@@ -2,235 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C0519447D39
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Nov 2021 11:01:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4DFD4447D3C
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Nov 2021 11:01:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238550AbhKHKEK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Nov 2021 05:04:10 -0500
-Received: from m43-7.mailgun.net ([69.72.43.7]:46264 "EHLO m43-7.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237176AbhKHKEH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Nov 2021 05:04:07 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1636365682; h=Content-Transfer-Encoding: Content-Type:
- In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
- Subject: Sender; bh=0l+Axwex3km/18zRKU/2t97iNvhS734FDSfeO1OvkLA=; b=IDJHg4mIjBFdtALcV8qhRwY4Gdo8twVFKBwqo7zXG0M33VxlNyp1Y69oi+jmGl+AjjBBXTv7
- QGhTqml7bps6xqQGmoxjST/Uogz7l7xLoKdScvgkiiLTecqnScILAUEEMMgVEmfKi7jzlyrS
- ozXNV535mhNK5AyO3o19zu/uC7o=
-X-Mailgun-Sending-Ip: 69.72.43.7
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n06.prod.us-west-2.postgun.com with SMTP id
- 6188f572facd20d7953610ca (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 08 Nov 2021 10:01:22
- GMT
-Sender: srivasam=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 28F97C4361B; Mon,  8 Nov 2021 10:01:22 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-6.0 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        NICE_REPLY_A,SPF_FAIL autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from [10.242.143.72] (unknown [202.46.23.19])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        id S238556AbhKHKE1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Nov 2021 05:04:27 -0500
+Received: from smtp-out1.suse.de ([195.135.220.28]:60350 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238568AbhKHKES (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Nov 2021 05:04:18 -0500
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out1.suse.de (Postfix) with ESMTP id 33A1E21AFC;
+        Mon,  8 Nov 2021 10:01:33 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1636365693; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=5UZuKAmHIrwVcGr41lKYOAKA0vOHUe0ZexZ00mvExQU=;
+        b=D3eL8PObhxrU8IE4pU3nDbNQgS4xDX279ndrDe7NVbcOlV4CWeQKYLEcilP1qhzGBDs3uI
+        HmnxAMflpuaiiXUcslsjCPMak5CL4TWeHpLVKyz19GO9CWWroehg4VuHCTyaaSS/gDVgxR
+        wrpGSrPqJ5HNIFgpWfuGeQ6v/SzYcyk=
+Received: from suse.cz (unknown [10.100.224.162])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        (Authenticated sender: srivasam)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 73DEEC4360D;
-        Mon,  8 Nov 2021 10:01:15 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 smtp.codeaurora.org 73DEEC4360D
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=codeaurora.org
-Subject: Re: [PATCH v2 3/3] pinctrl: qcom: Add SC7280 lpass pin configuration
-To:     Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
-        agross@kernel.org, bjorn.andersson@linaro.org, lgirdwood@gmail.com,
-        broonie@kernel.org, robh+dt@kernel.org, plai@codeaurora.org,
-        bgoswami@codeaurora.org, perex@perex.cz, tiwai@suse.com,
-        rohitkr@codeaurora.org, linux-arm-msm@vger.kernel.org,
-        alsa-devel@alsa-project.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, swboyd@chromium.org,
-        judyhsiao@chromium.org
-Cc:     Venkata Prasad Potturu <potturu@codeaurora.org>
-References: <1635342097-2726-1-git-send-email-srivasam@codeaurora.org>
- <1635342097-2726-4-git-send-email-srivasam@codeaurora.org>
- <3a05fc62-a060-3257-ad54-53e376763fe3@linaro.org>
-From:   Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
-Organization: Qualcomm India Private Limited.
-Message-ID: <54ab2532-a0d5-a04f-0f8c-2ce11fdf973e@codeaurora.org>
-Date:   Mon, 8 Nov 2021 15:31:13 +0530
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.14.0
+        by relay2.suse.de (Postfix) with ESMTPS id 11789A3B8B;
+        Mon,  8 Nov 2021 10:01:33 +0000 (UTC)
+Date:   Mon, 8 Nov 2021 11:01:32 +0100
+From:   Petr Mladek <pmladek@suse.com>
+To:     Christophe Leroy <christophe.leroy@csgroup.eu>
+Cc:     Josh Poimboeuf <jpoimboe@redhat.com>,
+        Jiri Kosina <jikos@kernel.org>,
+        Miroslav Benes <mbenes@suse.cz>,
+        Joe Lawrence <joe.lawrence@redhat.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        "Naveen N . Rao" <naveen.n.rao@linux.vnet.ibm.com>,
+        linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        live-patching@vger.kernel.org
+Subject: Re: [PATCH v1 5/5] powerpc/ftrace: Add support for livepatch to PPC32
+Message-ID: <YYj1fNkYAqr/H/I2@alley>
+References: <cover.1635423081.git.christophe.leroy@csgroup.eu>
+ <b73d053c145245499511c4827890c9411c8b3a5a.1635423081.git.christophe.leroy@csgroup.eu>
 MIME-Version: 1.0
-In-Reply-To: <3a05fc62-a060-3257-ad54-53e376763fe3@linaro.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <b73d053c145245499511c4827890c9411c8b3a5a.1635423081.git.christophe.leroy@csgroup.eu>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu 2021-10-28 14:24:05, Christophe Leroy wrote:
+> This is heavily copied from PPC64. Not much to say about it.
+> 
+> Livepatch sample modules all work.
+> 
+> Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
+> ---
+> diff --git a/arch/powerpc/include/asm/livepatch.h b/arch/powerpc/include/asm/livepatch.h
+> index 4fe018cc207b..daf24d837241 100644
+> --- a/arch/powerpc/include/asm/livepatch.h
+> +++ b/arch/powerpc/include/asm/livepatch.h
+> @@ -23,8 +23,8 @@ static inline void klp_arch_set_pc(struct ftrace_regs *fregs, unsigned long ip)
+>  static inline unsigned long klp_get_ftrace_location(unsigned long faddr)
+>  {
+>  	/*
+> -	 * Live patch works only with -mprofile-kernel on PPC. In this case,
+> -	 * the ftrace location is always within the first 16 bytes.
+> +	 * Live patch works on PPC32 and only with -mprofile-kernel on PPC64. In
+> +	 * both cases, the ftrace location is always within the first 16 bytes.
 
-On 11/3/2021 4:52 PM, Srinivas Kandagatla wrote:
-Thanks Srini for your TIme!!!
-> Thanks Srinivasa for the patches.
->
-> On 27/10/2021 14:41, Srinivasa Rao Mandadapu wrote:
->> Update pin control support for SC7280 LPASS LPI.
->>
->> Signed-off-by: Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
->> Co-developed-by: Venkata Prasad Potturu <potturu@codeaurora.org>
->> Signed-off-by: Venkata Prasad Potturu <potturu@codeaurora.org>
->> ---
->>   drivers/pinctrl/qcom/pinctrl-lpass-lpi.c | 40 
->> ++++++++++++++++++++++++++++++++
->>   1 file changed, 40 insertions(+)
->>
->> diff --git a/drivers/pinctrl/qcom/pinctrl-lpass-lpi.c 
->> b/drivers/pinctrl/qcom/pinctrl-lpass-lpi.c
->> index 0bd0c16..17a05a6 100644
->> --- a/drivers/pinctrl/qcom/pinctrl-lpass-lpi.c
->> +++ b/drivers/pinctrl/qcom/pinctrl-lpass-lpi.c
->> @@ -122,6 +122,7 @@ static const struct pinctrl_pin_desc 
->> lpass_lpi_pins[] = {
->>       PINCTRL_PIN(11, "gpio11"),
->>       PINCTRL_PIN(12, "gpio12"),
->>       PINCTRL_PIN(13, "gpio13"),
->> +    PINCTRL_PIN(14, "gpio14"),
->
-> I see your point in first patch making these names more generic, but 
-> this is not really going to work, as the above line just added new pin 
-> for sm8250 even though it really only has 0-13 pins.
->
-> I think it would be more clear if you could just make a dedicated 
-> structures for sc7280. Simillar comments apply for other changes too.
->
-> Other than that the patch looks good to me.
->
-> --srini
+Nit: I had some problems to parse it. I wonder if the following is
+better:
 
-Okay. agree to your point. As lpass_lpi_pins array is just declaration, 
-and it will be used in functions, I thought it won't impact as functions 
-are different for both architectures.
+	 * Live patch works on PPC32 out of box and on PPC64 only with
+	 * -mprofile-kernel. In both cases, the ftrace location is always
+	 * within the first 16 bytes.
 
-With your feedback understood that it may not work existing archs. Will 
-change accordingly and re-post it.
 
->
->>   };
->>     enum lpass_lpi_functions {
->> @@ -136,6 +137,7 @@ enum lpass_lpi_functions {
->>       LPI_MUX_i2s1_ws,
->>       LPI_MUX_i2s2_clk,
->>       LPI_MUX_i2s2_data,
->> +    LPI_MUX_sc7280_i2s2_data,
->>       LPI_MUX_i2s2_ws,
->>       LPI_MUX_qua_mi2s_data,
->>       LPI_MUX_qua_mi2s_sclk,
->> @@ -144,6 +146,7 @@ enum lpass_lpi_functions {
->>       LPI_MUX_swr_rx_data,
->>       LPI_MUX_swr_tx_clk,
->>       LPI_MUX_swr_tx_data,
->> +    LPI_MUX_sc7280_swr_tx_data,
->>       LPI_MUX_wsa_swr_clk,
->>       LPI_MUX_wsa_swr_data,
->>       LPI_MUX_gpio,
->> @@ -164,8 +167,11 @@ static const unsigned int gpio10_pins[] = { 10 };
->>   static const unsigned int gpio11_pins[] = { 11 };
->>   static const unsigned int gpio12_pins[] = { 12 };
->>   static const unsigned int gpio13_pins[] = { 13 };
->> +static const unsigned int gpio14_pins[] = { 14 };
->> +
->>   static const char * const swr_tx_clk_groups[] = { "gpio0" };
->>   static const char * const swr_tx_data_groups[] = { "gpio1", 
->> "gpio2", "gpio5" };
->> +static const char * const sc7280_swr_tx_data_groups[] = { "gpio1", 
->> "gpio2", "gpio14" };
->>   static const char * const swr_rx_clk_groups[] = { "gpio3" };
->>   static const char * const swr_rx_data_groups[] = { "gpio4", "gpio5" };
->>   static const char * const dmic1_clk_groups[] = { "gpio6" };
->> @@ -185,6 +191,7 @@ static const char * const i2s1_data_groups[] = { 
->> "gpio8", "gpio9" };
->>   static const char * const wsa_swr_clk_groups[] = { "gpio10" };
->>   static const char * const wsa_swr_data_groups[] = { "gpio11" };
->>   static const char * const i2s2_data_groups[] = { "gpio12", "gpio12" };
->> +static const char * const sc7280_i2s2_data_groups[] = { "gpio12", 
->> "gpio13" };
->>     static const struct lpi_pingroup sm8250_groups[] = {
->>       LPI_PINGROUP(0, 0, swr_tx_clk, qua_mi2s_sclk, _, _),
->> @@ -203,6 +210,24 @@ static const struct lpi_pingroup sm8250_groups[] 
->> = {
->>       LPI_PINGROUP(13, NO_SLEW, dmic3_data, i2s2_data, _, _),
->>   };
->>   +static const struct lpi_pingroup sc7280_groups[] = {
->> +    LPI_PINGROUP(0, 0, swr_tx_clk, qua_mi2s_sclk, _, _),
->> +    LPI_PINGROUP(1, 2, swr_tx_data, qua_mi2s_ws, _, _),
->> +    LPI_PINGROUP(2, 4, swr_tx_data, qua_mi2s_data, _, _),
->> +    LPI_PINGROUP(3, 8, swr_rx_clk, qua_mi2s_data, _, _),
->> +    LPI_PINGROUP(4, 10, swr_rx_data, qua_mi2s_data, _, _),
->> +    LPI_PINGROUP(5, 12, swr_rx_data, _, _, _),
->> +    LPI_PINGROUP(6, NO_SLEW, dmic1_clk, i2s1_clk, _,  _),
->> +    LPI_PINGROUP(7, NO_SLEW, dmic1_data, i2s1_ws, _, _),
->> +    LPI_PINGROUP(8, NO_SLEW, dmic2_clk, i2s1_data, _, _),
->> +    LPI_PINGROUP(9, NO_SLEW, dmic2_data, i2s1_data, _, _),
->> +    LPI_PINGROUP(10, 16, i2s2_clk, wsa_swr_clk, _, _),
->> +    LPI_PINGROUP(11, 18, i2s2_ws, wsa_swr_data, _, _),
->> +    LPI_PINGROUP(12, NO_SLEW, dmic3_clk, sc7280_i2s2_data, _, _),
->> +    LPI_PINGROUP(13, NO_SLEW, dmic3_data, sc7280_i2s2_data, _, _),
->> +    LPI_PINGROUP(14, 6, sc7280_swr_tx_data, _, _, _),
->> +};
->> +
->>   static const struct lpi_function lpass_functions[] = {
->>       LPI_FUNCTION(dmic1_clk),
->>       LPI_FUNCTION(dmic1_data),
->> @@ -215,6 +240,7 @@ static const struct lpi_function 
->> lpass_functions[] = {
->>       LPI_FUNCTION(i2s1_ws),
->>       LPI_FUNCTION(i2s2_clk),
->>       LPI_FUNCTION(i2s2_data),
->> +    LPI_FUNCTION(sc7280_i2s2_data),
->>       LPI_FUNCTION(i2s2_ws),
->>       LPI_FUNCTION(qua_mi2s_data),
->>       LPI_FUNCTION(qua_mi2s_sclk),
->> @@ -223,6 +249,7 @@ static const struct lpi_function 
->> lpass_functions[] = {
->>       LPI_FUNCTION(swr_rx_data),
->>       LPI_FUNCTION(swr_tx_clk),
->>       LPI_FUNCTION(swr_tx_data),
->> +    LPI_FUNCTION(sc7280_swr_tx_data),
->>       LPI_FUNCTION(wsa_swr_clk),
->>       LPI_FUNCTION(wsa_swr_data),
->>   };
->> @@ -236,6 +263,15 @@ static struct lpi_pinctrl_variant_data 
->> sm8250_lpi_data = {
->>       .nfunctions = ARRAY_SIZE(lpass_functions),
->>   };
->>   +static const struct lpi_pinctrl_variant_data sc7280_lpi_data = {
->> +    .pins = lpass_lpi_pins,
->> +    .npins = ARRAY_SIZE(lpass_lpi_pins),
->> +    .groups = sc7280_groups,
->> +    .ngroups = ARRAY_SIZE(sc7280_groups),
->> +    .functions = lpass_functions,
->> +    .nfunctions = ARRAY_SIZE(lpass_functions),
->> +};
->> +
->>   static int lpi_gpio_read(struct lpi_pinctrl *state, unsigned int pin,
->>                unsigned int addr)
->>   {
->> @@ -677,6 +713,10 @@ static const struct of_device_id 
->> lpi_pinctrl_of_match[] = {
->>              .compatible = "qcom,sm8250-lpass-lpi-pinctrl",
->>              .data = &sm8250_lpi_data,
->>       },
->> +    {
->> +           .compatible = "qcom,sc7280-lpass-lpi-pinctrl",
->> +           .data = &sc7280_lpi_data,
->> +    },
->>       { }
->>   };
->>   MODULE_DEVICE_TABLE(of, lpi_pinctrl_of_match);
->>
--- 
-Qualcomm India Private Limited, on behalf of Qualcomm Innovation Center, Inc.,
-is a member of Code Aurora Forum, a Linux Foundation Collaborative Project.
+>  	 */
+>  	return ftrace_location_range(faddr, faddr + 16);
+>  }
 
+Best Regards,
+Petr
