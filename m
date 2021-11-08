@@ -2,108 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4896F447C35
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Nov 2021 09:46:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A7640447C39
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Nov 2021 09:48:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237658AbhKHItT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Nov 2021 03:49:19 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47292 "EHLO
+        id S238135AbhKHIuw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Nov 2021 03:50:52 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47648 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231741AbhKHItN (ORCPT
+        with ESMTP id S229988AbhKHIuu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Nov 2021 03:49:13 -0500
-Received: from mail-oi1-x236.google.com (mail-oi1-x236.google.com [IPv6:2607:f8b0:4864:20::236])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 80C53C061570;
-        Mon,  8 Nov 2021 00:46:29 -0800 (PST)
-Received: by mail-oi1-x236.google.com with SMTP id bk14so3522393oib.7;
-        Mon, 08 Nov 2021 00:46:29 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=b30HFK7segSG78ROYe0qjgc47Uv4h5TuZEe2Pf4e1PE=;
-        b=WF4rbaKdRIpZ2F+cts080PySHOq6YpGFE53Vsvh02Vo8WpUndt4qqmm2NQcCLQMC2M
-         QQfXZPtMMgI09+hbny5KUGNvpInQhDjWW0mog50Ze29BoxdAJ3hhzrbI2kywMDtLl2r9
-         0r1DSm6Y0y4mTz+wxn7w3AYNQg3psxnR021F4ZYKYLNOxlAIYp4a5sIfLx/SNMeEe0bp
-         BTsIBMnfPG2SGunTa0YfqADAzVaTjbW/JS3T4pCLe/KM4p8JtNFcg0h+GxG9IgORIkML
-         MzSlJ9rR9VOcoQFfbWPs592yFicKQ4C5fzKJyofTzfu4VmrpsavfggV7eC0OG68U3Nle
-         Yv9g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=b30HFK7segSG78ROYe0qjgc47Uv4h5TuZEe2Pf4e1PE=;
-        b=XgSTpDnjEjx0RDhkt/Xh88lElXT9Wj1G6AlDGTnCe9RUWBjCaVCJp7bsDFtDIX3H7k
-         JZILnrOqds3L2wZyH/JMie4W1usM0oky6Bv0bHENivsy5ktDgGC1bzP+6zsaYFjD7V2l
-         4mOkTBM4vpX8Qr++Bbe0rctbp7NiU7Kzb745Pekv+3pkNpT9nIBsvJJWj6xrha9F5q0F
-         QYiltIeuBue+li9pUiAUo2IoXm40ijuMi6p5WXeW4tjbnla7HtROc9MJoetiXHZLLum4
-         t2zLiR1baJ8+xANeNcvCwyPz0y+Gl7KhQHPp4PzS7Gp+8FWl82AZANvxCWwZnvXf5po0
-         iG8w==
-X-Gm-Message-State: AOAM531iCtEzWrpQ23+5bPS+B7rgZ4AoVBJOLQlssf5qt69M+HCXZ3qN
-        Bi/dMph/ELlZfOgWRMKfxNaJWyYbUiiigX4habM=
-X-Google-Smtp-Source: ABdhPJwSROyOKeyGFcWpl+YbXz5jIT8aoi8nHVLroXIh06B0ZI0C6JVgK2iMlh+wXGpNzCptMmZvsNkZKmHuZbuzr+Q=
-X-Received: by 2002:a54:4499:: with SMTP id v25mr35904645oiv.71.1636361188731;
- Mon, 08 Nov 2021 00:46:28 -0800 (PST)
+        Mon, 8 Nov 2021 03:50:50 -0500
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 89C7EC061570;
+        Mon,  8 Nov 2021 00:48:06 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=5NFnfqo73VmZa9KdPDtUR2AdqfLCRkiEPb4pbj86ui0=; b=dK/FD8/1D5AbzQUvYeuURUX7N+
+        eALUIE8ff+2lsAqGOl2JGKcmAUDzXqinHQcDViR3VU0ACxuRwFfiM1L0CMQUHQW/l94PC13ssk+hb
+        YBMwE7KwTFaYlEDKidSi2np4r00RFLym3d5sRCVk9/IMXy1rcuYSOcidlvonyO1hnOLMY4Wp9KnAF
+        tS6D7Zsc72rn95JAduzEoyI3Cmudn2zftMAqSOp2M8y+Hng1LOfDaH+CR8KvooRTeaLctT/URJ7zz
+        zA+2IO3TLT9+RQgUCdJr+tBnvU09XXK8RHRa/ll8F0Lqhbp8ojIe56XtsOVR9zjBxJ0xhO/yL7/SQ
+        9aretSnA==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mk0Jp-00Er30-8q; Mon, 08 Nov 2021 08:47:57 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 378E230022C;
+        Mon,  8 Nov 2021 09:47:56 +0100 (CET)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 8975D2671B8AC; Mon,  8 Nov 2021 09:47:54 +0100 (CET)
+Date:   Mon, 8 Nov 2021 09:47:54 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Ricardo Neri <ricardo.neri-calderon@linux.intel.com>
+Cc:     "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        linux-pm@vger.kernel.org, x86@kernel.org,
+        linux-doc@vger.kernel.org, Len Brown <len.brown@intel.com>,
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+        Aubrey Li <aubrey.li@linux.intel.com>,
+        Amit Kucheria <amitk@kernel.org>,
+        Andi Kleen <ak@linux.intel.com>,
+        Tim Chen <tim.c.chen@linux.intel.com>,
+        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
+        Ricardo Neri <ricardo.neri@intel.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 3/7] thermal: intel: hfi: Minimally initialize the
+ Hardware Feedback Interface
+Message-ID: <YYjkOkFmDG9IMPHu@hirez.programming.kicks-ass.net>
+References: <20211106013312.26698-1-ricardo.neri-calderon@linux.intel.com>
+ <20211106013312.26698-4-ricardo.neri-calderon@linux.intel.com>
 MIME-Version: 1.0
-References: <CAHP4M8X1ABEhu8kGtRSJHeqQ_m627hNT_N3Q_GGdcr3W_Rfspw@mail.gmail.com>
- <CAHp75VcVZ6dDDm-k=Njo-jDq81bL4BTwrtkkAnm24b23qWKB_g@mail.gmail.com>
- <CAHP4M8UK6AYVORHCndpw2ZeRLDN+BMj3enJ-+2SWtbOPSqUe9A@mail.gmail.com> <CAHp75VeSxzDFVAgah=NXk4vzKCr0qPHHiyinKzS4vO_tvDrMsg@mail.gmail.com>
-In-Reply-To: <CAHp75VeSxzDFVAgah=NXk4vzKCr0qPHHiyinKzS4vO_tvDrMsg@mail.gmail.com>
-From:   Ajay Garg <ajaygargnsit@gmail.com>
-Date:   Mon, 8 Nov 2021 14:16:16 +0530
-Message-ID: <CAHP4M8U=0aTHgfREGJpSboV6J4X+E3Y6+H_kb-PvXxDKtV=n-g@mail.gmail.com>
-Subject: Re: RFC for a new string-copy function, using mixtures of strlcpy and strscpy
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc:     "andy@kernel.org" <andy@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
-        "adobriyan@gmail.com" <adobriyan@gmail.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "linux-hardening@vger.kernel.org" <linux-hardening@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211106013312.26698-4-ricardo.neri-calderon@linux.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 8, 2021 at 2:04 PM Andy Shevchenko <andy.shevchenko
-> >
-> > For example, in file fs/kernfs/dir.c, there are methods like
-> > "kernfs_name_locked", "kernfs_path_from_node_locked" which simply
-> > consume the return-value without any checks.
-> >
-> > All the above functions have a simple motive : copy as much bytes as
-> > possible in the destination buffer, and then consume/return the number
-> > of bytes actually copied (minus the null-terminator byte of course).
->
-> Nope. Read the comment WRT strscpy().
+On Fri, Nov 05, 2021 at 06:33:08PM -0700, Ricardo Neri wrote:
+> +static __init int hfi_parse_features(void)
+> +{
+> +	unsigned int nr_capabilities, reg;
+> +
 
-Seems there is a confusion.
+> +	/*
+> +	 * If we are here we know that CPUID_HFI_LEAF exists. Parse the
+> +	 * supported capabilities and the size of the HFI table.
+> +	 */
+> +	reg = cpuid_edx(CPUID_HFI_LEAF);
+> +
+> +	hfi_features.capabilities = reg & HFI_CAPABILITIES_MASK;
+> +	if (!(hfi_features.capabilities & HFI_CAPABILITIES_PERFORMANCE)) {
+> +		pr_err("Performance reporting not supported! Not using HFI\n");
+> +		return -ENODEV;
+> +	}
+> +
+> +	/* The number of 4KB pages required by the table */
+> +	hfi_features.nr_table_pages = ((reg & CPUID_HFI_TABLE_SIZE_MASK) >>
+> +				      CPUID_HFI_TABLE_SIZE_SHIFT) + 1;
+> +
 
-I meant the functions "kernfs_name_locked" and others in
-fs/kernfs/dir.c, that use strlcpy and then simply consume/propogate
-the return-value without any checks.
+> +/* Hardware Feedback Interface Enumeration */
+> +#define CPUID_HFI_LEAF			6
+> +#define CPUID_HFI_CAP_MASK		0xff
+> +#define CPUID_HFI_TABLE_SIZE_MASK	0x0f00
+> +#define CPUID_HFI_TABLE_SIZE_SHIFT	8
+> +#define CPUID_HFI_CPU_INDEX_MASK	0xffff0000
+
+Also, *if* you're going to do something like this, then at least write
+out the masks in full so you can easily see how they relate. The above
+is crap.
+
+> +#define CPUID_HFI_CPU_INDEX_SHIFT	16
+> +
+> +/* Hardware Feedback Interface Pointer */
+> +#define HFI_PTR_VALID_BIT		BIT(0)
+> +#define HFI_PTR_ADDR_SHIFT		12
+> +
+> +/* Hardware Feedback Interface Configuration */
+> +#define HFI_CONFIG_ENABLE_BIT		BIT(0)
+> +
+> +/* Hardware Feedback Interface Capabilities */
+> +#define HFI_CAPABILITIES_MASK		0xff
+> +#define HFI_CAPABILITIES_NR		8
+> +#define HFI_CAPABILITIES_PERFORMANCE	BIT(0)
+> +#define HFI_CAPABILITIES_ENERGY_EFF	BIT(1)
 
 
->
-> > If checks are to be put in-place, it would be too much code/churn,
-> > adding if checks all over the place.
->
-> Yep, that's why in some cases where we know that there can't be
-> overflow the checks are not present. In some cases it's historically
-> like this, in some cases checks might be useful and so on. But no, we
-> do not need more chaos in the string functions.
->
+So personally I prefer a bitfield union a-la cpuid10_eax, cpuid10_ebx
+cpuid10_edx etc.. Barring that, the above can also be written more
+concise using FIELD_GET() from bitfields.
 
-If the client knows that overflow cannot be there, it is better to use
-the simple vanilla strcpy.
-Using strlcpy means that the client believes there might be case when
-src-buffer might be bigger.
+union cpuid6_edx {
+	struct {
+		unsigned int capabilities :  8;
+		unsigned int table_size   :  4;
+		unsigned int __reserved   :  4;
+		unsigned int cpu_index    : 16;
+	};
+	unsigned int full;
+};
 
-Again, functions like "kernfs_name_locked" and others in
-fs/kernfs/dir.c demonstrate that the client cannot be sure whether the
-src-buffer is small enough to be fit into the dest-buffer.
-
-
-Thanks and Regards,
-Ajay
