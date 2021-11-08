@@ -2,146 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B0590447EF6
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Nov 2021 12:36:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 99BEC447F03
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Nov 2021 12:38:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239266AbhKHLjc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Nov 2021 06:39:32 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57994 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230235AbhKHLja (ORCPT
+        id S239276AbhKHLkq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Nov 2021 06:40:46 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:42966 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S235534AbhKHLko (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Nov 2021 06:39:30 -0500
-Received: from mail-lj1-x232.google.com (mail-lj1-x232.google.com [IPv6:2a00:1450:4864:20::232])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 31329C061714;
-        Mon,  8 Nov 2021 03:36:46 -0800 (PST)
-Received: by mail-lj1-x232.google.com with SMTP id d11so7696680ljg.8;
-        Mon, 08 Nov 2021 03:36:46 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=X+QlLlo/0/3EVdBxA2kw9RSD+7dI68j0akmWtlfHVoc=;
-        b=aZVzW8uInA8LU/x+WSDcs8GL423pa/2TbHlNFMZCd9U6UTTINhRxHwWgMG+VIGRFXX
-         YHsHS1Zp8SLg7g0I8x9US08hxM80ZghlJabXZBFwbjt/NZTi8D93A6u3DdWQsriGAEMv
-         bFmB7LTf3DQwVbSm6WogHRt9oYdTZJJwV6Cdja/STeDW7/10QbzkyuPD5z+/FAuGPwej
-         XDOG6vFO/moWThDJAR559rbcfRfK+AgOLrilun42rQLGkujwn1pckpcm4TgSB3WIb1LP
-         WWP0u+S7lmnv27N0vKhUH9Av/RJV5C0NJsxi8Lo9cU/Zh/pB4HH/qd8XqYWZNDXsqTHX
-         YlNA==
+        Mon, 8 Nov 2021 06:40:44 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1636371479;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=zlpIDeohuxGJKr6/NQGxf0qdewWP/HeI2X9Zoct4WLo=;
+        b=L9mv7Wzvbe42e1CbAnv05oCbj8xcueiPsoDNZRRpzHHeNz90zepp44MFDAB5Ig2c3VuFh2
+        V2iePOr5/bQ6OyJrUh0fzeYi+Etn+LUBaymtZQoSoCcSWpeEqNfppdpXhuPnSceCrC7PJw
+        FQX5XIZh1khAGao2jfLbVc3uYq60Ma8=
+Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com
+ [209.85.208.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-24-qYWbZ6BPP0CZtiAUmjThVQ-1; Mon, 08 Nov 2021 06:37:58 -0500
+X-MC-Unique: qYWbZ6BPP0CZtiAUmjThVQ-1
+Received: by mail-ed1-f70.google.com with SMTP id o15-20020a056402438f00b003e32b274b24so4090763edc.21
+        for <linux-kernel@vger.kernel.org>; Mon, 08 Nov 2021 03:37:58 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=X+QlLlo/0/3EVdBxA2kw9RSD+7dI68j0akmWtlfHVoc=;
-        b=KWZdk7RIX27jzq4RWHkl++6p6t82eepplG51Hg6iBlvnXdeiNGg5mWFtBTgM55fD7r
-         XaIcxM0I9HVYSuwEcBCiArXlfnjus7cT9ZZ6iMzQF2pJKl4TpaiZpgKqRZH7d3DEo4Dn
-         uvhpIT2CpKXKxDgJ/yBdCo1CWE8bTJqe7wdeVeEhl5iwBR/NsMnhlMhwyIJKj8NKcQrq
-         IWba0h+ROl9jelRGhDswgqd4dLCsuPegDv//UT7Hzc6OQKftauIME2n+0p/8opchtOcN
-         QJ8Z+DkbR+WsvH7yCQBhWIuqXTl3AYGiG0kohknrg8xW+MA86Ja7rV7VJQDBR6pi66gG
-         09dA==
-X-Gm-Message-State: AOAM5318fCuZW4f5bQvwbv1aWwofiCGjZ7druMr/mD/F+riYA9nvuZM9
-        B6LlG+MxfE+0FzcGt1tuJcOi/G4F1CM=
-X-Google-Smtp-Source: ABdhPJzzWZ+q13ptoCU5JHKLBozyl2qyG0di7fj7GC0x6tQVXWEZ5utjk3vHuuOVClKYY3WCOwTKiw==
-X-Received: by 2002:a2e:bd88:: with SMTP id o8mr69963654ljq.197.1636371404363;
-        Mon, 08 Nov 2021 03:36:44 -0800 (PST)
-Received: from [192.168.2.145] (79-139-188-96.dynamic.spd-mgts.ru. [79.139.188.96])
-        by smtp.googlemail.com with ESMTPSA id q6sm1523591ljh.1.2021.11.08.03.36.42
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 08 Nov 2021 03:36:44 -0800 (PST)
-Subject: Re: [PATCH v2 27/45] mfd: ntxec: Use devm_register_power_handler()
-To:     =?UTF-8?Q?Jonathan_Neusch=c3=a4fer?= <j.neuschaefer@gmx.net>
-Cc:     Guenter Roeck <linux@roeck-us.net>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Lee Jones <lee.jones@linaro.org>,
-        "Rafael J . Wysocki" <rafael@kernel.org>,
-        Mark Brown <broonie@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
+        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
+         :message-id:mime-version;
+        bh=zlpIDeohuxGJKr6/NQGxf0qdewWP/HeI2X9Zoct4WLo=;
+        b=qk0Sz4Yu7/SAFrqtKWf2i00ghcEDyMg92Mqt596jSNErTGBHayhQqhAdEZwO3OL3b9
+         z8HtQEzP6xt91o9C/ya2B3WeY9aYv9oqjA1aZCjFWJCdE4xnLiyHRlmmwE79jwRf7d1e
+         YNG2+tLRjhhY2KBsFqXXAeHV6BocmRsQ8kAinAqjYC0zpVfVZfiRN5fdjkhKRbbh8Hca
+         6FHOX3nMDRCClLXRM6UrfW6Owykt8Fp3f+KLNhUnF9VzGex3tZuYwzjJfyXQ3BKvXYzi
+         dUFGhv1MxoWeylQo4Ll60zs1s8CC7KkkwSP8sxUaBZ7vncQK7wTMGzv8dEDU5LqwYuzU
+         jieg==
+X-Gm-Message-State: AOAM531N3KhykxdLyAqqwgaoP6sWhNy3ZuUXM8KChWxxkxA1Mpx1FIeM
+        HWoSk2/VgzavpsrFdezqz18UD9TLtRt5GQeFlf4iXRpbDPiudT/qvFWRevTBJavUigAAw2jtHAV
+        hXkyzU9+1dZkEf4yBoD0XWPod
+X-Received: by 2002:a50:ff07:: with SMTP id a7mr107385522edu.338.1636371476591;
+        Mon, 08 Nov 2021 03:37:56 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJx6xBGQaHNOpSc3bDudxgiZ97suxKqVelKGBfKaraRJUbGpQNsgGOmD1+OdU/l8xcmlE13Mfg==
+X-Received: by 2002:a50:ff07:: with SMTP id a7mr107385478edu.338.1636371476247;
+        Mon, 08 Nov 2021 03:37:56 -0800 (PST)
+Received: from alrua-x1.borgediget.toke.dk ([45.145.92.2])
+        by smtp.gmail.com with ESMTPSA id sb8sm6393735ejc.51.2021.11.08.03.37.54
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 08 Nov 2021 03:37:54 -0800 (PST)
+Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
+        id 2E6B718026D; Mon,  8 Nov 2021 12:37:54 +0100 (CET)
+From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
+To:     Alexander Lobakin <alexandr.lobakin@intel.com>,
+        Saeed Mahameed <saeed@kernel.org>
+Cc:     Alexander Lobakin <alexandr.lobakin@intel.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jesse Brandeburg <jesse.brandeburg@intel.com>,
+        Lukasz Czapnik <lukasz.czapnik@intel.com>,
+        Marcin Kubiak <marcin.kubiak@intel.com>,
+        Michal Kubiak <michal.kubiak@intel.com>,
+        Michal Swiatkowski <michal.swiatkowski@intel.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Netanel Belgazal <netanel@amazon.com>,
+        Arthur Kiyanovski <akiyano@amazon.com>,
+        Guy Tzalik <gtzalik@amazon.com>,
+        Saeed Bishara <saeedb@amazon.com>,
+        Ioana Ciornei <ioana.ciornei@nxp.com>,
+        Claudiu Manoil <claudiu.manoil@nxp.com>,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+        Marcin Wojtas <mw@semihalf.com>,
         Russell King <linux@armlinux.org.uk>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>, Guo Ren <guoren@kernel.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Greg Ungerer <gerg@linux-m68k.org>,
-        Joshua Thompson <funaho@jurai.org>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Nick Hu <nickhu@andestech.com>,
-        Greentime Hu <green.hu@gmail.com>,
-        Vincent Chen <deanbo422@gmail.com>,
-        Helge Deller <deller@gmx.de>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Yoshinori Sato <ysato@users.sourceforge.jp>,
-        Rich Felker <dalias@libc.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        Juergen Gross <jgross@suse.com>,
-        Stefano Stabellini <sstabellini@kernel.org>,
-        Len Brown <lenb@kernel.org>,
-        Santosh Shilimkar <ssantosh@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Chen-Yu Tsai <wens@csie.org>, Tony Lindgren <tony@atomide.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Vladimir Zapolskiy <vz@mleia.com>,
-        Avi Fishman <avifishman70@gmail.com>,
-        Tomer Maimon <tmaimon77@gmail.com>,
-        Tali Perry <tali.perry1@gmail.com>,
-        Patrick Venture <venture@google.com>,
-        Nancy Yuen <yuenn@google.com>,
-        Benjamin Fair <benjaminfair@google.com>,
-        Pavel Machek <pavel@ucw.cz>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-csky@vger.kernel.org, linux-ia64@vger.kernel.org,
-        linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org,
-        linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        linux-riscv@lists.infradead.org, linux-sh@vger.kernel.org,
-        xen-devel@lists.xenproject.org, linux-acpi@vger.kernel.org,
-        linux-omap@vger.kernel.org, openbmc@lists.ozlabs.org,
-        linux-tegra@vger.kernel.org, linux-pm@vger.kernel.org
-References: <20211027211715.12671-1-digetx@gmail.com>
- <20211027211715.12671-28-digetx@gmail.com> <YYbqlmOM95q7Hbjo@latitude>
- <be0c74c6-05a9-cad5-c285-6626d05f8860@gmail.com>
- <9a22c22d-94b1-f519-27a2-ae0b8bbf6e99@roeck-us.net>
- <658cf796-e3b1-f816-1e15-9e9e08b8ade0@gmail.com>
- <5a17fee3-4214-c2b9-abc1-ab9d6071591b@roeck-us.net>
- <c0b52994-51f5-806b-b07e-3e70d8217ffc@gmail.com> <YYkIeBSCFka9yrqC@latitude>
-From:   Dmitry Osipenko <digetx@gmail.com>
-Message-ID: <04103df3-1ef4-b560-a5cb-fa51737d28ad@gmail.com>
-Date:   Mon, 8 Nov 2021 14:36:42 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.14.0
+        Edward Cree <ecree.xilinx@gmail.com>,
+        Martin Habets <habetsm.xilinx@gmail.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Shay Agroskin <shayagr@amazon.com>,
+        Sameeh Jubran <sameehj@amazon.com>,
+        Alexander Duyck <alexanderduyck@fb.com>,
+        Danielle Ratson <danieller@nvidia.com>,
+        Ido Schimmel <idosch@nvidia.com>, Andrew Lunn <andrew@lunn.ch>,
+        Vladyslav Tarasiuk <vladyslavt@nvidia.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Jian Shen <shenjian15@huawei.com>,
+        Petr Vorel <petr.vorel@gmail.com>, Dan Murphy <dmurphy@ti.com>,
+        Yangbo Lu <yangbo.lu@nxp.com>,
+        Michal Kubecek <mkubecek@suse.cz>,
+        Zheng Yongjun <zhengyongjun3@huawei.com>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        YueHaibing <yuehaibing@huawei.com>,
+        Johannes Berg <johannes@sipsolutions.net>,
+        Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
+        netdev@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        virtualization@lists.linux-foundation.org, bpf@vger.kernel.org
+Subject: Re: [PATCH net-next 03/21] ethtool, stats: introduce standard XDP
+ statistics
+In-Reply-To: <20211105164453.29102-1-alexandr.lobakin@intel.com>
+References: <20210803163641.3743-1-alexandr.lobakin@intel.com>
+ <20210803163641.3743-4-alexandr.lobakin@intel.com>
+ <20210803134900.578b4c37@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+ <ec0aefbc987575d1979f9102d331bd3e8f809824.camel@kernel.org>
+ <20211026092323.165-1-alexandr.lobakin@intel.com>
+ <20211105164453.29102-1-alexandr.lobakin@intel.com>
+X-Clacks-Overhead: GNU Terry Pratchett
+Date:   Mon, 08 Nov 2021 12:37:54 +0100
+Message-ID: <87v912ri7h.fsf@toke.dk>
 MIME-Version: 1.0
-In-Reply-To: <YYkIeBSCFka9yrqC@latitude>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-08.11.2021 14:22, Jonathan Neuschäfer пишет:
-> On Sun, Nov 07, 2021 at 08:42:33PM +0300, Dmitry Osipenko wrote:
-> [...]
->> EC drivers tend to use higher priority in general. Jonathan, could you
->> please confirm that NTXEC driver is a more preferable restart method
->> than the watchdog?
-> 
-> Yes. The original firmware uses the NTXEC to restart, and it works well,
-> so I do think it's preferable.
+Alexander Lobakin <alexandr.lobakin@intel.com> writes:
 
-Thank you, then I'll update the NTXEC patch like this:
+> From: Alexander Lobakin <alexandr.lobakin@intel.com>
+> Date: Tue, 26 Oct 2021 11:23:23 +0200
+>
+>> From: Saeed Mahameed <saeed@kernel.org>
+>> Date: Tue, 03 Aug 2021 16:57:22 -0700
+>> 
+>> [ snip ]
+>> 
+>> > XDP is going to always be eBPF based ! why not just report such stats
+>> > to a special BPF_MAP ? BPF stack can collect the stats from the driver
+>> > and report them to this special MAP upon user request.
+>> 
+>> I really dig this idea now. How do you see it?
+>> <ifindex:channel:stat_id> as a key and its value as a value or ...?
+>
+> Ideas, suggestions, anyone?
 
-https://github.com/grate-driver/linux/commit/22da3d91f1734d9a0ed036220ad4ea28465af988
+I don't like the idea of putting statistics in a map instead of the
+regular statistics counters. Sure, for bespoke things people want to put
+into their XDP programs, use a map, but for regular packet/byte
+counters, update the regular counters so XDP isn't "invisible".
+
+As Jesper pointed out, batching the updates so the global counters are
+only updated once per NAPI cycle is the way to avoid a huge performance
+overhead of this...
+
+-Toke
 
