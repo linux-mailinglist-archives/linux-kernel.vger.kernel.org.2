@@ -2,146 +2,435 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DDD92449D8B
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Nov 2021 22:04:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A7C67449D8D
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Nov 2021 22:05:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239705AbhKHVHe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Nov 2021 16:07:34 -0500
-Received: from mail-oi1-f177.google.com ([209.85.167.177]:34449 "EHLO
-        mail-oi1-f177.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239682AbhKHVHd (ORCPT
+        id S239721AbhKHVHo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Nov 2021 16:07:44 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46480 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239710AbhKHVHn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Nov 2021 16:07:33 -0500
-Received: by mail-oi1-f177.google.com with SMTP id bg25so29065012oib.1;
-        Mon, 08 Nov 2021 13:04:48 -0800 (PST)
+        Mon, 8 Nov 2021 16:07:43 -0500
+Received: from mail-pl1-x649.google.com (mail-pl1-x649.google.com [IPv6:2607:f8b0:4864:20::649])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD234C061570
+        for <linux-kernel@vger.kernel.org>; Mon,  8 Nov 2021 13:04:58 -0800 (PST)
+Received: by mail-pl1-x649.google.com with SMTP id l3-20020a170902f68300b00142892d0a86so952383plg.13
+        for <linux-kernel@vger.kernel.org>; Mon, 08 Nov 2021 13:04:58 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=date:message-id:mime-version:subject:from:cc
+         :content-transfer-encoding;
+        bh=A8slxoWuSLDDOGDe4TgFi7S16ENFGAtvh0ADzhlSYZw=;
+        b=n8YkBwJmoqNOkanThJhXYvj/VBydRb2b/0XFiBA8NdOKBT3EZiDJd9PGB2jF3KHTzA
+         I9PC9+blq91vJJUuaaIyaBsO6rKBL1A2NuLMeigV1K5YU2uHYoV/EG3NL2RFQsqIwztH
+         bSiOB3aaK3MYwHsGzrD5Z60ktV+U/jf+cMVDvb9jn/vQak8Q8nIDCjNhIGdxuzZ/nE7G
+         BsgKsOvunAkV1NMctzJj270iRO5b83vEWVKHcgiv6pyOxm0yTGzOAueGhiM6tP5qcR5K
+         endTnLofcWqdZICVX5pZ9xRHvoAkufCnU4j6xLNzj6gt79sm2MaiXY1S0xokB5JUDu0S
+         ReoA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=dLj06l1wmESDNcs8MD+tMJu6hG5JZ+huSjOUnPTWIms=;
-        b=nsC4eNwasN/o/nd7V/GXfwzU3jWWA4LQz5I3oczBwkZn8S+tCgTly+WA6yAlzA8G2z
-         rxf0oRPWgAVPEKGIFb3ZW8Jw8GkfCwrs4zlZKgrWEn5Y78t9EQw8w0y+MSr/m4bNHlRV
-         ezc8r7912r+rgWvkDPc2fQCklMI3MjJwZ9vV4Ec/u/2InyohIkE5zabsQTAqC3aqzgw6
-         XMk+NhDjJdNghz3sOmNUgy+t3jSpEGzOAfnHgfohQtf4VBNmqj5M8Hvg3Qi4tDUrv3+8
-         qheD/Ue48XzyBhzVFbi7oid7guukKdwMde3g23JW+mu3n/dJZsOV0KCpuiXdesjDagU/
-         xF4A==
-X-Gm-Message-State: AOAM533wCfX90g7pARZRnQ17yjPTXKlZxCZmbNQd7m0IkmyH0HJUzXrz
-        8ZRoWqBDo9hJt3zshvMyw91rLRyOaQ==
-X-Google-Smtp-Source: ABdhPJzgvZiyH3h067LzXWI0cQ4/N1FWjU0WpFR4uRRAaF0ibj9cAeUsZYzrHJXzWGQ7Y2Wdivex9Q==
-X-Received: by 2002:aca:3e86:: with SMTP id l128mr1169280oia.120.1636405487943;
-        Mon, 08 Nov 2021 13:04:47 -0800 (PST)
-Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
-        by smtp.gmail.com with ESMTPSA id k4sm6359902oic.48.2021.11.08.13.04.45
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 08 Nov 2021 13:04:46 -0800 (PST)
-Received: (nullmailer pid 16501 invoked by uid 1000);
-        Mon, 08 Nov 2021 21:04:44 -0000
-Date:   Mon, 8 Nov 2021 15:04:44 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     David Heidelberg <david@ixit.cz>
-Cc:     Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>, - <kernel@puri.sm>,
-        ~okias/devicetree@lists.sr.ht, phone-devel@vger.kernel.org,
-        alsa-devel@alsa-project.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] dt-bindings: sound: gtm601: convert to YAML
-Message-ID: <YYmQ7OCIIb2AbnjY@robh.at.kernel.org>
-References: <20211030121753.50191-1-david@ixit.cz>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211030121753.50191-1-david@ixit.cz>
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:cc
+         :content-transfer-encoding;
+        bh=A8slxoWuSLDDOGDe4TgFi7S16ENFGAtvh0ADzhlSYZw=;
+        b=LPyHSAO1sIHxDzl4HDJZT7jDck15rp4ply2MkepMOwtva7GPg+27Lgvdv+LP+6E8MM
+         f8h8vtYSI313g7VeWRsOYLAgftBOCefM+tY9yhOilaIVZJYQwKIWslyIbzHmzx7F4I3J
+         6POzYvRUSu7jsPXqG/qcxShfL0kZS+8Cp/VGO0bwm3/pG/CvOSM/5/zMBdEs3nVey7Rs
+         OU652UGPTQa8SjdmaYRLKYQuf70oZF+7YniSdFEcL61zpeOrm99rNjJlL/Pivtb0oRlE
+         W9VxhsXoBzc2+fuOHDZzjsffBK/0RBoYj4XJUQ+d4ooBnmXDNIC30foaNl6/AHhL4Fou
+         AU4w==
+X-Gm-Message-State: AOAM532YSh/Flju85q/NOAQ2qqnDmES+yr/Stu+z6i7jE/VQbbXEzEta
+        8wl2UY68ZHT6YRUIU7+/8WM4IlnnatkObOTtqw==
+X-Google-Smtp-Source: ABdhPJx+OqjdXiDm0F/9fq031WiWyrhpLNl5mmxUHKj1RCoo3OEkXl5mlaOgRY9YcGnG/Q1dmE2GcA7MKSEMsFfiGw==
+X-Received: from almasrymina.svl.corp.google.com ([2620:15c:2cd:202:8717:7707:fb59:664e])
+ (user=almasrymina job=sendgmr) by 2002:a05:6a00:21c2:b0:44c:fa0b:f72 with
+ SMTP id t2-20020a056a0021c200b0044cfa0b0f72mr2365377pfj.13.1636405498180;
+ Mon, 08 Nov 2021 13:04:58 -0800 (PST)
+Date:   Mon,  8 Nov 2021 13:04:56 -0800
+Message-Id: <20211108210456.1745788-1-almasrymina@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.34.0.rc0.344.g81b53c2807-goog
+Subject: [PATCH v4] hugetlb: Add hugetlb.*.numa_stat file
+From:   Mina Almasry <almasrymina@google.com>
+Cc:     Mina Almasry <almasrymina@google.com>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Shuah Khan <shuah@kernel.org>,
+        Miaohe Lin <linmiaohe@huawei.com>,
+        Oscar Salvador <osalvador@suse.de>,
+        Michal Hocko <mhocko@suse.com>,
+        Muchun Song <songmuchun@bytedance.com>,
+        David Rientjes <rientjes@google.com>,
+        Shakeel Butt <shakeelb@google.com>, Jue Wang <juew@google.com>,
+        Yang Yao <ygyao@google.com>, Joanna Li <joannali@google.com>,
+        Cannon Matthews <cannonmatthews@google.com>,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Oct 30, 2021 at 02:17:52PM +0200, David Heidelberg wrote:
-> Convert GTM601 binding to the YAML format.
-> 
-> Signed-off-by: David Heidelberg <david@ixit.cz>
-> ---
-> v2:
->  - add #sound-dai-cells
->  - put kernel@puri.sm into maintainers
-> 
->  .../devicetree/bindings/sound/gtm601.txt      | 19 ----------
->  .../devicetree/bindings/sound/gtm601.yaml     | 36 +++++++++++++++++++
->  2 files changed, 36 insertions(+), 19 deletions(-)
->  delete mode 100644 Documentation/devicetree/bindings/sound/gtm601.txt
->  create mode 100644 Documentation/devicetree/bindings/sound/gtm601.yaml
-> 
-> diff --git a/Documentation/devicetree/bindings/sound/gtm601.txt b/Documentation/devicetree/bindings/sound/gtm601.txt
-> deleted file mode 100644
-> index efa32a486c4a..000000000000
-> --- a/Documentation/devicetree/bindings/sound/gtm601.txt
-> +++ /dev/null
-> @@ -1,19 +0,0 @@
-> -GTM601 UMTS modem audio interface CODEC
-> -
-> -This device has no configuration interface. The sample rate and channels are
-> -based on the compatible string
-> -	"option,gtm601" = 8kHz mono
-> -	"broadmobi,bm818" = 48KHz stereo
-> -
-> -Required properties:
-> -
-> -  - compatible : one of
-> -	"option,gtm601"
-> -	"broadmobi,bm818"
-> -
-> -
-> -Example:
-> -
-> -codec: gtm601_codec {
-> -	compatible = "option,gtm601";
-> -};
-> diff --git a/Documentation/devicetree/bindings/sound/gtm601.yaml b/Documentation/devicetree/bindings/sound/gtm601.yaml
-> new file mode 100644
-> index 000000000000..e81a6aa75522
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/sound/gtm601.yaml
-> @@ -0,0 +1,36 @@
-> +# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/sound/gtm601.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: GTM601 UMTS modem audio interface CODEC
-> +
-> +maintainers:
-> +  - kernel@puri.sm
-> +
-> +description: >
-> +  This device has no configuration interface. The sample rate and channels are
-> +  based on the compatible string
-> +
-> +properties:
-> +  compatible:
-> +    oneOf:
-> +      - items:
-> +          - const: broadmobi,bm818
-> +          - const: option,gtm601
+For hugetlb backed jobs/VMs it's critical to understand the numa
+information for the memory backing these jobs to deliver optimal
+performance.
 
-This does not match what the binding originally said. And generally this 
-combined with the one below should never be valid.
+Currently this technically can be queried from /proc/self/numa_maps, but
+there are significant issues with that. Namely:
+1. Memory can be mapped on unmapped.
+2. numa_maps are per process and need to be aggregated across all
+   processes in the cgroup. For shared memory this is more involved as
+   the userspace needs to make sure it doesn't double count shared
+   mappings.
+3. I believe querying numa_maps needs to hold the mmap_lock which adds
+   to the contention on this lock.
 
-> +      - items:
-> +          - enum:
-> +              - broadmobi,bm818  # 48 kHz stereo
-> +              - option,gtm601  # 8 kHz mono
-> +
-> +  '#sound-dai-cells':
-> +    const: 0
-> +
-> +additionalProperties: false
-> +
-> +examples:
-> +  - |
-> +    gtm601_codec {
-> +        compatible = "option,gtm601";
-> +    };
-> -- 
-> 2.33.0
-> 
-> 
+For these reasons I propose simply adding hugetlb.*.numa_stat file,
+which shows the numa information of the cgroup similarly to
+memory.numa_stat.
+
+On cgroup-v2:
+   cat /sys/fs/cgroup/unified/test/hugetlb.2MB.numa_stat
+   total=3D2097152 N0=3D2097152 N1=3D0
+
+On cgroup-v1:
+   cat /sys/fs/cgroup/hugetlb/test/hugetlb.2MB.numa_stat
+   total=3D2097152 N0=3D2097152 N1=3D0
+   hierarichal_total=3D2097152 N0=3D2097152 N1=3D0
+
+This patch was tested manually by allocating hugetlb memory and querying
+the hugetlb.*.numa_stat file of the cgroup and its parents.
+=EF=BF=BC
+Cc: Mike Kravetz <mike.kravetz@oracle.com>
+Cc: Andrew Morton <akpm@linux-foundation.org>
+Cc: Shuah Khan <shuah@kernel.org>
+Cc: Miaohe Lin <linmiaohe@huawei.com>
+Cc: Oscar Salvador <osalvador@suse.de>
+Cc: Michal Hocko <mhocko@suse.com>
+Cc: Muchun Song <songmuchun@bytedance.com>
+Cc: David Rientjes <rientjes@google.com>
+Cc: Shakeel Butt <shakeelb@google.com>
+Cc: Jue Wang <juew@google.com>
+Cc: Yang Yao <ygyao@google.com>
+Cc: Joanna Li <joannali@google.com>
+Cc: Cannon Matthews <cannonmatthews@google.com>
+Cc: linux-mm@kvack.org
+Cc: linux-kernel@vger.kernel.org
+
+Signed-off-by: Mina Almasry <almasrymina@google.com>
+
+---
+
+Changes in v4:
+- Removed unnecessary braces.
+- usage is now counted in pages instead of bytes.
+- Reverted unneeded changes to write_to_hugetlbfs.c
+
+Changes in v3:
+- Fixed typos (sorry!)
+- Used conventional locations for cgroups mount points in docs/commit
+message.
+- Updated docs.
+- Handle kzalloc_node failure, and proper deallocation of per node data.
+- Use struct_size() to calculate the struct size.
+- Use nr_node_ids instead of MAX_NUMNODES.
+- Updated comments per multi-line comment pattern.
+
+Changes in v2:
+- Fix warning Reported-by: kernel test robot <lkp@intel.com>
+---
+ .../admin-guide/cgroup-v1/hugetlb.rst         |   4 +
+ Documentation/admin-guide/cgroup-v2.rst       |   5 +
+ include/linux/hugetlb.h                       |   4 +-
+ include/linux/hugetlb_cgroup.h                |   7 ++
+ mm/hugetlb_cgroup.c                           | 113 ++++++++++++++++--
+ 5 files changed, 122 insertions(+), 11 deletions(-)
+
+diff --git a/Documentation/admin-guide/cgroup-v1/hugetlb.rst b/Documentatio=
+n/admin-guide/cgroup-v1/hugetlb.rst
+index 338f2c7d7a1c..0fa724d82abb 100644
+--- a/Documentation/admin-guide/cgroup-v1/hugetlb.rst
++++ b/Documentation/admin-guide/cgroup-v1/hugetlb.rst
+@@ -29,12 +29,14 @@ Brief summary of control files::
+  hugetlb.<hugepagesize>.max_usage_in_bytes             # show max "hugepag=
+esize" hugetlb  usage recorded
+  hugetlb.<hugepagesize>.usage_in_bytes                 # show current usag=
+e for "hugepagesize" hugetlb
+  hugetlb.<hugepagesize>.failcnt                        # show the number o=
+f allocation failure due to HugeTLB usage limit
++ hugetlb.<hugepagesize>.numa_stat                      # show the numa inf=
+ormation of the hugetlb memory charged to this cgroup
+
+ For a system supporting three hugepage sizes (64k, 32M and 1G), the contro=
+l
+ files include::
+
+   hugetlb.1GB.limit_in_bytes
+   hugetlb.1GB.max_usage_in_bytes
++  hugetlb.1GB.numa_stat
+   hugetlb.1GB.usage_in_bytes
+   hugetlb.1GB.failcnt
+   hugetlb.1GB.rsvd.limit_in_bytes
+@@ -43,6 +45,7 @@ files include::
+   hugetlb.1GB.rsvd.failcnt
+   hugetlb.64KB.limit_in_bytes
+   hugetlb.64KB.max_usage_in_bytes
++  hugetlb.64KB.numa_stat
+   hugetlb.64KB.usage_in_bytes
+   hugetlb.64KB.failcnt
+   hugetlb.64KB.rsvd.limit_in_bytes
+@@ -51,6 +54,7 @@ files include::
+   hugetlb.64KB.rsvd.failcnt
+   hugetlb.32MB.limit_in_bytes
+   hugetlb.32MB.max_usage_in_bytes
++  hugetlb.32MB.numa_stat
+   hugetlb.32MB.usage_in_bytes
+   hugetlb.32MB.failcnt
+   hugetlb.32MB.rsvd.limit_in_bytes
+diff --git a/Documentation/admin-guide/cgroup-v2.rst b/Documentation/admin-=
+guide/cgroup-v2.rst
+index 4d8c27eca96b..356847f8f008 100644
+--- a/Documentation/admin-guide/cgroup-v2.rst
++++ b/Documentation/admin-guide/cgroup-v2.rst
+@@ -2252,6 +2252,11 @@ HugeTLB Interface Files
+ 	are local to the cgroup i.e. not hierarchical. The file modified event
+ 	generated on this file reflects only the local events.
+
++  hugetlb.<hugepagesize>.numa_stat
++	Similar to memory.numa_stat, it shows the numa information of the
++        hugetlb pages of <hugepagesize> in this cgroup.  Only active in
++        use hugetlb pages are included.  The per-node values are in bytes.
++
+ Misc
+ ----
+
+diff --git a/include/linux/hugetlb.h b/include/linux/hugetlb.h
+index 1faebe1cd0ed..0445faaa636e 100644
+--- a/include/linux/hugetlb.h
++++ b/include/linux/hugetlb.h
+@@ -613,8 +613,8 @@ struct hstate {
+ #endif
+ #ifdef CONFIG_CGROUP_HUGETLB
+ 	/* cgroup control files */
+-	struct cftype cgroup_files_dfl[7];
+-	struct cftype cgroup_files_legacy[9];
++	struct cftype cgroup_files_dfl[8];
++	struct cftype cgroup_files_legacy[10];
+ #endif
+ 	char name[HSTATE_NAME_LEN];
+ };
+diff --git a/include/linux/hugetlb_cgroup.h b/include/linux/hugetlb_cgroup.=
+h
+index c137396129db..54ff6ec68ed3 100644
+--- a/include/linux/hugetlb_cgroup.h
++++ b/include/linux/hugetlb_cgroup.h
+@@ -36,6 +36,11 @@ enum hugetlb_memory_event {
+ 	HUGETLB_NR_MEMORY_EVENTS,
+ };
+
++struct hugetlb_cgroup_per_node {
++	/* hugetlb usage in bytes over all hstates. */
++	unsigned long usage[HUGE_MAX_HSTATE];
++};
++
+ struct hugetlb_cgroup {
+ 	struct cgroup_subsys_state css;
+
+@@ -57,6 +62,8 @@ struct hugetlb_cgroup {
+
+ 	/* Handle for "hugetlb.events.local" */
+ 	struct cgroup_file events_local_file[HUGE_MAX_HSTATE];
++
++	struct hugetlb_cgroup_per_node *nodeinfo[];
+ };
+
+ static inline struct hugetlb_cgroup *
+diff --git a/mm/hugetlb_cgroup.c b/mm/hugetlb_cgroup.c
+index 5383023d0cca..4717465f5307 100644
+--- a/mm/hugetlb_cgroup.c
++++ b/mm/hugetlb_cgroup.c
+@@ -126,29 +126,58 @@ static void hugetlb_cgroup_init(struct hugetlb_cgroup=
+ *h_cgroup,
+ 	}
+ }
+
++static void hugetlb_cgroup_free(struct hugetlb_cgroup *h_cgroup)
++{
++	int node;
++
++	for_each_node(node)
++		kfree(h_cgroup->nodeinfo[node]);
++	kfree(h_cgroup);
++}
++
+ static struct cgroup_subsys_state *
+ hugetlb_cgroup_css_alloc(struct cgroup_subsys_state *parent_css)
+ {
+ 	struct hugetlb_cgroup *parent_h_cgroup =3D hugetlb_cgroup_from_css(parent=
+_css);
+ 	struct hugetlb_cgroup *h_cgroup;
++	int node;
++
++	h_cgroup =3D kzalloc(struct_size(h_cgroup, nodeinfo, nr_node_ids),
++			   GFP_KERNEL);
+
+-	h_cgroup =3D kzalloc(sizeof(*h_cgroup), GFP_KERNEL);
+ 	if (!h_cgroup)
+ 		return ERR_PTR(-ENOMEM);
+
+ 	if (!parent_h_cgroup)
+ 		root_h_cgroup =3D h_cgroup;
+
++	/*
++	 * TODO: this routine can waste much memory for nodes which will
++	 * never be onlined. It's better to use memory hotplug callback
++	 * function.
++	 */
++	for_each_node(node) {
++		/* Set node_to_alloc to -1 for offline nodes. */
++		int node_to_alloc =3D
++			node_state(node, N_NORMAL_MEMORY) ? node : -1;
++		h_cgroup->nodeinfo[node] =3D
++			kzalloc_node(sizeof(struct hugetlb_cgroup_per_node),
++				     GFP_KERNEL, node_to_alloc);
++		if (!h_cgroup->nodeinfo[node])
++			goto fail_alloc_nodeinfo;
++	}
++
+ 	hugetlb_cgroup_init(h_cgroup, parent_h_cgroup);
+ 	return &h_cgroup->css;
++
++fail_alloc_nodeinfo:
++	hugetlb_cgroup_free(h_cgroup);
++	return ERR_PTR(-ENOMEM);
+ }
+
+ static void hugetlb_cgroup_css_free(struct cgroup_subsys_state *css)
+ {
+-	struct hugetlb_cgroup *h_cgroup;
+-
+-	h_cgroup =3D hugetlb_cgroup_from_css(css);
+-	kfree(h_cgroup);
++	hugetlb_cgroup_free(hugetlb_cgroup_from_css(css));
+ }
+
+ /*
+@@ -292,7 +321,8 @@ static void __hugetlb_cgroup_commit_charge(int idx, uns=
+igned long nr_pages,
+ 		return;
+
+ 	__set_hugetlb_cgroup(page, h_cg, rsvd);
+-	return;
++	if (!rsvd && h_cg)
++		h_cg->nodeinfo[page_to_nid(page)]->usage[idx] +=3D nr_pages;
+ }
+
+ void hugetlb_cgroup_commit_charge(int idx, unsigned long nr_pages,
+@@ -331,7 +361,8 @@ static void __hugetlb_cgroup_uncharge_page(int idx, uns=
+igned long nr_pages,
+
+ 	if (rsvd)
+ 		css_put(&h_cg->css);
+-
++	else
++		h_cg->nodeinfo[page_to_nid(page)]->usage[idx] -=3D nr_pages;
+ 	return;
+ }
+
+@@ -421,6 +452,58 @@ enum {
+ 	RES_RSVD_FAILCNT,
+ };
+
++static int hugetlb_cgroup_read_numa_stat(struct seq_file *seq, void *dummy=
+)
++{
++	int nid;
++	struct cftype *cft =3D seq_cft(seq);
++	int idx =3D MEMFILE_IDX(cft->private);
++	bool legacy =3D MEMFILE_ATTR(cft->private);
++	struct hugetlb_cgroup *h_cg =3D hugetlb_cgroup_from_css(seq_css(seq));
++	struct cgroup_subsys_state *css;
++	unsigned long usage;
++
++	if (legacy) {
++		/* Add up usage across all nodes for the non-hierarchical total. */
++		usage =3D 0;
++		for_each_node_state(nid, N_MEMORY)
++			usage +=3D h_cg->nodeinfo[nid]->usage[idx];
++		seq_printf(seq, "total=3D%lu", usage * PAGE_SIZE);
++
++		/* Simply print the per-node usage for the non-hierarchical total. */
++		for_each_node_state(nid, N_MEMORY)
++			seq_printf(seq, " N%d=3D%lu", nid,
++				   h_cg->nodeinfo[nid]->usage[idx] * PAGE_SIZE);
++		seq_putc(seq, '\n');
++	}
++
++	/*
++	 * The hierarchical total is pretty much the value recorded by the
++	 * counter, so use that.
++	 */
++	seq_printf(seq, "%stotal=3D%lu", legacy ? "hierarichal_" : "",
++		   page_counter_read(&h_cg->hugepage[idx]) * PAGE_SIZE);
++
++	/*
++	 * For each node, transverse the css tree to obtain the hierarichal
++	 * node usage.
++	 */
++	for_each_node_state(nid, N_MEMORY) {
++		usage =3D 0;
++		rcu_read_lock();
++		css_for_each_descendant_pre(css, &h_cg->css) {
++			usage +=3D hugetlb_cgroup_from_css(css)
++					 ->nodeinfo[nid]
++					 ->usage[idx];
++		}
++		rcu_read_unlock();
++		seq_printf(seq, " N%d=3D%lu", nid, usage * PAGE_SIZE);
++	}
++
++	seq_putc(seq, '\n');
++
++	return 0;
++}
++
+ static u64 hugetlb_cgroup_read_u64(struct cgroup_subsys_state *css,
+ 				   struct cftype *cft)
+ {
+@@ -671,8 +754,14 @@ static void __init __hugetlb_cgroup_file_dfl_init(int =
+idx)
+ 				    events_local_file[idx]);
+ 	cft->flags =3D CFTYPE_NOT_ON_ROOT;
+
+-	/* NULL terminate the last cft */
++	/* Add the numa stat file */
+ 	cft =3D &h->cgroup_files_dfl[6];
++	snprintf(cft->name, MAX_CFTYPE_NAME, "%s.numa_stat", buf);
++	cft->seq_show =3D hugetlb_cgroup_read_numa_stat;
++	cft->flags =3D CFTYPE_NOT_ON_ROOT;
++
++	/* NULL terminate the last cft */
++	cft =3D &h->cgroup_files_dfl[7];
+ 	memset(cft, 0, sizeof(*cft));
+
+ 	WARN_ON(cgroup_add_dfl_cftypes(&hugetlb_cgrp_subsys,
+@@ -742,8 +831,14 @@ static void __init __hugetlb_cgroup_file_legacy_init(i=
+nt idx)
+ 	cft->write =3D hugetlb_cgroup_reset;
+ 	cft->read_u64 =3D hugetlb_cgroup_read_u64;
+
++	/* Add the numa stat file */
++	cft =3D &h->cgroup_files_dfl[8];
++	snprintf(cft->name, MAX_CFTYPE_NAME, "%s.numa_stat", buf);
++	cft->private =3D MEMFILE_PRIVATE(idx, 1);
++	cft->seq_show =3D hugetlb_cgroup_read_numa_stat;
++
+ 	/* NULL terminate the last cft */
+-	cft =3D &h->cgroup_files_legacy[8];
++	cft =3D &h->cgroup_files_legacy[9];
+ 	memset(cft, 0, sizeof(*cft));
+
+ 	WARN_ON(cgroup_add_legacy_cftypes(&hugetlb_cgrp_subsys,
+--
+2.34.0.rc0.344.g81b53c2807-goog
