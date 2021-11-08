@@ -2,92 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D9D24449CE0
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Nov 2021 21:07:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 816D6449CE2
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Nov 2021 21:09:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238368AbhKHUKY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Nov 2021 15:10:24 -0500
-Received: from mail.kernel.org ([198.145.29.99]:34406 "EHLO mail.kernel.org"
+        id S238396AbhKHULw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Nov 2021 15:11:52 -0500
+Received: from mail.kernel.org ([198.145.29.99]:34592 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234723AbhKHUKX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Nov 2021 15:10:23 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1B3D460234;
-        Mon,  8 Nov 2021 20:07:37 +0000 (UTC)
+        id S234723AbhKHULv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Nov 2021 15:11:51 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id F19DA60234;
+        Mon,  8 Nov 2021 20:09:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1636402058;
-        bh=+TD1fN8FSklZENvT6tfgRagmfN0EK9eQFnFwDCXYWFs=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=FtLzVKB0aBa0jebB9kEtYoZPI/36f0SnxT0K6bTM8yb3LPFgG0WGIFT79U+qn4uY/
-         WjbmdJejH6SB3MExQjiLSskSjgAwh/wNcFPhBAqulrshtDatEWjs8CIJjq6lJUo4zb
-         /tcUHkWCOcxLAgEtSLuzgfGgS+cTrGC5HFo6+KrRlLiIdRwC0ZIdSHjn/yCUe4MI1R
-         OMQbRvEkm31XOptb7YJRZSmHeSnoDCSGV7va99O2muxkoEYPaiERx/+i/CBg7fZtF2
-         DaCkMJWgAGU/6Wl/0b/SEuWr0Se1KY+r6adrzVQibvFqKL5BUbUo0Mz5I7A0ccuJD/
-         VrlV8/Qc9X2QQ==
-Date:   Mon, 8 Nov 2021 22:07:35 +0200
-From:   Jarkko Sakkinen <jarkko@kernel.org>
-To:     Dave Hansen <dave.hansen@intel.com>
-Cc:     Dave Hansen <dave.hansen@linux.intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        Jethro Beekman <jethro@fortanix.com>,
-        Sean Christopherson <seanjc@google.com>,
-        reinette.chatre@intel.com, tony.luck@intel.com,
-        nathaniel@profian.com, stable@vger.kernel.org,
-        Borislav Petkov <bp@suse.de>, linux-sgx@vger.kernel.org,
+        s=k20201202; t=1636402146;
+        bh=k86+JyVs3h0yvS2kIAvv8hKAIORmA1OywHMPzN/pC8w=;
+        h=From:To:Cc:Subject:Date:From;
+        b=bb6jQLepV1ZMIOKS3/Bcm6Dz/H0XcSUuSwwTu6635bUgZu2jvKLg47O70bQ+00NPL
+         CltxlDr4vNAbRaSAhYoCxWK9NxBAAzaQTFgGNEKfYDp/WDj7kbe0+ZaFFR8qD2wHYE
+         XKhlZYB0Ml+ndBGemuowBUqYOlcpKb6G/OKn7UVVQ8DJC4vVHPxDTOppJbQrJra8/7
+         KerArhBEpeszyCDmZgfc1QKxa/K5YdJ/Htc3EBif8rvr0/VEXr19vXk09tMbwAme44
+         lFhTTp9eA4fyAQ9shD/kVVMbl2XHkMtZ99HZ10LmfUztW/9W+vW87Kggyi0iDM8f4L
+         wZ9YVPQcAg8Zg==
+From:   Dinh Nguyen <dinguyen@kernel.org>
+To:     broonie@kernel.org
+Cc:     dinguyen@kernel.org, a-nandan@ti.com, linux-spi@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] x86/sgx: Free backing memory after faulting the enclave
- page
-Message-ID: <YYmDh8eFHxo2vmgW@iki.fi>
-References: <20211103232238.110557-1-jarkko@kernel.org>
- <6831ed3c-c5b1-64f7-2ad7-f2d686224b7e@intel.com>
- <e88d6d580354aadaa8eaa5ee6fa703f021786afb.camel@kernel.org>
- <d2191571-30a5-c2aa-e8ed-0a380e9daeac@intel.com>
- <55eb8f3649590289a0f2b1ebe7583b6da3ff70ee.camel@kernel.org>
- <c6f5356b-a56a-e057-ef74-74e1169a844b@intel.com>
- <YYgsL7xSxnsjqIlu@iki.fi>
- <7a5d6dab-4d06-40b3-d9c7-09c991b856cd@intel.com>
- <186120e4754fa0b583d5f4cb31aa49ccd5795d09.camel@kernel.org>
- <08a34922-2115-7154-e21d-de23e3354034@intel.com>
+Subject: [PATCH] spi: cadence-quadspi: fix write completion support
+Date:   Mon,  8 Nov 2021 14:08:54 -0600
+Message-Id: <20211108200854.3616121-1-dinguyen@kernel.org>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <08a34922-2115-7154-e21d-de23e3354034@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Nov 07, 2021 at 10:34:02PM -0800, Dave Hansen wrote:
-> On 11/7/21 2:28 PM, Jarkko Sakkinen wrote:
-> >> When you place PCMD in a page, you do a get_page().  The refcount goes
-> >> up by one.  So, a PCMD page with one PCMD will (I think) have a refcount
-> >> of 3.  If you totally fill it up with 31 *more* PCMD entries, it will
-> >> have a refcount of 34.  You do *not* do a put_page() on the PCMD page at
-> >> the end of the allocation phase.
-> >>
-> >> When the backing storage is freed, you drop the refcount.  So, going
-> >> from 32 PCMD entries to 31 entries in a page, you go from 34->33.
-> >>
-> >> When that refcount drops to 2, you know there is no more data in the
-> >> page that's useful.  At that point you can truncate it out of the
-> >> backing storage.
-> >>
-> >> There's no reason to scan the page, or a boatload of other metadata.
-> >> Just keep a refcount.  Just use the *existing* 'struct page' refcount.
-> > Right! Thank you, I'll use this approach, and check that the refcount
-> > actually behaves that way you described.
-> 
-> Thinking about this a bit more...  We don't want to use the normal
-> get/put_page() refcount for this.  If we do, it will pin the page while
-> there is any data in it, preventing it from being reclaimed (swapped).
-> 
-> That isn't to say that we can't keep *a* refcount, just that we can't
-> use the page refcount for this.
-> 
-> I still like the idea of just scanning the whole page for zeros.
+Some versions of the Cadence QSPI controller does not have the write
+completion register implemented(CQSPI_REG_WR_COMPLETION_CTRL). On the
+Intel SoCFPGA platform the CQSPI_REG_WR_COMPLETION_CTRL register is
+not configured.
 
-I can try that route first. I like the property in zeroing that it has
-predicatable O(1) cost.
+Add a quirk to not write to the CQSPI_REG_WR_COMPLETION_CTRL register.
 
-/Jarkko
+Fixes: 9cb2ff111712 ("spi: cadence-quadspi: Disable Auto-HW polling)
+Signed-off-by: Dinh Nguyen <dinguyen@kernel.org>
+---
+ drivers/spi/spi-cadence-quadspi.c | 24 +++++++++++++++++++++---
+ 1 file changed, 21 insertions(+), 3 deletions(-)
+
+diff --git a/drivers/spi/spi-cadence-quadspi.c b/drivers/spi/spi-cadence-quadspi.c
+index 8b3d268ac63c..b808c94641fa 100644
+--- a/drivers/spi/spi-cadence-quadspi.c
++++ b/drivers/spi/spi-cadence-quadspi.c
+@@ -37,6 +37,7 @@
+ #define CQSPI_NEEDS_WR_DELAY		BIT(0)
+ #define CQSPI_DISABLE_DAC_MODE		BIT(1)
+ #define CQSPI_SUPPORT_EXTERNAL_DMA	BIT(2)
++#define CQSPI_NO_SUPPORT_WR_COMPLETION	BIT(3)
+ 
+ /* Capabilities */
+ #define CQSPI_SUPPORTS_OCTAL		BIT(0)
+@@ -86,6 +87,7 @@ struct cqspi_st {
+ 	struct cqspi_flash_pdata f_pdata[CQSPI_MAX_CHIPSELECT];
+ 	bool			use_dma_read;
+ 	u32			pd_dev_id;
++	bool			wr_completion;
+ };
+ 
+ struct cqspi_driver_platdata {
+@@ -996,9 +998,11 @@ static int cqspi_write_setup(struct cqspi_flash_pdata *f_pdata,
+ 	 * polling on the controller's side. spinand and spi-nor will take
+ 	 * care of polling the status register.
+ 	 */
+-	reg = readl(reg_base + CQSPI_REG_WR_COMPLETION_CTRL);
+-	reg |= CQSPI_REG_WR_DISABLE_AUTO_POLL;
+-	writel(reg, reg_base + CQSPI_REG_WR_COMPLETION_CTRL);
++	if (cqspi->wr_completion) {
++		reg = readl(reg_base + CQSPI_REG_WR_COMPLETION_CTRL);
++		reg |= CQSPI_REG_WR_DISABLE_AUTO_POLL;
++		writel(reg, reg_base + CQSPI_REG_WR_COMPLETION_CTRL);
++	}
+ 
+ 	reg = readl(reg_base + CQSPI_REG_SIZE);
+ 	reg &= ~CQSPI_REG_SIZE_ADDRESS_MASK;
+@@ -1736,6 +1740,10 @@ static int cqspi_probe(struct platform_device *pdev)
+ 
+ 	cqspi->master_ref_clk_hz = clk_get_rate(cqspi->clk);
+ 	master->max_speed_hz = cqspi->master_ref_clk_hz;
++
++	/* write completion is supported by default */
++	cqspi->wr_completion = true;
++
+ 	ddata  = of_device_get_match_data(dev);
+ 	if (ddata) {
+ 		if (ddata->quirks & CQSPI_NEEDS_WR_DELAY)
+@@ -1747,6 +1755,8 @@ static int cqspi_probe(struct platform_device *pdev)
+ 			cqspi->use_direct_mode = true;
+ 		if (ddata->quirks & CQSPI_SUPPORT_EXTERNAL_DMA)
+ 			cqspi->use_dma_read = true;
++		if (ddata->quirks & CQSPI_NO_SUPPORT_WR_COMPLETION)
++			cqspi->wr_completion = false;
+ 
+ 		if (of_device_is_compatible(pdev->dev.of_node,
+ 					    "xlnx,versal-ospi-1.0"))
+@@ -1859,6 +1869,10 @@ static const struct cqspi_driver_platdata intel_lgm_qspi = {
+ 	.quirks = CQSPI_DISABLE_DAC_MODE,
+ };
+ 
++static const struct cqspi_driver_platdata socfpga_qspi = {
++	.quirks = CQSPI_NO_SUPPORT_WR_COMPLETION,
++};
++
+ static const struct cqspi_driver_platdata versal_ospi = {
+ 	.hwcaps_mask = CQSPI_SUPPORTS_OCTAL,
+ 	.quirks = CQSPI_DISABLE_DAC_MODE | CQSPI_SUPPORT_EXTERNAL_DMA,
+@@ -1887,6 +1901,10 @@ static const struct of_device_id cqspi_dt_ids[] = {
+ 		.compatible = "xlnx,versal-ospi-1.0",
+ 		.data = (void *)&versal_ospi,
+ 	},
++	{
++		.compatible = "intel,socfpga-qspi",
++		.data = (void *)&socfpga_qspi,
++	},
+ 	{ /* end of table */ }
+ };
+ 
+-- 
+2.25.1
+
