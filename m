@@ -2,96 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A0A9D447E72
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Nov 2021 12:05:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E06A447E75
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Nov 2021 12:05:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239013AbhKHLIZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Nov 2021 06:08:25 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50712 "EHLO
+        id S238973AbhKHLIi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Nov 2021 06:08:38 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50754 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238991AbhKHLIT (ORCPT
+        with ESMTP id S238974AbhKHLI3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Nov 2021 06:08:19 -0500
-Received: from mail-wm1-x32d.google.com (mail-wm1-x32d.google.com [IPv6:2a00:1450:4864:20::32d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C7793C061570
-        for <linux-kernel@vger.kernel.org>; Mon,  8 Nov 2021 03:05:33 -0800 (PST)
-Received: by mail-wm1-x32d.google.com with SMTP id y84-20020a1c7d57000000b00330cb84834fso14749781wmc.2
-        for <linux-kernel@vger.kernel.org>; Mon, 08 Nov 2021 03:05:33 -0800 (PST)
+        Mon, 8 Nov 2021 06:08:29 -0500
+Received: from mail-ua1-x936.google.com (mail-ua1-x936.google.com [IPv6:2607:f8b0:4864:20::936])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 26382C061714;
+        Mon,  8 Nov 2021 03:05:45 -0800 (PST)
+Received: by mail-ua1-x936.google.com with SMTP id p37so29516815uae.8;
+        Mon, 08 Nov 2021 03:05:45 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
-        bh=8N0EVvSK7cmgp6FySmGDS9JBMa2kFHQv45CEzvjOUHw=;
-        b=bLOQrK8ZIDqtFnSGWZYIA0RlhIdqTgOSBo70mwisHpE89e9n5OIG1KxsZhU3u8cdv1
-         U4LlwtxgNqeWSK6cTdTLip46Vja6E6ueuydYJcR7RRtkJk5yjnwznIOUx2+/9tt23LLp
-         DBM2BqNKliyfsBX6/YoGD/nqtUV210UsgGEtjkiCcMFJwLmLirlvcxAhSd3yd4QDk1L8
-         u41bGsaeR3gq4BNR+aqbJ9hzpEd0bJn1S6pO6vaOzz/FSEHN2FD3ry5bXwJRbYakDcIa
-         yDrPpLUoS/SZx9SCPJx8xnRZcxLg62XIThp4/3a/ry6NyMVj8a1QJLi42Qkcl/xmNq15
-         Susg==
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:reply-to:from:date:message-id
+         :subject:to:cc;
+        bh=teGM/aRfgsF+v1uRkOKwMF4DSOKKVhKqEf5p4Z5SiaU=;
+        b=ZFRoTUThOk+PwhJrD1Eag/Ir8bvPTzXitLWo7Qm9cG6hDuajRaS2ubnIpafa8hqelx
+         WL1fNfta5V2hrroNvZl7LbQpF7RKN5VCsa+xO7FSCsfSuNMAainm2YA5tikS3fTjEUPS
+         S7nUbti/rK0oZP1HtN/XSxIxymWHxiWgH+ZPUlRC52qAjrfBrS8Syo1prKFyQ6DlVzln
+         5LDkWXVj5zr7B1fhibrk9qbyr+E/YxYr9pPfgdbsos4R5YM1hocn1dMvKBm3IZjjBO2b
+         Yn8nOBvKre4xDiI1eLzRKslQWYixvbxMRJUOumfHVZk+aCAbdz5QT9hQoQMfG7unHNdL
+         DBpg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition;
-        bh=8N0EVvSK7cmgp6FySmGDS9JBMa2kFHQv45CEzvjOUHw=;
-        b=F93jH5JZtxCDkK+eeP63yten0x10/uHrC3dy+65Z9/5weFvdImKverXZix6FezBYrx
-         gCESK+NshGoi1GfP9Uq+STebuLk67zpPJPhevW3Oe46OaBydPSbBFUOVEJqzLPeGZB/+
-         1NLAtJJQEvyRR6LjLh+iBYCzmjKXFVUaPN/oL6emlMYGxvjx/dBwKT8GBFnQ19H7bQgG
-         Snr9dS26o611+3XcmatL4uujUB93vhTR+Le33KoH016xG1LmLv0wMY1rNxTBWk+YPvnu
-         9tyacRaVIjwkH1tV03qgk/MqSUzxPJfZ19blVasKjpz1Uqw/IowGzzogKIaCwpYilt+j
-         IqBA==
-X-Gm-Message-State: AOAM532kZ9CQqL7yzrZCn+vh+3LPQJhewfsGZ3ee+CqpZrCXcKVSJiAZ
-        4f+/JglhbSnQMQYreu5K9Z6pgyaB4iOh0Uc8
-X-Google-Smtp-Source: ABdhPJyFW00fs7JeWVvHs079TdXUCXEqYaF91jOr4IkIFps6rWM7SUpqmbgSA3mNKRnPRUpz+tS8/w==
-X-Received: by 2002:a7b:c5d8:: with SMTP id n24mr53997110wmk.51.1636369532216;
-        Mon, 08 Nov 2021 03:05:32 -0800 (PST)
-Received: from maple.lan (cpc141216-aztw34-2-0-cust174.18-1.cable.virginm.net. [80.7.220.175])
-        by smtp.gmail.com with ESMTPSA id t127sm20059156wma.9.2021.11.08.03.05.31
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 08 Nov 2021 03:05:31 -0800 (PST)
-Date:   Mon, 8 Nov 2021 11:05:30 +0000
-From:   Daniel Thompson <daniel.thompson@linaro.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Jason Wessel <jason.wessel@windriver.com>,
-        linux-kernel@vger.kernel.org,
-        Douglas Anderson <dianders@chromium.org>
-Subject: [GIT PULL] kgdb changes for v5.16
-Message-ID: <20211108110530.x7ztji4kavmqfecj@maple.lan>
+        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
+         :from:date:message-id:subject:to:cc;
+        bh=teGM/aRfgsF+v1uRkOKwMF4DSOKKVhKqEf5p4Z5SiaU=;
+        b=VYf44b+g8j7e+ZzLqU77Ss/6QSnpvrsaBVhAVibDU2Z2XdEJMVoJdy/ZpN1tzNQLtw
+         UpFcLQP3jvDbWO2icV9ufzoKPPeYrkvzN4ECQDFJuM0Im5O6Su0K+bQqfuVrkQ4Ps2tJ
+         +TcP0ntwom7+ECHliaE/SOxTa3QlWSH1/mNjlgbV+KyOMZ5jRQVcdabQHUCrU1O7RzO7
+         jHwfunHjebyesB25/oa3fWN1F5XTNVcuoqouuQkQj8q19IB0bCBgI0rEmAtzW5TtaVWT
+         /Q9CWCY3MU/OFjb2DHNghAetj6a219cb/A2mMIyGLvQHxbPqHw9ALZENOnRTYR5a6IMD
+         7LgQ==
+X-Gm-Message-State: AOAM532ZZK+5gDqfN3JyzdK1ONH1f5+5RFnUCrSOv5dcT8SFLG48ZL19
+        M4r3DYgSGP2AEJNHqUj+031Jd2AJczdJb1afi/s=
+X-Google-Smtp-Source: ABdhPJzVAd63faUQ9SQu882FRAjDvxBCJF8XbXAIW/sxogjQqNvAFil9hhvBomoaLzfx7bRe0gBj4+p/TaTuRNYF97E=
+X-Received: by 2002:a05:6102:3166:: with SMTP id l6mr16896002vsm.51.1636369544315;
+ Mon, 08 Nov 2021 03:05:44 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+References: <20210715141742.15072-1-andrea.merello@gmail.com>
+ <20211028101840.24632-1-andrea.merello@gmail.com> <20211028101840.24632-2-andrea.merello@gmail.com>
+ <CAHp75VdPhNbr6Y7ethsmw_Bd7DZOi4cyFHubPpOxa1LXibkUCQ@mail.gmail.com>
+In-Reply-To: <CAHp75VdPhNbr6Y7ethsmw_Bd7DZOi4cyFHubPpOxa1LXibkUCQ@mail.gmail.com>
+Reply-To: andrea.merello@gmail.com
+From:   Andrea Merello <andrea.merello@gmail.com>
+Date:   Mon, 8 Nov 2021 12:05:33 +0100
+Message-ID: <CAN8YU5OAdrivQuLAaQ8FyGbmGSR_Heb2Vz44PHgeQ=rrYuQBLQ@mail.gmail.com>
+Subject: Re: [v2 01/10] utils_macro: introduce find_closest_unsorted()
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc:     Jonathan Cameron <jic23@kernel.org>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        linux-iio <linux-iio@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        devicetree <devicetree@vger.kernel.org>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Rob Herring <robh+dt@kernel.org>,
+        Matt Ranostay <matt.ranostay@konsulko.com>,
+        Alexandru Ardelean <ardeleanalex@gmail.com>,
+        jmondi <jacopo@jmondi.org>,
+        Andrea Merello <andrea.merello@iit.it>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following changes since commit e4e737bb5c170df6135a127739a9e6148ee3da82:
+Il giorno gio 28 ott 2021 alle ore 12:26 Andy Shevchenko
+<andy.shevchenko@gmail.com> ha scritto:
+>
+> On Thu, Oct 28, 2021 at 1:18 PM Andrea Merello <andrea.merello@gmail.com> wrote:
+> >
+> > This is similar to find_closest() and find_closest_descending(), but, it
+> > doesn't make any assumption about the array being ordered.
+>
+> Macros in general are not so welcoming.
+> Why do you do it as a macro?
 
-  Linux 5.15-rc2 (2021-09-19 17:28:22 -0700)
+Honestly, I did that just because find_closest() and
+find_closest_descending() are macros (i.e. to be consistent wrt them).
+I see no drawbacks in making this a regular function indeed; just, do
+you have any advice about where should it live?
 
-are available in the Git repository at:
+> ...
+>
+> > +#include <linux/math.h>
+>
+> Wondering if the current header misses other inclusions it's a direct user of.
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/danielt/linux.git/ tags/kgdb-5.16-rc1
+Looking at it, it seems that also __find_closest() actually needs
+math.h because it (apparently incorrectly[*]) uses
+DIV_ROUND_CLOSEST()..
 
-for you to fetch changes up to b77dbc86d60459b42ab375e4e23172e7245f2854:
+[*]Indeed it seems there is another issue here about find_closest():
+for example it picks the 1st element while searching for "2" in an
+array like this: {1,2,..} ..This needs to be reported/fixed..
 
-  kdb: Adopt scheduler's task classification (2021-11-03 17:21:37 +0000)
 
-----------------------------------------------------------------
-kgdb patches for 5.16
 
-A single patch this cycle. We replace some open-coded routines to
-classify task states with the scheduler's own function to do this.
-Alongside the obvious benefits of removing funky code and aligning
-more exactly with the scheduler's task classification, this also
-fixes a long standing compiler warning by removing the open-coded
-routines that generated the warning.
-
-Signed-off-by: Daniel Thompson <daniel.thompson@linaro.org>
-
-----------------------------------------------------------------
-Daniel Thompson (1):
-      kdb: Adopt scheduler's task classification
-
- kernel/debug/kdb/kdb_bt.c      |  16 +++---
- kernel/debug/kdb/kdb_main.c    |  37 ++++++-------
- kernel/debug/kdb/kdb_private.h |   4 +-
- kernel/debug/kdb/kdb_support.c | 118 +++++++++--------------------------------
- 4 files changed, 53 insertions(+), 122 deletions(-)
+> ...
+>
+> > +/**
+> > + * find_closest_unsorted - locate the closest element in a unsorted array
+>
+> an
+>
+> > + * @x: The reference value.
+> > + * @a: The array in which to look for the closest element.
+> > + * @as: Size of 'a'.
+> > + *
+> > + * Similar to find_closest() but 'a' has no requirement to being sorted
+> > + */
+>
+> --
+> With Best Regards,
+> Andy Shevchenko
