@@ -2,61 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D624449AEB
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Nov 2021 18:39:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0B63D449AF4
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Nov 2021 18:42:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241467AbhKHRmS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Nov 2021 12:42:18 -0500
-Received: from mail.kernel.org ([198.145.29.99]:50144 "EHLO mail.kernel.org"
+        id S236637AbhKHRpc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Nov 2021 12:45:32 -0500
+Received: from mail.kernel.org ([198.145.29.99]:51056 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241382AbhKHRmI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Nov 2021 12:42:08 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPS id 1614861989;
-        Mon,  8 Nov 2021 17:39:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1636393164;
-        bh=hwQ2hBR6YiJeyG09duKNa8FVBKJcd+M255ZMGXcSrmU=;
-        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-        b=IzdIMcCaskPYu15iiSaxYMlDJaxATICf+m+Yp/e78kPKEOHi5kb/kWPnzDKc25Uhq
-         CVosJBadPvpsYNqoegDOdKfxHSckFrKuTfJ6K20uJMqIrZRH0RfBIPpcLq98O0OADP
-         Hp82gPj4v4wbigfDrfcmkVkzm2NRbuz2Vql0SmGitxpT4U1WcGbszyIoO7jn7G409K
-         2t7FOAgcG36B0qr0FDyEDFF4t7cTpSQ3IH6zG1lv8bsAsXiHkYcaT3BvH/8rzg/4i0
-         JybeRC0MoXE+etc+IQOUWpTu5UCgqfUf+bclYdGSpaiHA57ZQJ445RRlq874I6SmTp
-         uSl/qOOhrLqbA==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 10415609F7;
-        Mon,  8 Nov 2021 17:39:24 +0000 (UTC)
-Subject: Re: [GIT PULL] kgdb changes for v5.16
-From:   pr-tracker-bot@kernel.org
-In-Reply-To: <20211108110530.x7ztji4kavmqfecj@maple.lan>
-References: <20211108110530.x7ztji4kavmqfecj@maple.lan>
-X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <20211108110530.x7ztji4kavmqfecj@maple.lan>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/danielt/linux.git/ tags/kgdb-5.16-rc1
-X-PR-Tracked-Commit-Id: b77dbc86d60459b42ab375e4e23172e7245f2854
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: e851dfae4371d3c751f1e18e8eb5eba993de1467
-Message-Id: <163639316406.31155.7439189698679964024.pr-tracker-bot@kernel.org>
-Date:   Mon, 08 Nov 2021 17:39:24 +0000
-To:     Daniel Thompson <daniel.thompson@linaro.org>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Jason Wessel <jason.wessel@windriver.com>,
-        linux-kernel@vger.kernel.org,
-        Douglas Anderson <dianders@chromium.org>
+        id S232449AbhKHRpb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Nov 2021 12:45:31 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1193E61989;
+        Mon,  8 Nov 2021 17:42:47 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
+        s=korg; t=1636393367;
+        bh=aDP0JNZLneMa+fhhHDwEjiYQDIZ3O9kp6R7AQNfFBFU=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=Ka736QNrH5TeG6ihYfwD3Xp+ZOyH9vWoX444P2RHbWrs4G2/MbxhgdmDgfivT57y3
+         FnJ2UixIBR8LjiWYt6tOAdPF4aneBeukrwITqM3qAT2PD8jL02kTmTqkNHR5sw1JCL
+         q4Qj0mrGOyN4TtSI3zWTOYEBRcAELAjEp5WJ67ig=
+Date:   Mon, 8 Nov 2021 09:42:45 -0800
+From:   Andrew Morton <akpm@linux-foundation.org>
+To:     Johannes Weiner <hannes@cmpxchg.org>
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        kernel-team@fb.com
+Subject: Re:
+ vfs-keep-inodes-with-page-cache-off-the-inode-shrinker-lru.patch
+Message-Id: <20211108094245.6e3bc66d7cc5ce5196115058@linux-foundation.org>
+In-Reply-To: <YYlI40bWhtbKMwrz@cmpxchg.org>
+References: <YYlI40bWhtbKMwrz@cmpxchg.org>
+X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.31; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Mon, 8 Nov 2021 11:05:30 +0000:
+On Mon, 8 Nov 2021 10:57:23 -0500 Johannes Weiner <hannes@cmpxchg.org> wrote:
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/danielt/linux.git/ tags/kgdb-5.16-rc1
+> Hi Andrew,
+> 
+> I promised to give this patch some more testing exposure while it sits
+> in -mm. We've been steadily rolling this version of the change to our
+> fleet over the last months and it's currently on 20% of FB servers. We
+> have not noticed crashes or performance regressions because of it.
+> (The other 80% is running a previous version of the patch.)
+> 
+> The comment in 'series' says "extra cycle" but that was 5.15 :-) Do
+> you think we can get it merged into 5.16?
+> 
+> Just to reiterate, without the patch, there is very broad production
+> breakage for FB beyond reduced cache effectiveness. Yes, we lose cache
+> pages prematurely. But a bigger problem is that we lose nonresident
+> info we store in the inodes. This defeats thrash detection, which in
+> turn defeats psi and central reclaim deciscion making. The downstream
+> effects of this are quite severe and widespread:
+> 
+> - memory prioity inversion between containers
+> - failure to offload cold memory to swap with proactive reclaim
+> - breakdown of container health monitoring and userspace OOM killing
+> 
+> I'm not exaggerating when I say we can't reliably operate our fleet
+> without this patch. We've had to carry variants of it for two years
+> now. It'd be great to get this fixed upstream.
 
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/e851dfae4371d3c751f1e18e8eb5eba993de1467
-
-Thank you!
-
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/prtracker.html
+Cool, thanks for the update.  I'll sent it Linuswards this week.
