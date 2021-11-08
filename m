@@ -2,114 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3290C447FEE
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Nov 2021 13:56:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 493E8447FF1
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Nov 2021 13:56:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239729AbhKHM6z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Nov 2021 07:58:55 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47916 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238770AbhKHM6y (ORCPT
+        id S239740AbhKHM7b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Nov 2021 07:59:31 -0500
+Received: from szxga02-in.huawei.com ([45.249.212.188]:15374 "EHLO
+        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238770AbhKHM7a (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Nov 2021 07:58:54 -0500
-Received: from mail-lf1-x134.google.com (mail-lf1-x134.google.com [IPv6:2a00:1450:4864:20::134])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9EF6DC061570;
-        Mon,  8 Nov 2021 04:56:09 -0800 (PST)
-Received: by mail-lf1-x134.google.com with SMTP id u11so36005905lfs.1;
-        Mon, 08 Nov 2021 04:56:09 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=message-id:date:mime-version:user-agent:subject:to:cc:references
-         :from:in-reply-to:content-transfer-encoding;
-        bh=PRd8lrxK2rGzfhR6xd0y8MjCqwkrKOfPHO6ZfywRVnA=;
-        b=KIjeh7QgeVG9IpChI3cODLKL7UX3sRTcSUrfu1VjTjxWd6YTQAFs6DgtTlKD7+of3X
-         9qMnCmd3G/Bt9S7g5nJxrnVSWenaSxcPt46EVzFkksOkPT+ivtxwJsXvEBkbzZG7fK05
-         HE7lP5HBKUmNNGvsl9LfE/gMIWTahWcnIaFDKReCt9zL8CvsEoAHXnWTB7h6ttVb0WoR
-         XSARKLikLYEgkQ+//uJKF+z0rXT1ojfCfGvvweo3RyKuULukZfbD2jSQQaV7Zhpebk0T
-         KEGP/iIwjhoiC2dmNmgF4Mvj6mik13Wugtm+z/pFDmZoxny84TPnPsiwgHR1lAAK6Cdl
-         wBVg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :to:cc:references:from:in-reply-to:content-transfer-encoding;
-        bh=PRd8lrxK2rGzfhR6xd0y8MjCqwkrKOfPHO6ZfywRVnA=;
-        b=XPfqB9w++7ge0Zx0vV+AwOQ/Xxn26fMzzYaQNiAAJFxu0YQbifteCUG/d9BAdK7WJx
-         VV0imlIgnMEWn/A6L7AcHA2nRs9T2oKMx5Pw4Q1+BR4Rw/R4C6puCm3QEchMnva3ovJm
-         S9Zwv3d7OJQ1xkqtoRz7WsS7LIPE5rEx+A0o3SaV5mWGryC0l1kudDHRAUCe9IsEDIrz
-         4a4Nlcivope1xwfbKGmkbmYaFFBXJkK2S6e6zRz/Kl8hUD/KwY1kjrTWn3G+SZeA75bM
-         aH1G+babFZ3y1BUDFxNn/Der9NpVk6DluOLTo2Frr7SPyeZKdqNACjWqeuYjgmnnRVh/
-         7viQ==
-X-Gm-Message-State: AOAM532JAnk8eb47SLNDHek9qA8btJmy4n07y/WZqpAB7R15roHpjN+B
-        eYB9svtlapuECI49Uc7IfJ4=
-X-Google-Smtp-Source: ABdhPJz7b6AZzlifUaTMcQ3b65Sq/qgU3cFwHYqUyJ59VbtU0fc+lnXUT5NA+/1RzJQGcwUqsnEFjg==
-X-Received: by 2002:a05:6512:40c:: with SMTP id u12mr21130431lfk.473.1636376168038;
-        Mon, 08 Nov 2021 04:56:08 -0800 (PST)
-Received: from [10.1.250.9] (riviera.nat.ds.pw.edu.pl. [194.29.137.1])
-        by smtp.gmail.com with ESMTPSA id w40sm1809126lfu.48.2021.11.08.04.56.07
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 08 Nov 2021 04:56:07 -0800 (PST)
-Message-ID: <06a286d6-b675-3322-79f2-1127935794b9@gmail.com>
-Date:   Mon, 8 Nov 2021 13:56:07 +0100
+        Mon, 8 Nov 2021 07:59:30 -0500
+Received: from dggeme762-chm.china.huawei.com (unknown [172.30.72.54])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4Hnrhr6zpLz90w0;
+        Mon,  8 Nov 2021 20:56:28 +0800 (CST)
+Received: from [10.67.110.176] (10.67.110.176) by
+ dggeme762-chm.china.huawei.com (10.3.19.108) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2308.15; Mon, 8 Nov 2021 20:56:42 +0800
+Subject: Re: [PATCH -next,v2] efi/libstub: arm32: Use "align" for the size
+ alignment
+To:     Ard Biesheuvel <ardb@kernel.org>
+CC:     linux-efi <linux-efi@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        <wangweiyang2@huawei.com>
+References: <20211102020545.145840-1-cuigaosheng1@huawei.com>
+ <CAMj1kXFE1Gv41TowKZHqkwn+WVLsAOqJSFbi706KbMC0G_rqgw@mail.gmail.com>
+From:   cuigaosheng <cuigaosheng1@huawei.com>
+Message-ID: <d9ea13ab-843d-0036-0a27-6083023f4712@huawei.com>
+Date:   Mon, 8 Nov 2021 20:56:41 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.1
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:91.0)
- Gecko/20100101 Thunderbird/91.3.0
-Subject: Re: [PATCH v2 6/7] arm64: dts: qcom: sdm660-xiaomi-lavender: Enable
- Simple Framebuffer
-To:     Dang Huynh <danct12@riseup.net>
-Cc:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, martin.botka@somainline.org,
-        marijn.suijten@somainline.org, paul.bouchara@somainline.org,
-        angelogioacchino.delregno@somainline.org,
-        Caleb Connolly <caleb@connolly.tech>
-References: <20211108050336.3404559-1-danct12@riseup.net>
- <20211108050336.3404559-7-danct12@riseup.net>
-From:   Konrad Dybcio <konradybcio@gmail.com>
-In-Reply-To: <20211108050336.3404559-7-danct12@riseup.net>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <CAMj1kXFE1Gv41TowKZHqkwn+WVLsAOqJSFbi706KbMC0G_rqgw@mail.gmail.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.67.110.176]
+X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
+ dggeme762-chm.china.huawei.com (10.3.19.108)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Ard,
 
-On 08/11/2021 06:03, Dang Huynh wrote:
-> This lets the user sees the framebuffer console.
+Thanks for your reply.
+
+In my understanding address and size need to meet consistent alignment 
+constraints,If I understand wrong, please reject this patch.
+
+Best,
+
+GaoSheng.
+
+在 2021/11/4 17:26, Ard Biesheuvel 写道:
+> On Tue, 2 Nov 2021 at 03:04, Gaosheng Cui <cuigaosheng1@huawei.com> wrote:
+>> We are doing page-based allocations, and both the address
+>> and size must meet alignment constraints, so using "align"
+>> for the size alignment is a better choice.
+>>
+> Why is it a better choice? If I allocate a 2 MB aligned block of
+> memory, why is it better to align the size to a multiple of 2 MB as
+> well?
 >
-> Reviewed-by: Caleb Connolly <caleb@connolly.tech>
-> Reviewed-by: Martin Botka <martin.botka@somainline.org>
-> Signed-off-by: Dang Huynh <danct12@riseup.net>
-> ---
->   .../boot/dts/qcom/sdm660-xiaomi-lavender.dts  | 19 +++++++++++++++++++
->   1 file changed, 19 insertions(+)
 >
-> diff --git a/arch/arm64/boot/dts/qcom/sdm660-xiaomi-lavender.dts b/arch/arm64/boot/dts/qcom/sdm660-xiaomi-lavender.dts
-> index 8fd4d1732d94..122b487f197b 100644
-> --- a/arch/arm64/boot/dts/qcom/sdm660-xiaomi-lavender.dts
-> +++ b/arch/arm64/boot/dts/qcom/sdm660-xiaomi-lavender.dts
-> @@ -23,7 +23,21 @@ aliases {
->   	};
->   
->   	chosen {
-> +		#address-cells = <2>;
-> +		#size-cells = <2>;
-> +		ranges;
-> +
->   		stdout-path = "serial0:115200n8";
-> +
-> +		framebuffer0: framebuffer@9d400000 {
-> +			compatible = "simple-framebuffer";
-> +			reg = <0 0x9d400000 0 (1080 * 2340 * 4)>;
-> +			width = <1080>;
-> +			height = <2340>;
-> +			stride = <(1080 * 4)>;
-> +			format = "a8r8g8b8";
-> +			status= "okay";
-
-This line is redundant.
-
-
-Konrad
-
+>> Signed-off-by: Gaosheng Cui <cuigaosheng1@huawei.com>
+>> ---
+>>   drivers/firmware/efi/libstub/randomalloc.c | 2 +-
+>>   drivers/firmware/efi/libstub/relocate.c    | 2 +-
+>>   2 files changed, 2 insertions(+), 2 deletions(-)
+>>
+>> diff --git a/drivers/firmware/efi/libstub/randomalloc.c b/drivers/firmware/efi/libstub/randomalloc.c
+>> index 724155b9e10d..7b7159bb035d 100644
+>> --- a/drivers/firmware/efi/libstub/randomalloc.c
+>> +++ b/drivers/firmware/efi/libstub/randomalloc.c
+>> @@ -76,7 +76,7 @@ efi_status_t efi_random_alloc(unsigned long size,
+>>          if (align < EFI_ALLOC_ALIGN)
+>>                  align = EFI_ALLOC_ALIGN;
+>>
+>> -       size = round_up(size, EFI_ALLOC_ALIGN);
+>> +       size = round_up(size, align);
+>>
+>>          /* count the suitable slots in each memory map entry */
+>>          for (map_offset = 0; map_offset < map_size; map_offset += desc_size) {
+>> diff --git a/drivers/firmware/efi/libstub/relocate.c b/drivers/firmware/efi/libstub/relocate.c
+>> index 8ee9eb2b9039..d6d27e8c23f8 100644
+>> --- a/drivers/firmware/efi/libstub/relocate.c
+>> +++ b/drivers/firmware/efi/libstub/relocate.c
+>> @@ -50,7 +50,7 @@ efi_status_t efi_low_alloc_above(unsigned long size, unsigned long align,
+>>          if (align < EFI_ALLOC_ALIGN)
+>>                  align = EFI_ALLOC_ALIGN;
+>>
+>> -       size = round_up(size, EFI_ALLOC_ALIGN);
+>> +       size = round_up(size, align);
+>>          nr_pages = size / EFI_PAGE_SIZE;
+>>          for (i = 0; i < map_size / desc_size; i++) {
+>>                  efi_memory_desc_t *desc;
+>> --
+>> 2.30.0
+>>
+> .
