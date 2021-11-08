@@ -2,67 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6AD7A447FF8
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Nov 2021 14:00:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4F348447FFA
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Nov 2021 14:01:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239754AbhKHNCy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Nov 2021 08:02:54 -0500
-Received: from mga18.intel.com ([134.134.136.126]:35777 "EHLO mga18.intel.com"
+        id S239765AbhKHNEP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Nov 2021 08:04:15 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45012 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238770AbhKHNCv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Nov 2021 08:02:51 -0500
-X-IronPort-AV: E=McAfee;i="6200,9189,10161"; a="219118356"
-X-IronPort-AV: E=Sophos;i="5.87,218,1631602800"; 
-   d="scan'208";a="219118356"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Nov 2021 05:00:07 -0800
-X-IronPort-AV: E=Sophos;i="5.87,218,1631602800"; 
-   d="scan'208";a="503010130"
-Received: from mschuett-mobl2.ger.corp.intel.com (HELO localhost) ([10.249.33.194])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Nov 2021 05:00:05 -0800
-From:   Jani Nikula <jani.nikula@linux.intel.com>
-To:     "Artem S. Tashkinov" <aros@gmx.com>,
+        id S237857AbhKHNEO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Nov 2021 08:04:14 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0BFF061207;
+        Mon,  8 Nov 2021 13:01:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1636376490;
+        bh=1jc0fqx+O7P3W5EzIlHxWcUrWtz1kD3moB8iaoHU7Wk=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=YGOq63fNsqKNvSso040+FGHWJ+LffAc3B+hxjRF6aVeHFBUG7Tcah3YH/QYoLZ4sn
+         bomW1EyYUNfLKxV+QrDYpkYZXwAw8milG3lQbxEeKfhdA5fh0wPUkyS3XTD7VkbLQF
+         ypg+bBOgJbedjLFgT2gko/x3AhLpIXUgIKdMkPoU=
+Date:   Mon, 8 Nov 2021 14:01:28 +0100
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Ajay Garg <ajaygargnsit@gmail.com>
+Cc:     andy@kernel.org, Kees Cook <keescook@chromium.org>,
+        akpm@linux-foundation.org, adobriyan@gmail.com,
+        Nick Desaulniers <ndesaulniers@google.com>,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-doc@vger.kernel.org
-Subject: Re: [PATCH v1 (RFC)] docs: discourage users from using bugzilla.kernel.org
-In-Reply-To: <0b78b74e-5c72-1258-8373-5385d5709a6c@gmx.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
-References: <20210110121033.130504-1-linux@leemhuis.info> <6abc7248-efda-b569-9030-5384e5ce1f29@gmx.com> <87mtme98l6.fsf@intel.com> <0b78b74e-5c72-1258-8373-5385d5709a6c@gmx.com>
-Date:   Mon, 08 Nov 2021 15:00:02 +0200
-Message-ID: <871r3q950t.fsf@intel.com>
+        linux-hardening@vger.kernel.org
+Subject: Re: RFC for a new string-copy function, using mixtures of strlcpy
+ and strscpy
+Message-ID: <YYkfqH5wK3K/XaGQ@kroah.com>
+References: <CAHP4M8X1ABEhu8kGtRSJHeqQ_m627hNT_N3Q_GGdcr3W_Rfspw@mail.gmail.com>
+ <YYkWb4GQAAtZJNsT@kroah.com>
+ <CAHP4M8W2H4V=qgAeVp76GwfVUBzR3erZxJiuhm6jnyMo+gvknQ@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAHP4M8W2H4V=qgAeVp76GwfVUBzR3erZxJiuhm6jnyMo+gvknQ@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 08 Nov 2021, "Artem S. Tashkinov" <aros@gmx.com> wrote:
-> It does *not* help one bit that we have different bug trackers and
-> mailing lists for a *single* component which is the kernel. No other
-> software project under the sun makes the user rack their head trying to
-> understand how and where to post bug reports.
+On Mon, Nov 08, 2021 at 06:15:54PM +0530, Ajay Garg wrote:
+> Hi Greg,
+> 
+> Thanks for your time.
+> 
+> >
+> > Wait, why?  We have recently added new string copy functions to resolve
+> > the type of issues you have pointed out.  The kernel is not yet
+> > converted to use them, so why add yet-another-function that also is not
+> > used?
+> 
+> Greg, would request your couple of minutes more, in suggesting a
+> concrete way forward, by working through an example as below.
+> 
+> 
+> In the file fs/kernfs/dir.c, there is a statement
+> 
+>         return strlcpy(buf, kn->parent ? kn->name : "/", buflen);
+> 
+> Here, there is no information of how long kn->name might be, so there
+> is a definite chance of overflow happening. Thus, accordingly, strlcpy
+> is used, to bound copying of upto buflen bytes. Of course, buf
+> (destination-buffer) is safe from any overflow now.
 
-I suppose the kernel is a single component only from a fairly narrow
-user centric view. Sure, it would be nice, from a user perspective, to
-have a single bug tracker for everything. But behind the scenes, the
-kernel development community is so broad and fragmented it's basically
-impossible to get people to agree on a tracker that would suit everyone
-and that everyone would use. Furthermore, there are users that insist on
-reporting bugs on their own terms anyway, refusing to sign up to any
-trackers.
+We "know" that kn->name will not overflow here based on the callers of
+this function, right?  I can not find any caller that passes in a buffer
+that would overflow, or am I missing a callpath somewhere?
 
-Arguably "the single bug tracker" most users should report their kernel
-problems for triage first is their distro bug tracker.
+> However, iffff strlen(kn->name) is greater than (buflen - 1), then
+> strlcpy would return a different value than the number of bytes
+> actually copied. Since there is no check, this (wrong) return value
+> will be propagated to the clients down the stack.
 
-> Can we shut down bugzilla.kernel.org completely? In its current form
-> it's nothing but disgrace.
+But in the existing kernel, can that happen today?  I can't find any
+caller that would be using this in that manner.
 
-Works for me, ymmv.
+And that's what matters.  Not the theoretical callers in the possible
+future, but the in-kernel users of the functions today.
 
+If these calls are wrong, then they should be fixed, but adding another
+string function to the heap of ones we have should only be done after
+considering the ones that we currently have, why they were added, and
+why existing code has not yet been converted to use them.
 
-BR,
-Jani.
+thanks,
 
-
--- 
-Jani Nikula, Intel Open Source Graphics Center
+greg k-h
