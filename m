@@ -2,183 +2,229 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 63137447C3D
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Nov 2021 09:49:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 41100447C43
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Nov 2021 09:51:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238158AbhKHIwi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Nov 2021 03:52:38 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48044 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231660AbhKHIwh (ORCPT
+        id S238185AbhKHIxk convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 8 Nov 2021 03:53:40 -0500
+Received: from hostingweb31-40.netsons.net ([89.40.174.40]:58488 "EHLO
+        hostingweb31-40.netsons.net" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S238169AbhKHIxh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Nov 2021 03:52:37 -0500
-Received: from mail-lf1-x12e.google.com (mail-lf1-x12e.google.com [IPv6:2a00:1450:4864:20::12e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2336BC061570
-        for <linux-kernel@vger.kernel.org>; Mon,  8 Nov 2021 00:49:53 -0800 (PST)
-Received: by mail-lf1-x12e.google.com with SMTP id o18so34382233lfu.13
-        for <linux-kernel@vger.kernel.org>; Mon, 08 Nov 2021 00:49:53 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=NC6D/WS8Gp+h4dIR9Catgw+sLa+kzIQU0LzOCWmVhrM=;
-        b=LujYT2JCFGjdzk+2fC32ggQUDjKXizNOHdnxDLypoRVtzT8GLM6W8KkS6bBtKiaJ3s
-         CZ8D7mKp2MBmyNj4YkpNemsaT57xYF1ax7w/8RZ3y6NmY259gAE3PMY66Lmpu94VBpry
-         m/pKTKHdZU/F9HF/1y8PFQzkNmrj2wIXSBqI3GmXgB7xhzSGeKw0PAGPeJUunedLQikp
-         7rT4teXIU1RNvZ3jaEi1bH8c1sV0z5TJTlISfXNli/w+p+PQXhY4sare/g1TaS+B3C4j
-         44Y6+koNk1hbKRG/tz3XkfcZTPuqeKHJx5eKC2rklzBZ2CjfsCUyhaGOvKf4VeAxy8/q
-         Lxig==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=NC6D/WS8Gp+h4dIR9Catgw+sLa+kzIQU0LzOCWmVhrM=;
-        b=5xlAYZx7wNQ9drrXO2sqvd1b3V4K/iOmErLVOBOFl1VvA3edCnN6HkXiuNxOh8QuWu
-         i95TpzNIiBB5uDu6YcufiMOmM+ZOdDpwBWgoYY/YD3LB5gJG/OSyu5hRUuuFm5TmBAaa
-         AiRms2ZYAW957G+ZmWLNb3/YmlPLG1kLzaC/l1aenzZNdKhxRC6Wr3mtTPIMbgya9zly
-         M2KCcnEBGdbwL4AzY+R/qUEflm8xHxFPo67K9gGQWE89odQ7QMrIBH686sUgl0B4zbu/
-         jiDYw1huSHlrJROi0ose6eBCsXnfnE+XmVtQ2nUaDhfiWNO2U+hOTHLDmLXw8rnTYfpo
-         Ya2A==
-X-Gm-Message-State: AOAM530TMHi2zu6aip6US5u7BnKx7SbNrrLxwE/t9REm8UYRnmqWTG4Y
-        zDaJtoMCx6nYXVnQfTKqPJ4sNlUP9m33DeAWam47wX1LrDM=
-X-Google-Smtp-Source: ABdhPJwF3MCEgKFj4vvWPPbdNitPH62GPP/UPjjYD5+dZE6phEdbsCi7+BY69kIc8vwarxzNSoJq4rm3fdNHb27Kou8=
-X-Received: by 2002:a05:6512:2346:: with SMTP id p6mr39368133lfu.503.1636361391539;
- Mon, 08 Nov 2021 00:49:51 -0800 (PST)
+        Mon, 8 Nov 2021 03:53:37 -0500
+Received: from [77.244.183.192] (port=62110 helo=[192.168.178.41])
+        by hostingweb31.netsons.net with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.94.2)
+        (envelope-from <luca@lucaceresoli.net>)
+        id 1mk0Me-009nAD-9b; Mon, 08 Nov 2021 09:50:52 +0100
+From:   Luca Ceresoli <luca@lucaceresoli.net>
+Subject: Re: RFC: Extend probing of native PCIe controllers
+To:     =?UTF-8?Q?Pali_Roh=c3=a1r?= <pali@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        =?UTF-8?Q?Krzysztof_Wilczy=c5=84ski?= <kw@linux.com>,
+        Rob Herring <robh@kernel.org>,
+        =?UTF-8?Q?Marek_Beh=c3=ban?= <kabel@kernel.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20211022183808.jdeo7vntnagqkg7g@pali>
+Message-ID: <2744c8e0-5b69-ba1a-f750-6b5f8ad07998@lucaceresoli.net>
+Date:   Mon, 8 Nov 2021 09:50:51 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-References: <1634278612-17055-1-git-send-email-huangzhaoyang@gmail.com>
- <YYGV1TxsZXzGXFmx@cmpxchg.org> <CAGWkznEaEEz=m5UmPXRECiizwht7+8Zw_xH9V7Wwyd__10eJDA@mail.gmail.com>
- <CAGWkznFuX=6mSnj7J7=t7et5QO-GB2BKCMRiHoU37jcH9dPhLA@mail.gmail.com>
- <78b3f72b-3fe7-f2e0-0e6b-32f28b8ce777@arm.com> <CAGWkznF_8iBp57BPoQKvG4VuNYep=g+ZxgO7D4e0wMDLipJ8uw@mail.gmail.com>
- <85c81ab7-49ed-aba5-6221-ea6a8f37f8ad@arm.com>
-In-Reply-To: <85c81ab7-49ed-aba5-6221-ea6a8f37f8ad@arm.com>
-From:   Xuewen Yan <xuewen.yan94@gmail.com>
-Date:   Mon, 8 Nov 2021 16:49:39 +0800
-Message-ID: <CAB8ipk_0YxWnS-k+HLPnL7DRR1MM+WH-xQfna7jD_+TQ0vKi8Q@mail.gmail.com>
-Subject: Re: [Resend PATCH] psi : calc cfs task memstall time more precisely
-To:     Dietmar Eggemann <dietmar.eggemann@arm.com>
-Cc:     Zhaoyang Huang <huangzhaoyang@gmail.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        Zhaoyang Huang <zhaoyang.huang@unisoc.com>,
-        "open list:MEMORY MANAGEMENT" <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        xuewen.yan@unisoc.com, Ke Wang <Ke.Wang@unisoc.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20211022183808.jdeo7vntnagqkg7g@pali>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8BIT
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - hostingweb31.netsons.net
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - lucaceresoli.net
+X-Get-Message-Sender-Via: hostingweb31.netsons.net: authenticated_id: luca@lucaceresoli.net
+X-Authenticated-Sender: hostingweb31.netsons.net: luca@lucaceresoli.net
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Dietmar
+Hi Pali,
 
-On Sat, Nov 6, 2021 at 1:20 AM Dietmar Eggemann
-<dietmar.eggemann@arm.com> wrote:
->
-> On 05/11/2021 06:58, Zhaoyang Huang wrote:
-> >> I don't understand the EAS (probably asymmetric CPU capacity is meant
-> >> here) angle of the story. Pressure on CPU capacity which is usable for
-> >> CFS happens on SMP as well?
-> >  Mentioning EAS here mainly about RT tasks preempting small CFS tasks
-> > (big CFS tasks could be scheduled to big core), which would introduce
-> > more proportion of preempted time within PSI_MEM_STALL than SMP does.
->
-> What's your CPU layout? Do you have the little before the big CPUs? Like
-> Hikey 960?
->
-> root@linaro-developer:~# cat /sys/devices/system/cpu/cpu*/cpu_capacity
-> 462
-> 462
-> 462
-> 462
-> 1024
-> 1024
-> 1024
-> 1024
->
-> And I guess rt class prefers lower CPU numbers hence you see this?
->
-our CPU layout is:
-xuewen.yan:/ # cat /sys/devices/system/cpu/cpu*/cpu_capacity
-544
-544
-544
-544
-544
-544
-1024
-1024
+On 22/10/21 20:38, Pali Rohár wrote:
+> Hello!
+> 
+> In this email I'm describing how I see that probing of native PCIe
+> controller drivers is implemented, how it should be implemented and how
+> to extend / simplify core code for controller drivers.
+> 
+> 
+> Native PCIe controller drivers needs to fill struct pci_host_bridge and
+> then call pci_host_probe(). Function pci_host_probe() starts probing and
+> enumerating buses and register PCIe devices to system.
+> 
+> But initialization of PCIe controller and cards on buses (other end of
+> PCIe link) is more complicated and basically every native PCIe
+> controller driver needs to do initialization PCIe link prior calling
+> pci_host_probe(). Steps which controller drivers are doing are de-facto
+> standard steps defined in PCIe base or CEM specification.
+> 
+> The most problematic step is to reset endpoint card and wait until
+> endpoint card start. Reset of endpoint card is done by standard PERST#
+> signal (defined in PCIe CEM spec) and in most cases board export control
+> of this signal to OS via GPIO (few board and drivers have this signal
+> connected to PCIe controller and then PCIe controller has some specific
+> registers to control this signal). Reset via PERST# signal is defined in
+> PCIe CEM and base specs as "PCIe Warm Reset".
+> 
+> As discussed in the following email thread, this PCIe Warm Reset should
+> not depend on PCIe controller as it resets card on the other end of PCIe
+> controller. But currently every native PCIe controller driver does PCIe
+> Warm Reset by its own for randomly chosen time period. There is open
+> question how long should be endpoint card in Warm Reset state:
+> https://lore.kernel.org/linux-pci/20210310110535.zh4pnn4vpmvzwl5q@pali/
+> 
+> Initialization of PCIe endpoint card is described in PCIe CEM spec in
+> Figure 2-10: Power Up. Other informations are in PCIe base spec in 6.6.1
+> Conventional Reset section.
+> 
+> If I understand specifications correctly then OS initialization steps
+> should be following (please correct me if I'm wrong!):
+> 
+> 1) Put PERST# to low which enter endpoint card into reset state
+> 2) Enable AUX power (3.3V) and wait until is stable
+> 3) Enable main power (12V/3.3V) and wait until is stable
+> 4) Enable refclock and wait until is stable
+> 5) Enable LTSSM on PCIe controller to start link training
+> 6) Put PERST# to high which exit endpoint card from reset state
+> 7) Wait until link training completes
+> 8) Wait another 100ms prior accessing config space of endpoint card
+> 
+> Minimal time period between "after step 3)" and "before step 6)" is T_PVPERL = 100ms
+> Minimal time period between "after step 4)" and "before step 6)" is T_PERSTCLK = 100us
+> 
+> After step 6) is end of Fundamental Reset and PCIe controller needs to
+> be in LTSSM Detect state within 20ms. So enabling it prior putting
+> PERST# to high should achieve it.
+> 
+> Competition of link training is indicated by standard DLLLA bit in Root
+> Port config space. Support for DLLLA bit is optional and is indicated by
+> DLLLARC bit in Root Port config space. Lot of PCIe controllers do not
+> support this standard DLLLA bit, but have their own specific register
+> for it.
+> 
+> Similarly is defined power down of PCIe card in PCIe CEM spec in Figure
+> 2-13: Power Down. If I understand it correctly steps are:
+> 
+> 1) Put endpoint card into D3hot state, so PCIe link goes inactive
+> 2) Put PERST# to low, so endpoint card enters reset state
+> 3) Disable main power (12V/3.3V)
+> 4) Disable refclock
+> 
+> In case of surprise power down, PERST# needs to go low in 500ns.
+> 
+> In PCIe base spec in section 5.2 Link State Power Management is
+> described that preparation for removing the main power source can be
+> done also by sending PCIe PME_Turn_Off Message by Root Complex. IIRC
+> there is no standard way how to send PCIe PME_Turn_Off message.
+> 
+> 
+> 
+> 
+> I see that basically every PCIe controller driver is doing its own
+> implementation of PCIe Warm Reset and waiting until PCIe link is ready
+> prior calling pci_host_probe().
+> 
+> Based on all above details I would like to propose following extending
+> of struct pci_host_bridge and pci_host_probe() function to de-duplicate
+> native PCIe controller driver code:
+> 
+> 1) extend struct pci_host_bridge to provide callbacks for:
+>    * enable / disable main power source
+>    * enable / disable refclock
+>    * enable / disable LTSSM link training (if PCIe link should go into Detect / Polling state)
+>    * enable / disable PERST# signal
+>    * returning boolean if endpoint card is present (physically in PCIe/mPCIe/m.2/... slot)
+>    * returning boolean if link training completed
+>    * sending PCIe PME_Turn_Off message
+> 
+> 2) implement asynchronous initialization of PCIe link and enumeration of
+>    PCIe bus behind the PCIe Root Port from pci_host_probe() based on new
+>    callbacks added in 1)
+>    --> so native PCIe controller drivers do not have to do it manually
+>    --> during this initialization can be done also PCIe Hot Reset
+> 
+> 3) implement PCIe Hot Reset as reset method via PERST# signal and put it
+>    into pci_reset_fn_methods[] array
+> 
+> 4) implement PCIe Cold Reset as reset method via power down / up and put
+>    it into pci_reset_fn_methods[] array
+> 
+> 5) as enabling / disabling power supply and toggling PERST# signal is
+>    implemented via GPIO, add some generic implementation for callback
+>    functions which will use named gpios (e.g. from DT)
+> 
+> This could simplify implementations of native PCIe controller drivers by
+> calling initialization steps in correct order with correct timeouts and
+> drivers do not have to do copy+paste same common code or reimplement it
+> with own constants and macros for timeouts, etc...
+> 
+> Also it should enable access to PCIe Root Port as this device is part of
+> Root Complex and should be available also when link is down or link
+> training was not completed. Currently some PCIe controllers are not
+> registered into system when link is down (e.g. card is disconnected or
+> card has some issue). Which also prevents access to PCIe Root Port
+> device. And in some cases it could speed up boot process as pci
+> controller driver does not have to actively wait for link and let kernel
+> do initialization of other devices.
+> 
+> What do you think about this idea?
 
-And in our platform, we use the kernel in mobile phones with Android.
-And we prefer power, so we prefer the RT class to run on little cores.
+I'm afraid I know very little about PCI so I cannot give much valuable
+feedback.
 
+For what I can understand yours seems like a good analysis and the plan
+seems correct: move control from drivers into the core as far as the
+actions to take are standard and leave drivers the duty to implement
+only hardware-specific pieces via function pointers.
 
-> >>
-> >> This will let the idle task (swapper) pass. Is this indented? Or do you
-> >> want to only let CFS tasks (including SCHED_IDLE) pass?
-> > idle tasks will NOT call psi_memstall_xxx. We just want CFS tasks to
-> > scale the STALL time.
->
-> Not sure I  get this.
->
-> __schedule() -> psi_sched_switch() -> psi_task_change() ->
-> psi_group_change() -> record_times() -> psi_memtime_fixup()
->
-> is something else than calling psi_memstall_enter() or _leave()?
->
-> IMHO, at least record_times() can be called with current equal
-> swapper/X. Or is it that PSI_MEM_SOME is never set for the idle task in
-> this callstack? I don't know the PSI internals.
->
-> >>
-> >> if (current->sched_class != &fair_sched_class)
-> >>     return growth_fixed;
-> >>
-> >>>>>> +
-> >>>>>> +     if (current->in_memstall)
-> >>>>>> +             growth_fixed = div64_ul((1024 - rq->avg_rt.util_avg - rq->avg_dl.util_avg
-> >>>>>> +                                     - rq->avg_irq.util_avg + 1) * growth, 1024);
-> >>>>>> +
-> >>
-> >> We do this slightly different in scale_rt_capacity() [fair.c]:
-> >>
-> >> max = arch_scale_cpu_capacity(cpu_of(rq) /* instead of 1024 to support
-> >>                                             asymmetric CPU capacity */
-> > Is it possible that the SUM of rqs' util_avg large than
-> > arch_scale_cpu_capacity because of task migration things?
->
-> I assume you meant if the rq (cpu_rq(CPUx)) util_avg sum (CFS, RT, DL,
-> IRQ and thermal part) can be larger than arch_scale_cpu_capacity(CPUx)?
->
-> Yes it can.
->
-> Have a lock at
->
-> effective_cpu_util(..., max, ...) {
->
->   if (foo >= max)
->     return max;
->
-> }
->
-> Even the CFS part (cpu_rq(CPUx)->cfs.avg.util_avg) can be larger than
-> the original cpu capacity (rq->cpu_capacity_orig).
->
-> Have a look at cpu_util(). capacity_orig_of(CPUx) and
-> arch_scale_cpu_capacity(CPUx) both returning rq->cpu_capacity_orig.
->
+We have discussed in detail the PERST# behavior in [0], and I have a
+comment about that.
 
-Well, your means is we should not use the 1024 and should use the
-original cpu capacity?
-And maybe use the "sched_cpu_util()" is a good choice just like this:
+First, from that discussion it was clear that some drivers drive PERST#
+with an inverted polarity when calling gpiod_set_value() or
+devm_gpiod_get_optional(), which is "fixed" by an inverted polarity
+setting in their device tree.
 
-+       if (current->in_memstall)
-+               growth_fixed = div64_ul(cpu_util_cfs(rq) * growth,
-sched_cpu_util(rq->cpu, capacity_orig_of(rq->cpu)));
+Second, you say "in most cases board export control of this signal to OS
+via GPIO".
 
-Thanks!
+For these two reasons you might consider, in addition to the
+pci_reset_fn_methods[] function to implement PERST#, to add a struct
+gpio_desc * to be filled by the driver and used by the core. If set, it
+would allow the core to assert/deassert PERST# without driver
+intervention. The idea in pseudocode is:
 
-BR
-xuewen
+  [in drivers/pci/probe.c]
+
+  if (bridge->perst_gpio) {
+      gpiod_set_value(reset, 1); // assert
+      usleep(...);
+      gpiod_set_value(reset, 0); // deassert
+      usleep(...);
+  } else if (bridge->pci_reset_fn_methods[PERST]) {
+      bridge->pci_reset_fn_methods[PERST]();
+  }
+
+It would make drivers slightly simpler and less error prone.
+
+[0]
+https://lore.kernel.org/linux-arm-kernel/e9ab9c22-f73b-fe72-820a-4f2825c3dabc@lucaceresoli.net/T/#mc4fc8c10ebeeff8c6d3593b0072afbcf7de9f2ae
+
+My 2c,
+-- 
+Luca
+
