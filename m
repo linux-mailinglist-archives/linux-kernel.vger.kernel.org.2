@@ -2,167 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7CC55449817
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Nov 2021 16:23:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B60E449839
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Nov 2021 16:31:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239076AbhKHPZd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Nov 2021 10:25:33 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53304 "EHLO
+        id S239129AbhKHP1Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Nov 2021 10:27:24 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53714 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238991AbhKHPZ3 (ORCPT
+        with ESMTP id S235860AbhKHP1X (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Nov 2021 10:25:29 -0500
-Received: from mail-oi1-x231.google.com (mail-oi1-x231.google.com [IPv6:2607:f8b0:4864:20::231])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F0756C061746
-        for <linux-kernel@vger.kernel.org>; Mon,  8 Nov 2021 07:22:44 -0800 (PST)
-Received: by mail-oi1-x231.google.com with SMTP id r26so6816638oiw.5
-        for <linux-kernel@vger.kernel.org>; Mon, 08 Nov 2021 07:22:44 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kali.org; s=google;
-        h=message-id:date:mime-version:user-agent:subject:content-language:to
-         :cc:references:from:in-reply-to:content-transfer-encoding;
-        bh=g/Jzi4/bsCpORi3XVmLRvQb2/I7DBGZkp7KCpuyf5T4=;
-        b=mwH7FrqfQHnXKY5/RCDBKF2ggnIJcEyODdypMgivJ6eQLdASF6Hwkjw3j5vZk9kv0j
-         EGZnIsoaH/xgkRkINylGmDaZMfPtv07Jq6XIvgIctnr/nRWCHbl2sUHKp/7FYlI+/cF+
-         P2V07ztnCG2SdGzcI26Gd24RsTx8znOcyNBH/jePoOI5JDZPAXFDs+PfgixGFeCt70o7
-         98mL+hZWz4UGgFtzGH9I8ZXm9vivkR1XFZcuQ7ZDu/lw3rRiQdKVurksZ7gzDlynnSts
-         alGl5qGDn8/MyKSfW+/q4YxhmzspH2JzpAyaLSkEDyjgPGPt7LtlxCW9Xr9l8UGlYZRc
-         PEhA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:in-reply-to
-         :content-transfer-encoding;
-        bh=g/Jzi4/bsCpORi3XVmLRvQb2/I7DBGZkp7KCpuyf5T4=;
-        b=L/tb9LzUFXHqFxhSYYQlEn4DWaE4xRdPIAMZB/Lk9dpIltQGdD8mIJcfQrfyCUkw/C
-         DBtnFCdL0zdC+UdYi51dLqO21wN5PB025sLEp2fL7mHJB0CzqwK/xD6roCu2rfv3Wjre
-         nG9GqIUDuzdGm6+YFw4IbC4IMuqaNv6gZHCSidYHEdv+qqoXd9OEEGepYpTC3/ZsO7Fi
-         C0pRKez13KBhoIH0UdnLT6eXXm55hsfzZijoHjgW/LTC3ammxqRGE+kkh0R2VphbyaaT
-         diGCWX9m0ySVEl02UgXqW+iedyWe+1RXL7XtQ0dzo+ctDsTTTuqJM3S8FQLhGj+dWuJ4
-         fKug==
-X-Gm-Message-State: AOAM533YSVQ4v3ukLHggGVC/NMy1gb6dg7IlMPAMRK9j99AjYUOheYxL
-        ScwPCdDMbLyoEHS5rroomE8rqA==
-X-Google-Smtp-Source: ABdhPJyA6CRh1gldV9oc+Y86Ziq8FBRBvK1+8E1GkBSCwavEQvBLlT9jJop8RTiuLa1QL65Gd4rWOA==
-X-Received: by 2002:a05:6808:d53:: with SMTP id w19mr23526832oik.19.1636384964280;
-        Mon, 08 Nov 2021 07:22:44 -0800 (PST)
-Received: from [192.168.11.48] (cpe-173-173-107-246.satx.res.rr.com. [173.173.107.246])
-        by smtp.gmail.com with ESMTPSA id e2sm5524291ooh.40.2021.11.08.07.22.42
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 08 Nov 2021 07:22:43 -0800 (PST)
-Message-ID: <eac00041-a1b8-0780-931d-52249d538800@kali.org>
-Date:   Mon, 8 Nov 2021 09:22:42 -0600
+        Mon, 8 Nov 2021 10:27:23 -0500
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC195C061570;
+        Mon,  8 Nov 2021 07:24:38 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=ifil5zeZzBeMdGep2fEek9iKOuh1Q96iQHGmTHqvI0w=; b=HOi318BEWDtA70Q+Jy4/U+cvn9
+        2MuQaUsGbmpTac/PKZEJF3a/KsvMTDVPCYMNei/oBob+wQcjVmEMsTsSCk7AWlIbPK1pHUz5wepsJ
+        iFwYiNit1JLz1BQc+gzvsvbnAAhlPNPl+3LI7RANm6YUkVkxaOuwOzp1PRwMnaHFCuWVnzDAbL3Ke
+        jhacBfvBRJI66O1O/iOoQBE6QiSkV9Quy6vHb6251DoSSRJtYgAyVD8khMjxdZWlPsLlNliz5/yNH
+        YCZ4vHjyC6Tb4QbCrd6q95rjSiEVVNh3/ZQadrOeeXqvANVsyUJJ+qqRb9GcjV2V4i5vdh3GVQZuY
+        2N/FOJHw==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mk6Ve-00EuBn-Q0; Mon, 08 Nov 2021 15:24:34 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 4B4CB3000DD;
+        Mon,  8 Nov 2021 16:24:34 +0100 (CET)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 2B5C8202A0135; Mon,  8 Nov 2021 16:24:34 +0100 (CET)
+Date:   Mon, 8 Nov 2021 16:24:34 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Nadav Amit <nadav.amit@gmail.com>
+Cc:     kan.liang@linux.intel.com, LKML <linux-kernel@vger.kernel.org>,
+        linux-perf-users@vger.kernel.org
+Subject: Re: Using perf_event_open() to sample multiple events of a process
+Message-ID: <YYlBMmMg0PTV3pED@hirez.programming.kicks-ass.net>
+References: <92645262-D319-4068-9C44-2409EF44888E@gmail.com>
+ <YYXQRYbRO193U4re@hirez.programming.kicks-ass.net>
+ <YYXS8yldO/dwwVD4@hirez.programming.kicks-ass.net>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:91.0)
- Gecko/20100101 Thunderbird/91.3.0
-Subject: Re: [PATCH v3 0/5] Refactor thermal pressure update to avoid code
- duplication
-Content-Language: en-US
-To:     Thara Gopinath <thara.gopinath@linaro.org>,
-        Lukasz Luba <lukasz.luba@arm.com>
-Cc:     linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-arm-msm@vger.kernel.org, sudeep.holla@arm.com,
-        will@kernel.org, catalin.marinas@arm.com, linux@armlinux.org.uk,
-        gregkh@linuxfoundation.org, rafael@kernel.org,
-        viresh.kumar@linaro.org, amitk@kernel.org,
-        daniel.lezcano@linaro.org, amit.kachhap@gmail.com,
-        bjorn.andersson@linaro.org, agross@kernel.org
-References: <20211103161020.26714-1-lukasz.luba@arm.com>
- <c7b526f0-2c26-0cfc-910b-3521c6a6ef51@kali.org>
- <3cba148a-7077-7b6b-f131-dc65045aa348@arm.com>
- <9d533b6e-a81c-e823-fa6f-61fdea92fa65@kali.org>
- <74ea027b-b213-42b8-0f7d-275f3b84712e@linaro.org>
- <74603569-2ff1-999e-9618-79261fdb0ee4@kali.org>
- <b7e76c2a-ceac-500a-ff75-535a3f0d51d6@linaro.org>
- <f955a2aa-f788-00db-1ed8-dc9c7a1b2572@kali.org>
- <59054c90-c1cd-85bf-406e-579df668d7b4@linaro.org>
-From:   Steev Klimaszewski <steev@kali.org>
-In-Reply-To: <59054c90-c1cd-85bf-406e-579df668d7b4@linaro.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YYXS8yldO/dwwVD4@hirez.programming.kicks-ass.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Sat, Nov 06, 2021 at 01:57:23AM +0100, Peter Zijlstra wrote:
 
-> Hi Steev,
->
-> So this depends on the cpufreq governor you are using. By-default arm 
-> systems have sched-util governor enabled. This means you will scale up 
-> to boost depending on cpu load and not always. If you want to ensure 
-> you are always hitting boost frequency, you should enable performance 
-> governor for cpufreq and try.
->
-> Also since the defconfig has by default CPU_FREQ_STAT enabled, you 
-> should be able to get statistics out of cpufreq to see the time spent 
-> by a cpu in each frequency. I think cpufreq-info -s should give you 
-> this info. If not, you can explicitly get it for each cpu from
->
-> cat /sys/devices/system/cpu/cpu<X>/cpufreq/stats/time_in_state
->
-> Regarding temperature, if you have applied all the patches in the 
-> sdm845 LMh series and have LMh enabled, cpu throttling starts around 
-> 95 degree C.
->
-Hi Thara,
+> The problem seems to be that we call perf_event_set_output() before we
+> set event->ctx, which is a bit of a problem.
+> 
+> Now, afaict it's been broken since c3f00c70276d ("perf: Separate
+> find_get_context() from event initialization"), which is ages ago :/
+> 
+> It's waaay too late to try and fix it; I'll be likely to make an even
+> bigger mess if I tried. Perhaps tomorrow.
+> 
+> Clearly FD_OUTPUT isn't much used :-(
 
-Indeed, I ended up finding the time_in_state when I was doing more 
-digging after my last mail.  I do have the sdm845 LMh series and LMh 
-enabled, however I don't think I've ever seen my system go above 90C here.
+The below seems to fix, it's a bit of a hack, but I couldn't really come
+up with anything saner.
 
-So a quick look, and... we are simply almost never getting the 2.95GHz 
-at all, regardless of workload.  I saw Lukasz response as well about the 
-math possibly being wrong, but I haven't had a chance.
-
-Regarding the time in state - I went with policy4 instead of per cpu 
-(for brevity sake) and it's here:
-
-c630:~$ cat /sys/devices/system/cpu/cpufreq/policy4/stats/time_in_state
-825600 225037
-902400 92
-979200 205
-1056000 96
-1209600 902
-1286400 386
-1363200 396
-1459200 217
-1536000 101
-1612800 75
-1689600 95
-1766400 130
-1843200 255
-1920000 318
-1996800 92
-2092800 87
-2169600 66
-2246400 60
-2323200 58
-2400000 54
-2476800 47
-2553600 50
-2649600 69
-2745600 58
-2841600 54619
-2956800 5
-
-So we spend *very* little time in 2.96GHz and this is after almost 14 
-hours of uptime on the C630.  By comparison, on a Pinebook Pro where 
-I've added in 2GHz as a boost frequency :
-
-pinebook-pro:~$ cat 
-/sys/devices/system/cpu/cpufreq/policy4/stats/time_in_state
-408000 16084466
-600000 27212
-816000 32487
-1008000 11331
-1200000 13268
-1416000 75078
-1608000 18392
-1800000 207266
-2016000 648612
-
-With the Pinebook Pro, which doesn't even come close to getting to 95C, 
-we spend a lot more time in 2GHz.
-
--- steev
-
+---
+diff --git a/kernel/events/core.c b/kernel/events/core.c
+index f2253ea729a2..dbe766663733 100644
+--- a/kernel/events/core.c
++++ b/kernel/events/core.c
+@@ -5595,6 +5595,7 @@ static inline int perf_fget_light(int fd, struct fd *p)
+ }
+ 
+ static int perf_event_set_output(struct perf_event *event,
++				 struct perf_event_context *ctx,
+ 				 struct perf_event *output_event);
+ static int perf_event_set_filter(struct perf_event *event, void __user *arg);
+ static int perf_copy_attr(struct perf_event_attr __user *uattr,
+@@ -5647,10 +5648,10 @@ static long _perf_ioctl(struct perf_event *event, unsigned int cmd, unsigned lon
+ 			if (ret)
+ 				return ret;
+ 			output_event = output.file->private_data;
+-			ret = perf_event_set_output(event, output_event);
++			ret = perf_event_set_output(event, event->ctx, output_event);
+ 			fdput(output);
+ 		} else {
+-			ret = perf_event_set_output(event, NULL);
++			ret = perf_event_set_output(event, event->ctx, NULL);
+ 		}
+ 		return ret;
+ 	}
+@@ -11830,7 +11831,9 @@ static int perf_copy_attr(struct perf_event_attr __user *uattr,
+ }
+ 
+ static int
+-perf_event_set_output(struct perf_event *event, struct perf_event *output_event)
++perf_event_set_output(struct perf_event *event,
++		      struct perf_event_context *event_ctx,
++		      struct perf_event *output_event)
+ {
+ 	struct perf_buffer *rb = NULL;
+ 	int ret = -EINVAL;
+@@ -11851,7 +11854,7 @@ perf_event_set_output(struct perf_event *event, struct perf_event *output_event)
+ 	/*
+ 	 * If its not a per-cpu rb, it must be the same task.
+ 	 */
+-	if (output_event->cpu == -1 && output_event->ctx != event->ctx)
++	if (output_event->cpu == -1 && output_event->ctx != event_ctx)
+ 		goto out;
+ 
+ 	/*
+@@ -12232,7 +12235,7 @@ SYSCALL_DEFINE5(perf_event_open,
+ 	}
+ 
+ 	if (output_event) {
+-		err = perf_event_set_output(event, output_event);
++		err = perf_event_set_output(event, ctx, output_event);
+ 		if (err)
+ 			goto err_context;
+ 	}
