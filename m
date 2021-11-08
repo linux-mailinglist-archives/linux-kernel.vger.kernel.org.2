@@ -2,77 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 23653447CBE
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Nov 2021 10:25:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A491447CDB
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Nov 2021 10:32:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238386AbhKHJ2K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Nov 2021 04:28:10 -0500
-Received: from vps.xff.cz ([195.181.215.36]:41356 "EHLO vps.xff.cz"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236707AbhKHJ2J (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Nov 2021 04:28:09 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=megous.com; s=mail;
-        t=1636363523; bh=nVyQ9dFQrqiwLD+fct/FoZkJzctY87nIhEtqMUvnSL4=;
-        h=Date:From:To:Cc:Subject:X-My-GPG-KeyId:References:From;
-        b=EF2rrHZ2E/tty/UG0bZUh0K5+hNP5Kv4oX+xiWN+9KwswUmAYeL8Z1ZIM+JhPCG06
-         fekqe3QN5j5ifF2m09H+rOvzhviuT6Gy80TbSULE5VS9FAcRP76OsgbixiMe6XYRI4
-         ygy7/RknG8AQGCnAFfAnxYJkp3qxhvu4H985XfjA=
-Date:   Mon, 8 Nov 2021 10:25:23 +0100
-From:   =?utf-8?Q?Ond=C5=99ej?= Jirman <megous@megous.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Guenter Roeck <linux@roeck-us.net>,
-        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
-        Badhri Jagan Sridharan <badhri@google.com>,
-        "open list:USB TYPEC PORT CONTROLLER DRIVERS" 
-        <linux-usb@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 06/15] usb: typec: fusb302: Fix masking of comparator and
- bc_lvl interrupts
-Message-ID: <20211108092523.jfp7a2q2onxqlizt@core>
-Mail-Followup-To: =?utf-8?Q?Ond=C5=99ej?= Jirman <megous@megous.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
-        Badhri Jagan Sridharan <badhri@google.com>,
-        "open list:USB TYPEC PORT CONTROLLER DRIVERS" <linux-usb@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
-X-My-GPG-KeyId: EBFBDDE11FB918D44D1F56C1F9F0A873BE9777ED
- <https://xff.cz/key.txt>
-References: <20211107185435.2540185-1-megous@megous.com>
- <20211107185724.ik6wthsl3e6qlbj3@core>
- <YYjbdw+QrUfvpcjx@kroah.com>
+        id S238434AbhKHJer (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Nov 2021 04:34:47 -0500
+Received: from mail-ot1-f54.google.com ([209.85.210.54]:34444 "EHLO
+        mail-ot1-f54.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238415AbhKHJeL (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Nov 2021 04:34:11 -0500
+Received: by mail-ot1-f54.google.com with SMTP id x19-20020a9d7053000000b0055c8b39420bso3978261otj.1;
+        Mon, 08 Nov 2021 01:31:27 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=ZmZfs7D5IbUVgEtSSm6IrADV7ReOJphsMresBSdiIH0=;
+        b=x5uIwgFSQKJsIiQr3yTHYUolashHG/KhkIpDY5LTcPxLptU981GYifauUnG3DmCNos
+         d2S1mEFS5t/eEH3gtdFLoV9bT+GNC/kIovvnwc4itYfKZV+gkIsLJTC4ZMIGaDinFArr
+         FenxzPuzDt3ez8lFJgOi4OVal29LLPha+ssfahuFnnDtZXnTsLqK6kKlTn9vi7CJB+FV
+         wHnJ9xWFWGb5uraEnNmsUYFWz1IaSpqDuo6l6De2IJuj28AGo3B7bYZkuzi1RNYYtFir
+         H0BCkbUr0PtPBD5AKX9HY+8atUZdyTBqNNcKznTa/ZM94ioZx3Fp2qpKgea6bK9738Ia
+         a8Fg==
+X-Gm-Message-State: AOAM533WVuPt44e0WihKalOKEkEwDIv/c3SNBvLmihOU9XY/hrdXuTbX
+        HXxt79f9w5vERfHpuI0ynThAwHuLE8RHlQ==
+X-Google-Smtp-Source: ABdhPJz0wTeqNHYTCbt4+uCAZpHvIRF3U2CYz3bgpjcBANAELNQIooX9NHFzfCLAGjDsjLN5x+Ohjg==
+X-Received: by 2002:a9d:5d4:: with SMTP id 78mr12818467otd.368.1636363887127;
+        Mon, 08 Nov 2021 01:31:27 -0800 (PST)
+Received: from mail-ot1-f52.google.com (mail-ot1-f52.google.com. [209.85.210.52])
+        by smtp.gmail.com with ESMTPSA id c8sm3162977ooq.43.2021.11.08.01.31.26
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 08 Nov 2021 01:31:26 -0800 (PST)
+Received: by mail-ot1-f52.google.com with SMTP id q33-20020a056830442100b0055abeab1e9aso24543722otv.7;
+        Mon, 08 Nov 2021 01:31:26 -0800 (PST)
+X-Received: by 2002:a9f:2c98:: with SMTP id w24mr90132886uaj.89.1636363570925;
+ Mon, 08 Nov 2021 01:26:10 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <YYjbdw+QrUfvpcjx@kroah.com>
+References: <20211102161125.1144023-1-kernel@esmil.dk> <20211102161125.1144023-9-kernel@esmil.dk>
+In-Reply-To: <20211102161125.1144023-9-kernel@esmil.dk>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Mon, 8 Nov 2021 10:25:59 +0100
+X-Gmail-Original-Message-ID: <CAMuHMdWieSa-VKMov3qhT6UVe15huNW-z2hQgPLSKVDzvU-wYQ@mail.gmail.com>
+Message-ID: <CAMuHMdWieSa-VKMov3qhT6UVe15huNW-z2hQgPLSKVDzvU-wYQ@mail.gmail.com>
+Subject: Re: [PATCH v3 08/16] dt-bindings: reset: Add Starfive JH7100 reset bindings
+To:     Emil Renner Berthing <kernel@esmil.dk>
+Cc:     linux-riscv <linux-riscv@lists.infradead.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        linux-clk <linux-clk@vger.kernel.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        "open list:SERIAL DRIVERS" <linux-serial@vger.kernel.org>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Marc Zyngier <maz@kernel.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        Maximilian Luz <luzmaximilian@gmail.com>,
+        Sagar Kadam <sagar.kadam@sifive.com>,
+        Drew Fustini <drew@beagleboard.org>,
+        Michael Zhu <michael.zhu@starfivetech.com>,
+        Fu Wei <tekkamanninja@gmail.com>,
+        Anup Patel <anup.patel@wdc.com>,
+        Atish Patra <atish.patra@wdc.com>,
+        Matteo Croce <mcroce@microsoft.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 08, 2021 at 09:10:31AM +0100, Greg Kroah-Hartman wrote:
-> On Sun, Nov 07, 2021 at 07:57:24PM +0100, Ondřej Jirman wrote:
-> > Hi,
-> > 
-> > On Sun, Nov 07, 2021 at 07:54:33PM +0100, megous hlavni wrote:
-> > > The masks are swapped (interrupts are enabled when the mask is 0).
-> > 
-> > Please ignore the 06/15 in the subject. This is just a single patch
-> > from my local series and I forgot to edit the subject.
-> 
-> But I see 2 patches sent in this series?
+On Tue, Nov 2, 2021 at 5:11 PM Emil Renner Berthing <kernel@esmil.dk> wrote:
+> Add bindings for the reset controller on the JH7100 RISC-V SoC by
+> StarFive Ltd. This is a test chip for their upcoming JH7110 SoC.
+>
+> Signed-off-by: Emil Renner Berthing <kernel@esmil.dk>
 
-The other one is unrelated. This patch is a fix for a real bug.
+Reviewed-by: Geert Uytterhoeven <geert@linux-m68k.org>
 
-The other seemed like an independent correctness issue that I noticed from code
-review I had to do to figure out the reason for failure to handle disconnect
-detection properly. It's unrelated to this patch other than touching the same driver.
+Gr{oetje,eeting}s,
 
-regards,
-	o.
+                        Geert
 
-> Can you just fix this up and resend them correctly?
-> 
-> thanks,
-> 
-> greg k-h
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
