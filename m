@@ -2,107 +2,179 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CAD5D449A94
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Nov 2021 18:13:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 52B19449A96
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Nov 2021 18:13:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240533AbhKHRQZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Nov 2021 12:16:25 -0500
-Received: from linux.microsoft.com ([13.77.154.182]:37088 "EHLO
-        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233057AbhKHRQY (ORCPT
+        id S240554AbhKHRQb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Nov 2021 12:16:31 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50522 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S240568AbhKHRQ3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Nov 2021 12:16:24 -0500
-Received: from kbox (unknown [24.17.193.74])
-        by linux.microsoft.com (Postfix) with ESMTPSA id E118B20B417F;
-        Mon,  8 Nov 2021 09:13:39 -0800 (PST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com E118B20B417F
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1636391620;
-        bh=0YlRQO6T1q4juozmday3MwfnxwiUktPKoBtxc2ee7Iw=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=gyb0HWxnX8Wkev9OMxBThNU2bQ7tOxo1dgN/sG3/keS56wMcn62CG+oY8mxzRgQ6u
-         Tjc6g3KvipoVqJhGTCQjCjig8IUN9XabC5vnjjZWYS8nfTumuWXJfhkisq5Mk5a3J4
-         tB0zF+Phh71kGdGFn8tLadXBzVq0kmQ+i2SEqJyI=
-Date:   Mon, 8 Nov 2021 09:13:36 -0800
-From:   Beau Belgrave <beaub@linux.microsoft.com>
-To:     Masami Hiramatsu <mhiramat@kernel.org>
-Cc:     rostedt@goodmis.org, linux-trace-devel@vger.kernel.org,
+        Mon, 8 Nov 2021 12:16:29 -0500
+Received: from mail-pg1-x52d.google.com (mail-pg1-x52d.google.com [IPv6:2607:f8b0:4864:20::52d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 36B31C061714
+        for <linux-kernel@vger.kernel.org>; Mon,  8 Nov 2021 09:13:45 -0800 (PST)
+Received: by mail-pg1-x52d.google.com with SMTP id g28so7090305pgg.3
+        for <linux-kernel@vger.kernel.org>; Mon, 08 Nov 2021 09:13:45 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=UVBRwM2ywmCSM5TwIcqwKRvKzslFcfi0YeZ+8cTRmV0=;
+        b=NX+ve8Dn5OA9eOLlStVTIVoE5zibeGgWI5YaJs3GJWXIQjzmt9eFAuSj1s+NeqfqrI
+         1ZLUBgoGU/uSPjO1Up+zpKGsLYXGki1f+eJ3MntR+gS7e5ksRjULfJ/Drj+daopgt8wt
+         ZNKBUc50MSPmzD8O/MgEyXuoiMjjMf+T/S4pXF2UXo0ABTN7kTYUe/DnZehztKXDDI29
+         q6HZZbqmrU71x3OwzSJR43f/HN9UtzxNCbXkz6KnKBo8c3vvIauf2z6Fuy5W5huwwtep
+         IvT7OSv/saYA2MnSPKDOogW7sX/CNg6v9IK2BnpB+fc2177J4K0h7N/SP9tUbMdRI21K
+         U2aQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=UVBRwM2ywmCSM5TwIcqwKRvKzslFcfi0YeZ+8cTRmV0=;
+        b=TYEiA7J8PaNTyCQaxpguGtcWfaC/NqVl46x6XJRv1cqDUOiC0+JlrcrUFYYJL2Wor7
+         dTupKdHF5SOCesdjCsitJ1D+zJvo9N+CrRkb6eDUgRj0HCUJ/5h2x+jVTV1h8uXA7whw
+         7RQvONnvsGnMQMAGcW/2bWML/Bxg7rtj9qY+6UZW7hnXWFoReqx3Zq+/AdPvakNrxHGE
+         FRsV6DePnF6JWq9JiayhEfYgBCqHSr/OckqTUi7bfPLkcin2P6ZVCaTaaMYrRaZgqAH4
+         KEXjIsmdGK6++2ik30sDjuUVG/0UC/+AgGMC1HB3fBGb9c6DR6Asizm8qVaj2CQmFbne
+         74Cg==
+X-Gm-Message-State: AOAM530TjouE6gYGLTdaepe+vBAlRgLRyncfUM95h77WQ/EgYevXyNl0
+        kksQWqSrOUClJcZwkVmTao0tqg==
+X-Google-Smtp-Source: ABdhPJxwT8IV8PF5RHJgKjcEdkyOSI67ELP/ghLY1sgbRlnMe/Y/rEztbFjItedVZKuU/VcWzFtaAw==
+X-Received: by 2002:a63:db4d:: with SMTP id x13mr705077pgi.147.1636391624426;
+        Mon, 08 Nov 2021 09:13:44 -0800 (PST)
+Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
+        by smtp.gmail.com with ESMTPSA id d7sm17344672pfj.91.2021.11.08.09.13.43
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 08 Nov 2021 09:13:43 -0800 (PST)
+Date:   Mon, 8 Nov 2021 17:13:39 +0000
+From:   Sean Christopherson <seanjc@google.com>
+To:     Chenyi Qiang <chenyi.qiang@intel.com>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Xiaoyao Li <xiaoyao.li@intel.com>, kvm@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v4 02/10] user_events: Add minimal support for
- trace_event into ftrace
-Message-ID: <20211108171336.GA1690@kbox>
-References: <20211104170433.2206-1-beaub@linux.microsoft.com>
- <20211104170433.2206-3-beaub@linux.microsoft.com>
- <20211107233115.1f77e93c4bdf3ff649be99c1@kernel.org>
+Subject: Re: [PATCH v5 2/7] KVM: VMX: Add proper cache tracking for PKRS
+Message-ID: <YYlaw6v6GOgFUQ/Z@google.com>
+References: <20210811101126.8973-1-chenyi.qiang@intel.com>
+ <20210811101126.8973-3-chenyi.qiang@intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20211107233115.1f77e93c4bdf3ff649be99c1@kernel.org>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <20210811101126.8973-3-chenyi.qiang@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Nov 07, 2021 at 11:31:15PM +0900, Masami Hiramatsu wrote:
-> Hi Beau,
+On Wed, Aug 11, 2021, Chenyi Qiang wrote:
+> Add PKRS caching into the standard register caching mechanism in order
+> to take advantage of the availability checks provided by regs_avail.
 > 
-> At first, thanks for breaking down your patch into this series!
+> This is because vcpu->arch.pkrs will be rarely acceesed by KVM, only in
+> the case of host userspace MSR reads and GVA->GPA translation in
+> following patches. It is unnecessary to keep it up-to-date at all times.
 > 
-> Now I found that a suspicious security design issue in this patch.
+> Signed-off-by: Chenyi Qiang <chenyi.qiang@intel.com>
+> ---
+>  arch/x86/include/asm/kvm_host.h | 2 ++
+>  arch/x86/kvm/kvm_cache_regs.h   | 7 +++++++
+>  arch/x86/kvm/vmx/vmx.c          | 4 ++++
+>  arch/x86/kvm/vmx/vmx.h          | 3 ++-
+>  4 files changed, 15 insertions(+), 1 deletion(-)
 > 
-> On Thu,  4 Nov 2021 10:04:25 -0700
-> Beau Belgrave <beaub@linux.microsoft.com> wrote:
-> 
-> > +
-> > +static enum print_line_t user_event_print_trace(struct trace_iterator *iter,
-> > +						int flags,
-> > +						struct trace_event *event)
-> > +{
-> > +	/* Unsafe to try to decode user provided print_fmt, use hex */
-> > +	trace_print_hex_dump_seq(&iter->seq, "", DUMP_PREFIX_OFFSET, 16,
-> > +				 1, iter->ent, iter->ent_size, true);
-> 
-> You said this is "Unsafe to try to decode user provided" here, because
-> this doesn't check the event data sanity, especially non-fixed size data.
-> 
-> However, it is not enough that you don't decode it here. Because synthetic
-> events (histograms) and event filters need to decode this recorded data entry
-> using the event format information.
-> 
-> This means this can cause a buffer overrun issue on the ring buffer, because
-> __data_loc (and __rel_loc too) can be compromised by the user.
-> 
-> If you want to just trace the user events with digit parameters, there is
-> a way to close this issue - support only the fixed size types (IOW, drop
-> __data_loc/rel_loc support) and always checks the 'length' of the written
-> data size. This ensures that those filters/synthetic events can access
-> those parameters as 'values'. Maybe eprobes still has to reject the user
-> events but the other parts will work well.
-> 
-> If you want to log some "string", it is hard. Maybe it needs a special
-> check when writing the event (address, length, and null termination.),
-> but it will increase the recording overhead.
-> 
-> Thank you,
-> 
-> 
+> diff --git a/arch/x86/include/asm/kvm_host.h b/arch/x86/include/asm/kvm_host.h
+> index 974cbfb1eefe..c2bcb88781b3 100644
+> --- a/arch/x86/include/asm/kvm_host.h
+> +++ b/arch/x86/include/asm/kvm_host.h
+> @@ -173,6 +173,7 @@ enum kvm_reg {
+>  	VCPU_EXREG_SEGMENTS,
+>  	VCPU_EXREG_EXIT_INFO_1,
+>  	VCPU_EXREG_EXIT_INFO_2,
+> +	VCPU_EXREG_PKRS,
+>  };
+>  
+>  enum {
+> @@ -620,6 +621,7 @@ struct kvm_vcpu_arch {
+>  	unsigned long cr8;
+>  	u32 host_pkru;
+>  	u32 pkru;
+> +	u32 pkrs;
+>  	u32 hflags;
+>  	u64 efer;
+>  	u64 apic_base;
+> diff --git a/arch/x86/kvm/kvm_cache_regs.h b/arch/x86/kvm/kvm_cache_regs.h
+> index 90e1ffdc05b7..da014b1be874 100644
+> --- a/arch/x86/kvm/kvm_cache_regs.h
+> +++ b/arch/x86/kvm/kvm_cache_regs.h
+> @@ -171,6 +171,13 @@ static inline u64 kvm_read_edx_eax(struct kvm_vcpu *vcpu)
+>  		| ((u64)(kvm_rdx_read(vcpu) & -1u) << 32);
+>  }
+>  
+> +static inline ulong kvm_read_pkrs(struct kvm_vcpu *vcpu)
+
+Return value should be u32 (or u64 if we decide to track PKRS as a 64-bit value).
+
+> +{
+> +	if (!kvm_register_is_available(vcpu, VCPU_EXREG_PKRS))
+> +		static_call(kvm_x86_cache_reg)(vcpu, VCPU_EXREG_PKRS);
+> +	return vcpu->arch.pkrs;
+> +}
+> +
+>  static inline void enter_guest_mode(struct kvm_vcpu *vcpu)
+>  {
+>  	vcpu->arch.hflags |= HF_GUEST_MASK;
+> diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
+> index 927a552393b9..bf911029aa35 100644
+> --- a/arch/x86/kvm/vmx/vmx.c
+> +++ b/arch/x86/kvm/vmx/vmx.c
+> @@ -2273,6 +2273,10 @@ static void vmx_cache_reg(struct kvm_vcpu *vcpu, enum kvm_reg reg)
+>  		vcpu->arch.cr4 &= ~guest_owned_bits;
+>  		vcpu->arch.cr4 |= vmcs_readl(GUEST_CR4) & guest_owned_bits;
+>  		break;
+> +	case VCPU_EXREG_PKRS:
+> +		if (kvm_cpu_cap_has(X86_FEATURE_PKS))
+
+Peeking ahead, the next patch rejects RDMSR(MSR_IA32_PKRS) if X86_FEATURE_PKS isn't
+supported in KVM, i.e. this is WARN-worthy as KVM should PKRS if and only if PKS is
+supported.  Since KVM will WARN if VMREAD fails, just omit this check and let VMREAD
+handle any errors.  That won't detect the scenario where PKRS is supported in hardware
+but disabled by the kernel/KVM, but that's an acceptable risk since any buggy path is
+all but guaranteed to be reachable if PKRS isn't supported at all, i.e. the WARN will
+fire and detect any bug in the more common case.
+
+> +			vcpu->arch.pkrs = vmcs_read64(GUEST_IA32_PKRS);
+
+Hrm.  I agree that it's extremely unlikely that IA32_PKRS will ever allow software
+to set bits 63:32, but at the same time there's no real advantage to KVM it as a u32,
+e.g. the extra 4 bytes per vCPU is a non-issue, and could be avoided by shuffling
+kvm_vcpu_arch to get a more efficient layout.  On the flip side, using a 32 means
+code like this _looks_ buggy because it's silently dropping bits 63:32, and if the
+architecture ever does get updated, we'll have to modify a bunch of KVM code.
+
+TL;DR: I vote to track PRKS as a u64 even though the kernel tracks it as a u32.
+
+> +		break;
+>  	default:
+>  		WARN_ON_ONCE(1);
+>  		break;
+> diff --git a/arch/x86/kvm/vmx/vmx.h b/arch/x86/kvm/vmx/vmx.h
+> index db88ed4f2121..18039eb6efb0 100644
+> --- a/arch/x86/kvm/vmx/vmx.h
+> +++ b/arch/x86/kvm/vmx/vmx.h
+> @@ -447,7 +447,8 @@ static inline void vmx_register_cache_reset(struct kvm_vcpu *vcpu)
+>  				  | (1 << VCPU_EXREG_CR3)
+>  				  | (1 << VCPU_EXREG_CR4)
+>  				  | (1 << VCPU_EXREG_EXIT_INFO_1)
+> -				  | (1 << VCPU_EXREG_EXIT_INFO_2));
+> +				  | (1 << VCPU_EXREG_EXIT_INFO_2)
+> +				  | (1 << VCPU_EXREG_PKRS));
+>  	vcpu->arch.regs_dirty = 0;
+>  }
+>  
 > -- 
-> Masami Hiramatsu <mhiramat@kernel.org>
-
-Does that mean the decoders in eprobes/histogram don't check event
-record sizes before accessing the data? Shouldn't that get fix
-centrally? That would mean a loaded module could do the same thing
-(user_events only works if the user has access to tracefs, so it's not
-like it's open to all users).
-
-Is it possible to mark trace_events with a flag that says "don't trust
-this"? That way eBPF, ftrace and perf would still allow recording and
-decoding offline (in a safer context).
-
-From user_events code, an entry is always allocated with enough data and
-if it fails (either too big or alloc failure) the event is not written
-out. This appears to be purely in the decode logic that is not within
-this patch?
-
-Thanks,
--Beau
+> 2.17.1
+> 
