@@ -2,88 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4B3DD449CF9
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Nov 2021 21:16:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 02725449CFB
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Nov 2021 21:16:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238694AbhKHUSH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Nov 2021 15:18:07 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35372 "EHLO
+        id S238656AbhKHUSj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Nov 2021 15:18:39 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35492 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238614AbhKHUSB (ORCPT
+        with ESMTP id S238799AbhKHUS3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Nov 2021 15:18:01 -0500
-Received: from mail-wr1-x431.google.com (mail-wr1-x431.google.com [IPv6:2a00:1450:4864:20::431])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8598DC061570;
-        Mon,  8 Nov 2021 12:15:16 -0800 (PST)
-Received: by mail-wr1-x431.google.com with SMTP id r8so28920058wra.7;
-        Mon, 08 Nov 2021 12:15:16 -0800 (PST)
+        Mon, 8 Nov 2021 15:18:29 -0500
+Received: from mail-il1-x12d.google.com (mail-il1-x12d.google.com [IPv6:2607:f8b0:4864:20::12d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DBD37C061570
+        for <linux-kernel@vger.kernel.org>; Mon,  8 Nov 2021 12:15:43 -0800 (PST)
+Received: by mail-il1-x12d.google.com with SMTP id s14so18261371ilv.10
+        for <linux-kernel@vger.kernel.org>; Mon, 08 Nov 2021 12:15:43 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=googlemail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=jbnUVXNpx41MFEBmV6cmVlmllMJldtnH48jc2+xBXes=;
-        b=gu8uqR5kM4ZMhT8ubH93GveON9D48ARdPRc5sffXMVd2zTMimxD9qvJK0Ag/9AS7UG
-         Ykt4ACReQnq/tQVUeMHOwjOiG0crPCEUcznhsMNubv92XMkSvv0pGEvtWyNCjGESwvsf
-         aW/NqqhzRqk+oUBMANFVLDew5pF+BLn5W8JoKg4CHOt4ltm4p/5WIbWqWOxj0zUGL38p
-         j717YEgMo73KtPteZZj6HA+AGnkejKInE78p6LTt8MZPgJq6Zve6UpBipPgsoZZHl6+N
-         n99epMwrNhXpBXIZ3PqVQw2mgW8LwGjdvSofyFyi25I2uDkSwYf0SdW4o6MMhQtXdDCc
-         qeHg==
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=lCTOidaZajv7DxRrGkK5E30Y+aKj9uf2F6iDIjFDoo0=;
+        b=IPRxyCY6FnjvRfUORiItGiJ4keTVi1pv2WDaoiPx/gK+OBR1SAVKKVStpo6uhsg+t8
+         zG+kmCC882BYG68WqLF0dCmVnvcxWo82KQuZDKGLb5cwx/FIyHkESmXAPJnuM4vkd6k1
+         Mqvnwc5LaIDtNj8kAV/qzoRmHGkhnOaCDWDksvUFeSQBVa+7chFeZlB06S+9b1V1r+gx
+         iQAziNWdh1b6vLaCJtQSn3GDDZBMlFPMZdKHUe2JG9VUg2FAzLX/IDXr5/0SoEfH64LP
+         K8rWi7XkgrRx7XhTq5T0L1C3gMfP6HuqWXuKPFIbWaxidaUXwCclfWk9nnEKeXJ9SDxd
+         DHZw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=jbnUVXNpx41MFEBmV6cmVlmllMJldtnH48jc2+xBXes=;
-        b=f2YtnMNEDJVSgFoghjarY2LVxipqS44aiBaLCViLZjs1Ek6cKw+F+PjKx+WiuraEWF
-         OovCyYjHsu6VHHslsY2n/w+xDinebaO58he8dwadsO83tVE3/FvRE459WWAoPHaX3VzF
-         XIw77rtYdydAw/PsSRn/pqmMl8OElvLg02IP6WMtUijC6T23wYBIViCrSq4KK64zZPHT
-         O7mAnr2HlG6NXf3/8qjyyCM8xRmW2ctayUDSzdkxZTlKRJFJNQMX+5gRlNVaTGnL3GXO
-         J/31v1cMh5VyDBUAhSbdrDqOmJhv7TssQQNPFp9jTzLrxrw79rocb5rReq0YJFHh9/jl
-         obTQ==
-X-Gm-Message-State: AOAM5319yBwB8t68FrWq+iNOOvoTAwDuXRTCiAwz/SA9vtzRNkvohGOB
-        9o8tHNwcpJTBsg==
-X-Google-Smtp-Source: ABdhPJxHqPvmfEKhmG6A2lrY3TlcbdATo8YSPh9vxlLHO5ZL1OaSFMI0x624HAfdOxVu+zRWtfoFIg==
-X-Received: by 2002:a05:6000:15c8:: with SMTP id y8mr2248952wry.101.1636402515166;
-        Mon, 08 Nov 2021 12:15:15 -0800 (PST)
-Received: from localhost (cpc154979-craw9-2-0-cust193.16-3.cable.virginm.net. [80.193.200.194])
-        by smtp.gmail.com with ESMTPSA id l11sm17484447wrp.61.2021.11.08.12.15.14
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 08 Nov 2021 12:15:14 -0800 (PST)
-From:   Colin Ian King <colin.i.king@googlemail.com>
-X-Google-Original-From: Colin Ian King <colin.i.king@gmail.com>
-To:     Steven Rostedt <rostedt@goodmis.org>,
-        Ingo Molnar <mingo@redhat.com>
-Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] tracing: Fix spelling mistake "aritmethic" -> "arithmetic"
-Date:   Mon,  8 Nov 2021 20:15:13 +0000
-Message-Id: <20211108201513.42876-1-colin.i.king@gmail.com>
-X-Mailer: git-send-email 2.32.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=lCTOidaZajv7DxRrGkK5E30Y+aKj9uf2F6iDIjFDoo0=;
+        b=YmUb+TpfddhgX16Hr91ws1+JQlcEnr0IQa4vOZsJxBPjozOHfqLsAsKrFOCxPTfmMl
+         8eTkr2FNSEsQDKSFyaHbrhnhlkAAuPnxTQEWH30vvfEEnAwhxBLxRg14lSQMO1q9K0vv
+         MY9tpqGOSDJcw7hxy7Pg25iZI2GJ7EiO5j72jzhjaPF4zKa7Tuv+AQtLgRrpSZkDKuFp
+         ui/iB2RlXpw8T0xQUXCNRxsd+tU4mx/igRVG0H3Ti83mK1D3cV7GqXP6RrEF252iNdvP
+         esakdzY0T4kgqLIbKhBMrdjVRMRv0MlprKQUijO+vNEphQiNGlRSNmrWqFWb7FjqWN+D
+         Encw==
+X-Gm-Message-State: AOAM533uqKSGzjmPBJRUdNwstPPGg9W7i6IkF+sbLoPEHymq4LfZ4V60
+        LTpd5S5Mp7D4cznU8iduQ5yY5K6jeKA7HDFx87hNgA==
+X-Google-Smtp-Source: ABdhPJxm5ew/EklYukdHTfmEkmMrj87CAR5uYqp8lbP8/DfE75V4ejatD3BTFf5i4NgLR9gqVLt7Jl9xXi1ZHopbDso=
+X-Received: by 2002:a05:6e02:604:: with SMTP id t4mr1240795ils.129.1636402543150;
+ Mon, 08 Nov 2021 12:15:43 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+References: <20210913135745.13944-1-jgross@suse.com> <20210913135745.13944-2-jgross@suse.com>
+ <CANgfPd-DjawJpZDAFzwS54yukPSsUAU+rWsais2_FCeLCZuY0A@mail.gmail.com>
+In-Reply-To: <CANgfPd-DjawJpZDAFzwS54yukPSsUAU+rWsais2_FCeLCZuY0A@mail.gmail.com>
+From:   Ben Gardon <bgardon@google.com>
+Date:   Mon, 8 Nov 2021 12:15:32 -0800
+Message-ID: <CANgfPd-njeSYSiytAYEXLG8wwTmLBA6viV7YAHj5uVeukPde=g@mail.gmail.com>
+Subject: Re: [PATCH 1/2] x86/kvm: revert commit 76b4f357d0e7d8f6f00
+To:     Juergen Gross <jgross@suse.com>
+Cc:     kvm@vger.kernel.org, x86@kernel.org, linux-kernel@vger.kernel.org,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Eduardo Habkost <ehabkost@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There is a spelling mistake in the tracing mini-HOWTO text. Fix it.
+On Mon, Nov 8, 2021 at 12:14 PM Ben Gardon <bgardon@google.com> wrote:
+>
+> On Mon, Sep 13, 2021 at 7:51 AM Juergen Gross <jgross@suse.com> wrote:
+> >
+> > Commit 76b4f357d0e7d8f6f00 ("x86/kvm: fix vcpu-id indexed array sizes")
+> > has wrong reasoning, as KVM_MAX_VCPU_ID is not defining the maximum
+> > allowed vcpu-id as its name suggests, but the number of vcpu-ids.
+> >
+> > So revert this patch again.
+> >
+> > Suggested-by: Eduardo Habkost <ehabkost@redhat.com>
+> > Signed-off-by: Juergen Gross <jgross@suse.com>
+>
+> The original commit 76b4f357d0e7d8f6f00 CC'ed Stable but this revert
+> does not. Looking at the stable branches, I see the original has been
+> reverted but this hasn't. Should this be added to Stable as well?
 
-Signed-off-by: Colin Ian King <colin.i.king@gmail.com>
----
- kernel/trace/trace.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+*the original has been incorporated into the stable branches but this hasn't.
 
-diff --git a/kernel/trace/trace.c b/kernel/trace/trace.c
-index f9139dc1262c..b8e8f1962189 100644
---- a/kernel/trace/trace.c
-+++ b/kernel/trace/trace.c
-@@ -5623,7 +5623,7 @@ static const char readme_msg[] =
- 	"\t        - a numeric literal: e.g. ms_per_sec=1000,\n"
- 	"\t        - an arithmetic expression: e.g. time_secs=current_timestamp/1000\n"
- 	"\n"
--	"\t    hist trigger aritmethic expressions support addition(+), subtraction(-),\n"
-+	"\t    hist trigger arithmetic expressions support addition(+), subtraction(-),\n"
- 	"\t    multiplication(*) and division(/) operators. An operand can be either a\n"
- 	"\t    variable reference, field or numeric literal.\n"
- 	"\n"
--- 
-2.32.0
-
+>
+> > ---
+> >  arch/x86/kvm/ioapic.c | 2 +-
+> >  arch/x86/kvm/ioapic.h | 4 ++--
+> >  2 files changed, 3 insertions(+), 3 deletions(-)
+> >
+> > diff --git a/arch/x86/kvm/ioapic.c b/arch/x86/kvm/ioapic.c
+> > index ff005fe738a4..698969e18fe3 100644
+> > --- a/arch/x86/kvm/ioapic.c
+> > +++ b/arch/x86/kvm/ioapic.c
+> > @@ -96,7 +96,7 @@ static unsigned long ioapic_read_indirect(struct kvm_ioapic *ioapic,
+> >  static void rtc_irq_eoi_tracking_reset(struct kvm_ioapic *ioapic)
+> >  {
+> >         ioapic->rtc_status.pending_eoi = 0;
+> > -       bitmap_zero(ioapic->rtc_status.dest_map.map, KVM_MAX_VCPU_ID + 1);
+> > +       bitmap_zero(ioapic->rtc_status.dest_map.map, KVM_MAX_VCPU_ID);
+> >  }
+> >
+> >  static void kvm_rtc_eoi_tracking_restore_all(struct kvm_ioapic *ioapic);
+> > diff --git a/arch/x86/kvm/ioapic.h b/arch/x86/kvm/ioapic.h
+> > index bbd4a5d18b5d..27e61ff3ac3e 100644
+> > --- a/arch/x86/kvm/ioapic.h
+> > +++ b/arch/x86/kvm/ioapic.h
+> > @@ -39,13 +39,13 @@ struct kvm_vcpu;
+> >
+> >  struct dest_map {
+> >         /* vcpu bitmap where IRQ has been sent */
+> > -       DECLARE_BITMAP(map, KVM_MAX_VCPU_ID + 1);
+> > +       DECLARE_BITMAP(map, KVM_MAX_VCPU_ID);
+> >
+> >         /*
+> >          * Vector sent to a given vcpu, only valid when
+> >          * the vcpu's bit in map is set
+> >          */
+> > -       u8 vectors[KVM_MAX_VCPU_ID + 1];
+> > +       u8 vectors[KVM_MAX_VCPU_ID];
+> >  };
+> >
+> >
+> > --
+> > 2.26.2
+> >
