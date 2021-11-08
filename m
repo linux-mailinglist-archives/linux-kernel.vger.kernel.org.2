@@ -2,288 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A2A8C449AB3
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Nov 2021 18:23:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0B98B449AB6
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Nov 2021 18:24:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239317AbhKHR0O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Nov 2021 12:26:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52716 "EHLO
+        id S239529AbhKHR0s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Nov 2021 12:26:48 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52854 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231304AbhKHR0M (ORCPT
+        with ESMTP id S239374AbhKHR0q (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Nov 2021 12:26:12 -0500
-Received: from mail-il1-x135.google.com (mail-il1-x135.google.com [IPv6:2607:f8b0:4864:20::135])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 391A3C061570
-        for <linux-kernel@vger.kernel.org>; Mon,  8 Nov 2021 09:23:28 -0800 (PST)
-Received: by mail-il1-x135.google.com with SMTP id x9so17743131ilu.6
-        for <linux-kernel@vger.kernel.org>; Mon, 08 Nov 2021 09:23:28 -0800 (PST)
+        Mon, 8 Nov 2021 12:26:46 -0500
+Received: from mail-ot1-x329.google.com (mail-ot1-x329.google.com [IPv6:2607:f8b0:4864:20::329])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6183DC061714
+        for <linux-kernel@vger.kernel.org>; Mon,  8 Nov 2021 09:24:02 -0800 (PST)
+Received: by mail-ot1-x329.google.com with SMTP id l7-20020a0568302b0700b0055ae988dcc8so23446615otv.12
+        for <linux-kernel@vger.kernel.org>; Mon, 08 Nov 2021 09:24:02 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=ZPGKd4TGs0XA53ASidhzNrF2fiRX7U5gxFXqgn9DTGg=;
-        b=mmil4uIuW0TMFJfUrD8Awk1ufClyQY0B84wJmUVeU8dcqNzLmhiHK9a0H63pwIk8J6
-         SHGq4db3QsIywsTOr7SIjKJdT6gjKBvr70pW5PIt18rOxFb0DxfP8OIUbqr4gvUqALRt
-         GnwuUBXVKJ6SuOBxIamxE1lrg9o5LM87FdRjpT1IemhJa6UXXCPZFdjZ7i3yEVZmqXF0
-         cZleouHPFCdQei12sI4+6ks2t9JSIR9zVLp0RZVt/cHQ9k8bd+qPcXOH1HIQOqdJ9Cmf
-         707/4u6rBIKlFLUqBEO4kgeb/wW87bzFpktEuOdz3qUmkwp1Uuro+FzQcNkMJTZr+dBe
-         5ShA==
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=6WxNy+sbprXqh5vUpIWWndzj2Xknzdzzhl1WXIKKdHQ=;
+        b=jGRpem+QkB3LWgMkD1Rnnfu6Yf5Z+jVo0M55XBh3r847EYt0OfjzNGjaPk5xuBakSy
+         RlwUxyz48wK1ogpcuTDgcHs4uTnGnHpr51twgj2PHLneYxMhWyTDHMUp4nJ2+bLwAU+R
+         7l0esbWNGbAXZ5MspFa6gVYyTrM7mXevu3/yolaB73rYX9qtk6CxQiGISZQ04MyjHM3l
+         DE3I91clpu4dXZh2Dx/Eb4Rjau+PkSBwew9QINYrHTuqvKhZUmXliIuIMjI67m4IivvN
+         NniEYiZgXrZySmIBeNtjas/D6raW1GjvarZpHFkwl0LZCiF9S45azGPe1edyN16ra4YY
+         Opfg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=ZPGKd4TGs0XA53ASidhzNrF2fiRX7U5gxFXqgn9DTGg=;
-        b=jlzr5SYLzuKqGn0AtwMghc53LKhRHSSqkekts1t+rZD0bvvtjIF5eoxCwOxnXQwTcQ
-         hHdB9JjSatsX8uQISX+RsJRXRXHxywg+ejKpk3kjWXsdf1EjdOpfVigUqeHRpF+JsHjK
-         QPP4ukpEmRDhWR/IzW66dPwLKIHVep/UwBegHjJjVfjop5GtRwiB+MkZYsOqqCWyJRfR
-         roJYsx4HpNvvgxgc+LCsGewQ8CDFMF7s3kFTq2edHldxUx/GPZagn2tiVbuAV+cZYZ8M
-         Dr+Xya0/0TwS8Ab77l/L7odQ/Tnl/4eE+XUbrU7tzz2A9/C+ZmZx75SQSmXKRu/3Ke/Q
-         ZxNg==
-X-Gm-Message-State: AOAM531LCsB8poQiKNHw/wiJNHODnWQGITyuHnGb16N4B28IvgKQLKzc
-        3Tsw+IVyD2pLGAjsJ4yhnr9u02GDN5128rYzK+F/MA==
-X-Google-Smtp-Source: ABdhPJyq21dt4bsZMhivX/kONiVYXFOjQ5lZPDVxhT3N/tz/XXP/QLHoOjnYzwHNtmlH135DU+/ONIqIFBpneCSeAg4=
-X-Received: by 2002:a05:6e02:20ea:: with SMTP id q10mr515654ilv.10.1636392207384;
- Mon, 08 Nov 2021 09:23:27 -0800 (PST)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=6WxNy+sbprXqh5vUpIWWndzj2Xknzdzzhl1WXIKKdHQ=;
+        b=tOj/oPk9Ys2oNnrrhKQ6NlBKjkACsGr6BrLbR/mRtGhnh00aLXGKHC1/bwqvuOG032
+         Y27B9USMF2lkPTkQuruTkKgcIOGDC7JBd3fyCET6pe++w0E47E1PqwKWKZIA42rcKLLb
+         0giN5DEPT4IZ6j2zyCjJSXeGKViB7WIngELF7MKRH7V/U6nssjNJ+SuXyU6PZd8gG+BQ
+         pLgXv3ZoxlWT2Kh/w1oOE0OKsHr4/HJ+BBt0qshkGow9jHLDKK9nZSSBB5r2VNpJRunm
+         tgVDWYMfrcviLgj9KGjdDLb0kqXr+ioaQnfouDFKt56aFm4Gy1+bxSZ+ujVUxUclcM62
+         IurQ==
+X-Gm-Message-State: AOAM5314LB+2xa5Yi4CmMOV/jPLYZcItn4ejqygEP2hvXrrBBUNoqi3f
+        GBtetF+FCeABXi09T3Iq6wBY8A==
+X-Google-Smtp-Source: ABdhPJwnI/0a8eSi6T5sh6kjSDOylJYlYzjZs/9j5wYlWMNfnHQj5nFJ1qQvJFLzV0DvMv8An3yI3A==
+X-Received: by 2002:a05:6830:91a:: with SMTP id v26mr462006ott.313.1636392241682;
+        Mon, 08 Nov 2021 09:24:01 -0800 (PST)
+Received: from builder.lan (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
+        by smtp.gmail.com with ESMTPSA id y1sm1595919otu.58.2021.11.08.09.24.00
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 08 Nov 2021 09:24:01 -0800 (PST)
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Ohad Ben-Cohen <ohad@wizery.com>, linux-remoteproc@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Arun Kumar Neelakantam <aneela@codeaurora.org>,
+        Alexandru Ardelean <ardeleanalex@gmail.com>,
+        Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>,
+        Cai Huoqing <caihuoqing@baidu.com>,
+        Chris Lew <clew@codeaurora.org>,
+        Kees Cook <keescook@chromium.org>,
+        Tinghan Shen <tinghan.shen@mediatek.com>
+Subject: [GIT PULL] rpmsg updates for v5.16
+Date:   Mon,  8 Nov 2021 11:23:57 -0600
+Message-Id: <20211108172357.2477129-1-bjorn.andersson@linaro.org>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
-References: <20211106013058.2621799-1-dlatypov@google.com> <20211106013058.2621799-2-dlatypov@google.com>
- <CABVgOSnQ9qGtu0nEKePH+Zb1oR2osmVh791zyQ9P61SNznryrw@mail.gmail.com>
-In-Reply-To: <CABVgOSnQ9qGtu0nEKePH+Zb1oR2osmVh791zyQ9P61SNznryrw@mail.gmail.com>
-From:   Daniel Latypov <dlatypov@google.com>
-Date:   Mon, 8 Nov 2021 09:23:16 -0800
-Message-ID: <CAGS_qxr3qd4b=00B76qN5GpFBa9aYa4UBFPvR505F3PbF5HSmg@mail.gmail.com>
-Subject: Re: [PATCH 2/2] kunit: tool: add --kconfig_add to allow easily
- tweaking kunitconfigs
-To:     David Gow <davidgow@google.com>
-Cc:     brendanhiggins@google.com, linux-kernel@vger.kernel.org,
-        kunit-dev@googlegroups.com, linux-kselftest@vger.kernel.org,
-        skhan@linuxfoundation.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 5, 2021 at 9:07 PM David Gow <davidgow@google.com> wrote:
->
-> On Sat, Nov 6, 2021 at 9:31 AM 'Daniel Latypov' via KUnit Development
-> <kunit-dev@googlegroups.com> wrote:
-> >
-> > E.g. run tests but with KASAN
-> > $ ./tools/testing/kunit/kunit.py run --arch=x86_64 --kconfig_add=CONFIG_KASAN=y
->
-> This is very neat, thank you. I'm definitely going to use this quite a bit.
->
-> My only real note is that we'll need to add some documentation (but
-> since the KUnit documentation is being reworked at the moment, I'm
-> okay with doing that later to avoid merge conflicts).
+The following changes since commit 6880fa6c56601bb8ed59df6c30fd390cc5f6dd8f:
 
-Yeah, there's that and I was also unsure where exactly to mention it.
-I'd also want there to be the caveat about how removing the option
-won't trigger a rebuild.
-The part where we have that right now is really early on and doesn't
-need more stuff added there:
-https://www.kernel.org/doc/html/latest/dev-tools/kunit/start.html#creating-a-kunitconfig
+  Linux 5.15-rc1 (2021-09-12 16:28:37 -0700)
 
->
-> > This also works with --kunitconfig
-> > $ ./tools/testing/kunit/kunit.py run --arch=x86_64 --kunitconfig=fs/ext4 --kconfig_add=CONFIG_KASAN=y
->
-> It's also worth noting that this can be appended multiple times to set
-> multiple options, which is useful
+are available in the Git repository at:
 
-Ah yeah, this could be called out in the commit desc if we want a v2.
-Checking the examples in the link down below, TuxMake doesn't actually
-include one with it being repeated.
-I had been banking on readers of this message assuming that it could
-be repeated either from previous familiarity with TuxMake or by
-clicking that link.
+  https://git.kernel.org/pub/scm/linux/kernel/git/remoteproc/linux.git tags/rpmsg-v5.16
 
-But for tweaks that require multiple options, I'm personally going to
-stick with --kunitconfig and heredocs.
-E.g. coverage requires appending 3 kconfigs, so I'm sticking with
+for you to fetch changes up to b16a37e1846c9573a847a56fa2f31ba833dae45a:
 
-./tools/testing/kunit/kunit.py run --make_options=CC=/usr/bin/gcc-6
---kunitconfig /dev/stdin <<EOF
-CONFIG_KUNIT=y
-CONFIG_KUNIT_ALL_TESTS=y
-CONFIG_DEBUG_KERNEL=y
-CONFIG_DEBUG_INFO=y
-CONFIG_GCOV=y
-EOF
+  rpmsg: glink: Send READ_NOTIFY command in FIFO full case (2021-10-15 11:02:11 -0500)
 
->
-> > This flag is inspired by TuxMake's --kconfig-add, see
-> > https://gitlab.com/Linaro/tuxmake#examples.
-> >
-> > Our version just uses "_" as the delimiter for consistency with
-> > pre-existing flags like --build_dir, --make_options, --kernel_args, etc.
-> >
-> > Note: this does make it easier to run into a pre-existing edge case:
-> > $ ./tools/testing/kunit/kunit.py run --arch=x86_64 --kconfig_add=CONFIG_KASAN=y
-> > $ ./tools/testing/kunit/kunit.py run --arch=x86_64
-> > This second invocation ^ still has KASAN enabled!
->
-> This behaviour is quite useful, and actually means we can turn on
-> individual items with
-> $ ./tools/testing/kunit/kunit.py config --kconfig_add=<option>
+----------------------------------------------------------------
+rpmsg updates for v5.16
 
-Yes, that also works.
-I didn't really want to call that out, however.
+For the GLINK implementation this adds support for splitting outgoing
+messages that are too large to fit in the fifo, it introduces the use of
+"read notifications", to avoid polling in the case where the outgoing
+fifo is full and a few bugs are squashed.
 
-I ultimately would like this option to make it easier to have kunit
-commands be more declarative and less dependent on state.
+The return value of rpmsg_create_ept() for when RPMSG is disabled is
+corrected to return a valid error, the Mediatek rpmsg driver is updated
+to match the DT binding and a couple of cleanups are done in the virtio
+rpmsg driver.
 
-E.g. instead of
-$ cp fs/ext4/.kunitconfig .kunit/.kunitconfig
-$ echo "CONFIG_KASAN=y" >> .kunit/.kunitconfig
-$ ./tools/testing/kunit/kunit.py run --arch=x86_64
+----------------------------------------------------------------
+Alexandru Ardelean (1):
+      rpmsg: virtio_rpmsg_bus: use dev_warn_ratelimited for msg with no recipient
 
-it's now just one line and I'm less likely to miss a step, etc.
-$ ./tools/testing/kunit/kunit.py run --arch=x86_64
---kunitconfig=fs/ext4 --kconfig_add=CONFIG_KASAN=y
+Arnaud Pouliquen (1):
+      rpmsg: Fix rpmsg_create_ept return when RPMSG config is not defined
 
-A user could alternatively do this via
-$ ./tools/testing/kunit/kunit.py config --arch=x86_64
---kunitconfig=fs/ext4 --kconfig_add=CONFIG_KASAN=y
-$ ./tools/testing/kunit/kunit.py config --arch=x86_64
---kconfig_add=CONFIG_ANOTHER_OPTION=y
-$ ./tools/testing/kunit/kunit.py build
-$ ./tools/testing/kunit/kunit.py exec --arch=x86_64
+Arun Kumar Neelakantam (3):
+      rpmsg: glink: Add TX_DATA_CONT command while sending
+      rpmsg: glink: Remove the rpmsg dev in close_ack
+      rpmsg: glink: Send READ_NOTIFY command in FIFO full case
 
+Cai Huoqing (1):
+      rpmsg: virtio: Remove unused including <linux/of_device.h>
 
->
-> > kunit.py won't call olddefconfig if our current .config is already a
-> > superset of the provided kunitconfig.
-> >
-> > Signed-off-by: Daniel Latypov <dlatypov@google.com>
->
-> Looks good.
->
-> Reviewed-by: David Gow <davidgow@google.com>
->
->
-> > ---
-> >  tools/testing/kunit/kunit.py           |  8 ++++++++
-> >  tools/testing/kunit/kunit_kernel.py    |  5 +++++
-> >  tools/testing/kunit/kunit_tool_test.py | 18 ++++++++++++++++++
-> >  3 files changed, 31 insertions(+)
-> >
-> > diff --git a/tools/testing/kunit/kunit.py b/tools/testing/kunit/kunit.py
-> > index 68e6f461c758..be58f4c93806 100755
-> > --- a/tools/testing/kunit/kunit.py
-> > +++ b/tools/testing/kunit/kunit.py
-> > @@ -280,6 +280,10 @@ def add_common_opts(parser) -> None:
-> >                              ' If given a directory, (e.g. lib/kunit), "/.kunitconfig" '
-> >                              'will get  automatically appended.',
-> >                              metavar='kunitconfig')
-> > +       parser.add_argument('--kconfig_add',
-> > +                            help='Additional Kconfig options to append to the '
-> > +                            '.kunitconfig, e.g. CONFIG_KASAN=y. Can be repeated.',
-> > +                           action='append')
-> >
-> >         parser.add_argument('--arch',
-> >                             help=('Specifies the architecture to run tests under. '
-> > @@ -398,6 +402,7 @@ def main(argv, linux=None):
-> >                 if not linux:
-> >                         linux = kunit_kernel.LinuxSourceTree(cli_args.build_dir,
-> >                                         kunitconfig_path=cli_args.kunitconfig,
-> > +                                       kconfig_add=cli_args.kconfig_add,
-> >                                         arch=cli_args.arch,
-> >                                         cross_compile=cli_args.cross_compile,
-> >                                         qemu_config_path=cli_args.qemu_config)
-> > @@ -423,6 +428,7 @@ def main(argv, linux=None):
-> >                 if not linux:
-> >                         linux = kunit_kernel.LinuxSourceTree(cli_args.build_dir,
-> >                                         kunitconfig_path=cli_args.kunitconfig,
-> > +                                       kconfig_add=cli_args.kconfig_add,
-> >                                         arch=cli_args.arch,
-> >                                         cross_compile=cli_args.cross_compile,
-> >                                         qemu_config_path=cli_args.qemu_config)
-> > @@ -439,6 +445,7 @@ def main(argv, linux=None):
-> >                 if not linux:
-> >                         linux = kunit_kernel.LinuxSourceTree(cli_args.build_dir,
-> >                                         kunitconfig_path=cli_args.kunitconfig,
-> > +                                       kconfig_add=cli_args.kconfig_add,
-> >                                         arch=cli_args.arch,
-> >                                         cross_compile=cli_args.cross_compile,
-> >                                         qemu_config_path=cli_args.qemu_config)
-> > @@ -457,6 +464,7 @@ def main(argv, linux=None):
-> >                 if not linux:
-> >                         linux = kunit_kernel.LinuxSourceTree(cli_args.build_dir,
-> >                                         kunitconfig_path=cli_args.kunitconfig,
-> > +                                       kconfig_add=cli_args.kconfig_add,
-> >                                         arch=cli_args.arch,
-> >                                         cross_compile=cli_args.cross_compile,
-> >                                         qemu_config_path=cli_args.qemu_config)
-> > diff --git a/tools/testing/kunit/kunit_kernel.py b/tools/testing/kunit/kunit_kernel.py
-> > index 51ee6e5dae91..7d459d6d6ff2 100644
-> > --- a/tools/testing/kunit/kunit_kernel.py
-> > +++ b/tools/testing/kunit/kunit_kernel.py
-> > @@ -224,6 +224,7 @@ class LinuxSourceTree(object):
-> >               build_dir: str,
-> >               load_config=True,
-> >               kunitconfig_path='',
-> > +             kconfig_add: Optional[List[str]]=None,
-> >               arch=None,
-> >               cross_compile=None,
-> >               qemu_config_path=None) -> None:
-> > @@ -249,6 +250,10 @@ class LinuxSourceTree(object):
-> >                                 shutil.copyfile(DEFAULT_KUNITCONFIG_PATH, kunitconfig_path)
-> >
-> >                 self._kconfig = kunit_config.parse_file(kunitconfig_path)
-> > +               if kconfig_add:
-> > +                       kconfig = kunit_config.parse_from_string('\n'.join(kconfig_add))
-> > +                       self._kconfig.merge_in_entries(kconfig)
-> > +
-> >
-> >         def clean(self) -> bool:
-> >                 try:
-> > diff --git a/tools/testing/kunit/kunit_tool_test.py b/tools/testing/kunit/kunit_tool_test.py
-> > index 4ec70e41ec5a..7e42a7c27987 100755
-> > --- a/tools/testing/kunit/kunit_tool_test.py
-> > +++ b/tools/testing/kunit/kunit_tool_test.py
-> > @@ -334,6 +334,10 @@ class LinuxSourceTreeTest(unittest.TestCase):
-> >                                 pass
-> >                         kunit_kernel.LinuxSourceTree('', kunitconfig_path=dir)
-> >
-> > +       def test_kconfig_add(self):
-> > +               tree = kunit_kernel.LinuxSourceTree('', kconfig_add=['CONFIG_NOT_REAL=y'])
-> > +               self.assertIn(kunit_config.KconfigEntry('NOT_REAL', 'y'), tree._kconfig.entries())
-> > +
-> >         def test_invalid_arch(self):
-> >                 with self.assertRaisesRegex(kunit_kernel.ConfigError, 'not a valid arch, options are.*x86_64'):
-> >                         kunit_kernel.LinuxSourceTree('', arch='invalid')
-> > @@ -540,6 +544,7 @@ class KUnitMainTest(unittest.TestCase):
-> >                 # Just verify that we parsed and initialized it correctly here.
-> >                 mock_linux_init.assert_called_once_with('.kunit',
-> >                                                         kunitconfig_path='mykunitconfig',
-> > +                                                       kconfig_add=None,
-> >                                                         arch='um',
-> >                                                         cross_compile=None,
-> >                                                         qemu_config_path=None)
-> > @@ -551,6 +556,19 @@ class KUnitMainTest(unittest.TestCase):
-> >                 # Just verify that we parsed and initialized it correctly here.
-> >                 mock_linux_init.assert_called_once_with('.kunit',
-> >                                                         kunitconfig_path='mykunitconfig',
-> > +                                                       kconfig_add=None,
-> > +                                                       arch='um',
-> > +                                                       cross_compile=None,
-> > +                                                       qemu_config_path=None)
-> > +
-> > +       @mock.patch.object(kunit_kernel, 'LinuxSourceTree')
-> > +       def test_run_kconfig_add(self, mock_linux_init):
-> > +               mock_linux_init.return_value = self.linux_source_mock
-> > +               kunit.main(['run', '--kconfig_add=CONFIG_KASAN=y', '--kconfig_add=CONFIG_KCSAN=y'])
-> > +               # Just verify that we parsed and initialized it correctly here.
-> > +               mock_linux_init.assert_called_once_with('.kunit',
-> > +                                                       kunitconfig_path=None,
-> > +                                                       kconfig_add=['CONFIG_KASAN=y', 'CONFIG_KCSAN=y'],
-> >                                                         arch='um',
-> >                                                         cross_compile=None,
-> >                                                         qemu_config_path=None)
-> > --
-> > 2.34.0.rc0.344.g81b53c2807-goog
-> >
-> > --
-> > You received this message because you are subscribed to the Google Groups "KUnit Development" group.
-> > To unsubscribe from this group and stop receiving emails from it, send an email to kunit-dev+unsubscribe@googlegroups.com.
-> > To view this discussion on the web visit https://groups.google.com/d/msgid/kunit-dev/20211106013058.2621799-2-dlatypov%40google.com.
+Chris Lew (1):
+      rpmsg: glink: Remove channel decouple from rpdev release
+
+Kees Cook (1):
+      rpmsg: glink: Replace strncpy() with strscpy_pad()
+
+Tinghan Shen (1):
+      rpmsg: Change naming of mediatek rpmsg property
+
+ drivers/rpmsg/mtk_rpmsg.c         |  2 +-
+ drivers/rpmsg/qcom_glink_native.c | 90 +++++++++++++++++++++++++++++++++++----
+ drivers/rpmsg/virtio_rpmsg_bus.c  |  3 +-
+ include/linux/rpmsg.h             |  2 +-
+ 4 files changed, 85 insertions(+), 12 deletions(-)
