@@ -2,126 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 61955447BDF
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Nov 2021 09:33:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 20270447BE1
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Nov 2021 09:34:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238024AbhKHIf6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Nov 2021 03:35:58 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44208 "EHLO
+        id S238038AbhKHIh0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Nov 2021 03:37:26 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44562 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237001AbhKHIfz (ORCPT
+        with ESMTP id S236118AbhKHIhZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Nov 2021 03:35:55 -0500
-Received: from mail-ua1-x92d.google.com (mail-ua1-x92d.google.com [IPv6:2607:f8b0:4864:20::92d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 67DD7C061570
-        for <linux-kernel@vger.kernel.org>; Mon,  8 Nov 2021 00:33:11 -0800 (PST)
-Received: by mail-ua1-x92d.google.com with SMTP id s13so14374075uaj.11
-        for <linux-kernel@vger.kernel.org>; Mon, 08 Nov 2021 00:33:11 -0800 (PST)
+        Mon, 8 Nov 2021 03:37:25 -0500
+Received: from mail-ed1-x530.google.com (mail-ed1-x530.google.com [IPv6:2a00:1450:4864:20::530])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4CEF9C061570;
+        Mon,  8 Nov 2021 00:34:41 -0800 (PST)
+Received: by mail-ed1-x530.google.com with SMTP id ee33so59475367edb.8;
+        Mon, 08 Nov 2021 00:34:41 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
+        d=gmail.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=eXgMKC9k7dVBPc7GXJ0i9A3v0PLbEQVurYRUswXeJ14=;
-        b=GMUrD9cF4ys0Ne5QeiY1boHEUmgLrJKogjRUJYv+JOiOlCLwsHPpus6RLIpS1aTKEc
-         b9ZmfolezMysdzYltsRvw38VDRkFvWSASXeRyimw2zzvCQX6337hJfcOxyKjscOpct5F
-         NZItoB+PrucYaFhbhqzaHmjIndbDJdCCLj4j4=
+        bh=pHnkd35me93FuEtLXvwLwI6ioK1S2/Q5OTvTYZxAMTI=;
+        b=TVAjSTl6IurKWBgjfvUjG0wMA/lsQteX7/pKolPuBvk5yguPjvmoQAx7CUCBFV6f7J
+         9lHSWCFpMrH0mUzCowJ7k0e6cV6REhONzjXmuC51JA9d9gE/VNLcPHatb+chEiP8/bIY
+         sDkczqoUjRV/ACrlnya8+GLFDJlxWNk++yHhS1PGaVIUDYLNOIyOfiHfvMAfdHDmDTxA
+         /tpwjGUYzdGKuPUICtiE1hKZyqQym13NefF7+e2xlvC4nIuFM/TowLb1HZxG9bGb74M9
+         oHxr+CzpA5Qk6XUh0aDUSEvZaoRB/iyIyu9v1FWrAVq5YSOrpYUUQhP9mB2OdNi4UeGX
+         mnqw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=eXgMKC9k7dVBPc7GXJ0i9A3v0PLbEQVurYRUswXeJ14=;
-        b=m7kLev5hI2qAnSY+JFhdEZh4OhblTs8OpyNbqmV2q+tVSPSDFeqYV2E3uXh/KbEZeQ
-         /bYHuCleLMXXBoiNnevWe+LYX2AuCStD57LOgX9Cpqc3xeRqhCxgm/iMzVjcaK0slQFe
-         7nLk6XAMw1QLFD0kwmw98cexV0LsZPZiwhtgr0rP6kYp8/Vv8tjdf9Ry/h2kR1Dnq3UV
-         USODOiQizXtvKXmzAAQu3GHfaOg4iimEDUWSxqFlhSQab4Rqu7MYn0/hWxTeKxJpenou
-         +jRdJAD5ZmI9cXv78fS9Y0QbTQIT3TLiFPkuPp6ha02ttpYOzCIoLtx14YJGfLtYoI/M
-         2KuA==
-X-Gm-Message-State: AOAM530C0AWSeWUY7K9/pWKtxURK8QYhYy9XHxL2d3b+By7S+MSpRZlv
-        W9BmUko8MnrZWhIIIxMK//2plElLy9iOfmzPoXXaig==
-X-Google-Smtp-Source: ABdhPJxwvn1gZ+jImt6Emh1mXxnrYYIBQQzRFhinEsRuVwhdIgr19u7Y2YDFSD1M4Tpw0lPsAeAjgdJjgrfOjizmG1U=
-X-Received: by 2002:a67:ae47:: with SMTP id u7mr101092748vsh.7.1636360390609;
- Mon, 08 Nov 2021 00:33:10 -0800 (PST)
+        bh=pHnkd35me93FuEtLXvwLwI6ioK1S2/Q5OTvTYZxAMTI=;
+        b=C8d8kWTs3MwhXYmABDwMDRPYkjtNa4mX3BAT8/znM+tfHqfx9X/Fx7ry/kFtFC7FfQ
+         nVGusNoRLoIGEMnzBad12jaIDzQ8dxtd1afdEZBT29PD96jDX4zH7QzcJDGjUxTIVpkx
+         KMWakiNwXSHso3Fin7/6O4isT219xIyzhL0U6J2jKAaZCpq7fJu3bVFd2ljS8FbNnZoN
+         Bkmw0gjxx8Ztd2tlYc6jVd9no3tOT4U349wPQwRn4CVvZf6AlztiDxoecDL0gm+ev90k
+         JLTMvDWnPjszA1QlUj18Nas+V6p8qNM+YxUCTMIKYh136BHBiSgkzSU/H2ZJ5cukpFVR
+         iUPA==
+X-Gm-Message-State: AOAM531T75PIIiWPI63bcemX0er1ryQneuX/PFg1l99vhJfS2IRpEMEN
+        DrPUZqhGlFd3zpx2TC7LjtL4fdrTgMge0ghb9FI=
+X-Google-Smtp-Source: ABdhPJwW/C+XMPPMxdkbARixwVvUYYY1A1r+GWqu+oAetdoJrkcN7iqry3e4+4itEtjqQ/FimnvBaTnzZFJ45i6HEuc=
+X-Received: by 2002:aa7:cb09:: with SMTP id s9mr107198741edt.359.1636360479858;
+ Mon, 08 Nov 2021 00:34:39 -0800 (PST)
 MIME-Version: 1.0
-References: <20211104112329.8446-1-zhiyong.tao@mediatek.com> <20211104112329.8446-2-zhiyong.tao@mediatek.com>
-In-Reply-To: <20211104112329.8446-2-zhiyong.tao@mediatek.com>
-From:   Chen-Yu Tsai <wenst@chromium.org>
-Date:   Mon, 8 Nov 2021 16:32:59 +0800
-Message-ID: <CAGXv+5EWCkcC51nNF4k1FgEsVhuiQADCiOcdSLtU9yMb-8Q0GA@mail.gmail.com>
-Subject: Re: [PATCH v1] pinctrl: mediatek: fix global-out-of-bounds issue
-To:     Zhiyong Tao <zhiyong.tao@mediatek.com>
-Cc:     robh+dt@kernel.org, linus.walleij@linaro.org, mark.rutland@arm.com,
-        matthias.bgg@gmail.com, sean.wang@kernel.org,
-        srv_heupstream@mediatek.com, hui.liu@mediatek.com,
-        light.hsieh@mediatek.com, sean.wang@mediatek.com,
-        seiya.wang@mediatek.com, rex-bc.chen@mediatek.com,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, linux-gpio@vger.kernel.org,
-        Guodong Liu <guodong.liu@mediatek.corp-partner.google.com>
+References: <CAHP4M8X1ABEhu8kGtRSJHeqQ_m627hNT_N3Q_GGdcr3W_Rfspw@mail.gmail.com>
+ <CAHp75VcVZ6dDDm-k=Njo-jDq81bL4BTwrtkkAnm24b23qWKB_g@mail.gmail.com> <CAHP4M8UK6AYVORHCndpw2ZeRLDN+BMj3enJ-+2SWtbOPSqUe9A@mail.gmail.com>
+In-Reply-To: <CAHP4M8UK6AYVORHCndpw2ZeRLDN+BMj3enJ-+2SWtbOPSqUe9A@mail.gmail.com>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Mon, 8 Nov 2021 10:33:54 +0200
+Message-ID: <CAHp75VeSxzDFVAgah=NXk4vzKCr0qPHHiyinKzS4vO_tvDrMsg@mail.gmail.com>
+Subject: Re: RFC for a new string-copy function, using mixtures of strlcpy and strscpy
+To:     Ajay Garg <ajaygargnsit@gmail.com>
+Cc:     "andy@kernel.org" <andy@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
+        "adobriyan@gmail.com" <adobriyan@gmail.com>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "linux-hardening@vger.kernel.org" <linux-hardening@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 4, 2021 at 7:24 PM Zhiyong Tao <zhiyong.tao@mediatek.com> wrote:
+On Mon, Nov 8, 2021 at 9:42 AM Ajay Garg <ajaygargnsit@gmail.com> wrote:
 
-This should be tagged as v2. Your first submission, not tagged with any
-version or RFC/RFT, is v1.
+...
 
-> When eint virtual eint number is greater than gpio number,
-> it maybe produce 'desc[eint_n]' size globle-out-of-bounds issue.
+> >> len = [-7]
+> >> a = [123456789]
+> >
+> > My gosh, this is error code that you must check. We do not need more string copy functions.
 >
-> Signed-off-by: Zhiyong Tao <zhiyong.tao@mediatek.com>
-> Signed-off-by: Guodong Liu <guodong.liu@mediatek.corp-partner.google.com>
-
-Guodong's Signed-off-by here is confusing, as they are not the author nor
-the submitter, and as far as the mailing list is concerned they have not
-handled this patch either.
-
-Looks like the original patch is from https://crrev.com/c/3233623 ?
-
-It's customary to preserve the authorship and append your Signed-off-by
-when submitting patches written by others.
-
-> ---
->  drivers/pinctrl/mediatek/pinctrl-mtk-common-v2.c | 8 ++++++--
->  1 file changed, 6 insertions(+), 2 deletions(-)
+> Hmm, having the additional function would make things a lot easier.
 >
-> diff --git a/drivers/pinctrl/mediatek/pinctrl-mtk-common-v2.c b/drivers/pinctrl/mediatek/pinctrl-mtk-common-v2.c
-> index 45ebdeba985a..12163d3c4bcb 100644
-> --- a/drivers/pinctrl/mediatek/pinctrl-mtk-common-v2.c
-> +++ b/drivers/pinctrl/mediatek/pinctrl-mtk-common-v2.c
-> @@ -285,8 +285,12 @@ static int mtk_xt_get_gpio_n(void *data, unsigned long eint_n,
->         desc = (const struct mtk_pin_desc *)hw->soc->pins;
->         *gpio_chip = &hw->chip;
+> For example, in file fs/kernfs/dir.c, there are methods like
+> "kernfs_name_locked", "kernfs_path_from_node_locked" which simply
+> consume the return-value without any checks.
 >
-> -       /* Be greedy to guess first gpio_n is equal to eint_n */
-> -       if (desc[eint_n].eint.eint_n == eint_n)
-> +       /*
-> +        * Be greedy to guess first gpio_n is equal to eint_n.
-> +        * Only eint virtual eint number is greater than gpio number.
-> +        */
-> +       if (hw->soc->npins > eint_n &&
+> All the above functions have a simple motive : copy as much bytes as
+> possible in the destination buffer, and then consume/return the number
+> of bytes actually copied (minus the null-terminator byte of course).
 
-Nit: I believe it's more common to have the variable on the left, and the
-invariable on the right, but maybe it's just me:
+Nope. Read the comment WRT strscpy().
 
-    if (eint_n < hw->soc->npins && ...
+> If checks are to be put in-place, it would be too much code/churn,
+> adding if checks all over the place.
 
-Either way is OK I guess.
+Yep, that's why in some cases where we know that there can't be
+overflow the checks are not present. In some cases it's historically
+like this, in some cases checks might be useful and so on. But no, we
+do not need more chaos in the string functions.
 
+> If, instead we do a simple replace of "strlcpy" with "strlscpy" at
+> these places, we would be good to go (while *really* meeting the
+> requirements of these clients at the same time).
 
-ChenYu
-
-> +           desc[eint_n].eint.eint_n == eint_n)
->                 *gpio_n = eint_n;
->         else
->                 *gpio_n = mtk_xt_find_eint_num(hw, eint_n);
-> --
-> 2.25.1
->
->
-> _______________________________________________
-> Linux-mediatek mailing list
-> Linux-mediatek@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/linux-mediatek
+-- 
+With Best Regards,
+Andy Shevchenko
