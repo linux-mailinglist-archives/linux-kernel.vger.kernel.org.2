@@ -2,111 +2,212 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 64B70449E4F
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Nov 2021 22:37:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EE70B449E57
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Nov 2021 22:39:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238157AbhKHVjq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Nov 2021 16:39:46 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53908 "EHLO
+        id S240491AbhKHVmZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Nov 2021 16:42:25 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54536 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238291AbhKHVjp (ORCPT
+        with ESMTP id S240471AbhKHVmX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Nov 2021 16:39:45 -0500
-Received: from mail-oi1-x22e.google.com (mail-oi1-x22e.google.com [IPv6:2607:f8b0:4864:20::22e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F2D5C061764
-        for <linux-kernel@vger.kernel.org>; Mon,  8 Nov 2021 13:37:00 -0800 (PST)
-Received: by mail-oi1-x22e.google.com with SMTP id u2so29849959oiu.12
-        for <linux-kernel@vger.kernel.org>; Mon, 08 Nov 2021 13:37:00 -0800 (PST)
+        Mon, 8 Nov 2021 16:42:23 -0500
+Received: from mail-il1-x134.google.com (mail-il1-x134.google.com [IPv6:2607:f8b0:4864:20::134])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2EAB2C061570
+        for <linux-kernel@vger.kernel.org>; Mon,  8 Nov 2021 13:39:39 -0800 (PST)
+Received: by mail-il1-x134.google.com with SMTP id x9so18516940ilu.6
+        for <linux-kernel@vger.kernel.org>; Mon, 08 Nov 2021 13:39:39 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=swiecki.net; s=google;
+        d=sartura-hr.20210112.gappssmtp.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=IsLQjaQdlMGXIqecV4wPF8ML0lgecFSezbvs+txi9VE=;
-        b=dO/8dgSkwsbaWeZhkST1HoJnZWRSi9WmJh6Z+KGnOn/I5nSUwEdWTYmTuxCFpoL0ms
-         QXtz+2H8zmEf/z8pvOeYPDdyaAxvAganwCNlM7m6EOfImqGW9PSSYCfU1pt7DRoFDDXA
-         MTmEbkAfnMFwS5N3tZ/HnExYQtnOEtpv8bknU=
+        bh=qytYReYi2DeUI7hCFbbAa02ZiVc0pq8Kh5KE+hVc89c=;
+        b=H3USv1SxyfFzlVpWLI1rBldttje8XhrfpQIes1iEdAxsPes6sc10Ckzgj/hAPEfN14
+         O3PEIq4cLUYJddeH1GJH7Gms3+YalJ/8HOvft++EAHwhST4SmsEpSRehE328qv6WsEid
+         qEwob/tgjU/yjJtK14zugDR0/qbglhOFALAVx6+rUyyl2KLi2M7K1r5E7cfgKZqw2WOj
+         VO/NRbrORIsD9uwUmJDmXcywQS1kd/z2GWgcif6wonJfHzAfR7aYMgpyga5sW2ZXzcjE
+         hxttz9Tg3e6GEe87veFodYwHxTLadS9CEokrVSFebaCet99dCJ9RrXyX17y0mGni/3iU
+         IWMA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=IsLQjaQdlMGXIqecV4wPF8ML0lgecFSezbvs+txi9VE=;
-        b=PdoqB6bW2Ad91lYU859MDbE4JlP9o6t3vBeZVWgv9WnENeMBVYyieQJ5dpeUDOfYe5
-         BJ3Yk+eCspXmJGc6adYUIHKw2v0XuD+XBvOx7p8wTb/DT+CyqnLzgU90Mqj0iN8CX4U4
-         xkzGurdxXojPGq57ojIESYPpWdwil8JhoF59s/HTju8ivkGXghZSCuju3yVVFhjR5CvV
-         45SCQcx7yTkRY+SKQVrjuJPOQYkzmwdIg+IZogFu2s7shsHoxlIsjCIva6hQxft8IxF8
-         qtIHbPN/motFvQlBQKpATAOW9Ueq28bkoJHTuvhm0WPqS0iVg0e5DSH8KCMS7tLuDOND
-         Dnkg==
-X-Gm-Message-State: AOAM533XYi7lITvN4kAdlW3semdeyBm+3Zs/LKg4dWaCAmZRh7EdloUI
-        J3Ic3VqmCpRDuykT47WU8pY8Pzr4VePldKgftT3w6A==
-X-Google-Smtp-Source: ABdhPJxdmLSrnfD8gVnnutOGCvmzv2yNsvvaDMK3Mj2LQK2LTxpzAtdqhn4xDaUdcEVCmY4+jYIJjvEhNWnCKQH/g0Q=
-X-Received: by 2002:a54:4e98:: with SMTP id c24mr1286748oiy.144.1636407419924;
- Mon, 08 Nov 2021 13:36:59 -0800 (PST)
+        bh=qytYReYi2DeUI7hCFbbAa02ZiVc0pq8Kh5KE+hVc89c=;
+        b=4Oxd9XvEofTWGP358rHIqiLvsSc2xrwlUSPe2dsvEx7uCPJJXIk0ml4bwg8TvZoexO
+         5R3i5LueLGo3r+97dneEWkSjd4DXvnBBtdt2eErFqSVaeSBUhHg/W2EKRNAkj/F1nAT9
+         /ywnhYgeZkXeuBncTrSupWvNY0HGzGwzVTTV0FCH66ikenXYAKSutHbl12QMH5OA7bHf
+         pAF3TDolqwc7RIYjA5MYMvYJEjJB1z1rJ+WAJ3gQl+iecuwF+7zl0SCtbXhvlskVrSKn
+         Y+2pfCPbUk0fRfX15sTfaxOP/Cg6A1oziggU7u6SLty4pT/g/KmOvB3A45OgW9FDSn0Z
+         XiWQ==
+X-Gm-Message-State: AOAM531WzBRcBkP+T+GR/yWg91UTXzqor8zs8d3w+SST5254D1F25k4s
+        1/986aIhkQyzTkJPlIPp9qo4DsSl5qCDV/tCf+Ie6w==
+X-Google-Smtp-Source: ABdhPJyohNilOe6CSCxSa6otuYhyXaBrosmVaxYXY0HfEfNsGc3l7tziImiZ4gruW3kQdM5CnQTUzIrtvT59QdcUgt4=
+X-Received: by 2002:a05:6e02:1a85:: with SMTP id k5mr1669051ilv.27.1636407578605;
+ Mon, 08 Nov 2021 13:39:38 -0800 (PST)
 MIME-Version: 1.0
-References: <CAP145phj7jEy6tkdFMdW-rzPprMTUckaaSrtrVysE-u+S+=Lcg@mail.gmail.com>
- <20211108185823.GA1101310@bhelgaas> <20211108212226.253mwl4wp7xjckqz@pengutronix.de>
-In-Reply-To: <20211108212226.253mwl4wp7xjckqz@pengutronix.de>
-From:   =?UTF-8?B?Um9iZXJ0IMWad2nEmWNraQ==?= <robert@swiecki.net>
-Date:   Mon, 8 Nov 2021 22:36:49 +0100
-Message-ID: <CAP145phFHh+pMTXbdwwQK6bgxLBcF2JgQKwz2L+2vJRs2dMiVg@mail.gmail.com>
-Subject: Re: [PATCH] pci: Don't call resume callback for nearly bound devices
-To:     =?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>
-Cc:     Bjorn Helgaas <helgaas@kernel.org>, linux-i2c@vger.kernel.org,
-        Bjorn Helgaas <bhelgaas@google.com>, linux-pci@vger.kernel.org,
-        "Rafael J. Wysocki" <rafael@kernel.org>, linux-pm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
+References: <20211104124927.364683-1-robert.marko@sartura.hr>
+ <20211108202058.th7vjq4sjca3encz@skbuf> <CA+HBbNE_jh_h9bx9GLfMRFz_Kq=Vx1pu0dE1aK0guMoEkX1S5A@mail.gmail.com>
+ <20211108211811.qukts37eufgfj4sc@skbuf>
+In-Reply-To: <20211108211811.qukts37eufgfj4sc@skbuf>
+From:   Robert Marko <robert.marko@sartura.hr>
+Date:   Mon, 8 Nov 2021 22:39:27 +0100
+Message-ID: <CA+HBbNGvg43wMNbte827wmK_fnWuweKSgA-nWW+UPGCvunUwGA@mail.gmail.com>
+Subject: Re: [net-next] net: dsa: qca8k: only change the MIB_EN bit in
+ MODULE_EN register
+To:     Vladimir Oltean <olteanv@gmail.com>
+Cc:     Andrew Lunn <andrew@lunn.ch>, vivien.didelot@gmail.com,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        David Miller <davem@davemloft.net>, kuba@kernel.org,
+        netdev@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Gabor Juhos <j4g8y7@gmail.com>, John Crispin <john@phrozen.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi all,
-
-> > Here's the call tree:
+On Mon, Nov 8, 2021 at 10:18 PM Vladimir Oltean <olteanv@gmail.com> wrote:
+>
+> On Mon, Nov 08, 2021 at 10:10:19PM +0100, Robert Marko wrote:
+> > On Mon, Nov 8, 2021 at 9:21 PM Vladimir Oltean <olteanv@gmail.com> wrote:
+> > >
+> > > Timed out waiting for ACK/NACK from John.
+> > >
+> > > On Thu, Nov 04, 2021 at 01:49:27PM +0100, Robert Marko wrote:
+> > > > From: Gabor Juhos <j4g8y7@gmail.com>
+> > > >
+> > > > The MIB module needs to be enabled in the MODULE_EN register in
+> > > > order to make it to counting. This is done in the qca8k_mib_init()
+> > > > function. However instead of only changing the MIB module enable
+> > > > bit, the function writes the whole register. As a side effect other
+> > > > internal modules gets disabled.
+> > >
+> > > Please be more specific.
+> > > The MODULE_EN register contains these other bits:
+> > > BIT(0): MIB_EN
+> > > BIT(1): ACL_EN (ACL module enable)
+> > > BIT(2): L3_EN (Layer 3 offload enable)
+> > > BIT(10): SPECIAL_DIP_EN (Enable special DIP (224.0.0.x or ff02::1) broadcast
+> > > 0 = Use multicast DP
+> > > 1 = Use broadcast DP)
+> > >
+> > > >
+> > > > Fix up the code to only change the MIB module specific bit.
+> > >
+> > > Clearing which one of the above bits bothers you? The driver for the
+> > > qca8k switch supports neither layer 3 offloading nor ACLs, and I don't
+> > > really know what this special DIP packet/header is).
+> > >
+> > > Generally the assumption for OF-based drivers is that one should not
+> > > rely on any configuration done by prior boot stages, so please explain
+> > > what should have worked but doesn't.
 > >
-> >     really_probe
-> >       dev->driver = drv;                       # <--
-> >       call_driver_probe
-> >         dev->bus->probe
-> >           pci_device_probe
-> >             __pci_device_probe
-> >               pci_call_probe
-> >                 local_pci_probe
-> >                   pm_runtime_get_sync
-> >                     ...
-> >                     pci_pm_runtime_resume
-> >   -                   if (!pci_dev->driver)    # 2a4d9408c9e8 ("PCI: Use to_pci_driver() instead of pci_dev->driver")
-> >   +                   if (!to_pci_driver(dev->driver))
-> >                         return 0
-> >                       pm->runtime_resume
-> >                         i2c_dw_pci_resume
-> >                           i_dev->init()        # <-- NULL ptr deref
-> >   -                 pci_dev->driver = pci_drv  # b5f9c644eb1b ("PCI: Remove struct pci_dev->driver")
-> >                   pci_drv->probe
-> >                     i2c_dw_pci_probe
+> > Hi,
+> > I think that the commit message wasn't clear enough and that's my fault for not
+> > fixing it up before sending.
 >
-> I think this analysis is right.
+> Yes, it is not. If things turn out to need changing, you should resend
+> with an updated commit message.
 >
-> I didn't test this patch, @Robert, maybe you can do this?
+> > MODULE_EN register has 3 more bits that aren't documented in the QCA8337
+> > datasheet but only in the IPQ4019 one but they are there.
+> > Those are:
+> > BIT(31) S17C_INT (This one is IPQ4019 specific)
+> > BIT(9) LOOKUP_ERR_RST_EN
+> > BIT(10) QM_ERR_RST_EN
 >
-> Best regards
-> Uwe
->
->  drivers/pci/pci-driver.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/drivers/pci/pci-driver.c b/drivers/pci/pci-driver.c
-> index 1d98c974381c..202533654012 100644
-> --- a/drivers/pci/pci-driver.c
-> +++ b/drivers/pci/pci-driver.c
-> @@ -1299,7 +1299,7 @@ static int pci_pm_runtime_resume(struct device *dev)
->          */
->         pci_restore_standard_config(pci_dev);
->
-> -       if (!to_pci_driver(dev->driver))
-> +       if (!device_is_bound(dev))
->                 return 0;
->
->         pci_fixup_device(pci_fixup_resume_early, pci_dev);
+> Are you sure that BIT(10) is QM_ERR_RST_EN on IPQ4019? Because in the
+> QCA8334 document I'm looking at, it is SPECIAL_DIP_EN.
 
-Yes, that fixes it. Thanks for the patch.
+Sorry, QM_ERR_RST_EN is BIT(8) and it as well as LOOKUP_ERR_RST_EN should
+be exactly the same on QCA833x switches as well as IPQ4019 uses a
+variant of QCA8337N.
+>
+> > Lookup and QM bits as well as the DIP default to 1 while the INT bit is 0.
+> >
+> > Clearing the QM and Lookup bits is what is bothering me, why should we clear HW
+> > default bits without mentioning that they are being cleared and for what reason?
+>
+> To be fair, BIT(9) is marked as RESERVED and documented as being set to 1,
+> so writing a zero is probably not very smart.
+>
+> > We aren't depending on the bootloader or whatever configuring the switch, we are
+> > even invoking the HW reset before doing anything to make sure that the
+> > whole networking
+> > subsystem in IPQ4019 is back to HW defaults to get rid of various
+> > bootloader hackery.
+> >
+> > Gabor found this while working on IPQ4019 support and to him and to me it looks
+> > like a bug.
+>
+> A bug with what impact? I don't have a description of those bits that
+> get unset. What do they do, what doesn't work?
+
+LOOKUP_ERR_RST_EN:
+1b1:Enableautomatic software reset by hardware due to
+lookup error.
+
+QM_ERR_RST_EN:
+1b1:enableautomatic software reset by hardware due to qm
+error.
+
+So clearing these 2 disables the built-in error recovery essentially.
+
+To me clearing the bits even if they are not breaking something now
+should at least have a comment in the code that indicates that it's intentional
+for some reason.
+I wish John would explain the logic behind this.
+
+Regards,
+Robert
+>
+> > I hope this clears up things a bit.
+> > Regards,
+> > Robert
+> > >
+> > > >
+> > > > Fixes: 6b93fb46480a ("net-next: dsa: add new driver for qca8xxx family")
+> > > > Signed-off-by: Gabor Juhos <j4g8y7@gmail.com>
+> > > > Signed-off-by: Robert Marko <robert.marko@sartura.hr>
+> > > > ---
+> > > >  drivers/net/dsa/qca8k.c | 2 +-
+> > > >  1 file changed, 1 insertion(+), 1 deletion(-)
+> > > >
+> > > > diff --git a/drivers/net/dsa/qca8k.c b/drivers/net/dsa/qca8k.c
+> > > > index a984f06f6f04..a229776924f8 100644
+> > > > --- a/drivers/net/dsa/qca8k.c
+> > > > +++ b/drivers/net/dsa/qca8k.c
+> > > > @@ -583,7 +583,7 @@ qca8k_mib_init(struct qca8k_priv *priv)
+> > > >       if (ret)
+> > > >               goto exit;
+> > > >
+> > > > -     ret = qca8k_write(priv, QCA8K_REG_MODULE_EN, QCA8K_MODULE_EN_MIB);
+> > > > +     ret = qca8k_reg_set(priv, QCA8K_REG_MODULE_EN, QCA8K_MODULE_EN_MIB);
+> > > >
+> > > >  exit:
+> > > >       mutex_unlock(&priv->reg_mutex);
+> > > > --
+> > > > 2.33.1
+> > > >
+> >
+> >
+> >
+> > --
+> > Robert Marko
+> > Staff Embedded Linux Engineer
+> > Sartura Ltd.
+> > Lendavska ulica 16a
+> > 10000 Zagreb, Croatia
+> > Email: robert.marko@sartura.hr
+> > Web: www.sartura.hr
+
+
+
+-- 
+Robert Marko
+Staff Embedded Linux Engineer
+Sartura Ltd.
+Lendavska ulica 16a
+10000 Zagreb, Croatia
+Email: robert.marko@sartura.hr
+Web: www.sartura.hr
