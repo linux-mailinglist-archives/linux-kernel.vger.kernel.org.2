@@ -2,134 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B4391449A10
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Nov 2021 17:42:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D5E0449A15
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Nov 2021 17:45:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241320AbhKHQp0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Nov 2021 11:45:26 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43444 "EHLO
+        id S241327AbhKHQrn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Nov 2021 11:47:43 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43938 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236528AbhKHQpZ (ORCPT
+        with ESMTP id S236528AbhKHQrl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Nov 2021 11:45:25 -0500
-Received: from mail-io1-xd33.google.com (mail-io1-xd33.google.com [IPv6:2607:f8b0:4864:20::d33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 54B5EC061570
-        for <linux-kernel@vger.kernel.org>; Mon,  8 Nov 2021 08:42:41 -0800 (PST)
-Received: by mail-io1-xd33.google.com with SMTP id k22so5999710iol.13
-        for <linux-kernel@vger.kernel.org>; Mon, 08 Nov 2021 08:42:41 -0800 (PST)
+        Mon, 8 Nov 2021 11:47:41 -0500
+Received: from mail-pf1-x429.google.com (mail-pf1-x429.google.com [IPv6:2607:f8b0:4864:20::429])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6E909C061570;
+        Mon,  8 Nov 2021 08:44:57 -0800 (PST)
+Received: by mail-pf1-x429.google.com with SMTP id g18so11804351pfk.5;
+        Mon, 08 Nov 2021 08:44:57 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20210112.gappssmtp.com; s=20210112;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=IxAdOb0LqPBFkwvM1Auqh52QS5bnCXigClzsNcGh4zY=;
-        b=pWyC0UDicmpv1e+mmc2qy6UIzmW3a43fmJK9OZdzMGN6XowJNYmxkrcpLEY4l+L7Uo
-         Fq/pJ6H4QzukA1o4IOgeIvscd9PC/oHtKPMRK5VCYBDfbhYPwea94iqHZuQKQXfKrjfc
-         yuCy26oaXShM1f0JejBZJKq6UufqyTD0qRtXFeOKgKoOAhb4jZIKT1/Yf5tXgkqo8alL
-         FGcOQLVv+wAZmCBCUYZ/JLXSx3nvPgCywiHlHbqm8lwM/SWP/FeMkJorCet2x6uA4kj8
-         nWu67sAJz1p8TQwYp7iN6uvJytMFbtWuLpaKLqFAw5/FuqQb1YoRB3G2sjprezLhAKKL
-         DShg==
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=v6tzK+1zOq/v9nDcWdhPdWgczhf8lOmT2M5fBp/8qM4=;
+        b=DkvfTZMWSeF94X5CWqIfaLbE16dqGX+Hi06SDdQSwxVXwODdoiQhPEIcKAOjcdqhuI
+         LquVkZsC3cqU1UqQC6TqjcpSglEV8lRClfZXWHdIGrkcqT7a5dcFpgc2NvIiz/en0fDi
+         3l7Fx+9IPoAwAOEXar/GCYfQM4fSN8Io+a9dtu0CpmSMD3/U1I+5dVtcIgG9WfetSTrO
+         DMtCVgCPjWi5TG6Cy87KCfsMzKb1A6ZCy0sJnFxeF36ZKVYAV/CMcByxFTfDm4RcIjx/
+         y0/NaEKQdIVZIy79/yol05We6dw2CojZ7M5qBFwThyFkNhd8CmTkiddRJ7glTMRf/fmk
+         enYw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=IxAdOb0LqPBFkwvM1Auqh52QS5bnCXigClzsNcGh4zY=;
-        b=yEay9/s11PyzSzo6Q4qJDl84M7m1Vj+QvrIlHSz+58lzAuv01vo1Y2AnVTXPcFsPZf
-         fR029ImJILZBnrzGFPgMEK3+eTYpNajPSsyCdMQWAct6AUzJZmI2kvJ7/SsqczytaD/z
-         eP8wmONOlkXEUdeZvotgW363bF1RU6UlPjLTHtN/8MXHLY3HFOJ+Xn9bdOB0ccoCBa47
-         5N/6/HPSHQ7JtqTeYhkTtEsuyoGbjPIA+2EnANd0Hz0rSKbyhpOAK8m4lVLApGp5CrD1
-         u0NfaDgEWUO8zr+V0VWduVRJc6qF3Gn85plFiO3pO/pVm3jt37GLShxlyXGI1kobsnQ7
-         1W3A==
-X-Gm-Message-State: AOAM530B/X9dZPAah0TdfAtygznvXKHJf7+GURQFy7d1vW2zv51p6dyO
-        Xn7UMzxwgNYlS5TTnMy/sIdG/Q==
-X-Google-Smtp-Source: ABdhPJzxMe8r2lK7rB22X1iHEP3HPlWk2R5o7xQgDc/cFcH3xAZ/kr4G8p2zgMbbxhXphENNO2BY+A==
-X-Received: by 2002:a6b:ee10:: with SMTP id i16mr369263ioh.98.1636389759476;
-        Mon, 08 Nov 2021 08:42:39 -0800 (PST)
-Received: from [192.168.1.30] ([207.135.234.126])
-        by smtp.gmail.com with ESMTPSA id i15sm10697495ila.12.2021.11.08.08.42.38
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 08 Nov 2021 08:42:39 -0800 (PST)
-Subject: Re: [syzbot] WARNING in io_poll_task_func (2)
-To:     Dmitry Vyukov <dvyukov@google.com>,
-        syzkaller <syzkaller@googlegroups.com>
-Cc:     Aleksandr Nogikh <nogikh@google.com>,
-        syzbot <syzbot+804709f40ea66018e544@syzkaller.appspotmail.com>,
-        asml.silence@gmail.com, io-uring@vger.kernel.org,
-        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com,
-        xiaoguang.wang@linux.alibaba.com
-References: <0000000000007a0d5705cfea99b2@google.com>
- <0935df19-f813-8840-fa35-43c5558b90e7@kernel.dk>
- <CANp29Y4hi=iFti=BzZxEEPgnn74L80fr3WXDR8OVkGNqR9BOLw@mail.gmail.com>
- <97328832-70de-92d9-bf42-c2d1c9d5a2d6@kernel.dk>
- <CACT4Y+a05_HXcUfooYP5Jp2V5QsxB6zoSZKM6g6P3DiVWUvcyg@mail.gmail.com>
-From:   Jens Axboe <axboe@kernel.dk>
-Message-ID: <0099680c-8955-6771-808f-7fcae8ba7dcb@kernel.dk>
-Date:   Mon, 8 Nov 2021 09:42:38 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        bh=v6tzK+1zOq/v9nDcWdhPdWgczhf8lOmT2M5fBp/8qM4=;
+        b=AfLAlDdyjaODSgFKtVGTjsNXvqLHMZ34wO9x1hTvX/CfeDnhTRa3jj7gM4zqQNnlWn
+         jn+u3XCruxeo4GqFgELQVnwSatRD6Z0egeGJCv0sQYI3xLgO6iKuc8TEXGJ5jZ4iUrH4
+         /SNSc0khOzfoOJM7qZBlwxbV0Qye/wAHLvhH9un88XuxtOwYxaHS1MQX8QtiBGZQHMVa
+         gMBVkNQ2t8yvcqhJ0kGvxoKIicwBKnYiO/r3one8t4WLQ5FAXotZAd6CSDxOIyuu2Vm3
+         Zs1iQ5t7xw6VJMqI2tcq6C79y09TF+pLF3hXFeJjN3X9jWQOVWijgeSzZCamPZT+54Bf
+         cOdA==
+X-Gm-Message-State: AOAM531Vawew6NbXFExAazQ2WaZTlCt6Uyv7lwl4//iFsfc5K0RmWfn/
+        Pz9KINKS+CpKJGIy0LH8Guy/SqWoutE=
+X-Google-Smtp-Source: ABdhPJxV5Pwd6m1d2CnKF0YOJ00nwSP+XQC2TgNOZEzcj+XInLZhyjCL92OfgoIvxbtcFsjHMyhMOw==
+X-Received: by 2002:a05:6a00:21c6:b0:44c:937:fbf3 with SMTP id t6-20020a056a0021c600b0044c0937fbf3mr572059pfj.2.1636389896975;
+        Mon, 08 Nov 2021 08:44:56 -0800 (PST)
+Received: from jaschultz-Thelio-Major.corp.microsoft.com ([2001:4898:80e8:36:87e1:381d:5b89:8aef])
+        by smtp.gmail.com with ESMTPSA id 145sm15980974pfx.87.2021.11.08.08.44.56
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 08 Nov 2021 08:44:56 -0800 (PST)
+From:   Jarrett Schultz <jaschultzms@gmail.com>
+X-Google-Original-From: Jarrett Schultz <jaschultz@microsoft.com>
+To:     Rob Herring <robh+dt@kernel.org>, Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Mark Gross <mgross@linux.intel.com>,
+        Maximilian Luz <luzmaximilian@gmail.com>
+Cc:     linux-arm-msm@vger.kernel.org, platform-driver-x86@vger.kernel.org,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        Felipe Balbi <balbi@kernel.org>,
+        Jarrett Schultz <jaschultzMS@gmail.com>,
+        Jarrett Schultz <jaschultz@microsoft.com>
+Subject: [PATCH v2 0/5] platform: surface: Introduce Surface XBL Driver
+Date:   Mon,  8 Nov 2021 08:44:44 -0800
+Message-Id: <20211108164449.3036210-1-jaschultz@microsoft.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-In-Reply-To: <CACT4Y+a05_HXcUfooYP5Jp2V5QsxB6zoSZKM6g6P3DiVWUvcyg@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/8/21 9:30 AM, Dmitry Vyukov wrote:
-> On Thu, 4 Nov 2021 at 12:44, Jens Axboe <axboe@kernel.dk> wrote:
->>
->> On 11/4/21 4:45 AM, Aleksandr Nogikh wrote:
->>> Hi Jeans,
->>>
->>> We'll try to figure something out.
->>>
->>> I've filed an issue to track progress on the problem.
->>> https://github.com/google/syzkaller/issues/2865
->>
->> Great thanks. It's annoyed me a bit in the past, but it's really
->> excessive this time around. Probably because that particular patch
->> caused more than its fair share of problems, but still shouldn't
->> be an issue once it's dropped from the trees.
-> 
-> syzbot always tests the latest working tree. In this case it's the
-> latest linux-next tree. No dead branches were tested.
+Introduce the Surface Extensible Boot Loader driver for the Surface Duo.
+Exposes information about the driver to user space via sysfs.
 
-Maybe the -next tree is just lagging. Does the syzbot setup for the
-kernel have some notion of the trees involved? For this particular
-example, if the upstream tree that contains/contained the patch that is
-flagged as problematic, then it would be ideal if it didn't get
-reported. Not sure if this is viable or not.
+Signed-off-by: Jarrett Schultz <jaschultz@microsoft.com>
 
-Ditto if the upstream tree already has a fix for that issue, marked
-appropriately. But I guess this one naturally falls out from having told
-syzbot with a #fix reply, but that normally doesn't need to happen as
-long as the patch flows into the tree being tested. If -next is lagging,
-then again we'd get multiple reports for the same thing on an outdated
-tree.
+---
 
-> The real problem here is rebased trees and dropped patches and the use
-> of "invalid" command.
-> For issues fixed with a commit (#syz fix) syzbot tracks precisely when
-> the commit reaches all of the tested builds and only then closes the
-> issue and starts reporting new occurrences as new issues.
-> But "syz invalid" does not give syzbot a commit to track and means
-> literally "close now", so any new occurrences are reported as new
-> issues immediately.
-> The intention is that it's on the user issuing the "invalid" command
-> to do this only when the issue is really not present in any of syzbot
-> builds anymore.
+Changes in v2:
+ - Per Maximilian, added patch 2: propagated ACPI dependency from the
+   directory as a whole to each individual driver
+ - For the yaml documentation:
+    * Removed json-schema dependence
+    * Elaborated on description of driver
+    * Updated example
+ - Changed target KernelVersion in sysfs documentation
+ - Updated MAINTAINER changes to be properly applied across patches
+ - For the driver itself,
+    * Added types.h inclusion and removed unused inclusions
+    * Minor updates to code and acronym style
+    * Remove __packed attribute on driver struct
+    * Use .dev_groups for sysfs
+ - Added more in-depth description of driver in Kconfig
+ - Modified dts to reference a newly added section in sm8150.dtsi
 
-And the latter is problematic if the -next tree isn't current anymore.
+---
 
-> There are hacks around like saying "syz fix" with some unrelated later
-> commit that will reach linux-next upstream along with the dropped
-> patch, then syzbot will do proper tracking on its own.
-> Better suggestions are welcome.
+Jarrett Schultz (5):
+  dt-bindings: platform: microsoft: Document surface xbl
+  platform: surface: Propogate ACPI Dependency
+  platform: surface: Add surface xbl
+  arm64: dts: qcom: sm8150: Add imem section
+  arm64: dts: qcom: surface-duo: Add surface xbl
 
-I guess a work-around would just be to use #fix for eg the merge commit
-in the upstream branch.
+ .../ABI/testing/sysfs-platform-surface-xbl    |  78 +++++++
+ .../platform/microsoft/surface-xbl.yaml       |  57 +++++
+ MAINTAINERS                                   |   9 +
+ .../dts/qcom/sm8150-microsoft-surface-duo.dts |  10 +
+ arch/arm64/boot/dts/qcom/sm8150.dtsi          |   8 +
+ drivers/platform/surface/Kconfig              |  24 +-
+ drivers/platform/surface/Makefile             |   1 +
+ drivers/platform/surface/surface-xbl.c        | 215 ++++++++++++++++++
+ 8 files changed, 401 insertions(+), 1 deletion(-)
+ create mode 100644 Documentation/ABI/testing/sysfs-platform-surface-xbl
+ create mode 100644 Documentation/devicetree/bindings/platform/microsoft/surface-xbl.yaml
+ create mode 100644 drivers/platform/surface/surface-xbl.c
 
 -- 
-Jens Axboe
+2.25.1
 
