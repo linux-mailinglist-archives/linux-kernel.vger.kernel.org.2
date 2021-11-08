@@ -2,124 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D7B5449A48
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Nov 2021 17:48:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 00B46449A4C
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Nov 2021 17:50:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240236AbhKHQvI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Nov 2021 11:51:08 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:40162 "EHLO
+        id S239012AbhKHQxK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Nov 2021 11:53:10 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:20434 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231330AbhKHQvG (ORCPT
+        by vger.kernel.org with ESMTP id S231330AbhKHQxJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Nov 2021 11:51:06 -0500
+        Mon, 8 Nov 2021 11:53:09 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1636390101;
+        s=mimecast20190719; t=1636390225;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=z7LY8TgzSzRlxstIDXAu/WaXnqAVsKrKahWLI0s7ntI=;
-        b=LiEqL6c1t1Q6HRCIXjcONINgh364HgeHMOGAXBZFFt2kMztFG+/G85KnMUFIvAm/hhf7hY
-        PNoTJSpB0Txwc9rzmoMZlGXLlt+UpxdCvfBMzdebIPKFEqiZqSX/8JKekSEkCaIrbi3Nvz
-        1wRLnAEN/Dz1vLu3F67JmUoT5ZXUJ88=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-324-hH6Qm3GHMyesr4xqUckv2Q-1; Mon, 08 Nov 2021 11:48:18 -0500
-X-MC-Unique: hH6Qm3GHMyesr4xqUckv2Q-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 0E36E1835ADC;
-        Mon,  8 Nov 2021 16:48:12 +0000 (UTC)
-Received: from llong.com (unknown [10.22.18.139])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id AAA9460BF4;
-        Mon,  8 Nov 2021 16:48:09 +0000 (UTC)
-From:   Waiman Long <longman@redhat.com>
-To:     Michael Ellerman <mpe@ellerman.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Daniel Henrique Barboza <danielhb413@gmail.com>,
-        Nathan Lynch <nathanl@linux.ibm.com>,
-        "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>
-Cc:     linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
-        Laurent Dufour <ldufour@linux.ibm.com>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Zhang Xiaoxu <zhangxiaoxu5@huawei.com>,
-        Waiman Long <longman@redhat.com>
-Subject: [PATCH] powerpc/pseries/cpuhp: Use alloc_cpumask_var() in pseries_cpu_hotplug_init()
-Date:   Mon,  8 Nov 2021 11:47:51 -0500
-Message-Id: <20211108164751.65565-1-longman@redhat.com>
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=7Cp1Rx79HPRFWEhhZgz1bOKGe1/Vy9sbxJgrvV4cvSc=;
+        b=BGwCgGEBoPUPKOBAbbAvRM42G+ZOxZp26HIAK7GfXSw0YWsS3yGLJHJkbJe+yZiZpvjgP3
+        RluSXE4bagDn3YH4PCjmn/OAW3RlrG49S8r6lCyfku2mipgRBbNuNRiGR4AIg8hay8+ALq
+        x8ajz3rg5YCWpVO2TzY+BTDG+LklPo4=
+Received: from mail-ot1-f69.google.com (mail-ot1-f69.google.com
+ [209.85.210.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-438-1B6bXcEiOA6zkRgcx4wkew-1; Mon, 08 Nov 2021 11:50:24 -0500
+X-MC-Unique: 1B6bXcEiOA6zkRgcx4wkew-1
+Received: by mail-ot1-f69.google.com with SMTP id s38-20020a05683043a600b0055a6f3f8c26so9299445otv.21
+        for <linux-kernel@vger.kernel.org>; Mon, 08 Nov 2021 08:50:23 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=7Cp1Rx79HPRFWEhhZgz1bOKGe1/Vy9sbxJgrvV4cvSc=;
+        b=mcmJ7wuIe6xmQW3PAck5ofEQ4ATUZysfayk5vocDbvXYG1LobMgLlzsCZ2UK5IyPqV
+         XaqY8TV6fRFk7hqCgdMB5bKsgpg9nX2zdxeqWicGXbzs6uhOnxe02ne7WJ5/wv7nBHsN
+         e0G8hORMCGfVaetv/R6Yk1fSpWBMxYqm4JOo/+W9G0YKkmIz86tAvZjTy1jpRwUjarpD
+         ZWUbWZY02Thc7acFgcsmy672EuJuBEdzlIAmdl+ng25LdrfAjac94FEtgwV37rudrrGP
+         rj0lkuWuMuBJbUsDGK4oL6edtw4lWezr6nrI02apMhbSSNbjC919nkQ6Sjkmlf+WWQNZ
+         DM2w==
+X-Gm-Message-State: AOAM532lU5n1iVrHCO7b0Rsxbse1DvORvxQHMU9tOZH+2s7qv3tNPmZe
+        l954ArtYPaG4dBBSacn0Ie2OFBpVGG6qELajOdU1k+mN5PuYOXLAOhRyD9AarRsmBtHTqSRndPF
+        lH+Ls+JTuVclD+EhOHm9fHsKb
+X-Received: by 2002:a05:6808:13c6:: with SMTP id d6mr440836oiw.177.1636390223244;
+        Mon, 08 Nov 2021 08:50:23 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJwehjvW/iUaC2D+ZGiqB6AKiqAmRnGS6IRfpiMond0g3BBfFtTJxARakU1FNtFDw5WbMXDxGg==
+X-Received: by 2002:a05:6808:13c6:: with SMTP id d6mr440805oiw.177.1636390223013;
+        Mon, 08 Nov 2021 08:50:23 -0800 (PST)
+Received: from treble ([2600:1700:6e32:6c00::15])
+        by smtp.gmail.com with ESMTPSA id r26sm2025944otn.15.2021.11.08.08.50.21
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 08 Nov 2021 08:50:22 -0800 (PST)
+Date:   Mon, 8 Nov 2021 08:50:16 -0800
+From:   Josh Poimboeuf <jpoimboe@redhat.com>
+To:     Vasily Gorbik <gor@linux.ibm.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@kernel.org>, Borislav Petkov <bp@suse.de>,
+        Miroslav Benes <mbenes@suse.cz>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/2] compiler.h: Avoid using inline asm operand modifiers
+Message-ID: <20211108165016.kdehec32k3dw4334@treble>
+References: <cover.thread-1a26be.your-ad-here.call-01621428935-ext-2104@work.hours>
+ <patch-1.thread-1a26be.git-930d1b44844a.your-ad-here.call-01621428935-ext-2104@work.hours>
+ <20211105165418.ucsrpk53dv5kgu6k@treble>
+ <your-ad-here.call-01636386038-ext-6578@work.hours>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <your-ad-here.call-01636386038-ext-6578@work.hours>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-It was found that the following warning message could be printed out when
-booting the kernel on PowerPC systems that support LPAR:
+On Mon, Nov 08, 2021 at 04:40:38PM +0100, Vasily Gorbik wrote:
+> > Does this work on s390?
+> > 
+> > diff --git a/include/linux/compiler.h b/include/linux/compiler.h
+> > index 3d5af56337bd..42935500a712 100644
+> > --- a/include/linux/compiler.h
+> > +++ b/include/linux/compiler.h
+> > @@ -115,24 +115,18 @@ void ftrace_likely_update(struct ftrace_likely_data *f, int val,
+> >   * The __COUNTER__ based labels are a hack to make each instance of the macros
+> >   * unique, to convince GCC not to merge duplicate inline asm statements.
+> >   */
+> > -#define __stringify_label(n) #n
+> > -
+> > -#define __annotate_reachable(c) ({					\
+> > -	asm volatile(__stringify_label(c) ":\n\t"			\
+> > +#define annotate_reachable() ({						\
+> > +	asm volatile("%c0:\n\t"						\
+> >  		     ".pushsection .discard.reachable\n\t"		\
+> > -		     ".long " __stringify_label(c) "b - .\n\t"		\
+> > -		     ".popsection\n\t");				\
+> > +		     ".long %c0b - .\n\t"				\
+> > +		     ".popsection\n\t" : : "i" (__COUNTER__ & 0x7f));	\
+> >  })
+> 
+> hm, could we just add asm input back and not use it? and keep
+> __stringify_label(c) as is? would that work as well?
 
-[    0.129584] WARNING: CPU: 0 PID: 1 at mm/memblock.c:1451 memblock_alloc_internal+0x5c/0x104
-[    0.129593] Modules linked in:
-[    0.129598] CPU: 0 PID: 1 Comm: swapper/0 Not tainted 5.14.0-11.el9.ppc64le+debug #1
-[    0.129605] NIP:  c000000002040134 LR: c00000000204011c CTR: c0000000020241a8
-[    0.129610] REGS: c000000005637760 TRAP: 0700   Not tainted  (5.14.0-11.el9.ppc64le+debug)
-[    0.129616] MSR:  8000000002029033 <SF,VEC,EE,ME,IR,DR,RI,LE>  CR: 48000222  XER: 00000002
-[    0.129635] CFAR: c0000000004d1cf4 IRQMASK: 0
-[    0.129635] GPR00: c00000000204011c c000000005637a00 c000000002c94d00 0000000000000001
-[    0.129635] GPR04: 0000000000000080 0000000000000000 0000000000000000 ffffffffffffffff
-[    0.129635] GPR08: 0000000000000000 0000000000000003 c00000000205ac64 0000000000080000
-[    0.129635] GPR12: 0000000000000000 c0000000049d0000 c000000000013078 0000000000000000
-[    0.129635] GPR16: 0000000000000000 0000000000000000 0000000000000000 0000000000000000
-[    0.129635] GPR20: 0000000000000000 0000000000000000 0000000000000000 0000000000000000
-[    0.129635] GPR24: c000000002003808 c00000000146f7b8 0000000000000000 0000000000000100
-[    0.129635] GPR28: c000000002d7cf80 0000000000000000 0000000000000008 0000000000000000
-[    0.129710] NIP [c000000002040134] memblock_alloc_internal+0x5c/0x104
-[    0.129717] LR [c00000000204011c] memblock_alloc_internal+0x44/0x104
-[    0.129723] Call Trace:
-[    0.129726] [c000000005637a00] [c000000005637a40] 0xc000000005637a40 (unreliable)
-[    0.129735] [c000000005637a60] [c0000000020404d8] memblock_alloc_try_nid+0x94/0xcc
-[    0.129743] [c000000005637af0] [c00000000205ac64] alloc_bootmem_cpumask_var+0x4c/0x9c
-[    0.129751] [c000000005637b60] [c0000000020242e0] __machine_initcall_pseries_pseries_cpu_hotplug_init+0x138/0x1d8
-[    0.129760] [c000000005637bf0] [c000000000012404] do_one_initcall+0xa4/0x4f0
-[    0.129768] [c000000005637cd0] [c000000002005358] do_initcalls+0x140/0x18c
-[    0.129776] [c000000005637d80] [c0000000020055b8] kernel_init_freeable+0x178/0x1d0
-[    0.129783] [c000000005637db0] [c0000000000130a0] kernel_init+0x30/0x190
-[    0.129790] [c000000005637e10] [c00000000000cef4] ret_from_kernel_thread+0x5c/0x64
+Yeah, that seems to work:
 
-The warning is printed in memblock_alloc_internal() because the slab
-has been initialized when the initcalls are being processed. To
-avoid the warning, change alloc_bootmem_cpumask_var() call in
-pseries_cpu_hotplug_init() to alloc_cpumask_var() instead. Also
-change cpumask_or() to cpumask_copy() or we will have to use
-zalloc_cpumask_var().
-
-Fixes: bd1dd4c5f528 ("powerpc/pseries: Prevent free CPU ids being reused on another node")
-Signed-off-by: Waiman Long <longman@redhat.com>
----
- arch/powerpc/platforms/pseries/hotplug-cpu.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
-
-diff --git a/arch/powerpc/platforms/pseries/hotplug-cpu.c b/arch/powerpc/platforms/pseries/hotplug-cpu.c
-index 5ab44600c8d3..e8e08d916b16 100644
---- a/arch/powerpc/platforms/pseries/hotplug-cpu.c
-+++ b/arch/powerpc/platforms/pseries/hotplug-cpu.c
-@@ -864,12 +864,12 @@ static int __init pseries_cpu_hotplug_init(void)
- 	/* Processors can be added/removed only on LPAR */
- 	if (firmware_has_feature(FW_FEATURE_LPAR)) {
- 		for_each_node(node) {
--			alloc_bootmem_cpumask_var(&node_recorded_ids_map[node]);
-+			alloc_cpumask_var(&node_recorded_ids_map[node],
-+					  GFP_KERNEL|GFP_NOWAIT);
+diff --git a/include/linux/compiler.h b/include/linux/compiler.h
+index 3d5af56337bd..429dcebe2b99 100644
+--- a/include/linux/compiler.h
++++ b/include/linux/compiler.h
+@@ -121,7 +121,7 @@ void ftrace_likely_update(struct ftrace_likely_data *f, int val,
+ 	asm volatile(__stringify_label(c) ":\n\t"			\
+ 		     ".pushsection .discard.reachable\n\t"		\
+ 		     ".long " __stringify_label(c) "b - .\n\t"		\
+-		     ".popsection\n\t");				\
++		     ".popsection\n\t" : : "i" (c));			\
+ })
+ #define annotate_reachable() __annotate_reachable(__COUNTER__)
  
- 			/* Record ids of CPU added at boot time */
--			cpumask_or(node_recorded_ids_map[node],
--				   node_recorded_ids_map[node],
--				   cpumask_of_node(node));
-+			cpumask_copy(node_recorded_ids_map[node],
-+				     cpumask_of_node(node));
- 		}
+@@ -129,7 +129,7 @@ void ftrace_likely_update(struct ftrace_likely_data *f, int val,
+ 	asm volatile(__stringify_label(c) ":\n\t"			\
+ 		     ".pushsection .discard.unreachable\n\t"		\
+ 		     ".long " __stringify_label(c) "b - .\n\t"		\
+-		     ".popsection\n\t");				\
++		     ".popsection\n\t" : : "i" (c));			\
+ })
+ #define annotate_unreachable() __annotate_unreachable(__COUNTER__)
  
- 		of_reconfig_notifier_register(&pseries_smp_nb);
--- 
-2.27.0
+diff --git a/include/linux/instrumentation.h b/include/linux/instrumentation.h
+index fa2cd8c63dcc..24359b4a9605 100644
+--- a/include/linux/instrumentation.h
++++ b/include/linux/instrumentation.h
+@@ -11,7 +11,7 @@
+ 	asm volatile(__stringify(c) ": nop\n\t"				\
+ 		     ".pushsection .discard.instr_begin\n\t"		\
+ 		     ".long " __stringify(c) "b - .\n\t"		\
+-		     ".popsection\n\t");				\
++		     ".popsection\n\t" : : "i" (c));			\
+ })
+ #define instrumentation_begin() __instrumentation_begin(__COUNTER__)
+ 
+@@ -50,7 +50,7 @@
+ 	asm volatile(__stringify(c) ": nop\n\t"				\
+ 		     ".pushsection .discard.instr_end\n\t"		\
+ 		     ".long " __stringify(c) "b - .\n\t"		\
+-		     ".popsection\n\t");				\
++		     ".popsection\n\t" : : "i" (c));			\
+ })
+ #define instrumentation_end() __instrumentation_end(__COUNTER__)
+ #else
 
