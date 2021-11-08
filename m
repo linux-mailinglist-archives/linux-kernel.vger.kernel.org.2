@@ -2,79 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3CEE2449F07
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 00:31:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E51F449F1B
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 00:42:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240938AbhKHXeQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Nov 2021 18:34:16 -0500
-Received: from mail.kernel.org ([198.145.29.99]:46402 "EHLO mail.kernel.org"
+        id S240950AbhKHXos (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Nov 2021 18:44:48 -0500
+Received: from mga03.intel.com ([134.134.136.65]:5566 "EHLO mga03.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229591AbhKHXeP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Nov 2021 18:34:15 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id CD11061175;
-        Mon,  8 Nov 2021 23:31:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1636414290;
-        bh=P2bBc0/n+Zd/hqg8awc2ShYNTCAACpZXxIz97sKBhjE=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=T6GYXYhiDWKtuLAAOkyPgxJPw6wbPWGP6T1bdf3dR5QTDo4bbM75x14HuqzvT5iDx
-         tUo09gjAsJjxcIOcLua7Jjj0Y6jabGVIgeNYcfhegbL93Rx8JOsrrQjvDefoRjME4J
-         gHk50OpiHdiEUzyrmfzC6FZ2M4Nser4+gwNC8YVGvxcSljAvc49fodgqBV78hmtc8t
-         6iU+I1T0Q0BT1jcRxk4zP1jE8IDV9vK27b0CONkoMJQdpJAZWS7IrCGy8LOCzMWE3b
-         oZpbxfwRn2hc71+siq8x7ViaEG1qx9Wwb8T7d5wMbb1pbMJaHx74U24soEjbp7X9Xg
-         HsS074d77rW6g==
-Date:   Mon, 8 Nov 2021 15:31:26 -0800
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Leon Romanovsky <leon@kernel.org>
-Cc:     Ido Schimmel <idosch@idosch.org>, Jiri Pirko <jiri@resnulli.us>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jiri Pirko <jiri@nvidia.com>, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, edwin.peer@broadcom.com
-Subject: Re: [PATCH net-next] devlink: Require devlink lock during device
- reload
-Message-ID: <20211108153126.1f3a8fe8@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-In-Reply-To: <YYmBbJ5++iO4MOo7@unreal>
-References: <YYABqfFy//g5Gdis@nanopsycho>
-        <YYBTg4nW2BIVadYE@shredder>
-        <20211101161122.37fbb99d@kicinski-fedora-PC1C0HJN>
-        <YYgJ1bnECwUWvNqD@shredder>
-        <YYgSzEHppKY3oYTb@unreal>
-        <20211108080918.2214996c@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-        <YYlfI4UgpEsMt5QI@unreal>
-        <20211108101646.0a4e5ca4@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-        <YYlrZZTdJKhha0FF@unreal>
-        <20211108104608.378c106e@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-        <YYmBbJ5++iO4MOo7@unreal>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        id S231401AbhKHXor (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Nov 2021 18:44:47 -0500
+X-IronPort-AV: E=McAfee;i="6200,9189,10162"; a="232292395"
+X-IronPort-AV: E=Sophos;i="5.87,218,1631602800"; 
+   d="scan'208";a="232292395"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Nov 2021 15:42:01 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.87,218,1631602800"; 
+   d="scan'208";a="641642466"
+Received: from chang-linux-3.sc.intel.com ([172.25.66.175])
+  by fmsmga001.fm.intel.com with ESMTP; 08 Nov 2021 15:42:01 -0800
+From:   "Chang S. Bae" <chang.seok.bae@intel.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     x86@kernel.org, tglx@linutronix.de, dave.hansen@linux.intel.com,
+        bp@alien8.de, mingo@redhat.com, yang.zhong@intel.com,
+        jing2.liu@intel.com, chang.seok.bae@intel.com
+Subject: [PATCH 0/2] x86: Fix ARCH_REQ_XCOMP_PERM and update the test
+Date:   Mon,  8 Nov 2021 15:34:59 -0800
+Message-Id: <20211108233501.11516-1-chang.seok.bae@intel.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 8 Nov 2021 21:58:36 +0200 Leon Romanovsky wrote:
-> > > > nfp will benefit from the simplified locking as well, and so will bnxt,
-> > > > although I'm not sure the maintainers will opt for using devlink framework
-> > > > due to the downstream requirements.    
-> > > 
-> > > Exactly why devlink should be fixed first.  
-> > 
-> > If by "fixed first" you mean it needs 5 locks to be added and to remove
-> > any guarantees on sub-object lifetime then no thanks.  
-> 
-> How do you plan to fix pernet_ops_rwsem lock? By exposing devlink state
-> to the drivers? By providing unlocked version of unregister_netdevice_notifier?
-> 
-> This simple scenario has deadlocks:
-> sudo ip netns add n1
-> sudo devlink dev reload pci/0000:00:09.0 netns n1
-> sudo ip netns del n1
+The recent x86 dynamic state support incorporates the arch_prctl option to
+request permission before using a dynamic state.
 
-Okay - I'm not sure why you're asking me this. This is not related to
-devlink locking as far as I can tell. Neither are you fixing this
-problem in your own RFC.
+It was designed to add the requested feature in the group leader's
+permission bitmask so that every thread can reference this master bitmask.
+The group leader is assumed to be unchanged here. The mainline is the case
+as a group leader is identified at fork() or exec() time only.
 
-You'd need to tell me more about what the notifier is used for (I see
-RoCE in the call trace). I don't understand why you need to re-register 
-a global (i.e. not per netns) notifier when devlink is switching name
-spaces.
+This master bitmask should include non-dynamic features always, as they
+are permitted by default. Users may check them via ARCH_GET_XCOMP_PERM.
+
+But, in hindsight, the implementation does:
+  (1) update each task's permission bitmask, instead of the group leader's. 
+  (2) overwrite the bitmask with the requested bit only, instead of adding 
+      the bit to the existing one. This overwrite effectively revokes the
+      permission that is granted already.
+
+Fix the code and also update the selftest to disclose the issue if there
+is.
+
+Reported-by: Yang Zhong <yang.zhong@intel.com>
+Cc: Thomas Gleixner <tglx@linutronix.de>
+Cc: Dave Hansen <dave.hansen@linux.intel.com>
+
+Chang S. Bae (2):
+  x86/arch_prctl: Fix ARCH_REQ_XCOMP_PERM
+  selftests/x86/amx: Update the ARCH_REQ_XCOMP_PERM test
+
+ arch/x86/kernel/fpu/xstate.c      |  2 +-
+ tools/testing/selftests/x86/amx.c | 16 ++++++++++++++--
+ 2 files changed, 15 insertions(+), 3 deletions(-)
+
+
+base-commit: 9a6cf455a952725422f4fb10848839989f833579
+-- 
+2.17.1
+
