@@ -2,203 +2,179 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 86307447F95
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Nov 2021 13:42:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0FA3E447F97
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Nov 2021 13:42:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239582AbhKHMoz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Nov 2021 07:44:55 -0500
-Received: from mail-ua1-f52.google.com ([209.85.222.52]:35749 "EHLO
-        mail-ua1-f52.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239577AbhKHMoy (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Nov 2021 07:44:54 -0500
-Received: by mail-ua1-f52.google.com with SMTP id q13so31188020uaq.2;
-        Mon, 08 Nov 2021 04:42:09 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=9zP+VNV+6KkF7GoO1LSZyLAZ2MKqVKJkHlMGSlOkuyQ=;
-        b=hXm+bMZIQ9VdqoP+j14YZgOJ+yqpRwfTx+kRFbJHUvYel9KGixa/OXdq5yjUAQucQk
-         Sthegkf/hrOOAA+HYonSZMwanebFPd1SxqYHhEjMF+0fL5I5lVbAiFCOzjERh3/vR+xI
-         E0dGVah+Jz6FnTNEJ/pH8ovyluiLBVyhpAKSQT7+cT80JJSmxdOjYBfeDmKEz6SJJvwn
-         0YWl7lGkiI4acNAdXmCafZBWa6+JsdzDqCaMnNZJ+tcIRG4CeRzNxXNxWs9KydODvYEa
-         9kKxI0uBk63IblSTIyAi9WJD5E3aiNcGJIw0Npq31xfJKOSDvAB4o+E5CHD3QzzejbEQ
-         jSZw==
-X-Gm-Message-State: AOAM530/eFyCa5z1qf9MrFAvjlKJ2JOB+HJKGdgw86j/XAXDXTBrtj0B
-        FMqoCT/yBJmcJWILTHOoDhNhJbtdSA/pjdX5
-X-Google-Smtp-Source: ABdhPJwc6T9a0Bs2IGOKa7a7nJr7vvWqHGt6Zb+kSpDqCnCVYEBHhC+mF9W6tkZk93T4unSzGmnHOQ==
-X-Received: by 2002:a05:6102:38d1:: with SMTP id k17mr65773150vst.32.1636375329010;
-        Mon, 08 Nov 2021 04:42:09 -0800 (PST)
-Received: from mail-ua1-f42.google.com (mail-ua1-f42.google.com. [209.85.222.42])
-        by smtp.gmail.com with ESMTPSA id k185sm3097883vsc.21.2021.11.08.04.42.08
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 08 Nov 2021 04:42:08 -0800 (PST)
-Received: by mail-ua1-f42.google.com with SMTP id q13so31187920uaq.2;
-        Mon, 08 Nov 2021 04:42:08 -0800 (PST)
-X-Received: by 2002:a67:c38f:: with SMTP id s15mr40412626vsj.50.1636375327937;
- Mon, 08 Nov 2021 04:42:07 -0800 (PST)
+        id S239591AbhKHMpM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Nov 2021 07:45:12 -0500
+Received: from mail-eopbgr1320043.outbound.protection.outlook.com ([40.107.132.43]:59256
+        "EHLO APC01-PU1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S239585AbhKHMpL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Nov 2021 07:45:11 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=ehi7tvbcdkkjvy4iQxwJ+uW8rf3pGHYbGuIPHaDL08qu+tqqlcc96u1PcmBt42TPHEuoGOH4+nvA+6JPEqNjJJRWwy3vhj34aH/bxXQmFuXhgGKnEc4vvtOpU0gXZ0tbB8uhZS5Phz+Z5liQaxIq2WUay2LHUvODeUS3BJXiMzVAma+iM3D8hXmESGlJqGORYsbWRxOtsx4+LBkgaOVbb3EqCDXazN4CRV6D3/HiTO676Q+v/F4f62rzusxo0r9bw589sbMbIGDK0yW/ai52FA8SRM1rCoYxxOkQV/XEth+XZ0WDU3H2zF/dV7SIO8y7wys4kbjq6gS5b8Vh2vf6ug==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=pNwrde134SShN7XfOnnWu1QIu7dBZlwTVqUO3SGs1j0=;
+ b=AKOfEc+H1Zn5ACipWsTLrCYpY6q0MuE1tmFv/noI8NwRXVpncDS4ROBaUrNrv7bumkrG5RKnqEAL5jzu9f4ajq9bxoqsMgEK5OE3ylkfirrwrRTMhFbbPPT+qGFK5oFXLbTGXk2oxy4GkkFrv03QDayfHozGjLlycPubUtt29YT9jWO8FPXbJzTeh2jHXZ2Q7XKtj+hXPYO8CpeoGIS9vzKq/2LEh+tkB0mnlvxkhxQj/1BXF4+keYBjhpw9ouCEvUiQjSgYBo4718j9o6wEw90yZg0lirV5RFUt9SYwGeXCav7Xf7W8qXrplDcx9rPxabjdIKrC/hEpS1ttoNsx2A==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oppo.com; dmarc=pass action=none header.from=oppo.com;
+ dkim=pass header.d=oppo.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oppo.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=pNwrde134SShN7XfOnnWu1QIu7dBZlwTVqUO3SGs1j0=;
+ b=tCPyWdpGOiPsCJmtYuhXdMJxsAfiWHaQF6UOxxL7YMHD1n3yhipUaat5c48WF7ntdC/MnACjA3bIumG98gbaIRV+9mdcTgx5t8x4xh3GTFW1+S7mV+tJOjhwXUZKKk/TiQ7uWIQgzHZIF8hMQMgkaqTVMyj7XEWsQpU3C5CKVC8=
+Received: from KU1PR02MB2536.apcprd02.prod.outlook.com (2603:1096:802:22::12)
+ by KL1PR02MB4833.apcprd02.prod.outlook.com (2603:1096:820:56::13) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4669.10; Mon, 8 Nov
+ 2021 12:42:24 +0000
+Received: from KU1PR02MB2536.apcprd02.prod.outlook.com
+ ([fe80::8132:4e3:4879:62e8]) by KU1PR02MB2536.apcprd02.prod.outlook.com
+ ([fe80::8132:4e3:4879:62e8%6]) with mapi id 15.20.4669.016; Mon, 8 Nov 2021
+ 12:42:24 +0000
+From:   =?gb2312?B?uvrG9Lq9KE5pY2sgSHUp?= <huqihang@oppo.com>
+To:     Greg KH <gregkh@linuxfoundation.org>
+CC:     "balbi@kernel.org" <balbi@kernel.org>,
+        "peter.chen@kernel.org" <peter.chen@kernel.org>,
+        "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: RE: [PATCH v2] usb: gadget: composite: Fix null pointer exception
+Thread-Topic: [PATCH v2] usb: gadget: composite: Fix null pointer exception
+Thread-Index: AQHX0jK4VLpQhw8UMEatV/SgvUblXKv04WCAgAS0XLA=
+Date:   Mon, 8 Nov 2021 12:42:24 +0000
+Message-ID: <KU1PR02MB253627CFDBE573DE95F3A09EB0919@KU1PR02MB2536.apcprd02.prod.outlook.com>
+References: <20211105104840.159533-1-huqihang@oppo.com>
+ <YYUnM0/82FwS5OUE@kroah.com>
+In-Reply-To: <YYUnM0/82FwS5OUE@kroah.com>
+Accept-Language: en-US
+Content-Language: zh-CN
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: linuxfoundation.org; dkim=none (message not signed)
+ header.d=none;linuxfoundation.org; dmarc=none action=none
+ header.from=oppo.com;
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 70a95b52-75f9-4b98-45d1-08d9a2b5370f
+x-ms-traffictypediagnostic: KL1PR02MB4833:
+x-microsoft-antispam-prvs: <KL1PR02MB4833D25BF7A04DB2B41B941CB0919@KL1PR02MB4833.apcprd02.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:5236;
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: iKJpGZpYEBSTAPgiVWxQB4JBkuNJlWo88JY5anWrcm6sbX+KuyOdeT5nDY2gPTQaQxxU578QGjQpz/C96n3ocvBu08bsneI+CXD/yAyJuCO50O27S7TxW/DrwTiOUZlK6Ls05ww7vTUI2RoBS9H20sjwq7cSZ2vzT2IDTjhPRpw/tNV0/T9SMKnv9b8n7tPQqGBMhvxCGnTeBPkOtyKf23AIL6VSfE6FYCduGQ0H/tueXAGkFjJmwy228qVzt7fhE/6nh0Zqwhl/MlttLfg4S0VmGSWwMSxkVlayKD8guRB0KzecbUg/UkkOjHe/3zDjVLUc6xnLrw7Z0NYVqfaxx+CL3JO02fcem+3cQ2HDEK2rUq4ruy5JC97M3TcNXV9vDKQKw+vuAQf0EmONQArnWs8SK2y3+2fD+dC2nvhN0F4pLBiaZPgXmd6Qc+NJR20U1FWG3AUXMWCZNOFEZ0Me6NQWVg3y6ADH7jZPeCbDgkuQ5Of8PCj+ap+qzXmGPSv90XQTsGCppa36dQqULD+vX8fdkVroRxO3jU1f0l6NbXSGLZeQQhul+kR6CafAZZdolmc5FXyA0AGfIMAp8FCnJF8PbiG3GliuPsa66NEHetjo4WbiNbYgQQGzRNqU2BGtIzlPOWXCAqol1sNxhn5xnG3wk2ohj3WcRPsoPqJhuoCjUj5pQ1qWbOaTNrsDkuH3n+BX6dYTDk3XGmjq745GXht0ehnR0qB++lJF5hzBVLY=
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:KU1PR02MB2536.apcprd02.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(4326008)(55016002)(316002)(53546011)(83380400001)(508600001)(8936002)(9686003)(5660300002)(85182001)(8676002)(7696005)(86362001)(6506007)(54906003)(2906002)(6916009)(33656002)(52536014)(26005)(122000001)(186003)(66946007)(66446008)(66556008)(66476007)(76116006)(64756008)(71200400001)(38070700005)(38100700002)(11606007);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?gb2312?B?SDI3L1dMYVZ1NG84TGFyNWdkOHdjbjdxem1rTU9HcDNsR1cwcXYvR2ZUaW04?=
+ =?gb2312?B?Ky9wNzdTYU9JNkRRUFhpWUUza1d2dG1ra0hpK0VIL3dSMXhhR01LdzRjQUtk?=
+ =?gb2312?B?bGZ6ejYwQW1QUTAvM2M0NTVYc21ZWXlzZTk5ZmNTNy9pQSt0RFJrc1VYN2dG?=
+ =?gb2312?B?R1pDZ3hsbEVmazZETmNUc0ExL1graEFZRGsvWXRTWXp2OGRIMC9VMnlwZG90?=
+ =?gb2312?B?a3JKSXd4enR1ZkpsQkdiRGpTVGQwckJETkxSakR3Z29rMEd3VmZNWkwxRXI4?=
+ =?gb2312?B?Z0RuV0V4NjNEZ3R1K1VyUFRRQ0FMRHFCR1Rjd1hKamM0cGxheEMrSXd4RUVa?=
+ =?gb2312?B?RENYRVg2Wlc0V3RiaE53b01pUG4yc2xheXBXVlNoNzRaSFlKdDl2SEVkSSt3?=
+ =?gb2312?B?c1FvaWRQOExzMklnOXRlRmc2TjZFZTBqZnphYlhpdk1nS1FqUUI4OE5PeDFL?=
+ =?gb2312?B?dmFuWUV2aGRJSmZ2cUtoZHFYaVBrR0ppMmI2dnFhMGZ5L2ZwY0gySVVTMlpP?=
+ =?gb2312?B?b0lGYStBUGVHdVV3aVpscEJFNHVtL0dFZEJ3MVNBRGpCakdGNEdwNGV3T3Z4?=
+ =?gb2312?B?VXR2MWVxbURvLzlkcHJua1ovUEtRYnBvZTBiU1hyOVpmK3Fic3VPMVc5aVdw?=
+ =?gb2312?B?ZVpwZGlnM1RreGFPbXJUY2t5dWZYUzN6ckJiWVliaVgwbHdId3N5eDRUMEg1?=
+ =?gb2312?B?dkU0Y055aWRrbVAvUTBucHhlS0xXUGdxRWpJRGdkSWRCMmVIUkVnZ0VyaEN1?=
+ =?gb2312?B?YnJUTXBrL0l3a1p1M2N6TXJGRmx0YUhlRHE5L3JqUGoyK1RXOFJJR3VXUWZC?=
+ =?gb2312?B?ajdTbitQYWVJVVRWMFZEUk00Q3hCd1ZnRHlYVGZBeUlseVRFa3FpamJDLzFk?=
+ =?gb2312?B?cEJ3U2FzblRENmFvU0t6aUwwSkpvRVdKVmI2bU9qaEZHVkZQQmZvZnErcUZE?=
+ =?gb2312?B?a1NWNlhLU3VFekZjeHZhUlZCWVNtVXBlVkgwT2kvaUllMTQ3a1FVVTE0bkhD?=
+ =?gb2312?B?QWhxQnZpQVJiUWNCV2N3VC9zTURURER1RStRSWZqZFlvWERBcyt0MnVKMkZk?=
+ =?gb2312?B?dU1LZzhUTDQwV3FaTmZUMDhXMTBvcTdScW84UjdSbWJud1phOUIxZnpmM29O?=
+ =?gb2312?B?b0d0WUN2dHNoaEFTeU1udXpyZlpFTkNFNmlySlR2U3F1T3k2d0p0eWl6UEZZ?=
+ =?gb2312?B?OU1yV3N0ci91WVVra2NubDNQc0h6SHBQY3lpVmV3UHVNajAwaUMvdlN5UHFK?=
+ =?gb2312?B?VWE0ekpZR3Vrdmh4YXI4Y1ZRM2xETVVOd2VYOFFIUitaK1lNc0VTWTVJZXlO?=
+ =?gb2312?B?Z1hmbUMrWVFLTVZrVkdTTWNUMFRRRlI0akVMcW5qbzZhbXBtZDRMKytGVXNm?=
+ =?gb2312?B?QVFrQkNqTkd1ZUl1dFBRald4YVFxNWtkZVV1bmV5TXBueHFTRTF1ZHdCYm1Y?=
+ =?gb2312?B?bWxZSFovdEdINjR2QVhWMktyYXcvOC81NldnSU5mS3FDUjdOdEQveGRjcy9R?=
+ =?gb2312?B?VnBFNS8zRy8rZU8vRE01dm1FNk4zMXVVWVdNL0RQZnN2S25nRjdCNkNFbmU0?=
+ =?gb2312?B?QVhpT2hrSzdxYm9ObjhHN1JJajYwMTQ0M0ErWGNuR3B4c2VWTUc2Q2l1Mngv?=
+ =?gb2312?B?TlllZUxSNUlRYlpka3o3Qit3T3IxRFBJY3hCcHJ1MkdkSk82dEc5NmZLbEor?=
+ =?gb2312?B?ZC9uMHdBbCtFc2g2eGFzMXRTUEFhQ1p1RjJ4THR5MkdDa2ZZZmdlZUg4b3Ni?=
+ =?gb2312?B?dXJuWFdON2ZHUXIyU2ZkR216NnVsdzI0ZXYzWEZMMnpwc3pjYkJ6SlF4TnZv?=
+ =?gb2312?B?b2pzU3IwZ0NqRDErWWVObzdMMlJwWWxvYVJ6VGNRaGdCOER2RUtGM1E5VjJE?=
+ =?gb2312?B?OEU4bUVRMXJsRThzek40blpZMmVhS2VBWTNJRlpMWWwvRUMzY0tuMExycmxU?=
+ =?gb2312?B?NFRIRnJWMWRrWERQMTc2VkdvWit2YjcyblBSODRqaU9meGR4OFFVVjArQTFa?=
+ =?gb2312?B?RDhWTnFSRnEzdHZsVUFUZUY2R3RvUDRCZTZuMWcrK0hNTDJDcnRuMDR5eUFy?=
+ =?gb2312?B?Mi84ekhsT2RJNGE1TVVXUTc5M2xrOUpmajZzdmpVZlJIMVF4UzllUHlCcHRo?=
+ =?gb2312?B?V1ptU3l3QjRuV1FQYWdEWjgyUUMvTWtpdzlhNjN0MG5VNzlrSUFVckNlSzVJ?=
+ =?gb2312?B?Ync9PQ==?=
+Content-Type: text/plain; charset="gb2312"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-References: <20211105103508.4153491-1-kieran.bingham+renesas@ideasonboard.com>
- <20211105170037.GA65511@nixie71> <YYW4d/YK1MkIfGT/@google.com>
- <163619359511.3601475.3667763097540792609@Monstersaurus> <20211107061719.GA204396@nixie71>
- <CAMuHMdUUbzTGWSybSpEgaN1oCzV9o+tdKJHEsdVvPD--52RbQg@mail.gmail.com> <163637490726.275423.1171114801185953486@Monstersaurus>
-In-Reply-To: <163637490726.275423.1171114801185953486@Monstersaurus>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Mon, 8 Nov 2021 13:41:56 +0100
-X-Gmail-Original-Message-ID: <CAMuHMdV98HKopvDcY-bGgTh2Az6eqRL29QH_mY9C_=60JBhy8w@mail.gmail.com>
-Message-ID: <CAMuHMdV98HKopvDcY-bGgTh2Az6eqRL29QH_mY9C_=60JBhy8w@mail.gmail.com>
-Subject: Re: [PATCH v2] Input: add 'safe' user switch codes
-To:     Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>
-Cc:     Jeff LaBundy <jeff@labundy.com>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        linux-input <linux-input@vger.kernel.org>,
-        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
-        Max Gurtovoy <mgurtovoy@nvidia.com>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Wu Hao <hao.wu@intel.com>, Bjorn Helgaas <bhelgaas@google.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Dave Ertman <david.m.ertman@intel.com>,
-        Maximilian Luz <luzmaximilian@gmail.com>,
-        Stephan Gerhold <stephan@gerhold.net>,
-        Xu Yilun <yilun.xu@intel.com>,
-        open list <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+X-OriginatorOrg: oppo.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: KU1PR02MB2536.apcprd02.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 70a95b52-75f9-4b98-45d1-08d9a2b5370f
+X-MS-Exchange-CrossTenant-originalarrivaltime: 08 Nov 2021 12:42:24.5234
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: f1905eb1-c353-41c5-9516-62b4a54b5ee6
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: 7btodZMPdCIjrTk1bjGyTorbFRKWWuw6DBxYl5xDvJSR/cVn7A+DV1sQ03LXItS0KWCCZcxwRhQEc77xWVRcJw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: KL1PR02MB4833
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Kieran,
-
-On Mon, Nov 8, 2021 at 1:35 PM Kieran Bingham
-<kieran.bingham+renesas@ideasonboard.com> wrote:
-> Quoting Geert Uytterhoeven (2021-11-08 11:00:20)
-> > On Sun, Nov 7, 2021 at 7:17 AM Jeff LaBundy <jeff@labundy.com> wrote:
-> > > On Sat, Nov 06, 2021 at 10:13:15AM +0000, Kieran Bingham wrote:
-> > > > Quoting Dmitry Torokhov (2021-11-05 23:04:23)
-> > > > > On Fri, Nov 05, 2021 at 12:00:37PM -0500, Jeff LaBundy wrote:
-> > > > > > On Fri, Nov 05, 2021 at 10:35:07AM +0000, Kieran Bingham wrote:
-> > > > > > > All existing SW input codes define an action which can be interpreted by
-> > > > > > > a user environment to adapt to the condition of the switch.
-> > > > > > >
-> > > > > > > For example, switches to define the audio mute, will prevent audio
-> > > > > > > playback, and switches to indicate lid and covers being closed may
-> > > > > > > disable displays.
-> > > > > > >
-> > > > > > > Many evaluation platforms provide switches which can be connected to the
-> > > > > > > input system but associating these to an action incorrectly could
-> > > > > > > provide inconsistent end user experiences due to unmarked switch
-> > > > > > > positions.
-> > > > > > >
-> > > > > > > Define two custom user defined switches allowing hardware descriptions
-> > > > > > > to be created whereby the position of the switch is not interpreted as
-> > > > > > > any standard condition that will affect a user experience.
-> > > > > > >
-> > > > > > > This allows wiring up custom generic switches in a way that will allow
-> > > > > > > them to be read and processed, without incurring undesired or otherwise
-> > > > > > > undocumented (by the hardware) 'default' behaviours.
-> > > > > > >
-> > > > > > > Signed-off-by: Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>
-> > > > > > > ---
-> > > > > > >
-> > > > > > > Sigh, a compile test might have at least saved the buildbots the trouble
-> > > > > > > of notifying me I also need to update the INPUT_DEVICE_ID_SW_MAX. But
-> > > > > > > even so - I'm really looking for a discussion on the best ways to
-> > > > > > > describe a non-defined switch in device tree.
-> > > > > > >
-> > > > > > > Here's a compiling v2 ;-) But the real questions are :
-> > > > > > >
-> > > > > > >  - Should an existing feature switch be used for generic switches?
-> > > > > > >  - Should we even have a 'user' defined switch?
-> > > > > > >  - If we add user switches, how many?
-> > > > > > >
-> > > > > >
-> > > > > > This is merely my opinion, but if a hardware switch does not have a defined
-> > > > > > purpose, it does not seem necessary to represent it with an input device.
-> > > > >
-> > > > > Yes, exactly. For input core we are trying to avoid generic events with
-> > > > > no defined meaning.
-> > > >
-> > > > That's understandable, particularly as I could then ponder - how do we
-> > > > even define generic switches, and how many ;-) I wanted to discuss it
-> > > > because otherwise these switches will be defined in DT as buttons. And
-> > > > they are not buttons...
-> > > >
-> > > > > What are these switches? GPIOs? Maybe it would be better to use GPIO
-> > > > > layer to test the state for them?
-> > > >
-> > > > They are physical slide switches on the board. But they have no defined
-> > > > purpose by the hardware designer. The purpose would be defined by the
-> > > > end user, as otherwise they are generic test switches.
-> > > >
-> > > > These have been previously handled as gpio-key buttons, for instance
-> > > > key-1 to key-4 at [0] are actually four slides switches.
-> > > >
-> > > > [0] https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=e3414b8c45afa5cdfb1ffd10f5334da3458c4aa5
-> > > >
-> > > > What I'm trying to determine/promote is that they are not push buttons,
-> > > > and shouldn't be described as such. I have posted [1] to add support for
-> > > > these switches, but I am limited to chosing 'functions' which will have
-> > > > an impact on the system...
-> > > >
-> > > > [1] https://lore.kernel.org/all/20211025130457.935122-1-kieran.bingham+renesas@ideasonboard.com/
-> > > >
-> > > > Presently in [1] I have chosen SW_LID and SW_DOCK as very arbitrary
-> > > > functions for the switches. But my concern is that in doing so, the
-> > > > SW_LID position could for instance suggest to a window environment or
-> > > > power management system that the lid is closed, and the system should
-> > > > be suspended (of course depending upon configurations). That would mean
-> > > > that the board would now be potentially always heading into a suspend
-> > > > after power up which would not be at all clear from the switch.
-> > > >
-> > > > I believe a 'switch' is the correct way to define this hardware, so that
-> > > > both positions can be determined, and read, and events generated on
-> > > > state change - but that there shouldn't be any artificially imposed side
-> > > > effects from the description.
-> > > >
-> > > > If the answer is "no we can't have generic switches" then so be it, but
-> > > > it feels wrong to further propogate the definition of these test
-> > > > switches as keys.
-> > >
-> > > I agree that a slide switch tied to a GPIO is indeed a switch in terms of
-> > > input core. Note, however, that definitions from your first example (such
-> > > as KEY_1) are not any less generic; those have specific meanings too.
-> >
-> > But at least the KEY_* events are less likely to cause harmful side
-> > effects than the SW_* events.  I have no idea which daemon in e.g. a
-> > generic Ubuntu userspace would act on the SW_* events.
->
-> The fact that they are no-less generic is precisely another reason why I
-> don't think these switches should be bound to KEY_0/N either.
->
-> If the switch is in the 'on' position - then it will cause repeated key
-> press events... as the key will be permanantly in the active state.
->
-> Holding KEY_0 down isn't necessarily as harmful to the user as having
-> the screen disabled, but I'm sure it would have a painful impact
-> depending upon various key repeat delays and such of course.
-
-Switches behaving like stuck keys is indeed annoying.
-I was mainly referring to using KEY_* being innocent for push buttons.
-
-> The examples defined in [0] are (IMO) wrong, and have been implemented
-> incorrectly because of a lack of a generic test switch position.
-
-Sure. I do agree the switches should be described as switches
-using SW_*, not KEY_* events.
-
-> If we can come up with a solution, I think those definitions should be
-> fixed up (if we're allowed to modify them now they exist? I expect so?).
-
-I do think we can change them.
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+PiAtLS0tLU9yaWdpbmFsIE1lc3NhZ2UtLS0tLQ0KPiBGcm9tOiBHcmVnIEtIIDxncmVna2hAbGlu
+dXhmb3VuZGF0aW9uLm9yZz4NCj4gU2VudDogRnJpZGF5LCBOb3ZlbWJlciA1LCAyMDIxIDg6NDUg
+UE0NCj4gVG86ILr6xvS6vShOaWNrIEh1KSA8aHVxaWhhbmdAb3Bwby5jb20+DQo+IENjOiBiYWxi
+aUBrZXJuZWwub3JnOyBwZXRlci5jaGVuQGtlcm5lbC5vcmc7IGxpbnV4LXVzYkB2Z2VyLmtlcm5l
+bC5vcmc7DQo+IGxpbnV4LWtlcm5lbEB2Z2VyLmtlcm5lbC5vcmcNCj4gU3ViamVjdDogUmU6IFtQ
+QVRDSCB2Ml0gdXNiOiBnYWRnZXQ6IGNvbXBvc2l0ZTogRml4IG51bGwgcG9pbnRlciBleGNlcHRp
+b24NCj4gDQo+IE9uIEZyaSwgTm92IDA1LCAyMDIxIGF0IDA2OjQ4OjQwUE0gKzA4MDAsIFFpaGFu
+ZyBIdSB3cm90ZToNCj4gPiBJbiB0aGUgY29uZmlnX2VwX2J5X3NwZWVkX2FuZF9hbHQgZnVuY3Rp
+b24sIHNlbGVjdCB0aGUgY29ycmVzcG9uZGluZw0KPiA+IGRlc2NyaXB0b3IgdGhyb3VnaCBnLT5z
+cGVlZCwgYnV0IHRoZSBmdW5jdGlvbiBkcml2ZXIgbWF5IG5vdA0KPiA+IHN1cHBvcnQgdGhlIGNv
+cnJlc3BvbmRpbmcgc3BlZWQuIFNvLCB3ZSBuZWVkIHRvIGNoZWNrIHdoZXRoZXIgdGhlDQo+ID4g
+ZnVuY3Rpb24gZHJpdmVyIHByb3ZpZGVzIHRoZSBjb3JyZXNwb25kaW5nIHNwZWVkIGRlc2NyaXB0
+b3Igd2hlbg0KPiA+IHNlbGVjdGluZyB0aGUgZGVzY3JpcHRvci4NCj4gPg0KPiA+IFsgIDIzNy43
+MDgxNDZdICBhbmRyb2lkX3dvcms6IHNlbnQgdWV2ZW50IFVTQl9TVEFURT1DT05ORUNURUQNCj4g
+PiBbICAyMzcuNzEyNDY0XSAga2NvbmZpZ2ZzLWdhZGdldCBnYWRnZXQ6IHN1cGVyLXNwZWVkIGNv
+bmZpZyAjMTogYg0KPiA+IFsgIDIzNy43MTI0ODddICBrVW5hYmxlIHRvIGhhbmRsZSBrZXJuZWwg
+TlVMTCBwb2ludGVyIGRlcmVmZXJlbmNlIGF0DQo+IHZpcnR1YWwgYWRkcmVzcyAwMDAwMDAwMDAw
+MDAwMDAwDQo+IA0KPiBTbyB0aGlzIGlzIGFuIGludmFsaWQgZHJpdmVyIGNhdXNpbmcgdGhpcyBw
+cm9ibGVtPyAgT3IgY2FuIHRoaXMgYmUNCj4gdHJpZ2dlcmVkIGJ5IHVzZXJzcGFjZT8NCg0KWWVz
+LCBpZiB0aGUga2VybmVsIGlzIGxvYWRlZCB3aXRoIGFuIGludGVyZmFjZSBkcml2ZXIgdGhhdCBk
+b2VzIG5vdCBzdXBwb3J0IGFsbA0Kc3BlZWRzLCB0aGlzIHByb2JsZW0gY2FuIGJlIHRyaWdnZXJl
+ZCBpbiB1c2Vyc3BhY2UuDQoNCj4gDQo+ID4gWyAgMjM3LjcxMjQ5M10gIGtNZW0gYWJvcnQgaW5m
+bzoNCj4gPiBbICAyMzcuNzEyNDk4XSAgayAgRVNSID0gMHg5NjAwMDAwNg0KPiA+IFsgIDIzNy43
+MTI1MDRdICBrICBFQyA9IDB4MjU6IERBQlQgKGN1cnJlbnQgRUwpLCBJTCA9IDMyIGJpdHMNCj4g
+PiBbICAyMzcuNzEyNTEwXSAgayAgU0VUID0gMCwgRm5WID0gMA0KPiA+IFsgIDIzNy43MTI1MTVd
+ICBrICBFQSA9IDAsIFMxUFRXID0gMA0KPiA+IFsgIDIzNy43MTI1MjBdICBrRGF0YSBhYm9ydCBp
+bmZvOg0KPiA+IFsgIDIzNy43MTI1MjVdICBrICBJU1YgPSAwLCBJU1MgPSAweDAwMDAwMDA2DQo+
+ID4gWyAgMjM3LjcxMjUzMF0gIGsgIENNID0gMCwgV25SID0gMA0KPiA+IFsgIDIzNy43MTI1MzZd
+ICBrdXNlciBwZ3RhYmxlOiA0ayBwYWdlcywgMzktYml0IFZBcywNCj4gcGdkcD0wMDAwMDAwMjBl
+ZjI5MDAwDQo+ID4gWyAgMjM3LjcxMjU0MV0gIGtbMDAwMDAwMDAwMDAwMDAwMF0gcGdkPTAwMDAw
+MDAyMGVmMmEwMDMsDQo+IHB1ZD0wMDAwMDAwMjBlZjJhMDAzLCBwbWQ9MDAwMDAwMDAwMDAwMDAw
+MA0KPiA+IFsgIDIzNy43MTI1NTRdICBrSW50ZXJuYWwgZXJyb3I6IE9vcHM6IDk2MDAwMDA2IFsj
+MV0gUFJFRU1QVCBTTVANCj4gPiBbICAyMzcuNzIyMDY3XSAga1NraXAgbWQgZnRyYWNlIGJ1ZmZl
+ciBkdW1wIGZvcjogMHgxNjA5ZTANCj4gPiBbICAyMzcuNzg3MDM3XSAga1dvcmtxdWV1ZTogZHdj
+X3dxIGR3YzNfYmhfd29yay5jZmlfanQNCj4gPiBbICAyMzcuODU0OTIyXSAga3BzdGF0ZTogNjBj
+MDAwODUgKG5aQ3YgZGFJZiArUEFOICtVQU8pDQo+ID4gWyAgMjM3Ljg2MzE2NV0gIGtwYyA6IGNv
+bmZpZ19lcF9ieV9zcGVlZF9hbmRfYWx0KzB4OTAvMHgzMDgNCj4gPiBbICAyMzcuODcxNzY2XSAg
+a2xyIDogYXVkaW9fc2V0X2FsdCsweDU0LzB4NzgNCj4gPiBbICAyMzcuODc5MTA4XSAga3NwIDog
+ZmZmZmZmYzAxMDQ4MzllMA0KPiA+DQo+ID4gU2lnbmVkLW9mZi1ieTogUWloYW5nIEh1IDxodXFp
+aGFuZ0BvcHBvLmNvbT4NCj4gDQo+IFdoYXQgY29tbWl0IGlkIGRvZXMgdGhpcyBmaXg/DQoNCkkg
+aGF2ZSBub3Qgc3VibWl0dGVkIGEgQlVHLg0KSSB3aWxsIHN0dWR5IGFuZCBzdWJtaXQgYSBCVUcg
+YXMgc29vbiBhcyBwb3NzaWJsZS4NCg0KPiANCj4gPiAtLS0NCj4gPiBDaGFuZ2VzIGluIHYyOg0K
+PiA+IC1BZGQgd2FybmluZyBtZXNzYWdlDQo+ID4gLS0tDQo+ID4gIGRyaXZlcnMvdXNiL2dhZGdl
+dC9jb21wb3NpdGUuYyB8IDQwICsrKysrKysrKysrKysrKysrKysrKysrLS0tLS0tLS0tLS0NCj4g
+PiAgMSBmaWxlIGNoYW5nZWQsIDI3IGluc2VydGlvbnMoKyksIDEzIGRlbGV0aW9ucygtKQ0KPiA+
+DQo+ID4gZGlmZiAtLWdpdCBhL2RyaXZlcnMvdXNiL2dhZGdldC9jb21wb3NpdGUuYyBiL2RyaXZl
+cnMvdXNiL2dhZGdldC9jb21wb3NpdGUuYw0KPiA+IGluZGV4IDcyYTk3OTdkYmJhZS4uNzQ2YjM0
+Y2YwMzEwIDEwMDY0NA0KPiA+IC0tLSBhL2RyaXZlcnMvdXNiL2dhZGdldC9jb21wb3NpdGUuYw0K
+PiA+ICsrKyBiL2RyaXZlcnMvdXNiL2dhZGdldC9jb21wb3NpdGUuYw0KPiA+IEBAIC0xNjAsNiAr
+MTYwLDkgQEAgaW50IGNvbmZpZ19lcF9ieV9zcGVlZF9hbmRfYWx0KHN0cnVjdCB1c2JfZ2FkZ2V0
+DQo+ICpnLA0KPiA+DQo+ID4gIAlzdHJ1Y3QgdXNiX2Rlc2NyaXB0b3JfaGVhZGVyICoqZF9zcGQ7
+IC8qIGN1cnNvciBmb3Igc3BlZWQgZGVzYyAqLw0KPiA+DQo+IA0KPiBXaHkgdGhlIGJsYW5rIGxp
+bmUgaGVyZT8NCj4gDQo+ID4gKwlzdHJ1Y3QgdXNiX2NvbXBvc2l0ZV9kZXYgKmNkZXY7DQo+ID4g
+KwlpbnQgaW5jb21wbGV0ZV9kZXNjID0gMDsNCj4gDQo+IFNob3VsZG4ndCB0aGlzIGJlIGEgYm9v
+bD8NCj4gDQoNClRoZSBib29sIHZhcmlhYmxlIHNob3VsZCBpbmRlZWQgYmUgdXNlZCwgSSB3aWxs
+IGZpeCB0aGlzIHByb2JsZW0gaW4gVjMNCg0KVGhhbmtzDQo=
