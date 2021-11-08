@@ -2,70 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 92499449EF9
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 00:21:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C6890449EFC
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 00:21:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240912AbhKHXXo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Nov 2021 18:23:44 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48568 "EHLO
+        id S240925AbhKHXYI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Nov 2021 18:24:08 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48656 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236457AbhKHXXn (ORCPT
+        with ESMTP id S240249AbhKHXYF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Nov 2021 18:23:43 -0500
-Received: from mail-ed1-x534.google.com (mail-ed1-x534.google.com [IPv6:2a00:1450:4864:20::534])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 80DFAC061714
-        for <linux-kernel@vger.kernel.org>; Mon,  8 Nov 2021 15:20:55 -0800 (PST)
-Received: by mail-ed1-x534.google.com with SMTP id b15so49669740edd.7
-        for <linux-kernel@vger.kernel.org>; Mon, 08 Nov 2021 15:20:55 -0800 (PST)
+        Mon, 8 Nov 2021 18:24:05 -0500
+Received: from mail-oi1-x234.google.com (mail-oi1-x234.google.com [IPv6:2607:f8b0:4864:20::234])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3675BC061714
+        for <linux-kernel@vger.kernel.org>; Mon,  8 Nov 2021 15:21:19 -0800 (PST)
+Received: by mail-oi1-x234.google.com with SMTP id n66so6717494oia.9
+        for <linux-kernel@vger.kernel.org>; Mon, 08 Nov 2021 15:21:19 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=lwIQuGBsn7Be23bmYjcf+aNAhriSmibVwiA5fi4nHNg=;
-        b=nWqR3niUi8ZAlpGTH8M2PlMiONtnzBQ4ATovgndU9GxTAENtI7bOL+JGzlAaf1jzq5
-         sOiY2+euFxGC/cOsFw7QybnynMvkJkSjyaBCQnFcfxq9Ur70Drcep9CA7Uxc9kDWGND6
-         TFUm2dlG3O0UVpWdt1MCGpuCBdMNGxBKSnUceXfy3vQ5V0zIBQn/MNtGDA3NC6LvIpyA
-         gRcjbmfWelZoikQX4G6ZaFZfQoZDT3LWCD8baoYTfrDZI8uoOG8cCC+dI1G+CudV7/FV
-         cqKIBvUar0aF9IrOtefg7Fmf2JSMfrqfz7oJz9X52A+wooChgbIi5Z1GLteLyrX7yNuh
-         gxPg==
+        d=kali.org; s=google;
+        h=message-id:date:mime-version:user-agent:subject:content-language:to
+         :cc:references:from:in-reply-to:content-transfer-encoding;
+        bh=aglDua5AdbsngBR/JjVxVOGN4ojYR1I4q1+qjCDZ8kY=;
+        b=Eg7aarpr23Ymmm+qLTN10NI1ZvqC/lnX626amIjCU5JPmst7qh8jx+QYoQ1nEpxHYg
+         TQA9umINVSCeM2Zed5qvr6rUkMHzL/B7CB4kKwig3pjtqTZQqEao96aNtKcEe92Buhcb
+         xZtMWJbSpYUR6/6qV5jOsxZOVFZpFZd8GcLoegr9NPEXjvTuLoKiB/6JwE4RszLny2aq
+         tKcLUys/j7B2MdX3qSx7kXvXFo07Tvv0eH5jFA4pWuyEVlVew1sj4VPNQV6hClDDjqID
+         oY3YBXfSdwQIenLWtOGdKdvYRIwz937qas2r/XaTaTVWGRcgRu8GVt29OwRbyfOwv5My
+         tyfA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=lwIQuGBsn7Be23bmYjcf+aNAhriSmibVwiA5fi4nHNg=;
-        b=Tvb2+aretBKb2rskOWi9pn+AcFm0w3RQ/GMjmDLlO7oXZa0PFMudvp3+ZfNzg0HfVd
-         jdoCu26A9gWrdiMZwpP53vXttIRWZfzSQZl1fu7rna4MRlV1r7V6CIcaAnzgA+NqT8Xw
-         TAszZBEvZOIJjdHXEsf9sDyNuy5P1uIQ1D4++SSvD8Y7xrSOR7VSY9Eq/BsVk6au3g7S
-         HOzhuk1d6oGmylFjtKrRE/E7zKp7Y+STgDiAaWJZWXtqicZd8TMjey/B1nwhrnDWHHDb
-         V/XOFGLj2XFrpImnH+0F0pIpAWHNj90JYWs7keHImmzGjUfwuXMdWxMBfo+ZAcumb7j9
-         PzAg==
-X-Gm-Message-State: AOAM532q1jDrm0JgEzMLCrB+cGexNGHjkpbtv/jO7Y+FisMVOUqfRvqx
-        8J2m9oek0wRO4hZ6NLVieX5PYVutwy0pDjUw5YrFfA==
-X-Google-Smtp-Source: ABdhPJwTKbnqqSkppB5nGDfkjunaz4LA5vbuU6JW5kUVVhDDBNymoBRQ2b3G931U7pcKAAoDuVO62ro+gzidCYTi1V8=
-X-Received: by 2002:a50:d984:: with SMTP id w4mr3704451edj.375.1636413653922;
- Mon, 08 Nov 2021 15:20:53 -0800 (PST)
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:in-reply-to
+         :content-transfer-encoding;
+        bh=aglDua5AdbsngBR/JjVxVOGN4ojYR1I4q1+qjCDZ8kY=;
+        b=e7aiUbTqxVh3sZDwIvKMM7xR68KjGYndgn6c1+XdiPvWRXG1bB1p8YP399ruDxy7Gg
+         cE38NM2tTS3yKsR5TWIVu7tx11IFOvrxfWjVHZh2AmcXwTBCqtvilK065TphAAWaFDA7
+         kK5vJYqqUxUohTu1Tkb41YbLBOQjhrL+KaFwgKolFucolSIfWBiH/8E9Nnt0neD/6kN9
+         hubS6WUb6KEOfGzvLtMSu1V/LHuE3DsaboK7gBKh/WTJDEXjVWgAnPYpuPFz7E7pFPRo
+         L3AtIb00/QlJktR8CgafoY3U5CCnYv3zJ5gA6q2UMcOI8mSHOnzL9XF3oOKV9Np4w8dT
+         ygpg==
+X-Gm-Message-State: AOAM530jG4QqlgQunir++37az3ybJgvfmd3l9A0R76YO2Tog4b0tS8WL
+        2Q0erALx7dTPtcbDNTh0EVEuYQ==
+X-Google-Smtp-Source: ABdhPJwQPnBe2Z1YRuYGi21p43LHxeumd8a7Ehm4+kcXJPHdfw2SjGwwrqr7bfUNnge764Y9jctRig==
+X-Received: by 2002:a05:6808:13c6:: with SMTP id d6mr1818543oiw.177.1636413678648;
+        Mon, 08 Nov 2021 15:21:18 -0800 (PST)
+Received: from [192.168.11.48] (cpe-173-173-107-246.satx.res.rr.com. [173.173.107.246])
+        by smtp.gmail.com with ESMTPSA id w29sm5555627ooe.25.2021.11.08.15.21.17
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 08 Nov 2021 15:21:18 -0800 (PST)
+Message-ID: <97e93876-d654-0a89-dce1-6fe1189345e2@kali.org>
+Date:   Mon, 8 Nov 2021 17:21:16 -0600
 MIME-Version: 1.0
-References: <CADyq12yY25-LS8cV5LY-C=6_0HLPVZbSJCKtCDJm+wyHQSeVTg@mail.gmail.com>
- <cb682c8a-255e-28e5-d4e0-0981c2ab6ffd@intel.com> <85925a39-37c3-a79a-a084-51f2f291ca9c@intel.com>
-In-Reply-To: <85925a39-37c3-a79a-a084-51f2f291ca9c@intel.com>
-From:   Brian Geffon <bgeffon@google.com>
-Date:   Mon, 8 Nov 2021 18:20:18 -0500
-Message-ID: <CADyq12z+uOaY3Qz2g+bed4BMoVxikFSmDTDzLCuJzRVEuNpkLA@mail.gmail.com>
-Subject: Re: XSAVE / RDPKRU on Intel 11th Gen Core CPUs
-To:     Dave Hansen <dave.hansen@intel.com>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Guenter Roeck <groeck@google.com>,
-        Borislav Petkov <bp@suse.de>,
-        Andy Lutomirski <luto@kernel.org>, stable@vger.kernel.org,
-        "the arch/x86 maintainers" <x86@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:91.0)
+ Gecko/20100101 Thunderbird/91.3.0
+Subject: Re: [PATCH v3 0/5] Refactor thermal pressure update to avoid code
+ duplication
+Content-Language: en-US
+To:     Thara Gopinath <thara.gopinath@linaro.org>,
+        Lukasz Luba <lukasz.luba@arm.com>
+Cc:     linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-arm-msm@vger.kernel.org, sudeep.holla@arm.com,
+        will@kernel.org, catalin.marinas@arm.com, linux@armlinux.org.uk,
+        gregkh@linuxfoundation.org, rafael@kernel.org,
+        viresh.kumar@linaro.org, amitk@kernel.org,
+        daniel.lezcano@linaro.org, amit.kachhap@gmail.com,
+        bjorn.andersson@linaro.org, agross@kernel.org
+References: <20211103161020.26714-1-lukasz.luba@arm.com>
+ <c7b526f0-2c26-0cfc-910b-3521c6a6ef51@kali.org>
+ <3cba148a-7077-7b6b-f131-dc65045aa348@arm.com>
+ <9d533b6e-a81c-e823-fa6f-61fdea92fa65@kali.org>
+ <74ea027b-b213-42b8-0f7d-275f3b84712e@linaro.org>
+ <74603569-2ff1-999e-9618-79261fdb0ee4@kali.org>
+ <b7e76c2a-ceac-500a-ff75-535a3f0d51d6@linaro.org>
+ <f955a2aa-f788-00db-1ed8-dc9c7a1b2572@kali.org>
+ <59054c90-c1cd-85bf-406e-579df668d7b4@linaro.org>
+ <eac00041-a1b8-0780-931d-52249d538800@kali.org>
+ <2c54dbbd-2ecb-fb76-fa9f-9752f429c20e@linaro.org>
+From:   Steev Klimaszewski <steev@kali.org>
+In-Reply-To: <2c54dbbd-2ecb-fb76-fa9f-9752f429c20e@linaro.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> One more thing...  Does the protection_keys kernel selftest hit any
-> errors on this same setup?  It does a lot of PKRU sanity checking and
-> I'm a bit surprised it hasn't caught something yet.
+Hi Thara,
+> Hi Steev,
+>
+> IIUC, PineBook Pro has Rockchip RK3399 which has 2 Cortex A-72 and 4 
+> Cortex A-52 where as C630 has Qualcomm sdm845 which has 4 Cortex A-75 
+> and 4 Cortex A-55. Task placements and subsequently cpu load will be 
+> different for both the platforms. With the same workload, I will 
+> expect Rockchip to system to be more loaded than sdm845. Having said 
+> that, what cpu-freq governor are you using on both the systems.
+>
+I'm using sched-util on both of the systems.
 
-I'll do a little more testing and get back to you.
+I've tried a number of different ways of forcing builds only on the A-75 
+cores, and I simply cannot get the load to be "enough" to kick in the 
+boost frequency.
+
+An example being
+
+git clone https://github.com/zellij-org/zellij.git
+
+cd zellij
+
+taskset --cpu-list 4-7 cargo build --release
+
+git clean -fdx
+
+taskset --cpu-list 6-7 cargo build --release
+
+
+On my C630, it never goes higher than 85C with the 4 cores being used, 
+and with 2, it never goes about 65C and I do not get any 2.96GHz.  It's 
+currently sitting at "6" in the time_in_state for 2965800.
+
+
+--steev
+
