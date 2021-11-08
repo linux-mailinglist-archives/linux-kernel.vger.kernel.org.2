@@ -2,155 +2,196 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D7B58449916
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Nov 2021 17:07:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C0F89449918
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Nov 2021 17:08:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240340AbhKHQKU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Nov 2021 11:10:20 -0500
-Received: from mo4-p02-ob.smtp.rzone.de ([85.215.255.81]:29441 "EHLO
-        mo4-p02-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238191AbhKHQKT (ORCPT
+        id S241167AbhKHQKm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Nov 2021 11:10:42 -0500
+Received: from alexa-out-sd-02.qualcomm.com ([199.106.114.39]:24193 "EHLO
+        alexa-out-sd-02.qualcomm.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S240140AbhKHQKl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Nov 2021 11:10:19 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1636387650;
-    s=strato-dkim-0002; d=goldelico.com;
-    h=To:References:Message-Id:Cc:Date:In-Reply-To:From:Subject:Cc:Date:
-    From:Subject:Sender;
-    bh=07yFpp0NBIJt76EAOUVS+i+HKo29LgtcF4Hu3VjH5NQ=;
-    b=Rg2vJPmt/+LkW5+xEpO9Ep9kTp/m2n7CoqKMhUqJn+oGDrp8Ux/tCxZ/6p3Lg9nFRf
-    +M9afqTz5pxIeIhJmTdP01n+6v8byBMolulugXqSiFzy6Q2OC3BCjjd3/LJlRjiz5SQg
-    SeRJrA2UHCFoXhusV4BJE71ISi6QzGgEs3203f7B2DR93+dG7vIub5+E9r+g6xn1Nzze
-    UaYACgIQRXhbaNu78rrUbneneX6X8wCKbHYRRWuLyYfE5w1/KUlcSRskRlCzvo1x9CuZ
-    RAbspFz1Q5HWylw+bF63EP4YXVCJwFLlHb2Po13djo8YDj2/fMzOpc3pR9hRsVeBJy8F
-    w1Cg==
-Authentication-Results: strato.com;
-    dkim=none
-X-RZG-AUTH: ":JGIXVUS7cutRB/49FwqZ7WcJeFKiMgPgp8VKxflSZ1P34KBj7gpw91N5y2S3gMZ+"
-X-RZG-CLASS-ID: mo00
-Received: from imac.fritz.box
-    by smtp.strato.de (RZmta 47.34.1 DYNA|AUTH)
-    with ESMTPSA id 902c63xA8G7TLba
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (curve X9_62_prime256v1 with 256 ECDH bits, eq. 3072 bits RSA))
-        (Client did not present a certificate);
-    Mon, 8 Nov 2021 17:07:29 +0100 (CET)
-Content-Type: text/plain;
-        charset=us-ascii
-Mime-Version: 1.0 (Mac OS X Mail 12.4 \(3445.104.21\))
-Subject: Re: [RFC v4 4/6] mmc: core: add new calls to
- mmc_fixup_device(sdio_card_init_methods)
-From:   "H. Nikolaus Schaller" <hns@goldelico.com>
-In-Reply-To: <CAPDyKFr5=sQsb2KEh_nkDZY5ThjMTOZWzwN7mkd4AS5jWDYtWg@mail.gmail.com>
-Date:   Mon, 8 Nov 2021 17:07:28 +0100
-Cc:     =?utf-8?B?SsOpcsO0bWUgUG91aWxsZXI=?= <Jerome.Pouiller@silabs.com>,
-        Avri Altman <avri.altman@wdc.com>,
-        Shawn Lin <shawn.lin@rock-chips.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Tony Lindgren <tony@atomide.com>,
-        Bean Huo <beanhuo@micron.com>,
-        =?utf-8?Q?Gra=C5=BEvydas_Ignotas?= <notasas@gmail.com>,
-        linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        letux-kernel@openphoenux.org, kernel@pyra-handheld.com
-Content-Transfer-Encoding: quoted-printable
-Message-Id: <532B045A-951B-4104-9D77-4AA620958F52@goldelico.com>
-References: <cover.1636103151.git.hns@goldelico.com>
- <73440c0f227778e57167dd9fedd350637a1d737a.1636103151.git.hns@goldelico.com>
- <CAPDyKFr5=sQsb2KEh_nkDZY5ThjMTOZWzwN7mkd4AS5jWDYtWg@mail.gmail.com>
-To:     Ulf Hansson <ulf.hansson@linaro.org>
-X-Mailer: Apple Mail (2.3445.104.21)
+        Mon, 8 Nov 2021 11:10:41 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=quicinc.com; i=@quicinc.com; q=dns/txt; s=qcdkim;
+  t=1636387676; x=1667923676;
+  h=subject:to:cc:references:from:message-id:date:
+   mime-version:in-reply-to:content-transfer-encoding;
+  bh=DVuLfO6N4imwUeGijPHuCU7f9N/it0Vl247/FSitkDY=;
+  b=YJaSyWdygVZ+djmS9VUsrNmGFpt7akyXu3/Dy1TE0y5jC/6vc3r9CeAQ
+   jBXQ7IJyYZzqW/jmr9JVZ8+5A2XC6MVva+Bz96e/w7sXEhcZoXNFCi6iw
+   hiBVzGdV5LUbgGfvXZyPvm6kYYYdZlqrKNFOp+AaXtc2dDjH9dmRC+/kk
+   s=;
+Received: from unknown (HELO ironmsg03-sd.qualcomm.com) ([10.53.140.143])
+  by alexa-out-sd-02.qualcomm.com with ESMTP; 08 Nov 2021 08:07:56 -0800
+X-QCInternal: smtphost
+Received: from nasanex01c.na.qualcomm.com ([10.47.97.222])
+  by ironmsg03-sd.qualcomm.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Nov 2021 08:07:55 -0800
+Received: from nalasex01a.na.qualcomm.com (10.47.209.196) by
+ nasanex01c.na.qualcomm.com (10.47.97.222) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.922.7;
+ Mon, 8 Nov 2021 08:07:55 -0800
+Received: from [10.110.100.234] (10.80.80.8) by nalasex01a.na.qualcomm.com
+ (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.922.7; Mon, 8 Nov 2021
+ 08:07:54 -0800
+Subject: Re: [RFC PATCH] software node: Skip duplicated software_node sysfs
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>
+CC:     "Rafael J. Wysocki" <rafael@kernel.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Laurentiu Tudor <laurentiu.tudor@nxp.com>,
+        "linux-acpi@vger.kernel.org" <linux-acpi@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+References: <20211101200346.16466-1-quic_qiancai@quicinc.com>
+ <CAHp75VcrWPdR8EVGpcsniQedT0J4X700N7thFs6+srTP1MTgwQ@mail.gmail.com>
+ <52df4a97-1132-d594-0180-132d0ca714d5@quicinc.com>
+ <CAHp75VebOnrce-XZjOnZiivQPz-Cdgq6mor5oiLxK8Y49GiNNg@mail.gmail.com>
+From:   Qian Cai <quic_qiancai@quicinc.com>
+Message-ID: <1269258d-db4c-3922-776b-f11e6a1e338e@quicinc.com>
+Date:   Mon, 8 Nov 2021 11:07:53 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
+MIME-Version: 1.0
+In-Reply-To: <CAHp75VebOnrce-XZjOnZiivQPz-Cdgq6mor5oiLxK8Y49GiNNg@mail.gmail.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
 
-> Am 08.11.2021 um 16:08 schrieb Ulf Hansson <ulf.hansson@linaro.org>:
->=20
-> On Fri, 5 Nov 2021 at 10:06, H. Nikolaus Schaller <hns@goldelico.com> =
-wrote:
->>=20
->> This allows to add quirks based on device tree instead of having
->> card specific code in the host ops.
->>=20
->> We call it just after where host->ops->init_card() can be optionally
->> called.
->>=20
->> Signed-off-by: H. Nikolaus Schaller <hns@goldelico.com>
->> ---
->> drivers/mmc/core/mmc.c  | 1 +
->> drivers/mmc/core/sd.c   | 2 ++
->> drivers/mmc/core/sdio.c | 1 +
->> 3 files changed, 4 insertions(+)
->>=20
->> diff --git a/drivers/mmc/core/mmc.c b/drivers/mmc/core/mmc.c
->> index 29e58ffae3797..19cd138acaec9 100644
->> --- a/drivers/mmc/core/mmc.c
->> +++ b/drivers/mmc/core/mmc.c
->> @@ -1634,6 +1634,7 @@ static int mmc_init_card(struct mmc_host *host, =
-u32 ocr,
->>         */
->>        if (host->ops->init_card)
->>                host->ops->init_card(host, card);
->> +       mmc_fixup_device(card, sdio_card_init_methods);
->>=20
->>        /*
->>         * For native busses:  set card RCA and quit open drain mode.
->> diff --git a/drivers/mmc/core/sd.c b/drivers/mmc/core/sd.c
->> index 4646b7a03db6b..0d174fdf47164 100644
->> --- a/drivers/mmc/core/sd.c
->> +++ b/drivers/mmc/core/sd.c
->> @@ -23,6 +23,7 @@
->> #include "host.h"
->> #include "bus.h"
->> #include "mmc_ops.h"
->> +#include "quirks.h"
->> #include "sd.h"
->> #include "sd_ops.h"
->>=20
->> @@ -1427,6 +1428,7 @@ static int mmc_sd_init_card(struct mmc_host =
-*host, u32 ocr,
->>         */
->>        if (host->ops->init_card)
->>                host->ops->init_card(host, card);
->> +       mmc_fixup_device(card, sdio_card_init_methods);
->>=20
->>        /*
->>         * For native busses:  get card RCA and quit open drain mode.
->> diff --git a/drivers/mmc/core/sdio.c b/drivers/mmc/core/sdio.c
->> index 68edf7a615be5..cf8ee66990508 100644
->> --- a/drivers/mmc/core/sdio.c
->> +++ b/drivers/mmc/core/sdio.c
->> @@ -707,6 +707,7 @@ static int mmc_sdio_init_card(struct mmc_host =
-*host, u32 ocr,
->>         */
->>        if (host->ops->init_card)
->>                host->ops->init_card(host, card);
->> +       mmc_fixup_device(card, sdio_card_init_methods);
->>=20
->>        /*
->>         * If the host and card support UHS-I mode request the card
->> --
->> 2.33.0
->>=20
->=20
-> As the quirk is for SDIO cards, we don't need to call
-> mmc_fixup_device(card, sdio_card_init_methods) - other than from
-> mmc_sdio_init_card().
-
-Ok. Well, the old code did have some logic for some SD_COMBO.
-But I have no idea if that is needed.
-
-> Additionally, for sd/mmc we should not be using
-> 'sdio_card_init_methods'.
-
-Ok ,I see.
-
->=20
-> That said, it looks also reasonable to me, to squash $subject patch =
-with patch3.
-
-Ok.
-
-BR and thanks,
-Nikolaus
+On 11/5/21 3:39 PM, Andy Shevchenko wrote:
+>> Andy, thanks for the pointers so far. I was able to trace
+>> set_primary_fwnode() and set_secondary_fwnode().
+> 
+> Can you share the trace you have got?
 
 
+I used a simple debugging patch below:
+
+diff --git a/drivers/base/core.c b/drivers/base/core.c
+
+index fd034d742447..d8ae96289acf 100644
+
+--- a/drivers/base/core.c
+
++++ b/drivers/base/core.c
+
+@@ -4742,6 +4742,11 @@ void set_primary_fwnode(struct device *dev, struct fwnode_handle *fwnode)
+
+ 	struct device *parent = dev->parent;
+
+ 	struct fwnode_handle *fn = dev->fwnode;
+
+ 
+
++	printk("KK set_primary_fwnode dev name = %s, fwnode = %px\n", dev_name(dev), fwnode);
+
++	if (parent)
+
++		printk("KK parent = %s\n", dev_name(dev->parent));
+
++	if (fwnode && fwnode->dev)
+
++		printk("KK fwnode->dev = %s\n", dev_name(fwnode->dev));
+
+ 	if (fwnode) {
+
+ 		if (fwnode_is_primary(fn))
+
+ 			fn = fn->secondary;
+
+@@ -4761,6 +4766,8 @@ void set_primary_fwnode(struct device *dev, struct fwnode_handle *fwnode)
+
+ 			dev->fwnode = NULL;
+
+ 		}
+
+ 	}
+
++	if (fwnode)
+
++		printk("KK secondary = %px\n", dev->fwnode->secondary);
+
+ }
+
+ EXPORT_SYMBOL_GPL(set_primary_fwnode);
+
+ 
+
+@@ -4775,13 +4782,20 @@ EXPORT_SYMBOL_GPL(set_primary_fwnode);
+
+  */
+
+ void set_secondary_fwnode(struct device *dev, struct fwnode_handle *fwnode)
+
+ {
+
++	printk("KK set_secondary_fwnode dev name = %s, fwnode = %px\n", dev_name(dev), fwnode);
+
++	if (dev->parent)
+
++		printk("KK parent = %s\n", dev_name(dev->parent));
+
++	if (fwnode && fwnode->dev)
+
++		printk("KK fwnode->dev = %s\n", dev_name(fwnode->dev));
+
+ 	if (fwnode)
+
+ 		fwnode->secondary = ERR_PTR(-ENODEV);
+
+ 
+
+-	if (fwnode_is_primary(dev->fwnode))
+
++	if (fwnode_is_primary(dev->fwnode)) {
+
+ 		dev->fwnode->secondary = fwnode;
+
+-	else
+
++		printk("KK primary = %px\n", dev->fwnode);
+
++	} else {
+
+ 		dev->fwnode = fwnode;
+
++	}
+
+ }
+
+ EXPORT_SYMBOL_GPL(set_secondary_fwnode);
+
+ 
+Then, here are the relevant outputs indicating that
+"808622B7:01" and  "xhci-hcd.3.auto" have the same
+primary but different secondaries.
+
+[   11.233280] KK set_secondary_fwnode dev name = 808622B7:01, fwnode = ffff000838618840
+
+[   11.241846] KK parent = platform
+
+[   11.245790] KK primary = ffff0008064b9010
+
+[   11.259838] KK set_primary_fwnode dev name = (null), fwnode = ffff0008064b9010
+
+[   11.267795] KK parent = 808622B7:01
+
+[   11.272000] KK fwnode->dev = 808622B7:01
+
+[   11.276636] KK secondary = ffff000838618840
+
+[   11.680489] KK set_secondary_fwnode dev name = xhci-hcd.3.auto, fwnode = ffff000838325040
+
+[   11.689406] KK parent = 808622B7:01
+
+[   11.693916] KK primary = ffff0008064b9010
+[   11.698763] sysfs: cannot create duplicate filename '/devices/platform/808622B7:01/xhci-hcd.3.auto/software_node'
