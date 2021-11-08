@@ -2,91 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 66F44447F78
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Nov 2021 13:27:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 49CA4447F7E
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Nov 2021 13:35:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239489AbhKHMaN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Nov 2021 07:30:13 -0500
-Received: from mout.gmx.net ([212.227.15.19]:48143 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239477AbhKHMaK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Nov 2021 07:30:10 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1636374428;
-        bh=UH9EY25P1vO8a9NU0FuLhNQf5AOdrOHOIROC3aFIIJ4=;
-        h=X-UI-Sender-Class:Subject:From:To:Cc:Date:In-Reply-To:References;
-        b=gEBSfauMfDLPMlWUFeF6yoFatpzl867dLmR4IFbjUVKhQZFy48fnr2RkHqYgNzCzQ
-         sAjKMFU1RmZeUlaf84e+g2LCGqeIPF+lbdjj2buMGpXOD7KNdSoLTWdWPQLV2ldpPl
-         2GBckNwnANVp0Zi7sv6JJuIIk6eZauRHycUu7css=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from homer.fritz.box ([185.221.151.151]) by mail.gmx.net (mrgmx005
- [212.227.17.190]) with ESMTPSA (Nemesis) id 1Mj8mV-1mGCUr09tV-00fBX5; Mon, 08
- Nov 2021 13:27:08 +0100
-Message-ID: <5543627ee8ac5337a74de4b9671240d617273607.camel@gmx.de>
-Subject: Re: [PATCH] sched: Tweak default dynamic preempt mode selection
-From:   Mike Galbraith <efault@gmx.de>
-To:     Valentin Schneider <valentin.schneider@arm.com>,
-        linux-kernel@vger.kernel.org
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Frederic Weisbecker <frederic@kernel.org>
-Date:   Mon, 08 Nov 2021 13:27:06 +0100
-In-Reply-To: <8735o6uca5.mognet@arm.com>
-References: <20211105104035.3112162-1-valentin.schneider@arm.com>
-         <ff53a94401f8d6abe0303ee381f86bfb475ad354.camel@gmx.de>
-         <8735o6uca5.mognet@arm.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.42.0 
+        id S239538AbhKHMh5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Nov 2021 07:37:57 -0500
+Received: from www62.your-server.de ([213.133.104.62]:49926 "EHLO
+        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238062AbhKHMh4 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Nov 2021 07:37:56 -0500
+Received: from sslproxy05.your-server.de ([78.46.172.2])
+        by www62.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92.3)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1mk3rW-0004Gr-Qi; Mon, 08 Nov 2021 13:34:58 +0100
+Received: from [85.1.206.226] (helo=linux.home)
+        by sslproxy05.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1mk3rW-000MVN-KI; Mon, 08 Nov 2021 13:34:58 +0100
+Subject: Re: [dborkman-bpf:pr/bpf-tstamp 3/3]
+ drivers/net/ethernet/oki-semi/pch_gbe/pch_gbe_main.c:2482:44: warning: shift
+ count >= width of type
+To:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        kernel test robot <lkp@intel.com>
+Cc:     llvm@lists.linux.dev, kbuild-all@lists.01.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+References: <f98d886c-dc50-9c8b-c160-6e8ecd895cb0@wanadoo.fr>
+ <7658171d-e551-cc94-b6b6-0c8bd13d00eb@wanadoo.fr>
+From:   Daniel Borkmann <daniel@iogearbox.net>
+Message-ID: <2091d820-e95d-f3e1-722b-3b24f028f571@iogearbox.net>
+Date:   Mon, 8 Nov 2021 13:34:57 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:IkJVfih0jfgqnrM+J2jJO1UPxJg4A3sSlZdAyQxFqjA6gQq0Kl0
- QXX7mqqWxv3/IrvWvWwVAye8Bw/AEA8FuBRGTXlJyO4f483CDUF7NqZdF6yn8kN2LMi6xM7
- ZC1bEWfGK/OSNYi10uSMG2dqmpyA/gYLUCmWJ2xCAcqUXZNb0j8x3IKAIFLNVKmJFBg3+2m
- Suz/DuYL9P6xNC0A01D3A==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:fufUjyCac1E=:1ImMlJrTV3QAKDO0FJQosn
- oAyYX6cE0a8HLmZg3KmJJX8GUO/7IyDEovPRuiMNgXmoV8dyt4vob/ddpsGwJRFvgijRGANv9
- ifZXEUYckrBT+UFzhCtzFr2wIqCZVpXoTOhXrW3hax+lJZMV+5NKtmlpVXMFGvEfPj4tddqC6
- j6fT60Gy9T4MqNr5V1HAakjCSxgqlmM+p8qXqsIdm9BLMVRc0bfaZ07fabA5rrqmFciDzkU46
- JwY7DsoeNjAFjlD3EYejDBgagGiOk1oyAk8LDBb8EB1RyF7t4CDNzxqYYNC2ipJGKA5LhXN/X
- VR3VU1vOgXYFTcueytR5Lbm4Uzj/bBcwnha++0dvr/ZeHSJ+KUl/rZzngX+QxHJHoFeXFjU1a
- p4cacgqjXHJrjy5vznrswOAnOiADTRDuRvK2Ub+QROl4ef8QnvwBevRDnRflkYID1AaagOM0/
- 9SR+pCWxT9xiuA8AZSyZfy6W6MhVV8acWa6UYhPkVkjv9npsws35XABp6X04tmL+mEqLLDbtC
- Xanb0dkdKqNBzfu+XXcRWMc4MIhwRrJMEL1pSezEyVAQix3njruEdNBCXUOEVGIl9vRVxrUkd
- 2RYc79mQ0PUX9YH4SPYeLEX9gYESinWjSiQLudkidPhSdeEBYOR9GZdokdv6JimjCkuzaVsJj
- 8ru1cI0inohqgZTZJHG9MBDoDCaqgLw5F36cjVdEUnrEjmQ21tUF7BuRuBOQGVT7eujNFQPft
- +rbICKvMfiSiIA4o6IJjnV+VII5q5P263/ZznuL0ggO6aI6Lq9IepbXyMZIIpd789S5JN3f0t
- AJ5TTL6loz8WQEQPv+M4UeoYFRf9DGp8BxAWCKFR+Tw3FZPHRXmXPwEwAwLpEkOTlra5yTCd8
- BED8GVK93Wn70YaMyMgS0YzHfUWEsg/3lZoelLc/l/iV8t9LqlkjEGa3zsHrnHb3iuYeUZWmi
- NnHvUQJtUu4wamlbwEND2zMQXGAh/wFlcr8utNVX8cOP9KSzaZ6MWmfAXnXQ41rzyktSoXwVt
- giGKEfYYxOsynalmPd72d62Bi5PapDK6loAKntOtoZe34ytFre+pGXqcTYQXsedI6kHs5M36m
- a/JZHCz7fhXjX0=
+In-Reply-To: <7658171d-e551-cc94-b6b6-0c8bd13d00eb@wanadoo.fr>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.103.3/26347/Mon Nov  8 10:19:39 2021)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 2021-11-08 at 11:17 +0000, Valentin Schneider wrote:
-> On 06/11/21 05:40, Mike Galbraith wrote:
-> >
-> > Starting with a 5.15 config, to select RT you currently must first
-> > select a model you don't want, then reject PREEMPT_DYNAMIC and you'll
-> > be offered the full menu of models immediately. With your patch added,
-> > that became worse.=C2=A0 After rejecting PREEMPT_DYNAMIC, I had to go
-> > through new 5.15+ options before finally being offered the full menu.
-> >
->
-> Do you mean at the syncconfig step?
+On 11/6/21 10:12 PM, Christophe JAILLET wrote:
+> (resend because of HTML issue reported by mailing list daemon)
+> Le 06/11/2021 à 19:42, Andy Shevchenko a écrit :
+>> +Cc Christophe (can you look into this? It seems your code is involved)
+>> On Sat, Nov 6, 2021 at 3:52 AM kernel test robot<lkp@intel.com>  wrote:
+>>> tree:https://git.kernel.org/pub/scm/linux/kernel/git/dborkman/bpf.git  pr/bpf-tstamp
+>>> head:   f7d619a946e981177777983af26e9e31163ffb38
+>>> commit: f7d619a946e981177777983af26e9e31163ffb38 [3/3] net: skb clock bases
+>>> config: i386-randconfig-a005-20210928 (attached as .config)
+>>> compiler: clang version 14.0.0 (https://github.com/llvm/llvm-project  dc6e8dfdfe7efecfda318d43a06fae18b40eb498)
+>>> reproduce (this is a W=1 build):
+>>>          wgethttps://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross  -O ~/bin/make.cross
+>>>          chmod +x ~/bin/make.cross
+>>>          #https://git.kernel.org/pub/scm/linux/kernel/git/dborkman/bpf.git/commit/?id=f7d619a946e981177777983af26e9e31163ffb38
+>>>          git remote add dborkman-bpfhttps://git.kernel.org/pub/scm/linux/kernel/git/dborkman/bpf.git
+>>>          git fetch --no-tags dborkman-bpf pr/bpf-tstamp
+>>>          git checkout f7d619a946e981177777983af26e9e31163ffb38
+>>>          # save the attached .config to linux build tree
+>>>          COMPILER_INSTALL_PATH=$HOME/0day COMPILER=clang make.cross W=1 ARCH=i386
+>>>
+>>> If you fix the issue, kindly add following tag as appropriate
+>>> Reported-by: kernel test robot<lkp@intel.com>
+>>>
+>>> All warnings (new ones prefixed by >>):
+>>>
+>>>     In file included from drivers/net/ethernet/oki-semi/pch_gbe/pch_gbe_main.c:9:
+>>>     In file included from drivers/net/ethernet/oki-semi/pch_gbe/pch_gbe.h:22:
+>>>     include/net/tcp.h:812:27: error: no member named 'skb_mstamp_ns' in 'struct sk_buff'
+>>>             return tcp_ns_to_ts(skb->skb_mstamp_ns);
+>>>                                 ~~~  ^
+>>>     include/net/tcp.h:818:22: error: no member named 'skb_mstamp_ns' in 'struct sk_buff'
+>>>             return div_u64(skb->skb_mstamp_ns, NSEC_PER_USEC);
+>>>                            ~~~  ^
+>>>     include/net/tcp.h:2367:8: error: no member named 'skb_mstamp_ns' in 'struct sk_buff'
+>>>                     skb->skb_mstamp_ns += (u64)tp->tcp_tx_delay * NSEC_PER_USEC;
+>>>                     ~~~  ^
 
-Um, not sure what that is, but it sounds about right.
+Please ignore these, it is just a local test branch from a private tree.
 
-> I've only really played with upstream
-> arm64 / x86 defconfigs and didn't have to fight with any prompts, though
-> yes for x86 the default-y PREEMPT_DYNAMIC makes it a bit annoying to sel=
-ect
-> PREEMPT_RT.
-
-As long as RT depends on EXPERT it'll be a bit annoying regardless.  I
-just thought it worth mention that what you want now and what RT will
-presumably want upon merge completion appear to be mutually exclusive.
-
-	-Mike
+Thanks,
+Daniel
