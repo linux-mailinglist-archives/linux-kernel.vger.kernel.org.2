@@ -2,95 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A4844447CC0
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Nov 2021 10:26:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 80760447CC3
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Nov 2021 10:26:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238395AbhKHJ27 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Nov 2021 04:28:59 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56264 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236707AbhKHJ25 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Nov 2021 04:28:57 -0500
-Received: from mail-pf1-x42e.google.com (mail-pf1-x42e.google.com [IPv6:2607:f8b0:4864:20::42e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D537CC061570;
-        Mon,  8 Nov 2021 01:26:13 -0800 (PST)
-Received: by mail-pf1-x42e.google.com with SMTP id o4so1339228pfp.13;
-        Mon, 08 Nov 2021 01:26:13 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=message-id:date:mime-version:user-agent:subject:content-language:to
-         :cc:references:from:organization:in-reply-to
-         :content-transfer-encoding;
-        bh=QE1/LJ1LNaoIh5WC5o6lUyTF2BVqDSPHbnIHEa4a38U=;
-        b=hW+PS6QiQtD52Ow2QcH51gY/LAwHZBV0f0bBgo59mjcbBBRZneIZK9FON+hamrjNh9
-         R7v5lDORvqzCyUv6mdsoWGPS8M8hVs7RXueOtC9fr/4CNEqbfhmW+vFGD+qGFEu2B/0y
-         O7gV00N+wuBIrRQ0Kki2AV//LSx82Uz06fAfwdszAZSzr3KAhXWMfbsocc76OtrR3r/Q
-         o6unvErJ2erL9AKfcZmLWs6m3z5wPx5I/cqsiMt3Tbdjhf3OVYZqOISxvawaPVsqSiDN
-         r4IpgjPrpJfopZchOkvenJAeO20aifzVndDNlr1UfE6dSwE1R9OnOPwkrtTamMg/F4mT
-         5sGA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:organization:in-reply-to
-         :content-transfer-encoding;
-        bh=QE1/LJ1LNaoIh5WC5o6lUyTF2BVqDSPHbnIHEa4a38U=;
-        b=zZ7EhjE44oiFq3XrTLCwFLleP6+nmyKU+5JX2YGdXcVKAFvdhweI/8iW/uXTmbSs/0
-         42YPPj1Y5JZpEOqgTiX0mZ2J2t55t+WOcXsRKj6gcZiq8mwn+r+XBWSOUAU3GIw8NUhj
-         YYj4YXoaG4U2VTqODD1tJAC3nrl2QGaV4T6F4d706SjxqIeq//7ExZ0Mpl0pP/bdDh3a
-         cwy25FRxfk9Y37B57Qm4NnS8863IoKAS4XXObNCXvpQ/CZyDquBtKPBrqqvApfp2i5dm
-         E5WnYqFzXitTQ/8jiBTIVQIvazyd6etdGx4WsqYruSPG74dzuDIu1lUL3h+hMFv00Snd
-         gFzg==
-X-Gm-Message-State: AOAM531y8z0z+EQH3ulyFZQIBjvyDNnK0ecodGjK5KjpQkJBCojRHeT6
-        gNCojoqX5jIirFTJMixIDrs=
-X-Google-Smtp-Source: ABdhPJx7uTPC4ka3w/9lfsh7EkVysoC8V4ZbJBD7RgsYYW+QXcrI/xypVTajANZ7P4zbBo+OTa2/AA==
-X-Received: by 2002:a63:82c7:: with SMTP id w190mr41967446pgd.13.1636363573293;
-        Mon, 08 Nov 2021 01:26:13 -0800 (PST)
-Received: from [192.168.255.10] ([103.7.29.32])
-        by smtp.gmail.com with ESMTPSA id mg12sm15565714pjb.10.2021.11.08.01.26.10
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 08 Nov 2021 01:26:13 -0800 (PST)
-Message-ID: <583a2f1b-1ac8-0a30-1b0a-e541ce739448@gmail.com>
-Date:   Mon, 8 Nov 2021 17:26:04 +0800
+        id S238404AbhKHJ3P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Nov 2021 04:29:15 -0500
+Received: from mga14.intel.com ([192.55.52.115]:51294 "EHLO mga14.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S238401AbhKHJ3K (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Nov 2021 04:29:10 -0500
+X-IronPort-AV: E=McAfee;i="6200,9189,10161"; a="232442046"
+X-IronPort-AV: E=Sophos;i="5.87,218,1631602800"; 
+   d="scan'208";a="232442046"
+Received: from fmsmga007.fm.intel.com ([10.253.24.52])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Nov 2021 01:26:23 -0800
+X-IronPort-AV: E=Sophos;i="5.87,218,1631602800"; 
+   d="scan'208";a="499814430"
+Received: from smile.fi.intel.com ([10.237.72.184])
+  by fmsmga007-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Nov 2021 01:26:18 -0800
+Received: from andy by smile.fi.intel.com with local (Exim 4.95)
+        (envelope-from <andy.shevchenko@gmail.com>)
+        id 1mk0ui-004cSx-N0;
+        Mon, 08 Nov 2021 11:26:04 +0200
+Date:   Mon, 8 Nov 2021 11:26:04 +0200
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+To:     Joe Perches <joe@perches.com>
+Cc:     Bartosz Golaszewski <brgl@bgdev.pl>,
+        Jianqun Xu <jay.xu@rock-chips.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Sai Krishna Potthuri <lakshmi.sai.krishna.potthuri@xilinx.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "linux-gpio@vger.kernel.org" <linux-gpio@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "linux-rockchip@lists.infradead.org" 
+        <linux-rockchip@lists.infradead.org>,
+        Bamvor Jian Zhang <bamv2005@gmail.com>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Gregory Clement <gregory.clement@bootlin.com>,
+        Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
+        Heiko Stuebner <heiko@sntech.de>,
+        Patrice Chotard <patrice.chotard@foss.st.com>,
+        Michal Simek <michal.simek@xilinx.com>,
+        Andy Shevchenko <andy@kernel.org>
+Subject: Re: [PATCH v1 14/19] pinctrl: st: Use temporary variable for struct
+ device
+Message-ID: <YYjtLGlSCDPM4UVL@smile.fi.intel.com>
+References: <20211105124242.27288-1-andriy.shevchenko@linux.intel.com>
+ <20211105124242.27288-14-andriy.shevchenko@linux.intel.com>
+ <4b3f1ee1179dd6d4b010cb110b38d26e7d91c19f.camel@perches.com>
+ <CAHp75Ve0Bv9VsWFFZxL9wYk=Z_Mm7nat-vf7g8HHTiROi7EY=Q@mail.gmail.com>
+ <103d7321a2d18e44fb8c01483b1197766aff645a.camel@perches.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:91.0)
- Gecko/20100101 Thunderbird/91.2.1
-Subject: Re: [PATCH 1/3] KVM: x86: Copy kvm_pmu_ops by value to eliminate
- layer of indirection
-Content-Language: en-US
-To:     Sean Christopherson <seanjc@google.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        kvm@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20211103070310.43380-1-likexu@tencent.com>
- <20211103070310.43380-2-likexu@tencent.com> <YYVODdVEc/deNP8p@google.com>
- <YYVPkxVeQO4VFGCZ@google.com>
-From:   Like Xu <like.xu.linux@gmail.com>
-Organization: Tencent
-In-Reply-To: <YYVPkxVeQO4VFGCZ@google.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <103d7321a2d18e44fb8c01483b1197766aff645a.camel@perches.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 5/11/2021 11:36 pm, Sean Christopherson wrote:
-> On Fri, Nov 05, 2021, Sean Christopherson wrote:
->> On Wed, Nov 03, 2021, Like Xu wrote:
->> I would also say land this memcpy() above kvm_ops_static_call_update(), then the
->> enabling patch can do the static call updates in kvm_ops_static_call_update()
->> instead of adding another helper.
-> 
-> Ugh, kvm_ops_static_call_update() is defined in kvm_host.h.  That's completely
-> unnecessary, it should have exactly one caller, kvm_arch_hardware_setup().  As a
-> prep match, move kvm_ops_static_call_update() to x86.c, then it can reference the
-> pmu ops.
+On Sat, Nov 06, 2021 at 01:28:17AM -0700, Joe Perches wrote:
+> On Sat, 2021-11-06 at 10:07 +0200, Andy Shevchenko wrote:
+> > On Saturday, November 6, 2021, Joe Perches <joe@perches.com> wrote:
+> > > On Fri, 2021-11-05 at 14:42 +0200, Andy Shevchenko wrote:
 
-Quite good and thank you.
+...
+
+> > > > -     new_map = devm_kcalloc(pctldev->dev,
+> > > > -                             map_num, sizeof(*new_map), GFP_KERNEL);
+> > > > +     new_map = devm_kcalloc(dev, map_num, sizeof(*new_map), GFP_KERNEL);
+> > > 
+> > > Are pctldev->dev and dev the same pointer?
+> > 
+> > Seems so.
+> 
+> OK.
+> 
+> > https://elixir.bootlin.com/linux/latest/source/drivers/pinctrl/core.c#L2015
+> > 
+> > > It seems they are not.
+> > 
+> > Can you elaborate, please?
+
+> From code shape, you assign dev to info->dev rather than pctldev->dev
+
+Yes. And they are the same. TBH these three drivers seem to be written by
+copy'n'paste method where the first one, whichever it was, is simply messy
+and buggy.
+
+The extra redundant parameter (often struct platform_device) is passed to
+zillions of functions when at the same time info structure already has pointer
+to struct device is the easiest one to notice. And I believe so on, so on...
+
+> I also believe this single 19 patch series would be better as
+> multiple patch series.
+
+I'm fine with either, but I would like to hear from Linus about what he wishes
+as the maintainer. You know that we don't add code without users? So that's why
+my motive to send it in full.
+
+> IMO: the strarray variants introduction and use should be a separate
+> patchset from the rest.
+
+It will add unnecessary churn. Yeah, I have planned to send just that, but then
+it took more and more cleanups and I have to stop at some point, the code there
+is bad (historically or by other reasons, dunno).
+
+-- 
+With Best Regards,
+Andy Shevchenko
 
 
