@@ -2,94 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D8646447ECE
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Nov 2021 12:22:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DFDD3447ECD
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Nov 2021 12:22:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239216AbhKHLZR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Nov 2021 06:25:17 -0500
-Received: from mga07.intel.com ([134.134.136.100]:7782 "EHLO mga07.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239201AbhKHLZO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Nov 2021 06:25:14 -0500
-X-IronPort-AV: E=McAfee;i="6200,9189,10161"; a="295647596"
-X-IronPort-AV: E=Sophos;i="5.87,218,1631602800"; 
-   d="scan'208";a="295647596"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Nov 2021 03:22:30 -0800
-X-IronPort-AV: E=Sophos;i="5.87,218,1631602800"; 
-   d="scan'208";a="641380569"
-Received: from jlalwani-mobl1.gar.corp.intel.com ([10.215.113.236])
-  by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Nov 2021 03:22:22 -0800
-Message-ID: <82dfc7923e570612c2788341b85d3d125def464d.camel@linux.intel.com>
-Subject: Re: [PATCH] thermal/drivers/int340x: limit Kconfig to 64-bit
-From:   Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
-To:     Arnd Bergmann <arnd@kernel.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>
-Cc:     Arnd Bergmann <arnd@arndb.de>, Amit Kucheria <amitk@kernel.org>,
-        Zhang Rui <rui.zhang@intel.com>, linux-pm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Date:   Mon, 08 Nov 2021 03:22:14 -0800
-In-Reply-To: <20211108111347.3928294-1-arnd@kernel.org>
-References: <20211108111347.3928294-1-arnd@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.40.0-1 
+        id S239211AbhKHLZP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Nov 2021 06:25:15 -0500
+Received: from mailout2.samsung.com ([203.254.224.25]:29516 "EHLO
+        mailout2.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239199AbhKHLZN (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Nov 2021 06:25:13 -0500
+Received: from epcas2p1.samsung.com (unknown [182.195.41.53])
+        by mailout2.samsung.com (KnoxPortal) with ESMTP id 20211108112228epoutp0244cfde95188847a22dff327bfbb1daa4~1jlf76GXc0984609846epoutp02H
+        for <linux-kernel@vger.kernel.org>; Mon,  8 Nov 2021 11:22:28 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.samsung.com 20211108112228epoutp0244cfde95188847a22dff327bfbb1daa4~1jlf76GXc0984609846epoutp02H
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1636370548;
+        bh=QvmD6Tmq+bJeo76I1IXC5kiKoG3gf1RUxDtEOlrq1nE=;
+        h=From:To:Cc:In-Reply-To:Subject:Date:References:From;
+        b=sEha9i6KURaOiSdljVhOOwh+4Gvak611b8A8YzJXQs+aolqT8EWlqO39CT/3rZdmA
+         3T60YupF8LPXHrh5e0ht6eAHGxDT+GAqyBMZ5lmZ363GC6iNWnBgLPxR5rkzA2yRnA
+         cgUt5z7QYYjsZp0Zto3rxtrreQPmpmAcXX9fTPxk=
+Received: from epsnrtp4.localdomain (unknown [182.195.42.165]) by
+        epcas2p3.samsung.com (KnoxPortal) with ESMTP id
+        20211108112227epcas2p380483e73cd6786665f9b466738270008~1jlfpRJV71337813378epcas2p3H;
+        Mon,  8 Nov 2021 11:22:27 +0000 (GMT)
+Received: from epsmges2p2.samsung.com (unknown [182.195.36.89]) by
+        epsnrtp4.localdomain (Postfix) with ESMTP id 4Hnpc923XQz4x9Q2; Mon,  8 Nov
+        2021 11:22:17 +0000 (GMT)
+Received: from epcas2p3.samsung.com ( [182.195.41.55]) by
+        epsmges2p2.samsung.com (Symantec Messaging Gateway) with SMTP id
+        65.74.10018.76809816; Mon,  8 Nov 2021 20:22:15 +0900 (KST)
+Received: from epsmtrp2.samsung.com (unknown [182.195.40.14]) by
+        epcas2p2.samsung.com (KnoxPortal) with ESMTPA id
+        20211108112214epcas2p2c58d675ceddb6e7cc5f478fd5c295bfc~1jlTFFmU90032300323epcas2p2B;
+        Mon,  8 Nov 2021 11:22:14 +0000 (GMT)
+Received: from epsmgms1p1new.samsung.com (unknown [182.195.42.41]) by
+        epsmtrp2.samsung.com (KnoxPortal) with ESMTP id
+        20211108112214epsmtrp220678073f441bcf57c2906d42530a366~1jlTBClof0548405484epsmtrp2d;
+        Mon,  8 Nov 2021 11:22:14 +0000 (GMT)
+X-AuditID: b6c32a46-a0fff70000002722-a3-6189086702b4
+Received: from epsmtip1.samsung.com ( [182.195.34.30]) by
+        epsmgms1p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
+        A7.40.29871.66809816; Mon,  8 Nov 2021 20:22:14 +0900 (KST)
+Received: from KORCO006858 (unknown [10.229.8.71]) by epsmtip1.samsung.com
+        (KnoxPortal) with ESMTPA id
+        20211108112214epsmtip14e0ee3c318ecdbb6d831bae0b047c2c9~1jlS0RvFh0874508745epsmtip1H;
+        Mon,  8 Nov 2021 11:22:14 +0000 (GMT)
+From:   "Jaewon Kim" <jaewon02.kim@samsung.com>
+To:     "'Krzysztof Kozlowski'" <krzysztof.kozlowski@canonical.com>,
+        "'Wolfram Sang'" <wsa@kernel.org>,
+        "'Rob Herring'" <robh+dt@kernel.org>
+Cc:     "'Chanho Park'" <chanho61.park@samsung.com>,
+        <linux-i2c@vger.kernel.org>, <linux-samsung-soc@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+In-Reply-To: <5b05ff2e-953c-d1a3-8347-4d3f9911cc49@canonical.com>
+Subject: RE: [PATCH 1/2] i2c: exynos5: support USI(Universal Serial
+ Interface)
+Date:   Mon, 8 Nov 2021 20:22:14 +0900
+Message-ID: <000401d7d492$e157a450$a406ecf0$@samsung.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
+X-Mailer: Microsoft Outlook 16.0
+Thread-Index: AQH9TS3Ubwx9WhvNqO8Onnoqn/bWugGADPusApYBWVkB1joeOQEO3tdOq3aqCqA=
+Content-Language: ko
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFuplk+LIzCtJLcpLzFFi42LZdljTXDedozPRYEk3q8Xl/doWG9/+YLLo
+        +PuF0eLyrjlsFjPO72OyaN17hN3i7v65jA7sHrMaetk8Nq3qZPPo27KK0ePzJrkAlqhsm4zU
+        xJTUIoXUvOT8lMy8dFsl7+B453hTMwNDXUNLC3MlhbzE3FRbJRefAF23zBygA5QUyhJzSoFC
+        AYnFxUr6djZF+aUlqQoZ+cUltkqpBSk5BeYFesWJucWleel6eaklVoYGBkamQIUJ2RlTf/9g
+        KTjDVfFlygnWBsZVHF2MnBwSAiYS69beZu5i5OIQEtjBKLH5xld2COcTo8Tt/XNYQaqEBL4x
+        SvzYndrFyAHW0bhUC6JmL6PEm8XH2CCc54wSB7qWMIM0sAnoSuzc+ApskohAF6PEpS87wKqY
+        BaYySty40cUMMopTwFGi800IiCksECDxa4UHiMkioCLxs5EPZAyvgKXEtoNnGCFsQYmTM5+w
+        gNjMAvIS29/OYYb4QEHi59NlYHeKCPhJTDj+mhWiRkRidmcb2GcSAhM5JJZ0rGSDeMBF4vtb
+        RYheYYlXx7ewQ9hSEp/f7YUqqZf4esMBorWHUWJN1y8miBp7iV/Tt7CC1DALaEqs36UPUa4s
+        ceQW1GV8Eh2H/7JDhHklOtqEIBrVJO5PPccGYctITDqykmkCo9IsJH/NQvLXLCT3z0LYtYCR
+        ZRWjWGpBcW56arFRgRE8opPzczcxgtOlltsOxilvP+gdYmTiYDzEKMHBrCTCe+9oR6IQb0pi
+        ZVVqUX58UWlOavEhRlNgQE9klhJNzgcm7LySeEMTSwMTMzNDcyNTA3MlcV5L0exEIYH0xJLU
+        7NTUgtQimD4mDk6pBqYc+Z43KRJ8Mg/6X9879XHW1/mX5OIFJ/Yvb7a1uzlNYtuKni+W4p/E
+        0xRbZCvP6R/sE92zz+xAivvupOgzCSdPr27Zv9JE+fhkO8lV4i3vP7IZVcR8vnP2X+lm+bBz
+        ou/Cv7h+S1sTMS1wZ//mO7yCXAIVHqbmy68yivQ+ymKxOjCxjY0nVWmh3ZEDUz9u4FHSnXqq
+        f6rFt0Bd07z078U9KzbOnGH++Pu583p3TCV1k19/mCCouoUh9yqn0YUXGidVL6S7XNZJKmXl
+        7VV/0j6peXbikrM7jXId8v9b7HhwvqQ2vU11A3eFRLvA2eCHE+9ZHq2Z8/g438abmy/mT5bj
+        WfeRsX1e4NJZ37eZtrkqsRRnJBpqMRcVJwIACh4WXCAEAAA=
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFvrDLMWRmVeSWpSXmKPExsWy7bCSnG4aR2eiwYvVXBaX92tbbHz7g8mi
+        4+8XRovLu+awWcw4v4/JonXvEXaLu/vnMjqwe8xq6GXz2LSqk82jb8sqRo/Pm+QCWKK4bFJS
+        czLLUov07RK4Mqb+/sFScIar4suUE6wNjKs4uhg5OCQETCQal2p1MXJxCAnsZpT4sHUjUxcj
+        J1BcRmL5sz42CFtY4n7LEVaIoqeMEmdOTGYFSbAJ6Ers3PiKHcQWEehhlDjXIwRSxCwwnVFi
+        4epGFoiO5UwS/1b3sIKs4xRwlOh8EwLSICzgJ7FncQMbSJhFQEXiZyMfSJhXwFJi28EzjBC2
+        oMTJmU9YQGxmAW2J3oetjBC2vMT2t3OYIY5TkPj5dBkrxA1+EhOOv2aFqBGRmN3ZxjyBUXgW
+        klGzkIyahWTULCQtCxhZVjFKphYU56bnFhsWGOallusVJ+YWl+al6yXn525iBEeQluYOxu2r
+        PugdYmTiYDzEKMHBrCTCe+9oR6IQb0piZVVqUX58UWlOavEhRmkOFiVx3gtdJ+OFBNITS1Kz
+        U1MLUotgskwcnFINTKdeHROMXtWhMuMD66RHFrH7jNv3FMQtWKnu7lORuNBJ70QDyyz3uos5
+        HlXW9pwLAi55LdIqvb6X+fenRd0fl/yIN6nTlGxM/dGwK/jgyvPmvg17LcO36ddOendYZ28d
+        g4wlk1x0u3RC2vpv/bZPH+heDAhYIF3v2iK4OHn7/dPiLw+LVGipxtU0X5LJPiQYVrZhQ9tP
+        S1vT0jkOs97az11k1LphWvOhImVhHyaFuvUC9/tO392xlPfCkVnHfsx+06BwbwLjFPmnjTcY
+        7Ju4wvpm9D05Kr5Qz4tTyyH82LvIXeW31EOzYsRvCejeeLpNUEZMZzmfls5WNxNOF55zi49u
+        XvjNJr/o3fOQ893FSizFGYmGWsxFxYkAYWUsOA8DAAA=
+X-CMS-MailID: 20211108112214epcas2p2c58d675ceddb6e7cc5f478fd5c295bfc
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+X-Sendblock-Type: AUTO_CONFIDENTIAL
+CMS-TYPE: 102P
+DLP-Filter: Pass
+X-CFilter-Loop: Reflected
+X-CMS-RootMailID: 20211101114158epcas2p1d0762d52029b1b09912fd99665dd66f5
+References: <CGME20211101114158epcas2p1d0762d52029b1b09912fd99665dd66f5@epcas2p1.samsung.com>
+        <20211101113819.50651-1-jaewon02.kim@samsung.com>
+        <a571af00-8ac1-f1a5-3240-2c93f823c995@canonical.com>
+        <001001d7d153$5fb18840$1f1498c0$@samsung.com>
+        <5b05ff2e-953c-d1a3-8347-4d3f9911cc49@canonical.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 2021-11-08 at 12:13 +0100, Arnd Bergmann wrote:
-> From: Arnd Bergmann <arnd@arndb.de>
-> 
-> 32-bit processors cannot generally access 64-bit MMIO registers
-> atomically, and it is unknown in which order the two halves of
-> this registers would need to be read:
-> 
-> drivers/thermal/intel/int340x_thermal/processor_thermal_mbox.c: In
-> function 'send_mbox_cmd':
-> drivers/thermal/intel/int340x_thermal/processor_thermal_mbox.c:79:37:
-> error: implicit declaration of function 'readq'; did you mean
-> 'readl'? [-Werror=implicit-function-declaration]
->    79 |                         *cmd_resp = readq((void __iomem *)
-> (proc_priv->mmio_base + MBOX_OFFSET_DATA));
->       |                                     ^~~~~
->       |                                     readl
-> 
-> The driver already does not build for anything other than x86,
-> so limit it further to x86-64.
-> 
-> Fixes: aeb58c860dc5 ("thermal/drivers/int340x: processor_thermal:
-> Suppot 64 bit RFIM responses")
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-Reviewed-by: Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
+Hello Krzysztof
 
-> ---
->  drivers/thermal/intel/int340x_thermal/Kconfig | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
+> On 04/11/2021 09:10, Jaewon Kim wrote:
+> >
+> >>> +	if (ret) {
+> >>> +		dev_err(dev, "usi-sysreg offset is not specified\n");
+> >>> +		return ret;
+> >>> +	}
+> >>> +
+> >>> +	regmap_update_bits(i2c->usi_sysreg, i2c->usi_offset,
+> >>> +			SYSREG_USI_SW_CONF_MASK, SYSREG_I2C_SW_CONF);
+> >>> +
+> >>> +	exynos_usi_reset(i2c);
+> >>
+> >> You are clearing the reset flag, but not setting it back on probe
+> >> failure. What happens if the probe fails after this clear()? E.g.
+> >> because of deferred probe? The next probe try will start on a not-reset controller. Will it work?
+> >>
+> >
+> > The user manual guides USI_RESET to be done after changing the system register.
+> > For clarity, we will change not only to clear reset, but to clear after reset.
+> >
 > 
-> diff --git a/drivers/thermal/intel/int340x_thermal/Kconfig
-> b/drivers/thermal/intel/int340x_thermal/Kconfig
-> index 45c31f3d6054..5d046de96a5d 100644
-> --- a/drivers/thermal/intel/int340x_thermal/Kconfig
-> +++ b/drivers/thermal/intel/int340x_thermal/Kconfig
-> @@ -5,12 +5,12 @@
->  
->  config INT340X_THERMAL
->         tristate "ACPI INT340X thermal drivers"
-> -       depends on X86 && ACPI && PCI
-> +       depends on X86_64 && ACPI && PCI
->         select THERMAL_GOV_USER_SPACE
->         select ACPI_THERMAL_REL
->         select ACPI_FAN
->         select INTEL_SOC_DTS_IOSF_CORE
-> -       select PROC_THERMAL_MMIO_RAPL if X86_64 && POWERCAP
-> +       select PROC_THERMAL_MMIO_RAPL if POWERCAP
->         help
->           Newer laptops and tablets that use ACPI may have thermal
-> sensors and
->           other devices with thermal control capabilities outside the
-> core
+> What I meant, is do you handle probe failure correctly (e.g. probe deferral)? It's fine to leave the
+> reset cleared after deferred probe?
+> 
 
+I understood.
+In my opinion, rather than resetting USI_CON_RESET in the probe fail case.
+It seems it is more clear to set the reset as shown below.
+
+val = readl(i2c->regs + USI_CON);
+val |= USI_CON_RESET;
+writel(val, i2c->regs + USI_CON);
+udelay(1);
+
+val = readl(i2c->regs + USI_CON);
+val &= ~USI_CON_RESET;
+writel(val, i2c->regs + USI_CON);
+
+
+> Best regards,
+> Krzysztof
+
+Thanks
+Jaewon Kim
 
