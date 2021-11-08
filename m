@@ -2,104 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C42FD447CDC
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Nov 2021 10:32:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3E544447CE6
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Nov 2021 10:32:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238441AbhKHJet (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Nov 2021 04:34:49 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57586 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238427AbhKHJeq (ORCPT
+        id S238459AbhKHJfe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Nov 2021 04:35:34 -0500
+Received: from mail-ua1-f50.google.com ([209.85.222.50]:40466 "EHLO
+        mail-ua1-f50.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235884AbhKHJfU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Nov 2021 04:34:46 -0500
-Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 41011C061570;
-        Mon,  8 Nov 2021 01:32:02 -0800 (PST)
-Received: from zn.tnic (p200300ec2f33110088892b77bd117736.dip0.t-ipconnect.de [IPv6:2003:ec:2f33:1100:8889:2b77:bd11:7736])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 234ED1EC04CB;
-        Mon,  8 Nov 2021 10:31:59 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1636363919;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=h2P/LNsljnY2z25eHjXfrbalNQAopI8XuC/MPUOiOeg=;
-        b=bbedHRaR+iUfc85Q/LtqyY8fN7WM7vFvq8uyTEHnWtM4Bqg4bIgsenUX2TTXQULh2guDWM
-        2zyYyeoqhlFmAGiWx4J7ogH6Aga+U/9nHipLllRNoBCtl3OjoNtlaQ8Ka0/7osFkTimIkW
-        IXUkuIKtOozULHGi4wWcl0MVTqeOIgk=
-Date:   Mon, 8 Nov 2021 10:31:52 +0100
-From:   Borislav Petkov <bp@alien8.de>
-To:     Zhaolong Zhang <zhangzl2013@126.com>
-Cc:     Tony Luck <tony.luck@intel.com>, x86@kernel.org,
-        linux-edac@vger.kernel.org, linux-kernel@vger.kernel.org,
-        "Paul E . McKenney" <paulmck@kernel.org>
-Subject: Re: [PATCH] x86/mce: drop cpu_missing since we have more capable
- mce_missing_cpus
-Message-ID: <YYjuiHN1wKt82fjs@zn.tnic>
-References: <572d793c.f2e.17cede4cbf0.Coremail.zhangzl2013@126.com>
- <20211108082832.142436-1-zhangzl2013@126.com>
+        Mon, 8 Nov 2021 04:35:20 -0500
+Received: by mail-ua1-f50.google.com with SMTP id e2so30156091uax.7;
+        Mon, 08 Nov 2021 01:32:35 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=natkUAgTheIcsUsHIOKrKwm02jUscvarcAWkR9vE/gg=;
+        b=Qz3RRymHzuJjJXHo4tG/uvcnlefVze6axCfx1mf6z1rseco3fjOXL5UGL2zh3EHqsv
+         dWtem89E1P35Zm9fTb1zRnULThgNfdDD6wf05SAAYTGGOSn77TgKurtD3Max0OAkM8H7
+         Qo9r59UgkQY+DLmRpdjnNS/WYzZII6htcg8xipl9MRhJ8iEVOLtxT9bqj81XmI+vluLw
+         CKC5FB5fCd+6+vbF2Q0+OqLTxAP8NcYZLkUcA4voUKgHISo5f8xnVvlhi5TgnNE9A1R9
+         FgWZGhTB/Fz56ztxNaPx9KQMAATZxRs3+Nu6YIk0BRVf3t+HAclEP6lICuqD4txoIert
+         fd1g==
+X-Gm-Message-State: AOAM532UKTNvZQGPI/FW+ZV+6h2J49iXaOIAwy+qANQpir93XYUpBpB1
+        GiLqs0BG+A9xjB8fay35g/xC1lW5rTynag==
+X-Google-Smtp-Source: ABdhPJxvihut3Hp2eJTF+Zk6V+XSNksCPaXvC2rKzD+WiMxZSgb4VBp6iqohFHuEGE3y/w7FEy9PeQ==
+X-Received: by 2002:a67:e18e:: with SMTP id e14mr11488790vsl.49.1636363955295;
+        Mon, 08 Nov 2021 01:32:35 -0800 (PST)
+Received: from mail-vk1-f171.google.com (mail-vk1-f171.google.com. [209.85.221.171])
+        by smtp.gmail.com with ESMTPSA id d128sm3095209vsd.20.2021.11.08.01.32.34
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 08 Nov 2021 01:32:34 -0800 (PST)
+Received: by mail-vk1-f171.google.com with SMTP id p22so6149216vke.7;
+        Mon, 08 Nov 2021 01:32:34 -0800 (PST)
+X-Received: by 2002:a05:6122:1350:: with SMTP id f16mr18817472vkp.26.1636363954170;
+ Mon, 08 Nov 2021 01:32:34 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20211108082832.142436-1-zhangzl2013@126.com>
+References: <20211102161125.1144023-1-kernel@esmil.dk> <20211102161125.1144023-15-kernel@esmil.dk>
+In-Reply-To: <20211102161125.1144023-15-kernel@esmil.dk>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Mon, 8 Nov 2021 10:32:23 +0100
+X-Gmail-Original-Message-ID: <CAMuHMdVz1R_K7Zayj9LJBM1GpMVi2s8k9jFa8DZPhNWM6B2prA@mail.gmail.com>
+Message-ID: <CAMuHMdVz1R_K7Zayj9LJBM1GpMVi2s8k9jFa8DZPhNWM6B2prA@mail.gmail.com>
+Subject: Re: [PATCH v3 14/16] serial: 8250_dw: Add StarFive JH7100 quirk
+To:     Emil Renner Berthing <kernel@esmil.dk>
+Cc:     linux-riscv <linux-riscv@lists.infradead.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        linux-clk <linux-clk@vger.kernel.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        "open list:SERIAL DRIVERS" <linux-serial@vger.kernel.org>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Marc Zyngier <maz@kernel.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        Maximilian Luz <luzmaximilian@gmail.com>,
+        Sagar Kadam <sagar.kadam@sifive.com>,
+        Drew Fustini <drew@beagleboard.org>,
+        Michael Zhu <michael.zhu@starfivetech.com>,
+        Fu Wei <tekkamanninja@gmail.com>,
+        Anup Patel <anup.patel@wdc.com>,
+        Atish Patra <atish.patra@wdc.com>,
+        Matteo Croce <mcroce@microsoft.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 08, 2021 at 04:28:32PM +0800, Zhaolong Zhang wrote:
-> move mce_missing_cpus checking into mce_panic() as well, because we don't want
-> to lose the cpu missing information in case mca_cfg.tolerant > 1 and there is
-> no_way_out.
-> 
-> Signed-off-by: Zhaolong Zhang <zhangzl2013@126.com>
-> ---
->  arch/x86/kernel/cpu/mce/core.c | 38 ++++++++++++++++++++--------------
->  1 file changed, 22 insertions(+), 16 deletions(-)
+Hi Esmil,
 
-I was actually expecting to see something like this:
+On Tue, Nov 2, 2021 at 5:12 PM Emil Renner Berthing <kernel@esmil.dk> wrote:
+> On the StarFive JH7100 RISC-V SoC the UART core clocks can't be set to
+> exactly 16 * 115200Hz and many other common bitrates. Trying this will
+> only result in a higher input clock, but low enough that the UART's
+> internal divisor can't come close enough to the baud rate target.
+> So rather than try to set the input clock it's better to skip the
+> clk_set_rate call and rely solely on the UART's internal divisor.
+>
+> Signed-off-by: Emil Renner Berthing <kernel@esmil.dk>
 
-diff --git a/arch/x86/kernel/cpu/mce/core.c b/arch/x86/kernel/cpu/mce/core.c
-index 6ed365337a3b..30de00fe0d7a 100644
---- a/arch/x86/kernel/cpu/mce/core.c
-+++ b/arch/x86/kernel/cpu/mce/core.c
-@@ -99,7 +99,6 @@ struct mca_config mca_cfg __read_mostly = {
- 
- static DEFINE_PER_CPU(struct mce, mces_seen);
- static unsigned long mce_need_notify;
--static int cpu_missing;
- 
- /*
-  * MCA banks polled by the period polling timer for corrected events.
-@@ -314,8 +313,6 @@ static void mce_panic(const char *msg, struct mce *final, char *exp)
- 		if (!apei_err)
- 			apei_err = apei_write_mce(final);
- 	}
--	if (cpu_missing)
--		pr_emerg(HW_ERR "Some CPUs didn't answer in synchronization\n");
- 	if (exp)
- 		pr_emerg(HW_ERR "Machine check: %s\n", exp);
- 	if (!fake_panic) {
-@@ -891,7 +888,6 @@ static int mce_timed_out(u64 *t, const char *msg)
- 					 cpumask_pr_args(&mce_missing_cpus));
- 			mce_panic(msg, NULL, NULL);
- 		}
--		cpu_missing = 1;
- 		return 1;
- 	}
- 	*t -= SPINUNIT;
-@@ -2702,7 +2698,6 @@ struct dentry *mce_get_debugfs_dir(void)
- 
- static void mce_reset(void)
- {
--	cpu_missing = 0;
- 	atomic_set(&mce_fake_panicked, 0);
- 	atomic_set(&mce_executing, 0);
- 	atomic_set(&mce_callin, 0);
+Thanks for your patch!
 
--- 
-Regards/Gruss,
-    Boris.
+Reviewed-by: Geert Uytterhoeven <geert@linux-m68k.org>
 
-https://people.kernel.org/tglx/notes-about-netiquette
+> --- a/drivers/tty/serial/8250/8250_dw.c
+> +++ b/drivers/tty/serial/8250/8250_dw.c
+> @@ -414,6 +414,8 @@ static void dw8250_quirks(struct uart_port *p, struct dw8250_data *data)
+>
+>                 if (of_device_is_compatible(np, "marvell,armada-38x-uart"))
+>                         p->serial_out = dw8250_serial_out38x;
+> +               if (of_device_is_compatible(np, "starfive,jh7100-uart"))
+> +                       p->set_termios = dw8250_do_set_termios;
+
+BTW, it would be great for a follow-up patch to get rid of
+all these of_device_is_compatible() checks, and start using
+dw8250_of_match[...].data instead.
+
+>
+>         } else if (acpi_dev_present("APMC0D08", NULL, -1)) {
+>                 p->iotype = UPIO_MEM32;
+> @@ -696,6 +698,7 @@ static const struct of_device_id dw8250_of_match[] = {
+>         { .compatible = "cavium,octeon-3860-uart" },
+>         { .compatible = "marvell,armada-38x-uart" },
+>         { .compatible = "renesas,rzn1-uart" },
+> +       { .compatible = "starfive,jh7100-uart" },
+>         { /* Sentinel */ }
+>  };
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
