@@ -2,80 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0952B448676
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Nov 2021 15:52:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B798449747
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Nov 2021 15:57:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240645AbhKHOz3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Nov 2021 09:55:29 -0500
-Received: from vps0.lunn.ch ([185.16.172.187]:50760 "EHLO vps0.lunn.ch"
+        id S240657AbhKHPA0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Nov 2021 10:00:26 -0500
+Received: from mail.kernel.org ([198.145.29.99]:39134 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236586AbhKHOz1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Nov 2021 09:55:27 -0500
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
-        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
-        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
-        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
-        bh=nn8tCtwzY9QBZTRYbF4dylIAMuPhh/Jl+gmgCqR9Jaw=; b=nekQuXUWnbYkk9tyejPen4jkbH
-        7ynVbfVPlnhgTdGnFqAtkgQlK9SYLJhx3S3/Ql9tgEpum6y0FfUvdBwCeR/TO7ra0i3ooJWaJ6GYa
-        pQnLJLiFKUBP9P9uM0KDnk5gOw7MvwSaJdVOi4ipRNYcPOtCrSPz3qYpk7qAlpi1Ga4s=;
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
-        (envelope-from <andrew@lunn.ch>)
-        id 1mk60h-00CuDP-K4; Mon, 08 Nov 2021 15:52:35 +0100
-Date:   Mon, 8 Nov 2021 15:52:35 +0100
-From:   Andrew Lunn <andrew@lunn.ch>
-To:     Wells Lu =?utf-8?B?5ZGC6Iqz6aiw?= <wells.lu@sunplus.com>
-Cc:     Wells Lu <wellslutw@gmail.com>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        "kuba@kernel.org" <kuba@kernel.org>,
-        "robh+dt@kernel.org" <robh+dt@kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "p.zabel@pengutronix.de" <p.zabel@pengutronix.de>
-Subject: Re: [PATCH 2/2] net: ethernet: Add driver for Sunplus SP7021
-Message-ID: <YYk5s5fDuub7eBqu@lunn.ch>
-References: <cover.1635936610.git.wells.lu@sunplus.com>
- <650ec751dd782071dd56af5e36c0d509b0c66d7f.1635936610.git.wells.lu@sunplus.com>
- <YYK+EeCOu/BXBXDi@lunn.ch>
- <64626e48052c4fba9057369060bfbc84@sphcmbx02.sunplus.com.tw>
- <YYUzgyS6pfQOmKRk@lunn.ch>
- <7c77f644b7a14402bad6dd6326ba85b1@sphcmbx02.sunplus.com.tw>
- <YYkjBdu64r2JF1bR@lunn.ch>
- <4e663877558247048e9b04b027e555b8@sphcmbx02.sunplus.com.tw>
+        id S229832AbhKHPAZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Nov 2021 10:00:25 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id BC5AE6109D;
+        Mon,  8 Nov 2021 14:57:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1636383460;
+        bh=YEqVhK4em1VFCO9boJxA+xqPNafwsUczWij0XIN6s3Q=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=qRzecMXHO2vpQ8Ws6TwnnOLDA0KZRY4upe8aU47gM0FhW6/x5febm+AKH0tOArEXb
+         rHBn6ces4BB/igmPXZLN/VkQezsY9zuHRqnNjjK/5LOo81uiBCLoR/nRcSYatAJiLY
+         xDDc8ZrUQmZwIPi271n9J6wIwNbrUgLianwZDGJAxh1srSGJ1SvLBwTn1fZ8wRiwxK
+         RdLfyhak3DZiLNMYtDSP9id6SNZHuR4d4YD0tBuFTd39BW9ff+NDf50qCC8McDU1Ls
+         sRQ/SUkwhaGvIqc0IN+aar51ir/mRZ/hQIXLE4KX3j0WZMkvd7DD1f2AQD271PAIcW
+         2MLtUyBgNq9Nw==
+Received: by mail-ed1-f45.google.com with SMTP id v11so61122808edc.9;
+        Mon, 08 Nov 2021 06:57:40 -0800 (PST)
+X-Gm-Message-State: AOAM533A7vIcIOBrHCrSE5SFAbQWxK3XhdPR5fneNp/IMXdU+i8JJngJ
+        ERutbA+bFbUA9HjOnIeyPaEppLgFodIKs2ptVg==
+X-Google-Smtp-Source: ABdhPJz9Id4K2LgbUHCLbfG3HNDwvqjA3xrK6+NMRT0t8Qz4gZPY0IQSk/V/WkB/kt2+6AOQ9MKZ4NySBb3yC7Sk2U8=
+X-Received: by 2002:a17:907:7f25:: with SMTP id qf37mr494398ejc.147.1636383459216;
+ Mon, 08 Nov 2021 06:57:39 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <4e663877558247048e9b04b027e555b8@sphcmbx02.sunplus.com.tw>
+References: <YYG0KwuwSyH2uSqz@robh.at.kernel.org> <CAFr9PXnftX3k3C0sAt=qF4fgOS1apF_j4REqJXKk=wzCTVnBfw@mail.gmail.com>
+In-Reply-To: <CAFr9PXnftX3k3C0sAt=qF4fgOS1apF_j4REqJXKk=wzCTVnBfw@mail.gmail.com>
+From:   Rob Herring <robh@kernel.org>
+Date:   Mon, 8 Nov 2021 08:57:27 -0600
+X-Gmail-Original-Message-ID: <CAL_Jsq+HDXdJL69ybGBM16Nm4giS62ZP+5k3_OGsharrRj-PiQ@mail.gmail.com>
+Message-ID: <CAL_Jsq+HDXdJL69ybGBM16Nm4giS62ZP+5k3_OGsharrRj-PiQ@mail.gmail.com>
+Subject: Re: [GIT PULL] Devicetree updates for v5.16
+To:     Daniel Palmer <daniel@0x0f.com>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        DTML <devicetree@vger.kernel.org>,
+        Frank Rowand <frowand.list@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> The switch will not recognize type of packets, regardless BPDU, PTP or any other
-> packets. If turning off source-address learning function, it works like an Ethernet
-> plus a 2-port hub.
+On Mon, Nov 8, 2021 at 7:13 AM Daniel Palmer <daniel@0x0f.com> wrote:
+>
+> Hi Rob,
+>
+> On Wed, 3 Nov 2021 at 06:57, Rob Herring <robh@kernel.org> wrote:
+> > Rob Herring (22):
+> >       kbuild: Enable DT schema checks for %.dtb targets
+>
+> Sorry for replying to a pull request. I couldn't find the original
+> patch email for this commit to reply.
 
-So without STP, there is no way to stop an loop, and a broadcast storm
-taking down your network?
+FYI, the link is in the commit and 'b4' makes it easy to get the mbox
+to reply to. It's quite nice to be able to reply to *anything*.
 
-Looking at the TX descriptor, there are two bits:
+> Anyhow, the above commit makes buildroot unhappy.
+> I see this when trying to build any of my buildroot environments:
+> scripts/dtc/Makefile:23: *** dtc needs libyaml for DT schema
+> validation support. Install the necessary libyaml development
+> package..  Stop.
 
-          [18]: force forward to port 0
-          [19]: force forward to port 1
+If you fix this, then the next thing you will get is the dtschema
+python package is needed.
 
-When the switch is enabled, can these two bits be used?
+> I think this is some mess with pkg-config from somewhere (the host
+> distro, the buildroot host side,..) saying libyaml is available but
+> when the build actually happens the header it wants isn't actually
+> where it thinks. I think this is a pre-existing problem with
+> buildroot.
+> buildroot takes a list of the dtbs that you want to build and keep in
+> it's config and calls make with that list in the kernel build. So this
+> commit causes this issue to trigger when buildroot tries to build the
+> configured dtbs.
+>
+> Not sure what the fix is and I think it's probably a buildroot problem.
 
-In the RX descriptor there is:
+I suppose we can keep schema checks optional here, but my intention in
+this patch was moving towards the checks being required rather than a
+separate target. So we'd be kicking the problem down the road.
 
-pkt_sp:
-          000: from port0
-          001: from port1
-          110: soc0 loopback
-          101: soc1 loopback
-
-Are these bits used when the switch is enabled?
-
-0.31 port control 1 (port cntl1) blocking state seems to have what you
-need for STP.
-
-    Andrew
+Rob
