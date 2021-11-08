@@ -2,102 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7290C447CBC
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Nov 2021 10:25:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 23653447CBE
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Nov 2021 10:25:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238374AbhKHJ1u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Nov 2021 04:27:50 -0500
-Received: from smtp-out2.suse.de ([195.135.220.29]:60914 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238376AbhKHJ1r (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Nov 2021 04:27:47 -0500
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out2.suse.de (Postfix) with ESMTP id 42F621FD71;
-        Mon,  8 Nov 2021 09:25:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1636363502; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=SHWH2jFNs/MKAnHqbJ/fucH8U/PBAzjvELvO1YIaGf0=;
-        b=ZE01o+8hjs7CEidEKgBp682WRKWL6X9+Afe7D9WUcRrwT4iNqj9E1Ia16gpzqu0NziE365
-        A2nUn74kwG2/E82w1QwFkuHRhRTo7h54NwVAe48rHCdTMmQJqgNcbTBBiHrHXSdhRrYYG/
-        FZV6iJh1/gHN62+gkpGdhYmXRpaopv0=
-Received: from suse.cz (unknown [10.100.201.86])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by relay2.suse.de (Postfix) with ESMTPS id 0E8EEA3B81;
-        Mon,  8 Nov 2021 09:25:02 +0000 (UTC)
-Date:   Mon, 8 Nov 2021 10:25:01 +0100
-From:   Michal Hocko <mhocko@suse.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     akpm@linux-foundation.org, david@fromorbit.com, hch@infradead.org,
-        idryomov@gmail.com, jlayton@kernel.org, linux-mm@kvack.org,
-        mm-commits@vger.kernel.org, neilb@suse.de,
-        torvalds@linux-foundation.org, urezki@gmail.com
-Subject: Re: [patch 099/262] mm/vmalloc: be more explicit about supported gfp
- flags
-Message-ID: <YYjs7UT15WIF23DJ@dhcp22.suse.cz>
-References: <20211105133408.cccbb98b71a77d5e8430aba1@linux-foundation.org>
- <20211105203950.AJ1Cnteeh%akpm@linux-foundation.org>
+        id S238386AbhKHJ2K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Nov 2021 04:28:10 -0500
+Received: from vps.xff.cz ([195.181.215.36]:41356 "EHLO vps.xff.cz"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S236707AbhKHJ2J (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Nov 2021 04:28:09 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=megous.com; s=mail;
+        t=1636363523; bh=nVyQ9dFQrqiwLD+fct/FoZkJzctY87nIhEtqMUvnSL4=;
+        h=Date:From:To:Cc:Subject:X-My-GPG-KeyId:References:From;
+        b=EF2rrHZ2E/tty/UG0bZUh0K5+hNP5Kv4oX+xiWN+9KwswUmAYeL8Z1ZIM+JhPCG06
+         fekqe3QN5j5ifF2m09H+rOvzhviuT6Gy80TbSULE5VS9FAcRP76OsgbixiMe6XYRI4
+         ygy7/RknG8AQGCnAFfAnxYJkp3qxhvu4H985XfjA=
+Date:   Mon, 8 Nov 2021 10:25:23 +0100
+From:   =?utf-8?Q?Ond=C5=99ej?= Jirman <megous@megous.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Guenter Roeck <linux@roeck-us.net>,
+        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
+        Badhri Jagan Sridharan <badhri@google.com>,
+        "open list:USB TYPEC PORT CONTROLLER DRIVERS" 
+        <linux-usb@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 06/15] usb: typec: fusb302: Fix masking of comparator and
+ bc_lvl interrupts
+Message-ID: <20211108092523.jfp7a2q2onxqlizt@core>
+Mail-Followup-To: =?utf-8?Q?Ond=C5=99ej?= Jirman <megous@megous.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
+        Badhri Jagan Sridharan <badhri@google.com>,
+        "open list:USB TYPEC PORT CONTROLLER DRIVERS" <linux-usb@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+X-My-GPG-KeyId: EBFBDDE11FB918D44D1F56C1F9F0A873BE9777ED
+ <https://xff.cz/key.txt>
+References: <20211107185435.2540185-1-megous@megous.com>
+ <20211107185724.ik6wthsl3e6qlbj3@core>
+ <YYjbdw+QrUfvpcjx@kroah.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20211105203950.AJ1Cnteeh%akpm@linux-foundation.org>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <YYjbdw+QrUfvpcjx@kroah.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri 05-11-21 13:39:50, Andrew Morton wrote:
-> From: Michal Hocko <mhocko@suse.com>
-> Subject: mm/vmalloc: be more explicit about supported gfp flags
+On Mon, Nov 08, 2021 at 09:10:31AM +0100, Greg Kroah-Hartman wrote:
+> On Sun, Nov 07, 2021 at 07:57:24PM +0100, Ondřej Jirman wrote:
+> > Hi,
+> > 
+> > On Sun, Nov 07, 2021 at 07:54:33PM +0100, megous hlavni wrote:
+> > > The masks are swapped (interrupts are enabled when the mask is 0).
+> > 
+> > Please ignore the 06/15 in the subject. This is just a single patch
+> > from my local series and I forgot to edit the subject.
 > 
-> The core of the vmalloc allocator __vmalloc_area_node doesn't say anything
-> about gfp mask argument.  Not all gfp flags are supported though.  Be more
-> explicit about constraints.
-> 
-> Link: https://lkml.kernel.org/r/20211020082545.4830-1-mhocko@kernel.org
-> Signed-off-by: Michal Hocko <mhocko@suse.com>
-> Cc: Dave Chinner <david@fromorbit.com>
-> Cc: Neil Brown <neilb@suse.de>
-> Cc: Christoph Hellwig <hch@infradead.org>
-> Cc: Uladzislau Rezki <urezki@gmail.com>
-> Cc: Ilya Dryomov <idryomov@gmail.com>
-> Cc: Jeff Layton <jlayton@kernel.org>
-> Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+> But I see 2 patches sent in this series?
 
-As already pointed out
-http://lkml.kernel.org/r/YXE+hcodJ7zxeYA7@dhcp22.suse.cz this patch
-cannot be applied without other patches from the same series.
+The other one is unrelated. This patch is a fix for a real bug.
 
-> ---
-> 
->  mm/vmalloc.c |   12 ++++++++++--
->  1 file changed, 10 insertions(+), 2 deletions(-)
-> 
-> --- a/mm/vmalloc.c~mm-vmalloc-be-more-explicit-about-supported-gfp-flags
-> +++ a/mm/vmalloc.c
-> @@ -2983,8 +2983,16 @@ fail:
->   * @caller:		  caller's return address
->   *
->   * Allocate enough pages to cover @size from the page level
-> - * allocator with @gfp_mask flags.  Map them into contiguous
-> - * kernel virtual space, using a pagetable protection of @prot.
-> + * allocator with @gfp_mask flags. Please note that the full set of gfp
-> + * flags are not supported. GFP_KERNEL would be a preferred allocation mode
-> + * but GFP_NOFS and GFP_NOIO are supported as well. Zone modifiers are not
-> + * supported. From the reclaim modifiers__GFP_DIRECT_RECLAIM is required (aka
-> + * GFP_NOWAIT is not supported) and only __GFP_NOFAIL is supported (aka
-> + * __GFP_NORETRY and __GFP_RETRY_MAYFAIL are not supported).
-> + * __GFP_NOWARN can be used to suppress error messages about failures.
-> + *
-> + * Map them into contiguous kernel virtual space, using a pagetable
-> + * protection of @prot.
->   *
->   * Return: the address of the area or %NULL on failure
->   */
-> _
+The other seemed like an independent correctness issue that I noticed from code
+review I had to do to figure out the reason for failure to handle disconnect
+detection properly. It's unrelated to this patch other than touching the same driver.
 
--- 
-Michal Hocko
-SUSE Labs
+regards,
+	o.
+
+> Can you just fix this up and resend them correctly?
+> 
+> thanks,
+> 
+> greg k-h
