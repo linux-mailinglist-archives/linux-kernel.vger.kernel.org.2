@@ -2,61 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3AEB6449EF7
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 00:20:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 92499449EF9
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 00:21:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240901AbhKHXXL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Nov 2021 18:23:11 -0500
-Received: from mail.kernel.org ([198.145.29.99]:43822 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233956AbhKHXWx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Nov 2021 18:22:53 -0500
-Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id A97AE6103D;
-        Mon,  8 Nov 2021 23:20:07 +0000 (UTC)
-Date:   Mon, 8 Nov 2021 18:20:06 -0500
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Beau Belgrave <beaub@linux.microsoft.com>
-Cc:     mhiramat@kernel.org, linux-trace-devel@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v4 09/10] user_events: Optimize writing events by only
- copying data once
-Message-ID: <20211108182006.7b09a630@gandalf.local.home>
-In-Reply-To: <20211108231710.GA1521@kbox>
-References: <20211104170433.2206-1-beaub@linux.microsoft.com>
-        <20211104170433.2206-10-beaub@linux.microsoft.com>
-        <20211108174542.39c255e1@gandalf.local.home>
-        <20211108230034.GB1452@kbox>
-        <20211108180452.3ec1f4ec@gandalf.local.home>
-        <20211108231710.GA1521@kbox>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        id S240912AbhKHXXo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Nov 2021 18:23:44 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48568 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236457AbhKHXXn (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Nov 2021 18:23:43 -0500
+Received: from mail-ed1-x534.google.com (mail-ed1-x534.google.com [IPv6:2a00:1450:4864:20::534])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 80DFAC061714
+        for <linux-kernel@vger.kernel.org>; Mon,  8 Nov 2021 15:20:55 -0800 (PST)
+Received: by mail-ed1-x534.google.com with SMTP id b15so49669740edd.7
+        for <linux-kernel@vger.kernel.org>; Mon, 08 Nov 2021 15:20:55 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=lwIQuGBsn7Be23bmYjcf+aNAhriSmibVwiA5fi4nHNg=;
+        b=nWqR3niUi8ZAlpGTH8M2PlMiONtnzBQ4ATovgndU9GxTAENtI7bOL+JGzlAaf1jzq5
+         sOiY2+euFxGC/cOsFw7QybnynMvkJkSjyaBCQnFcfxq9Ur70Drcep9CA7Uxc9kDWGND6
+         TFUm2dlG3O0UVpWdt1MCGpuCBdMNGxBKSnUceXfy3vQ5V0zIBQn/MNtGDA3NC6LvIpyA
+         gRcjbmfWelZoikQX4G6ZaFZfQoZDT3LWCD8baoYTfrDZI8uoOG8cCC+dI1G+CudV7/FV
+         cqKIBvUar0aF9IrOtefg7Fmf2JSMfrqfz7oJz9X52A+wooChgbIi5Z1GLteLyrX7yNuh
+         gxPg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=lwIQuGBsn7Be23bmYjcf+aNAhriSmibVwiA5fi4nHNg=;
+        b=Tvb2+aretBKb2rskOWi9pn+AcFm0w3RQ/GMjmDLlO7oXZa0PFMudvp3+ZfNzg0HfVd
+         jdoCu26A9gWrdiMZwpP53vXttIRWZfzSQZl1fu7rna4MRlV1r7V6CIcaAnzgA+NqT8Xw
+         TAszZBEvZOIJjdHXEsf9sDyNuy5P1uIQ1D4++SSvD8Y7xrSOR7VSY9Eq/BsVk6au3g7S
+         HOzhuk1d6oGmylFjtKrRE/E7zKp7Y+STgDiAaWJZWXtqicZd8TMjey/B1nwhrnDWHHDb
+         V/XOFGLj2XFrpImnH+0F0pIpAWHNj90JYWs7keHImmzGjUfwuXMdWxMBfo+ZAcumb7j9
+         PzAg==
+X-Gm-Message-State: AOAM532q1jDrm0JgEzMLCrB+cGexNGHjkpbtv/jO7Y+FisMVOUqfRvqx
+        8J2m9oek0wRO4hZ6NLVieX5PYVutwy0pDjUw5YrFfA==
+X-Google-Smtp-Source: ABdhPJwTKbnqqSkppB5nGDfkjunaz4LA5vbuU6JW5kUVVhDDBNymoBRQ2b3G931U7pcKAAoDuVO62ro+gzidCYTi1V8=
+X-Received: by 2002:a50:d984:: with SMTP id w4mr3704451edj.375.1636413653922;
+ Mon, 08 Nov 2021 15:20:53 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+References: <CADyq12yY25-LS8cV5LY-C=6_0HLPVZbSJCKtCDJm+wyHQSeVTg@mail.gmail.com>
+ <cb682c8a-255e-28e5-d4e0-0981c2ab6ffd@intel.com> <85925a39-37c3-a79a-a084-51f2f291ca9c@intel.com>
+In-Reply-To: <85925a39-37c3-a79a-a084-51f2f291ca9c@intel.com>
+From:   Brian Geffon <bgeffon@google.com>
+Date:   Mon, 8 Nov 2021 18:20:18 -0500
+Message-ID: <CADyq12z+uOaY3Qz2g+bed4BMoVxikFSmDTDzLCuJzRVEuNpkLA@mail.gmail.com>
+Subject: Re: XSAVE / RDPKRU on Intel 11th Gen Core CPUs
+To:     Dave Hansen <dave.hansen@intel.com>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Guenter Roeck <groeck@google.com>,
+        Borislav Petkov <bp@suse.de>,
+        Andy Lutomirski <luto@kernel.org>, stable@vger.kernel.org,
+        "the arch/x86 maintainers" <x86@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 8 Nov 2021 15:17:10 -0800
-Beau Belgrave <beaub@linux.microsoft.com> wrote:
+> One more thing...  Does the protection_keys kernel selftest hit any
+> errors on this same setup?  It does a lot of PKRU sanity checking and
+> I'm a bit surprised it hasn't caught something yet.
 
-> > Which reminds me that trace_event_buffer_reserve() expects to be called
-> > with preemption disabled. And I'm guessing that may not be the case for you.
-> >   
-> 
-> Thanks, should be good there:
-> I have rcu_read_lock_sched() held, which will have preemption disabled
-> during the various probe calls.
-
-Ah, that's right. Thanks for the reminder.
-
-> 
-> > I'll change this so that it always disables preemption even if it uses the
-> > filter buffer, and *always* disables preemption on return.
-
-Even so, I think it's better to have it consistently disable/enable
-preemption than expect the caller to do so.
-
--- Steve
+I'll do a little more testing and get back to you.
