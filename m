@@ -2,60 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EEF12448056
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Nov 2021 14:37:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A38E9448065
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Nov 2021 14:39:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239979AbhKHNk0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Nov 2021 08:40:26 -0500
-Received: from mail.skyhub.de ([5.9.137.197]:43176 "EHLO mail.skyhub.de"
+        id S240006AbhKHNmU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Nov 2021 08:42:20 -0500
+Received: from mga02.intel.com ([134.134.136.20]:2279 "EHLO mga02.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235351AbhKHNkZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Nov 2021 08:40:25 -0500
-Received: from zn.tnic (p200300ec2f33110093973d8dfcf40fd9.dip0.t-ipconnect.de [IPv6:2003:ec:2f33:1100:9397:3d8d:fcf4:fd9])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 2F6D31EC0295;
-        Mon,  8 Nov 2021 14:37:40 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1636378660;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=n3RZpo1ny/8yHy++KCnVcsXaUMiSac3etAKckHaenK8=;
-        b=gpAQW+Cfn0/lGTfBOMw0TRx6nfeGM+oWsZu6DPimsVxwOyy+ZgxeTbR1PwEPGIoip+40LW
-        BrTWkBRdZ5pLm7DaYb+3VTTCWluKWE78GIB3Tlj1gdGUlwqN5cU/8JTsEOfYlFnVZbWhev
-        Rhk3Z1BNBzIB7OlvCzULYFHCzOwAi5s=
-Date:   Mon, 8 Nov 2021 14:37:38 +0100
-From:   Borislav Petkov <bp@alien8.de>
-To:     Naveen Krishna Chatradhi <nchatrad@amd.com>
-Cc:     linux-edac@vger.kernel.org, x86@kernel.org,
-        linux-kernel@vger.kernel.org, mingo@redhat.com, mchehab@kernel.org,
-        yazen.ghannam@amd.com, Muralidhara M K <muralimk@amd.com>
-Subject: Re: [PATCH v6 2/5] EDAC/mce_amd: Extract node id from MCA_IPID
-Message-ID: <YYkoIjBV/RaitMH+@zn.tnic>
-References: <20211028130106.15701-1-nchatrad@amd.com>
- <20211028130106.15701-3-nchatrad@amd.com>
+        id S230299AbhKHNmT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Nov 2021 08:42:19 -0500
+X-IronPort-AV: E=McAfee;i="6200,9189,10161"; a="219423204"
+X-IronPort-AV: E=Sophos;i="5.87,218,1631602800"; 
+   d="scan'208";a="219423204"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Nov 2021 05:39:34 -0800
+X-IronPort-AV: E=Sophos;i="5.87,218,1631602800"; 
+   d="scan'208";a="533315761"
+Received: from anushave-mobl1.amr.corp.intel.com (HELO [10.255.85.158]) ([10.255.85.158])
+  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Nov 2021 05:39:31 -0800
+Subject: Re: [PATCH] ASoC: SOF: build compression interface into snd_sof.ko
+To:     Arnd Bergmann <arnd@kernel.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
+        Kai Vehmanen <kai.vehmanen@linux.intel.com>,
+        Daniel Baluta <daniel.baluta@nxp.com>
+Cc:     Arnd Bergmann <arnd@arndb.de>, Mark Brown <broonie@kernel.org>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>,
+        Colin Ian King <colin.king@canonical.com>,
+        Peter Ujfalusi <peter.ujfalusi@linux.intel.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Bud Liviu-Alexandru <budliviu@gmail.com>,
+        Paul Olaru <paul.olaru@oss.nxp.com>,
+        sound-open-firmware@alsa-project.org, alsa-devel@alsa-project.org,
+        linux-kernel@vger.kernel.org
+References: <20211108111132.3800548-1-arnd@kernel.org>
+From:   Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Message-ID: <63c5b1fb-575e-f026-5a76-f08a366f7f38@linux.intel.com>
+Date:   Mon, 8 Nov 2021 07:39:29 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Firefox/78.0 Thunderbird/78.13.0
 MIME-Version: 1.0
+In-Reply-To: <20211108111132.3800548-1-arnd@kernel.org>
 Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20211028130106.15701-3-nchatrad@amd.com>
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 28, 2021 at 06:31:03PM +0530, Naveen Krishna Chatradhi wrote:
-> On SMCA banks of the GPU nodes, the node id information is
-> available in register MCA_IPID[47:44](InstanceIdHi).
+
+
+On 11/8/21 5:11 AM, Arnd Bergmann wrote:
+> From: Arnd Bergmann <arnd@arndb.de>
 > 
-> Convert the hardware node ID to a value used by Linux
-> where GPU nodes are sequencially after the CPU nodes.
+> With CONFIG_SND_SOC_SOF_COMPRESS=m, the compression code is
+> not built into a the main SOF driver when that is built-in:
+> 
+> x86_64-linux-ld: sound/soc/sof/ipc.o: in function `ipc_stream_message':
+> ipc.c:(.text+0x5a2): undefined reference to `snd_sof_compr_fragment_elapsed'
+> x86_64-linux-ld: sound/soc/sof/topology.o: in function `sof_dai_load':
+> topology.c:(.text+0x32d1): undefined reference to `snd_sof_compr_init_elapsed_work'
+> x86_64-linux-ld: topology.c:(.text+0x32e1): undefined reference to `snd_sof_compr_init_elapsed_work'
+> 
+> Make this a 'bool' symbol so it just decides whether the
+> code gets built at all.
+> 
+> Fixes: 858f7a5c45ca ("ASoC: SOF: Introduce fragment elapsed notification API")
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 
-"sequentially"
+It's Monday morning and my memory is still foggy but I think we fixed
+this problem with https://github.com/thesofproject/linux/pull/3180,
+where we changed the Kconfigs for i.MX. We haven't sent this update
+upstream for some reason.
 
-Use a spellchecker when writing commit messages pls.
+Arnd, can you share the configuration that breaks with the existing
+upstream code, I can check if the problem still exists.
 
--- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
+Thanks!
