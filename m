@@ -2,91 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F01D344784F
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Nov 2021 02:29:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E1886447843
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Nov 2021 02:29:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235827AbhKHBce (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 7 Nov 2021 20:32:34 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36026 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235746AbhKHBcd (ORCPT
+        id S235554AbhKHBby (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 7 Nov 2021 20:31:54 -0500
+Received: from szxga08-in.huawei.com ([45.249.212.255]:27118 "EHLO
+        szxga08-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229966AbhKHBbx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 7 Nov 2021 20:32:33 -0500
-Received: from mail-pl1-x62e.google.com (mail-pl1-x62e.google.com [IPv6:2607:f8b0:4864:20::62e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C110C061570;
-        Sun,  7 Nov 2021 17:29:49 -0800 (PST)
-Received: by mail-pl1-x62e.google.com with SMTP id n8so14739449plf.4;
-        Sun, 07 Nov 2021 17:29:49 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=4vQkz8/qTxyaVcJnsKCjYn20bkfBzjk11/LAmMKs8G8=;
-        b=cVnOCLuY/4b5KleH6K15LMLmcjDuPBXCm2Je0e7arrPgllRLmyI8WPbC0tz27LU7qZ
-         WMIQEQEVpQFBucjcaNX83XUQkDJkk3PZ6Yv24CX1I4L+T92ik0oH11zTJ+PXg9lvGE6m
-         H/X/xZT/6vmCaQbYbzr+yNRuENNC94Z1f9TmXIU3YTh2xKwJi7+xHgGB6Ymtz1xo5bST
-         mCGPfBZ2lhwV6sI1tKZKtUAF0JwJYlnhN1d/0Z/aRLa8Nrdxt5KnOy8HOmmn6Xeufm25
-         2mnSMvexRyRK6fh+rvXVZrABq73NciZf/GkE39LrQZXlnvzhT5n/+Wh78PxAAO+bdteA
-         vo5A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=4vQkz8/qTxyaVcJnsKCjYn20bkfBzjk11/LAmMKs8G8=;
-        b=iysn6Ok9yUr3cKoplJ6Dbm1Gmj3nVxRit+aVk8QBsmnXXYlH0tLShndtfmj/Ojb1UB
-         A+nflWfwBK3XFbpfADCEglJufOM3qewdKtvoObdQ7XWO7PKgwgs3MzGQsv0NoNenBdTo
-         wjOuWJWf/A3pfZ6sTWTh2bG+Y4uULyNhhQet806AR9sgB9Y9qjF+T0Bt8ybMYHVM4Mhd
-         U5eh3EpCGydlUOvW93oKEqNoJsNkXyqsoza7+KwIYVPJ+1IkWfEDt78WPtNJRMFSbjep
-         p19Dnv0zd27UtECW42GuWVYuIGz0EqjqtE/cGP4V4uv+FKsyF20cOaDR2B1BKfIUr6wa
-         c5KQ==
-X-Gm-Message-State: AOAM533zawj+c/vgITscU0n8tYNRxmjp4UjhzCGYIMtl6WZZddXVdE+T
-        NoymuQdkuABypNipRftzfdO/0NnRj3Yukw==
-X-Google-Smtp-Source: ABdhPJxxL7QOhLDR+/mBpUfVFdvYw0dHURcw0MPeWokwJlcuw3v16O0QJE3TTdDWyXxlaYnOihsfzQ==
-X-Received: by 2002:a17:90b:3850:: with SMTP id nl16mr48208378pjb.10.1636334988748;
-        Sun, 07 Nov 2021 17:29:48 -0800 (PST)
-Received: from sol.lan (14-201-12-235.tpgi.com.au. [14.201.12.235])
-        by smtp.gmail.com with ESMTPSA id t4sm13800861pfj.166.2021.11.07.17.29.44
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 07 Nov 2021 17:29:48 -0800 (PST)
-From:   Kent Gibson <warthog618@gmail.com>
-To:     linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org,
-        linux-kselftest@vger.kernel.org, brgl@bgdev.pl,
-        linus.walleij@linaro.org, shuah@kernel.org, bamv2005@gmail.com,
-        lizhijian@cn.fujitsu.com
-Cc:     Kent Gibson <warthog618@gmail.com>
-Subject: [PATCH 3/3] selftests: gpio: restore CFLAGS options
-Date:   Mon,  8 Nov 2021 09:28:51 +0800
-Message-Id: <20211108012851.7772-4-warthog618@gmail.com>
-X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211108012851.7772-1-warthog618@gmail.com>
-References: <20211108012851.7772-1-warthog618@gmail.com>
+        Sun, 7 Nov 2021 20:31:53 -0500
+Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.53])
+        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4HnYPC527Hz1DJC4;
+        Mon,  8 Nov 2021 09:26:55 +0800 (CST)
+Received: from dggpemm500001.china.huawei.com (7.185.36.107) by
+ dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.15; Mon, 8 Nov 2021 09:29:06 +0800
+Received: from [10.174.177.243] (10.174.177.243) by
+ dggpemm500001.china.huawei.com (7.185.36.107) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
+ 15.1.2308.15; Mon, 8 Nov 2021 09:29:05 +0800
+Message-ID: <2cf3f6a2-769a-7d68-b42f-3b74b58925fb@huawei.com>
+Date:   Mon, 8 Nov 2021 09:29:05 +0800
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
+ Thunderbird/91.2.0
+Subject: Re: [PATCH 2/2] amba: Move of_amba_device_decode_irq() into
+ amba_probe()
+Content-Language: en-US
+To:     kernel test robot <lkp@intel.com>,
+        Russell King <linux@armlinux.org.uk>, <saravanak@google.com>,
+        <robh+dt@kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>
+CC:     <llvm@lists.linux.dev>, <kbuild-all@lists.01.org>
+References: <20211104095643.180429-3-wangkefeng.wang@huawei.com>
+ <202111060042.JQjb9nZb-lkp@intel.com>
+From:   Kefeng Wang <wangkefeng.wang@huawei.com>
+In-Reply-To: <202111060042.JQjb9nZb-lkp@intel.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.177.243]
+X-ClientProxiedBy: dggeme707-chm.china.huawei.com (10.1.199.103) To
+ dggpemm500001.china.huawei.com (7.185.36.107)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-All the CFLAGS options were incorrectly removed in the recent rework
-of the GPIO selftests.  While some of the flags were specific to the old
-implementation the remainder are still relevant.  Restore those options.
+Thanks, will fix and resend after 5.16-rc1.
 
-Signed-off-by: Kent Gibson <warthog618@gmail.com>
----
- tools/testing/selftests/gpio/Makefile | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/tools/testing/selftests/gpio/Makefile b/tools/testing/selftests/gpio/Makefile
-index 42ea7d2aa844..d7b312b44a62 100644
---- a/tools/testing/selftests/gpio/Makefile
-+++ b/tools/testing/selftests/gpio/Makefile
-@@ -3,6 +3,6 @@
- TEST_PROGS := gpio-mockup.sh
- TEST_FILES := gpio-mockup-sysfs.sh
- TEST_GEN_PROGS_EXTENDED := gpio-mockup-cdev
--CFLAGS += -I../../../../usr/include
-+CFLAGS += -O2 -g -Wall -I../../../../usr/include/
- 
- include ../lib.mk
--- 
-2.33.1
-
+On 2021/11/6 0:41, kernel test robot wrote:
+> Hi Kefeng,
+> 
+> Thank you for the patch! Yet something to improve:
+> 
+> [auto build test ERROR on linus/master]
+> [also build test ERROR on next-20211105]
+> [cannot apply to v5.15]
+> [If your patch is applied to the wrong git tree, kindly drop us a note.
+> And when submitting patch, we suggest to use '--base' as documented in
+> https://git-scm.com/docs/git-format-patch]
+> 
+> url:    https://github.com/0day-ci/linux/commits/Kefeng-Wang/amba-some-cleanup/20211104-174611
+> base:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git 7ddb58cb0ecae8e8b6181d736a87667cc9ab8389
+> config: arm-randconfig-r034-20211104 (attached as .config)
+> compiler: clang version 14.0.0 (https://github.com/llvm/llvm-project 847a6807332b13f43704327c2d30103ec0347c77)
+> reproduce (this is a W=1 build):
+>          wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
+>          chmod +x ~/bin/make.cross
+>          # install arm cross compiling tool for clang build
+>          # apt-get install binutils-arm-linux-gnueabi
+>          # https://github.com/0day-ci/linux/commit/e7bfc31724b5810d3dade0f2b83635fec6aef601
+>          git remote add linux-review https://github.com/0day-ci/linux
+>          git fetch --no-tags linux-review Kefeng-Wang/amba-some-cleanup/20211104-174611
+>          git checkout e7bfc31724b5810d3dade0f2b83635fec6aef601
+>          # save the attached .config to linux build tree
+>          COMPILER_INSTALL_PATH=$HOME/0day COMPILER=clang make.cross W=1 ARCH=arm
+> 
+> If you fix the issue, kindly add following tag as appropriate
+> Reported-by: kernel test robot <lkp@intel.com>
+> 
+> All errors (new ones prefixed by >>):
+> 
+>>> drivers/amba/bus.c:186:9: error: implicit declaration of function 'of_amba_device_decode_irq' [-Werror,-Wimplicit-function-declaration]
+>                     ret = of_amba_device_decode_irq(dev);
+>                           ^
+>     drivers/amba/bus.c:375:12: error: static declaration of 'of_amba_device_decode_irq' follows non-static declaration
+>     static int of_amba_device_decode_irq(struct amba_device *dev)
+>                ^
+>     drivers/amba/bus.c:186:9: note: previous implicit declaration is here
+>                     ret = of_amba_device_decode_irq(dev);
+>                           ^
+>     2 errors generated.
+> 
