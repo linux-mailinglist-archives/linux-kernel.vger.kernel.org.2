@@ -2,389 +2,259 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 76EE0449925
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Nov 2021 17:09:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C9E2044992B
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Nov 2021 17:11:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238084AbhKHQMa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Nov 2021 11:12:30 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35864 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237203AbhKHQM3 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Nov 2021 11:12:29 -0500
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 28498C061714;
-        Mon,  8 Nov 2021 08:09:45 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=MIME-Version:Content-Type:Date:Cc:To:
-        From:Subject:Message-ID:Sender:Reply-To:Content-Transfer-Encoding:Content-ID:
-        Content-Description:In-Reply-To:References;
-        bh=u5hAg7ueNiL/DD45rJcH/5UokM1RJiVl8kFo7aiuSxY=; b=0LOrYYnjJ/xTG8OVAGv6Aaeqj7
-        Fw7pz0rYU5849HkPMOp/vhgZQSe1m4g7P3/QyR/hR1qZelsmqISBfrfggxr+JLk56y7FYoUa60scR
-        PLTlupnop1Bj9WC1zjXlubIK3TrryBZw17R1pCtpOfRQDNTx8ECR6x2N0ME2uWWUFZdZxaigOLTXP
-        mdVRnWIaOPLumM6QGj2bhyQrl4HpMNHp2pGtutcKL2Zc2iNSSJD0hJ9SWwUNN7mPwPL+284qY7wnv
-        nUsoPNxrVbYOVfOOZ1fdaNZuaVREGrwMZ2DbE4MLgy80QYfBntrjPZSiWdaXvh84hjkLF3476ekC9
-        5VNx/1Sg==;
-Received: from [2001:8b0:10b:1::3ae] (helo=u3832b3a9db3152.infradead.org)
-        by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mk7DM-00Guxd-83; Mon, 08 Nov 2021 16:09:44 +0000
-Message-ID: <26decf155bffc021a97846c0a0ed09c2b5e0bef1.camel@infradead.org>
-Subject: [PATCH] PM / hibernate: Allow ACPI hardware signature to be honoured
-From:   David Woodhouse <dwmw2@infradead.org>
-To:     linux-pm <linux-pm@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Cc:     benh <benh@kernel.crashing.org>,
-        "van der Linden, Frank" <fllinden@amazon.com>,
-        Amit Shah <aams@amazon.com>
-Date:   Mon, 08 Nov 2021 16:09:41 +0000
-Content-Type: multipart/signed; micalg="sha-256"; protocol="application/pkcs7-signature";
-        boundary="=-6ZBoHAHfiP7kSxiwwsDM"
-User-Agent: Evolution 3.36.5-0ubuntu1 
+        id S229568AbhKHQOZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Nov 2021 11:14:25 -0500
+Received: from mail.kernel.org ([198.145.29.99]:57392 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231976AbhKHQOX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Nov 2021 11:14:23 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 91AE461107;
+        Mon,  8 Nov 2021 16:11:38 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1636387898;
+        bh=J9k46rZiY8H+bRpoH4kyCCvMTCOAhyiiap4OZ/iHvD4=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Hdb3blKQePjDh/K4aFzf8cg3V4GorA3mAU3Mbl0rE1Ys5I43FrEsJp7tdS3ubdl8g
+         KUXFMrQ1s7TD4AtTMwC6XUjpE9vZX3FFhwrPOFp1268tCSDR/hGvV3T2OMxD+R7QUo
+         1QBOdH1ATDGfmemIz9f1xRP2oerg1lDei7/KM8bx54r98G9xpi5E4GYpyCfd786SdJ
+         OFCoTprVt0CCRbkPXwK1Adna+pGYIw7ErxTxDdrbWyAWZRbrS6VYIWFZ1oNrG9z6eV
+         /oyVf6HyzZU8mKDfB4wPTBqgibWtMy3Hx9GI7b0kQ9C2cuuuKPvZQQxGK0UqptEqHm
+         F3RTR8vRsM6ew==
+Received: by pali.im (Postfix)
+        id 1BE5DA15; Mon,  8 Nov 2021 17:11:36 +0100 (CET)
+Date:   Mon, 8 Nov 2021 17:11:35 +0100
+From:   Pali =?utf-8?B?Um9ow6Fy?= <pali@kernel.org>
+To:     Luca Ceresoli <luca@lucaceresoli.net>
+Cc:     Bjorn Helgaas <bhelgaas@google.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
+        Rob Herring <robh@kernel.org>,
+        Marek =?utf-8?B?QmVow7pu?= <kabel@kernel.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: RFC: Extend probing of native PCIe controllers
+Message-ID: <20211108161135.ldvdu2m6fzliyer6@pali>
+References: <20211022183808.jdeo7vntnagqkg7g@pali>
+ <2744c8e0-5b69-ba1a-f750-6b5f8ad07998@lucaceresoli.net>
 MIME-Version: 1.0
-X-SRS-Rewrite: SMTP reverse-path rewritten from <dwmw2@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <2744c8e0-5b69-ba1a-f750-6b5f8ad07998@lucaceresoli.net>
+User-Agent: NeoMutt/20180716
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hello!
 
---=-6ZBoHAHfiP7kSxiwwsDM
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+On Monday 08 November 2021 09:50:51 Luca Ceresoli wrote:
+> Hi Pali,
+> 
+> On 22/10/21 20:38, Pali Rohár wrote:
+> > Hello!
+> > 
+> > In this email I'm describing how I see that probing of native PCIe
+> > controller drivers is implemented, how it should be implemented and how
+> > to extend / simplify core code for controller drivers.
+> > 
+> > 
+> > Native PCIe controller drivers needs to fill struct pci_host_bridge and
+> > then call pci_host_probe(). Function pci_host_probe() starts probing and
+> > enumerating buses and register PCIe devices to system.
+> > 
+> > But initialization of PCIe controller and cards on buses (other end of
+> > PCIe link) is more complicated and basically every native PCIe
+> > controller driver needs to do initialization PCIe link prior calling
+> > pci_host_probe(). Steps which controller drivers are doing are de-facto
+> > standard steps defined in PCIe base or CEM specification.
+> > 
+> > The most problematic step is to reset endpoint card and wait until
+> > endpoint card start. Reset of endpoint card is done by standard PERST#
+> > signal (defined in PCIe CEM spec) and in most cases board export control
+> > of this signal to OS via GPIO (few board and drivers have this signal
+> > connected to PCIe controller and then PCIe controller has some specific
+> > registers to control this signal). Reset via PERST# signal is defined in
+> > PCIe CEM and base specs as "PCIe Warm Reset".
+> > 
+> > As discussed in the following email thread, this PCIe Warm Reset should
+> > not depend on PCIe controller as it resets card on the other end of PCIe
+> > controller. But currently every native PCIe controller driver does PCIe
+> > Warm Reset by its own for randomly chosen time period. There is open
+> > question how long should be endpoint card in Warm Reset state:
+> > https://lore.kernel.org/linux-pci/20210310110535.zh4pnn4vpmvzwl5q@pali/
+> > 
+> > Initialization of PCIe endpoint card is described in PCIe CEM spec in
+> > Figure 2-10: Power Up. Other informations are in PCIe base spec in 6.6.1
+> > Conventional Reset section.
+> > 
+> > If I understand specifications correctly then OS initialization steps
+> > should be following (please correct me if I'm wrong!):
+> > 
+> > 1) Put PERST# to low which enter endpoint card into reset state
+> > 2) Enable AUX power (3.3V) and wait until is stable
+> > 3) Enable main power (12V/3.3V) and wait until is stable
+> > 4) Enable refclock and wait until is stable
+> > 5) Enable LTSSM on PCIe controller to start link training
+> > 6) Put PERST# to high which exit endpoint card from reset state
+> > 7) Wait until link training completes
+> > 8) Wait another 100ms prior accessing config space of endpoint card
+> > 
+> > Minimal time period between "after step 3)" and "before step 6)" is T_PVPERL = 100ms
+> > Minimal time period between "after step 4)" and "before step 6)" is T_PERSTCLK = 100us
+> > 
+> > After step 6) is end of Fundamental Reset and PCIe controller needs to
+> > be in LTSSM Detect state within 20ms. So enabling it prior putting
+> > PERST# to high should achieve it.
+> > 
+> > Competition of link training is indicated by standard DLLLA bit in Root
+> > Port config space. Support for DLLLA bit is optional and is indicated by
+> > DLLLARC bit in Root Port config space. Lot of PCIe controllers do not
+> > support this standard DLLLA bit, but have their own specific register
+> > for it.
+> > 
+> > Similarly is defined power down of PCIe card in PCIe CEM spec in Figure
+> > 2-13: Power Down. If I understand it correctly steps are:
+> > 
+> > 1) Put endpoint card into D3hot state, so PCIe link goes inactive
+> > 2) Put PERST# to low, so endpoint card enters reset state
+> > 3) Disable main power (12V/3.3V)
+> > 4) Disable refclock
+> > 
+> > In case of surprise power down, PERST# needs to go low in 500ns.
+> > 
+> > In PCIe base spec in section 5.2 Link State Power Management is
+> > described that preparation for removing the main power source can be
+> > done also by sending PCIe PME_Turn_Off Message by Root Complex. IIRC
+> > there is no standard way how to send PCIe PME_Turn_Off message.
+> > 
+> > 
+> > 
+> > 
+> > I see that basically every PCIe controller driver is doing its own
+> > implementation of PCIe Warm Reset and waiting until PCIe link is ready
+> > prior calling pci_host_probe().
+> > 
+> > Based on all above details I would like to propose following extending
+> > of struct pci_host_bridge and pci_host_probe() function to de-duplicate
+> > native PCIe controller driver code:
+> > 
+> > 1) extend struct pci_host_bridge to provide callbacks for:
+> >    * enable / disable main power source
+> >    * enable / disable refclock
+> >    * enable / disable LTSSM link training (if PCIe link should go into Detect / Polling state)
+> >    * enable / disable PERST# signal
+> >    * returning boolean if endpoint card is present (physically in PCIe/mPCIe/m.2/... slot)
+> >    * returning boolean if link training completed
+> >    * sending PCIe PME_Turn_Off message
+> > 
+> > 2) implement asynchronous initialization of PCIe link and enumeration of
+> >    PCIe bus behind the PCIe Root Port from pci_host_probe() based on new
+> >    callbacks added in 1)
+> >    --> so native PCIe controller drivers do not have to do it manually
+> >    --> during this initialization can be done also PCIe Hot Reset
+> > 
+> > 3) implement PCIe Hot Reset as reset method via PERST# signal and put it
+> >    into pci_reset_fn_methods[] array
+> > 
+> > 4) implement PCIe Cold Reset as reset method via power down / up and put
+> >    it into pci_reset_fn_methods[] array
+> > 
+> > 5) as enabling / disabling power supply and toggling PERST# signal is
+> >    implemented via GPIO, add some generic implementation for callback
+> >    functions which will use named gpios (e.g. from DT)
+> > 
+> > This could simplify implementations of native PCIe controller drivers by
+> > calling initialization steps in correct order with correct timeouts and
+> > drivers do not have to do copy+paste same common code or reimplement it
+> > with own constants and macros for timeouts, etc...
+> > 
+> > Also it should enable access to PCIe Root Port as this device is part of
+> > Root Complex and should be available also when link is down or link
+> > training was not completed. Currently some PCIe controllers are not
+> > registered into system when link is down (e.g. card is disconnected or
+> > card has some issue). Which also prevents access to PCIe Root Port
+> > device. And in some cases it could speed up boot process as pci
+> > controller driver does not have to actively wait for link and let kernel
+> > do initialization of other devices.
+> > 
+> > What do you think about this idea?
+> 
+> I'm afraid I know very little about PCI so I cannot give much valuable
+> feedback.
+> 
+> For what I can understand yours seems like a good analysis and the plan
+> seems correct: move control from drivers into the core as far as the
+> actions to take are standard and leave drivers the duty to implement
+> only hardware-specific pieces via function pointers.
+> 
+> We have discussed in detail the PERST# behavior in [0], and I have a
+> comment about that.
+> 
+> First, from that discussion it was clear that some drivers drive PERST#
+> with an inverted polarity when calling gpiod_set_value() or
+> devm_gpiod_get_optional(), which is "fixed" by an inverted polarity
+> setting in their device tree.
 
-From: David Woodhouse <dwmw@amazon.co.uk>
+Yes, that is truth.
 
-Theoretically, when the hardware signature in FACS changes, the OS
-is supposed to gracefully decline to attempt to resume from S4:
+> Second, you say "in most cases board export control of this signal to OS
+> via GPIO".
 
- "If the signature has changed, OSPM will not restore the system
-  context and can boot from scratch"
+Yes.
 
-In practice, Windows doesn't do this and many laptop vendors do allow
-the signature to change especially when docking/undocking, so it would
-be a bad idea to simply comply with the specification by default in the
-general case.
+> For these two reasons you might consider, in addition to the
+> pci_reset_fn_methods[] function to implement PERST#, to add a struct
+> gpio_desc * to be filled by the driver and used by the core. If set, it
+> would allow the core to assert/deassert PERST# without driver
+> intervention.
 
-However, there are use cases where we do want the compliant behaviour
-and we know it's safe. Specifically, when resuming virtual machines where
-we know the hypervisor has changed sufficiently that resume will fail.
-We really want to be able to *tell* the guest kernel not to try, so it
-boots cleanly and doesn't just crash. This patch provides a way to opt
-in to the spec-compliant behaviour on the command line.
+Controlling PERST# via pci_reset_fn_methods[] is not enough.
+pci_reset_fn_methods[PERST]() would do something like this:
 
-A follow-up patch may do this automatically for certain "known good"
-machines based on a DMI match, or perhaps just for all hypervisor
-guests since there's no good reason a hypervisor would change the
-hardware_signature that it exposes to guests *unless* it wants them
-to obey the ACPI specification.
+1. Assert PERST# (put card into reset)
+2. Delay some time period (this is open question how long it should be)
+3. De-assert PERST# (put card from reset into normal state)
 
-Signed-off-by: David Woodhouse <dwmw@amazon.co.uk>
----
- .../admin-guide/kernel-parameters.txt         | 15 ++++++++---
- arch/x86/kernel/acpi/sleep.c                  |  4 ++-
- drivers/acpi/sleep.c                          | 26 +++++++++++++++----
- include/linux/acpi.h                          |  2 +-
- include/linux/suspend.h                       |  1 +
- kernel/power/power.h                          |  1 +
- kernel/power/swap.c                           | 16 ++++++++++--
- 7 files changed, 53 insertions(+), 12 deletions(-)
+But in some other functions it would be needed to put card into reset
+state and let it in this state (e.g. in power down, driver unbind,
+etc...). So pci_reset_fn_methods[PERST] would not be possible to use it
+here.
 
-diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentatio=
-n/admin-guide/kernel-parameters.txt
-index 43dc35fe5bc0..209402f4f11d 100644
---- a/Documentation/admin-guide/kernel-parameters.txt
-+++ b/Documentation/admin-guide/kernel-parameters.txt
-@@ -225,14 +225,23 @@
- 			For broken nForce2 BIOS resulting in XT-PIC timer.
-=20
- 	acpi_sleep=3D	[HW,ACPI] Sleep options
--			Format: { s3_bios, s3_mode, s3_beep, s4_nohwsig,
--				  old_ordering, nonvs, sci_force_enable, nobl }
-+			Format: { s3_bios, s3_mode, s3_beep, s4_hwsig,
-+				  s4_nohwsig, old_ordering, nonvs,
-+				  sci_force_enable, nobl }
- 			See Documentation/power/video.rst for information on
- 			s3_bios and s3_mode.
- 			s3_beep is for debugging; it makes the PC's speaker beep
- 			as soon as the kernel's real-mode entry point is called.
-+			s4_hwsig causes the kernel to check the ACPI hardware
-+			signature during resume from hibernation, and gracefully
-+			refuse to resume if it has changed. This complies with
-+			the ACPI specification but not with reality, since
-+			Windows does not do this and many laptops do change it
-+			on docking. So the default behaviour is to allow resume
-+			and simply warn when the signature changes, unless the
-+			s4_hwsig option is enabled.
- 			s4_nohwsig prevents ACPI hardware signature from being
--			used during resume from hibernation.
-+			used (or even warned about) during resume.
- 			old_ordering causes the ACPI 1.0 ordering of the _PTS
- 			control method, with respect to putting devices into
- 			low power states, to be enforced (the ACPI 2.0 ordering
-diff --git a/arch/x86/kernel/acpi/sleep.c b/arch/x86/kernel/acpi/sleep.c
-index 3f85fcae450c..1e97f944b47d 100644
---- a/arch/x86/kernel/acpi/sleep.c
-+++ b/arch/x86/kernel/acpi/sleep.c
-@@ -139,8 +139,10 @@ static int __init acpi_sleep_setup(char *str)
- 		if (strncmp(str, "s3_beep", 7) =3D=3D 0)
- 			acpi_realmode_flags |=3D 4;
- #ifdef CONFIG_HIBERNATION
-+		if (strncmp(str, "s4_hwsig", 8) =3D=3D 0)
-+			acpi_check_s4_hw_signature(1);
- 		if (strncmp(str, "s4_nohwsig", 10) =3D=3D 0)
--			acpi_no_s4_hw_signature();
-+			acpi_check_s4_hw_signature(0);
- #endif
- 		if (strncmp(str, "nonvs", 5) =3D=3D 0)
- 			acpi_nvs_nosave();
-diff --git a/drivers/acpi/sleep.c b/drivers/acpi/sleep.c
-index 3023224515ab..fa27319e5324 100644
---- a/drivers/acpi/sleep.c
-+++ b/drivers/acpi/sleep.c
-@@ -873,11 +873,11 @@ static inline void acpi_sleep_syscore_init(void) {}
- #ifdef CONFIG_HIBERNATION
- static unsigned long s4_hardware_signature;
- static struct acpi_table_facs *facs;
--static bool nosigcheck;
-+static int sigcheck =3D -1; /* Default behaviour is just to warn */
-=20
--void __init acpi_no_s4_hw_signature(void)
-+void __init acpi_check_s4_hw_signature(int check)
- {
--	nosigcheck =3D true;
-+	sigcheck =3D check;
- }
-=20
- static int acpi_hibernation_begin(pm_message_t stage)
-@@ -1005,12 +1005,28 @@ static void acpi_sleep_hibernate_setup(void)
- 	hibernation_set_ops(old_suspend_ordering ?
- 			&acpi_hibernation_ops_old : &acpi_hibernation_ops);
- 	sleep_states[ACPI_STATE_S4] =3D 1;
--	if (nosigcheck)
-+	if (!sigcheck)
- 		return;
-=20
- 	acpi_get_table(ACPI_SIG_FACS, 1, (struct acpi_table_header **)&facs);
--	if (facs)
-+	if (facs) {
-+		/*
-+		 * s4_hardware_signature is the local variable which is just
-+		 * used to warn about mismatch after we're attempting to
-+		 * resume (in violation of the ACPI specification.)
-+		 */
- 		s4_hardware_signature =3D facs->hardware_signature;
-+
-+		if (sigcheck > 0) {
-+			/*
-+			 * If we're actually obeying the ACPI specification
-+			 * then the signature is written out as part of the
-+			 * swsusp header, in order to allow the boot kernel
-+			 * to gracefully decline to resume.
-+			 */
-+			swsusp_hardware_signature =3D facs->hardware_signature;
-+		}
-+	}
- }
- #else /* !CONFIG_HIBERNATION */
- static inline void acpi_sleep_hibernate_setup(void) {}
-diff --git a/include/linux/acpi.h b/include/linux/acpi.h
-index 974d497a897d..5b6953189912 100644
---- a/include/linux/acpi.h
-+++ b/include/linux/acpi.h
-@@ -506,7 +506,7 @@ acpi_status acpi_release_memory(acpi_handle handle, str=
-uct resource *res,
- int acpi_resources_are_enforced(void);
-=20
- #ifdef CONFIG_HIBERNATION
--void __init acpi_no_s4_hw_signature(void);
-+void __init acpi_check_s4_hw_signature(int check);
- #endif
-=20
- #ifdef CONFIG_PM_SLEEP
-diff --git a/include/linux/suspend.h b/include/linux/suspend.h
-index 8af13ba60c7e..5785d909c321 100644
---- a/include/linux/suspend.h
-+++ b/include/linux/suspend.h
-@@ -446,6 +446,7 @@ extern unsigned long get_safe_page(gfp_t gfp_mask);
- extern asmlinkage int swsusp_arch_suspend(void);
- extern asmlinkage int swsusp_arch_resume(void);
-=20
-+extern u32 swsusp_hardware_signature;
- extern void hibernation_set_ops(const struct platform_hibernation_ops *ops=
-);
- extern int hibernate(void);
- extern bool system_entering_hibernation(void);
-diff --git a/kernel/power/power.h b/kernel/power/power.h
-index 778bf431ec02..bb41a1a1c0d3 100644
---- a/kernel/power/power.h
-+++ b/kernel/power/power.h
-@@ -168,6 +168,7 @@ extern int swsusp_swap_in_use(void);
- #define SF_PLATFORM_MODE	1
- #define SF_NOCOMPRESS_MODE	2
- #define SF_CRC32_MODE	        4
-+#define SF_HW_SIG		8
-=20
- /* kernel/power/hibernate.c */
- extern int swsusp_check(void);
-diff --git a/kernel/power/swap.c b/kernel/power/swap.c
-index 3cb89baebc79..58e9641682e8 100644
---- a/kernel/power/swap.c
-+++ b/kernel/power/swap.c
-@@ -36,6 +36,8 @@
-=20
- #define HIBERNATE_SIG	"S1SUSPEND"
-=20
-+u32 swsusp_hardware_signature;
-+
- /*
-  * When reading an {un,}compressed image, we may restore pages in place,
-  * in which case some architectures need these pages cleaning before they
-@@ -104,7 +106,8 @@ struct swap_map_handle {
-=20
- struct swsusp_header {
- 	char reserved[PAGE_SIZE - 20 - sizeof(sector_t) - sizeof(int) -
--	              sizeof(u32)];
-+	              sizeof(u32) - sizeof(u32)];
-+	u32	hw_sig;
- 	u32	crc32;
- 	sector_t image;
- 	unsigned int flags;	/* Flags to pass to the "boot" kernel */
-@@ -312,7 +315,6 @@ static blk_status_t hib_wait_io(struct hib_bio_batch *h=
-b)
- /*
-  * Saving part
-  */
--
- static int mark_swapfiles(struct swap_map_handle *handle, unsigned int fla=
-gs)
- {
- 	int error;
-@@ -324,6 +326,10 @@ static int mark_swapfiles(struct swap_map_handle *hand=
-le, unsigned int flags)
- 		memcpy(swsusp_header->orig_sig,swsusp_header->sig, 10);
- 		memcpy(swsusp_header->sig, HIBERNATE_SIG, 10);
- 		swsusp_header->image =3D handle->first_sector;
-+		if (swsusp_hardware_signature) {
-+			swsusp_header->hw_sig =3D swsusp_hardware_signature;
-+			flags |=3D SF_HW_SIG;
-+		}
- 		swsusp_header->flags =3D flags;
- 		if (flags & SF_CRC32_MODE)
- 			swsusp_header->crc32 =3D handle->crc32;
-@@ -1542,6 +1548,12 @@ int swsusp_check(void)
- 		} else {
- 			error =3D -EINVAL;
- 		}
-+		if (!error && swsusp_header->flags & SF_HW_SIG &&
-+		    swsusp_header->hw_sig !=3D swsusp_hardware_signature) {
-+			pr_info("Suspend image hardware signature mismatch (%08x now %08x); abo=
-rting resume.\n",
-+				swsusp_header->hw_sig, swsusp_hardware_signature);
-+			error =3D -EINVAL;
-+		}
-=20
- put:
- 		if (error)
---=20
-2.25.1
+I was thinking to provide just callback bridge->set_perst(enable) and
+then implement pci_reset_fn_methods[PERST] via this callback.
 
+If that callback is NULL then PCI core code can assign default
+"set_perst" callback which use gpiod_set_value. Like in your pseudocode
+below.
 
---=-6ZBoHAHfiP7kSxiwwsDM
-Content-Type: application/pkcs7-signature; name="smime.p7s"
-Content-Disposition: attachment; filename="smime.p7s"
-Content-Transfer-Encoding: base64
+Drivers which have inverted polarity of PERTST# gpio or drivers which
+have custom way for controlling this pin would have to provide
+appropriate callbacks.
 
-MIAGCSqGSIb3DQEHAqCAMIACAQExDzANBglghkgBZQMEAgEFADCABgkqhkiG9w0BBwEAAKCCECow
-ggUcMIIEBKADAgECAhEA4rtJSHkq7AnpxKUY8ZlYZjANBgkqhkiG9w0BAQsFADCBlzELMAkGA1UE
-BhMCR0IxGzAZBgNVBAgTEkdyZWF0ZXIgTWFuY2hlc3RlcjEQMA4GA1UEBxMHU2FsZm9yZDEaMBgG
-A1UEChMRQ09NT0RPIENBIExpbWl0ZWQxPTA7BgNVBAMTNENPTU9ETyBSU0EgQ2xpZW50IEF1dGhl
-bnRpY2F0aW9uIGFuZCBTZWN1cmUgRW1haWwgQ0EwHhcNMTkwMTAyMDAwMDAwWhcNMjIwMTAxMjM1
-OTU5WjAkMSIwIAYJKoZIhvcNAQkBFhNkd213MkBpbmZyYWRlYWQub3JnMIIBIjANBgkqhkiG9w0B
-AQEFAAOCAQ8AMIIBCgKCAQEAsv3wObLTCbUA7GJqKj9vHGf+Fa+tpkO+ZRVve9EpNsMsfXhvFpb8
-RgL8vD+L133wK6csYoDU7zKiAo92FMUWaY1Hy6HqvVr9oevfTV3xhB5rQO1RHJoAfkvhy+wpjo7Q
-cXuzkOpibq2YurVStHAiGqAOMGMXhcVGqPuGhcVcVzVUjsvEzAV9Po9K2rpZ52FE4rDkpDK1pBK+
-uOAyOkgIg/cD8Kugav5tyapydeWMZRJQH1vMQ6OVT24CyAn2yXm2NgTQMS1mpzStP2ioPtTnszIQ
-Ih7ASVzhV6csHb8Yrkx8mgllOyrt9Y2kWRRJFm/FPRNEurOeNV6lnYAXOymVJwIDAQABo4IB0zCC
-Ac8wHwYDVR0jBBgwFoAUgq9sjPjF/pZhfOgfPStxSF7Ei8AwHQYDVR0OBBYEFLfuNf820LvaT4AK
-xrGK3EKx1DE7MA4GA1UdDwEB/wQEAwIFoDAMBgNVHRMBAf8EAjAAMB0GA1UdJQQWMBQGCCsGAQUF
-BwMEBggrBgEFBQcDAjBGBgNVHSAEPzA9MDsGDCsGAQQBsjEBAgEDBTArMCkGCCsGAQUFBwIBFh1o
-dHRwczovL3NlY3VyZS5jb21vZG8ubmV0L0NQUzBaBgNVHR8EUzBRME+gTaBLhklodHRwOi8vY3Js
-LmNvbW9kb2NhLmNvbS9DT01PRE9SU0FDbGllbnRBdXRoZW50aWNhdGlvbmFuZFNlY3VyZUVtYWls
-Q0EuY3JsMIGLBggrBgEFBQcBAQR/MH0wVQYIKwYBBQUHMAKGSWh0dHA6Ly9jcnQuY29tb2RvY2Eu
-Y29tL0NPTU9ET1JTQUNsaWVudEF1dGhlbnRpY2F0aW9uYW5kU2VjdXJlRW1haWxDQS5jcnQwJAYI
-KwYBBQUHMAGGGGh0dHA6Ly9vY3NwLmNvbW9kb2NhLmNvbTAeBgNVHREEFzAVgRNkd213MkBpbmZy
-YWRlYWQub3JnMA0GCSqGSIb3DQEBCwUAA4IBAQALbSykFusvvVkSIWttcEeifOGGKs7Wx2f5f45b
-nv2ghcxK5URjUvCnJhg+soxOMoQLG6+nbhzzb2rLTdRVGbvjZH0fOOzq0LShq0EXsqnJbbuwJhK+
-PnBtqX5O23PMHutP1l88AtVN+Rb72oSvnD+dK6708JqqUx2MAFLMevrhJRXLjKb2Mm+/8XBpEw+B
-7DisN4TMlLB/d55WnT9UPNHmQ+3KFL7QrTO8hYExkU849g58Dn3Nw3oCbMUgny81ocrLlB2Z5fFG
-Qu1AdNiBA+kg/UxzyJZpFbKfCITd5yX49bOriL692aMVDyqUvh8fP+T99PqorH4cIJP6OxSTdxKM
-MIIFHDCCBASgAwIBAgIRAOK7SUh5KuwJ6cSlGPGZWGYwDQYJKoZIhvcNAQELBQAwgZcxCzAJBgNV
-BAYTAkdCMRswGQYDVQQIExJHcmVhdGVyIE1hbmNoZXN0ZXIxEDAOBgNVBAcTB1NhbGZvcmQxGjAY
-BgNVBAoTEUNPTU9ETyBDQSBMaW1pdGVkMT0wOwYDVQQDEzRDT01PRE8gUlNBIENsaWVudCBBdXRo
-ZW50aWNhdGlvbiBhbmQgU2VjdXJlIEVtYWlsIENBMB4XDTE5MDEwMjAwMDAwMFoXDTIyMDEwMTIz
-NTk1OVowJDEiMCAGCSqGSIb3DQEJARYTZHdtdzJAaW5mcmFkZWFkLm9yZzCCASIwDQYJKoZIhvcN
-AQEBBQADggEPADCCAQoCggEBALL98Dmy0wm1AOxiaio/bxxn/hWvraZDvmUVb3vRKTbDLH14bxaW
-/EYC/Lw/i9d98CunLGKA1O8yogKPdhTFFmmNR8uh6r1a/aHr301d8YQea0DtURyaAH5L4cvsKY6O
-0HF7s5DqYm6tmLq1UrRwIhqgDjBjF4XFRqj7hoXFXFc1VI7LxMwFfT6PStq6WedhROKw5KQytaQS
-vrjgMjpICIP3A/CroGr+bcmqcnXljGUSUB9bzEOjlU9uAsgJ9sl5tjYE0DEtZqc0rT9oqD7U57My
-ECIewElc4VenLB2/GK5MfJoJZTsq7fWNpFkUSRZvxT0TRLqznjVepZ2AFzsplScCAwEAAaOCAdMw
-ggHPMB8GA1UdIwQYMBaAFIKvbIz4xf6WYXzoHz0rcUhexIvAMB0GA1UdDgQWBBS37jX/NtC72k+A
-CsaxitxCsdQxOzAOBgNVHQ8BAf8EBAMCBaAwDAYDVR0TAQH/BAIwADAdBgNVHSUEFjAUBggrBgEF
-BQcDBAYIKwYBBQUHAwIwRgYDVR0gBD8wPTA7BgwrBgEEAbIxAQIBAwUwKzApBggrBgEFBQcCARYd
-aHR0cHM6Ly9zZWN1cmUuY29tb2RvLm5ldC9DUFMwWgYDVR0fBFMwUTBPoE2gS4ZJaHR0cDovL2Ny
-bC5jb21vZG9jYS5jb20vQ09NT0RPUlNBQ2xpZW50QXV0aGVudGljYXRpb25hbmRTZWN1cmVFbWFp
-bENBLmNybDCBiwYIKwYBBQUHAQEEfzB9MFUGCCsGAQUFBzAChklodHRwOi8vY3J0LmNvbW9kb2Nh
-LmNvbS9DT01PRE9SU0FDbGllbnRBdXRoZW50aWNhdGlvbmFuZFNlY3VyZUVtYWlsQ0EuY3J0MCQG
-CCsGAQUFBzABhhhodHRwOi8vb2NzcC5jb21vZG9jYS5jb20wHgYDVR0RBBcwFYETZHdtdzJAaW5m
-cmFkZWFkLm9yZzANBgkqhkiG9w0BAQsFAAOCAQEAC20spBbrL71ZEiFrbXBHonzhhirO1sdn+X+O
-W579oIXMSuVEY1LwpyYYPrKMTjKECxuvp24c829qy03UVRm742R9Hzjs6tC0oatBF7KpyW27sCYS
-vj5wbal+TttzzB7rT9ZfPALVTfkW+9qEr5w/nSuu9PCaqlMdjABSzHr64SUVy4ym9jJvv/FwaRMP
-gew4rDeEzJSwf3eeVp0/VDzR5kPtyhS+0K0zvIWBMZFPOPYOfA59zcN6AmzFIJ8vNaHKy5QdmeXx
-RkLtQHTYgQPpIP1Mc8iWaRWynwiE3ecl+PWzq4i+vdmjFQ8qlL4fHz/k/fT6qKx+HCCT+jsUk3cS
-jDCCBeYwggPOoAMCAQICEGqb4Tg7/ytrnwHV2binUlYwDQYJKoZIhvcNAQEMBQAwgYUxCzAJBgNV
-BAYTAkdCMRswGQYDVQQIExJHcmVhdGVyIE1hbmNoZXN0ZXIxEDAOBgNVBAcTB1NhbGZvcmQxGjAY
-BgNVBAoTEUNPTU9ETyBDQSBMaW1pdGVkMSswKQYDVQQDEyJDT01PRE8gUlNBIENlcnRpZmljYXRp
-b24gQXV0aG9yaXR5MB4XDTEzMDExMDAwMDAwMFoXDTI4MDEwOTIzNTk1OVowgZcxCzAJBgNVBAYT
-AkdCMRswGQYDVQQIExJHcmVhdGVyIE1hbmNoZXN0ZXIxEDAOBgNVBAcTB1NhbGZvcmQxGjAYBgNV
-BAoTEUNPTU9ETyBDQSBMaW1pdGVkMT0wOwYDVQQDEzRDT01PRE8gUlNBIENsaWVudCBBdXRoZW50
-aWNhdGlvbiBhbmQgU2VjdXJlIEVtYWlsIENBMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKC
-AQEAvrOeV6wodnVAFsc4A5jTxhh2IVDzJXkLTLWg0X06WD6cpzEup/Y0dtmEatrQPTRI5Or1u6zf
-+bGBSyD9aH95dDSmeny1nxdlYCeXIoymMv6pQHJGNcIDpFDIMypVpVSRsivlJTRENf+RKwrB6vcf
-WlP8dSsE3Rfywq09N0ZfxcBa39V0wsGtkGWC+eQKiz4pBZYKjrc5NOpG9qrxpZxyb4o4yNNwTqza
-aPpGRqXB7IMjtf7tTmU2jqPMLxFNe1VXj9XB1rHvbRikw8lBoNoSWY66nJN/VCJv5ym6Q0mdCbDK
-CMPybTjoNCQuelc0IAaO4nLUXk0BOSxSxt8kCvsUtQIDAQABo4IBPDCCATgwHwYDVR0jBBgwFoAU
-u69+Aj36pvE8hI6t7jiY7NkyMtQwHQYDVR0OBBYEFIKvbIz4xf6WYXzoHz0rcUhexIvAMA4GA1Ud
-DwEB/wQEAwIBhjASBgNVHRMBAf8ECDAGAQH/AgEAMBEGA1UdIAQKMAgwBgYEVR0gADBMBgNVHR8E
-RTBDMEGgP6A9hjtodHRwOi8vY3JsLmNvbW9kb2NhLmNvbS9DT01PRE9SU0FDZXJ0aWZpY2F0aW9u
-QXV0aG9yaXR5LmNybDBxBggrBgEFBQcBAQRlMGMwOwYIKwYBBQUHMAKGL2h0dHA6Ly9jcnQuY29t
-b2RvY2EuY29tL0NPTU9ET1JTQUFkZFRydXN0Q0EuY3J0MCQGCCsGAQUFBzABhhhodHRwOi8vb2Nz
-cC5jb21vZG9jYS5jb20wDQYJKoZIhvcNAQEMBQADggIBAHhcsoEoNE887l9Wzp+XVuyPomsX9vP2
-SQgG1NgvNc3fQP7TcePo7EIMERoh42awGGsma65u/ITse2hKZHzT0CBxhuhb6txM1n/y78e/4ZOs
-0j8CGpfb+SJA3GaBQ+394k+z3ZByWPQedXLL1OdK8aRINTsjk/H5Ns77zwbjOKkDamxlpZ4TKSDM
-KVmU/PUWNMKSTvtlenlxBhh7ETrN543j/Q6qqgCWgWuMAXijnRglp9fyadqGOncjZjaaSOGTTFB+
-E2pvOUtY+hPebuPtTbq7vODqzCM6ryEhNhzf+enm0zlpXK7q332nXttNtjv7VFNYG+I31gnMrwfH
-M5tdhYF/8v5UY5g2xANPECTQdu9vWPoqNSGDt87b3gXb1AiGGaI06vzgkejL580ul+9hz9D0S0U4
-jkhJiA7EuTecP/CFtR72uYRBcunwwH3fciPjviDDAI9SnC/2aPY8ydehzuZutLbZdRJ5PDEJM/1t
-yZR2niOYihZ+FCbtf3D9mB12D4ln9icgc7CwaxpNSCPt8i/GqK2HsOgkL3VYnwtx7cJUmpvVdZ4o
-gnzgXtgtdk3ShrtOS1iAN2ZBXFiRmjVzmehoMof06r1xub+85hFQzVxZx5/bRaTKTlL8YXLI8nAb
-R9HWdFqzcOoB/hxfEyIQpx9/s81rgzdEZOofSlZHynoSMYIDyjCCA8YCAQEwga0wgZcxCzAJBgNV
-BAYTAkdCMRswGQYDVQQIExJHcmVhdGVyIE1hbmNoZXN0ZXIxEDAOBgNVBAcTB1NhbGZvcmQxGjAY
-BgNVBAoTEUNPTU9ETyBDQSBMaW1pdGVkMT0wOwYDVQQDEzRDT01PRE8gUlNBIENsaWVudCBBdXRo
-ZW50aWNhdGlvbiBhbmQgU2VjdXJlIEVtYWlsIENBAhEA4rtJSHkq7AnpxKUY8ZlYZjANBglghkgB
-ZQMEAgEFAKCCAe0wGAYJKoZIhvcNAQkDMQsGCSqGSIb3DQEHATAcBgkqhkiG9w0BCQUxDxcNMjEx
-MTA4MTYwOTQxWjAvBgkqhkiG9w0BCQQxIgQg5U5pmJj9IFM4VKCtqt/xJXFgbSVrpIpPUNbBqYsq
-69Uwgb4GCSsGAQQBgjcQBDGBsDCBrTCBlzELMAkGA1UEBhMCR0IxGzAZBgNVBAgTEkdyZWF0ZXIg
-TWFuY2hlc3RlcjEQMA4GA1UEBxMHU2FsZm9yZDEaMBgGA1UEChMRQ09NT0RPIENBIExpbWl0ZWQx
-PTA7BgNVBAMTNENPTU9ETyBSU0EgQ2xpZW50IEF1dGhlbnRpY2F0aW9uIGFuZCBTZWN1cmUgRW1h
-aWwgQ0ECEQDiu0lIeSrsCenEpRjxmVhmMIHABgsqhkiG9w0BCRACCzGBsKCBrTCBlzELMAkGA1UE
-BhMCR0IxGzAZBgNVBAgTEkdyZWF0ZXIgTWFuY2hlc3RlcjEQMA4GA1UEBxMHU2FsZm9yZDEaMBgG
-A1UEChMRQ09NT0RPIENBIExpbWl0ZWQxPTA7BgNVBAMTNENPTU9ETyBSU0EgQ2xpZW50IEF1dGhl
-bnRpY2F0aW9uIGFuZCBTZWN1cmUgRW1haWwgQ0ECEQDiu0lIeSrsCenEpRjxmVhmMA0GCSqGSIb3
-DQEBAQUABIIBAAGi0Rwyhp4DRrs98xrr4n5dDRE5/25k+JBb0jgQrexYJLoksqWvgimEj1Uapyw4
-5mJf7CSGctMLaIpxC9mFPQa1x9sAr+KrnSAR8zIL5Z1pad7OBd2BazUZ64OmtfeWCAR4FEvyfUnQ
-6SLy1/PHIzQWjvUEABCW+cvtDOjQ2Pep4CPFE8WIULh9lyg9owQZnDgiHj8beau8r9rX/vAeBs/K
-XjoP5bslbBhfdFr2GcDBHlLBa7Wc/KiVqsGiRwNJ/JMWCy55CFWaS1OEL8TfNrFsHbKIFn80B9Mn
-xcMdOh6rb2rxCowJhe2g8yscZqJsTOmPIpBmZ6VqtnoVG4tanQQAAAAAAAA=
-
-
---=-6ZBoHAHfiP7kSxiwwsDM--
-
+> The idea in pseudocode is:
+> 
+>   [in drivers/pci/probe.c]
+> 
+>   if (bridge->perst_gpio) {
+>       gpiod_set_value(reset, 1); // assert
+>       usleep(...);
+>       gpiod_set_value(reset, 0); // deassert
+>       usleep(...);
+>   } else if (bridge->pci_reset_fn_methods[PERST]) {
+>       bridge->pci_reset_fn_methods[PERST]();
+>   }
+> 
+> It would make drivers slightly simpler and less error prone.
+> 
+> [0]
+> https://lore.kernel.org/linux-arm-kernel/e9ab9c22-f73b-fe72-820a-4f2825c3dabc@lucaceresoli.net/T/#mc4fc8c10ebeeff8c6d3593b0072afbcf7de9f2ae
+> 
+> My 2c,
+> -- 
+> Luca
+> 
