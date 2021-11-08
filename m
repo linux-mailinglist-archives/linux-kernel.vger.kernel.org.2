@@ -2,112 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7CF95449B90
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Nov 2021 19:21:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 06DB3449B93
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Nov 2021 19:21:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235357AbhKHSXm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Nov 2021 13:23:42 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37662 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235228AbhKHSXk (ORCPT
+        id S235427AbhKHSYP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Nov 2021 13:24:15 -0500
+Received: from mail-ot1-f43.google.com ([209.85.210.43]:39692 "EHLO
+        mail-ot1-f43.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235228AbhKHSYO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Nov 2021 13:23:40 -0500
-Received: from mail-yb1-xb34.google.com (mail-yb1-xb34.google.com [IPv6:2607:f8b0:4864:20::b34])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 55B18C061570;
-        Mon,  8 Nov 2021 10:20:56 -0800 (PST)
-Received: by mail-yb1-xb34.google.com with SMTP id q74so45934785ybq.11;
-        Mon, 08 Nov 2021 10:20:56 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=r7XPmJ4Slk0Ee3SezOzVKKKVWOfK/ZMFCj2/Il/40bw=;
-        b=iz01UfRunQAw2bNi51uhKvnwK2/Te9f/yoUFFKDmp5I6iZld01jP8o5venupoJWDO+
-         mT94brOYF2rsnQ9uqe12t0Y+xbOW7arQ2DH21TpPvZeFWaXI5omzz1VApkGnM2MZ15FJ
-         1zrT4C+5b5xSRAioqhGnsxz35d7mTG9TJy1xlk8nSZNpch7bGx/VzMczpRLQYkDGKLgP
-         5ReQhsl85aBI38ZkG/w/Zi2jMhqZqgCQ5fiW15aIJpYxdPWKRvVUhoLq9j1KgTwlCnT9
-         nr2UlZ5lWY9ldfsGC+IC+8RUNbeyEOvkY8IZR5FH5Fq96rFeepMMgtBf9TwyowqfnTsJ
-         FQFQ==
+        Mon, 8 Nov 2021 13:24:14 -0500
+Received: by mail-ot1-f43.google.com with SMTP id r10-20020a056830080a00b0055c8fd2cebdso5558667ots.6;
+        Mon, 08 Nov 2021 10:21:29 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=r7XPmJ4Slk0Ee3SezOzVKKKVWOfK/ZMFCj2/Il/40bw=;
-        b=I7ZRzP1GYj+660QOf/Kt6LiEsIkKcyoIpw3wizWepEdoy3kXYg2N3VTdnxZoyow3Rm
-         ssB2A1Cs3SKFavu78EP4+/iKylfDBvSHoTO2Bozo8mZLqbCC9Y5eMyFEj8C8wYr8F15N
-         baIcTl/SNJLFaDJ7GHefrE9AKmZzCSYdY0vF6r0qfUwt9qw/eUdQDLu3my5JBQ0vKO0H
-         A6hUhg8gdOJ39ZAHM2PrrqzkuaTzB5Jpibk+bW8MHbsVRWfcaeU6MqAsHEVqP4ClbSdf
-         XR+GU7Phcj7ZtuYM2FW6AejYtlc4TDYoXU+ndybHOxSAbAdOUfa1mt6npVaS/3XejMNA
-         mdqg==
-X-Gm-Message-State: AOAM5333zwdGKHmvt/V7GGahPeAHbRzuzySF5bnmBwsjHdYT82ekRhBT
-        S+OQQ396a2BdoaJXMex2weXiM3TsN+DShiR7iOyyNBlpM0s=
-X-Google-Smtp-Source: ABdhPJzKAxzbKjPtiiGNx7AYawm+AKqI67L99mxmMg0zsCRfBfiQ633kM0HeDLshFyAnNtdF6Ej5bom8rFbvvTcqyW4=
-X-Received: by 2002:a25:cc4c:: with SMTP id l73mr1441620ybf.114.1636395655412;
- Mon, 08 Nov 2021 10:20:55 -0800 (PST)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=rCISeuysZKbDMgJjuEiNIJE7YuKQ2TJrqtX7kNAW6+k=;
+        b=GrFweR8To4SppYhNoO1nDbVnP9/j5IZsBOuI2vhf3tqKLfv5wnssYjq+P9mo7pFBlr
+         XWfXlNc1HYE+cbWkbm4cp3LVRUv20r+Ddk3c+Boycvq069nEIcJZS6deHW15qHBkuMzJ
+         inHem2q/34lp1emn5QWrRqttURG4aPP8x6QZWEBmg/COn+tgio7s0oGY7ewAa5KJe60Q
+         R/033q6+a+SxDAQG/0JFqWad4K1FsfKf4xriEyZ5nYaHXl8iRWniRC/YkX9KYSdoYHC8
+         +/fI36exHI7uwWtFRM6qJjTNG4JbSRAyz7uesV3gtp2aNvFjP1/nhMARC5geg3CazQDW
+         IchA==
+X-Gm-Message-State: AOAM530mGAa+xmlCpVoAZaA6/ZQKeygDZ+h4gdu8tRMA+S+pdWWT0BH7
+        N7lU4i+QLwxbEeABaMm6aA==
+X-Google-Smtp-Source: ABdhPJy3zcQSwD3T164usGwB1k3ii5fGInofXXVdg+wtGM5mrZAOChqIQOn0tJZy8lyRAtiuoMCJAA==
+X-Received: by 2002:a05:6830:1014:: with SMTP id a20mr836094otp.63.1636395689139;
+        Mon, 08 Nov 2021 10:21:29 -0800 (PST)
+Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
+        by smtp.gmail.com with ESMTPSA id c8sm3671908ooq.43.2021.11.08.10.21.27
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 08 Nov 2021 10:21:28 -0800 (PST)
+Received: (nullmailer pid 3969396 invoked by uid 1000);
+        Mon, 08 Nov 2021 18:21:27 -0000
+Date:   Mon, 8 Nov 2021 12:21:27 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Pratyush Yadav <p.yadav@ti.com>
+Cc:     Mark Brown <broonie@kernel.org>, Nishanth Menon <nm@ti.com>,
+        Michael Walle <michael@walle.cc>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Richard Weinberger <richard@nod.at>,
+        Tudor Ambarus <tudor.ambarus@microchip.com>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-mtd@lists.infradead.org, linux-spi@vger.kernel.org
+Subject: Re: [PATCH v2 1/3] spi: dt-bindings: add schema listing
+ slave-specific properties
+Message-ID: <YYlqp7+vYd4X0Kyi@robh.at.kernel.org>
+References: <20211028124518.17370-1-p.yadav@ti.com>
+ <20211028124518.17370-2-p.yadav@ti.com>
+ <YYlmx3QyI9zxuO9N@robh.at.kernel.org>
 MIME-Version: 1.0
-References: <20211108083840.4627-1-laoar.shao@gmail.com> <20211108083840.4627-6-laoar.shao@gmail.com>
-In-Reply-To: <20211108083840.4627-6-laoar.shao@gmail.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Mon, 8 Nov 2021 10:20:44 -0800
-Message-ID: <CAEf4BzYn3PwjhjzWV8oPD3A8ozLN_Y4ef7xAHW+oECOMgtMgcA@mail.gmail.com>
-Subject: Re: [PATCH 5/7] samples/bpf/test_overhead_kprobe_kern: make it adopt
- to task comm size change
-To:     Yafang Shao <laoar.shao@gmail.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        "linux-perf-use." <linux-perf-users@vger.kernel.org>,
-        linux-fsdevel@vger.kernel.org,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        kernel test robot <oliver.sang@intel.com>,
-        kbuild test robot <lkp@intel.com>,
-        Kees Cook <keescook@chromium.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>,
-        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        Michal Miroslaw <mirq-linux@rere.qmqm.pl>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        David Hildenbrand <david@redhat.com>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Petr Mladek <pmladek@suse.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YYlmx3QyI9zxuO9N@robh.at.kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 8, 2021 at 12:39 AM Yafang Shao <laoar.shao@gmail.com> wrote:
->
-> bpf_probe_read_kernel_str() will add a nul terminator to the dst, then
-> we don't care about if the dst size is big enough. This patch also
-> replaces the hard-coded 16 with TASK_COMM_LEN to make it adopt to task
-> comm size change.
->
-> Signed-off-by: Yafang Shao <laoar.shao@gmail.com>
-> Reviewed-by: Kees Cook <keescook@chromium.org>
-> Cc: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-> Cc: Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>
-> Cc: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-> Cc: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-> Cc: Michal Miroslaw <mirq-linux@rere.qmqm.pl>
-> Cc: Peter Zijlstra <peterz@infradead.org>
-> Cc: Steven Rostedt <rostedt@goodmis.org>
-> Cc: Matthew Wilcox <willy@infradead.org>
-> Cc: David Hildenbrand <david@redhat.com>
-> Cc: Al Viro <viro@zeniv.linux.org.uk>
-> Cc: Kees Cook <keescook@chromium.org>
-> Cc: Petr Mladek <pmladek@suse.com>
-> ---
+On Mon, Nov 08, 2021 at 12:04:55PM -0600, Rob Herring wrote:
+> On Thu, Oct 28, 2021 at 06:15:16PM +0530, Pratyush Yadav wrote:
+> > Many SPI controllers need to add properties to slave devices. This could
+> 
+> Probably should replace 'slave' with 'peripheral' throughout[1]. 
 
-LGTM.
+Forgot the link:
 
-Acked-by: Andrii Nakryiko <andrii@kernel.org>
-
->  samples/bpf/offwaketime_kern.c          |  4 ++--
->  samples/bpf/test_overhead_kprobe_kern.c | 11 ++++++-----
->  samples/bpf/test_overhead_tp_kern.c     |  5 +++--
->  3 files changed, 11 insertions(+), 9 deletions(-)
->
-
-[...]
+https://www.oshwa.org/a-resolution-to-redefine-spi-signal-names/
