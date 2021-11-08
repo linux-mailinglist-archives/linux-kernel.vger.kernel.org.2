@@ -2,40 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C6EB447D65
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Nov 2021 11:13:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 202BA447D61
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Nov 2021 11:13:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238655AbhKHKPm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Nov 2021 05:15:42 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38480 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235650AbhKHKO5 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Nov 2021 05:14:57 -0500
-Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D41E3C061570;
-        Mon,  8 Nov 2021 02:12:12 -0800 (PST)
+        id S238623AbhKHKPe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Nov 2021 05:15:34 -0500
+Received: from mail.skyhub.de ([5.9.137.197]:38212 "EHLO mail.skyhub.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231913AbhKHKO4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Nov 2021 05:14:56 -0500
 Received: from zn.tnic (p200300ec2f33110088892b77bd117736.dip0.t-ipconnect.de [IPv6:2003:ec:2f33:1100:8889:2b77:bd11:7736])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 637521EC04DE;
-        Mon,  8 Nov 2021 11:12:11 +0100 (CET)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 29D9B1EC04DF;
+        Mon,  8 Nov 2021 11:12:12 +0100 (CET)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1636366331;
+        t=1636366332;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:
+         to:to:cc:mime-version:mime-version:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=TQJym/1rmYQ4+cETXUsQAXpKycUCv2OKpLpqlLMp4Ec=;
-        b=Uqo+C9vwlVvqmyoGrtoRTw3O16a0AUpdq1SX2Gz7G0aoPI3oBCWzbY7o/NkFklAhHi8jOP
-        4k0JkskOEA2iWDf7cBUvtnCWIUr/7QKWlwCNCd7otRQAmCXhaayQyrbnUisCH0B82J4mq6
-        iNmEsmAyNNdmWWvc0o1vQmkI5q9GmBQ=
+        bh=1CKqF0DE8Be0vB1u1hCxGErnnln1gggVNvwi7ZjWJYY=;
+        b=Y2KW/uok9k083wPWd+LGCZ4Ee3hUJbEvZMNHddmCdMXlFKLsDJT7vveXIXQTO647NITs3C
+        J5lucPD3q0bOJwu55O4iDw3VLHz0krF1jsaPHa04RCrPpseyDOR3PAavfJdMjxv2wchwEi
+        +E77VBKRX5oMStFhA2QAR+/BeYY3B6M=
 From:   Borislav Petkov <bp@alien8.de>
 To:     LKML <linux-kernel@vger.kernel.org>
-Cc:     linux-renesas-soc@vger.kernel.org, linux-clk@vger.kernel.org
-Subject: [PATCH v0 04/42] clk: renesas: Check notifier registration return value
-Date:   Mon,  8 Nov 2021 11:11:19 +0100
-Message-Id: <20211108101157.15189-5-bp@alien8.de>
+Subject: [PATCH v0 05/42] dca: Check notifier registration return value
+Date:   Mon,  8 Nov 2021 11:11:20 +0100
+Message-Id: <20211108101157.15189-6-bp@alien8.de>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20211108101157.15189-1-bp@alien8.de>
 References: <20211108101157.15189-1-bp@alien8.de>
@@ -52,43 +47,24 @@ Avoid homegrown notifier registration checks.
 No functional changes.
 
 Signed-off-by: Borislav Petkov <bp@suse.de>
-Cc: linux-renesas-soc@vger.kernel.org
-Cc: linux-clk@vger.kernel.org
 ---
- drivers/clk/renesas/clk-div6.c     | 4 +++-
- drivers/clk/renesas/rcar-cpg-lib.c | 4 +++-
- 2 files changed, 6 insertions(+), 2 deletions(-)
+ drivers/dca/dca-core.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/clk/renesas/clk-div6.c b/drivers/clk/renesas/clk-div6.c
-index 3abd6e5400ad..7d89ca01889a 100644
---- a/drivers/clk/renesas/clk-div6.c
-+++ b/drivers/clk/renesas/clk-div6.c
-@@ -306,7 +306,9 @@ struct clk * __init cpg_div6_register(const char *name,
- 
- 	if (notifiers) {
- 		clock->nb.notifier_call = cpg_div6_clock_notifier_call;
--		raw_notifier_chain_register(notifiers, &clock->nb);
-+
-+		if (raw_notifier_chain_register(notifiers, &clock->nb))
-+			pr_warn("CPG DIV6 clock notifier already registered\n");
- 	}
- 
- 	return clk;
-diff --git a/drivers/clk/renesas/rcar-cpg-lib.c b/drivers/clk/renesas/rcar-cpg-lib.c
-index e93f0011eb07..fbbb6f4a8148 100644
---- a/drivers/clk/renesas/rcar-cpg-lib.c
-+++ b/drivers/clk/renesas/rcar-cpg-lib.c
-@@ -59,7 +59,9 @@ void cpg_simple_notifier_register(struct raw_notifier_head *notifiers,
- 				  struct cpg_simple_notifier *csn)
+diff --git a/drivers/dca/dca-core.c b/drivers/dca/dca-core.c
+index c40c2ebfdae9..3e8f52214652 100644
+--- a/drivers/dca/dca-core.c
++++ b/drivers/dca/dca-core.c
+@@ -428,7 +428,8 @@ EXPORT_SYMBOL_GPL(unregister_dca_provider);
+  */
+ void dca_register_notify(struct notifier_block *nb)
  {
- 	csn->nb.notifier_call = cpg_simple_notifier_call;
--	raw_notifier_chain_register(notifiers, &csn->nb);
-+
-+	if (raw_notifier_chain_register(notifiers, &csn->nb))
-+		pr_warn("CPG notifier already registered\n");
+-	blocking_notifier_chain_register(&dca_provider_chain, nb);
++	if (blocking_notifier_chain_register(&dca_provider_chain, nb))
++		pr_warn("dca provider notifier already registered\n");
  }
+ EXPORT_SYMBOL_GPL(dca_register_notify);
  
- /*
 -- 
 2.29.2
 
