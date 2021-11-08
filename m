@@ -2,150 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5064B449ECD
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Nov 2021 23:55:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CD454449ED0
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Nov 2021 23:55:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240813AbhKHW6K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Nov 2021 17:58:10 -0500
-Received: from mail-io1-f70.google.com ([209.85.166.70]:33543 "EHLO
-        mail-io1-f70.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238608AbhKHW6I (ORCPT
+        id S240854AbhKHW6T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Nov 2021 17:58:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42944 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S240822AbhKHW6Q (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Nov 2021 17:58:08 -0500
-Received: by mail-io1-f70.google.com with SMTP id f19-20020a6b6213000000b005ddc4ce4deeso12696966iog.0
-        for <linux-kernel@vger.kernel.org>; Mon, 08 Nov 2021 14:55:23 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=z5scoa6MdgDTM/v1KInMqbp8/KCcBhmgZOy4sVbZyCY=;
-        b=IY9VExdIQKpHrzZ1U1XP1nhg4eR6e2V36MGIWlwfPR5tE4emBsvAlHYKHxZWrkLPvo
-         vd2xGsEN3V9DhlC+7NGj5Kx8lJTo5mimRyP5t82FeJb9/L1GSXErCd4ir/u95Y+jLAtm
-         5MYF7KtJj7x8mOIsm+tTOmwS7KGDZwnUumN4ZpGW0rWXWILQMdQStteFJEkJIh0NuAXj
-         HuuvhFB+JRrlbg6m+Nq5XjjJchsrIhQAspoKKhTxPHWZ2yr808w4DIq5N97dT9TMmcN+
-         FovvnTwSFwFYwewOwlPhjvXaBJ0wk99TmRZby07H/PZX+GtxbQSoHqSQQHMY2eDSWYZp
-         s8Zg==
-X-Gm-Message-State: AOAM530zf+Xk2/253HG8tubAvRZQ4GjcMIsnMTKbxru/ZDHFQtlIdV3v
-        RlX8xnAdZIwlqu5sXfWEE7dk4kodnElugs8j6a5N8FHyiJEW
-X-Google-Smtp-Source: ABdhPJxkX8wQ0QA2DeaLGIQSJPOxngvajESK7Vfl07z6xa8mUqFCT4tRjIr/6/JXFI3P5v6YNF5HWZZdWeSW7Ud1P9dqCLHRKuzs
+        Mon, 8 Nov 2021 17:58:16 -0500
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1234::107])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 35654C061570;
+        Mon,  8 Nov 2021 14:55:31 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
+        :Reply-To:Content-ID:Content-Description;
+        bh=bHrIX9cB0So6z8v8dpE1wVEf+y8GwLRTo4Q7rtYefjY=; b=cs8IIcZXWaLgUzbYR7jhvU1yMU
+        Ce3ATRipt2+n1ZQPa2smT2RW/1jbgN5jn8o6Y4QBTcJ4FaWDbErV76r0WGskdHtL6PrBQFQJibCj8
+        PWvSo0VoAcbnm0Mk0Fjg/OV4i06PUrGGIOCFRzPAZ/VVdB/GGNOlammnV0CFqLEskuGZaEx8LNqBY
+        TVfNazOQ72GRtuDJocBLXf4gqUbD9rXafHwxI8+Qv450qjsMXiDihKLwQrrK9sztm7shoqh1N7koP
+        GwDveOp+DB7fz+ozCx6UzMQIeKkR/AsQWIJWBRi7/1CeYDZUAG9bEhj0A2HDvzqB5VYM+V96o2aVx
+        ShbEWTLg==;
+Received: from [2601:1c0:6280:3f0::aa0b]
+        by merlin.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mkDXz-008jrU-Pg; Mon, 08 Nov 2021 22:55:28 +0000
+Subject: Re: [PATCH v8 2/4] iio: adc: Add Xilinx AMS driver
+To:     Anand Ashok Dumbre <anand.ashok.dumbre@xilinx.com>,
+        linux-kernel@vger.kernel.org, jic23@kernel.org, lars@metafoo.de,
+        linux-iio@vger.kernel.org, git@xilinx.com, michal.simek@xilinx.com,
+        pmeerw@pmeerw.net, devicetree@vger.kernel.org
+Cc:     Manish Narani <manish.narani@xilinx.com>
+References: <20211108210509.29870-1-anand.ashok.dumbre@xilinx.com>
+ <20211108210509.29870-3-anand.ashok.dumbre@xilinx.com>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <f81d00b2-8df1-8866-da4e-bedba13c34a2@infradead.org>
+Date:   Mon, 8 Nov 2021 14:55:22 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:ea5:: with SMTP id u5mr1743510ilj.285.1636412122868;
- Mon, 08 Nov 2021 14:55:22 -0800 (PST)
-Date:   Mon, 08 Nov 2021 14:55:22 -0800
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000004a302505d04ee33c@google.com>
-Subject: [syzbot] bpf-next boot error: KASAN: global-out-of-bounds Read in task_iter_init
-From:   syzbot <syzbot+e0d81ec552a21d9071aa@syzkaller.appspotmail.com>
-To:     ast@kernel.org, daniel@iogearbox.net, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20211108210509.29870-3-anand.ashok.dumbre@xilinx.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On 11/8/21 1:05 PM, Anand Ashok Dumbre wrote:
+> diff --git a/drivers/iio/adc/Kconfig b/drivers/iio/adc/Kconfig
+> index af168e1c9fdb..6d711f401326 100644
+> --- a/drivers/iio/adc/Kconfig
+> +++ b/drivers/iio/adc/Kconfig
+> @@ -1278,4 +1278,19 @@ config XILINX_XADC
+>   	  The driver can also be build as a module. If so, the module will be called
+>   	  xilinx-xadc.
+>   
+> +config XILINX_AMS
+> +	tristate "Xilinx AMS driver"
+> +	depends on ARCH_ZYNQMP || COMPILE_TEST
+> +	depends on HAS_IOMEM
+> +	help
+> +	  Say yes here to have support for the Xilinx AMS for Ultrascale/Ultrascale+
+> +	  System Monitor. With this you can measure and monitor the Voltages and
+> +          Temperature values on the SOC.
 
-syzbot found the following issue on:
+That last line above should be indented with one tab + 2 spaces
+instead of all spaces.
 
-HEAD commit:    c23551c9c36a selftests/bpf: Add exception handling selftes..
-git tree:       bpf-next
-console output: https://syzkaller.appspot.com/x/log.txt?x=107d637ab00000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=a5d447cdc3ae81d9
-dashboard link: https://syzkaller.appspot.com/bug?extid=e0d81ec552a21d9071aa
-compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.2
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+e0d81ec552a21d9071aa@syzkaller.appspotmail.com
-
-Bluetooth: RFCOMM TTY layer initialized
-Bluetooth: RFCOMM socket layer initialized
-Bluetooth: RFCOMM ver 1.11
-Bluetooth: BNEP (Ethernet Emulation) ver 1.3
-Bluetooth: BNEP filters: protocol multicast
-Bluetooth: BNEP socket layer initialized
-Bluetooth: CMTP (CAPI Emulation) ver 1.0
-Bluetooth: CMTP socket layer initialized
-Bluetooth: HIDP (Human Interface Emulation) ver 1.2
-Bluetooth: HIDP socket layer initialized
-NET: Registered PF_RXRPC protocol family
-Key type rxrpc registered
-Key type rxrpc_s registered
-NET: Registered PF_KCM protocol family
-lec:lane_module_init: lec.c: initialized
-mpoa:atm_mpoa_init: mpc.c: initialized
-l2tp_core: L2TP core driver, V2.0
-l2tp_ppp: PPPoL2TP kernel driver, V2.0
-l2tp_ip: L2TP IP encapsulation support (L2TPv3)
-l2tp_netlink: L2TP netlink interface
-l2tp_eth: L2TP ethernet pseudowire support (L2TPv3)
-l2tp_ip6: L2TP IP encapsulation support for IPv6 (L2TPv3)
-NET: Registered PF_PHONET protocol family
-8021q: 802.1Q VLAN Support v1.8
-DCCP: Activated CCID 2 (TCP-like)
-DCCP: Activated CCID 3 (TCP-Friendly Rate Control)
-sctp: Hash tables configured (bind 32/56)
-NET: Registered PF_RDS protocol family
-Registered RDS/infiniband transport
-Registered RDS/tcp transport
-tipc: Activated (version 2.0.0)
-NET: Registered PF_TIPC protocol family
-tipc: Started in single node mode
-NET: Registered PF_SMC protocol family
-9pnet: Installing 9P2000 support
-NET: Registered PF_CAIF protocol family
-NET: Registered PF_IEEE802154 protocol family
-Key type dns_resolver registered
-Key type ceph registered
-libceph: loaded (mon/osd proto 15/24)
-batman_adv: B.A.T.M.A.N. advanced 2021.3 (compatibility version 15) loaded
-openvswitch: Open vSwitch switching datapath
-NET: Registered PF_VSOCK protocol family
-mpls_gso: MPLS GSO support
-IPI shorthand broadcast: enabled
-AVX2 version of gcm_enc/dec engaged.
-AES CTR mode by8 optimization enabled
-sched_clock: Marking stable (11873113821, 15126850)->(11899219612, -10978941)
-registered taskstats version 1
-==================================================================
-BUG: KASAN: global-out-of-bounds in task_iter_init+0x212/0x2e7 kernel/bpf/task_iter.c:661
-Read of size 4 at addr ffffffff90297404 by task swapper/0/1
-
-CPU: 1 PID: 1 Comm: swapper/0 Not tainted 5.15.0-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Call Trace:
- <TASK>
- __dump_stack lib/dump_stack.c:88 [inline]
- dump_stack_lvl+0xcd/0x134 lib/dump_stack.c:106
- print_address_description.constprop.0.cold+0xf/0x309 mm/kasan/report.c:256
- __kasan_report mm/kasan/report.c:442 [inline]
- kasan_report.cold+0x83/0xdf mm/kasan/report.c:459
- task_iter_init+0x212/0x2e7 kernel/bpf/task_iter.c:661
- do_one_initcall+0x103/0x650 init/main.c:1295
- do_initcall_level init/main.c:1368 [inline]
- do_initcalls init/main.c:1384 [inline]
- do_basic_setup init/main.c:1403 [inline]
- kernel_init_freeable+0x6b1/0x73a init/main.c:1606
- kernel_init+0x1a/0x1d0 init/main.c:1497
- ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:295
- </TASK>
-
-The buggy address belongs to the variable:
- btf_task_struct_ids+0x4/0x40
-
-Memory state around the buggy address:
- ffffffff90297300: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
- ffffffff90297380: 00 00 00 00 00 00 00 00 00 00 00 00 f9 f9 f9 f9
->ffffffff90297400: 04 f9 f9 f9 f9 f9 f9 f9 00 f9 f9 f9 f9 f9 f9 f9
-                   ^
- ffffffff90297480: 00 04 f9 f9 f9 f9 f9 f9 00 00 f9 f9 f9 f9 f9 f9
- ffffffff90297500: 04 f9 f9 f9 f9 f9 f9 f9 04 f9 f9 f9 f9 f9 f9 f9
-==================================================================
-
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+-- 
+~Randy
