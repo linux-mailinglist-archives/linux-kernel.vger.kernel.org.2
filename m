@@ -2,123 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C6890449EFC
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 00:21:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EE630449F00
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 00:27:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240925AbhKHXYI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Nov 2021 18:24:08 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48656 "EHLO
+        id S240629AbhKHXa2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Nov 2021 18:30:28 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50056 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240249AbhKHXYF (ORCPT
+        with ESMTP id S238889AbhKHXa0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Nov 2021 18:24:05 -0500
-Received: from mail-oi1-x234.google.com (mail-oi1-x234.google.com [IPv6:2607:f8b0:4864:20::234])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3675BC061714
-        for <linux-kernel@vger.kernel.org>; Mon,  8 Nov 2021 15:21:19 -0800 (PST)
-Received: by mail-oi1-x234.google.com with SMTP id n66so6717494oia.9
-        for <linux-kernel@vger.kernel.org>; Mon, 08 Nov 2021 15:21:19 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kali.org; s=google;
-        h=message-id:date:mime-version:user-agent:subject:content-language:to
-         :cc:references:from:in-reply-to:content-transfer-encoding;
-        bh=aglDua5AdbsngBR/JjVxVOGN4ojYR1I4q1+qjCDZ8kY=;
-        b=Eg7aarpr23Ymmm+qLTN10NI1ZvqC/lnX626amIjCU5JPmst7qh8jx+QYoQ1nEpxHYg
-         TQA9umINVSCeM2Zed5qvr6rUkMHzL/B7CB4kKwig3pjtqTZQqEao96aNtKcEe92Buhcb
-         xZtMWJbSpYUR6/6qV5jOsxZOVFZpFZd8GcLoegr9NPEXjvTuLoKiB/6JwE4RszLny2aq
-         tKcLUys/j7B2MdX3qSx7kXvXFo07Tvv0eH5jFA4pWuyEVlVew1sj4VPNQV6hClDDjqID
-         oY3YBXfSdwQIenLWtOGdKdvYRIwz937qas2r/XaTaTVWGRcgRu8GVt29OwRbyfOwv5My
-         tyfA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:in-reply-to
-         :content-transfer-encoding;
-        bh=aglDua5AdbsngBR/JjVxVOGN4ojYR1I4q1+qjCDZ8kY=;
-        b=e7aiUbTqxVh3sZDwIvKMM7xR68KjGYndgn6c1+XdiPvWRXG1bB1p8YP399ruDxy7Gg
-         cE38NM2tTS3yKsR5TWIVu7tx11IFOvrxfWjVHZh2AmcXwTBCqtvilK065TphAAWaFDA7
-         kK5vJYqqUxUohTu1Tkb41YbLBOQjhrL+KaFwgKolFucolSIfWBiH/8E9Nnt0neD/6kN9
-         hubS6WUb6KEOfGzvLtMSu1V/LHuE3DsaboK7gBKh/WTJDEXjVWgAnPYpuPFz7E7pFPRo
-         L3AtIb00/QlJktR8CgafoY3U5CCnYv3zJ5gA6q2UMcOI8mSHOnzL9XF3oOKV9Np4w8dT
-         ygpg==
-X-Gm-Message-State: AOAM530jG4QqlgQunir++37az3ybJgvfmd3l9A0R76YO2Tog4b0tS8WL
-        2Q0erALx7dTPtcbDNTh0EVEuYQ==
-X-Google-Smtp-Source: ABdhPJwQPnBe2Z1YRuYGi21p43LHxeumd8a7Ehm4+kcXJPHdfw2SjGwwrqr7bfUNnge764Y9jctRig==
-X-Received: by 2002:a05:6808:13c6:: with SMTP id d6mr1818543oiw.177.1636413678648;
-        Mon, 08 Nov 2021 15:21:18 -0800 (PST)
-Received: from [192.168.11.48] (cpe-173-173-107-246.satx.res.rr.com. [173.173.107.246])
-        by smtp.gmail.com with ESMTPSA id w29sm5555627ooe.25.2021.11.08.15.21.17
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 08 Nov 2021 15:21:18 -0800 (PST)
-Message-ID: <97e93876-d654-0a89-dce1-6fe1189345e2@kali.org>
-Date:   Mon, 8 Nov 2021 17:21:16 -0600
+        Mon, 8 Nov 2021 18:30:26 -0500
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 28A22C061570
+        for <linux-kernel@vger.kernel.org>; Mon,  8 Nov 2021 15:27:42 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=Sender:In-Reply-To:Content-Type:
+        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=hXlfPXoraJxvMlmnLjJ9FDLqsSLbWHE4ov9uAQpzlyQ=; b=XXJUAGCdeAroytP5eC/+J99V/7
+        3OSN0yMihx5SkdJuhea2EInMOGfRp8dbZYPU2avu/U5JH8sXKKpyxVS58r6MAhj6pM1kHCEN8Ghzo
+        PZs+zlv6NxBHm8ShQcYRACbxrXYiApdvZawPoeCFkc26UJxGePd6y5CkSxDbw1bUwKfa4Jf574uOp
+        nXD8+OINPK+yQimz78+ezFKfZTz9Jt9jwu88d5aQ4mTV+AODhW7Am+plvr8GOyaNN5PCcu93HrlJb
+        FFjP5MBhKfYaDNyTRrl1eegx1En6+t0+VUbYaVPp/AZYIuKZdevlmUOgEdJv1rL2DqjhqEdFkqQ9F
+        ClW8pLdQ==;
+Received: from mcgrof by bombadil.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mkE3A-00Haag-AZ; Mon, 08 Nov 2021 23:27:40 +0000
+Date:   Mon, 8 Nov 2021 15:27:40 -0800
+From:   Luis Chamberlain <mcgrof@kernel.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Jessica Yu <jeyu@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: [GIT PULL] Modules updates for v5.16-rc1
+Message-ID: <YYmybK73+NGQdsQw@bombadil.infradead.org>
+References: <YYWxSlB1CNhhjUTQ@bombadil.infradead.org>
+ <CAHk-=wjQyGhKCM+F8vRS6SSesXk1rZEP4QxdTjvr8DXmC-e1Lg@mail.gmail.com>
+ <YYlK2QKpmb+ipalA@bombadil.infradead.org>
+ <CAHk-=whvQ0JxYDB2BWx4r3Ym-MM1U5G_OY0E=31UVqbwz2_-Dw@mail.gmail.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:91.0)
- Gecko/20100101 Thunderbird/91.3.0
-Subject: Re: [PATCH v3 0/5] Refactor thermal pressure update to avoid code
- duplication
-Content-Language: en-US
-To:     Thara Gopinath <thara.gopinath@linaro.org>,
-        Lukasz Luba <lukasz.luba@arm.com>
-Cc:     linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-arm-msm@vger.kernel.org, sudeep.holla@arm.com,
-        will@kernel.org, catalin.marinas@arm.com, linux@armlinux.org.uk,
-        gregkh@linuxfoundation.org, rafael@kernel.org,
-        viresh.kumar@linaro.org, amitk@kernel.org,
-        daniel.lezcano@linaro.org, amit.kachhap@gmail.com,
-        bjorn.andersson@linaro.org, agross@kernel.org
-References: <20211103161020.26714-1-lukasz.luba@arm.com>
- <c7b526f0-2c26-0cfc-910b-3521c6a6ef51@kali.org>
- <3cba148a-7077-7b6b-f131-dc65045aa348@arm.com>
- <9d533b6e-a81c-e823-fa6f-61fdea92fa65@kali.org>
- <74ea027b-b213-42b8-0f7d-275f3b84712e@linaro.org>
- <74603569-2ff1-999e-9618-79261fdb0ee4@kali.org>
- <b7e76c2a-ceac-500a-ff75-535a3f0d51d6@linaro.org>
- <f955a2aa-f788-00db-1ed8-dc9c7a1b2572@kali.org>
- <59054c90-c1cd-85bf-406e-579df668d7b4@linaro.org>
- <eac00041-a1b8-0780-931d-52249d538800@kali.org>
- <2c54dbbd-2ecb-fb76-fa9f-9752f429c20e@linaro.org>
-From:   Steev Klimaszewski <steev@kali.org>
-In-Reply-To: <2c54dbbd-2ecb-fb76-fa9f-9752f429c20e@linaro.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAHk-=whvQ0JxYDB2BWx4r3Ym-MM1U5G_OY0E=31UVqbwz2_-Dw@mail.gmail.com>
+Sender: Luis Chamberlain <mcgrof@infradead.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Thara,
-> Hi Steev,
->
-> IIUC, PineBook Pro has Rockchip RK3399 which has 2 Cortex A-72 and 4 
-> Cortex A-52 where as C630 has Qualcomm sdm845 which has 4 Cortex A-75 
-> and 4 Cortex A-55. Task placements and subsequently cpu load will be 
-> different for both the platforms. With the same workload, I will 
-> expect Rockchip to system to be more loaded than sdm845. Having said 
-> that, what cpu-freq governor are you using on both the systems.
->
-I'm using sched-util on both of the systems.
+On Mon, Nov 08, 2021 at 09:07:58AM -0800, Linus Torvalds wrote:
+> So if your 'origin' remote branch is the one that tracks upstream, the
+> command line should be something like
+> 
+>    git request-pull origin/master git://git.kernel.org/....
+> 
+> please give that a try (but don't update your origin tree before you
+> do, since I've just pulled things, and then you'll get the same
+> "nothing to pull").
 
-I've tried a number of different ways of forcing builds only on the A-75 
-cores, and I simply cannot get the load to be "enough" to kick in the 
-boost frequency.
+Yes, I see the diff stat now thanks! Will be sure to make it smoother on
+the next rounds.
 
-An example being
-
-git clone https://github.com/zellij-org/zellij.git
-
-cd zellij
-
-taskset --cpu-list 4-7 cargo build --release
-
-git clean -fdx
-
-taskset --cpu-list 6-7 cargo build --release
-
-
-On my C630, it never goes higher than 85C with the 4 cores being used, 
-and with 2, it never goes about 65C and I do not get any 2.96GHz.  It's 
-currently sitting at "6" in the time_in_state for 2965800.
-
-
---steev
-
+  Luis
