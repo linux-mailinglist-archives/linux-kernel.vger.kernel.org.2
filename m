@@ -2,75 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 336444479E4
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Nov 2021 06:22:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 442A14479E7
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Nov 2021 06:23:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236836AbhKHFYz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Nov 2021 00:24:55 -0500
-Received: from mga11.intel.com ([192.55.52.93]:44601 "EHLO mga11.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231444AbhKHFYy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Nov 2021 00:24:54 -0500
-X-IronPort-AV: E=McAfee;i="6200,9189,10161"; a="229626050"
-X-IronPort-AV: E=Sophos;i="5.87,217,1631602800"; 
-   d="scan'208";a="229626050"
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Nov 2021 21:22:10 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.87,217,1631602800"; 
-   d="scan'208";a="469480737"
-Received: from lkp-server02.sh.intel.com (HELO c20d8bc80006) ([10.239.97.151])
-  by orsmga002.jf.intel.com with ESMTP; 07 Nov 2021 21:22:07 -0800
-Received: from kbuild by c20d8bc80006 with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1mjx6d-000BZM-5d; Mon, 08 Nov 2021 05:22:07 +0000
-Date:   Mon, 8 Nov 2021 13:21:41 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Thomas Marangoni <thomas.marangoni@mec.at>, sre@kernel.org,
-        wens@csie.org, linux-pm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     kbuild-all@lists.01.org, Thomas Marangoni <thomas.marangoni@mec.at>
-Subject: [RFC PATCH] PM: axp20x_ocv_values_uV[] can be static
-Message-ID: <20211108052141.GA10523@9d7d69d1eba2>
-References: <20211025144455.16665-1-thomas.marangoni@mec.at>
+        id S236875AbhKHF02 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Nov 2021 00:26:28 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58904 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236707AbhKHF00 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Nov 2021 00:26:26 -0500
+Received: from mail-il1-x143.google.com (mail-il1-x143.google.com [IPv6:2607:f8b0:4864:20::143])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 43369C061570
+        for <linux-kernel@vger.kernel.org>; Sun,  7 Nov 2021 21:23:43 -0800 (PST)
+Received: by mail-il1-x143.google.com with SMTP id f10so15709956ilu.5
+        for <linux-kernel@vger.kernel.org>; Sun, 07 Nov 2021 21:23:43 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:reply-to:sender:from:date:message-id:subject:to;
+        bh=youMNmM6cy9kNjHo6KM5we+eIuNffRRVIA06auuS0CM=;
+        b=l9sqZYZ2GeS6EJQ9yvbdrZC2r2RzpwzFraMnhvmQ8CA0No7/P2V26L5lBiIZtdABKO
+         czDVO2hl7j+TYTG3VawNU7zmMDycfXJz8dJxhwETZLpJLhdqJqENJZ0RSFUAEMbHGfT6
+         W4TCOlDnVg+rcRhpGiT6zXa7Ipaf1Wgf+0aZ5dmsKE/Avz5U//tI10LYefdCxuate8l1
+         XOe8dRwi6KKINJatwvkvSBriFLhH8ZDAvWCxA6Psy3J0++UuWrwoWKHIjT3KNNoAAJcA
+         aRPbqUv+Jl9yz69IuSXcXJ103NkI7D96AOQS56l9oaOVKFmb1MYZtXZjpcIyU3GxJaNj
+         HyTA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:reply-to:sender:from:date
+         :message-id:subject:to;
+        bh=youMNmM6cy9kNjHo6KM5we+eIuNffRRVIA06auuS0CM=;
+        b=kApFfNSbiv3kN/BFJut9flsgWju/NHUI1xTa3aw0mqrYx/KD10e/UZN3Bxfd6A6191
+         Ug5Bjy3W0yFm8sIh7OWO5w+XF8liF4ijsKh6nkQUp65ymObntbVNIoqb5GQEgfRuBYKt
+         RFgwaKbbr4btyCT3kmiZF23bOlyt3R7325ryvpuOFq0RfTVxD65VvgcZnxMvviC0JPqh
+         RHrit1ojAcMNt0IoPDwk6wOBSGXpSQ9pNTTLKzL3x/HTrVZwnOTD/i4Tm0e462fg847d
+         ECFcpY34cdQg/DmV5unLp1RFeGwTMDrA0WF/zQILWb+s5IHm7t8b1cK71gpV0uGvAJ5r
+         DNVQ==
+X-Gm-Message-State: AOAM532AQSk2WcF/XdZxQsNPmFH1V/tWqVkH0Egj3YwCEFLPbUyTEeVw
+        Bzmjk5yHUSBq4FkRMjXlgzyN53m+1vztB68fYKE=
+X-Google-Smtp-Source: ABdhPJzpgAuW5y9h9DusUcBnqq1eVwGxFVEnrkLkbkistw7T2bJy+XfXsXtSDuvSawVUv8GnLBd5SPVpVgAkZIYSemY=
+X-Received: by 2002:a05:6e02:148d:: with SMTP id n13mr20578291ilk.100.1636349022725;
+ Sun, 07 Nov 2021 21:23:42 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211025144455.16665-1-thomas.marangoni@mec.at>
-X-Patchwork-Hint: ignore
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Reply-To: dr.mokhbermarjan2021@gmail.com
+Sender: mrsnoorhidayah23@gmail.com
+Received: by 2002:a92:6012:0:0:0:0:0 with HTTP; Sun, 7 Nov 2021 21:23:41 -0800 (PST)
+From:   "Dr.Mokhber Marjan" <dr.mokhbermarjan2021@gmail.com>
+Date:   Sun, 7 Nov 2021 21:23:41 -0800
+X-Google-Sender-Auth: IWOuGQouOTIs7UyxZb9diN-rRBE
+Message-ID: <CAAZS_VXkc1MNL3XW4Eb-GG=pf_EzB1qbCQ=CK=fg0ub8ag3-5Q@mail.gmail.com>
+Subject: My Dear Friend,
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-drivers/power/supply/axp20x_battery.c:105:11: warning: symbol 'axp20x_ocv_values_uV' was not declared. Should it be static?
-drivers/power/supply/axp20x_battery.c:1004:1: warning: symbol 'dev_attr_voltage_low_alert_level1' was not declared. Should it be static?
+Hi Dear
 
-Reported-by: kernel test robot <lkp@intel.com>
-Signed-off-by: kernel test robot <lkp@intel.com>
----
- axp20x_battery.c |    4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+I will like to know if you have received the email i sent to you last
+week. Kindly confirm the receipt of my letter once you read this mail.
+My cheerful regards to your family
 
-diff --git a/drivers/power/supply/axp20x_battery.c b/drivers/power/supply/axp20x_battery.c
-index 5997c8192c73e..ec17841d51733 100644
---- a/drivers/power/supply/axp20x_battery.c
-+++ b/drivers/power/supply/axp20x_battery.c
-@@ -102,7 +102,7 @@ struct axp20x_batt_ps {
-  * OCV curve has fixed values and percentage can be adjusted, this array represents
-  * the fixed values in uV
-  */
--const int axp20x_ocv_values_uV[AXP20X_OCV_MAX + 1] = {
-+static const int axp20x_ocv_values_uV[AXP20X_OCV_MAX + 1] = {
- 	3132800,
- 	3273600,
- 	3414400,
-@@ -1001,7 +1001,7 @@ static ssize_t voltage_low_alert_level1_store(struct device *dev,
- 	return count;
- }
- 
--DEVICE_ATTR_RW(voltage_low_alert_level1);
-+static DEVICE_ATTR_RW(voltage_low_alert_level1);
- 
- static ssize_t voltage_low_alert_level2_show(struct device *dev,
- 					     struct device_attribute *attr,
+Dr.Mokhber Marjan,
