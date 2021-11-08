@@ -2,179 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B86B144808E
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Nov 2021 14:49:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8FCC2448092
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Nov 2021 14:49:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236661AbhKHNwI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Nov 2021 08:52:08 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60042 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238804AbhKHNwD (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Nov 2021 08:52:03 -0500
-Received: from mail-pf1-x435.google.com (mail-pf1-x435.google.com [IPv6:2607:f8b0:4864:20::435])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7CCFAC061570;
-        Mon,  8 Nov 2021 05:49:19 -0800 (PST)
-Received: by mail-pf1-x435.google.com with SMTP id o4so2005710pfp.13;
-        Mon, 08 Nov 2021 05:49:19 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=u0pSRTw7ZC0+s4OzaQWGGWnVDXOfXxdQMKH6CCzPOw8=;
-        b=H+RJug8nrhgfdlsaokIuo+zjCpYA0hwpjmN4aCwxnO/x9rHtA7JeT6h0on4lAeenRf
-         j+AolIkV8rNhB1Ufo1p6LYB+wI9h7Ev4YfJrBzimsbcuC2ksbZAofVpho9TTPhRNvPZm
-         O+7jhould/HsIN186yVOO+oK5RCy5rbs/Coditkqau/MyutOW12+zE8RBSkiugndYamD
-         Q+C5bfzqk2YiB1agI10XVP8YlV24WQIk6Ag8VfDc4aKqm2y9uuOBZzwkz9ZepGC8PQIA
-         M8pqVg2RVfHre9xrgofRlG3tZEPXqX0h+0K28GGbdn/ZWP5xYP04aeFk26z77xDSBzwK
-         SgNw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=u0pSRTw7ZC0+s4OzaQWGGWnVDXOfXxdQMKH6CCzPOw8=;
-        b=G2mlHQR7Nfq0ZcrncFsl8mgrJ/shiYHh0jQPZ7m9y8+TjpVbTt3UxQs0xw6DCF0eIJ
-         nUXGtKlxMLT3B0spsnBcs6HcT+52ZUvaQ5YC64Z7oXOAWx06TcylmodJ201DsbnMN1Qg
-         JP/oEgt35NHb2HqT2Sc8e8K/ILOnWslwwiPBWtjHos+iarU3WX+c02PBIhdHsYpdut27
-         DpQSEMWysJ1cR6xQKWLtY2tzGY3l7/0isux3WpjOOoYo2yvBvGh1MpU8l/dBCK2filjI
-         eE9xIYtGcBX5cVkzn7xLOY9mg/EPmGqq+Nv6oqCVxpepEMl9RU5j29sl5d8WeaJZ3gs1
-         xyZQ==
-X-Gm-Message-State: AOAM530LFLRjfayu8NbnRKUa+BgXznbs6WBD8gzkTMpfVLJ6aUvO3aHh
-        uJ70KHw7+Bk/L4qUn6TucYQ=
-X-Google-Smtp-Source: ABdhPJxDFObt0FQYT2Iv0mXH2xKIKNjN8TCDBfvaRHjMigY30k85rupTkFf71SaR6ffEgg5rGey9vA==
-X-Received: by 2002:a63:5fc8:: with SMTP id t191mr46165273pgb.361.1636379358950;
-        Mon, 08 Nov 2021 05:49:18 -0800 (PST)
-Received: from host-x86-64.. ([122.161.243.27])
-        by smtp.gmail.com with ESMTPSA id t13sm10780466pfl.214.2021.11.08.05.49.15
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 08 Nov 2021 05:49:18 -0800 (PST)
-From:   Ajay Garg <ajaygargnsit@gmail.com>
-To:     gregkh@linuxfoundation.org, jirislaby@kernel.org,
-        andriy.shevchenko@linux.intel.com, kernel@esmil.dk,
-        linux-serial@vger.kernel.org, linux-kernel@vger.kernel.org,
-        paskripkin@gmail.com, johan@kernel.org
-Cc:     Ajay Garg <ajaygargnsit@gmail.com>
-Subject: [PATCH v5] vt: keyboard: suppress warnings in vt_do_kdgkb_ioctl
-Date:   Mon,  8 Nov 2021 19:19:01 +0530
-Message-Id: <20211108134901.7449-1-ajaygargnsit@gmail.com>
-X-Mailer: git-send-email 2.30.2
+        id S240105AbhKHNwZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Nov 2021 08:52:25 -0500
+Received: from mail.skyhub.de ([5.9.137.197]:45032 "EHLO mail.skyhub.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S237802AbhKHNwY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Nov 2021 08:52:24 -0500
+Received: from zn.tnic (p200300ec2f33110093973d8dfcf40fd9.dip0.t-ipconnect.de [IPv6:2003:ec:2f33:1100:9397:3d8d:fcf4:fd9])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 467971EC0464;
+        Mon,  8 Nov 2021 14:49:39 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1636379379;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=rKv0RtlSLo3j/2hTxdXNr6Rql/ET5rRqLoq4AI6m/cg=;
+        b=iYTDXbpYg9a2gtqmYlY4XP7MM39DNh4FCx9OFVWowie0Z5HxAnSB/na2Gj3dQrxt0efOZr
+        KBnyTmpi7qVEquTydmA9RQJX9cp3wt2QPeJvnC8UueJ0cyUP5W3iGMt1qITSW0ZkJvDggY
+        rteuXDaJZhJ6Xbm8KjNI1Lft43gSrsc=
+Date:   Mon, 8 Nov 2021 14:49:33 +0100
+From:   Borislav Petkov <bp@alien8.de>
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Linux-sh list <linux-sh@vger.kernel.org>
+Subject: Re: [PATCH v0 35/42] sh: Check notifier registration return value
+Message-ID: <YYkq7WbmNXNgiqv9@zn.tnic>
+References: <20211108101157.15189-1-bp@alien8.de>
+ <20211108101157.15189-36-bp@alien8.de>
+ <CAMuHMdW4fv4LN6oDS6qgYodf74_NvbzMxQfRbtnS-mn_D+u7Kg@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <CAMuHMdW4fv4LN6oDS6qgYodf74_NvbzMxQfRbtnS-mn_D+u7Kg@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-smatch-kchecker gives the following warnings when run on keyboard.c :
+On Mon, Nov 08, 2021 at 02:31:41PM +0100, Geert Uytterhoeven wrote:
+> Do you think these can actually fail?
 
-vt_do_kdgkb_ioctl() error: uninitialized symbol 'kbs'.
-vt_do_kdgkb_ioctl() error: uninitialized symbol 'ret'.
+Hmm, maybe you missed the 0th message. Does this explain it:
 
-i)
-The 'kbs" warning was introduced by "07edff926520" :
-("vt: keyboard, reorder user buffer handling in vt_do_kdgkb_ioctl")
+https://lore.kernel.org/r/20211108101924.15759-1-bp@alien8.de
 
-* 
-prior 07edff926520, the scope of kbs (allocation/deallocation) was
-external to switch-cases.
+?
 
-*
-post 07edff926520, kbs is allocated internally for each case, however the
-deallocation remains external.
+Thx.
 
-Thus, as the "fix", the scope of kbs deallocation is now made internal
-to each switch case.
-
-ii)
-The 'ret' warning is the result of "4e1404a5cd04" :
-("vt: keyboard, extract and simplify vt_kdskbsent")
-
-where the "ret = 0" (right at the end) was accidentally removed.
-
-Bringing back the above in a slightly different way, by initializing ret
-to 0 at the start.
-
-Many thanks to the following for review of previous versions :
-
-	* Pavel Skripkin <paskripkin@gmail.com> 
-	* Andy Shevchenko <andy.shevchenko@gmail.com> 
-	* Johan Hovold <johan@kernel.org>
-
-Signed-off-by: Ajay Garg <ajaygargnsit@gmail.com>
----
-
-There were discussions previously, and the current patch is the 
-result.
-
-v1 :
-https://lore.kernel.org/linux-serial/YYZN30qfaKMskVwE@kroah.com/T/#t
-
-v2 :
-https://lore.kernel.org/linux-serial/CAHP4M8Vdj4Eb8q773BeHvsW9n6t=3n1WznuXAR4fZCNi1J6rOg@mail.gmail.com/T/#m18f45676feaba6b1f01ddd5fe607997b190ef4b9
-
-v3 :
-https://lore.kernel.org/linux-serial/20211106220315.392842-1-ajaygargnsit@gmail.com/T/#u
-
-v4 :
-https://lore.kernel.org/linux-serial/YYjw2mRIhy1SoIb+@hovoldconsulting.com/T/#mf25ca00a93e278bbb8f0382a4f7752dc35f4aa8b
-
-Changes in v2 :
-
-        * Changes as required by scripts/checkpatch.pl
-
-        * Checking whether kbs is not NULL before kfree is not required,
-          as kfree(NULL) is safe. So, dropped the check.
-
-Changes in v3 :
-
-        * Using default-switch case, and setting the variables 
-          when there is no matching cmd.
-
-Changes in v4 :
-
-        * Removed braces for the default switch-case.
-
-Changes in v5 :
-
-        * Incorporating changes as suggested by Johan Hovold
- 	  (please see v4 link).
-
- drivers/tty/vt/keyboard.c | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/tty/vt/keyboard.c b/drivers/tty/vt/keyboard.c
-index c7fbbcdcc346..ea19671d5d0c 100644
---- a/drivers/tty/vt/keyboard.c
-+++ b/drivers/tty/vt/keyboard.c
-@@ -2050,7 +2050,7 @@ int vt_do_kdgkb_ioctl(int cmd, struct kbsentry __user *user_kdgkb, int perm)
- 	unsigned char kb_func;
- 	unsigned long flags;
- 	char *kbs;
--	int ret;
-+	int ret = 0;
- 
- 	if (get_user(kb_func, &user_kdgkb->kb_func))
- 		return -EFAULT;
-@@ -2073,6 +2073,7 @@ int vt_do_kdgkb_ioctl(int cmd, struct kbsentry __user *user_kdgkb, int perm)
- 		ret = copy_to_user(user_kdgkb->kb_string, kbs, len + 1) ?
- 			-EFAULT : 0;
- 
-+		kfree(kbs);
- 		break;
- 	}
- 	case KDSKBSENT:
-@@ -2088,11 +2089,11 @@ int vt_do_kdgkb_ioctl(int cmd, struct kbsentry __user *user_kdgkb, int perm)
- 		kbs = vt_kdskbsent(kbs, kb_func);
- 		spin_unlock_irqrestore(&func_buf_lock, flags);
- 
-+		kfree(kbs);
- 		ret = 0;
- 		break;
- 	}
- 
--	kfree(kbs);
- 
- 	return ret;
- }
 -- 
-2.30.2
+Regards/Gruss,
+    Boris.
 
+https://people.kernel.org/tglx/notes-about-netiquette
