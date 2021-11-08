@@ -2,141 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0919A447F0C
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Nov 2021 12:41:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BB24B447F12
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Nov 2021 12:42:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239299AbhKHLoP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Nov 2021 06:44:15 -0500
-Received: from mail-wm1-f45.google.com ([209.85.128.45]:44633 "EHLO
-        mail-wm1-f45.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231992AbhKHLoO (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Nov 2021 06:44:14 -0500
-Received: by mail-wm1-f45.google.com with SMTP id c71-20020a1c9a4a000000b0032cdcc8cbafso11378982wme.3;
-        Mon, 08 Nov 2021 03:41:29 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=tL4nnc8V6PfYQ8KYZsXp2wASy4Mkha6Wkxc8dGxjKY4=;
-        b=6qiDu5P9wcoz51fjdx1u9n34lGSn/v5OoJD53rNeRHnEGLshcRFfxeGmDcih/gyIIW
-         srztbgnb2n8IUieVp28uGLdsIIf4jz2Q28mXZNPfAd3xE5FBZ4kznBhGQUII6ILxhfhi
-         uDo4sSOSygi3I934ZkxSZDv8VJB1CxOJq4JbZImHidEE1/SV6gujNJOXrWWAUUsO6p35
-         zM+AfUol5D32a7Kx3PZm1hvvfwE/YEPc91Z0pzII4wc0rwZu4MjE8ewHm8nFVCgnteHg
-         mF2XLuVx+l0kjepfI2r/v9/vZXk+XkTQUuke/pajTqtiVfAkTcmvGk5KjsshqP+x4RXB
-         Qmag==
-X-Gm-Message-State: AOAM533WcEKKAiOfCEi2r1RB2Bf+wwNswMHLJJU7faIJzz0BA6RZ0ktj
-        lDg/cLitmddu8cCr1zjRQHg=
-X-Google-Smtp-Source: ABdhPJwhJhcBprsIPrbiuBIvlZrmM701ld2p3Ayr7kATTyzLIOPX2QxfWyeNs13iWIDQw6iF9J+ghg==
-X-Received: by 2002:a05:600c:1d0e:: with SMTP id l14mr50588741wms.64.1636371688979;
-        Mon, 08 Nov 2021 03:41:28 -0800 (PST)
-Received: from liuwe-devbox-debian-v2 ([51.145.34.42])
-        by smtp.gmail.com with ESMTPSA id j19sm16550307wra.5.2021.11.08.03.41.28
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 08 Nov 2021 03:41:28 -0800 (PST)
-Date:   Mon, 8 Nov 2021 11:41:27 +0000
-From:   Wei Liu <wei.liu@kernel.org>
-To:     Vitaly Kuznetsov <vkuznets@redhat.com>
-Cc:     Sean Christopherson <seanjc@google.com>,
-        linux-hyperv@vger.kernel.org, linux-kernel@vger.kernel.org,
-        "K. Y. Srinivasan" <kys@microsoft.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        Stephen Hemminger <sthemmin@microsoft.com>,
-        Wei Liu <wei.liu@kernel.org>, Dexuan Cui <decui@microsoft.com>
-Subject: Re: [PATCH v2 1/2] x86/hyperv: Fix NULL deref in
- set_hv_tscchange_cb() if Hyper-V setup fails
-Message-ID: <20211108114127.a2axvx4stpmebogi@liuwe-devbox-debian-v2>
-References: <20211104182239.1302956-1-seanjc@google.com>
- <20211104182239.1302956-2-seanjc@google.com>
- <87mtmilxg1.fsf@vitty.brq.redhat.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <87mtmilxg1.fsf@vitty.brq.redhat.com>
+        id S239311AbhKHLpQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Nov 2021 06:45:16 -0500
+Received: from foss.arm.com ([217.140.110.172]:49366 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S239303AbhKHLpP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Nov 2021 06:45:15 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 1A67C2B;
+        Mon,  8 Nov 2021 03:42:31 -0800 (PST)
+Received: from lakrids.cambridge.arm.com (usa-sjc-imap-foss1.foss.arm.com [10.121.207.14])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id F1B3D3F800;
+        Mon,  8 Nov 2021 03:42:29 -0800 (PST)
+From:   Mark Rutland <mark.rutland@arm.com>
+To:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+Cc:     Mark Rutland <mark.rutland@arm.com>,
+        Ard Biesheuvel <ardb@kernel.org>, Borislav Petkov <bp@suse.de>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Will Deacon <will@kernel.org>
+Subject: [PATCH] scripts/sorttable: Unify arm64 & x86 sort functions
+Date:   Mon,  8 Nov 2021 11:42:20 +0000
+Message-Id: <20211108114220.32796-1-mark.rutland@arm.com>
+X-Mailer: git-send-email 2.11.0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 05, 2021 at 11:16:14AM +0100, Vitaly Kuznetsov wrote:
-> Sean Christopherson <seanjc@google.com> writes:
-> 
-> > Check for a valid hv_vp_index array prior to derefencing hv_vp_index when
-> > setting Hyper-V's TSC change callback.  If Hyper-V setup failed in
-> > hyperv_init(), the kernel will still report that it's running under
-> > Hyper-V, but will have silently disabled nearly all functionality.
-> >
-> >   BUG: kernel NULL pointer dereference, address: 0000000000000010
-> >   #PF: supervisor read access in kernel mode
-> >   #PF: error_code(0x0000) - not-present page
-> >   PGD 0 P4D 0
-> >   Oops: 0000 [#1] SMP
-> >   CPU: 4 PID: 1 Comm: swapper/0 Not tainted 5.15.0-rc2+ #75
-> >   Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 0.0.0 02/06/2015
-> >   RIP: 0010:set_hv_tscchange_cb+0x15/0xa0
-> >   Code: <8b> 04 82 8b 15 12 17 85 01 48 c1 e0 20 48 0d ee 00 01 00 f6 c6 08
-> >   ...
-> >   Call Trace:
-> >    kvm_arch_init+0x17c/0x280
-> >    kvm_init+0x31/0x330
-> >    vmx_init+0xba/0x13a
-> >    do_one_initcall+0x41/0x1c0
-> >    kernel_init_freeable+0x1f2/0x23b
-> >    kernel_init+0x16/0x120
-> >    ret_from_fork+0x22/0x30
-> >
-> > Fixes: 93286261de1b ("x86/hyperv: Reenlightenment notifications support")
-> > Cc: stable@vger.kernel.org
-> > Cc: Vitaly Kuznetsov <vkuznets@redhat.com>
-> > Signed-off-by: Sean Christopherson <seanjc@google.com>
-> > ---
-> >  arch/x86/hyperv/hv_init.c | 3 +++
-> >  1 file changed, 3 insertions(+)
-> >
-> > diff --git a/arch/x86/hyperv/hv_init.c b/arch/x86/hyperv/hv_init.c
-> > index 24f4a06ac46a..7d252a58fbe4 100644
-> > --- a/arch/x86/hyperv/hv_init.c
-> > +++ b/arch/x86/hyperv/hv_init.c
-> > @@ -177,6 +177,9 @@ void set_hv_tscchange_cb(void (*cb)(void))
-> >  		return;
-> >  	}
-> >  
-> > +	if (!hv_vp_index)
-> > +		return;
-> > +
-> 
-> Arguably, we could've merged this with 'if (!hv_reenlightenment_available())' 
-> above to get a message printed:
-> 
-> diff --git a/arch/x86/hyperv/hv_init.c b/arch/x86/hyperv/hv_init.c
-> index 24f4a06ac46a..4a2a091c2f0e 100644
-> --- a/arch/x86/hyperv/hv_init.c
-> +++ b/arch/x86/hyperv/hv_init.c
-> @@ -172,7 +172,7 @@ void set_hv_tscchange_cb(void (*cb)(void))
->         };
->         struct hv_tsc_emulation_control emu_ctrl = {.enabled = 1};
->  
-> -       if (!hv_reenlightenment_available()) {
-> +       if (!hv_reenlightenment_available() || !hv_vp_index) {
->                 pr_warn("Hyper-V: reenlightenment support is unavailable\n");
->                 return;
->         }
-> 
-> just to have an indication that something is off.
-> 
-> >  	hv_reenlightenment_cb = cb;
-> >  
-> >  	/* Make sure callback is registered before we write to MSRs */
-> 
-> With or without the change,
-> 
-> Reviewed-by: Vitaly Kuznetsov <vkuznets@redhat.com>
+The format of the arm64 and x86 exception table entries is essentially
+the same as of commits:
 
-Thanks Sean and Vitaly. Both patches look good to me. They will be taken
-via hyperv-fixes after v5.16-rc1 is cut.
+  46d28947d9876fc0 ("x86/extable: Rework the exception table mechanics")
+  d6e2cc5647753825 ("arm64: extable: add `type` and `data` fields")
 
-Wei.
+Both use a 12-byte entry consisting of two 32-bit relative offsets and
+32 bits of (absolute) data, and their sort functions are identical aside
+from commentary, with arm64 saying:
 
-> 
-> -- 
-> Vitaly
-> 
+   /* Don't touch the fixup type or data */
+
+... and x86 saying:
+
+  /* Don't touch the fixup type */
+
+Unify the two behind a common sort_relative_table_with_data() function,
+retaining the arm64 commentary.
+
+There should be no functional change as a result of this patch.
+
+Signed-off-by: Mark Rutland <mark.rutland@arm.com>
+Cc: Ard Biesheuvel <ardb@kernel.org>
+Cc: Borislav Petkov <bp@suse.de>
+Cc: Catalin Marinas <catalin.marinas@arm.com>
+Cc: Thomas Gleixner <tglx@linutronix.de>
+Cc: Will Deacon <will@kernel.org>
+Cc: linux-arm-kernel@lists.infradead.org
+Cc: linux-kernel@vger.kernel.org
+---
+ scripts/sorttable.c | 36 +++---------------------------------
+ 1 file changed, 3 insertions(+), 33 deletions(-)
+
+diff --git a/scripts/sorttable.c b/scripts/sorttable.c
+index b7c2ad71f9cf..ca9db62bf766 100644
+--- a/scripts/sorttable.c
++++ b/scripts/sorttable.c
+@@ -231,7 +231,7 @@ static void sort_relative_table(char *extab_image, int image_size)
+ 	}
+ }
+ 
+-static void arm64_sort_relative_table(char *extab_image, int image_size)
++static void sort_relative_table_with_data(char *extab_image, int image_size)
+ {
+ 	int i = 0;
+ 
+@@ -259,34 +259,6 @@ static void arm64_sort_relative_table(char *extab_image, int image_size)
+ 	}
+ }
+ 
+-static void x86_sort_relative_table(char *extab_image, int image_size)
+-{
+-	int i = 0;
+-
+-	while (i < image_size) {
+-		uint32_t *loc = (uint32_t *)(extab_image + i);
+-
+-		w(r(loc) + i, loc);
+-		w(r(loc + 1) + i + 4, loc + 1);
+-		/* Don't touch the fixup type */
+-
+-		i += sizeof(uint32_t) * 3;
+-	}
+-
+-	qsort(extab_image, image_size / 12, 12, compare_relative_table);
+-
+-	i = 0;
+-	while (i < image_size) {
+-		uint32_t *loc = (uint32_t *)(extab_image + i);
+-
+-		w(r(loc) - i, loc);
+-		w(r(loc + 1) - (i + 4), loc + 1);
+-		/* Don't touch the fixup type */
+-
+-		i += sizeof(uint32_t) * 3;
+-	}
+-}
+-
+ static void s390_sort_relative_table(char *extab_image, int image_size)
+ {
+ 	int i;
+@@ -364,15 +336,13 @@ static int do_file(char const *const fname, void *addr)
+ 
+ 	switch (r2(&ehdr->e_machine)) {
+ 	case EM_386:
++	case EM_AARCH64:
+ 	case EM_X86_64:
+-		custom_sort = x86_sort_relative_table;
++		custom_sort = sort_relative_table_with_data;
+ 		break;
+ 	case EM_S390:
+ 		custom_sort = s390_sort_relative_table;
+ 		break;
+-	case EM_AARCH64:
+-		custom_sort = arm64_sort_relative_table;
+-		break;
+ 	case EM_PARISC:
+ 	case EM_PPC:
+ 	case EM_PPC64:
+-- 
+2.11.0
+
