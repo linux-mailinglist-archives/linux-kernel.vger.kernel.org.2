@@ -2,116 +2,183 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C2103449BC5
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Nov 2021 19:39:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 093D7449BCE
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Nov 2021 19:41:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235246AbhKHSmj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Nov 2021 13:42:39 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41946 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234999AbhKHSmi (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Nov 2021 13:42:38 -0500
-Received: from mail-oo1-xc2d.google.com (mail-oo1-xc2d.google.com [IPv6:2607:f8b0:4864:20::c2d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE3FAC061746
-        for <linux-kernel@vger.kernel.org>; Mon,  8 Nov 2021 10:39:53 -0800 (PST)
-Received: by mail-oo1-xc2d.google.com with SMTP id 64-20020a4a0d43000000b002b866fa13eeso6181550oob.2
-        for <linux-kernel@vger.kernel.org>; Mon, 08 Nov 2021 10:39:53 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=heU/fgi1agz0H5PpY0Ar7Q54bdWg7UObfsVa5tVLsyM=;
-        b=B0+uAB1+kUl4/BZ9mNfFjYyZI3lQLfyentboqtDXYzuw//u86WYhGiGdKhYS1pRY6o
-         4iQRFq3KZczOltZm6AmNt0YpB5L1hBCOTdzzYqKYxahY3tR/SVKFngRqvrca7SQV/lfj
-         PZ2p5fY3Db+JTXJoUFEh57jfrQrONt538ossZIz0YprSHRqRqfB7cLpYxCWLhPGxkEwi
-         GSGQ8J4OsziqV0uQJp6H6oFPMqOGIi1Ej1aDytmdaKsSJ+aYkSWjO6LCoDH73o8voX/A
-         C4HFzdSjqEYWomqkMgYEY6roSdAQBpp+/PkN4IOz+KySZvxkfUgTRSIiBeU0UGIC4Nio
-         slgw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=heU/fgi1agz0H5PpY0Ar7Q54bdWg7UObfsVa5tVLsyM=;
-        b=iNV91cBRSBDlwQni73r2mu7UTUAHGFNGznLNhRb6ocViHphaZ1lTptdtxoqB/5Yhdb
-         jAa8+0pgRSEllsECRT4v3cGYXWqL3MukBhC0FmPsaCGAPfii5PELqYmMAHWV6gVthMWC
-         KjSFO/KM36/T37oaN9km7lzB/f55+l8nGqqd60YrfS0QkdOI9HoLpCQOp/WK+B0gdAFJ
-         G4+y3bCI5BVLlylsxGTxgdCfnmgoEfCWxVWIF2piJIPLXaHkEZeB7bnlphPjzk0lA8Dt
-         FQJbwmeprXIdZ7HAPLa1plTlDvwEtKd9rklZ8DECvW+0paOEQ7sJI2wsU694I0kSbDYt
-         wZ4Q==
-X-Gm-Message-State: AOAM532bYNf4TkFoziVv5IqtX2bxAM2k/7UUT213jDbYy//vPZ9RX7Ig
-        1LgNSTjA6WuhnqLIueIMY8lXbA==
-X-Google-Smtp-Source: ABdhPJznmpagFWV5WwMe+ghITmgC6CWRRJMNkkh6ZNhUu0O4t0RlInhI97K4utFiZcSxaNju8gvQ4Q==
-X-Received: by 2002:a4a:e292:: with SMTP id k18mr774380oot.80.1636396793166;
-        Mon, 08 Nov 2021 10:39:53 -0800 (PST)
-Received: from ripper (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
-        by smtp.gmail.com with ESMTPSA id l2sm6692982otl.61.2021.11.08.10.39.51
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 08 Nov 2021 10:39:52 -0800 (PST)
-Date:   Mon, 8 Nov 2021 10:41:27 -0800
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Jarrett Schultz <jaschultzms@gmail.com>
-Cc:     Rob Herring <robh+dt@kernel.org>, Andy Gross <agross@kernel.org>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Mark Gross <mgross@linux.intel.com>,
-        Maximilian Luz <luzmaximilian@gmail.com>,
-        linux-arm-msm@vger.kernel.org, platform-driver-x86@vger.kernel.org,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        Felipe Balbi <balbi@kernel.org>,
-        Jarrett Schultz <jaschultz@microsoft.com>
-Subject: Re: [PATCH v2 4/5] arm64: dts: qcom: sm8150: Add imem section
-Message-ID: <YYlvVwp1Zd4Wz1Lc@ripper>
-References: <20211108164449.3036210-1-jaschultz@microsoft.com>
- <20211108164449.3036210-5-jaschultz@microsoft.com>
+        id S235760AbhKHSog (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Nov 2021 13:44:36 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45802 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235369AbhKHSoe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Nov 2021 13:44:34 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5A98361506;
+        Mon,  8 Nov 2021 18:41:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1636396909;
+        bh=sdeq1n+k7eyb7Na64KF01UO9TaLNhF7oJ20x3QUlUUg=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=gj5VlyPLVNTBk4vPd8looxyYc/xZI594yBBBghDH1i8LpxYzfOsN8lediJBiIw5D6
+         udp3kIcqXE8qtLB38s6BWCUozCJz9/IIBxCPIwgJbPpjqF5w0fr3pe5IXw/1ZNfp72
+         U0+WjBE3AwrlEjQAZm5lzD4Q+ltCj5MzFHjOxhpkULp0TpsP6lZIVVqVhl6z1oNW32
+         tD3m0sm2Q7QIwGZho/UkIsSfF+32+sDt5codZW8MATMakZm5shs44k8OkeitGKHouQ
+         ZLPceEq3MtHx4MmsQcPe+Aq7cZbVAcAONjKcPgGP8Ii9STUJNIFmjjvbPziQgkuzVL
+         gTO0mzz8dqEWA==
+Date:   Mon, 8 Nov 2021 19:41:42 +0100
+From:   Marek =?UTF-8?B?QmVow7pu?= <kabel@kernel.org>
+To:     Ansuel Smith <ansuelsmth@gmail.com>
+Cc:     Andrew Lunn <andrew@lunn.ch>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Vladimir Oltean <olteanv@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>, Pavel Machek <pavel@ucw.cz>,
+        John Crispin <john@phrozen.org>, netdev@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-leds@vger.kernel.org
+Subject: Re: [RFC PATCH v2 1/5] leds: trigger: add API for HW offloading of
+ triggers
+Message-ID: <20211108194142.58630e60@thinkpad>
+In-Reply-To: <YYllTn9W5tZLmVN8@Ansuel-xps.localdomain>
+References: <20211108002500.19115-1-ansuelsmth@gmail.com>
+        <20211108002500.19115-2-ansuelsmth@gmail.com>
+        <YYkuZwQi66slgfTZ@lunn.ch>
+        <YYk/Pbm9ZZ/Ikckg@Ansuel-xps.localdomain>
+        <20211108171312.0318b960@thinkpad>
+        <YYlUSr586WiZxMn6@Ansuel-xps.localdomain>
+        <20211108183537.134ee04c@thinkpad>
+        <YYllTn9W5tZLmVN8@Ansuel-xps.localdomain>
+X-Mailer: Claws Mail 3.18.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211108164449.3036210-5-jaschultz@microsoft.com>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon 08 Nov 08:44 PST 2021, Jarrett Schultz wrote:
+On Mon, 8 Nov 2021 18:58:38 +0100
+Ansuel Smith <ansuelsmth@gmail.com> wrote:
 
-> Introduce the imem section in preparation for the surface xbl driver.
-> 
-> Signed-off-by: Jarrett Schultz <jaschultz@microsoft.com>
-> 
+> Are you aware of any device that can have some trigger offloaded and
+> still have the led triggered manually?
 
-Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+I don't understand why we would need such a thing.
 
-Regards,
-Bjorn
+Look, just to make it clear via an example: I have a device with a
+Marvell PHY chip inside. There is a LED connected to one of the PHY LED
+pins.
 
-> ---
-> 
-> Changes in v2:
->  - Created to properly reference the xbl section inside of imem
-> 
-> ---
-> 
->  arch/arm64/boot/dts/qcom/sm8150.dtsi | 8 ++++++++
->  1 file changed, 8 insertions(+)
-> 
-> diff --git a/arch/arm64/boot/dts/qcom/sm8150.dtsi b/arch/arm64/boot/dts/qcom/sm8150.dtsi
-> index ef0232c2cf45..1da327cd49ae 100644
-> --- a/arch/arm64/boot/dts/qcom/sm8150.dtsi
-> +++ b/arch/arm64/boot/dts/qcom/sm8150.dtsi
-> @@ -1176,6 +1176,14 @@ gpi_dma1: dma-controller@a00000 {
->  			status = "disabled";
->  		};
->  
-> +		imem: imem@146bf000 {
-> +			compatible = "simple-mfd";
-> +			reg = <0x0 0x146bf000 0x0 0x1000>;
-> +			ranges = <0x0 0x0 0x146bf000 0x1000>;
-> +			#address-cells = <1>;
-> +			#size-cells = <1>;
-> +		};
-> +
->  		qupv3_id_1: geniqup@ac0000 {
->  			compatible = "qcom,geni-se-qup";
->  			reg = <0x0 0x00ac0000 0x0 0x6000>;
-> -- 
-> 2.25.1
-> 
+Marvell PHY has LED[0] control register, which supports the following
+modes:
+  LED is OFF
+  LED is ON
+  LED is ON when Link is up
+  LED blinks on RX activity
+  LED blinks on TX activity
+  LED blinks on RX/TX activity
+  LED is ON and blinks on RX/TX activity
+  ...
+
+I have code that exports this LED as a LED classdev
+
+When I activate netdev trigger on this LED, the netdev trigger currently
+just blinks the LED in software, by calling the .brightness_set()
+method, which configures LED[0] control register to one of the first
+two modes above (LED is OFF, LED is ON).
+
+But I have also another patch that adds support to offloading netdev
+trigger upon offloadable settings. The netdev trigger code calls the
+.trigger_offload() method, which is implemented in PHY driver. This
+method checks whether it is a netdev trigger that is to be offloaded,
+and whether device_name is the name of the device attached to the PHY,
+and then chooses one of the modes above, according to netdev trigger
+settings.
+
+So when I request netdev trigger for eth0, to indicate link and blink
+on activity, the netdev trigger doesn't do anything in software. It
+just calls the offload method ONCE (at the moment I am changing netdev
+trigger settings). The blinking is then done by the PHY chip. Netdev
+trigger doesn't do anything, at least not until I change the settings
+again.
+
+> Talking about mixed mode, so HW and SW.
+
+What exactly do you mean by mixed mode? There is no mixed mode.
+
+> Asking to understand as currently the only way to impement all
+> of this in netdev trigger is that:
+> IF any hw offload trigger is supported (and enabled) then the entire
+> netdev trigger can't work as it won't be able to simulate missing
+> trigger in SW. And that would leave some flexibility.
+
+What do you mean by missing trigger here? I think we need to clarify
+what we mean by the word "trigger". Are you talking about the various
+blinking modes that the PHY supports? If so, please let's call them HW
+control modes, and not triggers. By "triggers" I understand triggers
+that can be enabled on a LED via /sys/class/leds/<LED>/trigger.
+
+> We need to understand how to operate in this condition. Should netdev
+> detect that and ""hide"" the sysfs triggers? Should we report error?
+
+So if I understand you correctly, you are asking about what should we
+do if user asked for netdev trigger settings (currently only link, rx,
+tx, interval) that can't be offloaded to the PHY chip.
+
+Well, if the PHY allows to manipulate the LEDs ON/OFF state (in other
+words "full control by SW", or ability to implement brightness_set()
+method), then netdev trigger should blink the LED in SW via this
+mechanism (which is something it would do now). A new sysfs file,
+"offloaded", can indicate whether the trigger is offloaded to HW or not.
+
+If, on the other hand, the LED cannot be controlled by SW, and it only
+support some HW control modes, then there are multiple ways how to
+implement what should be done, and we need to discuss this.
+
+For example suppose that the PHY LED pin supports indicating LINK,
+blinking on activity, or both, but it doesn't support blinking on rx
+only, or tx only.
+
+Since the LED is always indicating something about one network device,
+the netdev trigger should be always activated for this LED and it
+should be impossible to deactivate it. Also, it should be impossible to
+change device_name.
+
+  $ cd /sys/class/leds/<LED>
+  $ cat device_name
+  eth0
+  $ echo eth1 >device_name
+  Operation not supported.
+  $ echo none >trigger
+  Operation not supported.
+
+Now suppose that the driver by default enabled link indication, so we
+have:
+  $ cat link
+  1
+  $ cat rx
+  0
+  $ cat tx
+  0
+
+We want to enable blink on activity, but the LED supports only blinking
+on both rx/tx activity, rx only or tx only is not supported.
+
+Currently the only way to enable this is to do
+  $ echo 1 >rx
+  $ echo 1 >tx
+but the first call asks for (link=1, rx=1, tx=0), which is impossible.
+
+There are multiple things which can be done:
+- "echo 1 >rx" indicates error, but remembers the setting
+- "echo 1 >rx" quietly fails, without error indication. Something can
+  be written to dmesg about nonsupported mode
+- "echo 1 >rx" succeeds, but also sets tx=1
+- rx and tx are non-writable, writing always fails. Another sysfs file
+  is created, which lists modes that are actually supported, and allows
+  to select between them. When a mode is selected, link,rx,tx are
+  filled automatically, so that user may read them to know what the LED
+  is actually doing
+- something different?
+
+Marek
