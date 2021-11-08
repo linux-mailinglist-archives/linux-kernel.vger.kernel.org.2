@@ -2,170 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4240744987D
+	by mail.lfdr.de (Postfix) with ESMTP id D3F5644987F
 	for <lists+linux-kernel@lfdr.de>; Mon,  8 Nov 2021 16:34:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240952AbhKHPhI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Nov 2021 10:37:08 -0500
-Received: from mx0a-00069f02.pphosted.com ([205.220.165.32]:21268 "EHLO
-        mx0a-00069f02.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S237570AbhKHPhG (ORCPT
+        id S240969AbhKHPhQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Nov 2021 10:37:16 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56050 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238365AbhKHPhO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Nov 2021 10:37:06 -0500
-Received: from pps.filterd (m0246617.ppops.net [127.0.0.1])
-        by mx0b-00069f02.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 1A8FFa7r016807;
-        Mon, 8 Nov 2021 15:34:04 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : references : content-type : in-reply-to :
- mime-version; s=corp-2021-07-09;
- bh=0tHcxwdych6hCpbewfI9d/ClOKIRiMKHT++7mn4/STA=;
- b=KtVONQL5SHj+4i0JtpO71vB55TAMaR6ltOkIp/W47EZulh/XA1NxvKsNu14h6GEPBLfw
- pTNMWpnUx+W5bdWvvzwt9mHQ3dI0q4CuUE5D2rjyqMjl1Tp2uYbqnNz4j0xsQ20GonRZ
- 64cL+U21NwJfgQrUwJYAHm2U4V5f84dvCc97CnHiHdLHTyqW8P0vRKJgP4uIeLZTqMWL
- MaWd/REta5IAoC2QIVfOwTT2AAoe4cWOgtSuMCoGynbrgwq9f6+dKuVljhFdE3YZoaqP
- uf2h83rG2XKqLMqY8UMybhConWdtGaCemNNHGqQUJKnS2h0TD6VlbojGR5voaf/cqg6/ vw== 
-Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
-        by mx0b-00069f02.pphosted.com with ESMTP id 3c6vkqunka-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 08 Nov 2021 15:34:04 +0000
-Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
-        by aserp3030.oracle.com (8.16.1.2/8.16.1.2) with SMTP id 1A8FK7Dr060669;
-        Mon, 8 Nov 2021 15:34:02 GMT
-Received: from nam02-sn1-obe.outbound.protection.outlook.com (mail-sn1anam02lp2046.outbound.protection.outlook.com [104.47.57.46])
-        by aserp3030.oracle.com with ESMTP id 3c5frcfh6e-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 08 Nov 2021 15:34:02 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=mQb4SuE4Tp8cgolVJydHRZhgekUHgvYH4A0YklsYUDMZM5QFcDfgAQuyxo9DWMAk2ewkGZbrCtjsUeysOcin2+vXRnl/xexiDJcXi5JmCe3/uJQcVZDYl9YD+8siu5kiayXmw3G5BHIkU+GyHs5vujRBwQXZRen9az+gbCRNrY5oapiywZ+2Q2scugOjOTgbTwb/Z2qfNZbokBqnTZAMnBMuU5QMAp1pnqN2d21P5rBAmWU2NFJYeNN9ngFJoDbIekWABHc8PzTS63lAH1fiAynZSdfu9GTPnjO55o6fwRp77UJe43ZJ9tUOGIUo1ElHWIOrugNW1cs9Pvy9AzdZ4Q==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=0tHcxwdych6hCpbewfI9d/ClOKIRiMKHT++7mn4/STA=;
- b=UCvzFVNlD4MLR4U2gfJjfpc9z1Wz7NsVTUTTaUSuyLbABMgKVtONSWIeO8dqeM/KyNGQu+gkAhC17uXz3rITrcdgrSPRm6tomK8eIfRZRPLHNtkKb3clt4lLvgl7axkKHTRPI8KSi39DG2nOn+2AbEFQA+QXWFTR6/3P2f99Ew4N48VNeGLeL+PiMwCzLe6zLszmGYRjO1D/qENOnN9Q/mAojz+q0NJYfIWL1rU5VdHW+Wc/RzP6CFD3vUrW9i1y2l/PtWYVs2KRJpCa3CsJespmDjdH4bwinHRUbOviDE0WvIby1BTg7L5oigu4MwjVgXtVsxJiqk5J0040vKIw+w==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
+        Mon, 8 Nov 2021 10:37:14 -0500
+Received: from mail-lj1-x233.google.com (mail-lj1-x233.google.com [IPv6:2a00:1450:4864:20::233])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4BC45C061714
+        for <linux-kernel@vger.kernel.org>; Mon,  8 Nov 2021 07:34:30 -0800 (PST)
+Received: by mail-lj1-x233.google.com with SMTP id h11so30314858ljk.1
+        for <linux-kernel@vger.kernel.org>; Mon, 08 Nov 2021 07:34:30 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=0tHcxwdych6hCpbewfI9d/ClOKIRiMKHT++7mn4/STA=;
- b=ehMZpyrKbIZk2MHtZqIFi1xaJNZuYSMTNmLSMuFCxUNYThv+qjYHT7IXF6cdmULMp6hJUnqx0VBWvtJnn+i2LsdbOFiJrONGGUxrYI2XXzAIktMbLXx3cy9KCJ+tLlh0yEM3hFdPyVfPHwbiOt794H/v4N+2VZmeDfIKwRsQqiA=
-Authentication-Results: gmail.com; dkim=none (message not signed)
- header.d=none;gmail.com; dmarc=none action=none header.from=oracle.com;
-Received: from MWHPR1001MB2365.namprd10.prod.outlook.com
- (2603:10b6:301:2d::28) by MW5PR10MB5849.namprd10.prod.outlook.com
- (2603:10b6:303:19b::13) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4669.16; Mon, 8 Nov
- 2021 15:33:59 +0000
-Received: from MWHPR1001MB2365.namprd10.prod.outlook.com
- ([fe80::d409:11b5:5eb2:6be9]) by MWHPR1001MB2365.namprd10.prod.outlook.com
- ([fe80::d409:11b5:5eb2:6be9%5]) with mapi id 15.20.4669.016; Mon, 8 Nov 2021
- 15:33:59 +0000
-Date:   Mon, 8 Nov 2021 18:33:35 +0300
-From:   Dan Carpenter <dan.carpenter@oracle.com>
-To:     Tsuchiya Yuto <kitakar@gmail.com>
-Cc:     Hans de Goede <hdegoede@redhat.com>,
-        Patrik Gfeller <patrik.gfeller@gmail.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Aline Santana Cordeiro <alinesantanacordeiro@gmail.com>,
-        Yang Yingliang <yangyingliang@huawei.com>,
-        Dinghao Liu <dinghao.liu@zju.edu.cn>,
-        Deepak R Varma <drv@mailo.com>,
-        Alex Dewar <alex.dewar90@gmail.com>,
-        linux-media@vger.kernel.org, linux-staging@lists.linux.dev,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 05/17] media: atomisp: pci: fix inverted error check for
- ia_css_mipi_is_source_port_valid()
-Message-ID: <20211108153335.GG2026@kadam>
-References: <20211017161958.44351-1-kitakar@gmail.com>
- <20211017161958.44351-6-kitakar@gmail.com>
- <20211102113332.GC2794@kadam>
- <ed17420d96bd302479b528f7ae8694ff9cd2e72a.camel@gmail.com>
- <20211108151455.GI2001@kadam>
- <efaf74b587e5e31403895cd5af88852402fe92ec.camel@gmail.com>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <efaf74b587e5e31403895cd5af88852402fe92ec.camel@gmail.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-ClientProxiedBy: JN2P275CA0014.ZAFP275.PROD.OUTLOOK.COM (2603:1086:0:3::26)
- To MWHPR1001MB2365.namprd10.prod.outlook.com (2603:10b6:301:2d::28)
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=7cDX8QQKKuew+Ja0r9BHR27VcwBnv9KU+20lUo/z16s=;
+        b=vTIb+xtH+3s+MEgysej6qyoxnPGY2brtJoQYxCc+bVniRkUxKGnhRSYHZB17wtiSJs
+         u9nI/Ot0lCij1fZK3CD2GLJq80wHqDJd5zO1aI8+Vb6dcv1BhTE+T6VrnHvcuWe1ENz/
+         T6Bd3+wI+qD3VSzBJlSwZP+ZDU3RV+IYaVQeZY2WJ7TSHEVdKSZIH/hjb3NjBs4AM/Ic
+         8jm9NyL+YinBrCYe01bswYW5BLxQ+tWpbVNYNTNagbJk0Uhv25zjX4rhMA0T7m5EgFdQ
+         mAXOw+Ua2Nu85Lr/+ejzJjiLx/FxkjkbhDREGW7EhXcIKF1Pq5jZO+M00TFE2TzVSl17
+         4nyg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=7cDX8QQKKuew+Ja0r9BHR27VcwBnv9KU+20lUo/z16s=;
+        b=4ScCBxYO8jT1nTXuqKG8OrxASzFTxtuMfP0Mq3jBMWqECkwOdCg2/+E/jEa0iVeH8g
+         noVa/H/X27z/TI7W59/uPJCwznNc45ZyKL0Xv9zDUkcCQWoXvkbOAPdOJJ8VNf1471Ht
+         uP/b6uypZS4lrzD9gnbrNck88Lrnv+o1Yx3OnqfsmBtdYfkQZ/KHlRSAzIICFvc4Ibik
+         oStwzIJDRiTSYKLxvaXNg3p8NIDq/lfsAGZCMTKjT1+jI8eqd9pHA0u1zasGA5nXr6Cm
+         mFYJln76B97vNW2uiVQh7eTbtXB7Foi8+xBM8VyXkHoDBCDmWfAqcVhe1asdpYbYrUW1
+         Glwg==
+X-Gm-Message-State: AOAM533L5B6wkOrlA7Ms368VJ2n66z7YzzOHyHveQuNwE5lARWWZ+G+d
+        oLBnIEVDBgqIhe1apdllTDfoaZt2SueljZbcG3F6vQ==
+X-Google-Smtp-Source: ABdhPJxBiS1rbinnfjfB/9eJv3en2gWlCsLABdEuSnSjFOgI02JAw2OpEI67E5RX+kiIK3+bYe4b3wxA7zuIM2GVqMU=
+X-Received: by 2002:a2e:a5c8:: with SMTP id n8mr541754ljp.367.1636385668612;
+ Mon, 08 Nov 2021 07:34:28 -0800 (PST)
 MIME-Version: 1.0
-Received: from kadam (102.222.70.114) by JN2P275CA0014.ZAFP275.PROD.OUTLOOK.COM (2603:1086:0:3::26) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4669.11 via Frontend Transport; Mon, 8 Nov 2021 15:33:49 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 1295ae31-a0d6-40a8-9d51-08d9a2cd2f06
-X-MS-TrafficTypeDiagnostic: MW5PR10MB5849:
-X-Microsoft-Antispam-PRVS: <MW5PR10MB5849911B470C75FB7189A4138E919@MW5PR10MB5849.namprd10.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:88;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: Di+bXrf6AVdFVy1tStffUcmIO+jE8mmHeHrtaSF+/lKI40WP1Lt0xJ2gyHmChuV4DtbkhBIi70ZScTXVDHKRpWJvCl5dBFXTQLEscHkUYwpDYK74eVW8qurjqskBKYhM+uSnGZOeEnfbct1VLdOGpyQ0OFvRHbQ/bUOpev0IPaQ00WH+pUEBn2ZA5Rb04qTMhS1zWK3XQcmuKsu0bduqpqJ05BgVpp/sB1fSV1MXLovOlmcvYcmXG8deHmr0txrO2V1njlghZRvEi9zksFBDfaVCRh12AuRx92962KFTzM+vdTvSr+tXDVknxSfLtF0BC+9TM84r70MVO3LqvYv0HgX70TIcbxe3/sn6Po/cEYILICyAnqk77C3y+VbJF+fPLVVPjcorK9qN3Ndye+BbRIvcfKmz9uf/QSCPHLjXoMIU94W5PoKhjD25dp8iAlIjBIGU9l5nbcAtDDXbITohpJs7d0Wx4ppgNTVipaNdrso1FGiA7APgriv0Ds5tb60vLLelkjWGBOLPGT7frbNjFZjwbRM0yIV0YnjP0GUlR3opAtcp9iCEzCMjh5avaAAhU6o5KgmS/m03l+qcsAAz/G999A0V9Rq2kFGEFIFEP6VswknwLdroizviylWZfve0cKV2IaGzK6CFObr//R73grHZ/ErN9RIbkuqi6l/Uroyo0qvTfaQ0ed2vHvSSLdBiI7l5gua+uoY+eE6UucN75w==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MWHPR1001MB2365.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(5660300002)(6496006)(54906003)(956004)(4326008)(44832011)(8676002)(1076003)(9576002)(558084003)(8936002)(508600001)(316002)(2906002)(7416002)(26005)(186003)(38350700002)(33656002)(38100700002)(6916009)(33716001)(52116002)(66946007)(66556008)(86362001)(66476007)(6666004)(9686003)(55016002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?nzvezfxS8WL1T4hQ4dZ39PiH1zQMlckqeF5Zb0PHnmDPPfAbMH9DOIh7L4Yo?=
- =?us-ascii?Q?5ueKMoR1Q+DYjXez1kya3DnbGlg3tORrsZ9CDuno4waQJyHNM7pjKzZ5xgzS?=
- =?us-ascii?Q?pj9T+X/LhNgIQM9tTInLWdjcIY4k+/WQDYv/2ZkcNIyCa32yLXAB5pZuxnGv?=
- =?us-ascii?Q?knITnITQZb6Seof7jfBRw8vDnuNJBmjP7UxtJ5kLxEW0kqvKnlds1mTQEYva?=
- =?us-ascii?Q?7KmDiSZ788sO9CyeREoZB0RFlkjwh5WTG0mbSvrkW6y1fubkxPmKgzGbh6vc?=
- =?us-ascii?Q?WXAcIucdcinNSQHJzHl4bBeHoMptV0TipLXdXmybHWoUHhYipEH1RnuWeC6I?=
- =?us-ascii?Q?D5If41zQk+0AMRVWr9Z4B+PVoezhsknF1HAxgqrdtCff6gElgRwrNjc3y0mN?=
- =?us-ascii?Q?eNYg90/F7SPW2uhD+V2ezdAiY3PfXhPHurUGxOZkW2aPRiwXSWPtzTmJKxgp?=
- =?us-ascii?Q?/9/T/pz8aoQ74NcF7qcR6714h7hY82bIPOX1U6bvS18Nruh3b3+fZnl1dsSR?=
- =?us-ascii?Q?wYBDumO8capTKZGwVq6+o5hyBCTtUDJLIJcT7eyzBgm+FqsazmrtMTsHFUo/?=
- =?us-ascii?Q?/FERssZ15VCynDL4uv1g1SA1yBu2cJagkEy+DN4YtmFT/aYW4a0tkO2XL2bz?=
- =?us-ascii?Q?Zg5S3Ixfoy3CRne31/gmjBRpuW4T1V2YmN2FPq/CwVr1nVf+UNzAvvuloe4q?=
- =?us-ascii?Q?/2WX0xqJ934PJ8CvGkNioI71kddBQqf9lEa6BsxfxOxmx96kFCBpgltyTtTf?=
- =?us-ascii?Q?7X5bRqzNnoiGm2yIsSHKjrp10FNVhuI+1C/vZTy7cH2MEn9eklUSHv9xYd2z?=
- =?us-ascii?Q?MyvHnM3LK/7sQXoSzDzbv76N0RKfglj+90E0/RF1t7WnFiFbsz/PZaVuN7U2?=
- =?us-ascii?Q?ekmP2lOjabSNU8cSzF0IgW8OhymQq8mKeISsFaebL+HkJOt0W0Soj7roN9bn?=
- =?us-ascii?Q?vHleyhi/DcfUf4ujPuyE41F6NNY4GMCp8EyivfU68B7E7kc3uGlYNhUEjQwi?=
- =?us-ascii?Q?3Z/fydLbCk4fngB9MVf3Y0/jvcaSk+MNlwPTW7AQy+mKuMgqhv7+KM1Hc2sL?=
- =?us-ascii?Q?T5zwKbMQDgcaP8R4a5l57jv3vVCqlBMAZ4el+iQ+LwAWhOpaLE5HU9qx6TJK?=
- =?us-ascii?Q?lhkqA/4nXXEEZ9lNBZtGegUgJWv+8DOlWPSkbbPhuD50iNOjF6SJA51qRNsg?=
- =?us-ascii?Q?y7cdT8Afqv1fAUJagAl31AeV7QXk4/sJJzlsE6ljG/yawbDBnjyQTJy+fKha?=
- =?us-ascii?Q?B2COoS+pUBpGycp2Ggwaq78TOrWyT1ecVUBMmc1SNCHH8FGSjre6ZukhKegO?=
- =?us-ascii?Q?WnS8tjkK0joshtrKu5d/t0hMtElKzir7pklg7KFs9HsWLfYx7n+KHjBBTZ3G?=
- =?us-ascii?Q?6fyHw6KzDyJsv1At7Mwt3jPgjQNpIZyNXaiGV8D7V307NAAFI7AY8GnDRSjR?=
- =?us-ascii?Q?aiS34Z/y6RQv8D2ffeq8pJ4NdRKDoFNVvc1q0mfe1tjY7CYTmZhSeNB2/v6b?=
- =?us-ascii?Q?pQgW6OjpRLkZmlGv2SRCy+u5qdt65JjBqpIxoA6QRKxSB7HoRkmXQwjd16l6?=
- =?us-ascii?Q?u6Sh8dIrEADM7k4amx/0qwIXVfsfrGAaOjxGEJqsmIau7KWK1n008RScd7xo?=
- =?us-ascii?Q?8fQC89XS6MDiekHObkWjho75xp3fjDbpsVrDeqKVkgyEIC9R6Y93OLSi1QYW?=
- =?us-ascii?Q?4ElpHnITqdAX7PeY0FFk9BUDKsY=3D?=
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 1295ae31-a0d6-40a8-9d51-08d9a2cd2f06
-X-MS-Exchange-CrossTenant-AuthSource: MWHPR1001MB2365.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 08 Nov 2021 15:33:59.5101
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: XmePV1fDbg/+293IQ7Hv9Fc8pSEhndKR+XsZWCwX2+er8AIAkv1vMk4ldwMnaZvugwF95+uGVmnvVkY1TJnK1m3xNSQcs+LeMoP9U0PBIHw=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW5PR10MB5849
-X-Proofpoint-Virus-Version: vendor=nai engine=6300 definitions=10162 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=889 mlxscore=0
- suspectscore=0 bulkscore=0 spamscore=0 phishscore=0 malwarescore=0
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2110150000 definitions=main-2111080095
-X-Proofpoint-GUID: mL7tfAZTqZjdrYYe8VM_KnhzB3N8C-SX
-X-Proofpoint-ORIG-GUID: mL7tfAZTqZjdrYYe8VM_KnhzB3N8C-SX
+References: <cover.1636103151.git.hns@goldelico.com> <3ca9a3099d86d631235b6c03ae260bc581cc8d60.1636103151.git.hns@goldelico.com>
+In-Reply-To: <3ca9a3099d86d631235b6c03ae260bc581cc8d60.1636103151.git.hns@goldelico.com>
+From:   Ulf Hansson <ulf.hansson@linaro.org>
+Date:   Mon, 8 Nov 2021 16:33:52 +0100
+Message-ID: <CAPDyKFrH8f80cs5dbh=3ugjyEzoUYXhStpHQyhUSd6b9wD78vw@mail.gmail.com>
+Subject: Re: [RFC v4 5/6] mmc: core: transplant ti,wl1251 quirks from to be
+ retired omap_hsmmc
+To:     "H. Nikolaus Schaller" <hns@goldelico.com>
+Cc:     =?UTF-8?B?SsOpcsO0bWUgUG91aWxsZXI=?= <Jerome.Pouiller@silabs.com>,
+        Avri Altman <avri.altman@wdc.com>,
+        Shawn Lin <shawn.lin@rock-chips.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Tony Lindgren <tony@atomide.com>,
+        Bean Huo <beanhuo@micron.com>, notasas@gmail.com,
+        linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        letux-kernel@openphoenux.org, kernel@pyra-handheld.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 09, 2021 at 12:25:52AM +0900, Tsuchiya Yuto wrote:
-> 
-> Ah, I see! Thank you. I feel I'm a stupid... I'll do so in v2.
-> 
+On Fri, 5 Nov 2021 at 10:06, H. Nikolaus Schaller <hns@goldelico.com> wrote:
+>
+> The TiWi WL1251 WiFi chip needs special setup of the sdio
+> interface before it can be probed.
+>
+> So far, this is done in omap_hsmmc_init_card() in omap_hsmmc.c
+> which makes it useable only if connected to omap devices
+> which use the omap_hsmmc. The OpenPandora is the most promient
+> example.
+>
+> There are plans to switch to a newer sdhci-omap driver and
+> retire omap_hsmmc. Hence this quirk must be reworked or moved
+> somewhere else. Ideally to some location that is not dependent
+> on the specific SoC mmc host driver.
+>
+> This is achieved by the new mmc_fixup_device() option introduced
+> by ("mmc: allow to match the device tree to apply quirks") to match
+> through device tree compatible string.
+>
+> This quirk will be called early right after where host->ops->init_card()
+> and thus omap_hsmmc_init_card() was previously called.
+>
+> Signed-off-by: H. Nikolaus Schaller <hns@goldelico.com>
+> ---
+>  drivers/mmc/core/card.h   | 19 +++++++++++++++++++
+>  drivers/mmc/core/quirks.h |  7 +++++++
+>  2 files changed, 26 insertions(+)
+>
+> diff --git a/drivers/mmc/core/card.h b/drivers/mmc/core/card.h
+> index 089ede71d3150..20c8dfd6831cf 100644
+> --- a/drivers/mmc/core/card.h
+> +++ b/drivers/mmc/core/card.h
+> @@ -168,6 +168,25 @@ static inline void __maybe_unused add_limit_rate_quirk(struct mmc_card *card,
+>         card->quirk_max_rate = data;
+>  }
+>
+> +static inline void __maybe_unused wl1251_quirk(struct mmc_card *card,
+> +                                              int data)
+> +{
+> +       /*
+> +        * We have TI wl1251 attached to this mmc. Pass this
+> +        * information to the SDIO core because it can't be
+> +        * probed by normal methods.
+> +        */
+> +
+> +       dev_info(card->host->parent, "found wl1251\n");
+> +       card->quirks |= MMC_QUIRK_NONSTD_SDIO;
+> +       card->cccr.wide_bus = 1;
+> +       card->cis.vendor = 0x104c;
+> +       card->cis.device = 0x9066;
+> +       card->cis.blksize = 512;
+> +       card->cis.max_dtr = 24000000;
+> +       card->ocr = 0x80;
 
-Not at all.
+In the past, we discussed a bit around why card->ocr needs to be set here.
 
-It's easy for me to not introduce bugs because I never write new code.
-I just sit here all day obsessing about error handling.
+The reason could very well be that the DTS file is specifying the
+vmmc-supply with 1.8V fixed regulator, which seems wrong to me.
 
-regards,
-dan carpenter
+I would be very interested to know if we would change
+"regulator-min|max-microvolt" of the regulator in the DTS, into
+somewhere in between 2700000-3600000 (2.7-3.6V) - and see if that
+allows us to drop the assignment of "card->ocr =  0x80;" above. Would
+you mind doing some tests for this?
 
+If that works, we should add some comments about it above, I think.
+
+> +}
+> +
+>  /*
+>   * Quirk add/remove for MMC products.
+>   */
+> diff --git a/drivers/mmc/core/quirks.h b/drivers/mmc/core/quirks.h
+> index 41c418527199c..e9813f1f8b23c 100644
+> --- a/drivers/mmc/core/quirks.h
+> +++ b/drivers/mmc/core/quirks.h
+> @@ -146,7 +146,14 @@ static const struct mmc_fixup __maybe_unused sdio_fixup_methods[] = {
+>         END_FIXUP
+>  };
+>
+> +static const char *__maybe_unused wl1251_compatible_list[] = {
+> +       "ti,wl1251",
+> +       NULL
+> +};
+> +
+>  static const struct mmc_fixup __maybe_unused sdio_card_init_methods[] = {
+> +       SDIO_FIXUP_COMPATIBLE(wl1251_compatible_list, wl1251_quirk, 0),
+> +
+>         END_FIXUP
+>  };
+>
+
+Kind regards
+Uffe
