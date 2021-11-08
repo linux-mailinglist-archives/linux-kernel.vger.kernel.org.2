@@ -2,111 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B56A4480DA
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Nov 2021 15:07:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E29EF4480E6
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Nov 2021 15:07:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240254AbhKHOKC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Nov 2021 09:10:02 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:41384 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S240227AbhKHOJ4 (ORCPT
+        id S240273AbhKHOKI convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 8 Nov 2021 09:10:08 -0500
+Received: from mail-ua1-f54.google.com ([209.85.222.54]:34507 "EHLO
+        mail-ua1-f54.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S240246AbhKHOKC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Nov 2021 09:09:56 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1636380432;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=cHhiP8dWU/yCrRHfZ4flhCwBp7rRmlRP7VQTJMKR8q4=;
-        b=XxaBCgXdjRwPiqRyXG7E0v80fGR4U2sl/Cdg6EZZQxDFol3EBYMbRw4Xl0MsbUVnFa4kbl
-        nAEPKQQQv1A5bw/cVKYNAMB8eNs0ADFOLbbtvOpjMz+oTUpsV5+WVAQjvgyH0Q34eECdX/
-        0F5M2QdkYqzKWw8580j9KxKzZ8aiDoQ=
-Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
- [209.85.128.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-482-vM7vHXRDOJGlbLlfyAYYrw-1; Mon, 08 Nov 2021 09:07:11 -0500
-X-MC-Unique: vM7vHXRDOJGlbLlfyAYYrw-1
-Received: by mail-wm1-f72.google.com with SMTP id r6-20020a1c4406000000b0033119c22fdbso6259824wma.4
-        for <linux-kernel@vger.kernel.org>; Mon, 08 Nov 2021 06:07:10 -0800 (PST)
+        Mon, 8 Nov 2021 09:10:02 -0500
+Received: by mail-ua1-f54.google.com with SMTP id b3so31739471uam.1;
+        Mon, 08 Nov 2021 06:07:16 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=cHhiP8dWU/yCrRHfZ4flhCwBp7rRmlRP7VQTJMKR8q4=;
-        b=UsEP1Qj0VYobKovJWH/eN8Xw4ZarYxJwwvF/CJldg6QTeb6gyJLDgE4vbSZTYDEbTO
-         pd1eSCNR+IrHhma1/dhcKFNjUDbq1Xu6SrZalMtaPXguMgduF7KYMb8AaM6djA5C1vFb
-         Rl+Wncaj/hlH1lnzz6T5OmWSlclwP1SFW6wm/eW/m0YurMkxX9VJ9JxTv4Vd5Fj/Sq1T
-         w5dPjjlllUBvpNW1M/zIGMkSu/yGPQs0Zq28bKVofaCIauFcTzXPHhR0GSMsWsSTCURQ
-         a6bho2UmlFvzyKGpN3SdHfTs4XzQht0KIHRFlU9gvFzmyZwPYlOvibCV6mh1PteCnDLJ
-         E5Wg==
-X-Gm-Message-State: AOAM531x+kQ7PjC88fHy/YqS+Yy+FQ3EpQb4O9VXGcgI329kKsbt11a6
-        0wNXig4SD1XW+Vuzj1PReVSdBjsctZgvNxmeR36TAgySoGz2Oz+0Xg8/k4W6wo+VFI3GQC7xI0M
-        CRSDjijIWDf+zDPxC1hvKMvF1En4qwHVpSnzZHQLVf79AYeLy1rx/N/MeJPvU08kR00RJEXvD/5
-        0=
-X-Received: by 2002:a05:6000:1869:: with SMTP id d9mr23381wri.416.1636380429826;
-        Mon, 08 Nov 2021 06:07:09 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJxBR8kNUJGMU0WDyzFvHqppXC/rJqD8zpASqe2AAp4OC/OcZbz6W8aHlANT8ClrikiGMpRVMg==
-X-Received: by 2002:a05:6000:1869:: with SMTP id d9mr23323wri.416.1636380429544;
-        Mon, 08 Nov 2021 06:07:09 -0800 (PST)
-Received: from minerva.home ([92.176.231.106])
-        by smtp.gmail.com with ESMTPSA id m14sm10081696wrp.28.2021.11.08.06.07.08
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 08 Nov 2021 06:07:09 -0800 (PST)
-From:   Javier Martinez Canillas <javierm@redhat.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     Pekka Paalanen <pekka.paalanen@collabora.com>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        Daniel Vetter <daniel.vetter@ffwll.ch>,
-        dri-devel@lists.freedesktop.org,
-        Peter Robinson <pbrobinson@gmail.com>,
-        Jani Nikula <jani.nikula@intel.com>,
-        =?UTF-8?q?Michel=20D=C3=A4nzer?= <michel@daenzer.net>,
-        Javier Martinez Canillas <javierm@redhat.com>
-Subject: [PATCH v4 6/6] drm: Make the nomodeset message less sensational
-Date:   Mon,  8 Nov 2021 15:06:48 +0100
-Message-Id: <20211108140648.795268-7-javierm@redhat.com>
-X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211108140648.795268-1-javierm@redhat.com>
-References: <20211108140648.795268-1-javierm@redhat.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=srssYsTsVb5ivMDmTAt6Y7lXgP/lHHGiJX97jzZpFII=;
+        b=lT7Q627YXwAYYti9TyWmhNrAwxF37ER+DnnHvi8ZOaxozyOw/rwlQ66wlApkNuyNN0
+         l/36WyzNYJX7UwsJU1aMV3bW5Sz7j/IP33Z/kZbh3aJA6GtHX+o7tNp9p+l7GF4QkKIB
+         sjbbINID3WCsCkZrFWfMUwfrp9PjYh6onoNzXUnoEQ/95F5HYU5n5UHmTstBfe0urn4h
+         1SE5gPNj3Pc2mvjTTyE8StQTFs4/Z7quYn3ZeZl33bFkXJAPxUlQqv23fQ05cU4PyTMU
+         am1ot2b90FgHRA4kFfiBdu8fFSdh6YxyoBpITiqz4ORJJJdFb9hLqYTU1fxm5MWEErbR
+         0b5Q==
+X-Gm-Message-State: AOAM531VcfMwSWKNLwI/Nir0vc2ScGiGBGnffpEeKxm2KOJGi6tJeJ4f
+        ZdyVgO2KwEjymrO3gMZbXCXik2FZgi7ZJAl7
+X-Google-Smtp-Source: ABdhPJx9G54VGw4oc23XJRelgp9dkMEtXydk+uvqLajllgER83nLii76Q7zBboH+kgBjAPFdw36B5A==
+X-Received: by 2002:ab0:3e3:: with SMTP id 90mr185644uau.102.1636380435783;
+        Mon, 08 Nov 2021 06:07:15 -0800 (PST)
+Received: from mail-vk1-f171.google.com (mail-vk1-f171.google.com. [209.85.221.171])
+        by smtp.gmail.com with ESMTPSA id c11sm3226781vsh.22.2021.11.08.06.07.14
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 08 Nov 2021 06:07:14 -0800 (PST)
+Received: by mail-vk1-f171.google.com with SMTP id a129so8254621vkb.8;
+        Mon, 08 Nov 2021 06:07:14 -0800 (PST)
+X-Received: by 2002:a05:6122:1350:: with SMTP id f16mr21288847vkp.26.1636380434409;
+ Mon, 08 Nov 2021 06:07:14 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+References: <20211108101157.15189-1-bp@alien8.de> <20211108101157.15189-43-bp@alien8.de>
+In-Reply-To: <20211108101157.15189-43-bp@alien8.de>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Mon, 8 Nov 2021 15:07:03 +0100
+X-Gmail-Original-Message-ID: <CAMuHMdWH+txiSP_d7Jc4f_bU8Lf9iWpT4E3o5o7BJr-YdA6-VA@mail.gmail.com>
+Message-ID: <CAMuHMdWH+txiSP_d7Jc4f_bU8Lf9iWpT4E3o5o7BJr-YdA6-VA@mail.gmail.com>
+Subject: Re: [PATCH v0 42/42] notifier: Return an error when callback is
+ already registered
+To:     Borislav Petkov <bp@alien8.de>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Ayush Sawal <ayush.sawal@chelsio.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Rohit Maheshwari <rohitm@chelsio.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Vinay Kumar Yadav <vinay.yadav@chelsio.com>,
+        ALSA Development Mailing List <alsa-devel@alsa-project.org>,
+        bcm-kernel-feedback-list <bcm-kernel-feedback-list@broadcom.com>,
+        Intel Graphics Development <intel-gfx@lists.freedesktop.org>,
+        intel-gvt-dev@lists.freedesktop.org,
+        alpha <linux-alpha@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        linux-clk <linux-clk@vger.kernel.org>,
+        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
+        linux-edac@vger.kernel.org,
+        Linux Fbdev development list <linux-fbdev@vger.kernel.org>,
+        linux-hyperv@vger.kernel.org, linux-iio@vger.kernel.org,
+        linux-leds <linux-leds@vger.kernel.org>,
+        "open list:BROADCOM NVRAM DRIVER" <linux-mips@vger.kernel.org>,
+        Parisc List <linux-parisc@vger.kernel.org>,
+        Linux PM list <linux-pm@vger.kernel.org>,
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+        "open list:REMOTE PROCESSOR (REMOTEPROC) SUBSYSTEM" 
+        <linux-remoteproc@vger.kernel.org>,
+        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
+        linux-s390 <linux-s390@vger.kernel.org>,
+        scsi <linux-scsi@vger.kernel.org>,
+        Linux-sh list <linux-sh@vger.kernel.org>,
+        linux-staging@lists.linux.dev,
+        linux-tegra <linux-tegra@vger.kernel.org>,
+        linux-um <linux-um@lists.infradead.org>,
+        USB list <linux-usb@vger.kernel.org>,
+        "open list:TENSILICA XTENSA PORT (xtensa)" 
+        <linux-xtensa@linux-xtensa.org>, netdev <netdev@vger.kernel.org>,
+        openipmi-developer@lists.sourceforge.net, rcu@vger.kernel.org,
+        sparclinux <sparclinux@vger.kernel.org>,
+        "the arch/x86 maintainers" <x86@kernel.org>,
+        xen-devel@lists.xenproject.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The message printed when nomodeset is present in the kernel command line
-makes it look as if the parameter must never be used and it's a bad idea.
+Hi Borislav,
 
-But there are valid reasons to use this parameter and the message should
-not imply otherwise. Change the text to be more accurate and restrained.
+On Mon, Nov 8, 2021 at 11:13 AM Borislav Petkov <bp@alien8.de> wrote:
+> From: Borislav Petkov <bp@suse.de>
+>
+> The notifier registration routine doesn't return a proper error value
+> when a callback has already been registered, leading people to track
+> whether that registration has happened at the call site:
+>
+>   https://lore.kernel.org/amd-gfx/20210512013058.6827-1-mukul.joshi@amd.com/
+>
+> Which is unnecessary.
+>
+> Return -EEXIST to signal that case so that callers can act accordingly.
+> Enforce callers to check the return value, leading to loud screaming
+> during build:
+>
+>   arch/x86/kernel/cpu/mce/core.c: In function ‘mce_register_decode_chain’:
+>   arch/x86/kernel/cpu/mce/core.c:167:2: error: ignoring return value of \
+>    ‘blocking_notifier_chain_register’, declared with attribute warn_unused_result [-Werror=unused-result]
+>     blocking_notifier_chain_register(&x86_mce_decoder_chain, nb);
+>   ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+>
+> Drop the WARN too, while at it.
+>
+> Suggested-by: Thomas Gleixner <tglx@linutronix.de>
+> Signed-off-by: Borislav Petkov <bp@suse.de>
 
-Suggested-by: Thomas Zimmermann <tzimmermann@suse.de>
-Signed-off-by: Javier Martinez Canillas <javierm@redhat.com>
----
+Thanks for your patch!
 
-Changes in v4:
-- Don't mention DRM drivers in the kernel message and instead explain
-  that only the system framebuffer will be available.
+> --- a/include/linux/notifier.h
+> +++ b/include/linux/notifier.h
+> @@ -141,13 +141,13 @@ extern void srcu_init_notifier_head(struct srcu_notifier_head *nh);
+>
+>  #ifdef __KERNEL__
+>
+> -extern int atomic_notifier_chain_register(struct atomic_notifier_head *nh,
+> +extern int __must_check atomic_notifier_chain_register(struct atomic_notifier_head *nh,
+>                 struct notifier_block *nb);
+> -extern int blocking_notifier_chain_register(struct blocking_notifier_head *nh,
+> +extern int __must_check blocking_notifier_chain_register(struct blocking_notifier_head *nh,
+>                 struct notifier_block *nb);
+> -extern int raw_notifier_chain_register(struct raw_notifier_head *nh,
+> +extern int __must_check raw_notifier_chain_register(struct raw_notifier_head *nh,
+>                 struct notifier_block *nb);
+> -extern int srcu_notifier_chain_register(struct srcu_notifier_head *nh,
+> +extern int __must_check srcu_notifier_chain_register(struct srcu_notifier_head *nh,
+>                 struct notifier_block *nb);
 
- drivers/gpu/drm/drm_nomodeset.c | 4 +---
- 1 file changed, 1 insertion(+), 3 deletions(-)
+I think the addition of __must_check is overkill, leading to the
+addition of useless error checks and message printing.  Many callers
+call this where it cannot fail, and where nothing can be done in the
+very unlikely event that the call would ever start to fail.
 
-diff --git drivers/gpu/drm/drm_nomodeset.c drivers/gpu/drm/drm_nomodeset.c
-index fc3acf3ab2e2..148b01f7183b 100644
---- drivers/gpu/drm/drm_nomodeset.c
-+++ drivers/gpu/drm/drm_nomodeset.c
-@@ -15,9 +15,7 @@ static int __init disable_modeset(char *str)
- {
- 	drm_nomodeset = true;
- 
--	pr_warn("You have booted with nomodeset. This means your GPU drivers are DISABLED\n");
--	pr_warn("Any video related functionality will be severely degraded, and you may not even be able to suspend the system properly\n");
--	pr_warn("Unless you actually understand what nomodeset does, you should reboot without enabling it\n");
-+	pr_warn("Booted with the nomodeset parameter. Only the system framebuffer will be available\n");
- 
- 	return 1;
- }
--- 
-2.33.1
+Gr{oetje,eeting}s,
 
+                        Geert
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
