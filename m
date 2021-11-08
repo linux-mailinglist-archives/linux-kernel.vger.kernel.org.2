@@ -2,59 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 142BF4480FF
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Nov 2021 15:09:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4BAF7448102
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Nov 2021 15:11:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238934AbhKHOL4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Nov 2021 09:11:56 -0500
-Received: from mail.skyhub.de ([5.9.137.197]:47678 "EHLO mail.skyhub.de"
+        id S237648AbhKHONm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Nov 2021 09:13:42 -0500
+Received: from mail.kernel.org ([198.145.29.99]:57716 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238838AbhKHOLz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Nov 2021 09:11:55 -0500
-Received: from zn.tnic (p200300ec2f33110093973d8dfcf40fd9.dip0.t-ipconnect.de [IPv6:2003:ec:2f33:1100:9397:3d8d:fcf4:fd9])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id EABCC1EC01FC;
-        Mon,  8 Nov 2021 15:09:09 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1636380550;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=afTIKYf1mOVjf2en+sa+/dA5gZljLEsuW+H25HdsaEo=;
-        b=PToB6GqDvuo8AkGnFC5fFetj2cDCUpLX8LVQFtaR7g1+SXbDZ1Obz/JUjvsIRvLbss8LuN
-        crLYPD9I1wW5t4XGaY7WJK9kO5q6CnWI7ovaKXHqoupzkIwgss0Q6txDqvYTgXLDhcKWQk
-        7B+7SsxyzSzlvpQd0fsunpKiQpXh3f0=
-Date:   Mon, 8 Nov 2021 15:09:04 +0100
-From:   Borislav Petkov <bp@alien8.de>
-To:     Alan Stern <stern@rowland.harvard.edu>
-Cc:     LKML <linux-kernel@vger.kernel.org>, linux-usb@vger.kernel.org
-Subject: Re: [PATCH v0 16/42] USB: Check notifier registration return value
-Message-ID: <YYkvgFW07CPRrBPn@zn.tnic>
-References: <20211108101157.15189-1-bp@alien8.de>
- <20211108101157.15189-17-bp@alien8.de>
- <20211108140553.GA1666297@rowland.harvard.edu>
+        id S238835AbhKHONk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Nov 2021 09:13:40 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 516C261107;
+        Mon,  8 Nov 2021 14:10:55 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1636380655;
+        bh=VD4LXky1edfBuqVBwDgx8FQOTCY3ZoMyDHkDS0ymc5A=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=peNSD7hn/nVx97yXb0P63Z2dxKTgV9JUIOFbntfNDIYkhfUXm+0N/PJt6z7V3QASq
+         TvdIPtNyRqmPun4QIOvxBFfU5GvAlrTaNzOD3BHB3MpbISuB0FaJ2i5biO0GPx2Xev
+         ezkms6K8cLDMdinTlHvXoAb7f9w4D79BvqIKhYFM=
+Date:   Mon, 8 Nov 2021 15:10:53 +0100
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Ajay Garg <ajaygargnsit@gmail.com>
+Cc:     jirislaby@kernel.org, andriy.shevchenko@linux.intel.com,
+        kernel@esmil.dk, linux-serial@vger.kernel.org,
+        linux-kernel@vger.kernel.org, paskripkin@gmail.com,
+        johan@kernel.org
+Subject: Re: [PATCH v5] vt: keyboard: suppress warnings in vt_do_kdgkb_ioctl
+Message-ID: <YYkv7ekV9ezpPOWx@kroah.com>
+References: <20211108134901.7449-1-ajaygargnsit@gmail.com>
+ <YYkroa2v1ruwPRBN@kroah.com>
+ <CAHP4M8WLaWa769hDJBWVwL7P7hadoTk+CE1sVba3tRVxpMRVtw@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20211108140553.GA1666297@rowland.harvard.edu>
+In-Reply-To: <CAHP4M8WLaWa769hDJBWVwL7P7hadoTk+CE1sVba3tRVxpMRVtw@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 08, 2021 at 09:05:53AM -0500, Alan Stern wrote:
-> This is a rather misleading description.  The patch does exactly the 
-> opposite: It _adds_ a homegrown notifier registration check.  (Homegrown 
-> in the sense that the check is made by the individual caller rather than 
-> being centralized in the routine being called.)
+On Mon, Nov 08, 2021 at 07:24:59PM +0530, Ajay Garg wrote:
+> Hmm, I am afraid I don't understand. The patch changes only 5 lines.
+> Could someone help me navigate what to "fix"?
+> 
+> 
+> Thanks and Regards,
+> Ajay
+> 
+> On Mon, Nov 8, 2021 at 7:22 PM Greg KH <gregkh@linuxfoundation.org> wrote:
+> >
+> > On Mon, Nov 08, 2021 at 07:19:01PM +0530, Ajay Garg wrote:
+> > > smatch-kchecker gives the following warnings when run on keyboard.c :
+> > >
+> > > vt_do_kdgkb_ioctl() error: uninitialized symbol 'kbs'.
+> > > vt_do_kdgkb_ioctl() error: uninitialized symbol 'ret'.
+> > >
+> > > i)
+> > > The 'kbs" warning was introduced by "07edff926520" :
+> > > ("vt: keyboard, reorder user buffer handling in vt_do_kdgkb_ioctl")
+> > >
+> > > *
+> > > prior 07edff926520, the scope of kbs (allocation/deallocation) was
+> > > external to switch-cases.
+> > >
+> > > *
+> > > post 07edff926520, kbs is allocated internally for each case, however the
+> > > deallocation remains external.
+> > >
+> > > Thus, as the "fix", the scope of kbs deallocation is now made internal
+> > > to each switch case.
+> > >
+> > > ii)
+> > > The 'ret' warning is the result of "4e1404a5cd04" :
+> > > ("vt: keyboard, extract and simplify vt_kdskbsent")
+> > >
+> > > where the "ret = 0" (right at the end) was accidentally removed.
+> > >
+> > > Bringing back the above in a slightly different way, by initializing ret
+> > > to 0 at the start.
 
-See the 0th message - there is a link to another example of what I mean
-with "homegrown" but I see your point.
 
-Thx.
+You are listing two different things being done in this single commit.
 
--- 
-Regards/Gruss,
-    Boris.
+It should be 2 different patches.
 
-https://people.kernel.org/tglx/notes-about-netiquette
+I would recommend getting more comfortable with Linux kernel development
+by working in the drivers/staging/ portion of the kernel first.  And not
+in the "core" kernel like tty/serial or other well-entrenched
+subsystems.  That way you can learn the proper processes and workflows
+better in an area of the kernel that is specifically designed just for
+that, and not end up bothering the time of other kernel developers for
+basic process issues like your recent patches have shown.
+
+thanks,
+
+greg k-h
