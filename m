@@ -2,135 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A9B4F447FE1
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Nov 2021 13:54:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 72A73447FE6
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Nov 2021 13:55:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238554AbhKHM5E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Nov 2021 07:57:04 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:25383 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229966AbhKHM5C (ORCPT
+        id S238762AbhKHM5m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Nov 2021 07:57:42 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47606 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229966AbhKHM5k (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Nov 2021 07:57:02 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1636376058;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=EFXqlwY3MOW61Iy5t5GDa7bdxm1Y6ZhUyYK2YPVZvAI=;
-        b=dVeKm75KlHxLnTLinzVqdvPsoLy0T0A8mW+8FzXTutNLnkSUjvzuM+zA6L9qO9mj9nglDH
-        nIBwJ4UNaDpRfYriOoNvkhOjUwPaqbjPAJdkaryBBwUtUwRqr+Inhc7DwENsAhi7Lbbdl5
-        mfIf58XZK2qaSTVQe7/7bst5vrmQLrw=
-Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
- [209.85.221.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-443-2VZflZqrPu6tG79gDEb5Gg-1; Mon, 08 Nov 2021 07:54:16 -0500
-X-MC-Unique: 2VZflZqrPu6tG79gDEb5Gg-1
-Received: by mail-wr1-f71.google.com with SMTP id f3-20020a5d50c3000000b00183ce1379feso4000893wrt.5
-        for <linux-kernel@vger.kernel.org>; Mon, 08 Nov 2021 04:54:16 -0800 (PST)
+        Mon, 8 Nov 2021 07:57:40 -0500
+Received: from mail-lf1-x12f.google.com (mail-lf1-x12f.google.com [IPv6:2a00:1450:4864:20::12f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05E3AC061570;
+        Mon,  8 Nov 2021 04:54:56 -0800 (PST)
+Received: by mail-lf1-x12f.google.com with SMTP id bu18so36071457lfb.0;
+        Mon, 08 Nov 2021 04:54:55 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=message-id:date:mime-version:user-agent:subject:to:cc:references
+         :from:in-reply-to:content-transfer-encoding;
+        bh=dhxkuxD7y+T2oUxbCfh7/LSZD92zgc+Z3BiHJZcwpms=;
+        b=UAbLL6XXoJdJTy8yMRqSdWQFR0Ky3RlOqulTRBBnEeWRTuARuWEIGpybETzelmBc02
+         EwR5fF96ous50B5L83zh5Qc8afwTxNyLQu6iBf6XCaoY1cDFeRBciQVWBdHc63dNsmVj
+         j5HU2wDqSU1YLMjlaFhFgb7akYpVDnUVq4NOfUV/NLvfbwE+kjJ6TFx3RkiU2+ljMeA3
+         tfwjTxp6y6Ec1qMJKnE3zkBQLjU8Rg/uLrxQdTLFRMJ/XzVPzl3tEnmSYvLaTrN+Ojh6
+         WJ5Q1J9yP3mojZ4a6acjOfx7Q4XGKayrxOc2WYK4oGJVbCWwhQeDOTMGdCjh5c0t/dQh
+         HENA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:in-reply-to
-         :content-transfer-encoding;
-        bh=EFXqlwY3MOW61Iy5t5GDa7bdxm1Y6ZhUyYK2YPVZvAI=;
-        b=2R0to3OOlWpSDfUzou60X+9cG2dog7tgPxf736czJbLmG2/T13Pa9WpxTZkacFJzo9
-         nQ9cZ4DaTky1lLS2yzXvNGB5dJ1xOYhhmvJ3ZyapzPp0VSBgQqqAbu5p6sZWMTBpKtqe
-         fxfYJyeEZYHit3GuU2w01WBxhqzZNsQCLRPRJusXSX550VaBK3bRJ4zQfIF5yAbcIeQl
-         wdeoV3gJC6xlcajKyMdkaBk2VcYILHohcb+REnEFrKRx+aK3pfTSRfgnXW8OnBUc++N5
-         /YN8hAPhIS+OgRrjXYgzblXBMYZxUkeoupgbYovooZDhhj4jawk9N+BQ7VeYTos3D2QC
-         8YpQ==
-X-Gm-Message-State: AOAM530CCSaGTg3BjWKndhBhiuDC0vbzt7rKd8i3mH9k7E/sRE1XWmlp
-        ihO7FA7btwQ+1kzGEcxLCEO6tovV3Qmz2cfJDz0+HOgppYbltjnPboeTwnxroCYlZK/LbmWkz84
-        WCaiUXOJVd3pq1WL3HEvH+ORa
-X-Received: by 2002:a7b:cd03:: with SMTP id f3mr50838591wmj.16.1636376055508;
-        Mon, 08 Nov 2021 04:54:15 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJwmqDlXtLEwAqWdRiXbSgRWUzhJtq4A3VbDkcMqhE2d089skY95iOLrHAVYiMf3G4b4ArNl7w==
-X-Received: by 2002:a7b:cd03:: with SMTP id f3mr50838558wmj.16.1636376055266;
-        Mon, 08 Nov 2021 04:54:15 -0800 (PST)
-Received: from [192.168.1.128] ([92.176.231.106])
-        by smtp.gmail.com with ESMTPSA id c5sm13509067wrd.13.2021.11.08.04.54.14
+         :to:cc:references:from:in-reply-to:content-transfer-encoding;
+        bh=dhxkuxD7y+T2oUxbCfh7/LSZD92zgc+Z3BiHJZcwpms=;
+        b=toXSK4tMj6qMQgTBabySKRM5x3fmWgD+RzOOIB8zBeyPmY7dK4uNocaLe+09l5aoZ2
+         JFESHZRhvnsqf/UTemtHkqPZYsvcJ1sx5ZHNNue8NgLa1TwygXEb4ct8gRkc+s1Hi2V4
+         Nb64YmShIQfKL+AJ0D8uLCfo4zIt6uQHkXFlT+pFprv763nkOdsoOREn/vh3ha2n5oqn
+         IeIfoUBn0aRViKmujkAcsKpPnART2WVHHgg8qROJ4xfO7DpIDRM7ZNzHu2zvMNfJVxUS
+         6U8lMJl0w6IRD5MffnJC3Hf/BDB9MeasYUgJgYC5bScpqdEj3bJLjjO0Wku0Wio8yGiU
+         zEpQ==
+X-Gm-Message-State: AOAM530Pa7abmbHjoYuzCj2UPIR7WegH2wR4YzAIfBVERobQQCaKxolG
+        HrG4se05u7f2Qo2oLg5F5+Y=
+X-Google-Smtp-Source: ABdhPJxF2fg5g4gcukSXF2hN0kNmRvlzieymMpxTEp+ysjtO/HyBbYADd5sA7lK7LKXX4tP/zMfGPw==
+X-Received: by 2002:a05:6512:965:: with SMTP id v5mr56432329lft.3.1636376094406;
+        Mon, 08 Nov 2021 04:54:54 -0800 (PST)
+Received: from [10.1.250.9] (riviera.nat.ds.pw.edu.pl. [194.29.137.1])
+        by smtp.gmail.com with ESMTPSA id i1sm1800363lfr.287.2021.11.08.04.54.53
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 08 Nov 2021 04:54:15 -0800 (PST)
-Message-ID: <7047ccc5-0927-f304-4d60-181d61344f8b@redhat.com>
-Date:   Mon, 8 Nov 2021 13:54:14 +0100
+        Mon, 08 Nov 2021 04:54:54 -0800 (PST)
+Message-ID: <70610f17-82c8-4239-f862-c90269b065f6@gmail.com>
+Date:   Mon, 8 Nov 2021 13:54:53 +0100
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.2.0
-Subject: Re: [PATCH v3 0/6] Cleanups for the nomodeset kernel command line
- parameter logic
-Content-Language: en-US
-To:     Thomas Zimmermann <tzimmermann@suse.de>,
-        linux-kernel@vger.kernel.org
-Cc:     Pekka Paalanen <pekka.paalanen@collabora.com>,
-        Jani Nikula <jani.nikula@intel.com>,
-        Daniel Vetter <daniel.vetter@ffwll.ch>,
-        =?UTF-8?Q?Michel_D=c3=a4nzer?= <michel@daenzer.net>,
-        dri-devel@lists.freedesktop.org,
-        Peter Robinson <pbrobinson@gmail.com>
-References: <20211108121544.776590-1-javierm@redhat.com>
- <509f58a5-5276-5608-e3ba-4694956f6c50@suse.de>
-From:   Javier Martinez Canillas <javierm@redhat.com>
-In-Reply-To: <509f58a5-5276-5608-e3ba-4694956f6c50@suse.de>
-Content-Type: text/plain; charset=UTF-8
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:91.0)
+ Gecko/20100101 Thunderbird/91.3.0
+Subject: Re: [PATCH v2 4/7] arm64: dts: qcom: sdm660-xiaomi-lavender: Add
+ volume up button
+To:     Dang Huynh <danct12@riseup.net>
+Cc:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, martin.botka@somainline.org,
+        marijn.suijten@somainline.org, paul.bouchara@somainline.org,
+        angelogioacchino.delregno@somainline.org,
+        Caleb Connolly <caleb@connolly.tech>
+References: <20211108050336.3404559-1-danct12@riseup.net>
+ <20211108050336.3404559-5-danct12@riseup.net>
+From:   Konrad Dybcio <konradybcio@gmail.com>
+In-Reply-To: <20211108050336.3404559-5-danct12@riseup.net>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Thomas,
 
-On 11/8/21 13:50, Thomas Zimmermann wrote:
-> Hi
-> 
-> Am 08.11.21 um 13:15 schrieb Javier Martinez Canillas:
->> There is a lot of historical baggage on this parameter. It is defined in
->> the vgacon driver as nomodeset, but its set function is called text_mode()
->> and the value queried with a function named vgacon_text_force().
->>
->> All this implies that it's about forcing text mode for VGA, yet it is not
->> used in neither vgacon nor other console driver. The only users for these
->> are DRM drivers, that check for the vgacon_text_force() return value to
->> determine whether the driver should be loaded or not.
->>
->> That makes it quite confusing to read the code, because the variables and
->> function names don't reflect what they actually do and also are not in the
->> same subsystem as the drivers that make use of them.
->>
->> This patch-set attempts to cleanup the code by moving the nomodseset param
->> to the DRM subsystem and do some renaming to make their intention clearer.
->>
->> This is a v3 of the patches, that address issues pointed out by Jani Nikula
->> in v2: https://lkml.org/lkml/2021/11/4/594
->>
->> Patch #1 and #2 are just trivial cleanups.
->>
->> Patch #3 moves the nomodeset boot option to the DRM subsystem and renames
->> the variables and functions names.
->>
->> Patch #4 removes the relationship between the nomodeset parameter and the
->> CONFIG_VGA_CONSOLE Kconfig symbol.
-> 
-> On patches 1 to 4
-> 
-> Acked-by: Thomas Zimmermann <tzimmermann@suse.de>
+On 08/11/2021 06:03, Dang Huynh wrote:
+> This enables the volume up key.
 >
-
-Thanks!
- 
->>
->> Patch #5 adds nomodeset to the kernel parameters documentation.
->>
->> Patch #6 improves the message when nomodeset is enabled to make it more
->> accurate and less sensational.
-> 
-> See my comments on these patches.
+> Reviewed-by: Caleb Connolly <caleb@connolly.tech>
+> Reviewed-by: Martin Botka <martin.botka@somainline.org>
+> Signed-off-by: Dang Huynh <danct12@riseup.net>
+> ---
+>   .../boot/dts/qcom/sdm660-xiaomi-lavender.dts   | 18 ++++++++++++++++++
+>   1 file changed, 18 insertions(+)
 >
+> diff --git a/arch/arm64/boot/dts/qcom/sdm660-xiaomi-lavender.dts b/arch/arm64/boot/dts/qcom/sdm660-xiaomi-lavender.dts
+> index 28408240735b..ab814dc8a875 100644
+> --- a/arch/arm64/boot/dts/qcom/sdm660-xiaomi-lavender.dts
+> +++ b/arch/arm64/boot/dts/qcom/sdm660-xiaomi-lavender.dts
+> @@ -9,6 +9,9 @@
+>   #include "sdm660.dtsi"
+>   #include "pm660.dtsi"
+>   #include "pm660l.dtsi"
+> +#include <dt-bindings/gpio/gpio.h>
+> +#include <dt-bindings/input/input.h>
+> +#include <dt-bindings/input/gpio-keys.h>
+>   
+>   / {
+>   	model = "Xiaomi Redmi Note 7";
+> @@ -31,6 +34,21 @@ vph_pwr: vph-pwr-regulator {
+>   		regulator-boot-on;
+>   	};
+>   
+> +	gpio_keys {
 
-Yes, agreed with your feedback on these. I'll improve it when posting a v4.
+Nodes shouldn't use underscores.
 
-Best regards, -- 
-Javier Martinez Canillas
-Linux Engineering
-Red Hat
 
+> +		status = "okay";
+
+It's set to "okay" by default, no need for this line.
+
+
+> +		compatible = "gpio-keys";
+> +		input-name = "gpio-keys";
+> +		#address-cells = <1>;
+> +		#size-cells = <0>;
+
+Not sure if you need -cells here, as the child nodes don't have a reg.
+
+
+> +
+> +		vol_up {
+
+Ditto
+
+
+> +			label = "Volume Up";
+> +			gpios = <&pm660l_gpios 7 GPIO_ACTIVE_LOW>;
+> +			linux,code = <KEY_VOLUMEUP>;
+> +			debounce-interval = <15>;
+> +		};
+> +	};
+> +
+>   	reserved-memory {
+>   		#address-cells = <2>;
+>   		#size-cells = <2>;
+>
+Konrad
