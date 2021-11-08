@@ -2,103 +2,182 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B37BD447A30
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Nov 2021 06:34:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 966EA447A35
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Nov 2021 06:41:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236936AbhKHFgv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Nov 2021 00:36:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32938 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229899AbhKHFgu (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Nov 2021 00:36:50 -0500
-Received: from mail-lf1-x12d.google.com (mail-lf1-x12d.google.com [IPv6:2a00:1450:4864:20::12d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 47100C061570
-        for <linux-kernel@vger.kernel.org>; Sun,  7 Nov 2021 21:34:06 -0800 (PST)
-Received: by mail-lf1-x12d.google.com with SMTP id o18so33391536lfu.13
-        for <linux-kernel@vger.kernel.org>; Sun, 07 Nov 2021 21:34:06 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=gpm7jPZ0ZMPW4LY+8KRKOKkVEUHfPW7d23ZeDD6AHnM=;
-        b=clg5vcEitEheMZx8mbDe7QnU97lNI4yoQQENZvJmRRtm1abIdfZ6gJXGV0pelj+b0U
-         dcpWZsOFazA1IGlq7SrDphfBwQnvrCHrVGnpBWH5cDVlShVMg39NGVxzHDMBVJDURIdZ
-         r45zV77psix8kpU5aRuHMFOO7DCOGXkHYh8E2cmRfxwLJ7RlgFGuZdaVI/9t9AEC00wP
-         f2nv6IZ3vMiNVFFpATlVwi+xNcWZfpwdwEoQ1SBmzUZGlG5TN8h57FHiFJ8hj13X/SKm
-         fgnRFWgwF58d3NWjdW5QVT1Yk5aCfV9tIJbG5SoWfDDcxv00aQJUeKZ0FDWWi9zMnsta
-         RN7w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=gpm7jPZ0ZMPW4LY+8KRKOKkVEUHfPW7d23ZeDD6AHnM=;
-        b=Gah2cqqMPyOfai0RKP+eVLAXpeDA8SXPcZkwhu3cczmu+FxUg3HoLK4XKwrwH6QKTk
-         jxQJmV/3WxqlESY8CLYm99vhvMeh2z0omltQTmqL/N063Lpf9XgfT/rvO4f3ymSCCGT4
-         xIEg9qX+RuJnuBtOFd8VKb8LdGMHqsYk5qjSDTLfFjj0ywb5YtG1PLA61QWlkf2OnBGh
-         RcIVkk08+wfouD0Rh7kVdYdkFYRL4Kb8meklTiuLwgR/li6/eI48CsdYawt9fMhQNftT
-         A7EWXxH/2gVqVDZb9w1F+8aZK/Cwe3utP4eMGB3+zPDiKbGGidFImJgmChKl2OOdrq4q
-         +P2g==
-X-Gm-Message-State: AOAM530ZeX0MTYtnom6mpBfwXG8y/KJlYT6AU7ngUPo4SQ+xiiHQ4eIS
-        osQYlgC+7qQ0xjClvGLqU2te/8lu0YiZ0uSF9A3cjA==
-X-Google-Smtp-Source: ABdhPJwgdGJyUpyR/mOLSV0b8Ig0zVB84wH3mLDwnfuV+O4nI7wKaMy5cn8BFLLuoLCj3znUKkmkfobNqIPVlpDJh20=
-X-Received: by 2002:a05:6512:2291:: with SMTP id f17mr71245439lfu.253.1636349644569;
- Sun, 07 Nov 2021 21:34:04 -0800 (PST)
+        id S236971AbhKHFoa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Nov 2021 00:44:30 -0500
+Received: from m43-7.mailgun.net ([69.72.43.7]:58335 "EHLO m43-7.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229899AbhKHFo3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Nov 2021 00:44:29 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1636350105; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=qRv2nHtDcrWu8ahlJnSE1F3twABo8IxBQNapATzVhWM=;
+ b=tTD2RH2rGn1fA5mBRNSSa2xPM3vb+2VhUVm5I+vUDN189wDD9LPHBl0pYdDsdo/FkR0agUMk
+ jYeYJ3br7YZxVovqSFSBQzn8u460l2slc7s1hPnpHlJGKI0QGSU09zA0/AkIolWXYOzkmF5u
+ 0UzLgzKXlJoRjPhdoJPG1bUpgyM=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n06.prod.us-west-2.postgun.com with SMTP id
+ 6188b8984596a04707f2c967 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 08 Nov 2021 05:41:44
+ GMT
+Sender: dikshita=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 25B8CC4360D; Mon,  8 Nov 2021 05:41:44 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
+        autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: dikshita)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 4CF08C4338F;
+        Mon,  8 Nov 2021 05:41:43 +0000 (UTC)
 MIME-Version: 1.0
-References: <20211104113047.28585-1-lv.ruyi@zte.com.cn>
-In-Reply-To: <20211104113047.28585-1-lv.ruyi@zte.com.cn>
-From:   Sumit Garg <sumit.garg@linaro.org>
-Date:   Mon, 8 Nov 2021 11:03:53 +0530
-Message-ID: <CAFA6WYPOz1g+-6=Roo88qwcSv9W5vsbVHFWTzv_ALXxyMsLJ8w@mail.gmail.com>
-Subject: Re: [PATCH] optee: fix kfree NULL pointer
-To:     cgel.zte@gmail.com
-Cc:     jens.wiklander@linaro.org, op-tee@lists.trustedfirmware.org,
-        linux-kernel@vger.kernel.org, Lv Ruyi <lv.ruyi@zte.com.cn>,
-        Zeal Robot <zealci@zte.com.cn>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Mon, 08 Nov 2021 11:11:43 +0530
+From:   dikshita@codeaurora.org
+To:     Dikshita Agarwal <quic_dikshita@quicinc.com>
+Cc:     agross@kernel.org, bjorn.andersson@linaro.org, robh+dt@kernel.org,
+        mchehab@kernel.org, devicetree@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-media@vger.kernel.org, vgarodia@codeaurora.org,
+        stanimir.varbanov@linaro.org,
+        Mansur Alisha Shaik <mansur@codeaurora.org>
+Subject: Re: [PATCH v7] arm64: dts: qcom: sc7280: Add venus DT node
+In-Reply-To: <1635259922-25378-1-git-send-email-quic_dikshita@quicinc.com>
+References: <1635259922-25378-1-git-send-email-quic_dikshita@quicinc.com>
+Message-ID: <8584fd56711395d1933ae8448e5af77e@codeaurora.org>
+X-Sender: dikshita@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 4 Nov 2021 at 17:00, <cgel.zte@gmail.com> wrote:
->
-> From: Lv Ruyi <lv.ruyi@zte.com.cn>
->
-> This patch fixes the following Coccinelle error:
-> drivers/tee/optee/ffa_abi.c: 877: ERROR  optee is NULL but dereferenced.
->
-> If memory allocation fails, optee is null pointer. the code will goto err
->  and release optee.
->
-> Reported-by: Zeal Robot <zealci@zte.com.cn>
-> Signed-off-by: Lv Ruyi <lv.ruyi@zte.com.cn>
+Hello,
+
+Gentle Reminder to review/merge this change.
+
+Thanks,
+Dikshita
+
+On 2021-10-26 20:22, Dikshita Agarwal wrote:
+> From: Dikshita Agarwal <dikshita@codeaurora.org>
+> 
+> Add DT entries for the sc7280 venus encoder/decoder.
+> 
+> Co-developed-by: Mansur Alisha Shaik <mansur@codeaurora.org>
+> Signed-off-by: Mansur Alisha Shaik <mansur@codeaurora.org>
+> Signed-off-by: Dikshita Agarwal <dikshita@codeaurora.org>
 > ---
->  drivers/tee/optee/ffa_abi.c | 3 +--
->  1 file changed, 1 insertion(+), 2 deletions(-)
->
-> diff --git a/drivers/tee/optee/ffa_abi.c b/drivers/tee/optee/ffa_abi.c
-> index 6defd1ec982a..8d9d189557f9 100644
-> --- a/drivers/tee/optee/ffa_abi.c
-> +++ b/drivers/tee/optee/ffa_abi.c
-> @@ -811,8 +811,7 @@ static int optee_ffa_probe(struct ffa_device *ffa_dev)
->
->         optee = kzalloc(sizeof(*optee), GFP_KERNEL);
->         if (!optee) {
-> -               rc = -ENOMEM;
-> -               goto err;
-> +               return -ENOMEM;
->         }
-
-So the braces are redundant after this change, hence can be dropped.
-
-With that addressed:
-
-Reviewed-by: Sumit Garg <sumit.garg@linaro.org>
-
--Sumit
-
->         optee->pool = optee_ffa_config_dyn_shm();
->         if (IS_ERR(optee->pool)) {
-> --
-> 2.25.1
->
+> changes since v6:
+>     fixed checkpatch errors.
+> 
+>  arch/arm64/boot/dts/qcom/sc7280.dtsi | 75 
+> ++++++++++++++++++++++++++++++++++++
+>  1 file changed, 75 insertions(+)
+> 
+> diff --git a/arch/arm64/boot/dts/qcom/sc7280.dtsi
+> b/arch/arm64/boot/dts/qcom/sc7280.dtsi
+> index 365a2e0..e4988ea 100644
+> --- a/arch/arm64/boot/dts/qcom/sc7280.dtsi
+> +++ b/arch/arm64/boot/dts/qcom/sc7280.dtsi
+> @@ -129,6 +129,11 @@
+>  			no-map;
+>  		};
+> 
+> +		video_mem: memory@8b200000 {
+> +			reg = <0x0 0x8b200000 0x0 0x500000>;
+> +			no-map;
+> +		};
+> +
+>  		ipa_fw_mem: memory@8b700000 {
+>  			reg = <0 0x8b700000 0 0x10000>;
+>  			no-map;
+> @@ -2675,6 +2680,76 @@
+>  			};
+>  		};
+> 
+> +		venus: video-codec@aa00000 {
+> +			compatible = "qcom,sc7280-venus";
+> +			reg = <0 0x0aa00000 0 0xd0600>;
+> +			interrupts = <GIC_SPI 174 IRQ_TYPE_LEVEL_HIGH>;
+> +
+> +			clocks = <&videocc VIDEO_CC_MVSC_CORE_CLK>,
+> +				 <&videocc VIDEO_CC_MVSC_CTL_AXI_CLK>,
+> +				 <&videocc VIDEO_CC_VENUS_AHB_CLK>,
+> +				 <&videocc VIDEO_CC_MVS0_CORE_CLK>,
+> +				 <&videocc VIDEO_CC_MVS0_AXI_CLK>;
+> +			clock-names = "core", "bus", "iface",
+> +				      "vcodec_core", "vcodec_bus";
+> +
+> +			power-domains = <&videocc MVSC_GDSC>,
+> +					<&videocc MVS0_GDSC>,
+> +					<&rpmhpd SC7280_CX>;
+> +			power-domain-names = "venus", "vcodec0", "cx";
+> +			operating-points-v2 = <&venus_opp_table>;
+> +
+> +			interconnects = <&gem_noc MASTER_APPSS_PROC 0 &cnoc2 
+> SLAVE_VENUS_CFG 0>,
+> +					<&mmss_noc MASTER_VIDEO_P0 0 &mc_virt SLAVE_EBI1 0>;
+> +			interconnect-names = "cpu-cfg", "video-mem";
+> +
+> +			iommus = <&apps_smmu 0x2180 0x20>,
+> +				 <&apps_smmu 0x2184 0x20>;
+> +			memory-region = <&video_mem>;
+> +
+> +			video-decoder {
+> +				compatible = "venus-decoder";
+> +			};
+> +
+> +			video-encoder {
+> +				compatible = "venus-encoder";
+> +			};
+> +
+> +			video-firmware {
+> +				iommus = <&apps_smmu 0x21a2 0x0>;
+> +			};
+> +
+> +			venus_opp_table: venus-opp-table {
+> +				compatible = "operating-points-v2";
+> +
+> +				opp-133330000 {
+> +					opp-hz = /bits/ 64 <133330000>;
+> +					required-opps = <&rpmhpd_opp_low_svs>;
+> +				};
+> +
+> +				opp-240000000 {
+> +					opp-hz = /bits/ 64 <240000000>;
+> +					required-opps = <&rpmhpd_opp_svs>;
+> +				};
+> +
+> +				opp-335000000 {
+> +					opp-hz = /bits/ 64 <335000000>;
+> +					required-opps = <&rpmhpd_opp_svs_l1>;
+> +				};
+> +
+> +				opp-424000000 {
+> +					opp-hz = /bits/ 64 <424000000>;
+> +					required-opps = <&rpmhpd_opp_nom>;
+> +				};
+> +
+> +				opp-460000048 {
+> +					opp-hz = /bits/ 64 <460000048>;
+> +					required-opps = <&rpmhpd_opp_turbo>;
+> +				};
+> +			};
+> +
+> +		};
+> +
+>  		videocc: clock-controller@aaf0000 {
+>  			compatible = "qcom,sc7280-videocc";
+>  			reg = <0 0xaaf0000 0 0x10000>;
