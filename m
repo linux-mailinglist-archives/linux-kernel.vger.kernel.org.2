@@ -2,125 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 398D8449C04
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Nov 2021 19:53:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E1BB0449C05
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Nov 2021 19:53:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236230AbhKHS43 convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 8 Nov 2021 13:56:29 -0500
-Received: from aposti.net ([89.234.176.197]:33428 "EHLO aposti.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236093AbhKHS42 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Nov 2021 13:56:28 -0500
-Date:   Mon, 08 Nov 2021 18:53:24 +0000
-From:   Paul Cercueil <paul@crapouillou.net>
-Subject: Re: [PATCH v5 2/7] drm/ingenic: Add support for JZ4780 and HDMI
- output
-To:     "H. Nikolaus Schaller" <hns@goldelico.com>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Kees Cook <keescook@chromium.org>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Robert Foss <robert.foss@linaro.org>,
-        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        Harry Wentland <harry.wentland@amd.com>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        Maxime Ripard <maxime@cerno.tech>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Paul Boddie <paul@boddie.org.uk>,
-        OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS 
-        <devicetree@vger.kernel.org>,
-        linux-mips <linux-mips@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Discussions about the Letux Kernel 
-        <letux-kernel@openphoenux.org>, Jonas Karlman <jonas@kwiboo.se>,
-        dri-devel <dri-devel@lists.freedesktop.org>
-Message-Id: <0HO92R.RF221XL59J3I1@crapouillou.net>
-In-Reply-To: <ACEFD0BB-1FCF-4EEB-A40F-1F2543A05BF4@goldelico.com>
-References: <cover.1633436959.git.hns@goldelico.com>
-        <2c7d0aa7d3ef480ebb996d37c27cbaa6f722728b.1633436959.git.hns@goldelico.com>
-        <FXTI0R.3FZIJZ7UYSNQ@crapouillou.net>
-        <7CEBB741-2218-40A7-9800-B3A154895274@goldelico.com>
-        <Q6U72R.9HY4TXLC6RWV2@crapouillou.net>
-        <229EBE4C-6555-41DE-962F-D82798AEC650@goldelico.com>
-        <HQY82R.69JHJIC64HDO1@crapouillou.net>
-        <2E32F572-72D0-44E7-A700-AF8A2D37BFDA@goldelico.com>
-        <ZA692R.GHQL6RBCLFB12@crapouillou.net>
-        <D0809E59-DCB5-46CE-BE5E-D2A5D2ECA6F0@goldelico.com>
-        <BVH92R.0VU3IKPQTLX9@crapouillou.net>
-        <2F8A88BC-2696-491B-9C01-7D07A3B3670A@goldelico.com>
-        <RIL92R.MLAZ6CTO865E1@crapouillou.net>
-        <ACEFD0BB-1FCF-4EEB-A40F-1F2543A05BF4@goldelico.com>
+        id S236263AbhKHS4b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Nov 2021 13:56:31 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45058 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236233AbhKHS43 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Nov 2021 13:56:29 -0500
+Received: from mail-lj1-x232.google.com (mail-lj1-x232.google.com [IPv6:2a00:1450:4864:20::232])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 65A96C061570
+        for <linux-kernel@vger.kernel.org>; Mon,  8 Nov 2021 10:53:44 -0800 (PST)
+Received: by mail-lj1-x232.google.com with SMTP id 207so13187052ljf.10
+        for <linux-kernel@vger.kernel.org>; Mon, 08 Nov 2021 10:53:44 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=ChbQr5dmryeBqZbjzLYHzYVaRx/29ISxTF05QE1qZTA=;
+        b=ecYtcpuTXEo93YuV6xgTpilVQgGCInTceXwxEaPYwn2jxSV2O3ap48L/1ESonyya60
+         fpRdYAnTqArP9m+XRjSBBuGiR0lLdJ8RQwus4bnS0SHc/QqmWmhg8EvUClscQbftHNj0
+         e+7GGx1Osd0Sx+zJH9ylzuqdB68HAWxXII8gN0y1fwYEfPkzSAXGEczewG63YcqZXY6z
+         1H5aUUP5lZDSBLBFDYCttIqf8BuXCTOZMx6LKo+dCm7fd2XOilV4oSsJA4dIPlf5fS6U
+         mzM57Bzgjs0pJe5qYHagkPxK2VIhXPZH9v61CzYXA1tk9omTmCjxtOmar8lVoCD9M+EH
+         fuVg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=ChbQr5dmryeBqZbjzLYHzYVaRx/29ISxTF05QE1qZTA=;
+        b=sUCBZK/bkeLyx2GFmckbS13moQQNG6HKx1MwX0+KpR2dOC5FjPvq9Tua8t3Tg5c4yP
+         vFDS2ADEZUhK4SbaqLKPllrFQ061Lev7UCepT/XtKF3KZ999vl2z71BGtRpV1y3Do6N7
+         mHh6f0lyhOZG9Nl4DIIAOftCmMc3iwMVbcJG2zhTF0K4EE+1LDv5a2ykp/eYqvpdNEmA
+         +X7D8Wocpbvh4JTJFvezlRFBlsR16G1yLfG1q7+f5uGIS2nMUx5VHQcQyTsxjqcjhgf+
+         WS6OKNjFX/n3YTlqmFc5+MqQLLKAYTcq0LAc9X7mcO2K8rdLDMVqLNODEfCYQo5Jjn4z
+         bxxQ==
+X-Gm-Message-State: AOAM530XYXWGMvU7jAu+cID1LrzmSYNLk7hfNu33fWeuJsg/1xKnCGdP
+        SGxoAaaI49yoGUCHb8+MgqS6YqeVVko1lLKOjJ8dEQhIDavwYA==
+X-Google-Smtp-Source: ABdhPJyJ3q66yAAhlqNGOl7hpVH8Z6xvpeVsO2wRyNVME2kXeftFS3hdQu1yQ+mUc3vIohqTZGirJrt3NwvEk3vWkog=
+X-Received: by 2002:a05:651c:889:: with SMTP id d9mr1230796ljq.198.1636397622550;
+ Mon, 08 Nov 2021 10:53:42 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1; format=flowed
-Content-Transfer-Encoding: 8BIT
+References: <20211105171023.989862879@infradead.org> <20211105171821.654356149@infradead.org>
+ <20211108164711.mr2cqdcvedin2lvx@treble> <YYlshkTmf5zdvf1Q@hirez.programming.kicks-ass.net>
+In-Reply-To: <YYlshkTmf5zdvf1Q@hirez.programming.kicks-ass.net>
+From:   Nick Desaulniers <ndesaulniers@google.com>
+Date:   Mon, 8 Nov 2021 10:53:31 -0800
+Message-ID: <CAKwvOdkFZ4PSN0GGmKMmoCrcp7_VVNjau_b0sNRm3MuqVi8yow@mail.gmail.com>
+Subject: Re: [PATCH 20/22] x86,word-at-a-time: Remove .fixup usage
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Josh Poimboeuf <jpoimboe@redhat.com>, x86@kernel.org,
+        linux-kernel@vger.kernel.org, mark.rutland@arm.com,
+        dvyukov@google.com, seanjc@google.com, pbonzini@redhat.com,
+        mbenes@suse.cz
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Nikolaus,
+On Mon, Nov 8, 2021 at 10:29 AM Peter Zijlstra <peterz@infradead.org> wrote:
+>
+> On Mon, Nov 08, 2021 at 08:47:11AM -0800, Josh Poimboeuf wrote:
+> > On Fri, Nov 05, 2021 at 06:10:43PM +0100, Peter Zijlstra wrote:
+> > > +static inline unsigned long load_unaligned_zeropad(const void *addr)
+> > > +{
+> > > +   unsigned long offset, data;
+> > > +   unsigned long ret;
+> > > +
+> > > +   asm_volatile_goto(
+> > > +           "1:     mov %[mem], %[ret]\n"
+> > > +
+> > > +           _ASM_EXTABLE(1b, %l[do_exception])
+> > > +
+> > > +           : [ret] "=&r" (ret)
+> > > +           : [mem] "m" (*(unsigned long *)addr)
+> > > +           : : do_exception);
+> > > +
+> > > +out:
+> > > +   return ret;
+> > > +
+> > > +do_exception: __cold;
+> >
+> > Clang doesn't approve of this label annotation:
+> >
+> > In file included from fs/dcache.c:186:
+> > ./arch/x86/include/asm/word-at-a-time.h:99:15: warning: '__cold__' attribute only applies to functions [-Wignored-attributes]
+> > do_exception: __cold;
+>
+> /me mutters something best left unsaid these days...
+>
+> Nick, how come?
 
-Le lun., nov. 8 2021 at 19:33:48 +0100, H. Nikolaus Schaller 
-<hns@goldelico.com> a écrit :
-> Hi Paul,
-> 
->>  Am 08.11.2021 um 18:49 schrieb Paul Cercueil <paul@crapouillou.net>:
->> 
->>>>  Variant 4: the variant #2 without the changes to the DTSI files.
->>>  Hm. If there is no cache and we can safely remove tight boundary 
->>> checking (by JZ_REG_LCD_SIZE1) for jz4725/40/70 (by not fixing 
->>> DTSI) why do we still need the max_register calculation from DTSI 
->>> specifically for jz4780 and at all?
->> 
->>  It's better to have the .max_register actually set to the proper 
->> value. Then reading the registers from debugfs 
->> (/sys/kernel/debug/regmap/) will print the actual list of registers 
->> without bogus values. If .max_register is set too high, it will end 
->> up reading outside the registers area.
-> 
-> Ok, that is a good reason to convince me.
-> 
->>  On Ingenic SoCs such reads just return 0, but on some other SoCs it 
->> can lock up the system.
-> 
-> Yes, I know some of these...
-> 
->>  So the best way forward is to have .max_register computed from the 
->> register area's size, and fix the DTSI with the proper sizes. Since 
->> your JZ4780 code needs to update .max_register anyway it's a good 
->> moment to add this patch, and the DTSI files can be fixed later (by 
->> me or whoever is up to the task).
-> 
-> Well, it would already be part of my Variant #2 (untested). So I 
-> could simply split it up further and you can test the pure dtsi 
-> changes and apply them later or modify if that makes problems. Saves 
-> you a little work. BTW: the jz4740 seems to have even less registers 
-> (last register seems to be LCDCMD1 @ 0x1305005C).
-
-Sure, if you want. Send the DTSI patch(es) separate from this patchset 
-then.
-
->> 
->>  Fixing the DTS is not a problem in any way, btw. We just need to 
->> ensure that the drivers still work with old DTB files, which will be 
->> the case here.
-> 
-> Yes, that is right since the new values are smaller than the 
-> originals.
-> 
-> Ok, then let's do it that way.
-
-Great. Waiting for your v6 then.
-
-Cheers,
--Paul
-
-
+Looks like https://bugs.llvm.org/show_bug.cgi?id=47487.
+-- 
+Thanks,
+~Nick Desaulniers
