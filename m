@@ -2,84 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3AF59447D0C
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Nov 2021 10:47:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 67AF3447D10
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Nov 2021 10:48:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237698AbhKHJtx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Nov 2021 04:49:53 -0500
-Received: from smtp-out2.suse.de ([195.135.220.29]:34590 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232818AbhKHJtw (ORCPT
+        id S238068AbhKHJu7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Nov 2021 04:50:59 -0500
+Received: from mailgw01.mediatek.com ([60.244.123.138]:39542 "EHLO
+        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S232818AbhKHJu5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Nov 2021 04:49:52 -0500
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out2.suse.de (Postfix) with ESMTP id 46FD91FD4B;
-        Mon,  8 Nov 2021 09:47:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1636364827; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=zigEgwMAEavRVLp+BJtAfXNpYofMF3JDQX/JpOBUL4w=;
-        b=WLLKV/YRu4/8Yv2L2sy9mY69NGD5Xm49FdpVe16AL4LOEP8J4o2s/u8FBeNwgL5mH1i7bj
-        taui7ghqRshCvhcpTfGwsygDhsx+MkX6w85OO7fMP9IdsakUPjweCptxJuxYYhrdt+fILV
-        vRqLwTKcGR/Eywyn0otcoPztY1Iypsg=
-Received: from suse.cz (unknown [10.100.224.162])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by relay2.suse.de (Postfix) with ESMTPS id F254EA3B81;
-        Mon,  8 Nov 2021 09:47:06 +0000 (UTC)
-Date:   Mon, 8 Nov 2021 10:47:06 +0100
-From:   Petr Mladek <pmladek@suse.com>
-To:     Christophe Leroy <christophe.leroy@csgroup.eu>
-Cc:     Josh Poimboeuf <jpoimboe@redhat.com>,
-        Jiri Kosina <jikos@kernel.org>,
-        Miroslav Benes <mbenes@suse.cz>,
-        Joe Lawrence <joe.lawrence@redhat.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        "Naveen N . Rao" <naveen.n.rao@linux.vnet.ibm.com>,
-        linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        live-patching@vger.kernel.org
-Subject: Re: [PATCH v1 1/5] livepatch: Fix build failure on 32 bits processors
-Message-ID: <YYjyGhhNbwtrx4p8@alley>
-References: <cover.1635423081.git.christophe.leroy@csgroup.eu>
- <cefeeaf1447088db00c5a62e2ff03f7d15bb4c05.1635423081.git.christophe.leroy@csgroup.eu>
+        Mon, 8 Nov 2021 04:50:57 -0500
+X-UUID: 3ee690613a8d4cecb71755dac53b3aae-20211108
+X-UUID: 3ee690613a8d4cecb71755dac53b3aae-20211108
+Received: from mtkcas11.mediatek.inc [(172.21.101.40)] by mailgw01.mediatek.com
+        (envelope-from <mark-pk.tsai@mediatek.com>)
+        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 1011212809; Mon, 08 Nov 2021 17:48:08 +0800
+Received: from mtkmbs10n1.mediatek.inc (172.21.101.34) by
+ mtkmbs10n2.mediatek.inc (172.21.101.183) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.792.3;
+ Mon, 8 Nov 2021 17:48:08 +0800
+Received: from mtksdccf07.mediatek.inc (172.21.84.99) by
+ mtkmbs10n1.mediatek.inc (172.21.101.73) with Microsoft SMTP Server id
+ 15.2.792.15 via Frontend Transport; Mon, 8 Nov 2021 17:48:08 +0800
+From:   Mark-PK Tsai <mark-pk.tsai@mediatek.com>
+To:     <ohad@wizery.com>, <bjorn.andersson@linaro.org>,
+        <mathieu.poirier@linaro.org>
+CC:     <linux-remoteproc@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <mark-pk.tsai@mediatek.com>, <yj.chiang@mediatek.com>
+Subject: remoteproc: rproc_va_to_pa returns invalid physical address when using sparse memory model
+Date:   Mon, 8 Nov 2021 17:48:08 +0800
+Message-ID: <20211108094808.1993-1-mark-pk.tsai@mediatek.com>
+X-Mailer: git-send-email 2.18.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <cefeeaf1447088db00c5a62e2ff03f7d15bb4c05.1635423081.git.christophe.leroy@csgroup.eu>
+Content-Type: text/plain
+X-MTK:  N
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu 2021-10-28 14:24:01, Christophe Leroy wrote:
-> Trying to build livepatch on powerpc/32 results in:
-> 
-> 	kernel/livepatch/core.c: In function 'klp_resolve_symbols':
-> 	kernel/livepatch/core.c:221:23: warning: cast to pointer from integer of different size [-Wint-to-pointer-cast]
-> 	  221 |                 sym = (Elf64_Sym *)sechdrs[symndx].sh_addr + ELF_R_SYM(relas[i].r_info);
-> 	      |                       ^
-> 	kernel/livepatch/core.c:221:21: error: assignment to 'Elf32_Sym *' {aka 'struct elf32_sym *'} from incompatible pointer type 'Elf64_Sym *' {aka 'struct elf64_sym *'} [-Werror=incompatible-pointer-types]
-> 	  221 |                 sym = (Elf64_Sym *)sechdrs[symndx].sh_addr + ELF_R_SYM(relas[i].r_info);
-> 	      |                     ^
-> 	kernel/livepatch/core.c: In function 'klp_apply_section_relocs':
-> 	kernel/livepatch/core.c:312:35: error: passing argument 1 of 'klp_resolve_symbols' from incompatible pointer type [-Werror=incompatible-pointer-types]
-> 	  312 |         ret = klp_resolve_symbols(sechdrs, strtab, symndx, sec, sec_objname);
-> 	      |                                   ^~~~~~~
-> 	      |                                   |
-> 	      |                                   Elf32_Shdr * {aka struct elf32_shdr *}
-> 	kernel/livepatch/core.c:193:44: note: expected 'Elf64_Shdr *' {aka 'struct elf64_shdr *'} but argument is of type 'Elf32_Shdr *' {aka 'struct elf32_shdr *'}
-> 	  193 | static int klp_resolve_symbols(Elf64_Shdr *sechdrs, const char *strtab,
-> 	      |                                ~~~~~~~~~~~~^~~~~~~
-> 
-> Fix it by using the right types instead of forcing 64 bits types.
-> 
-> Fixes: 7c8e2bdd5f0d ("livepatch: Apply vmlinux-specific KLP relocations early")
-> Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
+On my arm platform with CONFIG_SPARSEMEM=y, when the virtual address comes
+from ioremap, which map to a reserved memory region, rproc_va_to_pa
+returns a invalid address. (no iommu)
 
-Makes sense. I haven't tested it but it looks correct ;-)
+It's because the corresponding struct page and section not present.
+And then __page_to_pfn read the page->flags in the returned page which
+is actually an invalid address.
+(When CONFIG_SPARSMEM=y && CONFIG_SPARSEMEM_VMEMMAP=n, kernel get the
+section the page belong to in flags field.)
 
-Acked-by: Petr Mladek <pmladek@suse.com>
-
-Best Regards,
-Petr
+I'm looking for suggestion to properly fix this problem.
+Could you please give us some suggestion?
