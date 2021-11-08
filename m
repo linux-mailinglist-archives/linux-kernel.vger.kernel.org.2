@@ -2,151 +2,186 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A4385449E44
+	by mail.lfdr.de (Postfix) with ESMTP id ED925449E45
 	for <lists+linux-kernel@lfdr.de>; Mon,  8 Nov 2021 22:31:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240369AbhKHVec (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Nov 2021 16:34:32 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52706 "EHLO
+        id S240418AbhKHVeg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Nov 2021 16:34:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52714 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239289AbhKHVea (ORCPT
+        with ESMTP id S240367AbhKHVeb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Nov 2021 16:34:30 -0500
-Received: from mail-pg1-x52d.google.com (mail-pg1-x52d.google.com [IPv6:2607:f8b0:4864:20::52d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 67B47C061714
-        for <linux-kernel@vger.kernel.org>; Mon,  8 Nov 2021 13:31:45 -0800 (PST)
-Received: by mail-pg1-x52d.google.com with SMTP id r28so16369349pga.0
-        for <linux-kernel@vger.kernel.org>; Mon, 08 Nov 2021 13:31:45 -0800 (PST)
+        Mon, 8 Nov 2021 16:34:31 -0500
+Received: from mail-qk1-x72a.google.com (mail-qk1-x72a.google.com [IPv6:2607:f8b0:4864:20::72a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 39C5CC061714
+        for <linux-kernel@vger.kernel.org>; Mon,  8 Nov 2021 13:31:46 -0800 (PST)
+Received: by mail-qk1-x72a.google.com with SMTP id n15so16850428qkp.12
+        for <linux-kernel@vger.kernel.org>; Mon, 08 Nov 2021 13:31:46 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=IoCUy0ckLTOFUid7Iy+BX/Hk13faaLcXTZhF2jkBuiI=;
-        b=sPc/XZpVz19bKX0gCpMfnJqHnHPZTZQoluFvw3APki3n2cKwA1Ge8GfHYO8w9Ke7WH
-         01LCzn86g4nTjJQTMYv/gCAAQtYP9X5hy8VmAqT9qqWY68Vgl+DFDXz97UchzAt/oKP0
-         JQYFADxNuPhY1brHfNwCNEsLwJIwJQVjRvCNmP8xruoW7x2kgL31W98KnHCu0g69PKQy
-         tvANGY/wEJwuJscViJg159D0+7LNRuxxOqyssLzWjNq0D8UvmKuZaM2vL3Fu0AMDaRIi
-         0GRTOQO2z7jh23YyjSAdfYxYyXDrS5ti4LA8wr0Tm1O0AB74VyDKUhPuK3z+g/nRJIg7
-         h/TA==
+        d=linaro.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=s5tMJEcudqXsuhh1EA1Zp+nQ88xePj20Hc2KkNUWDsU=;
+        b=Ae8kkXgDrDFP/odEz71AJTjhaFNsH4u+OGlS3nZDJX5cldhY6nkQcUO3QoqEnqCzFa
+         BQht6SE35qyia0jMOtiC2IebnWiVKLTwQ5UQI9+/YyOERDE5mEaV/BGgEJt4haOdcGt4
+         QTxe+hsOLit51eifZGmv/JTxbGLaMOVFw3YcaZ4j36SZirauQ/NMEidMBHYWXxJMq87H
+         GIsHQ3fylNSRLGhvcHnIg7MU3g8AP6TFXK7ijyiBcFvAMeibXy9j1UNKFUWe5WBj+Duc
+         oifkKHgZeOaumPR1+i6Z///GQfUn/sybjkp04JEGf93BdNljICpBsVV1SGIrCv92sZOC
+         J/xA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=IoCUy0ckLTOFUid7Iy+BX/Hk13faaLcXTZhF2jkBuiI=;
-        b=S+378Ih+HSS+/QZuwrMSgTj2f5sN5f+awHMhfe0lWR1sHstqmvOocbl5JPDekf3/TG
-         bMHcgHLRtxrmhAureLVeBkxSKEWY8NYp9FAU2DHGH7UUYVldF9K1WeJOtGw26lwnEpYw
-         wUmRv6kIoCdzBMOlcjWc8Da7xHLihqVdiFRAQQCATn+wDzQLKtWeajLDtQF1z7a37evW
-         igerX3NMTOuZmdpzr2ywj5JS+Ros/aKKtfmC7kjRttrAPpTTf01pe47OBWIYYeJkewKs
-         QPK6OrDUUYbnLghsShbXLgvWE3UHu2A0htOIoLZUjONzi0QYMyd2I5t/tbkXREIZYfIT
-         0M0A==
-X-Gm-Message-State: AOAM532PohGik9MYViihhVRmrAQVodIOe9bUwbsJS6QJkJpVpmp0wibE
-        CCxRyrJZzV7IwJQzaYyuCdaD5w==
-X-Google-Smtp-Source: ABdhPJykBxJsO3lt/l2H3w3eMF0RzDf+q/D8UKOuN74GOHiY+muFWNxDtsMWZtXqU+QdDq9XNTq/dg==
-X-Received: by 2002:a05:6a00:70e:b0:480:be26:6240 with SMTP id 14-20020a056a00070e00b00480be266240mr2107586pfl.30.1636407104668;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=s5tMJEcudqXsuhh1EA1Zp+nQ88xePj20Hc2KkNUWDsU=;
+        b=rHJALEbgYPe0w30FCG23N116SZLIhVc2kOjMSUyrwCSvGmmHcVkbV0Wc+RV0it1I+G
+         7W4McTAU+vj9L32U2lNe1VnvG969ymga0hYxlyHA1gO5NE8jwI9HXjboEHNWbImrLeZV
+         78TbnSGsBfsDOBvBFAwMrZVOK22kVNT5AdbofSYxmgczxfbYUCR8Kks26FeT4XW+oPJ6
+         ODBtT8unGLQcAzWdQSs9HQ4Wmk37z7DLwRB3D3h2GldQQPoL1ZdESYGBYKzKa9TmtGr4
+         eIy+p3WbzW+6xgVoCHfjxD2FGqlGKBaxI5Su7jvPAHxyTnPHnAdoSRFBBycScwNFMhnC
+         ihoQ==
+X-Gm-Message-State: AOAM5329BKC/mOeCzbXPZVH+xeUR30vNFXJfKWkMG/88rCykUsD5cFmM
+        +/ARCU7Xit67bLeGU9j0UnGT/Q==
+X-Google-Smtp-Source: ABdhPJxLupCh0ogEwzGIg4W2cCTY25wrbd/qb1d2CFGSDvrqEWvp4py1sjwaDa/6e8fqENI6AyZOsA==
+X-Received: by 2002:a05:620a:2a14:: with SMTP id o20mr1830012qkp.221.1636407105343;
+        Mon, 08 Nov 2021 13:31:45 -0800 (PST)
+Received: from [192.168.1.93] (pool-71-163-245-5.washdc.fios.verizon.net. [71.163.245.5])
+        by smtp.gmail.com with ESMTPSA id w19sm2033209qkw.49.2021.11.08.13.31.44
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
         Mon, 08 Nov 2021 13:31:44 -0800 (PST)
-Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
-        by smtp.gmail.com with ESMTPSA id v10sm4657125pfg.162.2021.11.08.13.31.43
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 08 Nov 2021 13:31:43 -0800 (PST)
-Date:   Mon, 8 Nov 2021 21:31:39 +0000
-From:   Sean Christopherson <seanjc@google.com>
-To:     Chenyi Qiang <chenyi.qiang@intel.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Xiaoyao Li <xiaoyao.li@intel.com>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v5 6/7] KVM: VMX: Expose PKS to guest
-Message-ID: <YYmXO2WQpydWVro0@google.com>
-References: <20210811101126.8973-1-chenyi.qiang@intel.com>
- <20210811101126.8973-7-chenyi.qiang@intel.com>
+Subject: Re: [PATCH v3 0/5] Refactor thermal pressure update to avoid code
+ duplication
+To:     Steev Klimaszewski <steev@kali.org>,
+        Lukasz Luba <lukasz.luba@arm.com>
+Cc:     linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-arm-msm@vger.kernel.org, sudeep.holla@arm.com,
+        will@kernel.org, catalin.marinas@arm.com, linux@armlinux.org.uk,
+        gregkh@linuxfoundation.org, rafael@kernel.org,
+        viresh.kumar@linaro.org, amitk@kernel.org,
+        daniel.lezcano@linaro.org, amit.kachhap@gmail.com,
+        bjorn.andersson@linaro.org, agross@kernel.org
+References: <20211103161020.26714-1-lukasz.luba@arm.com>
+ <c7b526f0-2c26-0cfc-910b-3521c6a6ef51@kali.org>
+ <3cba148a-7077-7b6b-f131-dc65045aa348@arm.com>
+ <9d533b6e-a81c-e823-fa6f-61fdea92fa65@kali.org>
+ <74ea027b-b213-42b8-0f7d-275f3b84712e@linaro.org>
+ <74603569-2ff1-999e-9618-79261fdb0ee4@kali.org>
+ <b7e76c2a-ceac-500a-ff75-535a3f0d51d6@linaro.org>
+ <f955a2aa-f788-00db-1ed8-dc9c7a1b2572@kali.org>
+ <59054c90-c1cd-85bf-406e-579df668d7b4@linaro.org>
+ <eac00041-a1b8-0780-931d-52249d538800@kali.org>
+From:   Thara Gopinath <thara.gopinath@linaro.org>
+Message-ID: <2c54dbbd-2ecb-fb76-fa9f-9752f429c20e@linaro.org>
+Date:   Mon, 8 Nov 2021 16:31:44 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210811101126.8973-7-chenyi.qiang@intel.com>
+In-Reply-To: <eac00041-a1b8-0780-931d-52249d538800@kali.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 11, 2021, Chenyi Qiang wrote:
-> diff --git a/arch/x86/kvm/cpuid.c b/arch/x86/kvm/cpuid.c
-> index 739be5da3bca..dbee0d639db3 100644
-> --- a/arch/x86/kvm/cpuid.c
-> +++ b/arch/x86/kvm/cpuid.c
-> @@ -458,7 +458,7 @@ void kvm_set_cpu_caps(void)
->  		F(AVX512_VPOPCNTDQ) | F(UMIP) | F(AVX512_VBMI2) | F(GFNI) |
->  		F(VAES) | F(VPCLMULQDQ) | F(AVX512_VNNI) | F(AVX512_BITALG) |
->  		F(CLDEMOTE) | F(MOVDIRI) | F(MOVDIR64B) | 0 /*WAITPKG*/ |
-> -		F(SGX_LC) | F(BUS_LOCK_DETECT)
-> +		F(SGX_LC) | F(BUS_LOCK_DETECT) | 0 /*PKS*/
-
-...
-
->  	);
->  	/* Set LA57 based on hardware capability. */
->  	if (cpuid_ecx(7) & F(LA57))
-
-...
-
-> @@ -7311,6 +7312,14 @@ static __init void vmx_set_cpu_caps(void)
->  
->  	if (cpu_has_vmx_waitpkg())
->  		kvm_cpu_cap_check_and_set(X86_FEATURE_WAITPKG);
-> +
-> +	/*
-> +	 * PKS is not yet implemented for shadow paging.
-> +	 * If not support VM_{ENTRY, EXIT}_LOAD_IA32_PKRS,
-> +	 * don't expose the PKS as well.
-> +	 */
-> +	if (enable_ept && cpu_has_load_ia32_pkrs())
-> +		kvm_cpu_cap_check_and_set(X86_FEATURE_PKS);
-
-I would rather handle the !TDP case in cpuid.c alongside the PKU.  The decision
-to not support Protection Keys with legacy shadow paging is an x86 decision, not
-a VMX decision.
-
-And VMX's extra restriction on the VMCS support should not bleed into common x86.
-
-Can you also opportunistically update the comment (see below) to explain _why_
-OSPKE needs to be enabled in order to advertise PKU?
-
-Thanks!
-
-diff --git a/arch/x86/kvm/cpuid.c b/arch/x86/kvm/cpuid.c
-index 2d70edb0f323..c4ed6881857c 100644
---- a/arch/x86/kvm/cpuid.c
-+++ b/arch/x86/kvm/cpuid.c
-@@ -439,18 +439,23 @@ void kvm_set_cpu_caps(void)
-                F(AVX512_VPOPCNTDQ) | F(UMIP) | F(AVX512_VBMI2) | F(GFNI) |
-                F(VAES) | F(VPCLMULQDQ) | F(AVX512_VNNI) | F(AVX512_BITALG) |
-                F(CLDEMOTE) | F(MOVDIRI) | F(MOVDIR64B) | 0 /*WAITPKG*/ |
--               F(SGX_LC) | F(BUS_LOCK_DETECT)
-+               F(SGX_LC) | F(BUS_LOCK_DETECT) | F(PKS)
-        );
-        /* Set LA57 based on hardware capability. */
-        if (cpuid_ecx(7) & F(LA57))
-                kvm_cpu_cap_set(X86_FEATURE_LA57);
-
-        /*
--        * PKU not yet implemented for shadow paging and requires OSPKE
--        * to be set on the host. Clear it if that is not the case
-+        * Protection Keys are not supported for shadow paging.  PKU further
-+        * requires OSPKE to be set on the host in order to use {RD,WR}PKRU to
-+        * save/restore the guests PKRU.
-         */
--       if (!tdp_enabled || !boot_cpu_has(X86_FEATURE_OSPKE))
-+       if (!tdp_enabled) {
-                kvm_cpu_cap_clear(X86_FEATURE_PKU);
-+               kvm_cpu_cap_clear(X86_FEATURE_PKS);
-+       } else if (!boot_cpu_has(X86_FEATURE_OSPKE)) {
-+               kvm_cpu_cap_clear(X86_FEATURE_PKU);
-+       }
-
-        kvm_cpu_cap_mask(CPUID_7_EDX,
-                F(AVX512_4VNNIW) | F(AVX512_4FMAPS) | F(SPEC_CTRL) |
 
 
-and then vmx.c only needs to handle clearing PKS when the VMCS controls aren't
-available.
+On 11/8/21 10:22 AM, Steev Klimaszewski wrote:
+> 
+>> Hi Steev,
+>>
+>> So this depends on the cpufreq governor you are using. By-default arm 
+>> systems have sched-util governor enabled. This means you will scale up 
+>> to boost depending on cpu load and not always. If you want to ensure 
+>> you are always hitting boost frequency, you should enable performance 
+>> governor for cpufreq and try.
+>>
+>> Also since the defconfig has by default CPU_FREQ_STAT enabled, you 
+>> should be able to get statistics out of cpufreq to see the time spent 
+>> by a cpu in each frequency. I think cpufreq-info -s should give you 
+>> this info. If not, you can explicitly get it for each cpu from
+>>
+>> cat /sys/devices/system/cpu/cpu<X>/cpufreq/stats/time_in_state
+>>
+>> Regarding temperature, if you have applied all the patches in the 
+>> sdm845 LMh series and have LMh enabled, cpu throttling starts around 
+>> 95 degree C.
+>>
+> Hi Thara,
+> 
+> Indeed, I ended up finding the time_in_state when I was doing more 
+> digging after my last mail.  I do have the sdm845 LMh series and LMh 
+> enabled, however I don't think I've ever seen my system go above 90C here.
+> 
+> So a quick look, and... we are simply almost never getting the 2.95GHz 
+> at all, regardless of workload.  I saw Lukasz response as well about the 
+> math possibly being wrong, but I haven't had a chance.
+> 
+> Regarding the time in state - I went with policy4 instead of per cpu 
+> (for brevity sake) and it's here:
+> 
+> c630:~$ cat /sys/devices/system/cpu/cpufreq/policy4/stats/time_in_state
+> 825600 225037
+> 902400 92
+> 979200 205
+> 1056000 96
+> 1209600 902
+> 1286400 386
+> 1363200 396
+> 1459200 217
+> 1536000 101
+> 1612800 75
+> 1689600 95
+> 1766400 130
+> 1843200 255
+> 1920000 318
+> 1996800 92
+> 2092800 87
+> 2169600 66
+> 2246400 60
+> 2323200 58
+> 2400000 54
+> 2476800 47
+> 2553600 50
+> 2649600 69
+> 2745600 58
+> 2841600 54619
+> 2956800 5
+> 
+> So we spend *very* little time in 2.96GHz and this is after almost 14 
+> hours of uptime on the C630.  By comparison, on a Pinebook Pro where 
+> I've added in 2GHz as a boost frequency :
+
+Hi Steev,
+
+IIUC, PineBook Pro has Rockchip RK3399 which has 2 Cortex A-72 and 4 
+Cortex A-52 where as C630 has Qualcomm sdm845 which has 4 Cortex A-75 
+and 4 Cortex A-55. Task placements and subsequently cpu load will be 
+different for both the platforms. With the same workload, I will expect 
+Rockchip to system to be more loaded than sdm845. Having said that, what 
+cpu-freq governor are you using on both the systems.
+
+
+> 
+> pinebook-pro:~$ cat 
+> /sys/devices/system/cpu/cpufreq/policy4/stats/time_in_state
+> 408000 16084466
+> 600000 27212
+> 816000 32487
+> 1008000 11331
+> 1200000 13268
+> 1416000 75078
+> 1608000 18392
+> 1800000 207266
+> 2016000 648612
+> 
+> With the Pinebook Pro, which doesn't even come close to getting to 95C, 
+> we spend a lot more time in 2GHz.
+> 
+> -- steev
+> 
+
+-- 
+Warm Regards
+Thara (She/Her/Hers)
