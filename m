@@ -2,97 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E1A35447E25
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Nov 2021 11:38:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9585A447E29
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Nov 2021 11:40:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238827AbhKHKlY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Nov 2021 05:41:24 -0500
-Received: from mail.zju.edu.cn ([61.164.42.155]:40434 "EHLO zju.edu.cn"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S238640AbhKHKkt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Nov 2021 05:40:49 -0500
-Received: from localhost.localdomain (unknown [222.205.2.245])
-        by mail-app4 (Coremail) with SMTP id cS_KCgBHT+MH_ohhZIbCBA--.52229S4;
-        Mon, 08 Nov 2021 18:37:59 +0800 (CST)
-From:   Lin Ma <linma@zju.edu.cn>
-To:     netdev@vger.kernel.org
-Cc:     davem@davemloft.net, kuba@kernel.org, jirislaby@kernel.org,
-        gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org,
-        Lin Ma <linma@zju.edu.cn>
-Subject: [PATCH v1 2/2] hamradio: defer 6pack kfree after unregister_netdev
-Date:   Mon,  8 Nov 2021 18:37:59 +0800
-Message-Id: <20211108103759.30541-1-linma@zju.edu.cn>
-X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211108103721.30522-1-linma@zju.edu.cn>
-References: <20211108103721.30522-1-linma@zju.edu.cn>
+        id S236828AbhKHKnA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Nov 2021 05:43:00 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45016 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230310AbhKHKm6 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Nov 2021 05:42:58 -0500
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CEB66C061570
+        for <linux-kernel@vger.kernel.org>; Mon,  8 Nov 2021 02:40:14 -0800 (PST)
+From:   John Ogness <john.ogness@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1636368013;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=FW6JswIDu9qA1nuRkk62bEsDXrDikiWc8n7F/BGFqE8=;
+        b=0mDUzYRVn4Xk1G+5lUQKnWREAK9xysiSGkWVtXvS5ZScmTlYwMkG8SrUmTJZ66yHNdmK4m
+        ooae4Xb132NKAbEXvmF/3lg91dqsQZmDUZNNclid1bAhSblbAc+guh/cqX1/5nenL0WV0d
+        kE0g9zU16WqNOq5vVCsQqAG0YoNE1tTt76z5+o2pGC+Ne6ekrzk9rFWobwRuQRgS3ue1oz
+        PwTD/fZfYkuAyMcIVKUPsLzslt8wr3OcU6aKUVCGnw821KwIqrkxezlf5XisJ/duVOWvXJ
+        Zw2zdbPQQHpTtwd/rH08vAJHAuypU7EqnpbYZOM3oWbq+KE9g/YPhFX7r2pHPQ==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1636368013;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=FW6JswIDu9qA1nuRkk62bEsDXrDikiWc8n7F/BGFqE8=;
+        b=9V/RF8VejtlEIocR6Y/sNvVkp70HyEIsgsNB4SBOFU+0KsNg+/qSHRfQCawhKFResG7xP4
+        eEsI5hJ0Vc0eRADQ==
+To:     Nicholas Piggin <npiggin@gmail.com>, Petr Mladek <pmladek@suse.com>
+Cc:     Nicholas Piggin <npiggin@gmail.com>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] printk: restore flushing of NMI buffers on remote CPUs
+ after NMI backtraces
+In-Reply-To: <20211107045116.1754411-1-npiggin@gmail.com>
+References: <20211107045116.1754411-1-npiggin@gmail.com>
+Date:   Mon, 08 Nov 2021 11:46:13 +0106
+Message-ID: <87cznbx75e.fsf@jogness.linutronix.de>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: cS_KCgBHT+MH_ohhZIbCBA--.52229S4
-X-Coremail-Antispam: 1UD129KBjvJXoW7uF15Zr48ZFykCF1kGr15Jwb_yoW8Jw18pF
-        W5GFW3Aw1ktr45Gw1ktF4YgF98WwsavFWUCFZ8G3sF9rsIvF109r1qkFyj9r4DZr1rA3yY
-        yFn8AF43Crn5A3DanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUvY1xkIjI8I6I8E6xAIw20EY4v20xvaj40_Wr0E3s1l1IIY67AE
-        w4v_Jr0_Jr4l8cAvFVAK0II2c7xJM28CjxkF64kEwVA0rcxSw2x7M28EF7xvwVC0I7IYx2
-        IY67AKxVWDJVCq3wA2z4x0Y4vE2Ix0cI8IcVCY1x0267AKxVWxJr0_GcWl84ACjcxK6I8E
-        87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_GcCE3s1le2I262IYc4CY6c
-        8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_JrI_
-        JrylYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvY0x0EwI
-        xGrwACjI8F5VA0II8E6IAqYI8I648v4I1lc2xSY4AK67AK6r4DMxAIw28IcxkI7VAKI48J
-        MxAIw28IcVCjz48v1sIEY20_GFWkJr1UJwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c
-        02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_JF0_
-        Jw1lIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7
-        CjxVAFwI0_Gr0_Cr1lIxAIcVCF04k26cxKx2IYs7xG6r1j6r1xMIIF0xvEx4A2jsIE14v2
-        6r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x0J
-        UZYFZUUUUU=
-X-CM-SenderInfo: qtrwiiyqvtljo62m3hxhgxhubq/
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There is a possible race condition (use-after-free) like below
+On 2021-11-07, Nicholas Piggin <npiggin@gmail.com> wrote:
+> printk from NMI context relies on irq work being raised on the local CPU
+> to print to console. This can be a problem if the NMI was raised by a
+> lockup detector to print lockup stack and regs, because the CPU may not
+> enable irqs (because it is locked up).
+>
+> Introduce printk_trigger_flush() that can be called another CPU to try
+> to get those messages to the console, call that where printk_safe_flush
+> was previously called.
+>
+> Fixes: 93d102f094be ("printk: remove safe buffers")
+> Signed-off-by: Nicholas Piggin <npiggin@gmail.com>
 
- (USE)                       |  (FREE)
-  dev_queue_xmit             |
-   __dev_queue_xmit          |
-    __dev_xmit_skb           |
-     sch_direct_xmit         | ...
-      xmit_one               |
-       netdev_start_xmit     | tty_ldisc_kill
-        __netdev_start_xmit  |  6pack_close
-         sp_xmit             |   kfree
-          sp_encaps          |
-                             |
+Reviewed-by: John Ogness <john.ogness@linutronix.de>
 
-According to the patch "defer ax25 kfree after unregister_netdev", this
-patch reorder the kfree after the unregister_netdev to avoid the possible
-UAF as the unregister_netdev() is well synchronized and won't return if
-there is a running routine.
-
-Signed-off-by: Lin Ma <linma@zju.edu.cn>
----
- drivers/net/hamradio/6pack.c | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/net/hamradio/6pack.c b/drivers/net/hamradio/6pack.c
-index 49f10053a794..bfdf89e54752 100644
---- a/drivers/net/hamradio/6pack.c
-+++ b/drivers/net/hamradio/6pack.c
-@@ -672,11 +672,13 @@ static void sixpack_close(struct tty_struct *tty)
- 	del_timer_sync(&sp->tx_t);
- 	del_timer_sync(&sp->resync_t);
- 
--	/* Free all 6pack frame buffers. */
-+	unregister_netdev(sp->dev);
-+
-+	/* Free all 6pack frame buffers after unreg. */
- 	kfree(sp->rbuff);
- 	kfree(sp->xbuff);
- 
--	unregister_netdev(sp->dev);
-+	free_netdev(sp->dev);
- }
- 
- /* Perform I/O control on an active 6pack channel. */
--- 
-2.33.1
-
+> ---
+>  arch/powerpc/kernel/watchdog.c | 6 ++++++
+>  include/linux/printk.h         | 4 ++++
+>  kernel/printk/printk.c         | 5 +++++
+>  lib/nmi_backtrace.c            | 6 ++++++
+>  4 files changed, 21 insertions(+)
+>
+> diff --git a/arch/powerpc/kernel/watchdog.c b/arch/powerpc/kernel/watchdog.c
+> index 5f69ba4de1f3..c8017bc23b00 100644
+> --- a/arch/powerpc/kernel/watchdog.c
+> +++ b/arch/powerpc/kernel/watchdog.c
+> @@ -227,6 +227,12 @@ static void watchdog_smp_panic(int cpu)
+>  		cpumask_clear(&wd_smp_cpus_ipi);
+>  	}
+>  
+> +	/*
+> +	 * Force flush any remote buffers that might be stuck in IRQ context
+> +	 * and therefore could not run their irq_work.
+> +	 */
+> +	printk_trigger_flush();
+> +
+>  	if (hardlockup_panic)
+>  		nmi_panic(NULL, "Hard LOCKUP");
+>  
+> diff --git a/include/linux/printk.h b/include/linux/printk.h
+> index 85b656f82d75..9497f6b98339 100644
+> --- a/include/linux/printk.h
+> +++ b/include/linux/printk.h
+> @@ -198,6 +198,7 @@ void dump_stack_print_info(const char *log_lvl);
+>  void show_regs_print_info(const char *log_lvl);
+>  extern asmlinkage void dump_stack_lvl(const char *log_lvl) __cold;
+>  extern asmlinkage void dump_stack(void) __cold;
+> +void printk_trigger_flush(void);
+>  #else
+>  static inline __printf(1, 0)
+>  int vprintk(const char *s, va_list args)
+> @@ -274,6 +275,9 @@ static inline void dump_stack_lvl(const char *log_lvl)
+>  static inline void dump_stack(void)
+>  {
+>  }
+> +static inline void printk_trigger_flush(void)
+> +{
+> +}
+>  #endif
+>  
+>  #ifdef CONFIG_SMP
+> diff --git a/kernel/printk/printk.c b/kernel/printk/printk.c
+> index a8d0a58deebc..99221b016c68 100644
+> --- a/kernel/printk/printk.c
+> +++ b/kernel/printk/printk.c
+> @@ -3252,6 +3252,11 @@ void defer_console_output(void)
+>  	preempt_enable();
+>  }
+>  
+> +void printk_trigger_flush(void)
+> +{
+> +	defer_console_output();
+> +}
+> +
+>  int vprintk_deferred(const char *fmt, va_list args)
+>  {
+>  	int r;
+> diff --git a/lib/nmi_backtrace.c b/lib/nmi_backtrace.c
+> index f9e89001b52e..199ab201d501 100644
+> --- a/lib/nmi_backtrace.c
+> +++ b/lib/nmi_backtrace.c
+> @@ -75,6 +75,12 @@ void nmi_trigger_cpumask_backtrace(const cpumask_t *mask,
+>  		touch_softlockup_watchdog();
+>  	}
+>  
+> +	/*
+> +	 * Force flush any remote buffers that might be stuck in IRQ context
+> +	 * and therefore could not run their irq_work.
+> +	 */
+> +	printk_trigger_flush();
+> +
+>  	clear_bit_unlock(0, &backtrace_flag);
+>  	put_cpu();
+>  }
+> -- 
+> 2.23.0
