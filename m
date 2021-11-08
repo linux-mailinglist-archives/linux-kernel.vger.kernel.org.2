@@ -2,68 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E8EDA44804F
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Nov 2021 14:32:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D59244976C
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Nov 2021 16:06:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239955AbhKHNfL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Nov 2021 08:35:11 -0500
-Received: from mga04.intel.com ([192.55.52.120]:65375 "EHLO mga04.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234552AbhKHNfJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Nov 2021 08:35:09 -0500
-X-IronPort-AV: E=McAfee;i="6200,9189,10161"; a="230938616"
+        id S240686AbhKHPJQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Nov 2021 10:09:16 -0500
+Received: from esa.microchip.iphmx.com ([68.232.154.123]:41805 "EHLO
+        esa.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236457AbhKHPJM (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Nov 2021 10:09:12 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1636383987; x=1667919987;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=8SrEU9XI/OEo5uTJNfmiDpAr5AwL1FBJ0ig/W9RdeJY=;
+  b=uVT1wnJxxS7GgFyYEjB0ZVgGtyFscrseVnsFUZmcirIQOfYoCvUbPApg
+   KMNCD6wdpcdlFnsFP3mS/aK6ibYOkTR2zcFi6VIeKndP+uuRfHZK79MZw
+   +EOcxvgoZNcb6oeAOjuBHTSdud7HlDe90ddKHoE5CZLWJD3j++hlsZPTV
+   ce5AbYUdtwUKmsgaq+qjqx5sjUKhucm/7/EdcL/yQiN1oA4/y75+uP6BT
+   iDRJLIL4P+E5uGyjiopt6dyPJG1vW9JaCVyA0XT28aUh5DuWf2YquWqRm
+   wi1eghMc78q7cMeFmCM6zNcFNECREpLi0BXXJjf8IDnaaZ2lnqW4YN4ri
+   A==;
+IronPort-SDR: rKaUUnhxQEuffL258X7HEch2+KTgcTsz45WpCwjQFqdvi8jf1EDK/efkqY6IZ8ZUpCzJsKfE4K
+ fgxIdeqoyQBgLCKd+c5YqltwAtfrElduaVhZivZVIyZNykcinto/2oJdjfbZVi8qpomr8qiY+5
+ xvIo0j6fITV7ox+ZkTGm3VHcDlg3p/F8tKywsi/ROTKcRlaZHem9FmP1RYErwPj0c0fq/yJExn
+ Ge+EtfgudJp/+8PUoXcjGOeNR++YFCHA8AGfjsFN/WY8+sr7YVPwvi8LXrQVx/OEJV9KmkbI0f
+ 1vRBKjAwQ16j2JOLIbTgLjaZ
 X-IronPort-AV: E=Sophos;i="5.87,218,1631602800"; 
-   d="scan'208";a="230938616"
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Nov 2021 05:32:25 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.87,218,1631602800"; 
-   d="scan'208";a="581471753"
-Received: from icx.bj.intel.com ([10.240.192.117])
-  by FMSMGA003.fm.intel.com with ESMTP; 08 Nov 2021 05:32:22 -0800
-From:   Yang Zhong <yang.zhong@intel.com>
-To:     linux-kernel@vger.kernel.org, x86@kernel.org
-Cc:     tglx@linutronix.de, bp@suse.de, dave.hansen@intel.com,
-        chang.seok.bae@intel.com, yang.zhong@intel.com, jing2.liu@intel.com
-Subject: [PATCH] x86/fpu: Set the corret permission value for perm.__state_perm
-Date:   Mon,  8 Nov 2021 17:28:15 -0500
-Message-Id: <20211108222815.4078-1-yang.zhong@intel.com>
-X-Mailer: git-send-email 2.30.2
+   d="scan'208";a="135847455"
+Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
+  by esa4.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 08 Nov 2021 08:06:22 -0700
+Received: from chn-vm-ex03.mchp-main.com (10.10.85.151) by
+ chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.14; Mon, 8 Nov 2021 08:06:19 -0700
+Received: from wendy.microchip.com (10.10.115.15) by chn-vm-ex03.mchp-main.com
+ (10.10.85.151) with Microsoft SMTP Server id 15.1.2176.14 via Frontend
+ Transport; Mon, 8 Nov 2021 08:06:15 -0700
+From:   <conor.dooley@microchip.com>
+To:     <linus.walleij@linaro.org>, <bgolaszewski@baylibre.com>,
+        <robh+dt@kernel.org>, <jassisinghbrar@gmail.com>,
+        <paul.walmsley@sifive.com>, <palmer@dabbelt.com>,
+        <aou@eecs.berkeley.edu>, <a.zummo@towertech.it>,
+        <alexandre.belloni@bootlin.com>, <broonie@kernel.org>,
+        <gregkh@linuxfoundation.org>, <lewis.hanly@microchip.com>,
+        <conor.dooley@microchip.com>, <daire.mcnamara@microchip.com>,
+        <atish.patra@wdc.com>, <ivan.griffin@microchip.com>,
+        <linux-gpio@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <linux-i2c@vger.kernel.org>,
+        <linux-riscv@lists.infradead.org>, <linux-crypto@vger.kernel.org>,
+        <linux-rtc@vger.kernel.org>, <linux-spi@vger.kernel.org>,
+        <linux-usb@vger.kernel.org>
+CC:     <krzysztof.kozlowski@canonical.com>, <geert@linux-m68k.org>,
+        <bin.meng@windriver.com>
+Subject: [PATCH 00/13]Update the icicle kit device tree
+Date:   Mon, 8 Nov 2021 15:05:41 +0000
+Message-ID: <20211108150554.4457-1-conor.dooley@microchip.com>
+X-Mailer: git-send-email 2.33.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The perm.__state_perm is default xsave set features, when we request
-AMX permission from application, the requested value(bit18) should be
-replaced with mask value(requested | permitted), which can keep default
-features there.
+From: Conor Dooley <conor.dooley@microchip.com>
 
-Without this change, the below prctl syscall:
-(1). ARCH_GET_XCOMP_PERM, the bitmask=0x202e7
-(2). set ARCH_REQ_XCOMP_PERM with XFEATURE_XTILEDATA
-(3). ARCH_GET_XCOMP_PERM, the bitmask=0x40000, the correct value
-     should be 0x602e7 here.
+This series updates the microchip icicle kit device tree by adding a host
+of peripherals, and some updates to the memory map. In addition, the device
+tree has been split into a third part, which contains "soft" peripherals 
+that are in the fpga fabric.
 
-Signed-off-by: Yang Zhong <yang.zhong@intel.com>
----
- arch/x86/kernel/fpu/xstate.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Several of the entries are for peripherals that have not get had their drivers
+upstreamed, so in those cases the dt bindings are included where appropriate
+in order to avoid as many "DT compatible string <x> appears un-documented" 
+errors as possible.
 
-diff --git a/arch/x86/kernel/fpu/xstate.c b/arch/x86/kernel/fpu/xstate.c
-index d28829403ed0..fc1ab0116f4e 100644
---- a/arch/x86/kernel/fpu/xstate.c
-+++ b/arch/x86/kernel/fpu/xstate.c
-@@ -1626,7 +1626,7 @@ static int __xstate_request_perm(u64 permitted, u64 requested)
- 		return ret;
- 
- 	/* Pairs with the READ_ONCE() in xstate_get_group_perm() */
--	WRITE_ONCE(fpu->perm.__state_perm, requested);
-+	WRITE_ONCE(fpu->perm.__state_perm, mask);
- 	/* Protected by sighand lock */
- 	fpu->perm.__state_size = ksize;
- 	fpu->perm.__user_state_size = usize;
+Depends on mpfs clock driver series [1] to provide:
+dt-bindings/clock/microchip,mpfs-clock.h
+and on the other changes to the icicle/mpfs device tree
+that are already in linux/riscv/for-next.
+
+[1] https://lore.kernel.org/linux-clk/20210818141102.36655-2-daire.mcnamara@microchip.com/
+
+Conor Dooley (11):
+  dt-bindings: soc/microchip: update sys ctrlr compat string
+  dt-bindings: riscv: update microchip polarfire binds
+  dt-bindings: i2c: add bindings for microchip mpfs i2c
+  dt-bindings: rng: add bindings for microchip mpfs rng
+  dt-bindings: rtc: add bindings for microchip mpfs rtc
+  dt-bindings: soc/microchip: add bindings for mpfs system services
+  dt-bindings: gpio: add bindings for microchip mpfs gpio
+  dt-bindings: spi: add bindings for microchip mpfs spi
+  dt-bindings: usb: add bindings for microchip mpfs musb
+  riscv: icicle-kit: update microchip icicle kit device tree
+  MAINTAINERS: update riscv/microchip entry
+
+Ivan Griffin (2):
+  dt-bindings: interrupt-controller: add defines for riscv-hart
+  dt-bindings: interrupt-controller: add defines for mpfs-plic
+
+ .../bindings/gpio/microchip,mpfs-gpio.yaml    | 108 ++++++
+ .../bindings/i2c/microchip,mpfs-i2c.yaml      |  74 ++++
+ .../microchip,polarfire-soc-mailbox.yaml      |   4 +-
+ .../devicetree/bindings/riscv/microchip.yaml  |   1 +
+ .../bindings/rng/microchip,mpfs-rng.yaml      |  31 ++
+ .../bindings/rtc/microchip,mfps-rtc.yaml      |  61 ++++
+ .../microchip,mpfs-generic-service.yaml       |  31 ++
+ ...icrochip,polarfire-soc-sys-controller.yaml |   4 +-
+ .../bindings/spi/microchip,mpfs-spi.yaml      |  72 ++++
+ .../bindings/usb/microchip,mpfs-usb-host.yaml |  70 ++++
+ MAINTAINERS                                   |   2 +
+ .../dts/microchip/microchip-mpfs-fabric.dtsi  |  21 ++
+ .../microchip/microchip-mpfs-icicle-kit.dts   | 159 +++++++--
+ .../boot/dts/microchip/microchip-mpfs.dtsi    | 333 ++++++++++++++----
+ drivers/mailbox/mailbox-mpfs.c                |   1 +
+ .../microchip,mpfs-plic.h                     | 199 +++++++++++
+ .../interrupt-controller/riscv-hart.h         |  19 +
+ 17 files changed, 1103 insertions(+), 87 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/gpio/microchip,mpfs-gpio.yaml
+ create mode 100644 Documentation/devicetree/bindings/i2c/microchip,mpfs-i2c.yaml
+ create mode 100644 Documentation/devicetree/bindings/rng/microchip,mpfs-rng.yaml
+ create mode 100644 Documentation/devicetree/bindings/rtc/microchip,mfps-rtc.yaml
+ create mode 100644 Documentation/devicetree/bindings/soc/microchip/microchip,mpfs-generic-service.yaml
+ create mode 100644 Documentation/devicetree/bindings/spi/microchip,mpfs-spi.yaml
+ create mode 100644 Documentation/devicetree/bindings/usb/microchip,mpfs-usb-host.yaml
+ create mode 100644 arch/riscv/boot/dts/microchip/microchip-mpfs-fabric.dtsi
+ create mode 100644 include/dt-bindings/interrupt-controller/microchip,mpfs-plic.h
+ create mode 100644 include/dt-bindings/interrupt-controller/riscv-hart.h
+
 -- 
-2.30.2
+2.33.1
 
