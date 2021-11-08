@@ -2,90 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3968D448020
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Nov 2021 14:16:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 30E7D44801A
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Nov 2021 14:13:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239861AbhKHNSr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Nov 2021 08:18:47 -0500
-Received: from vps0.lunn.ch ([185.16.172.187]:50532 "EHLO vps0.lunn.ch"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235636AbhKHNSq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Nov 2021 08:18:46 -0500
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
-        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
-        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
-        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
-        bh=osVSOLYOJwSGODa9jrgI/5dh+40TO58UgjiAmVBjKPQ=; b=So6zvcfGyFcIy+0GqfFKVCOQ82
-        CDB8/b7vfWNhJE2X7EPoTmzYib4wXVgFBe9lP66euZjJARFTkkoIfmEqCs3SQw0be0uyRKbbScSsA
-        2QPe3Yj9+AnmVGQjgX7OEZEgSApJQQ36KO9qdwQFx6ERIaPc31rBX6FXp0WOPqNPYZ4A=;
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
-        (envelope-from <andrew@lunn.ch>)
-        id 1mk4V3-00CtfT-55; Mon, 08 Nov 2021 14:15:49 +0100
-Date:   Mon, 8 Nov 2021 14:15:49 +0100
-From:   Andrew Lunn <andrew@lunn.ch>
-To:     Wells Lu =?utf-8?B?5ZGC6Iqz6aiw?= <wells.lu@sunplus.com>
-Cc:     Wells Lu <wellslutw@gmail.com>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        "kuba@kernel.org" <kuba@kernel.org>,
-        "robh+dt@kernel.org" <robh+dt@kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "p.zabel@pengutronix.de" <p.zabel@pengutronix.de>
-Subject: Re: [PATCH 2/2] net: ethernet: Add driver for Sunplus SP7021
-Message-ID: <YYkjBdu64r2JF1bR@lunn.ch>
-References: <cover.1635936610.git.wells.lu@sunplus.com>
- <650ec751dd782071dd56af5e36c0d509b0c66d7f.1635936610.git.wells.lu@sunplus.com>
- <YYK+EeCOu/BXBXDi@lunn.ch>
- <64626e48052c4fba9057369060bfbc84@sphcmbx02.sunplus.com.tw>
- <YYUzgyS6pfQOmKRk@lunn.ch>
- <7c77f644b7a14402bad6dd6326ba85b1@sphcmbx02.sunplus.com.tw>
+        id S239850AbhKHNQf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Nov 2021 08:16:35 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51888 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239844AbhKHNQe (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Nov 2021 08:16:34 -0500
+Received: from mail-ua1-x932.google.com (mail-ua1-x932.google.com [IPv6:2607:f8b0:4864:20::932])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB010C061714
+        for <linux-kernel@vger.kernel.org>; Mon,  8 Nov 2021 05:13:49 -0800 (PST)
+Received: by mail-ua1-x932.google.com with SMTP id l43so31341538uad.4
+        for <linux-kernel@vger.kernel.org>; Mon, 08 Nov 2021 05:13:49 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=0x0f.com; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=wCwO4XStYiPzdzS4nIOsFCtzFEfsNHH4FacnUzvafCQ=;
+        b=ThmXplP4IL5iiwXNCOtfVrvVcZdPEl4pH5vajs1II4iMrbzAEPM0gQNT2zQdZYc4wr
+         LtUIGM5zMuUesN4IO2OjcJXws2H2NTSLEdBT9qebiN+Bss9aQiqbMf3GedUI8YezwU6l
+         VP9jEeX1sKVj2kM3G9KX5cuRnYFpe98rOn+4A=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=wCwO4XStYiPzdzS4nIOsFCtzFEfsNHH4FacnUzvafCQ=;
+        b=jkfCgoFYTCzdcJtOidkOLtaWA2v2CBm0ph30YkJUtlv7PVhGqsG67MmYy6e9S01hJz
+         9A27kmrOQ8QgGoN+I3xj7qZwQxNvt3CBpVoPoPSmpmRyvolO20A/7zm5gcbeSFPT4Nl8
+         auxwISr2dl2Q02jG5gzjJPUkXoYM6MHdyolWm1s5Ye0HmGgFwb+YZX/5ntuJZs3kS3/e
+         Kz3Ke8IagJPe5i+ehl2vBLcO+KTNsTZFN8g6hCSGRh5nAdkljKKINokIWyo1b9DSdtKL
+         STKQIaUwdX098F9VtRHtZrlcD00Kp5JnIWzH0nqii+VQwu4lgBccOD32KQQuQJf7XD9L
+         HANA==
+X-Gm-Message-State: AOAM532IDL8Udr04kmK6cEF+JbHv0l9nhsnCoGe4TtSAQUR3GQeTVsQH
+        q8GrWSIlJY3dHQBVUb/2GjLGxUDtnWUKAZrUC/SEqw==
+X-Google-Smtp-Source: ABdhPJziU/lixGfO5RAx6kuZy4s+7867lk6OS5u8omESTSSlp9/d4OpA86duVfQSh5aESqDFtVkkGsBz1+OyXbiRtaY=
+X-Received: by 2002:a05:6102:72a:: with SMTP id u10mr65700459vsg.9.1636377228738;
+ Mon, 08 Nov 2021 05:13:48 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <7c77f644b7a14402bad6dd6326ba85b1@sphcmbx02.sunplus.com.tw>
+References: <YYG0KwuwSyH2uSqz@robh.at.kernel.org>
+In-Reply-To: <YYG0KwuwSyH2uSqz@robh.at.kernel.org>
+From:   Daniel Palmer <daniel@0x0f.com>
+Date:   Mon, 8 Nov 2021 22:15:50 +0900
+Message-ID: <CAFr9PXnftX3k3C0sAt=qF4fgOS1apF_j4REqJXKk=wzCTVnBfw@mail.gmail.com>
+Subject: Re: [GIT PULL] Devicetree updates for v5.16
+To:     Rob Herring <robh@kernel.org>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        DTML <devicetree@vger.kernel.org>,
+        Frank Rowand <frowand.list@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> SP7021 Ethernet supports 3 operation modes:
->  - Dual Ethernet mode
->    In this mode, driver creates two net-device interfaces. Each connects
->    to PHY. There are two LAN ports totally.
->    I am sorry that EMAC of SP7021 cannot support L2 switch functions
->    of Linux switch-device model because it only has partial function of 
->    switch.
+Hi Rob,
 
-This is fine.
+On Wed, 3 Nov 2021 at 06:57, Rob Herring <robh@kernel.org> wrote:
+> Rob Herring (22):
+>       kbuild: Enable DT schema checks for %.dtb targets
 
-> 
->  - One Ethernet mode
->    In this mode, driver creates one net-device interface. It connects to
->    to a PHY (There is only one LAN port).
->    The LAN port is then connected to a 3-port Ethernet hub.
->    The 3-port Ethernet hub is a hardware circuitry. All operations 
->    (packet forwarding) are done by hardware. No software 
->    intervention is needed. Actually, even just power-on, no software 
->    running, two LAN ports of SP7021 work well as 2-port hub.
+Sorry for replying to a pull request. I couldn't find the original
+patch email for this commit to reply.
 
-We need to dig into the details of this mode. I would initially say
-no, until we really do know it is impossible to do it correctly.  Even
-if it is impossible to do it correctly, i'm still temped to reject
-this mode.
+Anyhow, the above commit makes buildroot unhappy.
+I see this when trying to build any of my buildroot environments:
+scripts/dtc/Makefile:23: *** dtc needs libyaml for DT schema
+validation support. Install the necessary libyaml development
+package..  Stop.
 
-How does spanning tree work? Who sends and receives the BPDU?
+I think this is some mess with pkg-config from somewhere (the host
+distro, the buildroot host side,..) saying libyaml is available but
+when the build actually happens the header it wants isn't actually
+where it thinks. I think this is a pre-existing problem with
+buildroot.
+buildroot takes a list of the dtbs that you want to build and keep in
+it's config and calls make with that list in the kernel build. So this
+commit causes this issue to trigger when buildroot tries to build the
+configured dtbs.
 
-Is there PTP support? How do you send and receive the PTP frames?
+Not sure what the fix is and I think it's probably a buildroot problem.
 
-Is IGMP snooping supported?
+Cheers,
 
-All of these have one thing in common, you need to be able to egress
-frames out a specific port of the switch, and you need to know what
-port a received frames ingressed on. If you can do that, you can
-probably do proper support in Linux.
-
-Is the datasheet available?
-
-
-   Andrew
+Daniel
