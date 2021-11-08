@@ -2,85 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 960EF448137
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Nov 2021 15:17:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B0DB344813A
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Nov 2021 15:18:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240345AbhKHOU1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Nov 2021 09:20:27 -0500
-Received: from vps0.lunn.ch ([185.16.172.187]:50680 "EHLO vps0.lunn.ch"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237965AbhKHOU0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Nov 2021 09:20:26 -0500
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
-        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
-        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
-        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
-        bh=gmwJXUQZZysDMClQuXxVmi498zqenZAX/qkgrMBBZ50=; b=5sED2Qlu/i1e7c6vp1/BW3d4NP
-        nV8oRFSio//MRsYm1iWPcPRPCCTxYuR0syPTB4OUGLQscihcyflEkb9CrFuX6FsvZqPqrgdKzsH7j
-        GSLDwEYIVEJHzUpGvlzvMXbBWiiBs2hUYKZ4iUzlKxuBENDaFzQRb8Lq1Im5QcsjLHdQ=;
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
-        (envelope-from <andrew@lunn.ch>)
-        id 1mk5Sn-00Cu1S-Sq; Mon, 08 Nov 2021 15:17:33 +0100
-Date:   Mon, 8 Nov 2021 15:17:33 +0100
-From:   Andrew Lunn <andrew@lunn.ch>
-To:     Ansuel Smith <ansuelsmth@gmail.com>
-Cc:     Vivien Didelot <vivien.didelot@gmail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Vladimir Oltean <olteanv@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>, Pavel Machek <pavel@ucw.cz>,
-        John Crispin <john@phrozen.org>, netdev@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-leds@vger.kernel.org
-Subject: Re: [RFC PATCH v2 3/5] leds: trigger: add offload-phy-activity
- trigger
-Message-ID: <YYkxfRrJ8ERaTr5x@lunn.ch>
-References: <20211108002500.19115-1-ansuelsmth@gmail.com>
- <20211108002500.19115-4-ansuelsmth@gmail.com>
+        id S240349AbhKHOVL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Nov 2021 09:21:11 -0500
+Received: from smtp-relay-internal-1.canonical.com ([185.125.188.123]:52044
+        "EHLO smtp-relay-internal-1.canonical.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S240314AbhKHOVK (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Nov 2021 09:21:10 -0500
+Received: from mail-lj1-f199.google.com (mail-lj1-f199.google.com [209.85.208.199])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-relay-internal-1.canonical.com (Postfix) with ESMTPS id 8EB813F1DA
+        for <linux-kernel@vger.kernel.org>; Mon,  8 Nov 2021 14:18:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1636381103;
+        bh=HiqLyGrHJ8vZ1EU008SBhCNuKX+ktJLcgyrfTZqVUQQ=;
+        h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+         In-Reply-To:Content-Type;
+        b=ZrDB2o3XsslR/K+l/kADIa1CimlgAromNIUUE4lJ4Xbh29tcXxxG4qDMR4hPA0SNq
+         vjUk0SHNy+TwH9n0ywttP3B0nsJsLeqw7az66I2FxHtKe9I13p/AJ/ulSVkMvT7/7j
+         +5cOeL84vBDabLiVoeNpbvwmjQp74AErHzetJ+Be3JFrSssxzaLSD2DZaVridbMM1Z
+         Qgm3wNVGyw+SqyOYx5bPswLEQT6KkGndo9rFAaDZ5ynT8efMsh9bZ1xmK0VFf0LlLL
+         e7CRsZRIhSGJnQdyo68odq/A0mfYvWAuY67lRK4k0bk6d7/MsyS2aPIJDXei93k47h
+         t0w/fIvLGfP8A==
+Received: by mail-lj1-f199.google.com with SMTP id w16-20020a05651c103000b00218c9d46faeso861413ljm.2
+        for <linux-kernel@vger.kernel.org>; Mon, 08 Nov 2021 06:18:23 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:in-reply-to
+         :content-transfer-encoding;
+        bh=HiqLyGrHJ8vZ1EU008SBhCNuKX+ktJLcgyrfTZqVUQQ=;
+        b=QP226HvNFoMsQnBcU3YUGwIqoq+Jw6+IV4NhOw8S16IHuxo6QAhChE7ehsPmHic5vN
+         c6p6K082QXWdqjg5vqpbY8e18RYUnJNJ2dk+7c/lm+cNKb5M5vWSmerCSEFwFhF/lEjo
+         LqKzJCZX3/L82/0O1XAUsOfE/IV/2cTSi3Xk7yGWa8CsQRYNp9/VPrwZBOmSCpFUvUle
+         v2SBTU/uJtIM/MW9q28ioTJERf7iVD13nxS9FWBaK1yEpUSf/TWa9kCzlMwBFl1lnrJC
+         KauxCnshdEYymaffwTbvQh78JM7/eh7srs1KhQm5che0zQojh3qKvxrTg+z4mh+TYb5m
+         MOzA==
+X-Gm-Message-State: AOAM532kjKgQuIrm++CEUb5TQjQTJT8maLHaExwF5M9G+WeQ4KgWBYbL
+        UYQc3nPqnJFkiwXa4J+4P6UG8feFYf7e4lAS4w5EtSf+d2eEqj4aJ8sq2rQalzGB59oS2DtFPAc
+        zL+V+extA/GQfSf3AX76d0trQQafiYDpc+2YETokIwQ==
+X-Received: by 2002:ac2:4c99:: with SMTP id d25mr28429584lfl.565.1636381102903;
+        Mon, 08 Nov 2021 06:18:22 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJyoBnzQ2brUYZsVEzHJHGfIUeAE1W1YmKzWFRbwndi941x319xZJkbtd8QCDTyFmriLopVtVg==
+X-Received: by 2002:ac2:4c99:: with SMTP id d25mr28429568lfl.565.1636381102755;
+        Mon, 08 Nov 2021 06:18:22 -0800 (PST)
+Received: from [192.168.3.67] (89-77-68-124.dynamic.chello.pl. [89.77.68.124])
+        by smtp.gmail.com with ESMTPSA id m20sm209636lfg.42.2021.11.08.06.18.21
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 08 Nov 2021 06:18:22 -0800 (PST)
+Message-ID: <433f2d77-90d0-53d9-2e04-a8c5feb16349@canonical.com>
+Date:   Mon, 8 Nov 2021 15:18:21 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211108002500.19115-4-ansuelsmth@gmail.com>
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.2.1
+Subject: Re: [PATCH 2/2] arm64: defconfig: Enable Samsung I2C driver
+Content-Language: en-US
+To:     Sam Protsenko <semen.protsenko@linaro.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>
+Cc:     Will McVicker <willmcvicker@google.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-samsung-soc@vger.kernel.org, linux-i2c@vger.kernel.org
+References: <20211108134901.20490-1-semen.protsenko@linaro.org>
+ <20211108134901.20490-2-semen.protsenko@linaro.org>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+In-Reply-To: <20211108134901.20490-2-semen.protsenko@linaro.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 08, 2021 at 01:24:58AM +0100, Ansuel Smith wrote:
-> Add Offload Trigger for PHY Activity. This special trigger is used to
-> configure and expose the different HW trigger that are provided by the
-> PHY. Each offload trigger can be configured by sysfs and on trigger
-> activation the offload mode is enabled.
+On 08/11/2021 14:49, Sam Protsenko wrote:
+> i2c-s3c2410 driver is needed for some arm64 Exynos SoCs, e.g. Exynos850.
 > 
-> This currently implement these hw triggers:
->   - blink_tx: Blink LED on tx packet receive
->   - blink_rx: Blink LED on rx packet receive
->   - blink_collision: Blink LED on collision detection
+> Signed-off-by: Sam Protsenko <semen.protsenko@linaro.org>
+> ---
+>  arch/arm64/configs/defconfig | 1 +
+>  1 file changed, 1 insertion(+)
 
-When did you last see a collision? Do you really have a 1/2 duplex
-link? Just because the PHY can, does not mean we should support
-it. Lets restrict this to the most useful modes.
+Hm, that's a little bit unexpected. I thought you will be also using the
+HSI2C driver (where Jaewon is adding USI support).
 
->   - link_10m: Keep LED on with 10m link speed
->   - link_100m: Keep LED on with 100m link speed
->   - link_1000m: Keep LED on with 1000m link speed
->   - half_duplex: Keep LED on with half duplex link
->   - full_duplex: Keep LED on with full duplex link
->   - linkup_over: Keep LED on with link speed and blink on rx/tx traffic
->   - power_on_reset: Keep LED on with switch reset
-
->   - blink_2hz: Set blink speed at 2hz for every blink event
->   - blink_4hz: Set blink speed at 4hz for every blink event
->   - blink_8hz: Set blink speed at 8hz for every blink event
-
-These seems like attributes, not blink modes. They need to be
-specified somehow differently, or not at all. Do we really need them?
-
->   - blink_auto: Set blink speed at 2hz for 10m link speed,
->       4hz for 100m and 8hz for 1000m
-
-Another attribute, and one i've not seen any other PHY do.
-
-	Andrew
+Best regards,
+Krzysztof
