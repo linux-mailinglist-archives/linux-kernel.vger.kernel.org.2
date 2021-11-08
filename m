@@ -2,69 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C38D14478B5
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Nov 2021 03:56:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C75CA4478A1
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Nov 2021 03:38:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237108AbhKHC6u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 7 Nov 2021 21:58:50 -0500
-Received: from mail-m974.mail.163.com ([123.126.97.4]:35416 "EHLO
-        mail-m974.mail.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237048AbhKHC6t (ORCPT
+        id S236981AbhKHClB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 7 Nov 2021 21:41:01 -0500
+Received: from szxga08-in.huawei.com ([45.249.212.255]:27119 "EHLO
+        szxga08-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229878AbhKHClA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 7 Nov 2021 21:58:49 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-        s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=7z1K0
-        sPc2NW3ADD5fllk4cazdNDAgk9u0Mox0gqXvXI=; b=Q+QEte4u5XDDYizVSD6bV
-        S4QBX++lLn4z60ZnO5c1m87utwytLcUA7ddmHbG5mbWcKl5eg3byK7NYPi+89Cpm
-        +pyRXbL4KeNRFVPzCJFK0SDLd29htfXVVSyvYgEDBKlpcSpvCdSORA390S4jNCRS
-        Yiacw+fICD4paKQMDJxzMo=
-Received: from fedora.lenovo.com (unknown [103.30.235.251])
-        by smtp4 (Coremail) with SMTP id HNxpCgCXHYKokYhhEgT8Kg--.2010S2;
-        Mon, 08 Nov 2021 10:55:41 +0800 (CST)
-From:   Jimmy Wang <jimmy221b@163.com>
-To:     markpearson@lenovo.com
-Cc:     wangjm19@lenovo.com, Jimmy Wang <jimmy221b@163.com>,
-        Henrique de Moraes Holschuh <hmh@hmh.eng.br>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Mark Gross <markgross@kernel.org>,
-        ibm-acpi-devel@lists.sourceforge.net,
-        platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] platform/x86: thinkpad_acpi: Add support for dual fan control
-Date:   Mon,  8 Nov 2021 10:55:34 +0800
-Message-Id: <20211108025534.7801-1-jimmy221b@163.com>
-X-Mailer: git-send-email 2.31.1
+        Sun, 7 Nov 2021 21:41:00 -0500
+Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.55])
+        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4HnZwz2VBwz1DJCl;
+        Mon,  8 Nov 2021 10:36:03 +0800 (CST)
+Received: from dggpeml500019.china.huawei.com (7.185.36.137) by
+ dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.15; Mon, 8 Nov 2021 10:38:12 +0800
+Received: from huawei.com (10.175.124.27) by dggpeml500019.china.huawei.com
+ (7.185.36.137) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2308.15; Mon, 8 Nov
+ 2021 10:38:11 +0800
+From:   Wu Bo <wubo40@huawei.com>
+To:     <viro@zeniv.linux.org.uk>
+CC:     <linux-fsdevel@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linfeilong@huawei.com>, <wubo40@huawei.com>
+Subject: [PATCH] fs: direct-io: use DIV_ROUND_UP helper macro for calculations
+Date:   Mon, 8 Nov 2021 11:10:11 +0800
+Message-ID: <1636341011-6494-1-git-send-email-wubo40@huawei.com>
+X-Mailer: git-send-email 1.8.3.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: HNxpCgCXHYKokYhhEgT8Kg--.2010S2
-X-Coremail-Antispam: 1Uf129KBjvdXoWrKFykZF15KFyUXw4UCrW8tFb_yoWDAFc_C3
-        Z8WFs2yF95K3909r1UKrnavry2qr9rXw1kGw47Xa43Gr95XF4xZw1jkFyfJFy3ZFnI9a4D
-        Zr15XF1jkry5tjkaLaAFLSUrUUUUjb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-        9fnUUvcSsGvfC2KfnxnUUI43ZEXa7IUUE4i5UUUUU==
-X-Originating-IP: [103.30.235.251]
-X-CM-SenderInfo: 5mlpz5assruqqrwthudrp/1tbiNhlFAlWBotLKQQACsF
+Content-Type: text/plain
+X-Originating-IP: [10.175.124.27]
+X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
+ dggpeml500019.china.huawei.com (7.185.36.137)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-   This adds dual fan control for P1 / X1 Extreme Gen4
+Replace open coded divisor calculations with the DIV_ROUND_UP kernel
+macro for better readability.
 
-Signed-off-by: Jimmy Wang <jimmy221b@163.com>
+Signed-off-by: Wu Bo <wubo40@huawei.com>
 ---
- drivers/platform/x86/thinkpad_acpi.c | 1 +
- 1 file changed, 1 insertion(+)
+ fs/direct-io.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/platform/x86/thinkpad_acpi.c b/drivers/platform/x86/thinkpad_acpi.c
-index 9c632df734bb..eb201d001075 100644
---- a/drivers/platform/x86/thinkpad_acpi.c
-+++ b/drivers/platform/x86/thinkpad_acpi.c
-@@ -8766,6 +8766,7 @@ static const struct tpacpi_quirk fan_quirk_table[] __initconst = {
- 	TPACPI_Q_LNV3('N', '2', 'E', TPACPI_FAN_2CTL),	/* P1 / X1 Extreme (1st gen) */
- 	TPACPI_Q_LNV3('N', '2', 'O', TPACPI_FAN_2CTL),	/* P1 / X1 Extreme (2nd gen) */
- 	TPACPI_Q_LNV3('N', '2', 'V', TPACPI_FAN_2CTL),	/* P1 / X1 Extreme (3nd gen) */
-+	TPACPI_Q_LNV3('N', '4', '0', TPACPI_FAN_2CTL),	/* P1 / X1 Extreme (4nd gen) */
- 	TPACPI_Q_LNV3('N', '3', '0', TPACPI_FAN_2CTL),	/* P15 (1st gen) / P15v (1st gen) */
- 	TPACPI_Q_LNV3('N', '3', '2', TPACPI_FAN_2CTL),	/* X1 Carbon (9th gen) */
- };
+diff --git a/fs/direct-io.c b/fs/direct-io.c
+index 6544435..e5869c2 100644
+--- a/fs/direct-io.c
++++ b/fs/direct-io.c
+@@ -194,7 +194,7 @@ static inline int dio_refill_pages(struct dio *dio, struct dio_submit *sdio)
+ 		iov_iter_advance(sdio->iter, ret);
+ 		ret += sdio->from;
+ 		sdio->head = 0;
+-		sdio->tail = (ret + PAGE_SIZE - 1) / PAGE_SIZE;
++		sdio->tail = DIV_ROUND_UP(ret, PAGE_SIZE);
+ 		sdio->to = ((ret - 1) & (PAGE_SIZE - 1)) + 1;
+ 		return 0;
+ 	}
 -- 
-2.31.1
+2.29.2
 
