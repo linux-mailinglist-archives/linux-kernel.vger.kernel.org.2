@@ -2,95 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A4CDD449E6B
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Nov 2021 22:46:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 77077449E6E
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Nov 2021 22:47:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240584AbhKHVte (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Nov 2021 16:49:34 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56132 "EHLO
+        id S240623AbhKHVuQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Nov 2021 16:50:16 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56268 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231282AbhKHVtd (ORCPT
+        with ESMTP id S240591AbhKHVuG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Nov 2021 16:49:33 -0500
-Received: from hall.aurel32.net (hall.aurel32.net [IPv6:2001:bc8:30d7:100::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 29D28C061570
-        for <linux-kernel@vger.kernel.org>; Mon,  8 Nov 2021 13:46:48 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=aurel32.net
-        ; s=202004.hall; h=Content-Transfer-Encoding:MIME-Version:Message-Id:Date:
-        Subject:Cc:To:From:Content-Type:From:Reply-To:Subject:Content-ID:
-        Content-Description:In-Reply-To:References:X-Debbugs-Cc;
-        bh=N66F6Wqb9JBCWGaFILjT7qMKPk0Bi6BRFQXkrAP8YSU=; b=dwCrZp+TvheeFG0rOfKtj6Cgrj
-        mpJOjbGl+DQxUnvjcW7D64bmBs7HfRok5/F0nnH+61uSek1zYGJzOUtA35/5zQSqMrwo2+x0zE8I6
-        kBa4xQwRpWUdlqUxlhsNxt1M81AgQhbCcNM4anrMu7xZLn32L4XiH1hwB6XH1icPEZUgLKvMYtmVu
-        qcVEH8tpQEk+PPvJqj3OLgdSfrear1yeN8TetRZYtyGW24zgS3wcP0E66HsLGIOGingiXAaeUNkXW
-        ySi3Z+nukH43ot6dubY++UEXguubrlxjjtfaj7u3wNGCKVVO9RVJVgfRwHuilxK/bMjh1KpeZjNr+
-        Nz/RfbQQ==;
-Received: from [2a01:e34:ec5d:a741:8a4c:7c4e:dc4c:1787] (helo=ohm.rr44.fr)
-        by hall.aurel32.net with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <aurelien@aurel32.net>)
-        id 1mkCTT-0001NP-9d; Mon, 08 Nov 2021 22:46:43 +0100
-Received: from aurel32 by ohm.rr44.fr with local (Exim 4.94.2)
-        (envelope-from <aurelien@aurel32.net>)
-        id 1mkCTS-007GI8-IX; Mon, 08 Nov 2021 22:46:42 +0100
-From:   Aurelien Jarno <aurelien@aurel32.net>
-To:     linux-kernel@vger.kernel.org
-Cc:     Aurelien Jarno <aurelien@aurel32.net>,
-        Rob Herring <robh+dt@kernel.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        devicetree@vger.kernel.org (open list:OPEN FIRMWARE AND FLATTENED
-        DEVICE TREE BINDINGS),
-        linux-riscv@lists.infradead.org (open list:RISC-V ARCHITECTURE)
-Subject: [PATCH] riscv: dts: enable more DA9063 functions for the SiFive HiFive Unmatched
-Date:   Mon,  8 Nov 2021 22:46:29 +0100
-Message-Id: <20211108214629.1730870-1-aurelien@aurel32.net>
-X-Mailer: git-send-email 2.30.2
+        Mon, 8 Nov 2021 16:50:06 -0500
+Received: from mail-pl1-x62b.google.com (mail-pl1-x62b.google.com [IPv6:2607:f8b0:4864:20::62b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E7B9C061746
+        for <linux-kernel@vger.kernel.org>; Mon,  8 Nov 2021 13:47:21 -0800 (PST)
+Received: by mail-pl1-x62b.google.com with SMTP id y1so17012512plk.10
+        for <linux-kernel@vger.kernel.org>; Mon, 08 Nov 2021 13:47:21 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=8OQO6oRB/v20IjJtN8MTHcPwmaehnBhTjwZgesS0aJY=;
+        b=q6+qt/2BIu8EOetYFoVHhDEyDdQV5s5qCX6YiuC30r8DgJ6jp0cGVWpCVSBDp6FVrN
+         DPmmsshVYG2M97Zge1+5CAEVDRevaII7/Izdyz8QFCNob9ujrGau4qaAs9t7SVQWE6Dd
+         bRWa1JQStU62M690RZ+Mrb48gqKAXaortZWbW4WHA9E7Y+uTs6Pf48VPmF+Dl2b0KOnB
+         ZhwzS2Me591HXVrEL9HZeC17vGRR3nzggzOkwEGrLq3csDMyLp3YHCJn+69Ius93F53W
+         pUtkyRRgyXzyCBTq4XOG9xHxfsgpSr7ojcFl6T7Du133m5DwDGxuY+pkiurd8fwZaaX+
+         pxHA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=8OQO6oRB/v20IjJtN8MTHcPwmaehnBhTjwZgesS0aJY=;
+        b=x0p9OJ0Kukda71dCxbLxjXDYan0+eCian7tEonIB5lK1O3lod7hJs6Vn1yK8NAgz/M
+         arlMUWNv1mRmlanxISRtJY7TaVgggapRtXE/sRVCVGOpXzlHRln7MDqdtOM2w24GwAQ7
+         ywxxLRhanGhbUd4GGb15vJudrRo3VI2H30vx8vqdFJUZF3FOC3pWhZ+dl6V3Rs20+ezG
+         +m4QubgE9t7oAlkXzaEOKrxDYaYqqQtWQBPkONWw9TZrWSKeyIC8hDfPPWoY71aqPwec
+         cA89ZX3wiKiEOMbBlIWJz8xQDuSNTc4fMfr3kfAOa+akxZr8+44ymixk1Lhoa8F6VsJV
+         gqDA==
+X-Gm-Message-State: AOAM530IMh18R7HZLh6Dh4FlI2jOdVfxxsLfnN9T5fWSUGpnDETFKVl9
+        3JHnHRqSPCZnhDS05bWJ0Z8ezA==
+X-Google-Smtp-Source: ABdhPJwEhyhfbeC/MNHqCWtg/FR+dr4b6RB3Mk6EDI6kjGv1xiTbmOpK8qZ+COSs0BLK3/7bdPcIQQ==
+X-Received: by 2002:a17:90a:9295:: with SMTP id n21mr1568891pjo.229.1636408040857;
+        Mon, 08 Nov 2021 13:47:20 -0800 (PST)
+Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
+        by smtp.gmail.com with ESMTPSA id u13sm13170875pga.92.2021.11.08.13.47.20
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 08 Nov 2021 13:47:20 -0800 (PST)
+Date:   Mon, 8 Nov 2021 21:47:16 +0000
+From:   Sean Christopherson <seanjc@google.com>
+To:     Sergey Senozhatsky <senozhatsky@chromium.org>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>,
+        David Matlack <dmatlack@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Suleiman Souhlal <suleiman@google.com>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCHV2 3/3] KVM: x86: add KVM_SET_MMU_PREFETCH ioctl
+Message-ID: <YYma5O/sifPa9FK9@google.com>
+References: <20211019153214.109519-1-senozhatsky@chromium.org>
+ <20211019153214.109519-4-senozhatsky@chromium.org>
+ <YW7mXF9DNLk4fVkQ@google.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YW7mXF9DNLk4fVkQ@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The DA9063 PMIC found on the SiFive HiFive Unmatched also provides an
-RTC, a watchdog and the power button input.
+On Wed, Oct 20, 2021, Sergey Senozhatsky wrote:
+> On (21/10/20 00:32), Sergey Senozhatsky wrote:
+> >  static int kvm_vm_ioctl_get_clock(struct kvm *kvm, void __user *argp)
+> >  {
+> >  	struct kvm_clock_data data;
+> > @@ -6169,6 +6189,15 @@ long kvm_arch_vm_ioctl(struct file *filp,
+> >  	case KVM_X86_SET_MSR_FILTER:
+> >  		r = kvm_vm_ioctl_set_msr_filter(kvm, argp);
+> >  		break;
+> > +	case KVM_SET_MMU_PREFETCH: {
+> > +		u64 val;
+> > +
+> > +		r = -EFAULT;
+> > +		if (copy_from_user(&val, argp, sizeof(val)))
+> > +			goto out;
+> > +		r = kvm_arch_mmu_pte_prefetch(kvm, val);
+> > +		break;
+> > +	}
+> 
+> A side question: is there any value in turning this into a per-VCPU ioctl?
+> So that, say, on heterogeneous systems big cores can prefetch more than
+> little cores, for instance.
 
-Signed-off-by: Aurelien Jarno <aurelien@aurel32.net>
----
- arch/riscv/boot/dts/sifive/hifive-unmatched-a00.dts | 12 ++++++++++++
- 1 file changed, 12 insertions(+)
+I don't think so?  If anything, such behavior should probably be tied to the pCPU,
+not vCPU.  Though I'm guessing the difference in optimal prefetch size between big
+and little cores is in the noise.
 
-diff --git a/arch/riscv/boot/dts/sifive/hifive-unmatched-a00.dts b/arch/riscv/boot/dts/sifive/hifive-unmatched-a00.dts
-index 2e4ea84f27e7..c357b48582f7 100644
---- a/arch/riscv/boot/dts/sifive/hifive-unmatched-a00.dts
-+++ b/arch/riscv/boot/dts/sifive/hifive-unmatched-a00.dts
-@@ -70,6 +70,10 @@ pmic@58 {
- 		interrupts = <1 IRQ_TYPE_LEVEL_LOW>;
- 		interrupt-controller;
- 
-+		onkey {
-+			compatible = "dlg,da9063-onkey";
-+		};
-+
- 		regulators {
- 			vdd_bcore1: bcore1 {
- 				regulator-min-microvolt = <900000>;
-@@ -205,6 +209,14 @@ vdd_ldo11: ldo11 {
- 				regulator-always-on;
- 			};
- 		};
-+
-+		rtc {
-+			compatible = "dlg,da9063-rtc";
-+		};
-+
-+		wdt {
-+			compatible = "dlg,da9063-watchdog";
-+		};
- 	};
- };
- 
--- 
-2.30.2
+I suspect the optimal prefetch size is more dependent on the guest workload than
+the core its running on.  There's likely a correlation between the core size and
+the workload, but for that to have any meaning the vCPU would have be affined to
+a core (or set of cores), i.e having the behavior tied to the pCPU as opposed to
+the vCPU would work just as well.
 
+If the optimal setting is based on the speed of the core, not the workload, then
+per-pCPU is again preferable as it "works" regardless of vCPU affinity.
