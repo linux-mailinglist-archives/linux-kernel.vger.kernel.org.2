@@ -2,58 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D9625449D13
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Nov 2021 21:34:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E22B7449D16
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Nov 2021 21:34:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238850AbhKHUaI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Nov 2021 15:30:08 -0500
-Received: from mail.kernel.org ([198.145.29.99]:41900 "EHLO mail.kernel.org"
+        id S238918AbhKHUaO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Nov 2021 15:30:14 -0500
+Received: from mail.kernel.org ([198.145.29.99]:42022 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236349AbhKHUaH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Nov 2021 15:30:07 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPS id B8E0D610A0;
-        Mon,  8 Nov 2021 20:27:22 +0000 (UTC)
+        id S238879AbhKHUaL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Nov 2021 15:30:11 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPS id D8AFD610A0;
+        Mon,  8 Nov 2021 20:27:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1636403242;
-        bh=Cyj8+E4a/i2GQxGBRu5O79r+7BKKyMbeXXI2M/rYch0=;
+        s=k20201202; t=1636403246;
+        bh=iJXjh68lb8Q5EnOICfatjJkOK+ox0u4x1oilozxwy0E=;
         h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-        b=dp2A0c6t/uQDgA9OZlBkiT7rAXCcAOiHObHaeb1eqskP/zGgsCRxBWhi5zjtwtT+e
-         zb0Hj3kiAmiD7/KWqIwstcBpuOf6B21U2AgM8ppYfxDmRsu+XWiBdAaiKvMBz6BE3U
-         GxZOGbbsY4uIDSLopaX7rd4Ysz63fP1/QLOtOQ8hfCwJB2tKmfdp8otZ8WB1X1MJEL
-         Ly/8NpfVV/v+WC/fJE8RVZFu9MztIIEizkS9pOQ6C9U2c41VWIyMb3o48QupVvCN0e
-         4qWoyEa3DBB1WKg8lqzKKjx/Yst+mqdSNTveE/+IssotUOUX1Pnj7xeEKi388bnCKC
-         ubg/zHMMOkDCQ==
+        b=mdqmmoZHGIzEqzCKocvXgcb+4/F5qKFyQVzg6fPtLFl3G2DaxeC5EZeluq5m2fZTN
+         enZHLMLW+LyJ032bbSLOEF19xcF+5YVQA4NlF3AEiH++Dk78yn9CEGvrE63E7EFGME
+         kiLSqkpJwZGYVA3rwjohYzZeme76ocTDTLLsYoRF5edxh+A1QURU05wDDFI/33VLkm
+         pTqJzj6OUZMT+IdZTjnc9JG+okjXm8s15+f/tkINGYBuBrwXLVCQsXTqwGNmANCM5d
+         2r1Pip9gdLckybocX+hqbijYQ9WhjCeSPtTZ1OPcxT6e2f4/tDtKyZqTcJrIXIubxu
+         S8W0DEGqKeUZA==
 Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id AE78960A23;
-        Mon,  8 Nov 2021 20:27:22 +0000 (UTC)
-Subject: Re: [PULL REQUEST] i2c for v5.16
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id D1FE5609F7;
+        Mon,  8 Nov 2021 20:27:26 +0000 (UTC)
+Subject: Re: [GIT PULL] gpio: updates for v5.16
 From:   pr-tracker-bot@kernel.org
-In-Reply-To: <YYjfrZ69320no587@ninjato>
-References: <YYjfrZ69320no587@ninjato>
-X-PR-Tracked-List-Id: <linux-i2c.vger.kernel.org>
-X-PR-Tracked-Message-Id: <YYjfrZ69320no587@ninjato>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/wsa/linux.git i2c/for-mergewindow
-X-PR-Tracked-Commit-Id: c6f49acb52c79f8e84af2eda4fc002a2068a6c9e
+In-Reply-To: <20211108132456.10033-1-brgl@bgdev.pl>
+References: <20211108132456.10033-1-brgl@bgdev.pl>
+X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
+X-PR-Tracked-Message-Id: <20211108132456.10033-1-brgl@bgdev.pl>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/brgl/linux.git tags/gpio-updates-for-v5.16
+X-PR-Tracked-Commit-Id: 7d0003da6297eb128f3490e396e6fc6df71557cd
 X-PR-Merge-Tree: torvalds/linux.git
 X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: dab334c98bf3563f57dc694242192f9e1cc95f96
-Message-Id: <163640324270.16718.7238205578260798433.pr-tracker-bot@kernel.org>
-Date:   Mon, 08 Nov 2021 20:27:22 +0000
-To:     Wolfram Sang <wsa@kernel.org>
+X-PR-Merge-Commit-Id: d20f7a09e5eeeeef5db679adc9a490fecb6a4c87
+Message-Id: <163640324685.16718.14075811319235480983.pr-tracker-bot@kernel.org>
+Date:   Mon, 08 Nov 2021 20:27:26 +0000
+To:     Bartosz Golaszewski <brgl@bgdev.pl>
 Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Peter Rosin <peda@axentia.se>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
         Bartosz Golaszewski <brgl@bgdev.pl>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Mon, 8 Nov 2021 09:28:29 +0100:
+The pull request you sent on Mon,  8 Nov 2021 14:24:56 +0100:
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/wsa/linux.git i2c/for-mergewindow
+> git://git.kernel.org/pub/scm/linux/kernel/git/brgl/linux.git tags/gpio-updates-for-v5.16
 
 has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/dab334c98bf3563f57dc694242192f9e1cc95f96
+https://git.kernel.org/torvalds/c/d20f7a09e5eeeeef5db679adc9a490fecb6a4c87
 
 Thank you!
 
