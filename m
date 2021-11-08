@@ -2,189 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B61A9447E4D
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Nov 2021 11:52:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 16DB3447E52
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Nov 2021 11:55:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238784AbhKHKzQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Nov 2021 05:55:16 -0500
-Received: from mo4-p02-ob.smtp.rzone.de ([85.215.255.83]:22113 "EHLO
-        mo4-p02-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238707AbhKHKzP (ORCPT
+        id S238808AbhKHK6i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Nov 2021 05:58:38 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48530 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236975AbhKHK6d (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Nov 2021 05:55:15 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1636368743;
-    s=strato-dkim-0002; d=goldelico.com;
-    h=To:References:Message-Id:Cc:Date:In-Reply-To:From:Subject:Cc:Date:
-    From:Subject:Sender;
-    bh=f/r1eAU7KrXxztQXZTXHCi0ApvqFCqBOCfYtrmaL1xY=;
-    b=gUx3dm5ooAMb8mpK2BYmZ1D/Xx/Kr68W0ZyIxRU3Bu57OWOFSJYrTR4sXnH8oVcUVg
-    WxtwvZXZWeOvkqKpPRlzwivKorKgAd+PJvmoqo2tnWHbZYqngpjNq8CL61HT3rdyHDqd
-    dJ9eejg05X50GVv0CbQoy29+bkPil7ilDjep8GaT7xczllJ+hQXf57xPp0Ul970mc8T1
-    pB36IYsn67s2+b/NW81/1WWbL96pwp0bD5oJxiDpPRIQmrr3edPEb4G34D2jUATizhJe
-    9o3ULt4duFoaOAFo5/q46zerHy30M+hx63d0zfKcmkffcHjp+mqEjOva3dyQ25XCNxpz
-    kO2A==
-Authentication-Results: strato.com;
-    dkim=none
-X-RZG-AUTH: ":JGIXVUS7cutRB/49FwqZ7WcJeFKiMgPgp8VKxflSZ1P34KBj7gpw91N5y2S3gMZ+"
-X-RZG-CLASS-ID: mo00
-Received: from imac.fritz.box
-    by smtp.strato.de (RZmta 47.34.1 DYNA|AUTH)
-    with ESMTPSA id 902c63xA8AqLIYt
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (curve X9_62_prime256v1 with 256 ECDH bits, eq. 3072 bits RSA))
-        (Client did not present a certificate);
-    Mon, 8 Nov 2021 11:52:21 +0100 (CET)
-Content-Type: text/plain;
-        charset=us-ascii
-Mime-Version: 1.0 (Mac OS X Mail 12.4 \(3445.104.21\))
-Subject: Re: [PATCH v5 2/7] drm/ingenic: Add support for JZ4780 and HDMI
- output
-From:   "H. Nikolaus Schaller" <hns@goldelico.com>
-In-Reply-To: <HQY82R.69JHJIC64HDO1@crapouillou.net>
-Date:   Mon, 8 Nov 2021 11:52:20 +0100
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Kees Cook <keescook@chromium.org>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Robert Foss <robert.foss@linaro.org>,
-        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        Harry Wentland <harry.wentland@amd.com>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        Maxime Ripard <maxime@cerno.tech>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Paul Boddie <paul@boddie.org.uk>,
-        OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS 
-        <devicetree@vger.kernel.org>,
-        linux-mips <linux-mips@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Discussions about the Letux Kernel 
-        <letux-kernel@openphoenux.org>, Jonas Karlman <jonas@kwiboo.se>,
-        dri-devel <dri-devel@lists.freedesktop.org>
-Content-Transfer-Encoding: quoted-printable
-Message-Id: <2E32F572-72D0-44E7-A700-AF8A2D37BFDA@goldelico.com>
-References: <cover.1633436959.git.hns@goldelico.com>
- <2c7d0aa7d3ef480ebb996d37c27cbaa6f722728b.1633436959.git.hns@goldelico.com>
- <FXTI0R.3FZIJZ7UYSNQ@crapouillou.net>
- <7CEBB741-2218-40A7-9800-B3A154895274@goldelico.com>
- <Q6U72R.9HY4TXLC6RWV2@crapouillou.net>
- <229EBE4C-6555-41DE-962F-D82798AEC650@goldelico.com>
- <HQY82R.69JHJIC64HDO1@crapouillou.net>
-To:     Paul Cercueil <paul@crapouillou.net>
-X-Mailer: Apple Mail (2.3445.104.21)
+        Mon, 8 Nov 2021 05:58:33 -0500
+Received: from mail-ed1-x52a.google.com (mail-ed1-x52a.google.com [IPv6:2a00:1450:4864:20::52a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 77B91C061570
+        for <linux-kernel@vger.kernel.org>; Mon,  8 Nov 2021 02:55:49 -0800 (PST)
+Received: by mail-ed1-x52a.google.com with SMTP id c8so43957285ede.13
+        for <linux-kernel@vger.kernel.org>; Mon, 08 Nov 2021 02:55:49 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=KNfZ6uMilvryu7GOeBols/pZXZY1MA2eNPOG6Jq/4aE=;
+        b=U6/HA5p3cWuErRNeCPFky87n13xC42GPv4nrDR0gbY2gmrn+ebDtFFI2KFSqRVA8w9
+         sOvpJUlzvyFaqyAHLWTG0d1jO1ESIuUOsmI7Yr0xTa/igyFZyMRi9xzpp6tKBaln5hr1
+         +ieS+RiQVx5e4zERv7D2tkbG3bW16i7yinhi/tTZMJmgRNfQmLB4grolMp3/mpgOP59e
+         +RL9WS/kJcBUrdGGeN2Fglgh26MUnGI2D56JPKdsxflxQRLjV1Nkcm2QTAUgEXoy4JiT
+         T/LLw+EX2OxCQ7jWfmz6P1Itg4cI+DvI5KmtJiWYcxncPb0bAI6aLGma18pyYJ6Kg3Wi
+         5omA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=KNfZ6uMilvryu7GOeBols/pZXZY1MA2eNPOG6Jq/4aE=;
+        b=WZcf19qnhKiB5t9CyUVrSVJ32S8kKdWH2wDpcofp6KOUz3LuLH7S0yqXPM0OfMvCXz
+         Lg2Ag1BGu6AGafRdM+vJS+i2kXb02LgorcRkrUhK7VF619XIM2eBbuyZOIYrxmIk42aD
+         WZtZVZPpFNXsf80zl1L0Wn9VrdnnDsY/G5jIQK33v5N4siTI+Vs4wKT+k/SzoSGRNfhO
+         HI+/D1R6tm5Mvs8vj5dWeSs16qxjOPx54D6iLdt/feqW1wC6+535Kde+7iMJnEnHheSd
+         9jrctTn0XHRrjmAEeq2eZ3HyoQDl5dH12+Jca05uuDySLixBaYR+XJFQ8O/bbSyhzgUj
+         Ydwg==
+X-Gm-Message-State: AOAM532xL0j4PdSDsRG2PJT0FeV3UIU4dfj7F/JvJkoesi4o7qZeF80p
+        9IWP53/QfsH7LgtY7qLOL9wum1v6GR4=
+X-Google-Smtp-Source: ABdhPJw45JqAdv9ir6/uvLoZyLi0420BmFuUQmuzlpYjj5tfePpXzhhGGK88crc5ORPybLmIPd0E1Q==
+X-Received: by 2002:a05:6402:10cd:: with SMTP id p13mr106801534edu.111.1636368948149;
+        Mon, 08 Nov 2021 02:55:48 -0800 (PST)
+Received: from localhost.localdomain ([2a02:8108:96c0:3b88::38bf])
+        by smtp.gmail.com with ESMTPSA id b19sm7747051ejc.107.2021.11.08.02.55.47
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 08 Nov 2021 02:55:47 -0800 (PST)
+From:   Michael Straube <straube.linux@gmail.com>
+To:     gregkh@linuxfoundation.org
+Cc:     Larry.Finger@lwfinger.net, phil@philpotter.co.uk,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
+        Michael Straube <straube.linux@gmail.com>
+Subject: [PATCH] staging: r8188eu: use GFP_ATOMIC under spinlock
+Date:   Mon,  8 Nov 2021 11:55:37 +0100
+Message-Id: <20211108105537.31655-1-straube.linux@gmail.com>
+X-Mailer: git-send-email 2.33.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Paul,
+In function rtw_report_sec_ie() kzalloc() is called under a spinlock,
+so the allocation have to be atomic.
 
->> Am 08.11.2021 um 10:37 schrieb Paul Cercueil <paul@crapouillou.net>:
->>=20
->> Well, it was atomic: "add jz4780+hdmi functionality" or not. Now we =
-separate into "preparation for adding jz4780" and "really adding". Yes, =
-you can split atoms into quarks...
->=20
-> And that's how it should be done. Lots of small atomic patches are =
-much easier to review than a few big patches.
+Call tree:
 
-I doubt that in this case especially as it has nothing to do with =
-jz4780...
+-> rtw_select_and_join_from_scanned_queue() <- takes a spinlock
+   -> rtw_joinbss_cmd()
+      -> rtw_restruct_sec_ie()
+         -> rtw_report_sec_ie()
 
-But I have a proposal for a better solution at the end of this mail.
+Fixes: 2b42bd58b321 ("staging: r8188eu: introduce new os_dep dir for RTL8188eu driver")
+Signed-off-by: Michael Straube <straube.linux@gmail.com>
+---
+ drivers/staging/r8188eu/os_dep/mlme_linux.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
->>> Note that you can do even better, set the .max_register field =
-according to the memory resource you get from DTS. Have a look at the =
-pinctrl driver which does exactly this.
->> That is an interesting idea. Although I don't see where
->> =
-https://elixir.bootlin.com/linux/latest/source/drivers/pinctrl/pinctrl-ing=
-enic.c#L4171
->> does make use of the memory resource from DTS. It just reads two =
-values from the ingenic_chip_info instead of one I do read from =
-soc_info.
->=20
-> It overrides the .max_register from a static regmap_config instance.
-
-To be precise: it overrides .max_register of a copy of a static =
-regmap_config instance (which has .max_register =3D 0).
-
-> You can do the same,
-
-We already do the same...
-
-> calculating the .max_register from the memory resource you get from =
-DT.
-
-I can't see any code in pinctrl-ingenic.c getting the memory resource =
-that from DT. It calculates it from the ingenic_chip_info tables inside =
-the driver code but not DT.
-
-> I'm sure you guys can figure it out.
-
-Ah, we have to figure out. You are not sure yourself how to do it? And =
-it is *not* exactly like the pinctrl driver (already) does? Please give =
-precise directions in reviews and not vague research homework. Our time =
-is also valuable. Sorry if I review your reviews...
-
-Anyways I think you roughly intend (untested):
-
-	struct resource *r;
-
-	r =3D platform_get_resource(pdev, IORESOURCE_MEM, 0);
-	regmap_config.max_register =3D r.end - r.start;
-
-But I wonder how that could work at all (despite adding code execution =
-time) with:
-
-e.g. jz4770.dtsi:
-
-	lcd: lcd-controller@13050000 {
-		compatible =3D "ingenic,jz4770-lcd";
-		reg =3D <0x13050000 0x300>;
-
-or jz4725b.dtsi:
-
-	lcd: lcd-controller@13050000 {
-		compatible =3D "ingenic,jz4725b-lcd";
-		reg =3D <0x13050000 0x1000>;
-
-So max_register becomes 0x300 or 0x1000 but not
-
-#define JZ_REG_LCD_SIZE1	0x12c
-	.max_reg =3D JZ_REG_LCD_SIZE1,
-
-And therefore wastes a lot of regmap memory.
-
-Do you want this? DTS should not be reduced (DTS should be kept as =
-stable as possible), since the reg property describes address mapping - =
-not how many bytes are really used by registers or how big a cache =
-should be allocated (cache allocation size requirements are not hardware =
-description).
-
-
-But here are good news:
-
-I have a simpler and less invasive proposal. We keep the =
-devm_regmap_init_mmio code as is and just increase its .max_register =
-from JZ_REG_LCD_SIZE1 to JZ_REG_LCD_PCFG when introducing the jz4780. =
-This wastes a handful bytes for all non-jz4780 chips but less than using =
-the DTS memory region size. And is less code (no entry in soc_info =
-tables, no modifyable copy) and faster code execution than all other =
-proposals.
-
-This is then just a single-line change when introducing the jz4780. And =
-no "preparation for adding jz4780" patch is needed at all. No patch to =
-split out for separate review.
-
-Let's go this way to get it eventually finalized. Ok?
-
-BR and thanks,
-Nikolaus
+diff --git a/drivers/staging/r8188eu/os_dep/mlme_linux.c b/drivers/staging/r8188eu/os_dep/mlme_linux.c
+index a9b6ffdbf31a..f7ce724ebf87 100644
+--- a/drivers/staging/r8188eu/os_dep/mlme_linux.c
++++ b/drivers/staging/r8188eu/os_dep/mlme_linux.c
+@@ -112,7 +112,7 @@ void rtw_report_sec_ie(struct adapter *adapter, u8 authmode, u8 *sec_ie)
+ 
+ 	buff = NULL;
+ 	if (authmode == _WPA_IE_ID_) {
+-		buff = kzalloc(IW_CUSTOM_MAX, GFP_KERNEL);
++		buff = kzalloc(IW_CUSTOM_MAX, GFP_ATOMIC);
+ 		if (!buff)
+ 			return;
+ 		p = buff;
+-- 
+2.33.1
 
