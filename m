@@ -2,72 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 65550449EAC
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Nov 2021 23:31:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D028A449EAE
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Nov 2021 23:32:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240700AbhKHWdl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Nov 2021 17:33:41 -0500
-Received: from mail.kernel.org ([198.145.29.99]:33008 "EHLO mail.kernel.org"
+        id S240728AbhKHWfB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Nov 2021 17:35:01 -0500
+Received: from nautica.notk.org ([91.121.71.147]:37112 "EHLO nautica.notk.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239746AbhKHWdk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Nov 2021 17:33:40 -0500
-Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 44991604D7;
-        Mon,  8 Nov 2021 22:30:55 +0000 (UTC)
-Date:   Mon, 8 Nov 2021 17:30:53 -0500
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Beau Belgrave <beaub@linux.microsoft.com>
-Cc:     Masami Hiramatsu <mhiramat@kernel.org>,
-        linux-trace-devel@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v4 02/10] user_events: Add minimal support for
- trace_event into ftrace
-Message-ID: <20211108173053.4b37a1b8@gandalf.local.home>
-In-Reply-To: <20211108220945.GA2148@kbox>
-References: <20211104170433.2206-1-beaub@linux.microsoft.com>
-        <20211104170433.2206-3-beaub@linux.microsoft.com>
-        <20211107233115.1f77e93c4bdf3ff649be99c1@kernel.org>
-        <20211108171336.GA1690@kbox>
-        <20211108131639.33a4f186@gandalf.local.home>
-        <20211108202527.GA1862@kbox>
-        <20211108160027.3b16c23d@gandalf.local.home>
-        <20211108220945.GA2148@kbox>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        id S239746AbhKHWfA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Nov 2021 17:35:00 -0500
+Received: by nautica.notk.org (Postfix, from userid 108)
+        id 4469CC020; Mon,  8 Nov 2021 23:32:14 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=codewreck.org; s=2;
+        t=1636410734; bh=zud7OdEIkTpD43LRPIbRcXq7+R/QWPBlGp1XNQjDQTw=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=YSwAC1Ld+GyuvCjOOo79KBMLWXQ3WMg7p2uSSU+bRtTDPRue+1gwnrlcZOQzZHgwr
+         oczWHEQL4oGs5Tc11NNNhWdgTks1dtDYuD5pbjWGXTX0c0PN6xgfXNGQs6/CGleEHf
+         KbQOvDle99VCOpwv4vIJS2dSKmyvYPaGfT5d3ecJafBXu3jY+GP1QVDalAN7/ifF6H
+         UbMticei3nPs9E6vN47PToiFTf9OHrfjGQ21rBcMHjUFDASmZ4U47TJzFn1Aveuvnm
+         yqbad62IFy8ZzjvAvPYr8hLIZ3HSE2FrmSHj6YGY7bS7yqIjKLn2jh0S4aIgUo7Xt/
+         sBkZkVqYthxGg==
+X-Spam-Checker-Version: SpamAssassin 3.3.2 (2011-06-06) on nautica.notk.org
+X-Spam-Level: 
+X-Spam-Status: No, score=0.0 required=5.0 tests=UNPARSEABLE_RELAY
+        autolearn=unavailable version=3.3.2
+Received: from odin.codewreck.org (localhost [127.0.0.1])
+        by nautica.notk.org (Postfix) with ESMTPS id DD4FFC009;
+        Mon,  8 Nov 2021 23:32:10 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=codewreck.org; s=2;
+        t=1636410733; bh=zud7OdEIkTpD43LRPIbRcXq7+R/QWPBlGp1XNQjDQTw=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=pfnrVCuPOHphpsheOYkQIMC63MpA6sG2wtcv+JDOBIQenja8mFJvwh06DRVXs9wPm
+         SpiE6EnhQJqz2kJDsaMgxBWt0xOm9DDSV16INlsPlAtYJCOb7gw0CLRoBo1cJeiHz8
+         9I2UR2d7aPpr3p9O0R5uKXzn14r5dBQiO8Vfi/MucEwuGrxNMC9Sme0afi/l2fBlFc
+         0wPe7KNArqacoQ6yzKSAROyqDJlKHS5QWnkq05z+A53w7B5GF+xEQetsstLN9nAxXJ
+         RgI6fXUBnwufQlCGYPzx46MqBZYVcE48Un3fhZ9LR5gCUijbpibjCzWByCh/OkMIDQ
+         Jl6u2lYAhrbDg==
+Received: from localhost (odin.codewreck.org [local])
+        by odin.codewreck.org (OpenSMTPD) with ESMTPA id e697cf90;
+        Mon, 8 Nov 2021 22:32:08 +0000 (UTC)
+Date:   Tue, 9 Nov 2021 07:31:52 +0900
+From:   Dominique Martinet <asmadeus@codewreck.org>
+To:     Thomas =?utf-8?Q?Wei=C3=9Fschuh?= <linux@weissschuh.net>
+Cc:     v9fs-developer@lists.sourceforge.net, netdev@vger.kernel.org,
+        Eric Van Hensbergen <ericvh@gmail.com>,
+        Latchesar Ionkov <lucho@ionkov.net>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Stefano Stabellini <stefano@aporeto.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 4/4] net/p9: load default transports
+Message-ID: <YYmlWC9k9jU/JXri@codewreck.org>
+References: <20211103193823.111007-1-linux@weissschuh.net>
+ <20211103193823.111007-5-linux@weissschuh.net>
+ <c2a33fa1-30b0-4f19-808f-3bd0316a4ed8@t-8ch.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <c2a33fa1-30b0-4f19-808f-3bd0316a4ed8@t-8ch.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 8 Nov 2021 14:09:45 -0800
-Beau Belgrave <beaub@linux.microsoft.com> wrote:
-> 
-> It seems like both histograms and filter both reference field flags to
-> determine how to get the data.
-> 
-> How would you feel about another FILTER_* flag on fields, like:
-> FILTER_DYN_STRING_SAFE
-> FILTER_PTR_STRING_SAFE
+Hi,
 
-You mean "UNSAFE" ?
+Thomas Weißschuh wrote on Mon, Nov 08, 2021 at 07:50:34PM +0100:
+> I did not notice that you already had applied "net/9p: autoload transport modules"
+> to your tree when sending this series.
+> 
+> Please note that in this series I modified patch 1 a bit, from the ony you
+> applied, to prevent warnings in patch 4.
+> Concretely I modified the prototypes of `v9fs_get_trans_by_name()` and
+> `_p9_get_trans_by_name()` to take const parameters.
+> 
+> Feel free to roll those changes into this patch when applying or I can resend
+> the patch/series.
 
-> 
-> user_events when parsing would instead of leaving FILTER_OTHER for
-> __data_loc / __rel_loc switch to the above.
-> 
-> The predicate filter method would then switch based on those types to
-> safer versions.
-> 
-> That way other parts could take advantage of this if needed beyond
-> user_events.
-> 
-> If this is addressed at the filter/histogram level, would then the write
-> callsites still check bounds per-write? Or maybe only care about the
-> undersized data cases?
+Thanks for the heads up, it's ok -- I'll move the constification of
+these functions to patch 4 myself.
 
-I'd have to look at the implementation of this. There's too many variables
-running around in my head right now.
-
--- Steve
+I've just sent my pull request to Linus so will take your patches to
+my for-next branch when that's merged.
+-- 
+Dominique
