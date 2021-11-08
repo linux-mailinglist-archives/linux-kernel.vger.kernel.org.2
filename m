@@ -2,66 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1CCBB449DB4
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Nov 2021 22:10:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A108449DC0
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Nov 2021 22:13:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239871AbhKHVNf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Nov 2021 16:13:35 -0500
-Received: from smtp-relay-internal-0.canonical.com ([185.125.188.122]:56590
+        id S239912AbhKHVQB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Nov 2021 16:16:01 -0500
+Received: from smtp-relay-internal-0.canonical.com ([185.125.188.122]:56694
         "EHLO smtp-relay-internal-0.canonical.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S239862AbhKHVNd (ORCPT
+        by vger.kernel.org with ESMTP id S239881AbhKHVP6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Nov 2021 16:13:33 -0500
-Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com [209.85.221.69])
+        Mon, 8 Nov 2021 16:15:58 -0500
+Received: from mail-lf1-f71.google.com (mail-lf1-f71.google.com [209.85.167.71])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
         (No client certificate requested)
-        by smtp-relay-internal-0.canonical.com (Postfix) with ESMTPS id C02F13F1EC
-        for <linux-kernel@vger.kernel.org>; Mon,  8 Nov 2021 21:10:47 +0000 (UTC)
+        by smtp-relay-internal-0.canonical.com (Postfix) with ESMTPS id 3384F3F1EE
+        for <linux-kernel@vger.kernel.org>; Mon,  8 Nov 2021 21:13:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1636405847;
-        bh=mwPFRn0AEGOneXePTnmoZQRi4asMCrfCLz0IrMjqCXA=;
+        s=20210705; t=1636405993;
+        bh=XB2KDOBpJiDTxLvN53KaY9Yfn9kq5MuLsy13SYbvRGU=;
         h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
          In-Reply-To:Content-Type;
-        b=DKhDC7F7lG4RVE4qNWgrKjnY/dvBbqJUWACN2l7Q8M60U9wCQA4QJgEehUtC3MdW9
-         5pJ331lKyUtm0tVPWbqoRa+i99e3WD1XDloL+fHW1YKkBvLJViJER83V78uFjpkUiO
-         DTS1RNB+ZuUAHy6E5eLTHASCx4KO44FhSWOZ/LsiC1990j56vjx/jsrJVSzJnbE8B7
-         AufpFT2m+HstTIxCjZMN4iJpIqHlKNF2a7kIP5U+/AXsLHw6IixuXeQ8cZnB1pAIzP
-         YnxII2IOnGo4XBhPznbQ92VWJKzYLwZvrjBORGNML6t+1hgXHrq723l+/ARDjBNxye
-         86hLzC1TC372Q==
-Received: by mail-wr1-f69.google.com with SMTP id v17-20020adfedd1000000b0017c5e737b02so4402150wro.18
-        for <linux-kernel@vger.kernel.org>; Mon, 08 Nov 2021 13:10:47 -0800 (PST)
+        b=UE+sQ5HC8SwYYYj7RcaBdm8GunNKTsOGQLbKZjuai+rkr4WLHN3crG47WIxD+fnXp
+         jSo7kUuENRJCtm+foTIvhY/Aaz81prUdYLgoSARcMDeYL3Sx8vjuo5rWBVgzloPYCS
+         3tiI5ks94aMQD3nuAMZ8xCvI5/yAit5u9ig49g4zW1uRjLBqXYocdi0PPqVswEUqyB
+         PmtCe4YQti1t5wSAUaVEzedFOgJGkjACBYrbMghdQaLLvZoaobqJOs0rRPqlH7bXPi
+         ufpUlTbLJnjQnw3TMhyFlGfz0Ur87EyHDzw0+sA2au3MX2U0+rKqv5KlJe+/gMvL9u
+         ucwCabZySCP1Q==
+Received: by mail-lf1-f71.google.com with SMTP id p19-20020a056512139300b003ff6dfea137so6968385lfa.9
+        for <linux-kernel@vger.kernel.org>; Mon, 08 Nov 2021 13:13:13 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
          :content-language:to:cc:references:from:in-reply-to
          :content-transfer-encoding;
-        bh=mwPFRn0AEGOneXePTnmoZQRi4asMCrfCLz0IrMjqCXA=;
-        b=jEImfan9j6khl4ja/QRO9+f3wmXyvJQ7Lh0dKGmhhf21mqrTd2QrwN2bIL+gNHuvig
-         1pXbwJ9W5DqmwHySVLlZOKQNqRC1xYohsL9FQkTMhwOPcNmpCAQpIWRfg/mXapKzDPjJ
-         tskuTbEUojuDtOX7i/jKbEptROwIs9gESdBaxLKf3Mmysqkt2uB2OdI2/13k0CzPdmsN
-         SVk0ETK34LKXi0TTqDxzASjWainH4+VYYe7/pnvC9qJlbSU9dc+EBmhSdljm47XSGZZI
-         iXT2mRwgQLmfsucFMw3jyv/EizjeIcQhZNz/o1QymDCWplIDi8OAO9LbQlTmGC9X4hRx
-         melA==
-X-Gm-Message-State: AOAM530J08XzbiaB9rnWzkmDd4OT3pAuWFLwJmWbV+zF90dbbNmpmHcc
-        rDbFvxUBdv4Td/6o+SEq4e9P2IllEig+/uvxXpa0D83JdOYzOapxLYCQV+6rscDpSeG3O+3fCCR
-        5wF/wAaR0vg951/cw3tJKl/SLvSAqeqLOwYncvHdHLA==
-X-Received: by 2002:a05:651c:246:: with SMTP id x6mr2094963ljn.49.1636405836536;
-        Mon, 08 Nov 2021 13:10:36 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJyZb4LKcW1A1+MA8CuLWPJQDB5phDB0potg5NQYQwGvOUd0o3C/EZkqT0mWfTObhT2/wWNBag==
-X-Received: by 2002:a05:651c:246:: with SMTP id x6mr2094920ljn.49.1636405836357;
-        Mon, 08 Nov 2021 13:10:36 -0800 (PST)
+        bh=XB2KDOBpJiDTxLvN53KaY9Yfn9kq5MuLsy13SYbvRGU=;
+        b=EC1fE5c6FG7hk5RFq5hoFjvV0fiKIxs8ksrFTs9PMN/OuTR8oPk6NdH+h+f6LXh3Da
+         emRynhrDBXprM61cbdw8+DgM7zXYtg60S5mTWYmEtFriuW1/PwR+N9YVqeHwbakSOxvg
+         OakUzJeQMN9zzxFWIX26pobkKOyAhk8hBll6cCJh/CfS3JPDtpPogiHC8ntp5Z65IAc8
+         akBFnXCbZjzhkk6zQPkrwOST+MuhxHj/hf4Q7PG2G/NNFDTuJ3eAj4MbUWO4uAVSs+gV
+         xeO4SBpx071Nre0hO2zNHfqnWWhdQeWZ8reqYBqLljZsZSBEuFcxJFTJDJUB+np3shw6
+         6l1Q==
+X-Gm-Message-State: AOAM53387ERuTnLEARa6chiqVcWVw863HWn848BM7QNEpCpCA3MQKOxB
+        tpDcWqrYp1E4w/HFQtImTrHbiaLfT5r37/6r7Q+pOylXeT5t9ISEB8MTRKUaPTHgSSeQaLxREBI
+        xTrXXvNvsONEeF87lr+yHOvbsLrijq5yCKyXVfItzBg==
+X-Received: by 2002:a05:651c:10a2:: with SMTP id k2mr2206424ljn.456.1636405992516;
+        Mon, 08 Nov 2021 13:13:12 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJxJoQJPfASIjl/Ea54GsJrSaswI+eaDTggcHJqauek5OKm03GQ1TdlvoYCWn2ROBLnxiDFlTg==
+X-Received: by 2002:a05:651c:10a2:: with SMTP id k2mr2206383ljn.456.1636405992327;
+        Mon, 08 Nov 2021 13:13:12 -0800 (PST)
 Received: from [192.168.3.67] (89-77-68-124.dynamic.chello.pl. [89.77.68.124])
-        by smtp.gmail.com with ESMTPSA id a16sm1929374lfu.274.2021.11.08.13.10.34
+        by smtp.gmail.com with ESMTPSA id b13sm1929260lfb.145.2021.11.08.13.13.11
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 08 Nov 2021 13:10:36 -0800 (PST)
-Message-ID: <8343f11a-89e8-c043-6296-000f7ba3e3d2@canonical.com>
-Date:   Mon, 8 Nov 2021 22:10:34 +0100
+        Mon, 08 Nov 2021 13:13:12 -0800 (PST)
+Message-ID: <632cb889-114b-2b44-3a75-e4b9e5bd0bda@canonical.com>
+Date:   Mon, 8 Nov 2021 22:13:10 +0100
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
  Thunderbird/91.2.1
-Subject: Re: [PATCH 04/13] dt-bindings: riscv: update microchip polarfire
- binds
+Subject: Re: [PATCH 05/13] dt-bindings: i2c: add bindings for microchip mpfs
+ i2c
 Content-Language: en-US
 To:     conor.dooley@microchip.com, linus.walleij@linaro.org,
         bgolaszewski@baylibre.com, robh+dt@kernel.org,
@@ -77,9 +77,9 @@ To:     conor.dooley@microchip.com, linus.walleij@linaro.org,
         linux-spi@vger.kernel.org, linux-usb@vger.kernel.org
 Cc:     geert@linux-m68k.org, bin.meng@windriver.com
 References: <20211108150554.4457-1-conor.dooley@microchip.com>
- <20211108150554.4457-5-conor.dooley@microchip.com>
+ <20211108150554.4457-6-conor.dooley@microchip.com>
 From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-In-Reply-To: <20211108150554.4457-5-conor.dooley@microchip.com>
+In-Reply-To: <20211108150554.4457-6-conor.dooley@microchip.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
@@ -89,28 +89,107 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 On 08/11/2021 16:05, conor.dooley@microchip.com wrote:
 > From: Conor Dooley <conor.dooley@microchip.com>
 > 
-> Add mpfs-soc to clear undocumented binding warning
-
-What warnings? There is no such compatible used.
-
+> Add device tree bindings for the i2c controller on
+> the Microchip PolarFire SoC.
 > 
 > Signed-off-by: Conor Dooley <conor.dooley@microchip.com>
+> Signed-off-by: Daire McNamara <daire.mcnamara@microchip.com>
 > ---
->  Documentation/devicetree/bindings/riscv/microchip.yaml | 1 +
->  1 file changed, 1 insertion(+)
+>  .../bindings/i2c/microchip,mpfs-i2c.yaml      | 74 +++++++++++++++++++
+>  1 file changed, 74 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/i2c/microchip,mpfs-i2c.yaml
 > 
-> diff --git a/Documentation/devicetree/bindings/riscv/microchip.yaml b/Documentation/devicetree/bindings/riscv/microchip.yaml
-> index 3f981e897126..1ff7a5224bbc 100644
-> --- a/Documentation/devicetree/bindings/riscv/microchip.yaml
-> +++ b/Documentation/devicetree/bindings/riscv/microchip.yaml
-> @@ -21,6 +21,7 @@ properties:
->        - enum:
->            - microchip,mpfs-icicle-kit
->        - const: microchip,mpfs
-> +      - const: microchip,mpfs-soc
->  
->  additionalProperties: true
->  
+> diff --git a/Documentation/devicetree/bindings/i2c/microchip,mpfs-i2c.yaml b/Documentation/devicetree/bindings/i2c/microchip,mpfs-i2c.yaml
+> new file mode 100644
+> index 000000000000..bc4ea4498d35
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/i2c/microchip,mpfs-i2c.yaml
+> @@ -0,0 +1,74 @@
+> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/i2c/microchip,mpfs-i2c.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: Microchip MPFS I2C Controller Device Tree Bindings
+> +
+> +maintainers:
+> +  - Daire McNamara <daire.mcnamara@microchip.com>
+> +
+> +description: |
+> +  This I2C controller is found on the Microchip PolarFire SoC.
+> +
+> +allOf:
+> +  - $ref: /schemas/i2c/i2c-controller.yaml#
+> +
+> +properties:
+> +  compatible:
+> +    enum:
+> +      - microchip,mpfs-i2c # Microchip PolarFire SoC compatible SoCs
+> +
+> +  reg:
+> +    maxItems: 1
+> +
+> +  interrupts:
+> +    maxItems: 1
+> +
+> +  clocks:
+> +    description: Phandle of the clock feeding the I2C controller.
+
+Skip such descriptions here and in other patches - they do not introduce
+any meaningful information.
+
+> +    minItems: 1
+
+Define instead exact number of clocks or maxItems... but why would they
+be variable?
+
+> +
+> +  clock-frequency:
+> +    description: |
+> +      Desired I2C bus clock frequency in Hz. As only Standard and Fast
+> +      modes are supported, possible values are 100000 and 400000.
+> +    enum: [100000, 400000]
+> +
+> +required:
+> +  - compatible
+> +  - reg
+> +  - interrupts
+> +  - clocks
+> +
+> +unevaluatedProperties: false
+> +
+> +examples:
+> +  - |
+> +    #include <dt-bindings/clock/microchip,mpfs-clock.h>
+> +    soc {
+> +        #address-cells = <2>;
+> +        #size-cells = <2>;
+> +        i2c@2010a000 {
+> +            compatible = "microchip,mpfs-i2c";
+> +            reg = <0 0x2010a000 0 0x1000>;
+> +            interrupts = <58>;
+> +            clock-frequency = <100000>;
+> +            clocks = <&clkcfg CLK_I2C0>;
+> +        };
+> +    };
+> +  - |
+> +    #include <dt-bindings/clock/microchip,mpfs-clock.h>
+> +    soc {
+> +        #address-cells = <2>;
+> +        #size-cells = <2>;
+> +        i2c@2010b000 {
+> +            compatible = "microchip,mpfs-i2c";
+> +            reg = <0 0x2010b000 0 0x1000>;
+> +            interrupts = <61>;
+> +            clock-frequency = <100000>;
+> +            clocks = <&clkcfg CLK_I2C1>;
+
+This is the same example as above, just with changed numbers. Skip it.
+
+> +        };
+> +    };
+> +...
 > 
 
 
