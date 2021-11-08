@@ -2,74 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 54742449B29
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Nov 2021 18:55:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D3025449B33
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Nov 2021 18:56:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231461AbhKHR6e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Nov 2021 12:58:34 -0500
-Received: from mail.kernel.org ([198.145.29.99]:34978 "EHLO mail.kernel.org"
+        id S232742AbhKHR72 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Nov 2021 12:59:28 -0500
+Received: from mail.kernel.org ([198.145.29.99]:36060 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230474AbhKHR6d (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Nov 2021 12:58:33 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B10AA61994;
-        Mon,  8 Nov 2021 17:55:48 +0000 (UTC)
+        id S231793AbhKHR71 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Nov 2021 12:59:27 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 75EF06124D;
+        Mon,  8 Nov 2021 17:56:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1636394148;
-        bh=OYVD+yF4GqAl/iyWfJTVCcMZnqTl3R3OTOp75lIVb5I=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=aaDGWltXDERpr9s6ruTG1YdI5olyXUVRUf3PiEuOrAd2ZejLdWe5Y2NGs4KEwBDxg
-         jJzLGKwPxbMq8QA53S2aLCK7abVu3VLq41CL0Sk+856Lf4NsyJQDhxRQB4zUPVprB3
-         WbTBkT9+I5fdAdEKqsUFj2+Pn7+pewxAN3qGh6x81+ndI8Bg4S1uopDvUB66xOMKuM
-         RAU4y6yffvc4Ke1FkpgptduDAuKSRvF8diw1MJUTCbrKrmswYpdwMuhujuc8oxfyUb
-         KGv2IMTc+iYKDHo4w0j0hlxm0z0tuqaQQ+q42dljnOTb65s89yDpiOZ0DU0CngefoV
-         FCBQw4nPGIzfg==
-Received: by mail-ed1-f50.google.com with SMTP id c8so49093348ede.13;
-        Mon, 08 Nov 2021 09:55:48 -0800 (PST)
-X-Gm-Message-State: AOAM530KhbqUiOVRX7sAT+vtvn3DU2NFzL2riIfOKoAeYW+NjSNPEyIY
-        T8HXUq0EeALmGrKGmume/UdW8uONI/KhHGWsYw==
-X-Google-Smtp-Source: ABdhPJye7ckCKLbYwwEcxwCvNhbBPRTK028g5dkSxPjZCrulB4a7/qRlAze8lPSC+981XN0NIraCm3W4A21yAtY93Lk=
-X-Received: by 2002:a05:6402:50d0:: with SMTP id h16mr1250991edb.70.1636394147216;
- Mon, 08 Nov 2021 09:55:47 -0800 (PST)
+        s=k20201202; t=1636394203;
+        bh=ffbY6XZWZcrefoCiKBER7fEnSzLlGX7KZbC/MIl/IUs=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=ss6sTjuYyCQj9plD3aR7WdASaMCXN5fbF08iCYDniDS9PB3OXI9wrPIAF2QRnTG6/
+         whrkK/PliEpbWR6AqbQYnUPUyCfrA7f3sOWwfLYoEfXgQzsgnWfAutGZWirwy+nTYJ
+         KeK/1QFEkCvZVY51+MR4mJl2NjoEu95mz/nI/SLHF0ImsVAf3e2EKtBsY8q8VeSdh6
+         B/7raepAFmBkZeHVVWa4xLyToxheKbYn6mh6Z1J32KPP6iS4ojFUsPtcvQjzQOkwY/
+         u7Rh9TN88WOB1m67cVHsVYjCm4TND+Wfgu48lPObntwvvNzY8nB2j36oTZ6dkT9jEZ
+         OL+aWiZBswwEQ==
+Date:   Mon, 8 Nov 2021 18:56:37 +0100
+From:   Marek =?UTF-8?B?QmVow7pu?= <kabel@kernel.org>
+To:     Andrew Lunn <andrew@lunn.ch>
+Cc:     Ansuel Smith <ansuelsmth@gmail.com>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Vladimir Oltean <olteanv@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>, Pavel Machek <pavel@ucw.cz>,
+        John Crispin <john@phrozen.org>, netdev@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-leds@vger.kernel.org
+Subject: Re: [RFC PATCH v2 1/5] leds: trigger: add API for HW offloading of
+ triggers
+Message-ID: <20211108185637.21b63d40@thinkpad>
+In-Reply-To: <YYliclrZuxG/laIh@lunn.ch>
+References: <20211108002500.19115-1-ansuelsmth@gmail.com>
+        <20211108002500.19115-2-ansuelsmth@gmail.com>
+        <YYkuZwQi66slgfTZ@lunn.ch>
+        <YYk/Pbm9ZZ/Ikckg@Ansuel-xps.localdomain>
+        <20211108171312.0318b960@thinkpad>
+        <YYliclrZuxG/laIh@lunn.ch>
+X-Mailer: Claws Mail 3.18.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-References: <cover.1635412162.git.matti.vaittinen@fi.rohmeurope.com> <637f8aa5f1d65d54c90ed165c2476c32dff53c26.1635412162.git.matti.vaittinen@fi.rohmeurope.com>
-In-Reply-To: <637f8aa5f1d65d54c90ed165c2476c32dff53c26.1635412162.git.matti.vaittinen@fi.rohmeurope.com>
-From:   Rob Herring <robh+dt@kernel.org>
-Date:   Mon, 8 Nov 2021 11:55:35 -0600
-X-Gmail-Original-Message-ID: <CAL_JsqLm5_Hu5tgN7aHPCATt8gk0V3k_1YC4bCiT6c8rp9yUQg@mail.gmail.com>
-Message-ID: <CAL_JsqLm5_Hu5tgN7aHPCATt8gk0V3k_1YC4bCiT6c8rp9yUQg@mail.gmail.com>
-Subject: Re: [RESEND PATCH 1/4] dt-bindings: mfd: regulator: Drop BD70528 support
-To:     Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
-Cc:     Matti Vaittinen <mazziesaccount@gmail.com>,
-        Lukas Bulwahn <lukas.bulwahn@gmail.com>,
-        Lee Jones <lee.jones@linaro.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <brgl@bgdev.pl>,
-        devicetree@vger.kernel.org,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        linux-power <linux-power@fi.rohmeurope.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 28, 2021 at 4:18 AM Matti Vaittinen
-<matti.vaittinen@fi.rohmeurope.com> wrote:
->
-> The only known BD70528 use-cases are such that the PMIC is controlled
-> from separate MCU which is not running Linux. I am not aware of
-> any Linux driver users. Furthermore, it seems there is no demand for
-> this IC. Let's ease the maintenance burden and drop the driver. We can
-> always add it back if there is sudden need for it.
->
-> Signed-off-by: Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
-> ---
->  .../bindings/mfd/rohm,bd70528-pmic.txt        | 102 ------------------
->  .../regulator/rohm,bd70528-regulator.txt      |  68 ------------
->  2 files changed, 170 deletions(-)
->  delete mode 100644 Documentation/devicetree/bindings/mfd/rohm,bd70528-pmic.txt
->  delete mode 100644 Documentation/devicetree/bindings/regulator/rohm,bd70528-regulator.txt
+On Mon, 8 Nov 2021 18:46:26 +0100
+Andrew Lunn <andrew@lunn.ch> wrote:
 
-Acked-by: Rob Herring <robh@kernel.org>
+> > Dear Ansuel,
+> > 
+> > what is the purpose of adding trigger_offload() methods to LED, if you
+> > are not going to add support to offload the netdev trigger? That was
+> > the entire purpose when I wrote that patch.
+> > 
+> > If you just want to create a new trigger that will make the PHY chip do
+> > the blinking, there is no need at all for the offloading patch.
+> > 
+> > And you will also get a NACK from me and also Pavel (LED subsystem
+> > maintainer).
+> > 
+> > The current plan is to:
+> > - add support for offloading existing LED triggers to HW (LED
+> >   controllers (PHY chips, for example))
+> > - make netdev trigger try offloading itself to HW via this new API (if
+> >   it fails, netdev trigger will blink the LED in SW as it does now)
+> > - create LED classdevices in a PHY driver that have the offload()
+> >   methods implemented. The offload method looks at what trigger is
+> >   being enabled for the LED, and it if it is a netdev trigger with such
+> >   settings that are possible to offload, it will be offloaded.
+> > 
+> >   This whole thing makes use of the existing sysfs ABI.
+> >   So for example if I do
+> >     cd /sys/class/net/eth0/phydev/leds/<LED>
+> >     echo netdev >trigger
+> >     echo eth0 >device_name
+> >     echo 1 >rx
+> >     echo 1 >tx
+> >   The netdev trigger is activated, and it calls the offload() method.
+> >   The offload() method is implemented in the PHY driver, and it checks
+> >   that it can offload these settings (blink on rx/tx), and will enable
+> >   this.
+> > - extend netdev trigger to support more settings:
+> >   - indicate link for specific link modes only (for example 1g, 100m)
+> >   - ...
+> > - extend PHY drivers to support offloading of these new settings
+> > 
+> > Marek  
+> 
+> Hi Marek
+> 
+> The problem here is, you are not making much progress. People are
+> giving up on you ever getting this done, and doing their own
+> implementation. Ansuel code is not mature enough yet, it has problems,
+> but he is responsive, he is dealing with comments, progress is being
+> made. At some point, it is going to be good enough, and it will get
+> merged, unless you actual get your code to a point it can be merged.
+> 
+> 	Andrew
+
+Hello Andrew,
+
+you are right that this has been taking too long on my side. I am sorry
+for that.
+
+I guess I will have to work on this again ASAP or we will end up with
+solution that I don't like.
+
+Nonetheless, what is your opinion about offloading netdev trigger vs
+introducing another trigger?
+
+Marek
