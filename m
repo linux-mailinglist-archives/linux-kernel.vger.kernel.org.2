@@ -2,88 +2,315 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C9F044810F
+	by mail.lfdr.de (Postfix) with ESMTP id E81C8448110
 	for <lists+linux-kernel@lfdr.de>; Mon,  8 Nov 2021 15:13:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239094AbhKHOQS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        id S240235AbhKHOQT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Nov 2021 09:16:19 -0500
+Received: from mail-eopbgr60050.outbound.protection.outlook.com ([40.107.6.50]:1957
+        "EHLO EUR04-DB3-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S239031AbhKHOQS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 8 Nov 2021 09:16:18 -0500
-Received: from mail-vk1-f173.google.com ([209.85.221.173]:33689 "EHLO
-        mail-vk1-f173.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234532AbhKHOQQ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Nov 2021 09:16:16 -0500
-Received: by mail-vk1-f173.google.com with SMTP id d130so8289594vke.0;
-        Mon, 08 Nov 2021 06:13:32 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=l47DyX7zT07Ftsepq+P26ZkT5gnhRsZgVIxOMImJuls=;
-        b=1D/YMS5J9wFckgE4pyemTZX7npsBbLLGByoX5AIHlCzcfN5VERfw/ORKFWCQQVKsIT
-         aFxb/IAbonJcjNJH71agikUOrlfLWxy4JYm/cs39x4SkbrSzYAolDGnM5sbWxG+nawXw
-         Ic92Z+3L4fpsXKzPAuEnWvsvXcA3UjTcN+H/FJL1iLnCJHqzQ07H3n0cSTgX/5kCQzy0
-         m++imdr6IlSpCEHPpxbUW0ZMIou9FidTXIxToDkEV23aSruJlg+W9nAazS+yPJjkjPnb
-         fUrpYgTp5kBU9aea4SNAIDOm9WmZ0Dvdfm6CUjuUIGnjL276an98fkNv6OjfwBeCds3T
-         BDXQ==
-X-Gm-Message-State: AOAM531pfZ+fHRrVP3h9t3EtSjEFdiY0ccMb5qZlGL0CTgK1uk15Totz
-        j26K2UNBlmoBTUCNV9mMiixrI57Lc5dYrDzX
-X-Google-Smtp-Source: ABdhPJyivZeljKXDxJCQtIxyZYyGnsHP69Ogaoz04J3MilG4pXl4Mvo2hy4SD1N+g5lAo6G0Z6XIYw==
-X-Received: by 2002:a05:6122:2015:: with SMTP id l21mr291031vkd.16.1636380811701;
-        Mon, 08 Nov 2021 06:13:31 -0800 (PST)
-Received: from mail-vk1-f179.google.com (mail-vk1-f179.google.com. [209.85.221.179])
-        by smtp.gmail.com with ESMTPSA id o16sm3254094vss.29.2021.11.08.06.13.31
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 08 Nov 2021 06:13:31 -0800 (PST)
-Received: by mail-vk1-f179.google.com with SMTP id d130so8289571vke.0;
-        Mon, 08 Nov 2021 06:13:31 -0800 (PST)
-X-Received: by 2002:a05:6122:50e:: with SMTP id x14mr22172276vko.7.1636380811049;
- Mon, 08 Nov 2021 06:13:31 -0800 (PST)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=G2ZOhlel3lrva3v73P12cTqUsCMKxJudSwJFrumsnhtb/d/duz4FQWjo7koQIgr/Bz4qi8lrhoWSff6Nm3zdMhXd62jwFhecgiZ5N/pAg8uDywVJxXMTjbJurjuDWOYnOR2/9gReeKXxfL5ajbK0E4DFzSCMjhLzvEOwE6hr3GogyyB2/7lHz8YJhdqMJqfCsJ2nFzmpZEfjfVG6hUoxjNhI3mg0+AM/OCbPrl0SRHivuuPWqzXSGfsjhe7GTiH94vhv8bC/Je1oE6H3et/q53t9xkzBUUF7x541Y8o03UYsP2vVbzf9H8HVsak//ayQjIxKtgvp1hFoK0xfS3h+Ig==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=QMdKBErpGg6SaEdEtEg7EYEC+aIVQtuQwsT/zLBaTSw=;
+ b=I0xc5AcKiOw5MudmJ3ox6CotAg3fH+f14m3xv+wuB4eiCg1KYUUEN2yg0GKoSdEZ1hidcfzxlWuBNoJjnrMkhQT4GIxBADRupVOMVFw7FICntfWCrIv2rxuH4OwMRR8pYcGOpoKzQBgae8mAclkPx8QaS9jBSf9VaK2V1ueDkZXBel1r0bVplniXfIp8bAYALmMJogUoHcxGQotWQN7spSzZ0vrJ5EN5buTrl+/MpPae1X7fWGb0eVh8agH4eweXTmvKqVQdUwGLQlQcCfQE/OISAstlL2cI6+jC9toZ6O2wEJmt0FfFW4tZs/6OpYRiJRPOQekCd2pRn5QKVBA9Cw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=QMdKBErpGg6SaEdEtEg7EYEC+aIVQtuQwsT/zLBaTSw=;
+ b=TRbV8JaoDafzdresv8d8hVjXOpoGNMB1jQ1TEv9ze/MXgJnVpczDboHrD1XcOawODT2Kx9jIG3nYqwkCseNhHuPI/S+ykt7Gv8aetbVGIbPnKGoQXrXdA6p1s3Ag8RHrQ4eSkx/F1FF2hsJYu/k5Xa3LPD0tYCWk9aNpStahmKU=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nxp.com;
+Received: from VI1PR04MB5151.eurprd04.prod.outlook.com (2603:10a6:803:61::28)
+ by VI1PR04MB7055.eurprd04.prod.outlook.com (2603:10a6:800:123::21) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4669.11; Mon, 8 Nov
+ 2021 14:13:32 +0000
+Received: from VI1PR04MB5151.eurprd04.prod.outlook.com
+ ([fe80::85af:f8be:aa99:ba5f]) by VI1PR04MB5151.eurprd04.prod.outlook.com
+ ([fe80::85af:f8be:aa99:ba5f%3]) with mapi id 15.20.4669.015; Mon, 8 Nov 2021
+ 14:13:32 +0000
+Subject: Re: [PATCH] ASoC: SOF: build compression interface into snd_sof.ko
+To:     Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        Arnd Bergmann <arnd@kernel.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
+        Kai Vehmanen <kai.vehmanen@linux.intel.com>
+Cc:     Arnd Bergmann <arnd@arndb.de>, Mark Brown <broonie@kernel.org>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>,
+        Colin Ian King <colin.king@canonical.com>,
+        Peter Ujfalusi <peter.ujfalusi@linux.intel.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Bud Liviu-Alexandru <budliviu@gmail.com>,
+        Paul Olaru <paul.olaru@oss.nxp.com>,
+        sound-open-firmware@alsa-project.org, alsa-devel@alsa-project.org,
+        linux-kernel@vger.kernel.org
+References: <20211108111132.3800548-1-arnd@kernel.org>
+ <63c5b1fb-575e-f026-5a76-f08a366f7f38@linux.intel.com>
+From:   Daniel Baluta <daniel.baluta@nxp.com>
+Message-ID: <bae1a17c-af6e-d77a-19e7-f3f6408951fa@nxp.com>
+Date:   Mon, 8 Nov 2021 16:13:29 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
+In-Reply-To: <63c5b1fb-575e-f026-5a76-f08a366f7f38@linux.intel.com>
+Content-Type: multipart/mixed;
+ boundary="------------791C240922A1805F6DA45D2B"
+Content-Language: en-US
+X-ClientProxiedBy: VI1PR0902CA0027.eurprd09.prod.outlook.com
+ (2603:10a6:802:1::16) To VI1PR04MB5151.eurprd04.prod.outlook.com
+ (2603:10a6:803:61::28)
 MIME-Version: 1.0
-References: <20211029124437.20721-1-prabhakar.mahadev-lad.rj@bp.renesas.com> <20211029124437.20721-5-prabhakar.mahadev-lad.rj@bp.renesas.com>
-In-Reply-To: <20211029124437.20721-5-prabhakar.mahadev-lad.rj@bp.renesas.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Mon, 8 Nov 2021 15:13:20 +0100
-X-Gmail-Original-Message-ID: <CAMuHMdVu49AC0nc0hgV=HsR8qEM0pQQuo8T-RRCwwTLvXgO2HQ@mail.gmail.com>
-Message-ID: <CAMuHMdVu49AC0nc0hgV=HsR8qEM0pQQuo8T-RRCwwTLvXgO2HQ@mail.gmail.com>
-Subject: Re: [PATCH v2 4/5] pinctrl: renesas: pinctrl-rzg2l: Rename PIN_CFG_*
- macros to match HW manual
-To:     Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-Cc:     Linus Walleij <linus.walleij@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
-        Prabhakar <prabhakar.csengg@gmail.com>,
-        Biju Das <biju.das.jz@bp.renesas.com>
-Content-Type: text/plain; charset="UTF-8"
+Received: from [IPv6:2a02:2f08:570c:ca00:c0fa:6a41:b933:e441] (2a02:2f08:570c:ca00:c0fa:6a41:b933:e441) by VI1PR0902CA0027.eurprd09.prod.outlook.com (2603:10a6:802:1::16) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4669.10 via Frontend Transport; Mon, 8 Nov 2021 14:13:31 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: eb1cbde3-98f1-4b57-cd23-08d9a2c1f1be
+X-MS-TrafficTypeDiagnostic: VI1PR04MB7055:
+X-Microsoft-Antispam-PRVS: <VI1PR04MB7055EBC3A81BDA3327D1C491F9919@VI1PR04MB7055.eurprd04.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:5516;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: qlqHyLAk8F5HBOoIb7p3dQ4yBc/m08BCTodgjLg78ELvOWfMpaOBpW/E6jmL0WAoo0O2L7unBH5EryrJAZT+Bt2LThX6Az4X1aCOLX+kmjyubIsNftaqMk9OvsnI7ncytXU2yeT/u6Y0fXeAsWaR/uJ5qrX5Bd6olkcraMExNPR5iCJ9gE/ZSA0i+LQhza0OqVQM+7VKK9tOm588D1T6ET/JLk17hrzeY5Uk6JGcBOjkStTK1qyzsIGbJzqlPcWCQk+mzsxwTZdJ831Ax89V2BiW+LNnTBkyBOvkZeOswIMUGyTy9Zlu92n8rhQSlRSJoJkdEBPONz2NxQBJXNGNL8zRHBbf6f9ErP3YTbooRyeV9FNUJaKu+yyEV2jnE/Lgs9jaExRzSYOiMuRdB9eQHmHY+UEuNV+sY0KhpivuerrFI6ucQqESocOQK91gb+tsKhLnyIsLftrSm40fK3sNWdQCAZnT6GYzC4+PWIDTLuXrYff8zq65sIe6f3gR21Iz/qicJruVG4HchMdj4UMhy6ftNWKNrzNTtz4QK/n099XFj2eYljyBZQ380u8HOhUBeXn+PPogwhzkGm1OKHUCvA0Jpn9wUIac/PYgYzelCd/pKK4mj2iJTCGzrCzbTv6EJEQmDuHLahQa9wN+Fz1dDf9nov80rkTl7q6cLb3csMXH+4LyLMZPvwQkJ6tL+D1Wk/GtSKjAaNkNufZwHR6C54P6ppawESncOBT6znHYGhV5MpGRYqDecOKFlkxXe1wDSnT21COfzD1HbQP5ZV6AJi6lHA+ly8aRqk5U0lao3jQJ7PKMKf3JfD7xmFrQfW5jRqZUoKWY2PfdgC6EXxh7EDSjDtSoexGRPqZyS6UUmKQ=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VI1PR04MB5151.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(31686004)(8676002)(508600001)(235185007)(66946007)(66476007)(6486002)(54906003)(8936002)(5660300002)(45080400002)(36756003)(4326008)(2906002)(44832011)(66556008)(966005)(186003)(7416002)(86362001)(2616005)(83380400001)(38100700002)(33964004)(316002)(53546011)(31696002)(110136005)(52116002)(43740500002)(45980500001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?Y0p5U2cyZ0Z6N01oUUJZSEl3N1F0bWFGZ25HMGd3TVFCV3dYck92cXRLaGs2?=
+ =?utf-8?B?NFJ4QUdDdkpLTW1naWkvbVBUekVxbGY4OC9abTU4ZkhQMGhETzh0c1diQW81?=
+ =?utf-8?B?cVB0enQ3L3drTjFKUW9LRkwxbktFOEN1cDhjY25ETWgwbjN3VHlLbzRoeVlu?=
+ =?utf-8?B?QmJkdzRrSzl4a011MjNNM1RLcHJMSm5yazlkeFduZXZGY3o5QkVHdmdsTDdn?=
+ =?utf-8?B?S2d5WEV1QTBpM0xDM2plSFdqeXloemZLL2dreFRBanVQY1l2L3YvMk5RN2ND?=
+ =?utf-8?B?UHJXWlBaR0xrOUN4RXVHa3IrRmhELzdzSzhvNk1QNnBwbWg4dHdCazI4Mzhz?=
+ =?utf-8?B?L3JkMkhTL1ZnM2pVRkhHc1JwL3RIRWNOUzN1TXdYYnExM25WMlI3ZEFUWThH?=
+ =?utf-8?B?ZDN3UjRGeldZWXU3YWFSSjFDQlNLZC92Y0txU0lmMStuKzVqaU5DbVZXVlBK?=
+ =?utf-8?B?MWZEK0Y2eW1iZmlIeHRtR2x6c0VFcXU2Q2hTVmU1T1JONmUzdVRyVVkyZ00r?=
+ =?utf-8?B?bWNBMElObFFCeWZ3VjdJRzAzRnltZzhEWkFpa2FQUkZVOHVOQ21QMHBnQXFO?=
+ =?utf-8?B?dmFMc1pXczJ4NTNPYjlYMUJ3Zng3Z1J5Nm0vT29SWmpWUG83TUV5RkVIZWVh?=
+ =?utf-8?B?TlZtMVZTL09VVDJ0ZHFDV2dLemJSVVU3dWVVMnFNK2VWbVJMYm01NXdwQzBO?=
+ =?utf-8?B?ODBZNi9yWVlaQ2xFcW1reDdRRXliNWR6ejFrcEV0cWQyeUZnRVNIVm9zT1VW?=
+ =?utf-8?B?SnRtRE5IQUZna2NQTWh5QVVIUXd3dU9KbzlHM1R2bHhCM0NiR0dlNVFlK0hn?=
+ =?utf-8?B?ek03b0pyVVp0YVlnQkpUYWZwdDRmNk1acS9kTFpFd0tCUFhvWXVuNjNYdnVj?=
+ =?utf-8?B?a2t1Q1gyb3NLRWZmMzhySXF5MXV6cTZDQm05b1lHdTM0RUkzbWVpTG55UWZ0?=
+ =?utf-8?B?WkQ3Rk8yQXlZMEdWR2FVVXZhc3cyNis2Ry9mbndMVVdYY2JkUW1TV2tXNUpv?=
+ =?utf-8?B?aEhtUUpWWDgwRDY3SFduaURTWUhBcGtGSU92ZVBXeVFGNkV6MzYwdVlXa2dE?=
+ =?utf-8?B?STNlVlRDRGRNZzZDUjdhZHY5NkxhN0ozeFQvVDgzS3d2ZlRMSXUwR3pHenhX?=
+ =?utf-8?B?UEJiRFd2OTZzaU1lVmVCT0xjNVJrdmJjUlptTU4zcjFOUXZnWUJlWjF0dVRF?=
+ =?utf-8?B?RWRJQVNWSkpiSG56WW9mYWlncG9mRzNsM3VTckkwVUlHSlNPU2o2c3NqNDEy?=
+ =?utf-8?B?a3lReTQvaWFJT241dE11V1dmZ21WZ3dhSTdkYk9UVVo2ZU5COHUvb013TnRB?=
+ =?utf-8?B?bEYxRjBqaW5JcnE0Q1FqdTMzUjRIc3pOU05zN3JZOG1ONW1OVGJkektreGZK?=
+ =?utf-8?B?STh6ZnJSVGozaHdlUW1xK1NnaTJkOWsxZW1aU2lDNnE2RGZ4K3c3cEdnVlly?=
+ =?utf-8?B?bUtWU2FKWmlMVDBQY3h2VXhjSFZVcUJOQWgxazcxYlM1ZUpmV1owcFhHUFZN?=
+ =?utf-8?B?S1pPR054K0tUczBtdDZ0OU5aSy9wcmFWbVRZbE4xYkFBZ3RySUIybXpCb2VI?=
+ =?utf-8?B?Y0t2cXRWU25KQUZFcHdJbzdrLzlqZFJwYVV6VTlsYWQyakUzQTlsRTRCRVJn?=
+ =?utf-8?B?cUE3NVpweSt5ZDJweFlRcmRuZTliTWZvTVVuaktBZlMydlFyTXUvdGo1dys4?=
+ =?utf-8?B?dUw1emVKRnlLbWU1TVNVdWFlTUd1VG5BMXdZTmtseE9JZ1BsWFJlbXVEejNo?=
+ =?utf-8?B?NlV1eGt1Ym9hSmtJTjhrTm9CVjAwYUZKLzFsbk85cTZkY3Yrb2U5Mm1kRTY1?=
+ =?utf-8?B?MlkwV3dpSnJ4Wlh3YW1zYThTZlp1Slo5aUUvdG0reDhsRU9jU2F5MVNEZE1U?=
+ =?utf-8?B?YjA1RHB1dzNheDRWdEVjeldQMnlWaTFOZWlFWkh3bzh3N3BQRjFDc0dNRGIz?=
+ =?utf-8?B?ZVNrTmI2Sm41VjAxcG5XM1JHU2NxL3Q2WkdYalMzYVQ0ZVplT3BKQkVJa01B?=
+ =?utf-8?B?UGFhVCtiOExIR09WN3JhUnZjeGhsOWFoSlVkVDFCVVQwWGdPZnVoSitXSGJJ?=
+ =?utf-8?B?ZXlVQXZQOXMrcWR1MlFORUpTSXdwTWMyMWNBVlVwTGtacEdrL0plaXdIVFZt?=
+ =?utf-8?B?aEgyY096Y2ltUUlzbEJ1bDZjZzJJVklaUXJMMUZzdVFEUXZWdkwvdUNCVE5u?=
+ =?utf-8?B?VTIrai9hdTJiSXRQTXRlaTI4MUVURnhnWW9ITEh2SThoczBieHJKcFNVS0JE?=
+ =?utf-8?Q?ShEUo6PSLp0tWSeCObfN4XMS3ogStk0zbDCtZJa38Q=3D?=
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: eb1cbde3-98f1-4b57-cd23-08d9a2c1f1be
+X-MS-Exchange-CrossTenant-AuthSource: VI1PR04MB5151.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 08 Nov 2021 14:13:31.9726
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: QJnB4SzU2kmTHa6K1BOGJiuBtswsLlanldQzYqYShzYK/lkWhAZUVO4j74UFt26PjQst0tzBa75A5zcRQmjqDw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR04MB7055
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 29, 2021 at 2:44 PM Lad Prabhakar
-<prabhakar.mahadev-lad.rj@bp.renesas.com> wrote:
-> Rename the below macros to match the HW manual (Rev.1.00):
-> PIN_CFG_IOLH_SD0 -> PIN_CFG_IO_VMC_SD0
-> PIN_CFG_IOLH_SD1 -> PIN_CFG_IO_VMC_SD1
-> PIN_CFG_IOLH_QSPI -> PIN_CFG_IO_VMC_QSPI
-> PIN_CFG_IOLH_ETH0 -> PIN_CFG_IO_VMC_ETH0
-> PIN_CFG_IOLH_ETH1 -> PIN_CFG_IO_VMC_ETH1
+--------------791C240922A1805F6DA45D2B
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+
+
+On 11/8/21 3:39 PM, Pierre-Louis Bossart wrote:
 >
-> Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-> Reviewed-by: Biju Das <biju.das.jz@bp.renesas.com>
+> On 11/8/21 5:11 AM, Arnd Bergmann wrote:
+>> From: Arnd Bergmann <arnd@arndb.de>
+>>
+>> With CONFIG_SND_SOC_SOF_COMPRESS=m, the compression code is
+>> not built into a the main SOF driver when that is built-in:
+>>
+>> x86_64-linux-ld: sound/soc/sof/ipc.o: in function `ipc_stream_message':
+>> ipc.c:(.text+0x5a2): undefined reference to `snd_sof_compr_fragment_elapsed'
+>> x86_64-linux-ld: sound/soc/sof/topology.o: in function `sof_dai_load':
+>> topology.c:(.text+0x32d1): undefined reference to `snd_sof_compr_init_elapsed_work'
+>> x86_64-linux-ld: topology.c:(.text+0x32e1): undefined reference to `snd_sof_compr_init_elapsed_work'
+>>
+>> Make this a 'bool' symbol so it just decides whether the
+>> code gets built at all.
+>>
+>> Fixes: 858f7a5c45ca ("ASoC: SOF: Introduce fragment elapsed notification API")
+>> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+> It's Monday morning and my memory is still foggy but I think we fixed
+> this problem with https://eur01.safelinks.protection.outlook.com/?url=https%3A%2F%2Fgithub.com%2Fthesofproject%2Flinux%2Fpull%2F3180&amp;data=04%7C01%7Cdaniel.baluta%40nxp.com%7C25ac869cfd1040f1be1708d9a2bd3460%7C686ea1d3bc2b4c6fa92cd99c5c301635%7C0%7C0%7C637719755777370422%7CUnknown%7CTWFpbGZsb3d8eyJWIjoiMC4wLjAwMDAiLCJQIjoiV2luMzIiLCJBTiI6Ik1haWwiLCJXVCI6Mn0%3D%7C1000&amp;sdata=E4K2DPkpLX2SgVJ1K99Qs3uz7l7mS96gIzYlJw9akbg%3D&amp;reserved=0,
+> where we changed the Kconfigs for i.MX. We haven't sent this update
+> upstream for some reason.
+>
+> Arnd, can you share the configuration that breaks with the existing
+> upstream code, I can check if the problem still exists.
 
-Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
-i.e. will queue in renesas-pinctrl-for-v5.17.
 
-Gr{oetje,eeting}s,
+Maybe someone forgot :) to send 
+https://github.com/thesofproject/linux/pull/3180/commits/7122edc88d13db8ba835bdb20f7444ae535f9ffa 
+upstream.
 
-                        Geert
+I think that's me.
 
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+Arnd can you run your scripts with 
+https://github.com/thesofproject/linux/pull/3180/commits/7122edc88d13db8ba835bdb20f7444ae535f9ffa. 
+I also attached the patch
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+if it's easier to apply.
+
+
+
+--------------791C240922A1805F6DA45D2B
+Content-Type: text/x-patch; charset=UTF-8;
+ name="0001-ASoC-SOF-i.MX-simplify-Kconfig.patch"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment;
+ filename="0001-ASoC-SOF-i.MX-simplify-Kconfig.patch"
+
+From 8393b756c476a513fc69016d701f22899724fb73 Mon Sep 17 00:00:00 2001
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Date: Mon, 27 Sep 2021 13:54:38 -0500
+Subject: [PATCH] ASoC: SOF: i.MX: simplify Kconfig
+
+Follow the Intel example and simplify the Kconfig
+a) start from the end-product for 'select' chains
+b) use 'depends on' to filter out configurations.
+c) use snd-sof-of as a common module without any 'select'
+
+Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Reviewed-by: Daniel Baluta <daniel.baluta@nxp.com>
+---
+ sound/soc/sof/Kconfig     |  4 +++-
+ sound/soc/sof/Makefile    |  2 +-
+ sound/soc/sof/imx/Kconfig | 46 +++++++++++----------------------------
+ 3 files changed, 17 insertions(+), 35 deletions(-)
+
+diff --git a/sound/soc/sof/Kconfig b/sound/soc/sof/Kconfig
+index 6bb4db87af03..98ba48982736 100644
+--- a/sound/soc/sof/Kconfig
++++ b/sound/soc/sof/Kconfig
+@@ -40,12 +40,14 @@ config SND_SOC_SOF_ACPI_DEV
+ config SND_SOC_SOF_OF
+ 	tristate "SOF OF enumeration support"
+ 	depends on OF || COMPILE_TEST
+-	select SND_SOC_SOF
+ 	help
+ 	  This adds support for Device Tree enumeration. This option is
+ 	  required to enable i.MX8 devices.
+ 	  Say Y if you need this option. If unsure select "N".
+ 
++config SND_SOC_SOF_OF_DEV
++	tristate
++
+ config SND_SOC_SOF_COMPRESS
+ 	tristate
+ 	select SND_SOC_COMPRESS
+diff --git a/sound/soc/sof/Makefile b/sound/soc/sof/Makefile
+index 06e5f49f7ee8..1dac5cb4dfd6 100644
+--- a/sound/soc/sof/Makefile
++++ b/sound/soc/sof/Makefile
+@@ -17,7 +17,7 @@ obj-$(CONFIG_SND_SOC_SOF_NOCODEC) += snd-sof-nocodec.o
+ 
+ 
+ obj-$(CONFIG_SND_SOC_SOF_ACPI_DEV) += snd-sof-acpi.o
+-obj-$(CONFIG_SND_SOC_SOF_OF) += snd-sof-of.o
++obj-$(CONFIG_SND_SOC_SOF_OF_DEV) += snd-sof-of.o
+ obj-$(CONFIG_SND_SOC_SOF_PCI_DEV) += snd-sof-pci.o
+ 
+ obj-$(CONFIG_SND_SOC_SOF_INTEL_TOPLEVEL) += intel/
+diff --git a/sound/soc/sof/imx/Kconfig b/sound/soc/sof/imx/Kconfig
+index 34cf228c188f..9b8d5bb1e449 100644
+--- a/sound/soc/sof/imx/Kconfig
++++ b/sound/soc/sof/imx/Kconfig
+@@ -11,53 +11,33 @@ config SND_SOC_SOF_IMX_TOPLEVEL
+ 
+ if SND_SOC_SOF_IMX_TOPLEVEL
+ 
+-config SND_SOC_SOF_IMX_OF
+-	def_tristate SND_SOC_SOF_OF
+-	select SND_SOC_SOF_IMX8 if SND_SOC_SOF_IMX8_SUPPORT
+-	select SND_SOC_SOF_IMX8M if SND_SOC_SOF_IMX8M_SUPPORT
+-	help
+-	  This option is not user-selectable but automagically handled by
+-	  'select' statements at a higher level.
+-
+ config SND_SOC_SOF_IMX_COMMON
+ 	tristate
++	select SND_SOC_SOF_OF_DEV
++	select SND_SOC_SOF
++	select SND_SOC_SOF_XTENSA
++	select SND_SOC_SOF_COMPRESS
+ 	help
+ 	  This option is not user-selectable but automagically handled by
+ 	  'select' statements at a higher level.
+ 
+-config SND_SOC_SOF_IMX8_SUPPORT
+-	bool "SOF support for i.MX8"
+-	depends on IMX_SCU=y || IMX_SCU=SND_SOC_SOF_IMX_OF
+-	depends on IMX_DSP=y || IMX_DSP=SND_SOC_SOF_IMX_OF
++config SND_SOC_SOF_IMX8
++	tristate "SOF support for i.MX8"
++	depends on IMX_SCU
++	depends on IMX_DSP
++	select SND_SOC_SOF_IMX_COMMON
+ 	help
+ 	  This adds support for Sound Open Firmware for NXP i.MX8 platforms.
+ 	  Say Y if you have such a device.
+ 	  If unsure select "N".
+ 
+-config SND_SOC_SOF_IMX8
+-	tristate
++config SND_SOC_SOF_IMX8M
++	tristate "SOF support for i.MX8M"
++	depends on IMX_DSP
+ 	select SND_SOC_SOF_IMX_COMMON
+-	select SND_SOC_SOF_XTENSA
+-	select SND_SOC_SOF_COMPRESS
+-	help
+-	  This option is not user-selectable but automagically handled by
+-	  'select' statements at a higher level.
+-
+-config SND_SOC_SOF_IMX8M_SUPPORT
+-	bool "SOF support for i.MX8M"
+-	depends on IMX_DSP=y || IMX_DSP=SND_SOC_SOF_OF
+ 	help
+ 	  This adds support for Sound Open Firmware for NXP i.MX8M platforms.
+ 	  Say Y if you have such a device.
+ 	  If unsure select "N".
+ 
+-config SND_SOC_SOF_IMX8M
+-	tristate
+-	select SND_SOC_SOF_IMX_COMMON
+-	select SND_SOC_SOF_XTENSA
+-	select SND_SOC_SOF_COMPRESS
+-	help
+-	  This option is not user-selectable but automagically handled by
+-	  'select' statements at a higher level.
+-
+-endif ## SND_SOC_SOF_IMX_IMX_TOPLEVEL
++endif ## SND_SOC_SOF_IMX_TOPLEVEL
+-- 
+2.27.0
+
+
+--------------791C240922A1805F6DA45D2B--
