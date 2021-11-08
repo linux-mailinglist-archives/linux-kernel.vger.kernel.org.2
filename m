@@ -2,154 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 78742447FC2
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Nov 2021 13:49:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 607E3447FC5
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Nov 2021 13:49:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238178AbhKHMvL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Nov 2021 07:51:11 -0500
-Received: from smtp-out2.suse.de ([195.135.220.29]:47880 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236033AbhKHMvK (ORCPT
+        id S238433AbhKHMvU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Nov 2021 07:51:20 -0500
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:46706 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S236033AbhKHMvT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Nov 2021 07:51:10 -0500
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id E30B81FD73;
-        Mon,  8 Nov 2021 12:48:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1636375704; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=wpL7eas8ZEkLYqRjohr9s4ICMOI421YUYA52Z5JeLpM=;
-        b=wTYc7XYNzD3wCYHpjBxnMQ2P2Da5+AXMdjZpXdolFzQUhOLvbskspSrrAEuKq4S14Pi54C
-        dVa6jhXIok/FenTDaV9fW60jXMdFSmIFa93TBV4r/PHZBH91lft/5kxdPkxCrGUy+BK+Zo
-        4jC++8vkZgeuVA5ZrfhdppZCmalQ9Ck=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1636375704;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=wpL7eas8ZEkLYqRjohr9s4ICMOI421YUYA52Z5JeLpM=;
-        b=FSXs15+wUQsZ9gb7aSwtNTLRATTDC3R0FrN86GtBTPFZr2vF5uRBvY/wGJ7HMXS5dZsq7h
-        VLTkE/BFDtzsZxDQ==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id AE02113BA0;
-        Mon,  8 Nov 2021 12:48:24 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id 12vHKJgciWEhbgAAMHmgww
-        (envelope-from <tzimmermann@suse.de>); Mon, 08 Nov 2021 12:48:24 +0000
-Message-ID: <0f152d33-6362-b04b-6661-1d5cd7f32015@suse.de>
-Date:   Mon, 8 Nov 2021 13:48:24 +0100
+        Mon, 8 Nov 2021 07:51:19 -0500
+Received: from pps.filterd (m0098404.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 1A8BCeqB023167;
+        Mon, 8 Nov 2021 12:48:35 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
+ mime-version : to : cc : references : from : subject : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=BvQHyQ+4NxbwuzlVf/NGd2GAOHhAWAXolb/HFm1xssI=;
+ b=CoGdrv3pVle/ALRPAOvV9DHyviCrGyjm+JEJvCvDHgLe48vj+bGCAcaJfuoXpDO/nwI0
+ 26Dvaf4LUHGHC3wWIBTDWcQUwQ0nZBOQ9YjTBNd0q8/nDHos3n8VHERp+M60j4iB5m7E
+ sdU6uXFy36S+s3IsWHW5V4In0Tp+1FftWLBMA/euVr4ciHZZYZ9aPjNY89FA5Q3qFJE+
+ kxcBHrdMm7FVi/D0VNbgpRwpMefzq2kAkZZmz2mkbYMep5e67q7K4CiachF0JcvqTuj4
+ BtZLztEjzliMwAfhSnyVxP2FDgZKJiN3Dkg0uQ+WifRWAcCxTqB1DO6V4ktmvhNIHd9l 8g== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3c6qeygrma-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 08 Nov 2021 12:48:34 +0000
+Received: from m0098404.ppops.net (m0098404.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 1A8CU6UD025572;
+        Mon, 8 Nov 2021 12:48:34 GMT
+Received: from ppma04ams.nl.ibm.com (63.31.33a9.ip4.static.sl-reverse.com [169.51.49.99])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3c6qeygrkk-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 08 Nov 2021 12:48:34 +0000
+Received: from pps.filterd (ppma04ams.nl.ibm.com [127.0.0.1])
+        by ppma04ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 1A8CbnTn023609;
+        Mon, 8 Nov 2021 12:48:31 GMT
+Received: from b06avi18878370.portsmouth.uk.ibm.com (b06avi18878370.portsmouth.uk.ibm.com [9.149.26.194])
+        by ppma04ams.nl.ibm.com with ESMTP id 3c5hb9x21x-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 08 Nov 2021 12:48:31 +0000
+Received: from d06av21.portsmouth.uk.ibm.com (d06av21.portsmouth.uk.ibm.com [9.149.105.232])
+        by b06avi18878370.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 1A8CfpIp65077608
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 8 Nov 2021 12:41:51 GMT
+Received: from d06av21.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 6C30852059;
+        Mon,  8 Nov 2021 12:48:28 +0000 (GMT)
+Received: from [9.145.83.128] (unknown [9.145.83.128])
+        by d06av21.portsmouth.uk.ibm.com (Postfix) with ESMTP id E9CFA5205A;
+        Mon,  8 Nov 2021 12:48:27 +0000 (GMT)
+Message-ID: <7e785ecc-1ddb-9357-e961-4498d1bf59fd@linux.ibm.com>
+Date:   Mon, 8 Nov 2021 13:48:27 +0100
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.2.1
-Subject: Re: [PATCH v3 5/6] Documentation/admin-guide: Document nomodeset
- kernel parameter
+ Thunderbird/91.1.0
 Content-Language: en-US
-To:     Javier Martinez Canillas <javierm@redhat.com>,
-        linux-kernel@vger.kernel.org
-Cc:     dri-devel@lists.freedesktop.org,
-        Jani Nikula <jani.nikula@intel.com>,
-        Peter Robinson <pbrobinson@gmail.com>,
-        =?UTF-8?Q?Michel_D=c3=a4nzer?= <michel@daenzer.net>,
-        Pekka Paalanen <pekka.paalanen@collabora.com>,
-        Daniel Vetter <daniel.vetter@ffwll.ch>
-References: <20211108121544.776590-1-javierm@redhat.com>
- <20211108121544.776590-6-javierm@redhat.com>
-From:   Thomas Zimmermann <tzimmermann@suse.de>
-In-Reply-To: <20211108121544.776590-6-javierm@redhat.com>
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature";
- boundary="------------mAxN61UkgB8epFULRIfOhFM7"
+To:     Christian Borntraeger <borntraeger@de.ibm.com>,
+        Collin Walling <walling@linux.ibm.com>,
+        linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kvm@vger.kernel.org
+Cc:     david@redhat.com, imbrenda@linux.ibm.com
+References: <20211027025451.290124-1-walling@linux.ibm.com>
+ <4488b572-11bf-72ff-86c0-395dfc7b3f71@linux.ibm.com>
+ <28d90d6f-b481-3588-cd33-39624710b7bd@de.ibm.com>
+From:   Janosch Frank <frankja@linux.ibm.com>
+Subject: Re: [PATCH] KVM: s390x: add debug statement for diag 318 CPNC data
+In-Reply-To: <28d90d6f-b481-3588-cd33-39624710b7bd@de.ibm.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: base64
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: 6aoC9tvGgBVpHIecjwrkEaJ64bW29rv2
+X-Proofpoint-ORIG-GUID: lSPzCiz1L1Esf9Tc_-ntxDgrVIG9cXLL
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.205,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.0.607.475
+ definitions=2021-11-08_04,2021-11-08_01,2020-04-07_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0
+ priorityscore=1501 mlxscore=0 clxscore=1015 mlxlogscore=999 suspectscore=0
+ lowpriorityscore=0 malwarescore=0 impostorscore=0 bulkscore=0 spamscore=0
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2110150000 definitions=main-2111080079
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---------------mAxN61UkgB8epFULRIfOhFM7
-Content-Type: multipart/mixed; boundary="------------wQg70e0YtgvVA0QCoyyPEGAo";
- protected-headers="v1"
-From: Thomas Zimmermann <tzimmermann@suse.de>
-To: Javier Martinez Canillas <javierm@redhat.com>,
- linux-kernel@vger.kernel.org
-Cc: dri-devel@lists.freedesktop.org, Jani Nikula <jani.nikula@intel.com>,
- Peter Robinson <pbrobinson@gmail.com>, =?UTF-8?Q?Michel_D=c3=a4nzer?=
- <michel@daenzer.net>, Pekka Paalanen <pekka.paalanen@collabora.com>,
- Daniel Vetter <daniel.vetter@ffwll.ch>
-Message-ID: <0f152d33-6362-b04b-6661-1d5cd7f32015@suse.de>
-Subject: Re: [PATCH v3 5/6] Documentation/admin-guide: Document nomodeset
- kernel parameter
-References: <20211108121544.776590-1-javierm@redhat.com>
- <20211108121544.776590-6-javierm@redhat.com>
-In-Reply-To: <20211108121544.776590-6-javierm@redhat.com>
-
---------------wQg70e0YtgvVA0QCoyyPEGAo
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: base64
-
-SGkNCg0KQW0gMDguMTEuMjEgdW0gMTM6MTUgc2NocmllYiBKYXZpZXIgTWFydGluZXogQ2Fu
-aWxsYXM6DQo+IFRoZSBub21vZGVzZXQga2VybmVsIGNvbW1hbmQgbGluZSBwYXJhbWV0ZXIg
-aXMgbm90IGRvY3VtZW50ZWQuIEl0cyBuYW1lDQo+IGlzIHF1aXRlIHZhZ3VlIGFuZCBpcyBu
-b3QgaW50dWl0aXZlIHdoYXQncyB0aGUgYmVoYXZpb3VyIHdoZW4gaXQgaXMgc2V0Lg0KPiAN
-Cj4gRG9jdW1lbnQgaW4ga2VybmVsLXBhcmFtZXRlcnMudHh0IHdoYXQgYWN0dWFsbHkgaGFw
-cGVucyB3aGVuIG5vbW9kZXNldA0KPiBpcyB1c2VkLiBUaGF0IHdheSwgdXNlcnMgY291bGQg
-a25vdyBpZiB0aGV5IHdhbnQgdG8gZW5hYmxlIHRoaXMgb3B0aW9uLg0KPiANCj4gU2lnbmVk
-LW9mZi1ieTogSmF2aWVyIE1hcnRpbmV6IENhbmlsbGFzIDxqYXZpZXJtQHJlZGhhdC5jb20+
-DQo+IC0tLQ0KPiANCj4gKG5vIGNoYW5nZXMgc2luY2UgdjEpDQo+IA0KPiAgIERvY3VtZW50
-YXRpb24vYWRtaW4tZ3VpZGUva2VybmVsLXBhcmFtZXRlcnMudHh0IHwgNCArKysrDQo+ICAg
-MSBmaWxlIGNoYW5nZWQsIDQgaW5zZXJ0aW9ucygrKQ0KPiANCj4gZGlmZiAtLWdpdCBEb2N1
-bWVudGF0aW9uL2FkbWluLWd1aWRlL2tlcm5lbC1wYXJhbWV0ZXJzLnR4dCBEb2N1bWVudGF0
-aW9uL2FkbWluLWd1aWRlL2tlcm5lbC1wYXJhbWV0ZXJzLnR4dA0KPiBpbmRleCA5MWJhMzkx
-ZjliMzIuLmVkOTg1OWZkMDczNCAxMDA2NDQNCj4gLS0tIERvY3VtZW50YXRpb24vYWRtaW4t
-Z3VpZGUva2VybmVsLXBhcmFtZXRlcnMudHh0DQo+ICsrKyBEb2N1bWVudGF0aW9uL2FkbWlu
-LWd1aWRlL2tlcm5lbC1wYXJhbWV0ZXJzLnR4dA0KPiBAQCAtMzUyMSw2ICszNTIxLDEwIEBA
-DQo+ICAgCQkJc2h1dGRvd24gdGhlIG90aGVyIGNwdXMuICBJbnN0ZWFkIHVzZSB0aGUgUkVC
-T09UX1ZFQ1RPUg0KPiAgIAkJCWlycS4NCj4gICANCj4gKwlub21vZGVzZXQJRGlzYWJsZSBr
-ZXJuZWwgbW9kZXNldHRpbmcuIERSTSBkcml2ZXJzIHdpbGwgbm90IGJlDQo+ICsJCQlsb2Fk
-ZWQgd2hlbiB0aGlzIGtlcm5lbCBib290IHBhcmFtZXRlciBpcyB1c2VkLiBUaGUNCj4gKwkJ
-CXNpbXBsZWRybSBkcml2ZXIgaXMgdGhlIG9ubHkgRFJNIGRyaXZlciB0aGF0IGxvYWRzLg0K
-PiArDQoNClRoYXQncyBtaXNsZWFkaW5nIGFuZCB0byB0aGUgZ2VuZXJhbCBhZG1pbiBpdCBt
-aWdodCBub3QgYmUgY2xlYXIgd2hhdCANCnNpbXBsZWRybSBpcyBhYm91dC4gUmF0aGVyIHNh
-eSBzb21ldGhpbmcgbGlrZQ0KDQogIERpc2FibGUga2VybmVsIG1vZGVzZXR0aW5nLiBEUk0g
-ZHJpdmVycyB3aWxsIG5vdCBwZXJmb3JtDQogIGRpc3BsYXktbW9kZSBjaGFuZ2VzIG9yIGFj
-Y2VsZXJhdGVkIHJlbmRlcmluZy4gT25seSB0aGUNCiAgc3lzdGVtIGZyYW1lYnVmZmVyIHdp
-bGwgYmUgYXZhaWxhYmxlIGZvciB1c2UuIFJlcXVpcmVzIHRoZQ0KICBmaXJtd2FyZSBvciBi
-b290IGxvYWRlciB0byBzZXR1cCB0aGUgZGlzcGxheS4gVXNlZnVsIGFzDQogIGZhbGxiYWNr
-LCBvciBmb3IgdGVzdGluZyBhbmQgZGVidWdnaW5nLg0KDQpCZXN0IHJlZ2FyZHMNClRob21h
-cw0KDQo+ICAgCW5vbW9kdWxlCURpc2FibGUgbW9kdWxlIGxvYWQNCj4gICANCj4gICAJbm9w
-YXQJCVtYODZdIERpc2FibGUgUEFUIChwYWdlIGF0dHJpYnV0ZSB0YWJsZSBleHRlbnNpb24g
-b2YNCj4gDQoNCi0tIA0KVGhvbWFzIFppbW1lcm1hbm4NCkdyYXBoaWNzIERyaXZlciBEZXZl
-bG9wZXINClNVU0UgU29mdHdhcmUgU29sdXRpb25zIEdlcm1hbnkgR21iSA0KTWF4ZmVsZHN0
-ci4gNSwgOTA0MDkgTsO8cm5iZXJnLCBHZXJtYW55DQooSFJCIDM2ODA5LCBBRyBOw7xybmJl
-cmcpDQpHZXNjaMOkZnRzZsO8aHJlcjogSXZvIFRvdGV2DQo=
-
---------------wQg70e0YtgvVA0QCoyyPEGAo--
-
---------------mAxN61UkgB8epFULRIfOhFM7
-Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="OpenPGP_signature"
-
------BEGIN PGP SIGNATURE-----
-
-wsF5BAABCAAjFiEExndm/fpuMUdwYFFolh/E3EQov+AFAmGJHJgFAwAAAAAACgkQlh/E3EQov+Ag
-dRAAohB0DRst8mFzOkp2loxGWm2/ktDwvNFwckT8BINW1xELvTIGOmxZUHNb3BNA1Q6N17h4qT7S
-lnGKZVoBBLiHjz79UiQN/zKCuKYNKTcgxhvqMNUoX/fLJME9GoPD8+0Ft096HpQREMRaJS1APSNc
-bIp+y8BVw3ZfL1HZCovXtq1e99ZERz0AVsRHl/ESZk+aVLmBOE6uc5s6k2DPNoAbsDfLQU6DVAYj
-LuGgvs/TIeuYfMLi1cr1EILQtgZpqKvfgdUR1OyzdphzXmUhCaiJ0M9053kPXxdN032nMr+7gYj7
-SJm2pPluIa2t9ffupSehi3efVslrDKxWFsacYpdjNn9UbjXh2iTTEQpRd/hF9Cexg2aT0a3vy/kt
-dYASnGTAzhfXgzI1LYbFc6/fo+jAD92x84KVuT/5ynfmV3ShvwYmzng9uct4DqToVDo1rt82Hpc7
-9B0LwpYkuzLCeA4NmPOjUUz3/40azTDVhfduU8N+cwOs055yitLpuzZfiapJfeox7CFmno6qWrrw
-krBybNrAh5iMNNpSkxGaeI3g9cCjg94omT2EZe35Xh+kCKLOY6rYLzGvI1VpE6A1yyDoSko6LUag
-1FxjoQzQDj4/3/MS0dV1JX5bgY1K/2aFRDwnXNiqRaL8enklm+CUl3f7bAhjazGaXm8KE+BUe8wr
-ehQ=
-=vmcp
------END PGP SIGNATURE-----
-
---------------mAxN61UkgB8epFULRIfOhFM7--
+T24gMTEvOC8yMSAxMzowNCwgQ2hyaXN0aWFuIEJvcm50cmFlZ2VyIHdyb3RlOg0KPiANCj4g
+DQo+IEFtIDA4LjExLjIxIHVtIDEyOjEyIHNjaHJpZWIgSmFub3NjaCBGcmFuazoNCj4+IE9u
+IDEwLzI3LzIxIDA0OjU0LCBDb2xsaW4gV2FsbGluZyB3cm90ZToNCj4+PiBUaGUgZGlhZyAz
+MTggZGF0YSBjb250YWlucyB2YWx1ZXMgdGhhdCBkZW5vdGUgaW5mb3JtYXRpb24gcmVnYXJk
+aW5nIHRoZQ0KPj4+IGd1ZXN0J3MgZW52aXJvbm1lbnQuIEN1cnJlbnRseSwgaXQgaXMgdW5l
+Y2Vzc2FyaWx5IGRpZmZpY3VsdCB0byBvYnNlcnZlDQo+Pj4gdGhpcyB2YWx1ZSAoZWl0aGVy
+IG1hbnVhbGx5LWluc2VydGVkIGRlYnVnIHN0YXRlbWVudHMsIGdkYiBzdGVwcGluZywgbWVt
+DQo+Pj4gZHVtcGluZyBldGMpLiBJdCdzIHVzZWZ1bCB0byBvYnNlcnZlIHRoaXMgaW5mb3Jt
+YXRpb24gdG8gb2J0YWluIGFuDQo+Pj4gYXQtYS1nbGFuY2UgdmlldyBvZiB0aGUgZ3Vlc3Qn
+cyBlbnZpcm9ubWVudCwgc28gbGV0cyBhZGQgYSBzaW1wbGUgVkNQVQ0KPj4+IGV2ZW50IHRo
+YXQgcHJpbnRzIHRoZSBDUE5DIHRvIHRoZSBzMzkwZGJmIGxvZ3MuDQo+Pj4NCj4+PiBTaWdu
+ZWQtb2ZmLWJ5OiBDb2xsaW4gV2FsbGluZyA8d2FsbGluZ0BsaW51eC5pYm0uY29tPg0KPj4+
+IC0tLQ0KPj4+ICDCoCBhcmNoL3MzOTAva3ZtL2t2bS1zMzkwLmMgfCAxICsNCj4+PiAgwqAg
+MSBmaWxlIGNoYW5nZWQsIDEgaW5zZXJ0aW9uKCspDQo+Pj4NCj4+PiBkaWZmIC0tZ2l0IGEv
+YXJjaC9zMzkwL2t2bS9rdm0tczM5MC5jIGIvYXJjaC9zMzkwL2t2bS9rdm0tczM5MC5jDQo+
+Pj4gaW5kZXggNmE2ZGQ1ZTFkYWY2Li5kYTNmZjI0ZWFiZDAgMTAwNjQ0DQo+Pj4gLS0tIGEv
+YXJjaC9zMzkwL2t2bS9rdm0tczM5MC5jDQo+Pj4gKysrIGIvYXJjaC9zMzkwL2t2bS9rdm0t
+czM5MC5jDQo+Pj4gQEAgLTQyNTQsNiArNDI1NCw3IEBAIHN0YXRpYyB2b2lkIHN5bmNfcmVn
+c19mbXQyKHN0cnVjdCBrdm1fdmNwdSAqdmNwdSkNCj4+PiAgwqDCoMKgwqDCoCBpZiAoa3Zt
+X3J1bi0+a3ZtX2RpcnR5X3JlZ3MgJiBLVk1fU1lOQ19ESUFHMzE4KSB7DQo+Pj4gIMKgwqDC
+oMKgwqDCoMKgwqDCoCB2Y3B1LT5hcmNoLmRpYWczMThfaW5mby52YWwgPSBrdm1fcnVuLT5z
+LnJlZ3MuZGlhZzMxODsNCj4+PiAgwqDCoMKgwqDCoMKgwqDCoMKgIHZjcHUtPmFyY2guc2ll
+X2Jsb2NrLT5jcG5jID0gdmNwdS0+YXJjaC5kaWFnMzE4X2luZm8uY3BuYzsNCj4+PiArwqDC
+oMKgwqDCoMKgwqAgVkNQVV9FVkVOVCh2Y3B1LCAyLCAic2V0dGluZyBjcG5jIHRvICVkIiwg
+dmNwdS0+YXJjaC5kaWFnMzE4X2luZm8uY3BuYyk7DQo+Pj4gIMKgwqDCoMKgwqAgfQ0KPj4+
+ICDCoMKgwqDCoMKgIC8qDQo+Pj4gIMKgwqDCoMKgwqDCoCAqIElmIHVzZXJzcGFjZSBzZXRz
+IHRoZSByaWNjYiAoZS5nLiBhZnRlciBtaWdyYXRpb24pIHRvIGEgdmFsaWQgc3RhdGUsDQo+
+Pj4NCj4+DQo+PiBXb24ndCB0aGF0IHR1cm4gdXAgZm9yIGV2ZXJ5IHZjcHUgYW5kIHNwYW0g
+dGhlIGxvZz8NCj4gDQo+IG9ubHkgaWYgdGhlIHVzZXJzcGFjZSBhbHdheXMgc2V0cyB0aGUg
+ZGlydHkgYml0ICh3aGljaCBpdCBzaG91bGQgbm90KS4NCj4gDQoNCkJ1dCB0aGF0J3MgZXhh
+Y3RseSB3aGF0IGl0IGRvZXMsIG5vPw0KV2UgZG8gYSBsb29wIG92ZXIgYWxsIHZjcHVzIGFu
+ZCBjYWxsIGt2bV9zMzkwX3NldF9kaWFnMzE4KCkgd2hpY2ggc2V0cyANCnRoZSBpbmZvIGlu
+IGt2bV9ydW4gYW5kIHNldHMgdGhlIGRpYWczMTggYml0IGluIHRoZSBrdm1fZGlydHlfcmVn
+cy4NCg0KQENvbGxpbjogQ291bGQgeW91IGNoZWNrIHRoYXQgcGxlYXNlPw0K
