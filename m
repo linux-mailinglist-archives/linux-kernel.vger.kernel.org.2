@@ -2,196 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 64E364480BD
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Nov 2021 15:03:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6AD1A4480BF
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Nov 2021 15:03:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240175AbhKHOF4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Nov 2021 09:05:56 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34974 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235325AbhKHOFz (ORCPT
+        id S240184AbhKHOGH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Nov 2021 09:06:07 -0500
+Received: from mail-ua1-f53.google.com ([209.85.222.53]:41657 "EHLO
+        mail-ua1-f53.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S240177AbhKHOGF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Nov 2021 09:05:55 -0500
-Received: from nautica.notk.org (ipv6.notk.org [IPv6:2001:41d0:1:7a93::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C8F41C061570;
-        Mon,  8 Nov 2021 06:03:10 -0800 (PST)
-Received: by nautica.notk.org (Postfix, from userid 108)
-        id 093CBC01C; Mon,  8 Nov 2021 15:03:08 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=codewreck.org; s=2;
-        t=1636380188; bh=8d1SRJTILJ3jSIx5wk4bJ3Oi9mCX4rFkHpU/0zIOD/c=;
-        h=Date:From:To:Cc:Subject:From;
-        b=EJabDiL1MEbknzfQkHhzT0Dtf5hWDJ8Ue/enXJuEyjfNS42O7Eh2oi5CA6nxng39f
-         TxwQhzd6dLsC4LVdjxLaH8T2u2QfLHGTZr2BqF1zxJDZjmO1KEb4Rxls98fPTt6GEU
-         tph5p1DSs3sP1Adrx7vVYPoJpyF3wNGMDsfPZigGV2jW2XZPxIpabyxspaw6ieF/Wo
-         XHEyNqsmc108hdawGT7vPaV/By183dRvFecGsK1uUw4CbO5idzcqZ3MC2I09XFS+ls
-         VOtwcMHdLJzqJIiwX6umDzf0oWtV6yi41lmwlZlUg1BzyTvW6Da7s/rwnsQXU7D9U3
-         Lrl1FbTcYNi9Q==
-X-Spam-Checker-Version: SpamAssassin 3.3.2 (2011-06-06) on nautica.notk.org
-X-Spam-Level: 
-X-Spam-Status: No, score=0.0 required=5.0 tests=UNPARSEABLE_RELAY
-        autolearn=unavailable version=3.3.2
-Received: from odin.codewreck.org (localhost [127.0.0.1])
-        by nautica.notk.org (Postfix) with ESMTPS id AE3D6C009;
-        Mon,  8 Nov 2021 15:03:05 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=codewreck.org; s=2;
-        t=1636380187; bh=8d1SRJTILJ3jSIx5wk4bJ3Oi9mCX4rFkHpU/0zIOD/c=;
-        h=Date:From:To:Cc:Subject:From;
-        b=aABpJMwHvyGlEABHKFx++J8MSyggP5v2ObDAsyOFDPyBRdkwALhz8Fdok67xFOTJu
-         1GxcuEIF4qG2j6bQPS6P3y6Xoc+CEpwuXW6w4p4RLRdYr3IKj4lhsYl5CziX/eCHCL
-         0/N7E9wsINhyJD4MWOSF1vnT6Zda/3b181IQykBBC2cLW117qz/cEjUCppU9SMfUuq
-         13S4oNgVIe+nmLzuC2Spm9TVPLo7fOielWS8DeWKlsAC847xUcgBmYl917GEBYDhtr
-         5H+jdJ9/twVFVWTDtjjlm808wvA5XU7LMVta2NgTOpd57mRpDqgZgS56sfsEr+G9Sm
-         Lq8nQx1/lOhAw==
-Received: from localhost (odin.codewreck.org [local])
-        by odin.codewreck.org (OpenSMTPD) with ESMTPA id 597cbc73;
-        Mon, 8 Nov 2021 14:03:02 +0000 (UTC)
-Date:   Mon, 8 Nov 2021 23:02:47 +0900
-From:   Dominique Martinet <asmadeus@codewreck.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     v9fs-developer@lists.sourceforge.net, linux-kernel@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, netdev@vger.kernel.org
-Subject: [GIT PULL] 9p for 5.16-rc1
-Message-ID: <YYkuBxbTYS2ANFnK@codewreck.org>
+        Mon, 8 Nov 2021 09:06:05 -0500
+Received: by mail-ua1-f53.google.com with SMTP id p37so30538457uae.8;
+        Mon, 08 Nov 2021 06:03:21 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=3vEIzZ1S/bu9Zd8ER6jvDbqdstuSaVNrpeM6s9ASoIo=;
+        b=C997UAu4rid2A+xQiaEfpgxtvU2YrTUyRsX9KIl0r2C47ds6lE7G0yu3BGZIq1Tvsd
+         N6pBTg+gplv9cQln976Ii1P09zna0/T5tBezgmmQodZTG/m+/4bH5MVmlL8QOzbulrVq
+         kL+N4YJsfdFeeGEIBhQFJlm9QvKCcCfLknbQFQUn/j8TrdpO9UKbc0H3seU1Z0Igjiq+
+         HSLvTLAv/pp/Oaub50mceL1gLwXDMKkOJnSvXYjctjnoFwl7ppNiw3oV+Boq/0JbZY+w
+         5tDaOsE68SAqMpvIpVJuDYgkSudtmytp/Q7TilSYIO4drfD7WxfBDyrS/BdMmmeTr+VP
+         gxTg==
+X-Gm-Message-State: AOAM532U/6Jvy7iChHgcp/AIBWJ4YWibH/HkekywmuVjdh8McitTFI/n
+        GQqSh4WSAzcSanoqQYp+js+Fr0rYtuOQGg==
+X-Google-Smtp-Source: ABdhPJzVF1rVaRZ1EVGMGVI38eDFIfajNZ/UDiP12X6F4eizXpDFjTz60oWk8bLSo6mro01EZT3KLA==
+X-Received: by 2002:a67:ec8f:: with SMTP id h15mr95467403vsp.42.1636380200463;
+        Mon, 08 Nov 2021 06:03:20 -0800 (PST)
+Received: from mail-vk1-f179.google.com (mail-vk1-f179.google.com. [209.85.221.179])
+        by smtp.gmail.com with ESMTPSA id 66sm3213728vsh.34.2021.11.08.06.03.19
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 08 Nov 2021 06:03:19 -0800 (PST)
+Received: by mail-vk1-f179.google.com with SMTP id n201so8250608vkn.12;
+        Mon, 08 Nov 2021 06:03:19 -0800 (PST)
+X-Received: by 2002:a05:6122:20a7:: with SMTP id i39mr32672729vkd.15.1636380199367;
+ Mon, 08 Nov 2021 06:03:19 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
+References: <20211108101157.15189-1-bp@alien8.de> <20211108101157.15189-36-bp@alien8.de>
+ <CAMuHMdW4fv4LN6oDS6qgYodf74_NvbzMxQfRbtnS-mn_D+u7Kg@mail.gmail.com> <YYkq7WbmNXNgiqv9@zn.tnic>
+In-Reply-To: <YYkq7WbmNXNgiqv9@zn.tnic>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Mon, 8 Nov 2021 15:03:08 +0100
+X-Gmail-Original-Message-ID: <CAMuHMdUULHGmsAu1f=4of1A+ABecH89PRxDqRGewqhG7bbL3-g@mail.gmail.com>
+Message-ID: <CAMuHMdUULHGmsAu1f=4of1A+ABecH89PRxDqRGewqhG7bbL3-g@mail.gmail.com>
+Subject: Re: [PATCH v0 35/42] sh: Check notifier registration return value
+To:     Borislav Petkov <bp@alien8.de>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Linux-sh list <linux-sh@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Borislav,
 
-Hi Linus,
+On Mon, Nov 8, 2021 at 2:49 PM Borislav Petkov <bp@alien8.de> wrote:
+> On Mon, Nov 08, 2021 at 02:31:41PM +0100, Geert Uytterhoeven wrote:
+> > Do you think these can actually fail?
+>
+> Hmm, maybe you missed the 0th message. Does this explain it:
+>
+> https://lore.kernel.org/r/20211108101924.15759-1-bp@alien8.de
+>
+> ?
 
-I've been hesitant on the checkpatch fixes: it's a large batch of noise
-that doesn't give much value, but I guess going forward it's good if
-I can have a baseline to keep enforcing and it'll prevent getting more
-half-assed drive-by style patches that aren't even correct like I've
-had...
+Thanks, but that still doesn't explain why we need to add the check,
+for something that IMHO cannot fail, in a caller that cannot do
+anything in the very unlikely event that he call would ever start
+to fail?
 
-If you have an opinion on it feel free to just drop the last patch, the
-rest still probably makes sense.
+The clue is the addition of __must_check in "[PATCH v0 42/42] notifier:
+Return an error when callback is already registered"
+(https://lore.kernel.org/all/20211108101157.15189-43-bp@alien8.de/).
 
+I'll reply to that one...
 
+Gr{oetje,eeting}s,
 
-The following changes since commit 8bb7eca972ad531c9b149c0a51ab43a417385813:
+                        Geert
 
-  Linux 5.15 (2021-10-31 13:53:10 -0700)
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
-are available in the Git repository at:
-
-  git://github.com/martinetd/linux tags/9p-for-5.16-rc1
-
-for you to fetch changes up to 6e195b0f7c8e50927fa31946369c22a0534ec7e2:
-
-  9p: fix a bunch of checkpatch warnings (2021-11-04 21:04:25 +0900)
-
-----------------------------------------------------------------
-9p-for-5.16-rc1: fixes, netfs read support and checkpatch rewrite
-
-- fix syzcaller uninitialized value usage after missing error check
-- add module autoloading based on transport name
-- convert cached reads to use netfs helpers
-- adjust readahead based on transport msize
-- and many, many checkpatch.pl warning fixes...
-
-----------------------------------------------------------------
-David Howells (1):
-      9p: Convert to using the netfs helper lib to do reads and caching
-
-Dominique Martinet (7):
-      9p/net: fix missing error check in p9_check_errors
-      fscache_cookie_enabled: check cookie is valid before accessing it
-      9p: fix file headers
-      9p v9fs_parse_options: replace simple_strtoul with kstrtouint
-      9p p9mode2perm: remove useless strlcpy and check sscanf return code
-      9p: set readahead and io size according to maxsize
-      9p: fix a bunch of checkpatch warnings
-
-Sohaib Mohamed (4):
-      fs/9p: cleanup: opening brace at the beginning of the next line
-      9p: fix minor indentation and codestyle
-      fs/9p: fix warnings found by checkpatch.pl
-      fs/9p: fix indentation and Add missing a blank line after declaration
-
-Thomas Weißschuh (1):
-      net/9p: autoload transport modules
-
- fs/9p/Kconfig              |   1 +
- fs/9p/acl.c                |  11 +---
- fs/9p/acl.h                |  27 ++++-----
- fs/9p/cache.c              | 141 +-------------------------------------------
- fs/9p/cache.h              |  97 +-----------------------------
- fs/9p/fid.c                |   3 +-
- fs/9p/v9fs.c               |  22 ++++---
- fs/9p/v9fs.h               |  17 ++++--
- fs/9p/v9fs_vfs.h           |  11 ++--
- fs/9p/vfs_addr.c           | 215 +++++++++++++++++++++++++++++++++---------------------------------
- fs/9p/vfs_dentry.c         |   4 +-
- fs/9p/vfs_dir.c            |   6 +-
- fs/9p/vfs_file.c           |  20 +++++--
- fs/9p/vfs_inode.c          |  29 +++++----
- fs/9p/vfs_inode_dotl.c     |  11 ++--
- fs/9p/vfs_super.c          |  14 +++--
- fs/9p/xattr.c              |  10 +---
- fs/9p/xattr.h              |  29 ++++-----
- include/linux/fscache.h    |   2 +-
- include/net/9p/9p.h        |  12 ++--
- include/net/9p/client.h    |  24 ++++----
- include/net/9p/transport.h |  26 ++++----
- net/9p/client.c            | 434 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++--------------------------------------------------------------------
- net/9p/error.c             |   4 +-
- net/9p/mod.c               |  41 ++++++++-----
- net/9p/protocol.c          |  38 ++++++------
- net/9p/protocol.h          |   4 +-
- net/9p/trans_common.c      |  10 +---
- net/9p/trans_common.h      |  12 +---
- net/9p/trans_fd.c          |   2 -
- net/9p/trans_rdma.c        |   3 +-
- net/9p/trans_virtio.c      |   1 +
- net/9p/trans_xen.c         |  26 +-------
- 33 files changed, 523 insertions(+), 784 deletions(-)
-
-
-
-
-
-============================
-
-The same stats without the last patch
- fs/9p/Kconfig              |   1 +
- fs/9p/acl.c                |  10 +------
- fs/9p/acl.h                |  10 +------
- fs/9p/cache.c              | 137 ----------------------------------------------------------------------------------------
- fs/9p/cache.h              |  97 ++------------------------------------------------------------
- fs/9p/fid.c                |   3 +-
- fs/9p/v9fs.c               |  18 ++++++------
- fs/9p/v9fs.h               |  17 ++++++++---
- fs/9p/vfs_addr.c           | 209 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++---------------------------------------------------------------------
- fs/9p/vfs_dentry.c         |   2 --
- fs/9p/vfs_dir.c            |   6 ++--
- fs/9p/vfs_file.c           |  19 +++++++++----
- fs/9p/vfs_inode.c          |  15 ++++++----
- fs/9p/vfs_inode_dotl.c     |   2 --
- fs/9p/vfs_super.c          |   7 ++---
- fs/9p/xattr.c              |  10 +------
- fs/9p/xattr.h              |  10 +------
- include/linux/fscache.h    |   2 +-
- include/net/9p/9p.h        |   2 --
- include/net/9p/client.h    |   2 --
- include/net/9p/transport.h |   8 ++++--
- net/9p/client.c            |   4 +--
- net/9p/error.c             |   2 --
- net/9p/mod.c               |  32 +++++++++++++++------
- net/9p/protocol.c          |   2 --
- net/9p/protocol.h          |   2 --
- net/9p/trans_common.c      |  10 +------
- net/9p/trans_common.h      |  10 +------
- net/9p/trans_fd.c          |   2 --
- net/9p/trans_rdma.c        |   3 +-
- net/9p/trans_virtio.c      |   1 +
- net/9p/trans_xen.c         |  26 ++---------------
- 32 files changed, 201 insertions(+), 480 deletions(-)
-
--- 
-Dominique Martinet | Asmadeus
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
