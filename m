@@ -2,71 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 21B01447EBA
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Nov 2021 12:17:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BEBA1447EC5
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Nov 2021 12:20:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237035AbhKHLUe convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 8 Nov 2021 06:20:34 -0500
-Received: from foss.arm.com ([217.140.110.172]:49188 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230269AbhKHLUa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Nov 2021 06:20:30 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id F05DF2B;
-        Mon,  8 Nov 2021 03:17:45 -0800 (PST)
-Received: from e113632-lin (e113632-lin.cambridge.arm.com [10.1.196.57])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 2FCDD3F800;
-        Mon,  8 Nov 2021 03:17:45 -0800 (PST)
-From:   Valentin Schneider <valentin.schneider@arm.com>
-To:     Mike Galbraith <efault@gmx.de>, linux-kernel@vger.kernel.org
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Frederic Weisbecker <frederic@kernel.org>
-Subject: Re: [PATCH] sched: Tweak default dynamic preempt mode selection
-In-Reply-To: <ff53a94401f8d6abe0303ee381f86bfb475ad354.camel@gmx.de>
-References: <20211105104035.3112162-1-valentin.schneider@arm.com> <ff53a94401f8d6abe0303ee381f86bfb475ad354.camel@gmx.de>
-Date:   Mon, 08 Nov 2021 11:17:38 +0000
-Message-ID: <8735o6uca5.mognet@arm.com>
+        id S239186AbhKHLWt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Nov 2021 06:22:49 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:55425 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S239172AbhKHLWq (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Nov 2021 06:22:46 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1636370399;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=OERNggq5Y+xLzf5LS68CDlX9Lh1Q9ESGR/6aoJbmMHc=;
+        b=X6gCjsSAnAhdS/qNc1zYFAc1A/cIb+IBTCnoo8yIaU7Q76x+ShNKAQ/OGdnwn/BRMSAymh
+        gMA/ElWjz9a4wu3nq5Mul2vVJcKLiQy2oj+OBz0AcdIH9CNhcW6tWWNUmL1Ju03qjkdSjv
+        rfswCYcYcCK+7sFCVfDJihew//LRsj0=
+Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com
+ [209.85.208.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-306-KGqptSpuMOCLz1MXS85tng-1; Mon, 08 Nov 2021 06:19:58 -0500
+X-MC-Unique: KGqptSpuMOCLz1MXS85tng-1
+Received: by mail-ed1-f70.google.com with SMTP id h13-20020a05640250cd00b003e35ea5357fso1402275edb.2
+        for <linux-kernel@vger.kernel.org>; Mon, 08 Nov 2021 03:19:58 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:in-reply-to
+         :content-transfer-encoding;
+        bh=OERNggq5Y+xLzf5LS68CDlX9Lh1Q9ESGR/6aoJbmMHc=;
+        b=ojl7DgF6kRvUNxdFs3/Y2DLFLBnFyL+HeYz5rX5LKVE23FaydaZNnVXpdoaUG1ewAa
+         lXPhXFFWplqNXZ9dJjxpgz396L/xm1pTxLSk0urFtAXV6OrVvSlt9a7FD80KfI5vHDFF
+         yOhlrHgVv67vMRlh0cnQlN37HUKBTQJsnEb7DGDSBy+52TuOHilWcxIeKWvIfwQxul0R
+         a3UdrnDCmWCa6tQsv/8cxuN70L97cIs7N3DkQMw53SK1ag3mhL93/Ya+k7pvdxD89i48
+         ie6d5tX7jBpVM7WXziYRjXh+fELNhHdkL5dRUmACxuUqC3nTICEfk7latJ6N43njdstp
+         NBdA==
+X-Gm-Message-State: AOAM5303pIyWiWw5jVzlN77StqVl4x3mXeEuMQmFT90Oivf69mqG45yJ
+        3ePhbCGqJwunp62H/SjCL+CIfyuybW4dsnbiuOhyO5495/+z599D/CDpuh8VFCHDpC5L003bdGo
+        ZHWtPXnrVB2q/yqxl7iDAtZup
+X-Received: by 2002:a17:906:c1c9:: with SMTP id bw9mr96435305ejb.3.1636370397570;
+        Mon, 08 Nov 2021 03:19:57 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJwVag4TCcB6qtlnRSSlsZn0Oq5TcZp/IPBjNnOlSvDzrFavistrdtkih9qeWT6MQifI+0sLgg==
+X-Received: by 2002:a17:906:c1c9:: with SMTP id bw9mr96435278ejb.3.1636370397365;
+        Mon, 08 Nov 2021 03:19:57 -0800 (PST)
+Received: from ?IPV6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
+        by smtp.gmail.com with ESMTPSA id jt24sm7722928ejb.59.2021.11.08.03.18.21
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 08 Nov 2021 03:19:06 -0800 (PST)
+Message-ID: <c3c84251-44b0-cff1-9607-b3686f1196b0@redhat.com>
+Date:   Mon, 8 Nov 2021 12:18:11 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8BIT
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.2.0
+Subject: Re: [RFC] KVM: x86: SVM: don't expose PV_SEND_IPI feature with AVIC
+Content-Language: en-US
+To:     zhenwei pi <pizhenwei@bytedance.com>,
+        Maxim Levitsky <mlevitsk@redhat.com>,
+        Kele Huang <huangkele@bytedance.com>
+Cc:     chaiwen.cc@bytedance.com, xieyongji@bytedance.com,
+        dengliang.1214@bytedance.com, wanpengli@tencent.com,
+        seanjc@google.com, Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
+        "H. Peter Anvin" <hpa@zytor.com>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20211108095931.618865-1-huangkele@bytedance.com>
+ <a991bbb4-b507-a2f6-ec0f-fce23d4379ce@redhat.com>
+ <f93612f54a5cde53fd9342f703ccbaf3c9edbc9c.camel@redhat.com>
+ <ad6b3ef5-4928-681c-a0cf-5a1095654566@bytedance.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+In-Reply-To: <ad6b3ef5-4928-681c-a0cf-5a1095654566@bytedance.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 06/11/21 05:40, Mike Galbraith wrote:
-> On Fri, 2021-11-05 at 10:40 +0000, Valentin Schneider wrote:
->> Commit c597bfddc9e9 ("sched: Provide Kconfig support for default dynamic
->> preempt mode") changed the selectable config names for the preemption
->> model. This means a config file must now select
->>
->>   CONFIG_PREEMPT_BEHAVIOUR=y
->>
->> rather than
->>
->>   CONFIG_PREEMPT=y
->>
->> to get a preemptible kernel. This means all arch config files need to be
->> updated - right now arm64 defconfig selects CONFIG_PREEMPT=y but ends up
->> with CONFIG_PREEMPT_NONE_BEHAVIOUR=y.
->>
->> Instead, have CONFIG_*PREEMPT be the selectable configs again, and make
->> them select their _BEHAVIOUR equivalent if CONFIG_PREEMPT_DYNAMIC is set.
->
->
-> Is there any way to get to PREEMPT_RT in the first selection again as
-> well?  I had created a behavior entry for RT (below) and inverted the
-> dependency to make it appear in the initial selection again, but that's
-> clearly not gonna fly.
->
-> Starting with a 5.15 config, to select RT you currently must first
-> select a model you don't want, then reject PREEMPT_DYNAMIC and you'll
-> be offered the full menu of models immediately. With your patch added,
-> that became worse.  After rejecting PREEMPT_DYNAMIC, I had to go
-> through new 5.15+ options before finally being offered the full menu.
->
+On 11/8/21 12:14, zhenwei pi wrote:
+> I don't yet know if there is a solution to this which doesn't
+> involve some management software decision (e.g libvirt or higher).
 
-Do you mean at the syncconfig step? I've only really played with upstream
-arm64 / x86 defconfigs and didn't have to fight with any prompts, though
-yes for x86 the default-y PREEMPT_DYNAMIC makes it a bit annoying to select
-PREEMPT_RT.
+If we use a new hint, there's no problems with migration from/to older 
+QEMU and libvirt's host-model/host-passthrough would pick up the bit 
+automatically.
+
+(I'm not sure if libvirt knows that hints can change across migration, 
+though).
+
+Paolo
+
