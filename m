@@ -2,89 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8120A449956
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Nov 2021 17:16:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A688644995E
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Nov 2021 17:19:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239660AbhKHQSy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Nov 2021 11:18:54 -0500
-Received: from mail.kernel.org ([198.145.29.99]:58658 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236829AbhKHQSx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Nov 2021 11:18:53 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 91AAF61360;
-        Mon,  8 Nov 2021 16:16:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1636388168;
-        bh=ZViGquAcSREf+WCVyvRS1/EQ7NWLBVKUIUxVQpvu/Vk=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=qDbi4k8q9+LR+6Xqi95afw3Ov2XCJtgQsoPXbqWGwgqOO6qNkaFhBAl0mvjhMmCUc
-         BIcFHDyB5TiDpg1vGgCQ7hfumwZCLduUiFoBOWwJa67ftfBNYrveblFgfDRkuqVWrj
-         o9qJQiXy4gqxwoCDF2AQUvtXpeVlQTJbSP3ychXOQeQg/YhtD6Irk2DGPcvxh6j9OB
-         HsZ+l8XDu+dG9hs7vV6m0+3RpxH36DzeEMzxZk6F3krj5wp77OKAHG6pvchC+qywhv
-         W6ESPfwY1BKiFDk8KzELS3xm/wqc+0iyR6Ey3SWiPKPOx492ubZEYx41nQZCbBprrD
-         Y0L0GtuSI1aBQ==
-Date:   Mon, 8 Nov 2021 16:16:03 +0000
-From:   Mark Brown <broonie@kernel.org>
-To:     Sameer Pujar <spujar@nvidia.com>
-Cc:     Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>,
-        lgirdwood@gmail.com, tiwai@suse.com, thierry.reding@gmail.com,
-        jonathanh@nvidia.com, alsa-devel@alsa-project.org,
-        linux-tegra@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 01/10] ASoC: tegra: Fix kcontrol put callback in ADMAIF
-Message-ID: <YYlNQya+YVg1JCRq@sirena.org.uk>
-References: <1635947547-24391-1-git-send-email-spujar@nvidia.com>
- <1635947547-24391-2-git-send-email-spujar@nvidia.com>
- <s5ha6ilmiiv.wl-tiwai@suse.de>
- <0e2d89ca-84e3-9427-5ce1-c0224d4db089@perex.cz>
- <d27bf513-6f16-5ad6-59cb-79fad5cc951c@nvidia.com>
+        id S238453AbhKHQW2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Nov 2021 11:22:28 -0500
+Received: from mail-ua1-f47.google.com ([209.85.222.47]:35494 "EHLO
+        mail-ua1-f47.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235479AbhKHQW1 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Nov 2021 11:22:27 -0500
+Received: by mail-ua1-f47.google.com with SMTP id q13so32605515uaq.2;
+        Mon, 08 Nov 2021 08:19:42 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=3kyMgy9kac8nf14MVpneIp9xZyW431ncVC+jJcYzE18=;
+        b=qzmJWWYA95h3ht1u8Hyx29Rnj8ovhY/kQeJ3ZM3JiDe5kkrd9eu5qHt0A+6HG7ndvg
+         k5gV+fvIjDK+wQCjeYZVWAe6Yut4yi/S6FDfS+NaUoCCu9rZmPLPL6tTgv5evmwHVjbC
+         26TckhWCPOpbfuGQmiyM9TfQX/Y2FRPXtbjYqMB9PXSg41jd0l85x/y0mSu5b/qNRyZO
+         kQlcT/amLgibzrzutmC8dXkjKMrK5Z97bZ5dMuSsM+e3hOUP8rxSTqGpxhgEg7NGOw2W
+         BwJ084khI9JEWE9F8/tBzHJLVmemi1ETuRpZ4npiA0bM0lTlZbZM5EDsGKZaRHqtLN79
+         14yA==
+X-Gm-Message-State: AOAM532fASv2Ud0fhtWoVmEo4dYJZWUYu0HAEq8QS4Jz/Ycd2XCH10Qe
+        iQlVfkVLqP0OfH9D0rCCLUO6HNxgZtGnYuHY
+X-Google-Smtp-Source: ABdhPJyShH2y4ybWehMmu2QRlKlTP5/9+S3SNi1450cx9i7LwdLz6RM5BJQW3RAyvu2FO4U+iuny+Q==
+X-Received: by 2002:a67:cb92:: with SMTP id h18mr234562vsl.7.1636388380283;
+        Mon, 08 Nov 2021 08:19:40 -0800 (PST)
+Received: from mail-ua1-f42.google.com (mail-ua1-f42.google.com. [209.85.222.42])
+        by smtp.gmail.com with ESMTPSA id p69sm2891704uap.1.2021.11.08.08.19.39
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 08 Nov 2021 08:19:39 -0800 (PST)
+Received: by mail-ua1-f42.google.com with SMTP id o26so32563061uab.5;
+        Mon, 08 Nov 2021 08:19:39 -0800 (PST)
+X-Received: by 2002:a05:6102:e82:: with SMTP id l2mr776038vst.37.1636388379530;
+ Mon, 08 Nov 2021 08:19:39 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="hSCBKJ2X0AP7XGaR"
-Content-Disposition: inline
-In-Reply-To: <d27bf513-6f16-5ad6-59cb-79fad5cc951c@nvidia.com>
-X-Cookie: Kleeneness is next to Godelness.
+References: <20211103173127.13701-1-prabhakar.mahadev-lad.rj@bp.renesas.com> <20211103173127.13701-3-prabhakar.mahadev-lad.rj@bp.renesas.com>
+In-Reply-To: <20211103173127.13701-3-prabhakar.mahadev-lad.rj@bp.renesas.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Mon, 8 Nov 2021 17:19:28 +0100
+X-Gmail-Original-Message-ID: <CAMuHMdXE9t5immi5WCVgPOe0dwioj3N_PGTk4Z_tWPaWtyQ6VQ@mail.gmail.com>
+Message-ID: <CAMuHMdXE9t5immi5WCVgPOe0dwioj3N_PGTk4Z_tWPaWtyQ6VQ@mail.gmail.com>
+Subject: Re: [PATCH 2/3] dt-bindings: serial: renesas,sci: Document RZ/G2L SoC
+To:     Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        "open list:SERIAL DRIVERS" <linux-serial@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
+        Prabhakar <prabhakar.csengg@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Prabhakar,
 
---hSCBKJ2X0AP7XGaR
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+On Wed, Nov 3, 2021 at 6:31 PM Lad Prabhakar
+<prabhakar.mahadev-lad.rj@bp.renesas.com> wrote:
+> Add SCI binding documentation for Renesas RZ/G2L SoC.
+>
+> Also update the example node with real world DT node.
+>
+> Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+> Reviewed-by: Biju Das <biju.das.jz@bp.renesas.com>
 
-On Mon, Nov 08, 2021 at 09:33:25PM +0530, Sameer Pujar wrote:
+> --- a/Documentation/devicetree/bindings/serial/renesas,sci.yaml
+> +++ b/Documentation/devicetree/bindings/serial/renesas,sci.yaml
+> @@ -14,7 +14,11 @@ allOf:
+>
+>  properties:
+>    compatible:
+> -    const: renesas,sci
+> +    oneOf:
+> +      - items:
+> +          - enum:
+> +              - renesas,r9a07g044-sci     # RZ/G2{L,LC}
+> +          - const: renesas,sci            # generic SCI compatible UART
 
-> With separate callbacks, the string checks can be removed. However for most
-> of the controls, the common part is minimal. So there would be multiple
-> independent small functions depending on the number of controls and the
-> local variables are duplicated that many times. Would there be any concern
-> on the space these local variables take? One pair of callbacks for a control
-> may look like this.
+You added a oneOf, but forgot to keep the old single compatible
+value as used on H8/300?
 
-...
+>
+>    reg:
+>      maxItems: 1
 
-> Looks like having separate callbacks make it look more cleaner. If this
-> appears fine, I can send next revision.
+With the above fixed:
+Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
 
-Looks fine.  It'll result in more code but hopefully they should be
-smaller, especially if you're using substrings rather than the full
-control name to identify the control and we need to store all them
-separately to the copy used to identify the control to userspace (I
-didn't go check).
+Gr{oetje,eeting}s,
 
---hSCBKJ2X0AP7XGaR
-Content-Type: application/pgp-signature; name="signature.asc"
+                        Geert
 
------BEGIN PGP SIGNATURE-----
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmGJTUIACgkQJNaLcl1U
-h9A7OAf/crR93uqsfMvOX0QdbKKWE3VrliVv3O3XEdi19d7/wUTGNbdqm0547n4L
-oyi9HGmFL/pXYpGncL5V+UIqWRftYJ9oy2GIYxRe/eH6RFGM0vthFI+Z8ZJw3D+i
-Rtx7WX9gFANilArMSXwILu4K8CsAeoDF8Tibjh4K1+k5IcO2tNcTnSNA5xlT7OVc
-uzpDDAe9c6c1X0mP2D42MoHJ4RtEcKvue0GxpN+/PKkCAgmpGMsQb+RQ25n9npHv
-8w7lMDaddhi2MQMuBPYDmAHboFkhsCVyVJFKJOPgMzF55SC17iDFHW6QyxT4FimW
-0p60A9ZtmDNkiKXjOo2tj3JEpqQmgw==
-=Xs1h
------END PGP SIGNATURE-----
-
---hSCBKJ2X0AP7XGaR--
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
