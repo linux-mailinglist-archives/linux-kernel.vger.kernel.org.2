@@ -2,86 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ADCEE447B3F
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Nov 2021 08:40:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E98BE447B42
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Nov 2021 08:41:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235879AbhKHHnf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Nov 2021 02:43:35 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60614 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235686AbhKHHnd (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Nov 2021 02:43:33 -0500
-Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BCCBEC061570
-        for <linux-kernel@vger.kernel.org>; Sun,  7 Nov 2021 23:40:49 -0800 (PST)
-Received: by mail-yb1-xb49.google.com with SMTP id g25-20020a25b119000000b005c5e52a0574so281339ybj.5
-        for <linux-kernel@vger.kernel.org>; Sun, 07 Nov 2021 23:40:49 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=date:message-id:mime-version:subject:from:to:cc;
-        bh=sUtivsoVmIxGeGa4QKLNOq3mLxq5mE35JtRoIExa9WM=;
-        b=fTdtn5RPYVpnCblz/8aKlnCrIz1xgQlNpTw8YAIFjrDlIQk0eIMyPo5PTlKAZ4u9EI
-         i3GD/czcAEL87Fz9pnzXE/4KOqxPPku7fYwkMAzo/5yM+uTuQx/UO/l2lpJq3+AYOK9W
-         DjOKMGCyXabm9WunAq1NIQgsHTTVQPoeJRB4Z2myDtmGR8/xiWdP0FDMhAgqkitvIbig
-         tIy+p5yF5DqrxK5APFFpkUnDXYFaWLBK/8FogilpRMyR2NgNRc1dsL6ig1B8YcBaP1xc
-         0KPovSSwcHpw4RthMt/g0E4IuD/jBMj3c9orDBYOxqE2vGIafuKRNWReXcZbun/C0wmt
-         EYBQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
-        bh=sUtivsoVmIxGeGa4QKLNOq3mLxq5mE35JtRoIExa9WM=;
-        b=kUinHy3z/w2BWJrGNvybNfNTojy+cYEkQXGPmGBQJzYY+QG1MPcVHKclhGfbIi5tr+
-         p7Wdgtz3sw+0PBjwruRvXkXWyMTZ9GGjGpQ7gvEHC/y+T7LXXA5A860xTPDcZpCWVnsG
-         L+JQ1OHWfe+6alA6aAkk9YfINxNrhOCLRuamaFMR4nglX8U47DfRqpByO9BhEGqlpEH2
-         LDTQPjd4A2D4804T3buC/MwPQfGDIPiD/T37w0zfbr6lwb7w+tO0izkHCOA70jhaUyiV
-         A4lDan2GDZUXn/kQw4c3J5FHvZ1jDKBUrth7ZdaxS/JaG+VlsSYgd+KjvM/+x9iHEtXa
-         +SaQ==
-X-Gm-Message-State: AOAM533P1+XDLflZr1gqydef8CKa5vRJLhyx/3tMmKehNniSTcHDcjao
-        jFeKvXVajd5CQEfYhPCGLttx6RCFfzkWqqtr2QCWnErVh14R/ID89GaPTBwY39H9IpsSmHsneqW
-        Lw8smDCIA0XdwdCz8DKkRtbDiI7D6XvH+7+zvfqYgRTr0X38GQYvV/QjMuHUvpyzVQGFpCLN/
-X-Google-Smtp-Source: ABdhPJwte1yBki3+M1wz+zsoBwjnbnuPLF1IkjJXM7eEcDn0g6zaFAU+R/b8437vLnYiASeCha8Ztg8bWs/X
-X-Received: from uluru3.svl.corp.google.com ([2620:15c:2cd:202:b53e:50ca:b5fb:c18e])
- (user=eranian job=sendgmr) by 2002:a05:6902:1081:: with SMTP id
- v1mr38616420ybu.397.1636357248950; Sun, 07 Nov 2021 23:40:48 -0800 (PST)
-Date:   Sun,  7 Nov 2021 23:40:45 -0800
-Message-Id: <20211108074045.3181854-1-eranian@google.com>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.34.0.rc0.344.g81b53c2807-goog
-Subject: [PATCH] perf report: fix output of WEIGHT_STRUCT
-From:   Stephane Eranian <eranian@google.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     acme@redhat.com, jolsa@redhat.com, ak@linux.intel.com,
-        kan.liang@intel.com, irogers@google.com, namhyung@kernel.org
-Content-Type: text/plain; charset="UTF-8"
+        id S236189AbhKHHny (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Nov 2021 02:43:54 -0500
+Received: from mail.kernel.org ([198.145.29.99]:38054 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235686AbhKHHnv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Nov 2021 02:43:51 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B096761075;
+        Mon,  8 Nov 2021 07:41:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1636357267;
+        bh=RVK8iyvJlzFHPZCKRlsINEQUkjxXHKinu7hv/cU6no0=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=bM8tPKMTXtOzLT0n0JcaF3/bbzalw0dSy3V/uc5oZokrGrRNrrnGhV7RdDP/yckuR
+         /mOMdXhPbvwRV39Ha+TLmMZr5y4s5HMBGMxL6utF7UckT/SUoRoZaMCxCaqHuGq5DM
+         1Qjvu+VAA/z8RGhDFGetpnOTbiph1AsYJ5lOAw9/hazTiOLmYN/FCRyrQBYJhKXkZs
+         jcOWUi8v7OOHobJYEj6fSlnRVlkqbP5deoOVHsUwdm3KFD4EYGSkIH1mm+gghpkpYI
+         t+jzr2ik91r/jMqNSCBp/is61wzQKLZ9v+vzY3FnpjUVmudPSn5+HwbTfQzaMg9HAM
+         iHu1v9eWS8G+A==
+Date:   Mon, 8 Nov 2021 07:41:01 +0000
+From:   Mauro Carvalho Chehab <mchehab@kernel.org>
+To:     Hans de Goede <hdegoede@redhat.com>
+Cc:     Tsuchiya Yuto <kitakar@gmail.com>,
+        Patrik Gfeller <patrik.gfeller@gmail.com>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Kaixu Xia <kaixuxia@tencent.com>,
+        Dan Carpenter <dan.carpenter@oracle.com>,
+        Arnd Bergmann <arnd@arndb.de>, linux-media@vger.kernel.org,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
+Subject: Re: [BUG 5/5] [BUG] media: atomisp: atomisp causes touchscreen to
+ stop working on Microsoft Surface 3
+Message-ID: <20211108074101.033af4c5@sal.lan>
+In-Reply-To: <310ace44-93d5-99a3-bb4c-371b0a13462d@redhat.com>
+References: <20211017162337.44860-1-kitakar@gmail.com>
+        <20211017162337.44860-6-kitakar@gmail.com>
+        <103b5438-9f7c-7e89-28b9-29fe11eb818c@redhat.com>
+        <cfad27a4bfdd94417305e1519e2f450a4422844d.camel@gmail.com>
+        <310ace44-93d5-99a3-bb4c-371b0a13462d@redhat.com>
+X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.30; x86_64-redhat-linux-gnu)
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The output of the WEIGHT_STRUCT record was not consistent among its
-fields. Some are printed in decimal, other in hexdecimal. It does not
-make sense to print a weight in hexadecimal.
+Em Mon, 8 Nov 2021 00:39:38 +0100
+Hans de Goede <hdegoede@redhat.com> escreveu:
 
-Signed-off-by: Stephane Eranian <eranian@google.com>
----
- tools/perf/util/session.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+> Hi,
+>=20
+> On 10/21/21 11:52, Tsuchiya Yuto wrote:
+> > Thank you for your comment :-)
+> >=20
+> > First, I need to correct what I said in the previous mail. I later found
+> > that loading only "atomisp" (as well as its dependency,
+> > atomisp_gmin_platform) does not cause this issue.
+> >=20
+> > What causes this issue is rather, loading sensor drivers (as well as its
+> > dependency, atomisp_gmin_platform).
+> >=20
+> > These sensor drivers for surface3 are both not upstream, but I made them
+> > as similar as possible to the upstreamed ones. So, I guess this issue
+> > can still be reproducible on some other devices. =20
+>=20
+> I've run some test on my own surface3 and the problem is the writing
+> of 0x62 (which becomes just 0x02) to the 0x57 register of the PMIC,
+> writing 0x00 to that after loading the sensor driver makes things work
+> again.
+>=20
+> I have not had time to investigate this further.
+>=20
+> I used media-staging + your sensor drivers from:
+> https://github.com/kitakar5525/surface3-atomisp-cameras.git
+>=20
+> Which was enough to figure this out, but I've not actually gotten
+> either of the cameras working :|  I get:
+>=20
+> [user@fedora nvt]$ ./atomisp-test.sh=20
+> p0: OPEN video device `/dev/video2'
 
-diff --git a/tools/perf/util/session.c b/tools/perf/util/session.c
-index 352f16076e01..94c056695a93 100644
---- a/tools/perf/util/session.c
-+++ b/tools/perf/util/session.c
-@@ -1332,8 +1332,8 @@ static void dump_sample(struct evsel *evsel, union perf_event *event,
- 	if (sample_type & PERF_SAMPLE_WEIGHT_TYPE) {
- 		printf("... weight: %" PRIu64 "", sample->weight);
- 			if (sample_type & PERF_SAMPLE_WEIGHT_STRUCT) {
--				printf(",0x%"PRIx16"", sample->ins_lat);
--				printf(",0x%"PRIx16"", sample->p_stage_cyc);
-+				printf(", %"PRIu16"", sample->ins_lat);
-+				printf(", %"PRIu16"", sample->p_stage_cyc);
- 			}
- 		printf("\n");
- 	}
--- 
-2.34.0.rc0.344.g81b53c2807-goog
+After the patch that moved the output preview to be the first one,
+you should probably use /dev/video0 here:
 
+
+$ v4l2-ctl -D -d /dev/video0|grep Name
+	Name             : ATOMISP ISP PREVIEW output
+
+$ v4l2-ctl -D -d /dev/video2|grep Name
+	Name             : ATOMISP ISP VIEWFINDER output
+
+
+On Asus T101HA, I'm also getting this if I use /dev/video2 with nvt:
+
+	ioctl(3, _IOC(_IOC_WRITE, 0x76, 0xe0, 0x1f0), 0x7ffcf08fe030) =3D -1 EINVA=
+L (Argumento inv=C3=A1lido)
+	p0: ./v4l2n: ATOMISP_IOC_S_PARAMETERS failed on fd 3: Invalid argument (22)
+	p0: CLOSED video device
+
+Regards,
+Mauro
