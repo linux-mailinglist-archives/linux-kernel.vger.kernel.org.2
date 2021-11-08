@@ -2,121 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EF4A9449CD4
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Nov 2021 21:02:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 323B7449CDB
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Nov 2021 21:03:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237967AbhKHUEe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Nov 2021 15:04:34 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60484 "EHLO
+        id S238305AbhKHUFx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Nov 2021 15:05:53 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60824 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236843AbhKHUEc (ORCPT
+        with ESMTP id S234723AbhKHUFv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Nov 2021 15:04:32 -0500
-Received: from mail-ed1-x52c.google.com (mail-ed1-x52c.google.com [IPv6:2a00:1450:4864:20::52c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E944BC061764
-        for <linux-kernel@vger.kernel.org>; Mon,  8 Nov 2021 12:01:47 -0800 (PST)
-Received: by mail-ed1-x52c.google.com with SMTP id j21so67038040edt.11
-        for <linux-kernel@vger.kernel.org>; Mon, 08 Nov 2021 12:01:47 -0800 (PST)
+        Mon, 8 Nov 2021 15:05:51 -0500
+Received: from mail-ed1-x534.google.com (mail-ed1-x534.google.com [IPv6:2a00:1450:4864:20::534])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF646C061570;
+        Mon,  8 Nov 2021 12:03:06 -0800 (PST)
+Received: by mail-ed1-x534.google.com with SMTP id j21so67052957edt.11;
+        Mon, 08 Nov 2021 12:03:06 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=pensando.io; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=rC7iBqJW1E9TnpQ1uBnuIKH8XymcaerC1Chr1eaKswE=;
-        b=MR2b77pFp/RULoljKlfL/ze9zs5V8AoGkmeOg8+PgzqIEv54cJigFrDiwibz/Hr0BL
-         5WBc4qstuKm2ba4nG8H1dzRzHc75XZ18ZL9SwUdwnzYRukHTQrMiaUk4m8GDMUmN5biZ
-         ZFE/esjMojBXcmoqJUixJU962e8ZfyNCQQ+3pOASDqmC3ChoWDkFREGrBtV90FpIv03v
-         aGMWIoxZkKWl7Borb/a1DuG6y3iz/sHW2gJbohrXNUnYedOBAN2Q+dVx33DtopzCE6UN
-         yhcAXvbW49/lfVVzk8sUi8ziShDrg8XeFY6Siq1H1zfHFDzIxdCOR3rQn0InQKTQV4zN
-         8n3w==
+        d=gmail.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=gfAW25npFijObZczyeTtXuHr+HMG0py6gXu8Oe8aGbQ=;
+        b=MASgWmxyfQR+VXm4faiVUYw7Hpp0SWGGzIwBC95c+422xytVdOdFS4qVwxvbnLBAHa
+         reNEg1Rgm+iM5o6Z8+kRP26cmqQhXGFEjKCyYekOyilXjMjiwSnJzPcZmtlj+SdW9JT/
+         TQTq4U65ObeWa7oGz944LwYscLqFZNDGh18t/u0ExDA5He+AzU82ZR/qE/n2xd40Uem2
+         ZoAgTm7mhFDv1goDyvW54xkyJhQArcxD5u6zEYTfCe1U/WBvNXqvBCzBEqEEoDot6pdl
+         Cr5P2dm3QCRMCK+E95nLcmSFOXJFnRZwqLSP5EnmBnX91wJygyOmzTNvaag8z3RVLxJL
+         ea7w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=rC7iBqJW1E9TnpQ1uBnuIKH8XymcaerC1Chr1eaKswE=;
-        b=i5bp6rW9t1XKH4TNA2QgbGr33yJeFj8lYOQpup86QaoXFCapQWLiQQMEjShRiB3ZAr
-         og+FyGSSL/9+hOawf5YNvw+RhS1Cn33UyLQEL+UiOOxVESeMiT61Z6W/XqyMiaGP6fpP
-         OdBU8HwPWU/7aWSCCKHAZJd7k8EyyvnlrckGPytT0mnaZDPFlCxo6RASUveIDdIwK2TV
-         610kHsyg0I7glH5AUi6Z+NGRVzNzZhr4ZW5PPRwo1QAiW0q8AkxXn0S38Dci0GIDHL4F
-         eJywHwcddhI5fzfI41OqSU+gvBY0hUc0r91SjiTKmmyT4lgpZU0WEI/btj9ztlHMPOaH
-         d5rQ==
-X-Gm-Message-State: AOAM530xmR/+ej6PjshRUNV/4Rj8h5bTG1Nvtbg5RYDm9nxFlMOpFcv9
-        O3gTyG0Xvbj1ve7v144fhbsjD6EDY7Oc1V/gJTagpQ==
-X-Google-Smtp-Source: ABdhPJziBcog/9TPjwbG/ZnN+mAUxWZYVP+3hLOcUxtkIOopkTmFCKpeALN2UTcbadopRFqsjTQx7nNu5czXA7KfX7w=
-X-Received: by 2002:a05:6402:3488:: with SMTP id v8mr2295916edc.170.1636401706425;
- Mon, 08 Nov 2021 12:01:46 -0800 (PST)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=gfAW25npFijObZczyeTtXuHr+HMG0py6gXu8Oe8aGbQ=;
+        b=Sr2KSq6K03RHQrMwQslM1GMGpUojan1woWXTTaQniyAlCMHoByAGOPRqJA22kBYSj7
+         fXvh9iHFBgbWliV8u0ZrpCg3jqKHXUe0AnKnp+2MxmrLTmBY9TJWmm6G8GPH4Z+DyKtB
+         4S+e0UQHzg1Axw3gUIgTAntK+h5A7nUVHOJ9cHdtpyUM1xHNa61od6MnoAawqCatNaD0
+         PTNfWxvb4M2Dt8oEyRuugjPmAposxv4YvQmYIezyZ0vkG7qxCIzedQf4IWZb880ag93r
+         eLx0Ent61iae2Gob3bdPQz9ZusrYOgtwqpbsIYc0Wt9D18HbN/WHpgj04ogMhm7zMSmP
+         4C6w==
+X-Gm-Message-State: AOAM533eOAiMNt3c+/B+tLwi7pWN2JOKiTaYbe+5feUOGt6PWdtoT5jc
+        laSIiG6HNRLVhAjZvQ61Vhc=
+X-Google-Smtp-Source: ABdhPJyr1gNI0uda0yXjXSsbfW3BBMV5yo4ctyCCmHiurclZHgyu/ngNGTcq+0SXtFGufhVLaqGAZA==
+X-Received: by 2002:a05:6402:28e:: with SMTP id l14mr2298832edv.162.1636401785325;
+        Mon, 08 Nov 2021 12:03:05 -0800 (PST)
+Received: from skbuf ([188.25.175.102])
+        by smtp.gmail.com with ESMTPSA id v6sm8243762edy.83.2021.11.08.12.03.03
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 08 Nov 2021 12:03:04 -0800 (PST)
+Date:   Mon, 8 Nov 2021 22:03:02 +0200
+From:   Vladimir Oltean <olteanv@gmail.com>
+To:     Andrew Lunn <andrew@lunn.ch>
+Cc:     Marek =?utf-8?B?QmVow7pu?= <kabel@kernel.org>,
+        Ansuel Smith <ansuelsmth@gmail.com>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>, Pavel Machek <pavel@ucw.cz>,
+        John Crispin <john@phrozen.org>, netdev@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-leds@vger.kernel.org
+Subject: Re: [RFC PATCH v2 1/5] leds: trigger: add API for HW offloading of
+ triggers
+Message-ID: <20211108200302.dusowlxfsb3e2sy3@skbuf>
+References: <20211108002500.19115-1-ansuelsmth@gmail.com>
+ <20211108002500.19115-2-ansuelsmth@gmail.com>
+ <YYkuZwQi66slgfTZ@lunn.ch>
+ <YYk/Pbm9ZZ/Ikckg@Ansuel-xps.localdomain>
+ <20211108171312.0318b960@thinkpad>
+ <YYliclrZuxG/laIh@lunn.ch>
+ <20211108185637.21b63d40@thinkpad>
+ <YYmAQDIBGxPXCNff@lunn.ch>
 MIME-Version: 1.0
-References: <20211025015156.33133-1-brad@pensando.io> <20211025015156.33133-12-brad@pensando.io>
- <20211025091731.GA2001@C02TD0UTHF1T.local> <a20805de16e1196c2ed46dd949473c9a@kernel.org>
- <CAK9rFnxH=DtC9vEJJCXkGEWjvg2E8vHPUcRy9rJpo34Furtmvw@mail.gmail.com>
- <87zgqi96nh.wl-maz@kernel.org> <CAK9rFnz6X3wR6bMPkVicGoqj+prm5OmY3y3B_8Fc+WGJxcVsXA@mail.gmail.com>
- <87lf1ye84p.wl-maz@kernel.org>
-In-Reply-To: <87lf1ye84p.wl-maz@kernel.org>
-From:   Brad Larson <brad@pensando.io>
-Date:   Mon, 8 Nov 2021 12:01:35 -0800
-Message-ID: <CAK9rFnxYH2V5K8xKLAExJA7CFip8p6shsdDHa4SrnRo5Y9-CJA@mail.gmail.com>
-Subject: Re: [PATCH v3 11/11] arm64: dts: Add Pensando Elba SoC support
-To:     Marc Zyngier <maz@kernel.org>
-Cc:     Mark Rutland <mark.rutland@arm.com>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Mark Brown <broonie@kernel.org>,
-        Serge Semin <fancer.lancer@gmail.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Olof Johansson <olof@lixom.net>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        linux-spi <linux-spi@vger.kernel.org>,
-        linux-mmc <linux-mmc@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YYmAQDIBGxPXCNff@lunn.ch>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 8, 2021 at 11:54 AM Marc Zyngier <maz@kernel.org> wrote:
-> >
-> > The Elba SoC is an embedded chip and not intended as a SBSA-compliant
-> > general platform.
->
-> This has nothing to do with following a standard. It has to do with
-> following the intended use of the architecture. What you have here is
-> the system architecture equivalent of trusting userspace to build the
-> kernel page tables. It can work in limited cases. But would you want
-> to deploy such construct at scale? Probably not.
->
-> > In this implementation the ITS is used to provide message-based
-> > interrupts for our (potentially large set) of hardware based
-> > platform device instances.  Virtualization is not a consideration.
-> > We don't have a SMMU.  Interrupt isolation isn't a practical
-> > consideration for this product.
->
-> Because you have foreseen all use cases for this HW ahead of time, and
-> can already tell how SW is going to make use of it? Oh well...
->
-> > Propose adding a comment to the dts.
-> >
-> > +                       /*
-> > +                        * Elba SoC implemented a pre-ITS that happened to
-> > +                        * be the same implementation as synquacer.
-> > +                        */
->
-> Which contains zero information. What you really want is: "We have
-> decided to ignore the system architecture, good luck".
->
->         M.
->
-> --
-> Without deviation from the norm, progress is not possible.
+On Mon, Nov 08, 2021 at 08:53:36PM +0100, Andrew Lunn wrote:
+> > I guess I will have to work on this again ASAP or we will end up with
+> > solution that I don't like.
+> > 
+> > Nonetheless, what is your opinion about offloading netdev trigger vs
+> > introducing another trigger?
+> 
+> It is a solution that fits the general pattern, do it in software, and
+> offload it if possible.
+> 
+> However, i'm not sure the software solution actually works very well.
+> At least for switches. The two DSA drivers which implement
+> get_stats64() simply copy the cached statistics. The XRS700X updates
+> its cached values every 3000ms. The ar9331 is the same. Those are the
+> only two switch drivers which implement get_stats64 and none implement
+> get_stats. There was also was an issue that get_stats64() cannot
+> perform blocking calls. I don't remember if that was fixed, but if
+> not, get_stats64() is going to be pretty useless on switches.
 
-On the contrary, the confusion of using the existing driver match
-"socionext,synquacer-pre-its" is answered, why add new code.
-Looks like we are deviating from the norm ;-).  I'm not seeing how
-this conversation is a productive use of time for a platform in
-production.
+No it wasn't, I lost the interest.
+I feel pretty uneasy hooking up .ndo_get_stats64() to my switches, and
+basically opening the flood gates for random processes and kernel
+threads to send SPI transactions back and forth like it's nothing.
+Latency for programs like ptp4l and phc2sys is actually more important.
 
-Thanks,
-Brad
+> 
+> We also need to handle drivers which don't actually implement
+> dev_get_stats(). That probably means only supporting offloads, all
+> modes which cannot be offloaded need to be rejected. This is pretty
+> much the same case of software control of the LEDs is not possible.
+> Unfortunately, dev_get_stats() does not return -EOPNOTSUPP, you need
+> to look at dev->netdev_ops->ndo_get_stats64 and
+> dev->netdev_ops->ndo_get_stats.
+> 
+> Are you working on Marvell switches? Have you implemented
+> get_stats64() for mv88e6xxx? How often do you poll the hardware for
+> the stats?
+> 
+> Given this, i think we need to bias the API so that it very likely
+> ends up offloading, if offloading is available.
+> 
+>      Andrew
+> 
+
+We could use some of the newer stats APIs exposed by Jakub if
+.ndo_get_stats64 is not implemented, like ethtool_ops->get_eth_mac_stats.
+Although.. see above.
