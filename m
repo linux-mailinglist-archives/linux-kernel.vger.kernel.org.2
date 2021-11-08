@@ -2,158 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A05FA449CC5
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Nov 2021 20:58:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C1187449CC7
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Nov 2021 20:59:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238128AbhKHUA2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Nov 2021 15:00:28 -0500
-Received: from smtp05.smtpout.orange.fr ([80.12.242.127]:55651 "EHLO
-        smtp.smtpout.orange.fr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236930AbhKHUA0 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Nov 2021 15:00:26 -0500
-Received: from [192.168.1.18] ([86.243.171.122])
-        by smtp.orange.fr with ESMTPA
-        id kAlwmHF3cOvR0kAlwmre4l; Mon, 08 Nov 2021 20:57:40 +0100
-X-ME-Helo: [192.168.1.18]
-X-ME-Auth: YWZlNiIxYWMyZDliZWIzOTcwYTEyYzlhMmU3ZiQ1M2U2MzfzZDfyZTMxZTBkMTYyNDBjNDJlZmQ3ZQ==
-X-ME-Date: Mon, 08 Nov 2021 20:57:40 +0100
-X-ME-IP: 86.243.171.122
-Subject: Re: [PATCH] PCI: xgene-msi: Use bitmap_zalloc() when applicable
-To:     =?UTF-8?Q?Krzysztof_Wilczy=c5=84ski?= <kw@linux.com>
-Cc:     toan@os.amperecomputing.com, lorenzo.pieralisi@arm.com,
-        robh@kernel.org, bhelgaas@google.com, linux-pci@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        kernel-janitors@vger.kernel.org
-References: <32f3bc1fbfbd6ee0815e565012904758ca9eff7e.1635019243.git.christophe.jaillet@wanadoo.fr>
- <YYb1RXjnXSV8xF/0@rocinante>
- <bd57f9db-e1a5-c2a6-3523-b3c0ad086759@wanadoo.fr>
- <YYh1vrNCavFKuskW@rocinante>
-From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Message-ID: <2ee153cc-961e-abaf-2c02-a15b4c0b7986@wanadoo.fr>
-Date:   Mon, 8 Nov 2021 20:57:39 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        id S238153AbhKHUBZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Nov 2021 15:01:25 -0500
+Received: from mail.kernel.org ([198.145.29.99]:33396 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230380AbhKHUBY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Nov 2021 15:01:24 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 80323619BB;
+        Mon,  8 Nov 2021 19:58:39 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1636401520;
+        bh=Tnug3S4nRTm6CERU8i/tUjb4Q2wQMGUGdCNAGitc0oc=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=MLtXwIn25NOcLAhX3DWLmGzFnYAQ/99iGrgqQyfzJ31QbuHI2M+sR4nMokpQr8tbp
+         77OxkvWitMtbEWKh2QhRIN3qPDgknMtEj6icrU3s5WJUDXkKHhpKFp2fSigr9CQ8qK
+         jFLY1s9YI7AmyZWrbYsj0j2MRT6090aCF1jGUHH348qzzZyCsnzYidhJGCKEROsKt6
+         g0808CsJK2Jt5yOktm+00gG79eepOnD5m9x70Fs85Yuf6zBObeyxTnSltMh2+alszG
+         ugAlwCviiqIx4d1BGYSfwaLi9ordbiF+7O6CeqZeLBFyJrOuChOEPf2ctu0ehvcqQC
+         qALbeR6RqiaoQ==
+Date:   Mon, 8 Nov 2021 21:58:36 +0200
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Jakub Kicinski <kuba@kernel.org>
+Cc:     Ido Schimmel <idosch@idosch.org>, Jiri Pirko <jiri@resnulli.us>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jiri Pirko <jiri@nvidia.com>, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, edwin.peer@broadcom.com
+Subject: Re: [PATCH net-next] devlink: Require devlink lock during device
+ reload
+Message-ID: <YYmBbJ5++iO4MOo7@unreal>
+References: <YYABqfFy//g5Gdis@nanopsycho>
+ <YYBTg4nW2BIVadYE@shredder>
+ <20211101161122.37fbb99d@kicinski-fedora-PC1C0HJN>
+ <YYgJ1bnECwUWvNqD@shredder>
+ <YYgSzEHppKY3oYTb@unreal>
+ <20211108080918.2214996c@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+ <YYlfI4UgpEsMt5QI@unreal>
+ <20211108101646.0a4e5ca4@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+ <YYlrZZTdJKhha0FF@unreal>
+ <20211108104608.378c106e@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
 MIME-Version: 1.0
-In-Reply-To: <YYh1vrNCavFKuskW@rocinante>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211108104608.378c106e@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Le 08/11/2021 à 01:56, Krzysztof Wilczyński a écrit :
-> Hi Christophe!
+On Mon, Nov 08, 2021 at 10:46:08AM -0800, Jakub Kicinski wrote:
+> On Mon, 8 Nov 2021 20:24:37 +0200 Leon Romanovsky wrote:
+> > > I prefer my version. I think I asked you to show how the changes make
+> > > drivers simpler, which you failed to do.  
+> > 
+> > Why did I fail? My version requires **zero** changes to the drivers.
+> > Everything works without them changing anything. You can't ask for more.
 > 
-> [...]
->>> I believe, after having a brief look, that we might have a few other
->>> candidates that we could also update:
->>>
->>>     drivers/pci/controller/dwc/pcie-designware-ep.c
->>>     717:	ep->ib_window_map = devm_kcalloc(dev,
->>>     724:	ep->ob_window_map = devm_kcalloc(dev,
->>>     drivers/pci/controller/pcie-iproc-msi.c
->>>     592:	msi->bitmap = devm_kcalloc(pcie->dev, BITS_TO_LONGS(msi->nr_msi_vecs),
->>>     drivers/pci/controller/pcie-xilinx-nwl.c
->>>     470:	bit = bitmap_find_free_region(msi->bitmap, INT_PCI_MSI_NR,
->>>     567:	msi->bitmap = kzalloc(size, GFP_KERNEL);
->>>     637:	msi->bitmap = NULL;
->>>     drivers/pci/controller/pcie-iproc-msi.c
->>>     262:	hwirq = bitmap_find_free_region(msi->bitmap, msi->nr_msi_vecs,
->>>     290:	bitmap_release_region(msi->bitmap, hwirq,
->>>     drivers/pci/controller/pcie-xilinx-nwl.c
->>>     470:	bit = bitmap_find_free_region(msi->bitmap, INT_PCI_MSI_NR,
->>>     494:	bitmap_release_region(msi->bitmap, data->hwirq,
->>>     drivers/pci/controller/pcie-brcmstb.c
->>>     537:	hwirq = bitmap_find_free_region(&msi->used, msi->nr, 0);
->>>     546:	bitmap_release_region(&msi->used, hwirq, 0);
->>>     drivers/pci/controller/pcie-xilinx.c
->>>     240:	hwirq = bitmap_find_free_region(port->msi_map, XILINX_NUM_MSI_IRQS, order_base_2(nr_irqs));
->>>     263:	bitmap_release_region(port->msi_map, d->hwirq, order_base_2(nr_irqs));
->>>
->>> Some of the above could also potentially benefit from being converted to
->>> use the DECLARE_BITMAP() macro to create the bitmap that is then being
->>> embedded into some struct used to capture details and state, rather than
->>> store a pointer to later allocate memory dynamically.  Some controller
->>> drivers already do this, so we could convert rest where appropriate.
->>>
->>> What do you think?
->>
->> Hi,
->>
->> my first goal was to simplify code that was not already spotted by a cocci
->> script proposed by Joe Perches (see [1]).
+> For the last time.
 > 
-> Ahh, OK.  I didn't know that Joe worked on adding new Coccinelle script to
-> deal with the bitmap allocations and such.  I assumed you did some code
-> review and found some issues.
-> 
-> I had a quick look at what the Coccinelle script found, and it seems I have
-> missed when I did some search on my own:
-> 
->    drivers/pci/controller/pcie-rcar-ep.c
-> 
->> I'll give a closer look at the opportunities spotted by Joe if they have not
->> already been fixed in the meantime.
-> 
-> As per the thread you linked to, I can see that neither the new Coccinelle
-> script nor the changes from Joe were accepted yet, or I couldn't see
-> anything yet (at least not in the PCI tree).
+> "Your version" does require driver changes, but for better or worse
+> we have already committed them to the tree. All the re-ordering to make
+> sure devlink is registered last and more work is done at alloc,
+> remember?
 
-No patch has been proposed yet, only the script and its output has been 
-sent on @kernel-janitor.
-
-There was also a discussion about the need to update the corresponding 
-kfree() into bitmap_free() to keep consistency.
-Doing it with coccinelle could be challenging.
-
-devm_ function are not impacted, but for the others, it can be more 
-tricky and would likely need manual update.
-
-CJ
+It fixed access to devlink before driver is ready. Also it fixed devlink
+reload of simple drivers (without net namespaces support). So yes, at
+least for now, we have a workaround to devlink reload bugs. We rmmod
+mlx5_ib before reload and after. Everything thanks to reordering.
 
 > 
->> Concerning the use of DECLARE_BITMAP instead of alloc/free memory, it can be
->> more tricky to spot it. Will try to give a look at it.
+> The goal is to make the upstream drivers simpler. You failed to show
+> how your code does that.
 > 
-> A lot more code to read, indeed.  However, the benefits are quite nice:
-> simpler code, easier error handling and reducing probability of leaking
-> memory.
-> 
-> I think, a lot of the drivers we have in our tree could (and a lot already
-> do) leverage the DECLARE_BITMAP() macro reserving space during build time
-> over dealing with memory allocations and such.
-> 
->>> We also have this nudge from Coverity that we could fix, as per:
->>>
->>>     532 static int brcm_msi_alloc(struct brcm_msi *msi)
->>>     533 {
->>>     534         int hwirq;
->>>     535
->>>     536         mutex_lock(&msi->lock);
->>>         1. address_of: Taking address with &msi->used yields a singleton pointer.
->>>         CID 1468487 (#1 of 1): Out-of-bounds access (ARRAY_VS_SINGLETON)2. callee_ptr_arith: Passing &msi->used to function bitmap_find_free_region which uses it as an array. This might corrupt or misinterpret adjacent memory locations. [show details]
->>>     537         hwirq = bitmap_find_free_region(&msi->used, msi->nr, 0);
->>>     538         mutex_unlock(&msi->lock);
->>>     539
->>>     540         return hwirq;
->>>     541 }
->>>     543 static void brcm_msi_free(struct brcm_msi *msi, unsigned long hwirq)
->>>     544 {
->>>     545         mutex_lock(&msi->lock);
->>>         1. address_of: Taking address with &msi->used yields a singleton pointer.
->>>         CID 1468424 (#1 of 1): Out-of-bounds access (ARRAY_VS_SINGLETON)2. callee_ptr_arith: Passing &msi->used to function bitmap_release_region which uses it as an array. This might corrupt or misinterpret adjacent memory locations. [show details]
->>>     546         bitmap_release_region(&msi->used, hwirq, 0);
->>>     547         mutex_unlock(&msi->lock);
->>>     548 }
->>>
->>> We could look at addressing this too at the same time.
->>
->> I'll give it a look.
-> 
-> Thank you!
-> 
-> 	Krzysztof
-> 
+> Maybe you don't see the benefit because upstream simplifications are
+> hard to depend on in out-of-tree drivers?
 
+I don't care about out-of-tree drivers, mlx5 is fully upstream.
+
+> 
+> > > I already told you how this is going to go, don't expect me to comment
+> > > too much.
+> > >   
+> > > > However for net namespace aware drivers it still stays DOA.
+> > > > 
+> > > > As you can see, devlink reload holds pernet_ops_rwsem, which drivers should
+> > > > take too in order to unregister_netdevice_notifier.
+> > > > 
+> > > > So for me, the difference between netdevsim and real device (mlx5) is
+> > > > too huge to really invest time into netdevsim-centric API, because it
+> > > > won't solve any of real world problems.  
+> > > 
+> > > Did we not already go over this? Sorry, it feels like you're repeating
+> > > arguments which I replied to before. This is exhausting.  
+> > 
+> > I don't enjoy it either.
+> > 
+> > > nfp will benefit from the simplified locking as well, and so will bnxt,
+> > > although I'm not sure the maintainers will opt for using devlink framework
+> > > due to the downstream requirements.  
+> > 
+> > Exactly why devlink should be fixed first.
+> 
+> If by "fixed first" you mean it needs 5 locks to be added and to remove
+> any guarantees on sub-object lifetime then no thanks.
+
+How do you plan to fix pernet_ops_rwsem lock? By exposing devlink state
+to the drivers? By providing unlocked version of unregister_netdevice_notifier?
+
+This simple scenario has deadlocks:
+sudo ip netns add n1
+sudo devlink dev reload pci/0000:00:09.0 netns n1
+sudo ip netns del n1
+
+https://lore.kernel.org/netdev/20211108104608.378c106e@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com/T/#m94b5c173f134c7d19daf455e3f6bad5ba6afd90d
