@@ -2,186 +2,238 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ED925449E45
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Nov 2021 22:31:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D1FF449E48
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Nov 2021 22:33:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240418AbhKHVeg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Nov 2021 16:34:36 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52714 "EHLO
+        id S240441AbhKHVgX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Nov 2021 16:36:23 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53142 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240367AbhKHVeb (ORCPT
+        with ESMTP id S240367AbhKHVgW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Nov 2021 16:34:31 -0500
-Received: from mail-qk1-x72a.google.com (mail-qk1-x72a.google.com [IPv6:2607:f8b0:4864:20::72a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 39C5CC061714
-        for <linux-kernel@vger.kernel.org>; Mon,  8 Nov 2021 13:31:46 -0800 (PST)
-Received: by mail-qk1-x72a.google.com with SMTP id n15so16850428qkp.12
-        for <linux-kernel@vger.kernel.org>; Mon, 08 Nov 2021 13:31:46 -0800 (PST)
+        Mon, 8 Nov 2021 16:36:22 -0500
+Received: from mail-il1-x12a.google.com (mail-il1-x12a.google.com [IPv6:2607:f8b0:4864:20::12a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 14077C061714
+        for <linux-kernel@vger.kernel.org>; Mon,  8 Nov 2021 13:33:38 -0800 (PST)
+Received: by mail-il1-x12a.google.com with SMTP id j28so18500064ila.1
+        for <linux-kernel@vger.kernel.org>; Mon, 08 Nov 2021 13:33:38 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=s5tMJEcudqXsuhh1EA1Zp+nQ88xePj20Hc2KkNUWDsU=;
-        b=Ae8kkXgDrDFP/odEz71AJTjhaFNsH4u+OGlS3nZDJX5cldhY6nkQcUO3QoqEnqCzFa
-         BQht6SE35qyia0jMOtiC2IebnWiVKLTwQ5UQI9+/YyOERDE5mEaV/BGgEJt4haOdcGt4
-         QTxe+hsOLit51eifZGmv/JTxbGLaMOVFw3YcaZ4j36SZirauQ/NMEidMBHYWXxJMq87H
-         GIsHQ3fylNSRLGhvcHnIg7MU3g8AP6TFXK7ijyiBcFvAMeibXy9j1UNKFUWe5WBj+Duc
-         oifkKHgZeOaumPR1+i6Z///GQfUn/sybjkp04JEGf93BdNljICpBsVV1SGIrCv92sZOC
-         J/xA==
+        d=google.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=hFSV1mBws9eLeLO5kPMmlLtWrmSlD924TaH/pakFmoU=;
+        b=O7/fYinykmp/KyEQVR3JRt816V+8zD9gdBIlkyp3lTFLY/wKMfxdp7IVHhrIv/GSz9
+         bosru1a/4zIf0Dp3NEv9gwxuV1MP3HEVomdXK7nf0ciuQXqQSwaiMJ/fqzudASPJQRb0
+         AuyZzjiupsk0i+PgdPFaz8nTBRKhGEoAp29RScs9pyG0d8RWLvWTSv8XkaVhjGgHeMAl
+         hj0mPf/gARZOMHKMXPzGUtAiaX6nrQbeFliJbfaa0DFCx3/LKw2HBPWxgmB7VIPkpQ0g
+         j80tXIUKKWHBKfTzcww2g+aGHCatQqgcDjjhcznu44WID6chwqvLvwCah5B4E4hj77iO
+         2LQw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=s5tMJEcudqXsuhh1EA1Zp+nQ88xePj20Hc2KkNUWDsU=;
-        b=rHJALEbgYPe0w30FCG23N116SZLIhVc2kOjMSUyrwCSvGmmHcVkbV0Wc+RV0it1I+G
-         7W4McTAU+vj9L32U2lNe1VnvG969ymga0hYxlyHA1gO5NE8jwI9HXjboEHNWbImrLeZV
-         78TbnSGsBfsDOBvBFAwMrZVOK22kVNT5AdbofSYxmgczxfbYUCR8Kks26FeT4XW+oPJ6
-         ODBtT8unGLQcAzWdQSs9HQ4Wmk37z7DLwRB3D3h2GldQQPoL1ZdESYGBYKzKa9TmtGr4
-         eIy+p3WbzW+6xgVoCHfjxD2FGqlGKBaxI5Su7jvPAHxyTnPHnAdoSRFBBycScwNFMhnC
-         ihoQ==
-X-Gm-Message-State: AOAM5329BKC/mOeCzbXPZVH+xeUR30vNFXJfKWkMG/88rCykUsD5cFmM
-        +/ARCU7Xit67bLeGU9j0UnGT/Q==
-X-Google-Smtp-Source: ABdhPJxLupCh0ogEwzGIg4W2cCTY25wrbd/qb1d2CFGSDvrqEWvp4py1sjwaDa/6e8fqENI6AyZOsA==
-X-Received: by 2002:a05:620a:2a14:: with SMTP id o20mr1830012qkp.221.1636407105343;
-        Mon, 08 Nov 2021 13:31:45 -0800 (PST)
-Received: from [192.168.1.93] (pool-71-163-245-5.washdc.fios.verizon.net. [71.163.245.5])
-        by smtp.gmail.com with ESMTPSA id w19sm2033209qkw.49.2021.11.08.13.31.44
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 08 Nov 2021 13:31:44 -0800 (PST)
-Subject: Re: [PATCH v3 0/5] Refactor thermal pressure update to avoid code
- duplication
-To:     Steev Klimaszewski <steev@kali.org>,
-        Lukasz Luba <lukasz.luba@arm.com>
-Cc:     linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-arm-msm@vger.kernel.org, sudeep.holla@arm.com,
-        will@kernel.org, catalin.marinas@arm.com, linux@armlinux.org.uk,
-        gregkh@linuxfoundation.org, rafael@kernel.org,
-        viresh.kumar@linaro.org, amitk@kernel.org,
-        daniel.lezcano@linaro.org, amit.kachhap@gmail.com,
-        bjorn.andersson@linaro.org, agross@kernel.org
-References: <20211103161020.26714-1-lukasz.luba@arm.com>
- <c7b526f0-2c26-0cfc-910b-3521c6a6ef51@kali.org>
- <3cba148a-7077-7b6b-f131-dc65045aa348@arm.com>
- <9d533b6e-a81c-e823-fa6f-61fdea92fa65@kali.org>
- <74ea027b-b213-42b8-0f7d-275f3b84712e@linaro.org>
- <74603569-2ff1-999e-9618-79261fdb0ee4@kali.org>
- <b7e76c2a-ceac-500a-ff75-535a3f0d51d6@linaro.org>
- <f955a2aa-f788-00db-1ed8-dc9c7a1b2572@kali.org>
- <59054c90-c1cd-85bf-406e-579df668d7b4@linaro.org>
- <eac00041-a1b8-0780-931d-52249d538800@kali.org>
-From:   Thara Gopinath <thara.gopinath@linaro.org>
-Message-ID: <2c54dbbd-2ecb-fb76-fa9f-9752f429c20e@linaro.org>
-Date:   Mon, 8 Nov 2021 16:31:44 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=hFSV1mBws9eLeLO5kPMmlLtWrmSlD924TaH/pakFmoU=;
+        b=ml8JSj7Q/yNY7aNV2TxqgcjC6RFo6I3T74E6yTUg8CxKpyPw1wqmg3bMSN5FJO+2mb
+         orNehYRjdomXB8wThPrD1Z6Oc3UsiGCE8cyyD9birNo09cAM3IaPkH0pQG2hceGTAwYp
+         PRnXf9xRoN4TzQaQGCtohCwc97RX4CftkhiWxv69wnx4LcBqM1DJFB5Zqo2iyRorgOqH
+         Vrb1q9Smlyvmc4tAc+ipgZsfbQHSKUep7BJaQcrJrOfn1X5OHNCwRLBwW8RbPbCqLpkj
+         jXKcQ8CAOjS0Z/ygtHE17lcd2SWGVWQn6vStRDN7XFeD7Vy3mw0QqwZDflhrm9wzD0fD
+         mi3A==
+X-Gm-Message-State: AOAM533OwPab4JerbMDKBE4otxAqV3rI2elAKz/I6qk8pG0Y4MV10Iy1
+        dFnvOmUq0VhVysMiWLPwAn3jOA==
+X-Google-Smtp-Source: ABdhPJzjPhy8/nW/9RIzLXtQxLZfiK10pduutrQX2tnPGXqQ62lKvQDM2Oe1tiRS22zzVFnb21gvuw==
+X-Received: by 2002:a05:6e02:2166:: with SMTP id s6mr1565008ilv.170.1636407217245;
+        Mon, 08 Nov 2021 13:33:37 -0800 (PST)
+Received: from google.com (194.225.68.34.bc.googleusercontent.com. [34.68.225.194])
+        by smtp.gmail.com with ESMTPSA id x11sm945804iop.55.2021.11.08.13.33.36
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 08 Nov 2021 13:33:36 -0800 (PST)
+Date:   Mon, 8 Nov 2021 21:33:33 +0000
+From:   Oliver Upton <oupton@google.com>
+To:     Raghavendra Rao Ananta <rananta@google.com>
+Cc:     Marc Zyngier <maz@kernel.org>, Andrew Jones <drjones@redhat.com>,
+        James Morse <james.morse@arm.com>,
+        Alexandru Elisei <alexandru.elisei@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>, Peter Shier <pshier@google.com>,
+        Ricardo Koller <ricarkol@google.com>,
+        Reiji Watanabe <reijiw@google.com>,
+        Jing Zhang <jingzhangos@google.com>,
+        linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
+        linux-kernel@vger.kernel.org, kvm@vger.kernel.org
+Subject: Re: [RFC PATCH 1/8] KVM: arm64: Factor out firmware register
+ handling from psci.c
+Message-ID: <YYmXrfCntqEgCeDX@google.com>
+References: <20211102002203.1046069-1-rananta@google.com>
+ <20211102002203.1046069-2-rananta@google.com>
+ <YYMCgC6qMEEWhNrk@google.com>
+ <CAJHc60wGi3wLNv97dFo1BoOjRUCpNSvw6u_nA+uunJX=k5+dEA@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <eac00041-a1b8-0780-931d-52249d538800@kali.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAJHc60wGi3wLNv97dFo1BoOjRUCpNSvw6u_nA+uunJX=k5+dEA@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, Nov 04, 2021 at 10:16:21AM -0700, Raghavendra Rao Ananta wrote:
+> Hi Oliver,
+> 
+> On Wed, Nov 3, 2021 at 2:43 PM Oliver Upton <oupton@google.com> wrote:
+> >
+> > Hi Raghu,
+> >
+> > On Tue, Nov 02, 2021 at 12:21:56AM +0000, Raghavendra Rao Ananta wrote:
+> > > Common hypercall firmware register handing is currently employed
+> > > by psci.c. Since the upcoming patches add more of these registers,
+> > > it's better to move the generic handling to hypercall.c for a
+> > > cleaner presentation.
+> > >
+> > > While we are at it, collect all the firmware registers under
+> > > fw_reg_ids[] to help implement kvm_arm_get_fw_num_regs() and
+> > > kvm_arm_copy_fw_reg_indices() in a generic way.
+> > >
+> > > No functional change intended.
+> > >
+> > > Signed-off-by: Raghavendra Rao Ananta <rananta@google.com>
+> > > ---
+> > >  arch/arm64/kvm/guest.c       |   2 +-
+> > >  arch/arm64/kvm/hypercalls.c  | 151 +++++++++++++++++++++++++++++++
+> > >  arch/arm64/kvm/psci.c        | 167 +++--------------------------------
+> > >  include/kvm/arm_hypercalls.h |   7 ++
+> > >  include/kvm/arm_psci.h       |   8 +-
+> > >  5 files changed, 172 insertions(+), 163 deletions(-)
+> > >
+> > > diff --git a/arch/arm64/kvm/guest.c b/arch/arm64/kvm/guest.c
+> > > index 5ce26bedf23c..625f97f7b304 100644
+> > > --- a/arch/arm64/kvm/guest.c
+> > > +++ b/arch/arm64/kvm/guest.c
+> > > @@ -18,7 +18,7 @@
+> > >  #include <linux/string.h>
+> > >  #include <linux/vmalloc.h>
+> > >  #include <linux/fs.h>
+> > > -#include <kvm/arm_psci.h>
+> > > +#include <kvm/arm_hypercalls.h>
+> > >  #include <asm/cputype.h>
+> > >  #include <linux/uaccess.h>
+> > >  #include <asm/fpsimd.h>
+> > > diff --git a/arch/arm64/kvm/hypercalls.c b/arch/arm64/kvm/hypercalls.c
+> > > index 30da78f72b3b..d030939c5929 100644
+> > > --- a/arch/arm64/kvm/hypercalls.c
+> > > +++ b/arch/arm64/kvm/hypercalls.c
+> > > @@ -146,3 +146,154 @@ int kvm_hvc_call_handler(struct kvm_vcpu *vcpu)
+> > >       smccc_set_retval(vcpu, val[0], val[1], val[2], val[3]);
+> > >       return 1;
+> > >  }
+> > > +
+> > > +static const u64 fw_reg_ids[] = {
+> > > +     KVM_REG_ARM_PSCI_VERSION,
+> > > +     KVM_REG_ARM_SMCCC_ARCH_WORKAROUND_1,
+> > > +     KVM_REG_ARM_SMCCC_ARCH_WORKAROUND_2,
+> > > +};
+> > > +
+> > > +int kvm_arm_get_fw_num_regs(struct kvm_vcpu *vcpu)
+> > > +{
+> > > +     return ARRAY_SIZE(fw_reg_ids);
+> > > +}
+> > > +
+> > > +int kvm_arm_copy_fw_reg_indices(struct kvm_vcpu *vcpu, u64 __user *uindices)
+> > > +{
+> > > +     int i;
+> > > +
+> > > +     for (i = 0; i < ARRAY_SIZE(fw_reg_ids); i++) {
+> > > +             if (put_user(fw_reg_ids[i], uindices))
+> > > +                     return -EFAULT;
+> > > +     }
+> > > +
+> > > +     return 0;
+> > > +}
+> >
+> > It would appear that this patch is separating out the hypercall services
+> > to each handle their own FW regs. At the same time, this is
+> > consolidating the register enumeration into a single place.
+> >
+> > It would be nice to keep the scoping consistent with your accessors
+> > below, or simply just handle all regs in hypercalls.c. Abstracting
+> > per-service might result in a lot of boilerplate, though.
+> >
+> It's neither here nor there, unfortunately, because of how the fw
+> registers exists. We have a dedicated fw register for psci and a file
+> of its own (psci.c). Some of the other services, such as TRNG, have
+> their own file, but because of the bitmap design, they won't have
+> their own fw register. And the ARCH_WORKAROUND have their dedicated
+> registers, but no file of their own. So, at best I was aiming to push
+> all the things relevant to a service in its own file (psci for
+> example), just to have a better file-context, while leaving others
+> (and generic handling stuff) in hypercall.c.
+> 
+> Just to maintain consistency, I can create a dedicated file for the
+> ARCH_WORKAROUND registers, if you feel that's better.
+>
 
+Perhaps the easiest thing to do would be to keep all firmware ID
+registers in one place, much like we do for the ARM feature ID regs in
+sys_regs.c.
 
-On 11/8/21 10:22 AM, Steev Klimaszewski wrote:
-> 
->> Hi Steev,
->>
->> So this depends on the cpufreq governor you are using. By-default arm 
->> systems have sched-util governor enabled. This means you will scale up 
->> to boost depending on cpu load and not always. If you want to ensure 
->> you are always hitting boost frequency, you should enable performance 
->> governor for cpufreq and try.
->>
->> Also since the defconfig has by default CPU_FREQ_STAT enabled, you 
->> should be able to get statistics out of cpufreq to see the time spent 
->> by a cpu in each frequency. I think cpufreq-info -s should give you 
->> this info. If not, you can explicitly get it for each cpu from
->>
->> cat /sys/devices/system/cpu/cpu<X>/cpufreq/stats/time_in_state
->>
->> Regarding temperature, if you have applied all the patches in the 
->> sdm845 LMh series and have LMh enabled, cpu throttling starts around 
->> 95 degree C.
->>
-> Hi Thara,
-> 
-> Indeed, I ended up finding the time_in_state when I was doing more 
-> digging after my last mail.  I do have the sdm845 LMh series and LMh 
-> enabled, however I don't think I've ever seen my system go above 90C here.
-> 
-> So a quick look, and... we are simply almost never getting the 2.95GHz 
-> at all, regardless of workload.  I saw Lukasz response as well about the 
-> math possibly being wrong, but I haven't had a chance.
-> 
-> Regarding the time in state - I went with policy4 instead of per cpu 
-> (for brevity sake) and it's here:
-> 
-> c630:~$ cat /sys/devices/system/cpu/cpufreq/policy4/stats/time_in_state
-> 825600 225037
-> 902400 92
-> 979200 205
-> 1056000 96
-> 1209600 902
-> 1286400 386
-> 1363200 396
-> 1459200 217
-> 1536000 101
-> 1612800 75
-> 1689600 95
-> 1766400 130
-> 1843200 255
-> 1920000 318
-> 1996800 92
-> 2092800 87
-> 2169600 66
-> 2246400 60
-> 2323200 58
-> 2400000 54
-> 2476800 47
-> 2553600 50
-> 2649600 69
-> 2745600 58
-> 2841600 54619
-> 2956800 5
-> 
-> So we spend *very* little time in 2.96GHz and this is after almost 14 
-> hours of uptime on the C630.  By comparison, on a Pinebook Pro where 
-> I've added in 2GHz as a boost frequency :
+> > > +#define KVM_REG_FEATURE_LEVEL_WIDTH  4
+> > > +#define KVM_REG_FEATURE_LEVEL_MASK   (BIT(KVM_REG_FEATURE_LEVEL_WIDTH) - 1)
+> > > +
+> > > +/*
+> > > + * Convert the workaround level into an easy-to-compare number, where higher
+> > > + * values mean better protection.
+> > > + */
+> > > +static int get_kernel_wa_level(u64 regid)
+> > > +{
+> > > +     switch (regid) {
+> > > +     case KVM_REG_ARM_SMCCC_ARCH_WORKAROUND_1:
+> > > +             switch (arm64_get_spectre_v2_state()) {
+> > > +             case SPECTRE_VULNERABLE:
+> > > +                     return KVM_REG_ARM_SMCCC_ARCH_WORKAROUND_1_NOT_AVAIL;
+> > > +             case SPECTRE_MITIGATED:
+> > > +                     return KVM_REG_ARM_SMCCC_ARCH_WORKAROUND_1_AVAIL;
+> > > +             case SPECTRE_UNAFFECTED:
+> > > +                     return KVM_REG_ARM_SMCCC_ARCH_WORKAROUND_1_NOT_REQUIRED;
+> > > +             }
+> > > +             return KVM_REG_ARM_SMCCC_ARCH_WORKAROUND_1_NOT_AVAIL;
+> > > +     case KVM_REG_ARM_SMCCC_ARCH_WORKAROUND_2:
+> > > +             switch (arm64_get_spectre_v4_state()) {
+> > > +             case SPECTRE_MITIGATED:
+> > > +                     /*
+> > > +                      * As for the hypercall discovery, we pretend we
+> > > +                      * don't have any FW mitigation if SSBS is there at
+> > > +                      * all times.
+> > > +                      */
+> > > +                     if (cpus_have_final_cap(ARM64_SSBS))
+> > > +                             return KVM_REG_ARM_SMCCC_ARCH_WORKAROUND_2_NOT_AVAIL;
+> > > +                     fallthrough;
+> > > +             case SPECTRE_UNAFFECTED:
+> > > +                     return KVM_REG_ARM_SMCCC_ARCH_WORKAROUND_2_NOT_REQUIRED;
+> > > +             case SPECTRE_VULNERABLE:
+> > > +                     return KVM_REG_ARM_SMCCC_ARCH_WORKAROUND_2_NOT_AVAIL;
+> > > +             }
+> > > +     }
+> > > +
+> > > +     return -EINVAL;
+> > > +}
+> > > +
+> > > +int kvm_arm_get_fw_reg(struct kvm_vcpu *vcpu, const struct kvm_one_reg *reg)
+> > > +{
+> > > +     void __user *uaddr = (void __user *)(long)reg->addr;
+> > > +     u64 val;
+> > > +
+> > > +     switch (reg->id) {
+> > > +     case KVM_REG_ARM_PSCI_VERSION:
+> > > +             val = kvm_psci_version(vcpu, vcpu->kvm);
+> >
+> > Should this become kvm_arm_get_fw_reg() to consistently genericize the
+> > PSCI FW register accessors?
+> >
+> Sorry, I didn't follow. Did you mean, "kvm_arm_get_psci_fw_reg()"?
 
-Hi Steev,
+Right :) Of course, this could become irrelevant depending on how you
+address scoping of the FW regs.
 
-IIUC, PineBook Pro has Rockchip RK3399 which has 2 Cortex A-72 and 4 
-Cortex A-52 where as C630 has Qualcomm sdm845 which has 4 Cortex A-75 
-and 4 Cortex A-55. Task placements and subsequently cpu load will be 
-different for both the platforms. With the same workload, I will expect 
-Rockchip to system to be more loaded than sdm845. Having said that, what 
-cpu-freq governor are you using on both the systems.
-
-
-> 
-> pinebook-pro:~$ cat 
-> /sys/devices/system/cpu/cpufreq/policy4/stats/time_in_state
-> 408000 16084466
-> 600000 27212
-> 816000 32487
-> 1008000 11331
-> 1200000 13268
-> 1416000 75078
-> 1608000 18392
-> 1800000 207266
-> 2016000 648612
-> 
-> With the Pinebook Pro, which doesn't even come close to getting to 95C, 
-> we spend a lot more time in 2GHz.
-> 
-> -- steev
-> 
-
--- 
-Warm Regards
-Thara (She/Her/Hers)
+--
+Thanks,
+Oliver
