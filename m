@@ -2,102 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C511449A59
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Nov 2021 17:59:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7D503449A5B
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Nov 2021 18:00:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240326AbhKHRCF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Nov 2021 12:02:05 -0500
-Received: from linux.microsoft.com ([13.77.154.182]:35466 "EHLO
-        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235453AbhKHRCE (ORCPT
+        id S240356AbhKHRDS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Nov 2021 12:03:18 -0500
+Received: from out03.mta.xmission.com ([166.70.13.233]:47306 "EHLO
+        out03.mta.xmission.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235453AbhKHRDR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Nov 2021 12:02:04 -0500
-Received: from kbox (unknown [24.17.193.74])
-        by linux.microsoft.com (Postfix) with ESMTPSA id 5476920B40A1;
-        Mon,  8 Nov 2021 08:59:19 -0800 (PST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 5476920B40A1
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1636390759;
-        bh=WVTJvvr3+Aa5VSsagTe6Vvn15jGQuhknNKGRDu2iVEg=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=D6xgmIZ5GWOvrLMTTNigkttYx7AgZIiSAUFl1s07B0zSwUWrqlziSbEsIH84rp1VI
-         5jCRkySv1e4VjpQr+tuNFa53M4XPz0b7InvIubkWUnSe2QCNPYgjwG3zEJLig+VhcW
-         mkdWWcxBE5HfK1H8hBkhEGoll1re7UcSS8widzjA=
-Date:   Mon, 8 Nov 2021 08:59:16 -0800
-From:   Beau Belgrave <beaub@linux.microsoft.com>
-To:     Masami Hiramatsu <mhiramat@kernel.org>
-Cc:     kernel test robot <lkp@intel.com>, rostedt@goodmis.org,
-        kbuild-all@lists.01.org, linux-trace-devel@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v4 02/10] user_events: Add minimal support for
- trace_event into ftrace
-Message-ID: <20211108165916.GA1607@kbox>
-References: <20211104170433.2206-3-beaub@linux.microsoft.com>
- <202111050558.mLGUj5jg-lkp@intel.com>
- <20211108113225.664c0594e0ca100e458de92b@kernel.org>
+        Mon, 8 Nov 2021 12:03:17 -0500
+Received: from in02.mta.xmission.com ([166.70.13.52]:42358)
+        by out03.mta.xmission.com with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.93)
+        (envelope-from <ebiederm@xmission.com>)
+        id 1mk80V-00Dm7O-2T; Mon, 08 Nov 2021 10:00:31 -0700
+Received: from ip68-227-160-95.om.om.cox.net ([68.227.160.95]:53774 helo=email.xmission.com)
+        by in02.mta.xmission.com with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.93)
+        (envelope-from <ebiederm@xmission.com>)
+        id 1mk80U-001noj-5H; Mon, 08 Nov 2021 10:00:30 -0700
+From:   ebiederm@xmission.com (Eric W. Biederman)
+To:     Arnd Bergmann <arnd@kernel.org>
+Cc:     Santosh Shilimkar <ssantosh@kernel.org>,
+        Dave Gerlach <d-gerlach@ti.com>,
+        Tony Lindgren <tony@atomide.com>, soc@kernel.org,
+        Arnd Bergmann <arnd@arndb.de>,
+        Lee Jones <lee.jones@linaro.org>,
+        Zhen Lei <thunder.leizhen@huawei.com>,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+References: <20211105075119.2327190-1-arnd@kernel.org>
+Date:   Mon, 08 Nov 2021 11:00:03 -0600
+In-Reply-To: <20211105075119.2327190-1-arnd@kernel.org> (Arnd Bergmann's
+        message of "Fri, 5 Nov 2021 08:51:12 +0100")
+Message-ID: <87k0hipoq4.fsf@disp2133>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211108113225.664c0594e0ca100e458de92b@kernel.org>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Type: text/plain
+X-XM-SPF: eid=1mk80U-001noj-5H;;;mid=<87k0hipoq4.fsf@disp2133>;;;hst=in02.mta.xmission.com;;;ip=68.227.160.95;;;frm=ebiederm@xmission.com;;;spf=neutral
+X-XM-AID: U2FsdGVkX19xWBTX/qOTO5dbjayArZR1W6WXfYyeGgc=
+X-SA-Exim-Connect-IP: 68.227.160.95
+X-SA-Exim-Mail-From: ebiederm@xmission.com
+X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on sa01.xmission.com
+X-Spam-Level: ***
+X-Spam-Status: No, score=3.0 required=8.0 tests=ALL_TRUSTED,BAYES_50,
+        DCC_CHECK_NEGATIVE,T_TM2_M_HEADER_IN_MSG,XMGappySubj_01,XMGappySubj_02,
+        XMSubLong,XM_B_Investor autolearn=disabled version=3.4.2
+X-Spam-Virus: No
+X-Spam-Report: * -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
+        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
+        *      [score: 0.5000]
+        *  1.0 XM_B_Investor BODY: Commonly used business phishing phrases
+        *  0.7 XMSubLong Long Subject
+        *  0.5 XMGappySubj_01 Very gappy subject
+        *  1.0 XMGappySubj_02 Gappier still
+        *  0.0 T_TM2_M_HEADER_IN_MSG BODY: No description available.
+        * -0.0 DCC_CHECK_NEGATIVE Not listed in DCC
+        *      [sa01 1397; Body=1 Fuz1=1 Fuz2=1]
+X-Spam-DCC: XMission; sa01 1397; Body=1 Fuz1=1 Fuz2=1 
+X-Spam-Combo: ***;Arnd Bergmann <arnd@kernel.org>
+X-Spam-Relay-Country: 
+X-Spam-Timing: total 356 ms - load_scoreonly_sql: 0.03 (0.0%),
+        signal_user_changed: 3.8 (1.1%), b_tie_ro: 2.5 (0.7%), parse: 0.64
+        (0.2%), extract_message_metadata: 8 (2.3%), get_uri_detail_list: 1.13
+        (0.3%), tests_pri_-1000: 11 (3.1%), tests_pri_-950: 1.01 (0.3%),
+        tests_pri_-900: 0.82 (0.2%), tests_pri_-90: 107 (30.1%), check_bayes:
+        105 (29.5%), b_tokenize: 5 (1.5%), b_tok_get_all: 6 (1.7%),
+        b_comp_prob: 1.49 (0.4%), b_tok_touch_all: 89 (25.0%), b_finish: 0.79
+        (0.2%), tests_pri_0: 214 (60.0%), check_dkim_signature: 0.38 (0.1%),
+        check_dkim_adsp: 1.72 (0.5%), poll_dns_idle: 0.40 (0.1%),
+        tests_pri_10: 1.69 (0.5%), tests_pri_500: 5 (1.5%), rewrite_mail: 0.00
+        (0.0%)
+Subject: Re: [PATCH] soc: ti: fix wkup_m3_rproc_boot_thread return type
+X-SA-Exim-Version: 4.2.1 (built Sat, 08 Feb 2020 21:53:50 +0000)
+X-SA-Exim-Scanned: Yes (on in02.mta.xmission.com)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 08, 2021 at 11:32:25AM +0900, Masami Hiramatsu wrote:
-> On Fri, 5 Nov 2021 05:34:31 +0800
-> kernel test robot <lkp@intel.com> wrote:
-> 
-> > Hi Beau,
-> > 
-> > Thank you for the patch! Yet something to improve:
-> > 
-> > [auto build test ERROR on rostedt-trace/for-next]
-> > [also build test ERROR on shuah-kselftest/next linux/master linus/master v5.15 next-20211104]
-> > [If your patch is applied to the wrong git tree, kindly drop us a note.
-> > And when submitting patch, we suggest to use '--base' as documented in
-> > https://git-scm.com/docs/git-format-patch]
-> > 
-> > url:    https://github.com/0day-ci/linux/commits/Beau-Belgrave/user_events-Enable-user-processes-to-create-and-write-to-trace-events/20211105-010650
-> > base:   https://git.kernel.org/pub/scm/linux/kernel/git/rostedt/linux-trace.git for-next
-> > config: powerpc-allmodconfig (attached as .config)
-> > compiler: powerpc-linux-gcc (GCC) 11.2.0
-> > reproduce (this is a W=1 build):
-> >         wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
-> >         chmod +x ~/bin/make.cross
-> >         # https://github.com/0day-ci/linux/commit/da0961ad45aa1192b47b8a80de6b17437434ae4a
-> >         git remote add linux-review https://github.com/0day-ci/linux
-> >         git fetch --no-tags linux-review Beau-Belgrave/user_events-Enable-user-processes-to-create-and-write-to-trace-events/20211105-010650
-> >         git checkout da0961ad45aa1192b47b8a80de6b17437434ae4a
-> >         # save the attached .config to linux build tree
-> >         mkdir build_dir
-> >         COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-11.2.0 make.cross O=build_dir ARCH=powerpc SHELL=/bin/bash kernel/trace/
-> > 
-> > If you fix the issue, kindly add following tag as appropriate
-> > Reported-by: kernel test robot <lkp@intel.com>
-> > 
-> > All errors (new ones prefixed by >>):
-> > 
-> >    kernel/trace/trace_events_user.c: In function 'user_event_parse':
-> > >> kernel/trace/trace_events_user.c:665:9: error: too few arguments to function 'dyn_event_add'
-> >      665 |         dyn_event_add(&user->devent);
-> >          |         ^~~~~~~~~~~~~
-> >    In file included from kernel/trace/trace_events_user.c:23:
-> >    kernel/trace/trace_dynevent.h:79:19: note: declared here
-> >       79 | static inline int dyn_event_add(struct dyn_event *ev,
-> >          |                   ^~~~~~~~~~~~~
-> 
-> You need to pass &user->call too :)
-> 
-> Thank you,
-> 
-> -- 
-> Masami Hiramatsu <mhiramat@kernel.org>
+Arnd Bergmann <arnd@kernel.org> writes:
 
-:)
+> From: Arnd Bergmann <arnd@arndb.de>
+>
+> The wkup_m3_rproc_boot_thread() function uses a nonstandard prototype,
+> which broke after Eric's recent cleanup:
+>
+> drivers/soc/ti/wkup_m3_ipc.c: In function 'wkup_m3_rproc_boot_thread':
+> drivers/soc/ti/wkup_m3_ipc.c:429:16: error: 'return' with a value, in function returning void [-Werror=return-type]
+>   429 |         return 0;
+>       |                ^
+> drivers/soc/ti/wkup_m3_ipc.c:416:13: note: declared here
+>   416 | static void wkup_m3_rproc_boot_thread(struct wkup_m3_ipc *m3_ipc)
+>       |             ^~~~~~~~~~~~~~~~~~~~~~~~~
+>
+> Change it to the normal prototype as it should have been from the
+> start.
 
-Yep, these so far have been based on perf/core branch of tip, I've moved the
-next iteration over to for-next branch off of linux-trace to ensure alignment.
+Thanks for catching this.  I will add it to my tree.
 
-Thanks,
--Beau
+Eric
+
+>
+> Fixes: 111e70490d2a ("exit/kthread: Have kernel threads return instead of calling do_exit")
+> Fixes: cdd5de500b2c ("soc: ti: Add wkup_m3_ipc driver")
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+> ---
+>  drivers/soc/ti/wkup_m3_ipc.c | 5 +++--
+>  1 file changed, 3 insertions(+), 2 deletions(-)
+>
+> diff --git a/drivers/soc/ti/wkup_m3_ipc.c b/drivers/soc/ti/wkup_m3_ipc.c
+> index 0733443a2631..72386bd393fe 100644
+> --- a/drivers/soc/ti/wkup_m3_ipc.c
+> +++ b/drivers/soc/ti/wkup_m3_ipc.c
+> @@ -413,8 +413,9 @@ void wkup_m3_ipc_put(struct wkup_m3_ipc *m3_ipc)
+>  }
+>  EXPORT_SYMBOL_GPL(wkup_m3_ipc_put);
+>  
+> -static void wkup_m3_rproc_boot_thread(struct wkup_m3_ipc *m3_ipc)
+> +static int wkup_m3_rproc_boot_thread(void *arg)
+>  {
+> +	struct wkup_m3_ipc *m3_ipc = arg;
+>  	struct device *dev = m3_ipc->dev;
+>  	int ret;
+>  
+> @@ -500,7 +501,7 @@ static int wkup_m3_ipc_probe(struct platform_device *pdev)
+>  	 * can boot the wkup_m3 as soon as it's ready without holding
+>  	 * up kernel boot
+>  	 */
+> -	task = kthread_run((void *)wkup_m3_rproc_boot_thread, m3_ipc,
+> +	task = kthread_run(wkup_m3_rproc_boot_thread, m3_ipc,
+>  			   "wkup_m3_rproc_loader");
+>  
+>  	if (IS_ERR(task)) {
