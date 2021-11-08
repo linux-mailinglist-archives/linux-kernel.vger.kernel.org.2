@@ -2,83 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E37F7447FBE
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Nov 2021 13:47:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A4E86447FC0
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Nov 2021 13:48:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236966AbhKHMuJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Nov 2021 07:50:09 -0500
-Received: from mail.kernel.org ([198.145.29.99]:42342 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236758AbhKHMuH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Nov 2021 07:50:07 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C935A61056;
-        Mon,  8 Nov 2021 12:47:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1636375643;
-        bh=2lL6p2FkwKwZDMfQvkjmVX/8/DZ8UBYP9z5uxeu2gYY=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=B4G2JkX/I6SmOre2krLcxpCZZQnCzYpjlx4Wp9FS1kJZdYO0Uif3jSnJykvAckjae
-         AkGneqdtjmwK4CROWKJL2FONWxcE8t4dd64NkuQXQDxhLq7k4Wt91TLkn98ApMW/QI
-         Ys2fIdKhi0P12HZF3/sl7ei0S0ukjCetmqT07VSxoPNvpfXXTxFVVsFiP9jtH1mXsJ
-         R88rc6TtJNa8QZlawsko87txlzJT3kgMOCfAS0NYXSloX8t6HPdMIvG8ryguv9kLT7
-         e7rAKCkhBw+1oHk8gKvDhTDZf+Cd6KvNHPBR5ksGuNvPjP4nGI0Gh+EJtT7JaV97FJ
-         +8upPKlXmrbiA==
-Date:   Mon, 8 Nov 2021 14:47:19 +0200
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Jason Gunthorpe <jgg@nvidia.com>
-Cc:     Doug Ledford <dledford@redhat.com>,
-        kernel test robot <lkp@intel.com>,
-        linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org
-Subject: Re: [PATCH rdma-rc] RDMA/netlink: Annotate unused function that is
- needed for compilation check
-Message-ID: <YYkcV9g8E3KhE92h@unreal>
-References: <4a8101919b765e01d7fde6f27fd572c958deeb4a.1636267207.git.leonro@nvidia.com>
- <20211108123639.GT2744544@nvidia.com>
+        id S237193AbhKHMuw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Nov 2021 07:50:52 -0500
+Received: from szxga03-in.huawei.com ([45.249.212.189]:27188 "EHLO
+        szxga03-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234124AbhKHMuv (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Nov 2021 07:50:51 -0500
+Received: from dggeme762-chm.china.huawei.com (unknown [172.30.72.54])
+        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4HnrTJ6xMNz8vHJ;
+        Mon,  8 Nov 2021 20:46:28 +0800 (CST)
+Received: from [10.67.110.176] (10.67.110.176) by
+ dggeme762-chm.china.huawei.com (10.3.19.108) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2308.15; Mon, 8 Nov 2021 20:48:03 +0800
+Subject: Re: [PATCH -next,v2] efi/libstub: arm32: Use "align" for the size
+ alignment
+To:     Ard Biesheuvel <ardb@kernel.org>
+CC:     linux-efi <linux-efi@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        <wangweiyang2@huawei.com>
+References: <20211102020545.145840-1-cuigaosheng1@huawei.com>
+ <CAMj1kXFE1Gv41TowKZHqkwn+WVLsAOqJSFbi706KbMC0G_rqgw@mail.gmail.com>
+From:   cuigaosheng <cuigaosheng1@huawei.com>
+Message-ID: <6bd8e85e-2ff8-f833-0b5b-2868b61f2f34@huawei.com>
+Date:   Mon, 8 Nov 2021 20:48:02 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211108123639.GT2744544@nvidia.com>
+In-Reply-To: <CAMj1kXFE1Gv41TowKZHqkwn+WVLsAOqJSFbi706KbMC0G_rqgw@mail.gmail.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.67.110.176]
+X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
+ dggeme762-chm.china.huawei.com (10.3.19.108)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 08, 2021 at 08:36:39AM -0400, Jason Gunthorpe wrote:
-> On Sun, Nov 07, 2021 at 08:40:47AM +0200, Leon Romanovsky wrote:
-> > From: Leon Romanovsky <leonro@nvidia.com>
-> > 
-> > >> drivers/infiniband/core/nldev.c:2543:1: warning: unused function '__chk_RDMA_NL_NLDEV'
-> >    MODULE_ALIAS_RDMA_NETLINK(RDMA_NL_NLDEV, 5);
-> >    ^
-> > 
-> > Fixes: e3bf14bdc17a ("rdma: Autoload netlink client modules")
-> > Reported-by: kernel test robot <lkp@intel.com>
-> > Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
-> > ---
-> >  include/rdma/rdma_netlink.h | 2 +-
-> >  1 file changed, 1 insertion(+), 1 deletion(-)
-> > 
-> > diff --git a/include/rdma/rdma_netlink.h b/include/rdma/rdma_netlink.h
-> > index 2758d9df71ee..c2a79aeee113 100644
-> > --- a/include/rdma/rdma_netlink.h
-> > +++ b/include/rdma/rdma_netlink.h
-> > @@ -30,7 +30,7 @@ enum rdma_nl_flags {
-> >   * constant as well and the compiler checks they are the same.
-> >   */
-> >  #define MODULE_ALIAS_RDMA_NETLINK(_index, _val)                                \
-> > -	static inline void __chk_##_index(void)                                \
-> > +	static inline void __maybe_unused __chk_##_index(void)                 \
-> >  	{                                                                      \
-> >  		BUILD_BUG_ON(_index != _val);                                  \
-> >  	}                                                                      \
-> 
-> This is a compiler bug, static inline should never need maybe_unsed
+Hi Ard,
 
-I saw many examples like this in arch code.
-For example, commit 4ac214574d2d ("KVM: MMU: mark role_regs and role accessors as maybe unused")
+Thanks for your reply.
 
-It is better to fix and forget instead of trying to fix clang.
+In my understanding address and size need to meet consistent alignment 
+constraints,If I understand wrong, please reject this patch.
 
-Thanks
+Best,
 
-> 
-> Jason
+GaoSheng.
+
+在 2021/11/4 17:26, Ard Biesheuvel 写道:
+> On Tue, 2 Nov 2021 at 03:04, Gaosheng Cui <cuigaosheng1@huawei.com> wrote:
+>> We are doing page-based allocations, and both the address
+>> and size must meet alignment constraints, so using "align"
+>> for the size alignment is a better choice.
+>>
+> Why is it a better choice? If I allocate a 2 MB aligned block of
+> memory, why is it better to align the size to a multiple of 2 MB as
+> well?
+>
+>
+>> Signed-off-by: Gaosheng Cui <cuigaosheng1@huawei.com>
+>> ---
+>>   drivers/firmware/efi/libstub/randomalloc.c | 2 +-
+>>   drivers/firmware/efi/libstub/relocate.c    | 2 +-
+>>   2 files changed, 2 insertions(+), 2 deletions(-)
+>>
+>> diff --git a/drivers/firmware/efi/libstub/randomalloc.c b/drivers/firmware/efi/libstub/randomalloc.c
+>> index 724155b9e10d..7b7159bb035d 100644
+>> --- a/drivers/firmware/efi/libstub/randomalloc.c
+>> +++ b/drivers/firmware/efi/libstub/randomalloc.c
+>> @@ -76,7 +76,7 @@ efi_status_t efi_random_alloc(unsigned long size,
+>>          if (align < EFI_ALLOC_ALIGN)
+>>                  align = EFI_ALLOC_ALIGN;
+>>
+>> -       size = round_up(size, EFI_ALLOC_ALIGN);
+>> +       size = round_up(size, align);
+>>
+>>          /* count the suitable slots in each memory map entry */
+>>          for (map_offset = 0; map_offset < map_size; map_offset += desc_size) {
+>> diff --git a/drivers/firmware/efi/libstub/relocate.c b/drivers/firmware/efi/libstub/relocate.c
+>> index 8ee9eb2b9039..d6d27e8c23f8 100644
+>> --- a/drivers/firmware/efi/libstub/relocate.c
+>> +++ b/drivers/firmware/efi/libstub/relocate.c
+>> @@ -50,7 +50,7 @@ efi_status_t efi_low_alloc_above(unsigned long size, unsigned long align,
+>>          if (align < EFI_ALLOC_ALIGN)
+>>                  align = EFI_ALLOC_ALIGN;
+>>
+>> -       size = round_up(size, EFI_ALLOC_ALIGN);
+>> +       size = round_up(size, align);
+>>          nr_pages = size / EFI_PAGE_SIZE;
+>>          for (i = 0; i < map_size / desc_size; i++) {
+>>                  efi_memory_desc_t *desc;
+>> --
+>> 2.30.0
+>>
+> .
