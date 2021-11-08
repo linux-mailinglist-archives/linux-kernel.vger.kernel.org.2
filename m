@@ -2,177 +2,188 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 55776447B34
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Nov 2021 08:36:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DCA04447B1D
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Nov 2021 08:31:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235058AbhKHHiq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Nov 2021 02:38:46 -0500
-Received: from so254-9.mailgun.net ([198.61.254.9]:10495 "EHLO
-        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231808AbhKHHio (ORCPT
+        id S237844AbhKHHav (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Nov 2021 02:30:51 -0500
+Received: from szxga03-in.huawei.com ([45.249.212.189]:27187 "EHLO
+        szxga03-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237859AbhKHHaa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Nov 2021 02:38:44 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1636356961; h=Content-Transfer-Encoding: Content-Type:
- In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
- Subject: Sender; bh=l9kiI4uHR2rmwPsreo+RrcGqVZDlNXEReTYLuPyDcGk=; b=YGHtNS6ONlMZO0TobcuVFC7OV9gMaX/MizjSM+YxUK1shFABDiAvAnnBTQZggRk3gkcGxxs3
- knt4yKZpBIGjwSZvRI60oaE5Q6PbIkLoRhK/o16StzrLtjEJkh1+nNvtKS0UvD5vBBff0cKU
- giGyNJsPl1UjitJnffwwIfh3uaQ=
-X-Mailgun-Sending-Ip: 198.61.254.9
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n03.prod.us-west-2.postgun.com with SMTP id
- 6188d35613b75473b272f5de (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 08 Nov 2021 07:35:50
- GMT
-Sender: srivasam=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 60685C43617; Mon,  8 Nov 2021 07:35:50 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-6.0 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        NICE_REPLY_A,SPF_FAIL autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from [10.242.143.72] (unknown [202.46.23.19])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: srivasam)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 564D5C4338F;
-        Mon,  8 Nov 2021 07:35:44 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 smtp.codeaurora.org 564D5C4338F
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=codeaurora.org
-Subject: Re: [PATCH v4 1/2] ASoC: google: dt-bindings: Add sc7280-herobrine
- machine bindings
-To:     Rob Herring <robh+dt@kernel.org>
-Cc:     Stephen Boyd <swboyd@chromium.org>,
-        "Gross, Andy" <agross@kernel.org>,
-        Linux-ALSA <alsa-devel@alsa-project.org>,
-        Banajit Goswami <bgoswami@codeaurora.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Mark Brown <broonie@kernel.org>, devicetree@vger.kernel.org,
-        judyhsiao@chromium.org, Liam Girdwood <lgirdwood@gmail.com>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Patrick Lai <plai@codeaurora.org>,
-        Rohit kumar <rohitkr@codeaurora.org>,
-        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
-        Takashi Iwai <tiwai@suse.com>
-References: <1635519876-7112-1-git-send-email-srivasam@codeaurora.org>
- <1635519876-7112-2-git-send-email-srivasam@codeaurora.org>
- <CAE-0n53ok5muZ8nhpsigsw3w_qx_TSxGSdm7pf9nbb+s4K+HiQ@mail.gmail.com>
- <0cf52203-249a-2f6c-6106-888631ac85fa@codeaurora.org>
- <CAL_JsqLxJ4HYUEcdCu-5EiakXe9e3yueOdxRa24K2r04F1Zqeg@mail.gmail.com>
-From:   Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
-Organization: Qualcomm India Private Limited.
-Message-ID: <b1f2280a-b349-6862-c6e1-f74a5584c9bc@codeaurora.org>
-Date:   Mon, 8 Nov 2021 13:05:41 +0530
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.14.0
+        Mon, 8 Nov 2021 02:30:30 -0500
+Received: from dggeme754-chm.china.huawei.com (unknown [172.30.72.56])
+        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4HnjMh2NxJz8vF3;
+        Mon,  8 Nov 2021 15:26:08 +0800 (CST)
+Received: from huawei.com (10.175.127.227) by dggeme754-chm.china.huawei.com
+ (10.3.19.100) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.15; Mon, 8
+ Nov 2021 15:27:42 +0800
+From:   Ye Bin <yebin10@huawei.com>
+To:     <axboe@kernel.dk>, <linux-block@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+CC:     <ming.lei@redhat.com>, Ye Bin <yebin10@huawei.com>,
+        Yu Kuai <yukuai3@huawei.com>
+Subject: [PATCH -next v2] blk-mq: don't free tags if the tag_set is used by other device in queue initialztion
+Date:   Mon, 8 Nov 2021 15:40:19 +0800
+Message-ID: <20211108074019.1058843-1-yebin10@huawei.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-In-Reply-To: <CAL_JsqLxJ4HYUEcdCu-5EiakXe9e3yueOdxRa24K2r04F1Zqeg@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.127.227]
+X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
+ dggeme754-chm.china.huawei.com (10.3.19.100)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+We got UAF report on v5.10 as follows:
+[ 1446.674930] ==================================================================
+[ 1446.675970] BUG: KASAN: use-after-free in blk_mq_get_driver_tag+0x9a4/0xa90
+[ 1446.676902] Read of size 8 at addr ffff8880185afd10 by task kworker/1:2/12348
+[ 1446.677851]
+[ 1446.678073] CPU: 1 PID: 12348 Comm: kworker/1:2 Not tainted 5.10.0-10177-gc9c81b1e346a #2
+[ 1446.679168] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS rel-1.14.0-0-g155821a1990b-prebuilt.qemu.org 04/01/2014
+[ 1446.680692] Workqueue: kthrotld blk_throtl_dispatch_work_fn
+[ 1446.681448] Call Trace:
+[ 1446.681800]  dump_stack+0x9b/0xce
+[ 1446.682916]  print_address_description.constprop.6+0x3e/0x60
+[ 1446.685999]  kasan_report.cold.9+0x22/0x3a
+[ 1446.687186]  blk_mq_get_driver_tag+0x9a4/0xa90
+[ 1446.687785]  blk_mq_dispatch_rq_list+0x21a/0x1d40
+[ 1446.692576]  __blk_mq_do_dispatch_sched+0x394/0x830
+[ 1446.695758]  __blk_mq_sched_dispatch_requests+0x398/0x4f0
+[ 1446.698279]  blk_mq_sched_dispatch_requests+0xdf/0x140
+[ 1446.698967]  __blk_mq_run_hw_queue+0xc0/0x270
+[ 1446.699561]  __blk_mq_delay_run_hw_queue+0x4cc/0x550
+[ 1446.701407]  blk_mq_run_hw_queue+0x13b/0x2b0
+[ 1446.702593]  blk_mq_sched_insert_requests+0x1de/0x390
+[ 1446.703309]  blk_mq_flush_plug_list+0x4b4/0x760
+[ 1446.705408]  blk_flush_plug_list+0x2c5/0x480
+[ 1446.708471]  blk_finish_plug+0x55/0xa0
+[ 1446.708980]  blk_throtl_dispatch_work_fn+0x23b/0x2e0
+[ 1446.711236]  process_one_work+0x6d4/0xfe0
+[ 1446.711778]  worker_thread+0x91/0xc80
+[ 1446.713400]  kthread+0x32d/0x3f0
+[ 1446.714362]  ret_from_fork+0x1f/0x30
+[ 1446.714846]
+[ 1446.715062] Allocated by task 1:
+[ 1446.715509]  kasan_save_stack+0x19/0x40
+[ 1446.716026]  __kasan_kmalloc.constprop.1+0xc1/0xd0
+[ 1446.716673]  blk_mq_init_tags+0x6d/0x330
+[ 1446.717207]  blk_mq_alloc_rq_map+0x50/0x1c0
+[ 1446.717769]  __blk_mq_alloc_map_and_request+0xe5/0x320
+[ 1446.718459]  blk_mq_alloc_tag_set+0x679/0xdc0
+[ 1446.719050]  scsi_add_host_with_dma.cold.3+0xa0/0x5db
+[ 1446.719736]  virtscsi_probe+0x7bf/0xbd0
+[ 1446.720265]  virtio_dev_probe+0x402/0x6c0
+[ 1446.720808]  really_probe+0x276/0xde0
+[ 1446.721320]  driver_probe_device+0x267/0x3d0
+[ 1446.721892]  device_driver_attach+0xfe/0x140
+[ 1446.722491]  __driver_attach+0x13a/0x2c0
+[ 1446.723037]  bus_for_each_dev+0x146/0x1c0
+[ 1446.723603]  bus_add_driver+0x3fc/0x680
+[ 1446.724145]  driver_register+0x1c0/0x400
+[ 1446.724693]  init+0xa2/0xe8
+[ 1446.725091]  do_one_initcall+0x9e/0x310
+[ 1446.725626]  kernel_init_freeable+0xc56/0xcb9
+[ 1446.726231]  kernel_init+0x11/0x198
+[ 1446.726714]  ret_from_fork+0x1f/0x30
+[ 1446.727212]
+[ 1446.727433] Freed by task 26992:
+[ 1446.727882]  kasan_save_stack+0x19/0x40
+[ 1446.728420]  kasan_set_track+0x1c/0x30
+[ 1446.728943]  kasan_set_free_info+0x1b/0x30
+[ 1446.729517]  __kasan_slab_free+0x111/0x160
+[ 1446.730084]  kfree+0xb8/0x520
+[ 1446.730507]  blk_mq_free_map_and_requests+0x10b/0x1b0
+[ 1446.731206]  blk_mq_realloc_hw_ctxs+0x8cb/0x15b0
+[ 1446.731844]  blk_mq_init_allocated_queue+0x374/0x1380
+[ 1446.732540]  blk_mq_init_queue_data+0x7f/0xd0
+[ 1446.733155]  scsi_mq_alloc_queue+0x45/0x170
+[ 1446.733730]  scsi_alloc_sdev+0x73c/0xb20
+[ 1446.734281]  scsi_probe_and_add_lun+0x9a6/0x2d90
+[ 1446.734916]  __scsi_scan_target+0x208/0xc50
+[ 1446.735500]  scsi_scan_channel.part.3+0x113/0x170
+[ 1446.736149]  scsi_scan_host_selected+0x25a/0x360
+[ 1446.736783]  store_scan+0x290/0x2d0
+[ 1446.737275]  dev_attr_store+0x55/0x80
+[ 1446.737782]  sysfs_kf_write+0x132/0x190
+[ 1446.738313]  kernfs_fop_write_iter+0x319/0x4b0
+[ 1446.738921]  new_sync_write+0x40e/0x5c0
+[ 1446.739429]  vfs_write+0x519/0x720
+[ 1446.739877]  ksys_write+0xf8/0x1f0
+[ 1446.740332]  do_syscall_64+0x2d/0x40
+[ 1446.740802]  entry_SYSCALL_64_after_hwframe+0x44/0xa9
+[ 1446.741462]
+[ 1446.741670] The buggy address belongs to the object at ffff8880185afd00
+[ 1446.741670]  which belongs to the cache kmalloc-256 of size 256
+[ 1446.743276] The buggy address is located 16 bytes inside of
+[ 1446.743276]  256-byte region [ffff8880185afd00, ffff8880185afe00)
+[ 1446.744765] The buggy address belongs to the page:
+[ 1446.745416] page:ffffea0000616b00 refcount:1 mapcount:0 mapping:0000000000000000 index:0x0 pfn:0x185ac
+[ 1446.746694] head:ffffea0000616b00 order:2 compound_mapcount:0 compound_pincount:0
+[ 1446.747719] flags: 0x1fffff80010200(slab|head)
+[ 1446.748337] raw: 001fffff80010200 ffffea00006a3208 ffffea000061bf08 ffff88801004f240
+[ 1446.749404] raw: 0000000000000000 0000000000100010 00000001ffffffff 0000000000000000
+[ 1446.750455] page dumped because: kasan: bad access detected
+[ 1446.751227]
+[ 1446.751445] Memory state around the buggy address:
+[ 1446.752102]  ffff8880185afc00: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
+[ 1446.753090]  ffff8880185afc80: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
+[ 1446.754079] >ffff8880185afd00: fa fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+[ 1446.755065]                          ^
+[ 1446.755589]  ffff8880185afd80: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+[ 1446.756574]  ffff8880185afe00: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
+[ 1446.757566] ==================================================================
 
-On 11/6/2021 7:00 AM, Rob Herring wrote:
-Thanks for Your time Rob!!!
-> On Tue, Nov 2, 2021 at 5:57 AM Srinivasa Rao Mandadapu
-> <srivasam@codeaurora.org> wrote:
->>
->> On 10/30/2021 12:37 AM, Stephen Boyd wrote:
->> Thanks for Your time Stephen!!!
->>> Quoting Srinivasa Rao Mandadapu (2021-10-29 08:04:35)
->>>> diff --git a/Documentation/devicetree/bindings/sound/google,sc7280-herobrine.yaml b/Documentation/devicetree/bindings/sound/google,sc7280-herobrine.yaml
->>>> new file mode 100644
->>>> index 0000000..3a781c8
->>>> --- /dev/null
->>>> +++ b/Documentation/devicetree/bindings/sound/google,sc7280-herobrine.yaml
->>>> @@ -0,0 +1,170 @@
->>>> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
->>>> +%YAML 1.2
->>>> +---
->>>> +$id: http://devicetree.org/schemas/sound/google,sc7280-herobrine.yaml#
->>>> +$schema: http://devicetree.org/meta-schemas/core.yaml#
->>>> +
->>>> +title: Google SC7280-Herobrine ASoC sound card driver
->>>> +
->>>> +maintainers:
->>>> +  - Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
->>>> +  - Judy Hsiao <judyhsiao@chromium.org>
->>>> +
->>>> +description:
->>>> +  This binding describes the SC7280 sound card which uses LPASS for audio.
->>>> +
->>>> +properties:
->>>> +  compatible:
->>>> +    enum:
->>>> +      - google,sc7280-herobrine
->>>> +
->>>> +  audio-routing:
->>>> +    $ref: /schemas/types.yaml#/definitions/non-unique-string-array
->>>> +    description:
->>>> +      A list of the connections between audio components. Each entry is a
->>>> +      pair of strings, the first being the connection's sink, the second
->>>> +      being the connection's source.
->>>> +
->>>> +  model:
->>>> +    $ref: /schemas/types.yaml#/definitions/string
->>>> +    description: User specified audio sound card name
->>>> +
->>>> +  "#address-cells":
->>>> +    const: 1
->>>> +
->>>> +  "#size-cells":
->>>> +    const: 0
->>>> +
->>>> +patternProperties:
->>>> +  "^dai-link@[0-9a-f]$":
->>>> +    description:
->>>> +      Each subnode represents a dai link. Subnodes of each dai links would be
->>>> +      cpu/codec dais.
->>>> +
->>>> +    type: object
->>>> +
->>>> +    properties:
->>>> +      link-name:
->>>> +        description: Indicates dai-link name and PCM stream name.
->>>> +        $ref: /schemas/types.yaml#/definitions/string
->>>> +        maxItems: 1
->>>> +
->>>> +      reg:
->>>> +        maxItems: 1
->>>> +        description: dai link address.
->>>> +
->>>> +      cpu:
->>>> +        description: Holds subnode which indicates cpu dai.
->>>> +        type: object
->>>> +        properties:
->>>> +          sound-dai: true
->>> Is sound-dai required? And additionalProperties is false? I think we
->>> need that yet again.
->> Okay. Will mark additionalPropertiesas true.
-> 'additiionalProperties: true' is almost never right. It's generally
-> only correct for schemas that are incomplete collections of
-> properties.
->
-> Rob
+Flag 'BLK_MQ_F_TAG_QUEUE_SHARED' will be set if the second device on the
+same host initializes it's queue successfully. However, if the second
+device failed to allocate memory in blk_mq_alloc_and_init_hctx() from
+blk_mq_realloc_hw_ctxs() from blk_mq_init_allocated_queue(),
+__blk_mq_free_map_and_rqs() will be called on error path, and if
+'BLK_MQ_TAG_HCTX_SHARED' is not set, 'tag_set->tags' will be freed
+while it's still used by the first device.
 
-As per Stephen Suggestion. thought it's a solution.
+To fix this issue we move release newly allocated hardware context from
+blk_mq_realloc_hw_ctxs to __blk_mq_update_nr_hw_queues. As there is needn't to
+release hardware context in blk_mq_init_allocated_queue.
 
-The sound-dai required here, and same is fallowed in SC7180 machine 
-driver bindings.
+Fixes: 868f2f0b7206 ("blk-mq: dynamic h/w context count")
+Signed-off-by: Ye Bin <yebin10@huawei.com>
+Signed-off-by: Yu Kuai <yukuai3@huawei.com>
+---
+ block/blk-mq.c | 6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
 
-Could You please suggest better approach on this?
-
-
+diff --git a/block/blk-mq.c b/block/blk-mq.c
+index 205d2ca40393..091158aa5416 100644
+--- a/block/blk-mq.c
++++ b/block/blk-mq.c
+@@ -3605,7 +3605,6 @@ static void blk_mq_realloc_hw_ctxs(struct blk_mq_tag_set *set,
+ 		struct blk_mq_hw_ctx *hctx = hctxs[j];
+ 
+ 		if (hctx) {
+-			__blk_mq_free_map_and_rqs(set, j);
+ 			blk_mq_exit_hctx(q, set, hctx, j);
+ 			hctxs[j] = NULL;
+ 		}
+@@ -4113,8 +4112,13 @@ static void __blk_mq_update_nr_hw_queues(struct blk_mq_tag_set *set,
+ 	list_for_each_entry(q, &set->tag_list, tag_set_list) {
+ 		blk_mq_realloc_hw_ctxs(set, q);
+ 		if (q->nr_hw_queues != set->nr_hw_queues) {
++			int i = prev_nr_hw_queues;
++
+ 			pr_warn("Increasing nr_hw_queues to %d fails, fallback to %d\n",
+ 					nr_hw_queues, prev_nr_hw_queues);
++			for (; i < set->nr_hw_queues; i++)
++				__blk_mq_free_map_and_rqs(set, i);
++
+ 			set->nr_hw_queues = prev_nr_hw_queues;
+ 			blk_mq_map_queues(&set->map[HCTX_TYPE_DEFAULT]);
+ 			goto fallback;
 -- 
-Qualcomm India Private Limited, on behalf of Qualcomm Innovation Center, Inc.,
-is a member of Code Aurora Forum, a Linux Foundation Collaborative Project.
+2.31.1
 
