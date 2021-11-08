@@ -2,130 +2,191 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B8645449B63
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Nov 2021 19:05:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2FDEB449B68
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Nov 2021 19:06:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234729AbhKHSI0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Nov 2021 13:08:26 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34132 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234728AbhKHSIM (ORCPT
+        id S234829AbhKHSJG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Nov 2021 13:09:06 -0500
+Received: from mail-oi1-f172.google.com ([209.85.167.172]:45910 "EHLO
+        mail-oi1-f172.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234728AbhKHSJD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Nov 2021 13:08:12 -0500
-Received: from mail-pj1-x1029.google.com (mail-pj1-x1029.google.com [IPv6:2607:f8b0:4864:20::1029])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 87C3FC061570
-        for <linux-kernel@vger.kernel.org>; Mon,  8 Nov 2021 10:05:27 -0800 (PST)
-Received: by mail-pj1-x1029.google.com with SMTP id f20-20020a17090a639400b001a772f524d1so510771pjj.5
-        for <linux-kernel@vger.kernel.org>; Mon, 08 Nov 2021 10:05:27 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=1bvQfGtg1qY0mnkya9WogPfleiDdsq2oQqr6nYpuOh0=;
-        b=m8C1XRcb6PUBPexiCgx9dWcYzX2TKZ2/TBttt0gFFtStZsWw94l1fMXF7z7p+iIxk8
-         KEjPUSvTPM4X0Z+8l4Y7Eu7M89YIWGo8knRYjMcuBK1H4gE1rJKUR6Dde2QMLcg16BNV
-         1j+mYRynIs8lzo5QhH3iHG1GzDhswYsUj5ROQ=
+        Mon, 8 Nov 2021 13:09:03 -0500
+Received: by mail-oi1-f172.google.com with SMTP id u2so28858775oiu.12;
+        Mon, 08 Nov 2021 10:06:19 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=1bvQfGtg1qY0mnkya9WogPfleiDdsq2oQqr6nYpuOh0=;
-        b=GG5l0Qe6G00DLe/I3m/LxULg/Kt5GBIf0Wmf3s21jzlqMqLgZYgbij6/ewCaljfe0k
-         vIsBg9VY3N/6urJrUbqHfeqMTsCe2GZ/vgyfE5cfp5p+tLhiMkSMa3c6fG8QKWs66CZp
-         R1chv9uahdt1qT0qYqIDrg3PCk/ssnYu831QXPTgcuA4wN2rtAdo+uBkXoRcbAHpbMf1
-         k1NhNKtNbTX/aFdjcQU6DRdNvLVqSigc4rSwK2ENNkHb5/UhFx+ZNYsuGw1c+EnwH/GX
-         kJivmQAY8OPpU+F1580mH3ayZnqUi7EMfmhknvSUIqKbN8PzbYW6pi+aov2LRUtNnQ9W
-         HSNw==
-X-Gm-Message-State: AOAM530lceF5XljBfbHrpRx1x9f6rdEljTYZ176nBmVilWikbT8kp/7D
-        mtX4SDsLuncWnnm6EfJLzbGZeQ==
-X-Google-Smtp-Source: ABdhPJwiKlR9fvqKcWuZhoDW1mL+j9NDCOH2CZmyAOA7hRqzIijkEbY3J7qkkOwoGdgIeXa2AFmFFQ==
-X-Received: by 2002:a17:903:286:b0:142:4abc:88b8 with SMTP id j6-20020a170903028600b001424abc88b8mr1071389plr.25.1636394726902;
-        Mon, 08 Nov 2021 10:05:26 -0800 (PST)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id i2sm8411877pfe.70.2021.11.08.10.05.26
+        bh=9lnLXG/bXbyXQGlWv3MhH5r9wnv2o0rdiMQr4B9gclY=;
+        b=YdhIpeDLbuD9LQPWWhnIvcygLaYWzLKjcQV29Wv0lXavz+of0znbbXurUAnkYPVc26
+         p8HpQppa0k3OZAndCWkpH1OZUl2JG8BmMUp0vNXQI567zYqIYkYLE/PXjzFB/1mPLlkL
+         83hXZBXAlmQhBl2H1LikqoPVP4CEtTmH6E9CBB8X3CaAoncSHv/Ufc8H2Wwnask4ODiu
+         JmQqRvsR+BFA71HVqtc4b+JZzs57zuNZMgI+stINK7KTjjuI6E8kFsyWx7cMZTpnOfND
+         ROMal547PVcoJ48TgCbcdwtkClEPz8jlMbQ9Jb5oSWQecz73vXRFPJhnbQnUQf81KjAj
+         yVXQ==
+X-Gm-Message-State: AOAM531EwT46DbN2QJ75rP7fvHtP0YtABvLEaMHyuGiekZph7tqwvtNP
+        79oays5eC0feOEgLwc38EQ==
+X-Google-Smtp-Source: ABdhPJzGI4wzpRGugqgY8wFxgZUkbFlkvY8GaiFS4N4OxbYx7GtY1iRnLPxthCXtA/6sNluFcaXltA==
+X-Received: by 2002:a54:4486:: with SMTP id v6mr186399oiv.90.1636394778826;
+        Mon, 08 Nov 2021 10:06:18 -0800 (PST)
+Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
+        by smtp.gmail.com with ESMTPSA id g15sm6378935oiy.8.2021.11.08.10.06.17
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 08 Nov 2021 10:05:26 -0800 (PST)
-Date:   Mon, 8 Nov 2021 10:05:25 -0800
-From:   Kees Cook <keescook@chromium.org>
-To:     Ajay Garg <ajaygargnsit@gmail.com>
-Cc:     Greg KH <gregkh@linuxfoundation.org>, andy@kernel.org,
-        akpm@linux-foundation.org, adobriyan@gmail.com,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-hardening@vger.kernel.org
-Subject: Re: RFC for a new string-copy function, using mixtures of strlcpy
- and strscpy
-Message-ID: <202111080954.B97F7B4C@keescook>
-References: <CAHP4M8X1ABEhu8kGtRSJHeqQ_m627hNT_N3Q_GGdcr3W_Rfspw@mail.gmail.com>
- <YYkWb4GQAAtZJNsT@kroah.com>
- <CAHP4M8W2H4V=qgAeVp76GwfVUBzR3erZxJiuhm6jnyMo+gvknQ@mail.gmail.com>
+        Mon, 08 Nov 2021 10:06:18 -0800 (PST)
+Received: (nullmailer pid 3947047 invoked by uid 1000);
+        Mon, 08 Nov 2021 18:06:17 -0000
+Date:   Mon, 8 Nov 2021 12:06:17 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Pratyush Yadav <p.yadav@ti.com>
+Cc:     Mark Brown <broonie@kernel.org>, Nishanth Menon <nm@ti.com>,
+        Michael Walle <michael@walle.cc>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Richard Weinberger <richard@nod.at>,
+        Tudor Ambarus <tudor.ambarus@microchip.com>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-mtd@lists.infradead.org, linux-spi@vger.kernel.org
+Subject: Re: [PATCH v2 2/3] spi: dt-bindings: cdns,qspi-nor: Move
+ slave-specific properties out
+Message-ID: <YYlnGfTw42nmg3sl@robh.at.kernel.org>
+References: <20211028124518.17370-1-p.yadav@ti.com>
+ <20211028124518.17370-3-p.yadav@ti.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAHP4M8W2H4V=qgAeVp76GwfVUBzR3erZxJiuhm6jnyMo+gvknQ@mail.gmail.com>
+In-Reply-To: <20211028124518.17370-3-p.yadav@ti.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 08, 2021 at 06:15:54PM +0530, Ajay Garg wrote:
-> Hi Greg,
-> 
-> Thanks for your time.
-> 
-> >
-> > Wait, why?  We have recently added new string copy functions to resolve
-> > the type of issues you have pointed out.  The kernel is not yet
-> > converted to use them, so why add yet-another-function that also is not
-> > used?
-> 
-> Greg, would request your couple of minutes more, in suggesting a
-> concrete way forward, by working through an example as below.
-> 
-> 
-> In the file fs/kernfs/dir.c, there is a statement
-> 
->         return strlcpy(buf, kn->parent ? kn->name : "/", buflen);
-> 
-> Here, there is no information of how long kn->name might be, so there
-> is a definite chance of overflow happening. Thus, accordingly, strlcpy
-> is used, to bound copying of upto buflen bytes. Of course, buf
-> (destination-buffer) is safe from any overflow now.
-> 
-> However, iffff strlen(kn->name) is greater than (buflen - 1), then
-> strlcpy would return a different value than the number of bytes
-> actually copied. Since there is no check, this (wrong) return value
-> will be propagated to the clients down the stack.
+On Thu, Oct 28, 2021 at 06:15:17PM +0530, Pratyush Yadav wrote:
+> The spi-slave-props.yaml schema contains slave-specific properties
+> for SPI controllers that should be present in the slave node. Move
+> slave-specific properties to a separate file and refer to it in
+> spi-slave-props.yaml.
 
-The propagation issues are the real problem here, IMO. strlcpy returns
-strlen(src), which is bound to cause problems if the result in used to
-adjust string index, and strscpy returns -E2BIG on overflow, which can
-cause different problems if the result in used to adjust string indexes.
+Other than s/slave/peripheral/, LGTM.
 
-strlcpy has the added problem of potentially performing OOB reads when
-src is unterminated, so it needs to be entirely removed from the kernel
-in favor of strscpy[1]. But yes, as you say, it isn't a drop-in
-replacement, but that's because it shouldn't be -- the return values
-need to be checked in both cases.
-
-> Now, in the current situation, following is the remedy :
 > 
-> ########################################
->         int ret = strlcpy(buf, kn->parent ? kn->name : "/", buflen);
->         if(ret >= buflen)
->             ret = buflen - 1;
+> Signed-off-by: Pratyush Yadav <p.yadav@ti.com>
 > 
->         return ret;
-> ########################################
-
-We do have other functions that "hide" the overflow (e.g. scnprintf),
-but those are usually more common in large string constructions, or
-chains of copies. When doing a single string copy, I think it's
-important that the caller decide explicitly what to do in the overflow
-case.
-
-For the specific fs/kerfs/dir.c case, I don't see any problems --
-nothing uses the result (cgroup_name() is the only caller of
-kernfs_name() that I see).
-
--- 
-Kees Cook
+> ---
+> 
+> Changes in v2:
+> - New in v2.
+> 
+>  .../spi/cdns,qspi-nor-slave-props.yaml        | 42 +++++++++++++++++++
+>  .../bindings/spi/cdns,qspi-nor.yaml           | 33 ---------------
+>  .../bindings/spi/spi-slave-props.yaml         |  2 +
+>  3 files changed, 44 insertions(+), 33 deletions(-)
+>  create mode 100644 Documentation/devicetree/bindings/spi/cdns,qspi-nor-slave-props.yaml
+> 
+> diff --git a/Documentation/devicetree/bindings/spi/cdns,qspi-nor-slave-props.yaml b/Documentation/devicetree/bindings/spi/cdns,qspi-nor-slave-props.yaml
+> new file mode 100644
+> index 000000000000..263382a5729a
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/spi/cdns,qspi-nor-slave-props.yaml
+> @@ -0,0 +1,42 @@
+> +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/spi/cdns,qspi-nor-slave-props.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: Slave-specific properties for the Cadence QSPI controller.
+> +
+> +description:
+> +  See spi-slave-props.yaml for more info.
+> +
+> +maintainers:
+> +  - Pratyush Yadav <p.yadav@ti.com>
+> +
+> +properties:
+> +  # cdns,qspi-nor.yaml
+> +  cdns,read-delay:
+> +    $ref: /schemas/types.yaml#/definitions/uint32
+> +    description:
+> +      Delay for read capture logic, in clock cycles.
+> +
+> +  cdns,tshsl-ns:
+> +    description:
+> +      Delay in nanoseconds for the length that the master mode chip select
+> +      outputs are de-asserted between transactions.
+> +
+> +  cdns,tsd2d-ns:
+> +    description:
+> +      Delay in nanoseconds between one chip select being de-activated
+> +      and the activation of another.
+> +
+> +  cdns,tchsh-ns:
+> +    description:
+> +      Delay in nanoseconds between last bit of current transaction and
+> +      deasserting the device chip select (qspi_n_ss_out).
+> +
+> +  cdns,tslch-ns:
+> +    description:
+> +      Delay in nanoseconds between setting qspi_n_ss_out low and
+> +      first bit transfer.
+> +
+> +additionalProperties: true
+> diff --git a/Documentation/devicetree/bindings/spi/cdns,qspi-nor.yaml b/Documentation/devicetree/bindings/spi/cdns,qspi-nor.yaml
+> index ca155abbda7a..a439e3ed753f 100644
+> --- a/Documentation/devicetree/bindings/spi/cdns,qspi-nor.yaml
+> +++ b/Documentation/devicetree/bindings/spi/cdns,qspi-nor.yaml
+> @@ -86,39 +86,6 @@ properties:
+>      items:
+>        enum: [ qspi, qspi-ocp ]
+>  
+> -# subnode's properties
+> -patternProperties:
+> -  "@[0-9a-f]+$":
+> -    type: object
+> -    description:
+> -      Flash device uses the below defined properties in the subnode.
+> -
+> -    properties:
+> -      cdns,read-delay:
+> -        $ref: /schemas/types.yaml#/definitions/uint32
+> -        description:
+> -          Delay for read capture logic, in clock cycles.
+> -
+> -      cdns,tshsl-ns:
+> -        description:
+> -          Delay in nanoseconds for the length that the master mode chip select
+> -          outputs are de-asserted between transactions.
+> -
+> -      cdns,tsd2d-ns:
+> -        description:
+> -          Delay in nanoseconds between one chip select being de-activated
+> -          and the activation of another.
+> -
+> -      cdns,tchsh-ns:
+> -        description:
+> -          Delay in nanoseconds between last bit of current transaction and
+> -          deasserting the device chip select (qspi_n_ss_out).
+> -
+> -      cdns,tslch-ns:
+> -        description:
+> -          Delay in nanoseconds between setting qspi_n_ss_out low and
+> -          first bit transfer.
+> -
+>  required:
+>    - compatible
+>    - reg
+> diff --git a/Documentation/devicetree/bindings/spi/spi-slave-props.yaml b/Documentation/devicetree/bindings/spi/spi-slave-props.yaml
+> index 5166ec9b0353..4cc12a161da9 100644
+> --- a/Documentation/devicetree/bindings/spi/spi-slave-props.yaml
+> +++ b/Documentation/devicetree/bindings/spi/spi-slave-props.yaml
+> @@ -87,5 +87,7 @@ properties:
+>        Delay, in microseconds, after a write transfer.
+>  
+>  # The controller specific properties go here.
+> +allOf:
+> +  - $ref: cdns,qspi-nor-slave-props.yaml#
+>  
+>  additionalProperties: true
+> -- 
+> 2.33.1.835.ge9e5ba39a7
+> 
+> 
