@@ -2,77 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A3806449AC3
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Nov 2021 18:30:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BAB54449AC6
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Nov 2021 18:32:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240382AbhKHRcz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Nov 2021 12:32:55 -0500
-Received: from smtp-out1.suse.de ([195.135.220.28]:37460 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230348AbhKHRcy (ORCPT
+        id S240428AbhKHRe5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Nov 2021 12:34:57 -0500
+Received: from mail-pg1-f181.google.com ([209.85.215.181]:44570 "EHLO
+        mail-pg1-f181.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230348AbhKHRey (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Nov 2021 12:32:54 -0500
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out1.suse.de (Postfix) with ESMTP id F2BF5212C2;
-        Mon,  8 Nov 2021 17:30:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1636392609; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=OWI1nCB7f0aN2OQYFqbQwRLdzXnDoryx+hXcS9XW2CE=;
-        b=VV/AGa5yhetUwyFekQOe6s7lStbdNKSb4soF7dI8m8BeY+AzvIf1dlwSSZQ3hH/2+mFBgh
-        4Bs+xGmRREAVfnof0NA5F2N33DaH69/XF5KDHZcWGv0MAvE6AJsTxQI09TXuQv873DNW3/
-        34F0LSzNXU/3vGlBx8ZtDI0hEQFOXyM=
-Received: from suse.cz (unknown [10.100.201.86])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by relay2.suse.de (Postfix) with ESMTPS id C1519A3B88;
-        Mon,  8 Nov 2021 17:30:08 +0000 (UTC)
-Date:   Mon, 8 Nov 2021 18:30:05 +0100
-From:   Michal Hocko <mhocko@suse.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Dave Chinner <david@fromorbit.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        Ilya Dryomov <idryomov@gmail.com>,
-        Jeff Layton <jlayton@kernel.org>,
-        Linux-MM <linux-mm@kvack.org>, mm-commits@vger.kernel.org,
-        Neil Brown <neilb@suse.de>, Uladzislau Rezki <urezki@gmail.com>
-Subject: Re: [patch 099/262] mm/vmalloc: be more explicit about supported gfp
- flags
-Message-ID: <YYleneQXV/Jz619B@dhcp22.suse.cz>
-References: <20211105133408.cccbb98b71a77d5e8430aba1@linux-foundation.org>
- <20211105203950.AJ1Cnteeh%akpm@linux-foundation.org>
- <YYjs7UT15WIF23DJ@dhcp22.suse.cz>
- <CAHk-=wjov5-baOgf+r7bOh=P_YCHuxBcyf_b=or990RTxz5QAw@mail.gmail.com>
+        Mon, 8 Nov 2021 12:34:54 -0500
+Received: by mail-pg1-f181.google.com with SMTP id p8so14448035pgh.11;
+        Mon, 08 Nov 2021 09:32:09 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=kKEuO5YXcbBlcHaiiVKVj0NBTGwhOLq1VPBkrxjpGEI=;
+        b=wis6nSqm3DsWoYY3ny6WqnHW28ojTbggo3bHbVAfaIjHLAdj+N96De7gbhDpovaikp
+         0Yqes43as2Jf0n2Z8rwWWGRfCozoPBikUL14qNsgWTswQQHbGx8pCiUMeiiGaM7/O350
+         nRxMAWFbKfCWbmEsUy4d9vexbbmiD0uCiU8C1EIhNrl/V6XVed5DUYe14EZflNbFO3wT
+         N6D1fRAtwdH10xjVizOq1WAQJiEConSdKZUsredT+auxvbU6jxH3U6VK5TxDOw/6G6+8
+         spBV1duNAFYSJ+Xqf9jqh/7OajhU2jdsUlwfp0axSMJKU5UejwSrwm0VjcfuDSf+OT45
+         /v5A==
+X-Gm-Message-State: AOAM532j29ke9iJqRuNSieBcPbA+/uex07Q21Iw0ebYQRcqFldegnw51
+        ye6WWqvVGZ13tkSwRmkPhX/Aw4myWSJuew==
+X-Google-Smtp-Source: ABdhPJxA6HRzdCk7J8G41bAHf2+UxRBqtGYb6cBaS2kU1X97QVAXgRcM+2EiJuke1yBCb64pDZt56A==
+X-Received: by 2002:aa7:808e:0:b0:493:f071:274f with SMTP id v14-20020aa7808e000000b00493f071274fmr937796pff.37.1636392729209;
+        Mon, 08 Nov 2021 09:32:09 -0800 (PST)
+Received: from bvanassche-linux.mtv.corp.google.com ([2620:15c:211:201:4ca8:59a2:ad3c:1580])
+        by smtp.gmail.com with ESMTPSA id j15sm16588841pfh.35.2021.11.08.09.32.08
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 08 Nov 2021 09:32:08 -0800 (PST)
+Subject: Re: [PATCH 2/2] scsi: ufs: Return a bsg request immediatley if
+ eh-in-progress
+To:     Avri Altman <Avri.Altman@wdc.com>,
+        "James E . J . Bottomley" <jejb@linux.vnet.ibm.com>,
+        "Martin K . Petersen" <martin.petersen@oracle.com>
+Cc:     "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Adrian Hunter <adrian.hunter@intel.com>
+References: <20211108120804.10405-1-avri.altman@wdc.com>
+ <20211108120804.10405-3-avri.altman@wdc.com>
+ <fa7dae1f-06ac-9d5a-616d-cc00c38e5feb@acm.org>
+ <DM6PR04MB6575F4831649503EE848C4CFFC919@DM6PR04MB6575.namprd04.prod.outlook.com>
+From:   Bart Van Assche <bvanassche@acm.org>
+Message-ID: <06c95606-ac89-5750-224f-04c72b5cc111@acm.org>
+Date:   Mon, 8 Nov 2021 09:32:07 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.14.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAHk-=wjov5-baOgf+r7bOh=P_YCHuxBcyf_b=or990RTxz5QAw@mail.gmail.com>
+In-Reply-To: <DM6PR04MB6575F4831649503EE848C4CFFC919@DM6PR04MB6575.namprd04.prod.outlook.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon 08-11-21 09:15:04, Linus Torvalds wrote:
-> On Mon, Nov 8, 2021 at 1:25 AM Michal Hocko <mhocko@suse.com> wrote:
-> >
-> > As already pointed out
-> > http://lkml.kernel.org/r/YXE+hcodJ7zxeYA7@dhcp22.suse.cz this patch
-> > cannot be applied without other patches from the same series.
-> 
-> Hmm. I've taken it already.
-> 
-> Not a huge deal, since it's a comment change - and the code will
-> presumably eventually match the updated comment.
+On 11/8/21 9:24 AM, Avri Altman wrote:
+> I am not sure. I would expect a retry / polling / other, if any, to
+> be done in user-space and not in the kernel. e.g. a common practice
+> in the code that send SG_IO or other ioctls is to retry on EBUSY. Not
+> sure that this is the case in ufs-utils though.
+Shouldn't we aim to make sure that user space code does not have to use 
+busy waiting?
 
-I plan to send the rest after the merge window.
- 
-> I guess it's a new thing that instead of stale comments, we have
-> future-proof ones ;)
+Thanks,
 
-I just hope nobody gets confused about which are not supported yet. E.g.
-GFP_NOFAIL, GFP_NO{FS,IO}. In both cases the direct use could lead to
-bugs.
--- 
-Michal Hocko
-SUSE Labs
+Bart.
