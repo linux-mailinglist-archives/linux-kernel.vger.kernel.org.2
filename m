@@ -2,212 +2,314 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EE70B449E57
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Nov 2021 22:39:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5446A449E5D
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Nov 2021 22:40:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240491AbhKHVmZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Nov 2021 16:42:25 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54536 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240471AbhKHVmX (ORCPT
+        id S240505AbhKHVnC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Nov 2021 16:43:02 -0500
+Received: from smtp-relay-internal-1.canonical.com ([185.125.188.123]:44014
+        "EHLO smtp-relay-internal-1.canonical.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S240495AbhKHVnB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Nov 2021 16:42:23 -0500
-Received: from mail-il1-x134.google.com (mail-il1-x134.google.com [IPv6:2607:f8b0:4864:20::134])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2EAB2C061570
-        for <linux-kernel@vger.kernel.org>; Mon,  8 Nov 2021 13:39:39 -0800 (PST)
-Received: by mail-il1-x134.google.com with SMTP id x9so18516940ilu.6
-        for <linux-kernel@vger.kernel.org>; Mon, 08 Nov 2021 13:39:39 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=sartura-hr.20210112.gappssmtp.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=qytYReYi2DeUI7hCFbbAa02ZiVc0pq8Kh5KE+hVc89c=;
-        b=H3USv1SxyfFzlVpWLI1rBldttje8XhrfpQIes1iEdAxsPes6sc10Ckzgj/hAPEfN14
-         O3PEIq4cLUYJddeH1GJH7Gms3+YalJ/8HOvft++EAHwhST4SmsEpSRehE328qv6WsEid
-         qEwob/tgjU/yjJtK14zugDR0/qbglhOFALAVx6+rUyyl2KLi2M7K1r5E7cfgKZqw2WOj
-         VO/NRbrORIsD9uwUmJDmXcywQS1kd/z2GWgcif6wonJfHzAfR7aYMgpyga5sW2ZXzcjE
-         hxttz9Tg3e6GEe87veFodYwHxTLadS9CEokrVSFebaCet99dCJ9RrXyX17y0mGni/3iU
-         IWMA==
+        Mon, 8 Nov 2021 16:43:01 -0500
+Received: from mail-lf1-f72.google.com (mail-lf1-f72.google.com [209.85.167.72])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-relay-internal-1.canonical.com (Postfix) with ESMTPS id 6CDFE3F1B0
+        for <linux-kernel@vger.kernel.org>; Mon,  8 Nov 2021 21:40:15 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1636407615;
+        bh=xMlhz60Y7Re9w6VZ4mCdMM9k1oT7By2/e2a+Ful96Aw=;
+        h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+         In-Reply-To:Content-Type;
+        b=Cw9hrTQ1a+rGSjBzygkb1SCOuG11ula+F4jiTytQ7sYVe5i/by0pMxkJVTyew54ik
+         ZaQhKyCLLYHw5ih1rgyxu90rFvqA+sonFrGLxQ3PeXcuS6RxH/24vJwAHKsHqSC1S1
+         xsAozsFZQr3oOHnC3+ATycz+NUJEe2KeB99iT8Vts3RdAiLHah3dpJqDqi3DtGu6vI
+         dCD4HpGABkhfvweG5lqaLpFIUNykd/XLND4tIoI8fqlT/tfEuyKADHkvYbJzrQHSCU
+         aS4EaC/uK2+tgUEmXufYPqcBtoR1pBDRuWF+cZ+7vLqu1O0eh/AMF/Cp5LAkXH2KDF
+         Xp7YR5RHs4IgA==
+Received: by mail-lf1-f72.google.com with SMTP id y40-20020a0565123f2800b003fded085638so7026665lfa.0
+        for <linux-kernel@vger.kernel.org>; Mon, 08 Nov 2021 13:40:15 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=qytYReYi2DeUI7hCFbbAa02ZiVc0pq8Kh5KE+hVc89c=;
-        b=4Oxd9XvEofTWGP358rHIqiLvsSc2xrwlUSPe2dsvEx7uCPJJXIk0ml4bwg8TvZoexO
-         5R3i5LueLGo3r+97dneEWkSjd4DXvnBBtdt2eErFqSVaeSBUhHg/W2EKRNAkj/F1nAT9
-         /ywnhYgeZkXeuBncTrSupWvNY0HGzGwzVTTV0FCH66ikenXYAKSutHbl12QMH5OA7bHf
-         pAF3TDolqwc7RIYjA5MYMvYJEjJB1z1rJ+WAJ3gQl+iecuwF+7zl0SCtbXhvlskVrSKn
-         Y+2pfCPbUk0fRfX15sTfaxOP/Cg6A1oziggU7u6SLty4pT/g/KmOvB3A45OgW9FDSn0Z
-         XiWQ==
-X-Gm-Message-State: AOAM531WzBRcBkP+T+GR/yWg91UTXzqor8zs8d3w+SST5254D1F25k4s
-        1/986aIhkQyzTkJPlIPp9qo4DsSl5qCDV/tCf+Ie6w==
-X-Google-Smtp-Source: ABdhPJyohNilOe6CSCxSa6otuYhyXaBrosmVaxYXY0HfEfNsGc3l7tziImiZ4gruW3kQdM5CnQTUzIrtvT59QdcUgt4=
-X-Received: by 2002:a05:6e02:1a85:: with SMTP id k5mr1669051ilv.27.1636407578605;
- Mon, 08 Nov 2021 13:39:38 -0800 (PST)
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:in-reply-to
+         :content-transfer-encoding;
+        bh=xMlhz60Y7Re9w6VZ4mCdMM9k1oT7By2/e2a+Ful96Aw=;
+        b=r5DLrziNED9iJERV41wydnvTg4JsEcjWCxsbTeeq8330dQshAILZ0Plyh1qO0gsrGq
+         F71Go8YDuVZyfSW/avNEv5kf+7n+aSn3I9r0BmL5S0/7yh/Bws/xLkTdgVjQiOtKmczP
+         Blj3s/DIqVlKa1pjDPSnVrkrHEXJoYoB9Un0erDRMN8II6S1AX1KLwwwjC1g0JmRe8/m
+         1cVMQqRdSp/uz5cNe0AJ0P4VT5Lx1rdBOJfjglaUD73v8BioILLL4tPJOVOzefC3vX2j
+         GUa8qKlpFMzju0k5fJhPr5ezQ2gcSr+X7xlt9YMXFXfHiApUMWwiKu8SPI9xjh9Zl+2i
+         gMYQ==
+X-Gm-Message-State: AOAM533i+L6S4EDWCzIba7Xka+VrNRYOV/NOd4JZj9tAD/bebL/3H9iJ
+        0k5HxUps9Jk2HiTwb+BomcAsDV2LTFlCgANddNvrXzlfEGm7zMCmBEsK7cC9Nq19/siUAsDTlQV
+        G0BJQEymgelqPtWMKuZra3uO0T6W9e/lJ3TxuF+Ag3w==
+X-Received: by 2002:ac2:4bc2:: with SMTP id o2mr2168845lfq.307.1636407614505;
+        Mon, 08 Nov 2021 13:40:14 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJym1HJFJOCiKpshotep+fEMHGVvuCHCUht7Znnr1Fptl/CMGw7zMKN16qBDQpX9jY7h2z+d7w==
+X-Received: by 2002:ac2:4bc2:: with SMTP id o2mr2168813lfq.307.1636407614293;
+        Mon, 08 Nov 2021 13:40:14 -0800 (PST)
+Received: from [192.168.3.67] (89-77-68-124.dynamic.chello.pl. [89.77.68.124])
+        by smtp.gmail.com with ESMTPSA id h18sm295563ljh.133.2021.11.08.13.40.12
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 08 Nov 2021 13:40:13 -0800 (PST)
+Message-ID: <01fdf2cf-26ae-b062-178b-4b9a23cd5803@canonical.com>
+Date:   Mon, 8 Nov 2021 22:40:12 +0100
 MIME-Version: 1.0
-References: <20211104124927.364683-1-robert.marko@sartura.hr>
- <20211108202058.th7vjq4sjca3encz@skbuf> <CA+HBbNE_jh_h9bx9GLfMRFz_Kq=Vx1pu0dE1aK0guMoEkX1S5A@mail.gmail.com>
- <20211108211811.qukts37eufgfj4sc@skbuf>
-In-Reply-To: <20211108211811.qukts37eufgfj4sc@skbuf>
-From:   Robert Marko <robert.marko@sartura.hr>
-Date:   Mon, 8 Nov 2021 22:39:27 +0100
-Message-ID: <CA+HBbNGvg43wMNbte827wmK_fnWuweKSgA-nWW+UPGCvunUwGA@mail.gmail.com>
-Subject: Re: [net-next] net: dsa: qca8k: only change the MIB_EN bit in
- MODULE_EN register
-To:     Vladimir Oltean <olteanv@gmail.com>
-Cc:     Andrew Lunn <andrew@lunn.ch>, vivien.didelot@gmail.com,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        David Miller <davem@davemloft.net>, kuba@kernel.org,
-        netdev@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Gabor Juhos <j4g8y7@gmail.com>, John Crispin <john@phrozen.org>
-Content-Type: text/plain; charset="UTF-8"
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.2.1
+Subject: Re: [PATCH 12/13] riscv: icicle-kit: update microchip icicle kit
+ device tree
+Content-Language: en-US
+To:     conor.dooley@microchip.com, linus.walleij@linaro.org,
+        bgolaszewski@baylibre.com, robh+dt@kernel.org,
+        jassisinghbrar@gmail.com, paul.walmsley@sifive.com,
+        palmer@dabbelt.com, aou@eecs.berkeley.edu, a.zummo@towertech.it,
+        alexandre.belloni@bootlin.com, broonie@kernel.org,
+        gregkh@linuxfoundation.org, lewis.hanly@microchip.com,
+        daire.mcnamara@microchip.com, atish.patra@wdc.com,
+        ivan.griffin@microchip.com, linux-gpio@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-i2c@vger.kernel.org, linux-riscv@lists.infradead.org,
+        linux-crypto@vger.kernel.org, linux-rtc@vger.kernel.org,
+        linux-spi@vger.kernel.org, linux-usb@vger.kernel.org
+Cc:     geert@linux-m68k.org, bin.meng@windriver.com
+References: <20211108150554.4457-1-conor.dooley@microchip.com>
+ <20211108150554.4457-13-conor.dooley@microchip.com>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+In-Reply-To: <20211108150554.4457-13-conor.dooley@microchip.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 8, 2021 at 10:18 PM Vladimir Oltean <olteanv@gmail.com> wrote:
->
-> On Mon, Nov 08, 2021 at 10:10:19PM +0100, Robert Marko wrote:
-> > On Mon, Nov 8, 2021 at 9:21 PM Vladimir Oltean <olteanv@gmail.com> wrote:
-> > >
-> > > Timed out waiting for ACK/NACK from John.
-> > >
-> > > On Thu, Nov 04, 2021 at 01:49:27PM +0100, Robert Marko wrote:
-> > > > From: Gabor Juhos <j4g8y7@gmail.com>
-> > > >
-> > > > The MIB module needs to be enabled in the MODULE_EN register in
-> > > > order to make it to counting. This is done in the qca8k_mib_init()
-> > > > function. However instead of only changing the MIB module enable
-> > > > bit, the function writes the whole register. As a side effect other
-> > > > internal modules gets disabled.
-> > >
-> > > Please be more specific.
-> > > The MODULE_EN register contains these other bits:
-> > > BIT(0): MIB_EN
-> > > BIT(1): ACL_EN (ACL module enable)
-> > > BIT(2): L3_EN (Layer 3 offload enable)
-> > > BIT(10): SPECIAL_DIP_EN (Enable special DIP (224.0.0.x or ff02::1) broadcast
-> > > 0 = Use multicast DP
-> > > 1 = Use broadcast DP)
-> > >
-> > > >
-> > > > Fix up the code to only change the MIB module specific bit.
-> > >
-> > > Clearing which one of the above bits bothers you? The driver for the
-> > > qca8k switch supports neither layer 3 offloading nor ACLs, and I don't
-> > > really know what this special DIP packet/header is).
-> > >
-> > > Generally the assumption for OF-based drivers is that one should not
-> > > rely on any configuration done by prior boot stages, so please explain
-> > > what should have worked but doesn't.
-> >
-> > Hi,
-> > I think that the commit message wasn't clear enough and that's my fault for not
-> > fixing it up before sending.
->
-> Yes, it is not. If things turn out to need changing, you should resend
-> with an updated commit message.
->
-> > MODULE_EN register has 3 more bits that aren't documented in the QCA8337
-> > datasheet but only in the IPQ4019 one but they are there.
-> > Those are:
-> > BIT(31) S17C_INT (This one is IPQ4019 specific)
-> > BIT(9) LOOKUP_ERR_RST_EN
-> > BIT(10) QM_ERR_RST_EN
->
-> Are you sure that BIT(10) is QM_ERR_RST_EN on IPQ4019? Because in the
-> QCA8334 document I'm looking at, it is SPECIAL_DIP_EN.
+On 08/11/2021 16:05, conor.dooley@microchip.com wrote:
+> From: Conor Dooley <conor.dooley@microchip.com>
+> 
+> Update the device tree for the icicle kit by splitting it into a third part,
+> which contains peripherals in the fpga fabric, add new peripherals
+> (spi, qspi, gpio, rtc, pcie, system services, i2c), update parts of the memory
+> map which have been changed.
 
-Sorry, QM_ERR_RST_EN is BIT(8) and it as well as LOOKUP_ERR_RST_EN should
-be exactly the same on QCA833x switches as well as IPQ4019 uses a
-variant of QCA8337N.
->
-> > Lookup and QM bits as well as the DIP default to 1 while the INT bit is 0.
-> >
-> > Clearing the QM and Lookup bits is what is bothering me, why should we clear HW
-> > default bits without mentioning that they are being cleared and for what reason?
->
-> To be fair, BIT(9) is marked as RESERVED and documented as being set to 1,
-> so writing a zero is probably not very smart.
->
-> > We aren't depending on the bootloader or whatever configuring the switch, we are
-> > even invoking the HW reset before doing anything to make sure that the
-> > whole networking
-> > subsystem in IPQ4019 is back to HW defaults to get rid of various
-> > bootloader hackery.
-> >
-> > Gabor found this while working on IPQ4019 support and to him and to me it looks
-> > like a bug.
->
-> A bug with what impact? I don't have a description of those bits that
-> get unset. What do they do, what doesn't work?
+This should be multiple commits because you mix up refactoring (split)
+and adding new features. The patch is really, really difficult to
+review. I gave up in the middle.
 
-LOOKUP_ERR_RST_EN:
-1b1:Enableautomatic software reset by hardware due to
-lookup error.
+> 
+> Signed-off-by: Conor Dooley <conor.dooley@microchip.com>
+> ---
+>  .../dts/microchip/microchip-mpfs-fabric.dtsi  |  21 ++
+>  .../microchip/microchip-mpfs-icicle-kit.dts   | 159 +++++++--
+>  .../boot/dts/microchip/microchip-mpfs.dtsi    | 333 ++++++++++++++----
+>  3 files changed, 428 insertions(+), 85 deletions(-)
+>  create mode 100644 arch/riscv/boot/dts/microchip/microchip-mpfs-fabric.dtsi
+> 
+> diff --git a/arch/riscv/boot/dts/microchip/microchip-mpfs-fabric.dtsi b/arch/riscv/boot/dts/microchip/microchip-mpfs-fabric.dtsi
+> new file mode 100644
+> index 000000000000..8fa3356494f1
+> --- /dev/null
+> +++ b/arch/riscv/boot/dts/microchip/microchip-mpfs-fabric.dtsi
+> @@ -0,0 +1,21 @@
+> +// SPDX-License-Identifier: (GPL-2.0 OR MIT)
+> +/* Copyright (c) 2020-2021 Microchip Technology Inc */
+> +
+> +/ {
+> +	fpgadma: fpgadma@60020000 {
+> +		compatible = "microchip,mpfs-fpga-dma-uio";
+> +		#address-cells = <1>;
+> +		#size-cells = <0>;
+> +		reg = <0x0 0x60020000 0x0 0x1000>;
+> +		interrupt-parent = <&plic>;
+> +		interrupts = <PLIC_INT_FABRIC_F2H_2>;
+> +		status = "okay";
+> +	};
+> +
+> +	fpgalsram: fpga_lsram@61000000 {
 
-QM_ERR_RST_EN:
-1b1:enableautomatic software reset by hardware due to qm
-error.
+Node names go with hyphen, but actually you should not need it, because
+the name should be generic, e.g. "uio".
 
-So clearing these 2 disables the built-in error recovery essentially.
+However there is no such compatible and checkpatch should complain about it.
 
-To me clearing the bits even if they are not breaking something now
-should at least have a comment in the code that indicates that it's intentional
-for some reason.
-I wish John would explain the logic behind this.
+> +		compatible = "generic-uio";
+> +		reg = <0x0 0x61000000 0x0 0x0001000
+> +			0x14 0x00000000 0x0 0x00010000>;
+> +		status = "okay";
+> +	};
+> +};
+> diff --git a/arch/riscv/boot/dts/microchip/microchip-mpfs-icicle-kit.dts b/arch/riscv/boot/dts/microchip/microchip-mpfs-icicle-kit.dts
+> index fc1e5869df1b..4212129fcdf1 100644
+> --- a/arch/riscv/boot/dts/microchip/microchip-mpfs-icicle-kit.dts
+> +++ b/arch/riscv/boot/dts/microchip/microchip-mpfs-icicle-kit.dts
+> @@ -1,5 +1,5 @@
+>  // SPDX-License-Identifier: (GPL-2.0 OR MIT)
+> -/* Copyright (c) 2020 Microchip Technology Inc */
+> +/* Copyright (c) 2020-2021 Microchip Technology Inc */
+>  
+>  /dts-v1/;
+>  
+> @@ -13,72 +13,187 @@ / {
+>  	compatible = "microchip,mpfs-icicle-kit", "microchip,mpfs";
+>  
+>  	aliases {
+> -		ethernet0 = &emac1;
+> -		serial0 = &serial0;
+> -		serial1 = &serial1;
+> -		serial2 = &serial2;
+> -		serial3 = &serial3;> +		mmuart0 = &mmuart0;
+> +		mmuart1 = &mmuart1;
+> +		mmuart2 = &mmuart2;
+> +		mmuart3 = &mmuart3;
+> +		mmuart4 = &mmuart4;
 
-Regards,
-Robert
->
-> > I hope this clears up things a bit.
-> > Regards,
-> > Robert
-> > >
-> > > >
-> > > > Fixes: 6b93fb46480a ("net-next: dsa: add new driver for qca8xxx family")
-> > > > Signed-off-by: Gabor Juhos <j4g8y7@gmail.com>
-> > > > Signed-off-by: Robert Marko <robert.marko@sartura.hr>
-> > > > ---
-> > > >  drivers/net/dsa/qca8k.c | 2 +-
-> > > >  1 file changed, 1 insertion(+), 1 deletion(-)
-> > > >
-> > > > diff --git a/drivers/net/dsa/qca8k.c b/drivers/net/dsa/qca8k.c
-> > > > index a984f06f6f04..a229776924f8 100644
-> > > > --- a/drivers/net/dsa/qca8k.c
-> > > > +++ b/drivers/net/dsa/qca8k.c
-> > > > @@ -583,7 +583,7 @@ qca8k_mib_init(struct qca8k_priv *priv)
-> > > >       if (ret)
-> > > >               goto exit;
-> > > >
-> > > > -     ret = qca8k_write(priv, QCA8K_REG_MODULE_EN, QCA8K_MODULE_EN_MIB);
-> > > > +     ret = qca8k_reg_set(priv, QCA8K_REG_MODULE_EN, QCA8K_MODULE_EN_MIB);
-> > > >
-> > > >  exit:
-> > > >       mutex_unlock(&priv->reg_mutex);
-> > > > --
-> > > > 2.33.1
-> > > >
-> >
-> >
-> >
-> > --
-> > Robert Marko
-> > Staff Embedded Linux Engineer
-> > Sartura Ltd.
-> > Lendavska ulica 16a
-> > 10000 Zagreb, Croatia
-> > Email: robert.marko@sartura.hr
-> > Web: www.sartura.hr
+Why? Commit msg does not explain it.
+
+>  	};
+>  
+>  	chosen {
+> -		stdout-path = "serial0:115200n8";
+> +		stdout-path = "mmuart1:115200n8";
+>  	};
+>  
+>  	cpus {
+>  		timebase-frequency = <RTCCLK_FREQ>;
+>  	};
+>  
+> -	memory@80000000 {
+> +	ddrc_cache_lo: memory@80000000 {
+>  		device_type = "memory";
+> -		reg = <0x0 0x80000000 0x0 0x40000000>;
+> -		clocks = <&clkcfg 26>;
+> +		reg = <0x0 0x80000000 0x0 0x2e000000>;
+> +		clocks = <&clkcfg CLK_DDRC>;
+> +		status = "okay";
+> +	};
+> +
+> +	ddrc_cache_hi: memory@1000000000 {
+> +		device_type = "memory";
+> +		reg = <0x10 0x0 0x0 0x40000000>;
+> +		clocks = <&clkcfg CLK_DDRC>;
+> +		status = "okay";
+>  	};
+>  };
+>  
+> -&serial0 {
+> +&mmuart1 {
+>  	status = "okay";
+>  };
+>  
+> -&serial1 {
+> +&mmuart2 {
+>  	status = "okay";
+>  };
+>  
+> -&serial2 {
+> +&mmuart3 {
+>  	status = "okay";
+>  };
+>  
+> -&serial3 {
+> +&mmuart4 {
+>  	status = "okay";
+>  };
+>  
+>  &mmc {
+>  	status = "okay";
+> -
+>  	bus-width = <4>;
+>  	disable-wp;
+>  	cap-sd-highspeed;
+> +	cap-mmc-highspeed;
+>  	card-detect-delay = <200>;
+> +	mmc-ddr-1_8v;
+> +	mmc-hs200-1_8v;
+>  	sd-uhs-sdr12;
+>  	sd-uhs-sdr25;
+>  	sd-uhs-sdr50;
+>  	sd-uhs-sdr104;
+>  };
+>  
+> -&emac0 {
+> +&spi0 {
+> +	status = "okay";
+> +	spidev@0 {
+> +		compatible = "spidev";
+
+1. There is no such compatible,
+2. You should have big fat warning when booting, so such DT cannot be
+accepted.
+
+> +		reg = <0>; /* CS 0 */
+> +		spi-max-frequency = <10000000>;
+> +		status = "okay";
+> +	};
+> +};
+> +
+> +&spi1 {
+> +	status = "okay";
+> +};
+> +
+> +&qspi {
+> +	status = "okay";
+> +};
+> +
+> +&i2c0 {
+> +	status = "okay";
+> +};
+> +
+> +&i2c1 {
+> +	status = "okay";
+> +	pac193x: pac193x@10 {
+
+Generic node name. Looks like compatible is not documented, so first
+bindings.
 
 
+> +		compatible = "microchip,pac1934";
+> +		reg = <0x10>;
+> +		samp-rate = <64>;
+> +		status = "okay";
+> +		ch0: channel0 {
+> +			uohms-shunt-res = <10000>;
+> +			rail-name = "VDDREG";
+> +			channel_enabled;
+> +		};
+> +		ch1: channel1 {
+> +			uohms-shunt-res = <10000>;
+> +			rail-name = "VDDA25";
+> +			channel_enabled;
+> +		};
+> +		ch2: channel2 {
+> +			uohms-shunt-res = <10000>;
+> +			rail-name = "VDD25";
+> +			channel_enabled;
+> +		};
+> +		ch3: channel3 {
+> +			uohms-shunt-res = <10000>;
+> +			rail-name = "VDDA_REG";
+> +			channel_enabled;
+> +		};
+> +	};
+> +};
+> +
+> +&mac0 {
+> +	status = "okay";
+>  	phy-mode = "sgmii";
+>  	phy-handle = <&phy0>;
+> -	phy0: ethernet-phy@8 {
+> -		reg = <8>;
+> -		ti,fifo-depth = <0x01>;
+> -	};
+>  };
+>  
+> -&emac1 {
+> +&mac1 {
 
--- 
-Robert Marko
-Staff Embedded Linux Engineer
-Sartura Ltd.
-Lendavska ulica 16a
-10000 Zagreb, Croatia
-Email: robert.marko@sartura.hr
-Web: www.sartura.hr
+I gave up here, it's not easy to find what is effect of refactoring,
+what is a new node.
+
+Best regards,
+Krzysztof
