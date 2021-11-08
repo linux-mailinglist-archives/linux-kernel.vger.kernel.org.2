@@ -2,191 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2FDEB449B68
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Nov 2021 19:06:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C021A449B6A
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Nov 2021 19:06:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234829AbhKHSJG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Nov 2021 13:09:06 -0500
-Received: from mail-oi1-f172.google.com ([209.85.167.172]:45910 "EHLO
-        mail-oi1-f172.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234728AbhKHSJD (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Nov 2021 13:09:03 -0500
-Received: by mail-oi1-f172.google.com with SMTP id u2so28858775oiu.12;
-        Mon, 08 Nov 2021 10:06:19 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=9lnLXG/bXbyXQGlWv3MhH5r9wnv2o0rdiMQr4B9gclY=;
-        b=YdhIpeDLbuD9LQPWWhnIvcygLaYWzLKjcQV29Wv0lXavz+of0znbbXurUAnkYPVc26
-         p8HpQppa0k3OZAndCWkpH1OZUl2JG8BmMUp0vNXQI567zYqIYkYLE/PXjzFB/1mPLlkL
-         83hXZBXAlmQhBl2H1LikqoPVP4CEtTmH6E9CBB8X3CaAoncSHv/Ufc8H2Wwnask4ODiu
-         JmQqRvsR+BFA71HVqtc4b+JZzs57zuNZMgI+stINK7KTjjuI6E8kFsyWx7cMZTpnOfND
-         ROMal547PVcoJ48TgCbcdwtkClEPz8jlMbQ9Jb5oSWQecz73vXRFPJhnbQnUQf81KjAj
-         yVXQ==
-X-Gm-Message-State: AOAM531EwT46DbN2QJ75rP7fvHtP0YtABvLEaMHyuGiekZph7tqwvtNP
-        79oays5eC0feOEgLwc38EQ==
-X-Google-Smtp-Source: ABdhPJzGI4wzpRGugqgY8wFxgZUkbFlkvY8GaiFS4N4OxbYx7GtY1iRnLPxthCXtA/6sNluFcaXltA==
-X-Received: by 2002:a54:4486:: with SMTP id v6mr186399oiv.90.1636394778826;
-        Mon, 08 Nov 2021 10:06:18 -0800 (PST)
-Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
-        by smtp.gmail.com with ESMTPSA id g15sm6378935oiy.8.2021.11.08.10.06.17
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 08 Nov 2021 10:06:18 -0800 (PST)
-Received: (nullmailer pid 3947047 invoked by uid 1000);
-        Mon, 08 Nov 2021 18:06:17 -0000
-Date:   Mon, 8 Nov 2021 12:06:17 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Pratyush Yadav <p.yadav@ti.com>
-Cc:     Mark Brown <broonie@kernel.org>, Nishanth Menon <nm@ti.com>,
-        Michael Walle <michael@walle.cc>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Richard Weinberger <richard@nod.at>,
-        Tudor Ambarus <tudor.ambarus@microchip.com>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mtd@lists.infradead.org, linux-spi@vger.kernel.org
-Subject: Re: [PATCH v2 2/3] spi: dt-bindings: cdns,qspi-nor: Move
- slave-specific properties out
-Message-ID: <YYlnGfTw42nmg3sl@robh.at.kernel.org>
-References: <20211028124518.17370-1-p.yadav@ti.com>
- <20211028124518.17370-3-p.yadav@ti.com>
+        id S234882AbhKHSJb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Nov 2021 13:09:31 -0500
+Received: from mga09.intel.com ([134.134.136.24]:23229 "EHLO mga09.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234728AbhKHSJ3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Nov 2021 13:09:29 -0500
+X-IronPort-AV: E=McAfee;i="6200,9189,10162"; a="232136200"
+X-IronPort-AV: E=Sophos;i="5.87,218,1631602800"; 
+   d="scan'208";a="232136200"
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Nov 2021 10:06:41 -0800
+X-IronPort-AV: E=Sophos;i="5.87,218,1631602800"; 
+   d="scan'208";a="451630202"
+Received: from smile.fi.intel.com ([10.237.72.184])
+  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Nov 2021 10:06:39 -0800
+Received: from andy by smile.fi.intel.com with local (Exim 4.95)
+        (envelope-from <andy.shevchenko@gmail.com>)
+        id 1mk92I-004oXR-SY;
+        Mon, 08 Nov 2021 20:06:26 +0200
+Date:   Mon, 8 Nov 2021 20:06:26 +0200
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+To:     Qian Cai <quic_qiancai@quicinc.com>
+Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
+        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Laurentiu Tudor <laurentiu.tudor@nxp.com>,
+        "linux-acpi@vger.kernel.org" <linux-acpi@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [RFC PATCH] software node: Skip duplicated software_node sysfs
+Message-ID: <YYlnIpGEmLH5GXft@smile.fi.intel.com>
+References: <20211101200346.16466-1-quic_qiancai@quicinc.com>
+ <CAHp75VcrWPdR8EVGpcsniQedT0J4X700N7thFs6+srTP1MTgwQ@mail.gmail.com>
+ <52df4a97-1132-d594-0180-132d0ca714d5@quicinc.com>
+ <CAHp75VebOnrce-XZjOnZiivQPz-Cdgq6mor5oiLxK8Y49GiNNg@mail.gmail.com>
+ <1269258d-db4c-3922-776b-f11e6a1e338e@quicinc.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20211028124518.17370-3-p.yadav@ti.com>
+In-Reply-To: <1269258d-db4c-3922-776b-f11e6a1e338e@quicinc.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 28, 2021 at 06:15:17PM +0530, Pratyush Yadav wrote:
-> The spi-slave-props.yaml schema contains slave-specific properties
-> for SPI controllers that should be present in the slave node. Move
-> slave-specific properties to a separate file and refer to it in
-> spi-slave-props.yaml.
+On Mon, Nov 08, 2021 at 11:07:53AM -0500, Qian Cai wrote:
+> On 11/5/21 3:39 PM, Andy Shevchenko wrote:
+> >> Andy, thanks for the pointers so far. I was able to trace
+> >> set_primary_fwnode() and set_secondary_fwnode().
+> > 
+> > Can you share the trace you have got?
 
-Other than s/slave/peripheral/, LGTM.
+...
 
-> 
-> Signed-off-by: Pratyush Yadav <p.yadav@ti.com>
-> 
-> ---
-> 
-> Changes in v2:
-> - New in v2.
-> 
->  .../spi/cdns,qspi-nor-slave-props.yaml        | 42 +++++++++++++++++++
->  .../bindings/spi/cdns,qspi-nor.yaml           | 33 ---------------
->  .../bindings/spi/spi-slave-props.yaml         |  2 +
->  3 files changed, 44 insertions(+), 33 deletions(-)
->  create mode 100644 Documentation/devicetree/bindings/spi/cdns,qspi-nor-slave-props.yaml
-> 
-> diff --git a/Documentation/devicetree/bindings/spi/cdns,qspi-nor-slave-props.yaml b/Documentation/devicetree/bindings/spi/cdns,qspi-nor-slave-props.yaml
-> new file mode 100644
-> index 000000000000..263382a5729a
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/spi/cdns,qspi-nor-slave-props.yaml
-> @@ -0,0 +1,42 @@
-> +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/spi/cdns,qspi-nor-slave-props.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: Slave-specific properties for the Cadence QSPI controller.
-> +
-> +description:
-> +  See spi-slave-props.yaml for more info.
-> +
-> +maintainers:
-> +  - Pratyush Yadav <p.yadav@ti.com>
-> +
-> +properties:
-> +  # cdns,qspi-nor.yaml
-> +  cdns,read-delay:
-> +    $ref: /schemas/types.yaml#/definitions/uint32
-> +    description:
-> +      Delay for read capture logic, in clock cycles.
-> +
-> +  cdns,tshsl-ns:
-> +    description:
-> +      Delay in nanoseconds for the length that the master mode chip select
-> +      outputs are de-asserted between transactions.
-> +
-> +  cdns,tsd2d-ns:
-> +    description:
-> +      Delay in nanoseconds between one chip select being de-activated
-> +      and the activation of another.
-> +
-> +  cdns,tchsh-ns:
-> +    description:
-> +      Delay in nanoseconds between last bit of current transaction and
-> +      deasserting the device chip select (qspi_n_ss_out).
-> +
-> +  cdns,tslch-ns:
-> +    description:
-> +      Delay in nanoseconds between setting qspi_n_ss_out low and
-> +      first bit transfer.
-> +
-> +additionalProperties: true
-> diff --git a/Documentation/devicetree/bindings/spi/cdns,qspi-nor.yaml b/Documentation/devicetree/bindings/spi/cdns,qspi-nor.yaml
-> index ca155abbda7a..a439e3ed753f 100644
-> --- a/Documentation/devicetree/bindings/spi/cdns,qspi-nor.yaml
-> +++ b/Documentation/devicetree/bindings/spi/cdns,qspi-nor.yaml
-> @@ -86,39 +86,6 @@ properties:
->      items:
->        enum: [ qspi, qspi-ocp ]
->  
-> -# subnode's properties
-> -patternProperties:
-> -  "@[0-9a-f]+$":
-> -    type: object
-> -    description:
-> -      Flash device uses the below defined properties in the subnode.
-> -
-> -    properties:
-> -      cdns,read-delay:
-> -        $ref: /schemas/types.yaml#/definitions/uint32
-> -        description:
-> -          Delay for read capture logic, in clock cycles.
-> -
-> -      cdns,tshsl-ns:
-> -        description:
-> -          Delay in nanoseconds for the length that the master mode chip select
-> -          outputs are de-asserted between transactions.
-> -
-> -      cdns,tsd2d-ns:
-> -        description:
-> -          Delay in nanoseconds between one chip select being de-activated
-> -          and the activation of another.
-> -
-> -      cdns,tchsh-ns:
-> -        description:
-> -          Delay in nanoseconds between last bit of current transaction and
-> -          deasserting the device chip select (qspi_n_ss_out).
-> -
-> -      cdns,tslch-ns:
-> -        description:
-> -          Delay in nanoseconds between setting qspi_n_ss_out low and
-> -          first bit transfer.
-> -
->  required:
->    - compatible
->    - reg
-> diff --git a/Documentation/devicetree/bindings/spi/spi-slave-props.yaml b/Documentation/devicetree/bindings/spi/spi-slave-props.yaml
-> index 5166ec9b0353..4cc12a161da9 100644
-> --- a/Documentation/devicetree/bindings/spi/spi-slave-props.yaml
-> +++ b/Documentation/devicetree/bindings/spi/spi-slave-props.yaml
-> @@ -87,5 +87,7 @@ properties:
->        Delay, in microseconds, after a write transfer.
->  
->  # The controller specific properties go here.
-> +allOf:
-> +  - $ref: cdns,qspi-nor-slave-props.yaml#
->  
->  additionalProperties: true
-> -- 
-> 2.33.1.835.ge9e5ba39a7
-> 
-> 
+> Then, here are the relevant outputs indicating that
+> "808622B7:01" and  "xhci-hcd.3.auto" have the same
+> primary but different secondaries.
+
+So, it confirms my theory if I'm not mistaken.
+
+Btw, what you can do in this case is to switch to use fwnode_create_software
+node and switch them in drd.c. It will be much much easier to achieve then
+full kernel refactoring.
+
+> [   11.233280] KK set_secondary_fwnode dev name = 808622B7:01, fwnode = ffff000838618840
+> [   11.241846] KK parent = platform
+> [   11.245790] KK primary = ffff0008064b9010
+> [   11.259838] KK set_primary_fwnode dev name = (null), fwnode = ffff0008064b9010
+> [   11.267795] KK parent = 808622B7:01
+> [   11.272000] KK fwnode->dev = 808622B7:01
+> [   11.276636] KK secondary = ffff000838618840
+> [   11.680489] KK set_secondary_fwnode dev name = xhci-hcd.3.auto, fwnode = ffff000838325040
+> [   11.689406] KK parent = 808622B7:01
+> [   11.693916] KK primary = ffff0008064b9010
+> [   11.698763] sysfs: cannot create duplicate filename '/devices/platform/808622B7:01/xhci-hcd.3.auto/software_node'
+
+-- 
+With Best Regards,
+Andy Shevchenko
+
+
