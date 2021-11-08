@@ -2,66 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D8DF8449C57
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Nov 2021 20:23:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2B748449C5C
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Nov 2021 20:24:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237163AbhKHT0a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Nov 2021 14:26:30 -0500
-Received: from mail-ot1-f44.google.com ([209.85.210.44]:35756 "EHLO
-        mail-ot1-f44.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236881AbhKHT03 (ORCPT
+        id S237208AbhKHT1L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Nov 2021 14:27:11 -0500
+Received: from mail-oi1-f169.google.com ([209.85.167.169]:45771 "EHLO
+        mail-oi1-f169.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236881AbhKHT1H (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Nov 2021 14:26:29 -0500
-Received: by mail-ot1-f44.google.com with SMTP id p11-20020a9d4e0b000000b0055a5741bff7so27191853otf.2;
-        Mon, 08 Nov 2021 11:23:44 -0800 (PST)
+        Mon, 8 Nov 2021 14:27:07 -0500
+Received: by mail-oi1-f169.google.com with SMTP id u2so29234357oiu.12;
+        Mon, 08 Nov 2021 11:24:23 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=mqDTQKApc2kTQofGLT1IqukelJnzReC5kPeApeje4eQ=;
-        b=Dj/knTZ6lJaGcGhgaWsoHL11w+dhi7xs3NHN5SW57ADxxWZ8gbVHBTm6PSwQHJQbxR
-         4z7TXwiwXLYQj4VGWQtTPkYA/ONHBqOx8lYdC5aT/cWQ7GoE5OdJEdFVbaepslmsb8kN
-         ZKkw0JElse+utK/YK+KV1rTXmlMm7+mIfReXHkuQPppLZDmD49NaDgqAmWCTtd/oA4GZ
-         74ZiphCxcfH0TZKN0y3RELCUIVVlFmHN2nx3nTtsZO8/D0UiLBI0kR1CfkNQ5eSX8t5p
-         VbXBxWRBPxiE/clOZOibiYo2X8pBHS+8BaF38nKBFQ8NFnHjmlv7LS0+jdmP5qCfAboM
-         QngA==
-X-Gm-Message-State: AOAM532IOnBEAox2AxTOxd+jTDfBFE8HwS48i+MLGB+/y9YDw0LLSru9
-        mspvHeFLB4NmjidL0u3Yag==
-X-Google-Smtp-Source: ABdhPJx3lD+3O7Jj4V4I2UeMIrVZzQhO2yLBSmbuSXbXCfKKOjcBoqXOQ295XzMoPvfirkaupaeHjA==
-X-Received: by 2002:a9d:a2b:: with SMTP id 40mr1224332otg.100.1636399424614;
-        Mon, 08 Nov 2021 11:23:44 -0800 (PST)
+        bh=FM8llzobihkoUvOXHFQ+hNZP7IbHJCuot18xvdjx4Uw=;
+        b=q1ROFL8Bi0wwliuSt2Rnb0vDmsrmLBT2tFHtRqZbQGixf34JuQc6xKCXVcgbE6Wb4l
+         hEHG0KuWsWpca5OjBJI4Hs6sHf5wEYP4tKGvM0fgrtJntONjS84e7axHY6qqdBSdUtTk
+         bAovG9bsMgTSCaQ9Mt4wC4MDCnDGFU0Fm11VRvpGjBXOkPSBuhHT572Nwd5tHCnLuZOa
+         mGd1nAW/jJUDJZX68s02s4gJLwTGXs0/KLiZGDYhnc2yo629pvTMKTG7PnSPIj6/u2S8
+         mCLHj8Rgc+m9YM+7kK5Yo/nJGSJScaYucR83sgF+d/cXoZnbg181zyDY0xcEA520yfiS
+         EjBQ==
+X-Gm-Message-State: AOAM530AQo5p13SitvFf2e0ofkdt0sE87hA6mjUvLO45G7k01h2M3K4Q
+        503HxMmTGFSGaxSL13nDPw==
+X-Google-Smtp-Source: ABdhPJwLcVMvMA46V9aGpbnxBj9mUGc+Iq2bgyEPo6tq8LWI3pWH7Z3VJA6ldrFp/+Ga0Ti+MB2jmQ==
+X-Received: by 2002:aca:e083:: with SMTP id x125mr620983oig.106.1636399462691;
+        Mon, 08 Nov 2021 11:24:22 -0800 (PST)
 Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
-        by smtp.gmail.com with ESMTPSA id z22sm6441009oth.63.2021.11.08.11.23.43
+        by smtp.gmail.com with ESMTPSA id j10sm1389435ooq.5.2021.11.08.11.24.21
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 08 Nov 2021 11:23:44 -0800 (PST)
-Received: (nullmailer pid 4062547 invoked by uid 1000);
-        Mon, 08 Nov 2021 19:23:43 -0000
-Date:   Mon, 8 Nov 2021 13:23:43 -0600
+        Mon, 08 Nov 2021 11:24:22 -0800 (PST)
+Received: (nullmailer pid 4063603 invoked by uid 1000);
+        Mon, 08 Nov 2021 19:24:21 -0000
+Date:   Mon, 8 Nov 2021 13:24:21 -0600
 From:   Rob Herring <robh@kernel.org>
-To:     Kavyasree Kotagiri <kavyasree.kotagiri@microchip.com>
-Cc:     devicetree@vger.kernel.org, UNGLinuxDriver@microchip.com,
-        Kavyasree.Kotagiri@microchip.com, linux-kernel@vger.kernel.org,
-        linux-gpio@vger.kernel.org, linus.walleij@linaro.org,
-        robh+dt@kernel.org
-Subject: Re: [PATCH 1/2] dt-bindings: pinctrl: ocelot: Add Lan966x SoC support
-Message-ID: <YYl5P4r6HZSWnxuv@robh.at.kernel.org>
-References: <20211029092703.18886-1-kavyasree.kotagiri@microchip.com>
- <20211029092703.18886-2-kavyasree.kotagiri@microchip.com>
+To:     David Heidelberg <david@ixit.cz>
+Cc:     ~okias/devicetree@lists.sr.ht,
+        Manu Gautam <mgautam@codeaurora.org>,
+        devicetree@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Rob Herring <robh+dt@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>
+Subject: Re: [PATCH 1/2] dt-bindings: usb: qcom,dwc3: add binding for IPQ4019
+ and IPQ8064
+Message-ID: <YYl5ZZBkBUxe5TCN@robh.at.kernel.org>
+References: <20211029103340.26828-1-david@ixit.cz>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20211029092703.18886-2-kavyasree.kotagiri@microchip.com>
+In-Reply-To: <20211029103340.26828-1-david@ixit.cz>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 29 Oct 2021 14:57:02 +0530, Kavyasree Kotagiri wrote:
-> Add documentation for the compatible designated for Lan966x.
+On Fri, 29 Oct 2021 12:33:38 +0200, David Heidelberg wrote:
+> Add compatible string for Qualcomm IPQ4019 and IPQ8064 SoC.
 > 
-> Signed-off-by: Kavyasree Kotagiri <kavyasree.kotagiri@microchip.com>
+> Signed-off-by: David Heidelberg <david@ixit.cz>
 > ---
->  .../devicetree/bindings/pinctrl/mscc,ocelot-pinctrl.txt        | 3 ++-
->  1 file changed, 2 insertions(+), 1 deletion(-)
+>  Documentation/devicetree/bindings/usb/qcom,dwc3.yaml | 2 ++
+>  1 file changed, 2 insertions(+)
 > 
 
 Acked-by: Rob Herring <robh@kernel.org>
