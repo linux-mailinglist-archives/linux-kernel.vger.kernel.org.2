@@ -2,139 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F665447C61
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Nov 2021 09:57:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E851447C6E
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Nov 2021 10:00:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238232AbhKHI7q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Nov 2021 03:59:46 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49612 "EHLO
+        id S238277AbhKHJDW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Nov 2021 04:03:22 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50400 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238226AbhKHI7n (ORCPT
+        with ESMTP id S238264AbhKHJDN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Nov 2021 03:59:43 -0500
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B3F50C061714
-        for <linux-kernel@vger.kernel.org>; Mon,  8 Nov 2021 00:56:58 -0800 (PST)
-Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=[IPv6:::1])
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <l.stach@pengutronix.de>)
-        id 1mk0SK-0003eP-Uo; Mon, 08 Nov 2021 09:56:45 +0100
-Message-ID: <a77d867eb42649d63356a62309e93ca78394f82f.camel@pengutronix.de>
-Subject: Re: [PATCH V2 1/5] soc: imx: imx8m-blk-ctrl: Fix imx8mm mipi reset
-From:   Lucas Stach <l.stach@pengutronix.de>
-To:     Adam Ford <aford173@gmail.com>,
-        linux-arm-kernel@lists.infradead.org
-Cc:     tharvey@gateworks.com, frieder.schrempf@kontron.de,
-        linux-media@vger.kernel.org, laurent.pinchart@ideasonboard.com,
-        aford@beaconembedded.com, cstevens@beaconembedded.com,
-        jagan@amarulasolutions.com, Rob Herring <robh+dt@kernel.org>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>, Peng Fan <peng.fan@nxp.com>,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Date:   Mon, 08 Nov 2021 09:56:40 +0100
-In-Reply-To: <20211106155427.753197-1-aford173@gmail.com>
-References: <20211106155427.753197-1-aford173@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.40.4 (3.40.4-1.fc34) 
+        Mon, 8 Nov 2021 04:03:13 -0500
+Received: from mail-ot1-x334.google.com (mail-ot1-x334.google.com [IPv6:2607:f8b0:4864:20::334])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F171DC061714;
+        Mon,  8 Nov 2021 01:00:09 -0800 (PST)
+Received: by mail-ot1-x334.google.com with SMTP id o15-20020a9d410f000000b0055c942cc7a0so1748856ote.8;
+        Mon, 08 Nov 2021 01:00:09 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=FZanGk8rGCBdhGfwRJPODn+28JTXVnU7A9yXQrXql5U=;
+        b=My1raRicmldHpmqxFEz86vzjpTbpS6iuVV2GdMFpFRH2MptKMQYzu4qssYOMmfDvYV
+         5ObAYAgUfVPWi7ignWFKfsDNA8+zW/RsFjYTxHhzbnYeb2Semfc5lDv8KZcOJst8FKOg
+         6u1iYI56w4zESvLIcwfNWwfL1grVHalG30056Fwmbo2vLe2FTOGzsjcf2oGwblBwe81p
+         Vo85vDS7/st80jjr6SpwqinLHHsuvhOQ+BTrjcprb8cyQafH+2ZRUCmcqifZbO7Rewyv
+         XzXhCF5p6gizHWLXF7rohTFaQrB/Gyn7RJfQGRFyQ5yCcHgn9cAS21hSNh7p66E6O1y6
+         z19Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=FZanGk8rGCBdhGfwRJPODn+28JTXVnU7A9yXQrXql5U=;
+        b=rTAaYFoM9ZAdEiFDn3m01cR32rOC4MQLyO8xKL8LI3pn72QjQBhq8SKUODHxwjBy4M
+         lYc8/QdLxyQ74e7GmS3QGo5sIl5CBAHsnt8f0mjk952tgBuSSZ8NUMq4inIA/z4pJo2Z
+         byCNAHCly8EMpphJsfBOUJ4pXozbjVOiC7dmL6FDb+HfNBBmvoeo+h28XdfYZT1Ebzhf
+         tQLXOpy7dol+v1d0Wu/nis5D0Hh12LJQoKmHWo7czuBjkMUDIC5rFG2g1ubm9xYmBmXr
+         NxmYmO/HErHBOpJ6toGskXG9MB9LCuuH9U4ZmNhtszAfBa5YZeYXKJQ9dT6MiLGO3ozN
+         +lzg==
+X-Gm-Message-State: AOAM530nJyiBhHKIFMzpURM/ShiOlQszZVvneU3650bp9wD2jUpCSqnz
+        ysenCLzO/wlY+5Z9juasoRT58K90l+hzSY2TC666hoy/Pbk=
+X-Google-Smtp-Source: ABdhPJx4StEUB+R6DAyP5d7YK12udwTm5xg8EZNd4Q6ZBUlffXWYR4nbReeR4Yo3+Td5hsWM30xNonMWWKdtRnSvpRc=
+X-Received: by 2002:a9d:6f0e:: with SMTP id n14mr9928388otq.173.1636362008818;
+ Mon, 08 Nov 2021 01:00:08 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
-X-SA-Exim-Mail-From: l.stach@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+References: <20211106092041.43745-1-ajaygargnsit@gmail.com>
+ <9eafae1f-d9f0-298d-cf20-212865d0becc@gmail.com> <868025b485b94480ad17d0ec971b3ee9@AcuMS.aculab.com>
+ <CAHP4M8Ww0-VqCBKX=iLd=zy1AcDoNdzTOqJuaqRxCGZsMhoX9w@mail.gmail.com>
+ <CAHP4M8UcZ=ttB8jbN1yOY6YH8SiQ27NhdEKi9SDH1CWG-GY6eg@mail.gmail.com>
+ <6b58a3e1-f2ea-cc4c-03b2-06334b559373@gmail.com> <CAHP4M8Vs8a8u98enuHXaBcC7D4fCZzCOtEq06VnvuPUqhqPK=Q@mail.gmail.com>
+ <9717b429-597f-7778-c880-94361bcdee7f@gmail.com> <CAHP4M8XtFiAa1kF5A_rPbcui3DP8L6iyfP8GbwgLLzo0Bo+TNQ@mail.gmail.com>
+ <65c45951-08ba-26bb-f96b-3d4442b1d4d4@gmail.com>
+In-Reply-To: <65c45951-08ba-26bb-f96b-3d4442b1d4d4@gmail.com>
+From:   Ajay Garg <ajaygargnsit@gmail.com>
+Date:   Mon, 8 Nov 2021 14:29:56 +0530
+Message-ID: <CAHP4M8X_D4WdK9TwQoeV=WTEGUyLCs1VV5qWbYbfWJyZ9+C_5w@mail.gmail.com>
+Subject: Re: [PATCH] tty: vt: keyboard: do not copy an extra-byte in copy_to_user
+To:     Pavel Skripkin <paskripkin@gmail.com>
+Cc:     Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Greg KH <gregkh@linuxfoundation.org>, jirislaby@kernel.org,
+        kernel@esmil.dk, David Laight <David.Laight@aculab.com>,
+        "linux-serial@vger.kernel.org" <linux-serial@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Am Samstag, dem 06.11.2021 um 10:54 -0500 schrieb Adam Ford:
-> Most of the blk-ctrl reset bits are found in one register, however
-> there are two bits in offset 8 for pulling the MIPI DPHY out of reset
-> and these need to be set when IMX8MM_DISPBLK_PD_MIPI_CSI is brought
-> out of reset or the MIPI_CSI hangs.
-> 
-> Fixes: 926e57c065df ("soc: imx: imx8m-blk-ctrl: add DISP blk-ctrl")
-> Signed-off-by: Adam Ford <aford173@gmail.com>
+Dropping all further discussions on this thread, as a RFC for a new
+string-copy method has been posted at :
+https://lore.kernel.org/linux-hardening/CAHP4M8U=0aTHgfREGJpSboV6J4X+E3Y6+H_kb-PvXxDKtV=n-g@mail.gmail.com/T/#t
 
-Reviewed-by: Lucas Stach <l.stach@pengutronix.de>
-
-> ---
-> 
-> V2:  Make a note that the extra register is only for Mini/Nano DISPLAY_BLK_CTRL
->      Rename the new register to mipi_phy_rst_mask
->      Encapsulate the edits to this register with an if-statement
-> 
->  drivers/soc/imx/imx8m-blk-ctrl.c | 18 ++++++++++++++++++
->  1 file changed, 18 insertions(+)
-> 
-> diff --git a/drivers/soc/imx/imx8m-blk-ctrl.c b/drivers/soc/imx/imx8m-blk-ctrl.c
-> index 519b3651d1d9..581eb4bc7f7d 100644
-> --- a/drivers/soc/imx/imx8m-blk-ctrl.c
-> +++ b/drivers/soc/imx/imx8m-blk-ctrl.c
-> @@ -17,6 +17,7 @@
->  
->  #define BLK_SFT_RSTN	0x0
->  #define BLK_CLK_EN	0x4
-> +#define BLK_MIPI_RESET_DIV	0x8 /* Mini/Nano DISPLAY_BLK_CTRL only */
->  
->  struct imx8m_blk_ctrl_domain;
->  
-> @@ -36,6 +37,15 @@ struct imx8m_blk_ctrl_domain_data {
->  	const char *gpc_name;
->  	u32 rst_mask;
->  	u32 clk_mask;
-> +
-> +	/*
-> +	 * i.MX8M Mini and Nano have a third DISPLAY_BLK_CTRL register
-> +	 * which is used to control the reset for the MIPI Phy.
-> +	 * Since it's only present in certain circumstances,
-> +	 * an if-statement should be used before setting and clearing this
-> +	 * register.
-> +	 */
-> +	u32 mipi_phy_rst_mask;
->  };
->  
->  #define DOMAIN_MAX_CLKS 3
-> @@ -78,6 +88,8 @@ static int imx8m_blk_ctrl_power_on(struct generic_pm_domain *genpd)
->  
->  	/* put devices into reset */
->  	regmap_clear_bits(bc->regmap, BLK_SFT_RSTN, data->rst_mask);
-> +	if (data->mipi_phy_rst_mask)
-> +		regmap_clear_bits(bc->regmap, BLK_MIPI_RESET_DIV, data->mipi_phy_rst_mask);
->  
->  	/* enable upstream and blk-ctrl clocks to allow reset to propagate */
->  	ret = clk_bulk_prepare_enable(data->num_clks, domain->clks);
-> @@ -99,6 +111,8 @@ static int imx8m_blk_ctrl_power_on(struct generic_pm_domain *genpd)
->  
->  	/* release reset */
->  	regmap_set_bits(bc->regmap, BLK_SFT_RSTN, data->rst_mask);
-> +	if (data->mipi_phy_rst_mask)
-> +		regmap_set_bits(bc->regmap, BLK_MIPI_RESET_DIV, data->mipi_phy_rst_mask);
->  
->  	/* disable upstream clocks */
->  	clk_bulk_disable_unprepare(data->num_clks, domain->clks);
-> @@ -120,6 +134,9 @@ static int imx8m_blk_ctrl_power_off(struct generic_pm_domain *genpd)
->  	struct imx8m_blk_ctrl *bc = domain->bc;
->  
->  	/* put devices into reset and disable clocks */
-> +	if (data->mipi_phy_rst_mask)
-> +		regmap_clear_bits(bc->regmap, BLK_MIPI_RESET_DIV, data->mipi_phy_rst_mask);
-> +
->  	regmap_clear_bits(bc->regmap, BLK_SFT_RSTN, data->rst_mask);
->  	regmap_clear_bits(bc->regmap, BLK_CLK_EN, data->clk_mask);
->  
-> @@ -488,6 +505,7 @@ static const struct imx8m_blk_ctrl_domain_data imx8mm_disp_blk_ctl_domain_data[]
->  		.gpc_name = "mipi-csi",
->  		.rst_mask = BIT(3) | BIT(4),
->  		.clk_mask = BIT(10) | BIT(11),
-> +		.mipi_phy_rst_mask = BIT(16) | BIT(17),
->  	},
->  };
->  
-
-
+which, if accepted, will make the clients' lives a lot easier.
