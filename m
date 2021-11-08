@@ -2,104 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 04E76449A06
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Nov 2021 17:39:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E056B449A0A
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Nov 2021 17:40:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240101AbhKHQly (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Nov 2021 11:41:54 -0500
-Received: from mail.kernel.org ([198.145.29.99]:34632 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236528AbhKHQlx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Nov 2021 11:41:53 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9167961054;
-        Mon,  8 Nov 2021 16:39:05 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1636389549;
-        bh=a6NTFs2KSKUTtge7RtoR+4/5YHytkD4pKor5SU+QaZ8=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=b9f28QHm13W2ui+DJ8Nkic0yst26y3MyI7Pzg/n7nIRUcowjjAJi0CQKekeCT2pFj
-         0Cp4WTK8PjDbIo+QSE3yvQrLl+aNdF78zZjBLE8dUHuiGs1MNA2oy/UYRu2boEBAkF
-         4pgLf/LY9jQaOrbRM7xKuOl4FBik963q+DWdxGLk5ouAkrJJRQ4oinP840ehWBdb60
-         DqrEgfB14zp/d55Ji+aUntKaNy/ltYhHdWCw/2JA5vY87CcONwWpao9UA2VweuQUIx
-         8OyNLiYAgMsAg6eG4hSIu06Md/MEKANEV39W6TGHIi1WfUemFdaEnP2xP6Ums9ajTF
-         lwBgfNLNSBn8w==
-Date:   Mon, 8 Nov 2021 16:39:02 +0000
-From:   Mauro Carvalho Chehab <mchehab@kernel.org>
-To:     Tsuchiya Yuto <kitakar@gmail.com>
-Cc:     Dan Carpenter <dan.carpenter@oracle.com>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Patrik Gfeller <patrik.gfeller@gmail.com>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Yang Yingliang <yangyingliang@huawei.com>,
-        Aline Santana Cordeiro <alinesantanacordeiro@gmail.com>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Dinghao Liu <dinghao.liu@zju.edu.cn>,
-        Deepak R Varma <drv@mailo.com>,
-        Alex Dewar <alex.dewar90@gmail.com>,
-        linux-media@vger.kernel.org, linux-staging@lists.linux.dev,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 06/17] media: atomisp: pci: use IA_CSS_ERROR() for error
- messages in sh_css_mipi.c
-Message-ID: <20211108163902.58e12e76@sal.lan>
-In-Reply-To: <ff2ac6cb74e98a5e9b0f537ea468322e6379620e.camel@gmail.com>
-References: <20211017161958.44351-1-kitakar@gmail.com>
-        <20211017161958.44351-7-kitakar@gmail.com>
-        <20211102113540.GD2794@kadam>
-        <ff2ac6cb74e98a5e9b0f537ea468322e6379620e.camel@gmail.com>
-X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.30; x86_64-redhat-linux-gnu)
+        id S241313AbhKHQmz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Nov 2021 11:42:55 -0500
+Received: from mail-ua1-f41.google.com ([209.85.222.41]:37747 "EHLO
+        mail-ua1-f41.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236528AbhKHQmt (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Nov 2021 11:42:49 -0500
+Received: by mail-ua1-f41.google.com with SMTP id l43so32697295uad.4;
+        Mon, 08 Nov 2021 08:40:05 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=35vjIg1mcgYM3GxZvYXmrSJn5EeE32/H7G52/qXH9NU=;
+        b=YsSpXEH31wEVfYDIK1IB8WRpSq6hhCnSFYILejpBTgSwdRJkZdT3lteNnpJeCK7PQ1
+         yIgHRhK0gkh+ty9jf0OLeHCEVa3xqrzm4taAICXAAvLvykE4gnvPPonLsEI8TLeiQ84A
+         PKmxzQeGCXzVOeAVrKLXmHyY4rszg/v89lblDlWZ/tzGLZvS8g0CjaYq3dwoXS5iXKEU
+         Cg4zaMKfYaDWVGmdJ8EHJYHu6wOdRlyMf1V+d5g8fNJUasEQX7UYsbtZUQFBGAFkUsq3
+         U38jwCwxKJRrXLV/KxsOXrMo6EncikGqMiGv6+45mSydKQCpqfte9GEuE/U05qQKJkm5
+         l5wA==
+X-Gm-Message-State: AOAM532vPZ9owux/PE4qTZcIVxKMbewcNspfPymX1Ow3sGnKwH9S56oj
+        ijDbZCqMH8ILVvHBt76n0KFHa4z4QEImJu4g
+X-Google-Smtp-Source: ABdhPJyYcCtLXlqBT1W6LWUu8v7/V9jFu7KcZI/63c8qjfFtL0Yy/M2VhE6e37bImdgL01Pe7XKGTQ==
+X-Received: by 2002:a05:6102:b14:: with SMTP id b20mr6609990vst.17.1636389604377;
+        Mon, 08 Nov 2021 08:40:04 -0800 (PST)
+Received: from mail-ua1-f46.google.com (mail-ua1-f46.google.com. [209.85.222.46])
+        by smtp.gmail.com with ESMTPSA id y24sm2986511uaq.17.2021.11.08.08.40.04
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 08 Nov 2021 08:40:04 -0800 (PST)
+Received: by mail-ua1-f46.google.com with SMTP id az37so32694947uab.13;
+        Mon, 08 Nov 2021 08:40:04 -0800 (PST)
+X-Received: by 2002:a05:6102:e82:: with SMTP id l2mr991282vst.37.1636389603858;
+ Mon, 08 Nov 2021 08:40:03 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+References: <20211103173127.13701-1-prabhakar.mahadev-lad.rj@bp.renesas.com> <20211103173127.13701-4-prabhakar.mahadev-lad.rj@bp.renesas.com>
+In-Reply-To: <20211103173127.13701-4-prabhakar.mahadev-lad.rj@bp.renesas.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Mon, 8 Nov 2021 17:39:52 +0100
+X-Gmail-Original-Message-ID: <CAMuHMdWLfUNh7PQWpARS6CNymqpGO_29tgy7NLtgmJ-BRgyUaA@mail.gmail.com>
+Message-ID: <CAMuHMdWLfUNh7PQWpARS6CNymqpGO_29tgy7NLtgmJ-BRgyUaA@mail.gmail.com>
+Subject: Re: [PATCH 3/3] serial: sh-sci: Add reset support for RZ/G2L SoC
+To:     Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        "open list:SERIAL DRIVERS" <linux-serial@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
+        Prabhakar <prabhakar.csengg@gmail.com>,
+        Biju Das <biju.das.jz@bp.renesas.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Tue, 09 Nov 2021 00:39:16 +0900
-Tsuchiya Yuto <kitakar@gmail.com> escreveu:
+Hi Prabhakar,
 
-> <removed Alan from Cc as the mail address not reachable>
-> 
-> On Tue, 2021-11-02 at 14:35 +0300, Dan Carpenter wrote:
-> > On Mon, Oct 18, 2021 at 01:19:46AM +0900, Tsuchiya Yuto wrote:  
-> > >  .../staging/media/atomisp/pci/sh_css_mipi.c   | 32 ++++++++-----------
-> > >  1 file changed, 13 insertions(+), 19 deletions(-)
-> > > 
-> > > diff --git a/drivers/staging/media/atomisp/pci/sh_css_mipi.c b/drivers/staging/media/atomisp/pci/sh_css_mipi.c
-> > > index c1f2f6151c5f..de56a1da754d 100644
-> > > --- a/drivers/staging/media/atomisp/pci/sh_css_mipi.c
-> > > +++ b/drivers/staging/media/atomisp/pci/sh_css_mipi.c
-> > > @@ -434,9 +434,8 @@ allocate_mipi_frames(struct ia_css_pipe *pipe,
-> > >  
-> > >  	if ((!IS_ISP2401 && port >= N_CSI_PORTS) ||
-> > >  	    (IS_ISP2401 && err)) {
-> > > -		ia_css_debug_dtrace(IA_CSS_DEBUG_TRACE_PRIVATE,
-> > > -				    "allocate_mipi_frames(%p) exit: error: port is not correct (port=%d).\n",
-> > > -				    pipe, port);
-> > > +		IA_CSS_ERROR("allocate_mipi_frames(%p) exit: port is not correct (port=%d).",
-> > > +			     pipe, port);  
-> > 
-> > Not related to this patch but these printks should be using __func__
-> > instead of hard coding it.  
-> 
-> OK, considering that I'll add a separate space issue fix patch in v2 as
-> discussed in another mail, I'll also add the separate fix for minor
-> issue fixes here, including the usage of `__func__` and dropping
-> the unneeded newline `\n` I'm currently doing while here.
+On Wed, Nov 3, 2021 at 6:31 PM Lad Prabhakar
+<prabhakar.mahadev-lad.rj@bp.renesas.com> wrote:
+> On RZ/G2L devices should be explicitly pulled out of reset for it
+> to work. This patch adds support to read the "resets" property and
+> performs deassert/assert when required.
+>
+> Also, propagate the error to the caller of sci_parse_dt() instead of
+> returning NULL in case of failure.
+>
+> Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+> Reviewed-by: Biju Das <biju.das.jz@bp.renesas.com>
 
-Better to keep the \n. The right fix - not only here but everywhere - would
-be to convert all those into dev_info/dev_dbg/..., but this is a huge
-change.
+Thanks for your patch!
 
-I would prefer to do such changes on a separate patch series that
-will do only this kind of changes. After the conversion, the string
-should finish with a \n. So, dropping it will just make the conversion
-more error-prone.
+> ---
+> Hi Geert,
+> For handling the resets I was in dual mind whether to perform
+> reset based on compatible strings or soc-id, let me know your
+> thoughts. Currently no SoC's use "renesas,sci" so using the same
+> for performing the reset operation for SCI.
 
-Regards,
-Mauro
+We do, on H8/300.
 
-> 
-> Regards,
-> Tsuchiya Yuto
-> 
+> --- a/drivers/tty/serial/sh-sci.c
+> +++ b/drivers/tty/serial/sh-sci.c
+> @@ -3203,23 +3204,58 @@ static const struct of_device_id of_sci_match[] = {
+>  };
+>  MODULE_DEVICE_TABLE(of, of_sci_match);
+>
+> +static void sci_reset_control_assert(void *data)
+> +{
+> +       reset_control_assert(data);
+> +}
+> +
+>  static struct plat_sci_port *sci_parse_dt(struct platform_device *pdev,
+>                                           unsigned int *dev_id)
+>  {
+>         struct device_node *np = pdev->dev.of_node;
+> +       const struct of_device_id *of_id;
+>         struct plat_sci_port *p;
+>         struct sci_port *sp;
+>         const void *data;
+>         int id;
+>
+>         if (!IS_ENABLED(CONFIG_OF) || !np)
+> -               return NULL;
+> +               return ERR_PTR(-EINVAL);
+> +
+> +       of_id = of_match_device(of_sci_match, &pdev->dev);
+> +       if (!of_id)
+> +               return ERR_PTR(-EINVAL);
+>
+> -       data = of_device_get_match_data(&pdev->dev);
+> +       if (!strcmp(of_id->compatible, "renesas,scif-r9a07g044") ||
+> +           !strcmp(of_id->compatible, "renesas,sci")) {
+
+This will match on H8/300, too, which doesn't have resets.
+Please match against "renesas,sci-r9a07g044" instead.
+
+Please don't use explicit strcmp() calls here, but add a flag to
+of_sci_match[].data.
+
+> +               struct reset_control *rstc;
+> +               int ret;
+> +
+> +               rstc = devm_reset_control_get_exclusive(&pdev->dev, NULL);
+> +               if (IS_ERR(rstc)) {
+> +                       dev_err(&pdev->dev, "Error: missing reset ctrl\n");
+> +                       return ERR_PTR(PTR_ERR(rstc));
+> +               }
+> +
+> +               ret = reset_control_deassert(rstc);
+> +               if (ret) {
+> +                       dev_err(&pdev->dev, "failed to deassert %d\n", ret);
+> +                       return ERR_PTR(ret);
+> +               }
+> +
+> +               ret = devm_add_action_or_reset(&pdev->dev, sci_reset_control_assert, rstc);
+> +               if (ret) {
+> +                       dev_err(&pdev->dev, "failed to register assert devm action, %d\n",
+> +                               ret);
+> +                       return ERR_PTR(ret);
+> +               }
+> +       }
+> +
+> +       data = of_id->data;
+>
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
