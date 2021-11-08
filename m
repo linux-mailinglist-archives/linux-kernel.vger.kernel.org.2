@@ -2,262 +2,207 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8C098447877
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Nov 2021 03:16:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D1C344788C
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Nov 2021 03:25:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236352AbhKHCT3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 7 Nov 2021 21:19:29 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:57669 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S236296AbhKHCT2 (ORCPT
+        id S236346AbhKHC1s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 7 Nov 2021 21:27:48 -0500
+Received: from esa18.fujitsucc.c3s2.iphmx.com ([216.71.158.38]:52779 "EHLO
+        esa18.fujitsucc.c3s2.iphmx.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229757AbhKHC1r (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 7 Nov 2021 21:19:28 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1636337804;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=CXjiBHE71AbI5lEtqOrv/4+gAXZLGaymFGRa7FCsrZY=;
-        b=Zz9/lVnipMiHmASL7tbsukCldk3cuCpYydUpKpV+JBrjCA0kjIAXhLsGbH9gLl05/zxApB
-        Ti3mlyNmKaFQiC1dEhJlgWd72TxAr56z/Zn7hLX/i6SVaMXd7LicPwtDvdVTWXGOucnrY2
-        9V+JM2y9wxVG3Gq0zeN6GefKsQh+1rs=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-319-7UQnjLH5NPKhRPJXsniIJw-1; Sun, 07 Nov 2021 21:16:41 -0500
-X-MC-Unique: 7UQnjLH5NPKhRPJXsniIJw-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 168DE15720;
-        Mon,  8 Nov 2021 02:16:39 +0000 (UTC)
-Received: from T590 (ovpn-8-17.pek2.redhat.com [10.72.8.17])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 339365DEFA;
-        Mon,  8 Nov 2021 02:16:29 +0000 (UTC)
-Date:   Mon, 8 Nov 2021 10:16:25 +0800
-From:   Ming Lei <ming.lei@redhat.com>
-To:     yebin <yebin10@huawei.com>
-Cc:     Yu Kuai <yukuai3@huawei.com>, axboe@kernel.dk, ast@kernel.org,
-        daniel@iogearbox.net, andrii@kernel.org, kbusch@kernel.org,
-        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, bpf@vger.kernel.org, yi.zhang@huawei.com
-Subject: Re: [PATCH] blk-mq: don't free tags if the tag_set is used by other
- device in queue initialztion
-Message-ID: <YYiIeUzqszx0g3Zs@T590>
-References: <20211106092331.3162749-1-yukuai3@huawei.com>
- <YYh+CrMZb4RPLFKs@T590>
- <618886B4.6050909@huawei.com>
+        Sun, 7 Nov 2021 21:27:47 -0500
+X-Greylist: delayed 433 seconds by postgrey-1.27 at vger.kernel.org; Sun, 07 Nov 2021 21:27:47 EST
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=fujitsu.com; i=@fujitsu.com; q=dns/txt; s=fj1;
+  t=1636338304; x=1667874304;
+  h=from:to:cc:subject:date:message-id:references:
+   in-reply-to:content-transfer-encoding:mime-version;
+  bh=ggyJ3ItdgTb5FRwxJbpBroKCFmNH6ZzHKm+LJULJht0=;
+  b=lSu+ZV2kvbfBDuu86jrwG/8AZ9pKnRynBGnotguSZOoo9JC49gfBXg6M
+   QRK6ABvhvFla62BnZttkdtqbgu0iVasCFksSRDJedrzaPTQllDLFcnyJP
+   cz3AnApEDbLSH3S0Q040g5SBoIDytXlfBCASe5gdFSYvxPdo7naaf30jP
+   QV1T7B3v8JkBpZdNTaDfU41RHb62K6lozU3pb1SXmSx+lxwptQ3TmAq+2
+   85ZMOUaq2ZP90caXOo2Hdk5Mfb7sT8ikJ/iyBD2j5urKtIjSRMQZGEcwz
+   yact+UAI9kqf2CKybvgWlpP2aLY/2W/cpJVJQ42QWXnOBfm98ZALREYYv
+   g==;
+X-IronPort-AV: E=McAfee;i="6200,9189,10161"; a="43799571"
+X-IronPort-AV: E=Sophos;i="5.87,217,1631545200"; 
+   d="scan'208";a="43799571"
+Received: from mail-os2jpn01lp2056.outbound.protection.outlook.com (HELO JPN01-OS2-obe.outbound.protection.outlook.com) ([104.47.92.56])
+  by ob1.fujitsucc.c3s2.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Nov 2021 11:17:46 +0900
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=VWsI22SHODCj4UwoHxlZsjL1kAyRo3fmrf0SyvOomwyLBWMeREt8YGxJ+wvowLbP8cs+fc4zNDxImrC+hoeBeHBkqUFhmTSs+pndusl1/MxByre9RIsVrvDfOpe6vyHfO1u5T2Zyc4vkPlpu7Nm9HrExT2hgyu+6bcxT57/3W3PsrmPpRi42ZSgJjlrJJFagPX5oJYXKo4jq6EUHBR1vy4r5wmW6But3cjfUvU1z+kEOB1U+yoXuRqrXauYI0k/7RZfScrG9N716ApSrVjT2kRYjogcp3UFYUu63R0cc4AuWcsKAmGsX4onQOVwUTjWphwYjuYtetFCLlOVcJvI4WA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=ggyJ3ItdgTb5FRwxJbpBroKCFmNH6ZzHKm+LJULJht0=;
+ b=MSdYXNnxyWcZMco03XKFIfgxf+unepvSiraO5lLSPibg06pB19dxDTuXglgxSwS1BQZ3Uw3ZttcOa5J+dySsmQs/y6fxShfUmpMS04HnC+yJnRVd6H/SFEnvTkX5z9l6h8CA+6rjiydc3jQ7TQOhxhd+asnYyZ3/OAF6/eTldQsnbYkxbBxn4EEj9NPKfOSi534HXXkVVoNqntkoQYdUSIzqLmFisOEuQ+0l/zHG8o31mU24p16TB2sTkmeTc1dCwG8vEqU9LLL4rGue133C3QfcFb2svnfpEMeRLNVjKnJvcIfxhlNIsgfAMJb/bAXSLa3YCfznWyC3pR8obmSCoA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=fujitsu.com; dmarc=pass action=none header.from=fujitsu.com;
+ dkim=pass header.d=fujitsu.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=fujitsu.onmicrosoft.com; s=selector2-fujitsu-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=ggyJ3ItdgTb5FRwxJbpBroKCFmNH6ZzHKm+LJULJht0=;
+ b=LL6bxis9DjOa6E2JiqT6GwAWjAPRMyp+PKNUK8rsCQ8CiTGcQF6iJ0uj860rMu1qDZoB0fEBUKAj3hJGz97SA3tdEBJCW+M6UevRFRUSNNMJOQD0aMmMEWXmi9V3TgLhc4yaeBf/nT35RB8e2ucx7sWDlhtb9ptcVohS1WCrDhQ=
+Received: from OSBPR01MB2037.jpnprd01.prod.outlook.com (2603:1096:603:25::17)
+ by OSBPR01MB2037.jpnprd01.prod.outlook.com (2603:1096:603:25::17) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4669.15; Mon, 8 Nov
+ 2021 02:17:43 +0000
+Received: from OSBPR01MB2037.jpnprd01.prod.outlook.com
+ ([fe80::816a:2a54:60a9:7124]) by OSBPR01MB2037.jpnprd01.prod.outlook.com
+ ([fe80::816a:2a54:60a9:7124%7]) with mapi id 15.20.4669.016; Mon, 8 Nov 2021
+ 02:17:43 +0000
+From:   "tarumizu.kohei@fujitsu.com" <tarumizu.kohei@fujitsu.com>
+To:     'Borislav Petkov' <bp@alien8.de>
+CC:     "catalin.marinas@arm.com" <catalin.marinas@arm.com>,
+        "will@kernel.org" <will@kernel.org>,
+        "tglx@linutronix.de" <tglx@linutronix.de>,
+        "mingo@redhat.com" <mingo@redhat.com>,
+        "dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>,
+        "x86@kernel.org" <x86@kernel.org>, "hpa@zytor.com" <hpa@zytor.com>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: RE: [RFC PATCH v2 0/5] Add hardware prefetch driver for A64FX and
+ Intel processors
+Thread-Topic: [RFC PATCH v2 0/5] Add hardware prefetch driver for A64FX and
+ Intel processors
+Thread-Index: AQHX0Tvqcmg6rBpliUSJLBUQh9tTC6vzenEAgAVvZFA=
+Date:   Mon, 8 Nov 2021 02:17:43 +0000
+Message-ID: <OSBPR01MB20370518F9296BA4302FF7DC80919@OSBPR01MB2037.jpnprd01.prod.outlook.com>
+References: <20211104052122.553868-1-tarumizu.kohei@fujitsu.com>
+ <YYP4fAgKSh4bVvgD@zn.tnic>
+In-Reply-To: <YYP4fAgKSh4bVvgD@zn.tnic>
+Accept-Language: ja-JP, en-US
+Content-Language: ja-JP
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+msip_labels: =?utf-8?B?TVNJUF9MYWJlbF9hNzI5NWNjMS1kMjc5LTQyYWMtYWI0ZC0zYjBmNGZlY2Uw?=
+ =?utf-8?B?NTBfQWN0aW9uSWQ9OTAwMDU4ZDMtMjVlOC00Yzc3LThhYmUtMTRmMGU3NTJi?=
+ =?utf-8?B?NTVlO01TSVBfTGFiZWxfYTcyOTVjYzEtZDI3OS00MmFjLWFiNGQtM2IwZjRm?=
+ =?utf-8?B?ZWNlMDUwX0NvbnRlbnRCaXRzPTA7TVNJUF9MYWJlbF9hNzI5NWNjMS1kMjc5?=
+ =?utf-8?B?LTQyYWMtYWI0ZC0zYjBmNGZlY2UwNTBfRW5hYmxlZD10cnVlO01TSVBfTGFi?=
+ =?utf-8?B?ZWxfYTcyOTVjYzEtZDI3OS00MmFjLWFiNGQtM2IwZjRmZWNlMDUwX01ldGhv?=
+ =?utf-8?B?ZD1TdGFuZGFyZDtNU0lQX0xhYmVsX2E3Mjk1Y2MxLWQyNzktNDJhYy1hYjRk?=
+ =?utf-8?B?LTNiMGY0ZmVjZTA1MF9OYW1lPUZVSklUU1UtUkVTVFJJQ1RFRO+/ou++gA==?=
+ =?utf-8?B?776LO01TSVBfTGFiZWxfYTcyOTVjYzEtZDI3OS00MmFjLWFiNGQtM2IwZjRm?=
+ =?utf-8?B?ZWNlMDUwX1NldERhdGU9MjAyMS0xMS0wOFQwMjoxMjo1OFo7TVNJUF9MYWJl?=
+ =?utf-8?B?bF9hNzI5NWNjMS1kMjc5LTQyYWMtYWI0ZC0zYjBmNGZlY2UwNTBfU2l0ZUlk?=
+ =?utf-8?Q?=3Da19f121d-81e1-4858-a9d8-736e267fd4c7;?=
+authentication-results: alien8.de; dkim=none (message not signed)
+ header.d=none;alien8.de; dmarc=none action=none header.from=fujitsu.com;
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 2825a568-a7ee-4576-c340-08d9a25df293
+x-ms-traffictypediagnostic: OSBPR01MB2037:
+x-microsoft-antispam-prvs: <OSBPR01MB20379A5E3CAC808A5AC6CA8B80919@OSBPR01MB2037.jpnprd01.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:10000;
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: nfTo/G6tWT++cvRPZJUeAK8pXDUxqisDbwzgcuuqtCqks6q0whPSuGZjzdmwWBZIsfPqfriuO2PiUUNuWeWmK2PL8OuZVq7/tKSvv+l/QgBHU7h/7iUQPlu4x84oErklm34R8+lqUbQazP0nhSi+aWZUoX/dHRkBufm3w2+oT4MX7JYsOk8olMEUYkIDznfer9ON/1IdXxWMuAEK8a8FIfrEm2U9/HvSDPSnbCANKCKxEceBXazEgcf32PUAw6C4ZSv+OBIzKoL9OoGRS7XWonQ920nwFrQYL/nwDCmiDEQA/WNAL4Y0P3teYcSf/x7pP0Cu/AyjxEKH1p58weNV0mkMJgcgoU1NNCLTYhgf8htEQ8eMz8O+S8HD4T8t0Cy5ivyXs7XpZ7Q3Kgv5s+uNOjMuAoeEi0LBH/EGyZqqbMpm+UD1aeFExxO6xGVZtn5+u5uNa5+KyPVKFf3XaM2DXvkW/urr4B2+a40IlgIPg//tnKEg/8YqEqTNnw7sFYnE0DJaPRrx1xgfX2cGLfytwvYupLYu4TD0NyXC2orOXYEuAHZWTlC7gvOWaSOTeuOWEFFMjz0KuEvTCEHA5tn0g/ZtT6Fg9BzdMHMSSrNHY2kVh7ZhLKtmEep9AOd1vLEjyDbN8rLlYTg1kzXJ8XJgoQ/lNRGuV88kUjOwj3MFRQbqAfFXzYfLMvT9/SciVEmH85NwKVbUbpa77JS4crk9HUmdwJcutiEu0E7mtowaHvTchMbRmHiiy2lbvSCgSfOWTKdwwJoDz/e9K90QPxAetFgznrKezNtNXtZ1Qcod6sI=
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:OSBPR01MB2037.jpnprd01.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(54906003)(7416002)(316002)(6916009)(26005)(4326008)(76116006)(66446008)(66556008)(64756008)(66476007)(66946007)(5660300002)(508600001)(33656002)(38070700005)(85182001)(966005)(7696005)(8936002)(2906002)(122000001)(86362001)(6506007)(82960400001)(186003)(8676002)(38100700002)(55016002)(52536014)(9686003)(83380400001)(71200400001);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?utf-8?B?RndUWTdsd1NsR0ZuZUFxOW51ZHp3dkpDU1dFUFZqRmdOZzVQN0p1WlZFNkdP?=
+ =?utf-8?B?TnpUekVqdldiQlhmNDdleXBXYmwxa3ByS1pUUTZ0eldOSy9FWEYzK2dPUUJ1?=
+ =?utf-8?B?VDk2RmpqRS9DdWZ6Y1FNWkRINnlmSHNrNjZVa2RabVlhWGt4STdrVFJLSjNi?=
+ =?utf-8?B?Wi9DbWNFenVydG9CdDRyU0I3Q3dhWWpEWDhLTENpekVHZzFNUUtHSzlGUVBv?=
+ =?utf-8?B?c28zWXFxWTJTRVdqQjcrOGphc2poUlp4WjBiNDJLOTY1WDlMVTgzTTMza1N6?=
+ =?utf-8?B?NXlCeDBqcUhJWTlNWUZqZkd4ZnRFaEcwY25tWk5McUVmMnRkQ1dXVDdyTi82?=
+ =?utf-8?B?UWlMa1pWYkFVeE92cHVkZ2xueldYeWp5ZnpwUTZGb29uZGFYVkg1bGlwL3Bp?=
+ =?utf-8?B?WlE0V1ZVYjZUOFJqbXkwQ0tBV3NZT0l2dzdLb1IxR3FRUkxJRkVEenJmYTQ1?=
+ =?utf-8?B?bWl1REJIVmhVMHFJUjZMTE1tbm5kY2RDSis3dVExajlkbEZPTkxmQ2FtQnpO?=
+ =?utf-8?B?WlFzSEZYckR5cXVOWFZ4WVpvSENPZ21lbzBDY3lSWUtCTS9zbzNXbk9XVHY1?=
+ =?utf-8?B?MElZR21pdHN5OXZ0T1NMTzgrNnBLKytEYUp0YjZhMjc5TjRHQTJJTDlra2Iy?=
+ =?utf-8?B?Y2RIcitZeXl4aUFMcHg5VGROR1VpNUdvZGlReW1hSGNOL3Z1a2Z5aEdIRVl3?=
+ =?utf-8?B?dkZmbFhPTVB1dzBvMGZkSmZ6YjhQMGtWWVZ3Z0c0QVhZUE9oTlRKSGVma1RU?=
+ =?utf-8?B?K2tZK2x3Vks1WTNnVTkwNVR2S0hyVkFYRnlvTFkxVFl2UmsyVFBua2NNKzQ4?=
+ =?utf-8?B?aFhJWlNtZzhmMEkyT2lMMFFBQk5IRUZqUG1rVXEwOFVKejlQemhQQzh3TTlX?=
+ =?utf-8?B?dTAzV21hY0hHYjhJUTUyZW45TUtidmZmZE4rSThRdXJlOE1lUGlHY3I0VTlh?=
+ =?utf-8?B?MHJpdHRMVmpPY3RNdHByZTBqbnVLT0x0U1JGNGpERjFSZ0V4YW1XTDF1ajc4?=
+ =?utf-8?B?SEVlaXVTeUtEMUowVGJCOHB0QmdwYXFOVVd2ak83emJYSXFJV3NNMkVtMDA4?=
+ =?utf-8?B?NWczenZza0l3QnlOcGtIem9CY2cxVW5WeXNWSHRxNU13d1k5NlpsY3p4V3Fr?=
+ =?utf-8?B?TWNRN3lySzN3Nld3QkJjb0ZZR1c0a3VjcTk2MU4vQWkrdjR5VXJvU0psK3M5?=
+ =?utf-8?B?alFoSzdDc1R1MUR0cXJ0T2g3N2FtdWdJbHJaZGUrSkJqTXVPcnZpSUFrMUxZ?=
+ =?utf-8?B?ODF6aTVWMWFlL1FIQzZFVFJIcEdPTkNwMjNRdlV3NFpVT09iNVFuQmlKTktF?=
+ =?utf-8?B?Qk4wL1ZWZStIb1RkWFVIRW1FdVE3Q09mNjdKdHVSTnhiV0VNKzVLYWVwZFBR?=
+ =?utf-8?B?M2hOYTBNRjNPaXllRXV0VFMxczAvVjFzekJaVGowM05YaFVSYWpmbGdSaXZj?=
+ =?utf-8?B?a29COFZGaWVNS2x4K1RqalBQNWNmdDdXSGNoNEk2U1VmK2F3dVdPeDRJMGdN?=
+ =?utf-8?B?NjQ1bCtKVHR1MWg5ZU5CT3lTS0hmV05Pd21Vei9ZZjBNejFhRVlSSWF6TUQ2?=
+ =?utf-8?B?MDQyUVhmUU90R09xc1RRbllkMkJSY0QrREFVbDl5bm5PMjVPWmhkdmdydkdr?=
+ =?utf-8?B?bkV1NHF6bXhzV1MxNFFObVFJYXAzWjN0L1crYnc5YStYakJSSzZzOTVtWVdi?=
+ =?utf-8?B?N0dlc3o4WjUrTE5LZ3F3UE9ZR1ZmZjdRdURrUXRVbWJRR09JL1c2WTY0WHFu?=
+ =?utf-8?B?WjZyTlZ4UnhkUmxadHY3RWt1TjZRelVNY3phYXh4KzdkemVmbFZscEpQdGhl?=
+ =?utf-8?B?SVRNaHpQMmQ5R25uV1VtRzR3VTh3ZlZFWFllOEhXVUxGam1PSEw2eHBrMmU5?=
+ =?utf-8?B?ZnRCaEdWZ3V5YjlnZmYyUUFHSzVmeXBUTmhhdFFDRHcrR21vc3J0Z0h1U3lz?=
+ =?utf-8?B?RjJ1dDI2cXJTMGJxZ2syb3RWSzhZYW1vOU9UaXdGS3AvejE0cHFNYXJkL2tE?=
+ =?utf-8?B?MFc0aytqVXNId1d6QTB0bXVKcHl0RUYraGZraWtPVzFUVmhRa3IzZllBMUZ6?=
+ =?utf-8?B?YnhuS3hxc2d2YTJNRmkxa0lnSWJ5ZEYvYUZjcm9NM3JsaFRPSmdxZ0FkSVp4?=
+ =?utf-8?B?RHJHZHdVNE5ackk3dHYwanNFYmFGak03bkdwN0hGS2swcmYyRHFrSkpma1lK?=
+ =?utf-8?B?MjdyM3hNMzRvU2Q0eDlrazNiYS9CQklvaHUwclMwYmdEWXlBK1BsRzNhVjNk?=
+ =?utf-8?B?bEFHRGsraHZ3NEVGY0xSMXErbWh3PT0=?=
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <618886B4.6050909@huawei.com>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
+X-OriginatorOrg: fujitsu.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: OSBPR01MB2037.jpnprd01.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 2825a568-a7ee-4576-c340-08d9a25df293
+X-MS-Exchange-CrossTenant-originalarrivaltime: 08 Nov 2021 02:17:43.3884
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: a19f121d-81e1-4858-a9d8-736e267fd4c7
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: czb5AdBf5lwe7AYcQaq8p5JMWSlOB1rnM+Q5kquSmmBjQCeT5dH9NpPH80TaVO3O6CHWtse/QEzckJGYvpPKTdC6nIw+3sE1lN56qS02j+Y=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: OSBPR01MB2037
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 08, 2021 at 10:08:52AM +0800, yebin wrote:
-> 
-> 
-> On 2021/11/8 9:31, Ming Lei wrote:
-> > On Sat, Nov 06, 2021 at 05:23:31PM +0800, Yu Kuai wrote:
-> > > Our test report a UAF on v5.10:
-> > > 
-> > > [ 1446.674930] ==================================================================
-> > > [ 1446.675970] BUG: KASAN: use-after-free in blk_mq_get_driver_tag+0x9a4/0xa90
-> > > [ 1446.676902] Read of size 8 at addr ffff8880185afd10 by task kworker/1:2/12348
-> > > [ 1446.677851]
-> > > [ 1446.678073] CPU: 1 PID: 12348 Comm: kworker/1:2 Not tainted 5.10.0-10177-gc9c81b1e346a #2
-> > > [ 1446.679168] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS rel-1.14.0-0-g155821a1990b-prebuilt.qemu.org 04/01/2014
-> > > [ 1446.680692] Workqueue: kthrotld blk_throtl_dispatch_work_fn
-> > > [ 1446.681448] Call Trace:
-> > > [ 1446.681800]  dump_stack+0x9b/0xce
-> > > [ 1446.682259]  ? blk_mq_get_driver_tag+0x9a4/0xa90
-> > > [ 1446.682916]  print_address_description.constprop.6+0x3e/0x60
-> > > [ 1446.683688]  ? __cpuidle_text_end+0x5/0x5
-> > > [ 1446.684239]  ? vprintk_func+0x6b/0x120
-> > > [ 1446.684748]  ? blk_mq_get_driver_tag+0x9a4/0xa90
-> > > [ 1446.685373]  ? blk_mq_get_driver_tag+0x9a4/0xa90
-> > > [ 1446.685999]  kasan_report.cold.9+0x22/0x3a
-> > > [ 1446.686559]  ? blk_mq_get_driver_tag+0x9a4/0xa90
-> > > [ 1446.687186]  blk_mq_get_driver_tag+0x9a4/0xa90
-> > > [ 1446.687785]  blk_mq_dispatch_rq_list+0x21a/0x1d40
-> > > [ 1446.688427]  ? __sbitmap_get_word+0xc3/0xe0
-> > > [ 1446.688992]  ? blk_mq_dequeue_from_ctx+0x960/0x960
-> > > [ 1446.689641]  ? _raw_spin_lock+0x7a/0xd0
-> > > [ 1446.690164]  ? _raw_spin_lock_irq+0xd0/0xd0
-> > > [ 1446.690727]  ? sbitmap_get_shallow+0x3c9/0x4e0
-> > > [ 1446.691329]  ? sbitmap_any_bit_set+0x128/0x190
-> > > [ 1446.691928]  ? kyber_completed_request+0x290/0x290
-> > > [ 1446.692576]  __blk_mq_do_dispatch_sched+0x394/0x830
-> > > [ 1446.693237]  ? blk_mq_sched_request_inserted+0x100/0x100
-> > > [ 1446.693948]  ? __blk_queue_split+0x31d/0x1380
-> > > [ 1446.694540]  ? blk_integrity_merge_bio+0xc1/0x370
-> > > [ 1446.695182]  ? ll_back_merge_fn+0x694/0x1490
-> > > [ 1446.695758]  __blk_mq_sched_dispatch_requests+0x398/0x4f0
-> > > [ 1446.696484]  ? bio_attempt_back_merge+0x1cc/0x340
-> > > [ 1446.697121]  ? blk_mq_do_dispatch_ctx+0x570/0x570
-> > > [ 1446.697756]  ? _raw_spin_lock+0x7a/0xd0
-> > > [ 1446.698279]  blk_mq_sched_dispatch_requests+0xdf/0x140
-> > > [ 1446.698967]  __blk_mq_run_hw_queue+0xc0/0x270
-> > > [ 1446.699561]  __blk_mq_delay_run_hw_queue+0x4cc/0x550
-> > > [ 1446.700231]  ? kyber_has_work+0x9a/0x140
-> > > [ 1446.700760]  ? kyber_completed_request+0x290/0x290
-> > > [ 1446.701407]  blk_mq_run_hw_queue+0x13b/0x2b0
-> > > [ 1446.701982]  ? kyber_has_work+0x140/0x140
-> > > [ 1446.702593]  blk_mq_sched_insert_requests+0x1de/0x390
-> > > [ 1446.703309]  blk_mq_flush_plug_list+0x4b4/0x760
-> > > [ 1446.703946]  ? blk_mq_insert_requests+0x4b0/0x4b0
-> > > [ 1446.704644]  ? __bpf_trace_block_bio_complete+0x30/0x30
-> > > [ 1446.705408]  blk_flush_plug_list+0x2c5/0x480
-> > > [ 1446.706026]  ? blk_insert_cloned_request+0x460/0x460
-> > > [ 1446.706717]  ? _raw_spin_lock_irq+0x7b/0xd0
-> > > [ 1446.707292]  ? _raw_spin_lock_irqsave+0xe0/0xe0
-> > > [ 1446.707901]  ? set_next_entity+0x235/0x2210
-> > > [ 1446.708471]  blk_finish_plug+0x55/0xa0
-> > > [ 1446.708980]  blk_throtl_dispatch_work_fn+0x23b/0x2e0
-> > > [ 1446.709653]  ? tg_prfill_limit+0x8a0/0x8a0
-> > > [ 1446.710216]  ? read_word_at_a_time+0xe/0x20
-> > > [ 1446.710780]  ? strscpy+0x9a/0x320
-> > > [ 1446.711236]  process_one_work+0x6d4/0xfe0
-> > > [ 1446.711778]  worker_thread+0x91/0xc80
-> > > [ 1446.712281]  ? __kthread_parkme+0xb0/0x110
-> > > [ 1446.712834]  ? process_one_work+0xfe0/0xfe0
-> > > [ 1446.713400]  kthread+0x32d/0x3f0
-> > > [ 1446.713840]  ? kthread_park+0x170/0x170
-> > > [ 1446.714362]  ret_from_fork+0x1f/0x30
-> > > [ 1446.714846]
-> > > [ 1446.715062] Allocated by task 1:
-> > > [ 1446.715509]  kasan_save_stack+0x19/0x40
-> > > [ 1446.716026]  __kasan_kmalloc.constprop.1+0xc1/0xd0
-> > > [ 1446.716673]  blk_mq_init_tags+0x6d/0x330
-> > > [ 1446.717207]  blk_mq_alloc_rq_map+0x50/0x1c0
-> > > [ 1446.717769]  __blk_mq_alloc_map_and_request+0xe5/0x320
-> > > [ 1446.718459]  blk_mq_alloc_tag_set+0x679/0xdc0
-> > > [ 1446.719050]  scsi_add_host_with_dma.cold.3+0xa0/0x5db
-> > > [ 1446.719736]  virtscsi_probe+0x7bf/0xbd0
-> > > [ 1446.720265]  virtio_dev_probe+0x402/0x6c0
-> > > [ 1446.720808]  really_probe+0x276/0xde0
-> > > [ 1446.721320]  driver_probe_device+0x267/0x3d0
-> > > [ 1446.721892]  device_driver_attach+0xfe/0x140
-> > > [ 1446.722491]  __driver_attach+0x13a/0x2c0
-> > > [ 1446.723037]  bus_for_each_dev+0x146/0x1c0
-> > > [ 1446.723603]  bus_add_driver+0x3fc/0x680
-> > > [ 1446.724145]  driver_register+0x1c0/0x400
-> > > [ 1446.724693]  init+0xa2/0xe8
-> > > [ 1446.725091]  do_one_initcall+0x9e/0x310
-> > > [ 1446.725626]  kernel_init_freeable+0xc56/0xcb9
-> > > [ 1446.726231]  kernel_init+0x11/0x198
-> > > [ 1446.726714]  ret_from_fork+0x1f/0x30
-> > > [ 1446.727212]
-> > > [ 1446.727433] Freed by task 26992:
-> > > [ 1446.727882]  kasan_save_stack+0x19/0x40
-> > > [ 1446.728420]  kasan_set_track+0x1c/0x30
-> > > [ 1446.728943]  kasan_set_free_info+0x1b/0x30
-> > > [ 1446.729517]  __kasan_slab_free+0x111/0x160
-> > > [ 1446.730084]  kfree+0xb8/0x520
-> > > [ 1446.730507]  blk_mq_free_map_and_requests+0x10b/0x1b0
-> > > [ 1446.731206]  blk_mq_realloc_hw_ctxs+0x8cb/0x15b0
-> > > [ 1446.731844]  blk_mq_init_allocated_queue+0x374/0x1380
-> > > [ 1446.732540]  blk_mq_init_queue_data+0x7f/0xd0
-> > > [ 1446.733155]  scsi_mq_alloc_queue+0x45/0x170
-> > > [ 1446.733730]  scsi_alloc_sdev+0x73c/0xb20
-> > > [ 1446.734281]  scsi_probe_and_add_lun+0x9a6/0x2d90
-> > > [ 1446.734916]  __scsi_scan_target+0x208/0xc50
-> > > [ 1446.735500]  scsi_scan_channel.part.3+0x113/0x170
-> > > [ 1446.736149]  scsi_scan_host_selected+0x25a/0x360
-> > > [ 1446.736783]  store_scan+0x290/0x2d0
-> > > [ 1446.737275]  dev_attr_store+0x55/0x80
-> > > [ 1446.737782]  sysfs_kf_write+0x132/0x190
-> > > [ 1446.738313]  kernfs_fop_write_iter+0x319/0x4b0
-> > > [ 1446.738921]  new_sync_write+0x40e/0x5c0
-> > > [ 1446.739429]  vfs_write+0x519/0x720
-> > > [ 1446.739877]  ksys_write+0xf8/0x1f0
-> > > [ 1446.740332]  do_syscall_64+0x2d/0x40
-> > > [ 1446.740802]  entry_SYSCALL_64_after_hwframe+0x44/0xa9
-> > > [ 1446.741462]
-> > > [ 1446.741670] The buggy address belongs to the object at ffff8880185afd00
-> > > [ 1446.741670]  which belongs to the cache kmalloc-256 of size 256
-> > > [ 1446.743276] The buggy address is located 16 bytes inside of
-> > > [ 1446.743276]  256-byte region [ffff8880185afd00, ffff8880185afe00)
-> > > [ 1446.744765] The buggy address belongs to the page:
-> > > [ 1446.745416] page:ffffea0000616b00 refcount:1 mapcount:0 mapping:0000000000000000 index:0x0 pfn:0x185ac
-> > > [ 1446.746694] head:ffffea0000616b00 order:2 compound_mapcount:0 compound_pincount:0
-> > > [ 1446.747719] flags: 0x1fffff80010200(slab|head)
-> > > [ 1446.748337] raw: 001fffff80010200 ffffea00006a3208 ffffea000061bf08 ffff88801004f240
-> > > [ 1446.749404] raw: 0000000000000000 0000000000100010 00000001ffffffff 0000000000000000
-> > > [ 1446.750455] page dumped because: kasan: bad access detected
-> > > [ 1446.751227]
-> > > [ 1446.751445] Memory state around the buggy address:
-> > > [ 1446.752102]  ffff8880185afc00: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
-> > > [ 1446.753090]  ffff8880185afc80: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
-> > > [ 1446.754079] >ffff8880185afd00: fa fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
-> > > [ 1446.755065]                          ^
-> > > [ 1446.755589]  ffff8880185afd80: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
-> > > [ 1446.756574]  ffff8880185afe00: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
-> > > [ 1446.757566] ==================================================================
-> > > 
-> > > Flag 'BLK_MQ_F_TAG_QUEUE_SHARED' will be set if the second device on the
-> > > same host initializes it's queue successfully. However, if the second
-> > > device failed to allocate memory in blk_mq_alloc_and_init_hctx() from
-> > > blk_mq_realloc_hw_ctxs() from blk_mq_init_allocated_queue(),
-> > > __blk_mq_free_map_and_rqs() will be called on error path, and if
-> > > 'BLK_MQ_TAG_HCTX_SHARED' is not set, 'tag_set->tags' will be freed
-> > > while it's still used by the first device.
-> > > 
-> > > Fix the problem by checking if 'tag_set->tag_list' is emptly before
-> > > freeing 'tag_set->tag' during queue initialization.
-> > > 
-> > > Fixes: 868f2f0b7206 ("blk-mq: dynamic h/w context count")
-> > > Signed-off-by: Yu Kuai <yukuai3@huawei.com>
-> > > ---
-> > >   block/blk-mq.c | 12 ++++++++++--
-> > >   1 file changed, 10 insertions(+), 2 deletions(-)
-> > > 
-> > > diff --git a/block/blk-mq.c b/block/blk-mq.c
-> > > index 3527ee251a85..529ad8c47377 100644
-> > > --- a/block/blk-mq.c
-> > > +++ b/block/blk-mq.c
-> > > @@ -3571,7 +3571,7 @@ static struct blk_mq_hw_ctx *blk_mq_alloc_and_init_hctx(
-> > >   }
-> > >   static void blk_mq_realloc_hw_ctxs(struct blk_mq_tag_set *set,
-> > > -						struct request_queue *q)
-> > > +				   struct request_queue *q)
-> > >   {
-> > >   	int i, j, end;
-> > >   	struct blk_mq_hw_ctx **hctxs = q->queue_hw_ctx;
-> > > @@ -3636,9 +3636,17 @@ static void blk_mq_realloc_hw_ctxs(struct blk_mq_tag_set *set,
-> > >   	for (; j < end; j++) {
-> > >   		struct blk_mq_hw_ctx *hctx = hctxs[j];
-> > > +		bool free_tags = !blk_mq_is_shared_tags(set->flags) &&
-> > > +			!q->nr_hw_queues && list_empty(&set->tag_list);
-> > >   		if (hctx) {
-> > > -			__blk_mq_free_map_and_rqs(set, j);
-> > > +			/*
-> > > +			 * tags should not be freed if other device is using the
-> > > +			 * tagset. q->nr_hw_queues is zero means current
-> > > +			 * function is called from queue initialization.
-> > > +			 */
-> > > +			if (free_tags)
-> > > +				__blk_mq_free_map_and_rqs(set, j);
-> > >   			blk_mq_exit_hctx(q, set, hctx, j);
-> > >   			hctxs[j] = NULL;
-> > __blk_mq_free_map_and_rqs() isn't supposed to call in
-> > blk_mq_realloc_hw_ctxs(), so why can't we simply remove it here?
-> __blk_mq_update_nr_hw_queues
->     blk_mq_realloc_hw_ctxs
->         if (q->nr_hw_queues != set->nr_hw_queues)
->             set->nr_hw_queues = prev_nr_hw_queues;
-> If 'tag_set' expansion failed, 'set->nr_hw_queues' will fallback previous
-> value. So If we don't
-> call '__blk_mq_free_map_and_rqs' to release the newly allocated hardware
-> context will lead to
-> memory leak.
-
-Then the correct way is to move the freeing of extra map_and_tags into
-__blk_mq_update_nr_hw_queues() where it is safe and supposed to do such
-thing.
-
-
-Thanks,
-Ming
-
+SGksDQoNClRoYW5rcyBmb3IgeW91ciBjb21tZW50Lg0KDQo+IFRoaXMgaXMgYWxsIGZpbmUgYW5k
+IGRhbmR5IGJ1dCB3aGF0IEknbSBtaXNzaW5nIGluIHRoaXMgcGlsZSBvZiB0ZXh0IC0gYXQgbGVh
+c3QgSSBjb3VsZG4ndA0KPiBmaW5kIGl0IC0gaXMgd2h5IGRvIHdlIG5lZWQgdGhpcyBpbiB0aGUg
+dXBzdHJlYW0ga2VybmVsPw0KPiANCj4gSXMgdGhlcmUgc29tZSByZWFsLWxpZmUgdXNlIGNhc2Ug
+dGhhdCB3b3VsZCBiZW5lZml0IGZyb20gc29mdHdhcmUgZmlkZGxpbmcgd2l0aA0KPiBwcmVmZXRj
+aGVycyBvciBpcyB0aGlzIG9uZSBvZiB0aG9zZSwgd2VsbCwgd2UgaGF2ZSB0aG9zZSBjb250cm9s
+cywgbGV0cyBleHBvc2UgdGhlbQ0KPiBpbiB0aGUgT1M/DQo+IA0KPiBJT1csIHlvdSBuZWVkIHRv
+IHNlbGwgdGhpcyBzdHVmZiBwcm9wZXJseSBmaXJzdCAtIHRoZW4gdGFsayBkZXNpZ24uDQoNCkE2
+NEZYIGFuZCBzb21lIEludGVsIHByb2Nlc3NvcnMgaGFzIGltcGxlbWVudGF0aW9uLWRlcGVuZGVu
+dCByZWdpc3Rlcg0KZm9yIGNvbnRyb2xsaW5nIGhhcmR3YXJlIHByZWZldGNoLiBJbnRlbCBoYXMg
+TVNSX01JU0NfRkVBVFVSRV9DT05UUk9MLA0KYW5kIEE2NEZYIGhhcyBJTVBfUEZfU1RSRUFNX0RF
+VEVDVF9DVFJMX0VMMC4gVGhlc2UgcmVnaXN0ZXIgY2Fubm90IGJlDQphY2Nlc3NlZCBmcm9tIHVz
+ZXJzcGFjZSwgc28gd2UgcHJvdmlkZSBhIHByb3BlciBrZXJuZWwgaW50ZXJmYWNlLg0KDQpUaGUg
+YWR2YW50YWdlIG9mIHVzaW5nIHRoaXMgaW50ZXJmYWNlIGZyb20gdXNlcnNwYWNlIGlzIHRoYXQg
+d2UgY2FuDQpleHBlY3QgcGVyZm9ybWFuY2UgaW1wcm92ZW1lbnRzLg0KDQpUaGUgZm9sbG93aW5n
+IHBlcmZvcm1hbmNlIGltcHJvdmVtZW50cyBoYXZlIGJlZW4gcmVwb3J0ZWQgZm9yIHNvbWUNCklu
+dGVsIHByb2Nlc3NvcnMuDQpodHRwczovL2dpdGh1Yi5jb20veG1yaWcveG1yaWcvaXNzdWVzLzE0
+MzMjaXNzdWVjb21tZW50LTU3MjEyNjE4NA0KDQpBNjRGWCBhbHNvIGhhcyBzZXZlcmFsIGFwcGxp
+Y2F0aW9ucyB0aGF0IGhhdmUgYWN0dWFsbHkgYmVlbiBpbXByb3ZlZA0KcGVyZm9ybWFuY2UuIElu
+IG1vc3Qgb2YgdGhlc2UgY2FzZXMsIHdlIGFyZSB0dW5pbmcgdGhlIHBhcmFtZXRlciBvZg0KaGFy
+ZHdhcmUgcHJlZmV0Y2ggZGlzdGFuY2UuIE9uZSBvZiB0aGVtIGlzIHRoZSBTdHJlYW0gYmVuY2ht
+YXJrLg0KDQpGb3IgcmVmZXJlbmNlLCBoZXJlIGlzIHRoZSByZXN1bHQgb2YgU1RSRUFNIFRyaWFk
+IHdoZW4gdHVuaW5nIHdpdGgNCnRoZSBkaXN0IGF0dHJpYnV0ZSBmaWxlIGluIEwxIGFuZCBMMiBj
+YWNoZSBvbiBBNjRGWC4NCg0KfCBkaXN0IGNvbWJpbmF0aW9uICB8IFBhdHRlcm4gQSAgIHwgUGF0
+dGVybiBCICAgfA0KfC0tLS0tLS0tLS0tLS0tLS0tLS18LS0tLS0tLS0tLS0tLXwtLS0tLS0tLS0t
+LS0tfA0KfCBMMToyNTYsICBMMjoxMDI0ICB8IDIzNDUwNS4yMTQ0IHwgMTE0NjAwLjA4MDEgfA0K
+fCBMMToxNTM2LCBMMjoxMDI0ICB8IDI3OTE3Mi44NzQyIHwgMTE4OTc5LjQ1NDIgfA0KfCBMMToy
+NTYsICBMMjoxMDI0MCB8IDI0NzcxNi43NzU3IHwgMTI3MzY0LjE1MzMgfA0KfCBMMToxNTM2LCBM
+MjoxMDI0MCB8IDI4MzY3NS42NjI1IHwgMTI1OTUwLjY4NDcgfA0KDQpJbiBwYXR0ZXJuIEEsIHdl
+IHNldCB0aGUgc2l6ZSBvZiB0aGUgYXJyYXkgdG8gMTc0NzIwLCB3aGljaCBpcyBhYm91dA0KaGFs
+ZiB0aGUgc2l6ZSBvZiB0aGUgTDFkIGNhY2hlLiBJbiBwYXR0ZXJuIEIsIHdlIHNldCB0aGUgc2l6
+ZSBvZiB0aGUNCmFycmF5IHRvIDEwNDg1MTIwLCB3aGljaCBpcyBhYm91dCB0d2ljZSB0aGUgc2l6
+ZSBvZiB0aGUgTDIgY2FjaGUuDQoNCkluIHBhdHRlcm4gQSwgYSBjaGFuZ2Ugb2YgZGlzdCBhdCBM
+MSBoYXMgYSBsYXJnZXIgZWZmZWN0LiBPbiB0aGUgb3RoZXINCmhhbmQsIGluIHBhdHRlcm4gQiwg
+dGhlIGNoYW5nZSBvZiBkaXN0IGF0IEwyIGhhcyBhIGxhcmdlciBlZmZlY3QuDQpBcyBkZXNjcmli
+ZWQgYWJvdmUsIHRoZSBvcHRpbWFsIGRpc3QgY29tYmluYXRpb24gZGVwZW5kcyBvbiB0aGUNCmNo
+YXJhY3RlcmlzdGljcyBvZiB0aGUgYXBwbGljYXRpb24uIFRoZXJlZm9yZSwgc3VjaCBhIHN5c2Zz
+IGludGVyZmFjZQ0KaXMgdXNlZnVsIGZvciBwZXJmb3JtYW5jZSB0dW5pbmcuDQoNCkZvciB0aGVz
+ZSByZWFzb25zLCB3ZSB3b3VsZCBsaWtlIHRvIGFkZCB0aGlzIGludGVyZmFjZSB0byB0aGUNCnVw
+c3RyZWFtIGtlcm5lbC4NCg0KPiBJJ20gbm90IHN1cmUgYWJvdXQgYSB3aG9sbHkgc2VwYXJhdGUg
+ZHJpdmVycy9od3BmLyAtIGl0J3Mgbm90IGxpa2UgdGhlcmUgYXJlDQo+IGdhemlsbGlvbiBkaWZm
+ZXJlbnQgaHcgcHJlZmV0Y2ggZHJpdmVycy4NCg0KV2UgY3JlYXRlZCBhIG5ldyBkaXJlY3Rvcnkg
+dG8gbHVtcCBtdWx0aXBsZSBzZXBhcmF0ZSBmaWxlcyBpbnRvIG9uZQ0KcGxhY2UuIFdlIGRvbid0
+IHRoaW5rIHRoaXMgaXMgYSBnb29kIHdheS4gSWYgdGhlcmUgaXMgYW55IG90aGVyDQpzdWl0YWJs
+ZSB3YXksIHdlIHdvdWxkIGxpa2UgdG8gY2hhbmdlIGl0Lg0K
