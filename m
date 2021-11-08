@@ -2,88 +2,195 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BC3F5447F69
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Nov 2021 13:19:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EA5FB447F71
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Nov 2021 13:21:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238036AbhKHMWb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Nov 2021 07:22:31 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39338 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237280AbhKHMWa (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Nov 2021 07:22:30 -0500
-Received: from mail-pf1-x430.google.com (mail-pf1-x430.google.com [IPv6:2607:f8b0:4864:20::430])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 52E1AC061714
-        for <linux-kernel@vger.kernel.org>; Mon,  8 Nov 2021 04:19:46 -0800 (PST)
-Received: by mail-pf1-x430.google.com with SMTP id 127so15821577pfu.1
-        for <linux-kernel@vger.kernel.org>; Mon, 08 Nov 2021 04:19:46 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:subject:message-id:mime-version:content-disposition;
-        bh=d59ik40JE0Qg3xm+KRc3jyIsznq3a6nYEStgAFHetjk=;
-        b=LVtY1Lsh1wJYicQvyIVdY0tOx9qkIjnGmoLMa1DHI9La8HlsCMrrqGVxG7vwFGnMmQ
-         T2MqqJ0Ff5RI5vC+JexZJyuZ6KqnRZHj1RyIZbO2YkVnwL364B52gXu7iZ7xp5Gj2nsN
-         Fi92+Up394d+7EDBMvmyfX5UUgYFP3CIt3PXQdWCF/+eLkUtzOKtUw+ACsBpvkSVmkFj
-         3aE94dmPFrlswRsyIBBynPKEWtpGaBgFne3jsjtdbW+M2L164sX3MDlrkMm/Sb7Ys5+p
-         du4w4WW0VJN2gqu8POXwZz+4RFzMuoczriXHNFIsMMFHv23idnMjtHcYy+bp3tWWYbdo
-         emyQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:subject:message-id:mime-version
-         :content-disposition;
-        bh=d59ik40JE0Qg3xm+KRc3jyIsznq3a6nYEStgAFHetjk=;
-        b=XcSC2KF0PIGU6yeJpJt8MWRbcSIgB5Sy83hJCJ4pFbEiFdbw9S34L0+xmHgS+2BT2k
-         Qe5MSY2IBwIbS7rMnqmQflOyrOzE3LP1KuvOqr+20Swz8rEyot59MFXn8fa8NnfEhmmH
-         xdq6c8qYEI9oIgG+dJvZ0p8N/bb7gOE4SpvwjDpe8UhGDVcXKkaNhdBaRtaMWy+SM5xm
-         3ywHsr4O7AhfWRZVLQJkt+qXEJxM8qYAmjcJGAjyJi7E0N8accz5Gt9aPBWOLJDtnMVs
-         nRnJMxqoDjM74/x/QheJDaXbHKbonQrALlOsmSgp9ZnHQet4wrqpVaFKvwreKSP9Yyqz
-         fyZQ==
-X-Gm-Message-State: AOAM531Mx02GLsysz3QbG+7S+KVKP1OyL4aqyUPR3HlEnt3rzkPKRKor
-        rOJuKKO6BTUzUlphvTLUa5Hi8A==
-X-Google-Smtp-Source: ABdhPJyVfx5SOGb17HjhO58f/lcqYt0rzNVO+yQVzsPtkOBZCJ1ixqdBfeouuQV39ZUsv1TF6Ly3GA==
-X-Received: by 2002:a63:6c4a:: with SMTP id h71mr55126977pgc.173.1636373985723;
-        Mon, 08 Nov 2021 04:19:45 -0800 (PST)
-Received: from leoy-ThinkPad-X240s ([134.195.101.46])
-        by smtp.gmail.com with ESMTPSA id j7sm12068918pjf.41.2021.11.08.04.19.43
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 08 Nov 2021 04:19:45 -0800 (PST)
-Date:   Mon, 8 Nov 2021 20:19:41 +0800
-From:   Leo Yan <leo.yan@linaro.org>
-To:     John Garry <john.garry@huawei.com>,
-        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Question: SMMUv3 PMU event aliasing
-Message-ID: <20211108121941.GC1267967@leoy-ThinkPad-X240s>
+        id S239452AbhKHMYH convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 8 Nov 2021 07:24:07 -0500
+Received: from aposti.net ([89.234.176.197]:51830 "EHLO aposti.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S237354AbhKHMYE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Nov 2021 07:24:04 -0500
+Date:   Mon, 08 Nov 2021 12:20:59 +0000
+From:   Paul Cercueil <paul@crapouillou.net>
+Subject: Re: [PATCH v5 2/7] drm/ingenic: Add support for JZ4780 and HDMI
+ output
+To:     "H. Nikolaus Schaller" <hns@goldelico.com>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Kees Cook <keescook@chromium.org>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Robert Foss <robert.foss@linaro.org>,
+        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        Harry Wentland <harry.wentland@amd.com>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        Maxime Ripard <maxime@cerno.tech>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Paul Boddie <paul@boddie.org.uk>,
+        OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS 
+        <devicetree@vger.kernel.org>,
+        linux-mips <linux-mips@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Discussions about the Letux Kernel 
+        <letux-kernel@openphoenux.org>, Jonas Karlman <jonas@kwiboo.se>,
+        dri-devel <dri-devel@lists.freedesktop.org>
+Message-Id: <ZA692R.GHQL6RBCLFB12@crapouillou.net>
+In-Reply-To: <2E32F572-72D0-44E7-A700-AF8A2D37BFDA@goldelico.com>
+References: <cover.1633436959.git.hns@goldelico.com>
+        <2c7d0aa7d3ef480ebb996d37c27cbaa6f722728b.1633436959.git.hns@goldelico.com>
+        <FXTI0R.3FZIJZ7UYSNQ@crapouillou.net>
+        <7CEBB741-2218-40A7-9800-B3A154895274@goldelico.com>
+        <Q6U72R.9HY4TXLC6RWV2@crapouillou.net>
+        <229EBE4C-6555-41DE-962F-D82798AEC650@goldelico.com>
+        <HQY82R.69JHJIC64HDO1@crapouillou.net>
+        <2E32F572-72D0-44E7-A700-AF8A2D37BFDA@goldelico.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Content-Type: text/plain; charset=iso-8859-1; format=flowed
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi John,
+Hi,
 
-[ + mailing list ]
+Le lun., nov. 8 2021 at 11:52:20 +0100, H. Nikolaus Schaller 
+<hns@goldelico.com> a écrit :
+> Hi Paul,
+> 
+>>>  Am 08.11.2021 um 10:37 schrieb Paul Cercueil 
+>>> <paul@crapouillou.net>:
+>>> 
+>>>  Well, it was atomic: "add jz4780+hdmi functionality" or not. Now 
+>>> we separate into "preparation for adding jz4780" and "really 
+>>> adding". Yes, you can split atoms into quarks...
+>> 
+>>  And that's how it should be done. Lots of small atomic patches are 
+>> much easier to review than a few big patches.
+> 
+> I doubt that in this case especially as it has nothing to do with 
+> jz4780...
 
-I'd like to confirm the latest upstream status for SMMUv3 PMU event
-aliasing.
+It has nothing to do with JZ4780 and that's exactly why it should be a 
+separate patch.
 
-I see the patch set v6 of "perf pmu-events: Support event aliasing for
-system PMUs" [1] has been landed on the mainline kernel, and as an
-example, imx8mm DDR PMU has been supported as system PMU [2].
+> But I have a proposal for a better solution at the end of this mail.
+> 
+>>>>  Note that you can do even better, set the .max_register field 
+>>>> according to the memory resource you get from DTS. Have a look at 
+>>>> the pinctrl driver which does exactly this.
+>>>  That is an interesting idea. Although I don't see where
+>>>  
+>>> https://elixir.bootlin.com/linux/latest/source/drivers/pinctrl/pinctrl-ingenic.c#L4171
+>>>  does make use of the memory resource from DTS. It just reads two 
+>>> values from the ingenic_chip_info instead of one I do read from 
+>>> soc_info.
+>> 
+>>  It overrides the .max_register from a static regmap_config instance.
+> 
+> To be precise: it overrides .max_register of a copy of a static 
+> regmap_config instance (which has .max_register = 0).
+> 
+>>  You can do the same,
+> 
+> We already do the same...
+> 
+>>  calculating the .max_register from the memory resource you get from 
+>> DT.
+> 
+> I can't see any code in pinctrl-ingenic.c getting the memory resource 
+> that from DT. It calculates it from the ingenic_chip_info tables 
+> inside the driver code but not DT.
+> 
+>>  I'm sure you guys can figure it out.
+> 
+> Ah, we have to figure out. You are not sure yourself how to do it? 
+> And it is *not* exactly like the pinctrl driver (already) does? 
+> Please give precise directions in reviews and not vague research 
+> homework. Our time is also valuable. Sorry if I review your reviews...
+> 
+> Anyways I think you roughly intend (untested):
+> 
+> 	struct resource *r;
+> 
+> 	r = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+> 	regmap_config.max_register = r.end - r.start;
 
-On the other hand, I can see patch set 5 contains the SMMUv3 PMU event
-aliasing with patch "perf vendor events arm64: Add Architected events
-smmuv3-pmcg.json" [3], but this patch was left out in patch set 6 and
-it's never landed on the mainline kernel.
+Replace the "devm_platform_ioremap_resource" with 
+"devm_platform_get_and_ioremap_resource" to get a pointer to the 
+resource.
 
-Could you share current status (or plan) for upstreaming SMMUv3 PMU
-event alias?  Or if there have any block issue to prevent merging the
-changes in the mainline kernel?
+Then the .max_register should be (r.end - r.start - 4) I think.
 
-Thanks for your help!
+And lose the aggressivity. It's not going to get you anywhere, 
+especially since I'm the one who decides whether or not I should merge 
+your patches. You want your code upstream, that's great, but it's your 
+responsability to get it to shape so that it's eventually accepted.
 
-Leo
+> 
+> But I wonder how that could work at all (despite adding code 
+> execution time) with:
 
-[1] https://lore.kernel.org/lkml/1607080216-36968-1-git-send-email-john.garry@huawei.com/
-[2] pmu-events/arch/arm64/freescale/imx8mm/sys/ddrc.json
-[3] https://lore.kernel.org/lkml/1604666153-4187-6-git-send-email-john.garry@huawei.com/
+Code execution time? ...
+
+> e.g. jz4770.dtsi:
+> 
+> 	lcd: lcd-controller@13050000 {
+> 		compatible = "ingenic,jz4770-lcd";
+> 		reg = <0x13050000 0x300>;
+> 
+> or jz4725b.dtsi:
+> 
+> 	lcd: lcd-controller@13050000 {
+> 		compatible = "ingenic,jz4725b-lcd";
+> 		reg = <0x13050000 0x1000>;
+> 
+> So max_register becomes 0x300 or 0x1000 but not
+> 
+> #define JZ_REG_LCD_SIZE1	0x12c
+> 	.max_reg = JZ_REG_LCD_SIZE1,
+> 
+> And therefore wastes a lot of regmap memory.
+
+"regmap memory"? ...
+
+> Do you want this? DTS should not be reduced (DTS should be kept as 
+> stable as possible), since the reg property describes address mapping 
+> - not how many bytes are really used by registers or how big a cache 
+> should be allocated (cache allocation size requirements are not 
+> hardware description).
+
+The DTS should list the address and size of the register area. If your 
+last register is at address 0x12c and there's nothing above, then the 
+size in DTS should be 0x130.
+
+> But here are good news:
+> 
+> I have a simpler and less invasive proposal. We keep the 
+> devm_regmap_init_mmio code as is and just increase its .max_register 
+> from JZ_REG_LCD_SIZE1 to JZ_REG_LCD_PCFG when introducing the jz4780. 
+> This wastes a handful bytes for all non-jz4780 chips but less than 
+> using the DTS memory region size. And is less code (no entry in 
+> soc_info tables, no modifyable copy) and faster code execution than 
+> all other proposals.
+> 
+> This is then just a single-line change when introducing the jz4780. 
+> And no "preparation for adding jz4780" patch is needed at all. No 
+> patch to split out for separate review.
+> 
+> Let's go this way to get it eventually finalized. Ok?
+
+No.
+
+Cheers,
+-Paul
+
+
