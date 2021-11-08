@@ -2,121 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2983E447CFD
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Nov 2021 10:41:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0E3CE447CFF
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Nov 2021 10:41:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237086AbhKHJnn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Nov 2021 04:43:43 -0500
-Received: from mailgw01.mediatek.com ([60.244.123.138]:56132 "EHLO
-        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S236838AbhKHJnm (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Nov 2021 04:43:42 -0500
-X-UUID: d313024215cb41fc999a422a7d299fe0-20211108
-X-UUID: d313024215cb41fc999a422a7d299fe0-20211108
-Received: from mtkcas11.mediatek.inc [(172.21.101.40)] by mailgw01.mediatek.com
-        (envelope-from <yc.hung@mediatek.com>)
-        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 753959213; Mon, 08 Nov 2021 17:40:53 +0800
-Received: from mtkmbs10n1.mediatek.inc (172.21.101.34) by
- mtkmbs10n1.mediatek.inc (172.21.101.34) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.792.15; Mon, 8 Nov 2021 17:40:52 +0800
-Received: from mtksdccf07 (172.21.84.99) by mtkmbs10n1.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.2.792.15 via Frontend
- Transport; Mon, 8 Nov 2021 17:40:52 +0800
-Message-ID: <4e876c89ee58cd1408511a34573005e3df359cd0.camel@mediatek.com>
-Subject: Re: [PATCH 3/4] ASoC: mediatek: mt8195: separate the common code
- from machine driver
-From:   YC Hung <yc.hung@mediatek.com>
-To:     Mark Brown <broonie@kernel.org>,
-        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-CC:     Trevor Wu <trevor.wu@mediatek.com>, <devicetree@vger.kernel.org>,
-        <alsa-devel@alsa-project.org>, <tiwai@suse.com>,
-        <linux-kernel@vger.kernel.org>, <robh+dt@kernel.org>,
-        <linux-mediatek@lists.infradead.org>, <matthias.bgg@gmail.com>,
-        <daniel.baluta@nxp.com>, <linux-arm-kernel@lists.infradead.org>
-Date:   Mon, 8 Nov 2021 17:40:52 +0800
-In-Reply-To: <YYVez/V9ocCXhYmg@sirena.org.uk>
-References: <20211103100040.11933-1-trevor.wu@mediatek.com>
-         <20211103100040.11933-4-trevor.wu@mediatek.com>
-         <YYP+l7tMofYoB+aC@sirena.org.uk>
-         <b4360ea17c3045759e85ee13fa9c001afe73c93c.camel@mediatek.com>
-         <YYVQC7KLZx8oxdXT@sirena.org.uk>
-         <e404d241-0685-643b-4b9d-d85bb8783385@linux.intel.com>
-         <YYVez/V9ocCXhYmg@sirena.org.uk>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.2 
+        id S237192AbhKHJoe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Nov 2021 04:44:34 -0500
+Received: from mail.kernel.org ([198.145.29.99]:33860 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S236838AbhKHJod (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Nov 2021 04:44:33 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D5B1961242;
+        Mon,  8 Nov 2021 09:41:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1636364509;
+        bh=KubNRzNxhXVYig4fprNmbCEDI0o1MB2KC5bqwRxBdsI=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=tXiQvIp/aMZhEW+2/cYq+GecvOAMtof+uzLEZJPzHvylPVEA2Uqq9CHCHwGfWhi1k
+         Yk4NhLWGUbGlb/4uIrYpDtMsfdAqnfQedlb/bcfOIlIocFZFsG0RaY+ugq/FeMFVJm
+         EqsjmdFwO65Hw9kiSdYj6L+uutw+CNzd9ljGNT5J7n7BCY9waoQUPYzDwVH9robrpy
+         AcOnHMDijykttGdwyiSpR3R9fXGTINCP3fiyXr8fWPFY2YLCVyAe8rvLP0Hare3nlc
+         TAN+qUOflI3jZsILRsr0hIrJuYm91tQZwnpNfmQf9blfIzVBSDR2bCLgvzfW7wW/Rh
+         0KzhQAQDa72GA==
+Received: from johan by xi.lan with local (Exim 4.94.2)
+        (envelope-from <johan@kernel.org>)
+        id 1mk19u-0003VH-7U; Mon, 08 Nov 2021 10:41:46 +0100
+Date:   Mon, 8 Nov 2021 10:41:46 +0100
+From:   Johan Hovold <johan@kernel.org>
+To:     Ajay Garg <ajaygargnsit@gmail.com>
+Cc:     gregkh@linuxfoundation.org, jirislaby@kernel.org,
+        andriy.shevchenko@linux.intel.com, kernel@esmil.dk,
+        linux-serial@vger.kernel.org, linux-kernel@vger.kernel.org,
+        paskripkin@gmail.com
+Subject: Re: [PATCH v4] tty: vt: keyboard: add default switch-case, to handle
+ smatch-warnings in method vt_do_kdgkb_ioctl
+Message-ID: <YYjw2mRIhy1SoIb+@hovoldconsulting.com>
+References: <20211107031721.4734-1-ajaygargnsit@gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-MTK:  N
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20211107031721.4734-1-ajaygargnsit@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Mark,
+First, please fix your patch Subject which is way too verbose. You
+should aim at less than 72 chars including prefix. Something like
 
-I am YC Hung from Mediatek. Let me show our block diagram as the link
-below for the sound card which support SOF.
+	"vt: keyboard: suppress smatch warning in vt_do_kdgkb_ioctl"
 
-https://user-images.githubusercontent.com/62316/132476344-923dfe3a-5305-43e5-9fc8-c63d9ab2c58f.png
-In this sound card, there are two components , one is SOF based
-component and another is non-SOF based component(called Normal in the
-block).
-We want to reuse some BEs of Normal which can control Mediatek Audio
-Front End hardware power, clock , and DAI module and still keep some
-FEs(e.g. DPTX) then we can use it on the same sound card.
-Therefore, we use late_probe callback function
-"mt8195_mt6359_rt1019_rt5682_card_late_probe" to add route path from
-SOF widget to non-SOF BEs.
-For two patches https://github.com/thesofproject/linux/pull/3217 and 
-https://github.com/thesofproject/linux/pull/3236, we want to keep FEs
-of non-SOF components and can reuse them. Please let me know if I am
-not clear enough.Thanks.
+should do.
 
-On Fri, 2021-11-05 at 16:41 +0000, Mark Brown wrote:
-> On Fri, Nov 05, 2021 at 11:16:05AM -0500, Pierre-Louis Bossart wrote:
-> > On 11/5/21 10:38 AM, Mark Brown wrote:
-> > > We shouldn't be requiring people to load completely different
-> > > drivers
-> > > based on software configuration, what if a system wants to bypass
-> > > the
-> > > DSP in some but not all configurations?  Can we not just have
-> > > controls
-> > > allowing users to route round the DSP where appropriate?
-> > It was my understanding the card relies on separate components
-> > - a SOF-based component to provide support for DSP-managed
-> > interfaces
-> > - a 'non-SOF' component for 'regular' interfaces not handled by the
-> > DSP.
-> > this was the basis for the changes discussed in
-> > https://github.com/thesofproject/linux/pull/3217 and
-> > https://github.com/thesofproject/linux/pull/3236
+On Sun, Nov 07, 2021 at 08:47:21AM +0530, Ajay Garg wrote:
+> smatch-kchecker gives the following warnings when run on keyboard.c :
 > 
-> So it's actually supposed to end up as two different cards which
-> can't
-> possibly be interlinked?  That doesn't seem to add up entirely given
-> that there's stuff being moved out of the current card, and I thought
-> these systems had a fairly comprehensive audio muxing capability.
-> Trevor, could you be a bit more specific about what's actually going
-> on
-> here physically please?
+> vt_do_kdgkb_ioctl() error: uninitialized symbol 'kbs'.
+> vt_do_kdgkb_ioctl() error: uninitialized symbol 'ret'.
 > 
-> > But indeed if the same interface can be managed by the DSP or not,
-> > depending on software choices it's a different problem altogether.
-> > We've looked into this recently, if the choice to involve the DSP
-> > or not
-> > is at the interface level, it might be better to have both
-> > components
-> > expose different DAIs for the same interface, with some sort of
-> > run-time
-> > mutual exclusion, so that all possible/allowed permutations are
-> > allowed.
+> This usually happens when switch has no default case and static 
+> analyzers and even sometimes compilers can’t prove that all possible 
+> values are covered.
+>
+> Thus, the default switch-case has been added, which sets the values 
+> for the two variables :
 > 
-> Yes, if the interface can optionally be completely hidden by the DSP
-> that's adding another layer of complication.
-> _______________________________________________
-> Linux-mediatek mailing list
-> Linux-mediatek@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/linux-mediatek
+>         * kbs as NULL, which also nicely fits in with kfree.
+> 
+>         * ret as -ENOIOCTLCMD (on same lines if there is no cmd
+>                                match in "vt_do_kdskled" method).
 
+Not sure how far we want to take the suppression of false-positive
+warnings but at least this isn't the right way to do it.
+
+> Many thanks to the following for review of previous versions :
+> 
+> 	* Pavel Skripkin <paskripkin@gmail.com> 
+> 	* Andy Shevchenko <andy.shevchenko@gmail.com> 
+> 
+> 
+> Signed-off-by: Ajay Garg <ajaygargnsit@gmail.com>
+> ---
+> 
+> 
+> There were discussions previously, and the current patch is the 
+> result.
+> 
+> v1 :
+> https://lore.kernel.org/linux-serial/YYZN30qfaKMskVwE@kroah.com/T/#t
+> 
+> v2 :
+> https://lore.kernel.org/linux-serial/CAHP4M8Vdj4Eb8q773BeHvsW9n6t=3n1WznuXAR4fZCNi1J6rOg@mail.gmail.com/T/#m18f45676feaba6b1f01ddd5fe607997b190ef4b9
+> 
+> v3 :
+> https://lore.kernel.org/linux-serial/20211106220315.392842-1-ajaygargnsit@gmail.com/T/#u
+> 
+> Changes in v2 :
+> 
+>         * Changes as required by scripts/checkpatch.pl
+> 
+>         * Checking whether kbs is not NULL before kfree is not required,
+>           as kfree(NULL) is safe. So, dropped the check.
+> 
+> Changes in v3 :
+> 
+>         * Using default-switch case, and setting the variables 
+>           when there is no matching cmd.
+> 
+> Changes in v4 :
+> 
+>         * Removed braces for the default switch-case.
+> 
+> 
+>  drivers/tty/vt/keyboard.c | 6 ++++++
+>  1 file changed, 6 insertions(+)
+> 
+> 
+> diff --git a/drivers/tty/vt/keyboard.c b/drivers/tty/vt/keyboard.c
+> index c7fbbcdcc346..f66c32fe7ef1 100644
+> --- a/drivers/tty/vt/keyboard.c
+> +++ b/drivers/tty/vt/keyboard.c
+> @@ -2090,6 +2090,10 @@ int vt_do_kdgkb_ioctl(int cmd, struct kbsentry __user *user_kdgkb, int perm)
+>  
+>  		ret = 0;
+>  		break;
+> +	default:
+> +		kbs = NULL;
+> +		ret = -ENOIOCTLCMD;
+> +		break;
+>  	}
+>  
+>  	kfree(kbs);
+
+Instead, move the kfree() into the two cases blocks and initialise ret
+to 0 as is done in several other vt helpers in case a driver bug ever
+causes them to be called for the wrong cmds (e.g. instead of sprinkling
+WARN_ON(1) in all those functions).
+
+You may want to mention that the kfree warning was introduced by 
+
+	07edff926520 ("vt: keyboard, reorder user buffer handling in vt_do_kdgkb_ioctl")
+
+which moved the shared allocation into the switch statement, and perhaps
+also mention
+
+	4e1404a5cd04 ("vt: keyboard, extract and simplify vt_kdskbsent")
+
+for the ret warning.
+
+Johan
