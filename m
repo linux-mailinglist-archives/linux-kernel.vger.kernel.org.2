@@ -2,161 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6217B447ED4
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Nov 2021 12:25:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 53FCF447EE6
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Nov 2021 12:29:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239231AbhKHL1k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Nov 2021 06:27:40 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:31241 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S239220AbhKHL1j (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Nov 2021 06:27:39 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1636370694;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=d9STRiI6KucgPVBhAUB/ZaQYLqQS9QZpyJnKok3uPOc=;
-        b=X2yXPhO8A4E0Axa8oxiLD2GD3MQlmvUL0CDD0R6ktaDSNMCWlJadYXfii9MUWYRouzNBSn
-        TyrUyfft/watIqE2MdtFsky3EPD6MV50GvlofHaWxuVly8boQ1d1ZGRIhf9cOC8q+Irrk2
-        3eJqULniYifRr8KfPKehacah1ABiXK4=
-Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com
- [209.85.208.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-367-nXh_RO-sPpO8iwrT8Vzjzw-1; Mon, 08 Nov 2021 06:24:53 -0500
-X-MC-Unique: nXh_RO-sPpO8iwrT8Vzjzw-1
-Received: by mail-ed1-f71.google.com with SMTP id f20-20020a0564021e9400b003e2ad3eae74so14580774edf.5
-        for <linux-kernel@vger.kernel.org>; Mon, 08 Nov 2021 03:24:53 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:references:from:in-reply-to
-         :content-transfer-encoding;
-        bh=d9STRiI6KucgPVBhAUB/ZaQYLqQS9QZpyJnKok3uPOc=;
-        b=q0hNm9ZyX3dUwbBqprGw0NrmGBTcKZChpUb6DS9Q3OM4Hf994pBHNQMWUYRaTZfLSV
-         qt3fS1xyyfZZbkL5B0JX7mS+GvX3MvFsa+xf6CkAUSxmN8KxzzKW+rFIKvwzvOEHvqpz
-         xQv2VjwxEkJ3U6x0w7nd3kx36o5MQOQVH0X2PKjwl6AmkCBjZ4yw1Ky8EL6MukVWZc3p
-         SelNCAoLaLur+LWYfr38l4sAiTXR0pdmTlvrlMvSqBDZak/jQUnTOkmYT8t8iYvImZeF
-         QSAT/at76YpOrOFOnVAJ0fdwo7cKg6af6vuJRdJF5KuKgs//2ED53pd81mVD5uX0oKPL
-         oqEA==
-X-Gm-Message-State: AOAM532DAEC/canBlTpu0aB89RfanoIkS86oVA3mT/oKGWk9DZ4px690
-        MgfZ2iohX85GsMCi2jTCV7mBX01LjDxNK8cWBXmtBN7gkqcM0DejG9wPzvcUK/Mhn281Lcp4+FF
-        YpMLbJyKPqM9gI5nJ7mudHWXR
-X-Received: by 2002:a17:907:7f18:: with SMTP id qf24mr55204558ejc.568.1636370692015;
-        Mon, 08 Nov 2021 03:24:52 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJwQ1Pfgel7h3DuLzHBNGPV5ClhUoEziQRIG7lqu2tiK3KfHXtfnhCqLwPpnzxoZ5sSYfpPKHw==
-X-Received: by 2002:a17:907:7f18:: with SMTP id qf24mr55204542ejc.568.1636370691856;
-        Mon, 08 Nov 2021 03:24:51 -0800 (PST)
-Received: from [10.40.1.223] ([81.30.35.201])
-        by smtp.gmail.com with ESMTPSA id k23sm9106957edv.22.2021.11.08.03.24.51
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 08 Nov 2021 03:24:51 -0800 (PST)
-Message-ID: <3e646803-346c-8650-d407-21af3f017366@redhat.com>
-Date:   Mon, 8 Nov 2021 12:24:51 +0100
+        id S237398AbhKHLcB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Nov 2021 06:32:01 -0500
+Received: from mail.kernel.org ([198.145.29.99]:38672 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231557AbhKHLb7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Nov 2021 06:31:59 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A277D61360
+        for <linux-kernel@vger.kernel.org>; Mon,  8 Nov 2021 11:29:15 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1636370955;
+        bh=t2BEV1wat8ws6w2DTh6xiYZxYgmoX7b04xEVmmh6RNQ=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=Hv1HBpcecgOPuOx/IU9Ci6dO8fXAgzIZMlzo8P3YTpcM3zRsepWzCN6PFlHNv05cM
+         UktH1a/pQ+oO3BTLWGHl8sl47krZ0LfPmYX/JU3J+mBWDSu6JvQCB3toq0qRykHYaJ
+         Gqggil/CqGQ2+FI8OscTxZKnF9YRk1fV7ez+5T3gX4sLp7OJc/+TaG1Meu6rkiqL0h
+         b1aBXbNC4bPYjCQ8X/+KTpFUvHt+curnVDqoxuHDRxW+LVmHymLirsILV5g8sFSRvM
+         OMztQkrsF1SnkCCMteS2CBH+0TFaYJql/pQZCVV5DEQGUAmSjOaoPRKxvuqdbiqaHN
+         Xp09e7pD50oMw==
+Received: by mail-oi1-f170.google.com with SMTP id q124so27028006oig.3
+        for <linux-kernel@vger.kernel.org>; Mon, 08 Nov 2021 03:29:15 -0800 (PST)
+X-Gm-Message-State: AOAM531zm5ztzkLFx9uft2X88Clg37y9z09JkB8lAOAAYvGdM1qNo1Ec
+        qy+bYRPvL8SK9zMGwr6UPOU1Py5Uaz+fpb9N2Jk=
+X-Google-Smtp-Source: ABdhPJz/CgiK30N4avcJmA414YAszTRP+TwzizVE4eOYT7giArQXQ/imYJ8VNPDDeW2YlpNO3kPv5rbH9hIUqy95a2E=
+X-Received: by 2002:a05:6808:1919:: with SMTP id bf25mr7236654oib.33.1636370954860;
+ Mon, 08 Nov 2021 03:29:14 -0800 (PST)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.2.0
-Subject: Re: [PATCH v2] usb: typec: fusb302: Fix masking of comparator and
- bc_lvl interrupts
-Content-Language: en-US
-To:     Ondrej Jirman <megous@megous.com>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Badhri Jagan Sridharan <badhri@google.com>,
-        "open list:USB TYPEC PORT CONTROLLER DRIVERS" 
-        <linux-usb@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
-References: <20211108102833.2793803-1-megous@megous.com>
-From:   Hans de Goede <hdegoede@redhat.com>
-In-Reply-To: <20211108102833.2793803-1-megous@megous.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+References: <20211105145917.2828911-1-ardb@kernel.org> <20211105145917.2828911-3-ardb@kernel.org>
+ <YYj6ib6Mrp9rAjVJ@hirez.programming.kicks-ass.net>
+In-Reply-To: <YYj6ib6Mrp9rAjVJ@hirez.programming.kicks-ass.net>
+From:   Ard Biesheuvel <ardb@kernel.org>
+Date:   Mon, 8 Nov 2021 12:29:04 +0100
+X-Gmail-Original-Message-ID: <CAMj1kXHEBc1XkTuHPXYV8rp5++HA9ruROUP-UApzEnVzvgFvTw@mail.gmail.com>
+Message-ID: <CAMj1kXHEBc1XkTuHPXYV8rp5++HA9ruROUP-UApzEnVzvgFvTw@mail.gmail.com>
+Subject: Re: [PATCH v6 2/2] arm64: implement support for static call trampolines
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Quentin Perret <qperret@google.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        James Morse <james.morse@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Sami Tolvanen <samitolvanen@google.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Steven Rostedt <rostedt@goodmis.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On Mon, 8 Nov 2021 at 11:23, Peter Zijlstra <peterz@infradead.org> wrote:
+>
+> On Fri, Nov 05, 2021 at 03:59:17PM +0100, Ard Biesheuvel wrote:
+> > diff --git a/arch/arm64/include/asm/static_call.h b/arch/arm64/include/asm/static_call.h
+> > new file mode 100644
+> > index 000000000000..6ee918991510
+> > --- /dev/null
+> > +++ b/arch/arm64/include/asm/static_call.h
+> > @@ -0,0 +1,40 @@
+> > +/* SPDX-License-Identifier: GPL-2.0 */
+> > +#ifndef _ASM_STATIC_CALL_H
+> > +#define _ASM_STATIC_CALL_H
+> > +
+> > +/*
+> > + * The sequence below is laid out in a way that guarantees that the literal and
+> > + * the instruction are always covered by the same cacheline, and can be updated
+> > + * using a single store-pair instruction (provided that we rewrite the BTI C
+> > + * instruction as well). This means the literal and the instruction are always
+> > + * in sync when observed via the D-side.
+> > + *
+> > + * However, this does not guarantee that the I-side will catch up immediately
+> > + * as well: until the I-cache maintenance completes, CPUs may branch to the old
+> > + * target, or execute a stale NOP or RET. We deal with this by writing the
+> > + * literal unconditionally, even if it is 0x0 or the branch is in range. That
+> > + * way, a stale NOP will fall through and call the new target via an indirect
+> > + * call. Stale RETs or Bs will be taken as before, and branch to the old
+> > + * target.
+> > + */
+>
+> Thanks for the comment!
+>
+>
+> > diff --git a/arch/arm64/kernel/patching.c b/arch/arm64/kernel/patching.c
+> > index 771f543464e0..a265a87d4d9e 100644
+> > --- a/arch/arm64/kernel/patching.c
+> > +++ b/arch/arm64/kernel/patching.c
+>
+>
+> > +static void *strip_cfi_jt(void *addr)
+> > +{
+> > +     if (IS_ENABLED(CONFIG_CFI_CLANG)) {
+> > +             void *p = addr;
+> > +             u32 insn;
+> > +
+> > +             /*
+> > +              * Taking the address of a function produces the address of the
+> > +              * jump table entry when Clang CFI is enabled. Such entries are
+> > +              * ordinary jump instructions, preceded by a BTI C instruction
+> > +              * if BTI is enabled for the kernel.
+> > +              */
+> > +             if (IS_ENABLED(CONFIG_ARM64_BTI_KERNEL))
+> > +                     p += 4;
+>
+> Perhaps:
+>                 if (aarch64_insn_is_bti(le32_to_cpup(p)))
 
-On 11/8/21 11:28, Ondrej Jirman wrote:
-> The code that enables either BC_LVL or COMP_CHNG interrupt in tcpm_set_cc
-> wrongly assumes that the interrupt is unmasked by writing 1 to the apropriate
-> bit in the mask register. In fact, interrupts are enabled when the mask
-> is 0, so the tcpm_set_cc enables interrupt for COMP_CHNG when it expects
-> BC_LVL interrupt to be enabled.
-> 
-> This causes inability of the driver to recognize cable unplug events
-> in host mode (unplug is recognized only via a COMP_CHNG interrupt).
-> 
-> In device mode this bug was masked by simultaneous triggering of the VBUS
-> change interrupt, because of loss of VBUS when the port peer is providing
-> power.
-> 
-> Fixes: 48242e30532b ("usb: typec: fusb302: Revert "Resolve fixed power role contract setup"")
-> Signed-off-by: Ondrej Jirman <megous@megous.com>
-> Cc: Hans de Goede <hdegoede@redhat.com>
+That instruction does not exist yet, and it begs the question which
+type of BTI instruction we want to detect.
 
-Thanks, patch looks good to me:
+>                         p += 4;
+>
+> Perhapser still, add:
+>                 else
+>                         WARN_ON(IS_ENABLED(CONFIG_ARM64_BTI_KERNEL));
+>
 
-Reviewed-by: Hans de Goede <hdegoede@redhat.com>
+There's already a WARN() below that will trigger and return the
+original address if the entry did not have the expected layout, which
+means a direct branch at offset 0x0 or 0x4 depending on whether BTI is
+on.
 
-Regards,
+So I could add a WARN() here as well, but I'd prefer to keep the one
+at the bottom, which makes the one here slightly redundant.
 
-Hans
+> > +
+> > +             insn = le32_to_cpup(p);
+> > +             if (aarch64_insn_is_b(insn))
+> > +                     return p + aarch64_get_branch_offset(insn);
+> > +
+> > +             WARN_ON(1);
+> > +     }
+> > +     return addr;
+> > +}
+>
+> Also, can this please have a comment decrying the lack of built-in for
+> this?
 
-> ---
->  drivers/usb/typec/tcpm/fusb302.c | 6 ++++--
->  1 file changed, 4 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/usb/typec/tcpm/fusb302.c b/drivers/usb/typec/tcpm/fusb302.c
-> index 7a2a17866a823..72f9001b07921 100644
-> --- a/drivers/usb/typec/tcpm/fusb302.c
-> +++ b/drivers/usb/typec/tcpm/fusb302.c
-> @@ -669,25 +669,27 @@ static int tcpm_set_cc(struct tcpc_dev *dev, enum typec_cc_status cc)
->  		ret = fusb302_i2c_mask_write(chip, FUSB_REG_MASK,
->  					     FUSB_REG_MASK_BC_LVL |
->  					     FUSB_REG_MASK_COMP_CHNG,
-> -					     FUSB_REG_MASK_COMP_CHNG);
-> +					     FUSB_REG_MASK_BC_LVL);
->  		if (ret < 0) {
->  			fusb302_log(chip, "cannot set SRC interrupt, ret=%d",
->  				    ret);
->  			goto done;
->  		}
->  		chip->intr_comp_chng = true;
-
-
-> +		chip->intr_bc_lvl = false;
-
-FWIW this is not necessary because the fusb302_set_toggling(chip, TOGGLING_MODE_OFF)
-already does this, but it makes the code more clear, so lets keep it.
-
->  		break;
->  	case TYPEC_CC_RD:
->  		ret = fusb302_i2c_mask_write(chip, FUSB_REG_MASK,
->  					     FUSB_REG_MASK_BC_LVL |
->  					     FUSB_REG_MASK_COMP_CHNG,
-> -					     FUSB_REG_MASK_BC_LVL);
-> +					     FUSB_REG_MASK_COMP_CHNG);
->  		if (ret < 0) {
->  			fusb302_log(chip, "cannot set SRC interrupt, ret=%d",
->  				    ret);
->  			goto done;
->  		}
->  		chip->intr_bc_lvl = true;
-
-
-> +		chip->intr_comp_chng = false;
-
-Idem.
-
->  		break;
->  	default:
->  		break;
-> 
-
-Regards,
-
-Hans
-
+Sure.
