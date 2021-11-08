@@ -2,165 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A98E4497FF
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Nov 2021 16:17:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 56D64449809
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Nov 2021 16:19:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237955AbhKHPUZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Nov 2021 10:20:25 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52144 "EHLO
+        id S238578AbhKHPWD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Nov 2021 10:22:03 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52508 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237690AbhKHPUW (ORCPT
+        with ESMTP id S231557AbhKHPWB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Nov 2021 10:20:22 -0500
-Received: from mail-wm1-x32d.google.com (mail-wm1-x32d.google.com [IPv6:2a00:1450:4864:20::32d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 778ECC061570
-        for <linux-kernel@vger.kernel.org>; Mon,  8 Nov 2021 07:17:37 -0800 (PST)
-Received: by mail-wm1-x32d.google.com with SMTP id o4-20020a1c7504000000b0032cab7473caso53004wmc.1
-        for <linux-kernel@vger.kernel.org>; Mon, 08 Nov 2021 07:17:37 -0800 (PST)
+        Mon, 8 Nov 2021 10:22:01 -0500
+Received: from mail-wr1-x436.google.com (mail-wr1-x436.google.com [IPv6:2a00:1450:4864:20::436])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 91C6CC061570;
+        Mon,  8 Nov 2021 07:19:16 -0800 (PST)
+Received: by mail-wr1-x436.google.com with SMTP id d24so27536245wra.0;
+        Mon, 08 Nov 2021 07:19:16 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ffwll.ch; s=google;
-        h=date:from:to:cc:subject:message-id:mail-followup-to:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=hBEGhoX5YuNLFtwj0iZldxCPL/IU1JHW309UHcbi6N0=;
-        b=L8/zB7BSBqyEz55VvZb2onr/HFN94h4kOWeL7YKHsOsT6aNM9jUhR/4oD9HwZJ4vNL
-         CrsZGGjPrY/EtdG2BuMc6FD6fiT05/iN3LeAelAyxYKbBQigeQTjqjw9wGhX+50L0qz1
-         MpjojiscjFDkUXddHTcuRAa2J1CAvkLAJWlMI=
+        d=gmail.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=r0UgxhSO3VS7lE1Qbtzz6PCS/79bXIcN+v+cxY6Q5rY=;
+        b=N5ABK3F+wUiTUnqjYz/5cQ3pFlpJ4ZWKrIfVL543NKoSYE+u6GEsSTW21HaChwCmzQ
+         MZSycOqdEng49+sTPNdda4tPrs45AimAOyhGUpJL93G86x9nW7I8D7qQC4TI2xeTnBRN
+         LSfm7zDUcysmBizo7rTGzP4Gck+JRNBDBjpFDOIt9rl4XNxbfY+I+3o89Tf7HqZVi/HU
+         MdBTLbATJD2ojiROC/X76x0XIJ4gzkytkSR3sK4ZDfjPhPyfw/cWx47XnjVL8sQWWNa8
+         FIivBpgav0R90YNFEikDx2XB/lhUMTYWTQ/6mvFeZxq+8bQRBXfFofr1LlBleIv9q+PD
+         CzEA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id
-         :mail-followup-to:references:mime-version:content-disposition
-         :in-reply-to;
-        bh=hBEGhoX5YuNLFtwj0iZldxCPL/IU1JHW309UHcbi6N0=;
-        b=Zd8BoyZaSMPScZJcMFWUet75LJET6z7y0WtE1SeFIZiHxuB74ecdIQjjK1HXmau5SH
-         S7URTJ1rk+n0NmmsylFqC6cqlY9c4XmVezqdF5n4edlQkVkIVOAbqeZiAS4YUTgRUyPK
-         ViuScLU5WHN2RXhFiivO8XsVsD71FRv0B4qjZsB+KPoOY0rgx1iC6PcHtKu6EJ4sLkAl
-         1J8QEwux2OaumwFRH6o0Z7XFNwE0gr2SnFYuFlk22CHgdL3an6Qm7iFmizAr7ozpkEvE
-         SVGmvCnuekiEHhBWYXB8L4CiM1kybwzhbLjTS+Vpzkx65UBvGOjnZIoPOS5IfgKoqRKq
-         JgFg==
-X-Gm-Message-State: AOAM5320emTjrH4DwFlBNKCA8FP7j37lLv7Gc0fViV8NyHpdXGHSfKmo
-        KRZVgJFR8pzEcLn+j/ECAjdK4A==
-X-Google-Smtp-Source: ABdhPJyp7OwRHBxwCBRfEWA+tElkasv2jnP+G3zoYuHxViLc/uz2nRtyKPxBmH9BvrPQOAu7OmBUOw==
-X-Received: by 2002:a1c:1fcf:: with SMTP id f198mr93457wmf.66.1636384656073;
-        Mon, 08 Nov 2021 07:17:36 -0800 (PST)
-Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
-        by smtp.gmail.com with ESMTPSA id l8sm22202895wmc.40.2021.11.08.07.17.35
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=r0UgxhSO3VS7lE1Qbtzz6PCS/79bXIcN+v+cxY6Q5rY=;
+        b=fodOS3dS7sHN0xGdzJtwNQ/vGUlOctZylD+00mQqHnfv0oA8s82z/4FRxOO5sPBYrx
+         ygTgzvUwX2YOXae5WSH9EQvPGT/3onEa8eIeZPgo+C6GjGl1pHk5fTj06JsZEprjVGNR
+         oOCIG4JWo6Rb2aIvYloJZjmGjWMats5irze28CS8obxnEBTsYjENTWfmOuHKXliaMHBr
+         ADmvbYetJ5udjIHTYOdkd/oCnFdTFcVRLytN+UeyOBRyHoJeKeCU2Bsf4YNxnjy0VEt9
+         I64a80AWQCq3ysXjqffKGbSVzMyY8UPfdU6SszF07Wnft2I8LR/5ovRdd52WNbm8jCID
+         8Z8Q==
+X-Gm-Message-State: AOAM5320qlxcoA42iZjgDPuYVqz72VK8eF1OzxyZJQ30GHCIX4YbgcX5
+        htoAzGeyjq17r0FRS9JwUMMQDxSlUOo=
+X-Google-Smtp-Source: ABdhPJx6wEJ0HyH3ODXf3R+ZN2UrMGtNivD7rCHS5b+2JhAR5DIP+vLbo2e1Y2BugcI3M8vNI0UjSA==
+X-Received: by 2002:adf:dc0e:: with SMTP id t14mr541769wri.277.1636384754971;
+        Mon, 08 Nov 2021 07:19:14 -0800 (PST)
+Received: from Ansuel-xps.localdomain (93-42-71-246.ip85.fastwebnet.it. [93.42.71.246])
+        by smtp.gmail.com with ESMTPSA id e18sm16976074wrs.48.2021.11.08.07.19.13
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 08 Nov 2021 07:17:35 -0800 (PST)
-Date:   Mon, 8 Nov 2021 16:17:33 +0100
-From:   Daniel Vetter <daniel@ffwll.ch>
-To:     Dmitry Osipenko <digetx@gmail.com>
-Cc:     Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Lyude Paul <lyude@redhat.com>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Thomas Graichen <thomas.graichen@gmail.com>,
-        dri-devel@lists.freedesktop.org, linux-tegra@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v1 2/2] drm/tegra: Use drm_dp_aux_register_ddc/chardev()
- helpers
-Message-ID: <YYk/jfcceun/Qleq@phenom.ffwll.local>
-Mail-Followup-To: Dmitry Osipenko <digetx@gmail.com>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Lyude Paul <lyude@redhat.com>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        David Airlie <airlied@linux.ie>,
-        Thomas Graichen <thomas.graichen@gmail.com>,
-        dri-devel@lists.freedesktop.org, linux-tegra@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20211107230821.13511-1-digetx@gmail.com>
- <20211107230821.13511-2-digetx@gmail.com>
+        Mon, 08 Nov 2021 07:19:14 -0800 (PST)
+Date:   Mon, 8 Nov 2021 16:19:12 +0100
+From:   Ansuel Smith <ansuelsmth@gmail.com>
+To:     Andrew Lunn <andrew@lunn.ch>
+Cc:     Vivien Didelot <vivien.didelot@gmail.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Vladimir Oltean <olteanv@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>, Pavel Machek <pavel@ucw.cz>,
+        John Crispin <john@phrozen.org>, netdev@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-leds@vger.kernel.org
+Subject: Re: [RFC PATCH v2 3/5] leds: trigger: add offload-phy-activity
+ trigger
+Message-ID: <YYk/8IIhCYUZFcy4@Ansuel-xps.localdomain>
+References: <20211108002500.19115-1-ansuelsmth@gmail.com>
+ <20211108002500.19115-4-ansuelsmth@gmail.com>
+ <YYkxfRrJ8ERaTr5x@lunn.ch>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20211107230821.13511-2-digetx@gmail.com>
-X-Operating-System: Linux phenom 5.10.0-8-amd64 
+In-Reply-To: <YYkxfRrJ8ERaTr5x@lunn.ch>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 08, 2021 at 02:08:21AM +0300, Dmitry Osipenko wrote:
-> Use drm_dp_aux_register_ddc/chardev() helpers that allow to register I2C
-> adapter separately from the character device. This fixes broken display
-> panel driver of Acer Chromebook CB5-311 that fails to probe starting with
-> v5.13 kernel when DP AUX registration order was changed. Tegra SOR driver
-> is never probed now using the new registration order because tegra-output
-> always fails with -EPROBE_DEFER due to missing display panel that requires
-> DP AUX DDC to be registered first. The offending commit made DDC to be
-> registered after SOR's output, which can't ever happen. Use new helpers
-> to restore the registration order and revive display panel.
-
-This feels a bit backward, I think the clean solution would be to untangle
-the SOR loading from the panel driver loading, and then only block
-registering the overall drm_device on both drivers having loaded.
-
-This here at least feels like a game of whack-a-mole, if like every driver
-needs its own careful staging of everything.
--Daniel
-
+On Mon, Nov 08, 2021 at 03:17:33PM +0100, Andrew Lunn wrote:
+> On Mon, Nov 08, 2021 at 01:24:58AM +0100, Ansuel Smith wrote:
+> > Add Offload Trigger for PHY Activity. This special trigger is used to
+> > configure and expose the different HW trigger that are provided by the
+> > PHY. Each offload trigger can be configured by sysfs and on trigger
+> > activation the offload mode is enabled.
+> > 
+> > This currently implement these hw triggers:
+> >   - blink_tx: Blink LED on tx packet receive
+> >   - blink_rx: Blink LED on rx packet receive
+> >   - blink_collision: Blink LED on collision detection
 > 
-> Cc: <stable@vger.kernel.org> # 5.13+
-> Fixes: 39c17ae60ea9 ("drm/tegra: Don't register DP AUX channels before connectors")
-> Reported-by: Thomas Graichen <thomas.graichen@gmail.com> # T124 Nyan Big
-> Tested-by: Thomas Graichen <thomas.graichen@gmail.com> # T124 Nyan Big
-> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
-> ---
->  drivers/gpu/drm/tegra/dpaux.c | 10 +++++++---
->  1 file changed, 7 insertions(+), 3 deletions(-)
+> When did you last see a collision? Do you really have a 1/2 duplex
+> link? Just because the PHY can, does not mean we should support
+> it. Lets restrict this to the most useful modes.
+>
+
+Ok will drop this. In my case (qca8k) I also never see a device using it
+so I agree on the fact that should be dropped.
+
+> >   - link_10m: Keep LED on with 10m link speed
+> >   - link_100m: Keep LED on with 100m link speed
+> >   - link_1000m: Keep LED on with 1000m link speed
+> >   - half_duplex: Keep LED on with half duplex link
+> >   - full_duplex: Keep LED on with full duplex link
+> >   - linkup_over: Keep LED on with link speed and blink on rx/tx traffic
+> >   - power_on_reset: Keep LED on with switch reset
 > 
-> diff --git a/drivers/gpu/drm/tegra/dpaux.c b/drivers/gpu/drm/tegra/dpaux.c
-> index 1f96e416fa08..e0d675c7c2e5 100644
-> --- a/drivers/gpu/drm/tegra/dpaux.c
-> +++ b/drivers/gpu/drm/tegra/dpaux.c
-> @@ -532,7 +532,9 @@ static int tegra_dpaux_probe(struct platform_device *pdev)
->  	dpaux->aux.transfer = tegra_dpaux_transfer;
->  	dpaux->aux.dev = &pdev->dev;
->  
-> -	drm_dp_aux_init(&dpaux->aux);
-> +	err = drm_dp_aux_register_ddc(&dpaux->aux);
-> +	if (err < 0)
-> +		return err;
->  
->  	/*
->  	 * Assume that by default the DPAUX/I2C pads will be used for HDMI,
-> @@ -585,6 +587,8 @@ static int tegra_dpaux_remove(struct platform_device *pdev)
->  	pm_runtime_put_sync(&pdev->dev);
->  	pm_runtime_disable(&pdev->dev);
->  
-> +	drm_dp_aux_unregister_ddc(&dpaux->aux);
-> +
->  	mutex_lock(&dpaux_lock);
->  	list_del(&dpaux->list);
->  	mutex_unlock(&dpaux_lock);
-> @@ -718,7 +722,7 @@ int drm_dp_aux_attach(struct drm_dp_aux *aux, struct tegra_output *output)
->  	int err;
->  
->  	aux->drm_dev = output->connector.dev;
-> -	err = drm_dp_aux_register(aux);
-> +	err = drm_dp_aux_register_chardev(aux);
->  	if (err < 0)
->  		return err;
->  
-> @@ -759,7 +763,7 @@ int drm_dp_aux_detach(struct drm_dp_aux *aux)
->  	unsigned long timeout;
->  	int err;
->  
-> -	drm_dp_aux_unregister(aux);
-> +	drm_dp_aux_unregister_chardev(aux);
->  	disable_irq(dpaux->irq);
->  
->  	if (dpaux->output->panel) {
-> -- 
-> 2.33.1
+> >   - blink_2hz: Set blink speed at 2hz for every blink event
+> >   - blink_4hz: Set blink speed at 4hz for every blink event
+> >   - blink_8hz: Set blink speed at 8hz for every blink event
 > 
+> These seems like attributes, not blink modes. They need to be
+> specified somehow differently, or not at all. Do we really need them?
+> 
+
+Sorry I didn't update the commit. In sysfs they are exposed as option
+like the power_on_reset and linkup_over. So they are option on how the
+LED behave on the event.
+
+> >   - blink_auto: Set blink speed at 2hz for 10m link speed,
+> >       4hz for 100m and 8hz for 1000m
+> 
+> Another attribute, and one i've not seen any other PHY do.
+> 
+
+Yes we can consider dropping this but I think the other 3 should be
+keeped.
+
+> 	Andrew
 
 -- 
-Daniel Vetter
-Software Engineer, Intel Corporation
-http://blog.ffwll.ch
+	Ansuel
