@@ -2,126 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 823C6449D01
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Nov 2021 21:18:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6952A449D04
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Nov 2021 21:18:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238720AbhKHUVF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Nov 2021 15:21:05 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36142 "EHLO
+        id S238740AbhKHUVH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Nov 2021 15:21:07 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36144 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238385AbhKHUVE (ORCPT
+        with ESMTP id S238662AbhKHUVF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Nov 2021 15:21:04 -0500
-Received: from mail-pl1-x62d.google.com (mail-pl1-x62d.google.com [IPv6:2607:f8b0:4864:20::62d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CEC00C061714
-        for <linux-kernel@vger.kernel.org>; Mon,  8 Nov 2021 12:18:19 -0800 (PST)
-Received: by mail-pl1-x62d.google.com with SMTP id p18so16548781plf.13
-        for <linux-kernel@vger.kernel.org>; Mon, 08 Nov 2021 12:18:19 -0800 (PST)
+        Mon, 8 Nov 2021 15:21:05 -0500
+Received: from mail-wr1-x42c.google.com (mail-wr1-x42c.google.com [IPv6:2a00:1450:4864:20::42c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 786A7C061570;
+        Mon,  8 Nov 2021 12:18:20 -0800 (PST)
+Received: by mail-wr1-x42c.google.com with SMTP id w29so17453459wra.12;
+        Mon, 08 Nov 2021 12:18:20 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=xCgR6XpMFGzRoI0Wnu3fKwXAyVZwxWNevueJr3lWUtw=;
-        b=JkyIF6H/P0UBvTblaseELgJ/mEfzoVsJi5EuVmqL9z/uPaCgzFdzlVn04aIIarLdMB
-         dT+p38sIfEGmuAHdtQXL0IhDiOgoM4C+uQZW0nX/q/ZLQfzDdJnemRdl8ZYjpnKTwvjs
-         X/6pBhZtACLkEIqVCaZJe3MzfoHnMfUAzNhn3WbsXopIWa/3eRRXBMjxJkznsE2KG47q
-         uUtjqNbXwMrZFPK23COHy+Hi/MjcsfHSwGMCJq1pLq2nCYsY3KJwHLIsIlsPVzJY82u+
-         7dpwnmrugYKfypXT5eQszwUimKHB9GWY/SpugXs8GaBCUMW31W5sHro4FpViAOPKFGRX
-         RPmg==
+        d=googlemail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=j0tzCILtYLjnkVMw5fV9YV7kZoveDNXNdYAPtQjDjAQ=;
+        b=K+HM8JZN9aItz4KVC/AvPZGGZ0Diii0j3X7ZYP+c5n1YFhusHiijkCF9jYJCc2sviB
+         OzQebppaGlOLbg4TnRF3lxekMTZ5MnZgB9Eq5VDQPnDYEH6RkopaphLkWz1tUgupdnct
+         uCI+twI+d1gRdqkQiG0movCBd32XnG4hIz1zVNKdaDxuAIG4SBRHwsBJtK/0j3DijQc+
+         Yf6SHEQklwIup5h4Phxg3XHmJQBnk56Ox1VSPSLjym1mLGRLg1b5tSdO9vL5Dc6q1AmY
+         ER4D18GIh+ThoUKCaZmf6NHUqMmpMZ5pJJN0fcdYqKX5bJZIEAJyiSEWGTQNu5qiBBrv
+         Xw8g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=xCgR6XpMFGzRoI0Wnu3fKwXAyVZwxWNevueJr3lWUtw=;
-        b=CuDpaBWt3sivZTm6UhKbLRUV16ssDQ5UdVK1/hrwabZdIoQuLmgBoEY+IofeijZfKB
-         bbLaWayz4iJ8fwQUCPVOryz000NHanLWp+a5xE5BMHSpqEt8JIM1skiZXTKmnEewoMVP
-         gAnZJOX2mxmWyABhi3D3ycDo4d0PBxHwUFpZ8Grt6jan827IdZwhsMVfQDHGmDsci3DM
-         QmTqzxBKVZPXtjSurNKgwUXAEs1pTOfE4NXR0n85xcHoVq4jvWPorbTFXiemaZsOdRW7
-         6H2n2Bjjm0ojhi7y+7fnJpwchrHDvP86PlQHHG7HoFNiQJVeVS3vUIO0CkXds7JON6G/
-         TF2A==
-X-Gm-Message-State: AOAM530T+Hq0FNBPsK82mhWV2F2ulHgd1PnjyqsgFl4LM1MNn4bK6uCj
-        lnGipH2bFiRkMVX1ZhSSbGnmiw==
-X-Google-Smtp-Source: ABdhPJwS3sd0RzShnCkpRHeNSJ1M3JAoBaf96UrTrNhJsQ6fO/l5Ula8VYQ9uXZtkx/5pWkwHIdAWg==
-X-Received: by 2002:a17:90b:3e84:: with SMTP id rj4mr1021782pjb.199.1636402699095;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=j0tzCILtYLjnkVMw5fV9YV7kZoveDNXNdYAPtQjDjAQ=;
+        b=LGDkfD29Vg5QwGf/zt6c+0kNIExQ2fo5oVcEKFvYutueFd1v9iytI0y93HTyKYnP6s
+         oJdDDLzsWpfRzdC0IP3wtazRAHMYcp1wWTSbUFno7Yd4lSP9ZJ+AD7vNHrnx2qcENwVk
+         TXDz2G+byFqnpEa/lBxYEwXGx/xWMBF3sMC86PgHokeFDXTk2oMKT0XmywTEiqOqmYwd
+         YcyNGMSjuNfAjqn7Ww3RF1IJBYcZ6qYKx053vqrg+yzZ2tGISJlWXL44Lu/OyWloyhuA
+         JEpH8tSE4IrJRMWUSQEKwz6cORdRK3iSjRGfkTCdVaP561iGlxBnB3zG5w1KFK2caJU4
+         7NrA==
+X-Gm-Message-State: AOAM532846ALRXJprnBKWhYWtdhzKwx658uPIWwz7eCfmRj5NftPrOe/
+        njRNDOqe/2eLng==
+X-Google-Smtp-Source: ABdhPJzcTnCe0YEDx8RwNlWOrSJDmOYk/x4KD1BDzyGoVvop6ej0ZZTM+odIqcfL3wSOnq6RfnaXFw==
+X-Received: by 2002:adf:e991:: with SMTP id h17mr2262962wrm.40.1636402699089;
         Mon, 08 Nov 2021 12:18:19 -0800 (PST)
-Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
-        by smtp.gmail.com with ESMTPSA id rm1sm194903pjb.3.2021.11.08.12.18.18
+Received: from localhost (cpc154979-craw9-2-0-cust193.16-3.cable.virginm.net. [80.193.200.194])
+        by smtp.gmail.com with ESMTPSA id c15sm17359871wrs.19.2021.11.08.12.18.18
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
         Mon, 08 Nov 2021 12:18:18 -0800 (PST)
-Date:   Mon, 8 Nov 2021 20:18:14 +0000
-From:   Sean Christopherson <seanjc@google.com>
-To:     Chenyi Qiang <chenyi.qiang@intel.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Xiaoyao Li <xiaoyao.li@intel.com>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v5 3/7] KVM: X86: Expose IA32_PKRS MSR
-Message-ID: <YYmGBhIbzgz+dyqp@google.com>
-References: <20210811101126.8973-1-chenyi.qiang@intel.com>
- <20210811101126.8973-4-chenyi.qiang@intel.com>
+From:   Colin Ian King <colin.i.king@googlemail.com>
+X-Google-Original-From: Colin Ian King <colin.i.king@gmail.com>
+To:     "K . Y . Srinivasan" <kys@microsoft.com>,
+        Haiyang Zhang <haiyangz@microsoft.com>,
+        Stephen Hemminger <sthemmin@microsoft.com>,
+        Wei Liu <wei.liu@kernel.org>, Dexuan Cui <decui@microsoft.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, linux-hyperv@vger.kernel.org,
+        netdev@vger.kernel.org
+Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] net: mana: Fix spelling mistake "calledd" -> "called"
+Date:   Mon,  8 Nov 2021 20:18:17 +0000
+Message-Id: <20211108201817.43121-1-colin.i.king@gmail.com>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210811101126.8973-4-chenyi.qiang@intel.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 11, 2021, Chenyi Qiang wrote:
-> @@ -7207,6 +7257,19 @@ static void vmx_vcpu_after_set_cpuid(struct kvm_vcpu *vcpu)
->  
->  	/* Refresh #PF interception to account for MAXPHYADDR changes. */
->  	vmx_update_exception_bitmap(vcpu);
-> +
-> +	if (kvm_cpu_cap_has(X86_FEATURE_PKS) &&
-> +	    guest_cpuid_has(vcpu, X86_FEATURE_PKS)) {
+There is a spelling mistake in a dev_info message. Fix it.
 
-Ah, this confused me for a second.  It's not wrong to clear the entry/exit controls
-in the "else" path, but it's surprisingly hard to follow because it reads as if the
-entry/exit controls are paired with the MSR behavior.
+Signed-off-by: Colin Ian King <colin.i.king@gmail.com>
+---
+ drivers/net/ethernet/microsoft/mana/gdma_main.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Oh, and more importantly, it's "hiding" a bug: the MSR bitmap needs to be _set_
-if userspace disables X86_FEATURE_PKS in guest CPUID, e.g. if for some reason
-userspace exposed PKS and then yanked it away.
+diff --git a/drivers/net/ethernet/microsoft/mana/gdma_main.c b/drivers/net/ethernet/microsoft/mana/gdma_main.c
+index c96ac81212f7..636dfef24a6c 100644
+--- a/drivers/net/ethernet/microsoft/mana/gdma_main.c
++++ b/drivers/net/ethernet/microsoft/mana/gdma_main.c
+@@ -1424,7 +1424,7 @@ static void mana_gd_shutdown(struct pci_dev *pdev)
+ {
+ 	struct gdma_context *gc = pci_get_drvdata(pdev);
+ 
+-	dev_info(&pdev->dev, "Shutdown was calledd\n");
++	dev_info(&pdev->dev, "Shutdown was called\n");
+ 
+ 	mana_remove(&gc->mana, true);
+ 
+-- 
+2.32.0
 
-Oof, two bugs actually.  This will fail to re-enable the entry/exit bits if
-userspace hides PKS and then re-enables PKS.
-
-Heh, make that three bugs.  If userspace never sets CPUID, KVM will run with
-the entry/exit bits set.  That's arguably not a bug since functionally it's fine,
-but it's a bug in the sense that KVM loads an MSR when it doesn't inted to do so.
-
-So this should be:
-
-	if (kvm_vcpu_cap_has(X86_FEATURE_PKS) {
-		if (guest_cpuid_has(vcpu, X86_FEATURE_PKS)) {
-			vmx_disable_intercept_for_msr(vcpu, MSR_IA32_PKRS, MSR_TYPE_RW);
-
-			vm_entry_controls_setbit(vmx, VM_ENTRY_LOAD_IA32_PKRS);
-			vm_exit_controls_setbit(vmx, VM_EXIT_LOAD_IA32_PKRS)
-
-		} else {
-			vmx_enable_intercept_for_msr(vcpu, MSR_IA32_PKRS, MSR_TYPE_RW);
-
-			vm_entry_controls_clearbit(vmx, VM_ENTRY_LOAD_IA32_PKRS);
-			vm_exit_controls_clearbit(vmx, VM_EXIT_LOAD_IA32_PKRS)
-		}
-	}
-
-and then the bits need to be masked in vmx_vmexit_ctrl() and vmx_vmentry_ctrl(),
-a la EFER and PERF_GLOBAL_CTRL.
-
-> +		vmx_disable_intercept_for_msr(vcpu, MSR_IA32_PKRS, MSR_TYPE_RW);
-> +	} else {
-> +		/*
-> +		 * Remove VM control in case guest VM doesn't support PKS to mitigate
-> +		 * overhead during VM-{exit,entry}. They are present by default
-> +		 * if supported.
-> +		 */
-> +		vm_entry_controls_clearbit(vmx, VM_ENTRY_LOAD_IA32_PKRS);
-> +		vm_exit_controls_clearbit(vmx, VM_EXIT_LOAD_IA32_PKRS);
-> +	}
->  }
