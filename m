@@ -2,211 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5695C447EB3
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Nov 2021 12:16:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E8454447EB1
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Nov 2021 12:16:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237909AbhKHLTb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Nov 2021 06:19:31 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53424 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237965AbhKHLT3 (ORCPT
+        id S237360AbhKHLT0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Nov 2021 06:19:26 -0500
+Received: from mail-wm1-f43.google.com ([209.85.128.43]:36554 "EHLO
+        mail-wm1-f43.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236204AbhKHLTZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Nov 2021 06:19:29 -0500
-Received: from mail-pj1-x1036.google.com (mail-pj1-x1036.google.com [IPv6:2607:f8b0:4864:20::1036])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D8179C061714
-        for <linux-kernel@vger.kernel.org>; Mon,  8 Nov 2021 03:16:45 -0800 (PST)
-Received: by mail-pj1-x1036.google.com with SMTP id gn3so7864038pjb.0
-        for <linux-kernel@vger.kernel.org>; Mon, 08 Nov 2021 03:16:45 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20210112.gappssmtp.com; s=20210112;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=vwKn8A78nbxh1bT4nrrDsinal0xZprUrg1oMka+P7PM=;
-        b=NtiPFd+5N8XEr1a/xdNsTVcfmD/2APTPDe1Wj+sYaKyn+Cyd2eek0LmuKVCVmmdk15
-         /mDYBMPOBdDKjUPyok6e0ZI7SW6i5NKqBnctc0RtDFQmGZRyzTlBVZN3bTxC6xO36quR
-         yj+IQfKFvRyxxKGN1YK96IHqXXMwJTM0vf/FP8BLn1gpT86MoxWxCBlOe/w92OaAd0Y2
-         5+e0p7d8TLpqX+xdsmMx1o5yT5s0zna6oEvuRm2hpULRriS/mjE6EzqPmtpP0iZOCzT/
-         eemKmVpRD0YOEHH4KSoJvg8RQCuUMPS2oAPH/v1WE5XMLZ+f3kQx9xHyq2PHtIZaAOUf
-         NWKg==
+        Mon, 8 Nov 2021 06:19:25 -0500
+Received: by mail-wm1-f43.google.com with SMTP id i8-20020a7bc948000000b0030db7b70b6bso3435904wml.1;
+        Mon, 08 Nov 2021 03:16:40 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=vwKn8A78nbxh1bT4nrrDsinal0xZprUrg1oMka+P7PM=;
-        b=nWs07QBDHW/ItznDCqKENwovY10UTZXVfl/0OORbq6sEapJM9q0gJsXYZnvIUxwVnz
-         wHIZ91cZxPkcX30QWnmZs5bv0JHYwcawuj0+Q82uWIjBt7YEVWxT+CLnKFMFF98rdyuK
-         3SAnJkWuA0NnIrV0cp54N+MjgwIpr9oHAycvFPrICW+whtza6Rzo77crZaMFO2OPpK1u
-         41+dJSGQ+xLBJRyKtsrehWb4lBGrrxrPj3jKOl1h6aC8ydFLeTgUWHkjhZygAu9AvLtt
-         2JTkyU4ha754odtDO3n5ctYpDEX8gfNNPW25sCrLa/JDbF+Yaz7awphAQtALKvZt/Z+8
-         LNoA==
-X-Gm-Message-State: AOAM532yC/2c3fH4RulWW/ztzJsghUjZsLFHRoiuWkS1nWVMDjXO4nrj
-        s/PwC2DcsKZyGOQXjWckuXhzRE3hzjWrVxtN
-X-Google-Smtp-Source: ABdhPJwT9OALjA7XUOHAUqMWCDd7RxGUBBT74K9E+6FkOYMtJyjbAwop3cCVdj3F8B78r9nsEmkMvA==
-X-Received: by 2002:a17:90b:4d86:: with SMTP id oj6mr49859606pjb.101.1636370205218;
-        Mon, 08 Nov 2021 03:16:45 -0800 (PST)
-Received: from [10.2.24.177] ([61.120.150.70])
-        by smtp.gmail.com with ESMTPSA id b18sm13187422pjo.31.2021.11.08.03.16.38
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 08 Nov 2021 03:16:44 -0800 (PST)
-Subject: Re: Re: [RFC] KVM: x86: SVM: don't expose PV_SEND_IPI feature with
- AVIC
-To:     Maxim Levitsky <mlevitsk@redhat.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Kele Huang <huangkele@bytedance.com>
-Cc:     chaiwen.cc@bytedance.com, xieyongji@bytedance.com,
-        dengliang.1214@bytedance.com, wanpengli@tencent.com,
-        seanjc@google.com, Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
-        "H. Peter Anvin" <hpa@zytor.com>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20211108095931.618865-1-huangkele@bytedance.com>
- <a991bbb4-b507-a2f6-ec0f-fce23d4379ce@redhat.com>
- <f93612f54a5cde53fd9342f703ccbaf3c9edbc9c.camel@redhat.com>
-From:   zhenwei pi <pizhenwei@bytedance.com>
-Message-ID: <ad6b3ef5-4928-681c-a0cf-5a1095654566@bytedance.com>
-Date:   Mon, 8 Nov 2021 19:14:49 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=MxrytVLw9uh69qoX0r197tR6AIMkYSznUUwb0bfwvaU=;
+        b=4pKZ95r1uRAekE7iYVgXPKDfFXUdqqmZy9M3JfGVsfo+dP3AkcSTcm0s58f9dgy85f
+         DvXRDloUmVIK7wowVyyeMPBrj126yynCoPTQsQcwGWq2vFYJc79UHqSs296KH9Y2mJLW
+         ybVUr0PX1ax7YRHNQvmUWmaf6UQ7R6/6V/i/j+k4hIkf+9GpYff+Hkpeo67otelTMiGs
+         MEKAu86qiIjI+A38xwGX46/y3RCrq+sIyvXorlnWaidc2XFEBIUnNBYX0tPQ87FZjHzw
+         cPkM65B57EjxmkszuG7v52s6OgQ6Cpa4BYMvg1nplpOUK0bUTXiI2D7wba+0piLUWaQn
+         T0+g==
+X-Gm-Message-State: AOAM532FeWzq+vU0enUQvZHQ83DxlOgwbQ+Jw/8zGVimkwRtrDc+5EWK
+        9jiuaNUo+kDu0ismdP3cjZut6pLFOfs=
+X-Google-Smtp-Source: ABdhPJwHF2VokMpNVGDxPma9gUxZIz3oSvmZ/UaIc9sIbhspWpSfPxInRDPTf+J+VdLDpOCrYdR5hQ==
+X-Received: by 2002:a05:600c:1549:: with SMTP id f9mr29176965wmg.118.1636370200099;
+        Mon, 08 Nov 2021 03:16:40 -0800 (PST)
+Received: from liuwe-devbox-debian-v2 ([51.145.34.42])
+        by smtp.gmail.com with ESMTPSA id h16sm18356263wrm.27.2021.11.08.03.16.39
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 08 Nov 2021 03:16:39 -0800 (PST)
+Date:   Mon, 8 Nov 2021 11:16:37 +0000
+From:   Wei Liu <wei.liu@kernel.org>
+To:     Borislav Petkov <bp@alien8.de>
+Cc:     LKML <linux-kernel@vger.kernel.org>, linux-hyperv@vger.kernel.org,
+        Wei Liu <wei.liu@kernel.org>
+Subject: Re: [PATCH v0 08/42] Drivers: hv: vmbus: Check notifier registration
+ return value
+Message-ID: <20211108111637.c3vsesezc7hwjbty@liuwe-devbox-debian-v2>
+References: <20211108101157.15189-1-bp@alien8.de>
+ <20211108101157.15189-9-bp@alien8.de>
 MIME-Version: 1.0
-In-Reply-To: <f93612f54a5cde53fd9342f703ccbaf3c9edbc9c.camel@redhat.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211108101157.15189-9-bp@alien8.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/8/21 7:08 PM, Maxim Levitsky wrote:
-> On Mon, 2021-11-08 at 11:30 +0100, Paolo Bonzini wrote:
->> On 11/8/21 10:59, Kele Huang wrote:
->>> Currently, AVIC is disabled if x2apic feature is exposed to guest
->>> or in-kernel PIT is in re-injection mode.
->>>
->>> We can enable AVIC with options:
->>>
->>>     Kmod args:
->>>     modprobe kvm_amd avic=1 nested=0 npt=1
->>>     QEMU args:
->>>     ... -cpu host,-x2apic -global kvm-pit.lost_tick_policy=discard ...
->>>
->>> When LAPIC works in xapic mode, both AVIC and PV_SEND_IPI feature
->>> can accelerate IPI operations for guest. However, the relationship
->>> between AVIC and PV_SEND_IPI feature is not sorted out.
->>>
->>> In logical, AVIC accelerates most of frequently IPI operations
->>> without VMM intervention, while the re-hooking of apic->send_IPI_xxx
->>> from PV_SEND_IPI feature masks out it. People can get confused
->>> if AVIC is enabled while getting lots of hypercall kvm_exits
->>> from IPI.
->>>
->>> In performance, benchmark tool
->>> https://lore.kernel.org/kvm/20171219085010.4081-1-ynorov@caviumnetworks.com/
->>> shows below results:
->>>
->>>     Test env:
->>>     CPU: AMD EPYC 7742 64-Core Processor
->>>     2 vCPUs pinned 1:1
->>>     idle=poll
->>>
->>>     Test result (average ns per IPI of lots of running):
->>>     PV_SEND_IPI 	: 1860
->>>     AVIC 		: 1390
->>>
->>> Besides, disscussions in https://lkml.org/lkml/2021/10/20/423
->>> do have some solid performance test results to this.
->>>
->>> This patch fixes this by masking out PV_SEND_IPI feature when
->>> AVIC is enabled in setting up of guest vCPUs' CPUID.
->>>
->>> Signed-off-by: Kele Huang <huangkele@bytedance.com>
->>
->> AVIC can change across migration.  I think we should instead use a new
->> KVM_HINTS_* bit (KVM_HINTS_ACCELERATED_LAPIC or something like that).
->> The KVM_HINTS_* bits are intended to be changeable across migration,
->> even though we don't have for now anything equivalent to the Hyper-V
->> reenlightenment interrupt.
+On Mon, Nov 08, 2021 at 11:11:23AM +0100, Borislav Petkov wrote:
+> From: Borislav Petkov <bp@suse.de>
 > 
-> Note that the same issue exists with HyperV. It also has PV APIC,
-> which is harmful when AVIC is enabled (that is guest uses it instead
-> of using AVIC, negating AVIC benefits).
+> Avoid homegrown notifier registration checks.
 > 
-> Also note that Intel recently posted IPI virtualizaion, which
-> will make this issue relevant to APICv too soon.
+> No functional changes.
 > 
-> I don't yet know if there is a solution to this which doesn't
-> involve some management software decision (e.g libvirt or higher).
-> 
-> Best regards,
-> 	Maxim Levitsky
-> 
+> Signed-off-by: Borislav Petkov <bp@suse.de>
+> Cc: linux-hyperv@vger.kernel.org
 
-For QEMU, "-cpu host,kvm-pv-ipi=off" can disable kvm-pv-ipi.
-And for libvirt, I posted a patch to disable kvm-pv-ipi by libvirt xml, 
-link:
-https://github.com/libvirt/libvirt/commit/b2757b697e29fa86972a4638a5879dccc8add2ad
+Acked-by: Wei Liu <wei.liu@kernel.org>
 
->>
->> Paolo
->>
->>> ---
->>>    arch/x86/kvm/cpuid.c   |  4 ++--
->>>    arch/x86/kvm/svm/svm.c | 13 +++++++++++++
->>>    2 files changed, 15 insertions(+), 2 deletions(-)
->>>
->>> diff --git a/arch/x86/kvm/cpuid.c b/arch/x86/kvm/cpuid.c
->>> index 2d70edb0f323..cc22975e2ac5 100644
->>> --- a/arch/x86/kvm/cpuid.c
->>> +++ b/arch/x86/kvm/cpuid.c
->>> @@ -194,8 +194,6 @@ static void kvm_vcpu_after_set_cpuid(struct kvm_vcpu *vcpu)
->>>    		best->ecx |= XFEATURE_MASK_FPSSE;
->>>    	}
->>>    
->>> -	kvm_update_pv_runtime(vcpu);
->>> -
->>>    	vcpu->arch.maxphyaddr = cpuid_query_maxphyaddr(vcpu);
->>>    	vcpu->arch.reserved_gpa_bits = kvm_vcpu_reserved_gpa_bits_raw(vcpu);
->>>    
->>> @@ -208,6 +206,8 @@ static void kvm_vcpu_after_set_cpuid(struct kvm_vcpu *vcpu)
->>>    	/* Invoke the vendor callback only after the above state is updated. */
->>>    	static_call(kvm_x86_vcpu_after_set_cpuid)(vcpu);
->>>    
->>> +	kvm_update_pv_runtime(vcpu);
->>> +
->>>    	/*
->>>    	 * Except for the MMU, which needs to do its thing any vendor specific
->>>    	 * adjustments to the reserved GPA bits.
->>> diff --git a/arch/x86/kvm/svm/svm.c b/arch/x86/kvm/svm/svm.c
->>> index b36ca4e476c2..b13bcfb2617c 100644
->>> --- a/arch/x86/kvm/svm/svm.c
->>> +++ b/arch/x86/kvm/svm/svm.c
->>> @@ -4114,6 +4114,19 @@ static void svm_vcpu_after_set_cpuid(struct kvm_vcpu *vcpu)
->>>    		if (nested && guest_cpuid_has(vcpu, X86_FEATURE_SVM))
->>>    			kvm_request_apicv_update(vcpu->kvm, false,
->>>    						 APICV_INHIBIT_REASON_NESTED);
->>> +
->>> +		if (!guest_cpuid_has(vcpu, X86_FEATURE_X2APIC) &&
->>> +				!(nested && guest_cpuid_has(vcpu, X86_FEATURE_SVM))) {
->>> +			/*
->>> +			 * PV_SEND_IPI feature masks out AVIC acceleration to IPI.
->>> +			 * So, we do not expose PV_SEND_IPI feature to guest when
->>> +			 * AVIC is enabled.
->>> +			 */
->>> +			best = kvm_find_cpuid_entry(vcpu, KVM_CPUID_FEATURES, 0);
->>> +			if (best && enable_apicv &&
->>> +					(best->eax & (1 << KVM_FEATURE_PV_SEND_IPI)))
->>> +				best->eax &= ~(1 << KVM_FEATURE_PV_SEND_IPI);
->>> +		}
->>>    	}
->>>    	init_vmcb_after_set_cpuid(vcpu);
->>>    }
->>>
+> ---
+>  drivers/hv/vmbus_drv.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
 > 
+> diff --git a/drivers/hv/vmbus_drv.c b/drivers/hv/vmbus_drv.c
+> index 392c1ac4f819..370afd108d2d 100644
+> --- a/drivers/hv/vmbus_drv.c
+> +++ b/drivers/hv/vmbus_drv.c
+> @@ -1574,8 +1574,8 @@ static int vmbus_bus_init(void)
+>  	 * the VMbus channel connection to prevent any VMbus
+>  	 * activity after the VM panics.
+>  	 */
+> -	atomic_notifier_chain_register(&panic_notifier_list,
+> -			       &hyperv_panic_block);
+> +	if (atomic_notifier_chain_register(&panic_notifier_list, &hyperv_panic_block))
+> +		pr_warn("VMBus panic notifier already registered\n");
+>  
+>  	vmbus_request_offers();
+>  
+> -- 
+> 2.29.2
 > 
-
--- 
-zhenwei pi
