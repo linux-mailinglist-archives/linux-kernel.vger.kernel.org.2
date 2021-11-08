@@ -2,75 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9FA5A447C72
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Nov 2021 10:01:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CF60E447C75
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Nov 2021 10:03:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238282AbhKHJEA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Nov 2021 04:04:00 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50620 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238261AbhKHJD4 (ORCPT
+        id S238261AbhKHJFr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Nov 2021 04:05:47 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124]:38405 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S235592AbhKHJFq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Nov 2021 04:03:56 -0500
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1F355C061570;
-        Mon,  8 Nov 2021 01:01:12 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=FzM8qSFY0zQQQfksibg27pvdfAM5iEzRGUbH+QhUlQE=; b=jGIFB3r4hyLCG8fJt6TPktHCpM
-        GhX88zXQeOPiLn01k4xFVaP6ysm93Y2lR+7wkUXr9W1qcGJswrsJ+RMFJF6lZ1ssaWB9oRU1SkAmZ
-        +uqXUKs9EtBvjh0gfOXYPG0DEgc8FHsNA40a4T/yBLRUvFOHMCTcKHmlCj71V7PDg+bMwnOuMhJ/L
-        sjol8WEB5wvPW2rKOisBvK01kgFHRXe7dB/GlNPvvNWU6cXP2LhpUdDiVHagKG1Cn7hEw+W4SEYbd
-        +nyHQ+TqPZb8s073nBb4LaQn4mGuIH54DiJCyARFqZrv/GqlrTugfvPsROi6OxU4qlwFHg097OZMv
-        8S1/V6rQ==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mk0WX-00ErA1-5s; Mon, 08 Nov 2021 09:01:05 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id CA8E23000A3;
-        Mon,  8 Nov 2021 10:01:04 +0100 (CET)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 73107200C6B85; Mon,  8 Nov 2021 10:01:04 +0100 (CET)
-Date:   Mon, 8 Nov 2021 10:01:04 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Ricardo Neri <ricardo.neri-calderon@linux.intel.com>
-Cc:     "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        linux-pm@vger.kernel.org, x86@kernel.org,
-        linux-doc@vger.kernel.org, Len Brown <len.brown@intel.com>,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        Aubrey Li <aubrey.li@linux.intel.com>,
-        Amit Kucheria <amitk@kernel.org>,
-        Andi Kleen <ak@linux.intel.com>,
-        Tim Chen <tim.c.chen@linux.intel.com>,
-        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
-        Ricardo Neri <ricardo.neri@intel.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 5/7] thermal: intel: hfi: Enable notification interrupt
-Message-ID: <YYjnUM/v8LmtnBq3@hirez.programming.kicks-ass.net>
-References: <20211106013312.26698-1-ricardo.neri-calderon@linux.intel.com>
- <20211106013312.26698-6-ricardo.neri-calderon@linux.intel.com>
+        Mon, 8 Nov 2021 04:05:46 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1636362181;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=DIt0yiHFSDrbNWT83YFxJ3NTN2gTGuSvPTfTKTC9zLQ=;
+        b=jEIfJuicpMuCEa5wkbsh2Wv+iUm6dg9H5cAes+l7IDd7AAxQqzNMivNMzoyBexAjcZI4lK
+        Y3ww/zQaIed31IyXeZr0yE8DPD3a9i3DqJHBtZNqkNWygT1nWMdGHoY8I7XxjsR4tsY6mf
+        ZSsAmZGOY0MqL0bfhPPmmXrZA5FNKTY=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-197-uL-OogzLMC6KIedenxW0BA-1; Mon, 08 Nov 2021 04:02:56 -0500
+X-MC-Unique: uL-OogzLMC6KIedenxW0BA-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 3BBCE1572B;
+        Mon,  8 Nov 2021 09:02:54 +0000 (UTC)
+Received: from localhost.localdomain (unknown [10.40.194.243])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id AB71519C79;
+        Mon,  8 Nov 2021 09:02:46 +0000 (UTC)
+From:   Maxim Levitsky <mlevitsk@redhat.com>
+To:     kvm@vger.kernel.org
+Cc:     "H. Peter Anvin" <hpa@zytor.com>,
+        Jim Mattson <jmattson@google.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        linux-kernel@vger.kernel.org, Ingo Molnar <mingo@redhat.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        x86@kernel.org (maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)),
+        Maxim Levitsky <mlevitsk@redhat.com>,
+        Borislav Petkov <bp@alien8.de>
+Subject: [PATCH v4] KVM: x86: inhibit APICv when KVM_GUESTDBG_BLOCKIRQ active
+Date:   Mon,  8 Nov 2021 11:02:45 +0200
+Message-Id: <20211108090245.166408-1-mlevitsk@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211106013312.26698-6-ricardo.neri-calderon@linux.intel.com>
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 05, 2021 at 06:33:10PM -0700, Ricardo Neri wrote:
-> +	/*
-> +	 * On most systems, all CPUs in the package receive a package-level
-> +	 * thermal interrupt when there is an HFI update. Since they all are
-> +	 * dealing with the same update (as indicated by the update timestamp),
-> +	 * it is sufficient to let a single CPU to acknowledge the update and
-> +	 * schedule work to process it.
-> +	 */
+KVM_GUESTDBG_BLOCKIRQ relies on interrupts being injected using
+standard kvm's inject_pending_event, and not via APICv/AVIC.
 
-That's pretty crap hardware behaviour. Is there really no way to steer
-these interrupts?
+Since this is a debug feature, just inhibit APICv/AVIC while
+KVM_GUESTDBG_BLOCKIRQ is in use on at least one vCPU.
+
+Fixes: 61e5f69ef0837 ("KVM: x86: implement KVM_GUESTDBG_BLOCKIRQ")
+
+Reported-by: Vitaly Kuznetsov <vkuznets@redhat.com>
+Signed-off-by: Maxim Levitsky <mlevitsk@redhat.com>
+Reviewed-and-tested-by: Sean Christopherson <seanjc@google.com>
+---
+ arch/x86/include/asm/kvm_host.h |  1 +
+ arch/x86/kvm/svm/avic.c         |  3 ++-
+ arch/x86/kvm/vmx/vmx.c          |  3 ++-
+ arch/x86/kvm/x86.c              | 20 ++++++++++++++++++++
+ 4 files changed, 25 insertions(+), 2 deletions(-)
+
+diff --git a/arch/x86/include/asm/kvm_host.h b/arch/x86/include/asm/kvm_host.h
+index 88fce6ab4bbd7..8f6e15b95a4d8 100644
+--- a/arch/x86/include/asm/kvm_host.h
++++ b/arch/x86/include/asm/kvm_host.h
+@@ -1034,6 +1034,7 @@ struct kvm_x86_msr_filter {
+ #define APICV_INHIBIT_REASON_IRQWIN     3
+ #define APICV_INHIBIT_REASON_PIT_REINJ  4
+ #define APICV_INHIBIT_REASON_X2APIC	5
++#define APICV_INHIBIT_REASON_BLOCKIRQ	6
+ 
+ struct kvm_arch {
+ 	unsigned long n_used_mmu_pages;
+diff --git a/arch/x86/kvm/svm/avic.c b/arch/x86/kvm/svm/avic.c
+index 8052d92069e01..affc0ea98d302 100644
+--- a/arch/x86/kvm/svm/avic.c
++++ b/arch/x86/kvm/svm/avic.c
+@@ -904,7 +904,8 @@ bool svm_check_apicv_inhibit_reasons(ulong bit)
+ 			  BIT(APICV_INHIBIT_REASON_NESTED) |
+ 			  BIT(APICV_INHIBIT_REASON_IRQWIN) |
+ 			  BIT(APICV_INHIBIT_REASON_PIT_REINJ) |
+-			  BIT(APICV_INHIBIT_REASON_X2APIC);
++			  BIT(APICV_INHIBIT_REASON_X2APIC) |
++			  BIT(APICV_INHIBIT_REASON_BLOCKIRQ);
+ 
+ 	return supported & BIT(bit);
+ }
+diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
+index 71f54d85f104c..e4fc9ff7cd944 100644
+--- a/arch/x86/kvm/vmx/vmx.c
++++ b/arch/x86/kvm/vmx/vmx.c
+@@ -7565,7 +7565,8 @@ static void hardware_unsetup(void)
+ static bool vmx_check_apicv_inhibit_reasons(ulong bit)
+ {
+ 	ulong supported = BIT(APICV_INHIBIT_REASON_DISABLE) |
+-			  BIT(APICV_INHIBIT_REASON_HYPERV);
++			  BIT(APICV_INHIBIT_REASON_HYPERV) |
++			  BIT(APICV_INHIBIT_REASON_BLOCKIRQ);
+ 
+ 	return supported & BIT(bit);
+ }
+diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
+index ac83d873d65b0..6064ac47c8a37 100644
+--- a/arch/x86/kvm/x86.c
++++ b/arch/x86/kvm/x86.c
+@@ -10703,6 +10703,24 @@ int kvm_arch_vcpu_ioctl_set_sregs(struct kvm_vcpu *vcpu,
+ 	return ret;
+ }
+ 
++static void kvm_arch_vcpu_guestdbg_update_apicv_inhibit(struct kvm *kvm)
++{
++	bool inhibit = false;
++	struct kvm_vcpu *vcpu;
++	int i;
++
++	down_write(&kvm->arch.apicv_update_lock);
++
++	kvm_for_each_vcpu(i, vcpu, kvm) {
++		if (vcpu->guest_debug & KVM_GUESTDBG_BLOCKIRQ) {
++			inhibit = true;
++			break;
++		}
++	}
++	__kvm_request_apicv_update(kvm, !inhibit, APICV_INHIBIT_REASON_BLOCKIRQ);
++	up_write(&kvm->arch.apicv_update_lock);
++}
++
+ int kvm_arch_vcpu_ioctl_set_guest_debug(struct kvm_vcpu *vcpu,
+ 					struct kvm_guest_debug *dbg)
+ {
+@@ -10755,6 +10773,8 @@ int kvm_arch_vcpu_ioctl_set_guest_debug(struct kvm_vcpu *vcpu,
+ 
+ 	static_call(kvm_x86_update_exception_bitmap)(vcpu);
+ 
++	kvm_arch_vcpu_guestdbg_update_apicv_inhibit(vcpu->kvm);
++
+ 	r = 0;
+ 
+ out:
+-- 
+2.26.3
+
