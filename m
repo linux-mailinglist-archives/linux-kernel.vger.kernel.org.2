@@ -2,100 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E1BB0449C05
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Nov 2021 19:53:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 07B1D449C08
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Nov 2021 19:55:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236263AbhKHS4b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Nov 2021 13:56:31 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45058 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236233AbhKHS43 (ORCPT
+        id S236286AbhKHS55 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Nov 2021 13:57:57 -0500
+Received: from mail-ot1-f44.google.com ([209.85.210.44]:35496 "EHLO
+        mail-ot1-f44.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229837AbhKHS54 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Nov 2021 13:56:29 -0500
-Received: from mail-lj1-x232.google.com (mail-lj1-x232.google.com [IPv6:2a00:1450:4864:20::232])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 65A96C061570
-        for <linux-kernel@vger.kernel.org>; Mon,  8 Nov 2021 10:53:44 -0800 (PST)
-Received: by mail-lj1-x232.google.com with SMTP id 207so13187052ljf.10
-        for <linux-kernel@vger.kernel.org>; Mon, 08 Nov 2021 10:53:44 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=ChbQr5dmryeBqZbjzLYHzYVaRx/29ISxTF05QE1qZTA=;
-        b=ecYtcpuTXEo93YuV6xgTpilVQgGCInTceXwxEaPYwn2jxSV2O3ap48L/1ESonyya60
-         fpRdYAnTqArP9m+XRjSBBuGiR0lLdJ8RQwus4bnS0SHc/QqmWmhg8EvUClscQbftHNj0
-         e+7GGx1Osd0Sx+zJH9ylzuqdB68HAWxXII8gN0y1fwYEfPkzSAXGEczewG63YcqZXY6z
-         1H5aUUP5lZDSBLBFDYCttIqf8BuXCTOZMx6LKo+dCm7fd2XOilV4oSsJA4dIPlf5fS6U
-         mzM57Bzgjs0pJe5qYHagkPxK2VIhXPZH9v61CzYXA1tk9omTmCjxtOmar8lVoCD9M+EH
-         fuVg==
+        Mon, 8 Nov 2021 13:57:56 -0500
+Received: by mail-ot1-f44.google.com with SMTP id p11-20020a9d4e0b000000b0055a5741bff7so27066114otf.2;
+        Mon, 08 Nov 2021 10:55:11 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=ChbQr5dmryeBqZbjzLYHzYVaRx/29ISxTF05QE1qZTA=;
-        b=sUCBZK/bkeLyx2GFmckbS13moQQNG6HKx1MwX0+KpR2dOC5FjPvq9Tua8t3Tg5c4yP
-         vFDS2ADEZUhK4SbaqLKPllrFQ061Lev7UCepT/XtKF3KZ999vl2z71BGtRpV1y3Do6N7
-         mHh6f0lyhOZG9Nl4DIIAOftCmMc3iwMVbcJG2zhTF0K4EE+1LDv5a2ykp/eYqvpdNEmA
-         +X7D8Wocpbvh4JTJFvezlRFBlsR16G1yLfG1q7+f5uGIS2nMUx5VHQcQyTsxjqcjhgf+
-         WS6OKNjFX/n3YTlqmFc5+MqQLLKAYTcq0LAc9X7mcO2K8rdLDMVqLNODEfCYQo5Jjn4z
-         bxxQ==
-X-Gm-Message-State: AOAM530XYXWGMvU7jAu+cID1LrzmSYNLk7hfNu33fWeuJsg/1xKnCGdP
-        SGxoAaaI49yoGUCHb8+MgqS6YqeVVko1lLKOjJ8dEQhIDavwYA==
-X-Google-Smtp-Source: ABdhPJyJ3q66yAAhlqNGOl7hpVH8Z6xvpeVsO2wRyNVME2kXeftFS3hdQu1yQ+mUc3vIohqTZGirJrt3NwvEk3vWkog=
-X-Received: by 2002:a05:651c:889:: with SMTP id d9mr1230796ljq.198.1636397622550;
- Mon, 08 Nov 2021 10:53:42 -0800 (PST)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=rVRh1sxzpaMQeA+0p6EZeOg5M9eCwHLOcOw6O1U43pE=;
+        b=nUDngUCHlxvpMYYCuRtMAXBdXkdCUeQsDSmbDx3zJjO9/xIcwDePFpSH8kZdOuL+/w
+         Vxi4BNjua7+fHgnaCmGcvoKv1sLiiGSdhm1Umo+6L9r1gW2K7M16xlEwmklrTU61xNMC
+         v/3j1uQLDtrhMwxcnTPNBcpQ4j4tn1qPaB7wILCiHveVxydLPLE+abTi4qRsa/SXNTFQ
+         cXZP/wrdTLg6lw9w+reLFyqR2hYrug5Oqq2Zl5mIUbF0kBgMKN7R5Y4+7zEmaRbnnaOH
+         QlLwZBjRbvOTVv9bOTH8quh6SiAeJT0zsToScDc5pJFaKFli7bzOgPyF0UyeGmNWt7Vl
+         k40w==
+X-Gm-Message-State: AOAM5309H+sSP+Tb4eCFlveYPXjGDU2WQu/63B/g+BFCLBxtuyXg0dra
+        2ieSXCoGcSIMG8/H3sa7td7R9MAXPw==
+X-Google-Smtp-Source: ABdhPJyohxO+K12heylMLci20BfZuAXUmtzxjEv0ifKRtxwCkxt4R3ufjC0VuUmqblEHbDIynR9zVw==
+X-Received: by 2002:a9d:4d0f:: with SMTP id n15mr991993otf.127.1636397711483;
+        Mon, 08 Nov 2021 10:55:11 -0800 (PST)
+Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
+        by smtp.gmail.com with ESMTPSA id p62sm6243908oif.43.2021.11.08.10.55.10
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 08 Nov 2021 10:55:10 -0800 (PST)
+Received: (nullmailer pid 4020110 invoked by uid 1000);
+        Mon, 08 Nov 2021 18:55:09 -0000
+Date:   Mon, 8 Nov 2021 12:55:09 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Richard Fitzgerald <rf@opensource.cirrus.com>
+Cc:     broonie@kernel.org, robh+dt@kernel.org,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        patches@opensource.cirrus.com, alsa-devel@alsa-project.org
+Subject: Re: [PATCH 3/3] ASoC: dt-bindings: cs42l42: Convert binding to yaml
+Message-ID: <YYlyjT9bB+EKYoGL@robh.at.kernel.org>
+References: <20211028140902.11786-1-rf@opensource.cirrus.com>
+ <20211028140902.11786-4-rf@opensource.cirrus.com>
 MIME-Version: 1.0
-References: <20211105171023.989862879@infradead.org> <20211105171821.654356149@infradead.org>
- <20211108164711.mr2cqdcvedin2lvx@treble> <YYlshkTmf5zdvf1Q@hirez.programming.kicks-ass.net>
-In-Reply-To: <YYlshkTmf5zdvf1Q@hirez.programming.kicks-ass.net>
-From:   Nick Desaulniers <ndesaulniers@google.com>
-Date:   Mon, 8 Nov 2021 10:53:31 -0800
-Message-ID: <CAKwvOdkFZ4PSN0GGmKMmoCrcp7_VVNjau_b0sNRm3MuqVi8yow@mail.gmail.com>
-Subject: Re: [PATCH 20/22] x86,word-at-a-time: Remove .fixup usage
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Josh Poimboeuf <jpoimboe@redhat.com>, x86@kernel.org,
-        linux-kernel@vger.kernel.org, mark.rutland@arm.com,
-        dvyukov@google.com, seanjc@google.com, pbonzini@redhat.com,
-        mbenes@suse.cz
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211028140902.11786-4-rf@opensource.cirrus.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 8, 2021 at 10:29 AM Peter Zijlstra <peterz@infradead.org> wrote:
->
-> On Mon, Nov 08, 2021 at 08:47:11AM -0800, Josh Poimboeuf wrote:
-> > On Fri, Nov 05, 2021 at 06:10:43PM +0100, Peter Zijlstra wrote:
-> > > +static inline unsigned long load_unaligned_zeropad(const void *addr)
-> > > +{
-> > > +   unsigned long offset, data;
-> > > +   unsigned long ret;
-> > > +
-> > > +   asm_volatile_goto(
-> > > +           "1:     mov %[mem], %[ret]\n"
-> > > +
-> > > +           _ASM_EXTABLE(1b, %l[do_exception])
-> > > +
-> > > +           : [ret] "=&r" (ret)
-> > > +           : [mem] "m" (*(unsigned long *)addr)
-> > > +           : : do_exception);
-> > > +
-> > > +out:
-> > > +   return ret;
-> > > +
-> > > +do_exception: __cold;
-> >
-> > Clang doesn't approve of this label annotation:
-> >
-> > In file included from fs/dcache.c:186:
-> > ./arch/x86/include/asm/word-at-a-time.h:99:15: warning: '__cold__' attribute only applies to functions [-Wignored-attributes]
-> > do_exception: __cold;
->
-> /me mutters something best left unsaid these days...
->
-> Nick, how come?
+On Thu, 28 Oct 2021 15:09:02 +0100, Richard Fitzgerald wrote:
+> Replace the old .txt binding with a new schema binding.
+> At the same time, some of the descriptions are updated to make them
+> clearer, fix errors, or just make them fit better into the style
+> of schema binding.
+> 
+> The cirrus,hs-bias-ramp-rate property was missing from the old .txt
+> binding and has been added to the yaml.
+> 
+> Signed-off-by: Richard Fitzgerald <rf@opensource.cirrus.com>
+> ---
+>  .../devicetree/bindings/sound/cirrus,cs42l42.yaml  | 225 +++++++++++++++++++++
+>  .../devicetree/bindings/sound/cs42l42.txt          | 115 -----------
+>  MAINTAINERS                                        |   1 +
+>  3 files changed, 226 insertions(+), 115 deletions(-)
+>  create mode 100644 Documentation/devicetree/bindings/sound/cirrus,cs42l42.yaml
+>  delete mode 100644 Documentation/devicetree/bindings/sound/cs42l42.txt
+> 
 
-Looks like https://bugs.llvm.org/show_bug.cgi?id=47487.
--- 
-Thanks,
-~Nick Desaulniers
+Reviewed-by: Rob Herring <robh@kernel.org>
