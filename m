@@ -2,103 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 73C7F447AA4
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Nov 2021 07:58:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 97CF0447AAB
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Nov 2021 08:03:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237180AbhKHHAv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Nov 2021 02:00:51 -0500
-Received: from mail.kernel.org ([198.145.29.99]:42060 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236168AbhKHHAq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Nov 2021 02:00:46 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 21CA060041;
-        Mon,  8 Nov 2021 06:58:01 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1636354682;
-        bh=b2fFSboOM6vWOlcYYowMTIvz/bRMu1W2OvDJwY9x72s=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=WCQxvTPG6zbsWvOhGTIaX45i7RgR2OGkL9bRC6zfUcYsKkyKRbqYztbcofRtRXEl+
-         n4ba+37SoABBCVZg+B0R5h3RAFnFclgt+j35rDI+dKUdUeO69lEO1rWBS92wHvpfVD
-         UvdKfKMnxEe/uToKzGstjJSk7Rp49sd6jbRGsSA8=
-Date:   Mon, 8 Nov 2021 07:57:59 +0100
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Alexey Khoroshilov <khoroshilov@ispras.ru>
-Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-        Xin Long <lucien.xin@gmail.com>,
-        Marcelo Ricardo Leitner <marcelo.leitner@gmail.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Sasha Levin <sashal@kernel.org>, ldv-project@linuxtesting.org
-Subject: Re: [PATCH 5.10 68/77] sctp: add vtag check in sctp_sf_violation
-Message-ID: <YYjKd/UwdwrbnrNd@kroah.com>
-References: <20211101082511.254155853@linuxfoundation.org>
- <20211101082525.833757923@linuxfoundation.org>
- <a3059f52-54c6-6ab3-0f1d-a9b1566ff118@ispras.ru>
- <YYFevClqyJbASQXH@kroah.com>
+        id S237197AbhKHHGM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Nov 2021 02:06:12 -0500
+Received: from mail-ed1-f50.google.com ([209.85.208.50]:39525 "EHLO
+        mail-ed1-f50.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236168AbhKHHGK (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Nov 2021 02:06:10 -0500
+Received: by mail-ed1-f50.google.com with SMTP id r12so58424132edt.6;
+        Sun, 07 Nov 2021 23:03:26 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:in-reply-to
+         :content-transfer-encoding;
+        bh=aPfdZWgB3g/V643+XMmyCN4+ogGJp3gQCDA9ui5E1hI=;
+        b=Ma9FQqCpz7pA25/hshYsjjm2POo9wbtBozfInfI10llgVrSWm8iqi574hz8NuOkyR2
+         qJudCtbhf+102Gbq87ARZd+kCHWF2uXBhfaxGzYx3f1yTLBQM4R7HiTWUQRqoSrW+RAp
+         PttFrrRnikTIBV7K2Wap/pZvJ53nwoJqOOprz21SHI4kPBCZ/NTabqXZx2x3ijbdGeFH
+         tniagiXaiQx8loXBh13aCZkK9pOvKC5H2PsgKt/pqcar9Y4nAQvv/3ay49orcagDoumS
+         DuIBLSFubBmpLbInKkHLC5ADwBZkxB53DVBIE+WMdbGYWapYjHHByNjGBIw0APpHwQEr
+         ocSw==
+X-Gm-Message-State: AOAM533UXPdJHRDrO/bZY35QX6Wlf8zVAADq50sEhgUgQ3JJ2QODxBK1
+        ZoE/5dBlXSgCaSi1iVIfcYmt/XtTufc=
+X-Google-Smtp-Source: ABdhPJwZJItmY33mo1PNL8oxFCZNejArA89JL438uYHj/Tmioc6GGhUwMTXmdxmLleCNA3jyi3/Lkw==
+X-Received: by 2002:a50:d4cd:: with SMTP id e13mr104310252edj.29.1636355005281;
+        Sun, 07 Nov 2021 23:03:25 -0800 (PST)
+Received: from [192.168.1.49] (185-219-167-24-static.vivo.cz. [185.219.167.24])
+        by smtp.gmail.com with ESMTPSA id he17sm4181817ejc.110.2021.11.07.23.03.23
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 07 Nov 2021 23:03:24 -0800 (PST)
+Message-ID: <3ab0e357-dbea-e5aa-49c0-d02b49d532dd@kernel.org>
+Date:   Mon, 8 Nov 2021 08:03:23 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YYFevClqyJbASQXH@kroah.com>
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.2.1
+Subject: Re: [PATCH v4] tty: vt: keyboard: add default switch-case, to handle
+ smatch-warnings in method vt_do_kdgkb_ioctl
+Content-Language: en-US
+To:     Ajay Garg <ajaygargnsit@gmail.com>, gregkh@linuxfoundation.org,
+        andriy.shevchenko@linux.intel.com, kernel@esmil.dk,
+        linux-serial@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     paskripkin@gmail.com
+References: <20211107031721.4734-1-ajaygargnsit@gmail.com>
+From:   Jiri Slaby <jirislaby@kernel.org>
+In-Reply-To: <20211107031721.4734-1-ajaygargnsit@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 02, 2021 at 04:52:28PM +0100, Greg Kroah-Hartman wrote:
-> On Tue, Nov 02, 2021 at 05:12:16PM +0300, Alexey Khoroshilov wrote:
-> > Hello!
-> > 
-> > It seems the patch may lead to NULL pointer dereference.
-> > 
-> > 
-> > 1. sctp_sf_violation_chunk() calls sctp_sf_violation() with asoc arg
-> > equal to NULL.
-> > 
-> > static enum sctp_disposition sctp_sf_violation_chunk(
-> > ...
-> > {
-> > ...
-> >     if (!asoc)
-> >         return sctp_sf_violation(net, ep, asoc, type, arg, commands);
-> > ...
-> > 
-> > 2. Newly added code of sctp_sf_violation() calls to sctp_vtag_verify()
-> > with asoc arg equal to NULL.
-> > 
-> > enum sctp_disposition sctp_sf_violation(struct net *net,
-> > ...
-> > {
-> >     struct sctp_chunk *chunk = arg;
-> > 
-> >     if (!sctp_vtag_verify(chunk, asoc))
-> >         return sctp_sf_pdiscard(net, ep, asoc, type, arg, commands);
-> > ...
-> > 
-> > 3. sctp_vtag_verify() dereferences asoc without any check.
-> > 
-> > /* Check VTAG of the packet matches the sender's own tag. */
-> > static inline int
-> > sctp_vtag_verify(const struct sctp_chunk *chunk,
-> > 		 const struct sctp_association *asoc)
-> > {
-> > 	/* RFC 2960 Sec 8.5 When receiving an SCTP packet, the endpoint
-> > 	 * MUST ensure that the value in the Verification Tag field of
-> > 	 * the received SCTP packet matches its own Tag. If the received
-> > 	 * Verification Tag value does not match the receiver's own
-> > 	 * tag value, the receiver shall silently discard the packet...
-> > 	 */
-> > 	if (ntohl(chunk->sctp_hdr->vtag) != asoc->c.my_vtag)
-> > 		return 0;
-> > 
-> > 
-> > Found by Linux Verification Center (linuxtesting.org) with SVACE tool.
+On 07. 11. 21, 4:17, Ajay Garg wrote:
+> smatch-kchecker gives the following warnings when run on keyboard.c :
 > 
-> These issues should all be the same with Linus's tree, so can you please
-> submit patches to the normal netdev developers and mailing list to
-> resolve the above issues?
+> vt_do_kdgkb_ioctl() error: uninitialized symbol 'kbs'.
+> vt_do_kdgkb_ioctl() error: uninitialized symbol 'ret'.
+> 
+> This usually happens when switch has no default case and static
+> analyzers and even sometimes compilers can’t prove that all possible
+> values are covered.
+> 
+> 
+> Thus, the default switch-case has been added, which sets the values
+> for the two variables :
 
-Given a lack of response, I am going to assume that these are not real
-issues.  If you think they are, please submit patches to the network
-developers to resolve them.
+Just to shut up random static analyzers? Please don't.
 
-thanks,
 
-greg k-h
+-- 
+js
+suse labs
