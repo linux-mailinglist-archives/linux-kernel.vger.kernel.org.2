@@ -2,115 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B64344793A
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Nov 2021 05:15:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AB72E44793D
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Nov 2021 05:15:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237386AbhKHESJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 7 Nov 2021 23:18:09 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43650 "EHLO
+        id S237392AbhKHESd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 7 Nov 2021 23:18:33 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43784 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235724AbhKHERz (ORCPT
+        with ESMTP id S237389AbhKHES3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 7 Nov 2021 23:17:55 -0500
-Received: from mail-pg1-x52a.google.com (mail-pg1-x52a.google.com [IPv6:2607:f8b0:4864:20::52a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5F38FC061570
-        for <linux-kernel@vger.kernel.org>; Sun,  7 Nov 2021 20:15:11 -0800 (PST)
-Received: by mail-pg1-x52a.google.com with SMTP id q126so10071520pgq.13
-        for <linux-kernel@vger.kernel.org>; Sun, 07 Nov 2021 20:15:11 -0800 (PST)
+        Sun, 7 Nov 2021 23:18:29 -0500
+Received: from mail-pg1-x536.google.com (mail-pg1-x536.google.com [IPv6:2607:f8b0:4864:20::536])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9010DC061714
+        for <linux-kernel@vger.kernel.org>; Sun,  7 Nov 2021 20:15:45 -0800 (PST)
+Received: by mail-pg1-x536.google.com with SMTP id s136so14016801pgs.4
+        for <linux-kernel@vger.kernel.org>; Sun, 07 Nov 2021 20:15:45 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=message-id:date:mime-version:user-agent:subject:content-language:to
-         :cc:references:from:in-reply-to:content-transfer-encoding;
-        bh=0vTb2Eh26EDQpQcNXEmLn0oGcTGvpNGAV1iupzbirMM=;
-        b=b7D2TToafJTPLm0i63Nn6QpKsrHmIbUzDnzU1fD92pSo3LOwtwXKUwZSrjsBqBCv/O
-         TPaxhtp/XBjQpIl+0xzjzvDM9dZLu0MTUUk3sqMdpH+Y3CtLKjSRhHPPZdAd13RMvD4b
-         d7azvHwMg7DLMzI6nBC2uQO0dIRezB+FODr+Umc+reQPp+L9iaC/njLKB/NiraDcWOOe
-         eTTlEx8kG8SFY1U2BQ9wOH3Zksc+ud9gLSLum/uyQ4SW6xEGzGwT1ltqexc2WjvkdlDP
-         BjYyOZ3oHv42EzQTdHeO128VA48Yo1XSsjbnTmQj+UehqsBODpSKSH0oCPjlaKkA56Cf
-         k35w==
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=Ow3kGxYLNyC9HLIHc8ZxwibYPx3dM7u/6WgOPxoycOY=;
+        b=hHMIXEwywC4KIIcQTyM84LrwKvo0ZqVFVCZyZ3zsYzUh8HbqDoMcVOpiienrfq12D8
+         xi0CV1k9a4sv5Q5WEj3X8+uC2l0CdHdSipai3N4MZ04/hGZKDyuIXNzCIciAOnJH17GP
+         wWUqQrLxozORex1MMIfW4QO9UL4Wj2vRuSWb7jQ1OkcOwMC2YKZFg6deH2OALV1Jcmvv
+         NktFVMtu6Ag4ALAeGCqLhZgl+b8yytLE8FfIfaKYbN7ham6klAxxbVDVF8Jic+75yHbM
+         c4A92SQLr6n749h08SAh91JLDGPwTi8gIf7rpf65FwTM1tUK6nxS4tRP+LYsE09ZGIT+
+         1LOQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:in-reply-to
-         :content-transfer-encoding;
-        bh=0vTb2Eh26EDQpQcNXEmLn0oGcTGvpNGAV1iupzbirMM=;
-        b=sOKOqJMWIpJF5BJWx+XCwe7hnom2Sig/Vb4oLgfb/zEVqEwBhWqzIJe8uUdsg8DslB
-         nJ0sz6FMo0UIKsym8ACPNanktoCfBQr6IyELfSS3UoVgay+trrcaTql5yTaUYvFKMhni
-         pVfQCalo0VXkssoWOgW8eK3YbCeJw5kY4yq82CEXCKBt3t+SjQMIKoNH/hnu7Qug/5TM
-         V2OEcrbmJFZOIkrgV/cc4l0ZxEWTQTnYGHySusLbUYqfbB3syIb9oVZyjtWxJo5r3U3u
-         D6qYx1dWKccdin3t+JgupwWiA+vdsEeWpaFQVd+wR8OW2qZKFSnjc3nDayB2yKMeTZkv
-         UUmQ==
-X-Gm-Message-State: AOAM533deZq2zkjFcm4fHhcF6mHRbrpofdS6YlZKx8XC23+dhAE3Xu7X
-        W4GI0pIgFYNe2QPJW6VnTls=
-X-Google-Smtp-Source: ABdhPJyPWcaTTgqdCleaOpm+cehsHuGg/TzMXEj+bFjeOv2cr0G86yWMVT6bGW4mYgN1FAC9oXbYlA==
-X-Received: by 2002:a63:8742:: with SMTP id i63mr43016950pge.282.1636344910874;
-        Sun, 07 Nov 2021 20:15:10 -0800 (PST)
-Received: from [192.168.1.2] ([59.88.109.27])
-        by smtp.gmail.com with ESMTPSA id y32sm14997687pfa.145.2021.11.07.20.15.07
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 07 Nov 2021 20:15:10 -0800 (PST)
-Message-ID: <24befb64-0fdc-03ab-5a9a-c7be443be1a1@gmail.com>
-Date:   Mon, 8 Nov 2021 09:45:05 +0530
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:91.0)
- Gecko/20100101 Thunderbird/91.2.1
-Subject: Re: [PATCH] staging: rtl8192u: remove the if condition without effect
-Content-Language: en-GB
-To:     gregkh@linuxfoundation.org, kuba@kernel.org, lee.jones@linaro.org,
-        nathan@kernel.org, clrrm@isep.ipp.pt, johan@kernel.org,
-        dinghao.liu@zju.edu.cn, linux-staging@lists.linux.dev,
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=Ow3kGxYLNyC9HLIHc8ZxwibYPx3dM7u/6WgOPxoycOY=;
+        b=losKvIoQGWKYKBJfglS1t4WZuFQzzuWJb5mzGoAvF5ya4eAahupgIz3741AiaZ6MYJ
+         w+AfyzCDYyJ3MVLqx2/NLdws7H0fdDF4J80qe8OW0SXzgI7C1ulWgv89QMUoFxSj+xV3
+         NTH0vzGr1C3EDtyRthWmP8bpi3p+tl1a+IToDdIopCz8lq1zQmNxE6+5uGoW/lMERv1K
+         lyZqjExHb0v0TMePInSrPxldvfUHX7tC7UxVvFL5T2XQ3XAUfYEzCITUIjdUm3A1l8K7
+         URyBtnr2hFFajzCc9fuitAIB+HaqajjoawlfNyeXNM1j3kEKIAmKHJiJE4YMg91H8CZN
+         VlJg==
+X-Gm-Message-State: AOAM532lGQwclLQziS/doUqBMGgKYPDtWnE4Xna0r91zm+x7KCdn9vSL
+        goKyyFVB6N0VGO8RH79api6KVA==
+X-Google-Smtp-Source: ABdhPJw03Vh40n48feQuJ7VhZZRb8hZlAw4Q421T71CKIYSr2dlumNMItyAlVZWpDNqfvuu93XJpTQ==
+X-Received: by 2002:aa7:80c5:0:b0:480:4fc5:a531 with SMTP id a5-20020aa780c5000000b004804fc5a531mr64855837pfn.52.1636344945089;
+        Sun, 07 Nov 2021 20:15:45 -0800 (PST)
+Received: from localhost ([223.226.77.81])
+        by smtp.gmail.com with ESMTPSA id e14sm4521443pfv.18.2021.11.07.20.15.43
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 07 Nov 2021 20:15:44 -0800 (PST)
+Date:   Mon, 8 Nov 2021 09:45:42 +0530
+From:   Viresh Kumar <viresh.kumar@linaro.org>
+To:     Yang Li <yang.lee@linux.alibaba.com>
+Cc:     info@metux.net, vireshk@kernel.org, linus.walleij@linaro.org,
+        brgl@bgdev.pl, linux-gpio@vger.kernel.org,
+        virtualization@lists.linux-foundation.org,
         linux-kernel@vger.kernel.org
-Cc:     saurav.girepunje@hotmail.com
-References: <YYijapuGOmObwM3S@Sauravs-MacBook-Air.local>
-From:   Saurav Girepunje <saurav.girepunje@gmail.com>
-In-Reply-To: <YYijapuGOmObwM3S@Sauravs-MacBook-Air.local>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Subject: Re: [PATCH -next] gpio: virtio: remove unneeded semicolon
+Message-ID: <20211108041542.vhznujep4qgm7hv3@vireshk-i7>
+References: <1636344232-56537-1-git-send-email-yang.lee@linux.alibaba.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1636344232-56537-1-git-send-email-yang.lee@linux.alibaba.com>
+User-Agent: NeoMutt/20180716-391-311a52
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 08/11/21 9:41 am, Saurav Girepunje wrote:
-> In function rtl8192_adapter_start priv->pFirmware->firmware_status
-> is assign to FW_STATUS_0_INIT just after assignment variable is
-> again get check for same value. Therefore if condition will be
-> always be true. So remove the if condition ,else if section and
-> else section which will never get execute.
+On 08-11-21, 12:03, Yang Li wrote:
+> Eliminate the following coccicheck warning:
+> ./drivers/gpio/gpio-virtio.c:437:2-3: Unneeded semicolon
 > 
-> Signed-off-by: Saurav Girepunje <saurav.girepunje@gmail.com>
+> Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+> Signed-off-by: Yang Li <yang.lee@linux.alibaba.com>
 > ---
->  drivers/staging/rtl8192u/r8192U_core.c | 9 +--------
->  1 file changed, 1 insertion(+), 8 deletions(-)
+>  drivers/gpio/gpio-virtio.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 > 
-> diff --git a/drivers/staging/rtl8192u/r8192U_core.c b/drivers/staging/rtl8192u/r8192U_core.c
-> index 726d7ad9408b..f5d9e81f4ac7 100644
-> --- a/drivers/staging/rtl8192u/r8192U_core.c
-> +++ b/drivers/staging/rtl8192u/r8192U_core.c
-> @@ -2666,14 +2666,7 @@ static bool rtl8192_adapter_start(struct net_device *dev)
->  	/* config CPUReset Register */
->  	/* Firmware Reset or not? */
->  	read_nic_dword(dev, CPU_GEN, &dwRegRead);
-> -	if (priv->pFirmware->firmware_status == FW_STATUS_0_INIT)
-> -		dwRegRead |= CPU_GEN_SYSTEM_RESET; /* do nothing here? */
-> -	else if (priv->pFirmware->firmware_status == FW_STATUS_5_READY)
-> -		dwRegRead |= CPU_GEN_FIRMWARE_RESET;
-> -	else
-> -		RT_TRACE(COMP_ERR,
-> -			 "ERROR in %s(): undefined firmware state(%d)\n",
-> -			 __func__,   priv->pFirmware->firmware_status);
-> +	dwRegRead |= CPU_GEN_SYSTEM_RESET; /* do nothing here? */
-> 
->  	write_nic_dword(dev, CPU_GEN, dwRegRead);
->  	/* config BB. */
-> --
-> 2.33.0
-> 
+> diff --git a/drivers/gpio/gpio-virtio.c b/drivers/gpio/gpio-virtio.c
+> index aeec4bf..84f96b7 100644
+> --- a/drivers/gpio/gpio-virtio.c
+> +++ b/drivers/gpio/gpio-virtio.c
+> @@ -434,7 +434,7 @@ static void virtio_gpio_event_vq(struct virtqueue *vq)
+>  		ret = generic_handle_domain_irq(vgpio->gc.irq.domain, gpio);
+>  		if (ret)
+>  			dev_err(dev, "failed to handle interrupt: %d\n", ret);
+> -	};
+> +	}
+>  }
+>  
+>  static void virtio_gpio_request_vq(struct virtqueue *vq)
 
-read_nic_dword function call also does not update value of priv->pFirmware->firmware_status.
-read_nic_dword return a value that never check by any caller function.
-That can cover on another patch.
+Acked-by: Viresh Kumar <viresh.kumar@linaro.org>
 
-Regards,
-Saurav
+-- 
+viresh
