@@ -2,70 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2B748449C5C
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Nov 2021 20:24:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DBFBA449C60
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Nov 2021 20:24:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237208AbhKHT1L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Nov 2021 14:27:11 -0500
-Received: from mail-oi1-f169.google.com ([209.85.167.169]:45771 "EHLO
-        mail-oi1-f169.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236881AbhKHT1H (ORCPT
+        id S237247AbhKHT1c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Nov 2021 14:27:32 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52118 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236881AbhKHT1b (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Nov 2021 14:27:07 -0500
-Received: by mail-oi1-f169.google.com with SMTP id u2so29234357oiu.12;
-        Mon, 08 Nov 2021 11:24:23 -0800 (PST)
+        Mon, 8 Nov 2021 14:27:31 -0500
+Received: from mail-pj1-x1029.google.com (mail-pj1-x1029.google.com [IPv6:2607:f8b0:4864:20::1029])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B71E4C061570;
+        Mon,  8 Nov 2021 11:24:46 -0800 (PST)
+Received: by mail-pj1-x1029.google.com with SMTP id gx15-20020a17090b124f00b001a695f3734aso722619pjb.0;
+        Mon, 08 Nov 2021 11:24:46 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=FCDEdClF4vdMDgnBHsoSmjaYIHWGF2A+Z4xn3NG9v1w=;
+        b=HCGysrxXl1ER4zmhl9YPJJYdawYbs7ddTxFQ0i49WPW3BToO6e7u6gD9auVUC2BEdt
+         YAM7o2kX2jCvLVUxtAcABc412VYQKt3026QiR6bxbaMoI7JUeA7lV1TpCbq2mT4evb+b
+         1N8BxMo/m5qxnJjQ9dnuj83io3qhoQXOpL17rlxHOfK/DxqlHpQ3xK0/ooboogoLlnya
+         NurgKyRMkcQLXBAOmrGDItL5vLAMtdIGK2DkewWJNa83nf+VI0wPAeuE5W1S9h9Y/rSp
+         2+ciCXYako7tirgvyZcraaBXAId5SSMlXNalhHlGYc14OmSuIkc84DES61ma4mIRKpAU
+         Yc9Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=FM8llzobihkoUvOXHFQ+hNZP7IbHJCuot18xvdjx4Uw=;
-        b=q1ROFL8Bi0wwliuSt2Rnb0vDmsrmLBT2tFHtRqZbQGixf34JuQc6xKCXVcgbE6Wb4l
-         hEHG0KuWsWpca5OjBJI4Hs6sHf5wEYP4tKGvM0fgrtJntONjS84e7axHY6qqdBSdUtTk
-         bAovG9bsMgTSCaQ9Mt4wC4MDCnDGFU0Fm11VRvpGjBXOkPSBuhHT572Nwd5tHCnLuZOa
-         mGd1nAW/jJUDJZX68s02s4gJLwTGXs0/KLiZGDYhnc2yo629pvTMKTG7PnSPIj6/u2S8
-         mCLHj8Rgc+m9YM+7kK5Yo/nJGSJScaYucR83sgF+d/cXoZnbg181zyDY0xcEA520yfiS
-         EjBQ==
-X-Gm-Message-State: AOAM530AQo5p13SitvFf2e0ofkdt0sE87hA6mjUvLO45G7k01h2M3K4Q
-        503HxMmTGFSGaxSL13nDPw==
-X-Google-Smtp-Source: ABdhPJwLcVMvMA46V9aGpbnxBj9mUGc+Iq2bgyEPo6tq8LWI3pWH7Z3VJA6ldrFp/+Ga0Ti+MB2jmQ==
-X-Received: by 2002:aca:e083:: with SMTP id x125mr620983oig.106.1636399462691;
-        Mon, 08 Nov 2021 11:24:22 -0800 (PST)
-Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
-        by smtp.gmail.com with ESMTPSA id j10sm1389435ooq.5.2021.11.08.11.24.21
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=FCDEdClF4vdMDgnBHsoSmjaYIHWGF2A+Z4xn3NG9v1w=;
+        b=DdPQ8qxLVG2QUUGNuC05khb3ucw7d+Ky/9sVhNVoHD2+Mpa9cMxmBzTnxAuuJbGmtg
+         iVeDrdmK2Zh6/h4E3aw5FEJwdPCnJihi0fPrPRFD9LIjqxJfifwu6cqhdneu2GCFpoyS
+         rDI2W+83fT0rDnWu6j7TNqQj8CnNqGLodb6G4FjowlOzmiHhCnZWH+oIGIHp/NFd3dTr
+         /SWhPX98qW3LnoeORUzFDyxRKUz0aqIFOf167dkAeI2vqsScAont+KD+1cHD23yf5mSZ
+         Nc4cJcFG/mwn3ndR1j5CM/mkW+yITsy0T2Z4bZG+n8MNmBQWfm7diFeX2Mu1jXw99Nwg
+         l9aw==
+X-Gm-Message-State: AOAM533IOip4F8qjtcIy85WnP6SuM6u6phwMkgEH7vu8zEXXsCR7a4UG
+        7ZjnS0YsefYDlJuPdHubB5RU0PlLe4w=
+X-Google-Smtp-Source: ABdhPJypWm5RLBYiHwy6o/qZj4b0PqtVUzKvqqbYsQ4+OemIaz797fo+lfzOlXhjxcebcO0el2mwLA==
+X-Received: by 2002:a17:902:b28b:b0:142:4abc:ac20 with SMTP id u11-20020a170902b28b00b001424abcac20mr1396214plr.88.1636399485869;
+        Mon, 08 Nov 2021 11:24:45 -0800 (PST)
+Received: from fainelli-desktop.igp.broadcom.net ([192.19.223.252])
+        by smtp.gmail.com with ESMTPSA id m3sm17573242pfk.190.2021.11.08.11.24.44
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 08 Nov 2021 11:24:22 -0800 (PST)
-Received: (nullmailer pid 4063603 invoked by uid 1000);
-        Mon, 08 Nov 2021 19:24:21 -0000
-Date:   Mon, 8 Nov 2021 13:24:21 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     David Heidelberg <david@ixit.cz>
-Cc:     ~okias/devicetree@lists.sr.ht,
-        Manu Gautam <mgautam@codeaurora.org>,
-        devicetree@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Rob Herring <robh+dt@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>
-Subject: Re: [PATCH 1/2] dt-bindings: usb: qcom,dwc3: add binding for IPQ4019
- and IPQ8064
-Message-ID: <YYl5ZZBkBUxe5TCN@robh.at.kernel.org>
-References: <20211029103340.26828-1-david@ixit.cz>
+        Mon, 08 Nov 2021 11:24:45 -0800 (PST)
+From:   Florian Fainelli <f.fainelli@gmail.com>
+To:     linux-pci@vger.kernel.org
+Cc:     bcm-kernel-feedback-list@broadcom.com,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Rob Herring <robh@kernel.org>,
+        =?UTF-8?q?Krzysztof=20Wilczy=C5=84ski?= <kw@linux.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        linux-mips@vger.kernel.org (open list:MIPS),
+        linux-kernel@vger.kernel.org (open list),
+        Jim Quinlan <jim2101024@gmail.com>
+Subject: [PATCH 0/2] Enable PCIE_BRCMSTB on MIPS
+Date:   Mon,  8 Nov 2021 11:24:30 -0800
+Message-Id: <20211108192432.1589507-1-f.fainelli@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211029103340.26828-1-david@ixit.cz>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 29 Oct 2021 12:33:38 +0200, David Heidelberg wrote:
-> Add compatible string for Qualcomm IPQ4019 and IPQ8064 SoC.
-> 
-> Signed-off-by: David Heidelberg <david@ixit.cz>
-> ---
->  Documentation/devicetree/bindings/usb/qcom,dwc3.yaml | 2 ++
->  1 file changed, 2 insertions(+)
-> 
+This patch series allows building the PCIE_BRCMSTB driver for
+BMIPS_GENERIC. This is preliminary work to actually adding support for
+PCIe host bridge changes to the 7425/29/35 MIPS-based SoCs.
 
-Acked-by: Rob Herring <robh@kernel.org>
+The two patches are largely independent, though it might make more sense
+to merge them via the PCI drivers tree?
+
+Florian Fainelli (2):
+  MIPS: BMIPS: Enable PCI Kconfig
+  PCI: brcmstb: Allow building for BMIPS_GENERIC
+
+ arch/mips/Kconfig              | 2 ++
+ drivers/pci/controller/Kconfig | 3 ++-
+ 2 files changed, 4 insertions(+), 1 deletion(-)
+
+-- 
+2.25.1
+
