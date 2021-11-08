@@ -2,229 +2,181 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 41100447C43
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Nov 2021 09:51:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E4FCD447C51
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Nov 2021 09:53:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238185AbhKHIxk convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 8 Nov 2021 03:53:40 -0500
-Received: from hostingweb31-40.netsons.net ([89.40.174.40]:58488 "EHLO
-        hostingweb31-40.netsons.net" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S238169AbhKHIxh (ORCPT
+        id S238194AbhKHI4S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Nov 2021 03:56:18 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48842 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236594AbhKHI4R (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Nov 2021 03:53:37 -0500
-Received: from [77.244.183.192] (port=62110 helo=[192.168.178.41])
-        by hostingweb31.netsons.net with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.94.2)
-        (envelope-from <luca@lucaceresoli.net>)
-        id 1mk0Me-009nAD-9b; Mon, 08 Nov 2021 09:50:52 +0100
-From:   Luca Ceresoli <luca@lucaceresoli.net>
-Subject: Re: RFC: Extend probing of native PCIe controllers
-To:     =?UTF-8?Q?Pali_Roh=c3=a1r?= <pali@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        =?UTF-8?Q?Krzysztof_Wilczy=c5=84ski?= <kw@linux.com>,
-        Rob Herring <robh@kernel.org>,
-        =?UTF-8?Q?Marek_Beh=c3=ban?= <kabel@kernel.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20211022183808.jdeo7vntnagqkg7g@pali>
-Message-ID: <2744c8e0-5b69-ba1a-f750-6b5f8ad07998@lucaceresoli.net>
-Date:   Mon, 8 Nov 2021 09:50:51 +0100
+        Mon, 8 Nov 2021 03:56:17 -0500
+Received: from lb1-smtp-cloud7.xs4all.net (lb1-smtp-cloud7.xs4all.net [IPv6:2001:888:0:108::1a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3AE9EC061570;
+        Mon,  8 Nov 2021 00:53:33 -0800 (PST)
+Received: from cust-b5b5937f ([IPv6:fc0c:c16d:66b8:757f:c639:739b:9d66:799d])
+        by smtp-cloud7.xs4all.net with ESMTPA
+        id k0P5meVbwFZvck0P8muGwC; Mon, 08 Nov 2021 09:53:31 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=xs4all.nl; s=s2;
+        t=1636361611; bh=N5WnZDwk03ecG+KFBZDfNUaUy6ujNUFngbnpFjjX2b4=;
+        h=Subject:To:From:Message-ID:Date:MIME-Version:Content-Type:From:
+         Subject;
+        b=Z3Ti1AOvyr7eR+h5UazH/dgbYgPioWEp7h55Ur8T/xnOKFHVKiWcHOC0nRsOzagIL
+         WHVdvfzz9Wa8KXwJGU6siHN9zDJW1x5Lvd8eY5Ok/DpgwDLdoJLa0324Lvs/wmkKtb
+         OjELReeICe5grkZxspXCJs//pqDyNz+BhBoRzqViqGfYEgad+ieD2WKs7VbaVHPOb1
+         jtpyllSb0HKF8EjRQ02Oc2F7N+u4xfC0D/V1+gk48TVkIfSvF1I2sEdbDKbyJUP+9J
+         lsDVXw6CF3aHPOVlm/d+6ftTUC5D/2lRHDBwLjSM0T1Xc2lWBFUN7/hVTNYt4pQjNC
+         N3qbi9C+OemnQ==
+Subject: Re: [PATCH] media: aspeed: use reset to replace clk off/on
+To:     Jammy Huang <jammy_huang@aspeedtech.com>,
+        Jae Hyun Yoo <jae.hyun.yoo@linux.intel.com>,
+        "eajames@linux.ibm.com" <eajames@linux.ibm.com>,
+        "mchehab@kernel.org" <mchehab@kernel.org>,
+        "joel@jms.id.au" <joel@jms.id.au>,
+        "andrew@aj.id.au" <andrew@aj.id.au>,
+        "linux-media@vger.kernel.org" <linux-media@vger.kernel.org>,
+        "openbmc@lists.ozlabs.org" <openbmc@lists.ozlabs.org>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "linux-aspeed@lists.ozlabs.org" <linux-aspeed@lists.ozlabs.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+References: <20211103054316.25272-1-jammy_huang@aspeedtech.com>
+ <883dd517-7996-8c44-8cea-1c8838b367b6@linux.intel.com>
+ <HK0PR06MB272258A4BA760E70CF609888F18E9@HK0PR06MB2722.apcprd06.prod.outlook.com>
+From:   Hans Verkuil <hverkuil@xs4all.nl>
+Message-ID: <398d37a5-509f-b78b-360b-990d256bde63@xs4all.nl>
+Date:   Mon, 8 Nov 2021 09:53:23 +0100
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+ Firefox/78.0 Thunderbird/78.14.0
 MIME-Version: 1.0
-In-Reply-To: <20211022183808.jdeo7vntnagqkg7g@pali>
+In-Reply-To: <HK0PR06MB272258A4BA760E70CF609888F18E9@HK0PR06MB2722.apcprd06.prod.outlook.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-Content-Transfer-Encoding: 8BIT
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - hostingweb31.netsons.net
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - lucaceresoli.net
-X-Get-Message-Sender-Via: hostingweb31.netsons.net: authenticated_id: luca@lucaceresoli.net
-X-Authenticated-Sender: hostingweb31.netsons.net: luca@lucaceresoli.net
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
+Content-Transfer-Encoding: 8bit
+X-CMAE-Envelope: MS4xfLgVZbzFUJQsFyvjN31c9nEsxsiILzODdS83Qkkx/mx+TyVnfKOOOxaUgiuQHgdsX9wdvFuPCS7ycc+NXp83vEzkC3WOxLNaWaUC4OKjqYekv4zHO4MB
+ qQQzdnvHulF54s9YtL8NdADr6vuekXN1BGAo5DNTlsnPHbt+5GEi8tOatPbXaROoVOQcq3wy4BpAwtN2yMT6nnMBm1GIPB9O8wbQf+pYhfY/+ce9L7pBU3qY
+ 56d+24AzKLlnGPEIiB4QjsSpQKPMzFSNTb1+b/Ro5uOob+JrJM1OknYGj7sKAd13GvB8PIKWqd7ROUTHkgeYdUmszohAJgngXDmlhp+pM5ohTlRCd+P8wMFV
+ VSnhxDeTiIr0mQflZxcj3eQ176i8td6oObDvqAsMnpljRlD4QC9OGfO+TDoAZbvyhj1mJHZK0DNfeHLZeeWYgypHxVmqPxfh/h/RDtC2RoJf1wUL2rYqvx1l
+ hrH4wCXeUmV1kjjWPc6aq4zPx7bQuXIo2VcXPMcDUzT2OT16JzGscjPJiHkpXeizRdw38Er1gS8pAjXhwH79pphTObHLwhhouBNbTQ==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Pali,
+Hi Jammy,
 
-On 22/10/21 20:38, Pali Rohár wrote:
-> Hello!
+On 05/11/2021 02:27, Jammy Huang wrote:
+> Hi Jae,
 > 
-> In this email I'm describing how I see that probing of native PCIe
-> controller drivers is implemented, how it should be implemented and how
-> to extend / simplify core code for controller drivers.
-> 
-> 
-> Native PCIe controller drivers needs to fill struct pci_host_bridge and
-> then call pci_host_probe(). Function pci_host_probe() starts probing and
-> enumerating buses and register PCIe devices to system.
-> 
-> But initialization of PCIe controller and cards on buses (other end of
-> PCIe link) is more complicated and basically every native PCIe
-> controller driver needs to do initialization PCIe link prior calling
-> pci_host_probe(). Steps which controller drivers are doing are de-facto
-> standard steps defined in PCIe base or CEM specification.
-> 
-> The most problematic step is to reset endpoint card and wait until
-> endpoint card start. Reset of endpoint card is done by standard PERST#
-> signal (defined in PCIe CEM spec) and in most cases board export control
-> of this signal to OS via GPIO (few board and drivers have this signal
-> connected to PCIe controller and then PCIe controller has some specific
-> registers to control this signal). Reset via PERST# signal is defined in
-> PCIe CEM and base specs as "PCIe Warm Reset".
-> 
-> As discussed in the following email thread, this PCIe Warm Reset should
-> not depend on PCIe controller as it resets card on the other end of PCIe
-> controller. But currently every native PCIe controller driver does PCIe
-> Warm Reset by its own for randomly chosen time period. There is open
-> question how long should be endpoint card in Warm Reset state:
-> https://lore.kernel.org/linux-pci/20210310110535.zh4pnn4vpmvzwl5q@pali/
-> 
-> Initialization of PCIe endpoint card is described in PCIe CEM spec in
-> Figure 2-10: Power Up. Other informations are in PCIe base spec in 6.6.1
-> Conventional Reset section.
-> 
-> If I understand specifications correctly then OS initialization steps
-> should be following (please correct me if I'm wrong!):
-> 
-> 1) Put PERST# to low which enter endpoint card into reset state
-> 2) Enable AUX power (3.3V) and wait until is stable
-> 3) Enable main power (12V/3.3V) and wait until is stable
-> 4) Enable refclock and wait until is stable
-> 5) Enable LTSSM on PCIe controller to start link training
-> 6) Put PERST# to high which exit endpoint card from reset state
-> 7) Wait until link training completes
-> 8) Wait another 100ms prior accessing config space of endpoint card
-> 
-> Minimal time period between "after step 3)" and "before step 6)" is T_PVPERL = 100ms
-> Minimal time period between "after step 4)" and "before step 6)" is T_PERSTCLK = 100us
-> 
-> After step 6) is end of Fundamental Reset and PCIe controller needs to
-> be in LTSSM Detect state within 20ms. So enabling it prior putting
-> PERST# to high should achieve it.
-> 
-> Competition of link training is indicated by standard DLLLA bit in Root
-> Port config space. Support for DLLLA bit is optional and is indicated by
-> DLLLARC bit in Root Port config space. Lot of PCIe controllers do not
-> support this standard DLLLA bit, but have their own specific register
-> for it.
-> 
-> Similarly is defined power down of PCIe card in PCIe CEM spec in Figure
-> 2-13: Power Down. If I understand it correctly steps are:
-> 
-> 1) Put endpoint card into D3hot state, so PCIe link goes inactive
-> 2) Put PERST# to low, so endpoint card enters reset state
-> 3) Disable main power (12V/3.3V)
-> 4) Disable refclock
-> 
-> In case of surprise power down, PERST# needs to go low in 500ns.
-> 
-> In PCIe base spec in section 5.2 Link State Power Management is
-> described that preparation for removing the main power source can be
-> done also by sending PCIe PME_Turn_Off Message by Root Complex. IIRC
-> there is no standard way how to send PCIe PME_Turn_Off message.
-> 
-> 
-> 
-> 
-> I see that basically every PCIe controller driver is doing its own
-> implementation of PCIe Warm Reset and waiting until PCIe link is ready
-> prior calling pci_host_probe().
-> 
-> Based on all above details I would like to propose following extending
-> of struct pci_host_bridge and pci_host_probe() function to de-duplicate
-> native PCIe controller driver code:
-> 
-> 1) extend struct pci_host_bridge to provide callbacks for:
->    * enable / disable main power source
->    * enable / disable refclock
->    * enable / disable LTSSM link training (if PCIe link should go into Detect / Polling state)
->    * enable / disable PERST# signal
->    * returning boolean if endpoint card is present (physically in PCIe/mPCIe/m.2/... slot)
->    * returning boolean if link training completed
->    * sending PCIe PME_Turn_Off message
-> 
-> 2) implement asynchronous initialization of PCIe link and enumeration of
->    PCIe bus behind the PCIe Root Port from pci_host_probe() based on new
->    callbacks added in 1)
->    --> so native PCIe controller drivers do not have to do it manually
->    --> during this initialization can be done also PCIe Hot Reset
-> 
-> 3) implement PCIe Hot Reset as reset method via PERST# signal and put it
->    into pci_reset_fn_methods[] array
-> 
-> 4) implement PCIe Cold Reset as reset method via power down / up and put
->    it into pci_reset_fn_methods[] array
-> 
-> 5) as enabling / disabling power supply and toggling PERST# signal is
->    implemented via GPIO, add some generic implementation for callback
->    functions which will use named gpios (e.g. from DT)
-> 
-> This could simplify implementations of native PCIe controller drivers by
-> calling initialization steps in correct order with correct timeouts and
-> drivers do not have to do copy+paste same common code or reimplement it
-> with own constants and macros for timeouts, etc...
-> 
-> Also it should enable access to PCIe Root Port as this device is part of
-> Root Complex and should be available also when link is down or link
-> training was not completed. Currently some PCIe controllers are not
-> registered into system when link is down (e.g. card is disconnected or
-> card has some issue). Which also prevents access to PCIe Root Port
-> device. And in some cases it could speed up boot process as pci
-> controller driver does not have to actively wait for link and let kernel
-> do initialization of other devices.
-> 
-> What do you think about this idea?
+> OK, I found it.
+> Thanks for your help.
 
-I'm afraid I know very little about PCI so I cannot give much valuable
-feedback.
+So just so I understand this correctly: this patch can be dropped, right?
 
-For what I can understand yours seems like a good analysis and the plan
-seems correct: move control from drivers into the core as far as the
-actions to take are standard and leave drivers the duty to implement
-only hardware-specific pieces via function pointers.
+Regards,
 
-We have discussed in detail the PERST# behavior in [0], and I have a
-comment about that.
+	Hans
 
-First, from that discussion it was clear that some drivers drive PERST#
-with an inverted polarity when calling gpiod_set_value() or
-devm_gpiod_get_optional(), which is "fixed" by an inverted polarity
-setting in their device tree.
-
-Second, you say "in most cases board export control of this signal to OS
-via GPIO".
-
-For these two reasons you might consider, in addition to the
-pci_reset_fn_methods[] function to implement PERST#, to add a struct
-gpio_desc * to be filled by the driver and used by the core. If set, it
-would allow the core to assert/deassert PERST# without driver
-intervention. The idea in pseudocode is:
-
-  [in drivers/pci/probe.c]
-
-  if (bridge->perst_gpio) {
-      gpiod_set_value(reset, 1); // assert
-      usleep(...);
-      gpiod_set_value(reset, 0); // deassert
-      usleep(...);
-  } else if (bridge->pci_reset_fn_methods[PERST]) {
-      bridge->pci_reset_fn_methods[PERST]();
-  }
-
-It would make drivers slightly simpler and less error prone.
-
-[0]
-https://lore.kernel.org/linux-arm-kernel/e9ab9c22-f73b-fe72-820a-4f2825c3dabc@lucaceresoli.net/T/#mc4fc8c10ebeeff8c6d3593b0072afbcf7de9f2ae
-
-My 2c,
--- 
-Luca
+> 
+> Regards,
+> Jammy Huang
+> 
+> Tel: 886-3-575-1185  ext.8630
+> 
+> ************* Email Confidentiality Notice ********************
+> DISCLAIMER:
+> This message (and any attachments) may contain legally privileged and/or other confidential information. If you have received it in error, please notify the sender by reply e-mail and immediately delete the e-mail and any attachments without copying or disclosing the contents. Thank you.
+> 
+> -----Original Message-----
+> From: Jae Hyun Yoo <jae.hyun.yoo@linux.intel.com> 
+> Sent: Thursday, November 4, 2021 11:54 PM
+> To: Jammy Huang <jammy_huang@aspeedtech.com>; eajames@linux.ibm.com; mchehab@kernel.org; joel@jms.id.au; andrew@aj.id.au; linux-media@vger.kernel.org; openbmc@lists.ozlabs.org; linux-arm-kernel@lists.infradead.org; linux-aspeed@lists.ozlabs.org; linux-kernel@vger.kernel.org
+> Subject: Re: [PATCH] media: aspeed: use reset to replace clk off/on
+> 
+> Hi Jammy,
+> 
+> On 11/2/2021 10:43 PM, Jammy Huang wrote:
+>> reset should be more proper than clk off/on to bring HW back to good 
+>> state.
+>>
+>> Signed-off-by: Jammy Huang <jammy_huang@aspeedtech.com>
+>> ---
+>>   drivers/media/platform/aspeed-video.c | 22 +++++++++++++++++++---
+>>   1 file changed, 19 insertions(+), 3 deletions(-)
+>>
+>> diff --git a/drivers/media/platform/aspeed-video.c 
+>> b/drivers/media/platform/aspeed-video.c
+>> index fea5e4d0927e..10d182139809 100644
+>> --- a/drivers/media/platform/aspeed-video.c
+>> +++ b/drivers/media/platform/aspeed-video.c
+>> @@ -23,6 +23,7 @@
+>>   #include <linux/workqueue.h>
+>>   #include <linux/debugfs.h>
+>>   #include <linux/ktime.h>
+>> +#include <linux/reset.h>
+>>   #include <media/v4l2-ctrls.h>
+>>   #include <media/v4l2-dev.h>
+>>   #include <media/v4l2-device.h>
+>> @@ -220,6 +221,7 @@ struct aspeed_video {
+>>   	void __iomem *base;
+>>   	struct clk *eclk;
+>>   	struct clk *vclk;
+>> +	struct reset_control *reset;
+>>   
+>>   	struct device *dev;
+>>   	struct v4l2_ctrl_handler ctrl_handler; @@ -554,6 +556,13 @@ static 
+>> void aspeed_video_on(struct aspeed_video *video)
+>>   	set_bit(VIDEO_CLOCKS_ON, &video->flags);
+>>   }
+>>   
+>> +static void aspeed_video_reset(struct aspeed_video *v) {
+>> +	reset_control_assert(v->reset);
+>> +	udelay(100);
+>> +	reset_control_deassert(v->reset);
+>> +}
+>> +
+>>   static void aspeed_video_bufs_done(struct aspeed_video *video,
+>>   				   enum vb2_buffer_state state)
+>>   {
+>> @@ -574,7 +583,9 @@ static void aspeed_video_irq_res_change(struct aspeed_video *video, ulong delay)
+>>   	set_bit(VIDEO_RES_CHANGE, &video->flags);
+>>   	clear_bit(VIDEO_FRAME_INPRG, &video->flags);
+>>   
+>> -	aspeed_video_off(video);
+>> +	aspeed_video_write(video, VE_INTERRUPT_CTRL, 0);
+>> +	aspeed_video_write(video, VE_INTERRUPT_STATUS, 0xffffffff);
+>> +	aspeed_video_reset(video);
+>>   	aspeed_video_bufs_done(video, VB2_BUF_STATE_ERROR);
+>>   
+>>   	schedule_delayed_work(&video->res_work, delay); @@ -1507,8 +1518,7 
+>> @@ static void aspeed_video_stop_streaming(struct vb2_queue *q)
+>>   		 * Need to force stop any DMA and try and get HW into a good
+>>   		 * state for future calls to start streaming again.
+>>   		 */
+>> -		aspeed_video_off(video);
+>> -		aspeed_video_on(video);
+>> +		aspeed_video_reset(video);
+> 
+> You can find the ECLK configuration in 'clk-aspeed.c' or in 'clk-ast2600.c' that it's coupled with the video engine reset (SCU04[6] for AST2500 / SCU040[6] for AST2600). It means that if we call
+> clk_disable() and clk_enable() through aspeed_video_off() and aspeed_video_on(), the video engine reset will be implicitly asserted and de-asserted by the clock driver so the reset mechanism is already in the existing code.
+> 
+> Thanks,
+> Jae
+> 
+>>   		aspeed_video_init_regs(video);
+>>   
+>> @@ -1715,6 +1725,12 @@ static int aspeed_video_init(struct aspeed_video *video)
+>>   		return rc;
+>>   	}
+>>   
+>> +	video->reset = devm_reset_control_get(dev, NULL);
+>> +	if (IS_ERR(video->reset)) {
+>> +		dev_err(dev, "Unable to get reset\n");
+>> +		return PTR_ERR(video->reset);
+>> +	}
+>> +
+>>   	video->eclk = devm_clk_get(dev, "eclk");
+>>   	if (IS_ERR(video->eclk)) {
+>>   		dev_err(dev, "Unable to get ECLK\n");
+>>
 
