@@ -2,108 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8712A449D6B
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Nov 2021 21:59:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B5D84449D74
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Nov 2021 22:00:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238138AbhKHVCQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Nov 2021 16:02:16 -0500
-Received: from netrider.rowland.org ([192.131.102.5]:41175 "HELO
-        netrider.rowland.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with SMTP id S230126AbhKHVCM (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Nov 2021 16:02:12 -0500
-Received: (qmail 1679175 invoked by uid 1000); 8 Nov 2021 15:59:26 -0500
-Date:   Mon, 8 Nov 2021 15:59:26 -0500
-From:   Alan Stern <stern@rowland.harvard.edu>
-To:     Borislav Petkov <bp@alien8.de>
-Cc:     Geert Uytterhoeven <geert@linux-m68k.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Ayush Sawal <ayush.sawal@chelsio.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Rohit Maheshwari <rohitm@chelsio.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Vinay Kumar Yadav <vinay.yadav@chelsio.com>,
-        ALSA Development Mailing List <alsa-devel@alsa-project.org>,
-        bcm-kernel-feedback-list <bcm-kernel-feedback-list@broadcom.com>,
-        Intel Graphics Development <intel-gfx@lists.freedesktop.org>,
-        intel-gvt-dev@lists.freedesktop.org,
-        alpha <linux-alpha@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        linux-clk <linux-clk@vger.kernel.org>,
-        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
-        linux-edac@vger.kernel.org,
-        Linux Fbdev development list <linux-fbdev@vger.kernel.org>,
-        linux-hyperv@vger.kernel.org, linux-iio@vger.kernel.org,
-        linux-leds <linux-leds@vger.kernel.org>,
-        "open list:BROADCOM NVRAM DRIVER" <linux-mips@vger.kernel.org>,
-        Parisc List <linux-parisc@vger.kernel.org>,
-        Linux PM list <linux-pm@vger.kernel.org>,
-        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
-        "open list:REMOTE PROCESSOR \(REMOTEPROC\) SUBSYSTEM" 
-        <linux-remoteproc@vger.kernel.org>,
-        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
-        linux-s390 <linux-s390@vger.kernel.org>,
-        scsi <linux-scsi@vger.kernel.org>,
-        Linux-sh list <linux-sh@vger.kernel.org>,
-        linux-staging@lists.linux.dev,
-        linux-tegra <linux-tegra@vger.kernel.org>,
-        linux-um <linux-um@lists.infradead.org>,
-        USB list <linux-usb@vger.kernel.org>,
-        "open list:TENSILICA XTENSA PORT \(xtensa\)" 
-        <linux-xtensa@linux-xtensa.org>, netdev <netdev@vger.kernel.org>,
-        openipmi-developer@lists.sourceforge.net, rcu@vger.kernel.org,
-        sparclinux <sparclinux@vger.kernel.org>,
-        the arch/x86 maintainers <x86@kernel.org>,
-        xen-devel@lists.xenproject.org
-Subject: Re: [PATCH v0 42/42] notifier: Return an error when callback is
- already registered
-Message-ID: <20211108205926.GA1678880@rowland.harvard.edu>
-References: <20211108101157.15189-1-bp@alien8.de>
- <20211108101157.15189-43-bp@alien8.de>
- <CAMuHMdWH+txiSP_d7Jc4f_bU8Lf9iWpT4E3o5o7BJr-YdA6-VA@mail.gmail.com>
- <YYkyUEqcsOwQMb1S@zn.tnic>
- <CAMuHMdXiBEQyEXJagSfpH44hxVA2t0sDH7B7YubLGHrb2MJLLA@mail.gmail.com>
- <YYlJQYLiIrhjwOmT@zn.tnic>
- <CAMuHMdXHikGrmUzuq0WG5JRHUUE=5zsaVCTF+e4TiHpM5tc5kA@mail.gmail.com>
- <YYlOmd0AeA8DSluD@zn.tnic>
+        id S236787AbhKHVDY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Nov 2021 16:03:24 -0500
+Received: from mail.kernel.org ([198.145.29.99]:47282 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230126AbhKHVDO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Nov 2021 16:03:14 -0500
+Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 255AB61051;
+        Mon,  8 Nov 2021 21:00:29 +0000 (UTC)
+Date:   Mon, 8 Nov 2021 16:00:27 -0500
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Beau Belgrave <beaub@linux.microsoft.com>
+Cc:     Masami Hiramatsu <mhiramat@kernel.org>,
+        linux-trace-devel@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v4 02/10] user_events: Add minimal support for
+ trace_event into ftrace
+Message-ID: <20211108160027.3b16c23d@gandalf.local.home>
+In-Reply-To: <20211108202527.GA1862@kbox>
+References: <20211104170433.2206-1-beaub@linux.microsoft.com>
+        <20211104170433.2206-3-beaub@linux.microsoft.com>
+        <20211107233115.1f77e93c4bdf3ff649be99c1@kernel.org>
+        <20211108171336.GA1690@kbox>
+        <20211108131639.33a4f186@gandalf.local.home>
+        <20211108202527.GA1862@kbox>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YYlOmd0AeA8DSluD@zn.tnic>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 08, 2021 at 05:21:45PM +0100, Borislav Petkov wrote:
-> On Mon, Nov 08, 2021 at 05:12:16PM +0100, Geert Uytterhoeven wrote:
-> > Returning void is the other extreme ;-)
-> > 
-> > There are 3 levels (ignoring BUG_ON()/panic () inside the callee):
-> >   1. Return void: no one can check success or failure,
-> >   2. Return an error code: up to the caller to decide,
-> >   3. Return a __must_check error code: every caller must check.
-> > 
-> > I'm in favor of 2, as there are several places where it cannot fail.
+On Mon, 8 Nov 2021 12:25:27 -0800
+Beau Belgrave <beaub@linux.microsoft.com> wrote:
+
+> It seems there are 2 concerns:
+> 1. If data comes in and it's not in the size that is specified, it's
+> suspicious and should either be truncated or ignored. Maybe under
+> ignore, over truncate.
 > 
-> Makes sense to me. I'll do that in the next iteration.
+> 2. If the data is more than specified, it must be checked to see if
+> there are __data_loc / __rel_loc entries and they must be validated as
+> within range of accepted limits. If there are no __data_loc / __rel_loc
+> it should either be truncated or ignored.
+> 
+> Is there more that I may have missed?
+> 
+> I'd like to know if I do fix them that the features like filtering will still
+> be available to user_events or if it's better to just add flags to disable
+> kernel filtering?
 
-Is there really any reason for returning an error code?  For example, is 
-it anticipated that at some point in the future these registration calls 
-might fail?
+If these are "user defined" then perhaps we add a wrapper to the filtering
+that is called instead of the normal filtering for theses events that
+verify the fields of the events being filtered are located on the ring
+buffer. Although, strings and such are rare or just slow in filtering that
+we could make sure the content is still on the buffer that is being
+filtered.
 
-Currently, the only reason for failing to register a notifier callback 
-is because the callback is already registered.  In a sense this isn't 
-even an actual failure -- after the registration returns the callback 
-_will_ still be registered.
+> 
+> I'm still unsure this is limited to just user_events.
+> 
+> For example, why doesn't filter_pred_strloc and filter_pred_pchar in
+> trace_events_filter.c check the boundary it will be accessing?
+> 
+> It seems like tracepoints from kernel modules, while more trusted, can also
+> cause this kind of thing due to bugs, etc.
 
-So if the call can never really fail, why bother with a return code?  
-Especially since the caller can't do anything with such a code value.
+Yes, it's the fact that the code is created in the kernel, and the only way
+that the filtering could be out of bounds is if there's a bug in the
+kernel. We rather not check for that if it slows down the tracing. But
+perhaps if we can show that the checks are only done for dynamic strings
+and arrays, that it doesn't cause noticeable overhead, it may be fine to
+keep for all events.
 
-Given the current state of affairs, I vote in favor of 1 (plus a WARN or 
-something similar to generate a stack dump in the callee, since double 
-registration really is a bug).
+-- Steve
 
-Alan Stern
