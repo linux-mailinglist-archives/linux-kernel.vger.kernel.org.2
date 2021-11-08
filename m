@@ -2,130 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F4694498F2
+	by mail.lfdr.de (Postfix) with ESMTP id E49AE4498F4
 	for <lists+linux-kernel@lfdr.de>; Mon,  8 Nov 2021 17:02:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241149AbhKHQCJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Nov 2021 11:02:09 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:47993 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S241136AbhKHQCC (ORCPT
+        id S239375AbhKHQE2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Nov 2021 11:04:28 -0500
+Received: from mo4-p02-ob.smtp.rzone.de ([81.169.146.168]:33174 "EHLO
+        mo4-p02-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231401AbhKHQE1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Nov 2021 11:02:02 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1636387158;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=0FX33YX3/KEHbRU3d7P7kXufc5u/aEPzAlj6z3nAH7Y=;
-        b=OA/OVwsvnjEs/9wJlkUk6Tmuvemh7MgG3GGAoB2t3jFoeVi/mMHSF7AH0XpKOs7A+67Qoa
-        kX+y+ew94jGo3JcrGoVW3jlhPM0G6qdCRknKP+zENgxoWfHNlIkYXZ5gdB/dZr36chbP79
-        unXlGaWqlEA9HPuen0a+6vrFrhdKq64=
-Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com
- [209.85.208.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-433-qyNxcKjNODmJ7v-B935kew-1; Mon, 08 Nov 2021 10:59:16 -0500
-X-MC-Unique: qyNxcKjNODmJ7v-B935kew-1
-Received: by mail-ed1-f70.google.com with SMTP id r25-20020a05640216d900b003dca3501ab4so15212667edx.15
-        for <linux-kernel@vger.kernel.org>; Mon, 08 Nov 2021 07:59:16 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:in-reply-to
-         :content-transfer-encoding;
-        bh=0FX33YX3/KEHbRU3d7P7kXufc5u/aEPzAlj6z3nAH7Y=;
-        b=UXnvx08DBiYvamLOuRAMAeRCLxlsjAr5gaOn+YF/aanx6T+VtFFYI1R46y6WITHoyT
-         Fq8thACVvUvemBwsC/XDV0lXu4bIXYqd8BjofOcMMAEINKwaLo3HINJ/cy6doID8tQSj
-         s9EskpNoSKrbY7LhboMU1dBL2ne+u76QXMUTmn8YnJWnycbf2XdcysJrK4lg2TKZ59qF
-         YirJjYkJ5xGmvdMdlCSo3a8cKZlN+dXd9A9VTIRPQOuO9aACMt3U+A1wgyGeakQQjPQJ
-         r0w+9PKd4ewUB4c3S3aZ8if5otx4vmu0F00QwixYRjX2NetIstGFBYAKLM6WlggCHLda
-         K1Hw==
-X-Gm-Message-State: AOAM532x+F6BfwjJsffbybxuS67i93UACKzwGbymgdbrecXeZOvdyUqu
-        FTHKe53jHqyixlRJkXHcN4Tl9iSLVZnUaUFiyM+jr3cWq+A3YTHDKi/pFbqJa3yJyCGkK3IMYff
-        drEJT69iIXhxmt52Pf1vwjLhm
-X-Received: by 2002:a17:906:ce2a:: with SMTP id sd10mr446118ejb.154.1636387155364;
-        Mon, 08 Nov 2021 07:59:15 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJzM+ps60VfZ94gEqS5fzeul9kwGKMKVeKZIAnSvvogw3JjAS/vRJ5dtMKHz5XSx9gQP8MDeNw==
-X-Received: by 2002:a17:906:ce2a:: with SMTP id sd10mr446099ejb.154.1636387155187;
-        Mon, 08 Nov 2021 07:59:15 -0800 (PST)
-Received: from [10.40.1.223] ([81.30.35.201])
-        by smtp.gmail.com with ESMTPSA id r7sm7446410edd.5.2021.11.08.07.59.14
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 08 Nov 2021 07:59:14 -0800 (PST)
-Message-ID: <5413cf06-6058-647a-0bf5-b7ae5cdd793a@redhat.com>
-Date:   Mon, 8 Nov 2021 16:59:14 +0100
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.2.0
-Subject: Re: [PATCH 09/13] power: supply: bq25890: Add bq25890_set_otg_cfg()
- helper
-Content-Language: en-US
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc:     Mark Gross <markgross@kernel.org>,
-        Andy Shevchenko <andy@infradead.org>,
-        Wolfram Sang <wsa@the-dreams.de>,
-        Sebastian Reichel <sre@kernel.org>,
-        MyungJoo Ham <myungjoo.ham@samsung.com>,
-        Chanwoo Choi <cw00.choi@samsung.com>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Yauhen Kharuzhy <jekhor@gmail.com>,
-        Tsuchiya Yuto <kitakar@gmail.com>,
-        Platform Driver <platform-driver-x86@vger.kernel.org>,
-        linux-i2c <linux-i2c@vger.kernel.org>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-efi <linux-efi@vger.kernel.org>
-References: <20211030182813.116672-1-hdegoede@redhat.com>
- <20211030182813.116672-10-hdegoede@redhat.com>
- <CAHp75Vf=ff840YD8_4QJpir_u__Rr_aN_0C-sqQOkt7PboWpww@mail.gmail.com>
-From:   Hans de Goede <hdegoede@redhat.com>
-In-Reply-To: <CAHp75Vf=ff840YD8_4QJpir_u__Rr_aN_0C-sqQOkt7PboWpww@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+        Mon, 8 Nov 2021 11:04:27 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1636387265;
+    s=strato-dkim-0002; d=goldelico.com;
+    h=To:References:Message-Id:Cc:Date:In-Reply-To:From:Subject:Cc:Date:
+    From:Subject:Sender;
+    bh=9gQJ+8te3UTuKnqS6mILMU9387N1gvJoGGc2kbCSpSg=;
+    b=kQxTpR2gkUA0NJfVP+/JA3dsuAnOcRfp60ou2InoBhpk+vi8drLHJvdIrmtVr2qEqs
+    FrkfytFlRZ0vaAie1KQh3f1vLoquSA2+7epVFblqlytpMYlIG2WiWATKOEfs2edlQ+Nz
+    SlqfaVtt/DGt/CE94vbpom8CvJCCYLhN7FmOqUUvetSeYOLf0pN935hG3SyxYCh0hRP0
+    6PzHP+vKuQcnAqsJOpspjQDAS8c5F1A8r3NmlM4iwFpHs0QkeYASanXh8yK2lrsM6Z1M
+    sE/6wOZFgRvKAe+KVGi1Xk0khy5q1J2J+Vetevqrlfy5zjhKyS+HmOTGN0vmgM9uNpH+
+    JjNA==
+Authentication-Results: strato.com;
+    dkim=none
+X-RZG-AUTH: ":JGIXVUS7cutRB/49FwqZ7WcJeFKiMgPgp8VKxflSZ1P34KBj7gpw91N5y2S3gMZ+"
+X-RZG-CLASS-ID: mo00
+Received: from imac.fritz.box
+    by smtp.strato.de (RZmta 47.34.1 DYNA|AUTH)
+    with ESMTPSA id 902c63xA8G12LY8
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (curve X9_62_prime256v1 with 256 ECDH bits, eq. 3072 bits RSA))
+        (Client did not present a certificate);
+    Mon, 8 Nov 2021 17:01:02 +0100 (CET)
+Content-Type: text/plain;
+        charset=utf-8
+Mime-Version: 1.0 (Mac OS X Mail 12.4 \(3445.104.21\))
+Subject: Re: [RFC v4 2/6] mmc: core: allow to match the device tree to apply
+ quirks
+From:   "H. Nikolaus Schaller" <hns@goldelico.com>
+In-Reply-To: <10252914.21crK1JNra@pc-42>
+Date:   Mon, 8 Nov 2021 17:01:01 +0100
+Cc:     Avri Altman <avri.altman@wdc.com>,
+        Shawn Lin <shawn.lin@rock-chips.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Tony Lindgren <tony@atomide.com>,
+        Bean Huo <beanhuo@micron.com>,
+        =?utf-8?Q?Gra=C5=BEvydas_Ignotas?= <notasas@gmail.com>,
+        linux-mmc@vger.kernel.org,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Discussions about the Letux Kernel 
+        <letux-kernel@openphoenux.org>, kernel@pyra-handheld.com
+Content-Transfer-Encoding: quoted-printable
+Message-Id: <8874B3D3-E2D1-4743-B9B6-F2FD3EB4033F@goldelico.com>
+References: <cover.1636103151.git.hns@goldelico.com>
+ <7121F069-56C7-402C-BA82-A922B1A36587@goldelico.com>
+ <CAPDyKFo09xhaWbGgWuPa2=x0zXCfir0VMDhd4ZdSc8rh25nG9A@mail.gmail.com>
+ <10252914.21crK1JNra@pc-42>
+To:     =?utf-8?B?SsOpcsO0bWUgUG91aWxsZXI=?= <jerome.pouiller@silabs.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>
+X-Mailer: Apple Mail (2.3445.104.21)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
 
-On 10/31/21 00:10, Andy Shevchenko wrote:
-> On Sat, Oct 30, 2021 at 9:28 PM Hans de Goede <hdegoede@redhat.com> wrote:
->>
->> Add a bq25890_set_otg_cfg() helper function, this is a preparation
->> patch for adding regulator support.
-> 
-> ...
-> 
->>         switch (bq->usb_event) {
->>         case USB_EVENT_ID:
->>                 /* Enable boost mode */
->> -               ret = bq25890_field_write(bq, F_OTG_CFG, 1);
->> -               if (ret < 0)
->> -                       goto error;
->> +               bq25890_set_otg_cfg(bq, 1);
->>                 break;
->>
->>         case USB_EVENT_NONE:
->>                 /* Disable boost mode */
->> -               ret = bq25890_field_write(bq, F_OTG_CFG, 0);
->> -               if (ret < 0)
->> -                       goto error;
->> -
->> -               power_supply_changed(bq->charger);
->> +               ret = bq25890_set_otg_cfg(bq, 0);
->> +               if (ret == 0)
->> +                       power_supply_changed(bq->charger);
->>                 break;
->>         }
-> 
-> While at it,
-> 
-> default:
->  break;
 
-bq->usb_event is not an enum, so there is no need for this.
+> Am 08.11.2021 um 16:34 schrieb J=C3=A9r=C3=B4me Pouiller =
+<jerome.pouiller@silabs.com>:
+>=20
+> On Monday 8 November 2021 16:00:02 CET Ulf Hansson wrote:
+>> On Sat, 6 Nov 2021 at 15:31, H. Nikolaus Schaller <hns@goldelico.com> =
+wrote:
+>>>=20
+>>> Hi J=C3=A9r=C3=B4me,
+>>>=20
+>>>> Am 05.11.2021 um 15:27 schrieb J=C3=A9r=C3=B4me Pouiller =
+<jerome.pouiller@silabs.com>:
+>>>>=20
+>>>> On Friday 5 November 2021 10:05:47 CET H. Nikolaus Schaller wrote:
+>>>>> From: J=C3=A9r=C3=B4me Pouiller <jerome.pouiller@silabs.com>
+>>>>>=20
+>>>>> MMC subsystem provides a way to apply quirks when a device match =
+some
+>>>>> properties (VID, PID, etc...) Unfortunately, some SDIO devices =
+does not
+>>>>> comply with the SDIO specification and does not provide reliable =
+VID/PID
+>>>>> (eg. Silabs WF200).
+>>>>>=20
+>>>>> So, the drivers for these devices rely on device tree to identify =
+the
+>>>>> device.
+>>>>>=20
+>>>>> This patch allows the MMC to also rely on the device tree to apply =
+a
+>>>>> quirk.
+>>>>>=20
+>>>>> Signed-off-by: J=C3=A9r=C3=B4me Pouiller =
+<jerome.pouiller@silabs.com>
+>=20
+> [...]
+>=20
+>>>>> ---
+>>>>> drivers/mmc/core/card.h   |  3 +++
+>>>>> drivers/mmc/core/quirks.h | 17 +++++++++++++++++
+>>>>> 2 files changed, 20 insertions(+)
+>>>>>=20
+>>>>> +static inline bool mmc_fixup_of_compatible_match(struct mmc_card =
+*card,
+>>>>> +                                                const char *const =
+*compat_list)
+>>=20
+>> After a second thought, I am not sure we really need a list of
+>> compatibles here. The quirks we may want to apply should be specific
+>> per device and most likely not shared among a family of devices, =
+don't
+>> you think?
+>=20
+> Indeed. I dislike to have to declare a list of compatible device (see=20=
 
-Regards,
+> wl1251_compatible_list in patch 5) outside of the fixup list.
+>=20
+> If I have several devices, I prefer to copy-paste a few lines in the=20=
 
-Hans
+> mmc_fixup list (for the WFX driver, I have 4 devices to declare).
 
+Agreed. It makes the macro easier to use.
+
+BR and thanks,
+Nikolaus=
