@@ -2,109 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E98BE447B42
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Nov 2021 08:41:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 08CDC447B44
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Nov 2021 08:42:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236189AbhKHHny (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Nov 2021 02:43:54 -0500
-Received: from mail.kernel.org ([198.145.29.99]:38054 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235686AbhKHHnv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Nov 2021 02:43:51 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B096761075;
-        Mon,  8 Nov 2021 07:41:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1636357267;
-        bh=RVK8iyvJlzFHPZCKRlsINEQUkjxXHKinu7hv/cU6no0=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=bM8tPKMTXtOzLT0n0JcaF3/bbzalw0dSy3V/uc5oZokrGrRNrrnGhV7RdDP/yckuR
-         /mOMdXhPbvwRV39Ha+TLmMZr5y4s5HMBGMxL6utF7UckT/SUoRoZaMCxCaqHuGq5DM
-         1Qjvu+VAA/z8RGhDFGetpnOTbiph1AsYJ5lOAw9/hazTiOLmYN/FCRyrQBYJhKXkZs
-         jcOWUi8v7OOHobJYEj6fSlnRVlkqbP5deoOVHsUwdm3KFD4EYGSkIH1mm+gghpkpYI
-         t+jzr2ik91r/jMqNSCBp/is61wzQKLZ9v+vzY3FnpjUVmudPSn5+HwbTfQzaMg9HAM
-         iHu1v9eWS8G+A==
-Date:   Mon, 8 Nov 2021 07:41:01 +0000
-From:   Mauro Carvalho Chehab <mchehab@kernel.org>
-To:     Hans de Goede <hdegoede@redhat.com>
-Cc:     Tsuchiya Yuto <kitakar@gmail.com>,
-        Patrik Gfeller <patrik.gfeller@gmail.com>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Kaixu Xia <kaixuxia@tencent.com>,
-        Dan Carpenter <dan.carpenter@oracle.com>,
-        Arnd Bergmann <arnd@arndb.de>, linux-media@vger.kernel.org,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: Re: [BUG 5/5] [BUG] media: atomisp: atomisp causes touchscreen to
- stop working on Microsoft Surface 3
-Message-ID: <20211108074101.033af4c5@sal.lan>
-In-Reply-To: <310ace44-93d5-99a3-bb4c-371b0a13462d@redhat.com>
-References: <20211017162337.44860-1-kitakar@gmail.com>
-        <20211017162337.44860-6-kitakar@gmail.com>
-        <103b5438-9f7c-7e89-28b9-29fe11eb818c@redhat.com>
-        <cfad27a4bfdd94417305e1519e2f450a4422844d.camel@gmail.com>
-        <310ace44-93d5-99a3-bb4c-371b0a13462d@redhat.com>
-X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.30; x86_64-redhat-linux-gnu)
+        id S236226AbhKHHpg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Nov 2021 02:45:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32836 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234348AbhKHHpe (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Nov 2021 02:45:34 -0500
+Received: from mail-ot1-x32b.google.com (mail-ot1-x32b.google.com [IPv6:2607:f8b0:4864:20::32b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A19C0C061570;
+        Sun,  7 Nov 2021 23:42:50 -0800 (PST)
+Received: by mail-ot1-x32b.google.com with SMTP id g91-20020a9d12e4000000b0055ae68cfc3dso21473528otg.9;
+        Sun, 07 Nov 2021 23:42:50 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=05x0jjtR7e1YyH6ib8YAN/VFxXqCLvpo8Fsy3l3DsA0=;
+        b=FHKKRtJK/2JDbedijOU1vmc/iO6PhMG4HASb9dglKXKXqkHXZ3AzqzaTMEI6Q8EVv7
+         AmBGyULcMK88QMYHENuZzSo71t5Re3RClsy9muuktD67LvSaNf3Aj8OLuuu6NHjMz6pK
+         XTX17umBekk45oMU6up+VosGsU5ReduopxalQYGmvsYrkWo9sZRdWd3vt2P7aQd/MSdP
+         KrP6VcBukP+kk+17IPCNV60cy9b2kqKc2YHgq4vtb05FsntRyi98Hghi6ItuVXrU5xoz
+         eU8qlLFGA24oYUalTwtuJLPn6/9Yi6ErD4JSOlTFsxrSjQzsiOy7BFNUsM3DwPqdybyT
+         wRsg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=05x0jjtR7e1YyH6ib8YAN/VFxXqCLvpo8Fsy3l3DsA0=;
+        b=M/hyWOAvPudvcApuOaKeWtTFXBfJEHum+kPZaZnUHsm0Dis5QxChRh6xMG63cr9D3F
+         2OdKa65WpT1e7XFvAE4HnGhmVldtl4KnCrLwTFMJtHxYDEsUJTQBAzl7aLZDk4zNdld1
+         oo46hYqZsn1VqgM1oZpI5FKdax07oN7BYedJeSgkMhxV+O/gA1RZfmfggeA3ei0h1uNl
+         DEjB/DvlqICBze7RXdYkHmkqcls1Gnp5WOKHn/IIe+wyOLnlKC0ipTrLSA0F24c1RQ57
+         0qnSRqyPdoKWYxWsmAdlnpPMJ3w2ahgOVcgfR8lx5R4RjDBLyvT6b4lNHCdpsnzrqO5X
+         SqKA==
+X-Gm-Message-State: AOAM532OfW/2n2/pBB6xhVqgqqvtcUjrYn0gsGFnwL7ZRFxoEfmc8hb0
+        UOihXNcz7lXRq03j1lphCFVLvACQMWByavEntMM=
+X-Google-Smtp-Source: ABdhPJy7soPkFTRLUxus9ydblly3rU/fRg5seRtGg/oILnzjDdJoDS7p8JyEZC9vYLPwfCO2XYkqWmo8kZH+EGRPviI=
+X-Received: by 2002:a9d:7617:: with SMTP id k23mr44483931otl.351.1636357369427;
+ Sun, 07 Nov 2021 23:42:49 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+References: <CAHP4M8X1ABEhu8kGtRSJHeqQ_m627hNT_N3Q_GGdcr3W_Rfspw@mail.gmail.com>
+ <CAHp75VcVZ6dDDm-k=Njo-jDq81bL4BTwrtkkAnm24b23qWKB_g@mail.gmail.com>
+In-Reply-To: <CAHp75VcVZ6dDDm-k=Njo-jDq81bL4BTwrtkkAnm24b23qWKB_g@mail.gmail.com>
+From:   Ajay Garg <ajaygargnsit@gmail.com>
+Date:   Mon, 8 Nov 2021 13:12:37 +0530
+Message-ID: <CAHP4M8UK6AYVORHCndpw2ZeRLDN+BMj3enJ-+2SWtbOPSqUe9A@mail.gmail.com>
+Subject: Re: RFC for a new string-copy function, using mixtures of strlcpy and strscpy
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc:     "andy@kernel.org" <andy@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
+        "adobriyan@gmail.com" <adobriyan@gmail.com>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "linux-hardening@vger.kernel.org" <linux-hardening@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Mon, 8 Nov 2021 00:39:38 +0100
-Hans de Goede <hdegoede@redhat.com> escreveu:
+>>
+>> The output is as follows :
+>>
+>> ######################################################
+>> Using [strlcpy] ::
+>>
+>> len = [16]
+>> a = [123456789]
+>>
+>>
+>> Using [strscpy] ::
+>>
+>> len = [-7]
+>> a = [123456789]
+>>
+>
+> My gosh, this is error code that you must check. We do not need more string copy functions.
+>
+>
 
-> Hi,
->=20
-> On 10/21/21 11:52, Tsuchiya Yuto wrote:
-> > Thank you for your comment :-)
-> >=20
-> > First, I need to correct what I said in the previous mail. I later found
-> > that loading only "atomisp" (as well as its dependency,
-> > atomisp_gmin_platform) does not cause this issue.
-> >=20
-> > What causes this issue is rather, loading sensor drivers (as well as its
-> > dependency, atomisp_gmin_platform).
-> >=20
-> > These sensor drivers for surface3 are both not upstream, but I made them
-> > as similar as possible to the upstreamed ones. So, I guess this issue
-> > can still be reproducible on some other devices. =20
->=20
-> I've run some test on my own surface3 and the problem is the writing
-> of 0x62 (which becomes just 0x02) to the 0x57 register of the PMIC,
-> writing 0x00 to that after loading the sensor driver makes things work
-> again.
->=20
-> I have not had time to investigate this further.
->=20
-> I used media-staging + your sensor drivers from:
-> https://github.com/kitakar5525/surface3-atomisp-cameras.git
->=20
-> Which was enough to figure this out, but I've not actually gotten
-> either of the cameras working :|  I get:
->=20
-> [user@fedora nvt]$ ./atomisp-test.sh=20
-> p0: OPEN video device `/dev/video2'
+Hmm, having the additional function would make things a lot easier.
 
-After the patch that moved the output preview to be the first one,
-you should probably use /dev/video0 here:
+For example, in file fs/kernfs/dir.c, there are methods like
+"kernfs_name_locked", "kernfs_path_from_node_locked" which simply
+consume the return-value without any checks.
+
+All the above functions have a simple motive : copy as much bytes as
+possible in the destination buffer, and then consume/return the number
+of bytes actually copied (minus the null-terminator byte of course).
+
+If checks are to be put in-place, it would be too much code/churn,
+adding if checks all over the place.
+If, instead we do a simple replace of "strlcpy" with "strlscpy" at
+these places, we would be good to go (while *really* meeting the
+requirements of these clients at the same time).
 
 
-$ v4l2-ctl -D -d /dev/video0|grep Name
-	Name             : ATOMISP ISP PREVIEW output
-
-$ v4l2-ctl -D -d /dev/video2|grep Name
-	Name             : ATOMISP ISP VIEWFINDER output
-
-
-On Asus T101HA, I'm also getting this if I use /dev/video2 with nvt:
-
-	ioctl(3, _IOC(_IOC_WRITE, 0x76, 0xe0, 0x1f0), 0x7ffcf08fe030) =3D -1 EINVA=
-L (Argumento inv=C3=A1lido)
-	p0: ./v4l2n: ATOMISP_IOC_S_PARAMETERS failed on fd 3: Invalid argument (22)
-	p0: CLOSED video device
-
-Regards,
-Mauro
+Anyhow, may be we can wait for some more opinions.
