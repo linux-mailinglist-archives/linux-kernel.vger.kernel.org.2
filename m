@@ -2,87 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4DFD4447D3C
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Nov 2021 11:01:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4FB8A447D38
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Nov 2021 11:01:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238556AbhKHKE1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Nov 2021 05:04:27 -0500
-Received: from smtp-out1.suse.de ([195.135.220.28]:60350 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238568AbhKHKES (ORCPT
+        id S238523AbhKHKEI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Nov 2021 05:04:08 -0500
+Received: from devianza.investici.org ([198.167.222.108]:38319 "EHLO
+        devianza.investici.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238542AbhKHKEB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Nov 2021 05:04:18 -0500
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out1.suse.de (Postfix) with ESMTP id 33A1E21AFC;
-        Mon,  8 Nov 2021 10:01:33 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1636365693; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=5UZuKAmHIrwVcGr41lKYOAKA0vOHUe0ZexZ00mvExQU=;
-        b=D3eL8PObhxrU8IE4pU3nDbNQgS4xDX279ndrDe7NVbcOlV4CWeQKYLEcilP1qhzGBDs3uI
-        HmnxAMflpuaiiXUcslsjCPMak5CL4TWeHpLVKyz19GO9CWWroehg4VuHCTyaaSS/gDVgxR
-        wrpGSrPqJ5HNIFgpWfuGeQ6v/SzYcyk=
-Received: from suse.cz (unknown [10.100.224.162])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by relay2.suse.de (Postfix) with ESMTPS id 11789A3B8B;
-        Mon,  8 Nov 2021 10:01:33 +0000 (UTC)
-Date:   Mon, 8 Nov 2021 11:01:32 +0100
-From:   Petr Mladek <pmladek@suse.com>
-To:     Christophe Leroy <christophe.leroy@csgroup.eu>
-Cc:     Josh Poimboeuf <jpoimboe@redhat.com>,
-        Jiri Kosina <jikos@kernel.org>,
-        Miroslav Benes <mbenes@suse.cz>,
-        Joe Lawrence <joe.lawrence@redhat.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        "Naveen N . Rao" <naveen.n.rao@linux.vnet.ibm.com>,
-        linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        live-patching@vger.kernel.org
-Subject: Re: [PATCH v1 5/5] powerpc/ftrace: Add support for livepatch to PPC32
-Message-ID: <YYj1fNkYAqr/H/I2@alley>
-References: <cover.1635423081.git.christophe.leroy@csgroup.eu>
- <b73d053c145245499511c4827890c9411c8b3a5a.1635423081.git.christophe.leroy@csgroup.eu>
+        Mon, 8 Nov 2021 05:04:01 -0500
+Received: from mx2.investici.org (unknown [127.0.0.1])
+        by devianza.investici.org (Postfix) with ESMTP id 4Hnmpc4znpz6vKk;
+        Mon,  8 Nov 2021 10:01:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=insiberia.net;
+        s=stigmate; t=1636365672;
+        bh=8u/0WuCSB65aowNOnReZL6b8hQXUHeDpmrzDc2JJXjI=;
+        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
+        b=m3uwy+PeMGmTSLyybhYV2cTAV8ooyFfW4UecOWKZoWRrAAIVe6sLe54t2iPaEPpZG
+         PMfSTUVS9i0d5zt2iu7aWTxiR9FpzKonNri3B9yKh2011ohW6H0jAVFefniG6IvPfI
+         rBxJIkMIHPxpHF/DUeJDh4MjDYPCQxgSlRRLqHq4=
+Received: from [198.167.222.108] (mx2.investici.org [198.167.222.108]) (Authenticated sender: stefano@distruzione.org) by localhost (Postfix) with ESMTPSA id 4Hnmpc3nv1z6vKg;
+        Mon,  8 Nov 2021 10:01:12 +0000 (UTC)
+Message-ID: <6b30aaf57cec5b6a72cff1f32d4fe24e47e9754b.camel@insiberia.net>
+Subject: Re: [PATCH] Allow selecting amd-pstate without CPU_SUP_INTEL
+From:   Stefano Picascia <stefano.picascia@insiberia.net>
+To:     Huang Rui <ray.huang@amd.com>
+Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Date:   Mon, 08 Nov 2021 10:01:51 +0000
+In-Reply-To: <YYjqNaND8hLGsoXg@hr-amd>
+References: <9932762ef184fe132acf176081f8893800c83800.camel@insiberia.net>
+         <YYjqNaND8hLGsoXg@hr-amd>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.40.4 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <b73d053c145245499511c4827890c9411c8b3a5a.1635423081.git.christophe.leroy@csgroup.eu>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu 2021-10-28 14:24:05, Christophe Leroy wrote:
-> This is heavily copied from PPC64. Not much to say about it.
+On Mon, 2021-11-08 at 17:13 +0800, Huang Rui wrote:
+> On Sat, Nov 06, 2021 at 07:55:29PM +0800, Stefano Picascia wrote:
+> > Currently, even if selected, amd-pstate is not enabled unless
+> > CPU_SUP_INTEL is also selected, due to ACPI_CPPC_LIB depending on
+> > SCHED_MC_PRIO, which in turn depends on CPU_SUP_INTEL
 > 
-> Livepatch sample modules all work.
-> 
-> Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
-> ---
-> diff --git a/arch/powerpc/include/asm/livepatch.h b/arch/powerpc/include/asm/livepatch.h
-> index 4fe018cc207b..daf24d837241 100644
-> --- a/arch/powerpc/include/asm/livepatch.h
-> +++ b/arch/powerpc/include/asm/livepatch.h
-> @@ -23,8 +23,8 @@ static inline void klp_arch_set_pc(struct ftrace_regs *fregs, unsigned long ip)
->  static inline unsigned long klp_get_ftrace_location(unsigned long faddr)
->  {
->  	/*
-> -	 * Live patch works only with -mprofile-kernel on PPC. In this case,
-> -	 * the ftrace location is always within the first 16 bytes.
-> +	 * Live patch works on PPC32 and only with -mprofile-kernel on PPC64. In
-> +	 * both cases, the ftrace location is always within the first 16 bytes.
+> Actually, amd-pstate driver doesn't depend on SCHED_MC_PRIO. 
 
-Nit: I had some problems to parse it. I wonder if the following is
-better:
+amd-pstate doesn't depend on SCHED_MC_PRIO, but ACPI_CPPC_LIB is only
+selected when SCHED_MC_PRIO is selected. I guess the issue can be fixed
+in a better way, but currently if one compiles the kernel with
+CPU_SUP_AMD, but without CPU_SUP_INTEL, ends up with a non functional
+amd-pstate. 
 
-	 * Live patch works on PPC32 out of box and on PPC64 only with
-	 * -mprofile-kernel. In both cases, the ftrace location is always
-	 * within the first 16 bytes.
+Not a problem for distro kernels I guess, but I was puzzled as I wasn't
+getting amd-pstate even with a supported processor.
 
+Regards!
 
->  	 */
->  	return ftrace_location_range(faddr, faddr + 16);
->  }
-
-Best Regards,
-Petr
