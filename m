@@ -2,144 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C2EE447E14
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Nov 2021 11:37:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AF804447E16
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Nov 2021 11:37:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238304AbhKHKjr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Nov 2021 05:39:47 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44222 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238180AbhKHKjo (ORCPT
+        id S238319AbhKHKj5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Nov 2021 05:39:57 -0500
+Received: from smtp-out2.suse.de ([195.135.220.29]:39366 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238350AbhKHKjy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Nov 2021 05:39:44 -0500
-Received: from mail.kapsi.fi (mail.kapsi.fi [IPv6:2001:67c:1be8::25])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5AA6EC061570;
-        Mon,  8 Nov 2021 02:37:00 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=kapsi.fi;
-         s=20161220; h=Content-Transfer-Encoding:Content-Type:In-Reply-To:
-        MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender:Reply-To:
-        Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
-        Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:
-        List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=i/cmFLJWXjRGackmQbyW+VCsyR/4I0WIJ6EqrdSA6JY=; b=TgVDqLVO+s5RobZKj0e0tc5fNy
-        sQ7s4SFC8WtG6elM+NAEv4mjxfpoy7JVFvonGPrL7zQr/ez3Zy+k/cZUaqJiRecRCcNi2P7VbkE8F
-        ka3tcQvpeAovYzNEd+HkVHsCfpaMi0A8MmEWp93+1bfLdOoI1b6w4GoA214JujO2mNRUBzstQdeGa
-        bLpBKQN1PyJKDS+X8rDt5TmKrMO9LNSjG+242s85JwTjTX7Vrv0uE+3eFdT/Lgf1H4RdXtzWOLNPt
-        n83LDUWPlVc+rTMI2qPSbTvt1fc9jEFAk7Sd+yh6crFCPnwJUgWt/1tb+cKxoGcaWvVttLk2IRflv
-        xP/M3HYw==;
-Received: from dsl-hkibng22-54f986-236.dhcp.inet.fi ([84.249.134.236] helo=[192.168.1.10])
-        by mail.kapsi.fi with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.89)
-        (envelope-from <cyndis@kapsi.fi>)
-        id 1mk21D-0008PS-Od; Mon, 08 Nov 2021 12:36:51 +0200
-Subject: Re: [PATCH v2 0/8] Host1x context isolation support
-To:     Mikko Perttunen <mperttunen@nvidia.com>, thierry.reding@gmail.com,
-        jonathanh@nvidia.com, joro@8bytes.org, will@kernel.org,
-        robh+dt@kernel.org, robin.murphy@arm.com
-Cc:     linux-tegra@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-References: <20210916143302.2024933-1-mperttunen@nvidia.com>
-From:   Mikko Perttunen <cyndis@kapsi.fi>
-Message-ID: <10de82cf-27a5-8890-93a5-0e58c74e5bcc@kapsi.fi>
-Date:   Mon, 8 Nov 2021 12:36:51 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
+        Mon, 8 Nov 2021 05:39:54 -0500
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out2.suse.de (Postfix) with ESMTP id 6E4881FD71;
+        Mon,  8 Nov 2021 10:37:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1636367829; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=YqyhzYsEQEeLpyJ9JtK/DYh0y4NiY5xSLZjut5gPAmE=;
+        b=SFc3b82e4uAduqji1+YkWeOCs6uI+vj7B1+RSuHP7N40XwkYt64Gdvoxw8rNXvd2/3z5ZO
+        YZJnM/jmYtEInKgqRhiRCA/Pgdq7SQUkNk4dd5NlOCyGOjLR5RWDsJzXHLTnvPE2poyd8A
+        Md28myxajpexC1icn1Io8isy8xtjEw0=
+Received: from suse.cz (unknown [10.100.201.86])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by relay2.suse.de (Postfix) with ESMTPS id 26536A3B81;
+        Mon,  8 Nov 2021 10:37:09 +0000 (UTC)
+Date:   Mon, 8 Nov 2021 11:37:08 +0100
+From:   Michal Hocko <mhocko@suse.com>
+To:     Alexey Makhalov <amakhalov@vmware.com>
+Cc:     linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
+        David Hildenbrand <david@redhat.com>,
+        Oscar Salvador <osalvador@suse.de>,
+        Dennis Zhou <dennis@kernel.org>, Tejun Heo <tj@kernel.org>,
+        Christoph Lameter <cl@linux.com>, linux-kernel@vger.kernel.org,
+        stable@vger.kernel.org
+Subject: Re: [PATCH v2] mm: fix panic in __alloc_pages
+Message-ID: <YYj91Mkt4m8ySIWt@dhcp22.suse.cz>
+References: <86BDA7AC-3E7A-4779-9388-9DF7BA7230AA@vmware.com>
+ <20211108063650.19435-1-amakhalov@vmware.com>
 MIME-Version: 1.0
-In-Reply-To: <20210916143302.2024933-1-mperttunen@nvidia.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-SA-Exim-Connect-IP: 84.249.134.236
-X-SA-Exim-Mail-From: cyndis@kapsi.fi
-X-SA-Exim-Scanned: No (on mail.kapsi.fi); SAEximRunCond expanded to false
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211108063650.19435-1-amakhalov@vmware.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/16/21 5:32 PM, Mikko Perttunen wrote:
-> Hi all,
+On Sun 07-11-21 22:36:50, Alexey Makhalov wrote:
+> There is a kernel panic caused by pcpu_alloc_pages() passing
+> offlined and uninitialized node to alloc_pages_node() leading
+> to panic by NULL dereferencing uninitialized NODE_DATA(nid).
 > 
-> ***
-> New in v2:
+>  CPU2 has been hot-added
+>  BUG: unable to handle page fault for address: 0000000000001608
+>  #PF: supervisor read access in kernel mode
+>  #PF: error_code(0x0000) - not-present page
+>  PGD 0 P4D 0
+>  Oops: 0000 [#1] SMP PTI
+>  CPU: 0 PID: 1 Comm: systemd Tainted: G            E     5.15.0-rc7+ #11
+>  Hardware name: VMware, Inc. VMware7,1/440BX Desktop Reference Platform, BIOS VMW
 > 
-> Added support for Tegra194
-> Use standard iommu-map property instead of custom mechanism
-> ***
+>  RIP: 0010:__alloc_pages+0x127/0x290
+>  Code: 4c 89 f0 5b 41 5c 41 5d 41 5e 41 5f 5d c3 44 89 e0 48 8b 55 b8 c1 e8 0c 83 e0 01 88 45 d0 4c 89 c8 48 85 d2 0f 85 1a 01 00 00 <45> 3b 41 08 0f 82 10 01 00 00 48 89 45 c0 48 8b 00 44 89 e2 81 e2
+>  RSP: 0018:ffffc900006f3bc8 EFLAGS: 00010246
+>  RAX: 0000000000001600 RBX: 0000000000000000 RCX: 0000000000000000
+>  RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000000000000cc2
+>  RBP: ffffc900006f3c18 R08: 0000000000000001 R09: 0000000000001600
+>  R10: ffffc900006f3a40 R11: ffff88813c9fffe8 R12: 0000000000000cc2
+>  R13: 0000000000000000 R14: 0000000000000001 R15: 0000000000000cc2
+>  FS:  00007f27ead70500(0000) GS:ffff88807ce00000(0000) knlGS:0000000000000000
+>  CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+>  CR2: 0000000000001608 CR3: 000000000582c003 CR4: 00000000001706b0
+>  Call Trace:
+>   pcpu_alloc_pages.constprop.0+0xe4/0x1c0
+>   pcpu_populate_chunk+0x33/0xb0
+>   pcpu_alloc+0x4d3/0x6f0
+>   __alloc_percpu_gfp+0xd/0x10
+>   alloc_mem_cgroup_per_node_info+0x54/0xb0
+>   mem_cgroup_alloc+0xed/0x2f0
+>   mem_cgroup_css_alloc+0x33/0x2f0
+>   css_create+0x3a/0x1f0
+>   cgroup_apply_control_enable+0x12b/0x150
+>   cgroup_mkdir+0xdd/0x110
+>   kernfs_iop_mkdir+0x4f/0x80
+>   vfs_mkdir+0x178/0x230
+>   do_mkdirat+0xfd/0x120
+>   __x64_sys_mkdir+0x47/0x70
+>   ? syscall_exit_to_user_mode+0x21/0x50
+>   do_syscall_64+0x43/0x90
+>   entry_SYSCALL_64_after_hwframe+0x44/0xae
 > 
-> this series adds support for Host1x 'context isolation'. Since
-> when programming engines through Host1x, userspace can program in
-> any addresses it wants, we need some way to isolate the engines'
-> memory spaces. Traditionally this has either been done imperfectly
-> with a single shared IOMMU domain, or by copying and verifying the
-> programming command stream at submit time (Host1x firewall).
+> Panic can be easily reproduced by disabling udev rule for
+> automatic onlining hot added CPU followed by CPU with
+> memoryless node (NUMA node with CPU only) hot add.
 > 
-> Since Tegra186 there is a privileged (only usable by kernel)
-> Host1x opcode that allows setting the stream ID sent by the engine
-> to the SMMU. So, by allocating a number of context banks and stream
-> IDs for this purpose, and using this opcode at the beginning of
-> each job, we can implement isolation. Due to the limited number of
-> context banks only each process gets its own context, and not
-> each channel.
+> Hot adding CPU and memoryless node does not bring the node
+> to online state. Memoryless node will be onlined only during
+> the onlining its CPU.
 > 
-> This feature also allows sharing engines among multiple VMs when
-> used with Host1x's hardware virtualization support - up to 8 VMs
-> can be configured with a subset of allowed stream IDs, enforced
-> at hardware level.
+> Node can be in one of the following states:
+> 1. not present.(nid == NUMA_NO_NODE)
+> 2. present, but offline (nid > NUMA_NO_NODE, node_online(nid) == 0,
+> 				NODE_DATA(nid) == NULL)
+> 3. present and online (nid > NUMA_NO_NODE, node_online(nid) > 0,
+> 				NODE_DATA(nid) != NULL)
 > 
-> To implement this, this series adds a new host1x context bus, which
-> will contain the 'struct device's corresponding to each context
-> bank / stream ID, changes to device tree and SMMU code to allow
-> registering the devices and using the bus, as well as the Host1x
-> stream ID programming code and support in TegraDRM.
-> 
-> Device tree bindings are not updated yet pending consensus that the
-> proposed changes make sense.
-> 
-> Thanks,
-> Mikko
-> 
-> Mikko Perttunen (8):
->    gpu: host1x: Add context bus
->    gpu: host1x: Add context device management code
->    gpu: host1x: Program context stream ID on submission
->    iommu/arm-smmu: Attach to host1x context device bus
->    arm64: tegra: Add Host1x context stream IDs on Tegra186+
->    drm/tegra: falcon: Set DMACTX field on DMA transactions
->    drm/tegra: vic: Implement get_streamid_offset
->    drm/tegra: Support context isolation
-> 
->   arch/arm64/boot/dts/nvidia/tegra186.dtsi  |  12 ++
->   arch/arm64/boot/dts/nvidia/tegra194.dtsi  |  12 ++
->   drivers/gpu/Makefile                      |   3 +-
->   drivers/gpu/drm/tegra/drm.h               |   2 +
->   drivers/gpu/drm/tegra/falcon.c            |   8 +
->   drivers/gpu/drm/tegra/falcon.h            |   1 +
->   drivers/gpu/drm/tegra/submit.c            |  13 ++
->   drivers/gpu/drm/tegra/uapi.c              |  34 ++++-
->   drivers/gpu/drm/tegra/vic.c               |  38 +++++
->   drivers/gpu/host1x/Kconfig                |   5 +
->   drivers/gpu/host1x/Makefile               |   2 +
->   drivers/gpu/host1x/context.c              | 174 ++++++++++++++++++++++
->   drivers/gpu/host1x/context.h              |  27 ++++
->   drivers/gpu/host1x/context_bus.c          |  31 ++++
->   drivers/gpu/host1x/dev.c                  |  12 +-
->   drivers/gpu/host1x/dev.h                  |   2 +
->   drivers/gpu/host1x/hw/channel_hw.c        |  52 ++++++-
->   drivers/gpu/host1x/hw/host1x06_hardware.h |  10 ++
->   drivers/gpu/host1x/hw/host1x07_hardware.h |  10 ++
->   drivers/iommu/arm/arm-smmu/arm-smmu.c     |  13 ++
->   include/linux/host1x.h                    |  21 +++
->   include/linux/host1x_context_bus.h        |  15 ++
->   22 files changed, 488 insertions(+), 9 deletions(-)
->   create mode 100644 drivers/gpu/host1x/context.c
->   create mode 100644 drivers/gpu/host1x/context.h
->   create mode 100644 drivers/gpu/host1x/context_bus.c
->   create mode 100644 include/linux/host1x_context_bus.h
-> 
+> Percpu code is doing allocations for all possible CPUs. The
+> issue happens when it serves hot added but not yet onlined
+> CPU when its node is in 2nd state. This node is not ready
+> to use, fallback to node_mem_id().
 
-IOMMU/DT folks, any thoughts about this approach? The patches that are 
-of interest outside of Host1x/TegraDRM specifics are patches 1, 2, 4, and 5.
+I do agree that cpu_to_mem usage is better here. But I still think this
+is papering over a deeper problem. We should never allow cpu_to_mem to
+return an invalid numa node.
 
-Thanks,
-Mikko
+-- 
+Michal Hocko
+SUSE Labs
