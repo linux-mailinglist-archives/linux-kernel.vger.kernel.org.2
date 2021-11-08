@@ -2,153 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F89644810B
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Nov 2021 15:12:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6C9F044810F
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Nov 2021 15:13:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239021AbhKHOPV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Nov 2021 09:15:21 -0500
-Received: from foss.arm.com ([217.140.110.172]:50700 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238977AbhKHOPU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Nov 2021 09:15:20 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 5B7B9D6E;
-        Mon,  8 Nov 2021 06:12:35 -0800 (PST)
-Received: from [10.57.27.158] (unknown [10.57.27.158])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 57B173F718;
-        Mon,  8 Nov 2021 06:12:31 -0800 (PST)
-Subject: Re: [PATCH v3 4/5] cpufreq: qcom-cpufreq-hw: Use new thermal pressure
- update function
-To:     Thara Gopinath <thara.gopinath@linaro.org>
-Cc:     linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-arm-msm@vger.kernel.org, sudeep.holla@arm.com,
-        will@kernel.org, catalin.marinas@arm.com, linux@armlinux.org.uk,
-        gregkh@linuxfoundation.org, rafael@kernel.org,
-        viresh.kumar@linaro.org, amitk@kernel.org,
-        daniel.lezcano@linaro.org, amit.kachhap@gmail.com,
-        bjorn.andersson@linaro.org, agross@kernel.org,
-        Steev Klimaszewski <steev@kali.org>
-References: <20211103161020.26714-1-lukasz.luba@arm.com>
- <20211103161020.26714-5-lukasz.luba@arm.com>
- <c4a2618f-71ee-b688-6268-08256a8edf10@linaro.org>
-From:   Lukasz Luba <lukasz.luba@arm.com>
-Message-ID: <02468805-f626-1f61-7f7f-73ed7dfad034@arm.com>
-Date:   Mon, 8 Nov 2021 14:12:29 +0000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.9.0
+        id S239094AbhKHOQS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Nov 2021 09:16:18 -0500
+Received: from mail-vk1-f173.google.com ([209.85.221.173]:33689 "EHLO
+        mail-vk1-f173.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234532AbhKHOQQ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Nov 2021 09:16:16 -0500
+Received: by mail-vk1-f173.google.com with SMTP id d130so8289594vke.0;
+        Mon, 08 Nov 2021 06:13:32 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=l47DyX7zT07Ftsepq+P26ZkT5gnhRsZgVIxOMImJuls=;
+        b=1D/YMS5J9wFckgE4pyemTZX7npsBbLLGByoX5AIHlCzcfN5VERfw/ORKFWCQQVKsIT
+         aFxb/IAbonJcjNJH71agikUOrlfLWxy4JYm/cs39x4SkbrSzYAolDGnM5sbWxG+nawXw
+         Ic92Z+3L4fpsXKzPAuEnWvsvXcA3UjTcN+H/FJL1iLnCJHqzQ07H3n0cSTgX/5kCQzy0
+         m++imdr6IlSpCEHPpxbUW0ZMIou9FidTXIxToDkEV23aSruJlg+W9nAazS+yPJjkjPnb
+         fUrpYgTp5kBU9aea4SNAIDOm9WmZ0Dvdfm6CUjuUIGnjL276an98fkNv6OjfwBeCds3T
+         BDXQ==
+X-Gm-Message-State: AOAM531pfZ+fHRrVP3h9t3EtSjEFdiY0ccMb5qZlGL0CTgK1uk15Totz
+        j26K2UNBlmoBTUCNV9mMiixrI57Lc5dYrDzX
+X-Google-Smtp-Source: ABdhPJyivZeljKXDxJCQtIxyZYyGnsHP69Ogaoz04J3MilG4pXl4Mvo2hy4SD1N+g5lAo6G0Z6XIYw==
+X-Received: by 2002:a05:6122:2015:: with SMTP id l21mr291031vkd.16.1636380811701;
+        Mon, 08 Nov 2021 06:13:31 -0800 (PST)
+Received: from mail-vk1-f179.google.com (mail-vk1-f179.google.com. [209.85.221.179])
+        by smtp.gmail.com with ESMTPSA id o16sm3254094vss.29.2021.11.08.06.13.31
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 08 Nov 2021 06:13:31 -0800 (PST)
+Received: by mail-vk1-f179.google.com with SMTP id d130so8289571vke.0;
+        Mon, 08 Nov 2021 06:13:31 -0800 (PST)
+X-Received: by 2002:a05:6122:50e:: with SMTP id x14mr22172276vko.7.1636380811049;
+ Mon, 08 Nov 2021 06:13:31 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <c4a2618f-71ee-b688-6268-08256a8edf10@linaro.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+References: <20211029124437.20721-1-prabhakar.mahadev-lad.rj@bp.renesas.com> <20211029124437.20721-5-prabhakar.mahadev-lad.rj@bp.renesas.com>
+In-Reply-To: <20211029124437.20721-5-prabhakar.mahadev-lad.rj@bp.renesas.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Mon, 8 Nov 2021 15:13:20 +0100
+X-Gmail-Original-Message-ID: <CAMuHMdVu49AC0nc0hgV=HsR8qEM0pQQuo8T-RRCwwTLvXgO2HQ@mail.gmail.com>
+Message-ID: <CAMuHMdVu49AC0nc0hgV=HsR8qEM0pQQuo8T-RRCwwTLvXgO2HQ@mail.gmail.com>
+Subject: Re: [PATCH v2 4/5] pinctrl: renesas: pinctrl-rzg2l: Rename PIN_CFG_*
+ macros to match HW manual
+To:     Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+Cc:     Linus Walleij <linus.walleij@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
+        Prabhakar <prabhakar.csengg@gmail.com>,
+        Biju Das <biju.das.jz@bp.renesas.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Thara,
+On Fri, Oct 29, 2021 at 2:44 PM Lad Prabhakar
+<prabhakar.mahadev-lad.rj@bp.renesas.com> wrote:
+> Rename the below macros to match the HW manual (Rev.1.00):
+> PIN_CFG_IOLH_SD0 -> PIN_CFG_IO_VMC_SD0
+> PIN_CFG_IOLH_SD1 -> PIN_CFG_IO_VMC_SD1
+> PIN_CFG_IOLH_QSPI -> PIN_CFG_IO_VMC_QSPI
+> PIN_CFG_IOLH_ETH0 -> PIN_CFG_IO_VMC_ETH0
+> PIN_CFG_IOLH_ETH1 -> PIN_CFG_IO_VMC_ETH1
+>
+> Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+> Reviewed-by: Biju Das <biju.das.jz@bp.renesas.com>
 
-+CC Steev, who discovered this issue with boost
-frequency
+Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
+i.e. will queue in renesas-pinctrl-for-v5.17.
 
-On 11/5/21 7:12 PM, Thara Gopinath wrote:
-> Hi Lukasz,
-> 
-> 
-> On 11/3/21 12:10 PM, Lukasz Luba wrote:
->> Thermal pressure provides a new API, which allows to use CPU frequency
->> as an argument. That removes the need of local conversion to capacity.
->> Use this new API and remove old local conversion code.
->>
->> Signed-off-by: Lukasz Luba <lukasz.luba@arm.com>
->> ---
->>   drivers/cpufreq/qcom-cpufreq-hw.c | 15 +++++----------
->>   1 file changed, 5 insertions(+), 10 deletions(-)
->>
->> diff --git a/drivers/cpufreq/qcom-cpufreq-hw.c 
->> b/drivers/cpufreq/qcom-cpufreq-hw.c
->> index 0138b2ec406d..425f351450ad 100644
->> --- a/drivers/cpufreq/qcom-cpufreq-hw.c
->> +++ b/drivers/cpufreq/qcom-cpufreq-hw.c
->> @@ -275,10 +275,10 @@ static unsigned int 
->> qcom_lmh_get_throttle_freq(struct qcom_cpufreq_data *data)
->>   static void qcom_lmh_dcvs_notify(struct qcom_cpufreq_data *data)
->>   {
->> -    unsigned long max_capacity, capacity, freq_hz, throttled_freq;
->>       struct cpufreq_policy *policy = data->policy;
->>       int cpu = cpumask_first(policy->cpus);
->>       struct device *dev = get_cpu_device(cpu);
->> +    unsigned long freq_hz, throttled_freq;
->>       struct dev_pm_opp *opp;
->>       unsigned int freq;
->> @@ -295,17 +295,12 @@ static void qcom_lmh_dcvs_notify(struct 
->> qcom_cpufreq_data *data)
->>       throttled_freq = freq_hz / HZ_PER_KHZ;
->> -    /* Update thermal pressure */
->> -
->> -    max_capacity = arch_scale_cpu_capacity(cpu);
->> -    capacity = mult_frac(max_capacity, throttled_freq, 
->> policy->cpuinfo.max_freq);
->> -
->>       /* Don't pass boost capacity to scheduler */
->> -    if (capacity > max_capacity)
->> -        capacity = max_capacity;
-> 
-> So, I think this should go into the common 
-> topology_update_thermal_pressure in lieu of
-> 
-> +    if (WARN_ON(max_freq < capped_freq))
-> +        return;
-> 
-> This will fix the issue Steev Klimaszewski has been reporting
-> https://lore.kernel.org/linux-arm-kernel/3cba148a-7077-7b6b-f131-dc65045aa348@arm.com/ 
-> 
-> 
-> 
+Gr{oetje,eeting}s,
 
-Well, I think the issue is broader. Look at the code which
-calculate this 'capacity'. It's just a multiplication & division:
+                        Geert
 
-max_capacity = arch_scale_cpu_capacity(cpu); // =1024 in our case
-capacity = mult_frac(max_capacity, throttled_freq,
-		policy->cpuinfo.max_freq);
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
-In the reported by Steev output from sysfs cpufreq we know
-that the value of 'policy->cpuinfo.max_freq' is:
-/sys/devices/system/cpu/cpu5/cpufreq/cpuinfo_max_freq:2956800
-
-so when we put the values to the equation we get:
-capacity = 1024 * 2956800 / 2956800; // =1024
-The 'capacity' will be always <= 1024 and this check won't
-be triggered:
-
-/* Don't pass boost capacity to scheduler */
-if (capacity > max_capacity)
-	capacity = max_capacity;
-
-
-IIUC you original code, you don't want to have this boost
-frequency to be treated as 1024 capacity. The reason is because
-the whole capacity machinery in arch_topology.c is calculated based
-on max freq value = 2841600,
-so the max capacity 1024 would be pinned to that frequency
-(according to Steeve's log:
-[   22.552273] THERMAL_PRESSURE: max_freq(2841) < capped_freq(2956) for 
-CPUs [4-7] )
-
-
-Having all this in mind, the multiplication and division in your
-original code should be done:
-
-capacity = 1024 * 2956800 / 2841600; // = 1065
-
-then clamped to 1024 value.
-
-My change just unveiled this division issue.
-
-With that in mind, I tend to agree that I should have not
-rely on passed boost freq value and try to apply your suggestion check.
-Let me experiment with that...
-
-Regards,
-Lukasz
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
