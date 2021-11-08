@@ -2,180 +2,246 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 08829449A86
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Nov 2021 18:10:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 48242449A88
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Nov 2021 18:10:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241440AbhKHRMw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Nov 2021 12:12:52 -0500
-Received: from out1-smtp.messagingengine.com ([66.111.4.25]:43653 "EHLO
+        id S241449AbhKHRMx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Nov 2021 12:12:53 -0500
+Received: from out1-smtp.messagingengine.com ([66.111.4.25]:40757 "EHLO
         out1-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232922AbhKHRMv (ORCPT
+        by vger.kernel.org with ESMTP id S236413AbhKHRMv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 8 Nov 2021 12:12:51 -0500
-Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
-        by mailout.nyi.internal (Postfix) with ESMTP id CACBA5C01B0;
-        Mon,  8 Nov 2021 12:09:58 -0500 (EST)
+Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
+        by mailout.nyi.internal (Postfix) with ESMTP id B20ED5C01A8;
+        Mon,  8 Nov 2021 12:10:00 -0500 (EST)
 Received: from mailfrontend1 ([10.202.2.162])
-  by compute4.internal (MEProxy); Mon, 08 Nov 2021 12:09:58 -0500
+  by compute6.internal (MEProxy); Mon, 08 Nov 2021 12:10:00 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=svenpeter.dev;
-         h=from:to:cc:subject:date:message-id:mime-version
-        :content-transfer-encoding; s=fm2; bh=Ac01M78HVVhymN796EnmiJqYFD
-        Y+9Lkga4k+OMsqtcI=; b=QQVqrjxJksTewDwfJheHFr7xtjwamMCBS0l65m8gsB
-        2lGzelknadwD0QORItBLsASN5QEeOThV7YPupyo5nZ5Q+AFL0jVwwpE7XkJKNu+w
-        fG5LvdZdg7SsgRhx3aadMMmvKfp8YmqD4s2IEmDb2VMXi9AeM4Mi0ML3SJJ7SkYX
-        QXVO3gmb4Zr5xWxZxRKITVKQbWYwgdLJzH3HNm5qrvPZynD+X5G1eqj1VGlAznEu
-        R7ypo2EGed15YoHtgUpT10r+hyqpcBZWiBBDJQGSb+9IChotof00tgCmhSEkP2zo
-        AowVQzQO7mcZ+JUCnDsN/ZV2YD4hhK4aoPDrCxsKpdlA==
+         h=from:to:cc:subject:date:message-id:in-reply-to:references
+        :mime-version:content-transfer-encoding; s=fm2; bh=MU0pudiomOBk1
+        BhCOEiNgrv+VzG0+79jlfAXlUbLYZo=; b=bBkFbRDq4FysP7uICMfwI0w0c6EIO
+        +WnwaUzkQtM6ie6YRZMqS1lPGfYD5dORjkqYXOcMTQ89Ih/jSDDbQOQb2RzUUZR9
+        ol06DJLLpmExm76gfNBRYWvchFZ1QFfLDpNwlyNChZ3O7sowQR316Jx0/GNKOyNH
+        /wLEHun4CdhPaV0WUCTJgsUAYqXvEGLO5exW45JrJ11+Pz1OjTq/DmFY1nfK2Pk7
+        9ALYTlIuG3Faa9oXfyMocU5pEhdoQ0QHF1ZqmhjdkrCYM9JjUBvZhnKOCU+Uba+p
+        T6W3pj2Z9NLj8gKHjmg8b15lq7A+MUd74Xs23mnXtOGyAPUgmKxogw6cg==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
         messagingengine.com; h=cc:content-transfer-encoding:date:from
-        :message-id:mime-version:subject:to:x-me-proxy:x-me-proxy
-        :x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=Ac01M78HVVhymN796
-        EnmiJqYFDY+9Lkga4k+OMsqtcI=; b=kSZa2Z/rrFyJenUy9r41JyLPg8DsnpP4J
-        P/+MLjt05xA76fAFLIjhp+wIPwFtywFGHioqvuKov5vYN6a32hN0TA/v5i/n5RmW
-        KCbJ8/b3nQDneJYmdzIEFFZHERgZzF7MKhUh4/PL2I/F+uq05GuQ6/ut/+H8fUFn
-        lJVxxRFr7DXouF10jOR64XyDfBGVYsAuZVvAfr/HiVDJ/iSJTicCC4rqqy+TK0G9
-        XWLICHx7OK9ITcmv+cS6rlLWFvXYRWUeaQuhJ7angc2JVschOO9gsEGgWUO3p3/4
-        +uQhyf1LY6pCYNM0IMjm8GNrxFm96rxNN3naPH8YJ2OBqEfXeAH/A==
-X-ME-Sender: <xms:5VmJYWlbogFi9hzr9Qho6IQUW12wDIwO49AGVRsz7hg4JMOVghveJA>
-    <xme:5VmJYd1dAyvIxX-QhmYXLaqvkeXksUrLn_5zRFWhzdkN30adDiYe8BgSgpSVhcBOw
-    JWfIb5mxUbxBgunrJQ>
-X-ME-Received: <xmr:5VmJYUrd33tj7zZ9OfGLjF9RhIo4U8OevfIvD1vHW1skN0kKqWswb6wCrxsFk5YcnnkPvPdAZ7O8OfTaHsMLee5o3GscFpM5zoQp9cOyxDeQzogAPAVVobWy23oX5Q>
+        :in-reply-to:message-id:mime-version:references:subject:to
+        :x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
+        fm1; bh=MU0pudiomOBk1BhCOEiNgrv+VzG0+79jlfAXlUbLYZo=; b=fDRtFySg
+        t9CONshaSQzNUsOm/tixzxcHwGCBepagPWJJ+urs9YwbbMaMsBHB1kN4NxYBYDKw
+        DaxBXxfql0uPyXaTTZxTLXP7WEg4oXEbtIRRGRKmu1nFG90hNgUSFKl2fDAQZNV+
+        nRNJ2fX/UwtSCElg3zJuPLEAV/T/oJO5fyO98z7ftCEM9+A8tgftkBp5zaALFsUU
+        N25Um3WoZs8pgWQ2xXOI/TzhtVIVNdL0IF6GR+FxH9AbwLUmfpPgDttjqO14naOo
+        KtVT1vTh+ng2uNbdH1J7mogWpstKwMNlfk8PQbrZAqJ2ztG5ivtRR4xxsn3xBNXN
+        crD3+mZaAvd3IA==
+X-ME-Sender: <xms:6FmJYR5Y2l8vAlehQkMTYkDOyepCepHtQWAtzeD996Oi6mW_vo86zw>
+    <xme:6FmJYe6UwIIIRdOPHEvk8rHQxgE_MKlCU6GwjLhUJYcNpi7YfdkB1KH9lb_1d1tVe
+    IqaqQBcYpNzow0AT94>
+X-ME-Received: <xmr:6FmJYYeVlVi1qgBip-I74jk7H68lw_c-YXDDkUPyeicxSfi7uZ5jwd1ztg8rAwEbaxVBopvlYFzCNMgtymmXm25OkB5N09mifrQSMdHdgWekQSAwE_y48OvFU-eB3A>
 X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvuddruddvgdeliecutefuodetggdotefrodftvf
     curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
     uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
-    fjughrpefhvffufffkofgggfestdekredtredttdenucfhrhhomhepufhvvghnucfrvght
-    vghruceoshhvvghnsehsvhgvnhhpvghtvghrrdguvghvqeenucggtffrrghtthgvrhhnpe
-    efjefgjeelveelledtiefhteetfeevudejledvieelvdejffeujeejtefgkedvudenucff
-    ohhmrghinhepuggvvhhitggvthhrvggvrdhorhhgpdhgihhthhhusgdrtghomhenucevlh
-    hushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehsvhgvnhesshhv
-    vghnphgvthgvrhdruggvvh
-X-ME-Proxy: <xmx:5lmJYakgPVABaUlvC6EfD2UNd98YJR665TdAQOQwinNbHfWIz6Ub6Q>
-    <xmx:5lmJYU2CbvvyU_kVkPfxzZQJsY5Tsij64cLc_BuBUNrWoKC8xgySgQ>
-    <xmx:5lmJYRtFAb2Q2Wa-MrQRDZMCkhq6lIyZ2ij2bE6PQapFxT5pQaxrEg>
-    <xmx:5lmJYVKsyHCZMozgWgZ_URZbP_sV3RtcZSO9Tc1efVtWNukcLmGnKg>
+    fjughrpefhvffufffkofgjfhgggfestdekredtredttdenucfhrhhomhepufhvvghnucfr
+    vghtvghruceoshhvvghnsehsvhgvnhhpvghtvghrrdguvghvqeenucggtffrrghtthgvrh
+    hnpeetvdekteeluefffffhkeetteffgefggfevheeileeufedvtdeuffevveelhfefjeen
+    ucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehsvhgvnh
+    esshhvvghnphgvthgvrhdruggvvh
+X-ME-Proxy: <xmx:6FmJYaJgX0t-JhhMsVs_elX4zPIVmMNjZum9DljcdiJGsD5YOGcOCA>
+    <xmx:6FmJYVJ1CZaWrUjuQXaSIZvvQIr-p5XPaZcE5OmELAl0j8RsD5HFeA>
+    <xmx:6FmJYTw87SW41JgEDonHAhN6C2lDs0ycwg9JJqiurnPQje5706h8VA>
+    <xmx:6FmJYc_tAEIUbfWoYqEGnbloK2_faLPw4PL1Q56tEyzgfptdhIWmlA>
 Received: by mail.messagingengine.com (Postfix) with ESMTPA; Mon,
- 8 Nov 2021 12:09:56 -0500 (EST)
+ 8 Nov 2021 12:09:58 -0500 (EST)
 From:   Sven Peter <sven@svenpeter.dev>
-To:     Rob Herring <robh+dt@kernel.org>
-Cc:     Sven Peter <sven@svenpeter.dev>, Felipe Balbi <balbi@kernel.org>,
+To:     Felipe Balbi <balbi@kernel.org>
+Cc:     Sven Peter <sven@svenpeter.dev>,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         Hector Martin <marcan@marcan.st>,
         Alyssa Rosenzweig <alyssa@rosenzweig.io>,
         Mark Kettenis <mark.kettenis@xs4all.nl>,
-        linux-usb@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v2 1/2] dt-bindings: usb: Add Apple dwc3 bindings
-Date:   Mon,  8 Nov 2021 18:09:45 +0100
-Message-Id: <20211108170946.49689-1-sven@svenpeter.dev>
+        Rob Herring <robh+dt@kernel.org>, linux-usb@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v2 2/2] usb: dwc3: Add role switch reset quirk for Apple DWC3
+Date:   Mon,  8 Nov 2021 18:09:46 +0100
+Message-Id: <20211108170946.49689-2-sven@svenpeter.dev>
 X-Mailer: git-send-email 2.30.1 (Apple Git-130)
+In-Reply-To: <20211108170946.49689-1-sven@svenpeter.dev>
+References: <20211108170946.49689-1-sven@svenpeter.dev>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Apple Silicon SoCs such as the M1 have multiple USB controllers based on
-the Synopsys DesignWare USB3 controller.
-References to the ATC PHY required for SuperSpeed are left out for now
-until support has been upstreamed as well.
+As mad as it sounds, the dwc3 controller present on Apple SoCs must be
+reset and reinitialized whenever a device is unplugged from the root port
+and triggers a role switch notification from the USB PD controller.
+
+This is required for at least two reasons:
+
+  - The USB2 D+/D- lines are connected through a stateful eUSB2 repeater
+    which in turn is controlled by a variant of the TI TPS6598x USB PD
+    chip. When the USB PD controller detects a hotplug event it resets
+    the eUSB2 repeater. Afterwards, no new device is recognized before
+    the DWC3 core and PHY are reset as well.
+
+  - It's possible to completely break the dwc3 controller by switching
+    it to device mode and unplugging the cable at just the wrong time.
+    Even a CORESOFTRESET is not enough to allow new devices again.
+    The only workaround is to trigger a hard reset of the entire
+    dwc3 core. This also happens when running macOS on these
+    machines.
 
 Signed-off-by: Sven Peter <sven@svenpeter.dev>
 ---
 v1 -> v2:
- - added apple,dwc3 bindings instead of a property for the reset quirk
+ - enable the quirk based on the compatible instead of a property
    as requested by robh
 
-I think I have to use GPL-2.0 for this binding since it's based
-on and references snps,dwc3.yaml which is also only GPL-2.0.
-Otherwise I'd be fine with the usual GPL/BSD dual license as well.
+ drivers/usb/dwc3/core.c | 39 ++++++++++++++++++++++++++++++++++++---
+ drivers/usb/dwc3/core.h |  6 ++++++
+ drivers/usb/dwc3/drd.c  |  7 +++++++
+ 3 files changed, 49 insertions(+), 3 deletions(-)
 
- .../devicetree/bindings/usb/apple,dwc3.yaml   | 64 +++++++++++++++++++
- MAINTAINERS                                   |  1 +
- 2 files changed, 65 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/usb/apple,dwc3.yaml
-
-diff --git a/Documentation/devicetree/bindings/usb/apple,dwc3.yaml b/Documentation/devicetree/bindings/usb/apple,dwc3.yaml
-new file mode 100644
-index 000000000000..fb3b3489e6b2
---- /dev/null
-+++ b/Documentation/devicetree/bindings/usb/apple,dwc3.yaml
-@@ -0,0 +1,64 @@
-+# SPDX-License-Identifier: GPL-2.0
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/usb/apple,dwc3.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
+diff --git a/drivers/usb/dwc3/core.c b/drivers/usb/dwc3/core.c
+index 0104a80b185e..b76d7536eafe 100644
+--- a/drivers/usb/dwc3/core.c
++++ b/drivers/usb/dwc3/core.c
+@@ -115,6 +115,8 @@ void dwc3_set_prtcap(struct dwc3 *dwc, u32 mode)
+ }
+ 
+ static int dwc3_core_soft_reset(struct dwc3 *dwc);
++static void dwc3_core_exit(struct dwc3 *dwc);
++static int dwc3_core_init_for_resume(struct dwc3 *dwc);
+ 
+ static void __dwc3_set_mode(struct work_struct *work)
+ {
+@@ -130,10 +132,11 @@ static void __dwc3_set_mode(struct work_struct *work)
+ 	if (dwc->current_dr_role == DWC3_GCTL_PRTCAP_OTG)
+ 		dwc3_otg_update(dwc, 0);
+ 
+-	if (!dwc->desired_dr_role)
++	if (!dwc->desired_dr_role && !dwc->role_switch_reset_quirk)
+ 		goto out;
+ 
+-	if (dwc->desired_dr_role == dwc->current_dr_role)
++	if (dwc->desired_dr_role == dwc->current_dr_role &&
++			!dwc->role_switch_reset_quirk)
+ 		goto out;
+ 
+ 	if (dwc->desired_dr_role == DWC3_GCTL_PRTCAP_OTG && dwc->edev)
+@@ -158,6 +161,34 @@ static void __dwc3_set_mode(struct work_struct *work)
+ 		break;
+ 	}
+ 
++	if (dwc->role_switch_reset_quirk) {
++		if (dwc->current_dr_role) {
++			dwc->current_dr_role = 0;
++			dwc3_core_exit(dwc);
++		}
 +
-+title: Apple Silicon DWC3 USB controller
++		if (dwc->desired_dr_role) {
++			/*
++			 * the first call to __dwc3_set_mode comes from
++			 * dwc3_drd_init. In that case dwc3_core_init has been
++			 * called but dwc->current_dr_role is zero such that
++			 * we must not reinitialize the core again here.
++			 */
++			if (dwc->role_switch_reset_quirk_initialized) {
++				ret = dwc3_core_init_for_resume(dwc);
++				if (ret) {
++					dev_err(dwc->dev,
++					    "failed to reinitialize core\n");
++					goto out;
++				}
++			}
 +
-+maintainers:
-+  - Sven Peter <sven@svenpeter.dev>
++			dwc->role_switch_reset_quirk_initialized = 1;
++		} else {
++			goto out;
++		}
++	}
 +
-+description:
-+  On Apple Silicon SoCs such as the M1 each Type-C port has a corresponding
-+  USB controller based on the Synopsys DesignWare USB3 controller.
+ 	/* For DRD host or device mode only */
+ 	if (dwc->desired_dr_role != DWC3_GCTL_PRTCAP_OTG) {
+ 		reg = dwc3_readl(dwc->regs, DWC3_GCTL);
+@@ -1586,6 +1617,8 @@ static int dwc3_probe(struct platform_device *pdev)
+ 		else
+ 			dwc->num_clks = ret;
+ 
++		if (of_device_is_compatible(dev->of_node, "apple,dwc3"))
++			dwc->role_switch_reset_quirk = true;
+ 	}
+ 
+ 	ret = reset_control_deassert(dwc->reset);
+@@ -1715,7 +1748,6 @@ static int dwc3_remove(struct platform_device *pdev)
+ 	return 0;
+ }
+ 
+-#ifdef CONFIG_PM
+ static int dwc3_core_init_for_resume(struct dwc3 *dwc)
+ {
+ 	int ret;
+@@ -1742,6 +1774,7 @@ static int dwc3_core_init_for_resume(struct dwc3 *dwc)
+ 	return ret;
+ }
+ 
++#ifdef CONFIG_PM
+ static int dwc3_suspend_common(struct dwc3 *dwc, pm_message_t msg)
+ {
+ 	unsigned long	flags;
+diff --git a/drivers/usb/dwc3/core.h b/drivers/usb/dwc3/core.h
+index 5612bfdf37da..3fc5c5bc4c57 100644
+--- a/drivers/usb/dwc3/core.h
++++ b/drivers/usb/dwc3/core.h
+@@ -1080,6 +1080,9 @@ struct dwc3_scratchpad_array {
+  *	3	- Reserved
+  * @dis_metastability_quirk: set to disable metastability quirk.
+  * @dis_split_quirk: set to disable split boundary.
++ * @role_switch_reset_quirk: set to force reinitialization after any role switch
++ * @role_switch_reset_quirk_initialized: set to true after the first role switch
++ *			which is triggered from dwc3_drd_init directly
+  * @imod_interval: set the interrupt moderation interval in 250ns
+  *			increments or 0 to disable.
+  * @max_cfg_eps: current max number of IN eps used across all USB configs.
+@@ -1291,6 +1294,9 @@ struct dwc3 {
+ 	unsigned		dis_split_quirk:1;
+ 	unsigned		async_callbacks:1;
+ 
++	unsigned		role_switch_reset_quirk:1;
++	unsigned		role_switch_reset_quirk_initialized:1;
 +
-+  The common content of this binding is defined in snps,dwc3.yaml.
+ 	u16			imod_interval;
+ 
+ 	int			max_cfg_eps;
+diff --git a/drivers/usb/dwc3/drd.c b/drivers/usb/dwc3/drd.c
+index d7f76835137f..403e88a72f0e 100644
+--- a/drivers/usb/dwc3/drd.c
++++ b/drivers/usb/dwc3/drd.c
+@@ -506,6 +506,9 @@ static int dwc3_usb_role_switch_set(struct usb_role_switch *sw,
+ 		break;
+ 	}
+ 
++	if (dwc->role_switch_reset_quirk && role == USB_ROLE_NONE)
++		mode = 0;
 +
-+allOf:
-+  - $ref: snps,dwc3.yaml#
+ 	dwc3_set_mode(dwc, mode);
+ 	return 0;
+ }
+@@ -534,6 +537,10 @@ static enum usb_role dwc3_usb_role_switch_get(struct usb_role_switch *sw)
+ 			role = USB_ROLE_DEVICE;
+ 		break;
+ 	}
 +
-+select:
-+  properties:
-+    compatible:
-+      contains:
-+        const: apple,dwc3
-+  required:
-+    - compatible
++	if (dwc->role_switch_reset_quirk && !dwc->current_dr_role)
++		role = USB_ROLE_NONE;
 +
-+properties:
-+  compatible:
-+    items:
-+      - enum:
-+          - apple,t8103-dwc3
-+          - apple,t6000-dwc3
-+      - const: apple,dwc3
-+      - const: snps,dwc3
-+
-+  reg:
-+    maxItems: 1
-+
-+  interrupts:
-+    maxItems: 1
-+
-+unevaluatedProperties: false
-+
-+required:
-+  - compatible
-+  - reg
-+  - interrupts
-+
-+examples:
-+  - |
-+    #include <dt-bindings/interrupt-controller/apple-aic.h>
-+    #include <dt-bindings/interrupt-controller/irq.h>
-+
-+    usb@82280000 {
-+      compatible = "apple,t8103-dwc3", "apple,dwc3", "snps,dwc3";
-+      reg = <0x82280000 0x10000>;
-+      interrupts = <AIC_IRQ 777 IRQ_TYPE_LEVEL_HIGH>;
-+
-+      dr_mode = "otg";
-+      usb-role-switch;
-+      role-switch-default-mode = "host";
-+    };
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 3b79fd441dde..03e7cc48877a 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -1724,6 +1724,7 @@ T:	git https://github.com/AsahiLinux/linux.git
- F:	Documentation/devicetree/bindings/arm/apple.yaml
- F:	Documentation/devicetree/bindings/interrupt-controller/apple,aic.yaml
- F:	Documentation/devicetree/bindings/pinctrl/apple,pinctrl.yaml
-+F:	Documentation/devicetree/bindings/usb/apple,dwc3.yaml
- F:	arch/arm64/boot/dts/apple/
- F:	drivers/irqchip/irq-apple-aic.c
- F:	include/dt-bindings/interrupt-controller/apple-aic.h
+ 	spin_unlock_irqrestore(&dwc->lock, flags);
+ 	return role;
+ }
 -- 
 2.25.1
 
