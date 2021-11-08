@@ -2,53 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 496D5447F32
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Nov 2021 13:00:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 40BF0447F33
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Nov 2021 13:01:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239362AbhKHMDP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Nov 2021 07:03:15 -0500
-Received: from foss.arm.com ([217.140.110.172]:49508 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237972AbhKHMDL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Nov 2021 07:03:11 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 5B2442B;
-        Mon,  8 Nov 2021 04:00:27 -0800 (PST)
-Received: from e113632-lin (usa-sjc-imap-foss1.foss.arm.com [10.121.207.14])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 596BD3F7F5;
-        Mon,  8 Nov 2021 04:00:26 -0800 (PST)
-From:   Valentin Schneider <valentin.schneider@arm.com>
-To:     kernel test robot <lkp@intel.com>, linux-kernel@vger.kernel.org
-Cc:     llvm@lists.linux.dev, kbuild-all@lists.01.org,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Frederic Weisbecker <frederic@kernel.org>
-Subject: Re: [PATCH] sched: Tweak default dynamic preempt mode selection
-In-Reply-To: <202111061341.QdauxAuH-lkp@intel.com>
-References: <20211105104035.3112162-1-valentin.schneider@arm.com> <202111061341.QdauxAuH-lkp@intel.com>
-Date:   Mon, 08 Nov 2021 12:00:17 +0000
-Message-ID: <878rxyeu26.mognet@arm.com>
+        id S239359AbhKHMD5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Nov 2021 07:03:57 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35164 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231401AbhKHMDz (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Nov 2021 07:03:55 -0500
+Received: from mail-il1-x12f.google.com (mail-il1-x12f.google.com [IPv6:2607:f8b0:4864:20::12f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7CA03C061570
+        for <linux-kernel@vger.kernel.org>; Mon,  8 Nov 2021 04:01:11 -0800 (PST)
+Received: by mail-il1-x12f.google.com with SMTP id i11so7349119ilv.13
+        for <linux-kernel@vger.kernel.org>; Mon, 08 Nov 2021 04:01:11 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=dC83MVqdOwYHKUmkxexdi7cEBwi0X0cH6p8fdWvRzn0=;
+        b=S79vnFctVitgbPO/JQkEJ88Rlowunqpf/9YfQu6KElHAhaFAW3gP1i2TOfQkmUnXPW
+         td62XmG2rpRBAAw71GQybrNxuxUppJkkiTDf9tnjfJr+XSr9UAml4umUNkxa1hmanqxj
+         8MrrTFAVpu/L7tBMVNGNniqYxPq40/BoIK0P+NH8I+Ci2DxeZUxGyN13hLKT1xaI8Lbm
+         aozfDfRkLlk70R1S3qjd5PJLWsQjiItFogq7K9QdD0lV01FAAhSbL4xfRDzGBnNVR4kh
+         8dz8z7pRSFs8f7Uy7Jbaf+nqpaEaV5mkm0ETK8gqQ+n7bLNSCaBlgukq86ZLDLgtkE+/
+         34QA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=dC83MVqdOwYHKUmkxexdi7cEBwi0X0cH6p8fdWvRzn0=;
+        b=zDaFwELkJ2fX0o/kLb3T6sR/tuUT2NEiO84qxk2QXONvB7hPjmY2EI2mlPmoPf2WEe
+         ZIAPgE3zbSV3fc1vE9W9XoVM0gNyK3ZMA2jDGBB5eRY3Q003uBEYQH1raSQxpxUGU3PI
+         tLg2cwrCCE5K68jukIg25mIJGfnQu/H1JRqjae1Q3cPZr0A0Xf6sDSmhxx5RL31zYJ1Q
+         cByvre6R12nczI71orSKINVCOK4J3s84FdOskG4GbOpep7ktelZQ8U5idtGMjjdTSunQ
+         TfnZHhhpPYJFJrbDCtgULq8nu3QhPa7LkX22AadGSmBffySDyzgWZXA7sO89SxqRf6B3
+         Hx2w==
+X-Gm-Message-State: AOAM531qogekf1S5u6zUJ1dWca35Y3tiW0NJam5Zx5JmZUuUMzboSG+9
+        iqxgf+ddLnZavCVWuEpvPsRKwf8wA/2rwbETQeByR+rOIkk=
+X-Google-Smtp-Source: ABdhPJwqtK0kei+JnB2wG6eSXP35HsBqm4n8+r8ez45v1pna6qCjRtZIE3dOfRZYCxQ67zYl97gRoT+dG0blcylZG10=
+X-Received: by 2002:a92:cb12:: with SMTP id s18mr45175526ilo.321.1636372870971;
+ Mon, 08 Nov 2021 04:01:10 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain
+References: <20211107150304.3253-1-sampaio.ime@gmail.com> <20211107150304.3253-2-sampaio.ime@gmail.com>
+In-Reply-To: <20211107150304.3253-2-sampaio.ime@gmail.com>
+From:   Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
+Date:   Mon, 8 Nov 2021 13:01:00 +0100
+Message-ID: <CANiq72mzT+bGMgrB1ppHOGu5C5w7oSDe5Sy-CRo-LKJ6Vanxjw@mail.gmail.com>
+Subject: Re: [PATCH 1/2] auxdisplay: charlcd: fixing coding style issue
+To:     Luiz Sampaio <sampaio.ime@gmail.com>
+Cc:     Miguel Ojeda <ojeda@kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 06/11/21 13:05, kernel test robot wrote:
->    kernel/sched/core.c:3439:6: error: no previous prototype for function 'sched_set_stop_task' [-Werror,-Wmissing-prototypes]
->    void sched_set_stop_task(int cpu, struct task_struct *stop)
->         ^
->    kernel/sched/core.c:3439:1: note: declare 'static' if the function is not intended to be used outside of this translation unit
->    void sched_set_stop_task(int cpu, struct task_struct *stop)
->    ^
->    static
->>> kernel/sched/core.c:6576:2: error: use of undeclared identifier '__SCT__preempt_schedule'
->            static_call_update(preempt_schedule, __preempt_schedule_func);
->            ^
+On Sun, Nov 7, 2021 at 4:03 PM Luiz Sampaio <sampaio.ime@gmail.com> wrote:
+>
+> Removing 'int' from 'unsigned long int' declaration, which is unnecessary.
 
-Doh, I broke the
+Not sure if this is a rule, but it is good to be consistent with the
+rest of auxdisplay. Thanks!
 
-  PREEMPT_DYNAMIC
-    select PREEMPT
-
-thing - the above happens with PREEMPT_DYNAMIC && !PREEMPT. Lemme fix.
+Cheers,
+Miguel
