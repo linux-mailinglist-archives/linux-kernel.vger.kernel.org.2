@@ -2,84 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AE803447AEA
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Nov 2021 08:30:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A4F7C447AF2
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Nov 2021 08:30:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237419AbhKHHaC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Nov 2021 02:30:02 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57600 "EHLO
+        id S236530AbhKHHaK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Nov 2021 02:30:10 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57628 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236530AbhKHHaB (ORCPT
+        with ESMTP id S237081AbhKHHaF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Nov 2021 02:30:01 -0500
-Received: from mail-pg1-x52f.google.com (mail-pg1-x52f.google.com [IPv6:2607:f8b0:4864:20::52f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 83A07C061714
-        for <linux-kernel@vger.kernel.org>; Sun,  7 Nov 2021 23:27:17 -0800 (PST)
-Received: by mail-pg1-x52f.google.com with SMTP id f5so14367353pgc.12
-        for <linux-kernel@vger.kernel.org>; Sun, 07 Nov 2021 23:27:17 -0800 (PST)
+        Mon, 8 Nov 2021 02:30:05 -0500
+Received: from mail-pj1-x1033.google.com (mail-pj1-x1033.google.com [IPv6:2607:f8b0:4864:20::1033])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3725C061714
+        for <linux-kernel@vger.kernel.org>; Sun,  7 Nov 2021 23:27:20 -0800 (PST)
+Received: by mail-pj1-x1033.google.com with SMTP id fv9-20020a17090b0e8900b001a6a5ab1392so8105965pjb.1
+        for <linux-kernel@vger.kernel.org>; Sun, 07 Nov 2021 23:27:20 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=RLjicxNmNpYNSdlDLoBw1hRqse8yPujz3RAWyTpfEac=;
-        b=ABDhVBoJRsbyso7STgkt2+X30CgJnQ/d99iSXLLZO1gs2qeFL7BsZSKMviiRjrSt5h
-         dbp4KcrvpoL3BQDhp46BsxZ+b00vpcLTx2TtUa2T/RN7G4khXEwLkFdQK7yb3lbgn25Z
-         Jm165XB0AGWijHaotMiS4DDjHK1d4a+LSyC+Y=
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=MIJkQVkt4xqve0BOXtxCBd9FeU0z9MmxfabsOKsl+NQ=;
+        b=keyO8iQjd9MCSdaTolVmJpKXr1NkWN8c7TyoX5mn+Uh2OMTjvFsH72trcqAquzXCqx
+         Z53QzVjhBv23LGyFMgZ19Ddb1tmvUi6sujNSrj1QRX8J1z+9DI4hFTd4eSJaVNAC6XwF
+         W5iAp4s3TYRvfKHZDUC6rT+N8fEdvMpcQJ1hE=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=RLjicxNmNpYNSdlDLoBw1hRqse8yPujz3RAWyTpfEac=;
-        b=YvUXXvka1U2xarJ7k8/GHcBNZ+1JzNm+AKilunX1x8fsnvfPJ40vYzZrAOCoWy9rEO
-         mv5wkaoKCuE4I/yL7VDs/zGlcKnlaE0/MGFKfke2Vui5jNs/dImLW9Y85axrifF+BigI
-         ycMSJEcVda429qAh+0uJaY1cw+h5S11sorOKflCdGOid/N6wSVg6RQe+7VC9wfUu+2nB
-         lrNRVLRKKjTlexlN+aj+VrsI04XKmcx+ChQ92V6+wZS580kmBm7iFef7SiE+YPK5wX7E
-         T8O6NRIe3iI7FIAlViRhFhX5Rj0xzfXE1KXDP7l96PPSNokhwefMwBPocv0c81goUAJN
-         aqmg==
-X-Gm-Message-State: AOAM530AdP1BQpQE7HzjchMPeN2Fat44FEfs8so2vXq+GMYzIx7fxnBv
-        jWBg3wJ2rNoDBwy7ea9X95lWqQ==
-X-Google-Smtp-Source: ABdhPJw21lXJshz/mAt6AiSaY5BS2Jjuxb/tgp9XVgQFp/b0HW4hLLC6R3JC3TGth5tlFtvm7q26WA==
-X-Received: by 2002:a05:6a00:140c:b0:447:96be:2ade with SMTP id l12-20020a056a00140c00b0044796be2ademr77871119pfu.26.1636356436963;
-        Sun, 07 Nov 2021 23:27:16 -0800 (PST)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=MIJkQVkt4xqve0BOXtxCBd9FeU0z9MmxfabsOKsl+NQ=;
+        b=2ZC3LCUe8StfGuXhMjQnRlh/Z+YzsfsXCeGeF+HRMXZVJFG1XuqLO6zcvtQXpAKQ6I
+         MouYH5b+2JbBEtyD6tvKrpmh+H5WWW82Wie80rkPzx4mEw5BN2TV0gSRzQgdbY/IXGJv
+         b7PjuEkvZ8Hi9Ty20AUgKeFvevRZAlXPtK5YpL7Sgi8VeaQMafCQo5VrhHAgTD/+fVMm
+         a5Y0R0EBjn9HxCDoFwpZ5IpUL/FxDhe8KPxDyh+t84EalOzTMR83bjULaNJNa88wflfT
+         +99j26rTDrW3Nh1jgbawB+QCnlzMF8B0QQ48OoduEZmCyygpkFS3GqMsG8cmslwSqoBo
+         8z/Q==
+X-Gm-Message-State: AOAM530n3VmXbEcEUdGr5XyItVwnBsXffmLdc+OGs3pXqG3o5qygP5DG
+        d7QtFYuIp53C1xTu5sgWajQmEzZDzv3Sig==
+X-Google-Smtp-Source: ABdhPJzWiwCT5/iU7//1etleZoUzv9KAQgehJNsaiUeAXd7ajQbe6/LTy0OJCjJITgmab/gRI1dkqg==
+X-Received: by 2002:a17:90a:5303:: with SMTP id x3mr49602563pjh.226.1636356440183;
+        Sun, 07 Nov 2021 23:27:20 -0800 (PST)
 Received: from hsinyi-z840.tpe.corp.google.com ([2401:fa00:1:10:5f03:6a9b:24e8:3a2e])
-        by smtp.gmail.com with ESMTPSA id e8sm11684972pgn.46.2021.11.07.23.27.15
+        by smtp.gmail.com with ESMTPSA id e8sm11684972pgn.46.2021.11.07.23.27.18
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 07 Nov 2021 23:27:16 -0800 (PST)
+        Sun, 07 Nov 2021 23:27:19 -0800 (PST)
 From:   Hsin-Yi Wang <hsinyi@chromium.org>
 To:     Matthias Brugger <matthias.bgg@gmail.com>
 Cc:     Rob Herring <robh+dt@kernel.org>,
         linux-arm-kernel@lists.infradead.org,
         linux-mediatek@lists.infradead.org, devicetree@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: [PATCH 1/7] arm64: dts: mt8183: jacuzzi: remove unused ddc-i2c-bus
-Date:   Mon,  8 Nov 2021 15:27:05 +0800
-Message-Id: <20211108072711.1628566-1-hsinyi@chromium.org>
+Subject: [PATCH 2/7] arm64: dts: mt8183: Add kukui-jacuzzi-cozmo board
+Date:   Mon,  8 Nov 2021 15:27:06 +0800
+Message-Id: <20211108072711.1628566-2-hsinyi@chromium.org>
 X-Mailer: git-send-email 2.34.0.rc0.344.g81b53c2807-goog
+In-Reply-To: <20211108072711.1628566-1-hsinyi@chromium.org>
+References: <20211108072711.1628566-1-hsinyi@chromium.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-EDID is read from bridge, so the ddc-i2c-bus is unused.
+Cozmo is known as Acer Chromebook 314 (CB314-2H/CB314-2HT)
 
 Signed-off-by: Hsin-Yi Wang <hsinyi@chromium.org>
 ---
- arch/arm64/boot/dts/mediatek/mt8183-kukui-jacuzzi.dtsi | 1 -
- 1 file changed, 1 deletion(-)
+ arch/arm64/boot/dts/mediatek/Makefile         |  1 +
+ .../mediatek/mt8183-kukui-jacuzzi-cozmo.dts   | 36 +++++++++++++++++++
+ 2 files changed, 37 insertions(+)
+ create mode 100644 arch/arm64/boot/dts/mediatek/mt8183-kukui-jacuzzi-cozmo.dts
 
-diff --git a/arch/arm64/boot/dts/mediatek/mt8183-kukui-jacuzzi.dtsi b/arch/arm64/boot/dts/mediatek/mt8183-kukui-jacuzzi.dtsi
-index d8826c82bcda29..8f7bf33f607da2 100644
---- a/arch/arm64/boot/dts/mediatek/mt8183-kukui-jacuzzi.dtsi
-+++ b/arch/arm64/boot/dts/mediatek/mt8183-kukui-jacuzzi.dtsi
-@@ -9,7 +9,6 @@ / {
- 	panel: panel {
- 		compatible = "auo,b116xw03";
- 		power-supply = <&pp3300_panel>;
--		ddc-i2c-bus = <&i2c4>;
- 		backlight = <&backlight_lcd0>;
- 
- 		port {
+diff --git a/arch/arm64/boot/dts/mediatek/Makefile b/arch/arm64/boot/dts/mediatek/Makefile
+index 4f68ebed2e3188..045927402269a9 100644
+--- a/arch/arm64/boot/dts/mediatek/Makefile
++++ b/arch/arm64/boot/dts/mediatek/Makefile
+@@ -14,6 +14,7 @@ dtb-$(CONFIG_ARCH_MEDIATEK) += mt8173-elm-hana-rev7.dtb
+ dtb-$(CONFIG_ARCH_MEDIATEK) += mt8173-evb.dtb
+ dtb-$(CONFIG_ARCH_MEDIATEK) += mt8183-evb.dtb
+ dtb-$(CONFIG_ARCH_MEDIATEK) += mt8183-kukui-jacuzzi-burnet.dtb
++dtb-$(CONFIG_ARCH_MEDIATEK) += mt8183-kukui-jacuzzi-cozmo.dtb
+ dtb-$(CONFIG_ARCH_MEDIATEK) += mt8183-kukui-jacuzzi-damu.dtb
+ dtb-$(CONFIG_ARCH_MEDIATEK) += mt8183-kukui-jacuzzi-fennel-sku1.dtb
+ dtb-$(CONFIG_ARCH_MEDIATEK) += mt8183-kukui-jacuzzi-fennel-sku6.dtb
+diff --git a/arch/arm64/boot/dts/mediatek/mt8183-kukui-jacuzzi-cozmo.dts b/arch/arm64/boot/dts/mediatek/mt8183-kukui-jacuzzi-cozmo.dts
+new file mode 100644
+index 00000000000000..072133fb0f0162
+--- /dev/null
++++ b/arch/arm64/boot/dts/mediatek/mt8183-kukui-jacuzzi-cozmo.dts
+@@ -0,0 +1,36 @@
++// SPDX-License-Identifier: (GPL-2.0 OR MIT)
++/*
++ * Copyright 2021 Google LLC
++ */
++
++/dts-v1/;
++#include "mt8183-kukui-jacuzzi.dtsi"
++#include "mt8183-kukui-audio-ts3a227e-max98357a.dtsi"
++
++/ {
++	model = "Google cozmo board";
++	compatible = "google,cozmo", "mediatek,mt8183";
++};
++
++&i2c_tunnel {
++	google,remote-bus = <0>;
++};
++
++&i2c2 {
++	trackpad@2c {
++		compatible = "hid-over-i2c";
++		reg = <0x2c>;
++		hid-descr-addr = <0x20>;
++
++		pinctrl-names = "default";
++		pinctrl-0 = <&trackpad_pins>;
++
++		interrupts-extended = <&pio 7 IRQ_TYPE_LEVEL_LOW>;
++
++		wakeup-source;
++	};
++};
++
++&qca_wifi {
++	qcom,ath10k-calibration-variant = "GO_COZMO";
++};
 -- 
 2.34.0.rc0.344.g81b53c2807-goog
 
