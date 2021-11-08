@@ -2,56 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 215084480D9
+	by mail.lfdr.de (Postfix) with ESMTP id 6B56A4480DA
 	for <lists+linux-kernel@lfdr.de>; Mon,  8 Nov 2021 15:07:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240242AbhKHOKA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Nov 2021 09:10:00 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:31870 "EHLO
+        id S240254AbhKHOKC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Nov 2021 09:10:02 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:41384 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S240218AbhKHOJz (ORCPT
+        by vger.kernel.org with ESMTP id S240227AbhKHOJ4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Nov 2021 09:09:55 -0500
+        Mon, 8 Nov 2021 09:09:56 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1636380431;
+        s=mimecast20190719; t=1636380432;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=VOreeT9xy7J8ItI94NHKifuwS46AUpOFOueH2yffi6I=;
-        b=NVRzvmCxNJoTylj/GD5Ai2CpFOGke5wHtnUhhnY4oJKbwfN2CyllentI/TFjBEPGJ2sIdM
-        GHQsA7xZ3sjggRZgLV/6aLbwyvSRd8NBYZQyZyA+6Mddl73ZNUqhth5ziTG5jML3CDplve
-        1MM8mOdu1xa3lKaRYd1tZJiYTeNJbJg=
-Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
- [209.85.128.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-89-_LWUHpq5Psak9MutoXVRAg-1; Mon, 08 Nov 2021 09:07:10 -0500
-X-MC-Unique: _LWUHpq5Psak9MutoXVRAg-1
-Received: by mail-wm1-f69.google.com with SMTP id g11-20020a1c200b000000b003320d092d08so6249908wmg.9
-        for <linux-kernel@vger.kernel.org>; Mon, 08 Nov 2021 06:07:09 -0800 (PST)
+        bh=cHhiP8dWU/yCrRHfZ4flhCwBp7rRmlRP7VQTJMKR8q4=;
+        b=XxaBCgXdjRwPiqRyXG7E0v80fGR4U2sl/Cdg6EZZQxDFol3EBYMbRw4Xl0MsbUVnFa4kbl
+        nAEPKQQQv1A5bw/cVKYNAMB8eNs0ADFOLbbtvOpjMz+oTUpsV5+WVAQjvgyH0Q34eECdX/
+        0F5M2QdkYqzKWw8580j9KxKzZ8aiDoQ=
+Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
+ [209.85.128.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-482-vM7vHXRDOJGlbLlfyAYYrw-1; Mon, 08 Nov 2021 09:07:11 -0500
+X-MC-Unique: vM7vHXRDOJGlbLlfyAYYrw-1
+Received: by mail-wm1-f72.google.com with SMTP id r6-20020a1c4406000000b0033119c22fdbso6259824wma.4
+        for <linux-kernel@vger.kernel.org>; Mon, 08 Nov 2021 06:07:10 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=VOreeT9xy7J8ItI94NHKifuwS46AUpOFOueH2yffi6I=;
-        b=NLwnRZOrQ7sVl4ebAQ67YR01Ak7deR4eidWZ1upPtvIKjUqbzGB0F0k3sfmB9VuTzE
-         UTctfVO+fcDoZZiIjIHlPoPS7PAGz5yyzjTQNR2CU/3BR15iERts8HC0vUQYeFxy8Nl3
-         weqv1dGnoHAlkALiAyPY31AM827jPOVfLyxG4hy507ifHe3FeIisOvSue2zGep3CZxXo
-         3MEpmH0IqOtqOgZO+4Fgz5VFE1SOdReVDmYmQrHNMBmQZECAIt6ISyPvA6WWt5dJX/v9
-         HKWDL7KmYMAbtFafzHoxXy4Deb0ow8jpZPuwhGGcm14+DcYhcUd4On6TCnl/tuXgzt+e
-         n/pA==
-X-Gm-Message-State: AOAM533/k+KPdExPAqiLhT6bhMthyf9l9JkURapWG1R+vvv5e0GvIHyC
-        ya5FSQFGtPD5WhNgWm6k+3K0rwtwQZN3o3kLQqkqm84J3wG3bocXaU6EdqzkmON/eZ9uqd//BKc
-        JUUj5vAT6RDQo5zxOCU63vHryy731rrwGb4mWIcI2Ly22I8VZ8s7/NpVVDRlVN6AtfJoqsXL7H4
-        w=
-X-Received: by 2002:a5d:51cf:: with SMTP id n15mr80160wrv.106.1636380428697;
-        Mon, 08 Nov 2021 06:07:08 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJxsYYuejGw7CybgaCxd/E1fUntxtMWk95iWPCbVv910JhxO1p9TBwfd54lnbUNLk9ILcI1Iiw==
-X-Received: by 2002:a5d:51cf:: with SMTP id n15mr80114wrv.106.1636380428489;
-        Mon, 08 Nov 2021 06:07:08 -0800 (PST)
+        bh=cHhiP8dWU/yCrRHfZ4flhCwBp7rRmlRP7VQTJMKR8q4=;
+        b=UsEP1Qj0VYobKovJWH/eN8Xw4ZarYxJwwvF/CJldg6QTeb6gyJLDgE4vbSZTYDEbTO
+         pd1eSCNR+IrHhma1/dhcKFNjUDbq1Xu6SrZalMtaPXguMgduF7KYMb8AaM6djA5C1vFb
+         Rl+Wncaj/hlH1lnzz6T5OmWSlclwP1SFW6wm/eW/m0YurMkxX9VJ9JxTv4Vd5Fj/Sq1T
+         w5dPjjlllUBvpNW1M/zIGMkSu/yGPQs0Zq28bKVofaCIauFcTzXPHhR0GSMsWsSTCURQ
+         a6bho2UmlFvzyKGpN3SdHfTs4XzQht0KIHRFlU9gvFzmyZwPYlOvibCV6mh1PteCnDLJ
+         E5Wg==
+X-Gm-Message-State: AOAM531x+kQ7PjC88fHy/YqS+Yy+FQ3EpQb4O9VXGcgI329kKsbt11a6
+        0wNXig4SD1XW+Vuzj1PReVSdBjsctZgvNxmeR36TAgySoGz2Oz+0Xg8/k4W6wo+VFI3GQC7xI0M
+        CRSDjijIWDf+zDPxC1hvKMvF1En4qwHVpSnzZHQLVf79AYeLy1rx/N/MeJPvU08kR00RJEXvD/5
+        0=
+X-Received: by 2002:a05:6000:1869:: with SMTP id d9mr23381wri.416.1636380429826;
+        Mon, 08 Nov 2021 06:07:09 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJxBR8kNUJGMU0WDyzFvHqppXC/rJqD8zpASqe2AAp4OC/OcZbz6W8aHlANT8ClrikiGMpRVMg==
+X-Received: by 2002:a05:6000:1869:: with SMTP id d9mr23323wri.416.1636380429544;
+        Mon, 08 Nov 2021 06:07:09 -0800 (PST)
 Received: from minerva.home ([92.176.231.106])
-        by smtp.gmail.com with ESMTPSA id m14sm10081696wrp.28.2021.11.08.06.07.07
+        by smtp.gmail.com with ESMTPSA id m14sm10081696wrp.28.2021.11.08.06.07.08
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 08 Nov 2021 06:07:08 -0800 (PST)
+        Mon, 08 Nov 2021 06:07:09 -0800 (PST)
 From:   Javier Martinez Canillas <javierm@redhat.com>
 To:     linux-kernel@vger.kernel.org
 Cc:     Pekka Paalanen <pekka.paalanen@collabora.com>,
@@ -62,52 +62,51 @@ Cc:     Pekka Paalanen <pekka.paalanen@collabora.com>,
         Jani Nikula <jani.nikula@intel.com>,
         =?UTF-8?q?Michel=20D=C3=A4nzer?= <michel@daenzer.net>,
         Javier Martinez Canillas <javierm@redhat.com>
-Subject: [PATCH v4 5/6] Documentation/admin-guide: Document nomodeset kernel parameter
-Date:   Mon,  8 Nov 2021 15:06:47 +0100
-Message-Id: <20211108140648.795268-6-javierm@redhat.com>
+Subject: [PATCH v4 6/6] drm: Make the nomodeset message less sensational
+Date:   Mon,  8 Nov 2021 15:06:48 +0100
+Message-Id: <20211108140648.795268-7-javierm@redhat.com>
 X-Mailer: git-send-email 2.33.1
 In-Reply-To: <20211108140648.795268-1-javierm@redhat.com>
 References: <20211108140648.795268-1-javierm@redhat.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The nomodeset kernel command line parameter is not documented. Its name
-is quite vague and is not intuitive what's the behaviour when it is set.
+The message printed when nomodeset is present in the kernel command line
+makes it look as if the parameter must never be used and it's a bad idea.
 
-Document in kernel-parameters.txt what actually happens when nomodeset
-is used. That way, users could know if they want to enable this option.
+But there are valid reasons to use this parameter and the message should
+not imply otherwise. Change the text to be more accurate and restrained.
 
+Suggested-by: Thomas Zimmermann <tzimmermann@suse.de>
 Signed-off-by: Javier Martinez Canillas <javierm@redhat.com>
 ---
 
 Changes in v4:
-- Don't mention the simpledrm driver and instead explain in high level
-  terms what the nomodeset option is about.
+- Don't mention DRM drivers in the kernel message and instead explain
+  that only the system framebuffer will be available.
 
- Documentation/admin-guide/kernel-parameters.txt | 7 +++++++
- 1 file changed, 7 insertions(+)
+ drivers/gpu/drm/drm_nomodeset.c | 4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
 
-diff --git Documentation/admin-guide/kernel-parameters.txt Documentation/admin-guide/kernel-parameters.txt
-index 91ba391f9b32..f6434aff943d 100644
---- Documentation/admin-guide/kernel-parameters.txt
-+++ Documentation/admin-guide/kernel-parameters.txt
-@@ -3521,6 +3521,13 @@
- 			shutdown the other cpus.  Instead use the REBOOT_VECTOR
- 			irq.
+diff --git drivers/gpu/drm/drm_nomodeset.c drivers/gpu/drm/drm_nomodeset.c
+index fc3acf3ab2e2..148b01f7183b 100644
+--- drivers/gpu/drm/drm_nomodeset.c
++++ drivers/gpu/drm/drm_nomodeset.c
+@@ -15,9 +15,7 @@ static int __init disable_modeset(char *str)
+ {
+ 	drm_nomodeset = true;
  
-+	nomodeset	Disable kernel modesetting. DRM drivers will not perform
-+			display-mode changes or accelerated rendering. Only the
-+			system framebuffer will be available for use if this was
-+			set-up by the firmware or boot loader.
-+
-+			Useful as fallback, or for testing and debugging.
-+
- 	nomodule	Disable module load
+-	pr_warn("You have booted with nomodeset. This means your GPU drivers are DISABLED\n");
+-	pr_warn("Any video related functionality will be severely degraded, and you may not even be able to suspend the system properly\n");
+-	pr_warn("Unless you actually understand what nomodeset does, you should reboot without enabling it\n");
++	pr_warn("Booted with the nomodeset parameter. Only the system framebuffer will be available\n");
  
- 	nopat		[X86] Disable PAT (page attribute table extension of
+ 	return 1;
+ }
 -- 
 2.33.1
 
