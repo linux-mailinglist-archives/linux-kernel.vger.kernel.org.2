@@ -2,95 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 73396449D0E
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Nov 2021 21:27:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D9625449D13
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Nov 2021 21:34:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238824AbhKHU2S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Nov 2021 15:28:18 -0500
-Received: from linux.microsoft.com ([13.77.154.182]:56542 "EHLO
-        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230243AbhKHU2Q (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Nov 2021 15:28:16 -0500
-Received: from kbox (unknown [24.17.193.74])
-        by linux.microsoft.com (Postfix) with ESMTPSA id CF63C20B416B;
-        Mon,  8 Nov 2021 12:25:31 -0800 (PST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com CF63C20B416B
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1636403131;
-        bh=YH2VeHXU1UeUcY3R8CfekvT7nVw4MlF6RZFh6JZYAQw=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=fhkLW0PlWcmizwhZCnFNDxRe0q3WGRSmPGOxKzkjEl027fRwNuA5Da1Z71aJnzXNV
-         p93Hp5NR98j8tayO2WZeP8KLAWXuHpjvAop3WvoUDLkRynAvVL6a8sv8eC8dB/WZxP
-         G7IqGr2KTM5nTbzsuMjNhas+vAiGVk3ooAzUCCLU=
-Date:   Mon, 8 Nov 2021 12:25:27 -0800
-From:   Beau Belgrave <beaub@linux.microsoft.com>
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     Masami Hiramatsu <mhiramat@kernel.org>,
-        linux-trace-devel@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v4 02/10] user_events: Add minimal support for
- trace_event into ftrace
-Message-ID: <20211108202527.GA1862@kbox>
-References: <20211104170433.2206-1-beaub@linux.microsoft.com>
- <20211104170433.2206-3-beaub@linux.microsoft.com>
- <20211107233115.1f77e93c4bdf3ff649be99c1@kernel.org>
- <20211108171336.GA1690@kbox>
- <20211108131639.33a4f186@gandalf.local.home>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211108131639.33a4f186@gandalf.local.home>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+        id S238850AbhKHUaI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Nov 2021 15:30:08 -0500
+Received: from mail.kernel.org ([198.145.29.99]:41900 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S236349AbhKHUaH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Nov 2021 15:30:07 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPS id B8E0D610A0;
+        Mon,  8 Nov 2021 20:27:22 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1636403242;
+        bh=Cyj8+E4a/i2GQxGBRu5O79r+7BKKyMbeXXI2M/rYch0=;
+        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
+        b=dp2A0c6t/uQDgA9OZlBkiT7rAXCcAOiHObHaeb1eqskP/zGgsCRxBWhi5zjtwtT+e
+         zb0Hj3kiAmiD7/KWqIwstcBpuOf6B21U2AgM8ppYfxDmRsu+XWiBdAaiKvMBz6BE3U
+         GxZOGbbsY4uIDSLopaX7rd4Ysz63fP1/QLOtOQ8hfCwJB2tKmfdp8otZ8WB1X1MJEL
+         Ly/8NpfVV/v+WC/fJE8RVZFu9MztIIEizkS9pOQ6C9U2c41VWIyMb3o48QupVvCN0e
+         4qWoyEa3DBB1WKg8lqzKKjx/Yst+mqdSNTveE/+IssotUOUX1Pnj7xeEKi388bnCKC
+         ubg/zHMMOkDCQ==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id AE78960A23;
+        Mon,  8 Nov 2021 20:27:22 +0000 (UTC)
+Subject: Re: [PULL REQUEST] i2c for v5.16
+From:   pr-tracker-bot@kernel.org
+In-Reply-To: <YYjfrZ69320no587@ninjato>
+References: <YYjfrZ69320no587@ninjato>
+X-PR-Tracked-List-Id: <linux-i2c.vger.kernel.org>
+X-PR-Tracked-Message-Id: <YYjfrZ69320no587@ninjato>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/wsa/linux.git i2c/for-mergewindow
+X-PR-Tracked-Commit-Id: c6f49acb52c79f8e84af2eda4fc002a2068a6c9e
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: dab334c98bf3563f57dc694242192f9e1cc95f96
+Message-Id: <163640324270.16718.7238205578260798433.pr-tracker-bot@kernel.org>
+Date:   Mon, 08 Nov 2021 20:27:22 +0000
+To:     Wolfram Sang <wsa@kernel.org>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Peter Rosin <peda@axentia.se>,
+        Bartosz Golaszewski <brgl@bgdev.pl>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 08, 2021 at 01:16:39PM -0500, Steven Rostedt wrote:
-> On Mon, 8 Nov 2021 09:13:36 -0800
-> Beau Belgrave <beaub@linux.microsoft.com> wrote:
-> 
-> 
-> > Does that mean the decoders in eprobes/histogram don't check event
-> > record sizes before accessing the data? Shouldn't that get fix
-> > centrally? That would mean a loaded module could do the same thing
-> > (user_events only works if the user has access to tracefs, so it's not
-> > like it's open to all users).
-> 
-> There's checks to make sure everything fits in eprobes and kprobes. If it
-> doesn't then the event is simply dropped.
-> 
-> For example, if you look at __eprobe_trace_func() in trace_eprobe.c, you'll
-> see that it calls get_eprobe_size(), which goes through and just reads what
-> it is about to accept. Then it reserves the amount of data on the ring
-> buffer, and then calls store_trace_args() which also passes in the size
-> that it found, in case things change. If it's too big, it only records what
-> it originally intended.
-> 
-> -- Steve
+The pull request you sent on Mon, 8 Nov 2021 09:28:29 +0100:
 
-It seems there are 2 concerns:
-1. If data comes in and it's not in the size that is specified, it's
-suspicious and should either be truncated or ignored. Maybe under
-ignore, over truncate.
+> git://git.kernel.org/pub/scm/linux/kernel/git/wsa/linux.git i2c/for-mergewindow
 
-2. If the data is more than specified, it must be checked to see if
-there are __data_loc / __rel_loc entries and they must be validated as
-within range of accepted limits. If there are no __data_loc / __rel_loc
-it should either be truncated or ignored.
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/dab334c98bf3563f57dc694242192f9e1cc95f96
 
-Is there more that I may have missed?
+Thank you!
 
-I'd like to know if I do fix them that the features like filtering will still
-be available to user_events or if it's better to just add flags to disable
-kernel filtering?
-
-I'm still unsure this is limited to just user_events.
-
-For example, why doesn't filter_pred_strloc and filter_pred_pchar in
-trace_events_filter.c check the boundary it will be accessing?
-
-It seems like tracepoints from kernel modules, while more trusted, can also
-cause this kind of thing due to bugs, etc.
-
-Thanks,
--Beau
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
