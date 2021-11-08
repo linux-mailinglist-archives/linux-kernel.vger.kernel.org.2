@@ -2,179 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 52B19449A96
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Nov 2021 18:13:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B459449A9E
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Nov 2021 18:15:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240554AbhKHRQb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Nov 2021 12:16:31 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50522 "EHLO
+        id S235143AbhKHRSJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Nov 2021 12:18:09 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50910 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240568AbhKHRQ3 (ORCPT
+        with ESMTP id S232444AbhKHRSI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Nov 2021 12:16:29 -0500
-Received: from mail-pg1-x52d.google.com (mail-pg1-x52d.google.com [IPv6:2607:f8b0:4864:20::52d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 36B31C061714
-        for <linux-kernel@vger.kernel.org>; Mon,  8 Nov 2021 09:13:45 -0800 (PST)
-Received: by mail-pg1-x52d.google.com with SMTP id g28so7090305pgg.3
-        for <linux-kernel@vger.kernel.org>; Mon, 08 Nov 2021 09:13:45 -0800 (PST)
+        Mon, 8 Nov 2021 12:18:08 -0500
+Received: from mail-lj1-x22a.google.com (mail-lj1-x22a.google.com [IPv6:2a00:1450:4864:20::22a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DFE45C061714
+        for <linux-kernel@vger.kernel.org>; Mon,  8 Nov 2021 09:15:23 -0800 (PST)
+Received: by mail-lj1-x22a.google.com with SMTP id i26so30850439ljg.7
+        for <linux-kernel@vger.kernel.org>; Mon, 08 Nov 2021 09:15:23 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=UVBRwM2ywmCSM5TwIcqwKRvKzslFcfi0YeZ+8cTRmV0=;
-        b=NX+ve8Dn5OA9eOLlStVTIVoE5zibeGgWI5YaJs3GJWXIQjzmt9eFAuSj1s+NeqfqrI
-         1ZLUBgoGU/uSPjO1Up+zpKGsLYXGki1f+eJ3MntR+gS7e5ksRjULfJ/Drj+daopgt8wt
-         ZNKBUc50MSPmzD8O/MgEyXuoiMjjMf+T/S4pXF2UXo0ABTN7kTYUe/DnZehztKXDDI29
-         q6HZZbqmrU71x3OwzSJR43f/HN9UtzxNCbXkz6KnKBo8c3vvIauf2z6Fuy5W5huwwtep
-         IvT7OSv/saYA2MnSPKDOogW7sX/CNg6v9IK2BnpB+fc2177J4K0h7N/SP9tUbMdRI21K
-         U2aQ==
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=rbpdyFuvgnoYbw1vZgGRR04p1YqU09F597l56zKmF5w=;
+        b=FdCbgZN5IkZRTACGx4tQGD9MUZfbCwA5BvyKga8l1/thVsThgJm6EHhUaGhiLre9b8
+         VZqn5LxxZNoX8nRPRMtTCXeT0KGbklOBxHqTo0FHM8VpeG/2skIx/R+GTTYKp1Vgm57h
+         12Orvhq0BPMVrQzkqorerKNGwUAS3ZkCBn1+4=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=UVBRwM2ywmCSM5TwIcqwKRvKzslFcfi0YeZ+8cTRmV0=;
-        b=TYEiA7J8PaNTyCQaxpguGtcWfaC/NqVl46x6XJRv1cqDUOiC0+JlrcrUFYYJL2Wor7
-         dTupKdHF5SOCesdjCsitJ1D+zJvo9N+CrRkb6eDUgRj0HCUJ/5h2x+jVTV1h8uXA7whw
-         7RQvONnvsGnMQMAGcW/2bWML/Bxg7rtj9qY+6UZW7hnXWFoReqx3Zq+/AdPvakNrxHGE
-         FRsV6DePnF6JWq9JiayhEfYgBCqHSr/OckqTUi7bfPLkcin2P6ZVCaTaaMYrRaZgqAH4
-         KEXjIsmdGK6++2ik30sDjuUVG/0UC/+AgGMC1HB3fBGb9c6DR6Asizm8qVaj2CQmFbne
-         74Cg==
-X-Gm-Message-State: AOAM530TjouE6gYGLTdaepe+vBAlRgLRyncfUM95h77WQ/EgYevXyNl0
-        kksQWqSrOUClJcZwkVmTao0tqg==
-X-Google-Smtp-Source: ABdhPJxwT8IV8PF5RHJgKjcEdkyOSI67ELP/ghLY1sgbRlnMe/Y/rEztbFjItedVZKuU/VcWzFtaAw==
-X-Received: by 2002:a63:db4d:: with SMTP id x13mr705077pgi.147.1636391624426;
-        Mon, 08 Nov 2021 09:13:44 -0800 (PST)
-Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
-        by smtp.gmail.com with ESMTPSA id d7sm17344672pfj.91.2021.11.08.09.13.43
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 08 Nov 2021 09:13:43 -0800 (PST)
-Date:   Mon, 8 Nov 2021 17:13:39 +0000
-From:   Sean Christopherson <seanjc@google.com>
-To:     Chenyi Qiang <chenyi.qiang@intel.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Xiaoyao Li <xiaoyao.li@intel.com>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v5 2/7] KVM: VMX: Add proper cache tracking for PKRS
-Message-ID: <YYlaw6v6GOgFUQ/Z@google.com>
-References: <20210811101126.8973-1-chenyi.qiang@intel.com>
- <20210811101126.8973-3-chenyi.qiang@intel.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=rbpdyFuvgnoYbw1vZgGRR04p1YqU09F597l56zKmF5w=;
+        b=2domiwAJ5hpqK3fMZAA4fEE5T/WtWGY+t/WQTlJG5hhbefKesKFZS/8nUA9TilXnMG
+         2XHyI8UmNAlteP49yLSUH5d/ASYiHxwnB8TEMWXIoInjev5d4JeKQzmXyVuDBZEeAf2e
+         SNAndH8uumAgu46T49MtwLNCdd7CevBb+APpaYIDFvZjuIsi3WfXkGypLuDZYmSjwdru
+         peINpwA7PRTkEByJ3WLE0/YMlOhUiAl06CVAg3X/xQx1XWcT1kl0vJd/SoGVsIZ3HEzo
+         mmrHZP4T9+0QFeRUyhKGVi56UogbYspfO9lwC9qm11T7iuclgaJESluxuYYKTl9YnZ7I
+         /yyg==
+X-Gm-Message-State: AOAM530HUeZFwmkAcnf0L4ShG/+4w3MPOXlsKJRLop3klTIuF3p9Effs
+        uGPTSOvP3sh5Ou18Hbw8mILCQtT0/9bZJbUb
+X-Google-Smtp-Source: ABdhPJzNSqqd+Jjxcqmfi/jINtIYoGxCtRpOKSAYQ5DyA4OvGqSCixUE8LHBxFXfe/icvzBbjc8RFA==
+X-Received: by 2002:a2e:9915:: with SMTP id v21mr565368lji.155.1636391722036;
+        Mon, 08 Nov 2021 09:15:22 -0800 (PST)
+Received: from mail-lf1-f50.google.com (mail-lf1-f50.google.com. [209.85.167.50])
+        by smtp.gmail.com with ESMTPSA id s17sm2082674lfe.10.2021.11.08.09.15.20
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 08 Nov 2021 09:15:21 -0800 (PST)
+Received: by mail-lf1-f50.google.com with SMTP id j10so12331351lfu.4
+        for <linux-kernel@vger.kernel.org>; Mon, 08 Nov 2021 09:15:20 -0800 (PST)
+X-Received: by 2002:ac2:57d3:: with SMTP id k19mr843202lfo.150.1636391719818;
+ Mon, 08 Nov 2021 09:15:19 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210811101126.8973-3-chenyi.qiang@intel.com>
+References: <20211105133408.cccbb98b71a77d5e8430aba1@linux-foundation.org>
+ <20211105203950.AJ1Cnteeh%akpm@linux-foundation.org> <YYjs7UT15WIF23DJ@dhcp22.suse.cz>
+In-Reply-To: <YYjs7UT15WIF23DJ@dhcp22.suse.cz>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Mon, 8 Nov 2021 09:15:04 -0800
+X-Gmail-Original-Message-ID: <CAHk-=wjov5-baOgf+r7bOh=P_YCHuxBcyf_b=or990RTxz5QAw@mail.gmail.com>
+Message-ID: <CAHk-=wjov5-baOgf+r7bOh=P_YCHuxBcyf_b=or990RTxz5QAw@mail.gmail.com>
+Subject: Re: [patch 099/262] mm/vmalloc: be more explicit about supported gfp flags
+To:     Michal Hocko <mhocko@suse.com>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Dave Chinner <david@fromorbit.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        Ilya Dryomov <idryomov@gmail.com>,
+        Jeff Layton <jlayton@kernel.org>,
+        Linux-MM <linux-mm@kvack.org>, mm-commits@vger.kernel.org,
+        Neil Brown <neilb@suse.de>, Uladzislau Rezki <urezki@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 11, 2021, Chenyi Qiang wrote:
-> Add PKRS caching into the standard register caching mechanism in order
-> to take advantage of the availability checks provided by regs_avail.
-> 
-> This is because vcpu->arch.pkrs will be rarely acceesed by KVM, only in
-> the case of host userspace MSR reads and GVA->GPA translation in
-> following patches. It is unnecessary to keep it up-to-date at all times.
-> 
-> Signed-off-by: Chenyi Qiang <chenyi.qiang@intel.com>
-> ---
->  arch/x86/include/asm/kvm_host.h | 2 ++
->  arch/x86/kvm/kvm_cache_regs.h   | 7 +++++++
->  arch/x86/kvm/vmx/vmx.c          | 4 ++++
->  arch/x86/kvm/vmx/vmx.h          | 3 ++-
->  4 files changed, 15 insertions(+), 1 deletion(-)
-> 
-> diff --git a/arch/x86/include/asm/kvm_host.h b/arch/x86/include/asm/kvm_host.h
-> index 974cbfb1eefe..c2bcb88781b3 100644
-> --- a/arch/x86/include/asm/kvm_host.h
-> +++ b/arch/x86/include/asm/kvm_host.h
-> @@ -173,6 +173,7 @@ enum kvm_reg {
->  	VCPU_EXREG_SEGMENTS,
->  	VCPU_EXREG_EXIT_INFO_1,
->  	VCPU_EXREG_EXIT_INFO_2,
-> +	VCPU_EXREG_PKRS,
->  };
->  
->  enum {
-> @@ -620,6 +621,7 @@ struct kvm_vcpu_arch {
->  	unsigned long cr8;
->  	u32 host_pkru;
->  	u32 pkru;
-> +	u32 pkrs;
->  	u32 hflags;
->  	u64 efer;
->  	u64 apic_base;
-> diff --git a/arch/x86/kvm/kvm_cache_regs.h b/arch/x86/kvm/kvm_cache_regs.h
-> index 90e1ffdc05b7..da014b1be874 100644
-> --- a/arch/x86/kvm/kvm_cache_regs.h
-> +++ b/arch/x86/kvm/kvm_cache_regs.h
-> @@ -171,6 +171,13 @@ static inline u64 kvm_read_edx_eax(struct kvm_vcpu *vcpu)
->  		| ((u64)(kvm_rdx_read(vcpu) & -1u) << 32);
->  }
->  
-> +static inline ulong kvm_read_pkrs(struct kvm_vcpu *vcpu)
+On Mon, Nov 8, 2021 at 1:25 AM Michal Hocko <mhocko@suse.com> wrote:
+>
+> As already pointed out
+> http://lkml.kernel.org/r/YXE+hcodJ7zxeYA7@dhcp22.suse.cz this patch
+> cannot be applied without other patches from the same series.
 
-Return value should be u32 (or u64 if we decide to track PKRS as a 64-bit value).
+Hmm. I've taken it already.
 
-> +{
-> +	if (!kvm_register_is_available(vcpu, VCPU_EXREG_PKRS))
-> +		static_call(kvm_x86_cache_reg)(vcpu, VCPU_EXREG_PKRS);
-> +	return vcpu->arch.pkrs;
-> +}
-> +
->  static inline void enter_guest_mode(struct kvm_vcpu *vcpu)
->  {
->  	vcpu->arch.hflags |= HF_GUEST_MASK;
-> diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
-> index 927a552393b9..bf911029aa35 100644
-> --- a/arch/x86/kvm/vmx/vmx.c
-> +++ b/arch/x86/kvm/vmx/vmx.c
-> @@ -2273,6 +2273,10 @@ static void vmx_cache_reg(struct kvm_vcpu *vcpu, enum kvm_reg reg)
->  		vcpu->arch.cr4 &= ~guest_owned_bits;
->  		vcpu->arch.cr4 |= vmcs_readl(GUEST_CR4) & guest_owned_bits;
->  		break;
-> +	case VCPU_EXREG_PKRS:
-> +		if (kvm_cpu_cap_has(X86_FEATURE_PKS))
+Not a huge deal, since it's a comment change - and the code will
+presumably eventually match the updated comment.
 
-Peeking ahead, the next patch rejects RDMSR(MSR_IA32_PKRS) if X86_FEATURE_PKS isn't
-supported in KVM, i.e. this is WARN-worthy as KVM should PKRS if and only if PKS is
-supported.  Since KVM will WARN if VMREAD fails, just omit this check and let VMREAD
-handle any errors.  That won't detect the scenario where PKRS is supported in hardware
-but disabled by the kernel/KVM, but that's an acceptable risk since any buggy path is
-all but guaranteed to be reachable if PKRS isn't supported at all, i.e. the WARN will
-fire and detect any bug in the more common case.
+I guess it's a new thing that instead of stale comments, we have
+future-proof ones ;)
 
-> +			vcpu->arch.pkrs = vmcs_read64(GUEST_IA32_PKRS);
-
-Hrm.  I agree that it's extremely unlikely that IA32_PKRS will ever allow software
-to set bits 63:32, but at the same time there's no real advantage to KVM it as a u32,
-e.g. the extra 4 bytes per vCPU is a non-issue, and could be avoided by shuffling
-kvm_vcpu_arch to get a more efficient layout.  On the flip side, using a 32 means
-code like this _looks_ buggy because it's silently dropping bits 63:32, and if the
-architecture ever does get updated, we'll have to modify a bunch of KVM code.
-
-TL;DR: I vote to track PRKS as a u64 even though the kernel tracks it as a u32.
-
-> +		break;
->  	default:
->  		WARN_ON_ONCE(1);
->  		break;
-> diff --git a/arch/x86/kvm/vmx/vmx.h b/arch/x86/kvm/vmx/vmx.h
-> index db88ed4f2121..18039eb6efb0 100644
-> --- a/arch/x86/kvm/vmx/vmx.h
-> +++ b/arch/x86/kvm/vmx/vmx.h
-> @@ -447,7 +447,8 @@ static inline void vmx_register_cache_reset(struct kvm_vcpu *vcpu)
->  				  | (1 << VCPU_EXREG_CR3)
->  				  | (1 << VCPU_EXREG_CR4)
->  				  | (1 << VCPU_EXREG_EXIT_INFO_1)
-> -				  | (1 << VCPU_EXREG_EXIT_INFO_2));
-> +				  | (1 << VCPU_EXREG_EXIT_INFO_2)
-> +				  | (1 << VCPU_EXREG_PKRS));
->  	vcpu->arch.regs_dirty = 0;
->  }
->  
-> -- 
-> 2.17.1
-> 
+              Linus
