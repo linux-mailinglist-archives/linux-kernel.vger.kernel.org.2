@@ -2,204 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0268F447DE4
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Nov 2021 11:26:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C2435447DEB
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Nov 2021 11:26:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236737AbhKHK2g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Nov 2021 05:28:36 -0500
-Received: from smtp-fw-6002.amazon.com ([52.95.49.90]:41329 "EHLO
-        smtp-fw-6002.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238090AbhKHK2Y (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Nov 2021 05:28:24 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
-  t=1636367141; x=1667903141;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=qUEuuOTwOL/Sc+ZmTr1vMvS1cNvU1oSNVa+4ZqCmXaU=;
-  b=cKyluXR9hTq7AfxCnEOLT8yjvODqGoJYsdzM4e+7NOjNZnQ4gg+oeFnh
-   FAe9bbMinU45StyPa92OSZ1u+O0sknXdARuAOp3KQ+DSEU5RBQU9Isjr8
-   89b2DzEGXawBfdPZzQYVC/fQUPbh/rtv+KL4tMan8b/t3yAyJ/Mnphaoy
-   g=;
-X-IronPort-AV: E=Sophos;i="5.87,218,1631577600"; 
-   d="scan'208";a="153427025"
-Received: from iad12-co-svc-p1-lb1-vlan2.amazon.com (HELO email-inbound-relay-pdx-2c-9ec26c6c.us-west-2.amazon.com) ([10.43.8.2])
-  by smtp-border-fw-6002.iad6.amazon.com with ESMTP; 08 Nov 2021 10:25:39 +0000
-Received: from EX13D16EUB003.ant.amazon.com (pdx1-ws-svc-p6-lb9-vlan3.pdx.amazon.com [10.236.137.198])
-        by email-inbound-relay-pdx-2c-9ec26c6c.us-west-2.amazon.com (Postfix) with ESMTPS id B5D6E41918;
-        Mon,  8 Nov 2021 10:25:38 +0000 (UTC)
-Received: from [192.168.16.189] (10.43.162.100) by
- EX13D16EUB003.ant.amazon.com (10.43.166.99) with Microsoft SMTP Server (TLS)
- id 15.0.1497.24; Mon, 8 Nov 2021 10:25:31 +0000
-Message-ID: <855a8af8-731a-41b8-4d1a-eb3900732746@amazon.com>
-Date:   Mon, 8 Nov 2021 12:25:26 +0200
+        id S238002AbhKHK3M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Nov 2021 05:29:12 -0500
+Received: from foss.arm.com ([217.140.110.172]:48408 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S237572AbhKHK2s (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Nov 2021 05:28:48 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 257AB1FB;
+        Mon,  8 Nov 2021 02:26:01 -0800 (PST)
+Received: from FVFF77S0Q05N (unknown [10.57.58.140])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id C89913F800;
+        Mon,  8 Nov 2021 02:25:58 -0800 (PST)
+Date:   Mon, 8 Nov 2021 10:25:52 +0000
+From:   Mark Rutland <mark.rutland@arm.com>
+To:     Brad Larson <brad@pensando.io>
+Cc:     Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Mark Brown <broonie@kernel.org>,
+        Serge Semin <fancer.lancer@gmail.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Olof Johansson <olof@lixom.net>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        linux-spi <linux-spi@vger.kernel.org>,
+        linux-mmc <linux-mmc@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v3 11/11] arm64: dts: Add Pensando Elba SoC support
+Message-ID: <YYj7MA4D1zCF39lh@FVFF77S0Q05N>
+References: <20211025015156.33133-1-brad@pensando.io>
+ <20211025015156.33133-12-brad@pensando.io>
+ <20211025091731.GA2001@C02TD0UTHF1T.local>
+ <CAK9rFnx7DgS3TYMmu5NBacV_6WC_UwJ=u7n3e_fGd0RpEcg3kA@mail.gmail.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:91.0)
- Gecko/20100101 Thunderbird/91.3.0
-Subject: Re: [PATCH v5 4/4] nitro_enclaves: Add KUnit tests for contiguous
- physical memory regions merging
-Content-Language: en-US
-To:     "Longpeng(Mike)" <longpeng2@huawei.com>
-CC:     <arei.gonglei@huawei.com>, <gregkh@linuxfoundation.org>,
-        <kamal@canonical.com>, <pbonzini@redhat.com>,
-        <sgarzare@redhat.com>, <stefanha@redhat.com>,
-        <vkuznets@redhat.com>, <linux-kernel@vger.kernel.org>,
-        <ne-devel-upstream@amazon.com>, <lexnv@amazon.com>,
-        <alcioa@amazon.com>
-References: <20211107140918.2106-1-longpeng2@huawei.com>
- <20211107140918.2106-5-longpeng2@huawei.com>
-From:   "Paraschiv, Andra-Irina" <andraprs@amazon.com>
-In-Reply-To: <20211107140918.2106-5-longpeng2@huawei.com>
-X-Originating-IP: [10.43.162.100]
-X-ClientProxiedBy: EX13D47UWA002.ant.amazon.com (10.43.163.30) To
- EX13D16EUB003.ant.amazon.com (10.43.166.99)
-Content-Type: text/plain; charset="utf-8"; format="flowed"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAK9rFnx7DgS3TYMmu5NBacV_6WC_UwJ=u7n3e_fGd0RpEcg3kA@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-CgpPbiAwNy8xMS8yMDIxIDE2OjA5LCBMb25ncGVuZyhNaWtlKSB3cm90ZToKPiAKPiBGcm9tOiBM
-b25ncGVuZyA8bG9uZ3BlbmcyQGh1YXdlaS5jb20+Cj4gCj4gQWRkIEtVbml0IHRlc3RzIGZvciB0
-aGUgY29udGlndW91cyBwaHlzaWNhbCBtZW1vcnkgcmVnaW9ucyBtZXJnaW5nCj4gZnVuY3Rpb25h
-bGl0eSBmcm9tIHRoZSBOaXRybyBFbmNsYXZlcyBtaXNjIGRldmljZSBsb2dpYy4KPiAKPiBXZSBj
-YW4gYnVpbGQgdGhlIHRlc3QgYmluYXJ5IHdpdGggdGhlIGZvbGxvd2luZyBjb25maWd1cmF0aW9u
-Ogo+ICAgIENPTkZJR19LVU5JVD15Cj4gICAgQ09ORklHX05JVFJPX0VOQ0xBVkVTPW0KPiAgICBD
-T05GSUdfTklUUk9fRU5DTEFWRVNfTUlTQ19ERVZfVEVTVD15Cj4gYW5kIGluc3RhbGwgdGhlIG5p
-dHJvX2VuY2xhdmVzIG1vZHVsZSB0byBydW4gdGhlIHRlc3RjYXNlcy4KPiAKPiBXZSdsbCBzZWUg
-dGhlIGZvbGxvd2luZyBtZXNzYWdlIHVzaW5nIGRtZXNnIGlmIGV2ZXJ5dGhpbmcgZ29lcyB3ZWxs
-Ogo+IAo+IFsuLi5dICAgICAjIFN1YnRlc3Q6IG5lX21pc2NfZGV2X3Rlc3QKPiBbLi4uXSAgICAg
-MS4uMQo+IFsuLi5dIChOVUxMIGRldmljZSAqKTogUGh5c2ljYWwgbWVtIHJlZ2lvbiBhZGRyZXNz
-IGlzIG5vdCAyIE1pQiBhbGlnbmVkCj4gWy4uLl0gKE5VTEwgZGV2aWNlICopOiBQaHlzaWNhbCBt
-ZW0gcmVnaW9uIHNpemUgaXMgbm90IG11bHRpcGxlIG9mIDIgTWlCCj4gWy4uLl0gKE5VTEwgZGV2
-aWNlICopOiBQaHlzaWNhbCBtZW0gcmVnaW9uIGFkZHJlc3MgaXMgbm90IDIgTWlCIGFsaWduZWQK
-PiBbLi4uXSAgICAgb2sgMSAtIG5lX21pc2NfZGV2X3Rlc3RfbWVyZ2VfcGh5c19jb250aWdfbWVt
-b3J5X3JlZ2lvbnMKPiBbLi4uXSBvayAxIC0gbmVfbWlzY19kZXZfdGVzdAo+IAo+IFNpZ25lZC1v
-ZmYtYnk6IExvbmdwZW5nIDxsb25ncGVuZzJAaHVhd2VpLmNvbT4KPiAtLS0KPiBDaGFuZ2VzIHY0
-IC0+IHY1Ogo+ICAgIC0gZml4IHRoZSB3YXJuaW5nIG9mIGFsaWdtZW50IHRoYXQgcmVwb3J0ZWQg
-YnkgdGhlIGNoZWNrcGF0aC5wbCAgW0FuZHJhXQo+ICAgIC0gcmVtb3ZlIHVubmVjZXNzYXJ5IGNv
-bXBhcmlzb24gb2YgTlVMTC4gIFtBbmRyYV0KPiAKPiBDaGFuZ2VzIHYzIC0+IHY0Ogo+ICAgIC0g
-ImludCBleHBlY3RfbnVtIiAtPiAidW5zaWduZWQgbG9uZyAgZXhwZWN0X251bSIgIFtBbmRyYV0K
-PiAgICAtIHJlbmFtZSBzZXZlcmFsIHZhcmlhYmxlcyBhbmQgc3RydWN0dXJlcyAgW0FuZHJhXQo+
-ICAgIC0gaW52b2tlICJrdW5pdF9rZnJlZSIgdG8gZnJlZSB0aGUgInJlZ2lvbnMiICBbQW5kcmFd
-Cj4gCj4gQ2hhbmdlcyB2MiAtPiB2MzoKPiAgICAtIHVwZGF0ZSB0aGUgY29tbWl0IHRpdGxlIGFu
-ZCBjb21taXQgbWVzc2FnZS4gIFtBbmRyYV0KPiAgICAtIGFsaWduIHRoZSBmaWxlZHMgaW4gJ3N0
-cnVjdCBwaHlzX3JlZ2lvbnNfdGVzdCcuICBbQW5kcmFdCj4gICAgLSByZW5hbWUgJ3BoeXNfcmVn
-aW9uc190ZXN0Y2FzZXMnIHRvICdwaHlzX3JlZ2lvbnNfdGVzdF9jYXNlcycuICBbQW5kcmFdCj4g
-ICAgLSBhZGQgY29tbWVudHMgYmVmb3JlIGVhY2ggdGVzdCBjYXNlcy4gIFtBbmRyYV0KPiAgICAt
-IGluaXRpYWxpemUgdGhlIHZhcmlhYmxlcyBpbiBuZV9taXNjX2Rldl90ZXN0X21lcmdlX3BoeXNf
-Y29udGlnX21lbW9yeV9yZWdpb25zLiAgW0FuZHJhXQo+IC0tLQo+ICAgZHJpdmVycy92aXJ0L25p
-dHJvX2VuY2xhdmVzL25lX21pc2NfZGV2X3Rlc3QuYyB8IDE0MCArKysrKysrKysrKysrKysrKysr
-KysrKysrCj4gICAxIGZpbGUgY2hhbmdlZCwgMTQwIGluc2VydGlvbnMoKykKPiAKClJldmlld2Vk
-LWJ5OiBBbmRyYSBQYXJhc2NoaXYgPGFuZHJhcHJzQGFtYXpvbi5jb20+CgpUaGFua3MsCkFuZHJh
-Cgo+IGRpZmYgLS1naXQgYS9kcml2ZXJzL3ZpcnQvbml0cm9fZW5jbGF2ZXMvbmVfbWlzY19kZXZf
-dGVzdC5jIGIvZHJpdmVycy92aXJ0L25pdHJvX2VuY2xhdmVzL25lX21pc2NfZGV2X3Rlc3QuYwo+
-IGluZGV4IDY4NjJlOTkuLjI2NTc5N2IgMTAwNjQ0Cj4gLS0tIGEvZHJpdmVycy92aXJ0L25pdHJv
-X2VuY2xhdmVzL25lX21pc2NfZGV2X3Rlc3QuYwo+ICsrKyBiL2RyaXZlcnMvdmlydC9uaXRyb19l
-bmNsYXZlcy9uZV9taXNjX2Rldl90ZXN0LmMKPiBAQCAtMiw3ICsyLDE0NyBAQAo+IAo+ICAgI2lu
-Y2x1ZGUgPGt1bml0L3Rlc3QuaD4KPiAKPiArI2RlZmluZSBNQVhfUEhZU19SRUdJT05TICAgICAg
-IDE2Cj4gKyNkZWZpbmUgSU5WQUxJRF9WQUxVRSAgICAgICAgICAofjB1bGwpCj4gKwo+ICtzdHJ1
-Y3QgbmVfcGh5c19yZWdpb25zX3Rlc3Qgewo+ICsgICAgICAgdTY0ICAgICAgICAgICBwYWRkcjsK
-PiArICAgICAgIHU2NCAgICAgICAgICAgc2l6ZTsKPiArICAgICAgIGludCAgICAgICAgICAgZXhw
-ZWN0X3JjOwo+ICsgICAgICAgdW5zaWduZWQgbG9uZyBleHBlY3RfbnVtOwo+ICsgICAgICAgdTY0
-ICAgICAgICAgICBleHBlY3RfbGFzdF9wYWRkcjsKPiArICAgICAgIHU2NCAgICAgICAgICAgZXhw
-ZWN0X2xhc3Rfc2l6ZTsKPiArfSBwaHlzX3JlZ2lvbnNfdGVzdF9jYXNlc1tdID0gewo+ICsgICAg
-ICAgLyoKPiArICAgICAgICAqIEFkZCB0aGUgcmVnaW9uIGZyb20gMHgxMDAwIHRvICgweDEwMDAg
-KyAweDIwMDAwMCAtIDEpOgo+ICsgICAgICAgICogICBFeHBlY3RlZCByZXN1bHQ6Cj4gKyAgICAg
-ICAgKiAgICAgICBGYWlsZWQsIHN0YXJ0IGFkZHJlc3MgaXMgbm90IDJNLWFsaWduZWQKPiArICAg
-ICAgICAqCj4gKyAgICAgICAgKiBOb3cgdGhlIGluc3RhbmNlIG9mIHN0cnVjdCBuZV9waHlzX2Nv
-bnRpZ19tZW1fcmVnaW9ucyBpczoKPiArICAgICAgICAqICAgbnVtID0gMAo+ICsgICAgICAgICog
-ICByZWdpb25zID0ge30KPiArICAgICAgICAqLwo+ICsgICAgICAgezB4MTAwMCwgMHgyMDAwMDAs
-IC1FSU5WQUwsIDAsIElOVkFMSURfVkFMVUUsIElOVkFMSURfVkFMVUV9LAo+ICsKPiArICAgICAg
-IC8qCj4gKyAgICAgICAgKiBBZGQgdGhlIHJlZ2lvbiBmcm9tIDB4MjAwMDAwIHRvICgweDIwMDAw
-MCArIDB4MTAwMCAtIDEpOgo+ICsgICAgICAgICogICBFeHBlY3RlZCByZXN1bHQ6Cj4gKyAgICAg
-ICAgKiAgICAgICBGYWlsZWQsIHNpemUgaXMgbm90IDJNLWFsaWduZWQKPiArICAgICAgICAqCj4g
-KyAgICAgICAgKiBOb3cgdGhlIGluc3RhbmNlIG9mIHN0cnVjdCBuZV9waHlzX2NvbnRpZ19tZW1f
-cmVnaW9ucyBpczoKPiArICAgICAgICAqICAgbnVtID0gMAo+ICsgICAgICAgICogICByZWdpb25z
-ID0ge30KPiArICAgICAgICAqLwo+ICsgICAgICAgezB4MjAwMDAwLCAweDEwMDAsIC1FSU5WQUws
-IDAsIElOVkFMSURfVkFMVUUsIElOVkFMSURfVkFMVUV9LAo+ICsKPiArICAgICAgIC8qCj4gKyAg
-ICAgICAgKiBBZGQgdGhlIHJlZ2lvbiBmcm9tIDB4MjAwMDAwIHRvICgweDIwMDAwMCArIDB4MjAw
-MDAwIC0gMSk6Cj4gKyAgICAgICAgKiAgIEV4cGVjdGVkIHJlc3VsdDoKPiArICAgICAgICAqICAg
-ICAgIFN1Y2Nlc3NmdWwKPiArICAgICAgICAqCj4gKyAgICAgICAgKiBOb3cgdGhlIGluc3RhbmNl
-IG9mIHN0cnVjdCBuZV9waHlzX2NvbnRpZ19tZW1fcmVnaW9ucyBpczoKPiArICAgICAgICAqICAg
-bnVtID0gMQo+ICsgICAgICAgICogICByZWdpb25zID0gewo+ICsgICAgICAgICogICAgICAge3N0
-YXJ0PTB4MjAwMDAwLCBlbmQ9MHgzZmZmZmZ9LCAvLyBsZW49MHgyMDAwMDAKPiArICAgICAgICAq
-ICAgfQo+ICsgICAgICAgICovCj4gKyAgICAgICB7MHgyMDAwMDAsIDB4MjAwMDAwLCAwLCAxLCAw
-eDIwMDAwMCwgMHgyMDAwMDB9LAo+ICsKPiArICAgICAgIC8qCj4gKyAgICAgICAgKiBBZGQgdGhl
-IHJlZ2lvbiBmcm9tIDB4MCB0byAoMHgwICsgMHgyMDAwMDAgLSAxKToKPiArICAgICAgICAqICAg
-RXhwZWN0ZWQgcmVzdWx0Ogo+ICsgICAgICAgICogICAgICAgU3VjY2Vzc2Z1bAo+ICsgICAgICAg
-ICoKPiArICAgICAgICAqIE5vdyB0aGUgaW5zdGFuY2Ugb2Ygc3RydWN0IG5lX3BoeXNfY29udGln
-X21lbV9yZWdpb25zIGlzOgo+ICsgICAgICAgICogICBudW0gPSAyCj4gKyAgICAgICAgKiAgIHJl
-Z2lvbnMgPSB7Cj4gKyAgICAgICAgKiAgICAgICB7c3RhcnQ9MHgyMDAwMDAsIGVuZD0weDNmZmZm
-Zn0sIC8vIGxlbj0weDIwMDAwMAo+ICsgICAgICAgICogICAgICAge3N0YXJ0PTB4MCwgICAgICBl
-bmQ9MHgxZmZmZmZ9LCAvLyBsZW49MHgyMDAwMDAKPiArICAgICAgICAqICAgfQo+ICsgICAgICAg
-ICovCj4gKyAgICAgICB7MHgwLCAweDIwMDAwMCwgMCwgMiwgMHgwLCAweDIwMDAwMH0sCj4gKwo+
-ICsgICAgICAgLyoKPiArICAgICAgICAqIEFkZCB0aGUgcmVnaW9uIGZyb20gMHg2MDAwMDAgdG8g
-KDB4NjAwMDAwICsgMHg0MDAwMDAgLSAxKToKPiArICAgICAgICAqICAgRXhwZWN0ZWQgcmVzdWx0
-Ogo+ICsgICAgICAgICogICAgICAgU3VjY2Vzc2Z1bAo+ICsgICAgICAgICoKPiArICAgICAgICAq
-IE5vdyB0aGUgaW5zdGFuY2Ugb2Ygc3RydWN0IG5lX3BoeXNfY29udGlnX21lbV9yZWdpb25zIGlz
-Ogo+ICsgICAgICAgICogICBudW0gPSAzCj4gKyAgICAgICAgKiAgIHJlZ2lvbnMgPSB7Cj4gKyAg
-ICAgICAgKiAgICAgICB7c3RhcnQ9MHgyMDAwMDAsIGVuZD0weDNmZmZmZn0sIC8vIGxlbj0weDIw
-MDAwMAo+ICsgICAgICAgICogICAgICAge3N0YXJ0PTB4MCwgICAgICBlbmQ9MHgxZmZmZmZ9LCAv
-LyBsZW49MHgyMDAwMDAKPiArICAgICAgICAqICAgICAgIHtzdGFydD0weDYwMDAwMCwgZW5kPTB4
-OWZmZmZmfSwgLy8gbGVuPTB4NDAwMDAwCj4gKyAgICAgICAgKiAgIH0KPiArICAgICAgICAqLwo+
-ICsgICAgICAgezB4NjAwMDAwLCAweDQwMDAwMCwgMCwgMywgMHg2MDAwMDAsIDB4NDAwMDAwfSwK
-PiArCj4gKyAgICAgICAvKgo+ICsgICAgICAgICogQWRkIHRoZSByZWdpb24gZnJvbSAweGEwMDAw
-MCB0byAoMHhhMDAwMDAgKyAweDQwMDAwMCAtIDEpOgo+ICsgICAgICAgICogICBFeHBlY3RlZCBy
-ZXN1bHQ6Cj4gKyAgICAgICAgKiAgICAgICBTdWNjZXNzZnVsLCBtZXJnaW5nIGNhc2UhCj4gKyAg
-ICAgICAgKgo+ICsgICAgICAgICogTm93IHRoZSBpbnN0YW5jZSBvZiBzdHJ1Y3QgbmVfcGh5c19j
-b250aWdfbWVtX3JlZ2lvbnMgaXM6Cj4gKyAgICAgICAgKiAgIG51bSA9IDMKPiArICAgICAgICAq
-ICAgcmVnaW9ucyA9IHsKPiArICAgICAgICAqICAgICAgIHtzdGFydD0weDIwMDAwMCwgZW5kPTB4
-M2ZmZmZmfSwgLy8gbGVuPTB4MjAwMDAwCj4gKyAgICAgICAgKiAgICAgICB7c3RhcnQ9MHgwLCAg
-ICAgIGVuZD0weDFmZmZmZn0sIC8vIGxlbj0weDIwMDAwMAo+ICsgICAgICAgICogICAgICAge3N0
-YXJ0PTB4NjAwMDAwLCBlbmQ9MHhkZmZmZmZ9LCAvLyBsZW49MHg4MDAwMDAKPiArICAgICAgICAq
-ICAgfQo+ICsgICAgICAgICovCj4gKyAgICAgICB7MHhhMDAwMDAsIDB4NDAwMDAwLCAwLCAzLCAw
-eDYwMDAwMCwgMHg4MDAwMDB9LAo+ICsKPiArICAgICAgIC8qCj4gKyAgICAgICAgKiBBZGQgdGhl
-IHJlZ2lvbiBmcm9tIDB4MTAwMCB0byAoMHgxMDAwICsgMHgyMDAwMDAgLSAxKToKPiArICAgICAg
-ICAqICAgRXhwZWN0ZWQgcmVzdWx0Ogo+ICsgICAgICAgICogICAgICAgRmFpbGVkLCBzdGFydCBh
-ZGRyZXNzIGlzIG5vdCAyTS1hbGlnbmVkCj4gKyAgICAgICAgKgo+ICsgICAgICAgICogTm93IHRo
-ZSBpbnN0YW5jZSBvZiBzdHJ1Y3QgbmVfcGh5c19jb250aWdfbWVtX3JlZ2lvbnMgaXM6Cj4gKyAg
-ICAgICAgKiAgIG51bSA9IDMKPiArICAgICAgICAqICAgcmVnaW9ucyA9IHsKPiArICAgICAgICAq
-ICAgICAgIHtzdGFydD0weDIwMDAwMCwgZW5kPTB4M2ZmZmZmfSwgLy8gbGVuPTB4MjAwMDAwCj4g
-KyAgICAgICAgKiAgICAgICB7c3RhcnQ9MHgwLCAgICAgIGVuZD0weDFmZmZmZn0sIC8vIGxlbj0w
-eDIwMDAwMAo+ICsgICAgICAgICogICAgICAge3N0YXJ0PTB4NjAwMDAwLCBlbmQ9MHhkZmZmZmZ9
-LCAvLyBsZW49MHg4MDAwMDAKPiArICAgICAgICAqICAgfQo+ICsgICAgICAgICovCj4gKyAgICAg
-ICB7MHgxMDAwLCAweDIwMDAwMCwgLUVJTlZBTCwgMywgMHg2MDAwMDAsIDB4ODAwMDAwfSwKPiAr
-fTsKPiArCj4gK3N0YXRpYyB2b2lkIG5lX21pc2NfZGV2X3Rlc3RfbWVyZ2VfcGh5c19jb250aWdf
-bWVtb3J5X3JlZ2lvbnMoc3RydWN0IGt1bml0ICp0ZXN0KQo+ICt7Cj4gKyAgICAgICBzdHJ1Y3Qg
-bmVfcGh5c19jb250aWdfbWVtX3JlZ2lvbnMgcGh5c19jb250aWdfbWVtX3JlZ2lvbnMgPSB7fTsK
-PiArICAgICAgIGludCByYyA9IDA7Cj4gKyAgICAgICBpbnQgaSA9IDA7Cj4gKwo+ICsgICAgICAg
-cGh5c19jb250aWdfbWVtX3JlZ2lvbnMucmVnaW9ucyA9IGt1bml0X2tjYWxsb2ModGVzdCwgTUFY
-X1BIWVNfUkVHSU9OUywKPiArICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgIHNpemVvZigqcGh5c19jb250aWdfbWVtX3JlZ2lvbnMucmVnaW9ucyks
-Cj4gKyAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICBHRlBfS0VSTkVMKTsKPiArICAgICAgIEtVTklUX0FTU0VSVF9UUlVFKHRlc3QsIHBoeXNfY29u
-dGlnX21lbV9yZWdpb25zLnJlZ2lvbnMpOwo+ICsKPiArICAgICAgIGZvciAoaSA9IDA7IGkgPCBB
-UlJBWV9TSVpFKHBoeXNfcmVnaW9uc190ZXN0X2Nhc2VzKTsgaSsrKSB7Cj4gKyAgICAgICAgICAg
-ICAgIHN0cnVjdCBuZV9waHlzX3JlZ2lvbnNfdGVzdCAqdGVzdF9jYXNlID0gJnBoeXNfcmVnaW9u
-c190ZXN0X2Nhc2VzW2ldOwo+ICsgICAgICAgICAgICAgICB1bnNpZ25lZCBsb25nIG51bSA9IDA7
-Cj4gKwo+ICsgICAgICAgICAgICAgICByYyA9IG5lX21lcmdlX3BoeXNfY29udGlnX21lbW9yeV9y
-ZWdpb25zKCZwaHlzX2NvbnRpZ19tZW1fcmVnaW9ucywKPiArICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICB0ZXN0X2Nhc2UtPnBhZGRyLCB0ZXN0
-X2Nhc2UtPnNpemUpOwo+ICsgICAgICAgICAgICAgICBLVU5JVF9FWFBFQ1RfRVEodGVzdCwgcmMs
-IHRlc3RfY2FzZS0+ZXhwZWN0X3JjKTsKPiArICAgICAgICAgICAgICAgS1VOSVRfRVhQRUNUX0VR
-KHRlc3QsIHBoeXNfY29udGlnX21lbV9yZWdpb25zLm51bSwgdGVzdF9jYXNlLT5leHBlY3RfbnVt
-KTsKPiArCj4gKyAgICAgICAgICAgICAgIGlmICh0ZXN0X2Nhc2UtPmV4cGVjdF9sYXN0X3BhZGRy
-ID09IElOVkFMSURfVkFMVUUpCj4gKyAgICAgICAgICAgICAgICAgICAgICAgY29udGludWU7Cj4g
-Kwo+ICsgICAgICAgICAgICAgICBudW0gPSBwaHlzX2NvbnRpZ19tZW1fcmVnaW9ucy5udW07Cj4g
-KyAgICAgICAgICAgICAgIEtVTklUX0VYUEVDVF9FUSh0ZXN0LCBwaHlzX2NvbnRpZ19tZW1fcmVn
-aW9ucy5yZWdpb25zW251bSAtIDFdLnN0YXJ0LAo+ICsgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgdGVzdF9jYXNlLT5leHBlY3RfbGFzdF9wYWRkcik7Cj4gKyAgICAgICAgICAgICAgIEtV
-TklUX0VYUEVDVF9FUSh0ZXN0LCByYW5nZV9sZW4oJnBoeXNfY29udGlnX21lbV9yZWdpb25zLnJl
-Z2lvbnNbbnVtIC0gMV0pLAo+ICsgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgdGVzdF9j
-YXNlLT5leHBlY3RfbGFzdF9zaXplKTsKPiArICAgICAgIH0KPiArCj4gKyAgICAgICBrdW5pdF9r
-ZnJlZSh0ZXN0LCBwaHlzX2NvbnRpZ19tZW1fcmVnaW9ucy5yZWdpb25zKTsKPiArfQo+ICsKPiAg
-IHN0YXRpYyBzdHJ1Y3Qga3VuaXRfY2FzZSBuZV9taXNjX2Rldl90ZXN0X2Nhc2VzW10gPSB7Cj4g
-KyAgICAgICBLVU5JVF9DQVNFKG5lX21pc2NfZGV2X3Rlc3RfbWVyZ2VfcGh5c19jb250aWdfbWVt
-b3J5X3JlZ2lvbnMpLAo+ICAgICAgICAgIHt9Cj4gICB9Owo+IAo+IC0tCj4gMS44LjMuMQo+IAoK
-CgpBbWF6b24gRGV2ZWxvcG1lbnQgQ2VudGVyIChSb21hbmlhKSBTLlIuTC4gcmVnaXN0ZXJlZCBv
-ZmZpY2U6IDI3QSBTZi4gTGF6YXIgU3RyZWV0LCBVQkM1LCBmbG9vciAyLCBJYXNpLCBJYXNpIENv
-dW50eSwgNzAwMDQ1LCBSb21hbmlhLiBSZWdpc3RlcmVkIGluIFJvbWFuaWEuIFJlZ2lzdHJhdGlv
-biBudW1iZXIgSjIyLzI2MjEvMjAwNS4K
+On Thu, Nov 04, 2021 at 03:53:13PM -0700, Brad Larson wrote:
+> On Mon, Oct 25, 2021 at 2:17 AM Mark Rutland <mark.rutland@arm.com> wrote:
+> > On Sun, Oct 24, 2021 at 06:51:56PM -0700, Brad Larson wrote:
+> > > +     timer {
+> > > +             compatible = "arm,armv8-timer";
+> > > +             interrupts = <GIC_PPI 13 (GIC_CPU_MASK_SIMPLE(1) |
+> > > +                                     IRQ_TYPE_LEVEL_LOW)>,
+> > > +                          <GIC_PPI 14 (GIC_CPU_MASK_SIMPLE(1) |
+> > > +                                     IRQ_TYPE_LEVEL_LOW)>,
+> > > +                          <GIC_PPI 11 (GIC_CPU_MASK_SIMPLE(1) |
+> > > +                                     IRQ_TYPE_LEVEL_LOW)>,
+> > > +                          <GIC_PPI 10 (GIC_CPU_MASK_SIMPLE(1) |
+> > > +                                     IRQ_TYPE_LEVEL_LOW)>;
+> > > +     };
+> >
+> > The GIC_CPU_MASK_SIMPLE() stuff is meant for GICv2, but as below you
+> > have GICv3, where this is not valid, so this should go.
+> >
+> > Also, beware that GIC_CPU_MASK_SIMPLE(1) means a single CPU, which
+> > doesn't mak sense for the 16 CPUs you have.
+> >
+> 
+> Thanks for pointing this out.  Elba SoC is a GICv3 implementation and looking
+> at other device tree files we should be using this:
+> 
+>         timer {
+>                 compatible = "arm,armv8-timer";
+>                 interrupts = <GIC_PPI 13 (GIC_CPU_MASK_SIMPLE(16) |
+>                                         IRQ_TYPE_LEVEL_LOW)>,
+>                              <GIC_PPI 14 (GIC_CPU_MASK_SIMPLE(16) |
+>                                         IRQ_TYPE_LEVEL_LOW)>,
+>                              <GIC_PPI 11 (GIC_CPU_MASK_SIMPLE(16) |
+>                                         IRQ_TYPE_LEVEL_LOW)>,
+>                              <GIC_PPI 10 (GIC_CPU_MASK_SIMPLE(16) |
+>                                         IRQ_TYPE_LEVEL_LOW)>;
+>         };
 
+No; as above, you should *not* use GIC_CPU_MASK_SIMPLE() at all for GICv3. i.e.
+
+>         timer {
+>                 compatible = "arm,armv8-timer";
+>                 interrupts = <GIC_PPI 13 IRQ_TYPE_LEVEL_LOW>,
+>                              <GIC_PPI 14 IRQ_TYPE_LEVEL_LOW>,
+>                              <GIC_PPI 11 IRQ_TYPE_LEVEL_LOW>,
+>                              <GIC_PPI 10 IRQ_TYPE_LEVEL_LOW>;
+>         };
+
+Please see the GICv3 binding documentation:
+
+  Documentation/devicetree/bindings/interrupt-controller/arm,gic-v3.yaml
+
+... and note that it does not have the cpumask field as use by the binding for
+prior generations of GIC:
+
+  Documentation/devicetree/bindings/interrupt-controller/arm,gic.yaml
+
+
+If you've seen other dts files using GIC_CPU_MASK_SIMPLE() with GICv3, those
+are incorrect, and need to be fixed.
+
+Thanks,
+Mark.
