@@ -2,133 +2,211 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 19E79447EAD
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Nov 2021 12:15:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5695C447EB3
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Nov 2021 12:16:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230389AbhKHLRi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Nov 2021 06:17:38 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52952 "EHLO
+        id S237909AbhKHLTb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Nov 2021 06:19:31 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53424 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237964AbhKHLR0 (ORCPT
+        with ESMTP id S237965AbhKHLT3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Nov 2021 06:17:26 -0500
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3B1CAC06120A
-        for <linux-kernel@vger.kernel.org>; Mon,  8 Nov 2021 03:14:42 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=6LeBVXEEkfDG4XZfeocFTtH7tQHJXwcvP1bIONx7BfY=; b=JgIx4gtY4DvoxTEpdZB5cPSdef
-        TWAZGjv6MvjFep+EqydrBYraYk1j+wBracHkKPVi01ej04s9ewmHP52dj1HGSsRuojfxEZa7a+e4o
-        p0b4KVHw7aaE3TLSfBi2r+9EWtt9nWNbxbDYp5xEEuwVYTpfGqRC5hXb7u9R6Zyys4tDUU6MjmS+n
-        Vntgm07nRQJ3ewjZLCFncPCE1GOVCtd7KsMvRIe+kAzYfb4+ZzeDOXXd6sbAmqxi/ezysuaL475Dd
-        /6fz4FiqowjtxZc3fKBJ2Quu1IdnifxpZY61yUJkOetfQTtQHrSfmUq3F/8xxxJemF9BdyjpLiV7X
-        qjnHHivg==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mk2bd-00EsBO-MG; Mon, 08 Nov 2021 11:14:31 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 1770530030B;
-        Mon,  8 Nov 2021 12:14:28 +0100 (CET)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id DAC63202A012E; Mon,  8 Nov 2021 12:14:27 +0100 (CET)
-Date:   Mon, 8 Nov 2021 12:14:27 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Mel Gorman <mgorman@techsingularity.net>
-Cc:     Ingo Molnar <mingo@kernel.org>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Aubrey Li <aubrey.li@linux.intel.com>,
-        "Srinivasan, Sadagopan" <Sadagopan.Srinivasan@amd.com>,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] sched/fair: Adjust the allowed NUMA imbalance when
- SD_NUMA spans multiple LLCs
-Message-ID: <YYkGkx+Wq6Ol2N9i@hirez.programming.kicks-ass.net>
-References: <20211028130305.GS3959@techsingularity.net>
+        Mon, 8 Nov 2021 06:19:29 -0500
+Received: from mail-pj1-x1036.google.com (mail-pj1-x1036.google.com [IPv6:2607:f8b0:4864:20::1036])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D8179C061714
+        for <linux-kernel@vger.kernel.org>; Mon,  8 Nov 2021 03:16:45 -0800 (PST)
+Received: by mail-pj1-x1036.google.com with SMTP id gn3so7864038pjb.0
+        for <linux-kernel@vger.kernel.org>; Mon, 08 Nov 2021 03:16:45 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance-com.20210112.gappssmtp.com; s=20210112;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=vwKn8A78nbxh1bT4nrrDsinal0xZprUrg1oMka+P7PM=;
+        b=NtiPFd+5N8XEr1a/xdNsTVcfmD/2APTPDe1Wj+sYaKyn+Cyd2eek0LmuKVCVmmdk15
+         /mDYBMPOBdDKjUPyok6e0ZI7SW6i5NKqBnctc0RtDFQmGZRyzTlBVZN3bTxC6xO36quR
+         yj+IQfKFvRyxxKGN1YK96IHqXXMwJTM0vf/FP8BLn1gpT86MoxWxCBlOe/w92OaAd0Y2
+         5+e0p7d8TLpqX+xdsmMx1o5yT5s0zna6oEvuRm2hpULRriS/mjE6EzqPmtpP0iZOCzT/
+         eemKmVpRD0YOEHH4KSoJvg8RQCuUMPS2oAPH/v1WE5XMLZ+f3kQx9xHyq2PHtIZaAOUf
+         NWKg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=vwKn8A78nbxh1bT4nrrDsinal0xZprUrg1oMka+P7PM=;
+        b=nWs07QBDHW/ItznDCqKENwovY10UTZXVfl/0OORbq6sEapJM9q0gJsXYZnvIUxwVnz
+         wHIZ91cZxPkcX30QWnmZs5bv0JHYwcawuj0+Q82uWIjBt7YEVWxT+CLnKFMFF98rdyuK
+         3SAnJkWuA0NnIrV0cp54N+MjgwIpr9oHAycvFPrICW+whtza6Rzo77crZaMFO2OPpK1u
+         41+dJSGQ+xLBJRyKtsrehWb4lBGrrxrPj3jKOl1h6aC8ydFLeTgUWHkjhZygAu9AvLtt
+         2JTkyU4ha754odtDO3n5ctYpDEX8gfNNPW25sCrLa/JDbF+Yaz7awphAQtALKvZt/Z+8
+         LNoA==
+X-Gm-Message-State: AOAM532yC/2c3fH4RulWW/ztzJsghUjZsLFHRoiuWkS1nWVMDjXO4nrj
+        s/PwC2DcsKZyGOQXjWckuXhzRE3hzjWrVxtN
+X-Google-Smtp-Source: ABdhPJwT9OALjA7XUOHAUqMWCDd7RxGUBBT74K9E+6FkOYMtJyjbAwop3cCVdj3F8B78r9nsEmkMvA==
+X-Received: by 2002:a17:90b:4d86:: with SMTP id oj6mr49859606pjb.101.1636370205218;
+        Mon, 08 Nov 2021 03:16:45 -0800 (PST)
+Received: from [10.2.24.177] ([61.120.150.70])
+        by smtp.gmail.com with ESMTPSA id b18sm13187422pjo.31.2021.11.08.03.16.38
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 08 Nov 2021 03:16:44 -0800 (PST)
+Subject: Re: Re: [RFC] KVM: x86: SVM: don't expose PV_SEND_IPI feature with
+ AVIC
+To:     Maxim Levitsky <mlevitsk@redhat.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Kele Huang <huangkele@bytedance.com>
+Cc:     chaiwen.cc@bytedance.com, xieyongji@bytedance.com,
+        dengliang.1214@bytedance.com, wanpengli@tencent.com,
+        seanjc@google.com, Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
+        "H. Peter Anvin" <hpa@zytor.com>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20211108095931.618865-1-huangkele@bytedance.com>
+ <a991bbb4-b507-a2f6-ec0f-fce23d4379ce@redhat.com>
+ <f93612f54a5cde53fd9342f703ccbaf3c9edbc9c.camel@redhat.com>
+From:   zhenwei pi <pizhenwei@bytedance.com>
+Message-ID: <ad6b3ef5-4928-681c-a0cf-5a1095654566@bytedance.com>
+Date:   Mon, 8 Nov 2021 19:14:49 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211028130305.GS3959@techsingularity.net>
+In-Reply-To: <f93612f54a5cde53fd9342f703ccbaf3c9edbc9c.camel@redhat.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 28, 2021 at 02:03:05PM +0100, Mel Gorman wrote:
+On 11/8/21 7:08 PM, Maxim Levitsky wrote:
+> On Mon, 2021-11-08 at 11:30 +0100, Paolo Bonzini wrote:
+>> On 11/8/21 10:59, Kele Huang wrote:
+>>> Currently, AVIC is disabled if x2apic feature is exposed to guest
+>>> or in-kernel PIT is in re-injection mode.
+>>>
+>>> We can enable AVIC with options:
+>>>
+>>>     Kmod args:
+>>>     modprobe kvm_amd avic=1 nested=0 npt=1
+>>>     QEMU args:
+>>>     ... -cpu host,-x2apic -global kvm-pit.lost_tick_policy=discard ...
+>>>
+>>> When LAPIC works in xapic mode, both AVIC and PV_SEND_IPI feature
+>>> can accelerate IPI operations for guest. However, the relationship
+>>> between AVIC and PV_SEND_IPI feature is not sorted out.
+>>>
+>>> In logical, AVIC accelerates most of frequently IPI operations
+>>> without VMM intervention, while the re-hooking of apic->send_IPI_xxx
+>>> from PV_SEND_IPI feature masks out it. People can get confused
+>>> if AVIC is enabled while getting lots of hypercall kvm_exits
+>>> from IPI.
+>>>
+>>> In performance, benchmark tool
+>>> https://lore.kernel.org/kvm/20171219085010.4081-1-ynorov@caviumnetworks.com/
+>>> shows below results:
+>>>
+>>>     Test env:
+>>>     CPU: AMD EPYC 7742 64-Core Processor
+>>>     2 vCPUs pinned 1:1
+>>>     idle=poll
+>>>
+>>>     Test result (average ns per IPI of lots of running):
+>>>     PV_SEND_IPI 	: 1860
+>>>     AVIC 		: 1390
+>>>
+>>> Besides, disscussions in https://lkml.org/lkml/2021/10/20/423
+>>> do have some solid performance test results to this.
+>>>
+>>> This patch fixes this by masking out PV_SEND_IPI feature when
+>>> AVIC is enabled in setting up of guest vCPUs' CPUID.
+>>>
+>>> Signed-off-by: Kele Huang <huangkele@bytedance.com>
+>>
+>> AVIC can change across migration.  I think we should instead use a new
+>> KVM_HINTS_* bit (KVM_HINTS_ACCELERATED_LAPIC or something like that).
+>> The KVM_HINTS_* bits are intended to be changeable across migration,
+>> even though we don't have for now anything equivalent to the Hyper-V
+>> reenlightenment interrupt.
+> 
+> Note that the same issue exists with HyperV. It also has PV APIC,
+> which is harmful when AVIC is enabled (that is guest uses it instead
+> of using AVIC, negating AVIC benefits).
+> 
+> Also note that Intel recently posted IPI virtualizaion, which
+> will make this issue relevant to APICv too soon.
+> 
+> I don't yet know if there is a solution to this which doesn't
+> involve some management software decision (e.g libvirt or higher).
+> 
+> Best regards,
+> 	Maxim Levitsky
+> 
 
-> @@ -1926,8 +1926,8 @@ static void task_numa_find_cpu(struct task_numa_env *env,
->  		src_running = env->src_stats.nr_running - 1;
->  		dst_running = env->dst_stats.nr_running + 1;
->  		imbalance = max(0, dst_running - src_running);
-> -		imbalance = adjust_numa_imbalance(imbalance, dst_running,
-> -							env->dst_stats.weight);
-> +		imbalance = adjust_numa_imbalance(imbalance, env->dst_cpu,
-> +					dst_running, env->dst_stats.weight);
+For QEMU, "-cpu host,kvm-pv-ipi=off" can disable kvm-pv-ipi.
+And for libvirt, I posted a patch to disable kvm-pv-ipi by libvirt xml, 
+link:
+https://github.com/libvirt/libvirt/commit/b2757b697e29fa86972a4638a5879dccc8add2ad
 
-Can we please align at (0 ?
+>>
+>> Paolo
+>>
+>>> ---
+>>>    arch/x86/kvm/cpuid.c   |  4 ++--
+>>>    arch/x86/kvm/svm/svm.c | 13 +++++++++++++
+>>>    2 files changed, 15 insertions(+), 2 deletions(-)
+>>>
+>>> diff --git a/arch/x86/kvm/cpuid.c b/arch/x86/kvm/cpuid.c
+>>> index 2d70edb0f323..cc22975e2ac5 100644
+>>> --- a/arch/x86/kvm/cpuid.c
+>>> +++ b/arch/x86/kvm/cpuid.c
+>>> @@ -194,8 +194,6 @@ static void kvm_vcpu_after_set_cpuid(struct kvm_vcpu *vcpu)
+>>>    		best->ecx |= XFEATURE_MASK_FPSSE;
+>>>    	}
+>>>    
+>>> -	kvm_update_pv_runtime(vcpu);
+>>> -
+>>>    	vcpu->arch.maxphyaddr = cpuid_query_maxphyaddr(vcpu);
+>>>    	vcpu->arch.reserved_gpa_bits = kvm_vcpu_reserved_gpa_bits_raw(vcpu);
+>>>    
+>>> @@ -208,6 +206,8 @@ static void kvm_vcpu_after_set_cpuid(struct kvm_vcpu *vcpu)
+>>>    	/* Invoke the vendor callback only after the above state is updated. */
+>>>    	static_call(kvm_x86_vcpu_after_set_cpuid)(vcpu);
+>>>    
+>>> +	kvm_update_pv_runtime(vcpu);
+>>> +
+>>>    	/*
+>>>    	 * Except for the MMU, which needs to do its thing any vendor specific
+>>>    	 * adjustments to the reserved GPA bits.
+>>> diff --git a/arch/x86/kvm/svm/svm.c b/arch/x86/kvm/svm/svm.c
+>>> index b36ca4e476c2..b13bcfb2617c 100644
+>>> --- a/arch/x86/kvm/svm/svm.c
+>>> +++ b/arch/x86/kvm/svm/svm.c
+>>> @@ -4114,6 +4114,19 @@ static void svm_vcpu_after_set_cpuid(struct kvm_vcpu *vcpu)
+>>>    		if (nested && guest_cpuid_has(vcpu, X86_FEATURE_SVM))
+>>>    			kvm_request_apicv_update(vcpu->kvm, false,
+>>>    						 APICV_INHIBIT_REASON_NESTED);
+>>> +
+>>> +		if (!guest_cpuid_has(vcpu, X86_FEATURE_X2APIC) &&
+>>> +				!(nested && guest_cpuid_has(vcpu, X86_FEATURE_SVM))) {
+>>> +			/*
+>>> +			 * PV_SEND_IPI feature masks out AVIC acceleration to IPI.
+>>> +			 * So, we do not expose PV_SEND_IPI feature to guest when
+>>> +			 * AVIC is enabled.
+>>> +			 */
+>>> +			best = kvm_find_cpuid_entry(vcpu, KVM_CPUID_FEATURES, 0);
+>>> +			if (best && enable_apicv &&
+>>> +					(best->eax & (1 << KVM_FEATURE_PV_SEND_IPI)))
+>>> +				best->eax &= ~(1 << KVM_FEATURE_PV_SEND_IPI);
+>>> +		}
+>>>    	}
+>>>    	init_vmcb_after_set_cpuid(vcpu);
+>>>    }
+>>>
+> 
+> 
 
->  
->  		/* Use idle CPU if there is no imbalance */
->  		if (!imbalance) {
-
-> diff --git a/kernel/sched/topology.c b/kernel/sched/topology.c
-> index 4e8698e62f07..08fb02510967 100644
-> --- a/kernel/sched/topology.c
-> +++ b/kernel/sched/topology.c
-> @@ -644,6 +644,7 @@ static void destroy_sched_domains(struct sched_domain *sd)
->  DEFINE_PER_CPU(struct sched_domain __rcu *, sd_llc);
->  DEFINE_PER_CPU(int, sd_llc_size);
->  DEFINE_PER_CPU(int, sd_llc_id);
-> +DEFINE_PER_CPU(int, sd_numaimb_shift);
-
-Why does it make sense for this to be a per-cpu variable? Yes, I suppose
-people can get creative with cpusets, but what you're trying to capture
-seems like a global system propery, no?
-
-At most this seems to want to be a sched_domain value.
-
->  DEFINE_PER_CPU(struct sched_domain_shared __rcu *, sd_llc_shared);
->  DEFINE_PER_CPU(struct sched_domain __rcu *, sd_numa);
->  DEFINE_PER_CPU(struct sched_domain __rcu *, sd_asym_packing);
-> @@ -672,6 +673,20 @@ static void update_top_cache_domain(int cpu)
->  	sd = lowest_flag_domain(cpu, SD_NUMA);
->  	rcu_assign_pointer(per_cpu(sd_numa, cpu), sd);
->  
-> +	/*
-> +	 * Save the threshold where an imbalance is allowed between SD_NUMA
-> +	 * domains. If LLC spans the entire node, then imbalances are allowed
-> +	 * until 25% of the domain is active. Otherwise, allow an imbalance
-> +	 * up to the point where LLCs between NUMA nodes should be balanced
-> +	 * to maximise cache and memory bandwidth utilisation.
-> +	 */
-> +	if (sd) {
-> +		if (sd->span_weight == size)
-> +			per_cpu(sd_numaimb_shift, cpu) = 2;
-> +		else
-> +			per_cpu(sd_numaimb_shift, cpu) = max(2, ilog2(sd->span_weight / size * num_online_nodes()));
-> +	}
-> +
->  	sd = highest_flag_domain(cpu, SD_ASYM_PACKING);
->  	rcu_assign_pointer(per_cpu(sd_asym_packing, cpu), sd);
-
-I think I'm with Valentin here, this seems like something that wants to
-use the sd/sd->child relation.
-
-That also makes this the wrong place to do things since this is after
-the degenerate code.
-
-Perhaps this can be done in sd_init(), after all, we build the thing
-bottom-up, so by the time we initialize the NODE, the MC level should
-already be present.
-
-I'm thinking you can perhaps use something like:
-
-	if (!(sd->flags & SD_SHARE_PKG_RESROUCES) &&
-	    (child->flags & SD_SHARE_PKG_RESOURCES)) {
-
-		/* this is the first domain not sharing LLC */
-		sd->new_magic_imb = /*  magic incantation goes here */
-	}
+-- 
+zhenwei pi
