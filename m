@@ -2,116 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F8E2448109
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Nov 2021 15:12:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F89644810B
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Nov 2021 15:12:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238963AbhKHOPT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Nov 2021 09:15:19 -0500
-Received: from mail-vk1-f181.google.com ([209.85.221.181]:44580 "EHLO
-        mail-vk1-f181.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237250AbhKHOPR (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Nov 2021 09:15:17 -0500
-Received: by mail-vk1-f181.google.com with SMTP id d128so8246855vkf.11;
-        Mon, 08 Nov 2021 06:12:33 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=BPrzNjKOLau3hKF+y8oEKhXRBCES6tkh2qL6Bflm6IE=;
-        b=ebHAKzmUSnHOFSGkTFQaGS8FV4RI5yhUiO1RiBaFIIYrNz9OVHYoA6iZjmMJH3d+aI
-         l/njNmbKnFc1R+LaHcI9VRxY6xdd75MDckedmpmb9THcH1R7Q2TOa5fEJdxxYVkBkfL6
-         hGuG1YBVagHeAFxV21W7l6rVmMsrxSGjyx/IrTg6Zsp9qiL91Z6C58MjZUqGJzjq8m9u
-         A/+YF+iKnohLMyfKE9Hw58qbZN2Pl74rtscAsftmh1PFM4jGZLSVF07Uc1S0Ah3ga6O2
-         9peCChU3O8PpSERxYN5tn1GuIwl3q2DAoL+RBlhCyjc2PDdM8UPze1UtyGw1Xs8biNcJ
-         Zd4A==
-X-Gm-Message-State: AOAM530pXj3D6pPvKJGrP/2qhxMh9+7ExlCHLw5elpwBIK87yFOE75k5
-        7xKdDCZRbAZ92Ka6W6emHQJ2Px3Hy3+tTxDO
-X-Google-Smtp-Source: ABdhPJzdYP6krv5UfwBjHy/wLWmObTsStfKHvpfjnzyOK/NZ21hk8+GcmHgVCeu3d97H+lDOppxTbA==
-X-Received: by 2002:a05:6122:1812:: with SMTP id ay18mr12453769vkb.18.1636380752676;
-        Mon, 08 Nov 2021 06:12:32 -0800 (PST)
-Received: from mail-vk1-f174.google.com (mail-vk1-f174.google.com. [209.85.221.174])
-        by smtp.gmail.com with ESMTPSA id m186sm3140724vsm.11.2021.11.08.06.12.32
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 08 Nov 2021 06:12:32 -0800 (PST)
-Received: by mail-vk1-f174.google.com with SMTP id b192so2619943vkf.3;
-        Mon, 08 Nov 2021 06:12:32 -0800 (PST)
-X-Received: by 2002:a05:6122:20ab:: with SMTP id i43mr21826948vkd.19.1636380752180;
- Mon, 08 Nov 2021 06:12:32 -0800 (PST)
+        id S239021AbhKHOPV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Nov 2021 09:15:21 -0500
+Received: from foss.arm.com ([217.140.110.172]:50700 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S238977AbhKHOPU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Nov 2021 09:15:20 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 5B7B9D6E;
+        Mon,  8 Nov 2021 06:12:35 -0800 (PST)
+Received: from [10.57.27.158] (unknown [10.57.27.158])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 57B173F718;
+        Mon,  8 Nov 2021 06:12:31 -0800 (PST)
+Subject: Re: [PATCH v3 4/5] cpufreq: qcom-cpufreq-hw: Use new thermal pressure
+ update function
+To:     Thara Gopinath <thara.gopinath@linaro.org>
+Cc:     linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-arm-msm@vger.kernel.org, sudeep.holla@arm.com,
+        will@kernel.org, catalin.marinas@arm.com, linux@armlinux.org.uk,
+        gregkh@linuxfoundation.org, rafael@kernel.org,
+        viresh.kumar@linaro.org, amitk@kernel.org,
+        daniel.lezcano@linaro.org, amit.kachhap@gmail.com,
+        bjorn.andersson@linaro.org, agross@kernel.org,
+        Steev Klimaszewski <steev@kali.org>
+References: <20211103161020.26714-1-lukasz.luba@arm.com>
+ <20211103161020.26714-5-lukasz.luba@arm.com>
+ <c4a2618f-71ee-b688-6268-08256a8edf10@linaro.org>
+From:   Lukasz Luba <lukasz.luba@arm.com>
+Message-ID: <02468805-f626-1f61-7f7f-73ed7dfad034@arm.com>
+Date:   Mon, 8 Nov 2021 14:12:29 +0000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.9.0
 MIME-Version: 1.0
-References: <20211108101157.15189-1-bp@alien8.de> <20211108101157.15189-5-bp@alien8.de>
-In-Reply-To: <20211108101157.15189-5-bp@alien8.de>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Mon, 8 Nov 2021 15:12:21 +0100
-X-Gmail-Original-Message-ID: <CAMuHMdUSvU6mW8cpiNGru7cv+B3hCvF=ou8ujTOz5czZqLrAxw@mail.gmail.com>
-Message-ID: <CAMuHMdUSvU6mW8cpiNGru7cv+B3hCvF=ou8ujTOz5czZqLrAxw@mail.gmail.com>
-Subject: Re: [PATCH v0 04/42] clk: renesas: Check notifier registration return value
-To:     Borislav Petkov <bp@alien8.de>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
-        linux-clk <linux-clk@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <c4a2618f-71ee-b688-6268-08256a8edf10@linaro.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Borislav,
+Hi Thara,
 
-Thanks for your patch!
++CC Steev, who discovered this issue with boost
+frequency
 
-On Mon, Nov 8, 2021 at 1:49 PM Borislav Petkov <bp@alien8.de> wrote:
-> From: Borislav Petkov <bp@suse.de>
->
-> Avoid homegrown notifier registration checks.
+On 11/5/21 7:12 PM, Thara Gopinath wrote:
+> Hi Lukasz,
+> 
+> 
+> On 11/3/21 12:10 PM, Lukasz Luba wrote:
+>> Thermal pressure provides a new API, which allows to use CPU frequency
+>> as an argument. That removes the need of local conversion to capacity.
+>> Use this new API and remove old local conversion code.
+>>
+>> Signed-off-by: Lukasz Luba <lukasz.luba@arm.com>
+>> ---
+>>   drivers/cpufreq/qcom-cpufreq-hw.c | 15 +++++----------
+>>   1 file changed, 5 insertions(+), 10 deletions(-)
+>>
+>> diff --git a/drivers/cpufreq/qcom-cpufreq-hw.c 
+>> b/drivers/cpufreq/qcom-cpufreq-hw.c
+>> index 0138b2ec406d..425f351450ad 100644
+>> --- a/drivers/cpufreq/qcom-cpufreq-hw.c
+>> +++ b/drivers/cpufreq/qcom-cpufreq-hw.c
+>> @@ -275,10 +275,10 @@ static unsigned int 
+>> qcom_lmh_get_throttle_freq(struct qcom_cpufreq_data *data)
+>>   static void qcom_lmh_dcvs_notify(struct qcom_cpufreq_data *data)
+>>   {
+>> -    unsigned long max_capacity, capacity, freq_hz, throttled_freq;
+>>       struct cpufreq_policy *policy = data->policy;
+>>       int cpu = cpumask_first(policy->cpus);
+>>       struct device *dev = get_cpu_device(cpu);
+>> +    unsigned long freq_hz, throttled_freq;
+>>       struct dev_pm_opp *opp;
+>>       unsigned int freq;
+>> @@ -295,17 +295,12 @@ static void qcom_lmh_dcvs_notify(struct 
+>> qcom_cpufreq_data *data)
+>>       throttled_freq = freq_hz / HZ_PER_KHZ;
+>> -    /* Update thermal pressure */
+>> -
+>> -    max_capacity = arch_scale_cpu_capacity(cpu);
+>> -    capacity = mult_frac(max_capacity, throttled_freq, 
+>> policy->cpuinfo.max_freq);
+>> -
+>>       /* Don't pass boost capacity to scheduler */
+>> -    if (capacity > max_capacity)
+>> -        capacity = max_capacity;
+> 
+> So, I think this should go into the common 
+> topology_update_thermal_pressure in lieu of
+> 
+> +    if (WARN_ON(max_freq < capped_freq))
+> +        return;
+> 
+> This will fix the issue Steev Klimaszewski has been reporting
+> https://lore.kernel.org/linux-arm-kernel/3cba148a-7077-7b6b-f131-dc65045aa348@arm.com/ 
+> 
+> 
+> 
 
-Which homegrown notifier registration check is avoided?
-IIANM, you're adding a homegrown notifier registration check?
+Well, I think the issue is broader. Look at the code which
+calculate this 'capacity'. It's just a multiplication & division:
 
-> No functional changes.
->
-> Signed-off-by: Borislav Petkov <bp@suse.de>
+max_capacity = arch_scale_cpu_capacity(cpu); // =1024 in our case
+capacity = mult_frac(max_capacity, throttled_freq,
+		policy->cpuinfo.max_freq);
 
-> --- a/drivers/clk/renesas/clk-div6.c
-> +++ b/drivers/clk/renesas/clk-div6.c
-> @@ -306,7 +306,9 @@ struct clk * __init cpg_div6_register(const char *name,
->
->         if (notifiers) {
->                 clock->nb.notifier_call = cpg_div6_clock_notifier_call;
-> -               raw_notifier_chain_register(notifiers, &clock->nb);
-> +
-> +               if (raw_notifier_chain_register(notifiers, &clock->nb))
-> +                       pr_warn("CPG DIV6 clock notifier already registered\n");
+In the reported by Steev output from sysfs cpufreq we know
+that the value of 'policy->cpuinfo.max_freq' is:
+/sys/devices/system/cpu/cpu5/cpufreq/cpuinfo_max_freq:2956800
 
-A duplicate registration cannot happen, as the notifier is freshly allocated.
+so when we put the values to the equation we get:
+capacity = 1024 * 2956800 / 2956800; // =1024
+The 'capacity' will be always <= 1024 and this check won't
+be triggered:
 
->         }
->
->         return clk;
-> diff --git a/drivers/clk/renesas/rcar-cpg-lib.c b/drivers/clk/renesas/rcar-cpg-lib.c
-> index e93f0011eb07..fbbb6f4a8148 100644
-> --- a/drivers/clk/renesas/rcar-cpg-lib.c
-> +++ b/drivers/clk/renesas/rcar-cpg-lib.c
-> @@ -59,7 +59,9 @@ void cpg_simple_notifier_register(struct raw_notifier_head *notifiers,
->                                   struct cpg_simple_notifier *csn)
->  {
->         csn->nb.notifier_call = cpg_simple_notifier_call;
-> -       raw_notifier_chain_register(notifiers, &csn->nb);
-> +
-> +       if (raw_notifier_chain_register(notifiers, &csn->nb))
-> +               pr_warn("CPG notifier already registered\n");
+/* Don't pass boost capacity to scheduler */
+if (capacity > max_capacity)
+	capacity = max_capacity;
 
-A duplicate registration cannot happen, as the notifier is freshly allocated.
 
->  }
->
+IIUC you original code, you don't want to have this boost
+frequency to be treated as 1024 capacity. The reason is because
+the whole capacity machinery in arch_topology.c is calculated based
+on max freq value = 2841600,
+so the max capacity 1024 would be pinned to that frequency
+(according to Steeve's log:
+[   22.552273] THERMAL_PRESSURE: max_freq(2841) < capped_freq(2956) for 
+CPUs [4-7] )
 
-Gr{oetje,eeting}s,
 
-                        Geert
+Having all this in mind, the multiplication and division in your
+original code should be done:
 
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+capacity = 1024 * 2956800 / 2841600; // = 1065
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+then clamped to 1024 value.
+
+My change just unveiled this division issue.
+
+With that in mind, I tend to agree that I should have not
+rely on passed boost freq value and try to apply your suggestion check.
+Let me experiment with that...
+
+Regards,
+Lukasz
