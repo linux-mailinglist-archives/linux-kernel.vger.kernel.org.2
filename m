@@ -2,91 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D4586447BA5
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Nov 2021 09:15:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 598D7447BA2
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Nov 2021 09:13:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237834AbhKHIRz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Nov 2021 03:17:55 -0500
-Received: from mga01.intel.com ([192.55.52.88]:5473 "EHLO mga01.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234561AbhKHIRy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Nov 2021 03:17:54 -0500
-X-IronPort-AV: E=McAfee;i="6200,9189,10161"; a="255853402"
-X-IronPort-AV: E=Sophos;i="5.87,218,1631602800"; 
-   d="scan'208";a="255853402"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Nov 2021 00:15:08 -0800
-X-IronPort-AV: E=Sophos;i="5.87,218,1631602800"; 
-   d="scan'208";a="502915910"
-Received: from yhuang6-desk2.sh.intel.com (HELO yhuang6-desk2.ccr.corp.intel.com) ([10.239.159.101])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Nov 2021 00:15:04 -0800
-From:   "Huang, Ying" <ying.huang@intel.com>
-To:     Baolin Wang <baolin.wang@linux.alibaba.com>
-Cc:     Dave Hansen <dave.hansen@intel.com>, <akpm@linux-foundation.org>,
-        <dave.hansen@linux.intel.com>, <ziy@nvidia.com>,
-        <osalvador@suse.de>, <shy828301@gmail.com>, <linux-mm@kvack.org>,
-        <linux-kernel@vger.kernel.org>
-Subject: Re: [RFC PATCH] mm: migrate: Add new node demotion strategy
-References: <c02bcbc04faa7a2c852534e9cd58a91c44494657.1636016609.git.baolin.wang@linux.alibaba.com>
-        <665cb882-6dbc-335f-1435-e52659d7ee58@intel.com>
-        <87tugrxqks.fsf@yhuang6-desk2.ccr.corp.intel.com>
-        <c0023ae8-0aff-0890-00fb-310d72130f8a@intel.com>
-        <240c5997-ab7e-8045-dacc-1afdb7c49a0d@linux.alibaba.com>
-        <b7062fa5-febf-24f6-b160-41359b92ff71@intel.com>
-        <9271f9d7-e251-9ed4-2126-8debb3395891@linux.alibaba.com>
-        <87fss7w3b7.fsf@yhuang6-desk2.ccr.corp.intel.com>
-        <a26234d8-4113-9f22-cb04-efe1956db8e7@linux.alibaba.com>
-Date:   Mon, 08 Nov 2021 16:12:10 +0800
-In-Reply-To: <a26234d8-4113-9f22-cb04-efe1956db8e7@linux.alibaba.com> (Baolin
-        Wang's message of "Mon, 8 Nov 2021 15:07:18 +0800")
-Message-ID: <87sfw7ukv9.fsf@yhuang6-desk2.ccr.corp.intel.com>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/27.1 (gnu/linux)
+        id S237823AbhKHIQV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Nov 2021 03:16:21 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:30375 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234561AbhKHIQQ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Nov 2021 03:16:16 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1636359212;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=nN5+aIj4d2XOGFghF3/VOZbdSEePgdIyyJhpvcoo8+g=;
+        b=bJPY63++AhJtrozEHwOsQpeQF9qXVAOFzR3aRlxaFS+8/za43t1lUSZu9lQwm35OXL1CBw
+        DqrUaOc09Dv5FWuc597n/4n9p12gAkLDo5zzHScfnUafaYwE5GS6gd5y8Q89/XoMb4QluG
+        m5eEExye9FQknOXIyVYuOOmxM6bIC1A=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-204-NWEKaI_jNa6gkvVWB9jm7Q-1; Mon, 08 Nov 2021 03:13:29 -0500
+X-MC-Unique: NWEKaI_jNa6gkvVWB9jm7Q-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id B964CBBEE0;
+        Mon,  8 Nov 2021 08:13:28 +0000 (UTC)
+Received: from localhost.localdomain (ovpn-14-20.pek2.redhat.com [10.72.14.20])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id E1D811017E37;
+        Mon,  8 Nov 2021 08:13:26 +0000 (UTC)
+From:   Jason Wang <jasowang@redhat.com>
+To:     mst@redhat.com, jasowang@redhat.com,
+        virtualization@lists.linux-foundation.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] virtio_ring: aovid reading flag from the descriptor ring
+Date:   Mon,  8 Nov 2021 16:13:24 +0800
+Message-Id: <20211108081324.14204-1-jasowang@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=ascii
 Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Baolin Wang <baolin.wang@linux.alibaba.com> writes:
+Commit 72b5e8958738 ("virtio-ring: store DMA metadata in desc_extra
+for split virtqueue") tries to make it possible for the driver to not
+read from the descriptor ring to prevent the device from corrupting
+the descriptor ring. But it still read the descriptor flag from the
+descriptor ring during buffer detach.
 
-> On 2021/11/8 14:48, Huang, Ying writes:
->> Baolin Wang <baolin.wang@linux.alibaba.com> writes:
->> 
->>> On 2021/11/7 23:20, Dave Hansen wrote:
->>>> On 11/7/21 1:33 AM, Baolin Wang wrote:
->>>>> Thanks for your suggestion. After some thinking, can we change the
->>>>> node_demotion[] structure like below? Which means one source node can be
->>>>> demoted to mutiple target node, and we can set up the target node mask
->>>>> according to the node distance. How do you think? Thanks.
->>>>>
->>>>> static nodemask_t node_demotion[MAX_NUMNODES] __read_mostly =
->>>>>       {[0 ... MAX_NUMNODES - 1] = NODE_MASK_NONE};
->>>> How large is that in the worst case?
->>>
->>> For the worst case (MAX_NUMNODES=1024), the size of the node_demotion
->>> is 131072 bytes, while the size of original data structure is 4096
->>> bytes. Maybe we can allocate the node_demotion dynamically?
->> Per my understanding, in most cases, the number of demotion target
->> nodes
->> should be quite small.  So why not restrict the number of demotion
->> target nodes to make it some kind of simple array?
->
-> Yes, agree. Something like below is reasonable for you?
->
-> #define DEMOTION_TARGET_NODES 16
-> typedef struct { DECLARE_BITMAP(bits, DEMOTION_TARGET_NODES); }
-> demotemask_t;
->
-> static demotemask_t node_demotion[MAX_NUMNODES];
+This patch fixes by always store the descriptor flag no matter whether
+DMA API is used and then we can avoid reading descriptor flag from the
+descriptor ring. This eliminates the possibly of unexpected next
+descriptor caused by the wrong flag (e.g the next flag).
 
-I don't think we need a bitmap.  May be something as following,
+Signed-off-by: Jason Wang <jasowang@redhat.com>
+---
+ drivers/virtio/virtio_ring.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-#define DEMOTION_TARGET_NODES 15
-struct demotion_nodes {
-  unsigned short nr;
-  unsigned short nodes[DEMOTION_TARGET_NODES];
-};
+diff --git a/drivers/virtio/virtio_ring.c b/drivers/virtio/virtio_ring.c
+index 00f64f2f8b72..28734f4e57d3 100644
+--- a/drivers/virtio/virtio_ring.c
++++ b/drivers/virtio/virtio_ring.c
+@@ -583,7 +583,7 @@ static inline int virtqueue_add_split(struct virtqueue *_vq,
+ 	}
+ 	/* Last one doesn't continue. */
+ 	desc[prev].flags &= cpu_to_virtio16(_vq->vdev, ~VRING_DESC_F_NEXT);
+-	if (!indirect && vq->use_dma_api)
++	if (!indirect)
+ 		vq->split.desc_extra[prev & (vq->split.vring.num - 1)].flags &=
+ 			~VRING_DESC_F_NEXT;
+ 
+@@ -713,7 +713,7 @@ static void detach_buf_split(struct vring_virtqueue *vq, unsigned int head,
+ 	/* Put back on free list: unmap first-level descriptors and find end */
+ 	i = head;
+ 
+-	while (vq->split.vring.desc[i].flags & nextflag) {
++	while (vq->split.desc_extra[i].flags & nextflag) {
+ 		vring_unmap_one_split(vq, i);
+ 		i = vq->split.desc_extra[i].next;
+ 		vq->vq.num_free++;
+-- 
+2.25.1
 
-Best Regards,
-Huang, Ying
