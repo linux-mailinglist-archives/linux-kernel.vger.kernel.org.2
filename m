@@ -2,124 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C195C4476D6
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Nov 2021 01:22:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A65A94476DD
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Nov 2021 01:25:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236795AbhKHAY4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 7 Nov 2021 19:24:56 -0500
-Received: from new2-smtp.messagingengine.com ([66.111.4.224]:34063 "EHLO
-        new2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234291AbhKHAYy (ORCPT
+        id S236800AbhKHA1v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 7 Nov 2021 19:27:51 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50132 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230455AbhKHA1s (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 7 Nov 2021 19:24:54 -0500
-Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
-        by mailnew.nyi.internal (Postfix) with ESMTP id 08DD95803EE;
-        Sun,  7 Nov 2021 19:22:10 -0500 (EST)
-Received: from imap43 ([10.202.2.93])
-  by compute4.internal (MEProxy); Sun, 07 Nov 2021 19:22:10 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=aj.id.au; h=
-        mime-version:message-id:in-reply-to:references:date:from:to:cc
-        :subject:content-type; s=fm1; bh=G+UTj3AnYA8ZP4iI6M9Sj8AQF+R2TPP
-        HefdgO8p+64c=; b=DH5pY0FSsMwGpnEmhsJQjDs5+cmjOwQWLhAQvbBGLs0a0cv
-        mvH/jrNMkqIBGr63FcxWAukxOx7Y1xbd9WVbJMSTmRiE/jtJQrHUKFdy6F5Z5oLp
-        EYnVAlFpySFfCFHWOr1EvvSYap8eiM1WalaF9SOJ+41uxPG7ZCCNhSNbwnXc4SOX
-        YZbOw4fCuxEulH6S5TugJUP6T3rdbd/PNgF5C0IWPmiYh+O3DTiqH1+N4MdJfmlU
-        vUBRyjGmC284GFHpWuewHG0BpEV+dCgndjYgwv0DlLqWML/lpxGVWTApmkYTI/GH
-        czRsGFmdIa7KkHqion/z3vE2qaAU4LHjngwdOeA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=G+UTj3
-        AnYA8ZP4iI6M9Sj8AQF+R2TPPHefdgO8p+64c=; b=a0M181+Us4nINoGWsTOddb
-        Nr2mH2QxHIKkVlSS2+Ub0kKadvvT+Z8DhMtiZ10GBqDDhSKML8Kr2Uh8/SqGkYY9
-        Q5dNHPksEGldk3TLhhAJM/BH1ma8Jmj87/WcfrzoqHT8dHRcDR0Z8d6S7u8/eixO
-        4Ut7AaJwE7nr2kT0lYGX11ukx7ogp9zvs3+8b3tya3hcAKNO7hBxac4CcO1FqZKD
-        PEiDikdX0z4Qdth70qXI6eszhy2jyZ7aJl/yi08W5SNjzA0xmx7rvok/5HGcDIfO
-        ua6UJo3HCrF1QLCq93/wSyrlrGYS3INatr3oXrC2QwAOBjgxQHf4cv6cP9dIplEQ
-        ==
-X-ME-Sender: <xms:sG2IYfOmGMRwDRHEKw7G2X-Q1qTZoreJSkxOEU2qle1m5Vi8geFhfQ>
-    <xme:sG2IYZ-Dd47EDJprU4ATIC6VUbN3VWPvf7wCV4cUVFknQqdGBgEJNQtaqJKj9AtOk
-    -NPpLsrK9cd7i2XLw>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvuddruddugdduiecutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
-    fjughrpefofgggkfgjfhffhffvufgtsehttdertderredtnecuhfhrohhmpedftehnughr
-    vgifucflvghffhgvrhihfdcuoegrnhgurhgvfiesrghjrdhiugdrrghuqeenucggtffrrg
-    htthgvrhhnpeehhfefkefgkeduveehffehieehudejfeejveejfedugfefuedtuedvhefh
-    veeuffenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpe
-    grnhgurhgvfiesrghjrdhiugdrrghu
-X-ME-Proxy: <xmx:sW2IYeQ8GDnxOnxEDbamLr9AinuScHhomTeRjEjypP8_XcwY1iWZBw>
-    <xmx:sW2IYTsxGjXExSohLnFLfrx5MAKpVfOHQ_EdsJ1Nh0HW-ESE6g7ctg>
-    <xmx:sW2IYXe8Ce1npBf6FZmtSjNgKSfMDKrln5v1luDUwXi2x0h0qPPOzw>
-    <xmx:sm2IYS-6aQHVxKhqTQwWrUDokHYs79zxyrcrrQ4pGhIltI3Adu9u1Q>
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-        id E931FAC0DD1; Sun,  7 Nov 2021 19:22:08 -0500 (EST)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.5.0-alpha0-1369-gd055fb5e7c-fm-20211018.002-gd055fb5e
-Mime-Version: 1.0
-Message-Id: <c79e93c3-1678-412f-87c5-2b757d806574@www.fastmail.com>
-In-Reply-To: <HK0PR06MB27861518CA84A9DC8D204AC1B28F9@HK0PR06MB2786.apcprd06.prod.outlook.com>
-References: <20210922103116.30652-1-chin-ting_kuo@aspeedtech.com>
- <20210922103116.30652-5-chin-ting_kuo@aspeedtech.com>
- <5a235916-f250-48ac-b931-6ec2c5c2ea5d@www.fastmail.com>
- <HK0PR06MB27861518CA84A9DC8D204AC1B28F9@HK0PR06MB2786.apcprd06.prod.outlook.com>
-Date:   Mon, 08 Nov 2021 10:51:48 +1030
-From:   "Andrew Jeffery" <andrew@aj.id.au>
-To:     "Chin-Ting Kuo" <chin-ting_kuo@aspeedtech.com>,
-        "Rob Herring" <robh+dt@kernel.org>,
-        "Joel Stanley" <joel@jms.id.au>,
-        "Ulf Hansson" <ulf.hansson@linaro.org>
-Cc:     BMC-SW <BMC-SW@aspeedtech.com>,
-        "Steven Lee" <steven_lee@aspeedtech.com>,
-        "Michael Turquette" <mturquette@baylibre.com>,
-        "Stephen Boyd" <sboyd@kernel.org>,
-        "Adrian Hunter" <adrian.hunter@intel.com>,
-        "linux-aspeed@lists.ozlabs.org" <linux-aspeed@lists.ozlabs.org>,
-        "openbmc@lists.ozlabs.org" <openbmc@lists.ozlabs.org>,
-        linux-mmc <linux-mmc@vger.kernel.org>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-clk@vger.kernel.org" <linux-clk@vger.kernel.org>
-Subject: Re: [PATCH 04/10] mmc: Add invert flag for clock phase signedness
-Content-Type: text/plain
+        Sun, 7 Nov 2021 19:27:48 -0500
+Received: from mail-ed1-x535.google.com (mail-ed1-x535.google.com [IPv6:2a00:1450:4864:20::535])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0FA68C061570;
+        Sun,  7 Nov 2021 16:25:05 -0800 (PST)
+Received: by mail-ed1-x535.google.com with SMTP id w1so55979786edd.10;
+        Sun, 07 Nov 2021 16:25:04 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=MONscSKyhvi2+SRKlBcGRiPlb7krpgUPlxLNPbjxYgo=;
+        b=bad+zSa0E8ifLsxFIIjQOYUpj6cMP4QEQxAksHyC+dUEaJmhyqt5mMse6Z5zIMA6v4
+         1JTVZB4rIye0fXMLmOgQPozH47hCaUtuIJq/NioXDoF48lXy8Ikqfl2jtGRlIQphLEG8
+         e50FmCg4kKLtcPSNiMYGDDEYQoVsnretSCq62en/klNk28jGf1WnGEzZhQ5DX0tfUnaQ
+         BV+OUNsqG2GkbkYE5wIxX0TMGrLOsEwLaaP2gdO3xGBkaEaJ8I3lxQdwzjV3b7LWnu/7
+         OC6XpuVTzI80d4P5+T0ZgMcB5H6LVl0MX0VRVZGSmSv7609AOL3nhHX+TlYbOhuCOxpd
+         kq/w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=MONscSKyhvi2+SRKlBcGRiPlb7krpgUPlxLNPbjxYgo=;
+        b=TZJ16GckiqBqWJUvDeTVEEJBCILVRmeA8F0LDZcN5wWURjq1LnROysL+9mmnQ/aTbH
+         497hJ/mn4Hq8L8ZjhUp3gJubUII0LQsgX3/h0yIzCHFGIHrs+VfpSs3vts9WR+WQe6iN
+         ZNiSswIHrPIQFefGTTDVKqbaEh4agRHMEKcYQvEK7PVbprocHu/2ho1cGbmnabHG0oPS
+         Rs3AH1gqdVE0wQrsS3n/Z3DqhFb8Sum5jXy4sVPKnCucEzb1t1HxPIHmPgC1NZGw4dUz
+         xKZmxAJjfWauwEIBupkcBOFHrx6uVCBPpEt/qtTJ+pxWOa7N/THRASBaHz+wnhUG2oqG
+         bt9Q==
+X-Gm-Message-State: AOAM532PcPGE+wHelhOhHgNaRxoaC3/fhZ7Zaa7qqb4J5C4Umfyr/jV2
+        pyEYPd8Hg1VL4k+HzOPUpY0=
+X-Google-Smtp-Source: ABdhPJxwuWOpWvwWyszMr+He1assUHDS3DKb5+qzQypzgnqgp3iSmhDeLLoGhR6U6by6xxd+xNcTPg==
+X-Received: by 2002:a05:6402:40d0:: with SMTP id z16mr73382067edb.340.1636331103501;
+        Sun, 07 Nov 2021 16:25:03 -0800 (PST)
+Received: from Ansuel-xps.localdomain (93-42-71-246.ip85.fastwebnet.it. [93.42.71.246])
+        by smtp.googlemail.com with ESMTPSA id bf8sm8537878edb.46.2021.11.07.16.25.02
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 07 Nov 2021 16:25:03 -0800 (PST)
+From:   Ansuel Smith <ansuelsmth@gmail.com>
+To:     Andrew Lunn <andrew@lunn.ch>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Vladimir Oltean <olteanv@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>, Pavel Machek <pavel@ucw.cz>,
+        Ansuel Smith <ansuelsmth@gmail.com>,
+        John Crispin <john@phrozen.org>, netdev@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-leds@vger.kernel.org
+Subject: [RFC PATCH v2 0/5] Adds support for PHY LEDs with offload triggers
+Date:   Mon,  8 Nov 2021 01:24:55 +0100
+Message-Id: <20211108002500.19115-1-ansuelsmth@gmail.com>
+X-Mailer: git-send-email 2.32.0
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 6 Nov 2021, at 20:32, Chin-Ting Kuo wrote:
-> Hi Andrew,
->>> > -	rc = device_property_read_u32_array(dev, prop, degrees, 2);
->> > +	rc = device_property_read_u32_array(dev, prop, degrees, 4);
->> >  	phase->valid = !rc;
->> >  	if (phase->valid) {
->> > -		phase->in_deg = degrees[0];
->> > -		phase->out_deg = degrees[1];
->> > +		phase->inv_in_deg = degrees[0] ? true : false;
->> > +		phase->in_deg = degrees[1];
->> > +		phase->inv_out_deg = degrees[2] ? true : false;
->> > +		phase->out_deg = degrees[3];
->> 
->> This fundamentally breaks any in-tree users. We can't do this.
->> 
->> In terms of the binding, if negative phase values are something we must do,
->> we can just extend the value range to include [-359, -1] right?
->
-> Yes, agree it and I tried it before. But, it seems that the device tree 
-> doesn't support
-> negative value with "-" prefixed and there is no device tree related 
-> API used to get
-> the negative value from .dts. Thus, I tried to add an additional flag 
-> to present
-> negative value.
->
+This is another attempt in adding support for PHY LEDs. Most of the
+times Switch/PHY have connected multiple LEDs that are controlled by HW
+based on some rules/event. Currently we lack any support for a generic
+way to control the HW part and normally we either never implement the
+feature or only add control for brightness or hw blink.
 
-Hmm. Still, I don't think we can break the binding this way.
+This is based on Marek idea of providing some API to cled but use a
+different implementation that in theory should be more generilized.
 
-Rob, Ulf, Adrian: What are your thoughts on handling phase offsets in 
-[-360, 360] in the binding? Do we append the flag field? Add a separate 
-property? I don't think interleaving the flags is desirable, though 
-interested in your thoughts.
+The current idea is:
+- LED driver implement 2 API (trigger and configure). They are used to
+  put the LED in offload mode and to configure the various trigger.
+- We have offload triggers that are used to expose to userspace the
+  supported offload triggers and set the offload mode on trigger
+  activation.
+- The LED driver will declare each supported trigger and each supported
+  offloaded trigger and communicate it to the trigger that will expose them
+  via sysfs.
+- Only supported triggers from linux,supported-offload-triggers will be
+  exposed by the offload trigger to userspace via sysfs. Other won't be
+  configurable as they are not supported by the LED driver.
+- The LED driver will set how the Offload mode is activated/disabled and
+  will set a configure function to set each supported offload triggers.
+  This function provide 3 different mode enable/disable/read that
+  will enable or disable the offload trigger or read the current status.
+- On offload trigger activation, only the offload mode is triggered but
+  the offload triggers are not configured. This means that the LED will
+  run in offload mode but will have the default rules/event set by the
+  device by default. To change this the user will have to operate via
+  userspace (or we can consider adding another binding in the dts to
+  declare also a default trigger configuration)
 
-Andrew
+Each LED driver will have to declare explicit support for the offload
+trigger (or return not supported error code) as we pass a u32 flag that
+the LED driver will elaborate and understand what is referring to (based
+on the current active trigger).
+
+I posted a user for this new implementation that will benefit from this
+and will add a big feature to it. Currently qca8k can have up to 3 LEDs
+connected to each PHY port and we have some device that have only one of
+them connected and the default configuration won't work for that.
+
+v2:
+- Fix spelling mistake (sorry)
+- Drop patch 02 "permit to declare supported offload triggers".
+  Change the logic, now the LED driver declare support for them
+  using the configure_offload with the cmd TRIGGER_SUPPORTED.
+- Rework code to follow this new implementation.
+- Update Documentation to better describe how this offload
+  implementation work.
+
+Ansuel Smith (4):
+  leds: add function to configure offload leds
+  leds: trigger: add offload-phy-activity trigger
+  net: dsa: qca8k: add LEDs support
+  dt-bindings: net: dsa: qca8k: add LEDs definition example
+
+Marek Behún (1):
+  leds: trigger: add API for HW offloading of triggers
+
+ .../devicetree/bindings/net/dsa/qca8k.yaml    |  20 +
+ Documentation/leds/leds-class.rst             |  44 +++
+ drivers/leds/led-triggers.c                   |   1 +
+ drivers/leds/trigger/Kconfig                  |  39 ++
+ drivers/leds/trigger/Makefile                 |   1 +
+ .../trigger/ledtrig-offload-phy-activity.c    | 145 +++++++
+ drivers/net/dsa/Kconfig                       |   9 +
+ drivers/net/dsa/Makefile                      |   1 +
+ drivers/net/dsa/qca8k-leds.c                  | 364 ++++++++++++++++++
+ drivers/net/dsa/qca8k.c                       |   8 +-
+ drivers/net/dsa/qca8k.h                       |  64 +++
+ include/linux/leds.h                          |  85 ++++
+ 12 files changed, 779 insertions(+), 2 deletions(-)
+ create mode 100644 drivers/leds/trigger/ledtrig-offload-phy-activity.c
+ create mode 100644 drivers/net/dsa/qca8k-leds.c
+
+-- 
+2.32.0
+
