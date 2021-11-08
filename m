@@ -2,154 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 99BEC447F03
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Nov 2021 12:38:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 06303447F09
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Nov 2021 12:39:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239276AbhKHLkq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Nov 2021 06:40:46 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:42966 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S235534AbhKHLko (ORCPT
+        id S239284AbhKHLmL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Nov 2021 06:42:11 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58574 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231992AbhKHLmG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Nov 2021 06:40:44 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1636371479;
+        Mon, 8 Nov 2021 06:42:06 -0500
+Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A05D5C061570;
+        Mon,  8 Nov 2021 03:39:22 -0800 (PST)
+Received: from zn.tnic (p200300ec2f331100bbe06604d19d6498.dip0.t-ipconnect.de [IPv6:2003:ec:2f33:1100:bbe0:6604:d19d:6498])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id EFE771EC04DE;
+        Mon,  8 Nov 2021 12:39:19 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1636371560;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=zlpIDeohuxGJKr6/NQGxf0qdewWP/HeI2X9Zoct4WLo=;
-        b=L9mv7Wzvbe42e1CbAnv05oCbj8xcueiPsoDNZRRpzHHeNz90zepp44MFDAB5Ig2c3VuFh2
-        V2iePOr5/bQ6OyJrUh0fzeYi+Etn+LUBaymtZQoSoCcSWpeEqNfppdpXhuPnSceCrC7PJw
-        FQX5XIZh1khAGao2jfLbVc3uYq60Ma8=
-Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com
- [209.85.208.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-24-qYWbZ6BPP0CZtiAUmjThVQ-1; Mon, 08 Nov 2021 06:37:58 -0500
-X-MC-Unique: qYWbZ6BPP0CZtiAUmjThVQ-1
-Received: by mail-ed1-f70.google.com with SMTP id o15-20020a056402438f00b003e32b274b24so4090763edc.21
-        for <linux-kernel@vger.kernel.org>; Mon, 08 Nov 2021 03:37:58 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
-         :message-id:mime-version;
-        bh=zlpIDeohuxGJKr6/NQGxf0qdewWP/HeI2X9Zoct4WLo=;
-        b=qk0Sz4Yu7/SAFrqtKWf2i00ghcEDyMg92Mqt596jSNErTGBHayhQqhAdEZwO3OL3b9
-         z8HtQEzP6xt91o9C/ya2B3WeY9aYv9oqjA1aZCjFWJCdE4xnLiyHRlmmwE79jwRf7d1e
-         YNG2+tLRjhhY2KBsFqXXAeHV6BocmRsQ8kAinAqjYC0zpVfVZfiRN5fdjkhKRbbh8Hca
-         6FHOX3nMDRCClLXRM6UrfW6Owykt8Fp3f+KLNhUnF9VzGex3tZuYwzjJfyXQ3BKvXYzi
-         dUFGhv1MxoWeylQo4Ll60zs1s8CC7KkkwSP8sxUaBZ7vncQK7wTMGzv8dEDU5LqwYuzU
-         jieg==
-X-Gm-Message-State: AOAM531N3KhykxdLyAqqwgaoP6sWhNy3ZuUXM8KChWxxkxA1Mpx1FIeM
-        HWoSk2/VgzavpsrFdezqz18UD9TLtRt5GQeFlf4iXRpbDPiudT/qvFWRevTBJavUigAAw2jtHAV
-        hXkyzU9+1dZkEf4yBoD0XWPod
-X-Received: by 2002:a50:ff07:: with SMTP id a7mr107385522edu.338.1636371476591;
-        Mon, 08 Nov 2021 03:37:56 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJx6xBGQaHNOpSc3bDudxgiZ97suxKqVelKGBfKaraRJUbGpQNsgGOmD1+OdU/l8xcmlE13Mfg==
-X-Received: by 2002:a50:ff07:: with SMTP id a7mr107385478edu.338.1636371476247;
-        Mon, 08 Nov 2021 03:37:56 -0800 (PST)
-Received: from alrua-x1.borgediget.toke.dk ([45.145.92.2])
-        by smtp.gmail.com with ESMTPSA id sb8sm6393735ejc.51.2021.11.08.03.37.54
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 08 Nov 2021 03:37:54 -0800 (PST)
-Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
-        id 2E6B718026D; Mon,  8 Nov 2021 12:37:54 +0100 (CET)
-From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
-To:     Alexander Lobakin <alexandr.lobakin@intel.com>,
-        Saeed Mahameed <saeed@kernel.org>
-Cc:     Alexander Lobakin <alexandr.lobakin@intel.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jesse Brandeburg <jesse.brandeburg@intel.com>,
-        Lukasz Czapnik <lukasz.czapnik@intel.com>,
-        Marcin Kubiak <marcin.kubiak@intel.com>,
-        Michal Kubiak <michal.kubiak@intel.com>,
-        Michal Swiatkowski <michal.swiatkowski@intel.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Netanel Belgazal <netanel@amazon.com>,
-        Arthur Kiyanovski <akiyano@amazon.com>,
-        Guy Tzalik <gtzalik@amazon.com>,
-        Saeed Bishara <saeedb@amazon.com>,
-        Ioana Ciornei <ioana.ciornei@nxp.com>,
-        Claudiu Manoil <claudiu.manoil@nxp.com>,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-        Marcin Wojtas <mw@semihalf.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Edward Cree <ecree.xilinx@gmail.com>,
-        Martin Habets <habetsm.xilinx@gmail.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Shay Agroskin <shayagr@amazon.com>,
-        Sameeh Jubran <sameehj@amazon.com>,
-        Alexander Duyck <alexanderduyck@fb.com>,
-        Danielle Ratson <danieller@nvidia.com>,
-        Ido Schimmel <idosch@nvidia.com>, Andrew Lunn <andrew@lunn.ch>,
-        Vladyslav Tarasiuk <vladyslavt@nvidia.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Jian Shen <shenjian15@huawei.com>,
-        Petr Vorel <petr.vorel@gmail.com>, Dan Murphy <dmurphy@ti.com>,
-        Yangbo Lu <yangbo.lu@nxp.com>,
-        Michal Kubecek <mkubecek@suse.cz>,
-        Zheng Yongjun <zhengyongjun3@huawei.com>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        YueHaibing <yuehaibing@huawei.com>,
-        Johannes Berg <johannes@sipsolutions.net>,
-        Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
-        netdev@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        virtualization@lists.linux-foundation.org, bpf@vger.kernel.org
-Subject: Re: [PATCH net-next 03/21] ethtool, stats: introduce standard XDP
- statistics
-In-Reply-To: <20211105164453.29102-1-alexandr.lobakin@intel.com>
-References: <20210803163641.3743-1-alexandr.lobakin@intel.com>
- <20210803163641.3743-4-alexandr.lobakin@intel.com>
- <20210803134900.578b4c37@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
- <ec0aefbc987575d1979f9102d331bd3e8f809824.camel@kernel.org>
- <20211026092323.165-1-alexandr.lobakin@intel.com>
- <20211105164453.29102-1-alexandr.lobakin@intel.com>
-X-Clacks-Overhead: GNU Terry Pratchett
-Date:   Mon, 08 Nov 2021 12:37:54 +0100
-Message-ID: <87v912ri7h.fsf@toke.dk>
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=fMAol2repudDd8TXhSVhZtfjNlX2LrvJk6WKpVinc98=;
+        b=rzZPwl7NZ0JXIABqnksvr15gvAtfWCnWpo/TAAbAG7Qv0mWui0aIIwG0va18r8K+TTUWQP
+        /onZ8Z6tOtLyxlidhu+hgFAwuB844fr776QTedz4Py1KFbGPMhVkvJ+QVzFCUy6VEJJbiv
+        VBKtCtSbWKW8YtyFMtH1tgcgmfAWths=
+Date:   Mon, 8 Nov 2021 12:39:14 +0100
+From:   Borislav Petkov <bp@alien8.de>
+To:     Wei Liu <wei.liu@kernel.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>, linux-hyperv@vger.kernel.org
+Subject: Re: [PATCH v0 08/42] Drivers: hv: vmbus: Check notifier registration
+ return value
+Message-ID: <YYkMYtYkvwiyzGNG@zn.tnic>
+References: <20211108101157.15189-1-bp@alien8.de>
+ <20211108101157.15189-9-bp@alien8.de>
+ <20211108111637.c3vsesezc7hwjbty@liuwe-devbox-debian-v2>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20211108111637.c3vsesezc7hwjbty@liuwe-devbox-debian-v2>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Alexander Lobakin <alexandr.lobakin@intel.com> writes:
+On Mon, Nov 08, 2021 at 11:16:37AM +0000, Wei Liu wrote:
+> On Mon, Nov 08, 2021 at 11:11:23AM +0100, Borislav Petkov wrote:
+> > From: Borislav Petkov <bp@suse.de>
+> > 
+> > Avoid homegrown notifier registration checks.
+> > 
+> > No functional changes.
+> > 
+> > Signed-off-by: Borislav Petkov <bp@suse.de>
+> > Cc: linux-hyperv@vger.kernel.org
+> 
+> Acked-by: Wei Liu <wei.liu@kernel.org>
 
-> From: Alexander Lobakin <alexandr.lobakin@intel.com>
-> Date: Tue, 26 Oct 2021 11:23:23 +0200
->
->> From: Saeed Mahameed <saeed@kernel.org>
->> Date: Tue, 03 Aug 2021 16:57:22 -0700
->> 
->> [ snip ]
->> 
->> > XDP is going to always be eBPF based ! why not just report such stats
->> > to a special BPF_MAP ? BPF stack can collect the stats from the driver
->> > and report them to this special MAP upon user request.
->> 
->> I really dig this idea now. How do you see it?
->> <ifindex:channel:stat_id> as a key and its value as a value or ...?
->
-> Ideas, suggestions, anyone?
+Thanks.
 
-I don't like the idea of putting statistics in a map instead of the
-regular statistics counters. Sure, for bespoke things people want to put
-into their XDP programs, use a map, but for regular packet/byte
-counters, update the regular counters so XDP isn't "invisible".
+I assume your ack means, I can take the two through tip.
 
-As Jesper pointed out, batching the updates so the global counters are
-only updated once per NAPI cycle is the way to avoid a huge performance
-overhead of this...
+Alternatively, you can take 'em too, if you prefer, as there's no
+dependency, see here:
 
--Toke
+https://lore.kernel.org/r/20211108101924.15759-1-bp@alien8.de
 
+-- 
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
