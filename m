@@ -2,96 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BB14F449AA4
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Nov 2021 18:16:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8ECD8449A8C
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Nov 2021 18:12:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238112AbhKHRTg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Nov 2021 12:19:36 -0500
-Received: from mail-pj1-f46.google.com ([209.85.216.46]:45969 "EHLO
-        mail-pj1-f46.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229966AbhKHRTf (ORCPT
+        id S240532AbhKHRPN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Nov 2021 12:15:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50234 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233057AbhKHRPM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Nov 2021 12:19:35 -0500
-Received: by mail-pj1-f46.google.com with SMTP id gb13-20020a17090b060d00b001a674e2c4a8so392769pjb.4;
-        Mon, 08 Nov 2021 09:16:51 -0800 (PST)
+        Mon, 8 Nov 2021 12:15:12 -0500
+Received: from mail-pg1-x52c.google.com (mail-pg1-x52c.google.com [IPv6:2607:f8b0:4864:20::52c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF503C061570;
+        Mon,  8 Nov 2021 09:12:27 -0800 (PST)
+Received: by mail-pg1-x52c.google.com with SMTP id e65so15720483pgc.5;
+        Mon, 08 Nov 2021 09:12:27 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=hGvO+FT4c2EJbxVYCDLmWLN/y9tCrxnSNXxEMsXuwNQ=;
+        b=PEXo9EJ8iyOs6JYtLc/77yuf3gv2+qmOaRxZ/t9gKovlJPftYz0nG0N+vgAMQrzQ4i
+         kNkOdJBlkeE/hZ6MODTHJLLrwXgvJnT/K6EX0chnqcK2yGVtopLE3UZg2leAGvZbl3LN
+         64kttVS3G4UKARK1dMYKiUjOGmY8M4KlUB4uGdl56x8atLwBvciap3B2qM5Ve4ah0rbR
+         JHeHvQRBp6QyA02S3Ok6G2ObBMX0tOjwcBU/elZbj5iChuMAeeb29F1iO9YXCuDr0WmS
+         3dA5OVsnzNLM6MuM5kv8tGGk+wI0/n1LaF7IdCi20tMea79itbKo6koYALO1VLXF6R48
+         n96g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=6qrbAoBrJjelIsGjirLwZN0gyhg8Hh/Ojtm8QnhOi0g=;
-        b=A73n+QazPeO2QdsJcqw2SVc29aBVqGbufyGCbTEyDbXyUnj7zdTcU8xXpxivFAlBh/
-         6hzmIYUxycxdbikUFEAIUVR3RdJ1JG7w6YF8ChgjV/V6S+mAwb4ULGnh5g2LHcKFQL1b
-         RBgnrRd9vvmDt03Othl2NVqo6TkHhcPbY4nFw8ry83XP/JYBNPHumKyVs/VhReaeJ0LN
-         H6sn2qSueinvUoufcyrVbtFt/BT8lHrHfQ2/H6l2fprVYxzDXSmUX/4j3ncW4BDZY7u+
-         QtBFvrv+Rhzeadg/mQa53jLcL3Tmf9cKBCjx95mBb31RMWWFts9OJf+FqHtVCjDPd5XE
-         cYlw==
-X-Gm-Message-State: AOAM531fyTujzUKgchUU6J2XVZEJMHpeQ2505I97Tk1oRVAVKk0MZSSN
-        E3JbnHffmHaAv0iw05XAeUg=
-X-Google-Smtp-Source: ABdhPJwL77HdCCHFjIvjr9rRDpMNNq43Z/sC2S3wBnrlSjlbPKp9TS0HcR6iMPctY/0vIcXyjwt14w==
-X-Received: by 2002:a17:90a:ba03:: with SMTP id s3mr533039pjr.116.1636391811033;
-        Mon, 08 Nov 2021 09:16:51 -0800 (PST)
-Received: from bvanassche-linux.mtv.corp.google.com ([2620:15c:211:201:4ca8:59a2:ad3c:1580])
-        by smtp.gmail.com with ESMTPSA id z4sm6657616pfg.101.2021.11.08.09.16.49
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 08 Nov 2021 09:16:49 -0800 (PST)
-Subject: Re: [PATCH 2/2] scsi: ufs: Return a bsg request immediatley if
- eh-in-progress
-To:     Avri Altman <avri.altman@wdc.com>,
-        "James E . J . Bottomley" <jejb@linux.vnet.ibm.com>,
-        "Martin K . Petersen" <martin.petersen@oracle.com>
-Cc:     linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Adrian Hunter <adrian.hunter@intel.com>
-References: <20211108120804.10405-1-avri.altman@wdc.com>
- <20211108120804.10405-3-avri.altman@wdc.com>
-From:   Bart Van Assche <bvanassche@acm.org>
-Message-ID: <fa7dae1f-06ac-9d5a-616d-cc00c38e5feb@acm.org>
-Date:   Mon, 8 Nov 2021 09:16:48 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.14.0
+        bh=hGvO+FT4c2EJbxVYCDLmWLN/y9tCrxnSNXxEMsXuwNQ=;
+        b=H8v7jyuw9MKhekIH4jq8NfangMFWKBExjcFrYsO75Mmv0ZiG0TmJqyJbRbE5FLqcAx
+         liRaCriFtYVD2W041QstEfQ+728WzEPeN5lMibGjEQqMVbxalbFPXB78Uj/pyh37nPm3
+         278UlEmF5KaPTkPHSpOCh8yZAuTISx8D7qWoAHINQQlZAvWteXOPKCQ9tSi9kGPa6e4u
+         gbmY7LzKbCX152oCAZFzihl5gEU5y2wJgG+VjgcZTFb6BHf//5ywRotXbM9530xJ6RuA
+         h1z5kyRlMyG8NrOXnQ6NUC6iAujl3NEGNIrJXeD0tmcXgVval07O+9pR7EChBGmSyfBx
+         YaWA==
+X-Gm-Message-State: AOAM531Wg5CibJh5lX3PSfgS/RpLPEAMoV+FPdG9GaM6ZVQM7L1tkTKI
+        hYsFCkbzrRxZ+xHeSiOTsUhzYdle7v4=
+X-Google-Smtp-Source: ABdhPJzliYBpPaMk022dk/QMrNH7Vg6W2agrDSJIDzTqNmxTzHAPQJOF1S2MqpYK5Ecosi0pxfxalA==
+X-Received: by 2002:a62:5ec2:0:b0:44d:47e2:4b3b with SMTP id s185-20020a625ec2000000b0044d47e24b3bmr82851281pfb.38.1636391547336;
+        Mon, 08 Nov 2021 09:12:27 -0800 (PST)
+Received: from localhost (c-73-25-156-94.hsd1.or.comcast.net. [73.25.156.94])
+        by smtp.gmail.com with ESMTPSA id p16sm12810610pgd.78.2021.11.08.09.12.25
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 08 Nov 2021 09:12:26 -0800 (PST)
+From:   Rob Clark <robdclark@gmail.com>
+To:     iommu@lists.linux-foundation.org
+Cc:     dri-devel@lists.freedesktop.org, linux-arm-msm@vger.kernel.org,
+        freedreno@lists.freedesktop.org,
+        Rob Clark <robdclark@chromium.org>,
+        Will Deacon <will@kernel.org>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Jordan Crouse <jordan@cosmicpenguin.net>,
+        Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>,
+        Shawn Guo <shawn.guo@linaro.org>,
+        Eric Anholt <eric@anholt.net>,
+        linux-arm-kernel@lists.infradead.org (moderated list:ARM SMMU DRIVERS),
+        linux-kernel@vger.kernel.org (open list)
+Subject: [PATCH] iommu/arm-smmu-qcom: Fix TTBR0 read
+Date:   Mon,  8 Nov 2021 09:17:23 -0800
+Message-Id: <20211108171724.470973-1-robdclark@gmail.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-In-Reply-To: <20211108120804.10405-3-avri.altman@wdc.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/8/21 4:08 AM, Avri Altman wrote:
-> ufs-bsg is attempting to access the device from user-space, and it is
-> unaware of the internal driver flows, specifically if error handling is
-> currently ongoing.
-> 
-> Fixes: 5e0a86eed846 (scsi: ufs: Add API to execute raw upiu commands)
-> 
-> Signed-off-by: Avri Altman <avri.altman@wdc.com>
-> ---
->   drivers/scsi/ufs/ufshcd.c | 3 +++
->   1 file changed, 3 insertions(+)
-> 
-> diff --git a/drivers/scsi/ufs/ufshcd.c b/drivers/scsi/ufs/ufshcd.c
-> index 3869bb57769b..828061c05909 100644
-> --- a/drivers/scsi/ufs/ufshcd.c
-> +++ b/drivers/scsi/ufs/ufshcd.c
-> @@ -6830,6 +6830,9 @@ int ufshcd_exec_raw_upiu_cmd(struct ufs_hba *hba,
->   	enum utp_ocs ocs_value;
->   	u8 tm_f = be32_to_cpu(req_upiu->header.dword_1) >> 16 & MASK_TM_FUNC;
->   
-> +	if (!ufshcd_is_user_access_allowed(hba))
-> +		return -EBUSY;
-> +
->   	switch (msgcode) {
->   	case UPIU_TRANSACTION_NOP_OUT:
->   		cmd_type = DEV_CMD_TYPE_NOP;
+From: Rob Clark <robdclark@chromium.org>
 
-Making operations fail if error handling is in progress makes it harder than
-necessary to write user space software that uses the BSG interface. Has it
-been considered to wait inside ufshcd_exec_raw_upiu_cmd() until error handling
-has finished?
+It is a 64b register, lets not lose the upper bits.
 
-Thanks,
+Fixes: ab5df7b953d8 ("iommu/arm-smmu-qcom: Add an adreno-smmu-priv callback to get pagefault info")
+Signed-off-by: Rob Clark <robdclark@chromium.org>
+---
+ drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Bart.
-
+diff --git a/drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c b/drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c
+index 55690af1b25d..c998960495b4 100644
+--- a/drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c
++++ b/drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c
+@@ -51,7 +51,7 @@ static void qcom_adreno_smmu_get_fault_info(const void *cookie,
+ 	info->fsynr1 = arm_smmu_cb_read(smmu, cfg->cbndx, ARM_SMMU_CB_FSYNR1);
+ 	info->far = arm_smmu_cb_readq(smmu, cfg->cbndx, ARM_SMMU_CB_FAR);
+ 	info->cbfrsynra = arm_smmu_gr1_read(smmu, ARM_SMMU_GR1_CBFRSYNRA(cfg->cbndx));
+-	info->ttbr0 = arm_smmu_cb_read(smmu, cfg->cbndx, ARM_SMMU_CB_TTBR0);
++	info->ttbr0 = arm_smmu_cb_readq(smmu, cfg->cbndx, ARM_SMMU_CB_TTBR0);
+ 	info->contextidr = arm_smmu_cb_read(smmu, cfg->cbndx, ARM_SMMU_CB_CONTEXTIDR);
+ }
+ 
+-- 
+2.31.1
 
