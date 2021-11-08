@@ -2,231 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 81B2A447F81
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Nov 2021 13:35:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F3575447F88
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Nov 2021 13:36:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239551AbhKHMiB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Nov 2021 07:38:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42748 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239535AbhKHMh5 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Nov 2021 07:37:57 -0500
-Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D6651C061570;
-        Mon,  8 Nov 2021 04:35:12 -0800 (PST)
-Received: from pendragon.ideasonboard.com (cpc89244-aztw30-2-0-cust3082.18-1.cable.virginm.net [86.31.172.11])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 320F2E51;
-        Mon,  8 Nov 2021 13:35:09 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1636374909;
-        bh=HRNa/ZVrLvCX78HK00UZgOgAd3EvsQWFkXO3bNwyEsI=;
-        h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
-        b=a6xma8pF1iu5hlJEj32zCGUwVlMME7Nrf8pj8y0uIWzDFSgfYFt/Ohf5cvmj3x3wO
-         ZEC365zNBmDpxnDTVlQtGyUClfBSqAWNv07DuGZutcVK5VNde2INtH7qfBY/pOZ0AP
-         VNLS504XON7rB1RBCeBA97EjPBC76MTHDd4ONz3U=
-Content-Type: text/plain; charset="utf-8"
+        id S238268AbhKHMj3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Nov 2021 07:39:29 -0500
+Received: from mail-mw2nam08on2049.outbound.protection.outlook.com ([40.107.101.49]:10528
+        "EHLO NAM04-MW2-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S237481AbhKHMj1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Nov 2021 07:39:27 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=N5vONHSEtcZjNAj/Uhk1SYzAGrqMiM+YzgK1KA67eU1HYpGHsv+JkSQQWqnvvdMfl5cba/pkjodXfmpRNSwGCPTjeP9MR/xq1WAW5iAjoY+44/8cqj/c2hzuFYAFzS8286f2xC/GstvX9TgDtl2CprCHtcBvGpTxp/A9F2h4YDVfZQCr3WjMCMFkb92uatOgzhz5isWmTmcWrit27KTa5Ddxu2jO7E3A3Dj24N4X+3csEaifMPD/5pbxCPQ1xmzIrjoOFQTG0UERHhl1nZdw5lVcv7QSsiGAKBpfS1Bsuvuk60W6T9YbP63MacGcca4pVASYypsgdRMXBats7Oms1A==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=bHsOdidPXC7nyS0PaTY57x7rG9XGlvPD+xWBHTF03sc=;
+ b=kd9UPnvi1AeuN6/4KlZphjL4yFrITI2QIFVUsSXn5HVc2KWwEdjKL8Ukceh6iZhEIuVoH8ETbNqnshZ2kj+6rAFE6CxWinXhpf9yfCP04xzJD1cTmAvVN/n1Sn79TYHa5Sly6SWI+o6peZoUH8SS3tcDtTsZBDkcJHS0sKGa3nH5OfIaog2I7NLiUqtelIK6iDqjb56KK2WbdFhaaaXEiU7AQY+ziZdLFkxKpyLRXH+0oAkkwbG2e3CAkdtq/SQS/BzJqJxAUp/WaSHBIqjrJ4IQdftliQ87Dqi2tH+OWI7ZUvNTdNHhySiuNVOQvyNViCfbuQj1rlIFSRBtU6TKtw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=bHsOdidPXC7nyS0PaTY57x7rG9XGlvPD+xWBHTF03sc=;
+ b=HeEk9QdjVm6REMgrG2DFE/c2SQlk3PAlInXlj51pBZulVnrxPkpY1kqxWbMT1m6i9v/XuCSn/IYqMFIX+6/5C5Xq4/WTAAYG2sqPIjHN9HKEak67xXMYrYeWWpF6DuA3QO3zpuSKdtRDO1omlZyzl8WuK6O7oG+/R11KaM3yiX6wvElLg0tHzJecGJokDFc2AXevEtSPhUK3fM3ZX8AKofj+jNsPlaY4wbzOl8xc6E89hzoRKJ960btdognnhr7IY2Bp2XsBEywlHgrJTI1J4HTvTkUJCo+ggbh2rCDW8Nva9N84uFdTlbkPYjNh32b0US1cJqWvL0Cxo2kWvqkvaQ==
+Authentication-Results: kernel.org; dkim=none (message not signed)
+ header.d=none;kernel.org; dmarc=none action=none header.from=nvidia.com;
+Received: from BL0PR12MB5506.namprd12.prod.outlook.com (2603:10b6:208:1cb::22)
+ by BL1PR12MB5320.namprd12.prod.outlook.com (2603:10b6:208:314::17) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4669.13; Mon, 8 Nov
+ 2021 12:36:40 +0000
+Received: from BL0PR12MB5506.namprd12.prod.outlook.com
+ ([fe80::5897:83b2:a704:7909]) by BL0PR12MB5506.namprd12.prod.outlook.com
+ ([fe80::5897:83b2:a704:7909%7]) with mapi id 15.20.4669.016; Mon, 8 Nov 2021
+ 12:36:40 +0000
+Date:   Mon, 8 Nov 2021 08:36:39 -0400
+From:   Jason Gunthorpe <jgg@nvidia.com>
+To:     Leon Romanovsky <leon@kernel.org>
+Cc:     Doug Ledford <dledford@redhat.com>,
+        Leon Romanovsky <leonro@nvidia.com>,
+        kernel test robot <lkp@intel.com>,
+        linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org
+Subject: Re: [PATCH rdma-rc] RDMA/netlink: Annotate unused function that is
+ needed for compilation check
+Message-ID: <20211108123639.GT2744544@nvidia.com>
+References: <4a8101919b765e01d7fde6f27fd572c958deeb4a.1636267207.git.leonro@nvidia.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <4a8101919b765e01d7fde6f27fd572c958deeb4a.1636267207.git.leonro@nvidia.com>
+X-ClientProxiedBy: BL1PR13CA0023.namprd13.prod.outlook.com
+ (2603:10b6:208:256::28) To BL0PR12MB5506.namprd12.prod.outlook.com
+ (2603:10b6:208:1cb::22)
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <CAMuHMdUUbzTGWSybSpEgaN1oCzV9o+tdKJHEsdVvPD--52RbQg@mail.gmail.com>
-References: <20211105103508.4153491-1-kieran.bingham+renesas@ideasonboard.com> <20211105170037.GA65511@nixie71> <YYW4d/YK1MkIfGT/@google.com> <163619359511.3601475.3667763097540792609@Monstersaurus> <20211107061719.GA204396@nixie71> <CAMuHMdUUbzTGWSybSpEgaN1oCzV9o+tdKJHEsdVvPD--52RbQg@mail.gmail.com>
-Subject: Re: [PATCH v2] Input: add 'safe' user switch codes
-From:   Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>
-Cc:     Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        linux-input <linux-input@vger.kernel.org>,
-        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
-        Max Gurtovoy <mgurtovoy@nvidia.com>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Wu Hao <hao.wu@intel.com>, Bjorn Helgaas <bhelgaas@google.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Dave Ertman <david.m.ertman@intel.com>,
-        Maximilian Luz <luzmaximilian@gmail.com>,
-        Stephan Gerhold <stephan@gerhold.net>,
-        Xu Yilun <yilun.xu@intel.com>,
-        open list <linux-kernel@vger.kernel.org>
-To:     Geert Uytterhoeven <geert@linux-m68k.org>,
-        Jeff LaBundy <jeff@labundy.com>
-Date:   Mon, 08 Nov 2021 12:35:07 +0000
-Message-ID: <163637490726.275423.1171114801185953486@Monstersaurus>
-User-Agent: alot/0.9.1
+Received: from mlx.ziepe.ca (142.162.113.129) by BL1PR13CA0023.namprd13.prod.outlook.com (2603:10b6:208:256::28) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4690.6 via Frontend Transport; Mon, 8 Nov 2021 12:36:40 +0000
+Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1mk3t9-0078oN-Td; Mon, 08 Nov 2021 08:36:39 -0400
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 89d5488b-7ec8-40c2-4cdd-08d9a2b46a04
+X-MS-TrafficTypeDiagnostic: BL1PR12MB5320:
+X-Microsoft-Antispam-PRVS: <BL1PR12MB5320F65BF953BEB75DBD9B6FC2919@BL1PR12MB5320.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:590;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: FUlWBugmSpOBe9p+WPiWkEa0HZJUHy8v4F380nD97+Ho61wZsdEEE7GQm4ge67xdBz9CzHSopNmvf5SI5ms0kQqyaeUnr4x7m0nfi6CBGA1g8O7TRfvy3Jr12uPleXb+5YW8Uo980iaUHmfl7ITT0LMpohYQqOGi5XrZibS4xRHU3hubGW1WXdUp8VNPgOFMej29Ry0JSG46586xJla4Yp6ilLOxPhmKQ8eGCJMJxpYAH10wllBEHwqwtieLwgJMQ2ZVvufv9l/IhLQ85nBVbXqU3zLUmfWTlJjfDdIyWuBakAgL7FBqv7UCqRjZjBXVEmAuGMAoe35CsgBpdKh7eGNYMFR5xNAmxvAYtb7zfAzWyTMyOvO82Ad3AD0X2DZRrpheqGBVpJhJtFZt9sYd/D+ok7orRD3AQtuTrF7plDm/I7S6rQ653fMayCyjOKBCWizOGwLe7Iopd3KmcQpYVX3s5sq3l+1VUYZivN9sn9ntm0OmEjLlQut1SEMA+SWLbUut3z4NQPgZO+GKnOUGXFsx0dLM/OPEBhAZmu1HVbIMzAYcyZSHlzVIr/Sbbv+IeNEdjCBreGmoNbDJqe7xOYAeePK1UBCEojNP9Ae4Uge+EmeUU934WqdH6NpTxpue0WsiaFXeihIxzk4CZo71ug==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BL0PR12MB5506.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(86362001)(38100700002)(186003)(316002)(66556008)(4326008)(26005)(54906003)(83380400001)(36756003)(2906002)(508600001)(66476007)(1076003)(2616005)(426003)(6916009)(9746002)(8676002)(9786002)(8936002)(66946007)(33656002)(5660300002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?V0VXcy28U132H9VTRvm7yl6KFZK9mNXfP/7hBr1XfYVhBk68doSV1GBBlLE0?=
+ =?us-ascii?Q?giS6Es3i4ZfI/KZKIAn7nUCCVRF3olKdft9aNr6OiJD5K6+0X+aWbWyev/by?=
+ =?us-ascii?Q?r7tRvpd/fX7XIEUS14IwIYX10EQfflPaTs/1Dy/2ek/7i9GRiBQYlBADnd5i?=
+ =?us-ascii?Q?1ouy7rVGUmmbemTlIMOa4g3cR1+63Zh1YM15K6pRJSkbJecCCkrAMYObiS8O?=
+ =?us-ascii?Q?sRtQfKw6Pj/39620cY3uTKw18MHtIhpdqs3RNKk6Gu3754UR4Fxpv6esOQmG?=
+ =?us-ascii?Q?NBsMc8kRjKNw8ZDe7OFeB0Jp/vUgVXYeONW3ZE4AluNBQ5DiaFnw8pqdyOl1?=
+ =?us-ascii?Q?HjQIavLStKTIvC2Uhq4Odrggdf5UIIUnxaViM7iEw6cJ3lTSeRFL8NOOCWD2?=
+ =?us-ascii?Q?KAIMptvpZgBmPP/riQDLAthhnBrL1ABCxwmf8qhfSXbg6O43thBQe71cLJ7b?=
+ =?us-ascii?Q?HO+Ts2SiaB8qQkocBkwRggfQGcL5UqFyOWxl2cU/ZFf2hBudMc/DMBkQaeW1?=
+ =?us-ascii?Q?m9yWi/r7E5ratpHK4RTQgm6Wh10TjRq9qdygvTnpNCdF1SWVz0so+jyIW4Ga?=
+ =?us-ascii?Q?LOLwRnMeX7sKUnJZ31ZPKzhJzONYwys6/j0S5F7gPfuZdduBsNAuxrfZn5v7?=
+ =?us-ascii?Q?QVH61QDnP6esD9eGhZjbtbYpsO1Ev4jZNLdf+r8MSYFAm+XypE/5NZZs8wg7?=
+ =?us-ascii?Q?mqfcZBUsfnDYdM5dV2aMnOTj8fVXeE3XCneGTdk9H+Q1OpCqNZh4fyC9ZpTd?=
+ =?us-ascii?Q?cToYySfdMP43OT9RymfORq2asa8LkmG0qJJX4cqy/EL1C909jkK52zy+YxP6?=
+ =?us-ascii?Q?hQLueMpqI+WvmSbPOjs/Nz2u8C0nX1DbH2WOx1MaRK2GT+07XUoFZsNhzLWl?=
+ =?us-ascii?Q?eXZE8tbhFsGm41Ah9N89HojfRoz2FvjtlLmh7ASHBSrUvc+Xv4v3QLbXuz4D?=
+ =?us-ascii?Q?P1ybMItWzv1AV7bZgihuDH0ItBYzWjgRlkZeMyEKrAYVm5x7CK3m00KPJG3v?=
+ =?us-ascii?Q?dY7Toca0c8I3y8Wr0em92/JXqVPL2tXjNPcaFFGG5HaXGHgMruN1YQB71eyL?=
+ =?us-ascii?Q?cVuLQoIosQLuOQY90zIvG6SQnGryYO7ZPQIZ3c8NKg2E6AKyesVqT9K6JFrp?=
+ =?us-ascii?Q?uaU/2ihj3DJvMf6KrPPzpI5i3JMMevGyRaXw2HqZcBzydyhVekerylij053m?=
+ =?us-ascii?Q?A8/Tgpl0ch8XBfNVNSJXEm4nNwsGEtNkkkzQkzm/Hp4t93EcX0D9HvKENoAe?=
+ =?us-ascii?Q?lwb2tJkYqZEsMVBnMqf1YszOKj+GKnfDgz8yoncmIhbY/YfEZWDivysEFdjG?=
+ =?us-ascii?Q?Fyiu38u/5O9EsaeANh5W1sjiIbh2BFJ3dnGttl0bYDI4uTtO7RxrjnEwBbom?=
+ =?us-ascii?Q?Nm6DbVPfhcMdAJrmzxpwDb+EM4NnViTHcXiShYirfgJd9EHYPfou6/uO5GHk?=
+ =?us-ascii?Q?PiXAOTWQZGVoFKmRSoUV6ILPNf7PYcQcQZ94ZawDS7TEc2ypYRJ58sFHfmk9?=
+ =?us-ascii?Q?NbIm0JKXbWrv1OMSHft+17SxnWM2k66jDrBy2qiRhkWoZS+C44uWK1dwQbyP?=
+ =?us-ascii?Q?mmchbtxICw8ZC6KxlKg=3D?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 89d5488b-7ec8-40c2-4cdd-08d9a2b46a04
+X-MS-Exchange-CrossTenant-AuthSource: BL0PR12MB5506.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 08 Nov 2021 12:36:40.7987
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: DLOSjsh9T7QctpFm/MPntqnKk88YY/cAZ0JUpfClLj2hYsabQgn+TK4XYR/+zTX8
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL1PR12MB5320
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Geert Uytterhoeven (2021-11-08 11:00:20)
-> Hi Jeff,
->=20
-> On Sun, Nov 7, 2021 at 7:17 AM Jeff LaBundy <jeff@labundy.com> wrote:
-> > On Sat, Nov 06, 2021 at 10:13:15AM +0000, Kieran Bingham wrote:
-> > > Quoting Dmitry Torokhov (2021-11-05 23:04:23)
-> > > > On Fri, Nov 05, 2021 at 12:00:37PM -0500, Jeff LaBundy wrote:
-> > > > > On Fri, Nov 05, 2021 at 10:35:07AM +0000, Kieran Bingham wrote:
-> > > > > > All existing SW input codes define an action which can be inter=
-preted by
-> > > > > > a user environment to adapt to the condition of the switch.
-> > > > > >
-> > > > > > For example, switches to define the audio mute, will prevent au=
-dio
-> > > > > > playback, and switches to indicate lid and covers being closed =
-may
-> > > > > > disable displays.
-> > > > > >
-> > > > > > Many evaluation platforms provide switches which can be connect=
-ed to the
-> > > > > > input system but associating these to an action incorrectly cou=
-ld
-> > > > > > provide inconsistent end user experiences due to unmarked switch
-> > > > > > positions.
-> > > > > >
-> > > > > > Define two custom user defined switches allowing hardware descr=
-iptions
-> > > > > > to be created whereby the position of the switch is not interpr=
-eted as
-> > > > > > any standard condition that will affect a user experience.
-> > > > > >
-> > > > > > This allows wiring up custom generic switches in a way that wil=
-l allow
-> > > > > > them to be read and processed, without incurring undesired or o=
-therwise
-> > > > > > undocumented (by the hardware) 'default' behaviours.
-> > > > > >
-> > > > > > Signed-off-by: Kieran Bingham <kieran.bingham+renesas@ideasonbo=
-ard.com>
-> > > > > > ---
-> > > > > >
-> > > > > > Sigh, a compile test might have at least saved the buildbots th=
-e trouble
-> > > > > > of notifying me I also need to update the INPUT_DEVICE_ID_SW_MA=
-X. But
-> > > > > > even so - I'm really looking for a discussion on the best ways =
-to
-> > > > > > describe a non-defined switch in device tree.
-> > > > > >
-> > > > > > Here's a compiling v2 ;-) But the real questions are :
-> > > > > >
-> > > > > >  - Should an existing feature switch be used for generic switch=
-es?
-> > > > > >  - Should we even have a 'user' defined switch?
-> > > > > >  - If we add user switches, how many?
-> > > > > >
-> > > > >
-> > > > > This is merely my opinion, but if a hardware switch does not have=
- a defined
-> > > > > purpose, it does not seem necessary to represent it with an input=
- device.
-> > > >
-> > > > Yes, exactly. For input core we are trying to avoid generic events =
-with
-> > > > no defined meaning.
-> > >
-> > > That's understandable, particularly as I could then ponder - how do we
-> > > even define generic switches, and how many ;-) I wanted to discuss it
-> > > because otherwise these switches will be defined in DT as buttons. And
-> > > they are not buttons...
-> > >
-> > > > What are these switches? GPIOs? Maybe it would be better to use GPIO
-> > > > layer to test the state for them?
-> > >
-> > > They are physical slide switches on the board. But they have no defin=
-ed
-> > > purpose by the hardware designer. The purpose would be defined by the
-> > > end user, as otherwise they are generic test switches.
-> > >
-> > > These have been previously handled as gpio-key buttons, for instance
-> > > key-1 to key-4 at [0] are actually four slides switches.
-> > >
-> > > [0] https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.gi=
-t/commit/?id=3De3414b8c45afa5cdfb1ffd10f5334da3458c4aa5
-> > >
-> > > What I'm trying to determine/promote is that they are not push button=
-s,
-> > > and shouldn't be described as such. I have posted [1] to add support =
-for
-> > > these switches, but I am limited to chosing 'functions' which will ha=
-ve
-> > > an impact on the system...
-> > >
-> > > [1] https://lore.kernel.org/all/20211025130457.935122-1-kieran.bingha=
-m+renesas@ideasonboard.com/
-> > >
-> > > Presently in [1] I have chosen SW_LID and SW_DOCK as very arbitrary
-> > > functions for the switches. But my concern is that in doing so, the
-> > > SW_LID position could for instance suggest to a window environment or
-> > > power management system that the lid is closed, and the system should
-> > > be suspended (of course depending upon configurations). That would me=
-an
-> > > that the board would now be potentially always heading into a suspend
-> > > after power up which would not be at all clear from the switch.
-> > >
-> > > I believe a 'switch' is the correct way to define this hardware, so t=
-hat
-> > > both positions can be determined, and read, and events generated on
-> > > state change - but that there shouldn't be any artificially imposed s=
-ide
-> > > effects from the description.
-> > >
-> > > If the answer is "no we can't have generic switches" then so be it, b=
-ut
-> > > it feels wrong to further propogate the definition of these test
-> > > switches as keys.
-> >
-> > I agree that a slide switch tied to a GPIO is indeed a switch in terms =
-of
-> > input core. Note, however, that definitions from your first example (su=
-ch
-> > as KEY_1) are not any less generic; those have specific meanings too.
->=20
-> But at least the KEY_* events are less likely to cause harmful side
-> effects than the SW_* events.  I have no idea which daemon in e.g. a
-> generic Ubuntu userspace would act on the SW_* events.
+On Sun, Nov 07, 2021 at 08:40:47AM +0200, Leon Romanovsky wrote:
+> From: Leon Romanovsky <leonro@nvidia.com>
+> 
+> >> drivers/infiniband/core/nldev.c:2543:1: warning: unused function '__chk_RDMA_NL_NLDEV'
+>    MODULE_ALIAS_RDMA_NETLINK(RDMA_NL_NLDEV, 5);
+>    ^
+> 
+> Fixes: e3bf14bdc17a ("rdma: Autoload netlink client modules")
+> Reported-by: kernel test robot <lkp@intel.com>
+> Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
+> ---
+>  include/rdma/rdma_netlink.h | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/include/rdma/rdma_netlink.h b/include/rdma/rdma_netlink.h
+> index 2758d9df71ee..c2a79aeee113 100644
+> --- a/include/rdma/rdma_netlink.h
+> +++ b/include/rdma/rdma_netlink.h
+> @@ -30,7 +30,7 @@ enum rdma_nl_flags {
+>   * constant as well and the compiler checks they are the same.
+>   */
+>  #define MODULE_ALIAS_RDMA_NETLINK(_index, _val)                                \
+> -	static inline void __chk_##_index(void)                                \
+> +	static inline void __maybe_unused __chk_##_index(void)                 \
+>  	{                                                                      \
+>  		BUILD_BUG_ON(_index != _val);                                  \
+>  	}                                                                      \
 
-The fact that they are no-less generic is precisely another reason why I
-don't think these switches should be bound to KEY_0/N either.
+This is a compiler bug, static inline should never need maybe_unsed
 
-If the switch is in the 'on' position - then it will cause repeated key
-press events... as the key will be permanantly in the active state.
-
-Holding KEY_0 down isn't necessarily as harmful to the user as having
-the screen disabled, but I'm sure it would have a painful impact
-depending upon various key repeat delays and such of course.
-
-The examples defined in [0] are (IMO) wrong, and have been implemented
-incorrectly because of a lack of a generic test switch position.
-
-If we can come up with a solution, I think those definitions should be
-fixed up (if we're allowed to modify them now they exist? I expect so?).
-
-> > If the concern is that toggling a switch effects undesired behavior, su=
-ch
-> > as turning a display on or off, then the switch should not be represent=
-ed
-> > with a gpio-keys node in the first place.
-> >
-> > Stated another way, the fact that the GPIO are connected to something d=
-oes
-> > not necessarily mean they need to be supported. Only once they map to s=
-ome
-> > function should they be defined, in my opinion.
->=20
-> Following the mantra "DT describes hardware, not software policy", I
-> think we should describe generic switches in DT, and perhaps have a way
-> to configure the actual event code from userspace (e.g. using sysfs?).
-> Without such configuration, perhaps they could emit a SW_* event with
-> the MSB set, so at least their state can be queried using e.g. evtest?
-
-The hardware exists, and it's permanantly wired this way, we 'just' need
-to describe it somehow...
-
-> Gr{oetje,eeting}s,
->=20
->                         Geert
->=20
-> --
-> Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m6=
-8k.org
->=20
-> In personal conversations with technical people, I call myself a hacker. =
-But
-> when I'm talking to journalists I just say "programmer" or something like=
- that.
->                                 -- Linus Torvalds
+Jason
