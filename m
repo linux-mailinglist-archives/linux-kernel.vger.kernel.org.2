@@ -2,128 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0ED7344817F
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Nov 2021 15:21:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ED454448186
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Nov 2021 15:22:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240455AbhKHOYQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Nov 2021 09:24:16 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39266 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237107AbhKHOX7 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Nov 2021 09:23:59 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C8EAFC0613F5
-        for <linux-kernel@vger.kernel.org>; Mon,  8 Nov 2021 06:21:14 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=xmXlf3SMHKf2Jf9ppr2fljTFcDzPGdxH5LWVioGEiI8=; b=u5+e3GO0NacEGFardo3PziNuIs
-        vOKbYUSNjX17VDF42F5N+C+Q0CRLpOeiPc+0sz4Sp9G0jiYH/kdmSfZePiUfYAe5YjiZTReC/zYHq
-        3TUChBS7d6FH3f2ahx82/a9ne50cfmfeqPYsBuU3KXL3pyAnecFdBSKATiski+tLE5Sitb3SsUAb+
-        SHhLT5CFDmEvAFgjj+/O7YnluK/WZYYdkDlncthhq6tpI2d2XH5TO2m4puO7x7H6PIDl2ZKCavFK0
-        xw4ER3Se2eTD/gDmEIWwsqEzuUNYxdMDlfIB4LZzgksUN7Y5RjF0KPVZbsaiCMR1SRal4JdlhRRUC
-        EOSo1OfA==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mk5WE-000FKR-Fb; Mon, 08 Nov 2021 14:21:07 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id B92EE30030B;
-        Mon,  8 Nov 2021 15:21:05 +0100 (CET)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id A5BE2202A0130; Mon,  8 Nov 2021 15:21:05 +0100 (CET)
-Date:   Mon, 8 Nov 2021 15:21:05 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Mel Gorman <mgorman@techsingularity.net>
-Cc:     Ingo Molnar <mingo@kernel.org>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Aubrey Li <aubrey.li@linux.intel.com>,
-        "Srinivasan, Sadagopan" <Sadagopan.Srinivasan@amd.com>,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] sched/fair: Adjust the allowed NUMA imbalance when
- SD_NUMA spans multiple LLCs
-Message-ID: <YYkyUT5etDBBjfIE@hirez.programming.kicks-ass.net>
-References: <20211028130305.GS3959@techsingularity.net>
- <YYkGkx+Wq6Ol2N9i@hirez.programming.kicks-ass.net>
- <20211108115948.GH3959@techsingularity.net>
+        id S238037AbhKHOYi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Nov 2021 09:24:38 -0500
+Received: from mail.kernel.org ([198.145.29.99]:60592 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235502AbhKHOYh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Nov 2021 09:24:37 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2971D610E9;
+        Mon,  8 Nov 2021 14:21:49 +0000 (UTC)
+Subject: Re: [RFC 3/3] gpiolib: coldfire: remove custom asm/gpio.h
+To:     Geert Uytterhoeven <geert@linux-m68k.org>,
+        Arnd Bergmann <arnd@kernel.org>
+Cc:     "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        Bartosz Golaszewski <brgl@bgdev.pl>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        linux-m68k <linux-m68k@lists.linux-m68k.org>,
+        Russell King <linux@armlinux.org.uk>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux-sh list <linux-sh@vger.kernel.org>,
+        Rich Felker <dalias@libc.org>,
+        Yoshinori Sato <ysato@users.sourceforge.jp>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+References: <20211105130338.241100-1-arnd@kernel.org>
+ <20211105130338.241100-3-arnd@kernel.org>
+ <CAMuHMdX=e5HB8gh25DMbrbUHagS9eOQokbjneJTY6HrSSf4Njw@mail.gmail.com>
+From:   Greg Ungerer <gerg@linux-m68k.org>
+Message-ID: <b45d970e-c02b-a843-4c38-dc7aee3cf8d3@linux-m68k.org>
+Date:   Tue, 9 Nov 2021 00:21:46 +1000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211108115948.GH3959@techsingularity.net>
+In-Reply-To: <CAMuHMdX=e5HB8gh25DMbrbUHagS9eOQokbjneJTY6HrSSf4Njw@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 08, 2021 at 11:59:48AM +0000, Mel Gorman wrote:
-> On Mon, Nov 08, 2021 at 12:14:27PM +0100, Peter Zijlstra wrote:
-> > On Thu, Oct 28, 2021 at 02:03:05PM +0100, Mel Gorman wrote:
-> > 
-> > > @@ -1926,8 +1926,8 @@ static void task_numa_find_cpu(struct task_numa_env *env,
-> > >  		src_running = env->src_stats.nr_running - 1;
-> > >  		dst_running = env->dst_stats.nr_running + 1;
-> > >  		imbalance = max(0, dst_running - src_running);
-> > > -		imbalance = adjust_numa_imbalance(imbalance, dst_running,
-> > > -							env->dst_stats.weight);
-> > > +		imbalance = adjust_numa_imbalance(imbalance, env->dst_cpu,
-> > > +					dst_running, env->dst_stats.weight);
-> > 
-> > Can we please align at (0 ?
-> > 
+Hi arnd, Geert,
+
+On 8/11/21 6:24 pm, Geert Uytterhoeven wrote:
+> Hi Arnd,
 > 
-> i.e.
-> 		imbalance = adjust_numa_imbalance(imbalance, env->dst_cpu,
-> 						  dst_running,
-> 						  env->dst_stats.weight);
+> On Fri, Nov 5, 2021 at 2:05 PM Arnd Bergmann <arnd@kernel.org> wrote:
+>> From: Arnd Bergmann <arnd@arndb.de>
+>>
+>> Now that coldfire is the only user of a custom asm/gpio.h, it seems
+>> better to remove this as well, and have the same interface everywhere.
+>>
+>> For the gpio_get_value()/gpio_set_value()/gpio_to_irq(), gpio_cansleep()
+>> functions, the custom version is only a micro-optimization to inline the
+>> function for constant GPIO numbers. However, in the coldfire defconfigs,
+>> I was unable to find a single instance where this micro-optimization
+>> was even used, so to my best knowledge removing this has no downsides.
 > 
-> ?
+> The only user seems to be QSPI chip select handling (not bit-banged
+> data transfer) in arch/m68k/coldfire/device.c, but that indeed depends
+> on CONFIG_SPI_COLDFIRE_QSPI, which is not set in any of the defconfigs.
+> That doesn't mean there were/are no real users, though ;-)
 
-Yep. For those using vim: :set cino=(0:0
+That is definitely used by some.
+But the generalization and removal of the special casing seems like a win to me.
 
-Might as well clean that up while we touch the thing anyway.
 
-> > >  
-> > >  		/* Use idle CPU if there is no imbalance */
-> > >  		if (!imbalance) {
-> > 
-> > > diff --git a/kernel/sched/topology.c b/kernel/sched/topology.c
-> > > index 4e8698e62f07..08fb02510967 100644
-> > > --- a/kernel/sched/topology.c
-> > > +++ b/kernel/sched/topology.c
-> > > @@ -644,6 +644,7 @@ static void destroy_sched_domains(struct sched_domain *sd)
-> > >  DEFINE_PER_CPU(struct sched_domain __rcu *, sd_llc);
-> > >  DEFINE_PER_CPU(int, sd_llc_size);
-> > >  DEFINE_PER_CPU(int, sd_llc_id);
-> > > +DEFINE_PER_CPU(int, sd_numaimb_shift);
-> > 
-> > Why does it make sense for this to be a per-cpu variable? Yes, I suppose
-> > people can get creative with cpusets, but what you're trying to capture
-> > seems like a global system propery, no?
-> > 
+>> The custom gpio_request_one() function is even less useful, as it is
+>> guarded by an #ifdef that is never true.
+>>
+>> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 > 
-> I thought things might get weird around CPU hotplug and as llc_size was
-> tracked per-cpu, I thought it made sense to also do it for
-> sd_numaimb_shift.
+> Reviewed-by: Geert Uytterhoeven <geert@linux-m68k.org>
 
-Ah, there were performance arguments for llc_id (saves a bunch of
-indirections trying to look up the LLC domain) and llc_size IIRC. While
-in this case, the user actually has a struct sched_domain handy.
+Reviewed-by: Greg Ungerer <gerg@linux-m68k.org>
+
+Regards
+Greg
 
 
-> > I'm thinking you can perhaps use something like:
-> > 
-> > 	if (!(sd->flags & SD_SHARE_PKG_RESROUCES) &&
-> > 	    (child->flags & SD_SHARE_PKG_RESOURCES)) {
-> > 
-> > 		/* this is the first domain not sharing LLC */
-> > 		sd->new_magic_imb = /*  magic incantation goes here */
-> > 	}
+
+> Gr{oetje,eeting}s,
 > 
-> Thanks, I'll give it a shot and see what I come up with, it'll probably
-> take me a few days to clear my table of other crud to focus on it.
-
-Sure thing.
+>                          Geert
+> 
+> --
+> Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+> 
+> In personal conversations with technical people, I call myself a hacker. But
+> when I'm talking to journalists I just say "programmer" or something like that.
+>                                  -- Linus Torvalds
+> 
