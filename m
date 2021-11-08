@@ -2,106 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0988D447C5B
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Nov 2021 09:55:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F665447C61
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Nov 2021 09:57:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238204AbhKHI62 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Nov 2021 03:58:28 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49320 "EHLO
+        id S238232AbhKHI7q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Nov 2021 03:59:46 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49612 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233254AbhKHI61 (ORCPT
+        with ESMTP id S238226AbhKHI7n (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Nov 2021 03:58:27 -0500
-Received: from mail-oi1-x236.google.com (mail-oi1-x236.google.com [IPv6:2607:f8b0:4864:20::236])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B1C73C061570;
-        Mon,  8 Nov 2021 00:55:43 -0800 (PST)
-Received: by mail-oi1-x236.google.com with SMTP id o4so26523470oia.10;
-        Mon, 08 Nov 2021 00:55:43 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=SV3uFGpOzk0BYk1mAzH96zrfSdq37VAR6UZ0MqQ4GoU=;
-        b=UK1MMZ6z8OPre7kMt+zn9ejRtioNXNZLQFiXiKPh2SEW53hzW1jDK2KWVoJsp6Dsdo
-         tph6iYO5pAXMm0b51I0E/9bddNz/udFDP9/vOnT+gc7Hl13bjC4l/lJFEI9A59rntZkn
-         t438WnsLH7SlCX50FaA3pRMPcqupSBKrSsAJYPJGrsDWyRBWrGsBu6/jfbI20uPZ/mfR
-         /K8X7eNp96PExQANMNjv1Q4pHYypB9T7Y8QBTw8wbzyDpo6kg88+BfS6ITumoB/b68uS
-         GwJWQrYrCf2bXCT94YNFWXaWpAgL97BfYIfoceF/wwOyk0IOjcO/G0WuWZB6eiJ2rHeI
-         FHSg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=SV3uFGpOzk0BYk1mAzH96zrfSdq37VAR6UZ0MqQ4GoU=;
-        b=mU1FXwTLclJekEcda/p2QqhnoEuDI0QFRruH73zMpdZXRm9mZFKllBluFLahPPXOkc
-         m1scejp/qR0dsNNRU0XU/oQzC4BD2j2Ag3TgLo9+w08EWGa+4bNF/+EJfUdLpb/ueDy3
-         u14aUz7DaaqsdzKAVm+zOtJKJpEZCQ5Qxni/e/WSKov4yzYXjD39c2T0AP7J0lgc7T1x
-         eQd+OuQWNMt6XY4alUcg57D+VGVLLlz+6mzoJsyIqavyLd1Q8oW5jLYwzx7GjocyIugw
-         l9h5dL6DO/aO2Z3MgaNUIZtcw44bwGqIns7msXCXW0RO49jgDJX28GsQHkFQz0bUmXdG
-         RNLg==
-X-Gm-Message-State: AOAM530uMKlgAiORKqH4YCUGJ1WmyggR2zVeJY/TAMxmGa4xKLTfgtr7
-        X/kesbDq7GIayYIwQtqr9PhMQDdJiPAd3pFkwYU=
-X-Google-Smtp-Source: ABdhPJy+bq7yS+jdw18APNSEBFLhed8rpYasNh8x1Yvye6eV1kPPJEJhIV3a3Q6IgZr+9BaWJ6Li73heuS2nmmLm620=
-X-Received: by 2002:a54:4499:: with SMTP id v25mr35931259oiv.71.1636361743154;
- Mon, 08 Nov 2021 00:55:43 -0800 (PST)
-MIME-Version: 1.0
-References: <20211107031721.4734-1-ajaygargnsit@gmail.com> <CAHp75VcacFAvsW6zmHe8fbnetcZq4xY_LZunZjBDG3ZdfS9NRQ@mail.gmail.com>
-In-Reply-To: <CAHp75VcacFAvsW6zmHe8fbnetcZq4xY_LZunZjBDG3ZdfS9NRQ@mail.gmail.com>
-From:   Ajay Garg <ajaygargnsit@gmail.com>
-Date:   Mon, 8 Nov 2021 14:25:31 +0530
-Message-ID: <CAHP4M8XWbxVDAeN=4YGX93gNLDDWE0GS8_sKkNv2p_-yBjjHVg@mail.gmail.com>
-Subject: Re: [PATCH v4] tty: vt: keyboard: add default switch-case, to handle
- smatch-warnings in method vt_do_kdgkb_ioctl
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Emil Renner Berthing <kernel@esmil.dk>,
-        "open list:SERIAL DRIVERS" <linux-serial@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Pavel Skripkin <paskripkin@gmail.com>
+        Mon, 8 Nov 2021 03:59:43 -0500
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B3F50C061714
+        for <linux-kernel@vger.kernel.org>; Mon,  8 Nov 2021 00:56:58 -0800 (PST)
+Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=[IPv6:::1])
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <l.stach@pengutronix.de>)
+        id 1mk0SK-0003eP-Uo; Mon, 08 Nov 2021 09:56:45 +0100
+Message-ID: <a77d867eb42649d63356a62309e93ca78394f82f.camel@pengutronix.de>
+Subject: Re: [PATCH V2 1/5] soc: imx: imx8m-blk-ctrl: Fix imx8mm mipi reset
+From:   Lucas Stach <l.stach@pengutronix.de>
+To:     Adam Ford <aford173@gmail.com>,
+        linux-arm-kernel@lists.infradead.org
+Cc:     tharvey@gateworks.com, frieder.schrempf@kontron.de,
+        linux-media@vger.kernel.org, laurent.pinchart@ideasonboard.com,
+        aford@beaconembedded.com, cstevens@beaconembedded.com,
+        jagan@amarulasolutions.com, Rob Herring <robh+dt@kernel.org>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>, Peng Fan <peng.fan@nxp.com>,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Date:   Mon, 08 Nov 2021 09:56:40 +0100
+In-Reply-To: <20211106155427.753197-1-aford173@gmail.com>
+References: <20211106155427.753197-1-aford173@gmail.com>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.40.4 (3.40.4-1.fc34) 
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
+X-SA-Exim-Mail-From: l.stach@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> > This usually happens when switch has no default case and static
-> > analyzers and even sometimes compilers can=E2=80=99t prove that all pos=
-sible
-> > values are covered.
-> >
-> >
->
-> One blank line is enough.
->
-> > Many thanks to the following for review of previous versions :
-> >
-> >         * Pavel Skripkin <paskripkin@gmail.com>
-> >         * Andy Shevchenko <andy.shevchenko@gmail.com>
-> >
-> >
->
-> Ditto for each such case.
+Am Samstag, dem 06.11.2021 um 10:54 -0500 schrieb Adam Ford:
+> Most of the blk-ctrl reset bits are found in one register, however
+> there are two bits in offset 8 for pulling the MIPI DPHY out of reset
+> and these need to be set when IMX8MM_DISPBLK_PD_MIPI_CSI is brought
+> out of reset or the MIPI_CSI hangs.
+> 
+> Fixes: 926e57c065df ("soc: imx: imx8m-blk-ctrl: add DISP blk-ctrl")
+> Signed-off-by: Adam Ford <aford173@gmail.com>
 
-Ok, will take care of this in all my future-patches.
+Reviewed-by: Lucas Stach <l.stach@pengutronix.de>
+
+> ---
+> 
+> V2:  Make a note that the extra register is only for Mini/Nano DISPLAY_BLK_CTRL
+>      Rename the new register to mipi_phy_rst_mask
+>      Encapsulate the edits to this register with an if-statement
+> 
+>  drivers/soc/imx/imx8m-blk-ctrl.c | 18 ++++++++++++++++++
+>  1 file changed, 18 insertions(+)
+> 
+> diff --git a/drivers/soc/imx/imx8m-blk-ctrl.c b/drivers/soc/imx/imx8m-blk-ctrl.c
+> index 519b3651d1d9..581eb4bc7f7d 100644
+> --- a/drivers/soc/imx/imx8m-blk-ctrl.c
+> +++ b/drivers/soc/imx/imx8m-blk-ctrl.c
+> @@ -17,6 +17,7 @@
+>  
+>  #define BLK_SFT_RSTN	0x0
+>  #define BLK_CLK_EN	0x4
+> +#define BLK_MIPI_RESET_DIV	0x8 /* Mini/Nano DISPLAY_BLK_CTRL only */
+>  
+>  struct imx8m_blk_ctrl_domain;
+>  
+> @@ -36,6 +37,15 @@ struct imx8m_blk_ctrl_domain_data {
+>  	const char *gpc_name;
+>  	u32 rst_mask;
+>  	u32 clk_mask;
+> +
+> +	/*
+> +	 * i.MX8M Mini and Nano have a third DISPLAY_BLK_CTRL register
+> +	 * which is used to control the reset for the MIPI Phy.
+> +	 * Since it's only present in certain circumstances,
+> +	 * an if-statement should be used before setting and clearing this
+> +	 * register.
+> +	 */
+> +	u32 mipi_phy_rst_mask;
+>  };
+>  
+>  #define DOMAIN_MAX_CLKS 3
+> @@ -78,6 +88,8 @@ static int imx8m_blk_ctrl_power_on(struct generic_pm_domain *genpd)
+>  
+>  	/* put devices into reset */
+>  	regmap_clear_bits(bc->regmap, BLK_SFT_RSTN, data->rst_mask);
+> +	if (data->mipi_phy_rst_mask)
+> +		regmap_clear_bits(bc->regmap, BLK_MIPI_RESET_DIV, data->mipi_phy_rst_mask);
+>  
+>  	/* enable upstream and blk-ctrl clocks to allow reset to propagate */
+>  	ret = clk_bulk_prepare_enable(data->num_clks, domain->clks);
+> @@ -99,6 +111,8 @@ static int imx8m_blk_ctrl_power_on(struct generic_pm_domain *genpd)
+>  
+>  	/* release reset */
+>  	regmap_set_bits(bc->regmap, BLK_SFT_RSTN, data->rst_mask);
+> +	if (data->mipi_phy_rst_mask)
+> +		regmap_set_bits(bc->regmap, BLK_MIPI_RESET_DIV, data->mipi_phy_rst_mask);
+>  
+>  	/* disable upstream clocks */
+>  	clk_bulk_disable_unprepare(data->num_clks, domain->clks);
+> @@ -120,6 +134,9 @@ static int imx8m_blk_ctrl_power_off(struct generic_pm_domain *genpd)
+>  	struct imx8m_blk_ctrl *bc = domain->bc;
+>  
+>  	/* put devices into reset and disable clocks */
+> +	if (data->mipi_phy_rst_mask)
+> +		regmap_clear_bits(bc->regmap, BLK_MIPI_RESET_DIV, data->mipi_phy_rst_mask);
+> +
+>  	regmap_clear_bits(bc->regmap, BLK_SFT_RSTN, data->rst_mask);
+>  	regmap_clear_bits(bc->regmap, BLK_CLK_EN, data->clk_mask);
+>  
+> @@ -488,6 +505,7 @@ static const struct imx8m_blk_ctrl_domain_data imx8mm_disp_blk_ctl_domain_data[]
+>  		.gpc_name = "mipi-csi",
+>  		.rst_mask = BIT(3) | BIT(4),
+>  		.clk_mask = BIT(10) | BIT(11),
+> +		.mipi_phy_rst_mask = BIT(16) | BIT(17),
+>  	},
+>  };
+>  
 
 
->
-> ...
->
-> > +       default:
-> > +               kbs =3D NULL;
->
-> > +               ret =3D -ENOIOCTLCMD;
->
-> Why is this? How is it supposed to work?
-
-If there is no match for a cmd, causing the default-case to be hit, we
-must return an error ret-code to the client.
-The -ENOIOCTLCMD error ret-code has been chosen, on the same lines as
-"vt_do_kdskled" method.
-
-
-Thanks and Regards,
-Ajay
