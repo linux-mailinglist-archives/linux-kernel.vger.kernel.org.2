@@ -2,129 +2,293 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E537449B5C
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Nov 2021 19:04:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8148E449B60
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Nov 2021 19:05:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234615AbhKHSHB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Nov 2021 13:07:01 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:50146 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234536AbhKHSG7 (ORCPT
+        id S234682AbhKHSHn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Nov 2021 13:07:43 -0500
+Received: from mail-ot1-f50.google.com ([209.85.210.50]:45022 "EHLO
+        mail-ot1-f50.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234536AbhKHSHm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Nov 2021 13:06:59 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1636394654;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=im9lhTupFPwsIHFjLfrf1/cWof8gxzjA2GesYxJq3+Y=;
-        b=d/jyq/F17TBPjvQCjXzQJyW6LY9lIhK5a55Fx+2U0fhZZ0JfJ7T1NA/zdaL6VnB2nCGhVI
-        Jpw5uqT0GIEa/pipcXu4LI7sLxUXWlv3V5mfgiRieqbRQpLAIkB8AczxayhdGL+2rsp8sy
-        k/2oBh/jzHHy/xhR2STL5+XMyUIy2TA=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-174-oiG5onmRPcKpQIUZRhHuhA-1; Mon, 08 Nov 2021 13:04:11 -0500
-X-MC-Unique: oiG5onmRPcKpQIUZRhHuhA-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 27BB719253C6;
-        Mon,  8 Nov 2021 18:04:10 +0000 (UTC)
-Received: from [172.30.41.16] (ovpn-115-6.phx2.redhat.com [10.3.115.6])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id C1ED560C17;
-        Mon,  8 Nov 2021 18:03:57 +0000 (UTC)
-Subject: [PATCH] platform/x86: think-lmi: Abort probe on analyze failure
-From:   Alex Williamson <alex.williamson@redhat.com>
-To:     markpearson@lenovo.com, hdegoede@redhat.com, markgross@kernel.org
-Cc:     alex.williamson@redhat.com, platform-driver-x86@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Date:   Mon, 08 Nov 2021 11:03:57 -0700
-Message-ID: <163639463588.1330483.15850167112490200219.stgit@omen>
-User-Agent: StGit/1.0-8-g6af9-dirty
+        Mon, 8 Nov 2021 13:07:42 -0500
+Received: by mail-ot1-f50.google.com with SMTP id g25-20020a9d5f99000000b0055af3d227e8so22437953oti.11;
+        Mon, 08 Nov 2021 10:04:57 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=IT0TOfNZrid+OKcl6kTolpGzJd7YUTS6ItseMSTHwM8=;
+        b=YzcrQyDwJVmvULzQwxpAGuE4a0SOuee9xSppP/oUcw+6h/ZXLfO/XdVpEQk+BAt/vh
+         qTBn9W5m2fDOTpmj/GckC+WYwtYcsA5PYoKQ2a0/2yhYEmD/uF0v5tMrNALkC979A1sl
+         vImAG0eCnslNAYeLDxj1N6f4QXSh+EcSqd//tBeRaY9v9NAluzB6JgJoy6VEp5Y4C2aA
+         4tRQBgWa6C7oA3tJh2nO5PY7pE0cn7uWMvedxdV7xwYWu5ZeLjKH5anwEkULFwugRqDA
+         9chGu7izzfnKxcK5Y+Af2eUPplFHQ+u0al4/hP6kjG7sAMjqaMyRUbzbMu94nsoNBvtL
+         hcHw==
+X-Gm-Message-State: AOAM533MiCFOLN89Xgh8f2l+0lKX9dfsHR6kk0AwW1SFoMPUVxZGo0Uc
+        aetHfjok9DQdqbkJk8Jm2Q==
+X-Google-Smtp-Source: ABdhPJztta6Ve9cS47MO7ZL8lvI5qZYy/tl71CB5N4gC8Xn634NSaq/6AGkg8468MAweL7jBaDfVIQ==
+X-Received: by 2002:a05:6830:14d9:: with SMTP id t25mr759237otq.69.1636394697386;
+        Mon, 08 Nov 2021 10:04:57 -0800 (PST)
+Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
+        by smtp.gmail.com with ESMTPSA id v66sm6303793oib.18.2021.11.08.10.04.56
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 08 Nov 2021 10:04:56 -0800 (PST)
+Received: (nullmailer pid 3938772 invoked by uid 1000);
+        Mon, 08 Nov 2021 18:04:55 -0000
+Date:   Mon, 8 Nov 2021 12:04:55 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Pratyush Yadav <p.yadav@ti.com>
+Cc:     Mark Brown <broonie@kernel.org>, Nishanth Menon <nm@ti.com>,
+        Michael Walle <michael@walle.cc>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Richard Weinberger <richard@nod.at>,
+        Tudor Ambarus <tudor.ambarus@microchip.com>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-mtd@lists.infradead.org, linux-spi@vger.kernel.org
+Subject: Re: [PATCH v2 1/3] spi: dt-bindings: add schema listing
+ slave-specific properties
+Message-ID: <YYlmx3QyI9zxuO9N@robh.at.kernel.org>
+References: <20211028124518.17370-1-p.yadav@ti.com>
+ <20211028124518.17370-2-p.yadav@ti.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211028124518.17370-2-p.yadav@ti.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-A Lenovo ThinkStation S20 (4157CTO BIOS 60KT41AUS) fails to boot on
-recent kernels including the think-lmi driver, due to the fact that
-errors returned by the tlmi_analyze() function are ignored by
-tlmi_probe(), where  tlmi_sysfs_init() is called unconditionally.
-This results in making use of an array of already freed, non-null
-pointers and other uninitialized globals, causing all sorts of nasty
-kobject and memory faults.
+On Thu, Oct 28, 2021 at 06:15:16PM +0530, Pratyush Yadav wrote:
+> Many SPI controllers need to add properties to slave devices. This could
 
-Make use of the analyze function return value, free a couple leaked
-allocations, and remove the settings_count field, which is incremented
-but never consumed.
+Probably should replace 'slave' with 'peripheral' throughout[1]. 
 
-Fixes: a40cd7ef22fb ("platform/x86: think-lmi: Add WMI interface support on Lenovo platforms")
-Signed-off-by: Alex Williamson <alex.williamson@redhat.com>
----
- drivers/platform/x86/think-lmi.c |   13 ++++++++++---
- drivers/platform/x86/think-lmi.h |    1 -
- 2 files changed, 10 insertions(+), 4 deletions(-)
+> be the delay in clock or data lines, etc. These properties are
+> controller specific but need to be defined in the slave node because
+> they are per-slave and there can be multiple slaves attached to a
+> controller.
+> 
+> If these properties are not added to the slave binding, then the dtbs
+> check emits a warning. But these properties do not make much sense in
+> the slave binding because they are controller-specific and they will
+> just pollute every slave binding. So this binding is added to collect
+> all such properties from all such controllers. Slave bindings should
+> simply refer to this binding and they should be rid of the warnings.
+> 
+> There are some limitations with this approach. Firstly, there is no way
+> to specify required properties. The schema contains properties for all
+> controllers and there is no way to know which controller is being used.
+> Secondly, there is no way to restrict additional properties. Since this
+> schema will be used with an allOf operator, additionalProperties needs
+> to be true. In addition, the slave schema will have to set
+> unevaluatedProperties: false.
+> 
+> Despite these limitations, this appears to be the best solution to this
+> problem that doesn't involve modifying existing tools or schema specs.
+> 
+> Signed-off-by: Pratyush Yadav <p.yadav@ti.com>
+> 
+> ---
+> 
+> Changes in v2:
+> - Move other subnode properties listed in spi-controller.yaml to
+>   spi-slave-props.yaml
+> - Move the Cadence controller-specific properties out of
+>   spi-slave-props.yaml. They will be added in a separate file.
+> - Add a reference to spi-slave-props.yaml in spi-controller.yaml.
+> - Update description.
+> 
+>  .../bindings/spi/spi-controller.yaml          | 69 +-------------
+>  .../bindings/spi/spi-slave-props.yaml         | 91 +++++++++++++++++++
+>  2 files changed, 93 insertions(+), 67 deletions(-)
+>  create mode 100644 Documentation/devicetree/bindings/spi/spi-slave-props.yaml
+> 
+> diff --git a/Documentation/devicetree/bindings/spi/spi-controller.yaml b/Documentation/devicetree/bindings/spi/spi-controller.yaml
+> index 8246891602e7..ff770657e214 100644
+> --- a/Documentation/devicetree/bindings/spi/spi-controller.yaml
+> +++ b/Documentation/devicetree/bindings/spi/spi-controller.yaml
+> @@ -94,73 +94,8 @@ patternProperties:
+>    "^.*@[0-9a-f]+$":
+>      type: object
+>  
+> -    properties:
+> -      compatible:
+> -        description:
+> -          Compatible of the SPI device.
+> -
+> -      reg:
+> -        minItems: 1
+> -        maxItems: 256
+> -        items:
+> -          minimum: 0
+> -          maximum: 256
+> -        description:
+> -          Chip select used by the device.
+> -
+> -      spi-3wire:
+> -        $ref: /schemas/types.yaml#/definitions/flag
+> -        description:
+> -          The device requires 3-wire mode.
+> -
+> -      spi-cpha:
+> -        $ref: /schemas/types.yaml#/definitions/flag
+> -        description:
+> -          The device requires shifted clock phase (CPHA) mode.
+> -
+> -      spi-cpol:
+> -        $ref: /schemas/types.yaml#/definitions/flag
+> -        description:
+> -          The device requires inverse clock polarity (CPOL) mode.
+> -
+> -      spi-cs-high:
+> -        $ref: /schemas/types.yaml#/definitions/flag
+> -        description:
+> -          The device requires the chip select active high.
+> -
+> -      spi-lsb-first:
+> -        $ref: /schemas/types.yaml#/definitions/flag
+> -        description:
+> -          The device requires the LSB first mode.
+> -
+> -      spi-max-frequency:
+> -        $ref: /schemas/types.yaml#/definitions/uint32
+> -        description:
+> -          Maximum SPI clocking speed of the device in Hz.
+> -
+> -      spi-rx-bus-width:
+> -        description:
+> -          Bus width to the SPI bus used for read transfers.
+> -          If 0 is provided, then no RX will be possible on this device.
+> -        $ref: /schemas/types.yaml#/definitions/uint32
+> -        enum: [0, 1, 2, 4, 8]
+> -        default: 1
+> -
+> -      spi-rx-delay-us:
+> -        description:
+> -          Delay, in microseconds, after a read transfer.
+> -
+> -      spi-tx-bus-width:
+> -        description:
+> -          Bus width to the SPI bus used for write transfers.
+> -          If 0 is provided, then no TX will be possible on this device.
+> -        $ref: /schemas/types.yaml#/definitions/uint32
+> -        enum: [0, 1, 2, 4, 8]
+> -        default: 1
+> -
+> -      spi-tx-delay-us:
+> -        description:
+> -          Delay, in microseconds, after a write transfer.
+> +    allOf:
+> +      - $ref: spi-slave-props.yaml
+>  
+>      required:
+>        - compatible
+> diff --git a/Documentation/devicetree/bindings/spi/spi-slave-props.yaml b/Documentation/devicetree/bindings/spi/spi-slave-props.yaml
+> new file mode 100644
+> index 000000000000..5166ec9b0353
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/spi/spi-slave-props.yaml
+> @@ -0,0 +1,91 @@
+> +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/spi/spi-slave-props.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: Slave-specific properties for a SPI bus.
+> +
+> +description: |
 
-diff --git a/drivers/platform/x86/think-lmi.c b/drivers/platform/x86/think-lmi.c
-index 9472aae72df2..c4d9c45350f7 100644
---- a/drivers/platform/x86/think-lmi.c
-+++ b/drivers/platform/x86/think-lmi.c
-@@ -888,8 +888,10 @@ static int tlmi_analyze(void)
- 			break;
- 		if (!item)
- 			break;
--		if (!*item)
-+		if (!*item) {
-+			kfree(item);
- 			continue;
-+		}
- 
- 		/* It is not allowed to have '/' for file name. Convert it into '\'. */
- 		strreplace(item, '/', '\\');
-@@ -902,6 +904,7 @@ static int tlmi_analyze(void)
- 		setting = kzalloc(sizeof(*setting), GFP_KERNEL);
- 		if (!setting) {
- 			ret = -ENOMEM;
-+			kfree(item);
- 			goto fail_clear_attr;
- 		}
- 		setting->index = i;
-@@ -916,7 +919,6 @@ static int tlmi_analyze(void)
- 		}
- 		kobject_init(&setting->kobj, &tlmi_attr_setting_ktype);
- 		tlmi_priv.setting[i] = setting;
--		tlmi_priv.settings_count++;
- 		kfree(item);
- 	}
- 
-@@ -983,7 +985,12 @@ static void tlmi_remove(struct wmi_device *wdev)
- 
- static int tlmi_probe(struct wmi_device *wdev, const void *context)
- {
--	tlmi_analyze();
-+	int ret;
-+
-+	ret = tlmi_analyze();
-+	if (ret)
-+		return ret;
-+
- 	return tlmi_sysfs_init();
- }
- 
-diff --git a/drivers/platform/x86/think-lmi.h b/drivers/platform/x86/think-lmi.h
-index f8e26823075f..2ce5086a5af2 100644
---- a/drivers/platform/x86/think-lmi.h
-+++ b/drivers/platform/x86/think-lmi.h
-@@ -55,7 +55,6 @@ struct tlmi_attr_setting {
- struct think_lmi {
- 	struct wmi_device *wmi_device;
- 
--	int settings_count;
- 	bool can_set_bios_settings;
- 	bool can_get_bios_selections;
- 	bool can_set_bios_password;
+Don't need '|' if no formatting to preserve.
 
+> +  Many SPI controllers need to add properties to slave devices. They could be
+> +  common properties like spi-max-frequency, spi-cpha, etc. or they could be
+> +  controller specific like delay in clock or data lines, etc. These properties
+> +  need to be defined in the slave node because they are per-slave and there can
+> +  be multiple slaves attached to a controller. All those properties are listed
+> +  here. The controller specific properties should go in their own separate
+> +  schema that should be referenced from here.
+> +
+> +maintainers:
+> +  - Pratyush Yadav <p.yadav@ti.com>
+> +
+> +properties:
+> +  compatible:
+> +    description:
+> +      Compatible of the SPI device.
 
+You can drop 'compatible'.
+
+> +
+> +  reg:
+> +    minItems: 1
+> +    maxItems: 256
+> +    items:
+> +      minimum: 0
+> +      maximum: 256
+> +    description:
+> +      Chip select used by the device.
+> +
+> +  spi-3wire:
+> +    $ref: /schemas/types.yaml#/definitions/flag
+> +    description:
+> +      The device requires 3-wire mode.
+> +
+> +  spi-cpha:
+> +    $ref: /schemas/types.yaml#/definitions/flag
+> +    description:
+> +      The device requires shifted clock phase (CPHA) mode.
+> +
+> +  spi-cpol:
+> +    $ref: /schemas/types.yaml#/definitions/flag
+> +    description:
+> +      The device requires inverse clock polarity (CPOL) mode.
+> +
+> +  spi-cs-high:
+> +    $ref: /schemas/types.yaml#/definitions/flag
+> +    description:
+> +      The device requires the chip select active high.
+> +
+> +  spi-lsb-first:
+> +    $ref: /schemas/types.yaml#/definitions/flag
+> +    description:
+> +      The device requires the LSB first mode.
+> +
+> +  spi-max-frequency:
+> +    $ref: /schemas/types.yaml#/definitions/uint32
+> +    description:
+> +      Maximum SPI clocking speed of the device in Hz.
+> +
+> +  spi-rx-bus-width:
+> +    description:
+> +      Bus width to the SPI bus used for read transfers.
+> +      If 0 is provided, then no RX will be possible on this device.
+> +    $ref: /schemas/types.yaml#/definitions/uint32
+> +    enum: [0, 1, 2, 4, 8]
+> +    default: 1
+> +
+> +  spi-rx-delay-us:
+> +    description:
+> +      Delay, in microseconds, after a read transfer.
+> +
+> +  spi-tx-bus-width:
+> +    description:
+> +      Bus width to the SPI bus used for write transfers.
+> +      If 0 is provided, then no TX will be possible on this device.
+> +    $ref: /schemas/types.yaml#/definitions/uint32
+> +    enum: [0, 1, 2, 4, 8]
+> +    default: 1
+> +
+> +  spi-tx-delay-us:
+> +    description:
+> +      Delay, in microseconds, after a write transfer.
+> +
+> +# The controller specific properties go here.
+> +
+> +additionalProperties: true
+> -- 
+> 2.33.1.835.ge9e5ba39a7
+> 
+> 
