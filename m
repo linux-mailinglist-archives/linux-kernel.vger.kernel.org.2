@@ -2,63 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E66AF447D05
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Nov 2021 10:45:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3AF59447D0C
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Nov 2021 10:47:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238456AbhKHJsN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Nov 2021 04:48:13 -0500
-Received: from mx.socionext.com ([202.248.49.38]:62305 "EHLO mx.socionext.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238285AbhKHJsF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Nov 2021 04:48:05 -0500
-Received: from unknown (HELO iyokan2-ex.css.socionext.com) ([172.31.9.54])
-  by mx.socionext.com with ESMTP; 08 Nov 2021 18:45:14 +0900
-Received: from mail.mfilter.local (m-filter-1 [10.213.24.61])
-        by iyokan2-ex.css.socionext.com (Postfix) with ESMTP id 7A62A206E704;
-        Mon,  8 Nov 2021 18:45:14 +0900 (JST)
-Received: from 172.31.9.53 (172.31.9.53) by m-FILTER with ESMTP; Mon, 8 Nov 2021 18:45:14 +0900
-Received: from yuzu2.css.socionext.com (yuzu2 [172.31.9.57])
-        by iyokan2.css.socionext.com (Postfix) with ESMTP id 57D689D68A;
-        Mon,  8 Nov 2021 18:45:14 +0900 (JST)
-Received: from scorpio.e01.socionext.com (aries.syh.socionext.com [10.213.112.88])
-        by yuzu2.css.socionext.com (Postfix) with ESMTP id 3BCB0B6292;
-        Mon,  8 Nov 2021 18:45:14 +0900 (JST)
-From:   Sugaya Taichi <sugaya.taichi@socionext.com>
-To:     Rob Herring <robh+dt@kernel.org>
-Cc:     Arnd Bergmann <arnd@arndb.de>, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, orito.takao@socionext.com,
-        sugaya.taichi@socionext.com,
-        Masami Hiramatsu <masami.hiramatsu@linaro.org>,
-        Jassi Brar <jaswinder.singh@linaro.org>
-Subject: [PATCH 3/3] ARM: dts: milbeaut: set clock phandle to uart node
-Date:   Mon,  8 Nov 2021 18:45:13 +0900
-Message-Id: <1636364713-21451-4-git-send-email-sugaya.taichi@socionext.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1636364713-21451-1-git-send-email-sugaya.taichi@socionext.com>
-References: <1636364713-21451-1-git-send-email-sugaya.taichi@socionext.com>
+        id S237698AbhKHJtx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Nov 2021 04:49:53 -0500
+Received: from smtp-out2.suse.de ([195.135.220.29]:34590 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232818AbhKHJtw (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Nov 2021 04:49:52 -0500
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out2.suse.de (Postfix) with ESMTP id 46FD91FD4B;
+        Mon,  8 Nov 2021 09:47:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1636364827; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=zigEgwMAEavRVLp+BJtAfXNpYofMF3JDQX/JpOBUL4w=;
+        b=WLLKV/YRu4/8Yv2L2sy9mY69NGD5Xm49FdpVe16AL4LOEP8J4o2s/u8FBeNwgL5mH1i7bj
+        taui7ghqRshCvhcpTfGwsygDhsx+MkX6w85OO7fMP9IdsakUPjweCptxJuxYYhrdt+fILV
+        vRqLwTKcGR/Eywyn0otcoPztY1Iypsg=
+Received: from suse.cz (unknown [10.100.224.162])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by relay2.suse.de (Postfix) with ESMTPS id F254EA3B81;
+        Mon,  8 Nov 2021 09:47:06 +0000 (UTC)
+Date:   Mon, 8 Nov 2021 10:47:06 +0100
+From:   Petr Mladek <pmladek@suse.com>
+To:     Christophe Leroy <christophe.leroy@csgroup.eu>
+Cc:     Josh Poimboeuf <jpoimboe@redhat.com>,
+        Jiri Kosina <jikos@kernel.org>,
+        Miroslav Benes <mbenes@suse.cz>,
+        Joe Lawrence <joe.lawrence@redhat.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        "Naveen N . Rao" <naveen.n.rao@linux.vnet.ibm.com>,
+        linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        live-patching@vger.kernel.org
+Subject: Re: [PATCH v1 1/5] livepatch: Fix build failure on 32 bits processors
+Message-ID: <YYjyGhhNbwtrx4p8@alley>
+References: <cover.1635423081.git.christophe.leroy@csgroup.eu>
+ <cefeeaf1447088db00c5a62e2ff03f7d15bb4c05.1635423081.git.christophe.leroy@csgroup.eu>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <cefeeaf1447088db00c5a62e2ff03f7d15bb4c05.1635423081.git.christophe.leroy@csgroup.eu>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Set clock phandle to uart node for Milbeaut M10V support.
+On Thu 2021-10-28 14:24:01, Christophe Leroy wrote:
+> Trying to build livepatch on powerpc/32 results in:
+> 
+> 	kernel/livepatch/core.c: In function 'klp_resolve_symbols':
+> 	kernel/livepatch/core.c:221:23: warning: cast to pointer from integer of different size [-Wint-to-pointer-cast]
+> 	  221 |                 sym = (Elf64_Sym *)sechdrs[symndx].sh_addr + ELF_R_SYM(relas[i].r_info);
+> 	      |                       ^
+> 	kernel/livepatch/core.c:221:21: error: assignment to 'Elf32_Sym *' {aka 'struct elf32_sym *'} from incompatible pointer type 'Elf64_Sym *' {aka 'struct elf64_sym *'} [-Werror=incompatible-pointer-types]
+> 	  221 |                 sym = (Elf64_Sym *)sechdrs[symndx].sh_addr + ELF_R_SYM(relas[i].r_info);
+> 	      |                     ^
+> 	kernel/livepatch/core.c: In function 'klp_apply_section_relocs':
+> 	kernel/livepatch/core.c:312:35: error: passing argument 1 of 'klp_resolve_symbols' from incompatible pointer type [-Werror=incompatible-pointer-types]
+> 	  312 |         ret = klp_resolve_symbols(sechdrs, strtab, symndx, sec, sec_objname);
+> 	      |                                   ^~~~~~~
+> 	      |                                   |
+> 	      |                                   Elf32_Shdr * {aka struct elf32_shdr *}
+> 	kernel/livepatch/core.c:193:44: note: expected 'Elf64_Shdr *' {aka 'struct elf64_shdr *'} but argument is of type 'Elf32_Shdr *' {aka 'struct elf32_shdr *'}
+> 	  193 | static int klp_resolve_symbols(Elf64_Shdr *sechdrs, const char *strtab,
+> 	      |                                ~~~~~~~~~~~~^~~~~~~
+> 
+> Fix it by using the right types instead of forcing 64 bits types.
+> 
+> Fixes: 7c8e2bdd5f0d ("livepatch: Apply vmlinux-specific KLP relocations early")
+> Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
 
-Signed-off-by: Sugaya Taichi <sugaya.taichi@socionext.com>
----
- arch/arm/boot/dts/milbeaut-m10v.dtsi | 1 +
- 1 file changed, 1 insertion(+)
+Makes sense. I haven't tested it but it looks correct ;-)
 
-diff --git a/arch/arm/boot/dts/milbeaut-m10v.dtsi b/arch/arm/boot/dts/milbeaut-m10v.dtsi
-index c800b13..e592fe0 100644
---- a/arch/arm/boot/dts/milbeaut-m10v.dtsi
-+++ b/arch/arm/boot/dts/milbeaut-m10v.dtsi
-@@ -85,6 +85,7 @@
- 			reg = <0x1e700010 0x10>;
- 			interrupts = <0 141 0x4>, <0 149 0x4>;
- 			interrupt-names = "rx", "tx";
-+			clock = <&clk 2>;
- 		};
- 
- 	};
--- 
-2.7.4
+Acked-by: Petr Mladek <pmladek@suse.com>
 
+Best Regards,
+Petr
