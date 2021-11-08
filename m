@@ -2,146 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9585A447E29
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Nov 2021 11:40:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3D6C3447E2C
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Nov 2021 11:41:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236828AbhKHKnA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Nov 2021 05:43:00 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45016 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230310AbhKHKm6 (ORCPT
+        id S237629AbhKHKng (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Nov 2021 05:43:36 -0500
+Received: from mail-ua1-f52.google.com ([209.85.222.52]:43917 "EHLO
+        mail-ua1-f52.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230310AbhKHKnf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Nov 2021 05:42:58 -0500
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CEB66C061570
-        for <linux-kernel@vger.kernel.org>; Mon,  8 Nov 2021 02:40:14 -0800 (PST)
-From:   John Ogness <john.ogness@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1636368013;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=FW6JswIDu9qA1nuRkk62bEsDXrDikiWc8n7F/BGFqE8=;
-        b=0mDUzYRVn4Xk1G+5lUQKnWREAK9xysiSGkWVtXvS5ZScmTlYwMkG8SrUmTJZ66yHNdmK4m
-        ooae4Xb132NKAbEXvmF/3lg91dqsQZmDUZNNclid1bAhSblbAc+guh/cqX1/5nenL0WV0d
-        kE0g9zU16WqNOq5vVCsQqAG0YoNE1tTt76z5+o2pGC+Ne6ekrzk9rFWobwRuQRgS3ue1oz
-        PwTD/fZfYkuAyMcIVKUPsLzslt8wr3OcU6aKUVCGnw821KwIqrkxezlf5XisJ/duVOWvXJ
-        Zw2zdbPQQHpTtwd/rH08vAJHAuypU7EqnpbYZOM3oWbq+KE9g/YPhFX7r2pHPQ==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1636368013;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=FW6JswIDu9qA1nuRkk62bEsDXrDikiWc8n7F/BGFqE8=;
-        b=9V/RF8VejtlEIocR6Y/sNvVkp70HyEIsgsNB4SBOFU+0KsNg+/qSHRfQCawhKFResG7xP4
-        eEsI5hJ0Vc0eRADQ==
-To:     Nicholas Piggin <npiggin@gmail.com>, Petr Mladek <pmladek@suse.com>
-Cc:     Nicholas Piggin <npiggin@gmail.com>, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] printk: restore flushing of NMI buffers on remote CPUs
- after NMI backtraces
-In-Reply-To: <20211107045116.1754411-1-npiggin@gmail.com>
-References: <20211107045116.1754411-1-npiggin@gmail.com>
-Date:   Mon, 08 Nov 2021 11:46:13 +0106
-Message-ID: <87cznbx75e.fsf@jogness.linutronix.de>
+        Mon, 8 Nov 2021 05:43:35 -0500
+Received: by mail-ua1-f52.google.com with SMTP id v3so30452909uam.10;
+        Mon, 08 Nov 2021 02:40:51 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=5wNov6GAlcKvQXnG0Wu/LU+lWR950kMLXxUaSyHwxmw=;
+        b=5yMb3PpxZibxEXcBGTPOZVzwGpgfspuKsnPCD445adeRGuXJKt0KQ/QTL1jiLg706F
+         8Q7gqieb7WZEnSRGKAi1w7kuiCrz5OT13adDFcqtiT5nH8aU3/MQfpNFTnf3U9Ukmcee
+         rNCMs2iuLJo1ChYqhcpFOjQIBwj9B0us4PTLxnukkU8kvRo1xFSu0exi+rpCxfxVW1p9
+         JrYk5w0QhI37HGaLWvDjKD4XS6PNqhXdmiqWmf5uKvf5Yi6ZcBFDekvmULCFEY6tBHN7
+         TxIePv9hek1IbOW440pPj5v+OivHwdfhGCSUFweiJhteB/RpBInS9VsikwUKAhC4Gubz
+         5QpQ==
+X-Gm-Message-State: AOAM530e/xFydqcGmjHPq8bxk7pCNatvEEJwIWHhc9XALoLtbZzZR/p3
+        1PYYuPcZ1oPhPnzuwdpHXZlYXH4K9hzCTg==
+X-Google-Smtp-Source: ABdhPJwdO5POiwjigQsDzY3OEKdI/AGPhBr0BnO9v9ZlAzniGH6Mp5SsDNmg9RSpIVfp9x4tjfmVCw==
+X-Received: by 2002:a05:6102:11ed:: with SMTP id e13mr76159500vsg.57.1636368050533;
+        Mon, 08 Nov 2021 02:40:50 -0800 (PST)
+Received: from mail-ua1-f47.google.com (mail-ua1-f47.google.com. [209.85.222.47])
+        by smtp.gmail.com with ESMTPSA id p69sm2773896uap.1.2021.11.08.02.40.49
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 08 Nov 2021 02:40:50 -0800 (PST)
+Received: by mail-ua1-f47.google.com with SMTP id b17so30610858uas.0;
+        Mon, 08 Nov 2021 02:40:49 -0800 (PST)
+X-Received: by 2002:a67:c38f:: with SMTP id s15mr39316001vsj.50.1636368049727;
+ Mon, 08 Nov 2021 02:40:49 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain
+References: <20211105015504.39226-1-vulab@iscas.ac.cn>
+In-Reply-To: <20211105015504.39226-1-vulab@iscas.ac.cn>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Mon, 8 Nov 2021 11:40:38 +0100
+X-Gmail-Original-Message-ID: <CAMuHMdX7CmiTW9y0pOytWaH8yoE8Aa=eOe7DRYAm97USZcMBNQ@mail.gmail.com>
+Message-ID: <CAMuHMdX7CmiTW9y0pOytWaH8yoE8Aa=eOe7DRYAm97USZcMBNQ@mail.gmail.com>
+Subject: Re: [PATCH] iio: adc: rzg2l_adc: Remove unnecessary print function dev_err()
+To:     Xu Wang <vulab@iscas.ac.cn>
+Cc:     "Lad, Prabhakar" <prabhakar.mahadev-lad.rj@bp.renesas.com>,
+        Jonathan Cameron <jic23@kernel.org>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        linux-iio@vger.kernel.org,
+        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-11-07, Nicholas Piggin <npiggin@gmail.com> wrote:
-> printk from NMI context relies on irq work being raised on the local CPU
-> to print to console. This can be a problem if the NMI was raised by a
-> lockup detector to print lockup stack and regs, because the CPU may not
-> enable irqs (because it is locked up).
+On Fri, Nov 5, 2021 at 3:02 AM Xu Wang <vulab@iscas.ac.cn> wrote:
+> The print function dev_err() is redundant because
+> platform_get_irq() already prints an error.
 >
-> Introduce printk_trigger_flush() that can be called another CPU to try
-> to get those messages to the console, call that where printk_safe_flush
-> was previously called.
->
-> Fixes: 93d102f094be ("printk: remove safe buffers")
-> Signed-off-by: Nicholas Piggin <npiggin@gmail.com>
+> Signed-off-by: Xu Wang <vulab@iscas.ac.cn>
 
-Reviewed-by: John Ogness <john.ogness@linutronix.de>
+Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
 
-> ---
->  arch/powerpc/kernel/watchdog.c | 6 ++++++
->  include/linux/printk.h         | 4 ++++
->  kernel/printk/printk.c         | 5 +++++
->  lib/nmi_backtrace.c            | 6 ++++++
->  4 files changed, 21 insertions(+)
->
-> diff --git a/arch/powerpc/kernel/watchdog.c b/arch/powerpc/kernel/watchdog.c
-> index 5f69ba4de1f3..c8017bc23b00 100644
-> --- a/arch/powerpc/kernel/watchdog.c
-> +++ b/arch/powerpc/kernel/watchdog.c
-> @@ -227,6 +227,12 @@ static void watchdog_smp_panic(int cpu)
->  		cpumask_clear(&wd_smp_cpus_ipi);
->  	}
->  
-> +	/*
-> +	 * Force flush any remote buffers that might be stuck in IRQ context
-> +	 * and therefore could not run their irq_work.
-> +	 */
-> +	printk_trigger_flush();
-> +
->  	if (hardlockup_panic)
->  		nmi_panic(NULL, "Hard LOCKUP");
->  
-> diff --git a/include/linux/printk.h b/include/linux/printk.h
-> index 85b656f82d75..9497f6b98339 100644
-> --- a/include/linux/printk.h
-> +++ b/include/linux/printk.h
-> @@ -198,6 +198,7 @@ void dump_stack_print_info(const char *log_lvl);
->  void show_regs_print_info(const char *log_lvl);
->  extern asmlinkage void dump_stack_lvl(const char *log_lvl) __cold;
->  extern asmlinkage void dump_stack(void) __cold;
-> +void printk_trigger_flush(void);
->  #else
->  static inline __printf(1, 0)
->  int vprintk(const char *s, va_list args)
-> @@ -274,6 +275,9 @@ static inline void dump_stack_lvl(const char *log_lvl)
->  static inline void dump_stack(void)
->  {
->  }
-> +static inline void printk_trigger_flush(void)
-> +{
-> +}
->  #endif
->  
->  #ifdef CONFIG_SMP
-> diff --git a/kernel/printk/printk.c b/kernel/printk/printk.c
-> index a8d0a58deebc..99221b016c68 100644
-> --- a/kernel/printk/printk.c
-> +++ b/kernel/printk/printk.c
-> @@ -3252,6 +3252,11 @@ void defer_console_output(void)
->  	preempt_enable();
->  }
->  
-> +void printk_trigger_flush(void)
-> +{
-> +	defer_console_output();
-> +}
-> +
->  int vprintk_deferred(const char *fmt, va_list args)
->  {
->  	int r;
-> diff --git a/lib/nmi_backtrace.c b/lib/nmi_backtrace.c
-> index f9e89001b52e..199ab201d501 100644
-> --- a/lib/nmi_backtrace.c
-> +++ b/lib/nmi_backtrace.c
-> @@ -75,6 +75,12 @@ void nmi_trigger_cpumask_backtrace(const cpumask_t *mask,
->  		touch_softlockup_watchdog();
->  	}
->  
-> +	/*
-> +	 * Force flush any remote buffers that might be stuck in IRQ context
-> +	 * and therefore could not run their irq_work.
-> +	 */
-> +	printk_trigger_flush();
-> +
->  	clear_bit_unlock(0, &backtrace_flag);
->  	put_cpu();
->  }
-> -- 
-> 2.23.0
+Gr{oetje,eeting}s,
+
+                        Geert
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
