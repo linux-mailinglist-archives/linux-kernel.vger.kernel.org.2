@@ -2,96 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ED454448186
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Nov 2021 15:22:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0FB4D448187
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Nov 2021 15:23:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238037AbhKHOYi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Nov 2021 09:24:38 -0500
-Received: from mail.kernel.org ([198.145.29.99]:60592 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235502AbhKHOYh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Nov 2021 09:24:37 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2971D610E9;
-        Mon,  8 Nov 2021 14:21:49 +0000 (UTC)
-Subject: Re: [RFC 3/3] gpiolib: coldfire: remove custom asm/gpio.h
-To:     Geert Uytterhoeven <geert@linux-m68k.org>,
-        Arnd Bergmann <arnd@kernel.org>
-Cc:     "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        Bartosz Golaszewski <brgl@bgdev.pl>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        linux-m68k <linux-m68k@lists.linux-m68k.org>,
-        Russell King <linux@armlinux.org.uk>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux-sh list <linux-sh@vger.kernel.org>,
-        Rich Felker <dalias@libc.org>,
-        Yoshinori Sato <ysato@users.sourceforge.jp>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-References: <20211105130338.241100-1-arnd@kernel.org>
- <20211105130338.241100-3-arnd@kernel.org>
- <CAMuHMdX=e5HB8gh25DMbrbUHagS9eOQokbjneJTY6HrSSf4Njw@mail.gmail.com>
-From:   Greg Ungerer <gerg@linux-m68k.org>
-Message-ID: <b45d970e-c02b-a843-4c38-dc7aee3cf8d3@linux-m68k.org>
-Date:   Tue, 9 Nov 2021 00:21:46 +1000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        id S237948AbhKHOZj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Nov 2021 09:25:39 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39670 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236155AbhKHOZi (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Nov 2021 09:25:38 -0500
+Received: from mail-il1-x135.google.com (mail-il1-x135.google.com [IPv6:2607:f8b0:4864:20::135])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6EB34C061714
+        for <linux-kernel@vger.kernel.org>; Mon,  8 Nov 2021 06:22:54 -0800 (PST)
+Received: by mail-il1-x135.google.com with SMTP id h23so17035666ila.4
+        for <linux-kernel@vger.kernel.org>; Mon, 08 Nov 2021 06:22:54 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=47DEQpj8HBSa+/TImW+5JCeuQeRkm5NMpJWZG3hSuFU=;
+        b=gfXQRJw316yobkzzkYLYou9RkmlANYcgKrYiE97bu0GKyf0T5zNbcDIiLx/DE6ews/
+         MKotVT7g2FNpod8ZsFI9g1GKIrIuWl+m+5j8B6tQ8w7cu+0aU1xRSiuQtcfsxEXO6Z3f
+         8Kw2dehpBJyexKs51lpY9Q1H02lWk62TGlzXS1XgITWHLchQ16rjKG8t3QDmC9io98VC
+         zrWD4DIvS5gDWBZbCm0/tBHqUGVmUbcSZW/mSITbJeOtbjUszuG3S0VHTOm9TJSQettL
+         4fZy7gDW8yi2apERJzvT+GC7xQJoSRtbCVPIsm4HrznULHha1S/MlwsSiS2rLwgRtMgl
+         JEQA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=47DEQpj8HBSa+/TImW+5JCeuQeRkm5NMpJWZG3hSuFU=;
+        b=KODX23d002YAkuZn8I86WoW+51v5p1yqpCruSVNBFU9x9i8wxwCANGCjKzLoUQjymA
+         iMLn6JOt8mgy+Kx3+JPSjFQd4+vIwBTJC0IxRGkq+t5s36xlEL+4uRNmWS/WNO4BP38W
+         2FNz2z6OqaCsQf1NFsphvGVjSXRSxA3Atft7zOHLIzuHOOnblJd+aT0BTMpLQAQmB8eX
+         W7HxTJOIPhMkaj+y4iXCSz50SZcV6rOhI9x5Q2R+aU5Z+v0e/FKZmQdMTj8RQ70m3uG4
+         LU4EBnv4sYLr9aGpb14wKm+xWjzhlcuuCrGyHi+6FoSTMIOxwhEhlg6Cq3QcNqv2h8+F
+         uSRA==
+X-Gm-Message-State: AOAM5315FY5cWIs4jPv4YjvaCgXW37JxN6DKbTByQNkWEXHfmfb6pjcU
+        efZqOjmUgIxBkhbi5785pvzNp2//ckJ0IVhk+8w=
+X-Google-Smtp-Source: ABdhPJzrJjdweTv8ngarGJc9ZBDUHON8vayiLxypsTqWoxa368R3+7T/s8iFaEOUDjkUbgT0eO87lFfHmu1ssc3yhXQ=
+X-Received: by 2002:a05:6e02:1989:: with SMTP id g9mr200294ilf.61.1636381373903;
+ Mon, 08 Nov 2021 06:22:53 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <CAMuHMdX=e5HB8gh25DMbrbUHagS9eOQokbjneJTY6HrSSf4Njw@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Received: by 2002:a92:cac5:0:0:0:0:0 with HTTP; Mon, 8 Nov 2021 06:22:53 -0800 (PST)
+Reply-To: fms333166@yandex.com
+From:   frank martins <fms333166@gmail.com>
+Date:   Mon, 8 Nov 2021 06:22:53 -0800
+Message-ID: <CAOGziQLrL4UZBjqAApWopiK=YBWf4jF7=qoXe5bmptcyjQBBZQ@mail.gmail.com>
+Subject: =?UTF-8?Q?Ich_warte_immer_noch_auf_Ihre_Antwort_auf_meine_zahl?=
+        =?UTF-8?Q?reichen_unbeantworteten_E=2DMails_an_Sie_bez=C3=BCglich_Ihres_Fami?=
+        =?UTF-8?Q?lienerbschaftsfonds_=288=2C5_Millionen_US=2DDollar=29=2E_Bitte_best=C3=A4t?=
+        =?UTF-8?Q?igen_Sie_mir_diesen_Brief_f=C3=BCr_weitere_Details=2E_Gr=C3=BC=C3=9Fe=2E_Mit?=
+        =?UTF-8?Q?_freundlichen_Gr=C3=BC=C3=9Fen_Herr_Frank_Martins=2E?=
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi arnd, Geert,
 
-On 8/11/21 6:24 pm, Geert Uytterhoeven wrote:
-> Hi Arnd,
-> 
-> On Fri, Nov 5, 2021 at 2:05 PM Arnd Bergmann <arnd@kernel.org> wrote:
->> From: Arnd Bergmann <arnd@arndb.de>
->>
->> Now that coldfire is the only user of a custom asm/gpio.h, it seems
->> better to remove this as well, and have the same interface everywhere.
->>
->> For the gpio_get_value()/gpio_set_value()/gpio_to_irq(), gpio_cansleep()
->> functions, the custom version is only a micro-optimization to inline the
->> function for constant GPIO numbers. However, in the coldfire defconfigs,
->> I was unable to find a single instance where this micro-optimization
->> was even used, so to my best knowledge removing this has no downsides.
-> 
-> The only user seems to be QSPI chip select handling (not bit-banged
-> data transfer) in arch/m68k/coldfire/device.c, but that indeed depends
-> on CONFIG_SPI_COLDFIRE_QSPI, which is not set in any of the defconfigs.
-> That doesn't mean there were/are no real users, though ;-)
-
-That is definitely used by some.
-But the generalization and removal of the special casing seems like a win to me.
-
-
->> The custom gpio_request_one() function is even less useful, as it is
->> guarded by an #ifdef that is never true.
->>
->> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-> 
-> Reviewed-by: Geert Uytterhoeven <geert@linux-m68k.org>
-
-Reviewed-by: Greg Ungerer <gerg@linux-m68k.org>
-
-Regards
-Greg
-
-
-
-> Gr{oetje,eeting}s,
-> 
->                          Geert
-> 
-> --
-> Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-> 
-> In personal conversations with technical people, I call myself a hacker. But
-> when I'm talking to journalists I just say "programmer" or something like that.
->                                  -- Linus Torvalds
-> 
