@@ -2,74 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E851447C6E
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Nov 2021 10:00:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9FA5A447C72
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Nov 2021 10:01:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238277AbhKHJDW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Nov 2021 04:03:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50400 "EHLO
+        id S238282AbhKHJEA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Nov 2021 04:04:00 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50620 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238264AbhKHJDN (ORCPT
+        with ESMTP id S238261AbhKHJD4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Nov 2021 04:03:13 -0500
-Received: from mail-ot1-x334.google.com (mail-ot1-x334.google.com [IPv6:2607:f8b0:4864:20::334])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F171DC061714;
-        Mon,  8 Nov 2021 01:00:09 -0800 (PST)
-Received: by mail-ot1-x334.google.com with SMTP id o15-20020a9d410f000000b0055c942cc7a0so1748856ote.8;
-        Mon, 08 Nov 2021 01:00:09 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=FZanGk8rGCBdhGfwRJPODn+28JTXVnU7A9yXQrXql5U=;
-        b=My1raRicmldHpmqxFEz86vzjpTbpS6iuVV2GdMFpFRH2MptKMQYzu4qssYOMmfDvYV
-         5ObAYAgUfVPWi7ignWFKfsDNA8+zW/RsFjYTxHhzbnYeb2Semfc5lDv8KZcOJst8FKOg
-         6u1iYI56w4zESvLIcwfNWwfL1grVHalG30056Fwmbo2vLe2FTOGzsjcf2oGwblBwe81p
-         Vo85vDS7/st80jjr6SpwqinLHHsuvhOQ+BTrjcprb8cyQafH+2ZRUCmcqifZbO7Rewyv
-         XzXhCF5p6gizHWLXF7rohTFaQrB/Gyn7RJfQGRFyQ5yCcHgn9cAS21hSNh7p66E6O1y6
-         z19Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=FZanGk8rGCBdhGfwRJPODn+28JTXVnU7A9yXQrXql5U=;
-        b=rTAaYFoM9ZAdEiFDn3m01cR32rOC4MQLyO8xKL8LI3pn72QjQBhq8SKUODHxwjBy4M
-         lYc8/QdLxyQ74e7GmS3QGo5sIl5CBAHsnt8f0mjk952tgBuSSZ8NUMq4inIA/z4pJo2Z
-         byCNAHCly8EMpphJsfBOUJ4pXozbjVOiC7dmL6FDb+HfNBBmvoeo+h28XdfYZT1Ebzhf
-         tQLXOpy7dol+v1d0Wu/nis5D0Hh12LJQoKmHWo7czuBjkMUDIC5rFG2g1ubm9xYmBmXr
-         NxmYmO/HErHBOpJ6toGskXG9MB9LCuuH9U4ZmNhtszAfBa5YZeYXKJQ9dT6MiLGO3ozN
-         +lzg==
-X-Gm-Message-State: AOAM530nJyiBhHKIFMzpURM/ShiOlQszZVvneU3650bp9wD2jUpCSqnz
-        ysenCLzO/wlY+5Z9juasoRT58K90l+hzSY2TC666hoy/Pbk=
-X-Google-Smtp-Source: ABdhPJx4StEUB+R6DAyP5d7YK12udwTm5xg8EZNd4Q6ZBUlffXWYR4nbReeR4Yo3+Td5hsWM30xNonMWWKdtRnSvpRc=
-X-Received: by 2002:a9d:6f0e:: with SMTP id n14mr9928388otq.173.1636362008818;
- Mon, 08 Nov 2021 01:00:08 -0800 (PST)
+        Mon, 8 Nov 2021 04:03:56 -0500
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1F355C061570;
+        Mon,  8 Nov 2021 01:01:12 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=FzM8qSFY0zQQQfksibg27pvdfAM5iEzRGUbH+QhUlQE=; b=jGIFB3r4hyLCG8fJt6TPktHCpM
+        GhX88zXQeOPiLn01k4xFVaP6ysm93Y2lR+7wkUXr9W1qcGJswrsJ+RMFJF6lZ1ssaWB9oRU1SkAmZ
+        +uqXUKs9EtBvjh0gfOXYPG0DEgc8FHsNA40a4T/yBLRUvFOHMCTcKHmlCj71V7PDg+bMwnOuMhJ/L
+        sjol8WEB5wvPW2rKOisBvK01kgFHRXe7dB/GlNPvvNWU6cXP2LhpUdDiVHagKG1Cn7hEw+W4SEYbd
+        +nyHQ+TqPZb8s073nBb4LaQn4mGuIH54DiJCyARFqZrv/GqlrTugfvPsROi6OxU4qlwFHg097OZMv
+        8S1/V6rQ==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mk0WX-00ErA1-5s; Mon, 08 Nov 2021 09:01:05 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id CA8E23000A3;
+        Mon,  8 Nov 2021 10:01:04 +0100 (CET)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 73107200C6B85; Mon,  8 Nov 2021 10:01:04 +0100 (CET)
+Date:   Mon, 8 Nov 2021 10:01:04 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Ricardo Neri <ricardo.neri-calderon@linux.intel.com>
+Cc:     "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        linux-pm@vger.kernel.org, x86@kernel.org,
+        linux-doc@vger.kernel.org, Len Brown <len.brown@intel.com>,
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+        Aubrey Li <aubrey.li@linux.intel.com>,
+        Amit Kucheria <amitk@kernel.org>,
+        Andi Kleen <ak@linux.intel.com>,
+        Tim Chen <tim.c.chen@linux.intel.com>,
+        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
+        Ricardo Neri <ricardo.neri@intel.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 5/7] thermal: intel: hfi: Enable notification interrupt
+Message-ID: <YYjnUM/v8LmtnBq3@hirez.programming.kicks-ass.net>
+References: <20211106013312.26698-1-ricardo.neri-calderon@linux.intel.com>
+ <20211106013312.26698-6-ricardo.neri-calderon@linux.intel.com>
 MIME-Version: 1.0
-References: <20211106092041.43745-1-ajaygargnsit@gmail.com>
- <9eafae1f-d9f0-298d-cf20-212865d0becc@gmail.com> <868025b485b94480ad17d0ec971b3ee9@AcuMS.aculab.com>
- <CAHP4M8Ww0-VqCBKX=iLd=zy1AcDoNdzTOqJuaqRxCGZsMhoX9w@mail.gmail.com>
- <CAHP4M8UcZ=ttB8jbN1yOY6YH8SiQ27NhdEKi9SDH1CWG-GY6eg@mail.gmail.com>
- <6b58a3e1-f2ea-cc4c-03b2-06334b559373@gmail.com> <CAHP4M8Vs8a8u98enuHXaBcC7D4fCZzCOtEq06VnvuPUqhqPK=Q@mail.gmail.com>
- <9717b429-597f-7778-c880-94361bcdee7f@gmail.com> <CAHP4M8XtFiAa1kF5A_rPbcui3DP8L6iyfP8GbwgLLzo0Bo+TNQ@mail.gmail.com>
- <65c45951-08ba-26bb-f96b-3d4442b1d4d4@gmail.com>
-In-Reply-To: <65c45951-08ba-26bb-f96b-3d4442b1d4d4@gmail.com>
-From:   Ajay Garg <ajaygargnsit@gmail.com>
-Date:   Mon, 8 Nov 2021 14:29:56 +0530
-Message-ID: <CAHP4M8X_D4WdK9TwQoeV=WTEGUyLCs1VV5qWbYbfWJyZ9+C_5w@mail.gmail.com>
-Subject: Re: [PATCH] tty: vt: keyboard: do not copy an extra-byte in copy_to_user
-To:     Pavel Skripkin <paskripkin@gmail.com>
-Cc:     Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Greg KH <gregkh@linuxfoundation.org>, jirislaby@kernel.org,
-        kernel@esmil.dk, David Laight <David.Laight@aculab.com>,
-        "linux-serial@vger.kernel.org" <linux-serial@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211106013312.26698-6-ricardo.neri-calderon@linux.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Dropping all further discussions on this thread, as a RFC for a new
-string-copy method has been posted at :
-https://lore.kernel.org/linux-hardening/CAHP4M8U=0aTHgfREGJpSboV6J4X+E3Y6+H_kb-PvXxDKtV=n-g@mail.gmail.com/T/#t
+On Fri, Nov 05, 2021 at 06:33:10PM -0700, Ricardo Neri wrote:
+> +	/*
+> +	 * On most systems, all CPUs in the package receive a package-level
+> +	 * thermal interrupt when there is an HFI update. Since they all are
+> +	 * dealing with the same update (as indicated by the update timestamp),
+> +	 * it is sufficient to let a single CPU to acknowledge the update and
+> +	 * schedule work to process it.
+> +	 */
 
-which, if accepted, will make the clients' lives a lot easier.
+That's pretty crap hardware behaviour. Is there really no way to steer
+these interrupts?
