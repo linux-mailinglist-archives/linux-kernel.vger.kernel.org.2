@@ -2,124 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E0120449EE6
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 00:00:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 93BCA44A022
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 01:59:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240237AbhKHXDV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Nov 2021 18:03:21 -0500
-Received: from linux.microsoft.com ([13.77.154.182]:43838 "EHLO
-        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230364AbhKHXDU (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Nov 2021 18:03:20 -0500
-Received: from kbox (unknown [24.17.193.74])
-        by linux.microsoft.com (Postfix) with ESMTPSA id AACA720B409D;
-        Mon,  8 Nov 2021 15:00:35 -0800 (PST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com AACA720B409D
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1636412435;
-        bh=IYoekjc8BXBw1L4x6xX7X7r2zzBU7yy61cvPMt+EHUU=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=JVLsB5gs/vLtjGojKAsPAz+nUbvHGKK7h7duI0yLF9k85mVF4x8irXN05/Gu8cLOs
-         roc2L3hPpprHjLkjEQFCZcd9MzzwqrTilTl1ygfcnpjOrO2mTfN0ecW8f2m1S1F0N2
-         mPrW7jh27vvwn2/FcG6d69R38msc/Y7pyrJIUeIY=
-Date:   Mon, 8 Nov 2021 15:00:34 -0800
-From:   Beau Belgrave <beaub@linux.microsoft.com>
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     mhiramat@kernel.org, linux-trace-devel@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v4 09/10] user_events: Optimize writing events by only
- copying data once
-Message-ID: <20211108230034.GB1452@kbox>
-References: <20211104170433.2206-1-beaub@linux.microsoft.com>
- <20211104170433.2206-10-beaub@linux.microsoft.com>
- <20211108174542.39c255e1@gandalf.local.home>
+        id S236718AbhKIBC0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Nov 2021 20:02:26 -0500
+Received: from mail.kernel.org ([198.145.29.99]:58052 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S236525AbhKIBCZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Nov 2021 20:02:25 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id EE649611BD;
+        Tue,  9 Nov 2021 00:59:38 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1636419579;
+        bh=qmHOld4pvSzd7AF+W6wQ4Nj6bQyCu6INWj0h1+yktDw=;
+        h=From:To:Cc:Subject:Date:From;
+        b=hYPmH3UYjMsL2pTdfIZmE+jerAc18ju/8lYAOtJ+oKbjmiKjszLfe3Hny6AxspflR
+         NmzZgfbe/YOasgDuZX+loVZLub2Z8caH54Woj7ztEXOD5kJU5IkPZ6iV6H1LKtGprM
+         974wRO2NeS7t0UX9SzenjcRBcaD/6DuvxRMANFNH00FOs3WbB45DKLtlsNa5SraXvq
+         egwygga6Lp6eBwYWXtJlbypcCd4ijuzy9WztiZjtN7craHP1rQu6YjyEv42Y/QgP9+
+         eCzsN43PcLpmiyJ9qGs1oiOdMooSFmmEjtzpofeBVzY7eEd5kua9NQ3rjQVjbLzvj5
+         FWLALIqtMjHbw==
+From:   Sasha Levin <sashal@kernel.org>
+To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Cc:     Charan Teja Reddy <charante@codeaurora.org>,
+        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
+        Sasha Levin <sashal@kernel.org>, sumit.semwal@linaro.org,
+        linux-media@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        linaro-mm-sig@lists.linaro.org
+Subject: [PATCH AUTOSEL 5.15 001/146] dma-buf: WARN on dmabuf release with pending attachments
+Date:   Mon,  8 Nov 2021 12:42:28 -0500
+Message-Id: <20211108174453.1187052-1-sashal@kernel.org>
+X-Mailer: git-send-email 2.33.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211108174542.39c255e1@gandalf.local.home>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Type: text/plain; charset=UTF-8
+X-stable: review
+X-Patchwork-Hint: Ignore
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 08, 2021 at 05:45:42PM -0500, Steven Rostedt wrote:
-> On Thu,  4 Nov 2021 10:04:32 -0700
-> Beau Belgrave <beaub@linux.microsoft.com> wrote:
-> 
-> > Pass iterator through to probes to allow copying data directly to the
-> > probe buffers instead of taking multiple copies. Enables eBPF user and
-> > raw iterator types out to programs for no-copy scenarios.
-> > 
-> > Signed-off-by: Beau Belgrave <beaub@linux.microsoft.com>
-> > ---
-> >  kernel/trace/trace_events_user.c | 97 +++++++++++++++++++++++---------
-> >  1 file changed, 69 insertions(+), 28 deletions(-)
-> > 
-> > diff --git a/kernel/trace/trace_events_user.c b/kernel/trace/trace_events_user.c
-> > index b5fe0550b489..d50118b9630a 100644
-> > --- a/kernel/trace/trace_events_user.c
-> > +++ b/kernel/trace/trace_events_user.c
-> > @@ -39,6 +39,10 @@
-> >  #define MAX_EVENT_DESC 512
-> >  #define EVENT_NAME(user_event) ((user_event)->tracepoint.name)
-> >  
-> > +#define MAX_BPF_COPY_SIZE PAGE_SIZE
-> > +#define MAX_STACK_BPF_DATA 512
-> > +#define copy_nofault copy_from_iter_nocache
-> > +
-> >  static char *register_page_data;
-> >  
-> >  static DEFINE_MUTEX(reg_mutex);
-> > @@ -63,8 +67,7 @@ struct user_event_refs {
-> >  	struct user_event *events[];
-> >  };
-> >  
-> > -typedef void (*user_event_func_t) (struct user_event *user,
-> > -				   void *data, u32 datalen,
-> > +typedef void (*user_event_func_t) (struct user_event *user, struct iov_iter *i,
-> >  				   void *tpdata);
-> >  
-> >  static int user_event_parse(char *name, char *args, char *flags,
-> > @@ -491,7 +494,7 @@ static struct user_event *find_user_event(char *name, u32 *outkey)
-> >  /*
-> >   * Writes the user supplied payload out to a trace file.
-> >   */
-> > -static void user_event_ftrace(struct user_event *user, void *data, u32 datalen,
-> > +static void user_event_ftrace(struct user_event *user, struct iov_iter *i,
-> >  			      void *tpdata)
-> >  {
-> >  	struct trace_event_file *file;
-> > @@ -506,41 +509,82 @@ static void user_event_ftrace(struct user_event *user, void *data, u32 datalen,
-> >  		return;
-> >  
-> >  	entry = trace_event_buffer_reserve(&event_buffer, file,
-> > -					   sizeof(*entry) + datalen);
-> > +					   sizeof(*entry) + i->count);
-> >  
-> >  	if (unlikely(!entry))
-> >  		return;
-> >  
-> > -	memcpy(entry + 1, data, datalen);
-> > +	if (unlikely(!copy_nofault(entry + 1, i->count, i)))
-> 
-> Need:
-> 		__trace_event_discard_commit(event_buffer.buffer, event_buffer.event);
-> 
-> Because the trace_event_buffer_reserve() will not only allocate space on
-> the ring buffer, but may also disable preemption.
-> 
-> -- Steve
-> 
+From: Charan Teja Reddy <charante@codeaurora.org>
 
-Ah, thank you!
+[ Upstream commit f492283b157053e9555787262f058ae33096f568 ]
 
--Beau
+It is expected from the clients to follow the below steps on an imported
+dmabuf fd:
+a) dmabuf = dma_buf_get(fd) // Get the dmabuf from fd
+b) dma_buf_attach(dmabuf); // Clients attach to the dmabuf
+   o Here the kernel does some slab allocations, say for
+dma_buf_attachment and may be some other slab allocation in the
+dmabuf->ops->attach().
+c) Client may need to do dma_buf_map_attachment().
+d) Accordingly dma_buf_unmap_attachment() should be called.
+e) dma_buf_detach () // Clients detach to the dmabuf.
+   o Here the slab allocations made in b) are freed.
+f) dma_buf_put(dmabuf) // Can free the dmabuf if it is the last
+reference.
 
-> 
-> > +		return;
-> >  
-> >  	trace_event_buffer_commit(&event_buffer);
-> >  }
-> >  
-> >  #ifdef CONFIG_PERF_EVENTS
+Now say an erroneous client failed at step c) above thus it directly
+called dma_buf_put(), step f) above. Considering that it may be the last
+reference to the dmabuf, buffer will be freed with pending attachments
+left to the dmabuf which can show up as the 'memory leak'. This should
+at least be reported as the WARN().
+
+Signed-off-by: Charan Teja Reddy <charante@codeaurora.org>
+Reviewed-by: Christian König <christian.koenig@amd.com>
+Link: https://patchwork.freedesktop.org/patch/msgid/1627043468-16381-1-git-send-email-charante@codeaurora.org
+Signed-off-by: Christian König <christian.koenig@amd.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
+---
+ drivers/dma-buf/dma-buf.c | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/drivers/dma-buf/dma-buf.c b/drivers/dma-buf/dma-buf.c
+index 63d32261b63ff..474de2d988ca7 100644
+--- a/drivers/dma-buf/dma-buf.c
++++ b/drivers/dma-buf/dma-buf.c
+@@ -82,6 +82,7 @@ static void dma_buf_release(struct dentry *dentry)
+ 	if (dmabuf->resv == (struct dma_resv *)&dmabuf[1])
+ 		dma_resv_fini(dmabuf->resv);
+ 
++	WARN_ON(!list_empty(&dmabuf->attachments));
+ 	module_put(dmabuf->owner);
+ 	kfree(dmabuf->name);
+ 	kfree(dmabuf);
+-- 
+2.33.0
+
