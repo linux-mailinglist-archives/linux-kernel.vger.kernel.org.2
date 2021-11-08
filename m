@@ -2,39 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 29E7A448144
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Nov 2021 15:19:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 59D82448158
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Nov 2021 15:20:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240358AbhKHOWf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Nov 2021 09:22:35 -0500
-Received: from mx08-00178001.pphosted.com ([91.207.212.93]:55380 "EHLO
-        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S237741AbhKHOWe (ORCPT
+        id S240501AbhKHOXJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Nov 2021 09:23:09 -0500
+Received: from mx07-00178001.pphosted.com ([185.132.182.106]:35616 "EHLO
+        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S240360AbhKHOWk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Nov 2021 09:22:34 -0500
-Received: from pps.filterd (m0046660.ppops.net [127.0.0.1])
-        by mx07-00178001.pphosted.com (8.16.1.2/8.16.1.2) with ESMTP id 1A8DV3vc021016;
-        Mon, 8 Nov 2021 15:19:47 +0100
+        Mon, 8 Nov 2021 09:22:40 -0500
+Received: from pps.filterd (m0046668.ppops.net [127.0.0.1])
+        by mx07-00178001.pphosted.com (8.16.1.2/8.16.1.2) with ESMTP id 1A8DSDmk021137;
+        Mon, 8 Nov 2021 15:19:48 +0100
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=from : to : cc :
  subject : date : message-id : in-reply-to : references : mime-version :
  content-type; s=selector1;
- bh=a41vJFItKJ5IiBl4p4P3S/FPtTvymrgfs42LyirnKtY=;
- b=6MJjKlvDGqUnvsADI3pp1wU8fSaBgvUCksZw6XnpkphtaxEMnEaQBH2xMSKFeuBFuegP
- gjw/PqCfsXW5gE+vxVSua+9ry/0otK/5ScSSU0UlEBt+i4hRxHpO3uhIuB+NhOP7Gbl6
- cw652CFgH5VpDXUFPedp/fs/MNQtKQ6wr5TuhLDg7MmPyLyis9jCouWd6rhCvNWjv4CA
- lMO5hePZVB360ZNlFOcmJVzQYHPViSSLEAFyitTeOuBwFecNeFbRRHC1Kc+SO8pb5ab6
- zGyOQEeVuH81RcrQW4Nhkrne4dJKsJF7SZDlkRWob6bWZbnmFMw8GhRXUggIThWnmL0K uQ== 
+ bh=tZF7B1AEqL3PxVhSsmPz+HyObnYBEuTvkk9FW+Dz/Mc=;
+ b=fnn6El9fmTCFwOTcIKeGooDREN5TzwMApQ/d2EYNZO7gv7+4KoO/LHs20HYLFDo+I6KY
+ HGu0tskKWSH5vMLcPI6sa3ZW6VZjcSe/IuAFWUQ3+/tMTCuenR9kOYs6igmKMR2JNfhi
+ l6NyWgCbmOfNe7HMeqi0LImHwHxN3pcUPR/h+8B9/KOrtNk9fZsa0cDop11/biA79dqT
+ L7s5t0gmDR5saFmeVCC4CcSfTThSUgoSUQhPKqjP9Bc87pBgK2Eb5yw5f0YcYdZt9aFi
+ PrSHH3H2QIbzYzLC1Z3gBBvthCWS6R8x+oiSHbrvDFnwR8xNcd1hLKMANlzOodFo+sj/ Cg== 
 Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
-        by mx07-00178001.pphosted.com (PPS) with ESMTPS id 3c74uk8b9r-1
+        by mx07-00178001.pphosted.com (PPS) with ESMTPS id 3c709q2a4b-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 08 Nov 2021 15:19:47 +0100
+        Mon, 08 Nov 2021 15:19:48 +0100
 Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 6A81F10002A;
-        Mon,  8 Nov 2021 15:19:47 +0100 (CET)
+        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 34CE6100034;
+        Mon,  8 Nov 2021 15:19:48 +0100 (CET)
 Received: from Webmail-eu.st.com (sfhdag2node2.st.com [10.75.127.5])
-        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 6443521E665;
-        Mon,  8 Nov 2021 15:19:47 +0100 (CET)
-Received: from localhost (10.75.127.51) by SFHDAG2NODE2.st.com (10.75.127.5)
+        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 2DCBA21E665;
+        Mon,  8 Nov 2021 15:19:48 +0100 (CET)
+Received: from localhost (10.75.127.49) by SFHDAG2NODE2.st.com (10.75.127.5)
  with Microsoft SMTP Server (TLS) id 15.0.1497.18; Mon, 8 Nov 2021 15:19:47
  +0100
 From:   Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>
@@ -44,16 +44,16 @@ To:     Bjorn Andersson <bjorn.andersson@linaro.org>,
 CC:     <linux-remoteproc@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
         <linux-stm32@st-md-mailman.stormreply.com>,
         <julien.massot@iot.bzh>, <arnaud.pouliquen@foss.st.com>
-Subject: [PATCH v7 07/12] rpmsg: char: Refactor rpmsg_chrdev_eptdev_create function
-Date:   Mon, 8 Nov 2021 15:19:32 +0100
-Message-ID: <20211108141937.13016-8-arnaud.pouliquen@foss.st.com>
+Subject: [PATCH v7 08/12] rpmsg: Introduce rpmsg_create_default_ept function
+Date:   Mon, 8 Nov 2021 15:19:33 +0100
+Message-ID: <20211108141937.13016-9-arnaud.pouliquen@foss.st.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20211108141937.13016-1-arnaud.pouliquen@foss.st.com>
 References: <20211108141937.13016-1-arnaud.pouliquen@foss.st.com>
 MIME-Version: 1.0
 Content-Type: text/plain
-X-Originating-IP: [10.75.127.51]
-X-ClientProxiedBy: SFHDAG2NODE1.st.com (10.75.127.4) To SFHDAG2NODE2.st.com
+X-Originating-IP: [10.75.127.49]
+X-ClientProxiedBy: SFHDAG1NODE2.st.com (10.75.127.2) To SFHDAG2NODE2.st.com
  (10.75.127.5)
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.205,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.0.607.475
@@ -62,85 +62,111 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Introduce the rpmsg_chrdev_eptdev_alloc and  rpmsg_chrdev_eptdev_add
-internal function to split the allocation part from the device add.
+By providing a callback in the rpmsg_driver structure, the rpmsg devices
+can be probed with a default endpoint created.
 
-This patch prepares the introduction of a rpmsg channel device for the
-char device. An default endpoint will be created,
-referenced in the rpmsg_eptdev structure before adding the devices.
+In this case, it is not possible to associated to this endpoint private data
+that could allow the driver to retrieve the context.
+
+This helper function allows rpmsg drivers to create a default endpoint
+on runtime with an associated private context.
+
+For example, a driver might create a context structure on the probe and
+want to provide that context as private data for the default rpmsg
+callback.
 
 Signed-off-by: Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>
----
- drivers/rpmsg/rpmsg_char.c | 33 ++++++++++++++++++++++++++++-----
- 1 file changed, 28 insertions(+), 5 deletions(-)
+Reviewed-by: Mathieu Poirier <mathieu.poirier@linaro.org>
+Tested-by: Julien Massot <julien.massot@iot.bzh>
 
-diff --git a/drivers/rpmsg/rpmsg_char.c b/drivers/rpmsg/rpmsg_char.c
-index 29c4d2c3aea9..3daf62df69a0 100644
---- a/drivers/rpmsg/rpmsg_char.c
-+++ b/drivers/rpmsg/rpmsg_char.c
-@@ -325,20 +325,18 @@ static void rpmsg_eptdev_release_device(struct device *dev)
- 	kfree(eptdev);
+---
+Update vs previous revision:
+- move rpmsg_create_default_ept declaration from rpmsg.h to rpmsg_internal.h
+- fix rpmsg_create_default_ept function header
+- Treat rpdev->ept!= 0 as invalid usage with a WARN_ON
+---
+ drivers/rpmsg/rpmsg_core.c     | 54 ++++++++++++++++++++++++++++++++++
+ drivers/rpmsg/rpmsg_internal.h |  4 +++
+ 2 files changed, 58 insertions(+)
+
+diff --git a/drivers/rpmsg/rpmsg_core.c b/drivers/rpmsg/rpmsg_core.c
+index 45227c864aa2..bdcde57c22f6 100644
+--- a/drivers/rpmsg/rpmsg_core.c
++++ b/drivers/rpmsg/rpmsg_core.c
+@@ -133,6 +133,60 @@ void rpmsg_destroy_ept(struct rpmsg_endpoint *ept)
+ }
+ EXPORT_SYMBOL(rpmsg_destroy_ept);
+ 
++/**
++ * rpmsg_create_default_ept() - create a default rpmsg_endpoint for a rpmsg device
++ * @rpdev: rpmsg channel device
++ * @cb: rx callback handler
++ * @priv: private data for the driver's use
++ * @chinfo: channel_info with the local rpmsg address to bind with @cb
++ *
++ * On register_rpmsg_driver if no callback is provided in the rpmsg_driver structure,
++ * no endpoint is created when the device is probed by the rpmsg bus.
++ *
++ * This function returns a pointer to an endpoint created and assigned as the default
++ * endpoint of the rpmsg device.
++ *
++ * Drivers should provide their @rpdev channel (so the new endpoint would belong
++ * to the same remote processor their channel belongs to), an rx callback
++ * function, an optional private data (which is provided back when the
++ * rx callback is invoked), and an address they want to bind with the
++ * callback. If @addr is RPMSG_ADDR_ANY, then rpmsg_create_ept will
++ * dynamically assign them an available rpmsg address (drivers should have
++ * a very good reason why not to always use RPMSG_ADDR_ANY here).
++ *
++ * Return: a pointer to the endpoint on success, or NULL on error.
++ */
++struct rpmsg_endpoint *rpmsg_create_default_ept(struct rpmsg_device *rpdev,
++						rpmsg_rx_cb_t cb, void *priv,
++						struct rpmsg_channel_info chinfo)
++{
++	struct rpmsg_endpoint *ept;
++
++	if (WARN_ON(!rpdev))
++		return NULL;
++
++	if (WARN_ON(rpdev->ept))
++		return NULL;
++
++	/* It does not make sense to create a default endpoint without a callback. */
++	if (!cb)
++		return NULL;
++
++	if (rpdev->ept)
++		return rpdev->ept;
++
++	ept = rpdev->ops->create_ept(rpdev, cb, priv, chinfo);
++	if (!ept)
++		return NULL;
++
++	/* Assign the new endpoint as default endpoint */
++	rpdev->ept = ept;
++	rpdev->src = ept->addr;
++
++	return ept;
++}
++EXPORT_SYMBOL(rpmsg_create_default_ept);
++
+ /**
+  * rpmsg_send() - send a message across to the remote processor
+  * @ept: the rpmsg endpoint
+diff --git a/drivers/rpmsg/rpmsg_internal.h b/drivers/rpmsg/rpmsg_internal.h
+index 8bb56d347c81..4577e9381d25 100644
+--- a/drivers/rpmsg/rpmsg_internal.h
++++ b/drivers/rpmsg/rpmsg_internal.h
+@@ -98,4 +98,8 @@ static inline int rpmsg_ctrldev_register_device(struct rpmsg_device *rpdev)
+ 	return rpmsg_register_device(rpdev);
  }
  
--int rpmsg_chrdev_eptdev_create(struct rpmsg_device *rpdev, struct device *parent,
--			       struct rpmsg_channel_info chinfo)
-+static struct rpmsg_eptdev *rpmsg_chrdev_eptdev_alloc(struct rpmsg_device *rpdev,
-+						      struct device *parent)
- {
- 	struct rpmsg_eptdev *eptdev;
- 	struct device *dev;
--	int ret;
- 
- 	eptdev = kzalloc(sizeof(*eptdev), GFP_KERNEL);
- 	if (!eptdev)
--		return -ENOMEM;
-+		return ERR_PTR(-ENOMEM);
- 
- 	dev = &eptdev->dev;
- 	eptdev->rpdev = rpdev;
--	eptdev->chinfo = chinfo;
- 
- 	mutex_init(&eptdev->ept_lock);
- 	spin_lock_init(&eptdev->queue_lock);
-@@ -354,6 +352,16 @@ int rpmsg_chrdev_eptdev_create(struct rpmsg_device *rpdev, struct device *parent
- 	cdev_init(&eptdev->cdev, &rpmsg_eptdev_fops);
- 	eptdev->cdev.owner = THIS_MODULE;
- 
-+	return eptdev;
-+}
++struct rpmsg_endpoint *rpmsg_create_default_ept(struct rpmsg_device *rpdev,
++						rpmsg_rx_cb_t cb, void *priv,
++						struct rpmsg_channel_info chinfo);
 +
-+static int rpmsg_chrdev_eptdev_add(struct rpmsg_eptdev *eptdev, struct rpmsg_channel_info chinfo)
-+{
-+	struct device *dev = &eptdev->dev;
-+	int ret;
-+
-+	eptdev->chinfo = chinfo;
-+
- 	ret = ida_simple_get(&rpmsg_minor_ida, 0, RPMSG_DEV_MAX, GFP_KERNEL);
- 	if (ret < 0)
- 		goto free_eptdev;
-@@ -390,6 +398,21 @@ int rpmsg_chrdev_eptdev_create(struct rpmsg_device *rpdev, struct device *parent
- 
- 	return ret;
- }
-+
-+int rpmsg_chrdev_eptdev_create(struct rpmsg_device *rpdev, struct device *parent,
-+			       struct rpmsg_channel_info chinfo)
-+{
-+	struct rpmsg_eptdev *eptdev;
-+	int ret;
-+
-+	eptdev = rpmsg_chrdev_eptdev_alloc(rpdev, parent);
-+	if (IS_ERR(eptdev))
-+		return PTR_ERR(eptdev);
-+
-+	ret = rpmsg_chrdev_eptdev_add(eptdev, chinfo);
-+
-+	return ret;
-+}
- EXPORT_SYMBOL(rpmsg_chrdev_eptdev_create);
- 
- static int rpmsg_chrdev_init(void)
+ #endif
 -- 
 2.17.1
 
