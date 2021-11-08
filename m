@@ -2,143 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 76428447F29
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Nov 2021 12:52:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B6B1447F2E
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Nov 2021 12:58:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239339AbhKHLz3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Nov 2021 06:55:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33302 "EHLO
+        id S239346AbhKHMAy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Nov 2021 07:00:54 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34456 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231401AbhKHLz2 (ORCPT
+        with ESMTP id S231401AbhKHMAw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Nov 2021 06:55:28 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A77C3C061570
-        for <linux-kernel@vger.kernel.org>; Mon,  8 Nov 2021 03:52:44 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=iGvLUtwPbdRsAfeVJOcAVPj61fXiSzd4nOb67Hfr9sw=; b=F+BJuQ+IrbziNIXT9xJu5L+UqB
-        lraLF91ieb3EqV159cAYbdxPh16m+cadbOWiwl9jcekGoedIewYhnqSHhhBMR7qmFo6cNLMrEiTOH
-        neMlc6vd2JUNmiVxh1iTSzLBHXGzM61RRdXD67CWRqKR3FZe0cFI6bFgVawRKX0mfGI9E1PFMJh2A
-        FQkh+4azXrnUjFKS64DvsnAhK1VH8e2rMEzUhJ9/d7EDudfuZ9U0/a0FfeOZOhFvyNDTwD4qDu9GW
-        guMvF6BRN4pe336JdFGkbJ6qabesfBb0AfOrYp4Ps9LBBs95b486GrznQjoZzSdl8F7ZQQyOJdQgk
-        QpUumMpQ==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mk3CR-0009SK-Fj; Mon, 08 Nov 2021 11:52:32 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 8764830030B;
-        Mon,  8 Nov 2021 12:52:31 +0100 (CET)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 5EFD4202A0132; Mon,  8 Nov 2021 12:52:31 +0100 (CET)
-Date:   Mon, 8 Nov 2021 12:52:31 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Ard Biesheuvel <ardb@kernel.org>
-Cc:     Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Quentin Perret <qperret@google.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        James Morse <james.morse@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        Sami Tolvanen <samitolvanen@google.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Steven Rostedt <rostedt@goodmis.org>
-Subject: Re: [PATCH v6 2/2] arm64: implement support for static call
- trampolines
-Message-ID: <YYkPf6TgsiV3Da/y@hirez.programming.kicks-ass.net>
-References: <20211105145917.2828911-1-ardb@kernel.org>
- <20211105145917.2828911-3-ardb@kernel.org>
- <YYj6ib6Mrp9rAjVJ@hirez.programming.kicks-ass.net>
- <CAMj1kXHEBc1XkTuHPXYV8rp5++HA9ruROUP-UApzEnVzvgFvTw@mail.gmail.com>
+        Mon, 8 Nov 2021 07:00:52 -0500
+Received: from mail-lf1-x12d.google.com (mail-lf1-x12d.google.com [IPv6:2a00:1450:4864:20::12d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1139CC061570;
+        Mon,  8 Nov 2021 03:58:08 -0800 (PST)
+Received: by mail-lf1-x12d.google.com with SMTP id u11so35619987lfs.1;
+        Mon, 08 Nov 2021 03:58:07 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=message-id:date:mime-version:user-agent:subject:content-language:to
+         :cc:references:from:in-reply-to:content-transfer-encoding;
+        bh=hrYIwuaickwVIX9nv5A/yaHsS4Ix6DSVs2dpM8KjH4o=;
+        b=d1GUMgFByKbIgoH5GKMfZLg18V3Pvs1vpLAjCSW6tR9WEbVeRvjda+OrwVgn55Xvi3
+         MMN61cx70hV0Hpd+qlq+gQk+get5yUBBISi5bZ9ybBoddoKtfalsgKvU2fKJh951WdGM
+         UV4iLu88mZCur1cXaZHq63eUBedPtx3V2BazJQL2oanX2l0yAqZaLBMMd1Nt9y7p3SUB
+         M0/gyfOqCT9fdnIeTp5l5u8J6bI96Z07CSQyv9j8qKaOMUFGQRwHijNvCphmuRNFUBvl
+         +ZvakDZkdfHEHMmge2V09SnqIkjaXpDqmaDvmPPwNMCoW22FyPkBgCCztpwvttxfP7lI
+         TdLg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:in-reply-to
+         :content-transfer-encoding;
+        bh=hrYIwuaickwVIX9nv5A/yaHsS4Ix6DSVs2dpM8KjH4o=;
+        b=EdEZXwyLB/rc75dI3/1D0zNUtxaP649Q5Io4+u6z/TGNBLhuHjcq5N9iKjCaBzWwTj
+         9j0tBAG6VfODroSk0QP2B9yL9bX4584NMZhzv1UyzBPsNbTrPRfqx0TGQ31FN3wOvlwG
+         ZyDYC6nQjQJqqPTehTLT3kpng5Abmpd6c9lZCzDGvx8tMQWt/II9lwoHpdHYBzrm15ri
+         cZVF2A4uqQOVseZVrjLOFN6KXHfPWme83zF+9l7bSCj1DON7GwCQmqF8QvCb/K5HJCL8
+         aS/d3Z6t3WC7b1GWxjlu0vcieXrvLOxTcBMj/xHYA8aVKPj+5bw/1mY9v8lZBEael2iI
+         Gs4Q==
+X-Gm-Message-State: AOAM532pWFFjA+x5b+ZxKCZMyY9xzynJtbAhm9jHe2fl7KtKVgyFHxSa
+        4RQBU08R7bdcsHfqprB9CLI=
+X-Google-Smtp-Source: ABdhPJw+/HXa6QCL/PDO4vo2ym6gJYbrgnqVuNy8PJ3XD9TeQLKLdch4iVk9MaFPGCCXQAOhDsOWGw==
+X-Received: by 2002:a05:6512:aca:: with SMTP id n10mr8634445lfu.649.1636372686350;
+        Mon, 08 Nov 2021 03:58:06 -0800 (PST)
+Received: from [192.168.1.11] ([94.103.224.112])
+        by smtp.gmail.com with ESMTPSA id u12sm1148267lff.271.2021.11.08.03.58.05
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 08 Nov 2021 03:58:05 -0800 (PST)
+Message-ID: <9e3047a9-ad29-ab83-670b-4d28e6ec6dbf@gmail.com>
+Date:   Mon, 8 Nov 2021 14:58:04 +0300
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAMj1kXHEBc1XkTuHPXYV8rp5++HA9ruROUP-UApzEnVzvgFvTw@mail.gmail.com>
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.2.1
+Subject: Re: [PATCH] tty: vt: keyboard: do not copy an extra-byte in
+ copy_to_user
+Content-Language: en-US
+To:     Ajay Garg <ajaygargnsit@gmail.com>
+Cc:     Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Greg KH <gregkh@linuxfoundation.org>, jirislaby@kernel.org,
+        kernel@esmil.dk, David Laight <David.Laight@aculab.com>,
+        "linux-serial@vger.kernel.org" <linux-serial@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+References: <20211106092041.43745-1-ajaygargnsit@gmail.com>
+ <9eafae1f-d9f0-298d-cf20-212865d0becc@gmail.com>
+ <868025b485b94480ad17d0ec971b3ee9@AcuMS.aculab.com>
+ <CAHP4M8Ww0-VqCBKX=iLd=zy1AcDoNdzTOqJuaqRxCGZsMhoX9w@mail.gmail.com>
+ <CAHP4M8UcZ=ttB8jbN1yOY6YH8SiQ27NhdEKi9SDH1CWG-GY6eg@mail.gmail.com>
+ <6b58a3e1-f2ea-cc4c-03b2-06334b559373@gmail.com>
+ <CAHP4M8Vs8a8u98enuHXaBcC7D4fCZzCOtEq06VnvuPUqhqPK=Q@mail.gmail.com>
+ <9717b429-597f-7778-c880-94361bcdee7f@gmail.com>
+ <CAHP4M8XtFiAa1kF5A_rPbcui3DP8L6iyfP8GbwgLLzo0Bo+TNQ@mail.gmail.com>
+ <65c45951-08ba-26bb-f96b-3d4442b1d4d4@gmail.com>
+ <CAHP4M8X_D4WdK9TwQoeV=WTEGUyLCs1VV5qWbYbfWJyZ9+C_5w@mail.gmail.com>
+From:   Pavel Skripkin <paskripkin@gmail.com>
+In-Reply-To: <CAHP4M8X_D4WdK9TwQoeV=WTEGUyLCs1VV5qWbYbfWJyZ9+C_5w@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 08, 2021 at 12:29:04PM +0100, Ard Biesheuvel wrote:
-> On Mon, 8 Nov 2021 at 11:23, Peter Zijlstra <peterz@infradead.org> wrote:
-
-> > > +static void *strip_cfi_jt(void *addr)
-> > > +{
-> > > +     if (IS_ENABLED(CONFIG_CFI_CLANG)) {
-> > > +             void *p = addr;
-> > > +             u32 insn;
-> > > +
-> > > +             /*
-> > > +              * Taking the address of a function produces the address of the
-> > > +              * jump table entry when Clang CFI is enabled. Such entries are
-> > > +              * ordinary jump instructions, preceded by a BTI C instruction
-> > > +              * if BTI is enabled for the kernel.
-> > > +              */
-> > > +             if (IS_ENABLED(CONFIG_ARM64_BTI_KERNEL))
-> > > +                     p += 4;
-> >
-> > Perhaps:
-> >                 if (aarch64_insn_is_bti(le32_to_cpup(p)))
+On 11/8/21 11:59, Ajay Garg wrote:
+> Dropping all further discussions on this thread, as a RFC for a new
+> string-copy method has been posted at :
+> https://lore.kernel.org/linux-hardening/CAHP4M8U=0aTHgfREGJpSboV6J4X+E3Y6+H_kb-PvXxDKtV=n-g@mail.gmail.com/T/#t
 > 
-> That instruction does not exist yet, and it begs the question which
-> type of BTI instruction we want to detect.
-
-Yeah, I actually checked, but I figured the intent was clear enough. I
-figured all of them?
-
-> >                         p += 4;
-> >
-> > Perhapser still, add:
-> >                 else
-> >                         WARN_ON(IS_ENABLED(CONFIG_ARM64_BTI_KERNEL));
-> >
+> which, if accepted, will make the clients' lives a lot easier.
 > 
-> There's already a WARN() below that will trigger and return the
-> original address if the entry did not have the expected layout, which
-> means a direct branch at offset 0x0 or 0x4 depending on whether BTI is
-> on.
-> 
-> So I could add a WARN() here as well, but I'd prefer to keep the one
-> at the bottom, which makes the one here slightly redundant.
 
-Sure, that works. The slightly more paranoid me would tell you that the
-code as is might match something you didn't want it to.
+Honestly, I can't get what you are trying to achieve with new string 
+function.
 
-Eg. without the extra WARN, you could accidentally match a B instruction
-without BTI on a BTI kernel build. Or your initial version could even
-match:
+If caller knows, that there is no possible overflow, it can omit bounds 
+checking (like in vt_do_kdgkb_ioctl). If caller needs return value equal 
+to destination length it can use strscpy().
 
-	RET;
-	B ponies;
+There is a bunch of str*cpy() functions and every month I see new 
+conversations between them on ML. As Andy said it's really chaos. These 
+conversation are needed, of course, from security point of view, but 
+lib/string is already big. It contains functions for every possible 
+scenario, caller just needs to pick right one.
 
-on a BTI kernel.
+I might be too dumb in this topic, so it's just my IMHO, since I am on 
+CC list.
 
-My point being that since we're not exactly sure what a future compiler
-will generate for us here, we'd best be maximally paranoid about what
-we're willing to accept.
 
-> > > +
-> > > +             insn = le32_to_cpup(p);
-> > > +             if (aarch64_insn_is_b(insn))
-> > > +                     return p + aarch64_get_branch_offset(insn);
-> > > +
-> > > +             WARN_ON(1);
-> > > +     }
-> > > +     return addr;
-> > > +}
-> >
-> > Also, can this please have a comment decrying the lack of built-in for
-> > this?
-> 
-> Sure.
 
-Which ties in with that. Once it's a built-in, we can be sure the
-compiler knows what it needs to do to undo it's own magic.
+
+With regards,
+Pavel Skripkin
