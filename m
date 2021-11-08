@@ -2,152 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5025D4498AC
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Nov 2021 16:44:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7245C4498B2
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Nov 2021 16:45:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241065AbhKHPq6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Nov 2021 10:46:58 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124]:33449 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S241049AbhKHPq5 (ORCPT
+        id S237906AbhKHPsE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Nov 2021 10:48:04 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58618 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236600AbhKHPsD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Nov 2021 10:46:57 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1636386252;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=2RyU8qhSeZit5hKsiu2hQbRUAvUK+e+McPaAjHTnw30=;
-        b=HS6x5FyGQQVlFuQGME6P34WvESt32V2oisiWSOpoMV/PAyCf+0SqzxF9nTz0hteXflCb1c
-        mGXG9s4JQcm/Lf9krUchKvOOswr41RRqe/Mf9oPHrvikOZUV7y/AqI8Wkmw8bS+arxBM4T
-        EmjPUDugHiNcrflsXVgZ+8/T1J4VXqM=
-Received: from mail-ed1-f72.google.com (mail-ed1-f72.google.com
- [209.85.208.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-261-rPb3a4nrMBmhcshqHJLWtA-1; Mon, 08 Nov 2021 10:44:11 -0500
-X-MC-Unique: rPb3a4nrMBmhcshqHJLWtA-1
-Received: by mail-ed1-f72.google.com with SMTP id d11-20020a50cd4b000000b003da63711a8aso15156814edj.20
-        for <linux-kernel@vger.kernel.org>; Mon, 08 Nov 2021 07:44:10 -0800 (PST)
+        Mon, 8 Nov 2021 10:48:03 -0500
+Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3DE13C061570;
+        Mon,  8 Nov 2021 07:45:19 -0800 (PST)
+Received: by mail-pj1-x102d.google.com with SMTP id gx15-20020a17090b124f00b001a695f3734aso187644pjb.0;
+        Mon, 08 Nov 2021 07:45:19 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:content-transfer-encoding:mime-version:subject:message-id:date
+         :cc:to;
+        bh=47NOo4wKKqjtmAdvJNWlYtKk9khtXB3NAG7aQmF+Mqk=;
+        b=hawOeSsCxIoVcKyRuv1+I454mJBwAmPSIlhvo+eB0ZOvyZ6Qnn3Ts27AYcQdlzWUik
+         RxFCoZTb0gMf/v8vVt8bcOho0YgDr6OuzQfAHs63m9O6H7TBY7v1uDCC3eKz17hcWoxT
+         rLmQfeBps00V1bipHV4eLToHyp1jWjj5wGjcwun1pCPgOPdbb7U11FvuHgh7UrpB3xDz
+         6jvlF2w4d5DDOGnlABKd9P3LbMutUA+fe6RmQ6YFq+kiPEg2oKYuGGXDjrNUN1frfx08
+         ZC8QfaYlbHlQOy9yvPIGWdBmj/FYz5Twm4hSkStR9IVpPwx0EAT33pAlxNVmeRSUeQh1
+         rFtA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:in-reply-to
-         :content-transfer-encoding;
-        bh=2RyU8qhSeZit5hKsiu2hQbRUAvUK+e+McPaAjHTnw30=;
-        b=jG6975zYMduzXpjLF9zalJpBccjQgmycvnLoLpF67CdO324mEKPWAhiKmqPkLjoCyQ
-         cvnuOrS7DmVp3wNZOFG6vOKRZ1OR60EuoWvjegxhtnlW/ezya36b8OWPAdMhJPXFDrVJ
-         jZARW85TmkQ6uoNDzuCs0/HTfGqLfELWYjgn6nLGy1Vh4W2l2ouF5S9n3XjUE64SrbAx
-         7wUiL37MfOuhVmPGrBsBiudS5/Mk9nw4zgBTWwLLqZtb03ooxo3uNzC8ju15vSRa2s7e
-         KIoTGKSIHS2iZbz41/RjyqBWj76Qkio9WOIatZnS7Nt/I29T4p2DM76QV9ZNY0kLkrwm
-         7agw==
-X-Gm-Message-State: AOAM5306TJzuSrDYUBmImMzjxWuCzK17h5j3ydC18FMuDOCGq9g8g5dV
-        1BHbdTGlbDw1x3Os2VV5GfMOtoor5icTPRybTi68BORz20Ry6XUfMQDMUqejiPuTc4CbuH4MfeY
-        LWd/mofSiFBRkOE835EdOUALB
-X-Received: by 2002:a17:906:2c16:: with SMTP id e22mr215014ejh.501.1636386250057;
-        Mon, 08 Nov 2021 07:44:10 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJzlq0HQMHgB4Zj6dSwUyUqA2pyHOS5wXAZQanD1ylnLhmhVrP+t0k2sXvtMwqypw3DeXs0uyg==
-X-Received: by 2002:a17:906:2c16:: with SMTP id e22mr214996ejh.501.1636386249907;
-        Mon, 08 Nov 2021 07:44:09 -0800 (PST)
-Received: from [10.40.1.223] ([81.30.35.201])
-        by smtp.gmail.com with ESMTPSA id sd28sm9076804ejc.37.2021.11.08.07.44.09
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 08 Nov 2021 07:44:09 -0800 (PST)
-Message-ID: <0b27cd90-3174-01f5-359c-be0c2e094fc8@redhat.com>
-Date:   Mon, 8 Nov 2021 16:44:08 +0100
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.2.0
-Subject: Re: [PATCH 13/13] extcon: intel-cht-wc: Add support for devices with
- an USB-micro-B connector
-Content-Language: en-US
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc:     Mark Gross <markgross@kernel.org>,
-        Andy Shevchenko <andy@infradead.org>,
-        Wolfram Sang <wsa@the-dreams.de>,
-        Sebastian Reichel <sre@kernel.org>,
-        MyungJoo Ham <myungjoo.ham@samsung.com>,
-        Chanwoo Choi <cw00.choi@samsung.com>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Yauhen Kharuzhy <jekhor@gmail.com>,
-        Tsuchiya Yuto <kitakar@gmail.com>,
-        Platform Driver <platform-driver-x86@vger.kernel.org>,
-        linux-i2c <linux-i2c@vger.kernel.org>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-efi <linux-efi@vger.kernel.org>
-References: <20211030182813.116672-1-hdegoede@redhat.com>
- <20211030182813.116672-14-hdegoede@redhat.com>
- <CAHp75VfRALjbGaY8rdt5HCte3_NPuwpdkr+GNZV7qMWBK1idWg@mail.gmail.com>
-From:   Hans de Goede <hdegoede@redhat.com>
-In-Reply-To: <CAHp75VfRALjbGaY8rdt5HCte3_NPuwpdkr+GNZV7qMWBK1idWg@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+        h=x-gm-message-state:from:content-transfer-encoding:mime-version
+         :subject:message-id:date:cc:to;
+        bh=47NOo4wKKqjtmAdvJNWlYtKk9khtXB3NAG7aQmF+Mqk=;
+        b=KvaUNimHh2YmnVXecbEg0ndpZ7otF8hY3E+QLZUqntx7j1WfoMhvrO+bqMc+VthoRB
+         t+lmuJNXl/94C6VdOf10JicXujZuQvDDtooa6mSkBUN88ET7s2LHDvq0crZzlo+JBkQc
+         59MbxwLVROAQPU1MamVzUkfgXWLUSRd125uPsraXmn3bhUjWox6ObY5EjAlXSAH7D816
+         7eC9yGy0RbOR/hcAeRfy3E6MS+5kHPNr6emnqyKrmwRwNSc7LQVX3j5SrrJ6q2ttuLbK
+         uGDrFNpnvn26+KvPTPJJyGI5dmNfpkSlTVfqJVaOFfaPMhw1AbIKJXHMzT8HAJA2tNwB
+         bp2w==
+X-Gm-Message-State: AOAM5333tcMTvhDLLHRFiPNxmWhGlw92081io+xVxbyQR0gD7dqUMcak
+        L5w1AylUjM0PBxilaFIoemYo69UlnqCCCA==
+X-Google-Smtp-Source: ABdhPJzG/N7eva+wJpQXudV0HA32aZoNw1VhacJD2w5DrE7i+8FhfO+Rjwhs/wlnr+1LW9i+StDJGQ==
+X-Received: by 2002:a17:90b:1b03:: with SMTP id nu3mr45321100pjb.240.1636386318750;
+        Mon, 08 Nov 2021 07:45:18 -0800 (PST)
+Received: from smtpclient.apple (pdf876064.tokynt01.ap.so-net.ne.jp. [223.135.96.100])
+        by smtp.gmail.com with ESMTPSA id n14sm12785227pgd.68.2021.11.08.07.44.27
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Mon, 08 Nov 2021 07:44:45 -0800 (PST)
+From:   kaz1020 <kaz1020@gmail.com>
+Content-Type: text/plain;
+        charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+Mime-Version: 1.0 (Mac OS X Mail 15.0 \(3693.20.0.1.32\))
+Subject: Re: [PATCH] udp: fix integer overflow while computing available space
+ in sk_rcvbuf
+Message-Id: <D4E91882-A53B-44CC-9741-14B19B863C9F@gmail.com>
+Date:   Tue, 9 Nov 2021 00:44:14 +0900
+Cc:     linux-kernel@vger.kernel.org, davem@davemloft.net,
+        kuznet@ms2.inr.ac.ru, yoshfuji@linux-ipv6.org,
+        netdev@vger.kernel.org
+To:     Antonio Messina <amessina@google.com>
+X-Mailer: Apple Mail (2.3693.20.0.1.32)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+Antonio Messina at Google,
+Linux Kernel maintainers,
 
-On 10/31/21 13:52, Andy Shevchenko wrote:
-> On Sat, Oct 30, 2021 at 9:29 PM Hans de Goede <hdegoede@redhat.com> wrote:
->>
->> So far the extcon-intel-cht-wc code has only been tested on devices with
->> a Type-C connector with USB-PD, USB3 (superspeed) and DP-altmode support
->> through a FUSB302 Type-C controller.
->>
->> Some devices with the intel-cht-wc PMIC however come with an USB-micro-B
->> connector, or an USB-2 only Type-C connector without USB-PD.
->>
->> These device are identified by "intel,cht-wc-setup" = "bq25890,bq27520",
->> since there is no Type-C controller on these devices the extcon code must
->> control the Vbus 5V boost converter and the USB role switch depending on
->> the detected cable-type.
-> 
-> ...
-> 
->> +       if (ext->vbus_boost && ext->vbus_boost_enabled != enable) {
->> +               if (enable)
->> +                       ret = regulator_enable(ext->vbus_boost);
->> +               else
->> +                       ret = regulator_disable(ext->vbus_boost);
-> 
->> +               if (ret == 0)
->> +                       ext->vbus_boost_enabled = enable;
->> +               else
->> +                       dev_err(ext->dev, "Error updating Vbus boost regulator: %d\n", ret);
-> 
-> if (ret)
->  dev_err()
-> else
->  ...
-> 
-> ?
+I read the following fraud Google Blog.
+=
+https://cloud.google.com/blog/topics/inside-google-cloud/google-cloud-supp=
+ort-engineer-solves-a-tough-dns-case
 
-When doing if-else branches around an error code I always put the success
-handling in the if branch and have the else branch deal with the error
-to me that feels as the most natural way to do it the error is the exception
-and thus the "else"
+I require Antonio Messina the fulfillment of obligations.
+Antonio Messina accepted the following requests on June 27, 2020.
 
-> 
->> +       }
-> 
-> ...
-> 
-> 
->> +               /*
->> +                * Classic micro USB-B setup, this requires controling
-> 
-> controlling
+I requested Antonio Messina to correct his mistakes.
+- Rewrite the article on fraud Google Blog
+- Send the new patch I proposed
 
-Fixed for the next version.
+Past, I explained the following result to Antonio Messina and Google.
 
-Thanks & Regards,
+Abstract:
+The =E2=80=9Csize" variable of the following line will be removed.
+Line: https://github.com/torvalds/linux/blob/v5.4/net/ipv4/udp.c#L1478
 
-Hans
+Because comparing "to be allocated buffer size" and "Max buffer size" + =
+"size."
+Antonio Messina's mistake: if (rmem > (unsigned int)(size + =
+sk->sk_rcvbuf))
+The fix I propose: if (rmem > sk->sk_rcvbuf)
+=20
+Details:
+In the function __udp_enqueue_schedule_skb.
+- rmem: Same as sk->sk_rmem_alloc.
+  -- It means allocated or to be allocated buffer size.
+- sk->sk_rcvbuf: Max buffer size(purpose to limit the buffer size).
+- size: Same as skb->truesize.
+  -- It means a packet size.
 
+The original problem is committed by:=20
+=
+https://github.com/torvalds/linux/commit/363dc73acacbbcdae98acf5612303e977=
+0e04b1d
+In addition, the condition sentence has been corrupted before this =
+commit.
 
-> 
->> +                * the role-sw and vbus based on the id-pin.
->> +                */
-> 
+Antonio Messina sent a poor patch:=20
+https://lkml.org/lkml/2019/12/19/482
+
+--=20
+Fix it,
+kaz1020
 
