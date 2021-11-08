@@ -2,133 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 70FB4448005
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Nov 2021 14:04:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 27BCE44800A
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Nov 2021 14:08:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239818AbhKHNHG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Nov 2021 08:07:06 -0500
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:22906 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230303AbhKHNHF (ORCPT
+        id S235826AbhKHNLU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Nov 2021 08:11:20 -0500
+Received: from smtp-relay-internal-0.canonical.com ([185.125.188.122]:60724
+        "EHLO smtp-relay-internal-0.canonical.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S236570AbhKHNLT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Nov 2021 08:07:05 -0500
-Received: from pps.filterd (m0098410.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 1A8CPN9N030905;
-        Mon, 8 Nov 2021 13:04:21 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=Hu+ICPyBLxkbxk8Tolcb6Qhnpy/0ub7sUQIUYdELyrU=;
- b=BH9b11y6rApvTPpfEMWhXzesYGqRkkiYcXnoBvFL8dKtOyMMcABt/Fxt1dkTpuI/8D6N
- dse/ErypIqDxj39DXvk/SHqegBh8aJm2b8EKNL3CrIlqmFMNRL36RAkF+Hm3jBFACzRQ
- TaiWk7vdzbwXB3o9szvVElwsHAmpU3HqHa901B7+fQvuCG34m14BDxDr/MFT+UogOP8M
- ce6r83LYs2vvGAn0r9K1ROVogJFgdwLO4yDO4dyopBHRfMOb3mvGdtXMPS/WioLADc3w
- Z1WExo5RTvpzT1+GuaGV59uz0v53yFeJY4Y2kQL9xH0wdprt1lBPoaD/Cgtn/Y6FSuw8 mQ== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3c6a94cnyh-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 08 Nov 2021 13:04:20 +0000
-Received: from m0098410.ppops.net (m0098410.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 1A8Ag0hU004710;
-        Mon, 8 Nov 2021 13:04:19 GMT
-Received: from ppma04ams.nl.ibm.com (63.31.33a9.ip4.static.sl-reverse.com [169.51.49.99])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3c6a94cnxe-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 08 Nov 2021 13:04:19 +0000
-Received: from pps.filterd (ppma04ams.nl.ibm.com [127.0.0.1])
-        by ppma04ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 1A8D3j8F011939;
-        Mon, 8 Nov 2021 13:04:17 GMT
-Received: from b06avi18878370.portsmouth.uk.ibm.com (b06avi18878370.portsmouth.uk.ibm.com [9.149.26.194])
-        by ppma04ams.nl.ibm.com with ESMTP id 3c5hb9x81g-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 08 Nov 2021 13:04:17 +0000
-Received: from d06av21.portsmouth.uk.ibm.com (d06av21.portsmouth.uk.ibm.com [9.149.105.232])
-        by b06avi18878370.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 1A8CvahE56361292
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 8 Nov 2021 12:57:36 GMT
-Received: from d06av21.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id AE94752063;
-        Mon,  8 Nov 2021 13:04:13 +0000 (GMT)
-Received: from [9.145.83.128] (unknown [9.145.83.128])
-        by d06av21.portsmouth.uk.ibm.com (Postfix) with ESMTP id 16DF45205F;
-        Mon,  8 Nov 2021 13:04:13 +0000 (GMT)
-Message-ID: <446e3ace-16e6-0cc4-874f-7a5caa46d3c1@linux.ibm.com>
-Date:   Mon, 8 Nov 2021 14:04:12 +0100
+        Mon, 8 Nov 2021 08:11:19 -0500
+Received: from mail-lj1-f197.google.com (mail-lj1-f197.google.com [209.85.208.197])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-relay-internal-0.canonical.com (Postfix) with ESMTPS id 7D0D840020
+        for <linux-kernel@vger.kernel.org>; Mon,  8 Nov 2021 13:08:27 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1636376907;
+        bh=/ySngP9TOMBOgvGkesTjnWFyMrTzkSO4ZS4YMXYfRzE=;
+        h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+         In-Reply-To:Content-Type;
+        b=PLut7+oBVWX7CFMYanxq4SIVrK9D8kOKV5ibRsqKIcsrgKfQqfkVQoPlLRvoECt8A
+         TcoU49MF67F+w503HssJcJOTh510zVXriQnL80LIkji6fjNYmMNJW1yOty3GLgF2QY
+         2hrY4yc/JxUqZXnyHbNZx51KA8xBpsp2Gb06vVgDYDERSJwCg+GjlUZ20sXWvOonKF
+         +HkLcvdavDq/INy9du4sqq2R3RP9wOA9krf/wQ0ABn4s7fdcqa/JvjbXGi2KjGdAqG
+         beBxlGZqPRLK/dTF83dtzwAKPEfefsqEzynmf2RB7H9m8ky6xq+90C40L2p0Shif/i
+         CO7mLKnrH+L5Q==
+Received: by mail-lj1-f197.google.com with SMTP id f6-20020a2e9e86000000b00211349f9ce3so5225299ljk.3
+        for <linux-kernel@vger.kernel.org>; Mon, 08 Nov 2021 05:08:27 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:in-reply-to
+         :content-transfer-encoding;
+        bh=/ySngP9TOMBOgvGkesTjnWFyMrTzkSO4ZS4YMXYfRzE=;
+        b=iWsyPSePsS8sREJlPYFdCYUxrFeYLUQO5bzdKt19P/TzlXMoRe32CfC74ePSmSRSmx
+         ugUIc2N1yNC3duEg5wEFAODg+jrHRiWXgCDE2WKb/mfmy6ILXFNY3oAJ24JO3ceXiXqq
+         WzvKvzW1JFcGoucZ8nwk2trXo7wFQP0Mblz15O2W9zYop/nuXJt/6bUh5/WmDkctSwM8
+         e0d0nz/l4s+rCztScXJV5IJOjamJ+InHle2IlIojmQfxo0ANc18Vl2OH95ESMY5cYzxw
+         TdJFO5UwiiQp29VArwsezU2C6kaCl3smzzdvGq8UP6MrpaWFg7wbxHJuVbV+tdFTXclq
+         LPqg==
+X-Gm-Message-State: AOAM530QQAMLPyWtZ1rWCgRQQ0qWYyPoUpr92H5aq1FsKJ0mqrr6WiaH
+        xM7xfoMr7U+SOWgOegB2l707s6krDg/noCS8HxNcrZz0vLiDh7e0ZtXTEdS9IXG08TPQpyQax2E
+        sCn8V2VWnh0Yd7PIkjbHzqbBGRGYhoop4/XfY3MDGkg==
+X-Received: by 2002:a19:7902:: with SMTP id u2mr51154106lfc.644.1636376906516;
+        Mon, 08 Nov 2021 05:08:26 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJwHuzpnBktBqI6ilkx+6XnxlpOfg0UhbRIfSUF/hD5lAIIYjIFaiyVDsreV9FymtsbnDRMVoQ==
+X-Received: by 2002:a19:7902:: with SMTP id u2mr51154085lfc.644.1636376906335;
+        Mon, 08 Nov 2021 05:08:26 -0800 (PST)
+Received: from [192.168.3.67] (89-77-68-124.dynamic.chello.pl. [89.77.68.124])
+        by smtp.gmail.com with ESMTPSA id s4sm2011138lfi.180.2021.11.08.05.08.25
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 08 Nov 2021 05:08:25 -0800 (PST)
+Message-ID: <806de5b0-a7ab-9d87-589e-9fc5e6f5a400@canonical.com>
+Date:   Mon, 8 Nov 2021 14:08:24 +0100
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.1.0
-Subject: Re: [PATCH] KVM: s390x: add debug statement for diag 318 CPNC data
+ Thunderbird/91.2.1
+Subject: Re: [PATCH v3 02/12] dt-bindings: watchdog: Document Exynos850
+ watchdog bindings
 Content-Language: en-US
-To:     Christian Borntraeger <borntraeger@de.ibm.com>,
-        Collin Walling <walling@linux.ibm.com>,
-        linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kvm@vger.kernel.org
-Cc:     david@redhat.com, imbrenda@linux.ibm.com
-References: <20211027025451.290124-1-walling@linux.ibm.com>
- <4488b572-11bf-72ff-86c0-395dfc7b3f71@linux.ibm.com>
- <28d90d6f-b481-3588-cd33-39624710b7bd@de.ibm.com>
- <7e785ecc-1ddb-9357-e961-4498d1bf59fd@linux.ibm.com>
- <6c88b81b-85d5-b997-9b69-02f7d05a54c3@de.ibm.com>
-From:   Janosch Frank <frankja@linux.ibm.com>
-In-Reply-To: <6c88b81b-85d5-b997-9b69-02f7d05a54c3@de.ibm.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: base64
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: l2oVTfnGHMtXom1PFrAZho_7SSYv0Esm
-X-Proofpoint-GUID: pps4uNWiL80d0zkj7A10jEmjF1jq6KYb
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.205,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.0.607.475
- definitions=2021-11-08_04,2021-11-08_01,2020-04-07_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0
- suspectscore=0 adultscore=0 clxscore=1015 mlxscore=0 lowpriorityscore=0
- bulkscore=0 priorityscore=1501 spamscore=0 mlxlogscore=999 malwarescore=0
- phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2110150000 definitions=main-2111080079
+To:     Sam Protsenko <semen.protsenko@linaro.org>,
+        Wim Van Sebroeck <wim@linux-watchdog.org>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Rob Herring <robh+dt@kernel.org>
+Cc:     linux-watchdog@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-samsung-soc@vger.kernel.org
+References: <20211107202943.8859-1-semen.protsenko@linaro.org>
+ <20211107202943.8859-3-semen.protsenko@linaro.org>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+In-Reply-To: <20211107202943.8859-3-semen.protsenko@linaro.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-T24gMTEvOC8yMSAxMzo1MCwgQ2hyaXN0aWFuIEJvcm50cmFlZ2VyIHdyb3RlOg0KPiANCj4g
-DQo+IEFtIDA4LjExLjIxIHVtIDEzOjQ4IHNjaHJpZWIgSmFub3NjaCBGcmFuazoNCj4+IE9u
-IDExLzgvMjEgMTM6MDQsIENocmlzdGlhbiBCb3JudHJhZWdlciB3cm90ZToNCj4+Pg0KPj4+
-DQo+Pj4gQW0gMDguMTEuMjEgdW0gMTI6MTIgc2NocmllYiBKYW5vc2NoIEZyYW5rOg0KPj4+
-PiBPbiAxMC8yNy8yMSAwNDo1NCwgQ29sbGluIFdhbGxpbmcgd3JvdGU6DQo+Pj4+PiBUaGUg
-ZGlhZyAzMTggZGF0YSBjb250YWlucyB2YWx1ZXMgdGhhdCBkZW5vdGUgaW5mb3JtYXRpb24g
-cmVnYXJkaW5nIHRoZQ0KPj4+Pj4gZ3Vlc3QncyBlbnZpcm9ubWVudC4gQ3VycmVudGx5LCBp
-dCBpcyB1bmVjZXNzYXJpbHkgZGlmZmljdWx0IHRvIG9ic2VydmUNCj4+Pj4+IHRoaXMgdmFs
-dWUgKGVpdGhlciBtYW51YWxseS1pbnNlcnRlZCBkZWJ1ZyBzdGF0ZW1lbnRzLCBnZGIgc3Rl
-cHBpbmcsIG1lbQ0KPj4+Pj4gZHVtcGluZyBldGMpLiBJdCdzIHVzZWZ1bCB0byBvYnNlcnZl
-IHRoaXMgaW5mb3JtYXRpb24gdG8gb2J0YWluIGFuDQo+Pj4+PiBhdC1hLWdsYW5jZSB2aWV3
-IG9mIHRoZSBndWVzdCdzIGVudmlyb25tZW50LCBzbyBsZXRzIGFkZCBhIHNpbXBsZSBWQ1BV
-DQo+Pj4+PiBldmVudCB0aGF0IHByaW50cyB0aGUgQ1BOQyB0byB0aGUgczM5MGRiZiBsb2dz
-Lg0KPj4+Pj4NCj4+Pj4+IFNpZ25lZC1vZmYtYnk6IENvbGxpbiBXYWxsaW5nIDx3YWxsaW5n
-QGxpbnV4LmlibS5jb20+DQo+Pj4+PiAtLS0NCj4+Pj4+ICDCoMKgIGFyY2gvczM5MC9rdm0v
-a3ZtLXMzOTAuYyB8IDEgKw0KPj4+Pj4gIMKgwqAgMSBmaWxlIGNoYW5nZWQsIDEgaW5zZXJ0
-aW9uKCspDQo+Pj4+Pg0KPj4+Pj4gZGlmZiAtLWdpdCBhL2FyY2gvczM5MC9rdm0va3ZtLXMz
-OTAuYyBiL2FyY2gvczM5MC9rdm0va3ZtLXMzOTAuYw0KPj4+Pj4gaW5kZXggNmE2ZGQ1ZTFk
-YWY2Li5kYTNmZjI0ZWFiZDAgMTAwNjQ0DQo+Pj4+PiAtLS0gYS9hcmNoL3MzOTAva3ZtL2t2
-bS1zMzkwLmMNCj4+Pj4+ICsrKyBiL2FyY2gvczM5MC9rdm0va3ZtLXMzOTAuYw0KPj4+Pj4g
-QEAgLTQyNTQsNiArNDI1NCw3IEBAIHN0YXRpYyB2b2lkIHN5bmNfcmVnc19mbXQyKHN0cnVj
-dCBrdm1fdmNwdSAqdmNwdSkNCj4+Pj4+ICDCoMKgwqDCoMKgwqAgaWYgKGt2bV9ydW4tPmt2
-bV9kaXJ0eV9yZWdzICYgS1ZNX1NZTkNfRElBRzMxOCkgew0KPj4+Pj4gIMKgwqDCoMKgwqDC
-oMKgwqDCoMKgIHZjcHUtPmFyY2guZGlhZzMxOF9pbmZvLnZhbCA9IGt2bV9ydW4tPnMucmVn
-cy5kaWFnMzE4Ow0KPj4+Pj4gIMKgwqDCoMKgwqDCoMKgwqDCoMKgIHZjcHUtPmFyY2guc2ll
-X2Jsb2NrLT5jcG5jID0gdmNwdS0+YXJjaC5kaWFnMzE4X2luZm8uY3BuYzsNCj4+Pj4+ICvC
-oMKgwqDCoMKgwqDCoCBWQ1BVX0VWRU5UKHZjcHUsIDIsICJzZXR0aW5nIGNwbmMgdG8gJWQi
-LCB2Y3B1LT5hcmNoLmRpYWczMThfaW5mby5jcG5jKTsNCj4+Pj4+ICDCoMKgwqDCoMKgwqAg
-fQ0KPj4+Pj4gIMKgwqDCoMKgwqDCoCAvKg0KPj4+Pj4gIMKgwqDCoMKgwqDCoMKgICogSWYg
-dXNlcnNwYWNlIHNldHMgdGhlIHJpY2NiIChlLmcuIGFmdGVyIG1pZ3JhdGlvbikgdG8gYSB2
-YWxpZCBzdGF0ZSwNCj4+Pj4+DQo+Pj4+DQo+Pj4+IFdvbid0IHRoYXQgdHVybiB1cCBmb3Ig
-ZXZlcnkgdmNwdSBhbmQgc3BhbSB0aGUgbG9nPw0KPj4+DQo+Pj4gb25seSBpZiB0aGUgdXNl
-cnNwYWNlIGFsd2F5cyBzZXRzIHRoZSBkaXJ0eSBiaXQgKHdoaWNoIGl0IHNob3VsZCBub3Qp
-Lg0KPj4+DQo+Pg0KPj4gQnV0IHRoYXQncyBleGFjdGx5IHdoYXQgaXQgZG9lcywgbm8/DQo+
-PiBXZSBkbyBhIGxvb3Agb3ZlciBhbGwgdmNwdXMgYW5kIGNhbGwga3ZtX3MzOTBfc2V0X2Rp
-YWczMTgoKSB3aGljaCBzZXRzIHRoZSBpbmZvIGluIGt2bV9ydW4gYW5kIHNldHMgdGhlIGRp
-YWczMTggYml0IGluIHRoZSBrdm1fZGlydHlfcmVncy4NCj4gDQo+IFllcywgT05DRSBwZXIg
-Q1BVLiBBbmQgdGhpcyBpcyBleGFjdGx5IHdoYXQgSSB3YW50IHRvIHNlZS4gKGFuZCBpdCBk
-aWQgc2hvdyBhIGJ1ZyBpbiBxZW11IHRoYXQgd2Ugb25seSBzZXQgaXQgZm9yIG9uZSBjcHUg
-dG8gdGhlIGNvcnJlY3QgdmFsdWUpLg0KDQpPay4NCkkgZGlkbid0IHJlYWxseSB3YW50IHRv
-IGhhdmUgbiBlbnRyaWVzIGluIHRoZSBsb2cgaGVuY2UgSSBhc2tlZC4NCg0KMzE4IGlzIGEg
-Yml0IHdlaXJkIGFzIGl0J3MgYSBwZXIgVk0gdmFsdWUgd2UgbmVlZCB0byBwdXQgaW50byBh
-bGwgc2llIA0KYmxvY2tzLg0KDQo+IA0KPj4NCj4+IEBDb2xsaW46IENvdWxkIHlvdSBjaGVj
-ayB0aGF0IHBsZWFzZT8NCg0K
+On 07/11/2021 21:29, Sam Protsenko wrote:
+> Exynos850 SoC has two CPU clusters:
+>   - cluster 0: contains CPUs #0, #1, #2, #3
+>   - cluster 1: contains CPUs #4, #5, #6, #7
+> 
+> Each cluster has its own dedicated watchdog timer. Those WDT instances
+> are controlled using different bits in PMU registers, new
+> "samsung,index" property is added to tell the driver which bits to use
+> for defined watchdog node.
+> 
+> Also on Exynos850 the peripheral clock and the source clock are two
+> different clocks. Provide a way to specify two clocks in watchdog device
+> tree node.
+> 
+> Signed-off-by: Sam Protsenko <semen.protsenko@linaro.org>
+> ---
+> Changes in v3:
+>   - Renamed "samsung,index" property to more descriptive
+>     "samsung,cluster-index"
+>   - Disabled "samsung,cluster-index" property for SoCs other than
+>     Exynos850
+> 
+> Changes in v2:
+>   - Stated explicitly that Exynos850 driver requires 2 clocks
+>   - Used single compatible for Exynos850
+>   - Added "index" property to specify CPU cluster index
+>   - Fixed a typo in commit message: dedicater -> dedicated
+> 
+>  .../bindings/watchdog/samsung-wdt.yaml        | 45 +++++++++++++++++--
+>  1 file changed, 41 insertions(+), 4 deletions(-)
+> 
+
+
+Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+
+
+Best regards,
+Krzysztof
