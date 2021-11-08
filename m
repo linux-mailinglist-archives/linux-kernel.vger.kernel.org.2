@@ -2,100 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4E9DD447BDB
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Nov 2021 09:32:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 61955447BDF
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Nov 2021 09:33:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238025AbhKHIe7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Nov 2021 03:34:59 -0500
-Received: from www381.your-server.de ([78.46.137.84]:42296 "EHLO
-        www381.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238010AbhKHIez (ORCPT
+        id S238024AbhKHIf6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Nov 2021 03:35:58 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44208 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237001AbhKHIfz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Nov 2021 03:34:55 -0500
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=metafoo.de;
-         s=default2002; h=Content-Transfer-Encoding:Content-Type:In-Reply-To:
-        MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender:Reply-To:
-        Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
-        Resent-To:Resent-Cc:Resent-Message-ID;
-        bh=BzocYnUMMEozi8YsW82kpJmT0XBjWfio9qwDPLpIMd4=; b=K7nfvqBxe49uSaXbp4WcIctixT
-        OUJJmjxwh95mwPo6hb6gBA8f5LHJPmeO86FIG2QAXa7msSmJzggfWz5KjTcHWgMyj/CmkWtwix7pg
-        yeIKwsApAknVAH88gXU1SUUmaaRQXw+0bcT4JJqOzCqM9ADoypcqN2DkPDPRoAYmNHpghc6qmhdpQ
-        CiOyyOL+PW09IE+StSYc/8MzxJ/McOwjEEhwxUk2+g4/rO/k56UrHmC8aPFPz4f3zOyDCvUmPWZhR
-        T7IkLtDRMFxK6lDfX0Yd98EMuOLknT5cZ9ygUecgpwgWsMTfYxoegUX55i1yP9poF5K9Zl63Wwh/0
-        subxwyvg==;
-Received: from sslproxy03.your-server.de ([88.198.220.132])
-        by www381.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92.3)
-        (envelope-from <lars@metafoo.de>)
-        id 1mk04X-0002Gn-7h; Mon, 08 Nov 2021 09:32:09 +0100
-Received: from [82.135.83.112] (helo=[192.168.178.20])
-        by sslproxy03.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <lars@metafoo.de>)
-        id 1mk04W-000LUa-Vo; Mon, 08 Nov 2021 09:32:08 +0100
-Subject: Re: [PATCH v5 1/2] dt-bindings: iio: dac: Add adi,ad3552r.yaml
-To:     "Chindris, Mihail" <Mihail.Chindris@analog.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-iio@vger.kernel.org" <linux-iio@vger.kernel.org>,
-        "robh+dt@kernel.org" <robh+dt@kernel.org>,
-        "broonie@kernel.org" <broonie@kernel.org>
-Cc:     "Hennerich, Michael" <Michael.Hennerich@analog.com>,
-        "jic23@kernel.org" <jic23@kernel.org>,
-        "Sa, Nuno" <Nuno.Sa@analog.com>,
-        "Bogdan, Dragos" <Dragos.Bogdan@analog.com>
-References: <20211108082447.116663-1-mihail.chindris@analog.com>
- <20211108082447.116663-2-mihail.chindris@analog.com>
- <SN4PR03MB679988CBFA34DF338C85549699919@SN4PR03MB6799.namprd03.prod.outlook.com>
-From:   Lars-Peter Clausen <lars@metafoo.de>
-Message-ID: <d8fa67fd-5954-efb0-b57c-0f9356f1fe1f@metafoo.de>
-Date:   Mon, 8 Nov 2021 09:32:08 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.14.0
+        Mon, 8 Nov 2021 03:35:55 -0500
+Received: from mail-ua1-x92d.google.com (mail-ua1-x92d.google.com [IPv6:2607:f8b0:4864:20::92d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 67DD7C061570
+        for <linux-kernel@vger.kernel.org>; Mon,  8 Nov 2021 00:33:11 -0800 (PST)
+Received: by mail-ua1-x92d.google.com with SMTP id s13so14374075uaj.11
+        for <linux-kernel@vger.kernel.org>; Mon, 08 Nov 2021 00:33:11 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=eXgMKC9k7dVBPc7GXJ0i9A3v0PLbEQVurYRUswXeJ14=;
+        b=GMUrD9cF4ys0Ne5QeiY1boHEUmgLrJKogjRUJYv+JOiOlCLwsHPpus6RLIpS1aTKEc
+         b9ZmfolezMysdzYltsRvw38VDRkFvWSASXeRyimw2zzvCQX6337hJfcOxyKjscOpct5F
+         NZItoB+PrucYaFhbhqzaHmjIndbDJdCCLj4j4=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=eXgMKC9k7dVBPc7GXJ0i9A3v0PLbEQVurYRUswXeJ14=;
+        b=m7kLev5hI2qAnSY+JFhdEZh4OhblTs8OpyNbqmV2q+tVSPSDFeqYV2E3uXh/KbEZeQ
+         /bYHuCleLMXXBoiNnevWe+LYX2AuCStD57LOgX9Cpqc3xeRqhCxgm/iMzVjcaK0slQFe
+         7nLk6XAMw1QLFD0kwmw98cexV0LsZPZiwhtgr0rP6kYp8/Vv8tjdf9Ry/h2kR1Dnq3UV
+         USODOiQizXtvKXmzAAQu3GHfaOg4iimEDUWSxqFlhSQab4Rqu7MYn0/hWxTeKxJpenou
+         +jRdJAD5ZmI9cXv78fS9Y0QbTQIT3TLiFPkuPp6ha02ttpYOzCIoLtx14YJGfLtYoI/M
+         2KuA==
+X-Gm-Message-State: AOAM530C0AWSeWUY7K9/pWKtxURK8QYhYy9XHxL2d3b+By7S+MSpRZlv
+        W9BmUko8MnrZWhIIIxMK//2plElLy9iOfmzPoXXaig==
+X-Google-Smtp-Source: ABdhPJxwvn1gZ+jImt6Emh1mXxnrYYIBQQzRFhinEsRuVwhdIgr19u7Y2YDFSD1M4Tpw0lPsAeAjgdJjgrfOjizmG1U=
+X-Received: by 2002:a67:ae47:: with SMTP id u7mr101092748vsh.7.1636360390609;
+ Mon, 08 Nov 2021 00:33:10 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <SN4PR03MB679988CBFA34DF338C85549699919@SN4PR03MB6799.namprd03.prod.outlook.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-Authenticated-Sender: lars@metafoo.de
-X-Virus-Scanned: Clear (ClamAV 0.103.3/26346/Sun Nov  7 09:21:25 2021)
+References: <20211104112329.8446-1-zhiyong.tao@mediatek.com> <20211104112329.8446-2-zhiyong.tao@mediatek.com>
+In-Reply-To: <20211104112329.8446-2-zhiyong.tao@mediatek.com>
+From:   Chen-Yu Tsai <wenst@chromium.org>
+Date:   Mon, 8 Nov 2021 16:32:59 +0800
+Message-ID: <CAGXv+5EWCkcC51nNF4k1FgEsVhuiQADCiOcdSLtU9yMb-8Q0GA@mail.gmail.com>
+Subject: Re: [PATCH v1] pinctrl: mediatek: fix global-out-of-bounds issue
+To:     Zhiyong Tao <zhiyong.tao@mediatek.com>
+Cc:     robh+dt@kernel.org, linus.walleij@linaro.org, mark.rutland@arm.com,
+        matthias.bgg@gmail.com, sean.wang@kernel.org,
+        srv_heupstream@mediatek.com, hui.liu@mediatek.com,
+        light.hsieh@mediatek.com, sean.wang@mediatek.com,
+        seiya.wang@mediatek.com, rex-bc.chen@mediatek.com,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, linux-gpio@vger.kernel.org,
+        Guodong Liu <guodong.liu@mediatek.corp-partner.google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/8/21 9:29 AM, Chindris, Mihail wrote:
-> ...
->> +patternProperties:
->> +  "^channel@([0-1])$":
->> +    type: object
->> +    description: Configurations of the DAC Channels
->> +    properties:
->> +      reg:
->> +          description: Channel number
->> +          enum: [0, 1]
->> +
->> +      custom-output-range-config:
-> Copy unanswered comment from V3
+On Thu, Nov 4, 2021 at 7:24 PM Zhiyong Tao <zhiyong.tao@mediatek.com> wrote:
+
+This should be tagged as v2. Your first submission, not tagged with any
+version or RFC/RFT, is v1.
+
+> When eint virtual eint number is greater than gpio number,
+> it maybe produce 'desc[eint_n]' size globle-out-of-bounds issue.
 >
->>>> Not a generic property so I think this needs an adi prefix.
->>>> Jonathan
->>> I tried with adi prefix but I get weird errors while running dt_binding_check for properties with adi prefix and with type:object
->>> Do you have any suggestion for this issues?
->>>
->>> Mihail
->>>
-> @Rob
-> Jonathan
+> Signed-off-by: Zhiyong Tao <zhiyong.tao@mediatek.com>
+> Signed-off-by: Guodong Liu <guodong.liu@mediatek.corp-partner.google.com>
 
-I had the same problem with the bindings for the xadc driver: 
-https://www.spinics.net/lists/devicetree/msg382081.html
+Guodong's Signed-off-by here is confusing, as they are not the author nor
+the submitter, and as far as the mailing list is concerned they have not
+handled this patch either.
+
+Looks like the original patch is from https://crrev.com/c/3233623 ?
+
+It's customary to preserve the authorship and append your Signed-off-by
+when submitting patches written by others.
+
+> ---
+>  drivers/pinctrl/mediatek/pinctrl-mtk-common-v2.c | 8 ++++++--
+>  1 file changed, 6 insertions(+), 2 deletions(-)
+>
+> diff --git a/drivers/pinctrl/mediatek/pinctrl-mtk-common-v2.c b/drivers/pinctrl/mediatek/pinctrl-mtk-common-v2.c
+> index 45ebdeba985a..12163d3c4bcb 100644
+> --- a/drivers/pinctrl/mediatek/pinctrl-mtk-common-v2.c
+> +++ b/drivers/pinctrl/mediatek/pinctrl-mtk-common-v2.c
+> @@ -285,8 +285,12 @@ static int mtk_xt_get_gpio_n(void *data, unsigned long eint_n,
+>         desc = (const struct mtk_pin_desc *)hw->soc->pins;
+>         *gpio_chip = &hw->chip;
+>
+> -       /* Be greedy to guess first gpio_n is equal to eint_n */
+> -       if (desc[eint_n].eint.eint_n == eint_n)
+> +       /*
+> +        * Be greedy to guess first gpio_n is equal to eint_n.
+> +        * Only eint virtual eint number is greater than gpio number.
+> +        */
+> +       if (hw->soc->npins > eint_n &&
+
+Nit: I believe it's more common to have the variable on the left, and the
+invariable on the right, but maybe it's just me:
+
+    if (eint_n < hw->soc->npins && ...
+
+Either way is OK I guess.
 
 
->> +        type: object
->> +        description: Configuration of custom range when
->> +          adi,output-range-microvolt is not present.
->> +          The formulas for calculation the output voltages are
->> +            Vout_fs = 2.5 + [(GainN + Offset/1024) * 2.5 * Rfbx * 1.03]
->> +            Vout_zs = 2.5 - [(GainP + Offset/1024) * 2.5 * Rfbx * 1.03]
-> ...
+ChenYu
 
-
+> +           desc[eint_n].eint.eint_n == eint_n)
+>                 *gpio_n = eint_n;
+>         else
+>                 *gpio_n = mtk_xt_find_eint_num(hw, eint_n);
+> --
+> 2.25.1
+>
+>
+> _______________________________________________
+> Linux-mediatek mailing list
+> Linux-mediatek@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/linux-mediatek
