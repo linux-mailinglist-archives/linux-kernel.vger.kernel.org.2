@@ -2,81 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 467CE449D58
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Nov 2021 21:58:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8712A449D6B
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Nov 2021 21:59:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238080AbhKHVBh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Nov 2021 16:01:37 -0500
-Received: from mail-oi1-f178.google.com ([209.85.167.178]:45652 "EHLO
-        mail-oi1-f178.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230126AbhKHVBf (ORCPT
+        id S238138AbhKHVCQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Nov 2021 16:02:16 -0500
+Received: from netrider.rowland.org ([192.131.102.5]:41175 "HELO
+        netrider.rowland.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with SMTP id S230126AbhKHVCM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Nov 2021 16:01:35 -0500
-Received: by mail-oi1-f178.google.com with SMTP id u2so29672755oiu.12;
-        Mon, 08 Nov 2021 12:58:51 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=YHUlQJEbpQR7/Et+g9CB2ZvQCivHYZl6NXqndHZfd8s=;
-        b=6+bDnxsHxzhYGDq8Vt8aZfa9UZhhKej9bJo9+6akYxpwGIdARWwS7b4anQooVfZot6
-         OG37r3a7VK1mepdHTSnRIv+GS4QhZiQ+0CbOEQyHQtSmr8EArN4lVfjmhbxFrjlgL5QC
-         vqeu48gZAHAYalGpZVKavPF8/bq5u1h9FiNZY3Ot2yW6ajoH/WX8cCDIL47WbBIUyKQT
-         enS5IHn7NEzQJorn8QpSHkMB7mJQOwD3qX6fiEpIQpJnZ5byfplvd+yMaIeD8J9Ov9IT
-         xDzCMHsMKrL9tEe6XQnPd5SU447zLIQsAuhRb+2vm7WbCFBRhOGX0uGsUU2j4K/Aq3J6
-         1hsw==
-X-Gm-Message-State: AOAM532s55zjJAdByi53YsESol5BNvjFt/vRICmi55dwdOUGYdjyuQRl
-        qEqXItS3fA/E2Eg4YWqNkg==
-X-Google-Smtp-Source: ABdhPJzpVbSN7N8yQUVIe8sDz6+F3EA1l3t2ISD19ruRthAjwYLgenwLYRBJ40ulfAACC7UOlVLxfg==
-X-Received: by 2002:aca:1815:: with SMTP id h21mr1072267oih.35.1636405130617;
-        Mon, 08 Nov 2021 12:58:50 -0800 (PST)
-Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
-        by smtp.gmail.com with ESMTPSA id r184sm6237873oia.38.2021.11.08.12.58.49
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 08 Nov 2021 12:58:49 -0800 (PST)
-Received: (nullmailer pid 7576 invoked by uid 1000);
-        Mon, 08 Nov 2021 20:58:48 -0000
-Date:   Mon, 8 Nov 2021 14:58:48 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     David Heidelberg <david@ixit.cz>
-Cc:     Sascha Hauer <s.hauer@pengutronix.de>,
-        Anson Huang <Anson.Huang@nxp.com>,
-        Fabio Estevam <festevam@gmail.com>,
-        linux-arm-kernel@lists.infradead.org,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Oleksij Rempel <o.rempel@pengutronix.de>,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        Oleksij Rempel <linux@rempel-privat.de>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Rob Herring <robh+dt@kernel.org>, linux-i2c@vger.kernel.org,
-        Shawn Guo <shawnguo@kernel.org>, ~okias/devicetree@lists.sr.ht
-Subject: Re: [PATCH] dt-bindings: i2c: imx: hardware do not restrict
- clock-frequency to only 100 and 400 kHz
-Message-ID: <YYmPiHXXqi1Nj8HY@robh.at.kernel.org>
-References: <20211029141134.66170-1-david@ixit.cz>
+        Mon, 8 Nov 2021 16:02:12 -0500
+Received: (qmail 1679175 invoked by uid 1000); 8 Nov 2021 15:59:26 -0500
+Date:   Mon, 8 Nov 2021 15:59:26 -0500
+From:   Alan Stern <stern@rowland.harvard.edu>
+To:     Borislav Petkov <bp@alien8.de>
+Cc:     Geert Uytterhoeven <geert@linux-m68k.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Ayush Sawal <ayush.sawal@chelsio.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Rohit Maheshwari <rohitm@chelsio.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Vinay Kumar Yadav <vinay.yadav@chelsio.com>,
+        ALSA Development Mailing List <alsa-devel@alsa-project.org>,
+        bcm-kernel-feedback-list <bcm-kernel-feedback-list@broadcom.com>,
+        Intel Graphics Development <intel-gfx@lists.freedesktop.org>,
+        intel-gvt-dev@lists.freedesktop.org,
+        alpha <linux-alpha@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        linux-clk <linux-clk@vger.kernel.org>,
+        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
+        linux-edac@vger.kernel.org,
+        Linux Fbdev development list <linux-fbdev@vger.kernel.org>,
+        linux-hyperv@vger.kernel.org, linux-iio@vger.kernel.org,
+        linux-leds <linux-leds@vger.kernel.org>,
+        "open list:BROADCOM NVRAM DRIVER" <linux-mips@vger.kernel.org>,
+        Parisc List <linux-parisc@vger.kernel.org>,
+        Linux PM list <linux-pm@vger.kernel.org>,
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+        "open list:REMOTE PROCESSOR \(REMOTEPROC\) SUBSYSTEM" 
+        <linux-remoteproc@vger.kernel.org>,
+        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
+        linux-s390 <linux-s390@vger.kernel.org>,
+        scsi <linux-scsi@vger.kernel.org>,
+        Linux-sh list <linux-sh@vger.kernel.org>,
+        linux-staging@lists.linux.dev,
+        linux-tegra <linux-tegra@vger.kernel.org>,
+        linux-um <linux-um@lists.infradead.org>,
+        USB list <linux-usb@vger.kernel.org>,
+        "open list:TENSILICA XTENSA PORT \(xtensa\)" 
+        <linux-xtensa@linux-xtensa.org>, netdev <netdev@vger.kernel.org>,
+        openipmi-developer@lists.sourceforge.net, rcu@vger.kernel.org,
+        sparclinux <sparclinux@vger.kernel.org>,
+        the arch/x86 maintainers <x86@kernel.org>,
+        xen-devel@lists.xenproject.org
+Subject: Re: [PATCH v0 42/42] notifier: Return an error when callback is
+ already registered
+Message-ID: <20211108205926.GA1678880@rowland.harvard.edu>
+References: <20211108101157.15189-1-bp@alien8.de>
+ <20211108101157.15189-43-bp@alien8.de>
+ <CAMuHMdWH+txiSP_d7Jc4f_bU8Lf9iWpT4E3o5o7BJr-YdA6-VA@mail.gmail.com>
+ <YYkyUEqcsOwQMb1S@zn.tnic>
+ <CAMuHMdXiBEQyEXJagSfpH44hxVA2t0sDH7B7YubLGHrb2MJLLA@mail.gmail.com>
+ <YYlJQYLiIrhjwOmT@zn.tnic>
+ <CAMuHMdXHikGrmUzuq0WG5JRHUUE=5zsaVCTF+e4TiHpM5tc5kA@mail.gmail.com>
+ <YYlOmd0AeA8DSluD@zn.tnic>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20211029141134.66170-1-david@ixit.cz>
+In-Reply-To: <YYlOmd0AeA8DSluD@zn.tnic>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 29 Oct 2021 16:11:33 +0200, David Heidelberg wrote:
-> clock-frequency is only restricted by the upper limit of 400 kHz.
+On Mon, Nov 08, 2021 at 05:21:45PM +0100, Borislav Petkov wrote:
+> On Mon, Nov 08, 2021 at 05:12:16PM +0100, Geert Uytterhoeven wrote:
+> > Returning void is the other extreme ;-)
+> > 
+> > There are 3 levels (ignoring BUG_ON()/panic () inside the callee):
+> >   1. Return void: no one can check success or failure,
+> >   2. Return an error code: up to the caller to decide,
+> >   3. Return a __must_check error code: every caller must check.
+> > 
+> > I'm in favor of 2, as there are several places where it cannot fail.
 > 
-> Found with:
-> $ DT_SCHEMA_FILES=Documentation/devicetree/bindings/i2c/i2c-imx.yaml make dtbs_check
-> ...
-> arch/arm64/boot/dts/freescale/imx8mq-librem5-r2.dt.yaml: i2c@30a20000: clock-frequency:0:0: 387000 is not one of [100000, 400000]
-> 	From schema: linux/Documentation/devicetree/bindings/i2c/i2c-imx.yaml
-> ...
-> 
-> Fixes: 4bdc44347299 ("dt-bindings: i2c: Convert imx i2c to json-schema")
-> Signed-off-by: David Heidelberg <david@ixit.cz>
-> ---
->  Documentation/devicetree/bindings/i2c/i2c-imx.yaml | 4 +++-
->  1 file changed, 3 insertions(+), 1 deletion(-)
-> 
+> Makes sense to me. I'll do that in the next iteration.
 
-Applied, thanks!
+Is there really any reason for returning an error code?  For example, is 
+it anticipated that at some point in the future these registration calls 
+might fail?
+
+Currently, the only reason for failing to register a notifier callback 
+is because the callback is already registered.  In a sense this isn't 
+even an actual failure -- after the registration returns the callback 
+_will_ still be registered.
+
+So if the call can never really fail, why bother with a return code?  
+Especially since the caller can't do anything with such a code value.
+
+Given the current state of affairs, I vote in favor of 1 (plus a WARN or 
+something similar to generate a stack dump in the callee, since double 
+registration really is a bug).
+
+Alan Stern
