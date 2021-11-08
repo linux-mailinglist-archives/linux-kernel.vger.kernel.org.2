@@ -2,162 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CC66D449C17
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Nov 2021 19:58:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E502B449C22
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Nov 2021 20:02:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236399AbhKHTBO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Nov 2021 14:01:14 -0500
-Received: from mail.kernel.org ([198.145.29.99]:51780 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236467AbhKHTBJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Nov 2021 14:01:09 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7A38961152;
-        Mon,  8 Nov 2021 18:58:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1636397904;
-        bh=KTojuwQ+u0LsjQAtF2ct0kbvBsFwwPUwlxlX0N1dF4c=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:From;
-        b=HMEnexM91tUxmTTWU9mOYe7LOf9kHOcb6xVQVZxqKcG6YkobwaNlsbJAYkd6QBpc+
-         CAskT3K9aXmCgZXWGDRLvI85cMuNFBv89xzeEEt+9D3wjEwuxVP+6lGsMOxNAwNurj
-         Etegis5PM1qa7HCCuY1VxgcJ7Z8fRJX6LFJX7Z/ihaVBD3Jw9FQYbdaOCAsfSS4wq9
-         6NvbVAC/Jmub2l4SOokA+mtUIUGFAD8QXM6f3QvnIWS6uFT6bfLXjCGpyZY6fdwIcS
-         2cX7E15IRuRsXL/HPV6VfHzoTdCgE6TkgnLnkp4bjLLjrzj7FcWkc4sYfnAlR8tPhh
-         X/ypGPWsddldQ==
-Date:   Mon, 8 Nov 2021 12:58:23 -0600
-From:   Bjorn Helgaas <helgaas@kernel.org>
-To:     Robert =?utf-8?B?xZp3acSZY2tp?= <robert@swiecki.net>,
-        Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
-        <u.kleine-koenig@pengutronix.de>
-Cc:     linux-i2c@vger.kernel.org, Bjorn Helgaas <bhelgaas@google.com>,
-        linux-pci@vger.kernel.org, "Rafael J. Wysocki" <rafael@kernel.org>,
-        linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: Crashes in 5.15-git in i2c code
-Message-ID: <20211108185823.GA1101310@bhelgaas>
+        id S236507AbhKHTFE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Nov 2021 14:05:04 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47038 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236467AbhKHTFC (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Nov 2021 14:05:02 -0500
+Received: from mail-ed1-x535.google.com (mail-ed1-x535.google.com [IPv6:2a00:1450:4864:20::535])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 228A7C061764
+        for <linux-kernel@vger.kernel.org>; Mon,  8 Nov 2021 11:02:18 -0800 (PST)
+Received: by mail-ed1-x535.google.com with SMTP id m14so66003014edd.0
+        for <linux-kernel@vger.kernel.org>; Mon, 08 Nov 2021 11:02:18 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=pensando.io; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=VD+leqfaw7cvxdr0hdFUU2DCytmZoC8d64RVpkQq7Mc=;
+        b=QZxWU12BBlyzV83NZ0nj9FJqE578Gabv8/gbF+d7mLGZ5cQX8AgfwZMd/klbb4Q7nC
+         PAFQCWFzxcoO/K4BCuUpp+PjpDMIElcMArXLIRhJcmba/ZnjBsX1DS17Q26OAo2maj+U
+         Ppdz+/ge3amaVKLu8Ik9xygjmi+PArEtI3PJbN0TLKBEqgZKrxvWTBHohz5qteRRIRKi
+         kMJa4u2ZWtDi4J6FsvAneMAo1DhkXbiNqXeGa8O9eyAvgrcteZ+Ftr3FEUB/ufGHmurG
+         xto0fd8hVfFGFGn5C47G6yTijEG16i4Mi4jKLSQh/zc13i5aIjodWmKJN/z85gHv+eNw
+         JLkg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=VD+leqfaw7cvxdr0hdFUU2DCytmZoC8d64RVpkQq7Mc=;
+        b=kCg4NgLROpzJinisFpT2qhb+K9MoYwGVNH0MrTsge6VyNoTQs1ZE1q6dqOPYc6cI9U
+         dZKOLEEaMx7Fh7s6ohPIOBWr3j3Jeixh6UmypjBRTt0KpYQEfajSz2g2qbIKCX1t/N+s
+         dCors0K8WmYEBeuw7/syt8tovYUAXX4Rmb3y1v3+It9Gn6/SSdlLZVwUMHdRpwTFu+WW
+         Fzvsc+uScSpD7NDxg5udXdXtJzRxiF9R8mFw9vMygL0/K1+UdMWiYNAkHnX3oR8A6ukm
+         AMiV4DyRcsTQMXfNM14E8qK2cYma4J4BIRgucVzkzF96C0wvTwMA2VPufdoiJBw/0NLS
+         4AJg==
+X-Gm-Message-State: AOAM532VJKD7K2Cu+QsAav/2RsTze5znvK50xeVFf6ObHYe9bgynLcFz
+        rGsGILPmkgckW2DADb79m7xaBBscUIbCwJitaenSVg==
+X-Google-Smtp-Source: ABdhPJzMqefrKaXcq09jbz4WokOBxPmGYf48od5DTPAH1Xprc6tdW5gTGoen6SETdNxoSREsXucD53VYWn7EbFB3k7w=
+X-Received: by 2002:a17:907:d89:: with SMTP id go9mr1896295ejc.330.1636398136568;
+ Mon, 08 Nov 2021 11:02:16 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAP145phj7jEy6tkdFMdW-rzPprMTUckaaSrtrVysE-u+S+=Lcg@mail.gmail.com>
+References: <20211025015156.33133-1-brad@pensando.io> <20211025015156.33133-12-brad@pensando.io>
+ <20211025091731.GA2001@C02TD0UTHF1T.local> <CAK9rFnx7DgS3TYMmu5NBacV_6WC_UwJ=u7n3e_fGd0RpEcg3kA@mail.gmail.com>
+ <YYj7MA4D1zCF39lh@FVFF77S0Q05N>
+In-Reply-To: <YYj7MA4D1zCF39lh@FVFF77S0Q05N>
+From:   Brad Larson <brad@pensando.io>
+Date:   Mon, 8 Nov 2021 11:02:05 -0800
+Message-ID: <CAK9rFnxzZJyVOtG7kkWkHiOD6_bcZqDp3SXYMiHeCY4RDAsKLA@mail.gmail.com>
+Subject: Re: [PATCH v3 11/11] arm64: dts: Add Pensando Elba SoC support
+To:     Mark Rutland <mark.rutland@arm.com>
+Cc:     Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Mark Brown <broonie@kernel.org>,
+        Serge Semin <fancer.lancer@gmail.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Olof Johansson <olof@lixom.net>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        linux-spi <linux-spi@vger.kernel.org>,
+        linux-mmc <linux-mmc@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-[+cc Uwe, Rafael, linux-pm, linux-pci, linux-kernel, beginning of
-thread: https://lore.kernel.org/linux-i2c/CAP145pgdrdiMAT7=-iB1DMgA7t_bMqTcJL4N0=6u8kNY3EU0dw@mail.gmail.com/T/#t]
+Hi Mark,
 
-On Mon, Nov 08, 2021 at 05:34:14PM +0100, Robert Święcki wrote:
-> > I'm daily-driving the linux from Linus' git (recompiling every day or
-> > two), and yesterday it stopped booting. Below is the dmesg from
-> > pstore.
-> > ...
-> 
-> This introduced the bug: 0c5c62ddf88c34bc83b66e4ac9beb2bb0e1887d4
-> https://github.com/torvalds/linux/commit/0c5c62ddf88c34bc83b66e4ac9beb2bb0e1887d4
+On Mon, Nov 8, 2021 at 2:26 AM Mark Rutland <mark.rutland@arm.com> wrote:
+>
+> No; as above, you should *not* use GIC_CPU_MASK_SIMPLE() at all for GICv3. i.e.
+>
+> >         timer {
+> >                 compatible = "arm,armv8-timer";
+> >                 interrupts = <GIC_PPI 13 IRQ_TYPE_LEVEL_LOW>,
+> >                              <GIC_PPI 14 IRQ_TYPE_LEVEL_LOW>,
+> >                              <GIC_PPI 11 IRQ_TYPE_LEVEL_LOW>,
+> >                              <GIC_PPI 10 IRQ_TYPE_LEVEL_LOW>;
+> >         };
+>
+> Please see the GICv3 binding documentation:
+>
+>   Documentation/devicetree/bindings/interrupt-controller/arm,gic-v3.yaml
+>
+> ... and note that it does not have the cpumask field as use by the binding for
+> prior generations of GIC:
+>
+>   Documentation/devicetree/bindings/interrupt-controller/arm,gic.yaml
+>
+>
+> If you've seen other dts files using GIC_CPU_MASK_SIMPLE() with GICv3, those
+> are incorrect, and need to be fixed.
+>
+> Thanks,
+> Mark.
 
-Thank you very much for the debugging and this report!  This report is
-for i2c, but the problem will affect many drivers.
+I'll use the bindings documentation as the primary reference.  The use of
+GIC_CPU_MASK_SIMPLE() is removed and tests ok.  These arm64 dts files in
+linux-next are gic-v3 and use GIC_CPU_MASK_SIMPLE(1, 2, 4, 8)
 
-> > <1>[    1.431369][  T447] BUG: kernel NULL pointer dereference,
-> > address: 0000000000000540
-> > <1>[    1.431371][  T447] #PF: supervisor read access in kernel mode
-> > <1>[    1.431375][  T447] #PF: error_code(0x0000) - not-present page
-> > <6>[    1.431378][  T447] PGD 0 P4D 0
-> > <4>[    1.431384][  T447] Oops: 0000 [#1] PREEMPT SMP NOPTI
-> > <4>[    1.431388][  T447] CPU: 12 PID: 447 Comm: systemd-udevd
-> > Tainted: G            E     5.15.0+ #91
-> > <4>[    1.431391][  T447] Hardware name: ASUS System Product Name/ROG
-> > CROSSHAIR VIII FORMULA, BIOS 3801 07/30/2021
-> > <4>[    1.431392][  T447] RIP: 0010:i2c_dw_pci_resume+0x8/0x40
-> > [i2c_designware_pci]
-> > <4>[    1.431399][  T447] Code: 00 00 00 00 66 66 2e 0f 1f 84 00 00 00
-> > 00 00 66 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 84 00 00 00 00 00 53 48
-> > 8b 5f 78 48 89 df <ff> 93 40 05 00 00 c6 83 c0 05 00 00 00 5b c3 66 66
-> > 2e 0f 1f 84 00
-> > <4>[    1.431401][  T447] RSP: 0018:ffffb3e740a13ba8 EFLAGS: 00010286
-> > <4>[    1.431403][  T447] RAX: 0000000000000000 RBX: 0000000000000000
-> > RCX: 0000000000000000
+./nvidia/tegra234.dtsi
+./renesas/r9a07g044.dtsi
+./renesas/r8a779a0.dtsi
+./qcom/sm8350.dtsi
+./qcom/sm8250.dtsi
+./freescale/fsl-ls1028a.dtsi
+./freescale/imx8mp.dtsi
+./freescale/imx8mn.dtsi
+./freescale/imx8mm.dtsi
 
-  $ ./scripts/decodecode < oops
-    22:       53                      push   %rbx
-    23:       48 8b 5f 78             mov    0x78(%rdi),%rbx
-    27:       48 89 df                mov    %rbx,%rdi
-    2a:*      ff 93 40 05 00 00       callq  *0x540(%rbx)             <-- trapping instruction
-    30:       c6 83 c0 05 00 00 00    movb   $0x0,0x5c0(%rbx)
-    37:       5b                      pop    %rbx
-    38:       c3                      retq
-
-  static int i2c_dw_pci_resume(struct device *dev)
-  {
-    struct dw_i2c_dev *i_dev = dev_get_drvdata(dev);
-    int ret;
-
-    ret = i_dev->init(i_dev);
-    i_dev->suspended = false;
-
-    return ret;
-
-So I think we're trying to call i_dev->init(), which is a NULL
-pointer.
-
-> > <4>[    1.431422][  T447]  pci_pm_runtime_resume+0xaa/0x100
-> > <4>[    1.431434][  T447]  __rpm_callback+0x3c/0x100
-> > <4>[    1.431442][  T447]  rpm_callback+0x54/0x80
-> > <4>[    1.431445][  T447]  rpm_resume+0x410/0x700
-> > <4>[    1.431455][  T447]  __pm_runtime_resume+0x45/0x80
-> > <4>[    1.431457][  T447]  pci_device_probe+0xa2/0x140
-> > <4>[    1.431459][  T447]  really_probe+0x1e4/0x400
-> > <4>[    1.431464][  T447]  __driver_probe_device+0xf9/0x180
-> > <4>[    1.431466][  T447]  driver_probe_device+0x19/0xc0
-
-I think the problem here is that:
-
-  - really_probe() sets dev->driver
-
-  - local_pci_probe() calls pm_runtime_get_sync(), which leads to:
-
-  - pci_pm_runtime_resume(), which previously skipped the driver's
-    .runtime_resume() method when "pci_dev->driver" as NULL
-
-  - after 2a4d9408c9e8 ("PCI: Use to_pci_driver() instead of
-    pci_dev->driver") [1], it checks "dev->driver" instead of
-    "pci_dev->driver"
-
-  - dev->driver is non-NULL (set by really_probe() above), but at this
-    point pci_dev->driver used to be NULL because local_pci_probe()
-    didn't set it until after after calling pm_runtime_get_sync() (see
-    b5f9c644eb1b ("PCI: Remove struct pci_dev->driver") [2])
-
-  - because dev->driver is non-NULL, we call i2c_dw_pci_resume()
-    before i2c_dw_pci_probe(), so the driver init hasn't been done
-
-Here's the call tree:
-
-    really_probe
-      dev->driver = drv;                       # <--
-      call_driver_probe
-        dev->bus->probe
-          pci_device_probe
-            __pci_device_probe
-              pci_call_probe
-                local_pci_probe
-                  pm_runtime_get_sync
-                    ...
-                    pci_pm_runtime_resume
-  -                   if (!pci_dev->driver)    # 2a4d9408c9e8 ("PCI: Use to_pci_driver() instead of pci_dev->driver")
-  +                   if (!to_pci_driver(dev->driver))
-                        return 0
-                      pm->runtime_resume
-                        i2c_dw_pci_resume
-                          i_dev->init()        # <-- NULL ptr deref
-  -                 pci_dev->driver = pci_drv  # b5f9c644eb1b ("PCI: Remove struct pci_dev->driver")
-                  pci_drv->probe
-                    i2c_dw_pci_probe
-
-Note that we used to call pm_runtime_get_sync() (and the driver's
-runtime_resume() method) in the window where dev->driver had been set
-but pci_dev->driver had not.  Since we got rid of pci_dev->driver
-altogether, that window no longer exists, so we call the driver's
-runtime_resume() when it isn't prepared for it.
-
-[1] https://git.kernel.org/linus/2a4d9408c9e8
-[2] https://git.kernel.org/linus/b5f9c644eb1b
+Thanks,
+Brad
