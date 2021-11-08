@@ -2,66 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 44E12447F16
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Nov 2021 12:43:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1CBEC447F1C
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Nov 2021 12:45:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239327AbhKHLpv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Nov 2021 06:45:51 -0500
-Received: from mga14.intel.com ([192.55.52.115]:59429 "EHLO mga14.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239303AbhKHLpu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Nov 2021 06:45:50 -0500
-X-IronPort-AV: E=McAfee;i="6200,9189,10161"; a="232456713"
-X-IronPort-AV: E=Sophos;i="5.87,218,1631602800"; 
-   d="scan'208";a="232456713"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Nov 2021 03:43:06 -0800
-X-IronPort-AV: E=Sophos;i="5.87,218,1631602800"; 
-   d="scan'208";a="491185072"
-Received: from mschuett-mobl2.ger.corp.intel.com (HELO localhost) ([10.249.33.194])
-  by orsmga007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Nov 2021 03:43:04 -0800
-From:   Jani Nikula <jani.nikula@linux.intel.com>
-To:     "Artem S. Tashkinov" <aros@gmx.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-doc@vger.kernel.org
-Subject: Re: [PATCH v1 (RFC)] docs: discourage users from using bugzilla.kernel.org
-In-Reply-To: <6abc7248-efda-b569-9030-5384e5ce1f29@gmx.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
-References: <20210110121033.130504-1-linux@leemhuis.info> <6abc7248-efda-b569-9030-5384e5ce1f29@gmx.com>
-Date:   Mon, 08 Nov 2021 13:43:01 +0200
-Message-ID: <87mtme98l6.fsf@intel.com>
+        id S237957AbhKHLsh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Nov 2021 06:48:37 -0500
+Received: from mail-wr1-f43.google.com ([209.85.221.43]:44551 "EHLO
+        mail-wr1-f43.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231401AbhKHLsg (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Nov 2021 06:48:36 -0500
+Received: by mail-wr1-f43.google.com with SMTP id n29so14613101wra.11;
+        Mon, 08 Nov 2021 03:45:51 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=GcX6PV1+ZBo9eou2lhQx0XIxyD2E0mkp8HVMZY3su90=;
+        b=3WGbzAOdnz265srJS5ybGjMg0ej8+zRDRhWEMd+gm1t5QZtnT1MRYCM84H3IbXBEPo
+         yOaFlHgoARfgIuTt2fXTkANEkQswbJtIw+8OyBSZmLqLhYiSUHCtGcUVMMyrYDVtLa06
+         Czb24ysBZKAhCMSWgkDvF89ZyF/Hr6wnaWdS7APmjoHzaHst6gIZxzk3hEyUoEGycrVO
+         CuT9jfd1IeZaHHODUyr3Uzv9lGEuMHZ45WgIYfssOJ7qtMvguacCHq+n9S71EG3cOCtz
+         wngy2cWH1TYnilvo9gqFG57knV2DyMARvpbyAZcshM9gSJVAiw+eeeGh37uDVUx9hUqb
+         3KjA==
+X-Gm-Message-State: AOAM532Ik392rfXdFyj+ag88uFgaZlushFGgrKauGKgg77S5eSF8q8g1
+        dGL0fZWKsqkMW6206F0M1QTd0unEN4s=
+X-Google-Smtp-Source: ABdhPJyLsW7OhUijj2/nzKCYaaNr+8LbWZe8NFIZp2ySUgi+YaRWOpUE/U+j08og2bFKfHnj7HBcCg==
+X-Received: by 2002:adf:ded0:: with SMTP id i16mr95129940wrn.335.1636371950843;
+        Mon, 08 Nov 2021 03:45:50 -0800 (PST)
+Received: from liuwe-devbox-debian-v2 ([51.145.34.42])
+        by smtp.gmail.com with ESMTPSA id n4sm18882595wri.41.2021.11.08.03.45.50
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 08 Nov 2021 03:45:50 -0800 (PST)
+Date:   Mon, 8 Nov 2021 11:45:49 +0000
+From:   Wei Liu <wei.liu@kernel.org>
+To:     Borislav Petkov <bp@alien8.de>
+Cc:     Wei Liu <wei.liu@kernel.org>, LKML <linux-kernel@vger.kernel.org>,
+        linux-hyperv@vger.kernel.org
+Subject: Re: [PATCH v0 08/42] Drivers: hv: vmbus: Check notifier registration
+ return value
+Message-ID: <20211108114549.q3lkgjwm5d7tkbcp@liuwe-devbox-debian-v2>
+References: <20211108101157.15189-1-bp@alien8.de>
+ <20211108101157.15189-9-bp@alien8.de>
+ <20211108111637.c3vsesezc7hwjbty@liuwe-devbox-debian-v2>
+ <YYkMYtYkvwiyzGNG@zn.tnic>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YYkMYtYkvwiyzGNG@zn.tnic>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 05 Nov 2021, "Artem S. Tashkinov" <aros@gmx.com> wrote:
-> Let me continue.
->
-> Here's something which is really bad for bugzilla.kernel.org:
->
-> People _continue_ to file bug reports for graphics drivers in Linux and
-> we don't even have proper components for it, only
->
-> Video (AGP) - What? AGP has been dead for a decade.
-> Video (DRI - Non Intel)  - what? Isn't it an X.org's feature, not kernel's?
-> Video (Other)
->
-> This is a complete and total clusterjoy.
+On Mon, Nov 08, 2021 at 12:39:14PM +0100, Borislav Petkov wrote:
+> On Mon, Nov 08, 2021 at 11:16:37AM +0000, Wei Liu wrote:
+> > On Mon, Nov 08, 2021 at 11:11:23AM +0100, Borislav Petkov wrote:
+> > > From: Borislav Petkov <bp@suse.de>
+> > > 
+> > > Avoid homegrown notifier registration checks.
+> > > 
+> > > No functional changes.
+> > > 
+> > > Signed-off-by: Borislav Petkov <bp@suse.de>
+> > > Cc: linux-hyperv@vger.kernel.org
+> > 
+> > Acked-by: Wei Liu <wei.liu@kernel.org>
+> 
+> Thanks.
+> 
+> I assume your ack means, I can take the two through tip.
 
-FWIW, for Intel graphics (i915) we don't want any bug reports at
-bugzilla.kernel.org. We've migrated away more than five years ago. The
-"Video (DRI - Intel)" component was closed for new bugs around that
-time, the description points at freedesktop.org as does MAINTAINERS:
+Yes please take them through tip. I should've been clearer on this.
+Sorry.
 
-INTEL DRM DRIVERS (excluding Poulsbo, Moorestown and derivative chipsets)
-B:	https://gitlab.freedesktop.org/drm/intel/-/wikis/How-to-file-i915-bugs
-
-
-BR,
-Jani.
-
-
--- 
-Jani Nikula, Intel Open Source Graphics Center
+Wei.
