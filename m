@@ -2,435 +2,207 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A7C67449D8D
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Nov 2021 22:05:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D4FB0449D90
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Nov 2021 22:05:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239721AbhKHVHo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Nov 2021 16:07:44 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46480 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239710AbhKHVHn (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Nov 2021 16:07:43 -0500
-Received: from mail-pl1-x649.google.com (mail-pl1-x649.google.com [IPv6:2607:f8b0:4864:20::649])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD234C061570
-        for <linux-kernel@vger.kernel.org>; Mon,  8 Nov 2021 13:04:58 -0800 (PST)
-Received: by mail-pl1-x649.google.com with SMTP id l3-20020a170902f68300b00142892d0a86so952383plg.13
-        for <linux-kernel@vger.kernel.org>; Mon, 08 Nov 2021 13:04:58 -0800 (PST)
+        id S239741AbhKHVIP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Nov 2021 16:08:15 -0500
+Received: from mail-dm6nam10on2064.outbound.protection.outlook.com ([40.107.93.64]:50816
+        "EHLO NAM10-DM6-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S239710AbhKHVIO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Nov 2021 16:08:14 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=FIW0PhDSB0MGwn9XjZodaWnXUxgzwgRZzxqTqaSM7qUrBS3sRdFk2Spbti7GnqCNEXtj3CIRokLIoNulqtibBgdogvnCNpMK7XTq+LZdiTQxDDtfhq0jadLhgMGTk7BjWI49mknPOJUnIIj1qTlvMoYzTvHWCMWXAfSde8mCPRfC6WoSJ2ZyirZo6scbybgKxI6BDQzFpsdMGUlFNCMeSa3abJIpvtCfIVFb/ghzSOzPHatF28saGlCwnzfOITMyuXXRqHQpjeq+wa8PmO662XY296y3X+uPq1nYSG5aKiVL/sDRKKvgPiwvNfhQWOCuO3BRzpmf/2E+lyOspxVy3w==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=G/kej1JFY9mm9J/x45hBoTL7+BVmh9im8bcGlEVvaOA=;
+ b=Sr0nK4RMbk1XK3UD6Lftf6qCDpQYKhkWZqrIdgB+Je8Sa/d3kThd4m+3LAYuwp9Y/1kmn4VhocVU/j9rOZYPu/LRE8uBpeI9+we3r9g7SrkkP00haiDbMlSGviybFD7SPOU4eqne5WaT9fyIvKkaPsY4d2PpE4ZCUuhCzqx7bfQoDX6WKLOO1R+Ru7I82f3JVWR6bdqRzB0U+RWNKq5mOarM6TW6MZ8n+jV1cXfvn7sHHHWNAnvjW2we8MGjF97d351IOqzc/ItFbrZ8jxRZ+ZnrSThpeFxi1XkeRpJufCB9/lQUnxdj6QVfK6m93wuqrjDnsKzdT1Rfv0R6slA7VA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 149.199.80.198) smtp.rcpttodomain=vger.kernel.org smtp.mailfrom=xilinx.com;
+ dmarc=pass (p=none sp=none pct=100) action=none header.from=xilinx.com;
+ dkim=none (message not signed); arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=date:message-id:mime-version:subject:from:cc
-         :content-transfer-encoding;
-        bh=A8slxoWuSLDDOGDe4TgFi7S16ENFGAtvh0ADzhlSYZw=;
-        b=n8YkBwJmoqNOkanThJhXYvj/VBydRb2b/0XFiBA8NdOKBT3EZiDJd9PGB2jF3KHTzA
-         I9PC9+blq91vJJUuaaIyaBsO6rKBL1A2NuLMeigV1K5YU2uHYoV/EG3NL2RFQsqIwztH
-         bSiOB3aaK3MYwHsGzrD5Z60ktV+U/jf+cMVDvb9jn/vQak8Q8nIDCjNhIGdxuzZ/nE7G
-         BsgKsOvunAkV1NMctzJj270iRO5b83vEWVKHcgiv6pyOxm0yTGzOAueGhiM6tP5qcR5K
-         endTnLofcWqdZICVX5pZ9xRHvoAkufCnU4j6xLNzj6gt79sm2MaiXY1S0xokB5JUDu0S
-         ReoA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:message-id:mime-version:subject:from:cc
-         :content-transfer-encoding;
-        bh=A8slxoWuSLDDOGDe4TgFi7S16ENFGAtvh0ADzhlSYZw=;
-        b=LPyHSAO1sIHxDzl4HDJZT7jDck15rp4ply2MkepMOwtva7GPg+27Lgvdv+LP+6E8MM
-         f8h8vtYSI313g7VeWRsOYLAgftBOCefM+tY9yhOilaIVZJYQwKIWslyIbzHmzx7F4I3J
-         6POzYvRUSu7jsPXqG/qcxShfL0kZS+8Cp/VGO0bwm3/pG/CvOSM/5/zMBdEs3nVey7Rs
-         OU652UGPTQa8SjdmaYRLKYQuf70oZF+7YniSdFEcL61zpeOrm99rNjJlL/Pivtb0oRlE
-         W9VxhsXoBzc2+fuOHDZzjsffBK/0RBoYj4XJUQ+d4ooBnmXDNIC30foaNl6/AHhL4Fou
-         AU4w==
-X-Gm-Message-State: AOAM532YSh/Flju85q/NOAQ2qqnDmES+yr/Stu+z6i7jE/VQbbXEzEta
-        8wl2UY68ZHT6YRUIU7+/8WM4IlnnatkObOTtqw==
-X-Google-Smtp-Source: ABdhPJx+OqjdXiDm0F/9fq031WiWyrhpLNl5mmxUHKj1RCoo3OEkXl5mlaOgRY9YcGnG/Q1dmE2GcA7MKSEMsFfiGw==
-X-Received: from almasrymina.svl.corp.google.com ([2620:15c:2cd:202:8717:7707:fb59:664e])
- (user=almasrymina job=sendgmr) by 2002:a05:6a00:21c2:b0:44c:fa0b:f72 with
- SMTP id t2-20020a056a0021c200b0044cfa0b0f72mr2365377pfj.13.1636405498180;
- Mon, 08 Nov 2021 13:04:58 -0800 (PST)
-Date:   Mon,  8 Nov 2021 13:04:56 -0800
-Message-Id: <20211108210456.1745788-1-almasrymina@google.com>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.34.0.rc0.344.g81b53c2807-goog
-Subject: [PATCH v4] hugetlb: Add hugetlb.*.numa_stat file
-From:   Mina Almasry <almasrymina@google.com>
-Cc:     Mina Almasry <almasrymina@google.com>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Shuah Khan <shuah@kernel.org>,
-        Miaohe Lin <linmiaohe@huawei.com>,
-        Oscar Salvador <osalvador@suse.de>,
-        Michal Hocko <mhocko@suse.com>,
-        Muchun Song <songmuchun@bytedance.com>,
-        David Rientjes <rientjes@google.com>,
-        Shakeel Butt <shakeelb@google.com>, Jue Wang <juew@google.com>,
-        Yang Yao <ygyao@google.com>, Joanna Li <joannali@google.com>,
-        Cannon Matthews <cannonmatthews@google.com>,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-To:     unlisted-recipients:; (no To-header on input)
+ d=xilinx.onmicrosoft.com; s=selector2-xilinx-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=G/kej1JFY9mm9J/x45hBoTL7+BVmh9im8bcGlEVvaOA=;
+ b=rzghtQSAuV/CF45rVtli5bhSK/w0wK3DY6ZSy6AbESgLcXUCQcGZdrFQEjo4DGzLqHcpakUQK4Je4nYX69kg1GBMxtUbh672YEQ5aCDtk38lLT3ytWzat45cmYyNkVP/wjNcVdtE+Rl0rjoaUZwoWWpck1ej+brTqQGRcRMQaOY=
+Received: from DM5PR19CA0039.namprd19.prod.outlook.com (2603:10b6:3:9a::25) by
+ SJ0PR02MB8766.namprd02.prod.outlook.com (2603:10b6:a03:3d8::6) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.4669.13; Mon, 8 Nov 2021 21:05:27 +0000
+Received: from DM3NAM02FT032.eop-nam02.prod.protection.outlook.com
+ (2603:10b6:3:9a:cafe::8) by DM5PR19CA0039.outlook.office365.com
+ (2603:10b6:3:9a::25) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4669.11 via Frontend
+ Transport; Mon, 8 Nov 2021 21:05:27 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 149.199.80.198)
+ smtp.mailfrom=xilinx.com; vger.kernel.org; dkim=none (message not signed)
+ header.d=none;vger.kernel.org; dmarc=pass action=none header.from=xilinx.com;
+Received-SPF: Pass (protection.outlook.com: domain of xilinx.com designates
+ 149.199.80.198 as permitted sender) receiver=protection.outlook.com;
+ client-ip=149.199.80.198; helo=xir-pvapexch01.xlnx.xilinx.com;
+Received: from xir-pvapexch01.xlnx.xilinx.com (149.199.80.198) by
+ DM3NAM02FT032.mail.protection.outlook.com (10.13.5.65) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.20.4669.10 via Frontend Transport; Mon, 8 Nov 2021 21:05:27 +0000
+Received: from xir-pvapexch02.xlnx.xilinx.com (172.21.17.17) by
+ xir-pvapexch01.xlnx.xilinx.com (172.21.17.15) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.14; Mon, 8 Nov 2021 21:05:24 +0000
+Received: from smtp.xilinx.com (172.21.105.198) by
+ xir-pvapexch02.xlnx.xilinx.com (172.21.17.17) with Microsoft SMTP Server id
+ 15.1.2176.14 via Frontend Transport; Mon, 8 Nov 2021 21:05:24 +0000
+Envelope-to: anand.ashok.dumbre@xilinx.com,
+ git@xilinx.com,
+ michal.simek@xilinx.com,
+ linux-kernel@vger.kernel.org,
+ jic23@kernel.org,
+ lars@metafoo.de,
+ linux-iio@vger.kernel.org,
+ pmeerw@pmeerw.net,
+ devicetree@vger.kernel.org
+Received: from [10.71.188.1] (port=52274 helo=xiranandash40.xilinx.com)
+        by smtp.xilinx.com with esmtp (Exim 4.90)
+        (envelope-from <anand.ashok.dumbre@xilinx.com>)
+        id 1mkBpO-0008LJ-Br; Mon, 08 Nov 2021 21:05:18 +0000
+From:   Anand Ashok Dumbre <anand.ashok.dumbre@xilinx.com>
+To:     <linux-kernel@vger.kernel.org>, <jic23@kernel.org>,
+        <lars@metafoo.de>, <linux-iio@vger.kernel.org>, <git@xilinx.com>,
+        <michal.simek@xilinx.com>, <pmeerw@pmeerw.net>,
+        <devicetree@vger.kernel.org>
+CC:     Anand Ashok Dumbre <anand.ashok.dumbre@xilinx.com>
+Subject: [PATCH v8 0/4] Add Xilinx AMS Driver
+Date:   Mon, 8 Nov 2021 21:05:05 +0000
+Message-ID: <20211108210509.29870-1-anand.ashok.dumbre@xilinx.com>
+X-Mailer: git-send-email 2.17.1
+MIME-Version: 1.0
+Content-Type: text/plain
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 1db5413e-63a4-4889-a0e5-08d9a2fb7d55
+X-MS-TrafficTypeDiagnostic: SJ0PR02MB8766:
+X-Microsoft-Antispam-PRVS: <SJ0PR02MB8766E29271FC6ACD038673E1A9919@SJ0PR02MB8766.namprd02.prod.outlook.com>
+X-Auto-Response-Suppress: DR, RN, NRN, OOF, AutoReply
+X-MS-Oob-TLC-OOBClassifiers: OLM:7691;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: dJte3jXOIXxfGWQo2nNWv9/e3U+XL1pDosqiS0NZm1hzlqbxO8bEy7T9myYvuGlZBOMg2D+sIW8dYdJGDNM3vaob+yqS284MHKi0OPdM0fi+MUv8l0OKeahbOYI+Tc2XRVmkEpcc2z8xhJSW4z9AS9uUO0UcnRV6sOlnl2yAI00CUzHamyFXxZIsVtjwXJzlic3aNR6VNSOTdNG32Y6voejiFkB/Jw0bpWxizjbtUAbrPpOh1eRExU7MNTXuPMe09yW6ftfR97Pwi43dqCa5W63S8B2TBn6SYynecEWpCKRObKrGd73V5m4vA5kJPLsMhARwwcQQ9sCDkEjqnL0oRVj21K87LCnvIKNor+wYw5iq+IQCcy28xgXIDGXA73gbLsApM8u76+n7EnFp+PHnIDEm7QXfD/DC/X9lNNgM+Cq1d05VQ178IASWPtz1hII1+Ghng1MwpDz9jbc/PUZb0pKeQPw+UjNVQOh5U0SadpVXOYLaQoW6EpZqY8E0O/czoR2K/thKLfu+ex9nkZMT1nFfpEKaQ4PcRT7BJ5RMjlPsZHELFN2ipDpPkscxShHM2oIA1ngRHk/es65sa5PI8Nro1uYSILPpiM+MObByECkOe8ujOfM/d+kniDT+OmLd4CE8rRy4kVnqtjEnBzGQLZIoZq3c7u6J69M1UrB17oPQj2yHNv/fqbhDmNQpqC+yS0wkMzofTMSZTd47VEopPEcN9WUF8mTgSezL9c3XECaOcC/DyMLvojqTadh99ILN
+X-Forefront-Antispam-Report: CIP:149.199.80.198;CTRY:IE;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:xir-pvapexch01.xlnx.xilinx.com;PTR:unknown-80-198.xilinx.com;CAT:NONE;SFS:(36840700001)(46966006)(83380400001)(7696005)(336012)(508600001)(82310400003)(8676002)(426003)(4326008)(2616005)(7636003)(70206006)(26005)(356005)(36860700001)(186003)(6666004)(36756003)(70586007)(5660300002)(2906002)(36906005)(103116003)(8936002)(9786002)(110136005)(107886003)(47076005)(1076003)(316002)(102446001)(2101003);DIR:OUT;SFP:1101;
+X-OriginatorOrg: xilinx.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 08 Nov 2021 21:05:27.0611
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 1db5413e-63a4-4889-a0e5-08d9a2fb7d55
+X-MS-Exchange-CrossTenant-Id: 657af505-d5df-48d0-8300-c31994686c5c
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=657af505-d5df-48d0-8300-c31994686c5c;Ip=[149.199.80.198];Helo=[xir-pvapexch01.xlnx.xilinx.com]
+X-MS-Exchange-CrossTenant-AuthSource: DM3NAM02FT032.eop-nam02.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ0PR02MB8766
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-For hugetlb backed jobs/VMs it's critical to understand the numa
-information for the memory backing these jobs to deliver optimal
-performance.
-
-Currently this technically can be queried from /proc/self/numa_maps, but
-there are significant issues with that. Namely:
-1. Memory can be mapped on unmapped.
-2. numa_maps are per process and need to be aggregated across all
-   processes in the cgroup. For shared memory this is more involved as
-   the userspace needs to make sure it doesn't double count shared
-   mappings.
-3. I believe querying numa_maps needs to hold the mmap_lock which adds
-   to the contention on this lock.
-
-For these reasons I propose simply adding hugetlb.*.numa_stat file,
-which shows the numa information of the cgroup similarly to
-memory.numa_stat.
-
-On cgroup-v2:
-   cat /sys/fs/cgroup/unified/test/hugetlb.2MB.numa_stat
-   total=3D2097152 N0=3D2097152 N1=3D0
-
-On cgroup-v1:
-   cat /sys/fs/cgroup/hugetlb/test/hugetlb.2MB.numa_stat
-   total=3D2097152 N0=3D2097152 N1=3D0
-   hierarichal_total=3D2097152 N0=3D2097152 N1=3D0
-
-This patch was tested manually by allocating hugetlb memory and querying
-the hugetlb.*.numa_stat file of the cgroup and its parents.
-=EF=BF=BC
-Cc: Mike Kravetz <mike.kravetz@oracle.com>
-Cc: Andrew Morton <akpm@linux-foundation.org>
-Cc: Shuah Khan <shuah@kernel.org>
-Cc: Miaohe Lin <linmiaohe@huawei.com>
-Cc: Oscar Salvador <osalvador@suse.de>
-Cc: Michal Hocko <mhocko@suse.com>
-Cc: Muchun Song <songmuchun@bytedance.com>
-Cc: David Rientjes <rientjes@google.com>
-Cc: Shakeel Butt <shakeelb@google.com>
-Cc: Jue Wang <juew@google.com>
-Cc: Yang Yao <ygyao@google.com>
-Cc: Joanna Li <joannali@google.com>
-Cc: Cannon Matthews <cannonmatthews@google.com>
-Cc: linux-mm@kvack.org
-Cc: linux-kernel@vger.kernel.org
-
-Signed-off-by: Mina Almasry <almasrymina@google.com>
-
----
-
-Changes in v4:
-- Removed unnecessary braces.
-- usage is now counted in pages instead of bytes.
-- Reverted unneeded changes to write_to_hugetlbfs.c
-
-Changes in v3:
-- Fixed typos (sorry!)
-- Used conventional locations for cgroups mount points in docs/commit
-message.
-- Updated docs.
-- Handle kzalloc_node failure, and proper deallocation of per node data.
-- Use struct_size() to calculate the struct size.
-- Use nr_node_ids instead of MAX_NUMNODES.
-- Updated comments per multi-line comment pattern.
+Add Xilinx AMS driver which is used for Xilinx's ZynqMP AMS controller.
+This AMS driver is used to report various interface voltages and temperatures
+across the system.
+This driver will be used by iio-hwmon to repport voltages and temperatures
+across the system by using various channel interfaces.
+This driver handles AMS module including PS-Sysmon & PL-Sysmon. The binding
+documentation is added for understanding of AMS, PS, PL Sysmon Channels.
 
 Changes in v2:
-- Fix warning Reported-by: kernel test robot <lkp@intel.com>
----
- .../admin-guide/cgroup-v1/hugetlb.rst         |   4 +
- Documentation/admin-guide/cgroup-v2.rst       |   5 +
- include/linux/hugetlb.h                       |   4 +-
- include/linux/hugetlb_cgroup.h                |   7 ++
- mm/hugetlb_cgroup.c                           | 113 ++++++++++++++++--
- 5 files changed, 122 insertions(+), 11 deletions(-)
+	- Added documentation for sysfs (Patch-2)
+	- Addressed code style review comments
+	- Patch-2 (Now it is Patch-3)
+		- Arranged the includes in alphabetical order
+		- Removed the wrapper 'ams_pl_write_reg()' and used writel
+		  instead
+		- Removed the unnecessary delay of 1ms and used polling of EOC
+		  instead
+		- Removed spin_lock and used mutex only.
+		- Used request_irq() instead of devm_request_irq() and handled
+		  respective error conditions
+		- Moved contents of xilinx-ams.h to inline with xilinx-ams.c
+	- Patch-1
+		- Addressed Documentation style comments
 
-diff --git a/Documentation/admin-guide/cgroup-v1/hugetlb.rst b/Documentatio=
-n/admin-guide/cgroup-v1/hugetlb.rst
-index 338f2c7d7a1c..0fa724d82abb 100644
---- a/Documentation/admin-guide/cgroup-v1/hugetlb.rst
-+++ b/Documentation/admin-guide/cgroup-v1/hugetlb.rst
-@@ -29,12 +29,14 @@ Brief summary of control files::
-  hugetlb.<hugepagesize>.max_usage_in_bytes             # show max "hugepag=
-esize" hugetlb  usage recorded
-  hugetlb.<hugepagesize>.usage_in_bytes                 # show current usag=
-e for "hugepagesize" hugetlb
-  hugetlb.<hugepagesize>.failcnt                        # show the number o=
-f allocation failure due to HugeTLB usage limit
-+ hugetlb.<hugepagesize>.numa_stat                      # show the numa inf=
-ormation of the hugetlb memory charged to this cgroup
+Changes in v3:
+	- Updated bindings document with the suggested modification in v2 review
+	- Removed documentation for sysfs
+	- Removed extended names for channels in the Xilinx AMS driver
+	- Modified dts to use ranges for child nodes
+	- Reduced address and size cells to 32-bit instead of 64-bit
 
- For a system supporting three hugepage sizes (64k, 32M and 1G), the contro=
-l
- files include::
+Changes in v4:
+	- Updated bindings document with the suggested modification in v3 review
+	- Changed the Device Tree property 'ranges' for child nodes
+	- Used Channel Numbers as 'reg' value in DT to avoid confusion
+	- Removed unused NULL arguments as suggested in v3 patch review
+	- Addressed comments on Device Tree property naming
 
-   hugetlb.1GB.limit_in_bytes
-   hugetlb.1GB.max_usage_in_bytes
-+  hugetlb.1GB.numa_stat
-   hugetlb.1GB.usage_in_bytes
-   hugetlb.1GB.failcnt
-   hugetlb.1GB.rsvd.limit_in_bytes
-@@ -43,6 +45,7 @@ files include::
-   hugetlb.1GB.rsvd.failcnt
-   hugetlb.64KB.limit_in_bytes
-   hugetlb.64KB.max_usage_in_bytes
-+  hugetlb.64KB.numa_stat
-   hugetlb.64KB.usage_in_bytes
-   hugetlb.64KB.failcnt
-   hugetlb.64KB.rsvd.limit_in_bytes
-@@ -51,6 +54,7 @@ files include::
-   hugetlb.64KB.rsvd.failcnt
-   hugetlb.32MB.limit_in_bytes
-   hugetlb.32MB.max_usage_in_bytes
-+  hugetlb.32MB.numa_stat
-   hugetlb.32MB.usage_in_bytes
-   hugetlb.32MB.failcnt
-   hugetlb.32MB.rsvd.limit_in_bytes
-diff --git a/Documentation/admin-guide/cgroup-v2.rst b/Documentation/admin-=
-guide/cgroup-v2.rst
-index 4d8c27eca96b..356847f8f008 100644
---- a/Documentation/admin-guide/cgroup-v2.rst
-+++ b/Documentation/admin-guide/cgroup-v2.rst
-@@ -2252,6 +2252,11 @@ HugeTLB Interface Files
- 	are local to the cgroup i.e. not hierarchical. The file modified event
- 	generated on this file reflects only the local events.
+Changes in v5:
+	- Updated bindings document to the YAML format
+	- Updated bindings document with the suggested modification in v4 review
+	- Renamed iio_pl_info struct to iio_ams_info in Xilinx AMS driver
+	- Updated the Xilinx AMS driver to not use iio_priv_to_dev function
+	- Updated Xilinx AMS node to reflect the changes in bindings document
+	- Update MAINTAINERS file
 
-+  hugetlb.<hugepagesize>.numa_stat
-+	Similar to memory.numa_stat, it shows the numa information of the
-+        hugetlb pages of <hugepagesize> in this cgroup.  Only active in
-+        use hugetlb pages are included.  The per-node values are in bytes.
-+
- Misc
- ----
+Changes in v6:
+	- Removed all tabs from bindings document.
+	- Removed the xlnx,ext-channels node from the device tree since
+	  it is not neeeded.
+	- Fixed unit addresses for ps-ams and pl-ams.
+	- Removed the names property from bindings.
+	- Fixed warnings from checkpatch.pl in the driver.
+	- devm_add_action_or_reset() used for exit/error path.
+	- devm_request_irq() for managed irq request instead of
+	  request_irq()
 
-diff --git a/include/linux/hugetlb.h b/include/linux/hugetlb.h
-index 1faebe1cd0ed..0445faaa636e 100644
---- a/include/linux/hugetlb.h
-+++ b/include/linux/hugetlb.h
-@@ -613,8 +613,8 @@ struct hstate {
- #endif
- #ifdef CONFIG_CGROUP_HUGETLB
- 	/* cgroup control files */
--	struct cftype cgroup_files_dfl[7];
--	struct cftype cgroup_files_legacy[9];
-+	struct cftype cgroup_files_dfl[8];
-+	struct cftype cgroup_files_legacy[10];
- #endif
- 	char name[HSTATE_NAME_LEN];
- };
-diff --git a/include/linux/hugetlb_cgroup.h b/include/linux/hugetlb_cgroup.=
-h
-index c137396129db..54ff6ec68ed3 100644
---- a/include/linux/hugetlb_cgroup.h
-+++ b/include/linux/hugetlb_cgroup.h
-@@ -36,6 +36,11 @@ enum hugetlb_memory_event {
- 	HUGETLB_NR_MEMORY_EVENTS,
- };
+Changes in v7:
+	- Added use of FIELD_PREP and FIELD_GET.
+	- Added the spinlocks back the v1 which were removed in v2 for
+	  no justifiable reason and replaced with the same mutex. This
+	  caused deadlocks.
+	- Removed the buffered mode information from channel config.
+	- Usage of wrapper functions for devm_add_action_or_reset
+	  callbacks to avoid typecasting functions.
+	- Usage of devm_platform_iremap_resource().
+	- Handled platform_get_irq() return values.
+	- Removed the remove() callback.
+	- Fixed the dt-bindings.
 
-+struct hugetlb_cgroup_per_node {
-+	/* hugetlb usage in bytes over all hstates. */
-+	unsigned long usage[HUGE_MAX_HSTATE];
-+};
-+
- struct hugetlb_cgroup {
- 	struct cgroup_subsys_state css;
+Changes in v8:
+	- Replaced *_of_() APIs with fwnode
+	- Added missing headers.
+	- Fixed documentation.
+	- Added devm_add_action_or_reset() for iounmap.
+	- Restructured read_raw function.
+	- Added helper functions.
+	- Usage of GENMASK for all masks.
+	- Added defaults for most switch cases. Some can't be added
+	  since the default will never occur.
 
-@@ -57,6 +62,8 @@ struct hugetlb_cgroup {
 
- 	/* Handle for "hugetlb.events.local" */
- 	struct cgroup_file events_local_file[HUGE_MAX_HSTATE];
-+
-+	struct hugetlb_cgroup_per_node *nodeinfo[];
- };
+Anand Ashok Dumbre (4):
+  arm64: zynqmp: DT: Add Xilinx AMS node
+  iio: adc: Add Xilinx AMS driver
+  dt-bindings: iio: adc: Add Xilinx AMS binding documentation
+  MAINTAINERS: Add maintainer for xilinx-ams
 
- static inline struct hugetlb_cgroup *
-diff --git a/mm/hugetlb_cgroup.c b/mm/hugetlb_cgroup.c
-index 5383023d0cca..4717465f5307 100644
---- a/mm/hugetlb_cgroup.c
-+++ b/mm/hugetlb_cgroup.c
-@@ -126,29 +126,58 @@ static void hugetlb_cgroup_init(struct hugetlb_cgroup=
- *h_cgroup,
- 	}
- }
+ .../bindings/iio/adc/xlnx,zynqmp-ams.yaml     |  227 +++
+ MAINTAINERS                                   |    7 +
+ arch/arm64/boot/dts/xilinx/zynqmp.dtsi        |   26 +-
+ drivers/iio/adc/Kconfig                       |   15 +
+ drivers/iio/adc/Makefile                      |    1 +
+ drivers/iio/adc/xilinx-ams.c                  | 1452 +++++++++++++++++
+ 6 files changed, 1727 insertions(+), 1 deletion(-)
+ create mode 100644 Documentation/devicetree/bindings/iio/adc/xlnx,zynqmp-ams.yaml
+ create mode 100644 drivers/iio/adc/xilinx-ams.c
 
-+static void hugetlb_cgroup_free(struct hugetlb_cgroup *h_cgroup)
-+{
-+	int node;
-+
-+	for_each_node(node)
-+		kfree(h_cgroup->nodeinfo[node]);
-+	kfree(h_cgroup);
-+}
-+
- static struct cgroup_subsys_state *
- hugetlb_cgroup_css_alloc(struct cgroup_subsys_state *parent_css)
- {
- 	struct hugetlb_cgroup *parent_h_cgroup =3D hugetlb_cgroup_from_css(parent=
-_css);
- 	struct hugetlb_cgroup *h_cgroup;
-+	int node;
-+
-+	h_cgroup =3D kzalloc(struct_size(h_cgroup, nodeinfo, nr_node_ids),
-+			   GFP_KERNEL);
+-- 
+2.17.1
 
--	h_cgroup =3D kzalloc(sizeof(*h_cgroup), GFP_KERNEL);
- 	if (!h_cgroup)
- 		return ERR_PTR(-ENOMEM);
-
- 	if (!parent_h_cgroup)
- 		root_h_cgroup =3D h_cgroup;
-
-+	/*
-+	 * TODO: this routine can waste much memory for nodes which will
-+	 * never be onlined. It's better to use memory hotplug callback
-+	 * function.
-+	 */
-+	for_each_node(node) {
-+		/* Set node_to_alloc to -1 for offline nodes. */
-+		int node_to_alloc =3D
-+			node_state(node, N_NORMAL_MEMORY) ? node : -1;
-+		h_cgroup->nodeinfo[node] =3D
-+			kzalloc_node(sizeof(struct hugetlb_cgroup_per_node),
-+				     GFP_KERNEL, node_to_alloc);
-+		if (!h_cgroup->nodeinfo[node])
-+			goto fail_alloc_nodeinfo;
-+	}
-+
- 	hugetlb_cgroup_init(h_cgroup, parent_h_cgroup);
- 	return &h_cgroup->css;
-+
-+fail_alloc_nodeinfo:
-+	hugetlb_cgroup_free(h_cgroup);
-+	return ERR_PTR(-ENOMEM);
- }
-
- static void hugetlb_cgroup_css_free(struct cgroup_subsys_state *css)
- {
--	struct hugetlb_cgroup *h_cgroup;
--
--	h_cgroup =3D hugetlb_cgroup_from_css(css);
--	kfree(h_cgroup);
-+	hugetlb_cgroup_free(hugetlb_cgroup_from_css(css));
- }
-
- /*
-@@ -292,7 +321,8 @@ static void __hugetlb_cgroup_commit_charge(int idx, uns=
-igned long nr_pages,
- 		return;
-
- 	__set_hugetlb_cgroup(page, h_cg, rsvd);
--	return;
-+	if (!rsvd && h_cg)
-+		h_cg->nodeinfo[page_to_nid(page)]->usage[idx] +=3D nr_pages;
- }
-
- void hugetlb_cgroup_commit_charge(int idx, unsigned long nr_pages,
-@@ -331,7 +361,8 @@ static void __hugetlb_cgroup_uncharge_page(int idx, uns=
-igned long nr_pages,
-
- 	if (rsvd)
- 		css_put(&h_cg->css);
--
-+	else
-+		h_cg->nodeinfo[page_to_nid(page)]->usage[idx] -=3D nr_pages;
- 	return;
- }
-
-@@ -421,6 +452,58 @@ enum {
- 	RES_RSVD_FAILCNT,
- };
-
-+static int hugetlb_cgroup_read_numa_stat(struct seq_file *seq, void *dummy=
-)
-+{
-+	int nid;
-+	struct cftype *cft =3D seq_cft(seq);
-+	int idx =3D MEMFILE_IDX(cft->private);
-+	bool legacy =3D MEMFILE_ATTR(cft->private);
-+	struct hugetlb_cgroup *h_cg =3D hugetlb_cgroup_from_css(seq_css(seq));
-+	struct cgroup_subsys_state *css;
-+	unsigned long usage;
-+
-+	if (legacy) {
-+		/* Add up usage across all nodes for the non-hierarchical total. */
-+		usage =3D 0;
-+		for_each_node_state(nid, N_MEMORY)
-+			usage +=3D h_cg->nodeinfo[nid]->usage[idx];
-+		seq_printf(seq, "total=3D%lu", usage * PAGE_SIZE);
-+
-+		/* Simply print the per-node usage for the non-hierarchical total. */
-+		for_each_node_state(nid, N_MEMORY)
-+			seq_printf(seq, " N%d=3D%lu", nid,
-+				   h_cg->nodeinfo[nid]->usage[idx] * PAGE_SIZE);
-+		seq_putc(seq, '\n');
-+	}
-+
-+	/*
-+	 * The hierarchical total is pretty much the value recorded by the
-+	 * counter, so use that.
-+	 */
-+	seq_printf(seq, "%stotal=3D%lu", legacy ? "hierarichal_" : "",
-+		   page_counter_read(&h_cg->hugepage[idx]) * PAGE_SIZE);
-+
-+	/*
-+	 * For each node, transverse the css tree to obtain the hierarichal
-+	 * node usage.
-+	 */
-+	for_each_node_state(nid, N_MEMORY) {
-+		usage =3D 0;
-+		rcu_read_lock();
-+		css_for_each_descendant_pre(css, &h_cg->css) {
-+			usage +=3D hugetlb_cgroup_from_css(css)
-+					 ->nodeinfo[nid]
-+					 ->usage[idx];
-+		}
-+		rcu_read_unlock();
-+		seq_printf(seq, " N%d=3D%lu", nid, usage * PAGE_SIZE);
-+	}
-+
-+	seq_putc(seq, '\n');
-+
-+	return 0;
-+}
-+
- static u64 hugetlb_cgroup_read_u64(struct cgroup_subsys_state *css,
- 				   struct cftype *cft)
- {
-@@ -671,8 +754,14 @@ static void __init __hugetlb_cgroup_file_dfl_init(int =
-idx)
- 				    events_local_file[idx]);
- 	cft->flags =3D CFTYPE_NOT_ON_ROOT;
-
--	/* NULL terminate the last cft */
-+	/* Add the numa stat file */
- 	cft =3D &h->cgroup_files_dfl[6];
-+	snprintf(cft->name, MAX_CFTYPE_NAME, "%s.numa_stat", buf);
-+	cft->seq_show =3D hugetlb_cgroup_read_numa_stat;
-+	cft->flags =3D CFTYPE_NOT_ON_ROOT;
-+
-+	/* NULL terminate the last cft */
-+	cft =3D &h->cgroup_files_dfl[7];
- 	memset(cft, 0, sizeof(*cft));
-
- 	WARN_ON(cgroup_add_dfl_cftypes(&hugetlb_cgrp_subsys,
-@@ -742,8 +831,14 @@ static void __init __hugetlb_cgroup_file_legacy_init(i=
-nt idx)
- 	cft->write =3D hugetlb_cgroup_reset;
- 	cft->read_u64 =3D hugetlb_cgroup_read_u64;
-
-+	/* Add the numa stat file */
-+	cft =3D &h->cgroup_files_dfl[8];
-+	snprintf(cft->name, MAX_CFTYPE_NAME, "%s.numa_stat", buf);
-+	cft->private =3D MEMFILE_PRIVATE(idx, 1);
-+	cft->seq_show =3D hugetlb_cgroup_read_numa_stat;
-+
- 	/* NULL terminate the last cft */
--	cft =3D &h->cgroup_files_legacy[8];
-+	cft =3D &h->cgroup_files_legacy[9];
- 	memset(cft, 0, sizeof(*cft));
-
- 	WARN_ON(cgroup_add_legacy_cftypes(&hugetlb_cgrp_subsys,
---
-2.34.0.rc0.344.g81b53c2807-goog
