@@ -2,119 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 605BE447E70
+	by mail.lfdr.de (Postfix) with ESMTP id A0A9D447E72
 	for <lists+linux-kernel@lfdr.de>; Mon,  8 Nov 2021 12:05:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238965AbhKHLIL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Nov 2021 06:08:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50644 "EHLO
+        id S239013AbhKHLIZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Nov 2021 06:08:25 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50712 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238937AbhKHLIA (ORCPT
+        with ESMTP id S238991AbhKHLIT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Nov 2021 06:08:00 -0500
-Received: from mail-wr1-x431.google.com (mail-wr1-x431.google.com [IPv6:2a00:1450:4864:20::431])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E095C061570;
-        Mon,  8 Nov 2021 03:05:14 -0800 (PST)
-Received: by mail-wr1-x431.google.com with SMTP id d27so26152418wrb.6;
-        Mon, 08 Nov 2021 03:05:14 -0800 (PST)
+        Mon, 8 Nov 2021 06:08:19 -0500
+Received: from mail-wm1-x32d.google.com (mail-wm1-x32d.google.com [IPv6:2a00:1450:4864:20::32d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C7793C061570
+        for <linux-kernel@vger.kernel.org>; Mon,  8 Nov 2021 03:05:33 -0800 (PST)
+Received: by mail-wm1-x32d.google.com with SMTP id y84-20020a1c7d57000000b00330cb84834fso14749781wmc.2
+        for <linux-kernel@vger.kernel.org>; Mon, 08 Nov 2021 03:05:33 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:mail-followup-to:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=DwStbK3RkDE5mMWd/g0RKBI9MVvEJL/dRmmFtbZvBbw=;
-        b=p2zInDakE0bXtpgmzVtWf/GEkKnU1lgwJopnm9I3jFqXITqawExS/dKDpX/q+LrjlL
-         OgR3Dsv9e9MdRQycwsIvHAeplCCyFp0woZksSfzOqiW/Y6H8oz01kHYG91BEMgkIUWfC
-         NRSlWPb9Eby5xm1ubI1joVKLD2FiboVwnOylljpuEOjjPhtJC974x0UhF5ywtcLGRqAV
-         fGiL+keyB48st5ob15L76b/YXn577+ZT8tFNotje2yplwgr/XMtEfegRmgcYx506vNOS
-         cvtUZr86us+Re9c21Z205+13FimtJa65GjaJ0ucd46qswlBlK+GqMJms6nr29sOx9hdd
-         oblA==
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
+        bh=8N0EVvSK7cmgp6FySmGDS9JBMa2kFHQv45CEzvjOUHw=;
+        b=bLOQrK8ZIDqtFnSGWZYIA0RlhIdqTgOSBo70mwisHpE89e9n5OIG1KxsZhU3u8cdv1
+         U4LlwtxgNqeWSK6cTdTLip46Vja6E6ueuydYJcR7RRtkJk5yjnwznIOUx2+/9tt23LLp
+         DBM2BqNKliyfsBX6/YoGD/nqtUV210UsgGEtjkiCcMFJwLmLirlvcxAhSd3yd4QDk1L8
+         u41bGsaeR3gq4BNR+aqbJ9hzpEd0bJn1S6pO6vaOzz/FSEHN2FD3ry5bXwJRbYakDcIa
+         yDrPpLUoS/SZx9SCPJx8xnRZcxLg62XIThp4/3a/ry6NyMVj8a1QJLi42Qkcl/xmNq15
+         Susg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id
-         :mail-followup-to:references:mime-version:content-disposition
-         :in-reply-to:user-agent;
-        bh=DwStbK3RkDE5mMWd/g0RKBI9MVvEJL/dRmmFtbZvBbw=;
-        b=cFuUt1onSoYss819+FrBzaO4S6kqAMIrw60R5NATfrbku2k/R/obBbeoGieprPiHOk
-         qqv8IBvLFdxXRBPOsZ9C+Ej1FbDxyfbW2Oe06YfWlCbjWDR3wAbj4SThRC6WPWs//nX3
-         v3utfbY0QKfpBg3GIoPRH3nwunDfggXFolI4B+21lfIFe2d5RchtPhh8QNZzOTOBGseS
-         aCg6c6tlwmQepZVGkUVplHkFbXD++XgL/ZiwNHuOGFe7olxzUF+MpemhPRD1AHSt3XSn
-         UxxVd5zV+Ar31+IKUAV3pbG7MRFpqWdlWCQyqLJ9kzhCFLNcetvcPniqq9Gg/5h4u/f7
-         foMg==
-X-Gm-Message-State: AOAM531bthPmU++lDGmme9aEwYH14W0bWqnooHDhTyEcRUKy98n8PgX+
-        FA3XHCv3x+GPzesu7I5sMZc=
-X-Google-Smtp-Source: ABdhPJw6TnSOF8OLxiM0GA+jRtJvANkJzG7hmjyS2xEoUAS8WdIzVolqFFR3P9DzimJ3e7a0KdUj3Q==
-X-Received: by 2002:a5d:4a44:: with SMTP id v4mr56635175wrs.246.1636369513184;
-        Mon, 08 Nov 2021 03:05:13 -0800 (PST)
-Received: from gmail.com ([81.168.73.77])
-        by smtp.gmail.com with ESMTPSA id r17sm16415094wmq.11.2021.11.08.03.05.11
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Mon, 08 Nov 2021 03:05:12 -0800 (PST)
-Date:   Mon, 8 Nov 2021 11:05:09 +0000
-From:   Martin Habets <habetsm.xilinx@gmail.com>
-To:     davidcomponentone@gmail.com
-Cc:     ecree.xilinx@gmail.com, davem@davemloft.net, kuba@kernel.org,
-        hkallweit1@gmail.com, bhelgaas@google.com, yuehaibing@huawei.com,
-        arnd@arndb.de, yang.guang5@zte.com.cn, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Zeal Robot <zealci@zte.com.cn>
-Subject: Re: [PATCH] sfc: use swap() to make code cleaner
-Message-ID: <20211108110509.yjn4o22en2w22uwp@gmail.com>
-Mail-Followup-To: davidcomponentone@gmail.com, ecree.xilinx@gmail.com,
-        davem@davemloft.net, kuba@kernel.org, hkallweit1@gmail.com,
-        bhelgaas@google.com, yuehaibing@huawei.com, arnd@arndb.de,
-        yang.guang5@zte.com.cn, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Zeal Robot <zealci@zte.com.cn>
-References: <20211104065350.1834911-1-yang.guang5@zte.com.cn>
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition;
+        bh=8N0EVvSK7cmgp6FySmGDS9JBMa2kFHQv45CEzvjOUHw=;
+        b=F93jH5JZtxCDkK+eeP63yten0x10/uHrC3dy+65Z9/5weFvdImKverXZix6FezBYrx
+         gCESK+NshGoi1GfP9Uq+STebuLk67zpPJPhevW3Oe46OaBydPSbBFUOVEJqzLPeGZB/+
+         1NLAtJJQEvyRR6LjLh+iBYCzmjKXFVUaPN/oL6emlMYGxvjx/dBwKT8GBFnQ19H7bQgG
+         Snr9dS26o611+3XcmatL4uujUB93vhTR+Le33KoH016xG1LmLv0wMY1rNxTBWk+YPvnu
+         9tyacRaVIjwkH1tV03qgk/MqSUzxPJfZ19blVasKjpz1Uqw/IowGzzogKIaCwpYilt+j
+         IqBA==
+X-Gm-Message-State: AOAM532kZ9CQqL7yzrZCn+vh+3LPQJhewfsGZ3ee+CqpZrCXcKVSJiAZ
+        4f+/JglhbSnQMQYreu5K9Z6pgyaB4iOh0Uc8
+X-Google-Smtp-Source: ABdhPJyFW00fs7JeWVvHs079TdXUCXEqYaF91jOr4IkIFps6rWM7SUpqmbgSA3mNKRnPRUpz+tS8/w==
+X-Received: by 2002:a7b:c5d8:: with SMTP id n24mr53997110wmk.51.1636369532216;
+        Mon, 08 Nov 2021 03:05:32 -0800 (PST)
+Received: from maple.lan (cpc141216-aztw34-2-0-cust174.18-1.cable.virginm.net. [80.7.220.175])
+        by smtp.gmail.com with ESMTPSA id t127sm20059156wma.9.2021.11.08.03.05.31
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 08 Nov 2021 03:05:31 -0800 (PST)
+Date:   Mon, 8 Nov 2021 11:05:30 +0000
+From:   Daniel Thompson <daniel.thompson@linaro.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Jason Wessel <jason.wessel@windriver.com>,
+        linux-kernel@vger.kernel.org,
+        Douglas Anderson <dianders@chromium.org>
+Subject: [GIT PULL] kgdb changes for v5.16
+Message-ID: <20211108110530.x7ztji4kavmqfecj@maple.lan>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20211104065350.1834911-1-yang.guang5@zte.com.cn>
-User-Agent: NeoMutt/20170113 (1.7.2)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 04, 2021 at 02:53:50PM +0800, davidcomponentone@gmail.com wrote:
-> From: Yang Guang <yang.guang5@zte.com.cn>
-> 
-> Use the macro 'swap()' defined in 'include/linux/minmax.h' to avoid
-> opencoding it.
-> 
-> Reported-by: Zeal Robot <zealci@zte.com.cn>
-> Signed-off-by: Yang Guang <yang.guang5@zte.com.cn>
-> ---
->  drivers/net/ethernet/sfc/falcon/efx.c | 8 ++------
->  1 file changed, 2 insertions(+), 6 deletions(-)
-> 
-> diff --git a/drivers/net/ethernet/sfc/falcon/efx.c b/drivers/net/ethernet/sfc/falcon/efx.c
-> index c68837a951f4..314c9c69eb0e 100644
-> --- a/drivers/net/ethernet/sfc/falcon/efx.c
-> +++ b/drivers/net/ethernet/sfc/falcon/efx.c
-> @@ -817,9 +817,7 @@ ef4_realloc_channels(struct ef4_nic *efx, u32 rxq_entries, u32 txq_entries)
->  	efx->rxq_entries = rxq_entries;
->  	efx->txq_entries = txq_entries;
->  	for (i = 0; i < efx->n_channels; i++) {
-> -		channel = efx->channel[i];
-> -		efx->channel[i] = other_channel[i];
-> -		other_channel[i] = channel;
-> +		swap(efx->channel[i], other_channel[i]);
->  	}
+The following changes since commit e4e737bb5c170df6135a127739a9e6148ee3da82:
 
-The braces are no longer needed. Remove those.
+  Linux 5.15-rc2 (2021-09-19 17:28:22 -0700)
 
-Martin
+are available in the Git repository at:
 
->  
->  	/* Restart buffer table allocation */
-> @@ -863,9 +861,7 @@ ef4_realloc_channels(struct ef4_nic *efx, u32 rxq_entries, u32 txq_entries)
->  	efx->rxq_entries = old_rxq_entries;
->  	efx->txq_entries = old_txq_entries;
->  	for (i = 0; i < efx->n_channels; i++) {
-> -		channel = efx->channel[i];
-> -		efx->channel[i] = other_channel[i];
-> -		other_channel[i] = channel;
-> +		swap(efx->channel[i], other_channel[i]);
->  	}
->  	goto out;
->  }
-> -- 
-> 2.30.2
+  git://git.kernel.org/pub/scm/linux/kernel/git/danielt/linux.git/ tags/kgdb-5.16-rc1
+
+for you to fetch changes up to b77dbc86d60459b42ab375e4e23172e7245f2854:
+
+  kdb: Adopt scheduler's task classification (2021-11-03 17:21:37 +0000)
+
+----------------------------------------------------------------
+kgdb patches for 5.16
+
+A single patch this cycle. We replace some open-coded routines to
+classify task states with the scheduler's own function to do this.
+Alongside the obvious benefits of removing funky code and aligning
+more exactly with the scheduler's task classification, this also
+fixes a long standing compiler warning by removing the open-coded
+routines that generated the warning.
+
+Signed-off-by: Daniel Thompson <daniel.thompson@linaro.org>
+
+----------------------------------------------------------------
+Daniel Thompson (1):
+      kdb: Adopt scheduler's task classification
+
+ kernel/debug/kdb/kdb_bt.c      |  16 +++---
+ kernel/debug/kdb/kdb_main.c    |  37 ++++++-------
+ kernel/debug/kdb/kdb_private.h |   4 +-
+ kernel/debug/kdb/kdb_support.c | 118 +++++++++--------------------------------
+ 4 files changed, 53 insertions(+), 122 deletions(-)
