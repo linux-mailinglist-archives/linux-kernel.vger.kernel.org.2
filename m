@@ -2,84 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C1CBF4481C1
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Nov 2021 15:28:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CE48B4481C4
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Nov 2021 15:29:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240409AbhKHObb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Nov 2021 09:31:31 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41074 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239496AbhKHOb2 (ORCPT
+        id S240444AbhKHObf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Nov 2021 09:31:35 -0500
+Received: from smtp-out2.suse.de ([195.135.220.29]:56550 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239496AbhKHObe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Nov 2021 09:31:28 -0500
-Received: from mail-ot1-x329.google.com (mail-ot1-x329.google.com [IPv6:2607:f8b0:4864:20::329])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 00ED8C061570;
-        Mon,  8 Nov 2021 06:28:43 -0800 (PST)
-Received: by mail-ot1-x329.google.com with SMTP id p11-20020a9d4e0b000000b0055a5741bff7so25762569otf.2;
-        Mon, 08 Nov 2021 06:28:43 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=zddqLgqGTr+VISPPPEfVDEa95nv8B5wIf1fGQsuOVx8=;
-        b=GC+UtHWket+w6TWXUa5PdiX9Pb30dK4kmfMuCfGTetawhHAv5r1Nbgpp+9Q41qhWup
-         +NOHRCk8b3/Cl8U0QRi67lqE7HTPwfYDFkg/jdo2x0yWjcW5mUJ7M0Kgpp7pwrr02zOb
-         XHqsIaEKPoP/xu0BGHLQLRidFJbpO7GVETW9tOcvOkohDJiumMaZO6gDTRPWWgD4SdU0
-         Gk6i8JykmXiP60934Lu8LyCYITRGYObpbz0jHz1suN2/mTwqQJ5wEcA447D4qNmAcCfl
-         V6vZMeK6sRi/loHOJfJ3RlyLAVyBHA3/GoppeKBU1UIBW8+yl7lMAHO6/lnocg89KM/k
-         f5EQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=zddqLgqGTr+VISPPPEfVDEa95nv8B5wIf1fGQsuOVx8=;
-        b=axfBk+bENKUk7b5/hOfbFXpcLrwqXL7YAZfTnmSScnIqvuWgXCOUDBw+eJHDKBOcAb
-         XG5FAYYY2T1WSh4+EKY8nBWVW9i0aD3SKmhtFMysLXFHgao4Anuz5euger1WbiNQJzvU
-         aOvdtOBSGCx1EXFxvppGyjhFbD/FuEBRRnsF47ptv7xNMH2eSMPveG9YBDUYfObFXMIV
-         szE26sEA7tUbaOtLJWqko0Xbd0xGyQtO688zgbf3HMMuM78AQwsc1I9lip+aXphQMK8Z
-         AP+dEO472y4mspt+1TWpax5xXSVueiXPnW1h+2OclxfkI1N1wKhhEKciADq4GkVpSVDh
-         ifMA==
-X-Gm-Message-State: AOAM530Vord/9MEjEhZ0jOZSy17B+GGCzbSzrifuVs3pJ2dA4Zzy9Gv8
-        DaU3FPfN2qossmdbu2CKipDCPT4zCEGR48dBGT4=
-X-Google-Smtp-Source: ABdhPJxeViaX4NG9EdYM+G5nBy4wKZQWa0Jvkli7h35XTucwVncG8DVWP9a98vMrFs/BJpQ3gVoiAXXoJ6cgHySRfEQ=
-X-Received: by 2002:a9d:6f0e:: with SMTP id n14mr116986otq.173.1636381723402;
- Mon, 08 Nov 2021 06:28:43 -0800 (PST)
+        Mon, 8 Nov 2021 09:31:34 -0500
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id B08D41FD50;
+        Mon,  8 Nov 2021 14:28:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1636381729; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=vGSAJuzDE+ow2YU8o0uvQO+L1+wARe42Qt1VZLAC+t0=;
+        b=JWrnLIoplwTvpsLCB6Jyk5mViprnd5BbDXuXbKwcFQwbMZLCpgOhogAsdU5tciQzjhBV8C
+        SQzw+nW4NrefyRG7/GfNpwgySmOarwrDeRpLmYi5pk+Mwo0WDb4Jp0dpqW0lDs+a2Tx0gx
+        YNPDoV63nDIwnlyxEs5/qUm3X4wjjk0=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1636381729;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=vGSAJuzDE+ow2YU8o0uvQO+L1+wARe42Qt1VZLAC+t0=;
+        b=z1rkkFNr05FDwwy++6+/JYXpS8cCbJVTGIFLhEC18cGPtncbpCPaVHnesiUfIv0HkZHGbv
+        rUoxNzYM/+Vg7tCA==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 7E78913BA0;
+        Mon,  8 Nov 2021 14:28:49 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id yP7oHCE0iWHAJgAAMHmgww
+        (envelope-from <tzimmermann@suse.de>); Mon, 08 Nov 2021 14:28:49 +0000
+Message-ID: <2601406e-e959-5ad1-73fa-8aabd77e68c5@suse.de>
+Date:   Mon, 8 Nov 2021 15:28:48 +0100
 MIME-Version: 1.0
-References: <20211108134901.7449-1-ajaygargnsit@gmail.com> <YYkroa2v1ruwPRBN@kroah.com>
- <CAHP4M8WLaWa769hDJBWVwL7P7hadoTk+CE1sVba3tRVxpMRVtw@mail.gmail.com> <YYkv7ekV9ezpPOWx@kroah.com>
-In-Reply-To: <YYkv7ekV9ezpPOWx@kroah.com>
-From:   Ajay Garg <ajaygargnsit@gmail.com>
-Date:   Mon, 8 Nov 2021 19:58:31 +0530
-Message-ID: <CAHP4M8XxbqCBU9gnoT4vbCMbQCEuV=Nm8SpJRMtksorr7F1z9g@mail.gmail.com>
-Subject: Re: [PATCH v5] vt: keyboard: suppress warnings in vt_do_kdgkb_ioctl
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     jirislaby@kernel.org, andriy.shevchenko@linux.intel.com,
-        kernel@esmil.dk, linux-serial@vger.kernel.org,
-        linux-kernel@vger.kernel.org, paskripkin@gmail.com,
-        johan@kernel.org
-Content-Type: text/plain; charset="UTF-8"
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.2.1
+Subject: Re: [PATCH] drm/drm_plane.h: fix a typo: not -> note
+Content-Language: en-US
+To:     Sui Jingfeng <15330273260@189.cn>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>
+Cc:     dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        suijingfeng <suijingfeng@loongson.cn>
+References: <20211108132008.3631-1-15330273260@189.cn>
+From:   Thomas Zimmermann <tzimmermann@suse.de>
+In-Reply-To: <20211108132008.3631-1-15330273260@189.cn>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature";
+ boundary="------------OtlOtyfcgU6FYtxlMam1ECrF"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
->
-> You are listing two different things being done in this single commit.
->
-> It should be 2 different patches.
->
-> I would recommend getting more comfortable with Linux kernel development
-> by working in the drivers/staging/ portion of the kernel first.  And not
-> in the "core" kernel like tty/serial or other well-entrenched
-> subsystems.  That way you can learn the proper processes and workflows
-> better in an area of the kernel that is specifically designed just for
-> that, and not end up bothering the time of other kernel developers for
-> basic process issues like your recent patches have shown.
->
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--------------OtlOtyfcgU6FYtxlMam1ECrF
+Content-Type: multipart/mixed; boundary="------------CB9JmSlVS02yw0q36kGGKf88";
+ protected-headers="v1"
+From: Thomas Zimmermann <tzimmermann@suse.de>
+To: Sui Jingfeng <15330273260@189.cn>,
+ Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+ Maxime Ripard <mripard@kernel.org>, David Airlie <airlied@linux.ie>,
+ Daniel Vetter <daniel@ffwll.ch>
+Cc: dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+ suijingfeng <suijingfeng@loongson.cn>
+Message-ID: <2601406e-e959-5ad1-73fa-8aabd77e68c5@suse.de>
+Subject: Re: [PATCH] drm/drm_plane.h: fix a typo: not -> note
+References: <20211108132008.3631-1-15330273260@189.cn>
+In-Reply-To: <20211108132008.3631-1-15330273260@189.cn>
 
-Ok, thanks Greg for the suggestion. Now looking to work with someone
-on an active component in drivers/staging, to come up to terms :)
-Thanks everyone for their time.
+--------------CB9JmSlVS02yw0q36kGGKf88
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: base64
 
+SGkNCg0KQW0gMDguMTEuMjEgdW0gMTQ6MjAgc2NocmllYiBTdWkgSmluZ2Zlbmc6DQo+IEZy
+b206IHN1aWppbmdmZW5nIDxzdWlqaW5nZmVuZ0Bsb29uZ3Nvbi5jbj4NCj4gDQo+IFNpZ25l
+ZC1vZmYtYnk6IHN1aWppbmdmZW5nIDxzdWlqaW5nZmVuZ0Bsb29uZ3Nvbi5jbj4NCg0KVGhp
+cyB3YXMgZml4ZWQgYSB3aGlsZSBhZ28uIFsxXSBJZiB5b3Ugd2FudCB0byB3b3JrIG9uIHRo
+ZSBEUk0gDQpmcmFtZXdvcmssIHBsZWFzZSB1c2UgdGhlIGxhdGVzdCByZXBvc2l0b3J5IGZy
+b20gZHJtLXRpcC4gWzJdDQoNCkJlc3QgcmVnYXJkcw0KVGhvbWFzDQoNClsxXSANCmh0dHBz
+Oi8vY2dpdC5mcmVlZGVza3RvcC5vcmcvZHJtL2RybS1taXNjL2NvbW1pdC8/aWQ9NDA4N2Qy
+ZmIyODZjODVhMWJkZTcyZTc1MjNjNDk2MDgwZWYzOTAzNQ0KWzJdIGh0dHBzOi8vY2dpdC5m
+cmVlZGVza3RvcC5vcmcvZHJtL2RybS10aXAvDQoNCj4gLS0tDQo+ICAgaW5jbHVkZS9kcm0v
+ZHJtX3BsYW5lLmggfCAyICstDQo+ICAgMSBmaWxlIGNoYW5nZWQsIDEgaW5zZXJ0aW9uKCsp
+LCAxIGRlbGV0aW9uKC0pDQo+IA0KPiBkaWZmIC0tZ2l0IGEvaW5jbHVkZS9kcm0vZHJtX3Bs
+YW5lLmggYi9pbmNsdWRlL2RybS9kcm1fcGxhbmUuaA0KPiBpbmRleCBmZWQ5N2UzNTYyNmYu
+LjBjMTEwMmRjNGQ4OCAxMDA2NDQNCj4gLS0tIGEvaW5jbHVkZS9kcm0vZHJtX3BsYW5lLmgN
+Cj4gKysrIGIvaW5jbHVkZS9kcm0vZHJtX3BsYW5lLmgNCj4gQEAgLTQzLDcgKzQzLDcgQEAg
+ZW51bSBkcm1fc2NhbGluZ19maWx0ZXIgew0KPiAgIC8qKg0KPiAgICAqIHN0cnVjdCBkcm1f
+cGxhbmVfc3RhdGUgLSBtdXRhYmxlIHBsYW5lIHN0YXRlDQo+ICAgICoNCj4gLSAqIFBsZWFz
+ZSBub3QgdGhhdCB0aGUgZGVzdGluYXRpb24gY29vcmRpbmF0ZXMgQGNydGNfeCwgQGNydGNf
+eSwgQGNydGNfaCBhbmQNCj4gKyAqIFBsZWFzZSBub3RlIHRoYXQgdGhlIGRlc3RpbmF0aW9u
+IGNvb3JkaW5hdGVzIEBjcnRjX3gsIEBjcnRjX3ksIEBjcnRjX2ggYW5kDQo+ICAgICogQGNy
+dGNfdyBhbmQgdGhlIHNvdXJjZSBjb29yZGluYXRlcyBAc3JjX3gsIEBzcmNfeSwgQHNyY19o
+IGFuZCBAc3JjX3cgYXJlIHRoZQ0KPiAgICAqIHJhdyBjb29yZGluYXRlcyBwcm92aWRlZCBi
+eSB1c2Vyc3BhY2UuIERyaXZlcnMgc2hvdWxkIHVzZQ0KPiAgICAqIGRybV9hdG9taWNfaGVs
+cGVyX2NoZWNrX3BsYW5lX3N0YXRlKCkgYW5kIG9ubHkgdXNlIHRoZSBkZXJpdmVkIHJlY3Rh
+bmdsZXMgaW4NCj4gDQoNCi0tIA0KVGhvbWFzIFppbW1lcm1hbm4NCkdyYXBoaWNzIERyaXZl
+ciBEZXZlbG9wZXINClNVU0UgU29mdHdhcmUgU29sdXRpb25zIEdlcm1hbnkgR21iSA0KTWF4
+ZmVsZHN0ci4gNSwgOTA0MDkgTsO8cm5iZXJnLCBHZXJtYW55DQooSFJCIDM2ODA5LCBBRyBO
+w7xybmJlcmcpDQpHZXNjaMOkZnRzZsO8aHJlcjogSXZvIFRvdGV2DQo=
 
-Thanks and Regards,
-Ajay
+--------------CB9JmSlVS02yw0q36kGGKf88--
+
+--------------OtlOtyfcgU6FYtxlMam1ECrF
+Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="OpenPGP_signature"
+
+-----BEGIN PGP SIGNATURE-----
+
+wsF5BAABCAAjFiEExndm/fpuMUdwYFFolh/E3EQov+AFAmGJNCAFAwAAAAAACgkQlh/E3EQov+Dw
+fw//TxnsWQDHBrQt3WhJCBD66qJQDrzNOEVXaKUIBmASL/+bfboKhezEHmbOYgaBkGX/WUkTx6lZ
+VOo+lPDFibh3HufsvxlOI8cHurrvq0hACzmuwwGTmecSnGflMjs71Ex+lSwKJ6hRv199hoNGHUbA
+lWTr04aNps7yGd4W2ZxY0knZRiQ3V2+6nEwKOzUqfFQmCup8t5YSygSg0c04ot3cWGVWeH4wC2Wv
+1Njd1bwUFWkIJwQzGm4j4Hjz4SAC0xuvtxoyxCSYC/J08L5qgWyfbHb1MA9YT+CqvBYHEvMhjemy
+glx3SrwsFqURqeUcAPoCYvQmudgcRPpZBJBSH06qFGOtfMSMEgiv34pThz62BvHSuTiFwCjZf5gL
+oVkNSueuyAEAJDYxzX7icbKluf4f3Zz9iYD0FpoP8Cl15QsuD1JhimG+tfgTXjWmJKR5aoIcy6+a
+Awsis4qMD+V0MJV/NQBdjHrrAFJ0u91VLpI29Vwk4KwOkOdGjEMhF7NNq5+HLOMupNJQp8xbmNEd
+mwaqVmMav25uVhRoofSh+mCDMgVXTfvuVxjsYPcqNs/KkUZMjF7kOPIUqyowjvmq5aSlx2Mmj159
+LOK1HHrfX2znEz6LjYbCr9+0O3NjGYvoa4rb++/luEJIc4GEyGPZ95lkAiwllxcVoebUxHDeUqWq
+0zg=
+=gBPj
+-----END PGP SIGNATURE-----
+
+--------------OtlOtyfcgU6FYtxlMam1ECrF--
