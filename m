@@ -2,106 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 979DC447918
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Nov 2021 05:05:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B66C6447927
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Nov 2021 05:10:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237329AbhKHEIC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 7 Nov 2021 23:08:02 -0500
-Received: from szxga01-in.huawei.com ([45.249.212.187]:14723 "EHLO
-        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236468AbhKHEH7 (ORCPT
+        id S237358AbhKHENU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 7 Nov 2021 23:13:20 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42574 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236536AbhKHENS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 7 Nov 2021 23:07:59 -0500
-Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.56])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4HncsK6WcHzZckx;
-        Mon,  8 Nov 2021 12:03:01 +0800 (CST)
-Received: from dggema774-chm.china.huawei.com (10.1.198.216) by
- dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
- 15.1.2308.15; Mon, 8 Nov 2021 12:05:13 +0800
-Received: from use12-sp2.huawei.com (10.67.189.174) by
- dggema774-chm.china.huawei.com (10.1.198.216) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2308.15; Mon, 8 Nov 2021 12:05:12 +0800
-From:   Xiaoming Ni <nixiaoming@huawei.com>
-To:     <linux-kernel@vger.kernel.org>, <linux@armlinux.org.uk>,
-        <arnd@arndb.de>, <olof@lixom.net>, <21cnbao@gmail.com>,
-        <grant.likely@secretlab.ca>, <santosh.shilimkar@ti.com>,
-        <m.szyprowski@samsung.com>, <tony@atomide.com>,
-        <t.figa@samsung.com>, <linux-arm-kernel@lists.infradead.org>
-CC:     <nixiaoming@huawei.com>, <wangle6@huawei.com>
-Subject: [PATCH] arm:cache-l2x0: Fix resource leak in the l2x0_of_init() failed branch
-Date:   Mon, 8 Nov 2021 12:05:10 +0800
-Message-ID: <20211108040510.14494-1-nixiaoming@huawei.com>
-X-Mailer: git-send-email 2.27.0
+        Sun, 7 Nov 2021 23:13:18 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B981FC061570;
+        Sun,  7 Nov 2021 20:10:34 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
+        Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
+        Content-Description:In-Reply-To:References;
+        bh=ktUs3uTQ8/E5fdzFkqY1zH7fnzNTHiKLIPKl79EDTvQ=; b=rz69hoxIcde3ZSkZGxzrx8B3G3
+        NZ6ipfKdYo7Dgv0EQAZqiT/2KjOgglkGFI5PCGdSzPIFGuNMW7Pg6mYhHUqsdM2/uAWAfEcIZdixl
+        dri2cK+oMRkmy/8S11UkympF9k6ohjmCUXcasgTnz1SpbJEy8bvwlPeuSB9EH8ju9xPAGstrkMhA+
+        VN1hfVqbAuwlG+Krp34Fg6ez5l2mxpIboxKVvpzl1ASZvTKcOBquL19nrC9NL14ro8LjvQrl5JSAD
+        ae4HVB0MXWulOgw5oTH1VoWBTwWupJgDaOi29ZoE5sG6qg8QXyndUsWfjxEjr3a9hyLoLSTg3kkTd
+        O1qRXaZA==;
+Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mjvur-0089Qy-Hv; Mon, 08 Nov 2021 04:06:26 +0000
+From:   "Matthew Wilcox (Oracle)" <willy@infradead.org>
+To:     "Darrick J . Wong " <djwong@kernel.org>
+Cc:     "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        linux-xfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-block@vger.kernel.org,
+        Jens Axboe <axboe@kernel.dk>,
+        Christoph Hellwig <hch@infradead.org>
+Subject: [PATCH v2 00/28] iomap/xfs folio patches
+Date:   Mon,  8 Nov 2021 04:05:23 +0000
+Message-Id: <20211108040551.1942823-1-willy@infradead.org>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.67.189.174]
-X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
- dggema774-chm.china.huawei.com (10.1.198.216)
-X-CFilter-Loop: Reflected
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-During the code review, some problems were found in the function l2x0_of_init().
-1. Do not call Of_put_node() after calling of_find_match_node().
-2. When __l2c_init() is called for identification, l2x0_base is not released.
+This patchset converts XFS & iomap to use folios, and gets them to a
+state where they can handle multi-page folios.  Applying these patches
+is not yet sufficient to actually start using multi-page folios for
+XFS; more page cache changes are needed.  I don't anticipate needing to
+touch XFS again until we're at the point where we want to convert the
+aops to be type-safe.  It completes an xfstests run with no unexpected
+failures.  Most of these patches have been posted before and I've retained
+acks/reviews where I thought them reasonable.  Some patches are new.
 
-Invoking Of_put_node() and iounmap() is added to solve this problem.
+v2:
+ - Added review tags from Jens, Darrick & Christoph (thanks!)
+ - Added folio_zero_* wrappers around zero_user_*()
+ - Added a patch to rename AS_THP_SUPPORT
+ - Added a patch to convert __block_write_begin_int() to take a folio
+ - Split the iomap_add_to_ioend() patch into three
+ - Updated changelog of bio_add_folio() (Jens)
+ - Adjusted whitespace of bio patches (Christoph, Jens)
+ - Improved changelog of readahead conversion to explain why the put_page()
+   disappeared (Christoph)
+ - Add a patch to zero an entire folio at a time, instead of limiting to
+   a page
+ - Switch pos & end_pos back to being u64 from loff_t
+ - Call block_write_end() and ->page_done with the head page of the folio,
+   as that's what those functions expect.
 
-Fixes: 8c369264b6de3 ("ARM: 7009/1: l2x0: Add OF based initialization")
-Fixes: 91c2ebb90b189 ("ARM: 7114/1: cache-l2x0: add resume entry for l2 in secure mode")
-Fixes: 6b49241ac2525 ("ARM: 8259/1: l2c: Refactor the driver to use commit-like interface")
-Signed-off-by: Xiaoming Ni <nixiaoming@huawei.com>
----
- arch/arm/mm/cache-l2x0.c | 17 ++++++++++++++---
- 1 file changed, 14 insertions(+), 3 deletions(-)
+I intend to push patch 1 upstream myself (before 5.16), but I've included
+it here to avoid nasty messages from the build-bots.  I can probably
+persuade Linus to take patches 2-4 as well if Darrick's not comfortable
+taking them as part of the iomap changes.
 
-diff --git a/arch/arm/mm/cache-l2x0.c b/arch/arm/mm/cache-l2x0.c
-index 43d91bfd2360..105bf7575cdf 100644
---- a/arch/arm/mm/cache-l2x0.c
-+++ b/arch/arm/mm/cache-l2x0.c
-@@ -1766,17 +1766,22 @@ int __init l2x0_of_init(u32 aux_val, u32 aux_mask)
- 	u32 cache_id, old_aux;
- 	u32 cache_level = 2;
- 	bool nosync = false;
-+	int ret;
- 
- 	np = of_find_matching_node(NULL, l2x0_ids);
- 	if (!np)
- 		return -ENODEV;
- 
--	if (of_address_to_resource(np, 0, &res))
-+	if (of_address_to_resource(np, 0, &res)) {
-+		of_put_node(np);
- 		return -ENODEV;
-+	}
- 
- 	l2x0_base = ioremap(res.start, resource_size(&res));
--	if (!l2x0_base)
-+	if (!l2x0_base) {
-+		of_put_node(np);
- 		return -ENOMEM;
-+	}
- 
- 	l2x0_saved_regs.phy_base = res.start;
- 
-@@ -1820,6 +1825,12 @@ int __init l2x0_of_init(u32 aux_val, u32 aux_mask)
- 	else
- 		cache_id = readl_relaxed(l2x0_base + L2X0_CACHE_ID);
- 
--	return __l2c_init(data, aux_val, aux_mask, cache_id, nosync);
-+	ret = _l2c_init(data, aux_val, aux_mask, cache_id, nosync);
-+	if (ret != 0) {
-+		iounmap(l2x0_base);
-+		l2x0_base = NULL;
-+	}
-+	of_put_node(np);
-+	return ret;
- }
- #endif
+These changes are also available at:
+  git://git.infradead.org/users/willy/pagecache.git heads/folio-iomap
+
+I intend to rebase that branch to include any further R-b tags (some of
+the patches are new and don't have reviews).
+
+Matthew Wilcox (Oracle) (28):
+  csky,sparc: Declare flush_dcache_folio()
+  mm: Add functions to zero portions of a folio
+  fs: Remove FS_THP_SUPPORT
+  fs: Rename AS_THP_SUPPORT and mapping_thp_support
+  block: Add bio_add_folio()
+  block: Add bio_for_each_folio_all()
+  fs/buffer: Convert __block_write_begin_int() to take a folio
+  iomap: Convert to_iomap_page to take a folio
+  iomap: Convert iomap_page_create to take a folio
+  iomap: Convert iomap_page_release to take a folio
+  iomap: Convert iomap_releasepage to use a folio
+  iomap: Add iomap_invalidate_folio
+  iomap: Pass the iomap_page into iomap_set_range_uptodate
+  iomap: Convert bio completions to use folios
+  iomap: Use folio offsets instead of page offsets
+  iomap: Convert iomap_read_inline_data to take a folio
+  iomap: Convert readahead and readpage to use a folio
+  iomap: Convert iomap_page_mkwrite to use a folio
+  iomap: Convert __iomap_zero_iter to use a folio
+  iomap: Convert iomap_write_begin() and iomap_write_end() to folios
+  iomap: Convert iomap_write_end_inline to take a folio
+  iomap,xfs: Convert ->discard_page to ->discard_folio
+  iomap: Simplify iomap_writepage_map()
+  iomap: Simplify iomap_do_writepage()
+  iomap: Convert iomap_add_to_ioend() to take a folio
+  iomap: Convert iomap_migrate_page() to use folios
+  iomap: Support multi-page folios in invalidatepage
+  xfs: Support multi-page folios
+
+ Documentation/core-api/kernel-api.rst  |   1 +
+ arch/csky/abiv1/inc/abi/cacheflush.h   |   1 +
+ arch/csky/abiv2/inc/abi/cacheflush.h   |   2 +
+ arch/sparc/include/asm/cacheflush_32.h |   1 +
+ arch/sparc/include/asm/cacheflush_64.h |   1 +
+ block/bio.c                            |  22 ++
+ fs/buffer.c                            |  22 +-
+ fs/inode.c                             |   2 -
+ fs/internal.h                          |   2 +-
+ fs/iomap/buffered-io.c                 | 506 +++++++++++++------------
+ fs/xfs/xfs_aops.c                      |  24 +-
+ fs/xfs/xfs_icache.c                    |   2 +
+ include/linux/bio.h                    |  56 ++-
+ include/linux/fs.h                     |   1 -
+ include/linux/highmem.h                |  44 ++-
+ include/linux/iomap.h                  |   3 +-
+ include/linux/pagemap.h                |  26 +-
+ mm/highmem.c                           |   2 -
+ mm/shmem.c                             |   3 +-
+ 19 files changed, 431 insertions(+), 290 deletions(-)
+
 -- 
-2.27.0
+2.33.0
 
