@@ -2,120 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C858447B7F
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Nov 2021 09:01:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 22316447BB5
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Nov 2021 09:23:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237406AbhKHIEd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Nov 2021 03:04:33 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45896 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230103AbhKHIEc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Nov 2021 03:04:32 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C745F61215;
-        Mon,  8 Nov 2021 08:01:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1636358508;
-        bh=VXYA20R2SRYdOjmYkLbFw5nQYcDPEhoabZ39B2SUV+8=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=kOZ1VPOxC1sEfdiy2ntIGt0Rdo7zkYF3gEOmLVLPh/Y6StcJFH5Qv95GMH09ksbzf
-         X9T+rWocjQZ2SPgu6QqsRW4Hm2nDBd72aA7+AgGQJ4hdo+vzdUUKWZWeGaOWx01y25
-         2Ihqia21w0ReY+aKH4PA3m/6uP8bF2HvS0MmeZHi+MHPbPJul+eS7Bs+ZG/juN0jAB
-         bioFsumVvsc3WbUcIZdMcgWyQUCpg/4d+ccHtriV/9G/bdmU9sSLRth9fHvO669vV2
-         eZ+FsMImfKSteE53zEUbZ5PGsiQe28vNDe8xyIP+rQzVM2BDtRhFeNSilVei+ozUbB
-         KqtdDAsAH0piQ==
-Date:   Mon, 8 Nov 2021 08:01:42 +0000
-From:   Mauro Carvalho Chehab <mchehab@kernel.org>
-To:     Hans de Goede <hdegoede@redhat.com>
-Cc:     Tsuchiya Yuto <kitakar@gmail.com>,
-        Patrik Gfeller <patrik.gfeller@gmail.com>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Kaixu Xia <kaixuxia@tencent.com>,
-        Dan Carpenter <dan.carpenter@oracle.com>,
-        Arnd Bergmann <arnd@arndb.de>, linux-media@vger.kernel.org,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: Re: [BUG 5/5] [BUG] media: atomisp: atomisp causes touchscreen to
- stop working on Microsoft Surface 3
-Message-ID: <20211108080142.0195118e@sal.lan>
-In-Reply-To: <869d0e2c-b04a-ef35-cfe5-b372c646fce9@redhat.com>
-References: <20211017162337.44860-1-kitakar@gmail.com>
-        <20211017162337.44860-6-kitakar@gmail.com>
-        <103b5438-9f7c-7e89-28b9-29fe11eb818c@redhat.com>
-        <cfad27a4bfdd94417305e1519e2f450a4422844d.camel@gmail.com>
-        <310ace44-93d5-99a3-bb4c-371b0a13462d@redhat.com>
-        <20211108074101.033af4c5@sal.lan>
-        <869d0e2c-b04a-ef35-cfe5-b372c646fce9@redhat.com>
-X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.30; x86_64-redhat-linux-gnu)
+        id S237911AbhKHIZp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Nov 2021 03:25:45 -0500
+Received: from mswedge2.sunplus.com ([60.248.182.106]:39328 "EHLO
+        mg.sunplus.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S237880AbhKHIZo (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Nov 2021 03:25:44 -0500
+X-Greylist: delayed 1190 seconds by postgrey-1.27 at vger.kernel.org; Mon, 08 Nov 2021 03:25:43 EST
+X-MailGates: (compute_score:DELIVER,40,3)
+Received: from 172.17.9.112
+        by mg02.sunplus.com with MailGates ESMTP Server V5.0(53126:0:AUTH_RELAY)
+        (envelope-from <tony.huang@sunplus.com>); Mon, 08 Nov 2021 16:02:57 +0800 (CST)
+Received: from sphcmbx02.sunplus.com.tw (172.17.9.112) by
+ sphcmbx02.sunplus.com.tw (172.17.9.112) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.23; Mon, 8 Nov 2021 16:02:52 +0800
+Received: from sphcmbx02.sunplus.com.tw ([::1]) by sphcmbx02.sunplus.com.tw
+ ([fe80::f8bb:bd77:a854:5b9e%14]) with mapi id 15.00.1497.023; Mon, 8 Nov 2021
+ 16:02:52 +0800
+From:   =?utf-8?B?VG9ueSBIdWFuZyDpu4Pmh7fljpo=?= <tony.huang@sunplus.com>
+To:     Randy Dunlap <rdunlap@infradead.org>,
+        Tony Huang <tonyhuang.sunplus@gmail.com>,
+        "ulf.hansson@linaro.org" <ulf.hansson@linaro.org>,
+        "robh+dt@kernel.org" <robh+dt@kernel.org>,
+        "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "p.zabel@pengutronix.de" <p.zabel@pengutronix.de>
+CC:     =?utf-8?B?V2VsbHMgTHUg5ZGC6Iqz6aiw?= <wells.lu@sunplus.com>
+Subject: RE: [PATCH 2/2] mmc: Add mmc driver for Sunplus SP7021
+Thread-Topic: [PATCH 2/2] mmc: Add mmc driver for Sunplus SP7021
+Thread-Index: AQHX0xnrVkLZ1EJZzk2i1wkvK0MjAqv2FiQAgAMuw4A=
+Date:   Mon, 8 Nov 2021 08:02:52 +0000
+Message-ID: <6ac06fbd9280493ea2f34c6b6f7714ef@sphcmbx02.sunplus.com.tw>
+References: <1636208598-18234-1-git-send-email-tony.huang@sunplus.com>
+ <1636208598-18234-3-git-send-email-tony.huang@sunplus.com>
+ <3da7cacf-d5ab-9f08-6d15-a75cf952d43d@infradead.org>
+In-Reply-To: <3da7cacf-d5ab-9f08-6d15-a75cf952d43d@infradead.org>
+Accept-Language: zh-TW, en-US
+Content-Language: zh-TW
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [172.25.108.54]
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Mon, 8 Nov 2021 08:55:53 +0100
-Hans de Goede <hdegoede@redhat.com> escreveu:
-
-> Hi Mauro,
-> 
-> On 11/8/21 08:41, Mauro Carvalho Chehab wrote:
-> > Em Mon, 8 Nov 2021 00:39:38 +0100
-> > Hans de Goede <hdegoede@redhat.com> escreveu:
-> >   
-> >> Hi,
-> >>
-> >> On 10/21/21 11:52, Tsuchiya Yuto wrote:  
-> >>> Thank you for your comment :-)
-> >>>
-> >>> First, I need to correct what I said in the previous mail. I later found
-> >>> that loading only "atomisp" (as well as its dependency,
-> >>> atomisp_gmin_platform) does not cause this issue.
-> >>>
-> >>> What causes this issue is rather, loading sensor drivers (as well as its
-> >>> dependency, atomisp_gmin_platform).
-> >>>
-> >>> These sensor drivers for surface3 are both not upstream, but I made them
-> >>> as similar as possible to the upstreamed ones. So, I guess this issue
-> >>> can still be reproducible on some other devices.    
-> >>
-> >> I've run some test on my own surface3 and the problem is the writing
-> >> of 0x62 (which becomes just 0x02) to the 0x57 register of the PMIC,
-> >> writing 0x00 to that after loading the sensor driver makes things work
-> >> again.
-> >>
-> >> I have not had time to investigate this further.
-> >>
-> >> I used media-staging + your sensor drivers from:
-> >> https://github.com/kitakar5525/surface3-atomisp-cameras.git
-> >>
-> >> Which was enough to figure this out, but I've not actually gotten
-> >> either of the cameras working :|  I get:
-> >>
-> >> [user@fedora nvt]$ ./atomisp-test.sh 
-> >> p0: OPEN video device `/dev/video2'  
-> > 
-> > After the patch that moved the output preview to be the first one,
-> > you should probably use /dev/video0 here:  
-> 
-> Thanks for the hint, but I've not rebased my tree to those latest couple
-> of patches yet, the same tree does work on the T101HA with /dev/video2 :)
-> 
-> I think this may be a module load ordering issue, I believe that the
-> sensor drivers need to be loaded before the atomisp driver itself
-> and on the T101HA we are hitting this "sweet spot", where as on
-> the surface I was loading the not yet merged sensor drivers manually,
-> causing them to be loaded later.
-
-Could be. The atomisp driver should be using V4L2 async kAPI, in
-order to properly register the sensors as their init code finishes
-to register.
-
-Right now, the registration logic inside atomisp waits for the first
-sensor to be available. So, everything works fine on devices with
-just one sensor, like Asus T101, but devices with multiple sensors 
-may end having just one of them registered.
-
-Regards,
-Mauro
+RGVhciBSYW5keToNCj4gW3Jlc2VuZGluZywgaGFkIHNvbWUga2luZCBvZiBlbWFpbCBlcnJvciBv
+biB0aGUgZmlyc3QgdHJ5XQ0KPiANCj4gT24gMTEvNi8yMSA3OjIzIEFNLCBUb255IEh1YW5nIHdy
+b3RlOg0KPiA+IGRpZmYgLS1naXQgYS9kcml2ZXJzL21tYy9ob3N0L0tjb25maWcgYi9kcml2ZXJz
+L21tYy9ob3N0L0tjb25maWcgaW5kZXgNCj4gPiBjY2MxNDhjLi4yYTc4Y2JjIDEwMDY0NA0KPiA+
+IC0tLSBhL2RyaXZlcnMvbW1jL2hvc3QvS2NvbmZpZw0KPiA+ICsrKyBiL2RyaXZlcnMvbW1jL2hv
+c3QvS2NvbmZpZw0KPiA+IEBAIC0xNCw2ICsxNCwxNSBAQCBjb25maWcgTU1DX0RFQlVHDQo+ID4g
+ICAJICBhZGRlZCBob3N0IGRyaXZlcnMgcGxlYXNlIGRvbid0IGludmVudCB0aGVpciBwcml2YXRl
+IG1hY3JvIGZvcg0KPiA+ICAgCSAgZGVidWdnaW5nLg0KPiA+DQo+ID4gK2NvbmZpZyBNTUNfU1VO
+UExVUw0KPiA+ICsJdHJpc3RhdGUgIlN1bnBsdXMgU1A3MDIxIE1NQyBDb250cm9sbGVyIg0KPiA+
+ICsJZGVwZW5kcyBvbiBBUkNIX1NVTlBMVVMgfHwgU09DX0kxNDMgfHwgU09DX1E2NDUNCj4gPiAr
+CWRlZmF1bHQgeQ0KPiANCj4gSXMgdGhpcyBuZWVkZWQgdG8gYmUgYWJsZSB0byBib290PyAgVGhh
+dCdzIGFib3V0IHRoZSBvbmx5IHJlYXNvbiB0aGF0ICJkZWZhdWx0DQo+IHkiIGNvdWxkIGJlIGp1
+c3RpZmllZC4NCg0KWWVzLCBpdCBuZWVkcyB0byBiZSBhYmxlIHRvIGJlIGJvb3QuDQoNCj4gDQo+
+ID4gKwloZWxwDQo+ID4gKwkJSWYgeW91IHNheSB5ZXMgaGVyZSwgeW91IHdpbGwgZ2V0IHN1cHBv
+cnQgZm9yIGVNTUMgaG9zdCBpbnRlcmZhY2UNCj4gPiArCQlvbiBzdW5wbHVzIFNvY3MuDQo+IA0K
+PiAJCSAgIFN1bnBsdXMgU29Dcy4NCg0KSSB3aWxsIG1vZGlmeS4NCg0KPiANCj4gPiArCQlJZiB1
+bnN1cmUsIHNheSBOLg0KPiA+ICsJCVN1bnBsdXMgIGVNTUMgSG9zdCBDb250cm9sbGVyIHY0LjUx
+IHN1cHBvcnQiDQo+IA0KPiBXaGF0IGlzIHRoYXQgbGFzdCBsaW5lIGZvcj8NCg0KSSB3aWxsIHJl
+bW92ZSBsYXN0IGxpbmUuDQoNCj4gDQo+IEFuZCBhbGwgbGluZXMgb2YgdGhlIGhlbHAgdGV4dCBz
+aG91bGQgYmUgaW5kZW50ZWQgd2l0aCBvbmUgdGFiICsgMiBzcGFjZXMgcGVyDQo+IGNvZGluZy1z
+dHlsZS5yc3QuDQoNCk9rLCBJIHVuZGVyc3RhbmQNCg0KPiANCj4gdGhhbmtzLg0KPiAtLQ0KPiB+
+UmFuZHkNCg==
