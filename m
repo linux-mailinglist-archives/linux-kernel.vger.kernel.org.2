@@ -2,68 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 095454478F3
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Nov 2021 04:41:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DDCA64478F5
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Nov 2021 04:46:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237246AbhKHDoJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 7 Nov 2021 22:44:09 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36222 "EHLO
+        id S237260AbhKHDtg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 7 Nov 2021 22:49:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37402 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234035AbhKHDoI (ORCPT
+        with ESMTP id S234035AbhKHDtd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 7 Nov 2021 22:44:08 -0500
-Received: from mail-lj1-x229.google.com (mail-lj1-x229.google.com [IPv6:2a00:1450:4864:20::229])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 39D6DC061570
-        for <linux-kernel@vger.kernel.org>; Sun,  7 Nov 2021 19:41:24 -0800 (PST)
-Received: by mail-lj1-x229.google.com with SMTP id h11so26949481ljk.1
-        for <linux-kernel@vger.kernel.org>; Sun, 07 Nov 2021 19:41:24 -0800 (PST)
+        Sun, 7 Nov 2021 22:49:33 -0500
+Received: from mail-ua1-x92e.google.com (mail-ua1-x92e.google.com [IPv6:2607:f8b0:4864:20::92e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5635EC061570;
+        Sun,  7 Nov 2021 19:46:50 -0800 (PST)
+Received: by mail-ua1-x92e.google.com with SMTP id l43so28892977uad.4;
+        Sun, 07 Nov 2021 19:46:50 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=9rGGzrq87yc4kKvaromgv4gZvpCfeloVzDgrEfZQ1Tc=;
-        b=WpfDP7/tcc0bj43IoitzYb7KgoOrs8gU+jJAV4SoWhejwU9w0AgeWSwNJRkFgkYSzz
-         NzeAU5oBWZrdRGaQUnT/zbh9vm5TbeHptte/Etu//O+B4Z8brEEwipLubwcXk5EQAhiI
-         cFJhF3VKxWOyGwpziDvI0HHnYRaWs2av4QMzHpGcZR012ki889kLbbLzZAHS6z+fvTsC
-         VnNQqNvMjgMP6Hui737vYSAtucQJ2YzOyCDDzAqsjA4s3v0J3my1HFabv0icRLXZlr3I
-         U6Fv8YguWiihEB4Eh5HKbPjXtjEi3TXUGtkn/dysv3xh0frZgH/59ScyGix6MdpiAGM8
-         Xv8g==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=9nBWp9x5Rv8RULMTkkYNHSeR8IARMsDNq5Ic4+DBrJM=;
+        b=XSw/+dEIxpypUSQo/Vl2b7kVjoRJIxiMWBFon+C6mZa5JyBApUL1XotT5wFTpiGTnC
+         491wis+FxrkelC0D5DEMexNclbYGapggBMA0sTF3E9cb++lwQU4cMUrfoCY+DzxYvFIi
+         +z38vfGXL9Elh4Oe+RzQwXXqtwvTOZuvvZ7RO84EHSrmxBx7bKUy1unEPAomMRF8V3H7
+         S23hXJYxEvvIvsXTzdTww5KophSz/jvaTqJug8YAveb69GBK2Y7+WOLwRLh4M7f7s4Ou
+         tezplb9rEW0WTCwH4eQSv5RrB0GXaSqqRvn+PbBsYbg9Pw8ZxhbQDn4tTdOs36Dvzkj2
+         WwdA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=9rGGzrq87yc4kKvaromgv4gZvpCfeloVzDgrEfZQ1Tc=;
-        b=3eGclbg2ZE2HlyGjk8Df03ESl3bFETGPIIcJQqnoXfgPMiVLpqTDTd9DL/In0DjmD7
-         XMujgeaSWv0RomSps5ZPMbopg9uuyFOD1uUys3phQr9mlRT62G36LRoC4OfCKNAhOUNP
-         542P0v1T/a3JE4/oFpXgN7FM0RPEdytkJA2/itNEr1gUjjGbUkgi0FL03gZtC5hEA+Lk
-         2UyThb62409FREdKPHX3XdUNMRLg4nBZIMMC/f//whlTWAnxAXkxie2b9XB/MQ3M1PvG
-         Wf9qdGf9jXmU+If1D/CPlZUQGKGeDA/HDgSEjpXTHmp8SuQ20dFSAiVG2/LYu+VKj8aO
-         ygtw==
-X-Gm-Message-State: AOAM531iTRmQyNI48tNprLgZies0G74zrHe26TQCWHgNjiVNmoUfpYs6
-        f2lBUnH13boCJ72pVj1LU6yPR5TQ6PA8NDL8rBU=
-X-Google-Smtp-Source: ABdhPJzjwG6vHA5MJiiohrlmkg5H1RfeEbsaGBQ5S06XrDZE+C/rFhaamfFCRyjBJW8in7fhCxIHV4kIn6drkL6umrM=
-X-Received: by 2002:a2e:b5b7:: with SMTP id f23mr53023225ljn.458.1636342882416;
- Sun, 07 Nov 2021 19:41:22 -0800 (PST)
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=9nBWp9x5Rv8RULMTkkYNHSeR8IARMsDNq5Ic4+DBrJM=;
+        b=KCEQIdDVBgpWzoY3kkJyl/+udDP8gfo+/HTkn1g9hDlOEl2+vAV67kFdjYTha/dqzO
+         nA8duGItET4Ap3Hquh+gS4/7urSIfZYD1btUWz9fun3ZtHQC2uSWnFuQWHFMBOOu65RO
+         GNXzlq7XEZjYM/k8UbYCHbj0sJPKOfF6i4d7m7P8BZLPrTJyuKp5QOgMuUmtFvZ4+9kh
+         wz+3nmWatFPFfUNGqWegNIfSqmwz22Ihhl/8K7uZeQumq1encYR/Xi5oiqtfB0a7kqqu
+         vMos+i+9ZwFTpQ7XU7BkjIvjaCNfIIz/tDze19eHcijpc+r/knAxTzwU7pDgxcmoa2FP
+         tzNQ==
+X-Gm-Message-State: AOAM530P6ZsI/QpwwzC3YWCYhfoFQkSSbg5a1HOBg1Cj3Rnp94tL7uvJ
+        /e+cnqZsf0op/e9oCnbOBOZvcXPNrDYqytuTKLs=
+X-Google-Smtp-Source: ABdhPJyXCLKNUV7mPnWrydjDue+FTshJHu0pwhQkbTqSlm4vz6QJ7Fipp/VIPNsv5a5rp72COHXpYTrud1HY6FmF1e0=
+X-Received: by 2002:a67:e003:: with SMTP id c3mr7887950vsl.51.1636343209149;
+ Sun, 07 Nov 2021 19:46:49 -0800 (PST)
 MIME-Version: 1.0
-Received: by 2002:a2e:a907:0:0:0:0:0 with HTTP; Sun, 7 Nov 2021 19:41:21 -0800 (PST)
-Reply-To: drdr.tracywilliam32@gmail.com
-From:   "DR. TRACY WILLIAM" <lovew2000wo@gmail.com>
-Date:   Mon, 8 Nov 2021 03:41:21 +0000
-Message-ID: <CAORoV-JdaX=o0FqGKbB929PKUHCUPqh=-Hs6Q2zwtRfvJaArvw@mail.gmail.com>
-Subject: HI DEAR
-To:     undisclosed-recipients:;
+References: <20211104123147.1632-1-lhenriques@suse.de> <20211104123147.1632-2-lhenriques@suse.de>
+In-Reply-To: <20211104123147.1632-2-lhenriques@suse.de>
+From:   Ilya Dryomov <idryomov@gmail.com>
+Date:   Mon, 8 Nov 2021 04:46:40 +0100
+Message-ID: <CAOi1vP8QYm+JR7c2_t5uSk-8jmqTmRs4WNYhDAoYfgar2cPw4Q@mail.gmail.com>
+Subject: Re: [PATCH v2 1/2] ceph: libceph: move ceph_osdc_copy_from() into
+ cephfs code
+To:     =?UTF-8?Q?Lu=C3=ADs_Henriques?= <lhenriques@suse.de>
+Cc:     Jeff Layton <jlayton@kernel.org>, Xiubo Li <xiubli@redhat.com>,
+        Patrick Donnelly <pdonnell@redhat.com>,
+        Ceph Development <ceph-devel@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
--- 
-Hello Dear,
+On Thu, Nov 4, 2021 at 1:31 PM Lu=C3=ADs Henriques <lhenriques@suse.de> wro=
+te:
+>
+> This patch moves ceph_osdc_copy_from() function out of libceph code into
+> cephfs.  There are no other users for this function, and there is the nee=
+d
+> (in another patch) to access internal ceph_osd_request struct members.
+> Thus, instead of changing ceph_osdc_copy_from() to return the request,
+> simply move it where it is needed.
 
-how are you today? hope you are fine
+Hi Luis,
 
-My name is Tracy William ,Am an English and French nationalities. I
-will give you pictures and more details about me as soon as i hear
-from you
+ceph_alloc_copyfrom_request() does exactly that -- returns the request.
+I have dropped this sentence from the changelog but wanted to check if
+you meant to keep the change instead of just moving and renaming.
 
-Thanks
-Dr. Tracy
+Thanks,
+
+                Ilya
