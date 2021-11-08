@@ -2,89 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 95AF6447E21
+	by mail.lfdr.de (Postfix) with ESMTP id DE33D447E22
 	for <lists+linux-kernel@lfdr.de>; Mon,  8 Nov 2021 11:38:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238588AbhKHKkf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Nov 2021 05:40:35 -0500
-Received: from relay10.mail.gandi.net ([217.70.178.230]:39989 "EHLO
-        relay10.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238365AbhKHKke (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Nov 2021 05:40:34 -0500
-Received: (Authenticated sender: gregory.clement@bootlin.com)
-        by relay10.mail.gandi.net (Postfix) with ESMTPSA id 084A024000C;
-        Mon,  8 Nov 2021 10:37:46 +0000 (UTC)
-From:   Gregory CLEMENT <gregory.clement@bootlin.com>
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Bartosz Golaszewski <brgl@bgdev.pl>,
-        Jianqun Xu <jay.xu@rock-chips.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Sai Krishna Potthuri <lakshmi.sai.krishna.potthuri@xilinx.com>,
+        id S238631AbhKHKkp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Nov 2021 05:40:45 -0500
+Received: from mail.kernel.org ([198.145.29.99]:57018 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S238603AbhKHKko (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Nov 2021 05:40:44 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id ED09260F5A;
+        Mon,  8 Nov 2021 10:37:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1636367880;
+        bh=ijWSRQIO9EYSaAAcrmHQs27lL73yStLZwUAjDP06ONE=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=pEgUWKUuiwBSxr5SN+e90t9wxjNLoRpSeuAeSCGVUqNQvApROPBkA+bM5+9VnRUGs
+         fHhN8nBHqVSwnCX/Hid0ko7BB+vhS9rOoxxuuGDn5wTPcY3JZiB8eMnSq7c7Y4AHU2
+         FDw1109kPoKnW4zJxM3vNjVHOVpvcgeV1/U55IN55ZUOpbcEsJtJY/BRKyoVrQi2U8
+         e97QiWU3Rtw5J1vFFSjz/uGvFr0+tl7mz++UKbYHrWwMDjWIkh3zR4TBxeYkav0/e8
+         4u5ODSHrnsXTi4trINLQvdwaOqXv8KvFHGx/zuB93oGUVR6teyWRQ2QXnCwXCHTNZW
+         nnMJD1NWdvgwQ==
+From:   Will Deacon <will@kernel.org>
+To:     Arnd Bergmann <arnd@kernel.org>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Marc Zyngier <maz@kernel.org>,
+        Kristina Martsenko <kristina.martsenko@arm.com>,
+        Bob Picco <bob.picco@oracle.com>,
+        Catalin Marinas <catalin.marinas@arm.com>
+Cc:     kernel-team@android.com, Will Deacon <will@kernel.org>,
+        Vladimir Murzin <vladimir.murzin@arm.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Matthew Wilcox <willy@infradead.org>,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        Steven Price <steven.price@arm.com>,
+        Ard Biesheuvel <ardb@kernel.org>,
         Andrew Morton <akpm@linux-foundation.org>,
-        linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-rockchip@lists.infradead.org
-Cc:     Bamvor Jian Zhang <bamv2005@gmail.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
-        Heiko Stuebner <heiko@sntech.de>,
-        Patrice Chotard <patrice.chotard@foss.st.com>,
-        Michal Simek <michal.simek@xilinx.com>,
-        Andy Shevchenko <andy@kernel.org>
-Subject: Re: [PATCH v1 08/19] pinctrl: armada-37xx: Fix function name in the
- kernel doc
-In-Reply-To: <20211105124242.27288-8-andriy.shevchenko@linux.intel.com>
-References: <20211105124242.27288-1-andriy.shevchenko@linux.intel.com>
- <20211105124242.27288-8-andriy.shevchenko@linux.intel.com>
-Date:   Mon, 08 Nov 2021 11:37:46 +0100
-Message-ID: <877ddjszk5.fsf@BL-laptop>
+        Anshuman Khandual <anshuman.khandual@arm.com>
+Subject: Re: [PATCH] arm64: pgtable: make __pte_to_phys/__phys_to_pte_val inline functions
+Date:   Mon,  8 Nov 2021 10:37:49 +0000
+Message-Id: <163636595480.15222.10658604372252056385.b4-ty@kernel.org>
+X-Mailer: git-send-email 2.20.1
+In-Reply-To: <20211105075414.2553155-1-arnd@kernel.org>
+References: <20211105075414.2553155-1-arnd@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Andy Shevchenko <andriy.shevchenko@linux.intel.com> writes:
+On Fri, 5 Nov 2021 08:54:03 +0100, Arnd Bergmann wrote:
+> From: Arnd Bergmann <arnd@arndb.de>
+> 
+> gcc warns about undefined behavior the vmalloc code when building
+> with CONFIG_ARM64_PA_BITS_52, when the 'idx++' in the argument to
+> __phys_to_pte_val() is evaluated twice:
+> 
+> mm/vmalloc.c: In function 'vmap_pfn_apply':
+> mm/vmalloc.c:2800:58: error: operation on 'data->idx' may be undefined [-Werror=sequence-point]
+>  2800 |         *pte = pte_mkspecial(pfn_pte(data->pfns[data->idx++], data->prot));
+>       |                                                 ~~~~~~~~~^~
+> arch/arm64/include/asm/pgtable-types.h:25:37: note: in definition of macro '__pte'
+>    25 | #define __pte(x)        ((pte_t) { (x) } )
+>       |                                     ^
+> arch/arm64/include/asm/pgtable.h:80:15: note: in expansion of macro '__phys_to_pte_val'
+>    80 |         __pte(__phys_to_pte_val((phys_addr_t)(pfn) << PAGE_SHIFT) | pgprot_val(prot))
+>       |               ^~~~~~~~~~~~~~~~~
+> mm/vmalloc.c:2800:30: note: in expansion of macro 'pfn_pte'
+>  2800 |         *pte = pte_mkspecial(pfn_pte(data->pfns[data->idx++], data->prot));
+>       |                              ^~~~~~~
+> 
+> [...]
 
-> Kernel doc validator is not happy:
->
->   .../pinctrl-armada-37xx.c:926: warning: expecting prototype for armada_37xx_fill_funcs(). Prototype was for armada_37xx_fill_func() instead
->
-> Fix this by updating function name in the kernel doc.
->
-> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Applied to arm64 (for-next/core), thanks!
 
+[1/1] arm64: pgtable: make __pte_to_phys/__phys_to_pte_val inline functions
+      https://git.kernel.org/arm64/c/c7c386fbc202
 
-Reviewed-by: Gregory CLEMENT <gregory.clement@bootlin.com>
-
-Thanks,
-
-Gregory
-
-> ---
->  drivers/pinctrl/mvebu/pinctrl-armada-37xx.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/drivers/pinctrl/mvebu/pinctrl-armada-37xx.c b/drivers/pinctrl/mvebu/pinctrl-armada-37xx.c
-> index 5cb018f98800..5615cb7a1209 100644
-> --- a/drivers/pinctrl/mvebu/pinctrl-armada-37xx.c
-> +++ b/drivers/pinctrl/mvebu/pinctrl-armada-37xx.c
-> @@ -913,7 +913,7 @@ static int armada_37xx_fill_group(struct armada_37xx_pinctrl *info)
->  }
->  
->  /**
-> - * armada_37xx_fill_funcs() - complete the funcs array
-> + * armada_37xx_fill_func() - complete the funcs array
->   * @info: info driver instance
->   *
->   * Based on the data available from the armada_37xx_pin_group array
-> -- 
-> 2.33.0
->
-
+Cheers,
 -- 
-Gregory Clement, Bootlin
-Embedded Linux and Kernel engineering
-http://bootlin.com
+Will
+
+https://fixes.arm64.dev
+https://next.arm64.dev
+https://will.arm64.dev
