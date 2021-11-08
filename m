@@ -2,100 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 15EE8447858
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Nov 2021 02:34:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 26A18447861
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Nov 2021 02:49:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235991AbhKHBhN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 7 Nov 2021 20:37:13 -0500
-Received: from mail-pf1-f169.google.com ([209.85.210.169]:33583 "EHLO
-        mail-pf1-f169.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235013AbhKHBhK (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 7 Nov 2021 20:37:10 -0500
-Received: by mail-pf1-f169.google.com with SMTP id c126so6045648pfb.0;
-        Sun, 07 Nov 2021 17:34:27 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=mWr9Mi5YMHTa3T07Gk34FemQhAzXo7wj/0HuBoS0oBY=;
-        b=Pt8Z4Lf10GJMEjgBmaRbSNZKR8/o8qH8TsW0Ah4iPRuFj77QPewiDIlMspj7Rk8Rh/
-         INHjTpDsNin1fj7L6iQbV9/3oOD03LCzbhJN3FXbGUxolGMPOeWpYWHrZn4UZhG+eWH5
-         P+NP4X7lqiqmigAcj+nBOfbBUqse7aqBg9Esvxbj2YEKade+FpIyQEzz5LDse3AUVtRs
-         S++jkvcVOP6G7h9eOOcR41YH+0E/0IsJR42PmfmrOL9hoUV9v/5Js9O4+ZVK0XQPvhQ8
-         wik9c7Qp4ZYnIja/N1p4QPR1I2mkAx43yqa9KKJr2EidGFiy0UIOkWjUe0aaPeHPE3NL
-         LYFw==
-X-Gm-Message-State: AOAM533OokXp+eXoH6d19XTR4DxjSNFkcCOqB4Emm6R0iLTC2olNbc8p
-        OPU9K4ZRaY0y2URRBjkP6z8=
-X-Google-Smtp-Source: ABdhPJyvrldzJctNqWP3qBig1k4nT4bAAzfVHptACo0tnM9HY/IvC+DM5RmBWCI0a12eDwKJDoZ1KQ==
-X-Received: by 2002:a62:7f4a:0:b0:44d:292f:cc24 with SMTP id a71-20020a627f4a000000b0044d292fcc24mr77899278pfd.58.1636335266915;
-        Sun, 07 Nov 2021 17:34:26 -0800 (PST)
-Received: from rocinante ([95.155.85.46])
-        by smtp.gmail.com with ESMTPSA id k20sm14217369pfc.83.2021.11.07.17.34.18
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 07 Nov 2021 17:34:26 -0800 (PST)
-Date:   Mon, 8 Nov 2021 02:34:13 +0100
-From:   Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>
-To:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Cc:     nsaenz@kernel.org, jim2101024@gmail.com, f.fainelli@gmail.com,
-        bcm-kernel-feedback-list@broadcom.com, lorenzo.pieralisi@arm.com,
-        robh@kernel.org, bhelgaas@google.com,
-        linux-rpi-kernel@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-pci@vger.kernel.org,
-        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
-Subject: Re: [PATCH] PCI: brcmstb: Declare a bitmap as a bitmap, not as a
- plain 'unsigned long'
-Message-ID: <YYh+ldT5wU2s0sWY@rocinante>
-References: <e6d9da2112aab2939d1507b90962d07bfd735b4c.1636273671.git.christophe.jaillet@wanadoo.fr>
+        id S236025AbhKHBv5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 7 Nov 2021 20:51:57 -0500
+Received: from mga11.intel.com ([192.55.52.93]:49812 "EHLO mga11.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230413AbhKHBvx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 7 Nov 2021 20:51:53 -0500
+X-IronPort-AV: E=McAfee;i="6200,9189,10161"; a="229609154"
+X-IronPort-AV: E=Sophos;i="5.87,217,1631602800"; 
+   d="scan'208";a="229609154"
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Nov 2021 17:49:09 -0800
+X-IronPort-AV: E=Sophos;i="5.87,217,1631602800"; 
+   d="scan'208";a="451296360"
+Received: from akirasen-mobl.amr.corp.intel.com (HELO [10.209.44.100]) ([10.209.44.100])
+  by orsmga006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Nov 2021 17:49:08 -0800
+Subject: Re: [RFC PATCH v2 5/5] docs: ABI: Add sysfs documentation interface
+ of hardware prefetch driver
+To:     "tarumizu.kohei@fujitsu.com" <tarumizu.kohei@fujitsu.com>,
+        "catalin.marinas@arm.com" <catalin.marinas@arm.com>,
+        "will@kernel.org" <will@kernel.org>,
+        "tglx@linutronix.de" <tglx@linutronix.de>,
+        "mingo@redhat.com" <mingo@redhat.com>,
+        "bp@alien8.de" <bp@alien8.de>,
+        "dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>,
+        "x86@kernel.org" <x86@kernel.org>, "hpa@zytor.com" <hpa@zytor.com>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+References: <20211104052122.553868-1-tarumizu.kohei@fujitsu.com>
+ <20211104052122.553868-6-tarumizu.kohei@fujitsu.com>
+ <2a939a62-7016-bbd6-6e2f-2824214687fd@intel.com>
+ <OSBPR01MB20379FB0D979C0B130FEAD0280919@OSBPR01MB2037.jpnprd01.prod.outlook.com>
+From:   Dave Hansen <dave.hansen@intel.com>
+Autocrypt: addr=dave.hansen@intel.com; keydata=
+ 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
+ z5cecg==
+Message-ID: <d9c31c0a-a0ce-452d-7f7d-df535eb5e918@intel.com>
+Date:   Sun, 7 Nov 2021 17:49:06 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
+In-Reply-To: <OSBPR01MB20379FB0D979C0B130FEAD0280919@OSBPR01MB2037.jpnprd01.prod.outlook.com>
 Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <e6d9da2112aab2939d1507b90962d07bfd735b4c.1636273671.git.christophe.jaillet@wanadoo.fr>
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Christophe!
+On 11/7/21 5:29 PM, tarumizu.kohei@fujitsu.com wrote:
+>> How does this look in practice?
+> It works on a x86 machine is shown below:
+> 
+> # find /sys/devices/system/cpu/cpu0/hwpf/
+> /sys/devices/system/cpu/cpu0/hwpf/
+> /sys/devices/system/cpu/cpu0/hwpf/l2
+> /sys/devices/system/cpu/cpu0/hwpf/l2/enable
+> /sys/devices/system/cpu/cpu0/hwpf/l1
+> /sys/devices/system/cpu/cpu0/hwpf/l1/enable
+> 
+>> Dumb question, but why don't we give these things names?  If the Intel one is
+>> called "L2 Hardware Prefetcher Disable", couldn't the directory be "l2_prefetch"?
+> There is no specific reason for directory names. We named it "l*"
+> because it is related to a certain cache level. We would change it,
+> if there is another suitable name.
 
-[...]
-> This bitmap can be BRCM_INT_PCI_MSI_LEGACY_NR or BRCM_INT_PCI_MSI_NR long.
-
-Ahh.  OK.  Given this an option would be to: do nothing (keep current
-status quo); allocate memory dynamically passing the "msi->nr" after it
-has been set accordingly; use BRCM_INT_PCI_MSI_NR and waste a little bit
-of space.
-
-Perhaps moving to using the DECLARE_BITMAP() would be fine in this case
-too, at least to match style of other drivers more closely.
-
-Jim, Florian and Lorenzo - is this something that would be OK with you,
-or you would rather keep things as they were?
-
-> Addresses-Coverity: "Out-of-bounds access (ARRAY_VS_SINGLETON)"
-
-This tag would have to be written as:
-
-  Addresses-Coverity: ("Out-of-bounds access (ARRAY_VS_SINGLETON)")
-
-[...]
-> +	DECLARE_BITMAP		(used, BRCM_INT_PCI_MSI_NR);
-
-Probably not the most elegant solution, but I would keep it as:
-
-  DECLARE_BITMAP(used, BRCM_INT_PCI_MSI_NR);
-
-Otherwise aligning either before or after the open bracket will cause
-either an error or a warning issued by checkpatch.pl accordingly about
-the style.  Other users of this (a vast majoirty) macro don't do any
-specific alignment at large
-
-[...]
-> +	/*
-> +	 * Sanity check to make sure that the 'used' bitmap in struct brcm_msi
-> +	 * is large enough.
-> +	 */
-> +	BUILD_BUG_ON(BRCM_INT_PCI_MSI_LEGACY_NR > BRCM_INT_PCI_MSI_NR);
-
-A healthy paranoia, I see. :-)
-
-	Krzysztof
+Ahh, so you really do intend the l2 directory to be for *all* the L2
+prefetchers?  I guess that's OK, but will folks ever want to do "L2
+Hardware Prefetcher Disable", but not "L2 Adjacent Cache Line Prefetcher
+Disable"?
