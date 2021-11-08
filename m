@@ -2,99 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3915D449B7E
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Nov 2021 19:14:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7ECC8449B85
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Nov 2021 19:16:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235094AbhKHSRG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Nov 2021 13:17:06 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36160 "EHLO
+        id S235190AbhKHSS6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Nov 2021 13:18:58 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36594 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230132AbhKHSRF (ORCPT
+        with ESMTP id S235105AbhKHSS4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Nov 2021 13:17:05 -0500
-Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1617EC061570;
-        Mon,  8 Nov 2021 10:14:21 -0800 (PST)
-Received: from zn.tnic (p200300ec2f3311008f2ddbd2a2570897.dip0.t-ipconnect.de [IPv6:2003:ec:2f33:1100:8f2d:dbd2:a257:897])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 3AAEC1EC03F0;
-        Mon,  8 Nov 2021 19:14:18 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1636395258;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=+HGdXgtqs75JzplHr1fw8l9R7E0Ax8B0+CMXZj7tYjw=;
-        b=JOTcUpAORtYs0vDLl0qwwB7gRevj19RPVQHhG0QnjV5H/+dFLUvZBr9eW8eD4MBeAbTe8q
-        N1UJwyZcsZojb6gTtwokrIVzEF5ZNpa4bsRYBo2kogWFnFZ3eJK+CGqccZzTKdVImeb73m
-        cRq530yqjggDJ4iaaeEGU22Nz6iYaRk=
-Date:   Mon, 8 Nov 2021 19:14:12 +0100
-From:   Borislav Petkov <bp@alien8.de>
-To:     Joerg Roedel <joro@8bytes.org>
-Cc:     x86@kernel.org, Eric Biederman <ebiederm@xmission.com>,
-        kexec@lists.infradead.org, Joerg Roedel <jroedel@suse.de>,
-        hpa@zytor.com, Andy Lutomirski <luto@kernel.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Jiri Slaby <jslaby@suse.cz>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        Juergen Gross <jgross@suse.com>,
-        Kees Cook <keescook@chromium.org>,
-        David Rientjes <rientjes@google.com>,
-        Cfir Cohen <cfir@google.com>,
-        Erdem Aktas <erdemaktas@google.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Mike Stunes <mstunes@vmware.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Martin Radev <martin.b.radev@gmail.com>,
-        Arvind Sankar <nivedita@alum.mit.edu>,
-        linux-coco@lists.linux.dev, linux-kernel@vger.kernel.org,
-        kvm@vger.kernel.org, virtualization@lists.linux-foundation.org
-Subject: Re: [PATCH v2 06/12] x86/sev: Cache AP Jump Table Address
-Message-ID: <YYlo9IhvDNr2FvK4@zn.tnic>
-References: <20210913155603.28383-1-joro@8bytes.org>
- <20210913155603.28383-7-joro@8bytes.org>
+        Mon, 8 Nov 2021 13:18:56 -0500
+Received: from mail-lf1-x131.google.com (mail-lf1-x131.google.com [IPv6:2a00:1450:4864:20::131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 81069C061570;
+        Mon,  8 Nov 2021 10:16:10 -0800 (PST)
+Received: by mail-lf1-x131.google.com with SMTP id l22so11412448lfg.7;
+        Mon, 08 Nov 2021 10:16:10 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=subject:to:references:from:message-id:date:user-agent:mime-version
+         :in-reply-to:content-language:content-transfer-encoding;
+        bh=ayfVWyvCKWObtEefpUK8XiDUodN1RBTjoIq7oKL3uI8=;
+        b=psSuSdjeBh18x7/UZOLKYBZ050xV58E8myXKgo3MzqnBgaLSlTfDeB/Ih/DhJOKXCK
+         JY/VGKOm85LNgvzMOlB/NITTvk00vhg+Zs+EYtYOL8gPxCdC/DqHzeCy59PWmR/5BwS5
+         EKQhxhOcmMYxZhAKG7ebJd81iZclDmD6aKsbW/LiR/7faDuaOyUNLO40+1fTUuTWnpIa
+         cKACbu7rch+9+KBFhUPBmCS6DMAesFG5gmdZgS/dKgdCMMvaWI2XnvcRDZ5WawOP12Ku
+         lVL1daDvmHqKvdDnI4C8a8JA2aRSxZtoxJzRZZrrtZZ1H7QYFRKKDOzai4CsXjdNm/4G
+         3/7w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:subject:to:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=ayfVWyvCKWObtEefpUK8XiDUodN1RBTjoIq7oKL3uI8=;
+        b=AT6JncGFzXtC18MQDHf45XIZoRPDU+hunfRvQtO5O7TfQXT950orFnxqGVgJ16pWTU
+         qiQu8fIGDeLR455/hb7g1SKJQN+bpR5KmFKJyNtMrMSjIJEPlFxdWSu9ZxDU7y9R1eOf
+         Bs/TBCcsh1Mseot0TGkxKE3C2yps0kNE+JJM8IuCTOhuU5j52qPdOEtRn8dUUNwvgz0E
+         Iv6B+v3ZMvES7EbAPzPyUTnWshvIJRUBGnUjXydXI0DVRW9kALPgNv4BrAFHce3ITpB+
+         5oa4/zqt1P+ZGLsFeFX+GBZWjaxUYLd73Zv9gmr/FNs4NBQ+COj90thH43lRq+BTtWEq
+         035w==
+X-Gm-Message-State: AOAM531wNQLaz33aRGmmjRe+E6A5HZ3dUZLba69UqK+Nzbcir3t5R3R7
+        heSEenzo+wbOelEy1lIkKh1h3uH0eSA=
+X-Google-Smtp-Source: ABdhPJyw6zaSueLH/5aKdZcN/z/zoQiQgNJHp6iKp8Ju3dgdqhN1PM6gmF8jtVPvRuuqQbclaHls8g==
+X-Received: by 2002:ac2:4c50:: with SMTP id o16mr1106096lfk.517.1636395368730;
+        Mon, 08 Nov 2021 10:16:08 -0800 (PST)
+Received: from [192.168.2.145] (79-139-188-96.dynamic.spd-mgts.ru. [79.139.188.96])
+        by smtp.googlemail.com with ESMTPSA id g10sm318910lfv.113.2021.11.08.10.16.07
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 08 Nov 2021 10:16:08 -0800 (PST)
+Subject: Re: [PATCH v1 2/2] drm/tegra: Use drm_dp_aux_register_ddc/chardev()
+ helpers
+To:     Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Lyude Paul <lyude@redhat.com>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        David Airlie <airlied@linux.ie>,
+        Thomas Graichen <thomas.graichen@gmail.com>,
+        dri-devel@lists.freedesktop.org, linux-tegra@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20211107230821.13511-1-digetx@gmail.com>
+ <20211107230821.13511-2-digetx@gmail.com>
+ <YYk/jfcceun/Qleq@phenom.ffwll.local>
+From:   Dmitry Osipenko <digetx@gmail.com>
+Message-ID: <0a2c02ae-3fe1-e384-28d3-13e13801d675@gmail.com>
+Date:   Mon, 8 Nov 2021 21:16:07 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.14.0
 MIME-Version: 1.0
+In-Reply-To: <YYk/jfcceun/Qleq@phenom.ffwll.local>
 Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20210913155603.28383-7-joro@8bytes.org>
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 13, 2021 at 05:55:57PM +0200, Joerg Roedel wrote:
-> From: Joerg Roedel <jroedel@suse.de>
+08.11.2021 18:17, Daniel Vetter пишет:
+> On Mon, Nov 08, 2021 at 02:08:21AM +0300, Dmitry Osipenko wrote:
+>> Use drm_dp_aux_register_ddc/chardev() helpers that allow to register I2C
+>> adapter separately from the character device. This fixes broken display
+>> panel driver of Acer Chromebook CB5-311 that fails to probe starting with
+>> v5.13 kernel when DP AUX registration order was changed. Tegra SOR driver
+>> is never probed now using the new registration order because tegra-output
+>> always fails with -EPROBE_DEFER due to missing display panel that requires
+>> DP AUX DDC to be registered first. The offending commit made DDC to be
+>> registered after SOR's output, which can't ever happen. Use new helpers
+>> to restore the registration order and revive display panel.
 > 
-> Store the physical address of the AP Jump Table in kernel memory so
-> that it does not need to be fetched from the Hypervisor again.
-> 
-> Signed-off-by: Joerg Roedel <jroedel@suse.de>
-> ---
->  arch/x86/kernel/sev.c | 26 ++++++++++++++------------
->  1 file changed, 14 insertions(+), 12 deletions(-)
-> 
-> diff --git a/arch/x86/kernel/sev.c b/arch/x86/kernel/sev.c
-> index 5d3422e8b25e..eedba56b6bac 100644
-> --- a/arch/x86/kernel/sev.c
-> +++ b/arch/x86/kernel/sev.c
-> @@ -42,6 +42,9 @@ static struct ghcb boot_ghcb_page __bss_decrypted __aligned(PAGE_SIZE);
->   */
->  static struct ghcb __initdata *boot_ghcb;
->  
-> +/* Cached AP Jump Table Address */
-> +static phys_addr_t sev_es_jump_table_pa;
+> This feels a bit backward, I think the clean solution would be to untangle
+> the SOR loading from the panel driver loading, and then only block
+> registering the overall drm_device on both drivers having loaded.
 
-This is static, so "jump_table_pa" should be enough.
+Sounds impossible.
 
-Also, to the prefixes, everything which is not SEV-ES only, should be
-simply prefixed with "sev_" if externally visible.
+1. DRM device can be created only when all components are ready, panel
+is one of the components.
 
-Thx.
+2. SOR driver is controlling panel and programs h/w based on panel presence.
 
--- 
-Regards/Gruss,
-    Boris.
+3. Panel can't become ready until DP AUX DDC is created.
 
-https://people.kernel.org/tglx/notes-about-netiquette
+4. DP AUX DDC can't be created until DRM device is created.
+
+5. Go to 1.
+
+Even if there is an option to somehow rewrite Tegra DRM driver to
+accommodate it to the desired driver model, it won't be something
+portable to stable kernels.
+
+> This here at least feels like a game of whack-a-mole, if like every driver
+> needs its own careful staging of everything.
+
+That is inevitable because each hardware design is individual.
