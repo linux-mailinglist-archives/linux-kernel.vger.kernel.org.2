@@ -2,108 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 95AE9449F32
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 00:46:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3E7C6449F35
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 00:52:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241004AbhKHXtN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Nov 2021 18:49:13 -0500
-Received: from mail-il1-f199.google.com ([209.85.166.199]:35396 "EHLO
-        mail-il1-f199.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236862AbhKHXtM (ORCPT
+        id S241014AbhKHXzZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Nov 2021 18:55:25 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55568 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238960AbhKHXzY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Nov 2021 18:49:12 -0500
-Received: by mail-il1-f199.google.com with SMTP id k5-20020a92c245000000b0026d8bebbff7so11789544ilo.2
-        for <linux-kernel@vger.kernel.org>; Mon, 08 Nov 2021 15:46:27 -0800 (PST)
+        Mon, 8 Nov 2021 18:55:24 -0500
+Received: from mail-il1-x12d.google.com (mail-il1-x12d.google.com [IPv6:2607:f8b0:4864:20::12d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 55ADEC061570
+        for <linux-kernel@vger.kernel.org>; Mon,  8 Nov 2021 15:52:33 -0800 (PST)
+Received: by mail-il1-x12d.google.com with SMTP id i12so18789556ila.12
+        for <linux-kernel@vger.kernel.org>; Mon, 08 Nov 2021 15:52:33 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=sartura-hr.20210112.gappssmtp.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=zVnAxwCTKjC3AUkCPijiuTypRE/MJddmMMQInhWEYjg=;
+        b=1BbGuwFmIJ6ilYIYJQ3CKsTFLJsPmDHclczUpQ4FmG3zG4epF7hOnFi1x49u54eOb4
+         vOBRrcemz3u6edv7mCXotXBhO5mCYFh9bEGVgt9ajeGv5vSzGuneBWy1XSZ7LPe4VdI0
+         1sKS8fGXkzSOinH1vB//SRs1joVwKVSMDLr8gX/1brfJGssTgtZAVyt6b9bu/h3qtRHZ
+         32Zg06KNzHAicEAiFxHsgtPlY/nlNyON8LKXiqryVPqLR7sOXNqrzrxRn9W0vnvl5ntN
+         XzBjkQfznPTMeaH2LvvDs5xidW3NqeZFcd7luJHbCou+xsARRrcMHa9XMzdrc58B30xW
+         pA/g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=kv3eiU/xeC6qSTp+i5dk+Lz5SOGQgV3Fx7iKIxXP+Ko=;
-        b=5Ds8geXr5ysKert5n1BBtnV/98t6zHBL8tbIp9UJUUiS8WfH+Pg2cIES7LTEwkdJ8L
-         h2vDXlbWIIOB7CM2tJGik1hm+Lsx8XrYjQx/Wz23JrF9BCYOJ/yhkpOoBrIPbP5Wuns4
-         RzzHL8hBmb4DhU+WcnAS1ZP+tN8yUl+qxKSOucE5Mh2naRDt3q7ianvlekz7bJg7qQkq
-         mYJuWE0xcOAZXioHYEHTKURJ+80s9T6nhnGMOV9WYXNBAwbqpxUDWLihysdxs0xqG4Rh
-         nPWT8lGwGgEO7MCoh2Z4bm8qyCLxDJCLsWhTyXEzFyC/G+z1yHu6nELO352RynCtivNc
-         HsNw==
-X-Gm-Message-State: AOAM532jFxyllV/4ZYrf3BLvYC5NwTtxEDjzPX3D1OEDFqsCiE0NPiUU
-        Y8s4a4UUfyKuexsOw+8UGTi+5WVpkxLBmUstNwErVxzf9Jny
-X-Google-Smtp-Source: ABdhPJxKDJob30e8ZiyIj7CMUEH5RQL2ew7YaI7b9lZ/58+a4VZz08d1c6oFNNc0icajQEwpedVAVvlaQ9fL+MKqhKnoWNpjRxSJ
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=zVnAxwCTKjC3AUkCPijiuTypRE/MJddmMMQInhWEYjg=;
+        b=QKG/AsF1b1aL69WvBpyd/gacUwyPGVYF6lOmPbJ1Y19PyR3DYLr+QoYFHNyav3HZBI
+         YhzSx0uTcEiV9fxSTiphKks/LUwvgbxMePS2dY18Mn1zeVmfIcDkqT9HJWgPoZLSosdT
+         kThp6GGdfBi5qlOimCYwLSf9H5vVUGP08RWo+ehElyuhW3dtsIF1G3LW7jJy8EkNB5mw
+         QCzXZ96grOE/zZOzY6LplaxWjS/zxU3GKij1U3YgGZ/vlzcn1b+JoNZoIvQLmIeRYp/0
+         jj4XXiSXFAYmqWhWob2PBe9swpc5DDGJHLrFlVQdhh4d5BkDrclRXCNezIuHPQnaa2Fj
+         IzjA==
+X-Gm-Message-State: AOAM5325Ls2tPhv9om0Zy4dIpDRqGcrifpU6ZNT5Pbg4kfzq8/zugizp
+        z8F93hTYROLoJUr0qCdZZMiDvgBJtTwv2/ryRiloAA==
+X-Google-Smtp-Source: ABdhPJzLlms+rbnmUdWf+Dr2jmDi5p0A5MQDDKPziEJJ+8j+NVxe3wQIyGidvv9WN0LMhOKfzmBprOewGoTMEFXl2lw=
+X-Received: by 2002:a05:6e02:190f:: with SMTP id w15mr2171155ilu.56.1636415552824;
+ Mon, 08 Nov 2021 15:52:32 -0800 (PST)
 MIME-Version: 1.0
-X-Received: by 2002:a05:6602:2e8c:: with SMTP id m12mr1948251iow.91.1636415187321;
- Mon, 08 Nov 2021 15:46:27 -0800 (PST)
-Date:   Mon, 08 Nov 2021 15:46:27 -0800
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000f2075605d04f9964@google.com>
-Subject: [syzbot] WARNING in iomap_iter
-From:   syzbot <syzbot+a8e049cd3abd342936b6@syzkaller.appspotmail.com>
-To:     djwong@kernel.org, hch@infradead.org,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-xfs@vger.kernel.org, syzkaller-bugs@googlegroups.com
+References: <20211104124927.364683-1-robert.marko@sartura.hr>
+ <20211108202058.th7vjq4sjca3encz@skbuf> <CA+HBbNE_jh_h9bx9GLfMRFz_Kq=Vx1pu0dE1aK0guMoEkX1S5A@mail.gmail.com>
+ <20211108211811.qukts37eufgfj4sc@skbuf> <CA+HBbNGvg43wMNbte827wmK_fnWuweKSgA-nWW+UPGCvunUwGA@mail.gmail.com>
+ <20211108214613.5fdhm4zg43xn5edm@skbuf> <CA+HBbNEKOW3F6Yu=OV3BDea+KKNH6AEUMS07az6=62aEAKHGgw@mail.gmail.com>
+ <20211108215926.hnrmqdyxbkt7lbhl@skbuf> <CA+HBbNH=31j1Nv8T67DKhLXaQub2Oz11Dw2RuMEWQ3iXrF2fxg@mail.gmail.com>
+ <20211108233816.tnov6gufaagdrhlv@skbuf>
+In-Reply-To: <20211108233816.tnov6gufaagdrhlv@skbuf>
+From:   Robert Marko <robert.marko@sartura.hr>
+Date:   Tue, 9 Nov 2021 00:52:21 +0100
+Message-ID: <CA+HBbNGHrQi_SbY=Ta395_J22Ab1s3wG_RtRvbjwa1LOw8Kfmw@mail.gmail.com>
+Subject: Re: [net-next] net: dsa: qca8k: only change the MIB_EN bit in
+ MODULE_EN register
+To:     Vladimir Oltean <olteanv@gmail.com>
+Cc:     Andrew Lunn <andrew@lunn.ch>, vivien.didelot@gmail.com,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        David Miller <davem@davemloft.net>, kuba@kernel.org,
+        netdev@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Gabor Juhos <j4g8y7@gmail.com>, John Crispin <john@phrozen.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On Tue, Nov 9, 2021 at 12:38 AM Vladimir Oltean <olteanv@gmail.com> wrote:
+>
+> On Mon, Nov 08, 2021 at 11:13:30PM +0100, Robert Marko wrote:
+> > > The driver keeps state. If the switch just resets by itself, what do you
+> > > think will continue to work fine afterwards? The code path needs testing.
+> > > I am not convinced that a desynchronized software state is any better
+> > > than a lockup.
+> >
+> > It's really unpredictable, as QCA doesn't specify what does the software reset
+> > actually does, as I doubt that they are completely resetting the
+> > switch to HW defaults.
+> > But since I was not able to trigger the QM error and the resulting
+> > reset, it's hard to tell.
+> > Phylink would probably see the ports going down and trigger the MAC
+> > configuration again,
+> > this should at least allow using the ports and forwarding to CPU again.
+> > However, it may also reset the forwarding config to basically flooding
+> > all ports which is the default
+> > which is not great.
+> >
+> > But I do agree that it may not be a lot better than a lockup.
+>
+> I'm not sure what you expect going forward. You haven't proven an issue
+> with the actual code structure, or an improvement brought by your change.
+> Allowing the hardware to autonomously reconfigure itself, even if
+> partially, is out of the question (of course, that's if and only if I
+> understand correctly the info that you've presented).
 
-syzbot found the following issue on:
+After this discussion, I think that John clears the bits intentionally,
+I still don't think its really the best practice to do so in the MIB enablement
+without documenting it.
+However, since this doesn't seem to be hurting anyone I will drop it and rather
+focus on IPQ4019 support which is slowly shaping into something upstreamable.
 
-HEAD commit:    7ddb58cb0eca Merge tag 'clk-for-linus' of git://git.kernel..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=13443b82b00000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=a30ce238f371e547
-dashboard link: https://syzkaller.appspot.com/bug?extid=a8e049cd3abd342936b6
-compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.2
-userspace arch: i386
+Regards,
+Robert
 
-Unfortunately, I don't have any reproducer for this issue yet.
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+a8e049cd3abd342936b6@syzkaller.appspotmail.com
-
-------------[ cut here ]------------
-WARNING: CPU: 0 PID: 1112 at fs/iomap/iter.c:33 iomap_iter_done fs/iomap/iter.c:33 [inline]
-WARNING: CPU: 0 PID: 1112 at fs/iomap/iter.c:33 iomap_iter+0xdcf/0x11b0 fs/iomap/iter.c:78
-Modules linked in:
-CPU: 0 PID: 1112 Comm: kworker/u4:5 Not tainted 5.15.0-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Workqueue: loop0 loop_rootcg_workfn
-RIP: 0010:iomap_iter_done fs/iomap/iter.c:33 [inline]
-RIP: 0010:iomap_iter+0xdcf/0x11b0 fs/iomap/iter.c:78
-Code: fd ff ff e8 93 9f d1 ff e9 f9 f9 ff ff e8 79 24 8b ff 0f 0b e9 85 f8 ff ff e8 6d 24 8b ff 0f 0b e9 96 f7 ff ff e8 61 24 8b ff <0f> 0b e9 f8 f6 ff ff e8 55 24 8b ff 0f 0b 48 b8 00 00 00 00 00 fc
-RSP: 0018:ffffc90004d4f680 EFLAGS: 00010293
-RAX: 0000000000000000 RBX: ffffc90004d4f818 RCX: 0000000000000000
-RDX: ffff88801c181d00 RSI: ffffffff81ec9faf RDI: 0000000000000003
-RBP: ffffc90004d4f848 R08: 00000fff80000000 R09: 000000000000000c
-R10: ffffffff81ec96a0 R11: 000000000000003f R12: ffffc90004d4f820
-R13: ffffffff80000000 R14: ffffc90004d4f840 R15: ffffc90004d4f888
-FS:  0000000000000000(0000) GS:ffff8880b9c00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007fc3d2148008 CR3: 00000000307d5000 CR4: 00000000003506f0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- <TASK>
- __iomap_dio_rw+0x6b2/0x1a10 fs/iomap/direct-io.c:588
- iomap_dio_rw+0x38/0x90 fs/iomap/direct-io.c:679
- ext4_dio_read_iter fs/ext4/file.c:77 [inline]
- ext4_file_read_iter+0x41c/0x5d0 fs/ext4/file.c:128
- call_read_iter include/linux/fs.h:2155 [inline]
- lo_rw_aio.isra.0+0xa99/0xc90 drivers/block/loop.c:453
- do_req_filebacked drivers/block/loop.c:497 [inline]
- loop_handle_cmd drivers/block/loop.c:1857 [inline]
- loop_process_work+0x92f/0x1db0 drivers/block/loop.c:1897
- process_one_work+0x9b2/0x1690 kernel/workqueue.c:2298
- worker_thread+0x658/0x11f0 kernel/workqueue.c:2445
- kthread+0x405/0x4f0 kernel/kthread.c:327
- ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:295
- </TASK>
-
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+-- 
+Robert Marko
+Staff Embedded Linux Engineer
+Sartura Ltd.
+Lendavska ulica 16a
+10000 Zagreb, Croatia
+Email: robert.marko@sartura.hr
+Web: www.sartura.hr
