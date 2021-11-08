@@ -2,159 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0FE38449912
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Nov 2021 17:07:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D7B58449916
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Nov 2021 17:07:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239387AbhKHQJk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Nov 2021 11:09:40 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124]:28004 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S239246AbhKHQJi (ORCPT
+        id S240340AbhKHQKU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Nov 2021 11:10:20 -0500
+Received: from mo4-p02-ob.smtp.rzone.de ([85.215.255.81]:29441 "EHLO
+        mo4-p02-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238191AbhKHQKT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Nov 2021 11:09:38 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1636387614;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=y1FCpwnoXru8LCUd4AbjW/RHjevdkDPK2hMhE65LRpk=;
-        b=EYIAf2ZWNP7cYGOtHBFD+XOv6j8eSDzivSBqQuaHMvMIgEynjerB3lg1EE/zox2ERpotiK
-        eXRdhRhpilfG10ncU4btPIswAayW+l+bE08B7bp5xgU4Hep6KkMmQV0Ztx7OYdMH3Yuxxg
-        bPuOWITDt8iMvZOUpGDKniVQvdjkXZo=
-Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com
- [209.85.208.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-75-7aR7LczwNBy9kSYWvza02A-1; Mon, 08 Nov 2021 11:06:52 -0500
-X-MC-Unique: 7aR7LczwNBy9kSYWvza02A-1
-Received: by mail-ed1-f70.google.com with SMTP id d11-20020a50cd4b000000b003da63711a8aso15217497edj.20
-        for <linux-kernel@vger.kernel.org>; Mon, 08 Nov 2021 08:06:52 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:in-reply-to
-         :content-transfer-encoding;
-        bh=y1FCpwnoXru8LCUd4AbjW/RHjevdkDPK2hMhE65LRpk=;
-        b=C8qJA9dF0zVWQDOjuvJZeAuRpQyjm6G65lrOzpUrIsN09EWXEFowulv5cveJFsxIUB
-         ol4nUW2ZLlQ+DyPengN1fU31RwN2l2C+0QF5TN8tOf74ytmBe18JPUNTporByGRC3ay6
-         cnypmPCqyCw2hwZIVMip9+1XL68MVFhg1XcshTrl3K3SoI84HzxZRJGPVg/PCBlFqkb/
-         cWDsIXr+XVR3WHNg8lxsRSWvEpW0t606gZv3MUwuxGK1gd6sISm8Mpri8iyhzxzbhdvj
-         qm458IlJGNYzkBq5rstjLcWuEDUpvW9oBRphNlBGSxfSvzpI2pEBQQG/GWKWTAVSJG1U
-         irPw==
-X-Gm-Message-State: AOAM5333PBdHqatKyraD6cfcPKRlbe0ds/YdhWwj/yu6y5hdkIgZn3Ae
-        VipM9Vu46G7za/iddOo5KBs7aP2IndO2cZasnhZepVAp4VvMMeigvtP7w9RvIxIA8pX/fPWkWZw
-        kR36zAzjOWb/iz1IrhYzA222w
-X-Received: by 2002:a05:6402:42d3:: with SMTP id i19mr351693edc.82.1636387611543;
-        Mon, 08 Nov 2021 08:06:51 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJyu9/pkrAjKIXIFB1SkeQQxKCuuMdfW8j3XbHSYc37jzZgl2Op4II0m3tdXn02+xuywOMqKXw==
-X-Received: by 2002:a05:6402:42d3:: with SMTP id i19mr351664edc.82.1636387611366;
-        Mon, 08 Nov 2021 08:06:51 -0800 (PST)
-Received: from [10.40.1.223] ([81.30.35.201])
-        by smtp.gmail.com with ESMTPSA id q8sm3675287edd.26.2021.11.08.08.06.50
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 08 Nov 2021 08:06:50 -0800 (PST)
-Message-ID: <6ffd2b8c-00f4-211e-de57-23d5159ae7d4@redhat.com>
-Date:   Mon, 8 Nov 2021 17:06:50 +0100
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.2.0
-Subject: Re: [PATCH 10/13] power: supply: bq25890: Add support for registering
- the Vbus boost converter as a regulator
-Content-Language: en-US
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc:     Mark Gross <markgross@kernel.org>,
-        Andy Shevchenko <andy@infradead.org>,
-        Wolfram Sang <wsa@the-dreams.de>,
-        Sebastian Reichel <sre@kernel.org>,
-        MyungJoo Ham <myungjoo.ham@samsung.com>,
-        Chanwoo Choi <cw00.choi@samsung.com>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Yauhen Kharuzhy <jekhor@gmail.com>,
-        Tsuchiya Yuto <kitakar@gmail.com>,
-        Platform Driver <platform-driver-x86@vger.kernel.org>,
-        linux-i2c <linux-i2c@vger.kernel.org>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-efi <linux-efi@vger.kernel.org>
-References: <20211030182813.116672-1-hdegoede@redhat.com>
- <20211030182813.116672-11-hdegoede@redhat.com>
- <CAHp75Vc=dZ1FPeDgaY8S+dSu8i=QUgbLN2NVOcsMz6h0uytNeg@mail.gmail.com>
-From:   Hans de Goede <hdegoede@redhat.com>
-In-Reply-To: <CAHp75Vc=dZ1FPeDgaY8S+dSu8i=QUgbLN2NVOcsMz6h0uytNeg@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+        Mon, 8 Nov 2021 11:10:19 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1636387650;
+    s=strato-dkim-0002; d=goldelico.com;
+    h=To:References:Message-Id:Cc:Date:In-Reply-To:From:Subject:Cc:Date:
+    From:Subject:Sender;
+    bh=07yFpp0NBIJt76EAOUVS+i+HKo29LgtcF4Hu3VjH5NQ=;
+    b=Rg2vJPmt/+LkW5+xEpO9Ep9kTp/m2n7CoqKMhUqJn+oGDrp8Ux/tCxZ/6p3Lg9nFRf
+    +M9afqTz5pxIeIhJmTdP01n+6v8byBMolulugXqSiFzy6Q2OC3BCjjd3/LJlRjiz5SQg
+    SeRJrA2UHCFoXhusV4BJE71ISi6QzGgEs3203f7B2DR93+dG7vIub5+E9r+g6xn1Nzze
+    UaYACgIQRXhbaNu78rrUbneneX6X8wCKbHYRRWuLyYfE5w1/KUlcSRskRlCzvo1x9CuZ
+    RAbspFz1Q5HWylw+bF63EP4YXVCJwFLlHb2Po13djo8YDj2/fMzOpc3pR9hRsVeBJy8F
+    w1Cg==
+Authentication-Results: strato.com;
+    dkim=none
+X-RZG-AUTH: ":JGIXVUS7cutRB/49FwqZ7WcJeFKiMgPgp8VKxflSZ1P34KBj7gpw91N5y2S3gMZ+"
+X-RZG-CLASS-ID: mo00
+Received: from imac.fritz.box
+    by smtp.strato.de (RZmta 47.34.1 DYNA|AUTH)
+    with ESMTPSA id 902c63xA8G7TLba
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (curve X9_62_prime256v1 with 256 ECDH bits, eq. 3072 bits RSA))
+        (Client did not present a certificate);
+    Mon, 8 Nov 2021 17:07:29 +0100 (CET)
+Content-Type: text/plain;
+        charset=us-ascii
+Mime-Version: 1.0 (Mac OS X Mail 12.4 \(3445.104.21\))
+Subject: Re: [RFC v4 4/6] mmc: core: add new calls to
+ mmc_fixup_device(sdio_card_init_methods)
+From:   "H. Nikolaus Schaller" <hns@goldelico.com>
+In-Reply-To: <CAPDyKFr5=sQsb2KEh_nkDZY5ThjMTOZWzwN7mkd4AS5jWDYtWg@mail.gmail.com>
+Date:   Mon, 8 Nov 2021 17:07:28 +0100
+Cc:     =?utf-8?B?SsOpcsO0bWUgUG91aWxsZXI=?= <Jerome.Pouiller@silabs.com>,
+        Avri Altman <avri.altman@wdc.com>,
+        Shawn Lin <shawn.lin@rock-chips.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Tony Lindgren <tony@atomide.com>,
+        Bean Huo <beanhuo@micron.com>,
+        =?utf-8?Q?Gra=C5=BEvydas_Ignotas?= <notasas@gmail.com>,
+        linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        letux-kernel@openphoenux.org, kernel@pyra-handheld.com
+Content-Transfer-Encoding: quoted-printable
+Message-Id: <532B045A-951B-4104-9D77-4AA620958F52@goldelico.com>
+References: <cover.1636103151.git.hns@goldelico.com>
+ <73440c0f227778e57167dd9fedd350637a1d737a.1636103151.git.hns@goldelico.com>
+ <CAPDyKFr5=sQsb2KEh_nkDZY5ThjMTOZWzwN7mkd4AS5jWDYtWg@mail.gmail.com>
+To:     Ulf Hansson <ulf.hansson@linaro.org>
+X-Mailer: Apple Mail (2.3445.104.21)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
-
-On 10/31/21 00:13, Andy Shevchenko wrote:
-> On Sat, Oct 30, 2021 at 9:28 PM Hans de Goede <hdegoede@redhat.com> wrote:
->>
->> The bq25890_charger code supports enabling/disabling the boost converter
->> based on usb-phy notifications. But the usb-phy framework is not used on
->> all boards/platforms. At support for registering the Vbus boost converter
->> as a standard regulator when there is no usb-phy on the board.
->>
->> Also add support for providing regulator_init_data through platform_data
->> for use on boards where device-tree is not used and the platform code must
->> thus provide the regulator_init_data.
-> 
-> ...
-> 
->> @@ -1018,6 +1059,21 @@ static int bq25890_probe(struct i2c_client *client,
->>                 INIT_WORK(&bq->usb_work, bq25890_usb_work);
->>                 bq->usb_nb.notifier_call = bq25890_usb_notifier;
->>                 usb_register_notifier(bq->usb_phy, &bq->usb_nb);
->> +#ifdef CONFIG_REGULATOR
->> +       } else {
->> +               struct bq25890_platform_data *pdata = dev_get_platdata(dev);
->> +               struct regulator_config cfg = { };
->> +               struct regulator_dev *reg;
->> +
->> +               cfg.dev = dev;
->> +               cfg.driver_data = bq;
->> +               if (pdata)
->> +                       cfg.init_data = pdata->regulator_init_data;
->> +
->> +               reg = devm_regulator_register(dev, &bq25890_vbus_desc, &cfg);
->> +               if (IS_ERR(reg))
->> +                       return dev_err_probe(dev, PTR_ERR(reg), "registering regulator");
->> +#endif
->>         }
-> 
-> }
-> #ifdef
-> else {
->   ...
-> }
-> #endif
-> 
-> is a bit better to maintain (less error prone in case of new code).
-> 
-> ...
-> 
->> +#ifndef _BQ25890_CHARGER_H_
->> +#define _BQ25890_CHARGER_H_
-> 
->> +#include <linux/regulator/machine.h>
-> 
-> struct regulator_init_data;
-> 
-> should be sufficient, no header is needed.
-
-Thanks, I've fixed both for v2 of the patch-set.
-
-Regards,
-
-Hans
 
 
-> 
->> +struct bq25890_platform_data {
->> +       const struct regulator_init_data *regulator_init_data;
->> +};
->> +
->> +#endif
-> 
+> Am 08.11.2021 um 16:08 schrieb Ulf Hansson <ulf.hansson@linaro.org>:
+>=20
+> On Fri, 5 Nov 2021 at 10:06, H. Nikolaus Schaller <hns@goldelico.com> =
+wrote:
+>>=20
+>> This allows to add quirks based on device tree instead of having
+>> card specific code in the host ops.
+>>=20
+>> We call it just after where host->ops->init_card() can be optionally
+>> called.
+>>=20
+>> Signed-off-by: H. Nikolaus Schaller <hns@goldelico.com>
+>> ---
+>> drivers/mmc/core/mmc.c  | 1 +
+>> drivers/mmc/core/sd.c   | 2 ++
+>> drivers/mmc/core/sdio.c | 1 +
+>> 3 files changed, 4 insertions(+)
+>>=20
+>> diff --git a/drivers/mmc/core/mmc.c b/drivers/mmc/core/mmc.c
+>> index 29e58ffae3797..19cd138acaec9 100644
+>> --- a/drivers/mmc/core/mmc.c
+>> +++ b/drivers/mmc/core/mmc.c
+>> @@ -1634,6 +1634,7 @@ static int mmc_init_card(struct mmc_host *host, =
+u32 ocr,
+>>         */
+>>        if (host->ops->init_card)
+>>                host->ops->init_card(host, card);
+>> +       mmc_fixup_device(card, sdio_card_init_methods);
+>>=20
+>>        /*
+>>         * For native busses:  set card RCA and quit open drain mode.
+>> diff --git a/drivers/mmc/core/sd.c b/drivers/mmc/core/sd.c
+>> index 4646b7a03db6b..0d174fdf47164 100644
+>> --- a/drivers/mmc/core/sd.c
+>> +++ b/drivers/mmc/core/sd.c
+>> @@ -23,6 +23,7 @@
+>> #include "host.h"
+>> #include "bus.h"
+>> #include "mmc_ops.h"
+>> +#include "quirks.h"
+>> #include "sd.h"
+>> #include "sd_ops.h"
+>>=20
+>> @@ -1427,6 +1428,7 @@ static int mmc_sd_init_card(struct mmc_host =
+*host, u32 ocr,
+>>         */
+>>        if (host->ops->init_card)
+>>                host->ops->init_card(host, card);
+>> +       mmc_fixup_device(card, sdio_card_init_methods);
+>>=20
+>>        /*
+>>         * For native busses:  get card RCA and quit open drain mode.
+>> diff --git a/drivers/mmc/core/sdio.c b/drivers/mmc/core/sdio.c
+>> index 68edf7a615be5..cf8ee66990508 100644
+>> --- a/drivers/mmc/core/sdio.c
+>> +++ b/drivers/mmc/core/sdio.c
+>> @@ -707,6 +707,7 @@ static int mmc_sdio_init_card(struct mmc_host =
+*host, u32 ocr,
+>>         */
+>>        if (host->ops->init_card)
+>>                host->ops->init_card(host, card);
+>> +       mmc_fixup_device(card, sdio_card_init_methods);
+>>=20
+>>        /*
+>>         * If the host and card support UHS-I mode request the card
+>> --
+>> 2.33.0
+>>=20
+>=20
+> As the quirk is for SDIO cards, we don't need to call
+> mmc_fixup_device(card, sdio_card_init_methods) - other than from
+> mmc_sdio_init_card().
+
+Ok. Well, the old code did have some logic for some SD_COMBO.
+But I have no idea if that is needed.
+
+> Additionally, for sd/mmc we should not be using
+> 'sdio_card_init_methods'.
+
+Ok ,I see.
+
+>=20
+> That said, it looks also reasonable to me, to squash $subject patch =
+with patch3.
+
+Ok.
+
+BR and thanks,
+Nikolaus
+
 
