@@ -2,163 +2,166 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DFDD3447ECD
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Nov 2021 12:22:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C132447EDE
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Nov 2021 12:25:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239211AbhKHLZP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Nov 2021 06:25:15 -0500
-Received: from mailout2.samsung.com ([203.254.224.25]:29516 "EHLO
-        mailout2.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239199AbhKHLZN (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Nov 2021 06:25:13 -0500
-Received: from epcas2p1.samsung.com (unknown [182.195.41.53])
-        by mailout2.samsung.com (KnoxPortal) with ESMTP id 20211108112228epoutp0244cfde95188847a22dff327bfbb1daa4~1jlf76GXc0984609846epoutp02H
-        for <linux-kernel@vger.kernel.org>; Mon,  8 Nov 2021 11:22:28 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.samsung.com 20211108112228epoutp0244cfde95188847a22dff327bfbb1daa4~1jlf76GXc0984609846epoutp02H
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1636370548;
-        bh=QvmD6Tmq+bJeo76I1IXC5kiKoG3gf1RUxDtEOlrq1nE=;
-        h=From:To:Cc:In-Reply-To:Subject:Date:References:From;
-        b=sEha9i6KURaOiSdljVhOOwh+4Gvak611b8A8YzJXQs+aolqT8EWlqO39CT/3rZdmA
-         3T60YupF8LPXHrh5e0ht6eAHGxDT+GAqyBMZ5lmZ363GC6iNWnBgLPxR5rkzA2yRnA
-         cgUt5z7QYYjsZp0Zto3rxtrreQPmpmAcXX9fTPxk=
-Received: from epsnrtp4.localdomain (unknown [182.195.42.165]) by
-        epcas2p3.samsung.com (KnoxPortal) with ESMTP id
-        20211108112227epcas2p380483e73cd6786665f9b466738270008~1jlfpRJV71337813378epcas2p3H;
-        Mon,  8 Nov 2021 11:22:27 +0000 (GMT)
-Received: from epsmges2p2.samsung.com (unknown [182.195.36.89]) by
-        epsnrtp4.localdomain (Postfix) with ESMTP id 4Hnpc923XQz4x9Q2; Mon,  8 Nov
-        2021 11:22:17 +0000 (GMT)
-Received: from epcas2p3.samsung.com ( [182.195.41.55]) by
-        epsmges2p2.samsung.com (Symantec Messaging Gateway) with SMTP id
-        65.74.10018.76809816; Mon,  8 Nov 2021 20:22:15 +0900 (KST)
-Received: from epsmtrp2.samsung.com (unknown [182.195.40.14]) by
-        epcas2p2.samsung.com (KnoxPortal) with ESMTPA id
-        20211108112214epcas2p2c58d675ceddb6e7cc5f478fd5c295bfc~1jlTFFmU90032300323epcas2p2B;
-        Mon,  8 Nov 2021 11:22:14 +0000 (GMT)
-Received: from epsmgms1p1new.samsung.com (unknown [182.195.42.41]) by
-        epsmtrp2.samsung.com (KnoxPortal) with ESMTP id
-        20211108112214epsmtrp220678073f441bcf57c2906d42530a366~1jlTBClof0548405484epsmtrp2d;
-        Mon,  8 Nov 2021 11:22:14 +0000 (GMT)
-X-AuditID: b6c32a46-a0fff70000002722-a3-6189086702b4
-Received: from epsmtip1.samsung.com ( [182.195.34.30]) by
-        epsmgms1p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
-        A7.40.29871.66809816; Mon,  8 Nov 2021 20:22:14 +0900 (KST)
-Received: from KORCO006858 (unknown [10.229.8.71]) by epsmtip1.samsung.com
-        (KnoxPortal) with ESMTPA id
-        20211108112214epsmtip14e0ee3c318ecdbb6d831bae0b047c2c9~1jlS0RvFh0874508745epsmtip1H;
-        Mon,  8 Nov 2021 11:22:14 +0000 (GMT)
-From:   "Jaewon Kim" <jaewon02.kim@samsung.com>
-To:     "'Krzysztof Kozlowski'" <krzysztof.kozlowski@canonical.com>,
-        "'Wolfram Sang'" <wsa@kernel.org>,
-        "'Rob Herring'" <robh+dt@kernel.org>
-Cc:     "'Chanho Park'" <chanho61.park@samsung.com>,
-        <linux-i2c@vger.kernel.org>, <linux-samsung-soc@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-In-Reply-To: <5b05ff2e-953c-d1a3-8347-4d3f9911cc49@canonical.com>
-Subject: RE: [PATCH 1/2] i2c: exynos5: support USI(Universal Serial
- Interface)
-Date:   Mon, 8 Nov 2021 20:22:14 +0900
-Message-ID: <000401d7d492$e157a450$a406ecf0$@samsung.com>
+        id S239252AbhKHL1u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Nov 2021 06:27:50 -0500
+Received: from mout.gmx.net ([212.227.17.22]:41875 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S239220AbhKHL1r (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Nov 2021 06:27:47 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1636370563;
+        bh=K79wqPStqcTfK5nLIvxLt2yDFN8raIwyDHqiPgY+PHc=;
+        h=X-UI-Sender-Class:Date:From:To:Cc:Subject:References:In-Reply-To;
+        b=Iil8zKbQDwR3Nlg+ymOUpymQS9X1Mc+jbLXtA+yVF4SDdcwftUD6iVyibZ6wTz7fb
+         Qc0Hcteal9dThlbJ/iNZLRdm5NTkZeKDClDySSPytppBB80v28nV6u18LsDpLiHQir
+         Ny1SVC50YGwrAIYi9pHquhjsrGZ1aixItLj5nI/g=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from longitude ([5.146.194.160]) by mail.gmx.net (mrgmx104
+ [212.227.17.168]) with ESMTPSA (Nemesis) id 1MBDj4-1msKD70Bvq-00CkHo; Mon, 08
+ Nov 2021 12:22:43 +0100
+Date:   Mon, 8 Nov 2021 12:22:32 +0100
+From:   Jonathan =?utf-8?Q?Neusch=C3=A4fer?= <j.neuschaefer@gmx.net>
+To:     Dmitry Osipenko <digetx@gmail.com>
+Cc:     Guenter Roeck <linux@roeck-us.net>,
+        Jonathan =?utf-8?Q?Neusch=C3=A4fer?= <j.neuschaefer@gmx.net>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Lee Jones <lee.jones@linaro.org>,
+        "Rafael J . Wysocki" <rafael@kernel.org>,
+        Mark Brown <broonie@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Russell King <linux@armlinux.org.uk>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>, Guo Ren <guoren@kernel.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Greg Ungerer <gerg@linux-m68k.org>,
+        Joshua Thompson <funaho@jurai.org>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Nick Hu <nickhu@andestech.com>,
+        Greentime Hu <green.hu@gmail.com>,
+        Vincent Chen <deanbo422@gmail.com>,
+        Helge Deller <deller@gmx.de>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Yoshinori Sato <ysato@users.sourceforge.jp>,
+        Rich Felker <dalias@libc.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        Juergen Gross <jgross@suse.com>,
+        Stefano Stabellini <sstabellini@kernel.org>,
+        Len Brown <lenb@kernel.org>,
+        Santosh Shilimkar <ssantosh@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Chen-Yu Tsai <wens@csie.org>, Tony Lindgren <tony@atomide.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Vladimir Zapolskiy <vz@mleia.com>,
+        Avi Fishman <avifishman70@gmail.com>,
+        Tomer Maimon <tmaimon77@gmail.com>,
+        Tali Perry <tali.perry1@gmail.com>,
+        Patrick Venture <venture@google.com>,
+        Nancy Yuen <yuenn@google.com>,
+        Benjamin Fair <benjaminfair@google.com>,
+        Pavel Machek <pavel@ucw.cz>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-csky@vger.kernel.org, linux-ia64@vger.kernel.org,
+        linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org,
+        linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        linux-riscv@lists.infradead.org, linux-sh@vger.kernel.org,
+        xen-devel@lists.xenproject.org, linux-acpi@vger.kernel.org,
+        linux-omap@vger.kernel.org, openbmc@lists.ozlabs.org,
+        linux-tegra@vger.kernel.org, linux-pm@vger.kernel.org
+Subject: Re: [PATCH v2 27/45] mfd: ntxec: Use devm_register_power_handler()
+Message-ID: <YYkIeBSCFka9yrqC@latitude>
+References: <20211027211715.12671-1-digetx@gmail.com>
+ <20211027211715.12671-28-digetx@gmail.com>
+ <YYbqlmOM95q7Hbjo@latitude>
+ <be0c74c6-05a9-cad5-c285-6626d05f8860@gmail.com>
+ <9a22c22d-94b1-f519-27a2-ae0b8bbf6e99@roeck-us.net>
+ <658cf796-e3b1-f816-1e15-9e9e08b8ade0@gmail.com>
+ <5a17fee3-4214-c2b9-abc1-ab9d6071591b@roeck-us.net>
+ <c0b52994-51f5-806b-b07e-3e70d8217ffc@gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-Mailer: Microsoft Outlook 16.0
-Thread-Index: AQH9TS3Ubwx9WhvNqO8Onnoqn/bWugGADPusApYBWVkB1joeOQEO3tdOq3aqCqA=
-Content-Language: ko
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFuplk+LIzCtJLcpLzFFi42LZdljTXDedozPRYEk3q8Xl/doWG9/+YLLo
-        +PuF0eLyrjlsFjPO72OyaN17hN3i7v65jA7sHrMaetk8Nq3qZPPo27KK0ePzJrkAlqhsm4zU
-        xJTUIoXUvOT8lMy8dFsl7+B453hTMwNDXUNLC3MlhbzE3FRbJRefAF23zBygA5QUyhJzSoFC
-        AYnFxUr6djZF+aUlqQoZ+cUltkqpBSk5BeYFesWJucWleel6eaklVoYGBkamQIUJ2RlTf/9g
-        KTjDVfFlygnWBsZVHF2MnBwSAiYS69beZu5i5OIQEtjBKLH5xld2COcTo8Tt/XNYQaqEBL4x
-        SvzYndrFyAHW0bhUC6JmL6PEm8XH2CCc54wSB7qWMIM0sAnoSuzc+ApskohAF6PEpS87wKqY
-        BaYySty40cUMMopTwFGi800IiCksECDxa4UHiMkioCLxs5EPZAyvgKXEtoNnGCFsQYmTM5+w
-        gNjMAvIS29/OYYb4QEHi59NlYHeKCPhJTDj+mhWiRkRidmcb2GcSAhM5JJZ0rGSDeMBF4vtb
-        RYheYYlXx7ewQ9hSEp/f7YUqqZf4esMBorWHUWJN1y8miBp7iV/Tt7CC1DALaEqs36UPUa4s
-        ceQW1GV8Eh2H/7JDhHklOtqEIBrVJO5PPccGYctITDqykmkCo9IsJH/NQvLXLCT3z0LYtYCR
-        ZRWjWGpBcW56arFRgRE8opPzczcxgtOlltsOxilvP+gdYmTiYDzEKMHBrCTCe+9oR6IQb0pi
-        ZVVqUX58UWlOavEhRlNgQE9klhJNzgcm7LySeEMTSwMTMzNDcyNTA3MlcV5L0exEIYH0xJLU
-        7NTUgtQimD4mDk6pBqYc+Z43KRJ8Mg/6X9879XHW1/mX5OIFJ/Yvb7a1uzlNYtuKni+W4p/E
-        0xRbZCvP6R/sE92zz+xAivvupOgzCSdPr27Zv9JE+fhkO8lV4i3vP7IZVcR8vnP2X+lm+bBz
-        ou/Cv7h+S1sTMS1wZ//mO7yCXAIVHqbmy68yivQ+ymKxOjCxjY0nVWmh3ZEDUz9u4FHSnXqq
-        f6rFt0Bd07z078U9KzbOnGH++Pu583p3TCV1k19/mCCouoUh9yqn0YUXGidVL6S7XNZJKmXl
-        7VV/0j6peXbikrM7jXId8v9b7HhwvqQ2vU11A3eFRLvA2eCHE+9ZHq2Z8/g438abmy/mT5bj
-        WfeRsX1e4NJZ37eZtrkqsRRnJBpqMRcVJwIACh4WXCAEAAA=
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFvrDLMWRmVeSWpSXmKPExsWy7bCSnG4aR2eiwYvVXBaX92tbbHz7g8mi
-        4+8XRovLu+awWcw4v4/JonXvEXaLu/vnMjqwe8xq6GXz2LSqk82jb8sqRo/Pm+QCWKK4bFJS
-        czLLUov07RK4Mqb+/sFScIar4suUE6wNjKs4uhg5OCQETCQal2p1MXJxCAnsZpT4sHUjUxcj
-        J1BcRmL5sz42CFtY4n7LEVaIoqeMEmdOTGYFSbAJ6Ers3PiKHcQWEehhlDjXIwRSxCwwnVFi
-        4epGFoiO5UwS/1b3sIKs4xRwlOh8EwLSICzgJ7FncQMbSJhFQEXiZyMfSJhXwFJi28EzjBC2
-        oMTJmU9YQGxmAW2J3oetjBC2vMT2t3OYIY5TkPj5dBkrxA1+EhOOv2aFqBGRmN3ZxjyBUXgW
-        klGzkIyahWTULCQtCxhZVjFKphYU56bnFhsWGOallusVJ+YWl+al6yXn525iBEeQluYOxu2r
-        PugdYmTiYDzEKMHBrCTCe+9oR6IQb0piZVVqUX58UWlOavEhRmkOFiVx3gtdJ+OFBNITS1Kz
-        U1MLUotgskwcnFINTKdeHROMXtWhMuMD66RHFrH7jNv3FMQtWKnu7lORuNBJ70QDyyz3uos5
-        HlXW9pwLAi55LdIqvb6X+fenRd0fl/yIN6nTlGxM/dGwK/jgyvPmvg17LcO36ddOendYZ28d
-        g4wlk1x0u3RC2vpv/bZPH+heDAhYIF3v2iK4OHn7/dPiLw+LVGipxtU0X5LJPiQYVrZhQ9tP
-        S1vT0jkOs97az11k1LphWvOhImVhHyaFuvUC9/tO392xlPfCkVnHfsx+06BwbwLjFPmnjTcY
-        7Ju4wvpm9D05Kr5Qz4tTyyH82LvIXeW31EOzYsRvCejeeLpNUEZMZzmfls5WNxNOF55zi49u
-        XvjNJr/o3fOQ893FSizFGYmGWsxFxYkAYWUsOA8DAAA=
-X-CMS-MailID: 20211108112214epcas2p2c58d675ceddb6e7cc5f478fd5c295bfc
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-X-Sendblock-Type: AUTO_CONFIDENTIAL
-CMS-TYPE: 102P
-DLP-Filter: Pass
-X-CFilter-Loop: Reflected
-X-CMS-RootMailID: 20211101114158epcas2p1d0762d52029b1b09912fd99665dd66f5
-References: <CGME20211101114158epcas2p1d0762d52029b1b09912fd99665dd66f5@epcas2p1.samsung.com>
-        <20211101113819.50651-1-jaewon02.kim@samsung.com>
-        <a571af00-8ac1-f1a5-3240-2c93f823c995@canonical.com>
-        <001001d7d153$5fb18840$1f1498c0$@samsung.com>
-        <5b05ff2e-953c-d1a3-8347-4d3f9911cc49@canonical.com>
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="SrzUzzmYivmDpJiW"
+Content-Disposition: inline
+In-Reply-To: <c0b52994-51f5-806b-b07e-3e70d8217ffc@gmail.com>
+X-Provags-ID: V03:K1:7qbQ+qoRzv7lpS+bZXlBkiHc8d3ndyzVjxZiUEx4fWU8LOwR4tV
+ sJ6wX31cULMNt4suZs8Fc9nNWwTvT28rf28Ux8jItr0YArRnxNHgajX8j3pR27WJ8X4+rN1
+ P6mwBUOnAtBBxh5xjfJsjiXu6SboLYbT6DrsS8jQkTim87V5oSocZwSYV15yBIZybWDcxi2
+ yhhXSfTVo1fjkR9G3NiNg==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:yjkPkKMrbPg=:X1ZiIBM9wmN7jnP9s16Cfb
+ sBqYerCPdYu35MyKm/gIqDt8Gw/FOK/47i1VNVZ2GZyzu2N+w6bq5umB4vcv2LdlVvVXasJFU
+ hHItgn4p2+gcrIXW8dm47/l7t1HQaw7UgtUqyeXqDu69ghAqCYZXx0eX60EUrsUOpoEgYDyVn
+ oP9a1XYVWqB1j9J0R0WURMEfCLIEiPQoq7Rbx4EPDsJbUZtdggotJ5Zu652F4YThXYIsp6IMf
+ gllsRU1HwQ6JjxuK8cXPPYaD+LLKehorJRlrq+y8qXUM6ylWXrOoGKNZLGsZkAONax4WYMqIW
+ d3FGkGXLV4f+esApgI7PsCMvrwTK22lrWu5ViPmU4x2nHZP+ZTPAZuJtgSimwyu20amazZwYK
+ Z4vpwY5CSzJZCDfMI5DZ0Ptk/Ztz1Q6g/A3jF9otZwKjtdDGI+4EVCvameWf3xn488EZ8v6YU
+ At13Fas5vppLSoa/xpMWgEaXqdhRWW3BWFKDkwwIzAy8iepAVZKdxWuiNZ5V838e4pssIjwOP
+ b9I/WUoeoSIjaVUx2uwI4jdditk+sE4UWUM/0QolX7ispKs/G3XyXxRQRgZ6B7X3V60FM1FjB
+ RAlEp0a5931lWVr5xqZfoR1dAUpRgm1O9Vjh40HLSfiunbwWOc0bQ0ONdbOPoSLykjVMQhxlP
+ xtpeZidtvOHYL9oWOJQZIFjHLJGmJNbSfzBBXrzNQMUN8I0KHFPgGMy1RqdguPf3PUJKELugu
+ Nk3jRxSbdt395Sseo31kU92jjNpYb9PTuVNaM1aWS4Q4yTc9cIXxk1+LRFP9bIgg/V6iwob0M
+ 2xQWxNH/EiCfUWEHwJvuTGBqhgThj/glAo/CZxZAe/L3n3D6849ukZO9fYf8H8Nk2y5a5UHWh
+ pvbdLd9gXcXQ6r/K+x80Dm4oeeZ7NvEbfgA19DwbuESar56ohW+JqsXIhz3AyR62ShQOe3+FE
+ 5fRkZdNNItdvlDY7CkW9kJ0ItIF7cQw1aNvt9OvV6ho/I2LuKv3w1ibUywvt8uxjpQ795s++f
+ LtodIi5u3n67HADZypUokVR2nausSwp0lMroUVKyNyJ3Q2D2RhV5rxgHndlU1/Jjw3Lcz380m
+ nnoGWxFp59yGiw=
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Krzysztof
 
-> On 04/11/2021 09:10, Jaewon Kim wrote:
-> >
-> >>> +	if (ret) {
-> >>> +		dev_err(dev, "usi-sysreg offset is not specified\n");
-> >>> +		return ret;
-> >>> +	}
-> >>> +
-> >>> +	regmap_update_bits(i2c->usi_sysreg, i2c->usi_offset,
-> >>> +			SYSREG_USI_SW_CONF_MASK, SYSREG_I2C_SW_CONF);
-> >>> +
-> >>> +	exynos_usi_reset(i2c);
-> >>
-> >> You are clearing the reset flag, but not setting it back on probe
-> >> failure. What happens if the probe fails after this clear()? E.g.
-> >> because of deferred probe? The next probe try will start on a not-reset controller. Will it work?
-> >>
-> >
-> > The user manual guides USI_RESET to be done after changing the system register.
-> > For clarity, we will change not only to clear reset, but to clear after reset.
-> >
-> 
-> What I meant, is do you handle probe failure correctly (e.g. probe deferral)? It's fine to leave the
-> reset cleared after deferred probe?
-> 
+--SrzUzzmYivmDpJiW
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-I understood.
-In my opinion, rather than resetting USI_CON_RESET in the probe fail case.
-It seems it is more clear to set the reset as shown below.
+On Sun, Nov 07, 2021 at 08:42:33PM +0300, Dmitry Osipenko wrote:
+[...]
+> EC drivers tend to use higher priority in general. Jonathan, could you
+> please confirm that NTXEC driver is a more preferable restart method
+> than the watchdog?
 
-val = readl(i2c->regs + USI_CON);
-val |= USI_CON_RESET;
-writel(val, i2c->regs + USI_CON);
-udelay(1);
-
-val = readl(i2c->regs + USI_CON);
-val &= ~USI_CON_RESET;
-writel(val, i2c->regs + USI_CON);
+Yes. The original firmware uses the NTXEC to restart, and it works well,
+so I do think it's preferable.
 
 
-> Best regards,
-> Krzysztof
+Best regards,
+Jonathan
 
-Thanks
-Jaewon Kim
+--SrzUzzmYivmDpJiW
+Content-Type: application/pgp-signature; name="signature.asc"
 
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEEvHAHGBBjQPVy+qvDCDBEmo7zX9sFAmGJCE4ACgkQCDBEmo7z
+X9vVoBAAyZoJJUbTWWKI6c/HY4wq3sRDukultq5nSNIOH4RAFsTFD2FbiBB7LDaG
+v/9oOqoTUDuR3AkaHFnk5+h5gLRqeePoH1KU8fa7bc7NPatTUVt54SqhQSRfUfrF
++0eRt3WHt2lZpZjaY8kj/vz5AkubzCmwVqSKoLUdCW/qi+UphZHp75E2XXypK/o3
+dt1dmPA1D0pXB1WdwLSZjtCn5lIOucdssKLl1UyXQzFmuKBPkjOcuuQqwm5Ietoz
+T4EEl/js2iIbui0e5ml9611nZoTLhVYMkxRcLi7gRHWTn9NmVzzJdubJH6Ajwp8E
+M9TOi2NtYbSk+pGvTwawfKaw+aROUuKqGOGc+9TFeu+V5pCMAIZ1wybNExZph5jp
+/o58QQUdszFwjMq7A4zdXSufKug8CpsYILhtcSx57wtGJ/OW7ZDtmX679x4jAvgX
+XeMWuW8x08UFauDBHsvw9aIIgKg7ZlJ+bQ5WdgtsiuXrZEEbTNbW1kjbKAvHS9dP
+o3MB/Lbi/rN/448ImnHtShmihh7ug6s+oUDbW6wFzCFvcfLbOs/Sfz35f5wNTHQW
+ReNPRgH+pTvzZvulDdrSA6GAnH8mfFE7IkC/3BP6BJE28ug1GvJrRtvylwp29ZW/
+Qu0z+FCaFjPu5yOr8rspC9YUdGolKnMg1msMwjgbe58vH9+EDDQ=
+=fkgc
+-----END PGP SIGNATURE-----
+
+--SrzUzzmYivmDpJiW--
