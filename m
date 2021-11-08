@@ -2,236 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7749D447A3D
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Nov 2021 06:49:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 058FC447A3E
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Nov 2021 06:52:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237075AbhKHFvy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Nov 2021 00:51:54 -0500
-Received: from alexa-out.qualcomm.com ([129.46.98.28]:40507 "EHLO
-        alexa-out.qualcomm.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235399AbhKHFvw (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Nov 2021 00:51:52 -0500
-Received: from ironmsg09-lv.qualcomm.com ([10.47.202.153])
-  by alexa-out.qualcomm.com with ESMTP; 07 Nov 2021 21:49:09 -0800
-X-QCInternal: smtphost
-Received: from ironmsg01-blr.qualcomm.com ([10.86.208.130])
-  by ironmsg09-lv.qualcomm.com with ESMTP/TLS/AES256-SHA; 07 Nov 2021 21:49:07 -0800
-X-QCInternal: smtphost
-Received: from c-mansur-linux.qualcomm.com ([10.204.83.180])
-  by ironmsg01-blr.qualcomm.com with ESMTP; 08 Nov 2021 11:18:57 +0530
-Received: by c-mansur-linux.qualcomm.com (Postfix, from userid 461723)
-        id 35B8220E7B; Mon,  8 Nov 2021 11:18:56 +0530 (IST)
-From:   Mansur Alisha Shaik <mansur@codeaurora.org>
-To:     linux-media@vger.kernel.org, stanimir.varbanov@linaro.org
-Cc:     linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        vgarodia@codeaurora.org, dikshita@codeaurora.org,
-        Mansur Alisha Shaik <mansur@codeaurora.org>
-Subject: [PATCH] venus: avoid calling core_clk_setrate() concurrently during concurrent video sessions
-Date:   Mon,  8 Nov 2021 11:18:51 +0530
-Message-Id: <20211108054851.15523-1-mansur@codeaurora.org>
-X-Mailer: git-send-email 2.29.0
+        id S237123AbhKHFyp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Nov 2021 00:54:45 -0500
+Received: from smtpbg506.qq.com ([203.205.250.33]:36936 "EHLO smtpbg506.qq.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S236049AbhKHFym (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Nov 2021 00:54:42 -0500
+X-QQ-mid: bizesmtp44t1636350711tdlcln7o
+Received: from localhost.localdomain (unknown [113.57.152.160])
+        by esmtp6.qq.com (ESMTP) with 
+        id ; Mon, 08 Nov 2021 13:51:45 +0800 (CST)
+X-QQ-SSF: B1400000002000B0E000B00A0000000
+X-QQ-FEAT: Y/4E1fKPEOqf/XUplZm0WZSpbhKCa658vtIsvauPqRFK5mbvXjRZPlk0mb8LY
+        oHchfxkHIKy12MIX+B5M29a514w0rnWObLnis1cpv1xS09om4MxaH4U/f0NhSgyEUzaLSCO
+        Umx4nQEfD0n4KiU7qetzlCl1bS6lMrK50sN2Lcm68WhCuE9I3/gOZ/F84g2r9+ReyJLkDcX
+        0dLd5kds05/wBVhlkDDXyPuHRaWjPxG61mAIOWROOnhk6lwkoB9itlrXzyRcTiXqoGF0+Io
+        mkRBT6NJCm77fsKzM8MqlwOTBP27P2M1uhQIspaT8tUcEQCGltlFbf5mpRJQ5idzgz1A2bl
+        d8awlNoc0Ix6rMOu95kuXUnUGla7mvg0TLiiEs2wJpQzBmVPVY=
+X-QQ-GoodBg: 2
+From:   lianzhi chang <changlianzhi@uniontech.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     dmitry.torokhov@gmail.com, gregkh@linuxfoundation.org,
+        jirislaby@kernel.org, andriy.shevchenko@linux.intel.com,
+        282827961@qq.com, lianzhi chang <changlianzhi@uniontech.com>
+Subject: [PATCH v14] tty: Fix the keyboard led light display problem
+Date:   Mon,  8 Nov 2021 13:51:39 +0800
+Message-Id: <20211108055139.7202-1-changlianzhi@uniontech.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+X-QQ-SENDSIZE: 520
+Feedback-ID: bizesmtp:uniontech.com:qybgforeign:qybgforeign7
+X-QQ-Bgrelay: 1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In existing implementation, core_clk_setrate() is getting called
-concurrently in concurrent video sessions. Before the previous call to
-core_clk_setrate returns, new call to core_clk_setrate is invoked from
-another video session running concurrently. This results in latest
-calculated frequency being set (higher/lower) instead of actual frequency
-required for that video session. It also results in stability crashes
-mention below. These resources are specific to video core, hence keeping
-under core lock would ensure that they are estimated for all running video
-sessions and called once for the video core.
+Switching from the desktop environment to the tty environment,
+the state of the keyboard led lights and the state of the keyboard
+lock are inconsistent. This is because the attribute kb->kbdmode
+of the tty bound in the desktop environment (Xorg) is set to
+VC_OFF, which causes the ledstate and kb->ledflagstate
+values of the bound tty to always be 0, which causes the switch
+from the desktop When to the tty environment, the LED light
+status is inconsistent with the keyboard lock status.
+In order to ensure that the keyboard LED lights are displayed
+normally during the VT switching process, when the VT is
+switched, the current VT LED configuration is forced to be issued.
 
-Crash logs:
-
-[    1.900089] WARNING: CPU: 4 PID: 1 at drivers/opp/debugfs.c:33 opp_debug_remove_one+0x2c/0x48
-[    1.908493] Modules linked in:
-[    1.911524] CPU: 4 PID: 1 Comm: swapper/0 Not tainted 5.10.67 #35 f8edb8c30cf2dd6838495dd9ef9be47af7f5f60c
-[    1.921036] Hardware name: Qualcomm Technologies, Inc. sc7280 IDP SKU2 platform (DT)
-[    1.928673] pstate: 60800009 (nZCv daif -PAN +UAO -TCO BTYPE=--)
-[    1.934608] pc : opp_debug_remove_one+0x2c/0x48
-[    1.939080] lr : opp_debug_remove_one+0x2c/0x48
-[    1.943560] sp : ffffffc011d7b7f0
-[    1.946836] pmr_save: 000000e0
-[    1.949854] x29: ffffffc011d7b7f0 x28: ffffffc010733bbc
-[    1.955104] x27: ffffffc010733ba8 x26: ffffff8083cedd00
-[    1.960355] x25: 0000000000000001 x24: 0000000000000000
-[    1.965603] x23: ffffff8083cc2878 x22: ffffff8083ceb900
-[    1.970852] x21: ffffff8083ceb910 x20: ffffff8083cc2800
-[    1.976101] x19: ffffff8083ceb900 x18: 00000000ffff0a10
-[    1.981352] x17: ffffff80837a5620 x16: 00000000000000ec
-[    1.986601] x15: ffffffc010519ad4 x14: 0000000000000003
-[    1.991849] x13: 0000000000000004 x12: 0000000000000001
-[    1.997100] x11: c0000000ffffdfff x10: 00000000ffffffff
-[    2.002348] x9 : d2627c580300dc00 x8 : d2627c580300dc00
-[    2.007596] x7 : 0720072007200720 x6 : ffffff80802ecf00
-[    2.012845] x5 : 0000000000190004 x4 : 0000000000000000
-[    2.018094] x3 : ffffffc011d7b478 x2 : ffffffc011d7b480
-[    2.023343] x1 : 00000000ffffdfff x0 : 0000000000000017
-[    2.028594] Call trace:
-[    2.031022]  opp_debug_remove_one+0x2c/0x48
-[    2.035160]  dev_pm_opp_put+0x94/0xb0
-[    2.038780]  _opp_remove_all+0x7c/0xc8
-[    2.042486]  _opp_remove_all_static+0x54/0x7c
-[    2.046796]  dev_pm_opp_remove_table+0x74/0x98
-[    2.051183]  devm_pm_opp_of_table_release+0x18/0x24
-[    2.056001]  devm_action_release+0x1c/0x28
-[    2.060053]  release_nodes+0x23c/0x2b8
-[    2.063760]  devres_release_group+0xcc/0xd0
-[    2.067900]  component_bind+0xac/0x168
-[    2.071608]  component_bind_all+0x98/0x124
-[    2.075664]  msm_drm_bind+0x1e8/0x678
-[    2.079287]  try_to_bring_up_master+0x60/0x134
-[    2.083674]  component_master_add_with_match+0xd8/0x120
-[    2.088834]  msm_pdev_probe+0x20c/0x2a0
-[    2.092629]  platform_drv_probe+0x9c/0xbc
-[    2.096598]  really_probe+0x11c/0x46c
-[    2.100217]  driver_probe_device+0x8c/0xf0
-[    2.104270]  device_driver_attach+0x54/0x78
-[    2.108407]  __driver_attach+0x48/0x148
-[    2.112201]  bus_for_each_dev+0x88/0xd4
-[    2.115998]  driver_attach+0x2c/0x38
-[    2.119534]  bus_add_driver+0x10c/0x200
-[    2.123330]  driver_register+0x6c/0x104
-[    2.127122]  __platform_driver_register+0x4c/0x58
-[    2.131767]  msm_drm_register+0x6c/0x70
-[    2.135560]  do_one_initcall+0x64/0x23c
-[    2.139357]  do_initcall_level+0xac/0x15c
-[    2.143321]  do_initcalls+0x5c/0x9c
-[    2.146778]  do_basic_setup+0x2c/0x38
-[    2.150401]  kernel_init_freeable+0xf8/0x15c
-[    2.154622]  kernel_init+0x1c/0x11c
-[    2.158079]  ret_from_fork+0x10/0x30
-[    2.161615] ---[ end trace a2cc45a0f784b212 ]---
-
-[    2.166272] Removing OPP: 300000000
-
-Signed-off-by: Mansur Alisha Shaik <mansur@codeaurora.org>
+Signed-off-by: lianzhi chang <changlianzhi@uniontech.com>
+Suggested-by: dmitry.torokhov <dmitry.torokhov@gmail.com>
+Suggested-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 ---
- .../media/platform/qcom/venus/pm_helpers.c    | 28 +++++++++----------
- 1 file changed, 14 insertions(+), 14 deletions(-)
+ v13:
+ The kbd_bh function no longer handles the "kb->kbdmode == VC_OFF"
+ scene, but puts this process in vt_set_leds_compute_shiftstate
+ together. Because the current circumvention is that other ttys
+ switch to the Xorg-bound tty scene, so this Better.
+ v14:
+ Sorry, I forgot to verify the format, it is good now.
+ 
+ drivers/tty/vt/keyboard.c | 19 ++++++++++++++++++-
+ 1 file changed, 18 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/media/platform/qcom/venus/pm_helpers.c b/drivers/media/platform/qcom/venus/pm_helpers.c
-index cedc664ba755..d78347fdaf7e 100644
---- a/drivers/media/platform/qcom/venus/pm_helpers.c
-+++ b/drivers/media/platform/qcom/venus/pm_helpers.c
-@@ -163,14 +163,12 @@ static u32 load_per_type(struct venus_core *core, u32 session_type)
- 	struct venus_inst *inst = NULL;
- 	u32 mbs_per_sec = 0;
+diff --git a/drivers/tty/vt/keyboard.c b/drivers/tty/vt/keyboard.c
+index c7fbbcdcc346..91e1c5d92029 100644
+--- a/drivers/tty/vt/keyboard.c
++++ b/drivers/tty/vt/keyboard.c
+@@ -153,6 +153,7 @@ static int shift_state = 0;
  
--	mutex_lock(&core->lock);
- 	list_for_each_entry(inst, &core->instances, list) {
- 		if (inst->session_type != session_type)
- 			continue;
+ static unsigned int ledstate = -1U;			/* undefined */
+ static unsigned char ledioctl;
++static bool vt_switch;
  
- 		mbs_per_sec += load_per_instance(inst);
- 	}
--	mutex_unlock(&core->lock);
+ /*
+  * Notifier list for console keyboard events
+@@ -412,9 +413,20 @@ static void do_compute_shiftstate(void)
+ /* We still have to export this method to vt.c */
+ void vt_set_leds_compute_shiftstate(void)
+ {
++	struct kbd_struct *kb;
+ 	unsigned long flags;
  
- 	return mbs_per_sec;
- }
-@@ -219,14 +217,12 @@ static int load_scale_bw(struct venus_core *core)
- 	struct venus_inst *inst = NULL;
- 	u32 mbs_per_sec, avg, peak, total_avg = 0, total_peak = 0;
+-	set_leds();
++	/* Xorg will bind a tty, the kb->kbdmode of this tty will be set to
++	 * VC_OFF, and this tty will no longer set the keyboard light. If
++	 * there is no such restriction, when switching from other tty to
++	 * Xorg-bound tty, the tty will set the keyboard light, which is
++	 * unreasonable
++	 */
++	kb = kbd_table + fg_console;
++	if (kb->kbdmode != VC_OFF) {
++		vt_switch = true;
++		set_leds();
++	}
  
--	mutex_lock(&core->lock);
- 	list_for_each_entry(inst, &core->instances, list) {
- 		mbs_per_sec = load_per_instance(inst);
- 		mbs_to_bw(inst, mbs_per_sec, &avg, &peak);
- 		total_avg += avg;
- 		total_peak += peak;
- 	}
--	mutex_unlock(&core->lock);
+ 	spin_lock_irqsave(&kbd_event_lock, flags);
+ 	do_compute_shiftstate();
+@@ -1255,6 +1267,11 @@ static void kbd_bh(struct tasklet_struct *unused)
+ 	leds |= (unsigned int)kbd->lockstate << 8;
+ 	spin_unlock_irqrestore(&led_lock, flags);
  
- 	/*
- 	 * keep minimum bandwidth vote for "video-mem" path,
-@@ -253,8 +249,9 @@ static int load_scale_v1(struct venus_inst *inst)
- 	struct device *dev = core->dev;
- 	u32 mbs_per_sec;
- 	unsigned int i;
--	int ret;
-+	int ret = 0;
- 
-+	mutex_lock(&core->lock);
- 	mbs_per_sec = load_per_type(core, VIDC_SESSION_TYPE_ENC) +
- 		      load_per_type(core, VIDC_SESSION_TYPE_DEC);
- 
-@@ -279,17 +276,19 @@ static int load_scale_v1(struct venus_inst *inst)
- 	if (ret) {
- 		dev_err(dev, "failed to set clock rate %lu (%d)\n",
- 			freq, ret);
--		return ret;
-+		goto exit;
- 	}
- 
- 	ret = load_scale_bw(core);
- 	if (ret) {
- 		dev_err(dev, "failed to set bandwidth (%d)\n",
- 			ret);
--		return ret;
-+		goto exit;
- 	}
- 
--	return 0;
-+exit:
-+	mutex_unlock(&core->lock);
-+	return ret;
- }
- 
- static int core_get_v1(struct venus_core *core)
-@@ -1116,13 +1115,13 @@ static int load_scale_v4(struct venus_inst *inst)
- 	struct device *dev = core->dev;
- 	unsigned long freq = 0, freq_core1 = 0, freq_core2 = 0;
- 	unsigned long filled_len = 0;
--	int i, ret;
-+	int i, ret = 0;
- 
- 	for (i = 0; i < inst->num_input_bufs; i++)
- 		filled_len = max(filled_len, inst->payloads[i]);
- 
- 	if (inst->session_type == VIDC_SESSION_TYPE_DEC && !filled_len)
--		return 0;
-+		return ret;
- 
- 	freq = calculate_inst_freq(inst, filled_len);
- 	inst->clk_data.freq = freq;
-@@ -1138,7 +1137,6 @@ static int load_scale_v4(struct venus_inst *inst)
- 			freq_core2 += inst->clk_data.freq;
- 		}
- 	}
--	mutex_unlock(&core->lock);
- 
- 	freq = max(freq_core1, freq_core2);
- 
-@@ -1163,17 +1161,19 @@ static int load_scale_v4(struct venus_inst *inst)
- 	if (ret) {
- 		dev_err(dev, "failed to set clock rate %lu (%d)\n",
- 			freq, ret);
--		return ret;
-+		goto exit;
- 	}
- 
- 	ret = load_scale_bw(core);
- 	if (ret) {
- 		dev_err(dev, "failed to set bandwidth (%d)\n",
- 			ret);
--		return ret;
-+		goto exit;
- 	}
- 
--	return 0;
-+exit:
-+	mutex_unlock(&core->lock);
-+	return ret;
- }
- 
- static const struct venus_pm_ops pm_ops_v4 = {
++	if (vt_switch) {
++		ledstate = ~leds;
++		vt_switch = false;
++	}
++
+ 	if (leds != ledstate) {
+ 		kbd_propagate_led_state(ledstate, leds);
+ 		ledstate = leds;
 -- 
-QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member 
-of Code Aurora Forum, hosted by The Linux Foundation
+2.20.1
+
+
 
