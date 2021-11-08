@@ -2,96 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 40948449A46
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Nov 2021 17:48:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D7B5449A48
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Nov 2021 17:48:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240191AbhKHQue (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Nov 2021 11:50:34 -0500
-Received: from 113.196.136.162.ll.static.sparqnet.net ([113.196.136.162]:49192
-        "EHLO mg.sunplus.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S240259AbhKHQud (ORCPT
+        id S240236AbhKHQvI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Nov 2021 11:51:08 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:40162 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231330AbhKHQvG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Nov 2021 11:50:33 -0500
-X-MailGates: (flag:3,DYNAMIC,RELAY,NOHOST:PASS)(compute_score:DELIVER,40
-        ,3)
-Received: from 172.17.9.202
-        by mg01.sunplus.com with MailGates ESMTP Server V5.0(13482:0:AUTH_RELAY)
-        (envelope-from <wells.lu@sunplus.com>); Tue, 09 Nov 2021 00:47:38 +0800 (CST)
-Received: from sphcmbx02.sunplus.com.tw (172.17.9.112) by
- sphcmbx01.sunplus.com.tw (172.17.9.202) with Microsoft SMTP Server (TLS) id
- 15.0.1497.23; Tue, 9 Nov 2021 00:47:33 +0800
-Received: from sphcmbx02.sunplus.com.tw ([::1]) by sphcmbx02.sunplus.com.tw
- ([fe80::f8bb:bd77:a854:5b9e%14]) with mapi id 15.00.1497.023; Tue, 9 Nov 2021
- 00:47:34 +0800
-From:   =?big5?B?V2VsbHMgTHUgp2aq2sTL?= <wells.lu@sunplus.com>
-To:     Andrew Lunn <andrew@lunn.ch>
-CC:     Wells Lu <wellslutw@gmail.com>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        "kuba@kernel.org" <kuba@kernel.org>,
-        "robh+dt@kernel.org" <robh+dt@kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "p.zabel@pengutronix.de" <p.zabel@pengutronix.de>
-Subject: RE: [PATCH 2/2] net: ethernet: Add driver for Sunplus SP7021
-Thread-Topic: [PATCH 2/2] net: ethernet: Add driver for Sunplus SP7021
-Thread-Index: AQHX0KKBcebTINBXKk6D/f7Frpi9sKvxfraAgAGf2kCAAU6CgIAE3RVA///T9oCAAJMwUP//h9mAgACMUqA=
-Date:   Mon, 8 Nov 2021 16:47:34 +0000
-Message-ID: <585e234fdb74499caafee3b43b5e5ab4@sphcmbx02.sunplus.com.tw>
-References: <cover.1635936610.git.wells.lu@sunplus.com>
- <650ec751dd782071dd56af5e36c0d509b0c66d7f.1635936610.git.wells.lu@sunplus.com>
- <YYK+EeCOu/BXBXDi@lunn.ch>
- <64626e48052c4fba9057369060bfbc84@sphcmbx02.sunplus.com.tw>
- <YYUzgyS6pfQOmKRk@lunn.ch>
- <7c77f644b7a14402bad6dd6326ba85b1@sphcmbx02.sunplus.com.tw>
- <YYkjBdu64r2JF1bR@lunn.ch>
- <4e663877558247048e9b04b027e555b8@sphcmbx02.sunplus.com.tw>
- <YYk5s5fDuub7eBqu@lunn.ch>
-In-Reply-To: <YYk5s5fDuub7eBqu@lunn.ch>
-Accept-Language: zh-TW, en-US
-Content-Language: zh-TW
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [172.25.108.39]
-Content-Type: text/plain; charset="big5"
-Content-Transfer-Encoding: base64
+        Mon, 8 Nov 2021 11:51:06 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1636390101;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=z7LY8TgzSzRlxstIDXAu/WaXnqAVsKrKahWLI0s7ntI=;
+        b=LiEqL6c1t1Q6HRCIXjcONINgh364HgeHMOGAXBZFFt2kMztFG+/G85KnMUFIvAm/hhf7hY
+        PNoTJSpB0Txwc9rzmoMZlGXLlt+UpxdCvfBMzdebIPKFEqiZqSX/8JKekSEkCaIrbi3Nvz
+        1wRLnAEN/Dz1vLu3F67JmUoT5ZXUJ88=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-324-hH6Qm3GHMyesr4xqUckv2Q-1; Mon, 08 Nov 2021 11:48:18 -0500
+X-MC-Unique: hH6Qm3GHMyesr4xqUckv2Q-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 0E36E1835ADC;
+        Mon,  8 Nov 2021 16:48:12 +0000 (UTC)
+Received: from llong.com (unknown [10.22.18.139])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id AAA9460BF4;
+        Mon,  8 Nov 2021 16:48:09 +0000 (UTC)
+From:   Waiman Long <longman@redhat.com>
+To:     Michael Ellerman <mpe@ellerman.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Daniel Henrique Barboza <danielhb413@gmail.com>,
+        Nathan Lynch <nathanl@linux.ibm.com>,
+        "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>
+Cc:     linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
+        Laurent Dufour <ldufour@linux.ibm.com>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        Zhang Xiaoxu <zhangxiaoxu5@huawei.com>,
+        Waiman Long <longman@redhat.com>
+Subject: [PATCH] powerpc/pseries/cpuhp: Use alloc_cpumask_var() in pseries_cpu_hotplug_init()
+Date:   Mon,  8 Nov 2021 11:47:51 -0500
+Message-Id: <20211108164751.65565-1-longman@redhat.com>
 MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-PiA+IFRoZSBzd2l0Y2ggd2lsbCBub3QgcmVjb2duaXplIHR5cGUgb2YgcGFja2V0cywgcmVnYXJk
-bGVzcyBCUERVLCBQVFAgb3INCj4gPiBhbnkgb3RoZXIgcGFja2V0cy4gSWYgdHVybmluZyBvZmYg
-c291cmNlLWFkZHJlc3MgbGVhcm5pbmcgZnVuY3Rpb24sIGl0DQo+ID4gd29ya3MgbGlrZSBhbiBF
-dGhlcm5ldCBwbHVzIGEgMi1wb3J0IGh1Yi4NCj4gDQo+IFNvIHdpdGhvdXQgU1RQLCB0aGVyZSBp
-cyBubyB3YXkgdG8gc3RvcCBhbiBsb29wLCBhbmQgYSBicm9hZGNhc3Qgc3Rvcm0gdGFraW5nDQo+
-IGRvd24geW91ciBuZXR3b3JrPw0KDQpEbyB5b3UgbWVhbiBjb25uZWN0aW5nIHR3byBQSFkgcG9y
-dHMgdG8gdGhlIHNhbWUgTEFOPyBXZSBuZXZlciANCmNvbm5lY3QgdHdvIFBIWSBwb3J0cyB0byB0
-aGUgc2FtZSBMQU4gKG9yIGh1YikuIEkgbmV2ZXIgdGhpbmsgb2YgdGhpcyANCmxvb3AgcHJvYmxl
-bS4gSSB0aG91Z2h0IG9ubHkgV0FOIGhhcyB0aGUgbG9vcCBwcm9ibGVtLg0KDQpUaGUgc3dpdGNo
-IGhhcyBzb21lIGtpbmRzIG9mIGZsb3cgY29udHJvbCwgcmVmZXIgdG8gMC4yICJGbG93IGNvbnRy
-b2wgdGhyZXNob2xkIg0KYW5kIDAuMyAiQ1BVIHBvcnQgZmxvdyBjb250cm9sIHRocmVzaG9sZCIu
-IEl0IHdpbGwgZHJvcCBleHRyYSBwYWNrZXRzLg0KSG93IGFuIEV0aGVybmV0IGh1YiB0YWtlIGNh
-cmUgb2YgdGhpcyBzaXR1YXRpb24/DQpJcyB0aGF0IHJlYXNvbmFibGUgdG8gY29ubmVjdCB0d28g
-cG9ydHMgb2YgYW4gRXRoZXJuZXQgaHViIHRvZ2V0aGVyPw0KDQoNCj4gTG9va2luZyBhdCB0aGUg
-VFggZGVzY3JpcHRvciwgdGhlcmUgYXJlIHR3byBiaXRzOg0KPiANCj4gICAgICAgICAgIFsxOF06
-IGZvcmNlIGZvcndhcmQgdG8gcG9ydCAwDQo+ICAgICAgICAgICBbMTldOiBmb3JjZSBmb3J3YXJk
-IHRvIHBvcnQgMQ0KPiANCj4gV2hlbiB0aGUgc3dpdGNoIGlzIGVuYWJsZWQsIGNhbiB0aGVzZSB0
-d28gYml0cyBiZSB1c2VkPw0KDQpZZXMsIGZvciBleGFtcGxlLCB3aGVuIGJpdCAxOSBvZiBUWCBk
-ZXNjcmlwdG9yIGlzIGVuYWJsZWQsIGEgcGFja2V0IGZyb20gQ1BVIA0KcG9ydCBpcyBmb3J3YXJk
-ZWQgdG8gTEFOIHBvcnQgMCBmb3JjaWJseS4NCg0KDQo+IEluIHRoZSBSWCBkZXNjcmlwdG9yIHRo
-ZXJlIGlzOg0KPiANCj4gcGt0X3NwOg0KPiAgICAgICAgICAgMDAwOiBmcm9tIHBvcnQwDQo+ICAg
-ICAgICAgICAwMDE6IGZyb20gcG9ydDENCj4gICAgICAgICAgIDExMDogc29jMCBsb29wYmFjaw0K
-PiAgICAgICAgICAgMTAxOiBzb2MxIGxvb3BiYWNrDQo+IA0KPiBBcmUgdGhlc2UgYml0cyB1c2Vk
-IHdoZW4gdGhlIHN3aXRjaCBpcyBlbmFibGVkPw0KDQpZZXMsIEUtIE1BQyBkcml2ZXIgdXNlcyB0
-aGVzZSBiaXRzIHRvIHRlbGwgd2hlcmUgYSBwYWNrZXQgY29tZXMgZnJvbS4NCk5vdGUgdGhhdCBz
-b2MxIHBvcnQgKENQVSBwb3J0KSBoYXMgYmVlbiByZW1vdmVkIGluIHRoaXMgY2hpcC4NCg0KDQo+
-IDAuMzEgcG9ydCBjb250cm9sIDEgKHBvcnQgY250bDEpIGJsb2NraW5nIHN0YXRlIHNlZW1zIHRv
-IGhhdmUgd2hhdCB5b3UgbmVlZCBmb3INCj4gU1RQLg0KDQpGcm9tIGRvY3VtZW50LCBpZiBiaXQg
-MTcgb3IgYml0IDE2IG9mIHBvcnRfY250bDEgcmVnaXN0ZXIgaXMgc2V0LCBvbmx5IFJNQyANCnBh
-Y2tldHMgd2lsbCBiZSBmb3J3YXJkZWQgdG8gb3RoZXIgTEFOIHBvcnQuIEkgYW0gbm90IHN1cmUg
-d2hldGhlciANCmVuYWJsaW5nIHRoZSBiaXRzIGhlbHBzIHRoZSBpc3N1ZS4gU2hvdWxkIEkgZW5h
-YmxlIHRoZSBiaXRzPw0KU29ycnksIEkgZG9uJ3Qga25vdyB3aGF0IGlzIGEgUk1DIHBhY2tldD8N
-CkNvdWxkIHlvdSBwbGVhc2UgdGVhY2ggbWU/DQoNCg0KPiAgICAgQW5kcmV3DQoNClRoYW5rIHlv
-dSBmb3IgcmV2aWV3Lg0KDQo=
+It was found that the following warning message could be printed out when
+booting the kernel on PowerPC systems that support LPAR:
+
+[    0.129584] WARNING: CPU: 0 PID: 1 at mm/memblock.c:1451 memblock_alloc_internal+0x5c/0x104
+[    0.129593] Modules linked in:
+[    0.129598] CPU: 0 PID: 1 Comm: swapper/0 Not tainted 5.14.0-11.el9.ppc64le+debug #1
+[    0.129605] NIP:  c000000002040134 LR: c00000000204011c CTR: c0000000020241a8
+[    0.129610] REGS: c000000005637760 TRAP: 0700   Not tainted  (5.14.0-11.el9.ppc64le+debug)
+[    0.129616] MSR:  8000000002029033 <SF,VEC,EE,ME,IR,DR,RI,LE>  CR: 48000222  XER: 00000002
+[    0.129635] CFAR: c0000000004d1cf4 IRQMASK: 0
+[    0.129635] GPR00: c00000000204011c c000000005637a00 c000000002c94d00 0000000000000001
+[    0.129635] GPR04: 0000000000000080 0000000000000000 0000000000000000 ffffffffffffffff
+[    0.129635] GPR08: 0000000000000000 0000000000000003 c00000000205ac64 0000000000080000
+[    0.129635] GPR12: 0000000000000000 c0000000049d0000 c000000000013078 0000000000000000
+[    0.129635] GPR16: 0000000000000000 0000000000000000 0000000000000000 0000000000000000
+[    0.129635] GPR20: 0000000000000000 0000000000000000 0000000000000000 0000000000000000
+[    0.129635] GPR24: c000000002003808 c00000000146f7b8 0000000000000000 0000000000000100
+[    0.129635] GPR28: c000000002d7cf80 0000000000000000 0000000000000008 0000000000000000
+[    0.129710] NIP [c000000002040134] memblock_alloc_internal+0x5c/0x104
+[    0.129717] LR [c00000000204011c] memblock_alloc_internal+0x44/0x104
+[    0.129723] Call Trace:
+[    0.129726] [c000000005637a00] [c000000005637a40] 0xc000000005637a40 (unreliable)
+[    0.129735] [c000000005637a60] [c0000000020404d8] memblock_alloc_try_nid+0x94/0xcc
+[    0.129743] [c000000005637af0] [c00000000205ac64] alloc_bootmem_cpumask_var+0x4c/0x9c
+[    0.129751] [c000000005637b60] [c0000000020242e0] __machine_initcall_pseries_pseries_cpu_hotplug_init+0x138/0x1d8
+[    0.129760] [c000000005637bf0] [c000000000012404] do_one_initcall+0xa4/0x4f0
+[    0.129768] [c000000005637cd0] [c000000002005358] do_initcalls+0x140/0x18c
+[    0.129776] [c000000005637d80] [c0000000020055b8] kernel_init_freeable+0x178/0x1d0
+[    0.129783] [c000000005637db0] [c0000000000130a0] kernel_init+0x30/0x190
+[    0.129790] [c000000005637e10] [c00000000000cef4] ret_from_kernel_thread+0x5c/0x64
+
+The warning is printed in memblock_alloc_internal() because the slab
+has been initialized when the initcalls are being processed. To
+avoid the warning, change alloc_bootmem_cpumask_var() call in
+pseries_cpu_hotplug_init() to alloc_cpumask_var() instead. Also
+change cpumask_or() to cpumask_copy() or we will have to use
+zalloc_cpumask_var().
+
+Fixes: bd1dd4c5f528 ("powerpc/pseries: Prevent free CPU ids being reused on another node")
+Signed-off-by: Waiman Long <longman@redhat.com>
+---
+ arch/powerpc/platforms/pseries/hotplug-cpu.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
+
+diff --git a/arch/powerpc/platforms/pseries/hotplug-cpu.c b/arch/powerpc/platforms/pseries/hotplug-cpu.c
+index 5ab44600c8d3..e8e08d916b16 100644
+--- a/arch/powerpc/platforms/pseries/hotplug-cpu.c
++++ b/arch/powerpc/platforms/pseries/hotplug-cpu.c
+@@ -864,12 +864,12 @@ static int __init pseries_cpu_hotplug_init(void)
+ 	/* Processors can be added/removed only on LPAR */
+ 	if (firmware_has_feature(FW_FEATURE_LPAR)) {
+ 		for_each_node(node) {
+-			alloc_bootmem_cpumask_var(&node_recorded_ids_map[node]);
++			alloc_cpumask_var(&node_recorded_ids_map[node],
++					  GFP_KERNEL|GFP_NOWAIT);
+ 
+ 			/* Record ids of CPU added at boot time */
+-			cpumask_or(node_recorded_ids_map[node],
+-				   node_recorded_ids_map[node],
+-				   cpumask_of_node(node));
++			cpumask_copy(node_recorded_ids_map[node],
++				     cpumask_of_node(node));
+ 		}
+ 
+ 		of_reconfig_notifier_register(&pseries_smp_nb);
+-- 
+2.27.0
+
