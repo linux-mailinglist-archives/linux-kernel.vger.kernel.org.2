@@ -2,37 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E8340447EA8
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Nov 2021 12:14:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6ABE7447EA9
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Nov 2021 12:14:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239138AbhKHLRP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Nov 2021 06:17:15 -0500
-Received: from mail.kernel.org ([198.145.29.99]:53744 "EHLO mail.kernel.org"
+        id S237117AbhKHLRS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Nov 2021 06:17:18 -0500
+Received: from mail.kernel.org ([198.145.29.99]:54212 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239101AbhKHLQf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Nov 2021 06:16:35 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1435D61352;
-        Mon,  8 Nov 2021 11:13:49 +0000 (UTC)
+        id S239149AbhKHLQ6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Nov 2021 06:16:58 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 396CF61359;
+        Mon,  8 Nov 2021 11:14:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1636370031;
-        bh=7EkTaZzukkgs/hh3SjAaERFUDJy9rR7bOREfGZkdmGo=;
+        s=k20201202; t=1636370054;
+        bh=v5kymqxyKmvAvPMLG99lLZzehfZMcI+K0hdQmyDJDP0=;
         h=From:To:Cc:Subject:Date:From;
-        b=sZe99ox3hHG9riCTn6E24IZPBeSxYXz4d0ei8nxK3zy+zqEeftDNZwh1aVLg1qVsm
-         4fQ/0OqckQYR78XM3MdYPV75wbIVWV6C9ipHXklbFk2j8VN3C2ZRjKTHkm+yHQ7hWe
-         iGwJK/Y8zQhsMMToQYAHnFxfbKQ8T0rCefW8oCRUVpgjqPV5XcdqvHWhN+D/S/P1Ey
-         d8cpHDvvpobZOopZvcuUepH8hC/hQRg/aTKW3MuAlCXCcpsRRS691vUXjpP7iyLX7E
-         lisxUnKt6KqfUEW52Ek8S0u4j19oHiO9u8kJmFL03fE8IrpLdmSUCaGdROxSC6ZOek
-         Wkrs5jb0xo75w==
+        b=k61D9dl1CO6u+IxOeGYlKSKxTPYQAHbbqLThEby8SfhBMX0ageW4wKX/P496Gv/Jd
+         teRPGeONVdfzR25diD0r0h8E1sSkXICTuaYPb7F+hNm9fByD/+JKZIH1mcUlRaZbRH
+         PH/LNDgD+0JggPn4ItGI5hZC9L5NWDe8q2YtV2HAHE/4pUapd3MY4T+J3kPzgMCl20
+         0TblZ0t5MKBV4T2HP68As1A+1GzJxH5AlcvoTl0HIelh3PkWzWIGi1n5ma61p5mt5Y
+         X4pl1cQne52cLmAd/Ulya4DMIO2GFMvXj1VwjHBG6qLo2pPbciPsui3/SLTs8iQVAc
+         QkvnyI+vmbkNg==
 From:   Arnd Bergmann <arnd@kernel.org>
-To:     "Rafael J. Wysocki" <rafael@kernel.org>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
-Cc:     Arnd Bergmann <arnd@arndb.de>, Amit Kucheria <amitk@kernel.org>,
-        Zhang Rui <rui.zhang@intel.com>, linux-pm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] thermal/drivers/int340x: limit Kconfig to 64-bit
-Date:   Mon,  8 Nov 2021 12:13:41 +0100
-Message-Id: <20211108111347.3928294-1-arnd@kernel.org>
+To:     Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        Juergen Gross <jgross@suse.com>
+Cc:     Arnd Bergmann <arnd@arndb.de>,
+        Stefano Stabellini <sstabellini@kernel.org>,
+        Oscar Salvador <osalvador@suse.de>,
+        Pankaj Gupta <pankaj.gupta@cloud.ionos.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        David Hildenbrand <david@redhat.com>,
+        xen-devel@lists.xenproject.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] xen/balloon: fix unused-variable warning
+Date:   Mon,  8 Nov 2021 12:14:02 +0100
+Message-Id: <20211108111408.3940366-1-arnd@kernel.org>
 X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -42,44 +45,45 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Arnd Bergmann <arnd@arndb.de>
 
-32-bit processors cannot generally access 64-bit MMIO registers
-atomically, and it is unknown in which order the two halves of
-this registers would need to be read:
+In configurations with CONFIG_XEN_BALLOON_MEMORY_HOTPLUG=n
+and CONFIG_XEN_BALLOON_MEMORY_HOTPLUG=y, gcc warns about an
+unused variable:
 
-drivers/thermal/intel/int340x_thermal/processor_thermal_mbox.c: In function 'send_mbox_cmd':
-drivers/thermal/intel/int340x_thermal/processor_thermal_mbox.c:79:37: error: implicit declaration of function 'readq'; did you mean 'readl'? [-Werror=implicit-function-declaration]
-   79 |                         *cmd_resp = readq((void __iomem *) (proc_priv->mmio_base + MBOX_OFFSET_DATA));
-      |                                     ^~~~~
-      |                                     readl
+drivers/xen/balloon.c:83:12: error: 'xen_hotplug_unpopulated' defined but not used [-Werror=unused-variable]
 
-The driver already does not build for anything other than x86,
-so limit it further to x86-64.
+Since this is always zero when CONFIG_XEN_BALLOON_MEMORY_HOTPLUG
+is disabled, turn it into a preprocessor constant in that case.
 
-Fixes: aeb58c860dc5 ("thermal/drivers/int340x: processor_thermal: Suppot 64 bit RFIM responses")
+Fixes: 121f2faca2c0 ("xen/balloon: rename alloc/free_xenballooned_pages")
 Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 ---
- drivers/thermal/intel/int340x_thermal/Kconfig | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/xen/balloon.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/thermal/intel/int340x_thermal/Kconfig b/drivers/thermal/intel/int340x_thermal/Kconfig
-index 45c31f3d6054..5d046de96a5d 100644
---- a/drivers/thermal/intel/int340x_thermal/Kconfig
-+++ b/drivers/thermal/intel/int340x_thermal/Kconfig
-@@ -5,12 +5,12 @@
+diff --git a/drivers/xen/balloon.c b/drivers/xen/balloon.c
+index ad9ba1e97450..ba2ea11e0d3d 100644
+--- a/drivers/xen/balloon.c
++++ b/drivers/xen/balloon.c
+@@ -80,9 +80,8 @@
+ static uint __read_mostly balloon_boot_timeout = 180;
+ module_param(balloon_boot_timeout, uint, 0444);
  
- config INT340X_THERMAL
- 	tristate "ACPI INT340X thermal drivers"
--	depends on X86 && ACPI && PCI
-+	depends on X86_64 && ACPI && PCI
- 	select THERMAL_GOV_USER_SPACE
- 	select ACPI_THERMAL_REL
- 	select ACPI_FAN
- 	select INTEL_SOC_DTS_IOSF_CORE
--	select PROC_THERMAL_MMIO_RAPL if X86_64 && POWERCAP
-+	select PROC_THERMAL_MMIO_RAPL if POWERCAP
- 	help
- 	  Newer laptops and tablets that use ACPI may have thermal sensors and
- 	  other devices with thermal control capabilities outside the core
+-static int xen_hotplug_unpopulated;
+-
+ #ifdef CONFIG_XEN_BALLOON_MEMORY_HOTPLUG
++static int xen_hotplug_unpopulated;
+ 
+ static struct ctl_table balloon_table[] = {
+ 	{
+@@ -115,6 +114,8 @@ static struct ctl_table xen_root[] = {
+ 	{ }
+ };
+ 
++#else
++#define xen_hotplug_unpopulated 0
+ #endif
+ 
+ /*
 -- 
 2.29.2
 
