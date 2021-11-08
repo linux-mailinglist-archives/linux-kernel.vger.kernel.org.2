@@ -2,152 +2,182 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ABEF1449DCD
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Nov 2021 22:17:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A9EB8449DCF
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Nov 2021 22:18:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239951AbhKHVTv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Nov 2021 16:19:51 -0500
-Received: from smtp-relay-internal-0.canonical.com ([185.125.188.122]:56900
-        "EHLO smtp-relay-internal-0.canonical.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S239945AbhKHVTr (ORCPT
+        id S239984AbhKHVVB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Nov 2021 16:21:01 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49522 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239938AbhKHVU7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Nov 2021 16:19:47 -0500
-Received: from mail-lf1-f72.google.com (mail-lf1-f72.google.com [209.85.167.72])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by smtp-relay-internal-0.canonical.com (Postfix) with ESMTPS id 43C543F1E8
-        for <linux-kernel@vger.kernel.org>; Mon,  8 Nov 2021 21:17:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1636406222;
-        bh=Ktl81v/Bz9DUD2tGXyt3QEXrDSC6xACsZ55UZL0LQHo=;
-        h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-         In-Reply-To:Content-Type;
-        b=gBNmRcwZkgVWRqxKl01gNzhy8qq2GxuXzPXAYIHLqMm3KovnNl6d2juWQgivJSymh
-         bhPbKxNrj7x5opVTGWWSt8LUWs5CJvV68gGXaV4IbiTAnvMrPNxFwVtpw6Dg20xUAW
-         aSiJ/uicGlbd2dp1A+4IToYa+c4FkdZZi7ZMeKZqIn5PapkBC5w7Iyv3lhXdIBiptU
-         KmCQJGR/xAizqjirrJK8vqTD4uc8WdgEoHbNHs6c1XhLHHOqS4RU9GEtBEtWIicO6E
-         8OOED8Vi8fqL0Vs4jTc0pgWS3AqZQ8H2lUax+88yBG3WYVDWRa6oW34HPQ634N7ykc
-         S3q8zoxlAX7uQ==
-Received: by mail-lf1-f72.google.com with SMTP id i34-20020a0565123e2200b0040019ae61d5so6942612lfv.20
-        for <linux-kernel@vger.kernel.org>; Mon, 08 Nov 2021 13:17:02 -0800 (PST)
+        Mon, 8 Nov 2021 16:20:59 -0500
+Received: from mail-ed1-x534.google.com (mail-ed1-x534.google.com [IPv6:2a00:1450:4864:20::534])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B67EEC061570;
+        Mon,  8 Nov 2021 13:18:14 -0800 (PST)
+Received: by mail-ed1-x534.google.com with SMTP id f4so67703557edx.12;
+        Mon, 08 Nov 2021 13:18:14 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=73vuYE9yYoLEy9iSrAl/rTu+PZTNJ9VdX48Xg8l11Dg=;
+        b=n+MYiZYy9nfxUhIu1n9FMmStmoZk3i6UH1eL4C+N/pEViVc3RiCQ4cAzkfVEgMEzcQ
+         SHzxBuYErbLwi0L18Tr9dTCN8yerCevpw9NLT8SfjddiX/arSvW/+fDSHmSpEEI04eJW
+         HkwswVi84klSx3TaXpJnmAPpax94mGIPrSoqgOPvipHgZi2aJOCxN6gnezdQXsSt211L
+         ifCHEcR+ogsc040LOwNLGl8a85KvUB4iKaxYh881xkllucDPTS3y1jZy4YohScQTxjb4
+         j4ztaVObPY4BBot8QZEOwnz5JBMwr7d7IVdsx5xvcj18Z8THhcNYG1quTSVVBr0BHmde
+         5XaQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:in-reply-to
-         :content-transfer-encoding;
-        bh=Ktl81v/Bz9DUD2tGXyt3QEXrDSC6xACsZ55UZL0LQHo=;
-        b=7ojKMYpH/+ufOTSPE9z8YkFqNuu1c7EeppVcwvMYJUTMyRu82QyK66S4M3M6kuRxrR
-         IE4Q4k/iEwd5/X+m4X3MCzhptOYxIfEKC+RQ1O6hiENcBxXMiU+qGy2oGQKKM9UrR0f+
-         PHm1YM0IoVwxHtxxY0JOcF5CKnCvCSkSwiV3sXvS5ylypYrtjvRQtv7gbOqn43SXS/ky
-         AIXHZVf9zHL4hA+ytEmNV5F5GdXf5RJOv8z0DOvimdRWo2QZYpQ8AIXIbjX82BRwj7mM
-         BzumNKk+55CY8BHJPbUpqbxSrRencNeFyc2fndp+CTiwkGBDfexb1wi8MQwvuvPQFxg+
-         4zDQ==
-X-Gm-Message-State: AOAM533r6hPLjyhHW19A1YCAxlib4Y7ieHSi0BodygjTpJNKz0LybDzp
-        IioHZShT3EHOVDb5F/a0EqN3v1wlYS0uEviMDexX7nTr0nJDBPIbPkTQTZI9JjmF2J2qcx6Dkvs
-        xPt4mSI5A5/F6LzXgiJfaqHCMuYOSiliPKt0N2jKBEw==
-X-Received: by 2002:a05:6512:ac9:: with SMTP id n9mr2180481lfu.188.1636406211315;
-        Mon, 08 Nov 2021 13:16:51 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJwOHL/9FtziDi6gx/33uA/2HxKYlDj46e0NYgoc72BGcMAuHzBgPINWumBlRSVqAb6ZuLjwSw==
-X-Received: by 2002:a05:6512:ac9:: with SMTP id n9mr2180441lfu.188.1636406211057;
-        Mon, 08 Nov 2021 13:16:51 -0800 (PST)
-Received: from [192.168.3.67] (89-77-68-124.dynamic.chello.pl. [89.77.68.124])
-        by smtp.gmail.com with ESMTPSA id u22sm1063187lff.118.2021.11.08.13.16.49
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 08 Nov 2021 13:16:50 -0800 (PST)
-Message-ID: <f60cf7e0-4f67-f4b3-2596-01114cff6623@canonical.com>
-Date:   Mon, 8 Nov 2021 22:16:49 +0100
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=73vuYE9yYoLEy9iSrAl/rTu+PZTNJ9VdX48Xg8l11Dg=;
+        b=VnFU4o3IzfLIj5kfbxTZauhdw0aBRxh21ZwQlKDenhxROuff5abwaLxsWK/Uh5w/gd
+         vDdWMmOh40Ru4aO2akLai7NMIswrU9bLRobboyNFeV1M/SqWTBOY51qm4aD/yOzvXSEY
+         XXQtrqtuXERJrGS4/hTDpfaaWI0opRZeteR4rBy/NsVBcr6DOTerXBPSxarZCsxqFlyy
+         oTJFoDA+kUJUO/lpZhOL9yH5Gde+hzaxUwbEg3/OTbRPQNU+LAgdPoAm3izXiHDZnf0y
+         TMQnlal5NAQwdA9HOcugZDQ+ZKO6iq68i7elz7XLkns5W45XbM1xAEerlRVj7E3nrK9o
+         5fzQ==
+X-Gm-Message-State: AOAM531Nze4sVWSA/oZDC1IW+Yiyf7Hav+Xu/Qiu0NAC19r3YjhxiEd7
+        5kF6gCrVqRwCST9rZKBilEo=
+X-Google-Smtp-Source: ABdhPJxElJYjUS/m0XnOrttdBBhOkph3caesijCsfQ7Tv9Vlstoo75Raixe7jzdIR+zX3ebxdj9Jgg==
+X-Received: by 2002:a17:907:3da6:: with SMTP id he38mr2668303ejc.151.1636406293258;
+        Mon, 08 Nov 2021 13:18:13 -0800 (PST)
+Received: from skbuf ([188.25.175.102])
+        by smtp.gmail.com with ESMTPSA id gs15sm8901663ejc.42.2021.11.08.13.18.12
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 08 Nov 2021 13:18:12 -0800 (PST)
+Date:   Mon, 8 Nov 2021 23:18:11 +0200
+From:   Vladimir Oltean <olteanv@gmail.com>
+To:     Robert Marko <robert.marko@sartura.hr>
+Cc:     Andrew Lunn <andrew@lunn.ch>, vivien.didelot@gmail.com,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        David Miller <davem@davemloft.net>, kuba@kernel.org,
+        netdev@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Gabor Juhos <j4g8y7@gmail.com>, John Crispin <john@phrozen.org>
+Subject: Re: [net-next] net: dsa: qca8k: only change the MIB_EN bit in
+ MODULE_EN register
+Message-ID: <20211108211811.qukts37eufgfj4sc@skbuf>
+References: <20211104124927.364683-1-robert.marko@sartura.hr>
+ <20211108202058.th7vjq4sjca3encz@skbuf>
+ <CA+HBbNE_jh_h9bx9GLfMRFz_Kq=Vx1pu0dE1aK0guMoEkX1S5A@mail.gmail.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.2.1
-Subject: Re: [PATCH 06/13] dt-bindings: rng: add bindings for microchip mpfs
- rng
-Content-Language: en-US
-To:     conor.dooley@microchip.com, linus.walleij@linaro.org,
-        bgolaszewski@baylibre.com, robh+dt@kernel.org,
-        jassisinghbrar@gmail.com, paul.walmsley@sifive.com,
-        palmer@dabbelt.com, aou@eecs.berkeley.edu, a.zummo@towertech.it,
-        alexandre.belloni@bootlin.com, broonie@kernel.org,
-        gregkh@linuxfoundation.org, lewis.hanly@microchip.com,
-        daire.mcnamara@microchip.com, atish.patra@wdc.com,
-        ivan.griffin@microchip.com, linux-gpio@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-i2c@vger.kernel.org, linux-riscv@lists.infradead.org,
-        linux-crypto@vger.kernel.org, linux-rtc@vger.kernel.org,
-        linux-spi@vger.kernel.org, linux-usb@vger.kernel.org
-Cc:     geert@linux-m68k.org, bin.meng@windriver.com
-References: <20211108150554.4457-1-conor.dooley@microchip.com>
- <20211108150554.4457-7-conor.dooley@microchip.com>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-In-Reply-To: <20211108150554.4457-7-conor.dooley@microchip.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CA+HBbNE_jh_h9bx9GLfMRFz_Kq=Vx1pu0dE1aK0guMoEkX1S5A@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 08/11/2021 16:05, conor.dooley@microchip.com wrote:
-> From: Conor Dooley <conor.dooley@microchip.com>
+On Mon, Nov 08, 2021 at 10:10:19PM +0100, Robert Marko wrote:
+> On Mon, Nov 8, 2021 at 9:21 PM Vladimir Oltean <olteanv@gmail.com> wrote:
+> >
+> > Timed out waiting for ACK/NACK from John.
+> >
+> > On Thu, Nov 04, 2021 at 01:49:27PM +0100, Robert Marko wrote:
+> > > From: Gabor Juhos <j4g8y7@gmail.com>
+> > >
+> > > The MIB module needs to be enabled in the MODULE_EN register in
+> > > order to make it to counting. This is done in the qca8k_mib_init()
+> > > function. However instead of only changing the MIB module enable
+> > > bit, the function writes the whole register. As a side effect other
+> > > internal modules gets disabled.
+> >
+> > Please be more specific.
+> > The MODULE_EN register contains these other bits:
+> > BIT(0): MIB_EN
+> > BIT(1): ACL_EN (ACL module enable)
+> > BIT(2): L3_EN (Layer 3 offload enable)
+> > BIT(10): SPECIAL_DIP_EN (Enable special DIP (224.0.0.x or ff02::1) broadcast
+> > 0 = Use multicast DP
+> > 1 = Use broadcast DP)
+> >
+> > >
+> > > Fix up the code to only change the MIB module specific bit.
+> >
+> > Clearing which one of the above bits bothers you? The driver for the
+> > qca8k switch supports neither layer 3 offloading nor ACLs, and I don't
+> > really know what this special DIP packet/header is).
+> >
+> > Generally the assumption for OF-based drivers is that one should not
+> > rely on any configuration done by prior boot stages, so please explain
+> > what should have worked but doesn't.
 > 
-> Add device tree bindings for the hardware rng device accessed via
-> the system services on the Microchip PolarFire SoC.
+> Hi,
+> I think that the commit message wasn't clear enough and that's my fault for not
+> fixing it up before sending.
+
+Yes, it is not. If things turn out to need changing, you should resend
+with an updated commit message.
+
+> MODULE_EN register has 3 more bits that aren't documented in the QCA8337
+> datasheet but only in the IPQ4019 one but they are there.
+> Those are:
+> BIT(31) S17C_INT (This one is IPQ4019 specific)
+> BIT(9) LOOKUP_ERR_RST_EN
+> BIT(10) QM_ERR_RST_EN
+
+Are you sure that BIT(10) is QM_ERR_RST_EN on IPQ4019? Because in the
+QCA8334 document I'm looking at, it is SPECIAL_DIP_EN.
+
+> Lookup and QM bits as well as the DIP default to 1 while the INT bit is 0.
 > 
-> Signed-off-by: Conor Dooley <conor.dooley@microchip.com>
-> ---
->  .../bindings/rng/microchip,mpfs-rng.yaml      | 31 +++++++++++++++++++
->  1 file changed, 31 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/rng/microchip,mpfs-rng.yaml
+> Clearing the QM and Lookup bits is what is bothering me, why should we clear HW
+> default bits without mentioning that they are being cleared and for what reason?
+
+To be fair, BIT(9) is marked as RESERVED and documented as being set to 1,
+so writing a zero is probably not very smart.
+
+> We aren't depending on the bootloader or whatever configuring the switch, we are
+> even invoking the HW reset before doing anything to make sure that the
+> whole networking
+> subsystem in IPQ4019 is back to HW defaults to get rid of various
+> bootloader hackery.
 > 
-> diff --git a/Documentation/devicetree/bindings/rng/microchip,mpfs-rng.yaml b/Documentation/devicetree/bindings/rng/microchip,mpfs-rng.yaml
-> new file mode 100644
-> index 000000000000..e8ecb3538a86
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/rng/microchip,mpfs-rng.yaml
-> @@ -0,0 +1,31 @@
-> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> +%YAML 1.2
-> +---
-> +$id: "http://devicetree.org/schemas/rng/microchip,mpfs-rng.yaml#"
-> +$schema: "http://devicetree.org/meta-schemas/core.yaml#"
-> +
-> +title: Microchip MPFS random number generator
-> +
-> +maintainers:
-> +  - Conor Dooley <conor.dooley@microchip.com>
-> +
-> +properties:
-> +  compatible:
-> +    const: microchip,polarfire-soc-rng
-> +
-> +  syscontroller:
-> +    maxItems: 1
-> +    description: name of the system controller device node
+> Gabor found this while working on IPQ4019 support and to him and to me it looks
+> like a bug.
 
-There are several issues with this:
-1. You need to describe the type.
-2. Description is not helpful (just copying the name of property) and
-actually misleading because you do not put there the name of device node.
-3. What is it? Looks like syscon (or sometimes called sysreg). If yes,
-please use existing syscon bindings.
+A bug with what impact? I don't have a description of those bits that
+get unset. What do they do, what doesn't work?
 
-> +
-> +required:
-> +  - compatible
-> +  - "syscontroller"
-
-No need for quotes.
-
-> +
-> +additionalProperties: false
-> +
-> +examples:
-> +  - |
-> +    hwrandom: hwrandom {
-> +        compatible = "microchip,polarfire-soc-rng";
-> +        syscontroller = <&syscontroller>;
-> +    };
+> I hope this clears up things a bit.
+> Regards,
+> Robert
+> >
+> > >
+> > > Fixes: 6b93fb46480a ("net-next: dsa: add new driver for qca8xxx family")
+> > > Signed-off-by: Gabor Juhos <j4g8y7@gmail.com>
+> > > Signed-off-by: Robert Marko <robert.marko@sartura.hr>
+> > > ---
+> > >  drivers/net/dsa/qca8k.c | 2 +-
+> > >  1 file changed, 1 insertion(+), 1 deletion(-)
+> > >
+> > > diff --git a/drivers/net/dsa/qca8k.c b/drivers/net/dsa/qca8k.c
+> > > index a984f06f6f04..a229776924f8 100644
+> > > --- a/drivers/net/dsa/qca8k.c
+> > > +++ b/drivers/net/dsa/qca8k.c
+> > > @@ -583,7 +583,7 @@ qca8k_mib_init(struct qca8k_priv *priv)
+> > >       if (ret)
+> > >               goto exit;
+> > >
+> > > -     ret = qca8k_write(priv, QCA8K_REG_MODULE_EN, QCA8K_MODULE_EN_MIB);
+> > > +     ret = qca8k_reg_set(priv, QCA8K_REG_MODULE_EN, QCA8K_MODULE_EN_MIB);
+> > >
+> > >  exit:
+> > >       mutex_unlock(&priv->reg_mutex);
+> > > --
+> > > 2.33.1
+> > >
 > 
-
-
-Best regards,
-Krzysztof
+> 
+> 
+> -- 
+> Robert Marko
+> Staff Embedded Linux Engineer
+> Sartura Ltd.
+> Lendavska ulica 16a
+> 10000 Zagreb, Croatia
+> Email: robert.marko@sartura.hr
+> Web: www.sartura.hr
