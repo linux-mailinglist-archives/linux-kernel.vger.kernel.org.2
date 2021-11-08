@@ -2,141 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 19DA2449E90
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Nov 2021 23:05:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B3B67449E92
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Nov 2021 23:06:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240023AbhKHWIl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Nov 2021 17:08:41 -0500
-Received: from mail.kernel.org ([198.145.29.99]:57096 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231330AbhKHWIk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Nov 2021 17:08:40 -0500
-Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id CD02B61361;
-        Mon,  8 Nov 2021 22:05:54 +0000 (UTC)
-Date:   Mon, 8 Nov 2021 17:05:53 -0500
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Beau Belgrave <beaub@linux.microsoft.com>
-Cc:     mhiramat@kernel.org, linux-trace-devel@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v4 04/10] user_events: Handle matching arguments from
- dyn_events
-Message-ID: <20211108170553.2d2a84b6@gandalf.local.home>
-In-Reply-To: <20211104170433.2206-5-beaub@linux.microsoft.com>
-References: <20211104170433.2206-1-beaub@linux.microsoft.com>
-        <20211104170433.2206-5-beaub@linux.microsoft.com>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        id S240211AbhKHWJe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Nov 2021 17:09:34 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60582 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231330AbhKHWJc (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Nov 2021 17:09:32 -0500
+Received: from mail-pf1-x42c.google.com (mail-pf1-x42c.google.com [IPv6:2607:f8b0:4864:20::42c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0597CC061714
+        for <linux-kernel@vger.kernel.org>; Mon,  8 Nov 2021 14:06:48 -0800 (PST)
+Received: by mail-pf1-x42c.google.com with SMTP id 127so17395639pfu.1
+        for <linux-kernel@vger.kernel.org>; Mon, 08 Nov 2021 14:06:48 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=bUBDJ2EfUrCCQV5R6IbbAxg+gz+7wwLlrF1tUpsYKDM=;
+        b=dgBLRKsd1dMCNu/RrFM/XQsHbBnQ9EMKmFeq5CFJ5HsaVhQY/2GXeRLrMx+Xv2xAzu
+         CFbNzDn+pBoXr3/N+F3bmVjaedAviVTueL25KnG+sAG6T70HppaaR0nyYMiiD7+4m6Tj
+         fWCuZbHp43+euVmg+CGGC4V+frNq4Sn1ZlN9sXInlxs9UUhSTE/8FYIYOUvaS+ItutQE
+         Qw/nURx3cghwa1Z9q9iEY0p4suJXq1FptokmIz2WW/KrUWTwtTlpDDrITUFXT8CJKZok
+         lfRGrxYbIGOj8rPiX9TZctJzy3veJqghEbr3zWATtdd4ocMJI6Ba5NE/tRGm79LeBt+k
+         3LgQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=bUBDJ2EfUrCCQV5R6IbbAxg+gz+7wwLlrF1tUpsYKDM=;
+        b=rw8D2AwCHJiHUBOj28G/q+3554+E1akvDlRMeDS5/MH48LxfP3EZYKmFKtdFUkZoMv
+         ofNPhW2t94z4Sy0WYa07b4T9G4YdKEEGqg+326rS5IP4vsatIhBTkIYoLkT3BY/O6BE8
+         5U6C/QfnHbGFo5gFfb1JbfXPiSPE1DjCZszPtEudpFfcn07BATfPIuVkQySVzVPnfIjN
+         VS873gJ3NVj/GrIFGbfdt6d8mzhXUikxATSYnHj5mHR86whuXNk3CzaTYvitaUPzbmyA
+         eLHA9+qX3Wxoy9rVndFxAN+yEL+PrA9pmEl0aLJWl81tod3QyUW3PcotTzvYHjQ7LoFr
+         DS0g==
+X-Gm-Message-State: AOAM5302Co/CaRijubrfuDik3amfK/EtWkXR68vdiLr6HZV6It3F4eAN
+        /6Zzu8Eqzi3Nx/XZAN9Ai+yLhQ==
+X-Google-Smtp-Source: ABdhPJwcIb/uo/j5Cwc7ERq37GlT6jr3E59ZOOFCPEphErWVsaJeJ0sPLotGQx2j6AiacS/9MjNLLA==
+X-Received: by 2002:a62:ea16:0:b0:47b:f3d7:7a9 with SMTP id t22-20020a62ea16000000b0047bf3d707a9mr2697131pfh.60.1636409207322;
+        Mon, 08 Nov 2021 14:06:47 -0800 (PST)
+Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
+        by smtp.gmail.com with ESMTPSA id mp12sm285426pjb.39.2021.11.08.14.06.46
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 08 Nov 2021 14:06:46 -0800 (PST)
+Date:   Mon, 8 Nov 2021 22:06:42 +0000
+From:   Sean Christopherson <seanjc@google.com>
+To:     Vitaly Kuznetsov <vkuznets@redhat.com>
+Cc:     Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Alexander Graf <graf@amazon.com>,
+        Paolo Bonzini <pbonzini@redhat.com>
+Subject: Re: [PATCH v3 1/3] KVM: nVMX: Handle dynamic MSR intercept toggling
+Message-ID: <YYmfcptFm/ptCZQ8@google.com>
+References: <20210924204907.1111817-1-seanjc@google.com>
+ <20210924204907.1111817-2-seanjc@google.com>
+ <87k0hioasv.fsf@vitty.brq.redhat.com>
+ <YYldZjBA0YOHjUdZ@google.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YYldZjBA0YOHjUdZ@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu,  4 Nov 2021 10:04:27 -0700
-Beau Belgrave <beaub@linux.microsoft.com> wrote:
+On Mon, Nov 08, 2021, Sean Christopherson wrote:
+> On Mon, Nov 08, 2021, Vitaly Kuznetsov wrote:
+> > Sean Christopherson <seanjc@google.com> writes:
+> > > @@ -6749,7 +6686,9 @@ static fastpath_t vmx_vcpu_run(struct kvm_vcpu *vcpu)
+> > >  	 * If the L02 MSR bitmap does not intercept the MSR, then we need to
+> > >  	 * save it.
+> > >  	 */
+> > > -	if (unlikely(!msr_write_intercepted(vcpu, MSR_IA32_SPEC_CTRL)))
+> > > +	if (unlikely(cpu_has_vmx_msr_bitmap() &&
 
-> Ensures that when dynamic events requests a match with arguments that
-> they match what is in the user_event.
+There's another bug lurking here.  If vmcs12 disables MSR bitmaps, then KVM also
+disables MSR bitmaps in vmcs02, ergo checking if MSR bitmaps are supported is
+incorrect.  KVM needs to check if MSR bitmaps are enabled for the current VMCS.
+
+> > > +		     vmx_test_msr_bitmap_write(vmx->loaded_vmcs->msr_bitmap,
+> > > +					       MSR_IA32_SPEC_CTRL)))
 > 
-> Signed-off-by: Beau Belgrave <beaub@linux.microsoft.com>
-> ---
->  kernel/trace/trace_events_user.c | 67 +++++++++++++++++++++++++++++++-
->  1 file changed, 66 insertions(+), 1 deletion(-)
+> Ugh, I inverted the check, '1' == intercept.  IIRC, I open coded the intercept
+> check because SPEC_CTRL is really the only case where should be reading _only_
+> the current VMCS's MSR bitmap.
 > 
-> diff --git a/kernel/trace/trace_events_user.c b/kernel/trace/trace_events_user.c
-> index 479a9ced3281..cd78cc481557 100644
-> --- a/kernel/trace/trace_events_user.c
-> +++ b/kernel/trace/trace_events_user.c
-> @@ -662,13 +662,78 @@ static int user_event_free(struct dyn_event *ev)
->  	return destroy_user_event(user);
->  }
->  
-> +static int user_field_match(struct ftrace_event_field *field, int argc,
-> +			    const char **argv, int *iout)
-> +{
-> +	char field_name[256];
-> +	char arg_name[256];
-
-I'm a bit nervous about allocating that much on the stack. This isn't a
-critical function. I think it is best to just kmalloc it, and fail in the
-unlikely event that the kmalloc fails. It should never fail unless there's
-major memory issues with the system.
-
--- Steve
-
-
-> +	int len, pos, i = *iout;
-> +	bool colon = false;
-> +
-> +	if (i >= argc)
-> +		return false;
-> +
-> +	len = sizeof(arg_name);
-> +	pos = 0;
-> +
-> +	for (; i < argc; ++i) {
-> +		if (i != *iout)
-> +			pos += snprintf(arg_name + pos, len - pos, " ");
-> +
-> +		pos += snprintf(arg_name + pos, len - pos, argv[i]);
-> +
-> +		if (strchr(argv[i], ';')) {
-> +			++i;
-> +			colon = true;
-> +			break;
-> +		}
-> +	}
-> +
-> +	len = sizeof(field_name);
-> +	pos = 0;
-> +
-> +	pos += snprintf(field_name + pos, len - pos, field->type);
-> +	pos += snprintf(field_name + pos, len - pos, " ");
-> +	pos += snprintf(field_name + pos, len - pos, field->name);
-> +
-> +	if (colon)
-> +		pos += snprintf(field_name + pos, len - pos, ";");
-> +
-> +	*iout = i;
-> +
-> +	return strcmp(arg_name, field_name) == 0;
-> +}
-> +
-> +static bool user_fields_match(struct user_event *user, int argc,
-> +			      const char **argv)
-> +{
-> +	struct ftrace_event_field *field, *next;
-> +	struct list_head *head = &user->fields;
-> +	int i = 0;
-> +
-> +	list_for_each_entry_safe_reverse(field, next, head, link)
-> +		if (!user_field_match(field, argc, argv, &i))
-> +			return false;
-> +
-> +	if (i != argc)
-> +		return false;
-> +
-> +	return true;
-> +}
-> +
->  static bool user_event_match(const char *system, const char *event,
->  			     int argc, const char **argv, struct dyn_event *ev)
->  {
->  	struct user_event *user = container_of(ev, struct user_event, devent);
-> +	bool match;
->  
-> -	return strcmp(EVENT_NAME(user), event) == 0 &&
-> +	match = strcmp(EVENT_NAME(user), event) == 0 &&
->  		(!system || strcmp(system, USER_EVENTS_SYSTEM) == 0);
-> +
-> +	if (match && argc > 0)
-> +		match = user_fields_match(user, argc, argv);
-> +
-> +	return match;
->  }
->  
->  static struct dyn_event_operations user_event_dops = {
-
+> I'll spin a new version of the series and test with SPEC_CTRL disabled in a VM,
+> and maybe revist my reasoning for this.
+> 
+> Thanks!
+> 
+> > >  		vmx->spec_ctrl = native_read_msr(MSR_IA32_SPEC_CTRL);
+> > 
+> > I smoke-tested this patch by running (unrelated) selftests when I tried
+> > to put in into my 'Enlightened MSR Bitmap v4' series and my dmesg got
+> > flooded with:
+> > 
+> > [   87.210214] unchecked MSR access error: RDMSR from 0x48 at rIP: 0xffffffffc04e0284 (native_read_msr+0x4/0x30 [kvm_intel])
+> > [   87.210325] Call Trace:
+> > [   87.210355]  vmx_vcpu_run+0xcc7/0x12b0 [kvm_intel]
+> > [   87.210405]  ? vmx_prepare_switch_to_guest+0x138/0x1f0 [kvm_intel]
+> > [   87.210466]  vcpu_enter_guest+0x98c/0x1380 [kvm]
+> > [   87.210631]  ? vmx_vcpu_put+0x2e/0x1f0 [kvm_intel]
+> > [   87.210678]  ? vmx_vcpu_load+0x21/0x60 [kvm_intel]
+> > [   87.210729]  kvm_arch_vcpu_ioctl_run+0xdf/0x580 [kvm]
+> > [   87.210844]  kvm_vcpu_ioctl+0x274/0x660 [kvm]
+> > [   87.210950]  __x64_sys_ioctl+0x83/0xb0
+> > [   87.210996]  do_syscall_64+0x3b/0x90
+> > [   87.211039]  entry_SYSCALL_64_after_hwframe+0x44/0xae
+> > [   87.211093] RIP: 0033:0x7f6ef7f9a307
+> > [   87.211134] Code: 44 00 00 48 8b 05 69 1b 2d 00 64 c7 00 26 00 00 00 48 c7 c0 ff ff ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 b8 10 00 00 00 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 8b 0d 39 1b 2d 00 f7 d8 64 89 01 48
+> > [   87.211293] RSP: 002b:00007ffcacfb3b18 EFLAGS: 00000246 ORIG_RAX: 0000000000000010
+> > [   87.211367] RAX: ffffffffffffffda RBX: 0000000000a2f300 RCX: 00007f6ef7f9a307
+> > [   87.211434] RDX: 0000000000000000 RSI: 000000000000ae80 RDI: 0000000000000007
+> > [   87.211500] RBP: 0000000000000000 R08: 000000000040e769 R09: 0000000000000000
+> > [   87.211559] R10: 0000000000a2f001 R11: 0000000000000246 R12: 0000000000a2d010
+> > [   87.211622] R13: 0000000000a2d010 R14: 0000000000402a15 R15: 00000000ffff0ff0
+> > [   87.212520] Call Trace:
+> > [   87.212597]  vmx_vcpu_run+0xcc7/0x12b0 [kvm_intel]
+> > [   87.212683]  ? vmx_prepare_switch_to_guest+0x138/0x1f0 [kvm_intel]
+> > [   87.212789]  vcpu_enter_guest+0x98c/0x1380 [kvm]
+> > [   87.213059]  ? vmx_vcpu_put+0x2e/0x1f0 [kvm_intel]
+> > [   87.213141]  ? schedule+0x44/0xa0
+> > [   87.213200]  kvm_arch_vcpu_ioctl_run+0xdf/0x580 [kvm]
+> > [   87.213428]  kvm_vcpu_ioctl+0x274/0x660 [kvm]
+> > [   87.213633]  __x64_sys_ioctl+0x83/0xb0
+> > [   87.213705]  do_syscall_64+0x3b/0x90
+> > [   87.213766]  entry_SYSCALL_64_after_hwframe+0x44/0xae
+> > ...
+> > 
+> > this was an old 'E5-2603 v3' CPU. Any idea what's wrong?
