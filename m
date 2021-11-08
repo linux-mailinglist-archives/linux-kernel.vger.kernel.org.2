@@ -2,97 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4BAF7448102
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Nov 2021 15:11:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 07F66448105
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Nov 2021 15:11:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237648AbhKHONm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Nov 2021 09:13:42 -0500
-Received: from mail.kernel.org ([198.145.29.99]:57716 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238835AbhKHONk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Nov 2021 09:13:40 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 516C261107;
-        Mon,  8 Nov 2021 14:10:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1636380655;
-        bh=VD4LXky1edfBuqVBwDgx8FQOTCY3ZoMyDHkDS0ymc5A=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=peNSD7hn/nVx97yXb0P63Z2dxKTgV9JUIOFbntfNDIYkhfUXm+0N/PJt6z7V3QASq
-         TvdIPtNyRqmPun4QIOvxBFfU5GvAlrTaNzOD3BHB3MpbISuB0FaJ2i5biO0GPx2Xev
-         ezkms6K8cLDMdinTlHvXoAb7f9w4D79BvqIKhYFM=
-Date:   Mon, 8 Nov 2021 15:10:53 +0100
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Ajay Garg <ajaygargnsit@gmail.com>
-Cc:     jirislaby@kernel.org, andriy.shevchenko@linux.intel.com,
-        kernel@esmil.dk, linux-serial@vger.kernel.org,
-        linux-kernel@vger.kernel.org, paskripkin@gmail.com,
-        johan@kernel.org
-Subject: Re: [PATCH v5] vt: keyboard: suppress warnings in vt_do_kdgkb_ioctl
-Message-ID: <YYkv7ekV9ezpPOWx@kroah.com>
-References: <20211108134901.7449-1-ajaygargnsit@gmail.com>
- <YYkroa2v1ruwPRBN@kroah.com>
- <CAHP4M8WLaWa769hDJBWVwL7P7hadoTk+CE1sVba3tRVxpMRVtw@mail.gmail.com>
+        id S238903AbhKHOO0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Nov 2021 09:14:26 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36980 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237250AbhKHOOY (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Nov 2021 09:14:24 -0500
+Received: from mail-qk1-x730.google.com (mail-qk1-x730.google.com [IPv6:2607:f8b0:4864:20::730])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8E271C061746
+        for <linux-kernel@vger.kernel.org>; Mon,  8 Nov 2021 06:11:39 -0800 (PST)
+Received: by mail-qk1-x730.google.com with SMTP id bq14so15549074qkb.1
+        for <linux-kernel@vger.kernel.org>; Mon, 08 Nov 2021 06:11:39 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=7pApxpdYsXub2Klb9AGksL2WOu4t7V/pprHcy+kutRA=;
+        b=gxurOgF0ZED/icjZMZbuA+q+02/HP2WNpNCS6vBO+97Y93C2rS0IDh9CHrdHxYlavI
+         z7IUjHhqEY+DQ+o3corur9IdfZjHEc5OK7KYR3cMWkZPqGhHR0Bmzs1AXgNPnfBjRVAx
+         MnWN1sbQ9vltyIhKJ6VGIkjXaOL0XoDan7TxaGypnmRP4z3ynz2I78CG3jEebiJw0qKd
+         MJPGKcXyThiVdU4sw92I5NDYCMKpFPxSR5FRDYq9fKG02EeKAV5Qb+HZNVQP+3CbSxpL
+         fUcj2/4jii0pUwKzUKjxgijWVQd6FD7LsBKd4sV4gcDDQyT8gZs2PRPsLkpSmb1S1Rx0
+         mdTw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=7pApxpdYsXub2Klb9AGksL2WOu4t7V/pprHcy+kutRA=;
+        b=vYmVbipenz+avIfG4t0ep/DwUZwswMFtDS/M3V9uRSPXimt4ttQDzhTFXsR/dFvdzF
+         zeKPEvQLezfiiM/m4mMg43TBXFs5saHNDxp4JqYN0BxYxu2gyr4234nRvTySMpulOq5u
+         H5y78Xg6w8DiAVlvpuQafsvFX5Er4+u/V6fnrI3mcam/tjiqhWNCBXIhNc2TywHa11nc
+         LOywLMO8PYpq1zdfcuF1BKwMgCfHy+yCcjEO/aerVi+GErJwoeGbY5LqCpd/oZs53jKt
+         BDIIjw+Qyq+XL1f/1V6bAGvAs3qFAz5SNTHlU00viXvz67jvryjnd8lA7zwOIEaiFrOt
+         BA5w==
+X-Gm-Message-State: AOAM5312/FSRQcmZSvl0U3Uo+s3GjeutNdMk+ntT+H+NQf8vAm/e7R7N
+        W1NdjZZ9U4EracrKorVLa444Zg==
+X-Google-Smtp-Source: ABdhPJww1CfOR1qBIq+Iby3R1s0yC0dwZpJoshYTS3+Ya+kObszITj3xlfXOuVgHLE/v423f2KK9xg==
+X-Received: by 2002:a05:620a:319d:: with SMTP id bi29mr5038172qkb.92.1636380698435;
+        Mon, 08 Nov 2021 06:11:38 -0800 (PST)
+Received: from [192.168.1.93] (pool-71-163-245-5.washdc.fios.verizon.net. [71.163.245.5])
+        by smtp.gmail.com with ESMTPSA id w11sm6302444qtk.62.2021.11.08.06.11.37
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 08 Nov 2021 06:11:38 -0800 (PST)
+Subject: Re: [PATCH v3 0/5] Refactor thermal pressure update to avoid code
+ duplication
+To:     Steev Klimaszewski <steev@kali.org>,
+        Lukasz Luba <lukasz.luba@arm.com>
+Cc:     linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-arm-msm@vger.kernel.org, sudeep.holla@arm.com,
+        will@kernel.org, catalin.marinas@arm.com, linux@armlinux.org.uk,
+        gregkh@linuxfoundation.org, rafael@kernel.org,
+        viresh.kumar@linaro.org, amitk@kernel.org,
+        daniel.lezcano@linaro.org, amit.kachhap@gmail.com,
+        bjorn.andersson@linaro.org, agross@kernel.org
+References: <20211103161020.26714-1-lukasz.luba@arm.com>
+ <c7b526f0-2c26-0cfc-910b-3521c6a6ef51@kali.org>
+ <3cba148a-7077-7b6b-f131-dc65045aa348@arm.com>
+ <9d533b6e-a81c-e823-fa6f-61fdea92fa65@kali.org>
+ <74ea027b-b213-42b8-0f7d-275f3b84712e@linaro.org>
+ <74603569-2ff1-999e-9618-79261fdb0ee4@kali.org>
+ <b7e76c2a-ceac-500a-ff75-535a3f0d51d6@linaro.org>
+ <f955a2aa-f788-00db-1ed8-dc9c7a1b2572@kali.org>
+From:   Thara Gopinath <thara.gopinath@linaro.org>
+Message-ID: <59054c90-c1cd-85bf-406e-579df668d7b4@linaro.org>
+Date:   Mon, 8 Nov 2021 09:11:37 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAHP4M8WLaWa769hDJBWVwL7P7hadoTk+CE1sVba3tRVxpMRVtw@mail.gmail.com>
+In-Reply-To: <f955a2aa-f788-00db-1ed8-dc9c7a1b2572@kali.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 08, 2021 at 07:24:59PM +0530, Ajay Garg wrote:
-> Hmm, I am afraid I don't understand. The patch changes only 5 lines.
-> Could someone help me navigate what to "fix"?
+
+
+On 11/5/21 6:46 PM, Steev Klimaszewski wrote:
+> 
+>> [snip]
+>> Hi,
+>>
+>> So IIUC the below logs correctly, you are never hitting boost 
+>> frequency (with or without this patch series). Is that correct ?
+>>
+>> w.r.t temperature , how are you measuring it? Do you have LMh enabled 
+>> or are you using tsens to mitigate cpu temperature ?
 > 
 > 
-> Thanks and Regards,
-> Ajay
+> Hi,
 > 
-> On Mon, Nov 8, 2021 at 7:22 PM Greg KH <gregkh@linuxfoundation.org> wrote:
-> >
-> > On Mon, Nov 08, 2021 at 07:19:01PM +0530, Ajay Garg wrote:
-> > > smatch-kchecker gives the following warnings when run on keyboard.c :
-> > >
-> > > vt_do_kdgkb_ioctl() error: uninitialized symbol 'kbs'.
-> > > vt_do_kdgkb_ioctl() error: uninitialized symbol 'ret'.
-> > >
-> > > i)
-> > > The 'kbs" warning was introduced by "07edff926520" :
-> > > ("vt: keyboard, reorder user buffer handling in vt_do_kdgkb_ioctl")
-> > >
-> > > *
-> > > prior 07edff926520, the scope of kbs (allocation/deallocation) was
-> > > external to switch-cases.
-> > >
-> > > *
-> > > post 07edff926520, kbs is allocated internally for each case, however the
-> > > deallocation remains external.
-> > >
-> > > Thus, as the "fix", the scope of kbs deallocation is now made internal
-> > > to each switch case.
-> > >
-> > > ii)
-> > > The 'ret' warning is the result of "4e1404a5cd04" :
-> > > ("vt: keyboard, extract and simplify vt_kdskbsent")
-> > >
-> > > where the "ret = 0" (right at the end) was accidentally removed.
-> > >
-> > > Bringing back the above in a slightly different way, by initializing ret
-> > > to 0 at the start.
+> I was wrong - it does indeed go boost with the patchset applied, it's 
+> just that it doesn't boost up to 2.96GHz very often at all. As noted by 
+> the 0.03% when i ran it while compiling zellij; I reapplied the patches 
+> (and the 6th patch from Lukasz's email) and after boot, 2.96GHz was 
+> showing at 0.39%.
+> 
+> Most tools that read the cpu frequency don't really seem to be well 
+> suited for big.LITTLE, and seem to throw an average of the speed, so 
+> cpufreq-info was the best I have.  We're apparently supposed to be using 
+> cpupower these days, but it doesn't seem to know anything about arm64 
+> devices.
+> 
+> Temperature wise, I'm just getting from the sensors, and I am using LMh.
+> 
+> Now, I have to admit, while I've thrown a patch here or there, I'm not 
+> exactly a kernel developer, just enough knowledge to be somewhat 
+> dangerous and know how to backport things.  In my mind, and my line of 
+> thinking, I would expect with boost enabled, that the cpu would boost up 
+> to that as often as possible, not require a specific workload to 
+> actually hit it.  But then again, I would expect multiple compilation 
+> jobs to be one of the workloads that would?
 
+Hi Steev,
 
-You are listing two different things being done in this single commit.
+So this depends on the cpufreq governor you are using. By-default arm 
+systems have sched-util governor enabled. This means you will scale up 
+to boost depending on cpu load and not always. If you want to ensure you 
+are always hitting boost frequency, you should enable performance 
+governor for cpufreq and try.
 
-It should be 2 different patches.
+Also since the defconfig has by default CPU_FREQ_STAT enabled, you 
+should be able to get statistics out of cpufreq to see the time spent by 
+a cpu in each frequency. I think cpufreq-info -s should give you this 
+info. If not, you can explicitly get it for each cpu from
 
-I would recommend getting more comfortable with Linux kernel development
-by working in the drivers/staging/ portion of the kernel first.  And not
-in the "core" kernel like tty/serial or other well-entrenched
-subsystems.  That way you can learn the proper processes and workflows
-better in an area of the kernel that is specifically designed just for
-that, and not end up bothering the time of other kernel developers for
-basic process issues like your recent patches have shown.
+cat /sys/devices/system/cpu/cpu<X>/cpufreq/stats/time_in_state
 
-thanks,
+Regarding temperature, if you have applied all the patches in the sdm845 
+LMh series and have LMh enabled, cpu throttling starts around 95 degree C.
 
-greg k-h
+> 
+> So I think, the part about never hitting 2.96GHz can be dismissed, and 
+> was simply my lack of knowledge about the cpufreq-info tool's averages. 
+> It does seem however to rarely ever hit 2.96GHz and I would actually 
+> expect it to hit it far more often.
+> 
+
+-- 
+Warm Regards
+Thara (She/Her/Hers)
