@@ -2,36 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 439AF447DA0
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Nov 2021 11:16:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 741C9447DB0
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Nov 2021 11:17:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238897AbhKHKR5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Nov 2021 05:17:57 -0500
-Received: from mail.skyhub.de ([5.9.137.197]:38536 "EHLO mail.skyhub.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231127AbhKHKPX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Nov 2021 05:15:23 -0500
+        id S238822AbhKHKTp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Nov 2021 05:19:45 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38556 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238642AbhKHKPj (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Nov 2021 05:15:39 -0500
+Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D7926C061220
+        for <linux-kernel@vger.kernel.org>; Mon,  8 Nov 2021 02:12:39 -0800 (PST)
 Received: from zn.tnic (p200300ec2f33110088892b77bd117736.dip0.t-ipconnect.de [IPv6:2003:ec:2f33:1100:8889:2b77:bd11:7736])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 9F4841EC0529;
-        Mon,  8 Nov 2021 11:12:37 +0100 (CET)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 79C881EC052A;
+        Mon,  8 Nov 2021 11:12:38 +0100 (CET)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1636366357;
+        t=1636366358;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=+U0N1WhO/TgXQDOA2GkcCX7tzQA/fw5C7L0WOlLoySU=;
-        b=re3054RNR1F8oPYRTdcjLHrbluM61LEeuqGN9VtnP96HvckuRHz/SwnoYSxg9qQKgO9IbR
-        uxH8lXh81utOZ704plkssgA8gtNWufQdWLykUomCC+vbSQAVG5Aoa3DUjWM9nXuj5ILE8X
-        EuNi8BXpdljJ17IUvRwJfLuQVq202c4=
+        bh=I5C5KaPMNkId+WvkDE2ITw4GnQtUUojtBVUD4mzClAg=;
+        b=EN2uwZY90FbtAenrLusETZ3c0OEaf5+STGYUDETB+fuklFOUEFa7DeVXNq62rkLLcGVNQb
+        fPItqHAzoGFy6tn5apT2TCpeseVK37U5/jxs/CYJZlUjdAxSFdWi+REUqOL054G1vt4UXc
+        oaLrEH5Y7zyf/Ts1UqhrFVPA971QQCw=
 From:   Borislav Petkov <bp@alien8.de>
 To:     LKML <linux-kernel@vger.kernel.org>
-Cc:     sparclinux@vger.kernel.org
-Subject: [PATCH v0 37/42] sparc: Check notifier registration return value
-Date:   Mon,  8 Nov 2021 11:11:52 +0100
-Message-Id: <20211108101157.15189-38-bp@alien8.de>
+Cc:     linux-xtensa@linux-xtensa.org
+Subject: [PATCH v0 38/42] xtensa: Check notifier registration return value
+Date:   Mon,  8 Nov 2021 11:11:53 +0100
+Message-Id: <20211108101157.15189-39-bp@alien8.de>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20211108101157.15189-1-bp@alien8.de>
 References: <20211108101157.15189-1-bp@alien8.de>
@@ -48,28 +52,23 @@ Avoid homegrown notifier registration checks.
 No functional changes.
 
 Signed-off-by: Borislav Petkov <bp@suse.de>
-Cc: sparclinux@vger.kernel.org
+Cc: linux-xtensa@linux-xtensa.org
 ---
- arch/sparc/kernel/sstate.c | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+ arch/xtensa/platforms/iss/setup.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/arch/sparc/kernel/sstate.c b/arch/sparc/kernel/sstate.c
-index 3bcc4ddc6911..4e29e8977609 100644
---- a/arch/sparc/kernel/sstate.c
-+++ b/arch/sparc/kernel/sstate.c
-@@ -106,8 +106,10 @@ static int __init sstate_init(void)
+diff --git a/arch/xtensa/platforms/iss/setup.c b/arch/xtensa/platforms/iss/setup.c
+index d3433e1bb94e..00b847e3cb76 100644
+--- a/arch/xtensa/platforms/iss/setup.c
++++ b/arch/xtensa/platforms/iss/setup.c
+@@ -81,5 +81,6 @@ void __init platform_setup(char **p_cmdline)
+ 		}
+ 	}
  
- 	do_set_sstate(HV_SOFT_STATE_TRANSITION, booting_msg);
- 
--	atomic_notifier_chain_register(&panic_notifier_list,
--				       &sstate_panic_block);
-+	if (atomic_notifier_chain_register(&panic_notifier_list,
-+					   &sstate_panic_block))
-+		pr_warn("Soft state panic notifier already registered\n");
-+
- 	register_reboot_notifier(&sstate_reboot_notifier);
- 
- 	return 0;
+-	atomic_notifier_chain_register(&panic_notifier_list, &iss_panic_block);
++	if (atomic_notifier_chain_register(&panic_notifier_list, &iss_panic_block))
++		pr_warn("Panic notifier already registered\n");
+ }
 -- 
 2.29.2
 
