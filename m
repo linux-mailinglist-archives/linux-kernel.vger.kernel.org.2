@@ -2,58 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 06286447AF6
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Nov 2021 08:30:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5A3D8447B09
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Nov 2021 08:31:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237804AbhKHHaM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Nov 2021 02:30:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57632 "EHLO
+        id S237866AbhKHHaa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Nov 2021 02:30:30 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57656 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237458AbhKHHaG (ORCPT
+        with ESMTP id S237488AbhKHHaJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Nov 2021 02:30:06 -0500
-Received: from mail-pj1-x1033.google.com (mail-pj1-x1033.google.com [IPv6:2607:f8b0:4864:20::1033])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 40D5CC061764
-        for <linux-kernel@vger.kernel.org>; Sun,  7 Nov 2021 23:27:22 -0800 (PST)
-Received: by mail-pj1-x1033.google.com with SMTP id v23so5516485pjr.5
-        for <linux-kernel@vger.kernel.org>; Sun, 07 Nov 2021 23:27:22 -0800 (PST)
+        Mon, 8 Nov 2021 02:30:09 -0500
+Received: from mail-pg1-x531.google.com (mail-pg1-x531.google.com [IPv6:2607:f8b0:4864:20::531])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB1ECC061570
+        for <linux-kernel@vger.kernel.org>; Sun,  7 Nov 2021 23:27:23 -0800 (PST)
+Received: by mail-pg1-x531.google.com with SMTP id j9so14406657pgh.1
+        for <linux-kernel@vger.kernel.org>; Sun, 07 Nov 2021 23:27:23 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=chromium.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=bqa39s+vxgVR+dxhrZtkvgAdK1DW/ZPp25VXvulqjaE=;
-        b=QhFa2WeZX88Bs0WCf7fMhuD7QMmVgzU8otVrSy7Zgz1HaGsQRqOTXucXWIpvs4gsRT
-         SN4D4YeiYcu/maV/BBTiUz5HKHNmZqWurD9lzouupzMQcht/m+aWI9YgXc9Case492Ts
-         Q2PEbtPj1aNCgQso90RqjSRYrVL1xie3it4VY=
+        bh=mMyybJ8cedWreU7hFIqGdeFr06iYH5ttCqNwsXNo+Ug=;
+        b=BlJ4p8MnCKRJrHov42Gw5KKXGTRYkmjY6+EH1ZkUsBlpQHSn1X3MArHfqqyICbpt8J
+         ckBJBTOX1M7RNcLEX4+BBy5saGYqpvpVQDtiX6EgOU3R+pDDNCsYiY2H3XOSmlcBFFFS
+         yPaiSqa+hYKrxoqtG0Csp1v1bWOsB8bznR7Rc=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=bqa39s+vxgVR+dxhrZtkvgAdK1DW/ZPp25VXvulqjaE=;
-        b=0RmCT8L3O4XNxTkFgteVZHlAZ0lszKrsCm6T7GX5O/ZG07mqNWkQf0y0/B9C9nBxzH
-         Aka2iZuILPUmePpCuYs7WLOp3O0nM6S15n9SsfPReBszr4bcpJiA6QFd4AnABmSIwfZi
-         +pbq/ST/BEyZJJSlCqQ65RJHxie1ziDcbDOaxvihLRHGoUXnN5RPW0n7ol1K7z8Z5nBp
-         PV6/FW+O1uWps/tZupy8LRFj3r+nMIyQLMg7gkY07Wv8d2tRPfax/zAgvktshcWRBYpQ
-         E3zCv/iUjAwzzshd+1fc7+yPRu/E8gRarcCWOCJGletL8dgEeCIgGzRNHIwBOMObx2Zy
-         tuYw==
-X-Gm-Message-State: AOAM530bJouqJoN8fxMJw2hD15coXh84k0iKdPLYB7Jb+Qy9niPzqB8U
-        /LhfLnzwSIJzuseTxpNIO89bKQ==
-X-Google-Smtp-Source: ABdhPJw8fTIJIR0QspPBLwT2xjfJCUaQF6HsFhnrIs7lc4mG337MzXvoExoAoIEvLCsKriqpETCotQ==
-X-Received: by 2002:a17:90b:4d92:: with SMTP id oj18mr49333764pjb.188.1636356441798;
-        Sun, 07 Nov 2021 23:27:21 -0800 (PST)
+        bh=mMyybJ8cedWreU7hFIqGdeFr06iYH5ttCqNwsXNo+Ug=;
+        b=KdVtIMwy0FFZo3hPBaLe/iubjExTiU0XJNIY58tjvxxXa66e46FLxaf6SXnoAl1UaT
+         ZmPBUo9eFQJascpLglpEqZdoXMwyRLWI894J5XMtq+SQif8SgfPUJ4nZwIlKfLVLCEgR
+         rybL9IYjaUQQYvdLObbSyW0Z1KcF5H0rwLV0mW7A+ms25+pZz7qD8kKZv5CRI16teEDY
+         nzxW4ADm+9KTjxIn5rHJI/NWeW3e1m42Mxy5psFs6JG+Q8DaaMdY63hnHo5i/VVzNpTt
+         jFFdQqxSV/fh1+oY8VCxjbMN5fBB4Ew/LlLZ8AzngfWRPyMXIEvNAdlrz0G9kXynSOKM
+         UUbw==
+X-Gm-Message-State: AOAM532t7w3S0JSGFcp+gUu0LednXt/+kBHFgmc2QI8/f51q4aAikIgT
+        bmCqVkONNoAEOH4DIDV2BRvbiw==
+X-Google-Smtp-Source: ABdhPJzGTEjdH6LyTtUqnt1Zognyi8VuOYKKerfR1nK0zQN7I97rN5Rl+Pi5/x087s9KQfDWroMIMg==
+X-Received: by 2002:a63:af06:: with SMTP id w6mr58727268pge.436.1636356443295;
+        Sun, 07 Nov 2021 23:27:23 -0800 (PST)
 Received: from hsinyi-z840.tpe.corp.google.com ([2401:fa00:1:10:5f03:6a9b:24e8:3a2e])
-        by smtp.gmail.com with ESMTPSA id e8sm11684972pgn.46.2021.11.07.23.27.20
+        by smtp.gmail.com with ESMTPSA id e8sm11684972pgn.46.2021.11.07.23.27.21
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 07 Nov 2021 23:27:21 -0800 (PST)
+        Sun, 07 Nov 2021 23:27:23 -0800 (PST)
 From:   Hsin-Yi Wang <hsinyi@chromium.org>
 To:     Matthias Brugger <matthias.bgg@gmail.com>
 Cc:     Rob Herring <robh+dt@kernel.org>,
         linux-arm-kernel@lists.infradead.org,
         linux-mediatek@lists.infradead.org, devicetree@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: [PATCH 3/7] arm64: dts: mt8183: Add more fennel SKUs
-Date:   Mon,  8 Nov 2021 15:27:07 +0800
-Message-Id: <20211108072711.1628566-3-hsinyi@chromium.org>
+Subject: [PATCH 4/7] arm64: dts: mt8183: Add kakadu sku22
+Date:   Mon,  8 Nov 2021 15:27:08 +0800
+Message-Id: <20211108072711.1628566-4-hsinyi@chromium.org>
 X-Mailer: git-send-email 2.34.0.rc0.344.g81b53c2807-goog
 In-Reply-To: <20211108072711.1628566-1-hsinyi@chromium.org>
 References: <20211108072711.1628566-1-hsinyi@chromium.org>
@@ -63,146 +63,52 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add fennel sku7 and fennel14 sku2, which use different audio codec than
-previous fennel/fennel14 boards.
+Kakadu sku22 is using mediatek,mt8183_mt6358_ts3a227_rt1015p audio codec
 
 Signed-off-by: Hsin-Yi Wang <hsinyi@chromium.org>
 ---
- arch/arm64/boot/dts/mediatek/Makefile         |  2 ++
- .../mt8183-kukui-jacuzzi-fennel-sku1.dts      |  1 +
- .../mt8183-kukui-jacuzzi-fennel-sku6.dts      |  1 +
- .../mt8183-kukui-jacuzzi-fennel-sku7.dts      | 33 +++++++++++++++++++
- .../mediatek/mt8183-kukui-jacuzzi-fennel.dtsi |  1 -
- .../mt8183-kukui-jacuzzi-fennel14-sku2.dts    | 17 ++++++++++
- .../mt8183-kukui-jacuzzi-fennel14.dts         |  1 +
- 7 files changed, 55 insertions(+), 1 deletion(-)
- create mode 100644 arch/arm64/boot/dts/mediatek/mt8183-kukui-jacuzzi-fennel-sku7.dts
- create mode 100644 arch/arm64/boot/dts/mediatek/mt8183-kukui-jacuzzi-fennel14-sku2.dts
+ arch/arm64/boot/dts/mediatek/Makefile         |  1 +
+ .../mediatek/mt8183-kukui-kakadu-sku22.dts    | 19 +++++++++++++++++++
+ 2 files changed, 20 insertions(+)
+ create mode 100644 arch/arm64/boot/dts/mediatek/mt8183-kukui-kakadu-sku22.dts
 
 diff --git a/arch/arm64/boot/dts/mediatek/Makefile b/arch/arm64/boot/dts/mediatek/Makefile
-index 045927402269a9..9834bd659d1530 100644
+index 9834bd659d1530..1613259b686576 100644
 --- a/arch/arm64/boot/dts/mediatek/Makefile
 +++ b/arch/arm64/boot/dts/mediatek/Makefile
-@@ -18,7 +18,9 @@ dtb-$(CONFIG_ARCH_MEDIATEK) += mt8183-kukui-jacuzzi-cozmo.dtb
- dtb-$(CONFIG_ARCH_MEDIATEK) += mt8183-kukui-jacuzzi-damu.dtb
- dtb-$(CONFIG_ARCH_MEDIATEK) += mt8183-kukui-jacuzzi-fennel-sku1.dtb
- dtb-$(CONFIG_ARCH_MEDIATEK) += mt8183-kukui-jacuzzi-fennel-sku6.dtb
-+dtb-$(CONFIG_ARCH_MEDIATEK) += mt8183-kukui-jacuzzi-fennel-sku7.dtb
- dtb-$(CONFIG_ARCH_MEDIATEK) += mt8183-kukui-jacuzzi-fennel14.dtb
-+dtb-$(CONFIG_ARCH_MEDIATEK) += mt8183-kukui-jacuzzi-fennel14-sku2.dtb
- dtb-$(CONFIG_ARCH_MEDIATEK) += mt8183-kukui-jacuzzi-juniper-sku16.dtb
- dtb-$(CONFIG_ARCH_MEDIATEK) += mt8183-kukui-jacuzzi-kappa.dtb
- dtb-$(CONFIG_ARCH_MEDIATEK) += mt8183-kukui-jacuzzi-kenzo.dtb
-diff --git a/arch/arm64/boot/dts/mediatek/mt8183-kukui-jacuzzi-fennel-sku1.dts b/arch/arm64/boot/dts/mediatek/mt8183-kukui-jacuzzi-fennel-sku1.dts
-index ef6257c9a2d2ff..dec11a4eb59e30 100644
---- a/arch/arm64/boot/dts/mediatek/mt8183-kukui-jacuzzi-fennel-sku1.dts
-+++ b/arch/arm64/boot/dts/mediatek/mt8183-kukui-jacuzzi-fennel-sku1.dts
-@@ -5,6 +5,7 @@
- 
- /dts-v1/;
- #include "mt8183-kukui-jacuzzi-fennel.dtsi"
-+#include "mt8183-kukui-audio-da7219-rt1015p.dtsi"
- 
- / {
- 	model = "Google fennel sku1 board";
-diff --git a/arch/arm64/boot/dts/mediatek/mt8183-kukui-jacuzzi-fennel-sku6.dts b/arch/arm64/boot/dts/mediatek/mt8183-kukui-jacuzzi-fennel-sku6.dts
-index 899c2e42385c27..37e6e58f63b7e3 100644
---- a/arch/arm64/boot/dts/mediatek/mt8183-kukui-jacuzzi-fennel-sku6.dts
-+++ b/arch/arm64/boot/dts/mediatek/mt8183-kukui-jacuzzi-fennel-sku6.dts
-@@ -5,6 +5,7 @@
- 
- /dts-v1/;
- #include "mt8183-kukui-jacuzzi-fennel.dtsi"
-+#include "mt8183-kukui-audio-da7219-rt1015p.dtsi"
- 
- / {
- 	model = "Google fennel sku6 board";
-diff --git a/arch/arm64/boot/dts/mediatek/mt8183-kukui-jacuzzi-fennel-sku7.dts b/arch/arm64/boot/dts/mediatek/mt8183-kukui-jacuzzi-fennel-sku7.dts
+@@ -27,6 +27,7 @@ dtb-$(CONFIG_ARCH_MEDIATEK) += mt8183-kukui-jacuzzi-kenzo.dtb
+ dtb-$(CONFIG_ARCH_MEDIATEK) += mt8183-kukui-jacuzzi-willow-sku0.dtb
+ dtb-$(CONFIG_ARCH_MEDIATEK) += mt8183-kukui-jacuzzi-willow-sku1.dtb
+ dtb-$(CONFIG_ARCH_MEDIATEK) += mt8183-kukui-kakadu.dtb
++dtb-$(CONFIG_ARCH_MEDIATEK) += mt8183-kukui-kakadu-sku22.dtb
+ dtb-$(CONFIG_ARCH_MEDIATEK) += mt8183-kukui-kodama-sku16.dtb
+ dtb-$(CONFIG_ARCH_MEDIATEK) += mt8183-kukui-kodama-sku272.dtb
+ dtb-$(CONFIG_ARCH_MEDIATEK) += mt8183-kukui-kodama-sku288.dtb
+diff --git a/arch/arm64/boot/dts/mediatek/mt8183-kukui-kakadu-sku22.dts b/arch/arm64/boot/dts/mediatek/mt8183-kukui-kakadu-sku22.dts
 new file mode 100644
-index 00000000000000..0e09604004d5e7
+index 00000000000000..3a724e6f915cd5
 --- /dev/null
-+++ b/arch/arm64/boot/dts/mediatek/mt8183-kukui-jacuzzi-fennel-sku7.dts
-@@ -0,0 +1,33 @@
++++ b/arch/arm64/boot/dts/mediatek/mt8183-kukui-kakadu-sku22.dts
+@@ -0,0 +1,19 @@
 +// SPDX-License-Identifier: (GPL-2.0 OR MIT)
 +/*
 + * Copyright 2021 Google LLC
 + */
 +
 +/dts-v1/;
-+#include "mt8183-kukui-jacuzzi-fennel.dtsi"
-+#include "mt8183-kukui-audio-ts3a227e-rt1015p.dtsi"
++#include "mt8183-kukui-kakadu.dtsi"
++#include "mt8183-kukui-audio-rt1015p.dtsi"
 +
 +/ {
-+	model = "Google fennel sku7 board";
-+	compatible = "google,fennel-sku7", "google,fennel", "mediatek,mt8183";
++	model = "MediaTek kakadu board sku22";
++	compatible = "google,kakadu-rev3-sku22", "google,kakadu-rev2-sku22",
++		     "google,kakadu", "mediatek,mt8183";
 +};
 +
-+&touchscreen {
-+	status = "okay";
-+
-+	compatible = "hid-over-i2c";
-+	reg = <0x10>;
-+	interrupt-parent = <&pio>;
-+	interrupts = <155 IRQ_TYPE_LEVEL_LOW>;
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&touchscreen_pins>;
-+
-+	post-power-on-delay-ms = <10>;
-+	hid-descr-addr = <0x0001>;
++&sound {
++	compatible = "mediatek,mt8183_mt6358_ts3a227_rt1015p";
 +};
 +
-+
-+&qca_wifi {
-+	qcom,ath10k-calibration-variant = "GO_FENNEL";
-+};
-+
-diff --git a/arch/arm64/boot/dts/mediatek/mt8183-kukui-jacuzzi-fennel.dtsi b/arch/arm64/boot/dts/mediatek/mt8183-kukui-jacuzzi-fennel.dtsi
-index 577519a775c057..bbe6c338f465ee 100644
---- a/arch/arm64/boot/dts/mediatek/mt8183-kukui-jacuzzi-fennel.dtsi
-+++ b/arch/arm64/boot/dts/mediatek/mt8183-kukui-jacuzzi-fennel.dtsi
-@@ -5,7 +5,6 @@
- 
- /dts-v1/;
- #include "mt8183-kukui-jacuzzi.dtsi"
--#include "mt8183-kukui-audio-da7219-rt1015p.dtsi"
- 
- &mt6358codec {
- 	mediatek,dmic-mode = <1>; /* one-wire */
-diff --git a/arch/arm64/boot/dts/mediatek/mt8183-kukui-jacuzzi-fennel14-sku2.dts b/arch/arm64/boot/dts/mediatek/mt8183-kukui-jacuzzi-fennel14-sku2.dts
-new file mode 100644
-index 00000000000000..3fc5a6181d7e66
---- /dev/null
-+++ b/arch/arm64/boot/dts/mediatek/mt8183-kukui-jacuzzi-fennel14-sku2.dts
-@@ -0,0 +1,17 @@
-+// SPDX-License-Identifier: (GPL-2.0 OR MIT)
-+/*
-+ * Copyright 2021 Google LLC
-+ */
-+
-+/dts-v1/;
-+#include "mt8183-kukui-jacuzzi-fennel.dtsi"
-+#include "mt8183-kukui-audio-ts3a227e-rt1015p.dtsi"
-+
-+/ {
-+	model = "Google fennel14 sku2 board";
-+	compatible = "google,fennel-sku2", "google,fennel", "mediatek,mt8183";
-+};
-+
-+&qca_wifi {
-+	qcom,ath10k-calibration-variant = "GO_FENNEL14";
-+};
-diff --git a/arch/arm64/boot/dts/mediatek/mt8183-kukui-jacuzzi-fennel14.dts b/arch/arm64/boot/dts/mediatek/mt8183-kukui-jacuzzi-fennel14.dts
-index e8c41f6b4b0d4e..23ad0b91e9776f 100644
---- a/arch/arm64/boot/dts/mediatek/mt8183-kukui-jacuzzi-fennel14.dts
-+++ b/arch/arm64/boot/dts/mediatek/mt8183-kukui-jacuzzi-fennel14.dts
-@@ -5,6 +5,7 @@
- 
- /dts-v1/;
- #include "mt8183-kukui-jacuzzi-fennel.dtsi"
-+#include "mt8183-kukui-audio-da7219-rt1015p.dtsi"
- 
- / {
- 	model = "Google fennel14 sku0 board";
 -- 
 2.34.0.rc0.344.g81b53c2807-goog
 
