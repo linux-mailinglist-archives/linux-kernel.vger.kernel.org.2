@@ -2,462 +2,285 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D7B6F449A39
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Nov 2021 17:46:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6BD66449A42
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Nov 2021 17:47:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241375AbhKHQtG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Nov 2021 11:49:06 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:34282 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S241380AbhKHQtA (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Nov 2021 11:49:00 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1636389973;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=E1ltadtEx7jvb3qLinyURJu824CaztEEWY3x8pCyubw=;
-        b=cyuZF3mcg4jYmQG/Rr1uYXKV9awI50Np51x/04S27mkGrLgmVHCSC52JXT/G3GKsXdDYYK
-        G/NE5eIgXGwq6rRefR1JbrCXid1BUUjN3xGX8OeRDZ7Iec/1peTm4JNhlniDvM5q4Rjylk
-        wkBtHdu6iYMYZWHvAwwvw9QDW5mGszY=
-Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
- [209.85.128.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-408-lLfJfApwOe2XjTsxhZLScA-1; Mon, 08 Nov 2021 11:46:11 -0500
-X-MC-Unique: lLfJfApwOe2XjTsxhZLScA-1
-Received: by mail-wm1-f69.google.com with SMTP id j25-20020a05600c1c1900b00332372c252dso108120wms.1
-        for <linux-kernel@vger.kernel.org>; Mon, 08 Nov 2021 08:46:11 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
-         :message-id:mime-version;
-        bh=E1ltadtEx7jvb3qLinyURJu824CaztEEWY3x8pCyubw=;
-        b=wr+vmN0yskoS/z/LgNJCyXiTBveiN/aiODv1iqi8bkcykfJioW9baQGkCDTfq9Zj4U
-         xe8erDWijfLCxeM+PruQSiaueGz49dxtOXwN+uPMj5LC2rJntrIozyyVaes+frfvu7Z7
-         r+jZEPQMRS62JmhfYiRqcw6DDCmDYn58JVuWN5t++F9xlnfHy27d+Soa663ZZmgXPf3Z
-         e7Nl3O3jhPiOAV7WYtclgNOXUclQpvG/L9ojV0BT0fixjfdw7+7HKwRyr3hUFJvdEqWV
-         yOaqBLeHDoY0zGaRmCwecF2J6csgiUQTRjqHwMcqbRsQaidTbBUM6uD3NsjMnK9IOG1X
-         rpJg==
-X-Gm-Message-State: AOAM531TvL943rI9rn8T00fhQK9BD3kj9N34bpluiR+nv/c10gbj75f0
-        JJ+mgE94PasaSgxlvfWLj0ANt64lPRBhTjM2fl3MDR8U/PY2fvWfTdsUz/g3QWvsqOVWAO/XR46
-        u29pD2U7Exm3Aq6YR2F1jDmrO
-X-Received: by 2002:a05:6000:1b8f:: with SMTP id r15mr603334wru.27.1636389970547;
-        Mon, 08 Nov 2021 08:46:10 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJztSWWasOeF193GU4qII35pVBv5TUKgbjRjteT1t0G5DV6G8jUQZxBZEtHOeLqu7RIN0j0BqQ==
-X-Received: by 2002:a05:6000:1b8f:: with SMTP id r15mr603289wru.27.1636389970222;
-        Mon, 08 Nov 2021 08:46:10 -0800 (PST)
-Received: from vitty.brq.redhat.com (g-server-2.ign.cz. [91.219.240.2])
-        by smtp.gmail.com with ESMTPSA id z135sm24310972wmc.45.2021.11.08.08.46.09
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 08 Nov 2021 08:46:09 -0800 (PST)
-From:   Vitaly Kuznetsov <vkuznets@redhat.com>
-To:     Sean Christopherson <seanjc@google.com>
-Cc:     Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Alexander Graf <graf@amazon.com>,
-        Paolo Bonzini <pbonzini@redhat.com>
-Subject: Re: [PATCH v3 1/3] KVM: nVMX: Handle dynamic MSR intercept toggling
-In-Reply-To: <20210924204907.1111817-2-seanjc@google.com>
-References: <20210924204907.1111817-1-seanjc@google.com>
- <20210924204907.1111817-2-seanjc@google.com>
-Date:   Mon, 08 Nov 2021 17:46:08 +0100
-Message-ID: <87k0hioasv.fsf@vitty.brq.redhat.com>
+        id S236097AbhKHQty (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Nov 2021 11:49:54 -0500
+Received: from mail.kernel.org ([198.145.29.99]:36602 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S240236AbhKHQtw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Nov 2021 11:49:52 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 145CC60187;
+        Mon,  8 Nov 2021 16:47:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1636390028;
+        bh=0v2vAx4zwJjrUeKvAJOFU5qdcGwXo2bNYzZSlEtsylM=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=iwqOT5jAaYT/pQzkzlw4A0pUe8X9VSNbfIh3CVT3VoxixHhZ/3kS1dMZ54s74JNfI
+         3dcLih53M8A6kdax0SwbfV2AjYQu/LW1kJTdETmpfTruy08uYUjra23zJgtplbfySZ
+         qC7tPkEZ0FF8dhtLllbeEWoMuLYzGtF2kraIiBQDbYHdtgyf7Pec7kvrES2xD4vcUy
+         bPD1C0L/a93gMyJ0k04BQhfd+1/BgTcMi2cwgIWLE2SzbfVY23sfAL/cs8IZffOQJO
+         ltv7G2NNLV1MlQqj1nnWCG25nNGuELMp0Tp5pBl8ErDrWaBQYzj35Q5wjLCecU3BID
+         bqJ8cT/IIWsuA==
+Received: by pali.im (Postfix)
+        id CD7F0A15; Mon,  8 Nov 2021 17:47:05 +0100 (CET)
+Date:   Mon, 8 Nov 2021 17:47:05 +0100
+From:   Pali =?utf-8?B?Um9ow6Fy?= <pali@kernel.org>
+To:     Oliver O'Halloran <oohall@gmail.com>
+Cc:     Bjorn Helgaas <bhelgaas@google.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
+        Rob Herring <robh@kernel.org>,
+        Luca Ceresoli <luca@lucaceresoli.net>,
+        Marek =?utf-8?B?QmVow7pu?= <kabel@kernel.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        linux-pci <linux-pci@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: RFC: Extend probing of native PCIe controllers
+Message-ID: <20211108164705.gcvd3qfx4jotpgwh@pali>
+References: <20211022183808.jdeo7vntnagqkg7g@pali>
+ <CAOSf1CG65t0OZuB87z3m9AVBOjAQL_5nNRak+UjX7fOQJDCH0A@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAOSf1CG65t0OZuB87z3m9AVBOjAQL_5nNRak+UjX7fOQJDCH0A@mail.gmail.com>
+User-Agent: NeoMutt/20180716
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Sean Christopherson <seanjc@google.com> writes:
+Hello!
 
-> Always check vmcs01's MSR bitmap when merging L0 and L1 bitmaps for L2,
-> and always update the relevant bits in vmcs02.  This fixes two distinct,
-> but intertwined bugs related to dynamic MSR bitmap modifications.
->
-> The first issue is that KVM fails to enable MSR interception in vmcs02
-> for the FS/GS base MSRs if L1 first runs L2 with interception disabled,
-> and later enables interception.
->
-> The second issue is that KVM fails to honor userspace MSR filtering when
-> preparing vmcs02.
->
-> Fix both issues simultaneous as fixing only one of the issues (doesn't
-> matter which) would create a mess that no one should have to bisect.
-> Fixing only the first bug would exacerbate the MSR filtering issue as
-> userspace would see inconsistent behavior depending on the whims of L1.
-> Fixing only the second bug (MSR filtering) effectively requires fixing
-> the first, as the nVMX code only knows how to transition vmcs02's
-> bitmap from 1->0.
->
-> Move the various accessor/mutators that are currently buried in vmx.c
-> into vmx.h so that they can be shared by the nested code.
->
-> Fixes: 1a155254ff93 ("KVM: x86: Introduce MSR filtering")
-> Fixes: d69129b4e46a ("KVM: nVMX: Disable intercept for FS/GS base MSRs in vmcs02 when possible")
-> Cc: stable@vger.kernel.org
-> Cc: Alexander Graf <graf@amazon.com>
-> Signed-off-by: Sean Christopherson <seanjc@google.com>
-> ---
->  arch/x86/kvm/vmx/nested.c | 111 +++++++++++++++++---------------------
->  arch/x86/kvm/vmx/vmx.c    |  67 ++---------------------
->  arch/x86/kvm/vmx/vmx.h    |  63 ++++++++++++++++++++++
->  3 files changed, 116 insertions(+), 125 deletions(-)
->
-> diff --git a/arch/x86/kvm/vmx/nested.c b/arch/x86/kvm/vmx/nested.c
-> index eedcebf58004..3c9657f6923e 100644
-> --- a/arch/x86/kvm/vmx/nested.c
-> +++ b/arch/x86/kvm/vmx/nested.c
-> @@ -523,29 +523,6 @@ static int nested_vmx_check_tpr_shadow_controls(struct kvm_vcpu *vcpu,
->  	return 0;
->  }
->  
-> -/*
-> - * Check if MSR is intercepted for L01 MSR bitmap.
-> - */
-> -static bool msr_write_intercepted_l01(struct kvm_vcpu *vcpu, u32 msr)
-> -{
-> -	unsigned long *msr_bitmap;
-> -	int f = sizeof(unsigned long);
-> -
-> -	if (!cpu_has_vmx_msr_bitmap())
-> -		return true;
-> -
-> -	msr_bitmap = to_vmx(vcpu)->vmcs01.msr_bitmap;
-> -
-> -	if (msr <= 0x1fff) {
-> -		return !!test_bit(msr, msr_bitmap + 0x800 / f);
-> -	} else if ((msr >= 0xc0000000) && (msr <= 0xc0001fff)) {
-> -		msr &= 0x1fff;
-> -		return !!test_bit(msr, msr_bitmap + 0xc00 / f);
-> -	}
-> -
-> -	return true;
-> -}
-> -
->  /*
->   * If a msr is allowed by L0, we should check whether it is allowed by L1.
->   * The corresponding bit will be cleared unless both of L0 and L1 allow it.
-> @@ -599,6 +576,34 @@ static inline void enable_x2apic_msr_intercepts(unsigned long *msr_bitmap)
->  	}
->  }
->  
-> +#define BUILD_NVMX_MSR_INTERCEPT_HELPER(rw)					\
-> +static inline									\
-> +void nested_vmx_set_msr_##rw##_intercept(struct vcpu_vmx *vmx,			\
-> +					 unsigned long *msr_bitmap_l1,		\
-> +					 unsigned long *msr_bitmap_l0, u32 msr)	\
-> +{										\
-> +	if (vmx_test_msr_bitmap_##rw(vmx->vmcs01.msr_bitmap, msr) ||		\
-> +	    vmx_test_msr_bitmap_##rw(msr_bitmap_l1, msr))			\
-> +		vmx_set_msr_bitmap_##rw(msr_bitmap_l0, msr);			\
-> +	else									\
-> +		vmx_clear_msr_bitmap_##rw(msr_bitmap_l0, msr);			\
-> +}
-> +BUILD_NVMX_MSR_INTERCEPT_HELPER(read)
-> +BUILD_NVMX_MSR_INTERCEPT_HELPER(write)
-> +
-> +static inline void nested_vmx_set_intercept_for_msr(struct vcpu_vmx *vmx,
-> +						    unsigned long *msr_bitmap_l1,
-> +						    unsigned long *msr_bitmap_l0,
-> +						    u32 msr, int types)
-> +{
-> +	if (types & MSR_TYPE_R)
-> +		nested_vmx_set_msr_read_intercept(vmx, msr_bitmap_l1,
-> +						  msr_bitmap_l0, msr);
-> +	if (types & MSR_TYPE_W)
-> +		nested_vmx_set_msr_write_intercept(vmx, msr_bitmap_l1,
-> +						   msr_bitmap_l0, msr);
-> +}
-> +
->  /*
->   * Merge L0's and L1's MSR bitmap, return false to indicate that
->   * we do not use the hardware.
-> @@ -606,10 +611,11 @@ static inline void enable_x2apic_msr_intercepts(unsigned long *msr_bitmap)
->  static inline bool nested_vmx_prepare_msr_bitmap(struct kvm_vcpu *vcpu,
->  						 struct vmcs12 *vmcs12)
->  {
-> +	struct vcpu_vmx *vmx = to_vmx(vcpu);
->  	int msr;
->  	unsigned long *msr_bitmap_l1;
-> -	unsigned long *msr_bitmap_l0 = to_vmx(vcpu)->nested.vmcs02.msr_bitmap;
-> -	struct kvm_host_map *map = &to_vmx(vcpu)->nested.msr_bitmap_map;
-> +	unsigned long *msr_bitmap_l0 = vmx->nested.vmcs02.msr_bitmap;
-> +	struct kvm_host_map *map = &vmx->nested.msr_bitmap_map;
->  
->  	/* Nothing to do if the MSR bitmap is not in use.  */
->  	if (!cpu_has_vmx_msr_bitmap() ||
-> @@ -660,44 +666,27 @@ static inline bool nested_vmx_prepare_msr_bitmap(struct kvm_vcpu *vcpu,
->  		}
->  	}
->  
-> -	/* KVM unconditionally exposes the FS/GS base MSRs to L1. */
-> -#ifdef CONFIG_X86_64
-> -	nested_vmx_disable_intercept_for_msr(msr_bitmap_l1, msr_bitmap_l0,
-> -					     MSR_FS_BASE, MSR_TYPE_RW);
-> -
-> -	nested_vmx_disable_intercept_for_msr(msr_bitmap_l1, msr_bitmap_l0,
-> -					     MSR_GS_BASE, MSR_TYPE_RW);
-> -
-> -	nested_vmx_disable_intercept_for_msr(msr_bitmap_l1, msr_bitmap_l0,
-> -					     MSR_KERNEL_GS_BASE, MSR_TYPE_RW);
-> -#endif
-> -
->  	/*
-> -	 * Checking the L0->L1 bitmap is trying to verify two things:
-> -	 *
-> -	 * 1. L0 gave a permission to L1 to actually passthrough the MSR. This
-> -	 *    ensures that we do not accidentally generate an L02 MSR bitmap
-> -	 *    from the L12 MSR bitmap that is too permissive.
-> -	 * 2. That L1 or L2s have actually used the MSR. This avoids
-> -	 *    unnecessarily merging of the bitmap if the MSR is unused. This
-> -	 *    works properly because we only update the L01 MSR bitmap lazily.
-> -	 *    So even if L0 should pass L1 these MSRs, the L01 bitmap is only
-> -	 *    updated to reflect this when L1 (or its L2s) actually write to
-> -	 *    the MSR.
-> +	 * Always check vmcs01's bitmap to honor userspace MSR filters and any
-> +	 * other runtime changes to vmcs01's bitmap, e.g. dynamic pass-through.
->  	 */
-> -	if (!msr_write_intercepted_l01(vcpu, MSR_IA32_SPEC_CTRL))
-> -		nested_vmx_disable_intercept_for_msr(
-> -					msr_bitmap_l1, msr_bitmap_l0,
-> -					MSR_IA32_SPEC_CTRL,
-> -					MSR_TYPE_R | MSR_TYPE_W);
-> -
-> -	if (!msr_write_intercepted_l01(vcpu, MSR_IA32_PRED_CMD))
-> -		nested_vmx_disable_intercept_for_msr(
-> -					msr_bitmap_l1, msr_bitmap_l0,
-> -					MSR_IA32_PRED_CMD,
-> -					MSR_TYPE_W);
-> -
-> -	kvm_vcpu_unmap(vcpu, &to_vmx(vcpu)->nested.msr_bitmap_map, false);
-> +#ifdef CONFIG_X86_64
-> +	nested_vmx_set_intercept_for_msr(vmx, msr_bitmap_l1, msr_bitmap_l0,
-> +					 MSR_FS_BASE, MSR_TYPE_RW);
-> +
-> +	nested_vmx_set_intercept_for_msr(vmx, msr_bitmap_l1, msr_bitmap_l0,
-> +					 MSR_GS_BASE, MSR_TYPE_RW);
-> +
-> +	nested_vmx_set_intercept_for_msr(vmx, msr_bitmap_l1, msr_bitmap_l0,
-> +					 MSR_KERNEL_GS_BASE, MSR_TYPE_RW);
-> +#endif
-> +	nested_vmx_set_intercept_for_msr(vmx, msr_bitmap_l1, msr_bitmap_l0,
-> +					 MSR_IA32_SPEC_CTRL, MSR_TYPE_RW);
-> +
-> +	nested_vmx_set_intercept_for_msr(vmx, msr_bitmap_l1, msr_bitmap_l0,
-> +					 MSR_IA32_PRED_CMD, MSR_TYPE_W);
-> +
-> +	kvm_vcpu_unmap(vcpu, &vmx->nested.msr_bitmap_map, false);
->  
->  	return true;
->  }
-> diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
-> index d118daed0530..86a8c2713039 100644
-> --- a/arch/x86/kvm/vmx/vmx.c
-> +++ b/arch/x86/kvm/vmx/vmx.c
-> @@ -766,29 +766,6 @@ void vmx_update_exception_bitmap(struct kvm_vcpu *vcpu)
->  	vmcs_write32(EXCEPTION_BITMAP, eb);
->  }
->  
-> -/*
-> - * Check if MSR is intercepted for currently loaded MSR bitmap.
-> - */
-> -static bool msr_write_intercepted(struct kvm_vcpu *vcpu, u32 msr)
-> -{
-> -	unsigned long *msr_bitmap;
-> -	int f = sizeof(unsigned long);
-> -
-> -	if (!cpu_has_vmx_msr_bitmap())
-> -		return true;
-> -
-> -	msr_bitmap = to_vmx(vcpu)->loaded_vmcs->msr_bitmap;
-> -
-> -	if (msr <= 0x1fff) {
-> -		return !!test_bit(msr, msr_bitmap + 0x800 / f);
-> -	} else if ((msr >= 0xc0000000) && (msr <= 0xc0001fff)) {
-> -		msr &= 0x1fff;
-> -		return !!test_bit(msr, msr_bitmap + 0xc00 / f);
-> -	}
-> -
-> -	return true;
-> -}
-> -
->  static void clear_atomic_switch_msr_special(struct vcpu_vmx *vmx,
->  		unsigned long entry, unsigned long exit)
->  {
-> @@ -3695,46 +3672,6 @@ void free_vpid(int vpid)
->  	spin_unlock(&vmx_vpid_lock);
->  }
->  
-> -static void vmx_clear_msr_bitmap_read(ulong *msr_bitmap, u32 msr)
-> -{
-> -	int f = sizeof(unsigned long);
-> -
-> -	if (msr <= 0x1fff)
-> -		__clear_bit(msr, msr_bitmap + 0x000 / f);
-> -	else if ((msr >= 0xc0000000) && (msr <= 0xc0001fff))
-> -		__clear_bit(msr & 0x1fff, msr_bitmap + 0x400 / f);
-> -}
-> -
-> -static void vmx_clear_msr_bitmap_write(ulong *msr_bitmap, u32 msr)
-> -{
-> -	int f = sizeof(unsigned long);
-> -
-> -	if (msr <= 0x1fff)
-> -		__clear_bit(msr, msr_bitmap + 0x800 / f);
-> -	else if ((msr >= 0xc0000000) && (msr <= 0xc0001fff))
-> -		__clear_bit(msr & 0x1fff, msr_bitmap + 0xc00 / f);
-> -}
-> -
-> -static void vmx_set_msr_bitmap_read(ulong *msr_bitmap, u32 msr)
-> -{
-> -	int f = sizeof(unsigned long);
-> -
-> -	if (msr <= 0x1fff)
-> -		__set_bit(msr, msr_bitmap + 0x000 / f);
-> -	else if ((msr >= 0xc0000000) && (msr <= 0xc0001fff))
-> -		__set_bit(msr & 0x1fff, msr_bitmap + 0x400 / f);
-> -}
-> -
-> -static void vmx_set_msr_bitmap_write(ulong *msr_bitmap, u32 msr)
-> -{
-> -	int f = sizeof(unsigned long);
-> -
-> -	if (msr <= 0x1fff)
-> -		__set_bit(msr, msr_bitmap + 0x800 / f);
-> -	else if ((msr >= 0xc0000000) && (msr <= 0xc0001fff))
-> -		__set_bit(msr & 0x1fff, msr_bitmap + 0xc00 / f);
-> -}
-> -
->  void vmx_disable_intercept_for_msr(struct kvm_vcpu *vcpu, u32 msr, int type)
->  {
->  	struct vcpu_vmx *vmx = to_vmx(vcpu);
-> @@ -6749,7 +6686,9 @@ static fastpath_t vmx_vcpu_run(struct kvm_vcpu *vcpu)
->  	 * If the L02 MSR bitmap does not intercept the MSR, then we need to
->  	 * save it.
->  	 */
-> -	if (unlikely(!msr_write_intercepted(vcpu, MSR_IA32_SPEC_CTRL)))
-> +	if (unlikely(cpu_has_vmx_msr_bitmap() &&
-> +		     vmx_test_msr_bitmap_write(vmx->loaded_vmcs->msr_bitmap,
-> +					       MSR_IA32_SPEC_CTRL)))
->  		vmx->spec_ctrl = native_read_msr(MSR_IA32_SPEC_CTRL);
+On Tuesday 09 November 2021 00:14:36 Oliver O'Halloran wrote:
+> On Sat, Oct 23, 2021 at 5:38 AM Pali Rohár <pali@kernel.org> wrote:
+> >
+> > Hello!
+> >
+> > In this email I'm describing how I see that probing of native PCIe
+> > controller drivers is implemented, how it should be implemented and how
+> > to extend / simplify core code for controller drivers.
+> >
+> > Native PCIe controller drivers needs to fill struct pci_host_bridge and
+> > then call pci_host_probe(). Function pci_host_probe() starts probing and
+> > enumerating buses and register PCIe devices to system.
+> >
+> > But initialization of PCIe controller and cards on buses (other end of
+> > PCIe link) is more complicated and basically every native PCIe
+> > controller driver needs to do initialization PCIe link prior calling
+> > pci_host_probe(). Steps which controller drivers are doing are de-facto
+> > standard steps defined in PCIe base or CEM specification.
+> >
+> > The most problematic step is to reset endpoint card and wait until
+> > endpoint card start. Reset of endpoint card is done by standard PERST#
+> > signal (defined in PCIe CEM spec) and in most cases board export control
+> > of this signal to OS via GPIO (few board and drivers have this signal
+> > connected to PCIe controller and then PCIe controller has some specific
+> > registers to control this signal). Reset via PERST# signal is defined in
+> > PCIe CEM and base specs as "PCIe Warm Reset".
+> >
+> > As discussed in the following email thread, this PCIe Warm Reset should
+> > not depend on PCIe controller as it resets card on the other end of PCIe
+> > controller. But currently every native PCIe controller driver does PCIe
+> > Warm Reset by its own for randomly chosen time period. There is open
+> > question how long should be endpoint card in Warm Reset state:
+> > https://lore.kernel.org/linux-pci/20210310110535.zh4pnn4vpmvzwl5q@pali/
+> >
+> > Initialization of PCIe endpoint card is described in PCIe CEM spec in
+> > Figure 2-10: Power Up. Other informations are in PCIe base spec in 6.6.1
+> > Conventional Reset section.
+> >
+> > If I understand specifications correctly then OS initialization steps
+> > should be following (please correct me if I'm wrong!):
+> >
+> > 1) Put PERST# to low which enter endpoint card into reset state
+> > 2) Enable AUX power (3.3V) and wait until is stable
+> > 3) Enable main power (12V/3.3V) and wait until is stable
+> > 4) Enable refclock and wait until is stable
+> > 5) Enable LTSSM on PCIe controller to start link training
+> > 6) Put PERST# to high which exit endpoint card from reset state
+> > 7) Wait until link training completes
+> > 8) Wait another 100ms prior accessing config space of endpoint card
+> >
+> > Minimal time period between "after step 3)" and "before step 6)" is T_PVPERL = 100ms
+> > Minimal time period between "after step 4)" and "before step 6)" is T_PERSTCLK = 100us
+> >
+> > After step 6) is end of Fundamental Reset and PCIe controller needs to
+> > be in LTSSM Detect state within 20ms. So enabling it prior putting
+> > PERST# to high should achieve it.
+> 
+> 5) is a bit out of place here and it could be step 0). There's no real
+> requirements around when the upstream device (the controller in our
+> case) starts polling for downstream devices. #PERST is effectively a
+> power good signal so the downstream device is required to ignore the
+> link polls until #PERST is lifted.
 
-I smoke-tested this patch by running (unrelated) selftests when I tried
-to put in into my 'Enlightened MSR Bitmap v4' series and my dmesg got
-flooded with:
+Ok, currently I do not see any issue by moving step 5) before step 1).
 
-[   87.210214] unchecked MSR access error: RDMSR from 0x48 at rIP: 0xffffffffc04e0284 (native_read_msr+0x4/0x30 [kvm_intel])
-[   87.210325] Call Trace:
-[   87.210355]  vmx_vcpu_run+0xcc7/0x12b0 [kvm_intel]
-[   87.210405]  ? vmx_prepare_switch_to_guest+0x138/0x1f0 [kvm_intel]
-[   87.210466]  vcpu_enter_guest+0x98c/0x1380 [kvm]
-[   87.210631]  ? vmx_vcpu_put+0x2e/0x1f0 [kvm_intel]
-[   87.210678]  ? vmx_vcpu_load+0x21/0x60 [kvm_intel]
-[   87.210729]  kvm_arch_vcpu_ioctl_run+0xdf/0x580 [kvm]
-[   87.210844]  kvm_vcpu_ioctl+0x274/0x660 [kvm]
-[   87.210950]  __x64_sys_ioctl+0x83/0xb0
-[   87.210996]  do_syscall_64+0x3b/0x90
-[   87.211039]  entry_SYSCALL_64_after_hwframe+0x44/0xae
-[   87.211093] RIP: 0033:0x7f6ef7f9a307
-[   87.211134] Code: 44 00 00 48 8b 05 69 1b 2d 00 64 c7 00 26 00 00 00 48 c7 c0 ff ff ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 b8 10 00 00 00 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 8b 0d 39 1b 2d 00 f7 d8 64 89 01 48
-[   87.211293] RSP: 002b:00007ffcacfb3b18 EFLAGS: 00000246 ORIG_RAX: 0000000000000010
-[   87.211367] RAX: ffffffffffffffda RBX: 0000000000a2f300 RCX: 00007f6ef7f9a307
-[   87.211434] RDX: 0000000000000000 RSI: 000000000000ae80 RDI: 0000000000000007
-[   87.211500] RBP: 0000000000000000 R08: 000000000040e769 R09: 0000000000000000
-[   87.211559] R10: 0000000000a2f001 R11: 0000000000000246 R12: 0000000000a2d010
-[   87.211622] R13: 0000000000a2d010 R14: 0000000000402a15 R15: 00000000ffff0ff0
-[   87.212520] Call Trace:
-[   87.212597]  vmx_vcpu_run+0xcc7/0x12b0 [kvm_intel]
-[   87.212683]  ? vmx_prepare_switch_to_guest+0x138/0x1f0 [kvm_intel]
-[   87.212789]  vcpu_enter_guest+0x98c/0x1380 [kvm]
-[   87.213059]  ? vmx_vcpu_put+0x2e/0x1f0 [kvm_intel]
-[   87.213141]  ? schedule+0x44/0xa0
-[   87.213200]  kvm_arch_vcpu_ioctl_run+0xdf/0x580 [kvm]
-[   87.213428]  kvm_vcpu_ioctl+0x274/0x660 [kvm]
-[   87.213633]  __x64_sys_ioctl+0x83/0xb0
-[   87.213705]  do_syscall_64+0x3b/0x90
-[   87.213766]  entry_SYSCALL_64_after_hwframe+0x44/0xae
-...
+> > Competition of link training is indicated by standard DLLLA bit in Root
+> > Port config space. Support for DLLLA bit is optional and is indicated by
+> > DLLLARC bit in Root Port config space. Lot of PCIe controllers do not
+> > support this standard DLLLA bit, but have their own specific register
+> > for it.
+> 
+> I thought DLLLA reporting was made mandatory in gen2? I suppose it
+> doesn't really matter since we need to support gen1 devices anyway,
+> but still...
 
-this was an old 'E5-2603 v3' CPU. Any idea what's wrong?
+I have PCIe 2.0 and also PCIe 3.0 controllers where Root Ports do not
+provide DLLLA capability. I do not know if DLLLA is mandatory in PCIe
+specifications, but we need to support also these devices.
 
->  
->  	x86_spec_ctrl_restore_host(vmx->spec_ctrl, 0);
-> diff --git a/arch/x86/kvm/vmx/vmx.h b/arch/x86/kvm/vmx/vmx.h
-> index 592217fd7d92..3f9c8548625d 100644
-> --- a/arch/x86/kvm/vmx/vmx.h
-> +++ b/arch/x86/kvm/vmx/vmx.h
-> @@ -400,6 +400,69 @@ static inline void vmx_set_intercept_for_msr(struct kvm_vcpu *vcpu, u32 msr,
->  
->  void vmx_update_cpu_dirty_logging(struct kvm_vcpu *vcpu);
->  
-> +static inline bool vmx_test_msr_bitmap_read(ulong *msr_bitmap, u32 msr)
-> +{
-> +	int f = sizeof(unsigned long);
-> +
-> +	if (msr <= 0x1fff)
-> +		return test_bit(msr, msr_bitmap + 0x000 / f);
-> +	else if ((msr >= 0xc0000000) && (msr <= 0xc0001fff))
-> +		return test_bit(msr & 0x1fff, msr_bitmap + 0x400 / f);
-> +	return true;
-> +}
-> +
-> +static inline bool vmx_test_msr_bitmap_write(ulong *msr_bitmap, u32 msr)
-> +{
-> +	int f = sizeof(unsigned long);
-> +
-> +	if (msr <= 0x1fff)
-> +		return test_bit(msr, msr_bitmap + 0x800 / f);
-> +	else if ((msr >= 0xc0000000) && (msr <= 0xc0001fff))
-> +		return test_bit(msr & 0x1fff, msr_bitmap + 0xc00 / f);
-> +	return true;
-> +}
-> +
-> +static inline void vmx_clear_msr_bitmap_read(ulong *msr_bitmap, u32 msr)
-> +{
-> +	int f = sizeof(unsigned long);
-> +
-> +	if (msr <= 0x1fff)
-> +		__clear_bit(msr, msr_bitmap + 0x000 / f);
-> +	else if ((msr >= 0xc0000000) && (msr <= 0xc0001fff))
-> +		__clear_bit(msr & 0x1fff, msr_bitmap + 0x400 / f);
-> +}
-> +
-> +static inline void vmx_clear_msr_bitmap_write(ulong *msr_bitmap, u32 msr)
-> +{
-> +	int f = sizeof(unsigned long);
-> +
-> +	if (msr <= 0x1fff)
-> +		__clear_bit(msr, msr_bitmap + 0x800 / f);
-> +	else if ((msr >= 0xc0000000) && (msr <= 0xc0001fff))
-> +		__clear_bit(msr & 0x1fff, msr_bitmap + 0xc00 / f);
-> +}
-> +
-> +static inline void vmx_set_msr_bitmap_read(ulong *msr_bitmap, u32 msr)
-> +{
-> +	int f = sizeof(unsigned long);
-> +
-> +	if (msr <= 0x1fff)
-> +		__set_bit(msr, msr_bitmap + 0x000 / f);
-> +	else if ((msr >= 0xc0000000) && (msr <= 0xc0001fff))
-> +		__set_bit(msr & 0x1fff, msr_bitmap + 0x400 / f);
-> +}
-> +
-> +static inline void vmx_set_msr_bitmap_write(ulong *msr_bitmap, u32 msr)
-> +{
-> +	int f = sizeof(unsigned long);
-> +
-> +	if (msr <= 0x1fff)
-> +		__set_bit(msr, msr_bitmap + 0x800 / f);
-> +	else if ((msr >= 0xc0000000) && (msr <= 0xc0001fff))
-> +		__set_bit(msr & 0x1fff, msr_bitmap + 0xc00 / f);
-> +}
-> +
-> +
->  static inline u8 vmx_get_rvi(void)
->  {
->  	return vmcs_read16(GUEST_INTR_STATUS) & 0xff;
+> > Similarly is defined power down of PCIe card in PCIe CEM spec in Figure
+> > 2-13: Power Down. If I understand it correctly steps are:
+> >
+> > 1) Put endpoint card into D3hot state, so PCIe link goes inactive
+> > 2) Put PERST# to low, so endpoint card enters reset state
+> > 3) Disable main power (12V/3.3V)
+> > 4) Disable refclock
+> >
+> > In case of surprise power down, PERST# needs to go low in 500ns.
+> >
+> > In PCIe base spec in section 5.2 Link State Power Management is
+> > described that preparation for removing the main power source can be
+> > done also by sending PCIe PME_Turn_Off Message by Root Complex. IIRC
+> > there is no standard way how to send PCIe PME_Turn_Off message.
+> 
+> Is there any real difference between sending this message and placing
+> the device into D3hot? IIRC devices in D3hot are required to tolerate
+> a transition to D3cold (i.e. power being removed) anyway.
 
--- 
-Vitaly
+Hm... I do not know right now. I think that this is just another option.
+Maybe somebody else know more details about it?
 
+I will try to look into my PCIe book if there is some more explanation
+about it.
+
+> > I see that basically every PCIe controller driver is doing its own
+> > implementation of PCIe Warm Reset and waiting until PCIe link is ready
+> > prior calling pci_host_probe().
+> >
+> > Based on all above details I would like to propose following extending
+> > of struct pci_host_bridge and pci_host_probe() function to de-duplicate
+> > native PCIe controller driver code:
+> >
+> > 1) extend struct pci_host_bridge to provide callbacks for:
+> >    * enable / disable main power source
+> >    * enable / disable refclock
+> >    * enable / disable LTSSM link training (if PCIe link should go into Detect / Polling state)
+> >    * enable / disable PERST# signal
+> >    * returning boolean if endpoint card is present (physically in PCIe/mPCIe/m.2/... slot)
+> >    * returning boolean if link training completed
+> >    * sending PCIe PME_Turn_Off message
+> 
+> I don't have any real objections to adding this, but I do wonder what
+> code would be using these calls.
+
+My initial idea is that native controller drivers would provide these
+callbacks and they would not do these steps in their probe callback.
+Instead pci core function would implement "common" probe method which
+would call these callbacks in correct order and with proper delays and
+checks between them.
+
+Next pci_reset_fn_methods[PERST] code would call some of these callbacks
+to implement Warm reset.
+
+> If you squint a bit you've got
+> something that looks a lot like a pci hotplug slot driver (enable /
+> disable / presence check calls). It might make sense to try use some
+> of that infrastructure for what you want to do since the bus scanning
+> code already knows how to deal with slot drivers.
+
+Something could be implemented in pci hotplug / slot driver.
+
+I think that PCIe Warm Reset fits better for "slot reset" mechanism than
+PCIe Hot Reset. It is because PCIe Warm Reset is done via out-of-band
+signal (dedicated PERST# line) as opposite of PCIe Hot Reset which is
+done via in-band PCIe protocol.
+
+Enable / disable power source also perfectly fits for "slot power on"
+mechanism.
+
+Also hotplug / slot driver can monitor change of DLLLA state via PCIe
+HotPlug interrupt. So it looks like that this could be reused too. But
+in more PCIe controllers do not provide interrupt to signal link up and
+some of them even DLLLA capability in Root Port (they have custom way
+how to read link state).
+
+> > 2) implement asynchronous initialization of PCIe link and enumeration of
+> >    PCIe bus behind the PCIe Root Port from pci_host_probe() based on new
+> >    callbacks added in 1)
+> >    --> so native PCIe controller drivers do not have to do it manually
+> >    --> during this initialization can be done also PCIe Hot Reset
+> >
+> > 3) implement PCIe Hot Reset as reset method via PERST# signal and put it
+> >    into pci_reset_fn_methods[] array
+> 
+> I assume you mean Warm reset here.
+
+Yes, that is typo. I really mean PCIe Warm Reset here.
+
+> I'll add a word of caution that
+> there are badly behaved devices out there which will ignore #PERST
+> being re-asserted after the card is powered on.
+
+Thanks for information! I know that there are devices which do not like
+PCIe Hot Reset (done via Secondary Bus Reset bit in PCI Bridge).
+And kernel has already quirks for these devices which disallow usage of
+this kind of reset.
+
+So if there are issue also with PCIe Warm Reset via PERST# pin then we
+can use this kind of reset as the last one (pci_reset_fn_methods has
+priority of resets). This should not break existing cards and if no
+other reset is possible then card would stay in broken state like
+before. Also we could add quirks which disallow this kind of reset for
+broken cards. I think that there are more options how to handle it.
+
+At least lot of native PCIe controller drivers are doing PERST# reset
+during kernel boot time more of these PCIe controllers are also
+initialized in bootloader U-Boot. So this issue about re-asserting
+PERST# pin is already affected by more PCIe controller drivers.
+
+> > 4) implement PCIe Cold Reset as reset method via power down / up and put
+> >    it into pci_reset_fn_methods[] array
+> >
+> > 5) as enabling / disabling power supply and toggling PERST# signal is
+> >    implemented via GPIO, add some generic implementation for callback
+> >    functions which will use named gpios (e.g. from DT)
+> >
+> > This could simplify implementations of native PCIe controller drivers by
+> > calling initialization steps in correct order with correct timeouts and
+> > drivers do not have to do copy+paste same common code or reimplement it
+> > with own constants and macros for timeouts, etc...
+> >
+> > Also it should enable access to PCIe Root Port as this device is part of
+> > Root Complex and should be available also when link is down or link
+> > training was not completed. Currently some PCIe controllers are not
+> > registered into system when link is down (e.g. card is disconnected or
+> > card has some issue). Which also prevents access to PCIe Root Port
+> > device.
+> 
+> Is there a good reason for skipping probing the controller when
+> there's no downstream device present?
+
+Either old code or hw bugs (accessing config space when link is down
+cause CPU aborts). I saw on mailing list patch which is fixing this and
+registering "host controller" even when link is down. So looks like
+these issues are being fixing.
+
+> Seems kinda dumb to make a whole
+> pci domain disappear just because it didn't have a device at boot.
+
+I agree.
+
+> > And in some cases it could speed up boot process as pci
+> > controller driver does not have to actively wait for link and let kernel
+> > do initialization of other devices.
+> 
+> > What do you think about this idea?
+> 
+> Sounds like a good idea to me.
+
+Thanks for checking it!
