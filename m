@@ -2,78 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 22316447BB5
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Nov 2021 09:23:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3D99B447B88
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Nov 2021 09:07:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237911AbhKHIZp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Nov 2021 03:25:45 -0500
-Received: from mswedge2.sunplus.com ([60.248.182.106]:39328 "EHLO
-        mg.sunplus.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S237880AbhKHIZo (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Nov 2021 03:25:44 -0500
-X-Greylist: delayed 1190 seconds by postgrey-1.27 at vger.kernel.org; Mon, 08 Nov 2021 03:25:43 EST
-X-MailGates: (compute_score:DELIVER,40,3)
-Received: from 172.17.9.112
-        by mg02.sunplus.com with MailGates ESMTP Server V5.0(53126:0:AUTH_RELAY)
-        (envelope-from <tony.huang@sunplus.com>); Mon, 08 Nov 2021 16:02:57 +0800 (CST)
-Received: from sphcmbx02.sunplus.com.tw (172.17.9.112) by
- sphcmbx02.sunplus.com.tw (172.17.9.112) with Microsoft SMTP Server (TLS) id
- 15.0.1497.23; Mon, 8 Nov 2021 16:02:52 +0800
-Received: from sphcmbx02.sunplus.com.tw ([::1]) by sphcmbx02.sunplus.com.tw
- ([fe80::f8bb:bd77:a854:5b9e%14]) with mapi id 15.00.1497.023; Mon, 8 Nov 2021
- 16:02:52 +0800
-From:   =?utf-8?B?VG9ueSBIdWFuZyDpu4Pmh7fljpo=?= <tony.huang@sunplus.com>
-To:     Randy Dunlap <rdunlap@infradead.org>,
-        Tony Huang <tonyhuang.sunplus@gmail.com>,
-        "ulf.hansson@linaro.org" <ulf.hansson@linaro.org>,
-        "robh+dt@kernel.org" <robh+dt@kernel.org>,
-        "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "p.zabel@pengutronix.de" <p.zabel@pengutronix.de>
-CC:     =?utf-8?B?V2VsbHMgTHUg5ZGC6Iqz6aiw?= <wells.lu@sunplus.com>
-Subject: RE: [PATCH 2/2] mmc: Add mmc driver for Sunplus SP7021
-Thread-Topic: [PATCH 2/2] mmc: Add mmc driver for Sunplus SP7021
-Thread-Index: AQHX0xnrVkLZ1EJZzk2i1wkvK0MjAqv2FiQAgAMuw4A=
-Date:   Mon, 8 Nov 2021 08:02:52 +0000
-Message-ID: <6ac06fbd9280493ea2f34c6b6f7714ef@sphcmbx02.sunplus.com.tw>
-References: <1636208598-18234-1-git-send-email-tony.huang@sunplus.com>
- <1636208598-18234-3-git-send-email-tony.huang@sunplus.com>
- <3da7cacf-d5ab-9f08-6d15-a75cf952d43d@infradead.org>
-In-Reply-To: <3da7cacf-d5ab-9f08-6d15-a75cf952d43d@infradead.org>
-Accept-Language: zh-TW, en-US
-Content-Language: zh-TW
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [172.25.108.54]
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+        id S237025AbhKHIJk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Nov 2021 03:09:40 -0500
+Received: from mail.kernel.org ([198.145.29.99]:46462 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230389AbhKHIJj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Nov 2021 03:09:39 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A5A486125F;
+        Mon,  8 Nov 2021 08:06:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1636358815;
+        bh=wFrYQYcCiXXh+Q8kD72HnRRnPHObi25norI94Y6SVA0=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=ccp3Rtr0sFzZ4+0tDqvlGKQSOu6k5EVraHHm+hAwHqH3GK4XOHPzZKKHsHdOD2J2j
+         peh1zuMXSC1tf9CfJo55pj8xE5w44Fu2PfYwuwqnwXtH9BHqXcR9Fj3fLEGKukmz9G
+         HQ4VgPwiRIWOf+YuJcC3+hz1NyZSe1W2f/nzkqZE=
+Date:   Mon, 8 Nov 2021 09:06:44 +0100
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Yang Shi <shy828301@gmail.com>
+Cc:     naoya.horiguchi@nec.com, hughd@google.com,
+        kirill.shutemov@linux.intel.com, willy@infradead.org,
+        osalvador@suse.de, peterx@redhat.com, akpm@linux-foundation.org,
+        stable@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [stable 5.10 v2 PATCH 1/2] mm: hwpoison: remove the unnecessary
+ THP check
+Message-ID: <YYjalO3gt3YczsY5@kroah.com>
+References: <20211104210752.390351-1-shy828301@gmail.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211104210752.390351-1-shy828301@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-RGVhciBSYW5keToNCj4gW3Jlc2VuZGluZywgaGFkIHNvbWUga2luZCBvZiBlbWFpbCBlcnJvciBv
-biB0aGUgZmlyc3QgdHJ5XQ0KPiANCj4gT24gMTEvNi8yMSA3OjIzIEFNLCBUb255IEh1YW5nIHdy
-b3RlOg0KPiA+IGRpZmYgLS1naXQgYS9kcml2ZXJzL21tYy9ob3N0L0tjb25maWcgYi9kcml2ZXJz
-L21tYy9ob3N0L0tjb25maWcgaW5kZXgNCj4gPiBjY2MxNDhjLi4yYTc4Y2JjIDEwMDY0NA0KPiA+
-IC0tLSBhL2RyaXZlcnMvbW1jL2hvc3QvS2NvbmZpZw0KPiA+ICsrKyBiL2RyaXZlcnMvbW1jL2hv
-c3QvS2NvbmZpZw0KPiA+IEBAIC0xNCw2ICsxNCwxNSBAQCBjb25maWcgTU1DX0RFQlVHDQo+ID4g
-ICAJICBhZGRlZCBob3N0IGRyaXZlcnMgcGxlYXNlIGRvbid0IGludmVudCB0aGVpciBwcml2YXRl
-IG1hY3JvIGZvcg0KPiA+ICAgCSAgZGVidWdnaW5nLg0KPiA+DQo+ID4gK2NvbmZpZyBNTUNfU1VO
-UExVUw0KPiA+ICsJdHJpc3RhdGUgIlN1bnBsdXMgU1A3MDIxIE1NQyBDb250cm9sbGVyIg0KPiA+
-ICsJZGVwZW5kcyBvbiBBUkNIX1NVTlBMVVMgfHwgU09DX0kxNDMgfHwgU09DX1E2NDUNCj4gPiAr
-CWRlZmF1bHQgeQ0KPiANCj4gSXMgdGhpcyBuZWVkZWQgdG8gYmUgYWJsZSB0byBib290PyAgVGhh
-dCdzIGFib3V0IHRoZSBvbmx5IHJlYXNvbiB0aGF0ICJkZWZhdWx0DQo+IHkiIGNvdWxkIGJlIGp1
-c3RpZmllZC4NCg0KWWVzLCBpdCBuZWVkcyB0byBiZSBhYmxlIHRvIGJlIGJvb3QuDQoNCj4gDQo+
-ID4gKwloZWxwDQo+ID4gKwkJSWYgeW91IHNheSB5ZXMgaGVyZSwgeW91IHdpbGwgZ2V0IHN1cHBv
-cnQgZm9yIGVNTUMgaG9zdCBpbnRlcmZhY2UNCj4gPiArCQlvbiBzdW5wbHVzIFNvY3MuDQo+IA0K
-PiAJCSAgIFN1bnBsdXMgU29Dcy4NCg0KSSB3aWxsIG1vZGlmeS4NCg0KPiANCj4gPiArCQlJZiB1
-bnN1cmUsIHNheSBOLg0KPiA+ICsJCVN1bnBsdXMgIGVNTUMgSG9zdCBDb250cm9sbGVyIHY0LjUx
-IHN1cHBvcnQiDQo+IA0KPiBXaGF0IGlzIHRoYXQgbGFzdCBsaW5lIGZvcj8NCg0KSSB3aWxsIHJl
-bW92ZSBsYXN0IGxpbmUuDQoNCj4gDQo+IEFuZCBhbGwgbGluZXMgb2YgdGhlIGhlbHAgdGV4dCBz
-aG91bGQgYmUgaW5kZW50ZWQgd2l0aCBvbmUgdGFiICsgMiBzcGFjZXMgcGVyDQo+IGNvZGluZy1z
-dHlsZS5yc3QuDQoNCk9rLCBJIHVuZGVyc3RhbmQNCg0KPiANCj4gdGhhbmtzLg0KPiAtLQ0KPiB+
-UmFuZHkNCg==
+On Thu, Nov 04, 2021 at 02:07:51PM -0700, Yang Shi wrote:
+> commit c7cb42e94473aafe553c0f2a3d8ca904599399ed upstream.
+> 
+> When handling THP hwpoison checked if the THP is in allocation or free
+> stage since hwpoison may mistreat it as hugetlb page.  After commit
+> 415c64c1453a ("mm/memory-failure: split thp earlier in memory error
+> handling") the problem has been fixed, so this check is no longer
+> needed.  Remove it.  The side effect of the removal is hwpoison may
+> report unsplit THP instead of unknown error for shmem THP.  It seems not
+> like a big deal.
+> 
+> The following patch "mm: filemap: check if THP has hwpoisoned subpage
+> for PMD page fault" depends on this, which fixes shmem THP with
+> hwpoisoned subpage(s) are mapped PMD wrongly.  So this patch needs to be
+> backported to -stable as well.
+> 
+> Link: https://lkml.kernel.org/r/20211020210755.23964-2-shy828301@gmail.com
+> Signed-off-by: Yang Shi <shy828301@gmail.com>
+> Suggested-by: Naoya Horiguchi <naoya.horiguchi@nec.com>
+> Acked-by: Naoya Horiguchi <naoya.horiguchi@nec.com>
+> Cc: Hugh Dickins <hughd@google.com>
+> Cc: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
+> Cc: Matthew Wilcox <willy@infradead.org>
+> Cc: Oscar Salvador <osalvador@suse.de>
+> Cc: Peter Xu <peterx@redhat.com>
+> Cc: <stable@vger.kernel.org>
+> Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+> Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+> ---
+>  mm/memory-failure.c | 14 --------------
+>  1 file changed, 14 deletions(-)
+> 
+> diff --git a/mm/memory-failure.c b/mm/memory-failure.c
+> index 01445ddff58d..bd2cd4dd59b6 100644
+> --- a/mm/memory-failure.c
+> +++ b/mm/memory-failure.c
+> @@ -956,20 +956,6 @@ static int get_hwpoison_page(struct page *page)
+>  {
+>  	struct page *head = compound_head(page);
+>  
+> -	if (!PageHuge(head) && PageTransHuge(head)) {
+> -		/*
+> -		 * Non anonymous thp exists only in allocation/free time. We
+> -		 * can't handle such a case correctly, so let's give it up.
+> -		 * This should be better than triggering BUG_ON when kernel
+> -		 * tries to touch the "partially handled" page.
+> -		 */
+> -		if (!PageAnon(head)) {
+> -			pr_err("Memory failure: %#lx: non anonymous thp\n",
+> -				page_to_pfn(page));
+> -			return 0;
+> -		}
+> -	}
+> -
+>  	if (get_page_unless_zero(head)) {
+>  		if (head == compound_head(page))
+>  			return 1;
+> -- 
+> 2.26.2
+> 
+
+Thanks, both now queued up.
+
+greg k-h
