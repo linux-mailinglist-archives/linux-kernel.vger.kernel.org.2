@@ -2,41 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 26A18447861
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Nov 2021 02:49:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4769A447862
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Nov 2021 02:51:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236025AbhKHBv5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 7 Nov 2021 20:51:57 -0500
-Received: from mga11.intel.com ([192.55.52.93]:49812 "EHLO mga11.intel.com"
+        id S236129AbhKHBxq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 7 Nov 2021 20:53:46 -0500
+Received: from mga17.intel.com ([192.55.52.151]:54878 "EHLO mga17.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230413AbhKHBvx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 7 Nov 2021 20:51:53 -0500
-X-IronPort-AV: E=McAfee;i="6200,9189,10161"; a="229609154"
+        id S230413AbhKHBxp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 7 Nov 2021 20:53:45 -0500
+X-IronPort-AV: E=McAfee;i="6200,9189,10161"; a="212882460"
 X-IronPort-AV: E=Sophos;i="5.87,217,1631602800"; 
-   d="scan'208";a="229609154"
+   d="scan'208";a="212882460"
 Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Nov 2021 17:49:09 -0800
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Nov 2021 17:51:01 -0800
 X-IronPort-AV: E=Sophos;i="5.87,217,1631602800"; 
-   d="scan'208";a="451296360"
+   d="scan'208";a="451296839"
 Received: from akirasen-mobl.amr.corp.intel.com (HELO [10.209.44.100]) ([10.209.44.100])
-  by orsmga006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Nov 2021 17:49:08 -0800
-Subject: Re: [RFC PATCH v2 5/5] docs: ABI: Add sysfs documentation interface
- of hardware prefetch driver
-To:     "tarumizu.kohei@fujitsu.com" <tarumizu.kohei@fujitsu.com>,
-        "catalin.marinas@arm.com" <catalin.marinas@arm.com>,
-        "will@kernel.org" <will@kernel.org>,
-        "tglx@linutronix.de" <tglx@linutronix.de>,
-        "mingo@redhat.com" <mingo@redhat.com>,
-        "bp@alien8.de" <bp@alien8.de>,
-        "dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>,
-        "x86@kernel.org" <x86@kernel.org>, "hpa@zytor.com" <hpa@zytor.com>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+  by orsmga006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Nov 2021 17:51:00 -0800
+Subject: Re: [RFC PATCH v2 3/5] driver: hwpf: Add support for Intel to
+ hardware prefetch driver
+To:     Kohei Tarumizu <tarumizu.kohei@fujitsu.com>,
+        catalin.marinas@arm.com, will@kernel.org, tglx@linutronix.de,
+        mingo@redhat.com, bp@alien8.de, dave.hansen@linux.intel.com,
+        x86@kernel.org, hpa@zytor.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
 References: <20211104052122.553868-1-tarumizu.kohei@fujitsu.com>
- <20211104052122.553868-6-tarumizu.kohei@fujitsu.com>
- <2a939a62-7016-bbd6-6e2f-2824214687fd@intel.com>
- <OSBPR01MB20379FB0D979C0B130FEAD0280919@OSBPR01MB2037.jpnprd01.prod.outlook.com>
+ <20211104052122.553868-4-tarumizu.kohei@fujitsu.com>
 From:   Dave Hansen <dave.hansen@intel.com>
 Autocrypt: addr=dave.hansen@intel.com; keydata=
  xsFNBE6HMP0BEADIMA3XYkQfF3dwHlj58Yjsc4E5y5G67cfbt8dvaUq2fx1lR0K9h1bOI6fC
@@ -81,37 +73,36 @@ Autocrypt: addr=dave.hansen@intel.com; keydata=
  OPsw5tV/LmQ5GXH0JQ/TZXWygyRFyyI2FqNTx4WHqUn3yFj8rwTAU1tluRUYyeLy0ayUlKBH
  ybj0N71vWO936MqP6haFERzuPAIpxj2ezwu0xb1GjTk4ynna6h5GjnKgdfOWoRtoWndMZxbA
  z5cecg==
-Message-ID: <d9c31c0a-a0ce-452d-7f7d-df535eb5e918@intel.com>
-Date:   Sun, 7 Nov 2021 17:49:06 -0800
+Message-ID: <664cf198-55b9-469f-ebdd-c8fb436544d5@intel.com>
+Date:   Sun, 7 Nov 2021 17:51:00 -0800
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <OSBPR01MB20379FB0D979C0B130FEAD0280919@OSBPR01MB2037.jpnprd01.prod.outlook.com>
+In-Reply-To: <20211104052122.553868-4-tarumizu.kohei@fujitsu.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/7/21 5:29 PM, tarumizu.kohei@fujitsu.com wrote:
->> How does this look in practice?
-> It works on a x86 machine is shown below:
-> 
-> # find /sys/devices/system/cpu/cpu0/hwpf/
-> /sys/devices/system/cpu/cpu0/hwpf/
-> /sys/devices/system/cpu/cpu0/hwpf/l2
-> /sys/devices/system/cpu/cpu0/hwpf/l2/enable
-> /sys/devices/system/cpu/cpu0/hwpf/l1
-> /sys/devices/system/cpu/cpu0/hwpf/l1/enable
-> 
->> Dumb question, but why don't we give these things names?  If the Intel one is
->> called "L2 Hardware Prefetcher Disable", couldn't the directory be "l2_prefetch"?
-> There is no specific reason for directory names. We named it "l*"
-> because it is related to a certain cache level. We would change it,
-> if there is another suitable name.
+On 11/3/21 10:21 PM, Kohei Tarumizu wrote:
+> +enum register_type __init get_register_type(void)
+> +{
+> +	if (boot_cpu_data.x86_vendor != X86_VENDOR_INTEL)
+> +		return REGISTER_TYPE_NONE;
+> +
+> +	switch (boot_cpu_data.x86_model) {
+> +	/*
+> +	 * Note: In addition to BROADWELL, NEHALEM and others have same register
+> +	 * specifications as REGISTER_TYPE_BROADWELL. If you want to add support
+> +	 * for these processor, add the target model case here.
+> +	 */
+> +	case INTEL_FAM6_BROADWELL_X:
+> +		return REGISTER_TYPE_BROADWELL;
+> +	default:
+> +		return REGISTER_TYPE_NONE;
+> +	}
+> +}
 
-Ahh, so you really do intend the l2 directory to be for *all* the L2
-prefetchers?  I guess that's OK, but will folks ever want to do "L2
-Hardware Prefetcher Disable", but not "L2 Adjacent Cache Line Prefetcher
-Disable"?
+Can you do this with a struct and x86_match_cpu() instead?
