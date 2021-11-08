@@ -2,135 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 87E2D449905
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Nov 2021 17:03:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B371D44990D
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Nov 2021 17:05:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241129AbhKHQGX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Nov 2021 11:06:23 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:52058 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S238035AbhKHQGW (ORCPT
+        id S238916AbhKHQHw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Nov 2021 11:07:52 -0500
+Received: from mo4-p02-ob.smtp.rzone.de ([85.215.255.82]:23818 "EHLO
+        mo4-p02-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232136AbhKHQHt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Nov 2021 11:06:22 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1636387417;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=5XRwho7+z/7vhTPwvicBMtPsRE4HAHnRBBlx0Po33V4=;
-        b=Pjgxay+dl/KE5k8REkqHD4mdxx44RFAZv4Bt74jFZWfaqNjO7Hc2t+OCT4Snq68nfSIUmI
-        Al/yN8v2lIeE6nkld7A7gmpVGWvaKQXAMXJDnvEAWgi7S7hmIEPermBzKlLv7mRKgFBeFn
-        JX4pQmK0pTR4S8+/Zil23x1SKoxvXbE=
-Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com
- [209.85.208.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-425-2yFx9L-PNMmVhn3zB5zFTA-1; Mon, 08 Nov 2021 11:03:36 -0500
-X-MC-Unique: 2yFx9L-PNMmVhn3zB5zFTA-1
-Received: by mail-ed1-f70.google.com with SMTP id f20-20020a0564021e9400b003e2ad3eae74so15271298edf.5
-        for <linux-kernel@vger.kernel.org>; Mon, 08 Nov 2021 08:03:35 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:references:from:in-reply-to
-         :content-transfer-encoding;
-        bh=5XRwho7+z/7vhTPwvicBMtPsRE4HAHnRBBlx0Po33V4=;
-        b=6SYMo3x68we4slmcGmqXO+BJ1bexv4QadiG4KqznXq/5l9eekb1MbJUwnCS/dtfMBq
-         rIEGjIeYZ+8kaqemcO7DjSmsd5vlkdqTalGJAZ6g4e0ox2dxNTyZmWtyjKfUcnNy3glS
-         ZkgA8jubUj0acV+xP72X5MJqnvDxqAd7kfeQ8e7l0yf02BCJHbBPIv06Xbq3ulTZvAEz
-         SsEdr28p3OxhxuQjXxEVwjIm7EXPDYb2aJKgQyjbxdawVpYRURbKmkDdOeF3i6OC2hxx
-         f5MNjhPymiidPQREbeC08EFBmNqXY6kWlXyLTv729bhdHq/I40O1CAFjfKMaVF6ZwSMg
-         sTGg==
-X-Gm-Message-State: AOAM533hHYaQTd/rtYCFbYLJHLF7h1TmPd6tx8YU3N0zKHhYoHmRHDHw
-        svE7jqa3zxTKKhtGdPVLguM9Pm/Ae0VEe2l9LeU8brsPsEaaxB95ixJzjvyy1RBGqWTnfZJ8Y/r
-        cPy8CXRtFkdqRp5VSpR86ddMt
-X-Received: by 2002:a05:6402:27ca:: with SMTP id c10mr257983ede.53.1636387414866;
-        Mon, 08 Nov 2021 08:03:34 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJymMeYJxOKQgUAvb5FkJ7gZggruAOC64UPNaUu/psunGlKIiAZnImk0g/83yscrsQAyHOIfNA==
-X-Received: by 2002:a05:6402:27ca:: with SMTP id c10mr257946ede.53.1636387414596;
-        Mon, 08 Nov 2021 08:03:34 -0800 (PST)
-Received: from [10.40.1.223] ([81.30.35.201])
-        by smtp.gmail.com with ESMTPSA id gb2sm8401303ejc.52.2021.11.08.08.03.33
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 08 Nov 2021 08:03:34 -0800 (PST)
-Message-ID: <bed46b1b-eebe-4b61-1470-6f8428208a7a@redhat.com>
-Date:   Mon, 8 Nov 2021 17:03:33 +0100
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.2.0
-Subject: Re: [PATCH 11/13] i2c: cht-wc: Add support for devices using a
- bq25890 charger
-Content-Language: en-US
-To:     Wolfram Sang <wsa@the-dreams.de>,
-        Mark Gross <markgross@kernel.org>,
-        Andy Shevchenko <andy@infradead.org>,
-        Sebastian Reichel <sre@kernel.org>,
-        MyungJoo Ham <myungjoo.ham@samsung.com>,
-        Chanwoo Choi <cw00.choi@samsung.com>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Yauhen Kharuzhy <jekhor@gmail.com>,
-        Tsuchiya Yuto <kitakar@gmail.com>,
-        platform-driver-x86@vger.kernel.org, linux-i2c@vger.kernel.org,
-        linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-efi@vger.kernel.org
-References: <20211030182813.116672-1-hdegoede@redhat.com>
- <20211030182813.116672-12-hdegoede@redhat.com> <YX7ZTXbD0F+n3M36@kunai>
-From:   Hans de Goede <hdegoede@redhat.com>
-In-Reply-To: <YX7ZTXbD0F+n3M36@kunai>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+        Mon, 8 Nov 2021 11:07:49 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1636387495;
+    s=strato-dkim-0002; d=goldelico.com;
+    h=To:References:Message-Id:Cc:Date:In-Reply-To:From:Subject:Cc:Date:
+    From:Subject:Sender;
+    bh=PK1HOtrrDdxTgOO8UphIBb6lJvOT4Qvb1ttzQln7tm0=;
+    b=aS//u9qKPBSrTM9/uH2GB40LrYPLyDqQuQGfgKSvPeT3hT8uCTw0kaEfgJL9XEW4Hg
+    FkaRHzPG1wUbkugh/LEKicwZECPsd+Asb2IEa6AE6gpjDnjxzXGptuidWvzKzHfZ32KW
+    RHEnHxXK4aRNQKBrRML1odz1ZxLCvoSJxD8JLDQJ8UzPtnIh0KjKSFx3lqKmFLfmrL18
+    3gPi5Q9SpA6n2D/glija8DZdp+Jm1roFqLQXGqMrEt4qVblNvYtcKhqHsQEmTv6gnWEv
+    9pxPX7MM1WU//+ZBTZy3hwChqlJfWrnZDkP4AxbX2ghNS5DXsbCKRXfGm+ML1AHhEdwr
+    2XOA==
+Authentication-Results: strato.com;
+    dkim=none
+X-RZG-AUTH: ":JGIXVUS7cutRB/49FwqZ7WcJeFKiMgPgp8VKxflSZ1P34KBj7gpw91N5y2S3gMZ+"
+X-RZG-CLASS-ID: mo00
+Received: from imac.fritz.box
+    by smtp.strato.de (RZmta 47.34.1 DYNA|AUTH)
+    with ESMTPSA id 902c63xA8G4tLab
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (curve X9_62_prime256v1 with 256 ECDH bits, eq. 3072 bits RSA))
+        (Client did not present a certificate);
+    Mon, 8 Nov 2021 17:04:55 +0100 (CET)
+Content-Type: text/plain;
+        charset=utf-8
+Mime-Version: 1.0 (Mac OS X Mail 12.4 \(3445.104.21\))
+Subject: Re: [RFC v4 4/6] mmc: core: add new calls to
+ mmc_fixup_device(sdio_card_init_methods)
+From:   "H. Nikolaus Schaller" <hns@goldelico.com>
+In-Reply-To: <5014485.RYphtzS1IF@pc-42>
+Date:   Mon, 8 Nov 2021 17:04:54 +0100
+Cc:     Ulf Hansson <ulf.hansson@linaro.org>,
+        Avri Altman <avri.altman@wdc.com>,
+        Shawn Lin <shawn.lin@rock-chips.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Tony Lindgren <tony@atomide.com>,
+        Bean Huo <beanhuo@micron.com>,
+        =?utf-8?Q?Gra=C5=BEvydas_Ignotas?= <notasas@gmail.com>,
+        linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        letux-kernel@openphoenux.org, kernel@pyra-handheld.com
+Content-Transfer-Encoding: quoted-printable
+Message-Id: <E022F77C-82D5-46DA-9F35-4C7D09F22C51@goldelico.com>
+References: <cover.1636103151.git.hns@goldelico.com>
+ <73440c0f227778e57167dd9fedd350637a1d737a.1636103151.git.hns@goldelico.com>
+ <5014485.RYphtzS1IF@pc-42>
+To:     =?utf-8?B?SsOpcsO0bWUgUG91aWxsZXI=?= <jerome.pouiller@silabs.com>
+X-Mailer: Apple Mail (2.3445.104.21)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
 
-On 10/31/21 18:58, Wolfram Sang wrote:
-> On Sat, Oct 30, 2021 at 08:28:11PM +0200, Hans de Goede wrote:
->> The i2c-controller on the Cherry Trail - Whiskey Cove PMIC is special
->> in that it is always connected to the I2C charger IC of the board on
->> which the PMIC is used; and the charger IC is not described in ACPI,
->> so the i2c-cht-wc code needs to instantiate an i2c-client for it itself.
->>
->> So far there has been a rudimentary check to make sure the ACPI tables
->> are at least somewhat as expected by checking for the presence of an
->> INT33FE device and sofar the code has assumed that if this INT33FE
->> device is present that the used charger then is a bq24290i.
->>
->> But some boards with an INT33FE device in their ACPI tables use a
->> different charger IC and some boards don't have an INT33FE device at all.
->>
->> Since the information about the used charger + fuel-gauge + other chips is
->> necessary in other places too, the kernel now adds a "intel,cht-wc-setup"
->> string property to the Whiskey Cove PMIC i2c-client based on DMI matching,
->> which reliably describes the board's setup of the PMIC.
->>
->> Switch to using the "intel,cht-wc-setup" property and add support for
->> instantiating an i2c-client for either a bq24292i or a bq25890 charger.
->>
->> This has been tested on a GPD pocket (which uses the old bq24292i setup)
->> and on a Xiaomi Mi Pad 2 with a bq25890 charger.
->>
->> Signed-off-by: Hans de Goede <hdegoede@redhat.com>
-> 
-> In general, fine with me from the I2C side:
-> 
-> Acked-by: Wolfram Sang <wsa@kernel.org>
 
-Thank you for v2 I've refactored things a bit, enough that I'm going
-to drop your Ack, sorry.
+> Am 08.11.2021 um 16:39 schrieb J=C3=A9r=C3=B4me Pouiller =
+<jerome.pouiller@silabs.com>:
+>=20
+> On Friday 5 November 2021 10:05:49 CET H. Nikolaus Schaller wrote:
+>> This allows to add quirks based on device tree instead of having
+>> card specific code in the host ops.
+>>=20
+>> We call it just after where host->ops->init_card() can be optionally
+>> called.
+>>=20
+>> Signed-off-by: H. Nikolaus Schaller <hns@goldelico.com>
+>=20
+> [...]
+>> diff --git a/drivers/mmc/core/sdio.c b/drivers/mmc/core/sdio.c
+>> index 68edf7a615be5..cf8ee66990508 100644
+>> --- a/drivers/mmc/core/sdio.c
+>> +++ b/drivers/mmc/core/sdio.c
+>> @@ -707,6 +707,7 @@ static int mmc_sdio_init_card(struct mmc_host =
+*host, u32 ocr,
+>>         */
+>>        if (host->ops->init_card)
+>>                host->ops->init_card(host, card);
+>> +       mmc_fixup_device(card, sdio_card_init_methods);
+>=20
+> sdio_read_common_cis(card) is called a bit after this line. I think it=20=
 
->> +	else if (!strcmp(str, "bq24292i,max17047,fusb302,pi3usb30532"))
->> +		board_info = &bq24190_board_info;
->> +	else if (!strcmp(str, "bq25890,bq27520"))
->> +		board_info = &bq25890_board_info;
-> 
-> Very minor nit: I prefer 'strcmp() == 0' because the above could be read
-> as 'if not strcmp()' which is sadly misleading. But I am not strict with
-> it.
+> will overwrite all the card->cis fields. This does not conflict with =
+what=20
+> your are doing in wl1251_quirk()?
 
-All the strcmp-s are gone in the refactored version.
-
-Regards,
-
-Hans
+No, because the wl1251_quirk sets MMC_QUIRK_NONSTD_SDIO which
+skips reading CIS. The key issue with the wl1251 seems to be
+that it reports random CIS tuples if we try to probe without
+quirks (I have no further idea about the wl1251 than moving the
+quirks around...).
 
