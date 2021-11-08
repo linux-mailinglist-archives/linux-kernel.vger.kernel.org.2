@@ -2,40 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EC3BA447DAC
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Nov 2021 11:17:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EEC13447D9F
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Nov 2021 11:16:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235855AbhKHKTY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Nov 2021 05:19:24 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38554 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238643AbhKHKPj (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Nov 2021 05:15:39 -0500
-Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 76AF1C061764
-        for <linux-kernel@vger.kernel.org>; Mon,  8 Nov 2021 02:12:36 -0800 (PST)
+        id S238906AbhKHKRv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Nov 2021 05:17:51 -0500
+Received: from mail.skyhub.de ([5.9.137.197]:38518 "EHLO mail.skyhub.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S237913AbhKHKPV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Nov 2021 05:15:21 -0500
 Received: from zn.tnic (p200300ec2f33110088892b77bd117736.dip0.t-ipconnect.de [IPv6:2003:ec:2f33:1100:8889:2b77:bd11:7736])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 0F41B1EC051F;
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id DA9DC1EC0523;
         Mon,  8 Nov 2021 11:12:35 +0100 (CET)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1636366355;
+        t=1636366356;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=WLe9ZSF1Lv1EDaI8nEzWPaF/7AwCYsNUrHmzLm4SFqw=;
-        b=MS1gmIM/QZLStat+1JoM5V56E2GOIz67eGJ40UaPaEO4KIaLSUvw+9eQ3B4vtBNCUiGVcS
-        GWo7m5k31XIfHESuFzbJUspmUZqG6WbTAzJlm9k82SgX+Cw63RISNUNx0yL+zSiqY0Luf2
-        3w2gQcYwezEk6jRypH6qR5XU9wS0tV0=
+        bh=6udaEpyG8h+J9wXmKHEY7Likmk6gPzBuHNHMnjS5i9I=;
+        b=G70gieGbrDi80a4ea+alShmWaZEh/CzfR9/ZMcmuuUX2GmpeyZsCEhKNpUW9ELcwZBC6Tf
+        tPumkuqo9DxF2gxOQi3DakERJnbJCkSh87UubytVLuva0Eoyp3J+taG4aMAzuYA98iqCmS
+        +lGzt7IMi0DoDp1t+FC4ceXTSuaUywo=
 From:   Borislav Petkov <bp@alien8.de>
 To:     LKML <linux-kernel@vger.kernel.org>
-Cc:     linuxppc-dev@lists.ozlabs.org
-Subject: [PATCH v0 34/42] powerpc: Check notifier registration return value
-Date:   Mon,  8 Nov 2021 11:11:49 +0100
-Message-Id: <20211108101157.15189-35-bp@alien8.de>
+Cc:     linux-sh@vger.kernel.org
+Subject: [PATCH v0 35/42] sh: Check notifier registration return value
+Date:   Mon,  8 Nov 2021 11:11:50 +0100
+Message-Id: <20211108101157.15189-36-bp@alien8.de>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20211108101157.15189-1-bp@alien8.de>
 References: <20211108101157.15189-1-bp@alien8.de>
@@ -52,38 +48,34 @@ Avoid homegrown notifier registration checks.
 No functional changes.
 
 Signed-off-by: Borislav Petkov <bp@suse.de>
-Cc: linuxppc-dev@lists.ozlabs.org
+Cc: linux-sh@vger.kernel.org
 ---
- arch/powerpc/kernel/setup-common.c | 12 ++++++++----
- 1 file changed, 8 insertions(+), 4 deletions(-)
+ arch/sh/kernel/cpu/sh4a/setup-sh7724.c | 11 +++++++----
+ 1 file changed, 7 insertions(+), 4 deletions(-)
 
-diff --git a/arch/powerpc/kernel/setup-common.c b/arch/powerpc/kernel/setup-common.c
-index b1e43b69a559..32f9900cd4f4 100644
---- a/arch/powerpc/kernel/setup-common.c
-+++ b/arch/powerpc/kernel/setup-common.c
-@@ -725,14 +725,18 @@ static struct notifier_block kernel_offset_notifier = {
+diff --git a/arch/sh/kernel/cpu/sh4a/setup-sh7724.c b/arch/sh/kernel/cpu/sh4a/setup-sh7724.c
+index 0d990ab1ba2a..8dfbb8149f66 100644
+--- a/arch/sh/kernel/cpu/sh4a/setup-sh7724.c
++++ b/arch/sh/kernel/cpu/sh4a/setup-sh7724.c
+@@ -1277,11 +1277,14 @@ static struct notifier_block sh7724_post_sleep_notifier = {
  
- void __init setup_panic(void)
+ static int __init sh7724_sleep_setup(void)
  {
--	if (IS_ENABLED(CONFIG_RANDOMIZE_BASE) && kaslr_offset() > 0)
--		atomic_notifier_chain_register(&panic_notifier_list,
--					       &kernel_offset_notifier);
-+	if (IS_ENABLED(CONFIG_RANDOMIZE_BASE) && kaslr_offset() > 0) {
-+		if (atomic_notifier_chain_register(&panic_notifier_list,
-+						   &kernel_offset_notifier))
-+			pr_warn("Kernel offset notifier already registered\n");
-+	}
- 
- 	/* PPC64 always does a hard irq disable in its panic handler */
- 	if (!IS_ENABLED(CONFIG_PPC64) && !ppc_md.panic)
- 		return;
--	atomic_notifier_chain_register(&panic_notifier_list, &ppc_panic_block);
+-	atomic_notifier_chain_register(&sh_mobile_pre_sleep_notifier_list,
+-				       &sh7724_pre_sleep_notifier);
++	if (atomic_notifier_chain_register(&sh_mobile_pre_sleep_notifier_list,
++					   &sh7724_pre_sleep_notifier))
++		pr_warn("SH7724 pre-sleep notifier already registered\n");
 +
-+	if (atomic_notifier_chain_register(&panic_notifier_list, &ppc_panic_block))
-+		pr_warn("Panic notifier already registered\n");
- }
++	if (atomic_notifier_chain_register(&sh_mobile_post_sleep_notifier_list,
++					   &sh7724_post_sleep_notifier))
++		pr_warn("SH7724 pre-sleep notifier already registered\n");
  
- #ifdef CONFIG_CHECK_CACHE_COHERENCY
+-	atomic_notifier_chain_register(&sh_mobile_post_sleep_notifier_list,
+-				       &sh7724_post_sleep_notifier);
+ 	return 0;
+ }
+ arch_initcall(sh7724_sleep_setup);
 -- 
 2.29.2
 
