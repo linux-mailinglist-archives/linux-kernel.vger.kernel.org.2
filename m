@@ -2,178 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EEB1A44803D
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Nov 2021 14:24:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D5D23448040
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Nov 2021 14:24:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239923AbhKHN0q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Nov 2021 08:26:46 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54182 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239916AbhKHN0j (ORCPT
+        id S239935AbhKHN1Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Nov 2021 08:27:16 -0500
+Received: from smtp-relay-internal-0.canonical.com ([185.125.188.122]:33350
+        "EHLO smtp-relay-internal-0.canonical.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S239924AbhKHN1P (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Nov 2021 08:26:39 -0500
-Received: from mail-il1-x133.google.com (mail-il1-x133.google.com [IPv6:2607:f8b0:4864:20::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 61161C061714
-        for <linux-kernel@vger.kernel.org>; Mon,  8 Nov 2021 05:23:55 -0800 (PST)
-Received: by mail-il1-x133.google.com with SMTP id j28so16853796ila.1
-        for <linux-kernel@vger.kernel.org>; Mon, 08 Nov 2021 05:23:55 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20210112.gappssmtp.com; s=20210112;
-        h=from:to:cc:in-reply-to:references:subject:message-id:date
-         :mime-version:content-transfer-encoding;
-        bh=AnpldSz3otw9Jo0sWSLAINlNywRhKkiZCwWlVFH1Tuc=;
-        b=EBpEQQMWgC391drJLWUg9P/Pabqv632lsBuA6+xFeRwrUALIG30VR/dac0y1qmw49v
-         soFeQtErRskJmRND34tM1PNQjm9nSSQ3x0M1toYUnluC90eR3EQix1qWjcdHjbvZkvmZ
-         9sBX9en13VeamPq1OGXXygnxCAWn0xPnDh8z/FVSGDOaCuM11bYqs2DQ9UYPR1117Sg7
-         FLxvxJaW0xewRAqfsHrU9pKMGO4Si6i8/U8Mqbc7woZ3npJY9sGy4cx/eN15QYLPw5xs
-         Gr4j0MNz3faAwj4QBfGp6GMmvibkRgAPniwC+Flkyg+SbiI6rpOnXBI+Iq7YQVUNh7yO
-         E4sg==
+        Mon, 8 Nov 2021 08:27:15 -0500
+Received: from mail-lj1-f199.google.com (mail-lj1-f199.google.com [209.85.208.199])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-relay-internal-0.canonical.com (Postfix) with ESMTPS id E63653F1AD
+        for <linux-kernel@vger.kernel.org>; Mon,  8 Nov 2021 13:24:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1636377869;
+        bh=/hm+frlIkfRbj18ggfJvfVA8HIIe4O3xDAkmIFBlwTA=;
+        h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+         In-Reply-To:Content-Type;
+        b=hvj/p9QVRPgZgyraQkuJmkl3g81QfPNufnJx3+nZLSgxNCnagVrS9pk74wv9Ow7U3
+         Jm/DRwLsosyUIZtTyro6Pasm6uP0FAeRe8zFOHdd1NXyk/ntJyEK9aYwxIdStd8FT1
+         ZAPXZwuBJgDSBoqqdzVmUmGJbjLr9PzDy30Fl9bCgzYon8OpGoIa4JtvwpEP5mazi7
+         tDaYJMKo5CNk6lQ4j0D//jrtZR+TXuinsi+Vp1SxfZuSKsXZ0FAMZt3rVCfzbX926L
+         +eHhLDD4FzB+88/b9JPk0ko4HD2hCKOYUJ+m7xOI0q3XEvPEnq119P9yihpZsU4cRx
+         Y9zK7hNefPhhA==
+Received: by mail-lj1-f199.google.com with SMTP id w16-20020a05651c103000b00218c9d46faeso801890ljm.2
+        for <linux-kernel@vger.kernel.org>; Mon, 08 Nov 2021 05:24:29 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:in-reply-to:references:subject
-         :message-id:date:mime-version:content-transfer-encoding;
-        bh=AnpldSz3otw9Jo0sWSLAINlNywRhKkiZCwWlVFH1Tuc=;
-        b=a5ZNzHO7cRYDgBHCglgf7JZ/T72/Z493kR63qZeUgYJavTQnOTwEEtD0BOXfWxzoLH
-         ogp4w6GL4fcyScNjB7Nxj/HbiPY9TmM4rQDVjqLktXCM+xFKB3TlD7TzObn2bkwfhfmb
-         6BUAZo4Fq6zVcPWJ8mBfspwHrXTQ3mjTjHwYiKM26mtQITj4aAEnmlLphMz0yrIxAF1h
-         ake1xBH6JpPUFl8MQBfk7bvJs6IdmE+uzWJEIhyeeOjXLupkD7vkHm5XPvYCYoluESJn
-         MWbIYYjoL4J6k/8zVj0hWIDdQxzAAlkBKSwA2Jdlu9e1TpQwKRy0HxoTRsx3hEWoWxFw
-         aXpw==
-X-Gm-Message-State: AOAM533is8ZmiOsxJo3jrrjl/6133ALeKUSphfdXuv4MDU3uToADsfcf
-        csxik8cCm4KQXQ1a6EjbafbAdg==
-X-Google-Smtp-Source: ABdhPJzwbFDOLxfbBZcf8nDM3RhfXB89Ylbm3V5SRZDXDHr7vO0PAqEYQe3JbILtTxC/1Eoeq2E9Jg==
-X-Received: by 2002:a05:6e02:180b:: with SMTP id a11mr21208721ilv.82.1636377834260;
-        Mon, 08 Nov 2021 05:23:54 -0800 (PST)
-Received: from [127.0.1.1] ([66.219.217.159])
-        by smtp.gmail.com with ESMTPSA id u12sm6964619iop.52.2021.11.08.05.23.53
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 08 Nov 2021 05:23:53 -0800 (PST)
-From:   Jens Axboe <axboe@kernel.dk>
-To:     linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Ye Bin <yebin10@huawei.com>
-Cc:     Yu Kuai <yukuai3@huawei.com>, ming.lei@redhat.com
-In-Reply-To: <20211108074019.1058843-1-yebin10@huawei.com>
-References: <20211108074019.1058843-1-yebin10@huawei.com>
-Subject: Re: [PATCH -next v2] blk-mq: don't free tags if the tag_set is used by other device in queue initialztion
-Message-Id: <163637783213.313782.2685614076983672835.b4-ty@kernel.dk>
-Date:   Mon, 08 Nov 2021 06:23:52 -0700
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:in-reply-to
+         :content-transfer-encoding;
+        bh=/hm+frlIkfRbj18ggfJvfVA8HIIe4O3xDAkmIFBlwTA=;
+        b=eGe3itj+0HdkCpe1Ak/nqjH0NMMwZUX91iktANC73n3IDph+EcXG0D0w32mmBqOLbb
+         Tl7O2p0aEdN7+zkOfSIBcKDiPKI4Kz552uUV7Nmlw4vZKwtMdRvEEkPC2zviIMZ2IAQm
+         8r+IjEUktI4kVhZCHwXddJbUw9DnSBZN1bxbXpuhAwuZlc25B5FdF3i6dEgPA2w8h0eK
+         gpOVou72Vp6IseQj5CqFydjmM19dv+sVyzgj1L+XT+B/MFjuy9JJlKO2VyB0ziPGcBG0
+         tA9+IK6pnSNySf+OIrBaQDvrOf+MPJw1QtAeSsK4gEgvufW/g7G01nYFwVaG5hmX5Gc0
+         mwZw==
+X-Gm-Message-State: AOAM533lulWtJtryMff4/H2HfTdvGH6RcmPO9Aom/HQzT0tZr0TZBhnD
+        tjSTv+I85kT1cQhH8P6Bo7gsgGm064FmyWgz2L018/jU9JZNUD9NHUKuNMaTYuM//0d0x9A0/S3
+        oJDfeey6jds9Zl3MW1DM8LU+ehMkCR3hyOcmLvyLesw==
+X-Received: by 2002:a2e:3803:: with SMTP id f3mr10888425lja.460.1636377869441;
+        Mon, 08 Nov 2021 05:24:29 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJyjqrwH68UZei4PQ8gNRPh9hkUMStu/9MMdUsMdfRFhdPTou/EX5PUQAI5rB4VsmqAfR/889Q==
+X-Received: by 2002:a2e:3803:: with SMTP id f3mr10888395lja.460.1636377869193;
+        Mon, 08 Nov 2021 05:24:29 -0800 (PST)
+Received: from [192.168.3.67] (89-77-68-124.dynamic.chello.pl. [89.77.68.124])
+        by smtp.gmail.com with ESMTPSA id l2sm1182683lfg.290.2021.11.08.05.24.28
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 08 Nov 2021 05:24:28 -0800 (PST)
+Message-ID: <f1a28b8f-c27d-19ae-a993-3fbe614d17b3@canonical.com>
+Date:   Mon, 8 Nov 2021 14:24:28 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.2.1
+Subject: Re: [PATCH v3 10/12] watchdog: s3c2410: Support separate source clock
+Content-Language: en-US
+To:     Sam Protsenko <semen.protsenko@linaro.org>,
+        Wim Van Sebroeck <wim@linux-watchdog.org>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Rob Herring <robh+dt@kernel.org>
+Cc:     linux-watchdog@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-samsung-soc@vger.kernel.org
+References: <20211107202943.8859-1-semen.protsenko@linaro.org>
+ <20211107202943.8859-11-semen.protsenko@linaro.org>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+In-Reply-To: <20211107202943.8859-11-semen.protsenko@linaro.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 8 Nov 2021 15:40:19 +0800, Ye Bin wrote:
-> We got UAF report on v5.10 as follows:
-> [ 1446.674930] ==================================================================
-> [ 1446.675970] BUG: KASAN: use-after-free in blk_mq_get_driver_tag+0x9a4/0xa90
-> [ 1446.676902] Read of size 8 at addr ffff8880185afd10 by task kworker/1:2/12348
-> [ 1446.677851]
-> [ 1446.678073] CPU: 1 PID: 12348 Comm: kworker/1:2 Not tainted 5.10.0-10177-gc9c81b1e346a #2
-> [ 1446.679168] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS rel-1.14.0-0-g155821a1990b-prebuilt.qemu.org 04/01/2014
-> [ 1446.680692] Workqueue: kthrotld blk_throtl_dispatch_work_fn
-> [ 1446.681448] Call Trace:
-> [ 1446.681800]  dump_stack+0x9b/0xce
-> [ 1446.682916]  print_address_description.constprop.6+0x3e/0x60
-> [ 1446.685999]  kasan_report.cold.9+0x22/0x3a
-> [ 1446.687186]  blk_mq_get_driver_tag+0x9a4/0xa90
-> [ 1446.687785]  blk_mq_dispatch_rq_list+0x21a/0x1d40
-> [ 1446.692576]  __blk_mq_do_dispatch_sched+0x394/0x830
-> [ 1446.695758]  __blk_mq_sched_dispatch_requests+0x398/0x4f0
-> [ 1446.698279]  blk_mq_sched_dispatch_requests+0xdf/0x140
-> [ 1446.698967]  __blk_mq_run_hw_queue+0xc0/0x270
-> [ 1446.699561]  __blk_mq_delay_run_hw_queue+0x4cc/0x550
-> [ 1446.701407]  blk_mq_run_hw_queue+0x13b/0x2b0
-> [ 1446.702593]  blk_mq_sched_insert_requests+0x1de/0x390
-> [ 1446.703309]  blk_mq_flush_plug_list+0x4b4/0x760
-> [ 1446.705408]  blk_flush_plug_list+0x2c5/0x480
-> [ 1446.708471]  blk_finish_plug+0x55/0xa0
-> [ 1446.708980]  blk_throtl_dispatch_work_fn+0x23b/0x2e0
-> [ 1446.711236]  process_one_work+0x6d4/0xfe0
-> [ 1446.711778]  worker_thread+0x91/0xc80
-> [ 1446.713400]  kthread+0x32d/0x3f0
-> [ 1446.714362]  ret_from_fork+0x1f/0x30
-> [ 1446.714846]
-> [ 1446.715062] Allocated by task 1:
-> [ 1446.715509]  kasan_save_stack+0x19/0x40
-> [ 1446.716026]  __kasan_kmalloc.constprop.1+0xc1/0xd0
-> [ 1446.716673]  blk_mq_init_tags+0x6d/0x330
-> [ 1446.717207]  blk_mq_alloc_rq_map+0x50/0x1c0
-> [ 1446.717769]  __blk_mq_alloc_map_and_request+0xe5/0x320
-> [ 1446.718459]  blk_mq_alloc_tag_set+0x679/0xdc0
-> [ 1446.719050]  scsi_add_host_with_dma.cold.3+0xa0/0x5db
-> [ 1446.719736]  virtscsi_probe+0x7bf/0xbd0
-> [ 1446.720265]  virtio_dev_probe+0x402/0x6c0
-> [ 1446.720808]  really_probe+0x276/0xde0
-> [ 1446.721320]  driver_probe_device+0x267/0x3d0
-> [ 1446.721892]  device_driver_attach+0xfe/0x140
-> [ 1446.722491]  __driver_attach+0x13a/0x2c0
-> [ 1446.723037]  bus_for_each_dev+0x146/0x1c0
-> [ 1446.723603]  bus_add_driver+0x3fc/0x680
-> [ 1446.724145]  driver_register+0x1c0/0x400
-> [ 1446.724693]  init+0xa2/0xe8
-> [ 1446.725091]  do_one_initcall+0x9e/0x310
-> [ 1446.725626]  kernel_init_freeable+0xc56/0xcb9
-> [ 1446.726231]  kernel_init+0x11/0x198
-> [ 1446.726714]  ret_from_fork+0x1f/0x30
-> [ 1446.727212]
-> [ 1446.727433] Freed by task 26992:
-> [ 1446.727882]  kasan_save_stack+0x19/0x40
-> [ 1446.728420]  kasan_set_track+0x1c/0x30
-> [ 1446.728943]  kasan_set_free_info+0x1b/0x30
-> [ 1446.729517]  __kasan_slab_free+0x111/0x160
-> [ 1446.730084]  kfree+0xb8/0x520
-> [ 1446.730507]  blk_mq_free_map_and_requests+0x10b/0x1b0
-> [ 1446.731206]  blk_mq_realloc_hw_ctxs+0x8cb/0x15b0
-> [ 1446.731844]  blk_mq_init_allocated_queue+0x374/0x1380
-> [ 1446.732540]  blk_mq_init_queue_data+0x7f/0xd0
-> [ 1446.733155]  scsi_mq_alloc_queue+0x45/0x170
-> [ 1446.733730]  scsi_alloc_sdev+0x73c/0xb20
-> [ 1446.734281]  scsi_probe_and_add_lun+0x9a6/0x2d90
-> [ 1446.734916]  __scsi_scan_target+0x208/0xc50
-> [ 1446.735500]  scsi_scan_channel.part.3+0x113/0x170
-> [ 1446.736149]  scsi_scan_host_selected+0x25a/0x360
-> [ 1446.736783]  store_scan+0x290/0x2d0
-> [ 1446.737275]  dev_attr_store+0x55/0x80
-> [ 1446.737782]  sysfs_kf_write+0x132/0x190
-> [ 1446.738313]  kernfs_fop_write_iter+0x319/0x4b0
-> [ 1446.738921]  new_sync_write+0x40e/0x5c0
-> [ 1446.739429]  vfs_write+0x519/0x720
-> [ 1446.739877]  ksys_write+0xf8/0x1f0
-> [ 1446.740332]  do_syscall_64+0x2d/0x40
-> [ 1446.740802]  entry_SYSCALL_64_after_hwframe+0x44/0xa9
-> [ 1446.741462]
-> [ 1446.741670] The buggy address belongs to the object at ffff8880185afd00
-> [ 1446.741670]  which belongs to the cache kmalloc-256 of size 256
-> [ 1446.743276] The buggy address is located 16 bytes inside of
-> [ 1446.743276]  256-byte region [ffff8880185afd00, ffff8880185afe00)
-> [ 1446.744765] The buggy address belongs to the page:
-> [ 1446.745416] page:ffffea0000616b00 refcount:1 mapcount:0 mapping:0000000000000000 index:0x0 pfn:0x185ac
-> [ 1446.746694] head:ffffea0000616b00 order:2 compound_mapcount:0 compound_pincount:0
-> [ 1446.747719] flags: 0x1fffff80010200(slab|head)
-> [ 1446.748337] raw: 001fffff80010200 ffffea00006a3208 ffffea000061bf08 ffff88801004f240
-> [ 1446.749404] raw: 0000000000000000 0000000000100010 00000001ffffffff 0000000000000000
-> [ 1446.750455] page dumped because: kasan: bad access detected
-> [ 1446.751227]
-> [ 1446.751445] Memory state around the buggy address:
-> [ 1446.752102]  ffff8880185afc00: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
-> [ 1446.753090]  ffff8880185afc80: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
-> [ 1446.754079] >ffff8880185afd00: fa fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
-> [ 1446.755065]                          ^
-> [ 1446.755589]  ffff8880185afd80: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
-> [ 1446.756574]  ffff8880185afe00: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
-> [ 1446.757566] ==================================================================
+On 07/11/2021 21:29, Sam Protsenko wrote:
+> Right now all devices supported in the driver have the single clock: it
+> acts simultaneously as a bus clock (providing register interface
+> clocking) and source clock (driving watchdog counter). Some newer Exynos
+> chips, like Exynos850, have two separate clocks for that. In that case
+> two clocks will be passed to the driver from the resource provider, e.g.
+> Device Tree. Provide necessary infrastructure to support that case:
+>   - use source clock's rate for all timer related calculations
+>   - use bus clock to gate/ungate the register interface
 > 
-> [...]
+> All devices that use the single clock are kept intact: if only one clock
+> is passed from Device Tree, it will be used for both purposes as before.
+> 
+> Signed-off-by: Sam Protsenko <semen.protsenko@linaro.org>
+> ---
+> Changes in v3:
+>   - Removed has_src_clk field: clk framework can handle NULL clk; added
+>     s3c2410wdt_get_freq() function instead, to figure out which clock to
+>     use for getting the rate
+> 
+> Changes in v2:
+>   - Reworded commit message to be more formal
+>   - Used separate "has_src_clk" trait to tell if source clock is present
+>   - Renamed clock variables to match their purpose
+>   - Removed caching source clock rate, obtaining it in place each time
+>     instead
+>   - Renamed err labels for more consistency
+> 
+>  drivers/watchdog/s3c2410_wdt.c | 56 +++++++++++++++++++++++++---------
+>  1 file changed, 41 insertions(+), 15 deletions(-)
+> 
 
-Applied, thanks!
 
-[1/1] blk-mq: don't free tags if the tag_set is used by other device in queue initialztion
-      commit: a846a8e6c9a5949582c5a6a8bbc83a7d27fd891e
+Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+
 
 Best regards,
--- 
-Jens Axboe
-
-
+Krzysztof
