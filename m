@@ -2,87 +2,185 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 38A3B447D50
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Nov 2021 11:10:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A87D447D5B
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Nov 2021 11:12:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237265AbhKHKNA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Nov 2021 05:13:00 -0500
-Received: from mga09.intel.com ([134.134.136.24]:46944 "EHLO mga09.intel.com"
+        id S237850AbhKHKPD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Nov 2021 05:15:03 -0500
+Received: from mail.skyhub.de ([5.9.137.197]:38172 "EHLO mail.skyhub.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235856AbhKHKM7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Nov 2021 05:12:59 -0500
-X-IronPort-AV: E=McAfee;i="6200,9189,10161"; a="232043743"
-X-IronPort-AV: E=Sophos;i="5.87,218,1631602800"; 
-   d="scan'208";a="232043743"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Nov 2021 02:10:14 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.87,218,1631602800"; 
-   d="scan'208";a="641365835"
-Received: from kuha.fi.intel.com ([10.237.72.166])
-  by fmsmga001.fm.intel.com with SMTP; 08 Nov 2021 02:10:08 -0800
-Received: by kuha.fi.intel.com (sSMTP sendmail emulation); Mon, 08 Nov 2021 12:10:07 +0200
-Date:   Mon, 8 Nov 2021 12:10:07 +0200
-From:   Heikki Krogerus <heikki.krogerus@linux.intel.com>
-To:     =?utf-8?Q?Ond=C5=99ej?= Jirman <megous@megous.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Badhri Jagan Sridharan <badhri@google.com>,
-        "open list:USB TYPEC PORT CONTROLLER DRIVERS" 
-        <linux-usb@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 06/15] usb: typec: fusb302: Fix masking of comparator and
- bc_lvl interrupts
-Message-ID: <YYj3f9nAFjZzbgJp@kuha.fi.intel.com>
-References: <20211107185435.2540185-1-megous@megous.com>
- <20211107185724.ik6wthsl3e6qlbj3@core>
- <YYjbdw+QrUfvpcjx@kroah.com>
- <20211108092523.jfp7a2q2onxqlizt@core>
+        id S230201AbhKHKOx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Nov 2021 05:14:53 -0500
+Received: from zn.tnic (p200300ec2f33110088892b77bd117736.dip0.t-ipconnect.de [IPv6:2003:ec:2f33:1100:8889:2b77:bd11:7736])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 083131EC04DE;
+        Mon,  8 Nov 2021 11:12:08 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1636366328;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:in-reply-to:
+         references; bh=9/wFO1NY0qxEVpffHV4sew3469Pb5B3vKMi/MXRAATs=;
+        b=ISbJKwGHmZpU2dkUVfi2uY7o3XmC0Tmb+bkniMnDNwnOplfzb8+6fHR0hHPrJ5v+kDQbI2
+        i5pZRwTiiFK0J1oMRLfcsLKq/r/c+piyd5kgoODVVuekSQMfZUnJHo9IHVwE1oex+mHn+8
+        k7yj1EnEoBUtmN3qaignl5T+7Oi2mOU=
+From:   Borislav Petkov <bp@alien8.de>
+To:     LKML <linux-kernel@vger.kernel.org>
+Subject: [PATCH v0 00/42] notifiers: Return an error when callback is already registered
+Date:   Mon,  8 Nov 2021 11:11:15 +0100
+Message-Id: <20211108101157.15189-1-bp@alien8.de>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20211108092523.jfp7a2q2onxqlizt@core>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+From: Borislav Petkov <bp@suse.de>
 
-On Mon, Nov 08, 2021 at 10:25:23AM +0100, Ondřej Jirman wrote:
-> On Mon, Nov 08, 2021 at 09:10:31AM +0100, Greg Kroah-Hartman wrote:
-> > On Sun, Nov 07, 2021 at 07:57:24PM +0100, Ondřej Jirman wrote:
-> > > Hi,
-> > > 
-> > > On Sun, Nov 07, 2021 at 07:54:33PM +0100, megous hlavni wrote:
-> > > > The masks are swapped (interrupts are enabled when the mask is 0).
-> > > 
-> > > Please ignore the 06/15 in the subject. This is just a single patch
-> > > from my local series and I forgot to edit the subject.
-> > 
-> > But I see 2 patches sent in this series?
-> 
-> The other one is unrelated. This patch is a fix for a real bug.
+Hi all,
 
-If this fixes a bug, then please include the appropriate Fixes tag and
-CC stable@vger.kernel.org. I'm guessing this is what the Fixes tag
-should look like:
+this is a huge patchset for something which is really trivial - it
+changes the notifier registration routines to return an error value
+if a notifier callback is already present on the respective list of
+callbacks. For more details scroll to the last patch.
 
-        Fixes: 48242e30532b ("usb: typec: fusb302: Revert "Resolve fixed power role contract setup"")
+Everything before it is converting the callers to check the return value
+of the registration routines and issue a warning, instead of the WARN()
+notifier_chain_register() does now.
 
-You probable also want to CC Hans de Goede <hdegoede@redhat.com> since
-you are patching his code.
+Before the last patch has been applied, though, that checking is a
+NOP which would make the application of those patches trivial - every
+maintainer can pick a patch at her/his discretion - only the last one
+enables the build warnings and that one will be queued only after the
+preceding patches have all been merged so that there are no build
+warnings.
 
-> The other seemed like an independent correctness issue that I noticed from code
-> review I had to do to figure out the reason for failure to handle disconnect
-> detection properly. It's unrelated to this patch other than touching the same driver.
+Due to the sheer volume of the patches, I have addressed the respective
+patch and the last one, which enables the warning, with addressees for
+each maintained area so as not to spam people unnecessarily.
 
-It still says "PATCH 07/15..." which means it's a part of a series,
-no? So..
+If people prefer I carry some through tip, instead, I'll gladly do so -
+your call.
 
-> > Can you just fix this up and resend them correctly?
+And, if you think the warning messages need to be more precise, feel
+free to adjust them before committing.
 
-thanks,
+Thanks!
+
+Borislav Petkov (42):
+  x86: Check notifier registration return value
+  xen/x86: Check notifier registration return value
+  impi: Check notifier registration return value
+  clk: renesas: Check notifier registration return value
+  dca: Check notifier registration return value
+  firmware: Check notifier registration return value
+  drm/i915: Check notifier registration return value
+  Drivers: hv: vmbus: Check notifier registration return value
+  iio: proximity: cros_ec: Check notifier registration return value
+  leds: trigger: Check notifier registration return value
+  misc: Check notifier registration return value
+  ethernet: chelsio: Check notifier registration return value
+  power: reset: Check notifier registration return value
+  remoteproc: Check notifier registration return value
+  scsi: target: Check notifier registration return value
+  USB: Check notifier registration return value
+  drivers: video: Check notifier registration return value
+  drivers/xen: Check notifier registration return value
+  kernel/hung_task: Check notifier registration return value
+  rcu: Check notifier registration return value
+  tracing: Check notifier registration return value
+  net: fib_notifier: Check notifier registration return value
+  ASoC: soc-jack: Check notifier registration return value
+  staging: olpc_dcon: Check notifier registration return value
+  arch/um: Check notifier registration return value
+  alpha: Check notifier registration return value
+  bus: brcmstb_gisb: Check notifier registration return value
+  soc: bcm: brcmstb: pm: pm-arm: Check notifier registration return
+    value
+  arm64: Check notifier registration return value
+  soc/tegra: Check notifier registration return value
+  parisc: Check notifier registration return value
+  macintosh/adb: Check notifier registration return value
+  mips: Check notifier registration return value
+  powerpc: Check notifier registration return value
+  sh: Check notifier registration return value
+  s390: Check notifier registration return value
+  sparc: Check notifier registration return value
+  xtensa: Check notifier registration return value
+  crypto: ccree - check notifier registration return value
+  EDAC/altera: Check notifier registration return value
+  power: supply: ab8500: Check notifier registration return value
+  notifier: Return an error when callback is already registered
+
+ arch/alpha/kernel/setup.c                     |  5 +--
+ arch/arm64/kernel/setup.c                     |  6 ++--
+ arch/mips/kernel/relocate.c                   |  6 ++--
+ arch/mips/sgi-ip22/ip22-reset.c               |  4 ++-
+ arch/mips/sgi-ip32/ip32-reset.c               |  4 ++-
+ arch/parisc/kernel/pdc_chassis.c              |  5 +--
+ arch/powerpc/kernel/setup-common.c            | 12 ++++---
+ arch/s390/kernel/ipl.c                        |  4 ++-
+ arch/s390/kvm/kvm-s390.c                      |  7 ++--
+ arch/sh/kernel/cpu/sh4a/setup-sh7724.c        | 11 +++---
+ arch/sparc/kernel/sstate.c                    |  6 ++--
+ arch/um/drivers/mconsole_kern.c               |  6 ++--
+ arch/um/kernel/um_arch.c                      |  5 +--
+ arch/x86/kernel/cpu/mce/core.c                |  3 +-
+ arch/x86/kernel/cpu/mce/dev-mcelog.c          |  3 +-
+ arch/x86/kernel/setup.c                       |  7 ++--
+ arch/x86/xen/enlighten.c                      |  4 ++-
+ arch/xtensa/platforms/iss/setup.c             |  3 +-
+ drivers/bus/brcmstb_gisb.c                    |  6 ++--
+ drivers/char/ipmi/ipmi_msghandler.c           |  3 +-
+ drivers/clk/renesas/clk-div6.c                |  4 ++-
+ drivers/clk/renesas/rcar-cpg-lib.c            |  4 ++-
+ drivers/crypto/ccree/cc_fips.c                |  4 ++-
+ drivers/dca/dca-core.c                        |  3 +-
+ drivers/edac/altera_edac.c                    |  6 ++--
+ drivers/firmware/arm_scmi/notify.c            |  3 +-
+ drivers/firmware/google/gsmi.c                |  6 ++--
+ drivers/gpu/drm/i915/gvt/scheduler.c          |  6 ++--
+ drivers/hv/vmbus_drv.c                        |  4 +--
+ .../iio/proximity/cros_ec_mkbp_proximity.c    |  3 +-
+ drivers/leds/trigger/ledtrig-activity.c       |  6 ++--
+ drivers/leds/trigger/ledtrig-heartbeat.c      |  6 ++--
+ drivers/leds/trigger/ledtrig-panic.c          |  4 +--
+ drivers/macintosh/adbhid.c                    |  4 +--
+ drivers/misc/ibmasm/heartbeat.c               |  3 +-
+ drivers/misc/pvpanic/pvpanic.c                |  3 +-
+ .../chelsio/inline_crypto/chtls/chtls_main.c  |  5 ++-
+ drivers/parisc/power.c                        |  5 +--
+ drivers/power/reset/ltc2952-poweroff.c        |  6 ++--
+ drivers/power/supply/ab8500_charger.c         |  8 ++---
+ drivers/remoteproc/qcom_common.c              |  3 +-
+ drivers/remoteproc/qcom_sysmon.c              |  4 ++-
+ drivers/remoteproc/remoteproc_core.c          |  4 ++-
+ drivers/s390/char/con3215.c                   |  5 ++-
+ drivers/s390/char/con3270.c                   |  5 ++-
+ drivers/s390/char/sclp_con.c                  |  4 ++-
+ drivers/s390/char/sclp_vt220.c                |  4 ++-
+ drivers/s390/char/zcore.c                     |  4 ++-
+ drivers/soc/bcm/brcmstb/pm/pm-arm.c           |  5 +--
+ drivers/soc/tegra/ari-tegra186.c              |  7 ++--
+ drivers/staging/olpc_dcon/olpc_dcon.c         |  4 ++-
+ drivers/target/tcm_fc/tfc_conf.c              |  4 ++-
+ drivers/usb/core/notify.c                     |  3 +-
+ drivers/video/console/dummycon.c              |  3 +-
+ drivers/video/fbdev/hyperv_fb.c               |  5 +--
+ drivers/xen/manage.c                          |  3 +-
+ drivers/xen/xenbus/xenbus_probe.c             |  8 +++--
+ include/linux/notifier.h                      |  8 ++---
+ kernel/hung_task.c                            |  3 +-
+ kernel/notifier.c                             | 36 ++++++++++---------
+ kernel/rcu/tree_stall.h                       |  4 ++-
+ kernel/trace/trace.c                          |  4 +--
+ net/core/fib_notifier.c                       |  4 ++-
+ sound/soc/soc-jack.c                          |  3 +-
+ 64 files changed, 222 insertions(+), 118 deletions(-)
 
 -- 
-heikki
+2.29.2
+
