@@ -2,37 +2,44 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A87D447D5B
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Nov 2021 11:12:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4DEAA447D5E
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Nov 2021 11:12:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237850AbhKHKPD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Nov 2021 05:15:03 -0500
-Received: from mail.skyhub.de ([5.9.137.197]:38172 "EHLO mail.skyhub.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230201AbhKHKOx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Nov 2021 05:14:53 -0500
+        id S238573AbhKHKPM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Nov 2021 05:15:12 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38466 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231127AbhKHKOy (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Nov 2021 05:14:54 -0500
+Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4CC68C061570
+        for <linux-kernel@vger.kernel.org>; Mon,  8 Nov 2021 02:12:10 -0800 (PST)
 Received: from zn.tnic (p200300ec2f33110088892b77bd117736.dip0.t-ipconnect.de [IPv6:2003:ec:2f33:1100:8889:2b77:bd11:7736])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 083131EC04DE;
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id D9AD71EC04DF;
         Mon,  8 Nov 2021 11:12:08 +0100 (CET)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1636366328;
+        t=1636366329;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:in-reply-to:
-         references; bh=9/wFO1NY0qxEVpffHV4sew3469Pb5B3vKMi/MXRAATs=;
-        b=ISbJKwGHmZpU2dkUVfi2uY7o3XmC0Tmb+bkniMnDNwnOplfzb8+6fHR0hHPrJ5v+kDQbI2
-        i5pZRwTiiFK0J1oMRLfcsLKq/r/c+piyd5kgoODVVuekSQMfZUnJHo9IHVwE1oex+mHn+8
-        k7yj1EnEoBUtmN3qaignl5T+7Oi2mOU=
+         to:to:cc:cc:mime-version:mime-version:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=72AWzlK8aJv/EOeTk6BHY7p0KLuR3Mw+5F63bwb7Ros=;
+        b=FIb8Y8A8RLehlZzj93AynaKTDHSb+/FOhBHnTt4SEEMX7PJT6IPQy3c3wJipxfcuabAIoR
+        tEBrKMGtzT3gNFrMDcTBvWm080kpyzOPTekHVr+EaGTJG6rj4DWSKVnGs3yvqWHe2Qbuzc
+        AaE2vV7osDc78PWRYixjDfmHJ0DNXTM=
 From:   Borislav Petkov <bp@alien8.de>
 To:     LKML <linux-kernel@vger.kernel.org>
-Subject: [PATCH v0 00/42] notifiers: Return an error when callback is already registered
-Date:   Mon,  8 Nov 2021 11:11:15 +0100
-Message-Id: <20211108101157.15189-1-bp@alien8.de>
+Cc:     x86@kernel.org
+Subject: [PATCH v0 01/42] x86: Check notifier registration return value
+Date:   Mon,  8 Nov 2021 11:11:16 +0100
+Message-Id: <20211108101157.15189-2-bp@alien8.de>
 X-Mailer: git-send-email 2.29.2
+In-Reply-To: <20211108101157.15189-1-bp@alien8.de>
+References: <20211108101157.15189-1-bp@alien8.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
@@ -40,147 +47,64 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Borislav Petkov <bp@suse.de>
 
-Hi all,
+Avoid homegrown notifier registration checks.
 
-this is a huge patchset for something which is really trivial - it
-changes the notifier registration routines to return an error value
-if a notifier callback is already present on the respective list of
-callbacks. For more details scroll to the last patch.
+No functional changes.
 
-Everything before it is converting the callers to check the return value
-of the registration routines and issue a warning, instead of the WARN()
-notifier_chain_register() does now.
+Signed-off-by: Borislav Petkov <bp@suse.de>
+Cc: x86@kernel.org
+---
+ arch/x86/kernel/cpu/mce/core.c       | 3 ++-
+ arch/x86/kernel/cpu/mce/dev-mcelog.c | 3 ++-
+ arch/x86/kernel/setup.c              | 7 +++++--
+ 3 files changed, 9 insertions(+), 4 deletions(-)
 
-Before the last patch has been applied, though, that checking is a
-NOP which would make the application of those patches trivial - every
-maintainer can pick a patch at her/his discretion - only the last one
-enables the build warnings and that one will be queued only after the
-preceding patches have all been merged so that there are no build
-warnings.
-
-Due to the sheer volume of the patches, I have addressed the respective
-patch and the last one, which enables the warning, with addressees for
-each maintained area so as not to spam people unnecessarily.
-
-If people prefer I carry some through tip, instead, I'll gladly do so -
-your call.
-
-And, if you think the warning messages need to be more precise, feel
-free to adjust them before committing.
-
-Thanks!
-
-Borislav Petkov (42):
-  x86: Check notifier registration return value
-  xen/x86: Check notifier registration return value
-  impi: Check notifier registration return value
-  clk: renesas: Check notifier registration return value
-  dca: Check notifier registration return value
-  firmware: Check notifier registration return value
-  drm/i915: Check notifier registration return value
-  Drivers: hv: vmbus: Check notifier registration return value
-  iio: proximity: cros_ec: Check notifier registration return value
-  leds: trigger: Check notifier registration return value
-  misc: Check notifier registration return value
-  ethernet: chelsio: Check notifier registration return value
-  power: reset: Check notifier registration return value
-  remoteproc: Check notifier registration return value
-  scsi: target: Check notifier registration return value
-  USB: Check notifier registration return value
-  drivers: video: Check notifier registration return value
-  drivers/xen: Check notifier registration return value
-  kernel/hung_task: Check notifier registration return value
-  rcu: Check notifier registration return value
-  tracing: Check notifier registration return value
-  net: fib_notifier: Check notifier registration return value
-  ASoC: soc-jack: Check notifier registration return value
-  staging: olpc_dcon: Check notifier registration return value
-  arch/um: Check notifier registration return value
-  alpha: Check notifier registration return value
-  bus: brcmstb_gisb: Check notifier registration return value
-  soc: bcm: brcmstb: pm: pm-arm: Check notifier registration return
-    value
-  arm64: Check notifier registration return value
-  soc/tegra: Check notifier registration return value
-  parisc: Check notifier registration return value
-  macintosh/adb: Check notifier registration return value
-  mips: Check notifier registration return value
-  powerpc: Check notifier registration return value
-  sh: Check notifier registration return value
-  s390: Check notifier registration return value
-  sparc: Check notifier registration return value
-  xtensa: Check notifier registration return value
-  crypto: ccree - check notifier registration return value
-  EDAC/altera: Check notifier registration return value
-  power: supply: ab8500: Check notifier registration return value
-  notifier: Return an error when callback is already registered
-
- arch/alpha/kernel/setup.c                     |  5 +--
- arch/arm64/kernel/setup.c                     |  6 ++--
- arch/mips/kernel/relocate.c                   |  6 ++--
- arch/mips/sgi-ip22/ip22-reset.c               |  4 ++-
- arch/mips/sgi-ip32/ip32-reset.c               |  4 ++-
- arch/parisc/kernel/pdc_chassis.c              |  5 +--
- arch/powerpc/kernel/setup-common.c            | 12 ++++---
- arch/s390/kernel/ipl.c                        |  4 ++-
- arch/s390/kvm/kvm-s390.c                      |  7 ++--
- arch/sh/kernel/cpu/sh4a/setup-sh7724.c        | 11 +++---
- arch/sparc/kernel/sstate.c                    |  6 ++--
- arch/um/drivers/mconsole_kern.c               |  6 ++--
- arch/um/kernel/um_arch.c                      |  5 +--
- arch/x86/kernel/cpu/mce/core.c                |  3 +-
- arch/x86/kernel/cpu/mce/dev-mcelog.c          |  3 +-
- arch/x86/kernel/setup.c                       |  7 ++--
- arch/x86/xen/enlighten.c                      |  4 ++-
- arch/xtensa/platforms/iss/setup.c             |  3 +-
- drivers/bus/brcmstb_gisb.c                    |  6 ++--
- drivers/char/ipmi/ipmi_msghandler.c           |  3 +-
- drivers/clk/renesas/clk-div6.c                |  4 ++-
- drivers/clk/renesas/rcar-cpg-lib.c            |  4 ++-
- drivers/crypto/ccree/cc_fips.c                |  4 ++-
- drivers/dca/dca-core.c                        |  3 +-
- drivers/edac/altera_edac.c                    |  6 ++--
- drivers/firmware/arm_scmi/notify.c            |  3 +-
- drivers/firmware/google/gsmi.c                |  6 ++--
- drivers/gpu/drm/i915/gvt/scheduler.c          |  6 ++--
- drivers/hv/vmbus_drv.c                        |  4 +--
- .../iio/proximity/cros_ec_mkbp_proximity.c    |  3 +-
- drivers/leds/trigger/ledtrig-activity.c       |  6 ++--
- drivers/leds/trigger/ledtrig-heartbeat.c      |  6 ++--
- drivers/leds/trigger/ledtrig-panic.c          |  4 +--
- drivers/macintosh/adbhid.c                    |  4 +--
- drivers/misc/ibmasm/heartbeat.c               |  3 +-
- drivers/misc/pvpanic/pvpanic.c                |  3 +-
- .../chelsio/inline_crypto/chtls/chtls_main.c  |  5 ++-
- drivers/parisc/power.c                        |  5 +--
- drivers/power/reset/ltc2952-poweroff.c        |  6 ++--
- drivers/power/supply/ab8500_charger.c         |  8 ++---
- drivers/remoteproc/qcom_common.c              |  3 +-
- drivers/remoteproc/qcom_sysmon.c              |  4 ++-
- drivers/remoteproc/remoteproc_core.c          |  4 ++-
- drivers/s390/char/con3215.c                   |  5 ++-
- drivers/s390/char/con3270.c                   |  5 ++-
- drivers/s390/char/sclp_con.c                  |  4 ++-
- drivers/s390/char/sclp_vt220.c                |  4 ++-
- drivers/s390/char/zcore.c                     |  4 ++-
- drivers/soc/bcm/brcmstb/pm/pm-arm.c           |  5 +--
- drivers/soc/tegra/ari-tegra186.c              |  7 ++--
- drivers/staging/olpc_dcon/olpc_dcon.c         |  4 ++-
- drivers/target/tcm_fc/tfc_conf.c              |  4 ++-
- drivers/usb/core/notify.c                     |  3 +-
- drivers/video/console/dummycon.c              |  3 +-
- drivers/video/fbdev/hyperv_fb.c               |  5 +--
- drivers/xen/manage.c                          |  3 +-
- drivers/xen/xenbus/xenbus_probe.c             |  8 +++--
- include/linux/notifier.h                      |  8 ++---
- kernel/hung_task.c                            |  3 +-
- kernel/notifier.c                             | 36 ++++++++++---------
- kernel/rcu/tree_stall.h                       |  4 ++-
- kernel/trace/trace.c                          |  4 +--
- net/core/fib_notifier.c                       |  4 ++-
- sound/soc/soc-jack.c                          |  3 +-
- 64 files changed, 222 insertions(+), 118 deletions(-)
-
+diff --git a/arch/x86/kernel/cpu/mce/core.c b/arch/x86/kernel/cpu/mce/core.c
+index 6ed365337a3b..2c4a9ff49384 100644
+--- a/arch/x86/kernel/cpu/mce/core.c
++++ b/arch/x86/kernel/cpu/mce/core.c
+@@ -164,7 +164,8 @@ void mce_register_decode_chain(struct notifier_block *nb)
+ 		    nb->priority > MCE_PRIO_HIGHEST))
+ 		return;
+ 
+-	blocking_notifier_chain_register(&x86_mce_decoder_chain, nb);
++	if (blocking_notifier_chain_register(&x86_mce_decoder_chain, nb))
++		pr_warn("MCE decoder chain notifier already registered\n");
+ }
+ EXPORT_SYMBOL_GPL(mce_register_decode_chain);
+ 
+diff --git a/arch/x86/kernel/cpu/mce/dev-mcelog.c b/arch/x86/kernel/cpu/mce/dev-mcelog.c
+index 100fbeebdc72..efa503a512dd 100644
+--- a/arch/x86/kernel/cpu/mce/dev-mcelog.c
++++ b/arch/x86/kernel/cpu/mce/dev-mcelog.c
+@@ -281,7 +281,8 @@ static long mce_chrdev_ioctl(struct file *f, unsigned int cmd,
+ 
+ void mce_register_injector_chain(struct notifier_block *nb)
+ {
+-	blocking_notifier_chain_register(&mce_injector_chain, nb);
++	if (blocking_notifier_chain_register(&mce_injector_chain, nb))
++		pr_warn("MCE injector notifier already registered\n");
+ }
+ EXPORT_SYMBOL_GPL(mce_register_injector_chain);
+ 
+diff --git a/arch/x86/kernel/setup.c b/arch/x86/kernel/setup.c
+index 40ed44ead063..e28cd4dd81c1 100644
+--- a/arch/x86/kernel/setup.c
++++ b/arch/x86/kernel/setup.c
+@@ -1245,8 +1245,11 @@ static struct notifier_block kernel_offset_notifier = {
+ 
+ static int __init register_kernel_offset_dumper(void)
+ {
+-	atomic_notifier_chain_register(&panic_notifier_list,
+-					&kernel_offset_notifier);
++	int ret = atomic_notifier_chain_register(&panic_notifier_list,
++						 &kernel_offset_notifier);
++	if (ret)
++		pr_warn("Kernel offset dumper notifier already registered\n");
++
+ 	return 0;
+ }
+ __initcall(register_kernel_offset_dumper);
 -- 
 2.29.2
 
