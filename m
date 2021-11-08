@@ -2,626 +2,274 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 61003447D46
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Nov 2021 11:06:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5DC98447D48
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Nov 2021 11:06:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235673AbhKHKJB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Nov 2021 05:09:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37116 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229966AbhKHKJA (ORCPT
+        id S235786AbhKHKJf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Nov 2021 05:09:35 -0500
+Received: from szxga02-in.huawei.com ([45.249.212.188]:26298 "EHLO
+        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229966AbhKHKJd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Nov 2021 05:09:00 -0500
-Received: from mail-pf1-x434.google.com (mail-pf1-x434.google.com [IPv6:2607:f8b0:4864:20::434])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C1ADC061570
-        for <linux-kernel@vger.kernel.org>; Mon,  8 Nov 2021 02:06:16 -0800 (PST)
-Received: by mail-pf1-x434.google.com with SMTP id 127so15504313pfu.1
-        for <linux-kernel@vger.kernel.org>; Mon, 08 Nov 2021 02:06:16 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=huaqin-corp-partner-google-com.20210112.gappssmtp.com; s=20210112;
-        h=from:to:cc:subject:date:message-id;
-        bh=SLJPgr8TyoIKg5adMKuCCehc8eUwgmh+uyBbGgdyT8E=;
-        b=mkuwPmDINKsoYYGkAw9VHKXff+uq8mMY4HdU3qi10FF+zafqFcB9xHavapyM4P9Mbo
-         wshjE8kb1VTMSP8kp0OvyIt9x9vB0KZSA1547fSB2TleUvoA7BH5wErLMB0XCEdpptdh
-         aMArRDCtezJe/sKkqAF3orV86tC0vlb8nKE5z/9Wcpm4JEFbbgaUatQ2skgyTS/FdnJi
-         4s6KwCj7HcrL2um0r5fSjL2Gqdv1tH+PunJQm6mbc4K/fhKVKiElpEGlgoVdKgYdmogw
-         7HfqRlY/og+HUd53WmcHBezzgajisMmdpUfB+iHc7Gn04vSEopZofczr4fWjKgqyBENu
-         /lzg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=SLJPgr8TyoIKg5adMKuCCehc8eUwgmh+uyBbGgdyT8E=;
-        b=2XF1ZiVSdyd36nQJ4LUFHQLGOE7UbxVi9xNXeJ6m8rqxgsw6Da/MK/WPGEIsP9WTew
-         p2Mv6NNS3xMUyU4+h7Gg3+7NVQCpiYtBRdFiKyPgc9rK7FbIVqpUFwlodWut6pUUOJOE
-         CcFQkBkUo0mdaTD+YQbRKxhp4k6MUHGIiwb8tkEdck0d359WRGgT0zJDmdexaDbWtPLY
-         EZLoU0/AesgVhYvTF6dLMW0LLgp7zFub0m5hdi/AsaGI7MEh4tQBMSo1gzO7aCa/f44I
-         sdUlgMUgGA1hUFQbboECzdjpihpSWkHEks2Ltn6hPC2/KckmzBUqSGMAeY7k17hCez+d
-         Ic4A==
-X-Gm-Message-State: AOAM533ISIiaAJK1Rs31eAspj6Yd934PZl0a3/SIdm0V6QydibsoULIz
-        xMd1IsYzYx3KdHyymga2KHNrcA==
-X-Google-Smtp-Source: ABdhPJy7loTtgWZ0LI3HnJ2ed91YYpQ3qtVPEUxFtv5nkKiSNTWlhhGN5E8yCmHMDxdlh7u+nMOd+g==
-X-Received: by 2002:a63:e551:: with SMTP id z17mr57518605pgj.203.1636365975668;
-        Mon, 08 Nov 2021 02:06:15 -0800 (PST)
-Received: from ubuntu.huaqin.com ([101.78.151.214])
-        by smtp.gmail.com with ESMTPSA id y32sm16526704pfa.145.2021.11.08.02.06.13
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 08 Nov 2021 02:06:15 -0800 (PST)
-From:   xiazhengqiao <xiazhengqiao@huaqin.corp-partner.google.com>
-To:     thierry.reding@gmail.com, sam@ravnborg.org, airlied@linux.ie,
-        daniel@ffwll.ch
-Cc:     linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        xiazhengqiao <xiazhengqiao@huaqin.corp-partner.google.com>
-Subject: [PATCH RESEND] drm/panel: Add inx Himax8279d MIPI-DSI LCD panel driver
-Date:   Mon,  8 Nov 2021 18:06:08 +0800
-Message-Id: <20211108100608.22401-1-xiazhengqiao@huaqin.corp-partner.google.com>
-X-Mailer: git-send-email 2.17.1
+        Mon, 8 Nov 2021 05:09:33 -0500
+Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.57])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4HnmqT6PpCzbhf8;
+        Mon,  8 Nov 2021 18:01:57 +0800 (CST)
+Received: from dggpeml500013.china.huawei.com (7.185.36.41) by
+ dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.15; Mon, 8 Nov 2021 18:06:46 +0800
+Received: from [10.174.187.161] (10.174.187.161) by
+ dggpeml500013.china.huawei.com (7.185.36.41) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
+ 15.1.2308.15; Mon, 8 Nov 2021 18:06:45 +0800
+Subject: Re: [PATCH V10 05/18] KVM: x86/pmu: Set MSR_IA32_MISC_ENABLE_EMON bit
+ when vPMU is enabled
+To:     Like Xu <like.xu.linux@gmail.com>,
+        Zhu Lingshan <lingshan.zhu@intel.com>
+References: <20210806133802.3528-1-lingshan.zhu@intel.com>
+ <20210806133802.3528-6-lingshan.zhu@intel.com> <6187A6F9.5030401@huawei.com>
+ <5aa115ab-d22c-098d-0591-36c7ab15f8b6@gmail.com>
+ <6188A28B.2020302@huawei.com>
+ <276febe3-f61c-8c3d-b069-bbcea4217660@gmail.com>
+ <6188DF79.7010405@huawei.com>
+ <97bc3da2-202b-f1f0-a269-4e28c848c7e9@gmail.com>
+CC:     <seanjc@google.com>, <vkuznets@redhat.com>,
+        <wanpengli@tencent.com>, <jmattson@google.com>, <joro@8bytes.org>,
+        <kan.liang@linux.intel.com>, <ak@linux.intel.com>,
+        <wei.w.wang@intel.com>, <eranian@google.com>,
+        <linux-kernel@vger.kernel.org>, <x86@kernel.org>,
+        <kvm@vger.kernel.org>, <boris.ostrvsky@oracle.com>,
+        Yao Yuan <yuan.yao@intel.com>,
+        "Venkatesh Srinivas" <venkateshs@chromium.org>,
+        "Fangyi (Eric)" <eric.fangyi@huawei.com>,
+        Xiexiangyou <xiexiangyou@huawei.com>
+From:   Liuxiangdong <liuxiangdong5@huawei.com>
+Message-ID: <6188F6B4.1000402@huawei.com>
+Date:   Mon, 8 Nov 2021 18:06:44 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:38.0) Gecko/20100101
+ Thunderbird/38.1.0
+MIME-Version: 1.0
+In-Reply-To: <97bc3da2-202b-f1f0-a269-4e28c848c7e9@gmail.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.187.161]
+X-ClientProxiedBy: dggeme712-chm.china.huawei.com (10.1.199.108) To
+ dggpeml500013.china.huawei.com (7.185.36.41)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add STARRY 2081101QFH032011-53G 10.1" WUXGA TFT LCD panel
 
-Signed-off-by: xiazhengqiao <xiazhengqiao@huaqin.corp-partner.google.com>
----
- drivers/gpu/drm/panel/Kconfig                 |   9 +
- drivers/gpu/drm/panel/Makefile                |   1 +
- .../gpu/drm/panel/panel-innolux-himax8279d.c  | 515 ++++++++++++++++++
- 3 files changed, 525 insertions(+)
- create mode 100644 drivers/gpu/drm/panel/panel-innolux-himax8279d.c
 
-diff --git a/drivers/gpu/drm/panel/Kconfig b/drivers/gpu/drm/panel/Kconfig
-index 2cb8eba76af8..dcf04c32f6ae 100644
---- a/drivers/gpu/drm/panel/Kconfig
-+++ b/drivers/gpu/drm/panel/Kconfig
-@@ -167,6 +167,15 @@ config DRM_PANEL_INNOLUX_EJ030NA
-           320x480 3.0" panel as found in the RS97 V2.1, RG300(non-ips)
-           and LDK handheld gaming consoles.
- 
-+config DRM_PANEL_INNOLUX_HIMAX8279D
-+	tristate "INX 2081101qfh032011-53g 1200x1920 video panel"
-+	depends on OF
-+	depends on DRM_MIPI_DSI
-+	depends on BACKLIGHT_CLASS_DEVICE
-+	help
-+	  Say Y here if you want to support for inx 2081101qfh032011-53g
-+	  1200x1920 video panel.
-+
- config DRM_PANEL_INNOLUX_P079ZCA
- 	tristate "Innolux P079ZCA panel"
- 	depends on OF
-diff --git a/drivers/gpu/drm/panel/Makefile b/drivers/gpu/drm/panel/Makefile
-index 6e30640b9099..f03d470a0085 100644
---- a/drivers/gpu/drm/panel/Makefile
-+++ b/drivers/gpu/drm/panel/Makefile
-@@ -15,6 +15,7 @@ obj-$(CONFIG_DRM_PANEL_ILITEK_IL9322) += panel-ilitek-ili9322.o
- obj-$(CONFIG_DRM_PANEL_ILITEK_ILI9341) += panel-ilitek-ili9341.o
- obj-$(CONFIG_DRM_PANEL_ILITEK_ILI9881C) += panel-ilitek-ili9881c.o
- obj-$(CONFIG_DRM_PANEL_INNOLUX_EJ030NA) += panel-innolux-ej030na.o
-+obj-$(CONFIG_DRM_PANEL_INNOLUX_HIMAX8279D) += panel-innolux-himax8279d.o
- obj-$(CONFIG_DRM_PANEL_INNOLUX_P079ZCA) += panel-innolux-p079zca.o
- obj-$(CONFIG_DRM_PANEL_JDI_LT070ME05000) += panel-jdi-lt070me05000.o
- obj-$(CONFIG_DRM_PANEL_KHADAS_TS050) += panel-khadas-ts050.o
-diff --git a/drivers/gpu/drm/panel/panel-innolux-himax8279d.c b/drivers/gpu/drm/panel/panel-innolux-himax8279d.c
-new file mode 100644
-index 000000000000..6840449548e4
---- /dev/null
-+++ b/drivers/gpu/drm/panel/panel-innolux-himax8279d.c
-@@ -0,0 +1,515 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * Copyright (c) 2021, Huaqin Telecom Technology Co., Ltd
-+ * Author: Zhengqiao Xia <xiazhengqiao@huaqin.corp-partner.google.com>
-+ */
-+
-+#include <linux/delay.h>
-+#include <linux/gpio/consumer.h>
-+#include <linux/module.h>
-+#include <linux/of.h>
-+#include <linux/of_device.h>
-+#include <linux/regulator/consumer.h>
-+
-+#include <drm/drm_connector.h>
-+#include <drm/drm_crtc.h>
-+#include <drm/drm_mipi_dsi.h>
-+#include <drm/drm_panel.h>
-+
-+#include <video/mipi_display.h>
-+
-+struct panel_desc {
-+	const struct drm_display_mode *modes;
-+	unsigned int bpc;
-+
-+	/**
-+	 * @width_mm: width of the panel's active display area
-+	 * @height_mm: height of the panel's active display area
-+	 */
-+	struct {
-+		unsigned int width_mm;
-+		unsigned int height_mm;
-+	} size;
-+
-+	unsigned long mode_flags;
-+	enum mipi_dsi_pixel_format format;
-+	const struct panel_init_cmd *init_cmds;
-+	unsigned int lanes;
-+	bool discharge_on_disable;
-+};
-+
-+struct inx_panel {
-+	struct drm_panel base;
-+	struct mipi_dsi_device *dsi;
-+
-+	const struct panel_desc *desc;
-+
-+	enum drm_panel_orientation orientation;
-+	struct regulator *pp1800;
-+	struct regulator *avee;
-+	struct regulator *avdd;
-+	struct gpio_desc *enable_gpio;
-+
-+	bool prepared;
-+};
-+
-+enum dsi_cmd_type {
-+	INIT_DCS_CMD,
-+	DELAY_CMD,
-+};
-+
-+struct panel_init_cmd {
-+	enum dsi_cmd_type type;
-+	size_t len;
-+	const char *data;
-+};
-+
-+#define _INIT_DCS_CMD(...) { \
-+	.type = INIT_DCS_CMD, \
-+	.len = sizeof((char[]){__VA_ARGS__}), \
-+	.data = (char[]){__VA_ARGS__} }
-+
-+#define _INIT_DELAY_CMD(...) { \
-+	.type = DELAY_CMD,\
-+	.len = sizeof((char[]){__VA_ARGS__}), \
-+	.data = (char[]){__VA_ARGS__} }
-+
-+static const struct panel_init_cmd starry_qfh032011_53g_init_cmd[] = {
-+	_INIT_DCS_CMD(0xB0, 0x01),
-+	_INIT_DCS_CMD(0xC3, 0x4F),
-+	_INIT_DCS_CMD(0xC4, 0x40),
-+	_INIT_DCS_CMD(0xC5, 0x40),
-+	_INIT_DCS_CMD(0xC6, 0x40),
-+	_INIT_DCS_CMD(0xC7, 0x40),
-+	_INIT_DCS_CMD(0xC8, 0x4D),
-+	_INIT_DCS_CMD(0xC9, 0x52),
-+	_INIT_DCS_CMD(0xCA, 0x51),
-+	_INIT_DCS_CMD(0xCD, 0x5D),
-+	_INIT_DCS_CMD(0xCE, 0x5B),
-+	_INIT_DCS_CMD(0xCF, 0x4B),
-+	_INIT_DCS_CMD(0xD0, 0x49),
-+	_INIT_DCS_CMD(0xD1, 0x47),
-+	_INIT_DCS_CMD(0xD2, 0x45),
-+	_INIT_DCS_CMD(0xD3, 0x41),
-+	_INIT_DCS_CMD(0xD7, 0x50),
-+	_INIT_DCS_CMD(0xD8, 0x40),
-+	_INIT_DCS_CMD(0xD9, 0x40),
-+	_INIT_DCS_CMD(0xDA, 0x40),
-+	_INIT_DCS_CMD(0xDB, 0x40),
-+	_INIT_DCS_CMD(0xDC, 0x4E),
-+	_INIT_DCS_CMD(0xDD, 0x52),
-+	_INIT_DCS_CMD(0xDE, 0x51),
-+	_INIT_DCS_CMD(0xE1, 0x5E),
-+	_INIT_DCS_CMD(0xE2, 0x5C),
-+	_INIT_DCS_CMD(0xE3, 0x4C),
-+	_INIT_DCS_CMD(0xE4, 0x4A),
-+	_INIT_DCS_CMD(0xE5, 0x48),
-+	_INIT_DCS_CMD(0xE6, 0x46),
-+	_INIT_DCS_CMD(0xE7, 0x42),
-+	_INIT_DCS_CMD(0xB0, 0x03),
-+	_INIT_DCS_CMD(0xBE, 0x03),
-+	_INIT_DCS_CMD(0xCC, 0x44),
-+	_INIT_DCS_CMD(0xC8, 0x07),
-+	_INIT_DCS_CMD(0xC9, 0x05),
-+	_INIT_DCS_CMD(0xCA, 0x42),
-+	_INIT_DCS_CMD(0xCD, 0x3E),
-+	_INIT_DCS_CMD(0xCF, 0x60),
-+	_INIT_DCS_CMD(0xD2, 0x04),
-+	_INIT_DCS_CMD(0xD3, 0x04),
-+	_INIT_DCS_CMD(0xD4, 0x01),
-+	_INIT_DCS_CMD(0xD5, 0x00),
-+	_INIT_DCS_CMD(0xD6, 0x03),
-+	_INIT_DCS_CMD(0xD7, 0x04),
-+	_INIT_DCS_CMD(0xD9, 0x01),
-+	_INIT_DCS_CMD(0xDB, 0x01),
-+	_INIT_DCS_CMD(0xE4, 0xF0),
-+	_INIT_DCS_CMD(0xE5, 0x0A),
-+	_INIT_DCS_CMD(0xB0, 0x00),
-+	_INIT_DCS_CMD(0xCC, 0x08),
-+	_INIT_DCS_CMD(0xC2, 0x08),
-+	_INIT_DCS_CMD(0xC4, 0x10),
-+	_INIT_DCS_CMD(0xB0, 0x02),
-+	_INIT_DCS_CMD(0xC0, 0x00),
-+	_INIT_DCS_CMD(0xC1, 0x0A),
-+	_INIT_DCS_CMD(0xC2, 0x20),
-+	_INIT_DCS_CMD(0xC3, 0x24),
-+	_INIT_DCS_CMD(0xC4, 0x23),
-+	_INIT_DCS_CMD(0xC5, 0x29),
-+	_INIT_DCS_CMD(0xC6, 0x23),
-+	_INIT_DCS_CMD(0xC7, 0x1C),
-+	_INIT_DCS_CMD(0xC8, 0x19),
-+	_INIT_DCS_CMD(0xC9, 0x17),
-+	_INIT_DCS_CMD(0xCA, 0x17),
-+	_INIT_DCS_CMD(0xCB, 0x18),
-+	_INIT_DCS_CMD(0xCC, 0x1A),
-+	_INIT_DCS_CMD(0xCD, 0x1E),
-+	_INIT_DCS_CMD(0xCE, 0x20),
-+	_INIT_DCS_CMD(0xCF, 0x23),
-+	_INIT_DCS_CMD(0xD0, 0x07),
-+	_INIT_DCS_CMD(0xD1, 0x00),
-+	_INIT_DCS_CMD(0xD2, 0x00),
-+	_INIT_DCS_CMD(0xD3, 0x0A),
-+	_INIT_DCS_CMD(0xD4, 0x13),
-+	_INIT_DCS_CMD(0xD5, 0x1C),
-+	_INIT_DCS_CMD(0xD6, 0x1A),
-+	_INIT_DCS_CMD(0xD7, 0x13),
-+	_INIT_DCS_CMD(0xD8, 0x17),
-+	_INIT_DCS_CMD(0xD9, 0x1C),
-+	_INIT_DCS_CMD(0xDA, 0x19),
-+	_INIT_DCS_CMD(0xDB, 0x17),
-+	_INIT_DCS_CMD(0xDC, 0x17),
-+	_INIT_DCS_CMD(0xDD, 0x18),
-+	_INIT_DCS_CMD(0xDE, 0x1A),
-+	_INIT_DCS_CMD(0xDF, 0x1E),
-+	_INIT_DCS_CMD(0xE0, 0x20),
-+	_INIT_DCS_CMD(0xE1, 0x23),
-+	_INIT_DCS_CMD(0xE2, 0x07),
-+	_INIT_DCS_CMD(0X11),
-+	_INIT_DELAY_CMD(120),
-+	_INIT_DCS_CMD(0X29),
-+	_INIT_DELAY_CMD(80),
-+	{},
-+};
-+
-+static inline struct inx_panel *to_inx_panel(struct drm_panel *panel)
-+{
-+	return container_of(panel, struct inx_panel, base);
-+}
-+
-+static int inx_panel_init_dcs_cmd(struct inx_panel *inx)
-+{
-+	struct mipi_dsi_device *dsi = inx->dsi;
-+	struct drm_panel *panel = &inx->base;
-+	int i, err = 0;
-+
-+	if (inx->desc->init_cmds) {
-+		const struct panel_init_cmd *init_cmds = inx->desc->init_cmds;
-+
-+		for (i = 0; init_cmds[i].len != 0; i++) {
-+			const struct panel_init_cmd *cmd = &init_cmds[i];
-+
-+			switch (cmd->type) {
-+			case DELAY_CMD:
-+				msleep(cmd->data[0]);
-+				err = 0;
-+				break;
-+
-+			case INIT_DCS_CMD:
-+				err = mipi_dsi_dcs_write(dsi, cmd->data[0],
-+							 cmd->len <= 1 ? NULL :
-+							 &cmd->data[1],
-+							 cmd->len - 1);
-+				break;
-+
-+			default:
-+				err = -EINVAL;
-+			}
-+
-+			if (err < 0) {
-+				dev_err(panel->dev,
-+					"failed to write command %u\n", i);
-+				return err;
-+			}
-+		}
-+	}
-+	return 0;
-+}
-+
-+static int inx_panel_enter_sleep_mode(struct inx_panel *inx)
-+{
-+	struct mipi_dsi_device *dsi = inx->dsi;
-+	int ret;
-+
-+	dsi->mode_flags &= ~MIPI_DSI_MODE_LPM;
-+
-+	ret = mipi_dsi_dcs_set_display_off(dsi);
-+	if (ret < 0)
-+		return ret;
-+
-+	ret = mipi_dsi_dcs_enter_sleep_mode(dsi);
-+	if (ret < 0)
-+		return ret;
-+
-+	return 0;
-+}
-+
-+static int inx_panel_unprepare(struct drm_panel *panel)
-+{
-+	struct inx_panel *inx = to_inx_panel(panel);
-+	int ret;
-+
-+	if (!inx->prepared)
-+		return 0;
-+
-+	ret = inx_panel_enter_sleep_mode(inx);
-+	if (ret < 0) {
-+		dev_err(panel->dev, "failed to set panel off: %d\n", ret);
-+		return ret;
-+	}
-+
-+	msleep(150);
-+
-+	if (inx->desc->discharge_on_disable) {
-+		regulator_disable(inx->avee);
-+		regulator_disable(inx->avdd);
-+		usleep_range(5000, 7000);
-+		gpiod_set_value(inx->enable_gpio, 0);
-+		usleep_range(5000, 7000);
-+		regulator_disable(inx->pp1800);
-+	} else {
-+		gpiod_set_value(inx->enable_gpio, 0);
-+		usleep_range(500, 1000);
-+		regulator_disable(inx->avee);
-+		regulator_disable(inx->avdd);
-+		usleep_range(5000, 7000);
-+		regulator_disable(inx->pp1800);
-+	}
-+
-+	inx->prepared = false;
-+
-+	return 0;
-+}
-+
-+static int inx_panel_prepare(struct drm_panel *panel)
-+{
-+	struct inx_panel *inx = to_inx_panel(panel);
-+	int ret;
-+
-+	if (inx->prepared)
-+		return 0;
-+
-+	gpiod_set_value(inx->enable_gpio, 0);
-+	usleep_range(1000, 1500);
-+
-+	ret = regulator_enable(inx->pp1800);
-+	if (ret < 0)
-+		return ret;
-+
-+	usleep_range(3000, 5000);
-+
-+	ret = regulator_enable(inx->avdd);
-+	if (ret < 0)
-+		goto poweroff1v8;
-+	ret = regulator_enable(inx->avee);
-+	if (ret < 0)
-+		goto poweroffavdd;
-+
-+	usleep_range(5000, 10000);
-+
-+	gpiod_set_value(inx->enable_gpio, 1);
-+	usleep_range(1000, 2000);
-+	gpiod_set_value(inx->enable_gpio, 0);
-+	usleep_range(1000, 2000);
-+	gpiod_set_value(inx->enable_gpio, 1);
-+	usleep_range(6000, 10000);
-+
-+	ret = inx_panel_init_dcs_cmd(inx);
-+	if (ret < 0) {
-+		dev_err(panel->dev, "failed to init panel: %d\n", ret);
-+		goto poweroff;
-+	}
-+
-+	inx->prepared = true;
-+
-+	return 0;
-+
-+poweroff:
-+	regulator_disable(inx->avee);
-+poweroffavdd:
-+	regulator_disable(inx->avdd);
-+poweroff1v8:
-+	usleep_range(5000, 7000);
-+	regulator_disable(inx->pp1800);
-+	gpiod_set_value(inx->enable_gpio, 0);
-+
-+	return ret;
-+}
-+
-+static int inx_panel_enable(struct drm_panel *panel)
-+{
-+	msleep(130);
-+	return 0;
-+}
-+
-+static const struct drm_display_mode starry_qfh032011_53g_default_mode = {
-+	.clock = 165731,
-+	.hdisplay = 1200,
-+	.hsync_start = 1200 + 100,
-+	.hsync_end = 1200 + 100 + 10,
-+	.htotal = 1200 + 100 + 10 + 100,
-+	.vdisplay = 1920,
-+	.vsync_start = 1920 + 14,
-+	.vsync_end = 1920 + 14 + 10,
-+	.vtotal = 1920 + 14 + 10 + 15,
-+};
-+
-+static const struct panel_desc starry_qfh032011_53g_desc = {
-+	.modes = &starry_qfh032011_53g_default_mode,
-+	.bpc = 8,
-+	.size = {
-+		.width_mm = 135,
-+		.height_mm = 216,
-+	},
-+	.lanes = 4,
-+	.format = MIPI_DSI_FMT_RGB888,
-+	.mode_flags = MIPI_DSI_MODE_VIDEO | MIPI_DSI_MODE_VIDEO_SYNC_PULSE |
-+		      MIPI_DSI_MODE_LPM,
-+	.init_cmds = starry_qfh032011_53g_init_cmd,
-+	.discharge_on_disable = false,
-+};
-+
-+static int inx_panel_get_modes(struct drm_panel *panel,
-+			       struct drm_connector *connector)
-+{
-+	struct inx_panel *inx = to_inx_panel(panel);
-+	const struct drm_display_mode *m = inx->desc->modes;
-+	struct drm_display_mode *mode;
-+
-+	mode = drm_mode_duplicate(connector->dev, m);
-+	if (!mode) {
-+		dev_err(panel->dev, "failed to add mode %ux%u@%u\n",
-+			m->hdisplay, m->vdisplay, drm_mode_vrefresh(m));
-+		return -ENOMEM;
-+	}
-+
-+	mode->type = DRM_MODE_TYPE_DRIVER | DRM_MODE_TYPE_PREFERRED;
-+	drm_mode_set_name(mode);
-+	drm_mode_probed_add(connector, mode);
-+
-+	connector->display_info.width_mm = inx->desc->size.width_mm;
-+	connector->display_info.height_mm = inx->desc->size.height_mm;
-+	connector->display_info.bpc = inx->desc->bpc;
-+	drm_connector_set_panel_orientation(connector, inx->orientation);
-+
-+	return 1;
-+}
-+
-+static const struct drm_panel_funcs inx_panel_funcs = {
-+	.unprepare = inx_panel_unprepare,
-+	.prepare = inx_panel_prepare,
-+	.enable = inx_panel_enable,
-+	.get_modes = inx_panel_get_modes,
-+};
-+
-+static int inx_panel_add(struct inx_panel *inx)
-+{
-+	struct device *dev = &inx->dsi->dev;
-+	int err;
-+
-+	inx->avdd = devm_regulator_get(dev, "avdd");
-+	if (IS_ERR(inx->avdd))
-+		return PTR_ERR(inx->avdd);
-+
-+	inx->avee = devm_regulator_get(dev, "avee");
-+	if (IS_ERR(inx->avee))
-+		return PTR_ERR(inx->avee);
-+
-+	inx->pp1800 = devm_regulator_get(dev, "pp1800");
-+	if (IS_ERR(inx->pp1800))
-+		return PTR_ERR(inx->pp1800);
-+
-+	inx->enable_gpio = devm_gpiod_get(dev, "enable", GPIOD_OUT_LOW);
-+	if (IS_ERR(inx->enable_gpio)) {
-+		dev_err(dev, "cannot get reset-gpios %ld\n",
-+			PTR_ERR(inx->enable_gpio));
-+		return PTR_ERR(inx->enable_gpio);
-+	}
-+
-+	gpiod_set_value(inx->enable_gpio, 0);
-+
-+	drm_panel_init(&inx->base, dev, &inx_panel_funcs,
-+		       DRM_MODE_CONNECTOR_DSI);
-+	err = of_drm_get_panel_orientation(dev->of_node, &inx->orientation);
-+	if (err < 0) {
-+		dev_err(dev, "%pOF: failed to get orientation %d\n", dev->of_node, err);
-+		return err;
-+	}
-+
-+	err = drm_panel_of_backlight(&inx->base);
-+	if (err)
-+		return err;
-+
-+	inx->base.funcs = &inx_panel_funcs;
-+	inx->base.dev = &inx->dsi->dev;
-+
-+	drm_panel_add(&inx->base);
-+
-+	return 0;
-+}
-+
-+static int inx_panel_probe(struct mipi_dsi_device *dsi)
-+{
-+	struct inx_panel *inx;
-+	int ret;
-+	const struct panel_desc *desc;
-+
-+	inx = devm_kzalloc(&dsi->dev, sizeof(*inx), GFP_KERNEL);
-+	if (!inx)
-+		return -ENOMEM;
-+
-+	desc = of_device_get_match_data(&dsi->dev);
-+	dsi->lanes = desc->lanes;
-+	dsi->format = desc->format;
-+	dsi->mode_flags = desc->mode_flags;
-+	inx->desc = desc;
-+	inx->dsi = dsi;
-+	ret = inx_panel_add(inx);
-+	if (ret < 0)
-+		return ret;
-+
-+	mipi_dsi_set_drvdata(dsi, inx);
-+
-+	ret = mipi_dsi_attach(dsi);
-+	if (ret)
-+		drm_panel_remove(&inx->base);
-+
-+	return ret;
-+}
-+
-+static void inx_panel_shutdown(struct mipi_dsi_device *dsi)
-+{
-+	struct inx_panel *inx = mipi_dsi_get_drvdata(dsi);
-+
-+	drm_panel_disable(&inx->base);
-+	drm_panel_unprepare(&inx->base);
-+}
-+
-+static int inx_panel_remove(struct mipi_dsi_device *dsi)
-+{
-+	struct inx_panel *inx = mipi_dsi_get_drvdata(dsi);
-+	int ret;
-+
-+	inx_panel_shutdown(dsi);
-+
-+	ret = mipi_dsi_detach(dsi);
-+	if (ret < 0)
-+		dev_err(&dsi->dev, "failed to detach from DSI host: %d\n", ret);
-+
-+	if (inx->base.dev)
-+		drm_panel_remove(&inx->base);
-+
-+	return 0;
-+}
-+
-+static const struct of_device_id inx_of_match[] = {
-+	{ .compatible = "starry,2081101qfh032011-53g",
-+	  .data = &starry_qfh032011_53g_desc
-+	},
-+	{ /* sentinel */ }
-+};
-+MODULE_DEVICE_TABLE(of, inx_of_match);
-+
-+static struct mipi_dsi_driver inx_panel_driver = {
-+	.driver = {
-+		.name = "panel-innolux-himax8279d",
-+		.of_match_table = inx_of_match,
-+	},
-+	.probe = inx_panel_probe,
-+	.remove = inx_panel_remove,
-+	.shutdown = inx_panel_shutdown,
-+};
-+module_mipi_dsi_driver(inx_panel_driver);
-+
-+MODULE_AUTHOR("Zhengqiao Xia <xiazhengqiao@huaqin.corp-partner.google.com>");
-+MODULE_DESCRIPTION("INNOLUX HIMAX8279D 1200x1920 video mode panel driver");
-+MODULE_LICENSE("GPL v2");
--- 
-2.17.1
+On 2021/11/8 16:44, Like Xu wrote:
+> On 8/11/2021 4:27 pm, Liuxiangdong wrote:
+>>
+>>
+>> On 2021/11/8 12:11, Like Xu wrote:
+>>> On 8/11/2021 12:07 pm, Liuxiangdong wrote:
+>>>>
+>>>>
+>>>> On 2021/11/8 11:06, Like Xu wrote:
+>>>>> On 7/11/2021 6:14 pm, Liuxiangdong wrote:
+>>>>>> Hi, like and lingshan.
+>>>>>>
+>>>>>> As said,  IA32_MISC_ENABLE[7] bit depends on the PMU is enabled 
+>>>>>> for the guest, so a software
+>>>>>> write openration to this bit will be ignored.
+>>>>>>
+>>>>>> But, in this patch, all the openration that writes 
+>>>>>> msr_ia32_misc_enable in guest could make this bit become 0.
+>>>>>>
+>>>>>> Suppose:
+>>>>>> When we start vm with "enable_pmu", 
+>>>>>> vcpu->arch.ia32_misc_enable_msr may be 0x80 first.
+>>>>>> And next, guest writes msr_ia32_misc_enable value 0x1.
+>>>>>> What we want could be 0x81, but unfortunately, it will be 0x1 
+>>>>>> because of
+>>>>>> "data &= ~MSR_IA32_MISC_ENABLE_EMON;"
+>>>>>> And even if guest writes msr_ia32_misc_enable value 0x81, it will 
+>>>>>> be 0x1 also.
+>>>>>>
+>>>>>
+>>>>> Yes and thank you. The fix has been committed on my private tree 
+>>>>> for a long time.
+>>>>>
+>>>>>>
+>>>>>> What we want is write operation will not change this bit. So, how 
+>>>>>> about this?
+>>>>>>
+>>>>>> --- a/arch/x86/kvm/x86.c
+>>>>>> +++ b/arch/x86/kvm/x86.c
+>>>>>> @@ -3321,6 +3321,7 @@ int kvm_set_msr_common(struct kvm_vcpu 
+>>>>>> *vcpu, struct msr_data *msr_info)
+>>>>>>           }
+>>>>>>           break;
+>>>>>>       case MSR_IA32_MISC_ENABLE:
+>>>>>> +        data &= ~MSR_IA32_MISC_ENABLE_EMON;
+>>>>>> +        data |= (vcpu->arch.ia32_misc_enable_msr & 
+>>>>>> MSR_IA32_MISC_ENABLE_EMON);
+>>>>>>           if (!kvm_check_has_quirk(vcpu->kvm, 
+>>>>>> KVM_X86_QUIRK_MISC_ENABLE_NO_MWAIT) &&
+>>>>>>               ((vcpu->arch.ia32_misc_enable_msr ^ data) & 
+>>>>>> MSR_IA32_MISC_ENABLE_MWAIT)) {
+>>>>>>               if (!guest_cpuid_has(vcpu, X86_FEATURE_XMM3))
+>>>>>>
+>>>>>>
+>>>>>
+>>>>> How about this for the final state considering PEBS enabling:
+>>>>>
+>>>>>     case MSR_IA32_MISC_ENABLE: {
+>>>>>         u64 old_val = vcpu->arch.ia32_misc_enable_msr;
+>>>>>         u64 pmu_mask = MSR_IA32_MISC_ENABLE_EMON |
+>>>>>             MSR_IA32_MISC_ENABLE_EMON;
+>>>>>
+>>>>          u64 pmu_mask = MSR_IA32_MISC_ENABLE_EMON |
+>>>>              MSR_IA32_MISC_ENABLE_EMON;
+>>>>
+>>>> Repetitive "MSR_IA32_MISC_ENABLE_EMON" ?
+>>>
+>>> Oops,
+>>>
+>>>     u64 pmu_mask = MSR_IA32_MISC_ENABLE_EMON |
+>>>             MSR_IA32_MISC_ENABLE_PEBS_UNAVAIL;
+>>>
+>>
+>> Yes. bit[12] is also read-only, so we can keep this bit unchanged also.
+>>
+>> And, because write operation will not change this bit by "pmu_mask", 
+>> do we still need this if statement?
+>>
+>>          /* RO bits */
+>>          if (!msr_info->host_initiated &&
+>>              ((old_val ^ data) & MSR_IA32_MISC_ENABLE_PEBS_UNAVAIL))
+>>              return 1;
+>>
+>> "(old_val ^ data) & MSR_IA32_MISC_ENABLE_PEBS_UNAVAIL" means some 
+>> operation tries to change this bit,
+>> so we cannot allow it.
+>> But, if there is no this judgement, "pmu_mask" will still make this 
+>> bit[12] no change.
+>>
+>> The only difference is that we can not change other bit (except bit 
+>> 12 and bit 7) once "old_val[12] != data[12]" if there exists this 
+>> statement
+>> and we can change other bit if there is no judgement.
+>>
+>> For both MSR_IA32_MISC_ENABLE_EMON and MSR_IA32_MISC_ENABLE_EMON are 
+>> read-only, maybe we can keep
+>> their behavioral consistency. Either both judge, or neither.
+>
+> One more difference per Intel SDM, I assume:
+>
+> For Bit 7, Performance Monitoring Available (R)
+>     (R)  means that attempts to change this bit will be silent;
+> For Bit 12, Processor Event Based Sampling (PEBS) Unavailable (RO),
+>     (RO) means that attempts to change this bit will be #GP;
+>
+
+Yes, I found it in SDM. You're right.  Thanks for your explanation!
+
+>>
+>> Do you think so?
+>>
+>>
+>>> I'll send the fix after sync with Lingshan.
+>>>
+>>>>
+>>>>>         /* RO bits */
+>>>>>         if (!msr_info->host_initiated &&
+>>>>>             ((old_val ^ data) & MSR_IA32_MISC_ENABLE_PEBS_UNAVAIL))
+>>>>>             return 1;
+>>>>>
+>>>>>         /*
+>>>>>          * For a dummy user space, the order of setting vPMU 
+>>>>> capabilities and
+>>>>>          * initialising MSR_IA32_MISC_ENABLE is not strictly 
+>>>>> guaranteed, so to
+>>>>>          * avoid inconsistent functionality we keep the vPMU bits 
+>>>>> unchanged here.
+>>>>>          */
+>>>> Yes. It's a little clearer with comments.
+>>>
+>>> Thanks for your feedback! Enjoy the feature.
+>>>
+>>>>>         data &= ~pmu_mask;
+>>>>>         data |= old_val & pmu_mask;
+>>>>>         if (!kvm_check_has_quirk(vcpu->kvm, 
+>>>>> KVM_X86_QUIRK_MISC_ENABLE_NO_MWAIT) &&
+>>>>>             ((old_val ^ data) & MSR_IA32_MISC_ENABLE_MWAIT)) {
+>>>>>             if (!guest_cpuid_has(vcpu, X86_FEATURE_XMM3))
+>>>>>                 return 1;
+>>>>>             vcpu->arch.ia32_misc_enable_msr = data;
+>>>>>             kvm_update_cpuid_runtime(vcpu);
+>>>>>         } else {
+>>>>>             vcpu->arch.ia32_misc_enable_msr = data;
+>>>>>         }
+>>>>>         break;
+>>>>>     }
+>>>>>
+>>>>>> Or is there anything in your design intention I don't understand?
+>>>>>>
+>>>>>> Thanks!
+>>>>>>
+>>>>>> Xiangdong Liu
+>>>>>>
+>>>>>>
+>>>>>> On 2021/8/6 21:37, Zhu Lingshan wrote:
+>>>>>>> From: Like Xu <like.xu@linux.intel.com>
+>>>>>>>
+>>>>>>> On Intel platforms, the software can use the IA32_MISC_ENABLE[7] 
+>>>>>>> bit to
+>>>>>>> detect whether the processor supports performance monitoring 
+>>>>>>> facility.
+>>>>>>>
+>>>>>>> It depends on the PMU is enabled for the guest, and a software 
+>>>>>>> write
+>>>>>>> operation to this available bit will be ignored. The proposal to 
+>>>>>>> ignore
+>>>>>>> the toggle in KVM is the way to go and that behavior matches 
+>>>>>>> bare metal.
+>>>>>>>
+>>>>>>> Cc: Yao Yuan <yuan.yao@intel.com>
+>>>>>>> Signed-off-by: Like Xu <like.xu@linux.intel.com>
+>>>>>>> Reviewed-by: Venkatesh Srinivas <venkateshs@chromium.org>
+>>>>>>> Signed-off-by: Zhu Lingshan <lingshan.zhu@intel.com>
+>>>>>>> Acked-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+>>>>>>> ---
+>>>>>>>   arch/x86/kvm/vmx/pmu_intel.c | 1 +
+>>>>>>>   arch/x86/kvm/x86.c           | 1 +
+>>>>>>>   2 files changed, 2 insertions(+)
+>>>>>>>
+>>>>>>> diff --git a/arch/x86/kvm/vmx/pmu_intel.c 
+>>>>>>> b/arch/x86/kvm/vmx/pmu_intel.c
+>>>>>>> index 9efc1a6b8693..d9dbebe03cae 100644
+>>>>>>> --- a/arch/x86/kvm/vmx/pmu_intel.c
+>>>>>>> +++ b/arch/x86/kvm/vmx/pmu_intel.c
+>>>>>>> @@ -488,6 +488,7 @@ static void intel_pmu_refresh(struct 
+>>>>>>> kvm_vcpu *vcpu)
+>>>>>>>       if (!pmu->version)
+>>>>>>>           return;
+>>>>>>> +    vcpu->arch.ia32_misc_enable_msr |= MSR_IA32_MISC_ENABLE_EMON;
+>>>>>>>       perf_get_x86_pmu_capability(&x86_pmu);
+>>>>>>>       pmu->nr_arch_gp_counters = min_t(int, eax.split.num_counters,
+>>>>>>> diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
+>>>>>>> index efd11702465c..f6b6984e26ef 100644
+>>>>>>> --- a/arch/x86/kvm/x86.c
+>>>>>>> +++ b/arch/x86/kvm/x86.c
+>>>>>>> @@ -3321,6 +3321,7 @@ int kvm_set_msr_common(struct kvm_vcpu 
+>>>>>>> *vcpu, struct msr_data *msr_info)
+>>>>>>>           }
+>>>>>>>           break;
+>>>>>>>       case MSR_IA32_MISC_ENABLE:
+>>>>>>> +        data &= ~MSR_IA32_MISC_ENABLE_EMON;
+>>>>>>>           if (!kvm_check_has_quirk(vcpu->kvm, 
+>>>>>>> KVM_X86_QUIRK_MISC_ENABLE_NO_MWAIT) &&
+>>>>>>>               ((vcpu->arch.ia32_misc_enable_msr ^ data) & 
+>>>>>>> MSR_IA32_MISC_ENABLE_MWAIT)) {
+>>>>>>>               if (!guest_cpuid_has(vcpu, X86_FEATURE_XMM3))
+>>>>>>
+>>>>
+>>
 
