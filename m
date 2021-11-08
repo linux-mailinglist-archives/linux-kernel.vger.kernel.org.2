@@ -2,83 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 669D9449E3C
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Nov 2021 22:30:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B5C48449E40
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Nov 2021 22:30:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240346AbhKHVcx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Nov 2021 16:32:53 -0500
-Received: from mail.kernel.org ([198.145.29.99]:52594 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239289AbhKHVcw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Nov 2021 16:32:52 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPS id 5C20B61181;
-        Mon,  8 Nov 2021 21:30:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1636407007;
-        bh=spRHXcGTXUYBf46hJjqceMd3cP9sEtQ9oVe+PiZLYFs=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=K7wO4kL8/3mD4COANLC2woAr4SU779+wtR9arXyDV68fe4z75LLMiQmDIsR83cGUa
-         d7v5x2eYk3Xfay/eHLnWRXgJTo83cJfA4cTLOkUqij6FFSOhreX+nOe0CJSyb6zx6y
-         DAJ6XDhi6/vQeX2K9cMaiCkobKgvMR1l95KJABiMzbBr7mv6Hjw6601yKb/aXqqTRA
-         gyigOLIf3q7AM/DLVmI0Muy0ouLb752rehmqPYA/Vam/cxiPXNfkUVjhBHZL3eI294
-         mX+To6S+v3aam4nBW+wz0NjLyd6h4bY0C0zg/BmhXmklpPMUrNPbuS8bczp3eqZ/Wj
-         IxQxlS7/AEIjg==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 4A5B360A23;
-        Mon,  8 Nov 2021 21:30:07 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        id S240365AbhKHVdh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Nov 2021 16:33:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52498 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239289AbhKHVdf (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Nov 2021 16:33:35 -0500
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1234::107])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F17DAC061570;
+        Mon,  8 Nov 2021 13:30:50 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
+        :Reply-To:Content-ID:Content-Description;
+        bh=0iwskvT7/hdjJZTdU1Eyzgws/WDVQd1HAOKc57+uQjw=; b=pocPJMpyTmtM9PRMwz8gM4cb65
+        ARrDqhE6l7qEoqBDn++car9Pk7CDPei4UiXKcIDsH/a1HDLe6m2anTctYJ62lvbBmUynMSr0G0+yZ
+        b75PmapDuqR+2iZrpLdqTgkA0usuSwZ86/bjCEqWJrjVJUkmMfzUuON1gWib2CGIZ0BWuuOWKZ00d
+        RtKjM2s7wqMwC262T1JMmh65f+iu3S+hh1vAV4sRq5pZHW1YTr/6yBjjRAs4aDk6BeGRIn9InQwEq
+        GeZQBBjbwIrbskHtmOw1Og0DWU7kH2MMn5gKVxTOMB+ti/ODlT/TrdS9oCok+IWUIuKMXcpkQpT2N
+        jU+nRFxQ==;
+Received: from [2601:1c0:6280:3f0::aa0b]
+        by merlin.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mkCE1-008jfC-Qe; Mon, 08 Nov 2021 21:30:46 +0000
+Subject: Re: [PATCH] rpmsg: Fix documentation return formatting
+To:     Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Ohad Ben-Cohen <ohad@wizery.com>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>
+Cc:     linux-remoteproc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-msm@vger.kernel.org
+References: <20211108140126.3530-1-arnaud.pouliquen@foss.st.com>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <67712270-d8b3-8475-f365-d24ed4cbb117@infradead.org>
+Date:   Mon, 8 Nov 2021 13:30:35 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH v2 bpf-next 0/2] arm64/bpf: remove 128MB limit for BPF JIT
- programs
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <163640700729.18756.3678999671690416622.git-patchwork-notify@kernel.org>
-Date:   Mon, 08 Nov 2021 21:30:07 +0000
-References: <1636131046-5982-1-git-send-email-alan.maguire@oracle.com>
-In-Reply-To: <1636131046-5982-1-git-send-email-alan.maguire@oracle.com>
-To:     Alan Maguire <alan.maguire@oracle.com>
-Cc:     ardb@kernel.org, catalin.marinas@arm.com, will@kernel.org,
-        daniel@iogearbox.net, ast@kernel.org, zlim.lnx@gmail.com,
-        andrii@kernel.org, kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
-        john.fastabend@gmail.com, kpsingh@kernel.org, andreyknvl@gmail.com,
-        vincenzo.frascino@arm.com, mark.rutland@arm.com,
-        samitolvanen@google.com, joey.gouly@arm.com, maz@kernel.org,
-        daizhiyuan@phytium.com.cn, jthierry@redhat.com,
-        tiantao6@hisilicon.com, pcc@google.com, akpm@linux-foundation.org,
-        rppt@kernel.org, Jisheng.Zhang@synaptics.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, bpf@vger.kernel.org
+In-Reply-To: <20211108140126.3530-1-arnaud.pouliquen@foss.st.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello:
-
-This series was applied to bpf/bpf-next.git (master)
-by Daniel Borkmann <daniel@iogearbox.net>:
-
-On Fri,  5 Nov 2021 16:50:44 +0000 you wrote:
-> There is a 128MB limit on BPF JIT program allocations; this is
-> to ensure BPF programs are in branching range of each other.
-> Patch 1 in this series removes this restriction.  To verify
-> exception handling still works, a test case to validate
-> exception handling in BPF programs is added in patch 2.
+On 11/8/21 6:01 AM, Arnaud Pouliquen wrote:
+> kernel documentation specification:
+> "The return value, if any, should be described in a dedicated section
+> named Return."
 > 
-> There was previous discussion around this topic [1], in particular
-> would be good to get feedback from Daniel if this approach makes
-> sense.
-> 
-> [...]
+> Signed-off-by: Arnaud Pouliquen<arnaud.pouliquen@foss.st.com>
+> ---
+>   drivers/rpmsg/qcom_glink_native.c |  2 +-
+>   drivers/rpmsg/qcom_smd.c          |  2 +-
+>   drivers/rpmsg/rpmsg_core.c        | 24 ++++++++++++------------
+>   drivers/rpmsg/virtio_rpmsg_bus.c  |  2 +-
+>   4 files changed, 15 insertions(+), 15 deletions(-)
 
-Here is the summary with links:
-  - [v2,bpf-next,1/2] arm64/bpf: remove 128MB limit for BPF JIT programs
-    https://git.kernel.org/bpf/bpf-next/c/b89ddf4cca43
-  - [v2,bpf-next,2/2] selftests/bpf: add exception handling selftests for tp_bpf program
-    https://git.kernel.org/bpf/bpf-next/c/c23551c9c36a
+Reviewed-by: Randy Dunlap <rdunlap@infradead.org>
 
-You are awesome, thank you!
+Thanks.
+
 -- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
-
+~Randy
