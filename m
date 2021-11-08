@@ -2,94 +2,184 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 09E1A449C4E
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Nov 2021 20:21:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 496B5449C54
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Nov 2021 20:23:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237076AbhKHTX6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Nov 2021 14:23:58 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51348 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236881AbhKHTX5 (ORCPT
+        id S237120AbhKHTZz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Nov 2021 14:25:55 -0500
+Received: from mail-ot1-f51.google.com ([209.85.210.51]:33566 "EHLO
+        mail-ot1-f51.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236881AbhKHTZy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Nov 2021 14:23:57 -0500
-Received: from mail-ot1-x331.google.com (mail-ot1-x331.google.com [IPv6:2607:f8b0:4864:20::331])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F65BC061570;
-        Mon,  8 Nov 2021 11:21:12 -0800 (PST)
-Received: by mail-ot1-x331.google.com with SMTP id b5-20020a9d60c5000000b0055c6349ff22so16426210otk.13;
-        Mon, 08 Nov 2021 11:21:12 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=fpRGr3jpvIFQhzvW4MxJKqtBZrUJ5oRccS3rsOZFPrg=;
-        b=CTM3ujxULM809hJxzOJR5rsG6Nf/+ASek2zlC5aYe6YCfmQ/C66zS1AZdkA0YX486F
-         WlFJS7Pr/VvYOd6PhSulFv66bePGyK/h6/9sZ8dsiGPx7ICz52AICdXUlbq9Qzah/KVw
-         k9InznOWVtioSOnzIF1zVullcDGbWyXANCjNYiBq2lSJ9+7zJSkvSq/X/j8jGByppY53
-         V216Zbv2Ctnj9O+CCOMnlbwLZ6n4AwX9uDk2dDh4D7skET4WcyT/9Lxs0z4pWY3/VOcr
-         buYQ7RJMq8oCGDrz3bvCruapcwS+0Z8Ze6Mk1c+Iv3NJnFaHge6Roz2wRg1zGiZDdlZC
-         8UUg==
+        Mon, 8 Nov 2021 14:25:54 -0500
+Received: by mail-ot1-f51.google.com with SMTP id h12-20020a056830034c00b0055c8458126fso8252565ote.0;
+        Mon, 08 Nov 2021 11:23:09 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=fpRGr3jpvIFQhzvW4MxJKqtBZrUJ5oRccS3rsOZFPrg=;
-        b=BEtegIoU6Srsxaq7adHypvyRGi3WmcjWgs30KTenlRTvjPzyImijqKqLUENuq+i1ZA
-         gFGMtviwzawsBE8jp3K4xRA5TR20nlmgbq1z0mKTSfLlt2/GkoG2ESnSV2/HaVNDwcPI
-         xoSC/AGHc3PdsrrFRMiesKKqmXrH7RfqjpFWksaFAynHQRcgRODMUuINokHDxu6iWwvM
-         DFidsgQBdqed3PO20BdQ3ugp99ZU+vGcc+MBjOOPpGJY6hs+OyVg/DgGjO5tDKcIXWWv
-         hhew6DwYl+iFVahSZH/SBqeRYSuMduYbrgXl+XOd32lA9v3h41qqob0cFojYJdK3+4vu
-         be1Q==
-X-Gm-Message-State: AOAM530dnJ/kVaacmUGHjWyI00NwOr8ZozgYCG3zPiFdo0uVFmSEuZ8v
-        5kctvnNtJH1EMf4sfi++oUC2+HHLfS+2PrzHing=
-X-Google-Smtp-Source: ABdhPJxN9HNj3rKGYq/3cvOZ/DzpmSQ8BQzXfQg/URy7qDl/nZNIA6k/PKqj7kC+WUwlE0WLxV+LwzXGLjC0qbZ1vTA=
-X-Received: by 2002:a9d:7617:: with SMTP id k23mr1078377otl.351.1636399271854;
- Mon, 08 Nov 2021 11:21:11 -0800 (PST)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=lKW7MiMs8UBNSc0+Id3Jzt86LaF6KHkklaDg7NR6Atc=;
+        b=e4IlxVji7H3yvEQp1fuXFl3BFGgpB5NINVxo+4c2MMdr5uh5uUVttC2n/dHg84Sgxr
+         gEXWD60bGYWoPV6/sSOlacCHBRly4RbN/h9nLPcEvREk0ya0z9ZJ0OdvEE8i3OSQ5t5W
+         9hoJqiOspHUBBrCEPtC0O2NDiZ/XWsjgrNxQBYe7Hkd29f7VQDgOM46nJFOt+IJ2IF/C
+         G+zsQV5wXIN72i65RVXsTs5e5jlWieLmb/DF7jefdpIzt3KxsvAojSs3mwSPMs4YTMtI
+         DbKvdX0qgxlpBgtilaMMS9Xvdz7RQCpA3dHEQfdircAdkwPmEt+Yi/F8BJ05K7EDVFrg
+         X6cg==
+X-Gm-Message-State: AOAM5305QVvQTAz41LrE5c/q11nvLmIzsEKKaYO5Ok8xb/ZcffD1KGOJ
+        Du0c6dOE+Iet4iseBq9okA==
+X-Google-Smtp-Source: ABdhPJy1eyr8WBBmXN911K1XxYXoMreyckMSEidOkO468v/qY5IWEe+ypOxAdR32K8rTOPN1pyapjw==
+X-Received: by 2002:a05:6830:1014:: with SMTP id a20mr1156520otp.63.1636399389311;
+        Mon, 08 Nov 2021 11:23:09 -0800 (PST)
+Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
+        by smtp.gmail.com with ESMTPSA id z7sm2170359oib.0.2021.11.08.11.23.08
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 08 Nov 2021 11:23:08 -0800 (PST)
+Received: (nullmailer pid 4061582 invoked by uid 1000);
+        Mon, 08 Nov 2021 19:23:07 -0000
+Date:   Mon, 8 Nov 2021 13:23:07 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     "LH.Kuo" <lhjeff911@gmail.com>
+Cc:     p.zabel@pengutronix.de, linux-kernel@vger.kernel.org,
+        linux-i2c@vger.kernel.org, devicetree@vger.kernel.org,
+        dvorkin@tibbo.com, qinjian@cqplus1.com, wells.lu@sunplus.com,
+        "LH.Kuo" <lh.kuo@sunplus.com>
+Subject: Re: [PATCH 2/2] devicetree bindings I2C Add bindings doc for Sunplus
+ SP7021
+Message-ID: <YYl5GwqE7aMvoXDo@robh.at.kernel.org>
+References: <1635496955-13985-1-git-send-email-lh.kuo@sunplus.com>
+ <1635496955-13985-3-git-send-email-lh.kuo@sunplus.com>
 MIME-Version: 1.0
-References: <CAHP4M8X1ABEhu8kGtRSJHeqQ_m627hNT_N3Q_GGdcr3W_Rfspw@mail.gmail.com>
- <YYkWb4GQAAtZJNsT@kroah.com> <CAHP4M8W2H4V=qgAeVp76GwfVUBzR3erZxJiuhm6jnyMo+gvknQ@mail.gmail.com>
- <202111080954.B97F7B4C@keescook>
-In-Reply-To: <202111080954.B97F7B4C@keescook>
-From:   Ajay Garg <ajaygargnsit@gmail.com>
-Date:   Tue, 9 Nov 2021 00:50:58 +0530
-Message-ID: <CAHP4M8WnLA0780yN+bpuuCtir+DLJRxe0atAiLbZO0bTGf6J-Q@mail.gmail.com>
-Subject: Re: RFC for a new string-copy function, using mixtures of strlcpy and strscpy
-To:     Kees Cook <keescook@chromium.org>
-Cc:     Greg KH <gregkh@linuxfoundation.org>, andy@kernel.org,
-        akpm@linux-foundation.org, adobriyan@gmail.com,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-hardening@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1635496955-13985-3-git-send-email-lh.kuo@sunplus.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Thanks Keen for your time.
+On Fri, Oct 29, 2021 at 04:42:35PM +0800, LH.Kuo wrote:
+> Add devicetree bindings I2C Add bindings doc for Sunplus SP7021
 
->
-> For the specific fs/kerfs/dir.c case, I don't see any problems --
-> nothing uses the result (cgroup_name() is the only caller of
-> kernfs_name() that I see).
->
+Please follow the subject convention used by the subsystem. This will 
+be evident running 'git log --oneline'. For this one: 
 
-I am not worried about this single case as per say.
+'dt-bindings: i2c: ...'
 
-My intention is to make the lives easier for clients in general, who
-have the simple motive : to copy as many bytes as possible, and then
-consume/propogate the return-value containing number of bytes
-*actually* copied, without having to resort to the identical
-4-lines-per-check-fix everywhere.
+> 
+> Signed-off-by: LH.Kuo <lh.kuo@sunplus.com>
+> ---
+>  .../devicetree/bindings/i2c/i2c-sunplus.yaml       | 82 ++++++++++++++++++++++
+>  MAINTAINERS                                        |  1 +
+>  2 files changed, 83 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/i2c/i2c-sunplus.yaml
+> 
+> diff --git a/Documentation/devicetree/bindings/i2c/i2c-sunplus.yaml b/Documentation/devicetree/bindings/i2c/i2c-sunplus.yaml
+> new file mode 100644
+> index 0000000..7e2f827
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/i2c/i2c-sunplus.yaml
+> @@ -0,0 +1,82 @@
+> +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
+> +# Copyright (C) Sunplus Co., Ltd. 2021
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/i2c/i2c-sunplus.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: Sunplus's I2C controller
+> +
+> +allOf:
+> +  - $ref: /schemas/i2c/i2c-controller.yaml#
+> +
+> +maintainers:
+> +  - lh.kuo <lh.kuo@sunplus.com>
+> +
+> +properties:
+> +  compatible:
+> +    enum:
+> +      - sunplus,sp7021-i2cm
+> +      - sunplus,q645-i2cm
+> +
+> +  reg:
+> +    items:
+> +      - description: Base address and length of the I2C registers
+> +      - description: Base address and length of the I2C DMA registers
+> +
+> +  reg-names:
+> +    items:
+> +      - const: i2cm
+> +      - const: i2cmdma
+> +
+> +  interrupts:
+> +    maxItems: 1
+> +
+> +  clocks:
+> +    maxItems: 1
+> +
+> +  resets:
+> +    maxItems: 1
+> +
+> +  clock-frequency:
+> +    enum: [ 100000, 400000 ]
+> +
+> +  pinctrl-names:
+> +    description:
+> +      A pinctrl state named "default" must be defined.
+> +    const: default
+> +
+> +  pinctrl-0:
+> +    description:
+> +      A phandle to the default pinctrl state.
+> +
+> +required:
+> +  - compatible
+> +  - reg
+> +  - reg-names
+> +  - interrupts
+> +  - clocks
+> +  - resets
+> +  - pinctrl-names
+> +  - pinctrl-0
+> +
+> +additionalProperties: false
 
-I think you and me agree on the pain-points of using strlcpy/strscpy.
+This means you can't have any child nodes which I'd assume you want. You 
+need 'unevaluatedProperties: false' instead.
 
-The general consensus is that no new string-functions should be added
-as of now, so I guess every client would require 4-lines-per-check-fix
-as of now (wherever applicable of course).
+> +
+> +examples:
+> +  - |
+> +    #include <dt-bindings/clock/sp-sp7021.h>
+> +    #include <dt-bindings/reset/sp-sp7021.h>
+> +    #include <dt-bindings/interrupt-controller/irq.h>
+> +    i2cm0: i2c@9C004600 {
 
-Maybe, the RFC for new function could be discussed in the next
-opportune moment, which would then be a simple drop-in replacement,
-resulting in 1-lines-per-check-fix (wherever applicable of course).
+Drop unused labels.
 
-
-Thanks and Regards,
-Ajay
+> +        compatible = "sunplus,sp7021-i2cm";
+> +        reg = <0x9c004600 0x80>, <0x9c004680 0x80>;
+> +        reg-names = "i2cm", "i2cmdma";
+> +        interrupt-parent = <&intc>;
+> +        interrupts = <174 IRQ_TYPE_LEVEL_HIGH>;
+> +        clocks = <&clkc I2CM0>;
+> +        resets = <&rstc RST_I2CM0>;
+> +        clock-frequency = <100000>;
+> +        pinctrl-names = "default";
+> +        pinctrl-0 = <&i2cm0_pins>;
+> +    };
+> +...
+> diff --git a/MAINTAINERS b/MAINTAINERS
+> index c89a3b1..7dc9bea 100644
+> --- a/MAINTAINERS
+> +++ b/MAINTAINERS
+> @@ -17951,6 +17951,7 @@ SUNPLUS I2C CONTROLLER INTERFACE DRIVER
+>  M:	LH Kuo <lh.kuo@sunplus.com>
+>  L:	linux-i2c@vger.kernel.org
+>  S:	Maintained
+> +F:	Documentation/devicetree/bindings/i2c/i2c-sunplus.yaml
+>  F:	drivers/i2c/busses/i2c-sunplus.c
+>  
+>  SUPERH
+> -- 
+> 2.7.4
+> 
+> 
