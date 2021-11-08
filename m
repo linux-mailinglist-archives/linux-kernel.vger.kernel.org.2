@@ -2,105 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B9837447CE7
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Nov 2021 10:34:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9CB94447CC8
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Nov 2021 10:28:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236857AbhKHJgn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Nov 2021 04:36:43 -0500
-Received: from mx2.tq-group.com ([93.104.207.82]:42810 "EHLO mx2.tq-group.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235884AbhKHJgm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Nov 2021 04:36:42 -0500
-X-Greylist: delayed 427 seconds by postgrey-1.27 at vger.kernel.org; Mon, 08 Nov 2021 04:36:41 EST
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=tq-group.com; i=@tq-group.com; q=dns/txt; s=key1;
-  t=1636364038; x=1667900038;
-  h=from:to:cc:subject:date:message-id:references:
-   in-reply-to:mime-version:content-id:
-   content-transfer-encoding;
-  bh=YsIfsjOydbJ7yEJPmixPtzgjosr/9p2WG1NwLYBVfNI=;
-  b=UpOxOqpdorvBK3bVXBy9MKQ1zD8BDwwiK4uv+2602XNG+seRS5eHjTRX
-   j9SsmZRMIWEaQuKcLGVrM/6AOS9oJEklxb1oowLmyv1uWozH+L4nl+7DU
-   aKNF6qHNGZgmwpGQNQJF3lEybPZ/tFTazGmCaxoYZ+LpSytCno7F1+tea
-   PQLEo6ztau2cF1f1oADT7ZPLUtCqxxMiBr5hZd/n27Xy8+jwUc4f/ulRU
-   FQwA8i0eiNuNkNgDKVSC1KhevFKXZh7Ssmp4H6AbOu0W4we98P/yaCjqq
-   t+WfhvCiRIKiG46VBR7JyXiUefrOGPOWQtoB+GlV7cYNddvqI4FCWA4+3
-   Q==;
-X-IronPort-AV: E=Sophos;i="5.87,218,1631570400"; 
-   d="scan'208";a="1159645"
-Received: from unknown (HELO tq-pgp-pr2.tq-net.de) ([192.168.6.18])
-  by mx2-pgp.tq-group.com with ESMTP; 08 Nov 2021 10:26:49 +0100
-Received: from mx2.tq-group.com ([192.168.6.8])
-  by tq-pgp-pr2.tq-net.de (PGP Universal service);
-  Mon, 08 Nov 2021 10:26:49 +0100
-X-PGP-Universal: processed;
-        by tq-pgp-pr2.tq-net.de on Mon, 08 Nov 2021 10:26:49 +0100
-X-IronPort-AV: E=Sophos;i="5.87,218,1631570400"; 
-   d="scan'208";a="1159644"
-Received: from vmail01.tq-net.de ([10.150.72.11])
-  by mx2.tq-group.com with ESMTP; 08 Nov 2021 10:26:49 +0100
-Received: from vmail01.tq-net.de (10.150.72.11) by vmail01.tq-net.de
- (10.150.72.11) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2308.15; Mon, 8 Nov
- 2021 10:26:49 +0100
-Received: from vmail01.tq-net.de ([10.150.72.11]) by vmail01.tq-net.de
- ([10.150.72.11]) with mapi id 15.01.2308.015; Mon, 8 Nov 2021 10:26:49 +0100
-From:   "Stein, Alexander" <Alexander.Stein@tq-group.com>
-To:     "p.yadav@ti.com" <p.yadav@ti.com>,
-        "vigneshr@ti.com" <vigneshr@ti.com>,
-        "michael@walle.cc" <michael@walle.cc>,
-        "tudor.ambarus@microchip.com" <tudor.ambarus@microchip.com>
-CC:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
-Subject: Re: (EXT) [PATCH 1/2] mtd: spi-nor: Fix shift-out-of-bounds
-Thread-Topic: (EXT) [PATCH 1/2] mtd: spi-nor: Fix shift-out-of-bounds
-Thread-Index: AQHX0uPOpq2SCHKAhUucvM9nE2hnpqv5TviA
-Date:   Mon, 8 Nov 2021 09:26:49 +0000
-Message-ID: <5f104ec3b6ad492212105ad59ba135ff8ed2cd0d.camel@tq-group.com>
-References: <20211106075616.95401-1-tudor.ambarus@microchip.com>
-         <20211106075616.95401-2-tudor.ambarus@microchip.com>
-In-Reply-To: <20211106075616.95401-2-tudor.ambarus@microchip.com>
-Accept-Language: de-DE, en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [10.150.72.21]
+        id S238410AbhKHJbM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Nov 2021 04:31:12 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56800 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231657AbhKHJbL (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Nov 2021 04:31:11 -0500
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5173FC061570;
+        Mon,  8 Nov 2021 01:28:27 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=yvOuI8LHQCnzD0XXjEMcYafm6IRvktnS6XgGtbq1JxQ=; b=RVVkSYrnWnWvMTbCtDk+8k1/fS
+        JyqSipGwP6DN1MYSc1xg2BIYd0UpmsGUEmgBUTeJAUFdD1P9MD2EikRsXmSU/nL8eMigjlihITgXZ
+        lsRpRQuQn0tCDuVSjK/YwIdONWVzBfyiS79hW2/dxJFRSPt3Bvs4EGMltG3EZchOn6nFvdkLXB+jU
+        DEuBBL9EQtL+kDGDTmI9OHvpqzJL4DI07zjULDn7wI3j2u3H+nBEW+8qsYbD4MF5NLwP3pvXFpK+C
+        F5OWVJKE1k3gw1JKKlDDYnDhZs/Zz1cQEqDprDFzSPcbVVcD1vbl4kHwVDO2u1jpjClR+9wSdFQuP
+        iHwaIkkw==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mk0wE-00ErJv-FE; Mon, 08 Nov 2021 09:27:38 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id ADA673000A3;
+        Mon,  8 Nov 2021 10:27:33 +0100 (CET)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 66E4B2CD0FE89; Mon,  8 Nov 2021 10:27:33 +0100 (CET)
+Date:   Mon, 8 Nov 2021 10:27:33 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Barry Song <21cnbao@gmail.com>
+Cc:     David Miller <davem@davemloft.net>, kuba@kernel.org,
+        Eric Dumazet <edumazet@google.com>, pabeni@redhat.com,
+        fw@strlen.de, Ingo Molnar <mingo@redhat.com>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>, netdev@vger.kernel.org,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linuxarm <linuxarm@huawei.com>,
+        Guodong Xu <guodong.xu@linaro.org>,
+        yangyicong <yangyicong@huawei.com>, shenyang39@huawei.com,
+        tangchengchang@huawei.com, Barry Song <song.bao.hua@hisilicon.com>,
+        Libo Chen <libo.chen@oracle.com>,
+        Tim Chen <tim.c.chen@linux.intel.com>
+Subject: Re: [RFC PATCH] sched&net: avoid over-pulling tasks due to network
+ interrupts
+Message-ID: <YYjthV9W09H5Err8@hirez.programming.kicks-ass.net>
+References: <20211105105136.12137-1-21cnbao@gmail.com>
+ <YYUiYrXMOQGap4+5@hirez.programming.kicks-ass.net>
+ <CAGsJ_4wofduvT2BJipJppJza_ZyL2pU3Ni-B3R+A3_Zqv2v_4g@mail.gmail.com>
 MIME-Version: 1.0
-Content-Language: en-US
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <578596A275E6EF4698090A05E2C24D9E@tq-group.com>
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAGsJ_4wofduvT2BJipJppJza_ZyL2pU3Ni-B3R+A3_Zqv2v_4g@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-DQoNCkFtIFNhbXN0YWcsIGRlbSAwNi4xMS4yMDIxIHVtIDA5OjU2ICswMjAwIHNjaHJpZWIgVHVk
-b3IgQW1iYXJ1czoNCj4gV2hlbiBwYXJpbmcgU0ZEUCB3ZSBtYXkgY2hvb3NlIHRvIG1hc2sgb3V0
-IGFuIGVyYXNlIHR5cGUsIHBhc3NpbmcNCj4gYW4gZXJhc2Ugc2l6ZSBvZiB6ZXJvIHRvIHNwaV9u
-b3Jfc2V0X2VyYXNlX3R5cGUoKS4NCj4gRml4IHNoaWZ0LW91dC1vZi1ib3VuZHMgYW5kIGp1c3Qg
-Y2xlYXIgdGhlIGVyYXNlIHBhcmFtcyB3aGVuDQo+IHBhc3NpbmcgemVybyBmb3IgZXJhc2Ugc2l6
-ZS4NCj4gV2hpbGUgaGVyZSBhdm9pZCBhIHN1cGVyZmx1b3VzIGRlcmVmZXJlbmNlIGFuZCB1c2Ug
-J3NpemUnIGRpcmVjdGx5Lg0KPiANCj4gVUJTQU46IHNoaWZ0LW91dC1vZi1ib3VuZHMgaW4gZHJp
-dmVycy9tdGQvc3BpLW5vci9jb3JlLmM6MjIzNzoyNA0KPiBzaGlmdCBleHBvbmVudCA0Mjk0OTY3
-Mjk1IGlzIHRvbyBsYXJnZSBmb3IgMzItYml0IHR5cGUgJ2ludCcNCj4gDQo+IEZpeGVzOiA1Mzkw
-YThkZjc2OWUgKCJtdGQ6IHNwaS1ub3I6IGFkZCBzdXBwb3J0IHRvIG5vbi11bmlmb3JtIFNGRFAN
-Cj4gU1BJIE5PUiBmbGFzaCBtZW1vcmllcyIpDQo+IFJlcG9ydGVkLWJ5OiBBbGV4YW5kZXIgU3Rl
-aW4gPA0KPiBBbGV4YW5kZXIuU3RlaW5AdHEtZ3JvdXAuY29tDQo+ID4NCj4gU2lnbmVkLW9mZi1i
-eTogVHVkb3IgQW1iYXJ1cyA8DQo+IHR1ZG9yLmFtYmFydXNAbWljcm9jaGlwLmNvbQ0KPiA+DQo+
-IC0tLQ0KPiAgZHJpdmVycy9tdGQvc3BpLW5vci9jb3JlLmMgfCA5ICsrKysrKystLQ0KPiAgMSBm
-aWxlIGNoYW5nZWQsIDcgaW5zZXJ0aW9ucygrKSwgMiBkZWxldGlvbnMoLSkNCj4gDQo+IGRpZmYg
-LS1naXQgYS9kcml2ZXJzL210ZC9zcGktbm9yL2NvcmUuYyBiL2RyaXZlcnMvbXRkL3NwaS1ub3Iv
-Y29yZS5jDQo+IGluZGV4IDNkOTdjMTg5YzMzMi4uYTFiNWQ1NDMyZjQxIDEwMDY0NA0KPiAtLS0g
-YS9kcml2ZXJzL210ZC9zcGktbm9yL2NvcmUuYw0KPiArKysgYi9kcml2ZXJzL210ZC9zcGktbm9y
-L2NvcmUuYw0KPiBAQCAtMjIzMCw4ICsyMjMwLDEzIEBAIHZvaWQgc3BpX25vcl9zZXRfZXJhc2Vf
-dHlwZShzdHJ1Y3QNCj4gc3BpX25vcl9lcmFzZV90eXBlICplcmFzZSwgdTMyIHNpemUsDQo+ICAJ
-ZXJhc2UtPnNpemUgPSBzaXplOw0KPiAgCWVyYXNlLT5vcGNvZGUgPSBvcGNvZGU7DQo+ICAJLyog
-SkVERUMgSkVTRDIxNkIgU3RhbmRhcmQgaW1wb3NlcyBlcmFzZSBzaXplcyB0byBiZSBwb3dlciBv
-Zg0KPiAyLiAqLw0KPiAtCWVyYXNlLT5zaXplX3NoaWZ0ID0gZmZzKGVyYXNlLT5zaXplKSAtIDE7
-DQo+IC0JZXJhc2UtPnNpemVfbWFzayA9ICgxIDw8IGVyYXNlLT5zaXplX3NoaWZ0KSAtIDE7DQo+
-ICsJaWYgKHNpemUpIHsNCj4gKwkJZXJhc2UtPnNpemVfc2hpZnQgPSBmZnMoc2l6ZSkgLSAxOw0K
-PiArCQllcmFzZS0+c2l6ZV9tYXNrID0gKDEgPDwgZXJhc2UtPnNpemVfc2hpZnQpIC0gMTsNCj4g
-Kwl9IGVsc2Ugew0KPiArCQllcmFzZS0+c2l6ZV9zaGlmdCA9IDA7DQo+ICsJCWVyYXNlLT5zaXpl
-X21hc2sgPSAwOw0KPiArCX0NCj4gIH0NCj4gIA0KPiAgLyoqDQoNClRlc3RlZC1CeTogQWxleGFu
-ZGVyIFN0ZWluIDxBbGV4YW5kZXIuU3RlaW5AdHEtZ3JvdXAuY29tPg0KDQpJdCBmaXhlcyB0aGUg
-VUJTQU4gZXJyb3IgYW5kIG15IHNwaS1ub3IgZmxhc2ggY2FuIHN0aWxsIGJlIGRldGVjdGVkLg0K
-DQpCZXN0IHJlZ2FyZHMsDQpBbGV4YW5kZXINCg0K
+On Mon, Nov 08, 2021 at 07:08:09AM +1300, Barry Song wrote:
+> On Sat, Nov 6, 2021 at 1:25 AM Peter Zijlstra <peterz@infradead.org> wrote:
+> >
+> > On Fri, Nov 05, 2021 at 06:51:36PM +0800, Barry Song wrote:
+> > > From: Barry Song <song.bao.hua@hisilicon.com>
+> > >
+> > > In LPC2021, both Libo Chen and Tim Chen have reported the overpull
+> > > of network interrupts[1]. For example, while running one database,
+> > > ethernet is located in numa0, numa1 might be almost idle due to
+> > > interrupts are pulling tasks to numa0 because of wake_up affine.
+> > > I have seen the same problem. One way to solve this problem is
+> > > moving to a normal wakeup in network rather than using a sync
+> > > wakeup which will be more aggressively pulling tasks in scheduler
+> > > core.
+> > >
+> > > On kunpeng920 with 4numa, ethernet is located at numa0, storage
+> > > disk is located at numa2. While using sysbench to connect this
+> > > mysql machine, I am seeing numa1 is idle though numa0,2 and 3
+> > > are quite busy.
+> > >
+> >
+> > > I am not saying this patch is exactly the right approach, But I'd
+> > > like to use this RFC to connect the people of net and scheduler,
+> > > and start the discussion in this wider range.
+> >
+> > Well the normal way would be to use multi-queue crud and/or receive
+> > packet steering to get the interrupt/wakeup back to the cpu that data
+> > came from.
+> 
+> The test case has been a multi-queue ethernet and irqs are balanced
+> to NUMA0 by irqbalanced or pinned to NUMA0 where the card is located
+> by the script like:
+> #!/bin/bash
+> irq_list=(`cat /proc/interrupts | grep network_name| awk -F: '{print $1}'`)
+> cpunum=0
+> for irq in ${irq_list[@]}
+> do
+> echo $cpunum > /proc/irq/$irq/smp_affinity_list
+> echo `cat /proc/irq/$irq/smp_affinity_list`
+> (( cpunum+=1 ))
+> done
+> 
+> I have heard some people are working around this issue  by pinning
+> multi-queue IRQs to multiple NUMAs which can spread interrupts and
+> avoid over-pulling tasks to one NUMA only, but lose ethernet locality?
+
+So you're doing explicitly the wrong thing with your script above and
+then complain the scheduler follows that and destroys your data
+locality?
+
+The network folks made RPS/RFS specifically to spread the processing of
+the packets back to the CPUs/Nodes the TX happened on to increase data
+locality. Why not use that?
+
