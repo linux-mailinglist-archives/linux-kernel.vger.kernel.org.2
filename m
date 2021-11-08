@@ -2,103 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CA52044804E
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Nov 2021 14:31:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3ACDF448052
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Nov 2021 14:34:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239939AbhKHNek (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Nov 2021 08:34:40 -0500
-Received: from mail-ua1-f51.google.com ([209.85.222.51]:42832 "EHLO
-        mail-ua1-f51.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235098AbhKHNei (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Nov 2021 08:34:38 -0500
-Received: by mail-ua1-f51.google.com with SMTP id t13so16130248uad.9;
-        Mon, 08 Nov 2021 05:31:54 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=917ou4i0m8XwTRLtSzLNb+jh838cky8jWcxVoB+CqOM=;
-        b=Pw3i+weyc7+jUFjiqgja4nmIGiQYkp+hTDI9tUVPtfM/z0qZ/4yhUYz846TFW/iUJE
-         8aZiIZxOJIJtcYDjBO0eZw31R4ld/ywvH5oMBRjH8uCeCTGw3OIYAu0TUmEvL6ueUne/
-         1HnChVid6if+SoM/P5I3r6J8pUDJWBSnVKgaEaJiHHeVunGHmT7XqkpyWVFVRUqup7eq
-         /e8uYLF186k+tLqbbRBuWImk5nNh91VBdX1tOA/TDh1l8a3+yBJBR/VZfxG0HOV2YmLi
-         CUKZC9kmBWQP4XrfpDcHA4DirB+LRlijSkYt4jGKbYlX9gm8pPWYVqmwv7U5uBDD/314
-         XFTg==
-X-Gm-Message-State: AOAM532clrUNDaatOchmCe/ok3705337hD8ueOonSizazkXGJ/I7V0Af
-        9ehEs0k4btdHQNvPPOA8Nl/0LxreMt2R3g==
-X-Google-Smtp-Source: ABdhPJw47zlIxwJ71J54+Vg0Z9l+bDbF+0CIPJ1roBry8M2Jopz/D+M+TAU28p0fM6RDPn+bbdJIiA==
-X-Received: by 2002:a67:5f47:: with SMTP id t68mr33706564vsb.56.1636378313578;
-        Mon, 08 Nov 2021 05:31:53 -0800 (PST)
-Received: from mail-ua1-f44.google.com (mail-ua1-f44.google.com. [209.85.222.44])
-        by smtp.gmail.com with ESMTPSA id q9sm1026020vkn.44.2021.11.08.05.31.53
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 08 Nov 2021 05:31:53 -0800 (PST)
-Received: by mail-ua1-f44.google.com with SMTP id l43so31453031uad.4;
-        Mon, 08 Nov 2021 05:31:53 -0800 (PST)
-X-Received: by 2002:a67:c38f:: with SMTP id s15mr40867953vsj.50.1636378313058;
- Mon, 08 Nov 2021 05:31:53 -0800 (PST)
+        id S239970AbhKHNhO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Nov 2021 08:37:14 -0500
+Received: from mail.skyhub.de ([5.9.137.197]:42682 "EHLO mail.skyhub.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235700AbhKHNhM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Nov 2021 08:37:12 -0500
+Received: from zn.tnic (p200300ec2f33110093973d8dfcf40fd9.dip0.t-ipconnect.de [IPv6:2003:ec:2f33:1100:9397:3d8d:fcf4:fd9])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 2A5A81EC0295;
+        Mon,  8 Nov 2021 14:34:27 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1636378467;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=+HBnFYHXgIpN0783puQdmV5sl9beAJsY+GC35ZNWPXY=;
+        b=dJL8vhiYLN68ncpoxkrQpS0yxfjmpGIw8qAiZe6JPUg0vz9wAV6Y9iKGjEnJD0/Caf1fJl
+        b49lZM4iOt6Qk47E139tW7sWxEVrKPBTLlis3IM/Sy6N8xQnn2+v2koOFBzvkg7X7MM/wx
+        xzq+8L+o8M8gCDFEUxr4BNH68LTK8Lc=
+Date:   Mon, 8 Nov 2021 14:34:20 +0100
+From:   Borislav Petkov <bp@alien8.de>
+To:     "Chatradhi, Naveen Krishna" <nchatrad@amd.com>
+Cc:     linux-edac@vger.kernel.org, x86@kernel.org,
+        linux-kernel@vger.kernel.org, mingo@redhat.com, mchehab@kernel.org,
+        yazen.ghannam@amd.com, Muralidhara M K <muralimk@amd.com>
+Subject: Re: [PATCH v6 1/5] x86/amd_nb: Add support for northbridges on
+ Aldebaran
+Message-ID: <YYknXBpOUQtV1aZ8@zn.tnic>
+References: <20211028130106.15701-1-nchatrad@amd.com>
+ <20211028130106.15701-2-nchatrad@amd.com>
+ <YYF9ei59G/OUyZqR@zn.tnic>
+ <b7f3639a-e46c-25e8-270b-04860074fd3c@amd.com>
 MIME-Version: 1.0
-References: <20211108101157.15189-1-bp@alien8.de> <20211108101157.15189-36-bp@alien8.de>
-In-Reply-To: <20211108101157.15189-36-bp@alien8.de>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Mon, 8 Nov 2021 14:31:41 +0100
-X-Gmail-Original-Message-ID: <CAMuHMdW4fv4LN6oDS6qgYodf74_NvbzMxQfRbtnS-mn_D+u7Kg@mail.gmail.com>
-Message-ID: <CAMuHMdW4fv4LN6oDS6qgYodf74_NvbzMxQfRbtnS-mn_D+u7Kg@mail.gmail.com>
-Subject: Re: [PATCH v0 35/42] sh: Check notifier registration return value
-To:     Borislav Petkov <bp@alien8.de>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Linux-sh list <linux-sh@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <b7f3639a-e46c-25e8-270b-04860074fd3c@amd.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Borislav,
+On Thu, Nov 04, 2021 at 06:48:29PM +0530, Chatradhi, Naveen Krishna wrote:
+> I know, this is confusion. we will try to give a meaning for definition
+> here.
 
-On Mon, Nov 8, 2021 at 1:50 PM Borislav Petkov <bp@alien8.de> wrote:
-> From: Borislav Petkov <bp@suse.de>
->
-> Avoid homegrown notifier registration checks.
->
-> No functional changes.
->
-> Signed-off-by: Borislav Petkov <bp@suse.de>
+Well, not that - you will need to keep adding PCI device IDs for the
+future GPUs supporting this stuff.
 
-Thanks for your patch!
+> How about, defining a new struct
+> 
+> +struct system_topology {
+> +       const struct pci_device_id *misc_ids;
+> +       const struct pci_device_id *link_ids;
+> +       const struct pci_device_id *root_ids;
+> +       u16 roots_per_misc;
+> +       u16 misc_count;
+> +       u16 root_count;
+> +};
 
-> --- a/arch/sh/kernel/cpu/sh4a/setup-sh7724.c
-> +++ b/arch/sh/kernel/cpu/sh4a/setup-sh7724.c
-> @@ -1277,11 +1277,14 @@ static struct notifier_block sh7724_post_sleep_notifier = {
->
->  static int __init sh7724_sleep_setup(void)
->  {
-> -       atomic_notifier_chain_register(&sh_mobile_pre_sleep_notifier_list,
-> -                                      &sh7724_pre_sleep_notifier);
-> +       if (atomic_notifier_chain_register(&sh_mobile_pre_sleep_notifier_list,
-> +                                          &sh7724_pre_sleep_notifier))
-> +               pr_warn("SH7724 pre-sleep notifier already registered\n");
-> +
-> +       if (atomic_notifier_chain_register(&sh_mobile_post_sleep_notifier_list,
-> +                                          &sh7724_post_sleep_notifier))
-> +               pr_warn("SH7724 pre-sleep notifier already registered\n");
+Well, how does having a single struct help make things easier?
 
-Do you think these can actually fail?
+IOW, if you use accessors to get the information you need, it doesn't
+really matter what the underlying organization of the data is. And if
+it helps to keep 'em separate because stuff is simple altogether, then,
+they should be separate.
 
->
-> -       atomic_notifier_chain_register(&sh_mobile_post_sleep_notifier_list,
-> -                                      &sh7724_post_sleep_notifier);
->         return 0;
->  }
->  arch_initcall(sh7724_sleep_setup);
+So, before you ask "How about", think of answering the question "Why
+should it be done this way? What are the advantages?"
 
-Gr{oetje,eeting}s,
+> This way, creating appropriate number MCs under EDAC and existing exported
+> APIs can remain the same.
 
-                        Geert
+Why does that matter?
 
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+Also, have you verified in what order the init_amd_nbs() fs initcall and
+amd64_edac_init() get executed?
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+I'm going to venture a pretty sure guess that the initcall runs first
+and that amd_cache_northbridges() call in amd64_edac_init() is probably
+not even needed anymore...
+
+Thx.
+
+-- 
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
