@@ -2,131 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 816D6449CE2
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Nov 2021 21:09:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E2493449CE5
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Nov 2021 21:09:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238396AbhKHULw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Nov 2021 15:11:52 -0500
-Received: from mail.kernel.org ([198.145.29.99]:34592 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234723AbhKHULv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Nov 2021 15:11:51 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id F19DA60234;
-        Mon,  8 Nov 2021 20:09:05 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1636402146;
-        bh=k86+JyVs3h0yvS2kIAvv8hKAIORmA1OywHMPzN/pC8w=;
-        h=From:To:Cc:Subject:Date:From;
-        b=bb6jQLepV1ZMIOKS3/Bcm6Dz/H0XcSUuSwwTu6635bUgZu2jvKLg47O70bQ+00NPL
-         CltxlDr4vNAbRaSAhYoCxWK9NxBAAzaQTFgGNEKfYDp/WDj7kbe0+ZaFFR8qD2wHYE
-         XKhlZYB0Ml+ndBGemuowBUqYOlcpKb6G/OKn7UVVQ8DJC4vVHPxDTOppJbQrJra8/7
-         KerArhBEpeszyCDmZgfc1QKxa/K5YdJ/Htc3EBif8rvr0/VEXr19vXk09tMbwAme44
-         lFhTTp9eA4fyAQ9shD/kVVMbl2XHkMtZ99HZ10LmfUztW/9W+vW87Kggyi0iDM8f4L
-         wZ9YVPQcAg8Zg==
-From:   Dinh Nguyen <dinguyen@kernel.org>
-To:     broonie@kernel.org
-Cc:     dinguyen@kernel.org, a-nandan@ti.com, linux-spi@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] spi: cadence-quadspi: fix write completion support
-Date:   Mon,  8 Nov 2021 14:08:54 -0600
-Message-Id: <20211108200854.3616121-1-dinguyen@kernel.org>
-X-Mailer: git-send-email 2.25.1
+        id S238428AbhKHUMB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Nov 2021 15:12:01 -0500
+Received: from smtp05.smtpout.orange.fr ([80.12.242.127]:51112 "EHLO
+        smtp.smtpout.orange.fr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238408AbhKHUMA (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Nov 2021 15:12:00 -0500
+Received: from [192.168.1.18] ([86.243.171.122])
+        by smtp.orange.fr with ESMTPA
+        id kAx6mHJabOvR0kAx7mrfnM; Mon, 08 Nov 2021 21:09:14 +0100
+X-ME-Helo: [192.168.1.18]
+X-ME-Auth: YWZlNiIxYWMyZDliZWIzOTcwYTEyYzlhMmU3ZiQ1M2U2MzfzZDfyZTMxZTBkMTYyNDBjNDJlZmQ3ZQ==
+X-ME-Date: Mon, 08 Nov 2021 21:09:14 +0100
+X-ME-IP: 86.243.171.122
+Subject: Re: [PATCH] platform/x86: hp_accel: Fix an error handling path in
+ 'lis3lv02d_probe()'
+To:     Mark Gross <markgross@kernel.org>
+Cc:     eric.piel@tremplin-utc.net, hdegoede@redhat.com,
+        dmitry.torokhov@gmail.com, giedriuswork@gmail.com,
+        dvhart@linux.intel.com, akpm@linux-foundation.org, pavel@suse.cz,
+        platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel-janitors@vger.kernel.org
+References: <5a4f218f8f16d2e3a7906b7ca3654ffa946895f8.1636314074.git.christophe.jaillet@wanadoo.fr>
+ <20211108194814.GI61200@T470>
+From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Message-ID: <21eabb3a-db41-6323-0ecd-f231029b75c5@wanadoo.fr>
+Date:   Mon, 8 Nov 2021 21:09:12 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
+In-Reply-To: <20211108194814.GI61200@T470>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Some versions of the Cadence QSPI controller does not have the write
-completion register implemented(CQSPI_REG_WR_COMPLETION_CTRL). On the
-Intel SoCFPGA platform the CQSPI_REG_WR_COMPLETION_CTRL register is
-not configured.
+Le 08/11/2021 à 20:48, Mark Gross a écrit :
+> On Sun, Nov 07, 2021 at 08:57:07PM +0100, Christophe JAILLET wrote:
+>> If 'led_classdev_register()' fails, some additional resources should be
+>> released.
+>>
+>> Add the missing 'i8042_remove_filter()' and 'lis3lv02d_remove_fs()' calls
+>> that are already in the remove function but are missing here.
+>>
+>> Fixes: a4c724d0723b ("platform: hp_accel: add a i8042 filter to remove HPQ6000 data from kb bus stream")
+>> Fixes: 9e0c79782143 ("lis3lv02d: merge with leds hp disk")
+>> Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+>> ---
+>>   drivers/platform/x86/hp_accel.c | 2 ++
+>>   1 file changed, 2 insertions(+)
+>>
+>> diff --git a/drivers/platform/x86/hp_accel.c b/drivers/platform/x86/hp_accel.c
+>> index b183967ecfb7..435a91fe2568 100644
+>> --- a/drivers/platform/x86/hp_accel.c
+>> +++ b/drivers/platform/x86/hp_accel.c
+>> @@ -331,9 +331,11 @@ static int lis3lv02d_probe(struct platform_device *device)
+> adding some lines of context:
+> 
+> 326         /* filter to remove HPQ6000 accelerometer data
+> 327          * from keyboard bus stream */
+> 328         if (strstr(dev_name(&device->dev), "HPQ6000"))
+> 329                 i8042_install_filter(hp_accel_i8042_filter);
+> 330
+>>   	INIT_WORK(&hpled_led.work, delayed_set_status_worker);
+>>   	ret = led_classdev_register(NULL, &hpled_led.led_classdev);
+>>   	if (ret) {
+>> +		i8042_remove_filter(hp_accel_i8042_filter);
+> This filter was added under a conditional.  Should it not be removed under a
+> similar conditional?
 
-Add a quirk to not write to the CQSPI_REG_WR_COMPLETION_CTRL register.
+Agreed that it looks odd, but in the remove function, we already don't 
+have the conditional.
 
-Fixes: 9cb2ff111712 ("spi: cadence-quadspi: Disable Auto-HW polling)
-Signed-off-by: Dinh Nguyen <dinguyen@kernel.org>
----
- drivers/spi/spi-cadence-quadspi.c | 24 +++++++++++++++++++++---
- 1 file changed, 21 insertions(+), 3 deletions(-)
+Moreover, in, we have 'i8042_remove_filter()':
+	if (i8042_platform_filter != filter) {
+		ret = -EINVAL;
+		goto out;
+	}
+So, if 'i8042_install_filter(hp_accel_i8042_filter)' is not called, the 
+removal will be a no-op.
 
-diff --git a/drivers/spi/spi-cadence-quadspi.c b/drivers/spi/spi-cadence-quadspi.c
-index 8b3d268ac63c..b808c94641fa 100644
---- a/drivers/spi/spi-cadence-quadspi.c
-+++ b/drivers/spi/spi-cadence-quadspi.c
-@@ -37,6 +37,7 @@
- #define CQSPI_NEEDS_WR_DELAY		BIT(0)
- #define CQSPI_DISABLE_DAC_MODE		BIT(1)
- #define CQSPI_SUPPORT_EXTERNAL_DMA	BIT(2)
-+#define CQSPI_NO_SUPPORT_WR_COMPLETION	BIT(3)
- 
- /* Capabilities */
- #define CQSPI_SUPPORTS_OCTAL		BIT(0)
-@@ -86,6 +87,7 @@ struct cqspi_st {
- 	struct cqspi_flash_pdata f_pdata[CQSPI_MAX_CHIPSELECT];
- 	bool			use_dma_read;
- 	u32			pd_dev_id;
-+	bool			wr_completion;
- };
- 
- struct cqspi_driver_platdata {
-@@ -996,9 +998,11 @@ static int cqspi_write_setup(struct cqspi_flash_pdata *f_pdata,
- 	 * polling on the controller's side. spinand and spi-nor will take
- 	 * care of polling the status register.
- 	 */
--	reg = readl(reg_base + CQSPI_REG_WR_COMPLETION_CTRL);
--	reg |= CQSPI_REG_WR_DISABLE_AUTO_POLL;
--	writel(reg, reg_base + CQSPI_REG_WR_COMPLETION_CTRL);
-+	if (cqspi->wr_completion) {
-+		reg = readl(reg_base + CQSPI_REG_WR_COMPLETION_CTRL);
-+		reg |= CQSPI_REG_WR_DISABLE_AUTO_POLL;
-+		writel(reg, reg_base + CQSPI_REG_WR_COMPLETION_CTRL);
-+	}
- 
- 	reg = readl(reg_base + CQSPI_REG_SIZE);
- 	reg &= ~CQSPI_REG_SIZE_ADDRESS_MASK;
-@@ -1736,6 +1740,10 @@ static int cqspi_probe(struct platform_device *pdev)
- 
- 	cqspi->master_ref_clk_hz = clk_get_rate(cqspi->clk);
- 	master->max_speed_hz = cqspi->master_ref_clk_hz;
-+
-+	/* write completion is supported by default */
-+	cqspi->wr_completion = true;
-+
- 	ddata  = of_device_get_match_data(dev);
- 	if (ddata) {
- 		if (ddata->quirks & CQSPI_NEEDS_WR_DELAY)
-@@ -1747,6 +1755,8 @@ static int cqspi_probe(struct platform_device *pdev)
- 			cqspi->use_direct_mode = true;
- 		if (ddata->quirks & CQSPI_SUPPORT_EXTERNAL_DMA)
- 			cqspi->use_dma_read = true;
-+		if (ddata->quirks & CQSPI_NO_SUPPORT_WR_COMPLETION)
-+			cqspi->wr_completion = false;
- 
- 		if (of_device_is_compatible(pdev->dev.of_node,
- 					    "xlnx,versal-ospi-1.0"))
-@@ -1859,6 +1869,10 @@ static const struct cqspi_driver_platdata intel_lgm_qspi = {
- 	.quirks = CQSPI_DISABLE_DAC_MODE,
- };
- 
-+static const struct cqspi_driver_platdata socfpga_qspi = {
-+	.quirks = CQSPI_NO_SUPPORT_WR_COMPLETION,
-+};
-+
- static const struct cqspi_driver_platdata versal_ospi = {
- 	.hwcaps_mask = CQSPI_SUPPORTS_OCTAL,
- 	.quirks = CQSPI_DISABLE_DAC_MODE | CQSPI_SUPPORT_EXTERNAL_DMA,
-@@ -1887,6 +1901,10 @@ static const struct of_device_id cqspi_dt_ids[] = {
- 		.compatible = "xlnx,versal-ospi-1.0",
- 		.data = (void *)&versal_ospi,
- 	},
-+	{
-+		.compatible = "intel,socfpga-qspi",
-+		.data = (void *)&socfpga_qspi,
-+	},
- 	{ /* end of table */ }
- };
- 
--- 
-2.25.1
+>>   		lis3lv02d_joystick_disable(&lis3_dev);
+>>   		lis3lv02d_poweroff(&lis3_dev);
+>>   		flush_work(&hpled_led.work);
+>> +		lis3lv02d_remove_fs(&lis3_dev);
+> where was the fs ever added?
+
+In 'lis3lv02d_init_device()' (see [1]), like what is undone with 
+'lis3lv02d_joystick_disable()' and 'lis3lv02d_poweroff()'.
+
+'lis3lv02d_remove_fs()' is also already part of the remove function.
+
+I guess that having a 'lis3lv02d_uninit_device()' would be much more 
+cleaner.
+
+
+[1]: 
+https://elixir.bootlin.com/linux/v5.15.1/source/drivers/misc/lis3lv02d/lis3lv02d.c#L1188
+
+CJ
+> 
+> --mark
+> 
+>>   		return ret;
+>>   	}
+>>   
+>> -- 
+>> 2.30.2
+>>
+> 
 
