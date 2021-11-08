@@ -2,94 +2,202 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A3785447BD6
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Nov 2021 09:31:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 13853447BD8
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Nov 2021 09:32:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238008AbhKHIdh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Nov 2021 03:33:37 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:51212 "EHLO
+        id S238005AbhKHIex (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Nov 2021 03:34:53 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:40787 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S238010AbhKHIdG (ORCPT
+        by vger.kernel.org with ESMTP id S236074AbhKHIew (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Nov 2021 03:33:06 -0500
+        Mon, 8 Nov 2021 03:34:52 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1636360219;
+        s=mimecast20190719; t=1636360327;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=dZ2Q+DY5lRLHrC4/deim612KwtYNG+pVAfJvd8a6ths=;
-        b=QQHAk2Lahq6U9v7kueBp9hTOBjfN2IC4xoI08oop29gPgOdA3ck7ySXBJw4mRybZlZUyWc
-        5sBIvs1zeTSka2Ers/9wAvZp98MFnHvgO08b9H6gpG3ogw/TWib370OvDFJxeGV394T81K
-        9ARVprIj2gbA/iSCILU8cZcBCehXb2Y=
-Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com
- [209.85.208.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-505-NFdkTeo_MXak_LjJno3rUQ-1; Mon, 08 Nov 2021 03:30:18 -0500
-X-MC-Unique: NFdkTeo_MXak_LjJno3rUQ-1
-Received: by mail-ed1-f69.google.com with SMTP id y12-20020a056402270c00b003e28de6e995so14162333edd.11
-        for <linux-kernel@vger.kernel.org>; Mon, 08 Nov 2021 00:30:18 -0800 (PST)
+        bh=hEd9v1Vyqj6kQtsKvZbGkqhWuIPMwqRf/FozMjwWxPc=;
+        b=VN3ePdh1LNC9DpDGmfPjJnE8TBNoIJcXllcCloyz7pao0rI/uUyDfODXlO95oX2nip+JqH
+        jZPUoHQMS49KVZndv2MFEdXCllgtxaA4ksYjLPZ6cUuehO3od3r58ARgiVQba/F46OJhdX
+        7x8NYgFe7h7a776+QOpn3gO7gLWdxqg=
+Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
+ [209.85.128.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-509-D9XRVdsMPlevm_TsU3AVrA-1; Mon, 08 Nov 2021 03:32:06 -0500
+X-MC-Unique: D9XRVdsMPlevm_TsU3AVrA-1
+Received: by mail-wm1-f69.google.com with SMTP id g81-20020a1c9d54000000b003330e488323so1487989wme.0
+        for <linux-kernel@vger.kernel.org>; Mon, 08 Nov 2021 00:32:06 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=dZ2Q+DY5lRLHrC4/deim612KwtYNG+pVAfJvd8a6ths=;
-        b=16XHE9TfemvECN7mnyR/hqMW60xxxYa6f5Uo59Fbl7oyCjiFkVmCwYtNXwiOHpdd3R
-         67CxTy4bwCAZNzmbzDOjpl2uiOx6nWvIBZLxFaSjkhohZCHFSFewExwQPyvgySIaQlXc
-         8jSMkLUPG4RGvZ1IR+hgtkAVk/xm8jx5XcRvGprn81NMNugK+mQEdnL8c/Ag4G6EMDR2
-         a4mKC2pjDER7yjM++8JTmQV00pisbCRMNKEwQSjNPitcZuzDNahKv7USf/3Y2WU4UfHz
-         SHp/tAl2nKjXhesz6amZe6OhKU5rI5p/9JZb0xG80T0E3GDdTFO63fTYc9NqQPzd94uJ
-         W6Og==
-X-Gm-Message-State: AOAM533QkKZAAlkuyYmGCmSac7Z/pSyjMGc76CZIQ9ogP2RmWTz6LAwC
-        G4VQFfdL4qmZFuYB5+Aa/ijTx9NlyGvNuGe4ngY1Nyf57ffK05JN36fDfWGpcUJ8eLBf4wAUbDQ
-        Mg5HD56YMRWVIpNOK14W7BEcU
-X-Received: by 2002:a17:906:11c5:: with SMTP id o5mr91025530eja.42.1636360216945;
-        Mon, 08 Nov 2021 00:30:16 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJx55rmukR33/BtWzxQ4veIc0curLmXRJTSzYxLwdm7CCry7Yxjy1ZS8/OpXpMRCM02Ir5v9qQ==
-X-Received: by 2002:a17:906:11c5:: with SMTP id o5mr91025508eja.42.1636360216758;
-        Mon, 08 Nov 2021 00:30:16 -0800 (PST)
-Received: from steredhat (host-87-10-72-39.retail.telecomitalia.it. [87.10.72.39])
-        by smtp.gmail.com with ESMTPSA id s26sm9112853edq.6.2021.11.08.00.30.16
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 08 Nov 2021 00:30:16 -0800 (PST)
-Date:   Mon, 8 Nov 2021 09:30:13 +0100
-From:   Stefano Garzarella <sgarzare@redhat.com>
-To:     Eiichi Tsukata <eiichi.tsukata@nutanix.com>
-Cc:     davem@davemloft.net, kuba@kernel.org,
-        virtualization@lists.linux-foundation.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH net] vsock: prevent unnecessary refcnt inc for
- nonblocking connect
-Message-ID: <20211108083013.svl77coopyryngfl@steredhat>
-References: <20211107120304.38224-1-eiichi.tsukata@nutanix.com>
+        h=x-gm-message-state:message-id:date:mime-version:user-agent
+         :content-language:to:cc:references:from:organization:subject
+         :in-reply-to:content-transfer-encoding;
+        bh=hEd9v1Vyqj6kQtsKvZbGkqhWuIPMwqRf/FozMjwWxPc=;
+        b=B2uEqbsgVXe66Prne+19DexM1NZteg+vJu7DuLUOUlz4PaaXAq6UCLhM7X1NEfHlQb
+         nBEpy64b//FGXsIzdfTYc+fll9ZE/n5c3FjHKLj4V9b4T38QtjglRX5pCKSRwE6vnzYS
+         De/zfzpKmAF+1qEMOjKXKEmgJeuK+29c9oia5ybyMch61bfZTKpZhB5g+kz+JUlgyJGB
+         het/Sr8iOlFA25YyOv2GMB86AJwZPcdVnGu2rD0loA2biRHA8mAObOzSB3uQAfVYi1zj
+         YoSERn+RPTQSTmWlAq4AIt8WwrLLK2YxKtztRwxO8eHDNhVDCEvVrlm5TulJLTbr57K7
+         ndhQ==
+X-Gm-Message-State: AOAM532w5el+CiKBVFtXDmTfYl18r7WoHsD6be9IIVafcuDRSSz8vSeF
+        ksdqYR2HC5/8mgoSq0dNY/NuiRpG3w3C+ktks1dvkEffY8MD/5AwSPxYA/yBHz0MFTytigqMrMa
+        Rhxb4dE62+f3JS9+AzwtjDTH1
+X-Received: by 2002:a05:6000:1688:: with SMTP id y8mr28137420wrd.420.1636360325551;
+        Mon, 08 Nov 2021 00:32:05 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJy67NpbO8B09kKqxsdGlvUBDsod6wvpsdGpRPSqMxb638wrxS4aj1mPkUmImJVAMkYO4SPznw==
+X-Received: by 2002:a05:6000:1688:: with SMTP id y8mr28137392wrd.420.1636360325383;
+        Mon, 08 Nov 2021 00:32:05 -0800 (PST)
+Received: from [192.168.3.132] (p5b0c6108.dip0.t-ipconnect.de. [91.12.97.8])
+        by smtp.gmail.com with ESMTPSA id g5sm15880108wri.45.2021.11.08.00.32.04
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 08 Nov 2021 00:32:04 -0800 (PST)
+Message-ID: <908909e0-4815-b580-7ff5-d824d36a141c@redhat.com>
+Date:   Mon, 8 Nov 2021 09:32:04 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Disposition: inline
-In-Reply-To: <20211107120304.38224-1-eiichi.tsukata@nutanix.com>
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.2.0
+Content-Language: en-US
+To:     Alexey Makhalov <amakhalov@vmware.com>, linux-mm@kvack.org
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Michal Hocko <mhocko@suse.com>,
+        Oscar Salvador <osalvador@suse.de>,
+        Dennis Zhou <dennis@kernel.org>, Tejun Heo <tj@kernel.org>,
+        Christoph Lameter <cl@linux.com>, linux-kernel@vger.kernel.org,
+        stable@vger.kernel.org
+References: <86BDA7AC-3E7A-4779-9388-9DF7BA7230AA@vmware.com>
+ <20211108063650.19435-1-amakhalov@vmware.com>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat
+Subject: Re: [PATCH v2] mm: fix panic in __alloc_pages
+In-Reply-To: <20211108063650.19435-1-amakhalov@vmware.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Nov 07, 2021 at 12:03:04PM +0000, Eiichi Tsukata wrote:
->Currently vosck_connect() increments sock refcount for nonblocking
->socket each time it's called, which can lead to memory leak if
->it's called multiple times because connect timeout function decrements
->sock refcount only once.
->
->Fixes it by making vsock_connect() return -EALREADY immediately when
->sock state is already SS_CONNECTING.
->
->Signed-off-by: Eiichi Tsukata <eiichi.tsukata@nutanix.com>
->---
-> net/vmw_vsock/af_vsock.c | 2 ++
-> 1 file changed, 2 insertions(+)
+On 08.11.21 07:36, Alexey Makhalov wrote:
+> There is a kernel panic caused by pcpu_alloc_pages() passing
+> offlined and uninitialized node to alloc_pages_node() leading
+> to panic by NULL dereferencing uninitialized NODE_DATA(nid).
+> 
+>  CPU2 has been hot-added
+>  BUG: unable to handle page fault for address: 0000000000001608
+>  #PF: supervisor read access in kernel mode
+>  #PF: error_code(0x0000) - not-present page
+>  PGD 0 P4D 0
+>  Oops: 0000 [#1] SMP PTI
+>  CPU: 0 PID: 1 Comm: systemd Tainted: G            E     5.15.0-rc7+ #11
+>  Hardware name: VMware, Inc. VMware7,1/440BX Desktop Reference Platform, BIOS VMW
+> 
+>  RIP: 0010:__alloc_pages+0x127/0x290
+>  Code: 4c 89 f0 5b 41 5c 41 5d 41 5e 41 5f 5d c3 44 89 e0 48 8b 55 b8 c1 e8 0c 83 e0 01 88 45 d0 4c 89 c8 48 85 d2 0f 85 1a 01 00 00 <45> 3b 41 08 0f 82 10 01 00 00 48 89 45 c0 48 8b 00 44 89 e2 81 e2
+>  RSP: 0018:ffffc900006f3bc8 EFLAGS: 00010246
+>  RAX: 0000000000001600 RBX: 0000000000000000 RCX: 0000000000000000
+>  RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000000000000cc2
+>  RBP: ffffc900006f3c18 R08: 0000000000000001 R09: 0000000000001600
+>  R10: ffffc900006f3a40 R11: ffff88813c9fffe8 R12: 0000000000000cc2
+>  R13: 0000000000000000 R14: 0000000000000001 R15: 0000000000000cc2
+>  FS:  00007f27ead70500(0000) GS:ffff88807ce00000(0000) knlGS:0000000000000000
+>  CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+>  CR2: 0000000000001608 CR3: 000000000582c003 CR4: 00000000001706b0
+>  Call Trace:
+>   pcpu_alloc_pages.constprop.0+0xe4/0x1c0
+>   pcpu_populate_chunk+0x33/0xb0
+>   pcpu_alloc+0x4d3/0x6f0
+>   __alloc_percpu_gfp+0xd/0x10
+>   alloc_mem_cgroup_per_node_info+0x54/0xb0
+>   mem_cgroup_alloc+0xed/0x2f0
+>   mem_cgroup_css_alloc+0x33/0x2f0
+>   css_create+0x3a/0x1f0
+>   cgroup_apply_control_enable+0x12b/0x150
+>   cgroup_mkdir+0xdd/0x110
+>   kernfs_iop_mkdir+0x4f/0x80
+>   vfs_mkdir+0x178/0x230
+>   do_mkdirat+0xfd/0x120
+>   __x64_sys_mkdir+0x47/0x70
+>   ? syscall_exit_to_user_mode+0x21/0x50
+>   do_syscall_64+0x43/0x90
+>   entry_SYSCALL_64_after_hwframe+0x44/0xae
+> 
+> Panic can be easily reproduced by disabling udev rule for
+> automatic onlining hot added CPU followed by CPU with
+> memoryless node (NUMA node with CPU only) hot add.
+> 
+> Hot adding CPU and memoryless node does not bring the node
+> to online state. Memoryless node will be onlined only during
+> the onlining its CPU.
+> 
+> Node can be in one of the following states:
+> 1. not present.(nid == NUMA_NO_NODE)
+> 2. present, but offline (nid > NUMA_NO_NODE, node_online(nid) == 0,
+> 				NODE_DATA(nid) == NULL)
+> 3. present and online (nid > NUMA_NO_NODE, node_online(nid) > 0,
+> 				NODE_DATA(nid) != NULL)
+> 
+> Percpu code is doing allocations for all possible CPUs. The
+> issue happens when it serves hot added but not yet onlined
+> CPU when its node is in 2nd state. This node is not ready
+> to use, fallback to node_mem_id().
+> 
+> Signed-off-by: Alexey Makhalov <amakhalov@vmware.com>
+> Cc: Andrew Morton <akpm@linux-foundation.org>
+> Cc: David Hildenbrand <david@redhat.com>
+> Cc: Michal Hocko <mhocko@suse.com>
+> Cc: Oscar Salvador <osalvador@suse.de>
+> Cc: Dennis Zhou <dennis@kernel.org>
+> Cc: Tejun Heo <tj@kernel.org>
+> Cc: Christoph Lameter <cl@linux.com>
+> Cc: linux-mm@kvack.org
+> Cc: linux-kernel@vger.kernel.org
+> Cc: stable@vger.kernel.org
+> ---
+>  mm/percpu-vm.c | 8 ++++++--
+>  1 file changed, 6 insertions(+), 2 deletions(-)
+> 
+> diff --git a/mm/percpu-vm.c b/mm/percpu-vm.c
+> index 2054c9213..f58d73c92 100644
+> --- a/mm/percpu-vm.c
+> +++ b/mm/percpu-vm.c
+> @@ -84,15 +84,19 @@ static int pcpu_alloc_pages(struct pcpu_chunk *chunk,
+>  			    gfp_t gfp)
+>  {
+>  	unsigned int cpu, tcpu;
+> -	int i;
+> +	int i, nid;
+>  
+>  	gfp |= __GFP_HIGHMEM;
+>  
+>  	for_each_possible_cpu(cpu) {
+> +		nid = cpu_to_node(cpu);
 
-Make sense to me, thanks for fixing this issue!
-I think would be better to add the Fixes ref in the commit message:
+As raised by Michal, we could use cpu_to_mem() here instead of
+cpu_to_node(). However, AFAIU, it's a pure optimization to avoid the
+fallback path:
 
-Fixes: d021c344051a ("VSOCK: Introduce VM Sockets")
+Documentation/vm/numa.rst:
 
-With that:
-Reviewed-by: Stefano Garzarella <sgarzare@redhat.com>
+"If the architecture supports--does not hide--memoryless nodes, then
+CPUs attached to memoryless nodes would always incur the fallback path
+overhead  or some subsystems would fail to initialize if they attempted
+to allocated memory exclusively from a node without memory.  To support
+such architectures transparently, kernel subsystems can use the
+numa_mem_id() or cpu_to_mem() function to locate the "local memory node"
+for the calling or specified CPU.  Again, this is the same node from
+which default, local page allocations will be attempted."
 
+
+The root issue here is that we're iterating possible CPUs (not online or
+present CPUs), belonging to nodes that might not be online yet. I agree
+that this fix, although sub-optimal, might be the right thing to do for
+now. It would be different if we'd be iterating online CPUs.
+
+
+Reviewed-by: David Hildenbrand <david@redhat.com>
+
+-- 
 Thanks,
-Stefano
+
+David / dhildenb
 
