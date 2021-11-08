@@ -2,104 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 08CDC447B44
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Nov 2021 08:42:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 88358447B46
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Nov 2021 08:43:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236226AbhKHHpg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Nov 2021 02:45:36 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32836 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234348AbhKHHpe (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Nov 2021 02:45:34 -0500
-Received: from mail-ot1-x32b.google.com (mail-ot1-x32b.google.com [IPv6:2607:f8b0:4864:20::32b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A19C0C061570;
-        Sun,  7 Nov 2021 23:42:50 -0800 (PST)
-Received: by mail-ot1-x32b.google.com with SMTP id g91-20020a9d12e4000000b0055ae68cfc3dso21473528otg.9;
-        Sun, 07 Nov 2021 23:42:50 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=05x0jjtR7e1YyH6ib8YAN/VFxXqCLvpo8Fsy3l3DsA0=;
-        b=FHKKRtJK/2JDbedijOU1vmc/iO6PhMG4HASb9dglKXKXqkHXZ3AzqzaTMEI6Q8EVv7
-         AmBGyULcMK88QMYHENuZzSo71t5Re3RClsy9muuktD67LvSaNf3Aj8OLuuu6NHjMz6pK
-         XTX17umBekk45oMU6up+VosGsU5ReduopxalQYGmvsYrkWo9sZRdWd3vt2P7aQd/MSdP
-         KrP6VcBukP+kk+17IPCNV60cy9b2kqKc2YHgq4vtb05FsntRyi98Hghi6ItuVXrU5xoz
-         eU8qlLFGA24oYUalTwtuJLPn6/9Yi6ErD4JSOlTFsxrSjQzsiOy7BFNUsM3DwPqdybyT
-         wRsg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=05x0jjtR7e1YyH6ib8YAN/VFxXqCLvpo8Fsy3l3DsA0=;
-        b=M/hyWOAvPudvcApuOaKeWtTFXBfJEHum+kPZaZnUHsm0Dis5QxChRh6xMG63cr9D3F
-         2OdKa65WpT1e7XFvAE4HnGhmVldtl4KnCrLwTFMJtHxYDEsUJTQBAzl7aLZDk4zNdld1
-         oo46hYqZsn1VqgM1oZpI5FKdax07oN7BYedJeSgkMhxV+O/gA1RZfmfggeA3ei0h1uNl
-         DEjB/DvlqICBze7RXdYkHmkqcls1Gnp5WOKHn/IIe+wyOLnlKC0ipTrLSA0F24c1RQ57
-         0qnSRqyPdoKWYxWsmAdlnpPMJ3w2ahgOVcgfR8lx5R4RjDBLyvT6b4lNHCdpsnzrqO5X
-         SqKA==
-X-Gm-Message-State: AOAM532OfW/2n2/pBB6xhVqgqqvtcUjrYn0gsGFnwL7ZRFxoEfmc8hb0
-        UOihXNcz7lXRq03j1lphCFVLvACQMWByavEntMM=
-X-Google-Smtp-Source: ABdhPJy7soPkFTRLUxus9ydblly3rU/fRg5seRtGg/oILnzjDdJoDS7p8JyEZC9vYLPwfCO2XYkqWmo8kZH+EGRPviI=
-X-Received: by 2002:a9d:7617:: with SMTP id k23mr44483931otl.351.1636357369427;
- Sun, 07 Nov 2021 23:42:49 -0800 (PST)
+        id S236296AbhKHHqM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Nov 2021 02:46:12 -0500
+Received: from mail.kernel.org ([198.145.29.99]:38330 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234348AbhKHHqK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Nov 2021 02:46:10 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7144561179;
+        Mon,  8 Nov 2021 07:43:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1636357407;
+        bh=fJNkYy2VfWxWOmdLqyNzL495wn67Xy7+DIMPMdlQ5sM=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=n16fUCLJPnqKnmqvR1U6WUsVeKbYd0wT1AkaZxkIzivQRITTlMG1RT35OkoSNVvlY
+         w/fmog3tLnVYV52mZ15FDosrID2YjKqii6s5AmhswP6F/d90sq6RAFnQpUK2polsfA
+         mwKe6ddMy4/7FGUN9zbt2wAXSzpJvsIMp4IT+lKE=
+Date:   Mon, 8 Nov 2021 08:43:24 +0100
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Alexey Khoroshilov <khoroshilov@ispras.ru>
+Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+        Xin Long <lucien.xin@gmail.com>,
+        Marcelo Ricardo Leitner <marcelo.leitner@gmail.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Sasha Levin <sashal@kernel.org>, ldv-project@linuxtesting.org
+Subject: Re: [PATCH 5.10 68/77] sctp: add vtag check in sctp_sf_violation
+Message-ID: <YYjVHMpu7lfYYHOR@kroah.com>
+References: <20211101082511.254155853@linuxfoundation.org>
+ <20211101082525.833757923@linuxfoundation.org>
+ <a3059f52-54c6-6ab3-0f1d-a9b1566ff118@ispras.ru>
+ <YYFevClqyJbASQXH@kroah.com>
+ <YYjKd/UwdwrbnrNd@kroah.com>
+ <06ea9fcf-12ab-29af-1621-6b1bb38a2265@ispras.ru>
 MIME-Version: 1.0
-References: <CAHP4M8X1ABEhu8kGtRSJHeqQ_m627hNT_N3Q_GGdcr3W_Rfspw@mail.gmail.com>
- <CAHp75VcVZ6dDDm-k=Njo-jDq81bL4BTwrtkkAnm24b23qWKB_g@mail.gmail.com>
-In-Reply-To: <CAHp75VcVZ6dDDm-k=Njo-jDq81bL4BTwrtkkAnm24b23qWKB_g@mail.gmail.com>
-From:   Ajay Garg <ajaygargnsit@gmail.com>
-Date:   Mon, 8 Nov 2021 13:12:37 +0530
-Message-ID: <CAHP4M8UK6AYVORHCndpw2ZeRLDN+BMj3enJ-+2SWtbOPSqUe9A@mail.gmail.com>
-Subject: Re: RFC for a new string-copy function, using mixtures of strlcpy and strscpy
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc:     "andy@kernel.org" <andy@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
-        "adobriyan@gmail.com" <adobriyan@gmail.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "linux-hardening@vger.kernel.org" <linux-hardening@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <06ea9fcf-12ab-29af-1621-6b1bb38a2265@ispras.ru>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
->>
->> The output is as follows :
->>
->> ######################################################
->> Using [strlcpy] ::
->>
->> len = [16]
->> a = [123456789]
->>
->>
->> Using [strscpy] ::
->>
->> len = [-7]
->> a = [123456789]
->>
->
-> My gosh, this is error code that you must check. We do not need more string copy functions.
->
->
+On Mon, Nov 08, 2021 at 10:23:11AM +0300, Alexey Khoroshilov wrote:
+> On 08.11.2021 09:57, Greg Kroah-Hartman wrote:
+> > On Tue, Nov 02, 2021 at 04:52:28PM +0100, Greg Kroah-Hartman wrote:
+> >> On Tue, Nov 02, 2021 at 05:12:16PM +0300, Alexey Khoroshilov wrote:
+> >>> Hello!
+> >>>
+> >>> It seems the patch may lead to NULL pointer dereference.
+> >>>
+> >>>
+> >>> 1. sctp_sf_violation_chunk() calls sctp_sf_violation() with asoc arg
+> >>> equal to NULL.
+> >>>
+> >>> static enum sctp_disposition sctp_sf_violation_chunk(
+> >>> ...
+> >>> {
+> >>> ...
+> >>>     if (!asoc)
+> >>>         return sctp_sf_violation(net, ep, asoc, type, arg, commands);
+> >>> ...
+> >>>
+> >>> 2. Newly added code of sctp_sf_violation() calls to sctp_vtag_verify()
+> >>> with asoc arg equal to NULL.
+> >>>
+> >>> enum sctp_disposition sctp_sf_violation(struct net *net,
+> >>> ...
+> >>> {
+> >>>     struct sctp_chunk *chunk = arg;
+> >>>
+> >>>     if (!sctp_vtag_verify(chunk, asoc))
+> >>>         return sctp_sf_pdiscard(net, ep, asoc, type, arg, commands);
+> >>> ...
+> >>>
+> >>> 3. sctp_vtag_verify() dereferences asoc without any check.
+> >>>
+> >>> /* Check VTAG of the packet matches the sender's own tag. */
+> >>> static inline int
+> >>> sctp_vtag_verify(const struct sctp_chunk *chunk,
+> >>> 		 const struct sctp_association *asoc)
+> >>> {
+> >>> 	/* RFC 2960 Sec 8.5 When receiving an SCTP packet, the endpoint
+> >>> 	 * MUST ensure that the value in the Verification Tag field of
+> >>> 	 * the received SCTP packet matches its own Tag. If the received
+> >>> 	 * Verification Tag value does not match the receiver's own
+> >>> 	 * tag value, the receiver shall silently discard the packet...
+> >>> 	 */
+> >>> 	if (ntohl(chunk->sctp_hdr->vtag) != asoc->c.my_vtag)
+> >>> 		return 0;
+> >>>
+> >>>
+> >>> Found by Linux Verification Center (linuxtesting.org) with SVACE tool.
+> >>
+> >> These issues should all be the same with Linus's tree, so can you please
+> >> submit patches to the normal netdev developers and mailing list to
+> >> resolve the above issues?
+> > 
+> > Given a lack of response, I am going to assume that these are not real
+> > issues.  If you think they are, please submit patches to the network
+> > developers to resolve them.
+> > 
+> > thanks,
+> > 
+> > greg k-h
+> 
+> Hi Greg,
+> 
+> During discussion with the network developers it was defined that the
+> code is unreachable and should be removed. The corresponding patch is
+> already in network tree:
+> 
+> https://git.kernel.org/pub/scm/linux/kernel/git/netdev/net.git/commit/?id=e7ea51cd879c
 
-Hmm, having the additional function would make things a lot easier.
+Great, thanks for letting me know.
 
-For example, in file fs/kernfs/dir.c, there are methods like
-"kernfs_name_locked", "kernfs_path_from_node_locked" which simply
-consume the return-value without any checks.
-
-All the above functions have a simple motive : copy as much bytes as
-possible in the destination buffer, and then consume/return the number
-of bytes actually copied (minus the null-terminator byte of course).
-
-If checks are to be put in-place, it would be too much code/churn,
-adding if checks all over the place.
-If, instead we do a simple replace of "strlcpy" with "strlscpy" at
-these places, we would be good to go (while *really* meeting the
-requirements of these clients at the same time).
-
-
-Anyhow, may be we can wait for some more opinions.
+greg k-h
