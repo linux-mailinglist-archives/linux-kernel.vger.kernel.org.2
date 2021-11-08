@@ -2,96 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 78122449F1C
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 00:42:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9CA93449F11
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 00:38:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240974AbhKHXou (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Nov 2021 18:44:50 -0500
-Received: from mga03.intel.com ([134.134.136.65]:5566 "EHLO mga03.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240902AbhKHXor (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Nov 2021 18:44:47 -0500
-X-IronPort-AV: E=McAfee;i="6200,9189,10162"; a="232292396"
-X-IronPort-AV: E=Sophos;i="5.87,218,1631602800"; 
-   d="scan'208";a="232292396"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Nov 2021 15:42:02 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.87,218,1631602800"; 
-   d="scan'208";a="641642471"
-Received: from chang-linux-3.sc.intel.com ([172.25.66.175])
-  by fmsmga001.fm.intel.com with ESMTP; 08 Nov 2021 15:42:01 -0800
-From:   "Chang S. Bae" <chang.seok.bae@intel.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     x86@kernel.org, tglx@linutronix.de, dave.hansen@linux.intel.com,
-        bp@alien8.de, mingo@redhat.com, yang.zhong@intel.com,
-        jing2.liu@intel.com, chang.seok.bae@intel.com,
-        linux-kselftest@vger.kernel.org
-Subject: [PATCH 2/2] selftests/x86/amx: Update the ARCH_REQ_XCOMP_PERM test
-Date:   Mon,  8 Nov 2021 15:35:01 -0800
-Message-Id: <20211108233501.11516-3-chang.seok.bae@intel.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20211108233501.11516-1-chang.seok.bae@intel.com>
-References: <20211108233501.11516-1-chang.seok.bae@intel.com>
+        id S237156AbhKHXkr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Nov 2021 18:40:47 -0500
+Received: from smtprelay0080.hostedemail.com ([216.40.44.80]:47598 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S231268AbhKHXkp (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Nov 2021 18:40:45 -0500
+Received: from omf01.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay03.hostedemail.com (Postfix) with ESMTP id 5411F837F24F;
+        Mon,  8 Nov 2021 23:37:59 +0000 (UTC)
+Received: from [HIDDEN] (Authenticated sender: joe@perches.com) by omf01.hostedemail.com (Postfix) with ESMTPA id 7C9C917274;
+        Mon,  8 Nov 2021 23:37:54 +0000 (UTC)
+Message-ID: <5179a7c097e0bb88f95642a394f53c53e64b66b1.camel@perches.com>
+Subject: Re: [PATCH 2/2] MAINTAINERS: Mark VMware mailing list entries as
+ private
+From:   Joe Perches <joe@perches.com>
+To:     "Srivatsa S. Bhat" <srivatsa@csail.mit.edu>, jgross@suse.com,
+        x86@kernel.org, pv-drivers@vmware.com
+Cc:     Nadav Amit <namit@vmware.com>, Vivek Thampi <vithampi@vmware.com>,
+        Vishal Bhakta <vbhakta@vmware.com>,
+        Ronak Doshi <doshir@vmware.com>,
+        linux-graphics-maintainer@vmware.com,
+        dri-devel@lists.freedesktop.org, linux-rdma@vger.kernel.org,
+        linux-scsi@vger.kernel.org, netdev@vger.kernel.org,
+        linux-input@vger.kernel.org, Zack Rusin <zackr@vmware.com>,
+        sdeep@vmware.com, amakhalov@vmware.com,
+        virtualization@lists.linux-foundation.org, keerthanak@vmware.com,
+        srivatsab@vmware.com, anishs@vmware.com,
+        linux-kernel@vger.kernel.org
+Date:   Mon, 08 Nov 2021 15:37:53 -0800
+In-Reply-To: <163640339370.62866.3435211389009241865.stgit@srivatsa-dev>
+References: <163640336232.62866.489924062999332446.stgit@srivatsa-dev>
+         <163640339370.62866.3435211389009241865.stgit@srivatsa-dev>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.40.4-1 
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-0.22
+X-Stat-Signature: dabja5iyhi1f3u7sn4gaygkth6wafpyr
+X-Rspamd-Server: rspamout05
+X-Rspamd-Queue-Id: 7C9C917274
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Session-ID: U2FsdGVkX19XvMXBRYU1i3HvRZAoQGyZbMrqYURbOg0=
+X-HE-Tag: 1636414674-345765
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Update the arch_prctl test to check the permission bitmap whether the
-requested feature is added as expected or not.
+On Mon, 2021-11-08 at 12:30 -0800, Srivatsa S. Bhat wrote:
+> From: Srivatsa S. Bhat (VMware) <srivatsa@csail.mit.edu>
+> 
+> VMware mailing lists in the MAINTAINERS file are private lists meant
+> for VMware-internal review/notification for patches to the respective
+> subsystems. So, in an earlier discussion [1][2], it was recommended to
+> mark them as such. Update all the remaining VMware mailing list
+> references to use that format -- "L: list@address (private)".
+[]
+> diff --git a/MAINTAINERS b/MAINTAINERS
+[]
+> @@ -6134,8 +6134,8 @@ T:	git git://anongit.freedesktop.org/drm/drm-misc
+>  F:	drivers/gpu/drm/vboxvideo/
+>  
+>  DRM DRIVER FOR VMWARE VIRTUAL GPU
+> -M:	"VMware Graphics" <linux-graphics-maintainer@vmware.com>
+>  M:	Zack Rusin <zackr@vmware.com>
+> +L:	linux-graphics-maintainer@vmware.com (private)
 
-Every non-dynamic feature that is enabled is permitted already for use.
-TILECFG is not dynamic feature. Ensure the bit is always on from
-ARCH_GET_XCOMP_PERM.
+This MAINTAINERS file is for _public_ use, marking something
+non-public isn't useful.
 
-Signed-off-by: Chang S. Bae <chang.seok.bae@intel.com>
-Cc: Dave Hansen <dave.hansen@linux.intel.com>
-Cc: linux-kselftest@vger.kernel.org
-Cc: x86@kernel.org
-Cc: linux-kernel@vger.kernel.org
----
- tools/testing/selftests/x86/amx.c | 16 ++++++++++++++--
- 1 file changed, 14 insertions(+), 2 deletions(-)
+private makes no sense and likely these L: entries shouldn't exist.
 
-diff --git a/tools/testing/selftests/x86/amx.c b/tools/testing/selftests/x86/amx.c
-index 3615ef4a48bb..e1e2c8f3356f 100644
---- a/tools/testing/selftests/x86/amx.c
-+++ b/tools/testing/selftests/x86/amx.c
-@@ -368,9 +368,16 @@ static void req_xtiledata_perm(void)
- 
- static void validate_req_xcomp_perm(enum expected_result exp)
- {
--	unsigned long bitmask;
-+	unsigned long bitmask, expected_bitmask;
- 	long rc;
- 
-+	rc = syscall(SYS_arch_prctl, ARCH_GET_XCOMP_PERM, &bitmask);
-+	if (rc) {
-+		fatal_error("prctl(ARCH_GET_XCOMP_PERM) error: %ld", rc);
-+	} else if (!(bitmask & XFEATURE_MASK_XTILECFG)) {
-+		fatal_error("ARCH_GET_XCOMP_PERM returns XFEATURE_XTILECFG off.");
-+	}
-+
- 	rc = syscall(SYS_arch_prctl, ARCH_REQ_XCOMP_PERM, XFEATURE_XTILEDATA);
- 	if (exp == FAIL_EXPECTED) {
- 		if (rc) {
-@@ -383,10 +390,15 @@ static void validate_req_xcomp_perm(enum expected_result exp)
- 		fatal_error("ARCH_REQ_XCOMP_PERM saw unexpected failure.\n");
- 	}
- 
-+	expected_bitmask = bitmask | XFEATURE_MASK_XTILEDATA;
-+
- 	rc = syscall(SYS_arch_prctl, ARCH_GET_XCOMP_PERM, &bitmask);
- 	if (rc) {
- 		fatal_error("prctl(ARCH_GET_XCOMP_PERM) error: %ld", rc);
--	} else if (bitmask & XFEATURE_MASK_XTILE) {
-+	} else if (bitmask != expected_bitmask) {
-+		fatal_error("ARCH_REQ_XCOMP_PERM saw a wrong bitmask: %lx, expected: %lx.\n",
-+			    bitmask, expected_bitmask);
-+	} else {
- 		printf("\tARCH_REQ_XCOMP_PERM is successful.\n");
- 	}
- }
--- 
-2.17.1
 
