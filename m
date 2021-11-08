@@ -2,81 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 66E45447E26
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Nov 2021 11:39:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E1A35447E25
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Nov 2021 11:38:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236859AbhKHKlr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Nov 2021 05:41:47 -0500
-Received: from mail.kernel.org ([198.145.29.99]:57174 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238668AbhKHKkv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Nov 2021 05:40:51 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id DF4DA61359;
-        Mon,  8 Nov 2021 10:38:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1636367887;
-        bh=xj1zISrLJM071lTGH9/U7IsLw03GBjukAVuQNFLuOtE=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=uTjpBMeiq1Xurb+GdXKUNM668W7EB9VmxXmVaCt4c2QaSR66OQCqYw0jwadLnybOA
-         1cIS7Xfw3G2kDEsaAfb+gLZUWtID2QvdBdizRtoqGgPXYHFj3igkt74urNV9LArNZ+
-         Ke3+2w5lZXMVCfSQwlatNdTobCywO4bs9OkG+SVWV6vCWqs8KXEeVs1e6MgYAGpbQp
-         nGEtd4VO3Z31AZ6J0JbLqYjGmZoYBd0kKh8BadOMEkJ7yl3bNrItunA2mpJxr5Cwkq
-         ZyJt+UBCq7YHlNWCQUsvWbFqbgwTpGIodHuFHF9mdzqkWjgkdeZhyNO8MtAvych8o0
-         oI2vPUb+c74GQ==
-From:   Will Deacon <will@kernel.org>
-To:     Qian Cai <quic_qiancai@quicinc.com>,
-        Catalin Marinas <catalin.marinas@arm.com>
-Cc:     kernel-team@android.com, Will Deacon <will@kernel.org>,
-        Andrey Ryabinin <ryabinin.a.a@gmail.com>,
-        Mike Rapoport <rppt@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        kasan-dev@googlegroups.com, linux-arm-kernel@lists.infradead.org,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Andrey Konovalov <andreyknvl@gmail.com>,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        Alexander Potapenko <glider@google.com>,
-        Russell King <linux@armlinux.org.uk>
-Subject: Re: [PATCH v2] arm64: Track no early_pgtable_alloc() for kmemleak
-Date:   Mon,  8 Nov 2021 10:37:52 +0000
-Message-Id: <163636592237.15032.12831105402698814160.b4-ty@kernel.org>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20211105150509.7826-1-quic_qiancai@quicinc.com>
-References: <20211105150509.7826-1-quic_qiancai@quicinc.com>
+        id S238827AbhKHKlY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Nov 2021 05:41:24 -0500
+Received: from mail.zju.edu.cn ([61.164.42.155]:40434 "EHLO zju.edu.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S238640AbhKHKkt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Nov 2021 05:40:49 -0500
+Received: from localhost.localdomain (unknown [222.205.2.245])
+        by mail-app4 (Coremail) with SMTP id cS_KCgBHT+MH_ohhZIbCBA--.52229S4;
+        Mon, 08 Nov 2021 18:37:59 +0800 (CST)
+From:   Lin Ma <linma@zju.edu.cn>
+To:     netdev@vger.kernel.org
+Cc:     davem@davemloft.net, kuba@kernel.org, jirislaby@kernel.org,
+        gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org,
+        Lin Ma <linma@zju.edu.cn>
+Subject: [PATCH v1 2/2] hamradio: defer 6pack kfree after unregister_netdev
+Date:   Mon,  8 Nov 2021 18:37:59 +0800
+Message-Id: <20211108103759.30541-1-linma@zju.edu.cn>
+X-Mailer: git-send-email 2.33.1
+In-Reply-To: <20211108103721.30522-1-linma@zju.edu.cn>
+References: <20211108103721.30522-1-linma@zju.edu.cn>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: cS_KCgBHT+MH_ohhZIbCBA--.52229S4
+X-Coremail-Antispam: 1UD129KBjvJXoW7uF15Zr48ZFykCF1kGr15Jwb_yoW8Jw18pF
+        W5GFW3Aw1ktr45Gw1ktF4YgF98WwsavFWUCFZ8G3sF9rsIvF109r1qkFyj9r4DZr1rA3yY
+        yFn8AF43Crn5A3DanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUvY1xkIjI8I6I8E6xAIw20EY4v20xvaj40_Wr0E3s1l1IIY67AE
+        w4v_Jr0_Jr4l8cAvFVAK0II2c7xJM28CjxkF64kEwVA0rcxSw2x7M28EF7xvwVC0I7IYx2
+        IY67AKxVWDJVCq3wA2z4x0Y4vE2Ix0cI8IcVCY1x0267AKxVWxJr0_GcWl84ACjcxK6I8E
+        87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_GcCE3s1le2I262IYc4CY6c
+        8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_JrI_
+        JrylYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvY0x0EwI
+        xGrwACjI8F5VA0II8E6IAqYI8I648v4I1lc2xSY4AK67AK6r4DMxAIw28IcxkI7VAKI48J
+        MxAIw28IcVCjz48v1sIEY20_GFWkJr1UJwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c
+        02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_JF0_
+        Jw1lIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7
+        CjxVAFwI0_Gr0_Cr1lIxAIcVCF04k26cxKx2IYs7xG6r1j6r1xMIIF0xvEx4A2jsIE14v2
+        6r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x0J
+        UZYFZUUUUU=
+X-CM-SenderInfo: qtrwiiyqvtljo62m3hxhgxhubq/
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 5 Nov 2021 11:05:09 -0400, Qian Cai wrote:
-> After switched page size from 64KB to 4KB on several arm64 servers here,
-> kmemleak starts to run out of early memory pool due to a huge number of
-> those early_pgtable_alloc() calls:
-> 
->   kmemleak_alloc_phys()
->   memblock_alloc_range_nid()
->   memblock_phys_alloc_range()
->   early_pgtable_alloc()
->   init_pmd()
->   alloc_init_pud()
->   __create_pgd_mapping()
->   __map_memblock()
->   paging_init()
->   setup_arch()
->   start_kernel()
-> 
-> [...]
+There is a possible race condition (use-after-free) like below
 
-Applied to arm64 (for-next/core), thanks!
+ (USE)                       |  (FREE)
+  dev_queue_xmit             |
+   __dev_queue_xmit          |
+    __dev_xmit_skb           |
+     sch_direct_xmit         | ...
+      xmit_one               |
+       netdev_start_xmit     | tty_ldisc_kill
+        __netdev_start_xmit  |  6pack_close
+         sp_xmit             |   kfree
+          sp_encaps          |
+                             |
 
-[1/1] arm64: Track no early_pgtable_alloc() for kmemleak
-      https://git.kernel.org/arm64/c/c6975d7cab5b
+According to the patch "defer ax25 kfree after unregister_netdev", this
+patch reorder the kfree after the unregister_netdev to avoid the possible
+UAF as the unregister_netdev() is well synchronized and won't return if
+there is a running routine.
 
-Cheers,
+Signed-off-by: Lin Ma <linma@zju.edu.cn>
+---
+ drivers/net/hamradio/6pack.c | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/net/hamradio/6pack.c b/drivers/net/hamradio/6pack.c
+index 49f10053a794..bfdf89e54752 100644
+--- a/drivers/net/hamradio/6pack.c
++++ b/drivers/net/hamradio/6pack.c
+@@ -672,11 +672,13 @@ static void sixpack_close(struct tty_struct *tty)
+ 	del_timer_sync(&sp->tx_t);
+ 	del_timer_sync(&sp->resync_t);
+ 
+-	/* Free all 6pack frame buffers. */
++	unregister_netdev(sp->dev);
++
++	/* Free all 6pack frame buffers after unreg. */
+ 	kfree(sp->rbuff);
+ 	kfree(sp->xbuff);
+ 
+-	unregister_netdev(sp->dev);
++	free_netdev(sp->dev);
+ }
+ 
+ /* Perform I/O control on an active 6pack channel. */
 -- 
-Will
+2.33.1
 
-https://fixes.arm64.dev
-https://next.arm64.dev
-https://will.arm64.dev
