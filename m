@@ -2,140 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1AAF44498BD
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Nov 2021 16:48:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 280ED4498BF
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Nov 2021 16:49:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241086AbhKHPvY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Nov 2021 10:51:24 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:50145 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S241077AbhKHPvW (ORCPT
+        id S241090AbhKHPvZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Nov 2021 10:51:25 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59366 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S241079AbhKHPvY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Nov 2021 10:51:22 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1636386517;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=FtwGeQksANjxXUD8kTJkumxHFxaoo+uKZKYpwUro+u0=;
-        b=iCrUlS7nBsO621G7XF0syfnI2s0azKkPBoFAlZ1HY+2uRtYMqtKGvNqVtOR9ED5FVVBDzC
-        LLAXXFffugI6h+hfjqJn66W2nCuRDQpXzH/FJu0LpgWR6J5LpUP1ud7S0UJfkKcm7miSJA
-        PAmQN/5heV/2S+7f3YR7geFBd3AjgGY=
-Received: from mail-ed1-f72.google.com (mail-ed1-f72.google.com
- [209.85.208.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-409-tHPUgxMgOhmBbPLdrC5-_Q-1; Mon, 08 Nov 2021 10:48:36 -0500
-X-MC-Unique: tHPUgxMgOhmBbPLdrC5-_Q-1
-Received: by mail-ed1-f72.google.com with SMTP id y20-20020a056402359400b003e28c9bc02cso15317594edc.9
-        for <linux-kernel@vger.kernel.org>; Mon, 08 Nov 2021 07:48:35 -0800 (PST)
+        Mon, 8 Nov 2021 10:51:24 -0500
+Received: from mail-pg1-x534.google.com (mail-pg1-x534.google.com [IPv6:2607:f8b0:4864:20::534])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BCF12C061570;
+        Mon,  8 Nov 2021 07:48:39 -0800 (PST)
+Received: by mail-pg1-x534.google.com with SMTP id n23so15484466pgh.8;
+        Mon, 08 Nov 2021 07:48:39 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=message-id:subject:from:to:cc:date:in-reply-to:references
+         :user-agent:mime-version:content-transfer-encoding;
+        bh=yS9RVOYSJmLmsjplw6tcopiKSzTd9TMH34xX1w9V238=;
+        b=GaG5gwfYDsY6S5gEPFlYty9FkBO0xUxnhHCh5q3oGiw+pVhceO+fm3xYdU3j7hriFf
+         zNm/HGCN1t1a6RRGVqGBN/N1UjTSUlRofW/vATUZ/LBDjQHL+cCZuui0mnBHjHrhhn9k
+         bYlbxklFvcCtOpA2slWgoGBUPuck+0qBbJf89PX+efcL5mh/8HoibJ1lGMJPfB+ZRzfy
+         N9MPizJxzURIQnlTjPiJMO8JEiXHomBXUJAxpGHRsNEaz2bM8DCxGuuSnrdSgaJHjV6J
+         +BPYjiCN8qx/mmoyUeaDKf8vPt1LVGemgGgMEur4aQ7KNhk9M/dTyNpE7UT+I1+Op5Wb
+         656g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:in-reply-to
-         :content-transfer-encoding;
-        bh=FtwGeQksANjxXUD8kTJkumxHFxaoo+uKZKYpwUro+u0=;
-        b=GW3AwA6DpYY1DLpm16yYjoMTOj3rTk/B3gesiVXyh5NWRTsjSUzMq0J07BFqv41BpP
-         qjL1NJoR7L52DA2XvDz+pHNW0MKH3xnZ32wRmMRRtfr/hzZ7xQXYSZZ0rQSfZd55P350
-         Ez8sTMZRMczBFvP7y6DJITIj0daIA3H9tYGw1W+SdcfFT1xC0suA+IFR7SEBwpqm9icI
-         JRSceH/cHUOpxZTTKAomQhB2hMnQHQAdzUHq4/a3iT5zPegAhDRoHdPWE5Q413uHrWhT
-         ZNoILwbnC7uzTrvCtuhKw92aHZRG9ALbyRNsc++T9UR+4sYp8rl9OCU/1oEnCVXblAl0
-         0I3g==
-X-Gm-Message-State: AOAM533ptFDzh6eB4rjgiUnmah/yeBkeq/OBjQzkFW+gZbRctcRWMZoY
-        pUiBz2exHqizUrsrbvorp10gRnjiZgj2fErBGrBtxYwdtWK6qMNB2Ucuutlt6ykwBZ3e6KDRWMi
-        /B5sw1zTwD6Vig7r957bmDOX+
-X-Received: by 2002:a17:906:d196:: with SMTP id c22mr284000ejz.231.1636386514997;
-        Mon, 08 Nov 2021 07:48:34 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJxtb9YLNfiqr9xl8w+/gcHV4f+pRqMHXso6LnfoUbKlBGUIXkI0Lyz6aADTJ+R2wXEPO4HdEg==
-X-Received: by 2002:a17:906:d196:: with SMTP id c22mr283967ejz.231.1636386514765;
-        Mon, 08 Nov 2021 07:48:34 -0800 (PST)
-Received: from [10.40.1.223] ([81.30.35.201])
-        by smtp.gmail.com with ESMTPSA id hp3sm8468706ejc.61.2021.11.08.07.48.34
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 08 Nov 2021 07:48:34 -0800 (PST)
-Message-ID: <a9cdcaa6-e933-2859-04f7-21392a9ac5ce@redhat.com>
-Date:   Mon, 8 Nov 2021 16:48:33 +0100
+        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
+         :references:user-agent:mime-version:content-transfer-encoding;
+        bh=yS9RVOYSJmLmsjplw6tcopiKSzTd9TMH34xX1w9V238=;
+        b=uJfZuU+siGgYdrl+VSJgxlhhu4vfFtYvdQKOd3/Q7aFlkZNZri+oqsAVv5c3OJmYDH
+         w2DXaXOdz9E1vXnah2xJGFCggvJM+erBADifEX/b/SMrUg1q+Nb4zgXe1Z+nDUgAkVio
+         /gzS0pFBulXDJSfXF2mVRQpb5HF06iFR35hmXPPLajZNzkNHOiA03te+6Ig2qoyaC6jH
+         z8wHrpkchSzaQm/jDsRdy3IXn7QL8O8gUBK+A+8le94C6Oq2F0RmXWovvMKkizDRQH4m
+         wfqxY5OEx/uYgEKMqX+TeeYKCKIRiii1B4Qv4+PDtTIfvUhbGw42CoWjFqZRoZ+gdCDB
+         kdSA==
+X-Gm-Message-State: AOAM532ZtjI+UymhWcaGiPDdc1zmQqJ2DbC7wSk7WZdSeINSSYmy8l2Z
+        X0pCTPbxk3MPTw7Aouu8mzQ=
+X-Google-Smtp-Source: ABdhPJzlS6xr6yExAOENTvlx33UuzblttBiBy/PsFjq5pssNpcnIMno4bFDl3z/oWLXnYHwWYScSXQ==
+X-Received: by 2002:a05:6a00:170d:b0:49f:9b39:d555 with SMTP id h13-20020a056a00170d00b0049f9b39d555mr393823pfc.27.1636386519115;
+        Mon, 08 Nov 2021 07:48:39 -0800 (PST)
+Received: from ?IPv6:2400:4052:6980:3800:dba7:2b1f:3f26:a5ec? ([2400:4052:6980:3800:dba7:2b1f:3f26:a5ec])
+        by smtp.gmail.com with ESMTPSA id bt2sm16621345pjb.33.2021.11.08.07.48.34
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 08 Nov 2021 07:48:38 -0800 (PST)
+Message-ID: <abada89901e0ca11f13d8380de8c1184522eb6db.camel@gmail.com>
+Subject: Re: [BUG/RFC PATCH 3/5] [BUG][RFC] media: atomisp: pci: add NULL
+ check for asd obtained from atomisp_video_pipe
+From:   Tsuchiya Yuto <kitakar@gmail.com>
+To:     Dan Carpenter <dan.carpenter@oracle.com>
+Cc:     Hans de Goede <hdegoede@redhat.com>,
+        Patrik Gfeller <patrik.gfeller@gmail.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Kaixu Xia <kaixuxia@tencent.com>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Yang Li <abaci-bugfix@linux.alibaba.com>,
+        Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>,
+        Alex Dewar <alex.dewar90@gmail.com>,
+        Aline Santana Cordeiro <alinesantanacordeiro@gmail.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        linux-media@vger.kernel.org, linux-staging@lists.linux.dev,
+        linux-kernel@vger.kernel.org
+Date:   Tue, 09 Nov 2021 00:48:33 +0900
+In-Reply-To: <20211102130245.GE2794@kadam>
+References: <20211017162337.44860-1-kitakar@gmail.com>
+         <20211017162337.44860-4-kitakar@gmail.com> <20211102130245.GE2794@kadam>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.40.4 
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.2.0
-Subject: Re: [PATCH 02/13] platform/x86: dmi_device_properties: Add setup info
- for boards with a CHT Whiskey Cove PMIC
-Content-Language: en-US
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc:     Mark Gross <markgross@kernel.org>,
-        Andy Shevchenko <andy@infradead.org>,
-        Wolfram Sang <wsa@the-dreams.de>,
-        Sebastian Reichel <sre@kernel.org>,
-        MyungJoo Ham <myungjoo.ham@samsung.com>,
-        Chanwoo Choi <cw00.choi@samsung.com>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Yauhen Kharuzhy <jekhor@gmail.com>,
-        Tsuchiya Yuto <kitakar@gmail.com>,
-        platform-driver-x86@vger.kernel.org, linux-i2c@vger.kernel.org,
-        linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-efi@vger.kernel.org
-References: <20211030182813.116672-1-hdegoede@redhat.com>
- <20211030182813.116672-3-hdegoede@redhat.com>
- <CAHp75VeXJauH1YQZxYvRWucDwsP_RF5T5yiwpMcB-r4O60ZPJQ@mail.gmail.com>
-From:   Hans de Goede <hdegoede@redhat.com>
-In-Reply-To: <CAHp75VeXJauH1YQZxYvRWucDwsP_RF5T5yiwpMcB-r4O60ZPJQ@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Andy,
+<removed Alan from Cc as the mail address not reachable>
 
-Thank you for your feedback.
+On Tue, 2021-11-02 at 16:02 +0300, Dan Carpenter wrote:
+> On Mon, Oct 18, 2021 at 01:23:34AM +0900, Tsuchiya Yuto wrote:
+> > diff --git a/drivers/staging/media/atomisp/pci/atomisp_cmd.c b/drivers/staging/media/atomisp/pci/atomisp_cmd.c
+> > index 366161cff560..7206d29ba263 100644
+> > --- a/drivers/staging/media/atomisp/pci/atomisp_cmd.c
+> > +++ b/drivers/staging/media/atomisp/pci/atomisp_cmd.c
+> > @@ -1715,6 +1715,12 @@ void atomisp_wdt_refresh_pipe(struct atomisp_video_pipe *pipe,
+> >  {
+> >  	unsigned long next;
+> >  
+> > +	if(!pipe->asd) {
+> 
+> Run your patches through scripts/checkpatch.pl.
 
-On 10/30/21 23:56, Andy Shevchenko wrote:
-> On Sat, Oct 30, 2021 at 9:28 PM Hans de Goede <hdegoede@redhat.com> wrote:
->>
->> Add a new "intel,cht-wc-setup" string property to the "INT34D3:00"
->> i2c_client for the Whiskey Cove PMIC found on several Cherry Trail
->> based devices. At least 3 setups are known:
->>
->> 1. The WC PMIC is connected to a TI BQ24292i charger, paired with
->>    a Maxim MAX17047 fuelgauge + a FUSB302 USB Type-C Controller +
->>    a PI3USB30532 USB switch, for a fully functional Type-C port
->>
->> 2. The WC PMIC is connected to a TI BQ25890 charger, paired with
->>    a TI BQ27520 fuelgauge, for a USB-2 only Type-C port without PD
->>
->> 3. The WC PMIC is connected to a TI BQ25890 charger, paired with
->>    a TI BQ27542 fuelgauge, for a micro-USB port
->>
->> Which setup is in use cannot be determined reliably from the ACPI tables
->> and various drivers (extcon-intel-cht-wc.c, i2c-cht-wc.c, ...) need
->> to know which setup they are dealing with.
-> 
-> If it's internal property only, I would rather expect it to start with
-> 'linux,' as DWC3 does. And it's also USB related.
-> 
-> ...
-> 
->> +       PROPERTY_ENTRY_STRING("intel,cht-wc-setup", "bq24292i,max17047,fusb302,pi3usb30532"),
-> 
->> +       PROPERTY_ENTRY_STRING("intel,cht-wc-setup", "bq25890,bq27520"),
-> 
->  Besides that I'm not sure about the name of the property, maybe
-> 'linux,cht-wc-usb-chips' or alike? And since it's a list, can we make
-> it a string array?
-> 
-
-So now that I also have a yogabook to test on it has become clear that
-we really need to treat each device-model/board with a cht-wc PMIC
-differently in the various cht-wc MFD cell drivers.
-
-So instead of using device-properties (patch 1 + 2 from this series)
-I've chosen to add a intel_cht_wc_get_model( helper to:
-drivers/mfd/intel_soc_pmic_chtwc.c
-
-Which uses DMI matching (in a shared place so that we need the DMI
-table only once) and returns an enum value which represents all
-known boards.
+I'm sorry about this. I did checkpatch for another series I sent earlier,
+but forgot this series.
 
 Regards,
+Tsuchiya Yuto
 
-Hans
+> > +		dev_err(pipe->isp->dev, "%s(): asd is NULL, device is %s\n",
+> > +			__func__, pipe->vdev.name);
+> > +		return;
+> > +	}
+> 
+> regards,
+> dan carpenter
+> 
+
 
