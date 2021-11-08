@@ -2,216 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 968F7449E9B
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Nov 2021 23:13:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 02263449EA2
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Nov 2021 23:19:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240314AbhKHWQ2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Nov 2021 17:16:28 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33884 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238230AbhKHWQ0 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Nov 2021 17:16:26 -0500
-Received: from mail-io1-xd33.google.com (mail-io1-xd33.google.com [IPv6:2607:f8b0:4864:20::d33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EEBFDC061714
-        for <linux-kernel@vger.kernel.org>; Mon,  8 Nov 2021 14:13:41 -0800 (PST)
-Received: by mail-io1-xd33.google.com with SMTP id y16so3064403ioc.8
-        for <linux-kernel@vger.kernel.org>; Mon, 08 Nov 2021 14:13:41 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=sartura-hr.20210112.gappssmtp.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=UFueHJW96kAK6US5CBLmGWH56ls09clRSfC19lbhihE=;
-        b=Ob8eQlCh3SGT71a6eHlpETBD62gd5ExWtq5dUZXiX0ut6qgZrWnoBp9t3wR4p1oD70
-         1zA7OxFI0WtIPmoHzE4nu6HuCwi0SbT/wcd1/q+QuiSV9gEaBrpSTz0N4VdfihdrsL6U
-         61FpyZnkt1saCDPZEal0Q4sY6Q3URBokWqy7GT6IvDhsVqIg4yTQY1d1n0pK9miUHsYD
-         Ck39rfn533vPY3/o9b0xkIL+CvUt3lGRYUQ98HB0PfCCgpX/VF68DWePDfCeG+8+WaCF
-         6e9XqtsLgL89E4R0WidD4LXY6egGTK7uOHevCZwIDmCq2rcivD18S352obR6dLGYDbM8
-         Um9g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=UFueHJW96kAK6US5CBLmGWH56ls09clRSfC19lbhihE=;
-        b=IfRDuTBwpvetbKMgNqvuCdnkCN2Ydt0F2GADIOY185jg7YprtOQzj50StvrwqC708W
-         InQqp4Y9MKvOJlshuemSfjBpZ978YQaAISUP1b35wOm3skPO8P+e+Ut+2HeQdb8MfEgp
-         hXlbfUerMfiHTTiheOqIV6394KeOWdYf1tOZBJX01Ug7/Z39WfU45qix4MjLubR05Wvo
-         RArM4VkVFk4CwnpeaVDD5o6VkkaSmq/IQBVs3cGlBQFzaNBCCYGs9dYvp+q1EvyA2ahp
-         ZEsMbzOErA1vDWGxxYAll5TjszexT4AhXGwejQFYKKvkkId+Y5XMRUGyjkRnLKuKKj1T
-         ud4A==
-X-Gm-Message-State: AOAM533OGumiFQrY6RGZv6T9jH5SgrllBsIOH8Oy+ibkEEFcHoIMPgjo
-        qC6MmgahSz38QUPC4G5fFX0P4WA8n08uqg04Pf2DIA==
-X-Google-Smtp-Source: ABdhPJxbJP1tMgLDK9VxcO3R3fxT22QQRgA97pS39Tt6k3KcSIi9n79Gncj918U+uF3xNWH9q8RBDJ6VNhbuJ1kvWNw=
-X-Received: by 2002:a05:6602:26c8:: with SMTP id g8mr1687054ioo.74.1636409621279;
- Mon, 08 Nov 2021 14:13:41 -0800 (PST)
-MIME-Version: 1.0
-References: <20211104124927.364683-1-robert.marko@sartura.hr>
- <20211108202058.th7vjq4sjca3encz@skbuf> <CA+HBbNE_jh_h9bx9GLfMRFz_Kq=Vx1pu0dE1aK0guMoEkX1S5A@mail.gmail.com>
- <20211108211811.qukts37eufgfj4sc@skbuf> <CA+HBbNGvg43wMNbte827wmK_fnWuweKSgA-nWW+UPGCvunUwGA@mail.gmail.com>
- <20211108214613.5fdhm4zg43xn5edm@skbuf> <CA+HBbNEKOW3F6Yu=OV3BDea+KKNH6AEUMS07az6=62aEAKHGgw@mail.gmail.com>
- <20211108215926.hnrmqdyxbkt7lbhl@skbuf>
-In-Reply-To: <20211108215926.hnrmqdyxbkt7lbhl@skbuf>
-From:   Robert Marko <robert.marko@sartura.hr>
-Date:   Mon, 8 Nov 2021 23:13:30 +0100
-Message-ID: <CA+HBbNH=31j1Nv8T67DKhLXaQub2Oz11Dw2RuMEWQ3iXrF2fxg@mail.gmail.com>
-Subject: Re: [net-next] net: dsa: qca8k: only change the MIB_EN bit in
- MODULE_EN register
-To:     Vladimir Oltean <olteanv@gmail.com>
-Cc:     Andrew Lunn <andrew@lunn.ch>, vivien.didelot@gmail.com,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        David Miller <davem@davemloft.net>, kuba@kernel.org,
-        netdev@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Gabor Juhos <j4g8y7@gmail.com>, John Crispin <john@phrozen.org>
-Content-Type: text/plain; charset="UTF-8"
+        id S240354AbhKHWWc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Nov 2021 17:22:32 -0500
+Received: from m43-7.mailgun.net ([69.72.43.7]:20034 "EHLO m43-7.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229627AbhKHWWb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Nov 2021 17:22:31 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1636409986; h=Message-Id: Date: Subject: Cc: To: From:
+ Sender; bh=OVbAu503m2OjDJ+olw7/qCqtm3SJRr6hxHct9Rj2XTM=; b=o0PZ/K//YU1AeswSBwBKXuLGraQZiNpOkPqLiUFk+cqj/OrV4jHl5rkrHCp1bzmek92bADaG
+ Bkh7NhCGRRudd2xkE94mPcfJP7FtJHnHClhWGtO0qpFU9KzTZ4mdAUeyeiyisCO8fWKvZkTC
+ Xsqcw/BG/o+U/1MOeLSa5qOiQJI=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n01.prod.us-west-2.postgun.com with SMTP id
+ 6189a2816b778b5a19cf2308 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 08 Nov 2021 22:19:45
+ GMT
+Sender: quic_bbhatt=quicinc.com@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 4D993C4338F; Mon,  8 Nov 2021 22:19:45 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
+        autolearn=no autolearn_force=no version=3.4.0
+Received: from vivace-linux.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: bbhatt)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id DBAB5C4338F;
+        Mon,  8 Nov 2021 22:19:43 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 smtp.codeaurora.org DBAB5C4338F
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=fail (p=none dis=none) header.from=quicinc.com
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=quicinc.com
+From:   Bhaumik Bhatt <quic_bbhatt@quicinc.com>
+To:     manivannan.sadhasivam@linaro.org
+Cc:     linux-arm-msm@vger.kernel.org, quic_hemantk@quicinc.com,
+        linux-kernel@vger.kernel.org, loic.poulain@linaro.org,
+        Bhaumik Bhatt <bbhatt@codeaurora.org>
+Subject: [PATCH] bus: mhi: core: Use macros for execution environment features
+Date:   Mon,  8 Nov 2021 14:19:38 -0800
+Message-Id: <1636409978-31847-1-git-send-email-quic_bbhatt@quicinc.com>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 8, 2021 at 10:59 PM Vladimir Oltean <olteanv@gmail.com> wrote:
->
-> On Mon, Nov 08, 2021 at 10:56:51PM +0100, Robert Marko wrote:
-> > On Mon, Nov 8, 2021 at 10:46 PM Vladimir Oltean <olteanv@gmail.com> wrote:
-> > >
-> > > On Mon, Nov 08, 2021 at 10:39:27PM +0100, Robert Marko wrote:
-> > > > On Mon, Nov 8, 2021 at 10:18 PM Vladimir Oltean <olteanv@gmail.com> wrote:
-> > > > >
-> > > > > On Mon, Nov 08, 2021 at 10:10:19PM +0100, Robert Marko wrote:
-> > > > > > On Mon, Nov 8, 2021 at 9:21 PM Vladimir Oltean <olteanv@gmail.com> wrote:
-> > > > > > >
-> > > > > > > Timed out waiting for ACK/NACK from John.
-> > > > > > >
-> > > > > > > On Thu, Nov 04, 2021 at 01:49:27PM +0100, Robert Marko wrote:
-> > > > > > > > From: Gabor Juhos <j4g8y7@gmail.com>
-> > > > > > > >
-> > > > > > > > The MIB module needs to be enabled in the MODULE_EN register in
-> > > > > > > > order to make it to counting. This is done in the qca8k_mib_init()
-> > > > > > > > function. However instead of only changing the MIB module enable
-> > > > > > > > bit, the function writes the whole register. As a side effect other
-> > > > > > > > internal modules gets disabled.
-> > > > > > >
-> > > > > > > Please be more specific.
-> > > > > > > The MODULE_EN register contains these other bits:
-> > > > > > > BIT(0): MIB_EN
-> > > > > > > BIT(1): ACL_EN (ACL module enable)
-> > > > > > > BIT(2): L3_EN (Layer 3 offload enable)
-> > > > > > > BIT(10): SPECIAL_DIP_EN (Enable special DIP (224.0.0.x or ff02::1) broadcast
-> > > > > > > 0 = Use multicast DP
-> > > > > > > 1 = Use broadcast DP)
-> > > > > > >
-> > > > > > > >
-> > > > > > > > Fix up the code to only change the MIB module specific bit.
-> > > > > > >
-> > > > > > > Clearing which one of the above bits bothers you? The driver for the
-> > > > > > > qca8k switch supports neither layer 3 offloading nor ACLs, and I don't
-> > > > > > > really know what this special DIP packet/header is).
-> > > > > > >
-> > > > > > > Generally the assumption for OF-based drivers is that one should not
-> > > > > > > rely on any configuration done by prior boot stages, so please explain
-> > > > > > > what should have worked but doesn't.
-> > > > > >
-> > > > > > Hi,
-> > > > > > I think that the commit message wasn't clear enough and that's my fault for not
-> > > > > > fixing it up before sending.
-> > > > >
-> > > > > Yes, it is not. If things turn out to need changing, you should resend
-> > > > > with an updated commit message.
-> > > > >
-> > > > > > MODULE_EN register has 3 more bits that aren't documented in the QCA8337
-> > > > > > datasheet but only in the IPQ4019 one but they are there.
-> > > > > > Those are:
-> > > > > > BIT(31) S17C_INT (This one is IPQ4019 specific)
-> > > > > > BIT(9) LOOKUP_ERR_RST_EN
-> > > > > > BIT(10) QM_ERR_RST_EN
-> > > > >
-> > > > > Are you sure that BIT(10) is QM_ERR_RST_EN on IPQ4019? Because in the
-> > > > > QCA8334 document I'm looking at, it is SPECIAL_DIP_EN.
-> > > >
-> > > > Sorry, QM_ERR_RST_EN is BIT(8) and it as well as LOOKUP_ERR_RST_EN should
-> > > > be exactly the same on QCA833x switches as well as IPQ4019 uses a
-> > > > variant of QCA8337N.
-> > > > >
-> > > > > > Lookup and QM bits as well as the DIP default to 1 while the INT bit is 0.
-> > > > > >
-> > > > > > Clearing the QM and Lookup bits is what is bothering me, why should we clear HW
-> > > > > > default bits without mentioning that they are being cleared and for what reason?
-> > > > >
-> > > > > To be fair, BIT(9) is marked as RESERVED and documented as being set to 1,
-> > > > > so writing a zero is probably not very smart.
-> > > > >
-> > > > > > We aren't depending on the bootloader or whatever configuring the switch, we are
-> > > > > > even invoking the HW reset before doing anything to make sure that the
-> > > > > > whole networking
-> > > > > > subsystem in IPQ4019 is back to HW defaults to get rid of various
-> > > > > > bootloader hackery.
-> > > > > >
-> > > > > > Gabor found this while working on IPQ4019 support and to him and to me it looks
-> > > > > > like a bug.
-> > > > >
-> > > > > A bug with what impact? I don't have a description of those bits that
-> > > > > get unset. What do they do, what doesn't work?
-> > > >
-> > > > LOOKUP_ERR_RST_EN:
-> > > > 1b1:Enableautomatic software reset by hardware due to
-> > > > lookup error.
-> > > >
-> > > > QM_ERR_RST_EN:
-> > > > 1b1:enableautomatic software reset by hardware due to qm
-> > > > error.
-> > > >
-> > > > So clearing these 2 disables the built-in error recovery essentially.
-> > > >
-> > > > To me clearing the bits even if they are not breaking something now
-> > > > should at least have a comment in the code that indicates that it's intentional
-> > > > for some reason.
-> > > > I wish John would explain the logic behind this.
-> > >
-> > > That sounds... aggressive. Have you or Gabor exercised this error path?
-> > > What is supposed to happen? Is software prepared for the hardware to
-> > > automatically reset?
-> >
-> > I am not trying to be aggressive, but to me, this is either a bug or they are
-> > intentionally cleaned but it's not documented.
-> > Have tried triggering the QM error, but couldn't hit it even when
-> > doing crazy stuff.
-> > It should be nearly impossible to hit it, but it's there to prevent
-> > the switch from just locking up
-> > under extreme conditions (At least that is how I understand it).
-> >
-> > I don't think the driver currently even monitors the QM registers at all.
-> > I can understand clearing these bits intentionally, but it's gotta be
-> > documented otherwise
-> > somebody else is gonna think is a bug/mistake/whatever in the code.
->
-> Oh no no, I'm not saying that you're aggressive, but the hardware
-> behavior of automatically performing a software reset.
->
-> The driver keeps state. If the switch just resets by itself, what do you
-> think will continue to work fine afterwards? The code path needs testing.
-> I am not convinced that a desynchronized software state is any better
-> than a lockup.
+From: Bhaumik Bhatt <bbhatt@codeaurora.org>
 
-It's really unpredictable, as QCA doesn't specify what does the software reset
-actually does, as I doubt that they are completely resetting the
-switch to HW defaults.
-But since I was not able to trigger the QM error and the resulting
-reset, it's hard to tell.
-Phylink would probably see the ports going down and trigger the MAC
-configuration again,
-this should at least allow using the ports and forwarding to CPU again.
-However, it may also reset the forwarding config to basically flooding
-all ports which is the default
-which is not great.
+The implementation for execution environment specific functionality
+is spread out. Use macros that help determine the paths to be taken.
 
-But I do agree that it may not be a lot better than a lockup.
+Signed-off-by: Bhaumik Bhatt <bbhatt@codeaurora.org>
+---
+ drivers/bus/mhi/core/boot.c     | 2 +-
+ drivers/bus/mhi/core/internal.h | 3 ++-
+ drivers/bus/mhi/core/pm.c       | 2 +-
+ 3 files changed, 4 insertions(+), 3 deletions(-)
 
-Regards,
-Robert
+diff --git a/drivers/bus/mhi/core/boot.c b/drivers/bus/mhi/core/boot.c
+index 0a97262..74295d3 100644
+--- a/drivers/bus/mhi/core/boot.c
++++ b/drivers/bus/mhi/core/boot.c
+@@ -417,7 +417,7 @@ void mhi_fw_load_handler(struct mhi_controller *mhi_cntrl)
+ 	}
+ 
+ 	/* wait for ready on pass through or any other execution environment */
+-	if (mhi_cntrl->ee != MHI_EE_EDL && mhi_cntrl->ee != MHI_EE_PBL)
++	if (!MHI_FW_LOAD_CAPABLE(mhi_cntrl->ee))
+ 		goto fw_load_ready_state;
+ 
+ 	fw_name = (mhi_cntrl->ee == MHI_EE_EDL) ?
+diff --git a/drivers/bus/mhi/core/internal.h b/drivers/bus/mhi/core/internal.h
+index 3a732af..9d72b1d1 100644
+--- a/drivers/bus/mhi/core/internal.h
++++ b/drivers/bus/mhi/core/internal.h
+@@ -390,7 +390,8 @@ extern const char * const mhi_ee_str[MHI_EE_MAX];
+ 
+ #define MHI_IN_PBL(ee) (ee == MHI_EE_PBL || ee == MHI_EE_PTHRU || \
+ 			ee == MHI_EE_EDL)
+-
++#define MHI_POWER_UP_CAPABLE(ee) (MHI_IN_PBL(ee) || ee == MHI_EE_AMSS)
++#define MHI_FW_LOAD_CAPABLE(ee) (ee == MHI_EE_PBL || ee == MHI_EE_EDL)
+ #define MHI_IN_MISSION_MODE(ee) (ee == MHI_EE_AMSS || ee == MHI_EE_WFW || \
+ 				 ee == MHI_EE_FP)
+ 
+diff --git a/drivers/bus/mhi/core/pm.c b/drivers/bus/mhi/core/pm.c
+index fb99e37..0bb8d77 100644
+--- a/drivers/bus/mhi/core/pm.c
++++ b/drivers/bus/mhi/core/pm.c
+@@ -1068,7 +1068,7 @@ int mhi_async_power_up(struct mhi_controller *mhi_cntrl)
+ 	write_unlock_irq(&mhi_cntrl->pm_lock);
+ 
+ 	/* Confirm that the device is in valid exec env */
+-	if (!MHI_IN_PBL(current_ee) && current_ee != MHI_EE_AMSS) {
++	if (!MHI_POWER_UP_CAPABLE(current_ee)) {
+ 		dev_err(dev, "%s is not a valid EE for power on\n",
+ 			TO_MHI_EXEC_STR(current_ee));
+ 		ret = -EIO;
 -- 
-Robert Marko
-Staff Embedded Linux Engineer
-Sartura Ltd.
-Lendavska ulica 16a
-10000 Zagreb, Croatia
-Email: robert.marko@sartura.hr
-Web: www.sartura.hr
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+a Linux Foundation Collaborative Project
+
