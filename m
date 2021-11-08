@@ -2,121 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AF804447E16
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Nov 2021 11:37:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 17A9E447E1B
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Nov 2021 11:37:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238319AbhKHKj5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Nov 2021 05:39:57 -0500
-Received: from smtp-out2.suse.de ([195.135.220.29]:39366 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238350AbhKHKjy (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Nov 2021 05:39:54 -0500
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out2.suse.de (Postfix) with ESMTP id 6E4881FD71;
-        Mon,  8 Nov 2021 10:37:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1636367829; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=YqyhzYsEQEeLpyJ9JtK/DYh0y4NiY5xSLZjut5gPAmE=;
-        b=SFc3b82e4uAduqji1+YkWeOCs6uI+vj7B1+RSuHP7N40XwkYt64Gdvoxw8rNXvd2/3z5ZO
-        YZJnM/jmYtEInKgqRhiRCA/Pgdq7SQUkNk4dd5NlOCyGOjLR5RWDsJzXHLTnvPE2poyd8A
-        Md28myxajpexC1icn1Io8isy8xtjEw0=
-Received: from suse.cz (unknown [10.100.201.86])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by relay2.suse.de (Postfix) with ESMTPS id 26536A3B81;
-        Mon,  8 Nov 2021 10:37:09 +0000 (UTC)
-Date:   Mon, 8 Nov 2021 11:37:08 +0100
-From:   Michal Hocko <mhocko@suse.com>
-To:     Alexey Makhalov <amakhalov@vmware.com>
-Cc:     linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
-        David Hildenbrand <david@redhat.com>,
-        Oscar Salvador <osalvador@suse.de>,
-        Dennis Zhou <dennis@kernel.org>, Tejun Heo <tj@kernel.org>,
-        Christoph Lameter <cl@linux.com>, linux-kernel@vger.kernel.org,
-        stable@vger.kernel.org
-Subject: Re: [PATCH v2] mm: fix panic in __alloc_pages
-Message-ID: <YYj91Mkt4m8ySIWt@dhcp22.suse.cz>
-References: <86BDA7AC-3E7A-4779-9388-9DF7BA7230AA@vmware.com>
- <20211108063650.19435-1-amakhalov@vmware.com>
+        id S238383AbhKHKkY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Nov 2021 05:40:24 -0500
+Received: from spam.zju.edu.cn ([61.164.42.155]:40310 "EHLO zju.edu.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S238382AbhKHKkQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Nov 2021 05:40:16 -0500
+Received: from localhost.localdomain (unknown [222.205.2.245])
+        by mail-app4 (Coremail) with SMTP id cS_KCgDn7eHj_Yhh3YTCBA--.28592S4;
+        Mon, 08 Nov 2021 18:37:23 +0800 (CST)
+From:   Lin Ma <linma@zju.edu.cn>
+To:     netdev@vger.kernel.org
+Cc:     davem@davemloft.net, kuba@kernel.org, jirislaby@kernel.org,
+        gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org,
+        Lin Ma <linma@zju.edu.cn>
+Subject: [PATCH v1 1/2] hamradio: defer ax25 kfree after unregister_netdev
+Date:   Mon,  8 Nov 2021 18:37:21 +0800
+Message-Id: <20211108103721.30522-1-linma@zju.edu.cn>
+X-Mailer: git-send-email 2.33.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211108063650.19435-1-amakhalov@vmware.com>
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: cS_KCgDn7eHj_Yhh3YTCBA--.28592S4
+X-Coremail-Antispam: 1UD129KBjvJXoW7KrW5Cw43Xw1rur45Cr4fGrg_yoW8WF1rpF
+        WFkFyfXF4ktr4xJw1DJay0qFy5Wws7JayUCa4Ik39a9ws0vryj9r40k3yUurn5ZrWfGrWS
+        vF15tFW3CF1YyrJanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUv01xkIjI8I6I8E6xAIw20EY4v20xvaj40_Wr0E3s1l1IIY67AE
+        w4v_Jr0_Jr4l8cAvFVAK0II2c7xJM28CjxkF64kEwVA0rcxSw2x7M28EF7xvwVC0I7IYx2
+        IY67AKxVWDJVCq3wA2z4x0Y4vE2Ix0cI8IcVCY1x0267AKxVWxJr0_GcWl84ACjcxK6I8E
+        87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_GcCE3s1le2I262IYc4CY6c
+        8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_Jr0_
+        Jr4lYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvY0x0EwI
+        xGrwACjI8F5VA0II8E6IAqYI8I648v4I1lc2xSY4AK67AK6r4DMxAIw28IcxkI7VAKI48J
+        MxAIw28IcVCjz48v1sIEY20_GFWkJr1UJwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c
+        02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_JF0_
+        Jw1lIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7
+        CjxVAFwI0_Jr0_Gr1lIxAIcVCF04k26cxKx2IYs7xG6r1j6r1xMIIF0xvEx4A2jsIE14v2
+        6r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Jr0_GrUvcSsGvfC2KfnxnUUI43ZEXa7VUb
+        GQ6JUUUUU==
+X-CM-SenderInfo: qtrwiiyqvtljo62m3hxhgxhubq/
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun 07-11-21 22:36:50, Alexey Makhalov wrote:
-> There is a kernel panic caused by pcpu_alloc_pages() passing
-> offlined and uninitialized node to alloc_pages_node() leading
-> to panic by NULL dereferencing uninitialized NODE_DATA(nid).
-> 
->  CPU2 has been hot-added
->  BUG: unable to handle page fault for address: 0000000000001608
->  #PF: supervisor read access in kernel mode
->  #PF: error_code(0x0000) - not-present page
->  PGD 0 P4D 0
->  Oops: 0000 [#1] SMP PTI
->  CPU: 0 PID: 1 Comm: systemd Tainted: G            E     5.15.0-rc7+ #11
->  Hardware name: VMware, Inc. VMware7,1/440BX Desktop Reference Platform, BIOS VMW
-> 
->  RIP: 0010:__alloc_pages+0x127/0x290
->  Code: 4c 89 f0 5b 41 5c 41 5d 41 5e 41 5f 5d c3 44 89 e0 48 8b 55 b8 c1 e8 0c 83 e0 01 88 45 d0 4c 89 c8 48 85 d2 0f 85 1a 01 00 00 <45> 3b 41 08 0f 82 10 01 00 00 48 89 45 c0 48 8b 00 44 89 e2 81 e2
->  RSP: 0018:ffffc900006f3bc8 EFLAGS: 00010246
->  RAX: 0000000000001600 RBX: 0000000000000000 RCX: 0000000000000000
->  RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000000000000cc2
->  RBP: ffffc900006f3c18 R08: 0000000000000001 R09: 0000000000001600
->  R10: ffffc900006f3a40 R11: ffff88813c9fffe8 R12: 0000000000000cc2
->  R13: 0000000000000000 R14: 0000000000000001 R15: 0000000000000cc2
->  FS:  00007f27ead70500(0000) GS:ffff88807ce00000(0000) knlGS:0000000000000000
->  CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
->  CR2: 0000000000001608 CR3: 000000000582c003 CR4: 00000000001706b0
->  Call Trace:
->   pcpu_alloc_pages.constprop.0+0xe4/0x1c0
->   pcpu_populate_chunk+0x33/0xb0
->   pcpu_alloc+0x4d3/0x6f0
->   __alloc_percpu_gfp+0xd/0x10
->   alloc_mem_cgroup_per_node_info+0x54/0xb0
->   mem_cgroup_alloc+0xed/0x2f0
->   mem_cgroup_css_alloc+0x33/0x2f0
->   css_create+0x3a/0x1f0
->   cgroup_apply_control_enable+0x12b/0x150
->   cgroup_mkdir+0xdd/0x110
->   kernfs_iop_mkdir+0x4f/0x80
->   vfs_mkdir+0x178/0x230
->   do_mkdirat+0xfd/0x120
->   __x64_sys_mkdir+0x47/0x70
->   ? syscall_exit_to_user_mode+0x21/0x50
->   do_syscall_64+0x43/0x90
->   entry_SYSCALL_64_after_hwframe+0x44/0xae
-> 
-> Panic can be easily reproduced by disabling udev rule for
-> automatic onlining hot added CPU followed by CPU with
-> memoryless node (NUMA node with CPU only) hot add.
-> 
-> Hot adding CPU and memoryless node does not bring the node
-> to online state. Memoryless node will be onlined only during
-> the onlining its CPU.
-> 
-> Node can be in one of the following states:
-> 1. not present.(nid == NUMA_NO_NODE)
-> 2. present, but offline (nid > NUMA_NO_NODE, node_online(nid) == 0,
-> 				NODE_DATA(nid) == NULL)
-> 3. present and online (nid > NUMA_NO_NODE, node_online(nid) > 0,
-> 				NODE_DATA(nid) != NULL)
-> 
-> Percpu code is doing allocations for all possible CPUs. The
-> issue happens when it serves hot added but not yet onlined
-> CPU when its node is in 2nd state. This node is not ready
-> to use, fallback to node_mem_id().
+There is a possible race condition (use-after-free) like below
 
-I do agree that cpu_to_mem usage is better here. But I still think this
-is papering over a deeper problem. We should never allow cpu_to_mem to
-return an invalid numa node.
+ (USE)                       |  (FREE)
+ax25_sendmsg                 |
+ ax25_queue_xmit             |
+  dev_queue_xmit             |
+   __dev_queue_xmit          |
+    __dev_xmit_skb           |
+     sch_direct_xmit         | ...
+      xmit_one               |
+       netdev_start_xmit     | tty_ldisc_kill
+        __netdev_start_xmit  |  mkiss_close
+         ax_xmit             |   kfree
+          ax_encaps          |
+                             |
 
+Even though there are two synchronization primitives before the kfree:
+1. wait_for_completion(&ax->dead). This can prevent the race with
+routines from mkiss_ioctl. However, it cannot stop the routine coming
+from upper layer, i.e., the ax25_sendmsg.
+
+2. netif_stop_queue(ax->dev). It seems that this line of code aims to
+halt the transmit queue but it fails to stop the routine that already
+being xmit.
+
+This patch reorder the kfree after the unregister_netdev to avoid the
+possible UAF as the unregister_netdev() is well synchronized and won't
+return if there is a running routine.
+
+Signed-off-by: Lin Ma <linma@zju.edu.cn>
+---
+ drivers/net/hamradio/mkiss.c | 9 +++++----
+ 1 file changed, 5 insertions(+), 4 deletions(-)
+
+diff --git a/drivers/net/hamradio/mkiss.c b/drivers/net/hamradio/mkiss.c
+index 867252a0247b..e2b332b54f06 100644
+--- a/drivers/net/hamradio/mkiss.c
++++ b/drivers/net/hamradio/mkiss.c
+@@ -792,13 +792,14 @@ static void mkiss_close(struct tty_struct *tty)
+ 	 */
+ 	netif_stop_queue(ax->dev);
+ 
+-	/* Free all AX25 frame buffers. */
+-	kfree(ax->rbuff);
+-	kfree(ax->xbuff);
+-
+ 	ax->tty = NULL;
+ 
+ 	unregister_netdev(ax->dev);
++
++	/* Free all AX25 frame buffers after unreg. */
++	kfree(ax->rbuff);
++	kfree(ax->xbuff);
++
+ 	free_netdev(ax->dev);
+ }
+ 
 -- 
-Michal Hocko
-SUSE Labs
+2.33.1
+
