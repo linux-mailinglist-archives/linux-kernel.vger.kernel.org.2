@@ -2,772 +2,539 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2A4554478B8
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Nov 2021 03:58:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D49B4478AC
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Nov 2021 03:51:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237119AbhKHDAt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 7 Nov 2021 22:00:49 -0500
-Received: from regular1.263xmail.com ([211.150.70.195]:37924 "EHLO
-        regular1.263xmail.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230128AbhKHDAq (ORCPT
+        id S236830AbhKHCy2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 7 Nov 2021 21:54:28 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53772 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229878AbhKHCy1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 7 Nov 2021 22:00:46 -0500
-X-Greylist: delayed 451 seconds by postgrey-1.27 at vger.kernel.org; Sun, 07 Nov 2021 22:00:45 EST
-Received: from localhost (unknown [192.168.167.16])
-        by regular1.263xmail.com (Postfix) with ESMTP id ED5681BD6;
-        Mon,  8 Nov 2021 10:50:23 +0800 (CST)
-X-MAIL-GRAY: 0
-X-MAIL-DELIVERY: 1
-X-ADDR-CHECKED4: 1
-X-SKE-CHECKED: 1
-X-ABS-CHECKED: 1
-X-ANTISPAM-LEVEL: 2
-Received: from [172.16.12.93] (unknown [58.22.7.114])
-        by smtp.263.net (postfix) whith ESMTP id P5172T139933591271168S1636339822752847_;
-        Mon, 08 Nov 2021 10:50:23 +0800 (CST)
-X-IP-DOMAINF: 1
-X-RL-SENDER: kever.yang@rock-chips.com
-X-SENDER: yk@rock-chips.com
-X-LOGIN-NAME: kever.yang@rock-chips.com
-X-FST-TO: cl@rock-chips.com
-X-RCPT-COUNT: 13
-X-LOCAL-RCPT-COUNT: 2
-X-SENDER-IP: 58.22.7.114
-X-ATTACHMENT-NUM: 0
-X-UNIQUE-TAG: <9dcb7e95c0f8cfeec5ed4dd933030aac>
-X-System-Flag: 0
-Subject: Re: [PATCH v3 2/3] phy/rockchip: add naneng combo phy for RK3568
-To:     Yifeng Zhao <yifeng.zhao@rock-chips.com>, heiko@sntech.de,
-        robh+dt@kernel.org
-Cc:     devicetree@vger.kernel.org, vkoul@kernel.org,
-        michael.riesch@wolfvision.net, linux-rockchip@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-phy@lists.infradead.org, kishon@ti.com,
-        p.zabel@pengutronix.de, cl@rock-chips.com
-References: <20211025080632.32063-1-yifeng.zhao@rock-chips.com>
- <20211025080632.32063-3-yifeng.zhao@rock-chips.com>
-From:   Kever Yang <kever.yang@rock-chips.com>
-Message-ID: <9630101c-f68d-4c5a-a1f2-b689d52a081b@rock-chips.com>
-Date:   Mon, 8 Nov 2021 10:50:22 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        Sun, 7 Nov 2021 21:54:27 -0500
+Received: from mail-yb1-xb30.google.com (mail-yb1-xb30.google.com [IPv6:2607:f8b0:4864:20::b30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 34A3AC061570
+        for <linux-kernel@vger.kernel.org>; Sun,  7 Nov 2021 18:51:43 -0800 (PST)
+Received: by mail-yb1-xb30.google.com with SMTP id v7so39842555ybq.0
+        for <linux-kernel@vger.kernel.org>; Sun, 07 Nov 2021 18:51:43 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance-com.20210112.gappssmtp.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=tUppml2Ur1MclUPf5DAubL+CMswUCyiQzxbAp3SgOe4=;
+        b=A4bIWnER9ccOIcxjms9w/pbuLJsmQUzIKX6pNGx+ciIG8ZcjnnY1ZYGUkn7TByfZHs
+         es7EetthkYtrJloTwcn75U1ofO7btvOyp9ihBKuOg+p1dEDg2DzxlcSeJIa7rRZfd551
+         bhSWDt1xWEqyco8FSQtNgl22PtPD8Q9l3zXaPE5YU4537Ewz71aK9Z3fSts8bMzZRg1y
+         zzXNSqbMyhhozi1hQYBCFLIVL8er3AZ6e9jLEqmzgtkKzNtpj0rphcHK90RlLT7uRtEm
+         dHUaVVZlqebt/DRkI6TiugGA4CBtC5Pf6fY3xeM7RNELoHmS0+Zn7lXkNxESWcI3ZYNl
+         FPqQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=tUppml2Ur1MclUPf5DAubL+CMswUCyiQzxbAp3SgOe4=;
+        b=qXVbcdAp7csg0droDSM+v1nxBBr1pL+D8zftkmRchZl1lhSa+Ul6T9i/05UidFNuoS
+         jdpUEhsswlgHVwXKDE3z3zvRnmcM/UtrvO7ywRZ3EkK+GA4tpChHNeuYPi/8Se6td81M
+         ugncgVWU7SsHSa1zP5Li+LOv7ac5suGC5D/u/U3hej2kMGIwBho6oH565zQCUsVqDPGk
+         fYVVuGMmXqKCkTtS4ApHbLD5aCxPgOwqIURTH5kp62D2qd0205+Hu0oH3jZszKm200T3
+         LnKBLvZidwUoV0p2YCKzEYq/CkHuHoKjl8MZlCv7keZ0HLPzRYIg6Ei1p+Jmu+jyjtxR
+         Qbfg==
+X-Gm-Message-State: AOAM532QUk57RcoxhB442qwrXTKR9AaGTwq8cXS2F86kpKjCQjgHvFau
+        0/xqc44jpRT5+UPkaqLDolsW4igR1lJQQQt7ucFQpA==
+X-Google-Smtp-Source: ABdhPJwgGENN+iNUdfQPUZ+a8WKfHIj6nU3swasJfa9CZnE61enxXZCsRk/JTG2wdSkBW08dlSjbZlsiNWfmVi4xODE=
+X-Received: by 2002:a25:59d5:: with SMTP id n204mr78204390ybb.189.1636339902313;
+ Sun, 07 Nov 2021 18:51:42 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20211025080632.32063-3-yifeng.zhao@rock-chips.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
+References: <20211104045347.218528-1-almasrymina@google.com>
+ <CAMZfGtWv+L37JXikOAnBWLEGhu8baReVsDWGFH+CnTeWKTQy2Q@mail.gmail.com> <CAHS8izMqHtJR4FR5DvyV0e0g+_pdCoDm6qWV_R6YpN7YrSZ9ig@mail.gmail.com>
+In-Reply-To: <CAHS8izMqHtJR4FR5DvyV0e0g+_pdCoDm6qWV_R6YpN7YrSZ9ig@mail.gmail.com>
+From:   Muchun Song <songmuchun@bytedance.com>
+Date:   Mon, 8 Nov 2021 10:51:05 +0800
+Message-ID: <CAMZfGtUKS0WPGsUffJUD-953LEEZYvwS8FvUKwCMuydU8gyLBA@mail.gmail.com>
+Subject: Re: [PATCH v3] hugetlb: Add hugetlb.*.numa_stat file
+To:     Mina Almasry <almasrymina@google.com>
+Cc:     Mike Kravetz <mike.kravetz@oracle.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Shuah Khan <shuah@kernel.org>,
+        Miaohe Lin <linmiaohe@huawei.com>,
+        Oscar Salvador <osalvador@suse.de>,
+        Michal Hocko <mhocko@suse.com>,
+        David Rientjes <rientjes@google.com>,
+        Shakeel Butt <shakeelb@google.com>, Jue Wang <juew@google.com>,
+        Yang Yao <ygyao@google.com>, Joanna Li <joannali@google.com>,
+        Cannon Matthews <cannonmatthews@google.com>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-Looks good to me.
-
-
-Reviewed-by: Kever Yang <kever.yang@rock-chips.com>
-
-
-Thanks,
-- Kever
-
-On 2021/10/25 下午4:06, Yifeng Zhao wrote:
-> This patch implements a combo phy driver for Rockchip SoCs
-> with NaNeng IP block. This phy can be used as pcie-phy, usb3-phy,
-> sata-phy or sgmii-phy.
+On Mon, Nov 8, 2021 at 7:09 AM Mina Almasry <almasrymina@google.com> wrote:
 >
-> Signed-off-by: Yifeng Zhao <yifeng.zhao@rock-chips.com>
-> ---
+> On Fri, Nov 5, 2021 at 11:55 PM Muchun Song <songmuchun@bytedance.com> wr=
+ote:
+> >
+> > On Thu, Nov 4, 2021 at 12:53 PM Mina Almasry <almasrymina@google.com> w=
+rote:
+> > >
+> > > For hugetlb backed jobs/VMs it's critical to understand the numa
+> > > information for the memory backing these jobs to deliver optimal
+> > > performance.
+> > >
+> > > Currently this technically can be queried from /proc/self/numa_maps, =
+but
+> > > there are significant issues with that. Namely:
+> > > 1. Memory can be mapped on unmapped.
+> > > 2. numa_maps are per process and need to be aggregated across all
+> > >    processes in the cgroup. For shared memory this is more involved a=
+s
+> > >    the userspace needs to make sure it doesn't double count shared
+> > >    mappings.
+> > > 3. I believe querying numa_maps needs to hold the mmap_lock which add=
+s
+> > >    to the contention on this lock.
+> > >
+> > > For these reasons I propose simply adding hugetlb.*.numa_stat file,
+> > > which shows the numa information of the cgroup similarly to
+> > > memory.numa_stat.
+> > >
+> > > On cgroup-v2:
+> > >    cat /sys/fs/cgroup/unified/test/hugetlb.2MB.numa_stat
+> > >    total=3D2097152 N0=3D2097152 N1=3D0
+> > >
+> > > On cgroup-v1:
+> > >    cat /sys/fs/cgroup/hugetlb/test/hugetlb.2MB.numa_stat
+> > >    total=3D2097152 N0=3D2097152 N1=3D0
+> > >    hierarichal_total=3D2097152 N0=3D2097152 N1=3D0
+> > >
+> > > This patch was tested manually by allocating hugetlb memory and query=
+ing
+> > > the hugetlb.*.numa_stat file of the cgroup and its parents.
+> > > =EF=BF=BC
+> > > Cc: Mike Kravetz <mike.kravetz@oracle.com>
+> > > Cc: Andrew Morton <akpm@linux-foundation.org>
+> > > Cc: Shuah Khan <shuah@kernel.org>
+> > > Cc: Miaohe Lin <linmiaohe@huawei.com>
+> > > Cc: Oscar Salvador <osalvador@suse.de>
+> > > Cc: Michal Hocko <mhocko@suse.com>
+> > > Cc: Muchun Song <songmuchun@bytedance.com>
+> > > Cc: David Rientjes <rientjes@google.com>
+> > > Cc: Shakeel Butt <shakeelb@google.com>
+> > > Cc: Jue Wang <juew@google.com>
+> > > Cc: Yang Yao <ygyao@google.com>
+> > > Cc: Joanna Li <joannali@google.com>
+> > > Cc: Cannon Matthews <cannonmatthews@google.com>
+> > > Cc: linux-mm@kvack.org
+> > > Cc: linux-kernel@vger.kernel.org
+> > >
+> > > Signed-off-by: Mina Almasry <almasrymina@google.com>
+> > >
+> > > ---
+> > >
+> > > Changes in v3:
+> > > - Fixed typos (sorry!)
+> > > - Used conventional locations for cgroups mount points in docs/commit
+> > > message.
+> > > - Updated docs.
+> > > - Handle kzalloc_node failure, and proper deallocation of per node da=
+ta.
+> > > - Use struct_size() to calculate the struct size.
+> > > - Use nr_node_ids instead of MAX_NUMNODES.
+> > > - Updated comments per multi-line comment pattern.
+> > >
+> > > Changes in v2:
+> > > - Fix warning Reported-by: kernel test robot <lkp@intel.com>
+> > > ---
+> > >  .../admin-guide/cgroup-v1/hugetlb.rst         |   4 +
+> > >  Documentation/admin-guide/cgroup-v2.rst       |   5 +
+> > >  include/linux/hugetlb.h                       |   4 +-
+> > >  include/linux/hugetlb_cgroup.h                |   7 ++
+> > >  mm/hugetlb_cgroup.c                           | 116 ++++++++++++++++=
+--
+> > >  .../testing/selftests/vm/write_to_hugetlbfs.c |   9 +-
+> > >  6 files changed, 132 insertions(+), 13 deletions(-)
+> > >
+> > > diff --git a/Documentation/admin-guide/cgroup-v1/hugetlb.rst b/Docume=
+ntation/admin-guide/cgroup-v1/hugetlb.rst
+> > > index 338f2c7d7a1c..0fa724d82abb 100644
+> > > --- a/Documentation/admin-guide/cgroup-v1/hugetlb.rst
+> > > +++ b/Documentation/admin-guide/cgroup-v1/hugetlb.rst
+> > > @@ -29,12 +29,14 @@ Brief summary of control files::
+> > >   hugetlb.<hugepagesize>.max_usage_in_bytes             # show max "h=
+ugepagesize" hugetlb  usage recorded
+> > >   hugetlb.<hugepagesize>.usage_in_bytes                 # show curren=
+t usage for "hugepagesize" hugetlb
+> > >   hugetlb.<hugepagesize>.failcnt                        # show the nu=
+mber of allocation failure due to HugeTLB usage limit
+> > > + hugetlb.<hugepagesize>.numa_stat                      # show the nu=
+ma information of the hugetlb memory charged to this cgroup
+> > >
+> > >  For a system supporting three hugepage sizes (64k, 32M and 1G), the =
+control
+> > >  files include::
+> > >
+> > >    hugetlb.1GB.limit_in_bytes
+> > >    hugetlb.1GB.max_usage_in_bytes
+> > > +  hugetlb.1GB.numa_stat
+> > >    hugetlb.1GB.usage_in_bytes
+> > >    hugetlb.1GB.failcnt
+> > >    hugetlb.1GB.rsvd.limit_in_bytes
+> > > @@ -43,6 +45,7 @@ files include::
+> > >    hugetlb.1GB.rsvd.failcnt
+> > >    hugetlb.64KB.limit_in_bytes
+> > >    hugetlb.64KB.max_usage_in_bytes
+> > > +  hugetlb.64KB.numa_stat
+> > >    hugetlb.64KB.usage_in_bytes
+> > >    hugetlb.64KB.failcnt
+> > >    hugetlb.64KB.rsvd.limit_in_bytes
+> > > @@ -51,6 +54,7 @@ files include::
+> > >    hugetlb.64KB.rsvd.failcnt
+> > >    hugetlb.32MB.limit_in_bytes
+> > >    hugetlb.32MB.max_usage_in_bytes
+> > > +  hugetlb.32MB.numa_stat
+> > >    hugetlb.32MB.usage_in_bytes
+> > >    hugetlb.32MB.failcnt
+> > >    hugetlb.32MB.rsvd.limit_in_bytes
+> > > diff --git a/Documentation/admin-guide/cgroup-v2.rst b/Documentation/=
+admin-guide/cgroup-v2.rst
+> > > index 4d8c27eca96b..356847f8f008 100644
+> > > --- a/Documentation/admin-guide/cgroup-v2.rst
+> > > +++ b/Documentation/admin-guide/cgroup-v2.rst
+> > > @@ -2252,6 +2252,11 @@ HugeTLB Interface Files
+> > >         are local to the cgroup i.e. not hierarchical. The file modif=
+ied event
+> > >         generated on this file reflects only the local events.
+> > >
+> > > +  hugetlb.<hugepagesize>.numa_stat
+> > > +       Similar to memory.numa_stat, it shows the numa information of=
+ the
+> > > +        hugetlb pages of <hugepagesize> in this cgroup.  Only active=
+ in
+> > > +        use hugetlb pages are included.  The per-node values are in =
+bytes.
+> > > +
+> > >  Misc
+> > >  ----
+> > >
+> > > diff --git a/include/linux/hugetlb.h b/include/linux/hugetlb.h
+> > > index 1faebe1cd0ed..0445faaa636e 100644
+> > > --- a/include/linux/hugetlb.h
+> > > +++ b/include/linux/hugetlb.h
+> > > @@ -613,8 +613,8 @@ struct hstate {
+> > >  #endif
+> > >  #ifdef CONFIG_CGROUP_HUGETLB
+> > >         /* cgroup control files */
+> > > -       struct cftype cgroup_files_dfl[7];
+> > > -       struct cftype cgroup_files_legacy[9];
+> > > +       struct cftype cgroup_files_dfl[8];
+> > > +       struct cftype cgroup_files_legacy[10];
+> > >  #endif
+> > >         char name[HSTATE_NAME_LEN];
+> > >  };
+> > > diff --git a/include/linux/hugetlb_cgroup.h b/include/linux/hugetlb_c=
+group.h
+> > > index c137396129db..54ff6ec68ed3 100644
+> > > --- a/include/linux/hugetlb_cgroup.h
+> > > +++ b/include/linux/hugetlb_cgroup.h
+> > > @@ -36,6 +36,11 @@ enum hugetlb_memory_event {
+> > >         HUGETLB_NR_MEMORY_EVENTS,
+> > >  };
+> > >
+> > > +struct hugetlb_cgroup_per_node {
+> > > +       /* hugetlb usage in bytes over all hstates. */
+> > > +       unsigned long usage[HUGE_MAX_HSTATE];
+> > > +};
+> > > +
+> > >  struct hugetlb_cgroup {
+> > >         struct cgroup_subsys_state css;
+> > >
+> > > @@ -57,6 +62,8 @@ struct hugetlb_cgroup {
+> > >
+> > >         /* Handle for "hugetlb.events.local" */
+> > >         struct cgroup_file events_local_file[HUGE_MAX_HSTATE];
+> > > +
+> > > +       struct hugetlb_cgroup_per_node *nodeinfo[];
+> > >  };
+> > >
+> > >  static inline struct hugetlb_cgroup *
+> > > diff --git a/mm/hugetlb_cgroup.c b/mm/hugetlb_cgroup.c
+> > > index 5383023d0cca..6be6dfb4f7a7 100644
+> > > --- a/mm/hugetlb_cgroup.c
+> > > +++ b/mm/hugetlb_cgroup.c
+> > > @@ -126,29 +126,59 @@ static void hugetlb_cgroup_init(struct hugetlb_=
+cgroup *h_cgroup,
+> > >         }
+> > >  }
+> > >
+> > > +static void hugetlb_cgroup_free(struct hugetlb_cgroup *h_cgroup)
+> > > +{
+> > > +       int node;
+> > > +
+> > > +       for_each_node(node) {
+> > > +               kfree(h_cgroup->nodeinfo[node]);
+> > > +       }
+> >
+> > Braces {} are not necessary for single statement blocks.
+> >
 >
-> Changes in v3:
-> - Using api devm_reset_control_get_optional_exclusive and dev_err_probe
-> - Remove apb_rst
-> - Redefine registers address
+> Will be removed in v4.
 >
-> Changes in v2:
-> - Using api devm_platform_get_and_ioremap_resource.
-> - Modify rockchip_combphy_set_Mode.
-> - Add some PHY registers definition.
+> > > +       kfree(h_cgroup);
+> > > +}
+> > > +
+> > >  static struct cgroup_subsys_state *
+> > >  hugetlb_cgroup_css_alloc(struct cgroup_subsys_state *parent_css)
+> > >  {
+> > >         struct hugetlb_cgroup *parent_h_cgroup =3D hugetlb_cgroup_fro=
+m_css(parent_css);
+> > >         struct hugetlb_cgroup *h_cgroup;
+> > > +       int node;
+> > > +
+> > > +       h_cgroup =3D kzalloc(struct_size(h_cgroup, nodeinfo, nr_node_=
+ids),
+> > > +                          GFP_KERNEL);
+> > >
+> > > -       h_cgroup =3D kzalloc(sizeof(*h_cgroup), GFP_KERNEL);
+> > >         if (!h_cgroup)
+> > >                 return ERR_PTR(-ENOMEM);
+> > >
+> > >         if (!parent_h_cgroup)
+> > >                 root_h_cgroup =3D h_cgroup;
+> > >
+> > > +       /*
+> > > +        * TODO: this routine can waste much memory for nodes which w=
+ill
+> > > +        * never be onlined. It's better to use memory hotplug callba=
+ck
+> > > +        * function.
+> > > +        */
+> > > +       for_each_node(node) {
+> > > +               /* Set node_to_alloc to -1 for offline nodes. */
+> > > +               int node_to_alloc =3D
+> > > +                       node_state(node, N_NORMAL_MEMORY) ? node : -1=
+;
+> > > +               h_cgroup->nodeinfo[node] =3D
+> > > +                       kzalloc_node(sizeof(struct hugetlb_cgroup_per=
+_node),
+> > > +                                    GFP_KERNEL, node_to_alloc);
+> > > +               if (!h_cgroup->nodeinfo[node])
+> > > +                       goto fail_alloc_nodeinfo;
+> > > +       }
+> > > +
+> > >         hugetlb_cgroup_init(h_cgroup, parent_h_cgroup);
+> > >         return &h_cgroup->css;
+> > > +
+> > > +fail_alloc_nodeinfo:
+> > > +       hugetlb_cgroup_free(h_cgroup);
+> > > +       return ERR_PTR(-ENOMEM);
+> > >  }
+> > >
+> > >  static void hugetlb_cgroup_css_free(struct cgroup_subsys_state *css)
+> > >  {
+> > > -       struct hugetlb_cgroup *h_cgroup;
+> > > -
+> > > -       h_cgroup =3D hugetlb_cgroup_from_css(css);
+> > > -       kfree(h_cgroup);
+> > > +       hugetlb_cgroup_free(hugetlb_cgroup_from_css(css));
+> > >  }
+> > >
+> > >  /*
+> > > @@ -292,7 +322,9 @@ static void __hugetlb_cgroup_commit_charge(int id=
+x, unsigned long nr_pages,
+> > >                 return;
+> > >
+> > >         __set_hugetlb_cgroup(page, h_cg, rsvd);
+> > > -       return;
+> > > +       if (!rsvd && h_cg)
+> > > +               h_cg->nodeinfo[page_to_nid(page)]->usage[idx] +=3D nr=
+_pages
+> > > +                                                                << P=
+AGE_SHIFT;
+> >
+> > How about changing the unit from byte to page? In this case, we
+> > do not need to do shift operations here. When the user reads
+> > numa_stat, then converting the pages to bytes for them.
+> >
 >
->   drivers/phy/rockchip/Kconfig                  |   8 +
->   drivers/phy/rockchip/Makefile                 |   1 +
->   .../rockchip/phy-rockchip-naneng-combphy.c    | 638 ++++++++++++++++++
->   3 files changed, 647 insertions(+)
->   create mode 100644 drivers/phy/rockchip/phy-rockchip-naneng-combphy.c
->
-> diff --git a/drivers/phy/rockchip/Kconfig b/drivers/phy/rockchip/Kconfig
-> index e812adad7242..9022e395c056 100644
-> --- a/drivers/phy/rockchip/Kconfig
-> +++ b/drivers/phy/rockchip/Kconfig
-> @@ -66,6 +66,14 @@ config PHY_ROCKCHIP_INNO_DSIDPHY
->   	  Enable this to support the Rockchip MIPI/LVDS/TTL PHY with
->   	  Innosilicon IP block.
->   
-> +config PHY_ROCKCHIP_NANENG_COMBO_PHY
-> +	tristate "Rockchip NANENG COMBO PHY Driver"
-> +	depends on ARCH_ROCKCHIP && OF
-> +	select GENERIC_PHY
-> +	help
-> +	  Enable this to support the Rockchip PCIe/USB3.0/SATA/QSGMII
-> +	  combo PHY with NaNeng IP block.
-> +
->   config PHY_ROCKCHIP_PCIE
->   	tristate "Rockchip PCIe PHY Driver"
->   	depends on (ARCH_ROCKCHIP && OF) || COMPILE_TEST
-> diff --git a/drivers/phy/rockchip/Makefile b/drivers/phy/rockchip/Makefile
-> index f0eec212b2aa..a5041efb5b8f 100644
-> --- a/drivers/phy/rockchip/Makefile
-> +++ b/drivers/phy/rockchip/Makefile
-> @@ -6,6 +6,7 @@ obj-$(CONFIG_PHY_ROCKCHIP_INNO_CSIDPHY)	+= phy-rockchip-inno-csidphy.o
->   obj-$(CONFIG_PHY_ROCKCHIP_INNO_DSIDPHY)	+= phy-rockchip-inno-dsidphy.o
->   obj-$(CONFIG_PHY_ROCKCHIP_INNO_HDMI)	+= phy-rockchip-inno-hdmi.o
->   obj-$(CONFIG_PHY_ROCKCHIP_INNO_USB2)	+= phy-rockchip-inno-usb2.o
-> +obj-$(CONFIG_PHY_ROCKCHIP_NANENG_COMBO_PHY)	+= phy-rockchip-naneng-combphy.o
->   obj-$(CONFIG_PHY_ROCKCHIP_PCIE)		+= phy-rockchip-pcie.o
->   obj-$(CONFIG_PHY_ROCKCHIP_TYPEC)	+= phy-rockchip-typec.o
->   obj-$(CONFIG_PHY_ROCKCHIP_USB)		+= phy-rockchip-usb.o
-> diff --git a/drivers/phy/rockchip/phy-rockchip-naneng-combphy.c b/drivers/phy/rockchip/phy-rockchip-naneng-combphy.c
-> new file mode 100644
-> index 000000000000..e5bea21a1d35
-> --- /dev/null
-> +++ b/drivers/phy/rockchip/phy-rockchip-naneng-combphy.c
-> @@ -0,0 +1,638 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +/*
-> + * Rockchip PIPE USB3.0 PCIE SATA combphy driver
-> + *
-> + * Copyright (C) 2021 Rockchip Electronics Co., Ltd.
-> + */
-> +
-> +#include <linux/clk.h>
-> +#include <linux/delay.h>
-> +#include <linux/io.h>
-> +#include <linux/iopoll.h>
-> +#include <linux/kernel.h>
-> +#include <linux/mfd/syscon.h>
-> +#include <linux/module.h>
-> +#include <linux/of_device.h>
-> +#include <linux/phy/phy.h>
-> +#include <linux/regmap.h>
-> +#include <linux/reset.h>
-> +#include <dt-bindings/phy/phy.h>
-> +
-> +#define BIT_WRITEABLE_SHIFT		16
-> +#define REF_CLOCK_24MHz			24000000
-> +#define REF_CLOCK_25MHz			25000000
-> +#define REF_CLOCK_100MHz		100000000
-> +/* RK3568 T22 COMBO PHY REG */
-> +#define RK3568_T22_PHYREG5		0x14
-> +#define T22_PHYREG5_PLL_DIV_MASK	GENMASK(7, 6)
-> +#define T22_PHYREG5_PLL_DIV_SHIFT	6
-> +#define T22_PHYREG5_PLL_DIV_2		1
-> +
-> +#define RK3568_T22_PHYREG6		0x18
-> +#define T22_PHYREG6_TX_RTERM_MASK	GENMASK(7, 4)
-> +#define T22_PHYREG6_TX_RTERM_SHIFT	4
-> +#define T22_PHYREG6_TX_RTERM_50OHM	0x8
-> +#define T22_PHYREG6_RX_RTERM_MASK	GENMASK(3, 0)
-> +#define T22_PHYREG6_RX_RTERM_SHIFT	0
-> +#define T22_PHYREG6_RX_RTERM_44OHM	0xF
-> +
-> +#define RK3568_T22_PHYREG7		0x1C
-> +#define T22_PHYREG7_SSC_EN		BIT(4)
-> +
-> +#define RK3568_T22_PHYREG10		0x28
-> +#define T22_PHYREG10_SU_TRIM_0_7	0xF0
-> +
-> +#define RK3568_T22_PHYREG11		0x2C
-> +#define T22_PHYREG11_PLL_LPF_ADJ	0x4
-> +
-> +#define RK3568_T22_PHYREG12		0x30
-> +#define T22_PHYREG12_RESISTER_MASK	GENMASK(5, 4)
-> +#define T22_PHYREG12_RESISTER_SHIFT	0x4
-> +#define T22_PHYREG12_RESISTER_HIGH_Z	0x3
-> +#define T22_PHYREG12_CKRCV_AMP0		BIT(7)
-> +
-> +#define RK3568_T22_PHYREG13		0x34
-> +#define T22_PHYREG13_CKRCV_AMP1		BIT(0)
-> +
-> +#define RK3568_T22_PHYREG14		0x38
-> +#define T22_PHYREG14_CTLE_EN		BIT(0)
-> +#define T22_PHYREG14_SSC_CNT_MASK	GENMASK(7, 6)
-> +#define T22_PHYREG14_SSC_CNT_SHIFT	6
-> +#define T22_PHYREG14_SSC_CNT_VALUE	0x1
-> +
-> +#define RK3568_T22_PHYREG15		0x3C
-> +#define T22_PHYREG15_SSC_CNT_VALUE	0x5f
-> +
-> +#define RK3568_T22_PHYREG17		0x44
-> +#define T22_PHYREG17_PLL_LOOP		0x32
-> +
-> +#define RK3568_T22_PHYREG31		0x7C
-> +#define T22_PHYREG31_SSC_MASK		GENMASK(7, 4)
-> +#define T22_PHYREG31_SSC_DIR_SHIFT	4
-> +#define T22_PHYREG31_SSC_UPWARD		0
-> +#define T22_PHYREG31_SSC_DOWNWARD	1
-> +#define T22_PHYREG31_SSC_OFFSET_SHIFT	6
-> +#define T22_PHYREG31_SSC_OFFSET_500PPM	1
-> +
-> +#define RK3568_T22_PHYREG32		0x80
-> +#define T22_PHYREG32_PLL_KVCO_MASK	GENMASK(4, 2)
-> +#define T22_PHYREG32_PLL_KVCO_SHIFT	2
-> +#define T22_PHYREG32_PLL_KVCO_VALUE	2
-> +
-> +struct rockchip_combphy_priv;
-> +
-> +struct combphy_reg {
-> +	u16 offset;
-> +	u16 bitend;
-> +	u16 bitstart;
-> +	u16 disable;
-> +	u16 enable;
-> +};
-> +
-> +struct rockchip_combphy_grfcfg {
-> +	struct combphy_reg pcie_mode_set;
-> +	struct combphy_reg usb_mode_set;
-> +	struct combphy_reg sgmii_mode_set;
-> +	struct combphy_reg qsgmii_mode_set;
-> +	struct combphy_reg pipe_rxterm_set;
-> +	struct combphy_reg pipe_txelec_set;
-> +	struct combphy_reg pipe_txcomp_set;
-> +	struct combphy_reg pipe_clk_25m;
-> +	struct combphy_reg pipe_clk_100m;
-> +	struct combphy_reg pipe_phymode_sel;
-> +	struct combphy_reg pipe_rate_sel;
-> +	struct combphy_reg pipe_rxterm_sel;
-> +	struct combphy_reg pipe_txelec_sel;
-> +	struct combphy_reg pipe_txcomp_sel;
-> +	struct combphy_reg pipe_clk_ext;
-> +	struct combphy_reg pipe_sel_usb;
-> +	struct combphy_reg pipe_sel_qsgmii;
-> +	struct combphy_reg pipe_phy_status;
-> +	struct combphy_reg con0_for_pcie;
-> +	struct combphy_reg con1_for_pcie;
-> +	struct combphy_reg con2_for_pcie;
-> +	struct combphy_reg con3_for_pcie;
-> +	struct combphy_reg con0_for_sata;
-> +	struct combphy_reg con1_for_sata;
-> +	struct combphy_reg con2_for_sata;
-> +	struct combphy_reg con3_for_sata;
-> +	struct combphy_reg pipe_con0_for_sata;
-> +	struct combphy_reg pipe_sgmii_mac_sel;
-> +	struct combphy_reg pipe_xpcs_phy_ready;
-> +	struct combphy_reg u3otg0_port_en;
-> +	struct combphy_reg u3otg1_port_en;
-> +};
-> +
-> +struct rockchip_combphy_cfg {
-> +	const int num_clks;
-> +	const struct clk_bulk_data *clks;
-> +	const struct rockchip_combphy_grfcfg *grfcfg;
-> +	int (*combphy_cfg)(struct rockchip_combphy_priv *priv);
-> +};
-> +
-> +struct rockchip_combphy_priv {
-> +	u8 mode;
-> +	void __iomem *mmio;
-> +	int num_clks;
-> +	struct clk_bulk_data *clks;
-> +	struct device *dev;
-> +	struct regmap *pipe_grf;
-> +	struct regmap *phy_grf;
-> +	struct phy *phy;
-> +	struct reset_control *phy_rst;
-> +	const struct rockchip_combphy_cfg *cfg;
-> +};
-> +
-> +static inline bool param_read(struct regmap *base,
-> +			      const struct combphy_reg *reg, u32 val)
-> +{
-> +	int ret;
-> +	u32 mask, orig, tmp;
-> +
-> +	ret = regmap_read(base, reg->offset, &orig);
-> +	if (ret)
-> +		return false;
-> +
-> +	mask = GENMASK(reg->bitend, reg->bitstart);
-> +	tmp = (orig & mask) >> reg->bitstart;
-> +
-> +	return tmp == val;
-> +}
-> +
-> +static int param_write(struct regmap *base,
-> +		       const struct combphy_reg *reg, bool en)
-> +{
-> +	u32 val, mask, tmp;
-> +
-> +	tmp = en ? reg->enable : reg->disable;
-> +	mask = GENMASK(reg->bitend, reg->bitstart);
-> +	val = (tmp << reg->bitstart) | (mask << BIT_WRITEABLE_SHIFT);
-> +
-> +	return regmap_write(base, reg->offset, val);
-> +}
-> +
-> +static u32 rockchip_combphy_is_ready(struct rockchip_combphy_priv *priv)
-> +{
-> +	const struct rockchip_combphy_grfcfg *cfg = priv->cfg->grfcfg;
-> +	u32 mask, val;
-> +
-> +	mask = GENMASK(cfg->pipe_phy_status.bitend,
-> +		       cfg->pipe_phy_status.bitstart);
-> +
-> +	regmap_read(priv->phy_grf, cfg->pipe_phy_status.offset, &val);
-> +	val = (val & mask) >> cfg->pipe_phy_status.bitstart;
-> +
-> +	return val;
-> +}
-> +
-> +static int rockchip_combphy_set_mode(struct rockchip_combphy_priv *priv)
-> +{
-> +	int ret = 0;
-> +
-> +	switch (priv->mode) {
-> +	case PHY_TYPE_PCIE:
-> +	case PHY_TYPE_USB3:
-> +	case PHY_TYPE_SATA:
-> +	case PHY_TYPE_SGMII:
-> +	case PHY_TYPE_QSGMII:
-> +		if (priv->cfg->combphy_cfg)
-> +			ret = priv->cfg->combphy_cfg(priv);
-> +		break;
-> +	default:
-> +		dev_err(priv->dev, "incompatible PHY type\n");
-> +		return -EINVAL;
-> +	}
-> +
-> +	if (ret)
-> +		dev_err(priv->dev, "failed to init phy for phy mode %x\n", priv->mode);
-> +
-> +	return ret;
-> +}
-> +
-> +static int rockchip_combphy_init(struct phy *phy)
-> +{
-> +	struct rockchip_combphy_priv *priv = phy_get_drvdata(phy);
-> +	const struct rockchip_combphy_grfcfg *cfg = priv->cfg->grfcfg;
-> +	u32 val;
-> +	int ret;
-> +
-> +	ret = clk_bulk_prepare_enable(priv->num_clks, priv->clks);
-> +	if (ret) {
-> +		dev_err(priv->dev, "failed to enable clks\n");
-> +		return ret;
-> +	}
-> +
-> +	ret = rockchip_combphy_set_mode(priv);
-> +	if (ret)
-> +		goto err_clk;
-> +
-> +	ret = reset_control_deassert(priv->phy_rst);
-> +	if (ret)
-> +		goto err_clk;
-> +
-> +	if (priv->mode == PHY_TYPE_USB3) {
-> +		ret = readx_poll_timeout_atomic(rockchip_combphy_is_ready,
-> +						priv, val,
-> +						val == cfg->pipe_phy_status.enable,
-> +						10, 1000);
-> +		if (ret)
-> +			dev_warn(priv->dev, "wait phy status ready timeout\n");
-> +	}
-> +
-> +	return 0;
-> +
-> +err_clk:
-> +	clk_bulk_disable_unprepare(priv->num_clks, priv->clks);
-> +
-> +	return ret;
-> +}
-> +
-> +static int rockchip_combphy_exit(struct phy *phy)
-> +{
-> +	struct rockchip_combphy_priv *priv = phy_get_drvdata(phy);
-> +
-> +	clk_bulk_disable_unprepare(priv->num_clks, priv->clks);
-> +	reset_control_assert(priv->phy_rst);
-> +
-> +	return 0;
-> +}
-> +
-> +static const struct phy_ops rochchip_combphy_ops = {
-> +	.init = rockchip_combphy_init,
-> +	.exit = rockchip_combphy_exit,
-> +	.owner = THIS_MODULE,
-> +};
-> +
-> +static struct phy *rockchip_combphy_xlate(struct device *dev,
-> +					  struct of_phandle_args *args)
-> +{
-> +	struct rockchip_combphy_priv *priv = dev_get_drvdata(dev);
-> +
-> +	if (args->args_count != 1) {
-> +		dev_err(dev, "invalid number of arguments\n");
-> +		return ERR_PTR(-EINVAL);
-> +	}
-> +
-> +	if (priv->mode != PHY_NONE && priv->mode != args->args[0])
-> +		dev_warn(dev, "phy type select %d overwriting type %d\n",
-> +			 args->args[0], priv->mode);
-> +
-> +	priv->mode = args->args[0];
-> +
-> +	return priv->phy;
-> +}
-> +
-> +static int rockchip_combphy_parse_dt(struct device *dev,
-> +				     struct rockchip_combphy_priv *priv)
-> +{
-> +	const struct rockchip_combphy_cfg *phy_cfg = priv->cfg;
-> +	int ret, mac_id;
-> +
-> +	ret = devm_clk_bulk_get(dev, priv->num_clks, priv->clks);
-> +	if (ret == -EPROBE_DEFER)
-> +		return -EPROBE_DEFER;
-> +	if (ret)
-> +		priv->num_clks = 0;
-> +
-> +	priv->pipe_grf = syscon_regmap_lookup_by_phandle(dev->of_node,
-> +							 "rockchip,pipe-grf");
-> +	if (IS_ERR(priv->pipe_grf)) {
-> +		dev_err(dev, "failed to find peri_ctrl pipe-grf regmap\n");
-> +		return PTR_ERR(priv->pipe_grf);
-> +	}
-> +
-> +	priv->phy_grf = syscon_regmap_lookup_by_phandle(dev->of_node,
-> +							"rockchip,pipe-phy-grf");
-> +	if (IS_ERR(priv->phy_grf)) {
-> +		dev_err(dev, "failed to find peri_ctrl pipe-phy-grf regmap\n");
-> +		return PTR_ERR(priv->phy_grf);
-> +	}
-> +
-> +	if (device_property_present(dev, "rockchip,dis-u3otg0-port"))
-> +		param_write(priv->pipe_grf, &phy_cfg->grfcfg->u3otg0_port_en,
-> +			    false);
-> +	else if (device_property_present(dev, "rockchip,dis-u3otg1-port"))
-> +		param_write(priv->pipe_grf, &phy_cfg->grfcfg->u3otg1_port_en,
-> +			    false);
-> +
-> +	if (!device_property_read_u32(dev, "rockchip,sgmii-mac-sel", &mac_id) &&
-> +	    (mac_id > 0))
-> +		param_write(priv->pipe_grf, &phy_cfg->grfcfg->pipe_sgmii_mac_sel, true);
-> +
-> +	priv->phy_rst = devm_reset_control_get_optional_exclusive(dev, "combphy");
-> +	if (IS_ERR(priv->phy_rst))
-> +		return dev_err_probe(dev, PTR_ERR(priv->phy_rst), "failed to get phy reset\n");
-> +
-> +	return 0;
-> +}
-> +
-> +static int rockchip_combphy_probe(struct platform_device *pdev)
-> +{
-> +	struct phy_provider *phy_provider;
-> +	struct device *dev = &pdev->dev;
-> +	struct rockchip_combphy_priv *priv;
-> +	const struct rockchip_combphy_cfg *phy_cfg;
-> +	struct resource *res;
-> +	int ret;
-> +
-> +	phy_cfg = of_device_get_match_data(dev);
-> +	if (!phy_cfg) {
-> +		dev_err(dev, "No OF match data provided\n");
-> +		return -EINVAL;
-> +	}
-> +
-> +	priv = devm_kzalloc(dev, sizeof(*priv), GFP_KERNEL);
-> +	if (!priv)
-> +		return -ENOMEM;
-> +
-> +	priv->mmio = devm_platform_get_and_ioremap_resource(pdev, 0, &res);
-> +	if (IS_ERR(priv->mmio)) {
-> +		ret = PTR_ERR(priv->mmio);
-> +		return ret;
-> +	}
-> +
-> +	priv->num_clks = phy_cfg->num_clks;
-> +
-> +	priv->clks = devm_kmemdup(dev, phy_cfg->clks,
-> +				  phy_cfg->num_clks * sizeof(struct clk_bulk_data),
-> +				  GFP_KERNEL);
-> +
-> +	if (!priv->clks)
-> +		return -ENOMEM;
-> +
-> +	priv->dev = dev;
-> +	priv->mode = PHY_NONE;
-> +	priv->cfg = phy_cfg;
-> +
-> +	ret = rockchip_combphy_parse_dt(dev, priv);
-> +	if (ret)
-> +		return ret;
-> +
-> +	ret = reset_control_assert(priv->phy_rst);
-> +	if (ret) {
-> +		dev_err(dev, "failed to reset phy\n");
-> +		return ret;
-> +	}
-> +
-> +	priv->phy = devm_phy_create(dev, NULL, &rochchip_combphy_ops);
-> +	if (IS_ERR(priv->phy)) {
-> +		dev_err(dev, "failed to create combphy\n");
-> +		return PTR_ERR(priv->phy);
-> +	}
-> +
-> +	dev_set_drvdata(dev, priv);
-> +	phy_set_drvdata(priv->phy, priv);
-> +
-> +	phy_provider = devm_of_phy_provider_register(dev, rockchip_combphy_xlate);
-> +
-> +	return PTR_ERR_OR_ZERO(phy_provider);
-> +}
-> +
-> +static int rk3568_combphy_cfg(struct rockchip_combphy_priv *priv)
-> +{
-> +	const struct rockchip_combphy_grfcfg *cfg = priv->cfg->grfcfg;
-> +	struct clk *refclk = NULL;
-> +	unsigned long rate;
-> +	int i;
-> +	u32 val;
-> +
-> +	/* Configure PHY reference clock frequency */
-> +	for (i = 0; i < priv->num_clks; i++) {
-> +		if (!strncmp(priv->clks[i].id, "ref", 3)) {
-> +			refclk = priv->clks[i].clk;
-> +			break;
-> +		}
-> +	}
-> +
-> +	if (!refclk) {
-> +		dev_err(priv->dev, "No refclk found\n");
-> +		return -EINVAL;
-> +	}
-> +
-> +	switch (priv->mode) {
-> +	case PHY_TYPE_PCIE:
-> +		/* Set SSC downward spread spectrum */
-> +		val = readl(priv->mmio + RK3568_T22_PHYREG31);
-> +		val &= ~T22_PHYREG31_SSC_MASK;
-> +		val |= T22_PHYREG31_SSC_DOWNWARD << T22_PHYREG31_SSC_DIR_SHIFT;
-> +		writel(val, priv->mmio + RK3568_T22_PHYREG31);
-> +
-> +		param_write(priv->phy_grf, &cfg->con0_for_pcie, true);
-> +		param_write(priv->phy_grf, &cfg->con1_for_pcie, true);
-> +		param_write(priv->phy_grf, &cfg->con2_for_pcie, true);
-> +		param_write(priv->phy_grf, &cfg->con3_for_pcie, true);
-> +		break;
-> +	case PHY_TYPE_USB3:
-> +		/* Set SSC downward spread spectrum */
-> +		val = readl(priv->mmio + RK3568_T22_PHYREG31);
-> +		val &= ~T22_PHYREG31_SSC_MASK;
-> +		val |= T22_PHYREG31_SSC_DOWNWARD << T22_PHYREG31_SSC_DIR_SHIFT;
-> +		writel(val, priv->mmio + RK3568_T22_PHYREG31);
-> +
-> +		/* Enable adaptive CTLE for USB3.0 Rx */
-> +		val = readl(priv->mmio + RK3568_T22_PHYREG14);
-> +		val |= T22_PHYREG14_CTLE_EN;
-> +		writel(val, priv->mmio + RK3568_T22_PHYREG14);
-> +
-> +		/* Set PLL KVCO fine tuning signals */
-> +		val = readl(priv->mmio + RK3568_T22_PHYREG32);
-> +		val &= ~T22_PHYREG32_PLL_KVCO_MASK;
-> +		val |= T22_PHYREG32_PLL_KVCO_VALUE << T22_PHYREG32_PLL_KVCO_SHIFT;
-> +		writel(val, priv->mmio + RK3568_T22_PHYREG32);
-> +
-> +		/* Enable controlling random jitter */
-> +		writel(T22_PHYREG11_PLL_LPF_ADJ, priv->mmio + RK3568_T22_PHYREG11);
-> +
-> +		/* Set PLL input clock divider 1/2 */
-> +		val = readl(priv->mmio + RK3568_T22_PHYREG5);
-> +		val &= ~T22_PHYREG5_PLL_DIV_MASK;
-> +		val |= T22_PHYREG5_PLL_DIV_2 << T22_PHYREG5_PLL_DIV_SHIFT;
-> +		writel(val, priv->mmio + RK3568_T22_PHYREG5);
-> +
-> +		writel(T22_PHYREG17_PLL_LOOP, priv->mmio + RK3568_T22_PHYREG17);
-> +		writel(T22_PHYREG10_SU_TRIM_0_7, priv->mmio + RK3568_T22_PHYREG10);
-> +
-> +		param_write(priv->phy_grf, &cfg->pipe_sel_usb, true);
-> +		param_write(priv->phy_grf, &cfg->pipe_txcomp_sel, false);
-> +		param_write(priv->phy_grf, &cfg->pipe_txelec_sel, false);
-> +		param_write(priv->phy_grf, &cfg->usb_mode_set, true);
-> +		break;
-> +	case PHY_TYPE_SATA:
-> +		/* Enable adaptive CTLE for SATA Rx */
-> +		val = readl(priv->mmio + RK3568_T22_PHYREG14);
-> +		val |= T22_PHYREG14_CTLE_EN;
-> +		writel(val, priv->mmio + RK3568_T22_PHYREG14);
-> +		/*
-> +		 * Set tx_rterm=50ohm and rx_rterm=44ohm for SATA
-> +		 * 0: 60ohm, 8: 50ohm 15: 44ohm (by step abort 1ohm)
-> +		 */
-> +		val = T22_PHYREG6_TX_RTERM_50OHM << T22_PHYREG6_TX_RTERM_SHIFT;
-> +		val |= T22_PHYREG6_RX_RTERM_44OHM << T22_PHYREG6_RX_RTERM_SHIFT;
-> +		writel(val, priv->mmio + RK3568_T22_PHYREG6);
-> +
-> +		param_write(priv->phy_grf, &cfg->con0_for_sata, true);
-> +		param_write(priv->phy_grf, &cfg->con1_for_sata, true);
-> +		param_write(priv->phy_grf, &cfg->con2_for_sata, true);
-> +		param_write(priv->phy_grf, &cfg->con3_for_sata, true);
-> +		param_write(priv->pipe_grf, &cfg->pipe_con0_for_sata, true);
-> +		break;
-> +	case PHY_TYPE_SGMII:
-> +		param_write(priv->pipe_grf, &cfg->pipe_xpcs_phy_ready, true);
-> +		param_write(priv->phy_grf, &cfg->pipe_phymode_sel, true);
-> +		param_write(priv->phy_grf, &cfg->pipe_sel_qsgmii, true);
-> +		param_write(priv->phy_grf, &cfg->sgmii_mode_set, true);
-> +		break;
-> +	case PHY_TYPE_QSGMII:
-> +		param_write(priv->pipe_grf, &cfg->pipe_xpcs_phy_ready, true);
-> +		param_write(priv->phy_grf, &cfg->pipe_phymode_sel, true);
-> +		param_write(priv->phy_grf, &cfg->pipe_rate_sel, true);
-> +		param_write(priv->phy_grf, &cfg->pipe_sel_qsgmii, true);
-> +		param_write(priv->phy_grf, &cfg->qsgmii_mode_set, true);
-> +		break;
-> +	default:
-> +		dev_err(priv->dev, "incompatible PHY type\n");
-> +		return -EINVAL;
-> +	}
-> +
-> +	rate = clk_get_rate(refclk);
-> +
-> +	switch (rate) {
-> +	case REF_CLOCK_24MHz:
-> +		if (priv->mode == PHY_TYPE_USB3 || priv->mode == PHY_TYPE_SATA) {
-> +			/* Set ssc_cnt[9:0]=0101111101 & 31.5KHz */
-> +			val = readl(priv->mmio + RK3568_T22_PHYREG14);
-> +			val &= ~T22_PHYREG14_SSC_CNT_MASK;
-> +			val |= T22_PHYREG14_SSC_CNT_VALUE << T22_PHYREG14_SSC_CNT_SHIFT;
-> +			writel(val, priv->mmio + RK3568_T22_PHYREG14);
-> +			writel(T22_PHYREG15_SSC_CNT_VALUE, priv->mmio + RK3568_T22_PHYREG15);
-> +		}
-> +		break;
-> +	case REF_CLOCK_25MHz:
-> +		param_write(priv->phy_grf, &cfg->pipe_clk_25m, true);
-> +		break;
-> +	case REF_CLOCK_100MHz:
-> +		param_write(priv->phy_grf, &cfg->pipe_clk_100m, true);
-> +		if (priv->mode == PHY_TYPE_PCIE) {
-> +			/* PLL KVCO tuning fine */
-> +			val = readl(priv->mmio + RK3568_T22_PHYREG32);
-> +			val &= ~T22_PHYREG32_PLL_KVCO_MASK;
-> +			val |= T22_PHYREG32_PLL_KVCO_VALUE << T22_PHYREG32_PLL_KVCO_SHIFT;
-> +			writel(val, priv->mmio + RK3568_T22_PHYREG32);
-> +
-> +			/* Enable controlling random jitter */
-> +			writel(T22_PHYREG11_PLL_LPF_ADJ, priv->mmio + RK3568_T22_PHYREG11);
-> +
-> +			val = readl(priv->mmio + RK3568_T22_PHYREG5);
-> +			val &= ~T22_PHYREG5_PLL_DIV_MASK;
-> +			val |= T22_PHYREG5_PLL_DIV_2 << T22_PHYREG5_PLL_DIV_SHIFT;
-> +			writel(val, priv->mmio + RK3568_T22_PHYREG5);
-> +
-> +			writel(T22_PHYREG17_PLL_LOOP, priv->mmio + RK3568_T22_PHYREG17);
-> +			writel(T22_PHYREG10_SU_TRIM_0_7, priv->mmio + RK3568_T22_PHYREG10);
-> +		} else if (priv->mode == PHY_TYPE_SATA) {
-> +			/* downward spread spectrum +500ppm */
-> +			val = readl(priv->mmio + RK3568_T22_PHYREG31);
-> +			val &= ~T22_PHYREG31_SSC_MASK;
-> +			val |= T22_PHYREG31_SSC_DOWNWARD << T22_PHYREG31_SSC_DIR_SHIFT;
-> +			val |= T22_PHYREG31_SSC_OFFSET_500PPM << T22_PHYREG31_SSC_OFFSET_SHIFT;
-> +			writel(val, priv->mmio + RK3568_T22_PHYREG31);
-> +		}
-> +		break;
-> +	default:
-> +		dev_err(priv->dev, "Unsupported rate: %lu\n", rate);
-> +		return -EINVAL;
-> +	}
-> +
-> +	if (device_property_read_bool(priv->dev, "rockchip,ext-refclk")) {
-> +		param_write(priv->phy_grf, &cfg->pipe_clk_ext, true);
-> +		if (priv->mode == PHY_TYPE_PCIE && rate == REF_CLOCK_100MHz) {
-> +			val = readl(priv->mmio + RK3568_T22_PHYREG12);
-> +			val &= ~T22_PHYREG12_RESISTER_MASK;
-> +			val |= T22_PHYREG12_RESISTER_HIGH_Z << T22_PHYREG12_RESISTER_SHIFT;
-> +			val |= T22_PHYREG12_CKRCV_AMP0;
-> +			writel(val, priv->mmio + RK3568_T22_PHYREG12);
-> +
-> +			val = readl(priv->mmio + RK3568_T22_PHYREG13);
-> +			val |= T22_PHYREG13_CKRCV_AMP1;
-> +			writel(val, priv->mmio + RK3568_T22_PHYREG13);
-> +		}
-> +	}
-> +
-> +	if (device_property_read_bool(priv->dev, "rockchip,enable-ssc")) {
-> +		val = readl(priv->mmio + RK3568_T22_PHYREG7);
-> +		val |= T22_PHYREG7_SSC_EN;
-> +		writel(val, priv->mmio + RK3568_T22_PHYREG7);
-> +	}
-> +
-> +	return 0;
-> +}
-> +
-> +static const struct rockchip_combphy_grfcfg rk3568_combphy_grfcfgs = {
-> +	/* pipe-phy-grf */
-> +	.pcie_mode_set		= { 0x0000, 5, 0, 0x00, 0x11 },
-> +	.usb_mode_set		= { 0x0000, 5, 0, 0x00, 0x04 },
-> +	.sgmii_mode_set		= { 0x0000, 5, 0, 0x00, 0x01 },
-> +	.qsgmii_mode_set	= { 0x0000, 5, 0, 0x00, 0x21 },
-> +	.pipe_rxterm_set	= { 0x0000, 12, 12, 0x00, 0x01 },
-> +	.pipe_txelec_set	= { 0x0004, 1, 1, 0x00, 0x01 },
-> +	.pipe_txcomp_set	= { 0x0004, 4, 4, 0x00, 0x01 },
-> +	.pipe_clk_25m		= { 0x0004, 14, 13, 0x00, 0x01 },
-> +	.pipe_clk_100m		= { 0x0004, 14, 13, 0x00, 0x02 },
-> +	.pipe_phymode_sel	= { 0x0008, 1, 1, 0x00, 0x01 },
-> +	.pipe_rate_sel		= { 0x0008, 2, 2, 0x00, 0x01 },
-> +	.pipe_rxterm_sel	= { 0x0008, 8, 8, 0x00, 0x01 },
-> +	.pipe_txelec_sel	= { 0x0008, 12, 12, 0x00, 0x01 },
-> +	.pipe_txcomp_sel	= { 0x0008, 15, 15, 0x00, 0x01 },
-> +	.pipe_clk_ext		= { 0x000c, 9, 8, 0x02, 0x01 },
-> +	.pipe_sel_usb		= { 0x000c, 14, 13, 0x00, 0x01 },
-> +	.pipe_sel_qsgmii	= { 0x000c, 15, 13, 0x00, 0x07 },
-> +	.pipe_phy_status	= { 0x0034, 6, 6, 0x01, 0x00 },
-> +	.con0_for_pcie		= { 0x0000, 15, 0, 0x00, 0x1000 },
-> +	.con1_for_pcie		= { 0x0004, 15, 0, 0x00, 0x0000 },
-> +	.con2_for_pcie		= { 0x0008, 15, 0, 0x00, 0x0101 },
-> +	.con3_for_pcie		= { 0x000c, 15, 0, 0x00, 0x0200 },
-> +	.con0_for_sata		= { 0x0000, 15, 0, 0x00, 0x0119 },
-> +	.con1_for_sata		= { 0x0004, 15, 0, 0x00, 0x0040 },
-> +	.con2_for_sata		= { 0x0008, 15, 0, 0x00, 0x80c3 },
-> +	.con3_for_sata		= { 0x000c, 15, 0, 0x00, 0x4407 },
-> +	/* pipe-grf */
-> +	.pipe_con0_for_sata	= { 0x0000, 15, 0, 0x00, 0x2220 },
-> +	.pipe_sgmii_mac_sel	= { 0x0040, 1, 1, 0x00, 0x01 },
-> +	.pipe_xpcs_phy_ready	= { 0x0040, 2, 2, 0x00, 0x01 },
-> +	.u3otg0_port_en		= { 0x0104, 15, 0, 0x0181, 0x1100 },
-> +	.u3otg1_port_en		= { 0x0144, 15, 0, 0x0181, 0x1100 },
-> +};
-> +
-> +static const struct clk_bulk_data rk3568_clks[] = {
-> +	{ .id = "ref" },
-> +	{ .id = "apb" },
-> +	{ .id = "pipe" },
-> +};
-> +
-> +static const struct rockchip_combphy_cfg rk3568_combphy_cfgs = {
-> +	.num_clks	= ARRAY_SIZE(rk3568_clks),
-> +	.clks		= rk3568_clks,
-> +	.grfcfg		= &rk3568_combphy_grfcfgs,
-> +	.combphy_cfg	= rk3568_combphy_cfg,
-> +};
-> +
-> +static const struct of_device_id rockchip_combphy_of_match[] = {
-> +	{
-> +		.compatible = "rockchip,rk3568-naneng-combphy",
-> +		.data = &rk3568_combphy_cfgs,
-> +	},
-> +	{ },
-> +};
-> +MODULE_DEVICE_TABLE(of, rockchip_combphy_of_match);
-> +
-> +static struct platform_driver rockchip_combphy_driver = {
-> +	.probe	= rockchip_combphy_probe,
-> +	.driver = {
-> +		.name = "naneng-combphy",
-> +		.of_match_table = rockchip_combphy_of_match,
-> +	},
-> +};
-> +module_platform_driver(rockchip_combphy_driver);
-> +
-> +MODULE_DESCRIPTION("Rockchip NANENG COMBPHY driver");
-> +MODULE_LICENSE("GPL v2");
+> So all the other hugetlb_cgroup interfaces (max, current,
+> usage_in_bytes, limit_in_bytes), are in bytes and not pages, and
+> memory.numa_stat is also in bytes. I think providing consistency here
+> is a really good thing.
 
+I mean accounting with pages but showing with bytes, which is more
+efficient and does not break consistency.
 
+>
+> > >  }
+> > >
+> > >  void hugetlb_cgroup_commit_charge(int idx, unsigned long nr_pages,
+> > > @@ -331,7 +363,9 @@ static void __hugetlb_cgroup_uncharge_page(int id=
+x, unsigned long nr_pages,
+> > >
+> > >         if (rsvd)
+> > >                 css_put(&h_cg->css);
+> > > -
+> > > +       else
+> > > +               h_cg->nodeinfo[page_to_nid(page)]->usage[idx] -=3D nr=
+_pages
+> > > +                                                                << P=
+AGE_SHIFT;
+> > >         return;
+> > >  }
+> > >
+> > > @@ -421,6 +455,58 @@ enum {
+> > >         RES_RSVD_FAILCNT,
+> > >  };
+> > >
+> > > +static int hugetlb_cgroup_read_numa_stat(struct seq_file *seq, void =
+*dummy)
+> > > +{
+> > > +       int nid;
+> > > +       struct cftype *cft =3D seq_cft(seq);
+> > > +       int idx =3D MEMFILE_IDX(cft->private);
+> > > +       bool legacy =3D MEMFILE_ATTR(cft->private);
+> > > +       struct hugetlb_cgroup *h_cg =3D hugetlb_cgroup_from_css(seq_c=
+ss(seq));
+> > > +       struct cgroup_subsys_state *css;
+> > > +       unsigned long usage;
+> > > +
+> > > +       if (legacy) {
+> > > +               /* Add up usage across all nodes for the non-hierarch=
+ical total. */
+> > > +               usage =3D 0;
+> > > +               for_each_node_state(nid, N_MEMORY)
+> > > +                       usage +=3D h_cg->nodeinfo[nid]->usage[idx];
+> > > +               seq_printf(seq, "total=3D%lu", usage);
+
+Here it could be like this.
+
+seq_printf(seq, "total=3D%lu", usage * PAGE_SIZE);
+
+Thanks.
+
+> > > +
+> > > +               /* Simply print the per-node usage for the non-hierar=
+chical total. */
+> > > +               for_each_node_state(nid, N_MEMORY)
+> > > +                       seq_printf(seq, " N%d=3D%lu", nid,
+> > > +                                  h_cg->nodeinfo[nid]->usage[idx]);
+> > > +               seq_putc(seq, '\n');
+> > > +       }
+> > > +
+> > > +       /*
+> > > +        * The hierarchical total is pretty much the value recorded b=
+y the
+> > > +        * counter, so use that.
+> > > +        */
+> > > +       seq_printf(seq, "%stotal=3D%lu", legacy ? "hierarichal_" : ""=
+,
+> > > +                  page_counter_read(&h_cg->hugepage[idx]) * PAGE_SIZ=
+E);
+> > > +
+> > > +       /*
+> > > +        * For each node, transverse the css tree to obtain the hiera=
+richal
+> > > +        * node usage.
+> > > +        */
+> > > +       for_each_node_state(nid, N_MEMORY) {
+> > > +               usage =3D 0;
+> > > +               rcu_read_lock();
+> > > +               css_for_each_descendant_pre(css, &h_cg->css) {
+> > > +                       usage +=3D hugetlb_cgroup_from_css(css)
+> > > +                                        ->nodeinfo[nid]
+> > > +                                        ->usage[idx];
+> > > +               }
+> > > +               rcu_read_unlock();
+> > > +               seq_printf(seq, " N%d=3D%lu", nid, usage);
+> > > +       }
+> > > +
+> > > +       seq_putc(seq, '\n');
+> > > +
+> > > +       return 0;
+> > > +}
+> > > +
+> > >  static u64 hugetlb_cgroup_read_u64(struct cgroup_subsys_state *css,
+> > >                                    struct cftype *cft)
+> > >  {
+> > > @@ -671,8 +757,14 @@ static void __init __hugetlb_cgroup_file_dfl_ini=
+t(int idx)
+> > >                                     events_local_file[idx]);
+> > >         cft->flags =3D CFTYPE_NOT_ON_ROOT;
+> > >
+> > > -       /* NULL terminate the last cft */
+> > > +       /* Add the numa stat file */
+> > >         cft =3D &h->cgroup_files_dfl[6];
+> > > +       snprintf(cft->name, MAX_CFTYPE_NAME, "%s.numa_stat", buf);
+> > > +       cft->seq_show =3D hugetlb_cgroup_read_numa_stat;
+> > > +       cft->flags =3D CFTYPE_NOT_ON_ROOT;
+> > > +
+> > > +       /* NULL terminate the last cft */
+> > > +       cft =3D &h->cgroup_files_dfl[7];
+> > >         memset(cft, 0, sizeof(*cft));
+> > >
+> > >         WARN_ON(cgroup_add_dfl_cftypes(&hugetlb_cgrp_subsys,
+> > > @@ -742,8 +834,14 @@ static void __init __hugetlb_cgroup_file_legacy_=
+init(int idx)
+> > >         cft->write =3D hugetlb_cgroup_reset;
+> > >         cft->read_u64 =3D hugetlb_cgroup_read_u64;
+> > >
+> > > +       /* Add the numa stat file */
+> > > +       cft =3D &h->cgroup_files_dfl[8];
+> > > +       snprintf(cft->name, MAX_CFTYPE_NAME, "%s.numa_stat", buf);
+> > > +       cft->private =3D MEMFILE_PRIVATE(idx, 1);
+> > > +       cft->seq_show =3D hugetlb_cgroup_read_numa_stat;
+> > > +
+> > >         /* NULL terminate the last cft */
+> > > -       cft =3D &h->cgroup_files_legacy[8];
+> > > +       cft =3D &h->cgroup_files_legacy[9];
+> > >         memset(cft, 0, sizeof(*cft));
+> > >
+> > >         WARN_ON(cgroup_add_legacy_cftypes(&hugetlb_cgrp_subsys,
+> > > diff --git a/tools/testing/selftests/vm/write_to_hugetlbfs.c b/tools/=
+testing/selftests/vm/write_to_hugetlbfs.c
+> > > index 6a2caba19ee1..d2da6315a40c 100644
+> > > --- a/tools/testing/selftests/vm/write_to_hugetlbfs.c
+> > > +++ b/tools/testing/selftests/vm/write_to_hugetlbfs.c
+> > > @@ -37,8 +37,8 @@ static int shmid;
+> > >  static void exit_usage(void)
+> > >  {
+> > >         printf("Usage: %s -p <path to hugetlbfs file> -s <size to map=
+> "
+> > > -              "[-m <0=3Dhugetlbfs | 1=3Dmmap(MAP_HUGETLB)>] [-l] [-r=
+] "
+> > > -              "[-o] [-w] [-n]\n",
+> > > +              "[-m <0=3Dhugetlbfs | 1=3Dmmap(MAP_HUGETLB)>] [-l(slee=
+p)] [-r(private)] "
+> > > +              "[-o(populate)] [-w(rite)] [-n(o-reserve)]\n",
+> >
+> > Why do those changes? It seems like it does not belong
+> > to this patch. Please explain why you did this in changelog
+> > and separate those lines into another patch.
+> >
+> > Thanks.
+> >
+>
+> So I used writo_to_hugetlbfs to test this patch, and I forgot what the
+> flags do so I clarified them, but sure yes these changes aren't
+> related to numa_stat. I'll drop them from v4 and I can always upload
+> them later.
+>
+> > >                self);
+> > >         exit(EXIT_FAILURE);
+> > >  }
+> > > @@ -161,6 +161,11 @@ int main(int argc, char **argv)
+> > >         else
+> > >                 printf("RESERVE mapping.\n");
+> > >
+> > > +       if (want_sleep)
+> > > +               printf("Sleeping\n");
+> > > +       else
+> > > +               printf("Not sleeping\n");
+> > > +
+> > >         switch (method) {
+> > >         case HUGETLBFS:
+> > >                 printf("Allocating using HUGETLBFS.\n");
+> > > --
+> > > 2.33.1.1089.g2158813163f-goog
