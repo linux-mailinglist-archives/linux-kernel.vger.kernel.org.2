@@ -2,103 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D0E14499B7
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Nov 2021 17:28:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B959E4499BE
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Nov 2021 17:29:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239960AbhKHQbS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Nov 2021 11:31:18 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40154 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236934AbhKHQbF (ORCPT
+        id S241266AbhKHQcc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Nov 2021 11:32:32 -0500
+Received: from mail-ua1-f48.google.com ([209.85.222.48]:38701 "EHLO
+        mail-ua1-f48.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236934AbhKHQcb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Nov 2021 11:31:05 -0500
-Received: from mail-pf1-x42b.google.com (mail-pf1-x42b.google.com [IPv6:2607:f8b0:4864:20::42b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85D56C061570;
-        Mon,  8 Nov 2021 08:28:21 -0800 (PST)
-Received: by mail-pf1-x42b.google.com with SMTP id c126so8079344pfb.0;
-        Mon, 08 Nov 2021 08:28:21 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=message-id:date:mime-version:user-agent:subject:content-language:to
-         :cc:references:from:in-reply-to:content-transfer-encoding;
-        bh=W522cAUz1VNkkWpIk8aeKJnn1WX3utZOCRBlk8dVNxo=;
-        b=j8QJip8KJf/J7pjefQLQ+QHjwUGyXHhZo5OosP3NxTxH4L9Tcr1neULNputik59V4U
-         0/w/eHRfLo6y22q6UUEEcJe3r7HB6IJuzUJa8sXmyEfF3QghNrBLk80+X7e7C2VzJMcw
-         fGfv2K1tsl3B9efOYpcZMvUA0Mtv5OEIB+RENgHndrbUSj6LTxpkABhm/P44aNQ8R0PH
-         vSBeHMhELaSfUN6dsp11ANnCOz8tiFUq1D49bHtQfdnvfKgJri/nPswG2CODs59gT4ne
-         5IDCrq2ARLdNV4kyErloFDELnjnRcQVC7JJofxspmMjv/RCHiEQUeRhNHn4VeokRt/yV
-         jGJQ==
+        Mon, 8 Nov 2021 11:32:31 -0500
+Received: by mail-ua1-f48.google.com with SMTP id o26so32629488uab.5;
+        Mon, 08 Nov 2021 08:29:46 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:in-reply-to
-         :content-transfer-encoding;
-        bh=W522cAUz1VNkkWpIk8aeKJnn1WX3utZOCRBlk8dVNxo=;
-        b=lM5O6VoKve9pWNnDgsni9IBlkMLLtkywAJQpDeZcQvvi9Zbxli8FefDColPDgsjMuS
-         x5qe4ubBG97wbBaPNEfdYTljbdzC3YpjmfkUSd0Pb8kywESWN1Xuu3gVRDDr69KQ9NN2
-         b7BOwYYlLm9hX0q24AC35BAGTEHYsC5lepzfxSm6kwzBQvthAvE3p6cDd8oUrB3i+7uk
-         xXO8pIy6qDSF6SijXOja1fREI4DJmvinj7buXibOp4Iq7WiJ11oQNrrW8wkjl3lqtF94
-         RpYVtq/BwlD+fOgfqghXCsl+DcFbZ+MnUmCH2d/N4cFUcLG5JxLvprtGuasZJqNvmNyg
-         Jweg==
-X-Gm-Message-State: AOAM530jZkKm/FhuqJvi2xSANR2txKSQ7Dcz24CPHmTGRUu0H3WMQWMn
-        CfUNl0yrUnmKOEHk5G/Zj8Y=
-X-Google-Smtp-Source: ABdhPJwYgtOPk/If8ZqeWazasT3ASjNeyFgwley+9ngPczU5N6qjaS1xCT1DRfcK8wfav40jqC8Z1g==
-X-Received: by 2002:a62:6184:0:b0:480:1759:b74 with SMTP id v126-20020a626184000000b0048017590b74mr390634pfb.82.1636388900985;
-        Mon, 08 Nov 2021 08:28:20 -0800 (PST)
-Received: from [10.230.24.142] ([192.19.224.250])
-        by smtp.gmail.com with ESMTPSA id h3sm17596989pfi.207.2021.11.08.08.28.18
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=woZgaj6Mu44Tryh18+xnuY1/GMuhYHx753N+bB1veGY=;
+        b=n6pIS/9NTEG06oBdZ7vif1tjFt8xFQugM9QbjFgirdzfcGRmDC6Lc5vpEXXyckB6Hq
+         e53ke5mn6i5ve8WyueU14VBHoYV3bDEq6W4hEWF7b8TXP0PYvXn2/tP0G6CUIQkV2U5+
+         laIMRxMLTCnS5kWEujGQCf538y6DEfW5UlRFy2YkFmiQ5fPfgfgEBjhkSLe6osLj77+g
+         rdohj4VlF0wnYIJzA5sUOIoMPpu1Yo7mkGNwinbwKANnr0OYLAuK7RutcpavktZ8bcSx
+         KP51SwTg/UwSWL4io1idMzziYlYbNF8iRkPBwmLuipej0NRhuE6S1Apy6E9qJ5Tc4Hho
+         Aimg==
+X-Gm-Message-State: AOAM530xnSEJHK19Cr9JEfbq1p8uuUuZhABPIAqzH8Em7boe8k0a3E9L
+        CyTEWQ7iw6KeTHxXbc8uSOfpTrSt6GR6pt5n
+X-Google-Smtp-Source: ABdhPJzKVOZYGibPHG+h892i7OUGjYuFesWp37cMNDki40TQiZRr4hfUhCDQ/tcAqjanivAlJUtsgA==
+X-Received: by 2002:a05:6102:3f02:: with SMTP id k2mr437155vsv.26.1636388985966;
+        Mon, 08 Nov 2021 08:29:45 -0800 (PST)
+Received: from mail-ua1-f42.google.com (mail-ua1-f42.google.com. [209.85.222.42])
+        by smtp.gmail.com with ESMTPSA id r20sm1417594vkq.15.2021.11.08.08.29.45
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 08 Nov 2021 08:28:20 -0800 (PST)
-Message-ID: <4d556ac3-b936-b99c-5a50-9add8607047d@gmail.com>
-Date:   Mon, 8 Nov 2021 08:28:16 -0800
+        Mon, 08 Nov 2021 08:29:45 -0800 (PST)
+Received: by mail-ua1-f42.google.com with SMTP id t13so17309483uad.9;
+        Mon, 08 Nov 2021 08:29:45 -0800 (PST)
+X-Received: by 2002:a05:6102:3a07:: with SMTP id b7mr75736580vsu.35.1636388985293;
+ Mon, 08 Nov 2021 08:29:45 -0800 (PST)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
- Thunderbird/91.3.0
-Subject: Re: [PATCH] PCI: brcmstb: Declare a bitmap as a bitmap, not as a
- plain 'unsigned long'
-Content-Language: en-US
-To:     =?UTF-8?Q?Krzysztof_Wilczy=c5=84ski?= <kw@linux.com>,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Cc:     nsaenz@kernel.org, jim2101024@gmail.com, f.fainelli@gmail.com,
-        bcm-kernel-feedback-list@broadcom.com, lorenzo.pieralisi@arm.com,
-        robh@kernel.org, bhelgaas@google.com,
-        linux-rpi-kernel@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-pci@vger.kernel.org,
-        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
-References: <e6d9da2112aab2939d1507b90962d07bfd735b4c.1636273671.git.christophe.jaillet@wanadoo.fr>
- <YYh+ldT5wU2s0sWY@rocinante>
-From:   Florian Fainelli <f.fainelli@gmail.com>
-In-Reply-To: <YYh+ldT5wU2s0sWY@rocinante>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+References: <20211103173127.13701-1-prabhakar.mahadev-lad.rj@bp.renesas.com> <20211103173127.13701-2-prabhakar.mahadev-lad.rj@bp.renesas.com>
+In-Reply-To: <20211103173127.13701-2-prabhakar.mahadev-lad.rj@bp.renesas.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Mon, 8 Nov 2021 17:29:34 +0100
+X-Gmail-Original-Message-ID: <CAMuHMdUjp4WQgkVxaSFJ-ge071KZ_JFWOuBQKZMpSCUW4kG9Ug@mail.gmail.com>
+Message-ID: <CAMuHMdUjp4WQgkVxaSFJ-ge071KZ_JFWOuBQKZMpSCUW4kG9Ug@mail.gmail.com>
+Subject: Re: [PATCH 1/3] dt-bindings: serial: renesas,scif: Make resets as a
+ required property
+To:     Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+Cc:     Geert Uytterhoeven <geert+renesas@glider.be>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        "open list:SERIAL DRIVERS" <linux-serial@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
+        Prabhakar <prabhakar.csengg@gmail.com>,
+        Biju Das <biju.das.jz@bp.renesas.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, Nov 3, 2021 at 6:31 PM Lad Prabhakar
+<prabhakar.mahadev-lad.rj@bp.renesas.com> wrote:
+> Make "resets" as required property for RZ/G2L. On RZ/G2L the devices
+> should be explicitly pulled out of reset for this reason make "resets"
+> as required property.
+>
+> Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+> Reviewed-by: Biju Das <biju.das.jz@bp.renesas.com>
 
+Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
 
-On 11/7/2021 5:34 PM, Krzysztof Wilczyński wrote:
-> Hi Christophe!
-> 
-> [...]
->> This bitmap can be BRCM_INT_PCI_MSI_LEGACY_NR or BRCM_INT_PCI_MSI_NR long.
-> 
-> Ahh.  OK.  Given this an option would be to: do nothing (keep current
-> status quo); allocate memory dynamically passing the "msi->nr" after it
-> has been set accordingly; use BRCM_INT_PCI_MSI_NR and waste a little bit
-> of space.
-> 
-> Perhaps moving to using the DECLARE_BITMAP() would be fine in this case
-> too, at least to match style of other drivers more closely.
-> 
-> Jim, Florian and Lorenzo - is this something that would be OK with you,
-> or you would rather keep things as they were?
+> --- a/Documentation/devicetree/bindings/serial/renesas,scif.yaml
+> +++ b/Documentation/devicetree/bindings/serial/renesas,scif.yaml
+> @@ -151,6 +151,7 @@ if:
+>      compatible:
+>        contains:
+>          enum:
+> +          - renesas,scif-r9a07g044
+>            - renesas,rcar-gen2-scif
+>            - renesas,rcar-gen3-scif
 
-I would be tempted to leave the code as-is, but if we do we are probably 
-bound to seeing patches like Christophe's in the future to address the 
-problem, unless we place a coverity specific comment in the source tree, 
-which is probably frowned upon.
+People might prefer alphabetical sort order...
 
-The addition of the BUILD_BUG_ON() is a good addition though.
--- 
-Florian
+>  then:
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
