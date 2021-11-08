@@ -2,226 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 11A9B4499A0
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Nov 2021 17:24:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C6DA4499A6
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Nov 2021 17:26:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239751AbhKHQ1j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Nov 2021 11:27:39 -0500
-Received: from smtp-out1.suse.de ([195.135.220.28]:59720 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235633AbhKHQ1i (ORCPT
+        id S239824AbhKHQ3Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Nov 2021 11:29:16 -0500
+Received: from mail-ua1-f47.google.com ([209.85.222.47]:35601 "EHLO
+        mail-ua1-f47.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230338AbhKHQ3P (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Nov 2021 11:27:38 -0500
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id F26C3218D6;
-        Mon,  8 Nov 2021 16:24:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1636388692; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=U0zZLb0HvWCCao8EJ+NqyQpxoV5ZQgJvH2DC+c9bMtc=;
-        b=Hgw5zelZjDq3KEJewEqjIBsIxED3LinUp/1sAUEmEnl/90dFCHLb9H7AmBhvKa3tQsiiK5
-        PiH17LAUQoP6VhDx1DDdEDMN5uwH8Ci9rFJD74358khYtC5RJ3xK98JKkgtvzamgOOTAFI
-        aheOFYAE6jYdqLEiUyxZtm+2K308+8E=
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id AF2EE13BC0;
-        Mon,  8 Nov 2021 16:24:51 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id hlFxKVNPiWFYZgAAMHmgww
-        (envelope-from <jgross@suse.com>); Mon, 08 Nov 2021 16:24:51 +0000
-Subject: Re: [PATCH] xen/balloon: fix unused-variable warning
-To:     Arnd Bergmann <arnd@kernel.org>,
-        Boris Ostrovsky <boris.ostrovsky@oracle.com>
-Cc:     Arnd Bergmann <arnd@arndb.de>,
-        Stefano Stabellini <sstabellini@kernel.org>,
-        Oscar Salvador <osalvador@suse.de>,
-        Pankaj Gupta <pankaj.gupta@cloud.ionos.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        David Hildenbrand <david@redhat.com>,
-        xen-devel@lists.xenproject.org, linux-kernel@vger.kernel.org
-References: <20211108111408.3940366-1-arnd@kernel.org>
-From:   Juergen Gross <jgross@suse.com>
-Message-ID: <4d0f02ec-4a36-34f1-3bfd-3f4758c4eea3@suse.com>
-Date:   Mon, 8 Nov 2021 17:24:51 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
+        Mon, 8 Nov 2021 11:29:15 -0500
+Received: by mail-ua1-f47.google.com with SMTP id q13so32651250uaq.2;
+        Mon, 08 Nov 2021 08:26:30 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=eWJ2swXUu5OhqsdPd5HpXfuzp1W1w8o29xoQZwB53+8=;
+        b=aqN6EP0nbj5oWwD6Vrf/9hnKM94i51wBCzCwbcEkmxqME0n135o2LV3IJxDvd+QB32
+         RplPao7VakJAUZinWG5bybFOriDg1sigfAXzzL/YubASvDDSqekA9xnwBH+T8NB2NeHz
+         8aAdFPpbUtwJ4HlRFBRHvWkjXB7N+Ni3Eqjd4xAkU1rxrteK2p40gVWqTCL3aUgi7Co8
+         8hDtLTPMthJfTsbMiJ4KBVSppm1FS/WRTXyeKm+07HgQMuf5GKk82Ss+REeJYv7x0gVu
+         eDsO/mBHjTVsfDYrAcZLB/kteYhPSPmyI9BUj4MpPfykptMEhilOz9X6JHbihzQiPsNK
+         hREA==
+X-Gm-Message-State: AOAM531/jkpcMkAtU1Ljxr85doAJPzGxH2PNRqlWyqyeyn/puxjzliZc
+        DYgBrRq1Ri1DUe6c6FgsX7J602giX3pOj2dk
+X-Google-Smtp-Source: ABdhPJyIJSEuKEqO1tzzjZxsAyvjJ7HoLYOcJ18+rs3kV6RCVScLbhlfeF6D+o8Bvhhac8E+wdRLgw==
+X-Received: by 2002:a05:6102:3912:: with SMTP id e18mr930216vsu.36.1636388790004;
+        Mon, 08 Nov 2021 08:26:30 -0800 (PST)
+Received: from mail-ua1-f47.google.com (mail-ua1-f47.google.com. [209.85.222.47])
+        by smtp.gmail.com with ESMTPSA id r11sm2905392uad.7.2021.11.08.08.26.29
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 08 Nov 2021 08:26:29 -0800 (PST)
+Received: by mail-ua1-f47.google.com with SMTP id p37so31471937uae.8;
+        Mon, 08 Nov 2021 08:26:29 -0800 (PST)
+X-Received: by 2002:a05:6102:1354:: with SMTP id j20mr29931929vsl.41.1636388789364;
+ Mon, 08 Nov 2021 08:26:29 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20211108111408.3940366-1-arnd@kernel.org>
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature";
- boundary="SkVOgLpshoD9dlISz1HVW9prGmzrAK94T"
+References: <20211103195600.23964-1-prabhakar.mahadev-lad.rj@bp.renesas.com> <20211103195600.23964-3-prabhakar.mahadev-lad.rj@bp.renesas.com>
+In-Reply-To: <20211103195600.23964-3-prabhakar.mahadev-lad.rj@bp.renesas.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Mon, 8 Nov 2021 17:26:18 +0100
+X-Gmail-Original-Message-ID: <CAMuHMdVjXrAhOm0JvE=RH5nARjuv03UKmo45vzRECDSWoXNbtw@mail.gmail.com>
+Message-ID: <CAMuHMdVjXrAhOm0JvE=RH5nARjuv03UKmo45vzRECDSWoXNbtw@mail.gmail.com>
+Subject: Re: [PATCH 2/3] arm64: dts: renesas: r9a07g044: Add SCI[0-1] nodes
+To:     Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+Cc:     Magnus Damm <magnus.damm@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Prabhakar <prabhakar.csengg@gmail.com>,
+        Biju Das <biju.das.jz@bp.renesas.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---SkVOgLpshoD9dlISz1HVW9prGmzrAK94T
-Content-Type: multipart/mixed; boundary="BAODkXB4N8PiE6nyzjEthqTiehs8bjioQ";
- protected-headers="v1"
-From: Juergen Gross <jgross@suse.com>
-To: Arnd Bergmann <arnd@kernel.org>,
- Boris Ostrovsky <boris.ostrovsky@oracle.com>
-Cc: Arnd Bergmann <arnd@arndb.de>, Stefano Stabellini
- <sstabellini@kernel.org>, Oscar Salvador <osalvador@suse.de>,
- Pankaj Gupta <pankaj.gupta@cloud.ionos.com>,
- Andrew Morton <akpm@linux-foundation.org>,
- David Hildenbrand <david@redhat.com>, xen-devel@lists.xenproject.org,
- linux-kernel@vger.kernel.org
-Message-ID: <4d0f02ec-4a36-34f1-3bfd-3f4758c4eea3@suse.com>
-Subject: Re: [PATCH] xen/balloon: fix unused-variable warning
-References: <20211108111408.3940366-1-arnd@kernel.org>
-In-Reply-To: <20211108111408.3940366-1-arnd@kernel.org>
+On Wed, Nov 3, 2021 at 8:56 PM Lad Prabhakar
+<prabhakar.mahadev-lad.rj@bp.renesas.com> wrote:
+> Add SCI[0-1] nodes to r9a07g044 (RZ/G2L) SoC DTSI.
+>
+> Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+> Reviewed-by: Biju Das <biju.das.jz@bp.renesas.com>
 
---BAODkXB4N8PiE6nyzjEthqTiehs8bjioQ
-Content-Type: multipart/mixed;
- boundary="------------ADE257E85A8FD6F18CF3FC67"
-Content-Language: en-US
+> --- a/arch/arm64/boot/dts/renesas/r9a07g044.dtsi
+> +++ b/arch/arm64/boot/dts/renesas/r9a07g044.dtsi
+> @@ -176,6 +176,36 @@
+>                         status = "disabled";
+>                 };
+>
+> +               sci0: serial@1004d000 {
 
-This is a multi-part message in MIME format.
---------------ADE257E85A8FD6F18CF3FC67
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
+Please keep sort order (by unit address, but grouped by type).
 
-On 08.11.21 12:14, Arnd Bergmann wrote:
-> From: Arnd Bergmann <arnd@arndb.de>
->=20
-> In configurations with CONFIG_XEN_BALLOON_MEMORY_HOTPLUG=3Dn
-> and CONFIG_XEN_BALLOON_MEMORY_HOTPLUG=3Dy, gcc warns about an
-> unused variable:
->=20
-> drivers/xen/balloon.c:83:12: error: 'xen_hotplug_unpopulated' defined b=
-ut not used [-Werror=3Dunused-variable]
->=20
-> Since this is always zero when CONFIG_XEN_BALLOON_MEMORY_HOTPLUG
-> is disabled, turn it into a preprocessor constant in that case.
->=20
-> Fixes: 121f2faca2c0 ("xen/balloon: rename alloc/free_xenballooned_pages=
-")
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+With the above fixed:
+Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
 
-Reviewed-by: Juergen Gross <jgross@suse.com>
+Gr{oetje,eeting}s,
 
+                        Geert
 
-Juergen
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
-
---------------ADE257E85A8FD6F18CF3FC67
-Content-Type: application/pgp-keys;
- name="OpenPGP_0xB0DE9DD628BF132F.asc"
-Content-Transfer-Encoding: quoted-printable
-Content-Description: OpenPGP public key
-Content-Disposition: attachment;
- filename="OpenPGP_0xB0DE9DD628BF132F.asc"
-
------BEGIN PGP PUBLIC KEY BLOCK-----
-
-xsBNBFOMcBYBCACgGjqjoGvbEouQZw/ToiBg9W98AlM2QHV+iNHsEs7kxWhKMjrioyspZKOBy=
-cWx
-w3ie3j9uvg9EOB3aN4xiTv4qbnGiTr3oJhkB1gsb6ToJQZ8uxGq2kaV2KL9650I1SJvedYm8O=
-f8Z
-d621lSmoKOwlNClALZNew72NjJLEzTalU1OdT7/i1TXkH09XSSI8mEQ/ouNcMvIJNwQpd369y=
-9bf
-IhWUiVXEK7MlRgUG6MvIj6Y3Am/BBLUVbDa4+gmzDC9ezlZkTZG2t14zWPvxXP3FAp2pkW0xq=
-G7/
-377qptDmrk42GlSKN4z76ELnLxussxc7I2hx18NUcbP8+uty4bMxABEBAAHNHEp1ZXJnZW4gR=
-3Jv
-c3MgPGpnQHBmdXBmLm5ldD7CwHkEEwECACMFAlOMcBYCGwMHCwkIBwMCAQYVCAIJCgsEFgIDA=
-QIe
-AQIXgAAKCRCw3p3WKL8TL0KdB/93FcIZ3GCNwFU0u3EjNbNjmXBKDY4FUGNQH2lvWAUy+dnyT=
-hpw
-dtF/jQ6j9RwE8VP0+NXcYpGJDWlNb9/JmYqLiX2Q3TyevpB0CA3dbBQp0OW0fgCetToGIQrg0=
-MbD
-1C/sEOv8Mr4NAfbauXjZlvTj30H2jO0u+6WGM6nHwbh2l5O8ZiHkH32iaSTfN7Eu5RnNVUJbv=
-oPH
-Z8SlM4KWm8rG+lIkGurqqu5gu8q8ZMKdsdGC4bBxdQKDKHEFExLJK/nRPFmAuGlId1E3fe10v=
-5QL
-+qHI3EIPtyfE7i9Hz6rVwi7lWKgh7pe0ZvatAudZ+JNIlBKptb64FaiIOAWDCx1SzR9KdWVyZ=
-2Vu
-IEdyb3NzIDxqZ3Jvc3NAc3VzZS5jb20+wsB5BBMBAgAjBQJTjHCvAhsDBwsJCAcDAgEGFQgCC=
-QoL
-BBYCAwECHgECF4AACgkQsN6d1ii/Ey/HmQf/RtI7kv5A2PS4RF7HoZhPVPogNVbC4YA6lW7Dr=
-Wf0
-teC0RR3MzXfy6pJ+7KLgkqMlrAbN/8Dvjoz78X+5vhH/rDLa9BuZQlhFmvcGtCF8eR0T1v0nC=
-/nu
-AFVGy+67q2DH8As3KPu0344TBDpAvr2uYM4tSqxK4DURx5INz4ZZ0WNFHcqsfvlGJALDeE0Lh=
-ITT
-d9jLzdDad1pQSToCnLl6SBJZjDOX9QQcyUigZFtCXFst4dlsvddrxyqT1f17+2cFSdu7+ynLm=
-XBK
-7abQ3rwJY8SbRO2iRulogc5vr/RLMMlscDAiDkaFQWLoqHHOdfO9rURssHNN8WkMnQfvUewRz=
-80h
-SnVlcmdlbiBHcm9zcyA8amdyb3NzQG5vdmVsbC5jb20+wsB5BBMBAgAjBQJTjHDXAhsDBwsJC=
-AcD
-AgEGFQgCCQoLBBYCAwECHgECF4AACgkQsN6d1ii/Ey8PUQf/ehmgCI9jB9hlgexLvgOtf7PJn=
-FOX
-gMLdBQgBlVPO3/D9R8LtF9DBAFPNhlrsfIG/SqICoRCqUcJ96Pn3P7UUinFG/I0ECGF4EvTE1=
-jnD
-kfJZr6jrbjgyoZHiw/4BNwSTL9rWASyLgqlA8u1mf+c2yUwcGhgkRAd1gOwungxcwzwqgljf0=
-N51
-N5JfVRHRtyfwq/ge+YEkDGcTU6Y0sPOuj4Dyfm8fJzdfHNQsWq3PnczLVELStJNdapwPOoE+l=
-otu
-fe3AM2vAEYJ9rTz3Cki4JFUsgLkHFqGZarrPGi1eyQcXeluldO3m91NK/1xMI3/+8jbO0tsn1=
-tqS
-EUGIJi7ox80eSnVlcmdlbiBHcm9zcyA8amdyb3NzQHN1c2UuZGU+wsB5BBMBAgAjBQJTjHDrA=
-hsD
-BwsJCAcDAgEGFQgCCQoLBBYCAwECHgECF4AACgkQsN6d1ii/Ey+LhQf9GL45eU5vOowA2u5N3=
-g3O
-ZUEBmDHVVbqMtzwlmNC4k9Kx39r5s2vcFl4tXqW7g9/ViXYuiDXb0RfUpZiIUW89siKrkzmQ5=
-dM7
-wRqzgJpJwK8Bn2MIxAKArekWpiCKvBOB/Cc+3EXE78XdlxLyOi/NrmSGRIov0karw2RzMNOu5=
-D+j
-LRZQd1Sv27AR+IP3I8U4aqnhLpwhK7MEy9oCILlgZ1QZe49kpcumcZKORmzBTNh30FVKK1Evm=
-V2x
-AKDoaEOgQB4iFQLhJCdP1I5aSgM5IVFdn7v5YgEYuJYx37IoN1EblHI//x/e2AaIHpzK5h88N=
-Eaw
-QsaNRpNSrcfbFmAg987ATQRTjHAWAQgAyzH6AOODMBjgfWE9VeCgsrwH3exNAU32gLq2xvjpW=
-nHI
-s98ndPUDpnoxWQugJ6MpMncr0xSwFmHEgnSEjK/PAjppgmyc57BwKII3sV4on+gDVFJR6Y8ZR=
-wgn
-BC5mVM6JjQ5xDk8WRXljExRfUX9pNhdE5eBOZJrDRoLUmmjDtKzWaDhIg/+1Hzz93X4fCQkNV=
-bVF
-LELU9bMaLPBG/x5q4iYZ2k2ex6d47YE1ZFdMm6YBYMOljGkZKwYde5ldM9mo45mmwe0icXKLk=
-pEd
-IXKTZeKDO+Hdv1aqFuAcccTg9RXDQjmwhC3yEmrmcfl0+rPghO0Iv3OOImwTEe4co3c1mwARA=
-QAB
-wsBfBBgBAgAJBQJTjHAWAhsMAAoJELDendYovxMvQ/gH/1ha96vm4P/L+bQpJwrZ/dneZcmEw=
-Tbe
-8YFsw2V/Buv6Z4Mysln3nQK5ZadD534CF7TDVft7fC4tU4PONxF5D+/tvgkPfDAfF77zy2AH1=
-vJz
-Q1fOU8lYFpZXTXIHb+559UqvIB8AdgR3SAJGHHt4RKA0F7f5ipYBBrC6cyXJyyoprT10EMvU8=
-VGi
-wXvTyJz3fjoYsdFzpWPlJEBRMedCot60g5dmbdrZ5DWClAr0yau47zpWj3enf1tLWaqcsuylW=
-svi
-uGjKGw7KHQd3bxALOknAp4dN3QwBYCKuZ7AddY9yjynVaD5X7nF9nO5BjR/i1DG86lem3iBDX=
-zXs
-ZDn8R38=3D
-=3D2wuH
------END PGP PUBLIC KEY BLOCK-----
-
---------------ADE257E85A8FD6F18CF3FC67--
-
---BAODkXB4N8PiE6nyzjEthqTiehs8bjioQ--
-
---SkVOgLpshoD9dlISz1HVW9prGmzrAK94T
-Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="OpenPGP_signature"
-
------BEGIN PGP SIGNATURE-----
-
-wsB5BAABCAAjFiEEhRJncuj2BJSl0Jf3sN6d1ii/Ey8FAmGJT1MFAwAAAAAACgkQsN6d1ii/Ey+2
-SQf/VATQhAPufmxQQXGhnOvti0OPrb2Cca3DVfFUY5yRow3hAD27XrRY3SU7Rvh7mlBM5GUQArDm
-xzU4wO4GMdR7ljzRWKGg+5fllW9ZdkNTxFRTAf8cD+DArmhaIoCQ7c7/vrOD9H5q8ojJqjfc+Z2s
-UqH0nbZwrbvuSDWKgC15xdT1q7Ip/XAeRVXPwdaRRqZR0HvOjxWvRNaQ7UMZGgDsAt6xIB5XkQ67
-+BezorBLASwp+iX/yb48xs595GXqZ/PVKPu/29zCBn+6GM2Qgs0JvwabaovuGUJO/Cot8/bB5y9m
-FJrQ2n8yrogHyp+/ZuJagEOH1V+pJccKvcIvsS6gGg==
-=JrLZ
------END PGP SIGNATURE-----
-
---SkVOgLpshoD9dlISz1HVW9prGmzrAK94T--
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
