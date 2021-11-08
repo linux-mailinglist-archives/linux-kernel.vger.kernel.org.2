@@ -2,132 +2,468 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BE4AB449D1E
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Nov 2021 21:35:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 67DF7449D23
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Nov 2021 21:39:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236038AbhKHUer (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Nov 2021 15:34:47 -0500
-Received: from mail-cusazon11021014.outbound.protection.outlook.com ([52.101.62.14]:37591
-        "EHLO na01-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229832AbhKHUep (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Nov 2021 15:34:45 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=QYfMBwm/M9JlDmXrNHXRdUNLKMBtL12XdKjxtWbysi7RfaF9jpIGHLKRHNrek1lhAY5TajMGUe6ttdq9583Qoz2bqyo5jnqzXLFTBRUmcd7yRPi60bkxaAmUB6yVlKOOn7IJSe9fXdS/lmOuogbivGOBGE7iiIhJ+S3Q/QLocS2Sq+1gqGljZ9VDO8g8y+hrkR4MUu48xRlNbOPY6bs/l14IXs4ovHy8n3eahNM191y3bDSQ5tP27iBGiugsdiyGfVvKNBKMgR0gmUX7PP5BSsAFmEiq3HFu4vh73VfFouw4TT7ocvgYvCrxFlI7AQSld02GcxpwY4WqWivISNF6gg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=8yQP8SlP4wEsyodN2IBg8jjvh7br9X/JhqAas/sbknM=;
- b=iVAn+wCE5XeRTb8ojFq1cVRVrXQOBdej95larPSkOEzFdkGVI0ECLh1KZvpkycmu79V6sbKLNjNOh9IBLJCQpanXdRpICcCADxo1TyvGCDm97Jz7gXoA+0g7P01uG9EhOLHlpqZ92mNGQqBzi0FIcW09oW3nvCHU7+RqFEnkq979yNpZb64Ahiz6w0PtRpsdWuZvUw0/Pue9QCy4C9PCyB29hEtAlmtAdI9R35gWLH9+nEC3cCQuYqz/AYM+99aMD81KeWnhiixeHIr9eu+C3yox21YBLUobn6fll04+PwQcRf0iv3HQijydbdbVgJvQBLXbCOlXOZjEOyxmZ2OsGg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=microsoft.com; dmarc=pass action=none
- header.from=microsoft.com; dkim=pass header.d=microsoft.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=8yQP8SlP4wEsyodN2IBg8jjvh7br9X/JhqAas/sbknM=;
- b=Pi8+Wvwd3ztB8mEMiGB8/l/4Fs3M6S8W+RaBSOl/gz9OgA1VoJR9Coj6U3OMfuLyRTpE/xqOpM2y6m8+A+fO9ObzKK2wPXaiPYWpu03stWmz5BPIRIfiLu6xL/dqgO7oaF/AafgHgDND3UrlF87OuLkAj6u5T0u9g5Eh9cYVs+k=
-Received: from BYAPR21MB1270.namprd21.prod.outlook.com (2603:10b6:a03:105::15)
- by BYAPR21MB1333.namprd21.prod.outlook.com (2603:10b6:a03:115::15) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4690.2; Mon, 8 Nov
- 2021 20:31:57 +0000
-Received: from BYAPR21MB1270.namprd21.prod.outlook.com
- ([fe80::9c8a:6cab:68a6:ceb1]) by BYAPR21MB1270.namprd21.prod.outlook.com
- ([fe80::9c8a:6cab:68a6:ceb1%6]) with mapi id 15.20.4690.002; Mon, 8 Nov 2021
- 20:31:57 +0000
-From:   Dexuan Cui <decui@microsoft.com>
-To:     Colin Ian King <colin.i.king@googlemail.com>,
-        KY Srinivasan <kys@microsoft.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        Stephen Hemminger <sthemmin@microsoft.com>,
-        Wei Liu <wei.liu@kernel.org>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>
-CC:     "kernel-janitors@vger.kernel.org" <kernel-janitors@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: RE: [PATCH] net: mana: Fix spelling mistake "calledd" -> "called"
-Thread-Topic: [PATCH] net: mana: Fix spelling mistake "calledd" -> "called"
-Thread-Index: AQHX1N3JWXHPA/r+2EOYbwPQvYNA7Kv6FERg
-Date:   Mon, 8 Nov 2021 20:31:56 +0000
-Message-ID: <BYAPR21MB127056B1E0D886CDFA044B73BF919@BYAPR21MB1270.namprd21.prod.outlook.com>
-References: <20211108201817.43121-1-colin.i.king@gmail.com>
-In-Reply-To: <20211108201817.43121-1-colin.i.king@gmail.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-msip_labels: MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ActionId=77dd171c-b47a-42de-8ade-cbfcb8c1dd4e;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ContentBits=0;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Enabled=true;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Method=Standard;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Name=Internal;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SetDate=2021-11-08T20:27:07Z;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SiteId=72f988bf-86f1-41af-91ab-2d7cd011db47;
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=microsoft.com;
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: cd6fcb4c-f495-43a7-0d8d-08d9a2f6cf33
-x-ms-traffictypediagnostic: BYAPR21MB1333:
-x-microsoft-antispam-prvs: <BYAPR21MB13331468149C09EB80E73C21BF919@BYAPR21MB1333.namprd21.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:3383;
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: 1I0p52WxVLUcnjwLYbZkHW30QMd7/n+CRayv+IKRONdcr/Wpr/XPUrMDlX7UpocHmAzYBXk94tRCIPVWLqUSICLs18UrJOo0gsFk+lL3f4tTreZD4tgbTqc1cd5OxeAKwMZOS1gPS1sD00SDhLs6X9R76r6Qn5hulfHy7k+XZep4TZnwwnF+RAsK9zOul/vdT4uV1Rq7sjcD+CeEEEFFsd5iLQ2hlp+Gpr0H5st+0LuS0vqpbOoQJrbmiMwCI30Fpd01j/hT5fzJQev7y/h9aB1QUqRrsG0oxECXAlJeMA0c1fF+JDM4MahyznAPQYXnjdQ5cjMAQ3DSnuD6sdVV74VIW/FT56k6V86YrYoe+qNXtK038sdrlr4MQhtLk/XAg4JiBCiz+0wdpuEgdA4W3WtQ2X+6H9B0ECI4LMZoMs2J0dwtlYmPPUv09VbPxCmBCPkVkbhP4Inhp60duR4AoqhIEhI56EqoZrzRgtDdwLvdOWsJ26ALZBuwTRXiZQNp0EGMSUi2lhUpXONERezwb5WEAxs1g0GSbEqnZtEBROvTlRXsDEuLGFGqXHPdhrRalTMIHv2eIU3ysjVmW/l89lFUPvRr86bJi0tK6ELKL+6ijqwsCRZfz8qiiKtHsyEJwmcOc8mURoPLBmbQnJNdQcgwKH+RTRUxU9kyEtmhDPLErYX+sh3Q9XeLFtpG6EmbXTmlx5WmcJ+U9YnTkkAzug==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR21MB1270.namprd21.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(558084003)(82950400001)(8936002)(5660300002)(83380400001)(66446008)(71200400001)(7696005)(38070700005)(64756008)(8990500004)(10290500003)(508600001)(4326008)(110136005)(54906003)(86362001)(9686003)(76116006)(55016002)(82960400001)(66476007)(26005)(66946007)(6506007)(38100700002)(316002)(33656002)(52536014)(66556008)(186003)(2906002)(8676002)(122000001);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?GuIEBURXPo3zvxMGCRaiSP11rWy+9Gnwvk9UKewvNzTE+Ezai/RP2TFGWrNe?=
- =?us-ascii?Q?AyxflgZPM07w8/bVolO0IQmszuWhY2TO9xUXgUbUMcC+Jzv8pLpOU0JWhHY5?=
- =?us-ascii?Q?5CATeP7rE8fU6qMVoZsYc4KkSX/gRr6KN92w2jtwCGToec3JoTakfJtJLQUj?=
- =?us-ascii?Q?reLxaSN/Nqgn+blpl2A4FU1A0FIacbWF+y/Y1pO3ZEhEsTeLBwwhwP1Oorx+?=
- =?us-ascii?Q?sDtIjYKzDpcvUd5tgh3zERrx+6U/ZCHmlhv/fxwLyzspn/U6HWWr2nvFwByU?=
- =?us-ascii?Q?/+M8jjnGmKKSQKvldmpGf6ZzzoN9bSocXYNEcyqgKYZ+1/Ld8qb6dRl1l1Cg?=
- =?us-ascii?Q?tpSkkGbTlMCWCbV1pzBlAMEpZZYLIJ9XVl+l5dYk3Px3XLLbNzVETY/gepaN?=
- =?us-ascii?Q?NZILeFvAw0kIbQXuv0RgQesQ+H6qFp9t9X/FvqkW49twexBB0SMcmTwtrkfK?=
- =?us-ascii?Q?89gyYBiS91qU3rhRKxisMVmGRb6xGz5YISQuEU99BqAfBu1T4LFbiHnWtwb/?=
- =?us-ascii?Q?ovXBgTSoEfj536PYXHRGwXYbi9BhuaHzHHL3fly735VXYZK+ZP7aJqs7zBro?=
- =?us-ascii?Q?WFnAWcthUDK+DJk+xnhR0OosT4HXL6nNigCkm3danqONJhPK3wKAVq/Ebfy4?=
- =?us-ascii?Q?9nH/muo/rsz19t9GqWpCz5bg7Te+UHxqXQuzUE9hUpaIs9jwdqWc0GaOpTVl?=
- =?us-ascii?Q?suMvDm91+bcX978Ok7Rb5/WJifqmmGxdYLSRoEZwjnqZ9aHZd9kTfwNeBFak?=
- =?us-ascii?Q?hhCtT6Sp92vo4uC90CsYf5v5WmnWfqB6tckImSL9hKUp6eXnU+PaK/VCfE7O?=
- =?us-ascii?Q?7viunl/0vbWt9I2mm/j+ttQqllQowmhTj4BvJXWitCwYko7VCGBGBWF68dkj?=
- =?us-ascii?Q?17kuzpRoE0aLvs9TFgBJUgOX4TMZx+MVL2RXZzcqm5xCZ/IQta3hWr3w89mK?=
- =?us-ascii?Q?3nCQuVomQjUdwmuxAaYKOW5ngIhUA/woM6L1wg6Z3/em92FdBuKEr4xPA38r?=
- =?us-ascii?Q?3Mwrd5GUw3yrv3Zv5rxgzLvuvmdtwyjgrUT92BqwTc/Fhe1IAFB2vQUptkti?=
- =?us-ascii?Q?rDa2/ODXfH2o9JLB4FZlOI03gCosHh4ELO561Ag4TAeu5VghH1HyTuVp/NYk?=
- =?us-ascii?Q?1m2EViIifR/d1oSJzv6lkLI7biq7feDmZoFDYMJ811XXaiDIT+wBI8eqsbJa?=
- =?us-ascii?Q?HxZ+zmElaUslbDn8xnAHjPhJgQ3j/jTaKe3vQhAtJF7vzZU1tz6b/+UHX2+o?=
- =?us-ascii?Q?UwC/Sf9o7OcwaV8nuMr4odP5sT4TGX/LkfHutDkhQdFrtiOMnv6H7DL0yJC2?=
- =?us-ascii?Q?jAZUfD9kAIxcMkh5zLHCvrK+VapPtiMUL+vY1qaUmKPlHybKF4RMKWhl80OA?=
- =?us-ascii?Q?RHaU0nHarjM7IVosbnM01/nFJA1QY+nqXT2rN9HvjoBzioN1PxUnPgj2qQh/?=
- =?us-ascii?Q?1G230K9CQNatZGHkwV7TWYXreMg4E6LwKOg64abeXAuJusq46GEVLZBdv2zB?=
- =?us-ascii?Q?VKbhxsrGWiHLYgMcfOAuDvpBAlFPlklO91hsl1wg/KLbsyK1lthWIQnIPrrA?=
- =?us-ascii?Q?9J1g+0ZnGFFRu9I4P4S4xhio2ggRKKxsBUGfzFpGqNrt6Vp6Ekd5n35x+AX4?=
- =?us-ascii?Q?woleP3PgjwaSgK24Pe/qZtY=3D?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
-MIME-Version: 1.0
-X-OriginatorOrg: microsoft.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: BYAPR21MB1270.namprd21.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: cd6fcb4c-f495-43a7-0d8d-08d9a2f6cf33
-X-MS-Exchange-CrossTenant-originalarrivaltime: 08 Nov 2021 20:31:57.0160
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 72f988bf-86f1-41af-91ab-2d7cd011db47
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: K/WKiz4s4QSXrxnQlY2pN5MByC7A3PMBxFptH0CExbi63GTze7gn7VSqGxPU0YeveS5lSqG7uEAQsoEi5dN4oQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR21MB1333
+        id S237146AbhKHUmN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Nov 2021 15:42:13 -0500
+Received: from so254-9.mailgun.net ([198.61.254.9]:46250 "EHLO
+        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229832AbhKHUmK (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Nov 2021 15:42:10 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1636403965; h=Message-Id: Date: Subject: Cc: To: From:
+ Sender; bh=kBesm0Q8LIo36KtkurWUv8WvrMHHxT3AGY+5Lzo2Pqk=; b=Zs9b3PeIEClpsuoFqwwZcM57RcXxNrKPMpfjmZW+/1lFpYEhHyqGx0qzyVd/2nehL+leGU/P
+ Pdc/yuO4t9c1F7R3ImpDv7RIQIqiL7DyiHcL1UXib8Ok/HgpW0jsEa/PaqhtlizNQMWdlIxD
+ mo1j33ybbHxd8T2Ul1g9+TBDG0Y=
+X-Mailgun-Sending-Ip: 198.61.254.9
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n06.prod.us-west-2.postgun.com with SMTP id
+ 61898aeffacd20d79527e723 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 08 Nov 2021 20:39:11
+ GMT
+Sender: quic_khsieh=quicinc.com@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 514F0C4360D; Mon,  8 Nov 2021 20:39:11 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
+        autolearn=no autolearn_force=no version=3.4.0
+Received: from khsieh-linux1.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: khsieh)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id D5AA1C4338F;
+        Mon,  8 Nov 2021 20:39:07 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 smtp.codeaurora.org D5AA1C4338F
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=fail (p=none dis=none) header.from=quicinc.com
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=quicinc.com
+From:   Kuogee Hsieh <quic_khsieh@quicinc.com>
+To:     robdclark@gmail.com, sean@poorly.run, swboyd@chromium.org,
+        vkoul@kernel.org, daniel@ffwll.ch, airlied@linux.ie,
+        agross@kernel.org, dmitry.baryshkov@linaro.org,
+        bjorn.andersson@linaro.org
+Cc:     quic_abhinavk@quicinc.com, aravindh@codeaurora.org,
+        quic_khsieh@quicinc.com, freedreno@lists.freedesktop.org,
+        dri-devel@lists.freedesktop.org, linux-arm-msm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Kuogee Hsieh <khsieh@codeaurora.org>
+Subject: [PATCH v2] drm/msm/dp: do not initialize phy until plugin interrupt received
+Date:   Mon,  8 Nov 2021 12:39:00 -0800
+Message-Id: <1636403940-3541-1-git-send-email-quic_khsieh@quicinc.com>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> From: Colin Ian King <colin.i.king@googlemail.com>
->=20
-> There is a spelling mistake in a dev_info message. Fix it.
->=20
-> Signed-off-by: Colin Ian King <colin.i.king@gmail.com>
+From: Kuogee Hsieh <khsieh@codeaurora.org>
 
-It would be good to add a Fixes tag:
-Fixes: 635096a86edb ("net: mana: Support hibernation and kexec")
+Combo phy supports both USB and DP simultaneously. There may has a
+possible conflict during phy initialization phase between USB and
+DP driver which may cause USB phy timeout when USB tries to power
+up its phy. This patch has the DP driver not initialize its phy
+during DP driver initialization phase. Instead DP driver only enable
+required regulators and clocks so that it is able to receive HPD
+interrupts after completion of initialization phase. DP driver will
+initialize its phy when HPD plug-in interrupt received.
+This patch also provides a positive side effects which balance regulator
+enable count since regulator only enabled at initialize phase and resume
+and disabled at followed suspend.
 
-Reviewed-by: Dexuan Cui <decui@microsoft.com>
+Changes in V2:
+-- removed unnecessary dp_ctrl NULL check
+-- removed unnecessary phy init_count and power_count DRM_DEBUG_DP logs
+-- remove flip parameter out of dp_ctrl_irq_enable()
+-- add fixes tag
 
-(Sorry for my typo in the original patch!)
+Fixes: e91e3065a806 ("drm/msm/dp: Add DP compliance tests on Snapdragon Chipsets")
+
+Signed-off-by: Kuogee Hsieh <quic_khsieh@quicinc.com>
+---
+ drivers/gpu/drm/msm/dp/dp_ctrl.c    | 87 ++++++++++++++++---------------------
+ drivers/gpu/drm/msm/dp/dp_ctrl.h    |  9 ++--
+ drivers/gpu/drm/msm/dp/dp_display.c | 83 ++++++++++++++++++++++++++---------
+ 3 files changed, 105 insertions(+), 74 deletions(-)
+
+diff --git a/drivers/gpu/drm/msm/dp/dp_ctrl.c b/drivers/gpu/drm/msm/dp/dp_ctrl.c
+index 7ec155d..4788e8c 100644
+--- a/drivers/gpu/drm/msm/dp/dp_ctrl.c
++++ b/drivers/gpu/drm/msm/dp/dp_ctrl.c
+@@ -1364,60 +1364,54 @@ static int dp_ctrl_enable_stream_clocks(struct dp_ctrl_private *ctrl)
+ 	return ret;
+ }
+ 
+-int dp_ctrl_host_init(struct dp_ctrl *dp_ctrl, bool flip, bool reset)
++void dp_ctrl_irq_enable(struct dp_ctrl *dp_ctrl)
++{
++	struct dp_ctrl_private *ctrl;
++
++	ctrl = container_of(dp_ctrl, struct dp_ctrl_private, dp_ctrl);
++
++	dp_catalog_ctrl_reset(ctrl->catalog);
++
++	dp_catalog_ctrl_enable_irq(ctrl->catalog, true);
++}
++
++void dp_ctrl_irq_disable(struct dp_ctrl *dp_ctrl)
++{
++	struct dp_ctrl_private *ctrl;
++
++	ctrl = container_of(dp_ctrl, struct dp_ctrl_private, dp_ctrl);
++
++	dp_catalog_ctrl_reset(ctrl->catalog);
++
++	dp_catalog_ctrl_enable_irq(ctrl->catalog, false);
++}
++
++void dp_ctrl_phy_init(struct dp_ctrl *dp_ctrl)
+ {
+ 	struct dp_ctrl_private *ctrl;
+ 	struct dp_io *dp_io;
+ 	struct phy *phy;
+ 
+-	if (!dp_ctrl) {
+-		DRM_ERROR("Invalid input data\n");
+-		return -EINVAL;
+-	}
+-
+ 	ctrl = container_of(dp_ctrl, struct dp_ctrl_private, dp_ctrl);
+ 	dp_io = &ctrl->parser->io;
+ 	phy = dp_io->phy;
+ 
+-	ctrl->dp_ctrl.orientation = flip;
+-
+-	if (reset)
+-		dp_catalog_ctrl_reset(ctrl->catalog);
+-
+-	DRM_DEBUG_DP("flip=%d\n", flip);
+ 	dp_catalog_ctrl_phy_reset(ctrl->catalog);
+ 	phy_init(phy);
+-	dp_catalog_ctrl_enable_irq(ctrl->catalog, true);
+-
+-	return 0;
+ }
+ 
+-/**
+- * dp_ctrl_host_deinit() - Uninitialize DP controller
+- * @dp_ctrl: Display Port Driver data
+- *
+- * Perform required steps to uninitialize DP controller
+- * and its resources.
+- */
+-void dp_ctrl_host_deinit(struct dp_ctrl *dp_ctrl)
++void dp_ctrl_phy_exit(struct dp_ctrl *dp_ctrl)
+ {
+ 	struct dp_ctrl_private *ctrl;
+ 	struct dp_io *dp_io;
+ 	struct phy *phy;
+ 
+-	if (!dp_ctrl) {
+-		DRM_ERROR("Invalid input data\n");
+-		return;
+-	}
+-
+ 	ctrl = container_of(dp_ctrl, struct dp_ctrl_private, dp_ctrl);
+ 	dp_io = &ctrl->parser->io;
+ 	phy = dp_io->phy;
+ 
+-	dp_catalog_ctrl_enable_irq(ctrl->catalog, false);
++	dp_catalog_ctrl_phy_reset(ctrl->catalog);
+ 	phy_exit(phy);
+-
+-	DRM_DEBUG_DP("Host deinitialized successfully\n");
+ }
+ 
+ static bool dp_ctrl_use_fixed_nvid(struct dp_ctrl_private *ctrl)
+@@ -1895,8 +1889,14 @@ int dp_ctrl_off_link_stream(struct dp_ctrl *dp_ctrl)
+ 		return ret;
+ 	}
+ 
++	DRM_DEBUG_DP("Before, phy=%x init_count=%d power_on=%d\n",
++		(u32)(uintptr_t)phy, phy->init_count, phy->power_count);
++
+ 	phy_power_off(phy);
+ 
++	DRM_DEBUG_DP("After, phy=%x init_count=%d power_on=%d\n",
++		(u32)(uintptr_t)phy, phy->init_count, phy->power_count);
++
+ 	/* aux channel down, reinit phy */
+ 	phy_exit(phy);
+ 	phy_init(phy);
+@@ -1905,23 +1905,6 @@ int dp_ctrl_off_link_stream(struct dp_ctrl *dp_ctrl)
+ 	return ret;
+ }
+ 
+-void dp_ctrl_off_phy(struct dp_ctrl *dp_ctrl)
+-{
+-	struct dp_ctrl_private *ctrl;
+-	struct dp_io *dp_io;
+-	struct phy *phy;
+-
+-	ctrl = container_of(dp_ctrl, struct dp_ctrl_private, dp_ctrl);
+-	dp_io = &ctrl->parser->io;
+-	phy = dp_io->phy;
+-
+-	dp_catalog_ctrl_reset(ctrl->catalog);
+-
+-	phy_exit(phy);
+-
+-	DRM_DEBUG_DP("DP off phy done\n");
+-}
+-
+ int dp_ctrl_off(struct dp_ctrl *dp_ctrl)
+ {
+ 	struct dp_ctrl_private *ctrl;
+@@ -1949,10 +1932,14 @@ int dp_ctrl_off(struct dp_ctrl *dp_ctrl)
+ 		DRM_ERROR("Failed to disable link clocks. ret=%d\n", ret);
+ 	}
+ 
++	DRM_DEBUG_DP("Before, phy=%x init_count=%d power_on=%d\n",
++		(u32)(uintptr_t)phy, phy->init_count, phy->power_count);
++
+ 	phy_power_off(phy);
+-	phy_exit(phy);
+ 
+-	DRM_DEBUG_DP("DP off done\n");
++	DRM_DEBUG_DP("After, phy=%x init_count=%d power_on=%d\n",
++		(u32)(uintptr_t)phy, phy->init_count, phy->power_count);
++
+ 	return ret;
+ }
+ 
+diff --git a/drivers/gpu/drm/msm/dp/dp_ctrl.h b/drivers/gpu/drm/msm/dp/dp_ctrl.h
+index 2363a2d..30f9414 100644
+--- a/drivers/gpu/drm/msm/dp/dp_ctrl.h
++++ b/drivers/gpu/drm/msm/dp/dp_ctrl.h
+@@ -19,12 +19,9 @@ struct dp_ctrl {
+ 	u32 pixel_rate;
+ };
+ 
+-int dp_ctrl_host_init(struct dp_ctrl *dp_ctrl, bool flip, bool reset);
+-void dp_ctrl_host_deinit(struct dp_ctrl *dp_ctrl);
+ int dp_ctrl_on_link(struct dp_ctrl *dp_ctrl);
+ int dp_ctrl_on_stream(struct dp_ctrl *dp_ctrl);
+ int dp_ctrl_off_link_stream(struct dp_ctrl *dp_ctrl);
+-void dp_ctrl_off_phy(struct dp_ctrl *dp_ctrl);
+ int dp_ctrl_off(struct dp_ctrl *dp_ctrl);
+ void dp_ctrl_push_idle(struct dp_ctrl *dp_ctrl);
+ void dp_ctrl_isr(struct dp_ctrl *dp_ctrl);
+@@ -34,4 +31,10 @@ struct dp_ctrl *dp_ctrl_get(struct device *dev, struct dp_link *link,
+ 			struct dp_power *power, struct dp_catalog *catalog,
+ 			struct dp_parser *parser);
+ 
++void dp_ctrl_irq_enable(struct dp_ctrl *dp_ctrl);
++void dp_ctrl_irq_disable(struct dp_ctrl *dp_ctrl);
++void dp_ctrl_phy_init(struct dp_ctrl *dp_ctrl);
++void dp_ctrl_phy_exit(struct dp_ctrl *dp_ctrl);
++void dp_ctrl_irq_phy_exit(struct dp_ctrl *dp_ctrl);
++
+ #endif /* _DP_CTRL_H_ */
+diff --git a/drivers/gpu/drm/msm/dp/dp_display.c b/drivers/gpu/drm/msm/dp/dp_display.c
+index e41dd40..c15f466 100644
+--- a/drivers/gpu/drm/msm/dp/dp_display.c
++++ b/drivers/gpu/drm/msm/dp/dp_display.c
+@@ -84,6 +84,7 @@ struct dp_display_private {
+ 
+ 	/* state variables */
+ 	bool core_initialized;
++	bool phy_initialized;
+ 	bool hpd_irq_on;
+ 	bool audio_supported;
+ 
+@@ -387,7 +388,7 @@ static int dp_display_process_hpd_high(struct dp_display_private *dp)
+ 	return rc;
+ }
+ 
+-static void dp_display_host_init(struct dp_display_private *dp, int reset)
++static void dp_display_host_init(struct dp_display_private *dp)
+ {
+ 	bool flip = false;
+ 
+@@ -400,12 +401,42 @@ static void dp_display_host_init(struct dp_display_private *dp, int reset)
+ 	if (dp->usbpd->orientation == ORIENTATION_CC2)
+ 		flip = true;
+ 
+-	dp_power_init(dp->power, flip);
+-	dp_ctrl_host_init(dp->ctrl, flip, reset);
++	dp_power_init(dp->power, false);
++	dp_ctrl_irq_enable(dp->ctrl);
++
++	/*
++	 * eDP is the embedded primary display and has its own phy
++	 * initialize phy immediately
++	 */
++	if (dp->dp_display.connector_type == DRM_MODE_CONNECTOR_eDP)
++		dp_ctrl_phy_init(dp->ctrl);
++
+ 	dp_aux_init(dp->aux);
+ 	dp->core_initialized = true;
+ }
+ 
++static void dp_display_host_phy_init(struct dp_display_private *dp)
++{
++	DRM_DEBUG_DP("core_init=%d phy_init=%d\n",
++			dp->core_initialized, dp->phy_initialized);
++
++	if (!dp->phy_initialized) {
++		dp_ctrl_phy_init(dp->ctrl);
++		dp->phy_initialized = true;
++	}
++}
++
++static void dp_display_host_phy_exit(struct dp_display_private *dp)
++{
++	DRM_DEBUG_DP("core_init=%d phy_init=%d\n",
++			dp->core_initialized, dp->phy_initialized);
++
++	if (dp->phy_initialized) {
++		dp_ctrl_phy_exit(dp->ctrl);
++		dp->phy_initialized = false;
++	}
++}
++
+ static void dp_display_host_deinit(struct dp_display_private *dp)
+ {
+ 	if (!dp->core_initialized) {
+@@ -413,7 +444,7 @@ static void dp_display_host_deinit(struct dp_display_private *dp)
+ 		return;
+ 	}
+ 
+-	dp_ctrl_host_deinit(dp->ctrl);
++	dp_ctrl_irq_disable(dp->ctrl);
+ 	dp_aux_deinit(dp->aux);
+ 	dp_power_deinit(dp->power);
+ 
+@@ -424,7 +455,7 @@ static int dp_display_usbpd_configure_cb(struct device *dev)
+ {
+ 	struct dp_display_private *dp = dev_get_dp_display_private(dev);
+ 
+-	dp_display_host_init(dp, true);
++	dp_display_host_phy_init(dp);
+ 
+ 	return dp_display_process_hpd_high(dp);
+ }
+@@ -551,7 +582,7 @@ static int dp_hpd_plug_handle(struct dp_display_private *dp, u32 data)
+ 		dp->hpd_state = ST_DISCONNECTED;
+ 
+ 		if (ret == -ECONNRESET) { /* cable unplugged */
+-			dp->core_initialized = false;
++			dp->phy_initialized = false;
+ 		}
+ 
+ 	} else {
+@@ -623,9 +654,8 @@ static int dp_hpd_unplug_handle(struct dp_display_private *dp, u32 data)
+ 	if (state == ST_DISCONNECTED) {
+ 		/* triggered by irq_hdp with sink_count = 0 */
+ 		if (dp->link->sink_count == 0) {
+-			dp_ctrl_off_phy(dp->ctrl);
++			dp_display_host_phy_exit(dp);
+ 			hpd->hpd_high = 0;
+-			dp->core_initialized = false;
+ 		}
+ 		mutex_unlock(&dp->event_mutex);
+ 		return 0;
+@@ -716,7 +746,7 @@ static int dp_irq_hpd_handle(struct dp_display_private *dp, u32 data)
+ 
+ 	ret = dp_display_usbpd_attention_cb(&dp->pdev->dev);
+ 	if (ret == -ECONNRESET) { /* cable unplugged */
+-		dp->core_initialized = false;
++		dp->phy_initialized = false;
+ 	}
+ 	DRM_DEBUG_DP("hpd_state=%d\n", state);
+ 
+@@ -918,12 +948,19 @@ static int dp_display_disable(struct dp_display_private *dp, u32 data)
+ 
+ 	dp_display->audio_enabled = false;
+ 
+-	/* triggered by irq_hpd with sink_count = 0 */
+ 	if (dp->link->sink_count == 0) {
++		/*
++		 * irq_hpd with sink_count = 0
++		 * hdmi unplugged out of dongle
++		 */
+ 		dp_ctrl_off_link_stream(dp->ctrl);
+ 	} else {
++		/*
++		 * unplugged interrupt
++		 * dongle unplugged out of DUT
++		 */
+ 		dp_ctrl_off(dp->ctrl);
+-		dp->core_initialized = false;
++		dp_display_host_phy_exit(dp);
+ 	}
+ 
+ 	dp_power_panel_on(dp->power, false);
+@@ -1059,7 +1096,7 @@ void msm_dp_snapshot(struct msm_disp_state *disp_state, struct msm_dp *dp)
+ static void dp_display_config_hpd(struct dp_display_private *dp)
+ {
+ 
+-	dp_display_host_init(dp, true);
++	dp_display_host_init(dp);
+ 	dp_catalog_ctrl_hpd_config(dp->catalog);
+ 
+ 	/* Enable interrupt first time
+@@ -1338,20 +1375,22 @@ static int dp_pm_resume(struct device *dev)
+ 	dp->hpd_state = ST_DISCONNECTED;
+ 
+ 	/* turn on dp ctrl/phy */
+-	dp_display_host_init(dp, true);
++	dp_display_host_init(dp);
+ 
+ 	dp_catalog_ctrl_hpd_config(dp->catalog);
+ 
+-	/*
+-	 * set sink to normal operation mode -- D0
+-	 * before dpcd read
+-	 */
+-	dp_link_psm_config(dp->link, &dp->panel->link_info, false);
+-
+ 	if (dp_catalog_link_is_connected(dp->catalog)) {
++		/*
++		 * set sink to normal operation mode -- D0
++		 * before dpcd read
++		 */
++		dp_display_host_phy_init(dp);
++		dp_link_psm_config(dp->link, &dp->panel->link_info, false);
+ 		sink_count = drm_dp_read_sink_count(dp->aux);
+ 		if (sink_count < 0)
+ 			sink_count = 0;
++
++		dp_display_host_phy_exit(dp);
+ 	}
+ 
+ 	dp->link->sink_count = sink_count;
+@@ -1399,6 +1438,8 @@ static int dp_pm_suspend(struct device *dev)
+ 		dp_display_host_deinit(dp);
+ 	}
+ 
++	dp_display_host_phy_exit(dp);
++
+ 	dp->hpd_state = ST_SUSPENDED;
+ 
+ 	/* host_init will be called at pm_resume */
+@@ -1473,7 +1514,7 @@ void msm_dp_irq_postinstall(struct msm_dp *dp_display)
+ 		enable_irq(dp->irq);
+ 		dp_hpd_connect(dp->usbpd, true);
+ 	} else {
+-		dp_add_event(dp, EV_HPD_INIT_SETUP, 0, dp->id * 10);
++		dp_add_event(dp, EV_HPD_INIT_SETUP, 0, 0);
+ 	}
+ }
+ 
+@@ -1567,7 +1608,7 @@ int msm_dp_display_enable(struct msm_dp *dp, struct drm_encoder *encoder)
+ 	state =  dp_display->hpd_state;
+ 
+ 	if (state == ST_DISPLAY_OFF)
+-		dp_display_host_init(dp_display, true);
++		dp_display_host_phy_init(dp_display);
+ 
+ 	dp_display_enable(dp_display, 0);
+ 
+-- 
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+a Linux Foundation Collaborative Project
+
