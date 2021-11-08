@@ -2,122 +2,626 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F3AA447D40
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Nov 2021 11:04:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 61003447D46
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Nov 2021 11:06:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235330AbhKHKGp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Nov 2021 05:06:45 -0500
-Received: from outbound-smtp19.blacknight.com ([46.22.139.246]:52837 "EHLO
-        outbound-smtp19.blacknight.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229966AbhKHKGn (ORCPT
+        id S235673AbhKHKJB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Nov 2021 05:09:01 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37116 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229966AbhKHKJA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Nov 2021 05:06:43 -0500
-Received: from mail.blacknight.com (pemlinmail03.blacknight.ie [81.17.254.16])
-        by outbound-smtp19.blacknight.com (Postfix) with ESMTPS id 7256F1C5CCE
-        for <linux-kernel@vger.kernel.org>; Mon,  8 Nov 2021 10:03:58 +0000 (GMT)
-Received: (qmail 11170 invoked from network); 8 Nov 2021 10:03:58 -0000
-Received: from unknown (HELO techsingularity.net) (mgorman@techsingularity.net@[84.203.17.29])
-  by 81.17.254.9 with ESMTPSA (AES256-SHA encrypted, authenticated); 8 Nov 2021 10:03:58 -0000
-Date:   Mon, 8 Nov 2021 10:03:56 +0000
-From:   Mel Gorman <mgorman@techsingularity.net>
-To:     Valentin Schneider <valentin.schneider@arm.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Aubrey Li <aubrey.li@linux.intel.com>,
-        "Srinivasan, Sadagopan" <Sadagopan.Srinivasan@amd.com>,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] sched/fair: Adjust the allowed NUMA imbalance when
- SD_NUMA spans multiple LLCs
-Message-ID: <20211108100356.GG3959@techsingularity.net>
-References: <20211028130305.GS3959@techsingularity.net>
- <875yt6tqbn.mognet@arm.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-15
-Content-Disposition: inline
-In-Reply-To: <875yt6tqbn.mognet@arm.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+        Mon, 8 Nov 2021 05:09:00 -0500
+Received: from mail-pf1-x434.google.com (mail-pf1-x434.google.com [IPv6:2607:f8b0:4864:20::434])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C1ADC061570
+        for <linux-kernel@vger.kernel.org>; Mon,  8 Nov 2021 02:06:16 -0800 (PST)
+Received: by mail-pf1-x434.google.com with SMTP id 127so15504313pfu.1
+        for <linux-kernel@vger.kernel.org>; Mon, 08 Nov 2021 02:06:16 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=huaqin-corp-partner-google-com.20210112.gappssmtp.com; s=20210112;
+        h=from:to:cc:subject:date:message-id;
+        bh=SLJPgr8TyoIKg5adMKuCCehc8eUwgmh+uyBbGgdyT8E=;
+        b=mkuwPmDINKsoYYGkAw9VHKXff+uq8mMY4HdU3qi10FF+zafqFcB9xHavapyM4P9Mbo
+         wshjE8kb1VTMSP8kp0OvyIt9x9vB0KZSA1547fSB2TleUvoA7BH5wErLMB0XCEdpptdh
+         aMArRDCtezJe/sKkqAF3orV86tC0vlb8nKE5z/9Wcpm4JEFbbgaUatQ2skgyTS/FdnJi
+         4s6KwCj7HcrL2um0r5fSjL2Gqdv1tH+PunJQm6mbc4K/fhKVKiElpEGlgoVdKgYdmogw
+         7HfqRlY/og+HUd53WmcHBezzgajisMmdpUfB+iHc7Gn04vSEopZofczr4fWjKgqyBENu
+         /lzg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=SLJPgr8TyoIKg5adMKuCCehc8eUwgmh+uyBbGgdyT8E=;
+        b=2XF1ZiVSdyd36nQJ4LUFHQLGOE7UbxVi9xNXeJ6m8rqxgsw6Da/MK/WPGEIsP9WTew
+         p2Mv6NNS3xMUyU4+h7Gg3+7NVQCpiYtBRdFiKyPgc9rK7FbIVqpUFwlodWut6pUUOJOE
+         CcFQkBkUo0mdaTD+YQbRKxhp4k6MUHGIiwb8tkEdck0d359WRGgT0zJDmdexaDbWtPLY
+         EZLoU0/AesgVhYvTF6dLMW0LLgp7zFub0m5hdi/AsaGI7MEh4tQBMSo1gzO7aCa/f44I
+         sdUlgMUgGA1hUFQbboECzdjpihpSWkHEks2Ltn6hPC2/KckmzBUqSGMAeY7k17hCez+d
+         Ic4A==
+X-Gm-Message-State: AOAM533ISIiaAJK1Rs31eAspj6Yd934PZl0a3/SIdm0V6QydibsoULIz
+        xMd1IsYzYx3KdHyymga2KHNrcA==
+X-Google-Smtp-Source: ABdhPJy7loTtgWZ0LI3HnJ2ed91YYpQ3qtVPEUxFtv5nkKiSNTWlhhGN5E8yCmHMDxdlh7u+nMOd+g==
+X-Received: by 2002:a63:e551:: with SMTP id z17mr57518605pgj.203.1636365975668;
+        Mon, 08 Nov 2021 02:06:15 -0800 (PST)
+Received: from ubuntu.huaqin.com ([101.78.151.214])
+        by smtp.gmail.com with ESMTPSA id y32sm16526704pfa.145.2021.11.08.02.06.13
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 08 Nov 2021 02:06:15 -0800 (PST)
+From:   xiazhengqiao <xiazhengqiao@huaqin.corp-partner.google.com>
+To:     thierry.reding@gmail.com, sam@ravnborg.org, airlied@linux.ie,
+        daniel@ffwll.ch
+Cc:     linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        xiazhengqiao <xiazhengqiao@huaqin.corp-partner.google.com>
+Subject: [PATCH RESEND] drm/panel: Add inx Himax8279d MIPI-DSI LCD panel driver
+Date:   Mon,  8 Nov 2021 18:06:08 +0800
+Message-Id: <20211108100608.22401-1-xiazhengqiao@huaqin.corp-partner.google.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 05, 2021 at 06:22:52PM +0000, Valentin Schneider wrote:
-> On 28/10/21 14:03, Mel Gorman wrote:
-> > Commit 7d2b5dd0bcc4 ("sched/numa: Allow a floating imbalance between NUMA
-> > nodes") allowed an imbalance between NUMA nodes such that communicating
-> > tasks would not be pulled apart by the load balancer. This works fine when
-> > there is a 1:1 relationship between LLC and node but can be suboptimal
-> > for multiple LLCs if independent tasks prematurely use CPUs sharing cache.
-> >
-> > Zen* has multiple LLCs per node with local memory channels and due to
-> > the allowed imbalance, it's far harder to tune some workloads to run
-> > optimally than it is on hardware that has 1 LLC per node. This patch
-> > adjusts the imbalance on multi-LLC machines to allow an imbalance up to
-> > the point where LLCs should be balanced between nodes.
-> >
-> 
-> I've run out of brain juice for today and didn't get to decipher the logic
-> you're implementing, but for now I do have a comment on the topology
-> detection side of things (see inline).
-> 
-> > --- a/kernel/sched/topology.c
-> > +++ b/kernel/sched/topology.c
-> > @@ -644,6 +644,7 @@ static void destroy_sched_domains(struct sched_domain *sd)
-> >  DEFINE_PER_CPU(struct sched_domain __rcu *, sd_llc);
-> >  DEFINE_PER_CPU(int, sd_llc_size);
-> >  DEFINE_PER_CPU(int, sd_llc_id);
-> > +DEFINE_PER_CPU(int, sd_numaimb_shift);
-> >  DEFINE_PER_CPU(struct sched_domain_shared __rcu *, sd_llc_shared);
-> >  DEFINE_PER_CPU(struct sched_domain __rcu *, sd_numa);
-> >  DEFINE_PER_CPU(struct sched_domain __rcu *, sd_asym_packing);
-> > @@ -672,6 +673,20 @@ static void update_top_cache_domain(int cpu)
-> >       sd = lowest_flag_domain(cpu, SD_NUMA);
-> >       rcu_assign_pointer(per_cpu(sd_numa, cpu), sd);
-> >
-> > +	/*
-> > +	 * Save the threshold where an imbalance is allowed between SD_NUMA
-> > +	 * domains. If LLC spans the entire node, then imbalances are allowed
-> > +	 * until 25% of the domain is active. Otherwise, allow an imbalance
-> > +	 * up to the point where LLCs between NUMA nodes should be balanced
-> > +	 * to maximise cache and memory bandwidth utilisation.
-> > +	 */
-> > +	if (sd) {
-> > +		if (sd->span_weight == size)
-> > +			per_cpu(sd_numaimb_shift, cpu) = 2;
-> > +		else
-> > +			per_cpu(sd_numaimb_shift, cpu) = max(2, ilog2(sd->span_weight / size * num_online_nodes()));
-> > +	}
-> > +
-> 
-> So nodes are covered by the NODE topology level which *doesn't* have
-> SD_NUMA set. I always get confused on how MC/DIE/NODE is supposed to look
-> on those sub-NUMA clustering thingies, but either way consider:
-> 
+Add STARRY 2081101QFH032011-53G 10.1" WUXGA TFT LCD panel
 
-The Zen machines don't have sub-NUMA clustering as such, each LLC is not
-represented as a separate NUMA node. For example, an example Zen3
-machines looks like
+Signed-off-by: xiazhengqiao <xiazhengqiao@huaqin.corp-partner.google.com>
+---
+ drivers/gpu/drm/panel/Kconfig                 |   9 +
+ drivers/gpu/drm/panel/Makefile                |   1 +
+ .../gpu/drm/panel/panel-innolux-himax8279d.c  | 515 ++++++++++++++++++
+ 3 files changed, 525 insertions(+)
+ create mode 100644 drivers/gpu/drm/panel/panel-innolux-himax8279d.c
 
-available: 2 nodes (0-1)
-node 0 cpus: 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 32 33 34 35 36 37 38 39 40 41 42 43 44 45 46 47 48 49 50 51 52 53 54 55 56 57 58 59 60 61 62 63 128 129 130 131 132 133 134 135 136 137 138 139 140 141 142 143 144 145 146 147 148 149 150 151 152 153 154 155 156 157 158 159 160 161 162 163 164 165 166 167 168 169 170 171 172 173 174 175 176 177 178 179 180 181 182 183 184 185 186 187 188 189 190 191
-node 0 size: 128278 MB
-node 0 free: 126193 MB
-node 1 cpus: 64 65 66 67 68 69 70 71 72 73 74 75 76 77 78 79 80 81 82 83 84 85 86 87 88 89 90 91 92 93 94 95 96 97 98 99 100 101 102 103 104 105 106 107 108 109 110 111 112 113 114 115 116 117 118 119 120 121 122 123 124 125 126 127 192 193 194 195 196 197 198 199 200 201 202 203 204 205 206 207 208 209 210 211 212 213 214 215 216 217 218 219 220 221 222 223 224 225 226 227 228 229 230 231 232 233 234 235 236 237 238 239 240 241 242 243 244 245 246 247 248 249 250 251 252 253 254 255
-node 1 size: 111571 MB
-node 1 free: 109755 MB
-node distances:
-node   0   1
-  0:  10  32
-  1:  32  10
-
-Each node has 8 LLCs and treated as if they are equal distance from memory
-so node != LLC but for peak memory utilisation, it's best to spread based
-on LLC and not just NUMA distance.
-
-Hence, the intent of the patch is "allow some NUMA imbalance but not
-enough imbalance that tasks share LLC prematurely". I didn't see an
-obvious way of doing that with SD flag trickery.
-
+diff --git a/drivers/gpu/drm/panel/Kconfig b/drivers/gpu/drm/panel/Kconfig
+index 2cb8eba76af8..dcf04c32f6ae 100644
+--- a/drivers/gpu/drm/panel/Kconfig
++++ b/drivers/gpu/drm/panel/Kconfig
+@@ -167,6 +167,15 @@ config DRM_PANEL_INNOLUX_EJ030NA
+           320x480 3.0" panel as found in the RS97 V2.1, RG300(non-ips)
+           and LDK handheld gaming consoles.
+ 
++config DRM_PANEL_INNOLUX_HIMAX8279D
++	tristate "INX 2081101qfh032011-53g 1200x1920 video panel"
++	depends on OF
++	depends on DRM_MIPI_DSI
++	depends on BACKLIGHT_CLASS_DEVICE
++	help
++	  Say Y here if you want to support for inx 2081101qfh032011-53g
++	  1200x1920 video panel.
++
+ config DRM_PANEL_INNOLUX_P079ZCA
+ 	tristate "Innolux P079ZCA panel"
+ 	depends on OF
+diff --git a/drivers/gpu/drm/panel/Makefile b/drivers/gpu/drm/panel/Makefile
+index 6e30640b9099..f03d470a0085 100644
+--- a/drivers/gpu/drm/panel/Makefile
++++ b/drivers/gpu/drm/panel/Makefile
+@@ -15,6 +15,7 @@ obj-$(CONFIG_DRM_PANEL_ILITEK_IL9322) += panel-ilitek-ili9322.o
+ obj-$(CONFIG_DRM_PANEL_ILITEK_ILI9341) += panel-ilitek-ili9341.o
+ obj-$(CONFIG_DRM_PANEL_ILITEK_ILI9881C) += panel-ilitek-ili9881c.o
+ obj-$(CONFIG_DRM_PANEL_INNOLUX_EJ030NA) += panel-innolux-ej030na.o
++obj-$(CONFIG_DRM_PANEL_INNOLUX_HIMAX8279D) += panel-innolux-himax8279d.o
+ obj-$(CONFIG_DRM_PANEL_INNOLUX_P079ZCA) += panel-innolux-p079zca.o
+ obj-$(CONFIG_DRM_PANEL_JDI_LT070ME05000) += panel-jdi-lt070me05000.o
+ obj-$(CONFIG_DRM_PANEL_KHADAS_TS050) += panel-khadas-ts050.o
+diff --git a/drivers/gpu/drm/panel/panel-innolux-himax8279d.c b/drivers/gpu/drm/panel/panel-innolux-himax8279d.c
+new file mode 100644
+index 000000000000..6840449548e4
+--- /dev/null
++++ b/drivers/gpu/drm/panel/panel-innolux-himax8279d.c
+@@ -0,0 +1,515 @@
++// SPDX-License-Identifier: GPL-2.0
++/*
++ * Copyright (c) 2021, Huaqin Telecom Technology Co., Ltd
++ * Author: Zhengqiao Xia <xiazhengqiao@huaqin.corp-partner.google.com>
++ */
++
++#include <linux/delay.h>
++#include <linux/gpio/consumer.h>
++#include <linux/module.h>
++#include <linux/of.h>
++#include <linux/of_device.h>
++#include <linux/regulator/consumer.h>
++
++#include <drm/drm_connector.h>
++#include <drm/drm_crtc.h>
++#include <drm/drm_mipi_dsi.h>
++#include <drm/drm_panel.h>
++
++#include <video/mipi_display.h>
++
++struct panel_desc {
++	const struct drm_display_mode *modes;
++	unsigned int bpc;
++
++	/**
++	 * @width_mm: width of the panel's active display area
++	 * @height_mm: height of the panel's active display area
++	 */
++	struct {
++		unsigned int width_mm;
++		unsigned int height_mm;
++	} size;
++
++	unsigned long mode_flags;
++	enum mipi_dsi_pixel_format format;
++	const struct panel_init_cmd *init_cmds;
++	unsigned int lanes;
++	bool discharge_on_disable;
++};
++
++struct inx_panel {
++	struct drm_panel base;
++	struct mipi_dsi_device *dsi;
++
++	const struct panel_desc *desc;
++
++	enum drm_panel_orientation orientation;
++	struct regulator *pp1800;
++	struct regulator *avee;
++	struct regulator *avdd;
++	struct gpio_desc *enable_gpio;
++
++	bool prepared;
++};
++
++enum dsi_cmd_type {
++	INIT_DCS_CMD,
++	DELAY_CMD,
++};
++
++struct panel_init_cmd {
++	enum dsi_cmd_type type;
++	size_t len;
++	const char *data;
++};
++
++#define _INIT_DCS_CMD(...) { \
++	.type = INIT_DCS_CMD, \
++	.len = sizeof((char[]){__VA_ARGS__}), \
++	.data = (char[]){__VA_ARGS__} }
++
++#define _INIT_DELAY_CMD(...) { \
++	.type = DELAY_CMD,\
++	.len = sizeof((char[]){__VA_ARGS__}), \
++	.data = (char[]){__VA_ARGS__} }
++
++static const struct panel_init_cmd starry_qfh032011_53g_init_cmd[] = {
++	_INIT_DCS_CMD(0xB0, 0x01),
++	_INIT_DCS_CMD(0xC3, 0x4F),
++	_INIT_DCS_CMD(0xC4, 0x40),
++	_INIT_DCS_CMD(0xC5, 0x40),
++	_INIT_DCS_CMD(0xC6, 0x40),
++	_INIT_DCS_CMD(0xC7, 0x40),
++	_INIT_DCS_CMD(0xC8, 0x4D),
++	_INIT_DCS_CMD(0xC9, 0x52),
++	_INIT_DCS_CMD(0xCA, 0x51),
++	_INIT_DCS_CMD(0xCD, 0x5D),
++	_INIT_DCS_CMD(0xCE, 0x5B),
++	_INIT_DCS_CMD(0xCF, 0x4B),
++	_INIT_DCS_CMD(0xD0, 0x49),
++	_INIT_DCS_CMD(0xD1, 0x47),
++	_INIT_DCS_CMD(0xD2, 0x45),
++	_INIT_DCS_CMD(0xD3, 0x41),
++	_INIT_DCS_CMD(0xD7, 0x50),
++	_INIT_DCS_CMD(0xD8, 0x40),
++	_INIT_DCS_CMD(0xD9, 0x40),
++	_INIT_DCS_CMD(0xDA, 0x40),
++	_INIT_DCS_CMD(0xDB, 0x40),
++	_INIT_DCS_CMD(0xDC, 0x4E),
++	_INIT_DCS_CMD(0xDD, 0x52),
++	_INIT_DCS_CMD(0xDE, 0x51),
++	_INIT_DCS_CMD(0xE1, 0x5E),
++	_INIT_DCS_CMD(0xE2, 0x5C),
++	_INIT_DCS_CMD(0xE3, 0x4C),
++	_INIT_DCS_CMD(0xE4, 0x4A),
++	_INIT_DCS_CMD(0xE5, 0x48),
++	_INIT_DCS_CMD(0xE6, 0x46),
++	_INIT_DCS_CMD(0xE7, 0x42),
++	_INIT_DCS_CMD(0xB0, 0x03),
++	_INIT_DCS_CMD(0xBE, 0x03),
++	_INIT_DCS_CMD(0xCC, 0x44),
++	_INIT_DCS_CMD(0xC8, 0x07),
++	_INIT_DCS_CMD(0xC9, 0x05),
++	_INIT_DCS_CMD(0xCA, 0x42),
++	_INIT_DCS_CMD(0xCD, 0x3E),
++	_INIT_DCS_CMD(0xCF, 0x60),
++	_INIT_DCS_CMD(0xD2, 0x04),
++	_INIT_DCS_CMD(0xD3, 0x04),
++	_INIT_DCS_CMD(0xD4, 0x01),
++	_INIT_DCS_CMD(0xD5, 0x00),
++	_INIT_DCS_CMD(0xD6, 0x03),
++	_INIT_DCS_CMD(0xD7, 0x04),
++	_INIT_DCS_CMD(0xD9, 0x01),
++	_INIT_DCS_CMD(0xDB, 0x01),
++	_INIT_DCS_CMD(0xE4, 0xF0),
++	_INIT_DCS_CMD(0xE5, 0x0A),
++	_INIT_DCS_CMD(0xB0, 0x00),
++	_INIT_DCS_CMD(0xCC, 0x08),
++	_INIT_DCS_CMD(0xC2, 0x08),
++	_INIT_DCS_CMD(0xC4, 0x10),
++	_INIT_DCS_CMD(0xB0, 0x02),
++	_INIT_DCS_CMD(0xC0, 0x00),
++	_INIT_DCS_CMD(0xC1, 0x0A),
++	_INIT_DCS_CMD(0xC2, 0x20),
++	_INIT_DCS_CMD(0xC3, 0x24),
++	_INIT_DCS_CMD(0xC4, 0x23),
++	_INIT_DCS_CMD(0xC5, 0x29),
++	_INIT_DCS_CMD(0xC6, 0x23),
++	_INIT_DCS_CMD(0xC7, 0x1C),
++	_INIT_DCS_CMD(0xC8, 0x19),
++	_INIT_DCS_CMD(0xC9, 0x17),
++	_INIT_DCS_CMD(0xCA, 0x17),
++	_INIT_DCS_CMD(0xCB, 0x18),
++	_INIT_DCS_CMD(0xCC, 0x1A),
++	_INIT_DCS_CMD(0xCD, 0x1E),
++	_INIT_DCS_CMD(0xCE, 0x20),
++	_INIT_DCS_CMD(0xCF, 0x23),
++	_INIT_DCS_CMD(0xD0, 0x07),
++	_INIT_DCS_CMD(0xD1, 0x00),
++	_INIT_DCS_CMD(0xD2, 0x00),
++	_INIT_DCS_CMD(0xD3, 0x0A),
++	_INIT_DCS_CMD(0xD4, 0x13),
++	_INIT_DCS_CMD(0xD5, 0x1C),
++	_INIT_DCS_CMD(0xD6, 0x1A),
++	_INIT_DCS_CMD(0xD7, 0x13),
++	_INIT_DCS_CMD(0xD8, 0x17),
++	_INIT_DCS_CMD(0xD9, 0x1C),
++	_INIT_DCS_CMD(0xDA, 0x19),
++	_INIT_DCS_CMD(0xDB, 0x17),
++	_INIT_DCS_CMD(0xDC, 0x17),
++	_INIT_DCS_CMD(0xDD, 0x18),
++	_INIT_DCS_CMD(0xDE, 0x1A),
++	_INIT_DCS_CMD(0xDF, 0x1E),
++	_INIT_DCS_CMD(0xE0, 0x20),
++	_INIT_DCS_CMD(0xE1, 0x23),
++	_INIT_DCS_CMD(0xE2, 0x07),
++	_INIT_DCS_CMD(0X11),
++	_INIT_DELAY_CMD(120),
++	_INIT_DCS_CMD(0X29),
++	_INIT_DELAY_CMD(80),
++	{},
++};
++
++static inline struct inx_panel *to_inx_panel(struct drm_panel *panel)
++{
++	return container_of(panel, struct inx_panel, base);
++}
++
++static int inx_panel_init_dcs_cmd(struct inx_panel *inx)
++{
++	struct mipi_dsi_device *dsi = inx->dsi;
++	struct drm_panel *panel = &inx->base;
++	int i, err = 0;
++
++	if (inx->desc->init_cmds) {
++		const struct panel_init_cmd *init_cmds = inx->desc->init_cmds;
++
++		for (i = 0; init_cmds[i].len != 0; i++) {
++			const struct panel_init_cmd *cmd = &init_cmds[i];
++
++			switch (cmd->type) {
++			case DELAY_CMD:
++				msleep(cmd->data[0]);
++				err = 0;
++				break;
++
++			case INIT_DCS_CMD:
++				err = mipi_dsi_dcs_write(dsi, cmd->data[0],
++							 cmd->len <= 1 ? NULL :
++							 &cmd->data[1],
++							 cmd->len - 1);
++				break;
++
++			default:
++				err = -EINVAL;
++			}
++
++			if (err < 0) {
++				dev_err(panel->dev,
++					"failed to write command %u\n", i);
++				return err;
++			}
++		}
++	}
++	return 0;
++}
++
++static int inx_panel_enter_sleep_mode(struct inx_panel *inx)
++{
++	struct mipi_dsi_device *dsi = inx->dsi;
++	int ret;
++
++	dsi->mode_flags &= ~MIPI_DSI_MODE_LPM;
++
++	ret = mipi_dsi_dcs_set_display_off(dsi);
++	if (ret < 0)
++		return ret;
++
++	ret = mipi_dsi_dcs_enter_sleep_mode(dsi);
++	if (ret < 0)
++		return ret;
++
++	return 0;
++}
++
++static int inx_panel_unprepare(struct drm_panel *panel)
++{
++	struct inx_panel *inx = to_inx_panel(panel);
++	int ret;
++
++	if (!inx->prepared)
++		return 0;
++
++	ret = inx_panel_enter_sleep_mode(inx);
++	if (ret < 0) {
++		dev_err(panel->dev, "failed to set panel off: %d\n", ret);
++		return ret;
++	}
++
++	msleep(150);
++
++	if (inx->desc->discharge_on_disable) {
++		regulator_disable(inx->avee);
++		regulator_disable(inx->avdd);
++		usleep_range(5000, 7000);
++		gpiod_set_value(inx->enable_gpio, 0);
++		usleep_range(5000, 7000);
++		regulator_disable(inx->pp1800);
++	} else {
++		gpiod_set_value(inx->enable_gpio, 0);
++		usleep_range(500, 1000);
++		regulator_disable(inx->avee);
++		regulator_disable(inx->avdd);
++		usleep_range(5000, 7000);
++		regulator_disable(inx->pp1800);
++	}
++
++	inx->prepared = false;
++
++	return 0;
++}
++
++static int inx_panel_prepare(struct drm_panel *panel)
++{
++	struct inx_panel *inx = to_inx_panel(panel);
++	int ret;
++
++	if (inx->prepared)
++		return 0;
++
++	gpiod_set_value(inx->enable_gpio, 0);
++	usleep_range(1000, 1500);
++
++	ret = regulator_enable(inx->pp1800);
++	if (ret < 0)
++		return ret;
++
++	usleep_range(3000, 5000);
++
++	ret = regulator_enable(inx->avdd);
++	if (ret < 0)
++		goto poweroff1v8;
++	ret = regulator_enable(inx->avee);
++	if (ret < 0)
++		goto poweroffavdd;
++
++	usleep_range(5000, 10000);
++
++	gpiod_set_value(inx->enable_gpio, 1);
++	usleep_range(1000, 2000);
++	gpiod_set_value(inx->enable_gpio, 0);
++	usleep_range(1000, 2000);
++	gpiod_set_value(inx->enable_gpio, 1);
++	usleep_range(6000, 10000);
++
++	ret = inx_panel_init_dcs_cmd(inx);
++	if (ret < 0) {
++		dev_err(panel->dev, "failed to init panel: %d\n", ret);
++		goto poweroff;
++	}
++
++	inx->prepared = true;
++
++	return 0;
++
++poweroff:
++	regulator_disable(inx->avee);
++poweroffavdd:
++	regulator_disable(inx->avdd);
++poweroff1v8:
++	usleep_range(5000, 7000);
++	regulator_disable(inx->pp1800);
++	gpiod_set_value(inx->enable_gpio, 0);
++
++	return ret;
++}
++
++static int inx_panel_enable(struct drm_panel *panel)
++{
++	msleep(130);
++	return 0;
++}
++
++static const struct drm_display_mode starry_qfh032011_53g_default_mode = {
++	.clock = 165731,
++	.hdisplay = 1200,
++	.hsync_start = 1200 + 100,
++	.hsync_end = 1200 + 100 + 10,
++	.htotal = 1200 + 100 + 10 + 100,
++	.vdisplay = 1920,
++	.vsync_start = 1920 + 14,
++	.vsync_end = 1920 + 14 + 10,
++	.vtotal = 1920 + 14 + 10 + 15,
++};
++
++static const struct panel_desc starry_qfh032011_53g_desc = {
++	.modes = &starry_qfh032011_53g_default_mode,
++	.bpc = 8,
++	.size = {
++		.width_mm = 135,
++		.height_mm = 216,
++	},
++	.lanes = 4,
++	.format = MIPI_DSI_FMT_RGB888,
++	.mode_flags = MIPI_DSI_MODE_VIDEO | MIPI_DSI_MODE_VIDEO_SYNC_PULSE |
++		      MIPI_DSI_MODE_LPM,
++	.init_cmds = starry_qfh032011_53g_init_cmd,
++	.discharge_on_disable = false,
++};
++
++static int inx_panel_get_modes(struct drm_panel *panel,
++			       struct drm_connector *connector)
++{
++	struct inx_panel *inx = to_inx_panel(panel);
++	const struct drm_display_mode *m = inx->desc->modes;
++	struct drm_display_mode *mode;
++
++	mode = drm_mode_duplicate(connector->dev, m);
++	if (!mode) {
++		dev_err(panel->dev, "failed to add mode %ux%u@%u\n",
++			m->hdisplay, m->vdisplay, drm_mode_vrefresh(m));
++		return -ENOMEM;
++	}
++
++	mode->type = DRM_MODE_TYPE_DRIVER | DRM_MODE_TYPE_PREFERRED;
++	drm_mode_set_name(mode);
++	drm_mode_probed_add(connector, mode);
++
++	connector->display_info.width_mm = inx->desc->size.width_mm;
++	connector->display_info.height_mm = inx->desc->size.height_mm;
++	connector->display_info.bpc = inx->desc->bpc;
++	drm_connector_set_panel_orientation(connector, inx->orientation);
++
++	return 1;
++}
++
++static const struct drm_panel_funcs inx_panel_funcs = {
++	.unprepare = inx_panel_unprepare,
++	.prepare = inx_panel_prepare,
++	.enable = inx_panel_enable,
++	.get_modes = inx_panel_get_modes,
++};
++
++static int inx_panel_add(struct inx_panel *inx)
++{
++	struct device *dev = &inx->dsi->dev;
++	int err;
++
++	inx->avdd = devm_regulator_get(dev, "avdd");
++	if (IS_ERR(inx->avdd))
++		return PTR_ERR(inx->avdd);
++
++	inx->avee = devm_regulator_get(dev, "avee");
++	if (IS_ERR(inx->avee))
++		return PTR_ERR(inx->avee);
++
++	inx->pp1800 = devm_regulator_get(dev, "pp1800");
++	if (IS_ERR(inx->pp1800))
++		return PTR_ERR(inx->pp1800);
++
++	inx->enable_gpio = devm_gpiod_get(dev, "enable", GPIOD_OUT_LOW);
++	if (IS_ERR(inx->enable_gpio)) {
++		dev_err(dev, "cannot get reset-gpios %ld\n",
++			PTR_ERR(inx->enable_gpio));
++		return PTR_ERR(inx->enable_gpio);
++	}
++
++	gpiod_set_value(inx->enable_gpio, 0);
++
++	drm_panel_init(&inx->base, dev, &inx_panel_funcs,
++		       DRM_MODE_CONNECTOR_DSI);
++	err = of_drm_get_panel_orientation(dev->of_node, &inx->orientation);
++	if (err < 0) {
++		dev_err(dev, "%pOF: failed to get orientation %d\n", dev->of_node, err);
++		return err;
++	}
++
++	err = drm_panel_of_backlight(&inx->base);
++	if (err)
++		return err;
++
++	inx->base.funcs = &inx_panel_funcs;
++	inx->base.dev = &inx->dsi->dev;
++
++	drm_panel_add(&inx->base);
++
++	return 0;
++}
++
++static int inx_panel_probe(struct mipi_dsi_device *dsi)
++{
++	struct inx_panel *inx;
++	int ret;
++	const struct panel_desc *desc;
++
++	inx = devm_kzalloc(&dsi->dev, sizeof(*inx), GFP_KERNEL);
++	if (!inx)
++		return -ENOMEM;
++
++	desc = of_device_get_match_data(&dsi->dev);
++	dsi->lanes = desc->lanes;
++	dsi->format = desc->format;
++	dsi->mode_flags = desc->mode_flags;
++	inx->desc = desc;
++	inx->dsi = dsi;
++	ret = inx_panel_add(inx);
++	if (ret < 0)
++		return ret;
++
++	mipi_dsi_set_drvdata(dsi, inx);
++
++	ret = mipi_dsi_attach(dsi);
++	if (ret)
++		drm_panel_remove(&inx->base);
++
++	return ret;
++}
++
++static void inx_panel_shutdown(struct mipi_dsi_device *dsi)
++{
++	struct inx_panel *inx = mipi_dsi_get_drvdata(dsi);
++
++	drm_panel_disable(&inx->base);
++	drm_panel_unprepare(&inx->base);
++}
++
++static int inx_panel_remove(struct mipi_dsi_device *dsi)
++{
++	struct inx_panel *inx = mipi_dsi_get_drvdata(dsi);
++	int ret;
++
++	inx_panel_shutdown(dsi);
++
++	ret = mipi_dsi_detach(dsi);
++	if (ret < 0)
++		dev_err(&dsi->dev, "failed to detach from DSI host: %d\n", ret);
++
++	if (inx->base.dev)
++		drm_panel_remove(&inx->base);
++
++	return 0;
++}
++
++static const struct of_device_id inx_of_match[] = {
++	{ .compatible = "starry,2081101qfh032011-53g",
++	  .data = &starry_qfh032011_53g_desc
++	},
++	{ /* sentinel */ }
++};
++MODULE_DEVICE_TABLE(of, inx_of_match);
++
++static struct mipi_dsi_driver inx_panel_driver = {
++	.driver = {
++		.name = "panel-innolux-himax8279d",
++		.of_match_table = inx_of_match,
++	},
++	.probe = inx_panel_probe,
++	.remove = inx_panel_remove,
++	.shutdown = inx_panel_shutdown,
++};
++module_mipi_dsi_driver(inx_panel_driver);
++
++MODULE_AUTHOR("Zhengqiao Xia <xiazhengqiao@huaqin.corp-partner.google.com>");
++MODULE_DESCRIPTION("INNOLUX HIMAX8279D 1200x1920 video mode panel driver");
++MODULE_LICENSE("GPL v2");
 -- 
-Mel Gorman
-SUSE Labs
+2.17.1
+
