@@ -2,118 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B8BA449C13
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Nov 2021 19:58:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CC66D449C17
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Nov 2021 19:58:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236502AbhKHTBI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Nov 2021 14:01:08 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46134 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236385AbhKHTBG (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Nov 2021 14:01:06 -0500
-Received: from mail-pl1-x62e.google.com (mail-pl1-x62e.google.com [IPv6:2607:f8b0:4864:20::62e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E9D64C061570
-        for <linux-kernel@vger.kernel.org>; Mon,  8 Nov 2021 10:58:21 -0800 (PST)
-Received: by mail-pl1-x62e.google.com with SMTP id b13so16486970plg.2
-        for <linux-kernel@vger.kernel.org>; Mon, 08 Nov 2021 10:58:21 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
-        bh=PNOIYs6KgLMM0EEMx1Z2xzj1ItxB04IJBuYUpminw00=;
-        b=cj5TurBU7tOrHqEkgpjynEEHqQ/SQljvgWhHrmHEEWUzZ1kAPv63h5y9Iv05Pl8Gjv
-         hLZSQjPngB4jMSO1Xq3kwfPuvbi+uxGn2c/7sZSMPWuhtIrKI5UbJA2D56cSwDjPmI0P
-         uZ4z8ZnIH/JY1KxJsNW4fpgUSInbPQSUR26lml9DcHe5ZBF4+um5lUa+wK6zBZf5l52B
-         7Vh3pUkb0FI6EN5lYzj6qJpgukcZO4+CJ4SY0E1+MW8F3N80dXalZ683XNIYIcwIBdkb
-         bXnValvq/v/nPuxCVQhs99aGzFBnHb66Z+XbkkUqQ05FcKjG0AtHggj4xCr9mag+vcW2
-         YvCA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition;
-        bh=PNOIYs6KgLMM0EEMx1Z2xzj1ItxB04IJBuYUpminw00=;
-        b=BJ7eSnBzOXlETPh/wc4QGibVrBhy16E5xt3HhxG2E/iInJZVU1MADsyp91mv6qfExY
-         k1PhRGLwftlSY0k0Kdag3gfXs9hROv+nR/+xzmvnQkJGKW+PDjkRIcdchKvnh3c0jtEu
-         vjTQ9OuA8K5AOJ7RYEHmCw6jlP9mUqe6kLyXR+01ZoQUptQcBqGb3fmXrJjJP9GAa1NQ
-         g7ksUFFC3VTrrKwXsm7cpL+ieL+8iKWeCmWR2PlGuJU96uR3c/eDY/zgYJeY7dde2Ikt
-         qVohjASCuamJMRQ4kcikKDZVZJTJxPMxaQTCyKHMCfWDqPrZguiJhyb0UQ8Cq4xo0vMO
-         H09A==
-X-Gm-Message-State: AOAM533oF4wuqHDLN0UVccOHg5DJA72ZC9KpyinBH9eL+HuuEoK5hvNW
-        WC1I2BT8w8F+WQMjsAfQaadpMaTNI7OiE77c
-X-Google-Smtp-Source: ABdhPJzfN8+64w0dkPwU+mwlfLv3lOzWCGiX4gRjOdB+8Ui6Jn9IstClnxCh4ILAJfmzuI+3HMh4RA==
-X-Received: by 2002:a17:902:cec4:b0:141:cfa1:f7e with SMTP id d4-20020a170902cec400b00141cfa10f7emr1183625plg.13.1636397901313;
-        Mon, 08 Nov 2021 10:58:21 -0800 (PST)
-Received: from makvihas ([150.129.206.103])
-        by smtp.gmail.com with ESMTPSA id s21sm1622942pfk.3.2021.11.08.10.58.20
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 08 Nov 2021 10:58:20 -0800 (PST)
-Date:   Tue, 9 Nov 2021 00:28:18 +0530
-From:   Vihas Mak <makvihas@gmail.com>
-To:     sudipm.mukherjee@gmail.com
-Cc:     arnd@arndb.de, gregkh@linuxfoundation.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] char: ppdev: fixed a validation issue
-Message-ID: <20211108185818.GA73382@makvihas>
+        id S236399AbhKHTBO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Nov 2021 14:01:14 -0500
+Received: from mail.kernel.org ([198.145.29.99]:51780 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S236467AbhKHTBJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Nov 2021 14:01:09 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7A38961152;
+        Mon,  8 Nov 2021 18:58:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1636397904;
+        bh=KTojuwQ+u0LsjQAtF2ct0kbvBsFwwPUwlxlX0N1dF4c=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:From;
+        b=HMEnexM91tUxmTTWU9mOYe7LOf9kHOcb6xVQVZxqKcG6YkobwaNlsbJAYkd6QBpc+
+         CAskT3K9aXmCgZXWGDRLvI85cMuNFBv89xzeEEt+9D3wjEwuxVP+6lGsMOxNAwNurj
+         Etegis5PM1qa7HCCuY1VxgcJ7Z8fRJX6LFJX7Z/ihaVBD3Jw9FQYbdaOCAsfSS4wq9
+         6NvbVAC/Jmub2l4SOokA+mtUIUGFAD8QXM6f3QvnIWS6uFT6bfLXjCGpyZY6fdwIcS
+         2cX7E15IRuRsXL/HPV6VfHzoTdCgE6TkgnLnkp4bjLLjrzj7FcWkc4sYfnAlR8tPhh
+         X/ypGPWsddldQ==
+Date:   Mon, 8 Nov 2021 12:58:23 -0600
+From:   Bjorn Helgaas <helgaas@kernel.org>
+To:     Robert =?utf-8?B?xZp3acSZY2tp?= <robert@swiecki.net>,
+        Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
+        <u.kleine-koenig@pengutronix.de>
+Cc:     linux-i2c@vger.kernel.org, Bjorn Helgaas <bhelgaas@google.com>,
+        linux-pci@vger.kernel.org, "Rafael J. Wysocki" <rafael@kernel.org>,
+        linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: Crashes in 5.15-git in i2c code
+Message-ID: <20211108185823.GA1101310@bhelgaas>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAP145phj7jEy6tkdFMdW-rzPprMTUckaaSrtrVysE-u+S+=Lcg@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Make sure the mode is a valid IEEE1284 mode.
+[+cc Uwe, Rafael, linux-pm, linux-pci, linux-kernel, beginning of
+thread: https://lore.kernel.org/linux-i2c/CAP145pgdrdiMAT7=-iB1DMgA7t_bMqTcJL4N0=6u8kNY3EU0dw@mail.gmail.com/T/#t]
 
-Signed-off-by: Vihas Mak <makvihas@gmail.com>
----
- drivers/char/ppdev.c | 28 +++++++++++++++++++++++++++-
- 1 file changed, 27 insertions(+), 1 deletion(-)
+On Mon, Nov 08, 2021 at 05:34:14PM +0100, Robert Święcki wrote:
+> > I'm daily-driving the linux from Linus' git (recompiling every day or
+> > two), and yesterday it stopped booting. Below is the dmesg from
+> > pstore.
+> > ...
+> 
+> This introduced the bug: 0c5c62ddf88c34bc83b66e4ac9beb2bb0e1887d4
+> https://github.com/torvalds/linux/commit/0c5c62ddf88c34bc83b66e4ac9beb2bb0e1887d4
 
-diff --git a/drivers/char/ppdev.c b/drivers/char/ppdev.c
-index 38b46c7d1737..3b290cbf6c66 100644
---- a/drivers/char/ppdev.c
-+++ b/drivers/char/ppdev.c
-@@ -333,6 +333,28 @@ static enum ieee1284_phase init_phase(int mode)
- 	return IEEE1284_PH_FWD_IDLE;
- }
- 
-+/*
-+ * Validate the mode and make sure the mode is power of two.
-+ *
-+ * IEEE1284_MODE_ECPRLE and IEEE1284_MODE_NIBBLE are exception
-+ * to this so handle them accordingly.
-+ */
-+
-+static int pp_validate_mode(int mode)
-+{
-+	if (mode == IEEE1284_MODE_ECPRLE || mode == IEEE1284_MODE_NIBBLE) {
-+		return 1;
-+	} else if (!(mode & (mode - 1)) &&
-+		   (mode & (IEEE1284_MODE_BYTE | IEEE1284_MODE_COMPAT |
-+			    IEEE1284_MODE_BECP | IEEE1284_MODE_ECP |
-+			    IEEE1284_MODE_ECPSWE | IEEE1284_MODE_EPP |
-+			    IEEE1284_MODE_EPPSL | IEEE1284_MODE_COMPAT |
-+			    IEEE1284_MODE_EPPSWE))) {
-+		return 1;
-+	}
-+	return 0;
-+}
-+
- static int pp_set_timeout(struct pardevice *pdev, long tv_sec, int tv_usec)
- {
- 	long to_jiffies;
-@@ -423,7 +445,11 @@ static int pp_do_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
- 
- 		if (copy_from_user(&mode, argp, sizeof(mode)))
- 			return -EFAULT;
--		/* FIXME: validate mode */
-+
-+		/* Validate mode */
-+		if (!pp_validate_mode(mode))
-+			return -EINVAL;
-+
- 		pp->state.mode = mode;
- 		pp->state.phase = init_phase(mode);
- 
--- 
-2.25.1
+Thank you very much for the debugging and this report!  This report is
+for i2c, but the problem will affect many drivers.
 
+> > <1>[    1.431369][  T447] BUG: kernel NULL pointer dereference,
+> > address: 0000000000000540
+> > <1>[    1.431371][  T447] #PF: supervisor read access in kernel mode
+> > <1>[    1.431375][  T447] #PF: error_code(0x0000) - not-present page
+> > <6>[    1.431378][  T447] PGD 0 P4D 0
+> > <4>[    1.431384][  T447] Oops: 0000 [#1] PREEMPT SMP NOPTI
+> > <4>[    1.431388][  T447] CPU: 12 PID: 447 Comm: systemd-udevd
+> > Tainted: G            E     5.15.0+ #91
+> > <4>[    1.431391][  T447] Hardware name: ASUS System Product Name/ROG
+> > CROSSHAIR VIII FORMULA, BIOS 3801 07/30/2021
+> > <4>[    1.431392][  T447] RIP: 0010:i2c_dw_pci_resume+0x8/0x40
+> > [i2c_designware_pci]
+> > <4>[    1.431399][  T447] Code: 00 00 00 00 66 66 2e 0f 1f 84 00 00 00
+> > 00 00 66 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 84 00 00 00 00 00 53 48
+> > 8b 5f 78 48 89 df <ff> 93 40 05 00 00 c6 83 c0 05 00 00 00 5b c3 66 66
+> > 2e 0f 1f 84 00
+> > <4>[    1.431401][  T447] RSP: 0018:ffffb3e740a13ba8 EFLAGS: 00010286
+> > <4>[    1.431403][  T447] RAX: 0000000000000000 RBX: 0000000000000000
+> > RCX: 0000000000000000
+
+  $ ./scripts/decodecode < oops
+    22:       53                      push   %rbx
+    23:       48 8b 5f 78             mov    0x78(%rdi),%rbx
+    27:       48 89 df                mov    %rbx,%rdi
+    2a:*      ff 93 40 05 00 00       callq  *0x540(%rbx)             <-- trapping instruction
+    30:       c6 83 c0 05 00 00 00    movb   $0x0,0x5c0(%rbx)
+    37:       5b                      pop    %rbx
+    38:       c3                      retq
+
+  static int i2c_dw_pci_resume(struct device *dev)
+  {
+    struct dw_i2c_dev *i_dev = dev_get_drvdata(dev);
+    int ret;
+
+    ret = i_dev->init(i_dev);
+    i_dev->suspended = false;
+
+    return ret;
+
+So I think we're trying to call i_dev->init(), which is a NULL
+pointer.
+
+> > <4>[    1.431422][  T447]  pci_pm_runtime_resume+0xaa/0x100
+> > <4>[    1.431434][  T447]  __rpm_callback+0x3c/0x100
+> > <4>[    1.431442][  T447]  rpm_callback+0x54/0x80
+> > <4>[    1.431445][  T447]  rpm_resume+0x410/0x700
+> > <4>[    1.431455][  T447]  __pm_runtime_resume+0x45/0x80
+> > <4>[    1.431457][  T447]  pci_device_probe+0xa2/0x140
+> > <4>[    1.431459][  T447]  really_probe+0x1e4/0x400
+> > <4>[    1.431464][  T447]  __driver_probe_device+0xf9/0x180
+> > <4>[    1.431466][  T447]  driver_probe_device+0x19/0xc0
+
+I think the problem here is that:
+
+  - really_probe() sets dev->driver
+
+  - local_pci_probe() calls pm_runtime_get_sync(), which leads to:
+
+  - pci_pm_runtime_resume(), which previously skipped the driver's
+    .runtime_resume() method when "pci_dev->driver" as NULL
+
+  - after 2a4d9408c9e8 ("PCI: Use to_pci_driver() instead of
+    pci_dev->driver") [1], it checks "dev->driver" instead of
+    "pci_dev->driver"
+
+  - dev->driver is non-NULL (set by really_probe() above), but at this
+    point pci_dev->driver used to be NULL because local_pci_probe()
+    didn't set it until after after calling pm_runtime_get_sync() (see
+    b5f9c644eb1b ("PCI: Remove struct pci_dev->driver") [2])
+
+  - because dev->driver is non-NULL, we call i2c_dw_pci_resume()
+    before i2c_dw_pci_probe(), so the driver init hasn't been done
+
+Here's the call tree:
+
+    really_probe
+      dev->driver = drv;                       # <--
+      call_driver_probe
+        dev->bus->probe
+          pci_device_probe
+            __pci_device_probe
+              pci_call_probe
+                local_pci_probe
+                  pm_runtime_get_sync
+                    ...
+                    pci_pm_runtime_resume
+  -                   if (!pci_dev->driver)    # 2a4d9408c9e8 ("PCI: Use to_pci_driver() instead of pci_dev->driver")
+  +                   if (!to_pci_driver(dev->driver))
+                        return 0
+                      pm->runtime_resume
+                        i2c_dw_pci_resume
+                          i_dev->init()        # <-- NULL ptr deref
+  -                 pci_dev->driver = pci_drv  # b5f9c644eb1b ("PCI: Remove struct pci_dev->driver")
+                  pci_drv->probe
+                    i2c_dw_pci_probe
+
+Note that we used to call pm_runtime_get_sync() (and the driver's
+runtime_resume() method) in the window where dev->driver had been set
+but pci_dev->driver had not.  Since we got rid of pci_dev->driver
+altogether, that window no longer exists, so we call the driver's
+runtime_resume() when it isn't prepared for it.
+
+[1] https://git.kernel.org/linus/2a4d9408c9e8
+[2] https://git.kernel.org/linus/b5f9c644eb1b
