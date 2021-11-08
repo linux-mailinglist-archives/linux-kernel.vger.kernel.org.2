@@ -2,86 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CCA98449F04
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 00:30:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3CEE2449F07
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 00:31:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240954AbhKHXdO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Nov 2021 18:33:14 -0500
-Received: from mail-ed1-f49.google.com ([209.85.208.49]:43536 "EHLO
-        mail-ed1-f49.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240747AbhKHXdJ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Nov 2021 18:33:09 -0500
-Received: by mail-ed1-f49.google.com with SMTP id w1so69562396edd.10;
-        Mon, 08 Nov 2021 15:30:23 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=4c9jRVTiEOAT2G+TczrZz0JB2x25zxtUp6Iq9kweQdk=;
-        b=XmnaINPhvFwQe0hdIzoMH5JuVuPLEN3oN1qoAPQcfUzRnBMWr6wMiFVaSBr/BC2ovE
-         lgfnTR+RyXnfaivM1ppGPHTujCsU4TAWifwRQMj8r+gNNQj4sPOIdtq8eS6TSGl32ZLc
-         MG4Tguo5Kf1eRojD55/5mUwe1kDVFdgjynJSadhrBvNCSJs7xJOr0b10s2w18DdKISiU
-         OvHPtxY6+jCrDnXQJ6ord0pRRtggTC/NUHQxR1wGjbLu52XP6+QV1m21sthdAJXTG1y5
-         Z2zA2MW0F2BXMDB+ndXstJetld8YBVqvMo3FFMSQcS/ghesysvckOh7NeatW6EvQJKLE
-         rDlw==
-X-Gm-Message-State: AOAM533GKlr15oWE4+GXWVZZWOuivv06vHB89MrxptRiPNWNHDPKgkYI
-        ADsmm2lGbKUA2x2XMJE+7v8=
-X-Google-Smtp-Source: ABdhPJys8NT5dfq5Lddj/S7xPCmtxJrgTHYB2WWsp3uqzbIbw1reXNcrnC9CFA6c4kiJhWpEA+oZzg==
-X-Received: by 2002:a17:906:12d0:: with SMTP id l16mr3561291ejb.415.1636414223297;
-        Mon, 08 Nov 2021 15:30:23 -0800 (PST)
-Received: from rocinante ([95.155.85.46])
-        by smtp.gmail.com with ESMTPSA id hq37sm9073999ejc.116.2021.11.08.15.30.22
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 08 Nov 2021 15:30:22 -0800 (PST)
-Date:   Tue, 9 Nov 2021 00:30:21 +0100
-From:   Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>
-To:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Cc:     Florian Fainelli <f.fainelli@gmail.com>, nsaenz@kernel.org,
-        jim2101024@gmail.com, bcm-kernel-feedback-list@broadcom.com,
-        lorenzo.pieralisi@arm.com, robh@kernel.org, bhelgaas@google.com,
-        linux-rpi-kernel@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-pci@vger.kernel.org,
-        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
-Subject: Re: [PATCH] PCI: brcmstb: Declare a bitmap as a bitmap, not as a
- plain 'unsigned long'
-Message-ID: <YYmzDSjLgmx9bQQs@rocinante>
-References: <e6d9da2112aab2939d1507b90962d07bfd735b4c.1636273671.git.christophe.jaillet@wanadoo.fr>
- <YYh+ldT5wU2s0sWY@rocinante>
- <4d556ac3-b936-b99c-5a50-9add8607047d@gmail.com>
- <4997ef3c-5867-7ce0-73a2-f4381cf0879b@wanadoo.fr>
+        id S240938AbhKHXeQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Nov 2021 18:34:16 -0500
+Received: from mail.kernel.org ([198.145.29.99]:46402 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229591AbhKHXeP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Nov 2021 18:34:15 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id CD11061175;
+        Mon,  8 Nov 2021 23:31:28 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1636414290;
+        bh=P2bBc0/n+Zd/hqg8awc2ShYNTCAACpZXxIz97sKBhjE=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=T6GYXYhiDWKtuLAAOkyPgxJPw6wbPWGP6T1bdf3dR5QTDo4bbM75x14HuqzvT5iDx
+         tUo09gjAsJjxcIOcLua7Jjj0Y6jabGVIgeNYcfhegbL93Rx8JOsrrQjvDefoRjME4J
+         gHk50OpiHdiEUzyrmfzC6FZ2M4Nser4+gwNC8YVGvxcSljAvc49fodgqBV78hmtc8t
+         6iU+I1T0Q0BT1jcRxk4zP1jE8IDV9vK27b0CONkoMJQdpJAZWS7IrCGy8LOCzMWE3b
+         oZpbxfwRn2hc71+siq8x7ViaEG1qx9Wwb8T7d5wMbb1pbMJaHx74U24soEjbp7X9Xg
+         HsS074d77rW6g==
+Date:   Mon, 8 Nov 2021 15:31:26 -0800
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Leon Romanovsky <leon@kernel.org>
+Cc:     Ido Schimmel <idosch@idosch.org>, Jiri Pirko <jiri@resnulli.us>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jiri Pirko <jiri@nvidia.com>, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, edwin.peer@broadcom.com
+Subject: Re: [PATCH net-next] devlink: Require devlink lock during device
+ reload
+Message-ID: <20211108153126.1f3a8fe8@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <YYmBbJ5++iO4MOo7@unreal>
+References: <YYABqfFy//g5Gdis@nanopsycho>
+        <YYBTg4nW2BIVadYE@shredder>
+        <20211101161122.37fbb99d@kicinski-fedora-PC1C0HJN>
+        <YYgJ1bnECwUWvNqD@shredder>
+        <YYgSzEHppKY3oYTb@unreal>
+        <20211108080918.2214996c@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+        <YYlfI4UgpEsMt5QI@unreal>
+        <20211108101646.0a4e5ca4@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+        <YYlrZZTdJKhha0FF@unreal>
+        <20211108104608.378c106e@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+        <YYmBbJ5++iO4MOo7@unreal>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <4997ef3c-5867-7ce0-73a2-f4381cf0879b@wanadoo.fr>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
-
-[...]
-> > > Jim, Florian and Lorenzo - is this something that would be OK with you,
-> > > or you would rather keep things as they were?
+On Mon, 8 Nov 2021 21:58:36 +0200 Leon Romanovsky wrote:
+> > > > nfp will benefit from the simplified locking as well, and so will bnxt,
+> > > > although I'm not sure the maintainers will opt for using devlink framework
+> > > > due to the downstream requirements.    
+> > > 
+> > > Exactly why devlink should be fixed first.  
 > > 
-> > I would be tempted to leave the code as-is, but if we do we are probably
-> > bound to seeing patches like Christophe's in the future to address the
+> > If by "fixed first" you mean it needs 5 locks to be added and to remove
+> > any guarantees on sub-object lifetime then no thanks.  
 > 
-> Even if I don't find this report in the Coverity database, it should from
-> around April 2018.
-> So, if you have not already received several patches for that, I doubt that
-> you will receive many in the future.
+> How do you plan to fix pernet_ops_rwsem lock? By exposing devlink state
+> to the drivers? By providing unlocked version of unregister_netdevice_notifier?
 > 
-> 
-> My own feeling is that using a long (and not a long *) as a bitmap, and
-> accessing it with &long may look spurious to a reader.
-> That said, it works.
-> 
-> So, I let you decide if the patch is of any use. Should I need to tweak or
-> resend it, let me know.
+> This simple scenario has deadlocks:
+> sudo ip netns add n1
+> sudo devlink dev reload pci/0000:00:09.0 netns n1
+> sudo ip netns del n1
 
-I would be pro taking it, not only to addresses the Coverity complaint, but
-also to align the code with other drivers a little bit more.  Only if
-the driver maintainers have no objection, that is.
+Okay - I'm not sure why you're asking me this. This is not related to
+devlink locking as far as I can tell. Neither are you fixing this
+problem in your own RFC.
 
-	Krzysztof
+You'd need to tell me more about what the notifier is used for (I see
+RoCE in the call trace). I don't understand why you need to re-register 
+a global (i.e. not per netns) notifier when devlink is switching name
+spaces.
