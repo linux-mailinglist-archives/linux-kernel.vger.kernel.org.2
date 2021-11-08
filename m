@@ -2,99 +2,179 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C340D449B6C
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Nov 2021 19:07:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BBFA9449B74
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Nov 2021 19:09:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234911AbhKHSJ4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Nov 2021 13:09:56 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34562 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234885AbhKHSJz (ORCPT
+        id S234989AbhKHSMA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Nov 2021 13:12:00 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:42524 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234952AbhKHSL7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Nov 2021 13:09:55 -0500
-Received: from mail-pf1-x42d.google.com (mail-pf1-x42d.google.com [IPv6:2607:f8b0:4864:20::42d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD67FC061570
-        for <linux-kernel@vger.kernel.org>; Mon,  8 Nov 2021 10:07:10 -0800 (PST)
-Received: by mail-pf1-x42d.google.com with SMTP id g19so10809276pfb.8
-        for <linux-kernel@vger.kernel.org>; Mon, 08 Nov 2021 10:07:10 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=7eQ8ia+dB2T87S9K7CaWuiJBvCWc/a1PJeN9BRnks1o=;
-        b=Gj9i4t4iknOQDeZ7YeT2+v0YHX74Zso9nysBAufKMqGIV7zyEIHSvbUUDZKOQffn4k
-         zLLOaNilf04ex9tsUxHrf/6q5gWV7GWII8Squu/FEs+tcKXsmVnS0kAwpZsnYbgqnf5P
-         AcsMmGaUg2xzwL4qg0u/Ew8NtJ8krFcKZ16sMkr1tTUfKJSgwaZl2HoxzSf4ArOGQPJI
-         GBV52ZtiOWcrSDI7JZ4u+QCmG2mxWaJLd584Jn4Y41tOKnI88GPpqsIilhVQ6Pworgn4
-         /fXBDpMB3h1FY3ZGpJjp/Apm2O0dq5yNdOD5WG2UT4X//wgSROSa367BVXlCM0xYRm7J
-         qgKA==
+        Mon, 8 Nov 2021 13:11:59 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1636394953;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=1cEuhXaEuhD+GKL/lBmFj9KF6WCNj/n+YccNImJPdjg=;
+        b=RtDjLOyG+rvejCqdCpqUrTxUmiM+0yQ6Dk3aIr/ytyH3lfKVJemntMIeWjpqeMmZTJs6iR
+        Gvqfo2dDOgzvfJCq0VagoMab4VYfHQCBk9SZXM6m4PcY7tM44lkVhYx+lkabhLWVOwpXfe
+        37wUPUG9ofma1X5gCwn4olEtKTvLJQY=
+Received: from mail-ed1-f72.google.com (mail-ed1-f72.google.com
+ [209.85.208.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-432-PAZQvrTAPxeOMRyUrR75Sg-1; Mon, 08 Nov 2021 13:09:12 -0500
+X-MC-Unique: PAZQvrTAPxeOMRyUrR75Sg-1
+Received: by mail-ed1-f72.google.com with SMTP id t20-20020a056402525400b003e2ad6b5ee7so15611375edd.8
+        for <linux-kernel@vger.kernel.org>; Mon, 08 Nov 2021 10:09:12 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=7eQ8ia+dB2T87S9K7CaWuiJBvCWc/a1PJeN9BRnks1o=;
-        b=me/9jJ+a1slyaavq87nblssWbQJTo7lM5O5SgVPdKYAAo/CgYxX12BNg+0Og+EG50s
-         aoYMixVSvFmolp5VFi15zKKdRP6HFakYoiKqpgLcFcf9Hp2eixP0zPlsUI0g26BRlHY6
-         oQTjqAoEBoDo6C0H+UJa5UzZ/s4gIMi1ThdFQOcDj9tRvtM3VRlDRXbx2hMnczwUVw/s
-         i0dxdGUQJxQmpoXtWeVN1Gi2zcdQhJ1yVmfwpKTZrHu0+Gn5fHbe5L2sV+aBdqUHmSya
-         eowiUso/ws/B8WU0VNgEUoc8RK/0G6bjvkIjS/lHt0i7IDdhvvKHI2hIDy/ulw7nBpW3
-         k2tw==
-X-Gm-Message-State: AOAM531YDl02MqBRD7e3mSX13rIOzGV+0PHVtlg7z7eopYBYlUvkQdrO
-        cutc2mZQQrZGrfM/JDCtoP1sIg==
-X-Google-Smtp-Source: ABdhPJxB1IdhseSV2aMwiBhebF4HV8tfAj7mXNlBpBQ+qWtDW/wYH1isLDJp19sxu4fmJWlVmAiumw==
-X-Received: by 2002:a05:6a00:2146:b0:44c:2922:8abf with SMTP id o6-20020a056a00214600b0044c29228abfmr1079633pfk.27.1636394830113;
-        Mon, 08 Nov 2021 10:07:10 -0800 (PST)
-Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
-        by smtp.gmail.com with ESMTPSA id mv22sm43754pjb.36.2021.11.08.10.07.09
+        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
+         :message-id:mime-version:content-transfer-encoding;
+        bh=1cEuhXaEuhD+GKL/lBmFj9KF6WCNj/n+YccNImJPdjg=;
+        b=O/olx1k5dGemIEOA+AP5NBjap3fdIClsBkqu4y8adG+qR3xWzJV+wYiHnUJJrLjCzB
+         ZD9220uoPbBsYKrCS92bRWTPB5nVA5nll546Pn9Cor2yTCK2e00FZUvICcaQA2P4a36J
+         tW8WyAL9dHrRyTXcvTk3DM3lUAUVV8yGPCoapj021jaV43uGQAswGN6Met9+CPbukD+i
+         8OBGYrtMAoMEtOwQeNqaGjC9pMaMSMHmkLwPE70meyvM/DZasQfjHVzr4rOr+tisl4u+
+         +QIyoHJ7wyAahcrrWwWdiFS+b7tz8aYmBUQyeycMlmflCpyW2z0c8j6Tq3lJRIPPBYmZ
+         cCiA==
+X-Gm-Message-State: AOAM531JK5psPP0wLb644+kPYOromUPZ2Yol0dRKMJNnVppnzPAvC55n
+        NtJ6MoWHzEJJUWnEXIza4L17VzpULiEBILDPfjjhXd16qTcvnGJQm86AJM/tcYcmZVNZwbhVzPJ
+        ab+4BEJprWUTiKS5rVu1uUOXC
+X-Received: by 2002:a17:907:8692:: with SMTP id qa18mr1467263ejc.7.1636394950732;
+        Mon, 08 Nov 2021 10:09:10 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJyClv8tcSrI/UxXplWxRW76JXyVsa3nEi/pu2Ka0nP1mqXKVKeTujb2Aq2XU4+3KU1tY6N6lw==
+X-Received: by 2002:a17:907:8692:: with SMTP id qa18mr1467121ejc.7.1636394949701;
+        Mon, 08 Nov 2021 10:09:09 -0800 (PST)
+Received: from alrua-x1.borgediget.toke.dk ([2a0c:4d80:42:443::2])
+        by smtp.gmail.com with ESMTPSA id gn16sm8739933ejc.67.2021.11.08.10.09.08
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 08 Nov 2021 10:07:09 -0800 (PST)
-Date:   Mon, 8 Nov 2021 18:07:05 +0000
-From:   Sean Christopherson <seanjc@google.com>
-To:     Chenyi Qiang <chenyi.qiang@intel.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Xiaoyao Li <xiaoyao.li@intel.com>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v5 2/7] KVM: VMX: Add proper cache tracking for PKRS
-Message-ID: <YYlnSdw+3dY/lJ25@google.com>
-References: <20210811101126.8973-1-chenyi.qiang@intel.com>
- <20210811101126.8973-3-chenyi.qiang@intel.com>
- <YYlaw6v6GOgFUQ/Z@google.com>
+        Mon, 08 Nov 2021 10:09:08 -0800 (PST)
+Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
+        id 1A5BA18026D; Mon,  8 Nov 2021 19:09:08 +0100 (CET)
+From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
+To:     Alexander Lobakin <alexandr.lobakin@intel.com>
+Cc:     Alexander Lobakin <alexandr.lobakin@intel.com>,
+        Saeed Mahameed <saeed@kernel.org>,
+        Jakub Kicinski <kuba@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jesse Brandeburg <jesse.brandeburg@intel.com>,
+        Lukasz Czapnik <lukasz.czapnik@intel.com>,
+        Marcin Kubiak <marcin.kubiak@intel.com>,
+        Michal Kubiak <michal.kubiak@intel.com>,
+        Michal Swiatkowski <michal.swiatkowski@intel.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Netanel Belgazal <netanel@amazon.com>,
+        Arthur Kiyanovski <akiyano@amazon.com>,
+        Guy Tzalik <gtzalik@amazon.com>,
+        Saeed Bishara <saeedb@amazon.com>,
+        Ioana Ciornei <ioana.ciornei@nxp.com>,
+        Claudiu Manoil <claudiu.manoil@nxp.com>,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+        Marcin Wojtas <mw@semihalf.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Edward Cree <ecree.xilinx@gmail.com>,
+        Martin Habets <habetsm.xilinx@gmail.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Shay Agroskin <shayagr@amazon.com>,
+        Sameeh Jubran <sameehj@amazon.com>,
+        Alexander Duyck <alexanderduyck@fb.com>,
+        Danielle Ratson <danieller@nvidia.com>,
+        Ido Schimmel <idosch@nvidia.com>, Andrew Lunn <andrew@lunn.ch>,
+        Vladyslav Tarasiuk <vladyslavt@nvidia.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Jian Shen <shenjian15@huawei.com>,
+        Petr Vorel <petr.vorel@gmail.com>, Dan Murphy <dmurphy@ti.com>,
+        Yangbo Lu <yangbo.lu@nxp.com>,
+        Michal Kubecek <mkubecek@suse.cz>,
+        Zheng Yongjun <zhengyongjun3@huawei.com>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        YueHaibing <yuehaibing@huawei.com>,
+        Johannes Berg <johannes@sipsolutions.net>,
+        Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
+        netdev@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        virtualization@lists.linux-foundation.org, bpf@vger.kernel.org
+Subject: Re: [PATCH net-next 03/21] ethtool, stats: introduce standard XDP
+ statistics
+In-Reply-To: <20211108132113.5152-1-alexandr.lobakin@intel.com>
+References: <20210803163641.3743-1-alexandr.lobakin@intel.com>
+ <20210803163641.3743-4-alexandr.lobakin@intel.com>
+ <20210803134900.578b4c37@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+ <ec0aefbc987575d1979f9102d331bd3e8f809824.camel@kernel.org>
+ <20211026092323.165-1-alexandr.lobakin@intel.com>
+ <20211105164453.29102-1-alexandr.lobakin@intel.com>
+ <87v912ri7h.fsf@toke.dk>
+ <20211108132113.5152-1-alexandr.lobakin@intel.com>
+X-Clacks-Overhead: GNU Terry Pratchett
+Date:   Mon, 08 Nov 2021 19:09:08 +0100
+Message-ID: <87cznar03f.fsf@toke.dk>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YYlaw6v6GOgFUQ/Z@google.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 08, 2021, Sean Christopherson wrote:
-> On Wed, Aug 11, 2021, Chenyi Qiang wrote:
-> > +			vcpu->arch.pkrs = vmcs_read64(GUEST_IA32_PKRS);
-> 
-> Hrm.  I agree that it's extremely unlikely that IA32_PKRS will ever allow software
-> to set bits 63:32, but at the same time there's no real advantage to KVM it as a u32,
-> e.g. the extra 4 bytes per vCPU is a non-issue, and could be avoided by shuffling
-> kvm_vcpu_arch to get a more efficient layout.  On the flip side, using a 32 means
-> code like this _looks_ buggy because it's silently dropping bits 63:32, and if the
-> architecture ever does get updated, we'll have to modify a bunch of KVM code.
-> 
-> TL;DR: I vote to track PRKS as a u64 even though the kernel tracks it as a u32.
+Alexander Lobakin <alexandr.lobakin@intel.com> writes:
 
-Rats, I forgot that the MMU code for PKRU is going to be reused for PKRS.  I withdraw
-my vote :-)
+> From: Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.com>
+> Date: Mon, 08 Nov 2021 12:37:54 +0100
+>
+>> Alexander Lobakin <alexandr.lobakin@intel.com> writes:
+>>=20
+>> > From: Alexander Lobakin <alexandr.lobakin@intel.com>
+>> > Date: Tue, 26 Oct 2021 11:23:23 +0200
+>> >
+>> >> From: Saeed Mahameed <saeed@kernel.org>
+>> >> Date: Tue, 03 Aug 2021 16:57:22 -0700
+>> >>=20
+>> >> [ snip ]
+>> >>=20
+>> >> > XDP is going to always be eBPF based ! why not just report such sta=
+ts
+>> >> > to a special BPF_MAP ? BPF stack can collect the stats from the dri=
+ver
+>> >> > and report them to this special MAP upon user request.
+>> >>=20
+>> >> I really dig this idea now. How do you see it?
+>> >> <ifindex:channel:stat_id> as a key and its value as a value or ...?
+>> >
+>> > Ideas, suggestions, anyone?
+>>=20
+>> I don't like the idea of putting statistics in a map instead of the
+>> regular statistics counters. Sure, for bespoke things people want to put
+>> into their XDP programs, use a map, but for regular packet/byte
+>> counters, update the regular counters so XDP isn't "invisible".
+>
+> I wanted to provide an `ip link` command for getting these stats
+> from maps and printing them in a usual format as well, but seems
+> like that's an unneeded overcomplication of things since using
+> maps for "regular"/"generic" XDP stats really has no reason except
+> for "XDP means eBPF means maps".
 
-Maybe have this code WARN on bits 63:32 being set in the VMCS field?  E.g. to
-detect if hardware ever changes and KVM fails to update this path, and to document
-that KVM intentionally drops those bits.
+Yeah, don't really see why it would have to: to me, one of the benefits
+of XDP is being integrated closely with the kernel so we can have a
+"fast path" *without* reinventing everything...
 
-	case VCPU_EXREG_PKRS: {
-		u64 ia32_pkrs;
+>> As Jesper pointed out, batching the updates so the global counters are
+>> only updated once per NAPI cycle is the way to avoid a huge performance
+>> overhead of this...
+>
+> That's how I do things currently, seems to work just fine.
 
-		ia32_pkrs = vmcs_read64(GUEST_IA32_PKRS);
-		WARN_ON_ONCE(ia32_pkrs >> 32);
-		vcpu->arch.pkrs = (u32)ia32_pkrs;
-	}
+Awesome!
+
+-Toke
+
