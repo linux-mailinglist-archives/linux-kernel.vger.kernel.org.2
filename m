@@ -2,124 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AEED54476F6
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Nov 2021 01:27:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 261134476FA
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Nov 2021 01:31:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236919AbhKHA2I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 7 Nov 2021 19:28:08 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50172 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236824AbhKHA1z (ORCPT
+        id S234219AbhKHAeh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 7 Nov 2021 19:34:37 -0500
+Received: from mail-wm1-f53.google.com ([209.85.128.53]:51080 "EHLO
+        mail-wm1-f53.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229807AbhKHAeg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 7 Nov 2021 19:27:55 -0500
-Received: from mail-ed1-x533.google.com (mail-ed1-x533.google.com [IPv6:2a00:1450:4864:20::533])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 62597C061764;
-        Sun,  7 Nov 2021 16:25:11 -0800 (PST)
-Received: by mail-ed1-x533.google.com with SMTP id o8so55585911edc.3;
-        Sun, 07 Nov 2021 16:25:11 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:subject:date:message-id:in-reply-to:references:mime-version
-         :content-transfer-encoding;
-        bh=mrT39HXhsvQIv884aQ7FKStKCV5fQEcK++rSuH4MPzo=;
-        b=PQf9IkCgbUfkwfSkTQ9cmvFGRVVwsMNE9Xg5lUXJGKHZtPH67mRBDLS80XrMBqdxW3
-         VQ0m0So5rQ3oTOp21xjT6FUfC8kf37o9bkiULvgQHagAAmZPIHPPbCSrWbFBEjlkaCu4
-         1AmzM6roYjsdsRj0Q9U+i2gUrbX/OfjksuYY3Fv607tgGSiNSJGFnKR+asNl/nKw4G3i
-         ShGwK2HWodDj3FFLY54MmubjB8j+T5QYekye2MiGl5Gihj/UFwlbpq4mkj/MTeLfx0q6
-         IAvx2YwYOpPKsOJSqXo2r3glSov8XT7esWwobddnEFRHzVkHI2hNOpJBiChli+UdLZZr
-         APyw==
+        Sun, 7 Nov 2021 19:34:36 -0500
+Received: by mail-wm1-f53.google.com with SMTP id 133so11737079wme.0;
+        Sun, 07 Nov 2021 16:31:52 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=mrT39HXhsvQIv884aQ7FKStKCV5fQEcK++rSuH4MPzo=;
-        b=WBGD2ifqIIMycS3bgFs7nBM5UXtJZgsWvSse7ygvIwXUU2wmX0ZQxlD/pLAuIrdWxZ
-         FDwnXIguYSkKXpXhHpMDSExNJ6Mf/z7DwUxZtkzjklDXCZnShZH4K6PCoLa489GEHYcn
-         50m5suFTc7+L46in0BF+vvLTyDSZNTH5XJ7Z6LfSY9FPCdXE8P4XGQPSBhvyrBJGFKf3
-         HzvSgJOY+CiDyTfDYMkdOyOLpJsb3q19cWqLRH/s62Jm2IilMbISynF2npHPvu2nDtuy
-         oIBNd1ovW4XNg32aUXWB15EOusUwe4rnP7wKUfclQnJ3CPcPkSTBy7j07sRj7dcspFNu
-         hXCg==
-X-Gm-Message-State: AOAM533yQId/z8iRqdxIbbno9wN0CA0433zl8FkkYZk4U6bHYHnDQxpx
-        cB/H0tHPCBNEuqdMOLtxYtM=
-X-Google-Smtp-Source: ABdhPJwNybOt935XNXrK3BecGp84QdcxIsF+iF0L8sukR/fp69tFDEPHghei89fatWJ7oUP4r6SRUQ==
-X-Received: by 2002:aa7:c041:: with SMTP id k1mr101332405edo.330.1636331109888;
-        Sun, 07 Nov 2021 16:25:09 -0800 (PST)
-Received: from Ansuel-xps.localdomain (93-42-71-246.ip85.fastwebnet.it. [93.42.71.246])
-        by smtp.googlemail.com with ESMTPSA id bf8sm8537878edb.46.2021.11.07.16.25.08
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=0xr2aH1oyqMnCG5sZbRwnK/ZucosCRevU1YYGZplaUA=;
+        b=ax1kkJQ50jkcnRXjP+i+DY2o/J9aL77QupPV/AOO6IVlvPzG2F4/D0CEsq1pb/6gbQ
+         cDSR2aLjHdB62o+Hv/eWLIhESMNoD5zD4Gu1kS7nOpT9hYguoWknNE2e1Be1j492KX0a
+         AFr2//6JWfa8NG7AUrN4yzLvdn4VvvxrEczgbz6zD8Vjai/v3AabKjbX/h76G6j5eeE7
+         49s0X1AIng54doYWceSy4iuIor1GoxdKyAwG/WD2AOwj0siqc3UP89YLEXxL1VXU02nM
+         a38Ef14dFCZZJV+PtexREVStdah+X56AhgNOPn4Crrup+dTUAHYbRk/rTqpj1npx7CJk
+         QlUw==
+X-Gm-Message-State: AOAM533dBtSipW0UYQ7ZXNcrf9o7QjPR4plKtf3tG751w26ivIPMnK1E
+        RMaRyzhVHgZNZ2pbEJy0I+E=
+X-Google-Smtp-Source: ABdhPJwWlZ8ZKf5IC3xlezyz2ic+m3IUOWrRwx5OhBtfu5ldkWaJQvnO75DYyvSRmlfLz10n/DBBOg==
+X-Received: by 2002:a05:600c:4f02:: with SMTP id l2mr30578157wmq.26.1636331511978;
+        Sun, 07 Nov 2021 16:31:51 -0800 (PST)
+Received: from rocinante ([95.155.85.46])
+        by smtp.gmail.com with ESMTPSA id j8sm14361672wrh.16.2021.11.07.16.31.51
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 07 Nov 2021 16:25:09 -0800 (PST)
-From:   Ansuel Smith <ansuelsmth@gmail.com>
-To:     Andrew Lunn <andrew@lunn.ch>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Vladimir Oltean <olteanv@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>, Pavel Machek <pavel@ucw.cz>,
-        Ansuel Smith <ansuelsmth@gmail.com>,
-        John Crispin <john@phrozen.org>, netdev@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-leds@vger.kernel.org
-Subject: [RFC PATCH v2 5/5] dt-bindings: net: dsa: qca8k: add LEDs definition example
-Date:   Mon,  8 Nov 2021 01:25:00 +0100
-Message-Id: <20211108002500.19115-6-ansuelsmth@gmail.com>
-X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20211108002500.19115-1-ansuelsmth@gmail.com>
-References: <20211108002500.19115-1-ansuelsmth@gmail.com>
+        Sun, 07 Nov 2021 16:31:51 -0800 (PST)
+Date:   Mon, 8 Nov 2021 01:31:50 +0100
+From:   Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>
+To:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Cc:     lorenzo.pieralisi@arm.com, robh@kernel.org, bhelgaas@google.com,
+        michal.simek@xilinx.com, linux-arm-kernel@lists.infradead.org,
+        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel-janitors@vger.kernel.org
+Subject: Re: [PATCH] PCI: xilinx-nwl: Simplify code and fix a memory leak
+Message-ID: <YYhv9vZCw5r+PKzj@rocinante>
+References: <5483f10a44b06aad55728576d489adfa16c3be91.1636279388.git.christophe.jaillet@wanadoo.fr>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <5483f10a44b06aad55728576d489adfa16c3be91.1636279388.git.christophe.jaillet@wanadoo.fr>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add LEDs definition example for qca8k using the offload trigger as the
-default trigger and add all the supported offload triggers by the
-switch.
+Hi Christophe,
 
-Signed-off-by: Ansuel Smith <ansuelsmth@gmail.com>
----
- .../devicetree/bindings/net/dsa/qca8k.yaml    | 20 +++++++++++++++++++
- 1 file changed, 20 insertions(+)
+> Allocate space for 'bitmap' in 'struct nwl_msi' at build time instead of
+> dynamically allocating the memory at runtime.
+> 
+> This simplifies code (especially error handling paths) and avoid some
+> open-coded arithmetic in allocator arguments
+> 
+> This also fixes a potential memory leak. The bitmap was never freed. It is
+> now part of a managed resource.
 
-diff --git a/Documentation/devicetree/bindings/net/dsa/qca8k.yaml b/Documentation/devicetree/bindings/net/dsa/qca8k.yaml
-index 48de0ace265d..106d95adc1e8 100644
---- a/Documentation/devicetree/bindings/net/dsa/qca8k.yaml
-+++ b/Documentation/devicetree/bindings/net/dsa/qca8k.yaml
-@@ -64,6 +64,8 @@ properties:
-                  internal mdio access is used.
-                  With the legacy mapping the reg corresponding to the internal
-                  mdio is the switch reg with an offset of -1.
-+                 Each phy have at least 3 LEDs connected and can be declared
-+                 using the standard LEDs structure.
- 
-     properties:
-       '#address-cells':
-@@ -340,6 +342,24 @@ examples:
- 
-                 internal_phy_port1: ethernet-phy@0 {
-                     reg = <0>;
-+
-+                    leds {
-+                        led@0 {
-+                            reg = <0>;
-+                            color = <LED_COLOR_ID_WHITE>;
-+                            function = LED_FUNCTION_LAN;
-+                            function-enumerator = <1>;
-+                            linux,default-trigger = "offload-phy-activity";
-+                        };
-+
-+                        led@1 {
-+                            reg = <1>;
-+                            color = <LED_COLOR_ID_AMBER>;
-+                            function = LED_FUNCTION_LAN;
-+                            function-enumerator = <1>;
-+                            linux,default-trigger = "offload-phy-activity";
-+                        };
-+                    };
-                 };
- 
-                 internal_phy_port2: ethernet-phy@1 {
--- 
-2.32.0
+Just to confirm - you mean potentially leaking when the driver would be
+unloaded?  Not the error handling path, correct?
 
+> --- a/drivers/pci/controller/pcie-xilinx-nwl.c
+> +++ b/drivers/pci/controller/pcie-xilinx-nwl.c
+> @@ -146,7 +146,7 @@
+>  
+>  struct nwl_msi {			/* MSI information */
+>  	struct irq_domain *msi_domain;
+> -	unsigned long *bitmap;
+> +	DECLARE_BITMAP(bitmap, INT_PCI_MSI_NR);
+>  	struct irq_domain *dev_domain;
+>  	struct mutex lock;		/* protect bitmap variable */
+>  	int irq_msi0;
+> @@ -335,12 +335,10 @@ static void nwl_pcie_leg_handler(struct irq_desc *desc)
+>  
+>  static void nwl_pcie_handle_msi_irq(struct nwl_pcie *pcie, u32 status_reg)
+>  {
+> -	struct nwl_msi *msi;
+> +	struct nwl_msi *msi = &pcie->msi;
+>  	unsigned long status;
+>  	u32 bit;
+>  
+> -	msi = &pcie->msi;
+> -
+>  	while ((status = nwl_bridge_readl(pcie, status_reg)) != 0) {
+>  		for_each_set_bit(bit, &status, 32) {
+>  			nwl_bridge_writel(pcie, 1 << bit, status_reg);
+> @@ -560,30 +558,21 @@ static int nwl_pcie_enable_msi(struct nwl_pcie *pcie)
+>  	struct nwl_msi *msi = &pcie->msi;
+>  	unsigned long base;
+>  	int ret;
+> -	int size = BITS_TO_LONGS(INT_PCI_MSI_NR) * sizeof(long);
+>  
+>  	mutex_init(&msi->lock);
+>  
+> -	msi->bitmap = kzalloc(size, GFP_KERNEL);
+> -	if (!msi->bitmap)
+> -		return -ENOMEM;
+> -
+>  	/* Get msi_1 IRQ number */
+>  	msi->irq_msi1 = platform_get_irq_byname(pdev, "msi1");
+> -	if (msi->irq_msi1 < 0) {
+> -		ret = -EINVAL;
+> -		goto err;
+> -	}
+> +	if (msi->irq_msi1 < 0)
+> +		return -EINVAL;
+>  
+>  	irq_set_chained_handler_and_data(msi->irq_msi1,
+>  					 nwl_pcie_msi_handler_high, pcie);
+>  
+>  	/* Get msi_0 IRQ number */
+>  	msi->irq_msi0 = platform_get_irq_byname(pdev, "msi0");
+> -	if (msi->irq_msi0 < 0) {
+> -		ret = -EINVAL;
+> -		goto err;
+> -	}
+> +	if (msi->irq_msi0 < 0)
+> +		return -EINVAL;
+>  
+>  	irq_set_chained_handler_and_data(msi->irq_msi0,
+>  					 nwl_pcie_msi_handler_low, pcie);
+> @@ -592,8 +581,7 @@ static int nwl_pcie_enable_msi(struct nwl_pcie *pcie)
+>  	ret = nwl_bridge_readl(pcie, I_MSII_CAPABILITIES) & MSII_PRESENT;
+>  	if (!ret) {
+>  		dev_err(dev, "MSI not present\n");
+> -		ret = -EIO;
+> -		goto err;
+> +		return -EIO;
+>  	}
+>  
+>  	/* Enable MSII */
+> @@ -632,10 +620,6 @@ static int nwl_pcie_enable_msi(struct nwl_pcie *pcie)
+>  	nwl_bridge_writel(pcie, MSGF_MSI_SR_LO_MASK, MSGF_MSI_MASK_LO);
+>  
+>  	return 0;
+> -err:
+> -	kfree(msi->bitmap);
+> -	msi->bitmap = NULL;
+> -	return ret;
+
+Thank you!
+
+Reviewed-by: Krzysztof Wilczyński <kw@linux.com>
+
+	Krzysztof
