@@ -2,35 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DC827447DA6
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Nov 2021 11:16:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BB344447DA4
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Nov 2021 11:16:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239025AbhKHKSn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Nov 2021 05:18:43 -0500
-Received: from mail.skyhub.de ([5.9.137.197]:38352 "EHLO mail.skyhub.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230201AbhKHKPI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Nov 2021 05:15:08 -0500
+        id S238957AbhKHKSP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Nov 2021 05:18:15 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38554 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238568AbhKHKPL (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Nov 2021 05:15:11 -0500
+Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7DB0CC0613F5;
+        Mon,  8 Nov 2021 02:12:25 -0800 (PST)
 Received: from zn.tnic (p200300ec2f33110088892b77bd117736.dip0.t-ipconnect.de [IPv6:2003:ec:2f33:1100:8889:2b77:bd11:7736])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 5327A1EC04E0;
-        Mon,  8 Nov 2021 11:12:23 +0100 (CET)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 12E011EC0505;
+        Mon,  8 Nov 2021 11:12:24 +0100 (CET)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1636366343;
+        t=1636366344;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:mime-version:mime-version:content-type:
+         to:to:cc:cc:mime-version:mime-version:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=O4l6NvOfwI35aQ1VkPm6SxCKClITle3M6ZNdjdLIRBg=;
-        b=WSpP5u0cMlmbvkpd/yxn2hLFcYASp5SC08SldoBh9vaf2jd4B42EPJdAiRV0Kk56CXj8g+
-        mjLhn8Fnh/UqmPkKRyzReH8owa8MQeATtQYTxR4DExrxXy4/CClIdOBnfs5WIwExf4LMlp
-        8SBu+OcAl+XApStMqJHw8bnjCXxe68M=
+        bh=dsN1KahJp/YRuwxssCUwC9tC2Gq1F8xatSCed4RDYK0=;
+        b=XW0S8cGQlrUU7Sx4YYUUqYSl7rK+m1lQDApwNyNOhVz6vrJu/e7+P4U1bGfGXbfHMVDyXN
+        Y8uAm5IJGhwoL4KDkc5TRE4CoSj0W1pCSeycHBn8vysOxc6YxxtvwQL1VenFJAU2VP+i1j
+        f/aiTSo1F8b3Zq+KdJ76uCjinG24up4=
 From:   Borislav Petkov <bp@alien8.de>
 To:     LKML <linux-kernel@vger.kernel.org>
-Subject: [PATCH v0 19/42] kernel/hung_task: Check notifier registration return value
-Date:   Mon,  8 Nov 2021 11:11:34 +0100
-Message-Id: <20211108101157.15189-20-bp@alien8.de>
+Cc:     rcu@vger.kernel.org
+Subject: [PATCH v0 20/42] rcu: Check notifier registration return value
+Date:   Mon,  8 Nov 2021 11:11:35 +0100
+Message-Id: <20211108101157.15189-21-bp@alien8.de>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20211108101157.15189-1-bp@alien8.de>
 References: <20211108101157.15189-1-bp@alien8.de>
@@ -47,24 +52,26 @@ Avoid homegrown notifier registration checks.
 No functional changes.
 
 Signed-off-by: Borislav Petkov <bp@suse.de>
+Cc: rcu@vger.kernel.org
 ---
- kernel/hung_task.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ kernel/rcu/tree_stall.h | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/kernel/hung_task.c b/kernel/hung_task.c
-index 9888e2bc8c76..8e3bb95968a4 100644
---- a/kernel/hung_task.c
-+++ b/kernel/hung_task.c
-@@ -304,7 +304,8 @@ static int watchdog(void *dummy)
+diff --git a/kernel/rcu/tree_stall.h b/kernel/rcu/tree_stall.h
+index 5e2fa6fd97f1..0c1d631214f4 100644
+--- a/kernel/rcu/tree_stall.h
++++ b/kernel/rcu/tree_stall.h
+@@ -101,7 +101,9 @@ static struct notifier_block rcu_panic_block = {
  
- static int __init hung_task_init(void)
+ static int __init check_cpu_stall_init(void)
  {
--	atomic_notifier_chain_register(&panic_notifier_list, &panic_block);
-+	if (atomic_notifier_chain_register(&panic_notifier_list, &panic_block))
-+		pr_warn("Hung task notifier already registered\n");
- 
- 	/* Disable hung task detector on suspend */
- 	pm_notifier(hungtask_pm_notify, 0);
+-	atomic_notifier_chain_register(&panic_notifier_list, &rcu_panic_block);
++	if (atomic_notifier_chain_register(&panic_notifier_list, &rcu_panic_block))
++		pr_warn("RCU warning suppress notifier already registered\n");
++
+ 	return 0;
+ }
+ early_initcall(check_cpu_stall_init);
 -- 
 2.29.2
 
