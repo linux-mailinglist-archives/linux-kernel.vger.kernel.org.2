@@ -2,162 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EEA68449AA2
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Nov 2021 18:16:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BB14F449AA4
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Nov 2021 18:16:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237112AbhKHRTR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Nov 2021 12:19:17 -0500
-Received: from mail-oi1-f180.google.com ([209.85.167.180]:38525 "EHLO
-        mail-oi1-f180.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229966AbhKHRTM (ORCPT
+        id S238112AbhKHRTg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Nov 2021 12:19:36 -0500
+Received: from mail-pj1-f46.google.com ([209.85.216.46]:45969 "EHLO
+        mail-pj1-f46.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229966AbhKHRTf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Nov 2021 12:19:12 -0500
-Received: by mail-oi1-f180.google.com with SMTP id r26so7401985oiw.5;
-        Mon, 08 Nov 2021 09:16:27 -0800 (PST)
+        Mon, 8 Nov 2021 12:19:35 -0500
+Received: by mail-pj1-f46.google.com with SMTP id gb13-20020a17090b060d00b001a674e2c4a8so392769pjb.4;
+        Mon, 08 Nov 2021 09:16:51 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=vu4a84fjDFz0BFr7Vx+IRehX13Sklb9+xGncvU8UvU4=;
-        b=35RvfEnb7+oxDwDhshcsxa9Urqa2iztHKoTOfn8yScULIAIIZ/aw1cYupoD97VIQpq
-         kD9aRbo3uNjC1A5PrjaOfNBBiATH/wjRABI0zaZ2vY58MsjlDE1WtV/cV00AGW4TtLWJ
-         mB58uWsKchAJp0/7m+GzqJVd/xuAcQXR9bc+FYvXpEwnaDiuUT2BreG2p+CtjKroAskQ
-         RwwU+spHMPlFmLzdptGDL6bhJlpNQiuA1bPBUYDmNzviR/f+6FOh8X0Pi3TCrQ8UIoyu
-         0uKW4c2POaPeH7t2+pcH7e2SOALnM7wgyyuyANZb2EfAq2Iqa2wzM14EGuQodT0IkMXN
-         EoCw==
-X-Gm-Message-State: AOAM532vIxevaCZLqJqevIEJyY2RbEfKWPEt/IHZYGRT4b9LOx9btbap
-        3i8XilGmQHz5L3QTk8rA6Q==
-X-Google-Smtp-Source: ABdhPJxE+F7n7nlSYLvkc9SOKSaGosIc69vBin/edtQ2MTe+QJ4tYvuoUVF1jdDRPNuRz7F07U6JAQ==
-X-Received: by 2002:aca:1818:: with SMTP id h24mr38823599oih.76.1636391787109;
-        Mon, 08 Nov 2021 09:16:27 -0800 (PST)
-Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
-        by smtp.gmail.com with ESMTPSA id x92sm6713239ota.46.2021.11.08.09.16.25
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 08 Nov 2021 09:16:25 -0800 (PST)
-Received: (nullmailer pid 3601472 invoked by uid 1000);
-        Mon, 08 Nov 2021 17:16:25 -0000
-Date:   Mon, 8 Nov 2021 11:16:25 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Tony Huang <tonyhuang.sunplus@gmail.com>
-Cc:     ulf.hansson@linaro.org, linux-mmc@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        p.zabel@pengutronix.de, wells.lu@sunplus.com,
-        Tony Huang <tony.huang@sunplus.com>
-Subject: Re: [PATCH 1/2] dt-binding: mmc: Add mmc yaml file for Sunplus SP7021
-Message-ID: <YYlbaTyAXYMw8A5O@robh.at.kernel.org>
-References: <1636208598-18234-1-git-send-email-tony.huang@sunplus.com>
- <1636208598-18234-2-git-send-email-tony.huang@sunplus.com>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=6qrbAoBrJjelIsGjirLwZN0gyhg8Hh/Ojtm8QnhOi0g=;
+        b=A73n+QazPeO2QdsJcqw2SVc29aBVqGbufyGCbTEyDbXyUnj7zdTcU8xXpxivFAlBh/
+         6hzmIYUxycxdbikUFEAIUVR3RdJ1JG7w6YF8ChgjV/V6S+mAwb4ULGnh5g2LHcKFQL1b
+         RBgnrRd9vvmDt03Othl2NVqo6TkHhcPbY4nFw8ry83XP/JYBNPHumKyVs/VhReaeJ0LN
+         H6sn2qSueinvUoufcyrVbtFt/BT8lHrHfQ2/H6l2fprVYxzDXSmUX/4j3ncW4BDZY7u+
+         QtBFvrv+Rhzeadg/mQa53jLcL3Tmf9cKBCjx95mBb31RMWWFts9OJf+FqHtVCjDPd5XE
+         cYlw==
+X-Gm-Message-State: AOAM531fyTujzUKgchUU6J2XVZEJMHpeQ2505I97Tk1oRVAVKk0MZSSN
+        E3JbnHffmHaAv0iw05XAeUg=
+X-Google-Smtp-Source: ABdhPJwL77HdCCHFjIvjr9rRDpMNNq43Z/sC2S3wBnrlSjlbPKp9TS0HcR6iMPctY/0vIcXyjwt14w==
+X-Received: by 2002:a17:90a:ba03:: with SMTP id s3mr533039pjr.116.1636391811033;
+        Mon, 08 Nov 2021 09:16:51 -0800 (PST)
+Received: from bvanassche-linux.mtv.corp.google.com ([2620:15c:211:201:4ca8:59a2:ad3c:1580])
+        by smtp.gmail.com with ESMTPSA id z4sm6657616pfg.101.2021.11.08.09.16.49
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 08 Nov 2021 09:16:49 -0800 (PST)
+Subject: Re: [PATCH 2/2] scsi: ufs: Return a bsg request immediatley if
+ eh-in-progress
+To:     Avri Altman <avri.altman@wdc.com>,
+        "James E . J . Bottomley" <jejb@linux.vnet.ibm.com>,
+        "Martin K . Petersen" <martin.petersen@oracle.com>
+Cc:     linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Adrian Hunter <adrian.hunter@intel.com>
+References: <20211108120804.10405-1-avri.altman@wdc.com>
+ <20211108120804.10405-3-avri.altman@wdc.com>
+From:   Bart Van Assche <bvanassche@acm.org>
+Message-ID: <fa7dae1f-06ac-9d5a-616d-cc00c38e5feb@acm.org>
+Date:   Mon, 8 Nov 2021 09:16:48 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.14.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1636208598-18234-2-git-send-email-tony.huang@sunplus.com>
+In-Reply-To: <20211108120804.10405-3-avri.altman@wdc.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Nov 06, 2021 at 10:23:17PM +0800, Tony Huang wrote:
-> Add mmc yaml file for Sunplus SP7021
+On 11/8/21 4:08 AM, Avri Altman wrote:
+> ufs-bsg is attempting to access the device from user-space, and it is
+> unaware of the internal driver flows, specifically if error handling is
+> currently ongoing.
 > 
-> Signed-off-by: Tony Huang <tony.huang@sunplus.com>
+> Fixes: 5e0a86eed846 (scsi: ufs: Add API to execute raw upiu commands)
+> 
+> Signed-off-by: Avri Altman <avri.altman@wdc.com>
 > ---
->  .../devicetree/bindings/mmc/sunplus-mmc.yaml       | 64 ++++++++++++++++++++++
->  MAINTAINERS                                        |  5 ++
->  2 files changed, 69 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/mmc/sunplus-mmc.yaml
+>   drivers/scsi/ufs/ufshcd.c | 3 +++
+>   1 file changed, 3 insertions(+)
 > 
-> diff --git a/Documentation/devicetree/bindings/mmc/sunplus-mmc.yaml b/Documentation/devicetree/bindings/mmc/sunplus-mmc.yaml
-> new file mode 100644
-> index 0000000..fc5a5f6
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/mmc/sunplus-mmc.yaml
-> @@ -0,0 +1,64 @@
-> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> +# Copyright (C) Sunplus Ltd. Co. 2021
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/mmc/sunplus-mmc.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> diff --git a/drivers/scsi/ufs/ufshcd.c b/drivers/scsi/ufs/ufshcd.c
+> index 3869bb57769b..828061c05909 100644
+> --- a/drivers/scsi/ufs/ufshcd.c
+> +++ b/drivers/scsi/ufs/ufshcd.c
+> @@ -6830,6 +6830,9 @@ int ufshcd_exec_raw_upiu_cmd(struct ufs_hba *hba,
+>   	enum utp_ocs ocs_value;
+>   	u8 tm_f = be32_to_cpu(req_upiu->header.dword_1) >> 16 & MASK_TM_FUNC;
+>   
+> +	if (!ufshcd_is_user_access_allowed(hba))
+> +		return -EBUSY;
 > +
-> +title: sunplus MMC controller
-> +
-> +allOf:
-> +  - $ref: "mmc-controller.yaml"
-> +
-> +maintainers:
-> +  - tony.huang <tony.huang@sunplus.com>
+>   	switch (msgcode) {
+>   	case UPIU_TRANSACTION_NOP_OUT:
+>   		cmd_type = DEV_CMD_TYPE_NOP;
 
-Please fix your name.
+Making operations fail if error handling is in progress makes it harder than
+necessary to write user space software that uses the BSG interface. Has it
+been considered to wait inside ufshcd_exec_raw_upiu_cmd() until error handling
+has finished?
 
-> +
-> +properties:
-> +  compatible:
-> +    enum:
-> +      - sunplus,sp7021-emmc
-> +      - sunplus,i143-emmc
-> +      - sunplus,q645-emmc
+Thanks,
 
-blank line here.
+Bart.
 
-> +  reg:
-> +    maxItems: 1
-> +
-> +  interrupts:
-> +    maxItems: 1
-> +
-> +  clocks:
-> +    minItems: 1
-> +
-> +  resets:
-> +    maxItems: 1
-> +
-> +required:
-> +  - compatible
-> +  - reg
-> +  - interrupts
-> +  - clocks
-> +  - resets
-> +
-> +unevaluatedProperties: false
-> +
-> +examples:
-> +  - |
-> +    #include <dt-bindings/interrupt-controller/irq.h>
-> +    #include <dt-bindings/interrupt-controller/arm-gic.h>
-> +    #include <dt-bindings/clock/sp-sp7021.h>
-> +    #include <dt-bindings/reset/sp-sp7021.h>
-> +    mmc0: mmc@9c003b00 {
-> +        compatible = "sunplus,sp7021-emmc";
-> +        reg = <0x9c003b00 0x180>;
-> +        interrupts = <20 IRQ_TYPE_LEVEL_HIGH>;
-> +        clocks = <&clkc CARD_CTL0>;
-> +        resets = <&rstc RST_CARD_CTL0>;
-> +        bus-width = <8>;
-> +        max-frequency = <52000000>;
-> +        non-removable;
-> +        disable-wp;
-> +        cap-mmc-highspeed;
-> +        mmc-ddr-3_3v;
-> +        no-sdio;
-> +        no-sd;
-> +    };
-> +...
-> diff --git a/MAINTAINERS b/MAINTAINERS
-> index 3b79fd4..179e60a 100644
-> --- a/MAINTAINERS
-> +++ b/MAINTAINERS
-> @@ -17945,6 +17945,11 @@ L:	netdev@vger.kernel.org
->  S:	Maintained
->  F:	drivers/net/ethernet/dlink/sundance.c
->  
-> +SUNPLUS MMC DRIVER
-> +M:	Tony Huang <tony.huang@sunplus.com>
-> +S:	Maintained
-> +F:	Documentation/devicetree/bindings/mmc/sunplu-mmc.yaml
-> +
->  SUPERH
->  M:	Yoshinori Sato <ysato@users.sourceforge.jp>
->  M:	Rich Felker <dalias@libc.org>
-> -- 
-> 2.7.4
-> 
-> 
+
