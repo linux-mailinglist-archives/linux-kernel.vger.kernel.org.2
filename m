@@ -2,145 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 00B46449A4C
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Nov 2021 17:50:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D4E83449A4D
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Nov 2021 17:51:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239012AbhKHQxK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Nov 2021 11:53:10 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:20434 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231330AbhKHQxJ (ORCPT
+        id S240151AbhKHQyH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Nov 2021 11:54:07 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45574 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231330AbhKHQyG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Nov 2021 11:53:09 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1636390225;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=7Cp1Rx79HPRFWEhhZgz1bOKGe1/Vy9sbxJgrvV4cvSc=;
-        b=BGwCgGEBoPUPKOBAbbAvRM42G+ZOxZp26HIAK7GfXSw0YWsS3yGLJHJkbJe+yZiZpvjgP3
-        RluSXE4bagDn3YH4PCjmn/OAW3RlrG49S8r6lCyfku2mipgRBbNuNRiGR4AIg8hay8+ALq
-        x8ajz3rg5YCWpVO2TzY+BTDG+LklPo4=
-Received: from mail-ot1-f69.google.com (mail-ot1-f69.google.com
- [209.85.210.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-438-1B6bXcEiOA6zkRgcx4wkew-1; Mon, 08 Nov 2021 11:50:24 -0500
-X-MC-Unique: 1B6bXcEiOA6zkRgcx4wkew-1
-Received: by mail-ot1-f69.google.com with SMTP id s38-20020a05683043a600b0055a6f3f8c26so9299445otv.21
-        for <linux-kernel@vger.kernel.org>; Mon, 08 Nov 2021 08:50:23 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=7Cp1Rx79HPRFWEhhZgz1bOKGe1/Vy9sbxJgrvV4cvSc=;
-        b=mcmJ7wuIe6xmQW3PAck5ofEQ4ATUZysfayk5vocDbvXYG1LobMgLlzsCZ2UK5IyPqV
-         XaqY8TV6fRFk7hqCgdMB5bKsgpg9nX2zdxeqWicGXbzs6uhOnxe02ne7WJ5/wv7nBHsN
-         e0G8hORMCGfVaetv/R6Yk1fSpWBMxYqm4JOo/+W9G0YKkmIz86tAvZjTy1jpRwUjarpD
-         ZWUbWZY02Thc7acFgcsmy672EuJuBEdzlIAmdl+ng25LdrfAjac94FEtgwV37rudrrGP
-         rj0lkuWuMuBJbUsDGK4oL6edtw4lWezr6nrI02apMhbSSNbjC919nkQ6Sjkmlf+WWQNZ
-         DM2w==
-X-Gm-Message-State: AOAM532lU5n1iVrHCO7b0Rsxbse1DvORvxQHMU9tOZH+2s7qv3tNPmZe
-        l954ArtYPaG4dBBSacn0Ie2OFBpVGG6qELajOdU1k+mN5PuYOXLAOhRyD9AarRsmBtHTqSRndPF
-        lH+Ls+JTuVclD+EhOHm9fHsKb
-X-Received: by 2002:a05:6808:13c6:: with SMTP id d6mr440836oiw.177.1636390223244;
-        Mon, 08 Nov 2021 08:50:23 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJwehjvW/iUaC2D+ZGiqB6AKiqAmRnGS6IRfpiMond0g3BBfFtTJxARakU1FNtFDw5WbMXDxGg==
-X-Received: by 2002:a05:6808:13c6:: with SMTP id d6mr440805oiw.177.1636390223013;
-        Mon, 08 Nov 2021 08:50:23 -0800 (PST)
-Received: from treble ([2600:1700:6e32:6c00::15])
-        by smtp.gmail.com with ESMTPSA id r26sm2025944otn.15.2021.11.08.08.50.21
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 08 Nov 2021 08:50:22 -0800 (PST)
-Date:   Mon, 8 Nov 2021 08:50:16 -0800
-From:   Josh Poimboeuf <jpoimboe@redhat.com>
-To:     Vasily Gorbik <gor@linux.ibm.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>, Borislav Petkov <bp@suse.de>,
-        Miroslav Benes <mbenes@suse.cz>, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/2] compiler.h: Avoid using inline asm operand modifiers
-Message-ID: <20211108165016.kdehec32k3dw4334@treble>
-References: <cover.thread-1a26be.your-ad-here.call-01621428935-ext-2104@work.hours>
- <patch-1.thread-1a26be.git-930d1b44844a.your-ad-here.call-01621428935-ext-2104@work.hours>
- <20211105165418.ucsrpk53dv5kgu6k@treble>
- <your-ad-here.call-01636386038-ext-6578@work.hours>
+        Mon, 8 Nov 2021 11:54:06 -0500
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6BCBC061570
+        for <linux-kernel@vger.kernel.org>; Mon,  8 Nov 2021 08:51:21 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=Sender:In-Reply-To:Content-Type:
+        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=JjeVTK+2GkBI0UCReLB90PqNbIgTpIsOIfrOXgVKgGU=; b=h9v8qKQFNF8m1EhXvqMzlq6S/w
+        QHtY/1ENrdUYR4A1lRNOqEws+yi5Z+Dr54+v0DayEcV5+tsVIesVcI/RCsIC4IXb6udWc80H92kYe
+        JUXK0AD7pu12MmcaPxVETsiBkSONm8bv+5BLHGFHQK7r+zSpbxKAnqczIyC/hAxvtTdFobXKc87KN
+        yUwly/oZ2ph3RmUKEoPnilgkPnxR3BvHKrl7eA1F3YQlGjdiXEYpsWuS41TudCbKDHMEsPxXd+RL8
+        UtFHpk+g5TYoyU+97K3s2EomVjYXZQnJE6wx9ZrCcq5Mc42zRqui1EGWb+dL664OUOalwwF1DY2WS
+        jb5RiAWQ==;
+Received: from mcgrof by bombadil.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mk7ra-00H0nj-1E; Mon, 08 Nov 2021 16:51:18 +0000
+Date:   Mon, 8 Nov 2021 08:51:18 -0800
+From:   Luis Chamberlain <mcgrof@kernel.org>
+To:     kernel test robot <lkp@intel.com>
+Cc:     llvm@lists.linux.dev, kbuild-all@lists.01.org,
+        linux-kernel@vger.kernel.org, Borislav Petkov <bp@suse.de>
+Subject: Re: [mcgrof-next:20210916-firmware-builtin-v2 14/14]
+ drivers/base/firmware_loader/test-builtin/test-builtin-firmware.bin.gen.S:5:13:
+ error: Could not find incbin file
+ 'drivers/base/firmware_loader/test-builtin/test-builtin-firmware.bin'
+Message-ID: <YYlVhm0ybuirMI//@bombadil.infradead.org>
+References: <202111080124.Dyl8aeOd-lkp@intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <your-ad-here.call-01636386038-ext-6578@work.hours>
+In-Reply-To: <202111080124.Dyl8aeOd-lkp@intel.com>
+Sender: Luis Chamberlain <mcgrof@infradead.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 08, 2021 at 04:40:38PM +0100, Vasily Gorbik wrote:
-> > Does this work on s390?
-> > 
-> > diff --git a/include/linux/compiler.h b/include/linux/compiler.h
-> > index 3d5af56337bd..42935500a712 100644
-> > --- a/include/linux/compiler.h
-> > +++ b/include/linux/compiler.h
-> > @@ -115,24 +115,18 @@ void ftrace_likely_update(struct ftrace_likely_data *f, int val,
-> >   * The __COUNTER__ based labels are a hack to make each instance of the macros
-> >   * unique, to convince GCC not to merge duplicate inline asm statements.
-> >   */
-> > -#define __stringify_label(n) #n
-> > -
-> > -#define __annotate_reachable(c) ({					\
-> > -	asm volatile(__stringify_label(c) ":\n\t"			\
-> > +#define annotate_reachable() ({						\
-> > +	asm volatile("%c0:\n\t"						\
-> >  		     ".pushsection .discard.reachable\n\t"		\
-> > -		     ".long " __stringify_label(c) "b - .\n\t"		\
-> > -		     ".popsection\n\t");				\
-> > +		     ".long %c0b - .\n\t"				\
-> > +		     ".popsection\n\t" : : "i" (__COUNTER__ & 0x7f));	\
-> >  })
+On Mon, Nov 08, 2021 at 01:37:31AM +0800, kernel test robot wrote:
+> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/mcgrof/linux-next.git 20210916-firmware-builtin-v2
+> head:   f69194f4bcf5b301f2d169b2f036c0da4b642e53
+> commit: f69194f4bcf5b301f2d169b2f036c0da4b642e53 [14/14] test_firmware: add support for testing built-in firmware
+> config: arm-randconfig-r004-20210929 (attached as .config)
+> compiler: clang version 14.0.0 (https://github.com/llvm/llvm-project dc6e8dfdfe7efecfda318d43a06fae18b40eb498)
+> reproduce (this is a W=1 build):
+>         wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
+>         chmod +x ~/bin/make.cross
+>         # install arm cross compiling tool for clang build
+>         # apt-get install binutils-arm-linux-gnueabi
+>         # https://git.kernel.org/pub/scm/linux/kernel/git/mcgrof/linux-next.git/commit/?id=f69194f4bcf5b301f2d169b2f036c0da4b642e53
+>         git remote add mcgrof-next https://git.kernel.org/pub/scm/linux/kernel/git/mcgrof/linux-next.git
+>         git fetch --no-tags mcgrof-next 20210916-firmware-builtin-v2
+>         git checkout f69194f4bcf5b301f2d169b2f036c0da4b642e53
+>         # save the attached .config to linux build tree
+>         COMPILER_INSTALL_PATH=$HOME/0day COMPILER=clang make.cross W=1 ARCH=arm 
 > 
-> hm, could we just add asm input back and not use it? and keep
-> __stringify_label(c) as is? would that work as well?
+> If you fix the issue, kindly add following tag as appropriate
+> Reported-by: kernel test robot <lkp@intel.com>
+> 
+> All errors (new ones prefixed by >>):
+> 
+> >> drivers/base/firmware_loader/test-builtin/test-builtin-firmware.bin.gen.S:5:13: error: Could not find incbin file 'drivers/base/firmware_loader/test-builtin/test-builtin-firmware.bin'
+>        .incbin "drivers/base/firmware_loader/test-builtin/test-builtin-firmware.bin"
+>                ^
 
-Yeah, that seems to work:
+I used the latest test branch:
 
-diff --git a/include/linux/compiler.h b/include/linux/compiler.h
-index 3d5af56337bd..429dcebe2b99 100644
---- a/include/linux/compiler.h
-+++ b/include/linux/compiler.h
-@@ -121,7 +121,7 @@ void ftrace_likely_update(struct ftrace_likely_data *f, int val,
- 	asm volatile(__stringify_label(c) ":\n\t"			\
- 		     ".pushsection .discard.reachable\n\t"		\
- 		     ".long " __stringify_label(c) "b - .\n\t"		\
--		     ".popsection\n\t");				\
-+		     ".popsection\n\t" : : "i" (c));			\
- })
- #define annotate_reachable() __annotate_reachable(__COUNTER__)
- 
-@@ -129,7 +129,7 @@ void ftrace_likely_update(struct ftrace_likely_data *f, int val,
- 	asm volatile(__stringify_label(c) ":\n\t"			\
- 		     ".pushsection .discard.unreachable\n\t"		\
- 		     ".long " __stringify_label(c) "b - .\n\t"		\
--		     ".popsection\n\t");				\
-+		     ".popsection\n\t" : : "i" (c));			\
- })
- #define annotate_unreachable() __annotate_unreachable(__COUNTER__)
- 
-diff --git a/include/linux/instrumentation.h b/include/linux/instrumentation.h
-index fa2cd8c63dcc..24359b4a9605 100644
---- a/include/linux/instrumentation.h
-+++ b/include/linux/instrumentation.h
-@@ -11,7 +11,7 @@
- 	asm volatile(__stringify(c) ": nop\n\t"				\
- 		     ".pushsection .discard.instr_begin\n\t"		\
- 		     ".long " __stringify(c) "b - .\n\t"		\
--		     ".popsection\n\t");				\
-+		     ".popsection\n\t" : : "i" (c));			\
- })
- #define instrumentation_begin() __instrumentation_begin(__COUNTER__)
- 
-@@ -50,7 +50,7 @@
- 	asm volatile(__stringify(c) ": nop\n\t"				\
- 		     ".pushsection .discard.instr_end\n\t"		\
- 		     ".long " __stringify(c) "b - .\n\t"		\
--		     ".popsection\n\t");				\
-+		     ".popsection\n\t" : : "i" (c));			\
- })
- #define instrumentation_end() __instrumentation_end(__COUNTER__)
- #else
+https://git.kernel.org/pub/scm/linux/kernel/git/mcgrof/linux-next.git/log/?h=20211020-firmware-builtin
 
+And I can't reproduce there, that build fails for another reason though:
+
+ld.lld: error: undefined symbol: _printk
+>>> referenced by io-acorn.o:(.text+0x38) in archive
+>>> arch/arm/mach-rpc/built-in.a
+make: *** [Makefile:1183: vmlinux] Error 1
+make: Target '__all' not remade because of errors.
+
+  Luis
