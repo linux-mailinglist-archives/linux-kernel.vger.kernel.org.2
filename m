@@ -2,181 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E4FCD447C51
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Nov 2021 09:53:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CBBD2447C67
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Nov 2021 09:57:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238194AbhKHI4S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Nov 2021 03:56:18 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48842 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236594AbhKHI4R (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Nov 2021 03:56:17 -0500
-Received: from lb1-smtp-cloud7.xs4all.net (lb1-smtp-cloud7.xs4all.net [IPv6:2001:888:0:108::1a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3AE9EC061570;
-        Mon,  8 Nov 2021 00:53:33 -0800 (PST)
-Received: from cust-b5b5937f ([IPv6:fc0c:c16d:66b8:757f:c639:739b:9d66:799d])
-        by smtp-cloud7.xs4all.net with ESMTPA
-        id k0P5meVbwFZvck0P8muGwC; Mon, 08 Nov 2021 09:53:31 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=xs4all.nl; s=s2;
-        t=1636361611; bh=N5WnZDwk03ecG+KFBZDfNUaUy6ujNUFngbnpFjjX2b4=;
-        h=Subject:To:From:Message-ID:Date:MIME-Version:Content-Type:From:
-         Subject;
-        b=Z3Ti1AOvyr7eR+h5UazH/dgbYgPioWEp7h55Ur8T/xnOKFHVKiWcHOC0nRsOzagIL
-         WHVdvfzz9Wa8KXwJGU6siHN9zDJW1x5Lvd8eY5Ok/DpgwDLdoJLa0324Lvs/wmkKtb
-         OjELReeICe5grkZxspXCJs//pqDyNz+BhBoRzqViqGfYEgad+ieD2WKs7VbaVHPOb1
-         jtpyllSb0HKF8EjRQ02Oc2F7N+u4xfC0D/V1+gk48TVkIfSvF1I2sEdbDKbyJUP+9J
-         lsDVXw6CF3aHPOVlm/d+6ftTUC5D/2lRHDBwLjSM0T1Xc2lWBFUN7/hVTNYt4pQjNC
-         N3qbi9C+OemnQ==
-Subject: Re: [PATCH] media: aspeed: use reset to replace clk off/on
-To:     Jammy Huang <jammy_huang@aspeedtech.com>,
-        Jae Hyun Yoo <jae.hyun.yoo@linux.intel.com>,
-        "eajames@linux.ibm.com" <eajames@linux.ibm.com>,
-        "mchehab@kernel.org" <mchehab@kernel.org>,
-        "joel@jms.id.au" <joel@jms.id.au>,
-        "andrew@aj.id.au" <andrew@aj.id.au>,
-        "linux-media@vger.kernel.org" <linux-media@vger.kernel.org>,
-        "openbmc@lists.ozlabs.org" <openbmc@lists.ozlabs.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-aspeed@lists.ozlabs.org" <linux-aspeed@lists.ozlabs.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-References: <20211103054316.25272-1-jammy_huang@aspeedtech.com>
- <883dd517-7996-8c44-8cea-1c8838b367b6@linux.intel.com>
- <HK0PR06MB272258A4BA760E70CF609888F18E9@HK0PR06MB2722.apcprd06.prod.outlook.com>
-From:   Hans Verkuil <hverkuil@xs4all.nl>
-Message-ID: <398d37a5-509f-b78b-360b-990d256bde63@xs4all.nl>
-Date:   Mon, 8 Nov 2021 09:53:23 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Firefox/78.0 Thunderbird/78.14.0
+        id S238235AbhKHJAd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Nov 2021 04:00:33 -0500
+Received: from mail.kernel.org ([198.145.29.99]:46594 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S238257AbhKHJAc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Nov 2021 04:00:32 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id F09F261029;
+        Mon,  8 Nov 2021 08:57:47 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1636361868;
+        bh=4wX+AII9Jyg6qEH+gRo7jIvJFABgSTjwEbhe7sn+sAA=;
+        h=From:To:Cc:Subject:Date:From;
+        b=i1MGeUtUKVpbNlY0JBiAfnYuiX/FAlw/CfpbJ7ClhJTWXW/QaO6Cpl8dHS0npTjys
+         r9ZkRwTJRmJsh5Up0j1U4WXMT5Vhe4arYzH/jWPAVGqhnK5bM4s2Y6jX7eG00B4kjz
+         n9lL8yCxDNeTqwGzMxxABjYtWLuEzUVtvT1wrpvGgrEvf1G2i8Q39uVg19nvmqCVYp
+         xTdBbmpkXn70Dzl63LFjg2TIXXMpComAh3VJ35AXDl/EiKBB/eiGorFmIcyKsY4uI+
+         0rH5bqLYQed03vsRsro+wNQUgP5T7C2IO8XTVAWEdgiTliTTST+aKP+db1dPjoiTeG
+         hEQtMtFpoOGuA==
+Received: from johan by xi.lan with local (Exim 4.94.2)
+        (envelope-from <johan@kernel.org>)
+        id 1mk0TI-0003JJ-53; Mon, 08 Nov 2021 09:57:44 +0100
+From:   Johan Hovold <johan@kernel.org>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Jiri Slaby <jirislaby@kernel.org>, linux-serial@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Johan Hovold <johan@kernel.org>,
+        Baruch Siach <baruch@tkos.co.il>, stable@vger.kernel.org,
+        Rob Herring <robh@kernel.org>
+Subject: [PATCH] serial: core: fix transmit-buffer reset and memleak
+Date:   Mon,  8 Nov 2021 09:54:31 +0100
+Message-Id: <20211108085431.12637-1-johan@kernel.org>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
-In-Reply-To: <HK0PR06MB272258A4BA760E70CF609888F18E9@HK0PR06MB2722.apcprd06.prod.outlook.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
 Content-Transfer-Encoding: 8bit
-X-CMAE-Envelope: MS4xfLgVZbzFUJQsFyvjN31c9nEsxsiILzODdS83Qkkx/mx+TyVnfKOOOxaUgiuQHgdsX9wdvFuPCS7ycc+NXp83vEzkC3WOxLNaWaUC4OKjqYekv4zHO4MB
- qQQzdnvHulF54s9YtL8NdADr6vuekXN1BGAo5DNTlsnPHbt+5GEi8tOatPbXaROoVOQcq3wy4BpAwtN2yMT6nnMBm1GIPB9O8wbQf+pYhfY/+ce9L7pBU3qY
- 56d+24AzKLlnGPEIiB4QjsSpQKPMzFSNTb1+b/Ro5uOob+JrJM1OknYGj7sKAd13GvB8PIKWqd7ROUTHkgeYdUmszohAJgngXDmlhp+pM5ohTlRCd+P8wMFV
- VSnhxDeTiIr0mQflZxcj3eQ176i8td6oObDvqAsMnpljRlD4QC9OGfO+TDoAZbvyhj1mJHZK0DNfeHLZeeWYgypHxVmqPxfh/h/RDtC2RoJf1wUL2rYqvx1l
- hrH4wCXeUmV1kjjWPc6aq4zPx7bQuXIo2VcXPMcDUzT2OT16JzGscjPJiHkpXeizRdw38Er1gS8pAjXhwH79pphTObHLwhhouBNbTQ==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Jammy,
+Commit 761ed4a94582 ("tty: serial_core: convert uart_close to use
+tty_port_close") converted serial core to use tty_port_close() but
+failed to notice that the transmit buffer still needs to be freed on
+final close.
 
-On 05/11/2021 02:27, Jammy Huang wrote:
-> Hi Jae,
-> 
-> OK, I found it.
-> Thanks for your help.
+Not freeing the transmit buffer means that the buffer is no longer
+cleared on next open so that any ioctl() waiting for the buffer to drain
+might wait indefinitely (e.g. on termios changes) or that stale data can
+end up being transmitted in case tx is restarted.
 
-So just so I understand this correctly: this patch can be dropped, right?
+Furthermore, the buffer of any port that has been opened would leak on
+driver unbind.
 
-Regards,
+Note that the port lock is held when clearing the buffer pointer due to
+the ldisc race worked around by commit a5ba1d95e46e ("uart: fix race
+between uart_put_char() and uart_shutdown()").
 
-	Hans
+Also note that the tty-port shutdown() callback is not called for
+console ports so it is not strictly necessary to free the buffer page
+after releasing the lock (cf. d72402145ace ("tty/serial: do not free
+trasnmit buffer page under port lock")).
 
-> 
-> Regards,
-> Jammy Huang
-> 
-> Tel: 886-3-575-1185  ext.8630
-> 
-> ************* Email Confidentiality Notice ********************
-> DISCLAIMER:
-> This message (and any attachments) may contain legally privileged and/or other confidential information. If you have received it in error, please notify the sender by reply e-mail and immediately delete the e-mail and any attachments without copying or disclosing the contents. Thank you.
-> 
-> -----Original Message-----
-> From: Jae Hyun Yoo <jae.hyun.yoo@linux.intel.com> 
-> Sent: Thursday, November 4, 2021 11:54 PM
-> To: Jammy Huang <jammy_huang@aspeedtech.com>; eajames@linux.ibm.com; mchehab@kernel.org; joel@jms.id.au; andrew@aj.id.au; linux-media@vger.kernel.org; openbmc@lists.ozlabs.org; linux-arm-kernel@lists.infradead.org; linux-aspeed@lists.ozlabs.org; linux-kernel@vger.kernel.org
-> Subject: Re: [PATCH] media: aspeed: use reset to replace clk off/on
-> 
-> Hi Jammy,
-> 
-> On 11/2/2021 10:43 PM, Jammy Huang wrote:
->> reset should be more proper than clk off/on to bring HW back to good 
->> state.
->>
->> Signed-off-by: Jammy Huang <jammy_huang@aspeedtech.com>
->> ---
->>   drivers/media/platform/aspeed-video.c | 22 +++++++++++++++++++---
->>   1 file changed, 19 insertions(+), 3 deletions(-)
->>
->> diff --git a/drivers/media/platform/aspeed-video.c 
->> b/drivers/media/platform/aspeed-video.c
->> index fea5e4d0927e..10d182139809 100644
->> --- a/drivers/media/platform/aspeed-video.c
->> +++ b/drivers/media/platform/aspeed-video.c
->> @@ -23,6 +23,7 @@
->>   #include <linux/workqueue.h>
->>   #include <linux/debugfs.h>
->>   #include <linux/ktime.h>
->> +#include <linux/reset.h>
->>   #include <media/v4l2-ctrls.h>
->>   #include <media/v4l2-dev.h>
->>   #include <media/v4l2-device.h>
->> @@ -220,6 +221,7 @@ struct aspeed_video {
->>   	void __iomem *base;
->>   	struct clk *eclk;
->>   	struct clk *vclk;
->> +	struct reset_control *reset;
->>   
->>   	struct device *dev;
->>   	struct v4l2_ctrl_handler ctrl_handler; @@ -554,6 +556,13 @@ static 
->> void aspeed_video_on(struct aspeed_video *video)
->>   	set_bit(VIDEO_CLOCKS_ON, &video->flags);
->>   }
->>   
->> +static void aspeed_video_reset(struct aspeed_video *v) {
->> +	reset_control_assert(v->reset);
->> +	udelay(100);
->> +	reset_control_deassert(v->reset);
->> +}
->> +
->>   static void aspeed_video_bufs_done(struct aspeed_video *video,
->>   				   enum vb2_buffer_state state)
->>   {
->> @@ -574,7 +583,9 @@ static void aspeed_video_irq_res_change(struct aspeed_video *video, ulong delay)
->>   	set_bit(VIDEO_RES_CHANGE, &video->flags);
->>   	clear_bit(VIDEO_FRAME_INPRG, &video->flags);
->>   
->> -	aspeed_video_off(video);
->> +	aspeed_video_write(video, VE_INTERRUPT_CTRL, 0);
->> +	aspeed_video_write(video, VE_INTERRUPT_STATUS, 0xffffffff);
->> +	aspeed_video_reset(video);
->>   	aspeed_video_bufs_done(video, VB2_BUF_STATE_ERROR);
->>   
->>   	schedule_delayed_work(&video->res_work, delay); @@ -1507,8 +1518,7 
->> @@ static void aspeed_video_stop_streaming(struct vb2_queue *q)
->>   		 * Need to force stop any DMA and try and get HW into a good
->>   		 * state for future calls to start streaming again.
->>   		 */
->> -		aspeed_video_off(video);
->> -		aspeed_video_on(video);
->> +		aspeed_video_reset(video);
-> 
-> You can find the ECLK configuration in 'clk-aspeed.c' or in 'clk-ast2600.c' that it's coupled with the video engine reset (SCU04[6] for AST2500 / SCU040[6] for AST2600). It means that if we call
-> clk_disable() and clk_enable() through aspeed_video_off() and aspeed_video_on(), the video engine reset will be implicitly asserted and de-asserted by the clock driver so the reset mechanism is already in the existing code.
-> 
-> Thanks,
-> Jae
-> 
->>   		aspeed_video_init_regs(video);
->>   
->> @@ -1715,6 +1725,12 @@ static int aspeed_video_init(struct aspeed_video *video)
->>   		return rc;
->>   	}
->>   
->> +	video->reset = devm_reset_control_get(dev, NULL);
->> +	if (IS_ERR(video->reset)) {
->> +		dev_err(dev, "Unable to get reset\n");
->> +		return PTR_ERR(video->reset);
->> +	}
->> +
->>   	video->eclk = devm_clk_get(dev, "eclk");
->>   	if (IS_ERR(video->eclk)) {
->>   		dev_err(dev, "Unable to get ECLK\n");
->>
+Reported-by: Baruch Siach <baruch@tkos.co.il>
+Link: https://lore.kernel.org/r/319321886d97c456203d5c6a576a5480d07c3478.1635781688.git.baruch@tkos.co.il
+Fixes: 761ed4a94582 ("tty: serial_core: convert uart_close to use tty_port_close")
+Cc: stable@vger.kernel.org      # 4.9
+Cc: Rob Herring <robh@kernel.org>
+Signed-off-by: Johan Hovold <johan@kernel.org>
+---
+ drivers/tty/serial/serial_core.c | 13 ++++++++++++-
+ 1 file changed, 12 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/tty/serial/serial_core.c b/drivers/tty/serial/serial_core.c
+index 0e2e35ab64c7..58834698739c 100644
+--- a/drivers/tty/serial/serial_core.c
++++ b/drivers/tty/serial/serial_core.c
+@@ -1542,6 +1542,7 @@ static void uart_tty_port_shutdown(struct tty_port *port)
+ {
+ 	struct uart_state *state = container_of(port, struct uart_state, port);
+ 	struct uart_port *uport = uart_port_check(state);
++	char *buf;
+ 
+ 	/*
+ 	 * At this point, we stop accepting input.  To do this, we
+@@ -1563,8 +1564,18 @@ static void uart_tty_port_shutdown(struct tty_port *port)
+ 	 */
+ 	tty_port_set_suspended(port, 0);
+ 
+-	uart_change_pm(state, UART_PM_STATE_OFF);
++	/*
++	 * Free the transmit buffer.
++	 */
++	spin_lock_irq(&uport->lock);
++	buf = state->xmit.buf;
++	state->xmit.buf = NULL;
++	spin_unlock_irq(&uport->lock);
+ 
++	if (buf)
++		free_page((unsigned long)buf);
++
++	uart_change_pm(state, UART_PM_STATE_OFF);
+ }
+ 
+ static void uart_wait_until_sent(struct tty_struct *tty, int timeout)
+-- 
+2.32.0
 
