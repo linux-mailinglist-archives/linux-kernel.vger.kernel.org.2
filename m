@@ -2,233 +2,168 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 74A56449C38
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Nov 2021 20:09:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 31378449C3C
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Nov 2021 20:09:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236702AbhKHTLq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Nov 2021 14:11:46 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48492 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236666AbhKHTLn (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Nov 2021 14:11:43 -0500
-Received: from mail-ed1-x52e.google.com (mail-ed1-x52e.google.com [IPv6:2a00:1450:4864:20::52e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6DBDCC061570;
-        Mon,  8 Nov 2021 11:08:58 -0800 (PST)
-Received: by mail-ed1-x52e.google.com with SMTP id o8so66603312edc.3;
-        Mon, 08 Nov 2021 11:08:58 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=5BlVIudKDsjBXmEfeAzic983XTcXGaBukuqDNHjo4TM=;
-        b=qE0pQR5zB920csJ351IAUW7201eKn63N8kQcApEzYbtjSOZ89W5ZXTpq0mkek1ku5r
-         /bDK86pF/pQijglFrnT6P/FV+GWxGSjVe5WYHr+EIaKYqMdqqaiwhMXMJrfOq3m2+6RN
-         PtmXwbDMbMmMLssQpxOI+CAWjrZ/bpmHWdfhQUHWlvksSuKwhW/JpFdlNJRnckB0XfG1
-         GcWnNZWl1XYgZEHXkZuvsz2w2TwVzS9A4pfICIMQHiJi7VkxUCtn90dxmiUpJBjGcIMt
-         EDIS42z/7tEk8ZD/3Z0fPQxJ1jmn2Er2XgFolO+yDqmvhau9EwISLTbcfnBMLOcesyyD
-         1okA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=5BlVIudKDsjBXmEfeAzic983XTcXGaBukuqDNHjo4TM=;
-        b=l/1mC6qPC8Zc2uMF/xzD5zxNNdCV+wz3AI+8hHyq35SROiGpbe24jDnzxn5pI7+TkQ
-         APOt548uHB3Hzou4NlnjnjG21bmpwrqeTj+ypMUDVdnxDHKIyQjoqpPwmVCuzYBBftpa
-         YwiyiG4nTe9oPpUEBDahkMJwXgxejnT7MnvFDfFwkwYocI76ZHqjcEWd0KaOzEPNu1QN
-         1xzV+9HeTm1gx5LUllz/MmNdjfB/P65MPsStmhi90wWBS54bDP9vVY1cRi1bSkB7StSk
-         nmF3fR0xxBMR23GdXMw9OfcnJ8zRLEJBnVRJPcJ7KK5+Ke4w4HIb7Y8N+WxGP0626QaI
-         ojgQ==
-X-Gm-Message-State: AOAM531Tz0Q+zBGp2zGP2Q1zPiUAtFnDtFYpfGhKMZqrm4QO/Cwu0/ZR
-        OUW++S4H2NGQJvUEL/DNQrE=
-X-Google-Smtp-Source: ABdhPJyKoqVhJK5MeuK4FsEiGxNzxqhdI9qzpBWBjOZKCsihq9hPEPoVBmFgMoXktSrj3TWxVkBi7A==
-X-Received: by 2002:a17:906:4791:: with SMTP id cw17mr1831807ejc.493.1636398536742;
-        Mon, 08 Nov 2021 11:08:56 -0800 (PST)
-Received: from Ansuel-xps.localdomain (93-42-71-246.ip85.fastwebnet.it. [93.42.71.246])
-        by smtp.gmail.com with ESMTPSA id bx27sm9967545edb.7.2021.11.08.11.08.55
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 08 Nov 2021 11:08:56 -0800 (PST)
-Date:   Mon, 8 Nov 2021 20:08:53 +0100
-From:   Ansuel Smith <ansuelsmth@gmail.com>
-To:     Marek =?iso-8859-1?Q?Beh=FAn?= <kabel@kernel.org>
-Cc:     Andrew Lunn <andrew@lunn.ch>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Vladimir Oltean <olteanv@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>, Pavel Machek <pavel@ucw.cz>,
-        John Crispin <john@phrozen.org>, netdev@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-leds@vger.kernel.org
-Subject: Re: [RFC PATCH v2 1/5] leds: trigger: add API for HW offloading of
- triggers
-Message-ID: <YYl1xSKg4vrsbTdw@Ansuel-xps.localdomain>
-References: <20211108002500.19115-1-ansuelsmth@gmail.com>
- <20211108002500.19115-2-ansuelsmth@gmail.com>
- <YYkuZwQi66slgfTZ@lunn.ch>
- <YYk/Pbm9ZZ/Ikckg@Ansuel-xps.localdomain>
- <20211108171312.0318b960@thinkpad>
- <YYlUSr586WiZxMn6@Ansuel-xps.localdomain>
- <20211108183537.134ee04c@thinkpad>
- <YYllTn9W5tZLmVN8@Ansuel-xps.localdomain>
- <20211108194142.58630e60@thinkpad>
+        id S236759AbhKHTMA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Nov 2021 14:12:00 -0500
+Received: from mail.kernel.org ([198.145.29.99]:53314 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S236664AbhKHTL7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Nov 2021 14:11:59 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E8F76610CB;
+        Mon,  8 Nov 2021 19:09:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1636398555;
+        bh=V50rMmonuAYlKwUzmzbQfYe9Ebf4+RIpcZdyeBxBOyM=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:From;
+        b=O5LuZCkPPG9aBDZ7T4hWfoH8hzqG9tuYzLFUghBP6kkYfdyGpfddJizltGucbn25I
+         Zx3gxN+tPqUIAjnyf4VfJGoKLNQZp/XA0e8eZLp2mOroQxSe73BnrkMnxkrMyVexOW
+         t/Or0yZO6pVATUBtt4EsAL0INoMDm6MpCYVPZGDPSo4Z6QXxYjOGV/j7d3y+GodODy
+         Bv89AKdVSFj9gb/NvQ/meuch8HbXrNK7/lfYymftU53qwAS75V+dXS0HWOCKruPg7F
+         K2n5PkJ3EepHwpBwGjhtCj5BnXaqmlMjRco6kT2H4tsg+OFsAk8lHmPQQ0GvDSvFsN
+         Sb1Ewqd/haCvA==
+Date:   Mon, 8 Nov 2021 13:09:13 -0600
+From:   Bjorn Helgaas <helgaas@kernel.org>
+To:     Robert =?utf-8?B?xZp3acSZY2tp?= <robert@swiecki.net>,
+        Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
+        <u.kleine-koenig@pengutronix.de>
+Cc:     linux-i2c@vger.kernel.org, Bjorn Helgaas <bhelgaas@google.com>,
+        linux-pci@vger.kernel.org, "Rafael J. Wysocki" <rafael@kernel.org>,
+        linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Subject: Re: Crashes in 5.15-git in i2c code
+Message-ID: <20211108190913.GA1108690@bhelgaas>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20211108194142.58630e60@thinkpad>
+In-Reply-To: <20211108185823.GA1101310@bhelgaas>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 08, 2021 at 07:41:42PM +0100, Marek Beh�n wrote:
-> On Mon, 8 Nov 2021 18:58:38 +0100
-> Ansuel Smith <ansuelsmth@gmail.com> wrote:
-> 
-> > Are you aware of any device that can have some trigger offloaded and
-> > still have the led triggered manually?
-> 
-> I don't understand why we would need such a thing.
-> 
-> Look, just to make it clear via an example: I have a device with a
-> Marvell PHY chip inside. There is a LED connected to one of the PHY LED
-> pins.
-> 
-> Marvell PHY has LED[0] control register, which supports the following
-> modes:
->   LED is OFF
->   LED is ON
->   LED is ON when Link is up
->   LED blinks on RX activity
->   LED blinks on TX activity
->   LED blinks on RX/TX activity
->   LED is ON and blinks on RX/TX activity
->   ...
-> 
-> I have code that exports this LED as a LED classdev
-> 
-> When I activate netdev trigger on this LED, the netdev trigger currently
-> just blinks the LED in software, by calling the .brightness_set()
-> method, which configures LED[0] control register to one of the first
-> two modes above (LED is OFF, LED is ON).
-> 
-> But I have also another patch that adds support to offloading netdev
-> trigger upon offloadable settings. The netdev trigger code calls the
-> .trigger_offload() method, which is implemented in PHY driver. This
-> method checks whether it is a netdev trigger that is to be offloaded,
-> and whether device_name is the name of the device attached to the PHY,
-> and then chooses one of the modes above, according to netdev trigger
-> settings.
-> 
-> So when I request netdev trigger for eth0, to indicate link and blink
-> on activity, the netdev trigger doesn't do anything in software. It
-> just calls the offload method ONCE (at the moment I am changing netdev
-> trigger settings). The blinking is then done by the PHY chip. Netdev
-> trigger doesn't do anything, at least not until I change the settings
-> again.
-> 
-> > Talking about mixed mode, so HW and SW.
-> 
-> What exactly do you mean by mixed mode? There is no mixed mode.
->
+[+cc Linus -- FYI since I'm sure you'll see more reports of this; we
+call driver resume methods before they're prepared for it.  We'll fix
+or revert this ASAP.]
 
-Ok.
-
-> > Asking to understand as currently the only way to impement all
-> > of this in netdev trigger is that:
-> > IF any hw offload trigger is supported (and enabled) then the entire
-> > netdev trigger can't work as it won't be able to simulate missing
-> > trigger in SW. And that would leave some flexibility.
+On Mon, Nov 08, 2021 at 12:58:25PM -0600, Bjorn Helgaas wrote:
+> [+cc Uwe, Rafael, linux-pm, linux-pci, linux-kernel, beginning of
+> thread: https://lore.kernel.org/linux-i2c/CAP145pgdrdiMAT7=-iB1DMgA7t_bMqTcJL4N0=6u8kNY3EU0dw@mail.gmail.com/T/#t]
 > 
-> What do you mean by missing trigger here? I think we need to clarify
-> what we mean by the word "trigger". Are you talking about the various
-> blinking modes that the PHY supports? If so, please let's call them HW
-> control modes, and not triggers. By "triggers" I understand triggers
-> that can be enabled on a LED via /sys/class/leds/<LED>/trigger.
+> On Mon, Nov 08, 2021 at 05:34:14PM +0100, Robert Święcki wrote:
+> > > I'm daily-driving the linux from Linus' git (recompiling every day or
+> > > two), and yesterday it stopped booting. Below is the dmesg from
+> > > pstore.
+> > > ...
+> > 
+> > This introduced the bug: 0c5c62ddf88c34bc83b66e4ac9beb2bb0e1887d4
+> > https://github.com/torvalds/linux/commit/0c5c62ddf88c34bc83b66e4ac9beb2bb0e1887d4
 > 
-
-offload triggers = blinking modes supported
-
-> > We need to understand how to operate in this condition. Should netdev
-> > detect that and ""hide"" the sysfs triggers? Should we report error?
+> Thank you very much for the debugging and this report!  This report is
+> for i2c, but the problem will affect many drivers.
 > 
-> So if I understand you correctly, you are asking about what should we
-> do if user asked for netdev trigger settings (currently only link, rx,
-> tx, interval) that can't be offloaded to the PHY chip.
+> > > <1>[    1.431369][  T447] BUG: kernel NULL pointer dereference,
+> > > address: 0000000000000540
+> > > <1>[    1.431371][  T447] #PF: supervisor read access in kernel mode
+> > > <1>[    1.431375][  T447] #PF: error_code(0x0000) - not-present page
+> > > <6>[    1.431378][  T447] PGD 0 P4D 0
+> > > <4>[    1.431384][  T447] Oops: 0000 [#1] PREEMPT SMP NOPTI
+> > > <4>[    1.431388][  T447] CPU: 12 PID: 447 Comm: systemd-udevd
+> > > Tainted: G            E     5.15.0+ #91
+> > > <4>[    1.431391][  T447] Hardware name: ASUS System Product Name/ROG
+> > > CROSSHAIR VIII FORMULA, BIOS 3801 07/30/2021
+> > > <4>[    1.431392][  T447] RIP: 0010:i2c_dw_pci_resume+0x8/0x40
+> > > [i2c_designware_pci]
+> > > <4>[    1.431399][  T447] Code: 00 00 00 00 66 66 2e 0f 1f 84 00 00 00
+> > > 00 00 66 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 84 00 00 00 00 00 53 48
+> > > 8b 5f 78 48 89 df <ff> 93 40 05 00 00 c6 83 c0 05 00 00 00 5b c3 66 66
+> > > 2e 0f 1f 84 00
+> > > <4>[    1.431401][  T447] RSP: 0018:ffffb3e740a13ba8 EFLAGS: 00010286
+> > > <4>[    1.431403][  T447] RAX: 0000000000000000 RBX: 0000000000000000
+> > > RCX: 0000000000000000
 > 
-> Well, if the PHY allows to manipulate the LEDs ON/OFF state (in other
-> words "full control by SW", or ability to implement brightness_set()
-> method), then netdev trigger should blink the LED in SW via this
-> mechanism (which is something it would do now). A new sysfs file,
-> "offloaded", can indicate whether the trigger is offloaded to HW or not.
+>   $ ./scripts/decodecode < oops
+>     22:       53                      push   %rbx
+>     23:       48 8b 5f 78             mov    0x78(%rdi),%rbx
+>     27:       48 89 df                mov    %rbx,%rdi
+>     2a:*      ff 93 40 05 00 00       callq  *0x540(%rbx)             <-- trapping instruction
+>     30:       c6 83 c0 05 00 00 00    movb   $0x0,0x5c0(%rbx)
+>     37:       5b                      pop    %rbx
+>     38:       c3                      retq
 > 
-
-Are all these sysfs entry OK? I mean if we want to add support for he
-main blinking modes, the number will increase to at least 10 additional
-entry. 
-
-> If, on the other hand, the LED cannot be controlled by SW, and it only
-> support some HW control modes, then there are multiple ways how to
-> implement what should be done, and we need to discuss this.
+>   static int i2c_dw_pci_resume(struct device *dev)
+>   {
+>     struct dw_i2c_dev *i_dev = dev_get_drvdata(dev);
+>     int ret;
 > 
-> For example suppose that the PHY LED pin supports indicating LINK,
-> blinking on activity, or both, but it doesn't support blinking on rx
-> only, or tx only.
+>     ret = i_dev->init(i_dev);
+>     i_dev->suspended = false;
 > 
-> Since the LED is always indicating something about one network device,
-> the netdev trigger should be always activated for this LED and it
-> should be impossible to deactivate it. Also, it should be impossible to
-> change device_name.
+>     return ret;
 > 
->   $ cd /sys/class/leds/<LED>
->   $ cat device_name
->   eth0
->   $ echo eth1 >device_name
->   Operation not supported.
->   $ echo none >trigger
->   Operation not supported.
+> So I think we're trying to call i_dev->init(), which is a NULL
+> pointer.
 > 
-> Now suppose that the driver by default enabled link indication, so we
-> have:
->   $ cat link
->   1
->   $ cat rx
->   0
->   $ cat tx
->   0
+> > > <4>[    1.431422][  T447]  pci_pm_runtime_resume+0xaa/0x100
+> > > <4>[    1.431434][  T447]  __rpm_callback+0x3c/0x100
+> > > <4>[    1.431442][  T447]  rpm_callback+0x54/0x80
+> > > <4>[    1.431445][  T447]  rpm_resume+0x410/0x700
+> > > <4>[    1.431455][  T447]  __pm_runtime_resume+0x45/0x80
+> > > <4>[    1.431457][  T447]  pci_device_probe+0xa2/0x140
+> > > <4>[    1.431459][  T447]  really_probe+0x1e4/0x400
+> > > <4>[    1.431464][  T447]  __driver_probe_device+0xf9/0x180
+> > > <4>[    1.431466][  T447]  driver_probe_device+0x19/0xc0
 > 
-> We want to enable blink on activity, but the LED supports only blinking
-> on both rx/tx activity, rx only or tx only is not supported.
+> I think the problem here is that:
 > 
-> Currently the only way to enable this is to do
->   $ echo 1 >rx
->   $ echo 1 >tx
-> but the first call asks for (link=1, rx=1, tx=0), which is impossible.
+>   - really_probe() sets dev->driver
 > 
-> There are multiple things which can be done:
-> - "echo 1 >rx" indicates error, but remembers the setting
-> - "echo 1 >rx" quietly fails, without error indication. Something can
->   be written to dmesg about nonsupported mode
-> - "echo 1 >rx" succeeds, but also sets tx=1
-> - rx and tx are non-writable, writing always fails. Another sysfs file
->   is created, which lists modes that are actually supported, and allows
->   to select between them. When a mode is selected, link,rx,tx are
->   filled automatically, so that user may read them to know what the LED
->   is actually doing
-> - something different?
+>   - local_pci_probe() calls pm_runtime_get_sync(), which leads to:
 > 
-
-Expose only the supported blinking modes? (in conjunciong with a generic
-traffic blinking mode)
-
-The initial question was Should we support a mixed mode offloaed
-blinking modes and blinking modes simulated by sw? I assume no as i
-don't think a device that supports that exist.
-
-> Marek
-
--- 
-	Ansuel
+>   - pci_pm_runtime_resume(), which previously skipped the driver's
+>     .runtime_resume() method when "pci_dev->driver" as NULL
+> 
+>   - after 2a4d9408c9e8 ("PCI: Use to_pci_driver() instead of
+>     pci_dev->driver") [1], it checks "dev->driver" instead of
+>     "pci_dev->driver"
+> 
+>   - dev->driver is non-NULL (set by really_probe() above), but at this
+>     point pci_dev->driver used to be NULL because local_pci_probe()
+>     didn't set it until after after calling pm_runtime_get_sync() (see
+>     b5f9c644eb1b ("PCI: Remove struct pci_dev->driver") [2])
+> 
+>   - because dev->driver is non-NULL, we call i2c_dw_pci_resume()
+>     before i2c_dw_pci_probe(), so the driver init hasn't been done
+> 
+> Here's the call tree:
+> 
+>     really_probe
+>       dev->driver = drv;                       # <--
+>       call_driver_probe
+>         dev->bus->probe
+>           pci_device_probe
+>             __pci_device_probe
+>               pci_call_probe
+>                 local_pci_probe
+>                   pm_runtime_get_sync
+>                     ...
+>                     pci_pm_runtime_resume
+>   -                   if (!pci_dev->driver)    # 2a4d9408c9e8 ("PCI: Use to_pci_driver() instead of pci_dev->driver")
+>   +                   if (!to_pci_driver(dev->driver))
+>                         return 0
+>                       pm->runtime_resume
+>                         i2c_dw_pci_resume
+>                           i_dev->init()        # <-- NULL ptr deref
+>   -                 pci_dev->driver = pci_drv  # b5f9c644eb1b ("PCI: Remove struct pci_dev->driver")
+>                   pci_drv->probe
+>                     i2c_dw_pci_probe
+> 
+> Note that we used to call pm_runtime_get_sync() (and the driver's
+> runtime_resume() method) in the window where dev->driver had been set
+> but pci_dev->driver had not.  Since we got rid of pci_dev->driver
+> altogether, that window no longer exists, so we call the driver's
+> runtime_resume() when it isn't prepared for it.
+> 
+> [1] https://git.kernel.org/linus/2a4d9408c9e8
+> [2] https://git.kernel.org/linus/b5f9c644eb1b
