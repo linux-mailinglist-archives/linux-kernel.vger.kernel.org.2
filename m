@@ -2,1249 +2,540 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5CE9244A466
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 03:00:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B49F344A465
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 02:59:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239004AbhKICDU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Nov 2021 21:03:20 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56666 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235860AbhKICDS (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Nov 2021 21:03:18 -0500
-Received: from mail-pl1-x632.google.com (mail-pl1-x632.google.com [IPv6:2607:f8b0:4864:20::632])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ADEE2C061570
-        for <linux-kernel@vger.kernel.org>; Mon,  8 Nov 2021 18:00:33 -0800 (PST)
-Received: by mail-pl1-x632.google.com with SMTP id b13so18072454plg.2
-        for <linux-kernel@vger.kernel.org>; Mon, 08 Nov 2021 18:00:33 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=N/s7xqesb+6YMB4KzooGpusttk5JwG3lX9xtoC7GhnY=;
-        b=ETDQp48OGtuxlHb4TarUbu6fPp8mLLVM1VN4G6INF+GrfgaxjAhh7vP/C0TDK/9Ocg
-         tCCCOqM+DAZNwiSjVtldXUTQ6tmpHPxlyiXMaebvc8QY//NCL4WbB/Df4JuW1mQNr5CS
-         v+EP1W3xIUesab1aYKu8Egqf+/ruNHsCM1UjOULbEvOD5kJAtviP5BLOL/jjIXosSe/T
-         ypqZz/y5bg3MjX+RvjMLDOH0JMTqBFsNwZzOamWkyutrwSqdCBlY2fUQt6wo0M1mXsNU
-         CqpxrMgXzEfwDQgmTqRxq5N50RDoJb95jUNpJnks1TeT9sckHLGAPnbw//jEyp6RitFq
-         wzsQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=N/s7xqesb+6YMB4KzooGpusttk5JwG3lX9xtoC7GhnY=;
-        b=AITo5tk0J5TVCKTnk5psf+JFLdfYh/K7VOYATWyb9dg4+M4+W8kxYsgLRYvJQK9cLp
-         xxv1FaB24fOMnw7QyNCycki/sQlDyXyEdqlX8kBjjkI8NstnQZgSqDZXyH6y23TuCdmL
-         9zHSmcJfn8R1Huumikb6lG/gBc9gheR6ixsnDK424xLQ0EMJQhdB+OvPQHr6LSRGZJIW
-         6mJPBqPYgH987qIXxpWUzSUTncem8GYDsUuwj1ln0BkfUxjLr/GL/UaRsB2jVOMvfNDs
-         BMV5bnuMsu7SHGJdoZ3T5+AU7txIfDeGKjLfhaup9kpCD6YRhqShLZbJrtpwx/9gADtR
-         wJmA==
-X-Gm-Message-State: AOAM531BIcSlDYRWV/0UwQpmbxNa36uKGR9Pb+o9kFL+27eLSVMqsyau
-        RiviZCURjbZk8ZBANTS38IA=
-X-Google-Smtp-Source: ABdhPJwK6Rf0Qa//SrebsaIZ6UhGnuBCqaR5cINH8UN2VxOUBmjQGQXCJqCU2M9REPlbNxhtOSgfDw==
-X-Received: by 2002:a17:90b:1d0e:: with SMTP id on14mr3131440pjb.119.1636423233015;
-        Mon, 08 Nov 2021 18:00:33 -0800 (PST)
-Received: from howard-System-Product-Name.dhcpserver.bu9bmc.local (125-228-123-29.hinet-ip.hinet.net. [125.228.123.29])
-        by smtp.gmail.com with ESMTPSA id 7sm7020277pgk.55.2021.11.08.18.00.31
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 08 Nov 2021 18:00:32 -0800 (PST)
-From:   Howard Chiu <howard10703049@gmail.com>
-X-Google-Original-From: Howard Chiu <howard.chiu@quantatw.com>
-To:     joel@jms.id.au, andrew@aj.id.au,
-        linux-arm-kernel@lists.infradead.org,
-        linux-aspeed@lists.ozlabs.org, linux-kernel@vger.kernel.org,
-        patrick@stwcx.xyz
-Cc:     Howard Chiu <howard.chiu@quantatw.com>
-Subject: [PATCH v2] ARM: dts: aspeed: Adding Facebook Bletchley BMC
-Date:   Tue,  9 Nov 2021 09:58:23 +0800
-Message-Id: <20211109015823.1007911-1-howard.chiu@quantatw.com>
-X-Mailer: git-send-email 2.25.1
+        id S241791AbhKICCI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Nov 2021 21:02:08 -0500
+Received: from mga02.intel.com ([134.134.136.20]:17923 "EHLO mga02.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S238592AbhKICCF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Nov 2021 21:02:05 -0500
+X-IronPort-AV: E=McAfee;i="6200,9189,10162"; a="219561326"
+X-IronPort-AV: E=Sophos;i="5.87,218,1631602800"; 
+   d="gz'50?scan'50,208,50";a="219561326"
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Nov 2021 17:59:20 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.87,218,1631602800"; 
+   d="gz'50?scan'50,208,50";a="669235456"
+Received: from lkp-server02.sh.intel.com (HELO c20d8bc80006) ([10.239.97.151])
+  by orsmga005.jf.intel.com with ESMTP; 08 Nov 2021 17:59:17 -0800
+Received: from kbuild by c20d8bc80006 with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1mkGPt-000Ctg-4j; Tue, 09 Nov 2021 01:59:17 +0000
+Date:   Tue, 9 Nov 2021 09:58:40 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Kris Van Hees <kris.van.hees@oracle.com>
+Cc:     kbuild-all@lists.01.org, linux-kernel@vger.kernel.org,
+        Nick Alcock <nick.alcock@oracle.com>,
+        Tomas Jedlicka <tomas.jedlicka@oracle.com>,
+        Eugene Loh <eugene.loh@oracle.com>,
+        David Mc Lean <david.mclean@oracle.com>,
+        Vincent Lim <vincent.lim@oracle.com>
+Subject: [oracle-dtrace:v1/5.15 21/35] make[3]: *** No rule to make target
+ 'crypto/aes_generic.sdtinfo.o', needed by 'crypto/aes_generic.ko'.
+Message-ID: <202111090931.T92mCJTU-lkp@intel.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/mixed; boundary="2oS5YaxWCcQjTEyO"
+Content-Disposition: inline
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Initial introduction of Facebook Bletchley equipped with
-Aspeed 2600 BMC SoC.
 
-Signed-off-by: Howard Chiu <howard.chiu@quantatw.com>
+--2oS5YaxWCcQjTEyO
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+tree:   https://github.com/oracle/dtrace-linux-kernel v1/5.15
+head:   0fee66d7ce96317146609675767971d0f35c3e74
+commit: 9bb7076b2261cf2470e94df26762679a950a0b1e [21/35] dtrace: sdt provider core components
+config: ia64-defconfig (attached as .config)
+compiler: ia64-linux-gcc (GCC) 11.2.0
+reproduce (this is a W=1 build):
+        wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
+        chmod +x ~/bin/make.cross
+        # https://github.com/oracle/dtrace-linux-kernel/commit/9bb7076b2261cf2470e94df26762679a950a0b1e
+        git remote add oracle-dtrace https://github.com/oracle/dtrace-linux-kernel
+        git fetch --no-tags oracle-dtrace v1/5.15
+        git checkout 9bb7076b2261cf2470e94df26762679a950a0b1e
+        # save the attached .config to linux build tree
+        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-11.2.0 make.cross ARCH=ia64 
+
+If you fix the issue, kindly add following tag as appropriate
+Reported-by: kernel test robot <lkp@intel.com>
+
+All errors (new ones prefixed by >>):
+
+>> make[3]: *** No rule to make target 'crypto/aes_generic.sdtinfo.o', needed by 'crypto/aes_generic.ko'.
+>> make[3]: *** No rule to make target 'crypto/authenc.sdtinfo.o', needed by 'crypto/authenc.ko'.
+>> make[3]: *** No rule to make target 'crypto/authencesn.sdtinfo.o', needed by 'crypto/authencesn.ko'.
+>> make[3]: *** No rule to make target 'crypto/cbc.sdtinfo.o', needed by 'crypto/cbc.ko'.
+>> make[3]: *** No rule to make target 'crypto/ccm.sdtinfo.o', needed by 'crypto/ccm.ko'.
+>> make[3]: *** No rule to make target 'crypto/cmac.sdtinfo.o', needed by 'crypto/cmac.ko'.
+>> make[3]: *** No rule to make target 'crypto/ctr.sdtinfo.o', needed by 'crypto/ctr.ko'.
+>> make[3]: *** No rule to make target 'crypto/ecb.sdtinfo.o', needed by 'crypto/ecb.ko'.
+>> make[3]: *** No rule to make target 'crypto/essiv.sdtinfo.o', needed by 'crypto/essiv.ko'.
+>> make[3]: *** No rule to make target 'crypto/gcm.sdtinfo.o', needed by 'crypto/gcm.ko'.
+>> make[3]: *** No rule to make target 'crypto/gf128mul.sdtinfo.o', needed by 'crypto/gf128mul.ko'.
+>> make[3]: *** No rule to make target 'crypto/ghash-generic.sdtinfo.o', needed by 'crypto/ghash-generic.ko'.
+>> make[3]: *** No rule to make target 'crypto/hmac.sdtinfo.o', needed by 'crypto/hmac.ko'.
+>> make[3]: *** No rule to make target 'crypto/pcbc.sdtinfo.o', needed by 'crypto/pcbc.ko'.
+>> make[3]: *** No rule to make target 'crypto/sha256_generic.sdtinfo.o', needed by 'crypto/sha256_generic.ko'.
+>> make[3]: *** No rule to make target 'crypto/sha512_generic.sdtinfo.o', needed by 'crypto/sha512_generic.ko'.
+   make[3]: Target '__modfinal' not remade because of errors.
+--
+>> make[3]: *** No rule to make target 'drivers/acpi/button.sdtinfo.o', needed by 'drivers/acpi/button.ko'.
+>> make[3]: *** No rule to make target 'drivers/acpi/fan.sdtinfo.o', needed by 'drivers/acpi/fan.ko'.
+>> make[3]: *** No rule to make target 'drivers/acpi/processor.sdtinfo.o', needed by 'drivers/acpi/processor.ko'.
+>> make[3]: *** No rule to make target 'drivers/acpi/thermal.sdtinfo.o', needed by 'drivers/acpi/thermal.ko'.
+   make[3]: Target '__modfinal' not remade because of errors.
+--
+>> make[3]: *** No rule to make target 'drivers/block/cryptoloop.sdtinfo.o', needed by 'drivers/block/cryptoloop.ko'.
+>> make[3]: *** No rule to make target 'drivers/block/loop.sdtinfo.o', needed by 'drivers/block/loop.ko'.
+>> make[3]: *** No rule to make target 'drivers/block/nbd.sdtinfo.o', needed by 'drivers/block/nbd.ko'.
+   make[3]: Target '__modfinal' not remade because of errors.
+--
+>> make[3]: *** No rule to make target 'drivers/cdrom/cdrom.sdtinfo.o', needed by 'drivers/cdrom/cdrom.ko'.
+   make[3]: Target '__modfinal' not remade because of errors.
+--
+>> make[3]: *** No rule to make target 'drivers/char/agp/agpgart.sdtinfo.o', needed by 'drivers/char/agp/agpgart.ko'.
+>> make[3]: *** No rule to make target 'drivers/char/agp/hp-agp.sdtinfo.o', needed by 'drivers/char/agp/hp-agp.ko'.
+>> make[3]: *** No rule to make target 'drivers/char/agp/i460-agp.sdtinfo.o', needed by 'drivers/char/agp/i460-agp.ko'.
+>> make[3]: *** No rule to make target 'drivers/char/mspec.sdtinfo.o', needed by 'drivers/char/mspec.ko'.
+   make[3]: Target '__modfinal' not remade because of errors.
+--
+>> make[3]: *** No rule to make target 'drivers/hid/hid-gyration.sdtinfo.o', needed by 'drivers/hid/hid-gyration.ko'.
+>> make[3]: *** No rule to make target 'drivers/hid/hid-petalynx.sdtinfo.o', needed by 'drivers/hid/hid-petalynx.ko'.
+>> make[3]: *** No rule to make target 'drivers/hid/hid-pl.sdtinfo.o', needed by 'drivers/hid/hid-pl.ko'.
+>> make[3]: *** No rule to make target 'drivers/hid/hid-samsung.sdtinfo.o', needed by 'drivers/hid/hid-samsung.ko'.
+>> make[3]: *** No rule to make target 'drivers/hid/hid-sunplus.sdtinfo.o', needed by 'drivers/hid/hid-sunplus.ko'.
+>> make[3]: *** No rule to make target 'drivers/hid/usbhid/usbhid.sdtinfo.o', needed by 'drivers/hid/usbhid/usbhid.ko'.
+   make[3]: Target '__modfinal' not remade because of errors.
+--
+>> make[3]: *** No rule to make target 'drivers/md/dm-bufio.sdtinfo.o', needed by 'drivers/md/dm-bufio.ko'.
+>> make[3]: *** No rule to make target 'drivers/md/dm-crypt.sdtinfo.o', needed by 'drivers/md/dm-crypt.ko'.
+>> make[3]: *** No rule to make target 'drivers/md/dm-log.sdtinfo.o', needed by 'drivers/md/dm-log.ko'.
+>> make[3]: *** No rule to make target 'drivers/md/dm-mirror.sdtinfo.o', needed by 'drivers/md/dm-mirror.ko'.
+>> make[3]: *** No rule to make target 'drivers/md/dm-mod.sdtinfo.o', needed by 'drivers/md/dm-mod.ko'.
+>> make[3]: *** No rule to make target 'drivers/md/dm-multipath.sdtinfo.o', needed by 'drivers/md/dm-multipath.ko'.
+>> make[3]: *** No rule to make target 'drivers/md/dm-region-hash.sdtinfo.o', needed by 'drivers/md/dm-region-hash.ko'.
+>> make[3]: *** No rule to make target 'drivers/md/dm-round-robin.sdtinfo.o', needed by 'drivers/md/dm-round-robin.ko'.
+>> make[3]: *** No rule to make target 'drivers/md/dm-snapshot.sdtinfo.o', needed by 'drivers/md/dm-snapshot.ko'.
+>> make[3]: *** No rule to make target 'drivers/md/dm-zero.sdtinfo.o', needed by 'drivers/md/dm-zero.ko'.
+>> make[3]: *** No rule to make target 'drivers/md/linear.sdtinfo.o', needed by 'drivers/md/linear.ko'.
+>> make[3]: *** No rule to make target 'drivers/md/md-mod.sdtinfo.o', needed by 'drivers/md/md-mod.ko'.
+>> make[3]: *** No rule to make target 'drivers/md/multipath.sdtinfo.o', needed by 'drivers/md/multipath.ko'.
+>> make[3]: *** No rule to make target 'drivers/md/raid0.sdtinfo.o', needed by 'drivers/md/raid0.ko'.
+>> make[3]: *** No rule to make target 'drivers/md/raid1.sdtinfo.o', needed by 'drivers/md/raid1.ko'.
+   make[3]: Target '__modfinal' not remade because of errors.
+--
+>> make[3]: *** No rule to make target 'drivers/message/fusion/mptfc.sdtinfo.o', needed by 'drivers/message/fusion/mptfc.ko'.
+   make[3]: Target '__modfinal' not remade because of errors.
+--
+>> make[3]: *** No rule to make target 'drivers/net/dummy.sdtinfo.o', needed by 'drivers/net/dummy.ko'.
+>> make[3]: *** No rule to make target 'drivers/net/ethernet/dec/tulip/tulip.sdtinfo.o', needed by 'drivers/net/ethernet/dec/tulip/tulip.ko'.
+>> make[3]: *** No rule to make target 'drivers/net/ethernet/intel/e100.sdtinfo.o', needed by 'drivers/net/ethernet/intel/e100.ko'.
+>> make[3]: *** No rule to make target 'drivers/net/mii.sdtinfo.o', needed by 'drivers/net/mii.ko'.
+   make[3]: Target '__modfinal' not remade because of errors.
+--
+>> make[3]: *** No rule to make target 'drivers/scsi/sg.sdtinfo.o', needed by 'drivers/scsi/sg.ko'.
+>> make[3]: *** No rule to make target 'drivers/scsi/sr_mod.sdtinfo.o', needed by 'drivers/scsi/sr_mod.ko'.
+>> make[3]: *** No rule to make target 'drivers/scsi/st.sdtinfo.o', needed by 'drivers/scsi/st.ko'.
+   make[3]: Target '__modfinal' not remade because of errors.
+--
+>> make[3]: *** No rule to make target 'drivers/usb/common/usb-common.sdtinfo.o', needed by 'drivers/usb/common/usb-common.ko'.
+>> make[3]: *** No rule to make target 'drivers/usb/core/usbcore.sdtinfo.o', needed by 'drivers/usb/core/usbcore.ko'.
+>> make[3]: *** No rule to make target 'drivers/usb/host/ehci-hcd.sdtinfo.o', needed by 'drivers/usb/host/ehci-hcd.ko'.
+>> make[3]: *** No rule to make target 'drivers/usb/host/ehci-pci.sdtinfo.o', needed by 'drivers/usb/host/ehci-pci.ko'.
+>> make[3]: *** No rule to make target 'drivers/usb/host/ohci-hcd.sdtinfo.o', needed by 'drivers/usb/host/ohci-hcd.ko'.
+>> make[3]: *** No rule to make target 'drivers/usb/host/ohci-pci.sdtinfo.o', needed by 'drivers/usb/host/ohci-pci.ko'.
+>> make[3]: *** No rule to make target 'drivers/usb/host/uhci-hcd.sdtinfo.o', needed by 'drivers/usb/host/uhci-hcd.ko'.
+>> make[3]: *** No rule to make target 'drivers/usb/mon/usbmon.sdtinfo.o', needed by 'drivers/usb/mon/usbmon.ko'.
+>> make[3]: *** No rule to make target 'drivers/usb/storage/usb-storage.sdtinfo.o', needed by 'drivers/usb/storage/usb-storage.ko'.
+   make[3]: Target '__modfinal' not remade because of errors.
+..
+
 ---
- arch/arm/boot/dts/Makefile                    |    1 +
- .../dts/aspeed-bmc-facebook-bletchley.dts     | 1152 +++++++++++++++++
- 2 files changed, 1153 insertions(+)
- create mode 100644 arch/arm/boot/dts/aspeed-bmc-facebook-bletchley.dts
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
 
-diff --git a/arch/arm/boot/dts/Makefile b/arch/arm/boot/dts/Makefile
-index 7e0934180724..4c1843cbf849 100644
---- a/arch/arm/boot/dts/Makefile
-+++ b/arch/arm/boot/dts/Makefile
-@@ -1462,6 +1462,7 @@ dtb-$(CONFIG_ARCH_ASPEED) += \
- 	aspeed-bmc-arm-stardragon4800-rep2.dtb \
- 	aspeed-bmc-asrock-e3c246d4i.dtb \
- 	aspeed-bmc-bytedance-g220a.dtb \
-+	aspeed-bmc-facebook-bletchley.dtb \
- 	aspeed-bmc-facebook-cloudripper.dtb \
- 	aspeed-bmc-facebook-cmm.dtb \
- 	aspeed-bmc-facebook-elbert.dtb \
-diff --git a/arch/arm/boot/dts/aspeed-bmc-facebook-bletchley.dts b/arch/arm/boot/dts/aspeed-bmc-facebook-bletchley.dts
-new file mode 100644
-index 000000000000..e807e02e3c78
---- /dev/null
-+++ b/arch/arm/boot/dts/aspeed-bmc-facebook-bletchley.dts
-@@ -0,0 +1,1152 @@
-+// SPDX-License-Identifier: GPL-2.0+
-+// Copyright (c) 2021 Facebook Inc.
-+/dts-v1/;
-+
-+#include "aspeed-g6.dtsi"
-+#include <dt-bindings/gpio/aspeed-gpio.h>
-+#include <dt-bindings/leds/leds-pca955x.h>
-+#include <dt-bindings/usb/pd.h>
-+
-+/ {
-+	model = "Facebook Bletchley BMC";
-+	compatible = "facebook,bletchley-bmc", "aspeed,ast2600";
-+
-+	aliases {
-+		serial4 = &uart5;
-+	};
-+
-+	chosen {
-+		bootargs = "console=ttyS4,57600n8";
-+	};
-+
-+	memory@80000000 {
-+		device_type = "memory";
-+		reg = <0x80000000 0x80000000>;
-+	};
-+
-+	iio-hwmon {
-+		compatible = "iio-hwmon";
-+		io-channels = <&adc0 0>, <&adc0 1>, <&adc0 2>, <&adc0 3>,
-+		  <&adc0 4>, <&adc0 5>, <&adc0 6>, <&adc0 7>,
-+		  <&adc1 0>, <&adc1 1>, <&adc1 2>, <&adc1 3>,
-+		  <&adc1 4>, <&adc1 5>, <&adc1 6>, <&adc1 7>;
-+	};
-+
-+	spi_gpio: spi-gpio {
-+		status = "okay";
-+		compatible = "spi-gpio";
-+		#address-cells = <1>;
-+		#size-cells = <0>;
-+
-+		gpio-sck = <&gpio0 ASPEED_GPIO(Z, 3) GPIO_ACTIVE_HIGH>;
-+		gpio-mosi = <&gpio0 ASPEED_GPIO(Z, 4) GPIO_ACTIVE_HIGH>;
-+		gpio-miso = <&gpio0 ASPEED_GPIO(Z, 5) GPIO_ACTIVE_HIGH>;
-+		num-chipselects = <1>;
-+		cs-gpios = <&gpio0 ASPEED_GPIO(Z, 0) GPIO_ACTIVE_LOW>;
-+
-+		tpmdev@0 {
-+			compatible = "tcg,tpm_tis-spi";
-+			spi-max-frequency = <33000000>;
-+			reg = <0>;
-+		};
-+	};
-+
-+	switchphy: ethernet-phy@0 {
-+		// Fixed-link
-+	};
-+
-+	leds {
-+		compatible = "gpio-leds";
-+
-+		sys_log_id {
-+			retain-state-shutdown;
-+			default-state = "keep";
-+			gpios = <&front_leds 0 GPIO_ACTIVE_HIGH>;
-+		};
-+		fan0_blue {
-+			retain-state-shutdown;
-+			default-state = "on";
-+			gpios = <&fan_ioexp 8 GPIO_ACTIVE_HIGH>;
-+		};
-+		fan1_blue {
-+			retain-state-shutdown;
-+			default-state = "on";
-+			gpios = <&fan_ioexp 9 GPIO_ACTIVE_HIGH>;
-+		};
-+		fan2_blue {
-+			retain-state-shutdown;
-+			default-state = "on";
-+			gpios = <&fan_ioexp 10 GPIO_ACTIVE_HIGH>;
-+		};
-+		fan3_blue {
-+			retain-state-shutdown;
-+			default-state = "on";
-+			gpios = <&fan_ioexp 11 GPIO_ACTIVE_HIGH>;
-+		};
-+		fan0_amber {
-+			retain-state-shutdown;
-+			default-state = "off";
-+			gpios = <&fan_ioexp 12 GPIO_ACTIVE_HIGH>;
-+		};
-+		fan1_amber {
-+			retain-state-shutdown;
-+			default-state = "off";
-+			gpios = <&fan_ioexp 13 GPIO_ACTIVE_HIGH>;
-+		};
-+		fan2_amber {
-+			retain-state-shutdown;
-+			default-state = "off";
-+			gpios = <&fan_ioexp 14 GPIO_ACTIVE_HIGH>;
-+		};
-+		fan3_amber {
-+			retain-state-shutdown;
-+			default-state = "off";
-+			gpios = <&fan_ioexp 15 GPIO_ACTIVE_HIGH>;
-+		};
-+		sled0_amber {
-+			retain-state-shutdown;
-+			default-state = "off";
-+			gpios = <&sled0_leds 0 GPIO_ACTIVE_LOW>;
-+		};
-+		sled0_blue {
-+			retain-state-shutdown;
-+			default-state = "off";
-+			gpios = <&sled0_leds 1 GPIO_ACTIVE_LOW>;
-+		};
-+		sled1_amber {
-+			retain-state-shutdown;
-+			default-state = "off";
-+			gpios = <&sled1_leds 0 GPIO_ACTIVE_LOW>;
-+		};
-+		sled1_blue {
-+			retain-state-shutdown;
-+			default-state = "off";
-+			gpios = <&sled1_leds 1 GPIO_ACTIVE_LOW>;
-+		};
-+		sled2_amber {
-+			retain-state-shutdown;
-+			default-state = "off";
-+			gpios = <&sled2_leds 0 GPIO_ACTIVE_LOW>;
-+		};
-+		sled2_blue {
-+			retain-state-shutdown;
-+			default-state = "off";
-+			gpios = <&sled2_leds 1 GPIO_ACTIVE_LOW>;
-+		};
-+		sled3_amber {
-+			retain-state-shutdown;
-+			default-state = "off";
-+			gpios = <&sled3_leds 0 GPIO_ACTIVE_LOW>;
-+		};
-+		sled3_blue {
-+			retain-state-shutdown;
-+			default-state = "off";
-+			gpios = <&sled3_leds 1 GPIO_ACTIVE_LOW>;
-+		};
-+		sled4_amber {
-+			retain-state-shutdown;
-+			default-state = "off";
-+			gpios = <&sled4_leds 0 GPIO_ACTIVE_LOW>;
-+		};
-+		sled4_blue {
-+			retain-state-shutdown;
-+			default-state = "off";
-+			gpios = <&sled4_leds 1 GPIO_ACTIVE_LOW>;
-+		};
-+		sled5_amber {
-+			retain-state-shutdown;
-+			default-state = "off";
-+			gpios = <&sled5_leds 0 GPIO_ACTIVE_LOW>;
-+		};
-+		sled5_blue {
-+			retain-state-shutdown;
-+			default-state = "off";
-+			gpios = <&sled5_leds 1 GPIO_ACTIVE_LOW>;
-+		};
-+	};
-+};
-+
-+&mac2 {
-+	status = "okay";
-+	phy-mode = "rgmii";
-+	phy-handle = <&switchphy>;
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&pinctrl_rgmii3_default>;
-+
-+	fixed-link {
-+		speed = <1000>;
-+		full-duplex;
-+	};
-+};
-+
-+&rtc {
-+	status = "okay";
-+};
-+
-+&fmc {
-+	status = "okay";
-+	flash@0 {
-+		status = "okay";
-+		m25p,fast-read;
-+		label = "bmc";
-+		spi-max-frequency = <50000000>;
-+#include "openbmc-flash-layout-128.dtsi"
-+	};
-+};
-+
-+&spi2 {
-+	status = "okay";
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&pinctrl_spi2_default>;
-+
-+	flash@0 {
-+		status = "okay";
-+		m25p,fast-read;
-+		label = "pnor";
-+		spi-max-frequency = <100000000>;
-+	};
-+};
-+
-+&uart5 {
-+	// Workaround for A0
-+	compatible = "snps,dw-apb-uart";
-+};
-+
-+&i2c0 {
-+	status = "okay";
-+	/* TODO: Add HSC MP5023 */
-+	/* TODO: Add ADC INA230 */
-+
-+	tmp421@4f {
-+		compatible = "ti,tmp421";
-+		reg = <0x4f>;
-+	};
-+
-+	sled0_ioexp: pca9539@76 {
-+		compatible = "nxp,pca9539";
-+		reg = <0x76>;
-+		#address-cells = <1>;
-+		#size-cells = <0>;
-+		gpio-controller;
-+		#gpio-cells = <2>;
-+
-+		gpio-line-names =
-+		"","SLED0_BMC_CCG5_INT","SLED0_INA230_ALERT","SLED0_P12V_STBY_ALERT",
-+		"SLED0_SSD_ALERT","SLED0_MS_DETECT","SLED0_MD_REF_PWM","",
-+		"SLED0_MD_STBY_RESET","SLED0_MD_IOEXP_EN_FAULT","SLED0_MD_DIR","SLED0_MD_DECAY",
-+		"SLED0_MD_MODE1","SLED0_MD_MODE2","SLED0_MD_MODE3","SLED0_AC_PWR_EN";
-+
-+		gpio@0 {
-+			reg = <0>;
-+		};
-+		gpio@1 {
-+			reg = <1>;
-+		};
-+		gpio@2 {
-+			reg = <2>;
-+		};
-+		gpio@3 {
-+			reg = <3>;
-+		};
-+		gpio@4 {
-+			reg = <4>;
-+		};
-+		gpio@5 {
-+			reg = <5>;
-+		};
-+		gpio@6 {
-+			reg = <6>;
-+		};
-+		gpio@7 {
-+			reg = <7>;
-+		};
-+		gpio@8 {
-+			reg = <8>;
-+		};
-+		gpio@9 {
-+			reg = <9>;
-+		};
-+		gpio@10 {
-+			reg = <10>;
-+		};
-+		gpio@11 {
-+			reg = <11>;
-+		};
-+		gpio@12 {
-+			reg = <12>;
-+		};
-+		gpio@13 {
-+			reg = <13>;
-+		};
-+		gpio@14 {
-+			reg = <14>;
-+		};
-+		gpio@15 {
-+			reg = <15>;
-+		};
-+	};
-+
-+	sled0_leds: pca9552@67 {
-+		compatible = "nxp,pca9552";
-+		reg = <0x67>;
-+		#address-cells = <1>;
-+		#size-cells = <0>;
-+		gpio-controller;
-+		#gpio-cells = <2>;
-+
-+		gpio-line-names =
-+		"SLED0_AMBER_LED","SLED0_BLUE_LED","SLED0_RST_IOEXP","",
-+		"","","","",
-+		"","","","",
-+		"","","","";
-+
-+		gpio@0 {
-+			reg = <0>;
-+			type = <PCA955X_TYPE_GPIO>;
-+		};
-+		gpio@1 {
-+			reg = <1>;
-+			type = <PCA955X_TYPE_GPIO>;
-+		};
-+		gpio@2 {
-+			reg = <2>;
-+			type = <PCA955X_TYPE_GPIO>;
-+		};
-+	};
-+
-+	sled0_fusb302: typec-portc@54 {
-+		compatible = "fcs,fusb302";
-+		reg = <0x54>;
-+
-+		connector {
-+			compatible = "usb-c-connector";
-+			label = "USB-C";
-+			power-role = "dual";
-+			try-power-role = "sink";
-+			source-pdos = <PDO_FIXED(5000, 3000, PDO_FIXED_USB_COMM)>;
-+			sink-pdos = <PDO_FIXED(5000, 3000, PDO_FIXED_USB_COMM)
-+					PDO_VAR(3000, 12000, 3000)
-+					PDO_PPS_APDO(3000, 11000, 3000)>;
-+			op-sink-microwatt = <10000000>;
-+		};
-+	};
-+};
-+
-+&i2c1 {
-+	status = "okay";
-+	/* TODO: Add HSC MP5023 */
-+	/* TODO: Add ADC INA230 */
-+
-+	tmp421@4f {
-+		compatible = "ti,tmp421";
-+		reg = <0x4f>;
-+	};
-+
-+	sled1_ioexp: pca9539@76 {
-+		compatible = "nxp,pca9539";
-+		reg = <0x76>;
-+		#address-cells = <1>;
-+		#size-cells = <0>;
-+		gpio-controller;
-+		#gpio-cells = <2>;
-+
-+		gpio-line-names =
-+		"","SLED1_BMC_CCG5_INT","SLED1_INA230_ALERT","SLED1_P12V_STBY_ALERT",
-+		"SLED1_SSD_ALERT","SLED1_MS_DETECT","SLED1_MD_REF_PWM","",
-+		"SLED1_MD_STBY_RESET","SLED1_MD_IOEXP_EN_FAULT","SLED1_MD_DIR","SLED1_MD_DECAY",
-+		"SLED1_MD_MODE1","SLED1_MD_MODE2","SLED1_MD_MODE3","SLED1_AC_PWR_EN";
-+
-+		gpio@0 {
-+			reg = <0>;
-+		};
-+		gpio@1 {
-+			reg = <1>;
-+		};
-+		gpio@2 {
-+			reg = <2>;
-+		};
-+		gpio@3 {
-+			reg = <3>;
-+		};
-+		gpio@4 {
-+			reg = <4>;
-+		};
-+		gpio@5 {
-+			reg = <5>;
-+		};
-+		gpio@6 {
-+			reg = <6>;
-+		};
-+		gpio@7 {
-+			reg = <7>;
-+		};
-+		gpio@8 {
-+			reg = <8>;
-+		};
-+		gpio@9 {
-+			reg = <9>;
-+		};
-+		gpio@10 {
-+			reg = <10>;
-+		};
-+		gpio@11 {
-+			reg = <11>;
-+		};
-+		gpio@12 {
-+			reg = <12>;
-+		};
-+		gpio@13 {
-+			reg = <13>;
-+		};
-+		gpio@14 {
-+			reg = <14>;
-+		};
-+		gpio@15 {
-+			reg = <15>;
-+		};
-+	};
-+
-+	sled1_leds: pca9552@67 {
-+		compatible = "nxp,pca9552";
-+		reg = <0x67>;
-+		#address-cells = <1>;
-+		#size-cells = <0>;
-+		gpio-controller;
-+		#gpio-cells = <2>;
-+
-+		gpio-line-names =
-+		"SLED1_AMBER_LED","SLED1_BLUE_LED","SLED1_RST_IOEXP","",
-+		"","","","",
-+		"","","","",
-+		"","","","";
-+
-+		gpio@0 {
-+			reg = <0>;
-+			type = <PCA955X_TYPE_GPIO>;
-+		};
-+		gpio@1 {
-+			reg = <1>;
-+			type = <PCA955X_TYPE_GPIO>;
-+		};
-+		gpio@2 {
-+			reg = <2>;
-+			type = <PCA955X_TYPE_GPIO>;
-+		};
-+	};
-+
-+	sled1_fusb302: typec-portc@54 {
-+		compatible = "fcs,fusb302";
-+		reg = <0x54>;
-+
-+		connector {
-+			compatible = "usb-c-connector";
-+			label = "USB-C";
-+			power-role = "dual";
-+			try-power-role = "sink";
-+			source-pdos = <PDO_FIXED(5000, 3000, PDO_FIXED_USB_COMM)>;
-+			sink-pdos = <PDO_FIXED(5000, 3000, PDO_FIXED_USB_COMM)
-+					PDO_VAR(3000, 12000, 3000)
-+					PDO_PPS_APDO(3000, 11000, 3000)>;
-+			op-sink-microwatt = <10000000>;
-+		};
-+	};
-+};
-+
-+&i2c1 {
-+	status = "okay";
-+};
-+
-+&i2c2 {
-+	status = "okay";
-+	/* TODO: Add HSC MP5023 */
-+	/* TODO: Add ADC INA230 */
-+
-+	tmp421@4f {
-+		compatible = "ti,tmp421";
-+		reg = <0x4f>;
-+	};
-+
-+	sled2_ioexp: pca9539@76 {
-+		compatible = "nxp,pca9539";
-+		reg = <0x76>;
-+		#address-cells = <1>;
-+		#size-cells = <0>;
-+		gpio-controller;
-+		#gpio-cells = <2>;
-+
-+		gpio-line-names =
-+		"","SLED2_BMC_CCG5_INT","SLED2_INA230_ALERT","SLED2_P12V_STBY_ALERT",
-+		"SLED2_SSD_ALERT","SLED2_MS_DETECT","SLED2_MD_REF_PWM","",
-+		"SLED2_MD_STBY_RESET","SLED2_MD_IOEXP_EN_FAULT","SLED2_MD_DIR","SLED2_MD_DECAY",
-+		"SLED2_MD_MODE1","SLED2_MD_MODE2","SLED2_MD_MODE3","SLED2_AC_PWR_EN";
-+
-+		gpio@0 {
-+			reg = <0>;
-+		};
-+		gpio@1 {
-+			reg = <1>;
-+		};
-+		gpio@2 {
-+			reg = <2>;
-+		};
-+		gpio@3 {
-+			reg = <3>;
-+		};
-+		gpio@4 {
-+			reg = <4>;
-+		};
-+		gpio@5 {
-+			reg = <5>;
-+		};
-+		gpio@6 {
-+			reg = <6>;
-+		};
-+		gpio@7 {
-+			reg = <7>;
-+		};
-+		gpio@8 {
-+			reg = <8>;
-+		};
-+		gpio@9 {
-+			reg = <9>;
-+		};
-+		gpio@10 {
-+			reg = <10>;
-+		};
-+		gpio@11 {
-+			reg = <11>;
-+		};
-+		gpio@12 {
-+			reg = <12>;
-+		};
-+		gpio@13 {
-+			reg = <13>;
-+		};
-+		gpio@14 {
-+			reg = <14>;
-+		};
-+		gpio@15 {
-+			reg = <15>;
-+		};
-+	};
-+
-+	sled2_leds: pca9552@67 {
-+		compatible = "nxp,pca9552";
-+		reg = <0x67>;
-+		#address-cells = <1>;
-+		#size-cells = <0>;
-+		gpio-controller;
-+		#gpio-cells = <2>;
-+
-+		gpio-line-names =
-+		"SLED2_AMBER_LED","SLED2_BLUE_LED","SLED2_RST_IOEXP","",
-+		"","","","",
-+		"","","","",
-+		"","","","";
-+
-+		gpio@0 {
-+			reg = <0>;
-+			type = <PCA955X_TYPE_GPIO>;
-+		};
-+		gpio@1 {
-+			reg = <1>;
-+			type = <PCA955X_TYPE_GPIO>;
-+		};
-+		gpio@2 {
-+			reg = <2>;
-+			type = <PCA955X_TYPE_GPIO>;
-+		};
-+	};
-+
-+	sled2_fusb302: typec-portc@54 {
-+		compatible = "fcs,fusb302";
-+		reg = <0x54>;
-+
-+		connector {
-+			compatible = "usb-c-connector";
-+			label = "USB-C";
-+			power-role = "dual";
-+			try-power-role = "sink";
-+			source-pdos = <PDO_FIXED(5000, 3000, PDO_FIXED_USB_COMM)>;
-+			sink-pdos = <PDO_FIXED(5000, 3000, PDO_FIXED_USB_COMM)
-+					PDO_VAR(3000, 12000, 3000)
-+					PDO_PPS_APDO(3000, 11000, 3000)>;
-+			op-sink-microwatt = <10000000>;
-+		};
-+	};
-+};
-+
-+&i2c3 {
-+	status = "okay";
-+	/* TODO: Add HSC MP5023 */
-+	/* TODO: Add ADC INA230 */
-+
-+	tmp421@4f {
-+		compatible = "ti,tmp421";
-+		reg = <0x4f>;
-+	};
-+
-+	sled3_ioexp: pca9539@76 {
-+		compatible = "nxp,pca9539";
-+		reg = <0x76>;
-+		#address-cells = <1>;
-+		#size-cells = <0>;
-+		gpio-controller;
-+		#gpio-cells = <2>;
-+
-+		gpio-line-names =
-+		"","SLED3_BMC_CCG5_INT","SLED3_INA230_ALERT","SLED3_P12V_STBY_ALERT",
-+		"SLED3_SSD_ALERT","SLED3_MS_DETECT","SLED3_MD_REF_PWM","",
-+		"SLED3_MD_STBY_RESET","SLED3_MD_IOEXP_EN_FAULT","SLED3_MD_DIR","SLED3_MD_DECAY",
-+		"SLED3_MD_MODE1","SLED3_MD_MODE2","SLED3_MD_MODE3","SLED3_AC_PWR_EN";
-+
-+		gpio@0 {
-+			reg = <0>;
-+		};
-+		gpio@1 {
-+			reg = <1>;
-+		};
-+		gpio@2 {
-+			reg = <2>;
-+		};
-+		gpio@3 {
-+			reg = <3>;
-+		};
-+		gpio@4 {
-+			reg = <4>;
-+		};
-+		gpio@5 {
-+			reg = <5>;
-+		};
-+		gpio@6 {
-+			reg = <6>;
-+		};
-+		gpio@7 {
-+			reg = <7>;
-+		};
-+		gpio@8 {
-+			reg = <8>;
-+		};
-+		gpio@9 {
-+			reg = <9>;
-+		};
-+		gpio@10 {
-+			reg = <10>;
-+		};
-+		gpio@11 {
-+			reg = <11>;
-+		};
-+		gpio@12 {
-+			reg = <12>;
-+		};
-+		gpio@13 {
-+			reg = <13>;
-+		};
-+		gpio@14 {
-+			reg = <14>;
-+		};
-+		gpio@15 {
-+			reg = <15>;
-+		};
-+	};
-+
-+	sled3_leds: pca9552@67 {
-+		compatible = "nxp,pca9552";
-+		reg = <0x67>;
-+		#address-cells = <1>;
-+		#size-cells = <0>;
-+		gpio-controller;
-+		#gpio-cells = <2>;
-+
-+		gpio-line-names =
-+		"SLED3_AMBER_LED","SLED3_BLUE_LED","SLED3_RST_IOEXP","",
-+		"","","","",
-+		"","","","",
-+		"","","","";
-+
-+		gpio@0 {
-+			reg = <0>;
-+			type = <PCA955X_TYPE_GPIO>;
-+		};
-+		gpio@1 {
-+			reg = <1>;
-+			type = <PCA955X_TYPE_GPIO>;
-+		};
-+		gpio@2 {
-+			reg = <2>;
-+			type = <PCA955X_TYPE_GPIO>;
-+		};
-+	};
-+
-+	sled3_fusb302: typec-portc@54 {
-+		compatible = "fcs,fusb302";
-+		reg = <0x54>;
-+
-+		connector {
-+			compatible = "usb-c-connector";
-+			label = "USB-C";
-+			power-role = "dual";
-+			try-power-role = "sink";
-+			source-pdos = <PDO_FIXED(5000, 3000, PDO_FIXED_USB_COMM)>;
-+			sink-pdos = <PDO_FIXED(5000, 3000, PDO_FIXED_USB_COMM)
-+					PDO_VAR(3000, 12000, 3000)
-+					PDO_PPS_APDO(3000, 11000, 3000)>;
-+			op-sink-microwatt = <10000000>;
-+		};
-+	};
-+};
-+
-+&i2c4 {
-+	status = "okay";
-+	/* TODO: Add HSC MP5023 */
-+	/* TODO: Add ADC INA230 */
-+
-+	tmp421@4f {
-+		compatible = "ti,tmp421";
-+		reg = <0x4f>;
-+	};
-+
-+	sled4_ioexp: pca9539@76 {
-+		compatible = "nxp,pca9539";
-+		reg = <0x76>;
-+		#address-cells = <1>;
-+		#size-cells = <0>;
-+		gpio-controller;
-+		#gpio-cells = <2>;
-+
-+		gpio-line-names =
-+		"","SLED4_BMC_CCG5_INT","SLED4_INA230_ALERT","SLED4_P12V_STBY_ALERT",
-+		"SLED4_SSD_ALERT","SLED4_MS_DETECT","SLED4_MD_REF_PWM","",
-+		"SLED4_MD_STBY_RESET","SLED4_MD_IOEXP_EN_FAULT","SLED4_MD_DIR","SLED4_MD_DECAY",
-+		"SLED4_MD_MODE1","SLED4_MD_MODE2","SLED4_MD_MODE3","SLED4_AC_PWR_EN";
-+
-+		gpio@0 {
-+			reg = <0>;
-+		};
-+		gpio@1 {
-+			reg = <1>;
-+		};
-+		gpio@2 {
-+			reg = <2>;
-+		};
-+		gpio@3 {
-+			reg = <3>;
-+		};
-+		gpio@4 {
-+			reg = <4>;
-+		};
-+		gpio@5 {
-+			reg = <5>;
-+		};
-+		gpio@6 {
-+			reg = <6>;
-+		};
-+		gpio@7 {
-+			reg = <7>;
-+		};
-+		gpio@8 {
-+			reg = <8>;
-+		};
-+		gpio@9 {
-+			reg = <9>;
-+		};
-+		gpio@10 {
-+			reg = <10>;
-+		};
-+		gpio@11 {
-+			reg = <11>;
-+		};
-+		gpio@12 {
-+			reg = <12>;
-+		};
-+		gpio@13 {
-+			reg = <13>;
-+		};
-+		gpio@14 {
-+			reg = <14>;
-+		};
-+		gpio@15 {
-+			reg = <15>;
-+		};
-+	};
-+
-+	sled4_leds: pca9552@67 {
-+		compatible = "nxp,pca9552";
-+		reg = <0x67>;
-+		#address-cells = <1>;
-+		#size-cells = <0>;
-+		gpio-controller;
-+		#gpio-cells = <2>;
-+
-+		gpio-line-names =
-+		"SLED4_AMBER_LED","SLED4_BLUE_LED","SLED4_RST_IOEXP","",
-+		"","","","",
-+		"","","","",
-+		"","","","";
-+
-+		gpio@0 {
-+			reg = <0>;
-+			type = <PCA955X_TYPE_GPIO>;
-+		};
-+		gpio@1 {
-+			reg = <1>;
-+			type = <PCA955X_TYPE_GPIO>;
-+		};
-+		gpio@2 {
-+			reg = <2>;
-+			type = <PCA955X_TYPE_GPIO>;
-+		};
-+	};
-+
-+	sled4_fusb302: typec-portc@54 {
-+		compatible = "fcs,fusb302";
-+		reg = <0x54>;
-+
-+		connector {
-+			compatible = "usb-c-connector";
-+			label = "USB-C";
-+			power-role = "dual";
-+			try-power-role = "sink";
-+			source-pdos = <PDO_FIXED(5000, 3000, PDO_FIXED_USB_COMM)>;
-+			sink-pdos = <PDO_FIXED(5000, 3000, PDO_FIXED_USB_COMM)
-+					PDO_VAR(3000, 12000, 3000)
-+					PDO_PPS_APDO(3000, 11000, 3000)>;
-+			op-sink-microwatt = <10000000>;
-+		};
-+	};
-+};
-+
-+&i2c5 {
-+	status = "okay";
-+	/* TODO: Add HSC MP5023 */
-+	/* TODO: Add ADC INA230 */
-+
-+	tmp421@4f {
-+		compatible = "ti,tmp421";
-+		reg = <0x4f>;
-+	};
-+
-+	sled5_ioexp: pca9539@76 {
-+		compatible = "nxp,pca9539";
-+		reg = <0x76>;
-+		#address-cells = <1>;
-+		#size-cells = <0>;
-+		gpio-controller;
-+		#gpio-cells = <2>;
-+
-+		gpio-line-names =
-+		"","SLED5_BMC_CCG5_INT","SLED5_INA230_ALERT","SLED5_P12V_STBY_ALERT",
-+		"SLED5_SSD_ALERT","SLED5_MS_DETECT","SLED5_MD_REF_PWM","",
-+		"SLED5_MD_STBY_RESET","SLED5_MD_IOEXP_EN_FAULT","SLED5_MD_DIR","SLED5_MD_DECAY",
-+		"SLED5_MD_MODE1","SLED5_MD_MODE2","SLED5_MD_MODE3","SLED5_AC_PWR_EN";
-+
-+		gpio@0 {
-+			reg = <0>;
-+		};
-+		gpio@1 {
-+			reg = <1>;
-+		};
-+		gpio@2 {
-+			reg = <2>;
-+		};
-+		gpio@3 {
-+			reg = <3>;
-+		};
-+		gpio@4 {
-+			reg = <4>;
-+		};
-+		gpio@5 {
-+			reg = <5>;
-+		};
-+		gpio@6 {
-+			reg = <6>;
-+		};
-+		gpio@7 {
-+			reg = <7>;
-+		};
-+		gpio@8 {
-+			reg = <8>;
-+		};
-+		gpio@9 {
-+			reg = <9>;
-+		};
-+		gpio@10 {
-+			reg = <10>;
-+		};
-+		gpio@11 {
-+			reg = <11>;
-+		};
-+		gpio@12 {
-+			reg = <12>;
-+		};
-+		gpio@13 {
-+			reg = <13>;
-+		};
-+		gpio@14 {
-+			reg = <14>;
-+		};
-+		gpio@15 {
-+			reg = <15>;
-+		};
-+	};
-+
-+	sled5_leds: pca9552@67 {
-+		compatible = "nxp,pca9552";
-+		reg = <0x67>;
-+		#address-cells = <1>;
-+		#size-cells = <0>;
-+		gpio-controller;
-+		#gpio-cells = <2>;
-+
-+		gpio-line-names =
-+		"SLED5_AMBER_LED","SLED5_BLUE_LED","SLED5_RST_IOEXP","",
-+		"","","","",
-+		"","","","",
-+		"","","","";
-+
-+		gpio@0 {
-+			reg = <0>;
-+			type = <PCA955X_TYPE_GPIO>;
-+		};
-+		gpio@1 {
-+			reg = <1>;
-+			type = <PCA955X_TYPE_GPIO>;
-+		};
-+		gpio@2 {
-+			reg = <2>;
-+			type = <PCA955X_TYPE_GPIO>;
-+		};
-+	};
-+
-+	sled5_fusb302: typec-portc@54 {
-+		compatible = "fcs,fusb302";
-+		reg = <0x54>;
-+
-+		connector {
-+			compatible = "usb-c-connector";
-+			label = "USB-C";
-+			power-role = "dual";
-+			try-power-role = "sink";
-+			source-pdos = <PDO_FIXED(5000, 3000, PDO_FIXED_USB_COMM)>;
-+			sink-pdos = <PDO_FIXED(5000, 3000, PDO_FIXED_USB_COMM)
-+					PDO_VAR(3000, 12000, 3000)
-+					PDO_PPS_APDO(3000, 11000, 3000)>;
-+			op-sink-microwatt = <10000000>;
-+		};
-+	};
-+};
-+
-+&i2c6 {
-+	status = "okay";
-+
-+	eeprom@56 {
-+		compatible = "atmel,24c64";
-+		reg = <0x56>;
-+	};
-+
-+	rtc@51 {
-+		compatible = "nxp,pcf85263";
-+		reg = <0x51>;
-+	};
-+};
-+
-+&i2c10 {
-+	status = "okay";
-+
-+	hdc1080@40 {
-+		compatible = "ti,hdc1080";
-+		reg = <0x40>;
-+	};
-+
-+	front_leds: pca9552@67 {
-+		compatible = "nxp,pca9552";
-+		reg = <0x67>;
-+		#address-cells = <1>;
-+		#size-cells = <0>;
-+		gpio-controller;
-+		#gpio-cells = <2>;
-+
-+		gpio-line-names =
-+		"SYSTEM_LOG_ID_LED","PWRGD_P5V_STBY","PWRGD_P1V0_DVDD","PWRGD_P1V0_AVDD",
-+		"","","","",
-+		"","","","",
-+		"","","","";
-+
-+		gpio@0 {
-+			reg = <0>;
-+			type = <PCA955X_TYPE_GPIO>;
-+		};
-+		gpio@1 {
-+			reg = <1>;
-+			type = <PCA955X_TYPE_GPIO>;
-+		};
-+		gpio@2 {
-+			reg = <2>;
-+			type = <PCA955X_TYPE_GPIO>;
-+		};
-+		gpio@3 {
-+			reg = <3>;
-+			type = <PCA955X_TYPE_GPIO>;
-+		};
-+	};
-+};
-+
-+&i2c12 {
-+	status = "okay";
-+
-+	adm1278@11 {
-+		compatible = "adi,adm1278";
-+		reg = <0x11>;
-+	};
-+
-+	tmp421@4c {
-+		compatible = "ti,tmp421";
-+		reg = <0x4c>;
-+	};
-+
-+	tmp421@4f {
-+		compatible = "ti,tmp421";
-+		reg = <0x4f>;
-+	};
-+
-+	fan_ioexp: pca9552@67 {
-+		compatible = "nxp,pca9552";
-+		reg = <0x67>;
-+		#address-cells = <1>;
-+		#size-cells = <0>;
-+		gpio-controller;
-+		#gpio-cells = <2>;
-+
-+		gpio-line-names =
-+		"FAN0_PRSNT","FAN1_PRSNT","FAN2_PRSNT","FAN3_PRSNT",
-+		"FAN0_PWRGD","FAN1_PWRGD","FAN2_PWRGD","FAN3_PWRGD",
-+		"","","","",
-+		"","","","";
-+
-+		gpio@0 {
-+			reg = <0>;
-+			type = <PCA955X_TYPE_GPIO>;
-+		};
-+		gpio@1 {
-+			reg = <1>;
-+			type = <PCA955X_TYPE_GPIO>;
-+		};
-+		gpio@2 {
-+			reg = <2>;
-+			type = <PCA955X_TYPE_GPIO>;
-+		};
-+		gpio@3 {
-+			reg = <3>;
-+			type = <PCA955X_TYPE_GPIO>;
-+		};
-+		gpio@4 {
-+			reg = <4>;
-+			type = <PCA955X_TYPE_GPIO>;
-+		};
-+		gpio@5 {
-+			reg = <5>;
-+			type = <PCA955X_TYPE_GPIO>;
-+		};
-+		gpio@6 {
-+			reg = <6>;
-+			type = <PCA955X_TYPE_GPIO>;
-+		};
-+		gpio@7 {
-+			reg = <7>;
-+			type = <PCA955X_TYPE_GPIO>;
-+		};
-+		gpio@8 {
-+			reg = <8>;
-+			type = <PCA955X_TYPE_GPIO>;
-+		};
-+		gpio@9 {
-+			reg = <9>;
-+			type = <PCA955X_TYPE_GPIO>;
-+		};
-+		gpio@10 {
-+			reg = <10>;
-+			type = <PCA955X_TYPE_GPIO>;
-+		};
-+		gpio@11 {
-+			reg = <11>;
-+			type = <PCA955X_TYPE_GPIO>;
-+		};
-+		gpio@12 {
-+			reg = <12>;
-+			type = <PCA955X_TYPE_GPIO>;
-+		};
-+		gpio@13 {
-+			reg = <13>;
-+			type = <PCA955X_TYPE_GPIO>;
-+		};
-+		gpio@14 {
-+			reg = <14>;
-+			type = <PCA955X_TYPE_GPIO>;
-+		};
-+		gpio@15 {
-+			reg = <15>;
-+			type = <PCA955X_TYPE_GPIO>;
-+		};
-+	};
-+};
-+
-+&i2c13 {
-+	multi-master;
-+	aspeed,hw-timeout-ms = <1000>;
-+	status = "okay";
-+};
-+
-+&gpio0 {
-+	gpio-line-names =
-+	/*A0-A7*/	"","","","","","","","",
-+	/*B0-B7*/	"","","","","","","","",
-+	/*C0-C7*/	"","","","","","","","",
-+	/*D0-D7*/	"","","","","","","","",
-+	/*E0-E7*/	"","","","","","","","",
-+	/*F0-F7*/	"","","","","","","","",
-+	/*G0-G7*/	"","","","","","","","",
-+	/*H0-H7*/	"","","","","","","","",
-+	/*I0-I7*/	"","","","","","","","",
-+	/*J0-J7*/	"","","","","","","","",
-+	/*K0-K7*/	"","","","","","","","",
-+	/*L0-L7*/	"","","","","","","","",
-+	/*M0-M7*/	"alert_sled1","alert_sled2",
-+			"alert_sled3","alert_sled4",
-+			"alert_sled5","alert_sled6",
-+			"p12v_aux_alert1","",
-+	/*N0-N7*/	"","","","","","","","",
-+	/*O0-O7*/	"","","","","","","","",
-+	/*P0-P7*/	"","","","","","","","",
-+	/*Q0-Q7*/	"","","","","","","","",
-+	/*R0-R7*/	"","","","","","","","",
-+	/*S0-S7*/	"","","","","","","","",
-+	/*T0-T7*/	"","","","","","","","",
-+	/*U0-U7*/	"","","","","","","","",
-+	/*V0-V7*/	"","","","","","","","",
-+	/*W0-W7*/	"","","","","","","","",
-+	/*X0-X7*/	"","","","","","","","",
-+	/*Y0-Y7*/	"","","","","","","","",
-+	/*Z0-Z7*/	"","","","","","","","";
-+};
-+
-+&adc0 {
-+	vref = <1800>;
-+	status = "okay";
-+
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&pinctrl_adc0_default &pinctrl_adc1_default
-+		&pinctrl_adc2_default &pinctrl_adc3_default
-+		&pinctrl_adc4_default &pinctrl_adc5_default
-+		&pinctrl_adc6_default &pinctrl_adc7_default>;
-+};
-+
-+&adc1 {
-+	vref = <2500>;
-+	status = "okay";
-+
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&pinctrl_adc8_default &pinctrl_adc9_default
-+		&pinctrl_adc10_default &pinctrl_adc11_default
-+		&pinctrl_adc12_default &pinctrl_adc13_default
-+		&pinctrl_adc14_default &pinctrl_adc15_default>;
-+};
--- 
-2.25.1
+--2oS5YaxWCcQjTEyO
+Content-Type: application/gzip
+Content-Disposition: attachment; filename=".config.gz"
+Content-Transfer-Encoding: base64
 
+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
+
+--2oS5YaxWCcQjTEyO--
