@@ -2,194 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E93AA44B648
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 23:23:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 955A944B724
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 23:30:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343838AbhKIW0S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Nov 2021 17:26:18 -0500
-Received: from mail.kernel.org ([198.145.29.99]:41190 "EHLO mail.kernel.org"
+        id S1344527AbhKIWcb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Nov 2021 17:32:31 -0500
+Received: from mail.kernel.org ([198.145.29.99]:50850 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1343968AbhKIWYR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Nov 2021 17:24:17 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id DDA4F619F5;
-        Tue,  9 Nov 2021 22:18:58 +0000 (UTC)
+        id S1344610AbhKIWa3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Nov 2021 17:30:29 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1F16F6187A;
+        Tue,  9 Nov 2021 22:20:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1636496341;
-        bh=aBNIXprNNC+WIC99moGG66hzjyuToEOTgU0fEydaa5E=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=SSaVuhyYwXR9tWj8K36jDMkHDl0XMcstS2EZ5ceIXScLDdckZhCbUpH9vwu++tDuz
-         VJQoMPsid3P1IAhLBtXMr0csdU+84lsgyDiQn7MBjJQwMRvBTIv74tkMcJs4DAJF32
-         FnsA0WBrHIJEz2/zDX2xtHfoVI0OMOy7USpqse3Y+xblDqClzv3BKcHdCgZko30A3B
-         48TzSnmlcZ3sNNW2xP97dzSoKZFkeiAD/KnK+7VGIiRx3ugThU0qVpuOj51GKdaQpM
-         2xHeNHoF1sh74kdlMfkhBeXhaZIe7RqdU71OGqjq0AInVcLiLv05R8F7T2Qpu5K0Tw
-         LFR+Ebpi3qQRQ==
-Date:   Tue, 9 Nov 2021 23:18:55 +0100
-From:   Marek =?UTF-8?B?QmVow7pu?= <kabel@kernel.org>
-To:     Ansuel Smith <ansuelsmth@gmail.com>
-Cc:     Andrew Lunn <andrew@lunn.ch>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Vladimir Oltean <olteanv@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>, Pavel Machek <pavel@ucw.cz>,
-        John Crispin <john@phrozen.org>, netdev@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-leds@vger.kernel.org
-Subject: Re: [RFC PATCH v3 2/8] leds: add function to configure hardware
- controlled LED
-Message-ID: <20211109231855.5d43c05e@thinkpad>
-In-Reply-To: <YYqEPZpGmjNgFj0L@Ansuel-xps.localdomain>
-References: <20211109022608.11109-1-ansuelsmth@gmail.com>
-        <20211109022608.11109-3-ansuelsmth@gmail.com>
-        <20211109040103.7b56bf82@thinkpad>
-        <YYqEPZpGmjNgFj0L@Ansuel-xps.localdomain>
-X-Mailer: Claws Mail 3.18.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        s=k20201202; t=1636496447;
+        bh=VA8DjA6TqwDJParLb/eZ22TvXnDnZdbSH74M12a34pI=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=I/6ovdVxAI1Qe4MKfTyXOm4Gv+HT0lRjnBPTs6Jswh3A5x8Xr/2LtLPNBytLPTtH4
+         jzUJjDiMF2AparabmjY0U2efr+ofYgp6xZXtCgcCVlswMP16Drv+a/ZyTOvYsxHmWy
+         cHMasmBP+Q9S7rfyYjDvtmTWwsFunR4zTiVZelQja4lCUrR2cVhlzBNa82pYDZaj0c
+         hkBIy4IHeC/hMpst0zz562hf1XDUfNvBG+BRhDNszXPTY3egMLpaWcEkm7RfL/oIdQ
+         m8Mb0a/GdYnd9xMbQROzt2XRmX15tgro/hEIhUBWVcGEqkCNEt+93dbEJR2lUej7uD
+         3Im8Gz2ij6oZw==
+From:   Sasha Levin <sashal@kernel.org>
+To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Cc:     James Smart <jsmart2021@gmail.com>,
+        Justin Tee <justin.tee@broadcom.com>,
+        "Martin K . Petersen" <martin.petersen@oracle.com>,
+        Sasha Levin <sashal@kernel.org>, james.smart@avagotech.com,
+        dick.kennedy@avagotech.com, JBottomley@odin.com,
+        linux-scsi@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.14 65/75] scsi: lpfc: Fix link down processing to address NULL pointer dereference
+Date:   Tue,  9 Nov 2021 17:18:55 -0500
+Message-Id: <20211109221905.1234094-65-sashal@kernel.org>
+X-Mailer: git-send-email 2.33.0
+In-Reply-To: <20211109221905.1234094-1-sashal@kernel.org>
+References: <20211109221905.1234094-1-sashal@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+X-stable: review
+X-Patchwork-Hint: Ignore
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 9 Nov 2021 15:22:53 +0100
-Ansuel Smith <ansuelsmth@gmail.com> wrote:
+From: James Smart <jsmart2021@gmail.com>
 
-> On Tue, Nov 09, 2021 at 04:01:03AM +0100, Marek Beh=C3=BAn wrote:
-> > Hello Ansuel,
-> >=20
-> > On Tue,  9 Nov 2021 03:26:02 +0100
-> > Ansuel Smith <ansuelsmth@gmail.com> wrote:
-> >  =20
-> > > Add hw_control_configure helper to configure how the LED should work =
-in
-> > > hardware mode. The function require to support the particular trigger=
- and
-> > > will use the passed flag to elaborate the data and apply the
-> > > correct configuration. This function will then be used by the trigger=
- to
-> > > request and update hardware configuration.
-> > >=20
-> > > Signed-off-by: Ansuel Smith <ansuelsmth@gmail.com>
-> > > ---
-> > >  Documentation/leds/leds-class.rst | 25 ++++++++++++++++++++
-> > >  include/linux/leds.h              | 39 +++++++++++++++++++++++++++++=
-++
-> > >  2 files changed, 64 insertions(+)
-> > >=20
-> > > diff --git a/Documentation/leds/leds-class.rst b/Documentation/leds/l=
-eds-class.rst
-> > > index 645940b78d81..efd2f68c46a7 100644
-> > > --- a/Documentation/leds/leds-class.rst
-> > > +++ b/Documentation/leds/leds-class.rst
-> > > @@ -198,6 +198,31 @@ With HARDWARE_CONTROLLED blink_mode hw_control_s=
-tatus/start/stop is optional
-> > >  and any software only trigger will reject activation as the LED supp=
-orts only
-> > >  hardware mode.
-> > > =20
-> > > +A trigger once he declared support for hardware controlled blinks, w=
-ill use the function
-> > > +hw_control_configure() provided by the driver to check support for a=
- particular blink mode.
-> > > +This function passes as the first argument (flag) a u32 flag.
-> > > +The second argument (cmd) of hw_control_configure() method can be us=
-ed to do various
-> > > +operations for the specific blink mode. We currently support ENABLE,=
- DISABLE, READ, ZERO
-> > > +and SUPPORTED to enable, disable, read the state of the blink mode, =
-ask the LED
-> > > +driver if it does supports the specific blink mode and to reset any =
-blink mode active.
-> > > +
-> > > +In ENABLE/DISABLE hw_control_configure() should configure the LED to=
- enable/disable the
-> > > +requested blink mode (flag).
-> > > +In READ hw_control_configure() should return 0 or 1 based on the sta=
-tus of the requested
-> > > +blink mode (flag).
-> > > +In SUPPORTED hw_control_configure() should return 0 or 1 if the LED =
-driver supports the
-> > > +requested blink mode (flags) or not.
-> > > +In ZERO hw_control_configure() should return 0 with success operatio=
-n or error.
-> > > +
-> > > +The unsigned long flag is specific to the trigger and change across =
-them. It's in the LED
-> > > +driver interest know how to elaborate this flag and to declare suppo=
-rt for a
-> > > +particular trigger. For this exact reason explicit support for the s=
-pecific
-> > > +trigger is mandatory or the driver returns -EOPNOTSUPP if asked to e=
-nter offload mode
-> > > +with a not supported trigger.
-> > > +If the driver returns -EOPNOTSUPP on hw_control_configure(), the tri=
-gger activation will
-> > > +fail as the driver doesn't support that specific offload trigger or =
-doesn't know
-> > > +how to handle the provided flags.
-> > > +
-> > >  Known Issues
-> > >  =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-> > > =20
-> > > diff --git a/include/linux/leds.h b/include/linux/leds.h
-> > > index cf0c6005c297..00bc4d6ed7ca 100644
-> > > --- a/include/linux/leds.h
-> > > +++ b/include/linux/leds.h
-> > > @@ -73,6 +73,16 @@ enum led_blink_modes {
-> > >  	SOFTWARE_HARDWARE_CONTROLLED,
-> > >  };
-> > > =20
-> > > +#ifdef CONFIG_LEDS_HARDWARE_CONTROL
-> > > +enum blink_mode_cmd {
-> > > +	BLINK_MODE_ENABLE, /* Enable the hardware blink mode */
-> > > +	BLINK_MODE_DISABLE, /* Disable the hardware blink mode */
-> > > +	BLINK_MODE_READ, /* Read the status of the hardware blink mode */
-> > > +	BLINK_MODE_SUPPORTED, /* Ask the driver if the hardware blink mode =
-is supported */
-> > > +	BLINK_MODE_ZERO, /* Disable any hardware blink active */
-> > > +};
-> > > +#endif =20
-> >=20
-> > this is a strange proposal for the API.
-> >=20
-> > Anyway, led_classdev already has the blink_set() method, which is docum=
-ented as
-> > 	/*
-> > 	  * Activate hardware accelerated blink, delays are in milliseconds
-> > 	  * and if both are zero then a sensible default should be chosen.
-> > 	  * The call should adjust the timings in that case and if it can't
-> > 	  * match the values specified exactly.
-> > 	  * Deactivate blinking again when the brightness is set to LED_OFF
-> > 	  * via the brightness_set() callback.
-> > 	  */
-> > 	int		(*blink_set)(struct led_classdev *led_cdev,
-> > 				     unsigned long *delay_on,
-> > 				     unsigned long *delay_off);
-> >=20
-> > So we already have a method to set hardware blkinking, we don't need
-> > another one.
-> >=20
-> > Marek =20
->=20
-> But that is about hardware blink, not a LED controlled by hardware based
-> on some rules/modes.
-> Doesn't really match the use for the hardware control.
+[ Upstream commit 1854f53ccd88ad4e7568ddfafafffe71f1ceb0a6 ]
 
-I think there is a miscommunication, because I don't quite understand
-what you are trying to say here.
+If an FC link down transition while PLOGIs are outstanding to fabric well
+known addresses, outstanding ABTS requests may result in a NULL pointer
+dereference. Driver unload requests may hang with repeated "2878" log
+messages.
 
-How is "hardware blink" different from "a LED controlled by hardware
-based on some rules/modes", when it is used for blinking ?
+The Link down processing results in ABTS requests for outstanding ELS
+requests. The Abort WQEs are sent for the ELSs before the driver had set
+the link state to down. Thus the driver is sending the Abort with the
+expectation that an ABTS will be sent on the wire. The Abort request is
+stalled waiting for the link to come up. In some conditions the driver may
+auto-complete the ELSs thus if the link does come up, the Abort completions
+may reference an invalid structure.
 
-If the hardware, any hardware, supports blinking with different
-frequencies, it should implement the blink_set() method.
+Fix by ensuring that Abort set the flag to avoid link traffic if issued due
+to conditions where the link failed.
 
-> Blink_set makes the LED blink contantly at the declared delay.
-> The blink_mode_cmd are used to request stuff to a LED in hardware mode.
->=20
-> Doesn't seem correct to change/enhance the blink_set function with
-> something that would do something completely different.
->=20
+Link: https://lore.kernel.org/r/20211020211417.88754-7-jsmart2021@gmail.com
+Co-developed-by: Justin Tee <justin.tee@broadcom.com>
+Signed-off-by: Justin Tee <justin.tee@broadcom.com>
+Signed-off-by: James Smart <jsmart2021@gmail.com>
+Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
+---
+ drivers/scsi/lpfc/lpfc_sli.c | 14 +++++++-------
+ 1 file changed, 7 insertions(+), 7 deletions(-)
+
+diff --git a/drivers/scsi/lpfc/lpfc_sli.c b/drivers/scsi/lpfc/lpfc_sli.c
+index 260e09b8ba38d..fd48664b531cf 100644
+--- a/drivers/scsi/lpfc/lpfc_sli.c
++++ b/drivers/scsi/lpfc/lpfc_sli.c
+@@ -11722,17 +11722,17 @@ lpfc_sli_issue_abort_iotag(struct lpfc_hba *phba, struct lpfc_sli_ring *pring,
+ 
+ 	/* ABTS WQE must go to the same WQ as the WQE to be aborted */
+ 	abtsiocbp->hba_wqidx = cmdiocb->hba_wqidx;
+-	if (cmdiocb->iocb_flag & LPFC_IO_FCP) {
+-		abtsiocbp->iocb_flag |= LPFC_IO_FCP;
+-		abtsiocbp->iocb_flag |= LPFC_USE_FCPWQIDX;
+-	}
++	if (cmdiocb->iocb_flag & LPFC_IO_FCP)
++		abtsiocbp->iocb_flag |= (LPFC_IO_FCP | LPFC_USE_FCPWQIDX);
+ 	if (cmdiocb->iocb_flag & LPFC_IO_FOF)
+ 		abtsiocbp->iocb_flag |= LPFC_IO_FOF;
+ 
+-	if (phba->link_state >= LPFC_LINK_UP)
+-		iabt->ulpCommand = CMD_ABORT_XRI_CN;
+-	else
++	if (phba->link_state < LPFC_LINK_UP ||
++	    (phba->sli_rev == LPFC_SLI_REV4 &&
++	     phba->sli4_hba.link_state.status == LPFC_FC_LA_TYPE_LINK_DOWN))
+ 		iabt->ulpCommand = CMD_CLOSE_XRI_CN;
++	else
++		iabt->ulpCommand = CMD_ABORT_XRI_CN;
+ 
+ 	if (cmpl)
+ 		abtsiocbp->iocb_cmpl = cmpl;
+-- 
+2.33.0
 
