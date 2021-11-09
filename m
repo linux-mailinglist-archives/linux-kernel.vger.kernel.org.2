@@ -2,104 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B55244ABB3
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 11:41:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E7F744ABB4
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 11:41:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245428AbhKIKnm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Nov 2021 05:43:42 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33086 "EHLO
+        id S245430AbhKIKob (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Nov 2021 05:44:31 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33244 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S245419AbhKIKnh (ORCPT
+        with ESMTP id S237576AbhKIKoR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Nov 2021 05:43:37 -0500
-Received: from mail-pl1-x635.google.com (mail-pl1-x635.google.com [IPv6:2607:f8b0:4864:20::635])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 10721C061766
-        for <linux-kernel@vger.kernel.org>; Tue,  9 Nov 2021 02:40:52 -0800 (PST)
-Received: by mail-pl1-x635.google.com with SMTP id p18so20084611plf.13
-        for <linux-kernel@vger.kernel.org>; Tue, 09 Nov 2021 02:40:52 -0800 (PST)
+        Tue, 9 Nov 2021 05:44:17 -0500
+Received: from mail-oi1-x22f.google.com (mail-oi1-x22f.google.com [IPv6:2607:f8b0:4864:20::22f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 28201C061764
+        for <linux-kernel@vger.kernel.org>; Tue,  9 Nov 2021 02:41:32 -0800 (PST)
+Received: by mail-oi1-x22f.google.com with SMTP id m6so6988851oim.2
+        for <linux-kernel@vger.kernel.org>; Tue, 09 Nov 2021 02:41:32 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20210112.gappssmtp.com; s=20210112;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=ijkZGpaFpq6LV8Gg8reo+SGCxLMW6UmnTU/srKB0UIc=;
-        b=T3YiUPJYSknWJO0k0ZBPc+Hfc2pdbROPOfOnZ4i3Bzpubl9KUT7aLNzl70vpfrZFd4
-         S8PgbtElpzfz+ter7uV5y4U8QWPW0Md0+qantVOPX3mxmhU//7vzBGlJ7L/jxFxuU3dF
-         be45f4qIlcndP6Em8lOmWG6KHlo6gZsW20iKtn/FmXagbz8rKmwu10WBo+M3RWJo7qQC
-         LLjeIxWF61EQUqZa2aIO+rWRbG2+wVmDr6cpa9AWL16MI5lAeaPKFMjAACnqAOtmH8Xd
-         j0UA8kXzVVj+gd/r9HnVZiYnP+wKj9L9NR/RjfVPuejWnVT6CvC6rv1GPRvJ24UJPl/u
-         DUmQ==
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Nt37Peic1jZ4kG3kSiSdbDiuGGxATK6tL4dJ/X3eVlg=;
+        b=QvMKRgQrn+wxf5d//BzQ/s39JzY9GOrdAm+RM2Sy+cn4S3MArAVKwusHpQs2QexY8k
+         LBfQUbc+nempuZsIEqsAqAWhA/nubmNOkNMMygRepbSPDH5iRagExMfdzY6nZPljiG1M
+         pQgE/RovqZstH1rMSiCLCmOTaB5Rrkn6nGgBma+tTGhpnXgdjd+5oFTxAEMGm1Z6Vwfd
+         BCxXJlEtbl7fOGShAeXCx74yUX9jIxmJHMtJHx9YGnSwbD8Og/W3F8f8i7sB4Z0v3BK3
+         Rdeu2wqdT2r2+Oyw/rHlHknwmuEwtfbclgj/LmA2bzso8Z7pHLVqLJJMvy5lfIyXT5le
+         mEdw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=ijkZGpaFpq6LV8Gg8reo+SGCxLMW6UmnTU/srKB0UIc=;
-        b=BVQrauCJ3aFTMrntc0FXh0RrSqUdOU1Jr+7UHtKRtMRHjN9BvAEoZvekwPZGJBP2EJ
-         5UA6WpMHF3iFc/KX4jau5W/47dqzZPw0dMXd/grWyln174SRtt1VOHY8UPdL8zAU+TVv
-         IZRo6ZYvtBehw/3L5954yrBX6npwQdmvqNE23sXUdu4ELNFFfDiCGMh2s4C3d1ZKoonB
-         DG1JNufgKvAUx8J8787jh/grqMsfQvII1o5Z0FVuIsuhjLhJyFsW6IKT7XhyzIOcvPqG
-         qy2/xVOlcNXCRGsZAd63XUsaoseD0pbKRAA/fHbA6CEBm2Ih7Z+mQOcfMqb242PW7e44
-         nxqg==
-X-Gm-Message-State: AOAM531pX8Xs6yvGPtdATpBuuUvmehLjQdYrAicuGqBn31WuZ/yjV155
-        VSpHRlXfhLVU+RPkaj4eSC6vUA==
-X-Google-Smtp-Source: ABdhPJyh2eh8cVDZfvZs49FwaWVzUtwCEWQ1SARsnhb2KFJzuK+iPRCqbAddHfiRgdFarLhZ85oEzA==
-X-Received: by 2002:a17:90a:2fc7:: with SMTP id n7mr6006745pjm.141.1636454451646;
-        Tue, 09 Nov 2021 02:40:51 -0800 (PST)
-Received: from [10.254.105.98] ([139.177.225.240])
-        by smtp.gmail.com with ESMTPSA id s2sm8895919pfg.124.2021.11.09.02.40.46
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 09 Nov 2021 02:40:51 -0800 (PST)
-Subject: Re: Re: Re: Re: [PATCH v1] sched/numa: add per-process numa_balancing
-To:     Mel Gorman <mgorman@suse.de>
-Cc:     Jonathan Corbet <corbet@lwn.net>, Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        linux-api@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
-        linux-fsdevel@vger.kernel.org, linux-doc@vger.kernel.org
-References: <20211027132633.86653-1-ligang.bdlg@bytedance.com>
- <20211028153028.GP3891@suse.de>
- <b884ad7d-48d3-fcc8-d199-9e7643552a9a@bytedance.com>
- <20211029083751.GR3891@suse.de>
- <CAMx52ARF1fVH9=YLQMjE=8ckKJ=q3X2-ovtKuQcoTyo564mQnQ@mail.gmail.com>
- <20211109091951.GW3891@suse.de>
-From:   Gang Li <ligang.bdlg@bytedance.com>
-Message-ID: <7de25e1b-e548-b8b5-dda5-6a2e001f3c1a@bytedance.com>
-Date:   Tue, 9 Nov 2021 18:40:43 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.14.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Nt37Peic1jZ4kG3kSiSdbDiuGGxATK6tL4dJ/X3eVlg=;
+        b=G3q7DqfxGyFmZTAG+1wCKJXESKTM5NaUtoYBhqcVbzRqOS7z5EzrjBCAdf7FTyE/Qu
+         z0f3LbM/9HfxzDzRaKK3P8tjxt5s8hjMz+qtsA0Bn6HzVysOGTZ8fF/D6gWuKDmkBLRc
+         62AqYV8eiWmDjN+2QfJcqjlBPTzi7m10UE2Ql55y1yEZSPf4RaTW7BXpb58HKlJ+B20+
+         HUom9SBi3drCiSUUN4vkkQ1jUOAjyg2iZKpJPEGA2hAcSrz4D7GXrX7hg/YDO001MyHR
+         oFtXuQbOslT37gtTjcPamMxGIFQiniYfme7j5f+sbsIjR+LOCm+QjQZZCHD3Vo6ed3jo
+         1pLA==
+X-Gm-Message-State: AOAM531QhisYP41BWNyk3dTUZt1Uwqq7GWOa5R8BCOCyoYzzXiqmInxH
+        GfL5u684af1I0EvhoIDOazgi2YmDYck04FATXDY=
+X-Google-Smtp-Source: ABdhPJxecaK2p2flfGhcC7OQEvqO8X0ns6o6TyAEJUuKgiwuqyAcadcQ1fD2AbYXCNkWnZ+UJ51f+kWLgmaHxN+VDns=
+X-Received: by 2002:a54:4486:: with SMTP id v6mr4923200oiv.90.1636454491527;
+ Tue, 09 Nov 2021 02:41:31 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20211109091951.GW3891@suse.de>
-Content-Type: text/plain; charset=iso-8859-15; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20211108185818.GA73382@makvihas> <YYoUYOyyP4EFYTSJ@kroah.com>
+In-Reply-To: <YYoUYOyyP4EFYTSJ@kroah.com>
+From:   Vihas Mak <makvihas@gmail.com>
+Date:   Tue, 9 Nov 2021 16:11:20 +0530
+Message-ID: <CAH1kMwSqfNT-jB70c6Md_Wa6Sn6GJKr2=LOunSaZwEk2TKzraA@mail.gmail.com>
+Subject: Re: [PATCH] char: ppdev: fixed a validation issue
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     sudipm.mukherjee@gmail.com, arnd@arndb.de,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/9/21 5:19 PM, Mel Gorman wrote:
-> On Tue, Nov 09, 2021 at 04:28:28PM +0800, Gang Li wrote:
->> If the global tuning affects default behaviour and the prctl
->> affects specific behaviour.  Then when prctl specifies
->> numa_balancing for a process, there is no way for the
->> global tuning to affect that process.
-> 
-> While I think it's very likely that the common case will be to disable
-> NUMA balancing for specific processes,
-> prctl(PR_NUMA_BALANCING,PR_SET_NUMA_BALANCING,1) should still be
-> meaningful.
-> 
+> On Tue, Nov 09, 2021 at 12:28:18AM +0530, Vihas Mak wrote:
+> > Make sure the mode is a valid IEEE1284 mode.
+> What is a valid mode?
 
-I'm still a bit confused.
+The valid IEEE1284 modes are the ones defined in
+<uapi/linux/parport.h>. Currently there are 10 modes. Namely nibble
+mode, byte mode, ECP, ECPRLE, EPP and some specials.
 
-If we really want to enable/disable numa_balancing for all processes, 
-but some of them override the global numa_balancing using prctl, what 
-should we do?
+> How did you test this?  And why is this needed now?  What hardware was
+> working that is now not going to work with this driver?
 
-Do we iterate through these processes to enable/disable them individually?
+I tested this on my local pc using a parallel port and read the
+incoming data on my Raspberry PI.
+I also used https://github.com/strezh/VPPSniffer. It's a simple
+virtual parallel port used for debugging and sniffing.
 
+The mainline code wasn't validating the mode when a user-space program
+does a ioctl call to change the current mode. It might
+create some bugs if the new mode isn't one of the IEEE1284 modes
+defined in <uapi/linux/parport.h>. So it's better to throw a EINVAL
+beforehand, if the mode is invalid.
 
+> > +static int pp_validate_mode(int mode)
+> bool?
+
+My bad. Will do a v2.
+
+Thanks,
+Vihas
+
+On Tue, Nov 9, 2021 at 11:55 AM Greg KH <gregkh@linuxfoundation.org> wrote:
+>
+> On Tue, Nov 09, 2021 at 12:28:18AM +0530, Vihas Mak wrote:
+> > Make sure the mode is a valid IEEE1284 mode.
+>
+> What is a valid mode?
+>
+> > Signed-off-by: Vihas Mak <makvihas@gmail.com>
+> > ---
+> >  drivers/char/ppdev.c | 28 +++++++++++++++++++++++++++-
+> >  1 file changed, 27 insertions(+), 1 deletion(-)
+> >
+> > diff --git a/drivers/char/ppdev.c b/drivers/char/ppdev.c
+> > index 38b46c7d1737..3b290cbf6c66 100644
+> > --- a/drivers/char/ppdev.c
+> > +++ b/drivers/char/ppdev.c
+> > @@ -333,6 +333,28 @@ static enum ieee1284_phase init_phase(int mode)
+> >       return IEEE1284_PH_FWD_IDLE;
+> >  }
+> >
+> > +/*
+> > + * Validate the mode and make sure the mode is power of two.
+> > + *
+> > + * IEEE1284_MODE_ECPRLE and IEEE1284_MODE_NIBBLE are exception
+> > + * to this so handle them accordingly.
+> > + */
+> > +
+>
+> Why the extra line?
+>
+> > +static int pp_validate_mode(int mode)
+>
+> bool?
+>
+> > +{
+> > +     if (mode == IEEE1284_MODE_ECPRLE || mode == IEEE1284_MODE_NIBBLE) {
+> > +             return 1;
+> > +     } else if (!(mode & (mode - 1)) &&
+> > +                (mode & (IEEE1284_MODE_BYTE | IEEE1284_MODE_COMPAT |
+> > +                         IEEE1284_MODE_BECP | IEEE1284_MODE_ECP |
+> > +                         IEEE1284_MODE_ECPSWE | IEEE1284_MODE_EPP |
+> > +                         IEEE1284_MODE_EPPSL | IEEE1284_MODE_COMPAT |
+> > +                         IEEE1284_MODE_EPPSWE))) {
+> > +             return 1;
+> > +     }
+> > +     return 0;
+> > +}
+>
+> How did you test this?  And why is this needed now?  What hardware was
+> working that is now not going to work with this driver?
+>
+> thanks,
+>
+> greg k-h
