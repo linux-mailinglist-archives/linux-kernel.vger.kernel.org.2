@@ -2,125 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 093CC44B2DA
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 19:49:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B617F44B2DB
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 19:49:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242702AbhKISv7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Nov 2021 13:51:59 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59920 "EHLO
+        id S242715AbhKISwN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Nov 2021 13:52:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60002 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242639AbhKISvx (ORCPT
+        with ESMTP id S242685AbhKISwL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Nov 2021 13:51:53 -0500
-Received: from mail-ed1-x531.google.com (mail-ed1-x531.google.com [IPv6:2a00:1450:4864:20::531])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA20BC061764;
-        Tue,  9 Nov 2021 10:49:06 -0800 (PST)
-Received: by mail-ed1-x531.google.com with SMTP id f8so409141edy.4;
-        Tue, 09 Nov 2021 10:49:06 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=lmow5GkNL8rmuwuXfGzLROk1KvBCn7lg2Dy3ImDhk10=;
-        b=DgAORoscuZ0uTA2FwtEIUUSdpeFFRTHDDTQa8+U3lm4kvgoK+xMBoVjJxivld4Twlv
-         v+zZumC3rXSFyTF9aKlusOMEaby0gMAB7y0NuDc1dkJqTCzp1fLMzUxcrwibyI66NdOj
-         FwaWBNx37/JeJeRZ2j2EAll9hItYc3Th5YpChuoSRj8fseyKgHs+byX4LmkC8BYGYiu5
-         zZ7OZtHvOIaWB3rNJGuguMc1YlusPKrgeH4XpBRPPeeo5hS/8pMSkz+uM26I77jaxg8i
-         u8ZhJ/GagOUrVLefJF606zsFPcloclpN1ToMZC06NP/gSpnUhRfH2bfftdSfg5xK4fX4
-         S+xA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=lmow5GkNL8rmuwuXfGzLROk1KvBCn7lg2Dy3ImDhk10=;
-        b=wSqnsSZr4i9EMOnzPXskouEcBfUJKS8ftWnhOW60UPkHCJDKpT9oHomrbz+t2o2deV
-         aF0MCXlNUGfBQj/qgNfz3pzQNBSXJ0YIvl5XGPR1aULn3UDS25eDUPcSozAE9486YbG4
-         YGJlNToQdRHJipc9z5aPmpq/uH0lXiaMfxHHLo2YcvQieRQc/dOb5wCjRDlQ1jyhe1A8
-         fbRb9f+6WYjXcevOs9JupeCOz6obZraXz3XXrU9LATYwiMnbD9jgBIsTqaSIrsAyIz1e
-         g6Qd6SrsghAv2DrSTXjsSX5JlvgHnPUgimRgQNlZO+F11ktCB02tjw328/3A8cYpuftV
-         9u1w==
-X-Gm-Message-State: AOAM532T1bcie8IW94y39nDZ1wr3XYECJpXe8FFxPq03WBPSciKa3yLx
-        7mtp/HWV/bc92OERF3T2DSo=
-X-Google-Smtp-Source: ABdhPJxGX9O0aUKxjKHiwzcWe5JLdc+r40TrL+2RP/tT84C062tGbTS1J0/78LdZJ3snzFvV2Dr0mQ==
-X-Received: by 2002:a17:906:82c5:: with SMTP id a5mr12532955ejy.127.1636483745332;
-        Tue, 09 Nov 2021 10:49:05 -0800 (PST)
-Received: from skbuf ([188.25.175.102])
-        by smtp.gmail.com with ESMTPSA id gb2sm10260118ejc.52.2021.11.09.10.49.04
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 09 Nov 2021 10:49:04 -0800 (PST)
-Date:   Tue, 9 Nov 2021 20:49:03 +0200
-From:   Vladimir Oltean <olteanv@gmail.com>
-To:     Florian Fainelli <f.fainelli@gmail.com>
-Cc:     Martin Kaistra <martin.kaistra@linutronix.de>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        Richard Cochran <richardcochran@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        John Stultz <john.stultz@linaro.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Russell King <linux@armlinux.org.uk>,
-        Marc Kleine-Budde <mkl@pengutronix.de>,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org
-Subject: Re: [PATCH v2 2/7] net: dsa: b53: Move struct b53_device to
- include/linux/dsa/b53.h
-Message-ID: <20211109184903.q6ijhjvcvhymf6nx@skbuf>
-References: <20211109095013.27829-1-martin.kaistra@linutronix.de>
- <20211109095013.27829-3-martin.kaistra@linutronix.de>
- <f71396fc-29a3-4022-3f7a-3a37abb9079c@gmail.com>
- <caec2d40-6093-ff06-ab8e-379e7939a85c@gmail.com>
- <CA+h21hp+UKRgCE0UTZr7keyU380W22ZEXdbfORhSTNfzb1S_iw@mail.gmail.com>
- <b04b344e-2a17-eac2-bbcb-746091f9175a@gmail.com>
+        Tue, 9 Nov 2021 13:52:11 -0500
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 97D68C061766
+        for <linux-kernel@vger.kernel.org>; Tue,  9 Nov 2021 10:49:25 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=YL9j7lej8XrT5xtmXgw8J3S+ZbROD4VKmCbZ/lMA8f8=; b=A7nevf/oS99Wsb8Xr0urtmSvsW
+        tVV+vDrC1axTdpzw4t9kehCKB3sdQ46sAjf6fEZurviC2VitkM1OegdiXuG0/rL5Lobi95ELeSKLp
+        lXTGMgjxknShfSiOG+MhEWnYP10JaYq+R/HukvowpT7/+CetUVBt0Lq1ru99X4jdasOqEuGj7H8Lf
+        ofrFdO83wr9aFrHVXaM3V4It21mig7uPnq4SLKHcwe8jYmLFfW93Gszc9Qd0hsgUz8vE24HBVS1M6
+        fle6ME2AWLebUuDxoc5Zpoc7s4396IMbGQs3SxlTR3FL0PGKuGoPVskU15KL+WNH917msWA4eb0Nt
+        RjC9NFAw==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mkWB6-00F735-Fd; Tue, 09 Nov 2021 18:49:04 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id CA5283000A3;
+        Tue,  9 Nov 2021 19:49:03 +0100 (CET)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id B1BEE212EE599; Tue,  9 Nov 2021 19:49:03 +0100 (CET)
+Date:   Tue, 9 Nov 2021 19:49:03 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Ard Biesheuvel <ardb@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Jason Baron <jbaron@akamai.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Kees Cook <keescook@chromium.org>
+Subject: Re: [RFC PATCH 2/7] static_call: deal with unexported keys without
+ cluttering up the API
+Message-ID: <YYrCn3mc+EbY+OB/@hirez.programming.kicks-ass.net>
+References: <20211109164549.1724710-1-ardb@kernel.org>
+ <20211109164549.1724710-3-ardb@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <b04b344e-2a17-eac2-bbcb-746091f9175a@gmail.com>
+In-Reply-To: <20211109164549.1724710-3-ardb@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 09, 2021 at 10:20:25AM -0800, Florian Fainelli wrote:
-> On 11/9/21 10:15 AM, Vladimir Oltean wrote:
-> > On Tue, 9 Nov 2021 at 20:11, Florian Fainelli <f.fainelli@gmail.com> wrote:
-> >>
-> >> On 11/9/21 10:05 AM, Florian Fainelli wrote:
-> >>> On 11/9/21 1:50 AM, Martin Kaistra wrote:
-> >>>> In order to access the b53 structs from net/dsa/tag_brcm.c move the
-> >>>> definitions from drivers/net/dsa/b53/b53_priv.h to the new file
-> >>>> include/linux/dsa/b53.h.
-> >>>>
-> >>>> Signed-off-by: Martin Kaistra <martin.kaistra@linutronix.de>
-> >>>> ---
-> >>>>  drivers/net/dsa/b53/b53_priv.h |  90 +----------------------------
-> >>>>  include/linux/dsa/b53.h        | 100 +++++++++++++++++++++++++++++++++
-> >>>>  2 files changed, 101 insertions(+), 89 deletions(-)
-> >>>>  create mode 100644 include/linux/dsa/b53.h
-> >>>
-> >>> All you really access is the b53_port_hwtstamp structure within the
-> >>> tagger, so please make it the only structure exposed to net/dsa/tag_brcm.c.
-> >>
-> >> You do access b53_dev in the TX part, still, I would like to find a more
-> >> elegant solution to exposing everything here, can you create a
-> >> b53_timecounter_cyc2time() function that is exported to modules but does
-> >> not require exposing the b53_device to net/dsa/tag_brcm.c?
-> >> --
-> >> Florian
-> > 
-> > Switch drivers can't export symbols to tagging protocol drivers, remember?
-> > https://lore.kernel.org/netdev/20210908220834.d7gmtnwrorhharna@skbuf/
-> 
-> I do now :) How about a function pointer in dsa_switch_ops that driver
-> can hook onto?
+On Tue, Nov 09, 2021 at 05:45:44PM +0100, Ard Biesheuvel wrote:
 
-IMHO, the honest answer to this is to admit that it's not quite okay to
-timestamp a single packet at a time and simply not timestamp any packet
-that might be concurrent with that, no warning or questions asked. We
-should queue that second packet if it cannot be marked for timestamping
-right away.
+> diff --git a/include/linux/static_call_types.h b/include/linux/static_call_types.h
+> index 5a00b8b2cf9f..0bb36294cce7 100644
+> --- a/include/linux/static_call_types.h
+> +++ b/include/linux/static_call_types.h
+> @@ -32,15 +32,20 @@
+>  struct static_call_site {
+>  	s32 addr;
+>  	s32 key;
+> +	s32 tramp;
+>  };
 
-Which brings me to my second point, there used to be a generic deferred
-xmit mechanism in DSA that also happened to solve this problem because
-yes, there was a function pointer in dsa_switch_ops for it.
-But you and Richard didn't quite like it, so I removed it.
-https://patchwork.ozlabs.org/cover/1215617/
+I can't say I'm thrilled at growing this thing, but the cleanup is nice.
+Perhaps we can increase alignment on struct static_call_key and instead
+frob it in .key still?
+
+>  
+>  #define DECLARE_STATIC_CALL(name, func)					\
+> -	extern struct static_call_key STATIC_CALL_KEY(name);		\
+> +	extern __weak struct static_call_key STATIC_CALL_KEY(name);	\
+>  	extern typeof(func) STATIC_CALL_TRAMP(name);
+
+I'm a little bit confused on how this actually works. What does a __weak
+extern data symbol do?
+
+A __weak function definition would create a module local instance of the
+function barring a strong override.
+
+But what does a __weak extern do?
+
+> diff --git a/kernel/static_call.c b/kernel/static_call.c
+> index 43ba0b1e0edb..360cc3cd0fbf 100644
+> --- a/kernel/static_call.c
+> +++ b/kernel/static_call.c
+> @@ -366,18 +366,18 @@ static int static_call_add_module(struct module *mod)
+>  		 * means modules are allowed to call static_call_update() on
+>  		 * it.
+>  		 *
+> -		 * Otherwise, the key isn't exported, and 'addr' points to the
+> +		 * Otherwise, the key isn't exported, and 'tramp' points to the
+>  		 * trampoline so we need to lookup the key.
+>  		 *
+>  		 * We go through this dance to prevent crazy modules from
+>  		 * abusing sensitive static calls.
+>  		 */
+> -		if (!kernel_text_address(addr))
+> +		if (addr)
+>  			continue;
+
+This seems to imply that the __weak extern symbol gets resolved to 0 at
+module link time.
+
+>  
+> -		key = tramp_key_lookup(addr);
+> +		key = tramp_key_lookup((unsigned long)offset_to_ptr(&site->tramp));
+>  		if (!key) {
+> -			pr_warn("Failed to fixup __raw_static_call() usage at: %ps\n",
+> +			pr_warn("Failed to fixup static_call() usage at: %ps\n",
+>  				static_call_addr(site));
+>  			return -EINVAL;
+
+>  		}
