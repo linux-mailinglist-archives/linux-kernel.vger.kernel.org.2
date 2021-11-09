@@ -2,53 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0231644ABCA
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 11:47:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6816144ABE0
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 11:50:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245443AbhKIKuO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Nov 2021 05:50:14 -0500
-Received: from foss.arm.com ([217.140.110.172]:60074 "EHLO foss.arm.com"
+        id S245059AbhKIKxc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Nov 2021 05:53:32 -0500
+Received: from mail.kernel.org ([198.145.29.99]:49076 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S243061AbhKIKuM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Nov 2021 05:50:12 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id A44B6ED1;
-        Tue,  9 Nov 2021 02:47:26 -0800 (PST)
-Received: from e113632-lin (e113632-lin.cambridge.arm.com [10.1.196.57])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 2F4283F7F5;
-        Tue,  9 Nov 2021 02:47:25 -0800 (PST)
-From:   Valentin Schneider <valentin.schneider@arm.com>
-To:     Yafang Shao <laoar.shao@gmail.com>
-Cc:     Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Benjamin Segall <bsegall@google.com>,
-        Mel Gorman <mgorman@suse.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [RFC PATCH 2/4] sched/fair: Introduce cfs_migration
-In-Reply-To: <CALOAHbAHQ0UBn2GqRNWQwH32UPOuFo0b550oi6WCKr8+wFgdsw@mail.gmail.com>
-References: <20211104145713.4419-1-laoar.shao@gmail.com> <20211104145713.4419-3-laoar.shao@gmail.com> <87a6iitu3r.mognet@arm.com> <CALOAHbAHQ0UBn2GqRNWQwH32UPOuFo0b550oi6WCKr8+wFgdsw@mail.gmail.com>
-Date:   Tue, 09 Nov 2021 10:47:22 +0000
-Message-ID: <87tuglsj0l.mognet@arm.com>
+        id S245455AbhKIKxU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Nov 2021 05:53:20 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 17F71611F0;
+        Tue,  9 Nov 2021 10:50:35 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1636455035;
+        bh=EQ2Y5pkSSbqTDlcZZ+vlV+jRlTkeuJkYjOzMF69zAo0=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=qS1n17lVGL0kEBUQiS9z+dUebAG5JndAxle9gkY6QJ6a4ZppPfdV96Q52ICuCXG2f
+         7Pbsd/Cnh2ppvQDjbBoK7O2t9QSd0/wJRpiNI476jbk5s4xIjPD4O6oEZHJIK7aGBn
+         uNFY/OVX/D9sCtwLIncBdo+ce7jBOA+7oRxeVkH3zFxMbq5yGRWKFKU+s2r3Ftuhjb
+         mVtNgMC3ko3lP3uMhM+IpajSS+rLw3Siy2SVGmB9qTx/iTU7PX9Q/h+DfZYzhAeJ7X
+         4KCSnnA1+r4sqWg9lFKs1jrj771S0/tDmxGx8ht+zYf1uhxOsLR6OD6XVygfvYwfcT
+         pzhumg/d0UmQg==
+Received: by mail-wm1-f48.google.com with SMTP id b184-20020a1c1bc1000000b0033140bf8dd5so1916039wmb.5;
+        Tue, 09 Nov 2021 02:50:35 -0800 (PST)
+X-Gm-Message-State: AOAM532V41LQelJnUQLE/Z+BluKlzW3mar7PIrsnnkQE02cOd+Ik/9PM
+        c54kqCHYUBNGgL61qMLAEKlk4fJEYRxuLDOGmK4=
+X-Google-Smtp-Source: ABdhPJwQBO/Ss3ZA0/3Ekr+aXKUm/5vIOjwi4khqDaKsRbKgRpm/1VlgiHZXFtkNE8I27My8QQVBY/+teVR+2z0Y2Rg=
+X-Received: by 2002:a1c:770e:: with SMTP id t14mr5881966wmi.173.1636455033495;
+ Tue, 09 Nov 2021 02:50:33 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain
+References: <20211109100207.2474024-1-arnd@kernel.org> <20211109100207.2474024-7-arnd@kernel.org>
+ <YYpN3LzXz638l6FG@smile.fi.intel.com>
+In-Reply-To: <YYpN3LzXz638l6FG@smile.fi.intel.com>
+From:   Arnd Bergmann <arnd@kernel.org>
+Date:   Tue, 9 Nov 2021 11:50:17 +0100
+X-Gmail-Original-Message-ID: <CAK8P3a24wkBEAnWG8=LYoVR1oiTo0VKZ3iME+FYbDuHXJDjMOw@mail.gmail.com>
+Message-ID: <CAK8P3a24wkBEAnWG8=LYoVR1oiTo0VKZ3iME+FYbDuHXJDjMOw@mail.gmail.com>
+Subject: Re: [PATCH v2 6/8] gpiolib: remove legacy gpio_export
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc:     "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <brgl@bgdev.pl>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 06/11/21 15:40, Yafang Shao wrote:
-> It seems we'd better take the patch[1] I sent several weeks back.
+On Tue, Nov 9, 2021 at 11:30 AM Andy Shevchenko
+<andriy.shevchenko@linux.intel.com> wrote:
 >
-> [1]. https://lore.kernel.org/lkml/20210615121551.31138-1-laoar.shao@gmail.com/
+> On Tue, Nov 09, 2021 at 11:02:05AM +0100, Arnd Bergmann wrote:
+> > From: Arnd Bergmann <arnd@arndb.de>
+> >
+> > There are only a handful of users of gpio_export() and
+> > related functions.
+> >
+> > As these are just wrappers around the modern gpiod_export()
+> > helper, remove the wrappers and open-code the gpio_to_desc
+> > in all callers to shrink the legacy API.
 >
+> Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+>
+> What I wish to see meanwhile is a section in the TODO list somewhere to clean
+> up those modules that have gpio.h. Linus, do we have one in the kernel or is
+> it your personal TODO?
+>
+> In case we have one in the kernel, please add there modules you modified in
+> a way that they still need further attention.
 
-As Peter stated in that thread, this only reduces the race window and
-doesn't eliminate it. The FIFO-1 smpboot idea is still a good one IMO.
+I think the TODO list is in Linus' head, but it would include all the files
+that use one of the interfaces in linux/gpio.h. I found about 350 of them,
+so there is little point in listing them one at a time. IIRC Linus is going
+through those one subsystem at a time.
 
-> --
-> Thanks
-> Yafang
+It might help to make it harder to get new users if we add some pattern
+matching to scripts/checkpatch.pl, and/or something for scripts/coccinelle/.
+I don't think it's possible to convert a gpio_request() user to gpio_get()
+in a scripted way because you usually have to change the platform side
+at the same time as the driver side.
+
+I also found that we have a ton of users of linux/of_gpio.h, which is
+somewhere inbetween the linux/gpio.h interface and the
+linux/gpio/consumer.h version.
+
+> > @@ -259,17 +259,19 @@ static int evm_sw_setup(struct i2c_client *client, int gpio,
+> >       char label[10];
+> >
+> >       for (i = 0; i < 4; ++i) {
+> > +             struct gpio_desc *desc = gpio_to_desc(gpio + i);
+> > +
+> >               snprintf(label, 10, "user_sw%d", i);
+> > -             status = gpio_request(gpio, label);
+> > +             status = gpio_request(gpio + i, label);
+>
+> Shouldn't be gpiod_get() or so at the end?
+
+Yes, but that would be a more invasive change that I think should be done
+separately.
+
+        Arnd
