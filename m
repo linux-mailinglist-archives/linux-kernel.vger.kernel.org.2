@@ -2,104 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AE3E944B297
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 19:17:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C9F7744B29F
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 19:19:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242191AbhKISUA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Nov 2021 13:20:00 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52750 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242172AbhKIST6 (ORCPT
+        id S242238AbhKISWY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Nov 2021 13:22:24 -0500
+Received: from fllv0015.ext.ti.com ([198.47.19.141]:55082 "EHLO
+        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S242172AbhKISWW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Nov 2021 13:19:58 -0500
-Received: from mail-pg1-x530.google.com (mail-pg1-x530.google.com [IPv6:2607:f8b0:4864:20::530])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4A4FC061766
-        for <linux-kernel@vger.kernel.org>; Tue,  9 Nov 2021 10:17:12 -0800 (PST)
-Received: by mail-pg1-x530.google.com with SMTP id 188so6873205pgb.7
-        for <linux-kernel@vger.kernel.org>; Tue, 09 Nov 2021 10:17:12 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=YOqlZrA3M1NbCnfldZU6DBKVKCYvlENSsVuwD1wea5I=;
-        b=PrwFZacaTHainZ0qaAJV/zGD84dkGdMP8wEbnN7L/byt2i65mFA4DL8wDIaDA2pijb
-         EYto4KmnQvazARA+jFcSeg4gqw+SoCMbY+BNStbubXZIVdonzY8uuiHYm0OCOnU6fCa7
-         WqWrWZcODnRH9XLy9J6OKpT4D2b2E0tOCqlwgLozReAYbmZULzJBD8uoMd+qTgx7Q7RV
-         rpiAupfnbd9bvCephkTGO3XgK5alwjY9cC9BptnwVVwJVErwNoAfdSoJlJ+SoNzw0QSh
-         pXAVkpVngZtCTnpp6Gj9xy6YOs0lEK5oZcXYWNr4Ztu0xSb9Kaxyso8k+LcXjBVLXuvg
-         LIGQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=YOqlZrA3M1NbCnfldZU6DBKVKCYvlENSsVuwD1wea5I=;
-        b=h6GyxBpdksg3yeoE6BWqo6Du5ooioJgZtScs1mWuqHSRvf3IlFi5gKZwG2QHz336UE
-         zLov1jdJ60eLOuqLuziA0asK3JS5JFpdfU9/v+DC2/7GEf/B/hTlocw8vCv0HbWEBjNR
-         PSII4r2aHwAWcX9heMdBE3zELY65DE7GRftppNp6KYOnWB+Wisb/jZ1IF8N85vhC0cC8
-         6Pn1X1mAZEDSeitFCx1DZdxObuqBIhT8CXYsSsdM54/sPTyLfFjtwGyz4swC9rLPdi4h
-         rFmLqgXRoN4bCFdOCNYwIjEI+Gr+UKc/X70en2TqIz5jgHPEMks42gXxWS4doii5Uqlo
-         qonQ==
-X-Gm-Message-State: AOAM530yTCKmHHIngLYb7lGbHoFXBbPwqwB/jGA3zrqZSXs7oBG4X9tP
-        VlB6cFS6RBobIVOBZPsGO+HluQ==
-X-Google-Smtp-Source: ABdhPJzXPKln9Vs5wQ4NRjyaxaIz3t4F1JVcwtodx5Uka/2wN4nWHcbBXb871xxDR6EuplXpiPb8Rg==
-X-Received: by 2002:a05:6a00:1946:b0:492:64f1:61b5 with SMTP id s6-20020a056a00194600b0049264f161b5mr10239921pfk.52.1636481832009;
-        Tue, 09 Nov 2021 10:17:12 -0800 (PST)
-Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
-        by smtp.gmail.com with ESMTPSA id gv23sm3281540pjb.17.2021.11.09.10.17.11
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 09 Nov 2021 10:17:11 -0800 (PST)
-Date:   Tue, 9 Nov 2021 18:17:08 +0000
-From:   Joe Burton <jevburton@google.com>
-To:     Hou Tao <houtao1@huawei.com>
-Cc:     Joe Burton <jevburton.kernel@gmail.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, bpf@vger.kernel.org,
-        Petar Penkov <ppenkov@google.com>,
-        Stanislav Fomichev <sdf@google.com>
-Subject: Re: [RFC PATCH v3 2/3] bpf: Add selftests
-Message-ID: <YYq7JHdIAdc2bU55@google.com>
-References: <20211102021432.2807760-1-jevburton.kernel@gmail.com>
- <20211102021432.2807760-3-jevburton.kernel@gmail.com>
- <98178f0f-ff43-b996-f78b-778f74b44a6b@huawei.com>
+        Tue, 9 Nov 2021 13:22:22 -0500
+Received: from fllv0034.itg.ti.com ([10.64.40.246])
+        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 1A9IJH40094844;
+        Tue, 9 Nov 2021 12:19:17 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1636481957;
+        bh=xsNrZAugT1a4ot1HJ3Nu/+NyUFJPJASfhJWC608znmA=;
+        h=From:To:CC:Subject:Date;
+        b=PYWfbWMgRF+mRZZTaJy/yImnZxTSDwfXFQPB2ZOgXzZqtd7wL/L5MVQlH0NFo7cMR
+         CKc5Y+cWC9QVOEgCS956QhUHhAEGL+i73UMDtypbjKQhI5X+OKWvpwjflGRC0Clh77
+         75FdPzZrPiIW4E26k6VDKMuQpkWVq6351swW9Iao=
+Received: from DFLE103.ent.ti.com (dfle103.ent.ti.com [10.64.6.24])
+        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 1A9IJH0K080403
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Tue, 9 Nov 2021 12:19:17 -0600
+Received: from DFLE114.ent.ti.com (10.64.6.35) by DFLE103.ent.ti.com
+ (10.64.6.24) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14; Tue, 9
+ Nov 2021 12:19:16 -0600
+Received: from lelv0327.itg.ti.com (10.180.67.183) by DFLE114.ent.ti.com
+ (10.64.6.35) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14 via
+ Frontend Transport; Tue, 9 Nov 2021 12:19:16 -0600
+Received: from pratyush-OptiPlex-790.dhcp.ti.com (ileax41-snat.itg.ti.com [10.172.224.153])
+        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 1A9IJC51017044;
+        Tue, 9 Nov 2021 12:19:13 -0600
+From:   Pratyush Yadav <p.yadav@ti.com>
+To:     Rob Herring <robh+dt@kernel.org>
+CC:     Mark Brown <broonie@kernel.org>, Nishanth Menon <nm@ti.com>,
+        Michael Walle <michael@walle.cc>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Pratyush Yadav <p.yadav@ti.com>,
+        Richard Weinberger <richard@nod.at>,
+        Tudor Ambarus <tudor.ambarus@microchip.com>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-mtd@lists.infradead.org>, <linux-spi@vger.kernel.org>
+Subject: [PATCH v3 0/3] Add bindings for peripheral-specific SPI controller properties
+Date:   Tue, 9 Nov 2021 23:49:08 +0530
+Message-ID: <20211109181911.2251-1-p.yadav@ti.com>
+X-Mailer: git-send-email 2.33.1.835.ge9e5ba39a7
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <98178f0f-ff43-b996-f78b-778f74b44a6b@huawei.com>
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Thu, Nov 04, 2021 at 02:32:37PM +0800, Hou Tao wrote:
+Hi,
 
-> In fentry__x64_sys_write(), you just do trigger updates to maps, so for the
-> portability of the test
-> (e.g. run-able for arm64)
+This series adds bindings for peripheral-specific SPI controller properties.
+See patch 1 for more info on the motivations behind this.
 
-Agreed that the test should be runnable on arm64. I haven't tested there
-yet but I'll do that before sending out v4.
+This is the best approach that I came up with with my limited knowledge
+of JSON schema. It has some limitations that are mentioned in patch 1. I
+don't know of any better ways to model this. Suggestions are welcome!
 
-> and minimal dependency (e.g. don't depends on /tmp),
-> why do you
-> using nanosleep() and replacing fentry_x64_sys_write by
-> tp/syscalls/sys_enter_nanosleep instead.
+Changes in v3:
+- s/slave/peripheral/g
+- Drop the | on description.
+- Drop the compatible property.
 
-As written, the example actually modifies the return of write(), so I
-don't think I can switch to tp/syscalls/* without significantly
-reworking the example. To minimize the amount of reworking while
-improving compatibility, how does this sound:
+Changes in v2:
+- Move other subnode properties listed in spi-controller.yaml to
+  spi-slave-props.yaml
+- Move the Cadence controller-specific properties out of
+  spi-slave-props.yaml. They will be added in a separate file.
+- Add a reference to spi-slave-props.yaml in spi-controller.yaml.
+- Update description.
 
-1. Add #ifdefs to support arm64
-2. Instead of opening /tmp/map_trace_test_file, open /dev/null
+Pratyush Yadav (3):
+  spi: dt-bindings: add schema listing peripheral-specific properties
+  spi: dt-bindings: cdns,qspi-nor: Move peripheral-specific properties
+    out
+  dt-bindings: mtd: spi-nor: Add a reference to
+    spi-peripheral-props.yaml
 
-Of course this isn't as portable as your proposal but I think it might
-be an acceptable compromise.
+ .../bindings/mtd/jedec,spi-nor.yaml           |  3 +-
+ .../spi/cdns,qspi-nor-peripheral-props.yaml   | 42 +++++++++
+ .../bindings/spi/cdns,qspi-nor.yaml           | 33 -------
+ .../bindings/spi/spi-controller.yaml          | 69 +-------------
+ .../bindings/spi/spi-peripheral-props.yaml    | 89 +++++++++++++++++++
+ 5 files changed, 135 insertions(+), 101 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/spi/cdns,qspi-nor-peripheral-props.yaml
+ create mode 100644 Documentation/devicetree/bindings/spi/spi-peripheral-props.yaml
 
-Best,
-Joe
+--
+2.33.1.835.ge9e5ba39a7
 
