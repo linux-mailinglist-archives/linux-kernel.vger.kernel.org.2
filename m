@@ -2,147 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EF76A44A426
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 02:41:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0CA0044A428
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 02:43:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237812AbhKIBnh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Nov 2021 20:43:37 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51472 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231455AbhKIBnW (ORCPT
+        id S232955AbhKIBqD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Nov 2021 20:46:03 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:28027 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231229AbhKIBqB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Nov 2021 20:43:22 -0500
-Received: from mail-pl1-x62f.google.com (mail-pl1-x62f.google.com [IPv6:2607:f8b0:4864:20::62f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E803BC014F00
-        for <linux-kernel@vger.kernel.org>; Mon,  8 Nov 2021 17:34:29 -0800 (PST)
-Received: by mail-pl1-x62f.google.com with SMTP id k4so17918460plx.8
-        for <linux-kernel@vger.kernel.org>; Mon, 08 Nov 2021 17:34:29 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=1YRNoCeeCQqxDvBnoZCtovzT6k/QbqjejEhDlgxJ1xE=;
-        b=pNVpk+rCV3HDgb16D6KNssN4BA5U8FFOZNcV6kT2A3hGuTm+OeROOwB3Gc25RBu5yd
-         X4Uhm2QzCn6VeLOQwzmDpP+LvkACbbM7DOiiN1F9FMFmdBDaNGhlXPS6Id8TxlqFveUv
-         ykpl9sKIWGUMRi9cWNOq4NVL7iOrhHfOKikKZQ1aYP9i+ytWzFlBD/awLiOZyTwIbWYd
-         XQYDPLCQNX3Mp2Ht8drmEm0GVWUVRwAlw4IodZrpKgzHqAjOAs0439do5Z+7ssrDyIK1
-         8md3BDizbcDwWCcQYcShMQ13fICVIj7mwm722Rbu19AAPS5eH2kbVej7sO/fO5BfTAlH
-         wWLQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=1YRNoCeeCQqxDvBnoZCtovzT6k/QbqjejEhDlgxJ1xE=;
-        b=jhZjn39UmZZipYDdchjvGyGMedspVmuuaEggNtpMQ5yYKvQDoB/9V1IR7AMSH6s83H
-         7szwCCCPX3Jqbe4eu0bpEUawh7BLZZEu5JvB5eiQODuM8N+73/JtHaCHHAwVFI1mkk98
-         EOAhhVWLg1MyxEHtxW1g/8lZSS6SJOLEqqj9ELvP7M+qoD3kedauLHXLtx9/uD7pt3FV
-         91wosLH1m1HyUy2uFCIck7RPRi4IKZieT7id723kRapTdSfJtGNYjRboIUm5oPyl5w3c
-         mlaVueZElcbIZcUELIaZinozQFs93tvFT743nALTCrsJgFjbL22YwcfoxqWDEb3VxQZz
-         1FkA==
-X-Gm-Message-State: AOAM530TRoa0XNK/Wt456MI8cI0J1bZ7tEkamfFi41cJjAzOpFnXt0Fs
-        KH6Y4XrYkDiA6l3sxho66TouFw==
-X-Google-Smtp-Source: ABdhPJy0HaVA5X41obakvoewrsg+dddMWtR8SRrwlCTWxcj9Z8BfUyvzJbNA9mrSzEmNcuMJfGzR8Q==
-X-Received: by 2002:a17:90b:1c02:: with SMTP id oc2mr2968763pjb.65.1636421669237;
-        Mon, 08 Nov 2021 17:34:29 -0800 (PST)
-Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
-        by smtp.gmail.com with ESMTPSA id h36sm307891pgb.9.2021.11.08.17.34.28
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 08 Nov 2021 17:34:28 -0800 (PST)
-Date:   Tue, 9 Nov 2021 01:34:25 +0000
-From:   Sean Christopherson <seanjc@google.com>
-To:     "Maciej S. Szmigiero" <maciej.szmigiero@oracle.com>
-Cc:     James Morse <james.morse@arm.com>,
-        Alexandru Elisei <alexandru.elisei@arm.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Atish Patra <atish.patra@wdc.com>,
-        David Hildenbrand <david@redhat.com>,
-        Cornelia Huck <cohuck@redhat.com>,
-        Claudio Imbrenda <imbrenda@linux.ibm.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
-        linux-mips@vger.kernel.org, kvm@vger.kernel.org,
-        kvm-ppc@vger.kernel.org, kvm-riscv@lists.infradead.org,
-        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Ben Gardon <bgardon@google.com>, Marc Zyngier <maz@kernel.org>,
-        Huacai Chen <chenhuacai@kernel.org>,
-        Aleksandar Markovic <aleksandar.qemu.devel@gmail.com>,
-        Anup Patel <anup.patel@wdc.com>,
-        Paul Mackerras <paulus@ozlabs.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        Janosch Frank <frankja@linux.ibm.com>,
-        Paolo Bonzini <pbonzini@redhat.com>
-Subject: Re: [PATCH v5.5 20/30] KVM: x86: Use nr_memslot_pages to avoid
- traversing the memslots array
-Message-ID: <YYnQIYdsb3wwg86j@google.com>
-References: <20211104002531.1176691-1-seanjc@google.com>
- <20211104002531.1176691-21-seanjc@google.com>
- <88d64cd0-4db1-34a8-96af-6661a55e971e@oracle.com>
+        Mon, 8 Nov 2021 20:46:01 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1636422195;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=mZnoXi+ZjFblymkkEDtIcvCWkMos1RRB5u7b5/Z9MGY=;
+        b=F6JCqZrg1topBsp4lqkK6/kmXfkiP12qMtPLV+1lRvcomNgDjBXUevlluofK3m8+oELHMS
+        1RYM+kQ1HAmATemMFS0/Zwqu9ET990oE/XVGifowh464+YHsoCr/WAZoCfWY6x6+1XLkqz
+        4X2X0jwO8bc1dOBlanVbl6RiA5pVXZU=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-326-oFKyZnhZOM2q1dbJgZ4mKA-1; Mon, 08 Nov 2021 20:43:11 -0500
+X-MC-Unique: oFKyZnhZOM2q1dbJgZ4mKA-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 3DA42802C91;
+        Tue,  9 Nov 2021 01:43:09 +0000 (UTC)
+Received: from [10.22.16.6] (unknown [10.22.16.6])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 93D3E5D9DE;
+        Tue,  9 Nov 2021 01:43:05 +0000 (UTC)
+Message-ID: <b74cd85b-098f-6454-e8a9-7df03c2ae6cc@redhat.com>
+Date:   Mon, 8 Nov 2021 20:43:04 -0500
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <88d64cd0-4db1-34a8-96af-6661a55e971e@oracle.com>
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.2.0
+Subject: Re: [PATCH] powerpc/pseries/cpuhp: Use alloc_cpumask_var() in
+ pseries_cpu_hotplug_init()
+Content-Language: en-US
+To:     Michael Ellerman <mpe@ellerman.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Daniel Henrique Barboza <danielhb413@gmail.com>,
+        Nathan Lynch <nathanl@linux.ibm.com>,
+        "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>
+Cc:     linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
+        Laurent Dufour <ldufour@linux.ibm.com>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        Zhang Xiaoxu <zhangxiaoxu5@huawei.com>
+References: <20211108164751.65565-1-longman@redhat.com>
+ <87y25ym96i.fsf@mpe.ellerman.id.au>
+From:   Waiman Long <longman@redhat.com>
+In-Reply-To: <87y25ym96i.fsf@mpe.ellerman.id.au>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 09, 2021, Maciej S. Szmigiero wrote:
-> On 04.11.2021 01:25, Sean Christopherson wrote:
-> > From: Maciej S. Szmigiero <maciej.szmigiero@oracle.com>
-> > 
-> > There is no point in recalculating from scratch the total number of pages
-> > in all memslots each time a memslot is created or deleted.  Use KVM's
-> > cached nr_memslot_pages to compute the default max number of MMU pages.
-> > 
-> > Signed-off-by: Maciej S. Szmigiero <maciej.szmigiero@oracle.com>
-> > [sean: use common KVM field and rework changelog accordingly]
+On 11/8/21 20:04, Michael Ellerman wrote:
+> Waiman Long <longman@redhat.com> writes:
+>> It was found that the following warning message could be printed out when
+>> booting the kernel on PowerPC systems that support LPAR:
+>>
+>> [    0.129584] WARNING: CPU: 0 PID: 1 at mm/memblock.c:1451 memblock_alloc_internal+0x5c/0x104
+>> [    0.129593] Modules linked in:
+>> [    0.129598] CPU: 0 PID: 1 Comm: swapper/0 Not tainted 5.14.0-11.el9.ppc64le+debug #1
+>> [    0.129605] NIP:  c000000002040134 LR: c00000000204011c CTR: c0000000020241a8
+>> [    0.129610] REGS: c000000005637760 TRAP: 0700   Not tainted  (5.14.0-11.el9.ppc64le+debug)
+>> [    0.129616] MSR:  8000000002029033 <SF,VEC,EE,ME,IR,DR,RI,LE>  CR: 48000222  XER: 00000002
+>> [    0.129635] CFAR: c0000000004d1cf4 IRQMASK: 0
+>> [    0.129635] GPR00: c00000000204011c c000000005637a00 c000000002c94d00 0000000000000001
+>> [    0.129635] GPR04: 0000000000000080 0000000000000000 0000000000000000 ffffffffffffffff
+>> [    0.129635] GPR08: 0000000000000000 0000000000000003 c00000000205ac64 0000000000080000
+>> [    0.129635] GPR12: 0000000000000000 c0000000049d0000 c000000000013078 0000000000000000
+>> [    0.129635] GPR16: 0000000000000000 0000000000000000 0000000000000000 0000000000000000
+>> [    0.129635] GPR20: 0000000000000000 0000000000000000 0000000000000000 0000000000000000
+>> [    0.129635] GPR24: c000000002003808 c00000000146f7b8 0000000000000000 0000000000000100
+>> [    0.129635] GPR28: c000000002d7cf80 0000000000000000 0000000000000008 0000000000000000
+>> [    0.129710] NIP [c000000002040134] memblock_alloc_internal+0x5c/0x104
+>> [    0.129717] LR [c00000000204011c] memblock_alloc_internal+0x44/0x104
+>> [    0.129723] Call Trace:
+>> [    0.129726] [c000000005637a00] [c000000005637a40] 0xc000000005637a40 (unreliable)
+>> [    0.129735] [c000000005637a60] [c0000000020404d8] memblock_alloc_try_nid+0x94/0xcc
+>> [    0.129743] [c000000005637af0] [c00000000205ac64] alloc_bootmem_cpumask_var+0x4c/0x9c
+>> [    0.129751] [c000000005637b60] [c0000000020242e0] __machine_initcall_pseries_pseries_cpu_hotplug_init+0x138/0x1d8
+>> [    0.129760] [c000000005637bf0] [c000000000012404] do_one_initcall+0xa4/0x4f0
+>> [    0.129768] [c000000005637cd0] [c000000002005358] do_initcalls+0x140/0x18c
+>> [    0.129776] [c000000005637d80] [c0000000020055b8] kernel_init_freeable+0x178/0x1d0
+>> [    0.129783] [c000000005637db0] [c0000000000130a0] kernel_init+0x30/0x190
+>> [    0.129790] [c000000005637e10] [c00000000000cef4] ret_from_kernel_thread+0x5c/0x64
+>>
+>> The warning is printed in memblock_alloc_internal() because the slab
+>> has been initialized when the initcalls are being processed. To
+>> avoid the warning, change alloc_bootmem_cpumask_var() call in
+>> pseries_cpu_hotplug_init() to alloc_cpumask_var() instead. Also
+>> change cpumask_or() to cpumask_copy() or we will have to use
+>> zalloc_cpumask_var().
+>>
+>> Fixes: bd1dd4c5f528 ("powerpc/pseries: Prevent free CPU ids being reused on another node")
+>> Signed-off-by: Waiman Long <longman@redhat.com>
+>> ---
+>>   arch/powerpc/platforms/pseries/hotplug-cpu.c | 8 ++++----
+>>   1 file changed, 4 insertions(+), 4 deletions(-)
+>
+> This looks similar to the patch Nick sent recently:
+>
+>    https://lore.kernel.org/linuxppc-dev/20211105132923.1582514-1-npiggin@gmail.com/
 
-Heh, and I forgot to add "and introduce bugs"
+I was not aware of Nick's patch. Since a fix is pending, I am 
+withdrawing mime.
 
-> > Signed-off-by: Sean Christopherson <seanjc@google.com>
-> > ---
-> >   arch/x86/include/asm/kvm_host.h |  1 -
-> >   arch/x86/kvm/mmu/mmu.c          | 24 ------------------------
-> >   arch/x86/kvm/x86.c              | 11 ++++++++---
-> >   3 files changed, 8 insertions(+), 28 deletions(-)
-> > 
-> (..)
-> > --- a/arch/x86/kvm/x86.c
-> > +++ b/arch/x86/kvm/x86.c
-> > @@ -11837,9 +11837,14 @@ void kvm_arch_commit_memory_region(struct kvm *kvm,
-> >   				enum kvm_mr_change change)
-> >   {
-> >   	if (!kvm->arch.n_requested_mmu_pages &&
-> > -	    (change == KVM_MR_CREATE || change == KVM_MR_DELETE))
-> > -		kvm_mmu_change_mmu_pages(kvm,
-> > -				kvm_mmu_calculate_default_mmu_pages(kvm));
-> > +	    (change == KVM_MR_CREATE || change == KVM_MR_DELETE)) {
-> > +		unsigned long nr_mmu_pages;
-> > +
-> > +		nr_mmu_pages = kvm->nr_memslot_pages * KVM_PERMILLE_MMU_PAGES;
-> 
-> Unfortunately, even if kvm->nr_memslot_pages is capped at ULONG_MAX then
-> this value multiplied by 20 can still overflow an unsigned long variable.
-
-Doh.  And that likely subtly avoided by the compiler collapsing the "* 20 / 1000"
-into "/ 50".
-
-Any objection to adding a patch to cut out the multiplication entirely?  Well, cut
-it from the source code, looks like gcc generates some fancy SHR+MUL to do the
-divide.
-
-I'm thinking this:
-
-#define KVM_MEMSLOT_PAGES_TO_MMU_PAGES_RATIO 50
-
-
-	...
-
-	nr_mmu_pages = nr_pages / KVM_MEMSLOT_PAGES_TO_MMU_PAGES_RATIO;
-
+Cheers,
+Longman
 
