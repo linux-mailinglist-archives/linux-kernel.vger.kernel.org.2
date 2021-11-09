@@ -2,160 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1354E44A538
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 04:12:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1094F44A53D
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 04:14:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242459AbhKIDP3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Nov 2021 22:15:29 -0500
-Received: from mail.kernel.org ([198.145.29.99]:34596 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235901AbhKIDP1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Nov 2021 22:15:27 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C7D3C6120A;
-        Tue,  9 Nov 2021 03:12:39 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1636427562;
-        bh=Vj6mN47ETXHPlVPItotZdyR9KltKfth72u8woDTgtlM=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=vE87oTxLQiugl3AAx/5SlS0/ObJ6tzCuAyplAOAPfXhN8q2kKPfxv94RRYc/DRXfi
-         MZilqVeHU5w1B59D43bMqiNpcQcmn5iU+xw6fvlsyM7RRDugxmo1gLYmJe7h45k8y+
-         gYViGpMRsKLXEIHgp7OtjfW7lVUURfcFS0PKcgKDrT56uZLcUbV/uDQtQAqSFl2VWK
-         N+yM2Ll5NxOqatp2ly6jYpSR+acACBlPJq9MHoGFLaOpFvvCVUYpjaBP8kyRcKpFSN
-         W82CTLjvTbcXNCu/S0e6eyChtjr9GvydCwe4ZfLNwvRnITjeNgcJAAcmrUF8ALWo0f
-         gpXMArWL6ubbA==
-Date:   Tue, 9 Nov 2021 04:12:36 +0100
-From:   Marek =?UTF-8?B?QmVow7pu?= <kabel@kernel.org>
-To:     Ansuel Smith <ansuelsmth@gmail.com>
-Cc:     Andrew Lunn <andrew@lunn.ch>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Vladimir Oltean <olteanv@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>, Pavel Machek <pavel@ucw.cz>,
-        John Crispin <john@phrozen.org>, netdev@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-leds@vger.kernel.org
-Subject: Re: [RFC PATCH v3 5/8] leds: trigger: netdev: add hardware control
- support
-Message-ID: <20211109041236.5bacbc19@thinkpad>
-In-Reply-To: <20211109022608.11109-6-ansuelsmth@gmail.com>
-References: <20211109022608.11109-1-ansuelsmth@gmail.com>
-        <20211109022608.11109-6-ansuelsmth@gmail.com>
-X-Mailer: Claws Mail 3.18.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        id S235901AbhKIDRD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Nov 2021 22:17:03 -0500
+Received: from smtprelay0225.hostedemail.com ([216.40.44.225]:51764 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S231910AbhKIDRB (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Nov 2021 22:17:01 -0500
+Received: from omf20.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay07.hostedemail.com (Postfix) with ESMTP id 8B43F1829B8FD;
+        Tue,  9 Nov 2021 03:14:15 +0000 (UTC)
+Received: from [HIDDEN] (Authenticated sender: joe@perches.com) by omf20.hostedemail.com (Postfix) with ESMTPA id 5E4A218A60C;
+        Tue,  9 Nov 2021 03:14:14 +0000 (UTC)
+Message-ID: <cc9807eb594b042ec2cd958f0c70c2f3dd12d58b.camel@perches.com>
+Subject: Re: [PATCH 1/2] erofs: add sysfs interface
+From:   Joe Perches <joe@perches.com>
+To:     Huang Jianan <huangjianan@oppo.com>, linux-erofs@lists.ozlabs.org
+Cc:     guoweichao@oppo.com, guanyuwei@oppo.com, yh@oppo.com,
+        zhangshiming@oppo.com, linux-kernel@vger.kernel.org
+Date:   Mon, 08 Nov 2021 19:14:13 -0800
+In-Reply-To: <20211109025445.12427-1-huangjianan@oppo.com>
+References: <20211109025445.12427-1-huangjianan@oppo.com>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.40.4-1 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
+X-Rspamd-Server: rspamout04
+X-Rspamd-Queue-Id: 5E4A218A60C
+X-Spam-Status: No, score=-4.15
+X-Stat-Signature: 4k1qequtneuzwq7efx34abfoa48qjm1y
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Session-ID: U2FsdGVkX19tC8M+OVunKUJInFptKz4De5mCUJw4EP8=
+X-HE-Tag: 1636427654-852723
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue,  9 Nov 2021 03:26:05 +0100
-Ansuel Smith <ansuelsmth@gmail.com> wrote:
-
-> Add hardware control support for the Netdev trigger.
-> The trigger on config change will check if the requested trigger can set
-> to blink mode using LED hardware mode and if every blink mode is supported,
-> the trigger will enable hardware mode with the requested configuration.
-> If there is at least one trigger that is not supported and can't run in
-> hardware mode, then software mode will be used instead.
-> 
-> Signed-off-by: Ansuel Smith <ansuelsmth@gmail.com>
-> ---
->  drivers/leds/trigger/ledtrig-netdev.c | 61 ++++++++++++++++++++++++++-
->  1 file changed, 60 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/leds/trigger/ledtrig-netdev.c b/drivers/leds/trigger/ledtrig-netdev.c
-> index 0a3c0b54dbb9..28d9def2fbd0 100644
-> --- a/drivers/leds/trigger/ledtrig-netdev.c
-> +++ b/drivers/leds/trigger/ledtrig-netdev.c
-> @@ -37,6 +37,7 @@
->   */
->  
->  struct led_netdev_data {
-> +	bool hw_mode_supported;
->  	spinlock_t lock;
->  
->  	struct delayed_work work;
-> @@ -61,9 +62,52 @@ enum netdev_led_attr {
->  
->  static void set_baseline_state(struct led_netdev_data *trigger_data)
->  {
-> +	bool can_offload;
->  	int current_brightness;
-> +	u32 hw_blink_mode_supported;
->  	struct led_classdev *led_cdev = trigger_data->led_cdev;
->  
-> +	if (trigger_data->hw_mode_supported) {
-> +		if (test_bit(TRIGGER_NETDEV_LINK, &trigger_data->mode) &&
-> +		    led_trigger_blink_mode_is_supported(led_cdev, TRIGGER_NETDEV_LINK))
-> +			hw_blink_mode_supported |= TRIGGER_NETDEV_LINK;
-> +		if (test_bit(TRIGGER_NETDEV_TX, &trigger_data->mode) &&
-> +		    led_trigger_blink_mode_is_supported(led_cdev, TRIGGER_NETDEV_TX))
-> +			hw_blink_mode_supported |= TRIGGER_NETDEV_TX;
-> +		if (test_bit(TRIGGER_NETDEV_RX, &trigger_data->mode) &&
-> +		    led_trigger_blink_mode_is_supported(led_cdev, TRIGGER_NETDEV_RX))
-> +			hw_blink_mode_supported |= TRIGGER_NETDEV_RX;
+On Tue, 2021-11-09 at 10:54 +0800, Huang Jianan wrote:
+> Add sysfs interface to configure erofs related parameters in the
+> future.
+[]
+> diff --git a/fs/erofs/sysfs.c b/fs/erofs/sysfs.c
+[]
+> +static ssize_t erofs_attr_show(struct kobject *kobj,
+> +				struct attribute *attr, char *buf)
+> +{
+> +	struct erofs_sb_info *sbi = container_of(kobj, struct erofs_sb_info,
+> +						s_kobj);
+> +	struct erofs_attr *a = container_of(attr, struct erofs_attr, attr);
+> +	unsigned char *ptr = __struct_ptr(sbi, a->struct_type, a->offset);
 > +
-> +		/* All the requested blink mode can be triggered by hardware.
-> +		 * Put it in hardware mode.
-> +		 */
-> +		if (hw_blink_mode_supported == trigger_data->mode)
-> +			can_offload = true;
-> +
-> +		if (can_offload) {
-> +			/* We are refreshing the blink modes. Reset them */
-> +			led_cdev->hw_control_configure(led_cdev, TRIGGER_NETDEV_LINK,
-> +						       BLINK_MODE_ZERO);
-> +
-> +			if (test_bit(TRIGGER_NETDEV_LINK, &trigger_data->mode))
-> +				led_cdev->hw_control_configure(led_cdev, TRIGGER_NETDEV_LINK,
-> +							       BLINK_MODE_ENABLE);
-> +			if (test_bit(TRIGGER_NETDEV_TX, &trigger_data->mode))
-> +				led_cdev->hw_control_configure(led_cdev, TRIGGER_NETDEV_TX,
-> +							       BLINK_MODE_ENABLE);
-> +			if (test_bit(TRIGGER_NETDEV_RX, &trigger_data->mode))
-> +				led_cdev->hw_control_configure(led_cdev, TRIGGER_NETDEV_RX,
-> +							       BLINK_MODE_ENABLE);
-> +			led_cdev->hw_control_start(led_cdev);
+> +	switch (a->attr_id) {
+> +	case attr_feature:
+> +		return snprintf(buf, PAGE_SIZE, "supported\n");
+> +	case attr_pointer_ui:
+> +		if (!ptr)
+> +			return 0;
+> +		return snprintf(buf, PAGE_SIZE, "%u\n",
+> +				*((unsigned int *) ptr));
 
-Please nooo :)
-This is exactly what I wanted to avoid, this logic should be in the LED
-driver itself.
+Prefer sysfs_emit over snprintf
 
-Can you please at least read my last proposal?
+	case attr_feature:
+		return sysfs_emit(buf, "supported\n");
+	case attr_pointer_ui:
+		...
+		return sysfs_emit(buf, "%u\n", *(unsigned int *)ptr);
 
-patch 2
-https://lore.kernel.org/linux-leds/20210601005155.27997-3-kabel@kernel.org/
-adds the trigger_offload() method. This may need to get changed to
-trigger_offload_start() and trigger_offload_stop(), as per Andrew's
-request.
+etc...
 
-patch 3
-https://lore.kernel.org/linux-leds/20210601005155.27997-4-kabel@kernel.org/
-moves the whole struct led_netdev_data to global include file
-include/linux/ledtrig-netdev.h
 
-patch 4
-https://lore.kernel.org/linux-leds/20210601005155.27997-5-kabel@kernel.org/
-makes netdev trigger to try to call the trigger_offload() method.
-
-So after patch 4, netdev trigger calls trigger_offload() methods and
-passes itself into it.
-
-Example implementation is then in patch 10 of the series
-https://lore.kernel.org/linux-leds/20210601005155.27997-11-kabel@kernel.org/
-Look at omnia_led_trig_offload() function.
-
-The benefit of this API is that it is flexible - all existing triggers
-an be theoretically offloaded to HW (if there is HW that supports it)
-without change to this API, and with minimal changes to the sw
-implementations of the triggers.
-
-Could you please at least try it?
-
-I am willing to work with you on this. We can make a conference call
-tomorrow, if you are able to.
-
-Marek
