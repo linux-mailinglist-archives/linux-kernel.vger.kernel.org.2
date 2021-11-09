@@ -2,160 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DF19644A69D
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 07:04:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E678744A6A0
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 07:08:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243064AbhKIGHV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Nov 2021 01:07:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54830 "EHLO
+        id S243067AbhKIGKl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Nov 2021 01:10:41 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55552 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240711AbhKIGHU (ORCPT
+        with ESMTP id S238713AbhKIGKj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Nov 2021 01:07:20 -0500
-Received: from mail-pl1-x629.google.com (mail-pl1-x629.google.com [IPv6:2607:f8b0:4864:20::629])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 02337C061767
-        for <linux-kernel@vger.kernel.org>; Mon,  8 Nov 2021 22:04:35 -0800 (PST)
-Received: by mail-pl1-x629.google.com with SMTP id u17so18978437plg.9
-        for <linux-kernel@vger.kernel.org>; Mon, 08 Nov 2021 22:04:34 -0800 (PST)
+        Tue, 9 Nov 2021 01:10:39 -0500
+Received: from mail-ed1-x543.google.com (mail-ed1-x543.google.com [IPv6:2a00:1450:4864:20::543])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A5E4C061764
+        for <linux-kernel@vger.kernel.org>; Mon,  8 Nov 2021 22:07:53 -0800 (PST)
+Received: by mail-ed1-x543.google.com with SMTP id r12so71993349edt.6
+        for <linux-kernel@vger.kernel.org>; Mon, 08 Nov 2021 22:07:53 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=intel-com.20210112.gappssmtp.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=NVge1Iw2DLICm/edhKMuLv0kwlblMX536VglZLVGuRY=;
-        b=0y9m/3Tm3ZPhkRfOO6g6G8z3si/DzsgoP/MCPFixBiyqHbS5GCigEp/dxfNfAseuxS
-         xThX8p4IEReKP+5oxM6JzYGIeRyClmu/fx6c5Rx+NDh3ZfmAXahyg+B0H8EoEGRZElbf
-         YGDSosivvUKzfEReFxYNIPktibOlqP0MH+sG6GINqABRAZqmPBABbEWU9mnCx2uqUvjn
-         vsaInhxhJX8T0ab9HkmF6f4okUnSUBvkCjzj7VDW63dScslQ3yBjiipLTGyDwHa0VayU
-         4Z4YaHdEJZqVrovaz24ifQc0maLsszlZ3AxdC8bbzM8uN1EXsV/QYBf/NjWXNGmSE3dZ
-         9OMA==
+        d=gmail.com; s=20210112;
+        h=mime-version:reply-to:from:date:message-id:subject:to
+         :content-transfer-encoding;
+        bh=b4rYg5SOz5rOM5p5ctP9uplrloJl2DRm6ET8X/kYdOk=;
+        b=kBo7mBgvLMCUeK3t9X7IsxezjbPB3yR34ukkot8nZZtxqh1rkWb6bhBIGRZ4KeF5fo
+         B9vq5Yeo5ublFvL6cCrQaDDXAE3Yh1eG2KBKJoKwllSuI/hgUjrvfnVw4Q+BaznVlkri
+         dTIQTaSSpLlyvfkO3QyQeAYJTxOshiC2Q3aeBVBY3L/8+5Z7JfWhNyd0lfXH5q+koUcg
+         NADFbspiu/Nh9zM6/+t+wNjYO4Rs84nby7oBxNohneNk/xRs9FtzUaxr3A+/vXjxXhsl
+         TUi88ZjiIomdl74Dle+greXpMcjkXvaU0FmVWIfSy/oaHgdws09IaNHb5BHcUtWiyl1W
+         MTrg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=NVge1Iw2DLICm/edhKMuLv0kwlblMX536VglZLVGuRY=;
-        b=YZIt9uyjgV+Osr3VgZJmDNqMyCRlZJGSJ3MzYc/hKhxbIk9pqsTUtXlYtJmdMpdmj1
-         e2dqAHLPBLuwzmtWzwNAgaKhyyvdY7b6DLwoyfRH3PFdHSMAmnHQnhcVW7Bk7lqTwvOt
-         HAMGQPrMAEAbIuld2lpccwOv5A7SoVWyGjkR+nRcTF3RRPqjzXE/sDB8dusD0Yyq9Ea+
-         M+kRFVVbuG0Eo3X5US+GXJmoXCVrXwAhQkonf3yQQPQeF3ivSBUXjoa10QwRXaUpVobn
-         3QCrzF5cH6C9jC+hBq4ZHkymq30aZqATgdoiCooTmhogq64oq+s2CngLaMw7Sgl3Nvia
-         kxlQ==
-X-Gm-Message-State: AOAM530SilsF9eL8Ypt/rsnUYLsSasI77gSuiMyj6jR8j+uxi8iIaocM
-        FrhZUmGxOMwxuyAkfVhaRbfe/JxcCfKThD/+Tm9Oxg==
-X-Google-Smtp-Source: ABdhPJwCtlqgnkTVyH3ATYZHBwvXcSX7T/CMSvZ7vKetQyo9w+pCKsHLoVtp5/ayV5vOuQEKSBrDKVvV/RcSnLRvGBk=
-X-Received: by 2002:a17:90b:1e07:: with SMTP id pg7mr4381475pjb.93.1636437874506;
- Mon, 08 Nov 2021 22:04:34 -0800 (PST)
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to:content-transfer-encoding;
+        bh=b4rYg5SOz5rOM5p5ctP9uplrloJl2DRm6ET8X/kYdOk=;
+        b=08dvYwGMP82vNwuOVM5Gn9Nmr4WWETXAskloubbAoB3m5yz67rmrni5r45MUzXuS8z
+         X8NsiHY2lWhSWYzjEu7AnE73mVpHCcfBERo2gUHOX3EdHUeiODTlQ1/Ylw9xktYwpMSy
+         dxV1V8ycjr8yy4Kl+BFrvsFktuK3Qty+b6qLDR1+gLgoDicbNPx4oD2WnS7A6ngL0wh7
+         G0qw4pOEsSCCcDQphb+GP45Bit/csTlZJ+Z7kTfuKo7rh03ZrjR5o3o0xI4citdgZFh1
+         ELPKT63/jgrDfum4/GEuRk2zaepfjFn3t0bQd/PE7d3jX0OruLyBvmTBaKWE+z4WpL8e
+         Gzgw==
+X-Gm-Message-State: AOAM532eaxQTGwLgp/KElJW+7ytcxYbk53Pry97AGBtJoMp+iKdTxwWm
+        bfimquhuy/EGq0+EK4DRBQj+H1BmiCAx5zsHXh0=
+X-Google-Smtp-Source: ABdhPJzet9IF7Qrd4rW4y7rYDY29VcamKwvfQhls7zchqts5drFrWIw4VykMpgy74Iv9oM21xPy/ThjoT0VNvpXXytQ=
+X-Received: by 2002:a05:6402:350f:: with SMTP id b15mr6888911edd.25.1636438071876;
+ Mon, 08 Nov 2021 22:07:51 -0800 (PST)
 MIME-Version: 1.0
-References: <20211106011638.2613039-1-jane.chu@oracle.com> <20211106011638.2613039-2-jane.chu@oracle.com>
- <CAPcyv4jcgFxgoXFhWL9+BReY8vFtgjb_=Lfai-adFpdzc4-35Q@mail.gmail.com>
- <63f89475-7a1f-e79e-7785-ba996211615b@oracle.com> <20211109052640.GG3538886@iweiny-DESK2.sc.intel.com>
-In-Reply-To: <20211109052640.GG3538886@iweiny-DESK2.sc.intel.com>
-From:   Dan Williams <dan.j.williams@intel.com>
-Date:   Mon, 8 Nov 2021 22:04:23 -0800
-Message-ID: <CAPcyv4j-EHz9Eg4UmD8v2-mPgNgE0uJSG_Wr2fzJsU-+Em6umw@mail.gmail.com>
-Subject: Re: [PATCH v2 1/2] dax: Introduce normal and recovery dax operation modes
-To:     Ira Weiny <ira.weiny@intel.com>
-Cc:     Jane Chu <jane.chu@oracle.com>, david <david@fromorbit.com>,
-        "Darrick J. Wong" <djwong@kernel.org>,
-        Christoph Hellwig <hch@infradead.org>,
-        Vishal L Verma <vishal.l.verma@intel.com>,
-        Dave Jiang <dave.jiang@intel.com>,
-        Alasdair Kergon <agk@redhat.com>,
-        Mike Snitzer <snitzer@redhat.com>,
-        device-mapper development <dm-devel@redhat.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Vivek Goyal <vgoyal@redhat.com>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        Linux NVDIMM <nvdimm@lists.linux.dev>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-xfs <linux-xfs@vger.kernel.org>
+Received: by 2002:a17:906:9c81:0:0:0:0 with HTTP; Mon, 8 Nov 2021 22:07:51
+ -0800 (PST)
+Reply-To: msbelinaya892@gmail.com
+From:   msbelinaya <shayelyhaver25@gmail.com>
+Date:   Tue, 9 Nov 2021 06:07:51 +0000
+Message-ID: <CAP8Ny24V1k+nKGPRhKwQ5c+20SORfwVDN7mvXAMS+xTb-DE19Q@mail.gmail.com>
+Subject: =?UTF-8?Q?T=C3=BCrkei?=
+To:     undisclosed-recipients:;
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 8, 2021 at 9:26 PM Ira Weiny <ira.weiny@intel.com> wrote:
->
-> On Mon, Nov 08, 2021 at 09:02:29PM +0000, Jane Chu wrote:
-> > On 11/6/2021 9:48 AM, Dan Williams wrote:
-> > > On Fri, Nov 5, 2021 at 6:17 PM Jane Chu <jane.chu@oracle.com> wrote:
-> > >>
-> > >> Introduce DAX_OP_NORMAL and DAX_OP_RECOVERY operation modes to
-> > >> {dax_direct_access, dax_copy_from_iter, dax_copy_to_iter}.
-> > >> DAX_OP_NORMAL is the default or the existing mode, and
-> > >> DAX_OP_RECOVERY is a new mode for data recovery purpose.
-> > >>
-> > >> When dax-FS suspects dax media error might be encountered
-> > >> on a read or write, it can enact the recovery mode read or write
-> > >> by setting DAX_OP_RECOVERY in the aforementioned APIs. A read
-> > >> in recovery mode attempts to fetch as much data as possible
-> > >> until the first poisoned page is encountered. A write in recovery
-> > >> mode attempts to clear poison(s) in a page-aligned range and
-> > >> then write the user provided data over.
-> > >>
-> > >> DAX_OP_NORMAL should be used for all non-recovery code path.
-> > >>
-> > >> Signed-off-by: Jane Chu <jane.chu@oracle.com>
-> > > [..]
-> > >> diff --git a/include/linux/dax.h b/include/linux/dax.h
-> > >> index 324363b798ec..931586df2905 100644
-> > >> --- a/include/linux/dax.h
-> > >> +++ b/include/linux/dax.h
-> > >> @@ -9,6 +9,10 @@
-> > >>   /* Flag for synchronous flush */
-> > >>   #define DAXDEV_F_SYNC (1UL << 0)
-> > >>
-> > >> +/* dax operation mode dynamically set by caller */
-> > >> +#define        DAX_OP_NORMAL           0
-> > >
-> > > Perhaps this should be called DAX_OP_FAILFAST?
-> >
-> > Sure.
-> >
-> > >
-> > >> +#define        DAX_OP_RECOVERY         1
-> > >> +
-> > >>   typedef unsigned long dax_entry_t;
-> > >>
-> > >>   struct dax_device;
-> > >> @@ -22,8 +26,8 @@ struct dax_operations {
-> > >>           * logical-page-offset into an absolute physical pfn. Return the
-> > >>           * number of pages available for DAX at that pfn.
-> > >>           */
-> > >> -       long (*direct_access)(struct dax_device *, pgoff_t, long,
-> > >> -                       void **, pfn_t *);
-> > >> +       long (*direct_access)(struct dax_device *, pgoff_t, long, int,
-> > >
-> > > Would be nice if that 'int' was an enum, but I'm not sure a new
-> > > parameter is needed at all, see below...
-> >
-> > Let's do your suggestion below. :)
-> >
-> > >
-> > >> +                               void **, pfn_t *);
-> > >>          /*
-> > >>           * Validate whether this device is usable as an fsdax backing
-> > >>           * device.
-> > >> @@ -32,10 +36,10 @@ struct dax_operations {
-> > >>                          sector_t, sector_t);
-> > >>          /* copy_from_iter: required operation for fs-dax direct-i/o */
-> > >>          size_t (*copy_from_iter)(struct dax_device *, pgoff_t, void *, size_t,
-> > >> -                       struct iov_iter *);
-> > >> +                       struct iov_iter *, int);
-> > >
-> > > I'm not sure the flag is needed here as the "void *" could carry a
-> > > flag in the pointer to indicate that is a recovery kaddr.
-> >
-> > Agreed.
->
-> Not sure if this is implied but I would like some macros or other helper
-> functions to check these flags hidden in the addresses.
->
-> For me I'm a bit scared about having flags hidden in the address like this
-> because I can't lead to some confusions IMO.
->
-> But if we have some macros or other calls which can make this more obvious of
-> what is going on I think that would help.
+Ich biete meine Freundschaft an und glaube, dass Sie mich mit gutem
+Herzen akzeptieren werden. Ich wurde gedr=C3=A4ngt, Sie zu kontaktieren und
+zu sehen, wie wir einander am besten unterst=C3=BCtzen k=C3=B6nnen. Ich bin=
+ Frau
+Kodjovi Hegbor aus der T=C3=BCrkei und arbeite als Divisionsleiterin f=C3=
+=BCr
+Operationen bei der StandardBNP bank limited Turkey . Ich glaube, es
+ist der Wille Gottes, dass ich Ihnen jetzt begegnen werde. Ich habe
+ein wichtiges gesch=C3=A4ftliches Gespr=C3=A4ch, das ich mit Ihnen teilen
+m=C3=B6chte, von dem ich glaube, dass es Sie interessiert, da es mit Ihrem
+Nachnamen in Verbindung steht und Sie davon profitieren werden.
 
-You could go further and mark it as an 'unsigned long __bitwise' type
-to get the compiler to help with enforcing accessors to strip off the
-flag bits.
+ Im Jahr 2006 hat ein B=C3=BCrger Ihres Landes bei meiner Bank ein
+Nicht-Residentenkonto f=C3=BCr 36 Monate des Kalenders im Wert von
+=C2=A38.400.000,00 eingerichtet. Das Ablaufdatum f=C3=BCr diesen Depotvertr=
+ag
+war der 16. Januar 2009. Leider starb er w=C3=A4hrend einer Gesch=C3=A4ftsr=
+eise
+bei einem t=C3=B6dlichen Erdbeben am 12. Mai 2008 in Sichuan, China, bei
+dem mindestens 68.000 Menschen ums Leben kamen.
+
+Das Management meiner Bank hat noch nichts von seinem Tod erfahren,
+ich wusste davon, weil er mein Freund war und ich sein Kontof=C3=BChrer
+war, als das Konto vor meiner Bef=C3=B6rderung er=C3=B6ffnet wurde. Jedoch =
+Herr
+ erw=C3=A4hnte bei der Kontoer=C3=B6ffnung keine n=C3=A4chsten Verwandten/E=
+rben, und
+er war nicht verheiratet und hatte keine Kinder. Letzte Woche hat
+meine Bankdirektion mich gebeten, Anweisungen zu geben, was mit seinen
+Geldern zu tun ist, wenn der Vertrag verl=C3=A4ngert werden soll.
+
+Ich wei=C3=9F, dass dies passieren wird, und deshalb habe ich nach einem
+Mittel gesucht, um mit der Situation umzugehen, denn wenn meine
+Bankdirektoren wissen, dass sie tot sind und keinen Erben haben,
+werden sie das Geld f=C3=BCr ihren pers=C3=B6nlichen Gebrauch nehmen, also =
+Ich
+m=C3=B6chte nicht, dass so etwas passiert. Als ich Ihren Nachnamen sah, war
+ich gl=C3=BCcklich und suche jetzt Ihre Mitarbeit, um Sie als Next of
+Kin/Erbe des Kontos zu pr=C3=A4sentieren, da Sie den gleichen Nachnamen wie
+er haben und meine Bankzentrale das Konto freigeben wird f=C3=BCr dich. Es
+besteht kein Risiko; die Transaktion wird im Rahmen einer legitimen
+Vereinbarung ausgef=C3=BChrt, die Sie vor Rechtsverletzungen sch=C3=BCtzt.
+
+Es ist besser, dass wir das Geld beanspruchen, als es den
+Bankdirektoren zu erlauben, es zu nehmen, sie sind bereits reich. Ich
+bin kein gieriger Mensch, daher schlage ich vor, dass wir das Geld zu
+gleichen Teilen teilen, 50/50% auf beide Parteien. Mein Anteil wird
+mir helfen, mein eigenes Unternehmen zu gr=C3=BCnden und den Erl=C3=B6s f=
+=C3=BCr
+wohlt=C3=A4tige Zwecke zu verwenden, was mein Traum war.
+
+Teilen Sie mir Ihre Meinung zu meinem Vorschlag mit, bitte, ich
+brauche wirklich Ihre Hilfe bei dieser Transaktion. Ich habe Sie
+ausgew=C3=A4hlt, um mir zu helfen, nicht durch mein eigenes Tun, mein
+Lieber, sondern bei Gott wollte ich, dass Sie wissen, dass ich mir
+Zeit zum Beten genommen habe =C3=BCber diese Mitteilung, bevor ich Sie
+jemals kontaktiert habe, teilen Sie mir Ihre Meinung dazu mit und
+behandeln Sie diese Informationen bitte als STRENG GEHEIM. Nach Erhalt
+Ihrer Antwort, ausschlie=C3=9Flich =C3=BCber meine pers=C3=B6nliche E-Mail-=
+Adresse,
+msbelinaya892@gmail.com
+gibt Ihnen Details zur Transaktion. Und eine Kopie der
+Einlagenbescheinigung des Fonds sowie die Gr=C3=BCndungsurkunde der
+Gesellschaft, die den Fonds erstellt hat.
+Gott segne, in Erwartung Ihrer dringenden Antwort
+Mit freundlichen Gr=C3=BC=C3=9Fen
+Frau Kodjovi Hegbor
+msbelinaya892@gmail.com
