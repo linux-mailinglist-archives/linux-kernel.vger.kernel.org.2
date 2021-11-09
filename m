@@ -2,135 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 12F5744AFC1
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 15:52:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A8BEF44AFC9
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 15:55:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237112AbhKIOzW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Nov 2021 09:55:22 -0500
-Received: from mail.kernel.org ([198.145.29.99]:59814 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233104AbhKIOzV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Nov 2021 09:55:21 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 42FB860F6E;
-        Tue,  9 Nov 2021 14:52:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1636469555;
-        bh=2wCF/vXVwMATKmiQt0OtS+R6byTCRWgcCEjKTvJDZoQ=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=dGlEhDQL0ZdowIyZQvg1cmRoq7W1ew1Gc5E3571c9O34824aD2UMQoAZOR8lRb6pc
-         lcYrB4QO40ck14u9rv3UAplI018r0DnJGB3y6FHSXI+wgpC3m7AZiO2HRcj8Opjwjs
-         zL2C6f/zLCydNukqalR0o1NC/8+Ee3VmX5a7SuGl6TOea910nTvWqLcuCvpKFTJqGT
-         SAImWH2VzyjzF++cTDeuFcT3qTFJkmTJXwhhvo6COvc82/9wRrGtMeK3SUS+wBBsyY
-         +GzvW2BNAudkTz009iKwN6T/sFAjUFalhJFnGQtud82YFZJL/OgrgZ89eddJlNr6Lu
-         Qfl/WuDQNLa1Q==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 0D3A45C0154; Tue,  9 Nov 2021 06:52:35 -0800 (PST)
-Date:   Tue, 9 Nov 2021 06:52:35 -0800
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Neeraj Upadhyay <quic_neeraju@quicinc.com>
-Cc:     josh@joshtriplett.org, rostedt@goodmis.org,
-        mathieu.desnoyers@efficios.com, jiangshanlai@gmail.com,
-        joel@joelfernandes.org, rcu@vger.kernel.org,
-        linux-kernel@vger.kernel.org, urezki@gmail.com,
-        frederic@kernel.org, boqun.feng@gmail.com
-Subject: Re: [PATCH] rcu-tasks: Inspect stalled task's trc state in locked
- state
-Message-ID: <20211109145235.GV641268@paulmck-ThinkPad-P17-Gen-1>
-Reply-To: paulmck@kernel.org
-References: <20211109112214.19618-1-quic_neeraju@quicinc.com>
+        id S237656AbhKIO6k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Nov 2021 09:58:40 -0500
+Received: from fllv0015.ext.ti.com ([198.47.19.141]:49482 "EHLO
+        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232619AbhKIO6j (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Nov 2021 09:58:39 -0500
+Received: from lelv0266.itg.ti.com ([10.180.67.225])
+        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 1A9EtdmV033385;
+        Tue, 9 Nov 2021 08:55:39 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1636469739;
+        bh=/9S7cEwEhjwd1n1GHF1WmCRCpoBx27XpIoMNXmVXuw8=;
+        h=Date:From:To:CC:Subject:References:In-Reply-To;
+        b=nAGFjs/klY90qqE6oQN32qmP7nGw5Z2VnMXT29u3YQFt5x4xgI0+K4sgObd3tujeN
+         ocYUzbmzvcGRy5kBj7OWtK+uEAwqnpIYu0NKgBEb7TxyUOyRqwRf6rs59wgG58F38E
+         h5FwmppmTSWA0P6y2Hg68+KXTI2FJhaDQKnefMJI=
+Received: from DLEE103.ent.ti.com (dlee103.ent.ti.com [157.170.170.33])
+        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 1A9EtdGk078253
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Tue, 9 Nov 2021 08:55:39 -0600
+Received: from DLEE113.ent.ti.com (157.170.170.24) by DLEE103.ent.ti.com
+ (157.170.170.33) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14; Tue, 9
+ Nov 2021 08:55:38 -0600
+Received: from lelv0327.itg.ti.com (10.180.67.183) by DLEE113.ent.ti.com
+ (157.170.170.24) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14 via
+ Frontend Transport; Tue, 9 Nov 2021 08:55:39 -0600
+Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
+        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 1A9Etc87033665;
+        Tue, 9 Nov 2021 08:55:39 -0600
+Date:   Tue, 9 Nov 2021 08:55:38 -0600
+From:   Nishanth Menon <nm@ti.com>
+To:     Boris Brezillon <bbrezillon@kernel.org>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Tomi Valkeinen <tomba@kernel.org>
+CC:     <linux-kernel@vger.kernel.org>, <dri-devel@lists.freedesktop.org>,
+        <linux-arm-kernel@lists.infradead.org>, <nikhil.nd@ti.com>,
+        <r-ravikumar@ti.com>, Milind Parab <mparab@cadence.com>
+Subject: Re: [PATCH] drm/bridge: cdns-dsi: Make sure to to create proper
+ aliases for dt
+Message-ID: <20211109145538.fh3vsfnvfvvmcovb@automated>
+References: <20210921174059.17946-1-nm@ti.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset="us-ascii"
 Content-Disposition: inline
-In-Reply-To: <20211109112214.19618-1-quic_neeraju@quicinc.com>
+In-Reply-To: <20210921174059.17946-1-nm@ti.com>
+User-Agent: NeoMutt/20171215
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 09, 2021 at 04:52:14PM +0530, Neeraj Upadhyay wrote:
-> On RCU tasks trace stall, inspect the RCU-tasks-trace specific
-> states of stalled task in locked down state, using try_invoke_
-> on_locked_down_task(), to get reliable trc state of a non-running
-> stalled task.
+On 12:40-20210921, Nishanth Menon wrote:
+> Add MODULE_DEVICE_TABLE to the device tree table to create required
+> aliases needed for module to be loaded with device tree based platform.
 > 
-> Signed-off-by: Neeraj Upadhyay <quic_neeraju@quicinc.com>
-
-Queued for further review and testing, thank you!
-
-Along those lines, what did you do to test this?  I would like to
-add that to the commit message.  (The usual approach is to use the
-rcutorture.stall_cpu module parameter, in case I have not yet passed
-that along.)
-
-							Thanx, Paul
-
+> Fixes: e19233955d9e ("drm/bridge: Add Cadence DSI driver")
+> Signed-off-by: Nishanth Menon <nm@ti.com>
 > ---
->  kernel/rcu/tasks.h | 43 ++++++++++++++++++++++++++++++++++---------
->  1 file changed, 34 insertions(+), 9 deletions(-)
+>  drivers/gpu/drm/bridge/cdns-dsi.c | 1 +
+>  1 file changed, 1 insertion(+)
 > 
-> diff --git a/kernel/rcu/tasks.h b/kernel/rcu/tasks.h
-> index e4a32db9f712..4e49b847971b 100644
-> --- a/kernel/rcu/tasks.h
-> +++ b/kernel/rcu/tasks.h
-> @@ -1073,25 +1073,50 @@ static void rcu_tasks_trace_postscan(struct list_head *hop)
->  	// Any tasks that exit after this point will set ->trc_reader_checked.
->  }
+> diff --git a/drivers/gpu/drm/bridge/cdns-dsi.c b/drivers/gpu/drm/bridge/cdns-dsi.c
+> index d8a15c459b42..829e1a144656 100644
+> --- a/drivers/gpu/drm/bridge/cdns-dsi.c
+> +++ b/drivers/gpu/drm/bridge/cdns-dsi.c
+> @@ -1284,6 +1284,7 @@ static const struct of_device_id cdns_dsi_of_match[] = {
+>  	{ .compatible = "cdns,dsi" },
+>  	{ },
+>  };
+> +MODULE_DEVICE_TABLE(of, cdns_dsi_of_match);
 >  
-> +/* Communicate task state back to the RCU tasks trace stall warning request. */
-> +struct trc_stall_chk_rdr {
-> +	int nesting;
-> +	int ipi_to_cpu;
-> +	u8 needqs;
-> +};
-> +
-> +static bool trc_check_slow_task(struct task_struct *t, void *arg)
-> +{
-> +	struct trc_stall_chk_rdr *trc_rdrp = arg;
-> +
-> +	if (task_curr(t))
-> +		return false; // It is running, so decline to inspect it.
-> +	trc_rdrp->nesting = READ_ONCE(t->trc_reader_nesting);
-> +	trc_rdrp->ipi_to_cpu = READ_ONCE(t->trc_ipi_to_cpu);
-> +	trc_rdrp->needqs = READ_ONCE(t->trc_reader_special.b.need_qs);
-> +	return true;
-> +}
-> +
->  /* Show the state of a task stalling the current RCU tasks trace GP. */
->  static void show_stalled_task_trace(struct task_struct *t, bool *firstreport)
->  {
->  	int cpu;
-> +	struct trc_stall_chk_rdr trc_rdr;
-> +	bool is_idle_tsk = is_idle_task(t);
->  
->  	if (*firstreport) {
->  		pr_err("INFO: rcu_tasks_trace detected stalls on tasks:\n");
->  		*firstreport = false;
->  	}
-> -	// FIXME: This should attempt to use try_invoke_on_nonrunning_task().
->  	cpu = task_cpu(t);
-> -	pr_alert("P%d: %c%c%c nesting: %d%c cpu: %d\n",
-> -		 t->pid,
-> -		 ".I"[READ_ONCE(t->trc_ipi_to_cpu) >= 0],
-> -		 ".i"[is_idle_task(t)],
-> -		 ".N"[cpu >= 0 && tick_nohz_full_cpu(cpu)],
-> -		 READ_ONCE(t->trc_reader_nesting),
-> -		 " N"[!!READ_ONCE(t->trc_reader_special.b.need_qs)],
-> -		 cpu);
-> +	if (!try_invoke_on_locked_down_task(t, trc_check_slow_task, &trc_rdr))
-> +		pr_alert("P%d: %c\n",
-> +			 t->pid,
-> +			 ".i"[is_idle_tsk]);
-> +	else
-> +		pr_alert("P%d: %c%c%c nesting: %d%c cpu: %d\n",
-> +			 t->pid,
-> +			 ".I"[trc_rdr.ipi_to_cpu >= 0],
-> +			 ".i"[is_idle_tsk],
-> +			 ".N"[cpu >= 0 && tick_nohz_full_cpu(cpu)],
-> +			 trc_rdr.nesting,
-> +			 " N"[!!trc_rdr.needqs],
-> +			 cpu);
->  	sched_show_task(t);
->  }
->  
+>  static struct platform_driver cdns_dsi_platform_driver = {
+>  	.probe  = cdns_dsi_drm_probe,
 > -- 
-> 2.17.1
+> 2.32.0
 > 
+> 
+
+Hi, Ping?
+-- 
+Regards,
+Nishanth Menon
+Key (0xDDB5849D1736249D) / Fingerprint: F8A2 8693 54EB 8232 17A3  1A34 DDB5 849D 1736 249D
