@@ -2,270 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2A67444AB0F
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 10:58:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C60E144AB12
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 10:58:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245024AbhKIKA5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Nov 2021 05:00:57 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51556 "EHLO
+        id S245066AbhKIKBU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Nov 2021 05:01:20 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51664 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243012AbhKIKAy (ORCPT
+        with ESMTP id S243012AbhKIKBR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Nov 2021 05:00:54 -0500
-Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC7F9C061764;
-        Tue,  9 Nov 2021 01:58:08 -0800 (PST)
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: gtucker)
-        with ESMTPSA id AE1FE1F44AE3
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=collabora.com; s=mail;
-        t=1636451887; bh=gwr0AMfKB/PxFzBdU0KGV5ZIiDYtZPwJi9dHOVJhKg4=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=ZR/oXfTxyrRDKcVLMlNYPrEgT+a/QJUeKLde4QVX2OLJqbvYvmrk26OgVOZVkEVpb
-         NLa0tK+iZXNPOkFlpdwviIdb8niH4CW8nzGM9Px6H/6qwr7EBnFXlZ0OUWMQV7Lv3c
-         v+vsPL0ilgo6JaqlvjT8uVnAbVCFKJ/W8Ku2H0DusZJMBzgx84ZmXje6cgHNBHzvom
-         /R22EvmmHt9zGbldogyRqrbg4tND2/kd0kw2Ewky6TW/ZERv7vptsiITzNDcoPUh8Z
-         W6cx8c2GSJmybBButFOhFUQ4g4nCVTZH/qBEf6CJBxWFROQxmZXvkuALzmRTFsRkXH
-         bAEFCe/hUUdSA==
-Subject: Re: [PATCH net-next v6] page_pool: disable dma mapping support for
- 32-bit arch with 64-bit DMA
-To:     Yunsheng Lin <linyunsheng@huawei.com>, davem@davemloft.net,
-        kuba@kernel.org
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linuxarm@openeuler.org, hawk@kernel.org,
-        ilias.apalodimas@linaro.org, akpm@linux-foundation.org,
-        peterz@infradead.org, will@kernel.org, jhubbard@nvidia.com,
-        yuzhao@google.com, mcroce@microsoft.com, fenghua.yu@intel.com,
-        feng.tang@intel.com, jgg@ziepe.ca, aarcange@redhat.com,
-        guro@fb.com, "kernelci@groups.io" <kernelci@groups.io>
-References: <20211013091920.1106-1-linyunsheng@huawei.com>
-From:   Guillaume Tucker <guillaume.tucker@collabora.com>
-Message-ID: <b9c0e7ef-a7a2-66ad-3a19-94cc545bd557@collabora.com>
-Date:   Tue, 9 Nov 2021 09:58:04 +0000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.14.0
+        Tue, 9 Nov 2021 05:01:17 -0500
+Received: from mail-ua1-x930.google.com (mail-ua1-x930.google.com [IPv6:2607:f8b0:4864:20::930])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6AEF0C061764;
+        Tue,  9 Nov 2021 01:58:31 -0800 (PST)
+Received: by mail-ua1-x930.google.com with SMTP id az37so37393607uab.13;
+        Tue, 09 Nov 2021 01:58:31 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:reply-to:from:date:message-id
+         :subject:to:cc;
+        bh=6SCzafxlbGRyr2tFR/3yTcdmhOfLXB8smhgQj+VN/mM=;
+        b=VTkNp8JKdqfJwZbB9WiYq3hzv1C+MVgoeu4f0AgfS8nd/lX5XzvaAaAjoI4q22YWzH
+         34bUQWvpyuzmpqKNimm1GWvRZantxOdacjMp2MPvjLnUplnodIVlIY64ixYqBZ3B75at
+         b251cXbXFjz9C9QNRTzyBhD714W4Jl1AqEavwNYezSpJVU7R52lFrIH66Rds/f7HiwlI
+         38xUkNU/Z39tPL83FPYFATJtgL4H6Evr3txKrDkRceOhOU/ImoeuCrqpx7iYX411ZIDP
+         D5hY8C2nv4j7BSSrXvJk3XrvHquH0FshVs1A4FEIYL+Zbt4Ieo6DuYL+iulYixT+S6BJ
+         edVg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
+         :from:date:message-id:subject:to:cc;
+        bh=6SCzafxlbGRyr2tFR/3yTcdmhOfLXB8smhgQj+VN/mM=;
+        b=iKUDkpqj4tQxRRDS37SohRR6C2V+ZHgDbzM4IJl7phNyWQz5Egl2p+Mo6EPdUvM19q
+         V7gGj4a4un44PfPCRaCTa4VsquGTr165fG7xn8nd40nKI+sL9VrYq/phYs1jI7Ga9mfq
+         D2nuNQl+ojw3pYyQEp2Sjr6aESnViv4A7pmgWRoK27teY3jAm4pkf4bZBphAdomL5iwa
+         fsQ0QxRNX0Ito7r941KhU41OHVpPreDry9zC6GrbP6A5HFOsJPiZvuLvE9NQ/wRqcFQl
+         SKOKjuFEzNHCosl6MFUM0IybT7tkHnGNyDu/y+HJ/TICKUsfuWqEt3WXvgn/+1q9+yxI
+         zCbg==
+X-Gm-Message-State: AOAM532gF8c3RQpWXxFbcPNncvibdumaUcsiBfyPEHU9NJ+2YvhCqc40
+        CqFqi3zcSyzLKTcwHgAfqi1mCco4nR93EPXYowODQL7ErvM=
+X-Google-Smtp-Source: ABdhPJzlS1Ynl/Lq56tV64dzEqzYvWPv4HJJLkXeWWxceP6vLUbok+OHObpb4urfoRG72McMdMg8hg0yrJ5LOHnHO30=
+X-Received: by 2002:a9f:3d85:: with SMTP id c5mr8509886uai.12.1636451910511;
+ Tue, 09 Nov 2021 01:58:30 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20211013091920.1106-1-linyunsheng@huawei.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20210715141742.15072-1-andrea.merello@gmail.com>
+ <20211028101840.24632-1-andrea.merello@gmail.com> <20211028101840.24632-5-andrea.merello@gmail.com>
+ <20211028114557.5b4db778@jic23-huawei>
+In-Reply-To: <20211028114557.5b4db778@jic23-huawei>
+Reply-To: andrea.merello@gmail.com
+From:   Andrea Merello <andrea.merello@gmail.com>
+Date:   Tue, 9 Nov 2021 10:58:19 +0100
+Message-ID: <CAN8YU5M1-tqXaAokjzZJ5aLY_PwK7-3O3PtEFEQ+ONwTLcK44Q@mail.gmail.com>
+Subject: Re: [v2 04/10] iio: add modifiers for linear acceleration
+To:     Jonathan Cameron <jic23@kernel.org>
+Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        linux-iio <linux-iio@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        devicetree <devicetree@vger.kernel.org>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Rob Herring <robh+dt@kernel.org>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Matt Ranostay <matt.ranostay@konsulko.com>,
+        Alexandru Ardelean <ardeleanalex@gmail.com>,
+        Jacopo Mondi <jacopo@jmondi.org>,
+        Andrea Merello <andrea.merello@iit.it>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Yunsheng,
+Il giorno gio 28 ott 2021 alle ore 12:41 Jonathan Cameron
+<jic23@kernel.org> ha scritto:
+>
+> On Thu, 28 Oct 2021 12:18:34 +0200
+> Andrea Merello <andrea.merello@gmail.com> wrote:
+>
+> > This patch is preparatory for adding the Bosh BNO055 IMU driver.
+> > The said IMU can report raw accelerations (among x, y and z axis)
+> > as well as the so called "linear accelerations" (again, among x,
+> > y and z axis) which is basically the acceleration after subtracting
+> > gravity.
+> >
+> > This patch adds IIO_MOD_ACCEL_LINEAR_X, IIO_MOD_ACCEL_LINEAR_Y and
+> > IIO_MOD_ACCEL_LINEAR_Z modifiers to te IIO core.
+> >
+> > Signed-off-by: Andrea Merello <andrea.merello@iit.it>
+>
+> They sometimes get forgotten but we should also update
+> tools/iio/iio_event_montitor.c to handle these new modifiers.
 
-Please see the bisection report below about a boot failure on
-rk3288-rock2-square which is pointing to this patch.  The issue
-appears to only happen with CONFIG_ARM_LPAE=y.
+I'm not so familiar with this tool, but it seems like it has to do
+with IIO events, which the bno055 driver doesn't use. On the other
+hand the modifiers I would add are not used by any other driver right
+now.
 
-Reports aren't automatically sent to the public while we're
-trialing new bisection features on kernelci.org but this one
-looks valid.
+So I would say that it would end up in adding things that I couldn't
+test.. Or is there any test infrastructure for this? It seems trivial,
+just a matter of a few defines, so it shouldn't be an issue indeed..
 
-Some more details can be found here:
+> That can be a separate patch, but also fine to do it in this one.
+>
+> > ---
+> >  drivers/iio/industrialio-core.c | 3 +++
+> >  include/uapi/linux/iio/types.h  | 4 +++-
+> >  2 files changed, 6 insertions(+), 1 deletion(-)
+> >
+> > diff --git a/drivers/iio/industrialio-core.c b/drivers/iio/industrialio-core.c
+> > index 2dbb37e09b8c..a79cb32207e4 100644
+> > --- a/drivers/iio/industrialio-core.c
+> > +++ b/drivers/iio/industrialio-core.c
+> > @@ -134,6 +134,9 @@ static const char * const iio_modifier_names[] = {
+> >       [IIO_MOD_ETHANOL] = "ethanol",
+> >       [IIO_MOD_H2] = "h2",
+> >       [IIO_MOD_O2] = "o2",
+> > +     [IIO_MOD_ACCEL_LINEAR_X] = "linear_x",
+> > +     [IIO_MOD_ACCEL_LINEAR_Y] = "linear_y",
+> > +     [IIO_MOD_ACCEL_LINEAR_Z] = "linear_z"
+> >  };
+> >
+> >  /* relies on pairs of these shared then separate */
+> > diff --git a/include/uapi/linux/iio/types.h b/include/uapi/linux/iio/types.h
+> > index 48c13147c0a8..db00f7c45f48 100644
+> > --- a/include/uapi/linux/iio/types.h
+> > +++ b/include/uapi/linux/iio/types.h
+> > @@ -95,6 +95,9 @@ enum iio_modifier {
+> >       IIO_MOD_ETHANOL,
+> >       IIO_MOD_H2,
+> >       IIO_MOD_O2,
+> > +     IIO_MOD_ACCEL_LINEAR_X,
+> > +     IIO_MOD_ACCEL_LINEAR_Y,
+> > +     IIO_MOD_ACCEL_LINEAR_Z,
+>
+> It might be useful for other channel types, so probably drop the ACCEL
+> part of the name.
+>
+> I'll admit I can't immediately think of what, but you never know.. :)
 
-  https://linux.kernelci.org/test/case/id/6189968c3ec0a3c06e3358fe/
+But in this case what should I write in the ABI documentation? If I
+state that this is something that makes the gravity not being included
+then isn't it intrinsically tied to be an acceleration?  Or, I do
+that, and if someone eventually finds another use, then she/he will
+change the ABI doc?
 
-Here's the same revision on the same platform booting fine with a
-plain multi_v7_defconfig build:
-
-  https://linux.kernelci.org/test/plan/id/61899d322c0e9fee7e3358ec/
-
-Please let us know if you need any help debugging this issue or
-if you have a fix to try.
-
-Best wishes,
-Guillaume
-
-
-GitHub: https://github.com/kernelci/kernelci-project/issues/71
-
--------------------------------------------------------------------------------
-
-* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
-* This automated bisection report was sent to you on the basis  *
-* that you may be involved with the breaking commit it has      *
-* found.  No manual investigation has been done to verify it,   *
-* and the root cause of the problem may be somewhere else.      *
-*                                                               *
-* If you do send a fix, please include this trailer:            *
-*   Reported-by: "kernelci.org bot" <bot@kernelci.org>          *
-*                                                               *
-* Hope this helps!                                              *
-* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
-
-mainline/master bisection: baseline.login on rk3288-rock2-square
-
-Summary:
-  Start:      e851dfae4371d Merge tag 'kgdb-5.16-rc1' of git://git.kernel.org/pub/scm/linux/kernel/git/danielt/linux
-  Plain log:  https://storage.kernelci.org/mainline/master/v5.15-11387-ge851dfae4371/arm/multi_v7_defconfig+CONFIG_EFI=y+CONFIG_ARM_LPAE=y/gcc-10/lab-collabora/baseline-rk3288-rock2-square.txt
-  HTML log:   https://storage.kernelci.org/mainline/master/v5.15-11387-ge851dfae4371/arm/multi_v7_defconfig+CONFIG_EFI=y+CONFIG_ARM_LPAE=y/gcc-10/lab-collabora/baseline-rk3288-rock2-square.html
-  Result:     d00e60ee54b12 page_pool: disable dma mapping support for 32-bit arch with 64-bit DMA
-
-Checks:
-  revert:     PASS
-  verify:     PASS
-
-Parameters:
-  Tree:       mainline
-  URL:        https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
-  Branch:     master
-  Target:     rk3288-rock2-square
-  CPU arch:   arm
-  Lab:        lab-collabora
-  Compiler:   gcc-10
-  Config:     multi_v7_defconfig+CONFIG_EFI=y+CONFIG_ARM_LPAE=y
-  Test case:  baseline.login
-
-Breaking commit found:
-
--------------------------------------------------------------------------------
-commit d00e60ee54b12de945b8493cf18c1ada9e422514
-Author: Yunsheng Lin <linyunsheng@huawei.com>
-Date:   Wed Oct 13 17:19:20 2021 +0800
-
-    page_pool: disable dma mapping support for 32-bit arch with 64-bit DMA
-    
-
-On 13/10/2021 10:19, Yunsheng Lin wrote:
-> As the 32-bit arch with 64-bit DMA seems to rare those days,
-> and page pool might carry a lot of code and complexity for
-> systems that possibly.
-> 
-> So disable dma mapping support for such systems, if drivers
-> really want to work on such systems, they have to implement
-> their own DMA-mapping fallback tracking outside page_pool.
-> 
-> Reviewed-by: Ilias Apalodimas <ilias.apalodimas@linaro.org>
-> Signed-off-by: Yunsheng Lin <linyunsheng@huawei.com>
-> ---
-> V6: Drop pp page tracking support
-> ---
->  include/linux/mm_types.h | 13 +------------
->  include/net/page_pool.h  | 12 +-----------
->  net/core/page_pool.c     | 10 ++++++----
->  3 files changed, 8 insertions(+), 27 deletions(-)
-> 
-> diff --git a/include/linux/mm_types.h b/include/linux/mm_types.h
-> index 7f8ee09c711f..436e0946d691 100644
-> --- a/include/linux/mm_types.h
-> +++ b/include/linux/mm_types.h
-> @@ -104,18 +104,7 @@ struct page {
->  			struct page_pool *pp;
->  			unsigned long _pp_mapping_pad;
->  			unsigned long dma_addr;
-> -			union {
-> -				/**
-> -				 * dma_addr_upper: might require a 64-bit
-> -				 * value on 32-bit architectures.
-> -				 */
-> -				unsigned long dma_addr_upper;
-> -				/**
-> -				 * For frag page support, not supported in
-> -				 * 32-bit architectures with 64-bit DMA.
-> -				 */
-> -				atomic_long_t pp_frag_count;
-> -			};
-> +			atomic_long_t pp_frag_count;
->  		};
->  		struct {	/* slab, slob and slub */
->  			union {
-> diff --git a/include/net/page_pool.h b/include/net/page_pool.h
-> index a4082406a003..3855f069627f 100644
-> --- a/include/net/page_pool.h
-> +++ b/include/net/page_pool.h
-> @@ -216,24 +216,14 @@ static inline void page_pool_recycle_direct(struct page_pool *pool,
->  	page_pool_put_full_page(pool, page, true);
->  }
->  
-> -#define PAGE_POOL_DMA_USE_PP_FRAG_COUNT	\
-> -		(sizeof(dma_addr_t) > sizeof(unsigned long))
-> -
->  static inline dma_addr_t page_pool_get_dma_addr(struct page *page)
->  {
-> -	dma_addr_t ret = page->dma_addr;
-> -
-> -	if (PAGE_POOL_DMA_USE_PP_FRAG_COUNT)
-> -		ret |= (dma_addr_t)page->dma_addr_upper << 16 << 16;
-> -
-> -	return ret;
-> +	return page->dma_addr;
->  }
->  
->  static inline void page_pool_set_dma_addr(struct page *page, dma_addr_t addr)
->  {
->  	page->dma_addr = addr;
-> -	if (PAGE_POOL_DMA_USE_PP_FRAG_COUNT)
-> -		page->dma_addr_upper = upper_32_bits(addr);
->  }
->  
->  static inline void page_pool_set_frag_count(struct page *page, long nr)
-> diff --git a/net/core/page_pool.c b/net/core/page_pool.c
-> index 1a6978427d6c..9b60e4301a44 100644
-> --- a/net/core/page_pool.c
-> +++ b/net/core/page_pool.c
-> @@ -49,6 +49,12 @@ static int page_pool_init(struct page_pool *pool,
->  	 * which is the XDP_TX use-case.
->  	 */
->  	if (pool->p.flags & PP_FLAG_DMA_MAP) {
-> +		/* DMA-mapping is not supported on 32-bit systems with
-> +		 * 64-bit DMA mapping.
-> +		 */
-> +		if (sizeof(dma_addr_t) > sizeof(unsigned long))
-> +			return -EOPNOTSUPP;
-> +
->  		if ((pool->p.dma_dir != DMA_FROM_DEVICE) &&
->  		    (pool->p.dma_dir != DMA_BIDIRECTIONAL))
->  			return -EINVAL;
-> @@ -69,10 +75,6 @@ static int page_pool_init(struct page_pool *pool,
->  		 */
->  	}
->  
-> -	if (PAGE_POOL_DMA_USE_PP_FRAG_COUNT &&
-> -	    pool->p.flags & PP_FLAG_PAGE_FRAG)
-> -		return -EINVAL;
-> -
->  	if (ptr_ring_init(&pool->ring, ring_qsize, GFP_KERNEL) < 0)
->  		return -ENOMEM;
->  
-> 
-
-
-
-Git bisection log:
-
--------------------------------------------------------------------------------
-git bisect start
-# good: [bfc484fe6abba4b89ec9330e0e68778e2a9856b2] Merge branch 'linus' of git://git.kernel.org/pub/scm/linux/kernel/git/herbert/crypto-2.6
-git bisect good bfc484fe6abba4b89ec9330e0e68778e2a9856b2
-# bad: [e851dfae4371d3c751f1e18e8eb5eba993de1467] Merge tag 'kgdb-5.16-rc1' of git://git.kernel.org/pub/scm/linux/kernel/git/danielt/linux
-git bisect bad e851dfae4371d3c751f1e18e8eb5eba993de1467
-# bad: [dcd68326d29b62f3039e4f4d23d3e38f24d37360] Merge tag 'devicetree-for-5.16' of git://git.kernel.org/pub/scm/linux/kernel/git/robh/linux
-git bisect bad dcd68326d29b62f3039e4f4d23d3e38f24d37360
-# bad: [b7b98f868987cd3e86c9bd9a6db048614933d7a0] Merge https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next
-git bisect bad b7b98f868987cd3e86c9bd9a6db048614933d7a0
-# bad: [9fd3d5dced976640f588e0a866b9611db2d2cb37] net: ethernet: ave: Add compatible string and SoC-dependent data for NX1 SoC
-git bisect bad 9fd3d5dced976640f588e0a866b9611db2d2cb37
-# good: [a96d317fb1a30b9f323548eb2ff05d4e4600ead9] ethernet: use eth_hw_addr_set()
-git bisect good a96d317fb1a30b9f323548eb2ff05d4e4600ead9
-# good: [f5396b8a663f7a78ee5b75a47ee524b40795b265] ice: switchdev slow path
-git bisect good f5396b8a663f7a78ee5b75a47ee524b40795b265
-# good: [20c3d9e45ba630a7156d682a40988c0e96be1b92] hamradio: use dev_addr_set() for setting device address
-git bisect good 20c3d9e45ba630a7156d682a40988c0e96be1b92
-# bad: [a64b442137669c9e839c6a70965989b01b1253b7] net: dpaa2: add support for manual setup of IRQ coalesing
-git bisect bad a64b442137669c9e839c6a70965989b01b1253b7
-# good: [30fc7efa38f21afa48b0be6bf2053e4c10ae2c78] net, neigh: Reject creating NUD_PERMANENT with NTF_MANAGED entries
-git bisect good 30fc7efa38f21afa48b0be6bf2053e4c10ae2c78
-# bad: [13ad5ccc093ff448b99ac7e138e91e78796adb48] dt-bindings: net: dsa: qca8k: Document qca,sgmii-enable-pll
-git bisect bad 13ad5ccc093ff448b99ac7e138e91e78796adb48
-# good: [40088915f547b52635f022c1e1e18df65ae3153a] Merge branch 'octeontx2-af-miscellaneous-changes-for-cpt'
-git bisect good 40088915f547b52635f022c1e1e18df65ae3153a
-# bad: [fdbf35df9c091db9c46e57e9938e3f7a4f603a7c] dt-bindings: net: dsa: qca8k: Add SGMII clock phase properties
-git bisect bad fdbf35df9c091db9c46e57e9938e3f7a4f603a7c
-# bad: [bacc8daf97d4199316328a5d18eeafbe447143c5] xen-netback: Remove redundant initialization of variable err
-git bisect bad bacc8daf97d4199316328a5d18eeafbe447143c5
-# bad: [d00e60ee54b12de945b8493cf18c1ada9e422514] page_pool: disable dma mapping support for 32-bit arch with 64-bit DMA
-git bisect bad d00e60ee54b12de945b8493cf18c1ada9e422514
-# first bad commit: [d00e60ee54b12de945b8493cf18c1ada9e422514] page_pool: disable dma mapping support for 32-bit arch with 64-bit DMA
--------------------------------------------------------------------------------
+> >  };
+> >
+> >  enum iio_event_type {
+> > @@ -114,4 +117,3 @@ enum iio_event_direction {
+> >  };
+> >
+> >  #endif /* _UAPI_IIO_TYPES_H_ */
+> > -
+> ?
+>
+>
