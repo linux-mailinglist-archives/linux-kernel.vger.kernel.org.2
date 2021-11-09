@@ -2,46 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BB2F844B0E8
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 17:13:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B7E1444B0EF
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 17:14:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238403AbhKIQQO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Nov 2021 11:16:14 -0500
-Received: from mail-ot1-f41.google.com ([209.85.210.41]:46678 "EHLO
-        mail-ot1-f41.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231161AbhKIQQN (ORCPT
+        id S238732AbhKIQQw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Nov 2021 11:16:52 -0500
+Received: from mail-oi1-f174.google.com ([209.85.167.174]:40866 "EHLO
+        mail-oi1-f174.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238523AbhKIQQu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Nov 2021 11:16:13 -0500
-Received: by mail-ot1-f41.google.com with SMTP id b5-20020a9d60c5000000b0055c6349ff22so20839020otk.13;
-        Tue, 09 Nov 2021 08:13:27 -0800 (PST)
+        Tue, 9 Nov 2021 11:16:50 -0500
+Received: by mail-oi1-f174.google.com with SMTP id bk14so11610325oib.7;
+        Tue, 09 Nov 2021 08:14:04 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=YgF8jamzpaIqMaFLxvpOOV3SnWcjJD7TEwGpydEes34=;
-        b=GYqnqAYzZpJcVcYiClS2sGkfVTdkOdFnv8gKdxStXbaylmWtB5gLAP/M3ekX08Nizk
-         mMxE4eQKPdzUVDy/ZYXu7GCDmYcpI/qN2uD0Ww0/h7QpNLrsjMT7tj1CX35aNXSaWMsL
-         IY6a8vrGcxIZok6SbPXo355VZohacViVnAeh0AKj1a/uV42LzuMtF4PfHU7usCv0dRGX
-         drCckWBphKUlM7g12a9VWrxynJ+AnXX+mIfF1ewVTYIxxLNH/mt9UyPEs6YkW+g+6aKZ
-         PxiSwXycIeoZPp52R0G2qBgjF+HOP6xZKI+piLIsrvZuEiavi0IutbgCxUYJKfDh7ufz
-         yKAQ==
-X-Gm-Message-State: AOAM530FdPTpHh1cOm/6EKFfWi5pdb9U62KA8w5Hv8GNnRtVEmwaV54e
-        1YATMKr9cyJxaumiE9IhMA==
-X-Google-Smtp-Source: ABdhPJw/yWunLCyUQLHrVmXuyciqvxSoPlfSe6RdxkCF+MQQamQlv3jX7e/z8xk3JRyyTluAFicEEg==
-X-Received: by 2002:a05:6830:1d87:: with SMTP id y7mr6722755oti.269.1636474406773;
-        Tue, 09 Nov 2021 08:13:26 -0800 (PST)
+        bh=wQFU29bSGSAyz5O6gMkXta10oolW+zHL7VnNsYdGBQo=;
+        b=LOclFZnNXPjvM1qURezVYGwIgqOHDL//OwlVPSLRcNdbqDkit+wSUMGraoMjm0pHBb
+         FxT2nNuvKze153C447DgDQPkvBYsTV3crUP1+YihBBWOs7pSKGoYjtKobyrVHXwKJYh9
+         9C53/BA8ME1Z01FXEGyLcmdULdoDZvgx/JphpeF7vi6iTqgg4ljZfbIcBkQ/7ovoY2fL
+         6DTj4CNQicFsDWYoEjEV5DIjQQl/Q2yDZ+R8OtjSDY8UjNo5dteP0mbJSrwVNcFaPQSf
+         jJGECoCmOXGJZ1/BgCY+nax1Tc9BMvUBgv0gkeuzWqDquKiA0QNh2MlHSBQMjN26HVs5
+         BSrg==
+X-Gm-Message-State: AOAM530htOryqRIV1Yi4NG3K6glJlTHx1hkQkhZ1ETgGOp3KpSyyiAuC
+        3xRP10eMhElr5TJcTJQGhA==
+X-Google-Smtp-Source: ABdhPJzTS01yEYfSXFn94vnmbE0+Ed2+FM34XpmHuwPIcnO1eGEHxCSE7bqdKKXbw6p8f8utt+V3YQ==
+X-Received: by 2002:aca:2319:: with SMTP id e25mr6692917oie.164.1636474443559;
+        Tue, 09 Nov 2021 08:14:03 -0800 (PST)
 Received: from xps15.herring.priv (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
-        by smtp.googlemail.com with ESMTPSA id bf17sm3833953oib.27.2021.11.09.08.13.25
+        by smtp.googlemail.com with ESMTPSA id l3sm2988851ots.69.2021.11.09.08.14.01
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 09 Nov 2021 08:13:26 -0800 (PST)
+        Tue, 09 Nov 2021 08:14:02 -0800 (PST)
 From:   Rob Herring <robh@kernel.org>
-To:     Mark Brown <broonie@kernel.org>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Ganesan Ramalingam <ganesanr@broadcom.com>
 Cc:     linux-kernel@vger.kernel.org,
         Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        linux-mips@vger.kernel.org, linux-spi@vger.kernel.org
-Subject: [PATCH] spi: xlp: Remove Netlogic XLP variants
-Date:   Tue,  9 Nov 2021 10:13:25 -0600
-Message-Id: <20211109161325.2203564-1-robh@kernel.org>
+        linux-mips@vger.kernel.org,
+        Jayachandran Chandrashekaran Nair <jchandra@broadcom.com>,
+        linux-staging@lists.linux.dev
+Subject: [PATCH] staging: Remove Netlogic XLP network driver
+Date:   Tue,  9 Nov 2021 10:14:01 -0600
+Message-Id: <20211109161401.2204280-1-robh@kernel.org>
 X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -49,74 +52,2521 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Netlogic XLP was removed in commit 95b8a5e0111a ("MIPS: Remove NETLOGIC
-support"). With those gone, the single platform left to support is
-Cavium ThunderX2. Remove the Netlogic variant and DT support.
+The Netlogic XLP platform was removed in commit 95b8a5e0111a ("MIPS:
+Remove NETLOGIC support"), so this driver is now dead.
 
-For simplicity, the existing kconfig name is retained.
-
-Cc: Mark Brown <broonie@kernel.org>
-Cc: linux-spi@vger.kernel.org
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc: Ganesan Ramalingam <ganesanr@broadcom.com>
+Cc: Jayachandran Chandrashekaran Nair <jchandra@broadcom.com>
+Cc: linux-staging@lists.linux.dev
 Signed-off-by: Rob Herring <robh@kernel.org>
 ---
- drivers/spi/Kconfig   | 11 +++++------
- drivers/spi/spi-xlp.c |  8 --------
- 2 files changed, 5 insertions(+), 14 deletions(-)
+ drivers/staging/Kconfig                 |    2 -
+ drivers/staging/Makefile                |    1 -
+ drivers/staging/netlogic/Kconfig        |    9 -
+ drivers/staging/netlogic/Makefile       |    2 -
+ drivers/staging/netlogic/TODO           |   11 -
+ drivers/staging/netlogic/platform_net.c |  219 -----
+ drivers/staging/netlogic/platform_net.h |   21 -
+ drivers/staging/netlogic/xlr_net.c      | 1080 -----------------------
+ drivers/staging/netlogic/xlr_net.h      | 1079 ----------------------
+ 9 files changed, 2424 deletions(-)
+ delete mode 100644 drivers/staging/netlogic/Kconfig
+ delete mode 100644 drivers/staging/netlogic/Makefile
+ delete mode 100644 drivers/staging/netlogic/TODO
+ delete mode 100644 drivers/staging/netlogic/platform_net.c
+ delete mode 100644 drivers/staging/netlogic/platform_net.h
+ delete mode 100644 drivers/staging/netlogic/xlr_net.c
+ delete mode 100644 drivers/staging/netlogic/xlr_net.h
 
-diff --git a/drivers/spi/Kconfig b/drivers/spi/Kconfig
-index 596705d24400..b2a8821971e1 100644
---- a/drivers/spi/Kconfig
-+++ b/drivers/spi/Kconfig
-@@ -974,14 +974,13 @@ config SPI_XILINX
- 	  Or for the DS570, see "XPS Serial Peripheral Interface (SPI) (v2.00b)"
+diff --git a/drivers/staging/Kconfig b/drivers/staging/Kconfig
+index 59af251e7576..7fec86946131 100644
+--- a/drivers/staging/Kconfig
++++ b/drivers/staging/Kconfig
+@@ -66,8 +66,6 @@ source "drivers/staging/gdm724x/Kconfig"
  
- config SPI_XLP
--	tristate "Netlogic XLP SPI controller driver"
--	depends on CPU_XLP || ARCH_THUNDER2 || COMPILE_TEST
-+	tristate "Cavium ThunderX2 SPI controller driver"
-+	depends on ARCH_THUNDER2 || COMPILE_TEST
- 	help
--	  Enable support for the SPI controller on the Netlogic XLP SoCs.
--	  Currently supported XLP variants are XLP8XX, XLP3XX, XLP2XX, XLP9XX
--	  and XLP5XX.
-+	  Enable support for the SPI controller on the Cavium ThunderX2.
-+	  (Originally on Netlogic XLP SoCs.)
+ source "drivers/staging/fwserial/Kconfig"
  
--	  If you have a Netlogic XLP platform say Y here.
-+	  If you have a Cavium ThunderX2 platform say Y here.
- 	  If unsure, say N.
- 
- config SPI_XTENSA_XTFPGA
-diff --git a/drivers/spi/spi-xlp.c b/drivers/spi/spi-xlp.c
-index 797ac0ea8fa3..e5707fe5c8f1 100644
---- a/drivers/spi/spi-xlp.c
-+++ b/drivers/spi/spi-xlp.c
-@@ -9,7 +9,6 @@
- #include <linux/module.h>
- #include <linux/platform_device.h>
- #include <linux/spi/spi.h>
--#include <linux/of.h>
- #include <linux/interrupt.h>
- 
- /* SPI Configuration Register */
-@@ -436,17 +435,10 @@ static const struct acpi_device_id xlp_spi_acpi_match[] = {
- MODULE_DEVICE_TABLE(acpi, xlp_spi_acpi_match);
- #endif
- 
--static const struct of_device_id xlp_spi_dt_id[] = {
--	{ .compatible = "netlogic,xlp832-spi" },
--	{ },
--};
--MODULE_DEVICE_TABLE(of, xlp_spi_dt_id);
+-source "drivers/staging/netlogic/Kconfig"
 -
- static struct platform_driver xlp_spi_driver = {
- 	.probe	= xlp_spi_probe,
- 	.driver = {
- 		.name	= "xlp-spi",
--		.of_match_table = xlp_spi_dt_id,
- 		.acpi_match_table = ACPI_PTR(xlp_spi_acpi_match),
- 	},
- };
+ source "drivers/staging/gs_fpgaboot/Kconfig"
+ 
+ source "drivers/staging/unisys/Kconfig"
+diff --git a/drivers/staging/Makefile b/drivers/staging/Makefile
+index 76f413470bc8..e66e19c45425 100644
+--- a/drivers/staging/Makefile
++++ b/drivers/staging/Makefile
+@@ -10,7 +10,6 @@ obj-$(CONFIG_RTL8723BS)		+= rtl8723bs/
+ obj-$(CONFIG_R8712U)		+= rtl8712/
+ obj-$(CONFIG_R8188EU)		+= r8188eu/
+ obj-$(CONFIG_RTS5208)		+= rts5208/
+-obj-$(CONFIG_NETLOGIC_XLR_NET)	+= netlogic/
+ obj-$(CONFIG_OCTEON_ETHERNET)	+= octeon/
+ obj-$(CONFIG_OCTEON_USB)	+= octeon-usb/
+ obj-$(CONFIG_VT6655)		+= vt6655/
+diff --git a/drivers/staging/netlogic/Kconfig b/drivers/staging/netlogic/Kconfig
+deleted file mode 100644
+index e1712606ee3c..000000000000
+--- a/drivers/staging/netlogic/Kconfig
++++ /dev/null
+@@ -1,9 +0,0 @@
+-# SPDX-License-Identifier: GPL-2.0
+-config NETLOGIC_XLR_NET
+-	tristate "Netlogic XLR/XLS network device"
+-	depends on CPU_XLR
+-	depends on NETDEVICES
+-	select PHYLIB
+-	help
+-	This driver support Netlogic XLR/XLS on chip gigabit
+-	Ethernet.
+diff --git a/drivers/staging/netlogic/Makefile b/drivers/staging/netlogic/Makefile
+deleted file mode 100644
+index 7e2902af26a3..000000000000
+--- a/drivers/staging/netlogic/Makefile
++++ /dev/null
+@@ -1,2 +0,0 @@
+-# SPDX-License-Identifier: GPL-2.0
+-obj-$(CONFIG_NETLOGIC_XLR_NET) += xlr_net.o platform_net.o
+diff --git a/drivers/staging/netlogic/TODO b/drivers/staging/netlogic/TODO
+deleted file mode 100644
+index 20e22ecb9903..000000000000
+--- a/drivers/staging/netlogic/TODO
++++ /dev/null
+@@ -1,11 +0,0 @@
+-* Implementing 64bit stat counter in software
+-* All memory allocation should be changed to DMA allocations
+-* Changing comments into linux standard format
+-
+-Please send patches
+-To:
+-Ganesan Ramalingam <ganesanr@broadcom.com>
+-Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+-Cc:
+-Jayachandran Chandrashekaran Nair <jchandra@broadcom.com>
+-
+diff --git a/drivers/staging/netlogic/platform_net.c b/drivers/staging/netlogic/platform_net.c
+deleted file mode 100644
+index 8be9d0b0c22c..000000000000
+--- a/drivers/staging/netlogic/platform_net.c
++++ /dev/null
+@@ -1,219 +0,0 @@
+-// SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
+-/*
+- * Copyright (c) 2003-2012 Broadcom Corporation
+- * All Rights Reserved
+- */
+-
+-#include <linux/device.h>
+-#include <linux/platform_device.h>
+-#include <linux/kernel.h>
+-#include <linux/init.h>
+-#include <linux/io.h>
+-#include <linux/delay.h>
+-#include <linux/ioport.h>
+-#include <linux/resource.h>
+-#include <linux/phy.h>
+-
+-#include <asm/netlogic/haldefs.h>
+-#include <asm/netlogic/common.h>
+-#include <asm/netlogic/xlr/fmn.h>
+-#include <asm/netlogic/xlr/xlr.h>
+-#include <asm/netlogic/psb-bootinfo.h>
+-#include <asm/netlogic/xlr/pic.h>
+-#include <asm/netlogic/xlr/iomap.h>
+-
+-#include "platform_net.h"
+-
+-/* Linux Net */
+-#define MAX_NUM_GMAC		8
+-#define MAX_NUM_XLS_GMAC	8
+-#define MAX_NUM_XLR_GMAC	4
+-
+-static u32 xlr_gmac_offsets[] = {
+-	NETLOGIC_IO_GMAC_0_OFFSET, NETLOGIC_IO_GMAC_1_OFFSET,
+-	NETLOGIC_IO_GMAC_2_OFFSET, NETLOGIC_IO_GMAC_3_OFFSET,
+-	NETLOGIC_IO_GMAC_4_OFFSET, NETLOGIC_IO_GMAC_5_OFFSET,
+-	NETLOGIC_IO_GMAC_6_OFFSET, NETLOGIC_IO_GMAC_7_OFFSET
+-};
+-
+-static u32 xlr_gmac_irqs[] = { PIC_GMAC_0_IRQ, PIC_GMAC_1_IRQ,
+-	PIC_GMAC_2_IRQ, PIC_GMAC_3_IRQ,
+-	PIC_GMAC_4_IRQ, PIC_GMAC_5_IRQ,
+-	PIC_GMAC_6_IRQ, PIC_GMAC_7_IRQ
+-};
+-
+-static struct resource xlr_net0_res[8];
+-static struct resource xlr_net1_res[8];
+-static u32 __iomem *gmac4_addr;
+-static u32 __iomem *gpio_addr;
+-
+-static void xlr_resource_init(struct resource *res, int offset, int irq)
+-{
+-	res->name = "gmac";
+-
+-	res->start = CPHYSADDR(nlm_mmio_base(offset));
+-	res->end = res->start + 0xfff;
+-	res->flags = IORESOURCE_MEM;
+-
+-	res++;
+-	res->name = "gmac";
+-	res->start = irq;
+-	res->end = irq;
+-	res->flags = IORESOURCE_IRQ;
+-}
+-
+-static struct platform_device *gmac_controller2_init(void *gmac0_addr)
+-{
+-	int mac;
+-	static struct xlr_net_data ndata1 = {
+-		.phy_interface	= PHY_INTERFACE_MODE_SGMII,
+-		.rfr_station	= FMN_STNID_GMAC1_FR_0,
+-		.bucket_size	= xlr_board_fmn_config.bucket_size,
+-		.gmac_fmn_info	= &xlr_board_fmn_config.gmac[1],
+-	};
+-
+-	static struct platform_device xlr_net_dev1 = {
+-		.name		= "xlr-net",
+-		.id		= 1,
+-		.dev.platform_data = &ndata1,
+-	};
+-
+-	gmac4_addr =
+-		ioremap(CPHYSADDR(nlm_mmio_base(NETLOGIC_IO_GMAC_4_OFFSET)),
+-			0xfff);
+-	ndata1.serdes_addr = gmac4_addr;
+-	ndata1.pcs_addr	= gmac4_addr;
+-	ndata1.mii_addr	= gmac0_addr;
+-	ndata1.gpio_addr = gpio_addr;
+-	ndata1.cpu_mask = nlm_current_node()->coremask;
+-
+-	xlr_net_dev1.resource = xlr_net1_res;
+-
+-	for (mac = 0; mac < 4; mac++) {
+-		ndata1.tx_stnid[mac] = FMN_STNID_GMAC1_TX0 + mac;
+-		ndata1.phy_addr[mac] = mac + 4 + 0x10;
+-
+-		xlr_resource_init(&xlr_net1_res[mac * 2],
+-				  xlr_gmac_offsets[mac + 4],
+-				  xlr_gmac_irqs[mac + 4]);
+-	}
+-	xlr_net_dev1.num_resources = 8;
+-
+-	return &xlr_net_dev1;
+-}
+-
+-static void xls_gmac_init(void)
+-{
+-	int mac;
+-	struct platform_device *xlr_net_dev1;
+-	void __iomem *gmac0_addr =
+-		ioremap(CPHYSADDR(nlm_mmio_base(NETLOGIC_IO_GMAC_0_OFFSET)),
+-			0xfff);
+-
+-	static struct xlr_net_data ndata0 = {
+-		.rfr_station	= FMN_STNID_GMACRFR_0,
+-		.bucket_size	= xlr_board_fmn_config.bucket_size,
+-		.gmac_fmn_info	= &xlr_board_fmn_config.gmac[0],
+-	};
+-
+-	static struct platform_device xlr_net_dev0 = {
+-		.name		= "xlr-net",
+-		.id		= 0,
+-	};
+-	xlr_net_dev0.dev.platform_data = &ndata0;
+-	ndata0.serdes_addr = gmac0_addr;
+-	ndata0.pcs_addr	= gmac0_addr;
+-	ndata0.mii_addr	= gmac0_addr;
+-
+-	/* Passing GPIO base for serdes init. Only needed on sgmii ports */
+-	gpio_addr =
+-		ioremap(CPHYSADDR(nlm_mmio_base(NETLOGIC_IO_GPIO_OFFSET)),
+-			0xfff);
+-	ndata0.gpio_addr = gpio_addr;
+-	ndata0.cpu_mask = nlm_current_node()->coremask;
+-
+-	xlr_net_dev0.resource = xlr_net0_res;
+-
+-	switch (nlm_prom_info.board_major_version) {
+-	case 12:
+-		/* first block RGMII or XAUI, use RGMII */
+-		ndata0.phy_interface = PHY_INTERFACE_MODE_RGMII;
+-		ndata0.tx_stnid[0] = FMN_STNID_GMAC0_TX0;
+-		ndata0.phy_addr[0] = 0;
+-
+-		xlr_net_dev0.num_resources = 2;
+-
+-		xlr_resource_init(&xlr_net0_res[0], xlr_gmac_offsets[0],
+-				  xlr_gmac_irqs[0]);
+-		platform_device_register(&xlr_net_dev0);
+-
+-		/* second block is XAUI, not supported yet */
+-		break;
+-	default:
+-		/* default XLS config, all ports SGMII */
+-		ndata0.phy_interface = PHY_INTERFACE_MODE_SGMII;
+-		for (mac = 0; mac < 4; mac++) {
+-			ndata0.tx_stnid[mac] = FMN_STNID_GMAC0_TX0 + mac;
+-			ndata0.phy_addr[mac] = mac + 0x10;
+-
+-			xlr_resource_init(&xlr_net0_res[mac * 2],
+-					  xlr_gmac_offsets[mac],
+-					xlr_gmac_irqs[mac]);
+-		}
+-		xlr_net_dev0.num_resources = 8;
+-		platform_device_register(&xlr_net_dev0);
+-
+-		xlr_net_dev1 = gmac_controller2_init(gmac0_addr);
+-		platform_device_register(xlr_net_dev1);
+-	}
+-}
+-
+-static void xlr_gmac_init(void)
+-{
+-	int mac;
+-
+-	/* assume all GMACs for now */
+-	static struct xlr_net_data ndata0 = {
+-		.phy_interface	= PHY_INTERFACE_MODE_RGMII,
+-		.serdes_addr	= NULL,
+-		.pcs_addr	= NULL,
+-		.rfr_station	= FMN_STNID_GMACRFR_0,
+-		.bucket_size	= xlr_board_fmn_config.bucket_size,
+-		.gmac_fmn_info	= &xlr_board_fmn_config.gmac[0],
+-		.gpio_addr	= NULL,
+-	};
+-
+-	static struct platform_device xlr_net_dev0 = {
+-		.name		= "xlr-net",
+-		.id		= 0,
+-		.dev.platform_data = &ndata0,
+-	};
+-	ndata0.mii_addr =
+-		ioremap(CPHYSADDR(nlm_mmio_base(NETLOGIC_IO_GMAC_0_OFFSET)),
+-			0xfff);
+-
+-	ndata0.cpu_mask = nlm_current_node()->coremask;
+-
+-	for (mac = 0; mac < MAX_NUM_XLR_GMAC; mac++) {
+-		ndata0.tx_stnid[mac] = FMN_STNID_GMAC0_TX0 + mac;
+-		ndata0.phy_addr[mac] = mac;
+-		xlr_resource_init(&xlr_net0_res[mac * 2], xlr_gmac_offsets[mac],
+-				  xlr_gmac_irqs[mac]);
+-	}
+-	xlr_net_dev0.num_resources = 8;
+-	xlr_net_dev0.resource = xlr_net0_res;
+-
+-	platform_device_register(&xlr_net_dev0);
+-}
+-
+-static int __init xlr_net_init(void)
+-{
+-	if (nlm_chip_is_xls())
+-		xls_gmac_init();
+-	else
+-		xlr_gmac_init();
+-
+-	return 0;
+-}
+-
+-arch_initcall(xlr_net_init);
+diff --git a/drivers/staging/netlogic/platform_net.h b/drivers/staging/netlogic/platform_net.h
+deleted file mode 100644
+index c8d4c13424c6..000000000000
+--- a/drivers/staging/netlogic/platform_net.h
++++ /dev/null
+@@ -1,21 +0,0 @@
+-/* SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause) */
+-/*
+- * Copyright (c) 2003-2012 Broadcom Corporation
+- * All Rights Reserved
+- */
+-
+-#define PORTS_PER_CONTROLLER		4
+-
+-struct xlr_net_data {
+-	int cpu_mask;
+-	u32 __iomem *mii_addr;
+-	u32 __iomem *serdes_addr;
+-	u32 __iomem *pcs_addr;
+-	u32 __iomem *gpio_addr;
+-	int phy_interface;
+-	int rfr_station;
+-	int tx_stnid[PORTS_PER_CONTROLLER];
+-	int *bucket_size;
+-	int phy_addr[PORTS_PER_CONTROLLER];
+-	struct xlr_fmn_info *gmac_fmn_info;
+-};
+diff --git a/drivers/staging/netlogic/xlr_net.c b/drivers/staging/netlogic/xlr_net.c
+deleted file mode 100644
+index 69ea61faf8fa..000000000000
+--- a/drivers/staging/netlogic/xlr_net.c
++++ /dev/null
+@@ -1,1080 +0,0 @@
+-// SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
+-/*
+- * Copyright (c) 2003-2012 Broadcom Corporation
+- * All Rights Reserved
+- */
+-
+-#include <linux/phy.h>
+-#include <linux/delay.h>
+-#include <linux/netdevice.h>
+-#include <linux/smp.h>
+-#include <linux/ethtool.h>
+-#include <linux/module.h>
+-#include <linux/etherdevice.h>
+-#include <linux/skbuff.h>
+-#include <linux/jiffies.h>
+-#include <linux/interrupt.h>
+-#include <linux/platform_device.h>
+-
+-#include <asm/mipsregs.h>
+-/*
+- * fmn.h - For FMN credit configuration and registering fmn_handler.
+- * FMN is communication mechanism that allows processing agents within
+- * XLR/XLS to communicate each other.
+- */
+-#include <asm/netlogic/xlr/fmn.h>
+-
+-#include "platform_net.h"
+-#include "xlr_net.h"
+-
+-/*
+- * The readl/writel implementation byteswaps on XLR/XLS, so
+- * we need to use __raw_ IO to read the NAE registers
+- * because they are in the big-endian MMIO area on the SoC.
+- */
+-static inline void xlr_nae_wreg(u32 __iomem *base, unsigned int reg, u32 val)
+-{
+-	__raw_writel(val, base + reg);
+-}
+-
+-static inline u32 xlr_nae_rdreg(u32 __iomem *base, unsigned int reg)
+-{
+-	return __raw_readl(base + reg);
+-}
+-
+-static inline void xlr_reg_update(u32 *base_addr, u32 off, u32 val, u32 mask)
+-{
+-	u32 tmp;
+-
+-	tmp = xlr_nae_rdreg(base_addr, off);
+-	xlr_nae_wreg(base_addr, off, (tmp & ~mask) | (val & mask));
+-}
+-
+-#define MAC_SKB_BACK_PTR_SIZE SMP_CACHE_BYTES
+-
+-static int send_to_rfr_fifo(struct xlr_net_priv *priv, void *addr)
+-{
+-	struct nlm_fmn_msg msg;
+-	int ret = 0, num_try = 0, stnid;
+-	unsigned long paddr, mflags;
+-
+-	paddr = virt_to_bus(addr);
+-	msg.msg0 = (u64)paddr & 0xffffffffe0ULL;
+-	msg.msg1 = 0;
+-	msg.msg2 = 0;
+-	msg.msg3 = 0;
+-	stnid = priv->nd->rfr_station;
+-	do {
+-		mflags = nlm_cop2_enable_irqsave();
+-		ret = nlm_fmn_send(1, 0, stnid, &msg);
+-		nlm_cop2_disable_irqrestore(mflags);
+-		if (ret == 0)
+-			return 0;
+-	} while (++num_try < 10000);
+-
+-	netdev_err(priv->ndev, "Send to RFR failed in RX path\n");
+-	return ret;
+-}
+-
+-static inline unsigned char *xlr_alloc_skb(void)
+-{
+-	struct sk_buff *skb;
+-	int buf_len = sizeof(struct sk_buff *);
+-	unsigned char *skb_data;
+-
+-	/* skb->data is cache aligned */
+-	skb = alloc_skb(XLR_RX_BUF_SIZE, GFP_ATOMIC);
+-	if (!skb)
+-		return NULL;
+-	skb_data = skb->data;
+-	skb_reserve(skb, MAC_SKB_BACK_PTR_SIZE);
+-	memcpy(skb_data, &skb, buf_len);
+-
+-	return skb->data;
+-}
+-
+-static void xlr_net_fmn_handler(int bkt, int src_stnid, int size, int code,
+-				struct nlm_fmn_msg *msg, void *arg)
+-{
+-	struct sk_buff *skb;
+-	void *skb_data = NULL;
+-	struct net_device *ndev;
+-	struct xlr_net_priv *priv;
+-	u32 port, length;
+-	unsigned char *addr;
+-	struct xlr_adapter *adapter = arg;
+-
+-	length = (msg->msg0 >> 40) & 0x3fff;
+-	if (length == 0) {
+-		addr = bus_to_virt(msg->msg0 & 0xffffffffffULL);
+-		addr = addr - MAC_SKB_BACK_PTR_SIZE;
+-		skb = (struct sk_buff *)(*(unsigned long *)addr);
+-		dev_kfree_skb_any((struct sk_buff *)addr);
+-	} else {
+-		addr = (unsigned char *)
+-			bus_to_virt(msg->msg0 & 0xffffffffe0ULL);
+-		length = length - BYTE_OFFSET - MAC_CRC_LEN;
+-		port = ((int)msg->msg0) & 0x0f;
+-		addr = addr - MAC_SKB_BACK_PTR_SIZE;
+-		skb = (struct sk_buff *)(*(unsigned long *)addr);
+-		skb->dev = adapter->netdev[port];
+-		if (!skb->dev)
+-			return;
+-		ndev = skb->dev;
+-		priv = netdev_priv(ndev);
+-
+-		/* 16 byte IP header align */
+-		skb_reserve(skb, BYTE_OFFSET);
+-		skb_put(skb, length);
+-		skb->protocol = eth_type_trans(skb, skb->dev);
+-		netif_rx(skb);
+-		/* Fill rx ring */
+-		skb_data = xlr_alloc_skb();
+-		if (skb_data)
+-			send_to_rfr_fifo(priv, skb_data);
+-	}
+-}
+-
+-static struct phy_device *xlr_get_phydev(struct xlr_net_priv *priv)
+-{
+-	return mdiobus_get_phy(priv->mii_bus, priv->phy_addr);
+-}
+-
+-/*
+- * Ethtool operation
+- */
+-static int xlr_get_link_ksettings(struct net_device *ndev,
+-				  struct ethtool_link_ksettings *ecmd)
+-{
+-	struct xlr_net_priv *priv = netdev_priv(ndev);
+-	struct phy_device *phydev = xlr_get_phydev(priv);
+-
+-	if (!phydev)
+-		return -ENODEV;
+-
+-	phy_ethtool_ksettings_get(phydev, ecmd);
+-
+-	return 0;
+-}
+-
+-static int xlr_set_link_ksettings(struct net_device *ndev,
+-				  const struct ethtool_link_ksettings *ecmd)
+-{
+-	struct xlr_net_priv *priv = netdev_priv(ndev);
+-	struct phy_device *phydev = xlr_get_phydev(priv);
+-
+-	if (!phydev)
+-		return -ENODEV;
+-	return phy_ethtool_ksettings_set(phydev, ecmd);
+-}
+-
+-static const struct ethtool_ops xlr_ethtool_ops = {
+-	.get_link_ksettings = xlr_get_link_ksettings,
+-	.set_link_ksettings = xlr_set_link_ksettings,
+-};
+-
+-/*
+- * Net operations
+- */
+-static int xlr_net_fill_rx_ring(struct net_device *ndev)
+-{
+-	void *skb_data;
+-	struct xlr_net_priv *priv = netdev_priv(ndev);
+-	int i;
+-
+-	for (i = 0; i < MAX_FRIN_SPILL / 4; i++) {
+-		skb_data = xlr_alloc_skb();
+-		if (!skb_data)
+-			return -ENOMEM;
+-		send_to_rfr_fifo(priv, skb_data);
+-	}
+-	netdev_info(ndev, "Rx ring setup done\n");
+-	return 0;
+-}
+-
+-static int xlr_net_open(struct net_device *ndev)
+-{
+-	u32 err;
+-	struct xlr_net_priv *priv = netdev_priv(ndev);
+-	struct phy_device *phydev = xlr_get_phydev(priv);
+-
+-	/* schedule a link state check */
+-	phy_start(phydev);
+-
+-	err = phy_start_aneg(phydev);
+-	if (err) {
+-		pr_err("Autoneg failed\n");
+-		return err;
+-	}
+-	/* Setup the speed from PHY to internal reg*/
+-	xlr_set_gmac_speed(priv);
+-
+-	netif_tx_start_all_queues(ndev);
+-
+-	return 0;
+-}
+-
+-static int xlr_net_stop(struct net_device *ndev)
+-{
+-	struct xlr_net_priv *priv = netdev_priv(ndev);
+-	struct phy_device *phydev = xlr_get_phydev(priv);
+-
+-	phy_stop(phydev);
+-	netif_tx_stop_all_queues(ndev);
+-	return 0;
+-}
+-
+-static void xlr_make_tx_desc(struct nlm_fmn_msg *msg, unsigned long addr,
+-			     struct sk_buff *skb)
+-{
+-	unsigned long physkb = virt_to_phys(skb);
+-	int cpu_core = nlm_core_id();
+-	int fr_stn_id = cpu_core * 8 + XLR_FB_STN;	/* FB to 6th bucket */
+-
+-	msg->msg0 = (((u64)1 << 63)	|	/* End of packet descriptor */
+-		((u64)127 << 54)	|	/* No Free back */
+-		(u64)skb->len << 40	|	/* Length of data */
+-		((u64)addr));
+-	msg->msg1 = (((u64)1 << 63)	|
+-		((u64)fr_stn_id << 54)	|	/* Free back id */
+-		(u64)0 << 40		|	/* Set len to 0 */
+-		((u64)physkb  & 0xffffffff));	/* 32bit address */
+-	msg->msg2 = 0;
+-	msg->msg3 = 0;
+-}
+-
+-static netdev_tx_t xlr_net_start_xmit(struct sk_buff *skb,
+-				      struct net_device *ndev)
+-{
+-	struct nlm_fmn_msg msg;
+-	struct xlr_net_priv *priv = netdev_priv(ndev);
+-	int ret;
+-	u32 flags;
+-
+-	xlr_make_tx_desc(&msg, virt_to_phys(skb->data), skb);
+-	flags = nlm_cop2_enable_irqsave();
+-	ret = nlm_fmn_send(2, 0, priv->tx_stnid, &msg);
+-	nlm_cop2_disable_irqrestore(flags);
+-	if (ret)
+-		dev_kfree_skb_any(skb);
+-	return NETDEV_TX_OK;
+-}
+-
+-static void xlr_hw_set_mac_addr(struct net_device *ndev)
+-{
+-	struct xlr_net_priv *priv = netdev_priv(ndev);
+-
+-	/* set mac station address */
+-	xlr_nae_wreg(priv->base_addr, R_MAC_ADDR0,
+-		     ((ndev->dev_addr[5] << 24) | (ndev->dev_addr[4] << 16) |
+-		     (ndev->dev_addr[3] << 8) | (ndev->dev_addr[2])));
+-	xlr_nae_wreg(priv->base_addr, R_MAC_ADDR0 + 1,
+-		     ((ndev->dev_addr[1] << 24) | (ndev->dev_addr[0] << 16)));
+-
+-	xlr_nae_wreg(priv->base_addr, R_MAC_ADDR_MASK2, 0xffffffff);
+-	xlr_nae_wreg(priv->base_addr, R_MAC_ADDR_MASK2 + 1, 0xffffffff);
+-	xlr_nae_wreg(priv->base_addr, R_MAC_ADDR_MASK3, 0xffffffff);
+-	xlr_nae_wreg(priv->base_addr, R_MAC_ADDR_MASK3 + 1, 0xffffffff);
+-
+-	xlr_nae_wreg(priv->base_addr, R_MAC_FILTER_CONFIG,
+-		     (1 << O_MAC_FILTER_CONFIG__BROADCAST_EN) |
+-		     (1 << O_MAC_FILTER_CONFIG__ALL_MCAST_EN) |
+-		     (1 << O_MAC_FILTER_CONFIG__MAC_ADDR0_VALID));
+-
+-	if (priv->nd->phy_interface == PHY_INTERFACE_MODE_RGMII ||
+-	    priv->nd->phy_interface == PHY_INTERFACE_MODE_SGMII)
+-		xlr_reg_update(priv->base_addr, R_IPG_IFG, MAC_B2B_IPG, 0x7f);
+-}
+-
+-static int xlr_net_set_mac_addr(struct net_device *ndev, void *data)
+-{
+-	int err;
+-
+-	err = eth_mac_addr(ndev, data);
+-	if (err)
+-		return err;
+-	xlr_hw_set_mac_addr(ndev);
+-	return 0;
+-}
+-
+-static void xlr_set_rx_mode(struct net_device *ndev)
+-{
+-	struct xlr_net_priv *priv = netdev_priv(ndev);
+-	u32 regval;
+-
+-	regval = xlr_nae_rdreg(priv->base_addr, R_MAC_FILTER_CONFIG);
+-
+-	if (ndev->flags & IFF_PROMISC) {
+-		regval |= (1 << O_MAC_FILTER_CONFIG__BROADCAST_EN) |
+-		(1 << O_MAC_FILTER_CONFIG__PAUSE_FRAME_EN) |
+-		(1 << O_MAC_FILTER_CONFIG__ALL_MCAST_EN) |
+-		(1 << O_MAC_FILTER_CONFIG__ALL_UCAST_EN);
+-	} else {
+-		regval &= ~((1 << O_MAC_FILTER_CONFIG__PAUSE_FRAME_EN) |
+-		(1 << O_MAC_FILTER_CONFIG__ALL_UCAST_EN));
+-	}
+-
+-	xlr_nae_wreg(priv->base_addr, R_MAC_FILTER_CONFIG, regval);
+-}
+-
+-static void xlr_stats(struct net_device *ndev, struct rtnl_link_stats64 *stats)
+-{
+-	struct xlr_net_priv *priv = netdev_priv(ndev);
+-
+-	stats->rx_packets = xlr_nae_rdreg(priv->base_addr, RX_PACKET_COUNTER);
+-	stats->tx_packets = xlr_nae_rdreg(priv->base_addr, TX_PACKET_COUNTER);
+-	stats->rx_bytes = xlr_nae_rdreg(priv->base_addr, RX_BYTE_COUNTER);
+-	stats->tx_bytes = xlr_nae_rdreg(priv->base_addr, TX_BYTE_COUNTER);
+-	stats->tx_errors = xlr_nae_rdreg(priv->base_addr, TX_FCS_ERROR_COUNTER);
+-	stats->rx_dropped = xlr_nae_rdreg(priv->base_addr,
+-					  RX_DROP_PACKET_COUNTER);
+-	stats->tx_dropped = xlr_nae_rdreg(priv->base_addr,
+-					  TX_DROP_FRAME_COUNTER);
+-
+-	stats->multicast = xlr_nae_rdreg(priv->base_addr,
+-					 RX_MULTICAST_PACKET_COUNTER);
+-	stats->collisions = xlr_nae_rdreg(priv->base_addr,
+-					  TX_TOTAL_COLLISION_COUNTER);
+-
+-	stats->rx_length_errors = xlr_nae_rdreg(priv->base_addr,
+-						RX_FRAME_LENGTH_ERROR_COUNTER);
+-	stats->rx_over_errors = xlr_nae_rdreg(priv->base_addr,
+-					      RX_DROP_PACKET_COUNTER);
+-	stats->rx_crc_errors = xlr_nae_rdreg(priv->base_addr,
+-					     RX_FCS_ERROR_COUNTER);
+-	stats->rx_frame_errors = xlr_nae_rdreg(priv->base_addr,
+-					       RX_ALIGNMENT_ERROR_COUNTER);
+-
+-	stats->rx_fifo_errors = xlr_nae_rdreg(priv->base_addr,
+-					      RX_DROP_PACKET_COUNTER);
+-	stats->rx_missed_errors = xlr_nae_rdreg(priv->base_addr,
+-						RX_CARRIER_SENSE_ERROR_COUNTER);
+-
+-	stats->rx_errors = (stats->rx_over_errors + stats->rx_crc_errors +
+-			    stats->rx_frame_errors + stats->rx_fifo_errors +
+-			    stats->rx_missed_errors);
+-
+-	stats->tx_aborted_errors = xlr_nae_rdreg(priv->base_addr,
+-						 TX_EXCESSIVE_COLLISION_PACKET_COUNTER);
+-	stats->tx_carrier_errors = xlr_nae_rdreg(priv->base_addr,
+-						 TX_DROP_FRAME_COUNTER);
+-	stats->tx_fifo_errors = xlr_nae_rdreg(priv->base_addr,
+-					      TX_DROP_FRAME_COUNTER);
+-}
+-
+-static const struct net_device_ops xlr_netdev_ops = {
+-	.ndo_open = xlr_net_open,
+-	.ndo_stop = xlr_net_stop,
+-	.ndo_start_xmit = xlr_net_start_xmit,
+-	.ndo_select_queue = dev_pick_tx_cpu_id,
+-	.ndo_set_mac_address = xlr_net_set_mac_addr,
+-	.ndo_set_rx_mode = xlr_set_rx_mode,
+-	.ndo_get_stats64 = xlr_stats,
+-};
+-
+-/*
+- * Gmac init
+- */
+-static void *xlr_config_spill(struct xlr_net_priv *priv, int reg_start_0,
+-			      int reg_start_1, int reg_size, int size)
+-{
+-	void *spill;
+-	u32 *base;
+-	unsigned long phys_addr;
+-	u32 spill_size;
+-
+-	base = priv->base_addr;
+-	spill_size = size;
+-	spill = kmalloc(spill_size + SMP_CACHE_BYTES, GFP_KERNEL);
+-	if (!spill)
+-		return ZERO_SIZE_PTR;
+-
+-	spill = PTR_ALIGN(spill, SMP_CACHE_BYTES);
+-	phys_addr = virt_to_phys(spill);
+-	dev_dbg(&priv->ndev->dev, "Allocated spill %d bytes at %lx\n",
+-		size, phys_addr);
+-	xlr_nae_wreg(base, reg_start_0, (phys_addr >> 5) & 0xffffffff);
+-	xlr_nae_wreg(base, reg_start_1, ((u64)phys_addr >> 37) & 0x07);
+-	xlr_nae_wreg(base, reg_size, spill_size);
+-
+-	return spill;
+-}
+-
+-/*
+- * Configure the 6 FIFO's that are used by the network accelarator to
+- * communicate with the rest of the XLx device. 4 of the FIFO's are for
+- * packets from NA --> cpu (called Class FIFO's) and 2 are for feeding
+- * the NA with free descriptors.
+- */
+-static void xlr_config_fifo_spill_area(struct xlr_net_priv *priv)
+-{
+-	priv->frin_spill = xlr_config_spill(priv,
+-					    R_REG_FRIN_SPILL_MEM_START_0,
+-					    R_REG_FRIN_SPILL_MEM_START_1,
+-					    R_REG_FRIN_SPILL_MEM_SIZE,
+-					    MAX_FRIN_SPILL * sizeof(u64));
+-	priv->frout_spill = xlr_config_spill(priv,
+-					     R_FROUT_SPILL_MEM_START_0,
+-					     R_FROUT_SPILL_MEM_START_1,
+-					     R_FROUT_SPILL_MEM_SIZE,
+-					     MAX_FROUT_SPILL * sizeof(u64));
+-	priv->class_0_spill = xlr_config_spill(priv,
+-					       R_CLASS0_SPILL_MEM_START_0,
+-					       R_CLASS0_SPILL_MEM_START_1,
+-					       R_CLASS0_SPILL_MEM_SIZE,
+-					       MAX_CLASS_0_SPILL * sizeof(u64));
+-	priv->class_1_spill = xlr_config_spill(priv,
+-					       R_CLASS1_SPILL_MEM_START_0,
+-					       R_CLASS1_SPILL_MEM_START_1,
+-					       R_CLASS1_SPILL_MEM_SIZE,
+-					       MAX_CLASS_1_SPILL * sizeof(u64));
+-	priv->class_2_spill = xlr_config_spill(priv,
+-					       R_CLASS2_SPILL_MEM_START_0,
+-					       R_CLASS2_SPILL_MEM_START_1,
+-					       R_CLASS2_SPILL_MEM_SIZE,
+-					       MAX_CLASS_2_SPILL * sizeof(u64));
+-	priv->class_3_spill = xlr_config_spill(priv,
+-					       R_CLASS3_SPILL_MEM_START_0,
+-					       R_CLASS3_SPILL_MEM_START_1,
+-					       R_CLASS3_SPILL_MEM_SIZE,
+-					       MAX_CLASS_3_SPILL * sizeof(u64));
+-}
+-
+-/*
+- * Configure PDE to Round-Robin distribution of packets to the
+- * available cpu
+- */
+-static void xlr_config_pde(struct xlr_net_priv *priv)
+-{
+-	int i = 0;
+-	u64 bkt_map = 0;
+-
+-	/* Each core has 8 buckets(station) */
+-	for (i = 0; i < hweight32(priv->nd->cpu_mask); i++)
+-		bkt_map |= (0xff << (i * 8));
+-
+-	xlr_nae_wreg(priv->base_addr, R_PDE_CLASS_0, (bkt_map & 0xffffffff));
+-	xlr_nae_wreg(priv->base_addr, R_PDE_CLASS_0 + 1,
+-		     ((bkt_map >> 32) & 0xffffffff));
+-
+-	xlr_nae_wreg(priv->base_addr, R_PDE_CLASS_1, (bkt_map & 0xffffffff));
+-	xlr_nae_wreg(priv->base_addr, R_PDE_CLASS_1 + 1,
+-		     ((bkt_map >> 32) & 0xffffffff));
+-
+-	xlr_nae_wreg(priv->base_addr, R_PDE_CLASS_2, (bkt_map & 0xffffffff));
+-	xlr_nae_wreg(priv->base_addr, R_PDE_CLASS_2 + 1,
+-		     ((bkt_map >> 32) & 0xffffffff));
+-
+-	xlr_nae_wreg(priv->base_addr, R_PDE_CLASS_3, (bkt_map & 0xffffffff));
+-	xlr_nae_wreg(priv->base_addr, R_PDE_CLASS_3 + 1,
+-		     ((bkt_map >> 32) & 0xffffffff));
+-}
+-
+-/*
+- * Setup the Message ring credits, bucket size and other
+- * common configuration
+- */
+-static int xlr_config_common(struct xlr_net_priv *priv)
+-{
+-	struct xlr_fmn_info *gmac = priv->nd->gmac_fmn_info;
+-	int start_stn_id = gmac->start_stn_id;
+-	int end_stn_id = gmac->end_stn_id;
+-	int *bucket_size = priv->nd->bucket_size;
+-	int i, j, err;
+-
+-	/* Setting non-core MsgBktSize(0x321 - 0x325) */
+-	for (i = start_stn_id; i <= end_stn_id; i++) {
+-		xlr_nae_wreg(priv->base_addr,
+-			     R_GMAC_RFR0_BUCKET_SIZE + i - start_stn_id,
+-			     bucket_size[i]);
+-	}
+-
+-	/*
+-	 * Setting non-core Credit counter register
+-	 * Distributing Gmac's credit to CPU's
+-	 */
+-	for (i = 0; i < 8; i++) {
+-		for (j = 0; j < 8; j++)
+-			xlr_nae_wreg(priv->base_addr,
+-				     (R_CC_CPU0_0 + (i * 8)) + j,
+-				     gmac->credit_config[(i * 8) + j]);
+-	}
+-
+-	xlr_nae_wreg(priv->base_addr, R_MSG_TX_THRESHOLD, 3);
+-	xlr_nae_wreg(priv->base_addr, R_DMACR0, 0xffffffff);
+-	xlr_nae_wreg(priv->base_addr, R_DMACR1, 0xffffffff);
+-	xlr_nae_wreg(priv->base_addr, R_DMACR2, 0xffffffff);
+-	xlr_nae_wreg(priv->base_addr, R_DMACR3, 0xffffffff);
+-	xlr_nae_wreg(priv->base_addr, R_FREEQCARVE, 0);
+-
+-	err = xlr_net_fill_rx_ring(priv->ndev);
+-	if (err)
+-		return err;
+-	nlm_register_fmn_handler(start_stn_id, end_stn_id, xlr_net_fmn_handler,
+-				 priv->adapter);
+-	return 0;
+-}
+-
+-static void xlr_config_translate_table(struct xlr_net_priv *priv)
+-{
+-	u32 cpu_mask;
+-	u32 val;
+-	int bkts[32]; /* one bucket is assumed for each cpu */
+-	int b1, b2, c1, c2, i, j, k;
+-	int use_bkt;
+-
+-	use_bkt = 0;
+-	cpu_mask = priv->nd->cpu_mask;
+-
+-	pr_info("Using %s-based distribution\n",
+-		(use_bkt) ? "bucket" : "class");
+-	j = 0;
+-	for (i = 0; i < 32; i++) {
+-		if ((1 << i) & cpu_mask) {
+-			/* for each cpu, mark the 4+threadid bucket */
+-			bkts[j] = ((i / 4) * 8) + (i % 4);
+-			j++;
+-		}
+-	}
+-
+-	/*configure the 128 * 9 Translation table to send to available buckets*/
+-	k = 0;
+-	c1 = 3;
+-	c2 = 0;
+-	for (i = 0; i < 64; i++) {
+-		/*
+-		 * On use_bkt set the b0, b1 are used, else
+-		 * the 4 classes are used, here implemented
+-		 * a logic to distribute the packets to the
+-		 * buckets equally or based on the class
+-		 */
+-		c1 = (c1 + 1) & 3;
+-		c2 = (c1 + 1) & 3;
+-		b1 = bkts[k];
+-		k = (k + 1) % j;
+-		b2 = bkts[k];
+-		k = (k + 1) % j;
+-
+-		val = ((c1 << 23) | (b1 << 17) | (use_bkt << 16) |
+-				(c2 << 7) | (b2 << 1) | (use_bkt << 0));
+-		dev_dbg(&priv->ndev->dev, "Table[%d] b1=%d b2=%d c1=%d c2=%d\n",
+-			i, b1, b2, c1, c2);
+-		xlr_nae_wreg(priv->base_addr, R_TRANSLATETABLE + i, val);
+-		c1 = c2;
+-	}
+-}
+-
+-static void xlr_config_parser(struct xlr_net_priv *priv)
+-{
+-	u32 val;
+-
+-	/* Mark it as ETHERNET type */
+-	xlr_nae_wreg(priv->base_addr, R_L2TYPE_0, 0x01);
+-
+-	/* Use 7bit CRChash for flow classification with 127 as CRC polynomial*/
+-	xlr_nae_wreg(priv->base_addr, R_PARSERCONFIGREG,
+-		     ((0x7f << 8) | (1 << 1)));
+-
+-	/* configure the parser : L2 Type is configured in the bootloader */
+-	/* extract IP: src, dest protocol */
+-	xlr_nae_wreg(priv->base_addr, R_L3CTABLE,
+-		     (9 << 20) | (1 << 19) | (1 << 18) | (0x01 << 16) |
+-		     (0x0800 << 0));
+-	xlr_nae_wreg(priv->base_addr, R_L3CTABLE + 1,
+-		     (9 << 25) | (1 << 21) | (12 << 14) | (4 << 10) |
+-		     (16 << 4) | 4);
+-
+-	/* Configure to extract SRC port and Dest port for TCP and UDP pkts */
+-	xlr_nae_wreg(priv->base_addr, R_L4CTABLE, 6);
+-	xlr_nae_wreg(priv->base_addr, R_L4CTABLE + 2, 17);
+-	val = ((0 << 21) | (2 << 17) | (2 << 11) | (2 << 7));
+-	xlr_nae_wreg(priv->base_addr, R_L4CTABLE + 1, val);
+-	xlr_nae_wreg(priv->base_addr, R_L4CTABLE + 3, val);
+-
+-	xlr_config_translate_table(priv);
+-}
+-
+-static int xlr_phy_write(u32 *base_addr, int phy_addr, int regnum, u16 val)
+-{
+-	unsigned long timeout, stoptime, checktime;
+-	int timedout;
+-
+-	/* 100ms timeout*/
+-	timeout = msecs_to_jiffies(100);
+-	stoptime = jiffies + timeout;
+-	timedout = 0;
+-
+-	xlr_nae_wreg(base_addr, R_MII_MGMT_ADDRESS, (phy_addr << 8) | regnum);
+-
+-	/* Write the data which starts the write cycle */
+-	xlr_nae_wreg(base_addr, R_MII_MGMT_WRITE_DATA, (u32)val);
+-
+-	/* poll for the read cycle to complete */
+-	while (!timedout) {
+-		checktime = jiffies;
+-		if (xlr_nae_rdreg(base_addr, R_MII_MGMT_INDICATORS) == 0)
+-			break;
+-		timedout = time_after(checktime, stoptime);
+-	}
+-	if (timedout) {
+-		pr_info("Phy device write err: device busy");
+-		return -EBUSY;
+-	}
+-
+-	return 0;
+-}
+-
+-static int xlr_phy_read(u32 *base_addr, int phy_addr, int regnum)
+-{
+-	unsigned long timeout, stoptime, checktime;
+-	int timedout;
+-
+-	/* 100ms timeout*/
+-	timeout = msecs_to_jiffies(100);
+-	stoptime = jiffies + timeout;
+-	timedout = 0;
+-
+-	/* setup the phy reg to be used */
+-	xlr_nae_wreg(base_addr, R_MII_MGMT_ADDRESS,
+-		     (phy_addr << 8) | (regnum << 0));
+-
+-	/* Issue the read command */
+-	xlr_nae_wreg(base_addr, R_MII_MGMT_COMMAND,
+-		     (1 << O_MII_MGMT_COMMAND__rstat));
+-
+-	/* poll for the read cycle to complete */
+-	while (!timedout) {
+-		checktime = jiffies;
+-		if (xlr_nae_rdreg(base_addr, R_MII_MGMT_INDICATORS) == 0)
+-			break;
+-		timedout = time_after(checktime, stoptime);
+-	}
+-	if (timedout) {
+-		pr_info("Phy device read err: device busy");
+-		return -EBUSY;
+-	}
+-
+-	/* clear the read cycle */
+-	xlr_nae_wreg(base_addr, R_MII_MGMT_COMMAND, 0);
+-
+-	/* Read the data */
+-	return xlr_nae_rdreg(base_addr, R_MII_MGMT_STATUS);
+-}
+-
+-static int xlr_mii_write(struct mii_bus *bus, int phy_addr, int regnum, u16 val)
+-{
+-	struct xlr_net_priv *priv = bus->priv;
+-	int ret;
+-
+-	ret = xlr_phy_write(priv->mii_addr, phy_addr, regnum, val);
+-	dev_dbg(&priv->ndev->dev, "mii_write phy %d : %d <- %x [%x]\n",
+-		phy_addr, regnum, val, ret);
+-	return ret;
+-}
+-
+-static int xlr_mii_read(struct mii_bus *bus, int phy_addr, int regnum)
+-{
+-	struct xlr_net_priv *priv = bus->priv;
+-	int ret;
+-
+-	ret =  xlr_phy_read(priv->mii_addr, phy_addr, regnum);
+-	dev_dbg(&priv->ndev->dev, "mii_read phy %d : %d [%x]\n",
+-		phy_addr, regnum, ret);
+-	return ret;
+-}
+-
+-/*
+- * XLR ports are RGMII. XLS ports are SGMII mostly except the port0,
+- * which can be configured either SGMII or RGMII, considered SGMII
+- * by default, if board setup to RGMII the port_type need to set
+- * accordingly.Serdes and PCS layer need to configured for SGMII
+- */
+-static void xlr_sgmii_init(struct xlr_net_priv *priv)
+-{
+-	int phy;
+-
+-	xlr_phy_write(priv->serdes_addr, 26, 0, 0x6DB0);
+-	xlr_phy_write(priv->serdes_addr, 26, 1, 0xFFFF);
+-	xlr_phy_write(priv->serdes_addr, 26, 2, 0xB6D0);
+-	xlr_phy_write(priv->serdes_addr, 26, 3, 0x00FF);
+-	xlr_phy_write(priv->serdes_addr, 26, 4, 0x0000);
+-	xlr_phy_write(priv->serdes_addr, 26, 5, 0x0000);
+-	xlr_phy_write(priv->serdes_addr, 26, 6, 0x0005);
+-	xlr_phy_write(priv->serdes_addr, 26, 7, 0x0001);
+-	xlr_phy_write(priv->serdes_addr, 26, 8, 0x0000);
+-	xlr_phy_write(priv->serdes_addr, 26, 9, 0x0000);
+-	xlr_phy_write(priv->serdes_addr, 26, 10, 0x0000);
+-
+-	/* program  GPIO values for serdes init parameters */
+-	xlr_nae_wreg(priv->gpio_addr, 0x20, 0x7e6802);
+-	xlr_nae_wreg(priv->gpio_addr, 0x10, 0x7104);
+-
+-	xlr_nae_wreg(priv->gpio_addr, 0x22, 0x7e6802);
+-	xlr_nae_wreg(priv->gpio_addr, 0x21, 0x7104);
+-
+-	/* enable autoneg - more magic */
+-	phy = priv->phy_addr % 4 + 27;
+-	xlr_phy_write(priv->pcs_addr, phy, 0, 0x1000);
+-	xlr_phy_write(priv->pcs_addr, phy, 0, 0x0200);
+-}
+-
+-void xlr_set_gmac_speed(struct xlr_net_priv *priv)
+-{
+-	struct phy_device *phydev = xlr_get_phydev(priv);
+-	int speed;
+-
+-	if (phydev->interface == PHY_INTERFACE_MODE_SGMII)
+-		xlr_sgmii_init(priv);
+-
+-	if (phydev->speed != priv->phy_speed) {
+-		speed = phydev->speed;
+-		if (speed == SPEED_1000) {
+-			/* Set interface to Byte mode */
+-			xlr_nae_wreg(priv->base_addr, R_MAC_CONFIG_2, 0x7217);
+-			priv->phy_speed = speed;
+-		} else if (speed == SPEED_100 || speed == SPEED_10) {
+-			/* Set interface to Nibble mode */
+-			xlr_nae_wreg(priv->base_addr, R_MAC_CONFIG_2, 0x7117);
+-			priv->phy_speed = speed;
+-		}
+-		/* Set SGMII speed in Interface control reg */
+-		if (phydev->interface == PHY_INTERFACE_MODE_SGMII) {
+-			if (speed == SPEED_10)
+-				xlr_nae_wreg(priv->base_addr,
+-					     R_INTERFACE_CONTROL,
+-					     SGMII_SPEED_10);
+-			if (speed == SPEED_100)
+-				xlr_nae_wreg(priv->base_addr,
+-					     R_INTERFACE_CONTROL,
+-					     SGMII_SPEED_100);
+-			if (speed == SPEED_1000)
+-				xlr_nae_wreg(priv->base_addr,
+-					     R_INTERFACE_CONTROL,
+-					     SGMII_SPEED_1000);
+-		}
+-		if (speed == SPEED_10)
+-			xlr_nae_wreg(priv->base_addr, R_CORECONTROL, 0x2);
+-		if (speed == SPEED_100)
+-			xlr_nae_wreg(priv->base_addr, R_CORECONTROL, 0x1);
+-		if (speed == SPEED_1000)
+-			xlr_nae_wreg(priv->base_addr, R_CORECONTROL, 0x0);
+-	}
+-	pr_info("gmac%d : %dMbps\n", priv->port_id, priv->phy_speed);
+-}
+-
+-static void xlr_gmac_link_adjust(struct net_device *ndev)
+-{
+-	struct xlr_net_priv *priv = netdev_priv(ndev);
+-	struct phy_device *phydev = xlr_get_phydev(priv);
+-	u32 intreg;
+-
+-	intreg = xlr_nae_rdreg(priv->base_addr, R_INTREG);
+-	if (phydev->link) {
+-		if (phydev->speed != priv->phy_speed) {
+-			xlr_set_gmac_speed(priv);
+-			pr_info("gmac%d : Link up\n", priv->port_id);
+-		}
+-	} else {
+-		xlr_set_gmac_speed(priv);
+-		pr_info("gmac%d : Link down\n", priv->port_id);
+-	}
+-}
+-
+-static int xlr_mii_probe(struct xlr_net_priv *priv)
+-{
+-	struct phy_device *phydev = xlr_get_phydev(priv);
+-
+-	if (!phydev) {
+-		pr_err("no PHY found on phy_addr %d\n", priv->phy_addr);
+-		return -ENODEV;
+-	}
+-
+-	/* Attach MAC to PHY */
+-	phydev = phy_connect(priv->ndev, phydev_name(phydev),
+-			     xlr_gmac_link_adjust, priv->nd->phy_interface);
+-
+-	if (IS_ERR(phydev)) {
+-		pr_err("could not attach PHY\n");
+-		return PTR_ERR(phydev);
+-	}
+-	phydev->supported &= (ADVERTISED_10baseT_Full
+-				| ADVERTISED_10baseT_Half
+-				| ADVERTISED_100baseT_Full
+-				| ADVERTISED_100baseT_Half
+-				| ADVERTISED_1000baseT_Full
+-				| ADVERTISED_Autoneg
+-				| ADVERTISED_MII);
+-
+-	phydev->advertising = phydev->supported;
+-	phy_attached_info(phydev);
+-	return 0;
+-}
+-
+-static int xlr_setup_mdio(struct xlr_net_priv *priv,
+-			  struct platform_device *pdev)
+-{
+-	int err;
+-
+-	priv->mii_bus = mdiobus_alloc();
+-	if (!priv->mii_bus) {
+-		pr_err("mdiobus alloc failed\n");
+-		return -ENOMEM;
+-	}
+-
+-	priv->mii_bus->priv = priv;
+-	priv->mii_bus->name = "xlr-mdio";
+-	snprintf(priv->mii_bus->id, MII_BUS_ID_SIZE, "%s-%d",
+-		 priv->mii_bus->name, priv->port_id);
+-	priv->mii_bus->read = xlr_mii_read;
+-	priv->mii_bus->write = xlr_mii_write;
+-	priv->mii_bus->parent = &pdev->dev;
+-
+-	/* Scan only the enabled address */
+-	priv->mii_bus->phy_mask = ~(1 << priv->phy_addr);
+-
+-	/* setting clock divisor to 54 */
+-	xlr_nae_wreg(priv->base_addr, R_MII_MGMT_CONFIG, 0x7);
+-
+-	err = mdiobus_register(priv->mii_bus);
+-	if (err) {
+-		mdiobus_free(priv->mii_bus);
+-		pr_err("mdio bus registration failed\n");
+-		return err;
+-	}
+-
+-	pr_info("Registered mdio bus id : %s\n", priv->mii_bus->id);
+-	err = xlr_mii_probe(priv);
+-	if (err) {
+-		mdiobus_free(priv->mii_bus);
+-		return err;
+-	}
+-	return 0;
+-}
+-
+-static void xlr_port_enable(struct xlr_net_priv *priv)
+-{
+-	u32 prid = (read_c0_prid() & 0xf000);
+-
+-	/* Setup MAC_CONFIG reg if (xls & rgmii) */
+-	if ((prid == 0x8000 || prid == 0x4000 || prid == 0xc000) &&
+-	    priv->nd->phy_interface == PHY_INTERFACE_MODE_RGMII)
+-		xlr_reg_update(priv->base_addr, R_RX_CONTROL,
+-			       (1 << O_RX_CONTROL__RGMII),
+-			       (1 << O_RX_CONTROL__RGMII));
+-
+-	/* Rx Tx enable */
+-	xlr_reg_update(priv->base_addr, R_MAC_CONFIG_1,
+-		       ((1 << O_MAC_CONFIG_1__rxen) |
+-			(1 << O_MAC_CONFIG_1__txen) |
+-			(1 << O_MAC_CONFIG_1__rxfc) |
+-			(1 << O_MAC_CONFIG_1__txfc)),
+-		       ((1 << O_MAC_CONFIG_1__rxen) |
+-			(1 << O_MAC_CONFIG_1__txen) |
+-			(1 << O_MAC_CONFIG_1__rxfc) |
+-			(1 << O_MAC_CONFIG_1__txfc)));
+-
+-	/* Setup tx control reg */
+-	xlr_reg_update(priv->base_addr, R_TX_CONTROL,
+-		       ((1 << O_TX_CONTROL__TXENABLE) |
+-		       (512 << O_TX_CONTROL__TXTHRESHOLD)), 0x3fff);
+-
+-	/* Setup rx control reg */
+-	xlr_reg_update(priv->base_addr, R_RX_CONTROL,
+-		       1 << O_RX_CONTROL__RXENABLE,
+-		       1 << O_RX_CONTROL__RXENABLE);
+-}
+-
+-static void xlr_port_disable(struct xlr_net_priv *priv)
+-{
+-	/* Setup MAC_CONFIG reg */
+-	/* Rx Tx disable*/
+-	xlr_reg_update(priv->base_addr, R_MAC_CONFIG_1,
+-		       ((1 << O_MAC_CONFIG_1__rxen) |
+-			(1 << O_MAC_CONFIG_1__txen) |
+-			(1 << O_MAC_CONFIG_1__rxfc) |
+-			(1 << O_MAC_CONFIG_1__txfc)), 0x0);
+-
+-	/* Setup tx control reg */
+-	xlr_reg_update(priv->base_addr, R_TX_CONTROL,
+-		       ((1 << O_TX_CONTROL__TXENABLE) |
+-		       (512 << O_TX_CONTROL__TXTHRESHOLD)), 0);
+-
+-	/* Setup rx control reg */
+-	xlr_reg_update(priv->base_addr, R_RX_CONTROL,
+-		       1 << O_RX_CONTROL__RXENABLE, 0);
+-}
+-
+-/*
+- * Initialization of gmac
+- */
+-static int xlr_gmac_init(struct xlr_net_priv *priv,
+-			 struct platform_device *pdev)
+-{
+-	int ret;
+-
+-	pr_info("Initializing the gmac%d\n", priv->port_id);
+-
+-	xlr_port_disable(priv);
+-
+-	xlr_nae_wreg(priv->base_addr, R_DESC_PACK_CTRL,
+-		     (1 << O_DESC_PACK_CTRL__MAXENTRY) |
+-		     (BYTE_OFFSET << O_DESC_PACK_CTRL__BYTEOFFSET) |
+-		     (1600 << O_DESC_PACK_CTRL__REGULARSIZE));
+-
+-	ret = xlr_setup_mdio(priv, pdev);
+-	if (ret)
+-		return ret;
+-	xlr_port_enable(priv);
+-
+-	/* Enable Full-duplex/1000Mbps/CRC */
+-	xlr_nae_wreg(priv->base_addr, R_MAC_CONFIG_2, 0x7217);
+-	/* speed 2.5Mhz */
+-	xlr_nae_wreg(priv->base_addr, R_CORECONTROL, 0x02);
+-	/* Setup Interrupt mask reg */
+-	xlr_nae_wreg(priv->base_addr, R_INTMASK, (1 << O_INTMASK__TXILLEGAL) |
+-		     (1 << O_INTMASK__MDINT) | (1 << O_INTMASK__TXFETCHERROR) |
+-		     (1 << O_INTMASK__P2PSPILLECC) | (1 << O_INTMASK__TAGFULL) |
+-		     (1 << O_INTMASK__UNDERRUN) | (1 << O_INTMASK__ABORT));
+-
+-	/* Clear all stats */
+-	xlr_reg_update(priv->base_addr, R_STATCTRL, 0, 1 << O_STATCTRL__CLRCNT);
+-	xlr_reg_update(priv->base_addr, R_STATCTRL, 1 << 2, 1 << 2);
+-	return 0;
+-}
+-
+-static int xlr_net_probe(struct platform_device *pdev)
+-{
+-	struct xlr_net_priv *priv = NULL;
+-	struct net_device *ndev;
+-	struct resource *res;
+-	struct xlr_adapter *adapter;
+-	int err, port;
+-
+-	pr_info("XLR/XLS Ethernet Driver controller %d\n", pdev->id);
+-	/*
+-	 * Allocate our adapter data structure and attach it to the device.
+-	 */
+-	adapter = devm_kzalloc(&pdev->dev, sizeof(*adapter), GFP_KERNEL);
+-	if (!adapter)
+-		return -ENOMEM;
+-
+-	/*
+-	 * XLR and XLS have 1 and 2 NAE controller respectively
+-	 * Each controller has 4 gmac ports, mapping each controller
+-	 * under one parent device, 4 gmac ports under one device.
+-	 */
+-	for (port = 0; port < pdev->num_resources / 2; port++) {
+-		ndev = alloc_etherdev_mq(sizeof(struct xlr_net_priv), 32);
+-		if (!ndev) {
+-			dev_err(&pdev->dev,
+-				"Allocation of Ethernet device failed\n");
+-			return -ENOMEM;
+-		}
+-
+-		priv = netdev_priv(ndev);
+-		priv->pdev = pdev;
+-		priv->ndev = ndev;
+-		priv->port_id = (pdev->id * 4) + port;
+-		priv->nd = (struct xlr_net_data *)pdev->dev.platform_data;
+-		priv->base_addr = devm_platform_ioremap_resource(pdev, port);
+-		if (IS_ERR(priv->base_addr)) {
+-			err = PTR_ERR(priv->base_addr);
+-			goto err_gmac;
+-		}
+-		priv->adapter = adapter;
+-		adapter->netdev[port] = ndev;
+-
+-		res = platform_get_resource(pdev, IORESOURCE_IRQ, port);
+-		if (!res) {
+-			dev_err(&pdev->dev, "No irq resource for MAC %d\n",
+-				priv->port_id);
+-			err = -ENODEV;
+-			goto err_gmac;
+-		}
+-
+-		ndev->irq = res->start;
+-
+-		priv->phy_addr = priv->nd->phy_addr[port];
+-		priv->tx_stnid = priv->nd->tx_stnid[port];
+-		priv->mii_addr = priv->nd->mii_addr;
+-		priv->serdes_addr = priv->nd->serdes_addr;
+-		priv->pcs_addr = priv->nd->pcs_addr;
+-		priv->gpio_addr = priv->nd->gpio_addr;
+-
+-		ndev->netdev_ops = &xlr_netdev_ops;
+-		ndev->watchdog_timeo = HZ;
+-
+-		/* Setup Mac address and Rx mode */
+-		eth_hw_addr_random(ndev);
+-		xlr_hw_set_mac_addr(ndev);
+-		xlr_set_rx_mode(ndev);
+-
+-		priv->num_rx_desc += MAX_NUM_DESC_SPILL;
+-		ndev->ethtool_ops = &xlr_ethtool_ops;
+-		SET_NETDEV_DEV(ndev, &pdev->dev);
+-
+-		xlr_config_fifo_spill_area(priv);
+-		/* Configure PDE to Round-Robin pkt distribution */
+-		xlr_config_pde(priv);
+-		xlr_config_parser(priv);
+-
+-		/* Call init with respect to port */
+-		if (strcmp(res->name, "gmac") == 0) {
+-			err = xlr_gmac_init(priv, pdev);
+-			if (err) {
+-				dev_err(&pdev->dev, "gmac%d init failed\n",
+-					priv->port_id);
+-				goto err_gmac;
+-			}
+-		}
+-
+-		if (priv->port_id == 0 || priv->port_id == 4) {
+-			err = xlr_config_common(priv);
+-			if (err)
+-				goto err_netdev;
+-		}
+-
+-		err = register_netdev(ndev);
+-		if (err) {
+-			dev_err(&pdev->dev,
+-				"Registering netdev failed for gmac%d\n",
+-				priv->port_id);
+-			goto err_netdev;
+-		}
+-		platform_set_drvdata(pdev, priv);
+-	}
+-
+-	return 0;
+-
+-err_netdev:
+-	mdiobus_free(priv->mii_bus);
+-err_gmac:
+-	free_netdev(ndev);
+-	return err;
+-}
+-
+-static int xlr_net_remove(struct platform_device *pdev)
+-{
+-	struct xlr_net_priv *priv = platform_get_drvdata(pdev);
+-
+-	unregister_netdev(priv->ndev);
+-	mdiobus_unregister(priv->mii_bus);
+-	mdiobus_free(priv->mii_bus);
+-	free_netdev(priv->ndev);
+-	return 0;
+-}
+-
+-static struct platform_driver xlr_net_driver = {
+-	.probe		= xlr_net_probe,
+-	.remove		= xlr_net_remove,
+-	.driver		= {
+-		.name	= "xlr-net",
+-	},
+-};
+-
+-module_platform_driver(xlr_net_driver);
+-
+-MODULE_AUTHOR("Ganesan Ramalingam <ganesanr@broadcom.com>");
+-MODULE_DESCRIPTION("Ethernet driver for Netlogic XLR/XLS");
+-MODULE_LICENSE("Dual BSD/GPL");
+-MODULE_ALIAS("platform:xlr-net");
+diff --git a/drivers/staging/netlogic/xlr_net.h b/drivers/staging/netlogic/xlr_net.h
+deleted file mode 100644
+index 8365b744f9b3..000000000000
+--- a/drivers/staging/netlogic/xlr_net.h
++++ /dev/null
+@@ -1,1079 +0,0 @@
+-/* SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause) */
+-/*
+- * Copyright (c) 2003-2012 Broadcom Corporation
+- * All Rights Reserved
+- */
+-
+-/* #define MAC_SPLIT_MODE */
+-
+-#define MAC_SPACING                 0x400
+-#define XGMAC_SPACING               0x400
+-
+-/* PE-MCXMAC register and bit field definitions */
+-#define R_MAC_CONFIG_1                                              0x00
+-#define   O_MAC_CONFIG_1__srst                                      31
+-#define   O_MAC_CONFIG_1__simr                                      30
+-#define   O_MAC_CONFIG_1__hrrmc                                     18
+-#define   W_MAC_CONFIG_1__hrtmc                                      2
+-#define   O_MAC_CONFIG_1__hrrfn                                     16
+-#define   W_MAC_CONFIG_1__hrtfn                                      2
+-#define   O_MAC_CONFIG_1__intlb                                      8
+-#define   O_MAC_CONFIG_1__rxfc                                       5
+-#define   O_MAC_CONFIG_1__txfc                                       4
+-#define   O_MAC_CONFIG_1__srxen                                      3
+-#define   O_MAC_CONFIG_1__rxen                                       2
+-#define   O_MAC_CONFIG_1__stxen                                      1
+-#define   O_MAC_CONFIG_1__txen                                       0
+-#define R_MAC_CONFIG_2                                              0x01
+-#define   O_MAC_CONFIG_2__prlen                                     12
+-#define   W_MAC_CONFIG_2__prlen                                      4
+-#define   O_MAC_CONFIG_2__speed                                      8
+-#define   W_MAC_CONFIG_2__speed                                      2
+-#define   O_MAC_CONFIG_2__hugen                                      5
+-#define   O_MAC_CONFIG_2__flchk                                      4
+-#define   O_MAC_CONFIG_2__crce                                       1
+-#define   O_MAC_CONFIG_2__fulld                                      0
+-#define R_IPG_IFG                                                   0x02
+-#define   O_IPG_IFG__ipgr1                                          24
+-#define   W_IPG_IFG__ipgr1                                           7
+-#define   O_IPG_IFG__ipgr2                                          16
+-#define   W_IPG_IFG__ipgr2                                           7
+-#define   O_IPG_IFG__mifg                                            8
+-#define   W_IPG_IFG__mifg                                            8
+-#define   O_IPG_IFG__ipgt                                            0
+-#define   W_IPG_IFG__ipgt                                            7
+-#define R_HALF_DUPLEX                                               0x03
+-#define   O_HALF_DUPLEX__abebt                                      24
+-#define   W_HALF_DUPLEX__abebt                                       4
+-#define   O_HALF_DUPLEX__abebe                                      19
+-#define   O_HALF_DUPLEX__bpnb                                       18
+-#define   O_HALF_DUPLEX__nobo                                       17
+-#define   O_HALF_DUPLEX__edxsdfr                                    16
+-#define   O_HALF_DUPLEX__retry                                      12
+-#define   W_HALF_DUPLEX__retry                                       4
+-#define   O_HALF_DUPLEX__lcol                                        0
+-#define   W_HALF_DUPLEX__lcol                                       10
+-#define R_MAXIMUM_FRAME_LENGTH                                      0x04
+-#define   O_MAXIMUM_FRAME_LENGTH__maxf                               0
+-#define   W_MAXIMUM_FRAME_LENGTH__maxf                              16
+-#define R_TEST                                                      0x07
+-#define   O_TEST__mbof                                               3
+-#define   O_TEST__rthdf                                              2
+-#define   O_TEST__tpause                                             1
+-#define   O_TEST__sstct                                              0
+-#define R_MII_MGMT_CONFIG                                           0x08
+-#define   O_MII_MGMT_CONFIG__scinc                                   5
+-#define   O_MII_MGMT_CONFIG__spre                                    4
+-#define   O_MII_MGMT_CONFIG__clks                                    3
+-#define   W_MII_MGMT_CONFIG__clks                                    3
+-#define R_MII_MGMT_COMMAND                                          0x09
+-#define   O_MII_MGMT_COMMAND__scan                                   1
+-#define   O_MII_MGMT_COMMAND__rstat                                  0
+-#define R_MII_MGMT_ADDRESS                                          0x0A
+-#define   O_MII_MGMT_ADDRESS__fiad                                   8
+-#define   W_MII_MGMT_ADDRESS__fiad                                   5
+-#define   O_MII_MGMT_ADDRESS__fgad                                   5
+-#define   W_MII_MGMT_ADDRESS__fgad                                   0
+-#define R_MII_MGMT_WRITE_DATA                                       0x0B
+-#define   O_MII_MGMT_WRITE_DATA__ctld                                0
+-#define   W_MII_MGMT_WRITE_DATA__ctld                               16
+-#define R_MII_MGMT_STATUS                                           0x0C
+-#define R_MII_MGMT_INDICATORS                                       0x0D
+-#define   O_MII_MGMT_INDICATORS__nvalid                              2
+-#define   O_MII_MGMT_INDICATORS__scan                                1
+-#define   O_MII_MGMT_INDICATORS__busy                                0
+-#define R_INTERFACE_CONTROL                                         0x0E
+-#define   O_INTERFACE_CONTROL__hrstint                              31
+-#define   O_INTERFACE_CONTROL__tbimode                              27
+-#define   O_INTERFACE_CONTROL__ghdmode                              26
+-#define   O_INTERFACE_CONTROL__lhdmode                              25
+-#define   O_INTERFACE_CONTROL__phymod                               24
+-#define   O_INTERFACE_CONTROL__hrrmi                                23
+-#define   O_INTERFACE_CONTROL__rspd                                 16
+-#define   O_INTERFACE_CONTROL__hr100                                15
+-#define   O_INTERFACE_CONTROL__frcq                                 10
+-#define   O_INTERFACE_CONTROL__nocfr                                 9
+-#define   O_INTERFACE_CONTROL__dlfct                                 8
+-#define   O_INTERFACE_CONTROL__enjab                                 0
+-#define R_INTERFACE_STATUS                                         0x0F
+-#define   O_INTERFACE_STATUS__xsdfr                                  9
+-#define   O_INTERFACE_STATUS__ssrr                                   8
+-#define   W_INTERFACE_STATUS__ssrr                                   5
+-#define   O_INTERFACE_STATUS__miilf                                  3
+-#define   O_INTERFACE_STATUS__locar                                  2
+-#define   O_INTERFACE_STATUS__sqerr                                  1
+-#define   O_INTERFACE_STATUS__jabber                                 0
+-#define R_STATION_ADDRESS_LS                                       0x10
+-#define R_STATION_ADDRESS_MS                                       0x11
+-
+-/* A-XGMAC register and bit field definitions */
+-#define R_XGMAC_CONFIG_0    0x00
+-#define   O_XGMAC_CONFIG_0__hstmacrst               31
+-#define   O_XGMAC_CONFIG_0__hstrstrctl              23
+-#define   O_XGMAC_CONFIG_0__hstrstrfn               22
+-#define   O_XGMAC_CONFIG_0__hstrsttctl              18
+-#define   O_XGMAC_CONFIG_0__hstrsttfn               17
+-#define   O_XGMAC_CONFIG_0__hstrstmiim              16
+-#define   O_XGMAC_CONFIG_0__hstloopback             8
+-#define R_XGMAC_CONFIG_1    0x01
+-#define   O_XGMAC_CONFIG_1__hsttctlen               31
+-#define   O_XGMAC_CONFIG_1__hsttfen                 30
+-#define   O_XGMAC_CONFIG_1__hstrctlen               29
+-#define   O_XGMAC_CONFIG_1__hstrfen                 28
+-#define   O_XGMAC_CONFIG_1__tfen                    26
+-#define   O_XGMAC_CONFIG_1__rfen                    24
+-#define   O_XGMAC_CONFIG_1__hstrctlshrtp            12
+-#define   O_XGMAC_CONFIG_1__hstdlyfcstx             10
+-#define   W_XGMAC_CONFIG_1__hstdlyfcstx              2
+-#define   O_XGMAC_CONFIG_1__hstdlyfcsrx              8
+-#define   W_XGMAC_CONFIG_1__hstdlyfcsrx              2
+-#define   O_XGMAC_CONFIG_1__hstppen                  7
+-#define   O_XGMAC_CONFIG_1__hstbytswp                6
+-#define   O_XGMAC_CONFIG_1__hstdrplt64               5
+-#define   O_XGMAC_CONFIG_1__hstprmscrx               4
+-#define   O_XGMAC_CONFIG_1__hstlenchk                3
+-#define   O_XGMAC_CONFIG_1__hstgenfcs                2
+-#define   O_XGMAC_CONFIG_1__hstpadmode               0
+-#define   W_XGMAC_CONFIG_1__hstpadmode               2
+-#define R_XGMAC_CONFIG_2    0x02
+-#define   O_XGMAC_CONFIG_2__hsttctlfrcp             31
+-#define   O_XGMAC_CONFIG_2__hstmlnkflth             27
+-#define   O_XGMAC_CONFIG_2__hstalnkflth             26
+-#define   O_XGMAC_CONFIG_2__rflnkflt                24
+-#define   W_XGMAC_CONFIG_2__rflnkflt                 2
+-#define   O_XGMAC_CONFIG_2__hstipgextmod            16
+-#define   W_XGMAC_CONFIG_2__hstipgextmod             5
+-#define   O_XGMAC_CONFIG_2__hstrctlfrcp             15
+-#define   O_XGMAC_CONFIG_2__hstipgexten              5
+-#define   O_XGMAC_CONFIG_2__hstmipgext               0
+-#define   W_XGMAC_CONFIG_2__hstmipgext               5
+-#define R_XGMAC_CONFIG_3    0x03
+-#define   O_XGMAC_CONFIG_3__hstfltrfrm              31
+-#define   W_XGMAC_CONFIG_3__hstfltrfrm              16
+-#define   O_XGMAC_CONFIG_3__hstfltrfrmdc            15
+-#define   W_XGMAC_CONFIG_3__hstfltrfrmdc            16
+-#define R_XGMAC_STATION_ADDRESS_LS      0x04
+-#define   O_XGMAC_STATION_ADDRESS_LS__hstmacadr0    0
+-#define   W_XGMAC_STATION_ADDRESS_LS__hstmacadr0    32
+-#define R_XGMAC_STATION_ADDRESS_MS      0x05
+-#define R_XGMAC_MAX_FRAME_LEN           0x08
+-#define   O_XGMAC_MAX_FRAME_LEN__hstmxfrmwctx       16
+-#define   W_XGMAC_MAX_FRAME_LEN__hstmxfrmwctx       14
+-#define   O_XGMAC_MAX_FRAME_LEN__hstmxfrmbcrx        0
+-#define   W_XGMAC_MAX_FRAME_LEN__hstmxfrmbcrx       16
+-#define R_XGMAC_REV_LEVEL               0x0B
+-#define   O_XGMAC_REV_LEVEL__revlvl                  0
+-#define   W_XGMAC_REV_LEVEL__revlvl                 15
+-#define R_XGMAC_MIIM_COMMAND            0x10
+-#define   O_XGMAC_MIIM_COMMAND__hstldcmd             3
+-#define   O_XGMAC_MIIM_COMMAND__hstmiimcmd           0
+-#define   W_XGMAC_MIIM_COMMAND__hstmiimcmd           3
+-#define R_XGMAC_MIIM_FILED              0x11
+-#define   O_XGMAC_MIIM_FILED__hststfield            30
+-#define   W_XGMAC_MIIM_FILED__hststfield             2
+-#define   O_XGMAC_MIIM_FILED__hstopfield            28
+-#define   W_XGMAC_MIIM_FILED__hstopfield             2
+-#define   O_XGMAC_MIIM_FILED__hstphyadx             23
+-#define   W_XGMAC_MIIM_FILED__hstphyadx              5
+-#define   O_XGMAC_MIIM_FILED__hstregadx             18
+-#define   W_XGMAC_MIIM_FILED__hstregadx              5
+-#define   O_XGMAC_MIIM_FILED__hsttafield            16
+-#define   W_XGMAC_MIIM_FILED__hsttafield             2
+-#define   O_XGMAC_MIIM_FILED__miimrddat              0
+-#define   W_XGMAC_MIIM_FILED__miimrddat             16
+-#define R_XGMAC_MIIM_CONFIG             0x12
+-#define   O_XGMAC_MIIM_CONFIG__hstnopram             7
+-#define   O_XGMAC_MIIM_CONFIG__hstclkdiv             0
+-#define   W_XGMAC_MIIM_CONFIG__hstclkdiv             7
+-#define R_XGMAC_MIIM_LINK_FAIL_VECTOR   0x13
+-#define   O_XGMAC_MIIM_LINK_FAIL_VECTOR__miimlfvec   0
+-#define   W_XGMAC_MIIM_LINK_FAIL_VECTOR__miimlfvec  32
+-#define R_XGMAC_MIIM_INDICATOR          0x14
+-#define   O_XGMAC_MIIM_INDICATOR__miimphylf          4
+-#define   O_XGMAC_MIIM_INDICATOR__miimmoncplt        3
+-#define   O_XGMAC_MIIM_INDICATOR__miimmonvld         2
+-#define   O_XGMAC_MIIM_INDICATOR__miimmon            1
+-#define   O_XGMAC_MIIM_INDICATOR__miimbusy           0
+-
+-/* GMAC stats registers */
+-#define R_RBYT							    0x27
+-#define R_RPKT							    0x28
+-#define R_RFCS							    0x29
+-#define R_RMCA							    0x2A
+-#define R_RBCA							    0x2B
+-#define R_RXCF							    0x2C
+-#define R_RXPF							    0x2D
+-#define R_RXUO							    0x2E
+-#define R_RALN							    0x2F
+-#define R_RFLR							    0x30
+-#define R_RCDE							    0x31
+-#define R_RCSE							    0x32
+-#define R_RUND							    0x33
+-#define R_ROVR							    0x34
+-#define R_TBYT							    0x38
+-#define R_TPKT							    0x39
+-#define R_TMCA							    0x3A
+-#define R_TBCA							    0x3B
+-#define R_TXPF							    0x3C
+-#define R_TDFR							    0x3D
+-#define R_TEDF							    0x3E
+-#define R_TSCL							    0x3F
+-#define R_TMCL							    0x40
+-#define R_TLCL							    0x41
+-#define R_TXCL							    0x42
+-#define R_TNCL							    0x43
+-#define R_TJBR							    0x46
+-#define R_TFCS							    0x47
+-#define R_TXCF							    0x48
+-#define R_TOVR							    0x49
+-#define R_TUND							    0x4A
+-#define R_TFRG							    0x4B
+-
+-/* Glue logic register and bit field definitions */
+-#define R_MAC_ADDR0                                                 0x50
+-#define R_MAC_ADDR1                                                 0x52
+-#define R_MAC_ADDR2                                                 0x54
+-#define R_MAC_ADDR3                                                 0x56
+-#define R_MAC_ADDR_MASK2                                            0x58
+-#define R_MAC_ADDR_MASK3                                            0x5A
+-#define R_MAC_FILTER_CONFIG                                         0x5C
+-#define   O_MAC_FILTER_CONFIG__BROADCAST_EN                         10
+-#define   O_MAC_FILTER_CONFIG__PAUSE_FRAME_EN                       9
+-#define   O_MAC_FILTER_CONFIG__ALL_MCAST_EN                         8
+-#define   O_MAC_FILTER_CONFIG__ALL_UCAST_EN                         7
+-#define   O_MAC_FILTER_CONFIG__HASH_MCAST_EN                        6
+-#define   O_MAC_FILTER_CONFIG__HASH_UCAST_EN                        5
+-#define   O_MAC_FILTER_CONFIG__ADDR_MATCH_DISC                      4
+-#define   O_MAC_FILTER_CONFIG__MAC_ADDR3_VALID                      3
+-#define   O_MAC_FILTER_CONFIG__MAC_ADDR2_VALID                      2
+-#define   O_MAC_FILTER_CONFIG__MAC_ADDR1_VALID                      1
+-#define   O_MAC_FILTER_CONFIG__MAC_ADDR0_VALID                      0
+-#define R_HASH_TABLE_VECTOR                                         0x30
+-#define R_TX_CONTROL                                                 0x0A0
+-#define   O_TX_CONTROL__TX15HALT                                     31
+-#define   O_TX_CONTROL__TX14HALT                                     30
+-#define   O_TX_CONTROL__TX13HALT                                     29
+-#define   O_TX_CONTROL__TX12HALT                                     28
+-#define   O_TX_CONTROL__TX11HALT                                     27
+-#define   O_TX_CONTROL__TX10HALT                                     26
+-#define   O_TX_CONTROL__TX9HALT                                      25
+-#define   O_TX_CONTROL__TX8HALT                                      24
+-#define   O_TX_CONTROL__TX7HALT                                      23
+-#define   O_TX_CONTROL__TX6HALT                                      22
+-#define   O_TX_CONTROL__TX5HALT                                      21
+-#define   O_TX_CONTROL__TX4HALT                                      20
+-#define   O_TX_CONTROL__TX3HALT                                      19
+-#define   O_TX_CONTROL__TX2HALT                                      18
+-#define   O_TX_CONTROL__TX1HALT                                      17
+-#define   O_TX_CONTROL__TX0HALT                                      16
+-#define   O_TX_CONTROL__TXIDLE                                       15
+-#define   O_TX_CONTROL__TXENABLE                                     14
+-#define   O_TX_CONTROL__TXTHRESHOLD                                  0
+-#define   W_TX_CONTROL__TXTHRESHOLD                                  14
+-#define R_RX_CONTROL                                                 0x0A1
+-#define   O_RX_CONTROL__RGMII                                        10
+-#define   O_RX_CONTROL__SOFTRESET			             2
+-#define   O_RX_CONTROL__RXHALT                                       1
+-#define   O_RX_CONTROL__RXENABLE                                     0
+-#define R_DESC_PACK_CTRL                                            0x0A2
+-#define   O_DESC_PACK_CTRL__BYTEOFFSET                              17
+-#define   W_DESC_PACK_CTRL__BYTEOFFSET                              3
+-#define   O_DESC_PACK_CTRL__PREPADENABLE                            16
+-#define   O_DESC_PACK_CTRL__MAXENTRY                                14
+-#define   W_DESC_PACK_CTRL__MAXENTRY                                2
+-#define   O_DESC_PACK_CTRL__REGULARSIZE                             0
+-#define   W_DESC_PACK_CTRL__REGULARSIZE                             14
+-#define R_STATCTRL                                                  0x0A3
+-#define   O_STATCTRL__OVERFLOWEN                                    4
+-#define   O_STATCTRL__GIG                                           3
+-#define   O_STATCTRL__STEN                                          2
+-#define   O_STATCTRL__CLRCNT                                        1
+-#define   O_STATCTRL__AUTOZ                                         0
+-#define R_L2ALLOCCTRL                                               0x0A4
+-#define   O_L2ALLOCCTRL__TXL2ALLOCATE                               9
+-#define   W_L2ALLOCCTRL__TXL2ALLOCATE                               9
+-#define   O_L2ALLOCCTRL__RXL2ALLOCATE                               0
+-#define   W_L2ALLOCCTRL__RXL2ALLOCATE                               9
+-#define R_INTMASK                                                   0x0A5
+-#define   O_INTMASK__SPI4TXERROR                                     28
+-#define   O_INTMASK__SPI4RXERROR                                     27
+-#define   O_INTMASK__RGMIIHALFDUPCOLLISION                           27
+-#define   O_INTMASK__ABORT                                           26
+-#define   O_INTMASK__UNDERRUN                                        25
+-#define   O_INTMASK__DISCARDPACKET                                   24
+-#define   O_INTMASK__ASYNCFIFOFULL                                   23
+-#define   O_INTMASK__TAGFULL                                         22
+-#define   O_INTMASK__CLASS3FULL                                      21
+-#define   O_INTMASK__C3EARLYFULL                                     20
+-#define   O_INTMASK__CLASS2FULL                                      19
+-#define   O_INTMASK__C2EARLYFULL                                     18
+-#define   O_INTMASK__CLASS1FULL                                      17
+-#define   O_INTMASK__C1EARLYFULL                                     16
+-#define   O_INTMASK__CLASS0FULL                                      15
+-#define   O_INTMASK__C0EARLYFULL                                     14
+-#define   O_INTMASK__RXDATAFULL                                      13
+-#define   O_INTMASK__RXEARLYFULL                                     12
+-#define   O_INTMASK__RFREEEMPTY                                      9
+-#define   O_INTMASK__RFEARLYEMPTY                                    8
+-#define   O_INTMASK__P2PSPILLECC                                     7
+-#define   O_INTMASK__FREEDESCFULL                                    5
+-#define   O_INTMASK__FREEEARLYFULL                                   4
+-#define   O_INTMASK__TXFETCHERROR                                    3
+-#define   O_INTMASK__STATCARRY                                       2
+-#define   O_INTMASK__MDINT                                           1
+-#define   O_INTMASK__TXILLEGAL                                       0
+-#define R_INTREG                                                    0x0A6
+-#define   O_INTREG__SPI4TXERROR                                     28
+-#define   O_INTREG__SPI4RXERROR                                     27
+-#define   O_INTREG__RGMIIHALFDUPCOLLISION                           27
+-#define   O_INTREG__ABORT                                           26
+-#define   O_INTREG__UNDERRUN                                        25
+-#define   O_INTREG__DISCARDPACKET                                   24
+-#define   O_INTREG__ASYNCFIFOFULL                                   23
+-#define   O_INTREG__TAGFULL                                         22
+-#define   O_INTREG__CLASS3FULL                                      21
+-#define   O_INTREG__C3EARLYFULL                                     20
+-#define   O_INTREG__CLASS2FULL                                      19
+-#define   O_INTREG__C2EARLYFULL                                     18
+-#define   O_INTREG__CLASS1FULL                                      17
+-#define   O_INTREG__C1EARLYFULL                                     16
+-#define   O_INTREG__CLASS0FULL                                      15
+-#define   O_INTREG__C0EARLYFULL                                     14
+-#define   O_INTREG__RXDATAFULL                                      13
+-#define   O_INTREG__RXEARLYFULL                                     12
+-#define   O_INTREG__RFREEEMPTY                                      9
+-#define   O_INTREG__RFEARLYEMPTY                                    8
+-#define   O_INTREG__P2PSPILLECC                                     7
+-#define   O_INTREG__FREEDESCFULL                                    5
+-#define   O_INTREG__FREEEARLYFULL                                   4
+-#define   O_INTREG__TXFETCHERROR                                    3
+-#define   O_INTREG__STATCARRY                                       2
+-#define   O_INTREG__MDINT                                           1
+-#define   O_INTREG__TXILLEGAL                                       0
+-#define R_TXRETRY                                                   0x0A7
+-#define   O_TXRETRY__COLLISIONRETRY                                 6
+-#define   O_TXRETRY__BUSERRORRETRY                                  5
+-#define   O_TXRETRY__UNDERRUNRETRY                                  4
+-#define   O_TXRETRY__RETRIES                                        0
+-#define   W_TXRETRY__RETRIES                                        4
+-#define R_CORECONTROL                                               0x0A8
+-#define   O_CORECONTROL__ERRORTHREAD                                4
+-#define   W_CORECONTROL__ERRORTHREAD                                7
+-#define   O_CORECONTROL__SHUTDOWN                                   2
+-#define   O_CORECONTROL__SPEED                                      0
+-#define   W_CORECONTROL__SPEED                                      2
+-#define R_BYTEOFFSET0                                               0x0A9
+-#define R_BYTEOFFSET1                                               0x0AA
+-#define R_L2TYPE_0                                                  0x0F0
+-#define   O_L2TYPE__EXTRAHDRPROTOSIZE                               26
+-#define   W_L2TYPE__EXTRAHDRPROTOSIZE                               5
+-#define   O_L2TYPE__EXTRAHDRPROTOOFFSET                             20
+-#define   W_L2TYPE__EXTRAHDRPROTOOFFSET                             6
+-#define   O_L2TYPE__EXTRAHEADERSIZE                                 14
+-#define   W_L2TYPE__EXTRAHEADERSIZE                                 6
+-#define   O_L2TYPE__PROTOOFFSET                                     8
+-#define   W_L2TYPE__PROTOOFFSET                                     6
+-#define   O_L2TYPE__L2HDROFFSET                                     2
+-#define   W_L2TYPE__L2HDROFFSET                                     6
+-#define   O_L2TYPE__L2PROTO                                         0
+-#define   W_L2TYPE__L2PROTO                                         2
+-#define R_L2TYPE_1                                                  0xF0
+-#define R_L2TYPE_2                                                  0xF0
+-#define R_L2TYPE_3                                                  0xF0
+-#define R_PARSERCONFIGREG                                           0x100
+-#define   O_PARSERCONFIGREG__CRCHASHPOLY                            8
+-#define   W_PARSERCONFIGREG__CRCHASHPOLY                            7
+-#define   O_PARSERCONFIGREG__PREPADOFFSET                           4
+-#define   W_PARSERCONFIGREG__PREPADOFFSET                           4
+-#define   O_PARSERCONFIGREG__USECAM                                 2
+-#define   O_PARSERCONFIGREG__USEHASH                                1
+-#define   O_PARSERCONFIGREG__USEPROTO                               0
+-#define R_L3CTABLE                                                  0x140
+-#define   O_L3CTABLE__OFFSET0                                       25
+-#define   W_L3CTABLE__OFFSET0                                       7
+-#define   O_L3CTABLE__LEN0                                          21
+-#define   W_L3CTABLE__LEN0                                          4
+-#define   O_L3CTABLE__OFFSET1                                       14
+-#define   W_L3CTABLE__OFFSET1                                       7
+-#define   O_L3CTABLE__LEN1                                          10
+-#define   W_L3CTABLE__LEN1                                          4
+-#define   O_L3CTABLE__OFFSET2                                       4
+-#define   W_L3CTABLE__OFFSET2                                       6
+-#define   O_L3CTABLE__LEN2                                          0
+-#define   W_L3CTABLE__LEN2                                          4
+-#define   O_L3CTABLE__L3HDROFFSET                                   26
+-#define   W_L3CTABLE__L3HDROFFSET                                   6
+-#define   O_L3CTABLE__L4PROTOOFFSET                                 20
+-#define   W_L3CTABLE__L4PROTOOFFSET                                 6
+-#define   O_L3CTABLE__IPCHKSUMCOMPUTE                               19
+-#define   O_L3CTABLE__L4CLASSIFY                                    18
+-#define   O_L3CTABLE__L2PROTO                                       16
+-#define   W_L3CTABLE__L2PROTO                                       2
+-#define   O_L3CTABLE__L3PROTOKEY                                    0
+-#define   W_L3CTABLE__L3PROTOKEY                                    16
+-#define R_L4CTABLE                                                  0x160
+-#define   O_L4CTABLE__OFFSET0                                       21
+-#define   W_L4CTABLE__OFFSET0                                       6
+-#define   O_L4CTABLE__LEN0                                          17
+-#define   W_L4CTABLE__LEN0                                          4
+-#define   O_L4CTABLE__OFFSET1                                       11
+-#define   W_L4CTABLE__OFFSET1                                       6
+-#define   O_L4CTABLE__LEN1                                          7
+-#define   W_L4CTABLE__LEN1                                          4
+-#define   O_L4CTABLE__TCPCHKSUMENABLE                               0
+-#define R_CAM4X128TABLE                                             0x172
+-#define   O_CAM4X128TABLE__CLASSID                                  7
+-#define   W_CAM4X128TABLE__CLASSID                                  2
+-#define   O_CAM4X128TABLE__BUCKETID                                 1
+-#define   W_CAM4X128TABLE__BUCKETID                                 6
+-#define   O_CAM4X128TABLE__USEBUCKET                                0
+-#define R_CAM4X128KEY                                               0x180
+-#define R_TRANSLATETABLE                                            0x1A0
+-#define R_DMACR0                                                    0x200
+-#define   O_DMACR0__DATA0WRMAXCR                                    27
+-#define   W_DMACR0__DATA0WRMAXCR                                    3
+-#define   O_DMACR0__DATA0RDMAXCR                                    24
+-#define   W_DMACR0__DATA0RDMAXCR                                    3
+-#define   O_DMACR0__DATA1WRMAXCR                                    21
+-#define   W_DMACR0__DATA1WRMAXCR                                    3
+-#define   O_DMACR0__DATA1RDMAXCR                                    18
+-#define   W_DMACR0__DATA1RDMAXCR                                    3
+-#define   O_DMACR0__DATA2WRMAXCR                                    15
+-#define   W_DMACR0__DATA2WRMAXCR                                    3
+-#define   O_DMACR0__DATA2RDMAXCR                                    12
+-#define   W_DMACR0__DATA2RDMAXCR                                    3
+-#define   O_DMACR0__DATA3WRMAXCR                                    9
+-#define   W_DMACR0__DATA3WRMAXCR                                    3
+-#define   O_DMACR0__DATA3RDMAXCR                                    6
+-#define   W_DMACR0__DATA3RDMAXCR                                    3
+-#define   O_DMACR0__DATA4WRMAXCR                                    3
+-#define   W_DMACR0__DATA4WRMAXCR                                    3
+-#define   O_DMACR0__DATA4RDMAXCR                                    0
+-#define   W_DMACR0__DATA4RDMAXCR                                    3
+-#define R_DMACR1                                                    0x201
+-#define   O_DMACR1__DATA5WRMAXCR                                    27
+-#define   W_DMACR1__DATA5WRMAXCR                                    3
+-#define   O_DMACR1__DATA5RDMAXCR                                    24
+-#define   W_DMACR1__DATA5RDMAXCR                                    3
+-#define   O_DMACR1__DATA6WRMAXCR                                    21
+-#define   W_DMACR1__DATA6WRMAXCR                                    3
+-#define   O_DMACR1__DATA6RDMAXCR                                    18
+-#define   W_DMACR1__DATA6RDMAXCR                                    3
+-#define   O_DMACR1__DATA7WRMAXCR                                    15
+-#define   W_DMACR1__DATA7WRMAXCR                                    3
+-#define   O_DMACR1__DATA7RDMAXCR                                    12
+-#define   W_DMACR1__DATA7RDMAXCR                                    3
+-#define   O_DMACR1__DATA8WRMAXCR                                    9
+-#define   W_DMACR1__DATA8WRMAXCR                                    3
+-#define   O_DMACR1__DATA8RDMAXCR                                    6
+-#define   W_DMACR1__DATA8RDMAXCR                                    3
+-#define   O_DMACR1__DATA9WRMAXCR                                    3
+-#define   W_DMACR1__DATA9WRMAXCR                                    3
+-#define   O_DMACR1__DATA9RDMAXCR                                    0
+-#define   W_DMACR1__DATA9RDMAXCR                                    3
+-#define R_DMACR2                                                    0x202
+-#define   O_DMACR2__DATA10WRMAXCR                                   27
+-#define   W_DMACR2__DATA10WRMAXCR                                   3
+-#define   O_DMACR2__DATA10RDMAXCR                                   24
+-#define   W_DMACR2__DATA10RDMAXCR                                   3
+-#define   O_DMACR2__DATA11WRMAXCR                                   21
+-#define   W_DMACR2__DATA11WRMAXCR                                   3
+-#define   O_DMACR2__DATA11RDMAXCR                                   18
+-#define   W_DMACR2__DATA11RDMAXCR                                   3
+-#define   O_DMACR2__DATA12WRMAXCR                                   15
+-#define   W_DMACR2__DATA12WRMAXCR                                   3
+-#define   O_DMACR2__DATA12RDMAXCR                                   12
+-#define   W_DMACR2__DATA12RDMAXCR                                   3
+-#define   O_DMACR2__DATA13WRMAXCR                                   9
+-#define   W_DMACR2__DATA13WRMAXCR                                   3
+-#define   O_DMACR2__DATA13RDMAXCR                                   6
+-#define   W_DMACR2__DATA13RDMAXCR                                   3
+-#define   O_DMACR2__DATA14WRMAXCR                                   3
+-#define   W_DMACR2__DATA14WRMAXCR                                   3
+-#define   O_DMACR2__DATA14RDMAXCR                                   0
+-#define   W_DMACR2__DATA14RDMAXCR                                   3
+-#define R_DMACR3                                                    0x203
+-#define   O_DMACR3__DATA15WRMAXCR                                   27
+-#define   W_DMACR3__DATA15WRMAXCR                                   3
+-#define   O_DMACR3__DATA15RDMAXCR                                   24
+-#define   W_DMACR3__DATA15RDMAXCR                                   3
+-#define   O_DMACR3__SPCLASSWRMAXCR                                  21
+-#define   W_DMACR3__SPCLASSWRMAXCR                                  3
+-#define   O_DMACR3__SPCLASSRDMAXCR                                  18
+-#define   W_DMACR3__SPCLASSRDMAXCR                                  3
+-#define   O_DMACR3__JUMFRINWRMAXCR                                  15
+-#define   W_DMACR3__JUMFRINWRMAXCR                                  3
+-#define   O_DMACR3__JUMFRINRDMAXCR                                  12
+-#define   W_DMACR3__JUMFRINRDMAXCR                                  3
+-#define   O_DMACR3__REGFRINWRMAXCR                                  9
+-#define   W_DMACR3__REGFRINWRMAXCR                                  3
+-#define   O_DMACR3__REGFRINRDMAXCR                                  6
+-#define   W_DMACR3__REGFRINRDMAXCR                                  3
+-#define   O_DMACR3__FROUTWRMAXCR                                    3
+-#define   W_DMACR3__FROUTWRMAXCR                                    3
+-#define   O_DMACR3__FROUTRDMAXCR                                    0
+-#define   W_DMACR3__FROUTRDMAXCR                                    3
+-#define R_REG_FRIN_SPILL_MEM_START_0                                0x204
+-#define   O_REG_FRIN_SPILL_MEM_START_0__REGFRINSPILLMEMSTART0        0
+-#define   W_REG_FRIN_SPILL_MEM_START_0__REGFRINSPILLMEMSTART0       32
+-#define R_REG_FRIN_SPILL_MEM_START_1                                0x205
+-#define   O_REG_FRIN_SPILL_MEM_START_1__REGFRINSPILLMEMSTART1        0
+-#define   W_REG_FRIN_SPILL_MEM_START_1__REGFRINSPILLMEMSTART1        3
+-#define R_REG_FRIN_SPILL_MEM_SIZE                                   0x206
+-#define   O_REG_FRIN_SPILL_MEM_SIZE__REGFRINSPILLMEMSIZE             0
+-#define   W_REG_FRIN_SPILL_MEM_SIZE__REGFRINSPILLMEMSIZE            32
+-#define R_FROUT_SPILL_MEM_START_0                                   0x207
+-#define   O_FROUT_SPILL_MEM_START_0__FROUTSPILLMEMSTART0             0
+-#define   W_FROUT_SPILL_MEM_START_0__FROUTSPILLMEMSTART0            32
+-#define R_FROUT_SPILL_MEM_START_1                                   0x208
+-#define   O_FROUT_SPILL_MEM_START_1__FROUTSPILLMEMSTART1             0
+-#define   W_FROUT_SPILL_MEM_START_1__FROUTSPILLMEMSTART1             3
+-#define R_FROUT_SPILL_MEM_SIZE                                      0x209
+-#define   O_FROUT_SPILL_MEM_SIZE__FROUTSPILLMEMSIZE                  0
+-#define   W_FROUT_SPILL_MEM_SIZE__FROUTSPILLMEMSIZE                 32
+-#define R_CLASS0_SPILL_MEM_START_0                                  0x20A
+-#define   O_CLASS0_SPILL_MEM_START_0__CLASS0SPILLMEMSTART0           0
+-#define   W_CLASS0_SPILL_MEM_START_0__CLASS0SPILLMEMSTART0          32
+-#define R_CLASS0_SPILL_MEM_START_1                                  0x20B
+-#define   O_CLASS0_SPILL_MEM_START_1__CLASS0SPILLMEMSTART1           0
+-#define   W_CLASS0_SPILL_MEM_START_1__CLASS0SPILLMEMSTART1           3
+-#define R_CLASS0_SPILL_MEM_SIZE                                     0x20C
+-#define   O_CLASS0_SPILL_MEM_SIZE__CLASS0SPILLMEMSIZE                0
+-#define   W_CLASS0_SPILL_MEM_SIZE__CLASS0SPILLMEMSIZE               32
+-#define R_JUMFRIN_SPILL_MEM_START_0                                 0x20D
+-#define   O_JUMFRIN_SPILL_MEM_START_0__JUMFRINSPILLMEMSTART0          0
+-#define   W_JUMFRIN_SPILL_MEM_START_0__JUMFRINSPILLMEMSTART0         32
+-#define R_JUMFRIN_SPILL_MEM_START_1                                 0x20E
+-#define   O_JUMFRIN_SPILL_MEM_START_1__JUMFRINSPILLMEMSTART1         0
+-#define   W_JUMFRIN_SPILL_MEM_START_1__JUMFRINSPILLMEMSTART1         3
+-#define R_JUMFRIN_SPILL_MEM_SIZE                                    0x20F
+-#define   O_JUMFRIN_SPILL_MEM_SIZE__JUMFRINSPILLMEMSIZE              0
+-#define   W_JUMFRIN_SPILL_MEM_SIZE__JUMFRINSPILLMEMSIZE             32
+-#define R_CLASS1_SPILL_MEM_START_0                                  0x210
+-#define   O_CLASS1_SPILL_MEM_START_0__CLASS1SPILLMEMSTART0           0
+-#define   W_CLASS1_SPILL_MEM_START_0__CLASS1SPILLMEMSTART0          32
+-#define R_CLASS1_SPILL_MEM_START_1                                  0x211
+-#define   O_CLASS1_SPILL_MEM_START_1__CLASS1SPILLMEMSTART1           0
+-#define   W_CLASS1_SPILL_MEM_START_1__CLASS1SPILLMEMSTART1           3
+-#define R_CLASS1_SPILL_MEM_SIZE                                     0x212
+-#define   O_CLASS1_SPILL_MEM_SIZE__CLASS1SPILLMEMSIZE                0
+-#define   W_CLASS1_SPILL_MEM_SIZE__CLASS1SPILLMEMSIZE               32
+-#define R_CLASS2_SPILL_MEM_START_0                                  0x213
+-#define   O_CLASS2_SPILL_MEM_START_0__CLASS2SPILLMEMSTART0           0
+-#define   W_CLASS2_SPILL_MEM_START_0__CLASS2SPILLMEMSTART0          32
+-#define R_CLASS2_SPILL_MEM_START_1                                  0x214
+-#define   O_CLASS2_SPILL_MEM_START_1__CLASS2SPILLMEMSTART1           0
+-#define   W_CLASS2_SPILL_MEM_START_1__CLASS2SPILLMEMSTART1           3
+-#define R_CLASS2_SPILL_MEM_SIZE                                     0x215
+-#define   O_CLASS2_SPILL_MEM_SIZE__CLASS2SPILLMEMSIZE                0
+-#define   W_CLASS2_SPILL_MEM_SIZE__CLASS2SPILLMEMSIZE               32
+-#define R_CLASS3_SPILL_MEM_START_0                                  0x216
+-#define   O_CLASS3_SPILL_MEM_START_0__CLASS3SPILLMEMSTART0           0
+-#define   W_CLASS3_SPILL_MEM_START_0__CLASS3SPILLMEMSTART0          32
+-#define R_CLASS3_SPILL_MEM_START_1                                  0x217
+-#define   O_CLASS3_SPILL_MEM_START_1__CLASS3SPILLMEMSTART1           0
+-#define   W_CLASS3_SPILL_MEM_START_1__CLASS3SPILLMEMSTART1           3
+-#define R_CLASS3_SPILL_MEM_SIZE                                     0x218
+-#define   O_CLASS3_SPILL_MEM_SIZE__CLASS3SPILLMEMSIZE                0
+-#define   W_CLASS3_SPILL_MEM_SIZE__CLASS3SPILLMEMSIZE               32
+-#define R_REG_FRIN1_SPILL_MEM_START_0                               0x219
+-#define R_REG_FRIN1_SPILL_MEM_START_1                               0x21a
+-#define R_REG_FRIN1_SPILL_MEM_SIZE                                  0x21b
+-#define R_SPIHNGY0                                                  0x219
+-#define   O_SPIHNGY0__EG_HNGY_THRESH_0                              24
+-#define   W_SPIHNGY0__EG_HNGY_THRESH_0                              7
+-#define   O_SPIHNGY0__EG_HNGY_THRESH_1                              16
+-#define   W_SPIHNGY0__EG_HNGY_THRESH_1                              7
+-#define   O_SPIHNGY0__EG_HNGY_THRESH_2                              8
+-#define   W_SPIHNGY0__EG_HNGY_THRESH_2                              7
+-#define   O_SPIHNGY0__EG_HNGY_THRESH_3                              0
+-#define   W_SPIHNGY0__EG_HNGY_THRESH_3                              7
+-#define R_SPIHNGY1                                                  0x21A
+-#define   O_SPIHNGY1__EG_HNGY_THRESH_4                              24
+-#define   W_SPIHNGY1__EG_HNGY_THRESH_4                              7
+-#define   O_SPIHNGY1__EG_HNGY_THRESH_5                              16
+-#define   W_SPIHNGY1__EG_HNGY_THRESH_5                              7
+-#define   O_SPIHNGY1__EG_HNGY_THRESH_6                              8
+-#define   W_SPIHNGY1__EG_HNGY_THRESH_6                              7
+-#define   O_SPIHNGY1__EG_HNGY_THRESH_7                              0
+-#define   W_SPIHNGY1__EG_HNGY_THRESH_7                              7
+-#define R_SPIHNGY2                                                  0x21B
+-#define   O_SPIHNGY2__EG_HNGY_THRESH_8                              24
+-#define   W_SPIHNGY2__EG_HNGY_THRESH_8                              7
+-#define   O_SPIHNGY2__EG_HNGY_THRESH_9                              16
+-#define   W_SPIHNGY2__EG_HNGY_THRESH_9                              7
+-#define   O_SPIHNGY2__EG_HNGY_THRESH_10                             8
+-#define   W_SPIHNGY2__EG_HNGY_THRESH_10                             7
+-#define   O_SPIHNGY2__EG_HNGY_THRESH_11                             0
+-#define   W_SPIHNGY2__EG_HNGY_THRESH_11                             7
+-#define R_SPIHNGY3                                                  0x21C
+-#define   O_SPIHNGY3__EG_HNGY_THRESH_12                             24
+-#define   W_SPIHNGY3__EG_HNGY_THRESH_12                             7
+-#define   O_SPIHNGY3__EG_HNGY_THRESH_13                             16
+-#define   W_SPIHNGY3__EG_HNGY_THRESH_13                             7
+-#define   O_SPIHNGY3__EG_HNGY_THRESH_14                             8
+-#define   W_SPIHNGY3__EG_HNGY_THRESH_14                             7
+-#define   O_SPIHNGY3__EG_HNGY_THRESH_15                             0
+-#define   W_SPIHNGY3__EG_HNGY_THRESH_15                             7
+-#define R_SPISTRV0                                                  0x21D
+-#define   O_SPISTRV0__EG_STRV_THRESH_0                              24
+-#define   W_SPISTRV0__EG_STRV_THRESH_0                              7
+-#define   O_SPISTRV0__EG_STRV_THRESH_1                              16
+-#define   W_SPISTRV0__EG_STRV_THRESH_1                              7
+-#define   O_SPISTRV0__EG_STRV_THRESH_2                              8
+-#define   W_SPISTRV0__EG_STRV_THRESH_2                              7
+-#define   O_SPISTRV0__EG_STRV_THRESH_3                              0
+-#define   W_SPISTRV0__EG_STRV_THRESH_3                              7
+-#define R_SPISTRV1                                                  0x21E
+-#define   O_SPISTRV1__EG_STRV_THRESH_4                              24
+-#define   W_SPISTRV1__EG_STRV_THRESH_4                              7
+-#define   O_SPISTRV1__EG_STRV_THRESH_5                              16
+-#define   W_SPISTRV1__EG_STRV_THRESH_5                              7
+-#define   O_SPISTRV1__EG_STRV_THRESH_6                              8
+-#define   W_SPISTRV1__EG_STRV_THRESH_6                              7
+-#define   O_SPISTRV1__EG_STRV_THRESH_7                              0
+-#define   W_SPISTRV1__EG_STRV_THRESH_7                              7
+-#define R_SPISTRV2                                                  0x21F
+-#define   O_SPISTRV2__EG_STRV_THRESH_8                              24
+-#define   W_SPISTRV2__EG_STRV_THRESH_8                              7
+-#define   O_SPISTRV2__EG_STRV_THRESH_9                              16
+-#define   W_SPISTRV2__EG_STRV_THRESH_9                              7
+-#define   O_SPISTRV2__EG_STRV_THRESH_10                             8
+-#define   W_SPISTRV2__EG_STRV_THRESH_10                             7
+-#define   O_SPISTRV2__EG_STRV_THRESH_11                             0
+-#define   W_SPISTRV2__EG_STRV_THRESH_11                             7
+-#define R_SPISTRV3                                                  0x220
+-#define   O_SPISTRV3__EG_STRV_THRESH_12                             24
+-#define   W_SPISTRV3__EG_STRV_THRESH_12                             7
+-#define   O_SPISTRV3__EG_STRV_THRESH_13                             16
+-#define   W_SPISTRV3__EG_STRV_THRESH_13                             7
+-#define   O_SPISTRV3__EG_STRV_THRESH_14                             8
+-#define   W_SPISTRV3__EG_STRV_THRESH_14                             7
+-#define   O_SPISTRV3__EG_STRV_THRESH_15                             0
+-#define   W_SPISTRV3__EG_STRV_THRESH_15                             7
+-#define R_TXDATAFIFO0                                               0x221
+-#define   O_TXDATAFIFO0__TX0DATAFIFOSTART                           24
+-#define   W_TXDATAFIFO0__TX0DATAFIFOSTART                           7
+-#define   O_TXDATAFIFO0__TX0DATAFIFOSIZE                            16
+-#define   W_TXDATAFIFO0__TX0DATAFIFOSIZE                            7
+-#define   O_TXDATAFIFO0__TX1DATAFIFOSTART                           8
+-#define   W_TXDATAFIFO0__TX1DATAFIFOSTART                           7
+-#define   O_TXDATAFIFO0__TX1DATAFIFOSIZE                            0
+-#define   W_TXDATAFIFO0__TX1DATAFIFOSIZE                            7
+-#define R_TXDATAFIFO1                                               0x222
+-#define   O_TXDATAFIFO1__TX2DATAFIFOSTART                           24
+-#define   W_TXDATAFIFO1__TX2DATAFIFOSTART                           7
+-#define   O_TXDATAFIFO1__TX2DATAFIFOSIZE                            16
+-#define   W_TXDATAFIFO1__TX2DATAFIFOSIZE                            7
+-#define   O_TXDATAFIFO1__TX3DATAFIFOSTART                           8
+-#define   W_TXDATAFIFO1__TX3DATAFIFOSTART                           7
+-#define   O_TXDATAFIFO1__TX3DATAFIFOSIZE                            0
+-#define   W_TXDATAFIFO1__TX3DATAFIFOSIZE                            7
+-#define R_TXDATAFIFO2                                               0x223
+-#define   O_TXDATAFIFO2__TX4DATAFIFOSTART                           24
+-#define   W_TXDATAFIFO2__TX4DATAFIFOSTART                           7
+-#define   O_TXDATAFIFO2__TX4DATAFIFOSIZE                            16
+-#define   W_TXDATAFIFO2__TX4DATAFIFOSIZE                            7
+-#define   O_TXDATAFIFO2__TX5DATAFIFOSTART                           8
+-#define   W_TXDATAFIFO2__TX5DATAFIFOSTART                           7
+-#define   O_TXDATAFIFO2__TX5DATAFIFOSIZE                            0
+-#define   W_TXDATAFIFO2__TX5DATAFIFOSIZE                            7
+-#define R_TXDATAFIFO3                                               0x224
+-#define   O_TXDATAFIFO3__TX6DATAFIFOSTART                           24
+-#define   W_TXDATAFIFO3__TX6DATAFIFOSTART                           7
+-#define   O_TXDATAFIFO3__TX6DATAFIFOSIZE                            16
+-#define   W_TXDATAFIFO3__TX6DATAFIFOSIZE                            7
+-#define   O_TXDATAFIFO3__TX7DATAFIFOSTART                           8
+-#define   W_TXDATAFIFO3__TX7DATAFIFOSTART                           7
+-#define   O_TXDATAFIFO3__TX7DATAFIFOSIZE                            0
+-#define   W_TXDATAFIFO3__TX7DATAFIFOSIZE                            7
+-#define R_TXDATAFIFO4                                               0x225
+-#define   O_TXDATAFIFO4__TX8DATAFIFOSTART                           24
+-#define   W_TXDATAFIFO4__TX8DATAFIFOSTART                           7
+-#define   O_TXDATAFIFO4__TX8DATAFIFOSIZE                            16
+-#define   W_TXDATAFIFO4__TX8DATAFIFOSIZE                            7
+-#define   O_TXDATAFIFO4__TX9DATAFIFOSTART                           8
+-#define   W_TXDATAFIFO4__TX9DATAFIFOSTART                           7
+-#define   O_TXDATAFIFO4__TX9DATAFIFOSIZE                            0
+-#define   W_TXDATAFIFO4__TX9DATAFIFOSIZE                            7
+-#define R_TXDATAFIFO5                                               0x226
+-#define   O_TXDATAFIFO5__TX10DATAFIFOSTART                          24
+-#define   W_TXDATAFIFO5__TX10DATAFIFOSTART                          7
+-#define   O_TXDATAFIFO5__TX10DATAFIFOSIZE                           16
+-#define   W_TXDATAFIFO5__TX10DATAFIFOSIZE                           7
+-#define   O_TXDATAFIFO5__TX11DATAFIFOSTART                          8
+-#define   W_TXDATAFIFO5__TX11DATAFIFOSTART                          7
+-#define   O_TXDATAFIFO5__TX11DATAFIFOSIZE                           0
+-#define   W_TXDATAFIFO5__TX11DATAFIFOSIZE                           7
+-#define R_TXDATAFIFO6                                               0x227
+-#define   O_TXDATAFIFO6__TX12DATAFIFOSTART                          24
+-#define   W_TXDATAFIFO6__TX12DATAFIFOSTART                          7
+-#define   O_TXDATAFIFO6__TX12DATAFIFOSIZE                           16
+-#define   W_TXDATAFIFO6__TX12DATAFIFOSIZE                           7
+-#define   O_TXDATAFIFO6__TX13DATAFIFOSTART                          8
+-#define   W_TXDATAFIFO6__TX13DATAFIFOSTART                          7
+-#define   O_TXDATAFIFO6__TX13DATAFIFOSIZE                           0
+-#define   W_TXDATAFIFO6__TX13DATAFIFOSIZE                           7
+-#define R_TXDATAFIFO7                                               0x228
+-#define   O_TXDATAFIFO7__TX14DATAFIFOSTART                          24
+-#define   W_TXDATAFIFO7__TX14DATAFIFOSTART                          7
+-#define   O_TXDATAFIFO7__TX14DATAFIFOSIZE                           16
+-#define   W_TXDATAFIFO7__TX14DATAFIFOSIZE                           7
+-#define   O_TXDATAFIFO7__TX15DATAFIFOSTART                          8
+-#define   W_TXDATAFIFO7__TX15DATAFIFOSTART                          7
+-#define   O_TXDATAFIFO7__TX15DATAFIFOSIZE                           0
+-#define   W_TXDATAFIFO7__TX15DATAFIFOSIZE                           7
+-#define R_RXDATAFIFO0                                               0x229
+-#define   O_RXDATAFIFO0__RX0DATAFIFOSTART                           24
+-#define   W_RXDATAFIFO0__RX0DATAFIFOSTART                           7
+-#define   O_RXDATAFIFO0__RX0DATAFIFOSIZE                            16
+-#define   W_RXDATAFIFO0__RX0DATAFIFOSIZE                            7
+-#define   O_RXDATAFIFO0__RX1DATAFIFOSTART                           8
+-#define   W_RXDATAFIFO0__RX1DATAFIFOSTART                           7
+-#define   O_RXDATAFIFO0__RX1DATAFIFOSIZE                            0
+-#define   W_RXDATAFIFO0__RX1DATAFIFOSIZE                            7
+-#define R_RXDATAFIFO1                                               0x22A
+-#define   O_RXDATAFIFO1__RX2DATAFIFOSTART                           24
+-#define   W_RXDATAFIFO1__RX2DATAFIFOSTART                           7
+-#define   O_RXDATAFIFO1__RX2DATAFIFOSIZE                            16
+-#define   W_RXDATAFIFO1__RX2DATAFIFOSIZE                            7
+-#define   O_RXDATAFIFO1__RX3DATAFIFOSTART                           8
+-#define   W_RXDATAFIFO1__RX3DATAFIFOSTART                           7
+-#define   O_RXDATAFIFO1__RX3DATAFIFOSIZE                            0
+-#define   W_RXDATAFIFO1__RX3DATAFIFOSIZE                            7
+-#define R_RXDATAFIFO2                                               0x22B
+-#define   O_RXDATAFIFO2__RX4DATAFIFOSTART                           24
+-#define   W_RXDATAFIFO2__RX4DATAFIFOSTART                           7
+-#define   O_RXDATAFIFO2__RX4DATAFIFOSIZE                            16
+-#define   W_RXDATAFIFO2__RX4DATAFIFOSIZE                            7
+-#define   O_RXDATAFIFO2__RX5DATAFIFOSTART                           8
+-#define   W_RXDATAFIFO2__RX5DATAFIFOSTART                           7
+-#define   O_RXDATAFIFO2__RX5DATAFIFOSIZE                            0
+-#define   W_RXDATAFIFO2__RX5DATAFIFOSIZE                            7
+-#define R_RXDATAFIFO3                                               0x22C
+-#define   O_RXDATAFIFO3__RX6DATAFIFOSTART                           24
+-#define   W_RXDATAFIFO3__RX6DATAFIFOSTART                           7
+-#define   O_RXDATAFIFO3__RX6DATAFIFOSIZE                            16
+-#define   W_RXDATAFIFO3__RX6DATAFIFOSIZE                            7
+-#define   O_RXDATAFIFO3__RX7DATAFIFOSTART                           8
+-#define   W_RXDATAFIFO3__RX7DATAFIFOSTART                           7
+-#define   O_RXDATAFIFO3__RX7DATAFIFOSIZE                            0
+-#define   W_RXDATAFIFO3__RX7DATAFIFOSIZE                            7
+-#define R_RXDATAFIFO4                                               0x22D
+-#define   O_RXDATAFIFO4__RX8DATAFIFOSTART                           24
+-#define   W_RXDATAFIFO4__RX8DATAFIFOSTART                           7
+-#define   O_RXDATAFIFO4__RX8DATAFIFOSIZE                            16
+-#define   W_RXDATAFIFO4__RX8DATAFIFOSIZE                            7
+-#define   O_RXDATAFIFO4__RX9DATAFIFOSTART                           8
+-#define   W_RXDATAFIFO4__RX9DATAFIFOSTART                           7
+-#define   O_RXDATAFIFO4__RX9DATAFIFOSIZE                            0
+-#define   W_RXDATAFIFO4__RX9DATAFIFOSIZE                            7
+-#define R_RXDATAFIFO5                                               0x22E
+-#define   O_RXDATAFIFO5__RX10DATAFIFOSTART                          24
+-#define   W_RXDATAFIFO5__RX10DATAFIFOSTART                          7
+-#define   O_RXDATAFIFO5__RX10DATAFIFOSIZE                           16
+-#define   W_RXDATAFIFO5__RX10DATAFIFOSIZE                           7
+-#define   O_RXDATAFIFO5__RX11DATAFIFOSTART                          8
+-#define   W_RXDATAFIFO5__RX11DATAFIFOSTART                          7
+-#define   O_RXDATAFIFO5__RX11DATAFIFOSIZE                           0
+-#define   W_RXDATAFIFO5__RX11DATAFIFOSIZE                           7
+-#define R_RXDATAFIFO6                                               0x22F
+-#define   O_RXDATAFIFO6__RX12DATAFIFOSTART                          24
+-#define   W_RXDATAFIFO6__RX12DATAFIFOSTART                          7
+-#define   O_RXDATAFIFO6__RX12DATAFIFOSIZE                           16
+-#define   W_RXDATAFIFO6__RX12DATAFIFOSIZE                           7
+-#define   O_RXDATAFIFO6__RX13DATAFIFOSTART                          8
+-#define   W_RXDATAFIFO6__RX13DATAFIFOSTART                          7
+-#define   O_RXDATAFIFO6__RX13DATAFIFOSIZE                           0
+-#define   W_RXDATAFIFO6__RX13DATAFIFOSIZE                           7
+-#define R_RXDATAFIFO7                                               0x230
+-#define   O_RXDATAFIFO7__RX14DATAFIFOSTART                          24
+-#define   W_RXDATAFIFO7__RX14DATAFIFOSTART                          7
+-#define   O_RXDATAFIFO7__RX14DATAFIFOSIZE                           16
+-#define   W_RXDATAFIFO7__RX14DATAFIFOSIZE                           7
+-#define   O_RXDATAFIFO7__RX15DATAFIFOSTART                          8
+-#define   W_RXDATAFIFO7__RX15DATAFIFOSTART                          7
+-#define   O_RXDATAFIFO7__RX15DATAFIFOSIZE                           0
+-#define   W_RXDATAFIFO7__RX15DATAFIFOSIZE                           7
+-#define R_XGMACPADCALIBRATION                                       0x231
+-#define R_FREEQCARVE                                                0x233
+-#define R_SPI4STATICDELAY0                                          0x240
+-#define   O_SPI4STATICDELAY0__DATALINE7                             28
+-#define   W_SPI4STATICDELAY0__DATALINE7                             4
+-#define   O_SPI4STATICDELAY0__DATALINE6                             24
+-#define   W_SPI4STATICDELAY0__DATALINE6                             4
+-#define   O_SPI4STATICDELAY0__DATALINE5                             20
+-#define   W_SPI4STATICDELAY0__DATALINE5                             4
+-#define   O_SPI4STATICDELAY0__DATALINE4                             16
+-#define   W_SPI4STATICDELAY0__DATALINE4                             4
+-#define   O_SPI4STATICDELAY0__DATALINE3                             12
+-#define   W_SPI4STATICDELAY0__DATALINE3                             4
+-#define   O_SPI4STATICDELAY0__DATALINE2                             8
+-#define   W_SPI4STATICDELAY0__DATALINE2                             4
+-#define   O_SPI4STATICDELAY0__DATALINE1                             4
+-#define   W_SPI4STATICDELAY0__DATALINE1                             4
+-#define   O_SPI4STATICDELAY0__DATALINE0                             0
+-#define   W_SPI4STATICDELAY0__DATALINE0                             4
+-#define R_SPI4STATICDELAY1                                          0x241
+-#define   O_SPI4STATICDELAY1__DATALINE15                            28
+-#define   W_SPI4STATICDELAY1__DATALINE15                            4
+-#define   O_SPI4STATICDELAY1__DATALINE14                            24
+-#define   W_SPI4STATICDELAY1__DATALINE14                            4
+-#define   O_SPI4STATICDELAY1__DATALINE13                            20
+-#define   W_SPI4STATICDELAY1__DATALINE13                            4
+-#define   O_SPI4STATICDELAY1__DATALINE12                            16
+-#define   W_SPI4STATICDELAY1__DATALINE12                            4
+-#define   O_SPI4STATICDELAY1__DATALINE11                            12
+-#define   W_SPI4STATICDELAY1__DATALINE11                            4
+-#define   O_SPI4STATICDELAY1__DATALINE10                            8
+-#define   W_SPI4STATICDELAY1__DATALINE10                            4
+-#define   O_SPI4STATICDELAY1__DATALINE9                             4
+-#define   W_SPI4STATICDELAY1__DATALINE9                             4
+-#define   O_SPI4STATICDELAY1__DATALINE8                             0
+-#define   W_SPI4STATICDELAY1__DATALINE8                             4
+-#define R_SPI4STATICDELAY2                                          0x242
+-#define   O_SPI4STATICDELAY0__TXSTAT1                               8
+-#define   W_SPI4STATICDELAY0__TXSTAT1                               4
+-#define   O_SPI4STATICDELAY0__TXSTAT0                               4
+-#define   W_SPI4STATICDELAY0__TXSTAT0                               4
+-#define   O_SPI4STATICDELAY0__RXCONTROL                             0
+-#define   W_SPI4STATICDELAY0__RXCONTROL                             4
+-#define R_SPI4CONTROL                                               0x243
+-#define   O_SPI4CONTROL__STATICDELAY                                2
+-#define   O_SPI4CONTROL__LVDS_LVTTL                                 1
+-#define   O_SPI4CONTROL__SPI4ENABLE                                 0
+-#define R_CLASSWATERMARKS                                           0x244
+-#define   O_CLASSWATERMARKS__CLASS0WATERMARK                        24
+-#define   W_CLASSWATERMARKS__CLASS0WATERMARK                        5
+-#define   O_CLASSWATERMARKS__CLASS1WATERMARK                        16
+-#define   W_CLASSWATERMARKS__CLASS1WATERMARK                        5
+-#define   O_CLASSWATERMARKS__CLASS3WATERMARK                        0
+-#define   W_CLASSWATERMARKS__CLASS3WATERMARK                        5
+-#define R_RXWATERMARKS1                                              0x245
+-#define   O_RXWATERMARKS__RX0DATAWATERMARK                          24
+-#define   W_RXWATERMARKS__RX0DATAWATERMARK                          7
+-#define   O_RXWATERMARKS__RX1DATAWATERMARK                          16
+-#define   W_RXWATERMARKS__RX1DATAWATERMARK                          7
+-#define   O_RXWATERMARKS__RX3DATAWATERMARK                          0
+-#define   W_RXWATERMARKS__RX3DATAWATERMARK                          7
+-#define R_RXWATERMARKS2                                              0x246
+-#define   O_RXWATERMARKS__RX4DATAWATERMARK                          24
+-#define   W_RXWATERMARKS__RX4DATAWATERMARK                          7
+-#define   O_RXWATERMARKS__RX5DATAWATERMARK                          16
+-#define   W_RXWATERMARKS__RX5DATAWATERMARK                          7
+-#define   O_RXWATERMARKS__RX6DATAWATERMARK                          8
+-#define   W_RXWATERMARKS__RX6DATAWATERMARK                          7
+-#define   O_RXWATERMARKS__RX7DATAWATERMARK                          0
+-#define   W_RXWATERMARKS__RX7DATAWATERMARK                          7
+-#define R_RXWATERMARKS3                                              0x247
+-#define   O_RXWATERMARKS__RX8DATAWATERMARK                          24
+-#define   W_RXWATERMARKS__RX8DATAWATERMARK                          7
+-#define   O_RXWATERMARKS__RX9DATAWATERMARK                          16
+-#define   W_RXWATERMARKS__RX9DATAWATERMARK                          7
+-#define   O_RXWATERMARKS__RX10DATAWATERMARK                         8
+-#define   W_RXWATERMARKS__RX10DATAWATERMARK                         7
+-#define   O_RXWATERMARKS__RX11DATAWATERMARK                         0
+-#define   W_RXWATERMARKS__RX11DATAWATERMARK                         7
+-#define R_RXWATERMARKS4                                              0x248
+-#define   O_RXWATERMARKS__RX12DATAWATERMARK                         24
+-#define   W_RXWATERMARKS__RX12DATAWATERMARK                         7
+-#define   O_RXWATERMARKS__RX13DATAWATERMARK                         16
+-#define   W_RXWATERMARKS__RX13DATAWATERMARK                         7
+-#define   O_RXWATERMARKS__RX14DATAWATERMARK                         8
+-#define   W_RXWATERMARKS__RX14DATAWATERMARK                         7
+-#define   O_RXWATERMARKS__RX15DATAWATERMARK                         0
+-#define   W_RXWATERMARKS__RX15DATAWATERMARK                         7
+-#define R_FREEWATERMARKS                                            0x249
+-#define   O_FREEWATERMARKS__FREEOUTWATERMARK                        16
+-#define   W_FREEWATERMARKS__FREEOUTWATERMARK                        16
+-#define   O_FREEWATERMARKS__JUMFRWATERMARK                          8
+-#define   W_FREEWATERMARKS__JUMFRWATERMARK                          7
+-#define   O_FREEWATERMARKS__REGFRWATERMARK                          0
+-#define   W_FREEWATERMARKS__REGFRWATERMARK                          7
+-#define R_EGRESSFIFOCARVINGSLOTS                                    0x24a
+-
+-#define CTRL_RES0           0
+-#define CTRL_RES1           1
+-#define CTRL_REG_FREE       2
+-#define CTRL_JUMBO_FREE     3
+-#define CTRL_CONT           4
+-#define CTRL_EOP            5
+-#define CTRL_START          6
+-#define CTRL_SNGL           7
+-
+-#define CTRL_B0_NOT_EOP     0
+-#define CTRL_B0_EOP         1
+-
+-#define R_ROUND_ROBIN_TABLE                 0
+-#define R_PDE_CLASS_0                       0x300
+-#define R_PDE_CLASS_1                       0x302
+-#define R_PDE_CLASS_2                       0x304
+-#define R_PDE_CLASS_3                       0x306
+-
+-#define R_MSG_TX_THRESHOLD                  0x308
+-
+-#define R_GMAC_JFR0_BUCKET_SIZE              0x320
+-#define R_GMAC_RFR0_BUCKET_SIZE              0x321
+-#define R_GMAC_TX0_BUCKET_SIZE              0x322
+-#define R_GMAC_TX1_BUCKET_SIZE              0x323
+-#define R_GMAC_TX2_BUCKET_SIZE              0x324
+-#define R_GMAC_TX3_BUCKET_SIZE              0x325
+-#define R_GMAC_JFR1_BUCKET_SIZE              0x326
+-#define R_GMAC_RFR1_BUCKET_SIZE              0x327
+-
+-#define R_XGS_TX0_BUCKET_SIZE               0x320
+-#define R_XGS_TX1_BUCKET_SIZE               0x321
+-#define R_XGS_TX2_BUCKET_SIZE               0x322
+-#define R_XGS_TX3_BUCKET_SIZE               0x323
+-#define R_XGS_TX4_BUCKET_SIZE               0x324
+-#define R_XGS_TX5_BUCKET_SIZE               0x325
+-#define R_XGS_TX6_BUCKET_SIZE               0x326
+-#define R_XGS_TX7_BUCKET_SIZE               0x327
+-#define R_XGS_TX8_BUCKET_SIZE               0x328
+-#define R_XGS_TX9_BUCKET_SIZE               0x329
+-#define R_XGS_TX10_BUCKET_SIZE              0x32A
+-#define R_XGS_TX11_BUCKET_SIZE              0x32B
+-#define R_XGS_TX12_BUCKET_SIZE              0x32C
+-#define R_XGS_TX13_BUCKET_SIZE              0x32D
+-#define R_XGS_TX14_BUCKET_SIZE              0x32E
+-#define R_XGS_TX15_BUCKET_SIZE              0x32F
+-#define R_XGS_JFR_BUCKET_SIZE               0x330
+-#define R_XGS_RFR_BUCKET_SIZE               0x331
+-
+-#define R_CC_CPU0_0                         0x380
+-#define R_CC_CPU1_0                         0x388
+-#define R_CC_CPU2_0                         0x390
+-#define R_CC_CPU3_0                         0x398
+-#define R_CC_CPU4_0                         0x3a0
+-#define R_CC_CPU5_0                         0x3a8
+-#define R_CC_CPU6_0                         0x3b0
+-#define R_CC_CPU7_0                         0x3b8
+-
+-#define XLR_GMAC_BLK_SZ		            (XLR_IO_GMAC_1_OFFSET - \
+-		XLR_IO_GMAC_0_OFFSET)
+-
+-/* Constants used for configuring the devices */
+-
+-#define XLR_FB_STN			6 /* Bucket used for Tx freeback */
+-
+-#define MAC_B2B_IPG                     88
+-
+-#define	XLR_NET_PREPAD_LEN		32
+-
+-/* frame sizes need to be cacheline aligned */
+-#define MAX_FRAME_SIZE                  (1536 + XLR_NET_PREPAD_LEN)
+-#define MAX_FRAME_SIZE_JUMBO            9216
+-
+-#define MAC_SKB_BACK_PTR_SIZE           SMP_CACHE_BYTES
+-#define MAC_PREPAD                      0
+-#define BYTE_OFFSET                     2
+-#define XLR_RX_BUF_SIZE                 (MAX_FRAME_SIZE + BYTE_OFFSET + \
+-		MAC_PREPAD + MAC_SKB_BACK_PTR_SIZE + SMP_CACHE_BYTES)
+-#define MAC_CRC_LEN                     4
+-#define MAX_NUM_MSGRNG_STN_CC           128
+-#define MAX_MSG_SND_ATTEMPTS		100	/* 13 stns x 4 entry msg/stn +
+-						 * headroom
+-						 */
+-
+-#define MAC_FRIN_TO_BE_SENT_THRESHOLD   16
+-
+-#define MAX_NUM_DESC_SPILL		1024
+-#define MAX_FRIN_SPILL                  (MAX_NUM_DESC_SPILL << 2)
+-#define MAX_FROUT_SPILL                 (MAX_NUM_DESC_SPILL << 2)
+-#define MAX_CLASS_0_SPILL               (MAX_NUM_DESC_SPILL << 2)
+-#define MAX_CLASS_1_SPILL               (MAX_NUM_DESC_SPILL << 2)
+-#define MAX_CLASS_2_SPILL               (MAX_NUM_DESC_SPILL << 2)
+-#define MAX_CLASS_3_SPILL               (MAX_NUM_DESC_SPILL << 2)
+-
+-enum {
+-	SGMII_SPEED_10 = 0x00000000,
+-	SGMII_SPEED_100 = 0x02000000,
+-	SGMII_SPEED_1000 = 0x04000000,
+-};
+-
+-enum tsv_rsv_reg {
+-	TX_RX_64_BYTE_FRAME = 0x20,
+-	TX_RX_64_127_BYTE_FRAME,
+-	TX_RX_128_255_BYTE_FRAME,
+-	TX_RX_256_511_BYTE_FRAME,
+-	TX_RX_512_1023_BYTE_FRAME,
+-	TX_RX_1024_1518_BYTE_FRAME,
+-	TX_RX_1519_1522_VLAN_BYTE_FRAME,
+-
+-	RX_BYTE_COUNTER = 0x27,
+-	RX_PACKET_COUNTER,
+-	RX_FCS_ERROR_COUNTER,
+-	RX_MULTICAST_PACKET_COUNTER,
+-	RX_BROADCAST_PACKET_COUNTER,
+-	RX_CONTROL_FRAME_PACKET_COUNTER,
+-	RX_PAUSE_FRAME_PACKET_COUNTER,
+-	RX_UNKNOWN_OP_CODE_COUNTER,
+-	RX_ALIGNMENT_ERROR_COUNTER,
+-	RX_FRAME_LENGTH_ERROR_COUNTER,
+-	RX_CODE_ERROR_COUNTER,
+-	RX_CARRIER_SENSE_ERROR_COUNTER,
+-	RX_UNDERSIZE_PACKET_COUNTER,
+-	RX_OVERSIZE_PACKET_COUNTER,
+-	RX_FRAGMENTS_COUNTER,
+-	RX_JABBER_COUNTER,
+-	RX_DROP_PACKET_COUNTER,
+-
+-	TX_BYTE_COUNTER   = 0x38,
+-	TX_PACKET_COUNTER,
+-	TX_MULTICAST_PACKET_COUNTER,
+-	TX_BROADCAST_PACKET_COUNTER,
+-	TX_PAUSE_CONTROL_FRAME_COUNTER,
+-	TX_DEFERRAL_PACKET_COUNTER,
+-	TX_EXCESSIVE_DEFERRAL_PACKET_COUNTER,
+-	TX_SINGLE_COLLISION_PACKET_COUNTER,
+-	TX_MULTI_COLLISION_PACKET_COUNTER,
+-	TX_LATE_COLLISION_PACKET_COUNTER,
+-	TX_EXCESSIVE_COLLISION_PACKET_COUNTER,
+-	TX_TOTAL_COLLISION_COUNTER,
+-	TX_PAUSE_FRAME_HONERED_COUNTER,
+-	TX_DROP_FRAME_COUNTER,
+-	TX_JABBER_FRAME_COUNTER,
+-	TX_FCS_ERROR_COUNTER,
+-	TX_CONTROL_FRAME_COUNTER,
+-	TX_OVERSIZE_FRAME_COUNTER,
+-	TX_UNDERSIZE_FRAME_COUNTER,
+-	TX_FRAGMENT_FRAME_COUNTER,
+-
+-	CARRY_REG_1 = 0x4c,
+-	CARRY_REG_2 = 0x4d,
+-};
+-
+-struct xlr_adapter {
+-	struct net_device *netdev[4];
+-};
+-
+-struct xlr_net_priv {
+-	u32 __iomem *base_addr;
+-	struct net_device *ndev;
+-	struct xlr_adapter *adapter;
+-	struct mii_bus *mii_bus;
+-	int num_rx_desc;
+-	int phy_addr;	/* PHY addr on MDIO bus */
+-	int pcs_id;	/* PCS id on MDIO bus */
+-	int port_id;	/* Port(gmac/xgmac) number, i.e 0-7 */
+-	int tx_stnid;
+-	u32 __iomem *mii_addr;
+-	u32 __iomem *serdes_addr;
+-	u32 __iomem *pcs_addr;
+-	u32 __iomem *gpio_addr;
+-	int phy_speed;
+-	int port_type;
+-	struct timer_list queue_timer;
+-	int wakeup_q;
+-	struct platform_device *pdev;
+-	struct xlr_net_data *nd;
+-
+-	u64 *frin_spill;
+-	u64 *frout_spill;
+-	u64 *class_0_spill;
+-	u64 *class_1_spill;
+-	u64 *class_2_spill;
+-	u64 *class_3_spill;
+-};
+-
+-void xlr_set_gmac_speed(struct xlr_net_priv *priv);
 -- 
 2.32.0
 
