@@ -2,113 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E79644AD82
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 13:29:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D85B044AD89
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 13:30:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242423AbhKIMc0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Nov 2021 07:32:26 -0500
-Received: from foss.arm.com ([217.140.110.172]:33146 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231250AbhKIMcZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Nov 2021 07:32:25 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 188BDED1;
-        Tue,  9 Nov 2021 04:29:39 -0800 (PST)
-Received: from [192.168.178.6] (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 26B0F3F7F5;
-        Tue,  9 Nov 2021 04:29:37 -0800 (PST)
-Subject: Re: [Resend PATCH] psi : calc cfs task memstall time more precisely
-To:     Zhaoyang Huang <huangzhaoyang@gmail.com>,
-        Xuewen Yan <xuewen.yan94@gmail.com>
-Cc:     Johannes Weiner <hannes@cmpxchg.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        Zhaoyang Huang <zhaoyang.huang@unisoc.com>,
-        "open list:MEMORY MANAGEMENT" <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        xuewen.yan@unisoc.com, Ke Wang <Ke.Wang@unisoc.com>
-References: <1634278612-17055-1-git-send-email-huangzhaoyang@gmail.com>
- <YYGV1TxsZXzGXFmx@cmpxchg.org>
- <CAGWkznEaEEz=m5UmPXRECiizwht7+8Zw_xH9V7Wwyd__10eJDA@mail.gmail.com>
- <CAGWkznFuX=6mSnj7J7=t7et5QO-GB2BKCMRiHoU37jcH9dPhLA@mail.gmail.com>
- <78b3f72b-3fe7-f2e0-0e6b-32f28b8ce777@arm.com>
- <CAGWkznF_8iBp57BPoQKvG4VuNYep=g+ZxgO7D4e0wMDLipJ8uw@mail.gmail.com>
- <85c81ab7-49ed-aba5-6221-ea6a8f37f8ad@arm.com>
- <CAB8ipk_0YxWnS-k+HLPnL7DRR1MM+WH-xQfna7jD_+TQ0vKi8Q@mail.gmail.com>
- <CAGWkznGNb2X_V1ppD2AjBxaKrey_A7U==XO_bnXoNAh2emLs8A@mail.gmail.com>
-From:   Dietmar Eggemann <dietmar.eggemann@arm.com>
-Message-ID: <25828616-1976-6e24-cd7d-a95b789f1bc0@arm.com>
-Date:   Tue, 9 Nov 2021 13:29:35 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        id S242476AbhKIMdY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Nov 2021 07:33:24 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58298 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231250AbhKIMdX (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Nov 2021 07:33:23 -0500
+Received: from mail-ed1-x536.google.com (mail-ed1-x536.google.com [IPv6:2a00:1450:4864:20::536])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D0518C061764;
+        Tue,  9 Nov 2021 04:30:37 -0800 (PST)
+Received: by mail-ed1-x536.google.com with SMTP id f8so76136636edy.4;
+        Tue, 09 Nov 2021 04:30:37 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Izwf0rNKbmjX//l6OqTNxretUo1ZACTCQZpG5D1V0qY=;
+        b=Z/PuwOPXJ3QyXPwgTI9wO+h6I0yH2IfB0vfbX7zfIkNnrTuYgjwNTg8gUcIk9r3Lsh
+         nq7PTATk9O6PgJ+Ps9johoCLk8wGfs7N7urFewvSeQoV3S6g6hoyGPSPFSlhGO8nswXp
+         Wopwg9j50Op5IceG+odtGlfYttvwgb1Sp+2Opeio08MxPEP3azmUObThzL2+t8tsavPL
+         CfuvmInv622AoGVMwFbIWEPuNLZ+PyHulPDOIBAA2n6T9PplQExr3+UgfsETC8q8QL0S
+         aShTqkuyTtNI9AikZdMlx2sZ93ysgYLssinbMA+BR8WiPO7Gjfofs/3ddjA5wtnWVCNt
+         RZ8w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Izwf0rNKbmjX//l6OqTNxretUo1ZACTCQZpG5D1V0qY=;
+        b=yXZzWshZouakFaAt0ML41JbzHDadg5i1PJmJicuwvE6XRymDw7f/6UEpDzTUsFUuJV
+         Qa84WOKfY32yAAdxMsDHb7dbrG7hYVsMqgPHs09dvUfCPHlWJRg2kxTHqLWftqhXzX9I
+         231t6RHs3rdvb8OL1hLi/1utPxpGNB4NJE3gu/o6su75/mcoLzb0vko5k9p1+mjnogEv
+         Or8vCAbFpZKr/vd2RgYXsHxmUD6LgqYcbDhGEu/v4u4HO1euoZyGXjCjVEOaKvi6FYPr
+         VVEG0Uq9Phf41rmLjnIwakSJ2aeknfBRF/JhUYDpBMV1ktksNKsZpZ1iy1+8K/CPhqiJ
+         3xkA==
+X-Gm-Message-State: AOAM532bWQetsLIv+POWSkF9DnNbsK0pNbtyAAacJZyjNWRTGcAws2UF
+        BZYnSvDVqyNV9GYq2KBA4UNnRsGjo3+OWGgqaC8=
+X-Google-Smtp-Source: ABdhPJxDCOOSrJrsdArOYFSqCctbOnu9Joe6Dm69fx4ZRvWaZkOHluNqKBfMst7bcVTnfdqsUbuH2jYNQs+b4XxgduE=
+X-Received: by 2002:a17:906:489b:: with SMTP id v27mr8851114ejq.567.1636461036427;
+ Tue, 09 Nov 2021 04:30:36 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <CAGWkznGNb2X_V1ppD2AjBxaKrey_A7U==XO_bnXoNAh2emLs8A@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20211025094119.82967-1-hdegoede@redhat.com> <20211025094119.82967-5-hdegoede@redhat.com>
+ <YYpmMNefsGUhqJ9W@paasikivi.fi.intel.com>
+In-Reply-To: <YYpmMNefsGUhqJ9W@paasikivi.fi.intel.com>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Tue, 9 Nov 2021 14:29:51 +0200
+Message-ID: <CAHp75VeGR8_53ZEXAtQ9oQXGfLoVfS6a+RNWWgA6Hi6oq7_02g@mail.gmail.com>
+Subject: Re: [PATCH v4 04/11] regulator: Introduce tps68470-regulator driver
+To:     Sakari Ailus <sakari.ailus@linux.intel.com>
+Cc:     Hans de Goede <hdegoede@redhat.com>,
+        "Rafael J . Wysocki" <rjw@rjwysocki.net>,
+        Mark Gross <markgross@kernel.org>,
+        Andy Shevchenko <andy@infradead.org>,
+        Wolfram Sang <wsa@the-dreams.de>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        Daniel Scally <djrscally@gmail.com>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>, Len Brown <lenb@kernel.org>,
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        Platform Driver <platform-driver-x86@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-i2c <linux-i2c@vger.kernel.org>,
+        Kate Hsuan <hpa@redhat.com>,
+        Linux Media Mailing List <linux-media@vger.kernel.org>,
+        linux-clk <linux-clk@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 08/11/2021 10:20, Zhaoyang Huang wrote:
-> On Mon, Nov 8, 2021 at 4:49 PM Xuewen Yan <xuewen.yan94@gmail.com> wrote:
->>
->> Hi Dietmar
->>
->> On Sat, Nov 6, 2021 at 1:20 AM Dietmar Eggemann
->> <dietmar.eggemann@arm.com> wrote:
->>>
->>> On 05/11/2021 06:58, Zhaoyang Huang wrote:
+On Tue, Nov 9, 2021 at 2:14 PM Sakari Ailus
+<sakari.ailus@linux.intel.com> wrote:
+> On Mon, Oct 25, 2021 at 11:41:12AM +0200, Hans de Goede wrote:
 
-[...]
+> > Changes in v4:
+> > - Make the top comment block use c++ style comments
+>
+> Why?
 
->>>>> This will let the idle task (swapper) pass. Is this indented? Or do you
->>>>> want to only let CFS tasks (including SCHED_IDLE) pass?
->>>> idle tasks will NOT call psi_memstall_xxx. We just want CFS tasks to
->>>> scale the STALL time.
->>>
->>> Not sure I  get this.
->>>
->>> __schedule() -> psi_sched_switch() -> psi_task_change() ->
->>> psi_group_change() -> record_times() -> psi_memtime_fixup()
->>>
->>> is something else than calling psi_memstall_enter() or _leave()?
->>>
->>> IMHO, at least record_times() can be called with current equal
->>> swapper/X. Or is it that PSI_MEM_SOME is never set for the idle task in
->>> this callstack? I don't know the PSI internals.
-> According to my understanding, PSI_MEM_SOME represents the CORE's
-> state within which there is at least one task trapped in memstall
-> path(only counted in by calling PSI_MEMSTALL_ENTER). record_times is
-> responsible for collecting the delta time of the CORE since it start.
-> What we are doing is to make the delta time more precise. So idle task
-> is irrelevant for these.
+Subsystem maintainer requirement.
 
-Coming back to the original snippet of the patch.
-
-static unsigned long psi_memtime_fixup(u32 growth)
-{
-
-    if (!(current->policy == SCHED_NORMAL ||
-          current->policy == SCHED_BATCH))
-        return growth_fixed;
-
-With this condition:
-
-(1) you're not bailing when current is the idle task. It has policy
-    equal 0 (SCHED_NORMAL)
-
-(2) But you're bailing for a SCHED_IDLE (CFS) task.
-
-I'm not sure that this is indented here?
-
-Since you want to do the scaling later based on whats left for CFS tasks
-from the CPU capacity my hunch is that you want to rather do:
-
-    if (current->sched_class != &fair_sched_class)
-        return growth_fixed;
-
-What's the possible sched classes of current in psi_memtime_fixup?
+-- 
+With Best Regards,
+Andy Shevchenko
