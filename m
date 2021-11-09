@@ -2,203 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C155744B3AE
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 21:01:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D865244B3B0
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 21:02:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244116AbhKIUE1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Nov 2021 15:04:27 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48104 "EHLO
+        id S244128AbhKIUFg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Nov 2021 15:05:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48380 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242871AbhKIUEZ (ORCPT
+        with ESMTP id S242871AbhKIUFf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Nov 2021 15:04:25 -0500
-Received: from mail-lj1-x22a.google.com (mail-lj1-x22a.google.com [IPv6:2a00:1450:4864:20::22a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 47C8FC061766
-        for <linux-kernel@vger.kernel.org>; Tue,  9 Nov 2021 12:01:39 -0800 (PST)
-Received: by mail-lj1-x22a.google.com with SMTP id s24so662657lji.12
-        for <linux-kernel@vger.kernel.org>; Tue, 09 Nov 2021 12:01:39 -0800 (PST)
+        Tue, 9 Nov 2021 15:05:35 -0500
+Received: from mail-yb1-xb31.google.com (mail-yb1-xb31.google.com [IPv6:2607:f8b0:4864:20::b31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E416CC061764
+        for <linux-kernel@vger.kernel.org>; Tue,  9 Nov 2021 12:02:48 -0800 (PST)
+Received: by mail-yb1-xb31.google.com with SMTP id q74so358265ybq.11
+        for <linux-kernel@vger.kernel.org>; Tue, 09 Nov 2021 12:02:48 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
+        d=google.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=XQ9MmBgG6DxG+MYA4zF7fuyzEizobKE/7ttDVS9RbSI=;
-        b=YotoFmkvLVN9hGvdjKO6754H+mRouO/8wPYkVGz9XafEoXduK9gT1fq15dDJM37lPu
-         ksQ7tEYcTBWb3hDUjRo6c7n8zDMhyZNx9WEO/GXY7n3cJ7GeYd0lsOyqHGLAJfK0O8gt
-         qa523oeFiITkccbKIThlj8UwPySSeDlslIiJUdZHm8Y0eyf9QkVpNlZYDsgd+4q6aOYZ
-         FKCeAlCesK8dM5sgKG/3nli04AqYjXBRke4/TKJdBqlL/zVxJ2p84XbX2F6d5//xmOmB
-         6en+Q7WPyRnvQ03koE+7ANI7Tjq23go5CQu0fDTSlDBIvxmwZIzjoXwIiQNtdTp6Yb0p
-         3wjg==
+        bh=mNY0y0eA9QFjzP9md2u0evK0gJlRjiM1T7nvr0z7Y1Q=;
+        b=XmpMSGbHisj1bMTeQbWzpoXd566Jd6dd6n20risBDuCFlvhGz1Ka37xSb6eLO7mRqN
+         dSvFoXkqF9JJBFcNtoERd2otIAhGLqbzoceEQ3s/4nOQ2UmJlgxshmVUUOhqIDxl06aZ
+         xxhWUPxXyfRoUQKtl59qgidqVSmuqkJv0g/bjs8k1cAhiUvE7AYVOcPdfiWI5BEZqoSG
+         Ajd2B8TFW80hBcaWql6Q94xBAjmpqzebr7BLvJQKnbMKZ06kvtdK/KRH33IOwF0vB6Yo
+         1AeYbMUsaBh3erYO3q4ir7rN1eQx3rCn83oc3ohBa2X1s+VqxcFWxrl15cMiIq3Z4VxF
+         3iCg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=XQ9MmBgG6DxG+MYA4zF7fuyzEizobKE/7ttDVS9RbSI=;
-        b=E8qy4V/Xwf5ywtIvbqANkCiCu+uyYS/3oodkKLUY7Q8akjlA8ishg4u6xqFuRLyd9Z
-         0LCtFR17E0i88gFWW3U9OtYp7vZlEWILTKeAZMQugeshhmP6e04XZr2CAfJcemNjKOux
-         pd2ntBLGBoD1VQtxijYenVsSnZhymHFvrpSGN2iMduiQbzcF8rg2WS37ncBpbenLuQHB
-         PTvlu9X4AaGpNMX3/vPtnA7MzfzSfmXPVKdUGAPT+fPF6QJ73XXcw6poMl9tT3J/O7GD
-         lk+KGL65xa0z629ddOpOWtrlSaEf6IbK7pc/AXAiaR33Yd67tgFkBBz2BexBMjqKRmT0
-         lrEg==
-X-Gm-Message-State: AOAM531kNu4SqXE7LInXyVilkeFamtBo9MauBuvYDcM6BSxrilJiVnli
-        N9/fnByVdPpW0XtFw9udzfr4ZqkYgfRQlKUzxxyqdg==
-X-Google-Smtp-Source: ABdhPJwVaBI44PRdZKlS7WK32pjyDHE8ubBG5Y9qIuUBfw5lxhW9wJ8sT6wx9GyLO9Ugcgo+pXkEp/zWBOVTIC6NeqM=
-X-Received: by 2002:a2e:80c3:: with SMTP id r3mr10580377ljg.4.1636488097447;
- Tue, 09 Nov 2021 12:01:37 -0800 (PST)
+        bh=mNY0y0eA9QFjzP9md2u0evK0gJlRjiM1T7nvr0z7Y1Q=;
+        b=b3CW9Ypc7uQ+NEGvOurbyBGHlKzrdH1n6u6Xn2/O69fSqJ9KlVJCfmCgyWL7U9Lh1X
+         UjhoM+QNQUbofK6YPEk87XTmFZoJdWZYiE+/Eo8r5v/px1VBTffuqJQZvVM00DBfGqtn
+         N4bw+nC+HCqORSSFKPS1z4aLHLvDJI4VZBXsRI4bRphRqN6jzVc3C5iTbP1l0dx4nyh8
+         f8HHRsiVKw/EUq46nGIxnSkbUSO/P8jW7fZsm2fXk7l2Cu5WiUA4ksRNOBECwD2pxbF5
+         a8SGl7kxMelPHIeSDMLz1vaweZ4lRunj1gzVmfMG7IQqnvFOyhHRUFN394csCFiTmLom
+         Gu6A==
+X-Gm-Message-State: AOAM532nSllIx4eVpmgtPT4a4Yua0ZortwC1SU826EL5JQ+cmPwHAI9z
+        0jLQiEbOgccdcEhdeyKE6z1Ey0Q5x+YuNg1CNx5wVA==
+X-Google-Smtp-Source: ABdhPJz66wXBO27AG+ywplv4qSiNKTGTTq3yywP5yCUsTUbLTry0vfQQUkbxdnDAz/wUa9ds4L+wp+VX+HKAUUXChRk=
+X-Received: by 2002:a25:d4d5:: with SMTP id m204mr12480331ybf.418.1636488167925;
+ Tue, 09 Nov 2021 12:02:47 -0800 (PST)
 MIME-Version: 1.0
-References: <cover.1636103151.git.hns@goldelico.com> <3ca9a3099d86d631235b6c03ae260bc581cc8d60.1636103151.git.hns@goldelico.com>
- <CAPDyKFrH8f80cs5dbh=3ugjyEzoUYXhStpHQyhUSd6b9wD78vw@mail.gmail.com> <C2F065E7-10C5-4701-A6F7-6B5A6198F0DF@goldelico.com>
-In-Reply-To: <C2F065E7-10C5-4701-A6F7-6B5A6198F0DF@goldelico.com>
-From:   Ulf Hansson <ulf.hansson@linaro.org>
-Date:   Tue, 9 Nov 2021 21:01:01 +0100
-Message-ID: <CAPDyKFoz6b-+HQYdypYD7EUXxwj7th-=41MAK=ZTnKQWRmLArQ@mail.gmail.com>
-Subject: Re: [RFC v4 5/6] mmc: core: transplant ti,wl1251 quirks from to be
- retired omap_hsmmc
-To:     "H. Nikolaus Schaller" <hns@goldelico.com>
-Cc:     =?UTF-8?B?SsOpcsO0bWUgUG91aWxsZXI=?= <Jerome.Pouiller@silabs.com>,
-        Avri Altman <avri.altman@wdc.com>,
-        Shawn Lin <shawn.lin@rock-chips.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Tony Lindgren <tony@atomide.com>,
-        Bean Huo <beanhuo@micron.com>,
-        =?UTF-8?Q?Gra=C5=BEvydas_Ignotas?= <notasas@gmail.com>,
-        linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        letux-kernel@openphoenux.org, kernel@pyra-handheld.com
+References: <CAJuCfpFccBJHHqfOKixJvLr7Xta_ojkdHGfGomwTDNKffzziRQ@mail.gmail.com>
+ <YXvxBSzA2YIxbwVC@dhcp22.suse.cz> <CAJuCfpHBoMGPOUvB2ZWQ=TxbFuWBRF++UaKJZDCrQV4mzb5kMA@mail.gmail.com>
+ <YX+nYGlZBOAljoeF@dhcp22.suse.cz> <CAJuCfpGC9-c9P40x7oy=jy5SphMcd0o0G_6U1-+JAziGKG6dGA@mail.gmail.com>
+ <YYDvm9c/7cGtBvw6@dhcp22.suse.cz> <CAJuCfpFX8FRynoK29h8tpRXRT-Kk+sHboiBnc7N-8MY6AAqVLw@mail.gmail.com>
+ <CAJuCfpFOOgs9uZSW2Tp6uBW23rLHFeSA8o5WYQ_D_ykUcKL64Q@mail.gmail.com>
+ <YYrLe2u2zbmu4LfL@dhcp22.suse.cz> <CAJuCfpG0d34yRhuvOj9NX9zMp=6jWLqFPfUGV0sOO6OrwNC89A@mail.gmail.com>
+ <YYrQ/hENQPn6Mk3v@dhcp22.suse.cz>
+In-Reply-To: <YYrQ/hENQPn6Mk3v@dhcp22.suse.cz>
+From:   Suren Baghdasaryan <surenb@google.com>
+Date:   Tue, 9 Nov 2021 12:02:37 -0800
+Message-ID: <CAJuCfpFT4-mdHHZ2i43hyJQ4dRKb7sRwnAL8GfRnZu3ecE26Ew@mail.gmail.com>
+Subject: Re: [PATCH 1/1] mm: prevent a race between process_mrelease and exit_mmap
+To:     Michal Hocko <mhocko@suse.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        David Rientjes <rientjes@google.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Roman Gushchin <guro@fb.com>, Rik van Riel <riel@surriel.com>,
+        Minchan Kim <minchan@kernel.org>,
+        Christian Brauner <christian@brauner.io>,
+        Christoph Hellwig <hch@infradead.org>,
+        Oleg Nesterov <oleg@redhat.com>,
+        David Hildenbrand <david@redhat.com>,
+        Jann Horn <jannh@google.com>,
+        Shakeel Butt <shakeelb@google.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Florian Weimer <fweimer@redhat.com>,
+        Jan Engelhardt <jengelh@inai.de>,
+        Linux API <linux-api@vger.kernel.org>,
+        linux-mm <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        kernel-team <kernel-team@android.com>,
+        "Kirill A. Shutemov" <kirill@shutemov.name>,
+        Andrea Arcangeli <aarcange@redhat.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 9 Nov 2021 at 11:58, H. Nikolaus Schaller <hns@goldelico.com> wrote:
+On Tue, Nov 9, 2021 at 11:50 AM Michal Hocko <mhocko@suse.com> wrote:
 >
-> Hi Ulf,
->
-> > Am 08.11.2021 um 16:33 schrieb Ulf Hansson <ulf.hansson@linaro.org>:
+> On Tue 09-11-21 11:37:06, Suren Baghdasaryan wrote:
+> > On Tue, Nov 9, 2021 at 11:26 AM Michal Hocko <mhocko@suse.com> wrote:
+> > >
+> > > On Tue 09-11-21 11:01:02, Suren Baghdasaryan wrote:
+> > > [...]
+> > > > Discussing how the patch I want to post works for maple trees that
+> > > > Matthew is working on, I've got a question:
+> > > >
+> > > > IIUC, according to Michal's post here:
+> > > > https://lore.kernel.org/all/20170725154514.GN26723@dhcp22.suse.cz,
+> > > > unmap_vmas() can race with other mmap_lock read holders (including
+> > > > oom_reap_task_mm()) with no issues.
+> > > > Maple tree patchset requires rcu read lock or the mmap semaphore be
+> > > > held (read or write side) when walking the tree, including inside
+> > > > unmap_vmas(). When asked, he told me that he is not sure why it's
+> > > > currently "safe" to walk the vma->vm_next list in unmap_vmas() while
+> > > > another thread is reaping the mm.
+> > > > Michal (or maybe someone else), could you please clarify why
+> > > > unmap_vmas() can safely race with oom_reap_task_mm()? Or maybe my
+> > > > understanding was wrong?
+> > >
+> > > I cannot really comment on the mapple tree part. But the existing
+> > > synchronization between oom reaper and exit_mmap is based on
+> > > - oom_reaper takes mmap_sem for reading
+> > > - exit_mmap sets MMF_OOM_SKIP and takes the exclusive mmap_sem before
+> > >   unmap_vmas.
+> > >
+> > > The oom_reaper therefore can either unmap the address space if the lock
+> > > is taken before exit_mmap or it would it would bale out on MMF_OOM_SKIP
+> > > if it takes the lock afterwards. So the reaper cannot race with
+> > > unmap_vmas.
 > >
-> > On Fri, 5 Nov 2021 at 10:06, H. Nikolaus Schaller <hns@goldelico.com> wrote:
-> >>
-> >> +       card->quirks |= MMC_QUIRK_NONSTD_SDIO;
-> >> +       card->cccr.wide_bus = 1;
-> >> +       card->cis.vendor = 0x104c;
-> >> +       card->cis.device = 0x9066;
-> >> +       card->cis.blksize = 512;
-> >> +       card->cis.max_dtr = 24000000;
-> >> +       card->ocr = 0x80;
-> >
-> > In the past, we discussed a bit around why card->ocr needs to be set here.
-> >
-> > The reason could very well be that the DTS file is specifying the
-> > vmmc-supply with 1.8V fixed regulator, which seems wrong to me.
+> > I see. So, it's the combination of MMF_OOM_SKIP and mmap_lock working
+> > as a barrier which prevent them from racing with each other...
+> > I wasn't sure how
+> > https://lore.kernel.org/all/20170724072332.31903-1-mhocko@kernel.org/
+> > was implementing this synchronization because it would take mmap_sem
+> > write side after unmap_vmas() and IIUC there was no
+> > "mmap_lock_write(); mmap_unlock_write();" sequence in exit_mmap at
+> > that time. I'll need to checkout the old sources to figure this out.
 >
-> I have checked with the schematics but the wlan_en regulator-fixed is just a GPIO
-> controlling some pin of the wifi chip.
->
-> I guess it enables some regulator or power switch inside the wifi module which
-> has unknown voltage.
->
-> We can interpret this as two sequential power-switches. The first one controlled
-> by the gpio-register bit and switches gpio power to the gpio pad of the SoC. The second
-> one switches the battery voltage to the internal circuits of the wifi module.
->
-> The GPIO itself is on 1.8V VIO level which seems to be the reason for the min/max.
->
-> Now it is a little arbitrary what the DTS describes: the gpio voltage or the unknown
-> internal voltage of the second switch.
->
-> So from hardware perspective the min/max values are irrelevant.
+> My memory is rather dimm but AFAIR the main problem was freeing page
+> tables and freeing vmas not unmap_vmas. That one was no modifying the
+> vma list. Essentially it was just a slightly modified madvise don't
+> need. So that part was allowed to race with oom_reaper.
 
-I completely agree with you! That's also why I earlier suggested
-moving to use an mmc-pwrseq node
-(Documentation/devicetree/bindings/mmc/mmc-pwrseq-simple.yaml), that
-would allow a better description of the HW.
+So, both unmap_vmas and __oom_reap_task_mm do not modify vma list and
+therefore can execute concurrently. That makes sense, thanks.
 
-Nevertheless, the important point is that the mmc core gets a valid
-host->ocr_avail to work with during card initialization. And in this
-case, it's probably good enough to model this via changing the
-regulator-min|max-microvolt to get a proper value from the
-"regulator".
+Then I guess, if we want to be semantically correct in exit_mmap(), we
+would have to take mmap_read_lock before unmap_vmas, then drop it and
+take mmap_write_lock before free_pgtables.
 
->
-> >
-> > I would be very interested to know if we would change
-> > "regulator-min|max-microvolt" of the regulator in the DTS, into
-> > somewhere in between 2700000-3600000 (2.7-3.6V)
->
-> Ok, if the mmc driver does something with these values it may have indeed an influence.
->
-> > - and see if that
-> > allows us to drop the assignment of "card->ocr =  0x80;" above. Would
-> > you mind doing some tests for this?
->
-> Well, with min/max=3.3V and no ocr I get:
->
-> [    2.765136] omap_hsmmc 480ad000.mmc: card claims to support voltages below defined range
-> [    2.776367] omap_hsmmc 480ad000.mmc: found wl1251
-> [    2.782287] mmc2: new SDIO card at address 0001
-
-That's really great information! During the first initialization
-attempt, things are working fine and the SDIO card gets properly
-detected.
-
-> [   10.874237] omap_hsmmc 480ad000.mmc: could not set regulator OCR (-22)
-> [   10.945373] wl1251_sdio: probe of mmc2:0001:1 failed with error -16
-
-It looks like the card is being re-initialized when it's time to probe
-with the SDIO func driver. This makes sense, assuming it's been
-powered off via runtime PM (the "cap-power-off-card" DT property
-should be set in the DTS for this card's slot).
-
-I looked a bit closer to understand the problem above and then I
-realized why the card->ocr is being set from omap_hsmmc ->init_card()
-callback. It's most likely because the mmc core in
-mmc_sdio_init_card() doesn't save the card->ocr when
-MMC_QUIRK_NONSTD_SDIO is set. Instead it becomes the responsibility
-for the ->init_card() callback to do it, which seems wrong to me.
-
-Note that the card->ocr is being used when re-initializing the SDIO card.
-
-I have just sent a patch [1], would you mind trying it, in combination
-with not assigning card->ocr in $subject patch?
-
->
-> Adding back card->ocr = 0x80 (and keeping 3.3V for min/max) shows exactly the same.
->
-> Only min/max 1.8V + OCR works:
->
-> [    2.824188] mmc2: new SDIO card at address 0001
-> [    2.806518] omap_hsmmc 480ad000.mmc: card claims to support voltages below defined range
-> [    2.815979] omap_hsmmc 480ad000.mmc: found wl1251
-> [   10.981018] omap_hsmmc 480ad000.mmc: found wl1251
-> [   11.018280] wl1251: using dedicated interrupt line
-> [   11.321136] wl1251: loaded
-> [   11.378601] wl1251: initialized
-> [   14.521759] omap_hsmmc 480ad000.mmc: found wl1251
-> [   38.680725] omap_hsmmc 480ad000.mmc: found wl1251
-> [   39.646942] wl1251: 151 tx blocks at 0x3b788, 35 rx blocks at 0x3a780
-> [   39.654785] wl1251: firmware booted (Rev 4.0.4.3.7)
->
-> Therefore I also tried the 4th combination: min/max 1.8V and no ocr quirk and it fails again.
->
-> Finally I tried setting min to 2.7V and max to 3.6V. This ends up in
->
-> [    0.402648] reg-fixed-voltage fixed-regulator-wg7210_en: Fixed regulator specified with variable voltages
->
-> So it seems that we need both: min/max = 1.8V and OCR. A little unexpected since I had expected
-> that min/max is completely irrelevant.
->
-> > If that works, we should add some comments about it above, I think.
->
-> So at the moment no change for [PATCH v1] which I can now send out.
->
-> BR and thanks,
-> Nikolaus
->
-
-Thanks a lot for doing these tests! If I am right, it looks like we
-should be able to skip assigning card->ocr for this quirk, but let's
-see.
-
-Kind regards
-Uffe
-
-[1]
-https://patchwork.kernel.org/project/linux-mmc/patch/20211109192547.28679-1-ulf.hansson@linaro.org/
+> --
+> Michal Hocko
+> SUSE Labs
