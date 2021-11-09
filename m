@@ -2,89 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ABD2E44B907
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 23:52:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 23C1244B91F
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 23:57:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240946AbhKIWyp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Nov 2021 17:54:45 -0500
-Received: from mail.kernel.org ([198.145.29.99]:40472 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1345607AbhKIWyF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Nov 2021 17:54:05 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 99AB661037;
-        Tue,  9 Nov 2021 22:51:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1636498276;
-        bh=MkQelUtPGxTk7CP+eGXpJiNBb67EtzdkLMHSuc0qB9w=;
-        h=From:Date:Subject:To:Cc:From;
-        b=N/qMtQ9ZzLxmhQ7iDPj0rvDOFfH6gDK0kJL07c3E53WnJ/4GtkHUgBnmMypjf4hYn
-         1AtglV02GzwTHeP4z3W0cAdaqsP62rm+TJYYg+l2PdccpNGNcorX9fDtI+61Nq3Qh2
-         sdl3HaQvpLsppulRBbvJo7L58MqxU7qud9b6Eo/WDWNnNUA/6U81uhDw2/TP1pdQDY
-         CEinaTcZ6+mt7iK9/onIzsa2bnPMkzzAj43ygPdn6DyqI8NCnvmzirDn/ubSujunjy
-         Gjc+hwLbQmFhPHZo/lvQVaKYPiWtYjzYOi5/PBYn7ha5CPec52TFpQfvXEljIQiYn1
-         c9jiZOprKt1Eg==
-Received: by mail-wr1-f42.google.com with SMTP id c4so568230wrd.9;
-        Tue, 09 Nov 2021 14:51:16 -0800 (PST)
-X-Gm-Message-State: AOAM532AHwaGgLhrAoiLrXY2AVTFRAd6rnT58nQ65K/E1QRxQZf2F56j
-        hzJZ2lZx0pDlKyVSnf7Y0IA69Bt/eQxl620YHQU=
-X-Google-Smtp-Source: ABdhPJyVTDedbofxrUet8EqsY0J9JI7QrXutZ1HLIU0wRv24nwwbxfEXM8/oIdKm1IwJahjuQ+NS6kEK3vu3d1MB+cg=
-X-Received: by 2002:a05:6000:18c7:: with SMTP id w7mr14052067wrq.411.1636498275112;
- Tue, 09 Nov 2021 14:51:15 -0800 (PST)
-MIME-Version: 1.0
-From:   Arnd Bergmann <arnd@kernel.org>
-Date:   Tue, 9 Nov 2021 23:50:59 +0100
-X-Gmail-Original-Message-ID: <CAK8P3a0G2BoQ5fa29SASLcYbY9Znwq9wCp4vXbcsZCX+Tios4w@mail.gmail.com>
-Message-ID: <CAK8P3a0G2BoQ5fa29SASLcYbY9Znwq9wCp4vXbcsZCX+Tios4w@mail.gmail.com>
-Subject: [GIT PULL] asm-generic: asm/syscall.h cleanup
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     linux-arch <linux-arch@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Peter Collingbourne <pcc@google.com>
+        id S236847AbhKIXAj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Nov 2021 18:00:39 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59254 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237674AbhKIXAf (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Nov 2021 18:00:35 -0500
+Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09434C04FD86
+        for <linux-kernel@vger.kernel.org>; Tue,  9 Nov 2021 14:54:04 -0800 (PST)
+Received: by mail-yb1-xb49.google.com with SMTP id t24-20020a252d18000000b005c225ae9e16so962058ybt.15
+        for <linux-kernel@vger.kernel.org>; Tue, 09 Nov 2021 14:54:04 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=fqkBKrDgG+U2J0jLPhfOG5/umxYft29Uz1Bp7bFqlU4=;
+        b=gaizNiw45AQlsLUXXmDt2Z841rK7YK6dEfm5VUXvm3abRCI+G8ZqrXQWuNbZFwSTmh
+         XDzZI4SMXh1Kl1WuBipnZdUMW5smsEdFRI30aJdHi4uxTjC51z/SGOAdP3IDilh5sA6s
+         /sSmu2/cpqoRmeJbNXVj0ei5YxIaGqfnnBf6LzmJqATWgWiIW0Xra422ZhbB2T5p60li
+         5XlCkM7OAc8IKhtaC9Kb+KTV20K8CJaIJEenVStxz2lj1egMVnF1gWjvufv0elFOFJm6
+         vQmvqmQak8AO9ZWg2dxaMsYd7YJHpDNagF8ZXUXIP8LumSzCYBbzUn5cgxHU9PfXEk0+
+         9RVw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=fqkBKrDgG+U2J0jLPhfOG5/umxYft29Uz1Bp7bFqlU4=;
+        b=2ZZutKIV0Nj8gy4ay62MqSeceiUy7XXfRiELEuYsEwiLxCk9dezzGKNeM6eMuvdVB8
+         WQomV6BysYVgDd8Lc45VwXaJtA/BnzwyY9CqNme92vJ/UxmgFm/RPqR98mXCvRrF5oD5
+         Lxtm94iheHDYz4FKUkXCbrSHw8WuVHpb5PGb7yQgHqTnuqjXTMB6QVGW0i3uT9a//V+1
+         3FIG/nNo6qNhlDX5dkqQnscgVmv45y9QNoFfoyS1lhsJU++fl2dJZGSwfc7yoHyoPe5F
+         9yoWE8D9nMKNsR5qwV8KaYkyRcGaq+nV57yEa/AToa6NlfLZwU7BJ7KIHXpPNAvIJ//6
+         UfNQ==
+X-Gm-Message-State: AOAM533nq4r7HW4IwCBiNNDXR85wPVMrSGO7dH9/sKsxHW3Uj5cHPDWs
+        B5QICHP6TCxI1MzFBnpA+gXA+U4nfsTpbjlqCIkMMUDsss8ph/R6cg5+8J/nL3yh49xuEjlRNMt
+        0Jsa6jl/s4P3wthFJJL/nnXK6ffstd5UWuGucKKDWW+GXLWwJ0KOcix2vW1pBGM9+HzwxfJqP
+X-Google-Smtp-Source: ABdhPJzNKPj7oPovvEeYQf8vpEbvDToEAPKuadIbnxVFDOySdOXin+j0m8TstBdNk2fD9endANDJ4D0MzBGV
+X-Received: from suichen.svl.corp.google.com ([2620:15c:2c5:13:7559:12f5:de29:c918])
+ (user=suichen job=sendgmr) by 2002:a25:e6c5:: with SMTP id
+ d188mr12102876ybh.217.1636498443089; Tue, 09 Nov 2021 14:54:03 -0800 (PST)
+Date:   Tue,  9 Nov 2021 14:53:19 -0800
+Message-Id: <20211109225321.618688-1-suichen@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.34.0.rc0.344.g81b53c2807-goog
+Subject: [RFC Patch Resend 0/2] I2C statistics as sysfs attributes
+From:   Sui Chen <suichen@google.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     Sui Chen <suichen@google.com>,
+        OpenBMC Mailing List <openbmc@lists.ozlabs.org>,
+        linux-i2c <linux-i2c@vger.kernel.org>,
+        Joel Stanley <joel@jms.id.au>,
+        Andrew Jeffery <andrew@aj.id.au>,
+        Tali Perry <tali.perry1@gmail.com>,
+        Benjamin Fair <benjaminfair@google.com>,
+        Josh Lehan <krellan@google.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following changes since commit 6880fa6c56601bb8ed59df6c30fd390cc5f6dd8f:
+Add I2C statistics such as Bus Error counts and NACK counts as sysfs
+attributes.
 
-  Linux 5.15-rc1 (2021-09-12 16:28:37 -0700)
+I2C statistics such as bus error counts and NACK counts, are
+implemented in many I2C controllers.
 
-are available in the Git repository at:
+Some drivers already populate the counters in debugfs. Having those
+statistics in sysfs can enable for a unified definition across various
+I2C drivers, make the statistics more ABI-stable.
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/arnd/asm-generic.git
-tags/asm-generic-5.16
+Overall the patch works in the following way:
+1) A sysfs directory for I2C statistics is created for an i2c_adapter.
+2) Each specific I2C driver can optionally instantiate each of the
+statistics individually.
 
-for you to fetch changes up to 7962c2eddbfe7cce879acb06f9b4f205789e57b7:
+Test Process:
+1. Clone the OpenBMC repository
+2. `devtool modify`and apply patch to the linux-nuvoton recipe
+3. Build image for quanta-gsj
+4. Build QEMU
+5. Run the image-bmc image in QEMU
 
-  arch: remove unused function syscall_set_arguments() (2021-09-14
-16:06:20 +0200)
+Results:
+root@gsj:/sys/class/i2c-adapter/i2c-1/stats# ls
+ber_cnt       i2c_speed     nack_cnt      rec_fail_cnt  rec_succ_cnt
+timeout_cnt
+root@gsj:/sys/class/i2c-adapter/i2c-1/stats# cat *
+0
+100000
+0
+0
+0
+0
 
-----------------------------------------------------------------
-asm-generic: asm/syscall.h cleanup
+Sui Chen (2):
+  i2c debug counters as sysfs attributes
+  add npcm7xx debug counters as sysfs attributes
 
-This is a single cleanup from Peter Collingbourne, removing
-some dead code.
+ drivers/i2c/busses/i2c-npcm7xx.c |  8 +++
+ drivers/i2c/i2c-core-base.c      |  2 +
+ drivers/i2c/i2c-dev.c            | 98 ++++++++++++++++++++++++++++++++
+ include/linux/i2c.h              | 26 +++++++++
+ 4 files changed, 134 insertions(+)
 
-----------------------------------------------------------------
-Peter Collingbourne (1):
-      arch: remove unused function syscall_set_arguments()
+(Previously sent to linux-i2c, resending to linux-kernel with
+CCed correspondents)
 
- arch/arm/include/asm/syscall.h        | 10 ----------
- arch/arm64/include/asm/syscall.h      | 10 ----------
- arch/csky/include/asm/syscall.h       |  9 ---------
- arch/ia64/include/asm/syscall.h       | 17 ++---------------
- arch/ia64/kernel/ptrace.c             | 31 ++++++++++++-------------------
- arch/microblaze/include/asm/syscall.h | 33 ---------------------------------
- arch/nds32/include/asm/syscall.h      | 22 ----------------------
- arch/nios2/include/asm/syscall.h      | 11 -----------
- arch/openrisc/include/asm/syscall.h   |  7 -------
- arch/powerpc/include/asm/syscall.h    | 10 ----------
- arch/riscv/include/asm/syscall.h      |  9 ---------
- arch/s390/include/asm/syscall.h       | 12 ------------
- arch/sh/include/asm/syscall_32.h      | 12 ------------
- arch/sparc/include/asm/syscall.h      | 10 ----------
- arch/um/include/asm/syscall-generic.h | 14 --------------
- arch/x86/include/asm/syscall.h        | 33 ---------------------------------
- arch/xtensa/include/asm/syscall.h     | 11 -----------
- include/asm-generic/syscall.h         | 16 ----------------
- 18 files changed, 14 insertions(+), 263 deletions(-)
+CC: OpenBMC Mailing List <openbmc@lists.ozlabs.org>
+CC: linux-i2c <linux-i2c@vger.kernel.org>
+CC: linux-kernel <linux-kernel@vger.kernel.org>
+CC: Joel Stanley <joel@jms.id.au>
+CC: Andrew Jeffery <andrew@aj.id.au>
+CC: Tali Perry <tali.perry1@gmail.com>
+CC: Benjamin Fair <benjaminfair@google.com>
+CC: Josh Lehan <krellan@google.com>
+
+
+-- 
+2.34.0.rc0.344.g81b53c2807-goog
+
