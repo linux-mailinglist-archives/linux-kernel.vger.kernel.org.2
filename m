@@ -2,86 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 31A2D44B3BE
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 21:08:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DED0644B3C2
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 21:09:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244165AbhKIUKo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Nov 2021 15:10:44 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49502 "EHLO
+        id S244174AbhKIUMB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Nov 2021 15:12:01 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49794 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244155AbhKIUKm (ORCPT
+        with ESMTP id S244155AbhKIUL7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Nov 2021 15:10:42 -0500
-Received: from mail-ot1-x32b.google.com (mail-ot1-x32b.google.com [IPv6:2607:f8b0:4864:20::32b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 909A3C061766
-        for <linux-kernel@vger.kernel.org>; Tue,  9 Nov 2021 12:07:56 -0800 (PST)
-Received: by mail-ot1-x32b.google.com with SMTP id q33-20020a056830442100b0055abeab1e9aso404192otv.7
-        for <linux-kernel@vger.kernel.org>; Tue, 09 Nov 2021 12:07:56 -0800 (PST)
+        Tue, 9 Nov 2021 15:11:59 -0500
+Received: from mail-pl1-x62f.google.com (mail-pl1-x62f.google.com [IPv6:2607:f8b0:4864:20::62f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ACC52C061764;
+        Tue,  9 Nov 2021 12:09:13 -0800 (PST)
+Received: by mail-pl1-x62f.google.com with SMTP id n8so614670plf.4;
+        Tue, 09 Nov 2021 12:09:13 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=jay4bvn1CHVbECfZlQ8rRUGomUTSbkN+CtKVdn6fLuw=;
-        b=UjmZ16XdSJmMTk1B1Q+5+jygX0AQnxVwiZ8nHytzix8JWJdKkHA1DfCyxpMIn+LvEH
-         8oizt36qlO9lPjxYa3z2hdYSazQstIsTha8sWrMq1ruzMdEPbGL3u5PuxcO4nDQuLaUq
-         pyPzmwEP8ypf51mZzOYgHlTUGmWAcNvmbj4GcHgW1Le9W2SMDQpIoZkZurFoTaWpkMxJ
-         KQz5SeJ7AjGA+PDdbqbJvFDXxQh0CLR4VQuTMWpxCcQ3rpPXPUIZctwdhI5NK9/3E07a
-         B+zKCrYOIohAOeNfqN7g2oTnYVPNaqsaqUv23gFcCRUKzyRNzVLCPBqc2W48WHrcvU7O
-         WOGw==
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=2jHOBwgk7CygldU9JMNVpuRaDAV/j7iK1C6bIJrdBx8=;
+        b=ajfJrf22Dke3yVXyY1X9U/IubgRPx38qzfp/Z5fWd/u1oP1+6Sr3Gs1hfr2DuXXsSA
+         jyP4hvFSqMJKCmChAUL6V5V4EHiw0jxiSX1VR/vluDqGjHyIw8k7ok2pLBfh37VcSGuI
+         bF76rpDBw7ZNo1zm16MU36V3LPsdsPuuUcmnk1Y72GvtgARZ+YPAmwKOVX4EJog9YRG0
+         U8ti2ELr09ZiubL7lQ8FvjAy1HZ6Yb9Vuma2pwftEqjZyFOnAZQd9+sdWJL/evPipapP
+         zfvco6Q6kfIqorJ1viyImyV5zYp1LVFTcMbK4alwI8rvxcXu9/WfKqPstVDI4GcI4oQj
+         om5w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=jay4bvn1CHVbECfZlQ8rRUGomUTSbkN+CtKVdn6fLuw=;
-        b=KAbQSWWUPKWa+eZrH9/trGlFAx5g19uRsT+erIFkfcMe1/ZgWtRIpCXWiqp2QMjNaw
-         My5YL3vnwxdcnRDtJ+H0h4JugFje2GUIEFPjey5TuZydNZqxQocM/OF+MMAYaqHf8Im0
-         /W2eXOZtuJ6FbpebwY9L/UV2zkzgM5y7lZpqWjZtCHtEmZutzJ4HV5zQko+0auZ/Xi/Q
-         pyeV6Fer4w3TgU+V3PE8Mt6kd9IjxZuP408D4Vh8mNoBRdqTkBRoefsrCID3Z3zTgAch
-         vFAGWOkNc0hp+uhMHOIvCnl8tS8pUnm7zMzoUEDkTyhFH3EDXbrZRAAbzgQ0I+mv3Jv0
-         Cz2Q==
-X-Gm-Message-State: AOAM532jg7pA3XXNLOl8X7mKmM8ZjgmDHzZdo7mze03QIfHY1fBDeM+K
-        psspXZTs16K/dbVgtoosQjH4KFrSld09Yx17xyEiCKYkJdc=
-X-Google-Smtp-Source: ABdhPJxNipPZr7+vmyXXCN9McHMGmga6b23qum9RT+SVZQNWx6aLiAtMH8PkORDzg0FIgBHPXVE6XphIIe1qjYrStiM=
-X-Received: by 2002:a9d:6348:: with SMTP id y8mr8389289otk.179.1636488475884;
- Tue, 09 Nov 2021 12:07:55 -0800 (PST)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=2jHOBwgk7CygldU9JMNVpuRaDAV/j7iK1C6bIJrdBx8=;
+        b=AdwXAN4YSMjGi7hxh2OMH5RuzT8dvZBj7UNxwmt+ttGu8okxsVQL3Ct6BOyXLDwduH
+         sL6wmRnxqjheJilHN+PCa+jeXmacBnZRi122/Z9evppJrHtjWqhwsgdTKFerdbjYH5O3
+         RfSPd6m7ZGyFADdmQkz4vrQAFsc4HNcKoxYFc378YJs822yiDdJl+msA6nj68Vb3Yhjt
+         1fnz/NTFEApqrLe0YyAVf+GitwGO2/c7PphgA1BKAjNxRnChiiXNBz2S4PPbOlJxfh6U
+         FGxb6iQmbM5HnO5A5T1O+9jQlmvZx2vAkQtDr+6wFByvyqH+4mGz0Vl8pRhlz77O9PUB
+         XGzg==
+X-Gm-Message-State: AOAM531jg4HvDTE7+/5v7/Vh0e02zSYIma0EvruiqgMwupiv+qYKEfRz
+        kr1eHVsfTqnCksYurrF2IUY=
+X-Google-Smtp-Source: ABdhPJwhIBc/8jKwd7nFGat0y4KPvl8W1zNVSMY7appSq6oFnOX2aMWxa9mBtnA3U/dZa2yNe7C4YA==
+X-Received: by 2002:a17:90b:38c5:: with SMTP id nn5mr10079324pjb.220.1636488553080;
+        Tue, 09 Nov 2021 12:09:13 -0800 (PST)
+Received: from localhost.localdomain ([27.255.248.134])
+        by smtp.googlemail.com with ESMTPSA id q10sm3103095pjd.0.2021.11.09.12.09.08
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 09 Nov 2021 12:09:12 -0800 (PST)
+From:   Puranjay Mohan <puranjay12@gmail.com>
+To:     gregkh@linuxfoundation.org, rafael@kernel.org,
+        heikki.krogerus@linux.intel.com, andriy.shevchenko@linux.intel.com,
+        kuba@kernel.org, saravanak@google.com,
+        linux-kernel@vger.kernel.org, lars@metafoo.de,
+        Michael.Hennerich@analog.com, jic23@kernel.org,
+        linux-iio@vger.kernel.org
+Cc:     Puranjay Mohan <puranjay12@gmail.com>
+Subject: [PATCH v2 0/2] device property: Adding fwnode_irq_get_byname()
+Date:   Wed, 10 Nov 2021 01:38:38 +0530
+Message-Id: <20211109200840.135019-1-puranjay12@gmail.com>
+X-Mailer: git-send-email 2.30.1
 MIME-Version: 1.0
-References: <20211105130338.241100-1-arnd@kernel.org> <20211105130338.241100-3-arnd@kernel.org>
-In-Reply-To: <20211105130338.241100-3-arnd@kernel.org>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Tue, 9 Nov 2021 21:07:44 +0100
-Message-ID: <CACRpkdYdrm_YnwvxjqLBrJfOF07_nDyu1g0xggRMJ9_x2S+LJA@mail.gmail.com>
-Subject: Re: [RFC 3/3] gpiolib: coldfire: remove custom asm/gpio.h
-To:     Arnd Bergmann <arnd@kernel.org>
-Cc:     linux-gpio@vger.kernel.org, Bartosz Golaszewski <brgl@bgdev.pl>,
-        linux-m68k@lists.linux-m68k.org, geert@linux-m68k.org,
-        gerg@linux-m68k.org, linux@armlinux.org.uk,
-        linux-arm-kernel@lists.infradead.org, linux-sh@vger.kernel.org,
-        dalias@libc.org, ysato@users.sourceforge.jp,
-        Arnd Bergmann <arnd@arndb.de>, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 5, 2021 at 2:05 PM Arnd Bergmann <arnd@kernel.org> wrote:
+The first patch in this series adds the fwnode_irq_get_byname() which is
+the generic version of the of_irq_get_byname(). It is used to get the
+IRQ number from name of the interrupt.
 
-> From: Arnd Bergmann <arnd@arndb.de>
->
-> Now that coldfire is the only user of a custom asm/gpio.h, it seems
-> better to remove this as well, and have the same interface everywhere.
->
-> For the gpio_get_value()/gpio_set_value()/gpio_to_irq(), gpio_cansleep()
-> functions, the custom version is only a micro-optimization to inline the
-> function for constant GPIO numbers. However, in the coldfire defconfigs,
-> I was unable to find a single instance where this micro-optimization
-> was even used, so to my best knowledge removing this has no downsides.
->
-> The custom gpio_request_one() function is even less useful, as it is
-> guarded by an #ifdef that is never true.
->
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+The second patch in this series uses the fwnode_irq_get_byname()
+function in the IIO driver of the ADXL355 accelerometer. The driver has
+been tested after applying this patch on a Raspberry PI. The ADXL355 was
+connected to the Raspberry Pi using I2C and fwnode_irq_get_byname() was
+used to get the IRQ number for the "DRDY" interrupt. Earlier this driver
+was using of_irq_get_byname() to get this IRQ number.
 
-Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
+Puranjay Mohan (2):
+  device property: Add fwnode_irq_get_byname()
+  iio: accel: adxl355: use fwnode_irq_get_byname()
 
-Yours,
-Linus Walleij
+ drivers/base/property.c          | 23 +++++++++++++++++++++++
+ drivers/iio/accel/adxl355_core.c |  7 ++-----
+ include/linux/property.h         |  2 ++
+ 3 files changed, 27 insertions(+), 5 deletions(-)
+
+-- 
+2.30.1
+
