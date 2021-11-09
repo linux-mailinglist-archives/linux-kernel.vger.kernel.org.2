@@ -2,174 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7BB2744B1CD
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 18:15:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6202F44B1D0
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 18:15:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236368AbhKIRSX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Nov 2021 12:18:23 -0500
-Received: from smtp-out2.suse.de ([195.135.220.29]:46186 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235222AbhKIRSV (ORCPT
+        id S239792AbhKIRSj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Nov 2021 12:18:39 -0500
+Received: from mx07-00178001.pphosted.com ([185.132.182.106]:32902 "EHLO
+        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S239822AbhKIRSh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Nov 2021 12:18:21 -0500
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out2.suse.de (Postfix) with ESMTP id F3E571FD34;
-        Tue,  9 Nov 2021 17:15:33 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1636478134; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=w2u1c/OVbCzJIJ5761FcTJUE1XzuOMfSX3Bnp8Mme7s=;
-        b=ZwQV9ABZLTcCLrPTJXvGjA+CksqOScnFQ8y0snD8Rj9xiiHPpSSUpj06oAM7Oxqgy0kvMt
-        Jxkr/KioI9GmfnXam3MDeBKl9K/OCjxRfLkcFPCuRSbcGuZEhgA6MLKgWN+4ynU3ZVoEI7
-        LIW5/W375caR/JxKMeZFxQZVyx26PGo=
-Received: from suse.cz (unknown [10.100.201.86])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by relay2.suse.de (Postfix) with ESMTPS id AFE77A3B83;
-        Tue,  9 Nov 2021 17:15:33 +0000 (UTC)
-Date:   Tue, 9 Nov 2021 18:15:33 +0100
-From:   Michal Hocko <mhocko@suse.com>
-To:     Eric Dumazet <eric.dumazet@gmail.com>
-Cc:     Alexey Makhalov <amakhalov@vmware.com>, linux-mm@kvack.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        David Hildenbrand <david@redhat.com>,
-        Oscar Salvador <osalvador@suse.de>,
-        Dennis Zhou <dennis@kernel.org>, Tejun Heo <tj@kernel.org>,
-        Christoph Lameter <cl@linux.com>, linux-kernel@vger.kernel.org,
-        stable@vger.kernel.org
-Subject: Re: [PATCH v3] mm: fix panic in __alloc_pages
-Message-ID: <YYqstfX8PSGDfWsn@dhcp22.suse.cz>
-References: <908909e0-4815-b580-7ff5-d824d36a141c@redhat.com>
- <20211108202325.20304-1-amakhalov@vmware.com>
- <2e191db3-286f-90c6-bf96-3f89891e9926@gmail.com>
+        Tue, 9 Nov 2021 12:18:37 -0500
+Received: from pps.filterd (m0241204.ppops.net [127.0.0.1])
+        by mx07-00178001.pphosted.com (8.16.1.2/8.16.1.2) with ESMTP id 1A9FFaVl017554;
+        Tue, 9 Nov 2021 18:15:46 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=selector1;
+ bh=WP56nJUOgV37WP5yVcprpOPdwQe3wKj3NgL3ETog4LU=;
+ b=YHwvA0thwO90uBFvXw7tP7KDEpb5DY5n/1ZYpWwlNfQNRKt4taiHz8R0pUCoDc6rdfSd
+ U1+InG/846E+PdkTTD34k8wdJC06f4+pFMFAnvvvk6l5Mqd0kWxJVGZ8tKWyGCPtxlMB
+ m/B+QiJD/TbKL1ULTCOs+YKIEwR0dmpIEp0/CEpy0CjT69zYFXZZz1nzFyF3nhW5cY9l
+ JHAazlAwpkyoe+pKCxS0izTqGuSXZsqUJ2zCANtmUp/uxBOFOLdaVdyWv/H/PUcAUI7I
+ RqSFiJ2f0HTTay8Gfo/qVVzceJgiT3LLPx/kDcajEX74x3d8EicUJaqP0x4NUeozWKGT Tg== 
+Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
+        by mx07-00178001.pphosted.com (PPS) with ESMTPS id 3c7ufn8mwr-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 09 Nov 2021 18:15:46 +0100
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 0EA4D10002A;
+        Tue,  9 Nov 2021 18:15:45 +0100 (CET)
+Received: from Webmail-eu.st.com (sfhdag2node2.st.com [10.75.127.5])
+        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id AA75C21AFA3;
+        Tue,  9 Nov 2021 18:15:45 +0100 (CET)
+Received: from lmecxl0993.lme.st.com (10.75.127.45) by SFHDAG2NODE2.st.com
+ (10.75.127.5) with Microsoft SMTP Server (TLS) id 15.0.1497.18; Tue, 9 Nov
+ 2021 18:15:44 +0100
+Subject: Re: [PATCH] MAINTAINERS: Update Benjamin Gaignard maintainer status
+To:     Alexandre TORGUE <alexandre.torgue@foss.st.com>,
+        Arnd Bergmann <arnd@arndb.de>
+CC:     Benjamin Gaignard <benjamin.gaignard@collabora.com>,
+        <linux-kernel@vger.kernel.org>,
+        Philippe CORNU <philippe.cornu@st.com>
+References: <20210706163033.795805-1-benjamin.gaignard@collabora.com>
+ <a1df40c2-f414-56e9-2e42-83e28ad54cee@foss.st.com>
+From:   Philippe CORNU <philippe.cornu@foss.st.com>
+Message-ID: <8a1ecd56-5690-7f0b-9c7f-92ff4ca46120@foss.st.com>
+Date:   Tue, 9 Nov 2021 18:15:40 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <2e191db3-286f-90c6-bf96-3f89891e9926@gmail.com>
+In-Reply-To: <a1df40c2-f414-56e9-2e42-83e28ad54cee@foss.st.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.75.127.45]
+X-ClientProxiedBy: SFHDAG2NODE2.st.com (10.75.127.5) To SFHDAG2NODE2.st.com
+ (10.75.127.5)
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.205,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.0.607.475
+ definitions=2021-11-09_04,2021-11-08_02,2020-04-07_01
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon 08-11-21 18:08:52, Eric Dumazet wrote:
+
+
+On 7/23/21 5:48 PM, Alexandre TORGUE wrote:
+> Hi Arnd
+> 
+> On 7/6/21 6:30 PM, Benjamin Gaignard wrote:
+>> Update Benjamin Gaignard address and remove it from no more maintained
+>> drivers.
+>>
+>> Signed-off-by: Benjamin Gaignard <benjamin.gaignard@collabora.com>
+> 
+> How to handle this kind of patch ? Do I take it or do you take it 
+> directly through arm-soc tree ?
+> 
+> regards
+> Alex
+
+Hi Arnd & Alexandre,
+
+This is a kind reminder email ;-)
+
+Many thanks for your support,
+Philippe :-)
+
+
+> 
+>> ---
+>>   MAINTAINERS | 5 +----
+>>   1 file changed, 1 insertion(+), 4 deletions(-)
+>>
+>> diff --git a/MAINTAINERS b/MAINTAINERS
+>> index 8c5ee008301a6..c6356cd0446a8 100644
+>> --- a/MAINTAINERS
+>> +++ b/MAINTAINERS
+>> @@ -5460,7 +5460,7 @@ F:    tools/testing/selftests/dma/
+>>   DMA-BUF HEAPS FRAMEWORK
+>>   M:    Sumit Semwal <sumit.semwal@linaro.org>
+>> -R:    Benjamin Gaignard <benjamin.gaignard@linaro.org>
+>> +R:    Benjamin Gaignard <benjamin.gaignard@collabora.com>
+>>   R:    Liam Mark <lmark@codeaurora.org>
+>>   R:    Laura Abbott <labbott@redhat.com>
+>>   R:    Brian Starkey <Brian.Starkey@arm.com>
+>> @@ -6141,7 +6141,6 @@ F:    
+>> Documentation/devicetree/bindings/display/rockchip/
+>>   F:    drivers/gpu/drm/rockchip/
+>>   DRM DRIVERS FOR STI
+>> -M:    Benjamin Gaignard <benjamin.gaignard@linaro.org>
+>>   L:    dri-devel@lists.freedesktop.org
+>>   S:    Maintained
+>>   T:    git git://anongit.freedesktop.org/drm/drm-misc
+>> @@ -6151,7 +6150,6 @@ F:    drivers/gpu/drm/sti
+>>   DRM DRIVERS FOR STM
+>>   M:    Yannick Fertre <yannick.fertre@foss.st.com>
+>>   M:    Philippe Cornu <philippe.cornu@foss.st.com>
+>> -M:    Benjamin Gaignard <benjamin.gaignard@linaro.org>
+>>   L:    dri-devel@lists.freedesktop.org
+>>   S:    Maintained
+>>   T:    git git://anongit.freedesktop.org/drm/drm-misc
+>> @@ -17453,7 +17451,6 @@ F:    
+>> Documentation/devicetree/bindings/sound/st,sti-asoc-card.txt
+>>   F:    sound/soc/sti/
+>>   STI CEC DRIVER
+>> -M:    Benjamin Gaignard <benjamin.gaignard@linaro.org>
+>>   S:    Maintained
+>>   F:    Documentation/devicetree/bindings/media/stih-cec.txt
+>>   F:    drivers/media/cec/platform/sti/
+>>
 > 
 > 
-> On 11/8/21 12:23 PM, Alexey Makhalov wrote:
-> > There is a kernel panic caused by pcpu_alloc_pages() passing
-> > offlined and uninitialized node to alloc_pages_node() leading
-> > to panic by NULL dereferencing uninitialized NODE_DATA(nid).
-> > 
-> >  CPU2 has been hot-added
-> >  BUG: unable to handle page fault for address: 0000000000001608
-> >  #PF: supervisor read access in kernel mode
-> >  #PF: error_code(0x0000) - not-present page
-> >  PGD 0 P4D 0
-> >  Oops: 0000 [#1] SMP PTI
-> >  CPU: 0 PID: 1 Comm: systemd Tainted: G            E     5.15.0-rc7+ #11
-> >  Hardware name: VMware, Inc. VMware7,1/440BX Desktop Reference Platform, BIOS VMW
-> > 
-> >  RIP: 0010:__alloc_pages+0x127/0x290
-> >  Code: 4c 89 f0 5b 41 5c 41 5d 41 5e 41 5f 5d c3 44 89 e0 48 8b 55 b8 c1 e8 0c 83 e0 01 88 45 d0 4c 89 c8 48 85 d2 0f 85 1a 01 00 00 <45> 3b 41 08 0f 82 10 01 00 00 48 89 45 c0 48 8b 00 44 89 e2 81 e2
-> >  RSP: 0018:ffffc900006f3bc8 EFLAGS: 00010246
-> >  RAX: 0000000000001600 RBX: 0000000000000000 RCX: 0000000000000000
-> >  RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000000000000cc2
-> >  RBP: ffffc900006f3c18 R08: 0000000000000001 R09: 0000000000001600
-> >  R10: ffffc900006f3a40 R11: ffff88813c9fffe8 R12: 0000000000000cc2
-> >  R13: 0000000000000000 R14: 0000000000000001 R15: 0000000000000cc2
-> >  FS:  00007f27ead70500(0000) GS:ffff88807ce00000(0000) knlGS:0000000000000000
-> >  CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> >  CR2: 0000000000001608 CR3: 000000000582c003 CR4: 00000000001706b0
-> >  Call Trace:
-> >   pcpu_alloc_pages.constprop.0+0xe4/0x1c0
-> >   pcpu_populate_chunk+0x33/0xb0
-> >   pcpu_alloc+0x4d3/0x6f0
-> >   __alloc_percpu_gfp+0xd/0x10
-> >   alloc_mem_cgroup_per_node_info+0x54/0xb0
-> >   mem_cgroup_alloc+0xed/0x2f0
-> >   mem_cgroup_css_alloc+0x33/0x2f0
-> >   css_create+0x3a/0x1f0
-> >   cgroup_apply_control_enable+0x12b/0x150
-> >   cgroup_mkdir+0xdd/0x110
-> >   kernfs_iop_mkdir+0x4f/0x80
-> >   vfs_mkdir+0x178/0x230
-> >   do_mkdirat+0xfd/0x120
-> >   __x64_sys_mkdir+0x47/0x70
-> >   ? syscall_exit_to_user_mode+0x21/0x50
-> >   do_syscall_64+0x43/0x90
-> >   entry_SYSCALL_64_after_hwframe+0x44/0xae
-> > 
-> > Panic can be easily reproduced by disabling udev rule for
-> > automatic onlining hot added CPU followed by CPU with
-> > memoryless node (NUMA node with CPU only) hot add.
-> > 
-> > Hot adding CPU and memoryless node does not bring the node
-> > to online state. Memoryless node will be onlined only during
-> > the onlining its CPU.
-> > 
-> > Node can be in one of the following states:
-> > 1. not present.(nid == NUMA_NO_NODE)
-> > 2. present, but offline (nid > NUMA_NO_NODE, node_online(nid) == 0,
-> > 				NODE_DATA(nid) == NULL)
-> > 3. present and online (nid > NUMA_NO_NODE, node_online(nid) > 0,
-> > 				NODE_DATA(nid) != NULL)
-> > 
-> > Percpu code is doing allocations for all possible CPUs. The
-> > issue happens when it serves hot added but not yet onlined
-> > CPU when its node is in 2nd state. This node is not ready
-> > to use, fallback to numa_mem_id().
-> > 
-> > Signed-off-by: Alexey Makhalov <amakhalov@vmware.com>
-> > Reviewed-by: David Hildenbrand <david@redhat.com>
-> > Cc: Andrew Morton <akpm@linux-foundation.org>
-> > Cc: David Hildenbrand <david@redhat.com>
-> > Cc: Michal Hocko <mhocko@suse.com>
-> > Cc: Oscar Salvador <osalvador@suse.de>
-> > Cc: Dennis Zhou <dennis@kernel.org>
-> > Cc: Tejun Heo <tj@kernel.org>
-> > Cc: Christoph Lameter <cl@linux.com>
-> > Cc: linux-mm@kvack.org
-> > Cc: linux-kernel@vger.kernel.org
-> > Cc: stable@vger.kernel.org
-> > ---
-> >  mm/percpu-vm.c | 8 ++++++--
-> >  1 file changed, 6 insertions(+), 2 deletions(-)
-> > 
-> > diff --git a/mm/percpu-vm.c b/mm/percpu-vm.c
-> > index 2054c9213..f58d73c92 100644
-> > --- a/mm/percpu-vm.c
-> > +++ b/mm/percpu-vm.c
-> > @@ -84,15 +84,19 @@ static int pcpu_alloc_pages(struct pcpu_chunk *chunk,
-> >  			    gfp_t gfp)
-> >  {
-> >  	unsigned int cpu, tcpu;
-> > -	int i;
-> > +	int i, nid;
-> >  
-> >  	gfp |= __GFP_HIGHMEM;
-> >  
-> >  	for_each_possible_cpu(cpu) {
-> > +		nid = cpu_to_node(cpu);
-> > +		if (nid == NUMA_NO_NODE || !node_online(nid))
-> > +			nid = numa_mem_id();
 > 
-> Maybe we should fail this fallback if (gfp & __GFP_THISNODE) ?
-> 
-> Or maybe there is no support for this constraint in per-cpu allocator anyway.
-
-I would be really curious about the usecase. Not to mention that pcp
-allocation would be effectively unusable on any setups with memory less
-nodes.
-
-> I am a bit worried that we do not really know if pages are
-> allocated on the right node or not.
-
-There hasn't been any guarantee like that. Page allocator would fallback
-to other nodes (in the node distance order) unless __GFP_THISNODE is
-specified. This patch just papers over the fact that currently we can
-end up having an invalid numa node associated with a cpu. This is a bug
-in the initialization code. Even if that is fixed the node fallback is
-still a real thing that might happen.
-
--- 
-Michal Hocko
-SUSE Labs
