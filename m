@@ -2,193 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B8B044B4CF
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 22:32:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C48A44B4AF
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 22:28:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245214AbhKIVfD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Nov 2021 16:35:03 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:55966 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S239478AbhKIVfA (ORCPT
+        id S245159AbhKIVas (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Nov 2021 16:30:48 -0500
+Received: from linux.microsoft.com ([13.77.154.182]:39884 "EHLO
+        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236933AbhKIVar (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Nov 2021 16:35:00 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1636493533;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=PE1VptDeAs6kmOyj4aRTeb4D8eNBBDr4zH9bU+KmOKU=;
-        b=XowU0lLqrc3Xf0FuTV9rXSTD/lsahIm+qkAgs3GxTrEZGjY89yX5QJtVUPoNuZ4Jajtbtz
-        fGWiMKzVsmhbbEmVjK26OegfnLz/GWprjoC5iG06zBen6G563Ojmft8tJ5RGVwBelits2C
-        o95GfuryUkS6k5taKtUixCM2xSqkKh0=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-446-pbeZtQg6M0m7P3otNU44WQ-1; Tue, 09 Nov 2021 16:27:57 -0500
-X-MC-Unique: pbeZtQg6M0m7P3otNU44WQ-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 0906887D542;
-        Tue,  9 Nov 2021 21:27:55 +0000 (UTC)
-Received: from warthog.procyon.org.uk (unknown [10.33.37.68])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 1812319729;
-        Tue,  9 Nov 2021 21:27:44 +0000 (UTC)
-Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
-        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
-        Kingdom.
-        Registered in England and Wales under Company Registration No. 3798903
-Subject: [PATCH v4 3/5] folio: Add replacements for page_endio()
-From:   David Howells <dhowells@redhat.com>
-To:     "Matthew Wilcox (Oracle)" <willy@infradead.org>
-Cc:     Jeff Layton <jlayton@kernel.org>,
-        Dominique Martinet <asmadeus@codewreck.org>,
-        kafs-testing@auristor.com, dhowells@redhat.com,
-        Jeff Layton <jlayton@kernel.org>,
-        Ilya Dryomov <idryomov@gmail.com>,
-        Dominique Martinet <asmadeus@codewreck.org>,
-        linux-fsdevel@vger.kernel.org, linux-cachefs@redhat.com,
-        v9fs-developer@lists.sourceforge.net,
-        linux-afs@lists.infradead.org, ceph-devel@vger.kernel.org,
-        linux-cifs@vger.kernel.org, linux-nfs@vger.kernel.org,
-        devel@lists.orangefs.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-Date:   Tue, 09 Nov 2021 21:27:44 +0000
-Message-ID: <163649326420.309189.6029879848780568728.stgit@warthog.procyon.org.uk>
-In-Reply-To: <163649323416.309189.4637503793406396694.stgit@warthog.procyon.org.uk>
-References: <163649323416.309189.4637503793406396694.stgit@warthog.procyon.org.uk>
-User-Agent: StGit/0.23
+        Tue, 9 Nov 2021 16:30:47 -0500
+Received: from kbox (unknown [24.17.193.74])
+        by linux.microsoft.com (Postfix) with ESMTPSA id 90D4220C34F1;
+        Tue,  9 Nov 2021 13:28:00 -0800 (PST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 90D4220C34F1
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+        s=default; t=1636493280;
+        bh=GRpd/oDBvncA0+dkIYF+gXWruVjL4DVSDIZQtRJZ+LI=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=ROLYTeKADIDt+CADjhZCcJD7FpSmgR4iLii6McgtvHrITZNiCqupEHJ0FIAyl5vN4
+         n9tCtXSTwyjLOd6bIABLPV9j7UvblV/nRtpbz7psTN1Vmt3h+fArrl66IwVnHL/63l
+         hBgdTzFFXEOOpBFLBaFDDFnH4eh2Me/1UhcVyKNo=
+Date:   Tue, 9 Nov 2021 13:27:56 -0800
+From:   Beau Belgrave <beaub@linux.microsoft.com>
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     Masami Hiramatsu <mhiramat@kernel.org>,
+        linux-trace-devel@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v4 02/10] user_events: Add minimal support for
+ trace_event into ftrace
+Message-ID: <20211109212756.GA1741@kbox>
+References: <20211104170433.2206-3-beaub@linux.microsoft.com>
+ <20211107233115.1f77e93c4bdf3ff649be99c1@kernel.org>
+ <20211108171336.GA1690@kbox>
+ <20211108131639.33a4f186@gandalf.local.home>
+ <20211108202527.GA1862@kbox>
+ <20211109115634.5fb6d984d7b4e701c740d5f3@kernel.org>
+ <20211109190844.GA1529@kbox>
+ <20211109142506.3c280469@gandalf.local.home>
+ <20211109201432.GA1650@kbox>
+ <20211109154520.11995e75@gandalf.local.home>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211109154520.11995e75@gandalf.local.home>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add three functions to replace page_endio():
+On Tue, Nov 09, 2021 at 03:45:20PM -0500, Steven Rostedt wrote:
+> On Tue, 9 Nov 2021 12:14:32 -0800
+> Beau Belgrave <beaub@linux.microsoft.com> wrote:
+> 
+> > The ftrace probe will have a blob even after optimization due to the copy
+> > into the ring buffer (assuming we can discard it if it violates a policy).
+> 
+> Yes it can be discarded. In fact, when filtering is enabled, it tries to
+> first use a temporary per cpu buffer to do the filtering and not write it
+> into the ring buffer. Only when it passes the filter does it get injected.
+> 
+> For user events that happen in user context, it will always use this temp
+> buffer. But since there's only buffer per CPU, if an interrupt comes in and
+> executes a filtered event, it will use the ring buffer itself, and discard
+> it if it does not match.
+> 
+> > 
+> > > That is, the reading of the trace file?
+> > >   
+> > 
+> > We really need to ensure that data can be analyzed on the machine
+> > directly (eBPF, ftrace, perf) as well as outside of the machine (ftrace, perf).
+> > 
+> > The priorities to us are fast recording speed with accurate reading of trace
+> > files and event data.
+> 
+> OK, then it probably isn't an issue to add checks to the parsing of the
+> dynamic arrays (including strings) that makes sure the string is within
+> bounds for the filtering.
+> 
+> -- Steve
 
- (1) folio_end_read().  End a read to a folio.
+Where were you thinking the filtering would occur? In the filter /
+histogram predicates or in user_events directly before buffer commit?
 
- (2) folio_end_write().  End a write from a folio.
-
- (3) folio_endio().  A switcher that does one or the other of the above.
-
-Change page_endio() to just call folio_endio().  Note that the parameter
-order is switched so that the folio_endio() stub doesn't have to shuffle
-the params around, but can rather just test and jump.
-
-Signed-off-by: David Howells <dhowells@redhat.com>
-Tested-by: Jeff Layton <jlayton@kernel.org>
-Tested-by: Dominique Martinet <asmadeus@codewreck.org>
-Tested-by: kafs-testing@auristor.com
-Link: https://lore.kernel.org/r/1088663.1635955216@warthog.procyon.org.uk/
----
-
- include/linux/pagemap.h |    9 ++++++-
- mm/filemap.c            |   64 ++++++++++++++++++++++++++++++++---------------
- 2 files changed, 51 insertions(+), 22 deletions(-)
-
-diff --git a/include/linux/pagemap.h b/include/linux/pagemap.h
-index 1a0c646eb6ff..fd90544bb3e4 100644
---- a/include/linux/pagemap.h
-+++ b/include/linux/pagemap.h
-@@ -895,7 +895,14 @@ static inline int __must_check write_one_page(struct page *page)
- int __set_page_dirty_nobuffers(struct page *page);
- int __set_page_dirty_no_writeback(struct page *page);
- 
--void page_endio(struct page *page, bool is_write, int err);
-+void folio_end_read(struct folio *folio, int err);
-+void folio_end_write(struct folio *folio, int err);
-+void folio_endio(struct folio *folio, int err, bool is_write);
-+
-+static inline void page_endio(struct page *page, bool is_write, int err)
-+{
-+	folio_endio(page_folio(page), err, is_write);
-+}
- 
- void folio_end_private_2(struct folio *folio);
- void folio_wait_private_2(struct folio *folio);
-diff --git a/mm/filemap.c b/mm/filemap.c
-index daa0e23a6ee6..841e87b2d6ab 100644
---- a/mm/filemap.c
-+++ b/mm/filemap.c
-@@ -1612,33 +1612,55 @@ void folio_end_writeback(struct folio *folio)
- }
- EXPORT_SYMBOL(folio_end_writeback);
- 
--/*
-- * After completing I/O on a page, call this routine to update the page
-- * flags appropriately
-+/**
-+ * folio_end_read - Update the state of a folio after a read
-+ * @folio: The folio to update
-+ * @err: The error code (or 0) to apply
-  */
--void page_endio(struct page *page, bool is_write, int err)
-+void folio_end_read(struct folio *folio, int err)
- {
--	if (!is_write) {
--		if (!err) {
--			SetPageUptodate(page);
--		} else {
--			ClearPageUptodate(page);
--			SetPageError(page);
--		}
--		unlock_page(page);
-+	if (!err) {
-+		folio_mark_uptodate(folio);
- 	} else {
--		if (err) {
--			struct address_space *mapping;
-+		folio_clear_uptodate(folio);
-+		folio_set_error(folio);
-+	}
-+	folio_unlock(folio);
-+}
-+EXPORT_SYMBOL_GPL(folio_end_read);
- 
--			SetPageError(page);
--			mapping = page_mapping(page);
--			if (mapping)
--				mapping_set_error(mapping, err);
--		}
--		end_page_writeback(page);
-+/**
-+ * folio_end_write - Update the state of a folio after a write
-+ * @folio: The folio to update
-+ * @err: The error code (or 0) to apply
-+ */
-+void folio_end_write(struct folio *folio, int err)
-+{
-+	if (err) {
-+		struct address_space *mapping = folio_mapping(folio);
-+
-+		folio_set_error(folio);
-+		if (mapping)
-+			mapping_set_error(mapping, err);
- 	}
-+	folio_end_writeback(folio);
-+}
-+EXPORT_SYMBOL_GPL(folio_end_write);
-+
-+/**
-+ * folio_endio - Update the state of a folio after a read or write
-+ * @folio: The folio to update
-+ * @err: The error code (or 0) to apply
-+ * @is_write: True if this was a write
-+ */
-+void folio_endio(struct folio *folio, int err, bool is_write)
-+{
-+	if (is_write)
-+		folio_end_write(folio, err);
-+	else
-+		folio_end_read(folio, err);
- }
--EXPORT_SYMBOL_GPL(page_endio);
-+EXPORT_SYMBOL_GPL(folio_endio);
- 
- /**
-  * __folio_lock - Get a lock on the folio, assuming we need to sleep to get it.
-
-
+Thanks,
+-Beau
