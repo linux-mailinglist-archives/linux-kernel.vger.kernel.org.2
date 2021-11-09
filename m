@@ -2,125 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0900444AE52
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 14:01:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A4A9244AE56
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 14:03:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231550AbhKINDx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Nov 2021 08:03:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37048 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229990AbhKINDv (ORCPT
+        id S239285AbhKINGd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Nov 2021 08:06:33 -0500
+Received: from mail-oi1-f171.google.com ([209.85.167.171]:38497 "EHLO
+        mail-oi1-f171.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231210AbhKING2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Nov 2021 08:03:51 -0500
-Received: from mail-ot1-x32f.google.com (mail-ot1-x32f.google.com [IPv6:2607:f8b0:4864:20::32f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 22C06C061764
-        for <linux-kernel@vger.kernel.org>; Tue,  9 Nov 2021 05:01:05 -0800 (PST)
-Received: by mail-ot1-x32f.google.com with SMTP id b5-20020a9d60c5000000b0055c6349ff22so19954620otk.13
-        for <linux-kernel@vger.kernel.org>; Tue, 09 Nov 2021 05:01:05 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=message-id:date:mime-version:user-agent:subject:content-language:to
-         :cc:references:from:in-reply-to:content-transfer-encoding;
-        bh=AVhXRNXWoG4nz7o/lke7pJRtR8Em/wWLZScBAGeMu9g=;
-        b=DHB7jYMFAcf8uxuqEmaiXy/5GRLxtMMekfIqso1iCTmp49IW45L24FBjFGGyKSePCZ
-         qY6TQM+giMtQYL0ICAQKCYzLN4kuPSiXtj1WSea1exnmC90E++Md7V0pTVfE0DSR30Fe
-         8fKImM9RXY0OtuOzlSR/p3uS1EPkkQbduaj1mm5X49vUJZ6X/ONFsD2PAjwtTSt6FdwD
-         RhoXS+mKWoSldUI1y+1oGRVnSuEyMBjfuI0vEy5jXkMyF9H6n9Ckm4GIq2DHgmXdalCU
-         kElObxXXD2ZibSav2qWgG2MVwoQ1v0ddtNFrhBJSrSua+HFjdIX98ozfHy96fMopSvCT
-         1i4Q==
+        Tue, 9 Nov 2021 08:06:28 -0500
+Received: by mail-oi1-f171.google.com with SMTP id r26so12255351oiw.5;
+        Tue, 09 Nov 2021 05:03:42 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:in-reply-to
-         :content-transfer-encoding;
-        bh=AVhXRNXWoG4nz7o/lke7pJRtR8Em/wWLZScBAGeMu9g=;
-        b=6f6v45Nm5vcP8sCqIGPkfnPC0oCQO+QHZ6wkI7I++EvMKIswj8TRBxZgfG2gdEymbR
-         mC6wocWCI+8lOkhHBEJ1Y7QjoLTUVtB0jg77Np+HJa0ZYu+dds02jM3+aq5tSkRptZOE
-         0N5lCdVG7LzQlmDQpdTmTABMDzbEEnAgr3IXbQpYLqe3L0QYUB4NkpeLb8tACS7MfvBz
-         1EAL+iPyQSjft3QssnzSCeOxkcRRCzmBFlpZKpxybkPAFXKPeBU+W4hlpzCKOfs38TSh
-         LBB3RnzdFIuINU7+zfC2Yy77XpPrFEO7qhdK9o5n6gXfq3bRTSfnXmq96DgZ0i3JIWLZ
-         KZ/g==
-X-Gm-Message-State: AOAM532xUqhEEEr+uBrHlAn/sTE4dNEj0reYcz4yF6AgznseN1SdZhz7
-        whshPK3/c1VRuedYVHR5ZJ+ryw==
-X-Google-Smtp-Source: ABdhPJzjmloI4njSsXKqibqtacip31c9IiXov8uX5GuzDD0N97lf9hVYIhmu6EH7+gsKEYFgDSL7Rw==
-X-Received: by 2002:a9d:f4a:: with SMTP id 68mr215156ott.327.1636462864405;
-        Tue, 09 Nov 2021 05:01:04 -0800 (PST)
-Received: from ?IPV6:2804:431:c7cb:55a:94d0:2630:9b29:e621? ([2804:431:c7cb:55a:94d0:2630:9b29:e621])
-        by smtp.gmail.com with ESMTPSA id k4sm7088764oic.48.2021.11.09.05.01.00
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 09 Nov 2021 05:01:04 -0800 (PST)
-Message-ID: <e73b9309-b575-37b4-519c-d326b764cf38@linaro.org>
-Date:   Tue, 9 Nov 2021 10:00:59 -0300
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.2.1
-Subject: Re: [PATCH v2 20/22] selftests: futex: Test sys_futex_waitv() timeout
-Content-Language: en-US
-To:     =?UTF-8?Q?Andr=c3=a9_Almeida?= <andrealmeid@collabora.com>,
-        Vasily Gorbik <gor@linux.ibm.com>
-Cc:     Davidlohr Bueso <dave@stgolabs.net>, libc-alpha@sourceware.org,
-        Peter Zijlstra <peterz@infradead.org>,
-        linux-api@vger.kernel.org,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        linux-kernel@vger.kernel.org, Steven Rostedt <rostedt@goodmis.org>,
-        Ingo Molnar <mingo@redhat.com>, mtk.manpages@gmail.com,
-        Darren Hart <dvhart@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>, kernel@collabora.com,
-        krisman@collabora.com
-References: <20210923171111.300673-1-andrealmeid@collabora.com>
- <20210923171111.300673-21-andrealmeid@collabora.com>
- <your-ad-here.call-01636456701-ext-5362@work.hours>
- <51bbfe74-33f6-bb92-3ce8-a22e4185820b@collabora.com>
-From:   Adhemerval Zanella <adhemerval.zanella@linaro.org>
-In-Reply-To: <51bbfe74-33f6-bb92-3ce8-a22e4185820b@collabora.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+        h=x-gm-message-state:from:to:cc:in-reply-to:references:subject:date
+         :message-id;
+        bh=Ko2dk4khs6TuCfZWpKr+X/YpD/2ivl7IRDSFpijQnZQ=;
+        b=naWTuXP3gVpPpb+9aDqD4ta5aC9LneIsfbtjuG/HcdUjgQrS0Yh+aR/GPm2azccD0n
+         Sw1+d6AYex5DM50b2r7C/5hE3XyFhzPufTkEGMqfSuwTT+sdjjhGtCwUh6KBZPraKUQ/
+         CZeLgwyuHZbn0z747MHZn9Zq8uCkbBkvM4atM90U+4rpNWS+/DCM4siCAvGHmwJdBzJ6
+         g3lGfPDq8G24OGfEK/D41kJEZ/FYCac2X6WxjfkTREOecVSYCgigZrIm0WTF7Dk1aEUV
+         iXlZ0/ClxjaioQvNcBeDHywlDJ1B0VI5GRwFpn9+cwMWvl02I/XnxrjgyU8OjUAYrD9C
+         sOhw==
+X-Gm-Message-State: AOAM531B+ppqP7KAFjnxXL0vvel99+m/cQYSwYPDvTrENcqUg0Xi5vZR
+        DLYanFTZC+0IXh23NY+MOw==
+X-Google-Smtp-Source: ABdhPJxmdR8zOIBybiLQ024IstvrijeHVsUHBInHYbbRC9DtlS4ssG0CMH25NvJfKGD8AYaliw43tA==
+X-Received: by 2002:a05:6808:14d6:: with SMTP id f22mr5390171oiw.101.1636463022146;
+        Tue, 09 Nov 2021 05:03:42 -0800 (PST)
+Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
+        by smtp.gmail.com with ESMTPSA id l21sm4102513otb.65.2021.11.09.05.03.41
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 09 Nov 2021 05:03:41 -0800 (PST)
+Received: (nullmailer pid 1726441 invoked by uid 1000);
+        Tue, 09 Nov 2021 13:03:40 -0000
+From:   Rob Herring <robh@kernel.org>
+To:     Hsin-Yi Wang <hsinyi@chromium.org>
+Cc:     linux-kernel@vger.kernel.org, linux-mediatek@lists.infradead.org,
+        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        Matthias Brugger <matthias.bgg@gmail.com>
+In-Reply-To: <20211109053334.1840273-7-hsinyi@chromium.org>
+References: <20211109053334.1840273-1-hsinyi@chromium.org> <20211109053334.1840273-7-hsinyi@chromium.org>
+Subject: Re: [PATCH v2 7/7] dt-bindings: arm64: dts: mediatek: Add sku22 for mt8183 kakadu board
+Date:   Tue, 09 Nov 2021 07:03:40 -0600
+Message-Id: <1636463020.563453.1726440.nullmailer@robh.at.kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, 09 Nov 2021 13:33:34 +0800, Hsin-Yi Wang wrote:
+> Add sku22 which uses different audio codec than previous kakadu board.
+> 
+> Signed-off-by: Hsin-Yi Wang <hsinyi@chromium.org>
+> ---
+> v2: fix compatible items matching
+> ---
+>  Documentation/devicetree/bindings/arm/mediatek.yaml | 9 +++++++--
+>  1 file changed, 7 insertions(+), 2 deletions(-)
+> 
 
+My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
+on your patch (DT_CHECKER_FLAGS is new in v5.13):
 
-On 09/11/2021 09:52, André Almeida via Libc-alpha wrote:
-> Hi Vasily,
-> 
-> Às 08:18 de 09/11/21, Vasily Gorbik escreveu:
->> On Thu, Sep 23, 2021 at 02:11:09PM -0300, André Almeida wrote:
->>> Test if the futex_waitv timeout is working as expected, using the
->>> supported clockid options.
->>
->>> +	/* futex_waitv with CLOCK_MONOTONIC */
->>> +	if (futex_get_abs_timeout(CLOCK_MONOTONIC, &to, timeout_ns))
->>> +		return RET_FAIL;
->>> +	res = futex_waitv(&waitv, 1, 0, &to, CLOCK_MONOTONIC);
->>> +	test_timeout(res, &ret, "futex_waitv monotonic", ETIMEDOUT);
->>> +
->>> +	/* futex_waitv with CLOCK_REALTIME */
->>> +	if (futex_get_abs_timeout(CLOCK_REALTIME, &to, timeout_ns))
->>> +		return RET_FAIL;
->>> +	res = futex_waitv(&waitv, 1, 0, &to, CLOCK_REALTIME);
->>> +	test_timeout(res, &ret, "futex_waitv realtime", ETIMEDOUT);
->>
->> Hi André,
->>
->> when built with -m32 and run as compat this two futex_waitv calls hang
->> on x86 and s390 (noticed while wiring up futex_waitv). The rest of the
->> futex selftests pass. This suggests some common compat issue? Any ideas?
-> 
-> The issue is that futex_waitv() only accepts struct timespec that uses
-> 64bit members. When using -m32, glibc will give you a 32bit timespec,
-> thus the timeout won't wort. Someday glibc will provide 64bit timespec
-> to 32bit userspace, given that this is affected by y2038 bug.
+yamllint warnings/errors:
 
-We do since glibc 2.34, but you need to opt-in by defining -D_TIME_SIZE=64.
-The default might change in a future release, so hopefully we will have
-both LFS and 64-bit as the default ABI.
+dtschema/dtc warnings/errors:
+/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/arm/mediatek.yaml: properties:compatible:oneOf:27:items: 'oneOf' conditional failed, one must be fixed:
+	[{'oneOf': [{'items': [{'const': 'google,kakadu-rev3-sku22'}, {'const': 'google,kakadu-rev2-sku22'}]}, {'items': [{'const': 'google,kakadu-rev3'}, {'const': 'google,kakadu-rev2'}]}]}, {'const': 'google,kakadu'}, {'const': 'mediatek,mt8183'}] is not of type 'object'
+	Additional properties are not allowed ('oneOf' was unexpected)
+	from schema $id: http://devicetree.org/meta-schemas/string-array.yaml#
+/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/arm/mediatek.yaml: ignoring, error in schema: properties: compatible: oneOf: 27: items
+warning: no schema found in file: ./Documentation/devicetree/bindings/arm/mediatek.yaml
 
-> 
-> In previous submissions I added a workaround for that in the
-> selftest[0]. Search for "Y2038 section for 32-bit applications" in that
-> link. I'll submit something like that for futex_waitv() timeout test.
-> 
-> [0]
-> https://lore.kernel.org/lkml/20210709001328.329716-6-andrealmeid@collabora.com/
-> 
+doc reference errors (make refcheckdocs):
+
+See https://patchwork.ozlabs.org/patch/1552630
+
+This check can fail if there are any dependencies. The base for a patch
+series is generally the most recent rc1.
+
+If you already ran 'make dt_binding_check' and didn't see the above
+error(s), then make sure 'yamllint' is installed and dt-schema is up to
+date:
+
+pip3 install dtschema --upgrade
+
+Please check and re-submit.
+
