@@ -2,128 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 21FFE44A953
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 09:37:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 234DD44A955
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 09:39:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244229AbhKIIkV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Nov 2021 03:40:21 -0500
-Received: from mail-vk1-f172.google.com ([209.85.221.172]:33535 "EHLO
-        mail-vk1-f172.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237880AbhKIIkT (ORCPT
+        id S244292AbhKIImS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Nov 2021 03:42:18 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33128 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237880AbhKIImR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Nov 2021 03:40:19 -0500
-Received: by mail-vk1-f172.google.com with SMTP id d130so9629460vke.0;
-        Tue, 09 Nov 2021 00:37:32 -0800 (PST)
+        Tue, 9 Nov 2021 03:42:17 -0500
+Received: from mail-wm1-x336.google.com (mail-wm1-x336.google.com [IPv6:2a00:1450:4864:20::336])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE40EC061764;
+        Tue,  9 Nov 2021 00:39:31 -0800 (PST)
+Received: by mail-wm1-x336.google.com with SMTP id d72-20020a1c1d4b000000b00331140f3dc8so1667322wmd.1;
+        Tue, 09 Nov 2021 00:39:31 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=xUMx2SzpISmAUmDxXrL4U6V2fvsKDrKV28VBdFMbGfg=;
+        b=ADYGiTOE7NGgfZHzddoLpEL6GrE0faIPVBEeuNA21DoSVt0YcjI59y+htJSOiGzFS9
+         ug+z/lYhUCeLiPQhMoNVDVTjMMO1e+mqg8SYc7AI7Y/cuBoDH9S5yYN9u/5iG+PLyErH
+         cXGyAXy/zg93FE6s1J4mknvJA0GkaIc4zV9AAdLU5CxWWrAEyq1OfeiKvSRnuJd9b4KG
+         PWcSF95FTSRl0915eWGv0KyBmztybe7JyXy4qpnvFZ0lV6O5mMIUqMsXyVjYJLAkstv1
+         juX9PoZXOmaijSVCtMKY9b9ewLol3NmFtCwYyaT4GjxXOUEBp/h4cssA7fyNIO43xDWG
+         ONOA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=a20XwW+ywquM0TvSLc4Uu7eUmVwNDFrP9cILSrmfGU4=;
-        b=ZPXlAO4KvMB6hGXaYL5C/A3eafP22MA8lyU1gWi5L/KRoqr0J3niBVcAR8NQrSJJKl
-         siQIrqk0bVxCI2xvRmmTLl45HW/YsKyI3LnB9cG0MDKCrBrnemt/PIkOiBcpy7FhZcFw
-         CCwDidcd2ML7gLm5XGqH98ZdS9BhvqCd1L8jiYEPRWVufOD6wcPHpmvyZEZdm22EyX1h
-         eypqecDErl57KmXjv0nH/hxLiwt+JZGd5+99gFKGlqPswVWCqWL7/LE/3AO/AGFt6803
-         T5u6f+oSVyPdl78PYdJT8Io4UQ5N6sjQvGK8H3WCx2kVAsuxk3GIKID0oXCaMO2yoml+
-         PfnA==
-X-Gm-Message-State: AOAM531FoZRLDJXb2065hmnc41mIc+8QV71ip+AqS3gNHfW7X1eNg4kc
-        z3NSXOT9tpJQ9BW1+glCLCqMxVXOLm7f5w==
-X-Google-Smtp-Source: ABdhPJxSJJiIqvqWvbpTflwUf4QrflfXVMFmla87mAJ93jPLjO5aJs/kaHm9LcUKMl8TNu/VB7nRJw==
-X-Received: by 2002:a05:6122:2005:: with SMTP id l5mr36807793vkd.4.1636447052081;
-        Tue, 09 Nov 2021 00:37:32 -0800 (PST)
-Received: from mail-ua1-f52.google.com (mail-ua1-f52.google.com. [209.85.222.52])
-        by smtp.gmail.com with ESMTPSA id x9sm1655185vkn.36.2021.11.09.00.37.31
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 09 Nov 2021 00:37:32 -0800 (PST)
-Received: by mail-ua1-f52.google.com with SMTP id s13so21496268uaj.11;
-        Tue, 09 Nov 2021 00:37:31 -0800 (PST)
-X-Received: by 2002:a05:6102:2910:: with SMTP id cz16mr48697933vsb.9.1636447051587;
- Tue, 09 Nov 2021 00:37:31 -0800 (PST)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=xUMx2SzpISmAUmDxXrL4U6V2fvsKDrKV28VBdFMbGfg=;
+        b=2LMVnR+wquE7QJ00KWUosDg9iBViTRrpTDOBcMsiG7rdlfOM11qXGfxK98OcJtQykx
+         pXqdQ4z9dfCczE3iBbtDVGb5/cwooP4Iv/BZnM0ZqCFSXuqPfJEhKB7y7n6teTz7SEyD
+         T9SXy1yHoFd0j0IVSYxCIsbwyHR6dtPVNA8rb0ok0ebtYT1ZkLVZm0hDmbNmeXpoQ03x
+         rJkaKh1dqZdJSW7BjMjfq1fYz+Fw4w4Z5aIqPybBbhAgqwvxwqw2TPuXh9MfrKZmRnaA
+         BY7eicvlpgZsVq+P4WaTr6OEGHRbcL/zXs+mBitNrJKFqW4r7ApFHe/Awtw1rmKLFMQe
+         LyhA==
+X-Gm-Message-State: AOAM533oZw4NKNMt0Btnzxw+PTFSAaXmeUUP+eeOGr7Ij9IHMNeHCpUb
+        l4U59sebcc86Gag/RG+0fJOB28XYJV0=
+X-Google-Smtp-Source: ABdhPJyA3t1YVxqVxH31o6CjuvgwZfEowYNuxeTZ4ETu3zQHqok2lhkQ8lLGk20DIi9ynDYP3iIsPg==
+X-Received: by 2002:a1c:cc09:: with SMTP id h9mr5417541wmb.191.1636447170290;
+        Tue, 09 Nov 2021 00:39:30 -0800 (PST)
+Received: from localhost.localdomain.at (62-178-82-229.cable.dynamic.surfer.at. [62.178.82.229])
+        by smtp.gmail.com with ESMTPSA id q26sm19086055wrc.39.2021.11.09.00.39.29
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 09 Nov 2021 00:39:29 -0800 (PST)
+From:   Christian Gmeiner <christian.gmeiner@gmail.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     Christian Gmeiner <christian.gmeiner@gmail.com>,
+        Ohad Ben-Cohen <ohad@wizery.com>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        linux-remoteproc@vger.kernel.org
+Subject: [RFC PATCH v2 0/1] rpmsg: syslog driver
+Date:   Tue,  9 Nov 2021 09:39:20 +0100
+Message-Id: <20211109083926.32052-1-christian.gmeiner@gmail.com>
+X-Mailer: git-send-email 2.33.1
 MIME-Version: 1.0
-References: <20211108150554.4457-1-conor.dooley@microchip.com> <20211108150554.4457-7-conor.dooley@microchip.com>
-In-Reply-To: <20211108150554.4457-7-conor.dooley@microchip.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Tue, 9 Nov 2021 09:37:20 +0100
-X-Gmail-Original-Message-ID: <CAMuHMdWWzQE7Pq8Qo=Vt3ey-ODhnP9B5+r==fsoK0miDv7-arA@mail.gmail.com>
-Message-ID: <CAMuHMdWWzQE7Pq8Qo=Vt3ey-ODhnP9B5+r==fsoK0miDv7-arA@mail.gmail.com>
-Subject: Re: [PATCH 06/13] dt-bindings: rng: add bindings for microchip mpfs rng
-To:     Conor Dooley <conor.dooley@microchip.com>
-Cc:     Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Jassi Brar <jassisinghbrar@gmail.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Alessandro Zummo <a.zummo@towertech.it>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Mark Brown <broonie@kernel.org>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        Lewis Hanly <lewis.hanly@microchip.com>,
-        daire.mcnamara@microchip.com, Atish Patra <atish.patra@wdc.com>,
-        ivan.griffin@microchip.com,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux I2C <linux-i2c@vger.kernel.org>,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
-        linux-rtc@vger.kernel.org, linux-spi <linux-spi@vger.kernel.org>,
-        USB list <linux-usb@vger.kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        Bin Meng <bin.meng@windriver.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Conor,
+I am sending this patch as RFC I am am aware that this is
+not ready for inclusion. I am however want to get some
+feedback on this choosen approach. In the end I want to be
+able to get log messages from the remote firmware into syslog.
 
-On Mon, Nov 8, 2021 at 4:07 PM <conor.dooley@microchip.com> wrote:
-> From: Conor Dooley <conor.dooley@microchip.com>
->
-> Add device tree bindings for the hardware rng device accessed via
-> the system services on the Microchip PolarFire SoC.
->
-> Signed-off-by: Conor Dooley <conor.dooley@microchip.com>
+Christian Gmeiner (1):
+  rpmsg: add syslog driver
 
-Thanks for your patch!
+ drivers/rpmsg/Kconfig        |  8 +++++
+ drivers/rpmsg/Makefile       |  1 +
+ drivers/rpmsg/rpmsg_syslog.c | 65 ++++++++++++++++++++++++++++++++++++
+ 3 files changed, 74 insertions(+)
+ create mode 100644 drivers/rpmsg/rpmsg_syslog.c
 
-> ---
->  .../bindings/rng/microchip,mpfs-rng.yaml      | 31 +++++++++++++++++++
->  1 file changed, 31 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/rng/microchip,mpfs-rng.yaml
->
-> diff --git a/Documentation/devicetree/bindings/rng/microchip,mpfs-rng.yaml b/Documentation/devicetree/bindings/rng/microchip,mpfs-rng.yaml
-> new file mode 100644
-> index 000000000000..e8ecb3538a86
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/rng/microchip,mpfs-rng.yaml
-> @@ -0,0 +1,31 @@
-> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> +%YAML 1.2
-> +---
-> +$id: "http://devicetree.org/schemas/rng/microchip,mpfs-rng.yaml#"
-> +$schema: "http://devicetree.org/meta-schemas/core.yaml#"
-> +
-> +title: Microchip MPFS random number generator
-> +
-> +maintainers:
-> +  - Conor Dooley <conor.dooley@microchip.com>
-> +
-> +properties:
-> +  compatible:
-> +    const: microchip,polarfire-soc-rng
+-- 
+2.33.1
 
-"microchip,mpfs-rng", for consistency with other bindings?
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
