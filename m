@@ -2,145 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 590BE44AD7A
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 13:22:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9BC5E44AD7B
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 13:24:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242207AbhKIMZ1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Nov 2021 07:25:27 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56550 "EHLO
+        id S235849AbhKIM0t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Nov 2021 07:26:49 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56848 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242080AbhKIMZ0 (ORCPT
+        with ESMTP id S231250AbhKIM0q (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Nov 2021 07:25:26 -0500
-Received: from mail-wr1-x42c.google.com (mail-wr1-x42c.google.com [IPv6:2a00:1450:4864:20::42c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 717E8C061767
-        for <linux-kernel@vger.kernel.org>; Tue,  9 Nov 2021 04:22:40 -0800 (PST)
-Received: by mail-wr1-x42c.google.com with SMTP id d27so32656422wrb.6
-        for <linux-kernel@vger.kernel.org>; Tue, 09 Nov 2021 04:22:40 -0800 (PST)
+        Tue, 9 Nov 2021 07:26:46 -0500
+Received: from mail-lf1-x135.google.com (mail-lf1-x135.google.com [IPv6:2a00:1450:4864:20::135])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 302FDC061764
+        for <linux-kernel@vger.kernel.org>; Tue,  9 Nov 2021 04:24:00 -0800 (PST)
+Received: by mail-lf1-x135.google.com with SMTP id l22so17120516lfg.7
+        for <linux-kernel@vger.kernel.org>; Tue, 09 Nov 2021 04:24:00 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=jGGxV5hRcr0wdAm1Axn32TXl8p4NQnFAiW+DU8mCDhk=;
-        b=CVuj3yd4LZaAVrvocsGXAK3VqK2hgBR2j1Ok6AuNnXyeCSB92d3ccpQbXIxmAuNc/d
-         36xjh2fO7SszLqc5+Dgph1KVcm5HA+RhE14Bq/YGF1woju9mJSYWAHhKHlBvGKpR1seD
-         Z8CwnIzkHbkf0W7rLv1gV7qzYtXmTQ5qMon/AUh0XknPyOtwjslFM/20c06dD8S9CEu8
-         Dbrv7YqoG2zG0++/FRZO0m/aHBzkm/MQfz6nJ/K0PanroUdF76z9o/Za7TUMj79CVpuX
-         VZCM++NhOmcOfwVsgcXUql+mFEMi7KlCBeHCqereJDtAgdMyotpz/n4qmLbir/hmWQEr
-         cqMQ==
+        d=gmail.com; s=20210112;
+        h=message-id:date:mime-version:user-agent:subject:content-language:to
+         :cc:references:from:in-reply-to:content-transfer-encoding;
+        bh=vXpk74Kb+HqypbiuoeMbcColw+iui5mY4cGX3uLvtyg=;
+        b=pM9y+EnA6dFxkjBjibDgNq7RwHqcSlaIBmb42SOQkkEcourIUU95lpej9G5N7Vi+v9
+         vtFLAh/zDIlLHAIEpoWJF8xZ3+RePKK15zBtavQeOhXNFF57bsWu6TQz3fUa1JfeaLIj
+         S1HHNpF2dbu6BZP3e17564YpZ8/YFZ+DCbNc/1kJH53g4wpY/wqJyQK8X/HRVUvkCJBT
+         2O6NXCNVnpw7vh7JifGDjcKlzOcnt4Ii7ob0CKa+ixS5piMZ1P4LF1arR7CoY2WPGZAG
+         44IsVfjwIPbQXMZhziFkPGUGSH/eDyLxH/auAxDfBaJ10BhvKSc+nVPbgUjIPe87VjAB
+         pKgw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=jGGxV5hRcr0wdAm1Axn32TXl8p4NQnFAiW+DU8mCDhk=;
-        b=bxRJ5Lc1s2lrQWgN/3ya6ZYbskVDTGFNsK3hC+tATYx4oH01SegNHVdQ9Mtgc6enhh
-         bb1qCYfrg3AtSq/h2aDVQAIDy+lsGGMbeLIuJQ+SVzvsEGsmxFSbRL5aeipoaadf6CUv
-         PoNu6EnH0LRCJjC9e7y/o0qikXYgjNMt3x6STsFYiL7JA87X0aqZw/AH7n/Iv3uqIYiV
-         5ZN80n8SuDqyYNRKjuQixLIW1XCuTx9n44j6UayMCvrkOR+zvjxdBLJxEiiloeFzW80W
-         DYs5L31FRnywgH9qDTZdeVxKDu0AoIIXMwXvGfGQzDi2mwK9UJvfdXUdl4fsnQgQVDxc
-         5tyA==
-X-Gm-Message-State: AOAM531lxNY5T/pqjCsK5dkOcelvpCMxvLlC5sDfoVtEnEmNVytmkGzN
-        jBYA1YPOf8w3/5gHq8voS+ztKg==
-X-Google-Smtp-Source: ABdhPJwVncvyWqpMtaGBtNmQxzHu9oM0ibXss97hRjSlw6b9nJhCbhm44df/U9FQj98N7elyEUzKwg==
-X-Received: by 2002:a5d:550c:: with SMTP id b12mr8817289wrv.427.1636460558780;
-        Tue, 09 Nov 2021 04:22:38 -0800 (PST)
-Received: from elver.google.com ([2a00:79e0:15:13:d20d:9fab:cbe:339])
-        by smtp.gmail.com with ESMTPSA id n32sm2815777wms.1.2021.11.09.04.22.37
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 09 Nov 2021 04:22:38 -0800 (PST)
-Date:   Tue, 9 Nov 2021 13:22:32 +0100
-From:   Marco Elver <elver@google.com>
-To:     peterz@infradead.org, mingo@redhat.com, mark.rutland@arm.com,
-        namhyung@kernel.org, acme@kernel.org,
-        alexander.shishkin@linux.intel.com, jolsa@redhat.com
-Cc:     syzbot <syzbot+23843634c323e144fd0b@syzkaller.appspotmail.com>,
-        andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org,
-        daniel@iogearbox.net, john.fastabend@gmail.com, kafai@fb.com,
-        kpsingh@kernel.org, linux-kernel@vger.kernel.org,
-        linux-perf-users@vger.kernel.org, netdev@vger.kernel.org,
-        songliubraving@fb.com, syzkaller-bugs@googlegroups.com, yhs@fb.com
-Subject: [PATCH] perf: Ignore sigtrap for tracepoints destined for other tasks
-Message-ID: <YYpoCOBmC/kJWfmI@elver.google.com>
-References: <00000000000053692705d05a17c1@google.com>
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:in-reply-to
+         :content-transfer-encoding;
+        bh=vXpk74Kb+HqypbiuoeMbcColw+iui5mY4cGX3uLvtyg=;
+        b=j+AOYaZFRpwq4TbbzpahV/5pHzrXTCRL5JSqNZTjyRJIOG+945Kr/ASKsQng8gJzP7
+         AkfnDDZY5PoAdWFp+FzCcfBjsWJqNhBCFwBbGZSIMJtGA2uHZO5GvLDoy3E3cYgRLgWl
+         XLhvz6+VjSIESpteDmUMkEB9Ze8fzAMs2kXeo65cI0DBieDvs5sxFFnBa/NN31DrfnFG
+         XZpQ39DRT3GDma2VPlMFyDOYc4DMZWmnz6cy1tWUjGlB4qm5gBwsvPc7Mbw+hMUFBEQy
+         q8rJQcmrLXReNHGvuf6vlCeT8fu4c6Ajq4SsR5dJqBFih9eipxtSPJ96K86Hb7PyEtwH
+         RQ3A==
+X-Gm-Message-State: AOAM530M7DfR4L+HB3hW9wt71fskbwzq8RGdXbwMuHDKLHpY17OMFd+7
+        Hz4duj+HUAboTuPcp8VjWAa4tMXaOZQ=
+X-Google-Smtp-Source: ABdhPJxo78lvPjm+MZllqIslZuX5QE92EtaeTkPAIME1Qa4zuCS7c3Nz6MK+d8qQD1WH532C10R9Zw==
+X-Received: by 2002:ac2:5a46:: with SMTP id r6mr6890498lfn.358.1636460638567;
+        Tue, 09 Nov 2021 04:23:58 -0800 (PST)
+Received: from [192.168.1.11] ([94.103.224.112])
+        by smtp.gmail.com with ESMTPSA id g11sm2119563lfu.282.2021.11.09.04.23.57
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 09 Nov 2021 04:23:58 -0800 (PST)
+Message-ID: <b790e108-fa37-28bf-15c2-885ddb05572e@gmail.com>
+Date:   Tue, 9 Nov 2021 15:23:57 +0300
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <00000000000053692705d05a17c1@google.com>
-User-Agent: Mutt/2.0.5 (2021-01-21)
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.2.1
+Subject: Re: [PATCH] staging: r8188eu: remove unneeded variable
+Content-Language: en-US
+To:     Dan Carpenter <dan.carpenter@oracle.com>
+Cc:     cgel.zte@gmail.com, Larry.Finger@lwfinger.net,
+        phil@philpotter.co.uk, gregkh@linuxfoundation.org,
+        straube.linux@gmail.com, linux-staging@lists.linux.dev,
+        linux-kernel@vger.kernel.org,
+        Changcheng Deng <deng.changcheng@zte.com.cn>,
+        Zeal Robot <zealci@zte.com.cn>
+References: <20211109115307.133100-1-deng.changcheng@zte.com.cn>
+ <c2c36a95-be34-bcaf-0224-a513e33a902e@gmail.com>
+ <20211109121823.GJ2001@kadam>
+From:   Pavel Skripkin <paskripkin@gmail.com>
+In-Reply-To: <20211109121823.GJ2001@kadam>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-syzbot reported that the warning in perf_sigtrap() fires, saying that
-the event's task does not match current:
+On 11/9/21 15:18, Dan Carpenter wrote:
+>> >   static int _rtw_init_evt_priv(struct evt_priv *pevtpriv)
+>> >   {
+>> > -	int res = _SUCCESS;
+>> > -
+>> >   	/* allocate DMA-able/Non-Page memory for cmd_buf and rsp_buf */
+>> >   	atomic_set(&pevtpriv->event_seq, 0);
+>> >   	pevtpriv->evt_done_cnt = 0;
+>> > @@ -72,7 +70,7 @@ static int _rtw_init_evt_priv(struct evt_priv *pevtpriv)
+>> >   	pevtpriv->c2h_wk_alive = false;
+>> >   	pevtpriv->c2h_queue = rtw_cbuf_alloc(C2H_QUEUE_MAX_LEN + 1);
+>> > -	return res;
+>> > +	return _SUCCESS;
+>> >   }
+>> 
+>> Shouldn't it return just void then?
+>> 
+> 
+> There is only one caller.  It should be folded into the caller and
+> deleted.  Then the caller could be made void.
+> 
 
- | WARNING: CPU: 0 PID: 9090 at kernel/events/core.c:6446 perf_pending_event+0x40d/0x4b0 kernel/events/core.c:6513
- | Modules linked in:
- | CPU: 0 PID: 9090 Comm: syz-executor.1 Not tainted 5.15.0-syzkaller #0
- | Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
- | RIP: 0010:perf_sigtrap kernel/events/core.c:6446 [inline]
- | RIP: 0010:perf_pending_event_disable kernel/events/core.c:6470 [inline]
- | RIP: 0010:perf_pending_event+0x40d/0x4b0 kernel/events/core.c:6513
- | ...
- | Call Trace:
- |  <IRQ>
- |  irq_work_single+0x106/0x220 kernel/irq_work.c:211
- |  irq_work_run_list+0x6a/0x90 kernel/irq_work.c:242
- |  irq_work_run+0x4f/0xd0 kernel/irq_work.c:251
- |  __sysvec_irq_work+0x95/0x3d0 arch/x86/kernel/irq_work.c:22
- |  sysvec_irq_work+0x8e/0xc0 arch/x86/kernel/irq_work.c:17
- |  </IRQ>
- |  <TASK>
- |  asm_sysvec_irq_work+0x12/0x20 arch/x86/include/asm/idtentry.h:664
- | RIP: 0010:__raw_spin_unlock_irqrestore include/linux/spinlock_api_smp.h:152 [inline]
- | RIP: 0010:_raw_spin_unlock_irqrestore+0x38/0x70 kernel/locking/spinlock.c:194
- | ...
- |  coredump_task_exit kernel/exit.c:371 [inline]
- |  do_exit+0x1865/0x25c0 kernel/exit.c:771
- |  do_group_exit+0xe7/0x290 kernel/exit.c:929
- |  get_signal+0x3b0/0x1ce0 kernel/signal.c:2820
- |  arch_do_signal_or_restart+0x2a9/0x1c40 arch/x86/kernel/signal.c:868
- |  handle_signal_work kernel/entry/common.c:148 [inline]
- |  exit_to_user_mode_loop kernel/entry/common.c:172 [inline]
- |  exit_to_user_mode_prepare+0x17d/0x290 kernel/entry/common.c:207
- |  __syscall_exit_to_user_mode_work kernel/entry/common.c:289 [inline]
- |  syscall_exit_to_user_mode+0x19/0x60 kernel/entry/common.c:300
- |  do_syscall_64+0x42/0xb0 arch/x86/entry/common.c:86
- |  entry_SYSCALL_64_after_hwframe+0x44/0xae
+Ah, I see. I've overlooked, that this function name starts with _ and 
+the wrapper just does `return _rtw_init_evt_priv();`. Interesting 
+approach...
 
-On x86 this shouldn't happen, which has arch_irq_work_raise().
+I agree, that _rtw_init_evt_priv should be just renamed to 
+rtw_init_evt_priv() and the old wrapper should be just removed
 
-The test program sets up a perf event with sigtrap set to fire on the
-'sched_wakeup' tracepoint, which fired in ttwu_do_wakeup().
 
-This happened because the 'sched_wakeup' tracepoint also takes a task
-argument passed on to perf_tp_event(), which is used to deliver the
-event to that other task.
 
-Since we cannot deliver synchronous signals to other tasks, skip an event if
-perf_tp_event() is targeted at another task and perf_event_attr::sigtrap is
-set, which will avoid ever entering perf_sigtrap() for such events.
-
-Fixes: 97ba62b27867 ("perf: Add support for SIGTRAP on perf events")
-Reported-by: syzbot+663359e32ce6f1a305ad@syzkaller.appspotmail.com
-Signed-off-by: Marco Elver <elver@google.com>
----
- kernel/events/core.c | 3 +++
- 1 file changed, 3 insertions(+)
-
-diff --git a/kernel/events/core.c b/kernel/events/core.c
-index f23ca260307f..91653c6e41a7 100644
---- a/kernel/events/core.c
-+++ b/kernel/events/core.c
-@@ -9729,6 +9729,9 @@ void perf_tp_event(u16 event_type, u64 count, void *record, int entry_size,
- 				continue;
- 			if (event->attr.config != entry->type)
- 				continue;
-+			/* Cannot deliver synchronous signal to other task. */
-+			if (event->attr.sigtrap)
-+				continue;
- 			if (perf_tp_event_match(event, &data, regs))
- 				perf_swevent_event(event, count, &data, regs);
- 		}
--- 
-2.34.0.rc0.344.g81b53c2807-goog
+With regards,
+Pavel Skripkin
