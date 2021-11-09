@@ -2,96 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6295D44A401
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 02:32:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9291644A41B
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 02:40:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242217AbhKIBfY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Nov 2021 20:35:24 -0500
-Received: from mail.kernel.org ([198.145.29.99]:34938 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S243601AbhKIBdE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Nov 2021 20:33:04 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 02F76610CB;
-        Tue,  9 Nov 2021 01:30:17 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1636421418;
-        bh=5z6TWhdFMQk1gL5oxmD2fxZ7CtBItaMocNOJZwNfzPU=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=t89kRIHv9SZoV/lY55zqqQ1bd1DzE1HAtw4pwhZyoXt13xn27f59QvHOasrMOlZa5
-         RSwpyZxK5fAwyH+C0yTKF/9BJJTFqihMcfCZpXDtG5Kl5Y6CrO1QPQYXs+g3mi8krf
-         E7KS95bBNWkcvw9VQ1A0E1jSGovPEzdjvQX/TVLlBeC5WX8YPL6gpl/LeN9aV0Iyew
-         Q1pkshfpy+MuYli0SFspIjXvJdVqSnEISHYLqTaliCx5315V8z/MbCYqrZhdTsbFLC
-         YA13JvBls9hOLPxupDVasnWELr1cvhJMHSs8mnFjQ1mJrYVYcWSYpea7pMwb9d7OR8
-         d/d+eUpZe8qjw==
-Date:   Tue, 9 Nov 2021 03:30:15 +0200
-From:   Jarkko Sakkinen <jarkko@kernel.org>
-To:     Reinette Chatre <reinette.chatre@intel.com>
-Cc:     dave.hansen@linux.intel.com, tglx@linutronix.de, bp@alien8.de,
-        mingo@redhat.com, linux-sgx@vger.kernel.org, x86@kernel.org,
-        seanjc@google.com, tony.luck@intel.com, hpa@zytor.com,
-        linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Subject: Re: [PATCH] x86/sgx: Fix free page accounting
-Message-ID: <YYnPJ3a9PSSy/gFZ@iki.fi>
-References: <373992d869cd356ce9e9afe43ef4934b70d604fd.1636049678.git.reinette.chatre@intel.com>
- <6e51fdacc2c1d834258f00ad8cc268b8d782eca7.camel@kernel.org>
- <2a0b84575733e4aaee13926387d997c35ac23130.camel@kernel.org>
- <d7a6dedb-03c5-fad1-e112-c912473c7214@intel.com>
- <YYmEwobYw+jGBSwV@iki.fi>
- <ced9786a-b8ac-2575-02b0-04323c83ca4e@intel.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ced9786a-b8ac-2575-02b0-04323c83ca4e@intel.com>
+        id S238283AbhKIBnO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Nov 2021 20:43:14 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50836 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237370AbhKIBnK (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Nov 2021 20:43:10 -0500
+Received: from mail-pl1-x649.google.com (mail-pl1-x649.google.com [IPv6:2607:f8b0:4864:20::649])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B521C079266
+        for <linux-kernel@vger.kernel.org>; Mon,  8 Nov 2021 17:30:51 -0800 (PST)
+Received: by mail-pl1-x649.google.com with SMTP id l3-20020a170902f68300b00142892d0a86so1371534plg.13
+        for <linux-kernel@vger.kernel.org>; Mon, 08 Nov 2021 17:30:51 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=reply-to:date:message-id:mime-version:subject:from:to:cc;
+        bh=qt5BufFWkbGduR/rMeWkzOBAWPaRlKIbVuIeH4pJKxg=;
+        b=noUyGZqR1gFUOMo1lxXgnpP34XC2r0nSsdZqc2PxF2e4+cuAjlNVHdHHlS9iG/yuZR
+         Qz/jcFAYdFyqpKbieL/Ae5bJ+OWpiQ3B1sr2VzFcGY/ztb9EB7s7FQ4ivvOEzUFmWKdc
+         053BOd8FPCHmIRCrtECZF483wKpQPJLzGeNKi77kOpvXY9PZIjIdTCtdwTRBGt2cSDIZ
+         V77WmxQsYHf7cfPYjo8JM2XPL86E3s3KiuumgePtnOi91etxaxuDJRbQ7ud4/J0xvx84
+         E0D14GyJ6+VDC6C5pALGFKJKdLC5Nc1sjP2N1WXW0qFk9tcBz+EyLMJo79CWKCl5T7d/
+         y4sQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:reply-to:date:message-id:mime-version:subject
+         :from:to:cc;
+        bh=qt5BufFWkbGduR/rMeWkzOBAWPaRlKIbVuIeH4pJKxg=;
+        b=jASDu3s7E13BmiapJEbC2wHBEEA+dGF2WLSMtgjTTPGb1zvBZQ81Tn3KM+TVUEc6Rp
+         gr6cOXXjlWRmrSoBVDJcacGnDysDVP9QVwsNEoyHCDoa4aqeOOFhHiD8D2NlYM3BQlKx
+         wTNToQKBHu+STulD7NJAQoXs1jcoYjbB3OZas4Y/4lRSgJL1AELQIgrv3Cf/PKUtaMC2
+         DoO8CTxRjYIxJthRSe33RscNzdsGF1R83TDGLntTYsHSUu9xvZv+W4JjOGK14jkH81cY
+         WfB5hQz1KDgDJBj3lkCyGbrIuSp25vbvxkjbOWSPaeew/+8SXGUdanKSNjil3/XddP6y
+         3+OA==
+X-Gm-Message-State: AOAM531lhr2c8kBOIKvhbEvGa0t6ZZg3cXajKwwrc30TlMlDAy9W4mFN
+        CRdMXsVyAa2aKXvzisfUVgzp/dbRFAg=
+X-Google-Smtp-Source: ABdhPJyp7ZqayU2E5gePhJ4RoRfdutOIzcfWtm8uiFUPgE1MTuJaoI1zv96mJPJQge6Qj6u1SywnjaJ0Fhw=
+X-Received: from seanjc.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:3e5])
+ (user=seanjc job=sendgmr) by 2002:a17:902:9303:b029:12c:29c:43f9 with SMTP id
+ bc3-20020a1709029303b029012c029c43f9mr3640541plb.5.1636421451073; Mon, 08 Nov
+ 2021 17:30:51 -0800 (PST)
+Reply-To: Sean Christopherson <seanjc@google.com>
+Date:   Tue,  9 Nov 2021 01:30:43 +0000
+Message-Id: <20211109013047.2041518-1-seanjc@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.34.0.rc0.344.g81b53c2807-goog
+Subject: [PATCH v4 0/4] KVM: x86: MSR filtering and related fixes
+From:   Sean Christopherson <seanjc@google.com>
+To:     Paolo Bonzini <pbonzini@redhat.com>
+Cc:     Sean Christopherson <seanjc@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Alexander Graf <graf@amazon.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 08, 2021 at 12:56:21PM -0800, Reinette Chatre wrote:
-> Hi Jarkko,
-> 
-> On 11/8/2021 12:12 PM, Jarkko Sakkinen wrote:
-> > On Mon, Nov 08, 2021 at 11:48:18AM -0800, Reinette Chatre wrote:
-> > > Hi Jarkko,
-> > > 
-> > > On 11/7/2021 8:47 AM, Jarkko Sakkinen wrote:
-> > > > On Sun, 2021-11-07 at 18:45 +0200, Jarkko Sakkinen wrote:
-> > > > > On Thu, 2021-11-04 at 11:28 -0700, Reinette Chatre wrote:
-> > > > > > The consequence of sgx_nr_free_pages not being protected is that
-> > > > > > its value may not accurately reflect the actual number of free
-> > > > > > pages on the system, impacting the availability of free pages in
-> > > > > > support of many flows. The problematic scenario is when the
-> > > > > > reclaimer never runs because it believes there to be sufficient
-> > > > > > free pages while any attempt to allocate a page fails because there
-> > > > > > are no free pages available. The worst scenario observed was a
-> > > > > > user space hang because of repeated page faults caused by
-> > > > > > no free pages ever made available.
-> > > > > 
-> > > > > Can you go in detail with the "concrete scenario" in the commit
-> > > > > message? It does not have to describe all the possible scenarios
-> > > > > but at least one sequence of events.
-> > > 
-> > > 
-> > > I provided significant detail regarding the "concrete scenario" in a
-> > > separate response to Greg:
-> > > https://lore.kernel.org/lkml/a636290d-db04-be16-1c86-a8dcc3719b39@intel.com/
-> > > 
-> > > That message details the test that was run (the test hangs before the fix
-> > > and can complete after the fix), the traces captured at the time the test
-> > > hung, analysis of the traces with root cause of why the system is hung,
-> > > traces after fix applied demonstrating why user space is able to make
-> > > progress and explaining why the test can complete.
-> > 
-> > For me that sequence looks like something that you could "abstract"
-> > a bit and get a rough description of the concurrency scenario.
-> > 
-> > It is as important in this type of patch, as the code change itself,
-> > not least because it helps with maintaining in the future to have
-> > that info in some level of detail in the commit log.
-> 
-> My apologies. I understood your comment to be a concern with the change
-> itself instead of just the commit message. I will add more detail about the
-> failing scenario encountered to the commit message.
+Fix a nVMX MSR interception check bug, fix two intertwined nVMX bugs bugs
+related to MSR filtering (one directly, one indirectly), and additional
+cleanup on top.  The main SRCU fix from the original series was merged,
+but these got left behind (luckily, becaues the main fix was buggy).
 
-Yeah, I went through the log and the code change makes sense :-)
+Side topic, getting a VM to actually barf on RDMSR(SPEC_CTRL) is comically
+difficult: -spec-ctrl,-stibp,-ssbd,-ibrs-all,-ibpb,-amd-stibp,-amd-ssbd.
+QEMU and KVM really, really want to expose SPEC_CTRL to the guest :-)
 
-/Jarkko
+v4:
+  - Rebase to 0d7d84498fb4 ("KVM: x86: SGX must obey the ... protocol")
+  - Fix inverted passthrough check for SPEC_CTRL. [Vitaly] 
+  - Add patch to fix MSR bitmap enabling check in helper.
+
+v3:
+  - Rebase to 9f6090b09d66 ("KVM: MMU: make spte .... in make_spte")
+
+v2:
+  - https://lkml.kernel.org/r/20210318224310.3274160-1-seanjc@google.com
+  - Make the macro insanity slightly less insane. [Paolo]
+
+v1: https://lkml.kernel.org/r/20210316184436.2544875-1-seanjc@google.com
+
+Sean Christopherson (4):
+  KVM: nVMX: Query current VMCS when determining if MSR bitmaps are in
+    use
+  KVM: nVMX: Handle dynamic MSR intercept toggling
+  KVM: VMX: Macrofy the MSR bitmap getters and setters
+  KVM: nVMX: Clean up x2APIC MSR handling for L2
+
+ arch/x86/kvm/vmx/nested.c | 164 +++++++++++++++-----------------------
+ arch/x86/kvm/vmx/vmx.c    |  61 ++------------
+ arch/x86/kvm/vmx/vmx.h    |  28 +++++++
+ 3 files changed, 97 insertions(+), 156 deletions(-)
+
+-- 
+2.34.0.rc0.344.g81b53c2807-goog
+
