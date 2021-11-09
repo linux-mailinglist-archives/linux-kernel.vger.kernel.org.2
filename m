@@ -2,85 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 076EF44A694
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 07:03:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DF19644A69D
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 07:04:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243054AbhKIGGZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Nov 2021 01:06:25 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54606 "EHLO
+        id S243064AbhKIGHV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Nov 2021 01:07:21 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54830 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243022AbhKIGGX (ORCPT
+        with ESMTP id S240711AbhKIGHU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Nov 2021 01:06:23 -0500
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1234::107])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B75DC061764;
-        Mon,  8 Nov 2021 22:03:37 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:To:Subject:Sender:
-        Reply-To:Cc:Content-ID:Content-Description;
-        bh=OSiVmEctRFAInEF+kuhKPhF8Bk8dgP3Se4G/4Mqpat4=; b=oRz4DQY02uZDr76wG2WIx47pRB
-        Tsy1V+HRrYysgIypC3ceMW7IGyo9I/hlrtz/I8UNEQx7zE+ZuTOA0Nbv3oOwCXOHxONW96TBOyZUJ
-        br2bGEcykWko3GIkH90XTc6uTHeTomtZsWZfj50VEn0rd/i0ZC+hRuuna+Nxo0qiriG2UfTpo/5xK
-        7gVQHBCrK5JZjPksOJa/G4ocW7LhfiQ0aBLfKIbgRGZldBwNMf7J1hlYdL2Agw9MK2rDvvo5XEIiF
-        BAyhsJFq2Kvma24P/tP6rkcR9PfnGnvrsXE/7fue4WRNdavyCAtA59gVmT1I8U4GPPZkrxKg/sqbs
-        gDKbbHrw==;
-Received: from [2601:1c0:6280:3f0::aa0b]
-        by merlin.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mkKEJ-008lkQ-LK; Tue, 09 Nov 2021 06:03:35 +0000
-Subject: Re: [RFC PATCH v3 7/8] net: dsa: qca8k: add LEDs support
-To:     Ansuel Smith <ansuelsmth@gmail.com>, Andrew Lunn <andrew@lunn.ch>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Vladimir Oltean <olteanv@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>, Pavel Machek <pavel@ucw.cz>,
-        John Crispin <john@phrozen.org>, netdev@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-leds@vger.kernel.org,
-        =?UTF-8?Q?Marek_Beh=c3=ban?= <kabel@kernel.org>
-References: <20211109022608.11109-1-ansuelsmth@gmail.com>
- <20211109022608.11109-8-ansuelsmth@gmail.com>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <2b36fd25-a71e-0902-18d1-73624de169c8@infradead.org>
-Date:   Mon, 8 Nov 2021 22:03:30 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        Tue, 9 Nov 2021 01:07:20 -0500
+Received: from mail-pl1-x629.google.com (mail-pl1-x629.google.com [IPv6:2607:f8b0:4864:20::629])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 02337C061767
+        for <linux-kernel@vger.kernel.org>; Mon,  8 Nov 2021 22:04:35 -0800 (PST)
+Received: by mail-pl1-x629.google.com with SMTP id u17so18978437plg.9
+        for <linux-kernel@vger.kernel.org>; Mon, 08 Nov 2021 22:04:34 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=intel-com.20210112.gappssmtp.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=NVge1Iw2DLICm/edhKMuLv0kwlblMX536VglZLVGuRY=;
+        b=0y9m/3Tm3ZPhkRfOO6g6G8z3si/DzsgoP/MCPFixBiyqHbS5GCigEp/dxfNfAseuxS
+         xThX8p4IEReKP+5oxM6JzYGIeRyClmu/fx6c5Rx+NDh3ZfmAXahyg+B0H8EoEGRZElbf
+         YGDSosivvUKzfEReFxYNIPktibOlqP0MH+sG6GINqABRAZqmPBABbEWU9mnCx2uqUvjn
+         vsaInhxhJX8T0ab9HkmF6f4okUnSUBvkCjzj7VDW63dScslQ3yBjiipLTGyDwHa0VayU
+         4Z4YaHdEJZqVrovaz24ifQc0maLsszlZ3AxdC8bbzM8uN1EXsV/QYBf/NjWXNGmSE3dZ
+         9OMA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=NVge1Iw2DLICm/edhKMuLv0kwlblMX536VglZLVGuRY=;
+        b=YZIt9uyjgV+Osr3VgZJmDNqMyCRlZJGSJ3MzYc/hKhxbIk9pqsTUtXlYtJmdMpdmj1
+         e2dqAHLPBLuwzmtWzwNAgaKhyyvdY7b6DLwoyfRH3PFdHSMAmnHQnhcVW7Bk7lqTwvOt
+         HAMGQPrMAEAbIuld2lpccwOv5A7SoVWyGjkR+nRcTF3RRPqjzXE/sDB8dusD0Yyq9Ea+
+         M+kRFVVbuG0Eo3X5US+GXJmoXCVrXwAhQkonf3yQQPQeF3ivSBUXjoa10QwRXaUpVobn
+         3QCrzF5cH6C9jC+hBq4ZHkymq30aZqATgdoiCooTmhogq64oq+s2CngLaMw7Sgl3Nvia
+         kxlQ==
+X-Gm-Message-State: AOAM530SilsF9eL8Ypt/rsnUYLsSasI77gSuiMyj6jR8j+uxi8iIaocM
+        FrhZUmGxOMwxuyAkfVhaRbfe/JxcCfKThD/+Tm9Oxg==
+X-Google-Smtp-Source: ABdhPJwCtlqgnkTVyH3ATYZHBwvXcSX7T/CMSvZ7vKetQyo9w+pCKsHLoVtp5/ayV5vOuQEKSBrDKVvV/RcSnLRvGBk=
+X-Received: by 2002:a17:90b:1e07:: with SMTP id pg7mr4381475pjb.93.1636437874506;
+ Mon, 08 Nov 2021 22:04:34 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20211109022608.11109-8-ansuelsmth@gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20211106011638.2613039-1-jane.chu@oracle.com> <20211106011638.2613039-2-jane.chu@oracle.com>
+ <CAPcyv4jcgFxgoXFhWL9+BReY8vFtgjb_=Lfai-adFpdzc4-35Q@mail.gmail.com>
+ <63f89475-7a1f-e79e-7785-ba996211615b@oracle.com> <20211109052640.GG3538886@iweiny-DESK2.sc.intel.com>
+In-Reply-To: <20211109052640.GG3538886@iweiny-DESK2.sc.intel.com>
+From:   Dan Williams <dan.j.williams@intel.com>
+Date:   Mon, 8 Nov 2021 22:04:23 -0800
+Message-ID: <CAPcyv4j-EHz9Eg4UmD8v2-mPgNgE0uJSG_Wr2fzJsU-+Em6umw@mail.gmail.com>
+Subject: Re: [PATCH v2 1/2] dax: Introduce normal and recovery dax operation modes
+To:     Ira Weiny <ira.weiny@intel.com>
+Cc:     Jane Chu <jane.chu@oracle.com>, david <david@fromorbit.com>,
+        "Darrick J. Wong" <djwong@kernel.org>,
+        Christoph Hellwig <hch@infradead.org>,
+        Vishal L Verma <vishal.l.verma@intel.com>,
+        Dave Jiang <dave.jiang@intel.com>,
+        Alasdair Kergon <agk@redhat.com>,
+        Mike Snitzer <snitzer@redhat.com>,
+        device-mapper development <dm-devel@redhat.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Vivek Goyal <vgoyal@redhat.com>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        Linux NVDIMM <nvdimm@lists.linux.dev>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-xfs <linux-xfs@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/8/21 6:26 PM, Ansuel Smith wrote:
-> diff --git a/drivers/net/dsa/Kconfig b/drivers/net/dsa/Kconfig
-> index 7b1457a6e327..89e36f3a8195 100644
-> --- a/drivers/net/dsa/Kconfig
-> +++ b/drivers/net/dsa/Kconfig
-> @@ -67,6 +67,15 @@ config NET_DSA_QCA8K
->   	  This enables support for the Qualcomm Atheros QCA8K Ethernet
->   	  switch chips.
->   
-> +config NET_DSA_QCA8K_LEDS_SUPPORT
-> +	tristate "Qualcomm Atheros QCA8K Ethernet switch family LEDs support"
-> +	select NET_DSA_QCA8K
-> +	select LEDS_OFFLOAD_TRIGGERS
-> +	help
-> +	  Thsi enabled support for LEDs present on the Qualcomm Atheros
+On Mon, Nov 8, 2021 at 9:26 PM Ira Weiny <ira.weiny@intel.com> wrote:
+>
+> On Mon, Nov 08, 2021 at 09:02:29PM +0000, Jane Chu wrote:
+> > On 11/6/2021 9:48 AM, Dan Williams wrote:
+> > > On Fri, Nov 5, 2021 at 6:17 PM Jane Chu <jane.chu@oracle.com> wrote:
+> > >>
+> > >> Introduce DAX_OP_NORMAL and DAX_OP_RECOVERY operation modes to
+> > >> {dax_direct_access, dax_copy_from_iter, dax_copy_to_iter}.
+> > >> DAX_OP_NORMAL is the default or the existing mode, and
+> > >> DAX_OP_RECOVERY is a new mode for data recovery purpose.
+> > >>
+> > >> When dax-FS suspects dax media error might be encountered
+> > >> on a read or write, it can enact the recovery mode read or write
+> > >> by setting DAX_OP_RECOVERY in the aforementioned APIs. A read
+> > >> in recovery mode attempts to fetch as much data as possible
+> > >> until the first poisoned page is encountered. A write in recovery
+> > >> mode attempts to clear poison(s) in a page-aligned range and
+> > >> then write the user provided data over.
+> > >>
+> > >> DAX_OP_NORMAL should be used for all non-recovery code path.
+> > >>
+> > >> Signed-off-by: Jane Chu <jane.chu@oracle.com>
+> > > [..]
+> > >> diff --git a/include/linux/dax.h b/include/linux/dax.h
+> > >> index 324363b798ec..931586df2905 100644
+> > >> --- a/include/linux/dax.h
+> > >> +++ b/include/linux/dax.h
+> > >> @@ -9,6 +9,10 @@
+> > >>   /* Flag for synchronous flush */
+> > >>   #define DAXDEV_F_SYNC (1UL << 0)
+> > >>
+> > >> +/* dax operation mode dynamically set by caller */
+> > >> +#define        DAX_OP_NORMAL           0
+> > >
+> > > Perhaps this should be called DAX_OP_FAILFAST?
+> >
+> > Sure.
+> >
+> > >
+> > >> +#define        DAX_OP_RECOVERY         1
+> > >> +
+> > >>   typedef unsigned long dax_entry_t;
+> > >>
+> > >>   struct dax_device;
+> > >> @@ -22,8 +26,8 @@ struct dax_operations {
+> > >>           * logical-page-offset into an absolute physical pfn. Return the
+> > >>           * number of pages available for DAX at that pfn.
+> > >>           */
+> > >> -       long (*direct_access)(struct dax_device *, pgoff_t, long,
+> > >> -                       void **, pfn_t *);
+> > >> +       long (*direct_access)(struct dax_device *, pgoff_t, long, int,
+> > >
+> > > Would be nice if that 'int' was an enum, but I'm not sure a new
+> > > parameter is needed at all, see below...
+> >
+> > Let's do your suggestion below. :)
+> >
+> > >
+> > >> +                               void **, pfn_t *);
+> > >>          /*
+> > >>           * Validate whether this device is usable as an fsdax backing
+> > >>           * device.
+> > >> @@ -32,10 +36,10 @@ struct dax_operations {
+> > >>                          sector_t, sector_t);
+> > >>          /* copy_from_iter: required operation for fs-dax direct-i/o */
+> > >>          size_t (*copy_from_iter)(struct dax_device *, pgoff_t, void *, size_t,
+> > >> -                       struct iov_iter *);
+> > >> +                       struct iov_iter *, int);
+> > >
+> > > I'm not sure the flag is needed here as the "void *" could carry a
+> > > flag in the pointer to indicate that is a recovery kaddr.
+> >
+> > Agreed.
+>
+> Not sure if this is implied but I would like some macros or other helper
+> functions to check these flags hidden in the addresses.
+>
+> For me I'm a bit scared about having flags hidden in the address like this
+> because I can't lead to some confusions IMO.
+>
+> But if we have some macros or other calls which can make this more obvious of
+> what is going on I think that would help.
 
-	  This enables
-
-> +	  QCA8K Ethernet switch chips. This require the LEDs offload
-
-	                                    requires
-
-> +	  triggers support as it can run in offload mode.
-
-
--- 
-~Randy
+You could go further and mark it as an 'unsigned long __bitwise' type
+to get the compiler to help with enforcing accessors to strip off the
+flag bits.
