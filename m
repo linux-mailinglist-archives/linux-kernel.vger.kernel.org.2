@@ -2,124 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EEC6C44B233
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 18:51:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E1E8044B236
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 18:51:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241431AbhKIRx4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Nov 2021 12:53:56 -0500
-Received: from foss.arm.com ([217.140.110.172]:36814 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239360AbhKIRxy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Nov 2021 12:53:54 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 5201EED1;
-        Tue,  9 Nov 2021 09:51:08 -0800 (PST)
-Received: from [10.57.26.224] (unknown [10.57.26.224])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 015893F7F5;
-        Tue,  9 Nov 2021 09:51:04 -0800 (PST)
-Subject: Re: [PATCH 6/7] thermal: netlink: Add a new event to notify CPU
- capabilities change
-To:     Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
-Cc:     Ricardo Neri <ricardo.neri-calderon@linux.intel.com>,
-        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        linux-pm@vger.kernel.org, x86@kernel.org,
-        linux-doc@vger.kernel.org, Len Brown <len.brown@intel.com>,
-        Aubrey Li <aubrey.li@linux.intel.com>,
-        Amit Kucheria <amitk@kernel.org>,
-        Andi Kleen <ak@linux.intel.com>,
-        Tim Chen <tim.c.chen@linux.intel.com>,
-        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
-        Ricardo Neri <ricardo.neri@intel.com>,
-        linux-kernel@vger.kernel.org
-References: <20211106013312.26698-1-ricardo.neri-calderon@linux.intel.com>
- <20211106013312.26698-7-ricardo.neri-calderon@linux.intel.com>
- <2160a0b8-59ec-03a1-1fd5-a3f98085be07@arm.com>
- <e244e3aa9fc323973d7da8d3ebc3e1fad1fdb731.camel@linux.intel.com>
- <5e4d7661-1e91-0c72-ae02-b2c60c2ad95e@arm.com>
- <94ddfd1177c3f119de2794d9fb659a6578f560c6.camel@linux.intel.com>
-From:   Lukasz Luba <lukasz.luba@arm.com>
-Message-ID: <a2389c0f-c42d-0198-a625-0eb2a97628f0@arm.com>
-Date:   Tue, 9 Nov 2021 17:51:02 +0000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.9.0
+        id S241149AbhKIRyi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Nov 2021 12:54:38 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47024 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239360AbhKIRyh (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Nov 2021 12:54:37 -0500
+Received: from mail-oo1-xc2a.google.com (mail-oo1-xc2a.google.com [IPv6:2607:f8b0:4864:20::c2a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4BC77C061764
+        for <linux-kernel@vger.kernel.org>; Tue,  9 Nov 2021 09:51:51 -0800 (PST)
+Received: by mail-oo1-xc2a.google.com with SMTP id o26-20020a4abe9a000000b002b74bffdef0so7185900oop.12
+        for <linux-kernel@vger.kernel.org>; Tue, 09 Nov 2021 09:51:51 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=HW60moPJLTS0KOdgX99eOqT8CyAlaO7KO0xrDprVEMU=;
+        b=lCVPYmvyv8MmjpRj49qYD77FC7FbmxGcG0sgKLXP+GjQcZJfNhKCnGRRogKsNFtBvB
+         9oJ4V5Ie5hQ8BvQODZpm3cWFlV8MW+kg+Q4MMtmEioy332JBMyldO/Zaw6SKziEZfF3h
+         uD3Q9kwWd986rfCoGIa20Vzc1YUhlNp20RXMacko3oyjuRi9z2cvu5H81QZmZ+XspR3E
+         rcVUV/YbjlLKHkAgHtMpMKHQ6xOKmZ0OYhj8nHFFRIa4TriPXv3e56YArfvtr/2tgGgr
+         0SE36GeTPVBqTQAUqE0WlxiwSu3g7kJMvFO14ZRCIaL3sodLmMQtU+M51GgqYAqUEK/T
+         hIPQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=HW60moPJLTS0KOdgX99eOqT8CyAlaO7KO0xrDprVEMU=;
+        b=yjaeM7tPhJ60iS9oSuciGaUX+U3r52FXqN/Ku7ltQNWbxeB3vjXAxYJfLh1E29wquq
+         oknkvwWguiQ8oDollLL4QGid/aS4GWkUMQS+/gJC9A5uj8LG0CNtqqurXhzd6aLTFaIT
+         MP24u28C/m2d+DrhuuNguo9X+W8yQVzLwXRGyJ3n9zD0zdVEEtwGoOxzJg4ZWyswluOn
+         QpFi50rby+EgGSH981VFck7J2/rA59qnN88MaadBx7bRxLALD5TcPfHzhHJXd38kB0uM
+         khffuUvmz/2qBdY3WZ9KmRAnezT1JnaDg7ijiOEy8bkQYM+aE3DiRvcnt3XD+xxg43if
+         9HOg==
+X-Gm-Message-State: AOAM533oFw4lT/V/TiDhKoit8dP6JT79xUWrCm3r7KWwKXVEb6Qm0pcr
+        TXu5P9JvT4ESEIma3Kc/wrDDWtN0PDxBNiRF8lDq3pMejB/FR8vf
+X-Google-Smtp-Source: ABdhPJzWfWS2uYunnNJdM5fGH/UVnvHzrVOt8X61cgXXwrvUjv4GogxlISOElKUmUBRDl94eLWdh2VjtGkVX4ae3uOk=
+X-Received: by 2002:a4a:e94e:: with SMTP id v14mr4702041ood.1.1636480310707;
+ Tue, 09 Nov 2021 09:51:50 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <94ddfd1177c3f119de2794d9fb659a6578f560c6.camel@linux.intel.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20211108185818.GA73382@makvihas> <YYoUYOyyP4EFYTSJ@kroah.com>
+ <CAH1kMwSqfNT-jB70c6Md_Wa6Sn6GJKr2=LOunSaZwEk2TKzraA@mail.gmail.com>
+ <YYpaP1fAg7jrFyhJ@kroah.com> <CAH1kMwR7BA6kpcHCmEnEQ_EPeJxFDHQ3QB9mAn0D8NzdB8LNhw@mail.gmail.com>
+ <YYqWuYK/c6D9K3Xi@kroah.com>
+In-Reply-To: <YYqWuYK/c6D9K3Xi@kroah.com>
+From:   Vihas Mak <makvihas@gmail.com>
+Date:   Tue, 9 Nov 2021 23:21:39 +0530
+Message-ID: <CAH1kMwQyy5v+cNkSzORo-tAe7gUuLJA+9GDDV5kGc9QzZ-zMxQ@mail.gmail.com>
+Subject: Re: [PATCH] char: ppdev: fixed a validation issue
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     sudipm.mukherjee@gmail.com, arnd@arndb.de,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+> And you didn't answer my question above, what happens if the mode is not
+> set properly today?
+
+It'll throw a ENOSYS if the mode is not set properly and print the following:
+
+pr_debug("%s: Unknown mode 0x%02x\n",
+             port->name, port->ieee1284.mode);
 
 
-On 11/9/21 2:15 PM, Srinivas Pandruvada wrote:
-> On Tue, 2021-11-09 at 13:53 +0000, Lukasz Luba wrote:
->> Hi Srinivas,
->>
->> On 11/9/21 1:23 PM, Srinivas Pandruvada wrote:
->>> Hi Lukasz,
->>>
->>> On Tue, 2021-11-09 at 12:39 +0000, Lukasz Luba wrote:
->>>> Hi Ricardo,
->>>>
->>>>
->>>> On 11/6/21 1:33 AM, Ricardo Neri wrote:
->>>>> From: Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
->>>>>
->>>>> Add a new netlink event to notify change in CPU capabilities in
->>>>> terms of
->>>>> performance and efficiency.
->>>>
->>>> Is this going to be handled by some 'generic' tools? If yes,
->>>> maybe
->>>> the values for 'performance' might be aligned with capacity
->>>> [0,1024] ? Or are they completely not related so the mapping is
->>>> simply impossible?
->>>>
->>>
->>> That would have been very useful.
->>>
->>> The problem is that we may not know the maximum performance as
->>> system
->>> may be booting with few CPUs (using maxcpus kernel command line)
->>> and
->>> then user hot adding them. So we may need to rescale when we get a
->>> new
->>> maximum performance CPU and send to user space.
->>>
->>> We can't just use max from HFI table at in instance as it is not
->>> necessary that HFI table contains data for all CPUs.
->>>
->>> If HFI max performance value of 255 is a scaled value to max
->>> performance CPU value in the system, then this conversion would
->>> have
->>> been easy. But that is not.
->>
->> I see. I was asking because I'm working on similar interface and
->> just wanted to understand your approach better. In my case we
->> would probably simply use 'capacity' scale, or more
->> precisely available capacity after subtracting 'thermal pressure'
->> value.
->> That might confuse a generic tool which listens to these socket
->> messages, though. So probably I would have to add a new
->> THERMAL_GENL_ATTR_CPU_CAPABILITY_* id
->> to handle this different normalized across CPUs scale.
-> I can add a field capacity_scale. In HFI case it will always be 255. In
-> your cases it will 1024.
-> 
-> 
-
-Sounds good, with that upper limit those tools would not build
-up assumptions (they would have to parse that scale value).
-Although, I would prefer to call it 'performance_scale' if you don't
-mind.
-I've done similar renaming  s/capacity/performance/ in the Energy Model
-(EM) some time ago [1]. Some reasons:
-- in the scheduler we have 'Performance Domains (PDs)'
-- for GPUs we talk about 'performance', because 'capacity' sounds odd
-   in that case
-
-[1] 
-https://lore.kernel.org/linux-pm/20200527095854.21714-2-lukasz.luba@arm.com/
+On Tue, Nov 9, 2021 at 9:11 PM Greg KH <gregkh@linuxfoundation.org> wrote:
+>
+> On Tue, Nov 09, 2021 at 09:04:57PM +0530, Vihas Mak wrote:
+> > > What happens today if the mode is not set properly?  Will the code paths
+> > > error out eventually, or will the call succeed?  The problem is that
+> > > there might be code that is working today that would break with a change
+> > > like this, as again, this is a very old driver.
+> >
+> > I see. So I guess this driver might be better off without any changes,
+> > as new changes might break things more severely.
+>
+> Changes in behavior always have the ability to break things.  What other
+> changes do you want to make to this old driver that might cause
+> problems?
+>
+> And you didn't answer my question above, what happens if the mode is not
+> set properly today?
+>
+> thanks,
+>
+> greg k-h
