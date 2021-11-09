@@ -2,179 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 20C1444B061
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 16:31:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F99944AFF6
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 16:02:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239082AbhKIPdq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Nov 2021 10:33:46 -0500
-Received: from www.linux-watchdog.org ([185.87.125.42]:39240 "EHLO
-        www.linux-watchdog.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236981AbhKIPdm (ORCPT
+        id S236058AbhKIPEw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Nov 2021 10:04:52 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36146 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232577AbhKIPEu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Nov 2021 10:33:42 -0500
-Received: by www.linux-watchdog.org (Postfix, from userid 500)
-        id 5854040A08; Tue,  9 Nov 2021 15:05:40 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 www.linux-watchdog.org 5854040A08
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-watchdog.org;
-        s=odk20180602; t=1636466747;
-        bh=Ca/EqhI6H4/tBr6sU9eDYFTOdR7fHeD62jwIH6GKZKI=;
-        h=Date:From:To:Cc:Subject:From;
-        b=gVFZfNhDBZRyY2dgzLxTt7A9smMhq2G7vyGuVY+MoZQ9yW/4HvIabQyxOlXv0IJl7
-         JvV/RZhM/98KifQSaXVK0nbfCMZHScc5G/IfxrtDmVxQgnNnAtCkEwopQyaGY7qSG2
-         XDJrnWIIsYJE8ny5Pb+QoaSqFtRJHOCu+iGI5d9k=
-Date:   Tue, 9 Nov 2021 15:05:40 +0100
-From:   Wim Van Sebroeck <wim@linux-watchdog.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux Watchdog Mailing List <linux-watchdog@vger.kernel.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Ahmad Fatoum <a.fatoum@pengutronix.de>,
-        Artem Lapkin <email2tema@gmail.com>,
-        Cai Huoqing <caihuoqing@baidu.com>,
-        Fengquan Chen <Fengquan.Chen@mediatek.com>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Jackie Liu <liuyun01@kylinos.cn>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Lukas Bulwahn <lukas.bulwahn@gmail.com>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Primoz Fiser <primoz.fiser@norik.com>,
-        =?utf-8?B?UmFmYcWCIE1pxYJlY2tp?= <rafal@milecki.pl>,
-        Samuel Holland <samuel@sholland.org>,
-        Tang Bin <tangbin@cmss.chinamobile.com>,
-        Thomas =?iso-8859-1?Q?Wei=DFschuh?= <linux@weissschuh.net>
-Subject: [GIT PULL REQUEST] watchdog - v5.16 Merge window
-Message-ID: <20211109140540.GA29107@www.linux-watchdog.org>
+        Tue, 9 Nov 2021 10:04:50 -0500
+Received: from mail-wr1-x42e.google.com (mail-wr1-x42e.google.com [IPv6:2a00:1450:4864:20::42e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 27759C061764;
+        Tue,  9 Nov 2021 07:02:04 -0800 (PST)
+Received: by mail-wr1-x42e.google.com with SMTP id w29so21952720wra.12;
+        Tue, 09 Nov 2021 07:02:04 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=RTYWV3nFhsgRzCKGFoDGpSlf4DtT065khk9Y6j+f+zU=;
+        b=jnVS46qwHdRRNGjrF6xSPOakVWUv2P8snKeh6DSfw47Z/ZPpji/GBjMaYDVjAklfoP
+         8lDl2Urn7GhjSQDYvuxL/xn1lOxVnryTwnNpKauHPWCnviBrA+OuHK7GcC5DXlsSdqNK
+         Hmu0eZWD6UdgfF8g94MCvAvO4NK6PYWbW3+XMse3eFkj/2AwsOiKtPs1Y+8VakFStL/q
+         s63Q1nChJMn/4YrgFMpSKYu0JcJe6sM9fyBfndf5MavM5A9I5fkwwhU8jzlf8S5Pq3wb
+         95G1M7lKlAqrcINDGTo2y6wBEJGy3XQmLyYjyn9QxUM3qju933CfkHSRlDH0ukyzYTlG
+         1I0A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=RTYWV3nFhsgRzCKGFoDGpSlf4DtT065khk9Y6j+f+zU=;
+        b=siPx/bNoMg7LzD2NVFTkqrnHJ8kYx8VmN7B4YD1mRvtCEDYj29+vX4W14dMVcwQ7wm
+         OUzpE3WuNJlC+2SI8uNqowd/D4c0PHRXO+xnWsto9FlX91XVKGlkdNxbfJ4APFazD5WG
+         scjzVIFSHDP0FntpVhxGcK8XouKD42+0w4xJqlMnfPIlg2OBiPypZ3eRelWDqu8Od3XA
+         BSH4eWK1HzDfD5+NCOeeBLcYxCh1tT9w9cHNvmTKqJz3uvEw5pl0OvPh1mA57s9EyATN
+         4qeIhe5qMCmqCphkpS94YppVoTKksa8XwD9FnEM5XTlZ+z0BBkg3Oyg/6PJL2e6A2RvL
+         zryQ==
+X-Gm-Message-State: AOAM533IGT7sWUuOIubsQHIN59N7dj9hpXyR0U4IM/blwthM8/RWLpGv
+        PffGreFX0LS009BTQwykTrmACjahMqw6Og==
+X-Google-Smtp-Source: ABdhPJygps4YrjlSn3HJQTTlqp9f+bHTW50W4W1/HeB/RdintfzFv0bAPdQZdHzjGEurWC2jep+I8w==
+X-Received: by 2002:a05:6000:1862:: with SMTP id d2mr9966179wri.251.1636470121226;
+        Tue, 09 Nov 2021 07:02:01 -0800 (PST)
+Received: from localhost.localdomain.at (62-178-82-229.cable.dynamic.surfer.at. [62.178.82.229])
+        by smtp.gmail.com with ESMTPSA id n184sm2703152wme.2.2021.11.09.07.02.00
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 09 Nov 2021 07:02:00 -0800 (PST)
+From:   Christian Gmeiner <christian.gmeiner@gmail.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     Christian Gmeiner <christian.gmeiner@gmail.com>,
+        Grygorii Strashko <grygorii.strashko@ti.com>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Nishanth Menon <nm@ti.com>, Tero Kristo <kristo@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org
+Subject: [PATCH] arm64: dts: ti: k3-am64-main: add timesync router node
+Date:   Tue,  9 Nov 2021 16:01:40 +0100
+Message-Id: <20211109150158.164778-1-christian.gmeiner@gmail.com>
+X-Mailer: git-send-email 2.33.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-User-Agent: Mutt/1.5.20 (2009-12-10)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus,
+The Time Sync Event Router (TIMESYNC_INTRTR0) implements a set of
+multiplexers to provide selection of active CPTS time sync events for
+routing to CPTS capable modules.
 
-Please pull the watchdog changes for the v5.16 release cycle.
+This patch adds DT node TIMESYNC_INTRTR0 using "pinctrl-single" bindings.
 
-This series contains:
-* f71808e_wdt: convert to watchdog framework
-* db8500_wdt: Rename driver (was ux500_wdt.c)
-* sunxi: Add compatibles for R329 and D1
-* mtk: add disable_wdt_extrst support
-* several other small fixes and improvements
+Signed-off-by: Grygorii Strashko <grygorii.strashko@ti.com>
+Signed-off-by: Vignesh Raghavendra <vigneshr@ti.com>
+Signed-off-by: Christian Gmeiner <christian.gmeiner@gmail.com>
+---
+ arch/arm64/boot/dts/ti/k3-am64-main.dtsi | 8 ++++++++
+ 1 file changed, 8 insertions(+)
 
-The output from git request-pull:
-----------------------------------------------------------------
-The following changes since commit cd004d8299f1dc6cfa6a4eea8f94cb45eaedf070:
-
-  watchdog: Fix OMAP watchdog early handling (2021-10-26 20:22:51 +0200)
-
-are available in the git repository at:
-
-  git://www.linux-watchdog.org/linux-watchdog.git tags/linux-watchdog-5.16-rc1
-
-for you to fetch changes up to c738888032ffafa1bbb971cd55b3d43b05b344cf:
-
-  watchdog: db8500_wdt: Rename symbols (2021-11-01 20:18:09 +0100)
-
-----------------------------------------------------------------
-linux-watchdog 5.16-rc1 tag
-
-----------------------------------------------------------------
-Ahmad Fatoum (7):
-      watchdog: f71808e_wdt: fix inaccurate report in WDIOC_GETTIMEOUT
-      watchdog: f71808e_wdt: remove superfluous global
-      watchdog: f71808e_wdt: constify static array
-      watchdog: f71808e_wdt: rename variant-independent identifiers appropriately
-      watchdog: f71808e_wdt: migrate to new kernel watchdog API
-      watchdog: f71808e_wdt: refactor to platform device/driver pair
-      watchdog: f71808e_wdt: dynamically allocate watchdog driver data
-
-Artem Lapkin (2):
-      watchdog: meson_gxbb_wdt: add nowayout parameter
-      watchdog: meson_gxbb_wdt: add timeout parameter
-
-Cai Huoqing (3):
-      watchdog: ar7_wdt: Make use of the helper function devm_platform_ioremap_resource_byname()
-      watchdog: iTCO_wdt: Make use of the helper function devm_platform_ioremap_resource()
-      watchdog: rti-wdt: Make use of the helper function devm_platform_ioremap_resource()
-
-Fengquan Chen (2):
-      dt-bindings: watchdog: mtk-wdt: add disable_wdt_extrst support
-      watchdog: mtk: add disable_wdt_extrst support
-
-Geert Uytterhoeven (1):
-      watchdog: rza_wdt: Use semicolons instead of commas
-
-Jackie Liu (1):
-      ar7: fix kernel builds for compiler test
-
-Krzysztof Kozlowski (1):
-      watchdog: s3c2410: describe driver in KConfig
-
-Linus Walleij (3):
-      watchdog: ux500_wdt: Drop platform data
-      watchdog: db8500_wdt: Rename driver
-      watchdog: db8500_wdt: Rename symbols
-
-Lukas Bulwahn (1):
-      watchdog: remove dead iop watchdog timer driver
-
-Mika Westerberg (1):
-      watchdog: iTCO_wdt: No need to stop the timer in probe
-
-Philipp Zabel (1):
-      watchdog: mlx-wdt: Use regmap_write_bits()
-
-Primoz Fiser (1):
-      watchdog: da9062: da9063: prevent pings ahead of machine reset
-
-Rafał Miłecki (1):
-      watchdog: bcm63xx_wdt: fix fallthrough warning
-
-Samuel Holland (3):
-      dt-bindings: watchdog: sunxi: Add compatibles for R329
-      dt-bindings: watchdog: sunxi: Add compatibles for D1
-      watchdog: sunxi_wdt: Add support for D1
-
-Tang Bin (1):
-      watchdog: stm32_iwdg: drop superfluous error message
-
-Thomas Weißschuh (1):
-      watchdog: sp5100_tco: Add support for get_timeleft
-
- .../bindings/watchdog/allwinner,sun4i-a10-wdt.yaml |  48 +-
- .../devicetree/bindings/watchdog/mtk-wdt.txt       |   2 +
- drivers/mfd/db8500-prcmu.c                         |  13 +-
- drivers/watchdog/Kconfig                           |  35 +-
- drivers/watchdog/Makefile                          |   3 +-
- drivers/watchdog/ar7_wdt.c                         |   6 +-
- drivers/watchdog/bcm63xx_wdt.c                     |   2 +
- drivers/watchdog/da9062_wdt.c                      |   7 +
- drivers/watchdog/da9063_wdt.c                      |   7 +
- drivers/watchdog/{ux500_wdt.c => db8500_wdt.c}     |  89 ++-
- drivers/watchdog/f71808e_wdt.c                     | 615 +++++++--------------
- drivers/watchdog/iTCO_wdt.c                        |  19 +-
- drivers/watchdog/iop_wdt.c                         | 250 ---------
- drivers/watchdog/meson_gxbb_wdt.c                  |  12 +
- drivers/watchdog/mlx_wdt.c                         |   5 +-
- drivers/watchdog/mtk_wdt.c                         |   7 +
- drivers/watchdog/rti_wdt.c                         |   4 +-
- drivers/watchdog/rza_wdt.c                         |   4 +-
- drivers/watchdog/sp5100_tco.c                      |   9 +
- drivers/watchdog/stm32_iwdg.c                      |   4 +-
- drivers/watchdog/sunxi_wdt.c                       |  20 +-
- include/linux/platform_data/ux500_wdt.h            |  18 -
- 22 files changed, 384 insertions(+), 795 deletions(-)
- rename drivers/watchdog/{ux500_wdt.c => db8500_wdt.c} (54%)
- delete mode 100644 drivers/watchdog/iop_wdt.c
- delete mode 100644 include/linux/platform_data/ux500_wdt.h
-----------------------------------------------------------------
-
-Kind regards,
-Wim.
+diff --git a/arch/arm64/boot/dts/ti/k3-am64-main.dtsi b/arch/arm64/boot/dts/ti/k3-am64-main.dtsi
+index 42d1d219a3fd..c9321a80353a 100644
+--- a/arch/arm64/boot/dts/ti/k3-am64-main.dtsi
++++ b/arch/arm64/boot/dts/ti/k3-am64-main.dtsi
+@@ -564,6 +564,14 @@ cpts@39000000 {
+ 		ti,cpts-ext-ts-inputs = <8>;
+ 	};
+ 
++	timesync_router: timesync-router@a40000 {
++		compatible = "pinctrl-single";
++		reg = <0x0 0xa40000 0x0 0x800>;
++		#pinctrl-cells = <1>;
++		pinctrl-single,register-width = <32>;
++		pinctrl-single,function-mask = <0x000107ff>;
++	};
++
+ 	usbss0: cdns-usb@f900000{
+ 		compatible = "ti,am64-usb";
+ 		reg = <0x00 0xf900000 0x00 0x100>;
+-- 
+2.33.1
 
