@@ -2,79 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AA4DA44B2FB
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 20:00:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C554F44B2FF
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 20:01:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242908AbhKITDK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Nov 2021 14:03:10 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34292 "EHLO
+        id S242946AbhKITEG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Nov 2021 14:04:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34490 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242898AbhKITDJ (ORCPT
+        with ESMTP id S242923AbhKITEB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Nov 2021 14:03:09 -0500
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 028CAC061764
-        for <linux-kernel@vger.kernel.org>; Tue,  9 Nov 2021 11:00:23 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=/bL3lEQeIXXgPfYvJavQSRTtLUG54fTvn98bwFpiOQU=; b=dyOXL4oXlW7Pu17rgPu5KCFTNI
-        +Ji+D/wZTs3iZFvOT8sJH+L8iLBXh2CB/IepPSstux8Hh8UNXp/YUZwqljdoawu6CwyPKOori7mmn
-        /+4OxWtyEbYKxSfIo053BFcS8d5FjnII0BOZyj47a8KpGYsauNDwnH3Y5zJAgmJanarOyVGqSfxFL
-        2Zg9DXDUOVBuPxq0YUVsmlIrjWwVYeexmT2Iq/WmLkMEwql+EHTd99f7x6Uqlr9MPrhSb78jKkDoW
-        sYDCYKs2DMOTYlE9q6+xJTJpg8Y0oXXPVcVYHdhwkRdmrGegvuofSl0wT8FOC/letGH1/L8JjOPDq
-        pJFst40Q==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mkWLp-00F79T-N0; Tue, 09 Nov 2021 19:00:10 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 2EA6A3000DD;
-        Tue,  9 Nov 2021 20:00:09 +0100 (CET)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 1B74A212EE599; Tue,  9 Nov 2021 20:00:09 +0100 (CET)
-Date:   Tue, 9 Nov 2021 20:00:09 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Ard Biesheuvel <ardb@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Jason Baron <jbaron@akamai.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Kees Cook <keescook@chromium.org>
-Subject: Re: [RFC PATCH 6/7] static_call: rename EXPORT_ macros to be more
- self-explanatory
-Message-ID: <YYrFOZT+6bNTfP+t@hirez.programming.kicks-ass.net>
-References: <20211109164549.1724710-1-ardb@kernel.org>
- <20211109164549.1724710-7-ardb@kernel.org>
+        Tue, 9 Nov 2021 14:04:01 -0500
+Received: from mail-yb1-xb2b.google.com (mail-yb1-xb2b.google.com [IPv6:2607:f8b0:4864:20::b2b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F00B9C061764
+        for <linux-kernel@vger.kernel.org>; Tue,  9 Nov 2021 11:01:14 -0800 (PST)
+Received: by mail-yb1-xb2b.google.com with SMTP id e136so42325ybc.4
+        for <linux-kernel@vger.kernel.org>; Tue, 09 Nov 2021 11:01:14 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=KoZB95vVH0v2a9gf7XfzuFZQxHUcQQC8LetoqIfIJrc=;
+        b=i6pbPLy0D0M4njCdg6snPJMmBT4Att1VQu/ppVxjExF9iSad/k/90KsN9L5mNymTSS
+         NIMvoF3R3jeKUqiUipteXgZ9xfPVwrgJlc42b8brMzPdZdFM1+YQSRIKURb1UK/Df9uT
+         RthW4wkCKi1AXXkdCWkGrlodZPyHo1jxSOXTNhNM7r5ZeYXATfhnPlHVsh05Q68lqHQ4
+         LxUVkDTF4VkLUmIAzppyMvguzsik6K4pYJwM4lATc/1pJn7Q0JAS7qkTzsemCERLwUq0
+         XvvDCalxov3CTjrK01krF26eRphk4Gfi83GC5VfxjJ2Nzc0GLavlPWMCP9TfwdmXNUNV
+         Ipsw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=KoZB95vVH0v2a9gf7XfzuFZQxHUcQQC8LetoqIfIJrc=;
+        b=Tj9qCGc+e2Eaos/5zme+6iQjc5njOEjNZkCKJYwsl5Fzm2mwMOKzuQrHbAyJwGcH1/
+         CG2U01fKV1+mKjD2Q4CPQW1vboyaft7MyBog4gXrqeULAwyWRt1+EkUX/oGmN0iJQT2A
+         kY5S79vEyxJF12H6a12mJsB9QE0C9eybYNDV++Dj32WxnFJKBpoM/Rd7x3aVIYB6BF+s
+         kjr99otR4Xf6RpnlfZTTpBLWxtXMtrNpEqo1bFQfaKNUMD7ei13pB6p4QFRGSmlcOUVN
+         iUL7Tu3CX1VahE850+UYiqzD4457cIDrRri/teDHVmMUD8y7fJyvCsVyCRTKiFJCMoqt
+         AW+w==
+X-Gm-Message-State: AOAM531uaZNrVzKqLz2UDiKnuALBbwXd0ZxdLrrTXyd6SJFui58d5wJ0
+        wj/f1hfNXVT70iWE/zqgIwFuhD6WtIZ6ede8t5UzKw==
+X-Google-Smtp-Source: ABdhPJwdc7hXS6J642vWkCDbrvXn+RiplHQk2rKWV5VvcmEBD7ypXiQI7Rbf7k86wgaSrzmhwiRPdB1ZI/CHd2MT1L0=
+X-Received: by 2002:a25:d4d5:: with SMTP id m204mr11979039ybf.418.1636484473977;
+ Tue, 09 Nov 2021 11:01:13 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211109164549.1724710-7-ardb@kernel.org>
+References: <20211022014658.263508-1-surenb@google.com> <YXJwUUPjfg9wV6MQ@dhcp22.suse.cz>
+ <CAJuCfpEcSbK8WrufZjDj-7iUxiQtrmVTqHOxFUOvLhYGz6_ttQ@mail.gmail.com>
+ <CAJuCfpFccBJHHqfOKixJvLr7Xta_ojkdHGfGomwTDNKffzziRQ@mail.gmail.com>
+ <YXvxBSzA2YIxbwVC@dhcp22.suse.cz> <CAJuCfpHBoMGPOUvB2ZWQ=TxbFuWBRF++UaKJZDCrQV4mzb5kMA@mail.gmail.com>
+ <YX+nYGlZBOAljoeF@dhcp22.suse.cz> <CAJuCfpGC9-c9P40x7oy=jy5SphMcd0o0G_6U1-+JAziGKG6dGA@mail.gmail.com>
+ <YYDvm9c/7cGtBvw6@dhcp22.suse.cz> <CAJuCfpFX8FRynoK29h8tpRXRT-Kk+sHboiBnc7N-8MY6AAqVLw@mail.gmail.com>
+In-Reply-To: <CAJuCfpFX8FRynoK29h8tpRXRT-Kk+sHboiBnc7N-8MY6AAqVLw@mail.gmail.com>
+From:   Suren Baghdasaryan <surenb@google.com>
+Date:   Tue, 9 Nov 2021 11:01:02 -0800
+Message-ID: <CAJuCfpFOOgs9uZSW2Tp6uBW23rLHFeSA8o5WYQ_D_ykUcKL64Q@mail.gmail.com>
+Subject: Re: [PATCH 1/1] mm: prevent a race between process_mrelease and exit_mmap
+To:     Michal Hocko <mhocko@suse.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        David Rientjes <rientjes@google.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Roman Gushchin <guro@fb.com>, Rik van Riel <riel@surriel.com>,
+        Minchan Kim <minchan@kernel.org>,
+        Christian Brauner <christian@brauner.io>,
+        Christoph Hellwig <hch@infradead.org>,
+        Oleg Nesterov <oleg@redhat.com>,
+        David Hildenbrand <david@redhat.com>,
+        Jann Horn <jannh@google.com>,
+        Shakeel Butt <shakeelb@google.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Florian Weimer <fweimer@redhat.com>,
+        Jan Engelhardt <jengelh@inai.de>,
+        Linux API <linux-api@vger.kernel.org>,
+        linux-mm <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        kernel-team <kernel-team@android.com>,
+        "Kirill A. Shutemov" <kirill@shutemov.name>,
+        Andrea Arcangeli <aarcange@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 09, 2021 at 05:45:48PM +0100, Ard Biesheuvel wrote:
-> So let's rename these macros to
-> 
->   EXPORT_STATIC_CALL        -> EXPORT_STATIC_CALL_FOR_UPDATE
->   EXPORT_STATIC_CALL_TRAMP  -> EXPORT_STATIC_CALL
-> 
+On Tue, Nov 2, 2021 at 8:14 AM Suren Baghdasaryan <surenb@google.com> wrote:
+>
+> On Tue, Nov 2, 2021 at 12:58 AM Michal Hocko <mhocko@suse.com> wrote:
+> >
+> > On Mon 01-11-21 08:44:58, Suren Baghdasaryan wrote:
+> > [...]
+> > > I'm with you on this one, that's why I wanted to measure the price we
+> > > would pay. Below are the test results:
+> > >
+> > > Test: https://lore.kernel.org/all/20170725142626.GJ26723@dhcp22.suse.cz/
+> > > Compiled: gcc -O2 -static test.c -o test
+> > > Test machine: 128 core / 256 thread 2x AMD EPYC 7B12 64-Core Processor
+> > > (family 17h)
+> > >
+> > > baseline (Linus master, f31531e55495ca3746fb895ffdf73586be8259fa)
+> > > p50 (median)   87412
+> > > p95                  168210
+> > > p99                  190058
+> > > average           97843.8
+> > > stdev               29.85%
+> > >
+> > > unconditional mmap_write_lock in exit_mmap (last column is the change
+> > > from the baseline)
+> > > p50 (median)   88312     +1.03%
+> > > p95                  170797   +1.54%
+> > > p99                  191813   +0.92%
+> > > average           97659.5  -0.19%
+> > > stdev               32.41%
+> > >
+> > > unconditional mmap_write_lock in exit_mmap + Matthew's patch (last
+> > > column is the change from the baseline)
+> > > p50 (median)   88807      +1.60%
+> > > p95                  167783     -0.25%
+> > > p99                  187853     -1.16%
+> > > average           97491.4    -0.36%
+> > > stdev               30.61%
+> > >
+> > > stdev is quite high in all cases, so the test is very noisy.
+> > > The impact seems quite low IMHO. WDYT?
+> >
+> > Results being very noisy is what I recall as well. Thanks!
+>
+> I believe, despite the noise, the percentiles show that overall we do
+> not noticeably regress the exit path by taking mmap_lock
+> unconditionally.
+> If there are no objections, I would like to post a patchset which
+> implements unconditional locking in exit_mmap() and process_madvise()
+> calling __oom_reap_task_mm() under protection of read mmap_lock.
+> Thanks!
 
-Ok, let's pain this shed a bit.
+Discussing how the patch I want to post works for maple trees that
+Matthew is working on, I've got a question:
 
-How about:
+IIUC, according to Michal's post here:
+https://lore.kernel.org/all/20170725154514.GN26723@dhcp22.suse.cz,
+unmap_vmas() can race with other mmap_lock read holders (including
+oom_reap_task_mm()) with no issues.
+Maple tree patchset requires rcu read lock or the mmap semaphore be
+held (read or write side) when walking the tree, including inside
+unmap_vmas(). When asked, he told me that he is not sure why it's
+currently "safe" to walk the vma->vm_next list in unmap_vmas() while
+another thread is reaping the mm.
+Michal (or maybe someone else), could you please clarify why
+unmap_vmas() can safely race with oom_reap_task_mm()? Or maybe my
+understanding was wrong?
+Thanks,
+Suren.
 
-	EXPORT_STATIC_CALL_RW
-	EXPORT_STATIC_CALL_RO
 
-respectively. OR.. alternatively, have both:
 
-	EXPORT_STATIC_CALL_KEY
-	EXPORT_STATIC_CALL_TRAMP
-
-and those that want to export both get to use both.
+>
+> > --
+> > Michal Hocko
+> > SUSE Labs
