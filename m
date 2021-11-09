@@ -2,191 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 82F0944AC6D
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 12:18:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0315144AC72
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 12:19:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245644AbhKILVW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Nov 2021 06:21:22 -0500
-Received: from mail.kernel.org ([198.145.29.99]:33096 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236933AbhKILVV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Nov 2021 06:21:21 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5011D61184;
-        Tue,  9 Nov 2021 11:18:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1636456715;
-        bh=lO8tQWqc2w+XvL3pbFer7fWOx8WpjOovLS4xqP6NpmY=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=N0n/Dee73r4Q0X559dbC63n6woPmMUv9NoLSbekRezGFIEab9+Njeq1M5QbEBVCGT
-         8xkQCyvSGRdu8hvrFFogJWV56aN+3Gk7D+/yDRUKfLwWbiPoNj707Xa8RYtZ6rMKML
-         K3nrxE1OxEj+GJnK/+EkKlvfZVfhg3hl4ULb3DYUaaD6Wz7/wbwqoggwjCSJH5gm0C
-         eihRUzcJM1cpHmnnebCj7OA5T+CuRZiwgF74REp0BqsIAAsVQSZT3YEexYZISVVAyI
-         NzbQGoPBMn3hIIh95NJ3/J+igf0Ew0Ub1FGxLi/U9fz/4/v6Epjjiv7hLJCGs2ejsH
-         14kX41gYPygyg==
-Received: by mail-wm1-f42.google.com with SMTP id z200so15511292wmc.1;
-        Tue, 09 Nov 2021 03:18:35 -0800 (PST)
-X-Gm-Message-State: AOAM5323ZfD2lsU3PZMvL0MPZSIDlbuquuy9fyUR5Br8Jj919bT3k0Q+
-        +hE1hQk3gCg8Ft5xWZufFOqWFsj11fqwmXMOBSU=
-X-Google-Smtp-Source: ABdhPJx/39MGIMYM/G7p9WtSJEXb6yf8SOLtbri1LasKTNG3haVIpi2RwrKOd2wYGXN8JRzcfURCGECdqWxmoSTGzHA=
-X-Received: by 2002:a1c:770e:: with SMTP id t14mr6072524wmi.173.1636456713698;
- Tue, 09 Nov 2021 03:18:33 -0800 (PST)
+        id S245673AbhKILV4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Nov 2021 06:21:56 -0500
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:61554 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S245677AbhKILVy (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Nov 2021 06:21:54 -0500
+Received: from pps.filterd (m0098396.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 1A9BHVCV026166;
+        Tue, 9 Nov 2021 11:18:29 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
+ subject : message-id : references : mime-version : content-type :
+ content-transfer-encoding : in-reply-to; s=pp1;
+ bh=wAF50VjjpA4GthliuDEwcBjQD4pGrgZQrnR8Ma+EU3U=;
+ b=qPHMtrgYg2AS+W7PO7h8PixuuBoVFVpKZ4BNgrxbciaWUyap1dnEekBi0i4LSnxIDCfA
+ gJUAhYj/gGBh6wvsOXeJz4nFWwOyNHn9nrs9JeSwLQ/1+/BLSPc8zrn0J7UDvpHsJMzm
+ V6vQVe+09R+yhbr11pSxirCkfvWQGyKcL80bRxNxCZg/e1G1jUhVnJJ4DVVo19aoPNF0
+ pG2Qd6BKXZ1Cls4Giy1ctr6wqABcBT5TRSu8Uh50kfmJaQWjK5gVG93cPVunn63UUrk/
+ uQd/EQ9SK+g+imh93k29EP/Epj1apVQqUEKmvEwTqgZRRcX1ms9WAVI1apvxUGsQFYNK MQ== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3c7r0080pk-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 09 Nov 2021 11:18:29 +0000
+Received: from m0098396.ppops.net (m0098396.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 1A9BISA7031777;
+        Tue, 9 Nov 2021 11:18:28 GMT
+Received: from ppma05fra.de.ibm.com (6c.4a.5195.ip4.static.sl-reverse.com [149.81.74.108])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3c7r0080nr-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 09 Nov 2021 11:18:28 +0000
+Received: from pps.filterd (ppma05fra.de.ibm.com [127.0.0.1])
+        by ppma05fra.de.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 1A9BHZnn023357;
+        Tue, 9 Nov 2021 11:18:26 GMT
+Received: from b06cxnps4074.portsmouth.uk.ibm.com (d06relay11.portsmouth.uk.ibm.com [9.149.109.196])
+        by ppma05fra.de.ibm.com with ESMTP id 3c5hb9d9b2-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 09 Nov 2021 11:18:25 +0000
+Received: from d06av25.portsmouth.uk.ibm.com (d06av25.portsmouth.uk.ibm.com [9.149.105.61])
+        by b06cxnps4074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 1A9BINWx61735174
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 9 Nov 2021 11:18:23 GMT
+Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id A26F911C071;
+        Tue,  9 Nov 2021 11:18:23 +0000 (GMT)
+Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id DB53311C0A9;
+        Tue,  9 Nov 2021 11:18:22 +0000 (GMT)
+Received: from localhost (unknown [9.171.40.178])
+        by d06av25.portsmouth.uk.ibm.com (Postfix) with ESMTPS;
+        Tue,  9 Nov 2021 11:18:22 +0000 (GMT)
+Date:   Tue, 9 Nov 2021 12:18:21 +0100
+From:   Vasily Gorbik <gor@linux.ibm.com>
+To:     =?utf-8?B?QW5kcsOp?= Almeida <andrealmeid@collabora.com>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Darren Hart <dvhart@infradead.org>,
+        linux-kernel@vger.kernel.org, Steven Rostedt <rostedt@goodmis.org>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        kernel@collabora.com, krisman@collabora.com,
+        linux-api@vger.kernel.org, libc-alpha@sourceware.org,
+        mtk.manpages@gmail.com, Davidlohr Bueso <dave@stgolabs.net>,
+        Arnd Bergmann <arnd@arndb.de>
+Subject: Re: [PATCH v2 20/22] selftests: futex: Test sys_futex_waitv() timeout
+Message-ID: <your-ad-here.call-01636456701-ext-5362@work.hours>
+References: <20210923171111.300673-1-andrealmeid@collabora.com>
+ <20210923171111.300673-21-andrealmeid@collabora.com>
 MIME-Version: 1.0
-References: <20211109100207.2474024-1-arnd@kernel.org> <20211109100207.2474024-6-arnd@kernel.org>
- <YYpMcKlcZ3JWqp5M@smile.fi.intel.com>
-In-Reply-To: <YYpMcKlcZ3JWqp5M@smile.fi.intel.com>
-From:   Arnd Bergmann <arnd@kernel.org>
-Date:   Tue, 9 Nov 2021 12:18:17 +0100
-X-Gmail-Original-Message-ID: <CAK8P3a0VsDG3af1YkRRb=5bmvZ4zP3Du492hE_jyUWOwnYph_w@mail.gmail.com>
-Message-ID: <CAK8P3a0VsDG3af1YkRRb=5bmvZ4zP3Du492hE_jyUWOwnYph_w@mail.gmail.com>
-Subject: Re: [PATCH v2 5/8] gpiolib: shrink further
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <brgl@bgdev.pl>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210923171111.300673-21-andrealmeid@collabora.com>
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: 8ZGmmKZpwycNjdqnKbJEhyKvGA9dmtlt
+X-Proofpoint-ORIG-GUID: kf8K6Tt8LcVW4t_5syGH8K0ZSp_ZFWJY
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.205,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.0.607.475
+ definitions=2021-11-09_03,2021-11-08_02,2020-04-07_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0
+ lowpriorityscore=0 malwarescore=0 priorityscore=1501 mlxlogscore=999
+ bulkscore=0 clxscore=1011 adultscore=0 suspectscore=0 spamscore=0
+ phishscore=0 mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2110150000 definitions=main-2111090067
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 9, 2021 at 11:24 AM Andy Shevchenko
-<andriy.shevchenko@linux.intel.com> wrote:
+On Thu, Sep 23, 2021 at 02:11:09PM -0300, André Almeida wrote:
+> Test if the futex_waitv timeout is working as expected, using the
+> supported clockid options.
 
-> > @@ -238,8 +238,6 @@ setup or driver probe/teardown code, so this is an easy constraint.)::
-> >          ##   gpio_free_array()
-> >
-> >                  gpio_free()
-> > -                gpio_set_debounce()
-> > -
-> >
->
-> One more blank line removal?
+> +	/* futex_waitv with CLOCK_MONOTONIC */
+> +	if (futex_get_abs_timeout(CLOCK_MONOTONIC, &to, timeout_ns))
+> +		return RET_FAIL;
+> +	res = futex_waitv(&waitv, 1, 0, &to, CLOCK_MONOTONIC);
+> +	test_timeout(res, &ret, "futex_waitv monotonic", ETIMEDOUT);
+> +
+> +	/* futex_waitv with CLOCK_REALTIME */
+> +	if (futex_get_abs_timeout(CLOCK_REALTIME, &to, timeout_ns))
+> +		return RET_FAIL;
+> +	res = futex_waitv(&waitv, 1, 0, &to, CLOCK_REALTIME);
+> +	test_timeout(res, &ret, "futex_waitv realtime", ETIMEDOUT);
 
-I think two blank lines at the end of a section is the normal style
-for this file.
-Do you mean I should remove another line, or not remove the third blank
-line here?
+Hi André,
 
-> > diff --git a/drivers/input/touchscreen/ads7846.c b/drivers/input/touchscreen/ads7846.c
-> > index a25a77dd9a32..d0664e3b89bb 100644
-> > --- a/drivers/input/touchscreen/ads7846.c
-> > +++ b/drivers/input/touchscreen/ads7846.c
-> > @@ -27,6 +27,7 @@
-> >  #include <linux/of.h>
->
-> >  #include <linux/of_gpio.h>
->
-> (1)
->
-> >  #include <linux/of_device.h>
->
-> > +#include <linux/gpio/consumer.h>
->
-> (2)
->
-> >  #include <linux/gpio.h>
->
-> (3)
->
-> Seems too many...
->
-> Are you planning to clean up this driver to get rid of (1) and (3) altogether?
->
-> (I understand that for current purposes above is a good quick cleanup)
+when built with -m32 and run as compat this two futex_waitv calls hang
+on x86 and s390 (noticed while wiring up futex_waitv). The rest of the
+futex selftests pass. This suggests some common compat issue? Any ideas?
 
-Ideally we should only use linux/gpio/consumer.h, which is required for
-gpiod_set_debounce(). of_gpio.h is still needed for of_get_named_gpio()
-and should be taken out once we change this to gpiod_get(), while
-linux/gpio.h is still needed for gpio_is_valid()/gpio_get_value() and should
-be removed when those are changed to the gpiod_ versions.
-
-We could do an intermediate patch that converts one half of the
-interface, something like
-
-diff --git a/drivers/input/touchscreen/ads7846.c
-b/drivers/input/touchscreen/ads7846.c
-index d0664e3b89bb..60e6b292ccdf 100644
---- a/drivers/input/touchscreen/ads7846.c
-+++ b/drivers/input/touchscreen/ads7846.c
-@@ -140,7 +140,7 @@ struct ads7846 {
-        int                     (*filter)(void *data, int data_idx, int *val);
-        void                    *filter_data;
-        int                     (*get_pendown_state)(void);
--       int                     gpio_pendown;
-+       struct gpio_desc        *gpio_pendown;
-
-        void                    (*wait_for_sync)(void);
- };
-@@ -223,7 +223,7 @@ static int get_pendown_state(struct ads7846 *ts)
-        if (ts->get_pendown_state)
-                return ts->get_pendown_state();
-
--       return !gpio_get_value(ts->gpio_pendown);
-+       return !gpiod_get_value(ts->gpio_pendown);
- }
-
- static void ads7846_report_pen_up(struct ads7846 *ts)
-@@ -1005,6 +1005,11 @@ static int ads7846_setup_pendown(struct spi_device *spi,
-
-        if (pdata->get_pendown_state) {
-                ts->get_pendown_state = pdata->get_pendown_state;
-+       } else if (ts->gpio_pendown) {
-+               if (IS_ERR(ts->gpio_pendown)) {
-+                       dev_err(&spi->dev, "missing pendown gpio\n");
-+                       return PTR_ERR(ts->gpio_pendown);
-+               }
-        } else if (gpio_is_valid(pdata->gpio_pendown)) {
-
-                err = devm_gpio_request_one(&spi->dev, pdata->gpio_pendown,
-@@ -1016,10 +1016,10 @@ static int ads7846_setup_pendown(struct spi_device *spi,
-                        return err;
-                }
-
--               ts->gpio_pendown = pdata->gpio_pendown;
-+               ts->gpio_pendown = gpio_to_desc(pdata->gpio_pendown);
-
-                if (pdata->gpio_pendown_debounce)
--                       gpiod_set_debounce(gpio_to_desc(pdata->gpio_pendown),
-+                       gpiod_set_debounce(ts->gpio_pendown,
-                                          pdata->gpio_pendown_debounce);
-        } else {
-                dev_err(&spi->dev, "no get_pendown_state nor gpio_pendown?\n");
-@@ -1128,7 +1128,7 @@ static const struct of_device_id ads7846_dt_ids[] = {
- };
- MODULE_DEVICE_TABLE(of, ads7846_dt_ids);
-
--static const struct ads7846_platform_data *ads7846_probe_dt(struct device *dev)
-+static const struct ads7846_platform_data *ads7846_probe_dt(struct
-ads7846 *ts, struct device *dev)
- {
-        struct ads7846_platform_data *pdata;
-        struct device_node *node = dev->of_node;
-@@ -1193,7 +1193,7 @@ static const struct ads7846_platform_data
-*ads7846_probe_dt(struct device *dev)
-        pdata->wakeup = of_property_read_bool(node, "wakeup-source") ||
-                        of_property_read_bool(node, "linux,wakeup");
-
--       pdata->gpio_pendown = of_get_named_gpio(dev->of_node,
-"pendown-gpio", 0);
-+       ts->gpio_pendown = gpiod_get(dev, "pendown-gpio", GPIOD_IN);
-
-        return pdata;
- }
-@@ -1267,7 +1267,7 @@ static int ads7846_probe(struct spi_device *spi)
-
-        pdata = dev_get_platdata(dev);
-        if (!pdata) {
--               pdata = ads7846_probe_dt(dev);
-+               pdata = ads7846_probe_dt(ts, dev);
-                if (IS_ERR(pdata))
-                        return PTR_ERR(pdata);
-        }
-
-while leaving the platform side untouched, but I think Linus' plan was to
-remove the gpio settings from all platform data and instead use the gpio
-lookup in the board files.
-
-          Arnd
+diff --git a/tools/testing/selftests/futex/functional/Makefile b/tools/testing/selftests/futex/functional/Makefile
+index 5cc38de9d8ea..ddcb597d13ea 100644
+--- a/tools/testing/selftests/futex/functional/Makefile
++++ b/tools/testing/selftests/futex/functional/Makefile
+@@ -1,7 +1,7 @@
+ # SPDX-License-Identifier: GPL-2.0
+ INCLUDES := -I../include -I../../ -I../../../../../usr/include/ \
+        -I$(KBUILD_OUTPUT)/kselftest/usr/include
+-CFLAGS := $(CFLAGS) -g -O2 -Wall -D_GNU_SOURCE -pthread $(INCLUDES)
++CFLAGS := $(CFLAGS) -g -m32 -O2 -Wall -D_GNU_SOURCE -pthread $(INCLUDES)
+ LDLIBS := -lpthread -lrt
+ 
+ HEADERS := \
+--
