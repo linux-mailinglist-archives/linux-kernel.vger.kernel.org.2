@@ -2,98 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ACC2344A6A6
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 07:10:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EF8CB44A6B0
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 07:12:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240720AbhKIGNT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Nov 2021 01:13:19 -0500
-Received: from mailgw02.mediatek.com ([210.61.82.184]:32902 "EHLO
-        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S243125AbhKIGNS (ORCPT
+        id S243096AbhKIGPA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Nov 2021 01:15:00 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56520 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238661AbhKIGO7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Nov 2021 01:13:18 -0500
-X-UUID: 39f6ff7cd48c4bdc882e8d7e7d2d8f13-20211109
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=5TI9MaGiDCo3zWSVU3oXZEG4tuaeM8OHObYDQ9ZAnOk=;
-        b=Kfl539Brdhh7+cW/qaVcd7GMd7/nntItxF2+s2Y9pIhSQjych/qZCQfOTFFAc9PbhuK+WFT0gOcmjift7ECFLS4YW0wm5qbNd6BadR5nglAbz6yCLkr8WD63RdNNZc9wqEfibPEZQAfthpglFQszOzDQU1hHb7MwAY4v/ripQ0E=;
-X-UUID: 39f6ff7cd48c4bdc882e8d7e7d2d8f13-20211109
-Received: from mtkcas10.mediatek.inc [(172.21.101.39)] by mailgw02.mediatek.com
-        (envelope-from <jianjun.wang@mediatek.com>)
-        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 1300365504; Tue, 09 Nov 2021 14:10:28 +0800
-Received: from mtkexhb02.mediatek.inc (172.21.101.103) by
- mtkmbs10n2.mediatek.inc (172.21.101.183) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id 15.2.792.3;
- Tue, 9 Nov 2021 14:10:27 +0800
-Received: from mtkmbs10n2.mediatek.inc (172.21.101.183) by
- mtkexhb02.mediatek.inc (172.21.101.103) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Tue, 9 Nov 2021 14:10:26 +0800
-Received: from mhfsdcap04 (10.17.3.154) by mtkmbs10n2.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.2.792.3 via Frontend
- Transport; Tue, 9 Nov 2021 14:10:26 +0800
-Message-ID: <b18f74b8831492c4a75f45fa778c359fd80184d0.camel@mediatek.com>
-Subject: Re: [PATCH v3] PCI: mediatek-gen3: Disable DVFSRC voltage request
-From:   Jianjun Wang <jianjun.wang@mediatek.com>
-To:     Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Tue, 9 Nov 2021 01:14:59 -0500
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1234::107])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9ABB6C061764;
+        Mon,  8 Nov 2021 22:12:13 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:From:References:To:Subject:Sender:
+        Reply-To:Cc:Content-ID:Content-Description;
+        bh=AqxeG9GMAXTBgfM0qk7iHTvqCqKRCutUS/VQ+ILwkaQ=; b=JD/PdfTT2f0wIkwwjCNnTVAPUt
+        7AWcf1S4AGHXEnBbIaUX1X2GHGuH/Ntui4nunaPnLqWOMPY026F6279zfd8ULG6mWzb6507ltebfD
+        ko0pVebCoC7XfOeHhmbW3ThVj7+dIkoBHvepAJme8QPnDWuToX7K4/gwboDIyjHQgoK3OQ9LWM6Dh
+        dP33YPtN8vl1nZFZL3YsFD5qvoe7XVxP7bFWdIDZnt20LtNIx+BSflKfNNa3/kjIZAmJz79tbSBL4
+        yv+Hf8Od9klstS4CONxTxEuXLRbL8tMnzVcz1GiyanDMPRYd1euAYIndWX47naqsTvO1Pk3Mp4man
+        /4+6enXw==;
+Received: from [2601:1c0:6280:3f0::aa0b]
+        by merlin.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mkKMd-008lm1-LJ; Tue, 09 Nov 2021 06:12:12 +0000
+Subject: Re: [RFC PATCH v3 2/8] leds: add function to configure hardware
+ controlled LED
+To:     Ansuel Smith <ansuelsmth@gmail.com>, Andrew Lunn <andrew@lunn.ch>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Vladimir Oltean <olteanv@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
         Rob Herring <robh+dt@kernel.org>,
-        Krzysztof =?UTF-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Ryder Lee <ryder.lee@mediatek.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>
-CC:     <linux-pci@vger.kernel.org>, <linux-mediatek@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <qizhong.cheng@mediatek.com>, <Ryan-JH.Yu@mediatek.com>,
-        Tzung-Bi Shih <tzungbi@google.com>
-Date:   Tue, 9 Nov 2021 14:10:25 +0800
-In-Reply-To: <20211015063602.29058-1-jianjun.wang@mediatek.com>
-References: <20211015063602.29058-1-jianjun.wang@mediatek.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.2 
+        Jonathan Corbet <corbet@lwn.net>, Pavel Machek <pavel@ucw.cz>,
+        John Crispin <john@phrozen.org>, netdev@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-leds@vger.kernel.org,
+        =?UTF-8?Q?Marek_Beh=c3=ban?= <kabel@kernel.org>
+References: <20211109022608.11109-1-ansuelsmth@gmail.com>
+ <20211109022608.11109-3-ansuelsmth@gmail.com>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <3e854c1c-25e2-789b-de67-d99344fcb498@infradead.org>
+Date:   Mon, 8 Nov 2021 22:12:05 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-X-MTK:  N
-Content-Transfer-Encoding: base64
+In-Reply-To: <20211109022608.11109-3-ansuelsmth@gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SGkgTWFpbnRhaW5lcnMsDQoNCkp1c3QgZ2VudGxlIHBpbmcgZm9yIHRoaXMgcGF0Y2gsIGlmIHRo
-ZXJlIGlzIGFueXRoaW5nIEkgbmVlZCB0byBtb2RpZnksDQpwbGVhc2Uga2luZGx5IGxldCBtZSBr
-bm93Lg0KDQpUaGFua3MuDQoNCk9uIEZyaSwgMjAyMS0xMC0xNSBhdCAxNDozNiArMDgwMCwgSmlh
-bmp1biBXYW5nIHdyb3RlOg0KPiBXaGVuIHRoZSBEVkZTUkMgKGR5bmFtaWMgdm9sdGFnZSBhbmQg
-ZnJlcXVlbmN5IHNjYWxpbmcgcmVzb3VyY2UNCj4gY29sbGVjdG9yKQ0KPiBmZWF0dXJlIGlzIG5v
-dCBpbXBsZW1lbnRlZCwgdGhlIFBDSWUgaGFyZHdhcmUgd2lsbCBhc3NlcnQgYSB2b2x0YWdlDQo+
-IHJlcXVlc3QNCj4gc2lnbmFsIHdoZW4gZXhpdCBmcm9tIHRoZSBMMSBQTSBTdWJzdGF0ZXMgdG8g
-cmVxdWVzdCBhIHNwZWNpZmljIFZjb3JlDQo+IHZvbHRhZ2UsIGJ1dCBjYW5ub3QgcmVjZWl2ZSB0
-aGUgdm9sdGFnZSByZWFkeSBzaWduYWwsIHdoaWNoIHdpbGwNCj4gY2F1c2UNCj4gdGhlIGxpbmsg
-dG8gZmFpbCB0byBleGl0IHRoZSBMMSBQTSBTdWJzdGF0ZXMuDQo+IA0KPiBEaXNhYmxlIERWRlNS
-QyB2b2x0YWdlIHJlcXVlc3QgYnkgZGVmYXVsdCwgd2UgbmVlZCB0byBmaW5kIGEgY29tbW9uDQo+
-IHdheSB0bw0KPiBlbmFibGUgaXQgaW4gdGhlIGZ1dHVyZS4NCj4gDQo+IEZpeGVzOiBkM2JmNzVi
-NTc5YjkgKCJQQ0k6IG1lZGlhdGVrLWdlbjM6IEFkZCBNZWRpYVRlayBHZW4zIGRyaXZlcg0KPiBm
-b3IgTVQ4MTkyIikNCj4gU2lnbmVkLW9mZi1ieTogSmlhbmp1biBXYW5nIDxqaWFuanVuLndhbmdA
-bWVkaWF0ZWsuY29tPg0KPiBSZXZpZXdlZC1ieTogVHp1bmctQmkgU2hpaCA8dHp1bmdiaUBnb29n
-bGUuY29tPg0KPiBUZXN0ZWQtYnk6IFFpemhvbmcgQ2hlbmcgPHFpemhvbmcuY2hlbmdAbWVkaWF0
-ZWsuY29tPg0KPiAtLS0NCj4gIGRyaXZlcnMvcGNpL2NvbnRyb2xsZXIvcGNpZS1tZWRpYXRlay1n
-ZW4zLmMgfCA4ICsrKysrKysrDQo+ICAxIGZpbGUgY2hhbmdlZCwgOCBpbnNlcnRpb25zKCspDQo+
-IA0KPiBkaWZmIC0tZ2l0IGEvZHJpdmVycy9wY2kvY29udHJvbGxlci9wY2llLW1lZGlhdGVrLWdl
-bjMuYw0KPiBiL2RyaXZlcnMvcGNpL2NvbnRyb2xsZXIvcGNpZS1tZWRpYXRlay1nZW4zLmMNCj4g
-aW5kZXggZjNhZWI4ZDRlYWNhLi43OWZiMTJmY2E2YTkgMTAwNjQ0DQo+IC0tLSBhL2RyaXZlcnMv
-cGNpL2NvbnRyb2xsZXIvcGNpZS1tZWRpYXRlay1nZW4zLmMNCj4gKysrIGIvZHJpdmVycy9wY2kv
-Y29udHJvbGxlci9wY2llLW1lZGlhdGVrLWdlbjMuYw0KPiBAQCAtNzksNiArNzksOSBAQA0KPiAg
-I2RlZmluZSBQQ0lFX0lDTURfUE1fUkVHCQkweDE5OA0KPiAgI2RlZmluZSBQQ0lFX1RVUk5fT0ZG
-X0xJTksJCUJJVCg0KQ0KPiAgDQo+ICsjZGVmaW5lIFBDSUVfTUlTQ19DVFJMX1JFRwkJMHgzNDgN
-Cj4gKyNkZWZpbmUgUENJRV9ESVNBQkxFX0RWRlNSQ19WTFRfUkVRCUJJVCgxKQ0KPiArDQo+ICAj
-ZGVmaW5lIFBDSUVfVFJBTlNfVEFCTEVfQkFTRV9SRUcJMHg4MDANCj4gICNkZWZpbmUgUENJRV9B
-VFJfU1JDX0FERFJfTVNCX09GRlNFVAkweDQNCj4gICNkZWZpbmUgUENJRV9BVFJfVFJTTF9BRERS
-X0xTQl9PRkZTRVQJMHg4DQo+IEBAIC0yOTcsNiArMzAwLDExIEBAIHN0YXRpYyBpbnQgbXRrX3Bj
-aWVfc3RhcnR1cF9wb3J0KHN0cnVjdA0KPiBtdGtfcGNpZV9wb3J0ICpwb3J0KQ0KPiAgCXZhbCAm
-PSB+UENJRV9JTlRYX0VOQUJMRTsNCj4gIAl3cml0ZWxfcmVsYXhlZCh2YWwsIHBvcnQtPmJhc2Ug
-KyBQQ0lFX0lOVF9FTkFCTEVfUkVHKTsNCj4gIA0KPiArCS8qIERpc2FibGUgRFZGU1JDIHZvbHRh
-Z2UgcmVxdWVzdCAqLw0KPiArCXZhbCA9IHJlYWRsX3JlbGF4ZWQocG9ydC0+YmFzZSArIFBDSUVf
-TUlTQ19DVFJMX1JFRyk7DQo+ICsJdmFsIHw9IFBDSUVfRElTQUJMRV9EVkZTUkNfVkxUX1JFUTsN
-Cj4gKwl3cml0ZWxfcmVsYXhlZCh2YWwsIHBvcnQtPmJhc2UgKyBQQ0lFX01JU0NfQ1RSTF9SRUcp
-Ow0KPiArDQo+ICAJLyogQXNzZXJ0IGFsbCByZXNldCBzaWduYWxzICovDQo+ICAJdmFsID0gcmVh
-ZGxfcmVsYXhlZChwb3J0LT5iYXNlICsgUENJRV9SU1RfQ1RSTF9SRUcpOw0KPiAgCXZhbCB8PSBQ
-Q0lFX01BQ19SU1RCIHwgUENJRV9QSFlfUlNUQiB8IFBDSUVfQlJHX1JTVEIgfA0KPiBQQ0lFX1BF
-X1JTVEI7DQo=
+On 11/8/21 6:26 PM, Ansuel Smith wrote:
+> diff --git a/Documentation/leds/leds-class.rst b/Documentation/leds/leds-class.rst
+> index 645940b78d81..efd2f68c46a7 100644
+> --- a/Documentation/leds/leds-class.rst
+> +++ b/Documentation/leds/leds-class.rst
+> @@ -198,6 +198,31 @@ With HARDWARE_CONTROLLED blink_mode hw_control_status/start/stop is optional
+>   and any software only trigger will reject activation as the LED supports only
+>   hardware mode.
+>   
+> +A trigger once he declared support for hardware controlled blinks, will use the function
 
+Maybe this:
+    Once a trigger has declared support for hardware-controller blinks, it will us the function
+
+> +hw_control_configure() provided by the driver to check support for a particular blink mode.
+> +This function passes as the first argument (flag) a u32 flag.
+> +The second argument (cmd) of hw_control_configure() method can be used to do various
+> +operations for the specific blink mode. We currently support ENABLE, DISABLE, READ, ZERO
+> +and SUPPORTED to enable, disable, read the state of the blink mode, ask the LED
+> +driver if it does supports the specific blink mode and to reset any blink mode active.
+> +
+> +In ENABLE/DISABLE hw_control_configure() should configure the LED to enable/disable the
+> +requested blink mode (flag).
+> +In READ hw_control_configure() should return 0 or 1 based on the status of the requested
+> +blink mode (flag).
+> +In SUPPORTED hw_control_configure() should return 0 or 1 if the LED driver supports the
+> +requested blink mode (flags) or not.
+> +In ZERO hw_control_configure() should return 0 with success operation or error.
+> +
+> +The unsigned long flag is specific to the trigger and change across them. It's in the LED
+
+                                                          changes
+
+> +driver interest know how to elaborate this flag and to declare support for a
+
+    driver's interest to know how to
+
+> +particular trigger. For this exact reason explicit support for the specific
+> +trigger is mandatory or the driver returns -EOPNOTSUPP if asked to enter offload mode
+> +with a not supported trigger.
+> +If the driver returns -EOPNOTSUPP on hw_control_configure(), the trigger activation will
+> +fail as the driver doesn't support that specific offload trigger or doesn't know
+> +how to handle the provided flags.
+
+
+-- 
+~Randy
