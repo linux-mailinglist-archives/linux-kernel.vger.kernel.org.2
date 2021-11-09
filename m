@@ -2,266 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C7DB44AC2F
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 12:01:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 37C3F44AC31
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 12:01:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241477AbhKILDk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Nov 2021 06:03:40 -0500
-Received: from mout.gmx.net ([212.227.15.18]:54537 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S245558AbhKILDh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Nov 2021 06:03:37 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1636455640;
-        bh=62ftpv2VMnexWpmR2fpAxm+6oGbrF+UemsQVFhDCY6g=;
-        h=X-UI-Sender-Class:Subject:From:To:Cc:Date:In-Reply-To:References;
-        b=BcdncYqApOrg01Riy/Zgl7nRjTAalLcXCgS7Sbe1tUG2jCacR+p48vymmEDdVJz+g
-         tnCHPChaXT1X5zOKVUrKKGgJiAIVoSbpLiNg9iibGNzvrrJD+7o63zwJm6UgNrA0mT
-         wmBtqIhKm28CL+1f3KkpJpuw2+sVy25/R/UwdvIU=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from homer.fritz.box ([212.114.172.107]) by mail.gmx.net (mrgmx005
- [212.227.17.190]) with ESMTPSA (Nemesis) id 1MNbkv-1n3qip09DH-00P25B; Tue, 09
- Nov 2021 12:00:40 +0100
-Message-ID: <1905cf613576d04f585d752d85ce21a3504a40d6.camel@gmx.de>
-Subject: Re: [PATCH] sched: Tweak default dynamic preempt mode selection
-From:   Mike Galbraith <efault@gmx.de>
-To:     Valentin Schneider <valentin.schneider@arm.com>,
-        linux-kernel@vger.kernel.org
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Frederic Weisbecker <frederic@kernel.org>
-Date:   Tue, 09 Nov 2021 12:00:39 +0100
-In-Reply-To: <87wnlhsljd.mognet@arm.com>
-References: <20211105104035.3112162-1-valentin.schneider@arm.com>
-         <ff53a94401f8d6abe0303ee381f86bfb475ad354.camel@gmx.de>
-         <8735o6uca5.mognet@arm.com>
-         <5543627ee8ac5337a74de4b9671240d617273607.camel@gmx.de>
-         <87zgqesmej.mognet@arm.com>
-         <a8540176424035960b12529c06d5a3dcedd57c77.camel@gmx.de>
-         <87wnlhsljd.mognet@arm.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.42.0 
+        id S245572AbhKILDn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Nov 2021 06:03:43 -0500
+Received: from smtp-out1.suse.de ([195.135.220.28]:44556 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S240965AbhKILDl (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Nov 2021 06:03:41 -0500
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out1.suse.de (Postfix) with ESMTP id CA324218B0;
+        Tue,  9 Nov 2021 11:00:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1636455654; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=41Cyo/hMei2kmUmbpToJbVcXlj7u0VEEJZBij8c44T4=;
+        b=rU3HghRaRnLHqlK1DMI/WDwk63A7cdlqcjv3bnyCf+0PoIBXAakd//+3P3PnoPwxBVvr3/
+        GhU5BO4ABLAMnaNBg3uN3kGf87rdGMIf9OvYHkHCZT7ScK4kTD/jnDvWGmoQes37OCZGIF
+        UanpITJBU3oM7Yo2K9zUn+acsEKuC5Y=
+Received: from suse.cz (unknown [10.100.201.86])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by relay2.suse.de (Postfix) with ESMTPS id 295BAA3B8C;
+        Tue,  9 Nov 2021 11:00:53 +0000 (UTC)
+Date:   Tue, 9 Nov 2021 12:00:46 +0100
+From:   Michal Hocko <mhocko@suse.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     amakhalov@vmware.com, cl@linux.com, dennis@kernel.org,
+        mm-commits@vger.kernel.org, osalvador@suse.de,
+        stable@vger.kernel.org, tj@kernel.org
+Subject: Re: + mm-fix-panic-in-__alloc_pages.patch added to -mm tree
+Message-ID: <YYpTy9eXZucxuRO/@dhcp22.suse.cz>
+References: <20211108205031.UxDPHBZWa%akpm@linux-foundation.org>
+ <YYozLsIECu0Jnv0p@dhcp22.suse.cz>
+ <af7ab3ce-fed2-1ffc-13a8-f9acbd201841@redhat.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:S2ChmoqAhF/wSZmH/+1g4gGArq0DafgLj7kW1ENXCr3Y8GXmlCy
- SID41GEHJ2XzQKgHe5+tbGY5zPRnrVzdh9pbMRbKkvSkItfJB6lgJlJiObgVj5akzwygytq
- bTM1K7FpvSDujVgfxknR/bPzdOpHD2E8BBY+p3SwtVwUdyZVysIE9zHLaHlOD/ya90tSBj5
- kF81DuMnqe/12+qk1P0YQ==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:wTaGWMbwtII=:wR2mQFDRHNKqw8vpugLpe7
- ee2EiMVRHx2u86u7lthcHXgJYJaz177A/d/7fAx84wUcZ4n8hGPTW4hn6KHO5/OC+4+rTqobK
- emLHE0F8+HeBZrFMklPbAhfXHRDfQIPHjOxbffFxJVQ8zEbOr4pke8Ein8iPb18HbCb5N0TCh
- c5oSfdDIRDH5C4wakSGlJB8QkHwa8JF/uALxZ09ppYKj3naN22SLqc7aodALlyXGVEH1Xpt4E
- iIG0v4uDV5bfuDObEMJt0algyo//mjBc3pTrsdLdny4ktfzsGiiyYYkABcLfHPjsFpYlKluuS
- vvvdcAJYTK6CuJE/OWpShIN56TV7pnklr7cB+D8HJ8Rtemo4/SkBWxxmmrFMLOTNnA/F3ogjY
- GszJZKM1bVEtM81smi8RuYDHD51sPpxMmZfuSBuiU0w1sVeGXi1cu7OyERpoj8dBkJ+ZO76f5
- NhdaYzF0oL9PUmsOS+VA7kntb3hsxvKDN0DIbAICpetRiC95Kv0SknsGCjKNG3sSpWtktTAvt
- mrWmwBDeDNA01ng/iiT3fjerVJBWqn3Ia4Li2x3/CSE8fSXalVskZOOkyrPsnOkhjeacWaRnl
- b69jbuM9DRfQACjhT/2aVzWZl/9mmpoPYs6spiPkvVpBUE7YcxdZcihRH3jwM1mEN0tXN7Rsh
- F95U7DVl1K1rhbBh5XwPgov1y1tpKML7fN+RENfoA29GTob9V4NWyv/X8FYuPamEiRSWtaDKg
- 4LBdUeFjLkN9qJxdDz/0fzKqiPlGGs1X8Ml/sLkHhuDHMpbaSL5rgmcZAZgDXQgD0fyi3V/mz
- ZqJfjIHrYiMaDahkFxS0mxRxfCwEDyq252IawmSLreY1qiQUp75mnMj+cyLgxUZ0u5vqkdpLt
- M+oam5R3Xxyp78304Hf4P840OnPZfxWm8gRWgR2DzJelhgYgGA5hnHhJf7Mapi5ooXLVoCH/k
- KhVQutoIopVfcSlgr2PEPyWo676XwvqPAe4mrvn8QHojzNSk/HlG0EnWKhW/DOd0PQpLm5Ezs
- 8nZEy1UN0KAixPX0WmFLEvLUuB2TeG7LnXvO31EBqMRw9trYk0n55oHonVakAEybR4xa5o5of
- k6FZ07AMwNr/io=
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <af7ab3ce-fed2-1ffc-13a8-f9acbd201841@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 2021-11-09 at 09:52 +0000, Valentin Schneider wrote:
-> On 09/11/21 06:30, Mike Galbraith wrote:
-> > Not seeing your v2 land yet, I grabbed my mallet and had a go at goal
-> > reconciliation over morning java.=C2=A0 Non-lovely result seems to wor=
-k.
-> >
->
-> Yeah so I went down a debatable path, gave up on that and started someth=
-ing
-> different, and gave up on that because it was late :-)
->
-> Now interestingly my second attempt is pretty close to what you have
-> below.
+On Tue 09-11-21 09:42:56, David Hildenbrand wrote:
+> On 09.11.21 09:37, Michal Hocko wrote:
+> > I have opposed this patch http://lkml.kernel.org/r/YYj91Mkt4m8ySIWt@dhcp22.suse.cz
+> > There was no response to that feedback. I will not go as far as to nack
+> > it explicitly because pcp allocator is not an area I would nack patches
+> > but seriously, this issue needs a deeper look rather than a paper over
+> > patch. I hope we do not want to do a similar thing to all callers of
+> > cpu_to_mem.
+> 
+> While we could move it into the !HOLES version of cpu_to_mem(), calling
+> cpu_to_mem() on an offline (and eventually not even present) CPU (with
+> an offline node) is really a corner case.
+> 
+> Instead of additional runtime overhead for all cpu_to_mem(), my take
+> would be to just do it for the random special cases. Sure, we can
+> document that people should be careful when calling cpu_to_mem() on
+> offline CPUs. But IMHO it's really a corner case.
 
-Well that's a shame, because while it seems to function, it also puts
-PREEMPT_DYNAMIC in a pretty darn similar spot to the one PREEMPT_RT was
-in.  Drat.
-
-> > sched, Kconfig: Fix preemption model selection
-> >
-> > Switch PREEMPT_DYNAMIC/PREEMPT_RT dependency around so PREEMPT_RT
-> > can be selected during the initial preemption model selection.
-> > Further, since PREEMPT_DYNAMIC requires PREEMPT, make it depend
-> > upon it instead of selecting it, and add a menu to allow selection
-> > of the boot time behavior, this to allow arches that do not support
-> > PREEMPT_DYNAMIC to retain their various configs untouched.
-> >
->
-> Have some nits below, but otherwise where I stand right now I think it's
-> the least ugly way of tackling this :)
-
-We're supposed to be going for _least_ ugly?  Oh ;)  This is really a
-job for someone who knows their way around Kconfig-land, but since I'm
-not hearing "Yawn, here ya go", it gets whacked with a mallet until one
-of us gives up.
-
-I'm looking at two straight up choice sets, one for those who have and
-want PREEMPT_DYNAMIC, and another for the rest of us.  Unfortunately,
-there's no "else", so I end up with this mess, which would likely be
-better served by "source foo/bar".
-
-=2D--
- kernel/Kconfig.preempt |   90 +++++++++++++++++++++++++++++--------------=
-------
- 1 file changed, 54 insertions(+), 36 deletions(-)
-
-=2D-- a/kernel/Kconfig.preempt
-+++ b/kernel/Kconfig.preempt
-@@ -2,11 +2,41 @@
-
- choice
- 	prompt "Preemption Model"
--	default PREEMPT_NONE_BEHAVIOUR
-+	default PREEMPT_STATIC
-
--config PREEMPT_NONE_BEHAVIOUR
-+config PREEMPT_STATIC
-+	bool "Preemption behaviour defined at build"
-+
-+config PREEMPT_DYNAMIC
-+	bool "Preemption behaviour defined on boot"
-+	depends on HAVE_PREEMPT_DYNAMIC && !ARCH_NO_PREEMPT
-+	select PREEMPT
-+	select PREEMPTION
-+	select UNINLINE_SPIN_UNLOCK if !ARCH_INLINE_SPIN_UNLOCK
-+	help
-+	  This option allows to define the preemption model on the kernel
-+	  command line parameter and thus override the default preemption
-+	  model defined during compile time.
-+
-+	  The feature is primarily interesting for Linux distributions which
-+	  provide a pre-built kernel binary to reduce the number of kernel
-+	  flavors they offer while still offering different usecases.
-+
-+	  The runtime overhead is negligible with HAVE_STATIC_CALL_INLINE enable=
-d
-+	  but if runtime patching is not available for the specific architecture
-+	  then the potential overhead should be considered.
-+
-+	  Interesting if you want the same pre-built kernel should be used for
-+	  both Server and Desktop workloads.
-+endchoice
-+
-+if PREEMPT_STATIC
-+choice
-+	prompt "Preemption Flavor"
-+	default PREEMPT_NONE
-+
-+config PREEMPT_NONE
- 	bool "No Forced Preemption (Server)"
--	select PREEMPT_NONE if !PREEMPT_DYNAMIC
- 	help
- 	  This is the traditional Linux preemption model, geared towards
- 	  throughput. It will still provide good latencies most of the
-@@ -18,10 +48,9 @@ config PREEMPT_NONE_BEHAVIOUR
- 	  raw processing power of the kernel, irrespective of scheduling
- 	  latencies.
-
--config PREEMPT_VOLUNTARY_BEHAVIOUR
-+config PREEMPT_VOLUNTARY
- 	bool "Voluntary Kernel Preemption (Desktop)"
- 	depends on !ARCH_NO_PREEMPT
--	select PREEMPT_VOLUNTARY if !PREEMPT_DYNAMIC
- 	help
- 	  This option reduces the latency of the kernel by adding more
- 	  "explicit preemption points" to the kernel code. These new
-@@ -37,10 +66,11 @@ config PREEMPT_VOLUNTARY_BEHAVIOUR
-
- 	  Select this if you are building a kernel for a desktop system.
-
--config PREEMPT_BEHAVIOUR
-+config PREEMPT
- 	bool "Preemptible Kernel (Low-Latency Desktop)"
- 	depends on !ARCH_NO_PREEMPT
--	select PREEMPT
-+	select PREEMPTION
-+	select UNINLINE_SPIN_UNLOCK if !ARCH_INLINE_SPIN_UNLOCK
- 	help
- 	  This option reduces the latency of the kernel by making
- 	  all kernel code (that is not executing in a critical section)
-@@ -58,7 +88,7 @@ config PREEMPT_BEHAVIOUR
-
- config PREEMPT_RT
- 	bool "Fully Preemptible Kernel (Real-Time)"
--	depends on EXPERT && ARCH_SUPPORTS_RT && !PREEMPT_DYNAMIC
-+	depends on EXPERT && ARCH_SUPPORTS_RT
- 	select PREEMPTION
- 	help
- 	  This option turns the kernel into a real-time kernel by replacing
-@@ -74,17 +104,26 @@ config PREEMPT_RT
- 	  require real-time guarantees.
-
- endchoice
-+endif # PREEMPT_STATIC
-
--config PREEMPT_NONE
-+if PREEMPT_DYNAMIC
-+config PREEMPT
- 	bool
-
--config PREEMPT_VOLUNTARY
--	bool
-+choice
-+	prompt "Boot Time Preemption Flavor"
-+	default PREEMPT_NONE_BEHAVIOR
-
--config PREEMPT
--	bool
--	select PREEMPTION
--	select UNINLINE_SPIN_UNLOCK if !ARCH_INLINE_SPIN_UNLOCK
-+config PREEMPT_NONE_BEHAVIOR
-+	bool "No Forced Preemption (Server)"
-+
-+config PREEMPT_VOLUNTARY_BEHAVIOR
-+	bool "Voluntary Kernel Preemption (Desktop)"
-+
-+config PREEMPT_BEHAVIOR
-+	bool "Preemptible Kernel (Low-Latency Desktop)"
-+endchoice
-+endif # PREEMPT_DYNAMIC
-
- config PREEMPT_COUNT
-        bool
-@@ -93,27 +132,6 @@ config PREEMPTION
-        bool
-        select PREEMPT_COUNT
-
--config PREEMPT_DYNAMIC
--	bool "Preemption behaviour defined on boot"
--	depends on HAVE_PREEMPT_DYNAMIC
--	select PREEMPT
--	default y
--	help
--	  This option allows to define the preemption model on the kernel
--	  command line parameter and thus override the default preemption
--	  model defined during compile time.
--
--	  The feature is primarily interesting for Linux distributions which
--	  provide a pre-built kernel binary to reduce the number of kernel
--	  flavors they offer while still offering different usecases.
--
--	  The runtime overhead is negligible with HAVE_STATIC_CALL_INLINE enable=
-d
--	  but if runtime patching is not available for the specific architecture
--	  then the potential overhead should be considered.
--
--	  Interesting if you want the same pre-built kernel should be used for
--	  both Server and Desktop workloads.
--
- config SCHED_CORE
- 	bool "Core Scheduling for SMT"
- 	depends on SCHED_SMT
-
-
-
-
+I suspect I haven't made myself clear enough. I do not think we should
+be touching cpu_to_mem/cpu_to_node and handle this corner case. We
+should be looking at the underlying problem instead. We cannot really
+rely on cpu to be onlined to have a proper node association. We should
+really look at the initialization code and handle this situation
+properly. Memory less nodes are something we have been dealing with
+already. This particular instance of the problem is new and we should
+understand why.
+-- 
+Michal Hocko
+SUSE Labs
