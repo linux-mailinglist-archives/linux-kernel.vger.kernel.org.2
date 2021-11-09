@@ -2,181 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B355244A9BE
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 09:52:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 433DF44A9C0
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 09:53:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244581AbhKIIzZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Nov 2021 03:55:25 -0500
-Received: from mga18.intel.com ([134.134.136.126]:10464 "EHLO mga18.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S244572AbhKIIzX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Nov 2021 03:55:23 -0500
-X-IronPort-AV: E=McAfee;i="6200,9189,10162"; a="219306304"
-X-IronPort-AV: E=Sophos;i="5.87,219,1631602800"; 
-   d="scan'208";a="219306304"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Nov 2021 00:52:38 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.87,219,1631602800"; 
-   d="scan'208";a="491585393"
-Received: from ipu5-build.bj.intel.com ([10.238.232.188])
-  by orsmga007.jf.intel.com with ESMTP; 09 Nov 2021 00:52:34 -0800
-From:   Bingbu Cao <bingbu.cao@intel.com>
-To:     linux-media@vger.kernel.org, sakari.ailus@linux.intel.com,
-        rafael@kernel.org
-Cc:     shawnx.tu@intel.com, tian.shu.qiu@intel.com,
-        chiranjeevi.rapolu@intel.com, hyungwoo.yang@intel.com,
-        tfiga@chromium.org, senozhatsky@chromium.org,
-        linux-kernel@vger.kernel.org, bingbu.cao@intel.com,
-        bingbu.cao@linux.intel.com
-Subject: [PATCH 6/6] media: hi556: Support device probe in non-zero ACPI D state
-Date:   Tue,  9 Nov 2021 16:48:35 +0800
-Message-Id: <1636447715-15526-7-git-send-email-bingbu.cao@intel.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1636447715-15526-1-git-send-email-bingbu.cao@intel.com>
-References: <1636447715-15526-1-git-send-email-bingbu.cao@intel.com>
+        id S244589AbhKIIzn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Nov 2021 03:55:43 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36366 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S244582AbhKIIzm (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Nov 2021 03:55:42 -0500
+Received: from mail-wr1-x429.google.com (mail-wr1-x429.google.com [IPv6:2a00:1450:4864:20::429])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E2054C061764
+        for <linux-kernel@vger.kernel.org>; Tue,  9 Nov 2021 00:52:56 -0800 (PST)
+Received: by mail-wr1-x429.google.com with SMTP id c4so31663291wrd.9
+        for <linux-kernel@vger.kernel.org>; Tue, 09 Nov 2021 00:52:56 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=immu-ne.20210112.gappssmtp.com; s=20210112;
+        h=message-id:date:mime-version:user-agent:subject:content-language:to
+         :cc:references:from:in-reply-to:content-transfer-encoding;
+        bh=aDt5AcmP+hGUAd+OlV839slvDoKlq8aR1W8+sUGr0nI=;
+        b=FBlHTOEGhDtif7tYHfM+LX5hnH04gjJmUB/RpC3lMi745hSNHerVlwb9OPI3SxfnuQ
+         dz3kgkgBQmsoYqbJDKX/ksYHE60q1fmfpqtkgqiMrXWT3Mo1HX2eVLE3jT3rvo5yVqu+
+         u5kBpKS69OHDFdT2hSSBy8kTKe4u9L5Ym9hT8+6GmYHjisKPxeCsbRFS/6ilik2YZpsr
+         np4ADMLRtjsBPL5v9fdZyfFlfjdj7rM5tBgVfhshlC9TvT/kx9aFsi1H62eRkBZlyzet
+         EEQt07cKiZkKTNNJ5vGo0ET6QTyNLQ3164cp/MtPfMOUZ19obo65XP+YnJGudGarCl79
+         UOfA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:in-reply-to
+         :content-transfer-encoding;
+        bh=aDt5AcmP+hGUAd+OlV839slvDoKlq8aR1W8+sUGr0nI=;
+        b=nYP1rabFHPrBMF9q/8iWEKlDaBI3pm6G3tfjjRNHV6Q5Dqyq9I03sqXYsg/T156lXG
+         w4PPNRqV66ohBc3BD3lVkuTVtHbKozIhjD2Nc9Ox4pJ2eVGyQpChyjLtEypymApkb84p
+         1nDjeR6f11zsoE6GX6sfUkoF4ZMj3gMrTOE0EUvhayvhbd7uum/1priVaxRmq1SYBRMN
+         kXuJT12mL+pXvP1y5tRcUAwNyfuExrzcnXUr1dKEUOvi8W9dThCrxLy1xoMiWmBJTwRz
+         kDw9ZZTuVRy4aJEypQfszvOeuNJwCpCrAdwc1W8xoTlb4U6pUq5v24bYlxzx7EMQbhcI
+         kvrQ==
+X-Gm-Message-State: AOAM533WCueO1aFlFG14xndPPG+VBm8g4w8BaMWnlutf7ZWaHwf88EgY
+        56R+AgZirpG6DNGqsb3DLCU5cw==
+X-Google-Smtp-Source: ABdhPJwiP+2iglFJrDNBGPH2koLqltR+Fjd1VahideDdfFo0Qehoa4YUZJSJfBOU2mfnSc5u5VXspg==
+X-Received: by 2002:a5d:4b45:: with SMTP id w5mr7131726wrs.272.1636447975481;
+        Tue, 09 Nov 2021 00:52:55 -0800 (PST)
+Received: from [192.168.1.158] ([45.138.42.234])
+        by smtp.gmail.com with ESMTPSA id o8sm19374704wrm.67.2021.11.09.00.52.54
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 09 Nov 2021 00:52:55 -0800 (PST)
+Message-ID: <42cea157-55a2-bd12-335b-6348f0ff6525@immu.ne>
+Date:   Tue, 9 Nov 2021 09:52:53 +0100
+MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.2.1
+Subject: Re: [PATCH] firmware: export x86_64 platform flash bios region via
+ sysfs
+Content-Language: en-US
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     akpm@linux-foundation.org, linux-kernel@vger.kernel.org,
+        philipp.deppenwiese@immu.ne, mauro.lima@eclypsium.com,
+        hughsient@gmail.com, platform-driver-x86@vger.kernel.org
+References: <20211109000130.42361-1-hans-gert.dahmen@immu.ne>
+ <YYoSPjF3M05dR0PX@kroah.com>
+From:   Hans-Gert Dahmen <hans-gert.dahmen@immu.ne>
+In-Reply-To: <YYoSPjF3M05dR0PX@kroah.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Tell ACPI device PM code that the driver supports the device being in
-non-zero ACPI D state when the driver's probe function is entered.
+On 09.11.21 07:16, Greg KH wrote:
+> On Tue, Nov 09, 2021 at 01:01:30AM +0100, Hans-Gert Dahmen wrote:
+>> Make the 16MiB long memory-mapped BIOS region of the platform SPI flash
+>> on X86_64 system available via /sys/kernel/firmware/flash_mmap/bios_region
+>> for pen-testing, security analysis and malware detection on kernels
+>> which restrict module loading and/or access to /dev/mem.
+> 
+> That feels like a big security hole we would be opening up for no good
+> reason.
+> 
+>> It will be used by the open source Converged Security Suite.
+>> https://github.com/9elements/converged-security-suite
+> 
+> What is the reason for this, and what use is this new interface?
+Because it is very hard to access the SPI flash to read the BIOS 
+contents for (security) analysis and this works without the more complex 
+and unfinished SPI drivers and it does so on a system where we may not 
+access the full /dev/mem.
 
-Also do identification on the first access of the device, whether in probe
-or when starting streaming.
+>> +static int __init flash_mmap_init(void)
+>> +{
+>> +	int ret;
+>> +
+>> +	pdev = platform_device_register_simple("flash_mmap", -1, NULL, 0);
+>> +	if (IS_ERR(pdev))
+>> +		return PTR_ERR(pdev);
+>> +
+>> +	ret = sysfs_create_group(&pdev->dev.kobj, &flash_mmap_group);
+> 
+> You just raced with userspace and lost  >
+ > Please set the attribute to the platform driver before you create the
+ > device.
+ >
 
-Signed-off-by: Bingbu Cao <bingbu.cao@intel.com>
-Signed-off-by: Kao, Arec <arec.kao@intel.com>
----
- drivers/media/i2c/hi556.c | 67 +++++++++++++++++++++++++++++------------------
- 1 file changed, 42 insertions(+), 25 deletions(-)
+Sorry, but I went through tons of code and could not find a single 
+instance where I can use a default group for creation without using a 
+probe function that does the magic for me. Please help me find the 
+correct way of doing this without manually creating and adding kobjects.
 
-diff --git a/drivers/media/i2c/hi556.c b/drivers/media/i2c/hi556.c
-index 8db1cbedc1fd..c8011467d1a4 100644
---- a/drivers/media/i2c/hi556.c
-+++ b/drivers/media/i2c/hi556.c
-@@ -495,6 +495,9 @@ struct hi556 {
- 
- 	/* Streaming on/off */
- 	bool streaming;
-+
-+	/* True if the device has been identified */
-+	bool identified;
- };
- 
- static u64 to_pixel_rate(u32 f_index)
-@@ -757,12 +760,38 @@ static void hi556_assign_pad_format(const struct hi556_mode *mode,
- 	fmt->field = V4L2_FIELD_NONE;
- }
- 
-+static int hi556_identify_module(struct hi556 *hi556)
-+{
-+	struct i2c_client *client = v4l2_get_subdevdata(&hi556->sd);
-+	int ret;
-+	u32 val;
-+
-+	ret = hi556_read_reg(hi556, HI556_REG_CHIP_ID,
-+			     HI556_REG_VALUE_16BIT, &val);
-+	if (ret)
-+		return ret;
-+
-+	if (val != HI556_CHIP_ID) {
-+		dev_err(&client->dev, "chip id mismatch: %x!=%x",
-+			HI556_CHIP_ID, val);
-+		return -ENXIO;
-+	}
-+
-+	hi556->identified = true;
-+
-+	return 0;
-+}
-+
- static int hi556_start_streaming(struct hi556 *hi556)
- {
- 	struct i2c_client *client = v4l2_get_subdevdata(&hi556->sd);
- 	const struct hi556_reg_list *reg_list;
- 	int link_freq_index, ret;
- 
-+	ret = hi556_identify_module(hi556);
-+	if (ret)
-+		return ret;
-+
- 	link_freq_index = hi556->cur_mode->link_freq_index;
- 	reg_list = &link_freq_configs[link_freq_index].reg_list;
- 	ret = hi556_write_reg_list(hi556, reg_list);
-@@ -1001,26 +1030,6 @@ static const struct v4l2_subdev_internal_ops hi556_internal_ops = {
- 	.open = hi556_open,
- };
- 
--static int hi556_identify_module(struct hi556 *hi556)
--{
--	struct i2c_client *client = v4l2_get_subdevdata(&hi556->sd);
--	int ret;
--	u32 val;
--
--	ret = hi556_read_reg(hi556, HI556_REG_CHIP_ID,
--			     HI556_REG_VALUE_16BIT, &val);
--	if (ret)
--		return ret;
--
--	if (val != HI556_CHIP_ID) {
--		dev_err(&client->dev, "chip id mismatch: %x!=%x",
--			HI556_CHIP_ID, val);
--		return -ENXIO;
--	}
--
--	return 0;
--}
--
- static int hi556_check_hwcfg(struct device *dev)
- {
- 	struct fwnode_handle *ep;
-@@ -1106,6 +1115,7 @@ static int hi556_remove(struct i2c_client *client)
- static int hi556_probe(struct i2c_client *client)
- {
- 	struct hi556 *hi556;
-+	bool full_power;
- 	int ret;
- 
- 	ret = hi556_check_hwcfg(&client->dev);
-@@ -1120,10 +1130,14 @@ static int hi556_probe(struct i2c_client *client)
- 		return -ENOMEM;
- 
- 	v4l2_i2c_subdev_init(&hi556->sd, client, &hi556_subdev_ops);
--	ret = hi556_identify_module(hi556);
--	if (ret) {
--		dev_err(&client->dev, "failed to find sensor: %d", ret);
--		return ret;
-+
-+	full_power = acpi_dev_state_d0(&client->dev);
-+	if (full_power) {
-+		ret = hi556_identify_module(hi556);
-+		if (ret) {
-+			dev_err(&client->dev, "failed to find sensor: %d", ret);
-+			return ret;
-+		}
- 	}
- 
- 	mutex_init(&hi556->mutex);
-@@ -1152,7 +1166,9 @@ static int hi556_probe(struct i2c_client *client)
- 		goto probe_error_media_entity_cleanup;
- 	}
- 
--	pm_runtime_set_active(&client->dev);
-+	/* Set the device's state to active if it's in D0 state. */
-+	if (full_power)
-+		pm_runtime_set_active(&client->dev);
- 	pm_runtime_enable(&client->dev);
- 	pm_runtime_idle(&client->dev);
- 
-@@ -1189,6 +1205,7 @@ static struct i2c_driver hi556_i2c_driver = {
- 	},
- 	.probe_new = hi556_probe,
- 	.remove = hi556_remove,
-+	.flags = I2C_DRV_ACPI_WAIVE_D0_PROBE,
- };
- 
- module_i2c_driver(hi556_i2c_driver);
--- 
-2.7.4
+> Also, you just bound this driver to ANY platform that it was loaded on,
+> with no actual detection of the hardware present, which feels like it
+> could cause big problems on all platforms.  Please, if you really want
+> to do this, restrict it to hardware that actually has the hardware you
+> are wanting to access, not all machines in the world.
 
+I ave already proven that it works on all x64 Intel platforms here [1]. 
+It nearly impossible to prove for AMD b/c of the lack of documentation, 
+but we tested it on several old Bulldozer system and so far the memory 
+was always mapped. I feel that adding more hardware detection just adds 
+complexity. Anyway, what do you suggest? Use CPUID to check if the 
+vendor is AMD or Intel?
+
+Hans-Gert Dahmen
