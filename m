@@ -2,153 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C200E44A6FD
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 07:43:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6620444A705
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 07:49:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240731AbhKIGpw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Nov 2021 01:45:52 -0500
-Received: from mga09.intel.com ([134.134.136.24]:8779 "EHLO mga09.intel.com"
+        id S243265AbhKIGwU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Nov 2021 01:52:20 -0500
+Received: from mga01.intel.com ([192.55.52.88]:38388 "EHLO mga01.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229591AbhKIGpu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Nov 2021 01:45:50 -0500
-X-IronPort-AV: E=McAfee;i="6200,9189,10162"; a="232233343"
+        id S241000AbhKIGwR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Nov 2021 01:52:17 -0500
+X-IronPort-AV: E=McAfee;i="6200,9189,10162"; a="256069502"
 X-IronPort-AV: E=Sophos;i="5.87,219,1631602800"; 
-   d="scan'208";a="232233343"
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Nov 2021 22:43:05 -0800
+   d="scan'208";a="256069502"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Nov 2021 22:49:25 -0800
 X-IronPort-AV: E=Sophos;i="5.87,219,1631602800"; 
-   d="scan'208";a="451769174"
-Received: from cqiang-mobl.ccr.corp.intel.com (HELO [10.238.2.71]) ([10.238.2.71])
-  by orsmga006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Nov 2021 22:43:00 -0800
-Message-ID: <0adf7bec-2b99-99fc-e5e6-e7f393cdbd94@intel.com>
-Date:   Tue, 9 Nov 2021 14:42:58 +0800
+   d="scan'208";a="503381575"
+Received: from ramyapad-mobl.amr.corp.intel.com (HELO [10.212.138.81]) ([10.212.138.81])
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Nov 2021 22:49:24 -0800
+Subject: Re: XSAVE / RDPKRU on Intel 11th Gen Core CPUs
+To:     Brian Geffon <bgeffon@google.com>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Guenter Roeck <groeck@google.com>,
+        Borislav Petkov <bp@suse.de>,
+        Andy Lutomirski <luto@kernel.org>, stable@vger.kernel.org,
+        the arch/x86 maintainers <x86@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+References: <CADyq12yY25-LS8cV5LY-C=6_0HLPVZbSJCKtCDJm+wyHQSeVTg@mail.gmail.com>
+ <cb682c8a-255e-28e5-d4e0-0981c2ab6ffd@intel.com>
+ <85925a39-37c3-a79a-a084-51f2f291ca9c@intel.com>
+ <CADyq12y0o=Y1MOMe7pCghy2ZEV2Y0Dd7jm5e=3o2N4-i088MWw@mail.gmail.com>
+From:   Dave Hansen <dave.hansen@intel.com>
+Autocrypt: addr=dave.hansen@intel.com; keydata=
+ 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
+ z5cecg==
+Message-ID: <472b8dbf-2c55-98c9-39ad-2db32a649a20@intel.com>
+Date:   Mon, 8 Nov 2021 22:49:22 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
- Firefox/91.0 Thunderbird/91.3.0
-Subject: Re: [PATCH v5 5/7] KVM: MMU: Add support for PKS emulation
+In-Reply-To: <CADyq12y0o=Y1MOMe7pCghy2ZEV2Y0Dd7jm5e=3o2N4-i088MWw@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-To:     Sean Christopherson <seanjc@google.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Xiaoyao Li <xiaoyao.li@intel.com>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20210811101126.8973-1-chenyi.qiang@intel.com>
- <20210811101126.8973-6-chenyi.qiang@intel.com> <YYl+k3VbEieh9X2H@google.com>
-From:   Chenyi Qiang <chenyi.qiang@intel.com>
-In-Reply-To: <YYl+k3VbEieh9X2H@google.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 11/8/21 5:47 PM, Brian Geffon wrote:
+>> One more thing...  Does the protection_keys kernel selftest hit any
+>> errors on this same setup?  It does a lot of PKRU sanity checking and
+>> I'm a bit surprised it hasn't caught something yet.
+> Hi Dave,
+> 
+> This issue does reproduce with the self tests too, my simple test
+> program also fails consistently [1], all it does is spin executing
+> RDPKRU waiting for a context switch to clobber the value.
+> 
+> $ ./test
+> unexpected value on iteration 3772082 value:0x55555554 expected:0x55555550
 
+Well, gosh, it's making it back to the software init value.  If you do:
 
-On 11/9/2021 3:46 AM, Sean Christopherson wrote:
-> On Wed, Aug 11, 2021, Chenyi Qiang wrote:
->>   * In particular the following conditions come from the error code, the
->>   * page tables and the machine state:
->> -* - PK is always zero unless CR4.PKE=1 and EFER.LMA=1
->> +* - PK is always zero unless CR4.PKE=1/CR4.PKS=1 and EFER.LMA=1
->>   * - PK is always zero if RSVD=1 (reserved bit set) or F=1 (instruction fetch)
->> -* - PK is always zero if U=0 in the page tables
->> -* - PKRU.WD is ignored if CR0.WP=0 and the access is a supervisor access.
->> +* - PK is always zero if
->> +*       - U=0 in the page tables and CR4.PKS=0
->> +*       - U=1 in the page tables and CR4.PKU=0
-> 
-> I think it makes sense to completely rewrite this "table" or drop it altogether.
-> The "always zero" wording is nonsensical when there are multiple conditions for
-> "always".  And IMO the whole "PK is ... zero" thing is a bit awkward because it
-> leaves the uninitiated wondering what PK=0 even means ('1' == disabled is not the
-> most intuitive thing since most PTE bits are '1' = allowed).  Ugh, and re-reading
-> with context, that's not even what "PK" means here, this is actually referring to
-> PFEC.PK, which is all kinds of confusing because PFEC.PK is merely a "symptom" of
-> a #PF to due a protection key violation, not the other way 'round.
-> 
-> IMO this entire comment could use a good overhaul.  It never explicitly documents
-> the "access-disable" and "write-disable" behavior.  More below.
-> 
->> +* - (PKRU/PKRS).WD is ignored if CR0.WP=0 and the access is a supervisor access.
-> 
-> Hrm.  The SDM contradicts itself.
-> 
-> Section 4.6.1 "Determination of Access Rights" says this for supervisor-mode accesses:
-> 
->    If CR0.WP = 0, data may be written to any supervisor-mode address with a protection
->    key for which write access is permitted.
-> 
-> but section 4.6.2 "Protection Keys" says:
-> 
->    If WDi = 1, write accesses are not permitted if CR0.WP = 1. (If CR0.WP = 0,
->    IA32_PKRS.WDi does not affect write accesses to supervisor-mode addresses with
->    protection key i.)
-> 
-> I believe 4.6.1 is subtly wrong and should be "data access", not "write access".
-> 
->    If CR0.WP = 0, data may be written to any supervisor-mode address with a protection
->    key for which data access is permitted.
->                  ^^^^
-> 
-> Can you follow-up with someone to get the SDM fixed?  This stuff is subtle and
-> confusing enough as it is :-)
-> 
+	echo 0x15555554 > /sys/kernel/debug/x86/init_pkru
 
-Nice catch. I'll mention it internally to fix it.
+do you end up with 0x15555554 as the value?
 
-> And on a very related topic, it would be helpful to clarify user-mode vs. supervisor-mode
-> and access vs. address.
-> 
-> How about this for a comment?
-> 
-> /*
->   * Protection Key Rights (PKR) is an additional mechanism by which data accesses
->   * with 4-level or 5-level paging (EFER.LMA=1) may be disabled based on the
->   * Protection Key Rights Userspace (PRKU) or Protection Key Rights Supervisor
->   * (PKRS) registers.  The Protection Key (PK) used for an access is a 4-bit
->   * value specified in bits 62:59 of the leaf PTE used to translate the address.
->   *
->   * PKRU and PKRS are 32-bit registers, with 16 2-bit entries consisting of an
->   * access-disable (AD) and write-disable (WD) bit.  The PK from the leaf PTE is
->   * used to index the approriate PKR (see below), e.g. PK=1 would consume bits
->   * 3:2 (bit 3 == write-disable, bit 2 == access-disable).
->   *
->   * The PK register (PKRU vs. PKRS) indexed by the PK depends on the type of
->   * _address_ (not access type!).  For a user-mode address, PKRU is used; for a
->   * supervisor-mode address, PKRS is used.  An address is supervisor-mode if the
->   * U/S flag (bit 2) is 0 in at least one of the paging-structure entries, i.e.
->   * an address is user-mode if the U/S flag is 0 in _all_ entries.  Again, this
->   * is the address type, not the the access type, e.g. a supervisor-mode _access_
->   * will consume PKRU if the _address_ is a user-mode address.
->   *
->   * As alluded to above, PKR checks are only performed for data accesses; code
->   * fetches are not subject to PKR checks.  Terminal page faults (!PRESENT or
->   * PFEC.RSVD=1) are also not subject to PKR checks.
->   *
->   * PKR write-disable checks for superivsor-mode _accesses_ are performed if and
->   * only if CR0.WP=1 (though access-disable checks still apply).
->   *
->   * In summary, PKR checks are based on (a) EFER.LMA, (b) CR4.PKE or CR4.PKS,
->   * (c) CR4.WP, (d) the PK in the leaf PTE, (e) two bits from the corresponding
->   * PKR{S,U} entry, (f) the access type (derived from the other PFEC bits), and
->   * (g) the address type (retrieved from the paging-structure entries).
->   *
->   * To avoid conditional branches in permission_fault(), the PKR bitmask caches
->   * the above inputs, except for (e) the PKR{S,U} entry.  The FETCH, USER, and
->   * WRITE bits of the PFEC and the effective value of the paging-structures' U/S
->   * bit (slotted into the PFEC.RSVD position, bit 3) are used to index into the
->   * PKR bitmask (similar to the 4-bit Protection Key itself).  The two bits of
->   * the PKR bitmask "entry" are then extracted and ANDed with the two bits of
->   * the PKR{S,U{} register corresponding to the address type and protection key.
->   *
->   * E.g. for all values where PFEC.FETCH=1, the corresponding pkr_bitmask bits
->   * will be 00b, thus masking away the AD and WD bits from the PKR{S,U} register
->   * to suppress PKR checks on code fetches.
-> */
+The other thing you can try is to turn on all the
+/sys/kernel/debug/tracing/events/x86_fpu tracepoints, pin your test
+program to one CPU, then dump the trace buffer out for that CPU.  That
+probably won't tell us too much for PKRU since it's generally not ever
+in its init state.  But, another test would be to use XRSTOR to *get* it
+into its init state then see how long it stays there.
 
-Very clear comment. I'll clean it up and change in next version.
+Another thing you could do is figure out if pkeys _ever_ worked on that
+hardware.  If so, a (long) bisect could figure out what broke it between
+its introduction and the 5.13 kernel that you've been testing.
+A random 5.11-based distro kernel that I have running on a Cascade Lake
+Xeon doesn't seem to have any issues.
 
-> 
+Does your system have any more XSAVE support than mine?
+
+> kernel: [    0.000000] x86/fpu: Supporting XSAVE feature 0x001: 'x87 floating point registers'
+> kernel: [    0.000000] x86/fpu: Supporting XSAVE feature 0x002: 'SSE registers'
+> kernel: [    0.000000] x86/fpu: Supporting XSAVE feature 0x004: 'AVX registers'
+> kernel: [    0.000000] x86/fpu: Supporting XSAVE feature 0x020: 'AVX-512 opmask'
+> kernel: [    0.000000] x86/fpu: Supporting XSAVE feature 0x040: 'AVX-512 Hi256'
+> kernel: [    0.000000] x86/fpu: Supporting XSAVE feature 0x080: 'AVX-512 ZMM_Hi256'
+> kernel: [    0.000000] x86/fpu: Supporting XSAVE feature 0x200: 'Protection Keys User registers'
+> kernel: [    0.000000] x86/fpu: xstate_offset[2]:  576, xstate_sizes[2]:  256
+> kernel: [    0.000000] x86/fpu: xstate_offset[5]:  832, xstate_sizes[5]:   64
+> kernel: [    0.000000] x86/fpu: xstate_offset[6]:  896, xstate_sizes[6]:  512
+> kernel: [    0.000000] x86/fpu: xstate_offset[7]: 1408, xstate_sizes[7]: 1024
+> kernel: [    0.000000] x86/fpu: xstate_offset[9]: 2432, xstate_sizes[9]:    8
+> kernel: [    0.000000] x86/fpu: Enabled xstate features 0x2e7, context size is 2440 bytes, using 'compacted' format.
