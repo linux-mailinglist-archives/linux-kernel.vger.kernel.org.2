@@ -2,141 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3798844AF1D
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 14:58:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0A6B144AF28
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 15:07:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237289AbhKIOB2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Nov 2021 09:01:28 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50054 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236679AbhKIOB1 (ORCPT
+        id S233672AbhKIOJ7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Nov 2021 09:09:59 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:58114 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230283AbhKIOJ6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Nov 2021 09:01:27 -0500
-Received: from mail-pf1-x42d.google.com (mail-pf1-x42d.google.com [IPv6:2607:f8b0:4864:20::42d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A8E86C061767
-        for <linux-kernel@vger.kernel.org>; Tue,  9 Nov 2021 05:58:41 -0800 (PST)
-Received: by mail-pf1-x42d.google.com with SMTP id y5so9315805pfb.4
-        for <linux-kernel@vger.kernel.org>; Tue, 09 Nov 2021 05:58:41 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20210112.gappssmtp.com; s=20210112;
-        h=from:subject:to:cc:references:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=Y30tES1mRbobBQ+m/yFfcYggfkhOFouTPN0eCLqdkac=;
-        b=Uxmdf4znCpTXGzwMRB/AMMCqss7/LZk+9jxusKZRrq3r5+Tb+7PwY3/Uz+yuixUuTc
-         a7KF+nrZAsxO0ezbYvMvahzD9nRoKh1K1Y1fhWIYzbjkVQNwkF1Ldmtg7D7xKs02Bx1I
-         +2Qzciv5ZLtEFIgXWj5hLSZStRi/GVrOhKefP5n/45RUXE4BVstirUAKlQSzaIJXE8Mq
-         vOrCFmoZzUJaJnuqw3nYonp0nWKmW4aN55IH3I6CW3GGxxPXkU8syNSvsXMgoAqw69r5
-         efJwpH4k6IteCT9DfyhNnHVnPdsfftpuObaExxMpZ/URQma3NEkYdYudn92CR7TZgE7B
-         hKqg==
+        Tue, 9 Nov 2021 09:09:58 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1636466831;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=6HrMco/R0NUD57OxTvVAWvFQ91tOHioQPvFqP/WswDk=;
+        b=Gqx7G8v3CVl08FFdB/9DIMSmMKWW+pPsX3jBJxtu3Tq6WdYNDwar3iTbIlTje3xuTyM362
+        pQKpVvvMNB6shqXL8cFiUONHbHMbu7AvVDg+M20mh8yFQw2sGrH4XfJwnrHFepIRvYAnHj
+        ZmVWe9kqnAVyVmEqAnYZqNE0gOdBrY4=
+Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
+ [209.85.221.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-518-tMxn7MTeMLyOo3LkXmgcrw-1; Tue, 09 Nov 2021 09:07:10 -0500
+X-MC-Unique: tMxn7MTeMLyOo3LkXmgcrw-1
+Received: by mail-wr1-f69.google.com with SMTP id p17-20020adff211000000b0017b902a7701so4822824wro.19
+        for <linux-kernel@vger.kernel.org>; Tue, 09 Nov 2021 06:07:10 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:subject:to:cc:references:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=Y30tES1mRbobBQ+m/yFfcYggfkhOFouTPN0eCLqdkac=;
-        b=SOjj57QU6HC2cTkb/Br0ryYBHUXapt8I+kJ6LZT4eUUFEdXTgTdcAbFtqKva7mVUzm
-         Sa1w7Dqf368lHXQbiowXea/AlRH9rxoD8wNOyTtJb/aaLprrAKedGsXu2FHOZAaCK2rs
-         4q3cDXgyegBk5lLzyTWB4r422U0Rzy1pmUw9dPU9w9r45Tc2OoA/X/3EcQLSA0hcSR2Y
-         E1gNNkyvZunxPNp1R2Y61eeqjIfKPghDjQMqooFfRO9djekp9P3GUBPgvr++VwSWxHgR
-         q3FltRlQZILgaWgKtrRqc25XugTUQrXmDJcpuc7isQIlTxHgCiw6JtRTPyXJjyGhGuCb
-         SJzg==
-X-Gm-Message-State: AOAM531+cVJjiqRYzCtDBy6s1RW23zVs8Ixpn4il1p7L827WHsO2UIJa
-        4XlY4v30vkv6SvICvrQxCbGstg==
-X-Google-Smtp-Source: ABdhPJzWFlZcFbzZsn65SN5dY7OVkgY7rcUmnQO3V4I/9mqB60l/OLip0qZ0tcw0tPBNnSncs09/Uw==
-X-Received: by 2002:a63:9042:: with SMTP id a63mr5939760pge.345.1636466321161;
-        Tue, 09 Nov 2021 05:58:41 -0800 (PST)
-Received: from [10.254.105.98] ([139.177.225.240])
-        by smtp.gmail.com with ESMTPSA id p3sm18854221pfb.205.2021.11.09.05.58.36
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 09 Nov 2021 05:58:40 -0800 (PST)
-From:   Gang Li <ligang.bdlg@bytedance.com>
-Subject: Re: Re: Re: Re: Re: [PATCH v1] sched/numa: add per-process
- numa_balancing
-To:     Mel Gorman <mgorman@suse.de>
-Cc:     Jonathan Corbet <corbet@lwn.net>, Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        linux-api@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
-        linux-fsdevel@vger.kernel.org, linux-doc@vger.kernel.org
-References: <20211027132633.86653-1-ligang.bdlg@bytedance.com>
- <20211028153028.GP3891@suse.de>
- <b884ad7d-48d3-fcc8-d199-9e7643552a9a@bytedance.com>
- <20211029083751.GR3891@suse.de>
- <CAMx52ARF1fVH9=YLQMjE=8ckKJ=q3X2-ovtKuQcoTyo564mQnQ@mail.gmail.com>
- <20211109091951.GW3891@suse.de>
- <7de25e1b-e548-b8b5-dda5-6a2e001f3c1a@bytedance.com>
- <20211109121222.GX3891@suse.de>
-Message-ID: <117d5b88-b62b-f50b-32ff-1a9fe35b9e2e@bytedance.com>
-Date:   Tue, 9 Nov 2021 21:58:34 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.14.0
+        bh=6HrMco/R0NUD57OxTvVAWvFQ91tOHioQPvFqP/WswDk=;
+        b=7ffTmR4SzcgAi9OuYs/LL2JzxBqdGI+O+7iTFLIe2V+M2c+PRI2CNxK4ZYSPPAgiMV
+         ACoRUH/IH8rmd2sLxRdw8AvLmAUK264u9mafMY/n2vO0G8wXLzmTbBRkwz7nGrtXISbj
+         gZmw8UG+xnAxzDOzNbAdiUOGrfmXCefscJbykNvVRJ0/OrfMf/1uDWEBnJdPIhQ5eR18
+         gzn0WLs47NtlythcPDFiQV6uqR6A/epLGXlMsViKIyrnfTjIHT0XXFseMdHlSENy9MAS
+         Abw4qh7I/ZtIskyUhboaVq3GIQxVOT1e0rnemZ10A8HptZaAykOIlEp/9Cl0qY1K1ytp
+         DAGQ==
+X-Gm-Message-State: AOAM53141noJnvTsUwX00vR4UbI615rZQPVJoDWhORnar0iSF7E+8E9V
+        m/eOW69k4dM7v8Imb1HDPWQgVFCYZnUnEaMz54wLY+Mombr/Y4GULKrNX74NYJT/F4EAM8Si2w9
+        P/yGwDFlPbdxr6Nkp0xEMLlRO
+X-Received: by 2002:a5d:460d:: with SMTP id t13mr9562270wrq.44.1636466829311;
+        Tue, 09 Nov 2021 06:07:09 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJyaP3JI+F3utXxRMEWygfnuHNjAmS3H+yQwa9Je6KMvLAT6PSUOSZqkXEDwKRAQziCXRmv2DA==
+X-Received: by 2002:a5d:460d:: with SMTP id t13mr9562242wrq.44.1636466829164;
+        Tue, 09 Nov 2021 06:07:09 -0800 (PST)
+Received: from krava.redhat.com (nat-pool-brq-u.redhat.com. [213.175.37.12])
+        by smtp.gmail.com with ESMTPSA id t189sm2762136wma.8.2021.11.09.06.07.08
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 09 Nov 2021 06:07:08 -0800 (PST)
+From:   Jiri Olsa <jolsa@redhat.com>
+X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
+To:     Arnaldo Carvalho de Melo <acme@kernel.org>
+Cc:     lkml <linux-kernel@vger.kernel.org>,
+        Peter Zijlstra <a.p.zijlstra@chello.nl>,
+        Ingo Molnar <mingo@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Michael Petlan <mpetlan@redhat.com>,
+        Ian Rogers <irogers@google.com>,
+        linux-perf-users@vger.kernel.org,
+        Andrii Nakryiko <andrii@kernel.org>
+Subject: [PATCH 0/2] perf tools: Fix perf build with dynamic libbpf
+Date:   Tue,  9 Nov 2021 15:07:05 +0100
+Message-Id: <20211109140707.1689940-1-jolsa@kernel.org>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-In-Reply-To: <20211109121222.GX3891@suse.de>
-Content-Type: text/plain; charset=iso-8859-15; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/9/21 8:12 PM, Mel Gorman wrote:
-> 
-> That would be a policy decision on how existing tasks should be tuned
-> if NUMA balancing is enabled at runtime after being disabled at boot
-> (or some arbitrary time in the past). Introducing the prctl does mean
-> that there is a semantic change for the runtime enabling/disabling
-> of NUMA balancing because previously, enabling global balancing affects
-> existing tasks and with prctl, it affects only future tasks. It could
-> be handled in the sysctl to some exist
-> 
-> 0. Disable for all but prctl specifications
-> 1. Enable for all tasks unless disabled by prctl
-> 2. Ignore all existing tasks, enable for future tasks
-> 
-> While this is more legwork, it makes more sense as an interface than
-> prctl(PR_NUMA_BALANCING,PR_SET_NUMA_BALANCING,1) failing if global
-> NUMA balancing is disabled.
-> 
+hi,
+sending fixes for building perf with LIBBPF_DYNAMIC=1.
 
-Why prctl(PR_NUMA_BALANCING,PR_SET_NUMA_BALANCING,1) must work while 
-global numa_balancing is disabled? No offense, I think that is a bit 
-redundant. And it's complicated to implement.
+We hit the window where perf uses libbpf functions, that did not
+make it to the official libbpf release yet and it's breaking perf
+build with dynamicly linked libbpf. Fixing this with adding weak
+stub functions for possibly missing libbpf function.
 
-It's hard for me to understand the whole vision of your idea. I'm very 
-sorry. Can you explain your full thoughts more specifically?
+thanks,
+jirka
 
-----------------------------------------------------
+---
+Jiri Olsa (2):
+      perf tools: Add more weak libbpf functions
+      perf tools: Add weak variants for the deprecated libbpf functions
 
-Also in case of misunderstanding, let me re-explain my patch using 
-circuit diagram.
+ tools/perf/util/bpf-event.c | 60 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 60 insertions(+)
 
-Before my patch, there is only one switch to control numa_balancing.
-
-             ______process1_
-...____/ __|______process2_|__...
-            |______process3_|
-
-        |
-     global numa_balancing
-
-After my patch, we can selectively disable numa_balancing for processes.
-And global switch has a high priority.
-
-             __/ __process1_
-...____/ __|__/ __process2_|__...
-            |__/ __process3_|
-
-        |       |
-     global  per-process
-
-Why global numa_balancing has high priority? There are two reasons:
-1. numa_balancing is useful to most processes, so there is no need to 
-consider how to enable numa_balancing for a few processes while 
-disabling it globally.
-2. It is easy to implement. The more we think, the more complex the code 
-becomes.
