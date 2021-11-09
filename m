@@ -2,125 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6221944AE16
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 13:53:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 035BD44AE20
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 13:54:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230408AbhKIM4X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Nov 2021 07:56:23 -0500
-Received: from smtp-relay-internal-1.canonical.com ([185.125.188.123]:40064
-        "EHLO smtp-relay-internal-1.canonical.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S242400AbhKIM4K (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Nov 2021 07:56:10 -0500
-Received: from mail-lj1-f197.google.com (mail-lj1-f197.google.com [209.85.208.197])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by smtp-relay-internal-1.canonical.com (Postfix) with ESMTPS id 779AB3F1CE
-        for <linux-kernel@vger.kernel.org>; Tue,  9 Nov 2021 12:53:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1636462402;
-        bh=j5tko5riuXms3JFEWKNcXt/poyacQNf52vuml9R0vAg=;
-        h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-         In-Reply-To:Content-Type;
-        b=O6JRxo6dBfipYpSvNoaIBYoID05hGx/gA56XQjZu117joPlyBzp5Vu2sXlJ0cceEi
-         fktSajCu5Ww16aIOG+znuHeN+v0MUuPSTYCabBhGWkiUCioAbbSpX2vg8OW9rzlekg
-         xjwXavLG4UtOx6XWLWnraAwj380xpCtSMXztdseZeE9YIBODrAJunBtQmKX7RGk2O2
-         XloIMvpF7/RjXUHaXon0Ts66rGe5KJ4YNuqojoY72ihZSq+iLjIdt5Bf6t2B+Wu0pC
-         vVFNdk40XnbFWbEXJH+/O2M9JfSWfKxmf6i/0t9ELfTzv/a55XkKNHQX3yTvr1oKH4
-         qe2nXvYCGgY5A==
-Received: by mail-lj1-f197.google.com with SMTP id b16-20020a2ebc10000000b00218d00045c4so1202535ljf.5
-        for <linux-kernel@vger.kernel.org>; Tue, 09 Nov 2021 04:53:22 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:in-reply-to
-         :content-transfer-encoding;
-        bh=j5tko5riuXms3JFEWKNcXt/poyacQNf52vuml9R0vAg=;
-        b=TXmx0zbQ07Eh0IufuhhdpguCeFGvT3Ip3l3FjKG5I+NypuUUJryfkz20GrAHUdmfya
-         3/Sav6y146I6+NkH76fn9serMXVqqismsiwpJYbkrwrg3R9dsp32MPv/fOaMWVKKNMiY
-         QAsinTyobbz6CEBXx/nKqBDimMjw8bqj+5OvBs2VxjSTZ/KmTHl985RhkKIQ3fW3fXKR
-         tDFaNm0t7CpbFtDiNUOwJIxXQop1gTAqMG54wspCZq/wTyno4xcxnwBe0Je2/6JK6CyY
-         jyWGKdAnMCJ7QAk2I11fbLatOcTocZeQpI2g8lo6oRPh01XOoD0sgDMTQTxAnFtXzasq
-         XuLQ==
-X-Gm-Message-State: AOAM531lSsin9st6jtEh+RqLMdfYEYuJy/Uma5bFSrAB6EvpAVP8kbl9
-        0QMCpRI4nT/fesaQ3nNUZFR5Ql4TK0LEbMOVEKuI4uisjfypFsdwlwCCbFltLUyC004CtFUZLdK
-        YGBtiXgXI4ex2jEkSN971u/CvXY6x9QVR5OuPqMmrYg==
-X-Received: by 2002:a19:9148:: with SMTP id y8mr6510846lfj.512.1636462401700;
-        Tue, 09 Nov 2021 04:53:21 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJxj8OuRHAShyPuiff/xoQ2+ShAhXkJXJ57MKAdkVyp0FJ2HQRhii/EaQs7fi9Q9gr6wclBnKQ==
-X-Received: by 2002:a19:9148:: with SMTP id y8mr6510816lfj.512.1636462401453;
-        Tue, 09 Nov 2021 04:53:21 -0800 (PST)
-Received: from [192.168.3.67] (89-77-68-124.dynamic.chello.pl. [89.77.68.124])
-        by smtp.gmail.com with ESMTPSA id i6sm2136859lfr.163.2021.11.09.04.53.19
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 09 Nov 2021 04:53:20 -0800 (PST)
-Message-ID: <0d996393-20b9-4f16-cbd0-c9bff2b54112@canonical.com>
-Date:   Tue, 9 Nov 2021 13:53:18 +0100
+        id S231250AbhKIM5G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Nov 2021 07:57:06 -0500
+Received: from mga14.intel.com ([192.55.52.115]:15258 "EHLO mga14.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S237847AbhKIM5E (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Nov 2021 07:57:04 -0500
+X-IronPort-AV: E=McAfee;i="6200,9189,10162"; a="232682281"
+X-IronPort-AV: E=Sophos;i="5.87,220,1631602800"; 
+   d="scan'208";a="232682281"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Nov 2021 04:54:18 -0800
+X-IronPort-AV: E=Sophos;i="5.87,220,1631602800"; 
+   d="scan'208";a="503491344"
+Received: from na1-mobl.gar.corp.intel.com ([10.213.108.242])
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Nov 2021 04:54:12 -0800
+Message-ID: <a69360a65739ba068ff21e266638c41aeb936870.camel@linux.intel.com>
+Subject: Re: [PATCH 5/7] thermal: intel: hfi: Enable notification interrupt
+From:   Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
+To:     Peter Zijlstra <peterz@infradead.org>,
+        Ricardo Neri <ricardo.neri-calderon@linux.intel.com>
+Cc:     "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        linux-pm@vger.kernel.org, x86@kernel.org,
+        linux-doc@vger.kernel.org, Len Brown <len.brown@intel.com>,
+        Aubrey Li <aubrey.li@linux.intel.com>,
+        Amit Kucheria <amitk@kernel.org>,
+        Andi Kleen <ak@linux.intel.com>,
+        Tim Chen <tim.c.chen@linux.intel.com>,
+        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
+        Ricardo Neri <ricardo.neri@intel.com>,
+        linux-kernel@vger.kernel.org
+Date:   Tue, 09 Nov 2021 04:54:08 -0800
+In-Reply-To: <YYo1x8YLozBZbqwC@hirez.programming.kicks-ass.net>
+References: <20211106013312.26698-1-ricardo.neri-calderon@linux.intel.com>
+         <20211106013312.26698-6-ricardo.neri-calderon@linux.intel.com>
+         <YYjo3Jx6JosHhoHM@hirez.programming.kicks-ass.net>
+         <20211109022613.GA16930@ranerica-svr.sc.intel.com>
+         <YYo1x8YLozBZbqwC@hirez.programming.kicks-ass.net>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.40.0-1 
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.2.1
-Subject: Re: [PATCH 10/13] dt-bindings: spi: add bindings for microchip mpfs
- spi
-Content-Language: en-US
-To:     Conor.Dooley@microchip.com, robh@kernel.org
-Cc:     robh+dt@kernel.org, gregkh@linuxfoundation.org,
-        linus.walleij@linaro.org, linux-riscv@lists.infradead.org,
-        aou@eecs.berkeley.edu, paul.walmsley@sifive.com,
-        linux-usb@vger.kernel.org, Daire.McNamara@microchip.com,
-        linux-spi@vger.kernel.org, geert@linux-m68k.org,
-        devicetree@vger.kernel.org, linux-rtc@vger.kernel.org,
-        linux-gpio@vger.kernel.org, broonie@kernel.org, palmer@dabbelt.com,
-        bgolaszewski@baylibre.com, jassisinghbrar@gmail.com,
-        linux-crypto@vger.kernel.org, Ivan.Griffin@microchip.com,
-        atish.patra@wdc.com, Lewis.Hanly@microchip.com,
-        bin.meng@windriver.com, alexandre.belloni@bootlin.com,
-        linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org,
-        a.zummo@towertech.it
-References: <20211108150554.4457-1-conor.dooley@microchip.com>
- <20211108150554.4457-11-conor.dooley@microchip.com>
- <1636430789.935637.743042.nullmailer@robh.at.kernel.org>
- <96005893-8819-1d76-6dea-7d173655258f@microchip.com>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-In-Reply-To: <96005893-8819-1d76-6dea-7d173655258f@microchip.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 09/11/2021 13:16, Conor.Dooley@microchip.com wrote:
-> On 09/11/2021 04:06, Rob Herring wrote:
->> EXTERNAL EMAIL: Do not click links or open attachments unless you know the content is safe
->>
->> On Mon, 08 Nov 2021 15:05:51 +0000, conor.dooley@microchip.com wrote:
->>> From: Conor Dooley <conor.dooley@microchip.com>
->>>
->>> Add device tree bindings for the {q,}spi controller on
->>> the Microchip PolarFire SoC.
->>>
->>> Signed-off-by: Conor Dooley <conor.dooley@microchip.com>
->>> ---
->>>   .../bindings/spi/microchip,mpfs-spi.yaml      | 72 +++++++++++++++++++
->>>   1 file changed, 72 insertions(+)
->>>   create mode 100644 Documentation/devicetree/bindings/spi/microchip,mpfs-spi.yaml
->>>
->>
->> My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
->> on your patch (DT_CHECKER_FLAGS is new in v5.13):
->>
->> yamllint warnings/errors:
->>
->> dtschema/dtc warnings/errors:
->> Documentation/devicetree/bindings/spi/microchip,mpfs-spi.example.dts:19:18: fatal error: dt-bindings/clock/microchip,mpfs-clock.h: No such file or directory
->>     19 |         #include "dt-bindings/clock/microchip,mpfs-clock.h"
-> Rob,
-> Should I drop the header from the example or is there a way for me 
-> specify the dependent patch to pass this check?
+On Tue, 2021-11-09 at 09:48 +0100, Peter Zijlstra wrote:
+> On Mon, Nov 08, 2021 at 06:26:13PM -0800, Ricardo Neri wrote:
+> > On Mon, Nov 08, 2021 at 10:07:40AM +0100, Peter Zijlstra wrote:
+> > > On Fri, Nov 05, 2021 at 06:33:10PM -0700, Ricardo Neri wrote:
+> 
+> > > > +static void hfi_update_work_fn(struct work_struct *work)
+> > > > +{
+> > > > +       struct hfi_instance *hfi_instance;
+> > > > +
+> > > > +       hfi_instance = container_of(to_delayed_work(work),
+> > > > struct hfi_instance,
+> > > > +                                   update_work);
+> > > > +       if (!hfi_instance)
+> > > > +               return;
+> > > > +
+> > > > +       /* TODO: Consume update here. */
+> > > 
+> > >         // this here uses ->event_lock to serialize against the
+> > >         // interrupt below changing the data...
+> > 
+> > Anyone reading the HFI table would need to take ->event_lock.
+> 
+> Right.. that implies ->event_lock can be taken while there is no
+> interrupt active, which then necessitates the additional lock.
+> 
+Correct.
+With the raw_spin_trylock() optimization, we will need additional lock.
+So need another lock to protect hfi_instance->table_base.
 
-The error has to be fixed, although not necessarily by dropping the
-header, but by posting it. How this can pass on your system? There is no
-such file added in this patchset.
+> > > > +}
+> > > > +
+> > > > +void intel_hfi_process_event(__u64 pkg_therm_status_msr_val)
+> > > > +{
+> > > > +       struct hfi_instance *hfi_instance;
+> > > > +       int cpu = smp_processor_id();
+> > > > +       struct hfi_cpu_info *info;
+> > > > +       unsigned long flags;
+> > > > +       u64 timestamp;
+> > > > +
+> > > > +       if (!pkg_therm_status_msr_val)
+> > > > +               return;
+> > > > +
+> > > > +       info = &per_cpu(hfi_cpu_info, cpu);
+> > > > +       if (!info)
+> > > > +               return;
+> > > > 
 
-Best regards,
-Krzysztof
+[...]
+
+> > > > +       memcpy(hfi_instance->table_base, hfi_instance-
+> > > > >hw_table,
+> > > > +              hfi_features.nr_table_pages << PAGE_SHIFT);
+> 
+> I think we actually need to release ->interrupt_lock here, *before*
+> the
+> WRMSR that ACKs the HFI update. Because I think the moment that WRMSR
+> goes through we can get another interrupt, and that *must* not find
+> ->interrupt_lock taken, otherwise it will not process the update
+> etc..
+> leading to lost interrupts.
+
+Correct.
+Once we use raw_spin_trylock() change suggested above, then we need to
+release lock here.
+
+Thanks,
+Srinivas
+
+> 
+
+> > > > +       /*
+> > > > +        * Let hardware and other CPUs know that we are done
+> > > > reading the HFI
+> > > > +        * table and it is free to update it again.
+> > > > +        */
+> > > > +       pkg_therm_status_msr_val &= THERM_STATUS_CLEAR_PKG_MASK
+> > > > &
+> > > > +                                  
+> > > > ~PACKAGE_THERM_STATUS_HFI_UPDATED;
+> > > > +       wrmsrl(MSR_IA32_PACKAGE_THERM_STATUS,
+> > > > pkg_therm_status_msr_val);
+> > > > +       schedule_delayed_work(&hfi_instance->update_work,
+> > > > HFI_UPDATE_INTERVAL);
+> > > > +
+> > > > +unlock_spinlock:
+> > > > +       raw_spin_unlock_irqrestore(&hfi_instance->event_lock,
+> > > > flags);
+> > > 
+> > >         raw_spin_unlock(&hfi_instance->interrupt_lock);
+> > 
+> > ... and here we release both locks.
+> 
+> See above.
+
+
