@@ -2,59 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 543C644AADD
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 10:50:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 68A8644AADA
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 10:49:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245051AbhKIJwo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Nov 2021 04:52:44 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49272 "EHLO
+        id S244285AbhKIJwd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Nov 2021 04:52:33 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49274 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244252AbhKIJvg (ORCPT
+        with ESMTP id S244272AbhKIJvg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 9 Nov 2021 04:51:36 -0500
-Received: from mail-pl1-x632.google.com (mail-pl1-x632.google.com [IPv6:2607:f8b0:4864:20::632])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B69FC06120F
-        for <linux-kernel@vger.kernel.org>; Tue,  9 Nov 2021 01:48:42 -0800 (PST)
-Received: by mail-pl1-x632.google.com with SMTP id o14so19935085plg.5
-        for <linux-kernel@vger.kernel.org>; Tue, 09 Nov 2021 01:48:42 -0800 (PST)
+Received: from mail-pf1-x432.google.com (mail-pf1-x432.google.com [IPv6:2607:f8b0:4864:20::432])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 91E6AC061220
+        for <linux-kernel@vger.kernel.org>; Tue,  9 Nov 2021 01:48:43 -0800 (PST)
+Received: by mail-pf1-x432.google.com with SMTP id 127so18986754pfu.1
+        for <linux-kernel@vger.kernel.org>; Tue, 09 Nov 2021 01:48:43 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=sifive.com; s=google;
         h=from:to:subject:date:message-id:in-reply-to:references:mime-version
          :content-transfer-encoding;
-        bh=SHTUtS2AqMwL7pythy2uWZaJGxfuuKizfBg8h7XFuhk=;
-        b=GTvbZO/Gy+t/HbdqxXnGSSUAYcX19EgyiDh4hSzeDsksdaBW6HwN7DfqsqaO4pey2/
-         jTJ9RHZW4nslizMrt1R/QL8IZf5LPZtAeLV9sANL6ww2ozo8lj8EL4aZio924rPaP/IM
-         6B5RjEwqDaSqfZadOtwe0nCFHmMRsvQopFZ1T0JhRi3Wo6t5SeUUDkWiNTD2X0Mb6lUh
-         xinKcpR9Yyxnk6b53anjGiZTbPyu1gigcVFn4dfoK+OWU+/pe1tDQG2gLHEJvDcHL+CA
-         jOt+xmi9YhvrZd2t2q1D/jGaHtsZ6uHek+ITnPfOzOmEx8rSMKBJSo+6ZJwe2VlAqoz6
-         d0mw==
+        bh=QSqFepERE4N2wqVXalvOoo260yooYSe4DI6a5ek1AvE=;
+        b=bb5tQb/6VeknVaR406cXHwsp0nVG1x2yFyshVKlDcHEmIEaibX4qmuCrnx6r7i3Yzy
+         OWdOraOah9Q6ITGHX4vvFKbZMLJelo1T2DmeZmd5HrSYIJM2iKB3Ls4U8bA0j4091ycA
+         4dZum9J1j2u00hjCLTf5AADYx9x7fSyilEbPo9Ew+2AjYBoDXSRxEMitnBEGGl7mKqh9
+         7MLp1wBHB1n4A3S1lWzFu8Xsqhr0mP/L01S7ezDht5Equ+H3qRNPbHZQb9AvS71SHzNv
+         wTxCCUy9H4La495JDszWKYXJl2SRS/rSwWT3Ja+ydDocytajLMyt6FOsFCpcDoJUQYaw
+         yzPQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=SHTUtS2AqMwL7pythy2uWZaJGxfuuKizfBg8h7XFuhk=;
-        b=oSzNW/IYA6C7zePw99pGTX3NlEpDdTUjhaNY91VczJqSE4exHwLjYSEp3arhvaJZ2e
-         efE1TdHfX1oprA2wcw8Th78fp/bpqMYTFsDXTZnqs2a4Bvz2Yg+EWH915eGSOtBgnw55
-         neoG5HFSkSU4t7nnVDc+3wSKE7Ww0AyRyFqqtWm4I7r0WUVEnri4Kyi5+WBUxgsRhTr0
-         9vH8a+8k68uVt/w7/lpB4JZyXhm5iPp0DCgb3ssVsWN8pRSg3IKiP8CKV21FzTF11Lnu
-         ypT6esLbq3I6zdMtH9/HcplljgfC6klmW8FZ+hpdY8Ku8RYwzsNIjjzI/LJGIwxxMnfD
-         Opuw==
-X-Gm-Message-State: AOAM532IfVQFyfCEfcngLnA2KQFud7iPB9327Dcryr5dEoyswbCxePmq
-        HYhIqXuCwnHyu3iV3JSpiY86Dw==
-X-Google-Smtp-Source: ABdhPJz4uumb1qUyFkc+MgaWMH/uDR5/ELb0ybuZChURb8fO/VbIhSArnl8zYY0FjHOCybWkDdacyw==
-X-Received: by 2002:a17:90a:9907:: with SMTP id b7mr2476181pjp.137.1636451321564;
-        Tue, 09 Nov 2021 01:48:41 -0800 (PST)
+        bh=QSqFepERE4N2wqVXalvOoo260yooYSe4DI6a5ek1AvE=;
+        b=DrWDdK9Xvi01uSzA5WW59zqYnwSaN08irWjasdJAK8bbwbP10Ajmhb2psTI+IRmJJd
+         RHouldXdTdgXTYczNXm3gcyUvpJYgHuLQcGXH094xxHcOsGk2qqXYZGO6MBTYwBVzsYd
+         Xwjh4UTe1L6FVqdSDjVfUM62ONhHHwv+98c80I+aITQpurS1ORlRkUnFKebs4hp6avwv
+         DquxApjbBGaRPazUfj8fYPEuB5OqiAJ4SeG3YWxYoOGb3DRbc49obWKkMmZwgcQdlGSd
+         7q06RGwh1W6EZ+tkdWA1QHrvu615mvt+CyMj0rkFsE1w5TPnUwzGyg6DhVb3gRoBOwaP
+         4IGQ==
+X-Gm-Message-State: AOAM531Z2qqbH3lNxkvInwZfKAP6pgeXRFqBKaNf38uVdQSAPic8DcTY
+        YatsPFHeYbPyVHToI4At0GHt6g==
+X-Google-Smtp-Source: ABdhPJz+XI26Bw7+LIrDII1mBcw/2IbYLT4/XZjMDBL60+W4P/sUugRbk2XDDdfmD5SP6IMja7V68w==
+X-Received: by 2002:aa7:848a:0:b0:47f:d648:2df4 with SMTP id u10-20020aa7848a000000b0047fd6482df4mr6418681pfn.63.1636451323096;
+        Tue, 09 Nov 2021 01:48:43 -0800 (PST)
 Received: from hsinchu16.internal.sifive.com (59-124-168-89.hinet-ip.hinet.net. [59.124.168.89])
-        by smtp.gmail.com with ESMTPSA id cv1sm1940511pjb.48.2021.11.09.01.48.40
+        by smtp.gmail.com with ESMTPSA id cv1sm1940511pjb.48.2021.11.09.01.48.41
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 09 Nov 2021 01:48:41 -0800 (PST)
+        Tue, 09 Nov 2021 01:48:42 -0800 (PST)
 From:   Greentime Hu <greentime.hu@sifive.com>
 To:     palmer@dabbelt.com, paul.walmsley@sifive.com,
         linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
         aou@eecs.berkeley.edu
-Subject: [PATCH v9 06/17] riscv: Add has_vector/riscv_vsize to save vector features.
-Date:   Tue,  9 Nov 2021 17:48:18 +0800
-Message-Id: <8652c476f08626d52f0412ca1a8427cfe7b4104f.1636362169.git.greentime.hu@sifive.com>
+Subject: [PATCH v9 07/17] riscv: Reset vector register
+Date:   Tue,  9 Nov 2021 17:48:19 +0800
+Message-Id: <8612e69a10235e67fac8a55864e77a4ab8f771ac.1636362169.git.greentime.hu@sifive.com>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <cover.1636362169.git.greentime.hu@sifive.com>
 References: <cover.1636362169.git.greentime.hu@sifive.com>
@@ -64,49 +64,83 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch is used to detect vector support status of CPU and use
-riscv_vsize to save the size of all the vector registers. It assumes
-all harts has the same capabilities in SMP system.
+From: Guo Ren <guoren@linux.alibaba.com>
 
-[guoren@linux.alibaba.com: add has_vector checking]
-Signed-off-by: Greentime Hu <greentime.hu@sifive.com>
-Co-developed-by: Guo Ren <guoren@linux.alibaba.com>
+Reset vector registers at boot-time and disable vector instructions
+execution for kernel mode.
+
 Signed-off-by: Guo Ren <guoren@linux.alibaba.com>
 Co-developed-by: Vincent Chen <vincent.chen@sifive.com>
 Signed-off-by: Vincent Chen <vincent.chen@sifive.com>
+Co-developed-by: Han-Kuan Chen <hankuan.chen@sifive.com>
+Signed-off-by: Han-Kuan Chen <hankuan.chen@sifive.com>
+Co-developed-by: Greentime Hu <greentime.hu@sifive.com>
+Signed-off-by: Greentime Hu <greentime.hu@sifive.com>
 ---
- arch/riscv/kernel/cpufeature.c | 13 +++++++++++++
- 1 file changed, 13 insertions(+)
+ arch/riscv/kernel/entry.S |  6 +++---
+ arch/riscv/kernel/head.S  | 22 ++++++++++++++++++++--
+ 2 files changed, 23 insertions(+), 5 deletions(-)
 
-diff --git a/arch/riscv/kernel/cpufeature.c b/arch/riscv/kernel/cpufeature.c
-index 7069e55335d0..8e7557980faf 100644
---- a/arch/riscv/kernel/cpufeature.c
-+++ b/arch/riscv/kernel/cpufeature.c
-@@ -21,6 +21,11 @@ static DECLARE_BITMAP(riscv_isa, RISCV_ISA_EXT_MAX) __read_mostly;
- #ifdef CONFIG_FPU
- __ro_after_init DEFINE_STATIC_KEY_FALSE(cpu_hwcap_fpu);
- #endif
-+#ifdef CONFIG_VECTOR
-+#include <asm/vector.h>
-+__ro_after_init DEFINE_STATIC_KEY_FALSE(cpu_hwcap_vector);
-+unsigned long riscv_vsize __read_mostly;
-+#endif
+diff --git a/arch/riscv/kernel/entry.S b/arch/riscv/kernel/entry.S
+index 98f502654edd..ad0fa80ada81 100644
+--- a/arch/riscv/kernel/entry.S
++++ b/arch/riscv/kernel/entry.S
+@@ -77,10 +77,10 @@ _save_context:
+ 	 * Disable user-mode memory access as it should only be set in the
+ 	 * actual user copy routines.
+ 	 *
+-	 * Disable the FPU to detect illegal usage of floating point in kernel
+-	 * space.
++	 * Disable the FPU/Vector to detect illegal usage of floating point
++	 * or vector in kernel space.
+ 	 */
+-	li t0, SR_SUM | SR_FS
++	li t0, SR_SUM | SR_FS | SR_VS
  
- /**
-  * riscv_isa_extension_base() - Get base extension word
-@@ -149,4 +154,12 @@ void __init riscv_fill_hwcap(void)
- 	if (elf_hwcap & (COMPAT_HWCAP_ISA_F | COMPAT_HWCAP_ISA_D))
- 		static_branch_enable(&cpu_hwcap_fpu);
- #endif
+ 	REG_L s0, TASK_TI_USER_SP(tp)
+ 	csrrc s1, CSR_STATUS, t0
+diff --git a/arch/riscv/kernel/head.S b/arch/riscv/kernel/head.S
+index 52c5ff9804c5..551afe1de85e 100644
+--- a/arch/riscv/kernel/head.S
++++ b/arch/riscv/kernel/head.S
+@@ -242,10 +242,10 @@ pmp_done:
+ .option pop
+ 
+ 	/*
+-	 * Disable FPU to detect illegal usage of
++	 * Disable FPU & VECTOR to detect illegal usage of
+ 	 * floating point in kernel space
+ 	 */
+-	li t0, SR_FS
++	li t0, SR_FS | SR_VS
+ 	csrc CSR_STATUS, t0
+ 
+ #ifdef CONFIG_SMP
+@@ -433,6 +433,24 @@ ENTRY(reset_regs)
+ 	csrw	fcsr, 0
+ 	/* note that the caller must clear SR_FS */
+ #endif /* CONFIG_FPU */
 +
 +#ifdef CONFIG_VECTOR
-+	if (elf_hwcap & COMPAT_HWCAP_ISA_V) {
-+		static_branch_enable(&cpu_hwcap_vector);
-+		/* There are 32 vector registers with vlenb length. */
-+		riscv_vsize = csr_read(CSR_VLENB) * 32;
-+	}
-+#endif
- }
++	csrr	t0, CSR_MISA
++	li	t1, (COMPAT_HWCAP_ISA_V >> 16)
++	slli	t1, t1, 16
++	and	t0, t0, t1
++	beqz	t0, .Lreset_regs_done
++
++	li	t1, SR_VS
++	csrs	CSR_STATUS, t1
++	vsetvli t1, x0, e8, m8
++	vmv.v.i v0, 0
++	vmv.v.i v8, 0
++	vmv.v.i v16, 0
++	vmv.v.i v24, 0
++	/* note that the caller must clear SR_VS */
++#endif /* CONFIG_VECTOR */
++
+ .Lreset_regs_done:
+ 	ret
+ END(reset_regs)
 -- 
 2.31.1
 
