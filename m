@@ -2,83 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 93E1744ACD7
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 12:47:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B3CE344ACE5
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 12:50:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343577AbhKILuO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Nov 2021 06:50:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48474 "EHLO
+        id S1343600AbhKILw5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Nov 2021 06:52:57 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49084 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241874AbhKILuM (ORCPT
+        with ESMTP id S1343588AbhKILw4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Nov 2021 06:50:12 -0500
-Received: from mail-oi1-x233.google.com (mail-oi1-x233.google.com [IPv6:2607:f8b0:4864:20::233])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 443E4C061764
-        for <linux-kernel@vger.kernel.org>; Tue,  9 Nov 2021 03:47:26 -0800 (PST)
-Received: by mail-oi1-x233.google.com with SMTP id t19so2893694oij.1
-        for <linux-kernel@vger.kernel.org>; Tue, 09 Nov 2021 03:47:26 -0800 (PST)
+        Tue, 9 Nov 2021 06:52:56 -0500
+Received: from mail-ot1-x336.google.com (mail-ot1-x336.google.com [IPv6:2607:f8b0:4864:20::336])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7DF2EC061766
+        for <linux-kernel@vger.kernel.org>; Tue,  9 Nov 2021 03:50:10 -0800 (PST)
+Received: by mail-ot1-x336.google.com with SMTP id o15-20020a9d410f000000b0055c942cc7a0so7741924ote.8
+        for <linux-kernel@vger.kernel.org>; Tue, 09 Nov 2021 03:50:10 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=pFIaOEBE3jLlzl6nBmZ3jg57oyX5JW9xJ2v9BAzzICM=;
-        b=LeL9etCeX8uwNqkyylsOjPnNZMdwwusOGMOEeW3rU91ddwANV9F460ShhpFrXwEKUu
-         AnHaSEFTF+I14vnJJv7Am22NNyAgQvtHjzrucgLjK4yF1Xhl0RUCdVpuDRLR/FH4qvsB
-         u+X0jhFb5z3wC3pzI3A/BqEgfymLUkhwXwI98jrHX6B+TYqVlPaBTFJLgIYeDbsZD4Rv
-         Gh9rZlnmXl+hEB1EG21CwcdRVKQ3UMJAa2p2pk+1gT18qu7dYcUFhmZbP1KbF1mfB2wl
-         skyVmuNW5+Q7gWlJOR6DD8kMZWmgv3tqwcute5zFXB5ce1c1J0VngvOQOntQYMAj2SmF
-         4njw==
+        bh=ALBcIFK0M2sDqjczdXHc9NoWo8sCRANOPePxtQKC6v0=;
+        b=WiNjKmsahtkj7noZ9ffdWo8zufH5fxNGTifxSgsaMThK1Bc25ubh55+CHeuGaG7dca
+         IUJu9SE+F1ZklwyVbmXyyhhwcj0fg+IcXAUeMkT2TM5AtPRpH3WjiiGM0JbYuy1FNyNo
+         W/m4prG/Qo/AI9tmUfrtEwc1xzSfJ8Q+7ZXo7dZw2gmjbx0/oFHLRnz+TXr7yb4yt4rw
+         DbpNSz1GfVi/hAHf/6iZhz37emGktf2XV99bWXojbMU9ELu6783fpV36atKSUBhOD6FP
+         qt5X3Lt9oO+YFKDBZilTPQ4bEsJUs+P+vARkfPy4jNZXysxqcTZkkSfcAc6qC7oUWOwo
+         t/8g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=pFIaOEBE3jLlzl6nBmZ3jg57oyX5JW9xJ2v9BAzzICM=;
-        b=egidjCaf9kTD9vG0D4uxjeJUfrLTgAsTznZD45kWIF1GRhSPUVDHvq4DkGDmPftzsl
-         y4GAtLTEjpEw1WBq+Zev+qgXhtv9A5gHUYfP2XzsXS1JBfDJ6NkDlLb8jN2+i8iGttmR
-         9JhEKp0zXKPIJoWHNMF1+gemnZimc+RgtsoSAm6KSVN9hxggwJv46XDbPJptp+XADNOE
-         aSlRo4xTHynBw5LyoVTp7T7Qg7BAM1CFaT290aRy/NIZ3rC43C/z50hjvpB60lNjZ1Qm
-         SQT2NIJP45MNWfzghrrCy0EfxifmRRqLnc9MV3DIXJ1r7cfs1T0gLVrkupVnjG5ubJzT
-         qbgw==
-X-Gm-Message-State: AOAM531PTaBfNSW6B5sddGtSyERKN3+qem+FOoXoOoMA3bSnxaqqS/d1
-        Hc2yCw9M9BjpDKByOwgpbhAzE/6/AYVSJ1Ig75qsQcre74s=
-X-Google-Smtp-Source: ABdhPJwEOP6hTw/QdLuaZqo0gQ+u9f+SSIeTdJ5gnFmYLjdI5+WU5LUyOlx+SqVjELBxLZX8CpI6iiNsihQHXWFUkXg=
-X-Received: by 2002:aca:120f:: with SMTP id 15mr4887619ois.132.1636458445642;
- Tue, 09 Nov 2021 03:47:25 -0800 (PST)
+        bh=ALBcIFK0M2sDqjczdXHc9NoWo8sCRANOPePxtQKC6v0=;
+        b=JMLjfQ64jBOhcG1uBouy1uOxJY88WSWYEri+S0g7XqV3/86FPIwFxjqoKWtzCHaxJO
+         w6tdbdG2WOosnuDtuTkQ/hCE+40ijXhbb3u9IGGA0q62CSZ4vyxOkrgQ8Q1cWDglrhXo
+         B1hVHiW0neBd7L+phvegC1Y+qR+FzV+OSj2zFVwBS7djbjiEoARSqu9g3T5rWBb2BsQP
+         lzw9dNuptUCEgphDPRdDZWr5eogVxcgnMWRVvySxhFQh6Zn28D0Mgqgz1U4zkmDW2qFe
+         IpNzD7gpxDvpTkqq3o4PzpYvd21acINqsiCti5ad9kXmioxdC8cg6+BynFzHx3rTa7ax
+         Nr6Q==
+X-Gm-Message-State: AOAM533LxzK9PCdv+M8Ia/lvALVLfJZf8Z5sw9Y8m2exJ/dOr5shNMy7
+        8ZMXkznWDdVqOUYIwLqtplxKCK1FGTgkWFc9AsMt+lGzHzc=
+X-Google-Smtp-Source: ABdhPJykswbjVxAwy6QccCD6a4oKxQG8ZBoSavSKVwonmEEZcj7+3DiAKXMLdnvkMbWw05xgzSkhW8FiyFJlI+8TVv8=
+X-Received: by 2002:a9d:ed6:: with SMTP id 80mr5272989otj.35.1636458609456;
+ Tue, 09 Nov 2021 03:50:09 -0800 (PST)
 MIME-Version: 1.0
-References: <20211107225458.111068-1-alexandre.belloni@bootlin.com> <20211107225458.111068-6-alexandre.belloni@bootlin.com>
-In-Reply-To: <20211107225458.111068-6-alexandre.belloni@bootlin.com>
+References: <20211105130338.241100-1-arnd@kernel.org>
+In-Reply-To: <20211105130338.241100-1-arnd@kernel.org>
 From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Tue, 9 Nov 2021 12:47:14 +0100
-Message-ID: <CACRpkdYyxhvVphR7b=b42qEUDGNM3jB_Zc6CjBR5ZK7PhDmVOw@mail.gmail.com>
-Subject: Re: [PATCH 06/12] rtc: ab8500: let the core handle the alarm resolution
-To:     Alexandre Belloni <alexandre.belloni@bootlin.com>
-Cc:     Alessandro Zummo <a.zummo@towertech.it>, linux-rtc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+Date:   Tue, 9 Nov 2021 12:49:58 +0100
+Message-ID: <CACRpkdYKs==og5pSsSxMXXozkexybJEnTHZWUr1ObsqAsGPuRA@mail.gmail.com>
+Subject: Re: [RFC 1/3] gpiolib: remove irq_to_gpio() definition
+To:     Arnd Bergmann <arnd@kernel.org>
+Cc:     linux-gpio@vger.kernel.org, Bartosz Golaszewski <brgl@bgdev.pl>,
+        linux-m68k@lists.linux-m68k.org, geert@linux-m68k.org,
+        gerg@linux-m68k.org, linux@armlinux.org.uk,
+        linux-arm-kernel@lists.infradead.org, linux-sh@vger.kernel.org,
+        dalias@libc.org, ysato@users.sourceforge.jp,
+        Arnd Bergmann <arnd@arndb.de>,
+        Fu Wei <tekkamanninja@gmail.com>, Alex Shi <alexs@kernel.org>,
+        Hu Haowen <src.res@email.cn>,
+        linux-doc-tw-discuss@lists.sourceforge.net,
+        Jonathan Corbet <corbet@lwn.net>,
+        Drew Fustini <drew@beagleboard.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Nov 7, 2021 at 11:55 PM Alexandre Belloni
-<alexandre.belloni@bootlin.com> wrote:
+On Fri, Nov 5, 2021 at 2:03 PM Arnd Bergmann <arnd@kernel.org> wrote:
 
-> Tell the RTC core UIE are not supported because the resolution of the alarm
-> is a minute.
+> From: Arnd Bergmann <arnd@arndb.de>
 >
-> Note that this is in fact also fixing how the resolution is reported as the
-> previous test was simply ensuring the alarm was more than a minute in the
-> future while the register has a minute resolution.
-> This would be ok if the alarm was a countdown but ab8500_rtc_read_alarm
-> suggests otherwise and the AB8500 datasheet states that the RTC
-> documentation is not public.
+> All implementations other than coldfire have returned an error since
+> the avr32 and blackfin architectures got removed, and the last user in
+> driver code was removed in 2016, so just remove this old interface.
 >
-> Finally, the comment is wrong and what makes the UIE emulation work is
-> uie_unsupported being set.
+> The only reference is now in the Chinese documentation, which should be
+> changed to remove this reference as well.
 >
-> Signed-off-by: Alexandre Belloni <alexandre.belloni@bootlin.com>
+> Cc: Fu Wei <tekkamanninja@gmail.com>
+> Cc: Alex Shi <alexs@kernel.org>
+> Cc: Hu Haowen <src.res@email.cn>
+> Cc: linux-doc-tw-discuss@lists.sourceforge.net
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 
-I trust you on this one!
-Acked-by: Linus Walleij <linus.walleij@linaro.org>
+Thanks for doing this Arnd. I had it on my mind some years
+ago but I think Coldfire or something was still using it and didn't
+think about it as the last user disappeared.
+Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
 
 Yours,
 Linus Walleij
