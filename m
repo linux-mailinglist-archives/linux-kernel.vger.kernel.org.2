@@ -2,2571 +2,878 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B7E1444B0EF
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 17:14:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AC1BA44B0F3
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 17:15:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238732AbhKIQQw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Nov 2021 11:16:52 -0500
-Received: from mail-oi1-f174.google.com ([209.85.167.174]:40866 "EHLO
-        mail-oi1-f174.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238523AbhKIQQu (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Nov 2021 11:16:50 -0500
-Received: by mail-oi1-f174.google.com with SMTP id bk14so11610325oib.7;
-        Tue, 09 Nov 2021 08:14:04 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=wQFU29bSGSAyz5O6gMkXta10oolW+zHL7VnNsYdGBQo=;
-        b=LOclFZnNXPjvM1qURezVYGwIgqOHDL//OwlVPSLRcNdbqDkit+wSUMGraoMjm0pHBb
-         FxT2nNuvKze153C447DgDQPkvBYsTV3crUP1+YihBBWOs7pSKGoYjtKobyrVHXwKJYh9
-         9C53/BA8ME1Z01FXEGyLcmdULdoDZvgx/JphpeF7vi6iTqgg4ljZfbIcBkQ/7ovoY2fL
-         6DTj4CNQicFsDWYoEjEV5DIjQQl/Q2yDZ+R8OtjSDY8UjNo5dteP0mbJSrwVNcFaPQSf
-         jJGECoCmOXGJZ1/BgCY+nax1Tc9BMvUBgv0gkeuzWqDquKiA0QNh2MlHSBQMjN26HVs5
-         BSrg==
-X-Gm-Message-State: AOAM530htOryqRIV1Yi4NG3K6glJlTHx1hkQkhZ1ETgGOp3KpSyyiAuC
-        3xRP10eMhElr5TJcTJQGhA==
-X-Google-Smtp-Source: ABdhPJzTS01yEYfSXFn94vnmbE0+Ed2+FM34XpmHuwPIcnO1eGEHxCSE7bqdKKXbw6p8f8utt+V3YQ==
-X-Received: by 2002:aca:2319:: with SMTP id e25mr6692917oie.164.1636474443559;
-        Tue, 09 Nov 2021 08:14:03 -0800 (PST)
-Received: from xps15.herring.priv (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
-        by smtp.googlemail.com with ESMTPSA id l3sm2988851ots.69.2021.11.09.08.14.01
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 09 Nov 2021 08:14:02 -0800 (PST)
-From:   Rob Herring <robh@kernel.org>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Ganesan Ramalingam <ganesanr@broadcom.com>
-Cc:     linux-kernel@vger.kernel.org,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        linux-mips@vger.kernel.org,
-        Jayachandran Chandrashekaran Nair <jchandra@broadcom.com>,
-        linux-staging@lists.linux.dev
-Subject: [PATCH] staging: Remove Netlogic XLP network driver
-Date:   Tue,  9 Nov 2021 10:14:01 -0600
-Message-Id: <20211109161401.2204280-1-robh@kernel.org>
-X-Mailer: git-send-email 2.32.0
+        id S239427AbhKIQSg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Nov 2021 11:18:36 -0500
+Received: from mga18.intel.com ([134.134.136.126]:44260 "EHLO mga18.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S237427AbhKIQSf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Nov 2021 11:18:35 -0500
+X-IronPort-AV: E=McAfee;i="6200,9189,10163"; a="219371863"
+X-IronPort-AV: E=Sophos;i="5.87,220,1631602800"; 
+   d="gz'50?scan'50,208,50";a="219371863"
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Nov 2021 08:15:48 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.87,220,1631602800"; 
+   d="gz'50?scan'50,208,50";a="451963070"
+Received: from lkp-server02.sh.intel.com (HELO c20d8bc80006) ([10.239.97.151])
+  by orsmga003.jf.intel.com with ESMTP; 09 Nov 2021 08:15:45 -0800
+Received: from kbuild by c20d8bc80006 with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1mkTmi-000Dbw-A9; Tue, 09 Nov 2021 16:15:44 +0000
+Date:   Wed, 10 Nov 2021 00:15:00 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Manish Mandlik <mmandlik@google.com>
+Cc:     kbuild-all@lists.01.org, linux-kernel@vger.kernel.org,
+        0day robot <lkp@intel.com>, Archie Pusaka <apusaka@google.com>,
+        Miao-chen Chou <mcchou@google.com>
+Subject: net/bluetooth/msft.h:64: multiple definition of
+ `msft_remove_all_monitors_on_suspend';
+ net/bluetooth/hci_core.o:net/bluetooth/msft.h:64: first defined here
+Message-ID: <202111100052.LKMtXLzL-lkp@intel.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/mixed; boundary="ReaqsoxgOBHFXBhH"
+Content-Disposition: inline
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The Netlogic XLP platform was removed in commit 95b8a5e0111a ("MIPS:
-Remove NETLOGIC support"), so this driver is now dead.
 
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc: Ganesan Ramalingam <ganesanr@broadcom.com>
-Cc: Jayachandran Chandrashekaran Nair <jchandra@broadcom.com>
-Cc: linux-staging@lists.linux.dev
-Signed-off-by: Rob Herring <robh@kernel.org>
+--ReaqsoxgOBHFXBhH
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+tree:   https://github.com/0day-ci/linux/commits/Manish-Mandlik/bluetooth-Fix-Advertisement-Monitor-Suspend-Resume/20210922-154726
+head:   d004fba7b2b2e00675030de2a4c5620c094a829f
+commit: d004fba7b2b2e00675030de2a4c5620c094a829f bluetooth: Fix Advertisement Monitor Suspend/Resume
+date:   7 weeks ago
+config: x86_64-rhel-8.3-kselftests (attached as .config)
+compiler: gcc-9 (Debian 9.3.0-22) 9.3.0
+reproduce (this is a W=1 build):
+        # https://github.com/0day-ci/linux/commit/d004fba7b2b2e00675030de2a4c5620c094a829f
+        git remote add linux-review https://github.com/0day-ci/linux
+        git fetch --no-tags linux-review Manish-Mandlik/bluetooth-Fix-Advertisement-Monitor-Suspend-Resume/20210922-154726
+        git checkout d004fba7b2b2e00675030de2a4c5620c094a829f
+        # save the attached .config to linux build tree
+        make W=1 ARCH=x86_64 
+
+If you fix the issue, kindly add following tag as appropriate
+Reported-by: kernel test robot <lkp@intel.com>
+
+All errors (new ones prefixed by >>):
+
+   ld: net/bluetooth/hci_event.o: in function `msft_remove_all_monitors_on_suspend':
+>> net/bluetooth/msft.h:64: multiple definition of `msft_remove_all_monitors_on_suspend'; net/bluetooth/hci_core.o:net/bluetooth/msft.h:64: first defined here
+   ld: net/bluetooth/hci_event.o: in function `msft_reregister_monitors_on_resume':
+>> net/bluetooth/msft.h:64: multiple definition of `msft_reregister_monitors_on_resume'; net/bluetooth/hci_core.o:net/bluetooth/msft.h:64: first defined here
+   ld: net/bluetooth/mgmt.o: in function `msft_remove_all_monitors_on_suspend':
+>> net/bluetooth/msft.h:64: multiple definition of `msft_remove_all_monitors_on_suspend'; net/bluetooth/hci_core.o:net/bluetooth/msft.h:64: first defined here
+   ld: net/bluetooth/mgmt.o: in function `msft_reregister_monitors_on_resume':
+>> net/bluetooth/msft.h:64: multiple definition of `msft_reregister_monitors_on_resume'; net/bluetooth/hci_core.o:net/bluetooth/msft.h:64: first defined here
+   ld: net/bluetooth/hci_request.o: in function `msft_remove_all_monitors_on_suspend':
+>> net/bluetooth/msft.h:64: multiple definition of `msft_remove_all_monitors_on_suspend'; net/bluetooth/hci_core.o:net/bluetooth/msft.h:64: first defined here
+   ld: net/bluetooth/hci_request.o: in function `msft_reregister_monitors_on_resume':
+>> net/bluetooth/msft.h:64: multiple definition of `msft_reregister_monitors_on_resume'; net/bluetooth/hci_core.o:net/bluetooth/msft.h:64: first defined here
+
+
+vim +64 net/bluetooth/msft.h
+
+    63	
+  > 64	void msft_remove_all_monitors_on_suspend(struct hci_dev *hdev) {}
+    65	void msft_reregister_monitors_on_resume(struct hci_dev *hdev) {}
+    66	
+
 ---
- drivers/staging/Kconfig                 |    2 -
- drivers/staging/Makefile                |    1 -
- drivers/staging/netlogic/Kconfig        |    9 -
- drivers/staging/netlogic/Makefile       |    2 -
- drivers/staging/netlogic/TODO           |   11 -
- drivers/staging/netlogic/platform_net.c |  219 -----
- drivers/staging/netlogic/platform_net.h |   21 -
- drivers/staging/netlogic/xlr_net.c      | 1080 -----------------------
- drivers/staging/netlogic/xlr_net.h      | 1079 ----------------------
- 9 files changed, 2424 deletions(-)
- delete mode 100644 drivers/staging/netlogic/Kconfig
- delete mode 100644 drivers/staging/netlogic/Makefile
- delete mode 100644 drivers/staging/netlogic/TODO
- delete mode 100644 drivers/staging/netlogic/platform_net.c
- delete mode 100644 drivers/staging/netlogic/platform_net.h
- delete mode 100644 drivers/staging/netlogic/xlr_net.c
- delete mode 100644 drivers/staging/netlogic/xlr_net.h
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
 
-diff --git a/drivers/staging/Kconfig b/drivers/staging/Kconfig
-index 59af251e7576..7fec86946131 100644
---- a/drivers/staging/Kconfig
-+++ b/drivers/staging/Kconfig
-@@ -66,8 +66,6 @@ source "drivers/staging/gdm724x/Kconfig"
- 
- source "drivers/staging/fwserial/Kconfig"
- 
--source "drivers/staging/netlogic/Kconfig"
--
- source "drivers/staging/gs_fpgaboot/Kconfig"
- 
- source "drivers/staging/unisys/Kconfig"
-diff --git a/drivers/staging/Makefile b/drivers/staging/Makefile
-index 76f413470bc8..e66e19c45425 100644
---- a/drivers/staging/Makefile
-+++ b/drivers/staging/Makefile
-@@ -10,7 +10,6 @@ obj-$(CONFIG_RTL8723BS)		+= rtl8723bs/
- obj-$(CONFIG_R8712U)		+= rtl8712/
- obj-$(CONFIG_R8188EU)		+= r8188eu/
- obj-$(CONFIG_RTS5208)		+= rts5208/
--obj-$(CONFIG_NETLOGIC_XLR_NET)	+= netlogic/
- obj-$(CONFIG_OCTEON_ETHERNET)	+= octeon/
- obj-$(CONFIG_OCTEON_USB)	+= octeon-usb/
- obj-$(CONFIG_VT6655)		+= vt6655/
-diff --git a/drivers/staging/netlogic/Kconfig b/drivers/staging/netlogic/Kconfig
-deleted file mode 100644
-index e1712606ee3c..000000000000
---- a/drivers/staging/netlogic/Kconfig
-+++ /dev/null
-@@ -1,9 +0,0 @@
--# SPDX-License-Identifier: GPL-2.0
--config NETLOGIC_XLR_NET
--	tristate "Netlogic XLR/XLS network device"
--	depends on CPU_XLR
--	depends on NETDEVICES
--	select PHYLIB
--	help
--	This driver support Netlogic XLR/XLS on chip gigabit
--	Ethernet.
-diff --git a/drivers/staging/netlogic/Makefile b/drivers/staging/netlogic/Makefile
-deleted file mode 100644
-index 7e2902af26a3..000000000000
---- a/drivers/staging/netlogic/Makefile
-+++ /dev/null
-@@ -1,2 +0,0 @@
--# SPDX-License-Identifier: GPL-2.0
--obj-$(CONFIG_NETLOGIC_XLR_NET) += xlr_net.o platform_net.o
-diff --git a/drivers/staging/netlogic/TODO b/drivers/staging/netlogic/TODO
-deleted file mode 100644
-index 20e22ecb9903..000000000000
---- a/drivers/staging/netlogic/TODO
-+++ /dev/null
-@@ -1,11 +0,0 @@
--* Implementing 64bit stat counter in software
--* All memory allocation should be changed to DMA allocations
--* Changing comments into linux standard format
--
--Please send patches
--To:
--Ganesan Ramalingam <ganesanr@broadcom.com>
--Greg Kroah-Hartman <gregkh@linuxfoundation.org>
--Cc:
--Jayachandran Chandrashekaran Nair <jchandra@broadcom.com>
--
-diff --git a/drivers/staging/netlogic/platform_net.c b/drivers/staging/netlogic/platform_net.c
-deleted file mode 100644
-index 8be9d0b0c22c..000000000000
---- a/drivers/staging/netlogic/platform_net.c
-+++ /dev/null
-@@ -1,219 +0,0 @@
--// SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
--/*
-- * Copyright (c) 2003-2012 Broadcom Corporation
-- * All Rights Reserved
-- */
--
--#include <linux/device.h>
--#include <linux/platform_device.h>
--#include <linux/kernel.h>
--#include <linux/init.h>
--#include <linux/io.h>
--#include <linux/delay.h>
--#include <linux/ioport.h>
--#include <linux/resource.h>
--#include <linux/phy.h>
--
--#include <asm/netlogic/haldefs.h>
--#include <asm/netlogic/common.h>
--#include <asm/netlogic/xlr/fmn.h>
--#include <asm/netlogic/xlr/xlr.h>
--#include <asm/netlogic/psb-bootinfo.h>
--#include <asm/netlogic/xlr/pic.h>
--#include <asm/netlogic/xlr/iomap.h>
--
--#include "platform_net.h"
--
--/* Linux Net */
--#define MAX_NUM_GMAC		8
--#define MAX_NUM_XLS_GMAC	8
--#define MAX_NUM_XLR_GMAC	4
--
--static u32 xlr_gmac_offsets[] = {
--	NETLOGIC_IO_GMAC_0_OFFSET, NETLOGIC_IO_GMAC_1_OFFSET,
--	NETLOGIC_IO_GMAC_2_OFFSET, NETLOGIC_IO_GMAC_3_OFFSET,
--	NETLOGIC_IO_GMAC_4_OFFSET, NETLOGIC_IO_GMAC_5_OFFSET,
--	NETLOGIC_IO_GMAC_6_OFFSET, NETLOGIC_IO_GMAC_7_OFFSET
--};
--
--static u32 xlr_gmac_irqs[] = { PIC_GMAC_0_IRQ, PIC_GMAC_1_IRQ,
--	PIC_GMAC_2_IRQ, PIC_GMAC_3_IRQ,
--	PIC_GMAC_4_IRQ, PIC_GMAC_5_IRQ,
--	PIC_GMAC_6_IRQ, PIC_GMAC_7_IRQ
--};
--
--static struct resource xlr_net0_res[8];
--static struct resource xlr_net1_res[8];
--static u32 __iomem *gmac4_addr;
--static u32 __iomem *gpio_addr;
--
--static void xlr_resource_init(struct resource *res, int offset, int irq)
--{
--	res->name = "gmac";
--
--	res->start = CPHYSADDR(nlm_mmio_base(offset));
--	res->end = res->start + 0xfff;
--	res->flags = IORESOURCE_MEM;
--
--	res++;
--	res->name = "gmac";
--	res->start = irq;
--	res->end = irq;
--	res->flags = IORESOURCE_IRQ;
--}
--
--static struct platform_device *gmac_controller2_init(void *gmac0_addr)
--{
--	int mac;
--	static struct xlr_net_data ndata1 = {
--		.phy_interface	= PHY_INTERFACE_MODE_SGMII,
--		.rfr_station	= FMN_STNID_GMAC1_FR_0,
--		.bucket_size	= xlr_board_fmn_config.bucket_size,
--		.gmac_fmn_info	= &xlr_board_fmn_config.gmac[1],
--	};
--
--	static struct platform_device xlr_net_dev1 = {
--		.name		= "xlr-net",
--		.id		= 1,
--		.dev.platform_data = &ndata1,
--	};
--
--	gmac4_addr =
--		ioremap(CPHYSADDR(nlm_mmio_base(NETLOGIC_IO_GMAC_4_OFFSET)),
--			0xfff);
--	ndata1.serdes_addr = gmac4_addr;
--	ndata1.pcs_addr	= gmac4_addr;
--	ndata1.mii_addr	= gmac0_addr;
--	ndata1.gpio_addr = gpio_addr;
--	ndata1.cpu_mask = nlm_current_node()->coremask;
--
--	xlr_net_dev1.resource = xlr_net1_res;
--
--	for (mac = 0; mac < 4; mac++) {
--		ndata1.tx_stnid[mac] = FMN_STNID_GMAC1_TX0 + mac;
--		ndata1.phy_addr[mac] = mac + 4 + 0x10;
--
--		xlr_resource_init(&xlr_net1_res[mac * 2],
--				  xlr_gmac_offsets[mac + 4],
--				  xlr_gmac_irqs[mac + 4]);
--	}
--	xlr_net_dev1.num_resources = 8;
--
--	return &xlr_net_dev1;
--}
--
--static void xls_gmac_init(void)
--{
--	int mac;
--	struct platform_device *xlr_net_dev1;
--	void __iomem *gmac0_addr =
--		ioremap(CPHYSADDR(nlm_mmio_base(NETLOGIC_IO_GMAC_0_OFFSET)),
--			0xfff);
--
--	static struct xlr_net_data ndata0 = {
--		.rfr_station	= FMN_STNID_GMACRFR_0,
--		.bucket_size	= xlr_board_fmn_config.bucket_size,
--		.gmac_fmn_info	= &xlr_board_fmn_config.gmac[0],
--	};
--
--	static struct platform_device xlr_net_dev0 = {
--		.name		= "xlr-net",
--		.id		= 0,
--	};
--	xlr_net_dev0.dev.platform_data = &ndata0;
--	ndata0.serdes_addr = gmac0_addr;
--	ndata0.pcs_addr	= gmac0_addr;
--	ndata0.mii_addr	= gmac0_addr;
--
--	/* Passing GPIO base for serdes init. Only needed on sgmii ports */
--	gpio_addr =
--		ioremap(CPHYSADDR(nlm_mmio_base(NETLOGIC_IO_GPIO_OFFSET)),
--			0xfff);
--	ndata0.gpio_addr = gpio_addr;
--	ndata0.cpu_mask = nlm_current_node()->coremask;
--
--	xlr_net_dev0.resource = xlr_net0_res;
--
--	switch (nlm_prom_info.board_major_version) {
--	case 12:
--		/* first block RGMII or XAUI, use RGMII */
--		ndata0.phy_interface = PHY_INTERFACE_MODE_RGMII;
--		ndata0.tx_stnid[0] = FMN_STNID_GMAC0_TX0;
--		ndata0.phy_addr[0] = 0;
--
--		xlr_net_dev0.num_resources = 2;
--
--		xlr_resource_init(&xlr_net0_res[0], xlr_gmac_offsets[0],
--				  xlr_gmac_irqs[0]);
--		platform_device_register(&xlr_net_dev0);
--
--		/* second block is XAUI, not supported yet */
--		break;
--	default:
--		/* default XLS config, all ports SGMII */
--		ndata0.phy_interface = PHY_INTERFACE_MODE_SGMII;
--		for (mac = 0; mac < 4; mac++) {
--			ndata0.tx_stnid[mac] = FMN_STNID_GMAC0_TX0 + mac;
--			ndata0.phy_addr[mac] = mac + 0x10;
--
--			xlr_resource_init(&xlr_net0_res[mac * 2],
--					  xlr_gmac_offsets[mac],
--					xlr_gmac_irqs[mac]);
--		}
--		xlr_net_dev0.num_resources = 8;
--		platform_device_register(&xlr_net_dev0);
--
--		xlr_net_dev1 = gmac_controller2_init(gmac0_addr);
--		platform_device_register(xlr_net_dev1);
--	}
--}
--
--static void xlr_gmac_init(void)
--{
--	int mac;
--
--	/* assume all GMACs for now */
--	static struct xlr_net_data ndata0 = {
--		.phy_interface	= PHY_INTERFACE_MODE_RGMII,
--		.serdes_addr	= NULL,
--		.pcs_addr	= NULL,
--		.rfr_station	= FMN_STNID_GMACRFR_0,
--		.bucket_size	= xlr_board_fmn_config.bucket_size,
--		.gmac_fmn_info	= &xlr_board_fmn_config.gmac[0],
--		.gpio_addr	= NULL,
--	};
--
--	static struct platform_device xlr_net_dev0 = {
--		.name		= "xlr-net",
--		.id		= 0,
--		.dev.platform_data = &ndata0,
--	};
--	ndata0.mii_addr =
--		ioremap(CPHYSADDR(nlm_mmio_base(NETLOGIC_IO_GMAC_0_OFFSET)),
--			0xfff);
--
--	ndata0.cpu_mask = nlm_current_node()->coremask;
--
--	for (mac = 0; mac < MAX_NUM_XLR_GMAC; mac++) {
--		ndata0.tx_stnid[mac] = FMN_STNID_GMAC0_TX0 + mac;
--		ndata0.phy_addr[mac] = mac;
--		xlr_resource_init(&xlr_net0_res[mac * 2], xlr_gmac_offsets[mac],
--				  xlr_gmac_irqs[mac]);
--	}
--	xlr_net_dev0.num_resources = 8;
--	xlr_net_dev0.resource = xlr_net0_res;
--
--	platform_device_register(&xlr_net_dev0);
--}
--
--static int __init xlr_net_init(void)
--{
--	if (nlm_chip_is_xls())
--		xls_gmac_init();
--	else
--		xlr_gmac_init();
--
--	return 0;
--}
--
--arch_initcall(xlr_net_init);
-diff --git a/drivers/staging/netlogic/platform_net.h b/drivers/staging/netlogic/platform_net.h
-deleted file mode 100644
-index c8d4c13424c6..000000000000
---- a/drivers/staging/netlogic/platform_net.h
-+++ /dev/null
-@@ -1,21 +0,0 @@
--/* SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause) */
--/*
-- * Copyright (c) 2003-2012 Broadcom Corporation
-- * All Rights Reserved
-- */
--
--#define PORTS_PER_CONTROLLER		4
--
--struct xlr_net_data {
--	int cpu_mask;
--	u32 __iomem *mii_addr;
--	u32 __iomem *serdes_addr;
--	u32 __iomem *pcs_addr;
--	u32 __iomem *gpio_addr;
--	int phy_interface;
--	int rfr_station;
--	int tx_stnid[PORTS_PER_CONTROLLER];
--	int *bucket_size;
--	int phy_addr[PORTS_PER_CONTROLLER];
--	struct xlr_fmn_info *gmac_fmn_info;
--};
-diff --git a/drivers/staging/netlogic/xlr_net.c b/drivers/staging/netlogic/xlr_net.c
-deleted file mode 100644
-index 69ea61faf8fa..000000000000
---- a/drivers/staging/netlogic/xlr_net.c
-+++ /dev/null
-@@ -1,1080 +0,0 @@
--// SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
--/*
-- * Copyright (c) 2003-2012 Broadcom Corporation
-- * All Rights Reserved
-- */
--
--#include <linux/phy.h>
--#include <linux/delay.h>
--#include <linux/netdevice.h>
--#include <linux/smp.h>
--#include <linux/ethtool.h>
--#include <linux/module.h>
--#include <linux/etherdevice.h>
--#include <linux/skbuff.h>
--#include <linux/jiffies.h>
--#include <linux/interrupt.h>
--#include <linux/platform_device.h>
--
--#include <asm/mipsregs.h>
--/*
-- * fmn.h - For FMN credit configuration and registering fmn_handler.
-- * FMN is communication mechanism that allows processing agents within
-- * XLR/XLS to communicate each other.
-- */
--#include <asm/netlogic/xlr/fmn.h>
--
--#include "platform_net.h"
--#include "xlr_net.h"
--
--/*
-- * The readl/writel implementation byteswaps on XLR/XLS, so
-- * we need to use __raw_ IO to read the NAE registers
-- * because they are in the big-endian MMIO area on the SoC.
-- */
--static inline void xlr_nae_wreg(u32 __iomem *base, unsigned int reg, u32 val)
--{
--	__raw_writel(val, base + reg);
--}
--
--static inline u32 xlr_nae_rdreg(u32 __iomem *base, unsigned int reg)
--{
--	return __raw_readl(base + reg);
--}
--
--static inline void xlr_reg_update(u32 *base_addr, u32 off, u32 val, u32 mask)
--{
--	u32 tmp;
--
--	tmp = xlr_nae_rdreg(base_addr, off);
--	xlr_nae_wreg(base_addr, off, (tmp & ~mask) | (val & mask));
--}
--
--#define MAC_SKB_BACK_PTR_SIZE SMP_CACHE_BYTES
--
--static int send_to_rfr_fifo(struct xlr_net_priv *priv, void *addr)
--{
--	struct nlm_fmn_msg msg;
--	int ret = 0, num_try = 0, stnid;
--	unsigned long paddr, mflags;
--
--	paddr = virt_to_bus(addr);
--	msg.msg0 = (u64)paddr & 0xffffffffe0ULL;
--	msg.msg1 = 0;
--	msg.msg2 = 0;
--	msg.msg3 = 0;
--	stnid = priv->nd->rfr_station;
--	do {
--		mflags = nlm_cop2_enable_irqsave();
--		ret = nlm_fmn_send(1, 0, stnid, &msg);
--		nlm_cop2_disable_irqrestore(mflags);
--		if (ret == 0)
--			return 0;
--	} while (++num_try < 10000);
--
--	netdev_err(priv->ndev, "Send to RFR failed in RX path\n");
--	return ret;
--}
--
--static inline unsigned char *xlr_alloc_skb(void)
--{
--	struct sk_buff *skb;
--	int buf_len = sizeof(struct sk_buff *);
--	unsigned char *skb_data;
--
--	/* skb->data is cache aligned */
--	skb = alloc_skb(XLR_RX_BUF_SIZE, GFP_ATOMIC);
--	if (!skb)
--		return NULL;
--	skb_data = skb->data;
--	skb_reserve(skb, MAC_SKB_BACK_PTR_SIZE);
--	memcpy(skb_data, &skb, buf_len);
--
--	return skb->data;
--}
--
--static void xlr_net_fmn_handler(int bkt, int src_stnid, int size, int code,
--				struct nlm_fmn_msg *msg, void *arg)
--{
--	struct sk_buff *skb;
--	void *skb_data = NULL;
--	struct net_device *ndev;
--	struct xlr_net_priv *priv;
--	u32 port, length;
--	unsigned char *addr;
--	struct xlr_adapter *adapter = arg;
--
--	length = (msg->msg0 >> 40) & 0x3fff;
--	if (length == 0) {
--		addr = bus_to_virt(msg->msg0 & 0xffffffffffULL);
--		addr = addr - MAC_SKB_BACK_PTR_SIZE;
--		skb = (struct sk_buff *)(*(unsigned long *)addr);
--		dev_kfree_skb_any((struct sk_buff *)addr);
--	} else {
--		addr = (unsigned char *)
--			bus_to_virt(msg->msg0 & 0xffffffffe0ULL);
--		length = length - BYTE_OFFSET - MAC_CRC_LEN;
--		port = ((int)msg->msg0) & 0x0f;
--		addr = addr - MAC_SKB_BACK_PTR_SIZE;
--		skb = (struct sk_buff *)(*(unsigned long *)addr);
--		skb->dev = adapter->netdev[port];
--		if (!skb->dev)
--			return;
--		ndev = skb->dev;
--		priv = netdev_priv(ndev);
--
--		/* 16 byte IP header align */
--		skb_reserve(skb, BYTE_OFFSET);
--		skb_put(skb, length);
--		skb->protocol = eth_type_trans(skb, skb->dev);
--		netif_rx(skb);
--		/* Fill rx ring */
--		skb_data = xlr_alloc_skb();
--		if (skb_data)
--			send_to_rfr_fifo(priv, skb_data);
--	}
--}
--
--static struct phy_device *xlr_get_phydev(struct xlr_net_priv *priv)
--{
--	return mdiobus_get_phy(priv->mii_bus, priv->phy_addr);
--}
--
--/*
-- * Ethtool operation
-- */
--static int xlr_get_link_ksettings(struct net_device *ndev,
--				  struct ethtool_link_ksettings *ecmd)
--{
--	struct xlr_net_priv *priv = netdev_priv(ndev);
--	struct phy_device *phydev = xlr_get_phydev(priv);
--
--	if (!phydev)
--		return -ENODEV;
--
--	phy_ethtool_ksettings_get(phydev, ecmd);
--
--	return 0;
--}
--
--static int xlr_set_link_ksettings(struct net_device *ndev,
--				  const struct ethtool_link_ksettings *ecmd)
--{
--	struct xlr_net_priv *priv = netdev_priv(ndev);
--	struct phy_device *phydev = xlr_get_phydev(priv);
--
--	if (!phydev)
--		return -ENODEV;
--	return phy_ethtool_ksettings_set(phydev, ecmd);
--}
--
--static const struct ethtool_ops xlr_ethtool_ops = {
--	.get_link_ksettings = xlr_get_link_ksettings,
--	.set_link_ksettings = xlr_set_link_ksettings,
--};
--
--/*
-- * Net operations
-- */
--static int xlr_net_fill_rx_ring(struct net_device *ndev)
--{
--	void *skb_data;
--	struct xlr_net_priv *priv = netdev_priv(ndev);
--	int i;
--
--	for (i = 0; i < MAX_FRIN_SPILL / 4; i++) {
--		skb_data = xlr_alloc_skb();
--		if (!skb_data)
--			return -ENOMEM;
--		send_to_rfr_fifo(priv, skb_data);
--	}
--	netdev_info(ndev, "Rx ring setup done\n");
--	return 0;
--}
--
--static int xlr_net_open(struct net_device *ndev)
--{
--	u32 err;
--	struct xlr_net_priv *priv = netdev_priv(ndev);
--	struct phy_device *phydev = xlr_get_phydev(priv);
--
--	/* schedule a link state check */
--	phy_start(phydev);
--
--	err = phy_start_aneg(phydev);
--	if (err) {
--		pr_err("Autoneg failed\n");
--		return err;
--	}
--	/* Setup the speed from PHY to internal reg*/
--	xlr_set_gmac_speed(priv);
--
--	netif_tx_start_all_queues(ndev);
--
--	return 0;
--}
--
--static int xlr_net_stop(struct net_device *ndev)
--{
--	struct xlr_net_priv *priv = netdev_priv(ndev);
--	struct phy_device *phydev = xlr_get_phydev(priv);
--
--	phy_stop(phydev);
--	netif_tx_stop_all_queues(ndev);
--	return 0;
--}
--
--static void xlr_make_tx_desc(struct nlm_fmn_msg *msg, unsigned long addr,
--			     struct sk_buff *skb)
--{
--	unsigned long physkb = virt_to_phys(skb);
--	int cpu_core = nlm_core_id();
--	int fr_stn_id = cpu_core * 8 + XLR_FB_STN;	/* FB to 6th bucket */
--
--	msg->msg0 = (((u64)1 << 63)	|	/* End of packet descriptor */
--		((u64)127 << 54)	|	/* No Free back */
--		(u64)skb->len << 40	|	/* Length of data */
--		((u64)addr));
--	msg->msg1 = (((u64)1 << 63)	|
--		((u64)fr_stn_id << 54)	|	/* Free back id */
--		(u64)0 << 40		|	/* Set len to 0 */
--		((u64)physkb  & 0xffffffff));	/* 32bit address */
--	msg->msg2 = 0;
--	msg->msg3 = 0;
--}
--
--static netdev_tx_t xlr_net_start_xmit(struct sk_buff *skb,
--				      struct net_device *ndev)
--{
--	struct nlm_fmn_msg msg;
--	struct xlr_net_priv *priv = netdev_priv(ndev);
--	int ret;
--	u32 flags;
--
--	xlr_make_tx_desc(&msg, virt_to_phys(skb->data), skb);
--	flags = nlm_cop2_enable_irqsave();
--	ret = nlm_fmn_send(2, 0, priv->tx_stnid, &msg);
--	nlm_cop2_disable_irqrestore(flags);
--	if (ret)
--		dev_kfree_skb_any(skb);
--	return NETDEV_TX_OK;
--}
--
--static void xlr_hw_set_mac_addr(struct net_device *ndev)
--{
--	struct xlr_net_priv *priv = netdev_priv(ndev);
--
--	/* set mac station address */
--	xlr_nae_wreg(priv->base_addr, R_MAC_ADDR0,
--		     ((ndev->dev_addr[5] << 24) | (ndev->dev_addr[4] << 16) |
--		     (ndev->dev_addr[3] << 8) | (ndev->dev_addr[2])));
--	xlr_nae_wreg(priv->base_addr, R_MAC_ADDR0 + 1,
--		     ((ndev->dev_addr[1] << 24) | (ndev->dev_addr[0] << 16)));
--
--	xlr_nae_wreg(priv->base_addr, R_MAC_ADDR_MASK2, 0xffffffff);
--	xlr_nae_wreg(priv->base_addr, R_MAC_ADDR_MASK2 + 1, 0xffffffff);
--	xlr_nae_wreg(priv->base_addr, R_MAC_ADDR_MASK3, 0xffffffff);
--	xlr_nae_wreg(priv->base_addr, R_MAC_ADDR_MASK3 + 1, 0xffffffff);
--
--	xlr_nae_wreg(priv->base_addr, R_MAC_FILTER_CONFIG,
--		     (1 << O_MAC_FILTER_CONFIG__BROADCAST_EN) |
--		     (1 << O_MAC_FILTER_CONFIG__ALL_MCAST_EN) |
--		     (1 << O_MAC_FILTER_CONFIG__MAC_ADDR0_VALID));
--
--	if (priv->nd->phy_interface == PHY_INTERFACE_MODE_RGMII ||
--	    priv->nd->phy_interface == PHY_INTERFACE_MODE_SGMII)
--		xlr_reg_update(priv->base_addr, R_IPG_IFG, MAC_B2B_IPG, 0x7f);
--}
--
--static int xlr_net_set_mac_addr(struct net_device *ndev, void *data)
--{
--	int err;
--
--	err = eth_mac_addr(ndev, data);
--	if (err)
--		return err;
--	xlr_hw_set_mac_addr(ndev);
--	return 0;
--}
--
--static void xlr_set_rx_mode(struct net_device *ndev)
--{
--	struct xlr_net_priv *priv = netdev_priv(ndev);
--	u32 regval;
--
--	regval = xlr_nae_rdreg(priv->base_addr, R_MAC_FILTER_CONFIG);
--
--	if (ndev->flags & IFF_PROMISC) {
--		regval |= (1 << O_MAC_FILTER_CONFIG__BROADCAST_EN) |
--		(1 << O_MAC_FILTER_CONFIG__PAUSE_FRAME_EN) |
--		(1 << O_MAC_FILTER_CONFIG__ALL_MCAST_EN) |
--		(1 << O_MAC_FILTER_CONFIG__ALL_UCAST_EN);
--	} else {
--		regval &= ~((1 << O_MAC_FILTER_CONFIG__PAUSE_FRAME_EN) |
--		(1 << O_MAC_FILTER_CONFIG__ALL_UCAST_EN));
--	}
--
--	xlr_nae_wreg(priv->base_addr, R_MAC_FILTER_CONFIG, regval);
--}
--
--static void xlr_stats(struct net_device *ndev, struct rtnl_link_stats64 *stats)
--{
--	struct xlr_net_priv *priv = netdev_priv(ndev);
--
--	stats->rx_packets = xlr_nae_rdreg(priv->base_addr, RX_PACKET_COUNTER);
--	stats->tx_packets = xlr_nae_rdreg(priv->base_addr, TX_PACKET_COUNTER);
--	stats->rx_bytes = xlr_nae_rdreg(priv->base_addr, RX_BYTE_COUNTER);
--	stats->tx_bytes = xlr_nae_rdreg(priv->base_addr, TX_BYTE_COUNTER);
--	stats->tx_errors = xlr_nae_rdreg(priv->base_addr, TX_FCS_ERROR_COUNTER);
--	stats->rx_dropped = xlr_nae_rdreg(priv->base_addr,
--					  RX_DROP_PACKET_COUNTER);
--	stats->tx_dropped = xlr_nae_rdreg(priv->base_addr,
--					  TX_DROP_FRAME_COUNTER);
--
--	stats->multicast = xlr_nae_rdreg(priv->base_addr,
--					 RX_MULTICAST_PACKET_COUNTER);
--	stats->collisions = xlr_nae_rdreg(priv->base_addr,
--					  TX_TOTAL_COLLISION_COUNTER);
--
--	stats->rx_length_errors = xlr_nae_rdreg(priv->base_addr,
--						RX_FRAME_LENGTH_ERROR_COUNTER);
--	stats->rx_over_errors = xlr_nae_rdreg(priv->base_addr,
--					      RX_DROP_PACKET_COUNTER);
--	stats->rx_crc_errors = xlr_nae_rdreg(priv->base_addr,
--					     RX_FCS_ERROR_COUNTER);
--	stats->rx_frame_errors = xlr_nae_rdreg(priv->base_addr,
--					       RX_ALIGNMENT_ERROR_COUNTER);
--
--	stats->rx_fifo_errors = xlr_nae_rdreg(priv->base_addr,
--					      RX_DROP_PACKET_COUNTER);
--	stats->rx_missed_errors = xlr_nae_rdreg(priv->base_addr,
--						RX_CARRIER_SENSE_ERROR_COUNTER);
--
--	stats->rx_errors = (stats->rx_over_errors + stats->rx_crc_errors +
--			    stats->rx_frame_errors + stats->rx_fifo_errors +
--			    stats->rx_missed_errors);
--
--	stats->tx_aborted_errors = xlr_nae_rdreg(priv->base_addr,
--						 TX_EXCESSIVE_COLLISION_PACKET_COUNTER);
--	stats->tx_carrier_errors = xlr_nae_rdreg(priv->base_addr,
--						 TX_DROP_FRAME_COUNTER);
--	stats->tx_fifo_errors = xlr_nae_rdreg(priv->base_addr,
--					      TX_DROP_FRAME_COUNTER);
--}
--
--static const struct net_device_ops xlr_netdev_ops = {
--	.ndo_open = xlr_net_open,
--	.ndo_stop = xlr_net_stop,
--	.ndo_start_xmit = xlr_net_start_xmit,
--	.ndo_select_queue = dev_pick_tx_cpu_id,
--	.ndo_set_mac_address = xlr_net_set_mac_addr,
--	.ndo_set_rx_mode = xlr_set_rx_mode,
--	.ndo_get_stats64 = xlr_stats,
--};
--
--/*
-- * Gmac init
-- */
--static void *xlr_config_spill(struct xlr_net_priv *priv, int reg_start_0,
--			      int reg_start_1, int reg_size, int size)
--{
--	void *spill;
--	u32 *base;
--	unsigned long phys_addr;
--	u32 spill_size;
--
--	base = priv->base_addr;
--	spill_size = size;
--	spill = kmalloc(spill_size + SMP_CACHE_BYTES, GFP_KERNEL);
--	if (!spill)
--		return ZERO_SIZE_PTR;
--
--	spill = PTR_ALIGN(spill, SMP_CACHE_BYTES);
--	phys_addr = virt_to_phys(spill);
--	dev_dbg(&priv->ndev->dev, "Allocated spill %d bytes at %lx\n",
--		size, phys_addr);
--	xlr_nae_wreg(base, reg_start_0, (phys_addr >> 5) & 0xffffffff);
--	xlr_nae_wreg(base, reg_start_1, ((u64)phys_addr >> 37) & 0x07);
--	xlr_nae_wreg(base, reg_size, spill_size);
--
--	return spill;
--}
--
--/*
-- * Configure the 6 FIFO's that are used by the network accelarator to
-- * communicate with the rest of the XLx device. 4 of the FIFO's are for
-- * packets from NA --> cpu (called Class FIFO's) and 2 are for feeding
-- * the NA with free descriptors.
-- */
--static void xlr_config_fifo_spill_area(struct xlr_net_priv *priv)
--{
--	priv->frin_spill = xlr_config_spill(priv,
--					    R_REG_FRIN_SPILL_MEM_START_0,
--					    R_REG_FRIN_SPILL_MEM_START_1,
--					    R_REG_FRIN_SPILL_MEM_SIZE,
--					    MAX_FRIN_SPILL * sizeof(u64));
--	priv->frout_spill = xlr_config_spill(priv,
--					     R_FROUT_SPILL_MEM_START_0,
--					     R_FROUT_SPILL_MEM_START_1,
--					     R_FROUT_SPILL_MEM_SIZE,
--					     MAX_FROUT_SPILL * sizeof(u64));
--	priv->class_0_spill = xlr_config_spill(priv,
--					       R_CLASS0_SPILL_MEM_START_0,
--					       R_CLASS0_SPILL_MEM_START_1,
--					       R_CLASS0_SPILL_MEM_SIZE,
--					       MAX_CLASS_0_SPILL * sizeof(u64));
--	priv->class_1_spill = xlr_config_spill(priv,
--					       R_CLASS1_SPILL_MEM_START_0,
--					       R_CLASS1_SPILL_MEM_START_1,
--					       R_CLASS1_SPILL_MEM_SIZE,
--					       MAX_CLASS_1_SPILL * sizeof(u64));
--	priv->class_2_spill = xlr_config_spill(priv,
--					       R_CLASS2_SPILL_MEM_START_0,
--					       R_CLASS2_SPILL_MEM_START_1,
--					       R_CLASS2_SPILL_MEM_SIZE,
--					       MAX_CLASS_2_SPILL * sizeof(u64));
--	priv->class_3_spill = xlr_config_spill(priv,
--					       R_CLASS3_SPILL_MEM_START_0,
--					       R_CLASS3_SPILL_MEM_START_1,
--					       R_CLASS3_SPILL_MEM_SIZE,
--					       MAX_CLASS_3_SPILL * sizeof(u64));
--}
--
--/*
-- * Configure PDE to Round-Robin distribution of packets to the
-- * available cpu
-- */
--static void xlr_config_pde(struct xlr_net_priv *priv)
--{
--	int i = 0;
--	u64 bkt_map = 0;
--
--	/* Each core has 8 buckets(station) */
--	for (i = 0; i < hweight32(priv->nd->cpu_mask); i++)
--		bkt_map |= (0xff << (i * 8));
--
--	xlr_nae_wreg(priv->base_addr, R_PDE_CLASS_0, (bkt_map & 0xffffffff));
--	xlr_nae_wreg(priv->base_addr, R_PDE_CLASS_0 + 1,
--		     ((bkt_map >> 32) & 0xffffffff));
--
--	xlr_nae_wreg(priv->base_addr, R_PDE_CLASS_1, (bkt_map & 0xffffffff));
--	xlr_nae_wreg(priv->base_addr, R_PDE_CLASS_1 + 1,
--		     ((bkt_map >> 32) & 0xffffffff));
--
--	xlr_nae_wreg(priv->base_addr, R_PDE_CLASS_2, (bkt_map & 0xffffffff));
--	xlr_nae_wreg(priv->base_addr, R_PDE_CLASS_2 + 1,
--		     ((bkt_map >> 32) & 0xffffffff));
--
--	xlr_nae_wreg(priv->base_addr, R_PDE_CLASS_3, (bkt_map & 0xffffffff));
--	xlr_nae_wreg(priv->base_addr, R_PDE_CLASS_3 + 1,
--		     ((bkt_map >> 32) & 0xffffffff));
--}
--
--/*
-- * Setup the Message ring credits, bucket size and other
-- * common configuration
-- */
--static int xlr_config_common(struct xlr_net_priv *priv)
--{
--	struct xlr_fmn_info *gmac = priv->nd->gmac_fmn_info;
--	int start_stn_id = gmac->start_stn_id;
--	int end_stn_id = gmac->end_stn_id;
--	int *bucket_size = priv->nd->bucket_size;
--	int i, j, err;
--
--	/* Setting non-core MsgBktSize(0x321 - 0x325) */
--	for (i = start_stn_id; i <= end_stn_id; i++) {
--		xlr_nae_wreg(priv->base_addr,
--			     R_GMAC_RFR0_BUCKET_SIZE + i - start_stn_id,
--			     bucket_size[i]);
--	}
--
--	/*
--	 * Setting non-core Credit counter register
--	 * Distributing Gmac's credit to CPU's
--	 */
--	for (i = 0; i < 8; i++) {
--		for (j = 0; j < 8; j++)
--			xlr_nae_wreg(priv->base_addr,
--				     (R_CC_CPU0_0 + (i * 8)) + j,
--				     gmac->credit_config[(i * 8) + j]);
--	}
--
--	xlr_nae_wreg(priv->base_addr, R_MSG_TX_THRESHOLD, 3);
--	xlr_nae_wreg(priv->base_addr, R_DMACR0, 0xffffffff);
--	xlr_nae_wreg(priv->base_addr, R_DMACR1, 0xffffffff);
--	xlr_nae_wreg(priv->base_addr, R_DMACR2, 0xffffffff);
--	xlr_nae_wreg(priv->base_addr, R_DMACR3, 0xffffffff);
--	xlr_nae_wreg(priv->base_addr, R_FREEQCARVE, 0);
--
--	err = xlr_net_fill_rx_ring(priv->ndev);
--	if (err)
--		return err;
--	nlm_register_fmn_handler(start_stn_id, end_stn_id, xlr_net_fmn_handler,
--				 priv->adapter);
--	return 0;
--}
--
--static void xlr_config_translate_table(struct xlr_net_priv *priv)
--{
--	u32 cpu_mask;
--	u32 val;
--	int bkts[32]; /* one bucket is assumed for each cpu */
--	int b1, b2, c1, c2, i, j, k;
--	int use_bkt;
--
--	use_bkt = 0;
--	cpu_mask = priv->nd->cpu_mask;
--
--	pr_info("Using %s-based distribution\n",
--		(use_bkt) ? "bucket" : "class");
--	j = 0;
--	for (i = 0; i < 32; i++) {
--		if ((1 << i) & cpu_mask) {
--			/* for each cpu, mark the 4+threadid bucket */
--			bkts[j] = ((i / 4) * 8) + (i % 4);
--			j++;
--		}
--	}
--
--	/*configure the 128 * 9 Translation table to send to available buckets*/
--	k = 0;
--	c1 = 3;
--	c2 = 0;
--	for (i = 0; i < 64; i++) {
--		/*
--		 * On use_bkt set the b0, b1 are used, else
--		 * the 4 classes are used, here implemented
--		 * a logic to distribute the packets to the
--		 * buckets equally or based on the class
--		 */
--		c1 = (c1 + 1) & 3;
--		c2 = (c1 + 1) & 3;
--		b1 = bkts[k];
--		k = (k + 1) % j;
--		b2 = bkts[k];
--		k = (k + 1) % j;
--
--		val = ((c1 << 23) | (b1 << 17) | (use_bkt << 16) |
--				(c2 << 7) | (b2 << 1) | (use_bkt << 0));
--		dev_dbg(&priv->ndev->dev, "Table[%d] b1=%d b2=%d c1=%d c2=%d\n",
--			i, b1, b2, c1, c2);
--		xlr_nae_wreg(priv->base_addr, R_TRANSLATETABLE + i, val);
--		c1 = c2;
--	}
--}
--
--static void xlr_config_parser(struct xlr_net_priv *priv)
--{
--	u32 val;
--
--	/* Mark it as ETHERNET type */
--	xlr_nae_wreg(priv->base_addr, R_L2TYPE_0, 0x01);
--
--	/* Use 7bit CRChash for flow classification with 127 as CRC polynomial*/
--	xlr_nae_wreg(priv->base_addr, R_PARSERCONFIGREG,
--		     ((0x7f << 8) | (1 << 1)));
--
--	/* configure the parser : L2 Type is configured in the bootloader */
--	/* extract IP: src, dest protocol */
--	xlr_nae_wreg(priv->base_addr, R_L3CTABLE,
--		     (9 << 20) | (1 << 19) | (1 << 18) | (0x01 << 16) |
--		     (0x0800 << 0));
--	xlr_nae_wreg(priv->base_addr, R_L3CTABLE + 1,
--		     (9 << 25) | (1 << 21) | (12 << 14) | (4 << 10) |
--		     (16 << 4) | 4);
--
--	/* Configure to extract SRC port and Dest port for TCP and UDP pkts */
--	xlr_nae_wreg(priv->base_addr, R_L4CTABLE, 6);
--	xlr_nae_wreg(priv->base_addr, R_L4CTABLE + 2, 17);
--	val = ((0 << 21) | (2 << 17) | (2 << 11) | (2 << 7));
--	xlr_nae_wreg(priv->base_addr, R_L4CTABLE + 1, val);
--	xlr_nae_wreg(priv->base_addr, R_L4CTABLE + 3, val);
--
--	xlr_config_translate_table(priv);
--}
--
--static int xlr_phy_write(u32 *base_addr, int phy_addr, int regnum, u16 val)
--{
--	unsigned long timeout, stoptime, checktime;
--	int timedout;
--
--	/* 100ms timeout*/
--	timeout = msecs_to_jiffies(100);
--	stoptime = jiffies + timeout;
--	timedout = 0;
--
--	xlr_nae_wreg(base_addr, R_MII_MGMT_ADDRESS, (phy_addr << 8) | regnum);
--
--	/* Write the data which starts the write cycle */
--	xlr_nae_wreg(base_addr, R_MII_MGMT_WRITE_DATA, (u32)val);
--
--	/* poll for the read cycle to complete */
--	while (!timedout) {
--		checktime = jiffies;
--		if (xlr_nae_rdreg(base_addr, R_MII_MGMT_INDICATORS) == 0)
--			break;
--		timedout = time_after(checktime, stoptime);
--	}
--	if (timedout) {
--		pr_info("Phy device write err: device busy");
--		return -EBUSY;
--	}
--
--	return 0;
--}
--
--static int xlr_phy_read(u32 *base_addr, int phy_addr, int regnum)
--{
--	unsigned long timeout, stoptime, checktime;
--	int timedout;
--
--	/* 100ms timeout*/
--	timeout = msecs_to_jiffies(100);
--	stoptime = jiffies + timeout;
--	timedout = 0;
--
--	/* setup the phy reg to be used */
--	xlr_nae_wreg(base_addr, R_MII_MGMT_ADDRESS,
--		     (phy_addr << 8) | (regnum << 0));
--
--	/* Issue the read command */
--	xlr_nae_wreg(base_addr, R_MII_MGMT_COMMAND,
--		     (1 << O_MII_MGMT_COMMAND__rstat));
--
--	/* poll for the read cycle to complete */
--	while (!timedout) {
--		checktime = jiffies;
--		if (xlr_nae_rdreg(base_addr, R_MII_MGMT_INDICATORS) == 0)
--			break;
--		timedout = time_after(checktime, stoptime);
--	}
--	if (timedout) {
--		pr_info("Phy device read err: device busy");
--		return -EBUSY;
--	}
--
--	/* clear the read cycle */
--	xlr_nae_wreg(base_addr, R_MII_MGMT_COMMAND, 0);
--
--	/* Read the data */
--	return xlr_nae_rdreg(base_addr, R_MII_MGMT_STATUS);
--}
--
--static int xlr_mii_write(struct mii_bus *bus, int phy_addr, int regnum, u16 val)
--{
--	struct xlr_net_priv *priv = bus->priv;
--	int ret;
--
--	ret = xlr_phy_write(priv->mii_addr, phy_addr, regnum, val);
--	dev_dbg(&priv->ndev->dev, "mii_write phy %d : %d <- %x [%x]\n",
--		phy_addr, regnum, val, ret);
--	return ret;
--}
--
--static int xlr_mii_read(struct mii_bus *bus, int phy_addr, int regnum)
--{
--	struct xlr_net_priv *priv = bus->priv;
--	int ret;
--
--	ret =  xlr_phy_read(priv->mii_addr, phy_addr, regnum);
--	dev_dbg(&priv->ndev->dev, "mii_read phy %d : %d [%x]\n",
--		phy_addr, regnum, ret);
--	return ret;
--}
--
--/*
-- * XLR ports are RGMII. XLS ports are SGMII mostly except the port0,
-- * which can be configured either SGMII or RGMII, considered SGMII
-- * by default, if board setup to RGMII the port_type need to set
-- * accordingly.Serdes and PCS layer need to configured for SGMII
-- */
--static void xlr_sgmii_init(struct xlr_net_priv *priv)
--{
--	int phy;
--
--	xlr_phy_write(priv->serdes_addr, 26, 0, 0x6DB0);
--	xlr_phy_write(priv->serdes_addr, 26, 1, 0xFFFF);
--	xlr_phy_write(priv->serdes_addr, 26, 2, 0xB6D0);
--	xlr_phy_write(priv->serdes_addr, 26, 3, 0x00FF);
--	xlr_phy_write(priv->serdes_addr, 26, 4, 0x0000);
--	xlr_phy_write(priv->serdes_addr, 26, 5, 0x0000);
--	xlr_phy_write(priv->serdes_addr, 26, 6, 0x0005);
--	xlr_phy_write(priv->serdes_addr, 26, 7, 0x0001);
--	xlr_phy_write(priv->serdes_addr, 26, 8, 0x0000);
--	xlr_phy_write(priv->serdes_addr, 26, 9, 0x0000);
--	xlr_phy_write(priv->serdes_addr, 26, 10, 0x0000);
--
--	/* program  GPIO values for serdes init parameters */
--	xlr_nae_wreg(priv->gpio_addr, 0x20, 0x7e6802);
--	xlr_nae_wreg(priv->gpio_addr, 0x10, 0x7104);
--
--	xlr_nae_wreg(priv->gpio_addr, 0x22, 0x7e6802);
--	xlr_nae_wreg(priv->gpio_addr, 0x21, 0x7104);
--
--	/* enable autoneg - more magic */
--	phy = priv->phy_addr % 4 + 27;
--	xlr_phy_write(priv->pcs_addr, phy, 0, 0x1000);
--	xlr_phy_write(priv->pcs_addr, phy, 0, 0x0200);
--}
--
--void xlr_set_gmac_speed(struct xlr_net_priv *priv)
--{
--	struct phy_device *phydev = xlr_get_phydev(priv);
--	int speed;
--
--	if (phydev->interface == PHY_INTERFACE_MODE_SGMII)
--		xlr_sgmii_init(priv);
--
--	if (phydev->speed != priv->phy_speed) {
--		speed = phydev->speed;
--		if (speed == SPEED_1000) {
--			/* Set interface to Byte mode */
--			xlr_nae_wreg(priv->base_addr, R_MAC_CONFIG_2, 0x7217);
--			priv->phy_speed = speed;
--		} else if (speed == SPEED_100 || speed == SPEED_10) {
--			/* Set interface to Nibble mode */
--			xlr_nae_wreg(priv->base_addr, R_MAC_CONFIG_2, 0x7117);
--			priv->phy_speed = speed;
--		}
--		/* Set SGMII speed in Interface control reg */
--		if (phydev->interface == PHY_INTERFACE_MODE_SGMII) {
--			if (speed == SPEED_10)
--				xlr_nae_wreg(priv->base_addr,
--					     R_INTERFACE_CONTROL,
--					     SGMII_SPEED_10);
--			if (speed == SPEED_100)
--				xlr_nae_wreg(priv->base_addr,
--					     R_INTERFACE_CONTROL,
--					     SGMII_SPEED_100);
--			if (speed == SPEED_1000)
--				xlr_nae_wreg(priv->base_addr,
--					     R_INTERFACE_CONTROL,
--					     SGMII_SPEED_1000);
--		}
--		if (speed == SPEED_10)
--			xlr_nae_wreg(priv->base_addr, R_CORECONTROL, 0x2);
--		if (speed == SPEED_100)
--			xlr_nae_wreg(priv->base_addr, R_CORECONTROL, 0x1);
--		if (speed == SPEED_1000)
--			xlr_nae_wreg(priv->base_addr, R_CORECONTROL, 0x0);
--	}
--	pr_info("gmac%d : %dMbps\n", priv->port_id, priv->phy_speed);
--}
--
--static void xlr_gmac_link_adjust(struct net_device *ndev)
--{
--	struct xlr_net_priv *priv = netdev_priv(ndev);
--	struct phy_device *phydev = xlr_get_phydev(priv);
--	u32 intreg;
--
--	intreg = xlr_nae_rdreg(priv->base_addr, R_INTREG);
--	if (phydev->link) {
--		if (phydev->speed != priv->phy_speed) {
--			xlr_set_gmac_speed(priv);
--			pr_info("gmac%d : Link up\n", priv->port_id);
--		}
--	} else {
--		xlr_set_gmac_speed(priv);
--		pr_info("gmac%d : Link down\n", priv->port_id);
--	}
--}
--
--static int xlr_mii_probe(struct xlr_net_priv *priv)
--{
--	struct phy_device *phydev = xlr_get_phydev(priv);
--
--	if (!phydev) {
--		pr_err("no PHY found on phy_addr %d\n", priv->phy_addr);
--		return -ENODEV;
--	}
--
--	/* Attach MAC to PHY */
--	phydev = phy_connect(priv->ndev, phydev_name(phydev),
--			     xlr_gmac_link_adjust, priv->nd->phy_interface);
--
--	if (IS_ERR(phydev)) {
--		pr_err("could not attach PHY\n");
--		return PTR_ERR(phydev);
--	}
--	phydev->supported &= (ADVERTISED_10baseT_Full
--				| ADVERTISED_10baseT_Half
--				| ADVERTISED_100baseT_Full
--				| ADVERTISED_100baseT_Half
--				| ADVERTISED_1000baseT_Full
--				| ADVERTISED_Autoneg
--				| ADVERTISED_MII);
--
--	phydev->advertising = phydev->supported;
--	phy_attached_info(phydev);
--	return 0;
--}
--
--static int xlr_setup_mdio(struct xlr_net_priv *priv,
--			  struct platform_device *pdev)
--{
--	int err;
--
--	priv->mii_bus = mdiobus_alloc();
--	if (!priv->mii_bus) {
--		pr_err("mdiobus alloc failed\n");
--		return -ENOMEM;
--	}
--
--	priv->mii_bus->priv = priv;
--	priv->mii_bus->name = "xlr-mdio";
--	snprintf(priv->mii_bus->id, MII_BUS_ID_SIZE, "%s-%d",
--		 priv->mii_bus->name, priv->port_id);
--	priv->mii_bus->read = xlr_mii_read;
--	priv->mii_bus->write = xlr_mii_write;
--	priv->mii_bus->parent = &pdev->dev;
--
--	/* Scan only the enabled address */
--	priv->mii_bus->phy_mask = ~(1 << priv->phy_addr);
--
--	/* setting clock divisor to 54 */
--	xlr_nae_wreg(priv->base_addr, R_MII_MGMT_CONFIG, 0x7);
--
--	err = mdiobus_register(priv->mii_bus);
--	if (err) {
--		mdiobus_free(priv->mii_bus);
--		pr_err("mdio bus registration failed\n");
--		return err;
--	}
--
--	pr_info("Registered mdio bus id : %s\n", priv->mii_bus->id);
--	err = xlr_mii_probe(priv);
--	if (err) {
--		mdiobus_free(priv->mii_bus);
--		return err;
--	}
--	return 0;
--}
--
--static void xlr_port_enable(struct xlr_net_priv *priv)
--{
--	u32 prid = (read_c0_prid() & 0xf000);
--
--	/* Setup MAC_CONFIG reg if (xls & rgmii) */
--	if ((prid == 0x8000 || prid == 0x4000 || prid == 0xc000) &&
--	    priv->nd->phy_interface == PHY_INTERFACE_MODE_RGMII)
--		xlr_reg_update(priv->base_addr, R_RX_CONTROL,
--			       (1 << O_RX_CONTROL__RGMII),
--			       (1 << O_RX_CONTROL__RGMII));
--
--	/* Rx Tx enable */
--	xlr_reg_update(priv->base_addr, R_MAC_CONFIG_1,
--		       ((1 << O_MAC_CONFIG_1__rxen) |
--			(1 << O_MAC_CONFIG_1__txen) |
--			(1 << O_MAC_CONFIG_1__rxfc) |
--			(1 << O_MAC_CONFIG_1__txfc)),
--		       ((1 << O_MAC_CONFIG_1__rxen) |
--			(1 << O_MAC_CONFIG_1__txen) |
--			(1 << O_MAC_CONFIG_1__rxfc) |
--			(1 << O_MAC_CONFIG_1__txfc)));
--
--	/* Setup tx control reg */
--	xlr_reg_update(priv->base_addr, R_TX_CONTROL,
--		       ((1 << O_TX_CONTROL__TXENABLE) |
--		       (512 << O_TX_CONTROL__TXTHRESHOLD)), 0x3fff);
--
--	/* Setup rx control reg */
--	xlr_reg_update(priv->base_addr, R_RX_CONTROL,
--		       1 << O_RX_CONTROL__RXENABLE,
--		       1 << O_RX_CONTROL__RXENABLE);
--}
--
--static void xlr_port_disable(struct xlr_net_priv *priv)
--{
--	/* Setup MAC_CONFIG reg */
--	/* Rx Tx disable*/
--	xlr_reg_update(priv->base_addr, R_MAC_CONFIG_1,
--		       ((1 << O_MAC_CONFIG_1__rxen) |
--			(1 << O_MAC_CONFIG_1__txen) |
--			(1 << O_MAC_CONFIG_1__rxfc) |
--			(1 << O_MAC_CONFIG_1__txfc)), 0x0);
--
--	/* Setup tx control reg */
--	xlr_reg_update(priv->base_addr, R_TX_CONTROL,
--		       ((1 << O_TX_CONTROL__TXENABLE) |
--		       (512 << O_TX_CONTROL__TXTHRESHOLD)), 0);
--
--	/* Setup rx control reg */
--	xlr_reg_update(priv->base_addr, R_RX_CONTROL,
--		       1 << O_RX_CONTROL__RXENABLE, 0);
--}
--
--/*
-- * Initialization of gmac
-- */
--static int xlr_gmac_init(struct xlr_net_priv *priv,
--			 struct platform_device *pdev)
--{
--	int ret;
--
--	pr_info("Initializing the gmac%d\n", priv->port_id);
--
--	xlr_port_disable(priv);
--
--	xlr_nae_wreg(priv->base_addr, R_DESC_PACK_CTRL,
--		     (1 << O_DESC_PACK_CTRL__MAXENTRY) |
--		     (BYTE_OFFSET << O_DESC_PACK_CTRL__BYTEOFFSET) |
--		     (1600 << O_DESC_PACK_CTRL__REGULARSIZE));
--
--	ret = xlr_setup_mdio(priv, pdev);
--	if (ret)
--		return ret;
--	xlr_port_enable(priv);
--
--	/* Enable Full-duplex/1000Mbps/CRC */
--	xlr_nae_wreg(priv->base_addr, R_MAC_CONFIG_2, 0x7217);
--	/* speed 2.5Mhz */
--	xlr_nae_wreg(priv->base_addr, R_CORECONTROL, 0x02);
--	/* Setup Interrupt mask reg */
--	xlr_nae_wreg(priv->base_addr, R_INTMASK, (1 << O_INTMASK__TXILLEGAL) |
--		     (1 << O_INTMASK__MDINT) | (1 << O_INTMASK__TXFETCHERROR) |
--		     (1 << O_INTMASK__P2PSPILLECC) | (1 << O_INTMASK__TAGFULL) |
--		     (1 << O_INTMASK__UNDERRUN) | (1 << O_INTMASK__ABORT));
--
--	/* Clear all stats */
--	xlr_reg_update(priv->base_addr, R_STATCTRL, 0, 1 << O_STATCTRL__CLRCNT);
--	xlr_reg_update(priv->base_addr, R_STATCTRL, 1 << 2, 1 << 2);
--	return 0;
--}
--
--static int xlr_net_probe(struct platform_device *pdev)
--{
--	struct xlr_net_priv *priv = NULL;
--	struct net_device *ndev;
--	struct resource *res;
--	struct xlr_adapter *adapter;
--	int err, port;
--
--	pr_info("XLR/XLS Ethernet Driver controller %d\n", pdev->id);
--	/*
--	 * Allocate our adapter data structure and attach it to the device.
--	 */
--	adapter = devm_kzalloc(&pdev->dev, sizeof(*adapter), GFP_KERNEL);
--	if (!adapter)
--		return -ENOMEM;
--
--	/*
--	 * XLR and XLS have 1 and 2 NAE controller respectively
--	 * Each controller has 4 gmac ports, mapping each controller
--	 * under one parent device, 4 gmac ports under one device.
--	 */
--	for (port = 0; port < pdev->num_resources / 2; port++) {
--		ndev = alloc_etherdev_mq(sizeof(struct xlr_net_priv), 32);
--		if (!ndev) {
--			dev_err(&pdev->dev,
--				"Allocation of Ethernet device failed\n");
--			return -ENOMEM;
--		}
--
--		priv = netdev_priv(ndev);
--		priv->pdev = pdev;
--		priv->ndev = ndev;
--		priv->port_id = (pdev->id * 4) + port;
--		priv->nd = (struct xlr_net_data *)pdev->dev.platform_data;
--		priv->base_addr = devm_platform_ioremap_resource(pdev, port);
--		if (IS_ERR(priv->base_addr)) {
--			err = PTR_ERR(priv->base_addr);
--			goto err_gmac;
--		}
--		priv->adapter = adapter;
--		adapter->netdev[port] = ndev;
--
--		res = platform_get_resource(pdev, IORESOURCE_IRQ, port);
--		if (!res) {
--			dev_err(&pdev->dev, "No irq resource for MAC %d\n",
--				priv->port_id);
--			err = -ENODEV;
--			goto err_gmac;
--		}
--
--		ndev->irq = res->start;
--
--		priv->phy_addr = priv->nd->phy_addr[port];
--		priv->tx_stnid = priv->nd->tx_stnid[port];
--		priv->mii_addr = priv->nd->mii_addr;
--		priv->serdes_addr = priv->nd->serdes_addr;
--		priv->pcs_addr = priv->nd->pcs_addr;
--		priv->gpio_addr = priv->nd->gpio_addr;
--
--		ndev->netdev_ops = &xlr_netdev_ops;
--		ndev->watchdog_timeo = HZ;
--
--		/* Setup Mac address and Rx mode */
--		eth_hw_addr_random(ndev);
--		xlr_hw_set_mac_addr(ndev);
--		xlr_set_rx_mode(ndev);
--
--		priv->num_rx_desc += MAX_NUM_DESC_SPILL;
--		ndev->ethtool_ops = &xlr_ethtool_ops;
--		SET_NETDEV_DEV(ndev, &pdev->dev);
--
--		xlr_config_fifo_spill_area(priv);
--		/* Configure PDE to Round-Robin pkt distribution */
--		xlr_config_pde(priv);
--		xlr_config_parser(priv);
--
--		/* Call init with respect to port */
--		if (strcmp(res->name, "gmac") == 0) {
--			err = xlr_gmac_init(priv, pdev);
--			if (err) {
--				dev_err(&pdev->dev, "gmac%d init failed\n",
--					priv->port_id);
--				goto err_gmac;
--			}
--		}
--
--		if (priv->port_id == 0 || priv->port_id == 4) {
--			err = xlr_config_common(priv);
--			if (err)
--				goto err_netdev;
--		}
--
--		err = register_netdev(ndev);
--		if (err) {
--			dev_err(&pdev->dev,
--				"Registering netdev failed for gmac%d\n",
--				priv->port_id);
--			goto err_netdev;
--		}
--		platform_set_drvdata(pdev, priv);
--	}
--
--	return 0;
--
--err_netdev:
--	mdiobus_free(priv->mii_bus);
--err_gmac:
--	free_netdev(ndev);
--	return err;
--}
--
--static int xlr_net_remove(struct platform_device *pdev)
--{
--	struct xlr_net_priv *priv = platform_get_drvdata(pdev);
--
--	unregister_netdev(priv->ndev);
--	mdiobus_unregister(priv->mii_bus);
--	mdiobus_free(priv->mii_bus);
--	free_netdev(priv->ndev);
--	return 0;
--}
--
--static struct platform_driver xlr_net_driver = {
--	.probe		= xlr_net_probe,
--	.remove		= xlr_net_remove,
--	.driver		= {
--		.name	= "xlr-net",
--	},
--};
--
--module_platform_driver(xlr_net_driver);
--
--MODULE_AUTHOR("Ganesan Ramalingam <ganesanr@broadcom.com>");
--MODULE_DESCRIPTION("Ethernet driver for Netlogic XLR/XLS");
--MODULE_LICENSE("Dual BSD/GPL");
--MODULE_ALIAS("platform:xlr-net");
-diff --git a/drivers/staging/netlogic/xlr_net.h b/drivers/staging/netlogic/xlr_net.h
-deleted file mode 100644
-index 8365b744f9b3..000000000000
---- a/drivers/staging/netlogic/xlr_net.h
-+++ /dev/null
-@@ -1,1079 +0,0 @@
--/* SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause) */
--/*
-- * Copyright (c) 2003-2012 Broadcom Corporation
-- * All Rights Reserved
-- */
--
--/* #define MAC_SPLIT_MODE */
--
--#define MAC_SPACING                 0x400
--#define XGMAC_SPACING               0x400
--
--/* PE-MCXMAC register and bit field definitions */
--#define R_MAC_CONFIG_1                                              0x00
--#define   O_MAC_CONFIG_1__srst                                      31
--#define   O_MAC_CONFIG_1__simr                                      30
--#define   O_MAC_CONFIG_1__hrrmc                                     18
--#define   W_MAC_CONFIG_1__hrtmc                                      2
--#define   O_MAC_CONFIG_1__hrrfn                                     16
--#define   W_MAC_CONFIG_1__hrtfn                                      2
--#define   O_MAC_CONFIG_1__intlb                                      8
--#define   O_MAC_CONFIG_1__rxfc                                       5
--#define   O_MAC_CONFIG_1__txfc                                       4
--#define   O_MAC_CONFIG_1__srxen                                      3
--#define   O_MAC_CONFIG_1__rxen                                       2
--#define   O_MAC_CONFIG_1__stxen                                      1
--#define   O_MAC_CONFIG_1__txen                                       0
--#define R_MAC_CONFIG_2                                              0x01
--#define   O_MAC_CONFIG_2__prlen                                     12
--#define   W_MAC_CONFIG_2__prlen                                      4
--#define   O_MAC_CONFIG_2__speed                                      8
--#define   W_MAC_CONFIG_2__speed                                      2
--#define   O_MAC_CONFIG_2__hugen                                      5
--#define   O_MAC_CONFIG_2__flchk                                      4
--#define   O_MAC_CONFIG_2__crce                                       1
--#define   O_MAC_CONFIG_2__fulld                                      0
--#define R_IPG_IFG                                                   0x02
--#define   O_IPG_IFG__ipgr1                                          24
--#define   W_IPG_IFG__ipgr1                                           7
--#define   O_IPG_IFG__ipgr2                                          16
--#define   W_IPG_IFG__ipgr2                                           7
--#define   O_IPG_IFG__mifg                                            8
--#define   W_IPG_IFG__mifg                                            8
--#define   O_IPG_IFG__ipgt                                            0
--#define   W_IPG_IFG__ipgt                                            7
--#define R_HALF_DUPLEX                                               0x03
--#define   O_HALF_DUPLEX__abebt                                      24
--#define   W_HALF_DUPLEX__abebt                                       4
--#define   O_HALF_DUPLEX__abebe                                      19
--#define   O_HALF_DUPLEX__bpnb                                       18
--#define   O_HALF_DUPLEX__nobo                                       17
--#define   O_HALF_DUPLEX__edxsdfr                                    16
--#define   O_HALF_DUPLEX__retry                                      12
--#define   W_HALF_DUPLEX__retry                                       4
--#define   O_HALF_DUPLEX__lcol                                        0
--#define   W_HALF_DUPLEX__lcol                                       10
--#define R_MAXIMUM_FRAME_LENGTH                                      0x04
--#define   O_MAXIMUM_FRAME_LENGTH__maxf                               0
--#define   W_MAXIMUM_FRAME_LENGTH__maxf                              16
--#define R_TEST                                                      0x07
--#define   O_TEST__mbof                                               3
--#define   O_TEST__rthdf                                              2
--#define   O_TEST__tpause                                             1
--#define   O_TEST__sstct                                              0
--#define R_MII_MGMT_CONFIG                                           0x08
--#define   O_MII_MGMT_CONFIG__scinc                                   5
--#define   O_MII_MGMT_CONFIG__spre                                    4
--#define   O_MII_MGMT_CONFIG__clks                                    3
--#define   W_MII_MGMT_CONFIG__clks                                    3
--#define R_MII_MGMT_COMMAND                                          0x09
--#define   O_MII_MGMT_COMMAND__scan                                   1
--#define   O_MII_MGMT_COMMAND__rstat                                  0
--#define R_MII_MGMT_ADDRESS                                          0x0A
--#define   O_MII_MGMT_ADDRESS__fiad                                   8
--#define   W_MII_MGMT_ADDRESS__fiad                                   5
--#define   O_MII_MGMT_ADDRESS__fgad                                   5
--#define   W_MII_MGMT_ADDRESS__fgad                                   0
--#define R_MII_MGMT_WRITE_DATA                                       0x0B
--#define   O_MII_MGMT_WRITE_DATA__ctld                                0
--#define   W_MII_MGMT_WRITE_DATA__ctld                               16
--#define R_MII_MGMT_STATUS                                           0x0C
--#define R_MII_MGMT_INDICATORS                                       0x0D
--#define   O_MII_MGMT_INDICATORS__nvalid                              2
--#define   O_MII_MGMT_INDICATORS__scan                                1
--#define   O_MII_MGMT_INDICATORS__busy                                0
--#define R_INTERFACE_CONTROL                                         0x0E
--#define   O_INTERFACE_CONTROL__hrstint                              31
--#define   O_INTERFACE_CONTROL__tbimode                              27
--#define   O_INTERFACE_CONTROL__ghdmode                              26
--#define   O_INTERFACE_CONTROL__lhdmode                              25
--#define   O_INTERFACE_CONTROL__phymod                               24
--#define   O_INTERFACE_CONTROL__hrrmi                                23
--#define   O_INTERFACE_CONTROL__rspd                                 16
--#define   O_INTERFACE_CONTROL__hr100                                15
--#define   O_INTERFACE_CONTROL__frcq                                 10
--#define   O_INTERFACE_CONTROL__nocfr                                 9
--#define   O_INTERFACE_CONTROL__dlfct                                 8
--#define   O_INTERFACE_CONTROL__enjab                                 0
--#define R_INTERFACE_STATUS                                         0x0F
--#define   O_INTERFACE_STATUS__xsdfr                                  9
--#define   O_INTERFACE_STATUS__ssrr                                   8
--#define   W_INTERFACE_STATUS__ssrr                                   5
--#define   O_INTERFACE_STATUS__miilf                                  3
--#define   O_INTERFACE_STATUS__locar                                  2
--#define   O_INTERFACE_STATUS__sqerr                                  1
--#define   O_INTERFACE_STATUS__jabber                                 0
--#define R_STATION_ADDRESS_LS                                       0x10
--#define R_STATION_ADDRESS_MS                                       0x11
--
--/* A-XGMAC register and bit field definitions */
--#define R_XGMAC_CONFIG_0    0x00
--#define   O_XGMAC_CONFIG_0__hstmacrst               31
--#define   O_XGMAC_CONFIG_0__hstrstrctl              23
--#define   O_XGMAC_CONFIG_0__hstrstrfn               22
--#define   O_XGMAC_CONFIG_0__hstrsttctl              18
--#define   O_XGMAC_CONFIG_0__hstrsttfn               17
--#define   O_XGMAC_CONFIG_0__hstrstmiim              16
--#define   O_XGMAC_CONFIG_0__hstloopback             8
--#define R_XGMAC_CONFIG_1    0x01
--#define   O_XGMAC_CONFIG_1__hsttctlen               31
--#define   O_XGMAC_CONFIG_1__hsttfen                 30
--#define   O_XGMAC_CONFIG_1__hstrctlen               29
--#define   O_XGMAC_CONFIG_1__hstrfen                 28
--#define   O_XGMAC_CONFIG_1__tfen                    26
--#define   O_XGMAC_CONFIG_1__rfen                    24
--#define   O_XGMAC_CONFIG_1__hstrctlshrtp            12
--#define   O_XGMAC_CONFIG_1__hstdlyfcstx             10
--#define   W_XGMAC_CONFIG_1__hstdlyfcstx              2
--#define   O_XGMAC_CONFIG_1__hstdlyfcsrx              8
--#define   W_XGMAC_CONFIG_1__hstdlyfcsrx              2
--#define   O_XGMAC_CONFIG_1__hstppen                  7
--#define   O_XGMAC_CONFIG_1__hstbytswp                6
--#define   O_XGMAC_CONFIG_1__hstdrplt64               5
--#define   O_XGMAC_CONFIG_1__hstprmscrx               4
--#define   O_XGMAC_CONFIG_1__hstlenchk                3
--#define   O_XGMAC_CONFIG_1__hstgenfcs                2
--#define   O_XGMAC_CONFIG_1__hstpadmode               0
--#define   W_XGMAC_CONFIG_1__hstpadmode               2
--#define R_XGMAC_CONFIG_2    0x02
--#define   O_XGMAC_CONFIG_2__hsttctlfrcp             31
--#define   O_XGMAC_CONFIG_2__hstmlnkflth             27
--#define   O_XGMAC_CONFIG_2__hstalnkflth             26
--#define   O_XGMAC_CONFIG_2__rflnkflt                24
--#define   W_XGMAC_CONFIG_2__rflnkflt                 2
--#define   O_XGMAC_CONFIG_2__hstipgextmod            16
--#define   W_XGMAC_CONFIG_2__hstipgextmod             5
--#define   O_XGMAC_CONFIG_2__hstrctlfrcp             15
--#define   O_XGMAC_CONFIG_2__hstipgexten              5
--#define   O_XGMAC_CONFIG_2__hstmipgext               0
--#define   W_XGMAC_CONFIG_2__hstmipgext               5
--#define R_XGMAC_CONFIG_3    0x03
--#define   O_XGMAC_CONFIG_3__hstfltrfrm              31
--#define   W_XGMAC_CONFIG_3__hstfltrfrm              16
--#define   O_XGMAC_CONFIG_3__hstfltrfrmdc            15
--#define   W_XGMAC_CONFIG_3__hstfltrfrmdc            16
--#define R_XGMAC_STATION_ADDRESS_LS      0x04
--#define   O_XGMAC_STATION_ADDRESS_LS__hstmacadr0    0
--#define   W_XGMAC_STATION_ADDRESS_LS__hstmacadr0    32
--#define R_XGMAC_STATION_ADDRESS_MS      0x05
--#define R_XGMAC_MAX_FRAME_LEN           0x08
--#define   O_XGMAC_MAX_FRAME_LEN__hstmxfrmwctx       16
--#define   W_XGMAC_MAX_FRAME_LEN__hstmxfrmwctx       14
--#define   O_XGMAC_MAX_FRAME_LEN__hstmxfrmbcrx        0
--#define   W_XGMAC_MAX_FRAME_LEN__hstmxfrmbcrx       16
--#define R_XGMAC_REV_LEVEL               0x0B
--#define   O_XGMAC_REV_LEVEL__revlvl                  0
--#define   W_XGMAC_REV_LEVEL__revlvl                 15
--#define R_XGMAC_MIIM_COMMAND            0x10
--#define   O_XGMAC_MIIM_COMMAND__hstldcmd             3
--#define   O_XGMAC_MIIM_COMMAND__hstmiimcmd           0
--#define   W_XGMAC_MIIM_COMMAND__hstmiimcmd           3
--#define R_XGMAC_MIIM_FILED              0x11
--#define   O_XGMAC_MIIM_FILED__hststfield            30
--#define   W_XGMAC_MIIM_FILED__hststfield             2
--#define   O_XGMAC_MIIM_FILED__hstopfield            28
--#define   W_XGMAC_MIIM_FILED__hstopfield             2
--#define   O_XGMAC_MIIM_FILED__hstphyadx             23
--#define   W_XGMAC_MIIM_FILED__hstphyadx              5
--#define   O_XGMAC_MIIM_FILED__hstregadx             18
--#define   W_XGMAC_MIIM_FILED__hstregadx              5
--#define   O_XGMAC_MIIM_FILED__hsttafield            16
--#define   W_XGMAC_MIIM_FILED__hsttafield             2
--#define   O_XGMAC_MIIM_FILED__miimrddat              0
--#define   W_XGMAC_MIIM_FILED__miimrddat             16
--#define R_XGMAC_MIIM_CONFIG             0x12
--#define   O_XGMAC_MIIM_CONFIG__hstnopram             7
--#define   O_XGMAC_MIIM_CONFIG__hstclkdiv             0
--#define   W_XGMAC_MIIM_CONFIG__hstclkdiv             7
--#define R_XGMAC_MIIM_LINK_FAIL_VECTOR   0x13
--#define   O_XGMAC_MIIM_LINK_FAIL_VECTOR__miimlfvec   0
--#define   W_XGMAC_MIIM_LINK_FAIL_VECTOR__miimlfvec  32
--#define R_XGMAC_MIIM_INDICATOR          0x14
--#define   O_XGMAC_MIIM_INDICATOR__miimphylf          4
--#define   O_XGMAC_MIIM_INDICATOR__miimmoncplt        3
--#define   O_XGMAC_MIIM_INDICATOR__miimmonvld         2
--#define   O_XGMAC_MIIM_INDICATOR__miimmon            1
--#define   O_XGMAC_MIIM_INDICATOR__miimbusy           0
--
--/* GMAC stats registers */
--#define R_RBYT							    0x27
--#define R_RPKT							    0x28
--#define R_RFCS							    0x29
--#define R_RMCA							    0x2A
--#define R_RBCA							    0x2B
--#define R_RXCF							    0x2C
--#define R_RXPF							    0x2D
--#define R_RXUO							    0x2E
--#define R_RALN							    0x2F
--#define R_RFLR							    0x30
--#define R_RCDE							    0x31
--#define R_RCSE							    0x32
--#define R_RUND							    0x33
--#define R_ROVR							    0x34
--#define R_TBYT							    0x38
--#define R_TPKT							    0x39
--#define R_TMCA							    0x3A
--#define R_TBCA							    0x3B
--#define R_TXPF							    0x3C
--#define R_TDFR							    0x3D
--#define R_TEDF							    0x3E
--#define R_TSCL							    0x3F
--#define R_TMCL							    0x40
--#define R_TLCL							    0x41
--#define R_TXCL							    0x42
--#define R_TNCL							    0x43
--#define R_TJBR							    0x46
--#define R_TFCS							    0x47
--#define R_TXCF							    0x48
--#define R_TOVR							    0x49
--#define R_TUND							    0x4A
--#define R_TFRG							    0x4B
--
--/* Glue logic register and bit field definitions */
--#define R_MAC_ADDR0                                                 0x50
--#define R_MAC_ADDR1                                                 0x52
--#define R_MAC_ADDR2                                                 0x54
--#define R_MAC_ADDR3                                                 0x56
--#define R_MAC_ADDR_MASK2                                            0x58
--#define R_MAC_ADDR_MASK3                                            0x5A
--#define R_MAC_FILTER_CONFIG                                         0x5C
--#define   O_MAC_FILTER_CONFIG__BROADCAST_EN                         10
--#define   O_MAC_FILTER_CONFIG__PAUSE_FRAME_EN                       9
--#define   O_MAC_FILTER_CONFIG__ALL_MCAST_EN                         8
--#define   O_MAC_FILTER_CONFIG__ALL_UCAST_EN                         7
--#define   O_MAC_FILTER_CONFIG__HASH_MCAST_EN                        6
--#define   O_MAC_FILTER_CONFIG__HASH_UCAST_EN                        5
--#define   O_MAC_FILTER_CONFIG__ADDR_MATCH_DISC                      4
--#define   O_MAC_FILTER_CONFIG__MAC_ADDR3_VALID                      3
--#define   O_MAC_FILTER_CONFIG__MAC_ADDR2_VALID                      2
--#define   O_MAC_FILTER_CONFIG__MAC_ADDR1_VALID                      1
--#define   O_MAC_FILTER_CONFIG__MAC_ADDR0_VALID                      0
--#define R_HASH_TABLE_VECTOR                                         0x30
--#define R_TX_CONTROL                                                 0x0A0
--#define   O_TX_CONTROL__TX15HALT                                     31
--#define   O_TX_CONTROL__TX14HALT                                     30
--#define   O_TX_CONTROL__TX13HALT                                     29
--#define   O_TX_CONTROL__TX12HALT                                     28
--#define   O_TX_CONTROL__TX11HALT                                     27
--#define   O_TX_CONTROL__TX10HALT                                     26
--#define   O_TX_CONTROL__TX9HALT                                      25
--#define   O_TX_CONTROL__TX8HALT                                      24
--#define   O_TX_CONTROL__TX7HALT                                      23
--#define   O_TX_CONTROL__TX6HALT                                      22
--#define   O_TX_CONTROL__TX5HALT                                      21
--#define   O_TX_CONTROL__TX4HALT                                      20
--#define   O_TX_CONTROL__TX3HALT                                      19
--#define   O_TX_CONTROL__TX2HALT                                      18
--#define   O_TX_CONTROL__TX1HALT                                      17
--#define   O_TX_CONTROL__TX0HALT                                      16
--#define   O_TX_CONTROL__TXIDLE                                       15
--#define   O_TX_CONTROL__TXENABLE                                     14
--#define   O_TX_CONTROL__TXTHRESHOLD                                  0
--#define   W_TX_CONTROL__TXTHRESHOLD                                  14
--#define R_RX_CONTROL                                                 0x0A1
--#define   O_RX_CONTROL__RGMII                                        10
--#define   O_RX_CONTROL__SOFTRESET			             2
--#define   O_RX_CONTROL__RXHALT                                       1
--#define   O_RX_CONTROL__RXENABLE                                     0
--#define R_DESC_PACK_CTRL                                            0x0A2
--#define   O_DESC_PACK_CTRL__BYTEOFFSET                              17
--#define   W_DESC_PACK_CTRL__BYTEOFFSET                              3
--#define   O_DESC_PACK_CTRL__PREPADENABLE                            16
--#define   O_DESC_PACK_CTRL__MAXENTRY                                14
--#define   W_DESC_PACK_CTRL__MAXENTRY                                2
--#define   O_DESC_PACK_CTRL__REGULARSIZE                             0
--#define   W_DESC_PACK_CTRL__REGULARSIZE                             14
--#define R_STATCTRL                                                  0x0A3
--#define   O_STATCTRL__OVERFLOWEN                                    4
--#define   O_STATCTRL__GIG                                           3
--#define   O_STATCTRL__STEN                                          2
--#define   O_STATCTRL__CLRCNT                                        1
--#define   O_STATCTRL__AUTOZ                                         0
--#define R_L2ALLOCCTRL                                               0x0A4
--#define   O_L2ALLOCCTRL__TXL2ALLOCATE                               9
--#define   W_L2ALLOCCTRL__TXL2ALLOCATE                               9
--#define   O_L2ALLOCCTRL__RXL2ALLOCATE                               0
--#define   W_L2ALLOCCTRL__RXL2ALLOCATE                               9
--#define R_INTMASK                                                   0x0A5
--#define   O_INTMASK__SPI4TXERROR                                     28
--#define   O_INTMASK__SPI4RXERROR                                     27
--#define   O_INTMASK__RGMIIHALFDUPCOLLISION                           27
--#define   O_INTMASK__ABORT                                           26
--#define   O_INTMASK__UNDERRUN                                        25
--#define   O_INTMASK__DISCARDPACKET                                   24
--#define   O_INTMASK__ASYNCFIFOFULL                                   23
--#define   O_INTMASK__TAGFULL                                         22
--#define   O_INTMASK__CLASS3FULL                                      21
--#define   O_INTMASK__C3EARLYFULL                                     20
--#define   O_INTMASK__CLASS2FULL                                      19
--#define   O_INTMASK__C2EARLYFULL                                     18
--#define   O_INTMASK__CLASS1FULL                                      17
--#define   O_INTMASK__C1EARLYFULL                                     16
--#define   O_INTMASK__CLASS0FULL                                      15
--#define   O_INTMASK__C0EARLYFULL                                     14
--#define   O_INTMASK__RXDATAFULL                                      13
--#define   O_INTMASK__RXEARLYFULL                                     12
--#define   O_INTMASK__RFREEEMPTY                                      9
--#define   O_INTMASK__RFEARLYEMPTY                                    8
--#define   O_INTMASK__P2PSPILLECC                                     7
--#define   O_INTMASK__FREEDESCFULL                                    5
--#define   O_INTMASK__FREEEARLYFULL                                   4
--#define   O_INTMASK__TXFETCHERROR                                    3
--#define   O_INTMASK__STATCARRY                                       2
--#define   O_INTMASK__MDINT                                           1
--#define   O_INTMASK__TXILLEGAL                                       0
--#define R_INTREG                                                    0x0A6
--#define   O_INTREG__SPI4TXERROR                                     28
--#define   O_INTREG__SPI4RXERROR                                     27
--#define   O_INTREG__RGMIIHALFDUPCOLLISION                           27
--#define   O_INTREG__ABORT                                           26
--#define   O_INTREG__UNDERRUN                                        25
--#define   O_INTREG__DISCARDPACKET                                   24
--#define   O_INTREG__ASYNCFIFOFULL                                   23
--#define   O_INTREG__TAGFULL                                         22
--#define   O_INTREG__CLASS3FULL                                      21
--#define   O_INTREG__C3EARLYFULL                                     20
--#define   O_INTREG__CLASS2FULL                                      19
--#define   O_INTREG__C2EARLYFULL                                     18
--#define   O_INTREG__CLASS1FULL                                      17
--#define   O_INTREG__C1EARLYFULL                                     16
--#define   O_INTREG__CLASS0FULL                                      15
--#define   O_INTREG__C0EARLYFULL                                     14
--#define   O_INTREG__RXDATAFULL                                      13
--#define   O_INTREG__RXEARLYFULL                                     12
--#define   O_INTREG__RFREEEMPTY                                      9
--#define   O_INTREG__RFEARLYEMPTY                                    8
--#define   O_INTREG__P2PSPILLECC                                     7
--#define   O_INTREG__FREEDESCFULL                                    5
--#define   O_INTREG__FREEEARLYFULL                                   4
--#define   O_INTREG__TXFETCHERROR                                    3
--#define   O_INTREG__STATCARRY                                       2
--#define   O_INTREG__MDINT                                           1
--#define   O_INTREG__TXILLEGAL                                       0
--#define R_TXRETRY                                                   0x0A7
--#define   O_TXRETRY__COLLISIONRETRY                                 6
--#define   O_TXRETRY__BUSERRORRETRY                                  5
--#define   O_TXRETRY__UNDERRUNRETRY                                  4
--#define   O_TXRETRY__RETRIES                                        0
--#define   W_TXRETRY__RETRIES                                        4
--#define R_CORECONTROL                                               0x0A8
--#define   O_CORECONTROL__ERRORTHREAD                                4
--#define   W_CORECONTROL__ERRORTHREAD                                7
--#define   O_CORECONTROL__SHUTDOWN                                   2
--#define   O_CORECONTROL__SPEED                                      0
--#define   W_CORECONTROL__SPEED                                      2
--#define R_BYTEOFFSET0                                               0x0A9
--#define R_BYTEOFFSET1                                               0x0AA
--#define R_L2TYPE_0                                                  0x0F0
--#define   O_L2TYPE__EXTRAHDRPROTOSIZE                               26
--#define   W_L2TYPE__EXTRAHDRPROTOSIZE                               5
--#define   O_L2TYPE__EXTRAHDRPROTOOFFSET                             20
--#define   W_L2TYPE__EXTRAHDRPROTOOFFSET                             6
--#define   O_L2TYPE__EXTRAHEADERSIZE                                 14
--#define   W_L2TYPE__EXTRAHEADERSIZE                                 6
--#define   O_L2TYPE__PROTOOFFSET                                     8
--#define   W_L2TYPE__PROTOOFFSET                                     6
--#define   O_L2TYPE__L2HDROFFSET                                     2
--#define   W_L2TYPE__L2HDROFFSET                                     6
--#define   O_L2TYPE__L2PROTO                                         0
--#define   W_L2TYPE__L2PROTO                                         2
--#define R_L2TYPE_1                                                  0xF0
--#define R_L2TYPE_2                                                  0xF0
--#define R_L2TYPE_3                                                  0xF0
--#define R_PARSERCONFIGREG                                           0x100
--#define   O_PARSERCONFIGREG__CRCHASHPOLY                            8
--#define   W_PARSERCONFIGREG__CRCHASHPOLY                            7
--#define   O_PARSERCONFIGREG__PREPADOFFSET                           4
--#define   W_PARSERCONFIGREG__PREPADOFFSET                           4
--#define   O_PARSERCONFIGREG__USECAM                                 2
--#define   O_PARSERCONFIGREG__USEHASH                                1
--#define   O_PARSERCONFIGREG__USEPROTO                               0
--#define R_L3CTABLE                                                  0x140
--#define   O_L3CTABLE__OFFSET0                                       25
--#define   W_L3CTABLE__OFFSET0                                       7
--#define   O_L3CTABLE__LEN0                                          21
--#define   W_L3CTABLE__LEN0                                          4
--#define   O_L3CTABLE__OFFSET1                                       14
--#define   W_L3CTABLE__OFFSET1                                       7
--#define   O_L3CTABLE__LEN1                                          10
--#define   W_L3CTABLE__LEN1                                          4
--#define   O_L3CTABLE__OFFSET2                                       4
--#define   W_L3CTABLE__OFFSET2                                       6
--#define   O_L3CTABLE__LEN2                                          0
--#define   W_L3CTABLE__LEN2                                          4
--#define   O_L3CTABLE__L3HDROFFSET                                   26
--#define   W_L3CTABLE__L3HDROFFSET                                   6
--#define   O_L3CTABLE__L4PROTOOFFSET                                 20
--#define   W_L3CTABLE__L4PROTOOFFSET                                 6
--#define   O_L3CTABLE__IPCHKSUMCOMPUTE                               19
--#define   O_L3CTABLE__L4CLASSIFY                                    18
--#define   O_L3CTABLE__L2PROTO                                       16
--#define   W_L3CTABLE__L2PROTO                                       2
--#define   O_L3CTABLE__L3PROTOKEY                                    0
--#define   W_L3CTABLE__L3PROTOKEY                                    16
--#define R_L4CTABLE                                                  0x160
--#define   O_L4CTABLE__OFFSET0                                       21
--#define   W_L4CTABLE__OFFSET0                                       6
--#define   O_L4CTABLE__LEN0                                          17
--#define   W_L4CTABLE__LEN0                                          4
--#define   O_L4CTABLE__OFFSET1                                       11
--#define   W_L4CTABLE__OFFSET1                                       6
--#define   O_L4CTABLE__LEN1                                          7
--#define   W_L4CTABLE__LEN1                                          4
--#define   O_L4CTABLE__TCPCHKSUMENABLE                               0
--#define R_CAM4X128TABLE                                             0x172
--#define   O_CAM4X128TABLE__CLASSID                                  7
--#define   W_CAM4X128TABLE__CLASSID                                  2
--#define   O_CAM4X128TABLE__BUCKETID                                 1
--#define   W_CAM4X128TABLE__BUCKETID                                 6
--#define   O_CAM4X128TABLE__USEBUCKET                                0
--#define R_CAM4X128KEY                                               0x180
--#define R_TRANSLATETABLE                                            0x1A0
--#define R_DMACR0                                                    0x200
--#define   O_DMACR0__DATA0WRMAXCR                                    27
--#define   W_DMACR0__DATA0WRMAXCR                                    3
--#define   O_DMACR0__DATA0RDMAXCR                                    24
--#define   W_DMACR0__DATA0RDMAXCR                                    3
--#define   O_DMACR0__DATA1WRMAXCR                                    21
--#define   W_DMACR0__DATA1WRMAXCR                                    3
--#define   O_DMACR0__DATA1RDMAXCR                                    18
--#define   W_DMACR0__DATA1RDMAXCR                                    3
--#define   O_DMACR0__DATA2WRMAXCR                                    15
--#define   W_DMACR0__DATA2WRMAXCR                                    3
--#define   O_DMACR0__DATA2RDMAXCR                                    12
--#define   W_DMACR0__DATA2RDMAXCR                                    3
--#define   O_DMACR0__DATA3WRMAXCR                                    9
--#define   W_DMACR0__DATA3WRMAXCR                                    3
--#define   O_DMACR0__DATA3RDMAXCR                                    6
--#define   W_DMACR0__DATA3RDMAXCR                                    3
--#define   O_DMACR0__DATA4WRMAXCR                                    3
--#define   W_DMACR0__DATA4WRMAXCR                                    3
--#define   O_DMACR0__DATA4RDMAXCR                                    0
--#define   W_DMACR0__DATA4RDMAXCR                                    3
--#define R_DMACR1                                                    0x201
--#define   O_DMACR1__DATA5WRMAXCR                                    27
--#define   W_DMACR1__DATA5WRMAXCR                                    3
--#define   O_DMACR1__DATA5RDMAXCR                                    24
--#define   W_DMACR1__DATA5RDMAXCR                                    3
--#define   O_DMACR1__DATA6WRMAXCR                                    21
--#define   W_DMACR1__DATA6WRMAXCR                                    3
--#define   O_DMACR1__DATA6RDMAXCR                                    18
--#define   W_DMACR1__DATA6RDMAXCR                                    3
--#define   O_DMACR1__DATA7WRMAXCR                                    15
--#define   W_DMACR1__DATA7WRMAXCR                                    3
--#define   O_DMACR1__DATA7RDMAXCR                                    12
--#define   W_DMACR1__DATA7RDMAXCR                                    3
--#define   O_DMACR1__DATA8WRMAXCR                                    9
--#define   W_DMACR1__DATA8WRMAXCR                                    3
--#define   O_DMACR1__DATA8RDMAXCR                                    6
--#define   W_DMACR1__DATA8RDMAXCR                                    3
--#define   O_DMACR1__DATA9WRMAXCR                                    3
--#define   W_DMACR1__DATA9WRMAXCR                                    3
--#define   O_DMACR1__DATA9RDMAXCR                                    0
--#define   W_DMACR1__DATA9RDMAXCR                                    3
--#define R_DMACR2                                                    0x202
--#define   O_DMACR2__DATA10WRMAXCR                                   27
--#define   W_DMACR2__DATA10WRMAXCR                                   3
--#define   O_DMACR2__DATA10RDMAXCR                                   24
--#define   W_DMACR2__DATA10RDMAXCR                                   3
--#define   O_DMACR2__DATA11WRMAXCR                                   21
--#define   W_DMACR2__DATA11WRMAXCR                                   3
--#define   O_DMACR2__DATA11RDMAXCR                                   18
--#define   W_DMACR2__DATA11RDMAXCR                                   3
--#define   O_DMACR2__DATA12WRMAXCR                                   15
--#define   W_DMACR2__DATA12WRMAXCR                                   3
--#define   O_DMACR2__DATA12RDMAXCR                                   12
--#define   W_DMACR2__DATA12RDMAXCR                                   3
--#define   O_DMACR2__DATA13WRMAXCR                                   9
--#define   W_DMACR2__DATA13WRMAXCR                                   3
--#define   O_DMACR2__DATA13RDMAXCR                                   6
--#define   W_DMACR2__DATA13RDMAXCR                                   3
--#define   O_DMACR2__DATA14WRMAXCR                                   3
--#define   W_DMACR2__DATA14WRMAXCR                                   3
--#define   O_DMACR2__DATA14RDMAXCR                                   0
--#define   W_DMACR2__DATA14RDMAXCR                                   3
--#define R_DMACR3                                                    0x203
--#define   O_DMACR3__DATA15WRMAXCR                                   27
--#define   W_DMACR3__DATA15WRMAXCR                                   3
--#define   O_DMACR3__DATA15RDMAXCR                                   24
--#define   W_DMACR3__DATA15RDMAXCR                                   3
--#define   O_DMACR3__SPCLASSWRMAXCR                                  21
--#define   W_DMACR3__SPCLASSWRMAXCR                                  3
--#define   O_DMACR3__SPCLASSRDMAXCR                                  18
--#define   W_DMACR3__SPCLASSRDMAXCR                                  3
--#define   O_DMACR3__JUMFRINWRMAXCR                                  15
--#define   W_DMACR3__JUMFRINWRMAXCR                                  3
--#define   O_DMACR3__JUMFRINRDMAXCR                                  12
--#define   W_DMACR3__JUMFRINRDMAXCR                                  3
--#define   O_DMACR3__REGFRINWRMAXCR                                  9
--#define   W_DMACR3__REGFRINWRMAXCR                                  3
--#define   O_DMACR3__REGFRINRDMAXCR                                  6
--#define   W_DMACR3__REGFRINRDMAXCR                                  3
--#define   O_DMACR3__FROUTWRMAXCR                                    3
--#define   W_DMACR3__FROUTWRMAXCR                                    3
--#define   O_DMACR3__FROUTRDMAXCR                                    0
--#define   W_DMACR3__FROUTRDMAXCR                                    3
--#define R_REG_FRIN_SPILL_MEM_START_0                                0x204
--#define   O_REG_FRIN_SPILL_MEM_START_0__REGFRINSPILLMEMSTART0        0
--#define   W_REG_FRIN_SPILL_MEM_START_0__REGFRINSPILLMEMSTART0       32
--#define R_REG_FRIN_SPILL_MEM_START_1                                0x205
--#define   O_REG_FRIN_SPILL_MEM_START_1__REGFRINSPILLMEMSTART1        0
--#define   W_REG_FRIN_SPILL_MEM_START_1__REGFRINSPILLMEMSTART1        3
--#define R_REG_FRIN_SPILL_MEM_SIZE                                   0x206
--#define   O_REG_FRIN_SPILL_MEM_SIZE__REGFRINSPILLMEMSIZE             0
--#define   W_REG_FRIN_SPILL_MEM_SIZE__REGFRINSPILLMEMSIZE            32
--#define R_FROUT_SPILL_MEM_START_0                                   0x207
--#define   O_FROUT_SPILL_MEM_START_0__FROUTSPILLMEMSTART0             0
--#define   W_FROUT_SPILL_MEM_START_0__FROUTSPILLMEMSTART0            32
--#define R_FROUT_SPILL_MEM_START_1                                   0x208
--#define   O_FROUT_SPILL_MEM_START_1__FROUTSPILLMEMSTART1             0
--#define   W_FROUT_SPILL_MEM_START_1__FROUTSPILLMEMSTART1             3
--#define R_FROUT_SPILL_MEM_SIZE                                      0x209
--#define   O_FROUT_SPILL_MEM_SIZE__FROUTSPILLMEMSIZE                  0
--#define   W_FROUT_SPILL_MEM_SIZE__FROUTSPILLMEMSIZE                 32
--#define R_CLASS0_SPILL_MEM_START_0                                  0x20A
--#define   O_CLASS0_SPILL_MEM_START_0__CLASS0SPILLMEMSTART0           0
--#define   W_CLASS0_SPILL_MEM_START_0__CLASS0SPILLMEMSTART0          32
--#define R_CLASS0_SPILL_MEM_START_1                                  0x20B
--#define   O_CLASS0_SPILL_MEM_START_1__CLASS0SPILLMEMSTART1           0
--#define   W_CLASS0_SPILL_MEM_START_1__CLASS0SPILLMEMSTART1           3
--#define R_CLASS0_SPILL_MEM_SIZE                                     0x20C
--#define   O_CLASS0_SPILL_MEM_SIZE__CLASS0SPILLMEMSIZE                0
--#define   W_CLASS0_SPILL_MEM_SIZE__CLASS0SPILLMEMSIZE               32
--#define R_JUMFRIN_SPILL_MEM_START_0                                 0x20D
--#define   O_JUMFRIN_SPILL_MEM_START_0__JUMFRINSPILLMEMSTART0          0
--#define   W_JUMFRIN_SPILL_MEM_START_0__JUMFRINSPILLMEMSTART0         32
--#define R_JUMFRIN_SPILL_MEM_START_1                                 0x20E
--#define   O_JUMFRIN_SPILL_MEM_START_1__JUMFRINSPILLMEMSTART1         0
--#define   W_JUMFRIN_SPILL_MEM_START_1__JUMFRINSPILLMEMSTART1         3
--#define R_JUMFRIN_SPILL_MEM_SIZE                                    0x20F
--#define   O_JUMFRIN_SPILL_MEM_SIZE__JUMFRINSPILLMEMSIZE              0
--#define   W_JUMFRIN_SPILL_MEM_SIZE__JUMFRINSPILLMEMSIZE             32
--#define R_CLASS1_SPILL_MEM_START_0                                  0x210
--#define   O_CLASS1_SPILL_MEM_START_0__CLASS1SPILLMEMSTART0           0
--#define   W_CLASS1_SPILL_MEM_START_0__CLASS1SPILLMEMSTART0          32
--#define R_CLASS1_SPILL_MEM_START_1                                  0x211
--#define   O_CLASS1_SPILL_MEM_START_1__CLASS1SPILLMEMSTART1           0
--#define   W_CLASS1_SPILL_MEM_START_1__CLASS1SPILLMEMSTART1           3
--#define R_CLASS1_SPILL_MEM_SIZE                                     0x212
--#define   O_CLASS1_SPILL_MEM_SIZE__CLASS1SPILLMEMSIZE                0
--#define   W_CLASS1_SPILL_MEM_SIZE__CLASS1SPILLMEMSIZE               32
--#define R_CLASS2_SPILL_MEM_START_0                                  0x213
--#define   O_CLASS2_SPILL_MEM_START_0__CLASS2SPILLMEMSTART0           0
--#define   W_CLASS2_SPILL_MEM_START_0__CLASS2SPILLMEMSTART0          32
--#define R_CLASS2_SPILL_MEM_START_1                                  0x214
--#define   O_CLASS2_SPILL_MEM_START_1__CLASS2SPILLMEMSTART1           0
--#define   W_CLASS2_SPILL_MEM_START_1__CLASS2SPILLMEMSTART1           3
--#define R_CLASS2_SPILL_MEM_SIZE                                     0x215
--#define   O_CLASS2_SPILL_MEM_SIZE__CLASS2SPILLMEMSIZE                0
--#define   W_CLASS2_SPILL_MEM_SIZE__CLASS2SPILLMEMSIZE               32
--#define R_CLASS3_SPILL_MEM_START_0                                  0x216
--#define   O_CLASS3_SPILL_MEM_START_0__CLASS3SPILLMEMSTART0           0
--#define   W_CLASS3_SPILL_MEM_START_0__CLASS3SPILLMEMSTART0          32
--#define R_CLASS3_SPILL_MEM_START_1                                  0x217
--#define   O_CLASS3_SPILL_MEM_START_1__CLASS3SPILLMEMSTART1           0
--#define   W_CLASS3_SPILL_MEM_START_1__CLASS3SPILLMEMSTART1           3
--#define R_CLASS3_SPILL_MEM_SIZE                                     0x218
--#define   O_CLASS3_SPILL_MEM_SIZE__CLASS3SPILLMEMSIZE                0
--#define   W_CLASS3_SPILL_MEM_SIZE__CLASS3SPILLMEMSIZE               32
--#define R_REG_FRIN1_SPILL_MEM_START_0                               0x219
--#define R_REG_FRIN1_SPILL_MEM_START_1                               0x21a
--#define R_REG_FRIN1_SPILL_MEM_SIZE                                  0x21b
--#define R_SPIHNGY0                                                  0x219
--#define   O_SPIHNGY0__EG_HNGY_THRESH_0                              24
--#define   W_SPIHNGY0__EG_HNGY_THRESH_0                              7
--#define   O_SPIHNGY0__EG_HNGY_THRESH_1                              16
--#define   W_SPIHNGY0__EG_HNGY_THRESH_1                              7
--#define   O_SPIHNGY0__EG_HNGY_THRESH_2                              8
--#define   W_SPIHNGY0__EG_HNGY_THRESH_2                              7
--#define   O_SPIHNGY0__EG_HNGY_THRESH_3                              0
--#define   W_SPIHNGY0__EG_HNGY_THRESH_3                              7
--#define R_SPIHNGY1                                                  0x21A
--#define   O_SPIHNGY1__EG_HNGY_THRESH_4                              24
--#define   W_SPIHNGY1__EG_HNGY_THRESH_4                              7
--#define   O_SPIHNGY1__EG_HNGY_THRESH_5                              16
--#define   W_SPIHNGY1__EG_HNGY_THRESH_5                              7
--#define   O_SPIHNGY1__EG_HNGY_THRESH_6                              8
--#define   W_SPIHNGY1__EG_HNGY_THRESH_6                              7
--#define   O_SPIHNGY1__EG_HNGY_THRESH_7                              0
--#define   W_SPIHNGY1__EG_HNGY_THRESH_7                              7
--#define R_SPIHNGY2                                                  0x21B
--#define   O_SPIHNGY2__EG_HNGY_THRESH_8                              24
--#define   W_SPIHNGY2__EG_HNGY_THRESH_8                              7
--#define   O_SPIHNGY2__EG_HNGY_THRESH_9                              16
--#define   W_SPIHNGY2__EG_HNGY_THRESH_9                              7
--#define   O_SPIHNGY2__EG_HNGY_THRESH_10                             8
--#define   W_SPIHNGY2__EG_HNGY_THRESH_10                             7
--#define   O_SPIHNGY2__EG_HNGY_THRESH_11                             0
--#define   W_SPIHNGY2__EG_HNGY_THRESH_11                             7
--#define R_SPIHNGY3                                                  0x21C
--#define   O_SPIHNGY3__EG_HNGY_THRESH_12                             24
--#define   W_SPIHNGY3__EG_HNGY_THRESH_12                             7
--#define   O_SPIHNGY3__EG_HNGY_THRESH_13                             16
--#define   W_SPIHNGY3__EG_HNGY_THRESH_13                             7
--#define   O_SPIHNGY3__EG_HNGY_THRESH_14                             8
--#define   W_SPIHNGY3__EG_HNGY_THRESH_14                             7
--#define   O_SPIHNGY3__EG_HNGY_THRESH_15                             0
--#define   W_SPIHNGY3__EG_HNGY_THRESH_15                             7
--#define R_SPISTRV0                                                  0x21D
--#define   O_SPISTRV0__EG_STRV_THRESH_0                              24
--#define   W_SPISTRV0__EG_STRV_THRESH_0                              7
--#define   O_SPISTRV0__EG_STRV_THRESH_1                              16
--#define   W_SPISTRV0__EG_STRV_THRESH_1                              7
--#define   O_SPISTRV0__EG_STRV_THRESH_2                              8
--#define   W_SPISTRV0__EG_STRV_THRESH_2                              7
--#define   O_SPISTRV0__EG_STRV_THRESH_3                              0
--#define   W_SPISTRV0__EG_STRV_THRESH_3                              7
--#define R_SPISTRV1                                                  0x21E
--#define   O_SPISTRV1__EG_STRV_THRESH_4                              24
--#define   W_SPISTRV1__EG_STRV_THRESH_4                              7
--#define   O_SPISTRV1__EG_STRV_THRESH_5                              16
--#define   W_SPISTRV1__EG_STRV_THRESH_5                              7
--#define   O_SPISTRV1__EG_STRV_THRESH_6                              8
--#define   W_SPISTRV1__EG_STRV_THRESH_6                              7
--#define   O_SPISTRV1__EG_STRV_THRESH_7                              0
--#define   W_SPISTRV1__EG_STRV_THRESH_7                              7
--#define R_SPISTRV2                                                  0x21F
--#define   O_SPISTRV2__EG_STRV_THRESH_8                              24
--#define   W_SPISTRV2__EG_STRV_THRESH_8                              7
--#define   O_SPISTRV2__EG_STRV_THRESH_9                              16
--#define   W_SPISTRV2__EG_STRV_THRESH_9                              7
--#define   O_SPISTRV2__EG_STRV_THRESH_10                             8
--#define   W_SPISTRV2__EG_STRV_THRESH_10                             7
--#define   O_SPISTRV2__EG_STRV_THRESH_11                             0
--#define   W_SPISTRV2__EG_STRV_THRESH_11                             7
--#define R_SPISTRV3                                                  0x220
--#define   O_SPISTRV3__EG_STRV_THRESH_12                             24
--#define   W_SPISTRV3__EG_STRV_THRESH_12                             7
--#define   O_SPISTRV3__EG_STRV_THRESH_13                             16
--#define   W_SPISTRV3__EG_STRV_THRESH_13                             7
--#define   O_SPISTRV3__EG_STRV_THRESH_14                             8
--#define   W_SPISTRV3__EG_STRV_THRESH_14                             7
--#define   O_SPISTRV3__EG_STRV_THRESH_15                             0
--#define   W_SPISTRV3__EG_STRV_THRESH_15                             7
--#define R_TXDATAFIFO0                                               0x221
--#define   O_TXDATAFIFO0__TX0DATAFIFOSTART                           24
--#define   W_TXDATAFIFO0__TX0DATAFIFOSTART                           7
--#define   O_TXDATAFIFO0__TX0DATAFIFOSIZE                            16
--#define   W_TXDATAFIFO0__TX0DATAFIFOSIZE                            7
--#define   O_TXDATAFIFO0__TX1DATAFIFOSTART                           8
--#define   W_TXDATAFIFO0__TX1DATAFIFOSTART                           7
--#define   O_TXDATAFIFO0__TX1DATAFIFOSIZE                            0
--#define   W_TXDATAFIFO0__TX1DATAFIFOSIZE                            7
--#define R_TXDATAFIFO1                                               0x222
--#define   O_TXDATAFIFO1__TX2DATAFIFOSTART                           24
--#define   W_TXDATAFIFO1__TX2DATAFIFOSTART                           7
--#define   O_TXDATAFIFO1__TX2DATAFIFOSIZE                            16
--#define   W_TXDATAFIFO1__TX2DATAFIFOSIZE                            7
--#define   O_TXDATAFIFO1__TX3DATAFIFOSTART                           8
--#define   W_TXDATAFIFO1__TX3DATAFIFOSTART                           7
--#define   O_TXDATAFIFO1__TX3DATAFIFOSIZE                            0
--#define   W_TXDATAFIFO1__TX3DATAFIFOSIZE                            7
--#define R_TXDATAFIFO2                                               0x223
--#define   O_TXDATAFIFO2__TX4DATAFIFOSTART                           24
--#define   W_TXDATAFIFO2__TX4DATAFIFOSTART                           7
--#define   O_TXDATAFIFO2__TX4DATAFIFOSIZE                            16
--#define   W_TXDATAFIFO2__TX4DATAFIFOSIZE                            7
--#define   O_TXDATAFIFO2__TX5DATAFIFOSTART                           8
--#define   W_TXDATAFIFO2__TX5DATAFIFOSTART                           7
--#define   O_TXDATAFIFO2__TX5DATAFIFOSIZE                            0
--#define   W_TXDATAFIFO2__TX5DATAFIFOSIZE                            7
--#define R_TXDATAFIFO3                                               0x224
--#define   O_TXDATAFIFO3__TX6DATAFIFOSTART                           24
--#define   W_TXDATAFIFO3__TX6DATAFIFOSTART                           7
--#define   O_TXDATAFIFO3__TX6DATAFIFOSIZE                            16
--#define   W_TXDATAFIFO3__TX6DATAFIFOSIZE                            7
--#define   O_TXDATAFIFO3__TX7DATAFIFOSTART                           8
--#define   W_TXDATAFIFO3__TX7DATAFIFOSTART                           7
--#define   O_TXDATAFIFO3__TX7DATAFIFOSIZE                            0
--#define   W_TXDATAFIFO3__TX7DATAFIFOSIZE                            7
--#define R_TXDATAFIFO4                                               0x225
--#define   O_TXDATAFIFO4__TX8DATAFIFOSTART                           24
--#define   W_TXDATAFIFO4__TX8DATAFIFOSTART                           7
--#define   O_TXDATAFIFO4__TX8DATAFIFOSIZE                            16
--#define   W_TXDATAFIFO4__TX8DATAFIFOSIZE                            7
--#define   O_TXDATAFIFO4__TX9DATAFIFOSTART                           8
--#define   W_TXDATAFIFO4__TX9DATAFIFOSTART                           7
--#define   O_TXDATAFIFO4__TX9DATAFIFOSIZE                            0
--#define   W_TXDATAFIFO4__TX9DATAFIFOSIZE                            7
--#define R_TXDATAFIFO5                                               0x226
--#define   O_TXDATAFIFO5__TX10DATAFIFOSTART                          24
--#define   W_TXDATAFIFO5__TX10DATAFIFOSTART                          7
--#define   O_TXDATAFIFO5__TX10DATAFIFOSIZE                           16
--#define   W_TXDATAFIFO5__TX10DATAFIFOSIZE                           7
--#define   O_TXDATAFIFO5__TX11DATAFIFOSTART                          8
--#define   W_TXDATAFIFO5__TX11DATAFIFOSTART                          7
--#define   O_TXDATAFIFO5__TX11DATAFIFOSIZE                           0
--#define   W_TXDATAFIFO5__TX11DATAFIFOSIZE                           7
--#define R_TXDATAFIFO6                                               0x227
--#define   O_TXDATAFIFO6__TX12DATAFIFOSTART                          24
--#define   W_TXDATAFIFO6__TX12DATAFIFOSTART                          7
--#define   O_TXDATAFIFO6__TX12DATAFIFOSIZE                           16
--#define   W_TXDATAFIFO6__TX12DATAFIFOSIZE                           7
--#define   O_TXDATAFIFO6__TX13DATAFIFOSTART                          8
--#define   W_TXDATAFIFO6__TX13DATAFIFOSTART                          7
--#define   O_TXDATAFIFO6__TX13DATAFIFOSIZE                           0
--#define   W_TXDATAFIFO6__TX13DATAFIFOSIZE                           7
--#define R_TXDATAFIFO7                                               0x228
--#define   O_TXDATAFIFO7__TX14DATAFIFOSTART                          24
--#define   W_TXDATAFIFO7__TX14DATAFIFOSTART                          7
--#define   O_TXDATAFIFO7__TX14DATAFIFOSIZE                           16
--#define   W_TXDATAFIFO7__TX14DATAFIFOSIZE                           7
--#define   O_TXDATAFIFO7__TX15DATAFIFOSTART                          8
--#define   W_TXDATAFIFO7__TX15DATAFIFOSTART                          7
--#define   O_TXDATAFIFO7__TX15DATAFIFOSIZE                           0
--#define   W_TXDATAFIFO7__TX15DATAFIFOSIZE                           7
--#define R_RXDATAFIFO0                                               0x229
--#define   O_RXDATAFIFO0__RX0DATAFIFOSTART                           24
--#define   W_RXDATAFIFO0__RX0DATAFIFOSTART                           7
--#define   O_RXDATAFIFO0__RX0DATAFIFOSIZE                            16
--#define   W_RXDATAFIFO0__RX0DATAFIFOSIZE                            7
--#define   O_RXDATAFIFO0__RX1DATAFIFOSTART                           8
--#define   W_RXDATAFIFO0__RX1DATAFIFOSTART                           7
--#define   O_RXDATAFIFO0__RX1DATAFIFOSIZE                            0
--#define   W_RXDATAFIFO0__RX1DATAFIFOSIZE                            7
--#define R_RXDATAFIFO1                                               0x22A
--#define   O_RXDATAFIFO1__RX2DATAFIFOSTART                           24
--#define   W_RXDATAFIFO1__RX2DATAFIFOSTART                           7
--#define   O_RXDATAFIFO1__RX2DATAFIFOSIZE                            16
--#define   W_RXDATAFIFO1__RX2DATAFIFOSIZE                            7
--#define   O_RXDATAFIFO1__RX3DATAFIFOSTART                           8
--#define   W_RXDATAFIFO1__RX3DATAFIFOSTART                           7
--#define   O_RXDATAFIFO1__RX3DATAFIFOSIZE                            0
--#define   W_RXDATAFIFO1__RX3DATAFIFOSIZE                            7
--#define R_RXDATAFIFO2                                               0x22B
--#define   O_RXDATAFIFO2__RX4DATAFIFOSTART                           24
--#define   W_RXDATAFIFO2__RX4DATAFIFOSTART                           7
--#define   O_RXDATAFIFO2__RX4DATAFIFOSIZE                            16
--#define   W_RXDATAFIFO2__RX4DATAFIFOSIZE                            7
--#define   O_RXDATAFIFO2__RX5DATAFIFOSTART                           8
--#define   W_RXDATAFIFO2__RX5DATAFIFOSTART                           7
--#define   O_RXDATAFIFO2__RX5DATAFIFOSIZE                            0
--#define   W_RXDATAFIFO2__RX5DATAFIFOSIZE                            7
--#define R_RXDATAFIFO3                                               0x22C
--#define   O_RXDATAFIFO3__RX6DATAFIFOSTART                           24
--#define   W_RXDATAFIFO3__RX6DATAFIFOSTART                           7
--#define   O_RXDATAFIFO3__RX6DATAFIFOSIZE                            16
--#define   W_RXDATAFIFO3__RX6DATAFIFOSIZE                            7
--#define   O_RXDATAFIFO3__RX7DATAFIFOSTART                           8
--#define   W_RXDATAFIFO3__RX7DATAFIFOSTART                           7
--#define   O_RXDATAFIFO3__RX7DATAFIFOSIZE                            0
--#define   W_RXDATAFIFO3__RX7DATAFIFOSIZE                            7
--#define R_RXDATAFIFO4                                               0x22D
--#define   O_RXDATAFIFO4__RX8DATAFIFOSTART                           24
--#define   W_RXDATAFIFO4__RX8DATAFIFOSTART                           7
--#define   O_RXDATAFIFO4__RX8DATAFIFOSIZE                            16
--#define   W_RXDATAFIFO4__RX8DATAFIFOSIZE                            7
--#define   O_RXDATAFIFO4__RX9DATAFIFOSTART                           8
--#define   W_RXDATAFIFO4__RX9DATAFIFOSTART                           7
--#define   O_RXDATAFIFO4__RX9DATAFIFOSIZE                            0
--#define   W_RXDATAFIFO4__RX9DATAFIFOSIZE                            7
--#define R_RXDATAFIFO5                                               0x22E
--#define   O_RXDATAFIFO5__RX10DATAFIFOSTART                          24
--#define   W_RXDATAFIFO5__RX10DATAFIFOSTART                          7
--#define   O_RXDATAFIFO5__RX10DATAFIFOSIZE                           16
--#define   W_RXDATAFIFO5__RX10DATAFIFOSIZE                           7
--#define   O_RXDATAFIFO5__RX11DATAFIFOSTART                          8
--#define   W_RXDATAFIFO5__RX11DATAFIFOSTART                          7
--#define   O_RXDATAFIFO5__RX11DATAFIFOSIZE                           0
--#define   W_RXDATAFIFO5__RX11DATAFIFOSIZE                           7
--#define R_RXDATAFIFO6                                               0x22F
--#define   O_RXDATAFIFO6__RX12DATAFIFOSTART                          24
--#define   W_RXDATAFIFO6__RX12DATAFIFOSTART                          7
--#define   O_RXDATAFIFO6__RX12DATAFIFOSIZE                           16
--#define   W_RXDATAFIFO6__RX12DATAFIFOSIZE                           7
--#define   O_RXDATAFIFO6__RX13DATAFIFOSTART                          8
--#define   W_RXDATAFIFO6__RX13DATAFIFOSTART                          7
--#define   O_RXDATAFIFO6__RX13DATAFIFOSIZE                           0
--#define   W_RXDATAFIFO6__RX13DATAFIFOSIZE                           7
--#define R_RXDATAFIFO7                                               0x230
--#define   O_RXDATAFIFO7__RX14DATAFIFOSTART                          24
--#define   W_RXDATAFIFO7__RX14DATAFIFOSTART                          7
--#define   O_RXDATAFIFO7__RX14DATAFIFOSIZE                           16
--#define   W_RXDATAFIFO7__RX14DATAFIFOSIZE                           7
--#define   O_RXDATAFIFO7__RX15DATAFIFOSTART                          8
--#define   W_RXDATAFIFO7__RX15DATAFIFOSTART                          7
--#define   O_RXDATAFIFO7__RX15DATAFIFOSIZE                           0
--#define   W_RXDATAFIFO7__RX15DATAFIFOSIZE                           7
--#define R_XGMACPADCALIBRATION                                       0x231
--#define R_FREEQCARVE                                                0x233
--#define R_SPI4STATICDELAY0                                          0x240
--#define   O_SPI4STATICDELAY0__DATALINE7                             28
--#define   W_SPI4STATICDELAY0__DATALINE7                             4
--#define   O_SPI4STATICDELAY0__DATALINE6                             24
--#define   W_SPI4STATICDELAY0__DATALINE6                             4
--#define   O_SPI4STATICDELAY0__DATALINE5                             20
--#define   W_SPI4STATICDELAY0__DATALINE5                             4
--#define   O_SPI4STATICDELAY0__DATALINE4                             16
--#define   W_SPI4STATICDELAY0__DATALINE4                             4
--#define   O_SPI4STATICDELAY0__DATALINE3                             12
--#define   W_SPI4STATICDELAY0__DATALINE3                             4
--#define   O_SPI4STATICDELAY0__DATALINE2                             8
--#define   W_SPI4STATICDELAY0__DATALINE2                             4
--#define   O_SPI4STATICDELAY0__DATALINE1                             4
--#define   W_SPI4STATICDELAY0__DATALINE1                             4
--#define   O_SPI4STATICDELAY0__DATALINE0                             0
--#define   W_SPI4STATICDELAY0__DATALINE0                             4
--#define R_SPI4STATICDELAY1                                          0x241
--#define   O_SPI4STATICDELAY1__DATALINE15                            28
--#define   W_SPI4STATICDELAY1__DATALINE15                            4
--#define   O_SPI4STATICDELAY1__DATALINE14                            24
--#define   W_SPI4STATICDELAY1__DATALINE14                            4
--#define   O_SPI4STATICDELAY1__DATALINE13                            20
--#define   W_SPI4STATICDELAY1__DATALINE13                            4
--#define   O_SPI4STATICDELAY1__DATALINE12                            16
--#define   W_SPI4STATICDELAY1__DATALINE12                            4
--#define   O_SPI4STATICDELAY1__DATALINE11                            12
--#define   W_SPI4STATICDELAY1__DATALINE11                            4
--#define   O_SPI4STATICDELAY1__DATALINE10                            8
--#define   W_SPI4STATICDELAY1__DATALINE10                            4
--#define   O_SPI4STATICDELAY1__DATALINE9                             4
--#define   W_SPI4STATICDELAY1__DATALINE9                             4
--#define   O_SPI4STATICDELAY1__DATALINE8                             0
--#define   W_SPI4STATICDELAY1__DATALINE8                             4
--#define R_SPI4STATICDELAY2                                          0x242
--#define   O_SPI4STATICDELAY0__TXSTAT1                               8
--#define   W_SPI4STATICDELAY0__TXSTAT1                               4
--#define   O_SPI4STATICDELAY0__TXSTAT0                               4
--#define   W_SPI4STATICDELAY0__TXSTAT0                               4
--#define   O_SPI4STATICDELAY0__RXCONTROL                             0
--#define   W_SPI4STATICDELAY0__RXCONTROL                             4
--#define R_SPI4CONTROL                                               0x243
--#define   O_SPI4CONTROL__STATICDELAY                                2
--#define   O_SPI4CONTROL__LVDS_LVTTL                                 1
--#define   O_SPI4CONTROL__SPI4ENABLE                                 0
--#define R_CLASSWATERMARKS                                           0x244
--#define   O_CLASSWATERMARKS__CLASS0WATERMARK                        24
--#define   W_CLASSWATERMARKS__CLASS0WATERMARK                        5
--#define   O_CLASSWATERMARKS__CLASS1WATERMARK                        16
--#define   W_CLASSWATERMARKS__CLASS1WATERMARK                        5
--#define   O_CLASSWATERMARKS__CLASS3WATERMARK                        0
--#define   W_CLASSWATERMARKS__CLASS3WATERMARK                        5
--#define R_RXWATERMARKS1                                              0x245
--#define   O_RXWATERMARKS__RX0DATAWATERMARK                          24
--#define   W_RXWATERMARKS__RX0DATAWATERMARK                          7
--#define   O_RXWATERMARKS__RX1DATAWATERMARK                          16
--#define   W_RXWATERMARKS__RX1DATAWATERMARK                          7
--#define   O_RXWATERMARKS__RX3DATAWATERMARK                          0
--#define   W_RXWATERMARKS__RX3DATAWATERMARK                          7
--#define R_RXWATERMARKS2                                              0x246
--#define   O_RXWATERMARKS__RX4DATAWATERMARK                          24
--#define   W_RXWATERMARKS__RX4DATAWATERMARK                          7
--#define   O_RXWATERMARKS__RX5DATAWATERMARK                          16
--#define   W_RXWATERMARKS__RX5DATAWATERMARK                          7
--#define   O_RXWATERMARKS__RX6DATAWATERMARK                          8
--#define   W_RXWATERMARKS__RX6DATAWATERMARK                          7
--#define   O_RXWATERMARKS__RX7DATAWATERMARK                          0
--#define   W_RXWATERMARKS__RX7DATAWATERMARK                          7
--#define R_RXWATERMARKS3                                              0x247
--#define   O_RXWATERMARKS__RX8DATAWATERMARK                          24
--#define   W_RXWATERMARKS__RX8DATAWATERMARK                          7
--#define   O_RXWATERMARKS__RX9DATAWATERMARK                          16
--#define   W_RXWATERMARKS__RX9DATAWATERMARK                          7
--#define   O_RXWATERMARKS__RX10DATAWATERMARK                         8
--#define   W_RXWATERMARKS__RX10DATAWATERMARK                         7
--#define   O_RXWATERMARKS__RX11DATAWATERMARK                         0
--#define   W_RXWATERMARKS__RX11DATAWATERMARK                         7
--#define R_RXWATERMARKS4                                              0x248
--#define   O_RXWATERMARKS__RX12DATAWATERMARK                         24
--#define   W_RXWATERMARKS__RX12DATAWATERMARK                         7
--#define   O_RXWATERMARKS__RX13DATAWATERMARK                         16
--#define   W_RXWATERMARKS__RX13DATAWATERMARK                         7
--#define   O_RXWATERMARKS__RX14DATAWATERMARK                         8
--#define   W_RXWATERMARKS__RX14DATAWATERMARK                         7
--#define   O_RXWATERMARKS__RX15DATAWATERMARK                         0
--#define   W_RXWATERMARKS__RX15DATAWATERMARK                         7
--#define R_FREEWATERMARKS                                            0x249
--#define   O_FREEWATERMARKS__FREEOUTWATERMARK                        16
--#define   W_FREEWATERMARKS__FREEOUTWATERMARK                        16
--#define   O_FREEWATERMARKS__JUMFRWATERMARK                          8
--#define   W_FREEWATERMARKS__JUMFRWATERMARK                          7
--#define   O_FREEWATERMARKS__REGFRWATERMARK                          0
--#define   W_FREEWATERMARKS__REGFRWATERMARK                          7
--#define R_EGRESSFIFOCARVINGSLOTS                                    0x24a
--
--#define CTRL_RES0           0
--#define CTRL_RES1           1
--#define CTRL_REG_FREE       2
--#define CTRL_JUMBO_FREE     3
--#define CTRL_CONT           4
--#define CTRL_EOP            5
--#define CTRL_START          6
--#define CTRL_SNGL           7
--
--#define CTRL_B0_NOT_EOP     0
--#define CTRL_B0_EOP         1
--
--#define R_ROUND_ROBIN_TABLE                 0
--#define R_PDE_CLASS_0                       0x300
--#define R_PDE_CLASS_1                       0x302
--#define R_PDE_CLASS_2                       0x304
--#define R_PDE_CLASS_3                       0x306
--
--#define R_MSG_TX_THRESHOLD                  0x308
--
--#define R_GMAC_JFR0_BUCKET_SIZE              0x320
--#define R_GMAC_RFR0_BUCKET_SIZE              0x321
--#define R_GMAC_TX0_BUCKET_SIZE              0x322
--#define R_GMAC_TX1_BUCKET_SIZE              0x323
--#define R_GMAC_TX2_BUCKET_SIZE              0x324
--#define R_GMAC_TX3_BUCKET_SIZE              0x325
--#define R_GMAC_JFR1_BUCKET_SIZE              0x326
--#define R_GMAC_RFR1_BUCKET_SIZE              0x327
--
--#define R_XGS_TX0_BUCKET_SIZE               0x320
--#define R_XGS_TX1_BUCKET_SIZE               0x321
--#define R_XGS_TX2_BUCKET_SIZE               0x322
--#define R_XGS_TX3_BUCKET_SIZE               0x323
--#define R_XGS_TX4_BUCKET_SIZE               0x324
--#define R_XGS_TX5_BUCKET_SIZE               0x325
--#define R_XGS_TX6_BUCKET_SIZE               0x326
--#define R_XGS_TX7_BUCKET_SIZE               0x327
--#define R_XGS_TX8_BUCKET_SIZE               0x328
--#define R_XGS_TX9_BUCKET_SIZE               0x329
--#define R_XGS_TX10_BUCKET_SIZE              0x32A
--#define R_XGS_TX11_BUCKET_SIZE              0x32B
--#define R_XGS_TX12_BUCKET_SIZE              0x32C
--#define R_XGS_TX13_BUCKET_SIZE              0x32D
--#define R_XGS_TX14_BUCKET_SIZE              0x32E
--#define R_XGS_TX15_BUCKET_SIZE              0x32F
--#define R_XGS_JFR_BUCKET_SIZE               0x330
--#define R_XGS_RFR_BUCKET_SIZE               0x331
--
--#define R_CC_CPU0_0                         0x380
--#define R_CC_CPU1_0                         0x388
--#define R_CC_CPU2_0                         0x390
--#define R_CC_CPU3_0                         0x398
--#define R_CC_CPU4_0                         0x3a0
--#define R_CC_CPU5_0                         0x3a8
--#define R_CC_CPU6_0                         0x3b0
--#define R_CC_CPU7_0                         0x3b8
--
--#define XLR_GMAC_BLK_SZ		            (XLR_IO_GMAC_1_OFFSET - \
--		XLR_IO_GMAC_0_OFFSET)
--
--/* Constants used for configuring the devices */
--
--#define XLR_FB_STN			6 /* Bucket used for Tx freeback */
--
--#define MAC_B2B_IPG                     88
--
--#define	XLR_NET_PREPAD_LEN		32
--
--/* frame sizes need to be cacheline aligned */
--#define MAX_FRAME_SIZE                  (1536 + XLR_NET_PREPAD_LEN)
--#define MAX_FRAME_SIZE_JUMBO            9216
--
--#define MAC_SKB_BACK_PTR_SIZE           SMP_CACHE_BYTES
--#define MAC_PREPAD                      0
--#define BYTE_OFFSET                     2
--#define XLR_RX_BUF_SIZE                 (MAX_FRAME_SIZE + BYTE_OFFSET + \
--		MAC_PREPAD + MAC_SKB_BACK_PTR_SIZE + SMP_CACHE_BYTES)
--#define MAC_CRC_LEN                     4
--#define MAX_NUM_MSGRNG_STN_CC           128
--#define MAX_MSG_SND_ATTEMPTS		100	/* 13 stns x 4 entry msg/stn +
--						 * headroom
--						 */
--
--#define MAC_FRIN_TO_BE_SENT_THRESHOLD   16
--
--#define MAX_NUM_DESC_SPILL		1024
--#define MAX_FRIN_SPILL                  (MAX_NUM_DESC_SPILL << 2)
--#define MAX_FROUT_SPILL                 (MAX_NUM_DESC_SPILL << 2)
--#define MAX_CLASS_0_SPILL               (MAX_NUM_DESC_SPILL << 2)
--#define MAX_CLASS_1_SPILL               (MAX_NUM_DESC_SPILL << 2)
--#define MAX_CLASS_2_SPILL               (MAX_NUM_DESC_SPILL << 2)
--#define MAX_CLASS_3_SPILL               (MAX_NUM_DESC_SPILL << 2)
--
--enum {
--	SGMII_SPEED_10 = 0x00000000,
--	SGMII_SPEED_100 = 0x02000000,
--	SGMII_SPEED_1000 = 0x04000000,
--};
--
--enum tsv_rsv_reg {
--	TX_RX_64_BYTE_FRAME = 0x20,
--	TX_RX_64_127_BYTE_FRAME,
--	TX_RX_128_255_BYTE_FRAME,
--	TX_RX_256_511_BYTE_FRAME,
--	TX_RX_512_1023_BYTE_FRAME,
--	TX_RX_1024_1518_BYTE_FRAME,
--	TX_RX_1519_1522_VLAN_BYTE_FRAME,
--
--	RX_BYTE_COUNTER = 0x27,
--	RX_PACKET_COUNTER,
--	RX_FCS_ERROR_COUNTER,
--	RX_MULTICAST_PACKET_COUNTER,
--	RX_BROADCAST_PACKET_COUNTER,
--	RX_CONTROL_FRAME_PACKET_COUNTER,
--	RX_PAUSE_FRAME_PACKET_COUNTER,
--	RX_UNKNOWN_OP_CODE_COUNTER,
--	RX_ALIGNMENT_ERROR_COUNTER,
--	RX_FRAME_LENGTH_ERROR_COUNTER,
--	RX_CODE_ERROR_COUNTER,
--	RX_CARRIER_SENSE_ERROR_COUNTER,
--	RX_UNDERSIZE_PACKET_COUNTER,
--	RX_OVERSIZE_PACKET_COUNTER,
--	RX_FRAGMENTS_COUNTER,
--	RX_JABBER_COUNTER,
--	RX_DROP_PACKET_COUNTER,
--
--	TX_BYTE_COUNTER   = 0x38,
--	TX_PACKET_COUNTER,
--	TX_MULTICAST_PACKET_COUNTER,
--	TX_BROADCAST_PACKET_COUNTER,
--	TX_PAUSE_CONTROL_FRAME_COUNTER,
--	TX_DEFERRAL_PACKET_COUNTER,
--	TX_EXCESSIVE_DEFERRAL_PACKET_COUNTER,
--	TX_SINGLE_COLLISION_PACKET_COUNTER,
--	TX_MULTI_COLLISION_PACKET_COUNTER,
--	TX_LATE_COLLISION_PACKET_COUNTER,
--	TX_EXCESSIVE_COLLISION_PACKET_COUNTER,
--	TX_TOTAL_COLLISION_COUNTER,
--	TX_PAUSE_FRAME_HONERED_COUNTER,
--	TX_DROP_FRAME_COUNTER,
--	TX_JABBER_FRAME_COUNTER,
--	TX_FCS_ERROR_COUNTER,
--	TX_CONTROL_FRAME_COUNTER,
--	TX_OVERSIZE_FRAME_COUNTER,
--	TX_UNDERSIZE_FRAME_COUNTER,
--	TX_FRAGMENT_FRAME_COUNTER,
--
--	CARRY_REG_1 = 0x4c,
--	CARRY_REG_2 = 0x4d,
--};
--
--struct xlr_adapter {
--	struct net_device *netdev[4];
--};
--
--struct xlr_net_priv {
--	u32 __iomem *base_addr;
--	struct net_device *ndev;
--	struct xlr_adapter *adapter;
--	struct mii_bus *mii_bus;
--	int num_rx_desc;
--	int phy_addr;	/* PHY addr on MDIO bus */
--	int pcs_id;	/* PCS id on MDIO bus */
--	int port_id;	/* Port(gmac/xgmac) number, i.e 0-7 */
--	int tx_stnid;
--	u32 __iomem *mii_addr;
--	u32 __iomem *serdes_addr;
--	u32 __iomem *pcs_addr;
--	u32 __iomem *gpio_addr;
--	int phy_speed;
--	int port_type;
--	struct timer_list queue_timer;
--	int wakeup_q;
--	struct platform_device *pdev;
--	struct xlr_net_data *nd;
--
--	u64 *frin_spill;
--	u64 *frout_spill;
--	u64 *class_0_spill;
--	u64 *class_1_spill;
--	u64 *class_2_spill;
--	u64 *class_3_spill;
--};
--
--void xlr_set_gmac_speed(struct xlr_net_priv *priv);
--- 
-2.32.0
+--ReaqsoxgOBHFXBhH
+Content-Type: application/gzip
+Content-Disposition: attachment; filename=".config.gz"
+Content-Transfer-Encoding: base64
 
+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
+AA==
+
+--ReaqsoxgOBHFXBhH--
