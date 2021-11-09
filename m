@@ -2,230 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8479B44AC48
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 12:08:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AEE7144AC4C
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 12:08:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238856AbhKILLE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Nov 2021 06:11:04 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124]:49267 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229998AbhKILLC (ORCPT
+        id S245576AbhKILLY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Nov 2021 06:11:24 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39548 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229998AbhKILLX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Nov 2021 06:11:02 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1636456096;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=pkc8K4HqCcx+nTHDI7TmhWF3CU0oAPH7TenNLXQ96Sc=;
-        b=iqKmpdoJRzPGR8zYABFTtoV5OvwIOsIKFzzKQhITggvN297XvP0RHC6gzbffmNeD4o4RoG
-        kmCqvurSlyx5PED/NF//1qyszdC611Yqo6MX7PngrK6h7Nca+PCZXvJCQOidI7sR8v4M4b
-        BCclPCWJqnFM9+RXsPifNhUp9pE0IPg=
-Received: from mail-qk1-f197.google.com (mail-qk1-f197.google.com
- [209.85.222.197]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-309-ZPXIl4cUP76acy4dhegUkA-1; Tue, 09 Nov 2021 06:08:15 -0500
-X-MC-Unique: ZPXIl4cUP76acy4dhegUkA-1
-Received: by mail-qk1-f197.google.com with SMTP id az10-20020a05620a170a00b00462e059180eso12776329qkb.19
-        for <linux-kernel@vger.kernel.org>; Tue, 09 Nov 2021 03:08:15 -0800 (PST)
+        Tue, 9 Nov 2021 06:11:23 -0500
+Received: from mail-ot1-x330.google.com (mail-ot1-x330.google.com [IPv6:2607:f8b0:4864:20::330])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 968F8C061764
+        for <linux-kernel@vger.kernel.org>; Tue,  9 Nov 2021 03:08:37 -0800 (PST)
+Received: by mail-ot1-x330.google.com with SMTP id p11-20020a9d4e0b000000b0055a5741bff7so30285963otf.2
+        for <linux-kernel@vger.kernel.org>; Tue, 09 Nov 2021 03:08:37 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=4+G3Lrbcy0EyO7hdvkch+Sv/6pjlgWUWMyGebQReyzg=;
+        b=xhHXwnxjwwSmY1SZZZ+GTy0PcDo+hQfjVaBgfbi+9YB3SH1FJvtAIu07roe/OvDeYX
+         oClayepzt4EfDQzdn6RT19t4bi49JFwMWVsWz9IZ4zZY+MNfAZJFnBEDgIOoKHtx1aXP
+         zlGLz5mBEpZBlHPzJmTanj3B0n7jX4w8UGxZRK2BfgIDthB3CiTEET5D7SZEXpz6SJcO
+         vM1eUj8nFaeJ026QX2tUuo7HjplPA/p1qprEKR+xJSj6byKyNRu5pHmHuYoGXQhN9th1
+         yjVgJiGV7nC8lA6jf+SBUQL/jKGeB7Aq4Dg+OTMNKHcISQL+rnkSp1jZ8alcMt2wVL6o
+         Qx8w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=pkc8K4HqCcx+nTHDI7TmhWF3CU0oAPH7TenNLXQ96Sc=;
-        b=zQYxWo+qhN8mnnXQDwFQhqvry/6vqVqgt9jxCxXZu+DwT9adV9GmiHpC60gm8UmhmQ
-         s4UpE8+zEif0yDATGhko/F/1HdRaEF42MiNCN6riDRgTBRtzE8TCeWFQsOVfKFyNX4Pi
-         GsJj31oak18oxkowlBVr7GniTiIPOTi0NEMjk4LggCtykhMau2Ys9IilXZaviDltKv67
-         /VJPJHO6FoTGPCsUs+lrL0Q8c9tcTCyBtNwUb0DSwcrCbvfFDMzFU+R7u+UHicICR9va
-         +0KDp0lIbx5puSVcvtuhG+y9BXLzopHBykYUFkcxhnkUUHrjDILPz9qxtPnRudEfeBkE
-         kDNw==
-X-Gm-Message-State: AOAM533ZckNDrQpJ6OSFvg9Wy7ChKoMfqsZLqnGDKyiqqlJY7KZuK3Id
-        roPtQ4Ipcol+IwhX4ultgK1ZN04P3Jjuvg0voNa5Xcqmu8BUAe3BKekEuocOyOiJSwvPzd4BP73
-        pSIdQw9FtYOgDa8OqMipukkoO
-X-Received: by 2002:ac8:488b:: with SMTP id i11mr7241937qtq.208.1636456094941;
-        Tue, 09 Nov 2021 03:08:14 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJxyY4WfjyYrMNT2PPauhfi4YQ1oY71oouiuOkN0d5MnKk6vhJCBmcEDqkxCQyLCdzkvd/HrEQ==
-X-Received: by 2002:ac8:488b:: with SMTP id i11mr7241905qtq.208.1636456094711;
-        Tue, 09 Nov 2021 03:08:14 -0800 (PST)
-Received: from krava (nat-pool-brq-u.redhat.com. [213.175.37.12])
-        by smtp.gmail.com with ESMTPSA id bk35sm58303qkb.32.2021.11.09.03.08.12
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 09 Nov 2021 03:08:14 -0800 (PST)
-Date:   Tue, 9 Nov 2021 12:08:09 +0100
-From:   Jiri Olsa <jolsa@redhat.com>
-To:     Ian Rogers <irogers@google.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Jin Yao <yao.jin@linux.intel.com>,
-        John Garry <john.garry@huawei.com>,
-        "Paul A . Clarke" <pc@us.ibm.com>,
-        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Brendan Higgins <brendanhiggins@google.com>,
-        Daniel Latypov <dlatypov@google.com>,
-        David Gow <davidgow@google.com>,
-        Sohaib Mohamed <sohaib.amhmd@gmail.com>, eranian@google.com
-Subject: Re: [PATCH v3 00/22] Start aligning perf test with kunit style
-Message-ID: <YYpWmb/QZGnQQDJi@krava>
-References: <20211104064208.3156807-1-irogers@google.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=4+G3Lrbcy0EyO7hdvkch+Sv/6pjlgWUWMyGebQReyzg=;
+        b=NZRvJGCxs4ussgqigJRClH424Bc+9Kd2wwj03Rf58r82SAeoYf0re9+5Wj+UXnFZJu
+         KBjlCdNsKhZGkinebTOlOvHCf98RdbEBdXVfbUfuRlrwh/M7jQRDM8r1Qt801/kMqUe2
+         tz3EuYKJlGFL5CReM9XZv8TM1ECNaorxe3vimn/KQZ53dWqsRFEPaZ6VtksbEiISin5r
+         dAyENvEkQrwhyIE7XEPa15BMnLhP45K9IJQfuPoRL+N8FdHJxBYtPq+VwywuJcHIhTAV
+         FSHHmjGDoUVo/3EiXFFhZ3892U51DY4yXTU9F+7sblLEIvYypJ6W5OeCWM95O6rUT+8c
+         rVag==
+X-Gm-Message-State: AOAM531Fw/Qb8MMjfyL0AkaX3VEW688UIqb4Cg8WkNCvITtDNxxunQCq
+        zl/EDvaugouUcDJ9IsQS8UVxkyh3jSqj313MEgNF3A==
+X-Google-Smtp-Source: ABdhPJxnfHg55h3LAurq3eK4N+Gzju+eUBJuOMAZrQ9cyTGkqZ6aXrm0I+nlIynOiCWVZH9L28ayNM0pQyDUNxJARLo=
+X-Received: by 2002:a05:6830:2809:: with SMTP id w9mr5139316otu.237.1636456117012;
+ Tue, 09 Nov 2021 03:08:37 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211104064208.3156807-1-irogers@google.com>
+References: <20211102034115.1946036-1-bjorn.andersson@linaro.org>
+In-Reply-To: <20211102034115.1946036-1-bjorn.andersson@linaro.org>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Tue, 9 Nov 2021 12:08:25 +0100
+Message-ID: <CACRpkdatWHsP+b8uxj8-ekMsn9rfVPSm7muBNG09PBU-RH2oEA@mail.gmail.com>
+Subject: Re: [PATCH] pinctrl: qcom: sdm845: Enable dual edge errata
+To:     Bjorn Andersson <bjorn.andersson@linaro.org>
+Cc:     Stephen Boyd <swboyd@chromium.org>,
+        Douglas Anderson <dianders@chromium.org>,
+        linux-arm-msm@vger.kernel.org, linux-gpio@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Steev Klimaszewski <steev@kali.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 03, 2021 at 11:41:46PM -0700, Ian Rogers wrote:
-> Perf test uses its own structs and code layout that differs from kunit
-> that was more recently introduced to the kernel. Besides consistency,
-> it is hoped that moving in the direction of kunit style will enable
-> reuse of infrastructure like test output formatting for continuous
-> testing systems. For example:
-> https://lore.kernel.org/linux-kselftest/CA+GJov6tdjvY9x12JsJT14qn6c7NViJxqaJk+r-K1YJzPggFDQ@mail.gmail.com/
-> 
-> The motivation for this restructuring comes from wanting to be able to
-> tag tests with a size:
-> https://lore.kernel.org/linux-perf-users/CAP-5=fWmGyuqFKc-EMP3rbmTkjZ3MS+YSajGZfeRMc38HS82gw@mail.gmail.com/
-> To have more exhaustive and slower running tests.  This isn't
-> something kunit currently supports, nor is the execution of python and
-> shell tests, but it seems sensible to work on an approach with kunit
-> rather to invent a new wheel inside of perf.
-> 
-> These initial patches are just refactoring the main test suite
-> definitions to be in a more kunit style. Kunit isn't depended upon, it
-> is hoped that this can be done in later patches for the sake of
-> consistency.
-> 
-> v3. Fixes a missing null and out of bound skip reason load detected by
->     address sanitizer. This issue was reported by Jiri Olsa
->     <jolsa@redhat.com> with an address sanitizer reproduction provided
->     by Sohaib Mohamed <sohaib.amhmd@gmail.com>.
+On Tue, Nov 2, 2021 at 4:41 AM Bjorn Andersson
+<bjorn.andersson@linaro.org> wrote:
 
-Acked-by: Jiri Olsa <jolsa@redhat.com>
+> It has been observed that dual edge triggered wakeirq GPIOs on SDM845
+> doesn't trigger interrupts on the falling edge.
+>
+> Enabling wakeirq_dual_edge_errata for SDM845 indicates that the PDC in
+> SDM845 suffers from the same problem described, and worked around, by
+> Doug in 'c3c0c2e18d94 ("pinctrl: qcom: Handle broken/missing PDC dual
+> edge IRQs on sc7180")', so enable the workaround for SDM845 as well.
+>
+> The specific problem seen without this is that gpio-keys does not detect
+> the falling edge of the LID gpio on the Lenovo Yoga C630 and as such
+> consistently reports the LID as closed.
+>
+> Fixes: e35a6ae0eb3a ("pinctrl/msm: Setup GPIO chip in hierarchy")
+> Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
 
-thanks,
-jirka
+Patch applied for fixes!
 
-> 
-> v2. Gets to a point of the perf test test suite/case structs being
->     close facsimiles of the kunit ones. It also addresses feedback on
->     the v1 RFC, in particular from Jiri Olsa <jolsa@redhat.com>.
-> 
-> v1. Built/tested on x86.
-> 
-> Ian Rogers (22):
->   perf test: Use macro for "suite" declarations
->   perf test: Use macro for "suite" definitions
->   perf test: Make each test/suite its own struct.
->   perf test: Move each test suite struct to its test
->   perf test: Rename struct test to test_suite
->   perf test: Add helper functions for abstraction.
->   perf test: Add test case struct.
->   perf test: Add skip reason to test case.
->   perf test: Convert pfm tests to use test cases.
->   perf test: Convert pmu event tests to test cases.
->   perf test: Convert watch point tests to test cases.
->   perf test: Convert clang tests to test cases.
->   perf test: Convert bpf tests to test cases.
->   perf test: Convert llvm tests to test cases.
->   perf test: Remove now unused subtest helpers
->   perf test: bp tests use test case
->   perf test: Convert time to tsc test to test case.
->   perf test: Remove non test case style support.
->   perf test: BP tests, remove is_supported use
->   perf test: TSC test, remove is_supported use
->   perf test: Remove is_supported function
->   perf test: Remove skip_if_fail
-> 
->  tools/perf/arch/arm/include/arch-tests.h      |   2 +-
->  tools/perf/arch/arm/tests/arch-tests.c        |  18 +-
->  tools/perf/arch/arm/tests/vectors-page.c      |   2 +-
->  tools/perf/arch/arm64/include/arch-tests.h    |   2 +-
->  tools/perf/arch/arm64/tests/arch-tests.c      |  11 +-
->  tools/perf/arch/powerpc/include/arch-tests.h  |   2 +-
->  tools/perf/arch/powerpc/tests/arch-tests.c    |  12 +-
->  tools/perf/arch/x86/include/arch-tests.h      |  14 +-
->  tools/perf/arch/x86/tests/arch-tests.c        |  47 +-
->  tools/perf/arch/x86/tests/bp-modify.c         |   2 +-
->  tools/perf/arch/x86/tests/insn-x86.c          |   2 +-
->  tools/perf/arch/x86/tests/intel-cqm.c         |   2 +-
->  .../x86/tests/intel-pt-pkt-decoder-test.c     |   2 +-
->  tools/perf/arch/x86/tests/rdpmc.c             |   2 +-
->  tools/perf/arch/x86/tests/sample-parsing.c    |   2 +-
->  tools/perf/tests/api-io.c                     |   6 +-
->  tools/perf/tests/attr.c                       |   4 +-
->  tools/perf/tests/backward-ring-buffer.c       |   4 +-
->  tools/perf/tests/bitmap.c                     |   4 +-
->  tools/perf/tests/bp_account.c                 |  36 +-
->  tools/perf/tests/bp_signal.c                  |  34 +-
->  tools/perf/tests/bp_signal_overflow.c         |   9 +-
->  tools/perf/tests/bpf.c                        |  69 ++-
->  tools/perf/tests/builtin-test.c               | 578 ++++++------------
->  tools/perf/tests/clang.c                      |  54 +-
->  tools/perf/tests/code-reading.c               |   4 +-
->  tools/perf/tests/cpumap.c                     |  10 +-
->  tools/perf/tests/demangle-java-test.c         |   4 +-
->  tools/perf/tests/demangle-ocaml-test.c        |   4 +-
->  tools/perf/tests/dlfilter-test.c              |   4 +-
->  tools/perf/tests/dso-data.c                   |  10 +-
->  tools/perf/tests/dwarf-unwind.c               |   5 +-
->  tools/perf/tests/event-times.c                |   4 +-
->  tools/perf/tests/event_update.c               |   4 +-
->  tools/perf/tests/evsel-roundtrip-name.c       |   5 +-
->  tools/perf/tests/evsel-tp-sched.c             |   5 +-
->  tools/perf/tests/expand-cgroup.c              |   6 +-
->  tools/perf/tests/expr.c                       |   4 +-
->  tools/perf/tests/fdarray.c                    |   7 +-
->  tools/perf/tests/genelf.c                     |   6 +-
->  tools/perf/tests/hists_cumulate.c             |   4 +-
->  tools/perf/tests/hists_filter.c               |   4 +-
->  tools/perf/tests/hists_link.c                 |   4 +-
->  tools/perf/tests/hists_output.c               |   4 +-
->  tools/perf/tests/is_printable_array.c         |   4 +-
->  tools/perf/tests/keep-tracking.c              |   4 +-
->  tools/perf/tests/kmod-path.c                  |   4 +-
->  tools/perf/tests/llvm.c                       |  74 ++-
->  tools/perf/tests/maps.c                       |   4 +-
->  tools/perf/tests/mem.c                        |   4 +-
->  tools/perf/tests/mem2node.c                   |   4 +-
->  tools/perf/tests/mmap-basic.c                 |   4 +-
->  tools/perf/tests/mmap-thread-lookup.c         |   4 +-
->  tools/perf/tests/openat-syscall-all-cpus.c    |   5 +-
->  tools/perf/tests/openat-syscall-tp-fields.c   |   5 +-
->  tools/perf/tests/openat-syscall.c             |   5 +-
->  tools/perf/tests/parse-events.c               |   4 +-
->  tools/perf/tests/parse-metric.c               |   4 +-
->  tools/perf/tests/parse-no-sample-id-all.c     |   5 +-
->  tools/perf/tests/pe-file-parsing.c            |   6 +-
->  tools/perf/tests/perf-hooks.c                 |   4 +-
->  tools/perf/tests/perf-record.c                |   4 +-
->  tools/perf/tests/perf-time-to-tsc.c           |  30 +-
->  tools/perf/tests/pfm.c                        |  63 +-
->  tools/perf/tests/pmu-events.c                 |  73 +--
->  tools/perf/tests/pmu.c                        |   4 +-
->  tools/perf/tests/python-use.c                 |   4 +-
->  tools/perf/tests/sample-parsing.c             |   4 +-
->  tools/perf/tests/sdt.c                        |   6 +-
->  tools/perf/tests/stat.c                       |  11 +-
->  tools/perf/tests/sw-clock.c                   |   4 +-
->  tools/perf/tests/switch-tracking.c            |   4 +-
->  tools/perf/tests/task-exit.c                  |   4 +-
->  tools/perf/tests/tests.h                      | 238 ++++----
->  tools/perf/tests/thread-map.c                 |  10 +-
->  tools/perf/tests/thread-maps-share.c          |   4 +-
->  tools/perf/tests/time-utils-test.c            |   4 +-
->  tools/perf/tests/topology.c                   |   4 +-
->  tools/perf/tests/unit_number__scnprintf.c     |   4 +-
->  tools/perf/tests/vmlinux-kallsyms.c           |   5 +-
->  tools/perf/tests/wp.c                         | 122 +---
->  tools/perf/util/c++/clang-c.h                 |   8 +-
->  tools/perf/util/c++/clang-test.cpp            |   6 +-
->  83 files changed, 812 insertions(+), 966 deletions(-)
-> 
-> -- 
-> 2.33.1.1089.g2158813163f-goog
-> 
-
+Yours,
+Linus Walleij
