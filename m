@@ -2,160 +2,281 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 87DBA44B42E
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 21:43:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6C92F44B433
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 21:44:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244620AbhKIUqG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Nov 2021 15:46:06 -0500
-Received: from mo4-p02-ob.smtp.rzone.de ([85.215.255.82]:15521 "EHLO
-        mo4-p02-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244597AbhKIUqE (ORCPT
+        id S244630AbhKIUqo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Nov 2021 15:46:44 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57700 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S244625AbhKIUqh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Nov 2021 15:46:04 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1636490576;
-    s=strato-dkim-0002; d=goldelico.com;
-    h=To:References:Message-Id:Cc:Date:In-Reply-To:From:Subject:Cc:Date:
-    From:Subject:Sender;
-    bh=BXAn1R+jGGr+poz7fiAkFE+JV3nNe0OqbizSqbesjgY=;
-    b=cwKuv7Dfmkcltr/hVF6LExZgp+bxlCqIqdWY+LAtx9l6moqnyM+laELhl6+SABJ0pb
-    9P3L8kfKDDKc0Ctf0zmrNzc+TxGwPZLyj1P1jGAB9zC98xWZ5Mg/RHlZgEc2Lg9y8MAx
-    6o6dil58CWYBbBPvLSyI4/9d+lWAkzG9DrGcxp0oU35nTA7cdhKa01WgS4WSpwKN+RCb
-    oJLTFcUPq9hZNAJ5hRrIg/HIYCo8LclWHe2URd7uscIFbgx3qiLZLNHJN3cI+J+JIjQO
-    WO69svcq9DwV4QxgJ4QG8haa3GauFhU4pEfjzr1VHQtwq7wUUDnd+4UPNgTAzrSLc2Kf
-    EAqw==
-Authentication-Results: strato.com;
-    dkim=none
-X-RZG-AUTH: ":JGIXVUS7cutRB/49FwqZ7WcJeFKiMgPgp8VKxflSZ1P34KBj7gpw91N5y2S3i8cT6Q=="
-X-RZG-CLASS-ID: mo00
-Received: from imac.fritz.box
-    by smtp.strato.de (RZmta 47.34.5 DYNA|AUTH)
-    with ESMTPSA id Y02aa4xA9Kgt0dc
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (curve X9_62_prime256v1 with 256 ECDH bits, eq. 3072 bits RSA))
-        (Client did not present a certificate);
-    Tue, 9 Nov 2021 21:42:55 +0100 (CET)
-Content-Type: text/plain;
-        charset=utf-8
-Mime-Version: 1.0 (Mac OS X Mail 12.4 \(3445.104.21\))
-Subject: Re: [PATCH v5 5/7] MIPS: DTS: jz4780: Account for Synopsys HDMI
- driver and LCD controllers
-From:   "H. Nikolaus Schaller" <hns@goldelico.com>
-In-Reply-To: <6WNB2R.GJ2KT1BB7QOY1@crapouillou.net>
-Date:   Tue, 9 Nov 2021 21:42:54 +0100
-Cc:     Paul Boddie <paul@boddie.org.uk>, Rob Herring <robh+dt@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Kees Cook <keescook@chromium.org>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Robert Foss <robert.foss@linaro.org>,
-        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        Ezequiel Garcia <ezequiel@collabora.com>,
-        Harry Wentland <harry.wentland@amd.com>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        Maxime Ripard <maxime@cerno.tech>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS 
-        <devicetree@vger.kernel.org>,
-        linux-mips <linux-mips@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Discussions about the Letux Kernel 
-        <letux-kernel@openphoenux.org>, Jon as Karlman <jonas@kwiboo.se>,
-        dri-devel <dri-devel@lists.freedesktop.org>
-Content-Transfer-Encoding: quoted-printable
-Message-Id: <4DCFE008-A619-465F-9124-F58AC36A2B08@goldelico.com>
-References: <cover.1633436959.git.hns@goldelico.com>
- <c243176cb5e5a3ab5df1fe77f9246b6d5ec4f88e.1633436959.git.hns@goldelico.com>
- <O7VI0R.CRIG8R7O0OOI3@crapouillou.net> <3514743.EH6qe8WxYI@jason>
- <N3YI0R.7ZLKK5JTBXW63@crapouillou.net>
- <95D1DE70-DDF4-419B-8F0C-E9A6E0995D1F@goldelico.com>
- <BDU72R.SAKM4CQWCUKI2@crapouillou.net>
- <BF6CBFFA-E8AA-4CCE-A587-4D5D647DEC64@goldelico.com>
- <6WNB2R.GJ2KT1BB7QOY1@crapouillou.net>
-To:     Paul Cercueil <paul@crapouillou.net>
-X-Mailer: Apple Mail (2.3445.104.21)
+        Tue, 9 Nov 2021 15:46:37 -0500
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B91CC061766
+        for <linux-kernel@vger.kernel.org>; Tue,  9 Nov 2021 12:43:51 -0800 (PST)
+Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1mkXy2-0002hN-Eq; Tue, 09 Nov 2021 21:43:42 +0100
+Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
+        by drehscheibe.grey.stw.pengutronix.de with esmtp (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1mkXy0-0000hG-RY; Tue, 09 Nov 2021 21:43:40 +0100
+Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1mkXy0-0002VV-QP; Tue, 09 Nov 2021 21:43:40 +0100
+Date:   Tue, 9 Nov 2021 21:43:40 +0100
+From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
+To:     Bjorn Helgaas <helgaas@kernel.org>
+Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
+        Robert =?utf-8?B?xZp3acSZY2tp?= <robert@swiecki.net>,
+        linux-i2c <linux-i2c@vger.kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Linux PCI <linux-pci@vger.kernel.org>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Subject: Re: [PATCH] pci: Don't call resume callback for nearly bound devices
+Message-ID: <20211109204340.aowatog3jn5hqrag@pengutronix.de>
+References: <CAJZ5v0impb8uscbp8LUTBMExfMoGz=cPrTWhSGh0GF_SANNKPQ@mail.gmail.com>
+ <20211109200518.GA1176309@bhelgaas>
+MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="y2ftutqsucx4ohds"
+Content-Disposition: inline
+In-Reply-To: <20211109200518.GA1176309@bhelgaas>
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
+X-SA-Exim-Mail-From: ukl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
+--y2ftutqsucx4ohds
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-> Am 09.11.2021 um 21:36 schrieb Paul Cercueil <paul@crapouillou.net>:
+On Tue, Nov 09, 2021 at 02:05:18PM -0600, Bjorn Helgaas wrote:
+> On Tue, Nov 09, 2021 at 07:58:47PM +0100, Rafael J. Wysocki wrote:
+> > On Tue, Nov 9, 2021 at 7:52 PM Rafael J. Wysocki <rafael@kernel.org> wr=
+ote:
+> > > On Tue, Nov 9, 2021 at 7:12 PM Bjorn Helgaas <helgaas@kernel.org> wro=
+te:
+> > > > On Tue, Nov 09, 2021 at 06:18:18PM +0100, Rafael J. Wysocki wrote:
+> > > > > On Tue, Nov 9, 2021 at 7:59 AM Uwe Kleine-K=C3=B6nig
+> > > > > <u.kleine-koenig@pengutronix.de> wrote:
+> > > > > > On Mon, Nov 08, 2021 at 08:56:19PM -0600, Bjorn Helgaas wrote:
+> > > > > > > [+cc Greg: new device_is_bound() use]
+> > > > > >
+> > > > > > ack, that's what I would have suggested now, too.
+> > > > > >
+> > > > > > > On Mon, Nov 08, 2021 at 10:22:26PM +0100, Uwe Kleine-K=C3=B6n=
+ig wrote:
+> > > > > > > > pci_pm_runtime_resume() exits early when the device to resu=
+me isn't
+> > > > > > > > bound yet:
+> > > > > > > >
+> > > > > > > >     if (!to_pci_driver(dev->driver))
+> > > > > > > >             return 0;
+> > > > > > > >
+> > > > > > > > This however isn't true when the device currently probes and
+> > > > > > > > local_pci_probe() calls pm_runtime_get_sync() because then =
+the driver
+> > > > > > > > core already setup dev->driver. As a result the driver's re=
+sume callback
+> > > > > > > > is called before the driver's probe function is called and =
+so more often
+> > > > > > > > than not required driver data isn't setup yet.
+> > > > > > > >
+> > > > > > > > So replace the check for the device being unbound by a chec=
+k that only
+> > > > > > > > becomes true after .probe() succeeded.
+> > > > > > >
+> > > > > > > I like the fact that this patch is short and simple.
+> > > > > > >
+> > > > > > > But there are 30+ users of to_pci_driver().  This patch asser=
+ts that
+> > > > > > > *one* of them, pci_pm_runtime_resume(), is special and needs =
+to test
+> > > > > > > device_is_bound() instead of using to_pci_driver().
+> > > > > >
+> > > > > > Maybe for the other locations using device_is_bound(&pdev->dev)=
+ instead
+> > > > > > of to_pci_driver(pdev) !=3D NULL would be nice, too?
+> > > > > >
+> > > > > > I have another doubt: device_is_bound() should (according to its
+> > > > > > kernel-doc) be called with the device lock held. For the call s=
+tack that
+> > > > > > is (maybe) fixed here, the lock is held (by __device_attach). We
+> > > > > > probably should check if the lock is also held for the other ca=
+lls of
+> > > > > > pci_pm_runtime_resume().
+> > > > > >
+> > > > > > Hmm, the device lock is a mutex, the pm functions might be call=
+ed in
+> > > > > > atomic context, right?
+> > > > > >
+> > > > > > > It's special because the current PM implementation calls it v=
+ia
+> > > > > > > pm_runtime_get_sync() before the driver's .probe() method.  T=
+hat
+> > > > > > > connection is a little bit obscure and fragile.  What if the =
+PM
+> > > > > > > implementation changes?
+> > > > > >
+> > > > > > Maybe a saver bet would be to not use pm_runtime_get_sync() in
+> > > > > > local_pci_probe()?
+> > > > >
+> > > > > Yes, in principle it might be replaced with pm_runtime_get_noresu=
+me().
+> > > > >
+> > > > > In theory, that may be problematic if a device is put into a low-=
+power
+> > > > > state on remove and then the driver is bound again to it.
+> > > > >
+> > > > > > I wonder if the same problem exists on remove, i.e. pci_device_=
+remove()
+> > > > > > calls pm_runtime_put_sync() after the driver's .remove() callba=
+ck was
+> > > > > > called.
+> > > > >
+> > > > > If it is called after ->remove() and before clearing the device's
+> > > > > driver pointer, then yes.
+> > > >
+> > > > Yes, that is the case:
+> > > >
+> > > >   pci_device_remove
+> > > >     if (drv->remove) {
+> > > >       pm_runtime_get_sync
+> > > >       drv->remove()                # <-- driver ->remove() method
+> > > >       pm_runtime_put_noidle
+> > > >     }
+> > > >     ...
+> > > >     pm_runtime_put_sync            # <-- after ->remove()
+> > > >
+> > > > So pm_runtime_put_sync() is called after drv->remove(), and it may
+> > > > call drv->pm->runtime_idle().  I think the driver may not expect th=
+is.
+> > > >
+> > > > > If this is turned into pm_runtime_put_noidle(), all should work.
+> > > >
+> > > > pci_device_remove() already calls pm_runtime_put_noidle() immediate=
+ly
+> > > > after calling the driver ->remove() method.
+> > > >
+> > > > Are you saying we should do this, which means pci_device_remove()
+> > > > would call pm_runtime_put_noidle() twice?
+> > >
+> > > Well, they are both needed to keep the PM-runtime reference counting =
+in balance.
+> > >
+> > > This still has an issue, though, because user space would be able to
+> > > trigger a runtime suspend via sysfs after we've dropped the last
+> > > reference to the device in pci_device_remove().
+> > >
+> > > So instead, we can drop the pm_runtime_get_sync() and
+> > > pm_runtime_put_sync() from local_pci_probe() and pci_device_remove(),
+> > > respectively, and add pm_runtine_get_noresume() to pci_pm_init(),
+> > > which will prevent PM-runtime from touching the device until it has a
+> > > driver that supports PM-runtime.
+> > >
+> > > We'll lose the theoretical ability to put unbound devices into D3 this
+> > > way, but we learned some time ago that this isn't safe in all cases
+> > > anyway.
+> >=20
+> > IOW, something like this (untested and most likely white-space-damaged).
 >=20
-> Hi Nikolaus,
+> Thanks!  I applied this manually to for-linus in hopes of making the
+> the next linux-next build.
 >=20
-> Le mar., nov. 9 2021 at 21:19:17 +0100, H. Nikolaus Schaller =
-<hns@goldelico.com> a =C3=A9crit :
->> Hi Paul,
->>> Am 07.11.2021 um 20:05 schrieb Paul Cercueil <paul@crapouillou.net>:
->>>> 6. Therefore I think it *may* work overclocked with 48MHz
->>>> but is not guaranteed or reliable above 27 MHz.
->>>> So everything is ok here.
->>> One thing though - the "assigned-clocks" and "assigned-clock-rates", =
-while it works here, should be moved to the CGU node, to respect the =
-YAML schemas.
->> Trying to do this seems to break boot.
->> I can boot up to
->> [    8.312926] dw-hdmi-ingenic 10180000.hdmi: registered DesignWare =
-HDMI I2C bus driver
->> and
->> [   11.366899] [drm] Initialized ingenic-drm 1.1.0 20200716 for =
-13050000.lcdc0 on minor 0
->> but then the boot process becomes slow and hangs. Last sign of =
-activity is
->> [   19.347659] hub 1-0:1.0: USB hub found
->> [   19.353478] hub 1-0:1.0: 1 port detected
->> [   32.321760] wlan0_power: disabling
->> What I did was to just move
->> 		assigned-clocks =3D <&cgu JZ4780_CLK_HDMI>;
->> 		assigned-clock-rates =3D <27000000>;
->> from
->> 	hdmi: hdmi@10180000 {
->> to
->> 	cgu: jz4780-cgu@10000000 {
->> Does this mean the clock is assigned too early or too late?
->> Do you have any suggestions since I don't know the details of CGU.
+> Please send any testing reports and corrections to the patch and
+> commit log!
 >=20
-> These properties are already set for the CGU node in ci20.dts:
-
-Ah, I didn't look into that. Maybe because I thought adding this should =
-stay in jz4780.dtsi to be available for any board making use of it.
-
-So it gets overwritten and is then completely missing.
-
+> commit dd414877b58b ("PCI/PM: Prevent runtime PM until claimed by a drive=
+r that supports it")
+> Author: Bjorn Helgaas <bhelgaas@google.com>
+> Date:   Tue Nov 9 13:36:09 2021 -0600
 >=20
-> &cgu {
-> 	/*
-> 	 * Use the 32.768 kHz oscillator as the parent of the RTC for a =
-higher
-> 	 * precision.
-> 	 */
-> 	assigned-clocks =3D <&cgu JZ4780_CLK_OTGPHY>, <&cgu =
-JZ4780_CLK_RTC>;
-> 	assigned-clock-parents =3D <0>, <&cgu JZ4780_CLK_RTCLK>;
-> 	assigned-clock-rates =3D <48000000>;
-> };
->=20
-> So you want to update these properties to add the HDMI clock setting, =
-like this:
->=20
-> 	assigned-clocks =3D <&cgu JZ4780_CLK_OTGPHY>, <&cgu =
-JZ4780_CLK_RTC>, <&cgu JZ4780_CLK_HDMI>;
-> 	assigned-clock-parents =3D <0>, <&cgu JZ4780_CLK_RTCLK>;
-> 	assigned-clock-rates =3D <48000000>, <0>, <27000000>;
+>     PCI/PM: Prevent runtime PM until claimed by a driver that supports it
+>    =20
+>     Previously we had a path that could call a driver's ->runtime_resume()
+>     method before calling the driver's ->probe() method, which is a probl=
+em
+>     because ->runtime_resume() often relies on initialization done in
+>     ->probe():
+>    =20
+>       local_pci_probe
+>         pm_runtime_get_sync
+>           ...
+>             pci_pm_runtime_resume
+>               if (!pci_dev->driver)
+>                 return 0;                          <-- early exit
+>               dev->driver->pm->runtime_resume();   <-- driver ->runtime_r=
+esume()
+>         pci_dev->driver =3D pci_drv;
+>         pci_drv->probe()                           <-- driver ->probe()
+>    =20
+>     Prior to 2a4d9408c9e8 ("PCI: Use to_pci_driver() instead of
+>     pci_dev->driver"), we took the early exit, which avoided the problem.=
+  But
+>     2a4d9408c9e8 removed pci_dev->driver (since it's redundant with
+>     device->driver), so we no longer take the early exit, which leads to =
+havoc
+>     in ->runtime_resume().
+>    =20
+>     Similarly, we could call the driver's ->runtime_idle() method after i=
+ts
+>     ->remove() method.
+>    =20
+>     Avoid the problem by dropping the pm_runtime_get_sync() and
+>     pm_runtime_put_sync() from local_pci_probe() and pci_device_remove(),
+>     respectively.
+>    =20
+>     Add pm_runtime_get_noresume(), which uses no driver PM callbacks, to =
+the
+>     pci_pm_init() enumeration path.  This will prevent PM-runtime from to=
+uching
+>     the device until it has a driver that supports PM-runtime.
+>    =20
+>     Link: https://lore.kernel.org/r/CAJZ5v0impb8uscbp8LUTBMExfMoGz=3DcPrT=
+WhSGh0GF_SANNKPQ@mail.gmail.com
+>     Fixes: 2a4d9408c9e8 ("PCI: Use to_pci_driver() instead of pci_dev->dr=
+iver")
+>     Reported-by: Robert =C5=9Awi=C4=99cki <robert@swiecki.net>
+>     Suggested-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+>     Signed-off-by: Bjorn Helgaas <bhelgaas@google.com>
 
-Will give it a try.
+I like this, this feels better than my initial suggestion using
+device_is_bound().
 
-I would prefer if it could sit in jz4780.dtsi and ci20.dts would just =
-extend it but IMHO this is beyond DTS capabilities.
-So we likely have to live with that.
+Acked-by: Uwe Kleine-K=C3=B6nig <u.kleine-koenig@pengutronix.de>
 
-BR and thanks,
-Nikolaus
+Thanks
+Uwe
 
+--=20
+Pengutronix e.K.                           | Uwe Kleine-K=C3=B6nig         =
+   |
+Industrial Linux Solutions                 | https://www.pengutronix.de/ |
+
+--y2ftutqsucx4ohds
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEfnIqFpAYrP8+dKQLwfwUeK3K7AkFAmGK3XkACgkQwfwUeK3K
+7AkEMwf/dR6xL6eOWDFAQ8JmjwwRgmPEgGmE5vnPBHye6wRQcfxcwE4SpXyVqgTI
+g664Hbe2SrP8rrwU0NklrEhwlX0zQ7IpZhUMbl1KkbkDKZx11+3tfFBGW21bDyFl
+lPwT/bK0l6nMzGhFriAbIfmxUPhHedoK0YhYDZz8WNL5vFvRUWvExi6zvCGy0FXE
+6dFjJHYga4eLTGkj22+sDiRXRbx0NdpiVGRzDD37sv18AAoMmZe9EM21yKHnhjUC
+xxaGqSDYRVpPVJ2ZkbIEqWo/08EfwJL19SGOO1A6fdmlxE+YnpmzzRYKeZVTaxxp
+yfvp6hKkjAQ7m8bOOrRScRbuNPdr2Q==
+=WTw5
+-----END PGP SIGNATURE-----
+
+--y2ftutqsucx4ohds--
