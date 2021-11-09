@@ -2,58 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0EE9F44B4C1
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 22:29:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A92F644B4C4
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 22:30:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245222AbhKIVbd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Nov 2021 16:31:33 -0500
-Received: from vps0.lunn.ch ([185.16.172.187]:53468 "EHLO vps0.lunn.ch"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S245187AbhKIVbZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Nov 2021 16:31:25 -0500
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
-        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
-        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
-        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
-        bh=UQf8COTFsagdrfbDjGeAFUwNVRG2xJ6sgcNzxAbi2GQ=; b=3vR5thXo5U0rqtVzvGah4Lsl/d
-        /b2EEtsaZdO8VlZNYC7oCbh+PbezQOcZoRwCGBddHevqFI03oDQ3v6nOm49kzzNAlayYHgA/NCoQi
-        E79jOZ/M8dMmqP7kugNMj1GgfhQghMImI3J6+ZwpMaJ0zkx0zcvQ+7yPUBJ8B7ZuUkBQ=;
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
-        (envelope-from <andrew@lunn.ch>)
-        id 1mkYfS-00D1aM-7h; Tue, 09 Nov 2021 22:28:34 +0100
-Date:   Tue, 9 Nov 2021 22:28:34 +0100
-From:   Andrew Lunn <andrew@lunn.ch>
-To:     Ansuel Smith <ansuelsmth@gmail.com>
-Cc:     Vivien Didelot <vivien.didelot@gmail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Vladimir Oltean <olteanv@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>, Pavel Machek <pavel@ucw.cz>,
-        John Crispin <john@phrozen.org>, netdev@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-leds@vger.kernel.org,
-        Marek =?iso-8859-1?Q?Beh=FAn?= <kabel@kernel.org>
-Subject: Re: [RFC PATCH v3 6/8] leds: trigger: add hardware-phy-activity
- trigger
-Message-ID: <YYroAse2JQjLTK4J@lunn.ch>
-References: <20211109022608.11109-1-ansuelsmth@gmail.com>
- <20211109022608.11109-7-ansuelsmth@gmail.com>
+        id S245172AbhKIVc5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Nov 2021 16:32:57 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39936 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239398AbhKIVc4 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Nov 2021 16:32:56 -0500
+Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D66AC061764;
+        Tue,  9 Nov 2021 13:30:09 -0800 (PST)
+Received: from zn.tnic (p200300ec2f18aa00aec912b1b11fde1a.dip0.t-ipconnect.de [IPv6:2003:ec:2f18:aa00:aec9:12b1:b11f:de1a])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id EE48F1EC0390;
+        Tue,  9 Nov 2021 22:30:07 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1636493408;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=Na1GO8CHHfkH7PTogxxL39ysdX5U41PDDHRMkhNbsVk=;
+        b=NDKwOXu5H+BVEopZN1+LF2gcd+5OR1YGOFBcHcPb6s9mu0b2s6wJm547IswbKTMjd0agCH
+        nnP8dIu0efCcUUshzNOTmvlr9fliZVwgJ8ds1CBDkVAXU2Vb3T7SCLwG3MySfJ6P18HKhQ
+        Z9fYWCpXrW13TCkRPuzYxl2RkTgLR0w=
+Date:   Tue, 9 Nov 2021 22:30:01 +0100
+From:   Borislav Petkov <bp@alien8.de>
+To:     "Luck, Tony" <tony.luck@intel.com>
+Cc:     Zhaolong Zhang <zhangzl2013@126.com>,
+        "x86@kernel.org" <x86@kernel.org>,
+        "linux-edac@vger.kernel.org" <linux-edac@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "Paul E . McKenney" <paulmck@kernel.org>
+Subject: Re: [PATCH] x86/mce: drop cpu_missing since we have more capable
+ mce_missing_cpus
+Message-ID: <YYroWYUVJEVKqy+7@zn.tnic>
+References: <4d526023.3cde.17cff097bab.Coremail.zhangzl2013@126.com>
+ <YYj8ir/UYnG/zVK4@zn.tnic>
+ <4a77f582.4434.17cff975224.Coremail.zhangzl2013@126.com>
+ <776fad3d.3369.17d03d2c2ba.Coremail.zhangzl2013@126.com>
+ <YYo6VwPZLCWcP3Bl@zn.tnic>
+ <d66e53d9d8cf4dabb2daade220308d7a@intel.com>
+ <YYrQe7bYe+OBzZ4B@zn.tnic>
+ <84e2622e4300490587793d2509f7b3ff@intel.com>
+ <YYrYUpM7c5Z+nFsv@zn.tnic>
+ <42d1d11d63f3453db61fad58a91e2ba5@intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20211109022608.11109-7-ansuelsmth@gmail.com>
+In-Reply-To: <42d1d11d63f3453db61fad58a91e2ba5@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> +/* The attrs will be placed dynamically based on the supported triggers */
-> +static struct attribute *phy_activity_attrs[PHY_ACTIVITY_MAX_TRIGGERS + 1];
+On Tue, Nov 09, 2021 at 08:44:41PM +0000, Luck, Tony wrote:
+> > what do we do with the sysfs knob? It probably is an ABI:
+> >
+> > /sys/devices/system/machinecheck/machinecheck1/tolerant
+> > /sys/devices/system/machinecheck/machinecheck2/tolerant
+> 
+> $ git grep tolerant -- Documentation/ABI/
+> $
+> 
+> An undocumented ABI! Well, not documented with all the other sysfs bits.
+> 
+> It does appear in:
+> Documentation/x86/x86_64/machinecheck.rst
 
-This cannot be global. I have boards with a mixture of different PHYs
-and switches. Each will have their own collection of supported
-modes. And some PHYs have different modes per LED. 
+Yeah, we have some spreading of documentation which is not necessarily
+helpful.
 
-       Andrew
+> Of course, like a lot of documentation, it isn't accurate. It wasn't
+> updated to describe what happens with recoverable errors. Final
+> paragraph says:
+>
+>         Note this only makes a difference if the CPU allows recovery
+>         from a machine check exception. Current x86 CPUs generally do
+>         not.
+>
+> Recovery was first introduced in the Nehalem generation which
+> ark.intel.com says was launched in Q1'2010. So over a decade.
+>
+> Choices: 1) Leave the file there, but remove the code that uses the
+> value 2) Delete the file too
+>
+> Option 1 doesn't break any scripts that look for the file, but may
+> make people shout louder when they find it no longer does anything.
+>
+> Option 2 is the more honest approach.
+
+Ack, we can try 2 and see who cries.
+
+-- 
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
