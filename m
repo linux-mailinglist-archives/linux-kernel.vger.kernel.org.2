@@ -2,98 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 549BE44A7F6
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 08:57:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4679144A7F9
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 08:58:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243827AbhKIIAb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Nov 2021 03:00:31 -0500
-Received: from mout.kundenserver.de ([212.227.126.131]:52203 "EHLO
-        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235038AbhKIIAa (ORCPT
+        id S243842AbhKIIBR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Nov 2021 03:01:17 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51878 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235038AbhKIIBP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Nov 2021 03:00:30 -0500
-Received: from mail-wr1-f49.google.com ([209.85.221.49]) by
- mrelayeu.kundenserver.de (mreue011 [213.165.67.97]) with ESMTPSA (Nemesis) id
- 1MV5rK-1nBLJB1Yn8-00S5fo for <linux-kernel@vger.kernel.org>; Tue, 09 Nov 2021
- 08:57:43 +0100
-Received: by mail-wr1-f49.google.com with SMTP id d3so31382054wrh.8
-        for <linux-kernel@vger.kernel.org>; Mon, 08 Nov 2021 23:57:43 -0800 (PST)
-X-Gm-Message-State: AOAM532VzhYvYc5gxysmOysTl6y1TkDJ8FoVAvLilCHuhdBj53+H0loa
-        G1Uly/V7a2X+HqlFeE8L6fV8ETMdzspXjsf5Ri8=
-X-Google-Smtp-Source: ABdhPJxOYX703uK6AXQHK5dh5jG7IAQN9VFUbVfnkw9tMVNR/Ayy1GnBPVJ0CkvgSbNoumTtH2lEYJvxHYFyV0+4bzA=
-X-Received: by 2002:a05:6000:10cb:: with SMTP id b11mr6937924wrx.71.1636444663024;
- Mon, 08 Nov 2021 23:57:43 -0800 (PST)
-MIME-Version: 1.0
-References: <20211109060302.56362-1-julianbraha@gmail.com>
-In-Reply-To: <20211109060302.56362-1-julianbraha@gmail.com>
-From:   Arnd Bergmann <arnd@arndb.de>
-Date:   Tue, 9 Nov 2021 08:57:27 +0100
-X-Gmail-Original-Message-ID: <CAK8P3a3=LBTM=ZnoPyhGRRstdBy1iTMHEeV4C4+NDU8B_sbTEQ@mail.gmail.com>
-Message-ID: <CAK8P3a3=LBTM=ZnoPyhGRRstdBy1iTMHEeV4C4+NDU8B_sbTEQ@mail.gmail.com>
-Subject: Re: [PATCH] [PATCH v2] ARM: fix unmet dependency on BITREVERSE for HAVE_ARCH_BITREVERSE
-To:     Julian Braha <julianbraha@gmail.com>
-Cc:     Russell King - ARM Linux <linux@armlinux.org.uk>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        fazilyildiran@gmail.com
-Content-Type: text/plain; charset="UTF-8"
-X-Provags-ID: V03:K1:DMEgb+/jz3kHpQk7k2eZZ98L8KRp5DUooTAUQ2s/aE3bBLX/tze
- 96u4Qy3RxdsJlm2kyx3BA0oWH2mz3UEfx6fHVr3/J7t/FeQio2VdB3q24/udbNi3B/eeH8c
- X+kiBDP1diCydsdEnULhHhpP7dUUqACkJNb7N6lpPGqDLWnTc2LR2UKz2Il1B9CK7M+DrB4
- usqZ+5zN7DxQussKi/+xA==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:iRZMSWbi1NU=:l8PEhCz0U38F0iLSHC5Tzb
- 912xcS97PbMJ12iwlfeKF5l0dDhE6jtOqz1TtA3fV1iPyoN5X4JfMn3s8zhoGtEiHvdfUR4aN
- N3Uwl+5ElpKvViYk2ZpZ6Phg6/8+9cuj8wRvVLUVPdE5YxRLcn1nN3R1AVXja5JbZpt7vShtc
- F+clKPGQIww7Rxi/NPfBlcFH5NL4N/hFgZDcvy2j1+/KBovROMG5jydl+4mN0jVbXXXJVX8wS
- trluHBwqVpBlVBxqRbSEYoWWp//G8MWE+Q6nB6236CHcrKpMGCK34p2zd9Xuxzhj+/7YbFlOX
- TpuQU08Kjat8ZRV/l6FB+v3Jz1fGuMmI33jOwwaTvkYaO5xdzQZ2vhSTrEyhjozJHyT80xG66
- 5nYmKcc6KOe9i5HlFxnOwarQRshSQWwddjBcTV7h+6+9exUBDv3TmwstrQgpmzBFxl4CzBu0O
- QCAIflFgLewuBWCst+ntMmYcpjq9MM39WW7a37I3cgd4z+yYocVDtwkwa9E96RbUbrd0wHaL+
- nnccOfwXzauBZ+XpzRLIuKbCJI/c1I8Si0eSryKfVHyCw6lWIs7Vbec8y6rvAgbpUGtKtPRdD
- t0Da9TF5dH9pLMPAoAmZaCjFRZR6EHhLijWpjRVPXpbGQ3RGr7UYrcjjvzq1Xqe2lsD6SjXhe
- rzWHMtd522o+dBHYLhiGji7rKCTCqwPS0Gb/+HOqOL4JJhIoqRDxxexWJCPM5koCpucA=
+        Tue, 9 Nov 2021 03:01:15 -0500
+Received: from mail-pl1-x62c.google.com (mail-pl1-x62c.google.com [IPv6:2607:f8b0:4864:20::62c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 22007C061764;
+        Mon,  8 Nov 2021 23:58:30 -0800 (PST)
+Received: by mail-pl1-x62c.google.com with SMTP id p18so19403235plf.13;
+        Mon, 08 Nov 2021 23:58:30 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references;
+        bh=vb4eBAY7N0LkA2iKekvmFSd0kTlc+hgeAZzRroUDRuw=;
+        b=kpLT0wPZJt6N/49Pzo75OHSy2fqytkL41+ufcjkYpfslXkv3VR+ssVUG7Gru6hZdAb
+         BR6paiz71+CewpnfAb6crR2dRV5bM8sSc7U864hrzw3TlxFoTdrt9nLxXK40dcOnEFlr
+         pvILyaldpTye8QyT8kBZZHky4Cy7w3mN6NKEnnCwEi0rm2MJb9Vb94giXZGmnua3PHJq
+         0DK3FrfXqXymLu+MGP5rvEX9uqHYgYYbBIO8KFQvJPEwPAQYRSVGmcHaQkbMCWoHGfxF
+         1Yw5w1lMhyE5F2loMRunWKnRxiOnhBzpKkHlV2bVRJw8No7UWyvnLImBRgX3l2noCj1Z
+         k6qQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references;
+        bh=vb4eBAY7N0LkA2iKekvmFSd0kTlc+hgeAZzRroUDRuw=;
+        b=YUAGzIJjqLhHMaXN3+9hUfUokO8yaCJ8J1XVoOImnvQ/IlZ+Z2iihAFslqUb9y8JL2
+         b3d7zNmjeKUF6x6vOq27DvNGJqFXBIYPJ1MbVl6zN+CStcfIuT5dDiys7FXVp1xf3dBc
+         ax/tQ4kznZNAwnVWTdbECncpnLsFMDVSVFXmpPJ8/MF8yeoLX+vnbABIvp2mNVJlkLcT
+         lem8ZKwvoZXZws6DHVSPKruhvmUJOpFrPLIr7E9IDriQ5CI4CMgvvdSTcgso/j2DFXL1
+         XEwwvGFKm1YBa+10XO0srZ5kLjN6TfpFPSoqyNCZnG20wZ5LfxKUG5g5XaPjsVByPXlM
+         OtTw==
+X-Gm-Message-State: AOAM531bxMNgnqkSuoI2XzGw74BS7n3jq328DzE3/CqFR3EuqP6RjmqI
+        kyyjgaOJNmSXMyPme59L0xI=
+X-Google-Smtp-Source: ABdhPJxnmtWC3JYFZjtqMdreyxgTZBG8189r0SLPti74aaLSDn2TxU+yRGNkh4u+6hEc9AB6Hy0mIA==
+X-Received: by 2002:a17:90b:1806:: with SMTP id lw6mr5049028pjb.59.1636444709599;
+        Mon, 08 Nov 2021 23:58:29 -0800 (PST)
+Received: from scdiu3.sunplus.com ([113.196.136.192])
+        by smtp.googlemail.com with ESMTPSA id x135sm10635714pfd.78.2021.11.08.23.58.27
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Mon, 08 Nov 2021 23:58:29 -0800 (PST)
+From:   "LH.Kuo" <lhjeff911@gmail.com>
+X-Google-Original-From: "LH.Kuo" <lh.kuo@sunplus.com>
+To:     p.zabel@pengutronix.de, daniel.thompson@linaro.org,
+        lee.jones@linaro.org, u.kleine-koenig@pengutronix.de,
+        ulf.hansson@linaro.org, robh+dt@kernel.org,
+        linux-kernel@vger.kernel.org, linux-mmc@vger.kernel.org,
+        devicetree@vger.kernel.org
+Cc:     qinjian@cqplus1.com, wells.lu@sunplus.com,
+        "LH.Kuo" <lh.kuo@sunplus.com>
+Subject: [PATCH v2 0/2] Add SD/SDIO control driver for Sunplus SP7021 SoC               
+Date:   Tue,  9 Nov 2021 15:58:23 +0800
+Message-Id: <1636444705-17883-1-git-send-email-lh.kuo@sunplus.com>
+X-Mailer: git-send-email 2.7.4
+In-Reply-To: <1635487055-18494-1-git-send-email-lh.kuo@sunplus.com>
+References: <1635487055-18494-1-git-send-email-lh.kuo@sunplus.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 9, 2021 at 7:03 AM Julian Braha <julianbraha@gmail.com> wrote:
->
-> When ARM is enabled, and BITREVERSE is disabled,
-> Kbuild gives the following warning:
->
-> WARNING: unmet direct dependencies detected for HAVE_ARCH_BITREVERSE
->   Depends on [n]: BITREVERSE [=n]
->   Selected by [y]:
->   - ARM [=y] && (CPU_32v7M [=n] || CPU_32v7 [=y]) && !CPU_32v6 [=n]
->
-> This is because ARM selects HAVE_ARCH_BITREVERSE
-> without selecting BITREVERSE, despite
-> HAVE_ARCH_BITREVERSE depending on BITREVERSE.
->
-> This unmet dependency bug was found by Kismet,
-> a static analysis tool for Kconfig.
+	This is a patch series for SD/SDIO driver for Sunplus SP7021 SoC.										
+											
+	Sunplus SP7021 is an ARM Cortex A7 (4 cores) based SoC. It integrates										
+	many peripherals (ex: UART, I2C, SPI, SDIO, eMMC, USB, SD card and										
+	etc.) into a single chip. It is designed for industrial control.										
+											
+	Refer to:										
+	https://sunplus-tibbo.atlassian.net/wiki/spaces/doc/overview										
+	https://tibbo.com/store/plus1.html	
 
-Looks good to me, please add it to the patch tracker[1].
+LH.Kuo (2):
+  mmc: Add SD/SDIO driver for Sunplus SP7021
+  devicetree bindings mmc Add bindings doc for Sunplus SP7021
 
-Reviewed-by: Arnd Bergmann <arnd@arndb.de>
+ .../devicetree/bindings/mmc/sunplus-sd2.yaml       |   82 ++
+ MAINTAINERS                                        |    7 +
+ drivers/mmc/host/Kconfig                           |   10 +
+ drivers/mmc/host/Makefile                          |    1 +
+ drivers/mmc/host/sunplus_sd2.c                     | 1068 ++++++++++++++++++++
+ drivers/mmc/host/sunplus_sd2.h                     |  155 +++
+ 6 files changed, 1323 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/mmc/sunplus-sd2.yaml
+ create mode 100644 drivers/mmc/host/sunplus_sd2.c
+ create mode 100644 drivers/mmc/host/sunplus_sd2.h
 
-> Please advise if this
-> is not the appropriate solution.
->
-> v2:
-> Changed this fix to remove the dependency on BITREVERSE from
-> HAVE_ARCH_BITREVERSE, since it isn't actually necessary.
+-- 
+2.7.4
 
-This bit should go below the --- line. You can also add a Link: tag
-pointing to v1 [2].
-
-       Arnd
-
-[1] https://www.armlinux.org.uk/developer/patches/info.php
-[2] https://lore.kernel.org/linux-arm-kernel/20211029203110.8343-1-julianbraha@gmail.com/
