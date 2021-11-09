@@ -2,117 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 12E3D449F4B
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 01:05:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4E263449F51
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 01:10:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238129AbhKIAIV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Nov 2021 19:08:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58480 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229618AbhKIAIU (ORCPT
+        id S241112AbhKIANh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Nov 2021 19:13:37 -0500
+Received: from mail-wr1-f54.google.com ([209.85.221.54]:42930 "EHLO
+        mail-wr1-f54.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229618AbhKIANf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Nov 2021 19:08:20 -0500
-Received: from mail-pf1-x435.google.com (mail-pf1-x435.google.com [IPv6:2607:f8b0:4864:20::435])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7BAC2C061570
-        for <linux-kernel@vger.kernel.org>; Mon,  8 Nov 2021 16:05:35 -0800 (PST)
-Received: by mail-pf1-x435.google.com with SMTP id z6so1890016pfe.7
-        for <linux-kernel@vger.kernel.org>; Mon, 08 Nov 2021 16:05:35 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=jz2KzTNbXrHHsy+Pm9sqGOU2Ds+KEEkeTlq7Y20EBzg=;
-        b=gmzpWCOl+6r+T6HSQ4AzKgWJcY5HnGQT0kvInRVUX0/RrFlRdXAZAPFfNgAeJeoiK4
-         dt7v56DTua9VcTLMAk2twgFjEHSLr0T+2LGNOiBMSKAYeLgAAAPJWQT6WzUx1aXhhwx8
-         HcNHbL04PQ0PcT+4K1NxRvQxY+bmJhlEyjlkX0txQ2xrUUMIUDO1pBVOzRmh+/yRi/Pr
-         pyjPEHblICl9sUUhQ7HHXvzP7wFJRzq7LS7Z2ylIZszCarhlzKCT8Gtgyvb713CB3wFo
-         Ujdf+OIE6D5XevhfkmHbm8eNgM/wdoZuqYn9dUzqZP31M5dtkOMXsqULfK87ij4DDElX
-         sJ6A==
+        Mon, 8 Nov 2021 19:13:35 -0500
+Received: by mail-wr1-f54.google.com with SMTP id c4so29881146wrd.9;
+        Mon, 08 Nov 2021 16:10:50 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=jz2KzTNbXrHHsy+Pm9sqGOU2Ds+KEEkeTlq7Y20EBzg=;
-        b=58TYU0xkMEZZkEsOuEvBeqpkrGX+0h0UgjgFV3M+OEc3G5m0X8iXj+Vw8GzsizjDb8
-         80t8KCFBaF1312Yv4/J64Y8OXKphtz7uUDTIComOzU61UR5tP+qWgQ3ARafrsMT+LQ6w
-         5lZoR8ptAXAuGVy/KD8vus5LydIwKmvB/SaPRbwt2uZD7OUmHiSzTJF6WeWd7tAn1ocM
-         JvJSQ83a0R4rX7xr0t8oJOT0ghDkp/VIB75sKwGJOdQKWy1pWV1w/HQNzmIlkmjvrHnk
-         xd+zmYph3XxJZCxt2J2UKEG5tpa2923rZlHWqlia09Vz93Yij9mNLMKQy0q8Z2FfK12K
-         k+kA==
-X-Gm-Message-State: AOAM533iQKd/IpDvZcCx4FVGXNvd083oD67pfzehyW8EvBbOIMYyd+B7
-        a+UkSGCpkOc3VegW0bnBJdrZmA==
-X-Google-Smtp-Source: ABdhPJxLNiLslorRQE+S4xoihyO5pNo7Y+BC5j67+KLinvlVZEQNYi/pgtMpEF+0n4/9H7Jkg0JrEg==
-X-Received: by 2002:a05:6a00:8d0:b0:44c:26e6:1c13 with SMTP id s16-20020a056a0008d000b0044c26e61c13mr3121962pfu.28.1636416334478;
-        Mon, 08 Nov 2021 16:05:34 -0800 (PST)
-Received: from google.com ([2620:15c:2ce:200:1205:53ca:e5c0:1a50])
-        by smtp.gmail.com with ESMTPSA id k13sm17859826pfc.197.2021.11.08.16.05.33
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=ZVPz7RE8j2SkZNiVARcZPJsD5NeLqgS5xDhGT2VjvE8=;
+        b=Et97hYx7KsK2cSgvcsoHqrVsGke8XEFv7c9k9xJm9thTnxtxwNekgB3u5MKaAwdwH/
+         HWWqoLZGCQ1Xoluo2qF6uYnFDwQKY0yzwtZtkFYfM5IXJ5I9juaQtp8detkqHNv5qcoT
+         P8nF/dKxoCTUXWWpdzMHMA7Biiz/vkso0yDe9uMKZfXh21LEpnBnHM9Y4Z+iqtSyEQe9
+         j/pw1FCZcTL6/9bSdfA+iG4zY1M5v8LNtuKVFnOFO/owaapoIW6uPn3lj1i2hLjs+pDB
+         vR8SGVwv/7uSYPHVJjXhuAUFDAxtk8hNpVUHcl+tmxw3DoMr4BeXC18srzo9XyW18Np5
+         T2qA==
+X-Gm-Message-State: AOAM530fDoDeHk0SGtyF1efVjKjr5vMg9G3XFmvf/xBLDmEFnOtKyLAC
+        4cWmYCHyWx6Z4GiRfrlmhKk=
+X-Google-Smtp-Source: ABdhPJyDtVTOsf2hgIXK1UcXDkH1yPcg6ieLQb6in8srUrjNQwgbnF1zEqOZyb7+uzNv/sCyjjKqBQ==
+X-Received: by 2002:a5d:6d07:: with SMTP id e7mr3776175wrq.311.1636416649789;
+        Mon, 08 Nov 2021 16:10:49 -0800 (PST)
+Received: from rocinante ([95.155.85.46])
+        by smtp.gmail.com with ESMTPSA id n4sm20961016wri.41.2021.11.08.16.10.48
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 08 Nov 2021 16:05:33 -0800 (PST)
-Date:   Mon, 8 Nov 2021 16:05:31 -0800
-From:   Fangrui Song <maskray@google.com>
-To:     Nick Desaulniers <ndesaulniers@google.com>
-Cc:     Masahiro Yamada <masahiroy@kernel.org>, x86@kernel.org,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H . Peter Anvin" <hpa@zytor.com>,
-        clang-built-linux@googlegroups.com,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        linux-kernel@vger.kernel.org, llvm@lists.linux.dev
-Subject: Re: [PATCH 2/2] x86/purgatory: remove -nostdlib compiler flag
-Message-ID: <20211109000531.k23mgrfjn5tomevv@google.com>
-References: <20211107162641.324688-1-masahiroy@kernel.org>
- <20211107162641.324688-2-masahiroy@kernel.org>
- <CAKwvOdmCaXAMvouD7bsWqmgOUxQ9vpdt3LY7qWpzTVm-2gddEw@mail.gmail.com>
+        Mon, 08 Nov 2021 16:10:49 -0800 (PST)
+Date:   Tue, 9 Nov 2021 01:10:47 +0100
+From:   Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>
+To:     Babu Moger <babu.moger@amd.com>
+Cc:     tglx@linutronix.de, mingo@redhat.com, bp@alien8.de,
+        dave.hansen@linux.intel.com, x86@kernel.org, hpa@zytor.com,
+        clemens@ladisch.de, jdelvare@suse.com, linux@roeck-us.net,
+        bhelgaas@google.com, linux-kernel@vger.kernel.org,
+        linux-hwmon@vger.kernel.org, linux-pci@vger.kernel.org
+Subject: Re: [PATCH 1/3] x86/amd_nb: Add AMD Family 19h Models (10h-1Fh) and
+ (A0h-AFh) PCI IDs
+Message-ID: <YYm8h1wDTAm7Rkf5@rocinante>
+References: <163640820320.955062.9967043475152157959.stgit@bmoger-ubuntu>
+ <163640828133.955062.18349019796157170473.stgit@bmoger-ubuntu>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <CAKwvOdmCaXAMvouD7bsWqmgOUxQ9vpdt3LY7qWpzTVm-2gddEw@mail.gmail.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <163640828133.955062.18349019796157170473.stgit@bmoger-ubuntu>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-11-08, Nick Desaulniers wrote:
->On Sun, Nov 7, 2021 at 8:27 AM Masahiro Yamada <masahiroy@kernel.org> wrote:
->>
->> The -nostdlib option requests the compiler to not use the standard
->> system startup files or libraries when linking. It is effective only
->> when $(CC) is used as a linker driver.
->
->Is that right? ld.lld recognizes --nostdlib and has --help text for it.
+Hello!
 
-GCC/Clang driver -nostdlib != ld.bfd/ld.lld -nostdlib.
+> Add the new PCI Device IDs to support new generation of AMD 19h family of
+> processors.
 
-ld.lld -nostdlib just ignores SEARCH_DIR in a linker script.
-I think ld.bfd's -nostdlib is more complex than that which also has
-something to do with its internal linker script location.
-Anyway, getting of the obscure ld -nostdlib is a good idea.
+This commit message matches the spirit of past additions very well, as per:
 
->>
->> $(LD) is directly used for linking purgatory.{ro,chk} here, hence
->> -nostdlib is unneeded.
->>
->> Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
->> ---
->>
->>  arch/x86/purgatory/Makefile | 2 +-
->>  1 file changed, 1 insertion(+), 1 deletion(-)
->>
->> diff --git a/arch/x86/purgatory/Makefile b/arch/x86/purgatory/Makefile
->> index 95ea17a9d20c..ae53d54d7959 100644
->> --- a/arch/x86/purgatory/Makefile
->> +++ b/arch/x86/purgatory/Makefile
->> @@ -16,7 +16,7 @@ CFLAGS_sha256.o := -D__DISABLE_EXPORTS
->>
->>  # When linking purgatory.ro with -r unresolved symbols are not checked,
->>  # also link a purgatory.chk binary without -r to check for unresolved symbols.
->> -PURGATORY_LDFLAGS := -e purgatory_start -nostdlib -z nodefaultlib
->> +PURGATORY_LDFLAGS := -e purgatory_start -z nodefaultlib
->>  LDFLAGS_purgatory.ro := -r $(PURGATORY_LDFLAGS)
->>  LDFLAGS_purgatory.chk := $(PURGATORY_LDFLAGS)
->>  targets += purgatory.ro purgatory.chk
->> --
->> 2.30.2
->
->-- 
->Thanks,
->~Nick Desaulniers
+  commit b3f79ae45904 ("x86/amd_nb: Add Family 19h PCI IDs")
+
+Admittedly, it would be nice to know what platform and/or generations of
+AMD family of CPUs this is for.  Unless this is somewhat confidential and
+in which case it would be fair enough.
+
+For the following PCI related changes:
+
+[...]
+> --- a/include/linux/pci_ids.h
+> +++ b/include/linux/pci_ids.h
+> @@ -555,6 +555,7 @@
+>  #define PCI_DEVICE_ID_AMD_17H_M60H_DF_F3 0x144b
+>  #define PCI_DEVICE_ID_AMD_17H_M70H_DF_F3 0x1443
+>  #define PCI_DEVICE_ID_AMD_19H_DF_F3	0x1653
+> +#define PCI_DEVICE_ID_AMD_19H_M10H_DF_F3 0x14b0
+>  #define PCI_DEVICE_ID_AMD_19H_M40H_DF_F3 0x167c
+>  #define PCI_DEVICE_ID_AMD_19H_M50H_DF_F3 0x166d
+>  #define PCI_DEVICE_ID_AMD_CNB17H_F3	0x1703
+
+Acked-by: Krzysztof Wilczyński <kw@linux.com>
+
+	Krzysztof
