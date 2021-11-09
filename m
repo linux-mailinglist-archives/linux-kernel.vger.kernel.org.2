@@ -2,126 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A436844B900
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 23:51:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9916E44B8A3
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 23:42:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239545AbhKIWy2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Nov 2021 17:54:28 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57802 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344575AbhKIWxf (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Nov 2021 17:53:35 -0500
-Received: from mail-pl1-x64a.google.com (mail-pl1-x64a.google.com [IPv6:2607:f8b0:4864:20::64a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 04A7DC110F3C
-        for <linux-kernel@vger.kernel.org>; Tue,  9 Nov 2021 14:23:57 -0800 (PST)
-Received: by mail-pl1-x64a.google.com with SMTP id u22-20020a170902a61600b00141ab5dd25dso581255plq.5
-        for <linux-kernel@vger.kernel.org>; Tue, 09 Nov 2021 14:23:57 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=reply-to:date:in-reply-to:message-id:mime-version:references
-         :subject:from:to:cc;
-        bh=ycLvjef8hLdk7LZI4/gX+inYpxs+E16n7SoVAMQYbFc=;
-        b=RH/SD9WH2rxUk9ThoB6cB4kA1NBJsDJiLeOWkZk9g7Bv9p84MfGa3RXXawQbTSAMim
-         k26q1x/Hb/h4jpIn4uKzi0235tEai0/9kk54pQCnBsFk/KTH/MS0KZ8T1DgOTO7TMkpn
-         s/6zUSt+EmWHfxFtHwYLE5GGRdfMyf91Kfs83Krlg3O/oMeCnwTcv3Fi2dHkcgnQXpu3
-         DcC9fDEQTgsnufKukuObbrWdoMJhARapdDojQb34tUuP0ulvmqIMKhu4LYmPRr/Y8+rt
-         HzFPi8EdT1bYCPHxvKKQdro8eTBGp47rczee2Ke8vjU3I5ipEopeQMLQC97AfYEth96P
-         KHVA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:reply-to:date:in-reply-to:message-id
-         :mime-version:references:subject:from:to:cc;
-        bh=ycLvjef8hLdk7LZI4/gX+inYpxs+E16n7SoVAMQYbFc=;
-        b=KeXQCvS4uB0N7vDv31lWktUuLa1iIEi97l8hzYfPf09ejzm2G+IgCKl/t/X01G82cV
-         tj6kXnJxmr84aCSzblELmj1SIagLyA84JeosSoROldBc6YCb7/6+cBlsZFH9clm4EcOf
-         ikvRS7bED9xQnezq9zuJx8USYs5hWV5MimnPjp9fxLVLytA/ULUGVKs1H1969jNsDZDz
-         pVwa/CfKU89zAtWr1MnXzLASEJPunhIB8PKCYH4IMpMJUDVFPPsmOcBBhK58zeUnQwcv
-         ezKm5+i96hkT9Opu5zU70WPCSoEPgBT3/N4nFeEsCRBxY1h+en4R1ekiqqIpzoxhaN/+
-         h8qA==
-X-Gm-Message-State: AOAM531wm/n+h38XMqRSeELxPpshwKR9Pu9YE0ukbOQ6HpINJUN7bRUx
-        1ESBVdWZwqPqLXMG21T3kCs/8RBsMnw=
-X-Google-Smtp-Source: ABdhPJx+mhejWFf7eZ9OTGpZ/iBTqEUfe2OZ3RjoRi5mNmTU3uuvA2OydzfWAllLfWwmUIivwje0m/ZsTb0=
-X-Received: from seanjc.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:3e5])
- (user=seanjc job=sendgmr) by 2002:a17:902:c947:b0:141:e7f6:d688 with SMTP id
- i7-20020a170902c94700b00141e7f6d688mr10459270pla.56.1636496636511; Tue, 09
- Nov 2021 14:23:56 -0800 (PST)
-Reply-To: Sean Christopherson <seanjc@google.com>
-Date:   Tue,  9 Nov 2021 22:23:50 +0000
-In-Reply-To: <20211109222350.2266045-1-seanjc@google.com>
-Message-Id: <20211109222350.2266045-3-seanjc@google.com>
-Mime-Version: 1.0
-References: <20211109222350.2266045-1-seanjc@google.com>
-X-Mailer: git-send-email 2.34.0.rc0.344.g81b53c2807-goog
-Subject: [PATCH 2/2] KVM: SEV: Fall back to __vmalloc() for SEV-ES scratch
- area if necessary
-From:   Sean Christopherson <seanjc@google.com>
-To:     Paolo Bonzini <pbonzini@redhat.com>
-Cc:     Sean Christopherson <seanjc@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Tom Lendacky <thomas.lendacky@amd.com>
-Content-Type: text/plain; charset="UTF-8"
+        id S1344457AbhKIWpT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Nov 2021 17:45:19 -0500
+Received: from mail.kernel.org ([198.145.29.99]:60072 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1345732AbhKIWmM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Nov 2021 17:42:12 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 83B8860524;
+        Tue,  9 Nov 2021 22:24:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1636496647;
+        bh=nzsXTx0P7obTY78Y1iLFMUWEmoTyHdi/l37FhHwOOc8=;
+        h=From:To:Cc:Subject:Date:From;
+        b=VuCzYLw9c5SD+YzJq1PhsXqqfe2FNg3L7WBHNFYyMtNOMdiC1Gvgc9fSYGGEY7hoC
+         g/LYylLrMn3bSrFOQ7Jo7jSup6ie8oYo3f5GN1z3HQtbNrFwGaoWvXKBIqblWXeTvo
+         N/S9qjFrMw6L3/f0lFFOLMD20CF40Ew0id3o4D7KOZhqminq7vsiiVugpXZXp/qHtY
+         v3ugqTri84LE4kl+O3r6gipzZlvErlERhosHe9loVK5c5a2GtOsEczEt7d60tyfphT
+         BOq1DH+OkyHPIbBQVhnsKSuVe6D7GFjiG4z5KjR3/f5ndfuPPs3vz9qkhtmS/nMibQ
+         H87frBcA7BsLw==
+From:   Sasha Levin <sashal@kernel.org>
+To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Cc:     James Smart <jsmart2021@gmail.com>,
+        Justin Tee <justin.tee@broadcom.com>,
+        "Martin K . Petersen" <martin.petersen@oracle.com>,
+        Sasha Levin <sashal@kernel.org>, james.smart@avagotech.com,
+        dick.kennedy@avagotech.com, JBottomley@odin.com,
+        linux-scsi@vger.kernel.org
+Subject: [PATCH AUTOSEL 4.9 01/13] scsi: lpfc: Fix list_add() corruption in lpfc_drain_txq()
+Date:   Tue,  9 Nov 2021 17:23:52 -0500
+Message-Id: <20211109222405.1236040-1-sashal@kernel.org>
+X-Mailer: git-send-email 2.33.0
+MIME-Version: 1.0
+X-stable: review
+X-Patchwork-Hint: Ignore
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use kvzalloc() to allocate KVM's buffer for SEV-ES's GHCB scratch area so
-that KVM falls back to __vmalloc() if physically contiguous memory isn't
-available.  The buffer is purely a KVM software construct, i.e. there's
-no need for it to be physically contiguous, and at a max allowed size of
-16kb it's just large enough that kzalloc() could feasibly fail due to
-memory fragmentation.
+From: James Smart <jsmart2021@gmail.com>
 
-Cc: Tom Lendacky <thomas.lendacky@amd.com>
-Signed-off-by: Sean Christopherson <seanjc@google.com>
+[ Upstream commit 99154581b05c8fb22607afb7c3d66c1bace6aa5d ]
+
+When parsing the txq list in lpfc_drain_txq(), the driver attempts to pass
+the requests to the adapter. If such an attempt fails, a local "fail_msg"
+string is set and a log message output.  The job is then added to a
+completions list for cancellation.
+
+Processing of any further jobs from the txq list continues, but since
+"fail_msg" remains set, jobs are added to the completions list regardless
+of whether a wqe was passed to the adapter.  If successfully added to
+txcmplq, jobs are added to both lists resulting in list corruption.
+
+Fix by clearing the fail_msg string after adding a job to the completions
+list. This stops the subsequent jobs from being added to the completions
+list unless they had an appropriate failure.
+
+Link: https://lore.kernel.org/r/20210910233159.115896-2-jsmart2021@gmail.com
+Co-developed-by: Justin Tee <justin.tee@broadcom.com>
+Signed-off-by: Justin Tee <justin.tee@broadcom.com>
+Signed-off-by: James Smart <jsmart2021@gmail.com>
+Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/x86/kvm/svm/sev.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+ drivers/scsi/lpfc/lpfc_sli.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/arch/x86/kvm/svm/sev.c b/arch/x86/kvm/svm/sev.c
-index ea8069c9b5cb..2d5a0eea27ea 100644
---- a/arch/x86/kvm/svm/sev.c
-+++ b/arch/x86/kvm/svm/sev.c
-@@ -2030,7 +2030,7 @@ void sev_free_vcpu(struct kvm_vcpu *vcpu)
- 	__free_page(virt_to_page(svm->vmsa));
- 
- 	if (svm->ghcb_sa_free)
--		kfree(svm->ghcb_sa);
-+		kvfree(svm->ghcb_sa);
- }
- 
- static void dump_ghcb(struct vcpu_svm *svm)
-@@ -2262,7 +2262,7 @@ void sev_es_unmap_ghcb(struct vcpu_svm *svm)
- 			svm->ghcb_sa_sync = false;
+diff --git a/drivers/scsi/lpfc/lpfc_sli.c b/drivers/scsi/lpfc/lpfc_sli.c
+index 0e7915ecb85a5..5c847ef459cd1 100644
+--- a/drivers/scsi/lpfc/lpfc_sli.c
++++ b/drivers/scsi/lpfc/lpfc_sli.c
+@@ -17274,6 +17274,7 @@ lpfc_drain_txq(struct lpfc_hba *phba)
+ 					fail_msg,
+ 					piocbq->iotag, piocbq->sli4_xritag);
+ 			list_add_tail(&piocbq->list, &completions);
++			fail_msg = NULL;
  		}
- 
--		kfree(svm->ghcb_sa);
-+		kvfree(svm->ghcb_sa);
- 		svm->ghcb_sa = NULL;
- 		svm->ghcb_sa_free = false;
+ 		spin_unlock_irqrestore(&pring->ring_lock, iflags);
  	}
-@@ -2350,7 +2350,7 @@ static int setup_vmgexit_scratch(struct vcpu_svm *svm, bool sync, u64 len)
- 			       len, GHCB_SCRATCH_AREA_LIMIT);
- 			return -EINVAL;
- 		}
--		scratch_va = kzalloc(len, GFP_KERNEL_ACCOUNT);
-+		scratch_va = kvzalloc(len, GFP_KERNEL_ACCOUNT);
- 		if (!scratch_va)
- 			return -ENOMEM;
- 
-@@ -2358,7 +2358,7 @@ static int setup_vmgexit_scratch(struct vcpu_svm *svm, bool sync, u64 len)
- 			/* Unable to copy scratch area from guest */
- 			pr_err("vmgexit: kvm_read_guest for scratch area failed\n");
- 
--			kfree(scratch_va);
-+			kvfree(scratch_va);
- 			return -EFAULT;
- 		}
- 
 -- 
-2.34.0.rc0.344.g81b53c2807-goog
+2.33.0
 
