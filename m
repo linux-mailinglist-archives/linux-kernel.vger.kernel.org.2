@@ -2,27 +2,27 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F66844B170
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 17:46:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 10C3244B171
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 17:46:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239651AbhKIQs6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Nov 2021 11:48:58 -0500
-Received: from mail.kernel.org ([198.145.29.99]:59662 "EHLO mail.kernel.org"
+        id S239751AbhKIQtA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Nov 2021 11:49:00 -0500
+Received: from mail.kernel.org ([198.145.29.99]:59740 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238230AbhKIQs4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Nov 2021 11:48:56 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B334E611AF;
-        Tue,  9 Nov 2021 16:46:08 +0000 (UTC)
+        id S239801AbhKIQs7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Nov 2021 11:48:59 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2BED5610C8;
+        Tue,  9 Nov 2021 16:46:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1636476370;
-        bh=+2gWOpugscZp0kvfTR5LRNZ/CWYNRcFjEgOqHanBEfI=;
+        s=k20201202; t=1636476373;
+        bh=7ZzvhFtWbybOkWfYS+IfbRYBGhMJHNq1ETuGEWSXG/E=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=pnXUv0xeqa6qJpy1YnvpvQiFRkhvqeVlldzU5yJ4OsP+ETNWRGtXUL1H4K0tUVoyq
-         +P7S6rJKTHBcOP1Ircjjq8pe6uIuHJaxcoff1PrNjAvFFgWtOUb3FoKNFl5inpj5V7
-         IJIfUQdZvYQWcLGbGzKtyuEARbwhsWieT7L3G4RN4BJ36w+GFg/hhZRrzRiaD7lu+w
-         PPp/KDVhysnGx555QB5eUYUlHVWy3riY20En/Bc96aEtMIAPAZ34koRYI2skDN9bAD
-         GgVuefYVXnoJH6zfpaiq5GCrQVvW5nyzBbmRGHfsR+WZ+lwniM3++AOZJS2lbgFQkj
-         qPa62D219bycg==
+        b=INqH8qsyvPNUfdrOXzBWLDvK3LU1P5zOBLpD7JTtRYUWGIkw6HIolxxS1UPSos8No
+         eRAinHUAasjdj7IZNsLApFLqJ4etsVwgU7iEZe1lQhU4rZ+ML9n3bfRs2b7r5OtRjz
+         xE23kwmsdpvIFNUMjlRjnq/7VKcuTRRlx9/87xduB6ASR3aDkREOismlGsObbQNdgm
+         dONchXISk9LyHbOFJeuRY2LqRcT7wFK/79BEPTDj2Hi8g1UqOE+Cq7/Zex1MI7Jq71
+         HoiGzd7ANbMnHqUIiv1/8fbzBBxho+h4tqeibclgG1mhkxV4Lh74hb+faS+TIK7i6p
+         tP6+AhRR8da9g==
 From:   Ard Biesheuvel <ardb@kernel.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     linux-arm-kernel@lists.infradead.org,
@@ -33,289 +33,325 @@ Cc:     linux-arm-kernel@lists.infradead.org,
         Steven Rostedt <rostedt@goodmis.org>,
         Mark Rutland <mark.rutland@arm.com>,
         Kees Cook <keescook@chromium.org>
-Subject: [RFC PATCH 1/7] static_call: get rid of static_call_cond()
-Date:   Tue,  9 Nov 2021 17:45:43 +0100
-Message-Id: <20211109164549.1724710-2-ardb@kernel.org>
+Subject: [RFC PATCH 2/7] static_call: deal with unexported keys without cluttering up the API
+Date:   Tue,  9 Nov 2021 17:45:44 +0100
+Message-Id: <20211109164549.1724710-3-ardb@kernel.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20211109164549.1724710-1-ardb@kernel.org>
 References: <20211109164549.1724710-1-ardb@kernel.org>
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=10086; h=from:subject; bh=+2gWOpugscZp0kvfTR5LRNZ/CWYNRcFjEgOqHanBEfI=; b=owEB7QES/pANAwAKAcNPIjmS2Y8kAcsmYgBhiqWvOk8k/nR9UZNYPo/Yb+y25ENP26aVPYplyzoP mG33H4KJAbMEAAEKAB0WIQT72WJ8QGnJQhU3VynDTyI5ktmPJAUCYYqlrwAKCRDDTyI5ktmPJKNTC/ 9D++/IA9FKSXAh4wbxnBaEg/gqBlrSiGbWKyyku7UkbGXjZaD6oUaebFjzvKezVfuaiHPytzmw/TJL 6VmVqMdqcN9z1l+kr3HIxhsRRDb4lCdAcWl4mCQs47tQCXLoxq+xld2cSTezNNQCtFOMc776EwzPdm CcRp5tGrJSeFxUBCgnreCnJ3/cU+qHo0x76sIxNBGUFMGeu2QORjCztsigfZ09srsSQZ3v1vMTAqmr mKlahMzk0QQVVcFRRxvHwcCtajTTqzChXJ8jRsINyJuA7zgU1wUXoTmfgn/tQQ9spRXxvOVhnjAeT4 hYhrQeXaIIQIqfBYSji6Dc0DKEV/vWsyYtKfY0pLPzADy/Vcb66ARXqOFD5NzED1yScKupjvLT5n3O Z41LI6gD3me9nNsNde2JTYr9W4S7beNnfLngixCKUTLRTDKKcITyL3SO09nzt4zll20lZxlEclapRK K3n6zIlnd9DDJXUesGyyYpUCxyd8OxTx7AFvhYxSnkmLM=
+X-Developer-Signature: v=1; a=openpgp-sha256; l=10376; h=from:subject; bh=7ZzvhFtWbybOkWfYS+IfbRYBGhMJHNq1ETuGEWSXG/E=; b=owEB7QES/pANAwAKAcNPIjmS2Y8kAcsmYgBhiqWx/EBUslL3LMMQ+zW/g55WcXPOmZoxDa6RujDX 1rjH97qJAbMEAAEKAB0WIQT72WJ8QGnJQhU3VynDTyI5ktmPJAUCYYqlsQAKCRDDTyI5ktmPJMlMC/ 9XAHyASjqKYt7Z1Z2ajFarzhmXmQOmVUKQZgfkYw4rBhtnpm5sYHVwDuYwhcL+gpw3ZhwUPp48Tfsb BBhcfdqee9LZkJ5gqRV6JNQfYV06fb9bqLRQ/QnVOcgJxrSZfpth1lp0hGKVmHMGkNozFFQDUmkW+k BCWRl24mLerxw4OG7tmM6DSFptYUA9ydkdZsSQkfrQ6OoKn1LLUlxZGSvm2U005Ui/zfSuJDncYVwH TNzadjZYA9bvMisUgTEpgBscEl2zCGSHAZmnu2MMtyRrgPW//hKMqur2zgq6m95NihyfZ3qjdxGz8n yZgJ007ZL9ROTvt6Mb1zaXzkiboNcE0XsMTT3Wad6hQ03fRp6h1UVHvBz5hcW8Ub7iiAWjuNUZtEYN CnWNTAOI7Smq/cZyQcVDaCyQ1rTJIWe+6rbGqXaJFVxmxadQzg0kb18Yn+yrzJSZzy3kRwwrRmLaoJ EiEMQhi+oY9ojdRsVEbOu+B9zJR41B5Psu1tly1CsPpd4=
 X-Developer-Key: i=ardb@kernel.org; a=openpgp; fpr=F43D03328115A198C90016883D200E9CA6329909
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The main reason for the existence of static_call_cond() seems to be that
-in theory, when using the generic implementation of static calls, it may
-be possible for a compiler to elide the indirect call entirely if the
-target is NULL, while still guaranteeing that all side effects of
-argument evaluation occur as expected.
+In principle, invoking a static call does not require access to the
+static call key that is used to manipulate the function that the static
+call targets. This means that exporting only the static call but not its
+key to modules should prevent such modules from manipulating the target
+inadvertently.
 
-This is rather optimistic: as documented by an existing code comment,
-both GCC and Clang (version 10) get this wrong, and even if they ever
-get it right, this is far too subtle to rely on for a code path that is
-expected to be used only by the 'remaining' architectures once all the
-best supported ones implement either the out-of-line or inline optimized
-variety of static calls.
+However, for inline static calls, we do need access to the key at module
+load time, because the code patching routines rely on it. For this
+reason, there is special handling in objtool that recovers the key
+pointer from the address of the trampoline (which does get exported
+unconditionally), using a lookup table in the core kernel.
 
-Given that having static_call_cond() clutters up the API, and puts the
-burden on the caller to go and check what kind of static call they are
-dealing with, let's just get rid of the distinction.
+Unfortunately, this clutters up the user-visible API: a static call is
+normally invoked using the static_call() macro, but in cases where a)
+the call originates from a module and b) the associated key was not
+exported, it is left up to the user to pick the static_call_mod() macro
+instead. Since that macro relies on the lookup table in the core kernel,
+it can only be used on static calls that are exported from the core
+kernel.
+
+It would be much better if the call sites can simply use static_call()
+and not have to figure out whether or not the static call exports its
+key and/or whether it as exported from the core kernel.
+
+So let's address this, by using a weak reference for the key. This means
+we can force the symbol reference in the module to be emitted
+unconditionally, allowing the caller to use static_call() without
+knowing the difference. This does imply that the logic in objtool that
+tests whether a symbol exists in the object no longer works, as the
+symbol is guaranteed to exist. So instead, add another field to struct
+static_call_site to cover the trampoline reference, and fix up the
+module notifier that consumes this data accordingly.
+
+This gets rid of the following macros:
+
+  __STATIC_CALL_MOD_ADDRESSABLE()
+  static_call_mod()
+  __static_call()
+  __raw_static_call()
 
 Signed-off-by: Ard Biesheuvel <ardb@kernel.org>
 ---
- arch/x86/events/core.c          | 20 ++++----
- arch/x86/include/asm/kvm_host.h |  4 +-
- arch/x86/kvm/irq.c              |  2 +-
- arch/x86/kvm/x86.c              |  4 +-
- include/linux/static_call.h     | 49 ++++----------------
- 5 files changed, 23 insertions(+), 56 deletions(-)
+ arch/x86/include/asm/preempt.h          |  4 +--
+ include/linux/kernel.h                  |  2 +-
+ include/linux/sched.h                   |  2 +-
+ include/linux/static_call_types.h       | 26 +++++-----------
+ kernel/static_call.c                    |  8 ++---
+ tools/include/linux/static_call_types.h | 26 +++++-----------
+ tools/objtool/check.c                   | 31 ++++++++++----------
+ 7 files changed, 38 insertions(+), 61 deletions(-)
 
-diff --git a/arch/x86/events/core.c b/arch/x86/events/core.c
-index 38b2c779146f..ed1e5fcdb49d 100644
---- a/arch/x86/events/core.c
-+++ b/arch/x86/events/core.c
-@@ -991,7 +991,7 @@ int x86_schedule_events(struct cpu_hw_events *cpuc, int n, int *assign)
- 	if (cpuc->txn_flags & PERF_PMU_TXN_ADD)
- 		n0 -= cpuc->n_txn;
+diff --git a/arch/x86/include/asm/preempt.h b/arch/x86/include/asm/preempt.h
+index fe5efbcba824..341745a03726 100644
+--- a/arch/x86/include/asm/preempt.h
++++ b/arch/x86/include/asm/preempt.h
+@@ -121,7 +121,7 @@ DECLARE_STATIC_CALL(preempt_schedule, __preempt_schedule_func);
  
--	static_call_cond(x86_pmu_start_scheduling)(cpuc);
-+	static_call(x86_pmu_start_scheduling)(cpuc);
+ #define __preempt_schedule() \
+ do { \
+-	__STATIC_CALL_MOD_ADDRESSABLE(preempt_schedule); \
++	__STATIC_CALL_ADDRESSABLE(preempt_schedule); \
+ 	asm volatile ("call " STATIC_CALL_TRAMP_STR(preempt_schedule) : ASM_CALL_CONSTRAINT); \
+ } while (0)
  
- 	for (i = 0, wmin = X86_PMC_IDX_MAX, wmax = 0; i < n; i++) {
- 		c = cpuc->event_constraint[i];
-@@ -1090,7 +1090,7 @@ int x86_schedule_events(struct cpu_hw_events *cpuc, int n, int *assign)
- 	 */
- 	if (!unsched && assign) {
- 		for (i = 0; i < n; i++)
--			static_call_cond(x86_pmu_commit_scheduling)(cpuc, i, assign[i]);
-+			static_call(x86_pmu_commit_scheduling)(cpuc, i, assign[i]);
- 	} else {
- 		for (i = n0; i < n; i++) {
- 			e = cpuc->event_list[i];
-@@ -1098,13 +1098,13 @@ int x86_schedule_events(struct cpu_hw_events *cpuc, int n, int *assign)
- 			/*
- 			 * release events that failed scheduling
- 			 */
--			static_call_cond(x86_pmu_put_event_constraints)(cpuc, e);
-+			static_call(x86_pmu_put_event_constraints)(cpuc, e);
+@@ -129,7 +129,7 @@ DECLARE_STATIC_CALL(preempt_schedule_notrace, __preempt_schedule_notrace_func);
  
- 			cpuc->event_constraint[i] = NULL;
- 		}
- 	}
+ #define __preempt_schedule_notrace() \
+ do { \
+-	__STATIC_CALL_MOD_ADDRESSABLE(preempt_schedule_notrace); \
++	__STATIC_CALL_ADDRESSABLE(preempt_schedule_notrace); \
+ 	asm volatile ("call " STATIC_CALL_TRAMP_STR(preempt_schedule_notrace) : ASM_CALL_CONSTRAINT); \
+ } while (0)
  
--	static_call_cond(x86_pmu_stop_scheduling)(cpuc);
-+	static_call(x86_pmu_stop_scheduling)(cpuc);
+diff --git a/include/linux/kernel.h b/include/linux/kernel.h
+index e5359b09de1d..1e1159878e40 100644
+--- a/include/linux/kernel.h
++++ b/include/linux/kernel.h
+@@ -101,7 +101,7 @@ DECLARE_STATIC_CALL(might_resched, __cond_resched);
  
- 	return unsched ? -EINVAL : 0;
- }
-@@ -1217,7 +1217,7 @@ static inline void x86_assign_hw_event(struct perf_event *event,
- 	hwc->last_cpu = smp_processor_id();
- 	hwc->last_tag = ++cpuc->tags[i];
- 
--	static_call_cond(x86_pmu_assign)(event, idx);
-+	static_call(x86_pmu_assign)(event, idx);
- 
- 	switch (hwc->idx) {
- 	case INTEL_PMC_IDX_FIXED_BTS:
-@@ -1494,7 +1494,7 @@ static int x86_pmu_add(struct perf_event *event, int flags)
- 	 * This is before x86_pmu_enable() will call x86_pmu_start(),
- 	 * so we enable LBRs before an event needs them etc..
- 	 */
--	static_call_cond(x86_pmu_add)(event);
-+	static_call(x86_pmu_add)(event);
- 
- 	ret = 0;
- out:
-@@ -1647,7 +1647,7 @@ static void x86_pmu_del(struct perf_event *event, int flags)
- 	if (i >= cpuc->n_events - cpuc->n_added)
- 		--cpuc->n_added;
- 
--	static_call_cond(x86_pmu_put_event_constraints)(cpuc, event);
-+	static_call(x86_pmu_put_event_constraints)(cpuc, event);
- 
- 	/* Delete the array entry. */
- 	while (++i < cpuc->n_events) {
-@@ -1667,7 +1667,7 @@ static void x86_pmu_del(struct perf_event *event, int flags)
- 	 * This is after x86_pmu_stop(); so we disable LBRs after any
- 	 * event can need them etc..
- 	 */
--	static_call_cond(x86_pmu_del)(event);
-+	static_call(x86_pmu_del)(event);
- }
- 
- int x86_pmu_handle_irq(struct pt_regs *regs)
-@@ -2638,13 +2638,13 @@ static const struct attribute_group *x86_pmu_attr_groups[] = {
- 
- static void x86_pmu_sched_task(struct perf_event_context *ctx, bool sched_in)
+ static __always_inline void might_resched(void)
  {
--	static_call_cond(x86_pmu_sched_task)(ctx, sched_in);
-+	static_call(x86_pmu_sched_task)(ctx, sched_in);
+-	static_call_mod(might_resched)();
++	static_call(might_resched)();
  }
  
- static void x86_pmu_swap_task_ctx(struct perf_event_context *prev,
- 				  struct perf_event_context *next)
+ #else
+diff --git a/include/linux/sched.h b/include/linux/sched.h
+index 78c351e35fec..3cdf55c1074c 100644
+--- a/include/linux/sched.h
++++ b/include/linux/sched.h
+@@ -2014,7 +2014,7 @@ DECLARE_STATIC_CALL(cond_resched, __cond_resched);
+ 
+ static __always_inline int _cond_resched(void)
  {
--	static_call_cond(x86_pmu_swap_task_ctx)(prev, next);
-+	static_call(x86_pmu_swap_task_ctx)(prev, next);
+-	return static_call_mod(cond_resched)();
++	return static_call(cond_resched)();
  }
  
- void perf_check_microcode(void)
-diff --git a/arch/x86/include/asm/kvm_host.h b/arch/x86/include/asm/kvm_host.h
-index 2acf37cc1991..295f6285b895 100644
---- a/arch/x86/include/asm/kvm_host.h
-+++ b/arch/x86/include/asm/kvm_host.h
-@@ -1914,12 +1914,12 @@ static inline bool kvm_irq_is_postable(struct kvm_lapic_irq *irq)
+ #else
+diff --git a/include/linux/static_call_types.h b/include/linux/static_call_types.h
+index 5a00b8b2cf9f..0bb36294cce7 100644
+--- a/include/linux/static_call_types.h
++++ b/include/linux/static_call_types.h
+@@ -32,15 +32,20 @@
+ struct static_call_site {
+ 	s32 addr;
+ 	s32 key;
++	s32 tramp;
+ };
  
- static inline void kvm_arch_vcpu_blocking(struct kvm_vcpu *vcpu)
- {
--	static_call_cond(kvm_x86_vcpu_blocking)(vcpu);
-+	static_call(kvm_x86_vcpu_blocking)(vcpu);
- }
+ #define DECLARE_STATIC_CALL(name, func)					\
+-	extern struct static_call_key STATIC_CALL_KEY(name);		\
++	extern __weak struct static_call_key STATIC_CALL_KEY(name);	\
+ 	extern typeof(func) STATIC_CALL_TRAMP(name);
  
- static inline void kvm_arch_vcpu_unblocking(struct kvm_vcpu *vcpu)
- {
--	static_call_cond(kvm_x86_vcpu_unblocking)(vcpu);
-+	static_call(kvm_x86_vcpu_unblocking)(vcpu);
- }
+ #ifdef CONFIG_HAVE_STATIC_CALL
  
- static inline void kvm_arch_vcpu_block_finish(struct kvm_vcpu *vcpu) {}
-diff --git a/arch/x86/kvm/irq.c b/arch/x86/kvm/irq.c
-index 172b05343cfd..79e9354f076a 100644
---- a/arch/x86/kvm/irq.c
-+++ b/arch/x86/kvm/irq.c
-@@ -150,7 +150,7 @@ void __kvm_migrate_timers(struct kvm_vcpu *vcpu)
- {
- 	__kvm_migrate_apic_timer(vcpu);
- 	__kvm_migrate_pit_timer(vcpu);
--	static_call_cond(kvm_x86_migrate_timers)(vcpu);
-+	static_call(kvm_x86_migrate_timers)(vcpu);
- }
+-#define __raw_static_call(name)	(&STATIC_CALL_TRAMP(name))
++#define static_call(name)						\
++({									\
++	__STATIC_CALL_ADDRESSABLE(name);				\
++	(&STATIC_CALL_TRAMP(name));					\
++})
  
- bool kvm_arch_irqfd_allowed(struct kvm *kvm, struct kvm_irqfd *args)
-diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-index c1c4e2b05a63..2202db26c4d7 100644
---- a/arch/x86/kvm/x86.c
-+++ b/arch/x86/kvm/x86.c
-@@ -11418,7 +11418,7 @@ void kvm_arch_destroy_vm(struct kvm *kvm)
- 		__x86_set_memory_region(kvm, TSS_PRIVATE_MEMSLOT, 0, 0);
- 		mutex_unlock(&kvm->slots_lock);
- 	}
--	static_call_cond(kvm_x86_vm_destroy)(kvm);
-+	static_call(kvm_x86_vm_destroy)(kvm);
- 	kvm_free_msr_filter(srcu_dereference_check(kvm->arch.msr_filter, &kvm->srcu, 1));
- 	kvm_pic_destroy(kvm);
- 	kvm_ioapic_destroy(kvm);
-@@ -12038,7 +12038,7 @@ bool kvm_arch_can_dequeue_async_page_present(struct kvm_vcpu *vcpu)
- void kvm_arch_start_assignment(struct kvm *kvm)
- {
- 	if (atomic_inc_return(&kvm->arch.assigned_device_count) == 1)
--		static_call_cond(kvm_x86_start_assignment)(kvm);
-+		static_call(kvm_x86_start_assignment)(kvm);
- }
- EXPORT_SYMBOL_GPL(kvm_arch_start_assignment);
+ #ifdef CONFIG_HAVE_STATIC_CALL_INLINE
  
-diff --git a/include/linux/static_call.h b/include/linux/static_call.h
-index 3e56a9751c06..19c98cab8643 100644
---- a/include/linux/static_call.h
-+++ b/include/linux/static_call.h
-@@ -92,23 +92,16 @@
-  *
-  *   where the argument evaludation also depends on the pointer value.
-  *
-- *   When calling a static_call that can be NULL, use:
-- *
-- *     static_call_cond(name)(arg1);
-- *
-- *   which will include the required value tests to avoid NULL-pointer
-- *   dereferences.
-- *
-  *   To query which function is currently set to be called, use:
-  *
-  *   func = static_call_query(name);
-  *
-  *
-- * DEFINE_STATIC_CALL_RET0 / __static_call_return0:
-+ * DEFINE_STATIC_CALL_RET0:
-  *
-- *   Just like how DEFINE_STATIC_CALL_NULL() / static_call_cond() optimize the
-- *   conditional void function call, DEFINE_STATIC_CALL_RET0 /
-- *   __static_call_return0 optimize the do nothing return 0 function.
-+ *   Just like how DEFINE_STATIC_CALL_NULL() optimizes the conditional void
-+ *   function call, DEFINE_STATIC_CALL_RET0 optimizes the do nothing return 0
-+ *   function.
-  *
-  *   This feature is strictly UB per the C standard (since it casts a function
-  *   pointer to a different signature) and relies on the architecture ABI to
-@@ -196,8 +189,6 @@ extern long __static_call_return0(void);
- 	};								\
- 	ARCH_DEFINE_STATIC_CALL_NULL_TRAMP(name)
+@@ -52,12 +57,6 @@ struct static_call_site {
+ #define __STATIC_CALL_ADDRESSABLE(name) \
+ 	__ADDRESSABLE(STATIC_CALL_KEY(name))
  
--#define static_call_cond(name)	(void)__static_call(name)
--
- #define EXPORT_STATIC_CALL(name)					\
- 	EXPORT_SYMBOL(STATIC_CALL_KEY(name));				\
- 	EXPORT_SYMBOL(STATIC_CALL_TRAMP(name))
-@@ -232,8 +223,6 @@ static inline int static_call_init(void) { return 0; }
- 	ARCH_DEFINE_STATIC_CALL_NULL_TRAMP(name)
- 
- 
--#define static_call_cond(name)	(void)__static_call(name)
--
- static inline
- void __static_call_update(struct static_call_key *key, void *tramp, void *func)
- {
-@@ -275,6 +264,8 @@ static inline long __static_call_return0(void)
- 	return 0;
- }
- 
-+static inline void __static_call_nop(void) { }
-+
- #define __DEFINE_STATIC_CALL(name, _func, _func_init)			\
- 	DECLARE_STATIC_CALL(name, _func);				\
- 	struct static_call_key STATIC_CALL_KEY(name) = {		\
-@@ -284,37 +275,13 @@ static inline long __static_call_return0(void)
- #define DEFINE_STATIC_CALL_NULL(name, _func)				\
- 	DECLARE_STATIC_CALL(name, _func);				\
- 	struct static_call_key STATIC_CALL_KEY(name) = {		\
--		.func = NULL,						\
-+		.func = (void *)__static_call_nop,			\
- 	}
- 
--static inline void __static_call_nop(void) { }
--
--/*
-- * This horrific hack takes care of two things:
-- *
-- *  - it ensures the compiler will only load the function pointer ONCE,
-- *    which avoids a reload race.
-- *
-- *  - it ensures the argument evaluation is unconditional, similar
-- *    to the HAVE_STATIC_CALL variant.
-- *
-- * Sadly current GCC/Clang (10 for both) do not optimize this properly
-- * and will emit an indirect call for the NULL case :-(
-- */
--#define __static_call_cond(name)					\
+-#define __static_call(name)						\
 -({									\
--	void *func = READ_ONCE(STATIC_CALL_KEY(name).func);		\
--	if (!func)							\
--		func = &__static_call_nop;				\
--	(typeof(STATIC_CALL_TRAMP(name))*)func;				\
+-	__STATIC_CALL_ADDRESSABLE(name);				\
+-	__raw_static_call(name);					\
 -})
 -
--#define static_call_cond(name)	(void)__static_call_cond(name)
--
- static inline
- void __static_call_update(struct static_call_key *key, void *tramp, void *func)
- {
--	WRITE_ONCE(key->func, func);
-+	WRITE_ONCE(key->func, func ?: (void *)&__static_call_nop);
- }
+ struct static_call_key {
+ 	void *func;
+ 	union {
+@@ -71,7 +70,6 @@ struct static_call_key {
+ #else /* !CONFIG_HAVE_STATIC_CALL_INLINE */
  
- static inline int static_call_text_reserved(void *start, void *end)
+ #define __STATIC_CALL_ADDRESSABLE(name)
+-#define __static_call(name)	__raw_static_call(name)
+ 
+ struct static_call_key {
+ 	void *func;
+@@ -79,16 +77,6 @@ struct static_call_key {
+ 
+ #endif /* CONFIG_HAVE_STATIC_CALL_INLINE */
+ 
+-#ifdef MODULE
+-#define __STATIC_CALL_MOD_ADDRESSABLE(name)
+-#define static_call_mod(name)	__raw_static_call(name)
+-#else
+-#define __STATIC_CALL_MOD_ADDRESSABLE(name) __STATIC_CALL_ADDRESSABLE(name)
+-#define static_call_mod(name)	__static_call(name)
+-#endif
+-
+-#define static_call(name)	__static_call(name)
+-
+ #else
+ 
+ struct static_call_key {
+diff --git a/kernel/static_call.c b/kernel/static_call.c
+index 43ba0b1e0edb..360cc3cd0fbf 100644
+--- a/kernel/static_call.c
++++ b/kernel/static_call.c
+@@ -366,18 +366,18 @@ static int static_call_add_module(struct module *mod)
+ 		 * means modules are allowed to call static_call_update() on
+ 		 * it.
+ 		 *
+-		 * Otherwise, the key isn't exported, and 'addr' points to the
++		 * Otherwise, the key isn't exported, and 'tramp' points to the
+ 		 * trampoline so we need to lookup the key.
+ 		 *
+ 		 * We go through this dance to prevent crazy modules from
+ 		 * abusing sensitive static calls.
+ 		 */
+-		if (!kernel_text_address(addr))
++		if (addr)
+ 			continue;
+ 
+-		key = tramp_key_lookup(addr);
++		key = tramp_key_lookup((unsigned long)offset_to_ptr(&site->tramp));
+ 		if (!key) {
+-			pr_warn("Failed to fixup __raw_static_call() usage at: %ps\n",
++			pr_warn("Failed to fixup static_call() usage at: %ps\n",
+ 				static_call_addr(site));
+ 			return -EINVAL;
+ 		}
+diff --git a/tools/include/linux/static_call_types.h b/tools/include/linux/static_call_types.h
+index 5a00b8b2cf9f..0bb36294cce7 100644
+--- a/tools/include/linux/static_call_types.h
++++ b/tools/include/linux/static_call_types.h
+@@ -32,15 +32,20 @@
+ struct static_call_site {
+ 	s32 addr;
+ 	s32 key;
++	s32 tramp;
+ };
+ 
+ #define DECLARE_STATIC_CALL(name, func)					\
+-	extern struct static_call_key STATIC_CALL_KEY(name);		\
++	extern __weak struct static_call_key STATIC_CALL_KEY(name);	\
+ 	extern typeof(func) STATIC_CALL_TRAMP(name);
+ 
+ #ifdef CONFIG_HAVE_STATIC_CALL
+ 
+-#define __raw_static_call(name)	(&STATIC_CALL_TRAMP(name))
++#define static_call(name)						\
++({									\
++	__STATIC_CALL_ADDRESSABLE(name);				\
++	(&STATIC_CALL_TRAMP(name));					\
++})
+ 
+ #ifdef CONFIG_HAVE_STATIC_CALL_INLINE
+ 
+@@ -52,12 +57,6 @@ struct static_call_site {
+ #define __STATIC_CALL_ADDRESSABLE(name) \
+ 	__ADDRESSABLE(STATIC_CALL_KEY(name))
+ 
+-#define __static_call(name)						\
+-({									\
+-	__STATIC_CALL_ADDRESSABLE(name);				\
+-	__raw_static_call(name);					\
+-})
+-
+ struct static_call_key {
+ 	void *func;
+ 	union {
+@@ -71,7 +70,6 @@ struct static_call_key {
+ #else /* !CONFIG_HAVE_STATIC_CALL_INLINE */
+ 
+ #define __STATIC_CALL_ADDRESSABLE(name)
+-#define __static_call(name)	__raw_static_call(name)
+ 
+ struct static_call_key {
+ 	void *func;
+@@ -79,16 +77,6 @@ struct static_call_key {
+ 
+ #endif /* CONFIG_HAVE_STATIC_CALL_INLINE */
+ 
+-#ifdef MODULE
+-#define __STATIC_CALL_MOD_ADDRESSABLE(name)
+-#define static_call_mod(name)	__raw_static_call(name)
+-#else
+-#define __STATIC_CALL_MOD_ADDRESSABLE(name) __STATIC_CALL_ADDRESSABLE(name)
+-#define static_call_mod(name)	__static_call(name)
+-#endif
+-
+-#define static_call(name)	__static_call(name)
+-
+ #else
+ 
+ struct static_call_key {
+diff --git a/tools/objtool/check.c b/tools/objtool/check.c
+index add39902166d..ec6ddaaf6cf6 100644
+--- a/tools/objtool/check.c
++++ b/tools/objtool/check.c
+@@ -652,21 +652,8 @@ static int create_static_call_sections(struct objtool_file *file)
+ 
+ 		key_sym = find_symbol_by_name(file->elf, tmp);
+ 		if (!key_sym) {
+-			if (!module) {
+-				WARN("static_call: can't find static_call_key symbol: %s", tmp);
+-				return -1;
+-			}
+-
+-			/*
+-			 * For modules(), the key might not be exported, which
+-			 * means the module can make static calls but isn't
+-			 * allowed to change them.
+-			 *
+-			 * In that case we temporarily set the key to be the
+-			 * trampoline address.  This is fixed up in
+-			 * static_call_add_module().
+-			 */
+-			key_sym = insn->call_dest;
++			WARN("static_call: can't find static_call_key symbol: %s", tmp);
++			return -1;
+ 		}
+ 		free(key_name);
+ 
+@@ -677,6 +664,20 @@ static int create_static_call_sections(struct objtool_file *file)
+ 				  is_sibling_call(insn) * STATIC_CALL_SITE_TAIL))
+ 			return -1;
+ 
++		/*
++		 * For modules(), the key might not be exported, which means
++		 * the module can make static calls but isn't allowed to change
++		 * them.
++		 *
++		 * For this case, we pass the trampoline in .static_call_sites
++		 * as well. This is used to lookup the key in
++		 * static_call_add_module().
++		 */
++		if (elf_add_reloc(file->elf, sec,
++				  idx * sizeof(struct static_call_site) + 8,
++				  R_X86_64_PC32, insn->call_dest, 0))
++			return -1;
++
+ 		idx++;
+ 	}
+ 
 -- 
 2.30.2
 
