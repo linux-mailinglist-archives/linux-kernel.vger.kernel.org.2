@@ -2,110 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C5C144B48E
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 22:18:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F412F44B493
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 22:20:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245011AbhKIVUq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Nov 2021 16:20:46 -0500
-Received: from vps0.lunn.ch ([185.16.172.187]:53432 "EHLO vps0.lunn.ch"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S244996AbhKIVUp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Nov 2021 16:20:45 -0500
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
-        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
-        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
-        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
-        bh=PVGQ+BZt3Xap89luTjpJPz1xs/+AqNdvxEq59MVPyl0=; b=aXM43gt+wWhALE2thCtM9R4Mk4
-        IKhP2qxS56tmDVwVF74wiAkyktUVHElObPkCzC3lWpXMa6TZ/b9fJFQ+jwhvt/KoQp1vrVK8ICh6a
-        oDVb2H7tpCHwlcqjo2W3TAcDpzpzDarHKmgkmJKhSJF1WRD6fRocYbl/6NgLf6hWG2Mo=;
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
-        (envelope-from <andrew@lunn.ch>)
-        id 1mkYV7-00D1YE-VJ; Tue, 09 Nov 2021 22:17:53 +0100
-Date:   Tue, 9 Nov 2021 22:17:53 +0100
-From:   Andrew Lunn <andrew@lunn.ch>
-To:     Ansuel Smith <ansuelsmth@gmail.com>
-Cc:     Vivien Didelot <vivien.didelot@gmail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Vladimir Oltean <olteanv@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
+        id S245026AbhKIVX1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Nov 2021 16:23:27 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37718 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239453AbhKIVX0 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Nov 2021 16:23:26 -0500
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1234::107])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D3C96C061764;
+        Tue,  9 Nov 2021 13:20:39 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
+        :Reply-To:Content-ID:Content-Description;
+        bh=YJ8t68+R8p8V4euK5x6UHBMgUMM6hiemj43DjNK0/OU=; b=mQfrWwkXZhYExKLiF38/BNvmpo
+        agZDt/92NE/8oxKmxcYlbnvXtsArRUrRBxEbWF8MGnWEAUEm6IyYRcqeSa2ZSg6ylXMpoytEa5asH
+        TYnLD1KxtgHYc2H3z5S8FZphUb0q+7AeY3nblgh1B3DaljI6TbQlPlXmN1ZAWMIteXQrI7ZG2nWk9
+        EIAYLtGrLzd1CpSpG8ftE35pSJRTI39jRDePKDVprSONdbxPi+unJ2IEQrMc06tlzsJgl3HmM/tWO
+        DmdvperznvFdul5JOGUnWOKg6EbJV7ffng5AimNVPPe/NUQAyIHZ8PRfBV7VncZOsyq788E5b/jSL
+        QfQDoODA==;
+Received: from [2601:1c0:6280:3f0::aa0b]
+        by merlin.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mkYXT-008p9I-Sq; Tue, 09 Nov 2021 21:20:27 +0000
+Subject: Re: [v2 10/10] iio: imu: add BNO055 I2C driver
+To:     Joe Perches <joe@perches.com>, andrea.merello@gmail.com,
+        Andi Kleen <ak@linux.intel.com>
+Cc:     Jonathan Cameron <jic23@kernel.org>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        linux-iio <linux-iio@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        devicetree <devicetree@vger.kernel.org>,
+        Lars-Peter Clausen <lars@metafoo.de>,
         Rob Herring <robh+dt@kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>, Pavel Machek <pavel@ucw.cz>,
-        John Crispin <john@phrozen.org>, netdev@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-leds@vger.kernel.org,
-        Marek =?iso-8859-1?Q?Beh=FAn?= <kabel@kernel.org>
-Subject: Re: [RFC PATCH v3 6/8] leds: trigger: add hardware-phy-activity
- trigger
-Message-ID: <YYrlgVT7Okw1c6pB@lunn.ch>
-References: <20211109022608.11109-1-ansuelsmth@gmail.com>
- <20211109022608.11109-7-ansuelsmth@gmail.com>
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Matt Ranostay <matt.ranostay@konsulko.com>,
+        Alexandru Ardelean <ardeleanalex@gmail.com>,
+        Jacopo Mondi <jacopo@jmondi.org>,
+        Andrea Merello <andrea.merello@iit.it>
+References: <20210715141742.15072-1-andrea.merello@gmail.com>
+ <20211028101840.24632-1-andrea.merello@gmail.com>
+ <20211028101840.24632-11-andrea.merello@gmail.com>
+ <85ef90ad-0d3a-6cb7-529f-667562b2ad71@infradead.org>
+ <CAN8YU5NiKz2JiNr-47OC4==N8L67HDshuH45BifnHBae+GUU-g@mail.gmail.com>
+ <021c6fe0-8131-a4f9-9cb0-2f4771d35da1@infradead.org>
+ <80960e445c986408e4ae9a20ac42c5b66d4d8046.camel@perches.com>
+ <4d812d76-07ca-1eb0-407d-78179628f0ba@infradead.org>
+ <846fb6e2b711ca09b89317d0117826eafc9f5b3d.camel@perches.com>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <f32781c1-b94f-9957-0a55-4a81a723097f@infradead.org>
+Date:   Tue, 9 Nov 2021 13:20:13 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211109022608.11109-7-ansuelsmth@gmail.com>
+In-Reply-To: <846fb6e2b711ca09b89317d0117826eafc9f5b3d.camel@perches.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> +#define DEFINE_OFFLOAD_TRIGGER(trigger_name, trigger) \
-> +	static ssize_t trigger_name##_show(struct device *dev, \
-> +				struct device_attribute *attr, char *buf) \
-> +	{ \
-> +		struct led_classdev *led_cdev = led_trigger_get_led(dev); \
-> +		int val; \
-> +		val = led_cdev->hw_control_configure(led_cdev, trigger, BLINK_MODE_READ); \
-> +		return sprintf(buf, "%d\n", val ? 1 : 0); \
-> +	} \
-> +	static ssize_t trigger_name##_store(struct device *dev, \
-> +					struct device_attribute *attr, \
-> +					const char *buf, size_t size) \
-> +	{ \
-> +		struct led_classdev *led_cdev = led_trigger_get_led(dev); \
-> +		unsigned long state; \
-> +		int cmd, ret; \
-> +		ret = kstrtoul(buf, 0, &state); \
-> +		if (ret) \
-> +			return ret; \
-> +		cmd = !!state ? BLINK_MODE_ENABLE : BLINK_MODE_DISABLE; \
-> +		/* Update the configuration with every change */ \
-> +		led_cdev->hw_control_configure(led_cdev, trigger, cmd); \
-> +		return size; \
-> +	} \
-> +	DEVICE_ATTR_RW(trigger_name)
+On 11/9/21 12:46 PM, Joe Perches wrote:
+> On Tue, 2021-11-09 at 11:11 -0800, Randy Dunlap wrote:
+>> On 11/9/21 10:21 AM, Joe Perches wrote:
+>>> (cc'ing Andi Kleen, who wrote this code a decade ago)
+>>>> Joe, can you identify why checkpatch does not detect missing Kconfig
+>>>> help text is this simple case?
+>>>
+>>> Original patch here: https://lore.kernel.org/all/20211028101840.24632-11-andrea.merello@gmail.com/raw
+>>>
+>>> checkpatch is counting the diff header lines that follow the config entry.
+>>> Maybe this is clearer (better?) code:
+>>> ---
+>> Tested-by: Randy Dunlap <rdunlap@infradead.org>
+>> Acked-by: Randy Dunlap <rdunlap@infradead.org>
+> 
+> Hey Randy/Andi.
+> 
+> I like this patch below a bit more.
+> 
+> It shows the Kconfig context block in the output message and
+> documents the code a bit more.
+> 
+> Care to test it again?
+> ---
+>   scripts/checkpatch.pl | 53 +++++++++++++++++++++++++++------------------------
+>   1 file changed, 28 insertions(+), 25 deletions(-)
+> 
 
-These are pretty big macro magic functions. And there is little actual
-macro in them. So make them simple functions which call helpers
+Same tags from me, better output. Thanks!
 
-	static ssize_t trigger_name##_show(struct device *dev, \
-				struct device_attribute *attr, char *buf) \
-	{ \
-		return trigger_generic_store(dev, attr, buf, size, trigger); \
-	} \
-	static ssize_t trigger_name##_store(struct device *dev, \
-					struct device_attribute *attr, \
-					const char *buf, size_t size) \
-	{ \
-		return trigger_generic_store(dev, attr, buf, size, trigger); \
-	} \
+Tested-by: Randy Dunlap <rdunlap@infradead.org>
+Acked-by: Randy Dunlap <rdunlap@infradead.org>
 
-> +/* The attrs will be placed dynamically based on the supported triggers */
-> +static struct attribute *phy_activity_attrs[PHY_ACTIVITY_MAX_TRIGGERS + 1];
-> +
-> +static int offload_phy_activity_activate(struct led_classdev *led_cdev)
-> +{
-> +	u32 checked_list = 0;
-> +	int i, trigger, ret;
-> +
-> +	/* Scan the supported offload triggers and expose them in sysfs if supported */
-> +	for (trigger = 0, i = 0; trigger < PHY_ACTIVITY_MAX_TRIGGERS; trigger++) {
-> +		if (!(checked_list & BLINK_TX) &&
-> +		    led_trigger_blink_mode_is_supported(led_cdev, BLINK_TX)) {
-> +			phy_activity_attrs[i++] = &dev_attr_blink_tx.attr;
-> +			checked_list |= BLINK_TX;
-> +		}
-
-Please re-write this using tables, rather than all this repeated code.
-
-       Andrew
+-- 
+~Randy
