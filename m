@@ -2,113 +2,208 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 25ACF44AE6D
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 14:05:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2085D44AE75
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 14:07:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239667AbhKINI0 convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 9 Nov 2021 08:08:26 -0500
-Received: from mout.kundenserver.de ([212.227.126.135]:42413 "EHLO
-        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240104AbhKINIQ (ORCPT
+        id S231699AbhKINKd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Nov 2021 08:10:33 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38558 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229591AbhKINKb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Nov 2021 08:08:16 -0500
-Received: from mail-wr1-f53.google.com ([209.85.221.53]) by
- mrelayeu.kundenserver.de (mreue012 [213.165.67.97]) with ESMTPSA (Nemesis) id
- 1MYcy3-1nEpjv0UKZ-00VgZ9; Tue, 09 Nov 2021 14:05:28 +0100
-Received: by mail-wr1-f53.google.com with SMTP id s13so32913754wrb.3;
-        Tue, 09 Nov 2021 05:05:27 -0800 (PST)
-X-Gm-Message-State: AOAM531obU9zQxZLci0HZGouM7eA/pZPEgynIlxejLNVY4k9ZiZC3ZyY
-        B+XkAhvccXZzszj0gQGHtZNUEBxE73dF2XLXxJw=
-X-Google-Smtp-Source: ABdhPJw59Rmr+DMXszKBukNsUqZ3FsgOiqKQbSlqF8XuY+XgF6EW4Cq5VhV2Y1l1S7CXitxZ6DpXsOJS8z6kaIvCVpE=
-X-Received: by 2002:adf:df89:: with SMTP id z9mr8974988wrl.336.1636463127622;
- Tue, 09 Nov 2021 05:05:27 -0800 (PST)
+        Tue, 9 Nov 2021 08:10:31 -0500
+Received: from mail-yb1-xb34.google.com (mail-yb1-xb34.google.com [IPv6:2607:f8b0:4864:20::b34])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 29EE4C061764;
+        Tue,  9 Nov 2021 05:07:46 -0800 (PST)
+Received: by mail-yb1-xb34.google.com with SMTP id a129so52769512yba.10;
+        Tue, 09 Nov 2021 05:07:46 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Vx8ACzzR7ClOZiFbVt6NTdwPz8XSyKvvQycpeMv1yu4=;
+        b=FXkyq7Qt4Du6/Jg1yT/OpZ68vb86FuM4kkBB5KI7rdNfHLIiExYnXMRsMuVTaeEzyS
+         WJzrmRtpAjNpyMg+1wxs2LhOmrK4QNbBxKvZePJD+pVa3kP2EyrLUXCN/DWmZDOOVtQw
+         80qYWtHz6DnP2D2AyhYcY7yTt+1VN8g/Z3sh9s+OROsbRCE5xklP18Gu2R5UU41Gy+vv
+         OQ2PmvDtLyWP/wFEx3H1/JbBrlSwpvjc+qF5MpuxWsLbUbLsKqla50oOG9qc6fdqtZ8k
+         n4UE9ZeaUJFnG0EVadNK1JZdt6g/QdMJ1YdybXzyJADgq9YKPGgj1v/pEylUVwlxDiSH
+         Eksg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Vx8ACzzR7ClOZiFbVt6NTdwPz8XSyKvvQycpeMv1yu4=;
+        b=YWG4k9vwhyvlh4Y0RkWm/CZaGptlIXKx2HSkj7W6+bgc1Ir+Xgr6NHSU6y6d3ajZxg
+         VBHZUAhyvEx9hfhhlOmhXGrJ0itpv2mqQ83NYlxZV3wciyWKB4skvgTFVVhNiVYVYLPe
+         OWZzaM9diV1+4XQN7ZkD/JxpQqmZSYKDc3xiBLKeci8oZQe4ZYYOCsq1c/OryiLVYauE
+         Ohg6TdwnZyUC+PUeVNYjdp9SgoxPBu2I7d87tnhBA+qoZXgqHzYv3WE6CMtglB1v/mdt
+         vnJy0CXaa/azjss/2+e4Hmck/tR2KCPWsyAo7rh1fKSUNOkPdhw8HsrCEsjgGwVpArP5
+         P1xA==
+X-Gm-Message-State: AOAM531bGsLv7BNoPMTpdGe1MkltFin/0fdM5uRxNeJfgZp3BNuq7c5i
+        8YIHmFJAz2iBEf0k+gxtuupwf4zIiC8y3kj+mkw=
+X-Google-Smtp-Source: ABdhPJxPF7bznx3Iq5w5DGo3ahtGklJaTLgR+RgnfIWFMmHgwtOpFhicepqYpjMaeWyH3BuKscGFh7EI7nhmMZtJih8=
+X-Received: by 2002:a25:c792:: with SMTP id w140mr8229629ybe.131.1636463265288;
+ Tue, 09 Nov 2021 05:07:45 -0800 (PST)
 MIME-Version: 1.0
-References: <20210923171111.300673-1-andrealmeid@collabora.com>
- <20210923171111.300673-21-andrealmeid@collabora.com> <your-ad-here.call-01636456701-ext-5362@work.hours>
- <51bbfe74-33f6-bb92-3ce8-a22e4185820b@collabora.com>
-In-Reply-To: <51bbfe74-33f6-bb92-3ce8-a22e4185820b@collabora.com>
-From:   Arnd Bergmann <arnd@arndb.de>
-Date:   Tue, 9 Nov 2021 14:05:11 +0100
-X-Gmail-Original-Message-ID: <CAK8P3a3T4qmZvags28bibibsyLBBLjsRQTGJqanLdcergxQTXQ@mail.gmail.com>
-Message-ID: <CAK8P3a3T4qmZvags28bibibsyLBBLjsRQTGJqanLdcergxQTXQ@mail.gmail.com>
-Subject: Re: [PATCH v2 20/22] selftests: futex: Test sys_futex_waitv() timeout
-To:     =?UTF-8?Q?Andr=C3=A9_Almeida?= <andrealmeid@collabora.com>
-Cc:     Vasily Gorbik <gor@linux.ibm.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Darren Hart <dvhart@infradead.org>,
+References: <20211109121631.26687-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
+ <20211109121631.26687-4-prabhakar.mahadev-lad.rj@bp.renesas.com> <CAMuHMdXAhQMOzbQHyymJrq0So11-uLC5nPT0gU7qj+MH8GmApw@mail.gmail.com>
+In-Reply-To: <CAMuHMdXAhQMOzbQHyymJrq0So11-uLC5nPT0gU7qj+MH8GmApw@mail.gmail.com>
+From:   "Lad, Prabhakar" <prabhakar.csengg@gmail.com>
+Date:   Tue, 9 Nov 2021 13:07:19 +0000
+Message-ID: <CA+V-a8tYFA_jgt+yE5En0OhUYibb38=uR=Y0hmDs+gggqF8R+A@mail.gmail.com>
+Subject: Re: [PATCH v2 3/3] serial: sh-sci: Add support to deassert/assert
+ reset line
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        "open list:SERIAL DRIVERS" <linux-serial@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Collabora kernel ML <kernel@collabora.com>,
-        Gabriel Krisman Bertazi <krisman@collabora.com>,
-        Linux API <linux-api@vger.kernel.org>,
-        GNU C Library <libc-alpha@sourceware.org>,
-        Michael Kerrisk <mtk.manpages@gmail.com>,
-        Davidlohr Bueso <dave@stgolabs.net>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Alistair Francis <alistair.francis@wdc.com>
+        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
+        Biju Das <biju.das.jz@bp.renesas.com>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-X-Provags-ID: V03:K1:j1y24ZLQaCxUnwIlX4UkGzpcQwqR0k9vJ7BzTd4TvS4BhotMlOC
- dLh9ehv+pKrnceNqMg4UWmtbtGXGXBMlUoXMErYIKABldKOPM08rnx4R7jZufLwY1NaodP3
- d1rsCDC0rjd5JmgydQKTeIjOaqPgtcqpqGudAdmwtdfeI03ZZ8ixBoY+eJQWoQa4X3Xds1G
- kEC9WKv/46/Ow+Xv0fVog==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:eFU4pS+yBGA=:0DD8DEJVG7L4LNan7gz6Od
- ZeJFhjshpJTNml5IVCZj1pXCUd2FCWg0i2N7+OszY5zX8aaOfFLLOfgw4PKfD0s84VXtFTWMQ
- DR8p2yuD+tTVIxGy4YMslHVXE78O81JeuqePSSlYCztLAQLdFmFApRSwJq1yN7AMjqcl8sP7D
- SG0OwWyqtUtTp1Vz5+BWgGIXsJwsZhKAH8kxh4KGY3plFo0iQb5YmuqM+hzJpqWGu3gsR/io/
- g+nsdwbWrZ8dH0D8pLa0hCwJpWdd31H9PmGEqxXt1bxL6kvaa9uWkA8zVzZyYGWNouxAgHG8b
- MtU8N4khoWL/glgUGJpqdOQaBHy5C/Y/XSayLKtsq/lU8nz6y/ZUYxa6MdKPiInBUJ+99j+sA
- U/3fZXBpIo4+UGUFy5fL9H6PNwyaTaArUn0Q9X+zGjuz6TdU52mDyGmmxiUB6XjWW0lP3SzJe
- fovHV/j0ZXR6XBFGOIeioTgNqXcRfR/SRbB/Ko7WU92N8rRwn642876pgwnRIpGveOAW5JOb4
- j8yp0v5spJHyd/OGiTM4IaKsatXjTwESOA9tr/y4ukzUQaaxZkdsfFhDXw/jbmu8YIZe8MjJl
- XXnGdXYv8D1gUWG5NrwJ1qibQnC+cFkKBCLbeVooG94/++1Ktea5sv+RQOPXjm43K8F84qGf4
- zxBJmcG1K0AHBHRKZRuCJeEBorcFifDFVxjJHC99fFnHB7nM5uSoWHGqpc/ffRPWqlXRGUeEH
- HSkSsJSmgNXGhPmXi8BQ3WhKqcPx06bEIcj4u3oTGgPFbaXhR6uupZCEKVHfatIsw0cqx6wjt
- 7NGBvT5LOxtG1vm72lV4p5c4SA21EtQHveIg/lAwPWkj/OkCYM=
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 9, 2021 at 1:52 PM André Almeida <andrealmeid@collabora.com> wrote:
-> Às 08:18 de 09/11/21, Vasily Gorbik escreveu:
-> > On Thu, Sep 23, 2021 at 02:11:09PM -0300, André Almeida wrote:
-> >> Test if the futex_waitv timeout is working as expected, using the
-> >> supported clockid options.
-> >
-> >> +    /* futex_waitv with CLOCK_MONOTONIC */
-> >> +    if (futex_get_abs_timeout(CLOCK_MONOTONIC, &to, timeout_ns))
-> >> +            return RET_FAIL;
-> >> +    res = futex_waitv(&waitv, 1, 0, &to, CLOCK_MONOTONIC);
-> >> +    test_timeout(res, &ret, "futex_waitv monotonic", ETIMEDOUT);
-> >> +
-> >> +    /* futex_waitv with CLOCK_REALTIME */
-> >> +    if (futex_get_abs_timeout(CLOCK_REALTIME, &to, timeout_ns))
-> >> +            return RET_FAIL;
-> >> +    res = futex_waitv(&waitv, 1, 0, &to, CLOCK_REALTIME);
-> >> +    test_timeout(res, &ret, "futex_waitv realtime", ETIMEDOUT);
-> >
-> > Hi André,
-> >
-> > when built with -m32 and run as compat this two futex_waitv calls hang
-> > on x86 and s390 (noticed while wiring up futex_waitv). The rest of the
-> > futex selftests pass. This suggests some common compat issue? Any ideas?
+Hi Geert,
+
+Thank you for the review.
+
+On Tue, Nov 9, 2021 at 12:58 PM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
 >
-> The issue is that futex_waitv() only accepts struct timespec that uses
-> 64bit members. When using -m32, glibc will give you a 32bit timespec,
-> thus the timeout won't wort. Someday glibc will provide 64bit timespec
-> to 32bit userspace, given that this is affected by y2038 bug.
+> Hi Prabhakar,
+>
+> On Tue, Nov 9, 2021 at 1:17 PM Lad Prabhakar
+> <prabhakar.mahadev-lad.rj@bp.renesas.com> wrote:
+> > On RZ/G2L SoC we need to explicitly deassert the reset line
+> > for the device to work, use this opportunity to deassert/assert
+> > reset line in sh-sci driver.
+> >
+> > This patch adds support to read the "resets" property (if available)
+> > from DT and perform deassert/assert when required.
+> >
+> > Also, propagate the error to the caller of sci_parse_dt() instead of
+> > returning NULL in case of failure.
+> >
+> > Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+> > Reviewed-by: Biju Das <biju.das.jz@bp.renesas.com>
+> > ---
+> > v1->v2
+> > * deassert/assert reset line if available on all SoC's
+> > * Updated commit message
+>
+> Thanks for the update!
+>
+> > --- a/drivers/tty/serial/sh-sci.c
+> > +++ b/drivers/tty/serial/sh-sci.c
+> > @@ -37,6 +37,7 @@
+> >  #include <linux/of_device.h>
+> >  #include <linux/platform_device.h>
+> >  #include <linux/pm_runtime.h>
+> > +#include <linux/reset.h>
+> >  #include <linux/scatterlist.h>
+> >  #include <linux/serial.h>
+> >  #include <linux/serial_sci.h>
+> > @@ -3203,23 +3204,53 @@ static const struct of_device_id of_sci_match[] = {
+> >  };
+> >  MODULE_DEVICE_TABLE(of, of_sci_match);
+> >
+> > +static void sci_reset_control_assert(void *data)
+> > +{
+> > +       reset_control_assert(data);
+> > +}
+> > +
+> >  static struct plat_sci_port *sci_parse_dt(struct platform_device *pdev,
+> >                                           unsigned int *dev_id)
+> >  {
+> >         struct device_node *np = pdev->dev.of_node;
+> > +       const struct of_device_id *of_id;
+>
+> Not needed.
+>
+Agreed.
 
-I think in the latest glibc you should be able to pass -D_TIME_BITS=64 to
-the compiler to get the correct definition. Unfortunately, this only works
-for simple test cases, but breaks if you call any interfaces from another
-(non-glibc) library that depend on a particular time_t definition.
+> > +       struct reset_control *rstc;
+> >         struct plat_sci_port *p;
+> >         struct sci_port *sp;
+> >         const void *data;
+> > -       int id;
+> > +       int id, ret;
+> >
+> >         if (!IS_ENABLED(CONFIG_OF) || !np)
+> > -               return NULL;
+> > +               return ERR_PTR(-EINVAL);
+> > +
+> > +       of_id = of_match_device(of_sci_match, &pdev->dev);
+> > +       if (!of_id)
+> > +               return ERR_PTR(-EINVAL);
+> >
+> > -       data = of_device_get_match_data(&pdev->dev);
+>
+> Please keep the old construct using of_device_get_match_data().
+>
+OK.
 
-Alistair Francis also recently posted a set of helpers for the old futex()
-call to make that easier to use from applications regardless of the libc
-interface. I think it would be good to have this for futex_waitv() as well.
+> > +       rstc = devm_reset_control_get_optional_exclusive(&pdev->dev, NULL);
+> > +       if (IS_ERR(rstc)) {
+> > +               dev_err(&pdev->dev, "failed to get reset ctrl %ld\n", PTR_ERR(rstc));
+> > +               return ERR_PTR(PTR_ERR(rstc));
+>
+> The error might be -EPROBE_DEFER, so please use
+> "return ERR_PTR(dev_err_probe(...))", to avoid printing the message
+> in case of probe deferral.
+>
+Agreed, will use dev_err_probe().
 
-       Arnd
+> BTW, ERR_CAST() is a shorthand for ERR_PTR(PTR_ERR()).
+>
+Thanks for the pointer.
+
+> > +       }
+> > +
+> > +       ret = reset_control_deassert(rstc);
+> > +       if (ret) {
+> > +               dev_err(&pdev->dev, "failed to deassert reset %d\n", ret);
+> > +               return ERR_PTR(ret);
+> > +       }
+> > +
+> > +       ret = devm_add_action_or_reset(&pdev->dev, sci_reset_control_assert, rstc);
+> > +       if (ret) {
+> > +               dev_err(&pdev->dev, "failed to register assert devm action, %d\n",
+> > +                       ret);
+> > +               return ERR_PTR(ret);
+> > +       }
+> > +
+> > +       data = of_id->data;
+> >
+> >         p = devm_kzalloc(&pdev->dev, sizeof(struct plat_sci_port), GFP_KERNEL);
+> >         if (!p)
+> > -               return NULL;
+> > +               return ERR_PTR(-ENOMEM);
+> >
+> >         /* Get the line number from the aliases node. */
+> >         id = of_alias_get_id(np, "serial");
+>
+> I gave this a try on Salvator-XS, and noticed no regressions.
+> I will test this on more SCIF variants later.
+>
+Thanks, I will re-spin a v3 just for this lone patch. I hope that's OK.
+
+Cheers,
+Prabhakar
+
+> Gr{oetje,eeting}s,
+>
+>                         Geert
+>
+> --
+> Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+>
+> In personal conversations with technical people, I call myself a hacker. But
+> when I'm talking to journalists I just say "programmer" or something like that.
+>                                 -- Linus Torvalds
