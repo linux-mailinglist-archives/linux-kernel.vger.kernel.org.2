@@ -2,39 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4B52B44A46E
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 03:06:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9390C44A46F
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 03:07:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238281AbhKICJ3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Nov 2021 21:09:29 -0500
-Received: from szxga08-in.huawei.com ([45.249.212.255]:27123 "EHLO
-        szxga08-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231229AbhKICJ2 (ORCPT
+        id S239212AbhKICKA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Nov 2021 21:10:00 -0500
+Received: from szxga01-in.huawei.com ([45.249.212.187]:14730 "EHLO
+        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239330AbhKICJ4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Nov 2021 21:09:28 -0500
-Received: from dggeme756-chm.china.huawei.com (unknown [172.30.72.56])
-        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4HpBB44NCcz1DDCd;
-        Tue,  9 Nov 2021 10:04:28 +0800 (CST)
+        Mon, 8 Nov 2021 21:09:56 -0500
+Received: from dggeme756-chm.china.huawei.com (unknown [172.30.72.53])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4HpBBc4xfnzVfsf;
+        Tue,  9 Nov 2021 10:04:56 +0800 (CST)
 Received: from [10.67.110.136] (10.67.110.136) by
  dggeme756-chm.china.huawei.com (10.3.19.102) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2308.15; Tue, 9 Nov 2021 10:06:40 +0800
-Subject: Re: [PATCH] drm: Fix possible memleak in drm_client_modeset_probe
+ 15.1.2308.15; Tue, 9 Nov 2021 10:07:08 +0800
+Subject: Re: [PATCH] fsl_hypervisor: Add missing of_node_put in
+ fsl_hypervisor_init
 From:   He Ying <heying24@huawei.com>
-To:     <maarten.lankhorst@linux.intel.com>, <mripard@kernel.org>,
-        <tzimmermann@suse.de>, <airlied@linux.ie>, <daniel@ffwll.ch>
-CC:     <dri-devel@lists.freedesktop.org>, <linux-kernel@vger.kernel.org>
-References: <20211022012623.97631-1-heying24@huawei.com>
-Message-ID: <e082f0fa-d524-ae4f-053d-48d817d2c7d4@huawei.com>
-Date:   Tue, 9 Nov 2021 10:06:40 +0800
+To:     <galak@kernel.crashing.org>, <timur@freescale.com>, <arnd@arndb.de>
+CC:     <linux-kernel@vger.kernel.org>
+References: <20211029032002.97355-1-heying24@huawei.com>
+Message-ID: <18de7555-0d77-77ae-f357-dea07c73d771@huawei.com>
+Date:   Tue, 9 Nov 2021 10:07:08 +0800
 User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
  Thunderbird/78.8.1
 MIME-Version: 1.0
-In-Reply-To: <20211022012623.97631-1-heying24@huawei.com>
+In-Reply-To: <20211029032002.97355-1-heying24@huawei.com>
 Content-Type: text/plain; charset="gbk"; format=flowed
 Content-Transfer-Encoding: 8bit
 X-Originating-IP: [10.67.110.136]
-X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
+X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
  dggeme756-chm.china.huawei.com (10.3.19.102)
 X-CFilter-Loop: Reflected
 Precedence: bulk
@@ -43,63 +43,29 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 kindly ping...
 
-在 2021/10/22 9:26, He Ying 写道:
-> I got memory leak as follows when doing fault injection test:
->
-> WARNING: CPU: 0 PID: 1214 at drm_mode_config_cleanup+0x689/0x890 [drm]
-> RIP: 0010:drm_mode_config_cleanup+0x689/0x890 [drm]
-> Call Trace:
->   ? tracer_hardirqs_on+0x33/0x520
->   ? drm_mode_config_reset+0x3f0/0x3f0 [drm]
->   ? trace_event_raw_event_rcu_torture_read+0x2c0/0x2c0
->   ? __sanitizer_cov_trace_pc+0x1d/0x50
->   ? call_rcu+0x489/0x15e0
->   ? trace_hardirqs_on+0x63/0x2d0
->   ? write_comp_data+0x2a/0x90
->   ? drm_mode_config_cleanup+0x890/0x890 [drm]
->   drm_managed_release+0x1fa/0x4f0 [drm]
->   drm_dev_release+0x72/0xb0 [drm]
->   devm_drm_dev_init_release+0x81/0xa0 [drm]
->   release_nodes+0xba/0x3b0
->   ...
->   entry_SYSCALL_64_after_hwframe+0x44/0xae
->
-> and then an error message:
->
-> [drm:drm_mode_config_cleanup [drm]] *ERROR* connector SPI-1 leaked!
->
-> When krealloc() in drm_client_modeset_probe() fails, it
-> goes to the label 'free_connectors'. However, krealloc()
-> is between drm_connector_list_iter_begin() and *_end().
-> Going to the label directly is not a good idea. Because
-> iter->conn is not cleaned up if so. Fix the problem by
-> going to the label outside drm_connector_list_iter_end().
+在 2021/10/29 11:20, He Ying 写道:
+> Early exits from for_each_compatible_node() should decrement the
+> node reference counter.
 >
 > Signed-off-by: He Ying <heying24@huawei.com>
+> Fixes: 6db7199407ca ("drivers/virt: introduce Freescale hypervisor management driver")
 > ---
->   drivers/gpu/drm/drm_client_modeset.c | 5 ++++-
->   1 file changed, 4 insertions(+), 1 deletion(-)
+>   drivers/virt/fsl_hypervisor.c | 4 +++-
+>   1 file changed, 3 insertions(+), 1 deletion(-)
 >
-> diff --git a/drivers/gpu/drm/drm_client_modeset.c b/drivers/gpu/drm/drm_client_modeset.c
-> index ced09c7c06f9..7ac88ae93f38 100644
-> --- a/drivers/gpu/drm/drm_client_modeset.c
-> +++ b/drivers/gpu/drm/drm_client_modeset.c
-> @@ -789,7 +789,7 @@ int drm_client_modeset_probe(struct drm_client_dev *client, unsigned int width,
->   		tmp = krealloc(connectors, (connector_count + 1) * sizeof(*connectors), GFP_KERNEL);
->   		if (!tmp) {
->   			ret = -ENOMEM;
-> -			goto free_connectors;
-> +			break;
+> diff --git a/drivers/virt/fsl_hypervisor.c b/drivers/virt/fsl_hypervisor.c
+> index 46ee0a0998b6..ef5fcca4b8f0 100644
+> --- a/drivers/virt/fsl_hypervisor.c
+> +++ b/drivers/virt/fsl_hypervisor.c
+> @@ -849,8 +849,10 @@ static int __init fsl_hypervisor_init(void)
 >   		}
 >   
->   		connectors = tmp;
-> @@ -798,6 +798,9 @@ int drm_client_modeset_probe(struct drm_client_dev *client, unsigned int width,
->   	}
->   	drm_connector_list_iter_end(&conn_iter);
+>   		dbisr = kzalloc(sizeof(*dbisr), GFP_KERNEL);
+> -		if (!dbisr)
+> +		if (!dbisr) {
+> +			of_node_put(np);
+>   			goto out_of_memory;
+> +		}
 >   
-> +	if (ret)
-> +		goto free_connectors;
-> +
->   	if (!connector_count)
->   		return 0;
->   
+>   		dbisr->irq = irq;
+>   		dbisr->doorbell = be32_to_cpup(handle);
