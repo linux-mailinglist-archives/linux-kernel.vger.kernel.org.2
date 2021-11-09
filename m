@@ -2,139 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D2DF944B123
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 17:27:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5829744B11E
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 17:26:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239790AbhKIQ3o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Nov 2021 11:29:44 -0500
-Received: from smtp-out1.suse.de ([195.135.220.28]:38580 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238397AbhKIQ3m (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Nov 2021 11:29:42 -0500
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out1.suse.de (Postfix) with ESMTP id 22DFC21B0F;
-        Tue,  9 Nov 2021 16:26:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1636475214; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=W8Yqvda4MK4hO1EoRB5r6GQpCOHroX0LfHlyY83Mevo=;
-        b=n8ph54cGxVOKEPgM+5p+AqZuytCKD7lxxc15YQWS+b1GoVVNoE7JvM7hjMyftp49vlScBU
-        f2/eNLWys935rjcfCs1KkeQk4OlCtKccHw7Gpz+zZAZKvlPMvPkKrYLmIrBn9bQnrkLEOa
-        cPl2eGrYMSNatVZji2GFhQsf56KKYgo=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1636475214;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=W8Yqvda4MK4hO1EoRB5r6GQpCOHroX0LfHlyY83Mevo=;
-        b=qwFDV487ASDanqQnKIcVp/7as4MKVz9GWVpyA/v0PuOU7WIQy6b0ukq0Y9msnQ0/vN84P0
-        lHzuydjgE/8IlqDQ==
-Received: from suse.de (mgorman.tcp.ovpn2.nue.suse.de [10.163.32.246])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by relay2.suse.de (Postfix) with ESMTPS id 818C3A3B88;
-        Tue,  9 Nov 2021 16:26:52 +0000 (UTC)
-Date:   Tue, 9 Nov 2021 16:26:47 +0000
-From:   Mel Gorman <mgorman@suse.de>
-To:     Gang Li <ligang.bdlg@bytedance.com>
-Cc:     Jonathan Corbet <corbet@lwn.net>, Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        linux-api@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
-        linux-fsdevel@vger.kernel.org, linux-doc@vger.kernel.org
-Subject: Re: Re: Re: Re: Re: [PATCH v1] sched/numa: add per-process
- numa_balancing
-Message-ID: <20211109162647.GY3891@suse.de>
-References: <20211027132633.86653-1-ligang.bdlg@bytedance.com>
- <20211028153028.GP3891@suse.de>
- <b884ad7d-48d3-fcc8-d199-9e7643552a9a@bytedance.com>
- <20211029083751.GR3891@suse.de>
- <CAMx52ARF1fVH9=YLQMjE=8ckKJ=q3X2-ovtKuQcoTyo564mQnQ@mail.gmail.com>
- <20211109091951.GW3891@suse.de>
- <7de25e1b-e548-b8b5-dda5-6a2e001f3c1a@bytedance.com>
- <20211109121222.GX3891@suse.de>
- <117d5b88-b62b-f50b-32ff-1a9fe35b9e2e@bytedance.com>
+        id S239729AbhKIQ3j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Nov 2021 11:29:39 -0500
+Received: from mail.kernel.org ([198.145.29.99]:52798 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S238397AbhKIQ3i (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Nov 2021 11:29:38 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0D4D261251;
+        Tue,  9 Nov 2021 16:26:50 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1636475212;
+        bh=SJd+CBR3hNdsEqv2/U4F2PEdGBxSNKt2Ee8Bu7IryJ8=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=SP9EdDjWkaoWtryXQxnAXLmrXpdzt5RSZu1RQZi8Ss78+Li6rDfqhDMaKqmNV9ZBV
+         8eGYuVymP8ejDsC10J/MDIsZpA84QsU1ZexaNrZ4JpJ7nRn5i7mR35ImQaB5eLqWyr
+         sx5wlo8NvhKiyBm8WX8zmIpIWJAVZLWsBG+6358y7PbtzcL/PTOzoLM+C/a7WM3nf1
+         DpiHxr1JhIVj+blMNy5Dkx5RtXK+VXRo3nOnnMlQjDW6MU343ShYdoz3q7HPPWUSt7
+         sWob6X0Hh2U3dXmn6ivzeGtn2pOixXbnvrHO98SrEPBEMG8kO2nIljEg1RzXIcUVCb
+         DR8ao8I9k7iOg==
+Date:   Tue, 9 Nov 2021 08:26:48 -0800
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Jiri Pirko <jiri@resnulli.us>
+Cc:     Jason Gunthorpe <jgg@nvidia.com>,
+        Leon Romanovsky <leon@kernel.org>,
+        Ido Schimmel <idosch@idosch.org>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jiri Pirko <jiri@nvidia.com>, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, edwin.peer@broadcom.com
+Subject: Re: [PATCH net-next] devlink: Require devlink lock during device
+ reload
+Message-ID: <20211109082648.73092dfb@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <YYqenGW4ftZH5Ufi@nanopsycho>
+References: <YYgSzEHppKY3oYTb@unreal>
+        <20211108080918.2214996c@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+        <YYlfI4UgpEsMt5QI@unreal>
+        <20211108101646.0a4e5ca4@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+        <YYlrZZTdJKhha0FF@unreal>
+        <20211108104608.378c106e@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+        <YYmBbJ5++iO4MOo7@unreal>
+        <20211108153126.1f3a8fe8@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+        <20211109144358.GA1824154@nvidia.com>
+        <20211109070702.17364ec7@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+        <YYqenGW4ftZH5Ufi@nanopsycho>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-15
-Content-Disposition: inline
-In-Reply-To: <117d5b88-b62b-f50b-32ff-1a9fe35b9e2e@bytedance.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 09, 2021 at 09:58:34PM +0800, Gang Li wrote:
-> On 11/9/21 8:12 PM, Mel Gorman wrote:
-> > 
-> > That would be a policy decision on how existing tasks should be tuned
-> > if NUMA balancing is enabled at runtime after being disabled at boot
-> > (or some arbitrary time in the past). Introducing the prctl does mean
-> > that there is a semantic change for the runtime enabling/disabling
-> > of NUMA balancing because previously, enabling global balancing affects
-> > existing tasks and with prctl, it affects only future tasks. It could
-> > be handled in the sysctl to some exist
-> > 
-> > 0. Disable for all but prctl specifications
-> > 1. Enable for all tasks unless disabled by prctl
-> > 2. Ignore all existing tasks, enable for future tasks
-> > 
-> > While this is more legwork, it makes more sense as an interface than
-> > prctl(PR_NUMA_BALANCING,PR_SET_NUMA_BALANCING,1) failing if global
-> > NUMA balancing is disabled.
-> > 
+On Tue, 9 Nov 2021 17:15:24 +0100 Jiri Pirko wrote:
+> Tue, Nov 09, 2021 at 04:07:02PM CET, kuba@kernel.org wrote:
+> >On Tue, 9 Nov 2021 10:43:58 -0400 Jason Gunthorpe wrote:  
+> >> This becomes all entangled in the aux device stuff we did before.  
+> >
+> >So entangled in fact that neither of you is willing to elucidate 
+> >the exact need ;)
+> >  
+> >> devlink reload is defined, for reasons unrelated to netns, to do a
+> >> complete restart of the aux devices below the devlink. This happens
+> >> necessarily during actual reconfiguration operations, for instance.
+> >> 
+> >> So we have a situation, which seems like bad design, where reload is
+> >> also triggered by net namespace change that has nothing to do with
+> >> reconfiguring.  
+> >
+> >Agreed, it is somewhat uncomfortable that the same callback achieves
+> >two things. As clear as the need for reload-for-reset is (reconfig,
+> >recovery etc.) I'm not as clear on reload for netns.
+> >
+> >The main use case for reload for netns is placing a VF in a namespace,
+> >for a container to use. Is that right? I've not seen use cases
+> >requiring the PF to be moved, are there any?
+> >
+> >devlink now lives in a networking namespace yet it spans such
+> >namespaces (thru global notifiers). I think we need to define what it
+> >means for devlink to live in a namespace. Is it just about the
+> >configuration / notification channel? Or do we expect proper isolation?
+> >
+> >Jiri?  
 > 
-> Why prctl(PR_NUMA_BALANCING,PR_SET_NUMA_BALANCING,1) must work while global
-> numa_balancing is disabled? No offense, I think that is a bit redundant.
+> Well honestly the primary motivation was to be able to run smoothly with
+> syzkaller for which the "configuration / notification channel" is
+> enough.
 
-For symmetry and consistency of the tuning. Either there is per-process
-control or there is not. Right now, there is only the ability to turn
-off NUMA balancing via prctl if globally enabled. There is no option to
-turn NUMA balancing on for a single task if globally disabled.
+Hm. And syzkaller runs in a namespace?
 
-> And
-> it's complicated to implement.
-> 
+> By "proper isolation" you mean what exactly?
 
-That is true.
-
-> It's hard for me to understand the whole vision of your idea. I'm very
-> sorry. Can you explain your full thoughts more specifically?
-> 
-
-I'm not sure how I can be more clear.
-
-> ----------------------------------------------------
-> 
-> Also in case of misunderstanding, let me re-explain my patch using circuit
-> diagram.
-> 
-
-I understood what you are proposing. In your case, global disabling
-is an absolute -- it's disabled regardless of prctl therefore
-prctl(PR_NUMA_BALANCING,PR_SET_NUMA_BALANCING,1) has no meaning and it
-either does nothing at all or fails so why does the option even exist?
-
-> Why global numa_balancing has high priority? There are two reasons:
-> 1. numa_balancing is useful to most processes, so there is no need to
-> consider how to enable numa_balancing for a few processes while disabling it
-> globally.
-> 2. It is easy to implement. The more we think, the more complex the code
-> becomes.
-
-Of those two, I agree with the second one, it would be tricky to implement
-but the first one is less clear. This is based on an assumption. If prctl
-exists to enable/disable NUMA baalancing, it's possible that someone
-else would want to control NUMA balancing on a cgroup basis instead of
-globally which would run into the same type of concerns -- different
-semantics depending on the global tunable.
-
--- 
-Mel Gorman
-SUSE Labs
+For the devlink instance and all subordinate objects to be entirely
+contained to the namespace within which devlink resides, unless
+explicitly liked up with or delegated to another namespace.
