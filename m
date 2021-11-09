@@ -2,96 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E8B3144A6E9
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 07:36:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 12F5244A6EF
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 07:38:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232513AbhKIGjX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Nov 2021 01:39:23 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33696 "EHLO
+        id S243239AbhKIGlN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Nov 2021 01:41:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34114 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230055AbhKIGjV (ORCPT
+        with ESMTP id S230055AbhKIGlL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Nov 2021 01:39:21 -0500
-Received: from mail-pl1-x630.google.com (mail-pl1-x630.google.com [IPv6:2607:f8b0:4864:20::630])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 79524C061764
-        for <linux-kernel@vger.kernel.org>; Mon,  8 Nov 2021 22:36:36 -0800 (PST)
-Received: by mail-pl1-x630.google.com with SMTP id v20so19125052plo.7
-        for <linux-kernel@vger.kernel.org>; Mon, 08 Nov 2021 22:36:36 -0800 (PST)
+        Tue, 9 Nov 2021 01:41:11 -0500
+Received: from mail-pl1-x635.google.com (mail-pl1-x635.google.com [IPv6:2607:f8b0:4864:20::635])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0CF23C061764;
+        Mon,  8 Nov 2021 22:38:25 -0800 (PST)
+Received: by mail-pl1-x635.google.com with SMTP id q17so7055851plr.11;
+        Mon, 08 Nov 2021 22:38:25 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=AATbywRIxzxNd7Dax4ALazPHnAkn6LmLQvylgIQIjyU=;
-        b=FAgrJIcp9K/wuOKtdkRL4PckOjCABsXpUO4MPD5n4K5Vj1gP1nmXD/DTYI2omaAPKd
-         IPEDkGcxSS26vD88hXHjuAeUq39e7y13F3jFltUBvm7RA/sKHC3qPkTB29A/IAWmTlKO
-         eLvOadXS51ygn8mx16s6rdM1q3tA4dlcMxD4lxSjK+m5UG04FTIutq6Wp6re2bFU2VcF
-         sa7u0zJmghqP5KTPmHXyWqWLXAG+4njMABiZ7lbA1J5bfZS2s4NdUuQhyizKTCEuQfPV
-         +SCglyyaiPDFkspKrNaQqCF22eKwrNDxnfwEgdFHKjVQIAQlqRs9jiw4rW75/WWZW1q5
-         Db8A==
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id;
+        bh=YXrLP/6w0RPBXSzKwulXWqp10SzvQvnKnc1yXHAk4Tw=;
+        b=P29Nsp+qcRAs+O6ZhboLiCkOkyogcYbvCxZdTTgiFho2vL3lrGeNbor5q3/V4UDnLZ
+         NeJGNt49CtZAbjl4xsIlmHJEdwMKDTjmDWv4NxP1bJw5tnZhaRcj+qhKISrAsQyk6IO/
+         N8Ela4GBPY9d3YWtL+nWyiAEBpauBd9hPJKyGvBj0wcXXI4zxF20DBD0riTyeDy6tkx0
+         aKMkoaYxtRMY1dXWpPRQu904c1a4jGl4r8fERoM0GWmBbrkcAPlj+1Pnqxp8omdQ15G0
+         9AouRNhMmazsO12JBfF+gMwkbeC7bJZfLzwVSy8u5mUJSGbvk7cHHN8lu3QjzYZY2khx
+         eCEg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=AATbywRIxzxNd7Dax4ALazPHnAkn6LmLQvylgIQIjyU=;
-        b=RJMC2c+6kdZ4ODlTbbWbvAOfflIxGaEuZz3q+Jzsmp682f1SNdCCMRln30f/zm6NbY
-         vo1oy3oPjWP8wwCZQ2LoaqBWjk6jH2tX5q4b/wYK1Y9I9bR9nKM5HHLfUXKCo0ywUwT8
-         sHpZg0fZ+2s4FsNoyDounamh1IE9h8IsdcZCguBa/uHTpfkJQj5rW2zu8TBuJ+rAsUu/
-         KX5DEXKInwC9wQ0nrv8oDcsrHMF0N4hS5vp0Nt8C+dtVLZRHbHQvRrTDU5qWQOLzEOE6
-         NZgj4dsnvLER8L0KwTCfYkMWHGzBwmwOjDzpwtOZMDv1dTZPolLlxXV+4IwkboFN3OVX
-         UQXg==
-X-Gm-Message-State: AOAM533iCkqqAeh0+O1b3Maxb87b0LPDMiQExy+qo1fCQDlQ+eI3C5H2
-        lBj+7QuUYE5JYx9hwfS/iqmzVvwDnuhdlraBGnxxoQ==
-X-Google-Smtp-Source: ABdhPJw+hzZesb2M2vFbROCco526ACzQd7hh9Ygg7UDBQjJf0od5fbsPy4di9D+tqraqr5p9fkIf1Il82INo7scjgvk=
-X-Received: by 2002:a17:90b:380d:: with SMTP id mq13mr4771617pjb.110.1636439795842;
- Mon, 08 Nov 2021 22:36:35 -0800 (PST)
-MIME-Version: 1.0
-References: <20211104002531.1176691-1-seanjc@google.com> <20211104002531.1176691-9-seanjc@google.com>
-In-Reply-To: <20211104002531.1176691-9-seanjc@google.com>
-From:   Reiji Watanabe <reijiw@google.com>
-Date:   Mon, 8 Nov 2021 22:36:19 -0800
-Message-ID: <CAAeT=FxcFq2SoM5xRYJfB=bBzGrY1uuEUhvFd+6sb86y-rg_Yw@mail.gmail.com>
-Subject: Re: [PATCH v5.5 08/30] KVM: arm64: Use "new" memslot instead of
- userspace memory region
-To:     Sean Christopherson <seanjc@google.com>
-Cc:     Marc Zyngier <maz@kernel.org>, Huacai Chen <chenhuacai@kernel.org>,
-        Aleksandar Markovic <aleksandar.qemu.devel@gmail.com>,
-        Paul Mackerras <paulus@ozlabs.org>,
-        Anup Patel <anup.patel@wdc.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        Janosch Frank <frankja@linux.ibm.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>, kvm@vger.kernel.org,
-        David Hildenbrand <david@redhat.com>,
-        linux-kernel@vger.kernel.org, Atish Patra <atish.patra@wdc.com>,
-        Ben Gardon <bgardon@google.com>,
-        "Maciej S . Szmigiero" <maciej.szmigiero@oracle.com>,
-        Claudio Imbrenda <imbrenda@linux.ibm.com>,
-        linux-riscv@lists.infradead.org, Joerg Roedel <joro@8bytes.org>,
-        kvmarm@lists.cs.columbia.edu, kvm-ppc@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        Jim Mattson <jmattson@google.com>,
-        Cornelia Huck <cohuck@redhat.com>, linux-mips@vger.kernel.org,
-        kvm-riscv@lists.infradead.org,
-        Vitaly Kuznetsov <vkuznets@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=YXrLP/6w0RPBXSzKwulXWqp10SzvQvnKnc1yXHAk4Tw=;
+        b=5gUSQV2BQzMgKdO89yhF4ZeZZJff4cILi6VOXuX5QsH+7qM1jP9wpeuyocKF3r/+4K
+         wOO17Z+fLXfR39x4mCCDlANtDf9la8yZaF+85GxwlpcaMmunmNVB7nhCoNI+nr65hs4W
+         PT/dAvid6HYbX/e9URn6IBfdTbK4RgkdIDqYPEx0TgDWWs/NcuyYvvit7kjv5asHL13l
+         JB/+Dq5Assfo15MrO3AGHgjBpNKOdKE2YRivm+nRxly9u0I1QEBYr0tze5UlvhLwPG4A
+         vQe5K185AkTdwWmiV2pXPAEfEasVAirplHtPub5IQLOL81EEmNGOfKOegApmUTNdvvD4
+         qrUA==
+X-Gm-Message-State: AOAM533kx5qUW8x9Uz7sVYlz7P5II6jWz9VtPgZL6s2nBjqxFzo3mPM5
+        mhebEizZOprCsvgS7Q8HePI=
+X-Google-Smtp-Source: ABdhPJxImBMzajXwqpFPjTT32OCGCFa21KgttTLnepIV1uorWAx1Evem+sVAIZ1bcTD+MDrdRgmtrA==
+X-Received: by 2002:a17:90a:191c:: with SMTP id 28mr4681654pjg.121.1636439904585;
+        Mon, 08 Nov 2021 22:38:24 -0800 (PST)
+Received: from scdiu3.sunplus.com ([113.196.136.192])
+        by smtp.googlemail.com with ESMTPSA id k22sm17466833pfi.149.2021.11.08.22.38.21
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Mon, 08 Nov 2021 22:38:23 -0800 (PST)
+From:   Vincent Shih <vincent.sunplus@gmail.com>
+X-Google-Original-From: Vincent Shih <vincent.shih@sunplus.com>
+To:     a.zummo@towertech.it, alexandre.belloni@bootlin.com,
+        p.zabel@pengutronix.de, linux-kernel@vger.kernel.org,
+        linux-rtc@vger.kernel.org, robh+dt@kernel.org,
+        devicetree@vger.kernel.org, wells.lu@sunplus.com,
+        in-reply-to=1635834123-24668-1-git-send-email-vincent.shih@sunplus.com
+Cc:     Vincent Shih <vincent.shih@sunplus.com>
+Subject: [PATCH v2 0/2] Add RTC driver for Sunplus SP7021 SoC
+Date:   Tue,  9 Nov 2021 14:38:16 +0800
+Message-Id: <1636439898-7358-1-git-send-email-vincent.shih@sunplus.com>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 3, 2021 at 5:26 PM Sean Christopherson <seanjc@google.com> wrote:
->
-> Get the slot ID, hva, etc... from the "new" memslot instead of the
-> userspace memory region when preparing/committing a memory region.  This
-> will allow a future commit to drop @mem from the prepare/commit hooks
-> once all architectures convert to using "new".
->
-> Opportunistically wait to get the hva begin+end until after filtering out
-> the DELETE case in anticipation of a future commit passing NULL for @new
-> when deleting a memslot.
->
-> Signed-off-by: Sean Christopherson <seanjc@google.com>
+This is a patch series for RTC driver for Sunplus SP7021 SoC.
 
-Reviewed-by: Reiji Watanabe <reijiw@google.com>
+Sunplus SP7021 is an ARM Cortex A7 (4 cores) based SoC. It integrates
+many peripherals (ex: UART, I2C, SPI, SDIO, eMMC, USB, SD Card and
+etc.) into a single chip. It is designed for industrial control.
+
+Refer to:
+https://sunplus-tibbo.atlassian.net/wiki/spaces/doc/overview
+https://tibbo.com/store/plus1.html
+
+Vincent Shih (2):
+  rtc: Add driver for Sunplus SP7021
+  dt-bindings: rtc: Convert Sunplus RTC to json-schema
+
+ .../bindings/rtc/sunplus,sp7021-rtc.yaml           |  56 ++++
+ MAINTAINERS                                        |   7 +
+ drivers/rtc/Kconfig                                |  11 +
+ drivers/rtc/Makefile                               |   1 +
+ drivers/rtc/rtc-sunplus.c                          | 370 +++++++++++++++++++++
+ 5 files changed, 445 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/rtc/sunplus,sp7021-rtc.yaml
+ create mode 100644 drivers/rtc/rtc-sunplus.c
+
+-- 
+2.7.4
+
