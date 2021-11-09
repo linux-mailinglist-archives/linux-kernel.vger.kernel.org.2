@@ -2,118 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A883C44A3E9
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 02:29:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E3BC44A40B
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 02:37:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243099AbhKIBcJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Nov 2021 20:32:09 -0500
-Received: from mail.kernel.org ([198.145.29.99]:58562 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S243223AbhKIB1A (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Nov 2021 20:27:00 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0DF3061A88;
-        Tue,  9 Nov 2021 01:10:17 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1636420219;
-        bh=apf7TYrkHRTSmQxheXA6LGWGkZTFg0co63K6qKThD10=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=sBWcVMwhjzTo7CIP1R7tOebvwP/EHyXvhbGNwq+n8OHIl0HSG+5BknT71wlU4E5QY
-         vKr2179IvCrV59nXuX/zP+gAHhvS47OC+ghYMdxp4JIRjZCyYM4jbGkyNENINK05uz
-         f71up0BFyQFEUwjiU6AV/AF9K2v0snKIsLd77P2NHsPh21o8WefGe7LVX8PGP3BG7w
-         Ji93cb6enmopSiRPP21EnNhnEUXf3xAh4Q09YAN1509jog0Rm6hntDMKOgbR6imCur
-         L1HMBGfliRmVce3EShgbFQyLGP25CrjTLihgEnyI8jVMvetFr+MxxBNc3LDEVD7z2Q
-         92pv6ezrunNVw==
-From:   Sasha Levin <sashal@kernel.org>
-To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Sven Schnelle <svens@stackframe.org>, Helge Deller <deller@gmx.de>,
-        Sasha Levin <sashal@kernel.org>,
-        James.Bottomley@HansenPartnership.com, peterz@infradead.org,
-        ardb@kernel.org, valentin.schneider@arm.com,
-        linux-parisc@vger.kernel.org
-Subject: [PATCH AUTOSEL 4.4 30/30] parisc/kgdb: add kgdb_roundup() to make kgdb work with idle polling
-Date:   Mon,  8 Nov 2021 20:09:18 -0500
-Message-Id: <20211109010918.1192063-30-sashal@kernel.org>
-X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20211109010918.1192063-1-sashal@kernel.org>
-References: <20211109010918.1192063-1-sashal@kernel.org>
+        id S240128AbhKIBkP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Nov 2021 20:40:15 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50640 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239118AbhKIBkI (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Nov 2021 20:40:08 -0500
+Received: from mail-pl1-x631.google.com (mail-pl1-x631.google.com [IPv6:2607:f8b0:4864:20::631])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 19E85C0432E9
+        for <linux-kernel@vger.kernel.org>; Mon,  8 Nov 2021 17:13:14 -0800 (PST)
+Received: by mail-pl1-x631.google.com with SMTP id q17so5761988plr.11
+        for <linux-kernel@vger.kernel.org>; Mon, 08 Nov 2021 17:13:14 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=OY5KYqUbBGpBDQ1k/TLXaDPEogjFGrqFLQuez5gL1qA=;
+        b=te7Nw2DvzfZp/BOqwknAvOUpfBhundhcdPJe1dNUemJpr+5tBnfyFRHnMzcPLxJFqN
+         KujEpDxbDQg9UP19BIas9xWrfjlUr8iNQnw44E4nNiuCXPw9XE2oUUEO4vm6LObg4EhG
+         d4Eh18RhxnXj0DeQQGDa0fItbHkrWTp2aGHdm8SLozmyzGYlENGO46rSxB1omAxCZquV
+         0SE2otTQgQ85nJvIEamMaKTrGUdltz0CPMYpQRIdj8uIl5/rXQOmwBDoJILcZ8QF1Jqs
+         zpka1GweINt+W1Mdx9Gb5XIPiYSJXz2XTgcNv6K30CkWtk/7XN35z66PabO6xsFDyCBN
+         K+Bg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=OY5KYqUbBGpBDQ1k/TLXaDPEogjFGrqFLQuez5gL1qA=;
+        b=wzKs4f1DlIYH8RGwLcLz/7Tj10h6zxclKHmdZ/CJoC+uIEafNBlWzuDvAJnpMffamC
+         q7KQFCmy7focJ0H5Ju0lwx4a9/44O+kwveMN50rjGHynnjxrzwQW963hUqd/KP77WoYc
+         uMbe3YHyy4eDOf+q5dmHzjEGg28jpMy/oXD67QEzlhJzHguTlr+EuV4cJeRUvlB3kh6e
+         82MslWAfVwjKI/Dchzg0B29Tvl8X/QHQt3TRT+NQNEp3MIit3FpDQgIv8nf6a4z1Ou3K
+         jml7CV7nEm95Ls7agpMxO0NW1FmFtO/4yy3Y+OpMBepiQSjmjUbfn+SyLUhIbnRaH0V+
+         sQKw==
+X-Gm-Message-State: AOAM531y/D+jlt5U2GUN2yZm4OPcfKLY9bRVkQsYQsuDBR0LFCM8iwCr
+        hTOEzihIEtGY8eUHejSTUs0SJw==
+X-Google-Smtp-Source: ABdhPJzcevbnubHEXgv1M6rLX2JGTzdlefd4kCjCHHTj8uzt2X4SJm7iMiDLodL/pGyJRFtYyjZrnw==
+X-Received: by 2002:a17:902:7c0e:b0:142:53c3:39d9 with SMTP id x14-20020a1709027c0e00b0014253c339d9mr3570608pll.66.1636420393180;
+        Mon, 08 Nov 2021 17:13:13 -0800 (PST)
+Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
+        by smtp.gmail.com with ESMTPSA id t135sm13421760pgc.51.2021.11.08.17.13.12
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 08 Nov 2021 17:13:12 -0800 (PST)
+Date:   Tue, 9 Nov 2021 01:13:08 +0000
+From:   Sean Christopherson <seanjc@google.com>
+To:     "Maciej S. Szmigiero" <maciej.szmigiero@oracle.com>
+Cc:     James Morse <james.morse@arm.com>,
+        Alexandru Elisei <alexandru.elisei@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Atish Patra <atish.patra@wdc.com>,
+        David Hildenbrand <david@redhat.com>,
+        Cornelia Huck <cohuck@redhat.com>,
+        Claudio Imbrenda <imbrenda@linux.ibm.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
+        linux-mips@vger.kernel.org, kvm@vger.kernel.org,
+        kvm-ppc@vger.kernel.org, kvm-riscv@lists.infradead.org,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Ben Gardon <bgardon@google.com>, Marc Zyngier <maz@kernel.org>,
+        Huacai Chen <chenhuacai@kernel.org>,
+        Aleksandar Markovic <aleksandar.qemu.devel@gmail.com>,
+        Paul Mackerras <paulus@ozlabs.org>,
+        Anup Patel <anup.patel@wdc.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Janosch Frank <frankja@linux.ibm.com>,
+        Paolo Bonzini <pbonzini@redhat.com>
+Subject: Re: [PATCH v5.5 07/30] KVM: Let/force architectures to deal with
+ arch specific memslot data
+Message-ID: <YYnLJKyt0aYsl1H0@google.com>
+References: <20211104002531.1176691-1-seanjc@google.com>
+ <20211104002531.1176691-8-seanjc@google.com>
+ <e12ecff3-ee69-9e2c-02f9-0e54a1cb9519@oracle.com>
 MIME-Version: 1.0
-X-stable: review
-X-Patchwork-Hint: Ignore
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <e12ecff3-ee69-9e2c-02f9-0e54a1cb9519@oracle.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sven Schnelle <svens@stackframe.org>
+On Tue, Nov 09, 2021, Maciej S. Szmigiero wrote:
+> On 04.11.2021 01:25, Sean Christopherson wrote:
+> > Pass the "old" slot to kvm_arch_prepare_memory_region() and force arch
+> > code to handle propagating arch specific data from "new" to "old" when
+> > necessary.  This is a baby step towards dynamically allocating "new" from
+> > the get go, and is a (very) minor performance boost on x86 due to not
+> > unnecessarily copying arch data.
+> > 
+> > For PPC HV, copy the rmap in the !CREATE and !DELETE paths, i.e. for MOVE
+> > and FLAGS_ONLY.  This is functionally a nop as the previous behavior
+> > would overwrite the pointer for CREATE, and eventually discard/ignore it
+> > for DELETE.
+> > 
+> > For x86, copy the arch data only for FLAGS_ONLY changes.  Unlike PPC HV,
+> > x86 needs to reallocate arch data in the MOVE case as the size of x86's
+> > allocations depend on the alignment of the memslot's gfn.
+> > 
+> > Opportunistically tweak kvm_arch_prepare_memory_region()'s param order to
+> > match the "commit" prototype.
+> > 
+> > Signed-off-by: Sean Christopherson <seanjc@google.com>
+> > ---
+> >   arch/arm64/kvm/mmu.c               |  7 ++++---
+> >   arch/mips/kvm/mips.c               |  3 ++-
+> >   arch/powerpc/include/asm/kvm_ppc.h | 18 ++++++++++--------
+> >   arch/powerpc/kvm/book3s.c          | 12 ++++++------
+> >   arch/powerpc/kvm/book3s_hv.c       | 17 ++++++++++-------
+> >   arch/powerpc/kvm/book3s_pr.c       | 17 +++++++++--------
+> >   arch/powerpc/kvm/booke.c           |  5 +++--
+> >   arch/powerpc/kvm/powerpc.c         |  5 +++--
+> >   arch/s390/kvm/kvm-s390.c           |  3 ++-
+> >   arch/x86/kvm/x86.c                 | 15 +++++++++++----
+> >   include/linux/kvm_host.h           |  3 ++-
+> >   virt/kvm/kvm_main.c                |  5 +----
+> >   12 files changed, 63 insertions(+), 47 deletions(-)
+> > 
+> 
+> You didn't include the RISCV kvm_arch_prepare_memory_region() change here
+> (that's actually in patch 13 of this series) so bisection on that arch
+> will be broken between this patch and patch 13.
 
-[ Upstream commit 66e29fcda1824f0427966fbee2bd2c85bf362c82 ]
-
-With idle polling, IPIs are not sent when a CPU idle, but queued
-and run later from do_idle(). The default kgdb_call_nmi_hook()
-implementation gets the pointer to struct pt_regs from get_irq_reqs(),
-which doesn't work in that case because it was not called from the
-IPI interrupt handler. Fix it by defining our own kgdb_roundup()
-function which sents an IPI_ENTER_KGDB. When that IPI is received
-on the target CPU kgdb_nmicallback() is called.
-
-Signed-off-by: Sven Schnelle <svens@stackframe.org>
-Signed-off-by: Helge Deller <deller@gmx.de>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- arch/parisc/kernel/smp.c | 19 +++++++++++++++++--
- 1 file changed, 17 insertions(+), 2 deletions(-)
-
-diff --git a/arch/parisc/kernel/smp.c b/arch/parisc/kernel/smp.c
-index 52e85973a283c..5a2c4771e9d1f 100644
---- a/arch/parisc/kernel/smp.c
-+++ b/arch/parisc/kernel/smp.c
-@@ -32,6 +32,7 @@
- #include <linux/bitops.h>
- #include <linux/ftrace.h>
- #include <linux/cpu.h>
-+#include <linux/kgdb.h>
- 
- #include <linux/atomic.h>
- #include <asm/current.h>
-@@ -74,7 +75,10 @@ enum ipi_message_type {
- 	IPI_CALL_FUNC,
- 	IPI_CPU_START,
- 	IPI_CPU_STOP,
--	IPI_CPU_TEST
-+	IPI_CPU_TEST,
-+#ifdef CONFIG_KGDB
-+	IPI_ENTER_KGDB,
-+#endif
- };
- 
- 
-@@ -170,7 +174,12 @@ ipi_interrupt(int irq, void *dev_id)
- 			case IPI_CPU_TEST:
- 				smp_debug(100, KERN_DEBUG "CPU%d is alive!\n", this_cpu);
- 				break;
--
-+#ifdef CONFIG_KGDB
-+			case IPI_ENTER_KGDB:
-+				smp_debug(100, KERN_DEBUG "CPU%d ENTER_KGDB\n", this_cpu);
-+				kgdb_nmicallback(raw_smp_processor_id(), get_irq_regs());
-+				break;
-+#endif
- 			default:
- 				printk(KERN_CRIT "Unknown IPI num on CPU%d: %lu\n",
- 					this_cpu, which);
-@@ -226,6 +235,12 @@ send_IPI_allbutself(enum ipi_message_type op)
- 	}
- }
- 
-+#ifdef CONFIG_KGDB
-+void kgdb_roundup_cpus(void)
-+{
-+	send_IPI_allbutself(IPI_ENTER_KGDB);
-+}
-+#endif
- 
- inline void 
- smp_send_stop(void)	{ send_IPI_allbutself(IPI_CPU_STOP); }
--- 
-2.33.0
-
+Argh, I thought I had found all of those.  :-/  Thanks.  
