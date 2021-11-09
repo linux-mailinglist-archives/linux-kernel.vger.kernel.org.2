@@ -2,97 +2,229 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8021644A985
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 09:43:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5CCAB44A992
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 09:43:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244428AbhKIIpr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Nov 2021 03:45:47 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:46850 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S239772AbhKIIpq (ORCPT
+        id S244457AbhKIIqK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Nov 2021 03:46:10 -0500
+Received: from mail-ua1-f44.google.com ([209.85.222.44]:37621 "EHLO
+        mail-ua1-f44.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238085AbhKIIqH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Nov 2021 03:45:46 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1636447380;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=nt9J4fSLMdODsCSzLW6IzJ8wlO7x+msZNl8HGhlgsR4=;
-        b=TWoEWksqC/U7RrMwCg9fFSdEhM+68keUXiGFrcEPuO0Aij6G36SS1v4g+4hXZjOL7Cr909
-        eIfVAy0Nkec0CNFKVWmm9zYUel5pxv4jYBFpyfLYt6Jo+KfqJJIN8Q4mEHmt6I5zBxdShl
-        PkJ+7bmOUoCHq4F9ixmEISthgvIndKE=
-Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
- [209.85.221.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-535-EnNI4BJMOqWeOp8xQPrFiA-1; Tue, 09 Nov 2021 03:42:59 -0500
-X-MC-Unique: EnNI4BJMOqWeOp8xQPrFiA-1
-Received: by mail-wr1-f69.google.com with SMTP id p3-20020a056000018300b00186b195d4ddso4618060wrx.15
-        for <linux-kernel@vger.kernel.org>; Tue, 09 Nov 2021 00:42:59 -0800 (PST)
+        Tue, 9 Nov 2021 03:46:07 -0500
+Received: by mail-ua1-f44.google.com with SMTP id l43so37050316uad.4;
+        Tue, 09 Nov 2021 00:43:21 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:organization:in-reply-to
-         :content-transfer-encoding;
-        bh=nt9J4fSLMdODsCSzLW6IzJ8wlO7x+msZNl8HGhlgsR4=;
-        b=WeJXOTR0lKJkvGvHc+Eu2HwJFqdVGTLwcI4fit5v3zK6PKUzo+L6DjExAuMKXB3wHO
-         izE+E5wOC/h2lwfOtVvcUOt42g9j5mk6fhRkOwCr82SRDBgDsGx+GnV9zLDD0mDV4jAq
-         RgfA6/xflvDuIGr7W6l6kyoJn4HG3eC+EuyUFLPLUTubjw6Dx97IlZ2Iib7AV+rIv020
-         8H/XEqsW1vtY6srWc7QklF0+xVzP2TA09bSYvjcrUjf3SSuuRNfxMGWxVX1MIoTa+0Ct
-         JogthIMCstYJwVT1n8TZzeP9taHk57T8jEJRRQ7bS5zTa4K42+Rfuau+yIqF2Cm9HFyN
-         N4bg==
-X-Gm-Message-State: AOAM531l6iqUK//DIsGxBbvR6p4f85QsTLczkvpyKVUKTSDVh1D3bs7r
-        lRuc8U5PjWyCBu/3N+x91Y16s5AlkmHQA4aiWZSLBLs5Y/AGfBQOlcmrboy/uKpe1EGBPKUGT28
-        UPzDpV/BfMOD258NlB0QqyrAz
-X-Received: by 2002:a1c:4b0b:: with SMTP id y11mr5346830wma.9.1636447378081;
-        Tue, 09 Nov 2021 00:42:58 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJzMB1sjzQ+HNZw0Uz4mqMrEPdjYUCJm6Y7oZEMZ4cLwW68YXm/WhyrBj+TLfB5Fbie9DtRlCg==
-X-Received: by 2002:a1c:4b0b:: with SMTP id y11mr5346808wma.9.1636447377873;
-        Tue, 09 Nov 2021 00:42:57 -0800 (PST)
-Received: from [192.168.3.132] (p4ff23c2b.dip0.t-ipconnect.de. [79.242.60.43])
-        by smtp.gmail.com with ESMTPSA id h15sm1838544wml.9.2021.11.09.00.42.56
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=SKaAwaDUF8hgJ7xnatzckTO00J9HAeQbGqYqskKTjGY=;
+        b=FAY1Wpn0OyCTyGJ3tBzNZO/EoRytfhdPMAMJgBEC8u6z5Od3he1hZ1nytEyqctvK2w
+         sXasIkRqGQQ5PXHtRLzu7ud9dS+d1OJJpaDedgV1iPbUJdOJHK8pkcOBaaK+eRM9SmxS
+         uJHX6sMlrSncxPlrQu5f7482T2N5XAnKf1lBK6FAV0fZCijRjDuDz+wPfyifLU9IV9nu
+         vfTD+WLBnl5MXMQY0vGpXistxpEIxWE93Zpml9e8+vWM3wsNOwAR8MZJb476jRwXZMD9
+         QvZm5kcwKodSQprBNTjsTqZ07vdmjRPyGiUK3cKmxsJXwOimrSHG1iFw4e9/jhvjS01h
+         Lh1A==
+X-Gm-Message-State: AOAM531R7hiO8Jzg5nOc3YlqlGcBfpqd/jE+Z0h7njoCFkRsz5sGosUd
+        IJte5DOV4LMRrcnM0KW/YZnNB/cSsWPp8+uY
+X-Google-Smtp-Source: ABdhPJy0ZS3OG3q8mnvej06NQRd9imNTJ8MMZys+9P5Oz8GwyO7tmUaoPKrnG8ApUfvuo7d5GrLxwQ==
+X-Received: by 2002:a67:a60b:: with SMTP id p11mr115778874vse.34.1636447400247;
+        Tue, 09 Nov 2021 00:43:20 -0800 (PST)
+Received: from mail-ua1-f51.google.com (mail-ua1-f51.google.com. [209.85.222.51])
+        by smtp.gmail.com with ESMTPSA id u11sm37284vkl.53.2021.11.09.00.43.19
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 09 Nov 2021 00:42:57 -0800 (PST)
-Message-ID: <af7ab3ce-fed2-1ffc-13a8-f9acbd201841@redhat.com>
-Date:   Tue, 9 Nov 2021 09:42:56 +0100
+        Tue, 09 Nov 2021 00:43:19 -0800 (PST)
+Received: by mail-ua1-f51.google.com with SMTP id e2so37040010uax.7;
+        Tue, 09 Nov 2021 00:43:19 -0800 (PST)
+X-Received: by 2002:a05:6102:3a07:: with SMTP id b7mr84616404vsu.35.1636447398871;
+ Tue, 09 Nov 2021 00:43:18 -0800 (PST)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.2.0
-Subject: Re: + mm-fix-panic-in-__alloc_pages.patch added to -mm tree
-Content-Language: en-US
-To:     Michal Hocko <mhocko@suse.com>, linux-kernel@vger.kernel.org
-Cc:     amakhalov@vmware.com, cl@linux.com, dennis@kernel.org,
-        mm-commits@vger.kernel.org, osalvador@suse.de,
-        stable@vger.kernel.org, tj@kernel.org
-References: <20211108205031.UxDPHBZWa%akpm@linux-foundation.org>
- <YYozLsIECu0Jnv0p@dhcp22.suse.cz>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat
-In-Reply-To: <YYozLsIECu0Jnv0p@dhcp22.suse.cz>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+References: <20211108150554.4457-1-conor.dooley@microchip.com> <20211108150554.4457-10-conor.dooley@microchip.com>
+In-Reply-To: <20211108150554.4457-10-conor.dooley@microchip.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Tue, 9 Nov 2021 09:43:07 +0100
+X-Gmail-Original-Message-ID: <CAMuHMdUpGjyN-+u+THiNJ-Ouzp8vRTeg6u23P1BoF8Gi4aSnWQ@mail.gmail.com>
+Message-ID: <CAMuHMdUpGjyN-+u+THiNJ-Ouzp8vRTeg6u23P1BoF8Gi4aSnWQ@mail.gmail.com>
+Subject: Re: [PATCH 09/13] dt-bindings: gpio: add bindings for microchip mpfs gpio
+To:     Conor Dooley <conor.dooley@microchip.com>
+Cc:     Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Jassi Brar <jassisinghbrar@gmail.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Alessandro Zummo <a.zummo@towertech.it>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Mark Brown <broonie@kernel.org>,
+        Greg KH <gregkh@linuxfoundation.org>,
+        Lewis Hanly <lewis.hanly@microchip.com>,
+        daire.mcnamara@microchip.com, Atish Patra <atish.patra@wdc.com>,
+        ivan.griffin@microchip.com,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux I2C <linux-i2c@vger.kernel.org>,
+        linux-riscv <linux-riscv@lists.infradead.org>,
+        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
+        linux-rtc@vger.kernel.org, linux-spi <linux-spi@vger.kernel.org>,
+        USB list <linux-usb@vger.kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        Bin Meng <bin.meng@windriver.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 09.11.21 09:37, Michal Hocko wrote:
-> I have opposed this patch http://lkml.kernel.org/r/YYj91Mkt4m8ySIWt@dhcp22.suse.cz
-> There was no response to that feedback. I will not go as far as to nack
-> it explicitly because pcp allocator is not an area I would nack patches
-> but seriously, this issue needs a deeper look rather than a paper over
-> patch. I hope we do not want to do a similar thing to all callers of
-> cpu_to_mem.
+Hi Conor,
 
-While we could move it into the !HOLES version of cpu_to_mem(), calling
-cpu_to_mem() on an offline (and eventually not even present) CPU (with
-an offline node) is really a corner case.
+On Mon, Nov 8, 2021 at 4:07 PM <conor.dooley@microchip.com> wrote:
+> From: Conor Dooley <conor.dooley@microchip.com>
+>
+> Add device tree bindings for the gpio controller on
+> the Microchip PolarFire SoC.
+>
+> Signed-off-by: Conor Dooley <conor.dooley@microchip.com>
 
-Instead of additional runtime overhead for all cpu_to_mem(), my take
-would be to just do it for the random special cases. Sure, we can
-document that people should be careful when calling cpu_to_mem() on
-offline CPUs. But IMHO it's really a corner case.
+Thanks for your patch!
 
--- 
-Thanks,
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/gpio/microchip,mpfs-gpio.yaml
+> @@ -0,0 +1,108 @@
+> +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/gpio/microchip,mpfs-gpio.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: Microchip MPFS GPIO Controller Device Tree Bindings
+> +
+> +maintainers:
+> +  - Conor Dooley <conor.dooley@microchip.com>
+> +
+> +description: |
+> +  This GPIO controller is found on the Microchip PolarFire SoC.
+> +
+> +properties:
+> +  compatible:
+> +    items:
+> +      - enum:
+> +          - microchip,mpfs-gpio
+> +          - microsemi,ms-pf-mss-gpio
 
-David / dhildenb
+What's the difference between these two?
+If there is a difference, please add a comment "# <explanation>"
+to each entry.
+If there is no difference, please drop the second one.
 
+> +
+> +  reg:
+> +    maxItems: 1
+> +
+> +  interrupts:
+> +    description:
+> +      Interrupt mapping, one per GPIO. Maximum 32 GPIOs.
+> +    minItems: 1
+> +    maxItems: 32
+> +
+> +  interrupt-controller: true
+> +
+> +  clocks:
+> +    maxItems: 1
+> +
+> +  "#gpio-cells":
+> +    const: 2
+> +
+> +  ngpios:
+> +    description:
+> +      The number of GPIOs available.
+> +    minimum: 1
+> +    maximum: 32
+> +    default: 32
+> +
+> +  gpio-controller: true
+> +
+> +required:
+> +  - compatible
+> +  - reg
+> +  - interrupts
+> +  - "#interrupt-cells"
+> +  - "#gpio-cells"
+> +  - gpio-controller
+> +  - clocks
+
+Any specific reason interrupt-controller is not required?
+
+> +
+> +additionalProperties: false
+> +
+> +examples:
+> +  - |
+> +    #include "dt-bindings/clock/microchip,mpfs-clock.h"
+> +    #include "dt-bindings/interrupt-controller/microchip,mpfs-plic.h"
+> +    soc {
+> +      #address-cells = <2>;
+> +      #size-cells = <2>;
+
+Just drop these two...
+
+> +      gpio2: gpio@20122000 {
+> +        compatible = "microchip,mpfs-gpio";
+> +        reg = <0x0 0x20122000 0x0 0x1000>;
+
+... and the zeros here.
+
+> +        clocks = <&clkcfg CLK_GPIO2>;
+> +        interrupt-parent = <&plic>;
+> +        interrupts = <PLIC_INT_GPIO2_NON_DIRECT
+> +          PLIC_INT_GPIO2_NON_DIRECT
+> +          PLIC_INT_GPIO2_NON_DIRECT
+> +          PLIC_INT_GPIO2_NON_DIRECT
+> +          PLIC_INT_GPIO2_NON_DIRECT
+> +          PLIC_INT_GPIO2_NON_DIRECT
+> +          PLIC_INT_GPIO2_NON_DIRECT
+> +          PLIC_INT_GPIO2_NON_DIRECT
+> +          PLIC_INT_GPIO2_NON_DIRECT
+> +          PLIC_INT_GPIO2_NON_DIRECT
+> +          PLIC_INT_GPIO2_NON_DIRECT
+> +          PLIC_INT_GPIO2_NON_DIRECT
+> +          PLIC_INT_GPIO2_NON_DIRECT
+> +          PLIC_INT_GPIO2_NON_DIRECT
+> +          PLIC_INT_GPIO2_NON_DIRECT
+> +          PLIC_INT_GPIO2_NON_DIRECT
+> +          PLIC_INT_GPIO2_NON_DIRECT
+> +          PLIC_INT_GPIO2_NON_DIRECT
+> +          PLIC_INT_GPIO2_NON_DIRECT
+> +          PLIC_INT_GPIO2_NON_DIRECT
+> +          PLIC_INT_GPIO2_NON_DIRECT
+> +          PLIC_INT_GPIO2_NON_DIRECT
+> +          PLIC_INT_GPIO2_NON_DIRECT
+> +          PLIC_INT_GPIO2_NON_DIRECT
+> +          PLIC_INT_GPIO2_NON_DIRECT
+> +          PLIC_INT_GPIO2_NON_DIRECT
+> +          PLIC_INT_GPIO2_NON_DIRECT
+> +          PLIC_INT_GPIO2_NON_DIRECT
+> +          PLIC_INT_GPIO2_NON_DIRECT
+> +          PLIC_INT_GPIO2_NON_DIRECT
+> +          PLIC_INT_GPIO2_NON_DIRECT
+> +          PLIC_INT_GPIO2_NON_DIRECT>;
+> +        gpio-controller;
+> +        #gpio-cells = <2>;
+> +        status = "disabled";
+
+Please drop this.
+
+> +      };
+> +    };
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
