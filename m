@@ -2,113 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6CFF644AD07
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 12:57:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A725744AD08
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 12:57:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236220AbhKIL7n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Nov 2021 06:59:43 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50706 "EHLO
+        id S236278AbhKIL76 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Nov 2021 06:59:58 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50770 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235184AbhKIL7l (ORCPT
+        with ESMTP id S236228AbhKIL7z (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Nov 2021 06:59:41 -0500
-Received: from mail-ua1-x935.google.com (mail-ua1-x935.google.com [IPv6:2607:f8b0:4864:20::935])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE812C061764;
-        Tue,  9 Nov 2021 03:56:55 -0800 (PST)
-Received: by mail-ua1-x935.google.com with SMTP id az37so37950146uab.13;
-        Tue, 09 Nov 2021 03:56:55 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:reply-to:from:date:message-id
-         :subject:to:cc;
-        bh=zF7zWyPkws0daJATKw16m2eAaCLss4SIeuJrKPXaNkY=;
-        b=HyW7zwK4N6jkoBGlaPvCVIwme4vRFBHGR/NdupJ5A1ykIjug0vp9DqiVgx6uk2RJJa
-         9RGRs1VcRt+vLo4zMV8LZjH36ItgiuN7Y+bXyV/ywm3NFSM8XsUxrhZGy2VFR88Zw+AZ
-         CFAxy8uFJ45mJ0BBmC04tTW7ijlNKvrn4Dwb/xlMMV8FiKN3dXAAuBHONbGslzjgEYw0
-         oGYlJlSI4DucKU4qnE982t6Y7FHG51npsOneoqWc9skKM37ojcA2EpgLMKahq9k/okY8
-         1L6TlbrkXfhS3PPltZj5NGOdea0JELjhlD0/SRIXNbKurbK+MxRb9MpkFOXANnIPa/7d
-         Hgmw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
-         :from:date:message-id:subject:to:cc;
-        bh=zF7zWyPkws0daJATKw16m2eAaCLss4SIeuJrKPXaNkY=;
-        b=Nu3Sz7Rhx14HPoDEO+MsCRoeWQiHOZFsXIDKffUZIJxtLGwp/UIO1a3+ihzC+OqUtv
-         d4yf7L97yIDLSOt+Sa89+u9QrqiDFcBTemHj5ISrCU+yyKdqJaGddUXm7hBO9cSZ+Hkd
-         S4w9rq5KN4JiSNA3fa/av2ewMHjKJLDubaybXH2sC9giv1G7R4wH7uBmJgRWlNM0ciHj
-         x/RjPUVrclnD/MMMllAH/CHr3Ize8NKItqxZIdM4yazMQ1ltp4NvBMMftE6iml2wHPwv
-         ULgadmpG80MIY+r0uepPBA+dArd8QuIBEdZcEN7QNZPOd9zf6uK/P9YAA1Ss0imwRful
-         1cMg==
-X-Gm-Message-State: AOAM530g91wI235lBFMTpihipoyxvwrazOINDd9vDYC6qngUodjh9vs6
-        sEL8OCBXm6lAiw32Nf/tHi4/vgXWeuEM7oJhV0U=
-X-Google-Smtp-Source: ABdhPJwQIeOmEoIm6aGu1+L2phcrmG1y1ZtokXziAOa3rvkrcyrTXxkhTDDxVVLB6sEq1GMNbP4bbP+tQF+ckCFE/xU=
-X-Received: by 2002:a05:6102:3166:: with SMTP id l6mr30092957vsm.51.1636459015051;
- Tue, 09 Nov 2021 03:56:55 -0800 (PST)
+        Tue, 9 Nov 2021 06:59:55 -0500
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DBEE7C061764
+        for <linux-kernel@vger.kernel.org>; Tue,  9 Nov 2021 03:57:09 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=LVklNhRF/3j2kC2mLLZWGPLsPt9am8QB+t55FPCukuA=; b=VKdBnYoDP/E3Q5QpO1Av0Jpdq/
+        hyCJ+d/e3FnANP7TU9CbZBGeMaW3XG9V9agjwqabKl4WUlF7xnIHkqbXIQvubA9O66r85kWwrNVVf
+        Tg8ST/XQbAJOIEkMKcDdabJMK0lr+LMurNP2jFpIYTq6GaZY/1GmxVHUyth3aehkC33aZ4r3eRYwQ
+        +hQv2R1mSP7E2eh+At3jmFcXca/ho6pTlmELGan/jAWE3pnjbHrAXSnc1ahcFy60UqaX2vvH5oMOW
+        tfDVOxvwHGANi5obBC8PdMsZR2uWZPMXbZFm8H3vimib2ghLUlROFk+7NVXkcxLzVH6800bfFlYbM
+        IsKv6WxA==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mkPk7-00F3bl-0G; Tue, 09 Nov 2021 11:56:47 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id C42A030003C;
+        Tue,  9 Nov 2021 12:56:44 +0100 (CET)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id A10D62D5E4E89; Tue,  9 Nov 2021 12:56:44 +0100 (CET)
+Date:   Tue, 9 Nov 2021 12:56:44 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Mel Gorman <mgorman@techsingularity.net>
+Cc:     Ingo Molnar <mingo@kernel.org>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        Aubrey Li <aubrey.li@linux.intel.com>,
+        Barry Song <song.bao.hua@hisilicon.com>,
+        Mike Galbraith <efault@gmx.de>,
+        Srikar Dronamraju <srikar@linux.vnet.ibm.com>,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 1/2] sched/fair: Couple wakee flips with heavy wakers
+Message-ID: <YYph/EuzlGr/3vG/@hirez.programming.kicks-ass.net>
+References: <20211021145603.5313-1-mgorman@techsingularity.net>
+ <20211021145603.5313-2-mgorman@techsingularity.net>
 MIME-Version: 1.0
-References: <20210715141742.15072-1-andrea.merello@gmail.com>
- <20211028101840.24632-1-andrea.merello@gmail.com> <20211028101840.24632-11-andrea.merello@gmail.com>
- <85ef90ad-0d3a-6cb7-529f-667562b2ad71@infradead.org>
-In-Reply-To: <85ef90ad-0d3a-6cb7-529f-667562b2ad71@infradead.org>
-Reply-To: andrea.merello@gmail.com
-From:   Andrea Merello <andrea.merello@gmail.com>
-Date:   Tue, 9 Nov 2021 12:56:43 +0100
-Message-ID: <CAN8YU5NiKz2JiNr-47OC4==N8L67HDshuH45BifnHBae+GUU-g@mail.gmail.com>
-Subject: Re: [v2 10/10] iio: imu: add BNO055 I2C driver
-To:     Randy Dunlap <rdunlap@infradead.org>
-Cc:     Jonathan Cameron <jic23@kernel.org>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        linux-iio <linux-iio@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        devicetree <devicetree@vger.kernel.org>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Rob Herring <robh+dt@kernel.org>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Matt Ranostay <matt.ranostay@konsulko.com>,
-        Alexandru Ardelean <ardeleanalex@gmail.com>,
-        Jacopo Mondi <jacopo@jmondi.org>,
-        Andrea Merello <andrea.merello@iit.it>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211021145603.5313-2-mgorman@techsingularity.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Il giorno ven 29 ott 2021 alle ore 00:04 Randy Dunlap
-<rdunlap@infradead.org> ha scritto:
->
-> On 10/28/21 3:18 AM, Andrea Merello wrote:
-> > This path adds an I2C driver for communicating to a BNO055 IMU via I2C bus
-> > and it enables the BNO055 core driver to work in this scenario.
-> >
-> > Signed-off-by: Andrea Merello <andrea.merello@iit.it>
-> > ---
-> >   drivers/iio/imu/bno055/Kconfig      |  6 ++++
-> >   drivers/iio/imu/bno055/Makefile     |  1 +
-> >   drivers/iio/imu/bno055/bno055_i2c.c | 54 +++++++++++++++++++++++++++++
-> >   3 files changed, 61 insertions(+)
-> >   create mode 100644 drivers/iio/imu/bno055/bno055_i2c.c
-> >
-> > diff --git a/drivers/iio/imu/bno055/Kconfig b/drivers/iio/imu/bno055/Kconfig
-> > index 941e43f0368d..87200787d548 100644
-> > --- a/drivers/iio/imu/bno055/Kconfig
-> > +++ b/drivers/iio/imu/bno055/Kconfig
-> > @@ -7,3 +7,9 @@ config BOSH_BNO055_SERIAL
-> >       tristate "Bosh BNO055 attached via serial bus"
-> >       depends on SERIAL_DEV_BUS
-> >       select BOSH_BNO055_IIO
-> > +
-> > +config BOSH_BNO055_I2C
-> > +     tristate "Bosh BNO055 attached via I2C bus"
-> > +     depends on I2C
-> > +     select REGMAP_I2C
-> > +     select BOSH_BNO055_IIO
->
-> Hi,
->
-> The config entries that have user prompt strings should also
-> have help text.  scripts/checkpatch.pl should have told you
-> about that...
+On Thu, Oct 21, 2021 at 03:56:02PM +0100, Mel Gorman wrote:
+> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+> index ff69f245b939..d00af3b97d8f 100644
+> --- a/kernel/sched/fair.c
+> +++ b/kernel/sched/fair.c
+> @@ -5865,6 +5865,14 @@ static void record_wakee(struct task_struct *p)
+>  	}
+>  
+>  	if (current->last_wakee != p) {
+> +		int min = __this_cpu_read(sd_llc_size) << 1;
+> +		/*
+> +		 * Couple the wakee flips to the waker for the case where it
+> +		 * doesn't accrue flips, taking care to not push the wakee
+> +		 * high enough that the wake_wide() heuristic fails.
+> +		 */
+> +		if (current->wakee_flips > p->wakee_flips * min)
+> +			p->wakee_flips++;
+>  		current->last_wakee = p;
+>  		current->wakee_flips++;
+>  	}
 
-I'll add it, thanks. But FYI checkpatch doesn't complain about that here.
+It's a bit odd that the above uses min for llc_size, while the below:
 
-> --
-> ~Randy
+> @@ -5895,7 +5903,7 @@ static int wake_wide(struct task_struct *p)
+>  
+>  	if (master < slave)
+>  		swap(master, slave);
+> -	if (slave < factor || master < slave * factor)
+> +	if ((slave < factor && master < (factor>>1)*factor) || master < slave * factor)
+>  		return 0;
+>  	return 1;
+>  }
+
+has factor.
+
+Now:
+
+	!(slave < factor || master < slave * factor)
+
+  !(x || y) == !x && !y, gives:
+
+	slave >= factor && master >= slave * factor
+
+  subst lhr in rhs:
+
+	master >= factor * factor
+
+
+your extra term:
+
+	!((slave < factor && master < (factor*factor)/2) || master < slave * factor)
+
+changes that how? AFAICT it's a nop.
+
