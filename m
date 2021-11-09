@@ -2,180 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F21FB44A732
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 08:00:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9B62044A71F
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 07:59:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243425AbhKIHDJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Nov 2021 02:03:09 -0500
-Received: from mailgw01.mediatek.com ([60.244.123.138]:36656 "EHLO
-        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S243389AbhKIHDC (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Nov 2021 02:03:02 -0500
-X-UUID: 94ae060bcbb5478296e847ce0c92951a-20211109
-X-UUID: 94ae060bcbb5478296e847ce0c92951a-20211109
-Received: from mtkexhb02.mediatek.inc [(172.21.101.103)] by mailgw01.mediatek.com
-        (envelope-from <rocco.yue@mediatek.com>)
-        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 2058828200; Tue, 09 Nov 2021 15:00:12 +0800
-Received: from mtkmbs10n2.mediatek.inc (172.21.101.183) by
- mtkmbs07n2.mediatek.inc (172.21.101.141) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Tue, 9 Nov 2021 15:00:10 +0800
-Received: from mbjsdccf07.mediatek.inc (10.15.20.246) by
- mtkmbs10n2.mediatek.inc (172.21.101.73) with Microsoft SMTP Server id
- 15.2.792.3 via Frontend Transport; Tue, 9 Nov 2021 15:00:10 +0800
-From:   Rocco Yue <rocco.yue@mediatek.com>
-To:     "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
-        David Ahern <dsahern@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>
-CC:     <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-mediatek@lists.infradead.org>, <Rocco.Yue@gmail.com>,
-        <chao.song@mediatek.com>, <zhuoliang.zhang@mediatek.com>,
-        <yanjie.jiang@mediatek.com>, Rocco Yue <rocco.yue@mediatek.com>
-Subject: [PATCH net-next] ipv6: don't generate link-local addr in random or privacy mode
-Date:   Tue, 9 Nov 2021 14:55:26 +0800
-Message-ID: <20211109065526.16772-1-rocco.yue@mediatek.com>
-X-Mailer: git-send-email 2.18.0
-MIME-Version: 1.0
+        id S243343AbhKIHCQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Nov 2021 02:02:16 -0500
+Received: from mail-eopbgr1320100.outbound.protection.outlook.com ([40.107.132.100]:31679
+        "EHLO APC01-PU1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S243331AbhKIHCO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Nov 2021 02:02:14 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=AqZF52QuaXLWlJY5/wba7lWjV2Fe/9xll7fF0ry2eJCvOPRxCweYb9kLmnl7QYWHQ9n5I4DAgGoz3rwXh9FdahVZZu7TlD5mxhT8HzrjmJC/QB8sU2EfsyAZMUrojJmyCKIAFfHEEBp5WWWyf8JL25Y+GoWsJdTLsumeE4INxUXqvZdb8l39E8s3RgnFpZZmuEk9GS0ecbm+OTi5EbCZEapehD59zkMUQO8Iy0wNMxB89rFTgT0NvEvQiFwxKE0RLLbJcKEb1dVT9xqDyU5rmCmNMTLsHuDXJzXpdItlE9ac36lJVzxxv3YkcezSLpWX6k8Lu2kfmn9vJalDgzdx4g==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=VR0L4XWrQMVsEuAxnw3v5OsiZpU0XFbyK3Pfcks//G8=;
+ b=H47sNhNgzgSjQLF228drHvlDGMTsx1xFwbXf7yKmpeeZ2JXMTWECskdveyn0MrVGuFCD4ZGwQkRED7xZTbA6o3N+RaDeRtCX4d1ojmeGrzCfg/2Id0xjIONBiPbr+ZsNt8P202S9zV90WtAjpXCuHir8kswll9dDeceP10bG+UFjN6JKPAl/2f5zw5fbckbiI16BjIKeGCKrWpJJ0LDBBmkmDx+d5gVm8u/Jq1SxfF4pcUicLXV4FCELzoOOLCHf0MKeHPZ/n+IUo5n44DG83DpHYR7HLjcU4YVzc7nzLW1jL2xThGHYBaQQ6Ud5YUfIJukMNUCmXItRs8MDqLiYFQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=vivo.com; dmarc=pass action=none header.from=vivo.com;
+ dkim=pass header.d=vivo.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=vivo0.onmicrosoft.com;
+ s=selector2-vivo0-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=VR0L4XWrQMVsEuAxnw3v5OsiZpU0XFbyK3Pfcks//G8=;
+ b=UPrDpQqyOv6L8QnJco4zD5bPJfVoWlAIGCQ77FfwVI/2S4pHpOWHXn61sziV7s9EDyx/SJU6sD8jBcnQEPFKHr2dhpJUVuSmdA0YfRApx7HO7pKV0Ox7/V4tX2nHmEiP3LRk+qegXF+H7RCPHvz6k2RbDe+rRg4U6bX78+2HTQc=
+Authentication-Results: vivo.com; dkim=none (message not signed)
+ header.d=none;vivo.com; dmarc=none action=none header.from=vivo.com;
+Received: from TYZPR06MB4173.apcprd06.prod.outlook.com (2603:1096:400:26::14)
+ by TY2PR06MB3613.apcprd06.prod.outlook.com (2603:1096:404:f7::11) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4669.13; Tue, 9 Nov
+ 2021 06:59:26 +0000
+Received: from TYZPR06MB4173.apcprd06.prod.outlook.com
+ ([fe80::5e:78e1:eba3:7d0e]) by TYZPR06MB4173.apcprd06.prod.outlook.com
+ ([fe80::5e:78e1:eba3:7d0e%8]) with mapi id 15.20.4669.016; Tue, 9 Nov 2021
+ 06:59:25 +0000
+From:   Yihao Han <hanyihao@vivo.com>
+To:     Yihao Han <hanyihao@vivo.com>, linux-kernel@vger.kernel.org
+Cc:     kernel@vivo.com
+Subject: [PATCH] lib/mpi: using swap() instead of tp variable
+Date:   Mon,  8 Nov 2021 22:59:05 -0800
+Message-Id: <20211109065907.11647-1-hanyihao@vivo.com>
+X-Mailer: git-send-email 2.17.1
 Content-Type: text/plain
-X-MTK:  N
+X-ClientProxiedBy: HK2PR03CA0054.apcprd03.prod.outlook.com
+ (2603:1096:202:17::24) To TYZPR06MB4173.apcprd06.prod.outlook.com
+ (2603:1096:400:26::14)
+MIME-Version: 1.0
+Received: from ubuntu.localdomain (103.220.76.181) by HK2PR03CA0054.apcprd03.prod.outlook.com (2603:1096:202:17::24) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4690.12 via Frontend Transport; Tue, 9 Nov 2021 06:59:24 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 5bfaab0a-c594-4ce4-dd38-08d9a34e770d
+X-MS-TrafficTypeDiagnostic: TY2PR06MB3613:
+X-Microsoft-Antispam-PRVS: <TY2PR06MB36134CCE39B585A446C428F9A2929@TY2PR06MB3613.apcprd06.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:4502;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: /ZMK2132F89XyiUpPJ59a8ePnQ0n8g+6MvnzZp9q/wUDZN+AIn8ZkT1ywbyoJjAqJgDrxqqv2GLvlfFfPYN1AiLfno3btlUgFhZbxISpJHE5SWXBr7Qd+DjO4DgmHkue1NdpEXRJreqQ0SkrZia7bV1BlUkub44TCO5jlTw9sdSFxedNXIhoUJWHOjpcOHN1of4DNzJ4I+RKjzqkC0OGXsGlqBRNCeQ8v8WYyDPIeTRExuUdHAyIipsIdkQWmejfZektQF9HSD2qjCgSxnWAN36liejPPS3Uha4IoSsnKw+OJHqaVAi+p5Ysa2cnUpmbEtcZBZfXYAfNQdtLl8+VYf5HRb7Hp38AClufroazx9rwU/876D1OiWvs5uw/eKBWPxsH1NOIfHSOaTLUHNgUEtTJgWRA5mUI9hDWoM6HYs7h4G1Nhqhf904QlqJElxqztRNl5yDElWOKK1BaiXDgiY/5vtfmI3X61n2jOljCCayd+bM/ctyH5sa0whDvto4m0VMJqufHDSydNQfXbrVmGMJv78TyuRxSxWqAeT2I2yvEP1UqeIWoKvZY+uVGDft8wzbIk63euYy5UN3mp70FFyPd2A+KY2tIvaLM2BpB/rCsWIFiSI7YiZFqGvFw7yQ4M4tXVyHP8KfJJMPpRgQyz1Id/qIIODF6rVIEHuI0YpMdQh6/37Ho4HXEeWX+jeV0FxuvNbooAHiFk78v/kihfg==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:TYZPR06MB4173.apcprd06.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(508600001)(83380400001)(6486002)(86362001)(6506007)(186003)(4326008)(6666004)(107886003)(36756003)(6512007)(52116002)(38100700002)(2906002)(38350700002)(8936002)(8676002)(2616005)(956004)(66476007)(66556008)(5660300002)(1076003)(66946007)(26005)(316002)(4744005);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?OssH7lXBDAnrCflRTGmaDjdBarG3PQESpOZGRYQ3e8XPNjD3kYurBzX0rV/+?=
+ =?us-ascii?Q?Lcd5I9aI1D/gMQ7g1o1aa8G/TXBDFToUKfsiOAi6962xBKY/zKKnbIwQUf4a?=
+ =?us-ascii?Q?1LINdRkHJi514/PdAljPg7Fs70H7h+Dsq8aGcpVYgJ0gKHQhwkB+UrsXhuhb?=
+ =?us-ascii?Q?M/FrkiUaQu6lmIgqLh883ZenO/Rc9cUBu5BZEmVG0mZhouKAnKJDUdohIsU9?=
+ =?us-ascii?Q?86Kq21EBl+8or+6OhvF/EiNqxDvRaMzvRZ/MlwLooSaCrSnA+Mp2iw/mox4r?=
+ =?us-ascii?Q?y0RrCDurHyXfXBS/TAfu7J7B8a9GlTwf1cg7deLnd0aISyHsBbL8jQTV8vWA?=
+ =?us-ascii?Q?VISszEAiF27zWyFujw1vdD4EWkQbJJB0R+zLm/8HD+43aeV4jrt5GrR6VGdf?=
+ =?us-ascii?Q?tUdoqV6qj5CL+7yv1wPazCkgAZSt8J9Uol/X3YXrApgAfnCPz/h9db/pyt7Y?=
+ =?us-ascii?Q?b8mzzBEa9OIYNCtcN2VQ7fDx3Q/YBbyoEIfxZMsrtMhv6n9QLCcwgMja4qhl?=
+ =?us-ascii?Q?zunDvgWoAwwEItSnVNHQ6qtpkLCPb4o2XtgQHhpjD+YHt19/NG8sDkJgBRYe?=
+ =?us-ascii?Q?18HY/Y5c1Vi6Io0otRQ6wl1jZvq99IZpNjo9Vc+O10lL9XMeH/J/2y71+LU9?=
+ =?us-ascii?Q?dP+3K8cq9uikUfPovuFbSItn9yYAEBzTrT0MqhDgaJ9k8MKXqd4pBDJ+XOzW?=
+ =?us-ascii?Q?rBc/LZYybfhVK5Bb8iuJYvwkQeaY5nU97v/eJViLoLm1splquK+uG+wWBO5L?=
+ =?us-ascii?Q?ObnPZ3SjSFcxn/LEblZhedbAhMofqRzBTWGcEc5WSzjojz1Mq4xVq5BIJQrA?=
+ =?us-ascii?Q?1hkOgPXKhaJHNf3FzRsnvpKwmFP2x/ZuH43ehq0W3511CiSasqeF4O+KDo/K?=
+ =?us-ascii?Q?E+PC4G8gQT7WDpeqOVCMufzqBstQGpZr8emDicOFPoeb45RIvqhfx68To3hp?=
+ =?us-ascii?Q?fWt+nSo57DvxKAY1Glwh9Jjc5KcALql4S6cLTBACVqUwT4kYvSzkl7u4K7qS?=
+ =?us-ascii?Q?4BIS0bnAFxXdD+Yz6hreJHgMLo3HCrpQ2c4SRXHfcQprTKIpGHZpGdyak1Aq?=
+ =?us-ascii?Q?UNNd4Al7Ai7b+UOj6jxnkU+hRr+TSne76ylgADVQb90ontBRgQ1HYnvdgQoA?=
+ =?us-ascii?Q?CoQJ+Icvt5PrbEc/LUkYLxlY8N7gtSe+o8M1vZoe6UVTKgo1Q3IMp3FDfelC?=
+ =?us-ascii?Q?SOvfSBPAcWLJVHvUJFRTv5qUYII+p4kl1EHb2+OI/DPhxURSXsureDpBE/3J?=
+ =?us-ascii?Q?ANw7qY+wrF7dTdiC6WANKGyEermKpjKlAY+IuCrcbINje/fFo06or3LLptQ5?=
+ =?us-ascii?Q?4omMfRBxohYERpVuuk+K0BSTdb1RC9pasA7q4YG1zk3DFkj6NZnstj/DU2Rd?=
+ =?us-ascii?Q?AmIxMcCcBu/5udHdDHGIjBhe9XwihH/9voZd2+kqWZHw9Py1ALnD+J3SOq4A?=
+ =?us-ascii?Q?TE1IgV1zwVG1OffokIayxb18dlN2oXrxlD69RAzMnbD/Shh3lf7HCnNjKNsQ?=
+ =?us-ascii?Q?EUqZi5qN48NE8ET9jHwUHjDOhbf7W2RfFLQbFWpziCPOzoUovnixWVIPz19U?=
+ =?us-ascii?Q?VFXnxnmnVE339YNgIcRVlbdp93JYyaCe4EBtZixXWnXZh+y2enD1N424jINs?=
+ =?us-ascii?Q?UaNx7jEUB2Xqpf92qTMxBXY=3D?=
+X-OriginatorOrg: vivo.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 5bfaab0a-c594-4ce4-dd38-08d9a34e770d
+X-MS-Exchange-CrossTenant-AuthSource: TYZPR06MB4173.apcprd06.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 09 Nov 2021 06:59:25.1094
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 923e42dc-48d5-4cbe-b582-1a797a6412ed
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: oxXUMouf7CkeWY3Vcu2JNbL27J6cqvpgc/hp+63/9iWF756ojBGqDWFR8VKCn0+jqLukmuCPtoN28cMI5/AH2g==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: TY2PR06MB3613
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In the 3GPP TS 29.061, here is a description as follows:
-"In order to avoid any conflict between the link-local address
-of the MS and that of the GGSN, the Interface-Identifier used by
-the MS to build its link-local address shall be assigned by the
-GGSN. The GGSN ensures the uniqueness of this Interface-Identifier.
-The MT shall then enforce the use of this Interface-Identifier by
-the TE"
+swap() was used instead of the tmp variable to swap values
 
-In other words, in the cellular network, GGSN determines whether
-to reply a solicited RA message by identifying the bottom 64 bits
-of the source address of the received RS message. Therefore,
-cellular network device's ipv6 link-local address should be set
-as the format of fe80::(GGSN assigned IID).
-
-To meet the above spec requirement, this patch adds two new
-addr_gen_mode:
-
-1) IN6_ADDR_GEN_MODE_STABLE_PRIVACY_NO_LLA, this mode is suitable
-for cellular networks that support RFC7217. In this mode, the
-kernel doesn't generate a link-local address for the cellular
-NIC, and generates an ipv6 stable privacy global address after
-receiving the RA message.
-
-2) IN6_ADDR_GEN_MODE_RANDOM_NO_LLA, in this mode, the kernel
-doesn't generate a link-local address for the cellular NIC,
-and will use the bottom 64 bits of the link-local address(same
-as the IID assigned by GGSN) to form an ipv6 global address
-after receiveing the RA message.
-
-Signed-off-by: Rocco Yue <rocco.yue@mediatek.com>
+Signed-off-by: Yihao Han <hanyihao@vivo.com>
 ---
- include/uapi/linux/if_link.h       |  2 ++
- net/ipv6/addrconf.c                | 22 ++++++++++++++++------
- tools/include/uapi/linux/if_link.h |  2 ++
- 3 files changed, 20 insertions(+), 6 deletions(-)
+ lib/mpi/mpi-pow.c | 9 ++-------
+ 1 file changed, 2 insertions(+), 7 deletions(-)
 
-diff --git a/include/uapi/linux/if_link.h b/include/uapi/linux/if_link.h
-index eebd3894fe89..9c5695744c7d 100644
---- a/include/uapi/linux/if_link.h
-+++ b/include/uapi/linux/if_link.h
-@@ -428,6 +428,8 @@ enum in6_addr_gen_mode {
- 	IN6_ADDR_GEN_MODE_NONE,
- 	IN6_ADDR_GEN_MODE_STABLE_PRIVACY,
- 	IN6_ADDR_GEN_MODE_RANDOM,
-+	IN6_ADDR_GEN_MODE_STABLE_PRIVACY_NO_LLA,
-+	IN6_ADDR_GEN_MODE_RANDOM_NO_LLA,
- };
+diff --git a/lib/mpi/mpi-pow.c b/lib/mpi/mpi-pow.c
+index 2fd7a46d55ec..67fbd4c2503d 100644
+--- a/lib/mpi/mpi-pow.c
++++ b/lib/mpi/mpi-pow.c
+@@ -176,7 +176,6 @@ int mpi_powm(MPI res, MPI base, MPI exp, MPI mod)
  
- /* Bridge section */
-diff --git a/net/ipv6/addrconf.c b/net/ipv6/addrconf.c
-index 3445f8017430..0045de10f4b5 100644
---- a/net/ipv6/addrconf.c
-+++ b/net/ipv6/addrconf.c
-@@ -392,7 +392,8 @@ static struct inet6_dev *ipv6_add_dev(struct net_device *dev)
- 	timer_setup(&ndev->rs_timer, addrconf_rs_timer, 0);
- 	memcpy(&ndev->cnf, dev_net(dev)->ipv6.devconf_dflt, sizeof(ndev->cnf));
+ 		for (;;) {
+ 			while (c) {
+-				mpi_ptr_t tp;
+ 				mpi_size_t xsize;
  
--	if (ndev->cnf.stable_secret.initialized)
-+	if (ndev->cnf.stable_secret.initialized &&
-+	    ndev->cnf.addr_gen_mode != IN6_ADDR_GEN_MODE_STABLE_PRIVACY_NO_LLA)
- 		ndev->cnf.addr_gen_mode = IN6_ADDR_GEN_MODE_STABLE_PRIVACY;
+ 				/*if (mpihelp_mul_n(xp, rp, rp, rsize) < 0) goto enomem */
+@@ -207,9 +206,7 @@ int mpi_powm(MPI res, MPI base, MPI exp, MPI mod)
+ 					xsize = msize;
+ 				}
  
- 	ndev->cnf.mtu6 = dev->mtu;
-@@ -2578,7 +2579,8 @@ static void manage_tempaddrs(struct inet6_dev *idev,
- static bool is_addr_mode_generate_stable(struct inet6_dev *idev)
- {
- 	return idev->cnf.addr_gen_mode == IN6_ADDR_GEN_MODE_STABLE_PRIVACY ||
--	       idev->cnf.addr_gen_mode == IN6_ADDR_GEN_MODE_RANDOM;
-+	       idev->cnf.addr_gen_mode == IN6_ADDR_GEN_MODE_RANDOM ||
-+	       idev->cnf.addr_gen_mode == IN6_ADDR_GEN_MODE_STABLE_PRIVACY_NO_LLA;
- }
+-				tp = rp;
+-				rp = xp;
+-				xp = tp;
++				swap(rp, xp);
+ 				rsize = xsize;
  
- int addrconf_prefix_rcv_add_addr(struct net *net, struct net_device *dev,
-@@ -3331,6 +3333,8 @@ static void addrconf_addr_gen(struct inet6_dev *idev, bool prefix_route)
- 					      0, 0, GFP_KERNEL);
- 		break;
- 	case IN6_ADDR_GEN_MODE_NONE:
-+	case IN6_ADDR_GEN_MODE_RANDOM_NO_LLA:
-+	case IN6_ADDR_GEN_MODE_STABLE_PRIVACY_NO_LLA:
- 	default:
- 		/* will not add any link local address */
- 		break;
-@@ -5798,7 +5802,9 @@ static int check_addr_gen_mode(int mode)
- 	if (mode != IN6_ADDR_GEN_MODE_EUI64 &&
- 	    mode != IN6_ADDR_GEN_MODE_NONE &&
- 	    mode != IN6_ADDR_GEN_MODE_STABLE_PRIVACY &&
--	    mode != IN6_ADDR_GEN_MODE_RANDOM)
-+	    mode != IN6_ADDR_GEN_MODE_RANDOM &&
-+	    mode != IN6_ADDR_GEN_MODE_STABLE_PRIVACY_NO_LLA &&
-+	    mode != IN6_ADDR_GEN_MODE_RANDOM_NO_LLA)
- 		return -EINVAL;
- 	return 1;
- }
-@@ -6428,15 +6434,19 @@ static int addrconf_sysctl_stable_secret(struct ctl_table *ctl, int write,
- 		for_each_netdev(net, dev) {
- 			struct inet6_dev *idev = __in6_dev_get(dev);
+ 				if ((mpi_limb_signed_t) e < 0) {
+@@ -235,9 +232,7 @@ int mpi_powm(MPI res, MPI base, MPI exp, MPI mod)
+ 						xsize = msize;
+ 					}
  
--			if (idev) {
-+			if (idev && idev->cnf.addr_gen_mode !=
-+			    IN6_ADDR_GEN_MODE_STABLE_PRIVACY_NO_LLA) {
- 				idev->cnf.addr_gen_mode =
- 					IN6_ADDR_GEN_MODE_STABLE_PRIVACY;
- 			}
- 		}
- 	} else {
- 		struct inet6_dev *idev = ctl->extra1;
--
--		idev->cnf.addr_gen_mode = IN6_ADDR_GEN_MODE_STABLE_PRIVACY;
-+		if (idev->cnf.addr_gen_mode !=
-+		    IN6_ADDR_GEN_MODE_STABLE_PRIVACY_NO_LLA) {
-+			idev->cnf.addr_gen_mode =
-+				IN6_ADDR_GEN_MODE_STABLE_PRIVACY;
-+		}
- 	}
- 
- out:
-diff --git a/tools/include/uapi/linux/if_link.h b/tools/include/uapi/linux/if_link.h
-index b3610fdd1fee..fb69137aea89 100644
---- a/tools/include/uapi/linux/if_link.h
-+++ b/tools/include/uapi/linux/if_link.h
-@@ -241,6 +241,8 @@ enum in6_addr_gen_mode {
- 	IN6_ADDR_GEN_MODE_NONE,
- 	IN6_ADDR_GEN_MODE_STABLE_PRIVACY,
- 	IN6_ADDR_GEN_MODE_RANDOM,
-+	IN6_ADDR_GEN_MODE_STABLE_PRIVACY_NO_LLA,
-+	IN6_ADDR_GEN_MODE_RANDOM_NO_LLA,
- };
- 
- /* Bridge section */
+-					tp = rp;
+-					rp = xp;
+-					xp = tp;
++					swap(rp, xp);
+ 					rsize = xsize;
+ 				}
+ 				e <<= 1;
 -- 
-2.18.0
+2.17.1
 
