@@ -2,113 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C25E44A856
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 09:29:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 768D244A859
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 09:29:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244057AbhKIIcB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Nov 2021 03:32:01 -0500
-Received: from mail-ua1-f45.google.com ([209.85.222.45]:37887 "EHLO
-        mail-ua1-f45.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241549AbhKIIcA (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Nov 2021 03:32:00 -0500
-Received: by mail-ua1-f45.google.com with SMTP id l43so36990095uad.4;
-        Tue, 09 Nov 2021 00:29:14 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=2BwDtO1eLZZUZrT3r0fYqPOHZzqJexnawXyMgbqoDnI=;
-        b=GaNENQOpuXGSOK8cIg30Sr5cXayCg0wxVRgPTHSeq2oimgKVLk9MdsbNUhpGFe3xGo
-         QQ3NhLhYzcwXqKFVoBByiUFtLcW6ZLeg37Nngl04T+1TkvY2VjCGwzWzFqtgLw/Vn/Uc
-         mSetXqc85wgq/CmEDpxdRv+aRcWm+hoJ4S67jQKTp7XO9hrf8dbQ49UimG6i2PEr2ela
-         XfUf/k+k8dqq0YikIUK/K6BSR7DgCxjY9JG2DNE9V6DHhwmyxhTgzCCBW09tOeGOPR5P
-         oAlel0Isl9T+Tf7BV6r3wJCfKAhjt1BS8xh1qMK6BPiUBOC1HEvxhbVIOlk24ekdzwZ3
-         gAcw==
-X-Gm-Message-State: AOAM532tMBHxvKOjmxmzQCbVqrLNR82BylmgVHlL9gJm1wep6kWGha1A
-        y8bDgUcG9jrWFZUetgFMNzdrym5Nz6lfWf6k
-X-Google-Smtp-Source: ABdhPJw+1nJ22cjIVAcjGG+O49/MrAAzlOy2atUYq2nF7D+uuXJOqEhoiLJwGDxqbBCZSNt466/ahA==
-X-Received: by 2002:a67:2dc5:: with SMTP id t188mr17138007vst.2.1636446553167;
-        Tue, 09 Nov 2021 00:29:13 -0800 (PST)
-Received: from mail-ua1-f48.google.com (mail-ua1-f48.google.com. [209.85.222.48])
-        by smtp.gmail.com with ESMTPSA id r11sm3303757uad.7.2021.11.09.00.29.12
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 09 Nov 2021 00:29:13 -0800 (PST)
-Received: by mail-ua1-f48.google.com with SMTP id q13so37048186uaq.2;
-        Tue, 09 Nov 2021 00:29:12 -0800 (PST)
-X-Received: by 2002:a67:c38f:: with SMTP id s15mr9524003vsj.50.1636446552558;
- Tue, 09 Nov 2021 00:29:12 -0800 (PST)
+        id S244066AbhKIIcP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Nov 2021 03:32:15 -0500
+Received: from foss.arm.com ([217.140.110.172]:58328 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S241549AbhKIIcO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Nov 2021 03:32:14 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 57ED02B;
+        Tue,  9 Nov 2021 00:29:28 -0800 (PST)
+Received: from [10.57.26.224] (unknown [10.57.26.224])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 718EB3F5A1;
+        Tue,  9 Nov 2021 00:29:24 -0800 (PST)
+Subject: Re: [PATCH v3 0/5] Refactor thermal pressure update to avoid code
+ duplication
+To:     Steev Klimaszewski <steev@kali.org>
+Cc:     Thara Gopinath <thara.gopinath@linaro.org>,
+        linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-arm-msm@vger.kernel.org, sudeep.holla@arm.com,
+        will@kernel.org, catalin.marinas@arm.com, linux@armlinux.org.uk,
+        gregkh@linuxfoundation.org, rafael@kernel.org,
+        viresh.kumar@linaro.org, amitk@kernel.org,
+        daniel.lezcano@linaro.org, amit.kachhap@gmail.com,
+        bjorn.andersson@linaro.org, agross@kernel.org
+References: <20211103161020.26714-1-lukasz.luba@arm.com>
+ <c7b526f0-2c26-0cfc-910b-3521c6a6ef51@kali.org>
+ <3cba148a-7077-7b6b-f131-dc65045aa348@arm.com>
+ <9d533b6e-a81c-e823-fa6f-61fdea92fa65@kali.org>
+ <74ea027b-b213-42b8-0f7d-275f3b84712e@linaro.org>
+ <74603569-2ff1-999e-9618-79261fdb0ee4@kali.org>
+ <b7e76c2a-ceac-500a-ff75-535a3f0d51d6@linaro.org>
+ <f955a2aa-f788-00db-1ed8-dc9c7a1b2572@kali.org>
+ <59054c90-c1cd-85bf-406e-579df668d7b4@linaro.org>
+ <eac00041-a1b8-0780-931d-52249d538800@kali.org>
+ <2c54dbbd-2ecb-fb76-fa9f-9752f429c20e@linaro.org>
+ <97e93876-d654-0a89-dce1-6fe1189345e2@kali.org>
+From:   Lukasz Luba <lukasz.luba@arm.com>
+Message-ID: <d83a5c25-2eae-3626-f78a-e42915076556@arm.com>
+Date:   Tue, 9 Nov 2021 08:29:21 +0000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.9.0
 MIME-Version: 1.0
-References: <20211104224033.3997504-1-kieran.bingham+renesas@ideasonboard.com>
-In-Reply-To: <20211104224033.3997504-1-kieran.bingham+renesas@ideasonboard.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Tue, 9 Nov 2021 09:29:01 +0100
-X-Gmail-Original-Message-ID: <CAMuHMdXVBj58ZM3LqCN3cudsE3VJV8AQC5OCOJP96RaqYf4NDQ@mail.gmail.com>
-Message-ID: <CAMuHMdXVBj58ZM3LqCN3cudsE3VJV8AQC5OCOJP96RaqYf4NDQ@mail.gmail.com>
-Subject: Re: [PATCH 0/9] arm64: dts: renesas: Thermal binding validation
-To:     Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>,
-        =?UTF-8?Q?Niklas_S=C3=B6derlund?= 
-        <niklas.soderlund+renesas@ragnatech.se>
-Cc:     Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Rob Herring <robh+dt@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <97e93876-d654-0a89-dce1-6fe1189345e2@kali.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Kieran,
+Hi Steev,
 
-On Thu, Nov 4, 2021 at 11:40 PM Kieran Bingham
-<kieran.bingham+renesas@ideasonboard.com> wrote:
-> The thermal sensor bindings were not matched correctly against the
-> expected naming scheme.
->
-> r8a77980.dtsi also used a different naming scheme compared to the other
-> related platforms.
+That's interesting what you've done with Rockchip RK3399.
+I would like to reproduce your experiment on my RockPI 4B v1.3.
+Could you tell me how you to add this boost frequency that you have
+mentioned in some previous emails?
 
-It lacked the labels, which you added for consistency.
-Is there any point in providing them, as there are no users? Or should
-they be removed instead?
+I want to have similar setup to yours and I'll check all the subsystems
+involved in the decision making process for triggering this boost freq.
 
-> This series cleans up the dtsi files for the CPU target thermal sensors,
-> allowing the validation to run.
->
-> Enabling this validation shows up a new validation failure:
->
-> linux/arch/arm64/boot/dts/renesas/r8a77951-ulcb-kf.dt.yaml: thermal-zones: sensor3-thermal:cooling-maps:map0:contribution:0:0: 1024 is greater than the maximum of 100
->         From schema: Documentation/devicetree/bindings/thermal/thermal-zones.yaml
->
-> This validation error appears to be pervasive across all of these
-> bindings, but changing that will be more invasive and require someone to
-> perform dedicated testing with the thermal drivers to ensure that the
-> updates to the ranges do not cause unexpected side effects.
+On 11/8/21 11:21 PM, Steev Klimaszewski wrote:
+> Hi Thara,
+>> Hi Steev,
+>>
+>> IIUC, PineBook Pro has Rockchip RK3399 which has 2 Cortex A-72 and 4 
+>> Cortex A-52 where as C630 has Qualcomm sdm845 which has 4 Cortex A-75 
+>> and 4 Cortex A-55. Task placements and subsequently cpu load will be 
+>> different for both the platforms. With the same workload, I will 
+>> expect Rockchip to system to be more loaded than sdm845. Having said 
+>> that, what cpu-freq governor are you using on both the systems.
+>>
+> I'm using sched-util on both of the systems.
+> 
+> I've tried a number of different ways of forcing builds only on the A-75 
+> cores, and I simply cannot get the load to be "enough" to kick in the 
+> boost frequency.
+> 
+> An example being
+> 
+> git clone https://github.com/zellij-org/zellij.git
+> 
+> cd zellij
+> 
+> taskset --cpu-list 4-7 cargo build --release
+> 
+> git clean -fdx
+> 
+> taskset --cpu-list 6-7 cargo build --release
 
-Niklas?
+Thanks for the pointers, I'll give it a try when I sort out this
+Rockchip boost setup.
 
-> Kieran Bingham (9):
->   arm64: dts: renesas: r8a774a1: Fix thermal bindings
->   arm64: dts: renesas: r8a774b1: Fix thermal bindings
->   arm64: dts: renesas: r8a774e1: Fix thermal bindings
->   arm64: dts: renesas: r8a77951: Fix thermal bindings
->   arm64: dts: renesas: r8a77960: Fix thermal bindings
->   arm64: dts: renesas: r8a77961: Fix thermal bindings
->   arm64: dts: renesas: r8a77965: Fix thermal bindings
->   arm64: dts: renesas: r8a77980: Fix thermal bindings
->   arm64: dts: renesas: r8a779a0: Fix thermal bindings
+> 
+> 
+> On my C630, it never goes higher than 85C with the 4 cores being used, 
+> and with 2, it never goes about 65C and I do not get any 2.96GHz.  It's 
+> currently sitting at "6" in the time_in_state for 2965800.
+> 
+> 
+> --steev
+> 
 
-For the whole series:
-Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
+Thank you for your support.
 
-Gr{oetje,eeting}s,
-
-                        Geert
-
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+Regards,
+Lukasz
