@@ -2,163 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F3DF244B04F
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 16:26:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0A60644B050
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 16:26:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236025AbhKIP2C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Nov 2021 10:28:02 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41386 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235782AbhKIP2B (ORCPT
+        id S236290AbhKIP2x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Nov 2021 10:28:53 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:25809 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S235782AbhKIP2v (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Nov 2021 10:28:01 -0500
-Received: from mail-yb1-xb32.google.com (mail-yb1-xb32.google.com [IPv6:2607:f8b0:4864:20::b32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F20FCC061764;
-        Tue,  9 Nov 2021 07:25:14 -0800 (PST)
-Received: by mail-yb1-xb32.google.com with SMTP id 131so53835335ybc.7;
-        Tue, 09 Nov 2021 07:25:14 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=1YtPKMAKhh4yr7fG5V9nmBRI32AwNngOJNQ80JUITj4=;
-        b=c7paMbIK2hqj6wQ/mm5GGvSBbBPqXannMb3ctv68OXdJsWNoG39Na33zL9sKXHa6aV
-         7wEwsjzCULgVq2m+aITEDLuoilL4uN8hPuG9nN4lvN7p4vigwPwk5m3V89ON+CjBCw9/
-         MUiikHB93jM4FhWuDcIDkpXYBbIbwszcGJ1D3jpbUR764AQ3V+LLL8kCyx6SZ18BM52G
-         vDGY0dUx0hCviLLzfpMOUC+8PpnFmlrMjcVPJ+cvnSM9SvdrYof+EzGSwP/fVPs3UfpP
-         v3+QAkN7F7TdEcXRZ3TLnRJeY/ugOlrRJbp/Q0ofpyL5XnksiWaQrZHYTmfNgIMid7QP
-         3CKw==
+        Tue, 9 Nov 2021 10:28:51 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1636471564;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=Wxou4MKPQ1jK4eND4O3g/qSLs6HMqmw3NMGLlftk3PU=;
+        b=SWV4XQ/kGsOGXwn6gIGzAGe0mFt+4XaNI1rpvt96M9zmz/6pPv6LHzW3sK7I/6PTlpp4SF
+        sDBRPnmjGk5fTOu2LeeshVKBBlx0cMNaM+1DgVaszrCIQgPD+pdvik9ccU++ZZhDAvqEai
+        ZzreDWIy2WN7GnEmq2OkRLzV/xst7/E=
+Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
+ [209.85.128.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-6-9otYH0EbOFKVp74JnomnIg-1; Tue, 09 Nov 2021 10:26:03 -0500
+X-MC-Unique: 9otYH0EbOFKVp74JnomnIg-1
+Received: by mail-wm1-f71.google.com with SMTP id 145-20020a1c0197000000b0032efc3eb9bcso1529515wmb.0
+        for <linux-kernel@vger.kernel.org>; Tue, 09 Nov 2021 07:26:03 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=1YtPKMAKhh4yr7fG5V9nmBRI32AwNngOJNQ80JUITj4=;
-        b=TMXAlaBg7IUmNI5WjPfJt2OXMIE3WcM/d0aunaG9Udy7n4+1l5xrDoBTjgxkFGuYP/
-         FXe2pklolLU0SIHER+njWQEVS10c0VH7tn9pD98LlsjRYtP5u/Tr77RLtaeEgK+2SMaJ
-         DvJlf7Fy7N9WTLLO10G5bNP+RWZJq+JQdoqnzvZWZ2MagAHp7REKTwINCZi+GTLDMyHa
-         /SszQ0ys9UWjvCiFth4XkWyES0xXHp+54bXZFDPePLfJF88XzEKyAFvz1j+Ut7kkCp8w
-         bE1H5qJ/U6Ohk+yCTokEuRvkJeYT96S/+XUEoCM+UiOIO5qSG6xzbd6mUanqQ4UknDAn
-         Uxjg==
-X-Gm-Message-State: AOAM530oqT6JJ4NkqAnuuS1xJ0v7VUHAlCP9KtyEWQmT38/TN84C0kAP
-        AbADmZ6VBQo5JF93jRj9ewZ/o3gZVfdkkF0f9/2l2PS37llN1Q==
-X-Google-Smtp-Source: ABdhPJxpUVbqgyBdPsEoi4i0MlIUmaqMD/K28fOWDIkFYJCv0Xr5XcsO29RbRFKS988n3+xgJVhnsbZ5Ld7mA5yyA/c=
-X-Received: by 2002:a5b:783:: with SMTP id b3mr8787410ybq.328.1636471514166;
- Tue, 09 Nov 2021 07:25:14 -0800 (PST)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=Wxou4MKPQ1jK4eND4O3g/qSLs6HMqmw3NMGLlftk3PU=;
+        b=4oOypwyZtXa4XlZNWGSOlbBzJ/pJ3iLs0wCVUsQ7CrEyT+9tGeUUq5TIA8edSpuplt
+         7RjDdLDn3tJrxAAoPVNqE8NwwkpGnio2eFukfCPnNybh/F8csrklXonjZUEF1d1/gvL5
+         5l5KMzUkt6rb8xvtKncyCFpNkgEgDAwYG36lUVTvWYGN/JK/ILwL+wZe5Gaz/20UCKt7
+         OM0t6+poN6lQoftpZILoVvag4kzE3bm0nNe1dafNgv++m7vo8lq8Y1PcPJTwu3PvmyfL
+         BCSfuMM502tqDykUA3z8Mr8O37faxgDmfE8JMZxFNNJELWmT5FmYBb3wixFLDVWVvmJ3
+         LNNA==
+X-Gm-Message-State: AOAM532+MqEWu86+ouHMk3gm90jwCXOsjy9RERVT+tYH0/TsAB8qy0/o
+        9oPlpNg6h0l47Siwko2QtqgTkJcFnt/oA+u1iF/Ur/8lXCvOOVUGuKvNfLuuA/Zg4EbfgKHxXsg
+        4JI81o0GHcphw0mpa0a6gT4eg
+X-Received: by 2002:a7b:c4c2:: with SMTP id g2mr7949006wmk.195.1636471562547;
+        Tue, 09 Nov 2021 07:26:02 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJzBnpOsut7rKZlaSBPduXJ5xAffRhNOu1HUeYRQRdK/um4HGi+o+P1Cz2Qt1sVLYNWJ5qGPUA==
+X-Received: by 2002:a7b:c4c2:: with SMTP id g2mr7948982wmk.195.1636471562339;
+        Tue, 09 Nov 2021 07:26:02 -0800 (PST)
+Received: from ?IPv6:2a01:e0a:59e:9d80:527b:9dff:feef:3874? ([2a01:e0a:59e:9d80:527b:9dff:feef:3874])
+        by smtp.gmail.com with ESMTPSA id u6sm2826590wmc.29.2021.11.09.07.26.01
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 09 Nov 2021 07:26:01 -0800 (PST)
+Subject: Re: [PATCH v4 01/21] KVM: arm64: Introduce template for inline
+ functions
+To:     Gavin Shan <gshan@redhat.com>, kvmarm@lists.cs.columbia.edu
+Cc:     maz@kernel.org, linux-kernel@vger.kernel.org,
+        Jonathan.Cameron@huawei.com, pbonzini@redhat.com, will@kernel.org
+References: <20210815001352.81927-1-gshan@redhat.com>
+ <20210815001352.81927-2-gshan@redhat.com>
+From:   Eric Auger <eauger@redhat.com>
+Message-ID: <5112b3ba-d038-f622-c67f-e53695cbef37@redhat.com>
+Date:   Tue, 9 Nov 2021 16:26:00 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.1
 MIME-Version: 1.0
-References: <20211029124437.20721-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
- <20211029124437.20721-4-prabhakar.mahadev-lad.rj@bp.renesas.com>
- <CAMuHMdV+716v3SOLM4Sf6arK5jEPgtc0NSOU6nZXQGXUT+-+3Q@mail.gmail.com>
- <CA+V-a8t2KZNqCHJQP_bj9+-RKVBBJpz=pnBXzpyy4tjbUe14EA@mail.gmail.com> <CAMuHMdW8NeSpv35a7Eq_+NMAE5Uamm_pD+Dp+OeHvCMqd3f2Xw@mail.gmail.com>
-In-Reply-To: <CAMuHMdW8NeSpv35a7Eq_+NMAE5Uamm_pD+Dp+OeHvCMqd3f2Xw@mail.gmail.com>
-From:   "Lad, Prabhakar" <prabhakar.csengg@gmail.com>
-Date:   Tue, 9 Nov 2021 15:24:48 +0000
-Message-ID: <CA+V-a8u0CMhoYJB8buZugG4Kd4BEkviv_WpBTgmJr6y2+gb-sg@mail.gmail.com>
-Subject: Re: [PATCH v2 3/5] pinctrl: renesas: pinctrl-rzg2l: Add support to
- get/set pin config for GPIO port pins
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
-        Biju Das <biju.das.jz@bp.renesas.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210815001352.81927-2-gshan@redhat.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Geert,
+Hi Gavin,
 
-On Tue, Nov 9, 2021 at 3:00 PM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
->
-> Hi Prabhakar,
->
-> On Tue, Nov 9, 2021 at 3:31 PM Lad, Prabhakar
-> <prabhakar.csengg@gmail.com> wrote:
-> > On Mon, Nov 8, 2021 at 3:36 PM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
-> > > On Fri, Oct 29, 2021 at 2:44 PM Lad Prabhakar
-> > > <prabhakar.mahadev-lad.rj@bp.renesas.com> wrote:
-> > > > Add support to get/set pin config for GPIO port pins.
-> > > >
-> > > > Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-> > > > Reviewed-by: Biju Das <biju.das.jz@bp.renesas.com>
-> > >
-> > > Thanks for your patch!
-> > >
-> > > > --- a/drivers/pinctrl/renesas/pinctrl-rzg2l.c
-> > > > +++ b/drivers/pinctrl/renesas/pinctrl-rzg2l.c
-> > >
-> > > > @@ -495,6 +512,14 @@ static int rzg2l_pinctrl_pinconf_get(struct pinctrl_dev *pctldev,
-> > > >                 port = RZG2L_SINGLE_PIN_GET_PORT(*pin_data);
-> > > >                 cfg = RZG2L_SINGLE_PIN_GET_CFGS(*pin_data);
-> > > >                 bit = RZG2L_SINGLE_PIN_GET_BIT(*pin_data);
-> > > > +       } else {
-> > > > +               cfg = RZG2L_GPIO_PORT_GET_CFGS(*pin_data);
-> > > > +               port = RZG2L_PIN_ID_TO_PORT(_pin);
-> > > > +               bit = RZG2L_PIN_ID_TO_PIN(_pin);
-> > > > +               port_pin = true;
-> > >
-> > > Instead of setting this flag, perhaps port should be adjusted?
-> >
-> > Something like below?
-> >
-> > #define RZG2L_PORT_START_OFFSET 0x10
-> >
-> > port = RZG2L_PIN_ID_TO_PORT_pin) + RZG2L_PORT_START_OFFSET;
-> > rzg2l_validate_gpio_pin(pctrl, *pin_data, port - RZG2L_PORT_START_OFFSET, bit)
->
-> Or adjust port after the call to rzg2l_validate_gpio_pin(), to avoid adding
-> the offset first, and subtracting it again for calling the latter?
->
-> > and rename port -> port_offset in rzg2l_pinctrl_pinconf_get/set
->
-> That makes sense.  Currently "port" has two meanings: it can mean
-> either the GPIO port index, or the global register index covering both
-> single function pin groups and GPIO port indices.
-> RZG2L_SINGLE_PIN_GET_PORT() returns the latter.
-> RZG2L_PIN_ID_TO_PORT() returns the former, thus needing an extra offset
-> to convert to the global register index.
->
-for symmetry will rename the below:
-RZG2L_SINGLE_PIN_GET_PORT -> RZG2L_SINGLE_PIN_GET_PORT_OFFSET
+On 8/15/21 2:13 AM, Gavin Shan wrote:
+> The inline functions used to get the SMCCC parameters have same
+> layout. It means these functions can be presented by a template,
+> to make the code simplified. Besides, this adds more similar inline
+> functions like smccc_get_arg{4,5,6,7,8}() to visit more SMCCC arguments,
+> which are needed by SDEI virtualization support.
+> 
+> Signed-off-by: Gavin Shan <gshan@redhat.com>
+> ---
+>  include/kvm/arm_hypercalls.h | 34 +++++++++++++++-------------------
+>  1 file changed, 15 insertions(+), 19 deletions(-)
+> 
+> diff --git a/include/kvm/arm_hypercalls.h b/include/kvm/arm_hypercalls.h
+> index 0e2509d27910..ebecb6c68254 100644
+> --- a/include/kvm/arm_hypercalls.h
+> +++ b/include/kvm/arm_hypercalls.h
+> @@ -6,27 +6,21 @@
+>  
+>  #include <asm/kvm_emulate.h>
+>  
+> -int kvm_hvc_call_handler(struct kvm_vcpu *vcpu);
+> -
+> -static inline u32 smccc_get_function(struct kvm_vcpu *vcpu)
+> -{
+> -	return vcpu_get_reg(vcpu, 0);
+> +#define SMCCC_DECLARE_GET_FUNC(type, name, reg)			\
+> +static inline type smccc_get_##name(struct kvm_vcpu *vcpu)	\
+> +{								\
+> +	return vcpu_get_reg(vcpu, reg);				\
+>  }
+>  
+> -static inline unsigned long smccc_get_arg1(struct kvm_vcpu *vcpu)
+> -{
+> -	return vcpu_get_reg(vcpu, 1);
+> -}
+> -
+> -static inline unsigned long smccc_get_arg2(struct kvm_vcpu *vcpu)
+> -{
+> -	return vcpu_get_reg(vcpu, 2);
+> -}
+> -
+> -static inline unsigned long smccc_get_arg3(struct kvm_vcpu *vcpu)
+> -{
+> -	return vcpu_get_reg(vcpu, 3);
+> -}
+> +SMCCC_DECLARE_GET_FUNC(u32,           function, 0)
+> +SMCCC_DECLARE_GET_FUNC(unsigned long, arg1,     1)
+> +SMCCC_DECLARE_GET_FUNC(unsigned long, arg2,     2)
+> +SMCCC_DECLARE_GET_FUNC(unsigned long, arg3,     3)
+> +SMCCC_DECLARE_GET_FUNC(unsigned long, arg4,     4)
+> +SMCCC_DECLARE_GET_FUNC(unsigned long, arg5,     5)
+> +SMCCC_DECLARE_GET_FUNC(unsigned long, arg6,     6)
+> +SMCCC_DECLARE_GET_FUNC(unsigned long, arg7,     7)
+> +SMCCC_DECLARE_GET_FUNC(unsigned long, arg8,     8)
+I think I would keep smccc_get_function() and add macros to get the
+64-bit args. SMCCC_DECLARE_GET_FUNC is an odd macro name for a function
+fetching an arg. I would suggest:
 
-Introduce a new macros:
-#define RZG2L_PORT_START_OFFSET 0x10
-#define RZG2L_PIN_ID_TO_PORT_OFFSET(id) (((id) / RZG2L_PINS_PER_PORT)
-+ RZG2L_PORT_START_OFFSET)
+> +#define SMCCC_DECLARE_GET_ARG(reg)			\
+> +static inline unsigned long smccc_get_arg##reg(struct kvm_vcpu *vcpu)	\
+> +{								\
+> +	return vcpu_get_reg(vcpu, reg);				\
+>  }
+>  
+>  static inline void smccc_set_retval(struct kvm_vcpu *vcpu,
+>  				    unsigned long a0,
+> @@ -40,4 +34,6 @@ static inline void smccc_set_retval(struct kvm_vcpu *vcpu,
+>  	vcpu_set_reg(vcpu, 3, a3);
+>  }
+>  
+> +int kvm_hvc_call_handler(struct kvm_vcpu *vcpu);
+> +
+spurious change?
+>  #endif
+> 
+Thanks
 
-And use the above two in rzg2l_pinctrl_pinconf_get/set along with
-renaming  port -> port_offset
+Eric
 
-And for rzg2l_validate_gpio_pin() will use below instead:
-rzg2l_validate_gpio_pin(pctrl, *pin_data, RZG2L_PIN_ID_TO_PORT(_pin), bit);
-
-> > Or
-> > would you prefer to change the RZG2L_PIN_ID_TO_PORT macro and adjust
-> > the entire file?
->
-> Changing RZG2L_PIN_ID_TO_PORT() would imply changing all macros
-> accessing GPIO registers, and is thus quite intrusive.
->
-Agreed, I will drop this option.
-
-Cheers,
-Prabhakar
-> > > Then rzg2l_r{ead,mw}_pin_config() don't have to care about that
-> > > anymore.
-> > >
-> > Agreed.
->
-> Gr{oetje,eeting}s,
->
->                         Geert
->
-> --
-> Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
->
-> In personal conversations with technical people, I call myself a hacker. But
-> when I'm talking to journalists I just say "programmer" or something like that.
->                                 -- Linus Torvalds
