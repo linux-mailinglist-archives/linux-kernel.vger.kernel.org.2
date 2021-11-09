@@ -2,159 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C554F44B2FF
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 20:01:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B50244B300
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 20:02:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242946AbhKITEG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Nov 2021 14:04:06 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34490 "EHLO
+        id S242952AbhKITFN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Nov 2021 14:05:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34758 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242923AbhKITEB (ORCPT
+        with ESMTP id S230445AbhKITFM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Nov 2021 14:04:01 -0500
-Received: from mail-yb1-xb2b.google.com (mail-yb1-xb2b.google.com [IPv6:2607:f8b0:4864:20::b2b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F00B9C061764
-        for <linux-kernel@vger.kernel.org>; Tue,  9 Nov 2021 11:01:14 -0800 (PST)
-Received: by mail-yb1-xb2b.google.com with SMTP id e136so42325ybc.4
-        for <linux-kernel@vger.kernel.org>; Tue, 09 Nov 2021 11:01:14 -0800 (PST)
+        Tue, 9 Nov 2021 14:05:12 -0500
+Received: from mail-wr1-x430.google.com (mail-wr1-x430.google.com [IPv6:2a00:1450:4864:20::430])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA59EC061764
+        for <linux-kernel@vger.kernel.org>; Tue,  9 Nov 2021 11:02:25 -0800 (PST)
+Received: by mail-wr1-x430.google.com with SMTP id t30so34715720wra.10
+        for <linux-kernel@vger.kernel.org>; Tue, 09 Nov 2021 11:02:25 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=KoZB95vVH0v2a9gf7XfzuFZQxHUcQQC8LetoqIfIJrc=;
-        b=i6pbPLy0D0M4njCdg6snPJMmBT4Att1VQu/ppVxjExF9iSad/k/90KsN9L5mNymTSS
-         NIMvoF3R3jeKUqiUipteXgZ9xfPVwrgJlc42b8brMzPdZdFM1+YQSRIKURb1UK/Df9uT
-         RthW4wkCKi1AXXkdCWkGrlodZPyHo1jxSOXTNhNM7r5ZeYXATfhnPlHVsh05Q68lqHQ4
-         LxUVkDTF4VkLUmIAzppyMvguzsik6K4pYJwM4lATc/1pJn7Q0JAS7qkTzsemCERLwUq0
-         XvvDCalxov3CTjrK01krF26eRphk4Gfi83GC5VfxjJ2Nzc0GLavlPWMCP9TfwdmXNUNV
-         Ipsw==
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=JmtPtX6YQCGEQxR5qcC95yni/wqtMg2Utq250ZHHwv4=;
+        b=PMiYwt3pU4LCbvavADvBPZXhBHdxF31DEIWDbU1QpTquKjnQXz7nC+Zn8WGERcV30Q
+         gGUqkjCg44xUyBUkAGuqd1Raj34SgBC2EhYTlGWb70CSjsudDK0JWEY0K9LCM4N44M56
+         jIIHQrszXNEgOLkM0CLDy8xi45bd4VJMvT0kKdhSlj8AJxP16mBvfZeI6EnPPp9CbOrn
+         9Hi2C0DwRWkdTl6AuuFdR9wT2RK49U4jDIkWsBhMs460NCVzVgFhqQ10tLstbvjVn+ja
+         ZOTjsQaVxqVXdM3psST6Yv9gqEsnpa2CUDDO/uIZL11eZxih4JXg2XV31VKztuB7xB9A
+         OD9A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=KoZB95vVH0v2a9gf7XfzuFZQxHUcQQC8LetoqIfIJrc=;
-        b=Tj9qCGc+e2Eaos/5zme+6iQjc5njOEjNZkCKJYwsl5Fzm2mwMOKzuQrHbAyJwGcH1/
-         CG2U01fKV1+mKjD2Q4CPQW1vboyaft7MyBog4gXrqeULAwyWRt1+EkUX/oGmN0iJQT2A
-         kY5S79vEyxJF12H6a12mJsB9QE0C9eybYNDV++Dj32WxnFJKBpoM/Rd7x3aVIYB6BF+s
-         kjr99otR4Xf6RpnlfZTTpBLWxtXMtrNpEqo1bFQfaKNUMD7ei13pB6p4QFRGSmlcOUVN
-         iUL7Tu3CX1VahE850+UYiqzD4457cIDrRri/teDHVmMUD8y7fJyvCsVyCRTKiFJCMoqt
-         AW+w==
-X-Gm-Message-State: AOAM531uaZNrVzKqLz2UDiKnuALBbwXd0ZxdLrrTXyd6SJFui58d5wJ0
-        wj/f1hfNXVT70iWE/zqgIwFuhD6WtIZ6ede8t5UzKw==
-X-Google-Smtp-Source: ABdhPJwdc7hXS6J642vWkCDbrvXn+RiplHQk2rKWV5VvcmEBD7ypXiQI7Rbf7k86wgaSrzmhwiRPdB1ZI/CHd2MT1L0=
-X-Received: by 2002:a25:d4d5:: with SMTP id m204mr11979039ybf.418.1636484473977;
- Tue, 09 Nov 2021 11:01:13 -0800 (PST)
-MIME-Version: 1.0
-References: <20211022014658.263508-1-surenb@google.com> <YXJwUUPjfg9wV6MQ@dhcp22.suse.cz>
- <CAJuCfpEcSbK8WrufZjDj-7iUxiQtrmVTqHOxFUOvLhYGz6_ttQ@mail.gmail.com>
- <CAJuCfpFccBJHHqfOKixJvLr7Xta_ojkdHGfGomwTDNKffzziRQ@mail.gmail.com>
- <YXvxBSzA2YIxbwVC@dhcp22.suse.cz> <CAJuCfpHBoMGPOUvB2ZWQ=TxbFuWBRF++UaKJZDCrQV4mzb5kMA@mail.gmail.com>
- <YX+nYGlZBOAljoeF@dhcp22.suse.cz> <CAJuCfpGC9-c9P40x7oy=jy5SphMcd0o0G_6U1-+JAziGKG6dGA@mail.gmail.com>
- <YYDvm9c/7cGtBvw6@dhcp22.suse.cz> <CAJuCfpFX8FRynoK29h8tpRXRT-Kk+sHboiBnc7N-8MY6AAqVLw@mail.gmail.com>
-In-Reply-To: <CAJuCfpFX8FRynoK29h8tpRXRT-Kk+sHboiBnc7N-8MY6AAqVLw@mail.gmail.com>
-From:   Suren Baghdasaryan <surenb@google.com>
-Date:   Tue, 9 Nov 2021 11:01:02 -0800
-Message-ID: <CAJuCfpFOOgs9uZSW2Tp6uBW23rLHFeSA8o5WYQ_D_ykUcKL64Q@mail.gmail.com>
-Subject: Re: [PATCH 1/1] mm: prevent a race between process_mrelease and exit_mmap
-To:     Michal Hocko <mhocko@suse.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        David Rientjes <rientjes@google.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Roman Gushchin <guro@fb.com>, Rik van Riel <riel@surriel.com>,
-        Minchan Kim <minchan@kernel.org>,
-        Christian Brauner <christian@brauner.io>,
-        Christoph Hellwig <hch@infradead.org>,
-        Oleg Nesterov <oleg@redhat.com>,
-        David Hildenbrand <david@redhat.com>,
-        Jann Horn <jannh@google.com>,
-        Shakeel Butt <shakeelb@google.com>,
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=JmtPtX6YQCGEQxR5qcC95yni/wqtMg2Utq250ZHHwv4=;
+        b=MTKFZcb+Ro+TmmE63uNz/9DfIt/GofRtXOZKwGYC+LHrBgaLodTHSgmOwXkOQXjxPy
+         2ny9PVhBq4fxeAGehtG0hvzdfEq4r6cgrV/bDe2JadxF2jrvgMBHutMCYFkZP2QZotZ8
+         ML6JJdvQmO1+PmYf8WDN8aoqrL6f0tGRUU37dLd7RoMRL9hmgnLe5XMzP/9A4dE81sWT
+         AayNv6BZqkma43mNNUVOL1a2l1+zNIPQV/lbwfvUUU9zSC2XpNghEDWknHLuJgOw9SfC
+         YMAt0AU9+xwlrQLG0xXLqnslx96liB3avqj3t5eyBZHBWTEkKiF7ne7HKm2k4XMhz6Qc
+         ipOg==
+X-Gm-Message-State: AOAM532tUfNuNdLKXhmJ1OnK2aDFscKCAgPJ9Sa3OsHXM1F2cUnFCYf1
+        i5jpZlnofO2+934T2c9InoGokQ==
+X-Google-Smtp-Source: ABdhPJwfPdTHhxkeQm51gL08gTx3Y5bcDbcmb42YrwujLhE4YiEmO0ApVy5ayZWbDHpKESRcqyB7UQ==
+X-Received: by 2002:a05:6000:1141:: with SMTP id d1mr12165854wrx.342.1636484544311;
+        Tue, 09 Nov 2021 11:02:24 -0800 (PST)
+Received: from google.com ([2a00:79e0:d:210:7159:ca65:97f2:ba4c])
+        by smtp.gmail.com with ESMTPSA id o10sm12290161wri.15.2021.11.09.11.02.23
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 09 Nov 2021 11:02:24 -0800 (PST)
+Date:   Tue, 9 Nov 2021 19:02:21 +0000
+From:   Quentin Perret <qperret@google.com>
+To:     Ard Biesheuvel <ardb@kernel.org>
+Cc:     Mark Rutland <mark.rutland@arm.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        James Morse <james.morse@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Kees Cook <keescook@chromium.org>,
+        Sami Tolvanen <samitolvanen@google.com>,
         Andy Lutomirski <luto@kernel.org>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Florian Weimer <fweimer@redhat.com>,
-        Jan Engelhardt <jengelh@inai.de>,
-        Linux API <linux-api@vger.kernel.org>,
-        linux-mm <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        kernel-team <kernel-team@android.com>,
-        "Kirill A. Shutemov" <kirill@shutemov.name>,
-        Andrea Arcangeli <aarcange@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Steven Rostedt <rostedt@goodmis.org>
+Subject: Re: [PATCH v6 2/2] arm64: implement support for static call
+ trampolines
+Message-ID: <YYrFvXg12eANs0gz@google.com>
+References: <20211105145917.2828911-1-ardb@kernel.org>
+ <20211105145917.2828911-3-ardb@kernel.org>
+ <YYq1/a10XGBthteg@FVFF77S0Q05N>
+ <CAMj1kXHrTjxWWX0cfF1Bx58aTR9Fp=xkfhizkWnQRjYtRm879w@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAMj1kXHrTjxWWX0cfF1Bx58aTR9Fp=xkfhizkWnQRjYtRm879w@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 2, 2021 at 8:14 AM Suren Baghdasaryan <surenb@google.com> wrote:
->
-> On Tue, Nov 2, 2021 at 12:58 AM Michal Hocko <mhocko@suse.com> wrote:
+On Tuesday 09 Nov 2021 at 19:09:21 (+0100), Ard Biesheuvel wrote:
+> On Tue, 9 Nov 2021 at 18:55, Mark Rutland <mark.rutland@arm.com> wrote:
 > >
-> > On Mon 01-11-21 08:44:58, Suren Baghdasaryan wrote:
-> > [...]
-> > > I'm with you on this one, that's why I wanted to measure the price we
-> > > would pay. Below are the test results:
-> > >
-> > > Test: https://lore.kernel.org/all/20170725142626.GJ26723@dhcp22.suse.cz/
-> > > Compiled: gcc -O2 -static test.c -o test
-> > > Test machine: 128 core / 256 thread 2x AMD EPYC 7B12 64-Core Processor
-> > > (family 17h)
-> > >
-> > > baseline (Linus master, f31531e55495ca3746fb895ffdf73586be8259fa)
-> > > p50 (median)   87412
-> > > p95                  168210
-> > > p99                  190058
-> > > average           97843.8
-> > > stdev               29.85%
-> > >
-> > > unconditional mmap_write_lock in exit_mmap (last column is the change
-> > > from the baseline)
-> > > p50 (median)   88312     +1.03%
-> > > p95                  170797   +1.54%
-> > > p99                  191813   +0.92%
-> > > average           97659.5  -0.19%
-> > > stdev               32.41%
-> > >
-> > > unconditional mmap_write_lock in exit_mmap + Matthew's patch (last
-> > > column is the change from the baseline)
-> > > p50 (median)   88807      +1.60%
-> > > p95                  167783     -0.25%
-> > > p99                  187853     -1.16%
-> > > average           97491.4    -0.36%
-> > > stdev               30.61%
-> > >
-> > > stdev is quite high in all cases, so the test is very noisy.
-> > > The impact seems quite low IMHO. WDYT?
+> > Hi Ard,
 > >
-> > Results being very noisy is what I recall as well. Thanks!
->
-> I believe, despite the noise, the percentiles show that overall we do
-> not noticeably regress the exit path by taking mmap_lock
-> unconditionally.
-> If there are no objections, I would like to post a patchset which
-> implements unconditional locking in exit_mmap() and process_madvise()
-> calling __oom_reap_task_mm() under protection of read mmap_lock.
-> Thanks!
+> > On Fri, Nov 05, 2021 at 03:59:17PM +0100, Ard Biesheuvel wrote:
+> > > +static void *strip_cfi_jt(void *addr)
+> > > +{
+> > > +     if (IS_ENABLED(CONFIG_CFI_CLANG)) {
+> > > +             void *p = addr;
+> > > +             u32 insn;
+> > > +
+> > > +             /*
+> > > +              * Taking the address of a function produces the address of the
+> > > +              * jump table entry when Clang CFI is enabled. Such entries are
+> > > +              * ordinary jump instructions, preceded by a BTI C instruction
+> > > +              * if BTI is enabled for the kernel.
+> > > +              */
+> > > +             if (IS_ENABLED(CONFIG_ARM64_BTI_KERNEL))
+> > > +                     p += 4;
+> > > +
+> > > +             insn = le32_to_cpup(p);
+> > > +             if (aarch64_insn_is_b(insn))
+> > > +                     return p + aarch64_get_branch_offset(insn);
+> > > +
+> > > +             WARN_ON(1);
+> > > +     }
+> > > +     return addr;
+> > > +}
+> >
+> > I'm somewhat uncomfortable with this, because it seems like the compiler could
+> > easily violate our expectations in future, and then we're in for a massive
+> > headache. I assume clang doesn't provide any guarnatee as to the format of the
+> > jump table entries (and e.g. I can see scope for branch padding breaking this).
+> >
+> > In trying to sidestep that I ended up with:
+> >
+> >   https://lore.kernel.org/linux-arm-kernel/20211109172408.49641-1-mark.rutland@arm.com/
+> >
+> > ... which I think is a good option for PREEMPT_DYNAMIC, but I don't know if
+> > there were other places where we believe static calls would be critical for
+> > performance rather than a nice-to-have, and whether we truly need static calls
+> > on arm64. My mind is leaning towards "avoid if reasonable" at the moment (or at
+> > least make that mutually exclusive with CFI so we can avoid that specific fun).
+> >
+> > I see you had at least one other user in:
+> >
+> >   https://lore.kernel.org/r/20211109120336.3561463-1-ardb@kernel.org
+> >
+> > ... what were your thoughts on the criticality of that?
+> >
+> 
+> That particular use case does not rely on static calls being fast at
+> all, so there it doesn't really matter which variety we implement. The
+> reason I sent it out today is because it gives some test coverage for
+> static calls used in a way that the API as designed should support,
+> but which turned out to be slightly broken in practice.
+> 
+> > FWIW other than the above this looks good to me. My major concern here is
+> > fragility/maintenance, and secondly whether we're gaining much in practice. So
+> > if you think we really need this, I'm not going to stand in the way.
+> >
+> 
+> Android relies heavily on tracepoints for vendor hooks, and given the
+> performance impact of CFI on indirect calls, there has been interest
+> in enabling static calls to replace them.
+> 
+> Quentin, anything to add here?
 
-Discussing how the patch I want to post works for maple trees that
-Matthew is working on, I've got a question:
+Yes, Android should definitely benefit from static calls.
 
-IIUC, according to Michal's post here:
-https://lore.kernel.org/all/20170725154514.GN26723@dhcp22.suse.cz,
-unmap_vmas() can race with other mmap_lock read holders (including
-oom_reap_task_mm()) with no issues.
-Maple tree patchset requires rcu read lock or the mmap semaphore be
-held (read or write side) when walking the tree, including inside
-unmap_vmas(). When asked, he told me that he is not sure why it's
-currently "safe" to walk the vma->vm_next list in unmap_vmas() while
-another thread is reaping the mm.
-Michal (or maybe someone else), could you please clarify why
-unmap_vmas() can safely race with oom_reap_task_mm()? Or maybe my
-understanding was wrong?
+Modules attaching to tracepoints cause a measurable overhead w/ CFI as
+the jump target is a bit harder to verify if it is not in-kernel. But
+sadly that's a common pattern for GKI. The current 'workaround' in
+Android has been to just plain disable CFI around all tracepoints in the
+kernel, which is a bit sad from a security PoV. But there was really no
+other option at the time, and we needed the performance back. Static
+calls would be a far superior solution as they would avoid much of the
+CFI overhead, and are not vulnerable in the CFI sense (that is, the
+branch target can't be easily overridden with a random OOB write from a
+dodgy driver). So yes, we'd really like to have those please :)
+
 Thanks,
-Suren.
-
-
-
->
-> > --
-> > Michal Hocko
-> > SUSE Labs
+Quentin
