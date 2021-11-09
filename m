@@ -2,209 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E50744B101
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 17:17:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F3A5144B10C
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 17:20:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239652AbhKIQT6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Nov 2021 11:19:58 -0500
-Received: from mail-oi1-f173.google.com ([209.85.167.173]:38764 "EHLO
-        mail-oi1-f173.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239499AbhKIQT4 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Nov 2021 11:19:56 -0500
-Received: by mail-oi1-f173.google.com with SMTP id r26so13295672oiw.5;
-        Tue, 09 Nov 2021 08:17:10 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=4hv3lNiKtCV9caPy7LZaczGaDSUcKdCzFY13hA0esuk=;
-        b=wonHPy4S3Vn+eMLGTE5F38W/7mZf6mD9zj+O/tN01pbM+z6XFH6CpuHewtFVWVEWRI
-         wHsXtyWsqdvlKu7f/Y7ufbzc+I9PzUoqk1lIz0+ECol44rWAc1kCRqacrPVXV3q2BOaX
-         Xmr/9RadaCow47YZhBhGt15jr54n22RgIRU8/arWosRsfLnXjPUVwej/HZxrUZuNg7rE
-         qZf3ve0Cv7YojuMHSimkGZXPbKK0IYBULm7n5XhciSUx8Ad9XCH3xMmYdnuH1VblS14W
-         iqEgEVEF5PvVUwBF55v8N1ApTyFUGxeQOCm2qwxeSlfrvjOkktUwvZd+1Pl5JmD0EcLV
-         oCbg==
-X-Gm-Message-State: AOAM532zi8tJkwu/BmIIFCydPX9JBEA1BjnoR14P8CEUDXWaZ0n90vuy
-        moPjnODnrl2OogU1Fs7FGkALUdbbmA==
-X-Google-Smtp-Source: ABdhPJxHZ4VI7DSvTKNUC5hrVKjdgRHeB9oCykyK0rT2lAjdeeJyho5biBnNUY8N6L/QrBqc2rDLfQ==
-X-Received: by 2002:aca:ad95:: with SMTP id w143mr5695268oie.47.1636474629421;
-        Tue, 09 Nov 2021 08:17:09 -0800 (PST)
-Received: from xps15.herring.priv (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
-        by smtp.googlemail.com with ESMTPSA id g2sm1001861oic.35.2021.11.09.08.17.08
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 09 Nov 2021 08:17:08 -0800 (PST)
-From:   Rob Herring <robh@kernel.org>
-To:     devicetree@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        linux-mips@vger.kernel.org,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <brgl@bgdev.pl>,
-        George Cherian <gcherian@marvell.com>,
-        Mark Brown <broonie@kernel.org>, linux-gpio@vger.kernel.org,
-        linux-i2c@vger.kernel.org, linux-spi@vger.kernel.org
-Subject: [PATCH] dt-bindings: Remove Netlogic bindings
-Date:   Tue,  9 Nov 2021 10:17:07 -0600
-Message-Id: <20211109161707.2209170-1-robh@kernel.org>
-X-Mailer: git-send-email 2.32.0
+        id S236923AbhKIQXd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Nov 2021 11:23:33 -0500
+Received: from mail.kernel.org ([198.145.29.99]:51676 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234118AbhKIQXc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Nov 2021 11:23:32 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A37806103C;
+        Tue,  9 Nov 2021 16:20:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1636474846;
+        bh=4pOLreVzXokeYjCJddXh8QZj6wy/qqmtkTv96o1Y4pU=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=mPAClu2DMa0PzfLnj4Ke6MShEnGwgzjLonoMOvU5PeCU9u8j9Ad5Q0nUJ2xGJZJW7
+         oGeJfd95fk5kTEUA0zVYXq5mjK4/A6//VCanWYWkN+zxEAyoMwM/xPJfibvC76LEt8
+         wTJdqKsLudYECGLGAl1YQN8Tc+tju40/7SbuYMxEelI0x3/LKTAAkBFdXa6UdnVrfj
+         RkKu2lBjgkoSsRzmpa6yUXL0neetbRx4rKEUFyx5ruZ5Me+IgW/5bLVoCLXXkB9lkQ
+         J1AM3wsCT31T8U/r+oMgi8/5QoTOmFLO2xL6m+MUZOPvng5FtkyhcnnWOkOqX6Zoz5
+         C1Y7/cLx/FEXg==
+Date:   Tue, 9 Nov 2021 08:20:42 -0800
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Jason Gunthorpe <jgg@nvidia.com>
+Cc:     Jiri Pirko <jiri@nvidia.com>, Leon Romanovsky <leon@kernel.org>,
+        Ido Schimmel <idosch@idosch.org>,
+        Jiri Pirko <jiri@resnulli.us>,
+        "David S . Miller" <davem@davemloft.net>,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        edwin.peer@broadcom.com
+Subject: Re: [PATCH net-next] devlink: Require devlink lock during device
+ reload
+Message-ID: <20211109082042.31cf29c3@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <20211109153335.GH1740502@nvidia.com>
+References: <YYgSzEHppKY3oYTb@unreal>
+        <20211108080918.2214996c@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+        <YYlfI4UgpEsMt5QI@unreal>
+        <20211108101646.0a4e5ca4@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+        <YYlrZZTdJKhha0FF@unreal>
+        <20211108104608.378c106e@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+        <YYmBbJ5++iO4MOo7@unreal>
+        <20211108153126.1f3a8fe8@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+        <20211109144358.GA1824154@nvidia.com>
+        <20211109070702.17364ec7@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+        <20211109153335.GH1740502@nvidia.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Support for Netlogic was removed in commit 95b8a5e0111a ("MIPS: Remove
-NETLOGIC support"). Remove the now unused bindings.
+On Tue, 9 Nov 2021 11:33:35 -0400 Jason Gunthorpe wrote:
+> > > I once sketched out fixing this by removing the need to hold the
+> > > per_net_rwsem just for list iteration, which in turn avoids holding it
+> > > over the devlink reload paths. It seemed like a reasonable step toward
+> > > finer grained locking.  
+> > 
+> > Seems to me the locking is just a symptom.  
+> 
+> My fear is this reload during net ns destruction is devlink uAPI now
+> and, yes it may be only a symptom, but the root cause may be unfixable
+> uAPI constraints.
 
-The GPIO binding also includes "brcm,vulcan-gpio", but it appears to be
-unused as well as Broadcom Vulkan became Cavium ThunderX2 which is ACPI
-based.
+If I'm reading this right it locks up 100% of the time, what is a uAPI
+for? DoS? ;)
 
-Cc: Linus Walleij <linus.walleij@linaro.org>
-Cc: Bartosz Golaszewski <brgl@bgdev.pl>
-Cc: George Cherian <gcherian@marvell.com>
-Cc: Mark Brown <broonie@kernel.org>
-Cc: linux-gpio@vger.kernel.org
-Cc: linux-i2c@vger.kernel.org
-Cc: linux-spi@vger.kernel.org
-Signed-off-by: Rob Herring <robh@kernel.org>
----
- .../devicetree/bindings/gpio/gpio-xlp.txt     | 49 -------------------
- .../devicetree/bindings/i2c/i2c-xlp9xx.txt    | 22 ---------
- .../devicetree/bindings/spi/spi-xlp.txt       | 38 --------------
- 3 files changed, 109 deletions(-)
- delete mode 100644 Documentation/devicetree/bindings/gpio/gpio-xlp.txt
- delete mode 100644 Documentation/devicetree/bindings/i2c/i2c-xlp9xx.txt
- delete mode 100644 Documentation/devicetree/bindings/spi/spi-xlp.txt
-
-diff --git a/Documentation/devicetree/bindings/gpio/gpio-xlp.txt b/Documentation/devicetree/bindings/gpio/gpio-xlp.txt
-deleted file mode 100644
-index 47fc64922fe0..000000000000
---- a/Documentation/devicetree/bindings/gpio/gpio-xlp.txt
-+++ /dev/null
-@@ -1,49 +0,0 @@
--Netlogic XLP Family GPIO
--========================
--
--This GPIO driver is used for following Netlogic XLP SoCs:
--	XLP832, XLP316, XLP208, XLP980, XLP532
--This GPIO driver is also compatible with GPIO controller found on
--Broadcom Vulcan ARM64.
--
--Required properties:
---------------------
--
--- compatible: Should be one of the following:
--  - "netlogic,xlp832-gpio": For Netlogic XLP832
--  - "netlogic,xlp316-gpio": For Netlogic XLP316
--  - "netlogic,xlp208-gpio": For Netlogic XLP208
--  - "netlogic,xlp980-gpio": For Netlogic XLP980
--  - "netlogic,xlp532-gpio": For Netlogic XLP532
--  - "brcm,vulcan-gpio": For Broadcom Vulcan ARM64
--- reg: Physical base address and length of the controller's registers.
--- #gpio-cells: Should be two. The first cell is the pin number and the second
--  cell is used to specify optional parameters (currently unused).
--- gpio-controller: Marks the device node as a GPIO controller.
--- nr-gpios: Number of GPIO pins supported by the controller.
--- interrupt-cells: Should be two. The first cell is the GPIO Number. The
--  second cell is used to specify flags. The following subset of flags is
--  supported:
--  - trigger type:
--	1 = low to high edge triggered.
--	2 = high to low edge triggered.
--	4 = active high level-sensitive.
--	8 = active low level-sensitive.
--- interrupts: Interrupt number for this device.
--- interrupt-controller: Identifies the node as an interrupt controller.
--
--Example:
--
--	gpio: xlp_gpio@34000 {
--		compatible = "netlogic,xlp316-gpio";
--		reg = <0 0x34100 0x1000
--		       0 0x35100 0x1000>;
--		#gpio-cells = <2>;
--		gpio-controller;
--		nr-gpios = <57>;
--
--		#interrupt-cells = <2>;
--		interrupt-parent = <&pic>;
--		interrupts = <39>;
--		interrupt-controller;
--	};
-diff --git a/Documentation/devicetree/bindings/i2c/i2c-xlp9xx.txt b/Documentation/devicetree/bindings/i2c/i2c-xlp9xx.txt
-deleted file mode 100644
-index f818ef507ab7..000000000000
---- a/Documentation/devicetree/bindings/i2c/i2c-xlp9xx.txt
-+++ /dev/null
-@@ -1,22 +0,0 @@
--Device tree configuration for the I2C controller on the XLP9xx/5xx SoC
--
--Required properties:
--- compatible      : should be "netlogic,xlp980-i2c"
--- reg             : bus address start and address range size of device
--- interrupts      : interrupt number
--
--Optional properties:
--- clock-frequency : frequency of bus clock in Hz
--                    Defaults to 100 KHz when the property is not specified
--
--Example:
--
--i2c0: i2c@113100 {
--	compatible = "netlogic,xlp980-i2c";
--	#address-cells = <1>;
--	#size-cells = <0>;
--	reg = <0 0x113100 0x100>;
--	clock-frequency = <400000>;
--	interrupts = <30>;
--	interrupt-parent = <&pic>;
--};
-diff --git a/Documentation/devicetree/bindings/spi/spi-xlp.txt b/Documentation/devicetree/bindings/spi/spi-xlp.txt
-deleted file mode 100644
-index f4925ec0ed33..000000000000
---- a/Documentation/devicetree/bindings/spi/spi-xlp.txt
-+++ /dev/null
-@@ -1,38 +0,0 @@
--SPI Master controller for Netlogic XLP MIPS64 SOCs
--==================================================
--
--Currently this SPI controller driver is supported for the following
--Netlogic XLP SoCs:
--	XLP832, XLP316, XLP208, XLP980, XLP532
--
--Required properties:
--- compatible		: Should be "netlogic,xlp832-spi".
--- #address-cells	: Number of cells required to define a chip select address
--			  on the SPI bus.
--- #size-cells		: Should be zero.
--- reg			: Should contain register location and length.
--- clocks		: Phandle of the spi clock
--- interrupts		: Interrupt number used by this controller.
--
--SPI slave nodes must be children of the SPI master node and can contain
--properties described in Documentation/devicetree/bindings/spi/spi-bus.txt.
--
--Example:
--
--	spi: xlp_spi@3a100 {
--		compatible = "netlogic,xlp832-spi";
--		#address-cells = <1>;
--		#size-cells = <0>;
--		reg = <0 0x3a100 0x100>;
--		clocks = <&spi_clk>;
--		interrupts = <34>;
--		interrupt-parent = <&pic>;
--
--		spi_nor@1 {
--			compatible = "spansion,s25sl12801";
--			#address-cells = <1>;
--			#size-cells = <1>;
--			reg = <1>;	/* Chip Select */
--			spi-max-frequency = <40000000>;
--		};
--};
--- 
-2.32.0
-
+Hence my questions about the actual use cases.
