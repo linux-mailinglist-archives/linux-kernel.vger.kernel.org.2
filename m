@@ -2,59 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 72F8C44AAD4
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 10:49:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 24DAC44AAD8
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 10:49:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244251AbhKIJwF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Nov 2021 04:52:05 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49288 "EHLO
+        id S241777AbhKIJw2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Nov 2021 04:52:28 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49278 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244303AbhKIJvh (ORCPT
+        with ESMTP id S244189AbhKIJvh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 9 Nov 2021 04:51:37 -0500
-Received: from mail-pg1-x530.google.com (mail-pg1-x530.google.com [IPv6:2607:f8b0:4864:20::530])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE940C061229
-        for <linux-kernel@vger.kernel.org>; Tue,  9 Nov 2021 01:48:50 -0800 (PST)
-Received: by mail-pg1-x530.google.com with SMTP id r80so7670592pgr.9
-        for <linux-kernel@vger.kernel.org>; Tue, 09 Nov 2021 01:48:50 -0800 (PST)
+Received: from mail-pf1-x42e.google.com (mail-pf1-x42e.google.com [IPv6:2607:f8b0:4864:20::42e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5DBE0C061767
+        for <linux-kernel@vger.kernel.org>; Tue,  9 Nov 2021 01:48:52 -0800 (PST)
+Received: by mail-pf1-x42e.google.com with SMTP id n85so14451509pfd.10
+        for <linux-kernel@vger.kernel.org>; Tue, 09 Nov 2021 01:48:52 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=sifive.com; s=google;
         h=from:to:subject:date:message-id:in-reply-to:references:mime-version
          :content-transfer-encoding;
-        bh=pi6gS1AOmEqyClcOp3xUlyQnt7cs+dDGFWt6NZDknBo=;
-        b=XhhhEPcRGde+/dWADPz3tOD7fRSHW5Y8BO+5LP5FefcsixsBDP+3S9Afyg7pPnS0T6
-         /i0QYgPfo1OSfZJtX2AEWIH+8dvpsvqZ5pgSSXxAhXg76J65AUJpuEUMRY2//3yyAg2S
-         RdJ7Jhs/7Eo0hMMbrMtHTL9xB5CX29gCyZAOQb/hlUU73jNmWWQTcZOZcjkXhZSg1eDl
-         YRnJ+CsN/8zq8bBx+aIuH833wvDaR4wrAKJVbz3XLgDbEevPB4BspYwzKhgrt8stQ7lI
-         onVuBdMWdlb4uKmklQUHV2gFwKNI3W88ENjsWKrs0NY0Wns0IfnYp0KA7qDjj03htmUQ
-         v7Bw==
+        bh=F3gUTqBXHGiL19KAfjx/EYijGGOp0DCkOQjrfpw3bjc=;
+        b=IISIGJipeVSh9FXbEQi+Tyuv/8NeGzpzw/sMW1HbuXQVW9bowNXkyt36J+Bx9iorlU
+         Q2GBV8uhJKdZ6MYowxuM+fY4NS+RRCY/2RA5ydFQUCpNMNeswRMFpvfQkO+NNZfZ62nB
+         z1HrBelhzRw7lzYwJmW6jU14nG4LbV4//kEt/2x1Mvvl93LBCaLeRjDf7eZ0WRJKb52u
+         zgg3U+Zdg6/EEFousJtr59iw6zknwPZrYoCSFVZDQKiKnCXe+s8Dubu0GJnZDduLQmbM
+         HUfmmhXPbKiGVjAgzgvOEUU0MkpKQNtWGDHsdiUtZwToY0uUhAEhzMs+fn2ifom7YgUB
+         QvVQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=pi6gS1AOmEqyClcOp3xUlyQnt7cs+dDGFWt6NZDknBo=;
-        b=rL3Qc+SB9oV7d4xivczi2FVSwn2I5//BptUzGOUxPrJVH81p4sdFMYHdJfUdezjOvt
-         ZykolVMZ2knOWHY+rbPnlXdVkPtkvxQh5dzGEALZ+SlAj8+nXA6k5D7P/H16fL1mu+nD
-         qSmd6nd5qv7vseEoU4zeQX0iJ9XZW8cv6LOdxzz6r+60SoIQewHIBnq9jrdXY5wwfWO1
-         qtwYTCvRKqJjgcFVfL6aEU0JmCUbbFotjaXoSwYkmaSdz/2JOMoWldyTmnxXqivtEMuG
-         4KerPYYzD+MKDJFV8u2rV775wbwoB40YWqfOoCqVQx+z2+PVJKAvtiKKEpBAfT46lw4Q
-         Gs9A==
-X-Gm-Message-State: AOAM531VBFMtZKQHygTMXcF+CWN/kBlmO9KVf7kSpm8WTifHnqwifHbi
-        OBQ9FQgsZRk6njLtoU08AK3ZiA==
-X-Google-Smtp-Source: ABdhPJx81VI0xuBl2e3qBtdgy3iT4Pr+E/K/KZMFUv167TUv0MZiT8hPEDwKaoL/oCVjxLvCG8sPdw==
-X-Received: by 2002:a63:9207:: with SMTP id o7mr4797495pgd.236.1636451330410;
-        Tue, 09 Nov 2021 01:48:50 -0800 (PST)
+        bh=F3gUTqBXHGiL19KAfjx/EYijGGOp0DCkOQjrfpw3bjc=;
+        b=pHPARn0EILsuWbqxOdl7IQn5USVCKfOWTQ/cpcJjg0oeSQxdeyptNtPRnfAFO/B0Cs
+         Cc2SCQXtdeTB3AVQoQZykHW9rKfDk/pucH6pOsJYPOtAjwoC6dWUHAXl2rrYdUEeSv7d
+         QS+/7S/LFFOxsV+rXG1NUntpJXOxc3116JuUF5zXy8XN5KZ0BWPhsfGSznehW5up8cKg
+         y2ifhZGayPWUmIz1JE2QYjLy3Tk6VdiJG0T8bN923f+c6BaVgWYNyF5sOrnZUebEx809
+         9PcCRlIwCQE9GRiMFjkluoApD5RGFwLIbtqS8TI39Z/v/lsUpbjsxxN/K9Ob+QNMGkYT
+         fUCw==
+X-Gm-Message-State: AOAM5336Xhp9i6WEQfby+4lTvRdnI7ArQaGUWpexV0F2bFbpCQKiBvAS
+        /mNmYqIkRyxeeIJRArOXo87LPA==
+X-Google-Smtp-Source: ABdhPJylBWGGztsPastX75WALYPMLNUP9zNUffkdqiIDAW08rYy+g+UFLDsvl+F/dn5aAcIjAQskLQ==
+X-Received: by 2002:a63:2b48:: with SMTP id r69mr4840642pgr.421.1636451331828;
+        Tue, 09 Nov 2021 01:48:51 -0800 (PST)
 Received: from hsinchu16.internal.sifive.com (59-124-168-89.hinet-ip.hinet.net. [59.124.168.89])
-        by smtp.gmail.com with ESMTPSA id cv1sm1940511pjb.48.2021.11.09.01.48.49
+        by smtp.gmail.com with ESMTPSA id cv1sm1940511pjb.48.2021.11.09.01.48.50
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 09 Nov 2021 01:48:50 -0800 (PST)
+        Tue, 09 Nov 2021 01:48:51 -0800 (PST)
 From:   Greentime Hu <greentime.hu@sifive.com>
 To:     palmer@dabbelt.com, paul.walmsley@sifive.com,
         linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
         aou@eecs.berkeley.edu
-Subject: [PATCH v9 12/17] riscv: signal: Report signal frame size to userspace via auxv
-Date:   Tue,  9 Nov 2021 17:48:24 +0800
-Message-Id: <94cdeb16927a0eeeed82537fa69cb11b0650f176.1636362169.git.greentime.hu@sifive.com>
+Subject: [PATCH v9 13/17] riscv: Add support for kernel mode vector
+Date:   Tue,  9 Nov 2021 17:48:25 +0800
+Message-Id: <5700882ca97cc9fb8ee44ce127f30ca04d81495e.1636362169.git.greentime.hu@sifive.com>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <cover.1636362169.git.greentime.hu@sifive.com>
 References: <cover.1636362169.git.greentime.hu@sifive.com>
@@ -64,131 +64,235 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Vincent Chen <vincent.chen@sifive.com>
+Add <asm/vector.h> containing kernel_rvv_begin()/kernel_rvv_end() function
+declarations and corresponding definitions in kernel_mode_vector.c
 
-The vector register belongs to the signal context. They need to be stored
-and restored as entering and leaving the signal handler. According to the
-V-extension specification, the maximum length of the vector registers can
-be 2^(XLEN-1). Hence, if userspace refers to the MINSIGSTKSZ to create a
-sigframe, it may not be enough. To resolve this problem, this patch refers
-to the commit 94b07c1f8c39c
-("arm64: signal: Report signal frame size to userspace via auxv") to enable
-userspace to know the minimum required sigframe size through the auxiliary
-vector and use it to allocate enough memory for signal context.
+These are needed to wrap uses of vector in kernel mode.
 
 Signed-off-by: Greentime Hu <greentime.hu@sifive.com>
+Co-developed-by: Vincent Chen <vincent.chen@sifive.com>
 Signed-off-by: Vincent Chen <vincent.chen@sifive.com>
 ---
- arch/riscv/include/asm/elf.h         | 41 +++++++++++++++++-----------
- arch/riscv/include/asm/processor.h   |  2 ++
- arch/riscv/include/uapi/asm/auxvec.h |  1 +
- arch/riscv/kernel/signal.c           |  8 ++++++
- 4 files changed, 36 insertions(+), 16 deletions(-)
+ arch/riscv/include/asm/switch_to.h     |   1 +
+ arch/riscv/include/asm/vector.h        |  14 +++
+ arch/riscv/kernel/Makefile             |   1 +
+ arch/riscv/kernel/kernel_mode_vector.c | 144 +++++++++++++++++++++++++
+ arch/riscv/kernel/vector.S             |   9 ++
+ 5 files changed, 169 insertions(+)
+ create mode 100644 arch/riscv/include/asm/vector.h
+ create mode 100644 arch/riscv/kernel/kernel_mode_vector.c
 
-diff --git a/arch/riscv/include/asm/elf.h b/arch/riscv/include/asm/elf.h
-index f53c40026c7a..72e02a31a279 100644
---- a/arch/riscv/include/asm/elf.h
-+++ b/arch/riscv/include/asm/elf.h
-@@ -61,22 +61,31 @@ extern unsigned long elf_hwcap;
- #define ELF_PLATFORM	(NULL)
+diff --git a/arch/riscv/include/asm/switch_to.h b/arch/riscv/include/asm/switch_to.h
+index 576204217e0f..b02064a3effd 100644
+--- a/arch/riscv/include/asm/switch_to.h
++++ b/arch/riscv/include/asm/switch_to.h
+@@ -79,6 +79,7 @@ static __always_inline bool has_vector(void)
+ extern unsigned long riscv_vsize;
+ extern void __vstate_save(struct __riscv_v_state *save_to, void *datap);
+ extern void __vstate_restore(struct __riscv_v_state *restore_from, void *datap);
++void vector_flush_cpu_state(void);
  
- #ifdef CONFIG_MMU
--#define ARCH_DLINFO						\
--do {								\
--	NEW_AUX_ENT(AT_SYSINFO_EHDR,				\
--		(elf_addr_t)current->mm->context.vdso);		\
--	NEW_AUX_ENT(AT_L1I_CACHESIZE,				\
--		get_cache_size(1, CACHE_TYPE_INST));		\
--	NEW_AUX_ENT(AT_L1I_CACHEGEOMETRY,			\
--		get_cache_geometry(1, CACHE_TYPE_INST));	\
--	NEW_AUX_ENT(AT_L1D_CACHESIZE,				\
--		get_cache_size(1, CACHE_TYPE_DATA));		\
--	NEW_AUX_ENT(AT_L1D_CACHEGEOMETRY,			\
--		get_cache_geometry(1, CACHE_TYPE_DATA));	\
--	NEW_AUX_ENT(AT_L2_CACHESIZE,				\
--		get_cache_size(2, CACHE_TYPE_UNIFIED));		\
--	NEW_AUX_ENT(AT_L2_CACHEGEOMETRY,			\
--		get_cache_geometry(2, CACHE_TYPE_UNIFIED));	\
-+#define ARCH_DLINFO						 \
-+do {								 \
-+	NEW_AUX_ENT(AT_SYSINFO_EHDR,				 \
-+		(elf_addr_t)current->mm->context.vdso);		 \
-+	NEW_AUX_ENT(AT_L1I_CACHESIZE,				 \
-+		get_cache_size(1, CACHE_TYPE_INST));		 \
-+	NEW_AUX_ENT(AT_L1I_CACHEGEOMETRY,			 \
-+		get_cache_geometry(1, CACHE_TYPE_INST));	 \
-+	NEW_AUX_ENT(AT_L1D_CACHESIZE,				 \
-+		get_cache_size(1, CACHE_TYPE_DATA));		 \
-+	NEW_AUX_ENT(AT_L1D_CACHEGEOMETRY,			 \
-+		get_cache_geometry(1, CACHE_TYPE_DATA));	 \
-+	NEW_AUX_ENT(AT_L2_CACHESIZE,				 \
-+		get_cache_size(2, CACHE_TYPE_UNIFIED));		 \
-+	NEW_AUX_ENT(AT_L2_CACHEGEOMETRY,			 \
-+		get_cache_geometry(2, CACHE_TYPE_UNIFIED));	 \
-+	/*							 \
-+	 * Should always be nonzero unless there's a kernel bug. \
-+	 * If we haven't determined a sensible value to give to	 \
-+	 * userspace, omit the entry:				 \
-+	 */							 \
-+	if (likely(signal_minsigstksz))				 \
-+		NEW_AUX_ENT(AT_MINSIGSTKSZ, signal_minsigstksz); \
-+	else							 \
-+		NEW_AUX_ENT(AT_IGNORE, 0);			 \
- } while (0)
- #define ARCH_HAS_SETUP_ADDITIONAL_PAGES
- struct linux_binprm;
-diff --git a/arch/riscv/include/asm/processor.h b/arch/riscv/include/asm/processor.h
-index a268f1382e52..e41e9d2b466c 100644
---- a/arch/riscv/include/asm/processor.h
-+++ b/arch/riscv/include/asm/processor.h
-@@ -7,6 +7,7 @@
- #define _ASM_RISCV_PROCESSOR_H
- 
- #include <linux/const.h>
-+#include <linux/cache.h>
- 
- #include <vdso/processor.h>
- 
-@@ -82,6 +83,7 @@ int riscv_of_parent_hartid(struct device_node *node);
- extern void riscv_fill_hwcap(void);
- extern int arch_dup_task_struct(struct task_struct *dst, struct task_struct *src);
- 
-+extern unsigned long signal_minsigstksz __ro_after_init;
- #endif /* __ASSEMBLY__ */
- 
- #endif /* _ASM_RISCV_PROCESSOR_H */
-diff --git a/arch/riscv/include/uapi/asm/auxvec.h b/arch/riscv/include/uapi/asm/auxvec.h
-index 32c73ba1d531..6610d24e6662 100644
---- a/arch/riscv/include/uapi/asm/auxvec.h
-+++ b/arch/riscv/include/uapi/asm/auxvec.h
-@@ -33,5 +33,6 @@
- 
- /* entries in ARCH_DLINFO */
- #define AT_VECTOR_SIZE_ARCH	7
-+#define AT_MINSIGSTKSZ 51
- 
- #endif /* _UAPI_ASM_RISCV_AUXVEC_H */
-diff --git a/arch/riscv/kernel/signal.c b/arch/riscv/kernel/signal.c
-index 6eb52890266e..ec6092987d82 100644
---- a/arch/riscv/kernel/signal.c
-+++ b/arch/riscv/kernel/signal.c
-@@ -471,8 +471,16 @@ asmlinkage __visible void do_notify_resume(struct pt_regs *regs,
- 		tracehook_notify_resume(regs);
- }
- 
-+unsigned long __ro_after_init signal_minsigstksz;
-+
- void init_rt_signal_env(void);
- void __init init_rt_signal_env(void)
+ static inline void __vstate_clean(struct pt_regs *regs)
  {
- 	rvv_sc_size = sizeof(struct __sc_riscv_v_state) + riscv_vsize;
+diff --git a/arch/riscv/include/asm/vector.h b/arch/riscv/include/asm/vector.h
+new file mode 100644
+index 000000000000..5d7f14453f68
+--- /dev/null
++++ b/arch/riscv/include/asm/vector.h
+@@ -0,0 +1,14 @@
++/* SPDX-License-Identifier: GPL-2.0-or-later */
++/*
++ * Copyright (C) 2020 SiFive
++ */
++
++#ifndef __ASM_RISCV_VECTOR_H
++#define __ASM_RISCV_VECTOR_H
++
++#include <linux/types.h>
++
++void kernel_rvv_begin(void);
++void kernel_rvv_end(void);
++
++#endif /* ! __ASM_RISCV_VECTOR_H */
+diff --git a/arch/riscv/kernel/Makefile b/arch/riscv/kernel/Makefile
+index 344078080839..8feda6312187 100644
+--- a/arch/riscv/kernel/Makefile
++++ b/arch/riscv/kernel/Makefile
+@@ -41,6 +41,7 @@ obj-$(CONFIG_MMU) += vdso.o vdso/
+ obj-$(CONFIG_RISCV_M_MODE)	+= traps_misaligned.o
+ obj-$(CONFIG_FPU)		+= fpu.o
+ obj-$(CONFIG_VECTOR)		+= vector.o
++obj-$(CONFIG_VECTOR)		+= kernel_mode_vector.o
+ obj-$(CONFIG_SMP)		+= smpboot.o
+ obj-$(CONFIG_SMP)		+= smp.o
+ obj-$(CONFIG_SMP)		+= cpu_ops.o
+diff --git a/arch/riscv/kernel/kernel_mode_vector.c b/arch/riscv/kernel/kernel_mode_vector.c
+new file mode 100644
+index 000000000000..8d2e53ea25c1
+--- /dev/null
++++ b/arch/riscv/kernel/kernel_mode_vector.c
+@@ -0,0 +1,144 @@
++// SPDX-License-Identifier: GPL-2.0-or-later
++/*
++ * Copyright (C) 2012 ARM Ltd.
++ * Author: Catalin Marinas <catalin.marinas@arm.com>
++ * Copyright (C) 2017 Linaro Ltd. <ard.biesheuvel@linaro.org>
++ * Copyright (C) 2021 SiFive
++ */
++#include <linux/compiler.h>
++#include <linux/irqflags.h>
++#include <linux/percpu.h>
++#include <linux/preempt.h>
++#include <linux/types.h>
++
++#include <asm/vector.h>
++#include <asm/switch_to.h>
++
++DECLARE_PER_CPU(bool, vector_context_busy);
++DEFINE_PER_CPU(bool, vector_context_busy);
++
++/*
++ * may_use_vector - whether it is allowable at this time to issue vector
++ *                instructions or access the vector register file
++ *
++ * Callers must not assume that the result remains true beyond the next
++ * preempt_enable() or return from softirq context.
++ */
++static __must_check inline bool may_use_vector(void)
++{
 +	/*
-+	 * Determine the stack space required for guaranteed signal delivery.
-+	 * The signal_minsigstksz will be populated into the AT_MINSIGSTKSZ entry
-+	 * in the auxiliary array at process startup.
++	 * vector_context_busy is only set while preemption is disabled,
++	 * and is clear whenever preemption is enabled. Since
++	 * this_cpu_read() is atomic w.r.t. preemption, vector_context_busy
++	 * cannot change under our feet -- if it's set we cannot be
++	 * migrated, and if it's clear we cannot be migrated to a CPU
++	 * where it is set.
 +	 */
-+	signal_minsigstksz = cal_rt_frame_size();
- }
++	return !in_irq() && !irqs_disabled() && !in_nmi() &&
++	       !this_cpu_read(vector_context_busy);
++}
++
++
++
++/*
++ * Claim ownership of the CPU vector context for use by the calling context.
++ *
++ * The caller may freely manipulate the vector context metadata until
++ * put_cpu_vector_context() is called.
++ */
++static void get_cpu_vector_context(void)
++{
++	bool busy;
++
++	preempt_disable();
++	busy = __this_cpu_xchg(vector_context_busy, true);
++
++	WARN_ON(busy);
++}
++
++/*
++ * Release the CPU vector context.
++ *
++ * Must be called from a context in which get_cpu_vector_context() was
++ * previously called, with no call to put_cpu_vector_context() in the
++ * meantime.
++ */
++static void put_cpu_vector_context(void)
++{
++	bool busy = __this_cpu_xchg(vector_context_busy, false);
++
++	WARN_ON(!busy);
++	preempt_enable();
++}
++
++static void rvv_enable(void)
++{
++	csr_set(CSR_STATUS, SR_VS);
++}
++
++static void rvv_disable(void)
++{
++	csr_clear(CSR_STATUS, SR_VS);
++}
++
++/*
++ * kernel_rvv_begin(): obtain the CPU vector registers for use by the calling
++ * context
++ *
++ * Must not be called unless may_use_vector() returns true.
++ * Task context in the vector registers is saved back to memory as necessary.
++ *
++ * A matching call to kernel_rvv_end() must be made before returning from the
++ * calling context.
++ *
++ * The caller may freely use the vector registers until kernel_rvv_end() is
++ * called.
++ */
++void kernel_rvv_begin(void)
++{
++	if (WARN_ON(!has_vector()))
++		return;
++
++	WARN_ON(!may_use_vector());
++
++	/* Acquire kernel mode vector */
++	get_cpu_vector_context();
++
++	/* Save vector state, if any */
++	vstate_save(current, task_pt_regs(current));
++
++	/* Enable vector */
++	rvv_enable();
++
++	/* Invalidate vector regs */
++	vector_flush_cpu_state();
++}
++EXPORT_SYMBOL_GPL(kernel_rvv_begin);
++
++/*
++ * kernel_rvv_end(): give the CPU vector registers back to the current task
++ *
++ * Must be called from a context in which kernel_rvv_begin() was previously
++ * called, with no call to kernel_rvv_end() in the meantime.
++ *
++ * The caller must not use the vector registers after this function is called,
++ * unless kernel_rvv_begin() is called again in the meantime.
++ */
++void kernel_rvv_end(void)
++{
++	if (WARN_ON(!has_vector()))
++		return;
++
++	/* Invalidate vector regs */
++	vector_flush_cpu_state();
++
++	/* Restore vector state, if any */
++	vstate_restore(current, task_pt_regs(current));
++
++	/* disable vector */
++	rvv_disable();
++
++	/* release kernel mode vector */
++	put_cpu_vector_context();
++}
++EXPORT_SYMBOL_GPL(kernel_rvv_end);
+diff --git a/arch/riscv/kernel/vector.S b/arch/riscv/kernel/vector.S
+index 7f3e3a838424..a973532d2e7f 100644
+--- a/arch/riscv/kernel/vector.S
++++ b/arch/riscv/kernel/vector.S
+@@ -79,3 +79,12 @@ ENTRY(__vstate_restore)
+ 	csrc	sstatus, status
+ 	ret
+ ENDPROC(__vstate_restore)
++
++ENTRY(vector_flush_cpu_state)
++	vsetvli t0, x0, e8, m8
++	vmv.v.i v0, 0
++	vmv.v.i v8, 0
++	vmv.v.i v16, 0
++	vmv.v.i v24, 0
++	ret
++ENDPROC(vector_flush_cpu_state)
 -- 
 2.31.1
 
