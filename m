@@ -2,189 +2,538 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4AF0A44A5C1
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 05:18:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8927244A5BF
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 05:18:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240269AbhKIEV3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Nov 2021 23:21:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59886 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236033AbhKIEV2 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Nov 2021 23:21:28 -0500
-Received: from mail-pl1-x62e.google.com (mail-pl1-x62e.google.com [IPv6:2607:f8b0:4864:20::62e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E8183C061764;
-        Mon,  8 Nov 2021 20:18:42 -0800 (PST)
-Received: by mail-pl1-x62e.google.com with SMTP id b13so18618335plg.2;
-        Mon, 08 Nov 2021 20:18:42 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=message-id:subject:from:to:cc:date:in-reply-to:references
-         :user-agent:mime-version:content-transfer-encoding;
-        bh=ix78GK2Ai7YylWGN1G/dwgUbIj6jFnrVnnnI52lvEDk=;
-        b=WAOUSuLR53P0drGRSYvrEntpJT1sDxDKH0kQ4o4wMYkMxqFM+7CWH9a+z7+/u5MbY2
-         YrInPWdU7O1b44Fpdg/sa6qkde6MTCvc1vSNwMIqw0GIzjiEsVLFF3KiGvuU3JtUbXFp
-         lbeH5Gj/+vOP/kSZCv9L+F/oa9BQjxvaaGUDEofBrYYhZGI4Q38aXF8snu/2Kg2CkmQE
-         dIVhqwfYVPbR/CSxFXb/vLChJpzbGkyMoMYkXV94stlCdOtS2Vqahq3+0FuVqWG2/wDy
-         2oqc2w7SZtlfqhZ3pVLaUba0l0XeGwoEKRvjR6+BsEB1VZWZvmVsy2M2n/cIwdf0X+hM
-         E8pQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
-         :references:user-agent:mime-version:content-transfer-encoding;
-        bh=ix78GK2Ai7YylWGN1G/dwgUbIj6jFnrVnnnI52lvEDk=;
-        b=7eA9SDBiwr45eViHVP/OrC2UI2n72rJaRaQeVy7Mhdn3NC80IpXi1GwoZFRsP9v7SF
-         +CM/h7F5HaI90U51UeF7bcCHBCjYDuNLtFeGiLjn2WCxvKWUhqjAb5mgzY7jENNxHFZq
-         Qk+sVkHOHYmtzPWgJDFN3CMtGFpgieVT4PaeuSQYFVIaBI0esxXA0rovD6sMLVXPnRmD
-         /vbpk1CXfNCnSHmJKVExDZIj0cB+RECa5jV9IY4pJrfthllmyxvmy/9Jp+1s8MTZQE0C
-         UvKU4vQvIqkIGqZXCP7Pw1VRNtWVePbxJ3lLyJW1YgxuCkqvwkJW5jy2Vc9aEH5s2t/U
-         oG0w==
-X-Gm-Message-State: AOAM532qJeq8K6XLnL8uXdpVnzpq9a3Pnl+z1pnObkg8qWrkkL3SIwgM
-        k4S+njfaGDos40gcwjTihQ4=
-X-Google-Smtp-Source: ABdhPJxuRWfYNUY+42wLvJZbwIoUSEA5xlfKT4Y0eGwrQGAUAU+1lvMm+3LfOUjYugprI7pv2a/kcw==
-X-Received: by 2002:a17:90b:4f4c:: with SMTP id pj12mr3942210pjb.218.1636431522328;
-        Mon, 08 Nov 2021 20:18:42 -0800 (PST)
-Received: from ?IPv6:2400:4052:6980:3800:dba7:2b1f:3f26:a5ec? ([2400:4052:6980:3800:dba7:2b1f:3f26:a5ec])
-        by smtp.gmail.com with ESMTPSA id e15sm806819pja.52.2021.11.08.20.18.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 08 Nov 2021 20:18:41 -0800 (PST)
-Message-ID: <46b212b2f8aeceaf20f7694a53247ae6846ab2b7.camel@gmail.com>
-Subject: Re: [BUG 5/5] [BUG] media: atomisp: atomisp causes touchscreen to
- stop working on Microsoft Surface 3
-From:   Tsuchiya Yuto <kitakar@gmail.com>
-To:     Hans de Goede <hdegoede@redhat.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>
-Cc:     Patrik Gfeller <patrik.gfeller@gmail.com>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Kaixu Xia <kaixuxia@tencent.com>,
-        Dan Carpenter <dan.carpenter@oracle.com>,
-        Arnd Bergmann <arnd@arndb.de>, linux-media@vger.kernel.org,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
-Date:   Tue, 09 Nov 2021 13:18:37 +0900
-In-Reply-To: <869d0e2c-b04a-ef35-cfe5-b372c646fce9@redhat.com>
-References: <20211017162337.44860-1-kitakar@gmail.com>
-         <20211017162337.44860-6-kitakar@gmail.com>
-         <103b5438-9f7c-7e89-28b9-29fe11eb818c@redhat.com>
-         <cfad27a4bfdd94417305e1519e2f450a4422844d.camel@gmail.com>
-         <310ace44-93d5-99a3-bb4c-371b0a13462d@redhat.com>
-         <20211108074101.033af4c5@sal.lan>
-         <869d0e2c-b04a-ef35-cfe5-b372c646fce9@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.40.4 
+        id S240120AbhKIEVF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Nov 2021 23:21:05 -0500
+Received: from out2.migadu.com ([188.165.223.204]:50676 "EHLO out2.migadu.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S236033AbhKIEVE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Nov 2021 23:21:04 -0500
+Date:   Tue, 9 Nov 2021 12:18:59 +0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+        t=1636431497;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=Zcx9kemVvvPfF/6pbo7VE2DObwW8ePDglZ/Or5HOZg8=;
+        b=eehvuX76yvCqcTM6TuHcdgUGJ0CY2cbXVTVGlOLz5UDLS/c1A89cL550Z2ece0pi14KhW7
+        RA1dDanAzEd7h7RkEod9yX8Iq/SjmpKsJCn9x9YpaF7YQaJBHMD8iVdPcl1G5otnCjBcuC
+        5kQKhAf17z2wvupwhwAu9IWiluBYzFk=
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From:   Tao Zhou <tao.zhou@linux.dev>
+To:     Peter Oskolkov <posk@posk.io>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Andy Lutomirski <luto@kernel.org>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, linux-api@vger.kernel.org,
+        Paul Turner <pjt@google.com>, Ben Segall <bsegall@google.com>,
+        Peter Oskolkov <posk@google.com>,
+        Andrei Vagin <avagin@google.com>, Jann Horn <jannh@google.com>,
+        Thierry Delisle <tdelisle@uwaterloo.ca>,
+        Tao Zhou <tao.zhou@linux.dev>
+Subject: Re: [PATCH v0.8 2/6] mm, x86/uaccess: add userspace atomic helpers
+Message-ID: <YYn2s+S6kMrwMW43@geo.homenetwork>
+References: <20211104195804.83240-1-posk@google.com>
+ <20211104195804.83240-3-posk@google.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211104195804.83240-3-posk@google.com>
+X-Migadu-Flow: FLOW_OUT
+X-Migadu-Auth-User: tao.zhou@linux.dev
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 2021-11-08 at 08:55 +0100, Hans de Goede wrote:
-> Hi Mauro,
+On Thu, Nov 04, 2021 at 12:58:00PM -0700, Peter Oskolkov wrote:
+
+> In addition to futexes needing to do atomic operations in the userspace,
+> a second use case is now in the works (UMCG, see
+> https://lore.kernel.org/all/20210917180323.278250-1-posk@google.com/),
+> so a generic facility to perform these operations has been called for
+> (see https://lore.kernel.org/all/87ilyk9xc0.ffs@tglx/).
 > 
-> On 11/8/21 08:41, Mauro Carvalho Chehab wrote:
-> > Em Mon, 8 Nov 2021 00:39:38 +0100
-> > Hans de Goede <hdegoede@redhat.com> escreveu:
-> > 
-> > > Hi,
-> > > 
-> > > On 10/21/21 11:52, Tsuchiya Yuto wrote:
-> > > > Thank you for your comment :-)
-> > > > 
-> > > > First, I need to correct what I said in the previous mail. I later found
-> > > > that loading only "atomisp" (as well as its dependency,
-> > > > atomisp_gmin_platform) does not cause this issue.
-> > > > 
-> > > > What causes this issue is rather, loading sensor drivers (as well as its
-> > > > dependency, atomisp_gmin_platform).
-> > > > 
-> > > > These sensor drivers for surface3 are both not upstream, but I made them
-> > > > as similar as possible to the upstreamed ones. So, I guess this issue
-> > > > can still be reproducible on some other devices.  
-> > > 
-> > > I've run some test on my own surface3 and the problem is the writing
-> > > of 0x62 (which becomes just 0x02) to the 0x57 register of the PMIC,
-> > > writing 0x00 to that after loading the sensor driver makes things work
-> > > again.
-> > > 
-> > > I have not had time to investigate this further.
-> > > 
-> > > I used media-staging + your sensor drivers from:
-> > > https://github.com/kitakar5525/surface3-atomisp-cameras.git
-> > > 
-> > > Which was enough to figure this out, but I've not actually gotten
-> > > either of the cameras working :|  I get:
-> > > 
-> > > [user@fedora nvt]$ ./atomisp-test.sh 
-> > > p0: OPEN video device `/dev/video2'
-> > 
-> > After the patch that moved the output preview to be the first one,
-> > you should probably use /dev/video0 here:
+> Add a set of generic helpers to perform 32/64-bit xchg and cmpxchg
+> operations in the userspace. Also implement the required
+> architecture-specific support on x86_64.
 > 
-> Thanks for the hint, but I've not rebased my tree to those latest couple
-> of patches yet, the same tree does work on the T101HA with /dev/video2 :)
+> Signed-off-by: Peter Oskolkov <posk@google.com>
+> ---
+>  arch/x86/include/asm/uaccess_64.h |  93 +++++++++++
+>  include/linux/uaccess.h           |  46 ++++++
+>  mm/maccess.c                      | 264 ++++++++++++++++++++++++++++++
+>  3 files changed, 403 insertions(+)
 > 
-> I think this may be a module load ordering issue, I believe that the
-> sensor drivers need to be loaded before the atomisp driver itself
-> and on the T101HA we are hitting this "sweet spot",
+> diff --git a/arch/x86/include/asm/uaccess_64.h b/arch/x86/include/asm/uaccess_64.h
+> index 45697e04d771..41e2f96d3ec4 100644
+> --- a/arch/x86/include/asm/uaccess_64.h
+> +++ b/arch/x86/include/asm/uaccess_64.h
+> @@ -79,4 +79,97 @@ __copy_from_user_flushcache(void *dst, const void __user *src, unsigned size)
+>  	kasan_check_write(dst, size);
+>  	return __copy_user_flushcache(dst, src, size);
+>  }
+> +
+> +#define ARCH_HAS_ATOMIC_UACCESS_HELPERS 1
+> +
+> +static inline int __try_cmpxchg_user_32(u32 *uval, u32 __user *uaddr,
+> +						u32 oldval, u32 newval)
+> +{
+> +	int ret = 0;
+> +
+> +	asm volatile("\n"
+> +		"1:\t" LOCK_PREFIX "cmpxchgl %4, %2\n"
+> +		"2:\n"
+> +		"\t.section .fixup, \"ax\"\n"
+> +		"3:\tmov     %3, %0\n"
+> +		"\tjmp     2b\n"
+> +		"\t.previous\n"
+> +		_ASM_EXTABLE_UA(1b, 3b)
+> +		: "+r" (ret), "=a" (oldval), "+m" (*uaddr)
+> +		: "i" (-EFAULT), "r" (newval), "1" (oldval)
+> +		: "memory"
+> +	);
+> +	*uval = oldval;
+> +	return ret;
+> +}
+> +
+> +static inline int __try_cmpxchg_user_64(u64 *uval, u64 __user *uaddr,
+> +						u64 oldval, u64 newval)
+> +{
+> +	int ret = 0;
+> +
+> +	asm volatile("\n"
+> +		"1:\t" LOCK_PREFIX "cmpxchgq %4, %2\n"
+> +		"2:\n"
+> +		"\t.section .fixup, \"ax\"\n"
+> +		"3:\tmov     %3, %0\n"
+> +		"\tjmp     2b\n"
+> +		"\t.previous\n"
+> +		_ASM_EXTABLE_UA(1b, 3b)
+> +		: "+r" (ret), "=a" (oldval), "+m" (*uaddr)
+> +		: "i" (-EFAULT), "r" (newval), "1" (oldval)
+> +		: "memory"
+> +	);
+> +	*uval = oldval;
+> +	return ret;
+> +}
+> +
+> +static inline int __try_xchg_user_32(u32 *oval, u32 __user *uaddr, u32 newval)
+> +{
+> +	u32 oldval = 0;
+> +	int ret = 0;
+> +
+> +	asm volatile("\n"
+> +		"1:\txchgl %0, %2\n"
+> +		"2:\n"
+> +		"\t.section .fixup, \"ax\"\n"
+> +		"3:\tmov     %3, %1\n"
+> +		"\tjmp     2b\n"
+> +		"\t.previous\n"
+> +		_ASM_EXTABLE_UA(1b, 3b)
+> +		: "=r" (oldval), "=r" (ret), "+m" (*uaddr)
+> +		: "i" (-EFAULT), "0" (newval), "1" (0)
 
-> where as on
-> the surface I was loading the not yet merged sensor drivers manually,
-> causing them to be loaded later.
+"1"(0) can be omitted, that ret is initialized. And the initialization
+of oldval not need.
+
+> +	);
+> +
+> +	if (ret)
+> +		return ret;
+> +
+> +	*oval = oldval;
+> +	return 0;
+> +}
+> +
+> +static inline int __try_xchg_user_64(u64 *oval, u64 __user *uaddr, u64 newval)
+> +{
+> +	u64 oldval = 0;
+> +	int ret = 0;
+> +
+> +	asm volatile("\n"
+> +		"1:\txchgq %0, %2\n"
+> +		"2:\n"
+> +		"\t.section .fixup, \"ax\"\n"
+> +		"3:\tmov     %3, %1\n"
+> +		"\tjmp     2b\n"
+> +		"\t.previous\n"
+> +		_ASM_EXTABLE_UA(1b, 3b)
+> +		: "=r" (oldval), "=r" (ret), "+m" (*uaddr)
+> +		: "i" (-EFAULT), "0" (newval), "1" (0)
+
+Same of above.
+
+> +	);
+> +
+> +	if (ret)
+> +		return ret;
+> +
+> +	*oval = oldval;
+> +	return 0;
+> +}
+> +
+>  #endif /* _ASM_X86_UACCESS_64_H */
+> diff --git a/include/linux/uaccess.h b/include/linux/uaccess.h
+> index ac0394087f7d..dcb3ac093075 100644
+> --- a/include/linux/uaccess.h
+> +++ b/include/linux/uaccess.h
+> @@ -408,4 +408,50 @@ void __noreturn usercopy_abort(const char *name, const char *detail,
+>  			       unsigned long len);
+>  #endif
 > 
-> I still need to verify this theory, Tsuchiya can you perhaps confirm 
-> that the modules must be loaded in this order?
+> +#ifdef ARCH_HAS_ATOMIC_UACCESS_HELPERS
+> +/**
+> + * cmpxchg_user_[32|64][_nofault|]() - compare_exchange 32/64-bit values
+> + * @uaddr:     Destination address, in user space;
+> + * @curr_val:  Source address, in kernel space;
+> + * @new_val:   The value to write to the destination address.
+> + *
+> + * This is the standard cmpxchg: atomically: compare *@uaddr to *@curr_val;
+> + * if the values match, write @new_val to @uaddr, return 0; if the values
+> + * do not match, write *@uaddr to @curr_val, return -EAGAIN.
+> + *
+> + * The _nofault versions don't fault and can be used in
+> + * atomic/preempt-disabled contexts.
+> + *
+> + * Return:
+> + * 0      : OK/success;
+> + * -EINVAL: @uaddr is not properly aligned ('may fault' versions only);
+> + * -EFAULT: memory access error (including mis-aligned @uaddr in _nofault);
 
-Sorry I forgot to add a note about a load order in my sensor driver repo
-for the case if you insmod external drivers. Yes, you need to load sensor
-drivers _before_ the main atomisp driver.
+(including mis-aligned @uaddr in _fault)
 
-So, here is the script to load sensor drivers in a proper order. Using
-rmmod because as I sent a bug report ("[BUG 4/5] [BUG] media: atomisp:
-`modprobe -r` not working well (dup video4linux, ATOMISP_SUBDEV_{0,1})"),
-`modprobe -r` does not work well for me.
+> + * -EAGAIN: @old did not match.
+> + */
+> +int cmpxchg_user_32_nofault(u32 __user *uaddr, u32 *curr_val, u32 new_val);
+> +int cmpxchg_user_64_nofault(u64 __user *uaddr, u64 *curr_val, u64 new_val);
+> +int cmpxchg_user_32(u32 __user *uaddr, u32 *curr_val, u32 new_val);
+> +int cmpxchg_user_64(u64 __user *uaddr, u64 *curr_val, u64 new_val);
+> +
+> +/**
+> + * xchg_user_[32|64][_nofault|]() - exchange 32/64-bit values
+> + * @uaddr:   Destination address, in user space;
+> + * @val:     Source address, in kernel space.
+> + *
+> + * This is the standard atomic xchg: exchange values pointed to by @uaddr and @val.
+> + *
+> + * The _nofault versions don't fault and can be used in
+> + * atomic/preempt-disabled contexts.
+> + *
+> + * Return:
+> + * 0      : OK/success;
+> + * -EINVAL: @uaddr is not properly aligned ('may fault' versions only);
+> + * -EFAULT: memory access error (including mis-aligned @uaddr in _nofault).
 
-        rmmod atomisp
-        insmod atomisp-ar0330.ko
-        insmod atomisp-ov883x.ko
-        # IIRC, modprobe works but try insmod instead if weird
-        modprobe atomisp
+(including mis-aligned @uaddr in _fault)
 
-Here is the insmod script I use for the record:
+> + */
+> +int xchg_user_32_nofault(u32 __user *uaddr, u32 *val);
+> +int xchg_user_64_nofault(u64 __user *uaddr, u64 *val);
+> +int xchg_user_32(u32 __user *uaddr, u32 *val);
+> +int xchg_user_64(u64 __user *uaddr, u64 *val);
+> +#endif		/* ARCH_HAS_ATOMIC_UACCESS_HELPERS */
+> +
+>  #endif		/* __LINUX_UACCESS_H__ */
+> diff --git a/mm/maccess.c b/mm/maccess.c
+> index d3f1a1f0b1c1..620556b11550 100644
+> --- a/mm/maccess.c
+> +++ b/mm/maccess.c
+> @@ -335,3 +335,267 @@ long strnlen_user_nofault(const void __user *unsafe_addr, long count)
+> 
+>  	return ret;
+>  }
+> +
+> +#ifdef ARCH_HAS_ATOMIC_UACCESS_HELPERS
+> +
+> +static int fix_pagefault(unsigned long uaddr, bool write_fault, int bytes)
+> +{
+> +	struct mm_struct *mm = current->mm;
+> +	int ret;
+> +
+> +	mmap_read_lock(mm);
+> +	ret = fixup_user_fault(mm, uaddr, write_fault ? FAULT_FLAG_WRITE : 0,
+> +			NULL);
+> +	mmap_read_unlock(mm);
+> +
+> +	return ret < 0 ? ret : 0;
+> +}
+> +
+> +int cmpxchg_user_32_nofault(u32 __user *uaddr, u32 *curr_val, u32 new_val)
+> +{
+> +	int ret = -EFAULT;
+> +	u32 __old = *curr_val;
+> +
+> +	if (unlikely(!access_ok(uaddr, sizeof(*uaddr))))
+> +		return -EFAULT;
+> +
+> +	pagefault_disable();
+> +
+> +	if (!user_access_begin(uaddr, sizeof(*uaddr))) {
+> +		pagefault_enable();
+> +		return -EFAULT;
+> +	}
+> +	ret = __try_cmpxchg_user_32(curr_val, uaddr, __old, new_val);
+> +	user_access_end();
+> +
+> +	if (!ret)
+> +		ret =  *curr_val == __old ? 0 : -EAGAIN;
+> +
+> +	pagefault_enable();
 
-        # load drivers needed for atomisp first for insmod
-        # for sensor drivers
-        sudo modprobe media # needed for older LTS
-        sudo modprobe videodev
-        sudo modprobe v4l2_common # needed for older LTS
-        sudo modprobe v4l2_async # if using async_register
-        # for atomisp
-        sudo modprobe videobuf-core
-        sudo modprobe videobuf-vmalloc
+May this can be moved to be sibling to user_access_end() even do not
+know much about this to me.
 
-        # load upstreamed atomisp drivers
-        sudo insmod upst/atomisp_gmin_platform.ko
-        sudo insmod upst/surface3/atomisp-ar0330.ko
-        sudo insmod upst/surface3/atomisp-ov883x.ko
-        sudo insmod upst/atomisp.ko dbg_level=1 #dyndbg
+> +	return ret;
+> +}
+> +
+> +int cmpxchg_user_64_nofault(u64 __user *uaddr, u64 *curr_val, u64 new_val)
+> +{
+> +	int ret = -EFAULT;
+> +	u64 __old = *curr_val;
+> +
+> +	if (unlikely(!access_ok(uaddr, sizeof(*uaddr))))
+> +		return -EFAULT;
+> +
+> +	pagefault_disable();
+> +
+> +	if (!user_access_begin(uaddr, sizeof(*uaddr))) {
+> +		pagefault_enable();
+> +		return -EFAULT;
+> +	}
+> +	ret = __try_cmpxchg_user_64(curr_val, uaddr, __old, new_val);
+> +	user_access_end();
+> +
+> +	if (!ret)
+> +		ret =  *curr_val == __old ? 0 : -EAGAIN;
+> +
+> +	pagefault_enable();
 
-I'm denylisting all the atomisp drivers and I load these manually
-currently to prevent oopses in case I use non-patched kernel.
+The same.
 
+> +	return ret;
+> +}
+> +
+> +int cmpxchg_user_32(u32 __user *uaddr, u32 *curr_val, u32 new_val)
+> +{
+> +	int ret = -EFAULT;
+> +	u32 __old = *curr_val;
+> +
+> +	/* Validate proper alignment. */
+> +	if (unlikely(((unsigned long)uaddr % sizeof(*uaddr)) ||
 
+See address. sizeof(*uaddr) --> sizeof(uaddr).
+The size of address length.
 
-Btw, this load order issue is indeed another problem even when the sensor
-drivers are built as in-tree module. I sometimes see atomisp fails to
-register camera device(s) on surface3.
+> +			((unsigned long)curr_val % sizeof(*curr_val))))
 
-On mipad2, things are worse. It uses regulator driver but sensor drivers
-do not wait for the driver to initialize the regulators. This results in
-probe failure for sensor drivers.
+Same. sizeof(*curr_val) -->  sizeof(curr_val)
 
+> +		return -EINVAL;
 
+This return should be -EFAULT accord to the comment above
+if not wrong to me.
 
-Regards,
-Tsuchiya Yuto
+> +	if (unlikely(!access_ok(uaddr, sizeof(*uaddr))))
+> +		return -EFAULT;
+> +
+> +	pagefault_disable();
+> +
+> +	while (true) {
+> +		ret = -EFAULT;
+> +		if (!user_access_begin(uaddr, sizeof(*uaddr)))
+> +			break;
+> +
+> +		ret = __try_cmpxchg_user_32(curr_val, uaddr, __old, new_val);
+> +		user_access_end();
+> +
+> +		if (!ret) {
+> +			ret =  *curr_val == __old ? 0 : -EAGAIN;
+> +			break;
+> +		}
+> +
+> +		if (fix_pagefault((unsigned long)uaddr, true, sizeof(*uaddr)) < 0)
+> +			break;
+> +	}
+> +
+> +	pagefault_enable();
+> +	return ret;
+> +}
+> +
+> +int cmpxchg_user_64(u64 __user *uaddr, u64 *curr_val, u64 new_val)
+> +{
+> +	int ret = -EFAULT;
+> +	u64 __old = *curr_val;
+> +
+> +	/* Validate proper alignment. */
+> +	if (unlikely(((unsigned long)uaddr % sizeof(*uaddr)) ||
+> +			((unsigned long)curr_val % sizeof(*curr_val))))
+> +		return -EINVAL;
 
+The same as above.. even the address size is equal to the value
+size. Not use value size here.
 
+> +	if (unlikely(!access_ok(uaddr, sizeof(*uaddr))))
+> +		return -EFAULT;
+> +
+> +	pagefault_disable();
+> +
+> +	while (true) {
+> +		ret = -EFAULT;
+> +		if (!user_access_begin(uaddr, sizeof(*uaddr)))
+> +			break;
+> +
+> +		ret = __try_cmpxchg_user_64(curr_val, uaddr, __old, new_val);
+> +		user_access_end();
+> +
+> +		if (!ret) {
+> +			ret =  *curr_val == __old ? 0 : -EAGAIN;
+> +			break;
+> +		}
+> +
+> +		if (fix_pagefault((unsigned long)uaddr, true, sizeof(*uaddr)) < 0)
+> +			break;
+> +	}
+> +
+> +	pagefault_enable();
+> +	return ret;
+> +}
+> +
+> +/**
+> + * xchg_user_[32|64][_nofault|]() - exchange 32/64-bit values
+> + * @uaddr:   Destination address, in user space;
+> + * @val:     Source address, in kernel space.
+> + *
+> + * This is the standard atomic xchg: exchange values pointed to by @uaddr and @val.
+> + *
+> + * The _nofault versions don't fault and can be used in
+> + * atomic/preempt-disabled contexts.
+> + *
+> + * Return:
+> + * 0      : OK/success;
+> + * -EINVAL: @uaddr is not properly aligned ('may fault' versions only);
+> + * -EFAULT: memory access error (including mis-aligned @uaddr in _nofault).
+> + */
+> +int xchg_user_32_nofault(u32 __user *uaddr, u32 *val)
+> +{
+> +	int ret;
+> +
+> +	if (unlikely(!access_ok(uaddr, sizeof(*uaddr))))
+> +		return -EFAULT;
+> +
+> +	pagefault_disable();
+> +
+> +	if (!user_access_begin(uaddr, sizeof(*uaddr))) {
+> +		pagefault_enable();
+> +		return -EFAULT;
+> +	}
+> +
+> +	ret = __try_xchg_user_32(val, uaddr, *val);
+> +	user_access_end();
+> +
+> +	pagefault_enable();
+> +
+> +	return ret;
+> +}
+> +
+> +int xchg_user_64_nofault(u64 __user *uaddr, u64 *val)
+> +{
+> +	int ret;
+> +
+> +	if (unlikely(!access_ok(uaddr, sizeof(*uaddr))))
+> +		return -EFAULT;
+> +
+> +	pagefault_disable();
+> +
+> +	if (!user_access_begin(uaddr, sizeof(*uaddr))) {
+> +		pagefault_enable();
+> +		return -EFAULT;
+> +	}
+> +
+> +	ret = __try_xchg_user_64(val, uaddr, *val);
+> +	user_access_end();
+> +
+> +	pagefault_enable();
+> +
+> +	return ret;
+> +}
+> +
+> +int xchg_user_32(u32 __user *uaddr, u32 *val)
+> +{
+> +	int ret = -EFAULT;
+> +
+> +	/* Validate proper alignment. */
+> +	if (unlikely(((unsigned long)uaddr % sizeof(*uaddr)) ||
+> +			((unsigned long)val % sizeof(*val))))
+> +		return -EINVAL;
+
+The same as above.
+
+> +	if (unlikely(!access_ok(uaddr, sizeof(*uaddr))))
+> +		return -EFAULT;
+> +
+> +	pagefault_disable();
+> +
+> +	while (true) {
+> +		ret = -EFAULT;
+> +		if (!user_access_begin(uaddr, sizeof(*uaddr)))
+> +			break;
+> +
+> +		ret = __try_xchg_user_32(val, uaddr, *val);
+> +		user_access_end();
+> +
+> +		if (!ret)
+> +			break;
+> +
+> +		if (fix_pagefault((unsigned long)uaddr, true, sizeof(*uaddr)) < 0)
+> +			break;
+> +	}
+> +
+> +	pagefault_enable();
+> +
+> +	return ret;
+> +}
+> +
+> +int xchg_user_64(u64 __user *uaddr, u64 *val)
+> +{
+> +	int ret = -EFAULT;
+> +
+> +	/* Validate proper alignment. */
+> +	if (unlikely(((unsigned long)uaddr % sizeof(*uaddr)) ||
+> +			((unsigned long)val % sizeof(*val))))
+> +		return -EINVAL;
+
+The same as above..
+
+> +	if (unlikely(!access_ok(uaddr, sizeof(*uaddr))))
+> +		return -EFAULT;
+> +
+> +	pagefault_disable();
+> +
+> +	while (true) {
+> +		ret = -EFAULT;
+> +		if (!user_access_begin(uaddr, sizeof(*uaddr)))
+> +			break;
+> +
+> +		ret = __try_xchg_user_64(val, uaddr, *val);
+> +		user_access_end();
+> +
+> +		if (!ret)
+> +			break;
+> +
+> +		if (fix_pagefault((unsigned long)uaddr, true, sizeof(*uaddr)) < 0)
+> +			break;
+> +	}
+> +
+> +	pagefault_enable();
+> +
+> +	return ret;
+> +}
+> +#endif		/* ARCH_HAS_ATOMIC_UACCESS_HELPERS */
+> --
+> 2.25.1
+> 
