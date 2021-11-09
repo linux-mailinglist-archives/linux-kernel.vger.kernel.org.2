@@ -2,82 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D099144B19D
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 17:58:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 633C044B1A1
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 17:59:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234989AbhKIRBL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Nov 2021 12:01:11 -0500
-Received: from conssluserg-01.nifty.com ([210.131.2.80]:23895 "EHLO
-        conssluserg-01.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234305AbhKIRBJ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Nov 2021 12:01:09 -0500
-Received: from mail-pl1-f169.google.com (mail-pl1-f169.google.com [209.85.214.169]) (authenticated)
-        by conssluserg-01.nifty.com with ESMTP id 1A9Gw5u9006278;
-        Wed, 10 Nov 2021 01:58:06 +0900
-DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-01.nifty.com 1A9Gw5u9006278
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
-        s=dec2015msa; t=1636477086;
-        bh=l+imeXQRv/2ldtFA8MBPtPRVxIzMgeJ7ou5whGv8vFY=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=uAXqOxNGCl/Cj/dsBHTWGSA7WisXjdy1hxmuZgWALn9MsxrL4BUtjwsvXkG/BCFGV
-         n99RT7ZEodKwTUxwHdFOniItwzMT81oPknzgq3EXn5C2tbG4b7YrCJOpxnuJy5yGs6
-         Tx/V0+f8gGidFs3P1o3icQ3F7ktzJKxIj+KiuyaEQtMHfvF1+aPnahSqaJXP0K/Yq5
-         msRfqfS7hBKUoj22FEBHdUce5mJ2uPugVJ+GjajxFn7LDHTcwlGqTAtjisit1K+BGN
-         bz2aNiZ22ehqdZ6lIqnLShJLq44rOImL4dQ7PMYwFZ+VolI8lfWnxChBpAVCbzj7+K
-         Tft83bJ3ZPOtQ==
-X-Nifty-SrcIP: [209.85.214.169]
-Received: by mail-pl1-f169.google.com with SMTP id o14so22012820plg.5;
-        Tue, 09 Nov 2021 08:58:06 -0800 (PST)
-X-Gm-Message-State: AOAM533+kck0LMA8eQjMMYXaJGRHsjVue4Y/CgWdUu3K1cWiKxTjcDjZ
-        pjLa55O6yLbqSAFso69xznPm7QE7qPLMdovEkEQ=
-X-Google-Smtp-Source: ABdhPJwi7qZkjQtFz6PpSaTX0nPHD0JjSTOcq/P29C1qjkyah+OwYACj5iWAqG88HBFpYIkkM6M/jI202Qe0SL1RcoQ=
-X-Received: by 2002:a17:90b:1d0e:: with SMTP id on14mr8786047pjb.119.1636477085348;
- Tue, 09 Nov 2021 08:58:05 -0800 (PST)
+        id S236058AbhKIRCl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Nov 2021 12:02:41 -0500
+Received: from mail.kernel.org ([198.145.29.99]:37442 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234305AbhKIRCk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Nov 2021 12:02:40 -0500
+Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id E90E0611AF;
+        Tue,  9 Nov 2021 16:59:52 +0000 (UTC)
+Date:   Tue, 9 Nov 2021 11:59:51 -0500
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Sai Prakash Ranjan <quic_saipraka@quicinc.com>
+Cc:     Will Deacon <will@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        <quic_psodagud@quicinc.com>, Marc Zyngier <maz@kernel.org>,
+        <gregkh@linuxfoundation.org>, <arnd@arndb.de>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <linux-arm-msm@vger.kernel.org>,
+        <mingo@redhat.com>, <jbaron@akamai.com>, <jim.cromie@gmail.com>
+Subject: Re: [PATCHv3 3/3] dynamic_debug: Add a flag for dynamic event
+ tracing
+Message-ID: <20211109115951.1c2b5228@gandalf.local.home>
+In-Reply-To: <f7c665b9-dc17-5a7f-de80-9fa0605721fc@quicinc.com>
+References: <cover.1636452784.git.quic_saipraka@quicinc.com>
+        <3706af20bc64a320ff8f3ff8950738b988f4bdf5.1636452784.git.quic_saipraka@quicinc.com>
+        <20211109104941.2d50eafc@gandalf.local.home>
+        <f7c665b9-dc17-5a7f-de80-9fa0605721fc@quicinc.com>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-References: <20211105023815.85784-1-masahiroy@kernel.org> <YG0B2R.AN2GMAOFSVCK1@crapouillou.net>
-In-Reply-To: <YG0B2R.AN2GMAOFSVCK1@crapouillou.net>
-From:   Masahiro Yamada <masahiroy@kernel.org>
-Date:   Wed, 10 Nov 2021 01:57:28 +0900
-X-Gmail-Original-Message-ID: <CAK7LNAQzUDerTOpaNjSSRAWqwQHC8RY2MX3VeEk_uJS9AXK82w@mail.gmail.com>
-Message-ID: <CAK7LNAQzUDerTOpaNjSSRAWqwQHC8RY2MX3VeEk_uJS9AXK82w@mail.gmail.com>
-Subject: Re: [PATCH] mips: decompressor: do not copy source files while building
-To:     Paul Cercueil <paul@crapouillou.net>
-Cc:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        "open list:BROADCOM NVRAM DRIVER" <linux-mips@vger.kernel.org>,
-        Alexander Lobakin <alobakin@pm.me>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Xingxing Su <suxingxing@loongson.cn>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        zhaoxiao <zhaoxiao@uniontech.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 9, 2021 at 9:10 PM Paul Cercueil <paul@crapouillou.net> wrote:
->
-> Hi Masahiro,
->
-> Le ven., nov. 5 2021 at 11:38:14 +0900, Masahiro Yamada
-> <masahiroy@kernel.org> a =C3=A9crit :
-> > As commit 7ae4a78daacf ("ARM: 8969/1: decompressor: simplify libfdt
-> > builds") stated, copying source files during the build time may not
-> > end up with as clean code as expected.
-> >
-> > Do similar for mips to clean up the Makefile and .gitignore.
->
-> What did you base this patch on?
->
-> It does not apply cleanly here. It tries to create ashldi3.c and
-> bswapsi.c, which already exist.
->
+On Tue, 9 Nov 2021 21:52:26 +0530
+Sai Prakash Ranjan <quic_saipraka@quicinc.com> wrote:
 
-Please remove them manually
-before 'git am'.
+> >>      rwmmio_read: rpmh_rsc_probe+0x35c/0x410 readl addr=0xffff80001071000c
+> >>      rwmmio_read: rpmh_rsc_probe+0x3d0/0x410 readl addr=0xffff800010710004
+> >>      rwmmio_write: rpmh_rsc_probe+0x3b0/0x410 writel addr=0xffff800010710d00 val=0x3
+> >>      rwmmio_write: write_tcs_cmd+0x6c/0x78 writel addr=0xffff800010710d30 val=0x10108  
+> > I'd much rather have a module name or something attached to the event that
+> > ca be filtered on via the trace event filters, than having it determined by
+> > some side effect done in another directory.  
+> 
+> I presume we don't have CALLER_MODULENAME0,1,2.. like CALLER_ADDR0,1,2 
+> without which we
+> cannot insert the module name to this trace event since MMIO accessors 
+> are defined in low level
+> arch headers and we won't get any useful module information from where 
+> these accessors are
+> called. The function name and the offset is good enough to identify the 
+> exact line and module after
+> post-processing with tools like GDB, objdump, so I feel we can keep the 
+> trace event fields limited?
 
+I'm thinking we can pass the descriptor to the event and not have it record
+it. We could add a new field type for defining the event. Something like:
 
---=20
-Best Regards
-Masahiro Yamada
+	__filter_field()
+
+that has size zero in the event itself, but is available to the filtering
+logic. Than perhaps we could pass that descriptor to the filter that has
+all the information needed.
+
+	DEFINE_DYNAMIC_DEBUG_METADATA(descriptor, width);
+	log_read_mmio(width, addr, descriptor);
+
+Where descriptor is NULL when dynamic debug in disabled.
+
+Have a way to pass that descriptor to the filtering logic (I'll have to
+take a look into it) and then be able to use the normal filtering.
+
+This way you could also create multiple instances, where one instance
+records the events coming from one file, and the other records events from
+another file, and not have just one big switch that disables all calls to
+log_read_mmio().
+
+-- Steve
