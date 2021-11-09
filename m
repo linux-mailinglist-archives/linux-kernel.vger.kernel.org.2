@@ -2,117 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E6ED444AA2B
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 10:10:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E331444AA5B
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 10:13:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244708AbhKIJMh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Nov 2021 04:12:37 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40298 "EHLO
+        id S242643AbhKIJQJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Nov 2021 04:16:09 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41160 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244688AbhKIJMf (ORCPT
+        with ESMTP id S237882AbhKIJQG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Nov 2021 04:12:35 -0500
-Received: from mail-lj1-x230.google.com (mail-lj1-x230.google.com [IPv6:2a00:1450:4864:20::230])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 62D28C061766
-        for <linux-kernel@vger.kernel.org>; Tue,  9 Nov 2021 01:09:49 -0800 (PST)
-Received: by mail-lj1-x230.google.com with SMTP id h11so34997655ljk.1
-        for <linux-kernel@vger.kernel.org>; Tue, 09 Nov 2021 01:09:49 -0800 (PST)
+        Tue, 9 Nov 2021 04:16:06 -0500
+Received: from mail-ed1-x52e.google.com (mail-ed1-x52e.google.com [IPv6:2a00:1450:4864:20::52e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B5C36C061766;
+        Tue,  9 Nov 2021 01:13:20 -0800 (PST)
+Received: by mail-ed1-x52e.google.com with SMTP id j21so73717680edt.11;
+        Tue, 09 Nov 2021 01:13:20 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ragnatech-se.20210112.gappssmtp.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=kus4q4w/MRHo7vb0zRbS2VwR79Spya1yRC0ArOdsenE=;
-        b=ZWZnKj77Bb0zN+NtDHkcLIakxLUogbyA7v7+ivtezp4n4NuGhNWL6tJEsoUAl4X2Rz
-         zEK5cQWJwG//muWN+ClyrRUkHFSKzTZ8sb3zWMYQGRfiyDXmY9RRibc2pA5/NwWi1cSH
-         i50S/3hrwkOVmnWp6TgVRLIptDNgAKE66Nszt8RzaMrsQPBJ87+2h2YAvlIl2W68c2CG
-         Tl5dlw4nQrbdXgZAlIuQnhOJ7O2PC+AJeaAxU1Rv1eHInQsjVlHrxAtnItoeCncXvqRB
-         FSelqX4zqam4rHbF6NNFRtJrMmlIridh9KAvX+00U53pz0Tq8iMAsUJ6FKMiI3netaA1
-         hGbg==
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=7fvpt7bkP+uxAmgEvC006y7WNF/VjJWaX7lBZ4rVieU=;
+        b=l07gsYTHDpcXom+Mpz+0McxPAljXjZ+IuiwP2OKDg5gkCPo95DDtQXoAJ0g7KwDEFM
+         +edW6xxEv8NLF3jZ/ZNYIDOln6HSWQDw6wPwZh/vlSkpL7gAO3m41kWdPqCu9AeEW6AP
+         AxdbOCepi9Fjzeft7Mr8UaAaRXhsUvIEG2fn1KPyK5AIB3pa03srUPmxcxspysYh7WSy
+         QU+Zgc4Kbnqtaij1YeI2Ov6XfUfosihc4CrP7bqJVwqMaCWPP4OIKEzy52JuYMJOHZjn
+         93tkn8JPK9h6AIH2tOoqg83l8GEB0bVZhDjjZl8YIQ6+5B5tbaeyq+CgBBv+Fk0zG1Ae
+         SbLg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=kus4q4w/MRHo7vb0zRbS2VwR79Spya1yRC0ArOdsenE=;
-        b=C0H/h3dFGr6OvRs4mhxW/xwtoUb4TtS8glN20ex12B63rUXp8bhFjGMIpJABidORWw
-         Wzdmngy2uT9QK267L+ndjxa59dZN7puiLLqLqBQl4bELy29+c4D7mOazB4la8cVGzAEP
-         wYQDGVhKDDkWxgOF87ZLzIqpsGk1uJg6rFgEv6qHd7+xVdySmWllwsxFuly6kqDbkJFr
-         3Hx+/JwZMG0OoRL8z+XxV6euYgY0iYpjrZkVyrF8nhdDNttSsENNrebnq1B2nVzXl7ul
-         csFBpH9Zj3ocrIRF8XFUujf/Td20O0BBISHsss0WJMMJlE1bh+oCSAtsBJ7hDacfJCWR
-         xd6A==
-X-Gm-Message-State: AOAM530dww2Hu5nOAfvSPzjLvQgXWJ76yaCXoO3A2kwlAvj4HBqUCogp
-        Z7A4FlGN/VHu7NWlL8zlt3L3og==
-X-Google-Smtp-Source: ABdhPJwcrEHsK3imEHQJg0uuHq01I7FN9FrVAlluvNnoCcfBvfbVXKgX5owLubLXvq2Tmmtz0wAeQg==
-X-Received: by 2002:a2e:8515:: with SMTP id j21mr5531503lji.531.1636448987671;
-        Tue, 09 Nov 2021 01:09:47 -0800 (PST)
-Received: from localhost (h-46-59-88-219.A463.priv.bahnhof.se. [46.59.88.219])
-        by smtp.gmail.com with ESMTPSA id d11sm191292lfq.303.2021.11.09.01.09.47
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 09 Nov 2021 01:09:47 -0800 (PST)
-Date:   Tue, 9 Nov 2021 10:09:46 +0100
-From:   Niklas =?iso-8859-1?Q?S=F6derlund?= 
-        <niklas.soderlund+renesas@ragnatech.se>
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>,
-        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Rob Herring <robh+dt@kernel.org>
-Subject: Re: [PATCH 0/9] arm64: dts: renesas: Thermal binding validation
-Message-ID: <YYo62jdzSTxqCMtk@oden.dyn.berto.se>
-References: <20211104224033.3997504-1-kieran.bingham+renesas@ideasonboard.com>
- <CAMuHMdXVBj58ZM3LqCN3cudsE3VJV8AQC5OCOJP96RaqYf4NDQ@mail.gmail.com>
- <YYo0syH9m/CYlB2d@oden.dyn.berto.se>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=7fvpt7bkP+uxAmgEvC006y7WNF/VjJWaX7lBZ4rVieU=;
+        b=e5uEpV6JU7ZYs4M5bej608IFxADhu3UxDSVV06k9i1G8dMLtx94kG7UzsOfqHm6ljn
+         bqrzm/6+fDp+ZoZ4JrIHwRpVfViTai8+jsEQPhA2vEh90+HK62kwFpeVTBz3WVygdQBl
+         1Scx/H6ndFxrVKpU6tJA0gdYtW1Ywo4fL6Ig/3R+PhkkiJ9mZq0KBB2tY+POcbT3Tf0L
+         d1oN9fDOME7/28Z8E/nW5B0jP8qJCu7L3D1Su86nh23cOOVn9j+mumaSEQS7qgoGN9ky
+         dGtbgXnbqH6tc3nQDnox9sL4FX2TMB7Zc/jEoJCj6tPOZuDpcOiC+RGwulWK+BtQgxke
+         hKPA==
+X-Gm-Message-State: AOAM531Nb01rTickS9Dc2DGMqF5pScE3c9uxV4mXfAp30cGdN0DGG3h/
+        pwyrh0J4oKpw1guBVUOgCepZ3Eyu2CLbEFUVEoY=
+X-Google-Smtp-Source: ABdhPJy2NG9TqRFnNV3SUetYoAPoeDCVudyp7SZz0z8KaYicVA4Fj0EI+TiAbUWUYAQGjbpPquMr3e13w0rq5hje9lI=
+X-Received: by 2002:a05:6402:207c:: with SMTP id bd28mr8154843edb.240.1636449199301;
+ Tue, 09 Nov 2021 01:13:19 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <YYo0syH9m/CYlB2d@oden.dyn.berto.se>
+References: <20211109081125.41410-1-nakato@nakato.io> <20211109081125.41410-2-nakato@nakato.io>
+In-Reply-To: <20211109081125.41410-2-nakato@nakato.io>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Tue, 9 Nov 2021 11:12:34 +0200
+Message-ID: <CAHp75Vcw-ARNZCRRJGzbQ7xc3ZB=98eFCuEFc4cj5W3vAj5EZw@mail.gmail.com>
+Subject: Re: [PATCH 2/2] platform/surface: surfacepro3_button: don't load on
+ amd variant
+To:     Sachi King <nakato@nakato.io>
+Cc:     Chen Yu <yu.c.chen@intel.com>, Hans de Goede <hdegoede@redhat.com>,
+        Mark Gross <markgross@kernel.org>,
+        Maximilian Luz <luzmaximilian@gmail.com>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        Platform Driver <platform-driver-x86@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-11-09 09:43:33 +0100, Niklas Söderlund wrote:
-> > > linux/arch/arm64/boot/dts/renesas/r8a77951-ulcb-kf.dt.yaml: 
-> > > thermal-zones: sensor3-thermal:cooling-maps:map0:contribution:0:0: 
-> > > 1024 is greater than the maximum of 100
-> > >         From schema: Documentation/devicetree/bindings/thermal/thermal-zones.yaml
-> > >
-> > > This validation error appears to be pervasive across all of these
-> > > bindings, but changing that will be more invasive and require someone to
-> > > perform dedicated testing with the thermal drivers to ensure that the
-> > > updates to the ranges do not cause unexpected side effects.
-> > 
-> > Niklas?
-> 
-> I will have a look. The thermal driver is the one driver where I have 
-> automated CI test running.
+On Tue, Nov 9, 2021 at 10:11 AM Sachi King <nakato@nakato.io> wrote:
+>
+> The AMD variant of the Surface Laptop report 0 for their OEM platform
+> revision.  The Surface devices that require the surfacepro3_button
+> driver do not have the _DSM that gets the OEM platform revision.  If the
+> method does not exist, load surfacepro3_button.
 
-So the core of the issue is that the definition of the property changed 
-in the txt to yaml conversion. The original definition was,
+...
 
-  Optional property:
-  - contribution:         The cooling contribution to the thermal zone of the
-    Type: unsigned        referred cooling device at the referred trip point.
-    Size: one cell        The contribution is a ratio of the sum
-			    of all cooling contributions within a thermal zone.
+>   * Surface Pro 4 and Surface Book 2 / Surface Pro 2017 use the same device
+>   * ID (MSHW0040) for the power/volume buttons. Make sure this is the right
+> - * device by checking for the _DSM method and OEM Platform Revision.
+> + * device by checking for the _DSM method and OEM Platform Revision DSM
+> + * function.
 
-While the  new binding states,
+Not sure what this change means (not a native speaker).
 
-  contribution:
-    $ref: /schemas/types.yaml#/definitions/uint32
-    minimum: 0
-    maximum: 100 
-    description:
-      The percentage contribution of the cooling devices at the 
-      specific trip temperature referenced in this map 
-      to this thermal zone
+...
 
-Looking at the real world usage of this only 2 out of 17 platforms sets 
-a contribution value less or equal to 100. I will send a patch to fix 
-the bindings.
+> -       dev_dbg(&dev->dev, "OEM Platform Revision %llu\n", oem_platform_rev);
+
+I think this is useful to have.
+
+What about leaving it as is for debugging purposes and just replacing
+the last test?
+
+...
+
+> +       // make sure that OEM platform revision DSM call does not exist
+
+Please, fix the comment style while at it.
 
 -- 
-Kind Regards,
-Niklas Söderlund
+With Best Regards,
+Andy Shevchenko
