@@ -2,84 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B9F3244B8F8
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 23:48:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A51B444B7E4
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 23:36:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237516AbhKIWu7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Nov 2021 17:50:59 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56762 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243208AbhKIWuG (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Nov 2021 17:50:06 -0500
-Received: from mail-ot1-x32f.google.com (mail-ot1-x32f.google.com [IPv6:2607:f8b0:4864:20::32f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4DD89C00EAA9
-        for <linux-kernel@vger.kernel.org>; Tue,  9 Nov 2021 14:21:24 -0800 (PST)
-Received: by mail-ot1-x32f.google.com with SMTP id l7-20020a0568302b0700b0055ae988dcc8so855477otv.12
-        for <linux-kernel@vger.kernel.org>; Tue, 09 Nov 2021 14:21:24 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=qLsRex488etMkJyCCFaXLtgPzZ6BB/J9dKWw8UO3KF8=;
-        b=HiVLib1yZobRnuW7sMIDMYgEiV7yhcNYV53azWFi6aSYW4Hu++8xN0MqgT9ZBTBPe1
-         tHfuZJW+x3zpArXVhEztoQURqBgNNAqvkhrpdok2c1CYScgbTEkk3toWbsXGaEsMPhBc
-         pobpQ2rMClAZp0i0TvDBo0SZAGTrza1mdUUSgjugkU2oA7tzpHVZSIZWY2OOOlvRabpj
-         xPBPjmrQZd9Z6fxEVq7BWnagN67ohxQ3kkVDeE0cZHQkykxoJzisjtym0erskVnhIOYl
-         BxQABSwHk0vmOC8j2uq7gypLmELd9QUegVybgm3hF2dKB/JaBQMP0LD29ohzDV3YG8Wz
-         hM9A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=qLsRex488etMkJyCCFaXLtgPzZ6BB/J9dKWw8UO3KF8=;
-        b=NIMtYQsmYSRexA0ZzTHW/g/paGoyImljwXvQFuyAoXSI/2mRI3TE5UKy0DHRVtKNZ5
-         fqoFwOW/as3Z+TGRKJObzEnMMb1IZibedMLAIEFzT8jGPoicAWWjr/EbDVJMoF28I0ie
-         ukN5VcuGgumFiw4ck/oDYEhqZJYfXxIFHjHsdn7caYqpgEP2ih9iectU76C3OJpXgPdt
-         hLw8lXZnE5kiebLPzXVsNm5bXNsEaSR53v68/IKTpVeVpzuDHKofjhYxT7KVtiWsFIeQ
-         5TSPs+BsT8COa4fgn/noX9cC38oA4MQR1Z8y+J9bYNgSj7e8KZERQW2Wce0NKZ664zoh
-         nVlA==
-X-Gm-Message-State: AOAM530GBw4otwUTulu0UblyUY4TkSNHQP7YY8qfXovMtooAUUZ5PIIt
-        RD6ZpFSwlY9h/fLOiyohwTiRA070TrmTWUZsFv1UJA==
-X-Google-Smtp-Source: ABdhPJxnGCMwPBzOn0vDnUGZChUhsq9PbhUnrHTyTVpdBpkdT5/1fxR/EpRTVr/sEUcMpLzruQlZhgh3IK5H9XIVdOU=
-X-Received: by 2002:a9d:ed6:: with SMTP id 80mr8689832otj.35.1636496484311;
- Tue, 09 Nov 2021 14:21:24 -0800 (PST)
+        id S1345595AbhKIWiS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Nov 2021 17:38:18 -0500
+Received: from mail.kernel.org ([198.145.29.99]:56152 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1345015AbhKIWfu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Nov 2021 17:35:50 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2FCAA61ACD;
+        Tue,  9 Nov 2021 22:22:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1636496547;
+        bh=jl1gUPw+TDlktSwf6vjGt49t+8ULymjwZAHlvZHQuvw=;
+        h=From:To:Cc:Subject:Date:From;
+        b=KYhOQ781zLHE2WsPeNzu1rCSPF1x9cCmEf9PiUTk9EyV2BKHSkqt1lg9LinLg97rZ
+         UtilKdPDtGcarrHMpYdz95Y0zmKYYp/is1adcY+EL1u4iWvp2YYIkBMSuwq1hMz025
+         pR++Zl6lpy3ycnxlGBPGB85kGeatq9kuDukncCuyP6u+K0+keLoM8M8RKVfgQ3SSmY
+         s1oxJGk4f7G+QXN8SXUbIptVMBTsGdXq90DcV6EBnxccESJwkx9oRzKE8qgMScFhaw
+         ygGVo/xrX2LFDnwYpVGjJdoNGBvZoyiJAeFSiDcnzBMJdo2Do0PfDfzOQSp9ZCDQ1a
+         f3JPRFsodtqzA==
+From:   Sasha Levin <sashal@kernel.org>
+To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Cc:     Amit Kumar Mahapatra <amit.kumar-mahapatra@xilinx.com>,
+        Michal Simek <michal.simek@xilinx.com>,
+        Sasha Levin <sashal@kernel.org>, robh+dt@kernel.org,
+        pawel.moll@arm.com, mark.rutland@arm.com,
+        ijc+devicetree@hellion.org.uk, galak@codeaurora.org,
+        catalin.marinas@arm.com, will.deacon@arm.com,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+Subject: [PATCH AUTOSEL 5.4 01/30] arm64: zynqmp: Do not duplicate flash partition label property
+Date:   Tue,  9 Nov 2021 17:21:55 -0500
+Message-Id: <20211109222224.1235388-1-sashal@kernel.org>
+X-Mailer: git-send-email 2.33.0
 MIME-Version: 1.0
-References: <20211109164650.2233507-1-robh@kernel.org> <20211109164650.2233507-3-robh@kernel.org>
-In-Reply-To: <20211109164650.2233507-3-robh@kernel.org>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Tue, 9 Nov 2021 23:21:12 +0100
-Message-ID: <CACRpkdaY9VQcUCNe4ZFKFyRd7HSFh1FX8yOT-AFqjJ6wc56Ehw@mail.gmail.com>
-Subject: Re: [PATCH 2/2] clk: versatile: clk-icst: Ensure clock names are unique
-To:     Rob Herring <robh@kernel.org>
-Cc:     Stephen Boyd <sboyd@kernel.org>,
-        Sudeep Holla <Sudeep.Holla@arm.com>,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        Guenter Roeck <linux@roeck-us.net>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org,
-        stable@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+X-stable: review
+X-Patchwork-Hint: Ignore
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 9, 2021 at 5:46 PM Rob Herring <robh@kernel.org> wrote:
+From: Amit Kumar Mahapatra <amit.kumar-mahapatra@xilinx.com>
 
-> Commit 2d3de197a818 ("ARM: dts: arm: Update ICST clock nodes 'reg' and
-> node names") moved to using generic node names. That results in trying
-> to register multiple clocks with the same name. Fix this by including
-> the unit-address in the clock name.
->
-> Fixes: 2d3de197a818 ("ARM: dts: arm: Update ICST clock nodes 'reg' and node names")
-> Cc: stable@vger.kernel.org
-> Cc: Linus Walleij <linus.walleij@linaro.org>
-> Cc: Stephen Boyd <sboyd@kernel.org>
-> Cc: linux-arm-kernel@lists.infradead.org
-> Cc: linux-clk@vger.kernel.org
-> Signed-off-by: Rob Herring <robh@kernel.org>
+[ Upstream commit 167721a5909f867f8c18c8e78ea58e705ad9bbd4 ]
 
-Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
+In kernel 5.4, support has been added for reading MTD devices via the nvmem
+API.
+For this the mtd devices are registered as read-only NVMEM providers under
+sysfs with the same name as the flash partition label property.
 
-Yours,
-Linus Walleij
+So if flash partition label property of multiple flash devices are
+identical then the second mtd device fails to get registered as a NVMEM
+provider.
+
+This patch fixes the issue by having different label property for different
+flashes.
+
+Signed-off-by: Amit Kumar Mahapatra <amit.kumar-mahapatra@xilinx.com>
+Signed-off-by: Michal Simek <michal.simek@xilinx.com>
+Link: https://lore.kernel.org/r/6c4b9b9232b93d9e316a63c086540fd5bf6b8687.1623684253.git.michal.simek@xilinx.com
+Signed-off-by: Sasha Levin <sashal@kernel.org>
+---
+ arch/arm64/boot/dts/xilinx/zynqmp-zc1751-xm016-dc2.dts | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/arch/arm64/boot/dts/xilinx/zynqmp-zc1751-xm016-dc2.dts b/arch/arm64/boot/dts/xilinx/zynqmp-zc1751-xm016-dc2.dts
+index 2421ec71a201c..41a66787247b6 100644
+--- a/arch/arm64/boot/dts/xilinx/zynqmp-zc1751-xm016-dc2.dts
++++ b/arch/arm64/boot/dts/xilinx/zynqmp-zc1751-xm016-dc2.dts
+@@ -131,7 +131,7 @@
+ 		reg = <0>;
+ 
+ 		partition@0 {
+-			label = "data";
++			label = "spi0-data";
+ 			reg = <0x0 0x100000>;
+ 		};
+ 	};
+@@ -149,7 +149,7 @@
+ 		reg = <0>;
+ 
+ 		partition@0 {
+-			label = "data";
++			label = "spi1-data";
+ 			reg = <0x0 0x84000>;
+ 		};
+ 	};
+-- 
+2.33.0
+
