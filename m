@@ -2,72 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E18444AA60
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 10:15:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3FE9F44AA6B
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 10:17:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238475AbhKIJRz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Nov 2021 04:17:55 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41576 "EHLO
+        id S244774AbhKIJUM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Nov 2021 04:20:12 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42154 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241947AbhKIJRv (ORCPT
+        with ESMTP id S237882AbhKIJUK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Nov 2021 04:17:51 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 516B2C061764
-        for <linux-kernel@vger.kernel.org>; Tue,  9 Nov 2021 01:15:05 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=3v6bJmP3+qBqplcN7AAaA8ZY9KeunR8vcRhii4EOX2I=; b=V65g+fdb+/AbEE7CzQKrwmZIr5
-        2Y/HafzeonMRNDXpa8VkWmw+BgrlvgVYrqCVkNWgow3/sIbAvAc6gf1vmNzf47WpbV9Xa1Yx83f0T
-        H5WoauZOCMujl5JEC1L6cahGR80JYN6bWbOCnL1Htntl/8G2ehBcfS9hH+zLWgQyb0bqilPAZlUgZ
-        2YxzhHd5TOn9GqU/LucAbe88qdhdIdiYRvw5KBfMYBIpiZenWOMw/QbvUdwSU1j/HqkyS5XGt04kX
-        lpfueG58W2ppY5Ll0TU90LN/yJzkVq/BBmzADbY8W/XqFUopb2rEAcC/nF2ECnIYMQCUygCFmYmhx
-        3N/wUtIQ==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mkNDT-000uEm-BD; Tue, 09 Nov 2021 09:14:56 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 8A3013001C7;
-        Tue,  9 Nov 2021 10:14:54 +0100 (CET)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 3330C2C277AC1; Tue,  9 Nov 2021 10:14:54 +0100 (CET)
-Date:   Tue, 9 Nov 2021 10:14:54 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Johannes Weiner <hannes@cmpxchg.org>
-Cc:     Liu Xinpeng <liuxp11@chinatelecom.cn>,
-        linux-kernel@vger.kernel.org, mingo@redhat.com,
-        juri.lelli@redhat.com, zhouchengming@bytedance.com
-Subject: Re: [PATCH 1/2] psi: Remove repeated verbose comment
-Message-ID: <YYo8DsWX///Qgnqu@hirez.programming.kicks-ass.net>
-References: <1635133586-84611-1-git-send-email-liuxp11@chinatelecom.cn>
- <YYQPL4exZUP2eruI@cmpxchg.org>
+        Tue, 9 Nov 2021 04:20:10 -0500
+Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D7D42C061764;
+        Tue,  9 Nov 2021 01:17:24 -0800 (PST)
+Received: from zn.tnic (p2e584790.dip0.t-ipconnect.de [46.88.71.144])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 6E8651EC0502;
+        Tue,  9 Nov 2021 10:17:23 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1636449443;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=dw5TMSektJ+6kyWjTPtQRBAjqW4uRrQU4qlKiqn1zq0=;
+        b=rpcr7uRQLofcxSsIAkwWzs+hUY8/K51Bw65j7OkScJJF7xQ3+QvBPGino+QVuiJ8wrupe3
+        qmmiqiovJoCVZ3oVFlAf1ooB8kaduZ2bb3BdKcqY6uGqZyqgDVUJMFfsl+HHy0PbBCnFrk
+        dm2UaGSL9XOtUvkbAeXChcdhYMOvhew=
+Date:   Tue, 9 Nov 2021 10:15:11 +0100
+From:   Borislav Petkov <bp@alien8.de>
+To:     Zhaolong Zhang <zhangzl2013@126.com>
+Cc:     Tony Luck <tony.luck@intel.com>, x86@kernel.org,
+        linux-edac@vger.kernel.org, linux-kernel@vger.kernel.org,
+        "Paul E . McKenney" <paulmck@kernel.org>
+Subject: Re: [PATCH] x86/mce: Get rid of cpu_missing
+Message-ID: <YYo8H34W8xPafdnH@zn.tnic>
+References: <776fad3d.3369.17d03d2c2ba.Coremail.zhangzl2013@126.com>
+ <20211109083547.3546963-1-zhangzl2013@126.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <YYQPL4exZUP2eruI@cmpxchg.org>
+In-Reply-To: <20211109083547.3546963-1-zhangzl2013@126.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 04, 2021 at 12:49:51PM -0400, Johannes Weiner wrote:
-> On Mon, Oct 25, 2021 at 11:46:25AM +0800, Liu Xinpeng wrote:
-> > Comment in function psi_task_switch,there are two same lines.
-> > ...
-> > * runtime state, the cgroup that contains both tasks
-> > * runtime state, the cgroup that contains both tasks
-> > ...
-> > 
-> > Signed-off-by: Liu Xinpeng <liuxp11@chinatelecom.cn>
-> 
-> Acked-by: Johannes Weiner <hannes@cmpxchg.org>
-> 
-> Peter, could you please take this through -tip?
+On Tue, Nov 09, 2021 at 04:35:47PM +0800, Zhaolong Zhang wrote:
+> Drop cpu_missing since we have more capable mce_missing_cpus.
 
-Sure, lemme figure out the b4 incantation to grab these patches since
-the originals didn't make it to my inbox. They should show up in
-tip/sched/core after -rc1 or so if I get the incantation right :-)
+Who is "we"?
+
+Also, you need to try harder with that commit message - mce_missing_cpus
+is a cpumask and I don't see how a cpumask can be "more capable"...
+
+Some more hints on a possible way to structure a commit message - those
+are just hints - not necessarily rules - but it should help you get an
+idea:
+
+Problem is A.
+
+It happens because of B.
+
+Fix it by doing C.
+
+(Potentially do D).
+
+For more detailed info, see
+Documentation/process/submitting-patches.rst, Section "2) Describe your
+changes".
+
+Also, to the tone, from Documentation/process/submitting-patches.rst:
+
+ "Describe your changes in imperative mood, e.g. "make xyzzy do frotz"
+  instead of "[This patch] makes xyzzy do frotz" or "[I] changed xyzzy
+  to do frotz", as if you are giving orders to the codebase to change
+  its behaviour."
+
+Also, do not talk about what your patch does - that should hopefully be
+visible in the diff itself. Rather, talk about *why* you're doing what
+you're doing.
+
+Also, please use passive voice in your commit message: no "we" or "I", etc,
+and describe your changes in imperative mood.
+
+Bottom line is: personal pronouns are ambiguous in text, especially with
+so many parties/companies/etc developing the kernel so let's avoid them
+please.
+
+Thx.
+
+-- 
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
