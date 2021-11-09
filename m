@@ -2,119 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 939A744AB79
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 11:28:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9924244AB7E
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 11:29:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242300AbhKIKbA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Nov 2021 05:31:00 -0500
-Received: from mail.kernel.org ([198.145.29.99]:42472 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238291AbhKIKa4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Nov 2021 05:30:56 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 45B44610FF;
-        Tue,  9 Nov 2021 10:28:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1636453690;
-        bh=yFPryjS7QA9HQE/gLxXljo2ASKdVsoOPF1knG7tPAVo=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=usQFigiIcx45VQmTU86xq8+astVPIj2IC45BtUKM13sBnX/ts6PY6WkfSqqDQQYsY
-         OCi8t8e/6GWpsuyie7YQucHXondjXP/bv77MDOcGTDKhtXdyVLc7EpSt0JhvjBc0/G
-         SUstB3HtbiMN4xvOqwDsBzcuWryKQXaEYTvpfo/8=
-Date:   Tue, 9 Nov 2021 11:28:08 +0100
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Hans-Gert Dahmen <hans-gert.dahmen@immu.ne>
-Cc:     akpm@linux-foundation.org, linux-kernel@vger.kernel.org,
-        philipp.deppenwiese@immu.ne, mauro.lima@eclypsium.com,
-        hughsient@gmail.com, platform-driver-x86@vger.kernel.org
-Subject: Re: [PATCH] firmware: export x86_64 platform flash bios region via
- sysfs
-Message-ID: <YYpNOMtp7Kwf0fho@kroah.com>
-References: <20211109000130.42361-1-hans-gert.dahmen@immu.ne>
- <YYoSPjF3M05dR0PX@kroah.com>
- <42cea157-55a2-bd12-335b-6348f0ff6525@immu.ne>
+        id S244003AbhKIKcf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Nov 2021 05:32:35 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58752 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238291AbhKIKcd (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Nov 2021 05:32:33 -0500
+Received: from michel.telenet-ops.be (michel.telenet-ops.be [IPv6:2a02:1800:110:4::f00:18])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9CB14C061767
+        for <linux-kernel@vger.kernel.org>; Tue,  9 Nov 2021 02:29:47 -0800 (PST)
+Received: from ramsan.of.borg ([IPv6:2a02:1810:ac12:ed20:9dc9:efd5:4c6f:baa9])
+        by michel.telenet-ops.be with bizsmtp
+        id GAVj260011LAWtA06AVjgj; Tue, 09 Nov 2021 11:29:45 +0100
+Received: from rox.of.borg ([192.168.97.57])
+        by ramsan.of.borg with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.93)
+        (envelope-from <geert@linux-m68k.org>)
+        id 1mkONq-00BCpC-OF; Tue, 09 Nov 2021 11:29:42 +0100
+Received: from geert by rox.of.borg with local (Exim 4.93)
+        (envelope-from <geert@linux-m68k.org>)
+        id 1mkONq-00E7Ix-7b; Tue, 09 Nov 2021 11:29:42 +0100
+From:   Geert Uytterhoeven <geert+renesas@glider.be>
+To:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Stanimir Varbanov <stanimir.varbanov@linaro.org>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Dikshita Agarwal <dikshita@codeaurora.org>
+Cc:     linux-arm-msm@vger.kernel.org, linux-media@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Rob Herring <robh@kernel.org>
+Subject: [PATCH v2] bindings: media: venus: Drop redundant maxItems for power-domain-names
+Date:   Tue,  9 Nov 2021 11:29:41 +0100
+Message-Id: <d94924e1bd00f396f2106f04d4a2bb839cf5f071.1636453406.git.geert+renesas@glider.be>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <42cea157-55a2-bd12-335b-6348f0ff6525@immu.ne>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 09, 2021 at 09:52:53AM +0100, Hans-Gert Dahmen wrote:
-> On 09.11.21 07:16, Greg KH wrote:
-> > On Tue, Nov 09, 2021 at 01:01:30AM +0100, Hans-Gert Dahmen wrote:
-> > > Make the 16MiB long memory-mapped BIOS region of the platform SPI flash
-> > > on X86_64 system available via /sys/kernel/firmware/flash_mmap/bios_region
-> > > for pen-testing, security analysis and malware detection on kernels
-> > > which restrict module loading and/or access to /dev/mem.
-> > 
-> > That feels like a big security hole we would be opening up for no good
-> > reason.
-> > 
-> > > It will be used by the open source Converged Security Suite.
-> > > https://github.com/9elements/converged-security-suite
-> > 
-> > What is the reason for this, and what use is this new interface?
-> Because it is very hard to access the SPI flash to read the BIOS contents
-> for (security) analysis and this works without the more complex and
-> unfinished SPI drivers and it does so on a system where we may not access
-> the full /dev/mem.
+make dt_binding_check:
 
-Why not fix the spi drivers to do this properly?  What is preventing you
-from doing that instead of adding a new user/kernel api that you will
-have to support for the next 20+ years?
+    Documentation/devicetree/bindings/media/qcom,sc7280-venus.yaml: ignoring, error in schema: properties: power-domain-names
+    warning: no schema found in file: Documentation/devicetree/bindings/media/qcom,sc7280-venus.yaml
+    Documentation/devicetree/bindings/media/qcom,sc7280-venus.yaml: properties:power-domain-names: {'required': ['maxItems']} is not allowed for {'minItems': 2, 'maxItems': 3, 'items': [{'const': 'venus'}, {'const': 'vcodec0'}, {'const': 'cx'}]}
+	   hint: "maxItems" is not needed with an "items" list
+	   from schema $id: http://devicetree.org/meta-schemas/items.yaml#
 
-> > > +static int __init flash_mmap_init(void)
-> > > +{
-> > > +	int ret;
-> > > +
-> > > +	pdev = platform_device_register_simple("flash_mmap", -1, NULL, 0);
-> > > +	if (IS_ERR(pdev))
-> > > +		return PTR_ERR(pdev);
-> > > +
-> > > +	ret = sysfs_create_group(&pdev->dev.kobj, &flash_mmap_group);
-> > 
-> > You just raced with userspace and lost  >
-> > Please set the attribute to the platform driver before you create the
-> > device.
-> >
-> 
-> Sorry, but I went through tons of code and could not find a single instance
-> where I can use a default group for creation without using a probe function
-> that does the magic for me. Please help me find the correct way of doing
-> this without manually creating and adding kobjects.
+Fixes: e48b839b6699c226 ("media: dt-bindings: media: venus: Add sc7280 dt schema")
+Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
+Acked-by: Rob Herring <robh@kernel.org>
+---
+v2:
+  - Add Acked-by,
+  - s/bogus/redundant/,
+  - Include full error message.
+---
+ Documentation/devicetree/bindings/media/qcom,sc7280-venus.yaml | 1 -
+ 1 file changed, 1 deletion(-)
 
-The problem here is that you are abusing the platform driver code and
-making a "fake" device that is not attached to anything real, and
-without a driver.  That should not be done, as you do not know what
-hardware this driver is going to be run on.
+diff --git a/Documentation/devicetree/bindings/media/qcom,sc7280-venus.yaml b/Documentation/devicetree/bindings/media/qcom,sc7280-venus.yaml
+index fa54c560e0bde3cb..e2874683b4d5faf3 100644
+--- a/Documentation/devicetree/bindings/media/qcom,sc7280-venus.yaml
++++ b/Documentation/devicetree/bindings/media/qcom,sc7280-venus.yaml
+@@ -30,7 +30,6 @@ properties:
+ 
+   power-domain-names:
+     minItems: 2
+-    maxItems: 3
+     items:
+       - const: venus
+       - const: vcodec0
+-- 
+2.25.1
 
-Bind to the real hardware resource please.
-
-> > Also, you just bound this driver to ANY platform that it was loaded on,
-> > with no actual detection of the hardware present, which feels like it
-> > could cause big problems on all platforms.  Please, if you really want
-> > to do this, restrict it to hardware that actually has the hardware you
-> > are wanting to access, not all machines in the world.
-> 
-> I ave already proven that it works on all x64 Intel platforms here [1]. It
-> nearly impossible to prove for AMD b/c of the lack of documentation, but we
-> tested it on several old Bulldozer system and so far the memory was always
-> mapped. I feel that adding more hardware detection just adds complexity.
-> Anyway, what do you suggest? Use CPUID to check if the vendor is AMD or
-> Intel?
-
-Again, without some sort of "we only bind to the hardware on these types
-of devices", a driver like this is not going to be allowed, because you
-are not checking the hardware at all!
-
-Also, drivers are loaded based on the hardware being found on the system
-and having the driver loaded automatically.  That isn't happening here
-at all, so that's another reason why this isn't going to be acceptable.
-
-You HAVE to have hardware detection, otherwise the code is broken,
-sorry.
-
-thanks,
-
-greg k-h
