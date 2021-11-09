@@ -2,112 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 32F5444B423
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 21:41:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AB92644B425
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 21:41:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244564AbhKIUnp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Nov 2021 15:43:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56998 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242487AbhKIUnn (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Nov 2021 15:43:43 -0500
-Received: from mail-wr1-x42b.google.com (mail-wr1-x42b.google.com [IPv6:2a00:1450:4864:20::42b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5F471C061764;
-        Tue,  9 Nov 2021 12:40:57 -0800 (PST)
-Received: by mail-wr1-x42b.google.com with SMTP id d5so163675wrc.1;
-        Tue, 09 Nov 2021 12:40:57 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=mg2e7z58lDe73VgrFciCdoCrTckxjsQdMH47LIpMlD8=;
-        b=Lvp6NHOPZwHxPj+fWGq2BvF2OdAqief2GwNbnsMaefDadOSWDKKRqm4nLRL+frEpyn
-         3KxZbtgCyg5WaAc7md7R3p0k2BKSjcdVrhP1UX8HyvvL8nEyjPsN5gIKQkVZMXEjuZht
-         B9boo/vxS4NoUxhzQF06GsGAvqR63F77yGlkWa3Av52PpHn0WQBXQPFK6NqjB0mukGUl
-         e1ecdTvzm6ZXzm5okWFnbpUUl8Xv52ZoFIygwJ/p/YnYDPpxmmamQBMbyVQf4Au0VQdK
-         8VbYtJ5KUNe1E3SBSIpZfqkYRK2o+H9ydDPeJFetb8HMFLUTDwG/1l64AiNY9Yyja5oh
-         ztLg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=mg2e7z58lDe73VgrFciCdoCrTckxjsQdMH47LIpMlD8=;
-        b=BMEf8quqlRyJnHb6GvhkduziGhNFEvDoqRpXO/Bc4I4n0pbvjsj/0+THCwEZfNHZ13
-         3VbetPCh7Xnnz8sWbBKVKrO9sg2IGP+uFk1qN2vRVOBthpPTqNnZJT5TTO9xET/Zx20E
-         Zlcq5xCirXYFVRbdmx0iOiqlhyCK96tXk+cN5tQ9sRZSszQqjtR7M8pa3IdQtTxX4blx
-         BZ+q2WFusV8mmGiLYe+BnaBS2uK7qNtrSF5Yb50ofLzCEmS54RlS8wTnztY+ucDikTiZ
-         9JRRwhEreoJh8SHabCERmtzNVwakcq3xsXlPAtV2LqOSsjOE09kjQxLNIbfz1PMczO15
-         v2/Q==
-X-Gm-Message-State: AOAM531920aB0Ti7Xtu0tl5iptidCk4AAcsdVmslkpF2KmXfavq3/KWE
-        RTKWddZv0gRpbZI54oLj1VKFaBhd6WU=
-X-Google-Smtp-Source: ABdhPJwHsR1gf29UiIqSs41HqAedueBMeaFCg5gVeoGSnC2EYmMxGiaTJQFQe7hvoJXGYs2R4Sx2Nw==
-X-Received: by 2002:a05:6000:23a:: with SMTP id l26mr12861034wrz.215.1636490455780;
-        Tue, 09 Nov 2021 12:40:55 -0800 (PST)
-Received: from Ansuel-xps.localdomain ([5.171.121.77])
-        by smtp.gmail.com with ESMTPSA id i17sm3675547wmq.48.2021.11.09.12.40.54
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 09 Nov 2021 12:40:55 -0800 (PST)
-Date:   Tue, 9 Nov 2021 21:40:53 +0100
-From:   Ansuel Smith <ansuelsmth@gmail.com>
-To:     Andrew Lunn <andrew@lunn.ch>
-Cc:     Vivien Didelot <vivien.didelot@gmail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Vladimir Oltean <olteanv@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>, Pavel Machek <pavel@ucw.cz>,
-        John Crispin <john@phrozen.org>, netdev@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-leds@vger.kernel.org,
-        Marek =?iso-8859-1?Q?Beh=FAn?= <kabel@kernel.org>
-Subject: Re: [RFC PATCH v3 1/8] leds: add support for hardware driven LEDs
-Message-ID: <YYrc1UfhVLEO/Nth@Ansuel-xps.localdomain>
-References: <20211109022608.11109-1-ansuelsmth@gmail.com>
- <20211109022608.11109-2-ansuelsmth@gmail.com>
- <YYrbT6pMGXqA2EVn@lunn.ch>
+        id S244584AbhKIUoA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Nov 2021 15:44:00 -0500
+Received: from mail.skyhub.de ([5.9.137.197]:47992 "EHLO mail.skyhub.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S242487AbhKIUn4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Nov 2021 15:43:56 -0500
+Received: from zn.tnic (p200300ec2f18aa00db849a68730b2e8f.dip0.t-ipconnect.de [IPv6:2003:ec:2f18:aa00:db84:9a68:730b:2e8f])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 8675B1EC0464;
+        Tue,  9 Nov 2021 21:41:08 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1636490468;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=lCidKXkUy1+wE1cxs+aPQJznLjMxcTrkuUQb5akSCJI=;
+        b=KOBy8wbh8eVClVBktgmvEYRhxby4CMg84HQAqa2daRvd2PXVNeYsMhhfn/6XDqebgqJVJ0
+        CFn12cl8Zkg6oXQahVTOpA46xryB/MSh2z7ANwNo5CcS6dxWFiS+2SNtRntfH6pvkRBMHm
+        rKXnyuLNwak8sPUTzNj4naBW9J3OJxA=
+Date:   Tue, 9 Nov 2021 21:41:02 +0100
+From:   Borislav Petkov <bp@alien8.de>
+To:     "Chatradhi, Naveen Krishna" <nchatrad@amd.com>
+Cc:     linux-edac@vger.kernel.org, x86@kernel.org,
+        linux-kernel@vger.kernel.org, mingo@redhat.com, mchehab@kernel.org,
+        yazen.ghannam@amd.com, Muralidhara M K <muralimk@amd.com>
+Subject: Re: [PATCH v6 1/5] x86/amd_nb: Add support for northbridges on
+ Aldebaran
+Message-ID: <YYrc3ty9lzcwdkt1@zn.tnic>
+References: <20211028130106.15701-1-nchatrad@amd.com>
+ <20211028130106.15701-2-nchatrad@amd.com>
+ <YYF9ei59G/OUyZqR@zn.tnic>
+ <b7f3639a-e46c-25e8-270b-04860074fd3c@amd.com>
+ <YYknXBpOUQtV1aZ8@zn.tnic>
+ <bcf5e86c-d3f1-0dab-2bed-505b1eb95f17@amd.com>
+ <YYl0l+XV/QRZieGY@zn.tnic>
+ <9de7f807-32a6-b009-d8b7-28771c80bfaf@amd.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <YYrbT6pMGXqA2EVn@lunn.ch>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <9de7f807-32a6-b009-d8b7-28771c80bfaf@amd.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 09, 2021 at 09:34:23PM +0100, Andrew Lunn wrote:
-> On Tue, Nov 09, 2021 at 03:26:01AM +0100, Ansuel Smith wrote:
-> > Some LEDs can be driven by hardware (for example a LED connected to
-> > an ethernet PHY or an ethernet switch can be configured to blink on
-> > activity on the network, which in software is done by the netdev trigger).
-> > 
-> > To do such offloading, LED driver must support this and a supported
-> > trigger must be used.
-> > 
-> > LED driver should declare the correct blink_mode supported and should set
-> > the blink_mode parameter to one of HARDWARE_CONTROLLED or
-> > SOFTWARE_HARDWARE_CONTROLLED.
-> > The trigger will check this option and fail to activate if the blink_mode
-> > is not supported. By default if a LED driver doesn't declare blink_mode,
-> > SOFTWARE_CONTROLLED is assumed.
-> > 
-> > The LED must implement 3 main API:
-> > - trigger_offload_status(): This asks the LED driver if offload mode is
-> >     enabled or not.
-> >     Triggers will check if the offload mode is supported and will be
-> >     activated accordingly. If the trigger can't run in software mode,
-> >     return -EOPNOTSUPP as the blinking can't be simulated by software.
+On Tue, Nov 09, 2021 at 05:00:11PM +0530, Chatradhi, Naveen Krishna wrote:
+> I was trying to handle both cpu and cpu northbridge enumeration in the
+> amd_cache_northbridges() itself by reusing the existing structures and APIs.
 > 
-> I don't understand this last part. The LED controller is not
-> implementing software mode, other than providing a method to manually
-> turn the LED on and off. And there is a well defined call for that. If
-> that call is a NULL, it is clear it is not implemented. There is no
-> need to ask the driver.
-> 
->      Andrew
+> Should have seen this through more clearly. As, this is working well for the
+> following reasons.
 
-You are right I have to remove the last part as it doesn't make sense.
-We already use blink_mode. Will remove in v4.
+Good, that's exactly what I meant! :)
+
+> a. Allocating the amd_northbridges.nb after identifying both the cpu and gpu
+> misc devices, would extend node_to_amd_nb(node) for both cpu and gpu nodes.
+
+Well, there's a reason those things are functions - so that you can do
+the necessary computation inside them and when stuff needs to change,
+users don't have to. That's why amd_northbridges is static and only the
+functions are exported.
+
+So if you want to make sure node_to_amd_nb() works for GPU nodes too,
+you simply have to look at the right "container" so to speak, depending
+on the number @node passed in as an argument and look it up in the
+proper array of pointers:
+
+	[ CPU_NB0, CPU_NB1, ..., CPU_NB-N]  [ GPU_NB0, ... ]
+
+you get the idea.
+
+>    It is used extensively in this module. However, the roots_per_misc value
+> is different in case of cpus and gpus and that needed to be handled
+> seperately.
+> 
+> b. amd_nb_num(void) is used by other modules in the kernel, returning the
+> total count of CPU and GPU northbridges would break the existing code.
+
+amd64_edac is using it too, to know how many driver instances to allocate.
+
+The other users - amd_gart_64.c and amd64-agp.c - are old stuff so they
+most certainly don't need to get the number of GPU nodes too.
+
+> I understood your point now.
+
+Good.
+
+> When we create separate functions for caching cpu and gpu devices, is it
+> okay to create "struct amd_gpu_nb_info" with the following fields
+> 
+> a. gpu_num;
+> b. struct amd_northbridge *gpu_nb;
+> c. gpu_node_start_id;
+
+Makes sense. You need to put in it anything that describes the GPU NBs
+on the system and that other code would use.
+
+> While, amd_nb_num(), continues to return number of cpu NBs
+> Add new API amd_gpu_nb_num(), return number of gpu NBs
+> 
+> and modify the node_to_amd_nb(node) to extend the same behavior for gpu
+> devices also
+
+Yap, exactly.
+
+And since amd64_edac is going to need the full NB count, you can use
+there both:
+
+	num_nodes = amd_nb_num() + amd_gpu_nb_num();
+
+	...
+
+Easy, peasy. :-)
+
+Thanks!
 
 -- 
-	Ansuel
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
