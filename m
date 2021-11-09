@@ -2,117 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BF1AD44A500
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 03:55:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A6C4C44A505
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 03:55:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241980AbhKIC5i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Nov 2021 21:57:38 -0500
-Received: from gandalf.ozlabs.org ([150.107.74.76]:44615 "EHLO
-        gandalf.ozlabs.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241851AbhKIC5h (ORCPT
+        id S242019AbhKIC6H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Nov 2021 21:58:07 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:27474 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S242018AbhKIC6A (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Nov 2021 21:57:37 -0500
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4HpCJB5xLfz4xbc;
-        Tue,  9 Nov 2021 13:54:50 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-        s=201702; t=1636426491;
-        bh=m3n4SZ2AeXrmHfnoBmehErFqI2ep2xaDpWSaCp85/NQ=;
-        h=Date:From:To:Cc:Subject:From;
-        b=W2PRUdgjLSQXUUEr5dltFKjJx62L+JT2qVX4ONIM0cZK8jYwaUN6ds/ziQvbJygW7
-         2yT+XoRDE113WdRPwi4YAInnCN9ZWTfS2k4uY5mOFb1UkPYM86S74GGF5M+SObT5b8
-         CZfjaJFQuhNr4mY/k1Xl8azIaJv48HsKoKQ0mJghcgc24mzuB/Gm73TpD5434M68Jr
-         SFhBITfEsQkEC9xIzHFvoqVJqA8JfEbU2zWDM0wCDmG2uZYQMInSgpdC1T6AHBZegv
-         WcPFGMzNVS55Q5/7uMCrm+YLUOhFpVn2MnjTTxHJQ1rmTlwoRPDsbKoVCbPhfRb8uT
-         uso8cdJmhC9pg==
-Date:   Tue, 9 Nov 2021 13:54:49 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Linux Next Mailing List <linux-next@vger.kernel.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: linux-next: Tree for Nov 9
-Message-ID: <20211109135449.7850eac3@canb.auug.org.au>
+        Mon, 8 Nov 2021 21:58:00 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1636426510;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=AcTad0s1zvICS8LxeQTrtyxxid2izF1mjCXQxAurXKY=;
+        b=C91HZ2ZX4BsaB0N6v2sW+Rwk49icfnfB4ZkSG9/SEgz3IPY/TMaumYr+nS2v6EKKdhg39F
+        6/hzKZnLRBM8H4igQp/MEl3kepMukgNDnG12WCBrR0mUadK2gUNGF/k/K7pqp2LgBMit45
+        vEHTXaCDmpPyTtqBPQFb28lweyaI5n8=
+Received: from mail-lf1-f70.google.com (mail-lf1-f70.google.com
+ [209.85.167.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-20-ZIheFP31PzKiPHAXm_hdiA-1; Mon, 08 Nov 2021 21:55:09 -0500
+X-MC-Unique: ZIheFP31PzKiPHAXm_hdiA-1
+Received: by mail-lf1-f70.google.com with SMTP id n18-20020a0565120ad200b004036c43a0ddso2673276lfu.2
+        for <linux-kernel@vger.kernel.org>; Mon, 08 Nov 2021 18:55:09 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=AcTad0s1zvICS8LxeQTrtyxxid2izF1mjCXQxAurXKY=;
+        b=WNOrQVggTfqB66kBR9kuPa4BYADyNS1yCErsAQ/CPn8XtPdMfjsqaYzGF9dpFBowoH
+         Ix4f6eoVsbHW/71mm0QVJnU1g+YAkFE5UWjNSmFL+ZQnl3d4sgCuudtgk9cRasLjvDTK
+         OXTqoZ94A2jHcIFnDogrR6+V65Y6v8i40QkQzaS2qyZxId8/eGRPQEOIgUAXqUOgUK7z
+         xHvzSoQPJm1yqQ3lrPFOsiVcT9NYPUa9oGAHvW3cXH879ULl5tDPBF9PkVNJSVmWARqT
+         PWRQKRExSl26MYLIipkuHqirW6r1MPWlsnt6N406owxFgZl+8IEXzg9wFRYK2xj5to/X
+         ncWA==
+X-Gm-Message-State: AOAM5319NSZ0Dc7kwLepHLThBpgl9tl7d++CMAGp+GwNSYvG13AasK/J
+        zvKziNxlIEjyaJZn+4HkiLYjwhWBqTWS4rqFCGsZwDtwoyYYObomWlNCd9QH0FlRYieXGK2yoGH
+        5Pdl6HF+KbAEXKaW+CNMqYWiWzr5hyvdFKkLbWuio
+X-Received: by 2002:a05:6512:32c1:: with SMTP id f1mr3929568lfg.498.1636426507724;
+        Mon, 08 Nov 2021 18:55:07 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJwzoTxL0Mk4o67I/bfxIlxvjzL7/EGLPXyM6pWuABUduS0GHa/cGuGMSr7Ifk1yQh3rc/WK2uaYSsPUZAeDPfE=
+X-Received: by 2002:a05:6512:32c1:: with SMTP id f1mr3929546lfg.498.1636426507506;
+ Mon, 08 Nov 2021 18:55:07 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/.SpnMY001_+kG4vrK2tn7jp";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+References: <f6b2d087ca3840604b4e711a208d35b5d6285cb4.1636301587.git.christophe.jaillet@wanadoo.fr>
+ <CACGkMEvN0cgFQhJmLF3xDXHt_EyZ-TnfBM8CnpNwA9sKcwpzBg@mail.gmail.com> <393fb7b7-653b-eae6-16bd-5ffc7d600619@wanadoo.fr>
+In-Reply-To: <393fb7b7-653b-eae6-16bd-5ffc7d600619@wanadoo.fr>
+From:   Jason Wang <jasowang@redhat.com>
+Date:   Tue, 9 Nov 2021 10:54:56 +0800
+Message-ID: <CACGkMEt3yA+fkFJxKfrXyui-rYVSk78=1AqrT0TYQqzcqTJVyg@mail.gmail.com>
+Subject: Re: [PATCH 1/2] eni_vdpa: Fix an error handling path in 'eni_vdpa_probe()'
+To:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Cc:     mst <mst@redhat.com>, Wu Zongyong <wuzongyong@linux.alibaba.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        virtualization <virtualization@lists.linux-foundation.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        kernel-janitors@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/.SpnMY001_+kG4vrK2tn7jp
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On Tue, Nov 9, 2021 at 3:32 AM Christophe JAILLET
+<christophe.jaillet@wanadoo.fr> wrote:
+>
+> Le 08/11/2021 =C3=A0 06:55, Jason Wang a =C3=A9crit :
+> > On Mon, Nov 8, 2021 at 12:15 AM Christophe JAILLET
+> > <christophe.jaillet@wanadoo.fr> wrote:
+> >>
+> >> In the error handling path, a successful 'vp_legacy_probe()' should be
+> >> balanced by a corresponding 'vp_legacy_remove()' call, as already done=
+ in
+> >> the remove function.
+> >>
+> >> Add the missing call and update gotos accordingly.
+> >>
+> >> Fixes: e85087beedca ("eni_vdpa: add vDPA driver for Alibaba ENI")
+> >> Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+> >> ---
+> >>   drivers/vdpa/alibaba/eni_vdpa.c | 6 ++++--
+> >>   1 file changed, 4 insertions(+), 2 deletions(-)
+> >>
+> >> diff --git a/drivers/vdpa/alibaba/eni_vdpa.c b/drivers/vdpa/alibaba/en=
+i_vdpa.c
+> >> index 3f788794571a..12b3db6b4517 100644
+> >> --- a/drivers/vdpa/alibaba/eni_vdpa.c
+> >> +++ b/drivers/vdpa/alibaba/eni_vdpa.c
+> >> @@ -501,7 +501,7 @@ static int eni_vdpa_probe(struct pci_dev *pdev, co=
+nst struct pci_device_id *id)
+> >>          if (!eni_vdpa->vring) {
+> >>                  ret =3D -ENOMEM;
+> >>                  ENI_ERR(pdev, "failed to allocate virtqueues\n");
+> >> -               goto err;
+> >> +               goto err_remove_vp_legacy;
+> >>          }
+> >>
+> >>          for (i =3D 0; i < eni_vdpa->queues; i++) {
+> >> @@ -513,11 +513,13 @@ static int eni_vdpa_probe(struct pci_dev *pdev, =
+const struct pci_device_id *id)
+> >>          ret =3D vdpa_register_device(&eni_vdpa->vdpa, eni_vdpa->queue=
+s);
+> >>          if (ret) {
+> >>                  ENI_ERR(pdev, "failed to register to vdpa bus\n");
+> >> -               goto err;
+> >> +               goto err_remove_vp_legacy;
+> >>          }
+> >>
+> >>          return 0;
+> >>
+> >> +err_remove_vp_legacy:
+> >> +       vp_legacy_remove(&eni_vdpa->ldev);
+> >
+> > Won't vp_legacy_remove() be triggered by the put_devic() below?
+>
+> Hi, I'm sorry but i don't see how.
+>
+> My understanding is that:
+>    - on "put_device(&eni_vdpa->vdpa.dev);", the corresponding release
+> function will be called.
+>
+>    - This release function is the one recorded in the
+> '__vdpa_alloc_device()' function.
+>
+>    - So it should be 'vdpa_release_dev()'.
+>
+>    - This function, AFAIU, has no knowledge of 'vp_legacy_remove()' or
+> anything that could call it.
+>
+>
+> Unless I misread something or miss something obvious, I don't see how
+> 'vp_legacy_remove() would be called.
+>
+>
+> Could you elaborate?
 
-Hi all,
+I think the device should release the driver (see
+device_release_driver()) during during its deleting.
 
-Changes since 20211108:
+Thanks
 
-I have disabled the ntfs file system write capabaility for now as it
-fails for builds with 64k pages.
+>
+> CJ
+>
+> >
+> > Thanks
+> >
+> >>   err:
+> >>          put_device(&eni_vdpa->vdpa.dev);
+> >>          return ret;
+> >> --
+> >> 2.30.2
+> >>
+> >
+> >
+>
 
-Non-merge commits (relative to Linus' tree): 1449
- 1738 files changed, 88873 insertions(+), 34366 deletions(-)
-
-----------------------------------------------------------------------------
-
-I have created today's linux-next tree at
-git://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git
-(patches at http://www.kernel.org/pub/linux/kernel/next/ ).  If you
-are tracking the linux-next tree using git, you should not use "git pull"
-to do so as that will try to merge the new linux-next release with the
-old one.  You should use "git fetch" and checkout or reset to the new
-master.
-
-You can see which trees have been included by looking in the Next/Trees
-file in the source.  There are also quilt-import.log and merge.log
-files in the Next directory.  Between each merge, the tree was built
-with a ppc64_defconfig for powerpc, an allmodconfig for x86_64, a
-multi_v7_defconfig for arm and a native build of tools/perf. After
-the final fixups (if any), I do an x86_64 modules_install followed by
-builds for x86_64 allnoconfig, powerpc allnoconfig (32 and 64 bit),
-ppc44x_defconfig, allyesconfig and pseries_le_defconfig and i386, sparc
-and sparc64 defconfig and htmldocs. And finally, a simple boot test
-of the powerpc pseries_le_defconfig kernel in qemu (with and without
-kvm enabled).
-
-Below is a summary of the state of the merge.
-
-I am currently merging 343 trees (counting Linus' and 92 trees of bug
-fix patches pending for the current merge release).
-
-Stats about the size of the tree over time can be seen at
-http://neuling.org/linux-next-size.html .
-
-Status of my local build tests will be at
-http://kisskb.ellerman.id.au/linux-next .  If maintainers want to give
-advice about cross compilers/configs that work, we are always open to add
-more builds.
-
-Thanks to Randy Dunlap for doing many randconfig builds.  And to Paul
-Gortmaker for triage and bug fixes.
-
-
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/.SpnMY001_+kG4vrK2tn7jp
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmGJ4vkACgkQAVBC80lX
-0GwbFQf+M7sy/wgbgJ5hUZ7pc+p492GqgEvlLqoT6i30elXi37C2Qdtgrx6kt5nM
-Q4ZQq84u/LwF0FLvwkvGKVMVQ41aQk1N5/fyF2+gAHxa87zmdZPHFNfc3KBUTsYK
-h9u/iHjqh9hVtC9VBd7P0ERJqGY9hsbBmKk+F+fbVGNFEFYdP9xX/HUPcYi3HZ3x
-6anVwYxIEQqc2G/ZLaYYTTlQk9mU6htqgHuj62hMkR+b2W78Zs2VhBT3NFlcAXax
-yjPm472svQX3QivfhpcFs5VyzMrv8xAwHZ5amV/+mwqIhH5AsdnwIySYSF+18Uy1
-OyUaCz+QzvPzS2tjk50fuPeFDLWQDA==
-=/iWi
------END PGP SIGNATURE-----
-
---Sig_/.SpnMY001_+kG4vrK2tn7jp--
