@@ -2,112 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0E03844B0A6
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 16:48:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1BFBC44B0AB
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 16:49:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236617AbhKIPu4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Nov 2021 10:50:56 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46678 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236482AbhKIPuz (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Nov 2021 10:50:55 -0500
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1234::107])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 62578C061764;
-        Tue,  9 Nov 2021 07:48:09 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
-        :Reply-To:Content-ID:Content-Description;
-        bh=mSVVJsEPHfSX6uPc9s53Oo/i0doUlHhdoN2OWqWwSK0=; b=JgwTX63ZqgXw6GuYY967TBSZ9z
-        cDRqSZQWrf1zi86tdd+G+5tfJner6dwxITwfHdp154USoM2VVC//P+ese5y0gV4LIsjjtW823f6uZ
-        2TCUkaVZzfF+fuPlNWkZLbN7bNnhnCmhlEGSOQUQHMO6hMHVEgduhGaTzgcbAuAUsC2m0AMH7LwaG
-        3iRUgPLPkut6Op2Qnb8rM7ncxPHqzz5eWQ03c2vAb+NCQMU0O6dCMpQhwvYep0jMLM7EWKGDP3nD8
-        ijOzZvbVQWi/NaOVT6vSiEQ1PnPJR/M4Od/pTDeua0NLzQIAhwsozEeDtY7xzSvrWFsyhd8H5jbgi
-        lEOS28OQ==;
-Received: from [2601:1c0:6280:3f0::aa0b]
-        by merlin.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mkTLk-008nwL-E2; Tue, 09 Nov 2021 15:47:52 +0000
-Subject: Re: [v2 10/10] iio: imu: add BNO055 I2C driver
-To:     andrea.merello@gmail.com, "joe@perches.com" <joe@perches.com>
-Cc:     Jonathan Cameron <jic23@kernel.org>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        linux-iio <linux-iio@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        devicetree <devicetree@vger.kernel.org>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Rob Herring <robh+dt@kernel.org>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Matt Ranostay <matt.ranostay@konsulko.com>,
-        Alexandru Ardelean <ardeleanalex@gmail.com>,
-        Jacopo Mondi <jacopo@jmondi.org>,
-        Andrea Merello <andrea.merello@iit.it>
-References: <20210715141742.15072-1-andrea.merello@gmail.com>
- <20211028101840.24632-1-andrea.merello@gmail.com>
- <20211028101840.24632-11-andrea.merello@gmail.com>
- <85ef90ad-0d3a-6cb7-529f-667562b2ad71@infradead.org>
- <CAN8YU5NiKz2JiNr-47OC4==N8L67HDshuH45BifnHBae+GUU-g@mail.gmail.com>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <021c6fe0-8131-a4f9-9cb0-2f4771d35da1@infradead.org>
-Date:   Tue, 9 Nov 2021 07:47:45 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        id S237909AbhKIPwc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Nov 2021 10:52:32 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45092 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S236482AbhKIPwa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Nov 2021 10:52:30 -0500
+Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 6EFA961186;
+        Tue,  9 Nov 2021 15:49:43 +0000 (UTC)
+Date:   Tue, 9 Nov 2021 10:49:41 -0500
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Sai Prakash Ranjan <quic_saipraka@quicinc.com>
+Cc:     Will Deacon <will@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        <quic_psodagud@quicinc.com>, Marc Zyngier <maz@kernel.org>,
+        <gregkh@linuxfoundation.org>, <arnd@arndb.de>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <linux-arm-msm@vger.kernel.org>,
+        <mingo@redhat.com>, <jbaron@akamai.com>, <jim.cromie@gmail.com>
+Subject: Re: [PATCHv3 3/3] dynamic_debug: Add a flag for dynamic event
+ tracing
+Message-ID: <20211109104941.2d50eafc@gandalf.local.home>
+In-Reply-To: <3706af20bc64a320ff8f3ff8950738b988f4bdf5.1636452784.git.quic_saipraka@quicinc.com>
+References: <cover.1636452784.git.quic_saipraka@quicinc.com>
+        <3706af20bc64a320ff8f3ff8950738b988f4bdf5.1636452784.git.quic_saipraka@quicinc.com>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-In-Reply-To: <CAN8YU5NiKz2JiNr-47OC4==N8L67HDshuH45BifnHBae+GUU-g@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/9/21 3:56 AM, Andrea Merello wrote:
-> Il giorno ven 29 ott 2021 alle ore 00:04 Randy Dunlap
-> <rdunlap@infradead.org> ha scritto:
->>
->> On 10/28/21 3:18 AM, Andrea Merello wrote:
->>> This path adds an I2C driver for communicating to a BNO055 IMU via I2C bus
->>> and it enables the BNO055 core driver to work in this scenario.
->>>
->>> Signed-off-by: Andrea Merello <andrea.merello@iit.it>
->>> ---
->>>    drivers/iio/imu/bno055/Kconfig      |  6 ++++
->>>    drivers/iio/imu/bno055/Makefile     |  1 +
->>>    drivers/iio/imu/bno055/bno055_i2c.c | 54 +++++++++++++++++++++++++++++
->>>    3 files changed, 61 insertions(+)
->>>    create mode 100644 drivers/iio/imu/bno055/bno055_i2c.c
->>>
->>> diff --git a/drivers/iio/imu/bno055/Kconfig b/drivers/iio/imu/bno055/Kconfig
->>> index 941e43f0368d..87200787d548 100644
->>> --- a/drivers/iio/imu/bno055/Kconfig
->>> +++ b/drivers/iio/imu/bno055/Kconfig
->>> @@ -7,3 +7,9 @@ config BOSH_BNO055_SERIAL
->>>        tristate "Bosh BNO055 attached via serial bus"
->>>        depends on SERIAL_DEV_BUS
->>>        select BOSH_BNO055_IIO
->>> +
->>> +config BOSH_BNO055_I2C
->>> +     tristate "Bosh BNO055 attached via I2C bus"
->>> +     depends on I2C
->>> +     select REGMAP_I2C
->>> +     select BOSH_BNO055_IIO
->>
->> Hi,
->>
->> The config entries that have user prompt strings should also
->> have help text.  scripts/checkpatch.pl should have told you
->> about that...
+On Tue, 9 Nov 2021 17:38:21 +0530
+Sai Prakash Ranjan <quic_saipraka@quicinc.com> wrote:
+
+> Debugging a specific driver or subsystem can be a lot easier if we can
+> trace events specific to that driver or subsystem. This type of
+> filtering can be achieved using existing dynamic debug library which
+> provides a way to filter based on files, functions and modules.
 > 
-> I'll add it, thanks. But FYI checkpatch doesn't complain about that here.
+> Using this, provide an additional flag 'e' to filter event tracing to
+> specified input.
+> 
+> For example, tracing all MMIO read/write can be overwhelming and of no
+> use when debugging a specific driver or a subsystem. So switch to
+> dynamic event tracing for register accesses.
+> 
+> Example: Tracing register accesses for all drivers in drivers/soc/qcom/*
+> and the trace output is given below:
+> 
+>   # dyndbg="file drivers/soc/qcom/* +e" trace_event=rwmmio
+>     or
+>   # echo "file drivers/soc/qcom/* +e" > /sys/kernel/debug/dynamic_debug/control
+>   # cat /sys/kernel/debug/tracing/trace
 
-Hm, thanks for adding it and telling me about that.
+FYI, it's best to use /sys/kernel/tracing, as the debug/tracing is only
+there for backward compatibility.
 
-checkpatch.pl does have some code for checking that but I confirmed
-that it does not catch this simple case.
+>     rwmmio_read: rpmh_rsc_probe+0x35c/0x410 readl addr=0xffff80001071000c
+>     rwmmio_read: rpmh_rsc_probe+0x3d0/0x410 readl addr=0xffff800010710004
+>     rwmmio_write: rpmh_rsc_probe+0x3b0/0x410 writel addr=0xffff800010710d00 val=0x3
+>     rwmmio_write: write_tcs_cmd+0x6c/0x78 writel addr=0xffff800010710d30 val=0x10108
 
-Joe, can you identify why checkpatch does not detect missing Kconfig
-help text is this simple case?
+I'd much rather have a module name or something attached to the event that
+ca be filtered on via the trace event filters, than having it determined by
+some side effect done in another directory.
 
-Thanks.
--- 
-~Randy
+-- Steve
