@@ -2,121 +2,219 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8FD3444B482
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 22:11:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F15E044B483
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 22:12:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244953AbhKIVOl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Nov 2021 16:14:41 -0500
-Received: from smtp03.smtpout.orange.fr ([80.12.242.125]:52270 "EHLO
-        smtp.smtpout.orange.fr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244951AbhKIVOk (ORCPT
+        id S244983AbhKIVPW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Nov 2021 16:15:22 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35936 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S241880AbhKIVPU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Nov 2021 16:14:40 -0500
-Received: from [192.168.1.18] ([86.243.171.122])
-        by smtp.orange.fr with ESMTPA
-        id kYPImHEHgIEdlkYPImbK7K; Tue, 09 Nov 2021 22:11:53 +0100
-X-ME-Helo: [192.168.1.18]
-X-ME-Auth: YWZlNiIxYWMyZDliZWIzOTcwYTEyYzlhMmU3ZiQ1M2U2MzfzZDfyZTMxZTBkMTYyNDBjNDJlZmQ3ZQ==
-X-ME-Date: Tue, 09 Nov 2021 22:11:53 +0100
-X-ME-IP: 86.243.171.122
-Subject: Re: [PATCH V2] dma: dw-edma-pcie: switch from 'pci_' to 'dma_' API
-To:     Dan Carpenter <dan.carpenter@oracle.com>
-Cc:     Qing Wang <wangqing@vivo.com>,
-        Gustavo Pimentel <gustavo.pimentel@synopsys.com>,
-        Vinod Koul <vkoul@kernel.org>, dmaengine@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Kernel Janitors <kernel-janitors@vger.kernel.org>
-References: <1632800660-108761-1-git-send-email-wangqing@vivo.com>
- <e30467d0-55e0-156c-4eba-2838c22fe030@wanadoo.fr>
- <20211109132137.GK2001@kadam>
-From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Message-ID: <e5f6585a-399f-5b08-700c-aa8a16969605@wanadoo.fr>
-Date:   Tue, 9 Nov 2021 22:11:52 +0100
+        Tue, 9 Nov 2021 16:15:20 -0500
+Received: from mail-pg1-x52b.google.com (mail-pg1-x52b.google.com [IPv6:2607:f8b0:4864:20::52b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8C7DAC061764
+        for <linux-kernel@vger.kernel.org>; Tue,  9 Nov 2021 13:12:34 -0800 (PST)
+Received: by mail-pg1-x52b.google.com with SMTP id e65so269629pgc.5
+        for <linux-kernel@vger.kernel.org>; Tue, 09 Nov 2021 13:12:34 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=broadcom.com; s=google;
+        h=to:from:subject:message-id:date:user-agent:mime-version;
+        bh=cOuwragMZHWV4n1XQbeHqy6C4nR5WVqw8wzG6+quQGI=;
+        b=Ox+pEoAMjf+GRCbgn8i9HUla33ob0vNHnRQFxekGlSeey29OQttkklCRu67/ll1mHc
+         a8pOPswOY8fM9UjKJkOtnvNpja/KWMYzBbw9QQp6D7IXHAjXbvuBeC3v/bkVyIPxoaq4
+         WGJQnS14S0Z38uh58i59K1V+hUkYhzSQO26IQ=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:to:from:subject:message-id:date:user-agent
+         :mime-version;
+        bh=cOuwragMZHWV4n1XQbeHqy6C4nR5WVqw8wzG6+quQGI=;
+        b=HKnbvCwYV9KeXXqsJe0H1whkooZnJe8xcI6qRy53uYb0qxveUiVzXqg3fheZsRXM3b
+         7IX8vYqOf19/yEOkHZNPeCx0UWvGKBwMtck618cTw6N/BQib2EEAE27tHkvrX03291jA
+         d4koOwjqe3ga2FZjfWriqF8rYOxqsb+7Egzqb0aqGhHYah7RKX9RyQHKkcUm/hffeVyt
+         yNwe6GxoyfAKA0kdiqB6mM9CUGYRf3O9iY0hkZQDHzZ8/1D19SScX/nw1vcyd293os/3
+         1hoJ9HQRwRUddMGVjr+IyGk7IyFh/JbnEKj87ZzCzQC4DYSPzTWVCfju5egTDzP3f0fQ
+         qU1A==
+X-Gm-Message-State: AOAM532BJHSmT6HlNyoG9N2Mx677EQct17qBrXAB254LSdhHxkuZjKGj
+        K4UC86YZhRzhepKU9ziZVeJWTg==
+X-Google-Smtp-Source: ABdhPJzprsDF+uVfzck4LU3NQX9iOcBklFHAdnbBKepMtT6P1n3b7xv51GV06o1yN1QJ3wkSKuElDA==
+X-Received: by 2002:a63:854a:: with SMTP id u71mr8276250pgd.428.1636492353886;
+        Tue, 09 Nov 2021 13:12:33 -0800 (PST)
+Received: from [10.136.13.65] ([192.19.228.250])
+        by smtp.gmail.com with ESMTPSA id w3sm17599870pfd.195.2021.11.09.13.12.31
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 09 Nov 2021 13:12:33 -0800 (PST)
+To:     perex@perex.cz, tiwai@suse.com, ranjani.sridharan@linux.intel.com,
+        broonie@kernel.org, kai.vehmanen@linux.intel.com,
+        alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
+        regressions@leemhuis.info
+From:   Scott Branden <scott.branden@broadcom.com>
+Subject: 5.15 Linux Regression in sound hda
+Message-ID: <063e2397-7edb-5f48-7b0d-618b938d9dd8@broadcom.com>
+Date:   Tue, 9 Nov 2021 13:12:30 -0800
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Thunderbird/78.13.0
 MIME-Version: 1.0
-In-Reply-To: <20211109132137.GK2001@kadam>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
+        boundary="00000000000074733a05d06191f9"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Le 09/11/2021 à 14:21, Dan Carpenter a écrit :
-> On Tue, Nov 02, 2021 at 08:05:53PM +0100, Christophe JAILLET wrote:
->> Hi,
->>
->>
->> Le 28/09/2021 à 05:44, Qing Wang a écrit :
->>> From: Wang Qing <wangqing@vivo.com>
->>>
->>> The wrappers in include/linux/pci-dma-compat.h should go away.
->>>
->>> The patch has been generated with the coccinelle script below.
->>> expression e1, e2;
->>> @@
->>> -    pci_set_dma_mask(e1, e2)
->>> +    dma_set_mask(&e1->dev, e2)
->>>
->>> @@
->>> expression e1, e2;
->>> @@
->>> -    pci_set_consistent_dma_mask(e1, e2)
->>> +    dma_set_coherent_mask(&e1->dev, e2)
->>>
->>> While at it, some 'dma_set_mask()/dma_set_coherent_mask()' have been
->>> updated to a much less verbose 'dma_set_mask_and_coherent()'.
->>>
->>> Signed-off-by: Wang Qing <wangqing@vivo.com>
->>> ---
->>>    drivers/dma/dw-edma/dw-edma-pcie.c | 17 ++++-------------
->>>    1 file changed, 4 insertions(+), 13 deletions(-)
->>>
->>> diff --git a/drivers/dma/dw-edma/dw-edma-pcie.c b/drivers/dma/dw-edma/dw-edma-pcie.c
->>> index 44f6e09..198f6cd
->>> --- a/drivers/dma/dw-edma/dw-edma-pcie.c
->>> +++ b/drivers/dma/dw-edma/dw-edma-pcie.c
->>> @@ -186,27 +186,18 @@ static int dw_edma_pcie_probe(struct pci_dev *pdev,
->>>    	pci_set_master(pdev);
->>>    	/* DMA configuration */
->>> -	err = pci_set_dma_mask(pdev, DMA_BIT_MASK(64));
->>> +	err = dma_set_mask_and_coherent(&pdev->dev, DMA_BIT_MASK(64));
->>>    	if (!err) {
->> if err = 0, so if no error...
->>
->>> -		err = pci_set_consistent_dma_mask(pdev, DMA_BIT_MASK(64));
->>> -		if (err) {
->>> -			pci_err(pdev, "consistent DMA mask 64 set failed\n");
->>> -			return err;
->>> -		}
->>> +		pci_err(pdev, "DMA mask 64 set failed\n");
->>> +		return err;
->> ... we log an error, return success but don't perform the last steps of the
->> probe.
-> 
-> I have an unpublished Smatch check for these:
-> 
-> drivers/dma/dw-edma/dw-edma-pcie.c:192 dw_edma_pcie_probe() info: return a literal instead of 'err'
-> 
-> The idea of the Smatch check is that it's pretty easy to get "if (!ret)"
-> and "if (ret)" transposed.  It would show up in testing, of course, but
-> the truth is that maintainers don't always have all the hardware they
-> maintain.
-> 
-> And the other idea is that "return 0;" is always more readable and
-> intentional than "return ret;" where ret is zero.
-> 
-> Anyway, is someone going to fix these?
+--00000000000074733a05d06191f9
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 
-Patch sent.
-Feed-back welcomed.
+I'm reporting a new WARN_ON in sound/hda/hdac_bus.c that was not present 
+in 5.15.  Sorry, I don't have time to bisect this right now but report 
+is below.
 
-CJ
+dmesg in 5.14 kernel was:
+snd_hda_intel 0000:00:1f.3: bound 0000:00:02.0 (ops 0xffffffffaa2ac520)
+GACT probability on
+Mirror/redirect action on
+Simple TC action Loaded
+u32 classifier
+     Performance counters on
+     input device check on
+     Actions configured
+hdaudio hdaudioC0D0: Unable to bind the codec
+hdaudio hdaudioC0D2: Unable to bind the codec
 
-> 
-> regards,
-> dan carpenter
-> 
-> 
+dmesg in 5.15 kernel produces WARN_ON in sound/hda/hdac_bus.c
+snd_hda_intel 0000:00:1f.3: bound 0000:00:02.0 (ops 0xffffffffad8b02a0)
+GACT probability on
+Mirror/redirect action on
+Simple TC action Loaded
+u32 classifier
+     Performance counters on
+     input device check on
+     Actions configured
+snd_hda_intel 0000:00:1f.3: Cannot probe codecs, giving up
+Initializing XFRM netlink socket
+------------[ cut here ]------------
+NET: Registered PF_INET6 protocol family
+WARNING: CPU: 14 PID: 186 at sound/hda/hdac_bus.c:73 
+snd_hdac_bus_exit+0x40/0x50
 
+Segment Routing with IPv6
+Modules linked in:
+CPU: 14 PID: 186 Comm: kworker/14:2 Tainted: G          I       5.15.0 #1
+Hardware name: ASUSTeK COMPUTER INC. System Product Name/WS C246 PRO, 
+BIOS 1401 08/13/2020
+In-situ OAM (IOAM) with IPv6
+Workqueue: events azx_probe_work
+sit: IPv6, IPv4 and MPLS over IPv4 tunneling driver
+
+RIP: 0010:snd_hdac_bus_exit+0x40/0x50
+NET: Registered PF_PACKET protocol family
+Code: 75 19 48 8b 57 58 48 8d 47 58 48 39 c2 75 1b 48 81 c7 f8 02 00 00 
+e9 ff 97 57 ff 0f 0b 48 8b 57 58 48 8d 47 58 48 39 c2 74 e5 <0f> 0b 48 
+81 c7 f8 02 00 00 e9 e2 97 57 ff 66 90 0f 1f 44 00 00 41
+RPC: Registered rdma transport module.
+RSP: 0000:ffffa545007b7e88 EFLAGS: 00010202
+RPC: Registered rdma backchannel transport module.
+
+Key type dns_resolver registered
+RAX: ffff89f483078880 RBX: ffff89f483078828 RCX: 0000000080200010
+RDX: ffff89f4830792f0 RSI: 0000000000000001 RDI: ffff89f483078828
+RBP: ffff89f483078e70 R08: 0000000000000000 R09: ffffffffacf094a4
+R10: 0000000000000004 R11: 0000000000000032 R12: ffff89f7dbda50c0
+R13: ffff89f7dbda9100 R14: 0000000000000000 R15: ffff89f7dbda9105
+FS:  0000000000000000(0000) GS:ffff89f7dbd80000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 0000000000000000 CR3: 0000000194a0c001 CR4: 00000000003706e0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+  azx_free+0xba/0x170
+  process_one_work+0x1db/0x380
+  worker_thread+0x4d/0x3e0
+  ? rescuer_thread+0x370/0x370
+  kthread+0x124/0x150
+  ? set_kthread_struct+0x40/0x40
+  ret_from_fork+0x1f/0x30
+---[ end trace 9779b9e2ef53104c ]---
+
+--00000000000074733a05d06191f9
+Content-Type: application/pkcs7-signature; name="smime.p7s"
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment; filename="smime.p7s"
+Content-Description: S/MIME Cryptographic Signature
+
+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
+cRe0CRXA7ypOJSgxO/nOOyQoaJxT7CGg1npOeSpPjEuc3fE4xum3l0nvU85hj6MlKZu43hokdBh0
+D0nLyyhEwlR3AC/msdff/UGbM/JR9vk812RP4m/aNWZFJwIDAQABo4IB2zCCAdcwDgYDVR0PAQH/
+BAQDAgWgMIGjBggrBgEFBQcBAQSBljCBkzBOBggrBgEFBQcwAoZCaHR0cDovL3NlY3VyZS5nbG9i
+YWxzaWduLmNvbS9jYWNlcnQvZ3NnY2NyM3BlcnNvbmFsc2lnbjJjYTIwMjAuY3J0MEEGCCsGAQUF
+BzABhjVodHRwOi8vb2NzcC5nbG9iYWxzaWduLmNvbS9nc2djY3IzcGVyc29uYWxzaWduMmNhMjAy
+MDBNBgNVHSAERjBEMEIGCisGAQQBoDIBKAowNDAyBggrBgEFBQcCARYmaHR0cHM6Ly93d3cuZ2xv
+YmFsc2lnbi5jb20vcmVwb3NpdG9yeS8wCQYDVR0TBAIwADBJBgNVHR8EQjBAMD6gPKA6hjhodHRw
+Oi8vY3JsLmdsb2JhbHNpZ24uY29tL2dzZ2NjcjNwZXJzb25hbHNpZ24yY2EyMDIwLmNybDAlBgNV
+HREEHjAcgRpzY290dC5icmFuZGVuQGJyb2FkY29tLmNvbTATBgNVHSUEDDAKBggrBgEFBQcDBDAf
+BgNVHSMEGDAWgBSWM9HmWBdbNHWKgVZk1b5I3qGPzzAdBgNVHQ4EFgQUOhjEpl04Sz9dh5MI82E1
+V39lM/owDQYJKoZIhvcNAQELBQADggEBAA7Rlypx/esz/iq1yA4+KW7uwV/aBY344BWcXt6I+SNK
+VwFBgFWfLj5vaEud9TVv2fPSiaHJo0umemOJk+43QD+bsoqmgcFXd21PrOt7Jjs+jjVED9VC5kJq
+S4NNKUkS+BqijJwSegtVygrc/atrIlJbjI21q4qpemUo5fgwqCNm++BmBGTI8yA09vtGSNDRN42k
+lLX9hl3iEj5SBgkQqCbbnoE+ZjjKfqt7ED166WhgyQWNrl39yLcvLj+JRUB3RuvXKZjH0NQEEBII
+wZBDSkyneykLt3CBNIhSCTxKM6OWxVp936ALSa5K9FNy00TeWSpokR6NmzaW8VD/EjTgvqAxggJt
+MIICaQIBATBrMFsxCzAJBgNVBAYTAkJFMRkwFwYDVQQKExBHbG9iYWxTaWduIG52LXNhMTEwLwYD
+VQQDEyhHbG9iYWxTaWduIEdDQyBSMyBQZXJzb25hbFNpZ24gMiBDQSAyMDIwAgx9oXSJpKniO4dS
+Gk8wDQYJYIZIAWUDBAIBBQCggdQwLwYJKoZIhvcNAQkEMSIEIMlaGJQ98My+aAyIZkRbjfzF8l5V
+BHiMRyFPu5n1uUY/MBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZIhvcNAQkFMQ8XDTIx
+MTEwOTIxMTIzNFowaQYJKoZIhvcNAQkPMVwwWjALBglghkgBZQMEASowCwYJYIZIAWUDBAEWMAsG
+CWCGSAFlAwQBAjAKBggqhkiG9w0DBzALBgkqhkiG9w0BAQowCwYJKoZIhvcNAQEHMAsGCWCGSAFl
+AwQCATANBgkqhkiG9w0BAQEFAASCAQAzFGaAwtFi4IWeG4iu0cwy+C7DQbmHShePv+t6enQ8ulRN
+w17SnDTVkU+FaZqvL22862pPUq1OPuJ56yjGbKAmgCtPNiR1ByTSmN411RePCOz+txa5X6KkRhjQ
+2tD5ai2HJMWHWBcKIE1LwMllwkbKMzGYnxwra6/ta4hs8f1d7cgPpX43QoLdZCvb5kuyjPbNO0H+
+N8kmvvtBvU+JItpcsQ816HWUIrpA+3Kcn728dGOjswawN+lnbnUX/5w2LrqlFmaWx2kCW/9JF4fK
+poCbqkgWcfykhVRfPNAN02acmKRzxJ+EWL8m/Ewhu990unLvgKGROs/jWJMA9hPJoyqg
+--00000000000074733a05d06191f9--
