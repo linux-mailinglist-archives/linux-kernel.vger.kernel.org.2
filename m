@@ -2,166 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CB8C344AD8E
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 13:31:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 42EF044AD9F
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 13:33:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242543AbhKIMef (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Nov 2021 07:34:35 -0500
-Received: from mail.kernel.org ([198.145.29.99]:47312 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241539AbhKIMed (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Nov 2021 07:34:33 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A5A8761051;
-        Tue,  9 Nov 2021 12:31:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1636461107;
-        bh=S+e5iTV5+Bs/5vsYLLwsUEdlQ/kxNOz+WH4f2I2y4qc=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=lUGj36gvga6j3IfS8HCJXIrDBSy5v3ZccWpqUKD0snvVZh+ss5GUvorDKHh7wNZzV
-         0d/e+sWcM6e1cf8mbPMQAtDPuRDlruWExtRJiifU4rl8NTMk22LEupndeEpuJzL2Q8
-         Jhyj7SbQ5lNacDNKLdE9pznpcXxAFDmoUQG3XeOb1NmVaYNfLz/MaX3p4CnBa+mqo8
-         bGv5u+w/GYbJCIBG0erySFHKZkbH/khRIeOC3uQgqO93SiqKbYSPDYyjMR6qwgDGMN
-         OizaZFBIoAw1UAyw0eHa5NIgY/2Bm1+BGcadXQ882IVFDTmPiB908zZNvrcpgwcjLR
-         El1OFTkWNgLeg==
-Date:   Tue, 9 Nov 2021 20:31:40 +0800
-From:   Peter Chen <peter.chen@kernel.org>
-To:     Qihang Hu <huqihang@oppo.com>
-Cc:     balbi@kernel.org, gregkh@linuxfoundation.org,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3] usb: gadget: composite: Show warning if function
- driver's descriptors are incomplete.
-Message-ID: <20211109123140.GA5208@Peter>
-References: <20211109101936.397503-1-huqihang@oppo.com>
+        id S242202AbhKIMfm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Nov 2021 07:35:42 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58878 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235446AbhKIMfl (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Nov 2021 07:35:41 -0500
+Received: from mail-wr1-x42b.google.com (mail-wr1-x42b.google.com [IPv6:2a00:1450:4864:20::42b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2539CC061766
+        for <linux-kernel@vger.kernel.org>; Tue,  9 Nov 2021 04:32:55 -0800 (PST)
+Received: by mail-wr1-x42b.google.com with SMTP id i5so32750091wrb.2
+        for <linux-kernel@vger.kernel.org>; Tue, 09 Nov 2021 04:32:55 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=immu-ne.20210112.gappssmtp.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=6vZ6aUIeCJbBlIO0Lv+WQYFDNRnVtb+GSHZa0RcE2rc=;
+        b=zjefnNTa5dG2lLyDyFwcYr3GkGFdRiMW0BfUjt11dHS7twn/Wx415BTEVSo+UwPmc3
+         RN0qNqol2NwaZG3z4qUFCf1L+MjGfPc8B1g6HqAgGHReiyj4nQRf4VEk71Zh7keJgcML
+         4JitDL82G2/YrG2OQThFdBv9TDmcUQL6KHLjy4E7fNVv9WPjDRDmc6fVQ0O18jau0P8d
+         zGB+NKmzP65RSpSB6dKXEHYDzNm02RKiLbMGIoaOZw9z7lkhR5+v4FhcMFbB20iMBayp
+         o5cdVdLyh28b7gsRtDoHuVB0JzR2jSOeY946ws55eUYej9prMz3GG0QpEeC8obCx5Dkk
+         aF2w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=6vZ6aUIeCJbBlIO0Lv+WQYFDNRnVtb+GSHZa0RcE2rc=;
+        b=bdLIgJBazMZyARdxIOJLwpF9Qx42Iw1o155kSggfWUsPzAu25hoqS7OWKvv0o8bJ/+
+         sDNuM3z8U1b2btFVw76eAdhgFZNbgAgwogWL+YUNTW/bw+B6LmGr6XRc+2mXqNKJcX83
+         L1udkmYt0DPlbLlMS2cX0bCUtZMvEyOkLh9z/btPnlYT8WHKYAgJzIOmmQhxzJE/FrLy
+         xneqJT6mYxwBwQd7bpO3wRUOYdohQfHkT0T6WTSLREfWoVBYXv5x3PZWrs4qI5m5L4eS
+         mhBLRhZIEsJ6F9I2sZI7VhvXb2k+uaWHV7BMQ3kWCh6ThOQl1AySuBRyIBPZ6zmP6S/M
+         uhhQ==
+X-Gm-Message-State: AOAM533jfAjCNhv5YnYYW0N/BA0OTMo6uVFoMuBgBAUlnqOGWUbbO1yT
+        Fb03T8tJO0RL7McNQPftwIbcfmmX8DRH86JYYWDE2g==
+X-Google-Smtp-Source: ABdhPJxBVGq3/twpZtrzbiJORWrfHffp4rl1UwLaiG27C8lDBzeYC7fhbtt4/m1JVkrSQn260BYhdO/Q3ZlAgtSOg5Q=
+X-Received: by 2002:a5d:6c6b:: with SMTP id r11mr8800449wrz.231.1636461173687;
+ Tue, 09 Nov 2021 04:32:53 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211109101936.397503-1-huqihang@oppo.com>
+References: <20211109000130.42361-1-hans-gert.dahmen@immu.ne>
+ <YYoSPjF3M05dR0PX@kroah.com> <42cea157-55a2-bd12-335b-6348f0ff6525@immu.ne> <YYpNOMtp7Kwf0fho@kroah.com>
+In-Reply-To: <YYpNOMtp7Kwf0fho@kroah.com>
+From:   Hans-Gert Dahmen <hans-gert.dahmen@immu.ne>
+Date:   Tue, 9 Nov 2021 13:32:48 +0100
+Message-ID: <CAHifhD4f676jiQ52siiKQTjUFXFm6Sto8pQjF07w5y+gqrUvFQ@mail.gmail.com>
+Subject: Re: [PATCH] firmware: export x86_64 platform flash bios region via sysfs
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     akpm@linux-foundation.org, linux-kernel@vger.kernel.org,
+        Philipp Deppenwiese <philipp.deppenwiese@immu.ne>,
+        Mauro Lima <mauro.lima@eclypsium.com>,
+        Richard Hughes <hughsient@gmail.com>,
+        platform-driver-x86@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 21-11-09 18:19:36, Qihang Hu wrote:
-> In the config_ep_by_speed_and_alt function, select the corresponding
-> descriptor through g->speed. But some unsound function drivers may
+On Tue, 9 Nov 2021, 11:28 Greg KH, <gregkh@linuxfoundation.org> wrote:
+>
+> On Tue, Nov 09, 2021 at 09:52:53AM +0100, Hans-Gert Dahmen wrote:
+> > On 09.11.21 07:16, Greg KH wrote:
+> > > On Tue, Nov 09, 2021 at 01:01:30AM +0100, Hans-Gert Dahmen wrote:
+> > > > Make the 16MiB long memory-mapped BIOS region of the platform SPI flash
+> > > > on X86_64 system available via /sys/kernel/firmware/flash_mmap/bios_region
+> > > > for pen-testing, security analysis and malware detection on kernels
+> > > > which restrict module loading and/or access to /dev/mem.
+> > >
+> > > That feels like a big security hole we would be opening up for no good
+> > > reason.
+> > >
+> > > > It will be used by the open source Converged Security Suite.
+> > > > https://github.com/9elements/converged-security-suite
+> > >
+> > > What is the reason for this, and what use is this new interface?
+> > Because it is very hard to access the SPI flash to read the BIOS contents
+> > for (security) analysis and this works without the more complex and
+> > unfinished SPI drivers and it does so on a system where we may not access
+> > the full /dev/mem.
+>
+> Why not fix the spi drivers to do this properly?  What is preventing you
+> from doing that instead of adding a new user/kernel api that you will
+> have to support for the next 20+ years?
+>
 
-But some 'legacy or not well designed' function drivers
+Because this interface we want to use is inherently tied to the
+workings of x86_64 CPUs. It is very stable and easy to use. The SPI
+drivers in contrast have a history of being complex, buggy and in
+general not reliable. This module will require very little maintenance
+and will probably work in the future without needing modification for
+newer platforms. It generally is meant as a fallback to the real SPI
+flash drivers so that userspace programs are able to provide essential
+functionality.
 
-> not support the corresponding speed. So, we can directly display
-> warnings instead of panicking the kernel.
+> > > > +static int __init flash_mmap_init(void)
+> > > > +{
+> > > > + int ret;
+> > > > +
+> > > > + pdev = platform_device_register_simple("flash_mmap", -1, NULL, 0);
+> > > > + if (IS_ERR(pdev))
+> > > > +         return PTR_ERR(pdev);
+> > > > +
+> > > > + ret = sysfs_create_group(&pdev->dev.kobj, &flash_mmap_group);
+> > >
+> > > You just raced with userspace and lost  >
+> > > Please set the attribute to the platform driver before you create the
+> > > device.
+> > >
+> >
+> > Sorry, but I went through tons of code and could not find a single instance
+> > where I can use a default group for creation without using a probe function
+> > that does the magic for me. Please help me find the correct way of doing
+> > this without manually creating and adding kobjects.
+>
+> The problem here is that you are abusing the platform driver code and
+> making a "fake" device that is not attached to anything real, and
+> without a driver.  That should not be done, as you do not know what
+> hardware this driver is going to be run on.
+>
+> Bind to the real hardware resource please.
 
-instead of 'causing kernel panic'
+In a previous mail in June you suggested this is some sort of platform
+device, that is why I rewrote it as such. The hardware resource here
+is the south bridge for x86_64 CPUs and the module dependencies will
+compile it only for these platforms. The situation is like, if you
+have that CPU, you have the hardware, so it is implicitly bound or it
+just will not execute on a machine code level. I feel like your
+requirement is somewhat impossible to satisfy and I really don't know
+what to do. Please, can anyone help me by pointing out a proper
+example elsewhere in the kernel?
 
-> At the same time, it
-> indicates a problem with the function in the warning message.
-
-It indicates the reasons in warning message.
-> 
-> Signed-off-by: Qihang Hu <huqihang@oppo.com>
-> ---
-> Changes in v2:
-> -Add warning message
-> 
-> Changes in v3:
-> -Change commit log
-> -Delete extra blank lines
-> -Modify 'incomplete_desc' to bool type
-
-The latest changelog should be showed at the first.
-
-> ---
->  drivers/usb/gadget/composite.c | 39 ++++++++++++++++++++++------------
->  1 file changed, 26 insertions(+), 13 deletions(-)
-> 
-> diff --git a/drivers/usb/gadget/composite.c b/drivers/usb/gadget/composite.c
-> index 72a9797dbbae..cb9c7edf9bbf 100644
-> --- a/drivers/usb/gadget/composite.c
-> +++ b/drivers/usb/gadget/composite.c
-> @@ -159,6 +159,8 @@ int config_ep_by_speed_and_alt(struct usb_gadget *g,
->  	int want_comp_desc = 0;
->  
->  	struct usb_descriptor_header **d_spd; /* cursor for speed desc */
-> +	struct usb_composite_dev *cdev;
-> +	bool incomplete_desc = false;
->  
->  	if (!g || !f || !_ep)
->  		return -EIO;
-> @@ -167,28 +169,43 @@ int config_ep_by_speed_and_alt(struct usb_gadget *g,
->  	switch (g->speed) {
->  	case USB_SPEED_SUPER_PLUS:
->  		if (gadget_is_superspeed_plus(g)) {
-> -			speed_desc = f->ssp_descriptors;
-> -			want_comp_desc = 1;
-> -			break;
-> +			if (f->ssp_descriptors) {
-> +				speed_desc = f->ssp_descriptors;
-> +				want_comp_desc = 1;
-> +				break;
-> +			}
-> +			incomplete_desc = true;
->  		}
->  		fallthrough;
->  	case USB_SPEED_SUPER:
->  		if (gadget_is_superspeed(g)) {
-> -			speed_desc = f->ss_descriptors;
-> -			want_comp_desc = 1;
-> -			break;
-> +			if (f->ss_descriptors) {
-> +				speed_desc = f->ss_descriptors;
-> +				want_comp_desc = 1;
-> +				break;
-> +			}
-> +			incomplete_desc = true;
->  		}
->  		fallthrough;
->  	case USB_SPEED_HIGH:
->  		if (gadget_is_dualspeed(g)) {
-> -			speed_desc = f->hs_descriptors;
-> -			break;
-> +			if (f->hs_descriptors) {
-> +				speed_desc = f->hs_descriptors;
-> +				break;
-> +			}
-> +			incomplete_desc = true;
->  		}
->  		fallthrough;
->  	default:
->  		speed_desc = f->fs_descriptors;
->  	}
->  
-> +	cdev = get_gadget_data(g);
-> +	if (incomplete_desc)
-> +		WARNING(cdev,
-> +			"%s doesn't hold the descriptors for current speed\n",
-> +			f->name);
-> +
->  	/* find correct alternate setting descriptor */
->  	for_each_desc(speed_desc, d_spd, USB_DT_INTERFACE) {
->  		int_desc = (struct usb_interface_descriptor *)*d_spd;
-> @@ -244,12 +261,8 @@ int config_ep_by_speed_and_alt(struct usb_gadget *g,
->  			_ep->maxburst = comp_desc->bMaxBurst + 1;
->  			break;
->  		default:
-> -			if (comp_desc->bMaxBurst != 0) {
-> -				struct usb_composite_dev *cdev;
-> -
-> -				cdev = get_gadget_data(g);
-> +			if (comp_desc->bMaxBurst != 0)
->  				ERROR(cdev, "ep0 bMaxBurst must be 0\n");
-> -			}
->  			_ep->maxburst = 1;
->  			break;
->  		}
-> -- 
-> 2.25.1
-> 
-
-Except the typo issues, other things are ok for me. It shows an warning
-message for not well designed function driver, instead of panic
-the kernel. It depends on Greg that whether it should be panic directly
-or show warning message to indicate the issue.
-
--- 
-
-Thanks,
-Peter Chen
-
+Hans-Gert
