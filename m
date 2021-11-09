@@ -2,224 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 164D744A503
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 03:55:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BF1AD44A500
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 03:55:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242062AbhKIC6A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Nov 2021 21:58:00 -0500
-Received: from mail-eopbgr1320085.outbound.protection.outlook.com ([40.107.132.85]:44224
-        "EHLO APC01-PU1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S241851AbhKIC5w (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Nov 2021 21:57:52 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=MjRucwjkwyra3K4VQGGpEGg0XydrtEBjS7+TSe46p5uUMEejBKUTgSCPb9/oudfSNrmbtw3lI15Z4BWZP6V8YiUQE9jp7imqTzIoCa2msh48FQta4bHxHJ/uMy2yTdz4Vg0UWjIkoHb72Gk2mEMLkjmCJ2fSruVMYU2IqWvuviX7pZgPj15/guUgFq/py1DU88OLkZPDKYb4nNXfnGi/DLwmp4YXHAPHTlz5WIcFbEbPErdA0YqyDTEmf5UEbbeTFi40EiKzAsVGKBLySutBTrjgpAZeqa9XthMVJU5zdrix++6RDNnJvD30kVKG/UIVpCVN2nab/qlWX56Q2B0iDA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=VvLokOUf35eCgKTRGFw1MK+UKYgI2JDRCOQeHH+KKQ4=;
- b=mkPPDP4m3Pwvxde85moB4f1bO6hETzkIf1ZWK3VF4X/LUESc2sczNxIx5JZtS5mv6PG5iRtop3u/DcjjaHgX3lo7NYrCUqjPhVevX+kL1sCWH6NvkX3xfgwtTaMNxeFRq0HcbkWHG3ZWG8X7wmkzNexxvDwFSAXi4uJLdS2K9+lbjYpX0WAAbMAIBYN1R9OWAjxTgKDJecUFfzZwfdQQvuFkmYEPRJo9M7acRDAoazEy8qL1YBW9JhQM35FULIVDy6/TBBktFffES/B9fmeTbVcgE7ZqMBVCU+BJeeyHCFvJKutqJrvsLjHbQpyfyZQaoF4w2CwoHYaZTjDsXjmvGQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oppo.com; dmarc=pass action=none header.from=oppo.com;
- dkim=pass header.d=oppo.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oppo.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=VvLokOUf35eCgKTRGFw1MK+UKYgI2JDRCOQeHH+KKQ4=;
- b=bt22hiGaP3dYGUGuMsYr9K5txS10sgN8piIw1U45Ta3KtPPFy871Xq729ywbGfbd2XEdn0La4DcIRch4e9C2dO0TC4D1h0JnTsi2O+t4supGT82pgSQFLPCFfXntRPK2tFJ050LagT9bGI9if5eLRK146+ziv/9YQEUpLvFIpWE=
-Authentication-Results: lists.ozlabs.org; dkim=none (message not signed)
- header.d=none;lists.ozlabs.org; dmarc=none action=none header.from=oppo.com;
-Received: from SG2PR02MB4108.apcprd02.prod.outlook.com (2603:1096:4:96::19) by
- SG2PR02MB2699.apcprd02.prod.outlook.com (2603:1096:4:58::14) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.4669.15; Tue, 9 Nov 2021 02:55:02 +0000
-Received: from SG2PR02MB4108.apcprd02.prod.outlook.com
- ([fe80::7e:59ef:bec3:9988]) by SG2PR02MB4108.apcprd02.prod.outlook.com
- ([fe80::7e:59ef:bec3:9988%7]) with mapi id 15.20.4669.016; Tue, 9 Nov 2021
- 02:55:02 +0000
-From:   Huang Jianan <huangjianan@oppo.com>
-To:     linux-erofs@lists.ozlabs.org
-Cc:     huangjianan@oppo.com, guoweichao@oppo.com, guanyuwei@oppo.com,
-        yh@oppo.com, zhangshiming@oppo.com, linux-kernel@vger.kernel.org
-Subject: [PATCH 2/2] erofs: add sysfs node to control sync decompression strategy
-Date:   Tue,  9 Nov 2021 10:54:45 +0800
-Message-Id: <20211109025445.12427-2-huangjianan@oppo.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20211109025445.12427-1-huangjianan@oppo.com>
-References: <20211109025445.12427-1-huangjianan@oppo.com>
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: HK0PR03CA0109.apcprd03.prod.outlook.com
- (2603:1096:203:b0::25) To SG2PR02MB4108.apcprd02.prod.outlook.com
- (2603:1096:4:96::19)
+        id S241980AbhKIC5i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Nov 2021 21:57:38 -0500
+Received: from gandalf.ozlabs.org ([150.107.74.76]:44615 "EHLO
+        gandalf.ozlabs.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S241851AbhKIC5h (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Nov 2021 21:57:37 -0500
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4HpCJB5xLfz4xbc;
+        Tue,  9 Nov 2021 13:54:50 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+        s=201702; t=1636426491;
+        bh=m3n4SZ2AeXrmHfnoBmehErFqI2ep2xaDpWSaCp85/NQ=;
+        h=Date:From:To:Cc:Subject:From;
+        b=W2PRUdgjLSQXUUEr5dltFKjJx62L+JT2qVX4ONIM0cZK8jYwaUN6ds/ziQvbJygW7
+         2yT+XoRDE113WdRPwi4YAInnCN9ZWTfS2k4uY5mOFb1UkPYM86S74GGF5M+SObT5b8
+         CZfjaJFQuhNr4mY/k1Xl8azIaJv48HsKoKQ0mJghcgc24mzuB/Gm73TpD5434M68Jr
+         SFhBITfEsQkEC9xIzHFvoqVJqA8JfEbU2zWDM0wCDmG2uZYQMInSgpdC1T6AHBZegv
+         WcPFGMzNVS55Q5/7uMCrm+YLUOhFpVn2MnjTTxHJQ1rmTlwoRPDsbKoVCbPhfRb8uT
+         uso8cdJmhC9pg==
+Date:   Tue, 9 Nov 2021 13:54:49 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Linux Next Mailing List <linux-next@vger.kernel.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: linux-next: Tree for Nov 9
+Message-ID: <20211109135449.7850eac3@canb.auug.org.au>
 MIME-Version: 1.0
-Received: from PC80253450.adc.com (58.252.5.73) by HK0PR03CA0109.apcprd03.prod.outlook.com (2603:1096:203:b0::25) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4669.10 via Frontend Transport; Tue, 9 Nov 2021 02:55:01 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: a4daefe5-1fe0-4ce2-06bb-08d9a32c537a
-X-MS-TrafficTypeDiagnostic: SG2PR02MB2699:
-X-Microsoft-Antispam-PRVS: <SG2PR02MB26991DD3C0931BC8136D0269C3929@SG2PR02MB2699.apcprd02.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:4303;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: II1WgWJboD8qT7Xc8Gl8N90UBCvxVjuQF+mdVjQ/gA9VSh7xpoOlU+6Dw14Cu6SEgxLMZECgjrIzikmXPZlu55nJ2WA2eLMKiuwnN4qGMex7bCtNisaaqViyL2IRoJFrIjhkBd0WU3h6cZ+CWuTGsQVbKQzSrJ9bT7FCqEqOtGJULTAQCD3HukDlEEAOe3YJ/6WhnBwkouaEf3q/xoFVP5hId2nB8h9cqFW4zGjDhgvV4PvKIz8WTo/Kz7lSuKAJ1kTRRMDyQJIshn3VG6sajqaR9hwjlfmJSxXLLP0DfR3Wxyq1M236fvHR3u6gzKuu/Y5+gHxBVh14bhHKeLS2VmVsdWGNnJ3Rx3Td4fl32RTqBtoucfV8QsjNXt0+nCDFtBaLyUPrt3A4EE52Hc+w/WzkMw8BwmiapyVjiUxqHRbyOaLSwvxMmcc9hNHF9uSO0flok8RVqCw3ZQW+vmziODMQor6RdVjzRi0vLuxfCzmeF+J8qW4kJtwrP45DsALlz8nBgF3zPM5ThWqLUSYa/SDRd/LlIwPcdkQtVzNkiCR/yWygtLLFlwH90r7JitRAftgQNGyaI3BAfvTj0AdLlarVL8l/kn3eROxZrPTxV2V/RUtSj7AHyBOQg+gOMN3M4LBBrXe8/lujnOKYLdDo3IXF6GVTJvLTiFfOS5HsuwgNy5fEoDjZzi9LWG/kEPT0wRw7qAmfLuu8tyWzAI28tpdWsOco362H53TP32bjSrY=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SG2PR02MB4108.apcprd02.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(508600001)(38100700002)(36756003)(6916009)(52116002)(66556008)(38350700002)(6506007)(6486002)(316002)(83380400001)(6512007)(4326008)(2906002)(86362001)(26005)(186003)(2616005)(1076003)(8936002)(5660300002)(956004)(66476007)(6666004)(66946007)(8676002)(11606007);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?2bwV9y1UsqybOPMsoErokG3wE9Zhly5Ba1mAirz6XyftAbLJnPfr/HECoci0?=
- =?us-ascii?Q?D5hVMxQaKwKiG85UzLYy3SnbQQSV3OQe0RdBnfpTVKuU2vzT+lBWj2NupuVC?=
- =?us-ascii?Q?pTt6tYfapGp3i4Ycz/GxA5cMm3fF9EwRooLv41d7cf7nKmtCiI4p/q6DdoSC?=
- =?us-ascii?Q?PoZQm6AIYqAShy0B8VhSLNZ73vZfnOoubD4azUpaZKRhPNokBICfx1YTlg0R?=
- =?us-ascii?Q?rXHR2lLPtAe9KUpECu0mKV+/Spb57YLGmdzH1PjlRvEQm8RaD0xeewI7G4MB?=
- =?us-ascii?Q?QIaQ5lXKswXlTthyOYukAgCyYR8AnenDB2dU08/eQ2K9HnO2VXLX5mXgi+YE?=
- =?us-ascii?Q?dyNB+1jrIEeMdePv6J1JBI9imAzVCe3L5TDjsfLmcZ8PJl8BdD0/S6YH6ccL?=
- =?us-ascii?Q?hlMBfrisqwaRrlL48YSEZg+0ov6XCrtB7jlYTdg82z9y8Fe8RQ29JJ9FegVD?=
- =?us-ascii?Q?XdujMK75IQMCD3ItSUdEpV7+MFyXpf112kHio9ZT2w4u12HTx85nMQf/qxa6?=
- =?us-ascii?Q?OGR5PzUIBRM85nBj/lCqvumJuAToSVDa8r21GUsQRHoyhRZOBD035UZSS15C?=
- =?us-ascii?Q?5Hi6bO38L7a941ZYEJyvOnFkM+eFxM5w2MLaDDRo/mZl+b5r+eo2KmwGOEPD?=
- =?us-ascii?Q?k6b6S28eenqpqP+4ozzbzfiOkpbqeZf52CAAvXe7NKsXBidrSn09MxeSK1uZ?=
- =?us-ascii?Q?fbVWVQA7qvA0HRFe8qDaShZw8JEstTHnbX4de2V3mUXREn/kLJlAoqWlO+41?=
- =?us-ascii?Q?iLROGrlR2Ot5Cgcl6Zsx7vT50EVFsj5gXKLZEJp5Hfo+y6Xaqwuok5siQIHf?=
- =?us-ascii?Q?xVDGnLteh97le7iCWYb1ppBXA1KEYCYVJN36RWsz2hFnp50+y6ed5JdsrAMi?=
- =?us-ascii?Q?EBohmqhg4m5HvioibrhhveWywsSDVvib850ViFevG7eb9DGtLhx+t00B0OWe?=
- =?us-ascii?Q?CHaK962CzYN1E1OTlHLH6DAOAJkixPSXwKey0zFE+bkZVbs092eUvuA5p+Ya?=
- =?us-ascii?Q?Vxh9kOf81c5HaGK2T0j2aLaU8/Uh4s8ghMQxcxrkYbn5SEKL2ZCEHlHecZhK?=
- =?us-ascii?Q?rMTmpXjbSsb8csL0DT4O7cqEuvI7tpiMPi+2UA5bicUd1AP9qG02jXU997YE?=
- =?us-ascii?Q?IoplsrQlCEwyVwkp7GpVVIOKdXMDoyq4ogexO6dRmzSoOf6OSzrXHsCmLIkZ?=
- =?us-ascii?Q?Rz/9zigKvslENq0XujZ9HF2cl7d7N0ro91lOsrkU7CuWGFp9LGpj0Bg5HhVx?=
- =?us-ascii?Q?UDK8Zhle3/AOG65KrGdm6WwT+B59FNASY5/xzN+nu9E4kIAMZH4vHp+fJdnn?=
- =?us-ascii?Q?6bmfKJwh7g4cNvVW83QxSka52cnzgdc8JWGyFiXZVDSRv6q0F+bE8MiWU7Jy?=
- =?us-ascii?Q?V3KBQT3G7wRTpGsGJ/Ma1edR8Oz8ebgfzKK3I9zUxHedCCMxx2lX+X0IzFYR?=
- =?us-ascii?Q?j2QxJdOaXorGGOs4jG5vp0K7kXuNptYCqCbZXRIGo11fxWp6/JigSTgIWeHr?=
- =?us-ascii?Q?VETGRPkpeVRJ5M4wzhFnpEznG5xpBgtFxFIA8dWHiQ3cpt5uHOiMN/nO/gX0?=
- =?us-ascii?Q?6Br2nYn/VpjYo7bPGhV6Z08vvdieSk5m42Px2CExVBF2shChVrTtjdxvxDUi?=
- =?us-ascii?Q?u76qJf/PH/hlberVqZuN3hQ=3D?=
-X-OriginatorOrg: oppo.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: a4daefe5-1fe0-4ce2-06bb-08d9a32c537a
-X-MS-Exchange-CrossTenant-AuthSource: SG2PR02MB4108.apcprd02.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 09 Nov 2021 02:55:02.5489
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: f1905eb1-c353-41c5-9516-62b4a54b5ee6
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: H6xK90Ev5x5x+6ltvMRsYVYKPBy6A9WDZkeCTPBPosV9nfLtj3avNJ+b5Ln5lUQJf7yFpcP8MZW/exuUq9dIpQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SG2PR02MB2699
+Content-Type: multipart/signed; boundary="Sig_/.SpnMY001_+kG4vrK2tn7jp";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Although readpage is a synchronous path, there will be no additional
-kworker scheduling overhead in non-atomic contexts. So we can add a
-sysfs node to allow disable sync decompression.
+--Sig_/.SpnMY001_+kG4vrK2tn7jp
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Signed-off-by: Huang Jianan <huangjianan@oppo.com>
----
- fs/erofs/internal.h | 2 +-
- fs/erofs/super.c    | 2 +-
- fs/erofs/sysfs.c    | 6 ++++++
- fs/erofs/zdata.c    | 9 ++++-----
- 4 files changed, 12 insertions(+), 7 deletions(-)
+Hi all,
 
-diff --git a/fs/erofs/internal.h b/fs/erofs/internal.h
-index d0cd712dc222..1ab96878009d 100644
---- a/fs/erofs/internal.h
-+++ b/fs/erofs/internal.h
-@@ -60,7 +60,7 @@ struct erofs_mount_opts {
- #ifdef CONFIG_EROFS_FS_ZIP
- 	/* current strategy of how to use managed cache */
- 	unsigned char cache_strategy;
--	/* strategy of sync decompression (false - auto, true - force on) */
-+	/* strategy of sync decompression (false - disable, true - force on) */
- 	bool readahead_sync_decompress;
- 
- 	/* threshold for decompression synchronously */
-diff --git a/fs/erofs/super.c b/fs/erofs/super.c
-index abc1da5d1719..26585d865503 100644
---- a/fs/erofs/super.c
-+++ b/fs/erofs/super.c
-@@ -423,7 +423,7 @@ static void erofs_default_options(struct erofs_fs_context *ctx)
- #ifdef CONFIG_EROFS_FS_ZIP
- 	ctx->opt.cache_strategy = EROFS_ZIP_CACHE_READAROUND;
- 	ctx->opt.max_sync_decompress_pages = 3;
--	ctx->opt.readahead_sync_decompress = false;
-+	ctx->opt.readahead_sync_decompress = true;
- #endif
- #ifdef CONFIG_EROFS_FS_XATTR
- 	set_opt(&ctx->opt, XATTR_USER);
-diff --git a/fs/erofs/sysfs.c b/fs/erofs/sysfs.c
-index c7685f1a8f34..fe67ed490735 100644
---- a/fs/erofs/sysfs.c
-+++ b/fs/erofs/sysfs.c
-@@ -16,6 +16,7 @@ enum {
- 
- enum {
- 	struct_erofs_sb_info,
-+	struct_erofs_mount_opts,
- };
- 
- struct erofs_attr {
-@@ -55,7 +56,10 @@ static struct erofs_attr erofs_attr_##_name = {			\
- 
- #define ATTR_LIST(name) (&erofs_attr_##name.attr)
- 
-+EROFS_RW_ATTR_BOOL(readahead_sync_decompress, erofs_mount_opts);
-+
- static struct attribute *erofs_attrs[] = {
-+	ATTR_LIST(readahead_sync_decompress),
- 	NULL,
- };
- ATTRIBUTE_GROUPS(erofs);
-@@ -82,6 +86,8 @@ static unsigned char *__struct_ptr(struct erofs_sb_info *sbi,
- {
- 	if (struct_type == struct_erofs_sb_info)
- 		return (unsigned char *)sbi + offset;
-+	if (struct_type == struct_erofs_mount_opts)
-+		return (unsigned char *)&sbi->opt + offset;
- 	return NULL;
- }
- 
-diff --git a/fs/erofs/zdata.c b/fs/erofs/zdata.c
-index bcb1b91b234f..ad11333b367a 100644
---- a/fs/erofs/zdata.c
-+++ b/fs/erofs/zdata.c
-@@ -776,8 +776,6 @@ static void z_erofs_decompressqueue_work(struct work_struct *work);
- static void z_erofs_decompress_kickoff(struct z_erofs_decompressqueue *io,
- 				       bool sync, int bios)
- {
--	struct erofs_sb_info *const sbi = EROFS_SB(io->sb);
--
- 	/* wake up the caller thread for sync decompression */
- 	if (sync) {
- 		unsigned long flags;
-@@ -791,10 +789,9 @@ static void z_erofs_decompress_kickoff(struct z_erofs_decompressqueue *io,
- 
- 	if (atomic_add_return(bios, &io->pending_bios))
- 		return;
--	/* Use workqueue and sync decompression for atomic contexts only */
-+	/* Use workqueue decompression for atomic contexts only */
- 	if (in_atomic() || irqs_disabled()) {
- 		queue_work(z_erofs_workqueue, &io->u.work);
--		sbi->opt.readahead_sync_decompress = true;
- 		return;
- 	}
- 	z_erofs_decompressqueue_work(&io->u.work);
-@@ -1454,6 +1451,7 @@ static void z_erofs_pcluster_readmore(struct z_erofs_decompress_frontend *f,
- static int z_erofs_readpage(struct file *file, struct page *page)
- {
- 	struct inode *const inode = page->mapping->host;
-+	struct erofs_sb_info *const sbi = EROFS_I_SB(inode);
- 	struct z_erofs_decompress_frontend f = DECOMPRESS_FRONTEND_INIT(inode);
- 	struct page *pagepool = NULL;
- 	int err;
-@@ -1469,7 +1467,8 @@ static int z_erofs_readpage(struct file *file, struct page *page)
- 	(void)z_erofs_collector_end(&f.clt);
- 
- 	/* if some compressed cluster ready, need submit them anyway */
--	z_erofs_runqueue(inode->i_sb, &f, &pagepool, true);
-+	z_erofs_runqueue(inode->i_sb, &f, &pagepool,
-+			 sbi->opt.readahead_sync_decompress);
- 
- 	if (err)
- 		erofs_err(inode->i_sb, "failed to read, err [%d]", err);
--- 
-2.25.1
+Changes since 20211108:
 
+I have disabled the ntfs file system write capabaility for now as it
+fails for builds with 64k pages.
+
+Non-merge commits (relative to Linus' tree): 1449
+ 1738 files changed, 88873 insertions(+), 34366 deletions(-)
+
+----------------------------------------------------------------------------
+
+I have created today's linux-next tree at
+git://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git
+(patches at http://www.kernel.org/pub/linux/kernel/next/ ).  If you
+are tracking the linux-next tree using git, you should not use "git pull"
+to do so as that will try to merge the new linux-next release with the
+old one.  You should use "git fetch" and checkout or reset to the new
+master.
+
+You can see which trees have been included by looking in the Next/Trees
+file in the source.  There are also quilt-import.log and merge.log
+files in the Next directory.  Between each merge, the tree was built
+with a ppc64_defconfig for powerpc, an allmodconfig for x86_64, a
+multi_v7_defconfig for arm and a native build of tools/perf. After
+the final fixups (if any), I do an x86_64 modules_install followed by
+builds for x86_64 allnoconfig, powerpc allnoconfig (32 and 64 bit),
+ppc44x_defconfig, allyesconfig and pseries_le_defconfig and i386, sparc
+and sparc64 defconfig and htmldocs. And finally, a simple boot test
+of the powerpc pseries_le_defconfig kernel in qemu (with and without
+kvm enabled).
+
+Below is a summary of the state of the merge.
+
+I am currently merging 343 trees (counting Linus' and 92 trees of bug
+fix patches pending for the current merge release).
+
+Stats about the size of the tree over time can be seen at
+http://neuling.org/linux-next-size.html .
+
+Status of my local build tests will be at
+http://kisskb.ellerman.id.au/linux-next .  If maintainers want to give
+advice about cross compilers/configs that work, we are always open to add
+more builds.
+
+Thanks to Randy Dunlap for doing many randconfig builds.  And to Paul
+Gortmaker for triage and bug fixes.
+
+
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/.SpnMY001_+kG4vrK2tn7jp
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmGJ4vkACgkQAVBC80lX
+0GwbFQf+M7sy/wgbgJ5hUZ7pc+p492GqgEvlLqoT6i30elXi37C2Qdtgrx6kt5nM
+Q4ZQq84u/LwF0FLvwkvGKVMVQ41aQk1N5/fyF2+gAHxa87zmdZPHFNfc3KBUTsYK
+h9u/iHjqh9hVtC9VBd7P0ERJqGY9hsbBmKk+F+fbVGNFEFYdP9xX/HUPcYi3HZ3x
+6anVwYxIEQqc2G/ZLaYYTTlQk9mU6htqgHuj62hMkR+b2W78Zs2VhBT3NFlcAXax
+yjPm472svQX3QivfhpcFs5VyzMrv8xAwHZ5amV/+mwqIhH5AsdnwIySYSF+18Uy1
+OyUaCz+QzvPzS2tjk50fuPeFDLWQDA==
+=/iWi
+-----END PGP SIGNATURE-----
+
+--Sig_/.SpnMY001_+kG4vrK2tn7jp--
