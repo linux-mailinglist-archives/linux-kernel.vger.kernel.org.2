@@ -2,132 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 695D844B09D
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 16:46:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0E03844B0A6
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 16:48:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236464AbhKIPtO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Nov 2021 10:49:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46286 "EHLO
+        id S236617AbhKIPu4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Nov 2021 10:50:56 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46678 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235926AbhKIPtM (ORCPT
+        with ESMTP id S236482AbhKIPuz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Nov 2021 10:49:12 -0500
-Received: from mail-ot1-x336.google.com (mail-ot1-x336.google.com [IPv6:2607:f8b0:4864:20::336])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C277C061767
-        for <linux-kernel@vger.kernel.org>; Tue,  9 Nov 2021 07:46:26 -0800 (PST)
-Received: by mail-ot1-x336.google.com with SMTP id o15-20020a9d410f000000b0055c942cc7a0so8777427ote.8
-        for <linux-kernel@vger.kernel.org>; Tue, 09 Nov 2021 07:46:26 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kali.org; s=google;
-        h=message-id:date:mime-version:user-agent:subject:content-language:to
-         :cc:references:from:in-reply-to:content-transfer-encoding;
-        bh=Nhd1cXLoARHfuxijxW1CC8tXdTo48PjAHCwKpZq0Ohs=;
-        b=IKxmNKTX0BIWoiJVskOWy25AW2N8zqTy4fIP0lluheBJPb6RR1HGWEcAHuwHK3XXKN
-         nQFDNMBxdgoBMZ+zfGlDzEFGyZVsZFTU9hhONQ+Yn+3HIgl0qlMdLyRHuMbYRYDyHf0v
-         TiDtEXaMz3rSGQLrg8ez3XZs+rszck4hArdyX5U0D3YELE4JsUMpnh5JJ7C3/CuyMs/r
-         54vcG13G//Zju+1iQhAWmTogb8mWB7XfGblWrJFFMT7PO6hka0efOdxIxJyTvnHYMAGS
-         qlphXdeiSYmFj9I6WwLQA+3zxKXUo8CMUH4gpUxzADZIsjcahm5O12FMBbotMKTxiXRb
-         Yg0Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:in-reply-to
-         :content-transfer-encoding;
-        bh=Nhd1cXLoARHfuxijxW1CC8tXdTo48PjAHCwKpZq0Ohs=;
-        b=S8+ML/0cvDIjsB38YBC3/Nv9ST+70l5S7HO+TDwRdQH/fzojdBKgG9oaD/UBXuIpL2
-         owvo//DnRW7NuqXVr3CwFNEzYLSj45sSmVxPCvT3xeAARechS9sKxkxXZ1HoSlOp2wBu
-         bLC8uUzT11BYW1BGa9xH6exvxnI9WIXy2rUdhf12UC2601piU4Gq+zdBlJOL/F/Vww4K
-         6tZiyOiI2T+JXO30EkDSvj4kVELjW1ktSDA7hcFiUlVtELBm+9xteDVRgk1fSlkkLVnI
-         8nYgKrDKzLB+5LLMnwpiuVL78VLNuynGTJrwUa7cq8cl8KCu64AjDaPYLScMdk212ipO
-         Deiw==
-X-Gm-Message-State: AOAM531YOTioNpHo/Sytz6frwuQQepZwYN3SsoHvWd+Qo8GZXLpIJVsu
-        B5lcV0lioz7M7vs+S/aAbiqb4g==
-X-Google-Smtp-Source: ABdhPJwMddWy/2opZdv1H0HcP66DI5B4SNXuxuecEiT10xIXb7rTcbNEsMS/6lJop5oEBqi3iRisPA==
-X-Received: by 2002:a9d:6f09:: with SMTP id n9mr6847374otq.357.1636472785577;
-        Tue, 09 Nov 2021 07:46:25 -0800 (PST)
-Received: from [192.168.11.48] (cpe-173-173-107-246.satx.res.rr.com. [173.173.107.246])
-        by smtp.gmail.com with ESMTPSA id v66sm7430632oib.18.2021.11.09.07.46.24
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 09 Nov 2021 07:46:25 -0800 (PST)
-Message-ID: <ac3f1771-0516-48dd-ee4d-5752e0433472@kali.org>
-Date:   Tue, 9 Nov 2021 09:46:23 -0600
+        Tue, 9 Nov 2021 10:50:55 -0500
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1234::107])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 62578C061764;
+        Tue,  9 Nov 2021 07:48:09 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
+        :Reply-To:Content-ID:Content-Description;
+        bh=mSVVJsEPHfSX6uPc9s53Oo/i0doUlHhdoN2OWqWwSK0=; b=JgwTX63ZqgXw6GuYY967TBSZ9z
+        cDRqSZQWrf1zi86tdd+G+5tfJner6dwxITwfHdp154USoM2VVC//P+ese5y0gV4LIsjjtW823f6uZ
+        2TCUkaVZzfF+fuPlNWkZLbN7bNnhnCmhlEGSOQUQHMO6hMHVEgduhGaTzgcbAuAUsC2m0AMH7LwaG
+        3iRUgPLPkut6Op2Qnb8rM7ncxPHqzz5eWQ03c2vAb+NCQMU0O6dCMpQhwvYep0jMLM7EWKGDP3nD8
+        ijOzZvbVQWi/NaOVT6vSiEQ1PnPJR/M4Od/pTDeua0NLzQIAhwsozEeDtY7xzSvrWFsyhd8H5jbgi
+        lEOS28OQ==;
+Received: from [2601:1c0:6280:3f0::aa0b]
+        by merlin.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mkTLk-008nwL-E2; Tue, 09 Nov 2021 15:47:52 +0000
+Subject: Re: [v2 10/10] iio: imu: add BNO055 I2C driver
+To:     andrea.merello@gmail.com, "joe@perches.com" <joe@perches.com>
+Cc:     Jonathan Cameron <jic23@kernel.org>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        linux-iio <linux-iio@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        devicetree <devicetree@vger.kernel.org>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Rob Herring <robh+dt@kernel.org>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Matt Ranostay <matt.ranostay@konsulko.com>,
+        Alexandru Ardelean <ardeleanalex@gmail.com>,
+        Jacopo Mondi <jacopo@jmondi.org>,
+        Andrea Merello <andrea.merello@iit.it>
+References: <20210715141742.15072-1-andrea.merello@gmail.com>
+ <20211028101840.24632-1-andrea.merello@gmail.com>
+ <20211028101840.24632-11-andrea.merello@gmail.com>
+ <85ef90ad-0d3a-6cb7-529f-667562b2ad71@infradead.org>
+ <CAN8YU5NiKz2JiNr-47OC4==N8L67HDshuH45BifnHBae+GUU-g@mail.gmail.com>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <021c6fe0-8131-a4f9-9cb0-2f4771d35da1@infradead.org>
+Date:   Tue, 9 Nov 2021 07:47:45 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:91.0)
- Gecko/20100101 Thunderbird/91.3.0
-Subject: Re: [PATCH v3 0/5] Refactor thermal pressure update to avoid code
- duplication
+In-Reply-To: <CAN8YU5NiKz2JiNr-47OC4==N8L67HDshuH45BifnHBae+GUU-g@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
-To:     Lukasz Luba <lukasz.luba@arm.com>
-Cc:     Thara Gopinath <thara.gopinath@linaro.org>,
-        linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-arm-msm@vger.kernel.org, sudeep.holla@arm.com,
-        will@kernel.org, catalin.marinas@arm.com, linux@armlinux.org.uk,
-        gregkh@linuxfoundation.org, rafael@kernel.org,
-        viresh.kumar@linaro.org, amitk@kernel.org,
-        daniel.lezcano@linaro.org, amit.kachhap@gmail.com,
-        bjorn.andersson@linaro.org, agross@kernel.org
-References: <20211103161020.26714-1-lukasz.luba@arm.com>
- <c7b526f0-2c26-0cfc-910b-3521c6a6ef51@kali.org>
- <3cba148a-7077-7b6b-f131-dc65045aa348@arm.com>
- <9d533b6e-a81c-e823-fa6f-61fdea92fa65@kali.org>
- <74ea027b-b213-42b8-0f7d-275f3b84712e@linaro.org>
- <74603569-2ff1-999e-9618-79261fdb0ee4@kali.org>
- <b7e76c2a-ceac-500a-ff75-535a3f0d51d6@linaro.org>
- <f955a2aa-f788-00db-1ed8-dc9c7a1b2572@kali.org>
- <59054c90-c1cd-85bf-406e-579df668d7b4@linaro.org>
- <eac00041-a1b8-0780-931d-52249d538800@kali.org>
- <2c54dbbd-2ecb-fb76-fa9f-9752f429c20e@linaro.org>
- <97e93876-d654-0a89-dce1-6fe1189345e2@kali.org>
- <d83a5c25-2eae-3626-f78a-e42915076556@arm.com>
-From:   Steev Klimaszewski <steev@kali.org>
-In-Reply-To: <d83a5c25-2eae-3626-f78a-e42915076556@arm.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 11/9/21 3:56 AM, Andrea Merello wrote:
+> Il giorno ven 29 ott 2021 alle ore 00:04 Randy Dunlap
+> <rdunlap@infradead.org> ha scritto:
+>>
+>> On 10/28/21 3:18 AM, Andrea Merello wrote:
+>>> This path adds an I2C driver for communicating to a BNO055 IMU via I2C bus
+>>> and it enables the BNO055 core driver to work in this scenario.
+>>>
+>>> Signed-off-by: Andrea Merello <andrea.merello@iit.it>
+>>> ---
+>>>    drivers/iio/imu/bno055/Kconfig      |  6 ++++
+>>>    drivers/iio/imu/bno055/Makefile     |  1 +
+>>>    drivers/iio/imu/bno055/bno055_i2c.c | 54 +++++++++++++++++++++++++++++
+>>>    3 files changed, 61 insertions(+)
+>>>    create mode 100644 drivers/iio/imu/bno055/bno055_i2c.c
+>>>
+>>> diff --git a/drivers/iio/imu/bno055/Kconfig b/drivers/iio/imu/bno055/Kconfig
+>>> index 941e43f0368d..87200787d548 100644
+>>> --- a/drivers/iio/imu/bno055/Kconfig
+>>> +++ b/drivers/iio/imu/bno055/Kconfig
+>>> @@ -7,3 +7,9 @@ config BOSH_BNO055_SERIAL
+>>>        tristate "Bosh BNO055 attached via serial bus"
+>>>        depends on SERIAL_DEV_BUS
+>>>        select BOSH_BNO055_IIO
+>>> +
+>>> +config BOSH_BNO055_I2C
+>>> +     tristate "Bosh BNO055 attached via I2C bus"
+>>> +     depends on I2C
+>>> +     select REGMAP_I2C
+>>> +     select BOSH_BNO055_IIO
+>>
+>> Hi,
+>>
+>> The config entries that have user prompt strings should also
+>> have help text.  scripts/checkpatch.pl should have told you
+>> about that...
+> 
+> I'll add it, thanks. But FYI checkpatch doesn't complain about that here.
 
-On 11/9/21 2:29 AM, Lukasz Luba wrote:
-> Hi Steev,
->
-> That's interesting what you've done with Rockchip RK3399.
-> I would like to reproduce your experiment on my RockPI 4B v1.3.
-> Could you tell me how you to add this boost frequency that you have
-> mentioned in some previous emails?
->
-> I want to have similar setup to yours and I'll check all the subsystems
-> involved in the decision making process for triggering this boost freq.
->
-> Thank you for your support.
->
-> Regards,
-> Lukasz
+Hm, thanks for adding it and telling me about that.
 
+checkpatch.pl does have some code for checking that but I confirmed
+that it does not catch this simple case.
 
-Hi Lukasz,
+Joe, can you identify why checkpatch does not detect missing Kconfig
+help text is this simple case?
 
-It was actually something that Armbian had been doing as an overlay for 
-their setup, and I thought, why does it need to be an overlay, when we 
-could simply hide it behind turbo-mode so that if users want to 
-overclock, they simply echo 1 and if it's unstable or cooling/power 
-isn't enough, they can echo 0 or leave it off (boost defaults to off) - 
-so that being said:
-
-I apply this patch 
-https://gitlab.com/kalilinux/build-scripts/kali-arm/-/blob/master/patches/pinebook-pro/pbp-5.14/rk3399-opp-overclock-2GHz-turbo-mode.patch 
-which adds the 1.5GHz for little cores and 2GHz for the big to the 
-rk3399 dtsi
-
-To enable at boot time, I simply have "echo 1 > 
-/sys/devices/system/cpu/cpufreq/boost" in my /etc/rc.local  And to 
-disable, simply echo 0 in there (it defaults to 0 so it's off and most 
-users won't know it exists.)
-
-I'm pretty sure this is "abusing" turbo-mode, but it works well enough...
-
-Hope that helps,
-
--- steev
-
+Thanks.
+-- 
+~Randy
