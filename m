@@ -2,107 +2,180 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 38D7E44A396
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 02:26:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B51444A1EF
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 02:14:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241615AbhKIB1m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Nov 2021 20:27:42 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46930 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243150AbhKIBXM (ORCPT
+        id S242670AbhKIBOG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Nov 2021 20:14:06 -0500
+Received: from twspam01.aspeedtech.com ([211.20.114.71]:42080 "EHLO
+        twspam01.aspeedtech.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S242136AbhKIBJm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Nov 2021 20:23:12 -0500
-Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [IPv6:2404:9400:2:0:216:3eff:fee2:21ea])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 50138C061764
-        for <linux-kernel@vger.kernel.org>; Mon,  8 Nov 2021 17:04:10 -0800 (PST)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4Hp8rS2MR3z4xfJ;
-        Tue,  9 Nov 2021 12:04:08 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ellerman.id.au;
-        s=201909; t=1636419849;
-        bh=3ncpsDBaAJOBAjaA3U7o9lHoQJuHhnA9MDiRmuX4kRw=;
-        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-        b=bS4caBIM6ELDwlRZS2YUoIjcbEsbRrEmqn8tTewbW6wGLB6pgsKDYhxP14wVlMqOQ
-         J5yOi8Y2zWNoBKdzjEIgFrzYoYxgi2zdND7kAmoTVB2OH2eoEjgg3CUKHogCr3QwFj
-         SYWAH1RwVQMw7N1W/yYEsyR6WT3RDR8/UxCMboj4Sl82iKZMS1TAeaFpyG5060hko9
-         AAvrb0djsEr/lpBC5TdXdHAkCR4mkCDZJ9Dp0zwWsZqrIRoXYfUXEpG1LbqBphuBgy
-         vyEGisbbHIEaLPK71YAT8w8HUBYPbSQOmSQHCTiNBpcxzw+U8jYIhtUr9pzPM17yS0
-         4HUTso0+J1lhw==
-From:   Michael Ellerman <mpe@ellerman.id.au>
-To:     Waiman Long <longman@redhat.com>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Daniel Henrique Barboza <danielhb413@gmail.com>,
-        Nathan Lynch <nathanl@linux.ibm.com>,
-        "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>
-Cc:     linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
-        Laurent Dufour <ldufour@linux.ibm.com>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Zhang Xiaoxu <zhangxiaoxu5@huawei.com>,
-        Waiman Long <longman@redhat.com>
-Subject: Re: [PATCH] powerpc/pseries/cpuhp: Use alloc_cpumask_var() in
- pseries_cpu_hotplug_init()
-In-Reply-To: <20211108164751.65565-1-longman@redhat.com>
-References: <20211108164751.65565-1-longman@redhat.com>
-Date:   Tue, 09 Nov 2021 12:04:05 +1100
-Message-ID: <87y25ym96i.fsf@mpe.ellerman.id.au>
+        Mon, 8 Nov 2021 20:09:42 -0500
+Received: from mail.aspeedtech.com ([192.168.0.24])
+        by twspam01.aspeedtech.com with ESMTP id 1A90gj1h050854;
+        Tue, 9 Nov 2021 08:42:45 +0800 (GMT-8)
+        (envelope-from jammy_huang@aspeedtech.com)
+Received: from [192.168.2.115] (192.168.2.115) by TWMBX02.aspeed.com
+ (192.168.0.24) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Tue, 9 Nov
+ 2021 09:05:59 +0800
+Message-ID: <acff05a4-38a5-4765-c6ff-011a58caf260@aspeedtech.com>
+Date:   Tue, 9 Nov 2021 09:05:59 +0800
 MIME-Version: 1.0
-Content-Type: text/plain
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
+ Thunderbird/91.3.0
+Subject: Re: [PATCH] media: aspeed: use reset to replace clk off/on
+Content-Language: en-US
+To:     Hans Verkuil <hverkuil@xs4all.nl>,
+        Jae Hyun Yoo <jae.hyun.yoo@linux.intel.com>,
+        "eajames@linux.ibm.com" <eajames@linux.ibm.com>,
+        "mchehab@kernel.org" <mchehab@kernel.org>,
+        "joel@jms.id.au" <joel@jms.id.au>,
+        "andrew@aj.id.au" <andrew@aj.id.au>,
+        "linux-media@vger.kernel.org" <linux-media@vger.kernel.org>,
+        "openbmc@lists.ozlabs.org" <openbmc@lists.ozlabs.org>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "linux-aspeed@lists.ozlabs.org" <linux-aspeed@lists.ozlabs.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+References: <20211103054316.25272-1-jammy_huang@aspeedtech.com>
+ <883dd517-7996-8c44-8cea-1c8838b367b6@linux.intel.com>
+ <HK0PR06MB272258A4BA760E70CF609888F18E9@HK0PR06MB2722.apcprd06.prod.outlook.com>
+ <398d37a5-509f-b78b-360b-990d256bde63@xs4all.nl>
+From:   Jammy Huang <jammy_huang@aspeedtech.com>
+In-Reply-To: <398d37a5-509f-b78b-360b-990d256bde63@xs4all.nl>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [192.168.2.115]
+X-ClientProxiedBy: TWMBX02.aspeed.com (192.168.0.24) To TWMBX02.aspeed.com
+ (192.168.0.24)
+X-DNSRBL: 
+X-MAIL: twspam01.aspeedtech.com 1A90gj1h050854
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Waiman Long <longman@redhat.com> writes:
-> It was found that the following warning message could be printed out when
-> booting the kernel on PowerPC systems that support LPAR:
+Dear Hans,
+
+On 2021/11/8 下午 04:53, Hans Verkuil wrote:
+> Hi Jammy,
 >
-> [    0.129584] WARNING: CPU: 0 PID: 1 at mm/memblock.c:1451 memblock_alloc_internal+0x5c/0x104
-> [    0.129593] Modules linked in:
-> [    0.129598] CPU: 0 PID: 1 Comm: swapper/0 Not tainted 5.14.0-11.el9.ppc64le+debug #1
-> [    0.129605] NIP:  c000000002040134 LR: c00000000204011c CTR: c0000000020241a8
-> [    0.129610] REGS: c000000005637760 TRAP: 0700   Not tainted  (5.14.0-11.el9.ppc64le+debug)
-> [    0.129616] MSR:  8000000002029033 <SF,VEC,EE,ME,IR,DR,RI,LE>  CR: 48000222  XER: 00000002
-> [    0.129635] CFAR: c0000000004d1cf4 IRQMASK: 0
-> [    0.129635] GPR00: c00000000204011c c000000005637a00 c000000002c94d00 0000000000000001
-> [    0.129635] GPR04: 0000000000000080 0000000000000000 0000000000000000 ffffffffffffffff
-> [    0.129635] GPR08: 0000000000000000 0000000000000003 c00000000205ac64 0000000000080000
-> [    0.129635] GPR12: 0000000000000000 c0000000049d0000 c000000000013078 0000000000000000
-> [    0.129635] GPR16: 0000000000000000 0000000000000000 0000000000000000 0000000000000000
-> [    0.129635] GPR20: 0000000000000000 0000000000000000 0000000000000000 0000000000000000
-> [    0.129635] GPR24: c000000002003808 c00000000146f7b8 0000000000000000 0000000000000100
-> [    0.129635] GPR28: c000000002d7cf80 0000000000000000 0000000000000008 0000000000000000
-> [    0.129710] NIP [c000000002040134] memblock_alloc_internal+0x5c/0x104
-> [    0.129717] LR [c00000000204011c] memblock_alloc_internal+0x44/0x104
-> [    0.129723] Call Trace:
-> [    0.129726] [c000000005637a00] [c000000005637a40] 0xc000000005637a40 (unreliable)
-> [    0.129735] [c000000005637a60] [c0000000020404d8] memblock_alloc_try_nid+0x94/0xcc
-> [    0.129743] [c000000005637af0] [c00000000205ac64] alloc_bootmem_cpumask_var+0x4c/0x9c
-> [    0.129751] [c000000005637b60] [c0000000020242e0] __machine_initcall_pseries_pseries_cpu_hotplug_init+0x138/0x1d8
-> [    0.129760] [c000000005637bf0] [c000000000012404] do_one_initcall+0xa4/0x4f0
-> [    0.129768] [c000000005637cd0] [c000000002005358] do_initcalls+0x140/0x18c
-> [    0.129776] [c000000005637d80] [c0000000020055b8] kernel_init_freeable+0x178/0x1d0
-> [    0.129783] [c000000005637db0] [c0000000000130a0] kernel_init+0x30/0x190
-> [    0.129790] [c000000005637e10] [c00000000000cef4] ret_from_kernel_thread+0x5c/0x64
+> On 05/11/2021 02:27, Jammy Huang wrote:
+>> Hi Jae,
+>>
+>> OK, I found it.
+>> Thanks for your help.
+> So just so I understand this correctly: this patch can be dropped, right?
 >
-> The warning is printed in memblock_alloc_internal() because the slab
-> has been initialized when the initcalls are being processed. To
-> avoid the warning, change alloc_bootmem_cpumask_var() call in
-> pseries_cpu_hotplug_init() to alloc_cpumask_var() instead. Also
-> change cpumask_or() to cpumask_copy() or we will have to use
-> zalloc_cpumask_var().
+> Regards,
 >
-> Fixes: bd1dd4c5f528 ("powerpc/pseries: Prevent free CPU ids being reused on another node")
-> Signed-off-by: Waiman Long <longman@redhat.com>
-> ---
->  arch/powerpc/platforms/pseries/hotplug-cpu.c | 8 ++++----
->  1 file changed, 4 insertions(+), 4 deletions(-)
+> 	Hans
 
+Yes, aspeed clk driver will reset the related engine at clk-enabled.
 
-This looks similar to the patch Nick sent recently:
+Thus, this modification isn't necessary.
 
-  https://lore.kernel.org/linuxppc-dev/20211105132923.1582514-1-npiggin@gmail.com/
+>> Regards,
+>> Jammy Huang
+>>
+>> Tel: 886-3-575-1185  ext.8630
+>>
+>> ************* Email Confidentiality Notice ********************
+>> DISCLAIMER:
+>> This message (and any attachments) may contain legally privileged and/or other confidential information. If you have received it in error, please notify the sender by reply e-mail and immediately delete the e-mail and any attachments without copying or disclosing the contents. Thank you.
+>>
+>> -----Original Message-----
+>> From: Jae Hyun Yoo <jae.hyun.yoo@linux.intel.com>
+>> Sent: Thursday, November 4, 2021 11:54 PM
+>> To: Jammy Huang <jammy_huang@aspeedtech.com>; eajames@linux.ibm.com; mchehab@kernel.org; joel@jms.id.au; andrew@aj.id.au; linux-media@vger.kernel.org; openbmc@lists.ozlabs.org; linux-arm-kernel@lists.infradead.org; linux-aspeed@lists.ozlabs.org; linux-kernel@vger.kernel.org
+>> Subject: Re: [PATCH] media: aspeed: use reset to replace clk off/on
+>>
+>> Hi Jammy,
+>>
+>> On 11/2/2021 10:43 PM, Jammy Huang wrote:
+>>> reset should be more proper than clk off/on to bring HW back to good
+>>> state.
+>>>
+>>> Signed-off-by: Jammy Huang <jammy_huang@aspeedtech.com>
+>>> ---
+>>>    drivers/media/platform/aspeed-video.c | 22 +++++++++++++++++++---
+>>>    1 file changed, 19 insertions(+), 3 deletions(-)
+>>>
+>>> diff --git a/drivers/media/platform/aspeed-video.c
+>>> b/drivers/media/platform/aspeed-video.c
+>>> index fea5e4d0927e..10d182139809 100644
+>>> --- a/drivers/media/platform/aspeed-video.c
+>>> +++ b/drivers/media/platform/aspeed-video.c
+>>> @@ -23,6 +23,7 @@
+>>>    #include <linux/workqueue.h>
+>>>    #include <linux/debugfs.h>
+>>>    #include <linux/ktime.h>
+>>> +#include <linux/reset.h>
+>>>    #include <media/v4l2-ctrls.h>
+>>>    #include <media/v4l2-dev.h>
+>>>    #include <media/v4l2-device.h>
+>>> @@ -220,6 +221,7 @@ struct aspeed_video {
+>>>    	void __iomem *base;
+>>>    	struct clk *eclk;
+>>>    	struct clk *vclk;
+>>> +	struct reset_control *reset;
+>>>    
+>>>    	struct device *dev;
+>>>    	struct v4l2_ctrl_handler ctrl_handler; @@ -554,6 +556,13 @@ static
+>>> void aspeed_video_on(struct aspeed_video *video)
+>>>    	set_bit(VIDEO_CLOCKS_ON, &video->flags);
+>>>    }
+>>>    
+>>> +static void aspeed_video_reset(struct aspeed_video *v) {
+>>> +	reset_control_assert(v->reset);
+>>> +	udelay(100);
+>>> +	reset_control_deassert(v->reset);
+>>> +}
+>>> +
+>>>    static void aspeed_video_bufs_done(struct aspeed_video *video,
+>>>    				   enum vb2_buffer_state state)
+>>>    {
+>>> @@ -574,7 +583,9 @@ static void aspeed_video_irq_res_change(struct aspeed_video *video, ulong delay)
+>>>    	set_bit(VIDEO_RES_CHANGE, &video->flags);
+>>>    	clear_bit(VIDEO_FRAME_INPRG, &video->flags);
+>>>    
+>>> -	aspeed_video_off(video);
+>>> +	aspeed_video_write(video, VE_INTERRUPT_CTRL, 0);
+>>> +	aspeed_video_write(video, VE_INTERRUPT_STATUS, 0xffffffff);
+>>> +	aspeed_video_reset(video);
+>>>    	aspeed_video_bufs_done(video, VB2_BUF_STATE_ERROR);
+>>>    
+>>>    	schedule_delayed_work(&video->res_work, delay); @@ -1507,8 +1518,7
+>>> @@ static void aspeed_video_stop_streaming(struct vb2_queue *q)
+>>>    		 * Need to force stop any DMA and try and get HW into a good
+>>>    		 * state for future calls to start streaming again.
+>>>    		 */
+>>> -		aspeed_video_off(video);
+>>> -		aspeed_video_on(video);
+>>> +		aspeed_video_reset(video);
+>> You can find the ECLK configuration in 'clk-aspeed.c' or in 'clk-ast2600.c' that it's coupled with the video engine reset (SCU04[6] for AST2500 / SCU040[6] for AST2600). It means that if we call
+>> clk_disable() and clk_enable() through aspeed_video_off() and aspeed_video_on(), the video engine reset will be implicitly asserted and de-asserted by the clock driver so the reset mechanism is already in the existing code.
+>>
+>> Thanks,
+>> Jae
+>>
+>>>    		aspeed_video_init_regs(video);
+>>>    
+>>> @@ -1715,6 +1725,12 @@ static int aspeed_video_init(struct aspeed_video *video)
+>>>    		return rc;
+>>>    	}
+>>>    
+>>> +	video->reset = devm_reset_control_get(dev, NULL);
+>>> +	if (IS_ERR(video->reset)) {
+>>> +		dev_err(dev, "Unable to get reset\n");
+>>> +		return PTR_ERR(video->reset);
+>>> +	}
+>>> +
+>>>    	video->eclk = devm_clk_get(dev, "eclk");
+>>>    	if (IS_ERR(video->eclk)) {
+>>>    		dev_err(dev, "Unable to get ECLK\n");
+>>>
+-- 
+Best Regards
+Jammy
 
-cheers
