@@ -2,118 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C03EC44A511
+	by mail.lfdr.de (Postfix) with ESMTP id 2D41544A50F
 	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 03:57:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242138AbhKIC7c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Nov 2021 21:59:32 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124]:49812 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S242090AbhKIC7b (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Nov 2021 21:59:31 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1636426604;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=JHvu3XTSxpKAPKxPraFsC3ipd6AaaaqYJT0sjfs7xH0=;
-        b=TFKi4hE9C/aWgCXxB8b9kNUWEoZzgGeQklo/bWY52XrSDkimcN8lKSc4XUe1IGzgDWRZyy
-        KGsJlZQtCQjtq0gsmj9TsLetbbdVbdTny7blMaqG3T8GoU5QaGzToVwmyj7pCCSCqu5Suc
-        pe4yxx9rEw6wMZxZ22qpU6j4JTms30Q=
-Received: from mail-lf1-f69.google.com (mail-lf1-f69.google.com
- [209.85.167.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-191-5feIw5BCNd6jFVzkPmAkFw-1; Mon, 08 Nov 2021 21:56:43 -0500
-X-MC-Unique: 5feIw5BCNd6jFVzkPmAkFw-1
-Received: by mail-lf1-f69.google.com with SMTP id j9-20020a05651231c900b004037efe9fddso857328lfe.18
-        for <linux-kernel@vger.kernel.org>; Mon, 08 Nov 2021 18:56:41 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=JHvu3XTSxpKAPKxPraFsC3ipd6AaaaqYJT0sjfs7xH0=;
-        b=qNJCAS66h/EJuLkblqr1R9S28OVuLkrrjeBXUImhtY7zhTvcTxBKRS79oindS2OLo1
-         ecn6k5EsbbbbwbxNOt1wPiNgo0052YwUAgwiFGInLfzAk4OwUQs3ZCr6v3M4RuHq5n16
-         5gjLvpgRvu4w+FR1bTnHx8FGRfFWvz1a0kcILcE1hD+Z1p6UmbkuCiPMnnT5F6k+9J8P
-         fOnXiziPUfAFOHiruTvcFnIaahOzs5GnbwuT6aWEnPXpL4dX9Jj3koakBDCvhIqCUKp7
-         +CdF+PhjuXkuBZMMwYUYReMW3N5vqY1ajMD7mwTy/NQ1BaM9+NSCfoYov50RC8KqNdj5
-         JsQg==
-X-Gm-Message-State: AOAM5314zJkBlHiwP0iss64VAH/GgmguKeA5z6FN0pJ42l4qaCTMVTgf
-        wcusMsAvmYXUbzurbFjL531CW/+djyID6XqPMuhbBsZiXkxG1mpQVxheqR6hSYr5MspOTNMiJbW
-        iJWKY5KQFKIJm4MOHhcg3TedOs1ODHWG12d72acWQ
-X-Received: by 2002:a2e:89d4:: with SMTP id c20mr4053545ljk.107.1636426598770;
-        Mon, 08 Nov 2021 18:56:38 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJwS0xouPIEbcfGrEIA1f9+MGc01Gw65/pL0zQKLFQYgTcVajy8bhK7Y9nb5RTP7yGFat3VCFBGMoT19gfnMt34=
-X-Received: by 2002:a2e:89d4:: with SMTP id c20mr4053522ljk.107.1636426598529;
- Mon, 08 Nov 2021 18:56:38 -0800 (PST)
-MIME-Version: 1.0
-References: <f6b2d087ca3840604b4e711a208d35b5d6285cb4.1636301587.git.christophe.jaillet@wanadoo.fr>
- <02045bdcbbb25f79bae4827f66029cfcddc90381.1636301587.git.christophe.jaillet@wanadoo.fr>
-In-Reply-To: <02045bdcbbb25f79bae4827f66029cfcddc90381.1636301587.git.christophe.jaillet@wanadoo.fr>
-From:   Jason Wang <jasowang@redhat.com>
-Date:   Tue, 9 Nov 2021 10:56:27 +0800
-Message-ID: <CACGkMEuimP8dcWrBk01P-bU-L-xPH=gN4=qAY_tAqnMHqpW+rA@mail.gmail.com>
-Subject: Re: [PATCH 2/2] eni_vdpa: Simplify 'eni_vdpa_probe()'
-To:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Cc:     mst <mst@redhat.com>, Wu Zongyong <wuzongyong@linux.alibaba.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        virtualization <virtualization@lists.linux-foundation.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        kernel-janitors@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+        id S242084AbhKIC7X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Nov 2021 21:59:23 -0500
+Received: from mail.kernel.org ([198.145.29.99]:59116 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235446AbhKIC7W (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Nov 2021 21:59:22 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E516161208;
+        Tue,  9 Nov 2021 02:56:35 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1636426597;
+        bh=nA69mhZC7gKm2W+3rTZLdSNhkbCmnshUWRaZqMPLjdE=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=SsUwV/XcSS/SQbcfAhEVQAm+axV7wl6lecGQOS+5Aj9LeGYuo6ZVA+KK7jk7Aco5N
+         tupDyAVBTZJwsP3k0bTLPZJYCtWPBGuKre6zriLJsNs0B+tykmYzwExsVIdE2rfdvX
+         SbxfoDX7j/KMqDaTatO2LT4hCCzAkcwXjQ5Crh7T4HzLdeK51WOXgohFgCDyj38Co8
+         b65FVi9CnKAkiChnFMTacg56bFe5GrZvOsTNi3l8AjCTyg5RYoVfu91yQWMKTVoQNk
+         ZclaGhmpByVZpj2okLBg12V/VHmhUL9yqoqgdVGFFz7SX3p9oG4ts18d0M07CVZH1q
+         PdEKxkRVcgQTQ==
+Date:   Tue, 9 Nov 2021 11:56:34 +0900
+From:   Masami Hiramatsu <mhiramat@kernel.org>
+To:     Beau Belgrave <beaub@linux.microsoft.com>
+Cc:     Steven Rostedt <rostedt@goodmis.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        linux-trace-devel@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v4 02/10] user_events: Add minimal support for
+ trace_event into ftrace
+Message-Id: <20211109115634.5fb6d984d7b4e701c740d5f3@kernel.org>
+In-Reply-To: <20211108202527.GA1862@kbox>
+References: <20211104170433.2206-1-beaub@linux.microsoft.com>
+        <20211104170433.2206-3-beaub@linux.microsoft.com>
+        <20211107233115.1f77e93c4bdf3ff649be99c1@kernel.org>
+        <20211108171336.GA1690@kbox>
+        <20211108131639.33a4f186@gandalf.local.home>
+        <20211108202527.GA1862@kbox>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 8, 2021 at 12:15 AM Christophe JAILLET
-<christophe.jaillet@wanadoo.fr> wrote:
->
-> When 'pcim_enable_device()' is used, some resources become automagically
-> managed.
-> There is no need to call 'pci_free_irq_vectors()' when the driver is
-> removed. The same will already be done by 'pcim_release()'.
->
-> Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+On Mon, 8 Nov 2021 12:25:27 -0800
+Beau Belgrave <beaub@linux.microsoft.com> wrote:
 
-Acked-by: Jason Wang <jasowang@redhat.com>
+> On Mon, Nov 08, 2021 at 01:16:39PM -0500, Steven Rostedt wrote:
+> > On Mon, 8 Nov 2021 09:13:36 -0800
+> > Beau Belgrave <beaub@linux.microsoft.com> wrote:
+> > 
+> > 
+> > > Does that mean the decoders in eprobes/histogram don't check event
+> > > record sizes before accessing the data? Shouldn't that get fix
+> > > centrally? That would mean a loaded module could do the same thing
+> > > (user_events only works if the user has access to tracefs, so it's not
+> > > like it's open to all users).
+> > 
+> > There's checks to make sure everything fits in eprobes and kprobes. If it
+> > doesn't then the event is simply dropped.
+> > 
+> > For example, if you look at __eprobe_trace_func() in trace_eprobe.c, you'll
+> > see that it calls get_eprobe_size(), which goes through and just reads what
+> > it is about to accept. Then it reserves the amount of data on the ring
+> > buffer, and then calls store_trace_args() which also passes in the size
+> > that it found, in case things change. If it's too big, it only records what
+> > it originally intended.
+> > 
+> > -- Steve
+> 
+> It seems there are 2 concerns:
+> 1. If data comes in and it's not in the size that is specified, it's
+> suspicious and should either be truncated or ignored. Maybe under
+> ignore, over truncate.
 
-> ---
-> Leaving the 'pci_free_irq_vectors()' call is harmless.
-> ---
->  drivers/vdpa/alibaba/eni_vdpa.c | 12 ------------
->  1 file changed, 12 deletions(-)
->
-> diff --git a/drivers/vdpa/alibaba/eni_vdpa.c b/drivers/vdpa/alibaba/eni_vdpa.c
-> index 12b3db6b4517..3db686436628 100644
-> --- a/drivers/vdpa/alibaba/eni_vdpa.c
-> +++ b/drivers/vdpa/alibaba/eni_vdpa.c
-> @@ -450,11 +450,6 @@ static u16 eni_vdpa_get_num_queues(struct eni_vdpa *eni_vdpa)
->         return num;
->  }
->
-> -static void eni_vdpa_free_irq_vectors(void *data)
-> -{
-> -       pci_free_irq_vectors(data);
-> -}
-> -
->  static int eni_vdpa_probe(struct pci_dev *pdev, const struct pci_device_id *id)
->  {
->         struct device *dev = &pdev->dev;
-> @@ -488,13 +483,6 @@ static int eni_vdpa_probe(struct pci_dev *pdev, const struct pci_device_id *id)
->         eni_vdpa->vdpa.dma_dev = &pdev->dev;
->         eni_vdpa->queues = eni_vdpa_get_num_queues(eni_vdpa);
->
-> -       ret = devm_add_action_or_reset(dev, eni_vdpa_free_irq_vectors, pdev);
-> -       if (ret) {
-> -               ENI_ERR(pdev,
-> -                       "failed for adding devres for freeing irq vectors\n");
-> -               goto err;
-> -       }
-> -
->         eni_vdpa->vring = devm_kcalloc(&pdev->dev, eni_vdpa->queues,
->                                       sizeof(*eni_vdpa->vring),
->                                       GFP_KERNEL);
-> --
-> 2.30.2
->
+Yes, this is for the events which is defined with fixed-size
+parameters and what I suggested.
 
+> 
+> 2. If the data is more than specified, it must be checked to see if
+> there are __data_loc / __rel_loc entries and they must be validated as
+> within range of accepted limits. If there are no __data_loc / __rel_loc
+> it should either be truncated or ignored.
+
+Yes, this is for the events, which is defined with variable length
+parameters, like null-terminated string. In this case, along with the
+__data/__rel_loc validation, it needs a null termination check.
+
+> 
+> Is there more that I may have missed?
+> 
+> I'd like to know if I do fix them that the features like filtering will still
+> be available to user_events or if it's better to just add flags to disable
+> kernel filtering?
+
+I would rather like that the filters will be available on the user_events.
+
+My question is that you need to log the dynamic data or strings via user-
+events or not. Since the other user-events, like SDT doesn't support the
+string variables to trace, I guess that is not a high priority.
+
+Moreover, since now we can use eprobes, if user event records the address of
+user-string, the eprobes can fetch it.
+
+So, my suggestion is implmenting with fixed-size parameters as the first step
+and keep filter/histograms/eprobes available on the user-events.
+If you find any performance issue, you can expand the user-events to support
+dynamic (array) data and strings.
+
+> 
+> I'm still unsure this is limited to just user_events.
+> 
+> For example, why doesn't filter_pred_strloc and filter_pred_pchar in
+> trace_events_filter.c check the boundary it will be accessing?
+
+Because all data is written from the kernel code. We can trust the data
+exists on the buffer. (If not, there is an actual BUG in the kenrel)
+We can add a verifieer for the debug purpose.
+
+> 
+> It seems like tracepoints from kernel modules, while more trusted, can also
+> cause this kind of thing due to bugs, etc.
+
+Of course, and that must be fixed. And, the tracepoints (traceevents) should
+be automatically generated code, that is more trusted than the events crafted
+by user.
+
+Thank you,
+
+-- 
+Masami Hiramatsu <mhiramat@kernel.org>
