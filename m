@@ -2,183 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4BD1144B8F2
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 23:47:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F7F944B8F4
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 23:48:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242214AbhKIWuO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Nov 2021 17:50:14 -0500
-Received: from so254-9.mailgun.net ([198.61.254.9]:29971 "EHLO
-        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242206AbhKIWsy (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Nov 2021 17:48:54 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1636497967; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=v9VczQnFx9xswdyxP7IiTRh0CLZMg/o04Xjcgs+tOZg=;
- b=eOlkCxCPWn5JCgkiPkxpCly3ImHXfYjlv0Bp/168CJetAmxzTdSrQs4txF1zdrhmTS8NAAlk
- Y4cZRDPH9U8yiXUn649/9rJAL9Q7wU3254FfBvtBdEfV7bMeRyr5mi7xfTjdrbuLCcjOLIWW
- 7TB6qtYprjdKryvK9u87gewvtfI=
-X-Mailgun-Sending-Ip: 198.61.254.9
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n03.prod.us-east-1.postgun.com with SMTP id
- 618afa2f332b6b6db47227ee (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 09 Nov 2021 22:46:07
- GMT
-Sender: khsieh=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 44DD0C37A20; Tue,  9 Nov 2021 22:46:06 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: khsieh)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id F11E3C359EE;
-        Tue,  9 Nov 2021 22:46:01 +0000 (UTC)
+        id S1344191AbhKIWuq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Nov 2021 17:50:46 -0500
+Received: from mail.kernel.org ([198.145.29.99]:39744 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S238765AbhKIWt6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Nov 2021 17:49:58 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 55C8861037;
+        Tue,  9 Nov 2021 22:47:11 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1636498031;
+        bh=dj/hPXX+AHLkoauaxECz0N9X/FMkI8WgcbGv80nhji8=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=Hs8sA/XzH5TZ/M3mgzYtarz6IoUW3ma0tnyhQu/0IiqUurY4kJ5tDtBEZD9Q+J8mO
+         wZI9MyMUg/S8EwQS208g64wFyWqnvVZUzY8nPVZjeb7mpD01ZB0F1N9NMM+l1g+nG5
+         WLA9xgH/rUDQ6NPFtbWqp0K3PIHheaYFna/vt+aA3ESvUWjNGWTJTV03hBgeuBXPLQ
+         gbnuiFdG1rFN9jQIGFWHtXwwnsLs+mVkT1j5iCO+65ok5UoOAbilWdzkthiQABtbJi
+         Kno1jkAVddxPVIFVf9/r+PYxRJuIfv0e14zejULp9u7vohKdQdu1/1UVA2hVzft8AL
+         YJYjE9qMYGX/w==
+Received: by mail-wr1-f43.google.com with SMTP id r8so572209wra.7;
+        Tue, 09 Nov 2021 14:47:11 -0800 (PST)
+X-Gm-Message-State: AOAM530PcD3J6LyT8RiWv2pOxouGWvf+/G9oKb+JM0Jglcug7Cz276xL
+        x4I3Ue15NrcU+1DfPRvlJO6QEI44ayVvL0xfJd4=
+X-Google-Smtp-Source: ABdhPJx0GUEf3uOG+qkjpPk74fgc8++Hq6oUSi1Roc6a6psjzTRzuwUhL0VdmvUAt8cnsK8rQJt77hQolV20uELO4a4=
+X-Received: by 2002:adf:d1c2:: with SMTP id b2mr13808947wrd.369.1636498029782;
+ Tue, 09 Nov 2021 14:47:09 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Tue, 09 Nov 2021 14:46:01 -0800
-From:   khsieh@codeaurora.org
-To:     Douglas Anderson <dianders@chromium.org>
-Cc:     Rob Clark <robdclark@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
-        David Airlie <airlied@linux.ie>, Sean Paul <sean@poorly.run>,
-        Stephen Boyd <swboyd@chromium.org>,
-        dri-devel@lists.freedesktop.org, freedreno@lists.freedesktop.org,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] drm/msm/dp: Avoid unpowered AUX xfers that caused crashes
-In-Reply-To: <20211109100403.1.I4e23470d681f7efe37e2e7f1a6466e15e9bb1d72@changeid>
-References: <20211109100403.1.I4e23470d681f7efe37e2e7f1a6466e15e9bb1d72@changeid>
-Message-ID: <bc63c12983fd05bfb97e9a2ce00b0bd6@codeaurora.org>
-X-Sender: khsieh@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+References: <20211109100207.2474024-1-arnd@kernel.org> <20211109100207.2474024-7-arnd@kernel.org>
+ <YYpN3LzXz638l6FG@smile.fi.intel.com> <CAK8P3a24wkBEAnWG8=LYoVR1oiTo0VKZ3iME+FYbDuHXJDjMOw@mail.gmail.com>
+ <CACRpkdZaJQqwyosnXhaOc=mF5jJxaDKDKAQxJGJvQAWpU7MNQQ@mail.gmail.com>
+In-Reply-To: <CACRpkdZaJQqwyosnXhaOc=mF5jJxaDKDKAQxJGJvQAWpU7MNQQ@mail.gmail.com>
+From:   Arnd Bergmann <arnd@kernel.org>
+Date:   Tue, 9 Nov 2021 23:46:53 +0100
+X-Gmail-Original-Message-ID: <CAK8P3a0J1f9+o6Uqdn4QeQ=30oW6p+fOaFU7-5L0cW-zihfNxg@mail.gmail.com>
+Message-ID: <CAK8P3a0J1f9+o6Uqdn4QeQ=30oW6p+fOaFU7-5L0cW-zihfNxg@mail.gmail.com>
+Subject: Re: [PATCH v2 6/8] gpiolib: remove legacy gpio_export
+To:     Linus Walleij <linus.walleij@linaro.org>
+Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Bartosz Golaszewski <brgl@bgdev.pl>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-11-09 10:04, Douglas Anderson wrote:
-> If you happened to try to access `/dev/drm_dp_aux` devices provided by
-> the MSM DP AUX driver too early at bootup you could go boom. Let's
-> avoid that by only allowing AUX transfers when the controller is
-> powered up.
-> 
-> Specifically the crash that was seen (on Chrome OS 5.4 tree with
-> relevant backports):
->   Kernel panic - not syncing: Asynchronous SError Interrupt
->   CPU: 0 PID: 3131 Comm: fwupd Not tainted 5.4.144-16620-g28af11b73efb 
-> #1
->   Hardware name: Google Lazor (rev3+) with KB Backlight (DT)
->   Call trace:
->    dump_backtrace+0x0/0x14c
->    show_stack+0x20/0x2c
->    dump_stack+0xac/0x124
->    panic+0x150/0x390
->    nmi_panic+0x80/0x94
->    arm64_serror_panic+0x78/0x84
->    do_serror+0x0/0x118
->    do_serror+0xa4/0x118
->    el1_error+0xbc/0x160
->    dp_catalog_aux_write_data+0x1c/0x3c
->    dp_aux_cmd_fifo_tx+0xf0/0x1b0
->    dp_aux_transfer+0x1b0/0x2bc
->    drm_dp_dpcd_access+0x8c/0x11c
->    drm_dp_dpcd_read+0x64/0x10c
->    auxdev_read_iter+0xd4/0x1c4
-> 
-> I did a little bit of tracing and found that:
-> * We register the AUX device very early at bootup.
-> * Power isn't actually turned on for my system until
->   hpd_event_thread() -> dp_display_host_init() -> dp_power_init()
-> * You can see that dp_power_init() calls dp_aux_init() which is where
->   we start allowing AUX channel requests to go through.
-> 
-> In general this patch is a bit of a bandaid but at least it gets us
-> out of the current state where userspace acting at the wrong time can
-> fully crash the system.
-> * I think the more proper fix (which requires quite a bit more
->   changes) is to power stuff on while an AUX transfer is
->   happening. This is like the solution we did for ti-sn65dsi86. This
->   might be required for us to move to populating the panel via the
->   DP-AUX bus.
-> * Another fix considered was to dynamically register / unregister. I
->   tried that at <https://crrev.com/c/3169431/3> but it got
->   ugly. Currently there's a bug where the pm_runtime() state isn't
->   tracked properly and that causes us to just keep registering more
->   and more.
-> 
-> Signed-off-by: Douglas Anderson <dianders@chromium.org>
-> ---
-Reviewed-by: Kuogee Hsieh <quic_khsieh@quicinc.com>
-> 
->  drivers/gpu/drm/msm/dp/dp_aux.c | 17 +++++++++++++++++
->  1 file changed, 17 insertions(+)
-> 
-> diff --git a/drivers/gpu/drm/msm/dp/dp_aux.c 
-> b/drivers/gpu/drm/msm/dp/dp_aux.c
-> index eb40d8413bca..6d36f63c3338 100644
-> --- a/drivers/gpu/drm/msm/dp/dp_aux.c
-> +++ b/drivers/gpu/drm/msm/dp/dp_aux.c
-> @@ -33,6 +33,7 @@ struct dp_aux_private {
->  	bool read;
->  	bool no_send_addr;
->  	bool no_send_stop;
-> +	bool initted;
->  	u32 offset;
->  	u32 segment;
-> 
-> @@ -331,6 +332,10 @@ static ssize_t dp_aux_transfer(struct drm_dp_aux 
-> *dp_aux,
->  	}
-> 
->  	mutex_lock(&aux->mutex);
-> +	if (!aux->initted) {
-> +		ret = -EIO;
-> +		goto exit;
-> +	}
-> 
->  	dp_aux_update_offset_and_segment(aux, msg);
->  	dp_aux_transfer_helper(aux, msg, true);
-> @@ -380,6 +385,8 @@ static ssize_t dp_aux_transfer(struct drm_dp_aux 
-> *dp_aux,
->  	}
-> 
->  	aux->cmd_busy = false;
-> +
-> +exit:
->  	mutex_unlock(&aux->mutex);
-> 
->  	return ret;
-> @@ -431,8 +438,13 @@ void dp_aux_init(struct drm_dp_aux *dp_aux)
-> 
->  	aux = container_of(dp_aux, struct dp_aux_private, dp_aux);
-> 
-> +	mutex_lock(&aux->mutex);
-> +
->  	dp_catalog_aux_enable(aux->catalog, true);
->  	aux->retry_cnt = 0;
-> +	aux->initted = true;
-> +
-> +	mutex_unlock(&aux->mutex);
->  }
-> 
->  void dp_aux_deinit(struct drm_dp_aux *dp_aux)
-> @@ -441,7 +453,12 @@ void dp_aux_deinit(struct drm_dp_aux *dp_aux)
-> 
->  	aux = container_of(dp_aux, struct dp_aux_private, dp_aux);
-> 
-> +	mutex_lock(&aux->mutex);
-> +
-> +	aux->initted = false;
->  	dp_catalog_aux_enable(aux->catalog, false);
-> +
-> +	mutex_unlock(&aux->mutex);
->  }
-> 
->  int dp_aux_register(struct drm_dp_aux *dp_aux)
+On Tue, Nov 9, 2021 at 9:42 PM Linus Walleij <linus.walleij@linaro.org> wro=
+te:
+> On Tue, Nov 9, 2021 at 11:50 AM Arnd Bergmann <arnd@kernel.org> wrote:
+>
+> > I think the TODO list is in Linus' head,
+>
+> Oh no, drivers/gpio/TODO
+>
+> > but it would include all the files
+> > that use one of the interfaces in linux/gpio.h. I found about 350 of th=
+em,
+> > so there is little point in listing them one at a time. IIRC Linus is g=
+oing
+> > through those one subsystem at a time.
+>
+> Yeah but if it's just me I doubt that I will manage to do it by the
+> time I retire in 2037 or so... So the TODO is there to inspire others
+> to step in and help out.
+
+I think at the current rate, it should only take about another ten years: ;=
+-)
+
+$ for i in v3.18 v4.1 v4.4 v4.9 v4.14 v4.19 v5.4 v5.10 v5.15 ; do echo
+-n $i\  ;  git grep -wl
+'\<\(gpio_direction_input\|gpio_direction_output\|gpio_get_value_cansleep\|=
+gpio_set_value_cansleep\|gpio_get_value\|gpio_set_value\|gpio_to_irq\|gpio_=
+request\|gpio_request_one\|gpio_request_array\)\>\|\<\(ARCH_NR_GPIOS\|GPIOF=
+_DIR_\|GPIOF_INIT\|GPIOF_EXPORT\|GPIOF_OPEN\|GPIOF_IN\|GPIOF_OUT\|gpio_is_v=
+alid\\|gpio_free\|devm_gpio_\)'
+$i | wc -l ; done
+v3.18 676
+v4.1 669
+v4.4 646
+v4.9 639
+v4.14 614
+v4.19 553
+v5.4 465
+v5.10 381
+v5.15 354
+
+I'm a fan of deconstruction interfaces one function call at a time, which
+is different from your one-subsystem at a time approach, but these can
+obviously be done at the same time. This 8-patch series is hopefully a good
+step in that direction, removing some of the more obscure interfaces
+and making the rest a little more obvious.
+
+I've also started a patch series to remove some of the less common
+of_gpio portions, which gets rid of of_get_gpio(), of_get_gpio_flags()
+and of_get_named_gpio_flags() but leaves of_get_named_gpio() in
+place for now. I'm much less confident about that work though, so I
+haven't posted that. I think killing off the of_gpio consumer-side
+interfaces entirely would likely make the biggest impact, as those
+appear to still be used a lot in relatively modern drivers, while the
+traditional gpio_request() interfaces are mainly used in drivers for
+legacy boards that don't have a long future ahead of them unless
+they get converted to DT.
+
+        Arnd
