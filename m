@@ -2,130 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 121F544B051
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 16:26:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5368244B053
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 16:27:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236352AbhKIP3D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Nov 2021 10:29:03 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124]:34404 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S235782AbhKIP25 (ORCPT
+        id S236603AbhKIPaa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Nov 2021 10:30:30 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41958 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231252AbhKIPa3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Nov 2021 10:28:57 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1636471570;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=zPHOaPm18j2Z6M7uu1JTM0F6CYuFdr82KoODnjFlc9g=;
-        b=YAQhJTHDcrGSJ1Jbcg+E3k09DkDdPe80whTI1scaZnIkXUjyCftbRf7pGUA7vZ5Jk53WoJ
-        tAbLV3Ezfrf0A/7D62GvI3FLtaxPi9WF/6XxMqtqnNzUMupmiJA8dFG8b+ghnGF2thKYMv
-        rkbx++GX/+FnQiyxPXotpLiG5ic5GwI=
-Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
- [209.85.221.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-231-Tq__TCJSPEubNWo7jissgA-1; Tue, 09 Nov 2021 10:26:08 -0500
-X-MC-Unique: Tq__TCJSPEubNWo7jissgA-1
-Received: by mail-wr1-f72.google.com with SMTP id z5-20020a5d6405000000b00182083d7d2aso4891272wru.13
-        for <linux-kernel@vger.kernel.org>; Tue, 09 Nov 2021 07:26:08 -0800 (PST)
+        Tue, 9 Nov 2021 10:30:29 -0500
+Received: from mail-lf1-x131.google.com (mail-lf1-x131.google.com [IPv6:2a00:1450:4864:20::131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 42B84C061766
+        for <linux-kernel@vger.kernel.org>; Tue,  9 Nov 2021 07:27:43 -0800 (PST)
+Received: by mail-lf1-x131.google.com with SMTP id f3so45176660lfu.12
+        for <linux-kernel@vger.kernel.org>; Tue, 09 Nov 2021 07:27:43 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=OcVKYMqD1OAPCy0gYs4jHd1iGD2P0eAuhSWYYDqPTRU=;
+        b=HA4Ajyi+Xj/btjf6u0PxXY4DQtH+vRDguJqYMWbU2Z81RDr1qDXwKA6hMBg7sH+U7L
+         MCgqzl+AGWpsVFab1htpOAH4m8bdz8tlc8vv0CD2SiD0EzXIRcl7idqeyHxaJkipLQZo
+         Eq/f+iNH4BhUpd3hTZwkkbJGN/q7O8sbmD+ORKLbDTHr3CEfXlKZpIPXt2N3rK3R6F9j
+         bqtJI8W7i5DdrR7fOHyRW2E2K2BebD4RV5dD2Zd3ENLTmrs2S+aW0xmT13DtbWEmopmL
+         PbWAzFwyg517dB3GKL0fjGef6omU/VITQocqx6tukyvCHc0Zu/4X+ehDwmBNYqGn2If2
+         v2sA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=zPHOaPm18j2Z6M7uu1JTM0F6CYuFdr82KoODnjFlc9g=;
-        b=25xQdWQQXtlLUBIyFiqpVs4hjjsuCdeCtEsEGMFIv5mNejC6/NZ5JmAz1JAnaZ0nvo
-         UVXem02wWb+wRmEJfWwHUS19gPyJVQMSOXw0++yOK8puERrJDU5HQI+Xxe0sBFdBRlae
-         dVLHa8JfHKZ8KbYPZH02AunHklBUTEQfsNe96HY/g5CgC15Ce8rKTQHEo/gBVP5Ocv+1
-         rP+8dAnWomYR/0eQkn7UmmmSMsvbdUJsK+xieaV5w680uVlsSLf3qYRygxlxzCk/x3op
-         Wd+VyjjN3tHjLcLpYKEf1xFickRI8jS1rbGfqXbHnga4vAqDV/8whtLHzT+kmnGH3apY
-         IQ5g==
-X-Gm-Message-State: AOAM5311G6x4IdS6gf+jkAo3UTl0AiMImOueaa92G8oMpovoSD0QFgHw
-        j4BF2tkzl0vOtVQOBGRE35ZSx+2e4cg+iQrt6h4hTf7ZMcASOmgYIg+H1sSnh3i3AaqEdvb59g5
-        1w5jarwTC/MwYz+kJHDw+cZNQ
-X-Received: by 2002:adf:b604:: with SMTP id f4mr10642689wre.111.1636471567755;
-        Tue, 09 Nov 2021 07:26:07 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJyj4mW7KmawaErXG/bkbQYML4AiemLmaiJ6RS/NPf7ijkc4rvHOTmAvgZDTC52J+J9rIde5JQ==
-X-Received: by 2002:adf:b604:: with SMTP id f4mr10642661wre.111.1636471567600;
-        Tue, 09 Nov 2021 07:26:07 -0800 (PST)
-Received: from ?IPv6:2a01:e0a:59e:9d80:527b:9dff:feef:3874? ([2a01:e0a:59e:9d80:527b:9dff:feef:3874])
-        by smtp.gmail.com with ESMTPSA id l4sm19431635wrv.94.2021.11.09.07.26.05
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 09 Nov 2021 07:26:06 -0800 (PST)
-Subject: Re: [PATCH v4 03/21] KVM: arm64: Support SDEI_VERSION hypercall
-To:     Gavin Shan <gshan@redhat.com>, kvmarm@lists.cs.columbia.edu
-Cc:     maz@kernel.org, linux-kernel@vger.kernel.org,
-        Jonathan.Cameron@huawei.com, pbonzini@redhat.com, will@kernel.org
-References: <20210815001352.81927-1-gshan@redhat.com>
- <20210815001352.81927-4-gshan@redhat.com>
-From:   Eric Auger <eauger@redhat.com>
-Message-ID: <3160dd62-1d96-7dcb-e99a-7ac923abc2c7@redhat.com>
-Date:   Tue, 9 Nov 2021 16:26:05 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.1
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=OcVKYMqD1OAPCy0gYs4jHd1iGD2P0eAuhSWYYDqPTRU=;
+        b=g87mAeBkVTFlQTQF+Rx3TnxoGd8fbOvXT8XnICj70hAnsw6VsOtKMiEpxWEwcNvjJC
+         raRauzlT/1p5jL/0SJUsGIEppnNfckBGjpCVH2EBZhD2T33oXA9uv9gfjAMzt3w8lCXD
+         djyry1uc6iIx/AL6l6IiKXjJcnuGPNNce7lQjHuGw8ho81FrDsr3Yl1HQRS5q7g1+m1G
+         QzBgd3f2eBTUG7s9j5wfcByxv1hAkajCODWHVDPaIY/mShDn6WWOWOwGpBVhBsKqBfka
+         xjx4wx45VkjBqi8c2ZpPyQ5M/AUSpdV/w5QHm1RW3hQyOeDzzvZken931GQVD5m2ZyEt
+         1J5A==
+X-Gm-Message-State: AOAM531stflZA3O7pAuJyoN6KqbeMMK/LZMIkUBpYwRh1RB7hFlFmlHu
+        aWbXeILdn44vWg6cwdDtQMeA1OlCETZNJYbsNbA=
+X-Google-Smtp-Source: ABdhPJwsGNfJMPrrKLU1oTqa4xaHcJHEf6AOI5u1+G5JQR7Q0lo6HaQeNVRlr3eRUbC/DZXwmD9lbdS/a4LVOgc5EV8=
+X-Received: by 2002:a19:f242:: with SMTP id d2mr7663179lfk.516.1636471661613;
+ Tue, 09 Nov 2021 07:27:41 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20210815001352.81927-4-gshan@redhat.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Received: by 2002:a05:6512:2628:0:0:0:0 with HTTP; Tue, 9 Nov 2021 07:27:41
+ -0800 (PST)
+Reply-To: mrsaishag45@gmail.com
+From:   Mrs Aisha Al-Qaddafi <mohaiyanibintishamsudin22@gmail.com>
+Date:   Tue, 9 Nov 2021 07:27:41 -0800
+Message-ID: <CAHp6nLRAV5eZb6EuE65gan745RT6xATJL_r=mwwo3zVCk6JeGw@mail.gmail.com>
+Subject: Dear Friend,
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Gavin
+Hi Dear Friend,
+I came across your e-mail contact prior a private search while in need
+of your assistance. I am Aisha Al-Qaddafi, the only biological
+Daughter of Former President of Libya Col. Muammar Al-Qaddafi. Am a
+single Mother and a Widow with three Children.
 
-On 8/15/21 2:13 AM, Gavin Shan wrote:
-> This supports SDEI_VERSION hypercall by returning v1.0.0 simply
-s/This supports/Add Support. I think this is the prefered way to start
-the commit msg. Here and elsewhere.
-> when the functionality is supported on the VM and vCPU.
-Can you explain when the functionality isn't supported on either. From
-the infra patch I have the impression that an allocation failure is the
-sole cause of lack of support?
-> 
-> Signed-off-by: Gavin Shan <gshan@redhat.com>
-> ---
->  arch/arm64/kvm/sdei.c | 18 ++++++++++++++++++
->  1 file changed, 18 insertions(+)
-> 
-> diff --git a/arch/arm64/kvm/sdei.c b/arch/arm64/kvm/sdei.c
-> index ab330b74a965..aa9485f076a9 100644
-> --- a/arch/arm64/kvm/sdei.c
-> +++ b/arch/arm64/kvm/sdei.c
-> @@ -70,6 +70,22 @@ static void kvm_sdei_remove_vcpu_events(struct kvm_vcpu *vcpu)
->  	}
->  }
->  
-> +static unsigned long kvm_sdei_hypercall_version(struct kvm_vcpu *vcpu)
-> +{
-> +	struct kvm *kvm = vcpu->kvm;
-> +	struct kvm_sdei_kvm *ksdei = kvm->arch.sdei;
-> +	struct kvm_sdei_vcpu *vsdei = vcpu->arch.sdei;
-> +	unsigned long ret = SDEI_NOT_SUPPORTED;
-nit: I would remove ret local variable
-> +
-> +	if (!(ksdei && vsdei))
-> +		return ret;
-> +
-> +	/* v1.0.0 */
-> +	ret = (1UL << SDEI_VERSION_MAJOR_SHIFT);
-> +
-> +	return ret;
-> +}
-> +
->  int kvm_sdei_hypercall(struct kvm_vcpu *vcpu)
->  {
->  	u32 func = smccc_get_function(vcpu);
-> @@ -78,6 +94,8 @@ int kvm_sdei_hypercall(struct kvm_vcpu *vcpu)
->  
->  	switch (func) {
->  	case SDEI_1_0_FN_SDEI_VERSION:
-> +		ret = kvm_sdei_hypercall_version(vcpu);
-> +		break;
->  	case SDEI_1_0_FN_SDEI_EVENT_REGISTER:
->  	case SDEI_1_0_FN_SDEI_EVENT_ENABLE:
->  	case SDEI_1_0_FN_SDEI_EVENT_DISABLE:
-> 
+I have investment funds worth Twenty Seven Million Five Hundred
+Thousand United State Dollar ($27.500.000.00 ) and i need a trusted
+investment Manager/Partner because of my current refugee status,
+however, I am interested in you for investment project assistance in
+your country, may be from there, we can build business relationship in
+the nearest future.
 
-Eric
+I am willing to negotiate investment/business profit sharing ratio
+with you base on the future investment earning profits.
+If you are willing to handle this project on my behalf kindly reply
+urgent to enable me provide you more information about the investment
+funds.
 
+Your Urgent Reply Will Be Appreciated
+Best Regards
+Mrs Aisha Al-Qaddafi
