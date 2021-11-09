@@ -2,132 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 47A8F44B95F
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 00:29:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 024D044B960
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 00:33:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232098AbhKIXc2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Nov 2021 18:32:28 -0500
-Received: from jabberwock.ucw.cz ([46.255.230.98]:55264 "EHLO
-        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232057AbhKIXcT (ORCPT
+        id S229550AbhKIXgF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Nov 2021 18:36:05 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39448 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229500AbhKIXgD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Nov 2021 18:32:19 -0500
-Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
-        id 273E71C0B80; Wed, 10 Nov 2021 00:29:32 +0100 (CET)
-Date:   Wed, 10 Nov 2021 00:29:31 +0100
-From:   Pavel Machek <pavel@ucw.cz>
-To:     Florian Eckert <fe@dev.tdt.de>
-Cc:     robh+dt@kernel.org, Eckert.Florian@googlemail.com,
-        linux-leds@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/2] leds: ktd20xx: Add the KTD20xx family of the RGB
- LEDs driver from Kinetic
-Message-ID: <20211109232930.GB26764@amd>
-References: <20211109100822.5412-1-fe@dev.tdt.de>
- <20211109100822.5412-2-fe@dev.tdt.de>
+        Tue, 9 Nov 2021 18:36:03 -0500
+Received: from mail-yb1-xb34.google.com (mail-yb1-xb34.google.com [IPv6:2607:f8b0:4864:20::b34])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 379E4C061764;
+        Tue,  9 Nov 2021 15:33:16 -0800 (PST)
+Received: by mail-yb1-xb34.google.com with SMTP id g17so1532764ybe.13;
+        Tue, 09 Nov 2021 15:33:16 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=OYebiZkSqfk+SEyJR1FyCrAiQ21EGEQnskwkiymG0qo=;
+        b=Wi8B15wZj4cc+h6CBGFJUarrPgW7jwmN7+G3E5tTlOgfIPxGwnD7zY/SrSiJ8TVdkb
+         quBMKPwJIp5s7CF64Vlz+4bv97K4YHTo3Hj1ywfqlDENr+irvzqXXzhW5U2HNUUnCpl/
+         P3GhTadjyFHFAM9lYJAPfHr38HlGJ7QYDDapCa9IQ00+OUl7mi32FCaPGitGIgz3C8O3
+         0pryorpjVu5D/p7XNPSFQPR3GSOK/PWK8d47qJuMSvGhOyO2NnQX0rCvdQwg18S4ETtb
+         wckiZts4oOHw3rmzyCNtmcRCHhcQ2fGu7u50gFoBQz7a7fdSb7Vn1VyJqPZYusK2FvT+
+         Pu5Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=OYebiZkSqfk+SEyJR1FyCrAiQ21EGEQnskwkiymG0qo=;
+        b=Qf0MIOVOoP6b+iFHXCO4Q4NNYpgpdfpupmsUe3vzWI9At/StAuZbO4WWkDcSwUHL8w
+         hh0kZufm9GMYZP7+FzrZvxzkuBk1hNfnvCPlg5wqDvOnGKDC/A2DGEj0c0o4eAgufV0e
+         Z2HnDc5ZlYobyawNRMuLKc4U+Q54FHC+AwMYJQp1s4FY+OwrQu8nxErcnlB/Gath5OZ9
+         BCVNp/9mVFUkFtGgiRcIb+Bx4oZZEDJhZFSfOZ2U6nrHMn+dKalKc+YgYC16Y+9YwYVQ
+         51/WZbH4rjQ3FPMMeT1GKxacge0nEDMqAqb8nTAJ9StXiQsPyUjv9DAyKRdsCdtanzId
+         nL1g==
+X-Gm-Message-State: AOAM5321NPSolrMVXAwDrUN6wjir17K3Fz6/mFW1z8HTqYukyMoZs7Dc
+        N+i6KGsSM+jtAQBTEhevQLjzWjK2HctPGZQ7r+g=
+X-Google-Smtp-Source: ABdhPJyl9e2HbT3PJbfsdL79UoJYgXrIeAb41W6oYZFEG/9Iy0OCoFz2rnJ6Y1g+V0kcUCGhQ7Epr8+ClRbMBfIKGtg=
+X-Received: by 2002:a05:6902:1023:: with SMTP id x3mr12837122ybt.267.1636500795508;
+ Tue, 09 Nov 2021 15:33:15 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-        protocol="application/pgp-signature"; boundary="NMuMz9nt05w80d4+"
-Content-Disposition: inline
-In-Reply-To: <20211109100822.5412-2-fe@dev.tdt.de>
-User-Agent: Mutt/1.5.23 (2014-03-12)
+References: <20211109140707.1689940-1-jolsa@kernel.org> <20211109140707.1689940-2-jolsa@kernel.org>
+ <CAP-5=fVS2AwZ9bP4BjF9GDcZqmw5fwUZ6OGXdgMnFj3w_2OTaw@mail.gmail.com>
+In-Reply-To: <CAP-5=fVS2AwZ9bP4BjF9GDcZqmw5fwUZ6OGXdgMnFj3w_2OTaw@mail.gmail.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Tue, 9 Nov 2021 15:33:04 -0800
+Message-ID: <CAEf4BzYXD57UDMW_scUdHUs=jgmR6f1-pt5JROwr5LYTh1vejw@mail.gmail.com>
+Subject: Re: [PATCH 1/2] perf tools: Add more weak libbpf functions
+To:     Ian Rogers <irogers@google.com>
+Cc:     Jiri Olsa <jolsa@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        lkml <linux-kernel@vger.kernel.org>,
+        Peter Zijlstra <a.p.zijlstra@chello.nl>,
+        Ingo Molnar <mingo@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Michael Petlan <mpetlan@redhat.com>,
+        "linux-perf-use." <linux-perf-users@vger.kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, Nov 9, 2021 at 10:50 AM Ian Rogers <irogers@google.com> wrote:
+>
+> On Tue, Nov 9, 2021 at 6:07 AM Jiri Olsa <jolsa@redhat.com> wrote:
+> >
+> > We hit the window where perf uses libbpf functions, that did not
+> > make it to the official libbpf release yet and it's breaking perf
+> > build with dynamicly linked libbpf.
+> >
+> > Fixing this by providing the new interface as weak functions which
+> > calls the original libbpf functions. Fortunatelly the changes were
+> > just renames.
+>
+> Could we just provide these functions behind a libbpf version #if ?
+> Weak symbols break things in subtle ways, under certain circumstances
+> the weak symbol is preferred over the strong due to lazy object file
+> resolution:
+> https://maskray.me/blog/2021-06-20-symbol-processing#archive-processing
+> This bit me last week, but in general you get away with it as the lazy
+> object file will get processed in an archive exposing the strong
+> symbol. With an #if you either get a linker error for 2 definitions or
+> 0 definitions, and it's clear what is broken.
+>
+> In the past we had problems due to constant propagation from weak
+> const variables, where #if was the solution:
+> https://lore.kernel.org/lkml/20191001003623.255186-1-irogers@google.com/
+>
+> There was some recent conversation on libbpf version for pahole here:
+> https://lore.kernel.org/bpf/CAP-5=fUc3LtU0WYg-Py9Jf+9picaWHJdSw=sdOMA54uY3p1pdw@mail.gmail.com/T/
+> https://lore.kernel.org/bpf/20211021183330.460681-1-irogers@google.com/
+>
+> Thanks,
+> Ian
+>
+> > Signed-off-by: Jiri Olsa <jolsa@kernel.org>
+> > ---
+> >  tools/perf/util/bpf-event.c | 27 +++++++++++++++++++++++++++
+> >  1 file changed, 27 insertions(+)
+> >
+> > diff --git a/tools/perf/util/bpf-event.c b/tools/perf/util/bpf-event.c
+> > index 4d3b4cdce176..ceb96360fd12 100644
+> > --- a/tools/perf/util/bpf-event.c
+> > +++ b/tools/perf/util/bpf-event.c
+> > @@ -33,6 +33,33 @@ struct btf * __weak btf__load_from_kernel_by_id(__u32 id)
+> >         return err ? ERR_PTR(err) : btf;
+> >  }
+> >
+> > +struct bpf_program * __weak
+> > +bpf_object__next_program(const struct bpf_object *obj, struct bpf_program *prev)
+> > +{
+> > +#pragma GCC diagnostic push
+> > +#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
+> > +       return bpf_program__next(prev, obj);
+> > +#pragma GCC diagnostic pop
+> > +}
+> > +
+> > +struct bpf_map * __weak
+> > +bpf_object__next_map(const struct bpf_object *obj, const struct bpf_map *prev)
+> > +{
+> > +#pragma GCC diagnostic push
+> > +#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
+> > +       return bpf_map__next(prev, obj);
+> > +#pragma GCC diagnostic pop
+> > +}
+> > +
+> > +const void * __weak
+> > +btf__raw_data(const struct btf *btf_ro, __u32 *size)
+> > +{
+> > +#pragma GCC diagnostic push
+> > +#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
+> > +       return btf__get_raw_data(btf_ro, size);
 
---NMuMz9nt05w80d4+
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+you can still use old variants for the time being, if you want. Were
+new APIs used accidentally? Libbpf maintains a guarantee that if some
+API is deprecated in favor of the new one, there will be at least one
+full libbpf release where both APIs are available and not marked as
+deprecated.
 
-hi!
 
-> Introduce the KTD2061/58/59/60 RGB LEDs driver. The difference in these
-> parts are the address number on the I2C bus the device is listen on.
->=20
-> All KT20xx device could control up to 12 LEDs. The chip can be operated
-> in two variants.
-
-How are the variants selected?
-
-> Variant 1:
-> The device has the ability to group LED outputs into two banks so that
-> the two LED banks can be controlled with the same color. This could not
-> be done via the LEDs 'sysfs' entry because of the limitation on the color
-> register count. The color of the two banks can be configured via device
-> 'sysfs' entry for all LEDs at once [current_color0|current_color1].
-> Which color the LED is to be used can be set via the 'sysfs' of the
-> individual LEDs via the 'multi_intensity' file. Valid values for the
-> colors (RGB) are 0 | 1. The value 0 selects the color register 0 and the
-> value 1 selects the color register 1.
-
-So... you can select two colors (current_color0, current_color1), and
-then then each of the 12 LEDs get one of those colors. What about
-intensities? Can brightness be set arbitrarily for each LED?
-
-> Variant 2:
-> The device can also set the LED color independently. Since the chip only
-> has two color registers, but we want to control the 12 LEDs
-> independently via the 'led-class-multicolour' sysfs entry,
-> the full RGB color depth cannot be used. Due to this limitation, only 7
-> colors and the color black (off) can be set. To use this mode the color
-> registers must be preset via the device tree or the device 'sysfs'. The
-> color registers 0 must be preset with 0x00 (Red=3D0x00 Green=3D0x00 Blue=
-=3D0x00).
-> The color register1 should be preset all with the same value. This value
-> depends on which light intensity is to be used in the setup.
-
-So now we have 7 colors we can select from. That sounds better than
-two colors. Why would we ever want to use variant 1?
-
-Can we simply pretend this is 7 LED RGB driver?
-
-> +/* Device attribute for color0 register
-> + *
-> + * The device attribute colour1 is intended to adjust the colour space.
-
-Use color, not colour. Plus run this through checkpatch.
-
-> + * The colour strength can be controlled via the current in 125uA steps.
-
-I don't know what "colour strength" is.
-
-> +/*
-> + * The chip also offers the option "Fade rate".
-> + */
-> +static ssize_t faderate_show(struct device *dev, struct device_attribute=
- *a,
-> +		char *buf)
-> +{
-> +	struct i2c_client *client =3D to_i2c_client(dev);
-> +	struct ktd20xx *chip =3D i2c_get_clientdata(client);
-> +	unsigned int value;
-> +
-> +	mutex_lock(&chip->lock);
-> +	regmap_field_read(chip->faderate, &value);
-> +	mutex_unlock(&chip->lock);
-> +
-> +	return sprintf(buf, "%d\n", value);
-> +}
-
-That's way too hardware specific.
-
-Best regards,
-									Pavel
---=20
-http://www.livejournal.com/~pavelmachek
-
---NMuMz9nt05w80d4+
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1
-
-iEYEARECAAYFAmGLBFoACgkQMOfwapXb+vLgVgCfSAOGWebHBAMez7RBh1oGoRAp
-6NsAn1cX05E3bf9cg2jmYsFiD+QpeE0W
-=DsMc
------END PGP SIGNATURE-----
-
---NMuMz9nt05w80d4+--
+> > +#pragma GCC diagnostic pop
+> > +}
+> > +
+> >  static int snprintf_hex(char *buf, size_t size, unsigned char *data, size_t len)
+> >  {
+> >         int ret = 0;
+> > --
+> > 2.31.1
+> >
