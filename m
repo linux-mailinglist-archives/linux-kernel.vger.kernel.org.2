@@ -2,59 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3542A44AADC
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 10:49:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CF7C344AAE2
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 10:50:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244976AbhKIJwk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Nov 2021 04:52:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49294 "EHLO
+        id S245080AbhKIJwy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Nov 2021 04:52:54 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49306 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244164AbhKIJvj (ORCPT
+        with ESMTP id S244968AbhKIJvk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Nov 2021 04:51:39 -0500
-Received: from mail-pl1-x636.google.com (mail-pl1-x636.google.com [IPv6:2607:f8b0:4864:20::636])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B410CC061764
-        for <linux-kernel@vger.kernel.org>; Tue,  9 Nov 2021 01:48:53 -0800 (PST)
-Received: by mail-pl1-x636.google.com with SMTP id y1so19905343plk.10
-        for <linux-kernel@vger.kernel.org>; Tue, 09 Nov 2021 01:48:53 -0800 (PST)
+        Tue, 9 Nov 2021 04:51:40 -0500
+Received: from mail-pl1-x62a.google.com (mail-pl1-x62a.google.com [IPv6:2607:f8b0:4864:20::62a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 31C10C061767
+        for <linux-kernel@vger.kernel.org>; Tue,  9 Nov 2021 01:48:55 -0800 (PST)
+Received: by mail-pl1-x62a.google.com with SMTP id o14so19935919plg.5
+        for <linux-kernel@vger.kernel.org>; Tue, 09 Nov 2021 01:48:55 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=sifive.com; s=google;
         h=from:to:subject:date:message-id:in-reply-to:references:mime-version
          :content-transfer-encoding;
-        bh=P9b3tDY+655xD0tPu9SBTJCGpaBZsqsfT1tLH+eh9ss=;
-        b=lH+Zi+btz0Y3PlO5Le6vD8gIS2gNoRc+CDGfvwK17wjnrtv9A40qM8mlBQvpTgMzfv
-         eiKZw0ZQTiDbMwH/xUeRYTyag0FYNP1oWYpOmMyM2yiXFnw4/HcDC7w1AGojiPJ3Fn5y
-         Fuw3/MPUiXHruI1mYFcflj+FDpE4U7yI4DIoQmV/hMk7+y/+ZKTCMkV8eJh1AuYi0Tmm
-         i12FqNhrilpzfcYiwyAt39z+QKkiVw6/n0bdhmBtJwQ+rYaOvvQZaPrlitURm795ecsU
-         740yWzE/PYiFOuRFFyFCCRRZaNekgfQQWfkm+t8fLYq+tL2U1mau/YYPW3T1DID2M/XP
-         UGYQ==
+        bh=FL+VEFe5sItLWp1iPVtwvUyzjrWRCQCbTfImwPAiDwA=;
+        b=S/RIVQtOFwDcFnlWP047m+ita50Qq7gst/EWQULmRuag85uX673maj4stcouS7zX+o
+         4Vb6BHMChP+Npz2M0DLUtw1YMP+HD1TlkGhA2gNkj5O0y04WLooFMQisxS6DNiVF1e3M
+         uG19VT7aMie4O88Di2Vz8Rh6R+kISFaiLf/ejM/ZEjJV0jGQ1RIYmibld5X62ufRZoX1
+         uGdpnqSoAnQgdyyR50xQJnbdVTrho94l1FFwVPhioMzi0z3kEaeBVQbu/hRVK9RsI9Gv
+         phbiuYaXUaA5VvAwD0a41SrHqJVbV+Y9/v2khRAZf7wRDmxzrja7KelEBSj7O84hMAFU
+         XAwA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=P9b3tDY+655xD0tPu9SBTJCGpaBZsqsfT1tLH+eh9ss=;
-        b=mlbAK3ahA0azrlu5qybtnarDAlAMWf0XvAkrxCOkJu9G2XakPjyfu+I0GxshdGbdgZ
-         mnjvdmmO+YV687Q7OKQFzwdSB5o7XTgZ4fNpDrrXimyLHVslQFwh/QO0DIwGnYS9aLVy
-         TH2WAzdWPX9vElU0gWQTofgqaJODAaTNjIUkCV3LwlJd/rM2y51wRmYKsaTA8PirObRC
-         P8nB4DK9td7zN8VgNlKj6S8U/e20f/se6lf2jYK21JlVC1yqjTv+pX75ESvYfJGPyHAG
-         K0fSyZAjry9UQTLdBQgWHRQjkhWpeMOJ1sqDUCfuj5QVzsBXfDFyvp4zfINzh0ovtotN
-         dAnw==
-X-Gm-Message-State: AOAM531u2M1n9hqDoQjmpon9Wcj3NREhw0sWko5UQYZqAy6aEmnml1Bs
-        LzSAsZS3lPPebc02L2b3/M774A==
-X-Google-Smtp-Source: ABdhPJyE89/bOjt3ujPXxTBFVPDjVmC+oQVF+9ESGIp8HQlLll/3ZSvGbSTYp6vIWSHhcnEsAw8slQ==
-X-Received: by 2002:a17:90a:9291:: with SMTP id n17mr5695519pjo.243.1636451333257;
-        Tue, 09 Nov 2021 01:48:53 -0800 (PST)
+        bh=FL+VEFe5sItLWp1iPVtwvUyzjrWRCQCbTfImwPAiDwA=;
+        b=rkdK3ReEAaB4nDn76uznojMuuotmIllDjiFYdQGQf9nV7oiq1ohNF9t+biGCW/m6tc
+         oP5KiJAk+qCVeO7EHbQIAPD99U027YaW8MFY2hcBVMcb98flKCkkMpFBT5ARfA1bUtfD
+         tC6V5qB6EHrsS2PD00ir4LOA3QjbZon+UT9aSbehsNxjkffDMO+GXMM37ODZZpjYVCRu
+         hW6rtueakFzqhubebVtMZ8b6fvA272f1WxPiSezB4ZPj/cywQwDpRWBwUcdJIYoznPok
+         4bJSu4V9fF0g1hdHh8keOTOrHT6fWV0iXgr+7k1AiOONryeeu3S0VvC98XCgSmmn7Gee
+         Eqgg==
+X-Gm-Message-State: AOAM531Kj1M2DetMxd/jUscFzrljg3mzqSe7jWUl9CEuLvl1JNMtjT3O
+        UUtobSA9oeNHnX7eCBOnklX2j9byj5hNtA==
+X-Google-Smtp-Source: ABdhPJytsGPIfF3bYcv8xbFBBZHNMLA+tLozgB6cjxQ/lpJnRz5bz8FAA8yIfzD8Rc3YAXKc2SCD3A==
+X-Received: by 2002:a17:903:1252:b0:13d:f3f6:2e1c with SMTP id u18-20020a170903125200b0013df3f62e1cmr5956556plh.73.1636451334709;
+        Tue, 09 Nov 2021 01:48:54 -0800 (PST)
 Received: from hsinchu16.internal.sifive.com (59-124-168-89.hinet-ip.hinet.net. [59.124.168.89])
-        by smtp.gmail.com with ESMTPSA id cv1sm1940511pjb.48.2021.11.09.01.48.52
+        by smtp.gmail.com with ESMTPSA id cv1sm1940511pjb.48.2021.11.09.01.48.53
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 09 Nov 2021 01:48:53 -0800 (PST)
+        Tue, 09 Nov 2021 01:48:54 -0800 (PST)
 From:   Greentime Hu <greentime.hu@sifive.com>
 To:     palmer@dabbelt.com, paul.walmsley@sifive.com,
         linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
         aou@eecs.berkeley.edu
-Subject: [PATCH v9 14/17] riscv: Use CSR_STATUS to replace sstatus in vector.S
-Date:   Tue,  9 Nov 2021 17:48:26 +0800
-Message-Id: <7204695c80a13a634381fed94ea1598ffd70c78f.1636362169.git.greentime.hu@sifive.com>
+Subject: [PATCH v9 15/17] riscv: Add vector extension XOR implementation
+Date:   Tue,  9 Nov 2021 17:48:27 +0800
+Message-Id: <c6330b675e015d2e0beb6a750cfc1101f2ddd83f.1636362169.git.greentime.hu@sifive.com>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <cover.1636362169.git.greentime.hu@sifive.com>
 References: <cover.1636362169.git.greentime.hu@sifive.com>
@@ -64,53 +64,202 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-It should use the same logic here in both m-mode and s-mode.
+This patch adds support for vector optimized XOR it is tested in spike and
+qemu.
 
+Logs in spike:
+[    0.008365] xor: measuring software checksum speed
+[    0.048885]    8regs     :  1719.000 MB/sec
+[    0.089080]    32regs    :  1717.000 MB/sec
+[    0.129275]    rvv       :  7043.000 MB/sec
+[    0.129525] xor: using function: rvv (7043.000 MB/sec)
+
+Logs in qemu:
+[    0.098943] xor: measuring software checksum speed
+[    0.139391]    8regs     :  2911.000 MB/sec
+[    0.181079]    32regs    :  2813.000 MB/sec
+[    0.224260]    rvv       :    45.000 MB/sec
+[    0.225586] xor: using function: 8regs (2911.000 MB/sec)
+
+Co-developed-by: Han-Kuan Chen <hankuan.chen@sifive.com>
+Signed-off-by: Han-Kuan Chen <hankuan.chen@sifive.com>
 Signed-off-by: Greentime Hu <greentime.hu@sifive.com>
-Co-developed-by: Vincent Chen <vincent.chen@sifive.com>
-Signed-off-by: Vincent Chen <vincent.chen@sifive.com>
 ---
- arch/riscv/kernel/vector.S | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+ arch/riscv/include/asm/xor.h | 66 +++++++++++++++++++++++++++++
+ arch/riscv/lib/Makefile      |  1 +
+ arch/riscv/lib/xor.S         | 81 ++++++++++++++++++++++++++++++++++++
+ 3 files changed, 148 insertions(+)
+ create mode 100644 arch/riscv/include/asm/xor.h
+ create mode 100644 arch/riscv/lib/xor.S
 
-diff --git a/arch/riscv/kernel/vector.S b/arch/riscv/kernel/vector.S
-index a973532d2e7f..1a79e2485bfa 100644
---- a/arch/riscv/kernel/vector.S
-+++ b/arch/riscv/kernel/vector.S
-@@ -31,7 +31,7 @@
+diff --git a/arch/riscv/include/asm/xor.h b/arch/riscv/include/asm/xor.h
+new file mode 100644
+index 000000000000..5e86277364b5
+--- /dev/null
++++ b/arch/riscv/include/asm/xor.h
+@@ -0,0 +1,66 @@
++/* SPDX-License-Identifier: GPL-2.0-or-later */
++/*
++ * Copyright (C) 2021 SiFive
++ */
++
++#include <linux/hardirq.h>
++#include <asm-generic/xor.h>
++#ifdef CONFIG_VECTOR
++#include <asm/vector.h>
++#include <asm/switch_to.h>
++
++void xor_regs_2_(unsigned long bytes, unsigned long *p1, unsigned long *p2);
++void xor_regs_3_(unsigned long bytes, unsigned long *p1, unsigned long *p2, unsigned long *p3);
++void xor_regs_4_(unsigned long bytes, unsigned long *p1, unsigned long *p2, unsigned long *p3,
++		 unsigned long *p4);
++void xor_regs_5_(unsigned long bytes, unsigned long *p1, unsigned long *p2, unsigned long *p3,
++		 unsigned long *p4, unsigned long *p5);
++
++static void xor_rvv_2(unsigned long bytes, unsigned long *p1, unsigned long *p2)
++{
++	kernel_rvv_begin();
++	xor_regs_2_(bytes, p1, p2);
++	kernel_rvv_end();
++}
++
++static void xor_rvv_3(unsigned long bytes, unsigned long *p1, unsigned long *p2, unsigned long *p3)
++{
++	kernel_rvv_begin();
++	xor_regs_3_(bytes, p1, p2, p3);
++	kernel_rvv_end();
++}
++
++static void xor_rvv_4(unsigned long bytes, unsigned long *p1, unsigned long *p2, unsigned long *p3,
++		      unsigned long *p4)
++{
++	kernel_rvv_begin();
++	xor_regs_4_(bytes, p1, p2, p3, p4);
++	kernel_rvv_end();
++}
++
++static void xor_rvv_5(unsigned long bytes, unsigned long *p1, unsigned long *p2, unsigned long *p3,
++		      unsigned long *p4, unsigned long *p5)
++{
++	kernel_rvv_begin();
++	xor_regs_5_(bytes, p1, p2, p3, p4, p5);
++	kernel_rvv_end();
++}
++
++static struct xor_block_template xor_block_rvv = {
++	.name = "rvv",
++	.do_2 = xor_rvv_2,
++	.do_3 = xor_rvv_3,
++	.do_4 = xor_rvv_4,
++	.do_5 = xor_rvv_5
++};
++
++#undef XOR_TRY_TEMPLATES
++#define XOR_TRY_TEMPLATES           \
++	do {        \
++		xor_speed(&xor_block_8regs);    \
++		xor_speed(&xor_block_32regs);    \
++		if (has_vector()) { \
++			xor_speed(&xor_block_rvv);\
++		} \
++	} while (0)
++#endif
+diff --git a/arch/riscv/lib/Makefile b/arch/riscv/lib/Makefile
+index 25d5c9664e57..acd87ac86d24 100644
+--- a/arch/riscv/lib/Makefile
++++ b/arch/riscv/lib/Makefile
+@@ -7,3 +7,4 @@ lib-$(CONFIG_MMU)	+= uaccess.o
+ lib-$(CONFIG_64BIT)	+= tishift.o
  
- ENTRY(__vstate_save)
- 	li      status, SR_VS
--	csrs    sstatus, status
-+	csrs    CSR_STATUS, status
- 
- 	csrr    x_vstart, CSR_VSTART
- 	csrr    x_vtype, CSR_VTYPE
-@@ -51,13 +51,13 @@ ENTRY(__vstate_save)
- 	REG_S   x_vl, RISCV_V_STATE_VL(vstatep)
- 	REG_S   x_vcsr, RISCV_V_STATE_VCSR(vstatep)
- 
--	csrc	sstatus, status
-+	csrc	CSR_STATUS, status
- 	ret
- ENDPROC(__vstate_save)
- 
- ENTRY(__vstate_restore)
- 	li      status, SR_VS
--	csrs    sstatus, status
-+	csrs    CSR_STATUS, status
- 
- 	vsetvli incr, x0, e8, m8
- 	vle8.v   v0, (datap)
-@@ -76,7 +76,7 @@ ENTRY(__vstate_restore)
- 	csrw    CSR_VSTART, x_vstart
- 	csrw    CSR_VCSR, x_vcsr
- 
--	csrc	sstatus, status
-+	csrc	CSR_STATUS, status
- 	ret
- ENDPROC(__vstate_restore)
- 
+ obj-$(CONFIG_FUNCTION_ERROR_INJECTION) += error-inject.o
++lib-$(CONFIG_VECTOR)	+= xor.o
+diff --git a/arch/riscv/lib/xor.S b/arch/riscv/lib/xor.S
+new file mode 100644
+index 000000000000..bb54e77df046
+--- /dev/null
++++ b/arch/riscv/lib/xor.S
+@@ -0,0 +1,81 @@
++/* SPDX-License-Identifier: GPL-2.0-or-later */
++/*
++ * Copyright (C) 2021 SiFive
++ */
++#include <linux/linkage.h>
++#include <asm-generic/export.h>
++#include <asm/asm.h>
++
++ENTRY(xor_regs_2_)
++	vsetvli a3, a0, e8, m8
++	vle8.v v0, (a1)
++	vle8.v v8, (a2)
++	sub a0, a0, a3
++	vxor.vv v16, v0, v8
++	add a2, a2, a3
++	vse8.v v16, (a1)
++	add a1, a1, a3
++	bnez a0, xor_regs_2_
++	ret
++END(xor_regs_2_)
++EXPORT_SYMBOL(xor_regs_2_)
++
++ENTRY(xor_regs_3_)
++	vsetvli a4, a0, e8, m8
++	vle8.v v0, (a1)
++	vle8.v v8, (a2)
++	sub a0, a0, a4
++	vxor.vv v0, v0, v8
++	vle8.v v16, (a3)
++	add a2, a2, a4
++	vxor.vv v16, v0, v16
++	add a3, a3, a4
++	vse8.v v16, (a1)
++	add a1, a1, a4
++	bnez a0, xor_regs_3_
++	ret
++END(xor_regs_3_)
++EXPORT_SYMBOL(xor_regs_3_)
++
++ENTRY(xor_regs_4_)
++	vsetvli a5, a0, e8, m8
++	vle8.v v0, (a1)
++	vle8.v v8, (a2)
++	sub a0, a0, a5
++	vxor.vv v0, v0, v8
++	vle8.v v16, (a3)
++	add a2, a2, a5
++	vxor.vv v0, v0, v16
++	vle8.v v24, (a4)
++	add a3, a3, a5
++	vxor.vv v16, v0, v24
++	add a4, a4, a5
++	vse8.v v16, (a1)
++	add a1, a1, a5
++	bnez a0, xor_regs_4_
++	ret
++END(xor_regs_4_)
++EXPORT_SYMBOL(xor_regs_4_)
++
++ENTRY(xor_regs_5_)
++	vsetvli a6, a0, e8, m8
++	vle8.v v0, (a1)
++	vle8.v v8, (a2)
++	sub a0, a0, a6
++	vxor.vv v0, v0, v8
++	vle8.v v16, (a3)
++	add a2, a2, a6
++	vxor.vv v0, v0, v16
++	vle8.v v24, (a4)
++	add a3, a3, a6
++	vxor.vv v0, v0, v24
++	vle8.v v8, (a5)
++	add a4, a4, a6
++	vxor.vv v16, v0, v8
++	add a5, a5, a6
++	vse8.v v16, (a1)
++	add a1, a1, a6
++	bnez a0, xor_regs_5_
++	ret
++END(xor_regs_5_)
++EXPORT_SYMBOL(xor_regs_5_)
 -- 
 2.31.1
 
