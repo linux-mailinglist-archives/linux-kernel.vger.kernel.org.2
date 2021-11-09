@@ -2,167 +2,179 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B982544B439
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 21:46:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C7B1A44B43B
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 21:46:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244677AbhKIUtG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Nov 2021 15:49:06 -0500
-Received: from smtprelay0012.hostedemail.com ([216.40.44.12]:35440 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S235551AbhKIUtC (ORCPT
+        id S235551AbhKIUtM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Nov 2021 15:49:12 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58280 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S244689AbhKIUtK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Nov 2021 15:49:02 -0500
-Received: from omf20.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay02.hostedemail.com (Postfix) with ESMTP id 95F5C7DC92;
-        Tue,  9 Nov 2021 20:46:15 +0000 (UTC)
-Received: from [HIDDEN] (Authenticated sender: joe@perches.com) by omf20.hostedemail.com (Postfix) with ESMTPA id BC36218A600;
-        Tue,  9 Nov 2021 20:46:12 +0000 (UTC)
-Message-ID: <846fb6e2b711ca09b89317d0117826eafc9f5b3d.camel@perches.com>
-Subject: Re: [v2 10/10] iio: imu: add BNO055 I2C driver
-From:   Joe Perches <joe@perches.com>
-To:     Randy Dunlap <rdunlap@infradead.org>, andrea.merello@gmail.com,
-        Andi Kleen <ak@linux.intel.com>
-Cc:     Jonathan Cameron <jic23@kernel.org>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        linux-iio <linux-iio@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        devicetree <devicetree@vger.kernel.org>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Rob Herring <robh+dt@kernel.org>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Matt Ranostay <matt.ranostay@konsulko.com>,
-        Alexandru Ardelean <ardeleanalex@gmail.com>,
-        Jacopo Mondi <jacopo@jmondi.org>,
-        Andrea Merello <andrea.merello@iit.it>
-Date:   Tue, 09 Nov 2021 12:46:10 -0800
-In-Reply-To: <4d812d76-07ca-1eb0-407d-78179628f0ba@infradead.org>
-References: <20210715141742.15072-1-andrea.merello@gmail.com>
-         <20211028101840.24632-1-andrea.merello@gmail.com>
-         <20211028101840.24632-11-andrea.merello@gmail.com>
-         <85ef90ad-0d3a-6cb7-529f-667562b2ad71@infradead.org>
-         <CAN8YU5NiKz2JiNr-47OC4==N8L67HDshuH45BifnHBae+GUU-g@mail.gmail.com>
-         <021c6fe0-8131-a4f9-9cb0-2f4771d35da1@infradead.org>
-         <80960e445c986408e4ae9a20ac42c5b66d4d8046.camel@perches.com>
-         <4d812d76-07ca-1eb0-407d-78179628f0ba@infradead.org>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.40.4-1 
+        Tue, 9 Nov 2021 15:49:10 -0500
+Received: from mail-lf1-x12c.google.com (mail-lf1-x12c.google.com [IPv6:2a00:1450:4864:20::12c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DEA09C061764
+        for <linux-kernel@vger.kernel.org>; Tue,  9 Nov 2021 12:46:23 -0800 (PST)
+Received: by mail-lf1-x12c.google.com with SMTP id x27so536973lfu.5
+        for <linux-kernel@vger.kernel.org>; Tue, 09 Nov 2021 12:46:23 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=h/+CbKq/m1ljNtqbFpAY5SzIXPWvs2rPCrXQESajW3U=;
+        b=Pxiyrg0kL9gFnc303lUkSLXOtBilXGSzuIlg+7snZRipRbEF2vonmMf7LBf5J46PVY
+         upPdqY3q2wdW45zgRPeiHPxzjeKNulStrEgNCOY5FqVewkz6RouIPsO5bbnwkfxe8hyV
+         XX40SoWRolwbr5VpTmI+vDypESMdipTgzEZ/YikWLcYR7pjuNdkQDm+UjZPemxywvFvm
+         Q6R2SJ4DSXcgQZdk+eJRUjnTWltG0eiMfPuJI3e92Xq7grv0Q7gyqylDisIvS+C/HMPF
+         OjEFzaa/6oUwEjtanmDw/zxsxmIXuFUCUbfWJVG1LReQ1a53zxb1UnvleEhFYL+1qKwJ
+         w9Zw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=h/+CbKq/m1ljNtqbFpAY5SzIXPWvs2rPCrXQESajW3U=;
+        b=OKF9Z/i4Kw+gD5mOqF6T5fJw2Ip5AujKVvyNqKy2VOox9QfkxrtgeEvZo0XGKYp24l
+         F2j2TfpYLuQjWWuAHxiukeeJYRc2JKSy3wLqPf/+7aFxbJBJK5YUrwv9cFZc6VJxwbvq
+         Q74zQR3jnXuKnkGpdFxFYpBjsH3d1nfvvzOki9NL9ttvav9nEQYxhtUW0C/T/RptS6oJ
+         fX4d0umovu5iAcBn/lqNUlnMUwWzRaJeLE010vlg6RIaH4wjTtLSfmfxMFTgBqZcwFSY
+         bP6LMpOwlfl6O09VgwvMAAVmfB7jiqbuL2RfioCoiwPRgipJioxmrwZ/j5IpljgkNK9G
+         nOTg==
+X-Gm-Message-State: AOAM531c/0DYGlr9zB7cyvp8O7yGZyLQGNs+1iZ4lbu78eNDcLvEWDSp
+        oWU9bOAJ85nfyLaEErtezdXABkHTeBOKsdQ5suLD7Q==
+X-Google-Smtp-Source: ABdhPJyRf41tSXXZGblCI19wMvjqN7NkuJ3p8xKiunNz/ji3yFm05cs5kPxucQ4hbYfeenAKT9BzNOubKOto5zp3H5s=
+X-Received: by 2002:a05:6512:39d1:: with SMTP id k17mr9432393lfu.79.1636490781953;
+ Tue, 09 Nov 2021 12:46:21 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-3.40
-X-Stat-Signature: mhte6ccyh3ngy8e7zurgnsmkyiazqaoh
-X-Rspamd-Server: rspamout05
-X-Rspamd-Queue-Id: BC36218A600
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Session-ID: U2FsdGVkX19+oTqAQeeHzJ5U+ZxRAhPKTw8pIqxtIoE=
-X-HE-Tag: 1636490772-693305
+References: <20211102142331.3753798-1-pgonda@google.com> <20211102142331.3753798-5-pgonda@google.com>
+ <YYquDWbkIwCkixxD@google.com> <CAMkAt6rHdsdD-L4PbZL7qaOY7GRHmApVJam0V0yY2BnYdhmPjA@mail.gmail.com>
+ <YYrZXRTukz3RccPN@google.com>
+In-Reply-To: <YYrZXRTukz3RccPN@google.com>
+From:   Peter Gonda <pgonda@google.com>
+Date:   Tue, 9 Nov 2021 13:46:10 -0700
+Message-ID: <CAMkAt6qauoiTBXF9VXRGiqtJD5pTAV=NqKHZgNFXHCkrR50gkg@mail.gmail.com>
+Subject: Re: [PATCH V3 4/4] crypto: ccp - Add SEV_INIT_EX support
+To:     Sean Christopherson <seanjc@google.com>
+Cc:     Thomas.Lendacky@amd.com, David Rientjes <rientjes@google.com>,
+        Marc Orr <marcorr@google.com>,
+        Brijesh Singh <brijesh.singh@amd.com>,
+        Joerg Roedel <jroedel@suse.de>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        John Allen <john.allen@amd.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 2021-11-09 at 11:11 -0800, Randy Dunlap wrote:
-> On 11/9/21 10:21 AM, Joe Perches wrote:
-> > (cc'ing Andi Kleen, who wrote this code a decade ago)
-> > > Joe, can you identify why checkpatch does not detect missing Kconfig
-> > > help text is this simple case?
-> > 
-> > Original patch here: https://lore.kernel.org/all/20211028101840.24632-11-andrea.merello@gmail.com/raw
-> > 
-> > checkpatch is counting the diff header lines that follow the config entry.
-> > Maybe this is clearer (better?) code:
-> > ---
-> Tested-by: Randy Dunlap <rdunlap@infradead.org>
-> Acked-by: Randy Dunlap <rdunlap@infradead.org>
+On Tue, Nov 9, 2021 at 1:26 PM Sean Christopherson <seanjc@google.com> wrote:
+>
+> On Tue, Nov 09, 2021, Peter Gonda wrote:
+> > On Tue, Nov 9, 2021 at 10:21 AM Sean Christopherson <seanjc@google.com> wrote:
+> > > There's no need for this to be a function pointer, and the duplicate code can be
+> > > consolidated.
+> > >
+> > > static int sev_do_init_locked(int cmd, void *data, int *error)
+> > > {
+> > >         if (sev_es_tmr) {
+> > >                 /*
+> > >                  * Do not include the encryption mask on the physical
+> > >                  * address of the TMR (firmware should clear it anyway).
+> > >                  */
+> > >                 data.flags |= SEV_INIT_FLAGS_SEV_ES;
+> > >                 data.tmr_address = __pa(sev_es_tmr);
+> > >                 data.tmr_len = SEV_ES_TMR_SIZE;
+> > >         }
+> > >         return __sev_do_cmd_locked(SEV_CMD_INIT, &data, error);
+> > > }
+> > >
+> > > static int __sev_init_locked(int *error)
+> > > {
+> > >         struct sev_data_init data;
+> > >
+> > >         memset(&data, 0, sizeof(data));
+> > >         return sev_do_init_locked(cmd, &data, error);
+> > > }
+> > >
+> > > static int __sev_init_ex_locked(int *error)
+> > > {
+> > >         struct sev_data_init_ex data;
+> > >
+> > >         memset(&data, 0, sizeof(data));
+> > >         data.length = sizeof(data);
+> > >         data.nv_address = __psp_pa(sev_init_ex_nv_address);
+> > >         data.nv_len = NV_LENGTH;
+> > >         return sev_do_init_locked(SEV_CMD_INIT_EX, &data, error);
+> > > }
+> >
+> > I am missing how this removes the duplication of the retry code,
+> > parameter checking, and other error checking code.. With what you have
+> > typed out I would assume I still need to function pointer between
+> > __sev_init_ex_locked and __sev_init_locked. Can you please elaborate
+> > here?
+>
+> Hmm.  Ah, I got distracted between the original thought, the realization that
+> the two commands used different structs, and typing up the above.
+>
+> > Also is there some reason the function pointer is not acceptable?
+>
+> It's not unacceptable, it would just be nice to avoid, assuming the alternative
+> is cleaner.  But I don't think any alternative is cleaner, since as you pointed
+> out the above is a half-baked thought.
 
-Hey Randy/Andi.
+OK I'll leave as is.
 
-I like this patch below a bit more.
+>
+> > > > +     rc = init_function(error);
+> > > >       if (rc && *error == SEV_RET_SECURE_DATA_INVALID) {
+> > > >               /*
+> > > >                * INIT command returned an integrity check failure
+> > > > @@ -286,8 +423,8 @@ static int __sev_platform_init_locked(int *error)
+> > > >                * failed and persistent state has been erased.
+> > > >                * Retrying INIT command here should succeed.
+> > > >                */
+> > > > -             dev_dbg(sev->dev, "SEV: retrying INIT command");
+> > > > -             rc = __sev_do_cmd_locked(SEV_CMD_INIT, &data, error);
+> > > > +             dev_notice(sev->dev, "SEV: retrying INIT command");
+> > > > +             rc = init_function(error);
+> > >
+> > > The above comment says "persistent state has been erased", but __sev_do_cmd_locked()
+> > > only writes back to the file if a relevant command was successful, which means
+> > > that rereading the userspace file in __sev_init_ex_locked() will retry INIT_EX
+> > > with the same garbage data.
+> >
+> > Ack my mistake, that comment is stale. I will update it so its correct
+> > for the INIT and INIT_EX flows.
+> > >
+> > > IMO, the behavior should be to read the file on load and then use the kernel buffer
+> > > without ever reloading (unless this is built as a module and is unloaded and reloaded).
+> > > The writeback then becomes opportunistic in the sense that if it fails for some reason,
+> > > the kernel's internal state isn't blasted away.
+> >
+> > One issue here is that the file read can fail on load so we use the
+> > late retry to guarantee we can read the file.
+>
+> But why continue loading if reading the file fails on load?
+>
+> > The other point seems like preference. Users may wish to shutdown the PSP FW,
+> > load a new file, and INIT_EX again with that new data. Why should we preclude
+> > them from that functionality?
+>
+> I don't think we should preclude that functionality, but it needs to be explicitly
+> tied to a userspace action, e.g. either on module load or on writing the param to
+> change the path.  If the latter is allowed, then it needs to be denied if the PSP
+> is initialized, otherwise the kernel will be in a non-coherent state and AFAICT
+> userspace will have a heck of a time even understanding what state has been used
+> to initialize the PSP.
 
-It shows the Kconfig context block in the output message and
-documents the code a bit more.
-
-Care to test it again?
----
- scripts/checkpatch.pl | 53 +++++++++++++++++++++++++++------------------------
- 1 file changed, 28 insertions(+), 25 deletions(-)
-
-diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
-index 1784921c645da..0b5c0363119ff 100755
---- a/scripts/checkpatch.pl
-+++ b/scripts/checkpatch.pl
-@@ -3480,46 +3480,49 @@ sub process {
- 		    # (\b) rather than a whitespace character (\s)
- 		    $line =~ /^\+\s*(?:config|menuconfig|choice)\b/) {
- 			my $length = 0;
--			my $cnt = $realcnt;
--			my $ln = $linenr + 1;
--			my $f;
--			my $is_start = 0;
--			my $is_end = 0;
--			for (; $cnt > 0 && defined $lines[$ln - 1]; $ln++) {
--				$f = $lines[$ln - 1];
--				$cnt-- if ($lines[$ln - 1] !~ /^-/);
--				$is_end = $lines[$ln - 1] =~ /^\+/;
-+			my $ln = $linenr;
-+			my $needs_help = 0;
-+			my $has_help = 0;
-+			my $herecfg = $herecurr;
-+			while (defined $lines[$ln]) {
-+				my $f = $lines[$ln++];
- 
- 				next if ($f =~ /^-/);
--				last if (!$file && $f =~ /^\@\@/);
-+				last if (!$file && $f =~ /^(?:\@\@|diff )/);
- 
--				if ($lines[$ln - 1] =~ /^\+\s*(?:bool|tristate|prompt)\s*["']/) {
--					$is_start = 1;
--				} elsif ($lines[$ln - 1] =~ /^\+\s*(?:---)?help(?:---)?$/) {
--					$length = -1;
-+				$herecfg .= $rawlines[$ln - 1] . "\n";
-+				if ($f =~ /^\+\s*(?:bool|tristate|prompt)\s*["']/) {
-+					$needs_help = 1;
-+					next;
-+				}
-+				if ($f =~ /^\+\s*help\s*$/) {
-+					$has_help = 1;
-+					next;
- 				}
- 
--				$f =~ s/^.//;
--				$f =~ s/#.*//;
--				$f =~ s/^\s+//;
--				next if ($f =~ /^$/);
-+				$f =~ s/^.//;	# strip patch context [+ ]
-+				$f =~ s/#.*//;	# strip # directives
-+				$f =~ s/^\s+//;	# strip leading blanks
-+				next if ($f =~ /^$/);	# skip blank lines
- 
-+				# At the end of this Kconfig block:
- 				# This only checks context lines in the patch
- 				# and so hopefully shouldn't trigger false
- 				# positives, even though some of these are
- 				# common words in help texts
--				if ($f =~ /^\s*(?:config|menuconfig|choice|endchoice|
--						  if|endif|menu|endmenu|source)\b/x) {
--					$is_end = 1;
-+				if ($f =~ /^(?:config|menuconfig|choice|endchoice|
-+					       if|endif|menu|endmenu|source)\b/x) {
-+					$herecfg =~ s/.*\n\Z//;	# strip last line
- 					last;
- 				}
--				$length++;
-+				$length++ if ($has_help);
- 			}
--			if ($is_start && $is_end && $length < $min_conf_desc_length) {
-+			if ($needs_help &&
-+			    (!$has_help ||
-+			     ($has_help && $length < $min_conf_desc_length))) {
- 				WARN("CONFIG_DESCRIPTION",
--				     "please write a paragraph that describes the config symbol fully\n" . $herecurr);
-+				     "please write a help paragraph that fully describes the config symbol\n" . $herecfg);
- 			}
--			#print "is_start<$is_start> is_end<$is_end> length<$length>\n";
- 		}
- 
- # check MAINTAINERS entries
-
-
+If this driver is builtin the filesystem will be unavailable during
+__init. Using the existing retries already built into
+sev_platform_init() also the file to be read once userspace is
+running, meaning the file system is usable. As I tried to explain in
+the commit message. We could remove the sev_platform_init call during
+sev_pci_init since this only actually needs to be initialized when the
+first command requiring it is issues (either reading some keys/certs
+from the PSP or launching an SEV guest). Then userspace in both the
+builtin and module usage would know running one of those commands
+cause the file to be read for PSP usage. Tom any thoughts on this?
