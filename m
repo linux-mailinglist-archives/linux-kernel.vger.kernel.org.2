@@ -2,159 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 56F0144AD60
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 13:17:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2977344AD63
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 13:17:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242433AbhKIMTw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Nov 2021 07:19:52 -0500
-Received: from relmlor2.renesas.com ([210.160.252.172]:34826 "EHLO
-        relmlie6.idc.renesas.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S242214AbhKIMTo (ORCPT
+        id S242362AbhKIMUQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Nov 2021 07:20:16 -0500
+Received: from mail-il1-f199.google.com ([209.85.166.199]:49970 "EHLO
+        mail-il1-f199.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S242190AbhKIMUG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Nov 2021 07:19:44 -0500
-X-IronPort-AV: E=Sophos;i="5.87,220,1631545200"; 
-   d="scan'208";a="99983750"
-Received: from unknown (HELO relmlir6.idc.renesas.com) ([10.200.68.152])
-  by relmlie6.idc.renesas.com with ESMTP; 09 Nov 2021 21:16:57 +0900
-Received: from localhost.localdomain (unknown [10.226.36.204])
-        by relmlir6.idc.renesas.com (Postfix) with ESMTP id 070D54392862;
-        Tue,  9 Nov 2021 21:16:54 +0900 (JST)
-From:   Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-To:     Geert Uytterhoeven <geert+renesas@glider.be>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>
-Cc:     linux-serial@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
-        Prabhakar <prabhakar.csengg@gmail.com>,
-        Biju Das <biju.das.jz@bp.renesas.com>,
-        Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-Subject: [PATCH v2 3/3] serial: sh-sci: Add support to deassert/assert reset line
-Date:   Tue,  9 Nov 2021 12:16:31 +0000
-Message-Id: <20211109121631.26687-4-prabhakar.mahadev-lad.rj@bp.renesas.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20211109121631.26687-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
-References: <20211109121631.26687-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
+        Tue, 9 Nov 2021 07:20:06 -0500
+Received: by mail-il1-f199.google.com with SMTP id w6-20020a056e021a6600b0027553e5c4e9so10340596ilv.16
+        for <linux-kernel@vger.kernel.org>; Tue, 09 Nov 2021 04:17:20 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=aCoweEaOvgt71+0i7uxsWqNufLYUKzPDGNM1p0HMj7E=;
+        b=m2sLD7wD8rHuAStMQylaf/mjHa4vlvLdctG35GoydHQQCMFzL1/yKKU26PDoHgNcNs
+         Ctlu5fkipenvBuAL/2cIliL2kKton0IMI4hc3nNVs6Ia8zta/f65fpfR50+7R09n3eFo
+         uxuHvOuOz8Z17SE0IxhtnANaQQu6XYqNg9lzSeuN+XEGebhK/bnGXqeMDMiboGtzbHf3
+         vNpqM9Rone+ueQuKBnYL46MdzFNzDc9WrKIaE/nguGso/r0zUNSsd/aALMYD51QJwfLc
+         XcHcKZFS4utey0pY6KkqrdHBZ+Czx8hzDSapH4UJ+Yx8vK16DEiV4ivP4tkVNSP1RaEs
+         pS9A==
+X-Gm-Message-State: AOAM531wNlIcAv+RDP1rPH3dgOh6eZeJXPVsQdzr44fwgh8ZiBo6zV/Z
+        ki12DIswbRkqIab909Ts3E0XDg/s/YkcqFvjzCcMutl2nlX0
+X-Google-Smtp-Source: ABdhPJxHGqbMCdDPD99fI2rQ3B09+I0TS+iw5PhxMREKjUcnFu0aagRR+VHmZTddB2VF4YbOV6ZUNDwhZ8MzjNnidcIeCpqjHzAd
+MIME-Version: 1.0
+X-Received: by 2002:a05:6e02:178a:: with SMTP id y10mr4676101ilu.257.1636460240527;
+ Tue, 09 Nov 2021 04:17:20 -0800 (PST)
+Date:   Tue, 09 Nov 2021 04:17:20 -0800
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <00000000000053692705d05a17c1@google.com>
+Subject: [syzbot] WARNING in perf_pending_event
+From:   syzbot <syzbot+23843634c323e144fd0b@syzkaller.appspotmail.com>
+To:     acme@kernel.org, alexander.shishkin@linux.intel.com,
+        andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org,
+        daniel@iogearbox.net, john.fastabend@gmail.com, jolsa@redhat.com,
+        kafai@fb.com, kpsingh@kernel.org, linux-kernel@vger.kernel.org,
+        linux-perf-users@vger.kernel.org, mark.rutland@arm.com,
+        mingo@redhat.com, namhyung@kernel.org, netdev@vger.kernel.org,
+        peterz@infradead.org, songliubraving@fb.com,
+        syzkaller-bugs@googlegroups.com, yhs@fb.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On RZ/G2L SoC we need to explicitly deassert the reset line
-for the device to work, use this opportunity to deassert/assert
-reset line in sh-sci driver.
+Hello,
 
-This patch adds support to read the "resets" property (if available)
-from DT and perform deassert/assert when required.
+syzbot found the following issue on:
 
-Also, propagate the error to the caller of sci_parse_dt() instead of
-returning NULL in case of failure.
+HEAD commit:    85a90500f9a1 Merge tag 'io_uring-5.14-2021-08-07' of git:/..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=13c8aa81300000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=5ba4a97de189f896
+dashboard link: https://syzkaller.appspot.com/bug?extid=23843634c323e144fd0b
+compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.1
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=12ac8392300000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1039bce6300000
 
-Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-Reviewed-by: Biju Das <biju.das.jz@bp.renesas.com>
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+23843634c323e144fd0b@syzkaller.appspotmail.com
+
+------------[ cut here ]------------
+WARNING: CPU: 0 PID: 8449 at kernel/events/core.c:6407 perf_sigtrap kernel/events/core.c:6407 [inline]
+WARNING: CPU: 0 PID: 8449 at kernel/events/core.c:6407 perf_pending_event_disable kernel/events/core.c:6431 [inline]
+WARNING: CPU: 0 PID: 8449 at kernel/events/core.c:6407 perf_pending_event+0x4ba/0x560 kernel/events/core.c:6474
+Modules linked in:
+CPU: 0 PID: 8449 Comm: syz-executor996 Not tainted 5.14.0-rc4-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+RIP: 0010:perf_sigtrap kernel/events/core.c:6407 [inline]
+RIP: 0010:perf_pending_event_disable kernel/events/core.c:6431 [inline]
+RIP: 0010:perf_pending_event+0x4ba/0x560 kernel/events/core.c:6474
+Code: ff 4c 89 e7 e8 d7 78 27 00 e9 2f ff ff ff e8 ad 78 27 00 e9 3d fc ff ff 4c 89 ff e8 30 79 27 00 e9 fb fb ff ff e8 b6 ba e1 ff <0f> 0b e9 86 fd ff ff e8 ba 78 27 00 e9 7b fe ff ff 48 89 df e8 9d
+RSP: 0018:ffffc90000007f38 EFLAGS: 00010046
+RAX: 0000000080010001 RBX: ffff88802a04fc40 RCX: 0000000000000000
+RDX: ffff8880377e0040 RSI: ffffffff8193268a RDI: ffff888026467958
+RBP: 0000000000000002 R08: 0000000000000000 R09: 0000000000000020
+R10: ffffffff819322cb R11: 0000000000000000 R12: ffff8880377e0040
+R13: ffff888026467800 R14: ffff88802a04f800 R15: ffff88802a04fc30
+FS:  0000000000545300(0000) GS:ffff8880b9c00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00000000004d05c0 CR3: 000000003d54f000 CR4: 00000000001506f0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ <IRQ>
+ irq_work_single+0x120/0x1f0 kernel/irq_work.c:155
+ irq_work_run_list+0x91/0xc0 kernel/irq_work.c:177
+ irq_work_run+0x54/0xd0 kernel/irq_work.c:186
+ __sysvec_irq_work+0x95/0x3d0 arch/x86/kernel/irq_work.c:22
+ sysvec_irq_work+0x8e/0xc0 arch/x86/kernel/irq_work.c:17
+ </IRQ>
+ asm_sysvec_irq_work+0x12/0x20 arch/x86/include/asm/idtentry.h:664
+RIP: 0010:__raw_spin_unlock_irq include/linux/spinlock_api_smp.h:169 [inline]
+RIP: 0010:_raw_spin_unlock_irq+0x25/0x40 kernel/locking/spinlock.c:199
+Code: 0f 1f 44 00 00 55 48 8b 74 24 08 48 89 fd 48 83 c7 18 e8 3e 1a 2d f8 48 89 ef e8 e6 8f 2d f8 e8 21 cb 4d f8 fb bf 01 00 00 00 <e8> 36 6a 21 f8 65 8b 05 cf b0 d4 76 85 c0 74 02 5d c3 e8 2b 06 d3
+RSP: 0018:ffffc90001a17ee8 EFLAGS: 00000202
+RAX: 0000000000000315 RBX: 0000000000000000 RCX: 1ffffffff1ad8461
+RDX: 0000000000000000 RSI: 0000000000000001 RDI: 0000000000000001
+RBP: ffff888021b9cb40 R08: 0000000000000001 R09: 0000000000000001
+R10: ffffffff817b0a38 R11: 0000000000000000 R12: ffff888033f2f320
+R13: 0000000000000000 R14: ffff888021b9cb40 R15: ffff8880377e0040
+ spin_unlock_irq include/linux/spinlock.h:404 [inline]
+ do_group_exit+0x29a/0x310 kernel/exit.c:919
+ __do_sys_exit_group kernel/exit.c:933 [inline]
+ __se_sys_exit_group kernel/exit.c:931 [inline]
+ __x64_sys_exit_group+0x3a/0x50 kernel/exit.c:931
+ do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+ do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
+ entry_SYSCALL_64_after_hwframe+0x44/0xae
+RIP: 0033:0x444379
+Code: 00 49 c7 c0 b8 ff ff ff be e7 00 00 00 ba 3c 00 00 00 eb 12 0f 1f 44 00 00 89 d0 0f 05 48 3d 00 f0 ff ff 77 1c f4 89 f0 0f 05 <48> 3d 00 f0 ff ff 76 e7 f7 d8 64 41 89 00 eb df 0f 1f 80 00 00 00
+RSP: 002b:00007fffad23f4c8 EFLAGS: 00000246 ORIG_RAX: 00000000000000e7
+RAX: ffffffffffffffda RBX: 00000000004ca370 RCX: 0000000000444379
+RDX: 000000000000003c RSI: 00000000000000e7 RDI: 0000000000000000
+RBP: 0000000000000000 R08: ffffffffffffffb8 R09: 0000000000f0b5ff
+R10: 00007fffad23f550 R11: 0000000000000246 R12: 00000000004ca370
+R13: 0000000000000001 R14: 0000000000000000 R15: 0000000000000001
+
+
 ---
-v1->v2
-* deassert/assert reset line if available on all SoC's
-* Updated commit message
----
- drivers/tty/serial/sh-sci.c | 47 ++++++++++++++++++++++++++++++-------
- 1 file changed, 39 insertions(+), 8 deletions(-)
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-diff --git a/drivers/tty/serial/sh-sci.c b/drivers/tty/serial/sh-sci.c
-index 89ee43061d3a..7aced84d2f04 100644
---- a/drivers/tty/serial/sh-sci.c
-+++ b/drivers/tty/serial/sh-sci.c
-@@ -37,6 +37,7 @@
- #include <linux/of_device.h>
- #include <linux/platform_device.h>
- #include <linux/pm_runtime.h>
-+#include <linux/reset.h>
- #include <linux/scatterlist.h>
- #include <linux/serial.h>
- #include <linux/serial_sci.h>
-@@ -3203,23 +3204,53 @@ static const struct of_device_id of_sci_match[] = {
- };
- MODULE_DEVICE_TABLE(of, of_sci_match);
- 
-+static void sci_reset_control_assert(void *data)
-+{
-+	reset_control_assert(data);
-+}
-+
- static struct plat_sci_port *sci_parse_dt(struct platform_device *pdev,
- 					  unsigned int *dev_id)
- {
- 	struct device_node *np = pdev->dev.of_node;
-+	const struct of_device_id *of_id;
-+	struct reset_control *rstc;
- 	struct plat_sci_port *p;
- 	struct sci_port *sp;
- 	const void *data;
--	int id;
-+	int id, ret;
- 
- 	if (!IS_ENABLED(CONFIG_OF) || !np)
--		return NULL;
-+		return ERR_PTR(-EINVAL);
-+
-+	of_id = of_match_device(of_sci_match, &pdev->dev);
-+	if (!of_id)
-+		return ERR_PTR(-EINVAL);
- 
--	data = of_device_get_match_data(&pdev->dev);
-+	rstc = devm_reset_control_get_optional_exclusive(&pdev->dev, NULL);
-+	if (IS_ERR(rstc)) {
-+		dev_err(&pdev->dev, "failed to get reset ctrl %ld\n", PTR_ERR(rstc));
-+		return ERR_PTR(PTR_ERR(rstc));
-+	}
-+
-+	ret = reset_control_deassert(rstc);
-+	if (ret) {
-+		dev_err(&pdev->dev, "failed to deassert reset %d\n", ret);
-+		return ERR_PTR(ret);
-+	}
-+
-+	ret = devm_add_action_or_reset(&pdev->dev, sci_reset_control_assert, rstc);
-+	if (ret) {
-+		dev_err(&pdev->dev, "failed to register assert devm action, %d\n",
-+			ret);
-+		return ERR_PTR(ret);
-+	}
-+
-+	data = of_id->data;
- 
- 	p = devm_kzalloc(&pdev->dev, sizeof(struct plat_sci_port), GFP_KERNEL);
- 	if (!p)
--		return NULL;
-+		return ERR_PTR(-ENOMEM);
- 
- 	/* Get the line number from the aliases node. */
- 	id = of_alias_get_id(np, "serial");
-@@ -3227,11 +3258,11 @@ static struct plat_sci_port *sci_parse_dt(struct platform_device *pdev,
- 		id = ffz(sci_ports_in_use);
- 	if (id < 0) {
- 		dev_err(&pdev->dev, "failed to get alias id (%d)\n", id);
--		return NULL;
-+		return ERR_PTR(-EINVAL);
- 	}
- 	if (id >= ARRAY_SIZE(sci_ports)) {
- 		dev_err(&pdev->dev, "serial%d out of range\n", id);
--		return NULL;
-+		return ERR_PTR(-EINVAL);
- 	}
- 
- 	sp = &sci_ports[id];
-@@ -3318,8 +3349,8 @@ static int sci_probe(struct platform_device *dev)
- 
- 	if (dev->dev.of_node) {
- 		p = sci_parse_dt(dev, &dev_id);
--		if (p == NULL)
--			return -EINVAL;
-+		if (IS_ERR(p))
-+			return PTR_ERR(p);
- 	} else {
- 		p = dev->dev.platform_data;
- 		if (p == NULL) {
--- 
-2.17.1
-
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+syzbot can test patches for this issue, for details see:
+https://goo.gl/tpsmEJ#testing-patches
