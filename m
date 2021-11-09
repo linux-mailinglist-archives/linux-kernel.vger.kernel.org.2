@@ -2,108 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9BC5E44AD7B
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 13:24:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0350B44AD80
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 13:28:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235849AbhKIM0t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Nov 2021 07:26:49 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56848 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231250AbhKIM0q (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Nov 2021 07:26:46 -0500
-Received: from mail-lf1-x135.google.com (mail-lf1-x135.google.com [IPv6:2a00:1450:4864:20::135])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 302FDC061764
-        for <linux-kernel@vger.kernel.org>; Tue,  9 Nov 2021 04:24:00 -0800 (PST)
-Received: by mail-lf1-x135.google.com with SMTP id l22so17120516lfg.7
-        for <linux-kernel@vger.kernel.org>; Tue, 09 Nov 2021 04:24:00 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=message-id:date:mime-version:user-agent:subject:content-language:to
-         :cc:references:from:in-reply-to:content-transfer-encoding;
-        bh=vXpk74Kb+HqypbiuoeMbcColw+iui5mY4cGX3uLvtyg=;
-        b=pM9y+EnA6dFxkjBjibDgNq7RwHqcSlaIBmb42SOQkkEcourIUU95lpej9G5N7Vi+v9
-         vtFLAh/zDIlLHAIEpoWJF8xZ3+RePKK15zBtavQeOhXNFF57bsWu6TQz3fUa1JfeaLIj
-         S1HHNpF2dbu6BZP3e17564YpZ8/YFZ+DCbNc/1kJH53g4wpY/wqJyQK8X/HRVUvkCJBT
-         2O6NXCNVnpw7vh7JifGDjcKlzOcnt4Ii7ob0CKa+ixS5piMZ1P4LF1arR7CoY2WPGZAG
-         44IsVfjwIPbQXMZhziFkPGUGSH/eDyLxH/auAxDfBaJ10BhvKSc+nVPbgUjIPe87VjAB
-         pKgw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:in-reply-to
-         :content-transfer-encoding;
-        bh=vXpk74Kb+HqypbiuoeMbcColw+iui5mY4cGX3uLvtyg=;
-        b=j+AOYaZFRpwq4TbbzpahV/5pHzrXTCRL5JSqNZTjyRJIOG+945Kr/ASKsQng8gJzP7
-         AkfnDDZY5PoAdWFp+FzCcfBjsWJqNhBCFwBbGZSIMJtGA2uHZO5GvLDoy3E3cYgRLgWl
-         XLhvz6+VjSIESpteDmUMkEB9Ze8fzAMs2kXeo65cI0DBieDvs5sxFFnBa/NN31DrfnFG
-         XZpQ39DRT3GDma2VPlMFyDOYc4DMZWmnz6cy1tWUjGlB4qm5gBwsvPc7Mbw+hMUFBEQy
-         q8rJQcmrLXReNHGvuf6vlCeT8fu4c6Ajq4SsR5dJqBFih9eipxtSPJ96K86Hb7PyEtwH
-         RQ3A==
-X-Gm-Message-State: AOAM530M7DfR4L+HB3hW9wt71fskbwzq8RGdXbwMuHDKLHpY17OMFd+7
-        Hz4duj+HUAboTuPcp8VjWAa4tMXaOZQ=
-X-Google-Smtp-Source: ABdhPJxo78lvPjm+MZllqIslZuX5QE92EtaeTkPAIME1Qa4zuCS7c3Nz6MK+d8qQD1WH532C10R9Zw==
-X-Received: by 2002:ac2:5a46:: with SMTP id r6mr6890498lfn.358.1636460638567;
-        Tue, 09 Nov 2021 04:23:58 -0800 (PST)
-Received: from [192.168.1.11] ([94.103.224.112])
-        by smtp.gmail.com with ESMTPSA id g11sm2119563lfu.282.2021.11.09.04.23.57
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 09 Nov 2021 04:23:58 -0800 (PST)
-Message-ID: <b790e108-fa37-28bf-15c2-885ddb05572e@gmail.com>
-Date:   Tue, 9 Nov 2021 15:23:57 +0300
+        id S242080AbhKIMbk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Nov 2021 07:31:40 -0500
+Received: from ixit.cz ([94.230.151.217]:54452 "EHLO ixit.cz"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231250AbhKIMbj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Nov 2021 07:31:39 -0500
+Received: from [127.0.0.1] (37-48-50-181.nat.epc.tmcz.cz [37.48.50.181])
+        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by ixit.cz (Postfix) with ESMTPSA id BE6E520064;
+        Tue,  9 Nov 2021 13:28:50 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ixit.cz; s=dkim;
+        t=1636460931;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=/KTxYwpPq7QKcYnuyQGk0KK0u6IPgYbFhdr9d5r8Aqc=;
+        b=QhK8ZufLm8qirdnmNWtHrkyJM9HQwJgcPOQdznKkQ6ITURh3M4mHt2v/X067xI6NKrCepB
+        8FvB4Ves1xltpqQdHOymcejNB/GwxBZNfH9jilgKMygPVM+pPoIRicTlm0B+PCOL5Bp2wj
+        i54Q7l9/cGzMpEJFRzkYWyudv+KqHng=
+Date:   Tue, 09 Nov 2021 12:24:36 +0000
+From:   David Heidelberg <david@ixit.cz>
+To:     Rob Herring <robh@kernel.org>
+CC:     Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>, - <kernel@puri.sm>,
+        ~okias/devicetree@lists.sr.ht, phone-devel@vger.kernel.org,
+        alsa-devel@alsa-project.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] dt-bindings: sound: gtm601: convert to YAML
+In-Reply-To: <YYmQ7OCIIb2AbnjY@robh.at.kernel.org>
+References: <20211030121753.50191-1-david@ixit.cz> <YYmQ7OCIIb2AbnjY@robh.at.kernel.org>
+Message-ID: <A1DBDD90-C79D-4455-9AC7-92C9DFB0F298@ixit.cz>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.2.1
-Subject: Re: [PATCH] staging: r8188eu: remove unneeded variable
-Content-Language: en-US
-To:     Dan Carpenter <dan.carpenter@oracle.com>
-Cc:     cgel.zte@gmail.com, Larry.Finger@lwfinger.net,
-        phil@philpotter.co.uk, gregkh@linuxfoundation.org,
-        straube.linux@gmail.com, linux-staging@lists.linux.dev,
-        linux-kernel@vger.kernel.org,
-        Changcheng Deng <deng.changcheng@zte.com.cn>,
-        Zeal Robot <zealci@zte.com.cn>
-References: <20211109115307.133100-1-deng.changcheng@zte.com.cn>
- <c2c36a95-be34-bcaf-0224-a513e33a902e@gmail.com>
- <20211109121823.GJ2001@kadam>
-From:   Pavel Skripkin <paskripkin@gmail.com>
-In-Reply-To: <20211109121823.GJ2001@kadam>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain;
+ charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/9/21 15:18, Dan Carpenter wrote:
->> >   static int _rtw_init_evt_priv(struct evt_priv *pevtpriv)
->> >   {
->> > -	int res = _SUCCESS;
->> > -
->> >   	/* allocate DMA-able/Non-Page memory for cmd_buf and rsp_buf */
->> >   	atomic_set(&pevtpriv->event_seq, 0);
->> >   	pevtpriv->evt_done_cnt = 0;
->> > @@ -72,7 +70,7 @@ static int _rtw_init_evt_priv(struct evt_priv *pevtpriv)
->> >   	pevtpriv->c2h_wk_alive = false;
->> >   	pevtpriv->c2h_queue = rtw_cbuf_alloc(C2H_QUEUE_MAX_LEN + 1);
->> > -	return res;
->> > +	return _SUCCESS;
->> >   }
->> 
->> Shouldn't it return just void then?
->> 
-> 
-> There is only one caller.  It should be folded into the caller and
-> deleted.  Then the caller could be made void.
-> 
-
-Ah, I see. I've overlooked, that this function name starts with _ and 
-the wrapper just does `return _rtw_init_evt_priv();`. Interesting 
-approach...
-
-I agree, that _rtw_init_evt_priv should be just renamed to 
-rtw_init_evt_priv() and the old wrapper should be just removed
+I agree, I'll adapt Librem 5 dts to follow original convention and resend=
+=2E
 
 
+-------- P=C5=AFvodn=C3=AD zpr=C3=A1va --------
+Odes=C3=ADlatel: Rob Herring <robh@kernel=2Eorg>
+Odesl=C3=A1no: 8=2E listopadu 2021 21:04:44 UTC
+Komu: David Heidelberg <david@ixit=2Ecz>
+Kopie: Liam Girdwood <lgirdwood@gmail=2Ecom>, Mark Brown <broonie@kernel=
+=2Eorg>, - <kernel@puri=2Esm>, ~okias/devicetree@lists=2Esr=2Eht, phone-dev=
+el@vger=2Ekernel=2Eorg, alsa-devel@alsa-project=2Eorg, devicetree@vger=2Eke=
+rnel=2Eorg, linux-kernel@vger=2Ekernel=2Eorg
+P=C5=99edm=C4=9Bt: Re: [PATCH v2] dt-bindings: sound: gtm601: convert to Y=
+AML
 
-With regards,
-Pavel Skripkin
+On Sat, Oct 30, 2021 at 02:17:52PM +0200, David Heidelberg wrote:
+> Convert GTM601 binding to the YAML format=2E
+>=20
+> Signed-off-by: David Heidelberg <david@ixit=2Ecz>
+> ---
+> v2:
+>  - add #sound-dai-cells
+>  - put kernel@puri=2Esm into maintainers
+>=20
+>  =2E=2E=2E/devicetree/bindings/sound/gtm601=2Etxt      | 19 ----------
+>  =2E=2E=2E/devicetree/bindings/sound/gtm601=2Eyaml     | 36 ++++++++++++=
++++++++
+>  2 files changed, 36 insertions(+), 19 deletions(-)
+>  delete mode 100644 Documentation/devicetree/bindings/sound/gtm601=2Etxt
+>  create mode 100644 Documentation/devicetree/bindings/sound/gtm601=2Eyam=
+l
+>=20
+> diff --git a/Documentation/devicetree/bindings/sound/gtm601=2Etxt b/Docu=
+mentation/devicetree/bindings/sound/gtm601=2Etxt
+> deleted file mode 100644
+> index efa32a486c4a=2E=2E000000000000
+> --- a/Documentation/devicetree/bindings/sound/gtm601=2Etxt
+> +++ /dev/null
+> @@ -1,19 +0,0 @@
+> -GTM601 UMTS modem audio interface CODEC
+> -
+> -This device has no configuration interface=2E The sample rate and chann=
+els are
+> -based on the compatible string
+> -	"option,gtm601" =3D 8kHz mono
+> -	"broadmobi,bm818" =3D 48KHz stereo
+> -
+> -Required properties:
+> -
+> -  - compatible : one of
+> -	"option,gtm601"
+> -	"broadmobi,bm818"
+> -
+> -
+> -Example:
+> -
+> -codec: gtm601_codec {
+> -	compatible =3D "option,gtm601";
+> -};
+> diff --git a/Documentation/devicetree/bindings/sound/gtm601=2Eyaml b/Doc=
+umentation/devicetree/bindings/sound/gtm601=2Eyaml
+> new file mode 100644
+> index 000000000000=2E=2Ee81a6aa75522
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/sound/gtm601=2Eyaml
+> @@ -0,0 +1,36 @@
+> +# SPDX-License-Identifier: GPL-2=2E0-only OR BSD-2-Clause
+> +%YAML 1=2E2
+> +---
+> +$id: http://devicetree=2Eorg/schemas/sound/gtm601=2Eyaml#
+> +$schema: http://devicetree=2Eorg/meta-schemas/core=2Eyaml#
+> +
+> +title: GTM601 UMTS modem audio interface CODEC
+> +
+> +maintainers:
+> +  - kernel@puri=2Esm
+> +
+> +description: >
+> +  This device has no configuration interface=2E The sample rate and cha=
+nnels are
+> +  based on the compatible string
+> +
+> +properties:
+> +  compatible:
+> +    oneOf:
+> +      - items:
+> +          - const: broadmobi,bm818
+> +          - const: option,gtm601
+
+This does not match what the binding originally said=2E And generally this=
+=20
+combined with the one below should never be valid=2E
+
+> +      - items:
+> +          - enum:
+> +              - broadmobi,bm818  # 48 kHz stereo
+> +              - option,gtm601  # 8 kHz mono
+> +
+> +  '#sound-dai-cells':
+> +    const: 0
+> +
+> +additionalProperties: false
+> +
+> +examples:
+> +  - |
+> +    gtm601_codec {
+> +        compatible =3D "option,gtm601";
+> +    };
+> --=20
+> 2=2E33=2E0
+>=20
+>=20
