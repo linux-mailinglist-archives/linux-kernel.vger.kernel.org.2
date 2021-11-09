@@ -2,102 +2,474 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A92F644B4C4
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 22:30:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C0F4844B4D8
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 22:38:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245172AbhKIVc5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Nov 2021 16:32:57 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39936 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239398AbhKIVc4 (ORCPT
+        id S239105AbhKIVl0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Nov 2021 16:41:26 -0500
+Received: from so254-9.mailgun.net ([198.61.254.9]:42597 "EHLO
+        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231961AbhKIVlZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Nov 2021 16:32:56 -0500
-Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D66AC061764;
-        Tue,  9 Nov 2021 13:30:09 -0800 (PST)
-Received: from zn.tnic (p200300ec2f18aa00aec912b1b11fde1a.dip0.t-ipconnect.de [IPv6:2003:ec:2f18:aa00:aec9:12b1:b11f:de1a])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        Tue, 9 Nov 2021 16:41:25 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1636493918; h=Message-Id: Date: Subject: Cc: To: From:
+ Sender; bh=8jb+Js8H1B+pf9Acm4tcezpUJL+fp0N5InPhDl3IdU8=; b=FuI7YW0Y59RQlBc8Fn9rjodmOnncTkkTL035cXhwE+UpqrjJaiXHo3nco1Sc8dHTE7gg2RQl
+ QV4nKeYhntViNNsYGcs2omvOl5U2JAF2sx8UnO/7kW9dKp2559XJ4niqfEuxf1THUwSU8vET
+ FHrmKmkSiBs9RR1w6K51gAvQErk=
+X-Mailgun-Sending-Ip: 198.61.254.9
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n01.prod.us-west-2.postgun.com with SMTP id
+ 618aea4fa06361a254a94e40 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 09 Nov 2021 21:38:23
+ GMT
+Sender: quic_khsieh=quicinc.com@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 695DEC43617; Tue,  9 Nov 2021 21:38:23 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+Received: from khsieh-linux1.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id EE48F1EC0390;
-        Tue,  9 Nov 2021 22:30:07 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1636493408;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=Na1GO8CHHfkH7PTogxxL39ysdX5U41PDDHRMkhNbsVk=;
-        b=NDKwOXu5H+BVEopZN1+LF2gcd+5OR1YGOFBcHcPb6s9mu0b2s6wJm547IswbKTMjd0agCH
-        nnP8dIu0efCcUUshzNOTmvlr9fliZVwgJ8ds1CBDkVAXU2Vb3T7SCLwG3MySfJ6P18HKhQ
-        Z9fYWCpXrW13TCkRPuzYxl2RkTgLR0w=
-Date:   Tue, 9 Nov 2021 22:30:01 +0100
-From:   Borislav Petkov <bp@alien8.de>
-To:     "Luck, Tony" <tony.luck@intel.com>
-Cc:     Zhaolong Zhang <zhangzl2013@126.com>,
-        "x86@kernel.org" <x86@kernel.org>,
-        "linux-edac@vger.kernel.org" <linux-edac@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "Paul E . McKenney" <paulmck@kernel.org>
-Subject: Re: [PATCH] x86/mce: drop cpu_missing since we have more capable
- mce_missing_cpus
-Message-ID: <YYroWYUVJEVKqy+7@zn.tnic>
-References: <4d526023.3cde.17cff097bab.Coremail.zhangzl2013@126.com>
- <YYj8ir/UYnG/zVK4@zn.tnic>
- <4a77f582.4434.17cff975224.Coremail.zhangzl2013@126.com>
- <776fad3d.3369.17d03d2c2ba.Coremail.zhangzl2013@126.com>
- <YYo6VwPZLCWcP3Bl@zn.tnic>
- <d66e53d9d8cf4dabb2daade220308d7a@intel.com>
- <YYrQe7bYe+OBzZ4B@zn.tnic>
- <84e2622e4300490587793d2509f7b3ff@intel.com>
- <YYrYUpM7c5Z+nFsv@zn.tnic>
- <42d1d11d63f3453db61fad58a91e2ba5@intel.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <42d1d11d63f3453db61fad58a91e2ba5@intel.com>
+        (Authenticated sender: khsieh)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 82110C4338F;
+        Tue,  9 Nov 2021 21:38:19 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 smtp.codeaurora.org 82110C4338F
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=fail (p=none dis=none) header.from=quicinc.com
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=quicinc.com
+From:   Kuogee Hsieh <quic_khsieh@quicinc.com>
+To:     robdclark@gmail.com, sean@poorly.run, swboyd@chromium.org,
+        vkoul@kernel.org, daniel@ffwll.ch, airlied@linux.ie,
+        agross@kernel.org, dmitry.baryshkov@linaro.org,
+        bjorn.andersson@linaro.org
+Cc:     quic_abhinavk@quicinc.com, aravindh@codeaurora.org,
+        quic_khsieh@quicinc.com, freedreno@lists.freedesktop.org,
+        dri-devel@lists.freedesktop.org, linux-arm-msm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Kuogee Hsieh <khsieh@codeaurora.org>
+Subject: [PATCH v4] drm/msm/dp: do not initialize phy until plugin interrupt received
+Date:   Tue,  9 Nov 2021 13:38:13 -0800
+Message-Id: <1636493893-7600-1-git-send-email-quic_khsieh@quicinc.com>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 09, 2021 at 08:44:41PM +0000, Luck, Tony wrote:
-> > what do we do with the sysfs knob? It probably is an ABI:
-> >
-> > /sys/devices/system/machinecheck/machinecheck1/tolerant
-> > /sys/devices/system/machinecheck/machinecheck2/tolerant
-> 
-> $ git grep tolerant -- Documentation/ABI/
-> $
-> 
-> An undocumented ABI! Well, not documented with all the other sysfs bits.
-> 
-> It does appear in:
-> Documentation/x86/x86_64/machinecheck.rst
+From: Kuogee Hsieh <khsieh@codeaurora.org>
 
-Yeah, we have some spreading of documentation which is not necessarily
-helpful.
+Current DP drivers have regulators, clocks, irq and phy are grouped
+together within a function and executed not in a symmetric manner.
+This increase difficulty of code maintenance and limited code scalability.
+This patch divided the driver life cycle of operation into four states,
+resume (including booting up), dongle plugin, dongle unplugged and suspend.
+Regulators, core clocks and irq are grouped together and enabled at resume
+(or booting up) so that the DP controller is armed and ready to receive HPD
+plugin interrupts. HPD plugin interrupt is generated when a dongle plugs
+into DUT (device under test). Once HPD plugin interrupt is received, DP
+controller will initialize phy so that dpcd read/write will function and
+following link training can be proceeded successfully. DP phy will be
+disabled after main link is teared down at end of unplugged HPD interrupt
+handle triggered by dongle unplugged out of DUT. Finally regulators, code
+clocks and irq are disabled at corresponding suspension.
 
-> Of course, like a lot of documentation, it isn't accurate. It wasn't
-> updated to describe what happens with recoverable errors. Final
-> paragraph says:
->
->         Note this only makes a difference if the CPU allows recovery
->         from a machine check exception. Current x86 CPUs generally do
->         not.
->
-> Recovery was first introduced in the Nehalem generation which
-> ark.intel.com says was launched in Q1'2010. So over a decade.
->
-> Choices: 1) Leave the file there, but remove the code that uses the
-> value 2) Delete the file too
->
-> Option 1 doesn't break any scripts that look for the file, but may
-> make people shout louder when they find it no longer does anything.
->
-> Option 2 is the more honest approach.
+Changes in V2:
+-- removed unnecessary dp_ctrl NULL check
+-- removed unnecessary phy init_count and power_count DRM_DEBUG_DP logs
+-- remove flip parameter out of dp_ctrl_irq_enable()
+-- add fixes tag
 
-Ack, we can try 2 and see who cries.
+Changes in V3:
+-- call dp_display_host_phy_init() instead of dp_ctrl_phy_init() at
+	dp_display_host_init() for eDP
 
+Changes in V4:
+-- rewording commit text to match this commit changes
+
+Fixes: e91e3065a806 ("drm/msm/dp: Add DP compliance tests on Snapdragon Chipsets")
+
+Signed-off-by: Kuogee Hsieh <quic_khsieh@quicinc.com>
+---
+ drivers/gpu/drm/msm/dp/dp_ctrl.c    | 87 ++++++++++++++++---------------------
+ drivers/gpu/drm/msm/dp/dp_ctrl.h    |  9 ++--
+ drivers/gpu/drm/msm/dp/dp_display.c | 83 ++++++++++++++++++++++++++---------
+ 3 files changed, 105 insertions(+), 74 deletions(-)
+
+diff --git a/drivers/gpu/drm/msm/dp/dp_ctrl.c b/drivers/gpu/drm/msm/dp/dp_ctrl.c
+index 7ec155d..4788e8c 100644
+--- a/drivers/gpu/drm/msm/dp/dp_ctrl.c
++++ b/drivers/gpu/drm/msm/dp/dp_ctrl.c
+@@ -1364,60 +1364,54 @@ static int dp_ctrl_enable_stream_clocks(struct dp_ctrl_private *ctrl)
+ 	return ret;
+ }
+ 
+-int dp_ctrl_host_init(struct dp_ctrl *dp_ctrl, bool flip, bool reset)
++void dp_ctrl_irq_enable(struct dp_ctrl *dp_ctrl)
++{
++	struct dp_ctrl_private *ctrl;
++
++	ctrl = container_of(dp_ctrl, struct dp_ctrl_private, dp_ctrl);
++
++	dp_catalog_ctrl_reset(ctrl->catalog);
++
++	dp_catalog_ctrl_enable_irq(ctrl->catalog, true);
++}
++
++void dp_ctrl_irq_disable(struct dp_ctrl *dp_ctrl)
++{
++	struct dp_ctrl_private *ctrl;
++
++	ctrl = container_of(dp_ctrl, struct dp_ctrl_private, dp_ctrl);
++
++	dp_catalog_ctrl_reset(ctrl->catalog);
++
++	dp_catalog_ctrl_enable_irq(ctrl->catalog, false);
++}
++
++void dp_ctrl_phy_init(struct dp_ctrl *dp_ctrl)
+ {
+ 	struct dp_ctrl_private *ctrl;
+ 	struct dp_io *dp_io;
+ 	struct phy *phy;
+ 
+-	if (!dp_ctrl) {
+-		DRM_ERROR("Invalid input data\n");
+-		return -EINVAL;
+-	}
+-
+ 	ctrl = container_of(dp_ctrl, struct dp_ctrl_private, dp_ctrl);
+ 	dp_io = &ctrl->parser->io;
+ 	phy = dp_io->phy;
+ 
+-	ctrl->dp_ctrl.orientation = flip;
+-
+-	if (reset)
+-		dp_catalog_ctrl_reset(ctrl->catalog);
+-
+-	DRM_DEBUG_DP("flip=%d\n", flip);
+ 	dp_catalog_ctrl_phy_reset(ctrl->catalog);
+ 	phy_init(phy);
+-	dp_catalog_ctrl_enable_irq(ctrl->catalog, true);
+-
+-	return 0;
+ }
+ 
+-/**
+- * dp_ctrl_host_deinit() - Uninitialize DP controller
+- * @dp_ctrl: Display Port Driver data
+- *
+- * Perform required steps to uninitialize DP controller
+- * and its resources.
+- */
+-void dp_ctrl_host_deinit(struct dp_ctrl *dp_ctrl)
++void dp_ctrl_phy_exit(struct dp_ctrl *dp_ctrl)
+ {
+ 	struct dp_ctrl_private *ctrl;
+ 	struct dp_io *dp_io;
+ 	struct phy *phy;
+ 
+-	if (!dp_ctrl) {
+-		DRM_ERROR("Invalid input data\n");
+-		return;
+-	}
+-
+ 	ctrl = container_of(dp_ctrl, struct dp_ctrl_private, dp_ctrl);
+ 	dp_io = &ctrl->parser->io;
+ 	phy = dp_io->phy;
+ 
+-	dp_catalog_ctrl_enable_irq(ctrl->catalog, false);
++	dp_catalog_ctrl_phy_reset(ctrl->catalog);
+ 	phy_exit(phy);
+-
+-	DRM_DEBUG_DP("Host deinitialized successfully\n");
+ }
+ 
+ static bool dp_ctrl_use_fixed_nvid(struct dp_ctrl_private *ctrl)
+@@ -1895,8 +1889,14 @@ int dp_ctrl_off_link_stream(struct dp_ctrl *dp_ctrl)
+ 		return ret;
+ 	}
+ 
++	DRM_DEBUG_DP("Before, phy=%x init_count=%d power_on=%d\n",
++		(u32)(uintptr_t)phy, phy->init_count, phy->power_count);
++
+ 	phy_power_off(phy);
+ 
++	DRM_DEBUG_DP("After, phy=%x init_count=%d power_on=%d\n",
++		(u32)(uintptr_t)phy, phy->init_count, phy->power_count);
++
+ 	/* aux channel down, reinit phy */
+ 	phy_exit(phy);
+ 	phy_init(phy);
+@@ -1905,23 +1905,6 @@ int dp_ctrl_off_link_stream(struct dp_ctrl *dp_ctrl)
+ 	return ret;
+ }
+ 
+-void dp_ctrl_off_phy(struct dp_ctrl *dp_ctrl)
+-{
+-	struct dp_ctrl_private *ctrl;
+-	struct dp_io *dp_io;
+-	struct phy *phy;
+-
+-	ctrl = container_of(dp_ctrl, struct dp_ctrl_private, dp_ctrl);
+-	dp_io = &ctrl->parser->io;
+-	phy = dp_io->phy;
+-
+-	dp_catalog_ctrl_reset(ctrl->catalog);
+-
+-	phy_exit(phy);
+-
+-	DRM_DEBUG_DP("DP off phy done\n");
+-}
+-
+ int dp_ctrl_off(struct dp_ctrl *dp_ctrl)
+ {
+ 	struct dp_ctrl_private *ctrl;
+@@ -1949,10 +1932,14 @@ int dp_ctrl_off(struct dp_ctrl *dp_ctrl)
+ 		DRM_ERROR("Failed to disable link clocks. ret=%d\n", ret);
+ 	}
+ 
++	DRM_DEBUG_DP("Before, phy=%x init_count=%d power_on=%d\n",
++		(u32)(uintptr_t)phy, phy->init_count, phy->power_count);
++
+ 	phy_power_off(phy);
+-	phy_exit(phy);
+ 
+-	DRM_DEBUG_DP("DP off done\n");
++	DRM_DEBUG_DP("After, phy=%x init_count=%d power_on=%d\n",
++		(u32)(uintptr_t)phy, phy->init_count, phy->power_count);
++
+ 	return ret;
+ }
+ 
+diff --git a/drivers/gpu/drm/msm/dp/dp_ctrl.h b/drivers/gpu/drm/msm/dp/dp_ctrl.h
+index 2363a2d..30f9414 100644
+--- a/drivers/gpu/drm/msm/dp/dp_ctrl.h
++++ b/drivers/gpu/drm/msm/dp/dp_ctrl.h
+@@ -19,12 +19,9 @@ struct dp_ctrl {
+ 	u32 pixel_rate;
+ };
+ 
+-int dp_ctrl_host_init(struct dp_ctrl *dp_ctrl, bool flip, bool reset);
+-void dp_ctrl_host_deinit(struct dp_ctrl *dp_ctrl);
+ int dp_ctrl_on_link(struct dp_ctrl *dp_ctrl);
+ int dp_ctrl_on_stream(struct dp_ctrl *dp_ctrl);
+ int dp_ctrl_off_link_stream(struct dp_ctrl *dp_ctrl);
+-void dp_ctrl_off_phy(struct dp_ctrl *dp_ctrl);
+ int dp_ctrl_off(struct dp_ctrl *dp_ctrl);
+ void dp_ctrl_push_idle(struct dp_ctrl *dp_ctrl);
+ void dp_ctrl_isr(struct dp_ctrl *dp_ctrl);
+@@ -34,4 +31,10 @@ struct dp_ctrl *dp_ctrl_get(struct device *dev, struct dp_link *link,
+ 			struct dp_power *power, struct dp_catalog *catalog,
+ 			struct dp_parser *parser);
+ 
++void dp_ctrl_irq_enable(struct dp_ctrl *dp_ctrl);
++void dp_ctrl_irq_disable(struct dp_ctrl *dp_ctrl);
++void dp_ctrl_phy_init(struct dp_ctrl *dp_ctrl);
++void dp_ctrl_phy_exit(struct dp_ctrl *dp_ctrl);
++void dp_ctrl_irq_phy_exit(struct dp_ctrl *dp_ctrl);
++
+ #endif /* _DP_CTRL_H_ */
+diff --git a/drivers/gpu/drm/msm/dp/dp_display.c b/drivers/gpu/drm/msm/dp/dp_display.c
+index e41dd40..2f113ff 100644
+--- a/drivers/gpu/drm/msm/dp/dp_display.c
++++ b/drivers/gpu/drm/msm/dp/dp_display.c
+@@ -84,6 +84,7 @@ struct dp_display_private {
+ 
+ 	/* state variables */
+ 	bool core_initialized;
++	bool phy_initialized;
+ 	bool hpd_irq_on;
+ 	bool audio_supported;
+ 
+@@ -387,7 +388,29 @@ static int dp_display_process_hpd_high(struct dp_display_private *dp)
+ 	return rc;
+ }
+ 
+-static void dp_display_host_init(struct dp_display_private *dp, int reset)
++static void dp_display_host_phy_init(struct dp_display_private *dp)
++{
++	DRM_DEBUG_DP("core_init=%d phy_init=%d\n",
++			dp->core_initialized, dp->phy_initialized);
++
++	if (!dp->phy_initialized) {
++		dp_ctrl_phy_init(dp->ctrl);
++		dp->phy_initialized = true;
++	}
++}
++
++static void dp_display_host_phy_exit(struct dp_display_private *dp)
++{
++	DRM_DEBUG_DP("core_init=%d phy_init=%d\n",
++			dp->core_initialized, dp->phy_initialized);
++
++	if (dp->phy_initialized) {
++		dp_ctrl_phy_exit(dp->ctrl);
++		dp->phy_initialized = false;
++	}
++}
++
++static void dp_display_host_init(struct dp_display_private *dp)
+ {
+ 	bool flip = false;
+ 
+@@ -400,8 +423,16 @@ static void dp_display_host_init(struct dp_display_private *dp, int reset)
+ 	if (dp->usbpd->orientation == ORIENTATION_CC2)
+ 		flip = true;
+ 
+-	dp_power_init(dp->power, flip);
+-	dp_ctrl_host_init(dp->ctrl, flip, reset);
++	dp_power_init(dp->power, false);
++	dp_ctrl_irq_enable(dp->ctrl);
++
++	/*
++	 * eDP is the embedded primary display and has its own phy
++	 * initialize phy immediately
++	 */
++	if (dp->dp_display.connector_type == DRM_MODE_CONNECTOR_eDP)
++		dp_display_host_phy_init(dp);
++
+ 	dp_aux_init(dp->aux);
+ 	dp->core_initialized = true;
+ }
+@@ -413,7 +444,7 @@ static void dp_display_host_deinit(struct dp_display_private *dp)
+ 		return;
+ 	}
+ 
+-	dp_ctrl_host_deinit(dp->ctrl);
++	dp_ctrl_irq_disable(dp->ctrl);
+ 	dp_aux_deinit(dp->aux);
+ 	dp_power_deinit(dp->power);
+ 
+@@ -424,7 +455,7 @@ static int dp_display_usbpd_configure_cb(struct device *dev)
+ {
+ 	struct dp_display_private *dp = dev_get_dp_display_private(dev);
+ 
+-	dp_display_host_init(dp, true);
++	dp_display_host_phy_init(dp);
+ 
+ 	return dp_display_process_hpd_high(dp);
+ }
+@@ -551,7 +582,7 @@ static int dp_hpd_plug_handle(struct dp_display_private *dp, u32 data)
+ 		dp->hpd_state = ST_DISCONNECTED;
+ 
+ 		if (ret == -ECONNRESET) { /* cable unplugged */
+-			dp->core_initialized = false;
++			dp->phy_initialized = false;
+ 		}
+ 
+ 	} else {
+@@ -623,9 +654,8 @@ static int dp_hpd_unplug_handle(struct dp_display_private *dp, u32 data)
+ 	if (state == ST_DISCONNECTED) {
+ 		/* triggered by irq_hdp with sink_count = 0 */
+ 		if (dp->link->sink_count == 0) {
+-			dp_ctrl_off_phy(dp->ctrl);
++			dp_display_host_phy_exit(dp);
+ 			hpd->hpd_high = 0;
+-			dp->core_initialized = false;
+ 		}
+ 		mutex_unlock(&dp->event_mutex);
+ 		return 0;
+@@ -716,7 +746,7 @@ static int dp_irq_hpd_handle(struct dp_display_private *dp, u32 data)
+ 
+ 	ret = dp_display_usbpd_attention_cb(&dp->pdev->dev);
+ 	if (ret == -ECONNRESET) { /* cable unplugged */
+-		dp->core_initialized = false;
++		dp->phy_initialized = false;
+ 	}
+ 	DRM_DEBUG_DP("hpd_state=%d\n", state);
+ 
+@@ -918,12 +948,19 @@ static int dp_display_disable(struct dp_display_private *dp, u32 data)
+ 
+ 	dp_display->audio_enabled = false;
+ 
+-	/* triggered by irq_hpd with sink_count = 0 */
+ 	if (dp->link->sink_count == 0) {
++		/*
++		 * irq_hpd with sink_count = 0
++		 * hdmi unplugged out of dongle
++		 */
+ 		dp_ctrl_off_link_stream(dp->ctrl);
+ 	} else {
++		/*
++		 * unplugged interrupt
++		 * dongle unplugged out of DUT
++		 */
+ 		dp_ctrl_off(dp->ctrl);
+-		dp->core_initialized = false;
++		dp_display_host_phy_exit(dp);
+ 	}
+ 
+ 	dp_power_panel_on(dp->power, false);
+@@ -1059,7 +1096,7 @@ void msm_dp_snapshot(struct msm_disp_state *disp_state, struct msm_dp *dp)
+ static void dp_display_config_hpd(struct dp_display_private *dp)
+ {
+ 
+-	dp_display_host_init(dp, true);
++	dp_display_host_init(dp);
+ 	dp_catalog_ctrl_hpd_config(dp->catalog);
+ 
+ 	/* Enable interrupt first time
+@@ -1338,20 +1375,22 @@ static int dp_pm_resume(struct device *dev)
+ 	dp->hpd_state = ST_DISCONNECTED;
+ 
+ 	/* turn on dp ctrl/phy */
+-	dp_display_host_init(dp, true);
++	dp_display_host_init(dp);
+ 
+ 	dp_catalog_ctrl_hpd_config(dp->catalog);
+ 
+-	/*
+-	 * set sink to normal operation mode -- D0
+-	 * before dpcd read
+-	 */
+-	dp_link_psm_config(dp->link, &dp->panel->link_info, false);
+-
+ 	if (dp_catalog_link_is_connected(dp->catalog)) {
++		/*
++		 * set sink to normal operation mode -- D0
++		 * before dpcd read
++		 */
++		dp_display_host_phy_init(dp);
++		dp_link_psm_config(dp->link, &dp->panel->link_info, false);
+ 		sink_count = drm_dp_read_sink_count(dp->aux);
+ 		if (sink_count < 0)
+ 			sink_count = 0;
++
++		dp_display_host_phy_exit(dp);
+ 	}
+ 
+ 	dp->link->sink_count = sink_count;
+@@ -1399,6 +1438,8 @@ static int dp_pm_suspend(struct device *dev)
+ 		dp_display_host_deinit(dp);
+ 	}
+ 
++	dp_display_host_phy_exit(dp);
++
+ 	dp->hpd_state = ST_SUSPENDED;
+ 
+ 	/* host_init will be called at pm_resume */
+@@ -1473,7 +1514,7 @@ void msm_dp_irq_postinstall(struct msm_dp *dp_display)
+ 		enable_irq(dp->irq);
+ 		dp_hpd_connect(dp->usbpd, true);
+ 	} else {
+-		dp_add_event(dp, EV_HPD_INIT_SETUP, 0, dp->id * 10);
++		dp_add_event(dp, EV_HPD_INIT_SETUP, 0, 0);
+ 	}
+ }
+ 
+@@ -1567,7 +1608,7 @@ int msm_dp_display_enable(struct msm_dp *dp, struct drm_encoder *encoder)
+ 	state =  dp_display->hpd_state;
+ 
+ 	if (state == ST_DISPLAY_OFF)
+-		dp_display_host_init(dp_display, true);
++		dp_display_host_phy_init(dp_display);
+ 
+ 	dp_display_enable(dp_display, 0);
+ 
 -- 
-Regards/Gruss,
-    Boris.
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+a Linux Foundation Collaborative Project
 
-https://people.kernel.org/tglx/notes-about-netiquette
