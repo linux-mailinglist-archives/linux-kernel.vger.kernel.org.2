@@ -2,108 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CFEF744B32E
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 20:26:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 68D5644B330
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 20:26:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243197AbhKIT3D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Nov 2021 14:29:03 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40056 "EHLO
+        id S243216AbhKIT3Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Nov 2021 14:29:25 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40152 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242627AbhKIT3B (ORCPT
+        with ESMTP id S243202AbhKIT3X (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Nov 2021 14:29:01 -0500
-Received: from mail-lf1-x12c.google.com (mail-lf1-x12c.google.com [IPv6:2a00:1450:4864:20::12c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 196B3C061764
-        for <linux-kernel@vger.kernel.org>; Tue,  9 Nov 2021 11:26:15 -0800 (PST)
-Received: by mail-lf1-x12c.google.com with SMTP id o18so46749237lfu.13
-        for <linux-kernel@vger.kernel.org>; Tue, 09 Nov 2021 11:26:15 -0800 (PST)
+        Tue, 9 Nov 2021 14:29:23 -0500
+Received: from mail-ed1-x536.google.com (mail-ed1-x536.google.com [IPv6:2a00:1450:4864:20::536])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 08CB5C061766
+        for <linux-kernel@vger.kernel.org>; Tue,  9 Nov 2021 11:26:37 -0800 (PST)
+Received: by mail-ed1-x536.google.com with SMTP id o8so814321edc.3
+        for <linux-kernel@vger.kernel.org>; Tue, 09 Nov 2021 11:26:36 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=9U1fcZswaVveyNe1fznYM+D+TPyYVuPdJculmvVq/ks=;
-        b=WnLDcW0Fg0r4DQNLTHhwsf9sb6bRjMerXAEkruLL3RitqhgJTmHfIu+eId72nJURnt
-         aZW1NW+dWuRun2G65OjX5DQCOqqdN6Nqyf315yGXa66jdC5gm1OSn2Uyz0oy4DnTwng8
-         0nsrekf24rf5PFhq17WrzpOSfX6mwAlrOsRzMUUQlXHFXcp+56wADP9R6hsqdR1m1bQA
-         wDvi2/6mjXqtTZLV5VOWITJmI7D82vVHSzIs7uKrIu25seiYyiUrzYJBThcvxrhsJZIR
-         Eac2EJI/gK3R/LJsCS+pHBBkNzhP4j9AUXWYUHmHvYPIxX3nwHLGDAp9wRZaLLscspAq
-         SaiQ==
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=ei0IjmYjF3Cz9j83zRSEUli+MBWkuUhizQs40K0x/A0=;
+        b=jGcnUHEBsbodZFjwpoerQJ8EjsqCv3BcE+rQKXLFvhGfEL5lR0Zp2ogTeibupQhGvj
+         CVqSXfL3y1szo+7gDT3kXSHAdIjM1a+zcto4+Rt0wevVKaRgDekNGHyd/D5neWOxrWf4
+         EcGTlio1t/2hzh0opontENyuvQQDdBEByBCP2P4s0/nyv3Te+Ly/UqHh40z5JnV3Ji6t
+         aQp+JDj0BkAWqHBtx8XjGweXL00rLKzYiDYANdD+RFTmx4DUTCSlpNiIy6Rip1sDo5X6
+         IiklCrcmB3KDXrDhsIdc6GMHVX8okMG/jKqWo31KaOM2Z/iXCjisWP6Iq01VFbaVQzmU
+         PkXQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=9U1fcZswaVveyNe1fznYM+D+TPyYVuPdJculmvVq/ks=;
-        b=5ss1L1wxtJp7vOZeNJoCPffIU7Xv1bSHXSad8K4XG7+AtRywzvvhef9vkunhRPv6II
-         nGZZi4gQVej3S0AgXXtFUW6r6JpEnxSt1KSYJzz8BhlaSrsoGHI3GKtc5kP5t4ieJLOV
-         x6hZNwT8fYlWopDuZSd0yg5p6EeUCDj9Cx8T3CH5cpYewcoy5zvn2Lh6eM6B6YlCvl8L
-         +kYtG3prDFNJWG66eoXdDz2MFEkw9Psmy0BxJg+QSdPd+Fx2+5shsmlT/C0e7gslbLdn
-         aGuM22WlPolsgKrCcrFK+22/CRo/O5knzit8GJ9kM2f0mooS2J2fr3d5pVSLBVxNmZtL
-         AJZg==
-X-Gm-Message-State: AOAM530Wn2UfrGxZSKtO86FD7CvJP5cd1DU+ZgejDdJktuBgZ1Bj1zhU
-        0JmMC2ghVryNGRwRAKT2KvvDfQ==
-X-Google-Smtp-Source: ABdhPJzD/gdSPZISI19GHFxGQ8gJGvNKlkDBRo4hr+K2cT3JQ9erdTVniPXm8mWNFEaQKiFTbXLXLg==
-X-Received: by 2002:ac2:4e02:: with SMTP id e2mr9257911lfr.264.1636485973441;
-        Tue, 09 Nov 2021 11:26:13 -0800 (PST)
-Received: from localhost.localdomain (h-155-4-129-146.NA.cust.bahnhof.se. [155.4.129.146])
-        by smtp.gmail.com with ESMTPSA id d24sm125134lfb.139.2021.11.09.11.26.12
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 09 Nov 2021 11:26:12 -0800 (PST)
-From:   Ulf Hansson <ulf.hansson@linaro.org>
-To:     linux-mmc@vger.kernel.org, Ulf Hansson <ulf.hansson@linaro.org>
-Cc:     "H . Nikolaus Schaller" <hns@goldelico.com>,
-        Jerome Pouiller <jerome.pouiller@silabs.com>,
-        Tony Lindgren <tony@atomide.com>, linux-kernel@vger.kernel.org
-Subject: [PATCH] mmc: core: Fixup storing of OCR for MMC_QUIRK_NONSTD_SDIO
-Date:   Tue,  9 Nov 2021 20:25:47 +0100
-Message-Id: <20211109192547.28679-1-ulf.hansson@linaro.org>
-X-Mailer: git-send-email 2.25.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=ei0IjmYjF3Cz9j83zRSEUli+MBWkuUhizQs40K0x/A0=;
+        b=p6GVbV/u9F+xxtXUEAY9VRzkx886PL6wxn506E5zXQS3093aUX2NGtQVBO+dwCBXCT
+         rabO0RgLLDqM5UxtcfeLwgNxZFrz76jg0rc7NZB8J0eUH9jqEKEK9b0hbMpdJXZ2+8ml
+         Ct88ym4TXfwCv99SyLT6GYzb1m+fH6mdHQaK7A0PK+h+LtDFFEww5pQXCesqK+ZEp6Cb
+         +jhhX/US43tJRFA0UZAklZPAnWBFQf9/tsEF+x7lh/dmnQNIeMST2QJk2vam+2Rm49zf
+         5XIz9TCrtLsrR7XYzRxn3UTBH77iZHc/Fpb5pdiqiqAAh8X4Fb+UszEYqC/I/ZbGqJyc
+         X7EA==
+X-Gm-Message-State: AOAM533F4m1r33KO+IAyQ+YQyowwJJzq9djZbta1qouOjS1a/N2fUCG/
+        IhTV54uCIt4hyzZOtFxoOhlM3sNWkXydy0egx7FvAg==
+X-Google-Smtp-Source: ABdhPJwjK0u0YQgI9Skl7GNuwhYEODMuBizImSvfAkYub3lLSu7HgvJZMiP17xU2OCxtdiCKXQU8aNVQLIccXSoZ3Eg=
+X-Received: by 2002:a50:e184:: with SMTP id k4mr13491532edl.217.1636485995403;
+ Tue, 09 Nov 2021 11:26:35 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <CADyq12yY25-LS8cV5LY-C=6_0HLPVZbSJCKtCDJm+wyHQSeVTg@mail.gmail.com>
+ <cb682c8a-255e-28e5-d4e0-0981c2ab6ffd@intel.com> <85925a39-37c3-a79a-a084-51f2f291ca9c@intel.com>
+ <CADyq12y0o=Y1MOMe7pCghy2ZEV2Y0Dd7jm5e=3o2N4-i088MWw@mail.gmail.com>
+ <472b8dbf-2c55-98c9-39ad-2db32a649a20@intel.com> <CADyq12whSxPdJhf4qg_w-7YXgEKWx4SDHByNBNZbfWDOeEY-8w@mail.gmail.com>
+ <649f4de7-3c91-4974-9af7-d981a2bf6224@www.fastmail.com> <CADyq12wXzitT4y38fUjiWq_Rq4AWQX4Z05Qpyuu-dNBzQc8Gmg@mail.gmail.com>
+In-Reply-To: <CADyq12wXzitT4y38fUjiWq_Rq4AWQX4Z05Qpyuu-dNBzQc8Gmg@mail.gmail.com>
+From:   Brian Geffon <bgeffon@google.com>
+Date:   Tue, 9 Nov 2021 14:25:59 -0500
+Message-ID: <CADyq12yeSpsbty+qkdQz16Jy-==dXxYKoew_7TB9y9pnyFwA3A@mail.gmail.com>
+Subject: Re: XSAVE / RDPKRU on Intel 11th Gen Core CPUs
+To:     Andy Lutomirski <luto@kernel.org>
+Cc:     Dave Hansen <dave.hansen@intel.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Guenter Roeck <groeck@google.com>,
+        Borislav Petkov <bp@suse.de>, stable@vger.kernel.org,
+        "the arch/x86 maintainers" <x86@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The mmc core takes a specific path to support initializing of a
-non-standard SDIO card. This is triggered by looking for the card-quirk,
-MMC_QUIRK_NONSTD_SDIO.
+On Tue, Nov 9, 2021 at 1:58 PM Brian Geffon <bgeffon@google.com> wrote:
+>
+> Hi Andy,
+>
+> On Tue, Nov 9, 2021 at 9:58 AM Andy Lutomirski <luto@kernel.org> wrote:
+> > Here's an excerpt from an old email that I, perhaps unwisely, sent to D=
+ave but not to a public list:
+> >
+> > static inline void write_pkru(u32 pkru)
+> > {
+> >         struct pkru_state *pk;
+> >
+> >         if (!boot_cpu_has(X86_FEATURE_OSPKE))
+> >                 return;
+> >
+> >         pk =3D get_xsave_addr(&current->thread.fpu.state.xsave,
+> > XFEATURE_PKRU);
+> >
+> >         /*
+> >          * The PKRU value in xstate needs to be in sync with the value
+> > that is
+> >          * written to the CPU. The FPU restore on return to userland wo=
+uld
+> >          * otherwise load the previous value again.
+> >          */
+> >         fpregs_lock();
+> >         if (pk)
+> >                 pk->pkru =3D pkru;
+> >
+> > ^^^
+> > else we just write to the PKRU register but leave XINUSE[PKRU] clear on
+> > return to usermode?  That seems... unwise.
+> >
+> >         __write_pkru(pkru);
+> >         fpregs_unlock();
+> > }
+> >
+> > I bet you're hitting exactly this bug.  The fix ended up being a whole =
+series of patches, but the gist of it is that the write_pkru() slow path ne=
+eds to set the xfeature bit in the xsave buffer and then do the write.  It =
+should be possible to make a little patch to do just this in a couple lines=
+ of code.
+>
+> I think you've got the right idea, the following patch does seem to
+> fix the problem on this CPU, this is based on 5.13. It seems the
+> changes to asm/pgtable.h were not enough, I also had to modify
+> fpu/internal.h to get it working properly.
+>
 
-In mmc_sdio_init_card() this gets rather messy, as it causes the code to
-bail out earlier, compared to the usual path. This leads to that the OCR
-doesn't get saved properly in card->ocr. Fortunately, only omap_hsmmc has
-been using the MMC_QUIRK_NONSTD_SDIO and is dealing with the issue, by
-assigning a hardcoded value (0x80) to card->ocr from an ->init_card() ops.
+Actually, it seems that only the changes to fpu/internal.h seem
+necessary. I guess the switch_fpu_finish explains how it's reverting
+to the initial value.
 
-To make the behaviour consistent, let's instead rely on the core to save
-the OCR in card->ocr during initialization.
-
-Reported-by: H. Nikolaus Schaller <hns@goldelico.com>
-Signed-off-by: Ulf Hansson <ulf.hansson@linaro.org>
----
- drivers/mmc/core/sdio.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
-
-diff --git a/drivers/mmc/core/sdio.c b/drivers/mmc/core/sdio.c
-index 68edf7a615be..5447c47157aa 100644
---- a/drivers/mmc/core/sdio.c
-+++ b/drivers/mmc/core/sdio.c
-@@ -708,6 +708,8 @@ static int mmc_sdio_init_card(struct mmc_host *host, u32 ocr,
- 	if (host->ops->init_card)
- 		host->ops->init_card(host, card);
- 
-+	card->ocr = ocr_card;
-+
- 	/*
- 	 * If the host and card support UHS-I mode request the card
- 	 * to switch to 1.8V signaling level.  No 1.8v signalling if
-@@ -820,7 +822,7 @@ static int mmc_sdio_init_card(struct mmc_host *host, u32 ocr,
- 			goto mismatch;
- 		}
- 	}
--	card->ocr = ocr_card;
-+
- 	mmc_fixup_device(card, sdio_fixup_methods);
- 
- 	if (card->type == MMC_TYPE_SD_COMBO) {
--- 
-2.25.1
-
+diff --git a/arch/x86/include/asm/fpu/internal.h
+b/arch/x86/include/asm/fpu/internal.h
+index 16bf4d4a8159..ed2ce7d1afeb 100644
+--- a/arch/x86/include/asm/fpu/internal.h
++++ b/arch/x86/include/asm/fpu/internal.h
+@@ -564,18 +564,16 @@ static inline void switch_fpu_finish(struct fpu *new_=
+fpu)
+         * PKRU state is switched eagerly because it needs to be valid befo=
+re we
+         * return to userland e.g. for a copy_to_user() operation.
+         */
+-       if (!(current->flags & PF_KTHREAD)) {
+-               /*
+-                * If the PKRU bit in xsave.header.xfeatures is not set,
+-                * then the PKRU component was in init state, which means
+-                * XRSTOR will set PKRU to 0. If the bit is not set then
+-                * get_xsave_addr() will return NULL because the PKRU value
+-                * in memory is not valid. This means pkru_val has to be
+-                * set to 0 and not to init_pkru_value.
+-                */
+-               pk =3D get_xsave_addr(&new_fpu->state.xsave, XFEATURE_PKRU)=
+;
+-               pkru_val =3D pk ? pk->pkru : 0;
+-       }
++       /*
++        * If the PKRU bit in xsave.header.xfeatures is not set,
++        * then the PKRU component was in init state, which means
++        * XRSTOR will set PKRU to 0. If the bit is not set then
++        * get_xsave_addr() will return NULL because the PKRU value
++        * in memory is not valid. This means pkru_val has to be
++        * set to 0 and not to init_pkru_value.
++        */
++       pk =3D get_xsave_addr(&new_fpu->state.xsave, XFEATURE_PKRU);
++       pkru_val =3D pk ? pk->pkru : 0;
+        __write_pkru(pkru_val);
+ }
