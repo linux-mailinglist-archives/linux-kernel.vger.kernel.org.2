@@ -2,59 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E77F944AADF
+	by mail.lfdr.de (Postfix) with ESMTP id 543C644AADD
 	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 10:50:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245000AbhKIJws (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Nov 2021 04:52:48 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49246 "EHLO
+        id S245051AbhKIJwo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Nov 2021 04:52:44 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49272 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244239AbhKIJvb (ORCPT
+        with ESMTP id S244252AbhKIJvg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Nov 2021 04:51:31 -0500
-Received: from mail-pg1-x533.google.com (mail-pg1-x533.google.com [IPv6:2607:f8b0:4864:20::533])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 54026C06120B
-        for <linux-kernel@vger.kernel.org>; Tue,  9 Nov 2021 01:48:40 -0800 (PST)
-Received: by mail-pg1-x533.google.com with SMTP id g184so18000366pgc.6
-        for <linux-kernel@vger.kernel.org>; Tue, 09 Nov 2021 01:48:40 -0800 (PST)
+        Tue, 9 Nov 2021 04:51:36 -0500
+Received: from mail-pl1-x632.google.com (mail-pl1-x632.google.com [IPv6:2607:f8b0:4864:20::632])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B69FC06120F
+        for <linux-kernel@vger.kernel.org>; Tue,  9 Nov 2021 01:48:42 -0800 (PST)
+Received: by mail-pl1-x632.google.com with SMTP id o14so19935085plg.5
+        for <linux-kernel@vger.kernel.org>; Tue, 09 Nov 2021 01:48:42 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=sifive.com; s=google;
         h=from:to:subject:date:message-id:in-reply-to:references:mime-version
          :content-transfer-encoding;
-        bh=earQXVM9ZpHBsIuYCgsSO014fLReRw8iXSg4gGRjLpA=;
-        b=eFQ2LvIIOUcoe8Vnr8ZReO0zVkG6yBNbCkwqFSzinze8kstWqfY3ioU9vyHDUDNntq
-         U9wXnP8dttrXtDOsrR04DzHK8J2Mur4UdSmi0f9Yn9Ws4HHi2RosvGd06d8KSzRK5NGI
-         UQB7YL7E3rV0FnwJ8J6l/6tUJsIl76hR6HMw+Je3OiHlOXrerdNa4/AfwsI0fDDmMMj5
-         XhQDr2iMG9CkD+n3Lvhwb+RDTDLPAyWS1wO2kq0nLzDQm2yXENE+qZGSTVs26GB1UvvU
-         jv4cZPipi6gdOKHh1VOEegnNsi/801eWV0mfHu1PgIC48mGcHIJyrM3yzvyjAQvgA1hP
-         TctQ==
+        bh=SHTUtS2AqMwL7pythy2uWZaJGxfuuKizfBg8h7XFuhk=;
+        b=GTvbZO/Gy+t/HbdqxXnGSSUAYcX19EgyiDh4hSzeDsksdaBW6HwN7DfqsqaO4pey2/
+         jTJ9RHZW4nslizMrt1R/QL8IZf5LPZtAeLV9sANL6ww2ozo8lj8EL4aZio924rPaP/IM
+         6B5RjEwqDaSqfZadOtwe0nCFHmMRsvQopFZ1T0JhRi3Wo6t5SeUUDkWiNTD2X0Mb6lUh
+         xinKcpR9Yyxnk6b53anjGiZTbPyu1gigcVFn4dfoK+OWU+/pe1tDQG2gLHEJvDcHL+CA
+         jOt+xmi9YhvrZd2t2q1D/jGaHtsZ6uHek+ITnPfOzOmEx8rSMKBJSo+6ZJwe2VlAqoz6
+         d0mw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=earQXVM9ZpHBsIuYCgsSO014fLReRw8iXSg4gGRjLpA=;
-        b=lyrDM02hZPNUQCJRr1i3/wVTkrkBV5nThhqLOxxmIgwwBsw4kKOdj4MfoaXHGRrloJ
-         LLDfzmNcJ4WFBoIYXE+ugs+xjoN2jqw2k/1J0Bz6eUlm0n/Yji32+6iDQ7y2aPVr4IvU
-         meHjq089yz0L0lhzJYiROm1gSRvNhJ+4g69T0ydMMciMPrtxO8z96PrYpLFQFgO0LEGT
-         8C1kJwgz9cVi8CXTzAiXTsU8lfdxToGrBTDeMCkLKIGmLb4ReyfWuJ7CVZfsMRP1RLYj
-         jhJclzAxAbpacRcy90jA2NOJBzAxD6LiNE5nsQT55mi16bXG6kXouPIl7EzecashN3sb
-         xpvQ==
-X-Gm-Message-State: AOAM5332VPsn/rl7k2a7llJSm1xNveH+MiV/4AxABR0L+P4cXYOgg2DQ
-        sSfrbhqCoqkWGMoihZGB5FOTDg==
-X-Google-Smtp-Source: ABdhPJxkLQJhp1q9mtVPkNo9QaKm6TAP/UN94ydOvWwI4RknDQjCZkuDN0aqowjnbprQ93hf3yNPlg==
-X-Received: by 2002:a63:7308:: with SMTP id o8mr4878770pgc.77.1636451319866;
-        Tue, 09 Nov 2021 01:48:39 -0800 (PST)
+        bh=SHTUtS2AqMwL7pythy2uWZaJGxfuuKizfBg8h7XFuhk=;
+        b=oSzNW/IYA6C7zePw99pGTX3NlEpDdTUjhaNY91VczJqSE4exHwLjYSEp3arhvaJZ2e
+         efE1TdHfX1oprA2wcw8Th78fp/bpqMYTFsDXTZnqs2a4Bvz2Yg+EWH915eGSOtBgnw55
+         neoG5HFSkSU4t7nnVDc+3wSKE7Ww0AyRyFqqtWm4I7r0WUVEnri4Kyi5+WBUxgsRhTr0
+         9vH8a+8k68uVt/w7/lpB4JZyXhm5iPp0DCgb3ssVsWN8pRSg3IKiP8CKV21FzTF11Lnu
+         ypT6esLbq3I6zdMtH9/HcplljgfC6klmW8FZ+hpdY8Ku8RYwzsNIjjzI/LJGIwxxMnfD
+         Opuw==
+X-Gm-Message-State: AOAM532IfVQFyfCEfcngLnA2KQFud7iPB9327Dcryr5dEoyswbCxePmq
+        HYhIqXuCwnHyu3iV3JSpiY86Dw==
+X-Google-Smtp-Source: ABdhPJz4uumb1qUyFkc+MgaWMH/uDR5/ELb0ybuZChURb8fO/VbIhSArnl8zYY0FjHOCybWkDdacyw==
+X-Received: by 2002:a17:90a:9907:: with SMTP id b7mr2476181pjp.137.1636451321564;
+        Tue, 09 Nov 2021 01:48:41 -0800 (PST)
 Received: from hsinchu16.internal.sifive.com (59-124-168-89.hinet-ip.hinet.net. [59.124.168.89])
-        by smtp.gmail.com with ESMTPSA id cv1sm1940511pjb.48.2021.11.09.01.48.38
+        by smtp.gmail.com with ESMTPSA id cv1sm1940511pjb.48.2021.11.09.01.48.40
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 09 Nov 2021 01:48:39 -0800 (PST)
+        Tue, 09 Nov 2021 01:48:41 -0800 (PST)
 From:   Greentime Hu <greentime.hu@sifive.com>
 To:     palmer@dabbelt.com, paul.walmsley@sifive.com,
         linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
         aou@eecs.berkeley.edu
-Subject: [PATCH v9 05/17] riscv: Add vector feature to compile
-Date:   Tue,  9 Nov 2021 17:48:17 +0800
-Message-Id: <2684ea9e25a63c7a88faf46680a26e560027e444.1636362169.git.greentime.hu@sifive.com>
+Subject: [PATCH v9 06/17] riscv: Add has_vector/riscv_vsize to save vector features.
+Date:   Tue,  9 Nov 2021 17:48:18 +0800
+Message-Id: <8652c476f08626d52f0412ca1a8427cfe7b4104f.1636362169.git.greentime.hu@sifive.com>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <cover.1636362169.git.greentime.hu@sifive.com>
 References: <cover.1636362169.git.greentime.hu@sifive.com>
@@ -64,51 +64,49 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Guo Ren <guoren@linux.alibaba.com>
+This patch is used to detect vector support status of CPU and use
+riscv_vsize to save the size of all the vector registers. It assumes
+all harts has the same capabilities in SMP system.
 
-This patch adds a new config option which could enable assembler's
-vector feature.
-
+[guoren@linux.alibaba.com: add has_vector checking]
 Signed-off-by: Greentime Hu <greentime.hu@sifive.com>
+Co-developed-by: Guo Ren <guoren@linux.alibaba.com>
 Signed-off-by: Guo Ren <guoren@linux.alibaba.com>
-Reviewed-by: Greentime Hu <greentime.hu@sifive.com>
+Co-developed-by: Vincent Chen <vincent.chen@sifive.com>
+Signed-off-by: Vincent Chen <vincent.chen@sifive.com>
 ---
- arch/riscv/Kconfig  | 9 +++++++++
- arch/riscv/Makefile | 1 +
- 2 files changed, 10 insertions(+)
+ arch/riscv/kernel/cpufeature.c | 13 +++++++++++++
+ 1 file changed, 13 insertions(+)
 
-diff --git a/arch/riscv/Kconfig b/arch/riscv/Kconfig
-index f076cee11af6..0311579920b9 100644
---- a/arch/riscv/Kconfig
-+++ b/arch/riscv/Kconfig
-@@ -389,6 +389,15 @@ config FPU
+diff --git a/arch/riscv/kernel/cpufeature.c b/arch/riscv/kernel/cpufeature.c
+index 7069e55335d0..8e7557980faf 100644
+--- a/arch/riscv/kernel/cpufeature.c
++++ b/arch/riscv/kernel/cpufeature.c
+@@ -21,6 +21,11 @@ static DECLARE_BITMAP(riscv_isa, RISCV_ISA_EXT_MAX) __read_mostly;
+ #ifdef CONFIG_FPU
+ __ro_after_init DEFINE_STATIC_KEY_FALSE(cpu_hwcap_fpu);
+ #endif
++#ifdef CONFIG_VECTOR
++#include <asm/vector.h>
++__ro_after_init DEFINE_STATIC_KEY_FALSE(cpu_hwcap_vector);
++unsigned long riscv_vsize __read_mostly;
++#endif
  
- 	  If you don't know what to do here, say Y.
- 
-+config VECTOR
-+	bool "VECTOR support"
-+	default n
-+	help
-+	  Say N here if you want to disable all vector related procedure
-+	  in the kernel.
+ /**
+  * riscv_isa_extension_base() - Get base extension word
+@@ -149,4 +154,12 @@ void __init riscv_fill_hwcap(void)
+ 	if (elf_hwcap & (COMPAT_HWCAP_ISA_F | COMPAT_HWCAP_ISA_D))
+ 		static_branch_enable(&cpu_hwcap_fpu);
+ #endif
 +
-+	  If you don't know what to do here, say Y.
-+
- endmenu
- 
- menu "Kernel features"
-diff --git a/arch/riscv/Makefile b/arch/riscv/Makefile
-index 37de70df4fae..f109214a2d7f 100644
---- a/arch/riscv/Makefile
-+++ b/arch/riscv/Makefile
-@@ -57,6 +57,7 @@ riscv-march-aflags-$(CONFIG_ARCH_RV32I)		:= rv32ima
- riscv-march-aflags-$(CONFIG_ARCH_RV64I)		:= rv64ima
- riscv-march-aflags-$(CONFIG_FPU)		:= $(riscv-march-aflags-y)fd
- riscv-march-aflags-$(CONFIG_RISCV_ISA_C)	:= $(riscv-march-aflags-y)c
-+riscv-march-aflags-$(CONFIG_VECTOR)		:= $(riscv-march-aflags-y)v
- 
- KBUILD_CFLAGS += -march=$(riscv-march-cflags-y)
- KBUILD_AFLAGS += -march=$(riscv-march-aflags-y)
++#ifdef CONFIG_VECTOR
++	if (elf_hwcap & COMPAT_HWCAP_ISA_V) {
++		static_branch_enable(&cpu_hwcap_vector);
++		/* There are 32 vector registers with vlenb length. */
++		riscv_vsize = csr_read(CSR_VLENB) * 32;
++	}
++#endif
+ }
 -- 
 2.31.1
 
