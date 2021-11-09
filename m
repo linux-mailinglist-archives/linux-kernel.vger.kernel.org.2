@@ -2,107 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AB78544B2A9
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 19:19:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 706A244B2AB
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 19:20:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242415AbhKISWh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Nov 2021 13:22:37 -0500
-Received: from fllv0016.ext.ti.com ([198.47.19.142]:45356 "EHLO
-        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242321AbhKISWb (ORCPT
+        id S242260AbhKISXZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Nov 2021 13:23:25 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53520 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S242389AbhKISXN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Nov 2021 13:22:31 -0500
-Received: from lelv0266.itg.ti.com ([10.180.67.225])
-        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 1A9IJStP123394;
-        Tue, 9 Nov 2021 12:19:28 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1636481968;
-        bh=bNgxSpWcyBtnq7XC0L3A6Ob6weYYVTcirUbh0b7kL2s=;
-        h=From:To:CC:Subject:Date:In-Reply-To:References;
-        b=aXRzuFpPka5DkvMwFrWfN2lhqsuPCucq9O5cNfbfOL4/vGV3GUZNehy8mafVz8IkM
-         AVJ3ltpRUtweFMUimcQjnMo3ViWp1VEaSqxTrHQ1MdOjjEQmzhVckIAzBGRum+uqun
-         chUKHzlp1LhKI5GKWNrDx+wj7PUouPSYW7WNDziA=
-Received: from DFLE102.ent.ti.com (dfle102.ent.ti.com [10.64.6.23])
-        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 1A9IJSr5103683
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Tue, 9 Nov 2021 12:19:28 -0600
-Received: from DFLE113.ent.ti.com (10.64.6.34) by DFLE102.ent.ti.com
- (10.64.6.23) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14; Tue, 9
- Nov 2021 12:19:28 -0600
-Received: from lelv0327.itg.ti.com (10.180.67.183) by DFLE113.ent.ti.com
- (10.64.6.34) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14 via
- Frontend Transport; Tue, 9 Nov 2021 12:19:28 -0600
-Received: from pratyush-OptiPlex-790.dhcp.ti.com (ileax41-snat.itg.ti.com [10.172.224.153])
-        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 1A9IJC54017044;
-        Tue, 9 Nov 2021 12:19:25 -0600
-From:   Pratyush Yadav <p.yadav@ti.com>
-To:     Rob Herring <robh+dt@kernel.org>
-CC:     Pratyush Yadav <p.yadav@ti.com>, Mark Brown <broonie@kernel.org>,
-        Nishanth Menon <nm@ti.com>, Michael Walle <michael@walle.cc>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Richard Weinberger <richard@nod.at>,
-        Tudor Ambarus <tudor.ambarus@microchip.com>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-mtd@lists.infradead.org>, <linux-spi@vger.kernel.org>
-Subject: [PATCH v3 3/3] dt-bindings: mtd: spi-nor: Add a reference to spi-peripheral-props.yaml
-Date:   Tue, 9 Nov 2021 23:49:11 +0530
-Message-ID: <20211109181911.2251-4-p.yadav@ti.com>
-X-Mailer: git-send-email 2.33.1.835.ge9e5ba39a7
-In-Reply-To: <20211109181911.2251-1-p.yadav@ti.com>
-References: <20211109181911.2251-1-p.yadav@ti.com>
+        Tue, 9 Nov 2021 13:23:13 -0500
+Received: from mail-pl1-x631.google.com (mail-pl1-x631.google.com [IPv6:2607:f8b0:4864:20::631])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 88017C061764;
+        Tue,  9 Nov 2021 10:20:27 -0800 (PST)
+Received: by mail-pl1-x631.google.com with SMTP id v20so32865plo.7;
+        Tue, 09 Nov 2021 10:20:27 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=I5wTdLmlJ6yAtNAX1aGNMQtVcCvB6wAMhoGw1PgjShw=;
+        b=jDZSHOQwo+2hNDQD2WfbPe4ou0IAujUoXUBQoTO5mynEfV0iZS5IA8uH3Jwtu0rj43
+         i/K8bG8I98oj2qYPYpHHhlSgtuPzeONXIbDQQuBIvsI5BNZZkC8WSrp0/tVIaVeltrZy
+         VnWc59XbHrzOSv1FZKYgZCXQvenHj7fDp8PnZDIg5V6UyatUwhb3VWxz6hRCmrBor3j+
+         8xTVlumwnmvst7bRZN7iRUmOEtpSkXeMtEB568sZvL1dt5GB5yEJG8pdzGBTTIRB+EpA
+         2ct28FrY17iiudsMs4QEQYsSI9ZueO203f7lev4ISHpkhs3omSCOW3Wulkj/J6uO/are
+         /Bvg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=I5wTdLmlJ6yAtNAX1aGNMQtVcCvB6wAMhoGw1PgjShw=;
+        b=xDQBlf5kl+jmp6NwmdZr57TH4OWZsKeZNm3O4LArIPg32Apvt6cf0DCpBbZb1UjchX
+         fna3Y0AJP10YDyxh63/kSxVICvbB9R7MX4CnmsKM/WRCM1oYuoCKeILGT37Tei9KbLLn
+         v23GwZ7I+390UZhSBVDC8ZC/UOAMpvBlXoP/N6S+7QinDQKHxutHLv4w68XEdYVAMjNc
+         nWkFT1FZF480W+KvwNVhRZvJCo78k2DD4jVissojaQhrdwzOe+ak/44Lj7Qed2TOdW76
+         a/o7xTtnp24IFte51KjZ5iXtmdacnqCKwK+yJkhBD4ESJMpWGZutfzmiEaD7k8xQoMNa
+         78oQ==
+X-Gm-Message-State: AOAM533fkgFRhqAHjTG1np6tm+AkYQLXBKpZ0RPrZ9WzJdypUDuNOFzA
+        6okCBF+iuuLD72k1xL2eBXb8gCulGFI=
+X-Google-Smtp-Source: ABdhPJzUMsFFMKjCDJF4+X2TN6M5dpgngkI7pPnNOdNbZWgVxq6UfRXQBcgVomS2x2fPe67sZ9s6bw==
+X-Received: by 2002:a17:90a:9d89:: with SMTP id k9mr9585117pjp.74.1636482026724;
+        Tue, 09 Nov 2021 10:20:26 -0800 (PST)
+Received: from [10.67.48.245] ([192.19.223.252])
+        by smtp.googlemail.com with ESMTPSA id f130sm20142967pfa.81.2021.11.09.10.20.25
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 09 Nov 2021 10:20:26 -0800 (PST)
+Subject: Re: [PATCH v2 2/7] net: dsa: b53: Move struct b53_device to
+ include/linux/dsa/b53.h
+To:     Vladimir Oltean <olteanv@gmail.com>
+Cc:     Martin Kaistra <martin.kaistra@linutronix.de>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        Richard Cochran <richardcochran@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        John Stultz <john.stultz@linaro.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Russell King <linux@armlinux.org.uk>,
+        Marc Kleine-Budde <mkl@pengutronix.de>,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org
+References: <20211109095013.27829-1-martin.kaistra@linutronix.de>
+ <20211109095013.27829-3-martin.kaistra@linutronix.de>
+ <f71396fc-29a3-4022-3f7a-3a37abb9079c@gmail.com>
+ <caec2d40-6093-ff06-ab8e-379e7939a85c@gmail.com>
+ <CA+h21hp+UKRgCE0UTZr7keyU380W22ZEXdbfORhSTNfzb1S_iw@mail.gmail.com>
+From:   Florian Fainelli <f.fainelli@gmail.com>
+Message-ID: <b04b344e-2a17-eac2-bbcb-746091f9175a@gmail.com>
+Date:   Tue, 9 Nov 2021 10:20:25 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+In-Reply-To: <CA+h21hp+UKRgCE0UTZr7keyU380W22ZEXdbfORhSTNfzb1S_iw@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The spi-peripheral-props.yaml schema contains peripheral-specific
-properties for SPI controllers that should be present in the peripheral
-node. Add a reference to that so its constraints are followed.
+On 11/9/21 10:15 AM, Vladimir Oltean wrote:
+> On Tue, 9 Nov 2021 at 20:11, Florian Fainelli <f.fainelli@gmail.com> wrote:
+>>
+>> On 11/9/21 10:05 AM, Florian Fainelli wrote:
+>>> On 11/9/21 1:50 AM, Martin Kaistra wrote:
+>>>> In order to access the b53 structs from net/dsa/tag_brcm.c move the
+>>>> definitions from drivers/net/dsa/b53/b53_priv.h to the new file
+>>>> include/linux/dsa/b53.h.
+>>>>
+>>>> Signed-off-by: Martin Kaistra <martin.kaistra@linutronix.de>
+>>>> ---
+>>>>  drivers/net/dsa/b53/b53_priv.h |  90 +----------------------------
+>>>>  include/linux/dsa/b53.h        | 100 +++++++++++++++++++++++++++++++++
+>>>>  2 files changed, 101 insertions(+), 89 deletions(-)
+>>>>  create mode 100644 include/linux/dsa/b53.h
+>>>
+>>> All you really access is the b53_port_hwtstamp structure within the
+>>> tagger, so please make it the only structure exposed to net/dsa/tag_brcm.c.
+>>
+>> You do access b53_dev in the TX part, still, I would like to find a more
+>> elegant solution to exposing everything here, can you create a
+>> b53_timecounter_cyc2time() function that is exported to modules but does
+>> not require exposing the b53_device to net/dsa/tag_brcm.c?
+>> --
+>> Florian
+> 
+> Switch drivers can't export symbols to tagging protocol drivers, remember?
+> https://lore.kernel.org/netdev/20210908220834.d7gmtnwrorhharna@skbuf/
 
-additionalProperties: false cannot be used since it marks the controller
-properties as unknown. Use unevaluatedProperties: false instead. This
-has the side effect of allowing extra properties that are not specified
-in the schema. The alternative is to list all the controller properties
-in this schema but that would mean every peripheral binding would have
-to repeat the same set of properties for each controller.
-
-Signed-off-by: Pratyush Yadav <p.yadav@ti.com>
-
----
-
-Changes in v3:
-- s/slave/peripheral/g
-
- Documentation/devicetree/bindings/mtd/jedec,spi-nor.yaml | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
-
-diff --git a/Documentation/devicetree/bindings/mtd/jedec,spi-nor.yaml b/Documentation/devicetree/bindings/mtd/jedec,spi-nor.yaml
-index ed590d7c6e37..39421f7233e4 100644
---- a/Documentation/devicetree/bindings/mtd/jedec,spi-nor.yaml
-+++ b/Documentation/devicetree/bindings/mtd/jedec,spi-nor.yaml
-@@ -11,6 +11,7 @@ maintainers:
- 
- allOf:
-   - $ref: "mtd.yaml#"
-+  - $ref: /schemas/spi/spi-peripheral-props.yaml#
- 
- properties:
-   compatible:
-@@ -88,7 +89,7 @@ patternProperties:
-   "^otp(-[0-9]+)?$":
-     type: object
- 
--additionalProperties: false
-+unevaluatedProperties: false
- 
- examples:
-   - |
+I do now :) How about a function pointer in dsa_switch_ops that driver
+can hook onto?
 -- 
-2.33.1.835.ge9e5ba39a7
-
+Florian
