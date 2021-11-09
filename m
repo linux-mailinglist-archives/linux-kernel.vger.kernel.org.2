@@ -2,190 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E1E1D44B1DE
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 18:20:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E770044B1E2
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 18:21:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240802AbhKIRWw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Nov 2021 12:22:52 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:20569 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S238356AbhKIRWu (ORCPT
+        id S240825AbhKIRYC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Nov 2021 12:24:02 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40044 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237296AbhKIRX7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Nov 2021 12:22:50 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1636478404;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=EeoeqnN42iO2HBA0In6NdJ3XgDyDHyboIkYWjl3H/UQ=;
-        b=HpW+w9yyZkJtbdct8+iAnry/wqMwA4rWXeXjMWm9shPHZNMOYUjlkl+f2JyUeM3Haj0jq2
-        gstePxzbRqhS7Ms+65UzNmYF520Hwkt309QPRiriiym4kBN7LeI/6f2BVN90LHoFYMUtDK
-        MPiQ0VPdsVQ68UHaMHcyFn2Vegf/imU=
-Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com
- [209.85.128.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-152-EwWiNOLpMJaQlKcNXo9l_Q-1; Tue, 09 Nov 2021 12:20:02 -0500
-X-MC-Unique: EwWiNOLpMJaQlKcNXo9l_Q-1
-Received: by mail-wm1-f70.google.com with SMTP id k5-20020a7bc3050000b02901e081f69d80so8017509wmj.8
-        for <linux-kernel@vger.kernel.org>; Tue, 09 Nov 2021 09:20:01 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=EeoeqnN42iO2HBA0In6NdJ3XgDyDHyboIkYWjl3H/UQ=;
-        b=fJFx0W0evUgyEqzqOXAAo2k5xirKH0gI5MxrlY5MOYI2D5TfdTvkYb4B7ya7wMl9FJ
-         KoNZeZiq/wEVJ2s00YSyRnE5lPRYc0R7KMtbitgG1m4Pcf4q67BXzXclxdRkTsyJjzSi
-         JeHP/SGDKvKnL6obUjgAt9Mlc8Uc5nIdmo6NgmOWUUbRl/h2IOA3hKRjDc1YM30oiAem
-         k5KqpiX1q6TwydyOyfbbyX3eDekPNmO/jZ7lq9UY+O/7lwcsJOxCt3GwtHnnEb1EUJ1t
-         FJurt9q5naWdvG5ThA9WeOfevEZbHwN0ejc3Q325MZY4yYhCZA8ENYI0M4TJUq29sLlk
-         rApw==
-X-Gm-Message-State: AOAM532ox5/uDA2XDWAJWBD984W6IsWCNrXsU2p6HrsqKuICCSp+JfeH
-        xqBPnEbET6AgOQdGflckFE+1EBguVu5hhzu386AnJrR6Sy20IVVFzFcBXHieXZl4GSsLu965Uuk
-        fl1CsYZqNQj88BAMt21+EWRyc
-X-Received: by 2002:adf:f448:: with SMTP id f8mr11639333wrp.47.1636478400330;
-        Tue, 09 Nov 2021 09:20:00 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJwCCtys+DFTB9rGKP29bXN2P+dxcKGg761X5Ys6eQzwFD7BzaaXV521w8QRy/G0gOuB6O4KJA==
-X-Received: by 2002:adf:f448:: with SMTP id f8mr11639296wrp.47.1636478400112;
-        Tue, 09 Nov 2021 09:20:00 -0800 (PST)
-Received: from ?IPv6:2a01:e0a:59e:9d80:527b:9dff:feef:3874? ([2a01:e0a:59e:9d80:527b:9dff:feef:3874])
-        by smtp.gmail.com with ESMTPSA id n8sm20410332wrp.95.2021.11.09.09.19.59
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 09 Nov 2021 09:19:59 -0800 (PST)
-Subject: Re: [PATCH v4 09/21] KVM: arm64: Support SDEI_EVENT_GET_INFO
- hypercall
-To:     Gavin Shan <gshan@redhat.com>, kvmarm@lists.cs.columbia.edu
-Cc:     maz@kernel.org, linux-kernel@vger.kernel.org,
-        Jonathan.Cameron@huawei.com, pbonzini@redhat.com, will@kernel.org
-References: <20210815001352.81927-1-gshan@redhat.com>
- <20210815001352.81927-10-gshan@redhat.com>
-From:   Eric Auger <eauger@redhat.com>
-Message-ID: <03e9b1fb-af79-69bf-f242-00fef3b11a81@redhat.com>
-Date:   Tue, 9 Nov 2021 18:19:58 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.1
+        Tue, 9 Nov 2021 12:23:59 -0500
+Received: from fieldses.org (fieldses.org [IPv6:2600:3c00:e000:2f7::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 26124C061764;
+        Tue,  9 Nov 2021 09:21:13 -0800 (PST)
+Received: by fieldses.org (Postfix, from userid 2815)
+        id 974F7A80; Tue,  9 Nov 2021 12:21:11 -0500 (EST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 fieldses.org 974F7A80
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fieldses.org;
+        s=default; t=1636478471;
+        bh=7Yfhs6mgnlAbRfDJtqysXWuoXj0URoLB6EAUKOJhcUo=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=F/j1fnRLd7T2nDlO4VRk53OAJPUuArhmrTcTA33IWgZrQ2Zu4ojzg9ng6mgl8O44i
+         buWApg3fqk90hJemS9xChQ62jrufahKwuwiy+BQ7bjQFYMWG2TOvfT558Uvjc9IAmd
+         f/YrFzNAhUTOqxATZRYin11SScH2fAr+fCdV5pN0=
+Date:   Tue, 9 Nov 2021 12:21:11 -0500
+From:   "bfields@fieldses.org" <bfields@fieldses.org>
+To:     "wanghai (M)" <wanghai38@huawei.com>
+Cc:     Trond Myklebust <trondmy@hammerspace.com>,
+        "neilb@suse.com" <neilb@suse.com>,
+        "jakub.kicinski@netronome.com" <jakub.kicinski@netronome.com>,
+        "willy@infradead.org" <willy@infradead.org>,
+        "tyhicks@canonical.com" <tyhicks@canonical.com>,
+        "davem@davemloft.net" <davem@davemloft.net>,
+        "nicolas.dichtel@6wind.com" <nicolas.dichtel@6wind.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "edumazet@google.com" <edumazet@google.com>,
+        "jlayton@kernel.org" <jlayton@kernel.org>,
+        "ast@kernel.org" <ast@kernel.org>,
+        "christian.brauner@ubuntu.com" <christian.brauner@ubuntu.com>,
+        "chuck.lever@oracle.com" <chuck.lever@oracle.com>,
+        "linux-nfs@vger.kernel.org" <linux-nfs@vger.kernel.org>,
+        "viro@zeniv.linux.org.uk" <viro@zeniv.linux.org.uk>,
+        "anna.schumaker@netapp.com" <anna.schumaker@netapp.com>,
+        "tom@talpey.com" <tom@talpey.com>,
+        "kuba@kernel.org" <kuba@kernel.org>,
+        "cong.wang@bytedance.com" <cong.wang@bytedance.com>,
+        "dsahern@gmail.com" <dsahern@gmail.com>,
+        "timo@rothenpieler.org" <timo@rothenpieler.org>,
+        "jiang.wang@bytedance.com" <jiang.wang@bytedance.com>,
+        "kuniyu@amazon.co.jp" <kuniyu@amazon.co.jp>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "Rao.Shoaib@oracle.com" <Rao.Shoaib@oracle.com>,
+        "wenbin.zeng@gmail.com" <wenbin.zeng@gmail.com>,
+        "kolga@netapp.com" <kolga@netapp.com>
+Subject: Re: [PATCH net 2/2] auth_gss: Fix deadlock that blocks
+ rpcsec_gss_exit_net when use-gss-proxy==1
+Message-ID: <20211109172111.GA5227@fieldses.org>
+References: <a845b544c6592e58feeaff3be9271a717f53b383.camel@hammerspace.com>
+ <20210928134952.GA25415@fieldses.org>
+ <77051a059fa19a7ae2390fbda7f8ab6f09514dfc.camel@hammerspace.com>
+ <20210928141718.GC25415@fieldses.org>
+ <cc92411f242290b85aa232e7220027b875942f30.camel@hammerspace.com>
+ <20210928145747.GD25415@fieldses.org>
+ <8b0e774bdb534c69b0612103acbe61c628fde9b1.camel@hammerspace.com>
+ <20210928154300.GE25415@fieldses.org>
+ <20210929211211.GC20707@fieldses.org>
+ <ba12c503-401d-9b22-be83-7645c619d9d1@huawei.com>
 MIME-Version: 1.0
-In-Reply-To: <20210815001352.81927-10-gshan@redhat.com>
 Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <ba12c503-401d-9b22-be83-7645c619d9d1@huawei.com>
+User-Agent: Mutt/1.5.21 (2010-09-15)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Gavin,
+On Thu, Sep 30, 2021 at 09:56:03AM +0800, wanghai (M) wrote:
+> 
+> 在 2021/9/30 5:12, bfields@fieldses.org 写道:
+> >On Tue, Sep 28, 2021 at 11:43:00AM -0400, bfields@fieldses.org wrote:
+> >>On Tue, Sep 28, 2021 at 03:36:58PM +0000, Trond Myklebust wrote:
+> >>>What is the use case here? Starting the gssd daemon or knfsd in
+> >>>separate chrooted environments? We already know that they have to be
+> >>>started in the same net namespace, which pretty much ensures it has to
+> >>>be the same container.
+> >>Somehow I forgot that knfsd startup is happening in some real process's
+> >>context too (not just a kthread).
+> >>
+> >>OK, great, I agree, that sounds like it should work.
 
-On 8/15/21 2:13 AM, Gavin Shan wrote:
-> This supports SDEI_EVENT_GET_INFO hypercall. It's used by the guest
-> to retrieve various information about the supported (exported) events,
-> including type, signaled, route mode and affinity for the shared
-> events.
-> 
-> Signed-off-by: Gavin Shan <gshan@redhat.com>
-> ---
->  arch/arm64/kvm/sdei.c | 76 +++++++++++++++++++++++++++++++++++++++++++
->  1 file changed, 76 insertions(+)
-> 
-> diff --git a/arch/arm64/kvm/sdei.c b/arch/arm64/kvm/sdei.c
-> index b95b8c4455e1..5dfa74b093f1 100644
-> --- a/arch/arm64/kvm/sdei.c
-> +++ b/arch/arm64/kvm/sdei.c
-> @@ -415,6 +415,80 @@ static unsigned long kvm_sdei_hypercall_status(struct kvm_vcpu *vcpu)
->  	return ret;
->  }
->  
-> +static unsigned long kvm_sdei_hypercall_info(struct kvm_vcpu *vcpu)
-> +{
-> +	struct kvm *kvm = vcpu->kvm;
-> +	struct kvm_sdei_kvm *ksdei = kvm->arch.sdei;
-> +	struct kvm_sdei_vcpu *vsdei = vcpu->arch.sdei;
-> +	struct kvm_sdei_event *kse = NULL;
-> +	struct kvm_sdei_kvm_event *kske = NULL;
-> +	unsigned long event_num = smccc_get_arg1(vcpu);
-> +	unsigned long event_info = smccc_get_arg2(vcpu);
-> +	unsigned long ret = SDEI_SUCCESS;
-> +
-> +	/* Sanity check */
-> +	if (!(ksdei && vsdei)) {
-> +		ret = SDEI_NOT_SUPPORTED;
-> +		goto out;
-> +	}
-> +
-> +	if (!kvm_sdei_is_valid_event_num(event_num)) {
-> +		ret = SDEI_INVALID_PARAMETERS;
-> +		goto out;
-> +	}
-> +
-> +	/*
-> +	 * Check if the KVM event exists. The event might have been
-> +	 * registered, we need fetch the information from the registered
-s/fetch/to fetch
-> +	 * event in that case.
-> +	 */
-> +	spin_lock(&ksdei->lock);
-> +	kske = kvm_sdei_find_kvm_event(kvm, event_num);
-> +	kse = kske ? kske->kse : NULL;
-> +	if (!kse) {
-> +		kse = kvm_sdei_find_event(kvm, event_num);
-> +		if (!kse) {
-> +			ret = SDEI_INVALID_PARAMETERS;
-this should have already be covered by !kvm_sdei_is_valid_event_num I
-think (although this latter only checks the since static event num with
-KVM owner mask)
-> +			goto unlock;
-> +		}
-> +	}
-> +
-> +	/* Retrieve the requested information */
-> +	switch (event_info) {
-> +	case SDEI_EVENT_INFO_EV_TYPE:
-> +		ret = kse->state.type;
-> +		break;
-> +	case SDEI_EVENT_INFO_EV_SIGNALED:
-> +		ret = kse->state.signaled;
-> +		break;
-> +	case SDEI_EVENT_INFO_EV_PRIORITY:
-> +		ret = kse->state.priority;
-> +		break;
-> +	case SDEI_EVENT_INFO_EV_ROUTING_MODE:
-> +	case SDEI_EVENT_INFO_EV_ROUTING_AFF:
-> +		if (kse->state.type != SDEI_EVENT_TYPE_SHARED) {
-> +			ret = SDEI_INVALID_PARAMETERS;
-> +			break;
-> +		}
-> +
-> +		if (event_info == SDEI_EVENT_INFO_EV_ROUTING_MODE) {
-> +			ret = kske ? kske->state.route_mode :
-> +				     SDEI_EVENT_REGISTER_RM_ANY;
-no, if event is not registered (!kske) DENIED should be returned
-> +		} else {
-same here
-> +			ret = kske ? kske->state.route_affinity : 0;
-> +		}
-> +
-> +		break;
-> +	default:
-> +		ret = SDEI_INVALID_PARAMETERS;
-> +	}
-> +
-> +unlock:
-> +	spin_unlock(&ksdei->lock);
-> +out:
-> +	return ret;
-> +}
-> +
->  int kvm_sdei_hypercall(struct kvm_vcpu *vcpu)
->  {
->  	u32 func = smccc_get_function(vcpu);
-> @@ -446,6 +520,8 @@ int kvm_sdei_hypercall(struct kvm_vcpu *vcpu)
->  		ret = kvm_sdei_hypercall_status(vcpu);
->  		break;
->  	case SDEI_1_0_FN_SDEI_EVENT_GET_INFO:
-> +		ret = kvm_sdei_hypercall_info(vcpu);
-> +		break;
->  	case SDEI_1_0_FN_SDEI_EVENT_ROUTING_SET:
->  	case SDEI_1_0_FN_SDEI_PE_MASK:
->  	case SDEI_1_0_FN_SDEI_PE_UNMASK:
-> 
-Eric
+Ugh, took me a while to get back to this and I went down a couple dead
+ends.
 
+The result from selinux's point of view is that rpc.nfsd is doing things
+it previously only expected gssproxy to do.  Fixable with an update to
+selinux policy.  And easily fixed in the meantime by cut-and-pasting the
+suggestions from the logs.
+
+Still, the result's that mounts fail when you update the kernel, which
+seems a violation of our usual rules about regressions.  I'd like to do
+better.
+
+--b.
