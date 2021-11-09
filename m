@@ -2,135 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A24AC44AC25
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 11:59:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BBCAE44AC2B
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 12:00:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245540AbhKILCP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Nov 2021 06:02:15 -0500
-Received: from mo4-p03-ob.smtp.rzone.de ([85.215.255.104]:16947 "EHLO
-        mo4-p03-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S245514AbhKILCJ (ORCPT
+        id S245555AbhKILCw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Nov 2021 06:02:52 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37486 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237369AbhKILCv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Nov 2021 06:02:09 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1636455552;
-    s=strato-dkim-0002; d=goldelico.com;
-    h=References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Cc:Date:
-    From:Subject:Sender;
-    bh=ytqJC3tzZimA/vKcRado/QdQBzzBwoUDJjRTyS4f9aA=;
-    b=kS7uJ6ie8RD2sDsMlTXN9Ht1/AArqSJdEZTXlRSxnN9MaKK1vIAHE18xUc70t1qF4n
-    iAESGMAr7Vz8dehXzCh6GPtu4U8fFeaQQxXLhz4G7x6R1uz1q0U7curA6Kx3jteUOP4R
-    mCPGiDWnp0rNBzkHMC3TgqGNp0ycPu42hVemctqxKG4Y9y4NzrHPr/CPHVgGUGekzWtL
-    IrXMhotZh+A5RU5g5IFb1YZhnftC8gMf9hhs4uQnn0Bgk0j8xP942l3DN5azkLkxb7T0
-    ql3oN3FQuzmn2EM7ZdnjphncUIsSycqJKtWciwNVHxsp7gqHhvYnjJ+zvg8oRli8/ga3
-    KwIg==
-Authentication-Results: strato.com;
-    dkim=none
-X-RZG-AUTH: ":JGIXVUS7cutRB/49FwqZ7WcJeFKiMhflhwDubTJ9o1KHeBQyh+ITDDFoCL4="
-X-RZG-CLASS-ID: mo00
-Received: from iMac.fritz.box
-    by smtp.strato.de (RZmta 47.34.1 DYNA|AUTH)
-    with ESMTPSA id 902c63xA9AxCOW7
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
-        (Client did not present a certificate);
-    Tue, 9 Nov 2021 11:59:12 +0100 (CET)
-From:   "H. Nikolaus Schaller" <hns@goldelico.com>
-To:     Ulf Hansson <ulf.hansson@linaro.org>,
-        =?UTF-8?q?J=C3=A9r=C3=B4me=20Pouiller?= 
-        <jerome.pouiller@silabs.com>, Avri Altman <avri.altman@wdc.com>,
-        Shawn Lin <shawn.lin@rock-chips.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Tony Lindgren <tony@atomide.com>,
-        Bean Huo <beanhuo@micron.com>,
-        "H. Nikolaus Schaller" <hns@goldelico.com>,
-        Kiwoong Kim <kwmad.kim@samsung.com>,
-        Tian Tao <tiantao6@hisilicon.com>,
-        Andreas Kemnade <andreas@kemnade.info>,
-        Yang Li <abaci-bugfix@linux.alibaba.com>
-Cc:     notasas@gmail.com, linux-mmc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, letux-kernel@openphoenux.org,
-        kernel@pyra-handheld.com, linux-omap@vger.kernel.org
-Subject: [PATCH 5/5] mmc: host: omap_hsmmc: revert special init for wl1251
-Date:   Tue,  9 Nov 2021 11:59:08 +0100
-Message-Id: <6f3cd3fca958b7dbdd9957ed369cd3733e85c95a.1636455548.git.hns@goldelico.com>
-X-Mailer: git-send-email 2.33.0
-In-Reply-To: <cover.1636455548.git.hns@goldelico.com>
-References: <cover.1636455548.git.hns@goldelico.com>
+        Tue, 9 Nov 2021 06:02:51 -0500
+Received: from mail-oi1-x22a.google.com (mail-oi1-x22a.google.com [IPv6:2607:f8b0:4864:20::22a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 532F1C061764
+        for <linux-kernel@vger.kernel.org>; Tue,  9 Nov 2021 03:00:05 -0800 (PST)
+Received: by mail-oi1-x22a.google.com with SMTP id o4so33010735oia.10
+        for <linux-kernel@vger.kernel.org>; Tue, 09 Nov 2021 03:00:05 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=i7T46wITiJUeW6jS2r6kmyBLCK14Tjsl4Ebda5Sp+pg=;
+        b=dwcf3fxtxfw1j05Fr3S5R//jo39L7ugj3h/E3WuzxzekfYfDCtjcFftXxxyHmEo0Io
+         12L1mnlBWucUUBD0cJez+52ExKyDppjxsCYQwIFZfucfpgdgyqiARCnuKOqgz7s79njy
+         sCsC5FTD9UuAcp5Gf83pQes/e50i0k/4AYu7jI4GLRAvZkTy85N8s8XwVykXs9mLZ6im
+         MMXwVaUWBWc5SgWYfcZbcN9t1tnplKTp6eUTtPf2dyZ8RQpgQg7iIAhIrfxs3qrgcZOT
+         LI0Zhu/ag/GyzligrWGqiDJ6/t2KNF2o+TPy+vZjTF9akpDy5yLradRXUVN7u/AUD46r
+         HZcw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=i7T46wITiJUeW6jS2r6kmyBLCK14Tjsl4Ebda5Sp+pg=;
+        b=Up9a3kiGwv+BF0ZPTQHB2qVSbYG96wyLgcfnfTN7zxSBwgQD4wr+GjiiYMunSe0Qu3
+         7UL7V2yQ4znWOWSCvgpq6nnRyrPiw6Wj9E/dop6J5ORi3FtdfUHYXta7lDyP+gONQV07
+         BfqsFFF3AEaE0jF5d1s0coAGzmstSSvf8s3b3DLb/jFz1sU5DXTm9Nn/aPYzrvGpskQz
+         KOaGJ1MA9eRErW7PJM6SxVJi347h01vI7DhsZQVoS/UoSVJ8UmZbIJsNfl/fdskg9QOm
+         VQlH3dIGE7yckYjNM1L644jZ2sfPVPo2BGXEGciHTpnKgk1wIT3VSKLCkSRMAGpX/Tv3
+         I0Bw==
+X-Gm-Message-State: AOAM5323AZMcE8L+Ta+1jFH0UbO6FHcjJRXh7ckX5WmITn1FvddNWAqd
+        qfV6GKjwllMNxnM7FaqA+h3KX2/cR7CZAsCZRA5s4g==
+X-Google-Smtp-Source: ABdhPJzHymYat3pW3yrmGZC+s27kLCoQfR/5ilImtjijEY251eme6e6QPa1jFhTFBFQvfPwC1D85epuYliezWKYGaZA=
+X-Received: by 2002:a54:4791:: with SMTP id o17mr5051916oic.114.1636455604731;
+ Tue, 09 Nov 2021 03:00:04 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20211031064046.13533-1-sergio.paracuellos@gmail.com>
+In-Reply-To: <20211031064046.13533-1-sergio.paracuellos@gmail.com>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Tue, 9 Nov 2021 11:59:53 +0100
+Message-ID: <CACRpkdb7eVgSvU=1GoYEHFpo7jSO-OAY3i9=Ld2gn-oC=q3Tow@mail.gmail.com>
+Subject: Re: [PATCH v2] pinctrl: ralink: include 'ralink_regs.h' in 'pinctrl-mt7620.c'
+To:     Sergio Paracuellos <sergio.paracuellos@gmail.com>
+Cc:     linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
+        stable@vger.kernel.org,
+        Luiz Angelo Daros de Luca <luizluca@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Replaces: commit f6498b922e57 ("mmc: host: omap_hsmmc: add code for special init of wl1251 to get rid of pandora_wl1251_init_card")
-Requires: commit ("mmc: core: transplant ti,wl1251 quirks from to be retired omap_hsmmc")
+On Sun, Oct 31, 2021 at 7:40 AM Sergio Paracuellos
+<sergio.paracuellos@gmail.com> wrote:
 
-After moving the wl1251 quirks from omap_hsmmc_init_card() to wl1251_quirk()
-and sdio_card_init_methods[] we can remove omap_hsmmc_init_card() completely.
+> mt7620.h, included by pinctrl-mt7620.c, mentions MT762X_SOC_MT7628AN
+> declared in ralink_regs.h.
+>
+> Fixes: 745ec436de72 ("pinctrl: ralink: move MT7620 SoC pinmux config into a new 'pinctrl-mt7620.c' file")
+> Cc: stable@vger.kernel.org
+> Cc: linus.walleij@linaro.org
+>
+> Signed-off-by: Luiz Angelo Daros de Luca <luizluca@gmail.com>
+> Signed-off-by: Sergio Paracuellos <sergio.paracuellos@gmail.com>
+> ---
+> Changes in v2:
+>  - Original patch from Luiz.
+>  - I have added Fixes tag and CC Linus Walleij and stable and sent v2.
 
-This also removes the specialization on the combination of omap_hsmmc and wl1251.
+Fixed up headers and applied for fixes.
 
-Related-to: commit f6498b922e57 ("mmc: host: omap_hsmmc: add code for special init of wl1251 to get rid of pandora_wl1251_init_card")
-Related-to: commit 2398c41d6432 ("omap: pdata-quirks: remove openpandora quirks for mmc3 and wl1251")
-Related-to: commit f9d50fef4b64 ("ARM: OMAP2+: omap3-pandora: add wifi support")
-Signed-off-by: H. Nikolaus Schaller <hns@goldelico.com>
----
- drivers/mmc/host/omap_hsmmc.c | 36 -----------------------------------
- 1 file changed, 36 deletions(-)
-
-diff --git a/drivers/mmc/host/omap_hsmmc.c b/drivers/mmc/host/omap_hsmmc.c
-index 6960e305e0a39..9749639ea8977 100644
---- a/drivers/mmc/host/omap_hsmmc.c
-+++ b/drivers/mmc/host/omap_hsmmc.c
-@@ -1504,41 +1504,6 @@ static void omap_hsmmc_set_ios(struct mmc_host *mmc, struct mmc_ios *ios)
- 	omap_hsmmc_set_bus_mode(host);
- }
- 
--static void omap_hsmmc_init_card(struct mmc_host *mmc, struct mmc_card *card)
--{
--	struct omap_hsmmc_host *host = mmc_priv(mmc);
--
--	if (card->type == MMC_TYPE_SDIO || card->type == MMC_TYPE_SD_COMBO) {
--		struct device_node *np = mmc_dev(mmc)->of_node;
--
--		/*
--		 * REVISIT: should be moved to sdio core and made more
--		 * general e.g. by expanding the DT bindings of child nodes
--		 * to provide a mechanism to provide this information:
--		 * Documentation/devicetree/bindings/mmc/mmc-card.txt
--		 */
--
--		np = of_get_compatible_child(np, "ti,wl1251");
--		if (np) {
--			/*
--			 * We have TI wl1251 attached to MMC3. Pass this
--			 * information to the SDIO core because it can't be
--			 * probed by normal methods.
--			 */
--
--			dev_info(host->dev, "found wl1251\n");
--			card->quirks |= MMC_QUIRK_NONSTD_SDIO;
--			card->cccr.wide_bus = 1;
--			card->cis.vendor = 0x104c;
--			card->cis.device = 0x9066;
--			card->cis.blksize = 512;
--			card->cis.max_dtr = 24000000;
--			card->ocr = 0x80;
--			of_node_put(np);
--		}
--	}
--}
--
- static void omap_hsmmc_enable_sdio_irq(struct mmc_host *mmc, int enable)
- {
- 	struct omap_hsmmc_host *host = mmc_priv(mmc);
-@@ -1667,7 +1632,6 @@ static struct mmc_host_ops omap_hsmmc_ops = {
- 	.set_ios = omap_hsmmc_set_ios,
- 	.get_cd = mmc_gpio_get_cd,
- 	.get_ro = mmc_gpio_get_ro,
--	.init_card = omap_hsmmc_init_card,
- 	.enable_sdio_irq = omap_hsmmc_enable_sdio_irq,
- };
- 
--- 
-2.33.0
-
+Yours,
+Linus Walleij
