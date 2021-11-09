@@ -2,59 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 245D144AAE3
+	by mail.lfdr.de (Postfix) with ESMTP id 6DC8B44AAE4
 	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 10:50:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244992AbhKIJw4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Nov 2021 04:52:56 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49314 "EHLO
+        id S245033AbhKIJxA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Nov 2021 04:53:00 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49328 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244225AbhKIJvm (ORCPT
+        with ESMTP id S244986AbhKIJvn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Nov 2021 04:51:42 -0500
-Received: from mail-pl1-x62a.google.com (mail-pl1-x62a.google.com [IPv6:2607:f8b0:4864:20::62a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 92359C0613B9
-        for <linux-kernel@vger.kernel.org>; Tue,  9 Nov 2021 01:48:56 -0800 (PST)
-Received: by mail-pl1-x62a.google.com with SMTP id u17so19904520plg.9
-        for <linux-kernel@vger.kernel.org>; Tue, 09 Nov 2021 01:48:56 -0800 (PST)
+        Tue, 9 Nov 2021 04:51:43 -0500
+Received: from mail-pl1-x631.google.com (mail-pl1-x631.google.com [IPv6:2607:f8b0:4864:20::631])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 00575C061205
+        for <linux-kernel@vger.kernel.org>; Tue,  9 Nov 2021 01:48:57 -0800 (PST)
+Received: by mail-pl1-x631.google.com with SMTP id p18so19868040plf.13
+        for <linux-kernel@vger.kernel.org>; Tue, 09 Nov 2021 01:48:57 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=sifive.com; s=google;
         h=from:to:subject:date:message-id:in-reply-to:references:mime-version
          :content-transfer-encoding;
-        bh=Vub601s5coaRpp9kU3Eneee7Bzk9CoXcDFYUdh/yUb4=;
-        b=JyUcyciFRzzYYp9uPqtgoYeeBxrzb9Sm45qw/bnFYDLaasWSvfZlOT1aItjSuT910p
-         IMH9JngmZ6R+RqXECaSEcKJu6kTP05L83/QZnGelZKslpynpOAgZm9GnJMPWlu2Bl/tz
-         Hs0FBDFGFkB8ztgQk9inlX67oZOmA+zCCEgolvmOlYtvcymgqhJrUX6dhTwU8YI5DIwW
-         P8Ry+AIQWEILx26BZDfFmCJa0r2KhHUQkBqFNVanep/JhPoTf2AoZs7FYOLrGGiKMFs9
-         1WIFiga7CLlCwWk2Bk+WeO8qup7mxPP0OSqyifvrUZQpy95E39kWmi9P+F8W5OGsf985
-         ORHQ==
+        bh=Ndxq/he9Iznc1VcgPcQOTE4Tyx8zhB8G5x8otwt8U5w=;
+        b=Bfe/bWitMMb4yDH7qpV9LaONIjcHyZvnYwV/lNtuf5KNVZ5noWDb3rJBCSDxNMDjSb
+         swrsKbETmzXPvEXX/JpI7Mql/yGow8tr8F6OvRqxjACksheLMNzAwR2zorDQUj8GPpbX
+         C2Mxw8Qg69tBR6SenTXxWVzfnJBB4YeHYpGCWcfWAC32feZkW2YuKZL7Ok+5bABnmdgv
+         fHKU8Me5Z51MCCJJmc5cyaW43vUfknkzMIdw6Y4fazIRhk5p18BqXgv9KWYmFmiEn53g
+         j7HopOsdAL890ieBL+0oHmgarJMDcm7I7Ktc2wM3tHQQcZUXE6EmdFt0u659JcaxDqf9
+         A2UA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=Vub601s5coaRpp9kU3Eneee7Bzk9CoXcDFYUdh/yUb4=;
-        b=H7kVmC2iO24Q/V0/ZanSwJ3nq32AaAXQxIj7CzN9pluz3niQEy3nRpoL7SxKk6CoAH
-         eF9BzGvLT0nMYXwpQ2uhxcAkeU9kEDug4LUiRfAG6uulqdgNTnoQOojj8ie7RebER4NR
-         n8G2bGq1alRScLlcu0vPp/GYfvRmrWCfU5PCEBPSID061OAuEawQ61Lljl4QdUSWJz9l
-         n0y57Wsuaik8c87SryV2RcKUmwNM9lAiOsbKE7FtmwkdEE9SyuyveqmKfjJeMnL1jBHi
-         p9q4enJKM0ptU7/Y1tNxqTgbyx4VrnM3RuReWFUrvx4UIoExwR0JRINlCpYyfO8IrE17
-         63bQ==
-X-Gm-Message-State: AOAM533RCJ/vyykbM3pgbK2anIxwynb8sX3xKVaU59iHVmDWnKny2fV2
-        kD2m7M1AZy+kOacuE/ES/Nhnj/ABsjW5rw==
-X-Google-Smtp-Source: ABdhPJzEcSgen4cPqTPPxdd8RjGLhjnXGs+ZgWDTCKGrccekjAhdSY+7/5ukjNzOST1jTpUdezj9tA==
-X-Received: by 2002:a17:902:ec8e:b0:141:da55:6158 with SMTP id x14-20020a170902ec8e00b00141da556158mr6011841plg.7.1636451336104;
-        Tue, 09 Nov 2021 01:48:56 -0800 (PST)
+        bh=Ndxq/he9Iznc1VcgPcQOTE4Tyx8zhB8G5x8otwt8U5w=;
+        b=a3EeOBVpj5KweggsygmM3ZSLvrxOEuK5ub2u56tRGOGmOlWVljk3FrB2Orau3AFnS6
+         HGYgbYQFxTwGbYKZsvAEA385I0+9A1fHcZcpn+dIt+15wk+eOFQa4a3eBM6swjEJihqh
+         EKO6kRGYUez30VUMoO0/LVOtTD8kXlqBc1fC314fq93gvM5mkxlzBBPz+rof/zD28mt9
+         j4gGFXFnzPm4eJtKrtXv8/D2JKSBthqbi5IHUXrmK5WK8JsID44R6b64eW/9tlBq1zTz
+         nbWkOrE4HC2Ey4RhlYRgZ9xLDSZhlgwMH92sIWqZTZldm0KpQSONA7d/0Tdu2KfOGGMX
+         sNNA==
+X-Gm-Message-State: AOAM530p9iFsUlmfSPyVEYQHzrprahE2b5C51c9D7LUGWi05O2FhZK5V
+        sGRVsKk+LiEE2c2w7FLhRN5H+iLM5LupCA==
+X-Google-Smtp-Source: ABdhPJxkXcHXXXYuTfH4xGUzHj722l8C5zUPIw2yiOBlrW9DlFUPkXS/76rvydZ9eLuq0PLGMSZPJg==
+X-Received: by 2002:a17:90b:1c07:: with SMTP id oc7mr5646669pjb.127.1636451337525;
+        Tue, 09 Nov 2021 01:48:57 -0800 (PST)
 Received: from hsinchu16.internal.sifive.com (59-124-168-89.hinet-ip.hinet.net. [59.124.168.89])
-        by smtp.gmail.com with ESMTPSA id cv1sm1940511pjb.48.2021.11.09.01.48.54
+        by smtp.gmail.com with ESMTPSA id cv1sm1940511pjb.48.2021.11.09.01.48.56
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 09 Nov 2021 01:48:55 -0800 (PST)
+        Tue, 09 Nov 2021 01:48:57 -0800 (PST)
 From:   Greentime Hu <greentime.hu@sifive.com>
 To:     palmer@dabbelt.com, paul.walmsley@sifive.com,
         linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
         aou@eecs.berkeley.edu
-Subject: [PATCH v9 16/17] riscv: Fix an illegal instruction exception when accessing vlenb without enable vector first
-Date:   Tue,  9 Nov 2021 17:48:28 +0800
-Message-Id: <3c0297d8335e4cac54a4397c880092c1c983e04e.1636362169.git.greentime.hu@sifive.com>
+Subject: [PATCH v9 17/17] riscv: Fix a kernel panic issue if $s2 is set to a specific value before entering Linux
+Date:   Tue,  9 Nov 2021 17:48:29 +0800
+Message-Id: <33b87327ad65d6c655406abd69139bd126d460e4.1636362169.git.greentime.hu@sifive.com>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <cover.1636362169.git.greentime.hu@sifive.com>
 References: <cover.1636362169.git.greentime.hu@sifive.com>
@@ -64,70 +64,145 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-It triggered an illegal instruction exception when accessing vlenb CSR
-without enable vector first. To fix this issue, we should enable vector
-before using it and disable vector after using it.
+Panic log:
+[    0.018707] Unable to handle kernel NULL pointer dereference at virtual address 0000000000000000
+[    0.023060] Oops [#1]
+[    0.023214] Modules linked in:
+[    0.023725] CPU: 0 PID: 0 Comm: swapper/0 Not tainted 5.14.0 #33
+[    0.023955] Hardware name: SiFive,FU800 (DT)
+[    0.024150] epc : __vstate_save+0x1c/0x48
+[    0.024654]  ra : arch_dup_task_struct+0x70/0x108
+[    0.024815] epc : ffffffff80005ad8 ra : ffffffff800035a8 sp : ffffffff81203d50
+[    0.025020]  gp : ffffffff812e8290 tp : ffffffff8120bdc0 t0 : 0000000000000000
+[    0.025216]  t1 : 0000000000000000 t2 : 0000000000000000 s0 : ffffffff81203d80
+[    0.025424]  s1 : ffffffff8120bdc0 a0 : ffffffff8120c820 a1 : 0000000000000000
+[    0.025659]  a2 : 0000000000001000 a3 : 0000000000000000 a4 : 0000000000000600
+[    0.025869]  a5 : ffffffff8120cdc0 a6 : ffffffe00160b400 a7 : ffffffff80a1fe60
+[    0.026069]  s2 : ffffffe0016b8000 s3 : ffffffff81204000 s4 : 0000000000004000
+[    0.026267]  s5 : 0000000000000000 s6 : ffffffe0016b8000 s7 : ffffffe0016b9000
+[    0.026475]  s8 : ffffffff81203ee0 s9 : 0000000000800300 s10: ffffffff812e9088
+[    0.026689]  s11: ffffffd004008000 t3 : 0000000000000000 t4 : 0000000000000100
+[    0.026900]  t5 : 0000000000000600 t6 : ffffffe00167bcc4
+[    0.027057] status: 8000000000000720 badaddr: 0000000000000000 cause: 000000000000000f
+[    0.027344] [<ffffffff80005ad8>] __vstate_save+0x1c/0x48
+[    0.027567] [<ffffffff8000abe8>] copy_process+0x266/0x11a0
+[    0.027739] [<ffffffff8000bc98>] kernel_clone+0x90/0x2aa
+[    0.027915] [<ffffffff8000c062>] kernel_thread+0x76/0x92
+[    0.028075] [<ffffffff8072e34c>] rest_init+0x26/0xfc
+[    0.028242] [<ffffffff80800638>] arch_call_rest_init+0x10/0x18
+[    0.028423] [<ffffffff80800c4a>] start_kernel+0x5ce/0x5fe
+[    0.029188] ---[ end trace 9a59af33f7ba3df4 ]---
+[    0.029479] Kernel panic - not syncing: Attempted to kill the idle task!
+[    0.029907] ---[ end Kernel panic - not syncing: Attempted to kill the idle task! ]---
 
+The NULL pointer accessing caused the kernel panic. There is a NULL
+pointer is because in vstate_save() function it will check
+(regs->status & SR_VS) == SR_VS_DIRTY and this is true, but it shouldn't
+be true because vector is not used here. Since vector is not used, datap
+won't be allocated so it is NULL. The reason why regs->status is set to
+a wrong value is because pt_regs->status is put in stack and it is polluted
+after setup_vm() called.
+
+In prologue of setup_vm(), we can observe it will save s2 to stack however
+s2 is meaningless here because the caller is assembly code and s2 is just
+some value from previous stage. The compiler will base on calling
+convention to save the register to stack. Then 0x80008638 in s2 is saved
+to stack. It might be any value. In this failure case it is 0x80008638 and
+it will accidentally cause SR_VS_DIRTY to call the vstate_save() function.
+
+(gdb) info addr setup_vm
+Symbol "setup_vm" is a function at address 0xffffffff80802c8a.
+(gdb) va2pa 0xffffffff80802c8a
+$64 = 0x80a02c8a
+(gdb) x/10i 0x80a02c8a
+   0x80a02c8a:  addi    sp,sp,-48
+   0x80a02c8c:  li      a3,-1
+   0x80a02c8e:  auipc   a5,0xff7fd
+   0x80a02c92:  addi    a5,a5,882
+   0x80a02c96:  sd      s0,32(sp)
+   0x80a02c98:  sd      s2,16(sp) <-- store to stack
+
+After returning from setup_vm()
+(gdb) x/20i  0x0000000080201138
+   0x80201138:  mv      a0,s1
+   0x8020113a:  auipc   ra,0x802
+   0x8020113e:  jalr    -1200(ra)    <-- jump to setup_vm()
+   0x80201142:  auipc   a0,0xa03
+(gdb) p/x $sp
+$70 = 0x81404000
+(gdb) p/x *(struct pt_regs*)($sp-0x120)
+$71 = {
+  epc = 0x0,
+  ra = 0x0,
+  sp = 0x0,
+  gp = 0x0,
+  tp = 0x0,
+  t0 = 0x0,
+  t1 = 0x0,
+  t2 = 0x0,
+  s0 = 0x0,
+  s1 = 0x0,
+  a0 = 0x0,
+  a1 = 0x0,
+  a2 = 0x0,
+  a3 = 0x81403f90,
+  a4 = 0x80c04000,
+  a5 = 0x1,
+  a6 = 0xffffffff81337000,
+  a7 = 0x81096700,
+  s2 = 0x81400000,
+  s3 = 0xffffffff81200000,
+  s4 = 0x81403fd0,
+  s5 = 0x80a02c6c,
+  s6 = 0x8000000000006800,
+  s7 = 0x0,
+  s8 = 0xfffffffffffffff3,
+  s9 = 0x80c01000,
+  s10 = 0x81096700,
+  s11 = 0x82200000,
+  t3 = 0x81404000,
+  t4 = 0x80a02dea,
+  t5 = 0x0,
+  t6 = 0x82200000,
+  status = 0x80008638, <- Wrong value in stack!!!
+  badaddr = 0x82200000,
+  cause = 0x0,
+  orig_a0 = 0x80201142
+}
+(gdb) p/x $pc
+$72 = 0x80201142
+(gdb) p/x sizeof(struct pt_regs)
+$73 = 0x120
+
+Co-developed-by: ShihPo Hung <shihpo.hung@sifive.com>
+Signed-off-by: ShihPo Hung <shihpo.hung@sifive.com>
 Co-developed-by: Vincent Chen <vincent.chen@sifive.com>
 Signed-off-by: Vincent Chen <vincent.chen@sifive.com>
 Signed-off-by: Greentime Hu <greentime.hu@sifive.com>
 ---
- arch/riscv/include/asm/vector.h        | 2 ++
- arch/riscv/kernel/cpufeature.c         | 2 ++
- arch/riscv/kernel/kernel_mode_vector.c | 6 ++++--
- 3 files changed, 8 insertions(+), 2 deletions(-)
+ arch/riscv/kernel/head.S | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/arch/riscv/include/asm/vector.h b/arch/riscv/include/asm/vector.h
-index 5d7f14453f68..ca063c8f47f2 100644
---- a/arch/riscv/include/asm/vector.h
-+++ b/arch/riscv/include/asm/vector.h
-@@ -8,6 +8,8 @@
+diff --git a/arch/riscv/kernel/head.S b/arch/riscv/kernel/head.S
+index 551afe1de85e..3f881a26527d 100644
+--- a/arch/riscv/kernel/head.S
++++ b/arch/riscv/kernel/head.S
+@@ -303,6 +303,7 @@ clear_bss_done:
+ 	/* Initialize page tables and relocate to virtual addresses */
+ 	la sp, init_thread_union + THREAD_SIZE
+ 	XIP_FIXUP_OFFSET sp
++	addi sp, sp, -PT_SIZE
+ #ifdef CONFIG_BUILTIN_DTB
+ 	la a0, __dtb_start
+ #else
+@@ -320,6 +321,7 @@ clear_bss_done:
+ 	la tp, init_task
+ 	sw zero, TASK_TI_CPU(tp)
+ 	la sp, init_thread_union + THREAD_SIZE
++	addi sp, sp, -PT_SIZE
  
- #include <linux/types.h>
- 
-+void rvv_enable(void);
-+void rvv_disable(void);
- void kernel_rvv_begin(void);
- void kernel_rvv_end(void);
- 
-diff --git a/arch/riscv/kernel/cpufeature.c b/arch/riscv/kernel/cpufeature.c
-index 8e7557980faf..0139ec20adce 100644
---- a/arch/riscv/kernel/cpufeature.c
-+++ b/arch/riscv/kernel/cpufeature.c
-@@ -159,7 +159,9 @@ void __init riscv_fill_hwcap(void)
- 	if (elf_hwcap & COMPAT_HWCAP_ISA_V) {
- 		static_branch_enable(&cpu_hwcap_vector);
- 		/* There are 32 vector registers with vlenb length. */
-+		rvv_enable();
- 		riscv_vsize = csr_read(CSR_VLENB) * 32;
-+		rvv_disable();
- 	}
- #endif
- }
-diff --git a/arch/riscv/kernel/kernel_mode_vector.c b/arch/riscv/kernel/kernel_mode_vector.c
-index 8d2e53ea25c1..1ecb6ec5c56d 100644
---- a/arch/riscv/kernel/kernel_mode_vector.c
-+++ b/arch/riscv/kernel/kernel_mode_vector.c
-@@ -71,15 +71,17 @@ static void put_cpu_vector_context(void)
- 	preempt_enable();
- }
- 
--static void rvv_enable(void)
-+void rvv_enable(void)
- {
- 	csr_set(CSR_STATUS, SR_VS);
- }
-+EXPORT_SYMBOL(rvv_enable);
- 
--static void rvv_disable(void)
-+void rvv_disable(void)
- {
- 	csr_clear(CSR_STATUS, SR_VS);
- }
-+EXPORT_SYMBOL(rvv_disable);
- 
- /*
-  * kernel_rvv_begin(): obtain the CPU vector registers for use by the calling
+ #ifdef CONFIG_KASAN
+ 	call kasan_early_init
 -- 
 2.31.1
 
