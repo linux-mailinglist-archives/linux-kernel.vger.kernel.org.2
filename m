@@ -2,175 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 47D0C44B1B5
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 18:05:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CB0A644B1B8
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 18:05:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240722AbhKIRHy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Nov 2021 12:07:54 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:53777 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231883AbhKIRHw (ORCPT
+        id S240743AbhKIRID (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Nov 2021 12:08:03 -0500
+Received: from mswedge2.sunplus.com ([60.248.182.106]:39736 "EHLO
+        mg.sunplus.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S231883AbhKIRIC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Nov 2021 12:07:52 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1636477506;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=C+tFRg598ce+Pkksxlpyq2K1tm7az89DtXstWpm6hqc=;
-        b=IVok75bKRuqJ1xnsFrmUsT7EMxVT6RsSKDEQ8SfRsUqCBge7tUSxCuxhUe3rFHximH5Qol
-        hZvXJxqo9D0+RHwLMRf1K3WxLCSQsbmKxANTBTqslVu/Vq5BgvJWQIH0AXJXE1uHg4PO5E
-        rnebcXTYycmGQj1Bi92Xb5p5fY8yygE=
-Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com
- [209.85.128.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-46-yYhtFs_OP_mwdUqO9QiHMw-1; Tue, 09 Nov 2021 12:05:05 -0500
-X-MC-Unique: yYhtFs_OP_mwdUqO9QiHMw-1
-Received: by mail-wm1-f70.google.com with SMTP id m18-20020a05600c3b1200b0033283ea5facso629242wms.1
-        for <linux-kernel@vger.kernel.org>; Tue, 09 Nov 2021 09:05:05 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=C+tFRg598ce+Pkksxlpyq2K1tm7az89DtXstWpm6hqc=;
-        b=ZR909O6yiD+MB3Lb9nZJlKLXT3K24FvEsSy7toytzwfJZDZ2Cb++kzruxvqVDtpWq3
-         UPantXaG8RvN4YZErGzpech4qC/LRRUQnYX0tcu6dApMl8jTbhfiIPt1U6xY/FfcGH7s
-         Je9lJ5RKMH+DdNRFBvG66uFX9JwyMakqcpJ50Tcm89iGB6NHbJljHKlkLMPEnWJFu/fQ
-         L54ymQ1RUQSuFQ8xpeqjzJkDedA+4MmHQ/9LJDDbRBqZiqNkd3RB89fMsyYOBDzmhdRJ
-         MenqpOfI66A+W8CgS+8vxtD7SGRTJUWAQhpXD+Nbrdpnvg1cBHxE2o0uymAvzPIh1RxV
-         39uQ==
-X-Gm-Message-State: AOAM531mkAZvGwirvMWewv0naC+tGGaofD/9E0xWs9K13sV1UnQmoE+R
-        SgjcOGCse6+2G7PcHKKRtltkyQIHrSk27FNQ5lwbyD8QoiBf0KlY9ZuevSUilkhjA45dyBtte7b
-        dyOlqAW+eZsqT5GDT+cJRxLNb
-X-Received: by 2002:adf:e2c5:: with SMTP id d5mr11472495wrj.338.1636477503999;
-        Tue, 09 Nov 2021 09:05:03 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJw4zmFD63DlRvgaPFPwC/DJ0LRgwzSloKUJSs78C2aFK91vrl3ZK3k6EtXwUcJIi3p8AMau7A==
-X-Received: by 2002:adf:e2c5:: with SMTP id d5mr11472455wrj.338.1636477503802;
-        Tue, 09 Nov 2021 09:05:03 -0800 (PST)
-Received: from ?IPv6:2a01:e0a:59e:9d80:527b:9dff:feef:3874? ([2a01:e0a:59e:9d80:527b:9dff:feef:3874])
-        by smtp.gmail.com with ESMTPSA id o12sm26601930wrc.85.2021.11.09.09.05.02
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 09 Nov 2021 09:05:03 -0800 (PST)
-Subject: Re: [PATCH v4 07/21] KVM: arm64: Support SDEI_EVENT_UNREGISTER
- hypercall
-To:     Gavin Shan <gshan@redhat.com>, kvmarm@lists.cs.columbia.edu
-Cc:     maz@kernel.org, linux-kernel@vger.kernel.org,
-        Jonathan.Cameron@huawei.com, pbonzini@redhat.com, will@kernel.org
-References: <20210815001352.81927-1-gshan@redhat.com>
- <20210815001352.81927-8-gshan@redhat.com>
-From:   Eric Auger <eauger@redhat.com>
-Message-ID: <100a4aa0-6c2d-2fec-6f11-c7e64946ef0b@redhat.com>
-Date:   Tue, 9 Nov 2021 18:05:01 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.1
+        Tue, 9 Nov 2021 12:08:02 -0500
+X-MailGates: (flag:3,DYNAMIC,RELAY,NOHOST:PASS)(compute_score:DELIVER,40
+        ,3)
+Received: from 172.17.9.112
+        by mg02.sunplus.com with MailGates ESMTP Server V5.0(57744:0:AUTH_RELAY)
+        (envelope-from <wells.lu@sunplus.com>); Wed, 10 Nov 2021 01:05:06 +0800 (CST)
+Received: from sphcmbx02.sunplus.com.tw (172.17.9.112) by
+ sphcmbx02.sunplus.com.tw (172.17.9.112) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.23; Wed, 10 Nov 2021 01:05:01 +0800
+Received: from sphcmbx02.sunplus.com.tw ([::1]) by sphcmbx02.sunplus.com.tw
+ ([fe80::f8bb:bd77:a854:5b9e%14]) with mapi id 15.00.1497.023; Wed, 10 Nov
+ 2021 01:05:01 +0800
+From:   =?big5?B?V2VsbHMgTHUgp2aq2sTL?= <wells.lu@sunplus.com>
+To:     Andrew Lunn <andrew@lunn.ch>
+CC:     Wells Lu <wellslutw@gmail.com>,
+        "davem@davemloft.net" <davem@davemloft.net>,
+        "kuba@kernel.org" <kuba@kernel.org>,
+        "robh+dt@kernel.org" <robh+dt@kernel.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "p.zabel@pengutronix.de" <p.zabel@pengutronix.de>
+Subject: RE: [PATCH 2/2] net: ethernet: Add driver for Sunplus SP7021
+Thread-Topic: [PATCH 2/2] net: ethernet: Add driver for Sunplus SP7021
+Thread-Index: AQHX0KKBcebTINBXKk6D/f7Frpi9sKvxfraAgAGf2kCAAU6CgIAE3RVA///T9oCAAJMwUP//h9mAgACMUqD//6B2AAA6wUXQ//+arYD//2ouwA==
+Date:   Tue, 9 Nov 2021 17:05:01 +0000
+Message-ID: <da39cce70a2849799bfff07394e27b0d@sphcmbx02.sunplus.com.tw>
+References: <YYK+EeCOu/BXBXDi@lunn.ch>
+ <64626e48052c4fba9057369060bfbc84@sphcmbx02.sunplus.com.tw>
+ <YYUzgyS6pfQOmKRk@lunn.ch>
+ <7c77f644b7a14402bad6dd6326ba85b1@sphcmbx02.sunplus.com.tw>
+ <YYkjBdu64r2JF1bR@lunn.ch>
+ <4e663877558247048e9b04b027e555b8@sphcmbx02.sunplus.com.tw>
+ <YYk5s5fDuub7eBqu@lunn.ch>
+ <585e234fdb74499caafee3b43b5e5ab4@sphcmbx02.sunplus.com.tw>
+ <YYlfRB7updHplnLE@lunn.ch>
+ <941aabfafa674999b2c0f4fc88025518@sphcmbx02.sunplus.com.tw>
+ <YYqUkfepXZzGpR3w@lunn.ch>
+In-Reply-To: <YYqUkfepXZzGpR3w@lunn.ch>
+Accept-Language: zh-TW, en-US
+Content-Language: zh-TW
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [172.25.108.39]
+Content-Type: text/plain; charset="big5"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-In-Reply-To: <20210815001352.81927-8-gshan@redhat.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 8/15/21 2:13 AM, Gavin Shan wrote:
-> This supports SDEI_EVENT_UNREGISTER hypercall. It's used by the
-> guest to unregister SDEI event. The SDEI event won't be raised to
-> the guest or specific vCPU after it's unregistered successfully.
-> It's notable the SDEI event is disabled automatically on the guest
-> or specific vCPU once it's unregistered successfully.
-> 
-> Signed-off-by: Gavin Shan <gshan@redhat.com>
-> ---
->  arch/arm64/kvm/sdei.c | 61 +++++++++++++++++++++++++++++++++++++++++++
->  1 file changed, 61 insertions(+)
-> 
-> diff --git a/arch/arm64/kvm/sdei.c b/arch/arm64/kvm/sdei.c
-> index b4162efda470..a3ba69dc91cb 100644
-> --- a/arch/arm64/kvm/sdei.c
-> +++ b/arch/arm64/kvm/sdei.c
-> @@ -308,6 +308,65 @@ static unsigned long kvm_sdei_hypercall_context(struct kvm_vcpu *vcpu)
->  	return ret;
->  }
->  
-> +static unsigned long kvm_sdei_hypercall_unregister(struct kvm_vcpu *vcpu)
-> +{
-> +	struct kvm *kvm = vcpu->kvm;
-> +	struct kvm_sdei_kvm *ksdei = kvm->arch.sdei;
-> +	struct kvm_sdei_vcpu *vsdei = vcpu->arch.sdei;
-> +	struct kvm_sdei_event *kse = NULL;
-> +	struct kvm_sdei_kvm_event *kske = NULL;
-> +	unsigned long event_num = smccc_get_arg1(vcpu);
-> +	int index = 0;
-> +	unsigned long ret = SDEI_SUCCESS;
-> +
-> +	/* Sanity check */
-> +	if (!(ksdei && vsdei)) {
-> +		ret = SDEI_NOT_SUPPORTED;
-> +		goto out;
-> +	}
-> +
-> +	if (!kvm_sdei_is_valid_event_num(event_num)) {
-> +		ret = SDEI_INVALID_PARAMETERS;
-> +		goto out;
-> +	}
-> +
-> +	/* Check if the KVM event exists */
-> +	spin_lock(&ksdei->lock);
-> +	kske = kvm_sdei_find_kvm_event(kvm, event_num);
-> +	if (!kske) {
-> +		ret = SDEI_INVALID_PARAMETERS;
-> +		goto unlock;
-> +	}
-> +
-> +	/* Check if there is pending events */
-> +	if (kske->state.refcount) {
-> +		ret = SDEI_PENDING;
-don't you want to record the fact the unregistration is outstanding to
-perform subsequent actions? Otherwise nothing will hapen when the
-current executing handlers complete?
-> +		goto unlock;
-> +	}
-> +
-> +	/* Check if it has been registered */
-> +	kse = kske->kse;
-> +	index = (kse->state.type == SDEI_EVENT_TYPE_PRIVATE) ?
-> +		vcpu->vcpu_idx : 0;
-you could have an inline for the above as this is executed in many
-functions. even including the code below.
-> +	if (!kvm_sdei_is_registered(kske, index)) {
-> +		ret = SDEI_DENIED;
-> +		goto unlock;
-> +	}
-> +
-> +	/* The event is disabled when it's unregistered */
-> +	kvm_sdei_clear_enabled(kske, index);
-> +	kvm_sdei_clear_registered(kske, index);
-> +	if (kvm_sdei_empty_registered(kske)) {
-a refcount mechanism would be cleaner I think.
-> +		list_del(&kske->link);
-> +		kfree(kske);
-> +	}
-> +
-> +unlock:
-> +	spin_unlock(&ksdei->lock);
-> +out:
-> +	return ret;
-> +}
-> +
->  int kvm_sdei_hypercall(struct kvm_vcpu *vcpu)
->  {
->  	u32 func = smccc_get_function(vcpu);
-> @@ -333,6 +392,8 @@ int kvm_sdei_hypercall(struct kvm_vcpu *vcpu)
->  	case SDEI_1_0_FN_SDEI_EVENT_COMPLETE:
->  	case SDEI_1_0_FN_SDEI_EVENT_COMPLETE_AND_RESUME:
->  	case SDEI_1_0_FN_SDEI_EVENT_UNREGISTER:
-> +		ret = kvm_sdei_hypercall_unregister(vcpu);
-> +		break;
->  	case SDEI_1_0_FN_SDEI_EVENT_STATUS:
->  	case SDEI_1_0_FN_SDEI_EVENT_GET_INFO:
->  	case SDEI_1_0_FN_SDEI_EVENT_ROUTING_SET:
-> 
-
+PiA+IEkgZG9uJ3Qga25vdyBob3cgdG8gaW1wbGVtZW50IFNUUCBpbiBMMiBzd2l0Y2ggbGlrZSBT
+UDcwMjEuDQo+IA0KPiBUaGF0IGlzIHRoZSBuaWNlIHRoaW5nIGFib3V0IHVzaW5nIExpbnV4LiBJ
+dCBhbHJlYWR5IGtub3dzIGhvdyB0byBpbXBsZW1lbnQNCj4gU1RQLiBUaGUgYnJpZGdlIHdpbGwg
+ZG8gaXQgZm9yIHlvdS4gWW91IGp1c3QgbmVlZCB0byBhZGQgdGhlIGNhbGxiYWNrcyBpbiB0aGUN
+Cj4gZHJpdmVyIHdoaWNoIGFyZSBuZWVkZWQuIFBsZWFzZSB0YWtlIGEgbG9vayBhdCBvdGhlciBz
+d2l0Y2hkZXYgZHJpdmVycy4NCj4gDQo+ID4gSWYgdGhpcyBpcyBhY2NlcHRhYmxlLCBJJ2QgbGlr
+ZSB0byBoYXZlIEV0aGVybmV0IG9mIFNQNzAyMSBoYXZlIHR3bw0KPiA+IG9wZXJhdGlvbg0KPiA+
+IG1vZGVzOg0KPiA+ICAtIER1YWwgTklDIG1vZGUNCj4gPiAgLSBTaW5nbGUgTklDIHdpdGggMi1w
+b3J0IGZyYW1lLWZsb29kaW5nIGh1YiBtb2RlDQo+IA0KPiBObywgc29ycnkuIERvIGl0IGNvcnJl
+Y3RseSwgb3IgZG8gbm90IGRvIGl0LiBQbGVhc2Ugc3RhcnQgd2l0aCBhIGNsZWFuIGRyaXZlciBk
+b2luZw0KPiBEdWFsIE5JQyBtb2RlLiBZb3UgY2FuIGFkZCBMMiBzdXBwb3J0IGxhdGVyLCBvbmNl
+IHlvdSBoYXZlIGRvbmUgdGhlIHJlc2VhcmNoDQo+IHRvIHVuZGVyc3RhbmQgc3dpdGNoZGV2LCBl
+dGMuDQoNClNvcnJ5LCBJIHdpbGwgZ28gd2l0aCBEdWFsIE5JQyBtb2RlLiBJJ2xsIGRvIGEgd2hv
+bGUgY2xlYW51cCBvbiBkcml2ZXIgZm9yIHRoaXMuDQpQbGVhc2Uga2luZGx5IHJldmlldyBhZ2Fp
+bi4NCg0KSSBuZWVkIHRpbWUgdG8gc3R1ZHkgbW9yZSBhYm91dCBzd2l0Y2hkZXYgYW5kIHByb3Bv
+c2UgYSBwbGFuIHRvIGhpZ2gNCm1hbmFnZW1lbnQgb2YgY29tcGFueS4gSG93ZXZlciwgU3VucGx1
+cyBpcyBub3QgYSBuZXR3b3JraW5nIGNvbXBhbnksIA0KYnV0IHRhcmdldHMgb24gTGludXgtYmFz
+ZWQgaW5kdXN0cmlhbCBjb250cm9sLCBhdXRvbm9tb3VzIG1vYmlsZSByb2JvdCwgLi4uDQoNCg0K
+PiA+IFJNSUkgcGlucyBvZiBQSFkgcG9ydHMgb2YgU1A3MDIxIGFyZSBtdWx0aXBsZXhhYmxlLiBJ
+J2QgbGlrZSB0byBzd2l0Y2gNCj4gPiBSTUlJIHBpbnMgb2YgdGhlIHNlY29uZCBQSFkgZm9yIG90
+aGVyIHVzZSBpZiBzaW5nbGUgTklDIG1vZGUgaXMgdXNlZC4NCj4gPiBJbiBmYWN0LCBzb21lIFNQ
+NzAyMSBib2FyZHMgaGF2ZSBkdWFsIEV0aGVybmV0IGFuZCBzb21lIGhhdmUgb25seSBvbmUNCj4g
+PiBFdGhlcm5ldC4gV2UgcmVhbGx5IG5lZWQgdGhlIHR3byBvcGVyYXRpb24gbW9kZXMuDQo+IA0K
+PiBPbmx5IHVzaW5nIGEgc3Vic2V0IG9mIHBvcnRzIGluIGEgc3dpdGNoIGlzIGNvbW1vbi4gVGhl
+IGNvbW1vbiBiaW5kaW5nIGZvcg0KPiBEU0Egc3dpdGNoZXMgaXMgZGVzY3JpYmVkIGluOg0KPiAN
+Cj4gRG9jdW1lbnRhdGlvbi9kZXZpY2V0cmVlL2JpbmRpbmdzL25ldC9kc2EvZHNhLnlhbWwgYW5k
+IGZvciBleGFtcGxlDQo+IERvY3VtZW50YXRpb24vZGV2aWNldHJlZS9iaW5kaW5ncy9uZXQvZHNh
+L2hpcnNjaG1hbm4saGVsbGNyZWVrLnlhbWwgaXMgYQ0KPiBtZW1vcnkgbWFwcGVkIHN3aXRjaC4g
+Tm90aWNlIHRoZSByZWcgbnVtYmVyczoNCj4gDQo+ICAgICAgICAgICAgZXRoZXJuZXQtcG9ydHMg
+ew0KPiAgICAgICAgICAgICAgICAgI2FkZHJlc3MtY2VsbHMgPSA8MT47DQo+ICAgICAgICAgICAg
+ICAgICAjc2l6ZS1jZWxscyA9IDwwPjsNCj4gDQo+ICAgICAgICAgICAgICAgICBwb3J0QDAgew0K
+PiAgICAgICAgICAgICAgICAgICAgIHJlZyA9IDwwPjsNCj4gICAgICAgICAgICAgICAgICAgICBs
+YWJlbCA9ICJjcHUiOw0KPiAgICAgICAgICAgICAgICAgICAgIGV0aGVybmV0ID0gPCZnbWFjMD47
+DQo+ICAgICAgICAgICAgICAgICB9Ow0KPiANCj4gICAgICAgICAgICAgICAgIHBvcnRAMiB7DQo+
+ICAgICAgICAgICAgICAgICAgICAgcmVnID0gPDI+Ow0KPiAgICAgICAgICAgICAgICAgICAgIGxh
+YmVsID0gImxhbjAiOw0KPiAgICAgICAgICAgICAgICAgICAgIHBoeS1oYW5kbGUgPSA8JnBoeTE+
+Ow0KPiAgICAgICAgICAgICAgICAgfTsNCj4gDQo+IHJlZyA9IDwxPiBpcyBtaXNzaW5nIGluIHRo
+aXMgZXhhbXBsZS4gUG9ydCAxIG9mIHRoZSBzd2l0Y2ggaXMgbm90IHVzZWQuIFlvdSBjYW4NCj4g
+ZG8gdGhlIHNhbWUgd2l0aCBhIDIgcG9ydCBzd2l0Y2gsIHdoZW4geW91IGRvbid0IHdhbnQgdG8g
+bWFrZSB1c2Ugb2YgYSBwb3J0Lg0KPiBKdXN0IGRvbid0IGxpc3QgaXQgaW4gRFQuDQoNClRoYW5r
+IHlvdSBmb3Igcm91dGluZyBtZSB0byB0aGUgZG9jdW1lbnQuDQpOb3cgSSBrbm93IHRoZXJlIGFy
+ZSBzd2l0Y2ggZGV2aWNlIGV4YW1wbGVzIGluIGZvbGRlciBkc2EvLg0KV2UgY2FuIHJlZmVyIHRv
+IHRoZW0gd2hlbiB3ZSB3YW50IHRvIG1ha2UgYSBzd2l0Y2guDQoNCg0KPiA+IEFmdGVyIGxvb2tp
+bmcgdXAgc29tZSBkYXRhLCBJIGZpbmQgUk1DIG1lYW5zIHJlc2VydmVkIG11bHRpLWNhc3QuDQo+
+ID4gUk1DIHBhY2tldHMgbWVhbnMgcGFja2V0cyB3aXRoIERBID0gMHgwMTgwYzIwMDAwMDAsIDB4
+MDE4MGMyMDAwMDAyIH4NCj4gPiAweDAxODBjMjAwMDAwZiwgZXhjZXB0IHRoZSBQQVVTRSBwYWNr
+ZXQgKERBID0gMHgwMTgwYzIwMDAwMDEpDQo+IA0KPiBBaCwgZ29vZC4gQlBEVXMgdXNlIDAxOjgw
+OkMyOjAwOjAwOjAwLiBTbyB0aGV5IHdpbGwgYmUgcGFzc2VkIHdoZW4gdGhlIHBvcnQgaXMNCj4g
+aW4gYmxvY2tpbmcgbW9kZS4gUFRQIHVzZXMgMDE6ODA6QzI6MDA6MDA6MEUuIFNvIHRoZSBoYXJk
+d2FyZSBkZXNpZ25lcnMNCj4gYXBwZWFyIHRvIG9mIGRlc2lnbmVkIGEgcHJvcGVyIEwyIHN3aXRj
+aCB3aXRoIGV2ZXJ5dGhpbmcgeW91IG5lZWQgZm9yIGENCj4gbWFuYWdlZCBzd2l0Y2guIFdoYXQg
+aXMgbWlzc2luZyBpcyBzb2Z0d2FyZS4gVGhlIG1vcmUgaSBsZWFybiBhYm91dCB0aGlzDQo+IGhh
+cmR3YXJlLCB0aGUgbW9yZSBpJ3ZlIGNvbnZpbmNlZCB5b3UgbmVlZCB0byB3cml0ZSBwcm9wZXIg
+TGludXggc3VwcG9ydCBmb3INCj4gaXQsIG5vdCB5b3VyIG1vZGUgaGFja3MuDQo+IA0KPiAgICAg
+QW5kcmV3DQoNClRoYW5rcyBmb3IgY29uZmlybWluZyB0aGF0IHRoZSBMMiBzd2l0Y2ggaXMgZ29v
+ZCBlbm91Z2ggZm9yIHN3aXRjaCBkZXZpY2UuDQpBY3R1YWxseSwgdGhlIElQIHdhcyBsaWNlbnNl
+ZCBmcm9tIG90aGVyIGNvbXBhbnkgbG9uZyBhZ28uIFdlIGRvbqGmdCBrbm93IA0KYWxsIGRldGFp
+bHMuDQoNCg==
