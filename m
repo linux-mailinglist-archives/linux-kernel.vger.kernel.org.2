@@ -2,144 +2,166 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 162E044AD9D
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 13:32:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CB8C344AD8E
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 13:31:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242740AbhKIMe5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Nov 2021 07:34:57 -0500
-Received: from mx0a-00128a01.pphosted.com ([148.163.135.77]:41072 "EHLO
-        mx0a-00128a01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S242647AbhKIMev (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Nov 2021 07:34:51 -0500
-Received: from pps.filterd (m0167088.ppops.net [127.0.0.1])
-        by mx0a-00128a01.pphosted.com (8.16.1.2/8.16.1.2) with ESMTP id 1A97XMEe019699;
-        Tue, 9 Nov 2021 07:32:05 -0500
-Received: from nwd2mta3.analog.com ([137.71.173.56])
-        by mx0a-00128a01.pphosted.com (PPS) with ESMTPS id 3c7156xter-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 09 Nov 2021 07:32:04 -0500
-Received: from ASHBMBX9.ad.analog.com (ASHBMBX9.ad.analog.com [10.64.17.10])
-        by nwd2mta3.analog.com (8.14.7/8.14.7) with ESMTP id 1A9CW3p7053014
-        (version=TLSv1/SSLv3 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Tue, 9 Nov 2021 07:32:03 -0500
-Received: from ASHBCASHYB4.ad.analog.com (10.64.17.132) by
- ASHBMBX9.ad.analog.com (10.64.17.10) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.858.5;
- Tue, 9 Nov 2021 07:32:02 -0500
-Received: from ASHBMBX9.ad.analog.com (10.64.17.10) by
- ASHBCASHYB4.ad.analog.com (10.64.17.132) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.858.5;
- Tue, 9 Nov 2021 07:32:02 -0500
-Received: from zeus.spd.analog.com (10.66.68.11) by ashbmbx9.ad.analog.com
- (10.64.17.10) with Microsoft SMTP Server id 15.2.858.5 via Frontend
- Transport; Tue, 9 Nov 2021 07:32:02 -0500
-Received: from amiclaus-VirtualBox.ad.analog.com (AMICLAUS-L02.ad.analog.com [10.48.65.128])
-        by zeus.spd.analog.com (8.15.1/8.15.1) with ESMTP id 1A9CVsT0007733;
-        Tue, 9 Nov 2021 07:32:01 -0500
-From:   Antoniu Miclaus <antoniu.miclaus@analog.com>
-To:     <jic23@kernel.org>, <robh+dt@kernel.org>,
-        <linux-iio@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-CC:     Antoniu Miclaus <antoniu.miclaus@analog.com>
-Subject: [PATCH 4/4] iio:filter:admv8818: Add sysfs ABI documentation
-Date:   Tue, 9 Nov 2021 14:31:27 +0200
-Message-ID: <20211109123127.96399-5-antoniu.miclaus@analog.com>
-X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211109123127.96399-1-antoniu.miclaus@analog.com>
-References: <20211109123127.96399-1-antoniu.miclaus@analog.com>
+        id S242543AbhKIMef (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Nov 2021 07:34:35 -0500
+Received: from mail.kernel.org ([198.145.29.99]:47312 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S241539AbhKIMed (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Nov 2021 07:34:33 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A5A8761051;
+        Tue,  9 Nov 2021 12:31:45 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1636461107;
+        bh=S+e5iTV5+Bs/5vsYLLwsUEdlQ/kxNOz+WH4f2I2y4qc=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=lUGj36gvga6j3IfS8HCJXIrDBSy5v3ZccWpqUKD0snvVZh+ss5GUvorDKHh7wNZzV
+         0d/e+sWcM6e1cf8mbPMQAtDPuRDlruWExtRJiifU4rl8NTMk22LEupndeEpuJzL2Q8
+         Jhyj7SbQ5lNacDNKLdE9pznpcXxAFDmoUQG3XeOb1NmVaYNfLz/MaX3p4CnBa+mqo8
+         bGv5u+w/GYbJCIBG0erySFHKZkbH/khRIeOC3uQgqO93SiqKbYSPDYyjMR6qwgDGMN
+         OizaZFBIoAw1UAyw0eHa5NIgY/2Bm1+BGcadXQ882IVFDTmPiB908zZNvrcpgwcjLR
+         El1OFTkWNgLeg==
+Date:   Tue, 9 Nov 2021 20:31:40 +0800
+From:   Peter Chen <peter.chen@kernel.org>
+To:     Qihang Hu <huqihang@oppo.com>
+Cc:     balbi@kernel.org, gregkh@linuxfoundation.org,
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3] usb: gadget: composite: Show warning if function
+ driver's descriptors are incomplete.
+Message-ID: <20211109123140.GA5208@Peter>
+References: <20211109101936.397503-1-huqihang@oppo.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-ADIRuleOP-NewSCL: Rule Triggered
-X-Proofpoint-GUID: JU0N3Abg7pvmQWk5AsskCmBZafEG25D1
-X-Proofpoint-ORIG-GUID: JU0N3Abg7pvmQWk5AsskCmBZafEG25D1
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.205,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.0.607.475
- definitions=2021-11-09_03,2021-11-08_02,2020-04-07_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
- bulkscore=0 suspectscore=0 phishscore=0 impostorscore=0 adultscore=0
- malwarescore=0 priorityscore=1501 mlxlogscore=999 spamscore=0
- clxscore=1015 mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2110150000 definitions=main-2111090076
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211109101936.397503-1-huqihang@oppo.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add initial ABI documentation for admv8818 filter sysfs interfaces.
+On 21-11-09 18:19:36, Qihang Hu wrote:
+> In the config_ep_by_speed_and_alt function, select the corresponding
+> descriptor through g->speed. But some unsound function drivers may
 
-Signed-off-by: Antoniu Miclaus <antoniu.miclaus@analog.com>
----
- .../ABI/testing/sysfs-bus-iio-filter-admv8818 | 60 +++++++++++++++++++
- 1 file changed, 60 insertions(+)
- create mode 100644 Documentation/ABI/testing/sysfs-bus-iio-filter-admv8818
+But some 'legacy or not well designed' function drivers
 
-diff --git a/Documentation/ABI/testing/sysfs-bus-iio-filter-admv8818 b/Documentation/ABI/testing/sysfs-bus-iio-filter-admv8818
-new file mode 100644
-index 000000000000..7fa5b0819055
---- /dev/null
-+++ b/Documentation/ABI/testing/sysfs-bus-iio-filter-admv8818
-@@ -0,0 +1,60 @@
-+What:		/sys/bus/iio/devices/iio:deviceX/out_altvoltageY_filter_high_pass_3db_frequency
-+KernelVersion:
-+Contact:	linux-iio@vger.kernel.org
-+Description:
-+		The cut-off frequency of the ADMV8818 high pass filter. The value is scaled using
-+		the `out_altvoltageY_scale` attribute so that GHz frequencies are valid inputs,
-+		The accepted range of values for the frequencies is between 1.75GHz and 19.9GHz.
-+
-+		The default value for the scale is 1000000, therefore MHz frequency values are
-+		passed as input.
-+
-+What:		/sys/bus/iio/devices/iio:deviceX/out_altvoltageY_filter_low_pass_3db_frequency
-+KernelVersion:
-+Contact:	linux-iio@vger.kernel.org
-+Description:
-+		The cut-off frequency of the ADMV8818 low pass filter. The value is scaled using
-+		the `out_altvoltageY_scale` attribute so that GHz frequencies are valid inputs,
-+		The accepted range of values for the frequencies is between 2.05GHz and 18.85GHz.
-+
-+		The default value for the scale is 1000000, therefore MHz frequency values are
-+		passed as input.
-+
-+What:		/sys/bus/iio/devices/iio:deviceX/out_altvoltageY_scale
-+KernelVersion:
-+Contact:	linux-iio@vger.kernel.org
-+Description:
-+		Scale high pass and lowpass filter frequency values to Hz.
-+
-+What:		/sys/bus/iio/devices/iio:deviceX/out_altvoltageY_mode_available
-+KernelVersion:
-+Contact:	linux-iio@vger.kernel.org
-+Description:
-+		Reading this returns the valid values that can be written to the
-+		on_altvoltage0_mode attribute:
-+
-+		- auto -> enable/register the clock rate notifier
-+		- manual -> disable/unregister the clock rate notifier
-+		- bypass -> bypass LPF/HPF and disable/unregister the clock rate notifier
-+
-+What:		/sys/bus/iio/devices/iio:deviceX/out_altvoltageY_mode
-+KernelVersion:
-+Contact:	linux-iio@vger.kernel.org
-+Description:
-+		This attribute configures the filter mode.
-+		Reading returns the actual mode.
-+
-+What:		/sys/bus/iio/devices/iio:deviceX/out_altvoltageY_filter_band_pass_bandwidth_3db_frequency
-+KernelVersion:
-+Contact:	linux-iio@vger.kernel.org
-+Description:
-+		Store the band pass bandwidth frequency value applied.
-+		Reading returns the bandwidth frequency scaled.
-+
-+
-+What:		/sys/bus/iio/devices/iio:deviceX/out_altvoltageY_filter_band_pass_center_frequency
-+KernelVersion:
-+Contact:	linux-iio@vger.kernel.org
-+Description:
-+		Store the band pass center frequency value applied.
-+		Reading returns the center frequency scaled.
+> not support the corresponding speed. So, we can directly display
+> warnings instead of panicking the kernel.
+
+instead of 'causing kernel panic'
+
+> At the same time, it
+> indicates a problem with the function in the warning message.
+
+It indicates the reasons in warning message.
+> 
+> Signed-off-by: Qihang Hu <huqihang@oppo.com>
+> ---
+> Changes in v2:
+> -Add warning message
+> 
+> Changes in v3:
+> -Change commit log
+> -Delete extra blank lines
+> -Modify 'incomplete_desc' to bool type
+
+The latest changelog should be showed at the first.
+
+> ---
+>  drivers/usb/gadget/composite.c | 39 ++++++++++++++++++++++------------
+>  1 file changed, 26 insertions(+), 13 deletions(-)
+> 
+> diff --git a/drivers/usb/gadget/composite.c b/drivers/usb/gadget/composite.c
+> index 72a9797dbbae..cb9c7edf9bbf 100644
+> --- a/drivers/usb/gadget/composite.c
+> +++ b/drivers/usb/gadget/composite.c
+> @@ -159,6 +159,8 @@ int config_ep_by_speed_and_alt(struct usb_gadget *g,
+>  	int want_comp_desc = 0;
+>  
+>  	struct usb_descriptor_header **d_spd; /* cursor for speed desc */
+> +	struct usb_composite_dev *cdev;
+> +	bool incomplete_desc = false;
+>  
+>  	if (!g || !f || !_ep)
+>  		return -EIO;
+> @@ -167,28 +169,43 @@ int config_ep_by_speed_and_alt(struct usb_gadget *g,
+>  	switch (g->speed) {
+>  	case USB_SPEED_SUPER_PLUS:
+>  		if (gadget_is_superspeed_plus(g)) {
+> -			speed_desc = f->ssp_descriptors;
+> -			want_comp_desc = 1;
+> -			break;
+> +			if (f->ssp_descriptors) {
+> +				speed_desc = f->ssp_descriptors;
+> +				want_comp_desc = 1;
+> +				break;
+> +			}
+> +			incomplete_desc = true;
+>  		}
+>  		fallthrough;
+>  	case USB_SPEED_SUPER:
+>  		if (gadget_is_superspeed(g)) {
+> -			speed_desc = f->ss_descriptors;
+> -			want_comp_desc = 1;
+> -			break;
+> +			if (f->ss_descriptors) {
+> +				speed_desc = f->ss_descriptors;
+> +				want_comp_desc = 1;
+> +				break;
+> +			}
+> +			incomplete_desc = true;
+>  		}
+>  		fallthrough;
+>  	case USB_SPEED_HIGH:
+>  		if (gadget_is_dualspeed(g)) {
+> -			speed_desc = f->hs_descriptors;
+> -			break;
+> +			if (f->hs_descriptors) {
+> +				speed_desc = f->hs_descriptors;
+> +				break;
+> +			}
+> +			incomplete_desc = true;
+>  		}
+>  		fallthrough;
+>  	default:
+>  		speed_desc = f->fs_descriptors;
+>  	}
+>  
+> +	cdev = get_gadget_data(g);
+> +	if (incomplete_desc)
+> +		WARNING(cdev,
+> +			"%s doesn't hold the descriptors for current speed\n",
+> +			f->name);
+> +
+>  	/* find correct alternate setting descriptor */
+>  	for_each_desc(speed_desc, d_spd, USB_DT_INTERFACE) {
+>  		int_desc = (struct usb_interface_descriptor *)*d_spd;
+> @@ -244,12 +261,8 @@ int config_ep_by_speed_and_alt(struct usb_gadget *g,
+>  			_ep->maxburst = comp_desc->bMaxBurst + 1;
+>  			break;
+>  		default:
+> -			if (comp_desc->bMaxBurst != 0) {
+> -				struct usb_composite_dev *cdev;
+> -
+> -				cdev = get_gadget_data(g);
+> +			if (comp_desc->bMaxBurst != 0)
+>  				ERROR(cdev, "ep0 bMaxBurst must be 0\n");
+> -			}
+>  			_ep->maxburst = 1;
+>  			break;
+>  		}
+> -- 
+> 2.25.1
+> 
+
+Except the typo issues, other things are ok for me. It shows an warning
+message for not well designed function driver, instead of panic
+the kernel. It depends on Greg that whether it should be panic directly
+or show warning message to indicate the issue.
+
 -- 
-2.33.1
+
+Thanks,
+Peter Chen
 
