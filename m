@@ -2,148 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E240444ACB1
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 12:33:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7FC7044ACB3
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 12:33:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343536AbhKILgE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Nov 2021 06:36:04 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45190 "EHLO
+        id S1343541AbhKILgF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Nov 2021 06:36:05 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45212 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239134AbhKILfz (ORCPT
+        with ESMTP id S241924AbhKILf6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Nov 2021 06:35:55 -0500
-Received: from mail-pf1-x42e.google.com (mail-pf1-x42e.google.com [IPv6:2607:f8b0:4864:20::42e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ADD52C061766
-        for <linux-kernel@vger.kernel.org>; Tue,  9 Nov 2021 03:33:09 -0800 (PST)
-Received: by mail-pf1-x42e.google.com with SMTP id y5so8937365pfb.4
-        for <linux-kernel@vger.kernel.org>; Tue, 09 Nov 2021 03:33:09 -0800 (PST)
+        Tue, 9 Nov 2021 06:35:58 -0500
+Received: from mail-oo1-xc36.google.com (mail-oo1-xc36.google.com [IPv6:2607:f8b0:4864:20::c36])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1D6F6C0613B9
+        for <linux-kernel@vger.kernel.org>; Tue,  9 Nov 2021 03:33:13 -0800 (PST)
+Received: by mail-oo1-xc36.google.com with SMTP id x1-20020a4aea01000000b002c296d82604so780608ood.9
+        for <linux-kernel@vger.kernel.org>; Tue, 09 Nov 2021 03:33:13 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=smartx-com.20210112.gappssmtp.com; s=20210112;
-        h=from:to:cc:subject:date:message-id;
-        bh=fO9WFV8F4TyUDMb8YJlmXZSb4ymnIYoC/ZrNTQ5M18Y=;
-        b=tfh2pJFgqE6eQHerjrMd7ZDA7D8PgRlU0vzOw5VCfk+CigYWbortt2g//OX9tzpLKg
-         atHId1dyTyi5qPIvLDW7Etgh3KjgwssCO9QNEQFvvLmYVFkNgVd1SqHCpZkAj6JpZYob
-         NZRV5E1td8jJLBmri2YmuHNdNqUdVaya7lkcag3vf8rkvUMXeHMqKK3bosG9955lRNU3
-         Esw/wyZQ7ldgIh8JVqE5f3GTSODxwJH7OFSwEO0DO0l7KQy7Y4VnwWQywqwf9hTOhck5
-         CIlw+qe7l2yIOQjVsBghzRGxkD2f6the3cYhJl6Gj8FSpf3lVBe2DkkyE9DoLuvJeJT8
-         OuqQ==
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=CSSmBGiZVMNlw9saF2eyI7HOrgrdT0YOSip6CH89u1c=;
+        b=TaEIl/KFsdk7aCm+psQMJAvJANY9fl88AA6fiFvOsx4MD/EZynOYrLCLBFHxr4nP3z
+         TQvoDi45fZ9jV5aILC7hS1SJkobjR2iKX5kJhLNeQwMHiRKyiZ6IJsUhBGAr+afnrw6+
+         x+d+BJjiiG4SuDpiBLjkkG8vTIL29TR5I6uJdzPfbVJy9UPzMyYnJJahks0Wcp6A67OH
+         +F2tNvawnF4i4K20iq+ZwMye0Uzjqad6sUB9BRaPfYEmwHEPHo+kNomEeE8sNnYVeM7r
+         OjHNtXuEIJyMq6csGdMlzvKEOPfpIB0ApOcBTaJlf70eH89kNAPHT7uA+XoLkRQ8M0Tj
+         AH4w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=fO9WFV8F4TyUDMb8YJlmXZSb4ymnIYoC/ZrNTQ5M18Y=;
-        b=PuSPk8G4SSFheLwHHDFMiCzJSoYaFIizST31S+28jYMNxkWpDX0wj8vpQOqNkG6LFC
-         EDrNMqyksHcXnmoPi97ID3p851RSnj31CN5kKkZGil1pG8HuYK5e3zoUB+X1tDOc7/eR
-         097dKTLGxmRe6cnkHktqQjV8sh3re/RnGnpYwms91Ac+GH3D/tVLotnMyr/ckbJ3Ul7q
-         R6P5xehY4ZLTx/ckLqWIgI4wP/6VXwuFhDHqN5DRFJpE3IdoTCLRAy0LeZFIsE7rRKR9
-         Drq904EcfiUOPzu5X39EH+SL06ehyuuMrHT9TKNKse0/Oo1ZCkpKuf3EtMB6rlBqk0Um
-         wcGg==
-X-Gm-Message-State: AOAM531/2wxOYSK8Bfc9+NzAL3yUY2awfOKuxYv8kG7En0ZY3X2+Cz/H
-        NNL9+kJ+5NbydwPUdr8QYqEW/lKdNEh3EXWBYJc=
-X-Google-Smtp-Source: ABdhPJyzn9Q/ehsjtHasSdutRKQBETfy9pR1GDs66kz0L6FPuvPdKrgLO0RPsMtbufg3JyqIRoWOAw==
-X-Received: by 2002:a63:8bc3:: with SMTP id j186mr5222010pge.250.1636457589253;
-        Tue, 09 Nov 2021 03:33:09 -0800 (PST)
-Received: from node1.smartx.com ([103.97.201.31])
-        by smtp.gmail.com with ESMTPSA id j6sm14937193pgq.0.2021.11.09.03.33.06
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 09 Nov 2021 03:33:08 -0800 (PST)
-From:   Changliang Wu <changliang.wu@smartx.com>
-To:     davem@davemloft.net
-Cc:     kuba@kernel.org, yoshfuji@linux-ipv6.org, dsahern@kernel.org,
-        edumazet@google.com, idosch@OSS.NVIDIA.COM, amcohen@nvidia.com,
-        fw@strlen.de, netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        changliang.wu@smartx.com
-Subject: [PATCH] ipv4: add sysctl knob to control the discarding of skb from local in ip_forward
-Date:   Tue,  9 Nov 2021 06:32:57 -0500
-Message-Id: <1636457577-43305-1-git-send-email-changliang.wu@smartx.com>
-X-Mailer: git-send-email 1.8.3.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=CSSmBGiZVMNlw9saF2eyI7HOrgrdT0YOSip6CH89u1c=;
+        b=A2JSiC+JUXn1jj9GBXxMc7JTDEHvOBHGwrxK1DG7KO/OqYHhYDDIl+4e9m9B5dKssS
+         Cgztuj/UGf0WchES2mnogSQba2b7uSZrfzBZmmQjNERYuMutRwqytg4dLxg6lLqBkJn2
+         94/lrollul5y86hJchfDXsUp5SilQlRKV1ouPIFoZC2/LWb/3N8MGWQIaldqaP+DrRFP
+         uBYu79T19QdSgYbGRQ+SWS+nUpdqYXvgmCWrz+BEGr1NgwoM6bSdPeX9J87SIiteTY0B
+         ayPGAa6y0i9MfXhB1QwTZFejASV4uQlyKXylbG4F7Hc+52KZwKuftnaFvGxdpWPsJPMo
+         +lAQ==
+X-Gm-Message-State: AOAM533tCfXMW2qxzFEV+EhGIekb8ih+34BboWh5s8ZVgyrmXXAyYMT/
+        6g4U14baY5Fdnha3x9BAqJNFoDTHZ6sa/sg9U2e80g==
+X-Google-Smtp-Source: ABdhPJywvZKJoZBox3QIktaEO2rKrJtRPMqM6AhEvJyTlBaJAPM8lakOBpMg0SgtBEI2NKgbHRswI7RDSSX7KAPjZjg=
+X-Received: by 2002:a4a:e5cd:: with SMTP id r13mr3324482oov.84.1636457592495;
+ Tue, 09 Nov 2021 03:33:12 -0800 (PST)
+MIME-Version: 1.0
+References: <20211105124242.27288-1-andriy.shevchenko@linux.intel.com> <20211105124242.27288-15-andriy.shevchenko@linux.intel.com>
+In-Reply-To: <20211105124242.27288-15-andriy.shevchenko@linux.intel.com>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Tue, 9 Nov 2021 12:33:00 +0100
+Message-ID: <CACRpkdaFNhy8DrY7L76OC3Udkeo33t8vGv10T8NoFp+R9x1jKQ@mail.gmail.com>
+Subject: Re: [PATCH v1 15/19] pinctrl: st: Make use of the devm_platform_ioremap_resource_byname()
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc:     Bartosz Golaszewski <brgl@bgdev.pl>,
+        Jianqun Xu <jay.xu@rock-chips.com>,
+        Sai Krishna Potthuri <lakshmi.sai.krishna.potthuri@xilinx.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-rockchip@lists.infradead.org,
+        Bamvor Jian Zhang <bamv2005@gmail.com>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Gregory Clement <gregory.clement@bootlin.com>,
+        Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
+        Heiko Stuebner <heiko@sntech.de>,
+        Patrice Chotard <patrice.chotard@foss.st.com>,
+        Michal Simek <michal.simek@xilinx.com>,
+        Andy Shevchenko <andy@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This change is meant to add a control for forwarding skb from local.
-By default, ip forward will not receive the pakcet to/from the local.
-But in some special cases, for example:
--
-|  ovs-bridge  gw-port |  <---->   kube-proxy(iptables) |
--
-Ovs sends the packet to the gateway, which requires iptables for nat,
-such as kube-proxy (iptables), and then sends it back to the gateway
-through routing for further processing in ovs.
+On Fri, Nov 5, 2021 at 1:43 PM Andy Shevchenko
+<andriy.shevchenko@linux.intel.com> wrote:
 
-Signed-off-by: Changliang Wu <changliang.wu@smartx.com>
----
- include/net/netns/ipv4.h   | 1 +
- net/ipv4/af_inet.c         | 1 +
- net/ipv4/ip_forward.c      | 6 +++---
- net/ipv4/sysctl_net_ipv4.c | 7 +++++++
- 4 files changed, 12 insertions(+), 3 deletions(-)
+> Use the devm_platform_ioremap_resource_byname() helper instead of
+> calling platform_get_resource_byname() and devm_ioremap_resource()
+> separately.
+>
+> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 
-diff --git a/include/net/netns/ipv4.h b/include/net/netns/ipv4.h
-index 2f65701..0dbe0d6 100644
---- a/include/net/netns/ipv4.h
-+++ b/include/net/netns/ipv4.h
-@@ -94,6 +94,7 @@ struct netns_ipv4 {
- 	u8 sysctl_ip_no_pmtu_disc;
- 	u8 sysctl_ip_fwd_use_pmtu;
- 	u8 sysctl_ip_fwd_update_priority;
-+	u8 sysctl_ip_fwd_accept_local;
- 	u8 sysctl_ip_nonlocal_bind;
- 	u8 sysctl_ip_autobind_reuse;
- 	/* Shall we try to damage output packets if routing dev changes? */
-diff --git a/net/ipv4/af_inet.c b/net/ipv4/af_inet.c
-index 0189e3c..b5dc205 100644
---- a/net/ipv4/af_inet.c
-+++ b/net/ipv4/af_inet.c
-@@ -1844,6 +1844,7 @@ static __net_init int inet_init_net(struct net *net)
- 	 */
- 	net->ipv4.sysctl_ip_default_ttl = IPDEFTTL;
- 	net->ipv4.sysctl_ip_fwd_update_priority = 1;
-+	net->ipv4.sysctl_ip_fwd_accept_local = 0;
- 	net->ipv4.sysctl_ip_dynaddr = 0;
- 	net->ipv4.sysctl_ip_early_demux = 1;
- 	net->ipv4.sysctl_udp_early_demux = 1;
-diff --git a/net/ipv4/ip_forward.c b/net/ipv4/ip_forward.c
-index 00ec819..06b7e00 100644
---- a/net/ipv4/ip_forward.c
-+++ b/net/ipv4/ip_forward.c
-@@ -95,9 +95,6 @@ int ip_forward(struct sk_buff *skb)
- 	if (skb->pkt_type != PACKET_HOST)
- 		goto drop;
- 
--	if (unlikely(skb->sk))
--		goto drop;
--
- 	if (skb_warn_if_lro(skb))
- 		goto drop;
- 
-@@ -110,6 +107,9 @@ int ip_forward(struct sk_buff *skb)
- 	skb_forward_csum(skb);
- 	net = dev_net(skb->dev);
- 
-+	if (unlikely(!net->ipv4.sysctl_ip_fwd_accept_local && skb->sk))
-+		goto drop;
-+
- 	/*
- 	 *	According to the RFC, we must first decrease the TTL field. If
- 	 *	that reaches zero, we must reply an ICMP control message telling
-diff --git a/net/ipv4/sysctl_net_ipv4.c b/net/ipv4/sysctl_net_ipv4.c
-index 97eb547..d95e2e3 100644
---- a/net/ipv4/sysctl_net_ipv4.c
-+++ b/net/ipv4/sysctl_net_ipv4.c
-@@ -756,6 +756,13 @@ static int proc_fib_multipath_hash_fields(struct ctl_table *table, int write,
- 		.extra2		= SYSCTL_ONE,
- 	},
- 	{
-+		.procname	= "ip_forward_accept_local",
-+		.data		= &init_net.ipv4.sysctl_ip_fwd_accept_local,
-+		.maxlen		= sizeof(u8),
-+		.mode		= 0644,
-+		.proc_handler	= proc_dou8vec_minmax,
-+	},
-+	{
- 		.procname	= "ip_nonlocal_bind",
- 		.data		= &init_net.ipv4.sysctl_ip_nonlocal_bind,
- 		.maxlen		= sizeof(u8),
--- 
-1.8.3.1
+Acked-by: Linus Walleij <linus.walleij@linaro.org>
 
+Yours,
+Linus Walleij
