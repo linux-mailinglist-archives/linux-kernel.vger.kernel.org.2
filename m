@@ -2,136 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 78D4944B223
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 18:44:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 442C644B226
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 18:47:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241411AbhKIRre (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Nov 2021 12:47:34 -0500
-Received: from mga06.intel.com ([134.134.136.31]:51677 "EHLO mga06.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241266AbhKIRr3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Nov 2021 12:47:29 -0500
-X-IronPort-AV: E=McAfee;i="6200,9189,10163"; a="293341198"
-X-IronPort-AV: E=Sophos;i="5.87,220,1631602800"; 
-   d="scan'208";a="293341198"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Nov 2021 09:44:43 -0800
-X-IronPort-AV: E=Sophos;i="5.87,220,1631602800"; 
-   d="scan'208";a="533767189"
-Received: from yushengo-mobl.amr.corp.intel.com (HELO [10.212.187.24]) ([10.212.187.24])
-  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Nov 2021 09:44:42 -0800
-Subject: Re: [RFC PATCH v2 5/5] docs: ABI: Add sysfs documentation interface
- of hardware prefetch driver
-To:     "tarumizu.kohei@fujitsu.com" <tarumizu.kohei@fujitsu.com>,
-        "catalin.marinas@arm.com" <catalin.marinas@arm.com>,
-        "will@kernel.org" <will@kernel.org>,
-        "tglx@linutronix.de" <tglx@linutronix.de>,
-        "mingo@redhat.com" <mingo@redhat.com>,
-        "bp@alien8.de" <bp@alien8.de>,
-        "dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>,
-        "x86@kernel.org" <x86@kernel.org>, "hpa@zytor.com" <hpa@zytor.com>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-References: <20211104052122.553868-1-tarumizu.kohei@fujitsu.com>
- <20211104052122.553868-6-tarumizu.kohei@fujitsu.com>
- <2a939a62-7016-bbd6-6e2f-2824214687fd@intel.com>
- <OSBPR01MB20379FB0D979C0B130FEAD0280919@OSBPR01MB2037.jpnprd01.prod.outlook.com>
- <d9c31c0a-a0ce-452d-7f7d-df535eb5e918@intel.com>
- <OSBPR01MB20374AB09F302F5CB0C63EED80929@OSBPR01MB2037.jpnprd01.prod.outlook.com>
-From:   Dave Hansen <dave.hansen@intel.com>
-Autocrypt: addr=dave.hansen@intel.com; keydata=
- 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
- z5cecg==
-Message-ID: <f5d0ce6d-c732-9fe8-5433-1362e4e77feb@intel.com>
-Date:   Tue, 9 Nov 2021 09:44:40 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S241327AbhKIRt5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Nov 2021 12:49:57 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:48824 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233952AbhKIRty (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Nov 2021 12:49:54 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1636480027;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=2nn+sZh+z3DAd6lRC0BhDFoNpFBYmNaI4d0rQ5iyEdU=;
+        b=jERHqdwoulXWTfIl4w8BQrO9jDKPoEZGGODHJOI4Igj8LupawXiclZkUXFqHXEAk1EugZI
+        8XZ0wBiNGQ3hRxh4RJTN+OU34tWP7ULX2vc8lMa2W5GB6rcaLSUBJISZsZ0igwcwkCmcBo
+        tWcpJl4tb7nrVDtN9sJGYMD3mfheuXs=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-446-Xdt07GfsPM6lR_5hF_CImw-1; Tue, 09 Nov 2021 12:47:04 -0500
+X-MC-Unique: Xdt07GfsPM6lR_5hF_CImw-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id BBF818799EC;
+        Tue,  9 Nov 2021 17:47:02 +0000 (UTC)
+Received: from wcosta.com (ovpn-116-123.gru2.redhat.com [10.97.116.123])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id D4FD167847;
+        Tue,  9 Nov 2021 17:46:23 +0000 (UTC)
+From:   wander@redhat.com
+To:     Davidlohr Bueso <dave@stgolabs.net>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        linux-kernel@vger.kernel.org (open list:TORTURE-TEST MODULES),
+        rcu@vger.kernel.org (open list:READ-COPY UPDATE (RCU))
+Cc:     Wander Lairson Costa <wander@redhat.com>
+Subject: [PATCH] rcutorture: Avoid soft lockup during cpu stall
+Date:   Tue,  9 Nov 2021 14:46:02 -0300
+Message-Id: <20211109174602.407644-1-wander@redhat.com>
 MIME-Version: 1.0
-In-Reply-To: <OSBPR01MB20374AB09F302F5CB0C63EED80929@OSBPR01MB2037.jpnprd01.prod.outlook.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
 Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/9/21 1:41 AM, tarumizu.kohei@fujitsu.com wrote:
->> I guess that's OK, but will folks ever want to do "L2
->> Hardware Prefetcher Disable", but not "L2 Adjacent Cache Line Prefetcher
->> Disable"?
-> There are people who actually tested the performance improvement[1].
-> 
-> [1]https://github.com/xmrig/xmrig/issues/1433#issuecomment-572126184
-> 
-> In this report, write 5 to MSR 0x1a4 (i.e. "L2 Hardware Prefetcher
-> Disable", but not "L2 Adjacent Cache Line Prefetcher Disable")
-> on i7-5930K for best performance. If such tuning is possible, it may
-> be useful for some people.
-> 
-> We describe how to deal these parameters in our sysfs interface at
-> "[RFC & Future plan]" section in the cover letter(0/5), but we can't
-> come up with any good ideas.
-> 
-> We thought that the sysfs interface should be generic and common,
-> and avoid showing architecture-dependent specifications.
-> 
-> We have considered the Proposal B that multiple hardware prefetch
-> types in one enable attribute file at above section. However, in
-> order to use it, we have to know the register specification, so we
-> think it is not appropriate.
-> 
-> Do you have any idea how to represent architecture-dependent
-> specifications in sysfs interface?
+From: Wander Lairson Costa <wander@redhat.com>
 
-First, I'd give them real names.
+If we use the module stall_cpu option, we may get a soft lockup warning
+if we also don't pass the stall_cpu_block option.
 
-Second, I'd link them to the level or levels of the cache that they effect.
+We introduce the stall_no_softlockup option to avoid a soft lockup on
+cpu stall even if we don't use the stall_cpu_block option.
 
-Third, I'd make sure that it is clear what caches it affects.
+Signed-off-by: Wander Lairson Costa <wander@redhat.com>
+---
+ kernel/rcu/rcutorture.c | 5 +++++
+ 1 file changed, 5 insertions(+)
 
-We have a representation of the caches in:
+diff --git a/kernel/rcu/rcutorture.c b/kernel/rcu/rcutorture.c
+index 40ef5417d954..0a2a9a6533d1 100644
+--- a/kernel/rcu/rcutorture.c
++++ b/kernel/rcu/rcutorture.c
+@@ -10,6 +10,7 @@
+  * See also:  Documentation/RCU/torture.rst
+  */
+ 
++#include "linux/nmi.h"
+ #define pr_fmt(fmt) fmt
+ 
+ #include <linux/types.h>
+@@ -109,6 +110,8 @@ torture_param(int, shutdown_secs, 0, "Shutdown time (s), <= zero to disable.");
+ torture_param(int, stall_cpu, 0, "Stall duration (s), zero to disable.");
+ torture_param(int, stall_cpu_holdoff, 10,
+ 	     "Time to wait before starting stall (s).");
++torture_param(bool, stall_no_softlockup, false,
++	     "Avoid softlockup warning during cpu stall.");
+ torture_param(int, stall_cpu_irqsoff, 0, "Disable interrupts while stalling.");
+ torture_param(int, stall_cpu_block, 0, "Sleep while stalling.");
+ torture_param(int, stall_gp_kthread, 0,
+@@ -2024,6 +2027,8 @@ static int rcu_torture_stall(void *args)
+ 				    stop_at))
+ 			if (stall_cpu_block)
+ 				schedule_timeout_uninterruptible(HZ);
++			else if (stall_no_softlockup)
++				touch_softlockup_watchdog();
+ 		if (stall_cpu_irqsoff)
+ 			local_irq_enable();
+ 		else if (!stall_cpu_block)
+-- 
+2.27.0
 
-	/sys/devices/system/cpu/cpu*/cache
-
-It would be a shame to ignore those.
