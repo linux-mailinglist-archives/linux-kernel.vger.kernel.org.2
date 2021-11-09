@@ -2,120 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D374144A811
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 09:00:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CBCD744A812
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 09:01:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241547AbhKIIDI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Nov 2021 03:03:08 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52372 "EHLO
+        id S243897AbhKIIDq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Nov 2021 03:03:46 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52538 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243911AbhKIIDH (ORCPT
+        with ESMTP id S236432AbhKIIDo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Nov 2021 03:03:07 -0500
-Received: from mail-ua1-x92d.google.com (mail-ua1-x92d.google.com [IPv6:2607:f8b0:4864:20::92d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8FEBEC061767;
-        Tue,  9 Nov 2021 00:00:21 -0800 (PST)
-Received: by mail-ua1-x92d.google.com with SMTP id v3so36760122uam.10;
-        Tue, 09 Nov 2021 00:00:21 -0800 (PST)
+        Tue, 9 Nov 2021 03:03:44 -0500
+Received: from mail-pg1-x52a.google.com (mail-pg1-x52a.google.com [IPv6:2607:f8b0:4864:20::52a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8063BC061764;
+        Tue,  9 Nov 2021 00:00:59 -0800 (PST)
+Received: by mail-pg1-x52a.google.com with SMTP id q126so13801029pgq.13;
+        Tue, 09 Nov 2021 00:00:59 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:reply-to:from:date:message-id
-         :subject:to:cc;
-        bh=jJRf2QoVELE16P7cEB6PznntzKV1Qjbgm15LTcUsRVc=;
-        b=gePWEHOSGecvEl7HJk8CquvjcxB88pnyrkGCaFJpCUh4S1dghmG7/dMru5orqE7XT2
-         nt/qRrfPaUPnmctmGZ/Dr1h47Z31ODwM+xwpl7cP4NYlcNiW8zpum+XarWZGbRno+Cqh
-         SteCW+khATmPvJsHO43ZUUOKW7X9UxgPRhxPiE+pduHEsilaICggfbpETpT3wRNwJPUu
-         UkYaboRaaj1UFiCNng++tcT5e2XmO5/aw2xrpnJG9/64B+005FELBQhMsd/GZFkwrpjm
-         XlEJA9UX3xorXGAjTFncWl4WQW2xd7HgCi3MBDqJTl1YS+qwxz42xC1VIyCEubXM54rI
-         IVvQ==
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=YY/xWrWdHWoOd2ErQ+giH+QO0ELkWsrHSIUV0eDZ8CM=;
+        b=AnDLhyPbGhfJZo97QffKCrFoJXMnBb48Uqb7ULr9S0sLambfLXegt7hN1L91W4g7U9
+         ze1dUnFvGySkjt6oOW94ppqSziYah6d4JWJtChBF1DLb4O2hhYVl6mOfKhM+iRkOeVw2
+         kbYbNDMRl395HTA8bCQAVzWLdYQ2frMHpNMdsFJN1J0N9z/GzdsGsE4w6E38+G3CLARQ
+         vPrIO300rhOCEZCMKJLgzBX281cUfzhRJcsw+XaBNkhQx9bW9Mw/LlXau66jEyhZeAmM
+         x2IwnCCYiZiplA7wH/Mrd1r4+QL5pf2H4p9lkJv/RETK5qa36Ijp1XN30NiWaGs3OHsi
+         ozOA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
-         :from:date:message-id:subject:to:cc;
-        bh=jJRf2QoVELE16P7cEB6PznntzKV1Qjbgm15LTcUsRVc=;
-        b=3UfAsmz4AwiZ9Ae65Hcm9BY6j33PcydpVUyeX4nSuWQ8/pr+SukXE/i3KCGAjjVK0f
-         FV+yCXA/uRBLclSKuvTTGsXvtGnU4AGrYbMcJFFc416GwE7F4hOfeR8mnh9oDg5BArIO
-         Kvxf7MP2ulKl1/hTHsc+9AlqAF5xZlvUKkJqf31bvPLR1y55sWi1mv8V/RPnta5qxo+5
-         7PYBuyy7UaA4sdRtiBLmBxmYwigADE3DDLRlxs2d01Mq/Ky232wVkAHgXL+5xeLUNbys
-         +d35HcLLWBFB5xi1bd/I+ORsw5wZMB+wkek/E5W7CQEda3CAvDGds3+viPIqs4i9HSlx
-         5mSg==
-X-Gm-Message-State: AOAM532pA7MEr2d0SlAh4mj7Rx8IPo6A4TjR7vodZf34SEew5yyUD32g
-        bTA2uzpG+qxthH02KesYmC39WONCAv0s/mdYQOg=
-X-Google-Smtp-Source: ABdhPJycfRS0jKa6T58TKm+pjxAElkNmAt4iCLFdenRg55Hmth20wKyVn6TBCPo2asd0ozf+/bas1/ZpTV2PDSGl7ak=
-X-Received: by 2002:a67:cc19:: with SMTP id q25mr8568763vsl.47.1636444820743;
- Tue, 09 Nov 2021 00:00:20 -0800 (PST)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=YY/xWrWdHWoOd2ErQ+giH+QO0ELkWsrHSIUV0eDZ8CM=;
+        b=fT9Gpzt3JDnSDRmBvoxYIZ2CCldfbV9LqgB+GLvWsXIJtsyksdht0qrUr7anJdNdbP
+         QiOlVGmlAIn7HbtPegzD0cPPvoDh8vB2sEdX+ANKcAPyIeK0KKjZsK6O2TxsICbliIVV
+         iwrfNaNJkLebY5W2YfB3FQtwvE6wI0xWWYsRK9fcgwMT3A8gabD+Y4+Y0ZorwaGNmDkg
+         G4tstvjXqTvB4EVqzZqb0Llo+aFJYtNKfJ4uuY+yZDTpwaYr1p4xoQ+fCC/ZdyUq/3et
+         T+wRjf0AEN5xgpk4ApQVIkx7R8xIF+m/VRwVGuFsVO06nRFAHd7AZsP5CN0ctlv+jtur
+         qBeA==
+X-Gm-Message-State: AOAM531KzgmCqmCO7vHK8S0zTuE5oUoevcd2ec8OuOi5pmE7SWUtt/Wn
+        Rfac5LWET4fGPiNUUykZiLoJ0Q23B6aN8UsYz+o=
+X-Google-Smtp-Source: ABdhPJw6rYUByMFJIZHERRo20+KIgnOpFO/AHyJxIfH7+z0hd8yHVzDGlFk8PQPG/CT+ff939LlbrA==
+X-Received: by 2002:a62:8683:0:b0:480:edf9:33c0 with SMTP id x125-20020a628683000000b00480edf933c0mr6128136pfd.11.1636444858881;
+        Tue, 09 Nov 2021 00:00:58 -0800 (PST)
+Received: from localhost.localdomain ([221.221.55.14])
+        by smtp.gmail.com with ESMTPSA id c1sm19710396pfv.54.2021.11.09.00.00.57
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 09 Nov 2021 00:00:58 -0800 (PST)
+From:   Jian Wen <wenjianhn@gmail.com>
+To:     linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     Jian Wen <wenjianhn@gmail.com>
+Subject: [PATCH] Fix usage of open()
+Date:   Tue,  9 Nov 2021 16:00:54 +0800
+Message-Id: <20211109080054.444997-1-wenjianhn@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-References: <20210715141742.15072-1-andrea.merello@gmail.com>
- <20211028101840.24632-1-andrea.merello@gmail.com> <20211028101840.24632-3-andrea.merello@gmail.com>
- <20211028114008.0c2abf06@jic23-huawei>
-In-Reply-To: <20211028114008.0c2abf06@jic23-huawei>
-Reply-To: andrea.merello@gmail.com
-From:   Andrea Merello <andrea.merello@gmail.com>
-Date:   Tue, 9 Nov 2021 09:00:09 +0100
-Message-ID: <CAN8YU5O=rUMQNvu5TmRphYb9gqzNAS=Aai9TYf4bywi3QNXV6w@mail.gmail.com>
-Subject: Re: [v2 02/10] iio: document linear acceleration modifiers
-To:     Jonathan Cameron <jic23@kernel.org>
-Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        linux-iio <linux-iio@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        devicetree <devicetree@vger.kernel.org>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Rob Herring <robh+dt@kernel.org>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Matt Ranostay <matt.ranostay@konsulko.com>,
-        Alexandru Ardelean <ardeleanalex@gmail.com>,
-        Jacopo Mondi <jacopo@jmondi.org>,
-        Andrea Merello <andrea.merello@iit.it>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Il giorno gio 28 ott 2021 alle ore 12:35 Jonathan Cameron
-<jic23@kernel.org> ha scritto:
->
-> On Thu, 28 Oct 2021 12:18:32 +0200
-> Andrea Merello <andrea.merello@gmail.com> wrote:
->
-> > This patch introduces ABI documentation for new iio modifiers used for
-> > reporting "linear acceleration" measures.
-> >
-> > Signed-off-by: Andrea Merello <andrea.merello@iit.it>
-> > ---
-> >  Documentation/ABI/testing/sysfs-bus-iio | 8 ++++++++
-> >  1 file changed, 8 insertions(+)
-> >
-> > diff --git a/Documentation/ABI/testing/sysfs-bus-iio b/Documentation/ABI/testing/sysfs-bus-iio
-> > index 6ad47a67521c..5147a00bf24a 100644
-> > --- a/Documentation/ABI/testing/sysfs-bus-iio
-> > +++ b/Documentation/ABI/testing/sysfs-bus-iio
-> > @@ -1957,3 +1957,11 @@ Description:
-> >               Specify the percent for light sensor relative to the channel
-> >               absolute value that a data field should change before an event
-> >               is generated. Units are a percentage of the prior reading.
-> > +
-> > +What:                /sys/bus/iio/devices/iio:deviceX/in_accel_linear_x_raw
-> > +What:                /sys/bus/iio/devices/iio:deviceX/in_accel_linear_y_raw
-> > +What:                /sys/bus/iio/devices/iio:deviceX/in_accel_linear_z_raw
-> > +KernelVersion:       5.15
-> > +Contact:     linux-iio@vger.kernel.org
-> > +Description:
-> > +             Raw (unscaled) linear acceleration readings.
->
-> Probably need more information that this.   What element is being 'removed' from
-> a normal acceleration measurement? What are units after application of offset and
-> scale?  Can cross refer to the in_accel_x_raw for that info if you like.
+O_NONBLOCK is a flag instead of a file mode bit.
 
-OK.  So, may I just state something like "As per in_accel_X_raw
-attributes, but minus the gravity acceleration"  ?
+Fixes: edcaa47958c7 ("perf daemon: Add 'ping' command")
 
-> Also, but them immediately after the block with the in_accel_x_raw etc
+Signed-off-by: Jian Wen <wenjianhn@gmail.com>
+---
+ tools/perf/builtin-daemon.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-OK
+diff --git a/tools/perf/builtin-daemon.c b/tools/perf/builtin-daemon.c
+index 6cb3f6cc36d0..37d6fcdbb63d 100644
+--- a/tools/perf/builtin-daemon.c
++++ b/tools/perf/builtin-daemon.c
+@@ -531,7 +531,7 @@ static int daemon_session__control(struct daemon_session *session,
+ 		scnprintf(ack_path, sizeof(ack_path), "%s/%s",
+ 			  session->base, SESSION_ACK);
+ 
+-		ack = open(ack_path, O_RDONLY, O_NONBLOCK);
++		ack = open(ack_path, O_RDONLY|O_NONBLOCK);
+ 		if (!ack) {
+ 			close(control);
+ 			return -1;
+-- 
+2.25.1
 
-> The organization fo that file needs a rethink but let us try to avoid making
-> it worse in the meeantime!
->
-> Jonathan
->
->
