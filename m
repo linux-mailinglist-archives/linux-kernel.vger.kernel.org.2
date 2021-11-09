@@ -2,113 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6511A44B360
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 20:41:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4A7AC44B36D
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 20:42:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243789AbhKIToi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Nov 2021 14:44:38 -0500
-Received: from smtp-out1.suse.de ([195.135.220.28]:49686 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231249AbhKIToh (ORCPT
+        id S243830AbhKITpc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Nov 2021 14:45:32 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43802 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237907AbhKITpb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Nov 2021 14:44:37 -0500
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out1.suse.de (Postfix) with ESMTP id 4FA3121B0B;
-        Tue,  9 Nov 2021 19:41:50 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1636486910; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=bzBgy3n+R9OViftZQZmytez+H91+PE5W3Pk0JaAPXFM=;
-        b=K6YTwT+buc/h+Wv/uDk/adZvYMO2s0tx79A81qaE+RtYL4cxHC4ZSLDaSyryb/CeboQr7A
-        j6YYFiqRfrkcon9G8y4jLr7T0XmmdXOc3/iDF+vTG9WWzCi0ExBHajGahzId3KYZFCix4Q
-        7MfpkwnOrxDR1+sIJeFdVyTHwlApXpg=
-Received: from suse.cz (unknown [10.100.201.86])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by relay2.suse.de (Postfix) with ESMTPS id EBF46A3B81;
-        Tue,  9 Nov 2021 19:41:49 +0000 (UTC)
-Date:   Tue, 9 Nov 2021 20:41:48 +0100
-From:   Michal Hocko <mhocko@suse.com>
-To:     Suren Baghdasaryan <surenb@google.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        David Rientjes <rientjes@google.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Roman Gushchin <guro@fb.com>, Rik van Riel <riel@surriel.com>,
-        Minchan Kim <minchan@kernel.org>,
-        Christian Brauner <christian@brauner.io>,
-        Christoph Hellwig <hch@infradead.org>,
-        Oleg Nesterov <oleg@redhat.com>,
-        David Hildenbrand <david@redhat.com>,
-        Jann Horn <jannh@google.com>,
-        Shakeel Butt <shakeelb@google.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Florian Weimer <fweimer@redhat.com>,
-        Jan Engelhardt <jengelh@inai.de>,
-        Linux API <linux-api@vger.kernel.org>,
-        linux-mm <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        kernel-team <kernel-team@android.com>,
-        "Kirill A. Shutemov" <kirill@shutemov.name>,
-        Andrea Arcangeli <aarcange@redhat.com>
-Subject: Re: [PATCH 1/1] mm: prevent a race between process_mrelease and
- exit_mmap
-Message-ID: <YYrO/PwdsyaxJaNZ@dhcp22.suse.cz>
-References: <CAJuCfpEcSbK8WrufZjDj-7iUxiQtrmVTqHOxFUOvLhYGz6_ttQ@mail.gmail.com>
- <CAJuCfpFccBJHHqfOKixJvLr7Xta_ojkdHGfGomwTDNKffzziRQ@mail.gmail.com>
- <YXvxBSzA2YIxbwVC@dhcp22.suse.cz>
- <CAJuCfpHBoMGPOUvB2ZWQ=TxbFuWBRF++UaKJZDCrQV4mzb5kMA@mail.gmail.com>
- <YX+nYGlZBOAljoeF@dhcp22.suse.cz>
- <CAJuCfpGC9-c9P40x7oy=jy5SphMcd0o0G_6U1-+JAziGKG6dGA@mail.gmail.com>
- <YYDvm9c/7cGtBvw6@dhcp22.suse.cz>
- <CAJuCfpFX8FRynoK29h8tpRXRT-Kk+sHboiBnc7N-8MY6AAqVLw@mail.gmail.com>
- <CAJuCfpFOOgs9uZSW2Tp6uBW23rLHFeSA8o5WYQ_D_ykUcKL64Q@mail.gmail.com>
- <YYrLe2u2zbmu4LfL@dhcp22.suse.cz>
+        Tue, 9 Nov 2021 14:45:31 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C82CFC061764
+        for <linux-kernel@vger.kernel.org>; Tue,  9 Nov 2021 11:42:44 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=5XIGjkcGERAZzzieuikWA1xHtahXazjRcK+wygMzymM=; b=WKWDuZNuWlOOcpDVQuK6Xl1kSY
+        Ed13XediStqyXCnxwD9QZzahRcQMBaWkAsAHnY2SGUIKfgx63Y2nHmc0++fR9fqIu+fdUpb/grb/J
+        ClsuHE03J3dqw76LVtLWs77d0VTO+wYQ8u4VIclk2S39zvs90ZkBCkZjrKE36+Kej+8e6hfuA1B9s
+        tWYvCmsP9yx2TNmthj7PMno1BEYAJ2ITWNTQixWtrHeIodrSkBzcjGVK6BrWpiqpStusU+/xSYBaa
+        sAuyY6ESdY+50u3pjB1kJefmDMpk2pwEH1QO8CWmslMwxeOwOyosy86BzS+McIG788gv5Jxt4UN9s
+        H9ETOffQ==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mkX0n-001I9n-EV; Tue, 09 Nov 2021 19:42:30 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id CC6D03000A3;
+        Tue,  9 Nov 2021 20:42:29 +0100 (CET)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id BC2292C525D3C; Tue,  9 Nov 2021 20:42:29 +0100 (CET)
+Date:   Tue, 9 Nov 2021 20:42:29 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Ard Biesheuvel <ardb@kernel.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Jason Baron <jbaron@akamai.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Kees Cook <keescook@chromium.org>
+Subject: Re: [RFC PATCH 3/7] static_call: use helper to access non-exported
+ key
+Message-ID: <YYrPJXlyQV5pXPHt@hirez.programming.kicks-ass.net>
+References: <20211109164549.1724710-1-ardb@kernel.org>
+ <20211109164549.1724710-4-ardb@kernel.org>
+ <YYrDkUsJVcOzxMPL@hirez.programming.kicks-ass.net>
+ <CAMj1kXEW72y1p-qR+X6EBqM8Rf5+fZnEs2WSSz7b+eU=zvPt6w@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <YYrLe2u2zbmu4LfL@dhcp22.suse.cz>
+In-Reply-To: <CAMj1kXEW72y1p-qR+X6EBqM8Rf5+fZnEs2WSSz7b+eU=zvPt6w@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue 09-11-21 20:26:56, Michal Hocko wrote:
-> On Tue 09-11-21 11:01:02, Suren Baghdasaryan wrote:
-> [...]
-> > Discussing how the patch I want to post works for maple trees that
-> > Matthew is working on, I've got a question:
-> > 
-> > IIUC, according to Michal's post here:
-> > https://lore.kernel.org/all/20170725154514.GN26723@dhcp22.suse.cz,
-> > unmap_vmas() can race with other mmap_lock read holders (including
-> > oom_reap_task_mm()) with no issues.
-> > Maple tree patchset requires rcu read lock or the mmap semaphore be
-> > held (read or write side) when walking the tree, including inside
-> > unmap_vmas(). When asked, he told me that he is not sure why it's
-> > currently "safe" to walk the vma->vm_next list in unmap_vmas() while
-> > another thread is reaping the mm.
-> > Michal (or maybe someone else), could you please clarify why
-> > unmap_vmas() can safely race with oom_reap_task_mm()? Or maybe my
-> > understanding was wrong?
+On Tue, Nov 09, 2021 at 07:54:23PM +0100, Ard Biesheuvel wrote:
+> On Tue, 9 Nov 2021 at 19:53, Peter Zijlstra <peterz@infradead.org> wrote:
+> >
+> > On Tue, Nov 09, 2021 at 05:45:45PM +0100, Ard Biesheuvel wrote:
+> > > @@ -196,13 +190,21 @@ extern long __static_call_return0(void);
+> > >       EXPORT_SYMBOL_GPL(STATIC_CALL_KEY(name));                       \
+> > >       EXPORT_SYMBOL_GPL(STATIC_CALL_TRAMP(name))
+> > >
+> > > +#define EXPORT_STATIC_CALL_GETKEY_HELPER(name)                               \
+> > > +     struct static_call_key *STATIC_CALL_GETKEY(name)(void) {        \
+> > > +             BUG_ON(!core_kernel_text(                               \
+> > > +                     (unsigned long)__builtin_return_address(0)));   \
+> > > +             return &STATIC_CALL_KEY(name);                          \
+> > > +     }                                                               \
+> > > +     EXPORT_SYMBOL_GPL(STATIC_CALL_GETKEY(name))
+> >
+> > So if I were a nevarious module, I would look up the above symbol from
+> > kallsyms (it is exported and easily obtainable) and then simply
+> > read the text to discover the key address and we're in business.
+> >
 > 
-> I cannot really comment on the mapple tree part. But the existing
-> synchronization between oom reaper and exit_mmap is based on
-> - oom_reaper takes mmap_sem for reading
-> - exit_mmap sets MMF_OOM_SKIP and takes the exclusive mmap_sem before 
->   unmap_vmas.
-> 
-> The oom_reaper therefore can either unmap the address space if the lock
-> is taken before exit_mmap or it would it would bale out on MMF_OOM_SKIP
-> if it takes the lock afterwards. So the reaper cannot race with
-> unmap_vmas.
+> Yeah I realised that. So would you prefer to have a
+> .static_call_tramp_key section in each module and look up the keys in
+> the module loader?
 
-Forgot to mention, that _if_ we can get rid of the nasty unlock;lock
-pattern in exit_mmap and simply take the exclusive mmap_sem there for
-unmap_vmas onward then we could get rid of the MMF_OOM_SKIP as well
-because oom_reaper would simply have no vmas to iterate through so the
-whole thing would become much more easier to follow.
--- 
-Michal Hocko
-SUSE Labs
+Think so... do you actually have a need for this?
