@@ -2,150 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C5ABF44B13C
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 17:31:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B446B44B13E
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 17:31:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240184AbhKIQdl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Nov 2021 11:33:41 -0500
-Received: from foss.arm.com ([217.140.110.172]:35884 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234491AbhKIQdj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Nov 2021 11:33:39 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id DAAA8ED1;
-        Tue,  9 Nov 2021 08:30:52 -0800 (PST)
-Received: from ip-10-252-15-108.eu-west-1.compute.internal (unknown [10.252.15.108])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id C719E3F800;
-        Tue,  9 Nov 2021 08:30:50 -0800 (PST)
-From:   German Gomez <german.gomez@arm.com>
-To:     linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
-        acme@kernel.org
-Cc:     German Gomez <german.gomez@arm.com>,
-        John Garry <john.garry@huawei.com>,
-        Will Deacon <will@kernel.org>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Leo Yan <leo.yan@linaro.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        linux-arm-kernel@lists.infradead.org
-Subject: [PATCH v2 3/3] perf arm-spe: Snapshot mode test
-Date:   Tue,  9 Nov 2021 16:30:09 +0000
-Message-Id: <20211109163009.92072-4-german.gomez@arm.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20211109163009.92072-1-german.gomez@arm.com>
-References: <20211109163009.92072-1-german.gomez@arm.com>
+        id S235325AbhKIQdp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Nov 2021 11:33:45 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56604 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234491AbhKIQdm (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Nov 2021 11:33:42 -0500
+Received: from mail-wm1-x335.google.com (mail-wm1-x335.google.com [IPv6:2a00:1450:4864:20::335])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D5EC2C061764
+        for <linux-kernel@vger.kernel.org>; Tue,  9 Nov 2021 08:30:55 -0800 (PST)
+Received: by mail-wm1-x335.google.com with SMTP id 133so16374000wme.0
+        for <linux-kernel@vger.kernel.org>; Tue, 09 Nov 2021 08:30:55 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=resnulli-us.20210112.gappssmtp.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=K1Djn1NGugleL3fdls1eG7emz8Ub2InlCxiphHf4t7E=;
+        b=qUs74T4WDHbDg4VLPJeM6tBjKDnYcGwupmuMns6IF61DOUZnlSkguJzd6OsfIj8JY2
+         VwqY6DKzzfSWjyzeQa2hc87dKw577ejwMEL8avGyWKzn/9awXq1RdTrOuCpYSQyTFfCh
+         pRS6pWOK9kK3o3xxjvYHA+pOQ5/Hi6AXwhsqzUb09EyQfkm6g9pBAeWOws0VlWcxOo0Y
+         pnupPpPdnhI3BwlBREuAVfxjsSBxcMQI1u8XPElwnuU7ENKtB925FL/vS8QekH72gVcb
+         Jn2K5y8V7wNj+J7QTYeaqYMCJUmsF3PmFr4UVR2CcH/W6d5YM61guMgRRaD5u9qMgZvx
+         /2Vg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=K1Djn1NGugleL3fdls1eG7emz8Ub2InlCxiphHf4t7E=;
+        b=4gjiDwmscsySLA5IjpK5uhTKT3g6fxuQQHqPcXecjOJOvndr4ZJ7lgvOHwGx35/o49
+         9AE9G1AUz8F+dyihi26nSOiqY3AZYi1E7RJvQ4g+etgMiD38EjLEDe4n1LiWma5ZTYEv
+         b2+XwpphOqum1hGgT1K7Lkjw5Rzi2gP8yhgM4BUtXet8lLXP0MsiAhe+0t73PvkUCBIh
+         F6APT9ahk7nYW/kv45jK+dax34pLh6xO2tPo5/LUr0RRxuJ63EB4M+RzePFdKuT/zhXL
+         6tKB2JjLvG5GY74W2ne2Ouu6g7GiceQ5iszl/M6A8utG4o/KQQekX2PjomUS/rZr9Ixh
+         FiXw==
+X-Gm-Message-State: AOAM531/bLlvP4L8ERyEGklCLa43uOtKJU3qNz5pWkz73U/yhJZwx3cH
+        OoIkQRC824lk/brVzlv42JMNXg==
+X-Google-Smtp-Source: ABdhPJyCtIuHdYYcQi82w8pNg4wVwqB3rCoMLtPHTLyZOaq7970r+3UxyjCrzdHdIqWIdcnY7Ara5w==
+X-Received: by 2002:a1c:4e0c:: with SMTP id g12mr8508110wmh.56.1636475454367;
+        Tue, 09 Nov 2021 08:30:54 -0800 (PST)
+Received: from localhost (host-213-179-129-39.customer.m-online.net. [213.179.129.39])
+        by smtp.gmail.com with ESMTPSA id r1sm3145896wmr.36.2021.11.09.08.30.53
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 09 Nov 2021 08:30:53 -0800 (PST)
+Date:   Tue, 9 Nov 2021 17:30:52 +0100
+From:   Jiri Pirko <jiri@resnulli.us>
+To:     Jakub Kicinski <kuba@kernel.org>
+Cc:     Jason Gunthorpe <jgg@nvidia.com>,
+        Leon Romanovsky <leon@kernel.org>,
+        Ido Schimmel <idosch@idosch.org>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jiri Pirko <jiri@nvidia.com>, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, edwin.peer@broadcom.com
+Subject: Re: [PATCH net-next] devlink: Require devlink lock during device
+ reload
+Message-ID: <YYqiPIV9KoGTiTSV@nanopsycho>
+References: <YYlfI4UgpEsMt5QI@unreal>
+ <20211108101646.0a4e5ca4@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+ <YYlrZZTdJKhha0FF@unreal>
+ <20211108104608.378c106e@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+ <YYmBbJ5++iO4MOo7@unreal>
+ <20211108153126.1f3a8fe8@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+ <20211109144358.GA1824154@nvidia.com>
+ <20211109070702.17364ec7@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+ <YYqenGW4ftZH5Ufi@nanopsycho>
+ <20211109082648.73092dfb@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211109082648.73092dfb@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Shell script test_arm_spe.sh has been added to test the recording of SPE
-tracing events in snapshot mode.
+Tue, Nov 09, 2021 at 05:26:48PM CET, kuba@kernel.org wrote:
+>On Tue, 9 Nov 2021 17:15:24 +0100 Jiri Pirko wrote:
+>> Tue, Nov 09, 2021 at 04:07:02PM CET, kuba@kernel.org wrote:
+>> >On Tue, 9 Nov 2021 10:43:58 -0400 Jason Gunthorpe wrote:  
+>> >> This becomes all entangled in the aux device stuff we did before.  
+>> >
+>> >So entangled in fact that neither of you is willing to elucidate 
+>> >the exact need ;)
+>> >  
+>> >> devlink reload is defined, for reasons unrelated to netns, to do a
+>> >> complete restart of the aux devices below the devlink. This happens
+>> >> necessarily during actual reconfiguration operations, for instance.
+>> >> 
+>> >> So we have a situation, which seems like bad design, where reload is
+>> >> also triggered by net namespace change that has nothing to do with
+>> >> reconfiguring.  
+>> >
+>> >Agreed, it is somewhat uncomfortable that the same callback achieves
+>> >two things. As clear as the need for reload-for-reset is (reconfig,
+>> >recovery etc.) I'm not as clear on reload for netns.
+>> >
+>> >The main use case for reload for netns is placing a VF in a namespace,
+>> >for a container to use. Is that right? I've not seen use cases
+>> >requiring the PF to be moved, are there any?
+>> >
+>> >devlink now lives in a networking namespace yet it spans such
+>> >namespaces (thru global notifiers). I think we need to define what it
+>> >means for devlink to live in a namespace. Is it just about the
+>> >configuration / notification channel? Or do we expect proper isolation?
+>> >
+>> >Jiri?  
+>> 
+>> Well honestly the primary motivation was to be able to run smoothly with
+>> syzkaller for which the "configuration / notification channel" is
+>> enough.
+>
+>Hm. And syzkaller runs in a namespace?
 
-Signed-off-by: German Gomez <german.gomez@arm.com>
----
- tools/perf/tests/shell/test_arm_spe.sh | 89 ++++++++++++++++++++++++++
- 1 file changed, 89 insertions(+)
- create mode 100755 tools/perf/tests/shell/test_arm_spe.sh
+Correct.
 
-diff --git a/tools/perf/tests/shell/test_arm_spe.sh b/tools/perf/tests/shell/test_arm_spe.sh
-new file mode 100755
-index 000000000..e59044edc
---- /dev/null
-+++ b/tools/perf/tests/shell/test_arm_spe.sh
-@@ -0,0 +1,89 @@
-+#!/bin/sh
-+# Check Arm SPE trace data recording and synthesized samples
-+
-+# Uses the 'perf record' to record trace data of Arm SPE events;
-+# then verify if any SPE event samples are generated by SPE with
-+# 'perf script' and 'perf report' commands.
-+
-+# SPDX-License-Identifier: GPL-2.0
-+# German Gomez <german.gomez@arm.com>, 2021
-+
-+skip_if_no_arm_spe_event() {
-+	perf list | egrep -q 'arm_spe_[0-9]+//' && return 0
-+
-+	# arm_spe event doesn't exist
-+	return 2
-+}
-+
-+skip_if_no_arm_spe_event || exit 2
-+
-+perfdata=$(mktemp /tmp/__perf_test.perf.data.XXXXX)
-+glb_err=0
-+
-+cleanup_files()
-+{
-+	rm -f ${perfdata}
-+	exit $glb_err
-+}
-+
-+trap cleanup_files exit term int
-+
-+arm_spe_report() {
-+	if [ $2 != 0 ]; then
-+		echo "$1: FAIL"
-+		glb_err=$2
-+	else
-+		echo "$1: PASS"
-+	fi
-+}
-+
-+perf_script_samples() {
-+	echo "Looking at perf.data file for dumping samples:"
-+
-+	# from arm-spe.c/arm_spe_synth_events()
-+	events="(ld1-miss|ld1-access|llc-miss|lld-access|tlb-miss|tlb-access|branch-miss|remote-access|memory)"
-+
-+	# Below is an example of the samples dumping:
-+	#	dd  3048 [002]          1    l1d-access:      ffffaa64999c __GI___libc_write+0x3c (/lib/aarch64-linux-gnu/libc-2.27.so)
-+	#	dd  3048 [002]          1    tlb-access:      ffffaa64999c __GI___libc_write+0x3c (/lib/aarch64-linux-gnu/libc-2.27.so)
-+	#	dd  3048 [002]          1        memory:      ffffaa64999c __GI___libc_write+0x3c (/lib/aarch64-linux-gnu/libc-2.27.so)
-+	perf script -F,-time -i ${perfdata} 2>&1 | \
-+		egrep " +$1 +[0-9]+ .* +${events}:(.*:)? +" > /dev/null 2>&1
-+}
-+
-+perf_report_samples() {
-+	echo "Looking at perf.data file for reporting samples:"
-+
-+	# Below is an example of the samples reporting:
-+	#   73.04%    73.04%  dd    libc-2.27.so      [.] _dl_addr
-+	#    7.71%     7.71%  dd    libc-2.27.so      [.] getenv
-+	#    2.59%     2.59%  dd    ld-2.27.so        [.] strcmp
-+	perf report --stdio -i ${perfdata} 2>&1 | \
-+		egrep " +[0-9]+\.[0-9]+% +[0-9]+\.[0-9]+% +$1 " > /dev/null 2>&1
-+}
-+
-+arm_spe_snapshot_test() {
-+	echo "Recording trace with snapshot mode $perfdata"
-+	perf record -o ${perfdata} -e arm_spe// -S \
-+		-- dd if=/dev/zero of=/dev/null > /dev/null 2>&1 &
-+	PERFPID=$!
-+
-+	# Wait for perf program
-+	sleep 1
-+
-+	# Send signal to snapshot trace data
-+	kill -USR2 $PERFPID
-+
-+	# Stop perf program
-+	kill $PERFPID
-+	wait $PERFPID
-+
-+	perf_script_samples dd &&
-+	perf_report_samples dd
-+
-+	err=$?
-+	arm_spe_report "SPE snapshot testing" $err
-+}
-+
-+arm_spe_snapshot_test
-+exit $glb_err
--- 
-2.25.1
+>
+>> By "proper isolation" you mean what exactly?
+>
+>For the devlink instance and all subordinate objects to be entirely
+>contained to the namespace within which devlink resides, unless
+>explicitly liked up with or delegated to another namespace.
 
+What makes sense to me and that is actually how the current drivers
+should behave (mlxsw, netdevsim are for sure).
