@@ -2,118 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6457644A3B6
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 02:26:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DB78E44A3E7
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 02:29:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244091AbhKIB2t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Nov 2021 20:28:49 -0500
-Received: from mail.kernel.org ([198.145.29.99]:49932 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S243296AbhKIBVF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Nov 2021 20:21:05 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 86A7061361;
-        Tue,  9 Nov 2021 01:08:05 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1636420086;
-        bh=mYGN1jchXqhP2XlrV8PgHBb3nJFQbw9yzoF3deh2WXc=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=bhXd0NwwD9Hb00aX5ierlLz0n9zIE0MFSNsAWGTHzlznZAt06aLdmxRGWMhw9EbNH
-         8OxOCvzFZ/cgiAJn2oO7KZwgCqNZxClpqzu9MZqW3SLMX90fwj9tLPLpUxKbBuRoET
-         vZxa54bbs1LVZRCxDl+DXiGwImMBBv8LTeC4AJCgx7MFDIYVpDan9SMswqVkGTtdob
-         8Q3KobiwcljvQLpwwfkQexBPKwLsKRB0fZDGnnND6McnBCi8DIrkQECzDsZoNmeBWe
-         vSt6/gVkLk+hIp/UjrX1DUYodMpu8lgSxzsVk7umoUMj8LdNZXDtIfWlmyTFwdi9w9
-         L9Vwi+pT28bdQ==
-From:   Sasha Levin <sashal@kernel.org>
-To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Sven Schnelle <svens@stackframe.org>, Helge Deller <deller@gmx.de>,
-        Sasha Levin <sashal@kernel.org>,
-        James.Bottomley@HansenPartnership.com, mingo@kernel.org,
-        peterz@infradead.org, valentin.schneider@arm.com, ardb@kernel.org,
-        linux-parisc@vger.kernel.org
-Subject: [PATCH AUTOSEL 4.14 39/39] parisc/kgdb: add kgdb_roundup() to make kgdb work with idle polling
-Date:   Mon,  8 Nov 2021 20:06:49 -0500
-Message-Id: <20211109010649.1191041-39-sashal@kernel.org>
-X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20211109010649.1191041-1-sashal@kernel.org>
-References: <20211109010649.1191041-1-sashal@kernel.org>
+        id S242824AbhKIBcA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Nov 2021 20:32:00 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48162 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S244190AbhKIB2z (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Nov 2021 20:28:55 -0500
+Received: from mail-oo1-xc30.google.com (mail-oo1-xc30.google.com [IPv6:2607:f8b0:4864:20::c30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30E85C0797B9
+        for <linux-kernel@vger.kernel.org>; Mon,  8 Nov 2021 17:07:26 -0800 (PST)
+Received: by mail-oo1-xc30.google.com with SMTP id w30-20020a4a355e000000b002c2649b8d5fso2429686oog.10
+        for <linux-kernel@vger.kernel.org>; Mon, 08 Nov 2021 17:07:26 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=ednwC4rk+fMRoZ56y8enAsmD1OcJ155WuvM3vrzbF0g=;
+        b=kW2VZKXq10e3+j2pN2rREnvfGn/ed2pBKv/FDDZGYkiJ1B/Tm+e592rBZOssvxp1nL
+         lJ8uNMknOuWUpEbsMD9f5YGmpAyp6iPS1isss6b24feSEfiOdZDz5BB1kClvWeRx3m+k
+         nSKJo7mf0P6cENwhEMcYQl79zQf2G4kpxcTjF8qti3XLvenzR4E8B9owfJGlT5swp/tO
+         0E211Heecg5kaSUuT4hqK7LMmN/Dv9ANQuL2x50Vl2dhZTV7X4DyPTdhV7FFap/gkuZA
+         a7curh+yVVMTtyUoMlA9s4fMN4nseVOWXU0tC4BMuT7AR0lvBWHgKVcMoJw8R1BKkXeI
+         mtJg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=ednwC4rk+fMRoZ56y8enAsmD1OcJ155WuvM3vrzbF0g=;
+        b=hYL14yqiFmMqcFX6WTxu79mKET3O7ANXSRylLdr6HoZik9qOy/rZTPAnBagbJplgoR
+         ONGc2Uqq2vQ29/mElkzqlrPtYeq8Bdz83iBmInZQYXDgY0hjb7zt75I843IIb2R+8PH9
+         64oVI9kpc0TSGO9AbNQTA/yElHesVbzxiy3B/PT7icnMY4fogcSQqJFmpjIZ5UUlEIZS
+         mRpRDalOk/WTlstmrFJPVuvuLrlOO3o6y6TuvHG0E3+GfgvlgTemb9djn050d+RSG+45
+         eTJ7RbM/eh599CCC7jMw5DwZGDmzhIptV4QYcv2ubgCbxgR1aR80uDoWgRyiYWkn2gyb
+         H49g==
+X-Gm-Message-State: AOAM532xHmJ46dL/Qhli48zjNXf/Rz5MlPEuiJ0We/ZoWpsrcyU6z0kf
+        2+61fDLWWAUA9ohiy8l6eFGRD1v907HHMIZH1TETCA==
+X-Google-Smtp-Source: ABdhPJxZSqASgOxakIs7bpwXgWYlDpKIrlNu94fm32sHo3EvuzrjMEZORAzZOMFOE3CUot1IZlKvoozayP2kRdmgAXQ=
+X-Received: by 2002:a4a:e5cd:: with SMTP id r13mr1831608oov.84.1636420045513;
+ Mon, 08 Nov 2021 17:07:25 -0800 (PST)
 MIME-Version: 1.0
-X-stable: review
-X-Patchwork-Hint: Ignore
-Content-Transfer-Encoding: 8bit
+References: <20211102225701.98944-1-Mr.Bossman075@gmail.com>
+ <20211102225701.98944-3-Mr.Bossman075@gmail.com> <1635902437.626178.3880384.nullmailer@robh.at.kernel.org>
+ <c97c45ac-d9d6-a21b-9c43-69f58b07f265@gmail.com>
+In-Reply-To: <c97c45ac-d9d6-a21b-9c43-69f58b07f265@gmail.com>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Tue, 9 Nov 2021 02:07:14 +0100
+Message-ID: <CACRpkda9e8FtjR3XB97Lu8X5=yeApk==4+zSqo3Qp6bWxgJAcw@mail.gmail.com>
+Subject: Re: [PATCH v2 02/13] dt-bindings: pinctrl: add i.MXRT1050 pinctrl
+ binding doc
+To:     Jesse Taube <mr.bossman075@gmail.com>
+Cc:     Rob Herring <robh@kernel.org>, mturquette@baylibre.com,
+        aisheng.dong@nxp.com, linux@armlinux.org.uk,
+        s.hauer@pengutronix.de, linux-gpio@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, adrian.hunter@intel.com,
+        linux-mmc@vger.kernel.org, kernel@pengutronix.de,
+        shawnguo@kernel.org, linux-serial@vger.kernel.org,
+        jirislaby@kernel.org, robh+dt@kernel.org, abel.vesa@nxp.com,
+        festevam@gmail.com, ulf.hansson@linaro.org,
+        linux-kernel@vger.kernel.org, stefan@agner.ch, olof@lixom.net,
+        sboyd@kernel.org, nobuhiro1.iwamatsu@toshiba.co.jp,
+        linux-clk@vger.kernel.org, arnd@arndb.de,
+        devicetree@vger.kernel.org, linux-imx@nxp.com, soc@kernel.org,
+        gregkh@linuxfoundation.org, giulio.benetti@benettiengineering.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sven Schnelle <svens@stackframe.org>
+On Wed, Nov 3, 2021 at 2:38 AM Jesse Taube <mr.bossman075@gmail.com> wrote:
 
-[ Upstream commit 66e29fcda1824f0427966fbee2bd2c85bf362c82 ]
+> Ah I thought it would stop make at error i see it now, is there a way to
+> do one file.
 
-With idle polling, IPIs are not sent when a CPU idle, but queued
-and run later from do_idle(). The default kgdb_call_nmi_hook()
-implementation gets the pointer to struct pt_regs from get_irq_reqs(),
-which doesn't work in that case because it was not called from the
-IPI interrupt handler. Fix it by defining our own kgdb_roundup()
-function which sents an IPI_ENTER_KGDB. When that IPI is received
-on the target CPU kgdb_nmicallback() is called.
+Yes:
 
-Signed-off-by: Sven Schnelle <svens@stackframe.org>
-Signed-off-by: Helge Deller <deller@gmx.de>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- arch/parisc/kernel/smp.c | 19 +++++++++++++++++--
- 1 file changed, 17 insertions(+), 2 deletions(-)
+make dt_binding_check DT_SCHEMA_FILES=Documentation/...
 
-diff --git a/arch/parisc/kernel/smp.c b/arch/parisc/kernel/smp.c
-index ab4d5580bb02b..45e3aadcecd2f 100644
---- a/arch/parisc/kernel/smp.c
-+++ b/arch/parisc/kernel/smp.c
-@@ -32,6 +32,7 @@
- #include <linux/bitops.h>
- #include <linux/ftrace.h>
- #include <linux/cpu.h>
-+#include <linux/kgdb.h>
- 
- #include <linux/atomic.h>
- #include <asm/current.h>
-@@ -74,7 +75,10 @@ enum ipi_message_type {
- 	IPI_CALL_FUNC,
- 	IPI_CPU_START,
- 	IPI_CPU_STOP,
--	IPI_CPU_TEST
-+	IPI_CPU_TEST,
-+#ifdef CONFIG_KGDB
-+	IPI_ENTER_KGDB,
-+#endif
- };
- 
- 
-@@ -170,7 +174,12 @@ ipi_interrupt(int irq, void *dev_id)
- 			case IPI_CPU_TEST:
- 				smp_debug(100, KERN_DEBUG "CPU%d is alive!\n", this_cpu);
- 				break;
--
-+#ifdef CONFIG_KGDB
-+			case IPI_ENTER_KGDB:
-+				smp_debug(100, KERN_DEBUG "CPU%d ENTER_KGDB\n", this_cpu);
-+				kgdb_nmicallback(raw_smp_processor_id(), get_irq_regs());
-+				break;
-+#endif
- 			default:
- 				printk(KERN_CRIT "Unknown IPI num on CPU%d: %lu\n",
- 					this_cpu, which);
-@@ -226,6 +235,12 @@ send_IPI_allbutself(enum ipi_message_type op)
- 	}
- }
- 
-+#ifdef CONFIG_KGDB
-+void kgdb_roundup_cpus(void)
-+{
-+	send_IPI_allbutself(IPI_ENTER_KGDB);
-+}
-+#endif
- 
- inline void 
- smp_send_stop(void)	{ send_IPI_allbutself(IPI_CPU_STOP); }
--- 
-2.33.0
-
+Yours,
+Linus Walleij
