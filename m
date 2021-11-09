@@ -2,78 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2598E44B90B
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 23:52:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B2A4344B838
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 23:38:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243582AbhKIWzU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Nov 2021 17:55:20 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56898 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243533AbhKIWxQ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Nov 2021 17:53:16 -0500
-Received: from mail-ot1-x334.google.com (mail-ot1-x334.google.com [IPv6:2607:f8b0:4864:20::334])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D6A66C0F26F1
-        for <linux-kernel@vger.kernel.org>; Tue,  9 Nov 2021 14:23:03 -0800 (PST)
-Received: by mail-ot1-x334.google.com with SMTP id z2-20020a9d71c2000000b0055c6a7d08b8so917331otj.5
-        for <linux-kernel@vger.kernel.org>; Tue, 09 Nov 2021 14:23:03 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=PgvfvNdwSI/3ph2NDnZGZVBMBhLt3hGukHq2mKYVk4E=;
-        b=ezGw9H7bK2e/s/4uure9G6i0ebK2VdicuchuQBo0XrMhltr4yLF4uioTnD7PUtSme0
-         OePrOFZy2xKznFmRa4kWryPPqSDr5KsA3FHmWvPnhzn9VGOr/5/sCVsV/b48g58sZG5Y
-         LdGvmusJLsiDg78lbyLvDdTWzbI35WNVFVM4ialFj7jcKKOcZKQd308uyj0GomRNPo5u
-         XqaD370mJ5NKpFFmzdUhTiqzyL3riw7Uo7hYGZjzRMdR4eaMbWfB9t/4m2hFHbzw1+WL
-         ahXbPCs1rFJ3HXqJzf6XeOso0kdfvJyF4mVwiHwpKiKF9Kbxb7+LLq5Na8bZLQBd7KGi
-         ENHw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=PgvfvNdwSI/3ph2NDnZGZVBMBhLt3hGukHq2mKYVk4E=;
-        b=qHGmgwtbYEqvm7XhaEXyb4WTt9zXnLbIIRGHrkCDvryGUgOvVVaMW8saNarZdsLMbk
-         9m43oKTInF5haPgvCq0CR6+yGeJrr2Xd2JNqx7piC8+JEDMXnxhQ5pvt8LKTeWKxoooV
-         BR5lbVcFtDMEm9UEDup3wUjj2AvwI8bsZqHXCZ9B8NWwTx4Rs9KUqCNXT3jKFK4f/Sbb
-         tGSV2JNeK6wXl5+R8fdt452tms1P/UAqPDLwv3bhbIJB19fn6g/IQXa1u1nU3MemfB7K
-         gQpOh94KREyTEq4fqR44F1yL3UJOsmfjTdceVU3hPvhdEW1Xps+H5jrJL5NRARDAkt3k
-         sukA==
-X-Gm-Message-State: AOAM533rsHR/ek/UK/b9zvVGIan81AS/wDLsdjca8Ga6u6sy9ZTV/h6r
-        7l3jY3w2hu918GDuCLmoycjm1MePcPjOExn34wDXzg==
-X-Google-Smtp-Source: ABdhPJzm3G0CFDoatPM1xAySmN9ryiR6N5sit39Y1Pb5dB8zXLzT9ztTe9fQor4ppdDUgnGjTWOFVjbFNCkeAX5UGds=
-X-Received: by 2002:a9d:ed6:: with SMTP id 80mr8697308otj.35.1636496583272;
- Tue, 09 Nov 2021 14:23:03 -0800 (PST)
+        id S240666AbhKIWlN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Nov 2021 17:41:13 -0500
+Received: from mail.kernel.org ([198.145.29.99]:59348 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1345112AbhKIWjL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Nov 2021 17:39:11 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3F3C761B1D;
+        Tue,  9 Nov 2021 22:23:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1636496597;
+        bh=DXPJin+CE2xZp1acdbPmxh1Z4QPChmnWizcEkUFwARI=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=mmBFhfys5Qd1BI+foOuUzeurh5jPCwzZnEgHYzNwaKIamAVXYDN7Z6zrlTM+owFBD
+         x2keYT70jtTvwm/Ls1JbrtusFle8liyrTg543+w2CWEPvWXEeGwwsK/0N/CX9EFI4J
+         kIhiwn8+ssHJIdXNx0gAYAWZMjMcsOv/VCafiRALJnSC5QAYAe3YfnFYPrV/H0ynL4
+         nUX6Pxy8l5Y+DnYYsK8ROtfOvt4EsSNBbksmVcfZAhSEbdcXbLO9pvwyYyFv2zaUys
+         2aMihgI6/G+p0hbWrfYN46Hcy6zIwdIVED7iKqScZ5U9Wt6fPr+uyTAgBETb4G9/KU
+         u63w17o0q59cg==
+From:   Sasha Levin <sashal@kernel.org>
+To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Cc:     James Smart <jsmart2021@gmail.com>,
+        Justin Tee <justin.tee@broadcom.com>,
+        "Martin K . Petersen" <martin.petersen@oracle.com>,
+        Sasha Levin <sashal@kernel.org>, james.smart@avagotech.com,
+        dick.kennedy@avagotech.com, JBottomley@odin.com,
+        linux-scsi@vger.kernel.org
+Subject: [PATCH AUTOSEL 4.19 03/21] scsi: lpfc: Fix list_add() corruption in lpfc_drain_txq()
+Date:   Tue,  9 Nov 2021 17:22:52 -0500
+Message-Id: <20211109222311.1235686-3-sashal@kernel.org>
+X-Mailer: git-send-email 2.33.0
+In-Reply-To: <20211109222311.1235686-1-sashal@kernel.org>
+References: <20211109222311.1235686-1-sashal@kernel.org>
 MIME-Version: 1.0
-References: <20211109164650.2233507-1-robh@kernel.org>
-In-Reply-To: <20211109164650.2233507-1-robh@kernel.org>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Tue, 9 Nov 2021 23:22:51 +0100
-Message-ID: <CACRpkdYuX5zfJrywx0kWWJJk2A963kzzVGvFrGJciUuGjh7XGw@mail.gmail.com>
-Subject: Re: [PATCH 0/2] Fix Arm Ltd board node name collisions
-To:     Rob Herring <robh@kernel.org>
-Cc:     Stephen Boyd <sboyd@kernel.org>,
-        Sudeep Holla <Sudeep.Holla@arm.com>,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        Guenter Roeck <linux@roeck-us.net>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+X-stable: review
+X-Patchwork-Hint: Ignore
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 9, 2021 at 5:46 PM Rob Herring <robh@kernel.org> wrote:
+From: James Smart <jsmart2021@gmail.com>
 
-> This does break DT ABI compatibility which is partially mitigated if
-> these changes are backported to stable. The alternative is reverting the
-> referenced DT changes and coming up with different node names without
-> unit-addresses. Ultimately, ABI issues are platform maintainers'
-> decision, not mine.
+[ Upstream commit 99154581b05c8fb22607afb7c3d66c1bace6aa5d ]
 
-I don't mind breaking the ABI for these boards since everyone I
-know rebuild the DT with the kernel and boot. I don't know if
-other users flash it though, so check what Sudeep says.
+When parsing the txq list in lpfc_drain_txq(), the driver attempts to pass
+the requests to the adapter. If such an attempt fails, a local "fail_msg"
+string is set and a log message output.  The job is then added to a
+completions list for cancellation.
 
-Yours,
-Linus Walleij
+Processing of any further jobs from the txq list continues, but since
+"fail_msg" remains set, jobs are added to the completions list regardless
+of whether a wqe was passed to the adapter.  If successfully added to
+txcmplq, jobs are added to both lists resulting in list corruption.
+
+Fix by clearing the fail_msg string after adding a job to the completions
+list. This stops the subsequent jobs from being added to the completions
+list unless they had an appropriate failure.
+
+Link: https://lore.kernel.org/r/20210910233159.115896-2-jsmart2021@gmail.com
+Co-developed-by: Justin Tee <justin.tee@broadcom.com>
+Signed-off-by: Justin Tee <justin.tee@broadcom.com>
+Signed-off-by: James Smart <jsmart2021@gmail.com>
+Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
+---
+ drivers/scsi/lpfc/lpfc_sli.c | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/drivers/scsi/lpfc/lpfc_sli.c b/drivers/scsi/lpfc/lpfc_sli.c
+index 40d6537e64dd6..e72fc88aeb40e 100644
+--- a/drivers/scsi/lpfc/lpfc_sli.c
++++ b/drivers/scsi/lpfc/lpfc_sli.c
+@@ -19171,6 +19171,7 @@ lpfc_drain_txq(struct lpfc_hba *phba)
+ 					fail_msg,
+ 					piocbq->iotag, piocbq->sli4_xritag);
+ 			list_add_tail(&piocbq->list, &completions);
++			fail_msg = NULL;
+ 		}
+ 		spin_unlock_irqrestore(&pring->ring_lock, iflags);
+ 	}
+-- 
+2.33.0
+
