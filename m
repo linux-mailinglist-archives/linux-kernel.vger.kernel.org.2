@@ -2,99 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D827D44B067
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 16:31:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 203EA44B05F
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 16:30:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239197AbhKIPeP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Nov 2021 10:34:15 -0500
-Received: from elvis.franken.de ([193.175.24.41]:39251 "EHLO elvis.franken.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239098AbhKIPeN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Nov 2021 10:34:13 -0500
-Received: from uucp (helo=alpha)
-        by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
-        id 1mkT5p-00033f-02; Tue, 09 Nov 2021 16:31:25 +0100
-Received: by alpha.franken.de (Postfix, from userid 1000)
-        id 251A8C2C38; Tue,  9 Nov 2021 16:29:54 +0100 (CET)
-Date:   Tue, 9 Nov 2021 16:29:54 +0100
-From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-To:     Randy Dunlap <rdunlap@infradead.org>
-Cc:     linux-kernel@vger.kernel.org, kernel test robot <lkp@intel.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        bcm-kernel-feedback-list@broadcom.com, linux-mips@vger.kernel.org,
-        Paul Burton <paulburton@kernel.org>,
-        Maxime Bizon <mbizon@freebox.fr>,
-        Ralf Baechle <ralf@linux-mips.org>
-Subject: Re: [PATCH v2] mips: BCM63XX: ensure that CPU_SUPPORTS_32BIT_KERNEL
- is set
-Message-ID: <20211109152954.GC12535@alpha.franken.de>
-References: <20211106154911.26222-1-rdunlap@infradead.org>
+        id S238808AbhKIPdE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Nov 2021 10:33:04 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42512 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236981AbhKIPc6 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Nov 2021 10:32:58 -0500
+Received: from mail-ot1-x32a.google.com (mail-ot1-x32a.google.com [IPv6:2607:f8b0:4864:20::32a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 979BEC061766;
+        Tue,  9 Nov 2021 07:30:12 -0800 (PST)
+Received: by mail-ot1-x32a.google.com with SMTP id q33-20020a056830442100b0055abeab1e9aso31408386otv.7;
+        Tue, 09 Nov 2021 07:30:12 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=sender:subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=0WsRLZzA+8WjebZk6MQ2yQcE7NyK/cID66AG50nvoVc=;
+        b=A3ZlGo23Y03n58pNlCX3VHiJ9bXqoKSn3wUaTr67d7afWz8UbNpvScGMEqMCV7Jrc3
+         ok3KIcMo7mXQa1KYm88SQyBLo0JasHLfF3gsxxPQzzGiFMQNeMcepBY/b1+ABOWJccMZ
+         yEwJARs6Iw9+PC8vu3aYoO+PDoqfy4XmCnc+lQ8PxgEw3H1hTiS/eJkab3JtQ+Ge3okZ
+         dxe8K3sEr4J/uAUbu89GY4vZmdJOM+d1QBM1CaGyNIUQTpx8XLeV/yGVbXj7gGLELnon
+         w3CNPvIQ9gEWjQ823XGQR7SbNZ35FdiaGj3qk5jRITqIIFEcdRUPOnmr6Ee5UVVT296X
+         Af2w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:sender:subject:to:cc:references:from:message-id
+         :date:user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=0WsRLZzA+8WjebZk6MQ2yQcE7NyK/cID66AG50nvoVc=;
+        b=MEhWEEc8u+AVbLf3g2RHCFZ8wAwYh4IlrvZnotBipHNvit9bKUhFBwcsgFRb9kbYjJ
+         BnJXPPLintfvXtH0fALWJryEag8URjTDoF07hQXdQENMLy5S4m3jXLPzl304BX59q67c
+         vPLBLaqh90I/AWLmJbLZE/HfumrATzevPM/m9xgtMR/b0L8KsI+s7V2Dzs0QWMkZLFqd
+         fHUUeB41RqBVKbux70VUAvr+Dpce9DrC6kRhVV4yqZHaUdgqC4kCAhJO8zrWTA+6wg7p
+         zimPziYnmqYHEP3alrck2c94DYV5k81/rmzcVerroLhqjQXdCrHmmAqthkNtB8Z3T/fV
+         VZ+g==
+X-Gm-Message-State: AOAM533RnKJ+qWeUDLac2fJLd2knYtVI8eXG2wligJq9K1lQqo/mkzM9
+        dZHOE+goSMeNd3naZ96sCqV+tQ8TJ6g=
+X-Google-Smtp-Source: ABdhPJxpyLpi4skiHMAK0ayI3zl7zHHQ5Xt5N5DUoX1F1aZAsG4RL86djvldh6Ns7Zr1Ru4loTZMow==
+X-Received: by 2002:a9d:2ab:: with SMTP id 40mr6894622otl.208.1636471811989;
+        Tue, 09 Nov 2021 07:30:11 -0800 (PST)
+Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id f12sm3292856ote.75.2021.11.09.07.30.05
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 09 Nov 2021 07:30:07 -0800 (PST)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Subject: Re: [PATCH v4 3/3] watchdog: meson_gxbb_wdt: remove stop_on_reboot
+To:     Art Nikpal <email2tema@gmail.com>,
+        Neil Armstrong <narmstrong@baylibre.com>
+Cc:     wim@linux-watchdog.org, Kevin Hilman <khilman@baylibre.com>,
+        Jerome Brunet <jbrunet@baylibre.com>,
+        Christian Hewitt <christianshewitt@gmail.com>,
+        Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
+        linux-watchdog@vger.kernel.org,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        "open list:ARM/Amlogic Meson..." <linux-amlogic@lists.infradead.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Artem Lapkin <art@khadas.com>, Nick Xie <nick@khadas.com>,
+        Gouwa Wang <gouwa@khadas.com>
+References: <20210730041355.2810397-1-art@khadas.com>
+ <20210730041355.2810397-4-art@khadas.com>
+ <CAKaHn9KxZDAHdKGZg3-Pi3jZO5E3knESHCFjgaV09u5QYe074A@mail.gmail.com>
+From:   Guenter Roeck <linux@roeck-us.net>
+Message-ID: <24363743-48fb-c01f-eb5d-0cd486d099f7@roeck-us.net>
+Date:   Tue, 9 Nov 2021 07:30:04 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211106154911.26222-1-rdunlap@infradead.org>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <CAKaHn9KxZDAHdKGZg3-Pi3jZO5E3knESHCFjgaV09u5QYe074A@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Nov 06, 2021 at 08:49:11AM -0700, Randy Dunlap wrote:
-> Several header files need info on CONFIG_32BIT or CONFIG_64BIT,
-> but kconfig symbol BCM63XX does not provide that info. This leads
-> to many build errors, e.g.:
+On 11/8/21 11:59 PM, Art Nikpal wrote:
+> hi Guenter Roeck
+> why still not merged to upstream ?
 > 
->    arch/mips/include/asm/page.h:196:13: error: use of undeclared identifier 'CAC_BASE'
->            return x - PAGE_OFFSET + PHYS_OFFSET;
->    arch/mips/include/asm/mach-generic/spaces.h:91:23: note: expanded from macro 'PAGE_OFFSET'
->    #define PAGE_OFFSET             (CAC_BASE + PHYS_OFFSET)
->    arch/mips/include/asm/io.h:134:28: error: use of undeclared identifier 'CAC_BASE'
->            return (void *)(address + PAGE_OFFSET - PHYS_OFFSET);
->    arch/mips/include/asm/mach-generic/spaces.h:91:23: note: expanded from macro 'PAGE_OFFSET'
->    #define PAGE_OFFSET             (CAC_BASE + PHYS_OFFSET)
-> 
-> arch/mips/include/asm/uaccess.h:82:10: error: use of undeclared identifier '__UA_LIMIT'
->            return (__UA_LIMIT & (addr | (addr + size) | __ua_size(size))) == 0;
-> 
-> 
-> Selecting the SYS_HAS_CPU_BMIPS* symbols causes SYS_HAS_CPU_BMIPS to be
-> set, which then selects CPU_SUPPORT_32BIT_KERNEL, which causes
-> CONFIG_32BIT to be set. (a bit more indirect than v1 [RFC].)
-> 
-> Fixes: e7300d04bd08 ("MIPS: BCM63xx: Add support for the Broadcom BCM63xx family of SOCs.")
-> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-> Reported-by: kernel test robot <lkp@intel.com>
-> Cc: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-> Cc: Florian Fainelli <f.fainelli@gmail.com>
-> Cc: bcm-kernel-feedback-list@broadcom.com
-> Cc: linux-mips@vger.kernel.org
-> Cc: Paul Burton <paulburton@kernel.org>
-> Cc: Maxime Bizon <mbizon@freebox.fr>
-> Cc: Ralf Baechle <ralf@linux-mips.org>
-> Suggested-by: Florian Fainelli <f.fainelli@gmail.com>
-> ---
-> v2: select 3 SYS_HAS_CPU_BMIPS* symbols that will cause
->     CPU_SUPPORTS_32BIT_KERNEL to be set (Florian)
-> 
->  arch/mips/Kconfig |    3 +++
->  1 file changed, 3 insertions(+)
-> 
-> --- linux-next-20211105.orig/arch/mips/Kconfig
-> +++ linux-next-20211105/arch/mips/Kconfig
-> @@ -332,6 +332,9 @@ config BCM63XX
->  	select SYS_SUPPORTS_32BIT_KERNEL
->  	select SYS_SUPPORTS_BIG_ENDIAN
->  	select SYS_HAS_EARLY_PRINTK
-> +	select SYS_HAS_CPU_BMIPS32_3300
-> +	select SYS_HAS_CPU_BMIPS4350
-> +	select SYS_HAS_CPU_BMIPS4380
->  	select SWAP_IO_SPACE
->  	select GPIOLIB
->  	select MIPS_L1_CACHE_SHIFT_4
 
-applied to mips-next.
+I had asked you to provide an updated description, without the "personal
+opinion" part which does not belong into a commit log. The other two
+patches wait for Wim to send them upstream.
 
-Thomas.
+Guenter
 
--- 
-Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
-good idea.                                                [ RFC1925, 2.3 ]
+
+> On Fri, Jul 30, 2021 at 12:14 PM Artem Lapkin <email2tema@gmail.com> wrote:
+>>
+>> Remove watchdog_stop_on_reboot()
+>>
+>> Meson platform still have some hardware drivers problems for some
+>> configurations which can freeze device on shutdown/reboot stage and i
+>> think better to have reboot warranty by default.
+>>
+>> I feel that it is important to keep the watchdog running during the
+>> reboot sequence, in the event that an abnormal driver freezes the reboot
+>> process.
+>>
+>> This is my personal opinion and I hope the driver authors will agree
+>> with my proposal, or just ignore this commit if not.
+>>
+>> https://lore.kernel.org/linux-watchdog/20210729072308.1908904-1-art@khadas.com/T/#t
+>>
+>> Signed-off-by: Artem Lapkin <art@khadas.com>
+>> ---
+>>   drivers/watchdog/meson_gxbb_wdt.c | 1 -
+>>   1 file changed, 1 deletion(-)
+>>
+>> diff --git a/drivers/watchdog/meson_gxbb_wdt.c b/drivers/watchdog/meson_gxbb_wdt.c
+>> index 945f5e65db57..d3c9e2f6e63b 100644
+>> --- a/drivers/watchdog/meson_gxbb_wdt.c
+>> +++ b/drivers/watchdog/meson_gxbb_wdt.c
+>> @@ -198,7 +198,6 @@ static int meson_gxbb_wdt_probe(struct platform_device *pdev)
+>>
+>>          meson_gxbb_wdt_set_timeout(&data->wdt_dev, data->wdt_dev.timeout);
+>>
+>> -       watchdog_stop_on_reboot(&data->wdt_dev);
+>>          return devm_watchdog_register_device(dev, &data->wdt_dev);
+>>   }
+>>
+>> --
+>> 2.25.1
+>>
+
