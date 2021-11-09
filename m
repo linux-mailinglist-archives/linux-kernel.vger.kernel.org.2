@@ -2,159 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AEDE944A99E
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 09:46:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 45D6144A9A2
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 09:46:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244476AbhKIIsp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Nov 2021 03:48:45 -0500
-Received: from mail-vk1-f170.google.com ([209.85.221.170]:43777 "EHLO
-        mail-vk1-f170.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244433AbhKIIso (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Nov 2021 03:48:44 -0500
-Received: by mail-vk1-f170.google.com with SMTP id f7so337784vkf.10;
-        Tue, 09 Nov 2021 00:45:58 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=cBujI6LULAaiAY45bOf/1wEBrbff5jn8VFxrA8Nj2gY=;
-        b=5OJvbVNnggPsyJbH3DFOZH9IXf417UKJi5yUmjA6ZHbiVB4DTVt0nHlUTtbOshzMYH
-         dvbx7VGZp5Pen7JVgmM+cotKlnH9kBkgXthbmres6R04Xz1mCOwSeKR0bBUkd1khgSTc
-         kYU0ArBftti5z9x9DBUYeSYozuS9sqcahRWHB0YV4pa1GA4j2LRXwHqQ0UQT1X4eHFRr
-         u19V8KeoT6es5KRViZB09IiUOau2/rPPPZCUyR9/s1TPXntnO6nZ4EK7wk65BZjqOr3A
-         aKrmftjmikncvpQFbxS9vR3jqKX/ZLqV4HQCIp2LZGOVsnCDyFXKqE4mHQU4RjfV9TwV
-         DUWg==
-X-Gm-Message-State: AOAM533BPvEeeDbZGVU/1D8vM6bDDZszxLMBcZqpzrQQ0kDahmJzWUMu
-        WK1uVOmVqpw2fKaAnldpIOoWSg3lYKjm7XXD
-X-Google-Smtp-Source: ABdhPJw5TsC7HzLHYmnfgC3H+jVA1zj6odTPKXc2T7osAwDSY+Q5rKWbcoxdvRN7lx7EMyrMMdh7Lw==
-X-Received: by 2002:a05:6122:218b:: with SMTP id j11mr21602415vkd.11.1636447557618;
-        Tue, 09 Nov 2021 00:45:57 -0800 (PST)
-Received: from mail-ua1-f42.google.com (mail-ua1-f42.google.com. [209.85.222.42])
-        by smtp.gmail.com with ESMTPSA id g187sm1263699vsc.10.2021.11.09.00.45.56
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 09 Nov 2021 00:45:56 -0800 (PST)
-Received: by mail-ua1-f42.google.com with SMTP id s13so21532204uaj.11;
-        Tue, 09 Nov 2021 00:45:56 -0800 (PST)
-X-Received: by 2002:a9f:2c98:: with SMTP id w24mr7784643uaj.89.1636447556112;
- Tue, 09 Nov 2021 00:45:56 -0800 (PST)
+        id S244478AbhKIIte (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Nov 2021 03:49:34 -0500
+Received: from foss.arm.com ([217.140.110.172]:58496 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S242854AbhKIItd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Nov 2021 03:49:33 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id A81E42B;
+        Tue,  9 Nov 2021 00:46:47 -0800 (PST)
+Received: from [10.57.26.224] (unknown [10.57.26.224])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id BB0953F7F5;
+        Tue,  9 Nov 2021 00:46:43 -0800 (PST)
+Subject: Re: [PATCH v3 4/5] cpufreq: qcom-cpufreq-hw: Use new thermal pressure
+ update function
+To:     Thara Gopinath <thara.gopinath@linaro.org>
+Cc:     linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-arm-msm@vger.kernel.org, sudeep.holla@arm.com,
+        will@kernel.org, catalin.marinas@arm.com, linux@armlinux.org.uk,
+        gregkh@linuxfoundation.org, rafael@kernel.org,
+        viresh.kumar@linaro.org, amitk@kernel.org,
+        daniel.lezcano@linaro.org, amit.kachhap@gmail.com,
+        bjorn.andersson@linaro.org, agross@kernel.org,
+        Steev Klimaszewski <steev@kali.org>
+References: <20211103161020.26714-1-lukasz.luba@arm.com>
+ <20211103161020.26714-5-lukasz.luba@arm.com>
+ <c4a2618f-71ee-b688-6268-08256a8edf10@linaro.org>
+ <02468805-f626-1f61-7f7f-73ed7dfad034@arm.com>
+ <af73cc0a-4dd2-832f-13b0-08807df64ce2@linaro.org>
+From:   Lukasz Luba <lukasz.luba@arm.com>
+Message-ID: <e4907877-6cfe-57fe-74b4-6d4efeb1d25a@arm.com>
+Date:   Tue, 9 Nov 2021 08:46:41 +0000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.9.0
 MIME-Version: 1.0
-References: <20211108150554.4457-1-conor.dooley@microchip.com> <20211108150554.4457-11-conor.dooley@microchip.com>
-In-Reply-To: <20211108150554.4457-11-conor.dooley@microchip.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Tue, 9 Nov 2021 09:45:44 +0100
-X-Gmail-Original-Message-ID: <CAMuHMdWQxz5eprDuqJcsXcp+cKPwxoV=+if_qvS9ah5qBO-shA@mail.gmail.com>
-Message-ID: <CAMuHMdWQxz5eprDuqJcsXcp+cKPwxoV=+if_qvS9ah5qBO-shA@mail.gmail.com>
-Subject: Re: [PATCH 10/13] dt-bindings: spi: add bindings for microchip mpfs spi
-To:     Conor Dooley <conor.dooley@microchip.com>
-Cc:     Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Jassi Brar <jassisinghbrar@gmail.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Alessandro Zummo <a.zummo@towertech.it>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Mark Brown <broonie@kernel.org>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        Lewis Hanly <lewis.hanly@microchip.com>,
-        daire.mcnamara@microchip.com, Atish Patra <atish.patra@wdc.com>,
-        ivan.griffin@microchip.com,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux I2C <linux-i2c@vger.kernel.org>,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
-        linux-rtc@vger.kernel.org, linux-spi <linux-spi@vger.kernel.org>,
-        USB list <linux-usb@vger.kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        Bin Meng <bin.meng@windriver.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <af73cc0a-4dd2-832f-13b0-08807df64ce2@linaro.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Conor,
 
-On Mon, Nov 8, 2021 at 4:07 PM <conor.dooley@microchip.com> wrote:
-> From: Conor Dooley <conor.dooley@microchip.com>
->
-> Add device tree bindings for the {q,}spi controller on
-> the Microchip PolarFire SoC.
->
-> Signed-off-by: Conor Dooley <conor.dooley@microchip.com>
 
-Thanks for your patch!
+On 11/8/21 9:23 PM, Thara Gopinath wrote:
+> 
+> 
+> On 11/8/21 9:12 AM, Lukasz Luba wrote:
+> ...snip
+> 
+>>>
+>>>
+>>
+>> Well, I think the issue is broader. Look at the code which
+>> calculate this 'capacity'. It's just a multiplication & division:
+>>
+>> max_capacity = arch_scale_cpu_capacity(cpu); // =1024 in our case
+>> capacity = mult_frac(max_capacity, throttled_freq,
+>>          policy->cpuinfo.max_freq);
+>>
+>> In the reported by Steev output from sysfs cpufreq we know
+>> that the value of 'policy->cpuinfo.max_freq' is:
+>> /sys/devices/system/cpu/cpu5/cpufreq/cpuinfo_max_freq:2956800
+>>
+>> so when we put the values to the equation we get:
+>> capacity = 1024 * 2956800 / 2956800; // =1024
+>> The 'capacity' will be always <= 1024 and this check won't
+>> be triggered:
+>>
+>> /* Don't pass boost capacity to scheduler */
+>> if (capacity > max_capacity)
+>>      capacity = max_capacity;
+>>
+>>
+>> IIUC you original code, you don't want to have this boost
+>> frequency to be treated as 1024 capacity. The reason is because
+>> the whole capacity machinery in arch_topology.c is calculated based
+>> on max freq value = 2841600,
+>> so the max capacity 1024 would be pinned to that frequency
+>> (according to Steeve's log:
+>> [   22.552273] THERMAL_PRESSURE: max_freq(2841) < capped_freq(2956) 
+>> for CPUs [4-7] )
+> 
+> Hi Lukasz,
+> 
+> Yes you are right in that I was using policy->cpuinfo.max_freq where as 
+> I should have used freq_factor. So now that you are using freq_factor, 
+> it makes sense to cap the capacity at the max capacity calulated by the 
+> scheduler.
+> 
+> I agree that the problem is complex because at some point we should look 
+> at rebuilding the topology based on changes to policy->cpuinfo.max_freq.
+> 
 
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/spi/microchip,mpfs-spi.yaml
-> @@ -0,0 +1,72 @@
-> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/spi/microchip,mpfs-spi.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: Microchip MPFS {Q,}SPI Controller Device Tree Bindings
-> +
-> +maintainers:
-> +  - Conor Dooley <conor.dooley@microchip.com>
-> +
-> +description: |
-> +  This {Q,}SPI controller is found on the Microchip PolarFire SoC.
-> +
-> +allOf:
-> +  - $ref: "spi-controller.yaml#"
-> +
-> +properties:
-> +  compatible:
-> +    enum:
-> +      - microchip,mpfs-spi
-> +      - microsemi,ms-pf-mss-spi
-> +      - microchip,mpfs-qspi
-> +      - microsemi,ms-pf-mss-qspi
+I probably cannot fix your driver easily right now. What I can do and is
+actually required for this new API arch_update_thermal_pressure() is to
+accept boost frequencies (values which are higher that 'freq_factor')
+without triggering a warning and just setting the thermal pressure to 0
+(since we are told that the frequency capping is completely removed even
+for boost values).
 
-Same comment as before: what are the ms-pf-mss entries?
+The next step would be to perform longer investigation how the boost
+frequencies are accepted then triggered/used by scheduler and other
+involved machinery.
 
-> +examples:
-> +  - |
-> +    #include "dt-bindings/clock/microchip,mpfs-clock.h"
-> +    #include "dt-bindings/interrupt-controller/microchip,mpfs-plic.h"
-> +    soc {
-> +      #address-cells = <2>;
-> +      #size-cells = <2>;
+I've asked Steev for help with setting up this Rockchip RK3399 new boost
+frequency which actually is used. I want to understand why that platform
+is able to use the boost freq and this Qcom SoC is not able to use it.
 
-Please drop these two...
+I agree with you that at some point we might need to try rebuilding the
+topology information based on these policy->cpuinfo.max_freq changes.
 
-> +      spi0: spi@20108000 {
-> +        compatible = "microchip,mpfs-spi";
-> +        reg = <0x0 0x20108000 0x0 0x1000>;
+I hope it would take only a few steps to fix these issues completely,
+without destroying a lot of existing code...
 
-... and the zeros here.
-
-> +        clocks = <&clkcfg CLK_SPI0>;
-> +        interrupt-parent = <&plic>;
-> +        interrupts = <PLIC_INT_SPI0>;
-> +        spi-max-frequency = <25000000>;
-> +        num-cs = <8>;
-> +        status = "disabled";
-
-Please drop this.
-
-> +      };
-> +    };
-> +...
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+Regards,
+Lukasz
