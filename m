@@ -2,93 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3E14D44AC92
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 12:25:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 642D344AC98
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 12:26:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245745AbhKIL2i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Nov 2021 06:28:38 -0500
-Received: from mail.kernel.org ([198.145.29.99]:34928 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S245705AbhKIL2h (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Nov 2021 06:28:37 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0F11461181;
-        Tue,  9 Nov 2021 11:25:50 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1636457151;
-        bh=ShWODb78JTesztD8vw3v6PUkVGfjRqdMSwOpbeq8enQ=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Z49g3JObLd2ZWq39ykZxII8k1g/bZcHhngpgwinB8FN0bD6XsVUslZNA5qqTyxLUk
-         g7uSttEUla/lDAti3E5OaSIQmf5Ky6ll7GEhUw1v9Pq9lGHYu+ifLouRCbD5FDshzl
-         1B9U5JGeo1p7TySk3Ganmf8zlGa3/QV+CJ/KNidw=
-Date:   Tue, 9 Nov 2021 12:25:48 +0100
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Philipp Deppenwiese <philipp.deppenwiese@immu.ne>
-Cc:     Hans-Gert Dahmen <hans-gert.dahmen@immu.ne>,
-        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "mauro.lima@eclypsium.com" <mauro.lima@eclypsium.com>,
-        "hughsient@gmail.com" <hughsient@gmail.com>,
-        "platform-driver-x86@vger.kernel.org" 
-        <platform-driver-x86@vger.kernel.org>
-Subject: Re: [PATCH] firmware: export x86_64 platform flash bios region via
- sysfs
-Message-ID: <YYpavE0t/3OF0qaX@kroah.com>
-References: <YYpMTVP/dWsyxMSt@kroah.com>
- <C7D4E238-04FA-4C96-9D54-89CD649B6CBC@getmailspring.com>
+        id S245753AbhKIL3Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Nov 2021 06:29:24 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43626 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238607AbhKIL3U (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Nov 2021 06:29:20 -0500
+Received: from mail-oo1-xc2f.google.com (mail-oo1-xc2f.google.com [IPv6:2607:f8b0:4864:20::c2f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 17F3BC061764
+        for <linux-kernel@vger.kernel.org>; Tue,  9 Nov 2021 03:26:35 -0800 (PST)
+Received: by mail-oo1-xc2f.google.com with SMTP id m37-20020a4a9528000000b002b83955f771so6795520ooi.7
+        for <linux-kernel@vger.kernel.org>; Tue, 09 Nov 2021 03:26:35 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=gCm3nSR397zk7aSEEkQCw98vZ58y73OpbN0H7g0wwJM=;
+        b=hS/rr3fGh5laNnuUENCdGVA75ssygWbqppxs2QMMUMhAB3kaGI9LQa+dlNsNsutGjS
+         q+56DQRYlQsibzvJuJnQ5w/SDbeU/j/DuklCJWYQhBYfyP82IJRcUdcycrJ+dNgtg3Dz
+         mAL3uKtBf9iM2NUmdhCC58DqFlbKBghnalIOXfNr5aObky1aQ6/O6QvIjO8DZCoP/7VK
+         7a3BjiYmqznA7f5d1mATCZU/hJ3HEZ7xFv0/0+K/f0FSXrgDIexQUxJo62EzKT9FPyTD
+         bYMylpOD4soTbGyONk6HtVc+zbvcVUjAHnTZn1C5tC+WN5rKWcfbvk6MaLakpKaiWZSV
+         IGvQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=gCm3nSR397zk7aSEEkQCw98vZ58y73OpbN0H7g0wwJM=;
+        b=uCwaZkashNMfNkAXO8Uw26Wqz6m7IWvD6AK/fY3UZTE0O0vHyUg+UD26lBnf71loSl
+         y1JsQnxC0f2B+GOol8DLw/DfVTbPKsWOeLth9ZXQthDRqzeKNrbmRiheH6ShqxIQVmrB
+         Sv+8ZU8CjxMd5edXwGNVhIY9fZYii4mwJKCClqjfGzU4p8F8JhnjKxRSIVQksk9hrxlp
+         P3T0ePDa1XcxRQXVYFDQvQ+83LFeKWTXO+limMl2eOB39DXPuTis3DQBRQrm2r56nr1/
+         8eVZXfq1ylo1CiD6Mpsj7ty3t4pWhXW1RXbcpjUSS4ZuDPwZUTXQfPLuWM42ofyEP5Xz
+         CtWw==
+X-Gm-Message-State: AOAM5329llPy2+R20rsyDtmV3XjmQ6cr9mGqBj3MOYDXDT9nZjJoXFng
+        XOuXEV2X/s68+beYmAljlFJQTnV6gUbLA1PPoPvvDg==
+X-Google-Smtp-Source: ABdhPJwkWMItcy6dYAzsdz0Ss+mlymO7DJvCLhisfx81i7Po0UJcwJpYb3dKmZpYVOf8lEFZGtR62J76EpX/RLqjp68=
+X-Received: by 2002:a4a:5b85:: with SMTP id g127mr3353848oob.86.1636457194390;
+ Tue, 09 Nov 2021 03:26:34 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <C7D4E238-04FA-4C96-9D54-89CD649B6CBC@getmailspring.com>
+References: <20211104154135.2119-1-rdunlap@infradead.org>
+In-Reply-To: <20211104154135.2119-1-rdunlap@infradead.org>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Tue, 9 Nov 2021 12:26:21 +0100
+Message-ID: <CACRpkdY8Otp8GVXWTCh5r9gs4e7fc9UuVMvW_zxU7ADbMmSpwg@mail.gmail.com>
+Subject: Re: [PATCH] gpio/rockchip: fix Kconfig to prevent build errors
+To:     Randy Dunlap <rdunlap@infradead.org>
+Cc:     linux-kernel@vger.kernel.org, Jianqun Xu <jay.xu@rock-chips.com>,
+        Bartosz Golaszewski <brgl@bgdev.pl>, linux-gpio@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-A: http://en.wikipedia.org/wiki/Top_post
-Q: Were do I find info about this thing called top-posting?
-A: Because it messes up the order in which people normally read text.
-Q: Why is top-posting such a bad thing?
-A: Top-posting.
-Q: What is the most annoying thing in e-mail?
+On Thu, Nov 4, 2021 at 4:41 PM Randy Dunlap <rdunlap@infradead.org> wrote:
 
-A: No.
-Q: Should I include quotations after my reply?
+> GPIO_ROCKCHIP needs to enable GENERIC_IRQ_CHIP to prevent build errors.
+>
+> Eliminates these build errors:
+> ld: drivers/gpio/gpio-rockchip.o: in function `rockchip_irq_disable':
+> gpio-rockchip.c:(.text+0x6c9): undefined reference to `irq_gc_mask_set_bit'
+> ld: drivers/gpio/gpio-rockchip.o: in function `rockchip_irq_enable':
+> gpio-rockchip.c:(.text+0x709): undefined reference to `irq_gc_mask_clr_bit'
+> ld: drivers/gpio/gpio-rockchip.o: in function `rockchip_gpio_probe':
+> gpio-rockchip.c:(.text+0xe25): undefined reference to `irq_generic_chip_ops'
+> ld: gpio-rockchip.c:(.text+0xe7e): undefined reference to `__irq_alloc_domain_generic_chips'
+> ld: gpio-rockchip.c:(.text+0xeb9): undefined reference to `irq_get_domain_generic_chip'
+> ld: gpio-rockchip.c:(.text+0xf04): undefined reference to `irq_gc_ack_set_bit'
+> ld: gpio-rockchip.c:(.text+0xf0e): undefined reference to `irq_gc_mask_set_bit'
+> ld: gpio-rockchip.c:(.text+0xf18): undefined reference to `irq_gc_mask_clr_bit'
+> ld: gpio-rockchip.c:(.text+0xf36): undefined reference to `irq_gc_set_wake'
+>
+> Fixes: 936ee2675eee ("gpio/rockchip: add driver for rockchip gpio")
+> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+> Cc: Jianqun Xu <jay.xu@rock-chips.com>
+> Cc: Linus Walleij <linus.walleij@linaro.org>
+> Cc: Bartosz Golaszewski <brgl@bgdev.pl>
+> Cc: linux-gpio@vger.kernel.org
 
-http://daringfireball.net/2007/07/on_top
+Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
 
-
-On Tue, Nov 09, 2021 at 11:30:06AM +0100, Philipp Deppenwiese wrote:
-> Hi Greg,
-> 
-> sorry for the previous html email, totally forgot kernel ml was plain
-> text only.
-
-It's also interleaved responses :)
-
-> Just some feedback regarding the use case for the interface. As you may
-> know the firmware (BIOS/UEFI/coreboot) is growing massively in the last
-> few years. So we have now 32MB of firmware on a normal x86 system. The
-> interface shall be used as safe and secure method to get the first 16MB
-> read-only copy of the firmware. The interface from Intel is read-only so
-> we shouldn't introduce any security issues here.
-
-The problem is this driver will "bind" to any device it is loaded on,
-which is not ok.  It must only work on hardware that it is known to work
-on, as remember, Linux runs on hundreds of thousands of different
-platforms and types of hardware.
-
-> Aside from us there is fwupd.org and another company which are
-> interested in the interface as well. We have added Richard from Redhat
-> to the CC. We use the interface mainly for firmware analysis and TPM PCR
-> pre-calculation features in our SaaS product.
-> 
-> I hope that resolves your questions :). Let me know if you want to
-> discuss more.
-
-Given a lack of documentation as to what this interface would be used
-for, that needs to be resolved, along with links to userspace code that
-uses this new api.
-
-thanks,
-
-greg k-h
+Yours,
+Linus Walleij
