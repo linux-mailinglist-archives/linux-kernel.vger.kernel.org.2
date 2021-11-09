@@ -2,76 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4EDE644B525
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 23:08:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 42EB444B528
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 23:09:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236893AbhKIWLk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Nov 2021 17:11:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48582 "EHLO
+        id S238431AbhKIWMM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Nov 2021 17:12:12 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48712 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235998AbhKIWLh (ORCPT
+        with ESMTP id S235998AbhKIWML (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Nov 2021 17:11:37 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 60D73C061764
-        for <linux-kernel@vger.kernel.org>; Tue,  9 Nov 2021 14:08:51 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=JEZpK26Jp71HL0nxbMNgr323nD6hTVEerZISLVX9BkY=; b=Q1cJrjJI2yHP+T0dM5HtF7KWCg
-        tzu1/s76r2oYU6Fwkdm/yXs15rFfrKI1JDSxhQ3ALNsFLBi+4cs78LSD60m5a03cMTaAwCO49uTtL
-        qK1/hSlhMYAHBf25xfkdp2ZH3KhzDT/u0q5rWqkqbkI2yZcwgY4xxg9yIFsbkZVWNu/cQmUErWyT9
-        QG30AD3VazOv2vnXE7hD/2qPIUTraSdIU6LunSWdD5puw6hAeWctuL3CTfU2yBq8a/tn74B0lRZfO
-        mVT0mVuOitBGPNnknTn0OJrY9ljuJcrZevPNxTt1vkj+qXlmAuTwX07S0IZd50dDAKlHmMtwCMIKY
-        T40zcOJg==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=worktop.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mkZIF-001Ndz-0e; Tue, 09 Nov 2021 22:08:39 +0000
-Received: by worktop.programming.kicks-ass.net (Postfix, from userid 1000)
-        id F2CB49862D2; Tue,  9 Nov 2021 23:08:37 +0100 (CET)
-Date:   Tue, 9 Nov 2021 23:08:37 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Borislav Petkov <bp@alien8.de>
-Cc:     Tony Luck <tony.luck@intel.com>, X86 ML <x86@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v0 00/12] x86/mce: Correct the noinstr annotation
-Message-ID: <20211109220837.GZ174703@worktop.programming.kicks-ass.net>
-References: <20211104144035.20107-1-bp@alien8.de>
+        Tue, 9 Nov 2021 17:12:11 -0500
+Received: from mail-oi1-x235.google.com (mail-oi1-x235.google.com [IPv6:2607:f8b0:4864:20::235])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC7CBC061764
+        for <linux-kernel@vger.kernel.org>; Tue,  9 Nov 2021 14:09:24 -0800 (PST)
+Received: by mail-oi1-x235.google.com with SMTP id s139so1310352oie.13
+        for <linux-kernel@vger.kernel.org>; Tue, 09 Nov 2021 14:09:24 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:in-reply-to:references:from:user-agent:date:message-id
+         :subject:to:cc;
+        bh=DPT5pWa6cT8nw3Zv9xh5xFmmq85YU9JvkFn3DJbbeno=;
+        b=Eepl0E0INMovuY9E/5rpog6e/jKCyo5Mf5NMvqE+gygcSEWSSwfak8b9jRvDyxJIwV
+         XbsyCcK/RVQDnUuh1ed6cRQNrYmeYfIzc4Rcw8U4qaSagdxJ5nO9ylDvR6Gpksurt6KS
+         5RZ3DEDXQvUcXuCz53c1nTjSQHHOQOSASdlQI=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:in-reply-to:references:from
+         :user-agent:date:message-id:subject:to:cc;
+        bh=DPT5pWa6cT8nw3Zv9xh5xFmmq85YU9JvkFn3DJbbeno=;
+        b=XCdV/h4XcW/e1o4cqMnlrRAR21SieCMPdk2zMjJKTLQL9tI3TurerE6aIk/SZIUDgr
+         8jXR+TFV4DFLsw7jAiLXCTWIqBVsksKnTuwxPX5/pm+q3Z6Vb9XC6jQ0nuiRRbnn2ul+
+         L0+Q5ZhhMQyayV9K5YfF7kYeOuBgad2D+GrAYdBG9jZS2GgBP0nT4VWJSF5ziXGU+b/u
+         iiRxQo88BogZmbdydA0MVsPD2gD/t3sPq/yD3KAeaIcX43QkGOyOMzLxQmtF6dJtwHJp
+         3oZp55+UwTecLopWg90qX1/d3mELzT1kMJ9MNj0iv3z33fHN8zHgz6dOL1Y1MkJLDUQy
+         ohSQ==
+X-Gm-Message-State: AOAM532oRE0NYM6VVDUnzXsNzE8LXxUCE5l3UWsmV820UeOAqWMAC9Z6
+        APLPeEYAppvasv4ZBeAq3qgDtEJ/gArguYl/6mKP4w==
+X-Google-Smtp-Source: ABdhPJyq+WHaMv+pQAv1iUIqLn4EAtyzQnLJaulAUyKW2RUle/i+EGbpt/SBpZiLkLkmUM3ZrpMeVk6x9TtFHDQkxCA=
+X-Received: by 2002:a05:6808:211f:: with SMTP id r31mr8942621oiw.64.1636495764284;
+ Tue, 09 Nov 2021 14:09:24 -0800 (PST)
+Received: from 753933720722 named unknown by gmailapi.google.com with
+ HTTPREST; Tue, 9 Nov 2021 22:09:23 +0000
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211104144035.20107-1-bp@alien8.de>
+In-Reply-To: <20211106172246.2597431-1-bjorn.andersson@linaro.org>
+References: <20211106172246.2597431-1-bjorn.andersson@linaro.org>
+From:   Stephen Boyd <swboyd@chromium.org>
+User-Agent: alot/0.9.1
+Date:   Tue, 9 Nov 2021 22:09:23 +0000
+Message-ID: <CAE-0n51evrWUseEKRbdsfx9nLHuv5YdS89OE3X5Ffs+LLN-35w@mail.gmail.com>
+Subject: Re: [PATCH] drm/msm/dp: Drop now unused hpd_high member
+To:     Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        David Airlie <airlied@linux.ie>,
+        Rob Clark <robdclark@gmail.com>, Sean Paul <sean@poorly.run>
+Cc:     Kuogee Hsieh <khsieh@codeaurora.org>,
+        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+        Abhinav Kumar <abhinavk@codeaurora.org>,
+        linux-arm-msm@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        freedreno@lists.freedesktop.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 04, 2021 at 03:40:23PM +0100, Borislav Petkov wrote:
-> From: Borislav Petkov <bp@suse.de>
-> 
-> Hi,
-> 
-> here's a first preliminary (it is based on some random 5.16-rc0 commit
-> and is tested only in qemu) of the series which correct all the noinstr
-> annotation of the #MC handler.
-> 
-> Since it calls a bunch of external facilities, the strategy is to mark
-> mce-specific functions called by the #MC handler as noinstr and when
-> they "call out" so to speak, to do a begin/end sandwich around that
-> call.
+Quoting Bjorn Andersson (2021-11-06 10:22:46)
+> Since '8ede2ecc3e5e ("drm/msm/dp: Add DP compliance tests on Snapdragon
+> Chipsets")' the hpd_high member of struct dp_usbpd has been write-only.
+>
+> Let's clean up the code a little bit by removing the writes as well.
+>
+> Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+> ---
 
-Some things are obviously fine, like annotating away mce_panic(), I mean
-we're going to panic, so who cares if instrumentation is going to make
-it explode earlier.
-
-But other things are non-obvious to me; in principle I'm thinking much
-of #MC really doesn't want instrumentation because things are fragile
-and the more 'crap' runs the more chance we'll trigger a second fail and
-blow up the system, right?
-
-Now, MCE code hasn't been 'architected' much, and as such seems to call
-out to lots of code, so perhaps put in an explicit comment with
-instrumentation_begin()'s you *know* are wrong, but are the best we can
-do to shut things up -- for now.
-
-That way we don't forget things are broken and need more work :-)
+Reviewed-by: Stephen Boyd <swboyd@chromium.org>
