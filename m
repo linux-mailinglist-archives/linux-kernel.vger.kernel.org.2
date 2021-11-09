@@ -2,206 +2,276 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CA23144B253
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 19:05:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A2D4E44B277
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 19:07:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241545AbhKISIR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Nov 2021 13:08:17 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49934 "EHLO
+        id S241815AbhKISK2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Nov 2021 13:10:28 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50296 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241601AbhKISIB (ORCPT
+        with ESMTP id S241785AbhKISKM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Nov 2021 13:08:01 -0500
-Received: from mail-ot1-x334.google.com (mail-ot1-x334.google.com [IPv6:2607:f8b0:4864:20::334])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3968CC061766
-        for <linux-kernel@vger.kernel.org>; Tue,  9 Nov 2021 10:05:14 -0800 (PST)
-Received: by mail-ot1-x334.google.com with SMTP id l7-20020a0568302b0700b0055ae988dcc8so28894599otv.12
-        for <linux-kernel@vger.kernel.org>; Tue, 09 Nov 2021 10:05:14 -0800 (PST)
+        Tue, 9 Nov 2021 13:10:12 -0500
+Received: from mail-pl1-x633.google.com (mail-pl1-x633.google.com [IPv6:2607:f8b0:4864:20::633])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A028C06120B;
+        Tue,  9 Nov 2021 10:07:26 -0800 (PST)
+Received: by mail-pl1-x633.google.com with SMTP id o14so22378649plg.5;
+        Tue, 09 Nov 2021 10:07:26 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=Ea1Ygytm9WwNWrADrVVx1H/iSgIyMBYVyduVUUcPhQU=;
-        b=KZhRPVnqzHRN14gHZ17on84P4rBej74U7m89/lI096r6Px6FPddR5WIJsZucIu/g+0
-         tdZCsEed7OPJHb8k/cOsRd71L/l/O2llzqfOmWPcyDk9BDo9GM0PZ0Oc/ET9fuRm1ii3
-         R+mHrxkfpcaYuq7N30HDf87BzXVLG6JnzG8cN+ERbdPMPTIMNnX6l/ndBAf51eXYshqK
-         VwmyCK8pJuexxno+mych6YSamu5gdkWcBkdi2PHn+nwFjniEuo6d1Xmf8f+M1xXFdlKl
-         oKuwDJvn5T1Q5H7PM6zaZPgbYgH1RJizUdhFJ9YSNMgXOzf4O8h8Oo7eNzc/jSzxB2HM
-         uHQg==
+        d=gmail.com; s=20210112;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=2L6rhPvItN9TtF9bTs6WdQ6t8LTnm64uAEz7E762uR4=;
+        b=f8GO3C4yJFV0tcQCJKO62bvQvyPI/8stXnayu2hAB4hSAuvZZ3puhEUkdies7wCSeL
+         O3VpG2DvCrAmVgT+/CwoBPymcOJyFd2kC+pRIF9jwR15SyQ2wZxlL0ucUcIqMDPY/gAy
+         Zm44BNzWX75hLEdcDz9jGSFK8XBf1ZeX8SMuC+YO0hNsPp/ISmVIK4KwvnRlRCjL1KJq
+         jnHzmRINu6w5t1n+xeBLXv7kMcD3PnzXExJCYfkyy16b0jSvRNL916JejXEcFuVnM09O
+         9cTqdES32DB7hC1XDB3lIOJWhuUAXt1c1uDbGg8tTDNji2r4lUJoJ1NBPqeNB6BFuDxb
+         eQDQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=Ea1Ygytm9WwNWrADrVVx1H/iSgIyMBYVyduVUUcPhQU=;
-        b=bRo2gbbO7hzFDupfoRtwiFVD441ojiMD51KiZjlQthv9C9KrvZKwxwv9LNQMLYe/8+
-         Hz0kmjm67j06F7V9A/U3cXYzNip6pgtpYn09wAPfFkIb2Q2FjNW/5qmsBBrNOSGD4vgQ
-         SO1hlw0wsi+lARPze7l1rzy5pSgiRSEQk2JTPaADQ/2dvLovTSRNwUKhCnLog7EJqBAE
-         xt1AJcnjwNncOnzmnnWLN3c6YV/nQClOiOsfFYlH2amuzCuOs6oVlSb1I/y0ogZMYbFL
-         aY4Zsxqi/WoETReOZcGWhUJDdC6kH6dQv1oXkjobcS216qkKt/6B/UGoEoeR+otuZu20
-         UbLw==
-X-Gm-Message-State: AOAM532v2fW1ff3Io6vqAgPr/YMrZgaB3e8gJTzXwaycv3PJ0dGXGyqL
-        V5wyL7ZGg+wpoqbdVzWfBMhufg==
-X-Google-Smtp-Source: ABdhPJxjlvODNgwumNSc2TEiWv8cMyvWTVmX27GjcmJQixUhMYkmNF3+klhtuCCzLGge5WSCcs2orw==
-X-Received: by 2002:a9d:2ab:: with SMTP id 40mr7869415otl.208.1636481113492;
-        Tue, 09 Nov 2021 10:05:13 -0800 (PST)
-Received: from ripper (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
-        by smtp.gmail.com with ESMTPSA id d6sm2855945otb.4.2021.11.09.10.05.12
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 09 Nov 2021 10:05:12 -0800 (PST)
-Date:   Tue, 9 Nov 2021 10:06:46 -0800
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Christian Gmeiner <christian.gmeiner@gmail.com>
-Cc:     linux-kernel@vger.kernel.org, Ohad Ben-Cohen <ohad@wizery.com>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        linux-remoteproc@vger.kernel.org
-Subject: Re: [RFC PATCH v2 1/1] rpmsg: add syslog driver
-Message-ID: <YYq4tjyv0qh+Zpqe@ripper>
-References: <20211109083926.32052-1-christian.gmeiner@gmail.com>
- <20211109083926.32052-2-christian.gmeiner@gmail.com>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=2L6rhPvItN9TtF9bTs6WdQ6t8LTnm64uAEz7E762uR4=;
+        b=LIUw+sHYoWCSYS6rU5tr2VoWyb4pQu+hMJvVE5gp1w5gORCpK/tHwow6lG6ohSScQb
+         I+JGnxHOD8kgqf5Lz8SOwCWmFx8lzBRzCpMv/UNu3Q8846ZPD804ZXCl42K0RMl2f5YV
+         AdzrE1QfBJXxcyYQ/4MVyW1K4ZoGcVN+mI3JEM/+aHm1az0z2sqVB6PhoxdjzY01XTTG
+         F6+JPyuo1hPoTHytMY8A5SOs1YZmV8SQQA8aBIwkPMIRJm8wbnc/ij/OUTOLwvY5adFs
+         cinv173QC/GvrrOUBfgFFnj6J27Zy+Pg2II8wKbDLgyitihcsYWWBRVanq+idcuFyt62
+         WC6g==
+X-Gm-Message-State: AOAM533cQrUyk6AAE18ZM4kV8pRrb/9fUx8kcqjHRPuObX7nhYYJtSmS
+        nACXS27eg5i+y8bSDwJ/+lu++H13Dvo=
+X-Google-Smtp-Source: ABdhPJyIH/JdlC2MWoxLNgBLQcdGKuJDgY/I1EtXIj3PaU+gLC12v3SqwRSTTw8LLIHG/jBjql8WwA==
+X-Received: by 2002:a17:902:6902:b0:13f:c1cd:88f1 with SMTP id j2-20020a170902690200b0013fc1cd88f1mr8863981plk.36.1636481245760;
+        Tue, 09 Nov 2021 10:07:25 -0800 (PST)
+Received: from [10.67.48.245] ([192.19.223.252])
+        by smtp.googlemail.com with ESMTPSA id j7sm3427169pjf.41.2021.11.09.10.07.24
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 09 Nov 2021 10:07:25 -0800 (PST)
+Subject: Re: [PATCH v2 5/7] net: dsa: b53: Add logic for RX timestamping
+To:     Martin Kaistra <martin.kaistra@linutronix.de>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Vivien Didelot <vivien.didelot@gmail.com>
+Cc:     Richard Cochran <richardcochran@gmail.com>,
+        Vladimir Oltean <olteanv@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        John Stultz <john.stultz@linaro.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Russell King <linux@armlinux.org.uk>,
+        Marc Kleine-Budde <mkl@pengutronix.de>,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org
+References: <20211109095013.27829-1-martin.kaistra@linutronix.de>
+ <20211109095013.27829-6-martin.kaistra@linutronix.de>
+From:   Florian Fainelli <f.fainelli@gmail.com>
+Message-ID: <9d9f3b13-051c-0c6d-e2cb-b64bbee2522f@gmail.com>
+Date:   Tue, 9 Nov 2021 10:07:23 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211109083926.32052-2-christian.gmeiner@gmail.com>
+In-Reply-To: <20211109095013.27829-6-martin.kaistra@linutronix.de>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue 09 Nov 00:39 PST 2021, Christian Gmeiner wrote:
-
-> Allows the remote firmware to log into syslog.
+On 11/9/21 1:50 AM, Martin Kaistra wrote:
+> Packets received by the tagger with opcode=1 contain the 32-bit timestamp
+> according to the timebase register. This timestamp is saved in
+> BRCM_SKB_CB(skb)->meta_tstamp. b53_port_rxtstamp() takes this
+> and puts the full time information from the timecounter into
+> shwt->hwtstamp.
 > 
-
-This allows the remote firmware to print log messages in the kernel log,
-not the syslog (although your system might inject the kernel log into
-the syslog as well)
-
-> Signed-off-by: Christian Gmeiner <christian.gmeiner@gmail.com>
+> Signed-off-by: Martin Kaistra <martin.kaistra@linutronix.de>
 > ---
->  drivers/rpmsg/Kconfig        |  8 +++++
->  drivers/rpmsg/Makefile       |  1 +
->  drivers/rpmsg/rpmsg_syslog.c | 65 ++++++++++++++++++++++++++++++++++++
-
-drivers/rpmsg is for rpmsg bus and transport drivers. Client drivers
-should live elsewhere.
-
-But perhaps, rather than having a driver for this, you could simply use
-rpmsg_char and a userspace tool; if you want to get the remote processor
-logs into syslog, instead of the kernel log?
-
->  3 files changed, 74 insertions(+)
->  create mode 100644 drivers/rpmsg/rpmsg_syslog.c
+>  drivers/net/dsa/b53/b53_common.c |  1 +
+>  drivers/net/dsa/b53/b53_ptp.c    | 28 +++++++++++++++++++++++++
+>  drivers/net/dsa/b53/b53_ptp.h    | 10 +++++++++
+>  include/linux/dsa/b53.h          | 30 +++++++++++++++++++++++++++
+>  net/dsa/tag_brcm.c               | 35 ++++++++++++++++++++++++--------
+>  5 files changed, 95 insertions(+), 9 deletions(-)
 > 
-> diff --git a/drivers/rpmsg/Kconfig b/drivers/rpmsg/Kconfig
-> index 0b4407abdf13..801f9956ec21 100644
-> --- a/drivers/rpmsg/Kconfig
-> +++ b/drivers/rpmsg/Kconfig
-> @@ -73,4 +73,12 @@ config RPMSG_VIRTIO
->  	select RPMSG_NS
->  	select VIRTIO
+> diff --git a/drivers/net/dsa/b53/b53_common.c b/drivers/net/dsa/b53/b53_common.c
+> index ed590efbd3bf..a9408f9cd414 100644
+> --- a/drivers/net/dsa/b53/b53_common.c
+> +++ b/drivers/net/dsa/b53/b53_common.c
+> @@ -2300,6 +2300,7 @@ static const struct dsa_switch_ops b53_switch_ops = {
+>  	.port_max_mtu		= b53_get_max_mtu,
+>  	.port_change_mtu	= b53_change_mtu,
+>  	.get_ts_info		= b53_get_ts_info,
+> +	.port_rxtstamp		= b53_port_rxtstamp,
+>  };
 >  
-> +config RPMSG_SYSLOG
-> +	tristate "SYSLOG device interface"
-> +	depends on RPMSG
-> +	help
-> +	  Say Y here to export rpmsg endpoints as device files, usually found
-> +	  in /dev. They make it possible for user-space programs to send and
-> +	  receive rpmsg packets.
+>  struct b53_chip_data {
+> diff --git a/drivers/net/dsa/b53/b53_ptp.c b/drivers/net/dsa/b53/b53_ptp.c
+> index 8629c510b1a0..f8dd8d484d93 100644
+> --- a/drivers/net/dsa/b53/b53_ptp.c
+> +++ b/drivers/net/dsa/b53/b53_ptp.c
+> @@ -6,6 +6,8 @@
+>   * Copyright (C) 2021 Linutronix GmbH
+>   */
+>  
+> +#include <linux/ptp_classify.h>
 > +
->  endmenu
-> diff --git a/drivers/rpmsg/Makefile b/drivers/rpmsg/Makefile
-> index 8d452656f0ee..75b2ec7133a5 100644
-> --- a/drivers/rpmsg/Makefile
-> +++ b/drivers/rpmsg/Makefile
-> @@ -9,3 +9,4 @@ obj-$(CONFIG_RPMSG_QCOM_GLINK_RPM) += qcom_glink_rpm.o
->  obj-$(CONFIG_RPMSG_QCOM_GLINK_SMEM) += qcom_glink_smem.o
->  obj-$(CONFIG_RPMSG_QCOM_SMD)	+= qcom_smd.o
->  obj-$(CONFIG_RPMSG_VIRTIO)	+= virtio_rpmsg_bus.o
-> +obj-$(CONFIG_RPMSG_SYSLOG)	+= rpmsg_syslog.o
-> diff --git a/drivers/rpmsg/rpmsg_syslog.c b/drivers/rpmsg/rpmsg_syslog.c
-> new file mode 100644
-> index 000000000000..b3fdae495fd9
-> --- /dev/null
-> +++ b/drivers/rpmsg/rpmsg_syslog.c
-> @@ -0,0 +1,65 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +
-> +#include <linux/kernel.h>
-> +#include <linux/module.h>
-> +#include <linux/rpmsg.h>
-> +
-> +static int rpmsg_syslog_cb(struct rpmsg_device *rpdev, void *data, int len,
-> +			   void *priv, u32 src)
+>  #include "b53_priv.h"
+>  #include "b53_ptp.h"
+>  
+> @@ -106,6 +108,32 @@ static long b53_hwtstamp_work(struct ptp_clock_info *ptp)
+>  	return B53_PTP_OVERFLOW_PERIOD;
+>  }
+>  
+> +bool b53_port_rxtstamp(struct dsa_switch *ds, int port, struct sk_buff *skb,
+> +		       unsigned int type)
 > +{
-> +	const char *buffer = data;
+> +	struct b53_device *dev = ds->priv;
+> +	struct b53_port_hwtstamp *ps = &dev->ports[port].port_hwtstamp;
+> +	struct skb_shared_hwtstamps *shwt;
+> +	u64 ns;
+
+I had asked you to store b53_port_hwtstamp into dp->priv, any reason for
+not doing that?
+
 > +
-> +	switch (buffer[0]) {
-> +	case 'e':
-> +		dev_err(&rpdev->dev, "%s", buffer + 1);
-> +		break;
-> +	case 'w':
-> +		dev_warn(&rpdev->dev, "%s", buffer + 1);
-> +		break;
-> +	case 'i':
-> +		dev_info(&rpdev->dev, "%s", buffer + 1);
-> +		break;
-> +	default:
-> +		dev_info(&rpdev->dev, "%s", buffer);
-> +		break;
-> +	}
+> +	if (type != PTP_CLASS_V2_L2)
+> +		return false;
 > +
-> +	return 0;
+> +	if (!test_bit(B53_HWTSTAMP_ENABLED, &ps->state))
+> +		return false;
+> +
+> +	mutex_lock(&dev->ptp_mutex);
+> +	ns = timecounter_cyc2time(&dev->tc, BRCM_SKB_CB(skb)->meta_tstamp);
+> +	mutex_unlock(&dev->ptp_mutex);
+> +
+> +	shwt = skb_hwtstamps(skb);
+> +	memset(shwt, 0, sizeof(*shwt));
+> +	shwt->hwtstamp = ns_to_ktime(ns);
+> +
+> +	return false;
+> +}
+> +EXPORT_SYMBOL(b53_port_rxtstamp);
+> +
+>  int b53_ptp_init(struct b53_device *dev)
+>  {
+>  	mutex_init(&dev->ptp_mutex);
+> diff --git a/drivers/net/dsa/b53/b53_ptp.h b/drivers/net/dsa/b53/b53_ptp.h
+> index 5cd2fd9621a2..3b3437870c55 100644
+> --- a/drivers/net/dsa/b53/b53_ptp.h
+> +++ b/drivers/net/dsa/b53/b53_ptp.h
+> @@ -9,11 +9,15 @@
+>  
+>  #include "b53_priv.h"
+>  
+> +#define SKB_PTP_TYPE(__skb) (*(unsigned int *)((__skb)->cb))
+> +
+>  #ifdef CONFIG_B53_PTP
+>  int b53_ptp_init(struct b53_device *dev);
+>  void b53_ptp_exit(struct b53_device *dev);
+>  int b53_get_ts_info(struct dsa_switch *ds, int port,
+>  		    struct ethtool_ts_info *info);
+> +bool b53_port_rxtstamp(struct dsa_switch *ds, int port, struct sk_buff *skb,
+> +		       unsigned int type);
+>  #else /* !CONFIG_B53_PTP */
+>  
+>  static inline int b53_ptp_init(struct b53_device *dev)
+> @@ -31,5 +35,11 @@ static inline int b53_get_ts_info(struct dsa_switch *ds, int port,
+>  	return -EOPNOTSUPP;
+>  }
+>  
+> +static inline bool b53_port_rxtstamp(struct dsa_switch *ds, int port,
+> +				     struct sk_buff *skb, unsigned int type)
+> +{
+> +	return false;
 > +}
 > +
-> +static int rpmsg_syslog_probe(struct rpmsg_device *rpdev)
-> +{
-> +	struct rpmsg_endpoint *syslog_ept;
-> +	struct rpmsg_channel_info syslog_chinfo = {
-> +		.src = 42,
-> +		.dst = 42,
-> +		.name = "syslog",
-> +	};
-> +
-> +	/*
-> +	 * Create the syslog service endpoint associated to the RPMsg
-> +	 * device. The endpoint will be automatically destroyed when the RPMsg
-> +	 * device will be deleted.
-> +	 */
-> +	syslog_ept = rpmsg_create_ept(rpdev, rpmsg_syslog_cb, NULL, syslog_chinfo);
-
-The rpmsg_device_id below should cause the device to probe on the
-presence of a "syslog" channel announcement, so why are you creating a
-new endpoint with the same here?
-
-Why aren't you just specifying the callback of the driver?
-
-> +	if (!syslog_ept) {
-> +		dev_err(&rpdev->dev, "failed to create the syslog ept\n");
-> +		return -ENOMEM;
-> +	}
-> +	rpdev->ept = syslog_ept;
-> +
-> +	return 0;
-> +}
-> +
-> +static struct rpmsg_device_id rpmsg_driver_syslog_id_table[] = {
-> +	{ .name = "syslog" },
-> +	{ },
+>  #endif
+>  #endif
+> diff --git a/include/linux/dsa/b53.h b/include/linux/dsa/b53.h
+> index 85aa6d9dc53d..542e5e3040d6 100644
+> --- a/include/linux/dsa/b53.h
+> +++ b/include/linux/dsa/b53.h
+> @@ -46,9 +46,32 @@ struct b53_io_ops {
+>  					struct phylink_link_state *state);
+>  };
+>  
+> +/* state flags for b53_port_hwtstamp::state */
+> +enum {
+> +	B53_HWTSTAMP_ENABLED,
+> +	B53_HWTSTAMP_TX_IN_PROGRESS,
 > +};
-> +MODULE_DEVICE_TABLE(rpmsg, rpmsg_driver_syslog_id_table);
 > +
-> +static struct rpmsg_driver rpmsg_syslog_client = {
-> +	.drv.name       = KBUILD_MODNAME,
-> +	.id_table       = rpmsg_driver_syslog_id_table,
-> +	.probe          = rpmsg_syslog_probe,
+> +struct b53_port_hwtstamp {
+> +	/* Port index */
+> +	int port_id;
+
+unsigned int;
+
+> +
+> +	/* Timestamping state */
+> +	unsigned long state;
+> +
+> +	/* Resources for transmit timestamping */
+> +	unsigned long tx_tstamp_start;
+> +	struct sk_buff *tx_skb;
+> +
+> +	/* Current timestamp configuration */
+> +	struct hwtstamp_config tstamp_config;
 > +};
-> +module_rpmsg_driver(rpmsg_syslog_client);
+> +
+>  struct b53_port {
+>  	u16 vlan_ctl_mask;
+>  	struct ethtool_eee eee;
+> +	/* Per-port timestamping resources */
+> +	struct b53_port_hwtstamp port_hwtstamp;
+>  };
+>  
+>  struct b53_vlan {
+> @@ -112,3 +135,10 @@ struct b53_device {
+>  #define B53_PTP_OVERFLOW_PERIOD (HZ / 2)
+>  	struct delayed_work overflow_work;
+>  };
+> +
+> +struct brcm_skb_cb {
+> +	struct sk_buff *clone;
+> +	u32 meta_tstamp;
+> +};
+> +
+> +#define BRCM_SKB_CB(skb) ((struct brcm_skb_cb *)(skb)->cb)
+> diff --git a/net/dsa/tag_brcm.c b/net/dsa/tag_brcm.c
+> index 96dbb8ee2fee..d611c1073deb 100644
+> --- a/net/dsa/tag_brcm.c
+> +++ b/net/dsa/tag_brcm.c
+> @@ -9,6 +9,7 @@
+>  #include <linux/etherdevice.h>
+>  #include <linux/list.h>
+>  #include <linux/slab.h>
+> +#include <linux/dsa/b53.h>
+>  
+>  #include "dsa_priv.h"
+>  
+> @@ -31,7 +32,10 @@
+>  /* 6th byte in the tag */
+>  #define BRCM_LEG_PORT_ID	(0xf)
+>  
+> -/* Newer Broadcom tag (4 bytes) */
+> +/* Newer Broadcom tag (4 bytes)
+> + * For egress, when opcode = 0001, additional 4 bytes are used for
+> + * the time stamp.
+> + */
+>  #define BRCM_TAG_LEN	4
+>  
+>  /* Tag is constructed and desconstructed using byte by byte access
+> @@ -136,19 +140,29 @@ static struct sk_buff *brcm_tag_xmit_ll(struct sk_buff *skb,
+>   */
+>  static struct sk_buff *brcm_tag_rcv_ll(struct sk_buff *skb,
+>  				       struct net_device *dev,
+> -				       unsigned int offset)
+> +				       unsigned int offset,
+> +				       int *tag_len)
 
-I would expect that building this as a module gives you complaints about
-lacking MODULE_LICENSE().
-
-Regards,
-Bjorn
-
-> -- 
-> 2.33.1
-> 
+unsigned int tag_len.
+-- 
+Florian
