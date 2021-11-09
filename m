@@ -2,128 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C5FF44B07A
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 16:35:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4360A44B07B
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 16:35:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236383AbhKIPhw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Nov 2021 10:37:52 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43692 "EHLO
+        id S237572AbhKIPiB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Nov 2021 10:38:01 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43720 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231176AbhKIPhu (ORCPT
+        with ESMTP id S231176AbhKIPhz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Nov 2021 10:37:50 -0500
-Received: from mail-ed1-x52d.google.com (mail-ed1-x52d.google.com [IPv6:2a00:1450:4864:20::52d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C34B3C061764;
-        Tue,  9 Nov 2021 07:35:03 -0800 (PST)
-Received: by mail-ed1-x52d.google.com with SMTP id v11so75916454edc.9;
-        Tue, 09 Nov 2021 07:35:03 -0800 (PST)
+        Tue, 9 Nov 2021 10:37:55 -0500
+Received: from mail-ot1-x335.google.com (mail-ot1-x335.google.com [IPv6:2607:f8b0:4864:20::335])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AD33BC061764
+        for <linux-kernel@vger.kernel.org>; Tue,  9 Nov 2021 07:35:09 -0800 (PST)
+Received: by mail-ot1-x335.google.com with SMTP id l7-20020a0568302b0700b0055ae988dcc8so28223757otv.12
+        for <linux-kernel@vger.kernel.org>; Tue, 09 Nov 2021 07:35:09 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to;
-        bh=qNKxbY+CJKEKz5I5jfTajE0gm0ARDEZSOX6nNnQ06Ds=;
-        b=TXmn+AUrGkmNG6aVTCQ0ceEBQWA2M0tCUS/XInhy1eodftrDVpbDBrlqrZo3ouldi8
-         NJkXvXRXOaayYgUBC4m23zYND11+H90KgMe/DtN010GUmH+cm1Ca1n7elJHv1GuOq93i
-         jhdYBhtB4KGGjpHGGM7alNugiLoMwZP0z9QLW1x3qBvAr8c+csj5oVu8tUSZqu3SSgZL
-         w7RgWjtzV6oyKMBvdonnmhOCh4vx/Ug1DvwGx8uRM504DeU1cbpsWiKNk0iRbFQEAYoz
-         88cyNWDPAcDtw5ltRTqLeART8tt8Qzj25UE+9iScIm8svh+kBXJuTXw4GpPKmboPJjPk
-         57CQ==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=6P9kfAq25M0Ott2fQCCUtK4XDP/IOjInuL3zZIDGlDI=;
+        b=I0QaZrYPjsQL6+JdoXG+V2WbIFNVhdI+JtmDiggHAqwpFAe0jw6hk+dyzWy5+jZyGG
+         Hs+BJvTDt5EA+1t/CUY3E82GonptnHzV2jTsFtth147tDDhxpxFrCaYIz59VTkgigqvK
+         GerBizDc4vzO9rakXKwdj6aHEJ7KQSw4DB2qkw9sbUqdDH1Fw76Ds4PZg1P6N3azly2J
+         shwFHGUwISj5zVy/9wHuZ/ugpjapHD3lim6wnhr3wMXCdHhEBIUeTgzuz+FpsgTxOr6q
+         ACbnewVcQOTASZ+h6ZvSuyqzePepMY9ioFdYVswNZWFfg7366vMFT6JH11PXDTkjZUJT
+         1kxg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to;
-        bh=qNKxbY+CJKEKz5I5jfTajE0gm0ARDEZSOX6nNnQ06Ds=;
-        b=dK9V518Oew/iXxYOdSYnVYguWNPR5M22wEdSD410b3R6iGcF9vL+tULQpoQSVKV3/U
-         drTATkWuumYJ/W4ND4v2hAZRamLQFN4nElgOC3zmigBTvKqflc2V/NxbW2sA2vfImoYL
-         hMB3WF7sRS/fcZKtMAdengFgeGkjXM5Fjei9RuvgghVT+x3yboGtr4aERqltLofcAZxJ
-         TfphXh7cDXpiHW1YQ8lfh4gS8Kcdt5LjT6k0X4LycxvkXvsfpmQKtnLP0zY3dhe/zt/S
-         bj10mRDBkisafuEA8xhAe+UhkQcB3EJfDccL4tgVXsjBYPiPbOBnThxwgN2XvYMzQ9Le
-         jyLg==
-X-Gm-Message-State: AOAM530R0tjHVYtINa+iEdes1tJtljY4v3m3rB7dABFvy8WGkcQlGyTx
-        Nr0mTmbHut03rWPw7MKpF0sgMSQ4J6uQpEzOT6WCHyvkgM4=
-X-Google-Smtp-Source: ABdhPJz3XYwx9pVakfx2STu6CYLqj/G+Ya7i+K/njYwnyhQXDgoupRe5ikHsWAMxrdD4KeZhZ4/qfjONVlKpPr2sjMc=
-X-Received: by 2002:a05:6402:3586:: with SMTP id y6mr11479655edc.332.1636472102206;
- Tue, 09 Nov 2021 07:35:02 -0800 (PST)
+         :message-id:subject:to:cc;
+        bh=6P9kfAq25M0Ott2fQCCUtK4XDP/IOjInuL3zZIDGlDI=;
+        b=rFZPR0XWszXr43u3ALrXMJOx15mJsBeUTzGmpJSGsiG1gLBNNYes5OrPP9jTRzOtBr
+         bEOJFzHe6GS7jNUzNRRF7SZlNwws1wBKaH+1nIw+M0MwpeM2GCG+VHcJL0UEPa2c+hIG
+         N+FQDzG5N1s1r/90P/EN7w5hBlFu+JrRkiKGbdLps9HmF2CP2GS6agEA3R076JPGhp2/
+         EKV9yhg+XxxN41XTfwhVlTmZXdauvew5XHa8DXuzLzlH6RrA7hXhim8sWGD3E3dXOsHe
+         adDmCny6fNMj6QnypYdMAcllHIxqEBamFxue0RC1xZ4jIeWXhTi+EpFYrBCsXdQ5yHoR
+         G+/g==
+X-Gm-Message-State: AOAM532L25l4Yr4Ks66twMP1eLcvxKUSrsMw0RYypmKyQHbXctaHL/YQ
+        SRRYdIQzT04kSB+JVpEKxhD0buYxp8tBP+c2MzVfhIJEiydpe5PxOYs=
+X-Google-Smtp-Source: ABdhPJyhMiCf84UiYlsJt3vq62Gicq5w67HOzTTVUdxLu7GqanMf3/ChRnXWo/99GQURcH2cITjJxxPJgp/+2O8RYo4=
+X-Received: by 2002:a9d:4502:: with SMTP id w2mr6918192ote.182.1636472109076;
+ Tue, 09 Nov 2021 07:35:09 -0800 (PST)
 MIME-Version: 1.0
-References: <CAOuPNLinoW5Cx=xbUcT-DB4RiQkAPpe=9hsc-Rkch0LxD0mh+Q@mail.gmail.com>
- <CAOuPNLgquwOJg85kDcf67+4kTYP9N=45FvV+VDTJr6txYi5-wg@mail.gmail.com>
-In-Reply-To: <CAOuPNLgquwOJg85kDcf67+4kTYP9N=45FvV+VDTJr6txYi5-wg@mail.gmail.com>
-From:   Pintu Agarwal <pintu.ping@gmail.com>
-Date:   Tue, 9 Nov 2021 21:04:50 +0530
-Message-ID: <CAOuPNLjFtS7ftg=+-K3S+0ndyNYmUNqXo7SHkyV4zK4G9bZ4Og@mail.gmail.com>
-Subject: Re: Kernel-4.14: With ubuntu-18.04 building rootfs images and booting
- gives SQUASHFS error: xz decompression failed, data probably corrupt
-To:     open list <linux-kernel@vger.kernel.org>,
-        linux-mtd <linux-mtd@lists.infradead.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        dm-devel@redhat.com, Phillip Lougher <phillip@squashfs.org.uk>,
-        Mikulas Patocka <mpatocka@redhat.com>,
-        Richard Weinberger <richard@nod.at>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        sumit.semwal@linaro.org
+References: <20211108185818.GA73382@makvihas> <YYoUYOyyP4EFYTSJ@kroah.com>
+ <CAH1kMwSqfNT-jB70c6Md_Wa6Sn6GJKr2=LOunSaZwEk2TKzraA@mail.gmail.com> <YYpaP1fAg7jrFyhJ@kroah.com>
+In-Reply-To: <YYpaP1fAg7jrFyhJ@kroah.com>
+From:   Vihas Mak <makvihas@gmail.com>
+Date:   Tue, 9 Nov 2021 21:04:57 +0530
+Message-ID: <CAH1kMwR7BA6kpcHCmEnEQ_EPeJxFDHQ3QB9mAn0D8NzdB8LNhw@mail.gmail.com>
+Subject: Re: [PATCH] char: ppdev: fixed a validation issue
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     sudipm.mukherjee@gmail.com, arnd@arndb.de,
+        linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 9 Nov 2021 at 16:45, Pintu Agarwal <pintu.ping@gmail.com> wrote:
->
-> Hi,
->
-> On Mon, 8 Nov 2021 at 20:00, Pintu Agarwal <pintu.ping@gmail.com> wrote:
-> >
-> > Hi,
-> > Here are few details.
-> > * Linux Kernel: 4.14
-> > * Processor: Qualcomm Arm32 Cortex-A7
-> > * Storage: NAND 512MB
-> > * Platform: Simple busybox
-> > * Filesystem: UBIFS, Squashfs
-> > * Build system: Linux Ubuntu 18.04 with Yocto build system
-> > * Consists of nand raw partitions, squashfs ubi volumes.
-> >
-> > What we are trying to do:
-> > We are trying to boot dm-verity enabled rootfs on our system.
-> > The images for rootfs were generated on Ubuntu 18.04 machine using
-> > Yocto build system.
-> >
-> > Issue:
-> > Earlier, when we were using Ubuntu 16.04 to generate our images, the
-> > system was booting fine even with dm-verity enabled.
-> > Recently we switched to Ubuntu 18.04 build machine, and now with the
-> > same changes we are seeing the below squashfs error, just after the
-> > mount.
-> > Note: with 18.04 also our rootfs is mounting successfully and
-> > dm-verity is also working fine.
-> > We only get these squashfs errors flooded in the boot logs:
-> > {{{
-> > ....
-> > [    5.153479] device-mapper: init: dm-0 is ready
-> > [    5.334282] VFS: Mounted root (squashfs filesystem) readonly on device 253:0.
-> > ....
-> > [    8.954120] SQUASHFS error: xz decompression failed, data probably corrupt
-> > [    8.954153] SQUASHFS error: squashfs_read_data failed to read block 0x1106
-> > [    8.970316] SQUASHFS error: Unable to read data cache entry [1106]
-> > [    8.970349] SQUASHFS error: Unable to read page, block 1106, size 776c
-> > [    8.980298] SQUASHFS error: Unable to read data cache entry [1106]
-> > [    8.981911] SQUASHFS error: Unable to read page, block 1106, size 776c
-> > [    8.988280] SQUASHFS error: Unable to read data cache entry [1106]
-> > ....
-> > }}}
-> >
-> Just one question:
-> Is there any history about these squashfs errors while cross-compiling
-> images on Ubuntu 18.04 or higher ?
->
-One quick observation:
-This issue is seen only when we enable dm-verity in our bootloader and
-cross-building the bootloader/kernel (with Yocto 2.6 toolchain
-arm-oe-linux-gnueabi-) on Ubuntu 18.04.
-The issue is *NOT* seen (on the same device) when building the
-dm-verity enabled kernel on Ubuntu 16.04.
+> What happens today if the mode is not set properly?  Will the code paths
+> error out eventually, or will the call succeed?  The problem is that
+> there might be code that is working today that would break with a change
+> like this, as again, this is a very old driver.
 
-Is it something to do with the cross-toolchain difference between
-Ubuntu 16 and 18 ?
-
+I see. So I guess this driver might be better off without any changes,
+as new changes might break things more severely.
 
 Thanks,
-Pintu
+Vihas
+
+On Tue, Nov 9, 2021 at 4:53 PM Greg KH <gregkh@linuxfoundation.org> wrote:
+>
+> On Tue, Nov 09, 2021 at 04:11:20PM +0530, Vihas Mak wrote:
+> > > On Tue, Nov 09, 2021 at 12:28:18AM +0530, Vihas Mak wrote:
+> > > > Make sure the mode is a valid IEEE1284 mode.
+> > > What is a valid mode?
+> >
+> > The valid IEEE1284 modes are the ones defined in
+> > <uapi/linux/parport.h>. Currently there are 10 modes. Namely nibble
+> > mode, byte mode, ECP, ECPRLE, EPP and some specials.
+>
+> But what happens today if code has not been sending those values
+> properly?  This is a very old driver for very old hardware.
+>
+> > > How did you test this?  And why is this needed now?  What hardware was
+> > > working that is now not going to work with this driver?
+> >
+> > I tested this on my local pc using a parallel port and read the
+> > incoming data on my Raspberry PI.
+> > I also used https://github.com/strezh/VPPSniffer. It's a simple
+> > virtual parallel port used for debugging and sniffing.
+> >
+> > The mainline code wasn't validating the mode when a user-space program
+> > does a ioctl call to change the current mode. It might
+> > create some bugs if the new mode isn't one of the IEEE1284 modes
+> > defined in <uapi/linux/parport.h>. So it's better to throw a EINVAL
+> > beforehand, if the mode is invalid.
+>
+> What happens today if the mode is not set properly?  Will the code paths
+> error out eventually, or will the call succeed?  The problem is that
+> there might be code that is working today that would break with a change
+> like this, as again, this is a very old driver.
+>
+> thanks,
+>
+> greg k-h
