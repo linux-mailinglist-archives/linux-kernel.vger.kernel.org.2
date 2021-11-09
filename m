@@ -2,168 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ECDE744AE0E
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 13:52:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CE5A244AE18
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 13:53:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344014AbhKIMyu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Nov 2021 07:54:50 -0500
-Received: from mailgw02.mediatek.com ([210.61.82.184]:57596 "EHLO
-        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1343786AbhKIMxs (ORCPT
+        id S236524AbhKIM4V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Nov 2021 07:56:21 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34802 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S242507AbhKIM4K (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Nov 2021 07:53:48 -0500
-X-UUID: dfddb90385ce49dba2cc3e10efc79903-20211109
-X-UUID: dfddb90385ce49dba2cc3e10efc79903-20211109
-Received: from mtkexhb02.mediatek.inc [(172.21.101.103)] by mailgw02.mediatek.com
-        (envelope-from <yunfei.dong@mediatek.com>)
-        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 1353559595; Tue, 09 Nov 2021 20:51:00 +0800
-Received: from mtkexhb01.mediatek.inc (172.21.101.102) by
- mtkmbs07n2.mediatek.inc (172.21.101.141) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Tue, 9 Nov 2021 20:50:59 +0800
-Received: from mtkmbs10n2.mediatek.inc (172.21.101.183) by
- mtkexhb01.mediatek.inc (172.21.101.102) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Tue, 9 Nov 2021 20:50:58 +0800
-Received: from localhost.localdomain (10.17.3.154) by mtkmbs10n2.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.2.792.3 via Frontend
- Transport; Tue, 9 Nov 2021 20:50:56 +0800
-From:   Yunfei Dong <yunfei.dong@mediatek.com>
-To:     Yunfei Dong <yunfei.dong@mediatek.com>,
-        Alexandre Courbot <acourbot@chromium.org>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        "Tzung-Bi Shih" <tzungbi@chromium.org>,
-        Tiffany Lin <tiffany.lin@mediatek.com>,
-        Andrew-CT Chen <andrew-ct.chen@mediatek.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Tomasz Figa <tfiga@google.com>
-CC:     Hsin-Yi Wang <hsinyi@chromium.org>,
-        Fritz Koenig <frkoenig@chromium.org>,
-        Dafna Hirschfeld <dafna.hirschfeld@collabora.com>,
-        Benjamin Gaignard <benjamin.gaignard@collabora.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        Irui Wang <irui.wang@mediatek.com>,
-        <linux-media@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <srv_heupstream@mediatek.com>,
-        <linux-mediatek@lists.infradead.org>,
-        <Project_Global_Chrome_Upstream_Group@mediatek.com>
-Subject: [PATCH v9, 19/19] media: mtk-vcodec: Remove mtk_vcodec_release_enc_pm
-Date:   Tue, 9 Nov 2021 20:50:30 +0800
-Message-ID: <20211109125030.26299-20-yunfei.dong@mediatek.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20211109125030.26299-1-yunfei.dong@mediatek.com>
-References: <20211109125030.26299-1-yunfei.dong@mediatek.com>
+        Tue, 9 Nov 2021 07:56:10 -0500
+Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AD202C06120A;
+        Tue,  9 Nov 2021 04:53:08 -0800 (PST)
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: tonyk)
+        with ESMTPSA id C89B91F44B34
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=collabora.com; s=mail;
+        t=1636462386; bh=6rhxitMRcNQgVh8jUZVAIrl39DOviTw78B3pgynzI/8=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=J01tLFphErXVbo2Cz13hk0mouVzkea+XCNVKE14+gbDip1IiSyUUsitbUqq+SCcuE
+         zw1jFtiTSzzO7AblKSF4eE+rks43ubJziZWgQpGANOR+VXZ/BtEwCp7cLJsMHkGvsB
+         wsz8u4VZbs8JCbmxBcHpMUkah6xwEV7iOn8d9Xx58jrYZvwp0Syj8DM+Z2Gh+lyncu
+         w+lbefh5remRkJnEFRZJbIXEaSf4oh1F7h/qdQLKN5MZgvS2bTK8l5BvK3XbW/LIbf
+         9x2cUpMufMZuVTMuL+GtkOJPH/1mI/0Ozvk9vvedn33C3pLkT4ZXrkRQvDTuAvYWlO
+         L6GDS7m2WhC+g==
+Message-ID: <51bbfe74-33f6-bb92-3ce8-a22e4185820b@collabora.com>
+Date:   Tue, 9 Nov 2021 09:52:58 -0300
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-MTK:  N
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.2.0
+Subject: Re: [PATCH v2 20/22] selftests: futex: Test sys_futex_waitv() timeout
+Content-Language: en-US
+To:     Vasily Gorbik <gor@linux.ibm.com>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Darren Hart <dvhart@infradead.org>,
+        linux-kernel@vger.kernel.org, Steven Rostedt <rostedt@goodmis.org>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        kernel@collabora.com, krisman@collabora.com,
+        linux-api@vger.kernel.org, libc-alpha@sourceware.org,
+        mtk.manpages@gmail.com, Davidlohr Bueso <dave@stgolabs.net>,
+        Arnd Bergmann <arnd@arndb.de>
+References: <20210923171111.300673-1-andrealmeid@collabora.com>
+ <20210923171111.300673-21-andrealmeid@collabora.com>
+ <your-ad-here.call-01636456701-ext-5362@work.hours>
+From:   =?UTF-8?Q?Andr=c3=a9_Almeida?= <andrealmeid@collabora.com>
+In-Reply-To: <your-ad-here.call-01636456701-ext-5362@work.hours>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There are only two lines in mtk_vcodec_release_enc_pm, using
-pm_runtime_disable and put_device instead directly.
+Hi Vasily,
 
-Move pm_runtime_enable outside mtk_vcodec_release_enc_pm to symmetry with
-pm_runtime_disable, after that, rename mtk_vcodec_init_enc_pm to *_clk since
-it only has clock operations now.
+Às 08:18 de 09/11/21, Vasily Gorbik escreveu:
+> On Thu, Sep 23, 2021 at 02:11:09PM -0300, André Almeida wrote:
+>> Test if the futex_waitv timeout is working as expected, using the
+>> supported clockid options.
+> 
+>> +	/* futex_waitv with CLOCK_MONOTONIC */
+>> +	if (futex_get_abs_timeout(CLOCK_MONOTONIC, &to, timeout_ns))
+>> +		return RET_FAIL;
+>> +	res = futex_waitv(&waitv, 1, 0, &to, CLOCK_MONOTONIC);
+>> +	test_timeout(res, &ret, "futex_waitv monotonic", ETIMEDOUT);
+>> +
+>> +	/* futex_waitv with CLOCK_REALTIME */
+>> +	if (futex_get_abs_timeout(CLOCK_REALTIME, &to, timeout_ns))
+>> +		return RET_FAIL;
+>> +	res = futex_waitv(&waitv, 1, 0, &to, CLOCK_REALTIME);
+>> +	test_timeout(res, &ret, "futex_waitv realtime", ETIMEDOUT);
+> 
+> Hi André,
+> 
+> when built with -m32 and run as compat this two futex_waitv calls hang
+> on x86 and s390 (noticed while wiring up futex_waitv). The rest of the
+> futex selftests pass. This suggests some common compat issue? Any ideas?
 
-Signed-off-by: Yunfei Dong <yunfei.dong@mediatek.com>
-Co-developed-by: Yong Wu <yong.wu@mediatek.com>
----
-add new to remove: mtk_vcodec_release_enc_pm
----
- drivers/media/platform/mtk-vcodec/mtk_vcodec_enc_drv.c | 9 ++++++---
- drivers/media/platform/mtk-vcodec/mtk_vcodec_enc_pm.c  | 9 +--------
- drivers/media/platform/mtk-vcodec/mtk_vcodec_enc_pm.h  | 3 +--
- 3 files changed, 8 insertions(+), 13 deletions(-)
+The issue is that futex_waitv() only accepts struct timespec that uses
+64bit members. When using -m32, glibc will give you a 32bit timespec,
+thus the timeout won't wort. Someday glibc will provide 64bit timespec
+to 32bit userspace, given that this is affected by y2038 bug.
 
-diff --git a/drivers/media/platform/mtk-vcodec/mtk_vcodec_enc_drv.c b/drivers/media/platform/mtk-vcodec/mtk_vcodec_enc_drv.c
-index 0f326d82dea0..7816efb90cbe 100644
---- a/drivers/media/platform/mtk-vcodec/mtk_vcodec_enc_drv.c
-+++ b/drivers/media/platform/mtk-vcodec/mtk_vcodec_enc_drv.c
-@@ -11,6 +11,7 @@
- #include <linux/module.h>
- #include <linux/of_device.h>
- #include <linux/of.h>
-+#include <linux/pm_runtime.h>
- #include <media/v4l2-event.h>
- #include <media/v4l2-mem2mem.h>
- #include <media/videobuf2-dma-contig.h>
-@@ -260,7 +261,7 @@ static int mtk_vcodec_probe(struct platform_device *pdev)
- 		return PTR_ERR(dev->fw_handler);
- 
- 	dev->venc_pdata = of_device_get_match_data(&pdev->dev);
--	ret = mtk_vcodec_init_enc_pm(dev);
-+	ret = mtk_vcodec_init_enc_clk(dev);
- 	if (ret < 0) {
- 		dev_err(&pdev->dev, "Failed to get mtk vcodec clock source!");
- 		goto err_enc_pm;
-@@ -372,7 +373,8 @@ static int mtk_vcodec_probe(struct platform_device *pdev)
- err_enc_alloc:
- 	v4l2_device_unregister(&dev->v4l2_dev);
- err_res:
--	mtk_vcodec_release_enc_pm(dev);
-+	pm_runtime_disable(dev->pm.dev);
-+	put_device(dev->pm.larbvenc);
- err_enc_pm:
- 	mtk_vcodec_fw_release(dev->fw_handler);
- 	return ret;
-@@ -462,7 +464,8 @@ static int mtk_vcodec_enc_remove(struct platform_device *pdev)
- 		video_unregister_device(dev->vfd_enc);
- 
- 	v4l2_device_unregister(&dev->v4l2_dev);
--	mtk_vcodec_release_enc_pm(dev);
-+	pm_runtime_disable(dev->pm.dev);
-+	put_device(dev->pm.larbvenc);
- 	mtk_vcodec_fw_release(dev->fw_handler);
- 	return 0;
- }
-diff --git a/drivers/media/platform/mtk-vcodec/mtk_vcodec_enc_pm.c b/drivers/media/platform/mtk-vcodec/mtk_vcodec_enc_pm.c
-index 0c8c8f86788c..0825c6ec4eb7 100644
---- a/drivers/media/platform/mtk-vcodec/mtk_vcodec_enc_pm.c
-+++ b/drivers/media/platform/mtk-vcodec/mtk_vcodec_enc_pm.c
-@@ -13,7 +13,7 @@
- #include "mtk_vcodec_enc_pm.h"
- #include "mtk_vcodec_util.h"
- 
--int mtk_vcodec_init_enc_pm(struct mtk_vcodec_dev *mtkdev)
-+int mtk_vcodec_init_enc_clk(struct mtk_vcodec_dev *mtkdev)
- {
- 	struct device_node *node;
- 	struct platform_device *pdev;
-@@ -86,13 +86,6 @@ int mtk_vcodec_init_enc_pm(struct mtk_vcodec_dev *mtkdev)
- 	return ret;
- }
- 
--void mtk_vcodec_release_enc_pm(struct mtk_vcodec_dev *mtkdev)
--{
--	pm_runtime_disable(mtkdev->pm.dev);
--	put_device(mtkdev->pm.larbvenc);
--}
--
--
- void mtk_vcodec_enc_clock_on(struct mtk_vcodec_pm *pm)
- {
- 	struct mtk_vcodec_clk *enc_clk = &pm->venc_clk;
-diff --git a/drivers/media/platform/mtk-vcodec/mtk_vcodec_enc_pm.h b/drivers/media/platform/mtk-vcodec/mtk_vcodec_enc_pm.h
-index b7ecdfd74823..bc455cefc0cd 100644
---- a/drivers/media/platform/mtk-vcodec/mtk_vcodec_enc_pm.h
-+++ b/drivers/media/platform/mtk-vcodec/mtk_vcodec_enc_pm.h
-@@ -9,8 +9,7 @@
- 
- #include "mtk_vcodec_drv.h"
- 
--int mtk_vcodec_init_enc_pm(struct mtk_vcodec_dev *dev);
--void mtk_vcodec_release_enc_pm(struct mtk_vcodec_dev *dev);
-+int mtk_vcodec_init_enc_clk(struct mtk_vcodec_dev *dev);
- 
- void mtk_vcodec_enc_clock_on(struct mtk_vcodec_pm *pm);
- void mtk_vcodec_enc_clock_off(struct mtk_vcodec_pm *pm);
--- 
-2.25.1
+In previous submissions I added a workaround for that in the
+selftest[0]. Search for "Y2038 section for 32-bit applications" in that
+link. I'll submit something like that for futex_waitv() timeout test.
 
+[0]
+https://lore.kernel.org/lkml/20210709001328.329716-6-andrealmeid@collabora.com/
