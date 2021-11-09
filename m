@@ -2,103 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1DE8244B8E9
+	by mail.lfdr.de (Postfix) with ESMTP id 94F5044B8EA
 	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 23:44:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241159AbhKIWrU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Nov 2021 17:47:20 -0500
-Received: from mail.kernel.org ([198.145.29.99]:36108 "EHLO mail.kernel.org"
+        id S1345342AbhKIWrV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Nov 2021 17:47:21 -0500
+Received: from mail.kernel.org ([198.145.29.99]:35026 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1346262AbhKIWoK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Nov 2021 17:44:10 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A4DFA61B47;
-        Tue,  9 Nov 2021 22:24:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1636496686;
-        bh=iudG8ri3aafLAIe2fV+orn+ebUq8ci3wOfMOvnn/MR8=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=BjbUw2Z4oMlSbr04KKxTVGILQm8XKyMBQ2TgEEm6Dk5dyuiLeo8AB+ylKKQNC80Zm
-         DSxgMoWHaf5fbFUkSVsbw+l3f0Yy/2ZazBTAFL3Pj1N+q3CU0rOYoLJGlT9rjM/xii
-         B5a8P1p5lH5YW7AE7Rcuu4vGpiCptYR898f9zcaCNFe6ajiqkpHEGdMhys8hgdO4Rs
-         l16Ahy/hHqy6MdsXa5vm0UR3JSFIOG/U9I7BVYVkjYhgGmltVQC1Duh/gluROz2FFi
-         2dej57opVc+AotgNUXwlYXTUst3Q/NW1qZ/a8QA+IAolWxotBcwCyDa0W3LlCErDBA
-         95GAwej4q8ixw==
-From:   Sasha Levin <sashal@kernel.org>
-To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Michael Ellerman <mpe@ellerman.id.au>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Sasha Levin <sashal@kernel.org>, benh@kernel.crashing.org,
-        paulus@samba.org, linuxppc-dev@lists.ozlabs.org
-Subject: [PATCH AUTOSEL 4.4 12/12] powerpc/dcr: Use cmplwi instead of 3-argument cmpli
-Date:   Tue,  9 Nov 2021 17:24:26 -0500
-Message-Id: <20211109222426.1236575-12-sashal@kernel.org>
-X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20211109222426.1236575-1-sashal@kernel.org>
-References: <20211109222426.1236575-1-sashal@kernel.org>
+        id S1346263AbhKIWoN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Nov 2021 17:44:13 -0500
+Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 32A4E6108C;
+        Tue,  9 Nov 2021 22:28:50 +0000 (UTC)
+Date:   Tue, 9 Nov 2021 17:28:48 -0500
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Jason Baron <jbaron@akamai.com>
+Cc:     Sai Prakash Ranjan <quic_saipraka@quicinc.com>,
+        Will Deacon <will@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        quic_psodagud@quicinc.com, Marc Zyngier <maz@kernel.org>,
+        gregkh@linuxfoundation.org, arnd@arndb.de,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, mingo@redhat.com,
+        jim.cromie@gmail.com, seanpaul@chromium.org,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+Subject: Re: [PATCHv3 3/3] dynamic_debug: Add a flag for dynamic event
+ tracing
+Message-ID: <20211109172848.304b1c19@gandalf.local.home>
+In-Reply-To: <55a9fe7b-5573-0f80-e075-758b377a6c47@akamai.com>
+References: <cover.1636452784.git.quic_saipraka@quicinc.com>
+        <3706af20bc64a320ff8f3ff8950738b988f4bdf5.1636452784.git.quic_saipraka@quicinc.com>
+        <20211109104941.2d50eafc@gandalf.local.home>
+        <f7c665b9-dc17-5a7f-de80-9fa0605721fc@quicinc.com>
+        <20211109115951.1c2b5228@gandalf.local.home>
+        <264b77dd-5509-60f9-248c-a93135b01aa9@quicinc.com>
+        <20211109124046.2a772bcb@gandalf.local.home>
+        <c5715db5-965b-c1f5-3e99-04caec3d4f2c@quicinc.com>
+        <e037f449-9784-c78e-431d-43f035a9f49f@akamai.com>
+        <20211109165104.176b4cf9@gandalf.local.home>
+        <55a9fe7b-5573-0f80-e075-758b377a6c47@akamai.com>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-X-stable: review
-X-Patchwork-Hint: Ignore
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Michael Ellerman <mpe@ellerman.id.au>
+[ Hmm, should add Mathieu in on this discussion ]
 
-[ Upstream commit fef071be57dc43679a32d5b0e6ee176d6f12e9f2 ]
+On Tue, 9 Nov 2021 17:13:13 -0500
+Jason Baron <jbaron@akamai.com> wrote:
 
-In dcr-low.S we use cmpli with three arguments, instead of four
-arguments as defined in the ISA:
+> > What we are looking at there is to pass the dynamic debug descriptor to the
+> > trace event filtering logic, where you could filter on information passed
+> > to it. For example, on a specific file if a trace event is called by
+> > several different files or modules.
+> > 
+> > -- Steve  
+> 
+> Ok, Could this be done at the dynamic debug level as it can already match
+> on specific files and line numbers currently?
 
-	cmpli	cr0,r3,1024
+Not sure what you mean by that.
 
-This appears to be a PPC440-ism, looking at the "PPC440x5 CPU Core
-User’s Manual" it shows cmpli having no L field, but implied to be 0 due
-to the core being 32-bit. It mentions that the ISA defines four
-arguments and recommends using cmplwi.
+The idea was that this would only be enabled if dynamic debug is enabled
+and that the DEFINE_DYNAMIC_DEBUG_METADATA() could be used at the
+tracepoint function location (trace_foo()) by the tracepoint macros. And
+then if one of the callbacks registered for the tracepoint had a
+"dynamic_debug" flag set, it would be passed the descriptor in as a pointer.
 
-It also corresponds to the old POWER instruction set, which had no L
-field there, a reserved bit instead.
+And then, for example, the filtering logic of ftrace could then reference
+the information of the event, if the user passed in something special.
 
-dcr-low.S is only built 32-bit, because it is only built when
-DCR_NATIVE=y, which is only selected by 40x and 44x. Looking at the
-generated code (with gcc/gas) we see cmplwi as expected.
+ # echo 'DEBUG_FILE ~ "drivers/soc/qcom/*"' > events/rwmmio/rwmmio_write/filter
+ # echo 1 > events/rwmmio/rwmmio_write/enable
 
-Although gas is happy with the 3-argument version when building for
-32-bit, the LLVM assembler is not and errors out with:
+And then only the rwmmio_write events that came from the qcom directory
+would be printed.
 
-  arch/powerpc/sysdev/dcr-low.S:27:10: error: invalid operand for instruction
-   cmpli 0,%r3,1024; ...
-           ^
+We would create special event fields like "DEBUG_FILE", "DEBUG_FUNC",
+"DEBUG_MOD", "DEBUG_LINE", etc, that could be used if dyndebug is enabled
+in the kernel.
 
-Switch to the cmplwi extended opcode, which avoids any confusion when
-reading the ISA, fixes the issue with the LLVM assembler, and also means
-the code could be built 64-bit in future (though that's very unlikely).
+Of course this is going to bloat the kernel as it will create a dynamic
+debug descriptor at every tracepoint location.
 
-Reported-by: Nick Desaulniers <ndesaulniers@google.com>
-Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
-Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
-BugLink: https://github.com/ClangBuiltLinux/linux/issues/1419
-Link: https://lore.kernel.org/r/20211014024424.528848-1-mpe@ellerman.id.au
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- arch/powerpc/sysdev/dcr-low.S | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/arch/powerpc/sysdev/dcr-low.S b/arch/powerpc/sysdev/dcr-low.S
-index d3098ef1404a2..3943d19d5f63b 100644
---- a/arch/powerpc/sysdev/dcr-low.S
-+++ b/arch/powerpc/sysdev/dcr-low.S
-@@ -14,7 +14,7 @@
- #include <asm/bug.h>
- 
- #define DCR_ACCESS_PROLOG(table) \
--	cmpli	cr0,r3,1024;	 \
-+	cmplwi	cr0,r3,1024;	 \
- 	rlwinm  r3,r3,4,18,27;   \
- 	lis     r5,table@h;      \
- 	ori     r5,r5,table@l;   \
--- 
-2.33.0
-
+-- Steve
