@@ -2,179 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C7B1A44B43B
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 21:46:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F2F344B44E
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 21:49:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235551AbhKIUtM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Nov 2021 15:49:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58280 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244689AbhKIUtK (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Nov 2021 15:49:10 -0500
-Received: from mail-lf1-x12c.google.com (mail-lf1-x12c.google.com [IPv6:2a00:1450:4864:20::12c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DEA09C061764
-        for <linux-kernel@vger.kernel.org>; Tue,  9 Nov 2021 12:46:23 -0800 (PST)
-Received: by mail-lf1-x12c.google.com with SMTP id x27so536973lfu.5
-        for <linux-kernel@vger.kernel.org>; Tue, 09 Nov 2021 12:46:23 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=h/+CbKq/m1ljNtqbFpAY5SzIXPWvs2rPCrXQESajW3U=;
-        b=Pxiyrg0kL9gFnc303lUkSLXOtBilXGSzuIlg+7snZRipRbEF2vonmMf7LBf5J46PVY
-         upPdqY3q2wdW45zgRPeiHPxzjeKNulStrEgNCOY5FqVewkz6RouIPsO5bbnwkfxe8hyV
-         XX40SoWRolwbr5VpTmI+vDypESMdipTgzEZ/YikWLcYR7pjuNdkQDm+UjZPemxywvFvm
-         Q6R2SJ4DSXcgQZdk+eJRUjnTWltG0eiMfPuJI3e92Xq7grv0Q7gyqylDisIvS+C/HMPF
-         OjEFzaa/6oUwEjtanmDw/zxsxmIXuFUCUbfWJVG1LReQ1a53zxb1UnvleEhFYL+1qKwJ
-         w9Zw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=h/+CbKq/m1ljNtqbFpAY5SzIXPWvs2rPCrXQESajW3U=;
-        b=OKF9Z/i4Kw+gD5mOqF6T5fJw2Ip5AujKVvyNqKy2VOox9QfkxrtgeEvZo0XGKYp24l
-         F2j2TfpYLuQjWWuAHxiukeeJYRc2JKSy3wLqPf/+7aFxbJBJK5YUrwv9cFZc6VJxwbvq
-         Q74zQR3jnXuKnkGpdFxFYpBjsH3d1nfvvzOki9NL9ttvav9nEQYxhtUW0C/T/RptS6oJ
-         fX4d0umovu5iAcBn/lqNUlnMUwWzRaJeLE010vlg6RIaH4wjTtLSfmfxMFTgBqZcwFSY
-         bP6LMpOwlfl6O09VgwvMAAVmfB7jiqbuL2RfioCoiwPRgipJioxmrwZ/j5IpljgkNK9G
-         nOTg==
-X-Gm-Message-State: AOAM531c/0DYGlr9zB7cyvp8O7yGZyLQGNs+1iZ4lbu78eNDcLvEWDSp
-        oWU9bOAJ85nfyLaEErtezdXABkHTeBOKsdQ5suLD7Q==
-X-Google-Smtp-Source: ABdhPJyRf41tSXXZGblCI19wMvjqN7NkuJ3p8xKiunNz/ji3yFm05cs5kPxucQ4hbYfeenAKT9BzNOubKOto5zp3H5s=
-X-Received: by 2002:a05:6512:39d1:: with SMTP id k17mr9432393lfu.79.1636490781953;
- Tue, 09 Nov 2021 12:46:21 -0800 (PST)
-MIME-Version: 1.0
-References: <20211102142331.3753798-1-pgonda@google.com> <20211102142331.3753798-5-pgonda@google.com>
- <YYquDWbkIwCkixxD@google.com> <CAMkAt6rHdsdD-L4PbZL7qaOY7GRHmApVJam0V0yY2BnYdhmPjA@mail.gmail.com>
- <YYrZXRTukz3RccPN@google.com>
-In-Reply-To: <YYrZXRTukz3RccPN@google.com>
-From:   Peter Gonda <pgonda@google.com>
-Date:   Tue, 9 Nov 2021 13:46:10 -0700
-Message-ID: <CAMkAt6qauoiTBXF9VXRGiqtJD5pTAV=NqKHZgNFXHCkrR50gkg@mail.gmail.com>
-Subject: Re: [PATCH V3 4/4] crypto: ccp - Add SEV_INIT_EX support
-To:     Sean Christopherson <seanjc@google.com>
-Cc:     Thomas.Lendacky@amd.com, David Rientjes <rientjes@google.com>,
-        Marc Orr <marcorr@google.com>,
-        Brijesh Singh <brijesh.singh@amd.com>,
-        Joerg Roedel <jroedel@suse.de>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        John Allen <john.allen@amd.com>,
+        id S244741AbhKIUwb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Nov 2021 15:52:31 -0500
+Received: from vps0.lunn.ch ([185.16.172.187]:53348 "EHLO vps0.lunn.ch"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234739AbhKIUwa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Nov 2021 15:52:30 -0500
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
+        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
+        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
+        bh=uskoC32TMSdvuhJDKn7CRN77CNfPsPQG6NnfnK3Twxc=; b=oMlqYD7MuCJ1P+HJlrJsKVUG9T
+        t8nss0SRNMLjgrcYFGJHySV0bvIBXoDs2GmSGUthD8iMvNSbbdoDQyEgIQR30JZPfDNMJqPCHxuGK
+        DZJKkAyyyHtwBlMoK+lAQ8V/eojcKmWRJW/MJLTz1dJNzy/HWi8c07ilkf948Vcc9TpA=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
+        (envelope-from <andrew@lunn.ch>)
+        id 1mkY3j-00D1Qb-Mr; Tue, 09 Nov 2021 21:49:35 +0100
+Date:   Tue, 9 Nov 2021 21:49:35 +0100
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     Ansuel Smith <ansuelsmth@gmail.com>
+Cc:     Marek =?iso-8859-1?Q?Beh=FAn?= <kabel@kernel.org>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Vladimir Oltean <olteanv@gmail.com>,
         "David S. Miller" <davem@davemloft.net>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+        Jakub Kicinski <kuba@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>, Pavel Machek <pavel@ucw.cz>,
+        John Crispin <john@phrozen.org>, netdev@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-leds@vger.kernel.org
+Subject: Re: [RFC PATCH v3 2/8] leds: add function to configure hardware
+ controlled LED
+Message-ID: <YYre31rVDcs8OWre@lunn.ch>
+References: <20211109022608.11109-1-ansuelsmth@gmail.com>
+ <20211109022608.11109-3-ansuelsmth@gmail.com>
+ <20211109040103.7b56bf82@thinkpad>
+ <YYqEPZpGmjNgFj0L@Ansuel-xps.localdomain>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YYqEPZpGmjNgFj0L@Ansuel-xps.localdomain>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 9, 2021 at 1:26 PM Sean Christopherson <seanjc@google.com> wrote:
->
-> On Tue, Nov 09, 2021, Peter Gonda wrote:
-> > On Tue, Nov 9, 2021 at 10:21 AM Sean Christopherson <seanjc@google.com> wrote:
-> > > There's no need for this to be a function pointer, and the duplicate code can be
-> > > consolidated.
-> > >
-> > > static int sev_do_init_locked(int cmd, void *data, int *error)
-> > > {
-> > >         if (sev_es_tmr) {
-> > >                 /*
-> > >                  * Do not include the encryption mask on the physical
-> > >                  * address of the TMR (firmware should clear it anyway).
-> > >                  */
-> > >                 data.flags |= SEV_INIT_FLAGS_SEV_ES;
-> > >                 data.tmr_address = __pa(sev_es_tmr);
-> > >                 data.tmr_len = SEV_ES_TMR_SIZE;
-> > >         }
-> > >         return __sev_do_cmd_locked(SEV_CMD_INIT, &data, error);
-> > > }
-> > >
-> > > static int __sev_init_locked(int *error)
-> > > {
-> > >         struct sev_data_init data;
-> > >
-> > >         memset(&data, 0, sizeof(data));
-> > >         return sev_do_init_locked(cmd, &data, error);
-> > > }
-> > >
-> > > static int __sev_init_ex_locked(int *error)
-> > > {
-> > >         struct sev_data_init_ex data;
-> > >
-> > >         memset(&data, 0, sizeof(data));
-> > >         data.length = sizeof(data);
-> > >         data.nv_address = __psp_pa(sev_init_ex_nv_address);
-> > >         data.nv_len = NV_LENGTH;
-> > >         return sev_do_init_locked(SEV_CMD_INIT_EX, &data, error);
-> > > }
-> >
-> > I am missing how this removes the duplication of the retry code,
-> > parameter checking, and other error checking code.. With what you have
-> > typed out I would assume I still need to function pointer between
-> > __sev_init_ex_locked and __sev_init_locked. Can you please elaborate
-> > here?
->
-> Hmm.  Ah, I got distracted between the original thought, the realization that
-> the two commands used different structs, and typing up the above.
->
-> > Also is there some reason the function pointer is not acceptable?
->
-> It's not unacceptable, it would just be nice to avoid, assuming the alternative
-> is cleaner.  But I don't think any alternative is cleaner, since as you pointed
-> out the above is a half-baked thought.
+> > > +#ifdef CONFIG_LEDS_HARDWARE_CONTROL
+> > > +enum blink_mode_cmd {
+> > > +	BLINK_MODE_ENABLE, /* Enable the hardware blink mode */
+> > > +	BLINK_MODE_DISABLE, /* Disable the hardware blink mode */
+> > > +	BLINK_MODE_READ, /* Read the status of the hardware blink mode */
+> > > +	BLINK_MODE_SUPPORTED, /* Ask the driver if the hardware blink mode is supported */
+> > > +	BLINK_MODE_ZERO, /* Disable any hardware blink active */
+> > > +};
+> > > +#endif
+> > 
+> > this is a strange proposal for the API.
+> > 
+> > Anyway, led_classdev already has the blink_set() method, which is documented as
+> > 	/*
+> > 	  * Activate hardware accelerated blink, delays are in milliseconds
+> > 	  * and if both are zero then a sensible default should be chosen.
+> > 	  * The call should adjust the timings in that case and if it can't
+> > 	  * match the values specified exactly.
+> > 	  * Deactivate blinking again when the brightness is set to LED_OFF
+> > 	  * via the brightness_set() callback.
+> > 	  */
+> > 	int		(*blink_set)(struct led_classdev *led_cdev,
+> > 				     unsigned long *delay_on,
+> > 				     unsigned long *delay_off);
+> > 
+> > So we already have a method to set hardware blkinking, we don't need
+> > another one.
+> > 
+> > Marek
+> 
+> But that is about hardware blink, not a LED controlled by hardware based
+> on some rules/modes.
+> Doesn't really match the use for the hardware control.
+> Blink_set makes the LED blink contantly at the declared delay.
+> The blink_mode_cmd are used to request stuff to a LED in hardware mode.
+> 
+> Doesn't seem correct to change/enhance the blink_set function with
+> something that would do something completely different.
 
-OK I'll leave as is.
+Humm. I can see merits for both.
 
->
-> > > > +     rc = init_function(error);
-> > > >       if (rc && *error == SEV_RET_SECURE_DATA_INVALID) {
-> > > >               /*
-> > > >                * INIT command returned an integrity check failure
-> > > > @@ -286,8 +423,8 @@ static int __sev_platform_init_locked(int *error)
-> > > >                * failed and persistent state has been erased.
-> > > >                * Retrying INIT command here should succeed.
-> > > >                */
-> > > > -             dev_dbg(sev->dev, "SEV: retrying INIT command");
-> > > > -             rc = __sev_do_cmd_locked(SEV_CMD_INIT, &data, error);
-> > > > +             dev_notice(sev->dev, "SEV: retrying INIT command");
-> > > > +             rc = init_function(error);
-> > >
-> > > The above comment says "persistent state has been erased", but __sev_do_cmd_locked()
-> > > only writes back to the file if a relevant command was successful, which means
-> > > that rereading the userspace file in __sev_init_ex_locked() will retry INIT_EX
-> > > with the same garbage data.
-> >
-> > Ack my mistake, that comment is stale. I will update it so its correct
-> > for the INIT and INIT_EX flows.
-> > >
-> > > IMO, the behavior should be to read the file on load and then use the kernel buffer
-> > > without ever reloading (unless this is built as a module and is unloaded and reloaded).
-> > > The writeback then becomes opportunistic in the sense that if it fails for some reason,
-> > > the kernel's internal state isn't blasted away.
-> >
-> > One issue here is that the file read can fail on load so we use the
-> > late retry to guarantee we can read the file.
->
-> But why continue loading if reading the file fails on load?
->
-> > The other point seems like preference. Users may wish to shutdown the PSP FW,
-> > load a new file, and INIT_EX again with that new data. Why should we preclude
-> > them from that functionality?
->
-> I don't think we should preclude that functionality, but it needs to be explicitly
-> tied to a userspace action, e.g. either on module load or on writing the param to
-> change the path.  If the latter is allowed, then it needs to be denied if the PSP
-> is initialized, otherwise the kernel will be in a non-coherent state and AFAICT
-> userspace will have a heck of a time even understanding what state has been used
-> to initialize the PSP.
+What i like about reusing blink_set() is that it is well understood.
+There is a defined sysfs API for it. ledtrig-oneshot.c also uses it,
+for a non-repeating blink. So i think that also fits the PHY LED use
+case.
 
-If this driver is builtin the filesystem will be unavailable during
-__init. Using the existing retries already built into
-sev_platform_init() also the file to be read once userspace is
-running, meaning the file system is usable. As I tried to explain in
-the commit message. We could remove the sev_platform_init call during
-sev_pci_init since this only actually needs to be initialized when the
-first command requiring it is issues (either reading some keys/certs
-from the PSP or launching an SEV guest). Then userspace in both the
-builtin and module usage would know running one of those commands
-cause the file to be read for PSP usage. Tom any thoughts on this?
+	Andrew
