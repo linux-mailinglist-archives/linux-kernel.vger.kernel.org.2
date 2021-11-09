@@ -2,90 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4648244B509
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 22:57:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0EF2F44B512
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 23:01:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244274AbhKIWA1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Nov 2021 17:00:27 -0500
-Received: from smtprelay0006.hostedemail.com ([216.40.44.6]:49108 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S237422AbhKIWA0 (ORCPT
+        id S244530AbhKIWDw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Nov 2021 17:03:52 -0500
+Received: from gandalf.ozlabs.org ([150.107.74.76]:60173 "EHLO
+        gandalf.ozlabs.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237422AbhKIWDu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Nov 2021 17:00:26 -0500
-Received: from omf09.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay07.hostedemail.com (Postfix) with ESMTP id B72C8184C6E43;
-        Tue,  9 Nov 2021 21:57:38 +0000 (UTC)
-Received: from [HIDDEN] (Authenticated sender: joe@perches.com) by omf09.hostedemail.com (Postfix) with ESMTPA id CE6C81E04D4;
-        Tue,  9 Nov 2021 21:57:32 +0000 (UTC)
-Message-ID: <1875b0458294d23d8e3260d2824894b095d6a62d.camel@perches.com>
-Subject: Re: [PATCH 2/2] MAINTAINERS: Mark VMware mailing list entries as
- private
-From:   Joe Perches <joe@perches.com>
-To:     Nadav Amit <namit@vmware.com>
-Cc:     "srivatsa@csail.mit.edu" <srivatsa@csail.mit.edu>,
-        Juergen Gross <jgross@suse.com>, X86 ML <x86@kernel.org>,
-        Pv-drivers <Pv-drivers@vmware.com>,
-        Vivek Thampi <vithampi@vmware.com>,
-        Vishal Bhakta <vbhakta@vmware.com>,
-        Ronak Doshi <doshir@vmware.com>,
-        Linux-graphics-maintainer <Linux-graphics-maintainer@vmware.com>,
-        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-input@vger.kernel.org" <linux-input@vger.kernel.org>,
-        Zack Rusin <zackr@vmware.com>, Deep Shah <sdeep@vmware.com>,
-        Alexey Makhalov <amakhalov@vmware.com>,
-        Linux Virtualization <virtualization@lists.linux-foundation.org>,
-        Keerthana Kalyanasundaram <keerthanak@vmware.com>,
-        Srivatsa Bhat <srivatsab@vmware.com>,
-        Anish Swaminathan <anishs@vmware.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Date:   Tue, 09 Nov 2021 13:57:31 -0800
-In-Reply-To: <5C24FB2A-D2C0-4D95-A0C0-B48C4B8D5AF4@vmware.com>
-References: <163640336232.62866.489924062999332446.stgit@srivatsa-dev>
-         <163640339370.62866.3435211389009241865.stgit@srivatsa-dev>
-         <5179a7c097e0bb88f95642a394f53c53e64b66b1.camel@perches.com>
-         <cb03ca42-b777-3d1a-5aba-b01cd19efa9a@csail.mit.edu>
-         <dcbd19fcd1625146f4db267f84abd7412513d20e.camel@perches.com>
-         <5C24FB2A-D2C0-4D95-A0C0-B48C4B8D5AF4@vmware.com>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.40.4-1 
+        Tue, 9 Nov 2021 17:03:50 -0500
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4Hphkk3wnRz4xcs;
+        Wed, 10 Nov 2021 09:01:02 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+        s=201702; t=1636495262;
+        bh=gPoCdXlZOINUlff1BfQ0QkaxsNu2JReJnrP+cxNPL9U=;
+        h=Date:From:To:Cc:Subject:From;
+        b=OvGdg4reE8aIw3OnZW75XvhA9Qq4JTmaKKwGazeJkHLGxUtCN/zYgus25VlToZ2fn
+         nwn7U2e7a0Xt270MagJ03ikbGUZOcj9+EuYyxCgiZ8TvhXWgPBF14n9ycwRzph4bKp
+         NMPo8ch3S3MW03Ws8X8dsoEnLbE9zPYAsKYuNVrDmD0q1gLnoy31Hce4If26+Lb7IB
+         TIZYA9cwny6ad6hZCc/HaU7ia36wC1A5jApjRuoH/6BN+zLfXbxnf56eZOeFVe7CjG
+         b3dw+Rc9vVsty2aFeKwNUoGKbcHUFaacGWyX8yAbnMnt78r0/NywAi2wqZILdVbOk8
+         T1HJonItMec5Q==
+Date:   Wed, 10 Nov 2021 09:01:00 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Alex Deucher <alexdeucher@gmail.com>
+Cc:     Evan Quan <evan.quan@amd.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: Fixes tag needs some work in the amdgpu tree
+Message-ID: <20211110090100.5855c861@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-Rspamd-Server: rspamout04
-X-Rspamd-Queue-Id: CE6C81E04D4
-X-Spam-Status: No, score=-4.90
-X-Stat-Signature: xphw7gem3ckanztarthni3x91po8eitn
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Session-ID: U2FsdGVkX18k+m4zQxO7Jw0A5AU3JcKPJ/10qFxleFI=
-X-HE-Tag: 1636495052-266614
+Content-Type: multipart/signed; boundary="Sig_/btjRkP.Pn3zD81HIUv490Wx";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 2021-11-09 at 00:58 +0000, Nadav Amit wrote:
-> > On Nov 8, 2021, at 4:37 PM, Joe Perches <joe@perches.com> wrote:
-> > On Mon, 2021-11-08 at 16:22 -0800, Srivatsa S. Bhat wrote:
-> > 
-> > So it's an exploder not an actual maintainer and it likely isn't
-> > publically archived with any normal list mechanism.
-> > 
-> > So IMO "private" isn't appropriate.  Neither is "L:"
-> > Perhaps just mark it as what it is as an "exploder".
-> > 
-> > Or maybe these blocks should be similar to:
-> > 
-> > M:	Name of Lead Developer <somebody@vmware.com>
-> > M:	VMware <foo> maintainers <linux-<foo>-maintainers@vmlinux.com>
+--Sig_/btjRkP.Pn3zD81HIUv490Wx
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Maybe adding entries like
+Hi all,
 
-M:	Named maintainer <whoever@vmware.com>
-R:	VMware <foo> reviewers <linux-<foo>-maintainers@vmware.com>
+In commit
 
-would be best/simplest.
+  d6874a709faa ("drm/amdgpu: fix uvd crash on Polaris12 during driver unloa=
+ding")
 
+Fixes tag
 
+  Fixes: cdccf1ffe1a3 ("drm/amdgpu: Fix crash on device remove/driver unloa=
+d")
+
+has these problem(s):
+
+  - Target SHA1 does not exist
+
+Maybe you meant
+
+Fixes: d82e2c249c8f ("drm/amdgpu: Fix crash on device remove/driver unload")
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/btjRkP.Pn3zD81HIUv490Wx
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmGK75wACgkQAVBC80lX
+0Gzb0Af+Ovv2AxlPoG/1FUJT4gs9qSQ9A8cUK3cXujXpRCQOfUqozNEY0AuEJrtf
+vwnw3N1PLmPyHRlRZMtmW7zzlLZvR9/JXkF72eKbU38foUPeCNKWtj40FwiVfd6M
+Y5B2io41ABpYnhnmuUVaQDy94VTHDfxLSupyRtZWjh+hwzpwu4ImmsMb5m83rK4X
+vnYYTXuqecc+5eb+ScKFtpFII1nT2HmNNTZFXUVHFAZaRpCjUoQcwqoC7dvCQENK
+YPjrOVe0kdd1y42ykbonatuZhzrlbcg1FHfVQFoZzv2krEZdCJjJIbA+4cD9IkOz
+wI66j4sp29Buw21AWG7wz/JYVDbHXQ==
+=4cNA
+-----END PGP SIGNATURE-----
+
+--Sig_/btjRkP.Pn3zD81HIUv490Wx--
