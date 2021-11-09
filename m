@@ -2,113 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D88D44AEE2
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 14:37:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4A70944AEE5
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 14:39:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234549AbhKINkd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Nov 2021 08:40:33 -0500
-Received: from mga03.intel.com ([134.134.136.65]:15505 "EHLO mga03.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233035AbhKINkb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Nov 2021 08:40:31 -0500
-X-IronPort-AV: E=McAfee;i="6200,9189,10162"; a="232390240"
-X-IronPort-AV: E=Sophos;i="5.87,220,1631602800"; 
-   d="scan'208";a="232390240"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Nov 2021 05:37:45 -0800
-X-IronPort-AV: E=Sophos;i="5.87,220,1631602800"; 
-   d="scan'208";a="491658606"
-Received: from xiaoyaol-mobl.ccr.corp.intel.com (HELO [10.249.168.220]) ([10.249.168.220])
-  by orsmga007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Nov 2021 05:37:40 -0800
-Message-ID: <6f0d243c-4f40-d608-3309-5c37536ab866@intel.com>
-Date:   Tue, 9 Nov 2021 21:37:38 +0800
+        id S234790AbhKINlp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Nov 2021 08:41:45 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45632 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233035AbhKINlo (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Nov 2021 08:41:44 -0500
+Received: from mail-lj1-x22d.google.com (mail-lj1-x22d.google.com [IPv6:2a00:1450:4864:20::22d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 700E8C061764
+        for <linux-kernel@vger.kernel.org>; Tue,  9 Nov 2021 05:38:58 -0800 (PST)
+Received: by mail-lj1-x22d.google.com with SMTP id m5so18044842ljp.4
+        for <linux-kernel@vger.kernel.org>; Tue, 09 Nov 2021 05:38:58 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=Xf2lmT83dSNiE9eWoGnGn4bhukTvP6d6+kM7Kc5CSqo=;
+        b=amJfQ8sHmRSWmPUArZTLQgn5LsrKQ3Iz9PAqbKRjFJpXbf+kZpMG6JSvCpmru6i7Rd
+         supmpPHjE8ZTeFLsO8zkQmFLqRA6qpil0n5vTTnEVu+BWFDVuFo4HDC2AtMhX9/XpoJg
+         QEzzNuL1CD0AEWInEWjMkWz6sbLRj/qqj3NSkdwEmfKi+uwiJLPz1CyR8avIX884fQYD
+         Uld/5FlkCls2GOKfZ0YXgvI5peWZTTrtJLVhUWwPy9yMp2aq3kjLKVlFwQQ92jOMlR98
+         VqjDIvuTfaUad4WKoH6o8hhEK/upQXqobvJRL8cbE/pF9dT0TL0J6tMAb4QxeJkJO9fr
+         Fk3g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=Xf2lmT83dSNiE9eWoGnGn4bhukTvP6d6+kM7Kc5CSqo=;
+        b=XQjCJGl6fxIehyElA1T/KwloUyO5lRcZvyUG9epTyN7jCNCLkWlRqjyHo/ibT+8I2b
+         XmM/uZPBrKZ/jchuEK7W07g+9iiMMsJnjys+w9GXzl4kQ/OVsglQ3/P9mYZS1RrrAtbG
+         2/70j02bfgj6RkkZL2qkExNq+RXTx4LmlxDal+MPSLBbV1hfkFPtoSu/neRmclq54lAZ
+         kCHZCrsIsB8j7aLJ765ui13MAw0rlOFFVN7zZ9Q9Qy/lQYMImM1Uk+KYCSx9WxVkglyf
+         uO+zt3DV6ZTf2HL3yXBRiC123wQTHyFe//DeNjSTCCBU9YaAC+L30K6pf6ExYRTm85a8
+         7C+Q==
+X-Gm-Message-State: AOAM53366g73H01N+azNR8KjeNmVksZ43CrIv9cIl0Nlbv2MF7J8dW3O
+        pwVPOfM8BJUTDeHsAqfjZTyDA9fxnYnXHFD+MtI=
+X-Google-Smtp-Source: ABdhPJwp/3yR0aKJzyyxnYPME8tdzmJXZFeiF4l88QOLnGXZJ0FpMU2lEfm3EzN+wCWR9J78xt3O+jujs2yYlAiq3d0=
+X-Received: by 2002:a2e:890d:: with SMTP id d13mr7561859lji.396.1636465136748;
+ Tue, 09 Nov 2021 05:38:56 -0800 (PST)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
- Firefox/91.0 Thunderbird/91.3.0
-Subject: Re: [RFC PATCH v2 24/69] KVM: x86: Introduce "protected guest"
- concept and block disallowed ioctls
-Content-Language: en-US
-To:     Tom Lendacky <thomas.lendacky@amd.com>,
-        Paolo Bonzini <pbonzini@redhat.com>
-Cc:     isaku.yamahata@gmail.com,
-        "Yamahata, Isaku" <isaku.yamahata@intel.com>, x86@kernel.org,
-        Joerg Roedel <joro@8bytes.org>,
-        Jim Mattson <jmattson@google.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H . Peter Anvin" <hpa@zytor.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>, erdemaktas@google.com,
-        Connor Kuehl <ckuehl@redhat.com>,
-        Sean Christopherson <seanjc@google.com>,
-        linux-kernel@vger.kernel.org, kvm@vger.kernel.org
-References: <cover.1625186503.git.isaku.yamahata@intel.com>
- <482264f17fa0652faad9bd5364d652d11cb2ecb8.1625186503.git.isaku.yamahata@intel.com>
- <02ca73b2-7f04-813d-5bb7-649c0edafa06@redhat.com>
- <209a57e9-ca9c-3939-4aaa-4602e3dd7cdd@amd.com>
-From:   Xiaoyao Li <xiaoyao.li@intel.com>
-In-Reply-To: <209a57e9-ca9c-3939-4aaa-4602e3dd7cdd@amd.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+References: <1636439024-15877-1-git-send-email-u0084500@gmail.com>
+ <1636439024-15877-2-git-send-email-u0084500@gmail.com> <YYp2+gqjn6+M/hZ7@sirena.org.uk>
+In-Reply-To: <YYp2+gqjn6+M/hZ7@sirena.org.uk>
+From:   ChiYuan Huang <u0084500@gmail.com>
+Date:   Tue, 9 Nov 2021 21:38:45 +0800
+Message-ID: <CADiBU38kyx6hA-xPp-EH34YmvDfXRtOBr3Zuzj2Yc7Sx+HJWcw@mail.gmail.com>
+Subject: Re: [PATCH 1/2] ASoC: rt9120: Update internal setting and fix auto
+ sync problem
+To:     Mark Brown <broonie@kernel.org>
+Cc:     perex@perex.cz, tiwai@suse.com, oder_chiou@realtek.com,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        alsa-devel@alsa-project.org, lkml <linux-kernel@vger.kernel.org>,
+        cy_huang <cy_huang@richtek.com>,
+        allen lin <allen_lin@richtek.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/21/2021 6:08 AM, Tom Lendacky wrote:
-> On 7/6/21 8:59 AM, Paolo Bonzini wrote:
->> On 03/07/21 00:04, isaku.yamahata@intel.com wrote:
->>> From: Sean Christopherson <sean.j.christopherson@intel.com>
->>>
->>> Add 'guest_state_protected' to mark a VM's state as being protected by
->>> hardware/firmware, e.g. SEV-ES or TDX-SEAM.  Use the flag to disallow
->>> ioctls() and/or flows that attempt to access protected state.
->>>
->>> Return an error if userspace attempts to get/set register state for a
->>> protected VM, e.g. a non-debug TDX guest.  KVM can't provide sane data,
->>> it's userspace's responsibility to avoid attempting to read guest state
->>> when it's known to be inaccessible.
->>>
->>> Retrieving vCPU events is the one exception, as the userspace VMM is
->>> allowed to inject NMIs.
->>>
->>> Co-developed-by: Xiaoyao Li <xiaoyao.li@intel.com>
->>> Signed-off-by: Xiaoyao Li <xiaoyao.li@intel.com>
->>> Signed-off-by: Sean Christopherson <sean.j.christopherson@intel.com>
->>> Signed-off-by: Isaku Yamahata <isaku.yamahata@intel.com>
->>> ---
->>>    arch/x86/kvm/x86.c | 104 +++++++++++++++++++++++++++++++++++++--------
->>>    1 file changed, 86 insertions(+), 18 deletions(-)
->>
->> Looks good, but it should be checked whether it breaks QEMU for SEV-ES.
->>   Tom, can you help?
-> 
-> Sorry to take so long to get back to you... been really slammed, let me
-> look into this a bit more. But, some quick thoughts...
-> 
-> Offhand, the SMI isn't a problem since SEV-ES doesn't support SMM.
-> 
-> For kvm_vcpu_ioctl_x86_{get,set}_xsave(), can TDX use what was added for
-> SEV-ES:
->    ed02b213098a ("KVM: SVM: Guest FPU state save/restore not needed for SEV-ES guest")
-> 
-> Same for kvm_arch_vcpu_ioctl_{get,set}_fpu().
+Mark Brown <broonie@kernel.org> =E6=96=BC 2021=E5=B9=B411=E6=9C=889=E6=97=
+=A5 =E9=80=B1=E4=BA=8C =E4=B8=8B=E5=8D=889:26=E5=AF=AB=E9=81=93=EF=BC=9A
+>
+> On Tue, Nov 09, 2021 at 02:23:43PM +0800, cy_huang wrote:
+> > From: ChiYuan Huang <cy_huang@richtek.com>
+> >
+> > - Update internal setting to fix issue.
+> > - Disable auto sync if fs is divided by 48.
+>
+> Please submit one patch per change, each with a clear changelog, as
+> covered in SubmittingPatches.  This makes it much easier to review
+> things since it's easier to tell if the patch does what it was intended
+> to do.  When splitting patches up git gui can be helpful, you can stage
+> and unstage individual lines by right clicking on them.
 
-Tom,
-
-I think what you did in this commit is not so correct. It just silently 
-ignores the ioctls insteaf of returning an error to userspace to tell 
-this IOCTL is not invalid to this VM. E.g., for 
-kvm_arch_vcpu_ioctl_get_fpu(), QEMU just gets it succesful with fpu 
-being all zeros.
-
-So Paolo, what's your point on this?
-
-> The changes to kvm_arch_vcpu_ioctl_{get,set}_sregs() might cause issues,
-> since there are specific things allowed in __{get,set}_sregs. But I'll
-> need to dig a bit more on that.
-> 
-> Thanks,
-> Tom
-> 
-
-
+OK, I'll split it with two changes to make it more clear.
