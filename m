@@ -2,116 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7BA2844AC9E
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 12:32:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DC40744ACA0
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 12:32:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245758AbhKILfI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Nov 2021 06:35:08 -0500
-Received: from foss.arm.com ([217.140.110.172]:60554 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S245757AbhKILe5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Nov 2021 06:34:57 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 6E0C2ED1;
-        Tue,  9 Nov 2021 03:32:11 -0800 (PST)
-Received: from [10.57.81.233] (unknown [10.57.81.233])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 63B2E3F7F5;
-        Tue,  9 Nov 2021 03:32:10 -0800 (PST)
-Message-ID: <7213fdb0-b0ff-f851-87c6-7a55245cfcce@arm.com>
-Date:   Tue, 9 Nov 2021 11:32:04 +0000
+        id S1343498AbhKILfU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Nov 2021 06:35:20 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45014 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234461AbhKILfT (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Nov 2021 06:35:19 -0500
+Received: from mail-pg1-x529.google.com (mail-pg1-x529.google.com [IPv6:2607:f8b0:4864:20::529])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF4F7C061764;
+        Tue,  9 Nov 2021 03:32:33 -0800 (PST)
+Received: by mail-pg1-x529.google.com with SMTP id p8so16874851pgh.11;
+        Tue, 09 Nov 2021 03:32:33 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=GB9eKxjcBWCxwS/HtKqmjwwInWPDBMBcitrchXMAIUQ=;
+        b=IvNLqajfGqrJ0qgsizV3KEbbplvjVdxPWkqrdE2iDY6VI/8FIUNqeIZFznTqvQNdHa
+         QPLN7jq3KSrVZmezG/XUSXA8GgRV0DwBg0tpSunadET4fbtELRV88tvcOIaO02buZZk3
+         ubewEQu8/6/KzuUNTyrr/lqX2/sqr51yHpGcnkJ8yPzyU02UDfWyEzb9VpzE2I6AR9KO
+         kfLkzvnXIKwoHhgtdTETkONHJKpQC5IPEW/MRpCvpGlN708+nIaBVv3W/xk9LfvFdmc4
+         Y350o3IjE5RPZvAtXU1rU4e0YoVraypmYMTUK+1bMGIHtP3Vx3JUQ+LdOzNf3yMzJ84K
+         uV9A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=GB9eKxjcBWCxwS/HtKqmjwwInWPDBMBcitrchXMAIUQ=;
+        b=A7Ipd3Y9/IOjxbOMiyssLtsNjEIjsvjrNDXO3cwdDRiQec6a7r3+0OhxLJFjgchy5y
+         QrbAG2ZaSJRweD5x0R9Om4WSfSWouGKLCa1x/KWiH4lHxLY9IUjRA4LUgH/M1NNpcGOk
+         WuE3SwQgxVAr14HbwGrEjsF8+iTD8NoOI/n5MrJ0cRfB4ZbGE3C8IyPjaHNGRvgdw+8e
+         /c25T7tN8C9FIspsqPgWusSFruVt09+J6MdGMTRgWZGGOIyW9isdb7o4MtXtv3zI+tbP
+         0LUlehIBDHEnjOPXIdA9lMlu7XXJ8fITaRva1WviBoj8EAqrtyC9sqqB48j1wfWPxDWj
+         MhDA==
+X-Gm-Message-State: AOAM5328yyR0QjiyoqRNpk1XWJKBETFFCMlnaziDamzQnjUmjXsT572d
+        I/WqehUIq06HDJ9ggpdUZBlsE+VOLLw=
+X-Google-Smtp-Source: ABdhPJzPdn3gAAyafPOj0XavlF+c4x4kvNZffTHaIj7Te4ANaiTvZ6tWL00QM9CG+sBBAWVvdj2kCA==
+X-Received: by 2002:a63:790e:: with SMTP id u14mr5559458pgc.478.1636457553410;
+        Tue, 09 Nov 2021 03:32:33 -0800 (PST)
+Received: from localhost.localdomain ([193.203.214.57])
+        by smtp.gmail.com with ESMTPSA id c1sm10504860pfm.77.2021.11.09.03.32.31
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 09 Nov 2021 03:32:32 -0800 (PST)
+From:   cgel.zte@gmail.com
+X-Google-Original-From: deng.changcheng@zte.com.cn
+To:     selvin.xavier@broadcom.com
+Cc:     dledford@redhat.com, jgg@ziepe.ca, linux-rdma@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Changcheng Deng <deng.changcheng@zte.com.cn>,
+        Zeal Robot <zealci@zte.com.cn>
+Subject: [PATCH] RDMA/bnxt_re: remove unneeded variable
+Date:   Tue,  9 Nov 2021 11:32:27 +0000
+Message-Id: <20211109113227.132596-1-deng.changcheng@zte.com.cn>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:91.0) Gecko/20100101
- Thunderbird/91.3.0
-Subject: Re: Question: SMMUv3 PMU event aliasing
-Content-Language: en-GB
-To:     John Garry <john.garry@huawei.com>, Leo Yan <leo.yan@linaro.org>,
-        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>
-References: <20211108121941.GC1267967@leoy-ThinkPad-X240s>
- <8b24f36b-6459-c13c-bf19-b9f588eb6b8e@huawei.com>
-From:   Robin Murphy <robin.murphy@arm.com>
-In-Reply-To: <8b24f36b-6459-c13c-bf19-b9f588eb6b8e@huawei.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-11-08 12:41, John Garry wrote:
-> On 08/11/2021 12:19, Leo Yan wrote:
->> Hi John,
->>
->> [ + mailing list ]
-> 
-> Hi Leo,
-> 
->>
->> I'd like to confirm the latest upstream status for SMMUv3 PMU event
->> aliasing.
->>
->> I see the patch set v6 of "perf pmu-events: Support event aliasing for
->> system PMUs" [1] has been landed on the mainline kernel, and as an
->> example, imx8mm DDR PMU has been supported as system PMU [2].
->>
->> On the other hand, I can see patch set 5 contains the SMMUv3 PMU event
->> aliasing with patch "perf vendor events arm64: Add Architected events
->> smmuv3-pmcg.json" [3], but this patch was left out in patch set 6 and
->> it's never landed on the mainline kernel.
->>
->> Could you share current status (or plan) for upstreaming SMMUv3 PMU
->> event alias?  Or if there have any block issue to prevent merging the
->> changes in the mainline kernel?
-> 
-> This feature should be supported in the SMMUv3 PMU kernel driver and 
-> perf tool.
-> 
-> However it relies on the SMMU PMU identifier sysfs file to work. This 
-> relies on SMMU_PMCG_IIDR being set, which is introduced latest spec, 
-> which not much HW will support yet - see commit 2c255223362e. In theory 
-> we don't need that for the fixed, non-IMPDEF events, but I did not 
-> complicate perf tool with that mixed support.
-> 
-> That's the reason for which I paused smmuv3-pmcg.json upstream in [3]. I 
-> will revive that for new gen HW when concrete IMPDEF events known and 
-> shared.
+From: Changcheng Deng <deng.changcheng@zte.com.cn>
 
-FWIW, imp-def-events are readily available for the existing Arm 
-implementations[1][2], and annoyingly we could trivially synthesise an 
-IIDR value from their imp-def PIDR registers if only we knew that that 
-was valid to do in the first place. I feel tempted now to resurrect 
-Jean-Philippe's DT binding and have a quick hack at that, then maybe a 
-much longer think about how to attempt it for IORT...
+Fix the following coccicheck review:
+./drivers/infiniband/hw/bnxt_re/main.c: 896: 5-7: Unneeded variable
 
-Cheers,
-Robin.
+Remove unneeded variable used to store return value.
 
-[1] 
-https://developer.arm.com/documentation/100310/0202/Functional-description/Operation/Performance-Monitoring-Unit
-[2] 
-https://developer.arm.com/documentation/101542/0001/Functional-description/Operation/Performance-Monitoring-Unit
+Reported-by: Zeal Robot <zealci@zte.com.cn>
+Signed-off-by: Changcheng Deng <deng.changcheng@zte.com.cn>
+---
+ drivers/infiniband/hw/bnxt_re/main.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-> 
-> Thanks,
-> John
-> 
->>
->> Thanks for your help!
->>
->> Leo
->>
->> [1] 
->> https://lore.kernel.org/lkml/1607080216-36968-1-git-send-email-john.garry@huawei.com/ 
->>
->> [2] pmu-events/arch/arm64/freescale/imx8mm/sys/ddrc.json
->> [3] 
->> https://lore.kernel.org/lkml/1604666153-4187-6-git-send-email-john.garry@huawei.com/ 
->>
->> .
->>
-> 
-> 
-> _______________________________________________
-> linux-arm-kernel mailing list
-> linux-arm-kernel@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
+diff --git a/drivers/infiniband/hw/bnxt_re/main.c b/drivers/infiniband/hw/bnxt_re/main.c
+index 4fa3b14b2613..2ce0e75f7b2d 100644
+--- a/drivers/infiniband/hw/bnxt_re/main.c
++++ b/drivers/infiniband/hw/bnxt_re/main.c
+@@ -894,7 +894,6 @@ static int bnxt_re_srqn_handler(struct bnxt_qplib_nq *nq,
+ 	struct bnxt_re_srq *srq = container_of(handle, struct bnxt_re_srq,
+ 					       qplib_srq);
+ 	struct ib_event ib_event;
+-	int rc = 0;
+ 
+ 	ib_event.device = &srq->rdev->ibdev;
+ 	ib_event.element.srq = &srq->ib_srq;
+@@ -908,7 +907,7 @@ static int bnxt_re_srqn_handler(struct bnxt_qplib_nq *nq,
+ 		(*srq->ib_srq.event_handler)(&ib_event,
+ 					     srq->ib_srq.srq_context);
+ 	}
+-	return rc;
++	return 0;
+ }
+ 
+ static int bnxt_re_cqn_handler(struct bnxt_qplib_nq *nq,
+-- 
+2.25.1
+
