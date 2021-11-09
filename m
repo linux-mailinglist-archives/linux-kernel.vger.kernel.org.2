@@ -2,77 +2,203 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 117BE449F8A
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 01:30:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D734449F94
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 01:34:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234353AbhKIAdh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Nov 2021 19:33:37 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35938 "EHLO
+        id S241236AbhKIAgx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Nov 2021 19:36:53 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36698 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229998AbhKIAdf (ORCPT
+        with ESMTP id S229974AbhKIAgv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Nov 2021 19:33:35 -0500
-Received: from mail-ot1-x333.google.com (mail-ot1-x333.google.com [IPv6:2607:f8b0:4864:20::333])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C75A0C061764
-        for <linux-kernel@vger.kernel.org>; Mon,  8 Nov 2021 16:30:50 -0800 (PST)
-Received: by mail-ot1-x333.google.com with SMTP id h12-20020a056830034c00b0055c8458126fso9351890ote.0
-        for <linux-kernel@vger.kernel.org>; Mon, 08 Nov 2021 16:30:50 -0800 (PST)
+        Mon, 8 Nov 2021 19:36:51 -0500
+Received: from mail-yb1-xb2b.google.com (mail-yb1-xb2b.google.com [IPv6:2607:f8b0:4864:20::b2b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C528CC061570;
+        Mon,  8 Nov 2021 16:34:06 -0800 (PST)
+Received: by mail-yb1-xb2b.google.com with SMTP id q74so48275308ybq.11;
+        Mon, 08 Nov 2021 16:34:06 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
+        d=gmail.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=wWOLg/TjdfsihzJ5MjAZua2eODby7ABOKKXMhSMpxIA=;
-        b=sN9/kcyrGV71FgwMjDXLU9oyYsKobWGMHlwoeh+H6r6+ttdcw2dIGT9EODixMzTmf3
-         sPDv7ueTlgzvo6ncQF1nN/IqqNqOJkqiCQKlOOVg2W2JTugQCofVHiHJm96KuNnzcurs
-         aarAL6o6O+yTAj8i6i6I/p6oSH4SBLrOgZTN9rDSwFi5ygMhoa/nERJq8ey57dZDUOM4
-         NEjgbedUv6cmna0v2/OvjKAGfci5uh63FERVDUJ3GUsbTP9JaJn4SMPd+vCTnnhrE5u2
-         du6Y1D2G0tgorJbYWoHQEs27fILFzJEMUy/JeSuLRus3PYipADVg1sQoX91e1w8HWxkl
-         uRYQ==
+        bh=Q5DOp79TqIehgB/tt332cR2spFyy+swaF0wEaBl7XIc=;
+        b=a7PQcClm4Xy/E/Osr0G2js0eSdA2KdGA4mVKsIXZ9CCPBIw5v8CosLAnaYRdg7ZIdr
+         4SyfaYkYvXY9H+iNOJgpLkKVGQ5u0mfBA4Umr71QFx8KLamv4DjiTcjBPHggtJTYqtmQ
+         3ilkb6KAxAYYaf/FpJKG0Ns+rJAk/pM2on894j8ehkCrUOHRXd/3lOUnj9VYXGX+3QKQ
+         39nwufPZfT76qKsJ85QAQmDaeuFgX15uc9lTGTyb4Rjuq1W45uC5HfkFykqGvUTOFuHN
+         T7Xx6k1/6og7+MOeRj6cJtz4YlJ1R5SQB3j4DZavTnsfpZ+tT1stIWjkXVVkPmog7oEf
+         cqtg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=wWOLg/TjdfsihzJ5MjAZua2eODby7ABOKKXMhSMpxIA=;
-        b=VrqIvQwj5kf7IQUErGQjz794W3AEqVUtbmIsTdl4XV2662MgzoICG9DYgjo4w7/HdI
-         aFza+pcCOR+dZzikcyEHwd5K8qUleZoUeKfacJOH0ZenXjxUwjFrinldwEwll++jXAQo
-         EV0KrOGmpxVbdkIjQzFu8QP0i25/txVh2TcJ/Z4OncndCL3KiOaSC9Y3sjak4dyiTvyV
-         aLBm4dRplDOTzQ4PavljLf1fQCv18glBX9f2JMM9uSjRCV+bz/Ism9JfioJOjPprplog
-         z9XO5Z+3XfGGlIjasS9D2YMI6vPnXEqpuFWEaS6PXUloiZjG1acVk3sSN+vKbcc3cPJw
-         2AKw==
-X-Gm-Message-State: AOAM531SFs4YYaU6IjR33k5GzUr0LRy1p+oQVWWMLFbDvUOP4E8+WmCK
-        RS//BI2FNwcnCw3DMp+eVAbNPrqylJBXDjzbr2drZQ==
-X-Google-Smtp-Source: ABdhPJxGcQ+6oFfc5rMf7oTfLgAK69TFbXU2aavrfhreX3DPCotCJiOwOPhx7R5RSV9g9kfwzmO8PXMieiHgMRXoH/U=
-X-Received: by 2002:a9d:6348:: with SMTP id y8mr2592888otk.179.1636417849971;
- Mon, 08 Nov 2021 16:30:49 -0800 (PST)
+        bh=Q5DOp79TqIehgB/tt332cR2spFyy+swaF0wEaBl7XIc=;
+        b=GeIhZ45FSaMWJYZRqiSXa3bgMzvZHMMegU1XrLgY+84t3ptry4Liz8LX2t9bkFUquV
+         e7ssawrOmPtqaXg/SfZd/2asUBACYahLIOxKMFKy2G46CMbb/tjLBxgrjHK9ZmCdxCgd
+         cFJOoINb17eLc6TjbmU7vWmgUwZRYzE/DKyMAKYjqm09mjBLPMke/3I8k1VvNhfoZEag
+         8TeNoMKxEfS0+RZvKJLJVp3H7EqOgfNL9mjZOaug2zTd+p+/tsZBwVd5/Oft5LLl6SmM
+         QnBvwZwb3vIy9RjG5UWqfNsKA4r/Bwmx/Pu4j74J5mPavZVZAENlZpom5pBnbA94mZhK
+         b3ZA==
+X-Gm-Message-State: AOAM530rOWJ4uSAZO7SucOrM8D7UyQ8DvUnRgxLFMqWSv7kk7hB0RmrC
+        LK9jKrI625SfzNqk5zU1rghefeG4N8EMGtEYhFU=
+X-Google-Smtp-Source: ABdhPJwgGFcUu6m+TJwjEwbFscerQ8a9/lv/DzIhJaXAO17zeyi/3RDTEv1ZJxuugzKwZC+yv4rYVyoRjHUejfM3jYU=
+X-Received: by 2002:a25:c08a:: with SMTP id c132mr3673023ybf.49.1636418046095;
+ Mon, 08 Nov 2021 16:34:06 -0800 (PST)
 MIME-Version: 1.0
-References: <20211021123021.9602-1-pshete@nvidia.com> <20211021123021.9602-2-pshete@nvidia.com>
- <YXq3/1AXX7KiwpTy@orome.fritz.box> <YYE7aXo0mfCfCqGF@orome.fritz.box> <DM5PR12MB240697948C6DFF64E45AFF00B78C9@DM5PR12MB2406.namprd12.prod.outlook.com>
-In-Reply-To: <DM5PR12MB240697948C6DFF64E45AFF00B78C9@DM5PR12MB2406.namprd12.prod.outlook.com>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Tue, 9 Nov 2021 01:30:38 +0100
-Message-ID: <CACRpkdZto=5Pa4r7-eufUqteaJS5yYeTL6Oh8mFO_g=6RzV+mg@mail.gmail.com>
-Subject: Re: [PATCH 2/2] gpio: tegra186: Add support for Tegra234 gpio
-To:     Prathamesh Shete <pshete@nvidia.com>
-Cc:     Thierry Reding <thierry.reding@gmail.com>,
-        "bgolaszewski@baylibre.com" <bgolaszewski@baylibre.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        "linux-gpio@vger.kernel.org" <linux-gpio@vger.kernel.org>,
-        "linux-tegra@vger.kernel.org" <linux-tegra@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Suresh Mangipudi <smangipudi@nvidia.com>
+References: <20211103173127.13701-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
+ <20211103173127.13701-4-prabhakar.mahadev-lad.rj@bp.renesas.com> <CAMuHMdWLfUNh7PQWpARS6CNymqpGO_29tgy7NLtgmJ-BRgyUaA@mail.gmail.com>
+In-Reply-To: <CAMuHMdWLfUNh7PQWpARS6CNymqpGO_29tgy7NLtgmJ-BRgyUaA@mail.gmail.com>
+From:   "Lad, Prabhakar" <prabhakar.csengg@gmail.com>
+Date:   Tue, 9 Nov 2021 00:33:40 +0000
+Message-ID: <CA+V-a8sLuZUC=Xfce5CzJ3jbszGjK00r6wLGc1n-xWgFDBuqPA@mail.gmail.com>
+Subject: Re: [PATCH 3/3] serial: sh-sci: Add reset support for RZ/G2L SoC
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        "open list:SERIAL DRIVERS" <linux-serial@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
+        Biju Das <biju.das.jz@bp.renesas.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 3, 2021 at 12:01 PM Prathamesh Shete <pshete@nvidia.com> wrote:
+Hi Geert,
 
-> It would be helpful if you share the update to the device tree bindings documentation patch with me I will push all the changes together.
-> OR
-> Can you please resend these patches along with device tree binding document patch that you have.
+Thank you for the review.
 
-I'm just gonna assume that you guys sort this out and I can see the
-combined tegra234 support in v2 :)
+On Mon, Nov 8, 2021 at 4:40 PM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
+>
+> Hi Prabhakar,
+>
+> On Wed, Nov 3, 2021 at 6:31 PM Lad Prabhakar
+> <prabhakar.mahadev-lad.rj@bp.renesas.com> wrote:
+> > On RZ/G2L devices should be explicitly pulled out of reset for it
+> > to work. This patch adds support to read the "resets" property and
+> > performs deassert/assert when required.
+> >
+> > Also, propagate the error to the caller of sci_parse_dt() instead of
+> > returning NULL in case of failure.
+> >
+> > Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+> > Reviewed-by: Biju Das <biju.das.jz@bp.renesas.com>
+>
+> Thanks for your patch!
+>
+> > ---
+> > Hi Geert,
+> > For handling the resets I was in dual mind whether to perform
+> > reset based on compatible strings or soc-id, let me know your
+> > thoughts. Currently no SoC's use "renesas,sci" so using the same
+> > for performing the reset operation for SCI.
+>
+> We do, on H8/300.
+>
+Missed that.
 
-Yours,
-Linus Walleij
+> > --- a/drivers/tty/serial/sh-sci.c
+> > +++ b/drivers/tty/serial/sh-sci.c
+> > @@ -3203,23 +3204,58 @@ static const struct of_device_id of_sci_match[] = {
+> >  };
+> >  MODULE_DEVICE_TABLE(of, of_sci_match);
+> >
+> > +static void sci_reset_control_assert(void *data)
+> > +{
+> > +       reset_control_assert(data);
+> > +}
+> > +
+> >  static struct plat_sci_port *sci_parse_dt(struct platform_device *pdev,
+> >                                           unsigned int *dev_id)
+> >  {
+> >         struct device_node *np = pdev->dev.of_node;
+> > +       const struct of_device_id *of_id;
+> >         struct plat_sci_port *p;
+> >         struct sci_port *sp;
+> >         const void *data;
+> >         int id;
+> >
+> >         if (!IS_ENABLED(CONFIG_OF) || !np)
+> > -               return NULL;
+> > +               return ERR_PTR(-EINVAL);
+> > +
+> > +       of_id = of_match_device(of_sci_match, &pdev->dev);
+> > +       if (!of_id)
+> > +               return ERR_PTR(-EINVAL);
+> >
+> > -       data = of_device_get_match_data(&pdev->dev);
+> > +       if (!strcmp(of_id->compatible, "renesas,scif-r9a07g044") ||
+> > +           !strcmp(of_id->compatible, "renesas,sci")) {
+>
+> This will match on H8/300, too, which doesn't have resets.
+> Please match against "renesas,sci-r9a07g044" instead.
+>
+> Please don't use explicit strcmp() calls here, but add a flag to
+> of_sci_match[].data.
+>
+Agreed, does the below hunk look good for handling the reset?
+
+-#define SCI_OF_DATA(type, regtype)     (void *)((type) << 16 | (regtype))
++#define SCIx_RESET                             BIT(31)
++#define SCI_OF_DATA(type, regtype, reset)      (void *)(reset |
+(type) << 16 | (regtype))
+ #define SCI_OF_TYPE(data)              ((unsigned long)(data) >> 16)
+ #define SCI_OF_REGTYPE(data)           ((unsigned long)(data) & 0xffff)
+
+@@ -3169,7 +3170,11 @@ static const struct of_device_id of_sci_match[] = {
+        },
+        {
+                .compatible = "renesas,scif-r9a07g044",
+-               .data = SCI_OF_DATA(PORT_SCIF, SCIx_RZ_SCIFA_REGTYPE),
++               .data = SCI_OF_DATA(PORT_SCIF, SCIx_RZ_SCIFA_REGTYPE,
+SCIx_RESET),
++       },
++       {
++               .compatible = "renesas,sci-r9a07g044",
++               .data = SCI_OF_DATA(PORT_SCI, SCIx_SCI_REGTYPE, SCIx_RESET),
+        },
+
+Cheers,
+Prabhakar
+
+> > +               struct reset_control *rstc;
+> > +               int ret;
+> > +
+> > +               rstc = devm_reset_control_get_exclusive(&pdev->dev, NULL);
+> > +               if (IS_ERR(rstc)) {
+> > +                       dev_err(&pdev->dev, "Error: missing reset ctrl\n");
+> > +                       return ERR_PTR(PTR_ERR(rstc));
+> > +               }
+> > +
+> > +               ret = reset_control_deassert(rstc);
+> > +               if (ret) {
+> > +                       dev_err(&pdev->dev, "failed to deassert %d\n", ret);
+> > +                       return ERR_PTR(ret);
+> > +               }
+> > +
+> > +               ret = devm_add_action_or_reset(&pdev->dev, sci_reset_control_assert, rstc);
+> > +               if (ret) {
+> > +                       dev_err(&pdev->dev, "failed to register assert devm action, %d\n",
+> > +                               ret);
+> > +                       return ERR_PTR(ret);
+> > +               }
+> > +       }
+> > +
+> > +       data = of_id->data;
+> >
+>
+> Gr{oetje,eeting}s,
+>
+>                         Geert
+>
+> --
+> Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+>
+> In personal conversations with technical people, I call myself a hacker. But
+> when I'm talking to journalists I just say "programmer" or something like that.
+>                                 -- Linus Torvalds
