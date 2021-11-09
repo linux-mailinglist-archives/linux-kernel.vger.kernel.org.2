@@ -2,210 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7933C44ACEA
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 12:51:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7ECD844ACED
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 12:51:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343636AbhKILyA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Nov 2021 06:54:00 -0500
-Received: from foss.arm.com ([217.140.110.172]:60850 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1343618AbhKILxf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Nov 2021 06:53:35 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 5103C113E;
-        Tue,  9 Nov 2021 03:50:49 -0800 (PST)
-Received: from ip-10-252-15-108.eu-west-1.compute.internal (unknown [10.252.15.108])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 3ACE73F7F5;
-        Tue,  9 Nov 2021 03:50:47 -0800 (PST)
-From:   German Gomez <german.gomez@arm.com>
-To:     linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
-        acme@kernel.org
-Cc:     German Gomez <german.gomez@arm.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        John Garry <john.garry@huawei.com>,
-        Will Deacon <will@kernel.org>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Leo Yan <leo.yan@linaro.org>,
-        linux-arm-kernel@lists.infradead.org
-Subject: [PATCH v2 4/4] perf arm-spe: Support hardware-based PID tracing
-Date:   Tue,  9 Nov 2021 11:50:20 +0000
-Message-Id: <20211109115020.31623-5-german.gomez@arm.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20211109115020.31623-1-german.gomez@arm.com>
-References: <20211109115020.31623-1-german.gomez@arm.com>
+        id S1343647AbhKILyK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Nov 2021 06:54:10 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49390 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1343641AbhKILyI (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Nov 2021 06:54:08 -0500
+Received: from mail-oi1-x229.google.com (mail-oi1-x229.google.com [IPv6:2607:f8b0:4864:20::229])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 64694C061766
+        for <linux-kernel@vger.kernel.org>; Tue,  9 Nov 2021 03:51:22 -0800 (PST)
+Received: by mail-oi1-x229.google.com with SMTP id o83so33216839oif.4
+        for <linux-kernel@vger.kernel.org>; Tue, 09 Nov 2021 03:51:22 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=kMK6SnHP7XOL/nzbm1KS22pVeT/yVqRtpG4D5bAlLtY=;
+        b=o9FwO7JCulklcAOt08HURze6MgADdmgcfLw3Yl4MCHTMoFLONnBFI0Vc09v1fn4Ru1
+         a8sSgNlHwT73XBbn3Rtvl9qOR9H/8XdGjeZ2kt9amCQmP/vrh9Ql/m9TqCEzKxmn2ck2
+         1iZItOphR9RBsP/Wx5Rh7PRHJcs87JiPoPXQLYosgsujYhKXvfklJlb8zp2WDcG+SCLz
+         Zh5hPpuhnG76txv0tu3QIahyuXIMUFjknLT4m3kjK66ydWl3NrN61xyanki+aMIiExYK
+         kz6K4gZOzlyomsHYCPRrpYTMDak6kyS29r3Z+mBeSKbX/Bb9XbUjiEnUBJ6FaLtnuuQE
+         K3Ww==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=kMK6SnHP7XOL/nzbm1KS22pVeT/yVqRtpG4D5bAlLtY=;
+        b=cKksfJANvGvuGlID3aeyrG5Qk02uNnAbaCMU720o4xq47FFZJJj4CFIPgveOBm4vjh
+         Dqw9FejDdur6zfpr33oEbj17/ycIXZbNpc0hinYtJTl0nKWl/tb3Vcfnwx7xNbTHlvvp
+         BId9rfcGmgwKfdt9jUajAZOQ3waECswK2Vq1DBQvML4p6zPYqNcQbQ2sLE0B6PpcIr99
+         mrTbTpqGlZw33a5SdbjgfeSn7Au4OCCuNL5PRmYkEe26TANo0kXIsfuLQY9h4tu5G0We
+         gVxpIaQAb0mRCPh9okJs+M91liI5O6h+m9dfaP851NpNVP0wdYzNXB6xcS2dYrZUGdHR
+         SjrQ==
+X-Gm-Message-State: AOAM531W7V4k1BIknngf0zs3wphpxWMywfCRBsiykg1U+hWCg9l0vUS3
+        098srORDt1M79r2kKsbSKLrg7dWHL7OY8cm8rPMzWg==
+X-Google-Smtp-Source: ABdhPJzh5h6N1umE+Ysu5XocKatjpgfgpDggcSizG4BYyhksOtzOtMD8oSphQQMP0yAmmkHhJPnOvtLfi83T4u+8cUM=
+X-Received: by 2002:a05:6808:60e:: with SMTP id y14mr5237493oih.162.1636458681847;
+ Tue, 09 Nov 2021 03:51:21 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20211105130338.241100-1-arnd@kernel.org> <20211105130338.241100-2-arnd@kernel.org>
+In-Reply-To: <20211105130338.241100-2-arnd@kernel.org>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Tue, 9 Nov 2021 12:51:09 +0100
+Message-ID: <CACRpkdZ=z2YZ0rtD3=xqEQOMbwph-BEb-3xP_LajCzykmpYgSg@mail.gmail.com>
+Subject: Re: [RFC 2/3] gpiolib: remove empty asm/gpio.h files
+To:     Arnd Bergmann <arnd@kernel.org>
+Cc:     linux-gpio@vger.kernel.org, Bartosz Golaszewski <brgl@bgdev.pl>,
+        linux-m68k@lists.linux-m68k.org, geert@linux-m68k.org,
+        gerg@linux-m68k.org, linux@armlinux.org.uk,
+        linux-arm-kernel@lists.infradead.org, linux-sh@vger.kernel.org,
+        dalias@libc.org, ysato@users.sourceforge.jp,
+        Arnd Bergmann <arnd@arndb.de>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-If Arm SPE traces contain CONTEXT packets with TID info, use these
-values for tracking tid of samples. Otherwise fall back to using context
-switch events and display a message warning the user of possible timing
-inaccuracies [1].
+On Fri, Nov 5, 2021 at 2:04 PM Arnd Bergmann <arnd@kernel.org> wrote:
 
-[1] https://lore.kernel.org/lkml/f877cfa6-9b25-6445-3806-ca44a4042eaf@arm.com/
+> From: Arnd Bergmann <arnd@arndb.de>
+>
+> The arm and sh versions of this file are identical to the generic
+> versions and can just be removed.
+>
+> The drivers that actually use the sh3 specific version also include
+> cpu/gpio.h directly. This leaves coldfire as the only gpio driver
+> that needs something custom for gpiolib.
+>
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 
-Signed-off-by: German Gomez <german.gomez@arm.com>
----
- tools/perf/util/arm-spe.c | 99 +++++++++++++++++++++++++++------------
- 1 file changed, 70 insertions(+), 29 deletions(-)
+Excellent!
+Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
 
-diff --git a/tools/perf/util/arm-spe.c b/tools/perf/util/arm-spe.c
-index 230bc7ab2..30b8bb48a 100644
---- a/tools/perf/util/arm-spe.c
-+++ b/tools/perf/util/arm-spe.c
-@@ -71,6 +71,7 @@ struct arm_spe {
- 	u64				kernel_start;
- 
- 	unsigned long			num_events;
-+	u8				use_ctx_pkt_for_pid;
- };
- 
- struct arm_spe_queue {
-@@ -226,6 +227,44 @@ static inline u8 arm_spe_cpumode(struct arm_spe *spe, u64 ip)
- 		PERF_RECORD_MISC_USER;
- }
- 
-+static void arm_spe_set_pid_tid_cpu(struct arm_spe *spe,
-+				    struct auxtrace_queue *queue)
-+{
-+	struct arm_spe_queue *speq = queue->priv;
-+	pid_t tid;
-+
-+	tid = machine__get_current_tid(spe->machine, speq->cpu);
-+	if (tid != -1) {
-+		speq->tid = tid;
-+		thread__zput(speq->thread);
-+	} else
-+		speq->tid = queue->tid;
-+
-+	if ((!speq->thread) && (speq->tid != -1)) {
-+		speq->thread = machine__find_thread(spe->machine, -1,
-+						    speq->tid);
-+	}
-+
-+	if (speq->thread) {
-+		speq->pid = speq->thread->pid_;
-+		if (queue->cpu == -1)
-+			speq->cpu = speq->thread->cpu;
-+	}
-+}
-+
-+static int arm_spe_set_tid(struct arm_spe_queue *speq, pid_t tid)
-+{
-+	struct arm_spe *spe = speq->spe;
-+	int err = machine__set_current_tid(spe->machine, speq->cpu, tid, tid);
-+
-+	if (err)
-+		return err;
-+
-+	arm_spe_set_pid_tid_cpu(spe, &spe->queues.queue_array[speq->queue_nr]);
-+
-+	return 0;
-+}
-+
- static void arm_spe_prep_sample(struct arm_spe *spe,
- 				struct arm_spe_queue *speq,
- 				union perf_event *event,
-@@ -460,6 +499,19 @@ static int arm_spe_run_decoder(struct arm_spe_queue *speq, u64 *timestamp)
- 		 * can correlate samples between Arm SPE trace data and other
- 		 * perf events with correct time ordering.
- 		 */
-+
-+		/*
-+		 * Update pid/tid info.
-+		 */
-+		record = &speq->decoder->record;
-+		if (!spe->timeless_decoding && record->context_id != (u64)-1) {
-+			ret = arm_spe_set_tid(speq, record->context_id);
-+			if (ret)
-+				return ret;
-+
-+			spe->use_ctx_pkt_for_pid = true;
-+		}
-+
- 		ret = arm_spe_sample(speq);
- 		if (ret)
- 			return ret;
-@@ -586,31 +638,6 @@ static bool arm_spe__is_timeless_decoding(struct arm_spe *spe)
- 	return timeless_decoding;
- }
- 
--static void arm_spe_set_pid_tid_cpu(struct arm_spe *spe,
--				    struct auxtrace_queue *queue)
--{
--	struct arm_spe_queue *speq = queue->priv;
--	pid_t tid;
--
--	tid = machine__get_current_tid(spe->machine, speq->cpu);
--	if (tid != -1) {
--		speq->tid = tid;
--		thread__zput(speq->thread);
--	} else
--		speq->tid = queue->tid;
--
--	if ((!speq->thread) && (speq->tid != -1)) {
--		speq->thread = machine__find_thread(spe->machine, -1,
--						    speq->tid);
--	}
--
--	if (speq->thread) {
--		speq->pid = speq->thread->pid_;
--		if (queue->cpu == -1)
--			speq->cpu = speq->thread->cpu;
--	}
--}
--
- static int arm_spe_process_queues(struct arm_spe *spe, u64 timestamp)
- {
- 	unsigned int queue_nr;
-@@ -641,7 +668,12 @@ static int arm_spe_process_queues(struct arm_spe *spe, u64 timestamp)
- 			ts = timestamp;
- 		}
- 
--		arm_spe_set_pid_tid_cpu(spe, queue);
-+		/*
-+		 * A previous context-switch event has set pid/tid in the machine's context, so
-+		 * here we need to update the pid/tid in the thread and SPE queue.
-+		 */
-+		if (!spe->use_ctx_pkt_for_pid)
-+			arm_spe_set_pid_tid_cpu(spe, queue);
- 
- 		ret = arm_spe_run_decoder(speq, &ts);
- 		if (ret < 0) {
-@@ -740,8 +772,9 @@ static int arm_spe_process_event(struct perf_session *session,
- 		if (err)
- 			return err;
- 
--		if (event->header.type == PERF_RECORD_SWITCH_CPU_WIDE ||
--		    event->header.type == PERF_RECORD_SWITCH)
-+		if (!spe->use_ctx_pkt_for_pid &&
-+		    (event->header.type == PERF_RECORD_SWITCH_CPU_WIDE ||
-+		    event->header.type == PERF_RECORD_SWITCH))
- 			err = arm_spe_context_switch(spe, event, sample);
- 	}
- 
-@@ -808,7 +841,15 @@ static int arm_spe_flush(struct perf_session *session __maybe_unused,
- 		return arm_spe_process_timeless_queues(spe, -1,
- 				MAX_TIMESTAMP - 1);
- 
--	return arm_spe_process_queues(spe, MAX_TIMESTAMP);
-+	ret = arm_spe_process_queues(spe, MAX_TIMESTAMP);
-+	if (ret)
-+		return ret;
-+
-+	if (!spe->use_ctx_pkt_for_pid)
-+		ui__warning("Arm SPE CONTEXT packets not found in the traces.\n"
-+			    "Matching of TIDs to SPE events could be inaccurate.\n");
-+
-+	return 0;
- }
- 
- static void arm_spe_free_queue(void *priv)
--- 
-2.25.1
+I suggest Bartosz can queue this in the GPIO tree.
 
+Yours,
+Linus Walleij
