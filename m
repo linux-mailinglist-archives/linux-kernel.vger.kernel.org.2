@@ -2,88 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4E263449F51
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 01:10:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E2A0F449F54
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 01:11:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241112AbhKIANh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Nov 2021 19:13:37 -0500
-Received: from mail-wr1-f54.google.com ([209.85.221.54]:42930 "EHLO
-        mail-wr1-f54.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229618AbhKIANf (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Nov 2021 19:13:35 -0500
-Received: by mail-wr1-f54.google.com with SMTP id c4so29881146wrd.9;
-        Mon, 08 Nov 2021 16:10:50 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=ZVPz7RE8j2SkZNiVARcZPJsD5NeLqgS5xDhGT2VjvE8=;
-        b=Et97hYx7KsK2cSgvcsoHqrVsGke8XEFv7c9k9xJm9thTnxtxwNekgB3u5MKaAwdwH/
-         HWWqoLZGCQ1Xoluo2qF6uYnFDwQKY0yzwtZtkFYfM5IXJ5I9juaQtp8detkqHNv5qcoT
-         P8nF/dKxoCTUXWWpdzMHMA7Biiz/vkso0yDe9uMKZfXh21LEpnBnHM9Y4Z+iqtSyEQe9
-         j/pw1FCZcTL6/9bSdfA+iG4zY1M5v8LNtuKVFnOFO/owaapoIW6uPn3lj1i2hLjs+pDB
-         vR8SGVwv/7uSYPHVJjXhuAUFDAxtk8hNpVUHcl+tmxw3DoMr4BeXC18srzo9XyW18Np5
-         T2qA==
-X-Gm-Message-State: AOAM530fDoDeHk0SGtyF1efVjKjr5vMg9G3XFmvf/xBLDmEFnOtKyLAC
-        4cWmYCHyWx6Z4GiRfrlmhKk=
-X-Google-Smtp-Source: ABdhPJyDtVTOsf2hgIXK1UcXDkH1yPcg6ieLQb6in8srUrjNQwgbnF1zEqOZyb7+uzNv/sCyjjKqBQ==
-X-Received: by 2002:a5d:6d07:: with SMTP id e7mr3776175wrq.311.1636416649789;
-        Mon, 08 Nov 2021 16:10:49 -0800 (PST)
-Received: from rocinante ([95.155.85.46])
-        by smtp.gmail.com with ESMTPSA id n4sm20961016wri.41.2021.11.08.16.10.48
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 08 Nov 2021 16:10:49 -0800 (PST)
-Date:   Tue, 9 Nov 2021 01:10:47 +0100
-From:   Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>
-To:     Babu Moger <babu.moger@amd.com>
-Cc:     tglx@linutronix.de, mingo@redhat.com, bp@alien8.de,
-        dave.hansen@linux.intel.com, x86@kernel.org, hpa@zytor.com,
-        clemens@ladisch.de, jdelvare@suse.com, linux@roeck-us.net,
-        bhelgaas@google.com, linux-kernel@vger.kernel.org,
-        linux-hwmon@vger.kernel.org, linux-pci@vger.kernel.org
-Subject: Re: [PATCH 1/3] x86/amd_nb: Add AMD Family 19h Models (10h-1Fh) and
- (A0h-AFh) PCI IDs
-Message-ID: <YYm8h1wDTAm7Rkf5@rocinante>
-References: <163640820320.955062.9967043475152157959.stgit@bmoger-ubuntu>
- <163640828133.955062.18349019796157170473.stgit@bmoger-ubuntu>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <163640828133.955062.18349019796157170473.stgit@bmoger-ubuntu>
+        id S241125AbhKIAOe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Nov 2021 19:14:34 -0500
+Received: from mx.socionext.com ([202.248.49.38]:51142 "EHLO mx.socionext.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229618AbhKIAOc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Nov 2021 19:14:32 -0500
+Received: from unknown (HELO iyokan2-ex.css.socionext.com) ([172.31.9.54])
+  by mx.socionext.com with ESMTP; 09 Nov 2021 09:11:46 +0900
+Received: from mail.mfilter.local (m-filter-1 [10.213.24.61])
+        by iyokan2-ex.css.socionext.com (Postfix) with ESMTP id 9C49D206E701;
+        Tue,  9 Nov 2021 09:11:46 +0900 (JST)
+Received: from 172.31.9.51 (172.31.9.51) by m-FILTER with ESMTP; Tue, 9 Nov 2021 09:11:46 +0900
+Received: from plum.e01.socionext.com (unknown [10.212.243.119])
+        by kinkan2.css.socionext.com (Postfix) with ESMTP id 62D7FB62AC;
+        Tue,  9 Nov 2021 09:11:46 +0900 (JST)
+From:   Kunihiko Hayashi <hayashi.kunihiko@socionext.com>
+To:     Rob Herring <robh+dt@kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>
+Cc:     linux-gpio@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Kunihiko Hayashi <hayashi.kunihiko@socionext.com>
+Subject: [PATCH v3] dt-bindings: pinctrl: uniphier: Add child node definitions to describe pin mux and configuration
+Date:   Tue,  9 Nov 2021 09:11:39 +0900
+Message-Id: <1636416699-21033-1-git-send-email-hayashi.kunihiko@socionext.com>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello!
+In arch/arm/boot/dts/uniphier-pinctrl.dtsi, there are child nodes of
+pinctrl that defines pinmux and pincfg, however, there are no rules about
+that in dt-bindings.
 
-> Add the new PCI Device IDs to support new generation of AMD 19h family of
-> processors.
+'make dtbs_check' results an error with the following message:
 
-This commit message matches the spirit of past additions very well, as per:
+   pinctrl: 'ain1', 'ain2', 'ainiec1', 'aout', 'aout1', 'aout2', ...
+   ... 'usb2', 'usb3' do not match any of the regexes: 'pinctrl-[0-9]+'
 
-  commit b3f79ae45904 ("x86/amd_nb: Add Family 19h PCI IDs")
+To avoid the issue, add the rules of pinmux and pincfg in each child node
+and grandchild node.
 
-Admittedly, it would be nice to know what platform and/or generations of
-AMD family of CPUs this is for.  Unless this is somewhat confidential and
-in which case it would be fair enough.
+Signed-off-by: Kunihiko Hayashi <hayashi.kunihiko@socionext.com>
+---
+Changes since v2:
+- Describe additionalProperties directly instead of patternProperties
+- Remove unnecessary unevaluatedProperties
 
-For the following PCI related changes:
+Changes since v1:
+- Replace additionalProperties with unevaluatedProperties
+- Add additionalProperties for child and grandchild nodes
 
-[...]
-> --- a/include/linux/pci_ids.h
-> +++ b/include/linux/pci_ids.h
-> @@ -555,6 +555,7 @@
->  #define PCI_DEVICE_ID_AMD_17H_M60H_DF_F3 0x144b
->  #define PCI_DEVICE_ID_AMD_17H_M70H_DF_F3 0x1443
->  #define PCI_DEVICE_ID_AMD_19H_DF_F3	0x1653
-> +#define PCI_DEVICE_ID_AMD_19H_M10H_DF_F3 0x14b0
->  #define PCI_DEVICE_ID_AMD_19H_M40H_DF_F3 0x167c
->  #define PCI_DEVICE_ID_AMD_19H_M50H_DF_F3 0x166d
->  #define PCI_DEVICE_ID_AMD_CNB17H_F3	0x1703
+.../pinctrl/socionext,uniphier-pinctrl.yaml        | 38 ++++++++++++++++++++--
+ 1 file changed, 36 insertions(+), 2 deletions(-)
 
-Acked-by: Krzysztof Wilczyński <kw@linux.com>
+diff --git a/Documentation/devicetree/bindings/pinctrl/socionext,uniphier-pinctrl.yaml b/Documentation/devicetree/bindings/pinctrl/socionext,uniphier-pinctrl.yaml
+index a804d9bc1602..27c5762b9cf8 100644
+--- a/Documentation/devicetree/bindings/pinctrl/socionext,uniphier-pinctrl.yaml
++++ b/Documentation/devicetree/bindings/pinctrl/socionext,uniphier-pinctrl.yaml
+@@ -26,11 +26,45 @@ properties:
+       - socionext,uniphier-pxs3-pinctrl
+       - socionext,uniphier-nx1-pinctrl
+ 
++additionalProperties:
++  type: object
++
++  allOf:
++    - $ref: pincfg-node.yaml#
++    - $ref: pinmux-node.yaml#
++
++  properties:
++    phandle: true
++    function: true
++    groups: true
++    pins: true
++    bias-pull-up: true
++    bias-pull-down: true
++    bias-pull-pin-default: true
++    drive-strength: true
++
++  additionalProperties:
++    type: object
++
++    allOf:
++      - $ref: pincfg-node.yaml#
++      - $ref: pinmux-node.yaml#
++
++    properties:
++      phandle: true
++      function: true
++      groups: true
++      pins: true
++      bias-pull-up: true
++      bias-pull-down: true
++      bias-pull-pin-default: true
++      drive-strength: true
++
++    unevaluatedProperties: false
++
+ required:
+   - compatible
+ 
+-additionalProperties: false
+-
+ examples:
+   - |
+     // The UniPhier pinctrl should be a subnode of a "syscon" compatible node.
+-- 
+2.7.4
 
-	Krzysztof
