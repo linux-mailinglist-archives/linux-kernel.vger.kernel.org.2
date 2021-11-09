@@ -2,133 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 27DF544B3D0
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 21:14:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 318B344B3D8
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 21:19:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244227AbhKIUR1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Nov 2021 15:17:27 -0500
-Received: from linux.microsoft.com ([13.77.154.182]:32858 "EHLO
-        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242293AbhKIURX (ORCPT
+        id S244233AbhKIUWb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Nov 2021 15:22:31 -0500
+Received: from mo4-p02-ob.smtp.rzone.de ([85.215.255.80]:24398 "EHLO
+        mo4-p02-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231872AbhKIUWa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Nov 2021 15:17:23 -0500
-Received: from kbox (unknown [24.17.193.74])
-        by linux.microsoft.com (Postfix) with ESMTPSA id ED19320C34DF;
-        Tue,  9 Nov 2021 12:14:36 -0800 (PST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com ED19320C34DF
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1636488877;
-        bh=f54cLIP+LVhC9e3MFKCNzYbFVIHdBqUgz+HD0cCsXZ8=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=aCfYfB1y7+lvAiP3gNLbaDoIpcL1OUW6ltw3X9uAPmOyo9iscOLTU/2BCbe5fmrdS
-         HJf8iThoW4MfWlRSPVgzi/u2mUrEi7IJtHtBdPdIMjH7OEa8glmyIg5QgRJkW3JLz6
-         rHywJTFvGAsbrOYFu4cz9aLnBtpw9HJUkNJSH7iQ=
-Date:   Tue, 9 Nov 2021 12:14:32 -0800
-From:   Beau Belgrave <beaub@linux.microsoft.com>
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     Masami Hiramatsu <mhiramat@kernel.org>,
-        linux-trace-devel@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v4 02/10] user_events: Add minimal support for
- trace_event into ftrace
-Message-ID: <20211109201432.GA1650@kbox>
-References: <20211104170433.2206-1-beaub@linux.microsoft.com>
- <20211104170433.2206-3-beaub@linux.microsoft.com>
- <20211107233115.1f77e93c4bdf3ff649be99c1@kernel.org>
- <20211108171336.GA1690@kbox>
- <20211108131639.33a4f186@gandalf.local.home>
- <20211108202527.GA1862@kbox>
- <20211109115634.5fb6d984d7b4e701c740d5f3@kernel.org>
- <20211109190844.GA1529@kbox>
- <20211109142506.3c280469@gandalf.local.home>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211109142506.3c280469@gandalf.local.home>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+        Tue, 9 Nov 2021 15:22:30 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1636489159;
+    s=strato-dkim-0002; d=goldelico.com;
+    h=To:References:Message-Id:Cc:Date:In-Reply-To:From:Subject:Cc:Date:
+    From:Subject:Sender;
+    bh=JxqM8I/z35C5+6J2ZygkF2pjyw7aqUpyOwISg707hYI=;
+    b=P4Q/O7R+6NMMrAlpZFc7SF8DTNcYUMrpfKvHu32CezOknO1/Yo3Iu2tZJRnS+B6797
+    76Ib13MWNlnm3EMFJNL6+52AE4zRb0dQk3vI7FuUH7PpE4G/5iJKdR1zgUmly5toHPYt
+    WpTZh+y/F854ldxMHS1w1pphUwbZrRs7lxq5KjUdeBq9uoS8gv6VuMH1QzTQ0Up9B/tb
+    LsO+WBhZEYSz7IMIuHEkewh4vZVYNysaKyWP3OB4cZtp84qHRbfXjv1lFEbB4oTyP37T
+    dpbgYNVlCNj/DN1H9+nsVOQ4piaKfjU+96mmNhQLO4J9q35XkcpvMewwjw4HOZjPA5LZ
+    EzEQ==
+Authentication-Results: strato.com;
+    dkim=none
+X-RZG-AUTH: ":JGIXVUS7cutRB/49FwqZ7WcJeFKiMgPgp8VKxflSZ1P34KBj7gpw91N5y2S3i8cT6Q=="
+X-RZG-CLASS-ID: mo00
+Received: from imac.fritz.box
+    by smtp.strato.de (RZmta 47.34.5 DYNA|AUTH)
+    with ESMTPSA id Y02aa4xA9KJI0YI
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (curve X9_62_prime256v1 with 256 ECDH bits, eq. 3072 bits RSA))
+        (Client did not present a certificate);
+    Tue, 9 Nov 2021 21:19:18 +0100 (CET)
+Content-Type: text/plain;
+        charset=us-ascii
+Mime-Version: 1.0 (Mac OS X Mail 12.4 \(3445.104.21\))
+Subject: Re: [PATCH v5 5/7] MIPS: DTS: jz4780: Account for Synopsys HDMI
+ driver and LCD controllers
+From:   "H. Nikolaus Schaller" <hns@goldelico.com>
+In-Reply-To: <BDU72R.SAKM4CQWCUKI2@crapouillou.net>
+Date:   Tue, 9 Nov 2021 21:19:17 +0100
+Cc:     Paul Boddie <paul@boddie.org.uk>, Rob Herring <robh+dt@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Kees Cook <keescook@chromium.org>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Robert Foss <robert.foss@linaro.org>,
+        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        Ezequiel Garcia <ezequiel@collabora.com>,
+        Harry Wentland <harry.wentland@amd.com>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        Maxime Ripard <maxime@cerno.tech>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS 
+        <devicetree@vger.kernel.org>,
+        linux-mips <linux-mips@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Discussions about the Letux Kernel 
+        <letux-kernel@openphoenux.org>, Jon as Karlman <jonas@kwiboo.se>,
+        dri-devel <dri-devel@lists.freedesktop.org>
+Content-Transfer-Encoding: quoted-printable
+Message-Id: <BF6CBFFA-E8AA-4CCE-A587-4D5D647DEC64@goldelico.com>
+References: <cover.1633436959.git.hns@goldelico.com>
+ <c243176cb5e5a3ab5df1fe77f9246b6d5ec4f88e.1633436959.git.hns@goldelico.com>
+ <O7VI0R.CRIG8R7O0OOI3@crapouillou.net> <3514743.EH6qe8WxYI@jason>
+ <N3YI0R.7ZLKK5JTBXW63@crapouillou.net>
+ <95D1DE70-DDF4-419B-8F0C-E9A6E0995D1F@goldelico.com>
+ <BDU72R.SAKM4CQWCUKI2@crapouillou.net>
+To:     Paul Cercueil <paul@crapouillou.net>
+X-Mailer: Apple Mail (2.3445.104.21)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 09, 2021 at 02:25:06PM -0500, Steven Rostedt wrote:
-> On Tue, 9 Nov 2021 11:08:44 -0800
-> Beau Belgrave <beaub@linux.microsoft.com> wrote:
-> 
-> > We need strings to be able to be emitted and recorded in eBPF, perf and
-> > ftrace. So I would rather go after a solution that lets us keep these in
-> > the ring buffers, even if it means a perf hit.
-> > 
-> > Guess what's left is to where the best place to check is, checking in
-> > the filter with unsafe flags would let us keep most of the perf (we just
-> > check the undersize case, 1 branch). When these unsafe types are
-> > filtered then a perf tax is imposed to keep things safe.
-> > 
-> > It sounded like Steven wanted to think about this a bit, so I'll wait a
-> > bit before poking again for consensus :)
-> > 
-> > Do you have any strong feelings about where it goes?
-> 
-> IIUC, the writing into the trace event is done via one big blob, correct?
-> 
+Hi Paul,
 
-Yes, the top 4 bytes get trimmed off as an index, then it's a big blob
-to all places except eBPF (when asking for the iterator directly).
+> Am 07.11.2021 um 20:05 schrieb Paul Cercueil <paul@crapouillou.net>:
+>=20
+>> 6. Therefore I think it *may* work overclocked with 48MHz
+>> but is not guaranteed or reliable above 27 MHz.
+>> So everything is ok here.
+>=20
+> One thing though - the "assigned-clocks" and "assigned-clock-rates", =
+while it works here, should be moved to the CGU node, to respect the =
+YAML schemas.
 
-> That is this:
-> 
-> +	if (likely(atomic_read(&tp->key.enabled) > 0)) {
-> +		struct tracepoint_func *probe_func_ptr;
-> +		user_event_func_t probe_func;
-> +		void *tpdata;
-> +		void *kdata;
-> +		u32 datalen;
-> +
-> +		kdata = kmalloc(i->count, GFP_KERNEL);
-> +
-> +		if (unlikely(!kdata))
-> +			return -ENOMEM;
-> +
-> +		datalen = copy_from_iter(kdata, i->count, i);
-> +
-> +		rcu_read_lock_sched();
-> +
-> +		probe_func_ptr = rcu_dereference_sched(tp->funcs);
-> +
-> +		if (probe_func_ptr) {
-> +			do {
-> +				probe_func = probe_func_ptr->func;
-> +				tpdata = probe_func_ptr->data;
-> +				probe_func(user, kdata, datalen, tpdata);
-> +			} while ((++probe_func_ptr)->func);
-> +		}
-> +
-> +		rcu_read_unlock_sched();
-> +
-> +		kfree(kdata);
-> 
-> So we really are just interested in making sure that the output is correct?
-> 
+Trying to do this seems to break boot.
 
-Largely, yes.
+I can boot up to=20
 
-The optimization part of the patch moves the buffer copies into the
-probes to remove a double copy. I believe however that output can be
-checked either centrally before the probes or within each probe call if
-need be.
+[    8.312926] dw-hdmi-ingenic 10180000.hdmi: registered DesignWare HDMI =
+I2C bus driver
 
-For perf/eBPF we may not need to check things, however, for ftrace
-we will due to the filters. So we may be able to isolate to just the
-ftrace probe method.
+and
 
-The ftrace probe will have a blob even after optimization due to the copy
-into the ring buffer (assuming we can discard it if it violates a policy).
+[   11.366899] [drm] Initialized ingenic-drm 1.1.0 20200716 for =
+13050000.lcdc0 on minor 0
 
-> That is, the reading of the trace file?
-> 
+but then the boot process becomes slow and hangs. Last sign of activity =
+is
 
-We really need to ensure that data can be analyzed on the machine
-directly (eBPF, ftrace, perf) as well as outside of the machine (ftrace, perf).
+[   19.347659] hub 1-0:1.0: USB hub found
+[   19.353478] hub 1-0:1.0: 1 port detected
+[   32.321760] wlan0_power: disabling
 
-The priorities to us are fast recording speed with accurate reading of trace
-files and event data.
+What I did was to just move
 
-> -- Steve
+		assigned-clocks =3D <&cgu JZ4780_CLK_HDMI>;
+		assigned-clock-rates =3D <27000000>;
+
+from
+
+	hdmi: hdmi@10180000 {
+
+to
+
+	cgu: jz4780-cgu@10000000 {
+
+Does this mean the clock is assigned too early or too late?
+
+Do you have any suggestions since I don't know the details of CGU.
+
+BR and thanks,
+Nikolaus
+
