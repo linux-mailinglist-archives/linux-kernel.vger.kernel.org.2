@@ -2,109 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 018FC44AFA6
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 15:39:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9A86844AFAB
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 15:40:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238730AbhKIOlw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Nov 2021 09:41:52 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59212 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231136AbhKIOlv (ORCPT
+        id S238824AbhKIOmg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Nov 2021 09:42:36 -0500
+Received: from mswedge1.sunplus.com ([60.248.182.113]:56046 "EHLO
+        mg.sunplus.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S231136AbhKIOmf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Nov 2021 09:41:51 -0500
-Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com [IPv6:2a00:1450:4864:20::132])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E79DC061764;
-        Tue,  9 Nov 2021 06:39:05 -0800 (PST)
-Received: by mail-lf1-x132.google.com with SMTP id f3so44811789lfu.12;
-        Tue, 09 Nov 2021 06:39:05 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=subject:from:to:references:message-id:date:user-agent:mime-version
-         :in-reply-to:content-language:content-transfer-encoding;
-        bh=jyBJ2upKfJG7Kux4hCZeboSUewwZJRYpFMsj9SS8i9o=;
-        b=ir5ZDcmf7V95JKIIyYhgBklVQc51+WQK0AbUSVRDTddSpZDY7m/Sdbo9aPJ5NYWLf+
-         I/o4DyC5wZ6xRt6JKdXdtjf4Hm0fOaqxmKfhws9a2RMAIq1+/0aSn2cB3dZy+UVn5ox6
-         cpX9RnQPtJlHN1f9wDaRfjiL5jdg32z40OqHS5yVyiz0pDXDZSx9pYNl7548NroN1cni
-         Ix6R4pk2i8q8ZSsli6vqOG9FqiDZvPAs1El8MCGqtNAsmG0mFJX5vcJlqPCsfAxQl+rm
-         Gu06YXzR1SA/wdJKMK2OcAjPyYKHwprgEbRczrWdgmC7vvGjTsHBywepZDQac7hAusbu
-         wvAQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:from:to:references:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=jyBJ2upKfJG7Kux4hCZeboSUewwZJRYpFMsj9SS8i9o=;
-        b=4kYNJ9+FpRehVSHrwo8heWBbFMkZzeOr7GzMUv7B9KY0OvJIhpmwBsAExr9N/wNj3j
-         S/iWaci62dJ+ePMowa00a4ofW50GnJglr/bGvGLiajIO3c/SGQL/O/O+CNbQxIn5K1iT
-         g9p3wDzC1ECXIxmQnLWBNq1Uy60DRbn8+6evib02Q56hZQ+iypzXmQf0k65bDKXzGxTg
-         unI4ZMfv7PcoO0/tomRZxbLH4gD1pYzKt8R0LCKKLuO4jgZGtTpjrVNnGUAZNTLnutxX
-         DmnGRAeHOYaBLjjhXIozOFHzqguxkeVB6vi45yzbT2PK9NFkoGIMzz16tI2bWRZ5dDZi
-         BhoA==
-X-Gm-Message-State: AOAM5311/6Ieub6JkDnw0wCPDrQkFn8nkchTK2wSE0zX4YJySGFLdbXL
-        dRshLIueOdu6riG3MlRnwDUf7qK4viQ=
-X-Google-Smtp-Source: ABdhPJznlfY8+zh/8oMdgnpOTLoYcyynyD4lHaDCdiihjw2hT3YhH1pFxJnm3shxUvURStovH+KaCA==
-X-Received: by 2002:a05:6512:152a:: with SMTP id bq42mr7278741lfb.109.1636468743544;
-        Tue, 09 Nov 2021 06:39:03 -0800 (PST)
-Received: from [192.168.2.145] (79-139-188-96.dynamic.spd-mgts.ru. [79.139.188.96])
-        by smtp.googlemail.com with ESMTPSA id i18sm2154335lfv.147.2021.11.09.06.39.02
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 09 Nov 2021 06:39:03 -0800 (PST)
-Subject: Re: [PATCH v1 2/2] drm/tegra: Use drm_dp_aux_register_ddc/chardev()
- helpers
-From:   Dmitry Osipenko <digetx@gmail.com>
-To:     Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Lyude Paul <lyude@redhat.com>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        David Airlie <airlied@linux.ie>,
-        Thomas Graichen <thomas.graichen@gmail.com>,
-        dri-devel@lists.freedesktop.org, linux-tegra@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20211107230821.13511-1-digetx@gmail.com>
- <20211107230821.13511-2-digetx@gmail.com>
- <YYk/jfcceun/Qleq@phenom.ffwll.local>
- <0a2c02ae-3fe1-e384-28d3-13e13801d675@gmail.com>
- <YYo9IXjevmstSREu@phenom.ffwll.local>
- <857a48ae-9ff4-89fe-11ce-5f1573763941@gmail.com>
- <efdc184a-5aa3-1141-7d74-23d29da41f2d@gmail.com>
- <71fcbc09-5b60-ee76-49b2-94adc965eda5@gmail.com>
-Message-ID: <49ffd29b-eb64-e0ca-410c-44074673d740@gmail.com>
-Date:   Tue, 9 Nov 2021 17:39:02 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.14.0
+        Tue, 9 Nov 2021 09:42:35 -0500
+X-MailGates: (flag:3,DYNAMIC,RELAY,NOHOST:PASS)(compute_score:DELIVER,40
+        ,3)
+Received: from 172.17.9.202
+        by mg01.sunplus.com with MailGates ESMTP Server V5.0(25039:0:AUTH_RELAY)
+        (envelope-from <wells.lu@sunplus.com>); Tue, 09 Nov 2021 22:39:38 +0800 (CST)
+Received: from sphcmbx02.sunplus.com.tw (172.17.9.112) by
+ sphcmbx01.sunplus.com.tw (172.17.9.202) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.23; Tue, 9 Nov 2021 22:39:33 +0800
+Received: from sphcmbx02.sunplus.com.tw ([::1]) by sphcmbx02.sunplus.com.tw
+ ([fe80::f8bb:bd77:a854:5b9e%14]) with mapi id 15.00.1497.023; Tue, 9 Nov 2021
+ 22:39:33 +0800
+From:   =?utf-8?B?V2VsbHMgTHUg5ZGC6Iqz6aiw?= <wells.lu@sunplus.com>
+To:     Andrew Lunn <andrew@lunn.ch>
+CC:     Wells Lu <wellslutw@gmail.com>,
+        "davem@davemloft.net" <davem@davemloft.net>,
+        "kuba@kernel.org" <kuba@kernel.org>,
+        "robh+dt@kernel.org" <robh+dt@kernel.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "p.zabel@pengutronix.de" <p.zabel@pengutronix.de>
+Subject: RE: [PATCH 2/2] net: ethernet: Add driver for Sunplus SP7021
+Thread-Topic: [PATCH 2/2] net: ethernet: Add driver for Sunplus SP7021
+Thread-Index: AQHX0KKBcebTINBXKk6D/f7Frpi9sKvxfraAgAGf2kCAAU6CgIAE3RVA///T9oCAAJMwUP//h9mAgACMUqD//6B2AAA6wUXQ
+Date:   Tue, 9 Nov 2021 14:39:33 +0000
+Message-ID: <941aabfafa674999b2c0f4fc88025518@sphcmbx02.sunplus.com.tw>
+References: <cover.1635936610.git.wells.lu@sunplus.com>
+ <650ec751dd782071dd56af5e36c0d509b0c66d7f.1635936610.git.wells.lu@sunplus.com>
+ <YYK+EeCOu/BXBXDi@lunn.ch>
+ <64626e48052c4fba9057369060bfbc84@sphcmbx02.sunplus.com.tw>
+ <YYUzgyS6pfQOmKRk@lunn.ch>
+ <7c77f644b7a14402bad6dd6326ba85b1@sphcmbx02.sunplus.com.tw>
+ <YYkjBdu64r2JF1bR@lunn.ch>
+ <4e663877558247048e9b04b027e555b8@sphcmbx02.sunplus.com.tw>
+ <YYk5s5fDuub7eBqu@lunn.ch>
+ <585e234fdb74499caafee3b43b5e5ab4@sphcmbx02.sunplus.com.tw>
+ <YYlfRB7updHplnLE@lunn.ch>
+In-Reply-To: <YYlfRB7updHplnLE@lunn.ch>
+Accept-Language: zh-TW, en-US
+Content-Language: zh-TW
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [172.25.108.39]
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-In-Reply-To: <71fcbc09-5b60-ee76-49b2-94adc965eda5@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-09.11.2021 17:17, Dmitry Osipenko пишет:
-> 09.11.2021 17:08, Dmitry Osipenko пишет:
->>> +static void host1x_drm_dev_deinit(struct host1x_device *dev)
->>> +{
->>> +	struct drm_device *drm = dev_get_drvdata(&dev->dev);
->> And platform_unregister_drivers() should be moved here.
->>
-> 
-> Nah, that should cause deadlock. This ad-hoc is too lame.
-
-Actually, there is no problem here as I see now. The host1x driver
-populates DT nodes after host1x_register() [1], meaning that Host1x DRM
-will be always inited first.
-
-[1]
-https://elixir.bootlin.com/linux/v5.15/source/drivers/gpu/host1x/dev.c#L475
-
-Still I'm not a fan of the ad-hoc solution.
-
-> Another solution is to defer probing of DP AUX driver while
-> tegra_drm_device() returns NULL, but it's icky.
-> 
-> Reverting the original DP AUX DDC registration order is the best option
-> so far, IMO.
-> 
+PiBPbiBNb24sIE5vdiAwOCwgMjAyMSBhdCAwNDo0NzozNFBNICswMDAwLCBXZWxscyBMdSDlkYLo
+irPpqLAgd3JvdGU6DQo+ID4gPiA+IFRoZSBzd2l0Y2ggd2lsbCBub3QgcmVjb2duaXplIHR5cGUg
+b2YgcGFja2V0cywgcmVnYXJkbGVzcyBCUERVLA0KPiA+ID4gPiBQVFAgb3IgYW55IG90aGVyIHBh
+Y2tldHMuIElmIHR1cm5pbmcgb2ZmIHNvdXJjZS1hZGRyZXNzIGxlYXJuaW5nDQo+ID4gPiA+IGZ1
+bmN0aW9uLCBpdCB3b3JrcyBsaWtlIGFuIEV0aGVybmV0IHBsdXMgYSAyLXBvcnQgaHViLg0KPiA+
+ID4NCj4gPiA+IFNvIHdpdGhvdXQgU1RQLCB0aGVyZSBpcyBubyB3YXkgdG8gc3RvcCBhbiBsb29w
+LCBhbmQgYSBicm9hZGNhc3QNCj4gPiA+IHN0b3JtIHRha2luZyBkb3duIHlvdXIgbmV0d29yaz8N
+Cj4gPg0KPiA+IERvIHlvdSBtZWFuIGNvbm5lY3RpbmcgdHdvIFBIWSBwb3J0cyB0byB0aGUgc2Ft
+ZSBMQU4/IFdlIG5ldmVyIGNvbm5lY3QNCj4gPiB0d28gUEhZIHBvcnRzIHRvIHRoZSBzYW1lIExB
+TiAob3IgaHViKS4gSSBuZXZlciB0aGluayBvZiB0aGlzIGxvb3ANCj4gPiBwcm9ibGVtLiBJIHRo
+b3VnaHQgb25seSBXQU4gaGFzIHRoZSBsb29wIHByb2JsZW0uDQo+IA0KPiBBbnkgRXRoZXJuZXQg
+bmV0d29yayBjYW4gaGF2ZSBhIGxvb3AuIE9mdGVuIGxvb3BzIGEgZGVsaWJlcmF0ZSBiZWNhdXNl
+IHRoZXkNCj4gZ2l2ZSByZWR1bmRhbmN5LiBTVFAgd2lsbCBkZXRlY3QgdGhpcyBsb29wLCBhbmQg
+c29tZXdoZXJlIGluIHRoZSBuZXR3b3JrIG9uZQ0KPiBvZiB0aGUgc3dpdGNoZXMgd2lsbCBibG9j
+ayB0cmFmZmljIHRvIGJyZWFrIHRoZSBsb29wLiBCdXQgaWYgc29tZXRoaW5nIGluIHRoZQ0KPiBu
+ZXR3b3JrIGJyZWFrcywgdGhlIHBvcnQgY2FuIGJlIHVuYmxvY2tlZCB0byBhbGxvdyB0cmFmZmlj
+IHRvIGZsb3csIHJlZHVuZGFuY3kuDQo+IFdlbGwgYmVoYXZlZCBzd2l0Y2hlcyBzaG91bGQgYWx3
+YXlzIGltcGxlbWVudCBTVFAuDQoNCkkgZG9uJ3Qga25vdyBob3cgdG8gaW1wbGVtZW50IFNUUCBp
+biBMMiBzd2l0Y2ggbGlrZSBTUDcwMjEuDQpIb3cgYWJvdXQgb25lIE5JQyArIDItcG9ydCBzaW1w
+bGUgZnJhbWUtZmxvb2RpbmcgaHViPw0KU29tZW9uZSB0b2xkIG1lIHRoYXQgc29tZSBsb3ctY29z
+dCBFdGhlcm5ldCBodWIganVzdCBkb2VzIGZyYW1lLWZsb29kaW5nIA0KdG8gb3RoZXIgcG9ydHMu
+IExldCB1c2VycyB0YWtlIGNhcmUgb2YgdXNlLg0KSWYgdGhpcyBpcyBhY2NlcHRhYmxlLCBJJ2Qg
+bGlrZSB0byBoYXZlIEV0aGVybmV0IG9mIFNQNzAyMSBoYXZlIHR3byBvcGVyYXRpb24gDQptb2Rl
+czoNCiAtIER1YWwgTklDIG1vZGUNCiAtIFNpbmdsZSBOSUMgd2l0aCAyLXBvcnQgZnJhbWUtZmxv
+b2RpbmcgaHViIG1vZGUNCg0KSWYgdGhpcyBpcyBub3QgYWNjZXB0YWJsZSwgY2FuIEksIGluc3Rl
+YWQsIGltcGxlbWVudCB0aGUgdHdvIG9wZXJhdGlvbiBtb2RlczoNCiAtIER1YWwgTklDIG1vZGUN
+CiAtIFNpbmdsZSBOSUMgbW9kZQ0KDQpSTUlJIHBpbnMgb2YgUEhZIHBvcnRzIG9mIFNQNzAyMSBh
+cmUgbXVsdGlwbGV4YWJsZS4gSSdkIGxpa2UgdG8gc3dpdGNoIFJNSUkgDQpwaW5zIG9mIHRoZSBz
+ZWNvbmQgUEhZIGZvciBvdGhlciB1c2UgaWYgc2luZ2xlIE5JQyBtb2RlIGlzIHVzZWQuDQpJbiBm
+YWN0LCBzb21lIFNQNzAyMSBib2FyZHMgaGF2ZSBkdWFsIEV0aGVybmV0IGFuZCBzb21lIGhhdmUg
+b25seSBvbmUNCkV0aGVybmV0LiBXZSByZWFsbHkgbmVlZCB0aGUgdHdvIG9wZXJhdGlvbiBtb2Rl
+cy4NCg0KDQo+ID4gSG93IGFuIEV0aGVybmV0IGh1YiB0YWtlIGNhcmUgb2YgdGhpcyBzaXR1YXRp
+b24/DQo+IA0KPiBTVFAuIFJ1biB0Y3BkdW1wIG9uIHlvdXIgbmV0d29yay4gRGVwZW5kaW5nIG9u
+IGhvdyB5b3VyIG5ldHdvcmsgaXMNCj4gY29uZmlndXJlZCwgeW91IG1pZ2h0IHNlZSBCUERVIGZy
+b20geW91ciBidWlsZGluZyBzd2l0Y2hlcy4NCg0KVGhhbmtzIGEgbG90LiBJIHVuZGVyc3RhbmQu
+DQoNCj4gPiBJcyB0aGF0IHJlYXNvbmFibGUgdG8gY29ubmVjdCB0d28gcG9ydHMgb2YgYW4gRXRo
+ZXJuZXQgaHViIHRvZ2V0aGVyPw0KPiANCj4gSXQgaXMgbm90IGp1c3QgdG9nZXRoZXIuIFlvdSBj
+YW5ub3QgZ3VhcmFudGVlIGFueSBFdGhlcm5ldCBuZXR3b3JrIGlzIGEgdHJlZS4gWW91DQo+IGNv
+dWxkIGNvbm5lY3QgdGhlIHR3byBwb3J0cyB0byB0d28gZGlmZmVyZW50IGh1YnMsIGJ1dCB0aG9z
+ZSBodWJzIGFyZQ0KPiBjb25uZWN0ZWQgdG9nZXRoZXIsIGFuZCBzbyB5b3UgZ2V0IGEgbG9vcC4N
+Cg0KVGhhbmtzIGZvciBleHBsYW5hdGlvbi4gSSBnb3QgaXQuDQoNCj4gPiA+IExvb2tpbmcgYXQg
+dGhlIFRYIGRlc2NyaXB0b3IsIHRoZXJlIGFyZSB0d28gYml0czoNCj4gPiA+DQo+ID4gPiAgICAg
+ICAgICAgWzE4XTogZm9yY2UgZm9yd2FyZCB0byBwb3J0IDANCj4gPiA+ICAgICAgICAgICBbMTld
+OiBmb3JjZSBmb3J3YXJkIHRvIHBvcnQgMQ0KPiA+ID4NCj4gPiA+IFdoZW4gdGhlIHN3aXRjaCBp
+cyBlbmFibGVkLCBjYW4gdGhlc2UgdHdvIGJpdHMgYmUgdXNlZD8NCj4gPg0KPiA+IFllcywgZm9y
+IGV4YW1wbGUsIHdoZW4gYml0IDE5IG9mIFRYIGRlc2NyaXB0b3IgaXMgZW5hYmxlZCwgYSBwYWNr
+ZXQNCj4gPiBmcm9tIENQVSBwb3J0IGlzIGZvcndhcmRlZCB0byBMQU4gcG9ydCAwIGZvcmNpYmx5
+Lg0KPiA+DQo+ID4NCj4gPiA+IEluIHRoZSBSWCBkZXNjcmlwdG9yIHRoZXJlIGlzOg0KPiA+ID4N
+Cj4gPiA+IHBrdF9zcDoNCj4gPiA+ICAgICAgICAgICAwMDA6IGZyb20gcG9ydDANCj4gPiA+ICAg
+ICAgICAgICAwMDE6IGZyb20gcG9ydDENCj4gPiA+ICAgICAgICAgICAxMTA6IHNvYzAgbG9vcGJh
+Y2sNCj4gPiA+ICAgICAgICAgICAxMDE6IHNvYzEgbG9vcGJhY2sNCj4gPiA+DQo+ID4gPiBBcmUg
+dGhlc2UgYml0cyB1c2VkIHdoZW4gdGhlIHN3aXRjaCBpcyBlbmFibGVkPw0KPiA+DQo+ID4gWWVz
+LCBFLSBNQUMgZHJpdmVyIHVzZXMgdGhlc2UgYml0cyB0byB0ZWxsIHdoZXJlIGEgcGFja2V0IGNv
+bWVzIGZyb20uDQo+ID4gTm90ZSB0aGF0IHNvYzEgcG9ydCAoQ1BVIHBvcnQpIGhhcyBiZWVuIHJl
+bW92ZWQgaW4gdGhpcyBjaGlwLg0KPiANCj4gUmlnaHQuIFNvIHlvdSBjYW4gaGF2ZSB0d28gbmV0
+ZGV2IHdoZW4gaW4gTDIgc3dpdGNoIG1vZGUuDQo+IA0KPiBZb3UgbmVlZCB0byB0aGluayBhYm91
+dCB0aGUgTGludXggbW9kZWwgc29tZSBtb3JlLiBJbiBsaW51eCwgbmV0d29ya2luZw0KPiBoYXJk
+d2FyZSBpcyB0aGVyZSB0byBhY2NlbGVyYXRlIHdoYXQgdGhlIExpbnV4IHN0YWNrIGNhbiBkbyBp
+biBzb2Z0d2FyZS4gVGFrZQ0KPiBmb3IgZXhhbXBsZSBhIHNpbXBsZSBTb0Mgd2lsbCBoYXZlIHR3
+byBFdGhlcm5ldCBpbnRlcmZhY2VzLiBZb3UgY2FuIHBlcmZvcm0NCj4gc29mdHdhcmUgYnJpZGdp
+bmcgb24gdGhvc2UgdHdvIGludGVyZmFjZXM6DQo+IA0KPiBpcCBsaW5rIGFkZCBuYW1lIGJyMCB0
+eXBlIGJyaWRnZQ0KPiBpcCBsaW5rIHNldCBkZXYgYnIwIHVwDQo+IGlwIGxpbmsgc2V0IGRldiBl
+dGgwIG1hc3RlciBicjANCj4gaXAgbGluayBzZXQgZGV2IGV0aDEgbWFzdGVyIGJyMA0KPiANCj4g
+VGhlIHNvZnR3YXJlIGJyaWRnZSB3aWxsIGRlY2lkZWQgd2hpY2ggaW50ZXJmYWNlIHRvIHNlbmQg
+YSBwYWNrZXQgb3V0LiBUaGUNCj4gc29mdHdhcmUgd2lsbCBwZXJmb3JtIGxlYXJuaW5nIGV0Yy4N
+Cj4gDQo+IFlvdSBjYW4gdXNlIHlvdXIgZHVhbCBNQUMgc2V0dXAgZXhhY3RseSBsaWtlIHRoaXMu
+IEJ1dCB5b3UgY2FuIGFsc28gZ28gZnVydGhlci4NCj4gWW91IGNhbiB1c2UgdGhlIGhhcmR3YXJl
+IHRvIGFjY2VsZXJhdGUgc3dpdGNoaW5nIHBhY2tldHMgYmV0d2VlbiBldGgwIGFuZA0KPiBldGgx
+LiBCdXQgYWxzbyBMaW51eCBjYW4gc3RpbGwgc2VuZCBwYWNrZXRzIG91dCBzcGVjaWZpYyBwb3J0
+cyB1c2luZyB0aGVzZSBiaXRzLg0KPiBUaGUgc29mdHdhcmUgYnJpZGdlIGFuZCB0aGUgaGFyZHdh
+cmUgYnJpZGdlIHdvcmsgdG9nZXRoZXIuIFRoaXMgaXMgdGhlIGNvcnJlY3QNCj4gd2F5IHRvIGRv
+IHRoaXMgaW4gTGludXguDQoNClNvcnJ5LCBJIGFtIG5vdCBjYXBhYmxlIHRvIGRvIHRoYXQuDQpJ
+IG5lZWQgdG8gc3R1ZHkgbW9yZSBhYm91dCBMaW51eCBzd2l0Y2ggZGV2aWNlLCBMMiBzd2l0Y2gg
+b2YgU1A3MDIxLCBwcm9jb3RvbHMsLi4uDQpTbyB3aGF0IEkgY2FuIHVzZSBub3cgaXMgcHVyZSBz
+b2Z0d2FyZSBicmlkZ2UgZm9yIGR1YWwgRXRoZXJuZXQgY2FzZS4NCg0KPiA+IFNvcnJ5LCBJIGRv
+bid0IGtub3cgd2hhdCBpcyBhIFJNQyBwYWNrZXQ/DQo+DQo+IFNvcnJ5LCBpIGhhdmUgbm8gaWRl
+YS4NCg0KQWZ0ZXIgbG9va2luZyB1cCBzb21lIGRhdGEsIEkgZmluZCBSTUMgbWVhbnMgcmVzZXJ2
+ZWQgbXVsdGktY2FzdC4NClJNQyBwYWNrZXRzIG1lYW5zIHBhY2tldHMgd2l0aCBEQSA9IDB4MDE4
+MGMyMDAwMDAwLCAweDAxODBjMjAwMDAwMiB+IDB4MDE4MGMyMDAwMDBmLA0KZXhjZXB0IHRoZSBQ
+QVVTRSBwYWNrZXQgKERBID0gMHgwMTgwYzIwMDAwMDEpDQoNCg0KPiAgICAgICAgQW5kcmV3DQoN
+ClRoYW5rIHlvdSBmb3IgeW91ciByZXZpZXcuDQoNCg0K
