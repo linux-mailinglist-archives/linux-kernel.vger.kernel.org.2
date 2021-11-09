@@ -2,78 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2677844B8AA
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 23:43:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2047744B906
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 23:52:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344670AbhKIWp2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Nov 2021 17:45:28 -0500
-Received: from mail.kernel.org ([198.145.29.99]:34962 "EHLO mail.kernel.org"
+        id S234951AbhKIWym (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Nov 2021 17:54:42 -0500
+Received: from mx3.wp.pl ([212.77.101.10]:11669 "EHLO mx3.wp.pl"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1345740AbhKIWmN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Nov 2021 17:42:13 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id DA7FF61A3D;
-        Tue,  9 Nov 2021 22:24:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1636496648;
-        bh=dcpl2f+8KBRt/uP+tn0OmypMvVqNkSS9gHGCM7XvEhA=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=E+1UdtJsUSbh76q1shiM/VrFjgTMVaCXtZn/oMU2a5BSZFpp0hIDvV9NyIxOb+gDX
-         zBeHcNNeHRODSClWi+ps8K56srNZE8KKqO0QKQSWSYBcSp6NNOuyPFlRPkdN6vvKIh
-         mo4ZeMKXzcS06e2LRMl7lHZBjVgdVZu79WUP1DpobDTble+0bntKZI6p8fk0A90hoZ
-         LnmD2sqcd46ZkdgKZtWPYvzx1LlRAYfO9w9h8tQKoPnwsGCKm4wPC7BURzz39Yagco
-         OvZM6u/3aNP/FTEr/Nay0VXNsA1gPY/U8nf4+QWnWtfMsfZXsvqkN+FXOdnkk7XQWZ
-         6lehCUIvP+QTQ==
-From:   Sasha Levin <sashal@kernel.org>
-To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Yang Yingliang <yangyingliang@huawei.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Sasha Levin <sashal@kernel.org>, balbi@ti.com,
-        linux-usb@vger.kernel.org
-Subject: [PATCH AUTOSEL 4.9 02/13] usb: musb: tusb6010: check return value after calling platform_get_resource()
-Date:   Tue,  9 Nov 2021 17:23:53 -0500
-Message-Id: <20211109222405.1236040-2-sashal@kernel.org>
-X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20211109222405.1236040-1-sashal@kernel.org>
-References: <20211109222405.1236040-1-sashal@kernel.org>
+        id S1344902AbhKIWxn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Nov 2021 17:53:43 -0500
+Received: (wp-smtpd smtp.wp.pl 3499 invoked from network); 9 Nov 2021 23:24:12 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wp.pl; s=1024a;
+          t=1636496652; bh=YAuwhktEqpk2WxIRwbfHGA/QwjMzTLJ3Jr/sbfk2x8s=;
+          h=From:To:Cc:Subject;
+          b=yCGuyRJ8UwABh5ilHCgr4IlZr1sqbuqk5eObJzERzoPq/M3ZDOYNl7BCsgQ64ThPm
+           /WoDDQ9yjEw0otTF2sZbcYAmFc7mvZPhKNH/AvQ8U2dmKqu8YEmyA6gpuXMr2i6DG1
+           nSBZkwpB9ooIgy7ndZi6ceyGEm6OrhThxl7Wjbhg=
+Received: from riviera.nat.ds.pw.edu.pl (HELO LAPTOP-OLEK.lan) (olek2@wp.pl@[194.29.137.1])
+          (envelope-sender <olek2@wp.pl>)
+          by smtp.wp.pl (WP-SMTPD) with ECDHE-RSA-AES256-GCM-SHA384 encrypted SMTP
+          for <davem@davemloft.net>; 9 Nov 2021 23:24:12 +0100
+From:   Aleksander Jan Bajkowski <olek2@wp.pl>
+To:     davem@davemloft.net, kuba@kernel.org, olek2@wp.pl, arnd@arndb.de,
+        jgg@ziepe.ca, rdunlap@infradead.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     kernel test robot <lkp@intel.com>
+Subject: [PATCH net] net: ethernet: lantiq_etop: Fix compilation error
+Date:   Tue,  9 Nov 2021 23:23:54 +0100
+Message-Id: <20211109222354.3688-1-olek2@wp.pl>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-X-stable: review
-X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
+X-WP-MailID: 03f7aef98eb9ae46a4ae67944484d81f
+X-WP-AV: skaner antywirusowy Poczty Wirtualnej Polski
+X-WP-SPAM: NO 0000000 [sWME]                               
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Yang Yingliang <yangyingliang@huawei.com>
+This fixes the error detected when compiling the driver.
 
-[ Upstream commit 14651496a3de6807a17c310f63c894ea0c5d858e ]
-
-It will cause null-ptr-deref if platform_get_resource() returns NULL,
-we need check the return value.
-
-Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
-Link: https://lore.kernel.org/r/20210915034925.2399823-1-yangyingliang@huawei.com
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Fixes: 14d4e308e0aa ("net: lantiq: configure the burst length in ethernet drivers")
+Reported-by: kernel test robot <lkp@intel.com>
+Signed-off-by: Aleksander Jan Bajkowski <olek2@wp.pl>
 ---
- drivers/usb/musb/tusb6010.c | 5 +++++
- 1 file changed, 5 insertions(+)
+ drivers/net/ethernet/lantiq_etop.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/usb/musb/tusb6010.c b/drivers/usb/musb/tusb6010.c
-index 7e9204fdba4a8..fb4239b5286fb 100644
---- a/drivers/usb/musb/tusb6010.c
-+++ b/drivers/usb/musb/tusb6010.c
-@@ -1120,6 +1120,11 @@ static int tusb_musb_init(struct musb *musb)
+diff --git a/drivers/net/ethernet/lantiq_etop.c b/drivers/net/ethernet/lantiq_etop.c
+index 2258e3f19161..6433c909c6b2 100644
+--- a/drivers/net/ethernet/lantiq_etop.c
++++ b/drivers/net/ethernet/lantiq_etop.c
+@@ -262,7 +262,7 @@ ltq_etop_hw_init(struct net_device *dev)
+ 	/* enable crc generation */
+ 	ltq_etop_w32(PPE32_CGEN, LQ_PPE32_ENET_MAC_CFG);
  
- 	/* dma address for async dma */
- 	mem = platform_get_resource(pdev, IORESOURCE_MEM, 0);
-+	if (!mem) {
-+		pr_debug("no async dma resource?\n");
-+		ret = -ENODEV;
-+		goto done;
-+	}
- 	musb->async = mem->start;
+-	ltq_dma_init_port(DMA_PORT_ETOP, priv->tx_burst_len, rx_burst_len);
++	ltq_dma_init_port(DMA_PORT_ETOP, priv->tx_burst_len, priv->rx_burst_len);
  
- 	/* dma address for sync dma */
+ 	for (i = 0; i < MAX_DMA_CHAN; i++) {
+ 		int irq = LTQ_DMA_CH0_INT + i;
 -- 
-2.33.0
+2.30.2
 
