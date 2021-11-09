@@ -2,103 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 76EC544ABB5
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 11:41:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9BB4D44ABB9
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 11:42:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245435AbhKIKoc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Nov 2021 05:44:32 -0500
-Received: from foss.arm.com ([217.140.110.172]:60004 "EHLO foss.arm.com"
+        id S245437AbhKIKpL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Nov 2021 05:45:11 -0500
+Received: from mail.kernel.org ([198.145.29.99]:46754 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S242487AbhKIKoU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Nov 2021 05:44:20 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id A0DFEED1;
-        Tue,  9 Nov 2021 02:41:34 -0800 (PST)
-Received: from [10.57.46.99] (unknown [10.57.46.99])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id D451B3F7F5;
-        Tue,  9 Nov 2021 02:41:31 -0800 (PST)
-Subject: Re: [PATCH 2/3] perf arm-spe: Save context ID in record
-To:     Leo Yan <leo.yan@linaro.org>
-Cc:     linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
-        acme@kernel.org, James Clark <james.clark@arm.com>,
-        John Garry <john.garry@huawei.com>,
-        Will Deacon <will@kernel.org>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        linux-arm-kernel@lists.infradead.org
-References: <20211102180739.18049-1-german.gomez@arm.com>
- <20211102180739.18049-3-german.gomez@arm.com>
- <20211106134725.GI477387@leoy-ThinkPad-X240s>
-From:   German Gomez <german.gomez@arm.com>
-Message-ID: <55338d60-bb75-48b8-66bb-87d74a6752b3@arm.com>
-Date:   Tue, 9 Nov 2021 10:41:29 +0000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        id S240799AbhKIKpC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Nov 2021 05:45:02 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A5E0661054;
+        Tue,  9 Nov 2021 10:42:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1636454536;
+        bh=SARQ0rfZIk7IiaCvVk31ChFv0tDhc8L0s3fOf2R/g+0=;
+        h=Date:From:To:cc:Subject:In-Reply-To:References:From;
+        b=a7exq0YD94v0zjUkhQ40CSdtgS4WGps5RaHgFFtYM1RjwIiaq2xOiNNP0oGsUQlSP
+         M+DD2giXMocWC+ssEbA/V/u1kkbZUCCidJNE2Hxv1QlxUOVQVsdGzGOUat3QiFOV9o
+         CY1Y2IbSJmDFhSaiOYRJcb6ZtAAmVNdu38r0xsLyFplnpsWfr1Fugf2HRyBVfr4pH4
+         QgG41ij0ruqhDOInQ3igH+ZCXHhX2oCF2v/ENyLejAs24Jgx+HDbQXVfOHdEgJ8PCL
+         2mfb5UrwCFtcFxAO99niG6q070h6m41z41GehOxHvT/06WgSWDPBAFfk1AIlgeBUd5
+         IPBhwCVnCSqXA==
+Date:   Tue, 9 Nov 2021 11:42:12 +0100 (CET)
+From:   Jiri Kosina <jikos@kernel.org>
+To:     =?ISO-8859-15?Q?Thomas_Wei=DFschuh?= <linux@weissschuh.net>
+cc:     linux-input@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+        Mark Gross <markgross@kernel.org>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Rushikesh S Kadam <rushikesh.s.kadam@intel.com>,
+        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
+        Guenter Roeck <groeck@chromium.org>,
+        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
+        Benson Leung <bleung@chromium.org>,
+        platform-driver-x86@vger.kernel.org, linux-kbuild@vger.kernel.org
+Subject: Re: [PATCH 0/6] MODULE_DEVICE_TABLE() support for the ISHTP bus
+In-Reply-To: <20211029152901.297939-1-linux@weissschuh.net>
+Message-ID: <nycvar.YFH.7.76.2111091141550.12554@cbobk.fhfr.pm>
+References: <20211029152901.297939-1-linux@weissschuh.net>
+User-Agent: Alpine 2.21 (LSU 202 2017-01-01)
 MIME-Version: 1.0
-In-Reply-To: <20211106134725.GI477387@leoy-ThinkPad-X240s>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri, 29 Oct 2021, Thomas Weißschuh wrote:
 
-On 06/11/2021 13:47, Leo Yan wrote:
-> On Tue, Nov 02, 2021 at 06:07:38PM +0000, German Gomez wrote:
->> This patch is to save context ID in record, this will be used to set TID
->> for samples.
->>
->> Signed-off-by: Leo Yan <leo.yan@linaro.org>
->> Signed-off-by: James Clark <james.clark@arm.com>
->> Signed-off-by: German Gomez <german.gomez@arm.com>
->> ---
->>  tools/perf/util/arm-spe-decoder/arm-spe-decoder.c | 2 ++
->>  tools/perf/util/arm-spe-decoder/arm-spe-decoder.h | 1 +
->>  2 files changed, 3 insertions(+)
->>
->> diff --git a/tools/perf/util/arm-spe-decoder/arm-spe-decoder.c b/tools/perf/util/arm-spe-decoder/arm-spe-decoder.c
->> index 32fe41835..1b58859d2 100644
->> --- a/tools/perf/util/arm-spe-decoder/arm-spe-decoder.c
->> +++ b/tools/perf/util/arm-spe-decoder/arm-spe-decoder.c
->> @@ -151,6 +151,7 @@ static int arm_spe_read_record(struct arm_spe_decoder *decoder)
->>  	u64 payload, ip;
->>  
->>  	memset(&decoder->record, 0x0, sizeof(decoder->record));
->> +	decoder->record.context_id = -1;
-> Since 'context_id' is type u64, here it's good to assign '(u64)-1'.
+> Currently as soon as any ISHTP device appears all available ISHTP device
+> drivers are loaded automatically.
+> This series extends the MODULE_DEVICE_TABLE() functionality to properly handle
+> the ishtp bus and switches the drivers over to use it.
+> 
+> Patch 1 adds the infrastructure to handle ishtp devices via MODULE_DEVICE_TABLE()
+> Patch 2 replaces some inlined constants with ones now defined by mod_devicetable.h
+> Patches 3-6 migrate all ishtp drivers to MODULE_DEVICE_TABLE()
+> 
+> Note: This patchset is based on the pdx86/for-next tree because that contains
+> one of the drivers that is not yet in the other trees.
+> 
+> Cc: Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
+> Cc: Mark Gross <markgross@kernel.org>
+> Cc: Hans de Goede <hdegoede@redhat.com>
+> Cc: Rushikesh S Kadam <rushikesh.s.kadam@intel.com>
+> Cc: Jiri Kosina <jikos@kernel.org>
+> Cc: Benjamin Tissoires <benjamin.tissoires@redhat.com>
+> Cc: Guenter Roeck <groeck@chromium.org>
+> Cc: Enric Balletbo i Serra <enric.balletbo@collabora.com>
+> Cc: Benson Leung <bleung@chromium.org>
+> 
+> Cc: platform-driver-x86@vger.kernel.org
+> Cc: linux-kbuild@vger.kernel.org
 
-Ack.
+Applied to hid.git#for-5.16/upstream-fixes. Thanks,
 
-Thanks,
-German
+-- 
+Jiri Kosina
+SUSE Labs
 
->
->>  	while (1) {
->>  		err = arm_spe_get_next_packet(decoder);
->> @@ -180,6 +181,7 @@ static int arm_spe_read_record(struct arm_spe_decoder *decoder)
->>  		case ARM_SPE_COUNTER:
->>  			break;
->>  		case ARM_SPE_CONTEXT:
->> +			decoder->record.context_id = payload;
->>  			break;
->>  		case ARM_SPE_OP_TYPE:
->>  			if (idx == SPE_OP_PKT_HDR_CLASS_LD_ST_ATOMIC) {
->> diff --git a/tools/perf/util/arm-spe-decoder/arm-spe-decoder.h b/tools/perf/util/arm-spe-decoder/arm-spe-decoder.h
->> index 59bdb7309..46a8556a9 100644
->> --- a/tools/perf/util/arm-spe-decoder/arm-spe-decoder.h
->> +++ b/tools/perf/util/arm-spe-decoder/arm-spe-decoder.h
->> @@ -38,6 +38,7 @@ struct arm_spe_record {
->>  	u64 timestamp;
->>  	u64 virt_addr;
->>  	u64 phys_addr;
->> +	u64 context_id;
->>  };
->>  
->>  struct arm_spe_insn;
->> -- 
->> 2.25.1
->>
