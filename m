@@ -2,102 +2,192 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 41B4144AF70
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 15:25:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B38E844AF75
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 15:28:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238426AbhKIO14 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Nov 2021 09:27:56 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56050 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232237AbhKIO1z (ORCPT
+        id S238453AbhKIObK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Nov 2021 09:31:10 -0500
+Received: from smtp-out2.suse.de ([195.135.220.29]:33858 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232237AbhKIObI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Nov 2021 09:27:55 -0500
-Received: from mail-wr1-x42c.google.com (mail-wr1-x42c.google.com [IPv6:2a00:1450:4864:20::42c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 941E3C061764;
-        Tue,  9 Nov 2021 06:25:09 -0800 (PST)
-Received: by mail-wr1-x42c.google.com with SMTP id u1so33300566wru.13;
-        Tue, 09 Nov 2021 06:25:09 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=4a5lwOe61pZqA6tzu1S0/ADcSBRaSBOmvU0WydFkmBI=;
-        b=kXwzzoQBxqNAJPu8b5nA/Y9EqzHRlQxlu/yoGIU8QQoEhmcu2v1REYvMxkN6WTdsnD
-         Ch+HS64Mn0BxVZqBakvu4IvbBRzfe6Od/nYcwUgO/MDSNf4WaY3tj28RC/beZmIbE/zl
-         nT6ykmfO2Dm9o5GbkWew3RHTTD4ME2FEoGO5qewrq/6webFa521/iB8v5x7pMJCA7KOj
-         e2gwALyudgGS6ZHFrQ5jxZKWk3fRpvrsLe8+Qynoqnx5QVehqSs2a+hwDZHeSqCrhYAd
-         ecdCG469Y6zBhYXq9qwX1iQ+ZoEEGHUP7lrxhRw/UkQ38fydQiYgfl758xKeSAA6V8PZ
-         I1aw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=4a5lwOe61pZqA6tzu1S0/ADcSBRaSBOmvU0WydFkmBI=;
-        b=nhoOO4y+rMhl8yxQjUPB4gEKRAwy5tOJa5fRYuq9RAbt3xA6st6in/yiEjZaNauqhg
-         T78f6PZKpOWQQ2vr4TfPC3gMT43rlSXE7CaD4Dr/G1nmr5JfA0SvN/XwHpDpdJdDB3V8
-         iwCAhUozwKDT3a7VxdZnoPVkYgRvARJ2Qvo/s07Mv4q0hDXmsGjnKLTlAtr9uDeEKe/T
-         WvVnZQsEz/5jnv2oxJBkd+9p5VTl32IGZDEkGRrAWmKPDo0bbuBurE3vI1AwX95Hbsu9
-         ircFVXAEDQ2d1uKp4tZ3a8qBgn7ZfQ05zXy6B1DH00kJw6H8OU49Ex40ouyAaBnDarAU
-         8l5A==
-X-Gm-Message-State: AOAM530oEyRkYkGsG5acd2/yHZsilBBJijr/jkunM7g554QnmC3+goJb
-        fUYogtgJBCnIEPs6ZkWjx3w=
-X-Google-Smtp-Source: ABdhPJzf0kSZTCxlr4qOhGWejx5hi0j3WUaEla10F3CM/6jJz/e+h0NbkiPr5xgX1aQxktDHKOgDnQ==
-X-Received: by 2002:adf:da44:: with SMTP id r4mr10234640wrl.180.1636467907937;
-        Tue, 09 Nov 2021 06:25:07 -0800 (PST)
-Received: from Ansuel-xps.localdomain (93-42-71-246.ip85.fastwebnet.it. [93.42.71.246])
-        by smtp.gmail.com with ESMTPSA id m36sm2914643wms.25.2021.11.09.06.25.06
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 09 Nov 2021 06:25:07 -0800 (PST)
-Date:   Tue, 9 Nov 2021 15:24:58 +0100
-From:   Ansuel Smith <ansuelsmth@gmail.com>
-To:     Marek =?iso-8859-1?Q?Beh=FAn?= <kabel@kernel.org>
-Cc:     Andrew Lunn <andrew@lunn.ch>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Vladimir Oltean <olteanv@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>, Pavel Machek <pavel@ucw.cz>,
-        John Crispin <john@phrozen.org>, netdev@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-leds@vger.kernel.org
-Subject: Re: [RFC PATCH v3 3/8] leds: trigger: netdev: drop
- NETDEV_LED_MODE_LINKUP from mode
-Message-ID: <YYqEuo8rwJ93AczD@Ansuel-xps.localdomain>
-References: <20211109022608.11109-1-ansuelsmth@gmail.com>
- <20211109022608.11109-4-ansuelsmth@gmail.com>
- <20211109040257.29f42aa1@thinkpad>
+        Tue, 9 Nov 2021 09:31:08 -0500
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id C07831FD58;
+        Tue,  9 Nov 2021 14:28:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1636468099; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+        bh=29iIuoXhjXzZm+Edp5wA7tp91R6v1sniaJVft+boKZ8=;
+        b=tL+XRcJWpxS/DkFYk4/IO4PF+bBYpuR64igPpRSBlQqIGMA3HVSo1EhQEQCljurIrqPmvj
+        DBiWB2DI5Xh5Ctdgpi8+x/QNXbSGF3lUxqNQ4hlotpY4njeACTPnnvCrif7KjfMnwH2dvS
+        rNSv9R8e7JUCQTqe+jscNp3203pPn6U=
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 9BA4213A1F;
+        Tue,  9 Nov 2021 14:28:19 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id F7KGJIOFimE1dgAAMHmgww
+        (envelope-from <jgross@suse.com>); Tue, 09 Nov 2021 14:28:19 +0000
+From:   Juergen Gross <jgross@suse.com>
+To:     torvalds@linux-foundation.org
+Cc:     linux-kernel@vger.kernel.org, xen-devel@lists.xenproject.org,
+        boris.ostrovsky@oracle.com
+Subject: [GIT PULL] xen: branch for v5.16-rc1
+Date:   Tue,  9 Nov 2021 15:28:19 +0100
+Message-Id: <20211109142819.24428-1-jgross@suse.com>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20211109040257.29f42aa1@thinkpad>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 09, 2021 at 04:02:57AM +0100, Marek Behún wrote:
-> On Tue,  9 Nov 2021 03:26:03 +0100
-> Ansuel Smith <ansuelsmth@gmail.com> wrote:
-> 
-> > Drop NETDEV_LED_MODE_LINKUP from mode list and convert to a simple bool
-> > that will be true or false based on the carrier link. No functional
-> > change intended.
-> 
-> The last time I tried this, I did it for all the fields that are now in
-> the bitmap, and I was told that the bitmap guarantees atomic access, so
-> it should be used...
-> 
-> But why do you needs this? I guess I will see in another patch.
->
+Linus,
 
-The link_up seems something internal to the netdev trigger and not
-something strictly related to the blink modes. Why put a status in the
-mode variable?
+Please git pull the following tag:
 
-> Marek
+ git://git.kernel.org/pub/scm/linux/kernel/git/xen/tip.git for-linus-5.16b-rc1-tag
 
--- 
-	Ansuel
+xen: branch for v5.16-rc1
+
+It contains the following patches:
+
+- a series for speeding up the boot of Xen PV guests
+
+- some cleanups in Xen related code
+
+- replacement of license texts with the appropriate SPDX headers and
+  fixing of wrong SPDX headers in Xen header files
+
+- a small series making paravirtualized interrupt masking much simpler
+  and at the same time removing complaints of objtool
+
+- a fix for Xen ballooning hogging workqueues for too long
+
+- enablement of the Xen pciback driver for Arm
+
+- some further small fixes/enhancements
+
+
+Thanks.
+
+Juergen
+
+ Documentation/admin-guide/kernel-parameters.txt |   7 +
+ arch/arm/xen/enlighten.c                        |   1 -
+ arch/arm/xen/hypercall.S                        |   1 -
+ arch/arm64/xen/hypercall.S                      |   1 -
+ arch/x86/include/asm/paravirt_types.h           |   2 +
+ arch/x86/include/asm/xen/hypercall.h            | 233 +++++++++++-------------
+ arch/x86/include/asm/xen/hypervisor.h           |   4 +
+ arch/x86/include/asm/xen/pci.h                  |  19 --
+ arch/x86/kernel/paravirt.c                      |  13 +-
+ arch/x86/pci/xen.c                              |  76 +-------
+ arch/x86/xen/enlighten.c                        | 116 +++---------
+ arch/x86/xen/enlighten_hvm.c                    |   6 +-
+ arch/x86/xen/enlighten_pv.c                     |  35 +---
+ arch/x86/xen/irq.c                              |  62 +------
+ arch/x86/xen/mmu_pv.c                           |  52 ++++--
+ arch/x86/xen/setup.c                            |  10 +-
+ arch/x86/xen/smp.c                              |  28 ---
+ arch/x86/xen/smp_pv.c                           |   2 -
+ arch/x86/xen/xen-head.S                         |  12 +-
+ arch/x86/xen/xen-ops.h                          |   4 +-
+ drivers/xen/Kconfig                             |  24 +++
+ drivers/xen/Makefile                            |   2 +-
+ drivers/xen/balloon.c                           | 113 ++++++++----
+ drivers/xen/mem-reservation.c                   |  27 +--
+ drivers/xen/pci.c                               |  76 ++++++++
+ drivers/xen/pvcalls-back.c                      |   1 -
+ drivers/xen/xen-acpi-processor.c                |   6 +-
+ drivers/xen/xen-pciback/Makefile                |   7 +
+ drivers/xen/xen-pciback/conf_space_capability.c |   2 +-
+ drivers/xen/xen-pciback/conf_space_header.c     |   8 +-
+ drivers/xen/xen-pciback/pci_stub.c              |   3 +-
+ drivers/xen/xen-pciback/pciback.h               |   5 +
+ drivers/xen/xen-pciback/xenbus.c                |   8 +-
+ include/xen/arm/hypercall.h                     |  15 --
+ include/xen/balloon.h                           |   3 -
+ include/xen/interface/callback.h                |  19 +-
+ include/xen/interface/elfnote.h                 |  19 +-
+ include/xen/interface/event_channel.h           |   2 +-
+ include/xen/interface/features.h                |   2 +-
+ include/xen/interface/grant_table.h             |  19 +-
+ include/xen/interface/hvm/dm_op.h               |  19 +-
+ include/xen/interface/hvm/hvm_op.h              |  20 +-
+ include/xen/interface/hvm/hvm_vcpu.h            |  19 +-
+ include/xen/interface/hvm/params.h              |  20 +-
+ include/xen/interface/hvm/start_info.h          |  19 +-
+ include/xen/interface/io/9pfs.h                 |  19 +-
+ include/xen/interface/io/blkif.h                |   2 +-
+ include/xen/interface/io/console.h              |   2 +-
+ include/xen/interface/io/displif.h              |  19 +-
+ include/xen/interface/io/fbif.h                 |  19 +-
+ include/xen/interface/io/kbdif.h                |  19 +-
+ include/xen/interface/io/netif.h                |  19 +-
+ include/xen/interface/io/pciif.h                |  19 +-
+ include/xen/interface/io/protocols.h            |   2 +-
+ include/xen/interface/io/pvcalls.h              |   2 +
+ include/xen/interface/io/ring.h                 |  19 +-
+ include/xen/interface/io/sndif.h                |  19 +-
+ include/xen/interface/io/vscsiif.h              |  19 +-
+ include/xen/interface/io/xenbus.h               |   2 +-
+ include/xen/interface/io/xs_wire.h              |   2 +-
+ include/xen/interface/memory.h                  |   2 +-
+ include/xen/interface/nmi.h                     |   2 +-
+ include/xen/interface/physdev.h                 |  20 +-
+ include/xen/interface/platform.h                |  19 +-
+ include/xen/interface/sched.h                   |  19 +-
+ include/xen/interface/vcpu.h                    |  19 +-
+ include/xen/interface/version.h                 |   2 +-
+ include/xen/interface/xen-mca.h                 |   1 +
+ include/xen/interface/xen.h                     |  19 +-
+ include/xen/interface/xenpmu.h                  |   2 +-
+ include/xen/pci.h                               |  28 +++
+ include/xen/xen.h                               |   6 -
+ 72 files changed, 496 insertions(+), 968 deletions(-)
+
+Arnd Bergmann (1):
+      xen/balloon: fix unused-variable warning
+
+Christophe JAILLET (1):
+      xen/pvcalls-back: Remove redundant 'flush_workqueue()' calls
+
+Jan Beulich (6):
+      xen/x86: streamline set_pte_mfn()
+      xen/x86: restore (fix) xen_set_pte_init() behavior
+      xen/x86: adjust xen_set_fixmap()
+      xen/x86: adjust handling of the L3 user vsyscall special page table
+      xen/x86: there's no highmem anymore in PV mode
+      xen/x86: restrict PV Dom0 identity mapping
+
+Jiasheng Jiang (1):
+      xen: Fix implicit type conversion
+
+Juergen Gross (10):
+      xen: fix wrong SPDX headers of Xen related headers
+      x86/pvh: add prototype for xen_pvh_init()
+      x86/xen: remove xen_have_vcpu_info_placement flag
+      x86/xen: switch initial pvops IRQ functions to dummy ones
+      x86/xen: remove 32-bit pv leftovers
+      xen: allow pv-only hypercalls only with CONFIG_XEN_PV
+      xen: remove highmem remnants
+      x86/xen: remove 32-bit awareness from startup_xen
+      xen/balloon: add late_initcall_sync() for initial ballooning done
+      xen/balloon: rename alloc/free_xenballooned_pages
+
+Oleksandr Andrushchenko (1):
+      xen-pciback: allow compiling on other archs than x86
+
+Thomas Gleixner (1):
+      x86/xen: Remove redundant irq_enter/exit() invocations
+
+YueHaibing (1):
+      xen-pciback: Fix return in pm_ctrl_init()
