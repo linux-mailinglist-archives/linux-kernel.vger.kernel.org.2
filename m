@@ -2,27 +2,27 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 10C3244B171
+	by mail.lfdr.de (Postfix) with ESMTP id 5C65744B172
 	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 17:46:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239751AbhKIQtA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Nov 2021 11:49:00 -0500
-Received: from mail.kernel.org ([198.145.29.99]:59740 "EHLO mail.kernel.org"
+        id S240344AbhKIQtH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Nov 2021 11:49:07 -0500
+Received: from mail.kernel.org ([198.145.29.99]:59802 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239801AbhKIQs7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Nov 2021 11:48:59 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2BED5610C8;
-        Tue,  9 Nov 2021 16:46:10 +0000 (UTC)
+        id S240294AbhKIQtB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Nov 2021 11:49:01 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9548F6112F;
+        Tue,  9 Nov 2021 16:46:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1636476373;
-        bh=7ZzvhFtWbybOkWfYS+IfbRYBGhMJHNq1ETuGEWSXG/E=;
+        s=k20201202; t=1636476375;
+        bh=gjUEfzTxx7CnmMsXB2+9zhlLejtjtTi8JaWXvQe55N8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=INqH8qsyvPNUfdrOXzBWLDvK3LU1P5zOBLpD7JTtRYUWGIkw6HIolxxS1UPSos8No
-         eRAinHUAasjdj7IZNsLApFLqJ4etsVwgU7iEZe1lQhU4rZ+ML9n3bfRs2b7r5OtRjz
-         xE23kwmsdpvIFNUMjlRjnq/7VKcuTRRlx9/87xduB6ASR3aDkREOismlGsObbQNdgm
-         dONchXISk9LyHbOFJeuRY2LqRcT7wFK/79BEPTDj2Hi8g1UqOE+Cq7/Zex1MI7Jq71
-         HoiGzd7ANbMnHqUIiv1/8fbzBBxho+h4tqeibclgG1mhkxV4Lh74hb+faS+TIK7i6p
-         tP6+AhRR8da9g==
+        b=pjm9opuxFUh0H7vCKx73rzEzdGGqfI/ciQDk131nLUCqFz+AN+HVcGRi4ljm3S/wC
+         PgaSX6016eGy2ybltt7XZmEEhOwgoxeq+lZ7aK+w/mEG3ybIHrr1ZqdL+Afastj6fY
+         Uj5QLrPH9gfSNz6GYbSKqhw/U2f9/Xb6J4l+6LFSjpzcWlwq8h0X0nH4fuXwKTcsRK
+         pL7L5jVUToW90BLEV1rOlXkE0quUWmyiVVgbTNNi42TEoLRzTRAmBCyTBVWWf6Lgsi
+         qaBNNjnqrW3KVrHM9xxrwqGCuoUNeDuY4gC84OPL3UsqkhH2nPmQnQ8oy823uM9PLH
+         JATLwljkE+d0Q==
 From:   Ard Biesheuvel <ardb@kernel.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     linux-arm-kernel@lists.infradead.org,
@@ -33,325 +33,321 @@ Cc:     linux-arm-kernel@lists.infradead.org,
         Steven Rostedt <rostedt@goodmis.org>,
         Mark Rutland <mark.rutland@arm.com>,
         Kees Cook <keescook@chromium.org>
-Subject: [RFC PATCH 2/7] static_call: deal with unexported keys without cluttering up the API
-Date:   Tue,  9 Nov 2021 17:45:44 +0100
-Message-Id: <20211109164549.1724710-3-ardb@kernel.org>
+Subject: [RFC PATCH 3/7] static_call: use helper to access non-exported key
+Date:   Tue,  9 Nov 2021 17:45:45 +0100
+Message-Id: <20211109164549.1724710-4-ardb@kernel.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20211109164549.1724710-1-ardb@kernel.org>
 References: <20211109164549.1724710-1-ardb@kernel.org>
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=10376; h=from:subject; bh=7ZzvhFtWbybOkWfYS+IfbRYBGhMJHNq1ETuGEWSXG/E=; b=owEB7QES/pANAwAKAcNPIjmS2Y8kAcsmYgBhiqWx/EBUslL3LMMQ+zW/g55WcXPOmZoxDa6RujDX 1rjH97qJAbMEAAEKAB0WIQT72WJ8QGnJQhU3VynDTyI5ktmPJAUCYYqlsQAKCRDDTyI5ktmPJMlMC/ 9XAHyASjqKYt7Z1Z2ajFarzhmXmQOmVUKQZgfkYw4rBhtnpm5sYHVwDuYwhcL+gpw3ZhwUPp48Tfsb BBhcfdqee9LZkJ5gqRV6JNQfYV06fb9bqLRQ/QnVOcgJxrSZfpth1lp0hGKVmHMGkNozFFQDUmkW+k BCWRl24mLerxw4OG7tmM6DSFptYUA9ydkdZsSQkfrQ6OoKn1LLUlxZGSvm2U005Ui/zfSuJDncYVwH TNzadjZYA9bvMisUgTEpgBscEl2zCGSHAZmnu2MMtyRrgPW//hKMqur2zgq6m95NihyfZ3qjdxGz8n yZgJ007ZL9ROTvt6Mb1zaXzkiboNcE0XsMTT3Wad6hQ03fRp6h1UVHvBz5hcW8Ub7iiAWjuNUZtEYN CnWNTAOI7Smq/cZyQcVDaCyQ1rTJIWe+6rbGqXaJFVxmxadQzg0kb18Yn+yrzJSZzy3kRwwrRmLaoJ EiEMQhi+oY9ojdRsVEbOu+B9zJR41B5Psu1tly1CsPpd4=
+X-Developer-Signature: v=1; a=openpgp-sha256; l=11120; h=from:subject; bh=gjUEfzTxx7CnmMsXB2+9zhlLejtjtTi8JaWXvQe55N8=; b=owEB7AET/pANAwAKAcNPIjmS2Y8kAcsmYgBhiqW0s9Dtw+iI2E1GGKxeeGII9T0LWRiONb5alEbu mP/fOReJAbIEAAEKAB0WIQT72WJ8QGnJQhU3VynDTyI5ktmPJAUCYYqltAAKCRDDTyI5ktmPJOQnC/ Y72vyZxxdMKvN2InH71n5q05E9fm5896DbUS2ypEoY4cARvpab0kurWbQZCJLye9/GVTRi+AVcxELe +GlfApXlb67D25t5JPp7rV2B4OoYBaDlmMpkojfswBbwBhBr1yf+Wa3ggkFmlruhv3zqb/vdd50XRo 6vEVJYH8hvtiKbbHK5/5Fq4iTyw3F8rnMD7PojQysZNUXSCuXXk0SM3WVAAoQWxPrnYo9GSkJVQIjh ZuvRstMlQSKWQElg4Gohl6Ar6L3DFAhWcwdGiCYnirqH7xPOZNQv9/tgJcz5gzkWkZ2t8UA4+w3itJ vwMAbC5IUyNu82zzcVs1AHRrsHZcUc/pOIl59lRjpfXLXih4aygkpVYlUAiH9Sfa/4SYg/0qSEZggq ItWRwhPlZcjROtSB7BRKRpnMAdwD+dEx/yN8hOFn/rNURwJU586onsqxLv4rQ9uNNWLi2h65tFxPGq 60xQridmuX9i2i2/SmLasA06E3XnQAL6XCAm5VBhSIjw==
 X-Developer-Key: i=ardb@kernel.org; a=openpgp; fpr=F43D03328115A198C90016883D200E9CA6329909
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In principle, invoking a static call does not require access to the
-static call key that is used to manipulate the function that the static
-call targets. This means that exporting only the static call but not its
-key to modules should prevent such modules from manipulating the target
-inadvertently.
+We support static calls from modules without the keys being exported,
+but since the inline patching code needs access to the key regardless,
+we have special handling in the module notifier that looks up the key
+based on the trampoline address in a list that is kept especially for
+this purpose.
 
-However, for inline static calls, we do need access to the key at module
-load time, because the code patching routines rely on it. For this
-reason, there is special handling in objtool that recovers the key
-pointer from the address of the trampoline (which does get exported
-unconditionally), using a lookup table in the core kernel.
+This list is part of the core kernel, and only contains static calls
+exported from the core kernel. This means that exporting static calls
+without the associated key is only possible from the core kernel, and
+any attempts to do so from another module currently result in module
+load failures.
 
-Unfortunately, this clutters up the user-visible API: a static call is
-normally invoked using the static_call() macro, but in cases where a)
-the call originates from a module and b) the associated key was not
-exported, it is left up to the user to pick the static_call_mod() macro
-instead. Since that macro relies on the lookup table in the core kernel,
-it can only be used on static calls that are exported from the core
-kernel.
-
-It would be much better if the call sites can simply use static_call()
-and not have to figure out whether or not the static call exports its
-key and/or whether it as exported from the core kernel.
-
-So let's address this, by using a weak reference for the key. This means
-we can force the symbol reference in the module to be emitted
-unconditionally, allowing the caller to use static_call() without
-knowing the difference. This does imply that the logic in objtool that
-tests whether a symbol exists in the object no longer works, as the
-symbol is guaranteed to exist. So instead, add another field to struct
-static_call_site to cover the trampoline reference, and fix up the
-module notifier that consumes this data accordingly.
-
-This gets rid of the following macros:
-
-  __STATIC_CALL_MOD_ADDRESSABLE()
-  static_call_mod()
-  __static_call()
-  __raw_static_call()
+So let's replace this list with a special per-static call helper that
+returns the static call key address, provided that the call originates
+from the core kernel. This prevents access to the key for modular
+callers, while removing the need to keep a list of key/trampoline pairs.
 
 Signed-off-by: Ard Biesheuvel <ardb@kernel.org>
 ---
- arch/x86/include/asm/preempt.h          |  4 +--
- include/linux/kernel.h                  |  2 +-
- include/linux/sched.h                   |  2 +-
- include/linux/static_call_types.h       | 26 +++++-----------
- kernel/static_call.c                    |  8 ++---
- tools/include/linux/static_call_types.h | 26 +++++-----------
- tools/objtool/check.c                   | 31 ++++++++++----------
- 7 files changed, 38 insertions(+), 61 deletions(-)
+Alternatively, we might fix the module loader to look for
+.static_call_tramp_key sections in all modules loaded prior, but I'm not
+sure whether that would be cleaner.
 
-diff --git a/arch/x86/include/asm/preempt.h b/arch/x86/include/asm/preempt.h
-index fe5efbcba824..341745a03726 100644
---- a/arch/x86/include/asm/preempt.h
-+++ b/arch/x86/include/asm/preempt.h
-@@ -121,7 +121,7 @@ DECLARE_STATIC_CALL(preempt_schedule, __preempt_schedule_func);
+ arch/x86/include/asm/static_call.h      |  6 -----
+ include/asm-generic/vmlinux.lds.h       |  5 +----
+ include/linux/static_call.h             | 18 ++++++++-------
+ include/linux/static_call_types.h       |  9 +++++++-
+ kernel/extable.c                        |  1 +
+ kernel/static_call.c                    | 23 +++-----------------
+ tools/include/linux/static_call_types.h |  9 +++++++-
+ tools/objtool/check.c                   | 20 ++++++++++++-----
+ 8 files changed, 45 insertions(+), 46 deletions(-)
+
+diff --git a/arch/x86/include/asm/static_call.h b/arch/x86/include/asm/static_call.h
+index cbb67b6030f9..beb2bbaae8b1 100644
+--- a/arch/x86/include/asm/static_call.h
++++ b/arch/x86/include/asm/static_call.h
+@@ -38,10 +38,4 @@
+ 	__ARCH_DEFINE_STATIC_CALL_TRAMP(name, "ret; nop; nop; nop; nop")
  
- #define __preempt_schedule() \
- do { \
--	__STATIC_CALL_MOD_ADDRESSABLE(preempt_schedule); \
-+	__STATIC_CALL_ADDRESSABLE(preempt_schedule); \
- 	asm volatile ("call " STATIC_CALL_TRAMP_STR(preempt_schedule) : ASM_CALL_CONSTRAINT); \
- } while (0)
  
-@@ -129,7 +129,7 @@ DECLARE_STATIC_CALL(preempt_schedule_notrace, __preempt_schedule_notrace_func);
+-#define ARCH_ADD_TRAMP_KEY(name)					\
+-	asm(".pushsection .static_call_tramp_key, \"a\"		\n"	\
+-	    ".long " STATIC_CALL_TRAMP_STR(name) " - .		\n"	\
+-	    ".long " STATIC_CALL_KEY_STR(name) " - .		\n"	\
+-	    ".popsection					\n")
+-
+ #endif /* _ASM_STATIC_CALL_H */
+diff --git a/include/asm-generic/vmlinux.lds.h b/include/asm-generic/vmlinux.lds.h
+index 42f3866bca69..5fd802ccb62f 100644
+--- a/include/asm-generic/vmlinux.lds.h
++++ b/include/asm-generic/vmlinux.lds.h
+@@ -408,10 +408,7 @@
+ 	. = ALIGN(8);							\
+ 	__start_static_call_sites = .;					\
+ 	KEEP(*(.static_call_sites))					\
+-	__stop_static_call_sites = .;					\
+-	__start_static_call_tramp_key = .;				\
+-	KEEP(*(.static_call_tramp_key))					\
+-	__stop_static_call_tramp_key = .;
++	__stop_static_call_sites = .;
  
- #define __preempt_schedule_notrace() \
- do { \
--	__STATIC_CALL_MOD_ADDRESSABLE(preempt_schedule_notrace); \
-+	__STATIC_CALL_ADDRESSABLE(preempt_schedule_notrace); \
- 	asm volatile ("call " STATIC_CALL_TRAMP_STR(preempt_schedule_notrace) : ASM_CALL_CONSTRAINT); \
- } while (0)
+ /*
+  * Allow architectures to handle ro_after_init data on their
+diff --git a/include/linux/static_call.h b/include/linux/static_call.h
+index 19c98cab8643..3bba0bcba844 100644
+--- a/include/linux/static_call.h
++++ b/include/linux/static_call.h
+@@ -161,12 +161,6 @@ struct static_call_mod {
+ 	struct static_call_site *sites;
+ };
  
-diff --git a/include/linux/kernel.h b/include/linux/kernel.h
-index e5359b09de1d..1e1159878e40 100644
---- a/include/linux/kernel.h
-+++ b/include/linux/kernel.h
-@@ -101,7 +101,7 @@ DECLARE_STATIC_CALL(might_resched, __cond_resched);
+-/* For finding the key associated with a trampoline */
+-struct static_call_tramp_key {
+-	s32 tramp;
+-	s32 key;
+-};
+-
+ extern void __static_call_update(struct static_call_key *key, void *tramp, void *func);
+ extern int static_call_mod_init(struct module *mod);
+ extern int static_call_text_reserved(void *start, void *end);
+@@ -196,13 +190,21 @@ extern long __static_call_return0(void);
+ 	EXPORT_SYMBOL_GPL(STATIC_CALL_KEY(name));			\
+ 	EXPORT_SYMBOL_GPL(STATIC_CALL_TRAMP(name))
  
- static __always_inline void might_resched(void)
- {
--	static_call_mod(might_resched)();
-+	static_call(might_resched)();
- }
++#define EXPORT_STATIC_CALL_GETKEY_HELPER(name)				\
++	struct static_call_key *STATIC_CALL_GETKEY(name)(void) {	\
++		BUG_ON(!core_kernel_text(				\
++			(unsigned long)__builtin_return_address(0)));	\
++		return &STATIC_CALL_KEY(name);				\
++	}								\
++	EXPORT_SYMBOL_GPL(STATIC_CALL_GETKEY(name))
++
+ /* Leave the key unexported, so modules can't change static call targets: */
+ #define EXPORT_STATIC_CALL_TRAMP(name)					\
+ 	EXPORT_SYMBOL(STATIC_CALL_TRAMP(name));				\
+-	ARCH_ADD_TRAMP_KEY(name)
++	EXPORT_STATIC_CALL_GETKEY_HELPER(name)
+ #define EXPORT_STATIC_CALL_TRAMP_GPL(name)				\
+ 	EXPORT_SYMBOL_GPL(STATIC_CALL_TRAMP(name));			\
+-	ARCH_ADD_TRAMP_KEY(name)
++	EXPORT_STATIC_CALL_GETKEY_HELPER(name)
  
- #else
-diff --git a/include/linux/sched.h b/include/linux/sched.h
-index 78c351e35fec..3cdf55c1074c 100644
---- a/include/linux/sched.h
-+++ b/include/linux/sched.h
-@@ -2014,7 +2014,7 @@ DECLARE_STATIC_CALL(cond_resched, __cond_resched);
+ #elif defined(CONFIG_HAVE_STATIC_CALL)
  
- static __always_inline int _cond_resched(void)
- {
--	return static_call_mod(cond_resched)();
-+	return static_call(cond_resched)();
- }
- 
- #else
 diff --git a/include/linux/static_call_types.h b/include/linux/static_call_types.h
-index 5a00b8b2cf9f..0bb36294cce7 100644
+index 0bb36294cce7..a31782909e43 100644
 --- a/include/linux/static_call_types.h
 +++ b/include/linux/static_call_types.h
-@@ -32,15 +32,20 @@
+@@ -18,6 +18,11 @@
+ #define STATIC_CALL_TRAMP(name)		__PASTE(STATIC_CALL_TRAMP_PREFIX, name)
+ #define STATIC_CALL_TRAMP_STR(name)	__stringify(STATIC_CALL_TRAMP(name))
+ 
++#define STATIC_CALL_GETKEY_PREFIX	__SCG__
++#define STATIC_CALL_GETKEY_PREFIX_STR	__stringify(STATIC_CALL_GETKEY_PREFIX)
++#define STATIC_CALL_GETKEY_PREFIX_LEN	(sizeof(STATIC_CALL_GETKEY_PREFIX_STR) - 1)
++#define STATIC_CALL_GETKEY(name)	__PASTE(STATIC_CALL_GETKEY_PREFIX, name)
++
+ /*
+  * Flags in the low bits of static_call_site::key.
+  */
+@@ -32,11 +37,12 @@
  struct static_call_site {
  	s32 addr;
  	s32 key;
-+	s32 tramp;
+-	s32 tramp;
++	s32 helper;
  };
  
  #define DECLARE_STATIC_CALL(name, func)					\
--	extern struct static_call_key STATIC_CALL_KEY(name);		\
-+	extern __weak struct static_call_key STATIC_CALL_KEY(name);	\
+ 	extern __weak struct static_call_key STATIC_CALL_KEY(name);	\
++	extern __weak struct static_call_key *STATIC_CALL_GETKEY(name)(void);\
  	extern typeof(func) STATIC_CALL_TRAMP(name);
  
  #ifdef CONFIG_HAVE_STATIC_CALL
- 
--#define __raw_static_call(name)	(&STATIC_CALL_TRAMP(name))
-+#define static_call(name)						\
-+({									\
-+	__STATIC_CALL_ADDRESSABLE(name);				\
-+	(&STATIC_CALL_TRAMP(name));					\
-+})
- 
- #ifdef CONFIG_HAVE_STATIC_CALL_INLINE
- 
-@@ -52,12 +57,6 @@ struct static_call_site {
+@@ -55,6 +61,7 @@ struct static_call_site {
+  * .static_call_sites section.
+  */
  #define __STATIC_CALL_ADDRESSABLE(name) \
++	__ADDRESSABLE(STATIC_CALL_GETKEY(name)) \
  	__ADDRESSABLE(STATIC_CALL_KEY(name))
  
--#define __static_call(name)						\
--({									\
--	__STATIC_CALL_ADDRESSABLE(name);				\
--	__raw_static_call(name);					\
--})
--
  struct static_call_key {
- 	void *func;
- 	union {
-@@ -71,7 +70,6 @@ struct static_call_key {
- #else /* !CONFIG_HAVE_STATIC_CALL_INLINE */
+diff --git a/kernel/extable.c b/kernel/extable.c
+index 290661f68e6b..e52579e46180 100644
+--- a/kernel/extable.c
++++ b/kernel/extable.c
+@@ -81,6 +81,7 @@ int notrace core_kernel_text(unsigned long addr)
+ 		return 1;
+ 	return 0;
+ }
++EXPORT_SYMBOL_GPL(core_kernel_text);
  
- #define __STATIC_CALL_ADDRESSABLE(name)
--#define __static_call(name)	__raw_static_call(name)
- 
- struct static_call_key {
- 	void *func;
-@@ -79,16 +77,6 @@ struct static_call_key {
- 
- #endif /* CONFIG_HAVE_STATIC_CALL_INLINE */
- 
--#ifdef MODULE
--#define __STATIC_CALL_MOD_ADDRESSABLE(name)
--#define static_call_mod(name)	__raw_static_call(name)
--#else
--#define __STATIC_CALL_MOD_ADDRESSABLE(name) __STATIC_CALL_ADDRESSABLE(name)
--#define static_call_mod(name)	__static_call(name)
--#endif
--
--#define static_call(name)	__static_call(name)
--
- #else
- 
- struct static_call_key {
+ /**
+  * core_kernel_data - tell if addr points to kernel data
 diff --git a/kernel/static_call.c b/kernel/static_call.c
-index 43ba0b1e0edb..360cc3cd0fbf 100644
+index 360cc3cd0fbf..29ae772dc86e 100644
 --- a/kernel/static_call.c
 +++ b/kernel/static_call.c
-@@ -366,18 +366,18 @@ static int static_call_add_module(struct module *mod)
- 		 * means modules are allowed to call static_call_update() on
- 		 * it.
- 		 *
--		 * Otherwise, the key isn't exported, and 'addr' points to the
-+		 * Otherwise, the key isn't exported, and 'tramp' points to the
- 		 * trampoline so we need to lookup the key.
- 		 *
- 		 * We go through this dance to prevent crazy modules from
- 		 * abusing sensitive static calls.
- 		 */
--		if (!kernel_text_address(addr))
-+		if (addr)
+@@ -12,8 +12,6 @@
+ 
+ extern struct static_call_site __start_static_call_sites[],
+ 			       __stop_static_call_sites[];
+-extern struct static_call_tramp_key __start_static_call_tramp_key[],
+-				    __stop_static_call_tramp_key[];
+ 
+ static bool static_call_initialized;
+ 
+@@ -333,23 +331,6 @@ static int __static_call_mod_text_reserved(void *start, void *end)
+ 	return ret;
+ }
+ 
+-static unsigned long tramp_key_lookup(unsigned long addr)
+-{
+-	struct static_call_tramp_key *start = __start_static_call_tramp_key;
+-	struct static_call_tramp_key *stop = __stop_static_call_tramp_key;
+-	struct static_call_tramp_key *tramp_key;
+-
+-	for (tramp_key = start; tramp_key != stop; tramp_key++) {
+-		unsigned long tramp;
+-
+-		tramp = (long)tramp_key->tramp + (long)&tramp_key->tramp;
+-		if (tramp == addr)
+-			return (long)tramp_key->key + (long)&tramp_key->key;
+-	}
+-
+-	return 0;
+-}
+-
+ static int static_call_add_module(struct module *mod)
+ {
+ 	struct static_call_site *start = mod->static_call_sites;
+@@ -359,6 +340,7 @@ static int static_call_add_module(struct module *mod)
+ 	for (site = start; site != stop; site++) {
+ 		unsigned long s_key = __static_call_key(site);
+ 		unsigned long addr = s_key & ~STATIC_CALL_SITE_FLAGS;
++		unsigned long (*key_helper)(void);
+ 		unsigned long key;
+ 
+ 		/*
+@@ -375,7 +357,8 @@ static int static_call_add_module(struct module *mod)
+ 		if (addr)
  			continue;
  
--		key = tramp_key_lookup(addr);
-+		key = tramp_key_lookup((unsigned long)offset_to_ptr(&site->tramp));
+-		key = tramp_key_lookup((unsigned long)offset_to_ptr(&site->tramp));
++		key_helper = offset_to_ptr(&site->helper);
++		key = key_helper();
  		if (!key) {
--			pr_warn("Failed to fixup __raw_static_call() usage at: %ps\n",
-+			pr_warn("Failed to fixup static_call() usage at: %ps\n",
+ 			pr_warn("Failed to fixup static_call() usage at: %ps\n",
  				static_call_addr(site));
- 			return -EINVAL;
- 		}
 diff --git a/tools/include/linux/static_call_types.h b/tools/include/linux/static_call_types.h
-index 5a00b8b2cf9f..0bb36294cce7 100644
+index 0bb36294cce7..a31782909e43 100644
 --- a/tools/include/linux/static_call_types.h
 +++ b/tools/include/linux/static_call_types.h
-@@ -32,15 +32,20 @@
+@@ -18,6 +18,11 @@
+ #define STATIC_CALL_TRAMP(name)		__PASTE(STATIC_CALL_TRAMP_PREFIX, name)
+ #define STATIC_CALL_TRAMP_STR(name)	__stringify(STATIC_CALL_TRAMP(name))
+ 
++#define STATIC_CALL_GETKEY_PREFIX	__SCG__
++#define STATIC_CALL_GETKEY_PREFIX_STR	__stringify(STATIC_CALL_GETKEY_PREFIX)
++#define STATIC_CALL_GETKEY_PREFIX_LEN	(sizeof(STATIC_CALL_GETKEY_PREFIX_STR) - 1)
++#define STATIC_CALL_GETKEY(name)	__PASTE(STATIC_CALL_GETKEY_PREFIX, name)
++
+ /*
+  * Flags in the low bits of static_call_site::key.
+  */
+@@ -32,11 +37,12 @@
  struct static_call_site {
  	s32 addr;
  	s32 key;
-+	s32 tramp;
+-	s32 tramp;
++	s32 helper;
  };
  
  #define DECLARE_STATIC_CALL(name, func)					\
--	extern struct static_call_key STATIC_CALL_KEY(name);		\
-+	extern __weak struct static_call_key STATIC_CALL_KEY(name);	\
+ 	extern __weak struct static_call_key STATIC_CALL_KEY(name);	\
++	extern __weak struct static_call_key *STATIC_CALL_GETKEY(name)(void);\
  	extern typeof(func) STATIC_CALL_TRAMP(name);
  
  #ifdef CONFIG_HAVE_STATIC_CALL
- 
--#define __raw_static_call(name)	(&STATIC_CALL_TRAMP(name))
-+#define static_call(name)						\
-+({									\
-+	__STATIC_CALL_ADDRESSABLE(name);				\
-+	(&STATIC_CALL_TRAMP(name));					\
-+})
- 
- #ifdef CONFIG_HAVE_STATIC_CALL_INLINE
- 
-@@ -52,12 +57,6 @@ struct static_call_site {
+@@ -55,6 +61,7 @@ struct static_call_site {
+  * .static_call_sites section.
+  */
  #define __STATIC_CALL_ADDRESSABLE(name) \
++	__ADDRESSABLE(STATIC_CALL_GETKEY(name)) \
  	__ADDRESSABLE(STATIC_CALL_KEY(name))
- 
--#define __static_call(name)						\
--({									\
--	__STATIC_CALL_ADDRESSABLE(name);				\
--	__raw_static_call(name);					\
--})
--
- struct static_call_key {
- 	void *func;
- 	union {
-@@ -71,7 +70,6 @@ struct static_call_key {
- #else /* !CONFIG_HAVE_STATIC_CALL_INLINE */
- 
- #define __STATIC_CALL_ADDRESSABLE(name)
--#define __static_call(name)	__raw_static_call(name)
- 
- struct static_call_key {
- 	void *func;
-@@ -79,16 +77,6 @@ struct static_call_key {
- 
- #endif /* CONFIG_HAVE_STATIC_CALL_INLINE */
- 
--#ifdef MODULE
--#define __STATIC_CALL_MOD_ADDRESSABLE(name)
--#define static_call_mod(name)	__raw_static_call(name)
--#else
--#define __STATIC_CALL_MOD_ADDRESSABLE(name) __STATIC_CALL_ADDRESSABLE(name)
--#define static_call_mod(name)	__static_call(name)
--#endif
--
--#define static_call(name)	__static_call(name)
--
- #else
  
  struct static_call_key {
 diff --git a/tools/objtool/check.c b/tools/objtool/check.c
-index add39902166d..ec6ddaaf6cf6 100644
+index ec6ddaaf6cf6..3698ace884a5 100644
 --- a/tools/objtool/check.c
 +++ b/tools/objtool/check.c
-@@ -652,21 +652,8 @@ static int create_static_call_sections(struct objtool_file *file)
+@@ -600,7 +600,7 @@ static int create_static_call_sections(struct objtool_file *file)
+ 	struct section *sec;
+ 	struct static_call_site *site;
+ 	struct instruction *insn;
+-	struct symbol *key_sym;
++	struct symbol *key_sym, *helper_sym;
+ 	char *key_name, *tmp;
+ 	int idx;
  
- 		key_sym = find_symbol_by_name(file->elf, tmp);
- 		if (!key_sym) {
--			if (!module) {
--				WARN("static_call: can't find static_call_key symbol: %s", tmp);
--				return -1;
--			}
--
--			/*
--			 * For modules(), the key might not be exported, which
--			 * means the module can make static calls but isn't
--			 * allowed to change them.
--			 *
--			 * In that case we temporarily set the key to be the
--			 * trampoline address.  This is fixed up in
--			 * static_call_add_module().
--			 */
--			key_sym = insn->call_dest;
-+			WARN("static_call: can't find static_call_key symbol: %s", tmp);
-+			return -1;
+@@ -655,7 +655,6 @@ static int create_static_call_sections(struct objtool_file *file)
+ 			WARN("static_call: can't find static_call_key symbol: %s", tmp);
+ 			return -1;
  		}
- 		free(key_name);
+-		free(key_name);
  
-@@ -677,6 +664,20 @@ static int create_static_call_sections(struct objtool_file *file)
+ 		/* populate reloc for 'key' */
+ 		if (elf_add_reloc(file->elf, sec,
+@@ -664,18 +663,27 @@ static int create_static_call_sections(struct objtool_file *file)
  				  is_sibling_call(insn) * STATIC_CALL_SITE_TAIL))
  			return -1;
  
-+		/*
-+		 * For modules(), the key might not be exported, which means
-+		 * the module can make static calls but isn't allowed to change
-+		 * them.
-+		 *
-+		 * For this case, we pass the trampoline in .static_call_sites
-+		 * as well. This is used to lookup the key in
-+		 * static_call_add_module().
-+		 */
-+		if (elf_add_reloc(file->elf, sec,
-+				  idx * sizeof(struct static_call_site) + 8,
-+				  R_X86_64_PC32, insn->call_dest, 0))
-+			return -1;
++		memcpy(tmp, STATIC_CALL_GETKEY_PREFIX_STR, STATIC_CALL_GETKEY_PREFIX_LEN);
 +
- 		idx++;
- 	}
++		helper_sym = find_symbol_by_name(file->elf, tmp);
++		if (!helper_sym) {
++			WARN("static_call: can't find static_call_key symbol: %s", tmp);
++			return -1;
++		}
++		free(key_name);
++
+ 		/*
+ 		 * For modules(), the key might not be exported, which means
+ 		 * the module can make static calls but isn't allowed to change
+ 		 * them.
+ 		 *
+-		 * For this case, we pass the trampoline in .static_call_sites
+-		 * as well. This is used to lookup the key in
+-		 * static_call_add_module().
++		 * For this case, we pass the special key helper routine in
++		 * .static_call_sites as well. This is used to lookup the key
++		 * in static_call_add_module().
+ 		 */
+ 		if (elf_add_reloc(file->elf, sec,
+ 				  idx * sizeof(struct static_call_site) + 8,
+-				  R_X86_64_PC32, insn->call_dest, 0))
++				  R_X86_64_PC32, helper_sym, 0))
+ 			return -1;
  
+ 		idx++;
 -- 
 2.30.2
 
