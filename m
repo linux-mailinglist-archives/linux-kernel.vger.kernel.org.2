@@ -2,198 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E620744A15F
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 02:07:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 128C744A292
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 02:17:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239688AbhKIBJa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Nov 2021 20:09:30 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43188 "EHLO
+        id S242998AbhKIBT3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Nov 2021 20:19:29 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45544 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237422AbhKIBHA (ORCPT
+        with ESMTP id S243028AbhKIBOz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Nov 2021 20:07:00 -0500
-Received: from mail-ot1-x32c.google.com (mail-ot1-x32c.google.com [IPv6:2607:f8b0:4864:20::32c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1D700C0797BC
-        for <linux-kernel@vger.kernel.org>; Mon,  8 Nov 2021 17:01:50 -0800 (PST)
-Received: by mail-ot1-x32c.google.com with SMTP id r10-20020a056830448a00b0055ac7767f5eso28382007otv.3
-        for <linux-kernel@vger.kernel.org>; Mon, 08 Nov 2021 17:01:50 -0800 (PST)
+        Mon, 8 Nov 2021 20:14:55 -0500
+Received: from mail-ed1-x529.google.com (mail-ed1-x529.google.com [IPv6:2a00:1450:4864:20::529])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5629DC043190
+        for <linux-kernel@vger.kernel.org>; Mon,  8 Nov 2021 17:03:26 -0800 (PST)
+Received: by mail-ed1-x529.google.com with SMTP id f4so69537791edx.12
+        for <linux-kernel@vger.kernel.org>; Mon, 08 Nov 2021 17:03:26 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
+        d=gmail.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=t9jW1J5eNwWEbybNdKesq0t74E7W/ck/52E2VJGXkkg=;
-        b=tUpaENN0tjUWzOeNT0UHfb4T1ir5hzA5JvtVSI8sTnzbpAxGN6zqp0AepxIOWpkLrE
-         i9rj1FhfA7LO8kbEZq4e8dfjCkeg4oHqJFDvqkt9f8H5fa1/DFLjivlehpz1he3+ybIc
-         Q+f3LW/VS4P3K/r2DWCugKqeOlb0rhBiRs8/EMU7rwa5+c5sVd59Jq2asZa60hffRYKg
-         5P/aLsIczyg9eYdk9qOGdhojaJLOiZd4vB22879Vx+SQxhM1rhihHRXP3fDeUkTSQq6F
-         B3d9kt0X3OjsfHCCJzKw8UCujLi+edpBxbSvIWJAX9RllF/Mox8o+jiYh7qyGpVK2zBU
-         eWXQ==
+        bh=KZr9FPrZOxgsc8U/wDnZ9LLLwqLTqPz85QXmM/1k+jk=;
+        b=TeNAQ5OubajkI3l1MfahzCgoz+EVErCV6IZJNzki5F7+gKV4K8rgOl14X8FjjJP/zO
+         nqAzQ+GiDxTt9tl/D5/Gm2R4rPkaZEYiTDGCHO0rPxTqXZCKR7B4FiB9zO0jKkFV4DR9
+         4u5vDGWVkhoTyt5MlGEo8V1xdwn1a2oJ3fVC/5PDkl9urx6+gjNILjk0NtPmxknDXrXN
+         03sUtFermnuyKGUwqdDzOJcUTR3hgMB99n0Sypc1pUReDXLaVG2YObyb0vunZ9A0yyGh
+         RWOjvjyfNU9xyf30L89p8TPlzzY4M9Vi5iu66MVV74j04Vc7WLjnCloIf/2YnErlyI3F
+         Q2Jw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=t9jW1J5eNwWEbybNdKesq0t74E7W/ck/52E2VJGXkkg=;
-        b=Fpeltjpip/AAGAQ4h5tQKWlNyfL/TSUrrctCLlDSuYpXiRkWD3hiXtrHSXxmiHnI8o
-         drc3eqncBNnQD3h9d5dFOZoTDDkeSKOJbRSchrUIiXflJJMA3PtZH4+paxgSWeuWpk3n
-         6Kd7at8w9pda5KLNYiTT4G48xXkA6+rP0n62Xf2zVQgRl3jKdKMAlFG6XCKUS0GcyX9Z
-         edTt743wuGnUmm4fkyBM1qUvP5Qkbeg0ECG4+885suH0fMAKwzpO2yWe08HERsv0Q1s8
-         1XXr3UV1yKd4JHgezJb4YcPO9NADguHqCztKbsnsvWnj57otPkadYiC/aQrvaOuWLysh
-         cwaQ==
-X-Gm-Message-State: AOAM532DwxLX2+iNV7LpSUHOzyXvKp3d8hSh09sRvfGzYN6hClMxB7kl
-        WmJRRB6taJ7VF/xSBmYwWh7Zd2dYjcByuFsCw326jg==
-X-Google-Smtp-Source: ABdhPJw7atefZ+9vTHHn1jZX0FdtT+yhNCn8qx2PNquKXMzwrqP0p2MI7f3sIpXgVuSNJNdGFjLmQJbrTBCj6pV6XZ4=
-X-Received: by 2002:a9d:ed6:: with SMTP id 80mr2644104otj.35.1636419709380;
- Mon, 08 Nov 2021 17:01:49 -0800 (PST)
+        bh=KZr9FPrZOxgsc8U/wDnZ9LLLwqLTqPz85QXmM/1k+jk=;
+        b=EuF7CUF8BUw/RRIjF2Owc6+uuxYXgq0Llju5kuBiJVJT2Cc1y3SaqD9USo7WgozdM1
+         s6FwTIGzYYoOPDnou0XMk7AP6O0tZDvPbCXL/AfP5lS0bdoBXHuSq5pscIZxJBpuGGOm
+         Kp1o4ZKZ7wB8ntSOQfNewbJ5h0w1+VTHU01D1Rtv6fjd1xzz/FiIEyEuOTUVTehyIb4g
+         Ucu/og5nsbpVpTKQZMLOCZX4/mDxvgfnozBmQMQGBoCXQaKoxFT46BkbvgYpkOmaFlfw
+         iS+QvcX7VATycK6tDTGMQ7GvSBijQVcVra220vMqSDgfjHjMrZdpgkP6qLCNmQQS0uTd
+         HxjQ==
+X-Gm-Message-State: AOAM530O8O70ZKjEGmec0LIwmV6+gL6bIqeV3XljQkpZT8rGZlmetIaJ
+        MdBLaBIOjuMNZeaRRyTeAyK1Xr2rXaSTt7TGob8=
+X-Google-Smtp-Source: ABdhPJxkaEeOP7RUo6eIVTAm9qolIyX+ECKaCMHrhmyNtkLMv8worAYtlC3m+2ROqdlUd5ukHIn2jnstxCAyb/h6DMk=
+X-Received: by 2002:a05:6402:520b:: with SMTP id s11mr4531859edd.363.1636419804995;
+ Mon, 08 Nov 2021 17:03:24 -0800 (PST)
 MIME-Version: 1.0
-References: <20211102161125.1144023-1-kernel@esmil.dk> <20211102161125.1144023-13-kernel@esmil.dk>
- <CAHp75VdmnnrisuP00W0KYta0KgmC+fu3WMxm959dt5X1kpiKTw@mail.gmail.com> <CAHp75VcuGdaq_TjjRS0S8R5y-nryLABZSp7ehrXz-fUS2W3vfA@mail.gmail.com>
-In-Reply-To: <CAHp75VcuGdaq_TjjRS0S8R5y-nryLABZSp7ehrXz-fUS2W3vfA@mail.gmail.com>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Tue, 9 Nov 2021 02:01:37 +0100
-Message-ID: <CACRpkdYe-tW2K2eOQa+FYb-ZXzrA95+pPc6kkLB8ZJLAT8G_eA@mail.gmail.com>
-Subject: Re: [PATCH v3 12/16] pinctrl: starfive: Add pinctrl driver for
- StarFive SoCs
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc:     Emil Renner Berthing <kernel@esmil.dk>,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        devicetree <devicetree@vger.kernel.org>,
-        linux-clk <linux-clk@vger.kernel.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        "open list:SERIAL DRIVERS" <linux-serial@vger.kernel.org>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Marc Zyngier <maz@kernel.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        Maximilian Luz <luzmaximilian@gmail.com>,
-        Sagar Kadam <sagar.kadam@sifive.com>,
-        Drew Fustini <drew@beagleboard.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Michael Zhu <michael.zhu@starfivetech.com>,
-        Fu Wei <tekkamanninja@gmail.com>,
-        Anup Patel <anup.patel@wdc.com>,
-        Atish Patra <atish.patra@wdc.com>,
-        Matteo Croce <mcroce@microsoft.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Huan Feng <huan.feng@starfivetech.com>
+References: <20211105055058.3152564-1-naoya.horiguchi@linux.dev>
+ <20211105055058.3152564-4-naoya.horiguchi@linux.dev> <CAHbLzkoCUs-Z9m47SnF3sR-wai3_M6R4Jkxq8bNBTdoTrkh5vA@mail.gmail.com>
+ <20211109005320.GA3341842@u2004>
+In-Reply-To: <20211109005320.GA3341842@u2004>
+From:   Yang Shi <shy828301@gmail.com>
+Date:   Mon, 8 Nov 2021 17:03:13 -0800
+Message-ID: <CAHbLzkpUX9NdKz5yz8j7ej-2hh0hKSB20_E_Ug4d2r3_NC6YUA@mail.gmail.com>
+Subject: Re: [PATCH v3 3/3] mm/hwpoison: fix unpoison_memory()
+To:     Naoya Horiguchi <naoya.horiguchi@linux.dev>
+Cc:     Linux MM <linux-mm@kvack.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        David Hildenbrand <david@redhat.com>,
+        Oscar Salvador <osalvador@suse.de>,
+        Michal Hocko <mhocko@suse.com>,
+        Ding Hui <dinghui@sangfor.com.cn>,
+        Tony Luck <tony.luck@intel.com>,
+        "Aneesh Kumar K.V" <aneesh.kumar@linux.vnet.ibm.com>,
+        Miaohe Lin <linmiaohe@huawei.com>,
+        Peter Xu <peterx@redhat.com>,
+        Naoya Horiguchi <naoya.horiguchi@nec.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 2, 2021 at 9:08 PM Andy Shevchenko
-<andy.shevchenko@gmail.com> wrote:
-(...)
-> > On Tue, Nov 2, 2021 at 6:50 PM Emil Renner Berthing <kernel@esmil.dk> wrote:
+On Mon, Nov 8, 2021 at 4:53 PM Naoya Horiguchi
+<naoya.horiguchi@linux.dev> wrote:
 >
+> On Mon, Nov 08, 2021 at 03:27:55PM -0800, Yang Shi wrote:
+> > On Thu, Nov 4, 2021 at 10:52 PM Naoya Horiguchi
+> > <naoya.horiguchi@linux.dev> wrote:
 > ...
->
-> > > +static int starfive_pinconf_group_set(struct pinctrl_dev *pctldev,
-> > > +                                     unsigned int gsel,
-> > > +                                     unsigned long *configs,
-> > > +                                     unsigned int num_configs)
+> > > @@ -1942,6 +1987,26 @@ core_initcall(memory_failure_init);
+> > >                 pr_info(fmt, pfn);                      \
+> > >  })
+> > >
+> > > +static inline int clear_page_hwpoison(struct ratelimit_state *rs, struct page *p)
 > > > +{
-> > > +       struct starfive_pinctrl *sfp = pinctrl_dev_get_drvdata(pctldev);
-> > > +       const struct group_desc *group;
-> > > +       u16 mask, value;
-> > > +       int i;
-> > > +
-> > > +       group = pinctrl_generic_get_group(pctldev, gsel);
-> > > +       if (!group)
-> > > +               return -EINVAL;
-> > > +
-> > > +       mask = 0;
-> > > +       value = 0;
-> > > +       for (i = 0; i < num_configs; i++) {
-> > > +               int param = pinconf_to_config_param(configs[i]);
-> > > +               u32 arg = pinconf_to_config_argument(configs[i]);
-> > > +
-> > > +               switch (param) {
-> > > +               case PIN_CONFIG_BIAS_DISABLE:
-> > > +                       mask |= PAD_BIAS_MASK;
-> > > +                       value = (value & ~PAD_BIAS_MASK) | PAD_BIAS_DISABLE;
-> > > +                       break;
-> > > +               case PIN_CONFIG_BIAS_PULL_DOWN:
-> > > +                       if (arg == 0)
-> > > +                               return -ENOTSUPP;
-> > > +                       mask |= PAD_BIAS_MASK;
-> > > +                       value = (value & ~PAD_BIAS_MASK) | PAD_BIAS_PULL_DOWN;
-> > > +                       break;
-> > > +               case PIN_CONFIG_BIAS_PULL_UP:
-> > > +                       if (arg == 0)
-> > > +                               return -ENOTSUPP;
-> > > +                       mask |= PAD_BIAS_MASK;
-> > > +                       value = value & ~PAD_BIAS_MASK;
-> > > +                       break;
-> > > +               case PIN_CONFIG_DRIVE_STRENGTH:
-> > > +                       mask |= PAD_DRIVE_STRENGTH_MASK;
-> > > +                       value = (value & ~PAD_DRIVE_STRENGTH_MASK) |
-> > > +                               starfive_drive_strength_from_max_mA(arg);
-> > > +                       break;
-> > > +               case PIN_CONFIG_INPUT_ENABLE:
-> > > +                       mask |= PAD_INPUT_ENABLE;
-> > > +                       if (arg)
-> > > +                               value |= PAD_INPUT_ENABLE;
-> > > +                       else
-> > > +                               value &= ~PAD_INPUT_ENABLE;
-> > > +                       break;
-> > > +               case PIN_CONFIG_INPUT_SCHMITT_ENABLE:
-> > > +                       mask |= PAD_INPUT_SCHMITT_ENABLE;
-> > > +                       if (arg)
-> > > +                               value |= PAD_INPUT_SCHMITT_ENABLE;
-> > > +                       else
-> > > +                               value &= ~PAD_INPUT_SCHMITT_ENABLE;
-> > > +                       break;
-> > > +               case PIN_CONFIG_SLEW_RATE:
-> > > +                       mask |= PAD_SLEW_RATE_MASK;
-> > > +                       value = (value & ~PAD_SLEW_RATE_MASK) |
-> > > +                               ((arg << PAD_SLEW_RATE_POS) & PAD_SLEW_RATE_MASK);
-> > > +                       break;
-> > > +               case PIN_CONFIG_STARFIVE_STRONG_PULL_UP:
-> > > +                       if (arg) {
-> > > +                               mask |= PAD_BIAS_MASK;
-> > > +                               value = (value & ~PAD_BIAS_MASK) |
-> > > +                                       PAD_BIAS_STRONG_PULL_UP;
-> > > +                       } else {
-> > > +                               mask |= PAD_BIAS_STRONG_PULL_UP;
-> > > +                               value = value & ~PAD_BIAS_STRONG_PULL_UP;
-> > > +                       }
-> > > +                       break;
-> > > +               default:
-> > > +                       return -ENOTSUPP;
-> > > +               }
+> > > +       if (TestClearPageHWPoison(p)) {
+> > > +               unpoison_pr_info("Unpoison: Software-unpoisoned page %#lx\n",
+> > > +                                page_to_pfn(p), rs);
+> > > +               num_poisoned_pages_dec();
+> > > +               return 1;
 > > > +       }
-> > > +
-> > > +       for (i = 0; i < group->num_pins; i++)
-> > > +               starfive_padctl_rmw(sfp, group->pins[i], mask, value);
-> > > +
 > > > +       return 0;
 > > > +}
+> > > +
+> > > +static inline int unpoison_taken_off_page(struct ratelimit_state *rs,
+> > > +                                         struct page *p)
+> > > +{
+> > > +       if (put_page_back_buddy(p) && clear_page_hwpoison(rs, p))
+> >
+> > It seems there might be race condition between free and allocation to
+> > kick the page out of buddy before the hwpoisoned flag is cleared IIUC?
+> >
+> >         CPU A                     CPU B
+> > Free:                            Allocation:
+> > acquire zone lock
+> > put back to buddy
+> > release zone lock
+> >                                      acquire zone lock
+> >                                      try to allocate this page
+> >                                      if it is hwpoisoned then reset
+> > PageBuddy (not buddy page anymore)
+> >                                      release zone lock
+> >
+> > Did I miss something?
 >
-> Linus any comments on this code (sorry if I missed your reply)? The
-> idea behind above is to skip all settings from the same category and
-> apply only the last one, e.g. if we have "bias set to X", ..., "bias
-> disable", ..., "bias set to Y", the hardware will see only the last
-> operation, i.e. "bias set to Y". I think it may not be the best
-> approach (theoretically?) since the hardware definitely may behave
-> differently on the other side in case of such series of the
-> configurations (yes, I have seen some interesting implementations of
-> the touchpad / touchscreen GPIOs that may be affected).
+> No, this is a nice catch. CPU B finds hwpoisoned page on free list then
+> calling bad_page().  So doing "put back to buddy" and clear_page_hwpoison
+> inside a single zone lock should prevent this race.
 
-That sounds weird. I think we need to look at how other drivers
-deal with this.
+Yeah, or clear the flag before putting it back to buddy? Anyway
+clearing the flag under zone lock is not a big deal either.
 
-To me it seems more natural that
-starfive_padctl_rmw(sfp, group->pins[i], mask, value);
-would get called at the end of each iteration of the
-for (i = 0; i < num_configs; i++) loop.
-
-Yours,
-Linus Walleij
+>
+> Thanks,
+> Naoya Horiguchi
