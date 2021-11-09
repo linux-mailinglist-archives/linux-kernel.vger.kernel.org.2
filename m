@@ -2,89 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 65DB444B42A
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 21:42:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 87DBA44B42E
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 21:43:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244610AbhKIUpa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Nov 2021 15:45:30 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57390 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244597AbhKIUpW (ORCPT
+        id S244620AbhKIUqG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Nov 2021 15:46:06 -0500
+Received: from mo4-p02-ob.smtp.rzone.de ([85.215.255.82]:15521 "EHLO
+        mo4-p02-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S244597AbhKIUqE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Nov 2021 15:45:22 -0500
-Received: from mail-ot1-x334.google.com (mail-ot1-x334.google.com [IPv6:2607:f8b0:4864:20::334])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 50456C061766
-        for <linux-kernel@vger.kernel.org>; Tue,  9 Nov 2021 12:42:36 -0800 (PST)
-Received: by mail-ot1-x334.google.com with SMTP id z2-20020a9d71c2000000b0055c6a7d08b8so561578otj.5
-        for <linux-kernel@vger.kernel.org>; Tue, 09 Nov 2021 12:42:36 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Kl+ING2vPVUw4dbwJiGjKtSToM+NyrnBy+El7nhO980=;
-        b=zmf1V1KQjNkArcK6dsYU/c7ttlDWId9avUz5BsgLno0wJHjE+nzUw6OMH54Pj+TumU
-         j01e23FYO8hn3Wk27ZB75YVIX5/gYGYkZqj1LIvqLDnGgADDGr6M7zzTqBjvsC0Lz9Mw
-         h9EiMhbJXNs+4gpq3Ftu3Ad5M87ldeLiKXsyBOv8WdpxtbD1shQKhiitRoadIzxMJ8Ks
-         Q1FpmIK1bwzRkO5AiXU14yXzdQG/wBdN3LtCIUDfnvMylDI03sqmIdM/HBZwkOqIBcb9
-         2b/TWTng1GnNdtmH0DcniDEgHWD6TNZ54grLGfwl0qzqG93s+3qFgndgPjdFE+KlzjDO
-         f7fA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Kl+ING2vPVUw4dbwJiGjKtSToM+NyrnBy+El7nhO980=;
-        b=ZXZ/MVZ4sEfxBSgIDk1T9uhS9+7tlEnhXNbU3Cu3iysH8GbYZsfKs/irLS3jXJtZdv
-         ++jtSo7BP4S3xScMc3SlqZVmRdrz5FfoCjNpaAxXMqSXZEmu0WLsVcesf2xEdSCokDst
-         Vi16gTieqYUhI++F2w+GAKFawYLs9o21DUmBmAuA+iGC70WkoX0RT6dvo0VMCvBGXrfI
-         5Ar0nx5e2whO2kNS2nAWwXC/bgkvBpSVOUoLkWGvZZjNMOGGAYYMU8dUE24Jz4bAKHtn
-         kktIC1ji6engsaamWv0kyCbdvjHDsePB6nfvCntTk0Bd80uusgffGeZliiY351vEfPVq
-         IG0g==
-X-Gm-Message-State: AOAM5312b1j3/W4CE2o+uNyN3yx8/hZrpMgi9KlM6SRZUeD/hzRBuQ7n
-        qo3C9J8KtSX6GkxM0SGeRrlqABGBoExCmIudKAg6hw==
-X-Google-Smtp-Source: ABdhPJzxPoRxDUD8SGDUt5PcErFvzEPCMZS6UV9UQDtuc0AL6W7X/9yWO2k1DBIvqVQZUNdpVTlOYATJQ3FyB40EqYQ=
-X-Received: by 2002:a9d:6348:: with SMTP id y8mr8564780otk.179.1636490555709;
- Tue, 09 Nov 2021 12:42:35 -0800 (PST)
-MIME-Version: 1.0
-References: <20211109100207.2474024-1-arnd@kernel.org> <20211109100207.2474024-7-arnd@kernel.org>
- <YYpN3LzXz638l6FG@smile.fi.intel.com> <CAK8P3a24wkBEAnWG8=LYoVR1oiTo0VKZ3iME+FYbDuHXJDjMOw@mail.gmail.com>
-In-Reply-To: <CAK8P3a24wkBEAnWG8=LYoVR1oiTo0VKZ3iME+FYbDuHXJDjMOw@mail.gmail.com>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Tue, 9 Nov 2021 21:42:24 +0100
-Message-ID: <CACRpkdZaJQqwyosnXhaOc=mF5jJxaDKDKAQxJGJvQAWpU7MNQQ@mail.gmail.com>
-Subject: Re: [PATCH v2 6/8] gpiolib: remove legacy gpio_export
-To:     Arnd Bergmann <arnd@kernel.org>
-Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Bartosz Golaszewski <brgl@bgdev.pl>,
+        Tue, 9 Nov 2021 15:46:04 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1636490576;
+    s=strato-dkim-0002; d=goldelico.com;
+    h=To:References:Message-Id:Cc:Date:In-Reply-To:From:Subject:Cc:Date:
+    From:Subject:Sender;
+    bh=BXAn1R+jGGr+poz7fiAkFE+JV3nNe0OqbizSqbesjgY=;
+    b=cwKuv7Dfmkcltr/hVF6LExZgp+bxlCqIqdWY+LAtx9l6moqnyM+laELhl6+SABJ0pb
+    9P3L8kfKDDKc0Ctf0zmrNzc+TxGwPZLyj1P1jGAB9zC98xWZ5Mg/RHlZgEc2Lg9y8MAx
+    6o6dil58CWYBbBPvLSyI4/9d+lWAkzG9DrGcxp0oU35nTA7cdhKa01WgS4WSpwKN+RCb
+    oJLTFcUPq9hZNAJ5hRrIg/HIYCo8LclWHe2URd7uscIFbgx3qiLZLNHJN3cI+J+JIjQO
+    WO69svcq9DwV4QxgJ4QG8haa3GauFhU4pEfjzr1VHQtwq7wUUDnd+4UPNgTAzrSLc2Kf
+    EAqw==
+Authentication-Results: strato.com;
+    dkim=none
+X-RZG-AUTH: ":JGIXVUS7cutRB/49FwqZ7WcJeFKiMgPgp8VKxflSZ1P34KBj7gpw91N5y2S3i8cT6Q=="
+X-RZG-CLASS-ID: mo00
+Received: from imac.fritz.box
+    by smtp.strato.de (RZmta 47.34.5 DYNA|AUTH)
+    with ESMTPSA id Y02aa4xA9Kgt0dc
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (curve X9_62_prime256v1 with 256 ECDH bits, eq. 3072 bits RSA))
+        (Client did not present a certificate);
+    Tue, 9 Nov 2021 21:42:55 +0100 (CET)
+Content-Type: text/plain;
+        charset=utf-8
+Mime-Version: 1.0 (Mac OS X Mail 12.4 \(3445.104.21\))
+Subject: Re: [PATCH v5 5/7] MIPS: DTS: jz4780: Account for Synopsys HDMI
+ driver and LCD controllers
+From:   "H. Nikolaus Schaller" <hns@goldelico.com>
+In-Reply-To: <6WNB2R.GJ2KT1BB7QOY1@crapouillou.net>
+Date:   Tue, 9 Nov 2021 21:42:54 +0100
+Cc:     Paul Boddie <paul@boddie.org.uk>, Rob Herring <robh+dt@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
         Geert Uytterhoeven <geert+renesas@glider.be>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        Kees Cook <keescook@chromium.org>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Robert Foss <robert.foss@linaro.org>,
+        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        Ezequiel Garcia <ezequiel@collabora.com>,
+        Harry Wentland <harry.wentland@amd.com>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        Maxime Ripard <maxime@cerno.tech>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS 
+        <devicetree@vger.kernel.org>,
+        linux-mips <linux-mips@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Discussions about the Letux Kernel 
+        <letux-kernel@openphoenux.org>, Jon as Karlman <jonas@kwiboo.se>,
+        dri-devel <dri-devel@lists.freedesktop.org>
+Content-Transfer-Encoding: quoted-printable
+Message-Id: <4DCFE008-A619-465F-9124-F58AC36A2B08@goldelico.com>
+References: <cover.1633436959.git.hns@goldelico.com>
+ <c243176cb5e5a3ab5df1fe77f9246b6d5ec4f88e.1633436959.git.hns@goldelico.com>
+ <O7VI0R.CRIG8R7O0OOI3@crapouillou.net> <3514743.EH6qe8WxYI@jason>
+ <N3YI0R.7ZLKK5JTBXW63@crapouillou.net>
+ <95D1DE70-DDF4-419B-8F0C-E9A6E0995D1F@goldelico.com>
+ <BDU72R.SAKM4CQWCUKI2@crapouillou.net>
+ <BF6CBFFA-E8AA-4CCE-A587-4D5D647DEC64@goldelico.com>
+ <6WNB2R.GJ2KT1BB7QOY1@crapouillou.net>
+To:     Paul Cercueil <paul@crapouillou.net>
+X-Mailer: Apple Mail (2.3445.104.21)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 9, 2021 at 11:50 AM Arnd Bergmann <arnd@kernel.org> wrote:
 
-> I think the TODO list is in Linus' head,
 
-Oh no, drivers/gpio/TODO
+> Am 09.11.2021 um 21:36 schrieb Paul Cercueil <paul@crapouillou.net>:
+>=20
+> Hi Nikolaus,
+>=20
+> Le mar., nov. 9 2021 at 21:19:17 +0100, H. Nikolaus Schaller =
+<hns@goldelico.com> a =C3=A9crit :
+>> Hi Paul,
+>>> Am 07.11.2021 um 20:05 schrieb Paul Cercueil <paul@crapouillou.net>:
+>>>> 6. Therefore I think it *may* work overclocked with 48MHz
+>>>> but is not guaranteed or reliable above 27 MHz.
+>>>> So everything is ok here.
+>>> One thing though - the "assigned-clocks" and "assigned-clock-rates", =
+while it works here, should be moved to the CGU node, to respect the =
+YAML schemas.
+>> Trying to do this seems to break boot.
+>> I can boot up to
+>> [    8.312926] dw-hdmi-ingenic 10180000.hdmi: registered DesignWare =
+HDMI I2C bus driver
+>> and
+>> [   11.366899] [drm] Initialized ingenic-drm 1.1.0 20200716 for =
+13050000.lcdc0 on minor 0
+>> but then the boot process becomes slow and hangs. Last sign of =
+activity is
+>> [   19.347659] hub 1-0:1.0: USB hub found
+>> [   19.353478] hub 1-0:1.0: 1 port detected
+>> [   32.321760] wlan0_power: disabling
+>> What I did was to just move
+>> 		assigned-clocks =3D <&cgu JZ4780_CLK_HDMI>;
+>> 		assigned-clock-rates =3D <27000000>;
+>> from
+>> 	hdmi: hdmi@10180000 {
+>> to
+>> 	cgu: jz4780-cgu@10000000 {
+>> Does this mean the clock is assigned too early or too late?
+>> Do you have any suggestions since I don't know the details of CGU.
+>=20
+> These properties are already set for the CGU node in ci20.dts:
 
-> but it would include all the files
-> that use one of the interfaces in linux/gpio.h. I found about 350 of them,
-> so there is little point in listing them one at a time. IIRC Linus is going
-> through those one subsystem at a time.
+Ah, I didn't look into that. Maybe because I thought adding this should =
+stay in jz4780.dtsi to be available for any board making use of it.
 
-Yeah but if it's just me I doubt that I will manage to do it by the
-time I retire in 2037 or so... So the TODO is there to inspire others
-to step in and help out.
+So it gets overwritten and is then completely missing.
 
-> I also found that we have a ton of users of linux/of_gpio.h, which is
-> somewhere inbetween the linux/gpio.h interface and the
-> linux/gpio/consumer.h version.
+>=20
+> &cgu {
+> 	/*
+> 	 * Use the 32.768 kHz oscillator as the parent of the RTC for a =
+higher
+> 	 * precision.
+> 	 */
+> 	assigned-clocks =3D <&cgu JZ4780_CLK_OTGPHY>, <&cgu =
+JZ4780_CLK_RTC>;
+> 	assigned-clock-parents =3D <0>, <&cgu JZ4780_CLK_RTCLK>;
+> 	assigned-clock-rates =3D <48000000>;
+> };
+>=20
+> So you want to update these properties to add the HDMI clock setting, =
+like this:
+>=20
+> 	assigned-clocks =3D <&cgu JZ4780_CLK_OTGPHY>, <&cgu =
+JZ4780_CLK_RTC>, <&cgu JZ4780_CLK_HDMI>;
+> 	assigned-clock-parents =3D <0>, <&cgu JZ4780_CLK_RTCLK>;
+> 	assigned-clock-rates =3D <48000000>, <0>, <27000000>;
 
-This is also mentioned in the TODO.
+Will give it a try.
 
-Yours,
-Linus Walleij
+I would prefer if it could sit in jz4780.dtsi and ci20.dts would just =
+extend it but IMHO this is beyond DTS capabilities.
+So we likely have to live with that.
+
+BR and thanks,
+Nikolaus
+
