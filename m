@@ -2,348 +2,221 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4CEFE44AAFD
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 10:54:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A33DA44AB14
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 10:59:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243221AbhKIJ5E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Nov 2021 04:57:04 -0500
-Received: from out30-42.freemail.mail.aliyun.com ([115.124.30.42]:47053 "EHLO
-        out30-42.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S242572AbhKIJ5A (ORCPT
+        id S245107AbhKIKBx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Nov 2021 05:01:53 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51802 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S242969AbhKIKBw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Nov 2021 04:57:00 -0500
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R171e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04426;MF=baolin.wang@linux.alibaba.com;NM=1;PH=DS;RN=10;SR=0;TI=SMTPD_---0UvluZmB_1636451651;
-Received: from 30.21.164.65(mailfrom:baolin.wang@linux.alibaba.com fp:SMTPD_---0UvluZmB_1636451651)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Tue, 09 Nov 2021 17:54:12 +0800
-Subject: Re: [RFC PATCH v2] mm: migrate: Support multiple target nodes
- demotion
-To:     "Huang, Ying" <ying.huang@intel.com>
-Cc:     akpm@linux-foundation.org, dave.hansen@linux.intel.com,
-        ziy@nvidia.com, osalvador@suse.de, shy828301@gmail.com,
-        zhongjiang-ali@linux.alibaba.com, xlpang@linux.alibaba.com,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org
-References: <f6d68800ff2efcb0720599ae092d30765a640232.1636428988.git.baolin.wang@linux.alibaba.com>
- <875yt1vk7i.fsf@yhuang6-desk2.ccr.corp.intel.com>
-From:   Baolin Wang <baolin.wang@linux.alibaba.com>
-Message-ID: <1bf154f0-951f-ce20-26f2-9ca7dda4bb77@linux.alibaba.com>
-Date:   Tue, 9 Nov 2021 17:54:58 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.14.0
+        Tue, 9 Nov 2021 05:01:52 -0500
+Received: from mail-io1-xd29.google.com (mail-io1-xd29.google.com [IPv6:2607:f8b0:4864:20::d29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8D74DC061764;
+        Tue,  9 Nov 2021 01:59:06 -0800 (PST)
+Received: by mail-io1-xd29.google.com with SMTP id e144so22354288iof.3;
+        Tue, 09 Nov 2021 01:59:06 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=ocne8Jf+CRaD/PTxWbJMJ6anZESoWIg8oVwu3VA3RFU=;
+        b=YAxtZaFHOVYY7fKxi+LYJgQHvvmv0hAuyglZVjIjIwHLY+bCP6iAExqHKMLrrp8slV
+         QuilRboUyRYpGQiG3nMxSn3a3HzVb9NpMiDGEBMKyFaX4tH/YTWgr1wnbqpgmRzqubUq
+         RtrHw0uVxvmoCTTm0JH09lOIbdXkN7saP+ygMEjmaKDVNq24tjoUSWv9KxnZsyV1D9xQ
+         qVKKgMSapT+nFxt92e8pOCcIngXqlBz8aYfs7aJb5VnvExou7xV5+sSJFckDrXaSQSPO
+         aB5ar8PN47ouJNHYA0/3f1c5NfpM0eBTEexV1zFFSIcecu+U/sQSlzhFmKA6PGHbOfF/
+         KLZA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=ocne8Jf+CRaD/PTxWbJMJ6anZESoWIg8oVwu3VA3RFU=;
+        b=LUTalVAHNTA2O3mWIDHT4vvbXL/gT9QVAFQ/E7r10Ah1kRL2mjzU76keDZMPS/mRwT
+         CHN0YdioK/2ZZMA2J0d1/4+h2+NZrAhhUHkR1sUcUQK5kfGsEcAqOstWuBht2j4WRLXa
+         VAkcJyt/msx+FxfdSS2DrF6PX1aDkPPfccBFLGeErcoWOorDh8lac30t9W+E/JkGMUW5
+         jv+r5zH6G0hozeqy2N300ahBGjLYGr7sqG/QfRuWopII0isOQfZiWlFRUqFrnrUOleI8
+         CViCLe8o5W8LmDIy1oLVyzbp4tSOljB8o7luRMifmiJmmMrDuh6ARSvDLyCeY4S4uVEa
+         2KTg==
+X-Gm-Message-State: AOAM532r3hOyu8cx999tzNXdHnbdb/uA89qXexM8OkDAtC5kNaXfxuP8
+        SuGWPdJAAbJiHYmJwKYIP9jKIOVQN6myvgw1Jc9ISZJeTWcWtA==
+X-Google-Smtp-Source: ABdhPJyPbzQdQsyjjhdkzHW8mr8w4SV9+xLf/EJpbFPzWjjoHaAD+B/UmvqAkyRL8XOe3Ylo7pR5UMmv6kcS1fbBFpI=
+X-Received: by 2002:a05:6638:d16:: with SMTP id q22mr4535814jaj.35.1636451945942;
+ Tue, 09 Nov 2021 01:59:05 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <875yt1vk7i.fsf@yhuang6-desk2.ccr.corp.intel.com>
-Content-Type: text/plain; charset=windows-1252; format=flowed
-Content-Transfer-Encoding: 7bit
+References: <20211009113707.17568-1-alistair@alistair23.me>
+ <20211009113707.17568-2-alistair@alistair23.me> <YWZYy8OsqJx1J8VA@google.com> <CAKmqyKM=wHN=NhfSBFT243oTkozcpFrqt1xM8xRP6Yf4ONGG1Q@mail.gmail.com>
+In-Reply-To: <CAKmqyKM=wHN=NhfSBFT243oTkozcpFrqt1xM8xRP6Yf4ONGG1Q@mail.gmail.com>
+From:   Alistair Francis <alistair23@gmail.com>
+Date:   Tue, 9 Nov 2021 19:58:00 +1000
+Message-ID: <CAKmqyKO1q4k8eXsJF1fGu6CNR1q9=_1MhwyCoJ2858rCNQBZKQ@mail.gmail.com>
+Subject: Re: [PATCH 2/2] Input: wacom_i2c - Use macros for the bit masks
+To:     Dmitry Torokhov <dmitry.torokhov@gmail.com>
+Cc:     Alistair Francis <alistair@alistair23.me>,
+        linux-input <linux-input@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, Oct 13, 2021 at 11:04 PM Alistair Francis <alistair23@gmail.com> wrote:
+>
+> On Wed, Oct 13, 2021 at 1:56 PM Dmitry Torokhov
+> <dmitry.torokhov@gmail.com> wrote:
+> >
+> > Hi Alistair,
+> >
+> > On Sat, Oct 09, 2021 at 09:37:07PM +1000, Alistair Francis wrote:
+> > > To make the code easier to read use macros for the bit masks.
+> > >
+> > > Signed-off-by: Alistair Francis <alistair@alistair23.me>
+> > > ---
+> > >  drivers/input/touchscreen/wacom_i2c.c | 14 ++++++++++----
+> > >  1 file changed, 10 insertions(+), 4 deletions(-)
+> > >
+> > > diff --git a/drivers/input/touchscreen/wacom_i2c.c b/drivers/input/touchscreen/wacom_i2c.c
+> > > index 8d7267ccc661..6865342db659 100644
+> > > --- a/drivers/input/touchscreen/wacom_i2c.c
+> > > +++ b/drivers/input/touchscreen/wacom_i2c.c
+> > > @@ -14,6 +14,12 @@
+> > >  #include <linux/interrupt.h>
+> > >  #include <asm/unaligned.h>
+> > >
+> > > +// Bitmasks (for data[3])
+> > > +#define WACOM_TIP_SWITCH_bm         (1 << 0)
+> > > +#define WACOM_BARREL_SWITCH_bm      (1 << 1)
+> > > +#define WACOM_ERASER_bm             (1 << 2)
+> > > +#define WACOM_BARREL_SWITCH_2_bm    (1 << 4)
+> >
+> > We have BIT() for that.
+> >
+> > By the way, do you know what is the good name for bit 3? I see it is
+> > being used in:
+>
+> I have this for bit 3:
+>
+> #define WACOM_INVERT_bm             (1 << 3)
+>
+>
+> >
+> >         if (!wac_i2c->prox)
+> >                 wac_i2c->tool = (data[3] & 0x0c) ?
+> >                         BTN_TOOL_RUBBER : BTN_TOOL_PEN;
+> >
+> >         wac_i2c->prox = data[3] & WACOM_IN_PROXIMITY;
+> >
+> > 0x0c is (WACOM_ERASER | <something else>).
+> >
+> > Also, I am a bit confused by this code, now that I look at it closer.
+> > Are we saying that the tool type (eraser or something else) is set only
+> > in first packet for contact/touch?
+>
+> I'm not sure, you would have to check with the wacom people.
+>
+> >
+> > > +
+> > >  // Registers
+> > >  #define WACOM_COMMAND_LSB   0x04
+> > >  #define WACOM_COMMAND_MSB   0x00
+> > > @@ -110,10 +116,10 @@ static irqreturn_t wacom_i2c_irq(int irq, void *dev_id)
+> > >       if (error < 0)
+> > >               goto out;
+> > >
+> > > -     tsw = data[3] & 0x01;
+> > > -     ers = data[3] & 0x04;
+> > > -     f1 = data[3] & 0x02;
+> > > -     f2 = data[3] & 0x10;
+> > > +     tsw = data[3] & WACOM_TIP_SWITCH_bm;
+> > > +     ers = data[3] & WACOM_ERASER_bm;
+> > > +     f1 = data[3] & WACOM_BARREL_SWITCH_bm;
+> > > +     f2 = data[3] & WACOM_BARREL_SWITCH_2_bm;
+> > >       x = le16_to_cpup((__le16 *)&data[4]);
+> > >       y = le16_to_cpup((__le16 *)&data[6]);
+> > >       pressure = le16_to_cpup((__le16 *)&data[8]);
+> > > --
+> > > 2.31.1
+> > >
+> >
+> > How about the version of the patch below?
+>
+> Looks good to me!
+>
+> Alistair
+>
+> >
+> > --
+> > Dmitry
+> >
+> > Input: wacom_i2c - use macros for the bit masks
+> >
+> > From: Alistair Francis <alistair@alistair23.me>
+> >
+> > To make the code easier to read use macros for the bit masks.
+> >
+> > Signed-off-by: Alistair Francis <alistair@alistair23.me>
+> > Link: https://lore.kernel.org/r/20211009113707.17568-2-alistair@alistair23.me
+> > Patchwork-Id: 12547519
+> > Signed-off-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
 
+I'm assuming you don't need me to re-send this. Let me know if you
+want me to though.
 
-On 2021/11/9 15:53, Huang, Ying writes:
-> Baolin Wang <baolin.wang@linux.alibaba.com> writes:
-> 
->> We have some machines with multiple memory types like below, which
->> have one fast (DRAM) memory node and two slow (persistent memory) memory
->> nodes. According to current node demotion, if node 0 fills up,
->> its memory should be migrated to node 1, when node 1 fills up, its
->> memory will be migrated to node 2: node 0 -> node 1 -> node 2 ->stop.
->>
->> But this is not efficient and suitbale memory migration route
->> for our machine with multiple slow memory nodes. Since the distance
->> between node 0 to node 1 and node 0 to node 2 is equal, and memory
->> migration between slow memory nodes will increase persistent memory
->> bandwidth greatly, which will hurt the whole system's performance.
->>
->> Thus for this case, we can treat the slow memory node 1 and node 2
->> as a whole slow memory region, and we should migrate memory from
->> node 0 to node 1 and node 2 if node 0 fills up.
->>
->> This patch changes the node_demotion data structure to support multiple
->> target nodes, and establishes the migration path to support multiple
->> target nodes with validating if the node distance is the best or not.
->>
->> available: 3 nodes (0-2)
->> node 0 cpus: 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15
->> node 0 size: 62153 MB
->> node 0 free: 55135 MB
->> node 1 cpus:
->> node 1 size: 127007 MB
->> node 1 free: 126930 MB
->> node 2 cpus:
->> node 2 size: 126968 MB
->> node 2 free: 126878 MB
->> node distances:
->> node   0   1   2
->>    0:  10  20  20
->>    1:  20  10  20
->>    2:  20  20  10
->>
->> Signed-off-by: Baolin Wang <baolin.wang@linux.alibaba.com>
->> ---
->> Changes from RFC v1:
->>   - Re-define the node_demotion structure.
->>   - Set up multiple target nodes by validating the node distance.
->>   - Add more comments.
->> ---
->>   mm/migrate.c | 132 +++++++++++++++++++++++++++++++++++++++++++----------------
->>   1 file changed, 96 insertions(+), 36 deletions(-)
->>
->> diff --git a/mm/migrate.c b/mm/migrate.c
->> index cf25b00..95f170d 100644
->> --- a/mm/migrate.c
->> +++ b/mm/migrate.c
->> @@ -1119,12 +1119,25 @@ static int __unmap_and_move(struct page *page, struct page *newpage,
->>    *
->>    * This is represented in the node_demotion[] like this:
->>    *
->> - *	{  1, // Node 0 migrates to 1
->> - *	   2, // Node 1 migrates to 2
->> - *	  -1, // Node 2 does not migrate
->> - *	   4, // Node 3 migrates to 4
->> - *	   5, // Node 4 migrates to 5
->> - *	  -1} // Node 5 does not migrate
->> + *	{  nr=1, nodes[0]=1 }, // Node 0 migrates to 1
->> + *	{  nr=1, nodes[0]=2 }, // Node 1 migrates to 2
->> + *	{  nr=0, nodes[0]=-1 }, // Node 2 does not migrate
->> + *	{  nr=1, nodes[0]=4 }, // Node 3 migrates to 4
->> + *	{  nr=1, nodes[0]=5 }, // Node 4 migrates to 5
->> + *	{  nr=0, nodes[0]=-1} // Node 5 does not migrate
->> + *
->> + * Moreover some systems may have multiple same class memory
->> + * types. Suppose a system has one socket with 3 memory nodes,
->> + * node 0 is fast memory type, and node 1/2 both are slow memory
->> + * type, and the distance between fast memory node and slow
->> + * memory node is same. So the migration path should be:
->> + *
->> + *	0 -> 1/2 -> stop
->> + *
->> + * This is represented in the node_demotion[] like this:
->> + *	{ nr=2, {nodes[0]=1, nodes[1]=2} }, // Node 0 migrates to node 1 and node 2
->> + *	{ nr=0, nodes[0]=-1, }, // Node 1 dose not migrate
->> + *	{ nr=0, nodes[0]=-1, }, // Node 2 does not migrate
->>    */
->>   
->>   /*
->> @@ -1135,8 +1148,13 @@ static int __unmap_and_move(struct page *page, struct page *newpage,
->>    * must be held over all reads to ensure that no cycles are
->>    * observed.
->>    */
->> -static int node_demotion[MAX_NUMNODES] __read_mostly =
->> -	{[0 ...  MAX_NUMNODES - 1] = NUMA_NO_NODE};
->> +#define DEMOTION_TARGET_NODES 15
->> +struct demotion_nodes {
->> +	unsigned short nr;
->> +	int nodes[DEMOTION_TARGET_NODES];
-> 
-> Why we cannot use "unsigned short" for nodes[]?
+Alistair
 
-I think the default value of target node should be NUMA_NO_NODE(-1), so 
-a signed type is more suitable. I can change to 'short' type.
-
-> 
->> +};
->> +
->> +static struct demotion_nodes node_demotion[MAX_NUMNODES] __read_mostly;
->>   
->>   /**
->>    * next_demotion_node() - Get the next node in the demotion path
->> @@ -1149,7 +1167,9 @@ static int __unmap_and_move(struct page *page, struct page *newpage,
->>    */
->>   int next_demotion_node(int node)
->>   {
->> -	int target;
->> +	struct demotion_nodes *current_node_demotion = &node_demotion[node];
->> +	int target, i;
->> +	nodemask_t target_nodes = NODE_MASK_NONE;
->>   
->>   	/*
->>   	 * node_demotion[] is updated without excluding this
->> @@ -1161,9 +1181,21 @@ int next_demotion_node(int node)
->>   	 * node_demotion[] reads need to be consistent.
->>   	 */
->>   	rcu_read_lock();
->> -	target = READ_ONCE(node_demotion[node]);
->> +	for (i = 0; i < DEMOTION_TARGET_NODES; i++) {
->> +		target = READ_ONCE(current_node_demotion->nodes[i]);
->> +		if (target == NUMA_NO_NODE)
->> +			break;
->> +
->> +		node_set(target, target_nodes);
-> 
-> Why do we need a nodemask?  Why not just find a target node from
-> current_node_demotion->nodes[] randomly and directly?
-
-I think nodemask is scalable in future if we want to add more 
-requirements to select the target node if necessary. Anyway now I have 
-no strong preference with the nodemask, and can change to select the 
-target node randomly and directly, which are something like below.
-
-+       target_nr = READ_ONCE(current_node_demotion->nr);
-+
-+       if (target_nr == 0) {
-+               target = NUMA_NO_NODE;
-+               goto out;
-+       } else if (target_nr == 1) {
-+               index = 0;
-+       } else {
-+               /*
-+                * If there are multiple target nodes, just select one
-+                * target node randomly.
-+                */
-+               index = get_random_int() % target_nr;
-+       }
-+
-+       target = READ_ONCE(current_node_demotion->nodes[index]);
-
-> 
->> +	}
->> +
->>   	rcu_read_unlock();
->>   
->> +	if (nodes_empty(target_nodes))
->> +		return NUMA_NO_NODE;
->> +
->> +	/* TODO: Select a target node randomly */
->> +	target = node_random(&target_nodes);
->>   	return target;
->>   }
->>   
->> @@ -2974,10 +3006,13 @@ void migrate_vma_finalize(struct migrate_vma *migrate)
->>   /* Disable reclaim-based migration. */
->>   static void __disable_all_migrate_targets(void)
->>   {
->> -	int node;
->> +	int node, i;
->>   
->> -	for_each_online_node(node)
->> -		node_demotion[node] = NUMA_NO_NODE;
->> +	for_each_online_node(node) {
->> +		node_demotion[node].nr = 0;
->> +		for (i = 0; i < DEMOTION_TARGET_NODES; i++)
->> +			node_demotion[node].nodes[i] = NUMA_NO_NODE;
->> +	}
->>   }
->>   
->>   static void disable_all_migrate_targets(void)
->> @@ -3004,26 +3039,34 @@ static void disable_all_migrate_targets(void)
->>    * Failing here is OK.  It might just indicate
->>    * being at the end of a chain.
->>    */
->> -static int establish_migrate_target(int node, nodemask_t *used)
->> +static int establish_migrate_target(int node, nodemask_t *used,
->> +				    int best_distance)
->>   {
->> -	int migration_target;
->> +	int migration_target, index, val;
->> +	struct demotion_nodes *current_node_demotion = &node_demotion[node];
->> +
->> +	migration_target = find_next_best_node(node, used);
->> +	if (migration_target == NUMA_NO_NODE)
->> +		return NUMA_NO_NODE;
->>   
->>   	/*
->> -	 * Can not set a migration target on a
->> -	 * node with it already set.
->> -	 *
->> -	 * No need for READ_ONCE() here since this
->> -	 * in the write path for node_demotion[].
->> -	 * This should be the only thread writing.
->> +	 * If the node has been set a migration target node before,
->> +	 * which means it's the best distance between them. Still
->> +	 * check if this node can be demoted to other target nodes
->> +	 * if they have a same best distance.
->>   	 */
->> -	if (node_demotion[node] != NUMA_NO_NODE)
->> -		return NUMA_NO_NODE;
->> +	if (best_distance != -1) {
->> +		val = node_distance(node, migration_target);
->> +		if (val > best_distance)
->> +			return NUMA_NO_NODE;
->> +	}
->>   
->> -	migration_target = find_next_best_node(node, used);
->> -	if (migration_target == NUMA_NO_NODE)
->> +	index = current_node_demotion->nr;
->> +	if (index >= DEMOTION_TARGET_NODES)
-> 
-> I think we need WARN_ONCE() here, so we can increase
-> DEMOTION_TARGET_NODES if necessary.
-
-Sure, will do. Thanks for your comments.
-
-> 
->>   		return NUMA_NO_NODE;
->>   
->> -	node_demotion[node] = migration_target;
->> +	current_node_demotion->nodes[index] = migration_target;
->> +	current_node_demotion->nr++;
->>   
->>   	return migration_target;
->>   }
->> @@ -3039,7 +3082,9 @@ static int establish_migrate_target(int node, nodemask_t *used)
->>    *
->>    * The difference here is that cycles must be avoided.  If
->>    * node0 migrates to node1, then neither node1, nor anything
->> - * node1 migrates to can migrate to node0.
->> + * node1 migrates to can migrate to node0. Also one node can
->> + * be migrated to multiple nodes if the target nodes all have
->> + * a same best-distance against the source node.
->>    *
->>    * This function can run simultaneously with readers of
->>    * node_demotion[].  However, it can not run simultaneously
->> @@ -3051,7 +3096,7 @@ static void __set_migration_target_nodes(void)
->>   	nodemask_t next_pass	= NODE_MASK_NONE;
->>   	nodemask_t this_pass	= NODE_MASK_NONE;
->>   	nodemask_t used_targets = NODE_MASK_NONE;
->> -	int node;
->> +	int node, best_distance;
->>   
->>   	/*
->>   	 * Avoid any oddities like cycles that could occur
->> @@ -3080,18 +3125,33 @@ static void __set_migration_target_nodes(void)
->>   	 * multiple source nodes to share a destination.
->>   	 */
->>   	nodes_or(used_targets, used_targets, this_pass);
->> -	for_each_node_mask(node, this_pass) {
->> -		int target_node = establish_migrate_target(node, &used_targets);
->>   
->> -		if (target_node == NUMA_NO_NODE)
->> -			continue;
->> +	for_each_node_mask(node, this_pass) {
->> +		best_distance = -1;
->>   
->>   		/*
->> -		 * Visit targets from this pass in the next pass.
->> -		 * Eventually, every node will have been part of
->> -		 * a pass, and will become set in 'used_targets'.
->> +		 * Try to set up the migration path for the node, and the target
->> +		 * migration nodes can be multiple, so doing a loop to find all
->> +		 * the target nodes if they all have a best node distance.
->>   		 */
->> -		node_set(target_node, next_pass);
->> +		do {
->> +			int target_node =
->> +				establish_migrate_target(node, &used_targets,
->> +							 best_distance);
->> +
->> +			if (target_node == NUMA_NO_NODE)
->> +				break;
->> +
->> +			if (best_distance == -1)
->> +				best_distance = node_distance(node, target_node);
->> +
->> +			/*
->> +			 * Visit targets from this pass in the next pass.
->> +			 * Eventually, every node will have been part of
->> +			 * a pass, and will become set in 'used_targets'.
->> +			 */
->> +			node_set(target_node, next_pass);
->> +		} while (1);
->>   	}
->>   	/*
->>   	 * 'next_pass' contains nodes which became migration
-> 
-> Best Regards,
-> Huang, Ying
-> 
+> > ---
+> >  drivers/input/touchscreen/wacom_i2c.c |   19 ++++++++++++++-----
+> >  1 file changed, 14 insertions(+), 5 deletions(-)
+> >
+> > diff --git a/drivers/input/touchscreen/wacom_i2c.c b/drivers/input/touchscreen/wacom_i2c.c
+> > index 22826c387da5..d3ea9aa8a98c 100644
+> > --- a/drivers/input/touchscreen/wacom_i2c.c
+> > +++ b/drivers/input/touchscreen/wacom_i2c.c
+> > @@ -6,6 +6,7 @@
+> >   * <tobita.tatsunosuke@wacom.co.jp>
+> >   */
+> >
+> > +#include <linux/bits.h>
+> >  #include <linux/module.h>
+> >  #include <linux/input.h>
+> >  #include <linux/i2c.h>
+> > @@ -14,6 +15,14 @@
+> >  #include <linux/interrupt.h>
+> >  #include <asm/unaligned.h>
+> >
+> > +// Bitmasks (for data[3])
+> > +#define WACOM_TIP_SWITCH       BIT(0)
+> > +#define WACOM_BARREL_SWITCH    BIT(1)
+> > +#define WACOM_ERASER           BIT(2)
+> > +#define WACOM_BARREL_SWITCH_2  BIT(4)
+> > +#define WACOM_IN_PROXIMITY     BIT(5)
+> > +
+> > +// Registers
+> >  #define WACOM_CMD_QUERY0       0x04
+> >  #define WACOM_CMD_QUERY1       0x00
+> >  #define WACOM_CMD_QUERY2       0x33
+> > @@ -99,10 +108,10 @@ static irqreturn_t wacom_i2c_irq(int irq, void *dev_id)
+> >         if (error < 0)
+> >                 goto out;
+> >
+> > -       tsw = data[3] & 0x01;
+> > -       ers = data[3] & 0x04;
+> > -       f1 = data[3] & 0x02;
+> > -       f2 = data[3] & 0x10;
+> > +       tsw = data[3] & WACOM_TIP_SWITCH;
+> > +       ers = data[3] & WACOM_ERASER;
+> > +       f1 = data[3] & WACOM_BARREL_SWITCH;
+> > +       f2 = data[3] & WACOM_BARREL_SWITCH_2;
+> >         x = le16_to_cpup((__le16 *)&data[4]);
+> >         y = le16_to_cpup((__le16 *)&data[6]);
+> >         pressure = le16_to_cpup((__le16 *)&data[8]);
+> > @@ -111,7 +120,7 @@ static irqreturn_t wacom_i2c_irq(int irq, void *dev_id)
+> >                 wac_i2c->tool = (data[3] & 0x0c) ?
+> >                         BTN_TOOL_RUBBER : BTN_TOOL_PEN;
+> >
+> > -       wac_i2c->prox = data[3] & 0x20;
+> > +       wac_i2c->prox = data[3] & WACOM_IN_PROXIMITY;
+> >
+> >         input_report_key(input, BTN_TOUCH, tsw || ers);
+> >         input_report_key(input, wac_i2c->tool, wac_i2c->prox);
