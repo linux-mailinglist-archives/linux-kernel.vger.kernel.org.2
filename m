@@ -2,187 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2B26744A6B4
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 07:16:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 822DB44A6BD
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 07:17:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240971AbhKIGTb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Nov 2021 01:19:31 -0500
-Received: from mail.kernel.org ([198.145.29.99]:54618 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230011AbhKIGT3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Nov 2021 01:19:29 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 27747611BF;
-        Tue,  9 Nov 2021 06:16:42 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1636438604;
-        bh=Pj0w/765nIeUinsdw2x8elro8Twg48Pg8i+XxslDxxs=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=bPXNt/UaJM8HsokBr6UYcVV3VdTwHbWw43zmUsMUEk0LkPtFVhluqS9SQEfUS2MjE
-         AuftfEYa7KgmveH4dEUY+q956qpISuVkwdsBavto6NkGrEV3K2VEpbxiiiSULhOdBo
-         T6Hq33mkcBl0UtQZAi4UCA1VDcpRqFILaCyjdHs0=
-Date:   Tue, 9 Nov 2021 07:16:30 +0100
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Hans-Gert Dahmen <hans-gert.dahmen@immu.ne>
-Cc:     akpm@linux-foundation.org, linux-kernel@vger.kernel.org,
-        philipp.deppenwiese@immu.ne, mauro.lima@eclypsium.com,
-        hughsient@gmail.com, platform-driver-x86@vger.kernel.org
-Subject: Re: [PATCH] firmware: export x86_64 platform flash bios region via
- sysfs
-Message-ID: <YYoSPjF3M05dR0PX@kroah.com>
-References: <20211109000130.42361-1-hans-gert.dahmen@immu.ne>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20211109000130.42361-1-hans-gert.dahmen@immu.ne>
+        id S243138AbhKIGUL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Nov 2021 01:20:11 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57680 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S240993AbhKIGUK (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Nov 2021 01:20:10 -0500
+Received: from mail-pf1-x42a.google.com (mail-pf1-x42a.google.com [IPv6:2607:f8b0:4864:20::42a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB5D4C061766
+        for <linux-kernel@vger.kernel.org>; Mon,  8 Nov 2021 22:17:24 -0800 (PST)
+Received: by mail-pf1-x42a.google.com with SMTP id n85so13971024pfd.10
+        for <linux-kernel@vger.kernel.org>; Mon, 08 Nov 2021 22:17:24 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id;
+        bh=+4p8iCSg5fdU2hA+HAu0ciUTCxD+Jovqw6Lw+zBsQn4=;
+        b=c0mYPeIubezW8It6zTFUxpYceqiy3dip6u89M/mAOYYRfpLH8q5Oal3P5CYZCw5CdV
+         vwNCOfuXNDP0oQGFnwzn0skTydWNRzEOxu35+gK1RzddUKbZvPC76yg+QacOLFTOEtFo
+         HzTUTJbRM5hJfM+vSWdWGx0PZHVjpgvkmtWYE0bwE/Jz6gzTVrq78p7QCwbs8CBINvTG
+         lMlIN/z1Jx45f4dBzS+HtV3wrYkRhi+IIXbcKj2gSRQXVjEF2GCdI4HQUBmsJNNozYJf
+         qxkb8ko/OzmEfh5/5KpurbKw082vrTl+96Sbl1biCeGJh78mKfNt/Fbl9fo7YEYt8EFS
+         CoQA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=+4p8iCSg5fdU2hA+HAu0ciUTCxD+Jovqw6Lw+zBsQn4=;
+        b=gUnj+kC81YSNLc9ibWSvvh8Ibtqt3+VREcBEKHhpy7HzICQUQingt1pUXq60MMNJpE
+         hNZw1EspQ9cKY24jxqVpSwU7BjpaGjH5IWGh3aJdyOWBhoYbZIsnmawYebhnPXXBvNyC
+         +hkzEIyOQOU+ZcnOpivbCkkX0p4Zdf7QEcWfdMxXpoeBCVImZbD5fH9t+Lt6uzq5az+r
+         frVEH4NdvKTuWNeOxfSalFB0j5alckJM2g0Y+bO+3XtsB78+SQJyrCf2LwDAQTNqdJSz
+         QejXrm96hr66NKTVJGdabPIbCP/qjkgZnwykUl+Cnrli5d5HUKxunDDx81cUCyaNqXPO
+         P8mw==
+X-Gm-Message-State: AOAM531QSEZ4PKT8AP8u27qichOA6U7IDcqmFUb9cRcszmH+/9jaU6Gh
+        DMnnZPFil5JIFs9cMlrh4ho=
+X-Google-Smtp-Source: ABdhPJw3oDQweJ7mnPkwHh6285Fc0kB7Vmga2oj403dTuyul3HqVfyW9lpBD58b6r2w8K4su/LX/RA==
+X-Received: by 2002:a63:9902:: with SMTP id d2mr370428pge.104.1636438644271;
+        Mon, 08 Nov 2021 22:17:24 -0800 (PST)
+Received: from bj08434pcu.spreadtrum.com ([117.18.48.102])
+        by smtp.gmail.com with ESMTPSA id y18sm7586887pgh.18.2021.11.08.22.17.22
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Mon, 08 Nov 2021 22:17:24 -0800 (PST)
+From:   niuzhiguo84@gmail.com
+To:     jaegeuk@kernel.org, chao@kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net,
+        linux-kernel@vger.kernel.org
+Cc:     Jing.Xia@unisoc.com
+Subject: [PATCH Vx 1/1] f2fs: Avoid deadlock between writeback and checkpoint
+Date:   Tue,  9 Nov 2021 14:16:48 +0800
+Message-Id: <1636438608-27597-1-git-send-email-niuzhiguo84@gmail.com>
+X-Mailer: git-send-email 1.9.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 09, 2021 at 01:01:30AM +0100, Hans-Gert Dahmen wrote:
-> Make the 16MiB long memory-mapped BIOS region of the platform SPI flash
-> on X86_64 system available via /sys/kernel/firmware/flash_mmap/bios_region
-> for pen-testing, security analysis and malware detection on kernels
-> which restrict module loading and/or access to /dev/mem.
+From: Zhiguo Niu <zhiguo.niu@unisoc.com>
 
-That feels like a big security hole we would be opening up for no good
-reason.
+There could be a scenario as following:
+The inodeA and inodeB are in b_io queue of writeback
+inodeA : f2fs's node inode
+inodeB : a dir inode with only one dirty pages, and the node page
+of inodeB cached into inodeA
 
-> It will be used by the open source Converged Security Suite.
-> https://github.com/9elements/converged-security-suite
+writeback:
 
-What is the reason for this, and what use is this new interface?
+wb_workfn
+wb_writeback
+blk_start_plug
+        loop {
+        queue_io
+        progress=__writeback_inodes_wb
+                __writeback_single_inode
+                        do_writepages
+                                f2fs_write_data_pages
+                                wbc->pages_skipped +=get_dirty_pages
+                        inode->i_state &= ~dirty
+                wrote++
+                requeue_inode
+        }
+blk_finish_plug
 
-> 
-> Signed-off-by: Hans-Gert Dahmen <hans-gert.dahmen@immu.ne>
-> ---
->  drivers/firmware/Kconfig             |  9 +++
->  drivers/firmware/Makefile            |  1 +
->  drivers/firmware/x86_64_flash_mmap.c | 86 ++++++++++++++++++++++++++++
+checkpoint:
 
-You forgot to document the new sysfs files in Documentation/ABI/ :(
+f2fs_write_checkpoint
+f2fs_sync_dirty_inodes
+filemap_fdatawrite
+do_writepages
+f2fs_write_data_pages
+        f2fs_write_single_data_page
+                f2fs_do_write_data_page
+                        set_page_writeback
+                        f2fs_outplace_write_data
+                                f2fs_update_data_blkaddr
+                                        f2fs_wait_on_page_writeback
+                inode_dec_dirty_pages
 
+1. Writeback thread flush inodeA, and push it's bio request in task's plug;
+2. Checkpoint thread writes inodeB's dirty page, and then wait its node
+    page writeback cached into inodeA which is in writeback task's plug
+3. Writeback thread flush inodeB and skip writing the dirty page as
+    wb_sync_req[DATA] > 0.
+4. As none of the inodeB's page is marked as PAGECACHE_TAG_DIRTY, writeback
+    thread clear inodeB's dirty state.
+5. Then inodeB is moved from b_io to b_dirty because of pages_skipped > 0
+    as checkpoint thread is stuck before dec dirty_pages.
 
->  3 files changed, 96 insertions(+)
->  create mode 100644 drivers/firmware/x86_64_flash_mmap.c
-> 
-> diff --git a/drivers/firmware/Kconfig b/drivers/firmware/Kconfig
-> index 75cb91055c17..27c2d0b074e0 100644
-> --- a/drivers/firmware/Kconfig
-> +++ b/drivers/firmware/Kconfig
-> @@ -293,6 +293,15 @@ config TURRIS_MOX_RWTM
->  	  other manufacturing data and also utilize the Entropy Bit Generator
->  	  for hardware random number generation.
->  
-> +config X86_64_FLASH_MMAP
-> +	tristate "Export platform flash memory-mapped BIOS region"
-> +	depends on X86_64
-> +	help
-> +	  Export the memory-mapped BIOS region of the platform SPI flash as
-> +	  a read-only sysfs binary attribute on X86_64 systems. The first 16MiB
-> +	  will be accessible via /sys/devices/platform/flash_mmap/bios_region
-> +	  for security and malware analysis for example.
-> +
->  source "drivers/firmware/arm_ffa/Kconfig"
->  source "drivers/firmware/broadcom/Kconfig"
->  source "drivers/firmware/cirrus/Kconfig"
-> diff --git a/drivers/firmware/Makefile b/drivers/firmware/Makefile
-> index 4e58cb474a68..60dc4ea08705 100644
-> --- a/drivers/firmware/Makefile
-> +++ b/drivers/firmware/Makefile
-> @@ -24,6 +24,7 @@ obj-$(CONFIG_SYSFB_SIMPLEFB)	+= sysfb_simplefb.o
->  obj-$(CONFIG_TI_SCI_PROTOCOL)	+= ti_sci.o
->  obj-$(CONFIG_TRUSTED_FOUNDATIONS) += trusted_foundations.o
->  obj-$(CONFIG_TURRIS_MOX_RWTM)	+= turris-mox-rwtm.o
-> +obj-$(CONFIG_X86_64_FLASH_MMAP)	+= x86_64_flash_mmap.o
->  
->  obj-y				+= arm_ffa/
->  obj-y				+= arm_scmi/
-> diff --git a/drivers/firmware/x86_64_flash_mmap.c b/drivers/firmware/x86_64_flash_mmap.c
-> new file mode 100644
-> index 000000000000..23d8655d17bb
-> --- /dev/null
-> +++ b/drivers/firmware/x86_64_flash_mmap.c
-> @@ -0,0 +1,86 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +/*
-> + * Export the memory-mapped BIOS region of the platform SPI flash as
-> + * a read-only sysfs binary attribute on X86_64 systems.
-> + *
-> + * Copyright © 2021 immune GmbH
-> + */
-> +
-> +#include <linux/version.h>
-> +#include <linux/init.h>
-> +#include <linux/module.h>
-> +#include <linux/io.h>
-> +#include <linux/sysfs.h>
-> +#include <linux/platform_device.h>
-> +
-> +#define FLASH_REGION_START 0xFF000000ULL
-> +#define FLASH_REGION_SIZE 0x1000000ULL
-> +#define FLASH_REGION_MASK (FLASH_REGION_SIZE - 1)
-> +
-> +struct platform_device *pdev;
-> +
-> +static ssize_t bios_region_read(struct file *file, struct kobject *kobj,
-> +				struct bin_attribute *bin_attr, char *buffer,
-> +				loff_t offset, size_t count)
-> +{
-> +	resource_size_t pa;
-> +	size_t copysize, remapsize;
-> +	void __iomem *va;
-> +
-> +	offset = offset & FLASH_REGION_MASK;
-> +	pa = (FLASH_REGION_START + offset) & PAGE_MASK;
-> +
-> +	if ((offset + count) > FLASH_REGION_SIZE)
-> +		copysize = FLASH_REGION_SIZE - offset;
-> +	else
-> +		copysize = min(count, PAGE_SIZE);
-> +
-> +	if (((offset & ~PAGE_MASK) + copysize) > PAGE_SIZE)
-> +		remapsize = 2 * PAGE_SIZE;
-> +	else
-> +		remapsize = PAGE_SIZE;
-> +
-> +	va = ioremap(pa, remapsize);
-> +	memcpy_fromio(buffer, va, copysize);
-> +	iounmap(va);
-> +
-> +	return copysize;
-> +}
-> +
-> +static BIN_ATTR_RO(bios_region, FLASH_REGION_SIZE);
-> +
-> +static struct bin_attribute *flash_mmap_attrs[] = { &bin_attr_bios_region,
-> +						    NULL };
-> +
-> +static const struct attribute_group flash_mmap_group = {
-> +	.bin_attrs = flash_mmap_attrs,
-> +};
-> +
-> +static int __init flash_mmap_init(void)
-> +{
-> +	int ret;
-> +
-> +	pdev = platform_device_register_simple("flash_mmap", -1, NULL, 0);
-> +	if (IS_ERR(pdev))
-> +		return PTR_ERR(pdev);
-> +
-> +	ret = sysfs_create_group(&pdev->dev.kobj, &flash_mmap_group);
+This patch collect correct pages_skipped according to the tag state in
+page tree of inode
 
-You just raced with userspace and lost :(
+Signed-off-by: Zhiguo Niu <zhiguo.niu@unisoc.com>
+Signed-off-by: Jing Xia <jing.xia@unisoc.com>
+---
+ fs/f2fs/data.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-Please set the attribute to the platform driver before you create the
-device.
+diff --git a/fs/f2fs/data.c b/fs/f2fs/data.c
+index f4fd6c246c9a..e98628e3868c 100644
+--- a/fs/f2fs/data.c
++++ b/fs/f2fs/data.c
+@@ -3237,7 +3237,9 @@ static int __f2fs_write_data_pages(struct address_space *mapping,
+ 	return ret;
+ 
+ skip_write:
+-	wbc->pages_skipped += get_dirty_pages(inode);
++	wbc->pages_skipped +=
++		mapping_tagged(inode->i_mapping, PAGECACHE_TAG_DIRTY) ?
++		get_dirty_pages(inode) : 0;
+ 	trace_f2fs_writepages(mapping->host, wbc, DATA);
+ 	return 0;
+ }
+-- 
+2.28.0
 
-Also, you just bound this driver to ANY platform that it was loaded on,
-with no actual detection of the hardware present, which feels like it
-could cause big problems on all platforms.  Please, if you really want
-to do this, restrict it to hardware that actually has the hardware you
-are wanting to access, not all machines in the world.
-
-thanks,
-
-greg k-h
