@@ -2,73 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 19A6444B14D
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 17:33:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 42D5044B153
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 17:40:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236456AbhKIQg2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Nov 2021 11:36:28 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57340 "EHLO
+        id S238031AbhKIQmq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Nov 2021 11:42:46 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58740 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235827AbhKIQg0 (ORCPT
+        with ESMTP id S237041AbhKIQml (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Nov 2021 11:36:26 -0500
-Received: from mail-ua1-x934.google.com (mail-ua1-x934.google.com [IPv6:2607:f8b0:4864:20::934])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 97D48C061767
-        for <linux-kernel@vger.kernel.org>; Tue,  9 Nov 2021 08:33:40 -0800 (PST)
-Received: by mail-ua1-x934.google.com with SMTP id p37so38527127uae.8
-        for <linux-kernel@vger.kernel.org>; Tue, 09 Nov 2021 08:33:40 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:sender:from:date:message-id:subject:to;
-        bh=/1Kp2WPJKK5zDIiVHFBMJDxTusj9lTuiNwPf/YrQxIs=;
-        b=krKTySUR9kJeLlqI+ufZ+UQgu06o2J71xODBJ1tzzSXkD9z0jNPiwoyQHU0YT97Hgm
-         dfRQ4gojBHxowS3AdRwrf6cGCLfUNwF/xIyDDBHRTZfS1Ltt22l0g96htMiNn+0WeZFv
-         xUEXolAAt4ufCo7OQgBuvAgucVx8mj2D6iGlXHZD9qh+o7QB5NOsosTu+2Tu2xm/zKJS
-         wcjqGygpRb/mCguZPA9Qksp0V7NVi0LlkixzBrRSMVN8a34CVUg+KJ/3St7G8XnPZzC3
-         Oiz2kVE2DMAXKDmHDFGbhkqFqQRVi7sMwxDbH4woX27YguUWK/4Pac1fT1nJlqzzE0TM
-         Ul9A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:sender:from:date:message-id:subject
-         :to;
-        bh=/1Kp2WPJKK5zDIiVHFBMJDxTusj9lTuiNwPf/YrQxIs=;
-        b=pYNTJQQAurx49GUO2OH+vHnX3TMjichj8p1NExdonIWR13SBASagP6YG0Ki3qHurTV
-         yLgYEk8wd85XJdu+DL+UfKosA/KmOzUlm0vs0AKPnnexM4QBhIc6X6/kVShURt0YDKjQ
-         sriNmi3YaSiLqLUZiPSzKffHH2QI2bD7043vAd4HySQxSMAPdvsqCo58QR8STVoTAJ6S
-         YAoA8HSZmU7LrMXg86oDiDv+atwxLQYgPLAvyCUxLoiIhQw1jMmqYMURc2RbFKqEZgj9
-         g880on5NtQxy0okorl9RQ5n2gkAN4Ojgdc88xKEM/bGBELVd3B/RLu+UQvXXOx001prM
-         V/hg==
-X-Gm-Message-State: AOAM532tIo5/6ZEMQz9hW2dba/p7u+K6UZldFoZj+tnsUOptqB3sLAoI
-        RCtAdOU0dKPElJ1uEhrxIIQ7FLddec8PzHLcVlU=
-X-Google-Smtp-Source: ABdhPJyYcAleTa0725gfzSmM2neAWoCfHXy0Zgkbe5Ian9w9ozDZG0w4PmG1svuS9SBGG9zfMSrz1skTGWWo4Ibye+I=
-X-Received: by 2002:a05:6102:41a4:: with SMTP id cd36mr14114257vsb.23.1636475618915;
- Tue, 09 Nov 2021 08:33:38 -0800 (PST)
+        Tue, 9 Nov 2021 11:42:41 -0500
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C2466C061764;
+        Tue,  9 Nov 2021 08:39:55 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=In-Reply-To:Content-Type:MIME-Version
+        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=HrXSYw8rk4n+A4PZtzybK6DqKpPd/fbVLmvWcN7MKLY=; b=UHjJm/M0a6jysVzwv55hP5Uzm0
+        iK1H669wXcWisFWKFSki4/Ys5QBVqbHMvV9j2k8nqyNM2wfyzFm1sVQxeLirA/z0jTWRoCPP0jO8M
+        KmZIOk1hXTrQTzbFuA8PdQs0Os9FYtElATLiI7crSQ80+LzhHhQv8XqmgGw0RQQaGQLmPZXUDDU14
+        5sJDCSUVxgsqpXXmdRzhqe/Vqbfa/OLUXDh9qrjUv4iVCt453PNSWAurV7//B1mbO0jcfcw+0EQr5
+        5/kAikwmtzYqjPKAdTUG5Ach3mso5A+4FGI0aXzIHzmhmsCBmOlChE2ehNLtUdC6qiDBT4cI1zT4C
+        evdBOVbw==;
+Received: from hch by bombadil.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mkUA5-002iSj-NZ; Tue, 09 Nov 2021 16:39:53 +0000
+Date:   Tue, 9 Nov 2021 08:39:53 -0800
+From:   Christoph Hellwig <hch@infradead.org>
+To:     Jaegeuk Kim <jaegeuk@kernel.org>
+Cc:     linux-kernel@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net,
+        linux-block@vger.kernel.org, linux-fsdevel@vger.kernel.org
+Subject: Re: [PATCH] f2fs: provide a way to attach HIPRI for Direct IO
+Message-ID: <YYqkWWZZsMW49/xu@infradead.org>
+References: <20211109021336.3796538-1-jaegeuk@kernel.org>
 MIME-Version: 1.0
-Sender: westernunionheadofficebfk@gmail.com
-Received: by 2002:a59:c766:0:b0:239:2ec4:c46b with HTTP; Tue, 9 Nov 2021
- 08:33:38 -0800 (PST)
-From:   Dr Martin Belem <drbelemmartint@gmail.com>
-Date:   Tue, 9 Nov 2021 08:33:38 -0800
-X-Google-Sender-Auth: veDuxbYDvLIO3S-xF2TOpwKWWG8
-Message-ID: <CAG5o=DAfrMnFKukTV6EjSzqopo+-HgReV1bAu9j3J1_pwTftWQ@mail.gmail.com>
-Subject: From Dr Teju Martin
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211109021336.3796538-1-jaegeuk@kernel.org>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello friend I am a banker in ADB BANK. I want to transfer an abandoned
-$18.5Million to your Bank account. 40/percent will be your share.
-No risk involved but keep it as secret. Contact me for more details.
+On Mon, Nov 08, 2021 at 06:13:36PM -0800, Jaegeuk Kim wrote:
+> This patch adds a way to attach HIPRI by expanding the existing sysfs's
+> data_io_flag. User can measure IO performance by enabling it.
 
-And also acknowledge receipt of this message in acceptance of my mutual
-business endeavor by furnishing me with the following:
+NAK.  This flag should only be used when explicitly specified by
+the submitter of the I/O.
 
-1. Your Full Names and Address.
-
-2. Direct Telephone and Fax numbers Of
-
-Yours
-
-Dr Belem Martin Teju.
+> 
+> Signed-off-by: Jaegeuk Kim <jaegeuk@kernel.org>
+> ---
+>  Documentation/ABI/testing/sysfs-fs-f2fs | 16 +++++++++-------
+>  fs/f2fs/data.c                          |  2 ++
+>  fs/f2fs/f2fs.h                          |  3 +++
+>  3 files changed, 14 insertions(+), 7 deletions(-)
+> 
+> diff --git a/Documentation/ABI/testing/sysfs-fs-f2fs b/Documentation/ABI/testing/sysfs-fs-f2fs
+> index b268e3e18b4a..ac52e1c6bcbc 100644
+> --- a/Documentation/ABI/testing/sysfs-fs-f2fs
+> +++ b/Documentation/ABI/testing/sysfs-fs-f2fs
+> @@ -369,13 +369,15 @@ Contact:	"Jaegeuk Kim" <jaegeuk@kernel.org>
+>  Description:	Give a way to attach REQ_META|FUA to data writes
+>  		given temperature-based bits. Now the bits indicate:
+>  
+> -		+-------------------+-------------------+
+> -		|      REQ_META     |      REQ_FUA      |
+> -		+------+------+-----+------+------+-----+
+> -		|    5 |    4 |   3 |    2 |    1 |   0 |
+> -		+------+------+-----+------+------+-----+
+> -		| Cold | Warm | Hot | Cold | Warm | Hot |
+> -		+------+------+-----+------+------+-----+
+> +		+------------+-------------------+-------------------+
+> +		| HIPRI_DIO  |      REQ_META     |      REQ_FUA      |
+> +		+------------+------+------+-----+------+------+-----+
+> +		|          6 |    5 |    4 |   3 |    2 |    1 |   0 |
+> +		+------------+------+------+-----+------+------+-----+
+> +		|        All | Cold | Warm | Hot | Cold | Warm | Hot |
+> +		+------------+------+------+-----+------+------+-----+
+> +
+> +		Note that, HIPRI_DIO bit is only for direct IO path.
+>  
+>  What:		/sys/fs/f2fs/<disk>/node_io_flag
+>  Date:		June 2020
+> diff --git a/fs/f2fs/data.c b/fs/f2fs/data.c
+> index 9f754aaef558..faa40aca2848 100644
+> --- a/fs/f2fs/data.c
+> +++ b/fs/f2fs/data.c
+> @@ -3707,6 +3707,8 @@ static ssize_t f2fs_direct_IO(struct kiocb *iocb, struct iov_iter *iter)
+>  		if (do_opu)
+>  			down_read(&fi->i_gc_rwsem[READ]);
+>  	}
+> +	if (sbi->data_io_flag & HIPRI_DIO)
+> +		iocb->ki_flags |= IOCB_HIPRI;
+>  
+>  	err = __blockdev_direct_IO(iocb, inode, inode->i_sb->s_bdev,
+>  			iter, rw == WRITE ? get_data_block_dio_write :
+> diff --git a/fs/f2fs/f2fs.h b/fs/f2fs/f2fs.h
+> index ce9fc9f13000..094f1e8ff82b 100644
+> --- a/fs/f2fs/f2fs.h
+> +++ b/fs/f2fs/f2fs.h
+> @@ -1557,6 +1557,9 @@ struct decompress_io_ctx {
+>  #define MAX_COMPRESS_LOG_SIZE		8
+>  #define MAX_COMPRESS_WINDOW_SIZE(log_size)	((PAGE_SIZE) << (log_size))
+>  
+> +/* HIPRI for direct IO used in sysfs/data_io_flag */
+> +#define HIPRI_DIO			(1 << 6)
+> +
+>  struct f2fs_sb_info {
+>  	struct super_block *sb;			/* pointer to VFS super block */
+>  	struct proc_dir_entry *s_proc;		/* proc entry */
+> -- 
+> 2.34.0.rc0.344.g81b53c2807-goog
+> 
+---end quoted text---
