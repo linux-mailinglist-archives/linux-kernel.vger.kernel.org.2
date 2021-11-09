@@ -2,72 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4803144A522
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 04:02:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E195244A529
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 04:03:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242312AbhKIDFS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Nov 2021 22:05:18 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124]:53311 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S242285AbhKIDFR (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Nov 2021 22:05:17 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1636426952;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=PbN9P372b4zfsNQXGyxa6f7PkAhvEGlp6qQZjPVPkKs=;
-        b=Nf8r6rM67Yw7tSNmAik+PoeJ893swk6dFSjYaYl3idp8sk+jejMJwUvoYYmYXOa9ujapyA
-        l2mO+o4WNvUXOeD3IdwDBuoWtrplCpA+lP7zoV9Ce5k+ZUtogWq/TlsUEjvCx2qve+AkJ5
-        FzbdEiUUII+Hunt0LELM8TA8FbF/5mI=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-237-zPLC8p2oMSiYmNba_b4oLg-1; Mon, 08 Nov 2021 22:02:30 -0500
-X-MC-Unique: zPLC8p2oMSiYmNba_b4oLg-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id EE2C8108087A;
-        Tue,  9 Nov 2021 03:02:28 +0000 (UTC)
-Received: from T590 (ovpn-8-17.pek2.redhat.com [10.72.8.17])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 0B2E760CC4;
-        Tue,  9 Nov 2021 03:02:16 +0000 (UTC)
-Date:   Tue, 9 Nov 2021 11:02:11 +0800
-From:   Ming Lei <ming.lei@redhat.com>
-To:     John Garry <john.garry@huawei.com>
-Cc:     axboe@kernel.dk, linux-block@vger.kernel.org,
-        linux-kernel@vger.kernel.org, kashyap.desai@broadcom.com,
-        hare@suse.de
-Subject: Re: [PATCH RFT 1/3] blk-mq: Drop busy_iter_fn blk_mq_hw_ctx argument
-Message-ID: <YYnks3nfRCIuekD2@T590>
-References: <1635852455-39935-1-git-send-email-john.garry@huawei.com>
- <1635852455-39935-2-git-send-email-john.garry@huawei.com>
+        id S242368AbhKIDFy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Nov 2021 22:05:54 -0500
+Received: from mail.kernel.org ([198.145.29.99]:60694 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S242316AbhKIDFs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Nov 2021 22:05:48 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 036CD61107;
+        Tue,  9 Nov 2021 03:02:59 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1636426982;
+        bh=mAPRGTo8qEALDIeot6JiMQ1fThLG8fXVOip31PH+G/U=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=Nwz+qwHUtlX6tZCT9XGrvCZN1EPyIn9OJPXHklYAgQeUgd+KxX8GSB4MJbUp72fCk
+         iWp+4rMq+5f9D3GnBetsiUhQ5A6uQ97z4ktp1JvWjiZrA+X63d/fj6S5P7YPHB6C2F
+         j60O96yW8lon3P37HXm+gVQWAJv++5xD4JUOzqZ86NE4IjvYQIq89T2hJI4QH7VdPk
+         Rfhk0OBT2keMT8hMjMQje/ZSeGP5uzQB6k8bmtL6+W3MAHMDNCaJuiSkd/2mkFRTXZ
+         yFn19aU8aXQVRJxqiwDGWvLCiC/ydV1xosPr+R4qoLlgITmLHdmmvKuNi0EAmLs/cX
+         krESrdRXcVQaA==
+Date:   Tue, 9 Nov 2021 04:02:57 +0100
+From:   Marek =?UTF-8?B?QmVow7pu?= <kabel@kernel.org>
+To:     Ansuel Smith <ansuelsmth@gmail.com>
+Cc:     Andrew Lunn <andrew@lunn.ch>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Vladimir Oltean <olteanv@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>, Pavel Machek <pavel@ucw.cz>,
+        John Crispin <john@phrozen.org>, netdev@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-leds@vger.kernel.org
+Subject: Re: [RFC PATCH v3 3/8] leds: trigger: netdev: drop
+ NETDEV_LED_MODE_LINKUP from mode
+Message-ID: <20211109040257.29f42aa1@thinkpad>
+In-Reply-To: <20211109022608.11109-4-ansuelsmth@gmail.com>
+References: <20211109022608.11109-1-ansuelsmth@gmail.com>
+        <20211109022608.11109-4-ansuelsmth@gmail.com>
+X-Mailer: Claws Mail 3.18.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1635852455-39935-2-git-send-email-john.garry@huawei.com>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 02, 2021 at 07:27:33PM +0800, John Garry wrote:
-> The only user of blk_mq_hw_ctx blk_mq_hw_ctx argument is
-> blk_mq_rq_inflight().
-> 
-> Function blk_mq_rq_inflight() uses the hctx to find the associated request
-> queue to match against the request. However this same check is already
-> done in caller bt_iter(), so drop this check.
-> 
-> With that change there are no more users of busy_iter_fn blk_mq_hw_ctx
-> argument, so drop the argument.
-> 
-> Signed-off-by: John Garry <john.garry@huawei.com>
-> ---
+On Tue,  9 Nov 2021 03:26:03 +0100
+Ansuel Smith <ansuelsmth@gmail.com> wrote:
 
-Reviewed-by: Ming Lei <ming.lei@redhat.com>
+> Drop NETDEV_LED_MODE_LINKUP from mode list and convert to a simple bool
+> that will be true or false based on the carrier link. No functional
+> change intended.
 
--- 
-Ming
+The last time I tried this, I did it for all the fields that are now in
+the bitmap, and I was told that the bitmap guarantees atomic access, so
+it should be used...
 
+But why do you needs this? I guess I will see in another patch.
+
+Marek
