@@ -2,129 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DBEFB44B521
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 23:07:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C925544B522
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 23:07:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244883AbhKIWKH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Nov 2021 17:10:07 -0500
-Received: from mail.kernel.org ([198.145.29.99]:35812 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235632AbhKIWKF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Nov 2021 17:10:05 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D3CE460524;
-        Tue,  9 Nov 2021 22:07:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1636495639;
-        bh=+qSgvYpQTfGO4XzzrvtjFVSaT33ud9DXLSG7u/nEfKs=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:From;
-        b=fq2dTkrvLVbcHQygx3bgnOZwesHj+kuGNINPDowb8PKPAyzzmrBcWAyRx2ZFunkUg
-         0if6hh7IFlxwkpFpQ/F/W+qj0jQbhbDctVE1h9yVj1rWbWu1hnNEGYTQ53Kp8XOVv/
-         81mCqvd37Kktfx/b7Lvje2zcE/wAvz6kTxcGoFLsmIi2ZH6r9AWIRJtDASK6VwZnrk
-         Dr1GkmXmlbDggxypf9yCBwIcCsohexJTK1Dz6cZ1AUEAFzl4AlU7f/HMbZyl4WhmHi
-         WYvVagrMdUsemxqWIHAIOK3Czdsk8kuiprhR8JKmEdQFU1YFH3Fg7k0IkY+3bySgMP
-         Mz2Yt9vWcEBRA==
-Date:   Tue, 9 Nov 2021 16:07:17 -0600
-From:   Bjorn Helgaas <helgaas@kernel.org>
-To:     Hans de Goede <hdegoede@redhat.com>
-Cc:     "Rafael J . Wysocki" <rjw@rjwysocki.net>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Myron Stowe <myron.stowe@redhat.com>,
-        Juha-Pekka Heikkila <juhapekka.heikkila@gmail.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H . Peter Anvin" <hpa@zytor.com>, linux-acpi@vger.kernel.org,
-        linux-pci@vger.kernel.org, x86@kernel.org,
-        linux-kernel@vger.kernel.org,
-        Benoit =?iso-8859-1?Q?Gr=E9goire?= <benoitg@coeus.ca>,
-        Hui Wang <hui.wang@canonical.com>, stable@vger.kernel.org,
-        "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>
-Subject: Re: [PATCH v5 1/2] x86/PCI: Ignore E820 reservations for bridge
- windows on newer systems
-Message-ID: <20211109220717.GA1187103@bhelgaas>
+        id S244955AbhKIWKU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Nov 2021 17:10:20 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48262 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235525AbhKIWKT (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Nov 2021 17:10:19 -0500
+Received: from mail-pl1-x630.google.com (mail-pl1-x630.google.com [IPv6:2607:f8b0:4864:20::630])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E1EFAC061764
+        for <linux-kernel@vger.kernel.org>; Tue,  9 Nov 2021 14:07:32 -0800 (PST)
+Received: by mail-pl1-x630.google.com with SMTP id v20so1123070plo.7
+        for <linux-kernel@vger.kernel.org>; Tue, 09 Nov 2021 14:07:32 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=SEW61RMqEuc7jtNZFEtpAj87vz2BI1gvYwTO3mPCgJU=;
+        b=S8AMqrmKFNv0gFAihdzlw9jupFiimC8CVrQaM1XmxgOq+AS0Mda5vVHm8hCMMmUHk5
+         Pro7U5SdSavvYmNlFV4y42kzBfkvpqB9ZiJoKFrxnrLpGAjopnh0Tky6PE9UQFEtdoSl
+         YO1M1RO3aK+gTNAtSS/qgOLhH1VAiOeTrB8izOeYhRLW7Eo5iwEvWWfYMbknl4b5GWgL
+         kCPecaBaenk9Nm9/WVDW6RH5Qgam7mA3infVoGPe31yAI8NLQoLO4DkRjAoB/xYyw6qt
+         JzHAQ7yh4uP0AlC2QbnP3g0iyqAtlOvKtDsKjZ1iPIRVHHaKIxkOldHVcwiD4/R9DDer
+         F0MQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=SEW61RMqEuc7jtNZFEtpAj87vz2BI1gvYwTO3mPCgJU=;
+        b=RcvliDtPNz/PuZosNFd6GyxgAGdcUKIwarBZdUY1/arHNnVlFOrmPKsYCCx2DXm3+l
+         OqHA6dgyjuRlE/nAgbhInNSCWIcMCreXGnMqQSaLeQCJ3XbSF7qmj+9vKohVdFyK2d/2
+         rdCjOOhisAmIkEk3paStsejjVZ8A9FXNjTGlSzbVU0eOJZ6MyuuukrzM8ps79hfYP7ig
+         HgICAjqoCEYXGFW+TuFioTWVhOwtqdu975OlQyuyR3L3ySblc+cjZ43MthlKLEJ6yEhi
+         6ia2spAQhP46g+4AW6pAgADKVN9Ye4hjuC/j3bpy7a6UGAzrLyLKSghP6VLeTBLbtJGQ
+         FZWA==
+X-Gm-Message-State: AOAM533JG0Ify+XQTzqaUjsS0wcNe5PT2SmmFpV3F+3sCw0rsnYbpyWY
+        5ZD3uRMy3nzjzS0enObCSvk=
+X-Google-Smtp-Source: ABdhPJxRKDthI/Jr2d2dcLEivS+Vz5KSyF62eRKrC+uUg+QOTgysRSI9Of9nPiXhFk6Wiv/ad36gMQ==
+X-Received: by 2002:a17:90a:134f:: with SMTP id y15mr11037244pjf.158.1636495652422;
+        Tue, 09 Nov 2021 14:07:32 -0800 (PST)
+Received: from thinkpad.localdomain ([2804:14d:5c21:92d0:458e:ac7b:f0d6:7ef4])
+        by smtp.gmail.com with ESMTPSA id y130sm14494685pfg.202.2021.11.09.14.07.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 09 Nov 2021 14:07:32 -0800 (PST)
+From:   Luiz Sampaio <sampaio.ime@gmail.com>
+To:     ojeda@kernel.org
+Cc:     linux-kernel@vger.kernel.org, Luiz Sampaio <sampaio.ime@gmail.com>
+Subject: [PATCH v2 0/2] Fixing bug that would segmentation fault
+Date:   Tue,  9 Nov 2021 19:07:30 -0300
+Message-Id: <20211109220732.7973-1-sampaio.ime@gmail.com>
+X-Mailer: git-send-email 2.33.1
+In-Reply-To: <CANiq72kgm-5CidoN8VRLnWokiDSWsQcMFbaUd4WKOnbPsON9RQ@mail.gmail.com>
+References: <CANiq72kgm-5CidoN8VRLnWokiDSWsQcMFbaUd4WKOnbPsON9RQ@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <c85a917e-143d-1218-61fa-e4f4810c4950@redhat.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Nov 06, 2021 at 11:15:07AM +0100, Hans de Goede wrote:
-> On 10/20/21 23:14, Bjorn Helgaas wrote:
-> > On Wed, Oct 20, 2021 at 12:23:26PM +0200, Hans de Goede wrote:
-> >> On 10/19/21 23:52, Bjorn Helgaas wrote:
-> >>> On Thu, Oct 14, 2021 at 08:39:42PM +0200, Hans de Goede wrote:
-> >>>> Some BIOS-es contain a bug where they add addresses which map to system
-> >>>> RAM in the PCI host bridge window returned by the ACPI _CRS method, see
-> >>>> commit 4dc2287c1805 ("x86: avoid E820 regions when allocating address
-> >>>> space").
-> >>>>
-> >>>> To work around this bug Linux excludes E820 reserved addresses when
-> >>>> allocating addresses from the PCI host bridge window since 2010.
-> >>>> ...
-> > 
-> >>> I haven't seen anybody else eager to merge this, so I guess I'll stick
-> >>> my neck out here.
-> >>>
-> >>> I applied this to my for-linus branch for v5.15.
-> >>
-> >> Thank you, and sorry about the build-errors which the lkp
-> >> kernel-test-robot found.
-> >>
-> >> I've just send out a patch which fixes these build-errors
-> >> (verified with both .config-s from the lkp reports).
-> >> Feel free to squash this into the original patch (or keep
-> >> them separate, whatever works for you).
-> > 
-> > Thanks, I squashed the fix in.
-> > 
-> > HOWEVER, I think it would be fairly risky to push this into v5.15.
-> > We would be relying on the assumption that current machines have all
-> > fixed the BIOS defect that 4dc2287c1805 addressed, and we have little
-> > evidence for that.
-> >
-> > I'm not sure there's significant benefit to having this in v5.15.
-> > Yes, the mainline v5.15 kernel would work on the affected machines,
-> > but I suspect most people with those machines are running distro
-> > kernels, not mainline kernels.
-> 
-> I understand that you were reluctant to add this to 5.15 so close
-> near the end of the 5.15 cycle, but can we please get this into
-> 5.16 now ?
-> 
-> I know you ultimately want to see if there is a better fix,
-> but this is hitting a *lot* of users right now and if we come up
-> with a better fix we can always use that to replace this one
-> later.
+This series of patches consists of one patch fixing a simple coding style
+issue and one patch fixing a bug that would cause segmentation fault.
+Basically, there was a pointer that was being dereferenced without testing
+if the pointer exists. This patch adds a protection, returning EFAULT in
+case the pointer is NULL.
 
-I don't know whether there's a "better" fix, but I do know that if we
-merge what we have right now, nobody will be looking for a better
-one.
+Changes in v2:
+- Changed return to -EINVAL and using WARN_ON as suggested 
+- Note in response for Miguel's comment: for the first patch, I ran the
+  script './scripts/checkpatch.pl --file --terse' to see with the file
+had any coding style issue. That was when I was suggested to remove
+'int' from 'unsigned long' declaration
 
-We're in the middle of the merge window, so the v5.16 development
-cycle is over.  The v5.17 cycle is just starting, so we have time to
-hit that.  Obviously a fix can be backported to older kernels as
-needed.
+Luiz Sampaio (2):
+  auxdisplay: charlcd: fixing coding style issue
+  auxdisplay: charlcd: checking for pointer reference before
+    dereferencing
 
-> So can we please just go with this fix now, so that we can
-> fix the issues a lot of users are seeing caused by the current
-> *wrong* behavior of taking the e820 reservations into account ?
+ drivers/auxdisplay/charlcd.c | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
-I think the fix on the table is "ignore E820 for BIOS date >= 2018"
-plus the obvious parameters to force it both ways.
+-- 
+2.33.1
 
-The thing I don't like is that this isn't connected at all to the
-actual BIOS defect.  We have no indication that current BIOSes have
-fixed the defect, and we have no assurance that future ones will not
-have the defect.  It would be better if we had some algorithmic way of
-figuring out what to do.
-
-Thank you very much for chasing down the dmesg log archive
-(https://github.com/linuxhw/Dmesg; see
-https://lore.kernel.org/r/82035130-d810-9f0b-259e-61280de1d81f@redhat.com).
-Unfortunately I haven't had time to look through it myself, and I
-haven't heard of anybody else doing it either.
-
-Bjorn
