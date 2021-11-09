@@ -2,185 +2,203 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2A98444B3AC
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 21:01:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C155744B3AE
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 21:01:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244106AbhKIUDx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Nov 2021 15:03:53 -0500
-Received: from mga01.intel.com ([192.55.52.88]:59920 "EHLO mga01.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S242871AbhKIUDv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Nov 2021 15:03:51 -0500
-X-IronPort-AV: E=McAfee;i="6200,9189,10163"; a="256212988"
-X-IronPort-AV: E=Sophos;i="5.87,221,1631602800"; 
-   d="scan'208";a="256212988"
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Nov 2021 12:01:04 -0800
-X-IronPort-AV: E=Sophos;i="5.87,221,1631602800"; 
-   d="scan'208";a="452039533"
-Received: from rchatre-ws.ostc.intel.com ([10.54.69.144])
-  by orsmga006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Nov 2021 12:01:03 -0800
-From:   Reinette Chatre <reinette.chatre@intel.com>
-To:     dave.hansen@linux.intel.com, jarkko@kernel.org, tglx@linutronix.de,
-        bp@alien8.de, mingo@redhat.com, linux-sgx@vger.kernel.org,
-        x86@kernel.org
-Cc:     seanjc@google.com, tony.luck@intel.com, hpa@zytor.com,
-        linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Subject: [PATCH V2] x86/sgx: Fix free page accounting
-Date:   Tue,  9 Nov 2021 12:00:56 -0800
-Message-Id: <b2e69e9febcae5d98d331de094d9cc7ce3217e66.1636487172.git.reinette.chatre@intel.com>
-X-Mailer: git-send-email 2.25.1
+        id S244116AbhKIUE1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Nov 2021 15:04:27 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48104 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S242871AbhKIUEZ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Nov 2021 15:04:25 -0500
+Received: from mail-lj1-x22a.google.com (mail-lj1-x22a.google.com [IPv6:2a00:1450:4864:20::22a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 47C8FC061766
+        for <linux-kernel@vger.kernel.org>; Tue,  9 Nov 2021 12:01:39 -0800 (PST)
+Received: by mail-lj1-x22a.google.com with SMTP id s24so662657lji.12
+        for <linux-kernel@vger.kernel.org>; Tue, 09 Nov 2021 12:01:39 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=XQ9MmBgG6DxG+MYA4zF7fuyzEizobKE/7ttDVS9RbSI=;
+        b=YotoFmkvLVN9hGvdjKO6754H+mRouO/8wPYkVGz9XafEoXduK9gT1fq15dDJM37lPu
+         ksQ7tEYcTBWb3hDUjRo6c7n8zDMhyZNx9WEO/GXY7n3cJ7GeYd0lsOyqHGLAJfK0O8gt
+         qa523oeFiITkccbKIThlj8UwPySSeDlslIiJUdZHm8Y0eyf9QkVpNlZYDsgd+4q6aOYZ
+         FKCeAlCesK8dM5sgKG/3nli04AqYjXBRke4/TKJdBqlL/zVxJ2p84XbX2F6d5//xmOmB
+         6en+Q7WPyRnvQ03koE+7ANI7Tjq23go5CQu0fDTSlDBIvxmwZIzjoXwIiQNtdTp6Yb0p
+         3wjg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=XQ9MmBgG6DxG+MYA4zF7fuyzEizobKE/7ttDVS9RbSI=;
+        b=E8qy4V/Xwf5ywtIvbqANkCiCu+uyYS/3oodkKLUY7Q8akjlA8ishg4u6xqFuRLyd9Z
+         0LCtFR17E0i88gFWW3U9OtYp7vZlEWILTKeAZMQugeshhmP6e04XZr2CAfJcemNjKOux
+         pd2ntBLGBoD1VQtxijYenVsSnZhymHFvrpSGN2iMduiQbzcF8rg2WS37ncBpbenLuQHB
+         PTvlu9X4AaGpNMX3/vPtnA7MzfzSfmXPVKdUGAPT+fPF6QJ73XXcw6poMl9tT3J/O7GD
+         lk+KGL65xa0z629ddOpOWtrlSaEf6IbK7pc/AXAiaR33Yd67tgFkBBz2BexBMjqKRmT0
+         lrEg==
+X-Gm-Message-State: AOAM531kNu4SqXE7LInXyVilkeFamtBo9MauBuvYDcM6BSxrilJiVnli
+        N9/fnByVdPpW0XtFw9udzfr4ZqkYgfRQlKUzxxyqdg==
+X-Google-Smtp-Source: ABdhPJwVaBI44PRdZKlS7WK32pjyDHE8ubBG5Y9qIuUBfw5lxhW9wJ8sT6wx9GyLO9Ugcgo+pXkEp/zWBOVTIC6NeqM=
+X-Received: by 2002:a2e:80c3:: with SMTP id r3mr10580377ljg.4.1636488097447;
+ Tue, 09 Nov 2021 12:01:37 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <cover.1636103151.git.hns@goldelico.com> <3ca9a3099d86d631235b6c03ae260bc581cc8d60.1636103151.git.hns@goldelico.com>
+ <CAPDyKFrH8f80cs5dbh=3ugjyEzoUYXhStpHQyhUSd6b9wD78vw@mail.gmail.com> <C2F065E7-10C5-4701-A6F7-6B5A6198F0DF@goldelico.com>
+In-Reply-To: <C2F065E7-10C5-4701-A6F7-6B5A6198F0DF@goldelico.com>
+From:   Ulf Hansson <ulf.hansson@linaro.org>
+Date:   Tue, 9 Nov 2021 21:01:01 +0100
+Message-ID: <CAPDyKFoz6b-+HQYdypYD7EUXxwj7th-=41MAK=ZTnKQWRmLArQ@mail.gmail.com>
+Subject: Re: [RFC v4 5/6] mmc: core: transplant ti,wl1251 quirks from to be
+ retired omap_hsmmc
+To:     "H. Nikolaus Schaller" <hns@goldelico.com>
+Cc:     =?UTF-8?B?SsOpcsO0bWUgUG91aWxsZXI=?= <Jerome.Pouiller@silabs.com>,
+        Avri Altman <avri.altman@wdc.com>,
+        Shawn Lin <shawn.lin@rock-chips.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Tony Lindgren <tony@atomide.com>,
+        Bean Huo <beanhuo@micron.com>,
+        =?UTF-8?Q?Gra=C5=BEvydas_Ignotas?= <notasas@gmail.com>,
+        linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        letux-kernel@openphoenux.org, kernel@pyra-handheld.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The SGX driver maintains a single global free page counter,
-sgx_nr_free_pages, that reflects the number of free pages available
-across all NUMA nodes. Correspondingly, a list of free pages is
-associated with each NUMA node and sgx_nr_free_pages is updated
-every time a page is added or removed from any of the free page
-lists. The main usage of sgx_nr_free_pages is by the reclaimer
-that will run when it (sgx_nr_free_pages) goes below a watermark
-to ensure that there are always some free pages available to, for
-example, support efficient page faults.
+On Tue, 9 Nov 2021 at 11:58, H. Nikolaus Schaller <hns@goldelico.com> wrote:
+>
+> Hi Ulf,
+>
+> > Am 08.11.2021 um 16:33 schrieb Ulf Hansson <ulf.hansson@linaro.org>:
+> >
+> > On Fri, 5 Nov 2021 at 10:06, H. Nikolaus Schaller <hns@goldelico.com> wrote:
+> >>
+> >> +       card->quirks |= MMC_QUIRK_NONSTD_SDIO;
+> >> +       card->cccr.wide_bus = 1;
+> >> +       card->cis.vendor = 0x104c;
+> >> +       card->cis.device = 0x9066;
+> >> +       card->cis.blksize = 512;
+> >> +       card->cis.max_dtr = 24000000;
+> >> +       card->ocr = 0x80;
+> >
+> > In the past, we discussed a bit around why card->ocr needs to be set here.
+> >
+> > The reason could very well be that the DTS file is specifying the
+> > vmmc-supply with 1.8V fixed regulator, which seems wrong to me.
+>
+> I have checked with the schematics but the wlan_en regulator-fixed is just a GPIO
+> controlling some pin of the wifi chip.
+>
+> I guess it enables some regulator or power switch inside the wifi module which
+> has unknown voltage.
+>
+> We can interpret this as two sequential power-switches. The first one controlled
+> by the gpio-register bit and switches gpio power to the gpio pad of the SoC. The second
+> one switches the battery voltage to the internal circuits of the wifi module.
+>
+> The GPIO itself is on 1.8V VIO level which seems to be the reason for the min/max.
+>
+> Now it is a little arbitrary what the DTS describes: the gpio voltage or the unknown
+> internal voltage of the second switch.
+>
+> So from hardware perspective the min/max values are irrelevant.
 
-With sgx_nr_free_pages accessed and modified from a few places
-it is essential to ensure that these accesses are done safely but
-this is not the case. sgx_nr_free_pages is read without any
-protection and updated with inconsistent protection by any one
-of the spin locks associated with the individual NUMA nodes.
-For example:
+I completely agree with you! That's also why I earlier suggested
+moving to use an mmc-pwrseq node
+(Documentation/devicetree/bindings/mmc/mmc-pwrseq-simple.yaml), that
+would allow a better description of the HW.
 
-      CPU_A                                 CPU_B
-      -----                                 -----
- spin_lock(&nodeA->lock);              spin_lock(&nodeB->lock);
- ...                                   ...
- sgx_nr_free_pages--;  /* NOT SAFE */  sgx_nr_free_pages--;
+Nevertheless, the important point is that the mmc core gets a valid
+host->ocr_avail to work with during card initialization. And in this
+case, it's probably good enough to model this via changing the
+regulator-min|max-microvolt to get a proper value from the
+"regulator".
 
- spin_unlock(&nodeA->lock);            spin_unlock(&nodeB->lock);
+>
+> >
+> > I would be very interested to know if we would change
+> > "regulator-min|max-microvolt" of the regulator in the DTS, into
+> > somewhere in between 2700000-3600000 (2.7-3.6V)
+>
+> Ok, if the mmc driver does something with these values it may have indeed an influence.
+>
+> > - and see if that
+> > allows us to drop the assignment of "card->ocr =  0x80;" above. Would
+> > you mind doing some tests for this?
+>
+> Well, with min/max=3.3V and no ocr I get:
+>
+> [    2.765136] omap_hsmmc 480ad000.mmc: card claims to support voltages below defined range
+> [    2.776367] omap_hsmmc 480ad000.mmc: found wl1251
+> [    2.782287] mmc2: new SDIO card at address 0001
 
-The consequence of sgx_nr_free_pages not being protected is that
-its value may not accurately reflect the actual number of free
-pages on the system, impacting the availability of free pages in
-support of many flows. The problematic scenario is when the
-reclaimer does not run because it believes there to be sufficient
-free pages while any attempt to allocate a page fails because there
-are no free pages available.
+That's really great information! During the first initialization
+attempt, things are working fine and the SDIO card gets properly
+detected.
 
-The worst scenario observed was a user space hang because of
-repeated page faults caused by no free pages made available.
+> [   10.874237] omap_hsmmc 480ad000.mmc: could not set regulator OCR (-22)
+> [   10.945373] wl1251_sdio: probe of mmc2:0001:1 failed with error -16
 
-The following flow was encountered:
-asm_exc_page_fault
- ...
-   sgx_vma_fault()
-     sgx_encl_load_page()
-       sgx_encl_eldu() // Encrypted page needs to be loaded from backing
-                       // storage into newly allocated SGX memory page
-         sgx_alloc_epc_page() // Allocate a page of SGX memory
-           __sgx_alloc_epc_page() // Fails, no free SGX memory
-           ...
-           if (sgx_should_reclaim(SGX_NR_LOW_PAGES)) // Wake reclaimer
-             wake_up(&ksgxd_waitq);
-           return -EBUSY; // Return -EBUSY giving reclaimer time to run
-       return -EBUSY;
-     return -EBUSY;
-   return VM_FAULT_NOPAGE;
+It looks like the card is being re-initialized when it's time to probe
+with the SDIO func driver. This makes sense, assuming it's been
+powered off via runtime PM (the "cap-power-off-card" DT property
+should be set in the DTS for this card's slot).
 
-The reclaimer is triggered in above flow with the following code:
+I looked a bit closer to understand the problem above and then I
+realized why the card->ocr is being set from omap_hsmmc ->init_card()
+callback. It's most likely because the mmc core in
+mmc_sdio_init_card() doesn't save the card->ocr when
+MMC_QUIRK_NONSTD_SDIO is set. Instead it becomes the responsibility
+for the ->init_card() callback to do it, which seems wrong to me.
 
-static bool sgx_should_reclaim(unsigned long watermark)
-{
-        return sgx_nr_free_pages < watermark &&
-               !list_empty(&sgx_active_page_list);
-}
+Note that the card->ocr is being used when re-initializing the SDIO card.
 
-In the problematic scenario there were no free pages available yet the
-value of sgx_nr_free_pages was above the watermark. The allocation of
-SGX memory thus always failed because of a lack of free pages while no
-free pages were made available because the reclaimer is never started
-because of sgx_nr_free_pages' incorrect value. The consequence was that
-user space kept encountering VM_FAULT_NOPAGE that caused the same
-address to be accessed repeatedly with the same result.
+I have just sent a patch [1], would you mind trying it, in combination
+with not assigning card->ocr in $subject patch?
 
-Change the global free page counter to an atomic type that
-ensures simultaneous updates are done safely. While doing so, move
-the updating of the variable outside of the spin lock critical
-section to which it does not belong.
+>
+> Adding back card->ocr = 0x80 (and keeping 3.3V for min/max) shows exactly the same.
+>
+> Only min/max 1.8V + OCR works:
+>
+> [    2.824188] mmc2: new SDIO card at address 0001
+> [    2.806518] omap_hsmmc 480ad000.mmc: card claims to support voltages below defined range
+> [    2.815979] omap_hsmmc 480ad000.mmc: found wl1251
+> [   10.981018] omap_hsmmc 480ad000.mmc: found wl1251
+> [   11.018280] wl1251: using dedicated interrupt line
+> [   11.321136] wl1251: loaded
+> [   11.378601] wl1251: initialized
+> [   14.521759] omap_hsmmc 480ad000.mmc: found wl1251
+> [   38.680725] omap_hsmmc 480ad000.mmc: found wl1251
+> [   39.646942] wl1251: 151 tx blocks at 0x3b788, 35 rx blocks at 0x3a780
+> [   39.654785] wl1251: firmware booted (Rev 4.0.4.3.7)
+>
+> Therefore I also tried the 4th combination: min/max 1.8V and no ocr quirk and it fails again.
+>
+> Finally I tried setting min to 2.7V and max to 3.6V. This ends up in
+>
+> [    0.402648] reg-fixed-voltage fixed-regulator-wg7210_en: Fixed regulator specified with variable voltages
+>
+> So it seems that we need both: min/max = 1.8V and OCR. A little unexpected since I had expected
+> that min/max is completely irrelevant.
+>
+> > If that works, we should add some comments about it above, I think.
+>
+> So at the moment no change for [PATCH v1] which I can now send out.
+>
+> BR and thanks,
+> Nikolaus
+>
 
-Cc: stable@vger.kernel.org
-Fixes: 901ddbb9ecf5 ("x86/sgx: Add a basic NUMA allocation scheme to sgx_alloc_epc_page()")
-Suggested-by: Dave Hansen <dave.hansen@linux.intel.com>
-Reviewed-by: Tony Luck <tony.luck@intel.com>
-Signed-off-by: Reinette Chatre <reinette.chatre@intel.com>
----
+Thanks a lot for doing these tests! If I am right, it looks like we
+should be able to skip assigning card->ocr for this quirk, but let's
+see.
 
-Changes since V1:
-- V1:
-  https://lore.kernel.org/lkml/373992d869cd356ce9e9afe43ef4934b70d604fd.1636049678.git.reinette.chatre@intel.com/
-- Add static to definition of sgx_nr_free_pages (Tony).
-- Add Tony's signature.
-- Provide detail about error scenario in changelog (Jarkko).
+Kind regards
+Uffe
 
- arch/x86/kernel/cpu/sgx/main.c | 12 ++++++------
- 1 file changed, 6 insertions(+), 6 deletions(-)
-
-diff --git a/arch/x86/kernel/cpu/sgx/main.c b/arch/x86/kernel/cpu/sgx/main.c
-index 63d3de02bbcc..8471a8b9b48e 100644
---- a/arch/x86/kernel/cpu/sgx/main.c
-+++ b/arch/x86/kernel/cpu/sgx/main.c
-@@ -28,8 +28,7 @@ static DECLARE_WAIT_QUEUE_HEAD(ksgxd_waitq);
- static LIST_HEAD(sgx_active_page_list);
- static DEFINE_SPINLOCK(sgx_reclaimer_lock);
- 
--/* The free page list lock protected variables prepend the lock. */
--static unsigned long sgx_nr_free_pages;
-+static atomic_long_t sgx_nr_free_pages = ATOMIC_LONG_INIT(0);
- 
- /* Nodes with one or more EPC sections. */
- static nodemask_t sgx_numa_mask;
-@@ -403,14 +402,15 @@ static void sgx_reclaim_pages(void)
- 
- 		spin_lock(&node->lock);
- 		list_add_tail(&epc_page->list, &node->free_page_list);
--		sgx_nr_free_pages++;
- 		spin_unlock(&node->lock);
-+		atomic_long_inc(&sgx_nr_free_pages);
- 	}
- }
- 
- static bool sgx_should_reclaim(unsigned long watermark)
- {
--	return sgx_nr_free_pages < watermark && !list_empty(&sgx_active_page_list);
-+	return atomic_long_read(&sgx_nr_free_pages) < watermark &&
-+	       !list_empty(&sgx_active_page_list);
- }
- 
- static int ksgxd(void *p)
-@@ -471,9 +471,9 @@ static struct sgx_epc_page *__sgx_alloc_epc_page_from_node(int nid)
- 
- 	page = list_first_entry(&node->free_page_list, struct sgx_epc_page, list);
- 	list_del_init(&page->list);
--	sgx_nr_free_pages--;
- 
- 	spin_unlock(&node->lock);
-+	atomic_long_dec(&sgx_nr_free_pages);
- 
- 	return page;
- }
-@@ -625,9 +625,9 @@ void sgx_free_epc_page(struct sgx_epc_page *page)
- 	spin_lock(&node->lock);
- 
- 	list_add_tail(&page->list, &node->free_page_list);
--	sgx_nr_free_pages++;
- 
- 	spin_unlock(&node->lock);
-+	atomic_long_inc(&sgx_nr_free_pages);
- }
- 
- static bool __init sgx_setup_epc_section(u64 phys_addr, u64 size,
--- 
-2.25.1
-
+[1]
+https://patchwork.kernel.org/project/linux-mmc/patch/20211109192547.28679-1-ulf.hansson@linaro.org/
