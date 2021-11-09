@@ -2,128 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E86444AC85
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 12:22:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 812F644AC87
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 12:22:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243216AbhKILZP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Nov 2021 06:25:15 -0500
-Received: from alexa-out-sd-01.qualcomm.com ([199.106.114.38]:40818 "EHLO
-        alexa-out-sd-01.qualcomm.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S245705AbhKILZN (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Nov 2021 06:25:13 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=quicinc.com; i=@quicinc.com; q=dns/txt; s=qcdkim;
-  t=1636456947; x=1667992947;
-  h=from:to:cc:subject:date:message-id:mime-version;
-  bh=UfMxmfeG+OV9PUqypLyDpULeZYvXQcRmofkX/KynauU=;
-  b=txs0ezC/ww8xj7L2E4SNxMxf6PPC95fkG62qefK2y+qPRZIKPszEG1O6
-   JEVJOTo5Sn3EWMSOp87+eAKikpTLh5xvZcaYhxWL4vqVggDZ1V5aWS9Zp
-   6Tw0CV2HBXW/0dzwVbYjvJKouHuGfh+WeyN/OLCRPMVg1Wi2s0vQBdgLI
-   g=;
-Received: from unknown (HELO ironmsg02-sd.qualcomm.com) ([10.53.140.142])
-  by alexa-out-sd-01.qualcomm.com with ESMTP; 09 Nov 2021 03:22:25 -0800
-X-QCInternal: smtphost
-Received: from nasanex01b.na.qualcomm.com ([10.46.141.250])
-  by ironmsg02-sd.qualcomm.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Nov 2021 03:22:25 -0800
-Received: from localhost (10.80.80.8) by nasanex01b.na.qualcomm.com
- (10.46.141.250) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.922.7; Tue, 9 Nov 2021
- 03:22:24 -0800
-From:   Neeraj Upadhyay <quic_neeraju@quicinc.com>
-To:     <paulmck@kernel.org>, <josh@joshtriplett.org>,
-        <rostedt@goodmis.org>, <mathieu.desnoyers@efficios.com>,
-        <jiangshanlai@gmail.com>, <joel@joelfernandes.org>
-CC:     <rcu@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <urezki@gmail.com>, <frederic@kernel.org>, <boqun.feng@gmail.com>,
-        Neeraj Upadhyay <quic_neeraju@quicinc.com>
-Subject: [PATCH] rcu-tasks: Inspect stalled task's trc state in locked state
-Date:   Tue, 9 Nov 2021 16:52:14 +0530
-Message-ID: <20211109112214.19618-1-quic_neeraju@quicinc.com>
-X-Mailer: git-send-email 2.17.1
+        id S245723AbhKILZ1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Nov 2021 06:25:27 -0500
+Received: from mx3.molgen.mpg.de ([141.14.17.11]:46921 "EHLO mx1.molgen.mpg.de"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S245705AbhKILZZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Nov 2021 06:25:25 -0500
+Received: from [141.14.220.45] (g45.guest.molgen.mpg.de [141.14.220.45])
+        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        (Authenticated sender: pmenzel)
+        by mx.molgen.mpg.de (Postfix) with ESMTPSA id 050FE61EA192C;
+        Tue,  9 Nov 2021 12:22:38 +0100 (CET)
+Message-ID: <ac30786b-dbeb-db77-4fd8-6fe1efbdb929@molgen.mpg.de>
+Date:   Tue, 9 Nov 2021 12:22:37 +0100
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nasanex01b.na.qualcomm.com (10.46.141.250)
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.3.0
+Subject: Re: [PATCH] media: aspeed: Fix incorrect resolution detected
+Content-Language: en-US
+To:     Jammy Huang <jammy_huang@aspeedtech.com>
+References: <20211109095453.12363-1-jammy_huang@aspeedtech.com>
+Cc:     eajames@linux.ibm.com, mchehab@kernel.org, joel@jms.id.au,
+        andrew@aj.id.au, linux-media@vger.kernel.org,
+        openbmc@lists.ozlabs.org, linux-arm-kernel@lists.infradead.org,
+        linux-aspeed@lists.ozlabs.org, linux-kernel@vger.kernel.org
+From:   Paul Menzel <pmenzel@molgen.mpg.de>
+In-Reply-To: <20211109095453.12363-1-jammy_huang@aspeedtech.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On RCU tasks trace stall, inspect the RCU-tasks-trace specific
-states of stalled task in locked down state, using try_invoke_
-on_locked_down_task(), to get reliable trc state of a non-running
-stalled task.
+Dear Jammy,
 
-Signed-off-by: Neeraj Upadhyay <quic_neeraju@quicinc.com>
----
- kernel/rcu/tasks.h | 43 ++++++++++++++++++++++++++++++++++---------
- 1 file changed, 34 insertions(+), 9 deletions(-)
 
-diff --git a/kernel/rcu/tasks.h b/kernel/rcu/tasks.h
-index e4a32db9f712..4e49b847971b 100644
---- a/kernel/rcu/tasks.h
-+++ b/kernel/rcu/tasks.h
-@@ -1073,25 +1073,50 @@ static void rcu_tasks_trace_postscan(struct list_head *hop)
- 	// Any tasks that exit after this point will set ->trc_reader_checked.
- }
- 
-+/* Communicate task state back to the RCU tasks trace stall warning request. */
-+struct trc_stall_chk_rdr {
-+	int nesting;
-+	int ipi_to_cpu;
-+	u8 needqs;
-+};
-+
-+static bool trc_check_slow_task(struct task_struct *t, void *arg)
-+{
-+	struct trc_stall_chk_rdr *trc_rdrp = arg;
-+
-+	if (task_curr(t))
-+		return false; // It is running, so decline to inspect it.
-+	trc_rdrp->nesting = READ_ONCE(t->trc_reader_nesting);
-+	trc_rdrp->ipi_to_cpu = READ_ONCE(t->trc_ipi_to_cpu);
-+	trc_rdrp->needqs = READ_ONCE(t->trc_reader_special.b.need_qs);
-+	return true;
-+}
-+
- /* Show the state of a task stalling the current RCU tasks trace GP. */
- static void show_stalled_task_trace(struct task_struct *t, bool *firstreport)
- {
- 	int cpu;
-+	struct trc_stall_chk_rdr trc_rdr;
-+	bool is_idle_tsk = is_idle_task(t);
- 
- 	if (*firstreport) {
- 		pr_err("INFO: rcu_tasks_trace detected stalls on tasks:\n");
- 		*firstreport = false;
- 	}
--	// FIXME: This should attempt to use try_invoke_on_nonrunning_task().
- 	cpu = task_cpu(t);
--	pr_alert("P%d: %c%c%c nesting: %d%c cpu: %d\n",
--		 t->pid,
--		 ".I"[READ_ONCE(t->trc_ipi_to_cpu) >= 0],
--		 ".i"[is_idle_task(t)],
--		 ".N"[cpu >= 0 && tick_nohz_full_cpu(cpu)],
--		 READ_ONCE(t->trc_reader_nesting),
--		 " N"[!!READ_ONCE(t->trc_reader_special.b.need_qs)],
--		 cpu);
-+	if (!try_invoke_on_locked_down_task(t, trc_check_slow_task, &trc_rdr))
-+		pr_alert("P%d: %c\n",
-+			 t->pid,
-+			 ".i"[is_idle_tsk]);
-+	else
-+		pr_alert("P%d: %c%c%c nesting: %d%c cpu: %d\n",
-+			 t->pid,
-+			 ".I"[trc_rdr.ipi_to_cpu >= 0],
-+			 ".i"[is_idle_tsk],
-+			 ".N"[cpu >= 0 && tick_nohz_full_cpu(cpu)],
-+			 trc_rdr.nesting,
-+			 " N"[!!trc_rdr.needqs],
-+			 cpu);
- 	sched_show_task(t);
- }
- 
--- 
-2.17.1
+Am 09.11.21 um 10:54 schrieb Jammy Huang:
+> During the process of os-installation, detected resolution's height
+> could be less than the correct one.
 
+Can you please elaborate? What OS? What resolution was and what 
+resolution should have been detected?
+
+> Increase min-required-count of stable signal to fix the problem.
+
+So you do two changes in the patch? First use the bitfield access 
+macros, and then change VE_MODE_DT_HOR_STABLE and VE_MODE_DT_VER_STABLE 
+from 6 to 10? Is that the amount of iterations? Why 10 and not 20?
+
+How much time do four iterations add?
+
+Sorry for my ignorance, but if you could make it two patches, that’d be 
+great.
+
+> Fixes: d2b4387f3bdf ("media: platform: Add Aspeed Video Engine driver")
+> Signed-off-by: Jammy Huang <jammy_huang@aspeedtech.com>
+> ---
+>   drivers/media/platform/aspeed-video.c | 13 ++++++++++++-
+>   1 file changed, 12 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/media/platform/aspeed-video.c b/drivers/media/platform/aspeed-video.c
+> index 5da52646b298..625a77ddb479 100644
+> --- a/drivers/media/platform/aspeed-video.c
+> +++ b/drivers/media/platform/aspeed-video.c
+> @@ -196,6 +196,12 @@
+>   #define  VE_INTERRUPT_VSYNC_DESC	BIT(11)
+>   
+>   #define VE_MODE_DETECT			0x30c
+> +#define  VE_MODE_DT_HOR_TOLER		GENMASK(31, 28)
+> +#define  VE_MODE_DT_VER_TOLER		GENMASK(27, 24)
+> +#define  VE_MODE_DT_HOR_STABLE		GENMASK(23, 20)
+> +#define  VE_MODE_DT_VER_STABLE		GENMASK(19, 16)
+> +#define  VE_MODE_DT_EDG_THROD		GENMASK(15, 8)
+> +
+>   #define VE_MEM_RESTRICT_START		0x310
+>   #define VE_MEM_RESTRICT_END		0x314
+>   
+> @@ -1199,7 +1205,12 @@ static void aspeed_video_init_regs(struct aspeed_video *video)
+>   	aspeed_video_write(video, VE_SCALING_FILTER3, 0x00200000);
+>   
+>   	/* Set mode detection defaults */
+> -	aspeed_video_write(video, VE_MODE_DETECT, 0x22666500);
+> +	aspeed_video_write(video, VE_MODE_DETECT,
+> +			   FIELD_PREP(VE_MODE_DT_HOR_TOLER, 2) |
+> +			   FIELD_PREP(VE_MODE_DT_VER_TOLER, 2) |
+> +			   FIELD_PREP(VE_MODE_DT_HOR_STABLE, 10) |
+> +			   FIELD_PREP(VE_MODE_DT_VER_STABLE, 10) |
+> +			   FIELD_PREP(VE_MODE_DT_EDG_THROD, 0x65));
+>   
+>   	aspeed_video_write(video, VE_BCD_CTRL, 0);
+>   }
+> 
+
+
+Kind regards,
+
+Paul
