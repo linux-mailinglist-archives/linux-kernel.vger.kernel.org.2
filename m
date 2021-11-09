@@ -2,108 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B57C44AA30
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 10:10:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 209A744AA21
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 10:08:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244735AbhKIJMp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Nov 2021 04:12:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40318 "EHLO
+        id S242567AbhKIJLA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Nov 2021 04:11:00 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39918 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244712AbhKIJMi (ORCPT
+        with ESMTP id S236483AbhKIJK6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Nov 2021 04:12:38 -0500
-Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 78E5AC061767;
-        Tue,  9 Nov 2021 01:09:52 -0800 (PST)
-Received: from zn.tnic (p2e584790.dip0.t-ipconnect.de [46.88.71.144])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id D3E4A1EC04E4;
-        Tue,  9 Nov 2021 10:09:50 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1636448990;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=zfYYtoXdHEdFf5P9uwulPig2zqIQ1+SFMFErzFp806w=;
-        b=ft1SgBWY9GStg3ExlOa+rDEF1dTyrsXU9D6YufTNatnc0R4z9ltlGcsYrdWazptt5oRUti
-        RgcjV1xRzhC7MLXziTjKrdV3cPwrrnyzkyi4PxlVGqtfn+LxyDetsBhIfgHaCsuYh4Pwod
-        MPGuLRrjVvX59aaNrERMMivCxizxg2E=
-Date:   Tue, 9 Nov 2021 10:07:35 +0100
-From:   Borislav Petkov <bp@alien8.de>
-To:     Zhaolong Zhang <zhangzl2013@126.com>
-Cc:     Tony Luck <tony.luck@intel.com>, x86@kernel.org,
-        linux-edac@vger.kernel.org, linux-kernel@vger.kernel.org,
-        "Paul E . McKenney" <paulmck@kernel.org>
-Subject: Re: [PATCH] x86/mce: drop cpu_missing since we have more capable
- mce_missing_cpus
-Message-ID: <YYo6VwPZLCWcP3Bl@zn.tnic>
-References: <572d793c.f2e.17cede4cbf0.Coremail.zhangzl2013@126.com>
- <20211108082832.142436-1-zhangzl2013@126.com>
- <YYjuiHN1wKt82fjs@zn.tnic>
- <4d526023.3cde.17cff097bab.Coremail.zhangzl2013@126.com>
- <YYj8ir/UYnG/zVK4@zn.tnic>
- <4a77f582.4434.17cff975224.Coremail.zhangzl2013@126.com>
- <776fad3d.3369.17d03d2c2ba.Coremail.zhangzl2013@126.com>
+        Tue, 9 Nov 2021 04:10:58 -0500
+Received: from mail-ed1-x52d.google.com (mail-ed1-x52d.google.com [IPv6:2a00:1450:4864:20::52d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C470C061767
+        for <linux-kernel@vger.kernel.org>; Tue,  9 Nov 2021 01:08:12 -0800 (PST)
+Received: by mail-ed1-x52d.google.com with SMTP id r12so73658730edt.6
+        for <linux-kernel@vger.kernel.org>; Tue, 09 Nov 2021 01:08:12 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=szeredi.hu; s=google;
+        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
+        bh=VCMCayoiw6jiN14Vy0tGeBad8uf3NfKNTuH/91IaUr0=;
+        b=aYVR3ufOsfMnHBKR9k4Bz0hUl0Kwq/e26/d6he0GM1iUrLEzS3CI5K4ItPWyUJQodh
+         An6ypM1RoUHf7tu6yyKULI98UJUbSfA4NEBEXGMd5ckR8Cioz2N2Z5C0tOTJTh2OfW0z
+         VBS3nFtzRfEPINJeKOGESEauvQ0NYW1XGXC/Q=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition;
+        bh=VCMCayoiw6jiN14Vy0tGeBad8uf3NfKNTuH/91IaUr0=;
+        b=msGSbx6rPZ+s+NfY4UWOVJaSfPwDK9xRqdb8WiqObbk+aqgqaet8hQHwNAMVxbeMoS
+         JxsnroetHSWx01pi3YOZqMULC6etBcQVyb47sb7U8qsbbOLXQLZgn88DK7BktV1ZMa2C
+         xGai/ss9k4dr0BHbklYO9BuSKFcqDr2s1zCFr6bS9uRFmkaT6k9bXWGnLC6QEVJ1B5Od
+         90PiVHuA2n4BIXbxMB2ZefsTUa5RaBrEPZOk6+ggw7mi/0Asxs/6Q2/J3i3bWV2+Vl/3
+         ha0icOV2fXcOa1qNLypzJF7HCSjXSn8Kd69DWqJbX/5WVLqJYglZeZd4eBFZigZyla46
+         U7ng==
+X-Gm-Message-State: AOAM533srJ2uuYvCZJzhRewaRFyIvCuRnC6i6qSehUU2q9gIA5Y1Is1i
+        dt2ZBTcMXVoFnTqY7CKkF53SfQ==
+X-Google-Smtp-Source: ABdhPJz9XrzSOmC4qjtJNbN2RuGiDKIgMwsJ3jk+9wtl12QNXF3iWJ3Zor39pSp4HstnYT3SrZD5wg==
+X-Received: by 2002:a17:906:6a0f:: with SMTP id qw15mr7382844ejc.463.1636448890742;
+        Tue, 09 Nov 2021 01:08:10 -0800 (PST)
+Received: from miu.piliscsaba.redhat.com (catv-178-48-189-3.catv.broadband.hu. [178.48.189.3])
+        by smtp.gmail.com with ESMTPSA id nd36sm9292965ejc.17.2021.11.09.01.08.09
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 09 Nov 2021 01:08:10 -0800 (PST)
+Date:   Tue, 9 Nov 2021 10:08:08 +0100
+From:   Miklos Szeredi <miklos@szeredi.hu>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-unionfs@vger.kernel.org
+Subject: [GIT PULL] overlayfs update for 5.16
+Message-ID: <YYo6eHUbXJXQkogn@miu.piliscsaba.redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <776fad3d.3369.17d03d2c2ba.Coremail.zhangzl2013@126.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 09, 2021 at 04:31:23PM +0800, Zhaolong Zhang wrote:
-> If there is a non-recoverable mce as well, just let it print that
-> reason. No need to bring the timeout message indeed. Because since
-> the tolerant was set to a high level to ignore the timeout, we can
-> eventually ignore them.
+Hi Linus,
 
-Here's how I see it:
+Please pull from:
 
-	/*
-	 * Tolerant levels:
-	 * 0: always panic on uncorrected errors, log corrected errors
-	 * 1: panic or SIGBUS on uncorrected errors, log corrected errors
-	 * 2: SIGBUS or log uncorrected errors (if possible), log corr. errors
-	 * 3: never panic or SIGBUS, log all errors (for testing only)
-	 */
+  git://git.kernel.org/pub/scm/linux/kernel/git/mszeredi/vfs.git tags/ovl-update-5.16
 
-So on normal deployments, no one should fiddle with tolerant levels - so
-you'll be running at tolerance level 0 by default and all should print
-out. Same for level 1.
+ - Fix a regression introduced in the last cycle.
 
-Levels 2 and 3 are, to me at least, purely for testing *only*. And,
-actually, that error message should be issued regardless of the
-tolerance level - only the panicking should be controlled by that. IOW,
-that code should do:
+ - Fix a use-after-free in the AIO path.
 
-        if ((s64)*t < SPINUNIT) {
-                if (cpumask_and(&mce_missing_cpus, cpu_online_mask, &mce_missing_cpus))
-                        pr_emerg("CPUs not responding to MCE broadcast (may include false positives): %*pbl\n",
-                                 cpumask_pr_args(&mce_missing_cpus));
-                if (mca_cfg.tolerant <= 1)
-                        mce_panic(msg, NULL, NULL);
-                return 1;
-        }
+ - Fix a bogus warning reported by syzbot.
 
-because, regardless of tolerance level, saying that some cores didn't
-respond is important info.
 
-You could do that as a separate patch, on top, if you feel like it.
+Thanks,
+Miklos
 
-> I am not sure whether it should be authored by you or suggested by
-> you.
+---
+Miklos Szeredi (2):
+      ovl: fix warning in ovl_create_real()
+      ovl: fix filattr copy-up failure
 
-Suggested is fine.
+yangerkun (1):
+      ovl: fix use after free in struct ovl_aio_req
 
-> Anyway, I will post a new patch exactly as you suggested. Please pick
-> it or ignore it as appropriate :)
-
-Thx.
-
--- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
+---
+ fs/overlayfs/copy_up.c   | 23 ++++++++++++++++++-----
+ fs/overlayfs/dir.c       |  3 +--
+ fs/overlayfs/file.c      | 16 ++++++++++++++--
+ fs/overlayfs/inode.c     |  5 ++++-
+ fs/overlayfs/overlayfs.h |  1 +
+ fs/overlayfs/super.c     | 12 ++++++++----
+ 6 files changed, 46 insertions(+), 14 deletions(-)
