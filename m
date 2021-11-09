@@ -2,145 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4915344B2DE
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 19:50:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 21D2444B2E1
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 19:52:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242753AbhKISw4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Nov 2021 13:52:56 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60182 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242639AbhKISwx (ORCPT
+        id S242763AbhKISy7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Nov 2021 13:54:59 -0500
+Received: from conuserg-09.nifty.com ([210.131.2.76]:50527 "EHLO
+        conuserg-09.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S242715AbhKISy5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Nov 2021 13:52:53 -0500
-Received: from mail-io1-xd29.google.com (mail-io1-xd29.google.com [IPv6:2607:f8b0:4864:20::d29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C3F61C061766
-        for <linux-kernel@vger.kernel.org>; Tue,  9 Nov 2021 10:50:07 -0800 (PST)
-Received: by mail-io1-xd29.google.com with SMTP id y16so6479272ioc.8
-        for <linux-kernel@vger.kernel.org>; Tue, 09 Nov 2021 10:50:07 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=C7ayoAZBsG7SmT52WD7mztV4zmoTtxtcqBtR1Gou9eQ=;
-        b=FvvQNa7hOwEnvZKsAmcWroNO2el/XKh1p/kqLEDzVcYNdDaxpBYMhXrxVExMC0RjZx
-         AQ2HupjCg/azmyN8xTDiF3G4QcXZY4XeOLDmOdZXmEbHtEJ2e/5VNnWhXKzC/CWgY1kW
-         9Ai0rjRqqNtSScIPx29vzaPCIub0xXk3lt2V97Jszg3O5VjlFdGALPtNNKfGwK/2H8ax
-         TczdgUWx6k7X5kgvedEEip075SYscdOWJB9aVTUG582f/9GT8KTSj4VC0h6wjecdCVzL
-         g0vAqZQZw5qy4aqR3vUPWoREoyPuSCP+sNvLeMcJ/9uMCvWUlq6SeFT/0QRWlTZ/zUjq
-         tx5A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=C7ayoAZBsG7SmT52WD7mztV4zmoTtxtcqBtR1Gou9eQ=;
-        b=RkK0qMlvW19AQsadFHqzL5f/BC5955bpOIVauwupELj51zN0nT6crwwxSbARgwqX+2
-         D72KQjog5hL5oWiG7iA9Fm6fTvkxvzm3SCi+DijKm3nKoT++B+1IWTUTqXm1pF62q+Wc
-         ZDuOn5DC46CwTnW7M2wYNUHpXjWh22+neEabGPQnIXV97GwPBGGJM6z4ha7ZTSkG+m1M
-         FAF6AJQmyh18EeduuAdozwilEq12R0xsV5W+PTg3jeMF5N+z+I6t9Nh4+MNJzYaGcX9G
-         FMbQ2G3aORE/6yFteDFdYxn/zkLH/tfRuv9sEWBDounGuJxiYRO+BxDkad7nmynR/9cd
-         8rCQ==
-X-Gm-Message-State: AOAM532NkRFIU8c2pIWLYYMVSGIa2+iqjBqerAKeCZXsa+8Fg34LwGmV
-        f+LJnVM1fUZA33q+UWMmXpT9vB6yixzbUWQr72QZhSuRAuqypQ==
-X-Google-Smtp-Source: ABdhPJwEIs3vlQLt6BT4ZkuXVh+EitAS6mwjZOseedf7mXmGOjP0VnyC89E9OFlORWdmo8U8hthIKUSy2oFTXfyev58=
-X-Received: by 2002:a05:6638:144f:: with SMTP id l15mr7414854jad.21.1636483807037;
- Tue, 09 Nov 2021 10:50:07 -0800 (PST)
+        Tue, 9 Nov 2021 13:54:57 -0500
+Received: from grover.. (133-32-232-101.west.xps.vectant.ne.jp [133.32.232.101]) (authenticated)
+        by conuserg-09.nifty.com with ESMTP id 1A9IoUZc023095;
+        Wed, 10 Nov 2021 03:50:31 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conuserg-09.nifty.com 1A9IoUZc023095
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
+        s=dec2015msa; t=1636483831;
+        bh=BvQkRW9CNz6/jlg9D16+/K4NnL23b6i8ZHcso55PIA4=;
+        h=From:To:Cc:Subject:Date:From;
+        b=xv/I0xmifZEuwnRH9M9gh9+b4PL0Mf3zb3gt5htmu9nV6vPictomt92iU2OvoTsj/
+         +u7+owpxirwELB+a8p5vmpCNW0HpREese7rMMBMyh5VfpgmwgnSvqNXDuFXt9Wv1Al
+         vmR036vx/Fb/c5Qxl8HCItkgS1MqcJ/Sfldo35LlCnNtp6sdFkJwIv7a2B3o/BTvB/
+         hrYZInYUx40syVmb8YFkyocIYOvuzqfcumgDgpfPWALNCrofd432/BbRG01r7gGZQq
+         gDZrBeaLWCqGTc+QeaLI5zwv7v5OBNS8LB7erxogUXzeW1noiGGHKya5vCm0jne47t
+         Az5RfAs8xb+tw==
+X-Nifty-SrcIP: [133.32.232.101]
+From:   Masahiro Yamada <masahiroy@kernel.org>
+To:     Michael Ellerman <mpe@ellerman.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        linuxppc-dev@lists.ozlabs.org
+Cc:     Masahiro Yamada <masahiroy@kernel.org>,
+        "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] powerpc: clean vdso32 and vdso64 directories
+Date:   Wed, 10 Nov 2021 03:50:15 +0900
+Message-Id: <20211109185015.615517-1-masahiroy@kernel.org>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-References: <20211109140707.1689940-1-jolsa@kernel.org> <20211109140707.1689940-2-jolsa@kernel.org>
-In-Reply-To: <20211109140707.1689940-2-jolsa@kernel.org>
-From:   Ian Rogers <irogers@google.com>
-Date:   Tue, 9 Nov 2021 10:49:53 -0800
-Message-ID: <CAP-5=fVS2AwZ9bP4BjF9GDcZqmw5fwUZ6OGXdgMnFj3w_2OTaw@mail.gmail.com>
-Subject: Re: [PATCH 1/2] perf tools: Add more weak libbpf functions
-To:     Jiri Olsa <jolsa@redhat.com>
-Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        lkml <linux-kernel@vger.kernel.org>,
-        Peter Zijlstra <a.p.zijlstra@chello.nl>,
-        Ingo Molnar <mingo@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Michael Petlan <mpetlan@redhat.com>,
-        linux-perf-users@vger.kernel.org,
-        Andrii Nakryiko <andrii@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 9, 2021 at 6:07 AM Jiri Olsa <jolsa@redhat.com> wrote:
->
-> We hit the window where perf uses libbpf functions, that did not
-> make it to the official libbpf release yet and it's breaking perf
-> build with dynamicly linked libbpf.
->
-> Fixing this by providing the new interface as weak functions which
-> calls the original libbpf functions. Fortunatelly the changes were
-> just renames.
+Since commit bce74491c300 ("powerpc/vdso: fix unnecessary rebuilds of
+vgettimeofday.o"), "make ARCH=powerpc clean" does not clean up the
+arch/powerpc/kernel/{vdso32,vdso64} directories.
 
-Could we just provide these functions behind a libbpf version #if ?
-Weak symbols break things in subtle ways, under certain circumstances
-the weak symbol is preferred over the strong due to lazy object file
-resolution:
-https://maskray.me/blog/2021-06-20-symbol-processing#archive-processing
-This bit me last week, but in general you get away with it as the lazy
-object file will get processed in an archive exposing the strong
-symbol. With an #if you either get a linker error for 2 definitions or
-0 definitions, and it's clear what is broken.
+Use the subdir- trick to let "make clean" descend into them.
 
-In the past we had problems due to constant propagation from weak
-const variables, where #if was the solution:
-https://lore.kernel.org/lkml/20191001003623.255186-1-irogers@google.com/
+Fixes: bce74491c300 ("powerpc/vdso: fix unnecessary rebuilds of vgettimeofday.o")
+Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
+---
 
-There was some recent conversation on libbpf version for pahole here:
-https://lore.kernel.org/bpf/CAP-5=fUc3LtU0WYg-Py9Jf+9picaWHJdSw=sdOMA54uY3p1pdw@mail.gmail.com/T/
-https://lore.kernel.org/bpf/20211021183330.460681-1-irogers@google.com/
+ arch/powerpc/kernel/Makefile | 3 +++
+ 1 file changed, 3 insertions(+)
 
-Thanks,
-Ian
+diff --git a/arch/powerpc/kernel/Makefile b/arch/powerpc/kernel/Makefile
+index 0e3640e14eb1..5fa68c2ef1f8 100644
+--- a/arch/powerpc/kernel/Makefile
++++ b/arch/powerpc/kernel/Makefile
+@@ -196,3 +196,6 @@ clean-files := vmlinux.lds
+ # Force dependency (incbin is bad)
+ $(obj)/vdso32_wrapper.o : $(obj)/vdso32/vdso32.so.dbg
+ $(obj)/vdso64_wrapper.o : $(obj)/vdso64/vdso64.so.dbg
++
++# for cleaning
++subdir- += vdso32 vdso64
+-- 
+2.30.2
 
-> Signed-off-by: Jiri Olsa <jolsa@kernel.org>
-> ---
->  tools/perf/util/bpf-event.c | 27 +++++++++++++++++++++++++++
->  1 file changed, 27 insertions(+)
->
-> diff --git a/tools/perf/util/bpf-event.c b/tools/perf/util/bpf-event.c
-> index 4d3b4cdce176..ceb96360fd12 100644
-> --- a/tools/perf/util/bpf-event.c
-> +++ b/tools/perf/util/bpf-event.c
-> @@ -33,6 +33,33 @@ struct btf * __weak btf__load_from_kernel_by_id(__u32 id)
->         return err ? ERR_PTR(err) : btf;
->  }
->
-> +struct bpf_program * __weak
-> +bpf_object__next_program(const struct bpf_object *obj, struct bpf_program *prev)
-> +{
-> +#pragma GCC diagnostic push
-> +#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
-> +       return bpf_program__next(prev, obj);
-> +#pragma GCC diagnostic pop
-> +}
-> +
-> +struct bpf_map * __weak
-> +bpf_object__next_map(const struct bpf_object *obj, const struct bpf_map *prev)
-> +{
-> +#pragma GCC diagnostic push
-> +#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
-> +       return bpf_map__next(prev, obj);
-> +#pragma GCC diagnostic pop
-> +}
-> +
-> +const void * __weak
-> +btf__raw_data(const struct btf *btf_ro, __u32 *size)
-> +{
-> +#pragma GCC diagnostic push
-> +#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
-> +       return btf__get_raw_data(btf_ro, size);
-> +#pragma GCC diagnostic pop
-> +}
-> +
->  static int snprintf_hex(char *buf, size_t size, unsigned char *data, size_t len)
->  {
->         int ret = 0;
-> --
-> 2.31.1
->
