@@ -2,102 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 081A344B3CE
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 21:13:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 27DF544B3D0
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 21:14:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244219AbhKIUQ1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Nov 2021 15:16:27 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50786 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242293AbhKIUQW (ORCPT
+        id S244227AbhKIUR1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Nov 2021 15:17:27 -0500
+Received: from linux.microsoft.com ([13.77.154.182]:32858 "EHLO
+        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S242293AbhKIURX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Nov 2021 15:16:22 -0500
-Received: from mail-lf1-x135.google.com (mail-lf1-x135.google.com [IPv6:2a00:1450:4864:20::135])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C2BDEC061764;
-        Tue,  9 Nov 2021 12:13:35 -0800 (PST)
-Received: by mail-lf1-x135.google.com with SMTP id u11so393309lfs.1;
-        Tue, 09 Nov 2021 12:13:35 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=JCo3ZYUvPoVt8JEt2PZSTfPPj0pbEwYv3HN7zMRymXc=;
-        b=BqBGLTasdswHd62KYITnkW/OPOhaZhLVuHB8URFEnwRcmXpc4SPcsyXK/7Xl1slOxd
-         wylCk0xqWGz6F62FMQdZrvmEIj4qUev4wIl3s8nHgb8k/BMOJu+v7x17NKvrNrlfMvVG
-         MMg99tdOOpaA5gCO2Sfc44dNMHPICLoIJOmtYk+sb1jnLo7oY0KrbMBD3m3BRIfoyShS
-         VRhZHVUAFChtLYGDSCTu3T9+l6trFb+2EWNWjB8MSdyt9u7YakCvxaLyHdrVcqAwjeKi
-         rWfh6Ir3/mijSHUlwlbd1GSEY+qMs1AOUe7CSm8tRtpYiTa398VWkxQXMvCG+iOsgrDF
-         jLPw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=JCo3ZYUvPoVt8JEt2PZSTfPPj0pbEwYv3HN7zMRymXc=;
-        b=RNGh2KFEzvxLu+zOUtcJsN8ueE+vDLuJCdrwT8uFcpQIVQrNoWXXOvj5htUF8NzVbM
-         7TbkvjE2k/bGPKuJFeCISM3n5bQS7yDKENHKSoWSu8xveLgNmwxAiQN87OPgHrindGQK
-         y2n8P+G3sg9m3MkqFym2DIJDpa8G2qvbKK8C2iEr5DZ+CXi0xzZ8QOOQ5HaS3rniyhRW
-         RwBCcdUFMWI4932llZDQ2wCfrBAw4HhmDTcgj2I4GEq2mpyILOiRaGz9vSgTf8TVDe5v
-         nie7vLc0D8gM6IzD0xJu4w/wFsXQE/D53p5KyzW/XQtP1MWpEK6EmenxS/f+FYhz1l3S
-         21eQ==
-X-Gm-Message-State: AOAM531uedVpt12UfmieACjXYrX2VJ1In87kW4xCKxm7j480KtfbTmhX
-        qwckBaDBRvGI41QMt2iHb/QeN6iZdnX7ecQi1CE=
-X-Google-Smtp-Source: ABdhPJxDaWDpWZ4XopS52A9UNiYz4wGGfgQugqHQm93wbhcpSbDYqHLF3yEUBRj9V8FWYySt8+ndKf9X9M2cdKTXHhg=
-X-Received: by 2002:a05:6512:32c1:: with SMTP id f1mr9712546lfg.498.1636488814040;
- Tue, 09 Nov 2021 12:13:34 -0800 (PST)
+        Tue, 9 Nov 2021 15:17:23 -0500
+Received: from kbox (unknown [24.17.193.74])
+        by linux.microsoft.com (Postfix) with ESMTPSA id ED19320C34DF;
+        Tue,  9 Nov 2021 12:14:36 -0800 (PST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com ED19320C34DF
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+        s=default; t=1636488877;
+        bh=f54cLIP+LVhC9e3MFKCNzYbFVIHdBqUgz+HD0cCsXZ8=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=aCfYfB1y7+lvAiP3gNLbaDoIpcL1OUW6ltw3X9uAPmOyo9iscOLTU/2BCbe5fmrdS
+         HJf8iThoW4MfWlRSPVgzi/u2mUrEi7IJtHtBdPdIMjH7OEa8glmyIg5QgRJkW3JLz6
+         rHywJTFvGAsbrOYFu4cz9aLnBtpw9HJUkNJSH7iQ=
+Date:   Tue, 9 Nov 2021 12:14:32 -0800
+From:   Beau Belgrave <beaub@linux.microsoft.com>
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     Masami Hiramatsu <mhiramat@kernel.org>,
+        linux-trace-devel@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v4 02/10] user_events: Add minimal support for
+ trace_event into ftrace
+Message-ID: <20211109201432.GA1650@kbox>
+References: <20211104170433.2206-1-beaub@linux.microsoft.com>
+ <20211104170433.2206-3-beaub@linux.microsoft.com>
+ <20211107233115.1f77e93c4bdf3ff649be99c1@kernel.org>
+ <20211108171336.GA1690@kbox>
+ <20211108131639.33a4f186@gandalf.local.home>
+ <20211108202527.GA1862@kbox>
+ <20211109115634.5fb6d984d7b4e701c740d5f3@kernel.org>
+ <20211109190844.GA1529@kbox>
+ <20211109142506.3c280469@gandalf.local.home>
 MIME-Version: 1.0
-References: <20211106173909.34255-1-puranjay12@gmail.com> <YYeOVJjiz6huHv4y@kroah.com>
- <CANk7y0jsy9m3YLdSgjsoP-w_NcS-QZx3UTd+jnMHdRrhQ8zgeQ@mail.gmail.com> <YYrP1RS5Uyf0MzD7@kroah.com>
-In-Reply-To: <YYrP1RS5Uyf0MzD7@kroah.com>
-From:   Puranjay Mohan <puranjay12@gmail.com>
-Date:   Wed, 10 Nov 2021 01:43:22 +0530
-Message-ID: <CANk7y0gNiqiR+4cLHq39y5qNNX6Lb2e=urpq-4a3FfrZ2nnewg@mail.gmail.com>
-Subject: Re: [PATCH 0/1] device property: Adding fwnode_irq_get_by_name()
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     rafael@kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Jonathan Cameron <jic23@kernel.org>,
-        linux-iio <linux-iio@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211109142506.3c280469@gandalf.local.home>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 10, 2021 at 1:15 AM Greg KH <gregkh@linuxfoundation.org> wrote:
->
-> On Wed, Nov 10, 2021 at 01:00:26AM +0530, Puranjay Mohan wrote:
-> > On Sun, Nov 7, 2021 at 1:59 PM Greg KH <gregkh@linuxfoundation.org> wrote:
-> > >
-> > > On Sat, Nov 06, 2021 at 11:09:08PM +0530, Puranjay Mohan wrote:
-> > > > While working on an IIO driver I was told to use of_irq_get_byname() as
-> > > > the generic version is not available in property.c.
-> > > > I wish to work on this and have written a function that may work.
-> > > > I am not sure about its correctness so I am posting this patch early for
-> > > > review.
-> > >
-> >
-> > Hi Greg,
-> >
-> > > Please test your code, and also provide a user for it.  We can not take
-> > > new functions that no one uses as that usually means they do not work.
-> >
-> > Actually, I just wanted to get a review of this code before I test it.
->
-> No, please test your code first, before asking others to review it.
->
+On Tue, Nov 09, 2021 at 02:25:06PM -0500, Steven Rostedt wrote:
+> On Tue, 9 Nov 2021 11:08:44 -0800
+> Beau Belgrave <beaub@linux.microsoft.com> wrote:
+> 
+> > We need strings to be able to be emitted and recorded in eBPF, perf and
+> > ftrace. So I would rather go after a solution that lets us keep these in
+> > the ring buffers, even if it means a perf hit.
+> > 
+> > Guess what's left is to where the best place to check is, checking in
+> > the filter with unsafe flags would let us keep most of the perf (we just
+> > check the undersize case, 1 branch). When these unsafe types are
+> > filtered then a perf tax is imposed to keep things safe.
+> > 
+> > It sounded like Steven wanted to think about this a bit, so I'll wait a
+> > bit before poking again for consensus :)
+> > 
+> > Do you have any strong feelings about where it goes?
+> 
+> IIUC, the writing into the trace event is done via one big blob, correct?
+> 
 
-Sorry for this inconvenience.
-Actually, I have never worked on this part of the kernel before so I
-was not sure if I was doing the right thing.
-Now, I have tested it and sent a new version.
+Yes, the top 4 bytes get trimmed off as an index, then it's a big blob
+to all places except eBPF (when asking for the iterator directly).
 
-P.S - I won't send untested code again.
+> That is this:
+> 
+> +	if (likely(atomic_read(&tp->key.enabled) > 0)) {
+> +		struct tracepoint_func *probe_func_ptr;
+> +		user_event_func_t probe_func;
+> +		void *tpdata;
+> +		void *kdata;
+> +		u32 datalen;
+> +
+> +		kdata = kmalloc(i->count, GFP_KERNEL);
+> +
+> +		if (unlikely(!kdata))
+> +			return -ENOMEM;
+> +
+> +		datalen = copy_from_iter(kdata, i->count, i);
+> +
+> +		rcu_read_lock_sched();
+> +
+> +		probe_func_ptr = rcu_dereference_sched(tp->funcs);
+> +
+> +		if (probe_func_ptr) {
+> +			do {
+> +				probe_func = probe_func_ptr->func;
+> +				tpdata = probe_func_ptr->data;
+> +				probe_func(user, kdata, datalen, tpdata);
+> +			} while ((++probe_func_ptr)->func);
+> +		}
+> +
+> +		rcu_read_unlock_sched();
+> +
+> +		kfree(kdata);
+> 
+> So we really are just interested in making sure that the output is correct?
+> 
 
-> Do you want to spend your time reviewing code that the creator has not
-> even tested themselves?
->
-> thanks,
->
-> greg k-h
+Largely, yes.
 
-Thanks,
-Puranjay Mohan
+The optimization part of the patch moves the buffer copies into the
+probes to remove a double copy. I believe however that output can be
+checked either centrally before the probes or within each probe call if
+need be.
+
+For perf/eBPF we may not need to check things, however, for ftrace
+we will due to the filters. So we may be able to isolate to just the
+ftrace probe method.
+
+The ftrace probe will have a blob even after optimization due to the copy
+into the ring buffer (assuming we can discard it if it violates a policy).
+
+> That is, the reading of the trace file?
+> 
+
+We really need to ensure that data can be analyzed on the machine
+directly (eBPF, ftrace, perf) as well as outside of the machine (ftrace, perf).
+
+The priorities to us are fast recording speed with accurate reading of trace
+files and event data.
+
+> -- Steve
