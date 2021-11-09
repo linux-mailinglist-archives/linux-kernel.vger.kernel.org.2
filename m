@@ -2,82 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E675344AC5B
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 12:15:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EDDFF44AC5C
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 12:15:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245619AbhKILSS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Nov 2021 06:18:18 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41042 "EHLO
+        id S245631AbhKILSY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Nov 2021 06:18:24 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41106 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S245616AbhKILSG (ORCPT
+        with ESMTP id S245616AbhKILSV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Nov 2021 06:18:06 -0500
-Received: from mail-oi1-x232.google.com (mail-oi1-x232.google.com [IPv6:2607:f8b0:4864:20::232])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8138FC061766
-        for <linux-kernel@vger.kernel.org>; Tue,  9 Nov 2021 03:15:20 -0800 (PST)
-Received: by mail-oi1-x232.google.com with SMTP id o4so33068982oia.10
-        for <linux-kernel@vger.kernel.org>; Tue, 09 Nov 2021 03:15:20 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=4hVT10Becr18q5c+7WtU6LwFlNBSvo80lS6A2/bda08=;
-        b=ZhXfE8fkb4kM7D/n3iQS5fnoQZmaFTutNdUzpKyGPv436hMukJ9vK1uP8tSpO+PXRc
-         M0gVdu0NzRyblMeiuI5wcMuznoCarl71nL8IqX393wppVulXPC/2CW2lP35vMZ5CE+lH
-         2B+KjwBr8x+ccQ0A6uNiH86Qp6Yg47a32b0fNz682Z0o0fZEGTXFvbECg4WDTQHhzSgH
-         7HcoeYeS+AulErQ4lYSbEqPEhJ/etfjjZDt9rXYyNi1awNAcRgfc0UwYDt+Da7NdwPz4
-         5My5tOefwW3IZn2ct0ets51BOzleP69gT4Wz0swbJIRpPG6eQoA30u3F1oDWrDBuEZP/
-         NyYw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=4hVT10Becr18q5c+7WtU6LwFlNBSvo80lS6A2/bda08=;
-        b=xqToBjuJvBgYLy1aauNW1LjW0M7wbeTCdvza3kUSWDU5C1FkGX9S8hFbOA5f1epNMq
-         MPQf8qT33wY/4ruqYg6levZ9AnapbSA8c7KkVRH2LhX+kxdcPw/vgfzkms6eeJ3bQZtl
-         K3WNFeEoTKxef5V22heUyZmmCF0Arzw5xWBlBhLuASLrvZTN4vq+wgca+tSjzq30gRBj
-         XWzhhEVkjWKYbHv1Y6x0NTG4MezHZSOw5uhuP5lRs63JCuSWuclgmk0lMxtX9LP5ZkiC
-         G4bazfVREUQm90gsgFbtdJSNn128x0oSZZqjL9B0sOGNC69V+qhKIFpm4gfp6ihgnUB3
-         wHYw==
-X-Gm-Message-State: AOAM5308Lb3Z2JSK4GC3MThPeCyyoU4XLxV7+FV8/teCEgv1b7Co/uwT
-        mEpkDlYSwK+U9g+VXEpnIOO6ZIxX0pdQZCORPzbuAw==
-X-Google-Smtp-Source: ABdhPJwk/P0SmvmDLHXhXAK1zJywnnYAVMs+ay9ZSTJjMZGRMEHispXDZQ/dpNO4SGj4/9plBxGXloJ/zEgEPWm0dyA=
-X-Received: by 2002:a05:6808:60e:: with SMTP id y14mr5037966oih.162.1636456519895;
- Tue, 09 Nov 2021 03:15:19 -0800 (PST)
+        Tue, 9 Nov 2021 06:18:21 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3DAF0C061764
+        for <linux-kernel@vger.kernel.org>; Tue,  9 Nov 2021 03:15:36 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=w1EOH6FPBwa3M2ymytmOdE7Dwkz35NxpmkwCa2EKnko=; b=OJJOWDfTxVYdPuwTP2rFq28Tiv
+        PJOyMuRCOA5fjZK2HdhyJMG1gO6idcNwJVC1mS9khNjjB7FP8elEcGKhWHJfLOLL282yLnKoUf4qb
+        WgHAUKyjuqgW9agKfQWlByUsLZmtw/Je2RFVXA2bK6RK7OUK5sUWmgi7MLOEmAJop81/BkKSjrIL4
+        6JG0UxZnKF/mpaxFOI7ML39Rx3yPaRu5DZWvl89Y8/rjHqB1lDFY2kqnV3JSHX7XbepEFTablHtJ/
+        z0MRP3sAOFXLu/2/KM9jO1Q5q1S2DpILsetT3F9lktKWQfrZAS+RqmIT4V5ub3gXg89vKDANViumT
+        jnwM+bLg==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mkP5r-000yft-VJ; Tue, 09 Nov 2021 11:15:12 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id A372F300388;
+        Tue,  9 Nov 2021 12:15:11 +0100 (CET)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 67258203B736E; Tue,  9 Nov 2021 12:15:11 +0100 (CET)
+Date:   Tue, 9 Nov 2021 12:15:11 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Josh Don <joshdon@google.com>
+Cc:     Ingo Molnar <mingo@redhat.com>, Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Vineeth Pillai <vineethrp@gmail.com>,
+        Hao Luo <haoluo@google.com>, Tao Zhou <tao.zhou@linux.dev>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] sched/core: forced idle accounting
+Message-ID: <YYpYP919xlC0NX7/@hirez.programming.kicks-ass.net>
+References: <20211018203428.2025792-1-joshdon@google.com>
 MIME-Version: 1.0
-References: <cover.1635944413.git.hns@goldelico.com> <10f243eccdca10ee34b09fb626500f4a56da914a.1635944413.git.hns@goldelico.com>
-In-Reply-To: <10f243eccdca10ee34b09fb626500f4a56da914a.1635944413.git.hns@goldelico.com>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Tue, 9 Nov 2021 12:15:08 +0100
-Message-ID: <CACRpkdZgrjfJ5mbstnwPELs_AWqZSBUZ6LXAR031Mm45Aivg_Q@mail.gmail.com>
-Subject: Re: [RFC v3 1/6] mmc: core: rewrite mmc_fixup_device()
-To:     "H. Nikolaus Schaller" <hns@goldelico.com>
-Cc:     Ulf Hansson <ulf.hansson@linaro.org>,
-        =?UTF-8?B?SsOpcsO0bWUgUG91aWxsZXI=?= <jerome.pouiller@silabs.com>,
-        Avri Altman <Avri.Altman@wdc.com>,
-        Shawn Lin <shawn.lin@rock-chips.com>,
-        Tony Lindgren <tony@atomide.com>,
-        Bean Huo <beanhuo@micron.com>, notasas@gmail.com,
-        linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        letux-kernel@openphoenux.org, kernel@pyra-handheld.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211018203428.2025792-1-joshdon@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 3, 2021 at 2:01 PM H. Nikolaus Schaller <hns@goldelico.com> wro=
-te:
+On Mon, Oct 18, 2021 at 01:34:28PM -0700, Josh Don wrote:
+> @@ -5804,6 +5830,12 @@ pick_next_task(struct rq *rq, struct task_struct *prev, struct rq_flags *rf)
+>  		}
+>  	}
+>  
+> +	if (rq->core->core_forceidle_count) {
 
-> From: J=C3=A9r=C3=B4me Pouiller <jerome.pouiller@silabs.com>
->
-> Currently, mmc_fixup_device() is a bit difficult to read because of
-> particularly long condition.
->
-> Signed-off-by: J=C3=A9r=C3=B4me Pouiller <jerome.pouiller@silabs.com>
+Does this want to be something like:
 
-That's more readable!
-Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
+	if (schedstat_enabled() && .. ) ?
 
-Yours,
-Linus Walleij
+afaict without schedstat on this is dead code.
+
+> +		if (cookie)
+> +			rq->core->core_forceidle_start = rq_clock(rq->core);
+> +		rq->core->core_forceidle_occupation = occ;
+> +	}
+> +
+>  	rq->core->core_pick_seq = rq->core->core_task_seq;
+>  	next = rq->core_pick;
+>  	rq->core_sched_seq = rq->core->core_pick_seq;
