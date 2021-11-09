@@ -2,120 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F83444B049
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 16:24:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F3DF244B04F
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 16:26:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235769AbhKIP0p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Nov 2021 10:26:45 -0500
-Received: from alexa-out-sd-02.qualcomm.com ([199.106.114.39]:19319 "EHLO
-        alexa-out-sd-02.qualcomm.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234526AbhKIP0n (ORCPT
+        id S236025AbhKIP2C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Nov 2021 10:28:02 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41386 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235782AbhKIP2B (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Nov 2021 10:26:43 -0500
+        Tue, 9 Nov 2021 10:28:01 -0500
+Received: from mail-yb1-xb32.google.com (mail-yb1-xb32.google.com [IPv6:2607:f8b0:4864:20::b32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F20FCC061764;
+        Tue,  9 Nov 2021 07:25:14 -0800 (PST)
+Received: by mail-yb1-xb32.google.com with SMTP id 131so53835335ybc.7;
+        Tue, 09 Nov 2021 07:25:14 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=quicinc.com; i=@quicinc.com; q=dns/txt; s=qcdkim;
-  t=1636471437; x=1668007437;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=LhDgqmajfz71vOYSGsDh9gMUO7ALBdgAMuleFHkhVRE=;
-  b=TeIK4K0JTNorUsiwPwZwoAGRBmLiCwdqXarvIL6/lsKSeslP7i+DSAm5
-   FOpobIxpW3HemsPqXFd6M7MefewILap3b5pE8Y30QDoDGN810AjLwO9nR
-   ygfAIzZEDO5j876yfLrrtkX+kXNI2C4Z/+KDv0G2y2Y4wsBI57byusRwT
-   Q=;
-Received: from unknown (HELO ironmsg-SD-alpha.qualcomm.com) ([10.53.140.30])
-  by alexa-out-sd-02.qualcomm.com with ESMTP; 09 Nov 2021 07:23:57 -0800
-X-QCInternal: smtphost
-Received: from nasanex01c.na.qualcomm.com ([10.47.97.222])
-  by ironmsg-SD-alpha.qualcomm.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Nov 2021 07:23:56 -0800
-Received: from nalasex01a.na.qualcomm.com (10.47.209.196) by
- nasanex01c.na.qualcomm.com (10.47.97.222) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.922.7;
- Tue, 9 Nov 2021 07:23:56 -0800
-Received: from qian-HP-Z2-SFF-G5-Workstation (10.80.80.8) by
- nalasex01a.na.qualcomm.com (10.47.209.196) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.922.7;
- Tue, 9 Nov 2021 07:23:55 -0800
-Date:   Tue, 9 Nov 2021 10:23:52 -0500
-From:   Qian Cai <quic_qiancai@quicinc.com>
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>
-CC:     "Rafael J. Wysocki" <rafael@kernel.org>,
-        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Laurentiu Tudor <laurentiu.tudor@nxp.com>,
-        "linux-acpi@vger.kernel.org" <linux-acpi@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Felipe Balbi <balbi@kernel.org>, <linux-usb@vger.kernel.org>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        <linux-arm-kernel@lists.infradead.org>
-Subject: Re: [RFC PATCH] software node: Skip duplicated software_node sysfs
-Message-ID: <YYqSiMwfdYPwQb62@qian-HP-Z2-SFF-G5-Workstation>
-References: <20211101200346.16466-1-quic_qiancai@quicinc.com>
- <CAHp75VcrWPdR8EVGpcsniQedT0J4X700N7thFs6+srTP1MTgwQ@mail.gmail.com>
- <52df4a97-1132-d594-0180-132d0ca714d5@quicinc.com>
- <CAHp75VebOnrce-XZjOnZiivQPz-Cdgq6mor5oiLxK8Y49GiNNg@mail.gmail.com>
- <1269258d-db4c-3922-776b-f11e6a1e338e@quicinc.com>
- <YYlnIpGEmLH5GXft@smile.fi.intel.com>
- <YYn8hpxxmAtw9z5S@qian-HP-Z2-SFF-G5-Workstation>
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=1YtPKMAKhh4yr7fG5V9nmBRI32AwNngOJNQ80JUITj4=;
+        b=c7paMbIK2hqj6wQ/mm5GGvSBbBPqXannMb3ctv68OXdJsWNoG39Na33zL9sKXHa6aV
+         7wEwsjzCULgVq2m+aITEDLuoilL4uN8hPuG9nN4lvN7p4vigwPwk5m3V89ON+CjBCw9/
+         MUiikHB93jM4FhWuDcIDkpXYBbIbwszcGJ1D3jpbUR764AQ3V+LLL8kCyx6SZ18BM52G
+         vDGY0dUx0hCviLLzfpMOUC+8PpnFmlrMjcVPJ+cvnSM9SvdrYof+EzGSwP/fVPs3UfpP
+         v3+QAkN7F7TdEcXRZ3TLnRJeY/ugOlrRJbp/Q0ofpyL5XnksiWaQrZHYTmfNgIMid7QP
+         3CKw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=1YtPKMAKhh4yr7fG5V9nmBRI32AwNngOJNQ80JUITj4=;
+        b=TMXAlaBg7IUmNI5WjPfJt2OXMIE3WcM/d0aunaG9Udy7n4+1l5xrDoBTjgxkFGuYP/
+         FXe2pklolLU0SIHER+njWQEVS10c0VH7tn9pD98LlsjRYtP5u/Tr77RLtaeEgK+2SMaJ
+         DvJlf7Fy7N9WTLLO10G5bNP+RWZJq+JQdoqnzvZWZ2MagAHp7REKTwINCZi+GTLDMyHa
+         /SszQ0ys9UWjvCiFth4XkWyES0xXHp+54bXZFDPePLfJF88XzEKyAFvz1j+Ut7kkCp8w
+         bE1H5qJ/U6Ohk+yCTokEuRvkJeYT96S/+XUEoCM+UiOIO5qSG6xzbd6mUanqQ4UknDAn
+         Uxjg==
+X-Gm-Message-State: AOAM530oqT6JJ4NkqAnuuS1xJ0v7VUHAlCP9KtyEWQmT38/TN84C0kAP
+        AbADmZ6VBQo5JF93jRj9ewZ/o3gZVfdkkF0f9/2l2PS37llN1Q==
+X-Google-Smtp-Source: ABdhPJxpUVbqgyBdPsEoi4i0MlIUmaqMD/K28fOWDIkFYJCv0Xr5XcsO29RbRFKS988n3+xgJVhnsbZ5Ld7mA5yyA/c=
+X-Received: by 2002:a5b:783:: with SMTP id b3mr8787410ybq.328.1636471514166;
+ Tue, 09 Nov 2021 07:25:14 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <YYn8hpxxmAtw9z5S@qian-HP-Z2-SFF-G5-Workstation>
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
+References: <20211029124437.20721-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
+ <20211029124437.20721-4-prabhakar.mahadev-lad.rj@bp.renesas.com>
+ <CAMuHMdV+716v3SOLM4Sf6arK5jEPgtc0NSOU6nZXQGXUT+-+3Q@mail.gmail.com>
+ <CA+V-a8t2KZNqCHJQP_bj9+-RKVBBJpz=pnBXzpyy4tjbUe14EA@mail.gmail.com> <CAMuHMdW8NeSpv35a7Eq_+NMAE5Uamm_pD+Dp+OeHvCMqd3f2Xw@mail.gmail.com>
+In-Reply-To: <CAMuHMdW8NeSpv35a7Eq_+NMAE5Uamm_pD+Dp+OeHvCMqd3f2Xw@mail.gmail.com>
+From:   "Lad, Prabhakar" <prabhakar.csengg@gmail.com>
+Date:   Tue, 9 Nov 2021 15:24:48 +0000
+Message-ID: <CA+V-a8u0CMhoYJB8buZugG4Kd4BEkviv_WpBTgmJr6y2+gb-sg@mail.gmail.com>
+Subject: Re: [PATCH v2 3/5] pinctrl: renesas: pinctrl-rzg2l: Add support to
+ get/set pin config for GPIO port pins
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
+        Biju Das <biju.das.jz@bp.renesas.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 08, 2021 at 11:43:54PM -0500, Qian Cai wrote:
-> Then, which functions do you suggest to replace with
-> fwnode_create_software_node()? In dwc3_host_init(),
-> 
-> int dwc3_host_init(struct dwc3 *dwc)
-> {
-> 	...
-> 	xhci = platform_device_alloc("xhci-hcd", PLATFORM_DEVID_AUTO);
-> 	...
-> 	ret = platform_device_add(xhci);
-> 
-> I am wondering if that we could solve the problem by avoiding
-> "xhci-hcd" string here which would unfortunately clash with
-> xhci_plat_init() as mentioned before:
+Hi Geert,
 
-Okay, I suppose that name has to be "xhci-hcd" to match the dirver
-name. Otherwise, the below path did not run to create "xhci-hcd"
-either. I noticed that the regression was discussed a few months ago
-and leave it as is.
+On Tue, Nov 9, 2021 at 3:00 PM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
+>
+> Hi Prabhakar,
+>
+> On Tue, Nov 9, 2021 at 3:31 PM Lad, Prabhakar
+> <prabhakar.csengg@gmail.com> wrote:
+> > On Mon, Nov 8, 2021 at 3:36 PM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
+> > > On Fri, Oct 29, 2021 at 2:44 PM Lad Prabhakar
+> > > <prabhakar.mahadev-lad.rj@bp.renesas.com> wrote:
+> > > > Add support to get/set pin config for GPIO port pins.
+> > > >
+> > > > Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+> > > > Reviewed-by: Biju Das <biju.das.jz@bp.renesas.com>
+> > >
+> > > Thanks for your patch!
+> > >
+> > > > --- a/drivers/pinctrl/renesas/pinctrl-rzg2l.c
+> > > > +++ b/drivers/pinctrl/renesas/pinctrl-rzg2l.c
+> > >
+> > > > @@ -495,6 +512,14 @@ static int rzg2l_pinctrl_pinconf_get(struct pinctrl_dev *pctldev,
+> > > >                 port = RZG2L_SINGLE_PIN_GET_PORT(*pin_data);
+> > > >                 cfg = RZG2L_SINGLE_PIN_GET_CFGS(*pin_data);
+> > > >                 bit = RZG2L_SINGLE_PIN_GET_BIT(*pin_data);
+> > > > +       } else {
+> > > > +               cfg = RZG2L_GPIO_PORT_GET_CFGS(*pin_data);
+> > > > +               port = RZG2L_PIN_ID_TO_PORT(_pin);
+> > > > +               bit = RZG2L_PIN_ID_TO_PIN(_pin);
+> > > > +               port_pin = true;
+> > >
+> > > Instead of setting this flag, perhaps port should be adjusted?
+> >
+> > Something like below?
+> >
+> > #define RZG2L_PORT_START_OFFSET 0x10
+> >
+> > port = RZG2L_PIN_ID_TO_PORT_pin) + RZG2L_PORT_START_OFFSET;
+> > rzg2l_validate_gpio_pin(pctrl, *pin_data, port - RZG2L_PORT_START_OFFSET, bit)
+>
+> Or adjust port after the call to rzg2l_validate_gpio_pin(), to avoid adding
+> the offset first, and subtracting it again for calling the latter?
+>
+> > and rename port -> port_offset in rzg2l_pinctrl_pinconf_get/set
+>
+> That makes sense.  Currently "port" has two meanings: it can mean
+> either the GPIO port index, or the global register index covering both
+> single function pin groups and GPIO port indices.
+> RZG2L_SINGLE_PIN_GET_PORT() returns the latter.
+> RZG2L_PIN_ID_TO_PORT() returns the former, thus needing an extra offset
+> to convert to the global register index.
+>
+for symmetry will rename the below:
+RZG2L_SINGLE_PIN_GET_PORT -> RZG2L_SINGLE_PIN_GET_PORT_OFFSET
 
-https://lore.kernel.org/lkml/e9bc1397-99b7-a57e-4860-80d146848e2c@nxp.com/
+Introduce a new macros:
+#define RZG2L_PORT_START_OFFSET 0x10
+#define RZG2L_PIN_ID_TO_PORT_OFFSET(id) (((id) / RZG2L_PINS_PER_PORT)
++ RZG2L_PORT_START_OFFSET)
 
-Alternatively, we might revert the commit 434b73e61cc6
-("iommu/arm-smmu-v3: Use device properties for pasid-num-bits")
-started to use device_add_properties() in iort_named_component_init()
-which probably does not look pretty either. I can't think of any other
-ways to avoid refactoring at the moment.
+And use the above two in rzg2l_pinctrl_pinconf_get/set along with
+renaming  port -> port_offset
 
-> 
->   sysfs_create_link
->   software_node_notify
->   device_create_managed_software_node
->   iort_named_component_init
->   iort_iommu_configure_id
->   acpi_dma_configure_id
->   platform_dma_configure
->   really_probe.part.0
->   really_probe
->   __driver_probe_device
->   driver_probe_device
->   __driver_attach
->   bus_for_each_dev
->   driver_attach
->   bus_add_driver
->   driver_register
->   __platform_driver_register
->   xhci_plat_init
->   do_one_initcall
->   kernel_init_freeable
->   kernel_init
->   ret_from_fork
+And for rzg2l_validate_gpio_pin() will use below instead:
+rzg2l_validate_gpio_pin(pctrl, *pin_data, RZG2L_PIN_ID_TO_PORT(_pin), bit);
 
+> > Or
+> > would you prefer to change the RZG2L_PIN_ID_TO_PORT macro and adjust
+> > the entire file?
+>
+> Changing RZG2L_PIN_ID_TO_PORT() would imply changing all macros
+> accessing GPIO registers, and is thus quite intrusive.
+>
+Agreed, I will drop this option.
+
+Cheers,
+Prabhakar
+> > > Then rzg2l_r{ead,mw}_pin_config() don't have to care about that
+> > > anymore.
+> > >
+> > Agreed.
+>
+> Gr{oetje,eeting}s,
+>
+>                         Geert
+>
+> --
+> Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+>
+> In personal conversations with technical people, I call myself a hacker. But
+> when I'm talking to journalists I just say "programmer" or something like that.
+>                                 -- Linus Torvalds
