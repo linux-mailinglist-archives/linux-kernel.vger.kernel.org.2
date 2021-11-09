@@ -2,59 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 24DAC44AAD8
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 10:49:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3542A44AADC
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 10:49:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241777AbhKIJw2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Nov 2021 04:52:28 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49278 "EHLO
+        id S244976AbhKIJwk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Nov 2021 04:52:40 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49294 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244189AbhKIJvh (ORCPT
+        with ESMTP id S244164AbhKIJvj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Nov 2021 04:51:37 -0500
-Received: from mail-pf1-x42e.google.com (mail-pf1-x42e.google.com [IPv6:2607:f8b0:4864:20::42e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5DBE0C061767
-        for <linux-kernel@vger.kernel.org>; Tue,  9 Nov 2021 01:48:52 -0800 (PST)
-Received: by mail-pf1-x42e.google.com with SMTP id n85so14451509pfd.10
-        for <linux-kernel@vger.kernel.org>; Tue, 09 Nov 2021 01:48:52 -0800 (PST)
+        Tue, 9 Nov 2021 04:51:39 -0500
+Received: from mail-pl1-x636.google.com (mail-pl1-x636.google.com [IPv6:2607:f8b0:4864:20::636])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B410CC061764
+        for <linux-kernel@vger.kernel.org>; Tue,  9 Nov 2021 01:48:53 -0800 (PST)
+Received: by mail-pl1-x636.google.com with SMTP id y1so19905343plk.10
+        for <linux-kernel@vger.kernel.org>; Tue, 09 Nov 2021 01:48:53 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=sifive.com; s=google;
         h=from:to:subject:date:message-id:in-reply-to:references:mime-version
          :content-transfer-encoding;
-        bh=F3gUTqBXHGiL19KAfjx/EYijGGOp0DCkOQjrfpw3bjc=;
-        b=IISIGJipeVSh9FXbEQi+Tyuv/8NeGzpzw/sMW1HbuXQVW9bowNXkyt36J+Bx9iorlU
-         Q2GBV8uhJKdZ6MYowxuM+fY4NS+RRCY/2RA5ydFQUCpNMNeswRMFpvfQkO+NNZfZ62nB
-         z1HrBelhzRw7lzYwJmW6jU14nG4LbV4//kEt/2x1Mvvl93LBCaLeRjDf7eZ0WRJKb52u
-         zgg3U+Zdg6/EEFousJtr59iw6zknwPZrYoCSFVZDQKiKnCXe+s8Dubu0GJnZDduLQmbM
-         HUfmmhXPbKiGVjAgzgvOEUU0MkpKQNtWGDHsdiUtZwToY0uUhAEhzMs+fn2ifom7YgUB
-         QvVQ==
+        bh=P9b3tDY+655xD0tPu9SBTJCGpaBZsqsfT1tLH+eh9ss=;
+        b=lH+Zi+btz0Y3PlO5Le6vD8gIS2gNoRc+CDGfvwK17wjnrtv9A40qM8mlBQvpTgMzfv
+         eiKZw0ZQTiDbMwH/xUeRYTyag0FYNP1oWYpOmMyM2yiXFnw4/HcDC7w1AGojiPJ3Fn5y
+         Fuw3/MPUiXHruI1mYFcflj+FDpE4U7yI4DIoQmV/hMk7+y/+ZKTCMkV8eJh1AuYi0Tmm
+         i12FqNhrilpzfcYiwyAt39z+QKkiVw6/n0bdhmBtJwQ+rYaOvvQZaPrlitURm795ecsU
+         740yWzE/PYiFOuRFFyFCCRRZaNekgfQQWfkm+t8fLYq+tL2U1mau/YYPW3T1DID2M/XP
+         UGYQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=F3gUTqBXHGiL19KAfjx/EYijGGOp0DCkOQjrfpw3bjc=;
-        b=pHPARn0EILsuWbqxOdl7IQn5USVCKfOWTQ/cpcJjg0oeSQxdeyptNtPRnfAFO/B0Cs
-         Cc2SCQXtdeTB3AVQoQZykHW9rKfDk/pucH6pOsJYPOtAjwoC6dWUHAXl2rrYdUEeSv7d
-         QS+/7S/LFFOxsV+rXG1NUntpJXOxc3116JuUF5zXy8XN5KZ0BWPhsfGSznehW5up8cKg
-         y2ifhZGayPWUmIz1JE2QYjLy3Tk6VdiJG0T8bN923f+c6BaVgWYNyF5sOrnZUebEx809
-         9PcCRlIwCQE9GRiMFjkluoApD5RGFwLIbtqS8TI39Z/v/lsUpbjsxxN/K9Ob+QNMGkYT
-         fUCw==
-X-Gm-Message-State: AOAM5336Xhp9i6WEQfby+4lTvRdnI7ArQaGUWpexV0F2bFbpCQKiBvAS
-        /mNmYqIkRyxeeIJRArOXo87LPA==
-X-Google-Smtp-Source: ABdhPJylBWGGztsPastX75WALYPMLNUP9zNUffkdqiIDAW08rYy+g+UFLDsvl+F/dn5aAcIjAQskLQ==
-X-Received: by 2002:a63:2b48:: with SMTP id r69mr4840642pgr.421.1636451331828;
-        Tue, 09 Nov 2021 01:48:51 -0800 (PST)
+        bh=P9b3tDY+655xD0tPu9SBTJCGpaBZsqsfT1tLH+eh9ss=;
+        b=mlbAK3ahA0azrlu5qybtnarDAlAMWf0XvAkrxCOkJu9G2XakPjyfu+I0GxshdGbdgZ
+         mnjvdmmO+YV687Q7OKQFzwdSB5o7XTgZ4fNpDrrXimyLHVslQFwh/QO0DIwGnYS9aLVy
+         TH2WAzdWPX9vElU0gWQTofgqaJODAaTNjIUkCV3LwlJd/rM2y51wRmYKsaTA8PirObRC
+         P8nB4DK9td7zN8VgNlKj6S8U/e20f/se6lf2jYK21JlVC1yqjTv+pX75ESvYfJGPyHAG
+         K0fSyZAjry9UQTLdBQgWHRQjkhWpeMOJ1sqDUCfuj5QVzsBXfDFyvp4zfINzh0ovtotN
+         dAnw==
+X-Gm-Message-State: AOAM531u2M1n9hqDoQjmpon9Wcj3NREhw0sWko5UQYZqAy6aEmnml1Bs
+        LzSAsZS3lPPebc02L2b3/M774A==
+X-Google-Smtp-Source: ABdhPJyE89/bOjt3ujPXxTBFVPDjVmC+oQVF+9ESGIp8HQlLll/3ZSvGbSTYp6vIWSHhcnEsAw8slQ==
+X-Received: by 2002:a17:90a:9291:: with SMTP id n17mr5695519pjo.243.1636451333257;
+        Tue, 09 Nov 2021 01:48:53 -0800 (PST)
 Received: from hsinchu16.internal.sifive.com (59-124-168-89.hinet-ip.hinet.net. [59.124.168.89])
-        by smtp.gmail.com with ESMTPSA id cv1sm1940511pjb.48.2021.11.09.01.48.50
+        by smtp.gmail.com with ESMTPSA id cv1sm1940511pjb.48.2021.11.09.01.48.52
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 09 Nov 2021 01:48:51 -0800 (PST)
+        Tue, 09 Nov 2021 01:48:53 -0800 (PST)
 From:   Greentime Hu <greentime.hu@sifive.com>
 To:     palmer@dabbelt.com, paul.walmsley@sifive.com,
         linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
         aou@eecs.berkeley.edu
-Subject: [PATCH v9 13/17] riscv: Add support for kernel mode vector
-Date:   Tue,  9 Nov 2021 17:48:25 +0800
-Message-Id: <5700882ca97cc9fb8ee44ce127f30ca04d81495e.1636362169.git.greentime.hu@sifive.com>
+Subject: [PATCH v9 14/17] riscv: Use CSR_STATUS to replace sstatus in vector.S
+Date:   Tue,  9 Nov 2021 17:48:26 +0800
+Message-Id: <7204695c80a13a634381fed94ea1598ffd70c78f.1636362169.git.greentime.hu@sifive.com>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <cover.1636362169.git.greentime.hu@sifive.com>
 References: <cover.1636362169.git.greentime.hu@sifive.com>
@@ -64,235 +64,53 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add <asm/vector.h> containing kernel_rvv_begin()/kernel_rvv_end() function
-declarations and corresponding definitions in kernel_mode_vector.c
-
-These are needed to wrap uses of vector in kernel mode.
+It should use the same logic here in both m-mode and s-mode.
 
 Signed-off-by: Greentime Hu <greentime.hu@sifive.com>
 Co-developed-by: Vincent Chen <vincent.chen@sifive.com>
 Signed-off-by: Vincent Chen <vincent.chen@sifive.com>
 ---
- arch/riscv/include/asm/switch_to.h     |   1 +
- arch/riscv/include/asm/vector.h        |  14 +++
- arch/riscv/kernel/Makefile             |   1 +
- arch/riscv/kernel/kernel_mode_vector.c | 144 +++++++++++++++++++++++++
- arch/riscv/kernel/vector.S             |   9 ++
- 5 files changed, 169 insertions(+)
- create mode 100644 arch/riscv/include/asm/vector.h
- create mode 100644 arch/riscv/kernel/kernel_mode_vector.c
+ arch/riscv/kernel/vector.S | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/arch/riscv/include/asm/switch_to.h b/arch/riscv/include/asm/switch_to.h
-index 576204217e0f..b02064a3effd 100644
---- a/arch/riscv/include/asm/switch_to.h
-+++ b/arch/riscv/include/asm/switch_to.h
-@@ -79,6 +79,7 @@ static __always_inline bool has_vector(void)
- extern unsigned long riscv_vsize;
- extern void __vstate_save(struct __riscv_v_state *save_to, void *datap);
- extern void __vstate_restore(struct __riscv_v_state *restore_from, void *datap);
-+void vector_flush_cpu_state(void);
- 
- static inline void __vstate_clean(struct pt_regs *regs)
- {
-diff --git a/arch/riscv/include/asm/vector.h b/arch/riscv/include/asm/vector.h
-new file mode 100644
-index 000000000000..5d7f14453f68
---- /dev/null
-+++ b/arch/riscv/include/asm/vector.h
-@@ -0,0 +1,14 @@
-+/* SPDX-License-Identifier: GPL-2.0-or-later */
-+/*
-+ * Copyright (C) 2020 SiFive
-+ */
-+
-+#ifndef __ASM_RISCV_VECTOR_H
-+#define __ASM_RISCV_VECTOR_H
-+
-+#include <linux/types.h>
-+
-+void kernel_rvv_begin(void);
-+void kernel_rvv_end(void);
-+
-+#endif /* ! __ASM_RISCV_VECTOR_H */
-diff --git a/arch/riscv/kernel/Makefile b/arch/riscv/kernel/Makefile
-index 344078080839..8feda6312187 100644
---- a/arch/riscv/kernel/Makefile
-+++ b/arch/riscv/kernel/Makefile
-@@ -41,6 +41,7 @@ obj-$(CONFIG_MMU) += vdso.o vdso/
- obj-$(CONFIG_RISCV_M_MODE)	+= traps_misaligned.o
- obj-$(CONFIG_FPU)		+= fpu.o
- obj-$(CONFIG_VECTOR)		+= vector.o
-+obj-$(CONFIG_VECTOR)		+= kernel_mode_vector.o
- obj-$(CONFIG_SMP)		+= smpboot.o
- obj-$(CONFIG_SMP)		+= smp.o
- obj-$(CONFIG_SMP)		+= cpu_ops.o
-diff --git a/arch/riscv/kernel/kernel_mode_vector.c b/arch/riscv/kernel/kernel_mode_vector.c
-new file mode 100644
-index 000000000000..8d2e53ea25c1
---- /dev/null
-+++ b/arch/riscv/kernel/kernel_mode_vector.c
-@@ -0,0 +1,144 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
-+/*
-+ * Copyright (C) 2012 ARM Ltd.
-+ * Author: Catalin Marinas <catalin.marinas@arm.com>
-+ * Copyright (C) 2017 Linaro Ltd. <ard.biesheuvel@linaro.org>
-+ * Copyright (C) 2021 SiFive
-+ */
-+#include <linux/compiler.h>
-+#include <linux/irqflags.h>
-+#include <linux/percpu.h>
-+#include <linux/preempt.h>
-+#include <linux/types.h>
-+
-+#include <asm/vector.h>
-+#include <asm/switch_to.h>
-+
-+DECLARE_PER_CPU(bool, vector_context_busy);
-+DEFINE_PER_CPU(bool, vector_context_busy);
-+
-+/*
-+ * may_use_vector - whether it is allowable at this time to issue vector
-+ *                instructions or access the vector register file
-+ *
-+ * Callers must not assume that the result remains true beyond the next
-+ * preempt_enable() or return from softirq context.
-+ */
-+static __must_check inline bool may_use_vector(void)
-+{
-+	/*
-+	 * vector_context_busy is only set while preemption is disabled,
-+	 * and is clear whenever preemption is enabled. Since
-+	 * this_cpu_read() is atomic w.r.t. preemption, vector_context_busy
-+	 * cannot change under our feet -- if it's set we cannot be
-+	 * migrated, and if it's clear we cannot be migrated to a CPU
-+	 * where it is set.
-+	 */
-+	return !in_irq() && !irqs_disabled() && !in_nmi() &&
-+	       !this_cpu_read(vector_context_busy);
-+}
-+
-+
-+
-+/*
-+ * Claim ownership of the CPU vector context for use by the calling context.
-+ *
-+ * The caller may freely manipulate the vector context metadata until
-+ * put_cpu_vector_context() is called.
-+ */
-+static void get_cpu_vector_context(void)
-+{
-+	bool busy;
-+
-+	preempt_disable();
-+	busy = __this_cpu_xchg(vector_context_busy, true);
-+
-+	WARN_ON(busy);
-+}
-+
-+/*
-+ * Release the CPU vector context.
-+ *
-+ * Must be called from a context in which get_cpu_vector_context() was
-+ * previously called, with no call to put_cpu_vector_context() in the
-+ * meantime.
-+ */
-+static void put_cpu_vector_context(void)
-+{
-+	bool busy = __this_cpu_xchg(vector_context_busy, false);
-+
-+	WARN_ON(!busy);
-+	preempt_enable();
-+}
-+
-+static void rvv_enable(void)
-+{
-+	csr_set(CSR_STATUS, SR_VS);
-+}
-+
-+static void rvv_disable(void)
-+{
-+	csr_clear(CSR_STATUS, SR_VS);
-+}
-+
-+/*
-+ * kernel_rvv_begin(): obtain the CPU vector registers for use by the calling
-+ * context
-+ *
-+ * Must not be called unless may_use_vector() returns true.
-+ * Task context in the vector registers is saved back to memory as necessary.
-+ *
-+ * A matching call to kernel_rvv_end() must be made before returning from the
-+ * calling context.
-+ *
-+ * The caller may freely use the vector registers until kernel_rvv_end() is
-+ * called.
-+ */
-+void kernel_rvv_begin(void)
-+{
-+	if (WARN_ON(!has_vector()))
-+		return;
-+
-+	WARN_ON(!may_use_vector());
-+
-+	/* Acquire kernel mode vector */
-+	get_cpu_vector_context();
-+
-+	/* Save vector state, if any */
-+	vstate_save(current, task_pt_regs(current));
-+
-+	/* Enable vector */
-+	rvv_enable();
-+
-+	/* Invalidate vector regs */
-+	vector_flush_cpu_state();
-+}
-+EXPORT_SYMBOL_GPL(kernel_rvv_begin);
-+
-+/*
-+ * kernel_rvv_end(): give the CPU vector registers back to the current task
-+ *
-+ * Must be called from a context in which kernel_rvv_begin() was previously
-+ * called, with no call to kernel_rvv_end() in the meantime.
-+ *
-+ * The caller must not use the vector registers after this function is called,
-+ * unless kernel_rvv_begin() is called again in the meantime.
-+ */
-+void kernel_rvv_end(void)
-+{
-+	if (WARN_ON(!has_vector()))
-+		return;
-+
-+	/* Invalidate vector regs */
-+	vector_flush_cpu_state();
-+
-+	/* Restore vector state, if any */
-+	vstate_restore(current, task_pt_regs(current));
-+
-+	/* disable vector */
-+	rvv_disable();
-+
-+	/* release kernel mode vector */
-+	put_cpu_vector_context();
-+}
-+EXPORT_SYMBOL_GPL(kernel_rvv_end);
 diff --git a/arch/riscv/kernel/vector.S b/arch/riscv/kernel/vector.S
-index 7f3e3a838424..a973532d2e7f 100644
+index a973532d2e7f..1a79e2485bfa 100644
 --- a/arch/riscv/kernel/vector.S
 +++ b/arch/riscv/kernel/vector.S
-@@ -79,3 +79,12 @@ ENTRY(__vstate_restore)
- 	csrc	sstatus, status
+@@ -31,7 +31,7 @@
+ 
+ ENTRY(__vstate_save)
+ 	li      status, SR_VS
+-	csrs    sstatus, status
++	csrs    CSR_STATUS, status
+ 
+ 	csrr    x_vstart, CSR_VSTART
+ 	csrr    x_vtype, CSR_VTYPE
+@@ -51,13 +51,13 @@ ENTRY(__vstate_save)
+ 	REG_S   x_vl, RISCV_V_STATE_VL(vstatep)
+ 	REG_S   x_vcsr, RISCV_V_STATE_VCSR(vstatep)
+ 
+-	csrc	sstatus, status
++	csrc	CSR_STATUS, status
+ 	ret
+ ENDPROC(__vstate_save)
+ 
+ ENTRY(__vstate_restore)
+ 	li      status, SR_VS
+-	csrs    sstatus, status
++	csrs    CSR_STATUS, status
+ 
+ 	vsetvli incr, x0, e8, m8
+ 	vle8.v   v0, (datap)
+@@ -76,7 +76,7 @@ ENTRY(__vstate_restore)
+ 	csrw    CSR_VSTART, x_vstart
+ 	csrw    CSR_VCSR, x_vcsr
+ 
+-	csrc	sstatus, status
++	csrc	CSR_STATUS, status
  	ret
  ENDPROC(__vstate_restore)
-+
-+ENTRY(vector_flush_cpu_state)
-+	vsetvli t0, x0, e8, m8
-+	vmv.v.i v0, 0
-+	vmv.v.i v8, 0
-+	vmv.v.i v16, 0
-+	vmv.v.i v24, 0
-+	ret
-+ENDPROC(vector_flush_cpu_state)
+ 
 -- 
 2.31.1
 
