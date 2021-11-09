@@ -2,107 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B565F44AE77
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 14:08:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 330B044AE8D
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 14:11:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232683AbhKINKt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Nov 2021 08:10:49 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38632 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229591AbhKINKr (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Nov 2021 08:10:47 -0500
-Received: from mail-ed1-x52e.google.com (mail-ed1-x52e.google.com [IPv6:2a00:1450:4864:20::52e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 00C21C061764
-        for <linux-kernel@vger.kernel.org>; Tue,  9 Nov 2021 05:08:01 -0800 (PST)
-Received: by mail-ed1-x52e.google.com with SMTP id r12so76223668edt.6
-        for <linux-kernel@vger.kernel.org>; Tue, 09 Nov 2021 05:08:01 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:from:date:message-id:subject:to:cc;
-        bh=z/G52I1JExpiE6TsSsLB/EzgZR9OB61hQ9ixNpsTNBE=;
-        b=CuUtxJN4kwqiRiUowjq6mEvwrxbwdABBDFwboec9BwfBBdNKP+Sd0FJQ2oNClGFe3j
-         6hsijBoQm6PVzx6rpcsIRMF5nRChEyRXjOnRF7zObCZ9zs4W8FYbDC3TqL5MdAIVjBzo
-         milLxaXzmLHeJMIuFzf6v9W2QcdoPHr5bOLCBxuINtH/rYcVZXYJ7/O9um2gEGlnmlV4
-         i4JxLxE1na3/h7vZTOWyGhLU1UZddywmHh87pC7KQNPyFcMH50nZ1Q6NqNgMMVnb6Bun
-         0Qa1yfv8qDXSQfGhd6TknCcoLaUoj/aqjFVp02cArCjNPQuuLnPq24D2oN+Dyssuf2+L
-         cPrA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
-        bh=z/G52I1JExpiE6TsSsLB/EzgZR9OB61hQ9ixNpsTNBE=;
-        b=65OKM62SesnUu3hUEM+lAOvXNHcpnnrqnYXICZV8lwywGNt3ehHncYnKsilGSGTsW6
-         QIHV4VXeXNX43iRoOCNgL9v36pnEnqGkJnGjhFEx+9JVdHHd3dAJbonYH+x0Tq7Beb8b
-         s4gfN5bOuDR0cMfsT2RC1g7EXxGajRigsq0FGCYVUpP+xQcRc5LnFh5ZWA9iCpwlM6qV
-         VeH6saOXX9qzGqla2H2tINQz3HbowlQUQoJBShrnAhbZjOnvbqhDMREx6MSVsHkBv2fg
-         QScP07yKWh/pLviuaOv1MiRpO01utYQVHSV5Cvtr6v3PwceQNIXPwt56FiTEwJXF8Uap
-         +1pQ==
-X-Gm-Message-State: AOAM532xcuqT4y9KgvY2fx0LJbSo81Br9Q4qGEg/RHF+TcuoIhDmcZb/
-        VfRZJjEh3b8ztuJ/zraT2xzKQdp70vXNfsKIG8XdFFlaHJM7rA==
-X-Google-Smtp-Source: ABdhPJwUTCxSCo1QVtNs5QZJ4bfRcHmVDxVbWaA72k99Wgx4nF22yhg3NcwJ+sONSsC0fGX1HlPTvHTRROvNktdXjz4=
-X-Received: by 2002:a50:e184:: with SMTP id k4mr10018486edl.217.1636463280343;
- Tue, 09 Nov 2021 05:08:00 -0800 (PST)
+        id S235044AbhKINOC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Nov 2021 08:14:02 -0500
+Received: from comms.puri.sm ([159.203.221.185]:47440 "EHLO comms.puri.sm"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229906AbhKINOB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Nov 2021 08:14:01 -0500
+Received: from localhost (localhost [127.0.0.1])
+        by comms.puri.sm (Postfix) with ESMTP id CD8C8E0306;
+        Tue,  9 Nov 2021 05:10:45 -0800 (PST)
+Received: from comms.puri.sm ([127.0.0.1])
+        by localhost (comms.puri.sm [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id k3Q3wFnK-lMX; Tue,  9 Nov 2021 05:10:45 -0800 (PST)
+From:   Martin Kepplinger <martin.kepplinger@puri.sm>
+To:     sakari.ailus@linux.intel.com, mchehab@kernel.org
+Cc:     linux-media@vger.kernel.org, linux-pm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, kernel@puri.sm,
+        Martin Kepplinger <martin.kepplinger@puri.sm>
+Subject: [PATCH v1 0/2] media: i2c: hi846: minor PM fixes
+Date:   Tue,  9 Nov 2021 14:10:11 +0100
+Message-Id: <20211109131013.2684058-1-martin.kepplinger@puri.sm>
 MIME-Version: 1.0
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Tue, 9 Nov 2021 18:37:48 +0530
-Message-ID: <CA+G9fYvviLKpT7a-1ZDmVp8YN8cCG0ixLpxv2uSubtsw-CkZCQ@mail.gmail.com>
-Subject: powerpc: mcu_mpc8349emitx.c:189:13: error: unused variable 'ret' [-Werror=unused-variable]
-To:     Paul Mackerras <paulus@samba.org>,
-        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Linux-Next Mailing List <linux-next@vger.kernel.org>
-Cc:     Scott Wood <oss@buserror.net>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        Anders Roxell <anders.roxell@linaro.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-[Please ignore this email if it is already reported ]
+hi Saraki and all,
 
-Regression found on powerpc gcc-8/9/10 and gcc-11 built with ppc6xx_defconfig
-Following build warnings / errors reported on linux next 20211109.
+Here are minor PM fixes for the hi846 sensor while testing system suspend:
 
-metadata:
-    git_describe: next-20211109
-    git_repo: https://gitlab.com/Linaro/lkft/mirrors/next/linux-next
-    git_short_log: c8109c2ba35e (\"Add linux-next specific files for 20211109\")
-    target_arch: powerpc
-    toolchain: gcc-11
+thank you very much for your time,
 
-build error :
---------------
-<stdin>:1559:2: warning: #warning syscall futex_waitv not implemented [-Wcpp]
-arch/powerpc/platforms/83xx/mcu_mpc8349emitx.c: In function 'mcu_remove':
-arch/powerpc/platforms/83xx/mcu_mpc8349emitx.c:189:13: error: unused
-variable 'ret' [-Werror=unused-variable]
-  189 |         int ret;
-      |             ^~~
-cc1: all warnings being treated as errors
-make[4]: *** [scripts/Makefile.build:288:
-arch/powerpc/platforms/83xx/mcu_mpc8349emitx.o] Error 1
-make[4]: Target '__build' not remade because of errors.
-make[3]: *** [scripts/Makefile.build:571: arch/powerpc/platforms/83xx] Error 2
-
-Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
-
-build link:
------------
-https://builds.tuxbuild.com/20fICxLPRCpcISasoGwKGICBELv/build.log
-
-build config:
--------------
-https://builds.tuxbuild.com/20fICxLPRCpcISasoGwKGICBELv/config
-
-# To install tuxmake on your system globally
-# sudo pip3 install -U tuxmake
-tuxmake --runtime podman --target-arch powerpc --toolchain gcc-11
---kconfig ppc6xx_defconfig
+                             martin
 
 
---
-Linaro LKFT
-https://lkft.linaro.org
+Martin Kepplinger (2):
+  media: i2c: hi846: check return value of regulator_bulk_disable()
+  media: i2c: hi846: use pm_runtime_force_suspend/resume for system
+    suspend
+
+ drivers/media/i2c/hi846.c | 14 ++++++++------
+ 1 file changed, 8 insertions(+), 6 deletions(-)
+
+-- 
+2.30.2
+
