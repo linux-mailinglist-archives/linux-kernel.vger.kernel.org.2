@@ -2,188 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C599444A5E0
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 05:43:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 72BF344A5E4
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 05:45:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242818AbhKIEql (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Nov 2021 23:46:41 -0500
-Received: from alexa-out-sd-02.qualcomm.com ([199.106.114.39]:62176 "EHLO
-        alexa-out-sd-02.qualcomm.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S242766AbhKIEqk (ORCPT
+        id S242848AbhKIEsJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Nov 2021 23:48:09 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37516 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S242829AbhKIEsG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Nov 2021 23:46:40 -0500
+        Mon, 8 Nov 2021 23:48:06 -0500
+Received: from mail-oi1-x232.google.com (mail-oi1-x232.google.com [IPv6:2607:f8b0:4864:20::232])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 21EF7C061766
+        for <linux-kernel@vger.kernel.org>; Mon,  8 Nov 2021 20:45:21 -0800 (PST)
+Received: by mail-oi1-x232.google.com with SMTP id o4so31610152oia.10
+        for <linux-kernel@vger.kernel.org>; Mon, 08 Nov 2021 20:45:21 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=quicinc.com; i=@quicinc.com; q=dns/txt; s=qcdkim;
-  t=1636433035; x=1667969035;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=RPvJcJDPMdp7Swo0W51sy6DYmybCviFK4B196uJ5MtU=;
-  b=B4RJTFsVYUWnpLsLCLV9YTjlCqdSfTmFSJm7ZcxYJXKZ68rP+RA4lHZh
-   CIf2R60odjISVa7YAyXXTQFRCvMOOPxaTsGNlJASAODykVdjUwhr9oXWc
-   BFF3wctjiZpp5h1BqDX6c+dzwq6Q2bDNAjtejuCycOXIv/UpTONMH4CU9
-   8=;
-Received: from unknown (HELO ironmsg01-sd.qualcomm.com) ([10.53.140.141])
-  by alexa-out-sd-02.qualcomm.com with ESMTP; 08 Nov 2021 20:43:55 -0800
-X-QCInternal: smtphost
-Received: from nasanex01c.na.qualcomm.com ([10.47.97.222])
-  by ironmsg01-sd.qualcomm.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Nov 2021 20:43:54 -0800
-Received: from nalasex01a.na.qualcomm.com (10.47.209.196) by
- nasanex01c.na.qualcomm.com (10.47.97.222) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.922.7;
- Mon, 8 Nov 2021 20:43:54 -0800
-Received: from qian-HP-Z2-SFF-G5-Workstation (10.80.80.8) by
- nalasex01a.na.qualcomm.com (10.47.209.196) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.922.7;
- Mon, 8 Nov 2021 20:43:52 -0800
-Date:   Mon, 8 Nov 2021 23:43:50 -0500
-From:   Qian Cai <quic_qiancai@quicinc.com>
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>
-CC:     "Rafael J. Wysocki" <rafael@kernel.org>,
-        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Laurentiu Tudor <laurentiu.tudor@nxp.com>,
-        "linux-acpi@vger.kernel.org" <linux-acpi@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Felipe Balbi <balbi@kernel.org>, <linux-usb@vger.kernel.org>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        <linux-arm-kernel@lists.infradead.org>
-Subject: Re: [RFC PATCH] software node: Skip duplicated software_node sysfs
-Message-ID: <YYn8hpxxmAtw9z5S@qian-HP-Z2-SFF-G5-Workstation>
-References: <20211101200346.16466-1-quic_qiancai@quicinc.com>
- <CAHp75VcrWPdR8EVGpcsniQedT0J4X700N7thFs6+srTP1MTgwQ@mail.gmail.com>
- <52df4a97-1132-d594-0180-132d0ca714d5@quicinc.com>
- <CAHp75VebOnrce-XZjOnZiivQPz-Cdgq6mor5oiLxK8Y49GiNNg@mail.gmail.com>
- <1269258d-db4c-3922-776b-f11e6a1e338e@quicinc.com>
- <YYlnIpGEmLH5GXft@smile.fi.intel.com>
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=rrUXzO/SXSYvsB+cqJXI4sWsKIikjeXfqc6uXfkQ7dU=;
+        b=fZx8eeRzFjoenMcmcYQTn6ymcMuoGaZwU682S15i1IwsNsJ4Kc7YMsYbYqlUDBzoQ5
+         0xutz+Ylapgh8ApsABzt7BASgYb9+0tqZWeSLQ+QBcOAHyO41nUuhrxzUqJ55yKN3ShG
+         PjER1WHqs+kZ2b17N7OkIFVVdE/wIczhKNcEBHi4iC08o0Hb+bbprn5ZTTYey8I3vTIy
+         YfqfkZhhtp7fwANa9X2q6iidrjyXiF9kWBiJTjOY1s2iGCtrUC0Kf3F4zCklQfrTlnCV
+         xaC+8xmw3CLcy1CH4mLOtU6tMW/fTnnxIxj+iXTH3c+HRWEL0fTGFt5Bt8M/UvZSaKjM
+         3ttQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=rrUXzO/SXSYvsB+cqJXI4sWsKIikjeXfqc6uXfkQ7dU=;
+        b=pC1vyIHZCj5QagNypfmhbel3DdqgS8zj0dlWlR1afQUhBSQua53zFmHqMyCqhCBHwn
+         OwD6Prh1l73EoqtS1dWjudzwtMyiTRaVFGg5VWzMGZvXtIvF9N3y1QCFusZmzdpvuenn
+         v6hsOhDpcbU5PMAlu5nEsUAF53di0XIYZi2dVV8ipGCCYJw9V0AyRDRMtyNzHtFSQRoJ
+         ma9TnKFK+JGXXbu93rhvf+FYRm9+h5V/KzusJKXLBnjtLymqmiHenSHHnP5t5PAElDcx
+         7MSl1YRNr0LS6bwVZKR4YcOUj6jLrRwAO2gOfkEACFqkzXetVKcqqPKB53oCcRRjiber
+         zpgg==
+X-Gm-Message-State: AOAM5311vRaH78A5wOo536O5jIt0owGlY05+0frj5bvAw7zKeRxuOHsu
+        yi3RjoGPkR1rFH2pPq/7+tFc0Y/B9Ku7MtGLBsXZcA==
+X-Google-Smtp-Source: ABdhPJxB/Y/jjWaY9guY61DEGMDSZKf3Q4w5/NgwO5gdErp/7ZQwieYv6LRgOffm7IVuHcgnSYnEQbM++u3iJSxmJ5s=
+X-Received: by 2002:aca:120f:: with SMTP id 15mr3127795ois.132.1636433120520;
+ Mon, 08 Nov 2021 20:45:20 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <YYlnIpGEmLH5GXft@smile.fi.intel.com>
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
+References: <20211027181350.91630-1-nikita@trvn.ru>
+In-Reply-To: <20211027181350.91630-1-nikita@trvn.ru>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Tue, 9 Nov 2021 05:45:09 +0100
+Message-ID: <CACRpkda_EM9mXuJdrZcpFaJCKF1UDgXkfdxkaniyXFHFd_7+Pw@mail.gmail.com>
+Subject: Re: [PATCH 0/6] Add touch-keys support to the Zinitix touch driver
+To:     Nikita Travkin <nikita@trvn.ru>
+Cc:     dmitry.torokhov@gmail.com, robh+dt@kernel.org,
+        Michael.Srba@seznam.cz, broonie@kernel.org,
+        linux-input@vger.kernel.org, devicetree@vger.kernel.org,
+        phone-devel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        ~postmarketos/upstreaming@lists.sr.ht
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 08, 2021 at 08:06:26PM +0200, Andy Shevchenko wrote:
-> Btw, what you can do in this case is to switch to use fwnode_create_software
-> node and switch them in drd.c. It will be much much easier to achieve then
-> full kernel refactoring.
+Hi Nikita,
 
-(Adding arm64 and dwc3 people since that iort_iommu_configure_id()
-path below to create a duplicated sysfs is arm64-specific. The
-original thread is here):
+On Wed, Oct 27, 2021 at 8:15 PM Nikita Travkin <nikita@trvn.ru> wrote:
 
-https://lore.kernel.org/lkml/20211101200346.16466-1-quic_qiancai@quicinc.com/
+> This series adds support for the touch-keys that can be present on some
+> touchscreen configurations, adds the compatible for bt532 and fixes a
+> small race condition bug in the driver probe function.
+>
+> I also pick up the series that converts the dt bindings to yaml
+> initially submitted by Linus Walleij in [1].
+> I made some minor changes to those patches:
+>  - Fixed dt_schema_check error
+>  - Adressed the review comments from Dmitry on the original series
 
-Andy, did you mean host.c? I saw that the first time
-"/devices/platform/808622B7:01/xhci-hcd.3.auto/software_node" was
-created by dwc3_host_init(). Call trace:
+Thanks for picking this up!
 
-  sysfs_do_create_link_sd.isra.0
-  sysfs_create_link
-  software_node_notify
-  device_add
-  platform_device_add
-  dwc3_host_init
-  dwc3_probe
-  platform_probe
-  really_probe.part.0
-  really_probe
-  __driver_probe_device
-  driver_probe_device
-  __driver_attach
-  bus_for_each_dev
-  driver_attach
-  bus_add_driver
-  driver_register
-  __platform_driver_register
-  dwc3_driver_init
-  dwc3_driver_init at drivers/usb/dwc3/core.c:2072
-  do_one_initcall
-  kernel_init_freeable
-  kernel_init
-  ret_from_fork
+Have you notices some behaviour like surplus touch events
+(like many press/release events fall through to the UI)
+when using this driver? I think it might need some z fuzzing
+but I am not sure.
 
-Then, which functions do you suggest to replace with
-fwnode_create_software_node()? In dwc3_host_init(),
-
-int dwc3_host_init(struct dwc3 *dwc)
-{
-	...
-	xhci = platform_device_alloc("xhci-hcd", PLATFORM_DEVID_AUTO);
-	...
-	ret = platform_device_add(xhci);
-
-I am wondering if that we could solve the problem by avoiding
-"xhci-hcd" string here which would unfortunately clash with
-xhci_plat_init() as mentioned before:
-
-  sysfs_create_link
-  software_node_notify
-  device_create_managed_software_node
-  iort_named_component_init
-  iort_iommu_configure_id
-  acpi_dma_configure_id
-  platform_dma_configure
-  really_probe.part.0
-  really_probe
-  __driver_probe_device
-  driver_probe_device
-  __driver_attach
-  bus_for_each_dev
-  driver_attach
-  bus_add_driver
-  driver_register
-  __platform_driver_register
-  xhci_plat_init
-  do_one_initcall
-  kernel_init_freeable
-  kernel_init
-  ret_from_fork
-
-since the driver would also use "xhci-hcd".
-
-static struct platform_driver usb_xhci_driver = {
-	...
-	.driver	= {
-		.name = "xhci-hcd",
-
-static int __init xhci_plat_init(void)
-{
-       ...
-       return platform_driver_register(&usb_xhci_driver);
-
-
-BTW, "/sys/devices/platform/808622B7:01/software_node" was also
-created from the path:
-
-  sysfs_create_link
-  software_node_notify
-  device_create_managed_software_node
-  iort_named_component_init
-  iort_iommu_configure_id
-  acpi_dma_configure_id
-  platform_dma_configure
-  really_probe.part.0
-  really_probe
-  __driver_probe_device
-  driver_probe_device
-  __driver_attach
-  bus_for_each_dev
-  driver_attach
-  bus_add_driver
-  driver_register
-  __platform_driver_register
-  dwc3_driver_init
-  do_one_initcall
-  kernel_init_freeable
-  kernel_init
-  ret_from_fork
-
-# ls -l /sys//devices/platform/808622B7:01/xhci-hcd.3.auto/software_node
-lrwxrwxrwx 1 root root 0 Nov  9 03:18 /sys//devices/platform/808622B7:01/xhci-hcd.3.auto/software_node -> ../../../../kernel/software_nodes/node4
-
-# ls -l /sys//devices/platform/808622B7:01/software_node
-lrwxrwxrwx 1 root root 0 Nov  9 03:18 /sys//devices/platform/808622B7:01/software_node -> ../../../kernel/software_nodes/node4
+Yours,
+Linus Walleij
