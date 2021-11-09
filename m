@@ -2,71 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BF90344AA89
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 10:24:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3577244AA8C
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 10:25:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244844AbhKIJ1V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Nov 2021 04:27:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43750 "EHLO
+        id S244886AbhKIJ2V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Nov 2021 04:28:21 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43946 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244806AbhKIJ1U (ORCPT
+        with ESMTP id S244806AbhKIJ2M (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Nov 2021 04:27:20 -0500
-Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 24486C061764;
-        Tue,  9 Nov 2021 01:24:35 -0800 (PST)
-Received: from zn.tnic (p2e584790.dip0.t-ipconnect.de [46.88.71.144])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id B4D881EC04E4;
-        Tue,  9 Nov 2021 10:24:33 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1636449873;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=yFqY4ZC+tk+ojUjF553QTrJ3iEB11I0CRzAPXH7XI5c=;
-        b=FjQi8y73HoFQWdP5cPsdQNqkvbI7a/EC2n42PgVfs/eH3X1qfGtz8qLblmgwY+u3s1w9Ek
-        GgNKHuXDoBFtjv9kDQEpwgKdzXWIqGV+FTqOiomyk19i1lFKM+WgMvclYJWRiZ4QoB/7Wk
-        298crZiYiCPJrd1yGYJ7hihIJ4kXQok=
-Date:   Tue, 9 Nov 2021 10:22:20 +0100
-From:   Borislav Petkov <bp@alien8.de>
-To:     Babu Moger <babu.moger@amd.com>
-Cc:     tglx@linutronix.de, mingo@redhat.com, dave.hansen@linux.intel.com,
-        x86@kernel.org, hpa@zytor.com, clemens@ladisch.de,
-        jdelvare@suse.com, linux@roeck-us.net, bhelgaas@google.com,
-        linux-kernel@vger.kernel.org, linux-hwmon@vger.kernel.org,
-        linux-pci@vger.kernel.org
-Subject: Re: [PATCH 1/3] x86/amd_nb: Add AMD Family 19h Models (10h-1Fh) and
- (A0h-AFh) PCI IDs
-Message-ID: <YYo9zEGr7wSKT8Gk@zn.tnic>
-References: <163640820320.955062.9967043475152157959.stgit@bmoger-ubuntu>
- <163640828133.955062.18349019796157170473.stgit@bmoger-ubuntu>
+        Tue, 9 Nov 2021 04:28:12 -0500
+Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3EF59C061764
+        for <linux-kernel@vger.kernel.org>; Tue,  9 Nov 2021 01:25:26 -0800 (PST)
+Received: by mail-pf1-x444.google.com with SMTP id y5so8645130pfb.4
+        for <linux-kernel@vger.kernel.org>; Tue, 09 Nov 2021 01:25:26 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:reply-to:sender:from:date:message-id:subject:to
+         :content-transfer-encoding;
+        bh=FN8gmeeFosyEMCwP+9T5Qcxe++S6hreeBk1oxhzKQmg=;
+        b=Sl8wYCy8kYu7D9vAHAOvPiYkQYPU75CVJR3RmoPZNLuJze7+GA/MmMiD1S44K3Gswy
+         fodkBDmvJx/olb7kTNK/3KVrf3wc07A+JjXTEwB9J/lYwuwKTw9aA2rTBqFHOEd47Zfk
+         R5OKCOBpjVMap6Y74nnzOs/9IYPrARxfiMvZ3biS58PrhALvGgCLYWRB7Jf8hNE+58I8
+         W4wK6xAn4FQRzBh81g491tcnO2SEoVDs1PJmBnhmTmc5jYz/xF+5sjkGRag1lUNQv7FH
+         14nsJWPAdCPWo4OPXm23EomMNstK34vyHAYrZfOhFsyiDfyxbt99AKe7chgu9E3Pp8vm
+         WR2g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:reply-to:sender:from:date
+         :message-id:subject:to:content-transfer-encoding;
+        bh=FN8gmeeFosyEMCwP+9T5Qcxe++S6hreeBk1oxhzKQmg=;
+        b=ghxeLONukdRCoWj46RdsHoeoC6SfVGBTtTop9pn8EqzvELEuO9SkBm2czVBua/WjAa
+         sI0DE90amVtAo8WGSIug4ZznrjC1l9Jtb6xFM/S+ZM669VKmhT8edgQfrKPKTVK45Ikd
+         NJLI0tWnpWSlUwSMPLbmVtdPz4WF0hdZdr7JY6wA5beWKFGUEqwIwe/zx50Wh0mJ/mdC
+         AN/k5Rs4aJ75MRLcvQLT+Z7vmgdEMBcvlCyItPnTYeKAGn3i14LsDMAQHzWfNQhRwLXI
+         r2ISkTIDcaJwZbTUUTvDaOqRLa5gD6S//WqfjShO4x9oEKmq0yb+KksOsrf8X+GF5/P1
+         DkOw==
+X-Gm-Message-State: AOAM5300wiFspkKwj6b+PkSXfiiPykNzx8mBmkTwcxk9g7arfEqvHxct
+        w66O4g+cjGMVK7wED6vrPslEETiT5RNI+e/EyLE=
+X-Google-Smtp-Source: ABdhPJy5JLvhq6LzZjxzyN+CKSbERa2NPMEsj/LDCi+rAdM56Z4mvhjpuwTTuB7XKFLgopkg1QQkYBkRiySf4l2GCjE=
+X-Received: by 2002:a05:6a00:cc8:b0:49f:c4a9:b9f1 with SMTP id
+ b8-20020a056a000cc800b0049fc4a9b9f1mr6617929pfv.32.1636449925223; Tue, 09 Nov
+ 2021 01:25:25 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <163640828133.955062.18349019796157170473.stgit@bmoger-ubuntu>
+Reply-To: oliviaingra343@gmail.com
+Sender: simtondji@gmail.com
+Received: by 2002:a05:6a10:cacc:0:0:0:0 with HTTP; Tue, 9 Nov 2021 01:25:24
+ -0800 (PST)
+From:   Ingram Olivia <oliviaingra@gmail.com>
+Date:   Tue, 9 Nov 2021 09:25:24 +0000
+X-Google-Sender-Auth: pFEDnayqP8zA4f8bYSMg2Oljl7A
+Message-ID: <CAGg0eJzRVMe_6xL42nmYQcHag+1Fhhoys3y2+gw3HXh2hNANmA@mail.gmail.com>
+Subject: I wish you read my mail in a good heart
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 08, 2021 at 03:51:21PM -0600, Babu Moger wrote:
-> From: Yazen Ghannam <yazen.ghannam@amd.com>
-> 
-> Add the new PCI Device IDs to support new generation of AMD 19h family of
-> processors.
-> 
-> Signed-off-by: Yazen Ghannam <yazen.ghannam@amd.com>
-> Signed-off-by: Babu Moger <babu.moger@amd.com>
-> ---
->  arch/x86/kernel/amd_nb.c |    5 +++++
->  include/linux/pci_ids.h  |    1 +
->  2 files changed, 6 insertions(+)
+Hello Dear,
 
-Acked-by: Borislav Petkov <bp@suse.de>
+I am Mrs. Ingram Olivia, I have decided to donate what I have to
+Motherless babies/ Less privileged/ Widows' because I am dying and
+diagnosed for cancer for about 10 years ago. I have been touched by
+God Almighty to donate from what I have inherited from my late husband
+to you for good work of God Almighty. I have asked Almighty God to
+forgive me and believe he has, because he is a Merciful God, I'm
+presently suffering from Leukemia.
 
--- 
-Regards/Gruss,
-    Boris.
+My health condition has gotten worse and just two weeks ago my doctor
+informed me that my condition has reach a critical stage, that I have
+just 5 months left. This confirmation from my doctor was and still is
+devastating news; it is hard to know that you have just a little time
+left to live here.
 
-https://people.kernel.org/tglx/notes-about-netiquette
+After the doctor=E2=80=99s medical pronunciation that I have just few month=
+s
+to live, I decided to divide my wealth to contribute to your country.
+I want to assist you with the funds to do great charity works in your
+country, this is my last wish. I selected you after searching few
+websites; I prayed and was led to you. I am willing to donate the sum
+of ($8.1million ) to the less privileged through you.
+
+Please I want to transfer this money to you, If you can handle this
+fund and very sure to do charity works on my behalf and from there I
+will travel to meet a specialist as I want to be buried alongside my
+late husband when I passed on.
+
+Note that this fund is in the financial institution and upon my
+instruction; I will file in an application for the transfer of the
+money into your account for the said purpose.
+
+Lastly, I honestly pray that this money when transferred will be used
+for the said purpose even though I might be late then. I have come to
+find out that wealth is vanity and I made a promise to God that my
+wealth will be used to support the poor and the assist the sick. Do
+let me know
+
+if you will be able to handle this fund and use it for the said
+purpose so that I will inform my bank on my decision, If you are
+interested in carrying out this task, get back to me for more details
+on this noble project of mine.
+1: Full name:
+2: Country:
+3:Occupation/position:
+4:Phone/s:
+5: Age:
+6: Sex:
+7: Address:
+God bless you
+Mrs.Ingram Olivia
