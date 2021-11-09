@@ -2,122 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 51FA844B3F8
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 21:29:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DDDA144B3FB
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 21:29:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244337AbhKIUc2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Nov 2021 15:32:28 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54332 "EHLO
+        id S244370AbhKIUce (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Nov 2021 15:32:34 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54390 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244334AbhKIUcV (ORCPT
+        with ESMTP id S244359AbhKIUcc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Nov 2021 15:32:21 -0500
-Received: from mail-ot1-x331.google.com (mail-ot1-x331.google.com [IPv6:2607:f8b0:4864:20::331])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A8BFC061767
-        for <linux-kernel@vger.kernel.org>; Tue,  9 Nov 2021 12:29:35 -0800 (PST)
-Received: by mail-ot1-x331.google.com with SMTP id b5-20020a9d60c5000000b0055c6349ff22so445969otk.13
-        for <linux-kernel@vger.kernel.org>; Tue, 09 Nov 2021 12:29:35 -0800 (PST)
+        Tue, 9 Nov 2021 15:32:32 -0500
+Received: from mail-oi1-x22a.google.com (mail-oi1-x22a.google.com [IPv6:2607:f8b0:4864:20::22a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 133C8C061764;
+        Tue,  9 Nov 2021 12:29:46 -0800 (PST)
+Received: by mail-oi1-x22a.google.com with SMTP id u2so847876oiu.12;
+        Tue, 09 Nov 2021 12:29:46 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=mcjMHcwYzwBgvUlsJJw9+Jv9JVC62owaRPJ/yUM6y5U=;
-        b=OweV8gSNpr/wemLfT5r5RqLdeNQQkyD/5uhlgtWeguJV2kW4kusfjz5uEepsm35Uhz
-         zxR38DUI8/IDIgxkpQz0Tr9dwCnxanyqiqv/JOp8GMlFop+gP+rMEs9Mhbm8m9bOx212
-         6oyJhJb6BNDTip5qNk1mjb8MZbGv7koOtqGXg1JXtimY92OdEVIub6loTlg0f4f4g9Mp
-         U9khgkYKVjZK/5/igWUFPJBklDaIWAgtGhHPLcTG0hS0KLbmatF62yQe54EL0uzApfg7
-         x8JIp4TmUBJP4w/9BfWDl1KDTkR5EAu60nNT8PYwktSPJrYlp4yUEqClTkbZC2OlPz8j
-         yE9w==
+        d=gmail.com; s=20210112;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=Fu6Efpg1HM1VF7oK8oKNnaQ7ek93tEycWK/pneRESxI=;
+        b=mBbW6xujuXL9r3LfLwp1UvmvE0kqthRG3Owuz/CniwMj8myKsmC/wNvOf9/UeIzkD+
+         lW8RzmYpzlGl8gjBXM+YV5X35ZoCWGGplTLCgxx4cpdydNUkqIGhyioB1YFnSq4t8ehD
+         1EFr7OV6NBNVQdG0y6ybW3xSPPuwy4t7mrR12UO//O1iuMneskAQKnn/xiWYSlBMQdWY
+         y7qKjSdZURnPDZOcdZTCtgCx7VLGVw1SuPx/AlUlhNEes1YGR3zLdRLrE8W0Set8uyvD
+         EjWoEOP7oALbA9iOqHHsKsVe6q/qS12NAL7dSZND5P+sPY0LZQUQ19lAM1Z1sKhcyBwD
+         h6nw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=mcjMHcwYzwBgvUlsJJw9+Jv9JVC62owaRPJ/yUM6y5U=;
-        b=xLUwQyQmttcxeQ8pLTO9t2yg/LmY5EJbRUZeEFVbsmxS8h+KRpwcJAtM5MNhVmQVkv
-         PScqrXMqoLxkXvZ9ImCsw0DbcrVPbvzQWzlxkBqnWGn3+1H7gtGXbXlEeik7z3+bno9N
-         wfyAIXCNWiXY1J/MZWjIE58qwhqPVFyfU2nv594w/SsmPIOX/qO05WZ0memq2cyjWQxm
-         dT6dC+Pf/FGQUq5NTie0JQ2vsqjC2rbOqpe0K9RaKRVrnySCJo8hlgBVBRu6mmvUad5u
-         p3i37pe11qm8gmahia6gLXd7tzAK4qXld4fHMttVnbizPWwknafwv0YGJ7lo61OtwKK6
-         g+Rw==
-X-Gm-Message-State: AOAM531cftnyWL/rBofvxx11Zk8UoAPFfdYXHDY/monZZ71AIaW9zRlz
-        FVkadWVNim6blXmBXmSbT/I+RGYKK4GnxZZphrbCyg==
-X-Google-Smtp-Source: ABdhPJx79vAz5xo21O8AcZjHZ2iz/cgsFzrU7PqDL77Snjbftb5loWoN2JiL02a01H3N9KzF4bFY81wiDaHO8sIEFIQ=
-X-Received: by 2002:a9d:ed6:: with SMTP id 80mr8156814otj.35.1636489774773;
- Tue, 09 Nov 2021 12:29:34 -0800 (PST)
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=Fu6Efpg1HM1VF7oK8oKNnaQ7ek93tEycWK/pneRESxI=;
+        b=GKG9490tDDubnX2TsAqo5gwiYM10ctnOX2LfPRimHOcfGlT3BL0Da2VGr+jf1/etaC
+         lB040GwYt/8Ikm5Cq4f+AWbwwGR+6AB8mLe2Nneh8KJnrn46gOMv1fZjwswEl4dCaxfa
+         NjoxCcprgK61jYZoIOB6jngGkuFjeUZ/KY0JqUVdqy5TeWO2RE6ZY9ZtKt21GRV8xBs3
+         aRcDIaup3k61eFb5oxFS6VDlxUGpyxbpxV39L6dGff4pPO/B8GLr7DffjaeEbIJQ+Hth
+         31WPMq0GDd+/g95f0V7VypQSlDpUz/OgyjfTPfosgi0QAeB7CUKQq423h15qtyojE/kN
+         D5/A==
+X-Gm-Message-State: AOAM533z49oqOVz8B7fTIsaKSJp9xqKgpIrInIxd5SuSTWYWlMWxY5XK
+        yvYlKq5vvkauqKZPlUR2ScI=
+X-Google-Smtp-Source: ABdhPJwNzd4uicpYuvVaOtvBtmUUXsKIZqsfs0Xmd/kCcfwHIrJ4/OX1PRWPNT0eCwHbS5b9KdsYbQ==
+X-Received: by 2002:aca:5e03:: with SMTP id s3mr8076353oib.27.1636489785471;
+        Tue, 09 Nov 2021 12:29:45 -0800 (PST)
+Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id f25sm5868026oog.44.2021.11.09.12.29.44
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 09 Nov 2021 12:29:44 -0800 (PST)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Date:   Tue, 9 Nov 2021 12:29:43 -0800
+From:   Guenter Roeck <linux@roeck-us.net>
+To:     Babu Moger <babu.moger@amd.com>
+Cc:     tglx@linutronix.de, mingo@redhat.com, bp@alien8.de,
+        dave.hansen@linux.intel.com, x86@kernel.org, hpa@zytor.com,
+        clemens@ladisch.de, jdelvare@suse.com, bhelgaas@google.com,
+        linux-kernel@vger.kernel.org, linux-hwmon@vger.kernel.org,
+        linux-pci@vger.kernel.org
+Subject: Re: [PATCH 2/3] hwmon: (k10temp) Remove unused definitions
+Message-ID: <20211109202943.GA3693009@roeck-us.net>
+References: <163640820320.955062.9967043475152157959.stgit@bmoger-ubuntu>
+ <163640828776.955062.15863375803675701204.stgit@bmoger-ubuntu>
 MIME-Version: 1.0
-References: <20211102161125.1144023-1-kernel@esmil.dk> <20211102161125.1144023-13-kernel@esmil.dk>
- <CAHp75VdmnnrisuP00W0KYta0KgmC+fu3WMxm959dt5X1kpiKTw@mail.gmail.com>
- <CAHp75VcuGdaq_TjjRS0S8R5y-nryLABZSp7ehrXz-fUS2W3vfA@mail.gmail.com>
- <CACRpkdYe-tW2K2eOQa+FYb-ZXzrA95+pPc6kkLB8ZJLAT8G_eA@mail.gmail.com>
- <CANBLGcyo3YjygkjDmdjt4C_H=MZdHQwqumsxnatuObeP2LADAg@mail.gmail.com>
- <CAHp75VdBaKZVeA7dasHWP4E3c8F2phaGz-90FErj3bB8FJOS9w@mail.gmail.com> <CANBLGcw7X9SY3_=A7ZXW60646vconjCbYBsvb=D2a0BPcyn75A@mail.gmail.com>
-In-Reply-To: <CANBLGcw7X9SY3_=A7ZXW60646vconjCbYBsvb=D2a0BPcyn75A@mail.gmail.com>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Tue, 9 Nov 2021 21:29:22 +0100
-Message-ID: <CACRpkda7b+j1=X9rUrqwEFhxvp2zVTvFkxanjh3hL7AksqCX1g@mail.gmail.com>
-Subject: Re: [PATCH v3 12/16] pinctrl: starfive: Add pinctrl driver for
- StarFive SoCs
-To:     Emil Renner Berthing <kernel@esmil.dk>
-Cc:     Andy Shevchenko <andy.shevchenko@gmail.com>,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        devicetree <devicetree@vger.kernel.org>,
-        linux-clk <linux-clk@vger.kernel.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        "open list:SERIAL DRIVERS" <linux-serial@vger.kernel.org>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Marc Zyngier <maz@kernel.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        Maximilian Luz <luzmaximilian@gmail.com>,
-        Sagar Kadam <sagar.kadam@sifive.com>,
-        Drew Fustini <drew@beagleboard.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Michael Zhu <michael.zhu@starfivetech.com>,
-        Fu Wei <tekkamanninja@gmail.com>,
-        Anup Patel <anup.patel@wdc.com>,
-        Atish Patra <atish.patra@wdc.com>,
-        Matteo Croce <mcroce@microsoft.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Huan Feng <huan.feng@starfivetech.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <163640828776.955062.15863375803675701204.stgit@bmoger-ubuntu>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 9, 2021 at 10:40 AM Emil Renner Berthing <kernel@esmil.dk> wrote:
-> On Tue, 9 Nov 2021 at 10:34, Andy Shevchenko <andy.shevchenko@gmail.com> wrote:
+On Mon, Nov 08, 2021 at 03:51:27PM -0600, Babu Moger wrote:
+> Usage of these definitions were removed after the commit 0a4e668b5d52
+> ("hwmon: (k10temp) Remove support for displaying voltage and current on Zen CPUs").
+> So, cleanup them up.
+> 
+> Signed-off-by: Babu Moger <babu.moger@amd.com>
 
-> > > The order the different states are blinked depends entirely on
-> > > how the pinctrl framework parses the device tree. I still think it
-> > > would be more natural to cleanly go to the end result without this
-> > > blinking.
->
-> Hmm.. but if going through the different states is what you want, then
-> wouldn't you need the device tree to have an ordered list of the
-> states rather than just a single node and also a way to tune how long
-> time the different states are blinked?
+Applied to hwmon-next.
 
-In a way you are correct that the DT is a functional language and it's
-a bit lite a style sheet or prolog or something in that the end reduction
-is what counts.
+Thanks,
+Guenter
 
-In this case, I would say something is weird if there are interim states,
-the yaml validation should not allow you to set the same thing back
-and forth in your DTS file.
-
-Alas we are not perfect as in yaml validation isn't perfect either.
-I can't see what the problem is really, just write proper DTS files
-and there will not be any interim states, right? And if it is possible
-to write DTS files that have states and sequence requirements,
-these should be caught in validation. Should be.
-
-Yours,
-Linus Walleij
+> ---
+>  drivers/hwmon/k10temp.c |   20 --------------------
+>  1 file changed, 20 deletions(-)
+> 
+> diff --git a/drivers/hwmon/k10temp.c b/drivers/hwmon/k10temp.c
+> index 3618a924e78e..662bad7ed0a2 100644
+> --- a/drivers/hwmon/k10temp.c
+> +++ b/drivers/hwmon/k10temp.c
+> @@ -76,26 +76,6 @@ static DEFINE_MUTEX(nb_smu_ind_mutex);
+>  #define ZEN_CUR_TEMP_SHIFT			21
+>  #define ZEN_CUR_TEMP_RANGE_SEL_MASK		BIT(19)
+>  
+> -#define ZEN_SVI_BASE				0x0005A000
+> -
+> -/* F17h thermal registers through SMN */
+> -#define F17H_M01H_SVI_TEL_PLANE0		(ZEN_SVI_BASE + 0xc)
+> -#define F17H_M01H_SVI_TEL_PLANE1		(ZEN_SVI_BASE + 0x10)
+> -#define F17H_M31H_SVI_TEL_PLANE0		(ZEN_SVI_BASE + 0x14)
+> -#define F17H_M31H_SVI_TEL_PLANE1		(ZEN_SVI_BASE + 0x10)
+> -
+> -#define F17H_M01H_CFACTOR_ICORE			1000000	/* 1A / LSB	*/
+> -#define F17H_M01H_CFACTOR_ISOC			250000	/* 0.25A / LSB	*/
+> -#define F17H_M31H_CFACTOR_ICORE			1000000	/* 1A / LSB	*/
+> -#define F17H_M31H_CFACTOR_ISOC			310000	/* 0.31A / LSB	*/
+> -
+> -/* F19h thermal registers through SMN */
+> -#define F19H_M01_SVI_TEL_PLANE0			(ZEN_SVI_BASE + 0x14)
+> -#define F19H_M01_SVI_TEL_PLANE1			(ZEN_SVI_BASE + 0x10)
+> -
+> -#define F19H_M01H_CFACTOR_ICORE			1000000	/* 1A / LSB	*/
+> -#define F19H_M01H_CFACTOR_ISOC			310000	/* 0.31A / LSB	*/
+> -
+>  struct k10temp_data {
+>  	struct pci_dev *pdev;
+>  	void (*read_htcreg)(struct pci_dev *pdev, u32 *regval);
