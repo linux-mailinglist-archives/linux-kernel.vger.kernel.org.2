@@ -2,175 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0E51044AC36
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 12:02:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9688244AC3D
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 12:03:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238075AbhKILFV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Nov 2021 06:05:21 -0500
-Received: from mga09.intel.com ([134.134.136.24]:27154 "EHLO mga09.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S245585AbhKILFT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Nov 2021 06:05:19 -0500
-X-IronPort-AV: E=McAfee;i="6200,9189,10162"; a="232266963"
-X-IronPort-AV: E=Sophos;i="5.87,220,1631602800"; 
-   d="scan'208";a="232266963"
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Nov 2021 03:02:31 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.87,220,1631602800"; 
-   d="scan'208";a="563979915"
-Received: from orsmsx603.amr.corp.intel.com ([10.22.229.16])
-  by fmsmga004.fm.intel.com with ESMTP; 09 Nov 2021 03:02:30 -0800
-Received: from orsmsx607.amr.corp.intel.com (10.22.229.20) by
- ORSMSX603.amr.corp.intel.com (10.22.229.16) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2242.12; Tue, 9 Nov 2021 03:02:30 -0800
-Received: from orsmsx610.amr.corp.intel.com (10.22.229.23) by
- ORSMSX607.amr.corp.intel.com (10.22.229.20) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2242.12; Tue, 9 Nov 2021 03:02:29 -0800
-Received: from ORSEDG602.ED.cps.intel.com (10.7.248.7) by
- orsmsx610.amr.corp.intel.com (10.22.229.23) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2242.12 via Frontend Transport; Tue, 9 Nov 2021 03:02:29 -0800
-Received: from NAM04-DM6-obe.outbound.protection.outlook.com (104.47.73.44) by
- edgegateway.intel.com (134.134.137.103) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2242.12; Tue, 9 Nov 2021 03:02:29 -0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=H6nyJ5eK+6G1oAOsRV9/GdICBQpwG6N5IgNEkCXVqRbnAmftmph20NRkz5dwr1mDcJprU4D4otvw4+7dWf1CpyDYOPk0M7TE4QegskTrMgjixxgDp2Psec7cZ58UQc4kXQrPsGrSIXqW0jBCqYUOD3OrkneLDf2nfQ5ZJ9ewQ1yrb5Xm9rp61NrPlNab2kUqRuU5M+3ilelvsTzKRlM9xD3ubfojiUkhKLZfwvf7ayTGqc4DMuoYJMfN3mU7PaPefUYJIyWgiyKnP+6sADvLZ6ynU+WGhx6KbNGjEcshUjdYZ5iw2AdSEFEhdmbeCyLjTmBI3reDgKNQdu8kac8c0Q==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=LBH6kYYuYByB5Y5xYf5nRUtePSMd7tG9hfm7CybUGJw=;
- b=KhJhwLusqrkTyYt58he79byJbqkAMZsyzlbgPNJ7wFdLl3tk5QA9H3XpjDd7mJv9trXRJrXnJ5IEqKAH/ub64nT71n1C4cw09zod61S0kM7b9T0nxk8cc9ZuqqwJZK+FoJhdcj6DtiRLLMT5fHbdAZRTTwfd3G5r/DsP+CgKw1KEd+Y4dv4sOXP89/ALEFFg3D/pvSa/04wKOjH0WFJTLhiQFY2LNcZxqq8Sg7NSMbEYAZY9u1ateUAm6Jwq6eBCnwqyKBF1mqozcYmuVND5HrmcmMadRJMLc80lKmOaOHGeV2hI1BtpqBaRvIJ0zGwtSihYNjzmwATK4kak85qs9Q==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=intel.onmicrosoft.com;
- s=selector2-intel-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=LBH6kYYuYByB5Y5xYf5nRUtePSMd7tG9hfm7CybUGJw=;
- b=lASVklb9d8l5BorIakPXiNNuMnqZL7ukn/JfTlSwRWTkdbtqlMpyZT0lDEvP5rTXmn0dFTdRKrv8vYG9rEVZ7HTK3RUw5IvZKxVwUKGaYe6NaitGHyCHiPfTDUOi1+BTJ7XeDZ/IlFs2Cbot1xRAE7VFRju0NhMzM5ryaXO35AE=
-Received: from CH0PR11MB5538.namprd11.prod.outlook.com (2603:10b6:610:d5::23)
- by CH2PR11MB4310.namprd11.prod.outlook.com (2603:10b6:610:3d::27) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4669.10; Tue, 9 Nov
- 2021 11:02:28 +0000
-Received: from CH0PR11MB5538.namprd11.prod.outlook.com
- ([fe80::f54b:a185:b50f:27ff]) by CH0PR11MB5538.namprd11.prod.outlook.com
- ([fe80::f54b:a185:b50f:27ff%2]) with mapi id 15.20.4669.016; Tue, 9 Nov 2021
- 11:02:28 +0000
-From:   "Wang, Zhi A" <zhi.a.wang@intel.com>
-To:     "hch@lst.de" <hch@lst.de>
-CC:     Jani Nikula <jani.nikula@linux.intel.com>,
-        Zhi Wang <zhi.wang.linux@gmail.com>,
-        "joonas.lahtinen@linux.intel.com" <joonas.lahtinen@linux.intel.com>,
-        "Vivi, Rodrigo" <rodrigo.vivi@intel.com>,
-        "zhenyuw@linux.intel.com" <zhenyuw@linux.intel.com>,
-        "jgg@nvidia.com" <jgg@nvidia.com>,
-        "intel-gfx@lists.freedesktop.org" <intel-gfx@lists.freedesktop.org>,
-        "intel-gvt-dev@lists.freedesktop.org" 
-        <intel-gvt-dev@lists.freedesktop.org>,
-        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 1/3] i915/gvt: seperate tracked MMIO table from handlers.c
-Thread-Topic: [PATCH 1/3] i915/gvt: seperate tracked MMIO table from
- handlers.c
-Thread-Index: AQHX1Od2ewkiyRHA1kGOSyaP59dZeqv6xTKAgAAcJgCAABupAIAABHYAgAAEN4CAAAIEAIAAAQ+A
-Date:   Tue, 9 Nov 2021 11:02:28 +0000
-Message-ID: <040f15a2-e538-8762-1a85-82df0c4190cc@intel.com>
-References: <20211108212718.10576-1-zhi.a.wang@intel.com>
- <875yt17qzs.fsf@intel.com> <5dd106e7-e62f-dfcd-bfa1-3f92794b8e3e@intel.com>
- <87o86t636f.fsf@intel.com> <20211109103622.GA7607@lst.de>
- <ddff22c4-fa19-24b4-c5e5-9910abb02bf6@intel.com>
- <20211109105840.GA9675@lst.de>
-In-Reply-To: <20211109105840.GA9675@lst.de>
-Accept-Language: en-FI, en-US
-Content-Language: aa
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-user-agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
- Thunderbird/91.3.0
-authentication-results: lst.de; dkim=none (message not signed)
- header.d=none;lst.de; dmarc=none action=none header.from=intel.com;
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 7fe9b8fc-2e0e-4263-8247-08d9a3706b62
-x-ms-traffictypediagnostic: CH2PR11MB4310:
-x-ld-processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
-x-microsoft-antispam-prvs: <CH2PR11MB4310A9C0A73AF4504CC0FF25CA929@CH2PR11MB4310.namprd11.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:4125;
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: ZKind1UvC4wjaPOLOVnGBqYcStnbEqWIYfWPhv9NDbveAcSYMEzAQ1UIZatPkjdMAC4eypgdBnTnnPFlZylshlLxSHb7rck3G/8PvR8H1PlDwpnr2FDcV2kUoKh7kiZOlfTIVvUI0LNx6s7qjHH5rwWcJ7A4A/UUdSQslGxqSrrYQHfyurdF8uTpoAIDnMkrVdxIDTvecgE8rtnsOVoIELAhaUL/hIlyCMnl5CXv1SKE95kvxwDAaG0QQYvRjeSoCnEdW/IUXc0Gms4sAJJbaWAUVa+65GOKy2w3LQVhiw929Jx2HsUPosVl4tvXJpClN1bMv/wK15K/rZwPkd4HrWhKCSbsNXGe7hUCV3hUDDYgRoDuLHKlivVYIdRCnvPYkODxgwDyvYr6ZIghygSXxdJF/nSrRr4DPJ1GmuLaE1h/AGHgJVVo3B+RWBZgUsWDbWAxoqtWYwePhrcy4kv25iWNb+qu5xY7ZqDvHYuMnXaUpGi+9ZDGsQ962jUvubzKdcjHlaLKIPPsnERXiULa6LR6D9sBFMLUqJ6hX9lvOt+83cbMFcTCAMnt1oJeChzTy1fDj3euv45ROnipvEM5bL8JafAy4zvU2afPpEodasKru5uWQtU/lP+X+JhjeEB8Xd2/abprlnBUh/7eNS3vSQ6UD4RkIBqDw+1ZUbXdiWhBb051T+9YaRwY4nIY2rHS9a9Kv20vlRfgEqxsq/XeO/Ok26nT67D/TH5G1NlpmFH/sA3lyQ6lNrwnmQXlpVhw7bs8D1qGxpEjhFjOKvLblw==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CH0PR11MB5538.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(71200400001)(6506007)(122000001)(8676002)(82960400001)(38100700002)(5660300002)(53546011)(66446008)(64756008)(2616005)(66556008)(66476007)(4744005)(91956017)(31686004)(66946007)(26005)(36756003)(6486002)(7416002)(4326008)(76116006)(508600001)(83380400001)(8936002)(38070700005)(31696002)(316002)(86362001)(2906002)(6512007)(54906003)(6916009)(186003)(43740500002)(45980500001);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?utf-8?B?WlFnRmdMdzZLT3p2UnY5WHVzaDZja1R6L3UvSkFZU1RDaWpnOWk5eTEvYmRw?=
- =?utf-8?B?bUpvWmZ1TDVoenJwU1NrOEp4bjk2L1dyTDJUZEJwdERwcEE4M0FoalVoM2pV?=
- =?utf-8?B?cW5GbDJsUFF3YStlNEthdCtIUmtwUEZ0alAyM2U2bzVxS1puOTNoM3E5NklM?=
- =?utf-8?B?YkorTXRHMDBBU3h5YUVJbnowdThuMjNncUVNa3RFR1JZb3o2Yk9PYzdFZXRX?=
- =?utf-8?B?UmlwSnJaL2RaNk8zS2NSZjFUTGJKOEdveDNuRzdmUCtSUGVNRC9zZ25PNHdq?=
- =?utf-8?B?OEVHZE13VkMyRVlNN1h5dkgweTRpL2UrMjhkbjJ0S1hpSHVuaW14Vjh5bk81?=
- =?utf-8?B?YkFEQXVseUNWQUROWUtGT0tNaCsyUE0yNFRpc2JvQ1JtL3g2d0tYaXk0YXBq?=
- =?utf-8?B?N2pYZ0s3WlJmRHMxYzUvMUZkN0N0dlp2blN4SE5iQjZ5V3Jhd1pFZ2hYQ256?=
- =?utf-8?B?bDZDV1dMZVZxV2c5SzhJYUlmdlBoaHZvV1BNQXNxMXVZN0doUkhxUXBRMmlI?=
- =?utf-8?B?TUpYVnc0UDhvNXNlVFVKanV4b1A2UzF1ZFdBOHlVTWVHRW9mTlhBUTFSNVp1?=
- =?utf-8?B?WjJzaGpEZTUrVU9mUjFVUVkrMWdoYmdvK2tMYnBqUkF2YlpsaWNzU2xNS3Aw?=
- =?utf-8?B?WEFZcTIrMUFVZ3h0TkYxTnU0cko1UmdTejhYN2pDSjgvb3NxdUdOQWMwd0cz?=
- =?utf-8?B?ZmZXL0xpeVhKbVlSVmNiMWNhclpiSHE4c0l5WVNzVTJudVFTM245TXVDWSts?=
- =?utf-8?B?b3hGKzB3SEtvbzZKUDdndkxvaVpUK0Vrc3N1ay83aVduWklpSGp2V1ZJeU1Y?=
- =?utf-8?B?eXpVbFNHVkcrVXhPTU5zb0lKZWxLQ1MzQWNVZWlwaEZyQ080Lzc4MDlYODBr?=
- =?utf-8?B?YVBMaVBDS0ZOazJmeHZHVW1VcVNzMDRZOWsrbExrQi9rWWMvUXpqUzZPZ1pM?=
- =?utf-8?B?RUNqWHN3QWxHbkUrVzlLWkZCcG54cGFpRnBYQ2xKaXpxMWZ4R2NkRE00UEZH?=
- =?utf-8?B?d0NEa3ZybU5uaXd6MEVnOStjMEFyNmhJSExmdGwrR0tkUzN2WHRkYzlCMTBw?=
- =?utf-8?B?SUJvd0FjZkoyUkNrQTA2aERmayt5a1h4dHZ4cTM0dkp1L3NGL0JuMFZpenVG?=
- =?utf-8?B?QTNzT0xvWHpGQVEwS2tJeXcwTDhYei8wVXBtOVNsSjAxdVQ2cjVBZ2J6UmZH?=
- =?utf-8?B?VjNpTlkwVHRzMXE1SExwSGZTMCtPeDRxd3lFb3dCeXlmZWwyRVJuaHp6RGVM?=
- =?utf-8?B?ck5WdzNGaUVydGZtbU1OVUFTUU85UXNMbEsrYWVNS0FSb2oxVE9NcGc4Uy9n?=
- =?utf-8?B?Mi9Sb0F2bnBBbjB4VlRab0RieG92eTBpTW5WUnBkU2UzZTluUDJYdC9tZy9X?=
- =?utf-8?B?OEFyZjVSaGRMOFhETFdPQ2VlYkRVZ2RrVHJhSys2d0RwVEI2RU8vZDlndisy?=
- =?utf-8?B?Tm91RzdKY2ptd3lLN1RlVVdVanB3SlpmOG5FTE4wZHlQd2ljQ0RLbm1lRHZI?=
- =?utf-8?B?SUhOWGVMSUx3bGtwTUR5VHM5cGtiQmsrMlBGWXBSdWhIeVV0Nm96TFcvazM3?=
- =?utf-8?B?VVJ6czMwK0g4dUpLZnQyRWhnaEsvQnZXTXJ4YTAvWmF2NUJCNjlHZllSSDA4?=
- =?utf-8?B?ZTU3Z2NxVEFnUEJ2eEdiMExFaUdnY1JTSFNFRUN0bXNpdkJpbDdWdFhOWS80?=
- =?utf-8?B?NzVYbkM1aUhkQ1RvY0VQQ25IRnFSSTNiaHNhVmVjVWo2TGkwSjB5Vll0bEhm?=
- =?utf-8?B?NVRqRWd6WFNnMWtSa3p1NUVIUDI0Qjd5OUtSOHBtc0xxUVhFSktkQ0tENm4x?=
- =?utf-8?B?YTJqaUhlV0gyNUMrVWkzMTd4dUxBYkZCT2p6Zkp5cHVvNllqTWZQRDA1eG9Q?=
- =?utf-8?B?S1RCZ3JoWG5pL0oveUVhTzd3dW1Dc3J6eWJ1bllWNlRubUU3M3JmUW1TNGM0?=
- =?utf-8?B?cHVSLytNU1QrbFplbDNyQWVnZEYwY2Z2a1dNVkFZaTd4bkVHSnVwZXRTaGtz?=
- =?utf-8?B?ZVViUHg0TkZrZys4OEswV2hMaDhUVTNJRkZxQkc0aWVoalRQcElKWDBQRGZO?=
- =?utf-8?B?b1JIbnZ5NkVLSDFjZzlPYXEwYmFmVVI0a3RWL3haa3dXOWdQVkJsSCtOWDlr?=
- =?utf-8?B?cnB2Y0pPVlpkSFdka3NaSWZtTmtyVFFkQ2QzUjdKK0g5bmhRTVNiY3ZxbElV?=
- =?utf-8?B?SVE9PQ==?=
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <EE24E08A28998E4485736D241702497E@namprd11.prod.outlook.com>
-Content-Transfer-Encoding: base64
+        id S238785AbhKILG3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Nov 2021 06:06:29 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38358 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236019AbhKILG2 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Nov 2021 06:06:28 -0500
+Received: from mail-ot1-x334.google.com (mail-ot1-x334.google.com [IPv6:2607:f8b0:4864:20::334])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 637E5C0613F5
+        for <linux-kernel@vger.kernel.org>; Tue,  9 Nov 2021 03:03:42 -0800 (PST)
+Received: by mail-ot1-x334.google.com with SMTP id v40-20020a056830092800b0055591caa9c6so30301654ott.4
+        for <linux-kernel@vger.kernel.org>; Tue, 09 Nov 2021 03:03:42 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Cde9sTeLd0vmgQnDHFOawLma/945mJa1LBSD0r3d4s0=;
+        b=KUI62Pd4Hj8HYSVaTZVhn3KQ/1ACqdRRbXUCxDm7Cl8VDNJ30jya31vSmTFZoNbTqZ
+         alW0aZBNZ6y07fcs1h/IQ76exO8Tt+nUWG1WLdpjZXJzbv7JBbkb6Th0s6hutWHTMJul
+         zNpfutFxzNwYz5uCgG6ipTjXUBqGZwv0pPQhMTLUoHB/kgUresoM+UTy0SXno5zo4vnr
+         KpufGMJgF7Sk3SuTLYslA+Oa1Dq/gzdkM0jNnr/+O7z/76BsdwzbRGb2HJtr2gdPTcuG
+         GjbBl9U35n20sIBbapohjJXCfJYxQoczB9QGluiaDkmhQEyS+U9OT1rRoyV7/1LookLj
+         DINw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Cde9sTeLd0vmgQnDHFOawLma/945mJa1LBSD0r3d4s0=;
+        b=jYqPtqP5w9s8KjjaVDGZNw+0k42pNVNfMeWnSA+b0vqdfiRNpFFLOcKrEi90ipyJrT
+         jSnvdHYV5yWf2XPC4QGspGpBq3sh2SZFfHDcj/cA0afdUtkup9TZVr/wfYUBhGh8492D
+         8ApuS6iPP2Lg2YfTH9ZITwgMWQc1syPZUV8e5GwdDbffe7QGbiWFUOCe7nr1E59oVRpW
+         TExZYNVm5czoRZpDpwRMsRTiFhZMM+z/E16HhNNg9ncqnqnB6EMpK84X87GtceHadjAd
+         2R4+yh8XczWMxt83bLwVR99mZCzhuMGkP792F5HUMv2kynMntlX8/DLHS2UcfvgGulGk
+         J8hg==
+X-Gm-Message-State: AOAM5307KbKG6MLVtci1b6BLyfvBLW7H5S2eYdVxZ8olyKDN3JioIiTA
+        xorBeRjQZ6OqC0fo//WIFXy4SBjXVe6vM4v1u6l7yQ==
+X-Google-Smtp-Source: ABdhPJwQOh0weKMLmGhNanRSWouIAcQ21jLyTUZlfQlEatdYccM7AhIWTjH/d9ZVCzYfYnSdy1TMVoeQKsf8ytpQYFs=
+X-Received: by 2002:a05:6830:2809:: with SMTP id w9mr5110934otu.237.1636455821654;
+ Tue, 09 Nov 2021 03:03:41 -0800 (PST)
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: CH0PR11MB5538.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 7fe9b8fc-2e0e-4263-8247-08d9a3706b62
-X-MS-Exchange-CrossTenant-originalarrivaltime: 09 Nov 2021 11:02:28.1614
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: XY+4VE47C/Q+iD0r/zXwE8CqhPqoCDcQDby6hJNfkZN7WceO6eKmSOkaiSZMokEJCh/3jRWZgY/ADLcu9nihYQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH2PR11MB4310
-X-OriginatorOrg: intel.com
+References: <20210921043936.468001-1-andrew@aj.id.au> <20210921043936.468001-2-andrew@aj.id.au>
+In-Reply-To: <20210921043936.468001-2-andrew@aj.id.au>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Tue, 9 Nov 2021 12:03:30 +0100
+Message-ID: <CACRpkdZRWzq_j_UsU+eZurv1wT7muB1V4ktui1-Q0mHV3xw58A@mail.gmail.com>
+Subject: Re: [PATCH 1/2] leds: pca955x: Make the gpiochip always expose all pins
+To:     Andrew Jeffery <andrew@aj.id.au>
+Cc:     linux-leds@vger.kernel.org, linux-gpio@vger.kernel.org,
+        clg@kaod.org, robh+dt@kernel.org, joel@jms.id.au, pavel@ucw.cz,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-aspeed@lists.ozlabs.org, linux-kernel@vger.kernel.org,
+        andy.shevchenko@gmail.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-T24gMTEvOS8yMDIxIDEyOjU4IFBNLCBoY2hAbHN0LmRlIHdyb3RlOg0KPiBPbiBUdWUsIE5vdiAw
-OSwgMjAyMSBhdCAxMDo1MToyN0FNICswMDAwLCBXYW5nLCBaaGkgQSB3cm90ZToNCj4+IENhbiB5
-b3UgZWxhYm9yYXRlIG1vcmUgYWJvdXQgdGhpcz8gV2UgbmVlZCB0aGUgaGFzaCBxdWVyeSBmcm9t
-IHRoZSB0YWJsZQ0KPj4gQVNBUCB3aGVuIHRoZSBoeXBlcnZpc29yIHRyYXBwZWQgYSBtbWlvIGFj
-Y2Vzcy4gSXQncyBhIGNyaXRpY2FsIHBhdGggYW5kDQo+PiB3ZSB0cmllZCBkaWZmZXJlbnQgZGF0
-YSBzdHJ1Y3R1cmUgaW4gdGhlIGtlcm5lbCBhbmQgdGhlIGhhc2ggdGFibGUgZ2l2ZXMNCj4+IHRo
-ZSBiZXN0IHBlcmZvcm1hbmNlLg0KPiBPaywgSSBtaXN1bmRlcnN0b29kIHRoZSBoYXNodGFibGUu
-aCBpbnRlcmZhY2UuICBoYXNoX2Zvcl9lYWNoX3Bvc3NpYmxlDQo+IGFjdHVhbGx5IGRvZXMgYSBo
-YXNoIGxvb2t1cCBpbnN0ZWFkIG9mIGFuIGludGVyYXRpb24gZGVzcGl0ZSB0aGUgcmF0aGVyDQo+
-IG1pc2xlYWRpbmcgbmFtZS4NCg0KWWVzLiBNYXliZSB3aXRoIGEga2V5d29yZCAibG9va3VwIiBp
-biB0aGUgbmFtZSBvZiB0aGUgaW50ZXJmYWNlIHdvdWxkIGJlIA0KYmV0dGVyIHNpbmNlIGl0J3Mg
-d2lkZWx5IHVzZWQgaW4gdGhlIGtlcm5lbC4gOikNCg0K
+On Tue, Sep 21, 2021 at 6:40 AM Andrew Jeffery <andrew@aj.id.au> wrote:
+
+> The devicetree binding allows specifying which pins are GPIO vs LED.
+> Limiting the instantiated gpiochip to just these pins as the driver
+> currently does requires an arbitrary mapping between pins and GPIOs, but
+> such a mapping is not implemented by the driver. As a result,
+> specifying GPIOs in such a way that they don't map 1-to-1 to pin indexes
+> does not function as expected.
+>
+> Establishing such a mapping is more complex than not and even if we did,
+> doing so leads to a slightly hairy userspace experience as the behaviour
+> of the PCA955x gpiochip would depend on how the pins are assigned in the
+> devicetree. Instead, always expose all pins via the gpiochip to provide
+> a stable interface and track which pins are in use.
+>
+> Specifying a pin as `type = <PCA955X_TYPE_GPIO>;` in the devicetree
+> becomes a no-op.
+>
+> I've assessed the impact of this change by looking through all of the
+> affected devicetrees as of the tag leds-5.15-rc1:
+>
+> ```
+> $ git grep -l 'pca955[0123]' $(find . -name dts -type d)
+> arch/arm/boot/dts/aspeed-bmc-ibm-everest.dts
+> arch/arm/boot/dts/aspeed-bmc-ibm-rainier.dts
+> arch/arm/boot/dts/aspeed-bmc-opp-mihawk.dts
+> arch/arm/boot/dts/aspeed-bmc-opp-mowgli.dts
+> arch/arm/boot/dts/aspeed-bmc-opp-swift.dts
+> arch/arm/boot/dts/aspeed-bmc-opp-tacoma.dts
+> arch/arm/boot/dts/aspeed-bmc-opp-witherspoon.dts
+> ```
+>
+> These are all IBM-associated platforms. I've analysed both the
+> devicetrees and schematics where necessary to determine whether any
+> systems hit the hazard of the current broken behaviour. For the most
+> part, the systems specify the pins as either all LEDs or all GPIOs, or
+> at least do so in a way such that the broken behaviour isn't exposed.
+>
+> The main counter-point to this observation is the Everest system whose
+> devicetree describes a large number of PCA955x devices and in some cases
+> has pin assignments that hit the hazard. However, there does not seem to
+> be any use of the affected GPIOs in the userspace associated with
+> Everest.
+>
+> Regardless, any use of the hazardous GPIOs in Everest is already broken,
+> so let's fix the interface and then fix any already broken userspace
+> with it.
+>
+> Signed-off-by: Andrew Jeffery <andrew@aj.id.au>
+
+Acked-by: Linus Walleij <linus.walleij@linaro.org>
+
+Yours,
+Linus Walleij
