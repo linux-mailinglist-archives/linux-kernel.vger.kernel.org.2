@@ -2,135 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 758AB44AFEA
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 16:00:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C29BB44AFEE
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 16:00:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234853AbhKIPDG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Nov 2021 10:03:06 -0500
-Received: from mail-yb1-f171.google.com ([209.85.219.171]:46711 "EHLO
-        mail-yb1-f171.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234372AbhKIPDE (ORCPT
+        id S234951AbhKIPDJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Nov 2021 10:03:09 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35728 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234902AbhKIPDH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Nov 2021 10:03:04 -0500
-Received: by mail-yb1-f171.google.com with SMTP id g17so29393316ybe.13;
-        Tue, 09 Nov 2021 07:00:18 -0800 (PST)
+        Tue, 9 Nov 2021 10:03:07 -0500
+Received: from mail-ed1-x535.google.com (mail-ed1-x535.google.com [IPv6:2a00:1450:4864:20::535])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B78BCC0613F5
+        for <linux-kernel@vger.kernel.org>; Tue,  9 Nov 2021 07:00:21 -0800 (PST)
+Received: by mail-ed1-x535.google.com with SMTP id j21so77612120edt.11
+        for <linux-kernel@vger.kernel.org>; Tue, 09 Nov 2021 07:00:21 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=paul-moore-com.20210112.gappssmtp.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=I6uJhYgaShmiRXF04cLV4RwDYjwYFS466hjaILAfyiA=;
+        b=oh++hDJXIKSIULecGTYkYa8h1fLMICBrU3u7wdye21L2M7oIFkBBTlbNEb9A6pnIxr
+         Ej8NWLSg0ouGH7XU3FEoVfa0+v5EmeL03EXz0+Rrz1z2hpVhgf9rXYnYQHfO1etJPQJj
+         rY8a5oEBslDyPFNnQILPaj89oKk63q+xmT9LmjbTFXTnp7EzPnWJfk/rNWyAtxIzGgDI
+         dc89cXmGMAsZ9WLVr5OpJ4I0O4cBR1AEBvtSdH53ZjwopiCVhoXi52n/Qz9dnonMZz/p
+         Ajp7ILcPZy1K/oehLxm8oRm36X/Kldl5sktl4wqVH4Dna5Bd1D9oAMN1428zxa0YLdRT
+         s6Sw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=pQs8NuOusvW43yJdvPU7h2JJb+2dPvnVfEafUayKssc=;
-        b=gpWIoweDEN0RA7TUcMLj4dcr5fKLGVbCWEnrXW7IJGXr1eJE1TE85vSA8JrGLutgJI
-         eks+k1Os/wOmMyJLryWRleXLY89JJ3lFWxAPFDtnorjKCTItvV4ZgGyJRNoKAYnn3M8B
-         zW3uqEBhnCdTmOKz/KpfYuMjjM+bIprjMeKHk7Wq+zDC2dvzUzx24lJRB/MnRE6pWdha
-         EQkuu8LQbak4brhKL2fpJ4pAyArJ4X17N9jOVUrY8aEBBNnLX1jQjdtoZ3hQX1HQZaEs
-         Pox3gClxE4RP6BbjJlcRixg83szqTsmJI17sUlM5e4BSmSYSjWjx2Q1NdIucmkYzd5pK
-         ANKA==
-X-Gm-Message-State: AOAM530PHEKeBlT/tYdQyttsvgvQAoDCyJi1Ajy+RNaAmKiqecAgcm8X
-        Zsxc+W258btGeXkus9vjjo8qR3go2FI7jg==
-X-Google-Smtp-Source: ABdhPJwgTs2Eya/VzxmbZ9CRrEiumTi5lozMWnUeYSgdykvLIO6bcFn8FReAafEa3EDFCJFZo2KHpg==
-X-Received: by 2002:a25:5003:: with SMTP id e3mr9059823ybb.482.1636470015719;
-        Tue, 09 Nov 2021 07:00:15 -0800 (PST)
-Received: from mail-ua1-f41.google.com (mail-ua1-f41.google.com. [209.85.222.41])
-        by smtp.gmail.com with ESMTPSA id 23sm698191vkk.17.2021.11.09.07.00.15
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 09 Nov 2021 07:00:15 -0800 (PST)
-Received: by mail-ua1-f41.google.com with SMTP id ay21so39000215uab.12;
-        Tue, 09 Nov 2021 07:00:15 -0800 (PST)
-X-Received: by 2002:a05:6102:1354:: with SMTP id j20mr42333682vsl.41.1636470014854;
- Tue, 09 Nov 2021 07:00:14 -0800 (PST)
+        bh=I6uJhYgaShmiRXF04cLV4RwDYjwYFS466hjaILAfyiA=;
+        b=lbxtku5ktlFvpsQkbp3BUnexIW+FjjdmTCikANXqLAmrNtRDAu9K4Bpc/so2yDHmhi
+         ELx+B+GKkhTRb3sN6Q2HLlLqQhhNucraDnYqd1LosInNKNcNYSkONGqflWYiBXYps+cx
+         tvfgYkFmaQmupgGOt/kzF4xC0EJ0kJooEHomBO8ahvPN9/rIpdOVLNzlEKVuAbId8FcO
+         0E1NjW8y2bbGe1/8Ldn2MqUQp1+gtKS+PIFkcfeLMYkFPd5q5iqVzYZjuDBlYFqO8JXP
+         qzCO8hwbGV7a8n6NF83gCbM+Npy65aCOmk1IUk5QBiinMWfyk09MQMamaagNsPEQkiv0
+         djYQ==
+X-Gm-Message-State: AOAM533g+1ioY5RUa1ox8vXzEA5Y0L1MHXFQOC4q3KPon73fdLz562Lh
+        BHn0Xt3VW4d5wS/eaR32vcrrS2cajAu/WIk/4fay
+X-Google-Smtp-Source: ABdhPJwudea26ElEmhWHO/N5gvNlQtUK8zEtfTsVc1cJaPGB66AF29W0PyBst6prdCXPqh8eM47USKwhnF6BbZHnNQU=
+X-Received: by 2002:a17:906:6592:: with SMTP id x18mr10277115ejn.307.1636470019526;
+ Tue, 09 Nov 2021 07:00:19 -0800 (PST)
 MIME-Version: 1.0
-References: <20211029124437.20721-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
- <20211029124437.20721-4-prabhakar.mahadev-lad.rj@bp.renesas.com>
- <CAMuHMdV+716v3SOLM4Sf6arK5jEPgtc0NSOU6nZXQGXUT+-+3Q@mail.gmail.com> <CA+V-a8t2KZNqCHJQP_bj9+-RKVBBJpz=pnBXzpyy4tjbUe14EA@mail.gmail.com>
-In-Reply-To: <CA+V-a8t2KZNqCHJQP_bj9+-RKVBBJpz=pnBXzpyy4tjbUe14EA@mail.gmail.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Tue, 9 Nov 2021 16:00:03 +0100
-X-Gmail-Original-Message-ID: <CAMuHMdW8NeSpv35a7Eq_+NMAE5Uamm_pD+Dp+OeHvCMqd3f2Xw@mail.gmail.com>
-Message-ID: <CAMuHMdW8NeSpv35a7Eq_+NMAE5Uamm_pD+Dp+OeHvCMqd3f2Xw@mail.gmail.com>
-Subject: Re: [PATCH v2 3/5] pinctrl: renesas: pinctrl-rzg2l: Add support to
- get/set pin config for GPIO port pins
-To:     "Lad, Prabhakar" <prabhakar.csengg@gmail.com>
-Cc:     Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
-        Biju Das <biju.das.jz@bp.renesas.com>
+References: <20211104195949.135374-1-omosnace@redhat.com> <20211109062140.2ed84f96@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <20211109062140.2ed84f96@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+From:   Paul Moore <paul@paul-moore.com>
+Date:   Tue, 9 Nov 2021 10:00:08 -0500
+Message-ID: <CAHC9VhTVNOUHJp+NbqV5AgtwR6+3V6am0SKGKF0CegsPqjQ8pw@mail.gmail.com>
+Subject: Re: [PATCH net] selinux: fix SCTP client peeloff socket labeling
+To:     Jakub Kicinski <kuba@kernel.org>
+Cc:     Ondrej Mosnacek <omosnace@redhat.com>,
+        Xin Long <lucien.xin@gmail.com>, netdev@vger.kernel.org,
+        davem@davemloft.net,
+        Richard Haines <richard_c_haines@btinternet.com>,
+        Vlad Yasevich <vyasevich@gmail.com>,
+        Neil Horman <nhorman@tuxdriver.com>,
+        Marcelo Ricardo Leitner <marcelo.leitner@gmail.com>,
+        linux-sctp@vger.kernel.org, selinux@vger.kernel.org,
+        linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Prabhakar,
-
-On Tue, Nov 9, 2021 at 3:31 PM Lad, Prabhakar
-<prabhakar.csengg@gmail.com> wrote:
-> On Mon, Nov 8, 2021 at 3:36 PM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
-> > On Fri, Oct 29, 2021 at 2:44 PM Lad Prabhakar
-> > <prabhakar.mahadev-lad.rj@bp.renesas.com> wrote:
-> > > Add support to get/set pin config for GPIO port pins.
-> > >
-> > > Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-> > > Reviewed-by: Biju Das <biju.das.jz@bp.renesas.com>
-> >
-> > Thanks for your patch!
-> >
-> > > --- a/drivers/pinctrl/renesas/pinctrl-rzg2l.c
-> > > +++ b/drivers/pinctrl/renesas/pinctrl-rzg2l.c
-> >
-> > > @@ -495,6 +512,14 @@ static int rzg2l_pinctrl_pinconf_get(struct pinctrl_dev *pctldev,
-> > >                 port = RZG2L_SINGLE_PIN_GET_PORT(*pin_data);
-> > >                 cfg = RZG2L_SINGLE_PIN_GET_CFGS(*pin_data);
-> > >                 bit = RZG2L_SINGLE_PIN_GET_BIT(*pin_data);
-> > > +       } else {
-> > > +               cfg = RZG2L_GPIO_PORT_GET_CFGS(*pin_data);
-> > > +               port = RZG2L_PIN_ID_TO_PORT(_pin);
-> > > +               bit = RZG2L_PIN_ID_TO_PIN(_pin);
-> > > +               port_pin = true;
-> >
-> > Instead of setting this flag, perhaps port should be adjusted?
+On Tue, Nov 9, 2021 at 9:21 AM Jakub Kicinski <kuba@kernel.org> wrote:
+> On Thu,  4 Nov 2021 20:59:49 +0100 Ondrej Mosnacek wrote:
+> > As agreed with Xin Long, I'm posting this fix up instead of him. I am
+> > now fairly convinced that this is the right way to deal with the
+> > immediate problem of client peeloff socket labeling. I'll work on
+> > addressing the side problem regarding selinux_socket_post_create()
+> > being called on the peeloff sockets separately.
 >
-> Something like below?
->
-> #define RZG2L_PORT_START_OFFSET 0x10
->
-> port = RZG2L_PIN_ID_TO_PORT_pin) + RZG2L_PORT_START_OFFSET;
-> rzg2l_validate_gpio_pin(pctrl, *pin_data, port - RZG2L_PORT_START_OFFSET, bit)
+> IIUC Paul would like to see this part to come up in the same series.
 
-Or adjust port after the call to rzg2l_validate_gpio_pin(), to avoid adding
-the offset first, and subtracting it again for calling the latter?
+Just to reaffirm the IIUC part - yes, your understanding is correct.
 
-> and rename port -> port_offset in rzg2l_pinctrl_pinconf_get/set
-
-That makes sense.  Currently "port" has two meanings: it can mean
-either the GPIO port index, or the global register index covering both
-single function pin groups and GPIO port indices.
-RZG2L_SINGLE_PIN_GET_PORT() returns the latter.
-RZG2L_PIN_ID_TO_PORT() returns the former, thus needing an extra offset
-to convert to the global register index.
-
-> Or
-> would you prefer to change the RZG2L_PIN_ID_TO_PORT macro and adjust
-> the entire file?
-
-Changing RZG2L_PIN_ID_TO_PORT() would imply changing all macros
-accessing GPIO registers, and is thus quite intrusive.
-
-> > Then rzg2l_r{ead,mw}_pin_config() don't have to care about that
-> > anymore.
-> >
-> Agreed.
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+-- 
+paul moore
+www.paul-moore.com
