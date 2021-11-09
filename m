@@ -2,70 +2,351 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 672CB44AC4E
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 12:10:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 084EB44AC55
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 12:12:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245583AbhKILMn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Nov 2021 06:12:43 -0500
-Received: from mga11.intel.com ([192.55.52.93]:1931 "EHLO mga11.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229998AbhKILMm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Nov 2021 06:12:42 -0500
-X-IronPort-AV: E=McAfee;i="6200,9189,10162"; a="229887611"
-X-IronPort-AV: E=Sophos;i="5.87,220,1631602800"; 
-   d="scan'208";a="229887611"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Nov 2021 03:09:44 -0800
-X-IronPort-AV: E=Sophos;i="5.87,220,1631602800"; 
-   d="scan'208";a="503463235"
-Received: from stkachen-mobl3.ger.corp.intel.com (HELO localhost) ([10.251.216.106])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Nov 2021 03:09:40 -0800
-From:   Jani Nikula <jani.nikula@intel.com>
-To:     Daniel Vetter <daniel@ffwll.ch>
-Cc:     Stephen Rothwell <sfr@canb.auug.org.au>,
-        Dave Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel.vetter@ffwll.ch>,
-        Intel Graphics <intel-gfx@lists.freedesktop.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        DRI <dri-devel@lists.freedesktop.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        Maxime Ripard <mripard@kernel.org>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>
-Subject: Re: linux-next: build failure after merge of the drm-misc tree
-In-Reply-To: <YYo8axRhW/zFQUgW@phenom.ffwll.local>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
-References: <20211015202648.258445ef@canb.auug.org.au> <20211101194223.749197c5@canb.auug.org.au> <20211105171517.287de894@canb.auug.org.au> <874k8qampc.fsf@intel.com> <20211106133314.42e3e308@canb.auug.org.au> <87zgqd6alj.fsf@intel.com> <YYo8axRhW/zFQUgW@phenom.ffwll.local>
-Date:   Tue, 09 Nov 2021 13:09:38 +0200
-Message-ID: <87ilx160wd.fsf@intel.com>
+        id S245594AbhKILPE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Nov 2021 06:15:04 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40354 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S241538AbhKILPD (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Nov 2021 06:15:03 -0500
+Received: from mail-ed1-x533.google.com (mail-ed1-x533.google.com [IPv6:2a00:1450:4864:20::533])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09687C061764;
+        Tue,  9 Nov 2021 03:12:17 -0800 (PST)
+Received: by mail-ed1-x533.google.com with SMTP id f4so74829587edx.12;
+        Tue, 09 Nov 2021 03:12:16 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=d1Cwzm/R2VskFtuO04qmR4oP8PF+o0XMCDSULbcMQ+Q=;
+        b=lTqzOeYE0rxc5qmZAbQMkwUrQQGLwl95efeWadOGqFv6n4kCrFjE0MbLOSmofn3R7z
+         xMTIV6eXxV5cQ67N7A18kDdwokk/HmX7diZbc6hJeV/dVoGp5Mk5FJOnzVndPxaV7Ifb
+         lvL3dS1bq0RZcya5cw4cRx/mFfOFiSH1ytFH6GsORcUOz6deU/nhUDNV5CFhAv9DRMHw
+         1bUaX9WixThN4TtEX7pE1r+DkKwh9Xx3XKJ7do4Gx0bWm1D6mSlsd0x8HPV8Efl1lNL0
+         wjcKMsvAxzRsrkkQnjmB1BcJf0/9a4JNCLllGIHWDj/wO+TcF8Lx/0oNPvyBdJ7U+pbb
+         S02g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=d1Cwzm/R2VskFtuO04qmR4oP8PF+o0XMCDSULbcMQ+Q=;
+        b=hHd6o6EHO6AZ9XXD/AEJBJcP6oEUWSk8jl8gfgyz7Ku7w5wez1OzboWRvP0FpT1twj
+         jY10OJfvZ45Vuk4kQYRIz+jl2LLeFfOwxgr4AhDHc8pgQhLcBG6aVN2Y8ZZtrk7l2B8H
+         C4LdbEmkX5BNS4bvd/V7uVlhDU9XSBdxi5aV9LwUW88Ac4E6VFJ+yF3nZ/tsG0/lTW4L
+         2L/IIEAGHTpczhwOvCzBVKPvPCclr409/+ZtoWzaZ7qkY0Tbo0zwv29aBnt8g+nyztRl
+         x89ntOpqMIo6rcgdfbq5fAmbIgUcrrTiwc1vJrXtGLvGxfGDNunfGBwDuH5DW7rlmRh5
+         UMMw==
+X-Gm-Message-State: AOAM533tICXJ5YQvYx9U7FWYG1NhE6GAHosSi9TJkZpjGF7qJ2xAG/Ai
+        T8KMFLxS67lVXQ+2H90yqbk=
+X-Google-Smtp-Source: ABdhPJzbK1Pep1EV5znlJyRGdijLQvJsQCB5W8ckjantaKU45csvgIC5VBNseaQpVQzmsGpWoaMuYA==
+X-Received: by 2002:a17:907:7d88:: with SMTP id oz8mr8756710ejc.173.1636456335503;
+        Tue, 09 Nov 2021 03:12:15 -0800 (PST)
+Received: from skbuf ([188.25.175.102])
+        by smtp.gmail.com with ESMTPSA id sg17sm9613898ejc.72.2021.11.09.03.12.14
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 09 Nov 2021 03:12:15 -0800 (PST)
+Date:   Tue, 9 Nov 2021 13:12:13 +0200
+From:   Vladimir Oltean <olteanv@gmail.com>
+To:     Martin Kaistra <martin.kaistra@linutronix.de>
+Cc:     Florian Fainelli <f.fainelli@gmail.com>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        Richard Cochran <richardcochran@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        John Stultz <john.stultz@linaro.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Russell King <linux@armlinux.org.uk>,
+        Marc Kleine-Budde <mkl@pengutronix.de>,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org
+Subject: Re: [PATCH v2 6/7] net: dsa: b53: Add logic for TX timestamping
+Message-ID: <20211109111213.6vo5swdhxjvgmyjt@skbuf>
+References: <20211109095013.27829-1-martin.kaistra@linutronix.de>
+ <20211109095013.27829-7-martin.kaistra@linutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211109095013.27829-7-martin.kaistra@linutronix.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 09 Nov 2021, Daniel Vetter <daniel@ffwll.ch> wrote:
-> On Tue, Nov 09, 2021 at 09:40:08AM +0200, Jani Nikula wrote:
->> On Sat, 06 Nov 2021, Stephen Rothwell <sfr@canb.auug.org.au> wrote:
->> > Hi Jani,
->> >
->> > On Fri, 05 Nov 2021 13:03:43 +0200 Jani Nikula <jani.nikula@intel.com> wrote:
->> >>
->> >> I probably should have pushed c4f08d7246a5 ("drm/locking: fix
->> >> __stack_depot_* name conflict") to drm-misc-next-fixes.
->> >
->> > Please do so as builds will start failing otherwise :-(
->> 
->> Thomas/Maxime/Maarten, okay to cherry-pick that to drm-misc-next-fixes?
->
-> Yeah just do, for drm-misc this is considered in committer purview. I
-> think we should add a section to the docs about "What if a patch is in the
-> wrong branch" which tells you to just cherry-pick -x or whatever.
+On Tue, Nov 09, 2021 at 10:50:08AM +0100, Martin Kaistra wrote:
+> In order to get the switch to generate a timestamp for a transmitted
+> packet, we need to set the TS bit in the BRCM tag. The switch will then
+> create a status frame, which gets send back to the cpu.
+> In b53_port_txtstamp() we put the skb into a waiting position.
+> 
+> When a status frame is received, we extract the timestamp and put the time
+> according to our timecounter into the waiting skb. When
+> TX_TSTAMP_TIMEOUT is reached and we have no means to correctly get back
+> a full timestamp, we cancel the process.
+> 
+> As the status frame doesn't contain a reference to the original packet,
+> only one packet with timestamp request can be sent at a time.
+> 
+> Signed-off-by: Martin Kaistra <martin.kaistra@linutronix.de>
+> ---
+>  drivers/net/dsa/b53/b53_common.c |  1 +
+>  drivers/net/dsa/b53/b53_ptp.c    | 56 ++++++++++++++++++++++++++++++++
+>  drivers/net/dsa/b53/b53_ptp.h    |  8 +++++
+>  net/dsa/tag_brcm.c               | 46 ++++++++++++++++++++++++++
+>  4 files changed, 111 insertions(+)
+> 
+> diff --git a/drivers/net/dsa/b53/b53_common.c b/drivers/net/dsa/b53/b53_common.c
+> index a9408f9cd414..56a9de89b38b 100644
+> --- a/drivers/net/dsa/b53/b53_common.c
+> +++ b/drivers/net/dsa/b53/b53_common.c
+> @@ -2301,6 +2301,7 @@ static const struct dsa_switch_ops b53_switch_ops = {
+>  	.port_change_mtu	= b53_change_mtu,
+>  	.get_ts_info		= b53_get_ts_info,
+>  	.port_rxtstamp		= b53_port_rxtstamp,
+> +	.port_txtstamp		= b53_port_txtstamp,
+>  };
+>  
+>  struct b53_chip_data {
+> diff --git a/drivers/net/dsa/b53/b53_ptp.c b/drivers/net/dsa/b53/b53_ptp.c
+> index f8dd8d484d93..5567135ba8b9 100644
+> --- a/drivers/net/dsa/b53/b53_ptp.c
+> +++ b/drivers/net/dsa/b53/b53_ptp.c
+> @@ -100,14 +100,65 @@ static long b53_hwtstamp_work(struct ptp_clock_info *ptp)
+>  {
+>  	struct b53_device *dev =
+>  		container_of(ptp, struct b53_device, ptp_clock_info);
+> +	struct dsa_switch *ds = dev->ds;
+> +	int i;
+>  
+>  	mutex_lock(&dev->ptp_mutex);
+>  	timecounter_read(&dev->tc);
+>  	mutex_unlock(&dev->ptp_mutex);
+>  
+> +	for (i = 0; i < ds->num_ports; i++) {
+> +		struct b53_port_hwtstamp *ps;
+> +
+> +		if (!dsa_is_user_port(ds, i))
+> +			continue;
 
-Done.
+dsa_switch_for_each_user_port and replace i with dp->index.
+This makes for a more efficient iteration through the port list.
 
-BR,
-Jani.
+> +
+> +		ps = &dev->ports[i].port_hwtstamp;
+> +
+> +		if (test_bit(B53_HWTSTAMP_TX_IN_PROGRESS, &ps->state) &&
+> +		    time_is_before_jiffies(ps->tx_tstamp_start +
+> +					   TX_TSTAMP_TIMEOUT)) {
+> +			dev_err(dev->dev,
+> +				"Timeout while waiting for Tx timestamp!\n");
+> +			dev_kfree_skb_any(ps->tx_skb);
+> +			ps->tx_skb = NULL;
+> +			clear_bit_unlock(B53_HWTSTAMP_TX_IN_PROGRESS,
+> +					 &ps->state);
+> +		}
+> +	}
+> +
+>  	return B53_PTP_OVERFLOW_PERIOD;
+>  }
+>  
+> +void b53_port_txtstamp(struct dsa_switch *ds, int port, struct sk_buff *skb)
+> +{
+> +	struct b53_device *dev = ds->priv;
+> +	struct b53_port_hwtstamp *ps = &dev->ports[port].port_hwtstamp;
+> +	struct sk_buff *clone;
+> +	unsigned int type;
+> +
+> +	type = ptp_classify_raw(skb);
+> +
+> +	if (type != PTP_CLASS_V2_L2)
+> +		return;
+> +
+> +	if (!test_bit(B53_HWTSTAMP_ENABLED, &ps->state))
+> +		return;
+> +
+> +	clone = skb_clone_sk(skb);
+> +	if (!clone)
+> +		return;
+> +
+> +	if (test_and_set_bit_lock(B53_HWTSTAMP_TX_IN_PROGRESS, &ps->state)) {
 
--- 
-Jani Nikula, Intel Open Source Graphics Center
+Is it ok if you simply don't timestamp a second skb which may be sent
+while the first one is in flight, I wonder? What PTP profiles have you
+tested with? At just one PTP packet at a time, the switch isn't giving
+you a lot. Is it a hardware limitation?
+
+> +		kfree_skb(clone);
+> +		return;
+> +	}
+> +
+> +	ps->tx_skb = clone;
+> +	ps->tx_tstamp_start = jiffies;
+> +}
+> +EXPORT_SYMBOL(b53_port_txtstamp);
+> +
+>  bool b53_port_rxtstamp(struct dsa_switch *ds, int port, struct sk_buff *skb,
+>  		       unsigned int type)
+>  {
+> @@ -136,6 +187,8 @@ EXPORT_SYMBOL(b53_port_rxtstamp);
+>  
+>  int b53_ptp_init(struct b53_device *dev)
+>  {
+> +	struct dsa_port *dp;
+> +
+>  	mutex_init(&dev->ptp_mutex);
+>  
+>  	/* Enable BroadSync HD for all ports */
+> @@ -191,6 +244,9 @@ int b53_ptp_init(struct b53_device *dev)
+>  
+>  	ptp_schedule_worker(dev->ptp_clock, 0);
+>  
+> +	dsa_switch_for_each_port(dp, dev->ds)
+> +		dp->priv = &dev->ports[dp->index].port_hwtstamp;
+> +
+>  	return 0;
+>  }
+>  EXPORT_SYMBOL(b53_ptp_init);
+> diff --git a/drivers/net/dsa/b53/b53_ptp.h b/drivers/net/dsa/b53/b53_ptp.h
+> index 3b3437870c55..f888f0a2022a 100644
+> --- a/drivers/net/dsa/b53/b53_ptp.h
+> +++ b/drivers/net/dsa/b53/b53_ptp.h
+> @@ -10,6 +10,7 @@
+>  #include "b53_priv.h"
+>  
+>  #define SKB_PTP_TYPE(__skb) (*(unsigned int *)((__skb)->cb))
+> +#define TX_TSTAMP_TIMEOUT msecs_to_jiffies(40)
+>  
+>  #ifdef CONFIG_B53_PTP
+>  int b53_ptp_init(struct b53_device *dev);
+> @@ -18,6 +19,8 @@ int b53_get_ts_info(struct dsa_switch *ds, int port,
+>  		    struct ethtool_ts_info *info);
+>  bool b53_port_rxtstamp(struct dsa_switch *ds, int port, struct sk_buff *skb,
+>  		       unsigned int type);
+> +void b53_port_txtstamp(struct dsa_switch *ds, int port, struct sk_buff *skb);
+> +
+>  #else /* !CONFIG_B53_PTP */
+>  
+>  static inline int b53_ptp_init(struct b53_device *dev)
+> @@ -41,5 +44,10 @@ static inline bool b53_port_rxtstamp(struct dsa_switch *ds, int port,
+>  	return false;
+>  }
+>  
+> +static inline void b53_port_txtstamp(struct dsa_switch *ds, int port,
+> +				     struct sk_buff *skb)
+> +{
+> +}
+> +
+>  #endif
+>  #endif
+> diff --git a/net/dsa/tag_brcm.c b/net/dsa/tag_brcm.c
+> index d611c1073deb..a44ac81fa097 100644
+> --- a/net/dsa/tag_brcm.c
+> +++ b/net/dsa/tag_brcm.c
+> @@ -8,6 +8,7 @@
+>  #include <linux/dsa/brcm.h>
+>  #include <linux/etherdevice.h>
+>  #include <linux/list.h>
+> +#include <linux/ptp_classify.h>
+>  #include <linux/slab.h>
+>  #include <linux/dsa/b53.h>
+>  
+> @@ -76,6 +77,7 @@
+>  #define BRCM_EG_TC_SHIFT	5
+>  #define BRCM_EG_TC_MASK		0x7
+>  #define BRCM_EG_PID_MASK	0x1f
+> +#define BRCM_EG_T_R		0x20
+>  
+>  #if IS_ENABLED(CONFIG_NET_DSA_TAG_BRCM) || \
+>  	IS_ENABLED(CONFIG_NET_DSA_TAG_BRCM_PREPEND)
+> @@ -85,6 +87,8 @@ static struct sk_buff *brcm_tag_xmit_ll(struct sk_buff *skb,
+>  					unsigned int offset)
+>  {
+>  	struct dsa_port *dp = dsa_slave_to_port(dev);
+> +	unsigned int type = ptp_classify_raw(skb);
+> +	struct b53_port_hwtstamp *ps = dp->priv;
+>  	u16 queue = skb_get_queue_mapping(skb);
+>  	u8 *brcm_tag;
+>  
+> @@ -112,7 +116,13 @@ static struct sk_buff *brcm_tag_xmit_ll(struct sk_buff *skb,
+>  	 */
+>  	brcm_tag[0] = (1 << BRCM_OPCODE_SHIFT) |
+>  		       ((queue & BRCM_IG_TC_MASK) << BRCM_IG_TC_SHIFT);
+> +
+>  	brcm_tag[1] = 0;
+> +
+> +	if (type == PTP_CLASS_V2_L2 &&
+> +	    test_bit(B53_HWTSTAMP_TX_IN_PROGRESS, &ps->state))
+> +		brcm_tag[1] = 1 << BRCM_IG_TS_SHIFT;
+> +
+>  	brcm_tag[2] = 0;
+>  	if (dp->index == 8)
+>  		brcm_tag[2] = BRCM_IG_DSTMAP2_MASK;
+> @@ -126,6 +136,33 @@ static struct sk_buff *brcm_tag_xmit_ll(struct sk_buff *skb,
+>  	return skb;
+>  }
+>  
+> +static int set_txtstamp(struct dsa_port *dp,
+> +			int port,
+> +			u64 ns)
+> +{
+> +	struct b53_device *b53_dev = dp->ds->priv;
+> +	struct b53_port_hwtstamp *ps = dp->priv;
+> +	struct skb_shared_hwtstamps shhwtstamps;
+> +	struct sk_buff *tmp_skb;
+> +
+> +	if (!ps->tx_skb)
+> +		return 0;
+> +
+> +	mutex_lock(&b53_dev->ptp_mutex);
+> +	ns = timecounter_cyc2time(&b53_dev->tc, ns);
+> +	mutex_unlock(&b53_dev->ptp_mutex);
+
+This is called from brcm_tag_rcv_ll which runs in softirq context.
+You can't take a sleeping mutex, sorry.
+Please test your patches with CONFIG_DEBUG_ATOMIC_SLEEP and friends
+(lockdep etc).
+
+> +
+> +	memset(&shhwtstamps, 0, sizeof(shhwtstamps));
+> +	shhwtstamps.hwtstamp = ns_to_ktime(ns);
+> +	tmp_skb = ps->tx_skb;
+> +	ps->tx_skb = NULL;
+> +
+> +	clear_bit_unlock(B53_HWTSTAMP_TX_IN_PROGRESS, &ps->state);
+> +	skb_complete_tx_timestamp(tmp_skb, &shhwtstamps);
+> +
+> +	return 0;
+> +}
+> +
+>  /* Frames with this tag have one of these two layouts:
+>   * -----------------------------------
+>   * | MAC DA | MAC SA | 4b tag | Type | DSA_TAG_PROTO_BRCM
+> @@ -143,6 +180,7 @@ static struct sk_buff *brcm_tag_rcv_ll(struct sk_buff *skb,
+>  				       unsigned int offset,
+>  				       int *tag_len)
+>  {
+> +	struct dsa_port *dp;
+>  	int source_port;
+>  	u8 *brcm_tag;
+>  	u32 tstamp;
+> @@ -177,6 +215,14 @@ static struct sk_buff *brcm_tag_rcv_ll(struct sk_buff *skb,
+>  	if (!skb->dev)
+>  		return NULL;
+>  
+> +	/* Check whether this is a status frame */
+> +	if (unlikely(*tag_len == 8 && brcm_tag[3] & BRCM_EG_T_R)) {
+> +		dp = dsa_slave_to_port(skb->dev);
+> +
+> +		set_txtstamp(dp, source_port, tstamp);
+> +		return NULL;
+> +	}
+> +
+>  	/* Remove Broadcom tag and update checksum */
+>  	skb_pull_rcsum(skb, *tag_len);
+>  
+> -- 
+> 2.20.1
+> 
+
