@@ -2,90 +2,187 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 63B6544B2CB
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 19:41:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 48D7A44B2CD
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 19:42:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242544AbhKISoC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Nov 2021 13:44:02 -0500
-Received: from mail.kernel.org ([198.145.29.99]:59166 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238608AbhKISoB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Nov 2021 13:44:01 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4552861181
-        for <linux-kernel@vger.kernel.org>; Tue,  9 Nov 2021 18:41:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1636483275;
-        bh=KLG2E+BwCMYq+3yzwEato8H/I2GlZKSMT5NJJfj0uoo=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=cvDVsO+qm1CiBGa4jyMNmLXadK1qAcw5Qv9cOC0JElP3ugA1s8Nkj0YreVKx86UTW
-         Vu0TPt2FPudqAKOfJ0sdRR68OwshfyY1OghkVwRkN+A85VXWM7XRn1OQUez6oiJkvQ
-         9FWltgpQGD/1hnaadG3QfA2nxY8qM4BLYKfZG7TOI0SZU5Izi1Lpe1c3LRSGJjIZph
-         Yj11D4jr64kzUrJWTX4dGc0JACiHicYvwMkUju1zZRSVm85f6H7HsPkHyWk7KafFAP
-         KRffyiswbX9NzHmo1rM3G3XBt2jWcncTe91Qxzq/zCO5O/xsA7UryNkgx3htVQunMe
-         rk5igvbmwZa5Q==
-Received: by mail-ot1-f53.google.com with SMTP id h16-20020a9d7990000000b0055c7ae44dd2so21519otm.10
-        for <linux-kernel@vger.kernel.org>; Tue, 09 Nov 2021 10:41:15 -0800 (PST)
-X-Gm-Message-State: AOAM532Vc3cJCvUYbJXcO9xPxbW2dlaiFs9v+FL/iP9h8NInPTPw1X/h
-        sjBW933wbr5EVi8/26gAVqO8xI90KVUFLT8x7rs=
-X-Google-Smtp-Source: ABdhPJyOsO9WSB6zSlqUnZq9wXPk8D+A1q6rpTg+mUMsz4cl+fhGGDMeZiiqxWkPYAC8c1n52JEZ6vJSuWMFcXvY5hM=
-X-Received: by 2002:a9d:830:: with SMTP id 45mr8046039oty.112.1636483274561;
- Tue, 09 Nov 2021 10:41:14 -0800 (PST)
+        id S242573AbhKISpL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Nov 2021 13:45:11 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58406 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238608AbhKISpJ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Nov 2021 13:45:09 -0500
+Received: from mail-lj1-x22e.google.com (mail-lj1-x22e.google.com [IPv6:2a00:1450:4864:20::22e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6042AC061766
+        for <linux-kernel@vger.kernel.org>; Tue,  9 Nov 2021 10:42:22 -0800 (PST)
+Received: by mail-lj1-x22e.google.com with SMTP id s24so275199lji.12
+        for <linux-kernel@vger.kernel.org>; Tue, 09 Nov 2021 10:42:22 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=InQJGFKmQYllVp7IiaAZn+LAmA7OCtH0DBxbniPKpR0=;
+        b=RtmT1bhWauZj9jI+RdomKFJes0ucsgQhFZWz3On7EK78Gg5p1mXKWZMa+pU09O9QzI
+         i+/g33wS7+C89uC4MHhX5Qi4qnrod6GLyFsWJc355cGkzhhEN5Quwe5VJJk9BPSnv+Wa
+         qVnhA9Yf5ByNArMXFVsHusV0Q9r8No1+hC01fSmnXN/iXSaAniHK2S+VdhapXQ8zXSJV
+         wZWrszGWl9x3NRa0Ll9Fnkdyl1ofinN6ano1IBnKWVHLTjZmqD90cw7w5kdGx6C/824r
+         rGdh+Y3iWoVF7MEJ0w79Q/CTpqulco2q4mGnXPcIYyr8wtv2++wJqSg2p1wA2P7i7RDk
+         xJfA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=InQJGFKmQYllVp7IiaAZn+LAmA7OCtH0DBxbniPKpR0=;
+        b=skUjgKij/WXEo4tThKdG+smQmj0aN3FrF9DpZ+hfxhZnuUsxZicLZXG+IhVsEZ6fLC
+         z+3xoC7ZGsoDalMyPSH6fiA7z4XUxXABB4l+C1kAHv5x2BbKwu9/8WKqy3yjGW9nb/UX
+         8w0pxMZwHusxOUpqUHpZrTob32v+3mGCe7nNaiRdIFnLFGBumup1c9V0sidRKcHNb14n
+         g+Y0QPvwKyQGZP1lqG6ksjq37hPzWsxPRxE8A9fZq2eWV4NtTX4DnFNNcr3kjw7Z7Kq4
+         IKX21LkstRXCV5hmpATwzFJIYHJzNo2fCJrjC2dqyJv1RhYjLAT3yTp6fOkuKnfLwvHe
+         aVig==
+X-Gm-Message-State: AOAM531K4If6Hrc1zBVOBEjD58jOmBYooFSeo36bTfJiqvvbRgzwZWR7
+        q19WohEE8qYMyjDtmryak3ju6gcw4b+zNrqeE6Z+fw==
+X-Google-Smtp-Source: ABdhPJwAZPyc1/1ykNzKwifTludqmxvARMnVfNLCjFtpgzyLA65k6mCir8ivv3rsSe7AYhGJcUeB5FaZBkDDDAisdxY=
+X-Received: by 2002:a05:651c:1035:: with SMTP id w21mr9520966ljm.278.1636483340373;
+ Tue, 09 Nov 2021 10:42:20 -0800 (PST)
 MIME-Version: 1.0
-References: <20211109164549.1724710-1-ardb@kernel.org> <20211109164549.1724710-2-ardb@kernel.org>
- <YYrAHMy8xmPXj4ql@hirez.programming.kicks-ass.net>
-In-Reply-To: <YYrAHMy8xmPXj4ql@hirez.programming.kicks-ass.net>
-From:   Ard Biesheuvel <ardb@kernel.org>
-Date:   Tue, 9 Nov 2021 19:41:03 +0100
-X-Gmail-Original-Message-ID: <CAMj1kXGdqDQ-WKLBcLhGNofmXpf-Xt8wAE18EBEGeTe9wNqZog@mail.gmail.com>
-Message-ID: <CAMj1kXGdqDQ-WKLBcLhGNofmXpf-Xt8wAE18EBEGeTe9wNqZog@mail.gmail.com>
-Subject: Re: [RFC PATCH 1/7] static_call: get rid of static_call_cond()
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Jason Baron <jbaron@akamai.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Kees Cook <keescook@chromium.org>
+References: <20211102142331.3753798-1-pgonda@google.com> <20211102142331.3753798-3-pgonda@google.com>
+ <YYqicq5YnNuwTS+B@google.com> <CAMkAt6q37BmPcA2Le98NOFQoz9nAwiDQqrALLD-Ogf5RytSS4g@mail.gmail.com>
+ <YYqwT1fGxBQQmFvY@google.com>
+In-Reply-To: <YYqwT1fGxBQQmFvY@google.com>
+From:   Peter Gonda <pgonda@google.com>
+Date:   Tue, 9 Nov 2021 11:42:08 -0700
+Message-ID: <CAMkAt6pF9cLQa5i4rqGVsrkwZSKsXbWBjY4sgGHVs+HT+4NtXA@mail.gmail.com>
+Subject: Re: [PATCH V3 2/4] crypto: ccp - Move SEV_INIT retry for corrupted data
+To:     Sean Christopherson <seanjc@google.com>
+Cc:     Thomas.Lendacky@amd.com, Marc Orr <marcorr@google.com>,
+        David Rientjes <rientjes@google.com>,
+        Brijesh Singh <brijesh.singh@amd.com>,
+        Joerg Roedel <jroedel@suse.de>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        John Allen <john.allen@amd.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 9 Nov 2021 at 19:38, Peter Zijlstra <peterz@infradead.org> wrote:
+On Tue, Nov 9, 2021 at 10:31 AM Sean Christopherson <seanjc@google.com> wrote:
 >
-> On Tue, Nov 09, 2021 at 05:45:43PM +0100, Ard Biesheuvel wrote:
-> > The main reason for the existence of static_call_cond() seems to be that
-> > in theory, when using the generic implementation of static calls, it may
-> > be possible for a compiler to elide the indirect call entirely if the
-> > target is NULL, while still guaranteeing that all side effects of
-> > argument evaluation occur as expected.
+> On Tue, Nov 09, 2021, Peter Gonda wrote:
+> > On Tue, Nov 9, 2021 at 9:31 AM Sean Christopherson <seanjc@google.com> wrote:
+> > >
+> > > On Tue, Nov 02, 2021, Peter Gonda wrote:
+> > > > This change moves the data corrupted retry of SEV_INIT into the
+> > >
+> > > Use imperative mood.
 > >
-> > This is rather optimistic: as documented by an existing code comment,
-> > both GCC and Clang (version 10) get this wrong, and even if they ever
-> > get it right, this is far too subtle to rely on for a code path that is
-> > expected to be used only by the 'remaining' architectures once all the
-> > best supported ones implement either the out-of-line or inline optimized
-> > variety of static calls.
+> > Will do for next revision
 > >
-> > Given that having static_call_cond() clutters up the API, and puts the
-> > burden on the caller to go and check what kind of static call they are
-> > dealing with, let's just get rid of the distinction.
+> > >
+> > > > __sev_platform_init_locked() function. This is for upcoming INIT_EX
+> > > > support as well as helping direct callers of
+> > > > __sev_platform_init_locked() which currently do not support the
+> > > > retry.
+> > > >
+> > > > Signed-off-by: Peter Gonda <pgonda@google.com>
+> > > > Reviewed-by: Marc Orr <marcorr@google.com>
+> > > > Acked-by: David Rientjes <rientjes@google.com>
+> > > > Acked-by: Tom Lendacky <thomas.lendacky@amd.com>
+> > > > Cc: Tom Lendacky <thomas.lendacky@amd.com>
+> > > > Cc: Brijesh Singh <brijesh.singh@amd.com>
+> > > > Cc: Marc Orr <marcorr@google.com>
+> > > > Cc: Joerg Roedel <jroedel@suse.de>
+> > > > Cc: Herbert Xu <herbert@gondor.apana.org.au>
+> > > > Cc: David Rientjes <rientjes@google.com>
+> > > > Cc: John Allen <john.allen@amd.com>
+> > > > Cc: "David S. Miller" <davem@davemloft.net>
+> > > > Cc: Paolo Bonzini <pbonzini@redhat.com>
+> > > > Cc: linux-crypto@vger.kernel.org
+> > > > Cc: linux-kernel@vger.kernel.org
+> > > > ---
+> > > >  drivers/crypto/ccp/sev-dev.c | 24 ++++++++++++------------
+> > > >  1 file changed, 12 insertions(+), 12 deletions(-)
+> > > >
+> > > > diff --git a/drivers/crypto/ccp/sev-dev.c b/drivers/crypto/ccp/sev-dev.c
+> > > > index ec89a82ba267..e4bc833949a0 100644
+> > > > --- a/drivers/crypto/ccp/sev-dev.c
+> > > > +++ b/drivers/crypto/ccp/sev-dev.c
+> > > > @@ -267,6 +267,18 @@ static int __sev_platform_init_locked(int *error)
+> > > >       }
+> > > >
+> > > >       rc = __sev_do_cmd_locked(SEV_CMD_INIT, &data, error);
+> > > > +     if (rc && *error == SEV_RET_SECURE_DATA_INVALID) {
+> > >
+> > > There are no guarantees that @error is non-NULL as this is reachable via an
+> > > exported function, sev_platform_init().  Which ties in with my complaints in the
+> > > previous patch that the API is a bit of a mess.
+> >
+> > That seems like a bug from the caller right? Is it typical that we
+> > sanity-check the caller in these instances?
 >
-> No, static_call_cond() signifies the function can be NULL. Both gcc and
-> clang generate correct (but wildly ineffecient) code for this. Without
-> static_call_cond() the generic implementation will do a NULL deref.
+> sev-dev.c needs to make up its mind.  __sev_do_cmd_locked() very clearly allows
+> a NULL @error, ergo all of the wrappers for sev_do_cmd() support a NULL @error.
 >
-> That is, static_call_cond() does properly encapuslate:
+> > For example the same comment could be made here:
+> > https://elixir.bootlin.com/linux/latest/source/drivers/crypto/ccp/sev-dev.c#L336
+> >
+> > ```
+> > static int sev_get_platform_state(int *state, int *error)
+> > {
+> > struct sev_user_data_status data;
+> > int rc;
+> >
+> > rc = __sev_do_cmd_locked(SEV_CMD_PLATFORM_STATUS, &data, error);
+> > if (rc)
+> > return rc;
+> >
+> > *state = data.state;  <--- State could be null.
 >
->         func = READ_ONCE(key.func);
->         if (func)
->                 func(ARGS);
+> No, because this is an internal helper and all call sites can be easily audited.
 >
-> You can't take that out.
+> > return rc;
+> > }
+> > ```
+> >
+> > Example outside of this driver:
+> > https://elixir.bootlin.com/linux/v5.15.1/source/arch/x86/kvm/x86.c#L468
+> >
+> > ```
+> > int kvm_set_apic_base(struct kvm_vcpu *vcpu, struct msr_data *msr_info)
+> > {
+> > enum lapic_mode old_mode = kvm_get_apic_mode(vcpu);
+> > enum lapic_mode new_mode = kvm_apic_mode(msr_info->data);  <---
+> > msr_info could be null here
+> > u64 reserved_bits = kvm_vcpu_reserved_gpa_bits_raw(vcpu) | 0x2ff |
+> > (guest_cpuid_has(vcpu, X86_FEATURE_X2APIC) ? 0 : X2APIC_ENABLE);
+> >
+> > if ((msr_info->data & reserved_bits) != 0 || new_mode == LAPIC_MODE_INVALID)
+> > return 1;
+> > if (!msr_info->host_initiated) {
+> > if (old_mode == LAPIC_MODE_X2APIC && new_mode == LAPIC_MODE_XAPIC)
+> > return 1;
+> > if (old_mode == LAPIC_MODE_DISABLED && new_mode == LAPIC_MODE_X2APIC)
+> > return 1;
+> > }
+> >
+> > kvm_lapic_set_base(vcpu, msr_info->data);
+> > kvm_recalculate_apic_map(vcpu->kvm);
+> > return 0;
+> > }
+> > EXPORT_SYMBOL_GPL(kvm_set_apic_base);
+> > ```
+>
+> The difference is that KVM has consistent expecations for a set of functions,
+> whereas sev-dev.c does not.   Yes, KVM will explode if @msr_info is NULL, and
+> there are undoubtedly a bajillion flows in the kernel that would do the same,
+> but unlike the functions declared in include/linux/psp-sev.h() the requirements
+> on the caller are fairly obvious.  E.g. why should this be illegal from a caller's
+> perspective?
+>
+>         sev_platform_init(NULL);
+>         sev_platform_status(&status, NULL);
 
-I actually address that in the patch.
-
-AIUI, the compiler generates an indirect call to __static_call_nop(),
-right? So why not simply set .func to the address of
-__static_call_nop() when NULL is passed to update / the initializer?
+Ack. I'll store a intermediate error in __sev_platform_init_locked and
+export to @error if its not null.
