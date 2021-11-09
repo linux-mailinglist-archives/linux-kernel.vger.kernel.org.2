@@ -2,129 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AB92644B425
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 21:41:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 998E844B428
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 21:41:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244584AbhKIUoA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Nov 2021 15:44:00 -0500
-Received: from mail.skyhub.de ([5.9.137.197]:47992 "EHLO mail.skyhub.de"
+        id S244595AbhKIUoO convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 9 Nov 2021 15:44:14 -0500
+Received: from aposti.net ([89.234.176.197]:53172 "EHLO aposti.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S242487AbhKIUn4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Nov 2021 15:43:56 -0500
-Received: from zn.tnic (p200300ec2f18aa00db849a68730b2e8f.dip0.t-ipconnect.de [IPv6:2003:ec:2f18:aa00:db84:9a68:730b:2e8f])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 8675B1EC0464;
-        Tue,  9 Nov 2021 21:41:08 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1636490468;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=lCidKXkUy1+wE1cxs+aPQJznLjMxcTrkuUQb5akSCJI=;
-        b=KOBy8wbh8eVClVBktgmvEYRhxby4CMg84HQAqa2daRvd2PXVNeYsMhhfn/6XDqebgqJVJ0
-        CFn12cl8Zkg6oXQahVTOpA46xryB/MSh2z7ANwNo5CcS6dxWFiS+2SNtRntfH6pvkRBMHm
-        rKXnyuLNwak8sPUTzNj4naBW9J3OJxA=
-Date:   Tue, 9 Nov 2021 21:41:02 +0100
-From:   Borislav Petkov <bp@alien8.de>
-To:     "Chatradhi, Naveen Krishna" <nchatrad@amd.com>
-Cc:     linux-edac@vger.kernel.org, x86@kernel.org,
-        linux-kernel@vger.kernel.org, mingo@redhat.com, mchehab@kernel.org,
-        yazen.ghannam@amd.com, Muralidhara M K <muralimk@amd.com>
-Subject: Re: [PATCH v6 1/5] x86/amd_nb: Add support for northbridges on
- Aldebaran
-Message-ID: <YYrc3ty9lzcwdkt1@zn.tnic>
-References: <20211028130106.15701-1-nchatrad@amd.com>
- <20211028130106.15701-2-nchatrad@amd.com>
- <YYF9ei59G/OUyZqR@zn.tnic>
- <b7f3639a-e46c-25e8-270b-04860074fd3c@amd.com>
- <YYknXBpOUQtV1aZ8@zn.tnic>
- <bcf5e86c-d3f1-0dab-2bed-505b1eb95f17@amd.com>
- <YYl0l+XV/QRZieGY@zn.tnic>
- <9de7f807-32a6-b009-d8b7-28771c80bfaf@amd.com>
+        id S242487AbhKIUoN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Nov 2021 15:44:13 -0500
+Date:   Tue, 09 Nov 2021 20:41:16 +0000
+From:   Paul Cercueil <paul@crapouillou.net>
+Subject: Re: [PATCH v2 1/2] dt-bindings: Rename Ingenic CGU headers to
+ ingenic,*.h
+To:     Rob Herring <robh@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, list@opendingux.net,
+        devicetree@vger.kernel.org,
+        Michael Turquette <mturquette@baylibre.com>,
+        linux-clk@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
+        Stephen Boyd <sboyd@kernel.org>
+Message-Id: <S4OB2R.59MVHDUBC2VP3@crapouillou.net>
+In-Reply-To: <YYqzT6ZjyQPMisXE@robh.at.kernel.org>
+References: <20211016133322.40771-1-paul@crapouillou.net>
+        <YYqzT6ZjyQPMisXE@robh.at.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <9de7f807-32a6-b009-d8b7-28771c80bfaf@amd.com>
+Content-Type: text/plain; charset=iso-8859-1; format=flowed
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 09, 2021 at 05:00:11PM +0530, Chatradhi, Naveen Krishna wrote:
-> I was trying to handle both cpu and cpu northbridge enumeration in the
-> amd_cache_northbridges() itself by reusing the existing structures and APIs.
+Hi Rob,
+
+Le mar., nov. 9 2021 at 11:43:43 -0600, Rob Herring <robh@kernel.org> a 
+�crit :
+> On Sat, 16 Oct 2021 14:33:21 +0100, Paul Cercueil wrote:
+>>  Tidy up a bit the tree, by prefixing all include/dt-bindings/clock/ 
+>> files
+>>  related to Ingenic SoCs with 'ingenic,'.
+>> 
+>>  Signed-off-by: Paul Cercueil <paul@crapouillou.net>
+>>  ---
+>> 
+>>  Notes:
+>>      v2: Fix x1000-cgu.h and x1830-cgu.h incorrectly renamed to
+>>          x1000.h / x1830.h
+>> 
+>>   Documentation/devicetree/bindings/clock/ingenic,cgu.yaml      | 2 
+>> +-
+>>   Documentation/devicetree/bindings/display/ingenic,ipu.yaml    | 2 
+>> +-
+>>   Documentation/devicetree/bindings/display/ingenic,lcd.yaml    | 4 
+>> ++--
+>>   Documentation/devicetree/bindings/dma/ingenic,dma.yaml        | 2 
+>> +-
+>>   Documentation/devicetree/bindings/i2c/ingenic,i2c.yaml        | 2 
+>> +-
+>>   Documentation/devicetree/bindings/iio/adc/ingenic,adc.yaml    | 2 
+>> +-
+>>   .../devicetree/bindings/memory-controllers/ingenic,nemc.yaml  | 2 
+>> +-
+>>   .../devicetree/bindings/mips/ingenic/ingenic,cpu.yaml         | 2 
+>> +-
+>>   Documentation/devicetree/bindings/mmc/ingenic,mmc.yaml        | 2 
+>> +-
+>>   Documentation/devicetree/bindings/mtd/ingenic,nand.yaml       | 2 
+>> +-
+>>   Documentation/devicetree/bindings/net/ingenic,mac.yaml        | 2 
+>> +-
+>>   .../devicetree/bindings/nvmem/ingenic,jz4780-efuse.yaml       | 2 
+>> +-
+>>   Documentation/devicetree/bindings/phy/ingenic,phy-usb.yaml    | 2 
+>> +-
+>>   Documentation/devicetree/bindings/remoteproc/ingenic,vpu.yaml | 2 
+>> +-
+>>   Documentation/devicetree/bindings/rng/ingenic,trng.yaml       | 2 
+>> +-
+>>   Documentation/devicetree/bindings/rtc/ingenic,rtc.yaml        | 2 
+>> +-
+>>   Documentation/devicetree/bindings/serial/ingenic,uart.yaml    | 2 
+>> +-
+>>   Documentation/devicetree/bindings/sound/ingenic,aic.yaml      | 2 
+>> +-
+>>   Documentation/devicetree/bindings/sound/ingenic,codec.yaml    | 2 
+>> +-
+>>   Documentation/devicetree/bindings/timer/ingenic,sysost.yaml   | 2 
+>> +-
+>>   Documentation/devicetree/bindings/timer/ingenic,tcu.yaml      | 2 
+>> +-
+>>   Documentation/devicetree/bindings/usb/ingenic,musb.yaml       | 2 
+>> +-
+>>   arch/mips/boot/dts/ingenic/jz4725b.dtsi                       | 2 
+>> +-
+>>   arch/mips/boot/dts/ingenic/jz4740.dtsi                        | 2 
+>> +-
+>>   arch/mips/boot/dts/ingenic/jz4770.dtsi                        | 2 
+>> +-
+>>   arch/mips/boot/dts/ingenic/jz4780.dtsi                        | 2 
+>> +-
+>>   arch/mips/boot/dts/ingenic/x1000.dtsi                         | 2 
+>> +-
+>>   arch/mips/boot/dts/ingenic/x1830.dtsi                         | 2 
+>> +-
+>>   drivers/clk/ingenic/jz4725b-cgu.c                             | 2 
+>> +-
+>>   drivers/clk/ingenic/jz4740-cgu.c                              | 2 
+>> +-
+>>   drivers/clk/ingenic/jz4760-cgu.c                              | 2 
+>> +-
+>>   drivers/clk/ingenic/jz4770-cgu.c                              | 2 
+>> +-
+>>   drivers/clk/ingenic/jz4780-cgu.c                              | 2 
+>> +-
+>>   drivers/clk/ingenic/x1000-cgu.c                               | 2 
+>> +-
+>>   drivers/clk/ingenic/x1830-cgu.c                               | 2 
+>> +-
+>>   .../clock/{jz4725b-cgu.h => ingenic,jz4725b-cgu.h}            | 0
+>>   .../dt-bindings/clock/{jz4740-cgu.h => ingenic,jz4740-cgu.h}  | 0
+>>   .../dt-bindings/clock/{jz4760-cgu.h => ingenic,jz4760-cgu.h}  | 0
+>>   .../dt-bindings/clock/{jz4770-cgu.h => ingenic,jz4770-cgu.h}  | 0
+>>   .../dt-bindings/clock/{jz4780-cgu.h => ingenic,jz4780-cgu.h}  | 0
+>>   .../dt-bindings/clock/{x1000-cgu.h => ingenic,x1000-cgu.h}    | 0
+>>   .../dt-bindings/clock/{x1830-cgu.h => ingenic,x1830-cgu.h}    | 0
+>>   42 files changed, 36 insertions(+), 36 deletions(-)
+>>   rename include/dt-bindings/clock/{jz4725b-cgu.h => 
+>> ingenic,jz4725b-cgu.h} (100%)
+>>   rename include/dt-bindings/clock/{jz4740-cgu.h => 
+>> ingenic,jz4740-cgu.h} (100%)
+>>   rename include/dt-bindings/clock/{jz4760-cgu.h => 
+>> ingenic,jz4760-cgu.h} (100%)
+>>   rename include/dt-bindings/clock/{jz4770-cgu.h => 
+>> ingenic,jz4770-cgu.h} (100%)
+>>   rename include/dt-bindings/clock/{jz4780-cgu.h => 
+>> ingenic,jz4780-cgu.h} (100%)
+>>   rename include/dt-bindings/clock/{x1000-cgu.h => 
+>> ingenic,x1000-cgu.h} (100%)
+>>   rename include/dt-bindings/clock/{x1830-cgu.h => 
+>> ingenic,x1830-cgu.h} (100%)
+>> 
 > 
-> Should have seen this through more clearly. As, this is working well for the
-> following reasons.
-
-Good, that's exactly what I meant! :)
-
-> a. Allocating the amd_northbridges.nb after identifying both the cpu and gpu
-> misc devices, would extend node_to_amd_nb(node) for both cpu and gpu nodes.
-
-Well, there's a reason those things are functions - so that you can do
-the necessary computation inside them and when stuff needs to change,
-users don't have to. That's why amd_northbridges is static and only the
-functions are exported.
-
-So if you want to make sure node_to_amd_nb() works for GPU nodes too,
-you simply have to look at the right "container" so to speak, depending
-on the number @node passed in as an argument and look it up in the
-proper array of pointers:
-
-	[ CPU_NB0, CPU_NB1, ..., CPU_NB-N]  [ GPU_NB0, ... ]
-
-you get the idea.
-
->    It is used extensively in this module. However, the roots_per_misc value
-> is different in case of cpus and gpus and that needed to be handled
-> seperately.
+> Applied, thanks!
 > 
-> b. amd_nb_num(void) is used by other modules in the kernel, returning the
-> total count of CPU and GPU northbridges would break the existing code.
+> I'll let Stephen take patch 2 after rc1.
 
-amd64_edac is using it too, to know how many driver instances to allocate.
+Perfect, thanks!
 
-The other users - amd_gart_64.c and amd64-agp.c - are old stuff so they
-most certainly don't need to get the number of GPU nodes too.
+I will later send a patch to update the spi/ingenic-spi.yaml example 
+(the one that was in linux-next and not yet in master) so that it 
+points to the right include.
 
-> I understood your point now.
+-Paul
 
-Good.
 
-> When we create separate functions for caching cpu and gpu devices, is it
-> okay to create "struct amd_gpu_nb_info" with the following fields
-> 
-> a. gpu_num;
-> b. struct amd_northbridge *gpu_nb;
-> c. gpu_node_start_id;
-
-Makes sense. You need to put in it anything that describes the GPU NBs
-on the system and that other code would use.
-
-> While, amd_nb_num(), continues to return number of cpu NBs
-> Add new API amd_gpu_nb_num(), return number of gpu NBs
-> 
-> and modify the node_to_amd_nb(node) to extend the same behavior for gpu
-> devices also
-
-Yap, exactly.
-
-And since amd64_edac is going to need the full NB count, you can use
-there both:
-
-	num_nodes = amd_nb_num() + amd_gpu_nb_num();
-
-	...
-
-Easy, peasy. :-)
-
-Thanks!
-
--- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
