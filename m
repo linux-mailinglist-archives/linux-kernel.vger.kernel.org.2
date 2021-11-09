@@ -2,122 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 92DC244B112
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 17:22:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 33F2544B11A
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 17:24:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238893AbhKIQZZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Nov 2021 11:25:25 -0500
-Received: from alexa-out-sd-01.qualcomm.com ([199.106.114.38]:17281 "EHLO
-        alexa-out-sd-01.qualcomm.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S238397AbhKIQZX (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Nov 2021 11:25:23 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=quicinc.com; i=@quicinc.com; q=dns/txt; s=qcdkim;
-  t=1636474957; x=1668010957;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=arA5NuLJ5w1GwDIRETabm4JkNQQtn8VKJ8rknKRj7tQ=;
-  b=tUEz+xggtXFmVp97lOJAA+hJaiSjYaIuP7SQD1+cS8qxLDKtvHapuLnP
-   BwJsAXq1Ly1tM4e456tpxCu70oxO5WPAIXDia972njxkTurWkU9YuFTPR
-   YbgtQ8Qawg9JOqsNAJo2sUbbUC3V9SSZ5EQy6w+FIXlFgCO7DYff38HK2
-   s=;
-Received: from unknown (HELO ironmsg03-sd.qualcomm.com) ([10.53.140.143])
-  by alexa-out-sd-01.qualcomm.com with ESMTP; 09 Nov 2021 08:22:36 -0800
-X-QCInternal: smtphost
-Received: from nasanex01c.na.qualcomm.com ([10.47.97.222])
-  by ironmsg03-sd.qualcomm.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Nov 2021 08:22:36 -0800
-Received: from nalasex01a.na.qualcomm.com (10.47.209.196) by
- nasanex01c.na.qualcomm.com (10.47.97.222) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.922.7;
- Tue, 9 Nov 2021 08:22:36 -0800
-Received: from [10.50.19.148] (10.80.80.8) by nalasex01a.na.qualcomm.com
- (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.922.7; Tue, 9 Nov 2021
- 08:22:30 -0800
-Message-ID: <f7c665b9-dc17-5a7f-de80-9fa0605721fc@quicinc.com>
-Date:   Tue, 9 Nov 2021 21:52:26 +0530
+        id S239674AbhKIQ12 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Nov 2021 11:27:28 -0500
+Received: from mail.kernel.org ([198.145.29.99]:52378 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S238397AbhKIQ1Z (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Nov 2021 11:27:25 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id F014A60FD8;
+        Tue,  9 Nov 2021 16:24:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1636475079;
+        bh=S02AWkEYJNSoTOH6r1bp7lYVkK/1pCY/xooUDR9Z8YY=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=D29EStRlaFZuXf/ZKsGy2wvtW2tv3OQ6X9FxyEWxTolayz//ngdUFuGwGl7TaQC0S
+         F5pmBZNrzYlp1m/LUnrah3cILrV0JrFgZQIJnVzQbPfaJUncjTTPwVu/49ozn89NgF
+         vuNLw6gZ2TLf94CRDtpejr2z5/eegrZGe0jkewVBQt1ySWS16pNeT1/cSWsEqN2a0L
+         oYplSFy9K+eCRzCswU+cj8AafEefqlzGBQL5Q7BUWchbLGooxSFfjaJ369gcoCYSJ3
+         LPRNA+R+j/iqUdcseKQ5Jt+8cDeK9aVH7OdtmrV4rQrT+gzkEUf6ewYAjwi7VXob2G
+         ImBxYhg1VLmcA==
+Date:   Tue, 9 Nov 2021 16:24:33 +0000
+From:   Mark Brown <broonie@kernel.org>
+To:     Rob Herring <robh@kernel.org>
+Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        linux-mips@vger.kernel.org,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <brgl@bgdev.pl>,
+        George Cherian <gcherian@marvell.com>,
+        linux-gpio@vger.kernel.org, linux-i2c@vger.kernel.org,
+        linux-spi@vger.kernel.org
+Subject: Re: [PATCH] dt-bindings: Remove Netlogic bindings
+Message-ID: <YYqgwQVgjOwoaZZg@sirena.org.uk>
+References: <20211109161707.2209170-1-robh@kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
- Thunderbird/91.1.2
-Subject: Re: [PATCHv3 3/3] dynamic_debug: Add a flag for dynamic event tracing
-Content-Language: en-US
-To:     Steven Rostedt <rostedt@goodmis.org>
-CC:     Will Deacon <will@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        <quic_psodagud@quicinc.com>, Marc Zyngier <maz@kernel.org>,
-        <gregkh@linuxfoundation.org>, <arnd@arndb.de>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <linux-arm-msm@vger.kernel.org>,
-        <mingo@redhat.com>, <jbaron@akamai.com>, <jim.cromie@gmail.com>
-References: <cover.1636452784.git.quic_saipraka@quicinc.com>
- <3706af20bc64a320ff8f3ff8950738b988f4bdf5.1636452784.git.quic_saipraka@quicinc.com>
- <20211109104941.2d50eafc@gandalf.local.home>
-From:   Sai Prakash Ranjan <quic_saipraka@quicinc.com>
-In-Reply-To: <20211109104941.2d50eafc@gandalf.local.home>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="2FnwxKPLYbn/7HKW"
+Content-Disposition: inline
+In-Reply-To: <20211109161707.2209170-1-robh@kernel.org>
+X-Cookie: Elevators smell different to midgets.
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Steve,
 
-On 11/9/2021 9:19 PM, Steven Rostedt wrote:
-> On Tue, 9 Nov 2021 17:38:21 +0530
-> Sai Prakash Ranjan <quic_saipraka@quicinc.com> wrote:
->
->> Debugging a specific driver or subsystem can be a lot easier if we can
->> trace events specific to that driver or subsystem. This type of
->> filtering can be achieved using existing dynamic debug library which
->> provides a way to filter based on files, functions and modules.
->>
->> Using this, provide an additional flag 'e' to filter event tracing to
->> specified input.
->>
->> For example, tracing all MMIO read/write can be overwhelming and of no
->> use when debugging a specific driver or a subsystem. So switch to
->> dynamic event tracing for register accesses.
->>
->> Example: Tracing register accesses for all drivers in drivers/soc/qcom/*
->> and the trace output is given below:
->>
->>    # dyndbg="file drivers/soc/qcom/* +e" trace_event=rwmmio
->>      or
->>    # echo "file drivers/soc/qcom/* +e" > /sys/kernel/debug/dynamic_debug/control
->>    # cat /sys/kernel/debug/tracing/trace
-> FYI, it's best to use /sys/kernel/tracing, as the debug/tracing is only
-> there for backward compatibility.
+--2FnwxKPLYbn/7HKW
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Ah I see, will correct it.
+On Tue, Nov 09, 2021 at 10:17:07AM -0600, Rob Herring wrote:
+> Support for Netlogic was removed in commit 95b8a5e0111a ("MIPS: Remove
+> NETLOGIC support"). Remove the now unused bindings.
+>=20
+> The GPIO binding also includes "brcm,vulcan-gpio", but it appears to be
+> unused as well as Broadcom Vulkan became Cavium ThunderX2 which is ACPI
+> based.
 
+Acked-by: Mark Brown <broonie@kernel.org>
 
->>      rwmmio_read: rpmh_rsc_probe+0x35c/0x410 readl addr=0xffff80001071000c
->>      rwmmio_read: rpmh_rsc_probe+0x3d0/0x410 readl addr=0xffff800010710004
->>      rwmmio_write: rpmh_rsc_probe+0x3b0/0x410 writel addr=0xffff800010710d00 val=0x3
->>      rwmmio_write: write_tcs_cmd+0x6c/0x78 writel addr=0xffff800010710d30 val=0x10108
-> I'd much rather have a module name or something attached to the event that
-> ca be filtered on via the trace event filters, than having it determined by
-> some side effect done in another directory.
+--2FnwxKPLYbn/7HKW
+Content-Type: application/pgp-signature; name="signature.asc"
 
-I presume we don't have CALLER_MODULENAME0,1,2.. like CALLER_ADDR0,1,2 
-without which we
-cannot insert the module name to this trace event since MMIO accessors 
-are defined in low level
-arch headers and we won't get any useful module information from where 
-these accessors are
-called. The function name and the offset is good enough to identify the 
-exact line and module after
-post-processing with tools like GDB, objdump, so I feel we can keep the 
-trace event fields limited?
+-----BEGIN PGP SIGNATURE-----
 
-Thanks,
-Sai
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmGKoMAACgkQJNaLcl1U
+h9AoiAf/ekVKGxswprkfhL2xFb59W4S9TiOQAYT6SnP7lu202u3QcBy7W8oX4OjT
+dr8uo6NQ6jHwai3ZiP85QrmuN4sweJG8JDzh6ArgtWgRHcYknDH/RjYhDYoo3P8O
+S2fc1NtMu5mVXAMxJWjEuQKhoKkStNMMZOJCQh9SbXOUaF53JH4h92p4BOUSDoBh
+7EJ0JvqWX1tGTxi3TEKb8e+9JoamQpZaMp4NhMlXKjsOEan/8CJ+n0n6E+TzUwqn
+N+/sZ3uiuWQnrtsTBHPJ31T/iWMYt5ZpVhWN0kXRu1cKg0Xcs6zE4dsfjUnaRDP3
+EifXkzdJvgUNnGsl7M5QG6MHyFmMAw==
+=l4BV
+-----END PGP SIGNATURE-----
 
->
-> -- Steve
-
-
+--2FnwxKPLYbn/7HKW--
