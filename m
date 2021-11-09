@@ -2,92 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C15E444AD18
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 13:05:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 21A4944AD1C
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 13:07:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237041AbhKIMI1 convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 9 Nov 2021 07:08:27 -0500
-Received: from aposti.net ([89.234.176.197]:53678 "EHLO aposti.net"
+        id S237454AbhKIMKW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Nov 2021 07:10:22 -0500
+Received: from mga06.intel.com ([134.134.136.31]:22285 "EHLO mga06.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236479AbhKIMI0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Nov 2021 07:08:26 -0500
-Date:   Tue, 09 Nov 2021 12:05:27 +0000
-From:   Paul Cercueil <paul@crapouillou.net>
-Subject: Re: [PATCH] iio/adc: ingenic: fix (MIPS) ingenic-adc build errors
-To:     Randy Dunlap <rdunlap@infradead.org>
-Cc:     linux-kernel@vger.kernel.org, kernel test robot <lkp@intel.com>,
-        Artur Rojek <contact@artur-rojek.eu>,
-        linux-mips@vger.kernel.org, Jonathan Cameron <jic23@kernel.org>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        linux-iio@vger.kernel.org, Florian Fainelli <f.fainelli@gmail.com>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>
-Message-Id: <390B2R.ICFJKTTX7S392@crapouillou.net>
-In-Reply-To: <20211106174932.15676-1-rdunlap@infradead.org>
-References: <20211106174932.15676-1-rdunlap@infradead.org>
+        id S236479AbhKIMKU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Nov 2021 07:10:20 -0500
+X-IronPort-AV: E=McAfee;i="6200,9189,10162"; a="293265099"
+X-IronPort-AV: E=Sophos;i="5.87,220,1631602800"; 
+   d="scan'208";a="293265099"
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Nov 2021 04:07:35 -0800
+X-IronPort-AV: E=Sophos;i="5.87,220,1631602800"; 
+   d="scan'208";a="469953482"
+Received: from smile.fi.intel.com ([10.237.72.184])
+  by orsmga002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Nov 2021 04:07:30 -0800
+Received: from andy by smile.fi.intel.com with local (Exim 4.95)
+        (envelope-from <andy.shevchenko@gmail.com>)
+        id 1mkPuH-0054ja-3j;
+        Tue, 09 Nov 2021 14:07:17 +0200
+Date:   Tue, 9 Nov 2021 14:07:16 +0200
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+To:     Linus Walleij <linus.walleij@linaro.org>
+Cc:     Joe Perches <joe@perches.com>, Bartosz Golaszewski <brgl@bgdev.pl>,
+        Jianqun Xu <jay.xu@rock-chips.com>,
+        Sai Krishna Potthuri <lakshmi.sai.krishna.potthuri@xilinx.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "linux-gpio@vger.kernel.org" <linux-gpio@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "linux-rockchip@lists.infradead.org" 
+        <linux-rockchip@lists.infradead.org>,
+        Bamvor Jian Zhang <bamv2005@gmail.com>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Gregory Clement <gregory.clement@bootlin.com>,
+        Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
+        Heiko Stuebner <heiko@sntech.de>,
+        Patrice Chotard <patrice.chotard@foss.st.com>,
+        Michal Simek <michal.simek@xilinx.com>,
+        Andy Shevchenko <andy@kernel.org>
+Subject: Re: [PATCH v1 14/19] pinctrl: st: Use temporary variable for struct
+ device
+Message-ID: <YYpkdAPtLWm9pLOM@smile.fi.intel.com>
+References: <20211105124242.27288-1-andriy.shevchenko@linux.intel.com>
+ <20211105124242.27288-14-andriy.shevchenko@linux.intel.com>
+ <4b3f1ee1179dd6d4b010cb110b38d26e7d91c19f.camel@perches.com>
+ <CAHp75Ve0Bv9VsWFFZxL9wYk=Z_Mm7nat-vf7g8HHTiROi7EY=Q@mail.gmail.com>
+ <103d7321a2d18e44fb8c01483b1197766aff645a.camel@perches.com>
+ <YYjtLGlSCDPM4UVL@smile.fi.intel.com>
+ <CACRpkdZQsR1yisaCgmSDfG8OtkYgu1tWPBa_mw25o++suLjf4A@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1; format=flowed
-Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CACRpkdZQsR1yisaCgmSDfG8OtkYgu1tWPBa_mw25o++suLjf4A@mail.gmail.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Randy,
+On Tue, Nov 09, 2021 at 12:55:44PM +0100, Linus Walleij wrote:
+> On Mon, Nov 8, 2021 at 10:26 AM Andy Shevchenko
+> <andy.shevchenko@gmail.com> wrote:
+> 
+> > > IMO: the strarray variants introduction and use should be a separate
+> > > patchset from the rest.
+> >
+> > It will add unnecessary churn. Yeah, I have planned to send just that, but then
+> > it took more and more cleanups and I have to stop at some point, the code there
+> > is bad (historically or by other reasons, dunno).
+> 
+> I trust your judgement and taste to a large extent so this will not be
+> necessary. I can queue the whole series in pinctrl when you
+> think it's mature.
+> 
+> The library bits I kind of feel uncertain about who maintains, but I might just
+> apply it.
 
-Le sam., nov. 6 2021 at 10:49:32 -0700, Randy Dunlap 
-<rdunlap@infradead.org> a écrit :
-> MIPS does not always provide clk*() interfaces and there are no
-> always-present stubs for them, so depending on "MIPS || COMPILE_TEST"
-> is not strong enough to prevent build errors.
-> 
-> Likewise MACH_INGENIC_SOC || COMPILE_TEST is not strong enough
-> since if only COMPILE_TEST=y (with some other MIPS MACH_ or CPU or
-> BOARD setting), there are still the same build errors.
-> 
-> It looks like depending on MACH_INGENIC_SOC is the only thing that is
-> sufficient here in order to prevent build errors.
+No worries, Andrew usually applies that in case it's _solely_ library code.
+Otherwise it's on certain maintainer shoulders to decide. Note, that I'm one
+of the designated reviewers for lib/string*.
 
-Should be "depends on MACH_INGENIC". This symbol is selected when 
-building a kernel tailored for Ingenic boards (CONFIG_MACH_INGENIC_SOC) 
-and also selected when building a generic MIPS kernel that supports 
-Ingenic SoCs (CONFIG_BOARD_INGENIC).
+Thanks!
 
-Cheers,
--Paul
-
-> 
-> mips-linux-ld: drivers/iio/adc/ingenic-adc.o: in function 
-> `jz4770_adc_init_clk_div':
-> ingenic-adc.c:(.text+0xe4): undefined reference to `clk_get_parent'
-> mips-linux-ld: drivers/iio/adc/ingenic-adc.o: in function 
-> `jz4725b_adc_init_clk_div':
-> ingenic-adc.c:(.text+0x1b8): undefined reference to `clk_get_parent'
-> 
-> Fixes: 1a78daea107d ("IIO: add Ingenic JZ47xx ADC driver.")
-> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-> Reported-by: kernel test robot <lkp@intel.com>
-> Cc: Artur Rojek <contact@artur-rojek.eu>
-> Cc: Paul Cercueil <paul@crapouillou.net>
-> Cc: linux-mips@vger.kernel.org
-> Cc: Jonathan Cameron <jic23@kernel.org>
-> Cc: Lars-Peter Clausen <lars@metafoo.de>
-> Cc: linux-iio@vger.kernel.org
-> Cc: Florian Fainelli <f.fainelli@gmail.com>
-> Cc: Andy Shevchenko <andy.shevchenko@gmail.com>
-> ---
->  drivers/iio/adc/Kconfig |    2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> --- linux-next-20211105.orig/drivers/iio/adc/Kconfig
-> +++ linux-next-20211105/drivers/iio/adc/Kconfig
-> @@ -501,7 +501,7 @@ config INA2XX_ADC
-> 
->  config INGENIC_ADC
->  	tristate "Ingenic JZ47xx SoCs ADC driver"
-> -	depends on MIPS || COMPILE_TEST
-> +	depends on MACH_INGENIC_SOC
->  	select IIO_BUFFER
->  	help
->  	  Say yes here to build support for the Ingenic JZ47xx SoCs ADC 
-> unit.
+-- 
+With Best Regards,
+Andy Shevchenko
 
 
