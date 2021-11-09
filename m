@@ -2,88 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D602244B49F
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 22:26:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AB92A44B4D4
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 22:32:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240038AbhKIV2s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Nov 2021 16:28:48 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38924 "EHLO
+        id S245240AbhKIVfc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Nov 2021 16:35:32 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40548 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230248AbhKIV2r (ORCPT
+        with ESMTP id S238607AbhKIVfb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Nov 2021 16:28:47 -0500
-Received: from mail-lf1-x12a.google.com (mail-lf1-x12a.google.com [IPv6:2a00:1450:4864:20::12a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F0B7FC061764
-        for <linux-kernel@vger.kernel.org>; Tue,  9 Nov 2021 13:26:00 -0800 (PST)
-Received: by mail-lf1-x12a.google.com with SMTP id k37so789158lfv.3
-        for <linux-kernel@vger.kernel.org>; Tue, 09 Nov 2021 13:26:00 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=0pEy8zRbX4M0WulD1O3v1mhyXPMQ6YHtrHY83BsLR0g=;
-        b=m4GdQSz+6PKu49f3JNqC0i9Ir+h0KyfXoFOYlFH4WhD4aZ1lWy7xNAp6CdaNqcc6Om
-         PJoUfVnVTHKpTKfuhhBnTWP5OeSjqM3u5moYAj4FACkujCsLl2Av2YXANeQOmGZASu57
-         Pc1Fju4Fx9mhlkloszkJRUhsrcIwm73AFRVazYvQ+0h2kDIiKGX31LGPt0CcLPDM3jrn
-         ikXuEC0R8rCJjqWYR1fJ3Zny40fRohWvauCds4E70RsEIrNf190nFlSGHg1GcqIdMEZm
-         Su9pp5hly9gWq4FLASd3z49GVs7dWSMcy6QVWUvhB/k7WeLty9YlGb3t8FUUw3PloGyD
-         ToDA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=0pEy8zRbX4M0WulD1O3v1mhyXPMQ6YHtrHY83BsLR0g=;
-        b=U1FLsGlH565yxFI313ZHadWc4KljVsKw7VrjbGqX2X4xJn+8KW2mH1ObZQpbooa1p3
-         4JbwuChMZOUZiH0r5jr7wgr3d7STFTABvCotR+ytHV48mDIINSVn1O6Ru8o8eXsd8V3B
-         dt9Dnzi1bd4kuK5Vb6S1IQYe/JPeeTTsFktrmihzeeg+jmdCrrPq/AlvyL46kfLm73sq
-         gRFN8uvYIIa2L74x+Hz6crSQMvrEiSEwFcRsfPdGk7TeYUcC2W24qsJ5S4TeRVpOMXuO
-         nRuNpU/fKqJ6m5ejrOtueFlNfcwwO2n/i1WBfIWtkLzvezw1ptAoKwc5zZLKbcvwu53w
-         +8qA==
-X-Gm-Message-State: AOAM532TOAr0l8Hmq3ZuOk+hVFWsUdl8Qexu76LxGEAhs2pw6OAPhypl
-        ow1tcLsEVtOtQtaqp4y5/uRHwsvCkvoQ5GQTK611iQ==
-X-Google-Smtp-Source: ABdhPJzAuZ0fJiDD4u+9qnqI2MbQh8ZPVDGKUAVD3PQQU+dwZoFDORUfzFz1zfA/o6wRbHl6wwGW32ZCEBhXHLlM5Zw=
-X-Received: by 2002:a05:6512:110e:: with SMTP id l14mr72283lfg.550.1636493159120;
- Tue, 09 Nov 2021 13:25:59 -0800 (PST)
+        Tue, 9 Nov 2021 16:35:31 -0500
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E233C061764;
+        Tue,  9 Nov 2021 13:32:45 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=dJw8Ik3ylTfPa2P+lNYAI2E2MHLc1nH0ayoDuzAKkgA=; b=OOkUgSDXP7m4WHp+xHkR0poveQ
+        F4isHITGM8YcAaTGbZj0pvoTb+4BCJTmjqojBg4GfhXkZZXUzCNjHAYHDC80RJzSF2L5hDRJZsnaY
+        NtGk4eumtBy/xPnr89A8E9WSXDGJ7jc2XWB3w0hTg4wy0vplWcJb+HB68jvs/fSOE0Y6NadAmTH8M
+        0/oR/kogdOGavrcWaV+75SpbQRGwB+TWzk0lLgRRcUP0STDeNykaS6lv5SzTLxwlaN+WbJzNrHCU2
+        5GkLZTjl3/QeOpKdfwfPLGIs1qt7FlguhfDJPvfIAtHa8UtmS619YcDGNU+iGkaKQfsTSyQEVpxZB
+        P+pMNIzQ==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=worktop.programming.kicks-ass.net)
+        by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mkYj3-00F8o8-Sd; Tue, 09 Nov 2021 21:32:19 +0000
+Received: by worktop.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 1C45A985A2A; Tue,  9 Nov 2021 22:25:56 +0100 (CET)
+Date:   Tue, 9 Nov 2021 22:25:56 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Luis Chamberlain <mcgrof@kernel.org>
+Cc:     Miroslav Benes <mbenes@suse.cz>,
+        Julia Lawall <julia.lawall@inria.fr>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Jiasheng Jiang <jiasheng@iscas.ac.cn>, jeyu@kernel.org,
+        ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
+        kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
+        john.fastabend@gmail.com, kpsingh@kernel.org, nathan@kernel.org,
+        ndesaulniers@google.com, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, bpf@vger.kernel.org,
+        clang-built-linux@googlegroups.com
+Subject: Re: [PATCH] module: Fix implicit type conversion
+Message-ID: <20211109212556.GX174703@worktop.programming.kicks-ass.net>
+References: <1635473169-1848729-1-git-send-email-jiasheng@iscas.ac.cn>
+ <alpine.LSU.2.21.2111081925580.1710@pobox.suse.cz>
+ <YYrghnBqTq5ZF2ZR@bombadil.infradead.org>
 MIME-Version: 1.0
-References: <20211105171023.989862879@infradead.org> <20211105171821.654356149@infradead.org>
- <20211108164711.mr2cqdcvedin2lvx@treble> <YYlshkTmf5zdvf1Q@hirez.programming.kicks-ass.net>
- <CAKwvOdkFZ4PSN0GGmKMmoCrcp7_VVNjau_b0sNRm3MuqVi8yow@mail.gmail.com>
- <YYov8SVHk/ZpFsUn@hirez.programming.kicks-ass.net> <CAKwvOdn8yrRopXyfd299=SwZS9TAPfPj4apYgdCnzPb20knhbg@mail.gmail.com>
- <CAGG=3QVecQroYbJ05AGk2f0pe=QOtWuZHyQowzG0i7os8E9fdg@mail.gmail.com> <20211109212116.GW174703@worktop.programming.kicks-ass.net>
-In-Reply-To: <20211109212116.GW174703@worktop.programming.kicks-ass.net>
-From:   Nick Desaulniers <ndesaulniers@google.com>
-Date:   Tue, 9 Nov 2021 13:25:47 -0800
-Message-ID: <CAKwvOd=3wFr=juT7hXPowHBvOTVPTW7LuB6XwHzURGd=GXkK1Q@mail.gmail.com>
-Subject: Re: [PATCH 20/22] x86,word-at-a-time: Remove .fixup usage
-To:     Bill Wendling <morbo@google.com>
-Cc:     Josh Poimboeuf <jpoimboe@redhat.com>, x86@kernel.org,
-        linux-kernel@vger.kernel.org, mark.rutland@arm.com,
-        dvyukov@google.com, seanjc@google.com, pbonzini@redhat.com,
-        mbenes@suse.cz, llvm@lists.linux.dev,
-        linux-toolchains@vger.kernel.org,
-        Peter Zijlstra <peterz@infradead.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YYrghnBqTq5ZF2ZR@bombadil.infradead.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 9, 2021 at 1:21 PM Peter Zijlstra <peterz@infradead.org> wrote:
->
-> On Tue, Nov 09, 2021 at 12:59:12PM -0800, Bill Wendling wrote:
-> >
-> > Adding attributes to labels shouldn't be difficult, as you mention. In
-> > the case of cold/hot, it's adjusting some of the metadata that already
-> > exists on some basic blocks. It might be enough to allow the normal
-> > block placement algorithms to move the hot and cold blocks around for
-> > us. The question becomes how many attributes does GCC allow on labels?
->
-> I'm aware of 3: unused, hot, cold. Also:
->
->   https://gcc.gnu.org/onlinedocs/gcc/Label-Attributes.html
+On Tue, Nov 09, 2021 at 12:56:38PM -0800, Luis Chamberlain wrote:
 
-Re: unused:
-Being able to selectively disable -Wunused-label via
-__attribute__((unused)); seems useful, too.
--- 
-Thanks,
-~Nick Desaulniers
+> If we're going to do this we we must ask, is it really worth it and
+> moving forward then add a semantic patch rule which will pick up on
+> misuses.
+
+Please, no!
+
+This guy has been going around sending silly patches on his own, but the
+moment you add this script all the robots will join him, adding to the
+pile of useless crap we get to wade through each day.
+
+I've yet to see one of these patches fix an actual problem.
