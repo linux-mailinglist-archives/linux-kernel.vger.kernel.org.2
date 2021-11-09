@@ -2,85 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1DF1E44B479
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 22:09:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AFBBF44B47C
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 22:10:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244912AbhKIVMe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Nov 2021 16:12:34 -0500
-Received: from vps0.lunn.ch ([185.16.172.187]:53414 "EHLO vps0.lunn.ch"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237584AbhKIVMc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Nov 2021 16:12:32 -0500
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
-        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
-        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
-        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
-        bh=fqMfvevUL4ukmxtHDYzE4N3EIZqfBJykGBfoMdASPoc=; b=EdA5Rkfs5/ZsHFfhINZIQ6inmE
-        xr1hE5zxYp/zcr/mb/MlKKxMvBKAMm70zb3zyoSaTLgp9SOqvO0KpwXMF0UY/0RRJESp2k7eXNYkj
-        AyX/Zjkebe7biSqDhYgH9WnC07Rmh9jiajIC5nKERkr+8B2iqgTypBC6Tv5PekdX7bnE=;
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
-        (envelope-from <andrew@lunn.ch>)
-        id 1mkYNA-00D1Wk-AZ; Tue, 09 Nov 2021 22:09:40 +0100
-Date:   Tue, 9 Nov 2021 22:09:40 +0100
-From:   Andrew Lunn <andrew@lunn.ch>
-To:     Marek =?iso-8859-1?Q?Beh=FAn?= <kabel@kernel.org>
-Cc:     Ansuel Smith <ansuelsmth@gmail.com>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Vladimir Oltean <olteanv@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>, Pavel Machek <pavel@ucw.cz>,
-        John Crispin <john@phrozen.org>, netdev@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-leds@vger.kernel.org
-Subject: Re: [RFC PATCH v3 6/8] leds: trigger: add hardware-phy-activity
- trigger
-Message-ID: <YYrjlHz/UgTUwQAm@lunn.ch>
-References: <20211109022608.11109-1-ansuelsmth@gmail.com>
- <20211109022608.11109-7-ansuelsmth@gmail.com>
- <20211109042517.03baa809@thinkpad>
+        id S244930AbhKIVMx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Nov 2021 16:12:53 -0500
+Received: from smtp03.smtpout.orange.fr ([80.12.242.125]:59321 "EHLO
+        smtp.smtpout.orange.fr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S244929AbhKIVMt (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Nov 2021 16:12:49 -0500
+Received: from pop-os.home ([86.243.171.122])
+        by smtp.orange.fr with ESMTPA
+        id kYNSmHD8XIEdlkYNSmbJt2; Tue, 09 Nov 2021 22:10:00 +0100
+X-ME-Helo: pop-os.home
+X-ME-Auth: YWZlNiIxYWMyZDliZWIzOTcwYTEyYzlhMmU3ZiQ1M2U2MzfzZDfyZTMxZTBkMTYyNDBjNDJlZmQ3ZQ==
+X-ME-Date: Tue, 09 Nov 2021 22:10:00 +0100
+X-ME-IP: 86.243.171.122
+From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+To:     gustavo.pimentel@synopsys.com, vkoul@kernel.org, wangqing@vivo.com
+Cc:     dmaengine@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel-janitors@vger.kernel.org,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Subject: [PATCH] dmaengine: dw-edma: Fix (and simplify) the probe broken since ecb8c88bd31c
+Date:   Tue,  9 Nov 2021 22:09:56 +0100
+Message-Id: <935fbb40ae930c5fe87482a41dcb73abf2257973.1636492127.git.christophe.jaillet@wanadoo.fr>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211109042517.03baa809@thinkpad>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> > +/* Expose sysfs for every blink to be configurable from userspace */
-> > +DEFINE_OFFLOAD_TRIGGER(blink_tx, BLINK_TX);
-> > +DEFINE_OFFLOAD_TRIGGER(blink_rx, BLINK_RX);
-> > +DEFINE_OFFLOAD_TRIGGER(keep_link_10m, KEEP_LINK_10M);
-> > +DEFINE_OFFLOAD_TRIGGER(keep_link_100m, KEEP_LINK_100M);
-> > +DEFINE_OFFLOAD_TRIGGER(keep_link_1000m, KEEP_LINK_1000M);
+The commit in the Fixes: tag has changed the logic of the code and now it
+is likely that the probe will return an early success (0), even if not
+completely executed.
 
-You might get warnings about CamelCase, but i suggest keep_link_10M,
-keep_link_100M and keep_link_1000M. These are megabits, not millibits.
+This should lead to a crash or similar issue later on when the code
+accesses to some never allocated resources.
 
-> > +DEFINE_OFFLOAD_TRIGGER(keep_half_duplex, KEEP_HALF_DUPLEX);
-> > +DEFINE_OFFLOAD_TRIGGER(keep_full_duplex, KEEP_FULL_DUPLEX);
+Change the '!err' into a 'err' when checking if
+'dma_set_mask_and_coherent()' has failed or not.
 
-What does keep mean in this context?
+While at it, simplify the code and remove the "can't success code" related
+to 32 DMA mask.
+As stated in [1], 'dma_set_mask_and_coherent(DMA_BIT_MASK(64))' can't fail
+if 'dev->dma_mask' is non-NULL. And if it is NULL, it would fail for the
+same reason when tried with DMA_BIT_MASK(32).
 
-> > +DEFINE_OFFLOAD_TRIGGER(option_linkup_over, OPTION_LINKUP_OVER);
-> > +DEFINE_OFFLOAD_TRIGGER(option_power_on_reset, OPTION_POWER_ON_RESET);
-> > +DEFINE_OFFLOAD_TRIGGER(option_blink_2hz, OPTION_BLINK_2HZ);
-> > +DEFINE_OFFLOAD_TRIGGER(option_blink_4hz, OPTION_BLINK_4HZ);
-> > +DEFINE_OFFLOAD_TRIGGER(option_blink_8hz, OPTION_BLINK_8HZ);
-> 
-> This is very strange. Is option_blink_2hz a trigger on itself? Or just
-> an option for another trigger? It seems that it is an option, so that I
-> can set something like
->   blink_tx,option_blink_2hz
-> and the LED will blink on tx activity with frequency 2 Hz... If that is
-> so, I think you are misnaming your macros or something, since you are
-> defining option_blink_2hz as a trigger with
->  DEFINE_OFFLOAD_TRIGGER
+[1]: https://lkml.org/lkml/2021/6/7/398
 
-Yes, i already said this needs handling differently. The 2Hz, 4Hz and
-8Hz naturally fit the delay_on, delay_of sysfs attributes.
+Fixes: ecb8c88bd31c ("dmaengine: dw-edma-pcie: switch from 'pci_' to 'dma_' API")
+Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+---
+ drivers/dma/dw-edma/dw-edma-pcie.c | 10 +---------
+ 1 file changed, 1 insertion(+), 9 deletions(-)
 
-    Andrew
+diff --git a/drivers/dma/dw-edma/dw-edma-pcie.c b/drivers/dma/dw-edma/dw-edma-pcie.c
+index 198f6cd8ac1b..cee7aa231d7b 100644
+--- a/drivers/dma/dw-edma/dw-edma-pcie.c
++++ b/drivers/dma/dw-edma/dw-edma-pcie.c
+@@ -187,17 +187,9 @@ static int dw_edma_pcie_probe(struct pci_dev *pdev,
+ 
+ 	/* DMA configuration */
+ 	err = dma_set_mask_and_coherent(&pdev->dev, DMA_BIT_MASK(64));
+-	if (!err) {
++	if (err) {
+ 		pci_err(pdev, "DMA mask 64 set failed\n");
+ 		return err;
+-	} else {
+-		pci_err(pdev, "DMA mask 64 set failed\n");
+-
+-		err = dma_set_mask_and_coherent(&pdev->dev, DMA_BIT_MASK(32));
+-		if (err) {
+-			pci_err(pdev, "DMA mask 32 set failed\n");
+-			return err;
+-		}
+ 	}
+ 
+ 	/* Data structure allocation */
+-- 
+2.30.2
+
