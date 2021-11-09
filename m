@@ -2,67 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 088C144A9C7
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 09:56:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 681ED44A9D9
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 09:59:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244582AbhKII7E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Nov 2021 03:59:04 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37106 "EHLO
+        id S244625AbhKIJB5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Nov 2021 04:01:57 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37778 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236483AbhKII7C (ORCPT
+        with ESMTP id S244616AbhKIJB4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Nov 2021 03:59:02 -0500
-Received: from mail-wr1-x430.google.com (mail-wr1-x430.google.com [IPv6:2a00:1450:4864:20::430])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 763D8C061764
-        for <linux-kernel@vger.kernel.org>; Tue,  9 Nov 2021 00:56:16 -0800 (PST)
-Received: by mail-wr1-x430.google.com with SMTP id d3so31645213wrh.8
-        for <linux-kernel@vger.kernel.org>; Tue, 09 Nov 2021 00:56:16 -0800 (PST)
+        Tue, 9 Nov 2021 04:01:56 -0500
+Received: from mail-ed1-x535.google.com (mail-ed1-x535.google.com [IPv6:2a00:1450:4864:20::535])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7222DC061764;
+        Tue,  9 Nov 2021 00:59:10 -0800 (PST)
+Received: by mail-ed1-x535.google.com with SMTP id f8so73911380edy.4;
+        Tue, 09 Nov 2021 00:59:10 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=immu-ne.20210112.gappssmtp.com; s=20210112;
+        d=gmail.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=8hDxc4ORTBbluxxeIIeFMi6TZfMeVfC09o6eJqDhW6Y=;
-        b=0KV7+HspyaS3g9zMUH7QkJFoaINFWkKQEXKTAmysFQs4K/Q7hiwfgIRcWRlI3w6Bik
-         JaWassP3CHaxn5gcid1HAzTxWzMRo0QZ4+O392zq13ZkI6+GJLlMKmY421Qp98XUBUBy
-         75a6Fi0jjlsrSgjvx1dt4H1S+OKBWnnzd4RbYrqVJxKLjXOwpmpa2bWzupDjAnBhXZOX
-         tG16LdsSuHC9KfnXTLhbD97YPW0yFzxBsHUGbykaRryttMp6JPnYyt/6xLzEQIe2k8YN
-         rC9bg+SGFCRj3xUZR6SEFlNYaQViv68c/HUPQtLcIo0JZQ/xQE9UBWsz6jPKoNIBehbm
-         //jA==
+        bh=kmkcsLwhqrRlZYiF/o6WGOvaKjRFSvuNPZIr825qDS4=;
+        b=B0Nkb/Lxi0ma4Gqty9CoAxpahvSRtZuZt6gtGMcfl+nc1uMbWq8qR6m380Cn1GtcYo
+         CE3E5Ovrh+MmdKN0BaVZaUbM764j9Q8purv+cEYsE7jtPS7bPFvvHeJz079iNLi/xS50
+         tmY5tAsfSHvM0JsV0+46VXA338tcleeUlItyIbU33JpjEFGzuzuqIvp8ftahGriow6Lm
+         6ga1r+wPTMjilwoXyBDuRlEftn3l7MwikhGjtipWEF4yjm7F2gHTBWaG8pSC9BVrpWaG
+         fCgx5rL5EcCxwlbNhLvr/fueVV9MpPK1k1e0XYQVDh4pBQGif/GvKh04bDBmH1np8Oul
+         zWIQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=8hDxc4ORTBbluxxeIIeFMi6TZfMeVfC09o6eJqDhW6Y=;
-        b=w24AOyuCW6e6hir7r65YPczhHZfS5nfWLZ2SVrGIX2StwH5CX9iEE2egpJGyz9Gz77
-         4DKAt7c3Vjua6tGhny544FdFfIuKv3AL+mScHqAH3L7xptU/a+aGGXmhvPhxp22sZ/op
-         qsL/r0u+JIMzxo4TN3OaCmwMnGwgrNniH+pKB2JsnfK5znFWtjIGpoTfFcEgYniN7b38
-         N4AZoLJuqCOmDV4IBMbN+SQvN4pXQC84U/yh1yzrH4GYd5bGZYj0iA37bCSh9fcmMCRH
-         KaGNOE6WCgIwpMhSzeFbBi5zGTmOyXefGVcf94YiQrC0fF/RrCd+MJI/jDLPf4WuwsWy
-         hVhg==
-X-Gm-Message-State: AOAM533oVaSaQTzecyYIxqJe5u4Ec5+5SzIHrDysFxOPelqfrzgzwGlm
-        S/71OdGCvrG1OlJZ+ZFN7LqBdKwSkN7lR21nUig9WA==
-X-Google-Smtp-Source: ABdhPJxjQyapcmQOZoeGUdSh2ePTETHsHN9v6j2of8gpdEiuV82Z+REWYGnGHSZ8XIcfUkLElR/+U/Hs0YR3DIMNzAQ=
-X-Received: by 2002:adf:eece:: with SMTP id a14mr7232192wrp.333.1636448175103;
- Tue, 09 Nov 2021 00:56:15 -0800 (PST)
+        bh=kmkcsLwhqrRlZYiF/o6WGOvaKjRFSvuNPZIr825qDS4=;
+        b=ThpqunLGSPdaxgSpkXRBf5nGa1GXQjKCxvdqDhlrbY1ahyXEMKwL6rIDIq0QMe9Jtj
+         KXeHJIKsrvw3Z3tm9Cq5KA+b3mlUDUHGZWq0ZbX4NSR67XWsws+lEm4YNIX5quXTq/ir
+         uduvCCXCPYPN++eTUb+AaRs9Lj1SM+tZ3ZKzoaGBPUfVPwO+7iEuvZA8mEBTr3aBlB/q
+         d1vxxGnZBDzrGCyc8qYOQaq/6BM22Ed/0nU+FKpu2cCIH6GbXQt4v/Ic9JRDjH7XRGKK
+         rgQElRBnLZB5cNdxQxJamJyNE53zYSZ80imNiLOe6UboJo8esGo7nDhej9CGA9wTPdQm
+         SE/A==
+X-Gm-Message-State: AOAM530C+KAhpqYUk/1DmwJf02Zc5s6JrVe0OjLEj1nlhh4ajXAZF7oJ
+        buH+/WXJv3A+eUM2C6L1u8rM2sYgn+9LYhWtV4c=
+X-Google-Smtp-Source: ABdhPJyUtICnxChNmThzPFmd2mxmlxgT2Vf4Uq3J6C6iLge/0z3Zlx6o0pBqiUkPlRNLnjsnz4Jc3nCgip5GrDG9gAs=
+X-Received: by 2002:a17:907:7601:: with SMTP id jx1mr7419521ejc.69.1636448348975;
+ Tue, 09 Nov 2021 00:59:08 -0800 (PST)
 MIME-Version: 1.0
-References: <20211109000130.42361-1-hans-gert.dahmen@immu.ne>
- <YYoSPjF3M05dR0PX@kroah.com> <42cea157-55a2-bd12-335b-6348f0ff6525@immu.ne>
-In-Reply-To: <42cea157-55a2-bd12-335b-6348f0ff6525@immu.ne>
-From:   Hans-Gert Dahmen <hans-gert.dahmen@immu.ne>
-Date:   Tue, 9 Nov 2021 09:56:03 +0100
-Message-ID: <CAHifhD70EEqmwJtZ1dc8=Nd0bknmN9FeYk+z5+ZRJ0gOUMooag@mail.gmail.com>
-Subject: Re: [PATCH] firmware: export x86_64 platform flash bios region via sysfs
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     akpm@linux-foundation.org, linux-kernel@vger.kernel.org,
-        Philipp Deppenwiese <philipp.deppenwiese@immu.ne>,
-        Mauro Lima <mauro.lima@eclypsium.com>,
-        Richard Hughes <hughsient@gmail.com>,
-        platform-driver-x86@vger.kernel.org
+References: <20211102161125.1144023-1-kernel@esmil.dk> <20211102161125.1144023-13-kernel@esmil.dk>
+ <CAHp75VdmnnrisuP00W0KYta0KgmC+fu3WMxm959dt5X1kpiKTw@mail.gmail.com> <CACRpkdZOpXC0GvoyS8KexgjxL17rjyNkPuA0KGOvesZMDLvyJg@mail.gmail.com>
+In-Reply-To: <CACRpkdZOpXC0GvoyS8KexgjxL17rjyNkPuA0KGOvesZMDLvyJg@mail.gmail.com>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Tue, 9 Nov 2021 10:58:23 +0200
+Message-ID: <CAHp75VcxQ8nWqUTYzhJeUW55bvALHzcxQjMTP5UQwxmwu2aZ3Q@mail.gmail.com>
+Subject: Re: [PATCH v3 12/16] pinctrl: starfive: Add pinctrl driver for
+ StarFive SoCs
+To:     Linus Walleij <linus.walleij@linaro.org>
+Cc:     Emil Renner Berthing <kernel@esmil.dk>,
+        linux-riscv <linux-riscv@lists.infradead.org>,
+        devicetree <devicetree@vger.kernel.org>,
+        linux-clk <linux-clk@vger.kernel.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        "open list:SERIAL DRIVERS" <linux-serial@vger.kernel.org>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Marc Zyngier <maz@kernel.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        Maximilian Luz <luzmaximilian@gmail.com>,
+        Sagar Kadam <sagar.kadam@sifive.com>,
+        Drew Fustini <drew@beagleboard.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Michael Zhu <michael.zhu@starfivetech.com>,
+        Fu Wei <tekkamanninja@gmail.com>,
+        Anup Patel <anup.patel@wdc.com>,
+        Atish Patra <atish.patra@wdc.com>,
+        Matteo Croce <mcroce@microsoft.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Huan Feng <huan.feng@starfivetech.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-I am really sorry I forgot the link for [1] in my last mail.
+On Tue, Nov 9, 2021 at 2:54 AM Linus Walleij <linus.walleij@linaro.org> wrote:
+> On Tue, Nov 2, 2021 at 9:02 PM Andy Shevchenko
+> <andy.shevchenko@gmail.com> wrote:
+>
+> > > +       depends on OF
+> >
+> > So this descreases test coverage.
+> > Linus, can we provide a necessary stub so we may drop this dependency?
+>
+> Hm it further selects OF_GPIO which depends on OF
+> so I don't know how that would work.
+>
+> But does it decrease compile coverage a lot, even x86 has
+> optional OF support so I imagine it appears in x86
+> allyesconfig I suppose? Or am I wrong?
 
-[1] https://lkml.org/lkml/2021/6/23/433
+I believe so. At least in my environment I have OF enabled (I haven't
+looked into what was the change to the config, though).
+
+-- 
+With Best Regards,
+Andy Shevchenko
