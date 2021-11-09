@@ -2,97 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3FE9F44AA6B
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 10:17:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B885E44AA66
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 10:16:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244774AbhKIJUM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Nov 2021 04:20:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42154 "EHLO
+        id S243533AbhKIJTV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Nov 2021 04:19:21 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41908 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237882AbhKIJUK (ORCPT
+        with ESMTP id S237882AbhKIJTT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Nov 2021 04:20:10 -0500
-Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D7D42C061764;
-        Tue,  9 Nov 2021 01:17:24 -0800 (PST)
-Received: from zn.tnic (p2e584790.dip0.t-ipconnect.de [46.88.71.144])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 6E8651EC0502;
-        Tue,  9 Nov 2021 10:17:23 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1636449443;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=dw5TMSektJ+6kyWjTPtQRBAjqW4uRrQU4qlKiqn1zq0=;
-        b=rpcr7uRQLofcxSsIAkwWzs+hUY8/K51Bw65j7OkScJJF7xQ3+QvBPGino+QVuiJ8wrupe3
-        qmmiqiovJoCVZ3oVFlAf1ooB8kaduZ2bb3BdKcqY6uGqZyqgDVUJMFfsl+HHy0PbBCnFrk
-        dm2UaGSL9XOtUvkbAeXChcdhYMOvhew=
-Date:   Tue, 9 Nov 2021 10:15:11 +0100
-From:   Borislav Petkov <bp@alien8.de>
-To:     Zhaolong Zhang <zhangzl2013@126.com>
-Cc:     Tony Luck <tony.luck@intel.com>, x86@kernel.org,
-        linux-edac@vger.kernel.org, linux-kernel@vger.kernel.org,
-        "Paul E . McKenney" <paulmck@kernel.org>
-Subject: Re: [PATCH] x86/mce: Get rid of cpu_missing
-Message-ID: <YYo8H34W8xPafdnH@zn.tnic>
-References: <776fad3d.3369.17d03d2c2ba.Coremail.zhangzl2013@126.com>
- <20211109083547.3546963-1-zhangzl2013@126.com>
+        Tue, 9 Nov 2021 04:19:19 -0500
+Received: from mail-wm1-x32b.google.com (mail-wm1-x32b.google.com [IPv6:2a00:1450:4864:20::32b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A24DAC061208
+        for <linux-kernel@vger.kernel.org>; Tue,  9 Nov 2021 01:16:30 -0800 (PST)
+Received: by mail-wm1-x32b.google.com with SMTP id d72-20020a1c1d4b000000b00331140f3dc8so1738791wmd.1
+        for <linux-kernel@vger.kernel.org>; Tue, 09 Nov 2021 01:16:30 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ffwll.ch; s=google;
+        h=date:from:to:cc:subject:message-id:mail-followup-to:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=Yjma5mRrb82FaHeqwEGkttg2XiFg5zhxGRY3Wmkbjxk=;
+        b=fKFTVCySyPMePSh7mhupGnzSoJoGvjq1KyxBEzABecEN+XHEN+WMQOhWsEzkGtRmid
+         9iqVwP//G3abSfqk+rIgkTn5yXuk0Mo3f5OlFYwtq9LaFWTjU8N9nNL55Cz3Nf/+UZuI
+         ZcQxS2ta7waGRCAMMNIigaBfF2L2we8y7YaxA=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id
+         :mail-followup-to:references:mime-version:content-disposition
+         :in-reply-to;
+        bh=Yjma5mRrb82FaHeqwEGkttg2XiFg5zhxGRY3Wmkbjxk=;
+        b=YUfvyrnb5Xpd3V21+1YmtOt5D391jHG5pV6ji7i/pqXkNcRMmETYX6uj7/C9+Es0re
+         Ln7MtSAG24ry3TAlRVwzohbjfNGzufBPFBR2e8cQDdIL/GblSniQzbTU2fXpM22JkOF8
+         mpIUc7AR0MF4V0Sf9yaHeIuzgHLOctnkrGHIXUMibMKpCa6LF3SMyw7owtu0UpYvvTFR
+         1Gjsompac5hSZEXLRGHZW8fQE2bX55SKdW/ltSt6yG3P7fzHoq8nfwxBn9fN7AzkkddA
+         4KTxXmGcmrv9tU+ZKguuGIxnsIWHR7Xx+PPaGIV9Tz38y0hOmO2QlPfGniqYLitCV3wN
+         WSHA==
+X-Gm-Message-State: AOAM530IP2QJHoFJTjOEs8MVXoTPaa+NME8EY913P9cehhn0Y4qp5eyJ
+        wtgLz4MMgImYy4BmQSHQk+KFWg==
+X-Google-Smtp-Source: ABdhPJz7q+uhfnvfEH4DwVgZJaCEKFC1hKgEx5TjbsATOUhrI19DS7lgDXeUqtwj6dIwUW3QWcXnJA==
+X-Received: by 2002:a05:600c:3b83:: with SMTP id n3mr5338933wms.116.1636449389206;
+        Tue, 09 Nov 2021 01:16:29 -0800 (PST)
+Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
+        by smtp.gmail.com with ESMTPSA id h13sm19842564wrx.82.2021.11.09.01.16.28
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 09 Nov 2021 01:16:28 -0800 (PST)
+Date:   Tue, 9 Nov 2021 10:16:27 +0100
+From:   Daniel Vetter <daniel@ffwll.ch>
+To:     Jani Nikula <jani.nikula@intel.com>
+Cc:     Stephen Rothwell <sfr@canb.auug.org.au>,
+        Dave Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel.vetter@ffwll.ch>,
+        Intel Graphics <intel-gfx@lists.freedesktop.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        DRI <dri-devel@lists.freedesktop.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Maxime Ripard <mripard@kernel.org>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>
+Subject: Re: linux-next: build failure after merge of the drm-misc tree
+Message-ID: <YYo8axRhW/zFQUgW@phenom.ffwll.local>
+Mail-Followup-To: Jani Nikula <jani.nikula@intel.com>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        Dave Airlie <airlied@linux.ie>,
+        Intel Graphics <intel-gfx@lists.freedesktop.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        DRI <dri-devel@lists.freedesktop.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Maxime Ripard <mripard@kernel.org>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>
+References: <20211015202648.258445ef@canb.auug.org.au>
+ <20211101194223.749197c5@canb.auug.org.au>
+ <20211105171517.287de894@canb.auug.org.au>
+ <874k8qampc.fsf@intel.com>
+ <20211106133314.42e3e308@canb.auug.org.au>
+ <87zgqd6alj.fsf@intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20211109083547.3546963-1-zhangzl2013@126.com>
+In-Reply-To: <87zgqd6alj.fsf@intel.com>
+X-Operating-System: Linux phenom 5.10.0-8-amd64 
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 09, 2021 at 04:35:47PM +0800, Zhaolong Zhang wrote:
-> Drop cpu_missing since we have more capable mce_missing_cpus.
+On Tue, Nov 09, 2021 at 09:40:08AM +0200, Jani Nikula wrote:
+> On Sat, 06 Nov 2021, Stephen Rothwell <sfr@canb.auug.org.au> wrote:
+> > Hi Jani,
+> >
+> > On Fri, 05 Nov 2021 13:03:43 +0200 Jani Nikula <jani.nikula@intel.com> wrote:
+> >>
+> >> I probably should have pushed c4f08d7246a5 ("drm/locking: fix
+> >> __stack_depot_* name conflict") to drm-misc-next-fixes.
+> >
+> > Please do so as builds will start failing otherwise :-(
+> 
+> Thomas/Maxime/Maarten, okay to cherry-pick that to drm-misc-next-fixes?
 
-Who is "we"?
-
-Also, you need to try harder with that commit message - mce_missing_cpus
-is a cpumask and I don't see how a cpumask can be "more capable"...
-
-Some more hints on a possible way to structure a commit message - those
-are just hints - not necessarily rules - but it should help you get an
-idea:
-
-Problem is A.
-
-It happens because of B.
-
-Fix it by doing C.
-
-(Potentially do D).
-
-For more detailed info, see
-Documentation/process/submitting-patches.rst, Section "2) Describe your
-changes".
-
-Also, to the tone, from Documentation/process/submitting-patches.rst:
-
- "Describe your changes in imperative mood, e.g. "make xyzzy do frotz"
-  instead of "[This patch] makes xyzzy do frotz" or "[I] changed xyzzy
-  to do frotz", as if you are giving orders to the codebase to change
-  its behaviour."
-
-Also, do not talk about what your patch does - that should hopefully be
-visible in the diff itself. Rather, talk about *why* you're doing what
-you're doing.
-
-Also, please use passive voice in your commit message: no "we" or "I", etc,
-and describe your changes in imperative mood.
-
-Bottom line is: personal pronouns are ambiguous in text, especially with
-so many parties/companies/etc developing the kernel so let's avoid them
-please.
-
-Thx.
-
+Yeah just do, for drm-misc this is considered in committer purview. I
+think we should add a section to the docs about "What if a patch is in the
+wrong branch" which tells you to just cherry-pick -x or whatever.
+-Daniel
 -- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
+Daniel Vetter
+Software Engineer, Intel Corporation
+http://blog.ffwll.ch
