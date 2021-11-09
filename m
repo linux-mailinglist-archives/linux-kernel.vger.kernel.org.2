@@ -2,213 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9ED4F44B125
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 17:27:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 73CE344B126
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 17:28:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239808AbhKIQ3u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Nov 2021 11:29:50 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55566 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238397AbhKIQ3q (ORCPT
+        id S239822AbhKIQbd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Nov 2021 11:31:33 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:25660 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S238397AbhKIQba (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Nov 2021 11:29:46 -0500
-Received: from mail-pg1-x52b.google.com (mail-pg1-x52b.google.com [IPv6:2607:f8b0:4864:20::52b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BCA23C061767
-        for <linux-kernel@vger.kernel.org>; Tue,  9 Nov 2021 08:27:00 -0800 (PST)
-Received: by mail-pg1-x52b.google.com with SMTP id g28so10321988pgg.3
-        for <linux-kernel@vger.kernel.org>; Tue, 09 Nov 2021 08:27:00 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=twc11wTijDol+V5sYkUbqWC/Fb481jyMCWDrEPnsYeM=;
-        b=YJb6IRksssQC+zqpdvq0ZyonBrShcW4KWBv4SGnArUKMIvGmF6MgkADrHb9rX0FETD
-         0zwsbBgi3wEDHtXteiEcrlm5jR8KO3pPLMhMWiT3yhgi3NKvdgDXZz9+Dv1fZwilxiOP
-         jFLnVgYeMzEhrytax9IHvBlwx7DyAZey26+jr0W1o4zKz88H6Dysjc+5HE5v6ZpqAQ30
-         mswDgVh84oM1IzDSNhnDg2AMikezIKKsjoUodA5cWu0vSK3AP5NabL/vkfstvpPr6co6
-         1hQpUgk9WFoJ+cjBOnl9RvJE8yg0h/ZT+AffLYi60h40z1GF8BP1rnRWMJ/XUQzlQ5va
-         LD4Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=twc11wTijDol+V5sYkUbqWC/Fb481jyMCWDrEPnsYeM=;
-        b=sEVEWHODenZQO9xNgj1Rw9Lv86n24pNBhbrb0YJCWH86qH3pMeqLYmAOWrRlFJkbVo
-         423COVdryYeq+cNY3bfV81Ho5lnpRnvctvhSOfvTC+aX5ALim8wRJUSM23/CTgPU+XYf
-         dPV3/2UmnnF7wVTTG5Plbsw/YnN1nc3Kwc3GLkh4/K7LurZXg9J1p4vqMPQmNA1EXBWr
-         x2uYidLequmCJgZExQhWBaix3H+GUIk/PuKA2tfL5YCRvUZFOWL9rZW5q2yDZGKjTWd1
-         AycaQIfQAXskcqt7CfBnVd2ffBP0JbB0yhV0YPpWbXXVeGKRi6KEn0V6GQVoYiVneIl/
-         /K8Q==
-X-Gm-Message-State: AOAM533BOVDWPD2tqw5igFdsMZOCLVDFk3+l+ybwV7b18xxAi6QglwM7
-        +NWT22PyKer1NlTVjF9OcNg7sg==
-X-Google-Smtp-Source: ABdhPJysTCKCFRyYLRJ3W3Q0q2hZeG4rP1jyD6c2DHOify59QaMiTL4EApss1dP7B6pJLvN2gpdrBw==
-X-Received: by 2002:a63:68c9:: with SMTP id d192mr6899174pgc.335.1636475219843;
-        Tue, 09 Nov 2021 08:26:59 -0800 (PST)
-Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
-        by smtp.gmail.com with ESMTPSA id s14sm5274517pfk.73.2021.11.09.08.26.58
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 09 Nov 2021 08:26:59 -0800 (PST)
-Date:   Tue, 9 Nov 2021 16:26:55 +0000
-From:   Sean Christopherson <seanjc@google.com>
-To:     Peter Gonda <pgonda@google.com>
-Cc:     thomas.lendacky@amd.com, Marc Orr <marcorr@google.com>,
-        David Rientjes <rientjes@google.com>,
-        Brijesh Singh <brijesh.singh@amd.com>,
-        Joerg Roedel <jroedel@suse.de>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        John Allen <john.allen@amd.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH V3 1/4] crypto: ccp - Fix SEV_INIT error logging on init
-Message-ID: <YYqhT+Enba5xa4cO@google.com>
-References: <20211102142331.3753798-1-pgonda@google.com>
- <20211102142331.3753798-2-pgonda@google.com>
+        Tue, 9 Nov 2021 11:31:30 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1636475323;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=1gLakwF4Eve2r/ZOKSyyyu4ALZgwnpk2T8Ddhd8zwjk=;
+        b=V+JIjdO8rexk848j1exhwGgOpc9eELIF0BTTt/tKzzdKMNjr/a19hxGxVg0vWJVXcRcPTQ
+        g71Xedl4MAddj223mi3RwaA48wfRE9fZDx4SY+BgkR7ZBqhbE1i2SS2tixEH7cqJiYyFM/
+        2hPjDop230BNOZjjzX+jKiOrfA9DyPM=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-350-hhzjrkFhOjmwxDLNMke4RA-1; Tue, 09 Nov 2021 11:28:42 -0500
+X-MC-Unique: hhzjrkFhOjmwxDLNMke4RA-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 7A0241019982;
+        Tue,  9 Nov 2021 16:28:41 +0000 (UTC)
+Received: from vitty.brq.redhat.com (unknown [10.40.192.207])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id DBC3656A96;
+        Tue,  9 Nov 2021 16:28:36 +0000 (UTC)
+From:   Vitaly Kuznetsov <vkuznets@redhat.com>
+To:     kvm@vger.kernel.org, Paolo Bonzini <pbonzini@redhat.com>
+Cc:     Sean Christopherson <seanjc@google.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Maxim Levitsky <mlevitsk@redhat.com>,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v4 0/8] KVM: nVMX: Enlightened MSR Bitmap feature for Hyper-V on KVM (+ KVM: x86: MSR filtering and related fixes)
+Date:   Tue,  9 Nov 2021 17:28:27 +0100
+Message-Id: <20211109162835.99475-1-vkuznets@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211102142331.3753798-2-pgonda@google.com>
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 02, 2021, Peter Gonda wrote:
-> Currently only the firmware error code is printed. This is incomplete
-> and also incorrect as error cases exists where the firmware is never
-> called and therefore does not set an error code. This change zeros the
-> firmware error code in case the call does not get that far and prints
-> the return code for non firmware errors.
-> 
-> Signed-off-by: Peter Gonda <pgonda@google.com>
-> Reviewed-by: Marc Orr <marcorr@google.com>
-> Acked-by: David Rientjes <rientjes@google.com>
-> Acked-by: Tom Lendacky <thomas.lendacky@amd.com>
-> Cc: Tom Lendacky <thomas.lendacky@amd.com>
-> Cc: Brijesh Singh <brijesh.singh@amd.com>
-> Cc: Marc Orr <marcorr@google.com>
-> Cc: Joerg Roedel <jroedel@suse.de>
-> Cc: Herbert Xu <herbert@gondor.apana.org.au>
-> Cc: David Rientjes <rientjes@google.com>
-> Cc: John Allen <john.allen@amd.com>
-> Cc: "David S. Miller" <davem@davemloft.net>
-> Cc: Paolo Bonzini <pbonzini@redhat.com>
-> Cc: linux-crypto@vger.kernel.org
-> Cc: linux-kernel@vger.kernel.org
-> ---
->  drivers/crypto/ccp/sev-dev.c | 5 +++--
->  1 file changed, 3 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/crypto/ccp/sev-dev.c b/drivers/crypto/ccp/sev-dev.c
-> index 2ecb0e1f65d8..ec89a82ba267 100644
-> --- a/drivers/crypto/ccp/sev-dev.c
-> +++ b/drivers/crypto/ccp/sev-dev.c
-> @@ -1065,7 +1065,7 @@ void sev_pci_init(void)
->  {
->  	struct sev_device *sev = psp_master->sev_data;
->  	struct page *tmr_page;
-> -	int error, rc;
-> +	int error = 0, rc;
+This series combines "Enlightened MSR Bitmap feature for Hyper-V on KVM v4"
+and Sean's "KVM: x86: MSR filtering and related fixes v4" 
+(https://lore.kernel.org/kvm/20211109013047.2041518-1-seanjc@google.com/)
+series as they're code dependent.
 
-Wouldn't it be more appropriate to use something the PSP can't return, e.g. -1?
-'0' is SEV_RET_SUCCESS, which is quite misleading, e.g. the below error message
-will print
+Changes in "Enlightened MSR Bitmap feature for Hyper-V on KVM v4" since
+ v3 [Sean]:
+- Move Hyper-V Enlightened MSR Bitmap in vmx_create_vcpu() and expand
+  the comment.
+- Add R-b tag to "KVM: VMX: Introduce vmx_msr_bitmap_l01_changed() helper".
+- s,msr_bitmap_force_recalc,force_msr_bitmap_recalc,
+- Drop unneeded 'out_clear_msr_bitmap_force_recalc' path from "KVM: nVMX:
+  Implement Enlightened MSR Bitmap feature".
 
-	SEV: failed to INIT error 0, rc -16
+Original description of the feature:
 
-which a bit head scratching without looking at the code.  AFAICT, the PSP return
-codes aren't intrinsically hex, so printing error as a signed demical and thus
+Updating MSR bitmap for L2 is not cheap and rearly needed. TLFS for Hyper-V
+offers 'Enlightened MSR Bitmap' feature which allows L1 hypervisor to
+inform L0 when it changes MSR bitmap, this eliminates the need to examine
+L1's MSR bitmap for L2 every time when 'real' MSR bitmap for L2 gets
+constructed.
 
-	SEV: failed to INIT error -1, rc -16
+When the feature is enabled for Win10+WSL2, it shaves off around 700 CPU
+cycles from a nested vmexit cost (tight cpuid loop test).
 
-would be less confusing.
+First patch of the series is unrelated to the newly implemented feature,
+it fixes a bug in Enlightened MSR Bitmap usage when KVM runs as a nested
+hypervisor on top of Hyper-V.
 
-And IMO requiring the caller to initialize error is will be neverending game of
-whack-a-mole.  E.g. sev_ioctl() fails to set "error" in the userspace structure,
-and literally every function exposed via include/linux/psp-sev.h has this same
-issue.  Case in point, the retry path fails to re-initialize "error" and will
-display stale information if the second sev_platform_init() fails without reaching
-the PSP.
+Sean Christopherson (4):
+  KVM: nVMX: Query current VMCS when determining if MSR bitmaps are in
+    use
+  KVM: nVMX: Handle dynamic MSR intercept toggling
+  KVM: VMX: Macrofy the MSR bitmap getters and setters
+  KVM: nVMX: Clean up x2APIC MSR handling for L2
 
-	rc = sev_platform_init(&error);
-	if (rc && (error == SEV_RET_SECURE_DATA_INVALID)) {
-		/*
-		 * INIT command returned an integrity check failure
-		 * status code, meaning that firmware load and
-		 * validation of SEV related persistent data has
-		 * failed and persistent state has been erased.
-		 * Retrying INIT command here should succeed.
-		 */
-		dev_dbg(sev->dev, "SEV: retrying INIT command");
-		rc = sev_platform_init(&error); <------ error may or may not be set
-	}
+Vitaly Kuznetsov (4):
+  KVM: nVMX: Don't use Enlightened MSR Bitmap for L3
+  KVM: VMX: Introduce vmx_msr_bitmap_l01_changed() helper
+  KVM: nVMX: Track whether changes in L0 require MSR bitmap for L2 to be
+    rebuilt
+  KVM: nVMX: Implement Enlightened MSR Bitmap feature
 
-Ideally, error wouldn't be an output param and instead would be squished into the
-true return value, but that'd required quite the refactoring, and might yield ugly
-code generation on non-64-bit architectures (does this code support those?).
+ arch/x86/kvm/hyperv.c     |   2 +
+ arch/x86/kvm/vmx/nested.c | 177 +++++++++++++++++---------------------
+ arch/x86/kvm/vmx/vmx.c    |  94 +++++++-------------
+ arch/x86/kvm/vmx/vmx.h    |  37 ++++++++
+ 4 files changed, 149 insertions(+), 161 deletions(-)
 
-As a minimal step toward sanity, sev_ioctl(), __sev_platform_init_locked(), and
-__sev_do_cmd_locked() should initialize the incoming error.  Long term, sev-dev
-really needs to either have well-defined API for when "error" is meaningful, or
-ensure the pointer is initialized in all paths.
+-- 
+2.31.1
 
-E.g. 
-
-diff --git a/drivers/crypto/ccp/sev-dev.c b/drivers/crypto/ccp/sev-dev.c
-index ec89a82ba267..549686a1e812 100644
---- a/drivers/crypto/ccp/sev-dev.c
-+++ b/drivers/crypto/ccp/sev-dev.c
-@@ -149,6 +149,9 @@ static int __sev_do_cmd_locked(int cmd, void *data, int *psp_ret)
-        unsigned int reg, ret = 0;
-        int buf_len;
-
-+       if (psp_ret)
-+               *psp_ret = -1;
-+
-        if (!psp || !psp->sev_data)
-                return -ENODEV;
-
-@@ -192,9 +195,6 @@ static int __sev_do_cmd_locked(int cmd, void *data, int *psp_ret)
-        /* wait for command completion */
-        ret = sev_wait_cmd_ioc(sev, &reg, psp_timeout);
-        if (ret) {
--               if (psp_ret)
--                       *psp_ret = 0;
--
-                dev_err(sev->dev, "sev command %#x timed out, disabling PSP\n", cmd);
-                psp_dead = true;
-
-@@ -243,6 +243,9 @@ static int __sev_platform_init_locked(int *error)
-        struct sev_device *sev;
-        int rc = 0;
-
-+       if (error)
-+               *error = -1;
-+
-        if (!psp || !psp->sev_data)
-                return -ENODEV;
-
-@@ -838,6 +841,8 @@ static long sev_ioctl(struct file *file, unsigned int ioctl, unsigned long arg)
-        if (input.cmd > SEV_MAX)
-                return -EINVAL;
-
-+       input.error = -1;
-+
-        mutex_lock(&sev_cmd_mutex);
-
-        switch (input.cmd) {
-
->  	if (!sev)
->  		return;
-> @@ -1104,7 +1104,8 @@ void sev_pci_init(void)
->  	}
->  
->  	if (rc) {
-> -		dev_err(sev->dev, "SEV: failed to INIT error %#x\n", error);
-> +		dev_err(sev->dev, "SEV: failed to INIT error %#x, rc %d\n",
-> +			error, rc);
->  		return;
->  	}
->  
-> -- 
-> 2.33.1.1089.g2158813163f-goog
-> 
