@@ -2,124 +2,238 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A7A6D44AFD1
+	by mail.lfdr.de (Postfix) with ESMTP id 5E11A44AFD0
 	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 15:57:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237936AbhKIO7i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Nov 2021 09:59:38 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34874 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234608AbhKIO7f (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
+        id S237878AbhKIO7g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Nov 2021 09:59:36 -0500
+Received: from mail.kernel.org ([198.145.29.99]:60554 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232619AbhKIO7f (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 9 Nov 2021 09:59:35 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D14F1C061764
-        for <linux-kernel@vger.kernel.org>; Tue,  9 Nov 2021 06:56:49 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=TE5nwlTvkafC/RL3ZP05CpG0F4N27gWH3FYNvovOc/g=; b=nLXk2YUTsdjac/qXWxPpCHKBol
-        0UJMm/kHZi4Z7lA1PKKtlrrxzcT2do3HHqIVfXegE0TsmDhFlBUTWxT7UxhH27Ow/BBp08dg2dFsc
-        ImeCHZpnvZYofyVPr8HEMgiJ4vGTCTWmB/bx3Z8OB+9B/dqR79ukERrwjkkzp9CCyNWDyHnAvzeaf
-        MiQ5UYaX/SRJI4N6HPU9fr41JF9Hkpss4QlCRhwaX1/cu6Mf4POASOR3pehNRWkVtUQhUSffBF9qG
-        ndYiXd2NJJb0fPsoIIROUU5fLvYxTlxmGuVbY3b80PlVrfL1twwwcs+gdNCymZ6CCg0XkCiNJVBXI
-        rP9z5xqw==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mkSY9-0016rd-JC; Tue, 09 Nov 2021 14:56:38 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 8FB4F3001C7;
-        Tue,  9 Nov 2021 15:56:36 +0100 (CET)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 41D732D92505C; Tue,  9 Nov 2021 15:56:36 +0100 (CET)
-Date:   Tue, 9 Nov 2021 15:56:36 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Johannes Weiner <hannes@cmpxchg.org>
-Cc:     Huangzhaoyang <huangzhaoyang@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        Zhaoyang Huang <zhaoyang.huang@unisoc.com>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [Resend PATCH] psi : calc cfs task memstall time more precisely
-Message-ID: <YYqMJLXcQ4a+Lh/4@hirez.programming.kicks-ass.net>
-References: <1634278612-17055-1-git-send-email-huangzhaoyang@gmail.com>
- <YYGV1TxsZXzGXFmx@cmpxchg.org>
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 81E2C6108D;
+        Tue,  9 Nov 2021 14:56:47 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1636469809;
+        bh=3klCozlBVnzBXBg6vClaYZADmZT6NoO+cjoqvUwO+eE=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=LMJ/1r7oXg05PS2Uw7GKyhTS1MFsGnxGHoJdokhAqG+vhjx8JElAJV7HfCgK+FiZo
+         BiBHYbPiiMqC9SwGMIAN07sPBIxtrjJ12i+O9plLAzIzQYF9m2+qFUvwqwuwXxxTM7
+         a7ykrLUT4tcu1dVjx9W0PvUH+Nnfyju09vPVT2UpHOauWAyZ5fHCQV6qYs5Vhcor5g
+         0bET8lH5cbctP8/kRzOhEa2PfWOOmGUZijgJvd8kBCmtOlgbhl5BCrR9S/ugGC7rq2
+         jgOoe9YF5fxzSbwJRB0JSasziiyWoo6ocX5vOm+8V9jraciK9YF4Ah7BCIVJGgoyh+
+         +rIuEF08aDORQ==
+Date:   Tue, 9 Nov 2021 14:56:44 +0000
+From:   Mark Brown <broonie@kernel.org>
+To:     "LH.Kuo" <lhjeff911@gmail.com>
+Cc:     p.zabel@pengutronix.de, robh+dt@kernel.org,
+        linux-spi@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, dvorkin@tibbo.com,
+        qinjian@cqplus1.com, wells.lu@sunplus.com,
+        "LH.Kuo" <lh.kuo@sunplus.com>
+Subject: Re: [PATCH v2 1/2] SPI: Add SPI driver for Sunplus SP7021
+Message-ID: <YYqMLPB6VX9k5LUK@sirena.org.uk>
+References: <1635747525-31243-1-git-send-email-lh.kuo@sunplus.com>
+ <1636448488-14158-1-git-send-email-lh.kuo@sunplus.com>
+ <1636448488-14158-2-git-send-email-lh.kuo@sunplus.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="pADVUBww0TEoVRVh"
 Content-Disposition: inline
-In-Reply-To: <YYGV1TxsZXzGXFmx@cmpxchg.org>
+In-Reply-To: <1636448488-14158-2-git-send-email-lh.kuo@sunplus.com>
+X-Cookie: Elevators smell different to midgets.
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 02, 2021 at 03:47:33PM -0400, Johannes Weiner wrote:
-> CC peterz as well for rt and timekeeping magic
-> 
-> On Fri, Oct 15, 2021 at 02:16:52PM +0800, Huangzhaoyang wrote:
-> > From: Zhaoyang Huang <zhaoyang.huang@unisoc.com>
-> > 
-> > In an EAS enabled system, there are two scenarios discordant to current design,
-> > 
-> > 1. workload used to be heavy uneven among cores for sake of scheduler policy.
-> > RT task usually preempts CFS task in little core.
-> > 2. CFS task's memstall time is counted as simple as exit - entry so far, which
-> > ignore the preempted time by RT, DL and Irqs.
 
-It ignores preemption full-stop. I don't see why RT/IRQ should be
-special cased here.
+--pADVUBww0TEoVRVh
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-> > With these two constraints, the percpu nonidle time would be mainly consumed by
-> > none CFS tasks and couldn't be averaged. Eliminating them by calc the time growth
-> > via the proportion of cfs_rq's utilization on the whole rq.
+On Tue, Nov 09, 2021 at 05:01:27PM +0800, LH.Kuo wrote:
 
+A lot of my previous feedback on this driver still applies, while some
+of the issues have been addressed most of the major structural issues
+continue to apply here.  A lot of the code is replicating code from the
+core or is really hard to explain, it's hard to see anything super
+unusual with the hardware here that would require such unusual code.
 
-> > +static unsigned long psi_memtime_fixup(u32 growth)
-> > +{
-> > +	struct rq *rq = task_rq(current);
-> > +	unsigned long growth_fixed = (unsigned long)growth;
-> > +
-> > +	if (!(current->policy == SCHED_NORMAL || current->policy == SCHED_BATCH))
-> > +		return growth_fixed;
-> > +
-> > +	if (current->in_memstall)
-> > +		growth_fixed = div64_ul((1024 - rq->avg_rt.util_avg - rq->avg_dl.util_avg
-> > +					- rq->avg_irq.util_avg + 1) * growth, 1024);
-> > +
-> > +	return growth_fixed;
-> > +}
-> > +
-> >  static void init_triggers(struct psi_group *group, u64 now)
-> >  {
-> >  	struct psi_trigger *t;
-> > @@ -658,6 +675,7 @@ static void record_times(struct psi_group_cpu *groupc, u64 now)
-> >  	}
-> >  
-> >  	if (groupc->state_mask & (1 << PSI_MEM_SOME)) {
-> > +		delta = psi_memtime_fixup(delta);
-> 
-> Ok, so we want to deduct IRQ and RT preemption time from the memstall
-> period of an active reclaimer, since it's technically not stalled on
-> memory during this time but on CPU.
-> 
-> However, we do NOT want to deduct IRQ and RT time from memstalls that
-> are sleeping on refaults swapins, since they are not affected by what
-> is going on on the CPU.
+Please don't ignore review comments, people are generally making them
+for a reason and are likely to have the same concerns if issues remain
+unaddressed.  Having to repeat the same comments can get repetitive and
+make people question the value of time spent reviewing.  If you disagree
+with the review comments that's fine but you need to reply and discuss
+your concerns so that the reviewer can understand your decisions.
 
-I think that focus on RT/IRQ is mis-guided here, and the implementation
-is horrendous.
+> +static void sp7021_spi_set_cs(struct spi_device *_s, bool _on)
+> +{
+> +	if (_s->mode & SPI_NO_CS)
+> +		return;
+> +	if (!(_s->cs_gpiod))
+> +		return;
+> +	dev_dbg(&(_s->dev), "%d gpiod:%d", _on, desc_to_gpio(_s->cs_gpiod));
+> +	if (_s->mode & SPI_CS_HIGH)
+> +		_on = !_on;
+> +	gpiod_set_value_cansleep(_s->cs_gpiod, _on);
+> +}
 
-So the fundamental question seems to be; and I think Johannes is the one
-to answer that: What time-base do these metrics want to use?
+This is *still* open coding a GPIO chip select, to repeat what I said
+last time this is not OK - use the core facilities to avoid introducing
+bugs like double application of SPI_CS_HIGH you have here.
 
-Do some of these states want to account in task-time instead of
-wall-time perhaps? I can't quite remember, but vague memories are
-telling me most of the PSI accounting was about blocked tasks, not
-running tasks, which makes all this rather more complicated.
+> +// spi slave irq handler
+> +static irqreturn_t sp7021_spi_sla_irq(int _irq, void *_dev)
+> +{
+> +	struct sp7021_spi_ctlr *pspim = (struct sp7021_spi_ctlr *)_dev;
 
-Randomly scaling time as proposed seems almost certainly wrong. What
-would that make the stats mean?
+If you need this cast something is very wrong, do you need it?
+
+> +int sp7021_spi_sla_rw(struct spi_device *_s, struct spi_transfer *_t, int RW_phase)
+
+Please use the normal kernel coding style, using _s for parameter names
+or mixed case symbol names isn't normal for the kernel.  There's also
+issues with line lengths over 80 columns all over, while it's not a
+strict limit it's still good try to keep things to a reasonable length.
+
+> +	if (RW_phase == SP7021_SLA_WRITE) {
+
+This looks like a switch statement, though given how little code is
+shared it's not clear why this is all in one function.
+
+> +		if (_t->tx_dma == pspim->tx_dma_phy_base)
+> +			memcpy(pspim->tx_dma_vir_base, _t->tx_buf, _t->len);
+
+Why are we copying data into a DMA transfer buffer, doesn't this defeat
+the point of DMA?  I'd expect to DMA data directly.  I'd also expect
+some synchronisation operations to ensure that everything has a
+consistent view of the memory.
+
+> +// spi master irq handler
+> +static irqreturn_t sp7021_spi_mas_irq_dma(int _irq, void *_dev)
+> +{
+> +	struct sp7021_spi_ctlr *pspim = (struct sp7021_spi_ctlr *)_dev;
+> +
+> +	spin_lock_irq(&pspim->lock);
+
+Why are we using spin_lock_irq() when we're already in an interrupt
+handler?
+
+> +	}
+> +}
+> +void sp7021spi_wb(struct sp7021_spi_ctlr *_m, u8 _len)
+
+Blank lines between functions.
+
+> +fin_irq:
+> +	if (isrdone)
+> +		complete(&pspim->isr_done);
+> +	spin_unlock_irqrestore(&pspim->lock, flags);
+> +	return IRQ_HANDLED;
+> +}
+
+This unconditionally reports IRQ_HANDLED even if we didn't actually see
+any interrupt status flagged, this will break shared interrupts and
+reduce the ability of the interrupt core to handle errors.
+
+> +	for (i = 0; i < transfers_cnt; i++) {
+> +		if (t->tx_buf)
+> +			memcpy(&pspim->tx_data_buf[data_len], t->tx_buf, t->len);
+> +		if (t->rx_buf)
+> +			xfer_rx = true;
+> +		data_len += t->len;
+> +		t = list_entry(t->transfer_list.next, struct spi_transfer, transfer_list);
+> +	}
+
+This is still copying all data for no apparent reason as highlighted
+last time.
+
+> +	dev_dbg(&(_c->dev), "data_len %d xfer_rx %d", data_len, xfer_rx);
+> +
+> +	// set SPI FIFO data for full duplex (SPI_FD fifo_data)  91.13
+> +	if (pspim->tx_cur_len < data_len) {
+> +		len_temp = min(pspim->data_unit, data_len);
+> +		sp7021spi_wb(pspim, len_temp);
+> +	}
+
+Is the device full duplex or half duplex?  The code immediately above
+this treats both transmit and recieve buffers as optional.  If the
+device does actually need to be full duplex then the driver should flag
+it as such.
+
+> +// called when child device is registering on the bus
+> +static int sp7021_spi_dev_setup(struct spi_device *_s)
+> +{
+> +	struct sp7021_spi_ctlr *pspim = spi_controller_get_devdata(_s->controller);
+> +	int ret;
+> +
+> +	ret = pm_runtime_get_sync(pspim->dev);
+> +		if (ret < 0)
+> +			return 0;
+> +
+> +	pm_runtime_put(pspim->dev);
+> +
+> +	return 0;
+> +
+> +}
+
+This function does nothing except bounce the power on the device, this
+is obviously not useful and should be removed.
+
+> +static int sp7021_spi_controller_unprepare_message(struct spi_controller *_c,
+> +				    struct spi_message *msg)
+> +{
+> +	return 0;
+> +}
+
+Remove empty functions.
+
+> +static size_t sp7021_spi_max_length(struct spi_device *spi)
+> +{
+> +	return SP7021_SPI_MSG_SIZE;
+> +}
+
+Is there any actual limit in the hardware?  This looks very much like
+it's a completely artificial limit in the driver for no obvious reason.
+
+> +static int sp7021_spi_mas_transfer_one_message(struct spi_controller *_c, struct spi_message *m)
+> +{
+> +	struct sp7021_spi_ctlr *pspim = spi_master_get_devdata(_c);
+> +	struct spi_device *spi = m->spi;
+> +	unsigned int xfer_cnt = 0, total_len = 0;
+> +	bool start_xfer = false;
+> +	struct spi_transfer *xfer, *first_xfer = NULL;
+> +	int ret;
+> +	bool keep_cs = false;
+> +
+> +	pm_runtime_get_sync(pspim->dev);
+
+To repeat the feedback from last time do not open code runtime PM, use
+the core support.
+
+> +	sp7021_spi_set_cs(spi, true);
+> +
+> +	list_for_each_entry(xfer, &m->transfers, transfer_list) {
+> +		if (!first_xfer)
+> +			first_xfer = xfer;
+> +		total_len +=  xfer->len;
+
+To further repeat my prior feedback I can't see any reason why this
+driver doesn't just use transfer_one().
+
+--pADVUBww0TEoVRVh
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmGKjCsACgkQJNaLcl1U
+h9D+CwgAg05hfhwyKJDroHzo6DQPDIYOZZQ7dJ6RRuZLsKrk0JvRkDpc/R30oVFO
+B+aeyqR0D6wAdPFTNyDc8wYpqbiB5V2WteSjZM14iOtykE/jCtYgYOUPRC7reQd3
+d/8elkaxojMoyqXNMj5forBmwuO3KiH60ka3bqpZmFO+9n+dPrgecK6wd4k437P9
+7ENoYOV4SDv6AZ3njsyEZ55Ou8xWx+d3dzOUhQeWV31Zcq140g5uJ+r36BeB9ELT
+k5o/5ZFlwueO4svhts0cWn0Da8F6V4fOzElWy5VAd47S/hgSF2xdZbg8ZQrBxSi7
+Nbn10hlmDnxGRlgdyIPY7JzZJlkleA==
+=UItb
+-----END PGP SIGNATURE-----
+
+--pADVUBww0TEoVRVh--
