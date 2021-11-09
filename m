@@ -2,59 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E17344B05B
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 16:29:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D827D44B067
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 16:31:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236759AbhKIPck (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Nov 2021 10:32:40 -0500
-Received: from mail.kernel.org ([198.145.29.99]:39368 "EHLO mail.kernel.org"
+        id S239197AbhKIPeP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Nov 2021 10:34:15 -0500
+Received: from elvis.franken.de ([193.175.24.41]:39251 "EHLO elvis.franken.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236677AbhKIPcj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Nov 2021 10:32:39 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B23DE611CA;
-        Tue,  9 Nov 2021 15:29:52 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1636471793;
-        bh=eJtozRUR5h8pluy5NEdrhAqmDhEU6q84/t9GV3y8+1o=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:From;
-        b=a7zUzYaPODFM1y4fYyQAX3RlfgrpmzTGX192L/0wnwqk9aB6vyh2QymVPvfHDdHPL
-         jFeDvjcuV4qTmreOw3AFSF+KfJ9TtPoRgRI4Mro/O+9z1Ja79lEDwlw5Axk0Sspmde
-         xBnJ9PFm28H6b2u0T8q0SqUA8zexRsdlvKfBRB3BAwfPBxvGbJbNrQutXL9c5QlyDp
-         9/DViqZAqJ9Eu7Jy8lOHyq2G9VMV0s/Ra3+S6iT2oTkTvC5kH2H1kYiO5CgzGH8J/W
-         tZYYpozOPDVHX/eII/KW06djWDzwQuSfRJnMGBtcSmBJZJI0vEcBmfpkJHK5ssShGq
-         CzWyqu1tBec3g==
-Date:   Tue, 9 Nov 2021 09:29:51 -0600
-From:   Bjorn Helgaas <helgaas@kernel.org>
-To:     "Bao, Joseph" <joseph.bao@intel.com>
-Cc:     Bjorn Helgaas <bhelgaas@google.com>,
-        "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Stuart Hayes <stuart.w.hayes@gmail.com>,
-        Lukas Wunner <lukas@wunner.de>
-Subject: Re: HW power fault defect cause system hang on kernel 5.4.y
-Message-ID: <20211109152951.GA1146992@bhelgaas>
+        id S239098AbhKIPeN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Nov 2021 10:34:13 -0500
+Received: from uucp (helo=alpha)
+        by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
+        id 1mkT5p-00033f-02; Tue, 09 Nov 2021 16:31:25 +0100
+Received: by alpha.franken.de (Postfix, from userid 1000)
+        id 251A8C2C38; Tue,  9 Nov 2021 16:29:54 +0100 (CET)
+Date:   Tue, 9 Nov 2021 16:29:54 +0100
+From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+To:     Randy Dunlap <rdunlap@infradead.org>
+Cc:     linux-kernel@vger.kernel.org, kernel test robot <lkp@intel.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        bcm-kernel-feedback-list@broadcom.com, linux-mips@vger.kernel.org,
+        Paul Burton <paulburton@kernel.org>,
+        Maxime Bizon <mbizon@freebox.fr>,
+        Ralf Baechle <ralf@linux-mips.org>
+Subject: Re: [PATCH v2] mips: BCM63XX: ensure that CPU_SUPPORTS_32BIT_KERNEL
+ is set
+Message-ID: <20211109152954.GC12535@alpha.franken.de>
+References: <20211106154911.26222-1-rdunlap@infradead.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <DM8PR11MB570219FE94A7983E0F61A3BA86929@DM8PR11MB5702.namprd11.prod.outlook.com>
+In-Reply-To: <20211106154911.26222-1-rdunlap@infradead.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 09, 2021 at 07:59:59AM +0000, Bao, Joseph wrote:
-> Hi Lukas/Stuart,
-> Want to follow up with you whether the system hang is expected when
-> HW has a defect keeping PCI_EXP_SLTSTA_PFD always HIGH.
+On Sat, Nov 06, 2021 at 08:49:11AM -0700, Randy Dunlap wrote:
+> Several header files need info on CONFIG_32BIT or CONFIG_64BIT,
+> but kconfig symbol BCM63XX does not provide that info. This leads
+> to many build errors, e.g.:
+> 
+>    arch/mips/include/asm/page.h:196:13: error: use of undeclared identifier 'CAC_BASE'
+>            return x - PAGE_OFFSET + PHYS_OFFSET;
+>    arch/mips/include/asm/mach-generic/spaces.h:91:23: note: expanded from macro 'PAGE_OFFSET'
+>    #define PAGE_OFFSET             (CAC_BASE + PHYS_OFFSET)
+>    arch/mips/include/asm/io.h:134:28: error: use of undeclared identifier 'CAC_BASE'
+>            return (void *)(address + PAGE_OFFSET - PHYS_OFFSET);
+>    arch/mips/include/asm/mach-generic/spaces.h:91:23: note: expanded from macro 'PAGE_OFFSET'
+>    #define PAGE_OFFSET             (CAC_BASE + PHYS_OFFSET)
+> 
+> arch/mips/include/asm/uaccess.h:82:10: error: use of undeclared identifier '__UA_LIMIT'
+>            return (__UA_LIMIT & (addr | (addr + size) | __ua_size(size))) == 0;
+> 
+> 
+> Selecting the SYS_HAS_CPU_BMIPS* symbols causes SYS_HAS_CPU_BMIPS to be
+> set, which then selects CPU_SUPPORT_32BIT_KERNEL, which causes
+> CONFIG_32BIT to be set. (a bit more indirect than v1 [RFC].)
+> 
+> Fixes: e7300d04bd08 ("MIPS: BCM63xx: Add support for the Broadcom BCM63xx family of SOCs.")
+> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+> Reported-by: kernel test robot <lkp@intel.com>
+> Cc: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+> Cc: Florian Fainelli <f.fainelli@gmail.com>
+> Cc: bcm-kernel-feedback-list@broadcom.com
+> Cc: linux-mips@vger.kernel.org
+> Cc: Paul Burton <paulburton@kernel.org>
+> Cc: Maxime Bizon <mbizon@freebox.fr>
+> Cc: Ralf Baechle <ralf@linux-mips.org>
+> Suggested-by: Florian Fainelli <f.fainelli@gmail.com>
+> ---
+> v2: select 3 SYS_HAS_CPU_BMIPS* symbols that will cause
+>     CPU_SUPPORTS_32BIT_KERNEL to be set (Florian)
+> 
+>  arch/mips/Kconfig |    3 +++
+>  1 file changed, 3 insertions(+)
+> 
+> --- linux-next-20211105.orig/arch/mips/Kconfig
+> +++ linux-next-20211105/arch/mips/Kconfig
+> @@ -332,6 +332,9 @@ config BCM63XX
+>  	select SYS_SUPPORTS_32BIT_KERNEL
+>  	select SYS_SUPPORTS_BIG_ENDIAN
+>  	select SYS_HAS_EARLY_PRINTK
+> +	select SYS_HAS_CPU_BMIPS32_3300
+> +	select SYS_HAS_CPU_BMIPS4350
+> +	select SYS_HAS_CPU_BMIPS4380
+>  	select SWAP_IO_SPACE
+>  	select GPIOLIB
+>  	select MIPS_L1_CACHE_SHIFT_4
 
-A system hang in response to a hardware defect like this is never the
-expected situation.  Worst case we should be able to work around it
-with a quirk.  Far better would be a generic fix that could recognize
-and deal with the situation even without a quirk.
+applied to mips-next.
 
-But I don't know the fix yet.  I'm just responding to encourage you to
-keep pestering us and not give up :)  In the meantime, it might be
-worth opening a report at https://bugzilla.kernel.org with a
-description of how you trigger the problem, and attaching the complete
-dmesg log and "sudo lspci -vv" output.
+Thomas.
 
-Bjorn
+-- 
+Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
+good idea.                                                [ RFC1925, 2.3 ]
