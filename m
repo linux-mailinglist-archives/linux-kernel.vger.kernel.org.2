@@ -2,188 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 418B144AAC3
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 10:44:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E06344AACC
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 10:47:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244969AbhKIJrI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Nov 2021 04:47:08 -0500
-Received: from verein.lst.de ([213.95.11.211]:49373 "EHLO verein.lst.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237441AbhKIJrA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Nov 2021 04:47:00 -0500
-Received: by verein.lst.de (Postfix, from userid 2407)
-        id 4A0B567373; Tue,  9 Nov 2021 10:44:11 +0100 (CET)
-Date:   Tue, 9 Nov 2021 10:44:10 +0100
-From:   Christoph Hellwig <hch@lst.de>
-To:     Jani Nikula <jani.nikula@linux.intel.com>
-Cc:     Zhi Wang <zhi.wang.linux@gmail.com>,
-        joonas.lahtinen@linux.intel.com, rodrigo.vivi@intel.com,
-        zhenyuw@linux.intel.com, zhi.a.wang@intel.com, jgg@nvidia.com,
-        intel-gfx@lists.freedesktop.org,
-        intel-gvt-dev@lists.freedesktop.org,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        hch@lst.de
-Subject: Re: [PATCH 1/3] i915/gvt: seperate tracked MMIO table from
- handlers.c
-Message-ID: <20211109094410.GA3073@lst.de>
-References: <20211108212718.10576-1-zhi.a.wang@intel.com> <875yt17qzs.fsf@intel.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <875yt17qzs.fsf@intel.com>
-User-Agent: Mutt/1.5.17 (2007-11-01)
+        id S242600AbhKIJub (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Nov 2021 04:50:31 -0500
+Received: from alexa-out.qualcomm.com ([129.46.98.28]:32717 "EHLO
+        alexa-out.qualcomm.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231147AbhKIJua (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Nov 2021 04:50:30 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=quicinc.com; i=@quicinc.com; q=dns/txt; s=qcdkim;
+  t=1636451265; x=1667987265;
+  h=from:to:cc:subject:date:message-id;
+  bh=6tqlYmDpFiTflvQY8+aODJEFmV4JpiyMaHH3bDkK6nQ=;
+  b=TtkNbawaJwgQiq2hng00FA0CNUljabTiu6jesQlbaB3kANvEtIl2NJRw
+   P5jH/Jd0l6zkqjeTjoNSIheTuHRRXH80Aiqt99CE62xYj5B+G4wRukZ48
+   zRbasuxpWcWmbcQLJgWR0OM92pUFy1IWCBbJjHIcyoSRQ8wDOhFoJmq+q
+   E=;
+Received: from ironmsg07-lv.qualcomm.com ([10.47.202.151])
+  by alexa-out.qualcomm.com with ESMTP; 09 Nov 2021 01:47:44 -0800
+X-QCInternal: smtphost
+Received: from ironmsg02-blr.qualcomm.com ([10.86.208.131])
+  by ironmsg07-lv.qualcomm.com with ESMTP/TLS/AES256-SHA; 09 Nov 2021 01:47:42 -0800
+X-QCInternal: smtphost
+Received: from mkrishn-linux.qualcomm.com ([10.204.66.35])
+  by ironmsg02-blr.qualcomm.com with ESMTP; 09 Nov 2021 15:17:31 +0530
+Received: by mkrishn-linux.qualcomm.com (Postfix, from userid 438394)
+        id 517DE2227F; Tue,  9 Nov 2021 15:17:30 +0530 (IST)
+From:   Krishna Manikandan <quic_mkrishn@quicinc.com>
+To:     linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     Krishna Manikandan <quic_mkrishn@quicinc.com>,
+        quic_kalyant@quicinc.com, robdclark@gmail.com, swboyd@chromium.org,
+        freedreno@lists.freedesktop.org, dri-devel@lists.freedesktop.org
+Subject: [PATCH v3] drm/msm: use compatible lists to find mdp node
+Date:   Tue,  9 Nov 2021 15:17:28 +0530
+Message-Id: <1636451248-18889-1-git-send-email-quic_mkrishn@quicinc.com>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 09, 2021 at 09:00:39AM +0200, Jani Nikula wrote:
-> On Mon, 08 Nov 2021, Zhi Wang <zhi.wang.linux@gmail.com> wrote:
-> > From: Zhi Wang <zhi.wang.linux@gmail.com>
-> >
-> > To support the new mdev interfaces and the re-factor patches from
-> > Christoph, which moves the GVT-g code into a dedicated module, the GVT-g
-> > MMIO snapshot still needs to be saved in i915 so that the inital clean HW
-> > state can be used for the further vGPU. Seperate the tracked MMIO table
-> > from GVT-g, so that GVT-g and i915 can both use it.
-> 
-> Do you really have to both put code in a header and then include that in
-> multiple places?
-> 
-> I think you may need to rethink the whole approach, maybe make them
-> actual tables instead of code.
+In the current implementation, substring comparison
+using device node name is used to find mdp node
+during driver probe. Use compatible string list instead
+of node name to get mdp node from the parent mdss node.
 
-I played around with this a bit and I can't think of anyting better,
-especially given that a function (i915_mmio_reg_offset) is used to
-get the offset.  So except for the cosmetic cleanup below I think this
-is the best we can do for now:
+Signed-off-by: Krishna Manikandan <quic_mkrishn@quicinc.com>
 
-diff --git a/drivers/gpu/drm/i915/gvt/gvt.h b/drivers/gpu/drm/i915/gvt/gvt.h
-index 4e2fd564abea1..c1f5f3b8abb2c 100644
---- a/drivers/gpu/drm/i915/gvt/gvt.h
-+++ b/drivers/gpu/drm/i915/gvt/gvt.h
-@@ -295,8 +295,8 @@ struct intel_vgpu_type {
+Changes in v2:
+  - Use compatible lists instead of duplicate string
+    check (Stephen Boyd)
+
+Changes in v3:
+  - Use match tables to find the mdp node (Stephen Boyd)
+---
+ drivers/gpu/drm/msm/disp/dpu1/dpu_kms.c  | 3 ++-
+ drivers/gpu/drm/msm/disp/mdp5/mdp5_kms.c | 3 ++-
+ drivers/gpu/drm/msm/msm_drv.c            | 7 ++++---
+ drivers/gpu/drm/msm/msm_kms.h            | 3 +++
+ 4 files changed, 11 insertions(+), 5 deletions(-)
+
+diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_kms.c b/drivers/gpu/drm/msm/disp/dpu1/dpu_kms.c
+index ad247c0..c778b6d 100644
+--- a/drivers/gpu/drm/msm/disp/dpu1/dpu_kms.c
++++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_kms.c
+@@ -1273,7 +1273,7 @@ static const struct dev_pm_ops dpu_pm_ops = {
+ 				pm_runtime_force_resume)
  };
  
- struct intel_gvt_hw_state {
--	void *cfg_space;
--	void *mmio;
-+	u32 *cfg_space;
-+	u32 *mmio;
+-static const struct of_device_id dpu_dt_match[] = {
++const struct of_device_id dpu_dt_match[] = {
+ 	{ .compatible = "qcom,sdm845-dpu", },
+ 	{ .compatible = "qcom,sc7180-dpu", },
+ 	{ .compatible = "qcom,sc7280-dpu", },
+@@ -1282,6 +1282,7 @@ static const struct of_device_id dpu_dt_match[] = {
+ 	{}
+ };
+ MODULE_DEVICE_TABLE(of, dpu_dt_match);
++EXPORT_SYMBOL(dpu_dt_match);
+ 
+ static struct platform_driver dpu_driver = {
+ 	.probe = dpu_dev_probe,
+diff --git a/drivers/gpu/drm/msm/disp/mdp5/mdp5_kms.c b/drivers/gpu/drm/msm/disp/mdp5/mdp5_kms.c
+index 7b24224..8b97008 100644
+--- a/drivers/gpu/drm/msm/disp/mdp5/mdp5_kms.c
++++ b/drivers/gpu/drm/msm/disp/mdp5/mdp5_kms.c
+@@ -1031,13 +1031,14 @@ static const struct dev_pm_ops mdp5_pm_ops = {
+ 	SET_RUNTIME_PM_OPS(mdp5_runtime_suspend, mdp5_runtime_resume, NULL)
  };
  
- struct intel_gvt {
-diff --git a/drivers/gpu/drm/i915/gvt/handlers.c b/drivers/gpu/drm/i915/gvt/handlers.c
-index 6a08d362bf664..41d1bb80aba40 100644
---- a/drivers/gpu/drm/i915/gvt/handlers.c
-+++ b/drivers/gpu/drm/i915/gvt/handlers.c
-@@ -2124,6 +2124,17 @@ static int csfe_chicken1_mmio_write(struct intel_vgpu *vgpu,
+-static const struct of_device_id mdp5_dt_match[] = {
++const struct of_device_id mdp5_dt_match[] = {
+ 	{ .compatible = "qcom,mdp5", },
+ 	/* to support downstream DT files */
+ 	{ .compatible = "qcom,mdss_mdp", },
+ 	{}
+ };
+ MODULE_DEVICE_TABLE(of, mdp5_dt_match);
++EXPORT_SYMBOL(mdp5_dt_match);
+ 
+ static struct platform_driver mdp5_driver = {
+ 	.probe = mdp5_dev_probe,
+diff --git a/drivers/gpu/drm/msm/msm_drv.c b/drivers/gpu/drm/msm/msm_drv.c
+index 7936e8d..445788f 100644
+--- a/drivers/gpu/drm/msm/msm_drv.c
++++ b/drivers/gpu/drm/msm/msm_drv.c
+@@ -1277,9 +1277,10 @@ static int add_components_mdp(struct device *mdp_dev,
  	return 0;
  }
  
-+/*
-+ * Generate the MMIO handler hash table.
-+ */
-+#define MMIO_F(reg, s, f, am, rm, d, r, w)			\
-+do {								\
-+	int ret = new_mmio_info(gvt, i915_mmio_reg_offset(reg),	\
-+				f, s, am, rm, d, r, w);		\
-+	if (ret)						\
-+		return ret;					\
-+} while (0)
-+
- #include "mmio_table.h"
- 
- static struct gvt_mmio_block *find_mmio_block(struct intel_gvt *gvt,
-diff --git a/drivers/gpu/drm/i915/gvt/mmio_table.h b/drivers/gpu/drm/i915/gvt/mmio_table.h
-index 39a4cb59695ae..2a17f7162224d 100644
---- a/drivers/gpu/drm/i915/gvt/mmio_table.h
-+++ b/drivers/gpu/drm/i915/gvt/mmio_table.h
-@@ -25,20 +25,7 @@
- #ifndef _GVT_MMIO_TABLE_H_
- #define _GVT_MMIO_TABLE_H_
- 
--#ifdef GENERATE_MMIO_TABLE_IN_I915
--#define MMIO_F(reg, s, f, am, rm, d, r, w) do { \
--	ret = new_mmio_info(gvt, i915_mmio_reg_offset(reg)); \
--	if (ret) \
--		return ret; \
--} while (0)
--#else
--#define MMIO_F(reg, s, f, am, rm, d, r, w) do { \
--	ret = new_mmio_info(gvt, i915_mmio_reg_offset(reg), \
--		f, s, am, rm, d, r, w); \
--	if (ret) \
--		return ret; \
--} while (0)
--#endif
-+#include "gvt/reg.h"
- 
- #define MMIO_D(reg, d) \
- 	MMIO_F(reg, 4, 0, 0, 0, d, NULL, NULL)
-@@ -86,8 +73,6 @@ static int intel_gvt_init_generic_mmio_info(struct intel_gvt *gvt)
+-static int compare_name_mdp(struct device *dev, void *data)
++static int find_mdp_node(struct device *dev, void *data)
  {
- 	struct drm_i915_private *dev_priv = gvt->gt->i915;
- 
--	int ret;
--
- 	MMIO_RING_DFH(RING_IMR, D_ALL, 0, NULL,
- 		intel_vgpu_reg_imr_handler);
- 
-@@ -905,7 +890,6 @@ static int intel_gvt_init_generic_mmio_info(struct intel_gvt *gvt)
- static int intel_gvt_init_bdw_mmio_info(struct intel_gvt *gvt)
- {
- 	struct drm_i915_private *dev_priv = gvt->gt->i915;
--	int ret;
- 
- 	MMIO_DH(GEN8_GT_IMR(0), D_BDW_PLUS, NULL, intel_vgpu_reg_imr_handler);
- 	MMIO_DH(GEN8_GT_IER(0), D_BDW_PLUS, NULL, intel_vgpu_reg_ier_handler);
-@@ -1095,7 +1079,6 @@ static int intel_gvt_init_bdw_mmio_info(struct intel_gvt *gvt)
- static int intel_gvt_init_skl_mmio_info(struct intel_gvt *gvt)
- {
- 	struct drm_i915_private *dev_priv = gvt->gt->i915;
--	int ret;
- 
- 	MMIO_DH(FORCEWAKE_RENDER_GEN9, D_SKL_PLUS, NULL, mul_force_wake_write);
- 	MMIO_DH(FORCEWAKE_ACK_RENDER_GEN9, D_SKL_PLUS, NULL, NULL);
-@@ -1346,7 +1329,6 @@ static int intel_gvt_init_skl_mmio_info(struct intel_gvt *gvt)
- static int intel_gvt_init_bxt_mmio_info(struct intel_gvt *gvt)
- {
- 	struct drm_i915_private *dev_priv = gvt->gt->i915;
--	int ret;
- 
- 	MMIO_F(_MMIO(0x80000), 0x3000, 0, 0, 0, D_BXT, NULL, NULL);
- 
-diff --git a/drivers/gpu/drm/i915/intel_gvt.c b/drivers/gpu/drm/i915/intel_gvt.c
-index 4fd51974bd359..fa9d79815af26 100644
---- a/drivers/gpu/drm/i915/intel_gvt.c
-+++ b/drivers/gpu/drm/i915/intel_gvt.c
-@@ -86,19 +86,17 @@ void intel_gvt_sanitize_options(struct drm_i915_private *dev_priv)
- 	dev_priv->params.enable_gvt = 0;
+-	return (strstr(dev_name(dev), "mdp") != NULL);
++	return of_match_node(dpu_dt_match, dev->of_node) ||
++		of_match_node(mdp5_dt_match, dev->of_node);
  }
  
--#define GENERATE_MMIO_TABLE_IN_I915
--static int new_mmio_info(struct intel_gvt *gvt, u32 offset)
--{
--	void *mmio = gvt->hw_state.mmio;
--
--	*(u32 *)(mmio + offset) = intel_uncore_read_notrace(gvt->gt->uncore,
--							    _MMIO(offset));
--	return 0;
--}
--
--#include "gvt/reg.h"
-+/*
-+ * Generates the MMIO golden state table.
-+ */
-+#define MMIO_F(reg, s, f, am, rm, d, r, w)			\
-+do {								\
-+	u32 offset = i915_mmio_reg_offset(reg);			\
-+								\
-+	(gvt)->hw_state.mmio[offset] =				\
-+		intel_uncore_read_notrace((gvt)->gt->uncore, _MMIO(offset)); \
-+} while (0)
- #include "gvt/mmio_table.h"
--#undef GENERATE_MMIO_TABLE_IN_I915
+ static int add_display_components(struct platform_device *pdev,
+@@ -1304,7 +1305,7 @@ static int add_display_components(struct platform_device *pdev,
+ 			return ret;
+ 		}
  
- static void init_device_info(struct intel_gvt *gvt)
- {
+-		mdp_dev = device_find_child(dev, NULL, compare_name_mdp);
++		mdp_dev = device_find_child(dev, NULL, find_mdp_node);
+ 		if (!mdp_dev) {
+ 			DRM_DEV_ERROR(dev, "failed to find MDSS MDP node\n");
+ 			of_platform_depopulate(dev);
+diff --git a/drivers/gpu/drm/msm/msm_kms.h b/drivers/gpu/drm/msm/msm_kms.h
+index 6a42b81..8b132c8 100644
+--- a/drivers/gpu/drm/msm/msm_kms.h
++++ b/drivers/gpu/drm/msm/msm_kms.h
+@@ -198,6 +198,9 @@ struct msm_kms *mdp4_kms_init(struct drm_device *dev);
+ struct msm_kms *mdp5_kms_init(struct drm_device *dev);
+ struct msm_kms *dpu_kms_init(struct drm_device *dev);
+ 
++extern const struct of_device_id dpu_dt_match[];
++extern const struct of_device_id mdp5_dt_match[];
++
+ struct msm_mdss_funcs {
+ 	int (*enable)(struct msm_mdss *mdss);
+ 	int (*disable)(struct msm_mdss *mdss);
+-- 
+2.7.4
+
