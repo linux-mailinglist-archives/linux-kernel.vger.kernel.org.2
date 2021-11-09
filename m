@@ -2,223 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1007044AAD0
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 10:48:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B963544AAD1
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 10:48:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244137AbhKIJvT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Nov 2021 04:51:19 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49178 "EHLO
+        id S244212AbhKIJv1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Nov 2021 04:51:27 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49182 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243626AbhKIJvS (ORCPT
+        with ESMTP id S243626AbhKIJvU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Nov 2021 04:51:18 -0500
-Received: from mail-pf1-x432.google.com (mail-pf1-x432.google.com [IPv6:2607:f8b0:4864:20::432])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 145F0C061764
-        for <linux-kernel@vger.kernel.org>; Tue,  9 Nov 2021 01:48:33 -0800 (PST)
-Received: by mail-pf1-x432.google.com with SMTP id y5so8695585pfb.4
-        for <linux-kernel@vger.kernel.org>; Tue, 09 Nov 2021 01:48:33 -0800 (PST)
+        Tue, 9 Nov 2021 04:51:20 -0500
+Received: from mail-pf1-x435.google.com (mail-pf1-x435.google.com [IPv6:2607:f8b0:4864:20::435])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B690C061764
+        for <linux-kernel@vger.kernel.org>; Tue,  9 Nov 2021 01:48:34 -0800 (PST)
+Received: by mail-pf1-x435.google.com with SMTP id y5so8695657pfb.4
+        for <linux-kernel@vger.kernel.org>; Tue, 09 Nov 2021 01:48:34 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=sifive.com; s=google;
-        h=from:to:subject:date:message-id:mime-version
+        h=from:to:subject:date:message-id:in-reply-to:references:mime-version
          :content-transfer-encoding;
-        bh=g6SI+GiU8941Hm+qpVFQtR2xu0rkhJco6OwMqL6R5Po=;
-        b=dSlutICv3KDh1SAjN1MJn4EzjCtZtor3MjckIrzKKhOz4S8VYwWwLsgKlBrb+0NriO
-         r2M2KkijLNLn9oNPjRidUAawqY3VeaSwOLj1FXuWoPLjY+S0i3X1uthif90L7HHy3xOY
-         3sjnht1EdBRwIn3G9JbFSHKCLwibZUN3TO7eJvHO3/jwpSkkMxX/SKYsG+8LlPDxuZkj
-         w2Zw2gCWK36fqmY+3GQSbubyJ2fc/AZjogfRBQ3HE4keF0DK3/CGplnjQT3h/adRNMo2
-         saFBVjU1bJtOat1FPmVOue0y0EngHn8Q/gwbaoyi5a9PCghfDPhZNyJk0TZ+sStro7wd
-         TmZQ==
+        bh=/TnOUl4F123mnvANSe6fIkO63Rk+15kCEettwhNh/z0=;
+        b=c+oKiP6aTAXv3kd484eeW4UnfjRGvcHzqaDG3PnqjWgSmokMzhdSoGEqb2RhYVnnVZ
+         R2HqxI+1/Q5cHL+qudUrM83P+Vbjav0mg3EldzK514G/Fhqs1LTAJYjoz6BTcY1/f9XH
+         gBjCEJ/o8XOwUOdqX6a1rLsCXHK94yYEe3h5cDWi8cVkmnZjKp6fGihl68fWt+E7/qiE
+         Q9uJFo06TIPrrjBouzLD49IEzfNwE9db8WFTzrdLWI9bjjgiYgsHb1klYa+JHkTsp3YJ
+         DzNyyPVDb7nlRG4dMgbQK/LcbTelCcZnbMeS7i5c1NhSZNzKMmjuGviJ18U11YFL29AD
+         UW6Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=g6SI+GiU8941Hm+qpVFQtR2xu0rkhJco6OwMqL6R5Po=;
-        b=efN/NnYRy9NxRb36clq0D+xyFeDhx9eJ3TfHtSebi8GxY8mKuqUT4jQl4Z2xArlrvs
-         2quVdei4Nw0plgjrPu1CtiNJ0iS1X3uTbvdh/uAxjs1zwGJ0hC0UQWaf0ZaRLNHq9n+/
-         cHALx7NSCX9738id0gs+Ch4bNb6czyckY6lAYILXJK8daVF/EGQpDA9dgaZBNxfEj+wg
-         tu18ZMLNPu1lVYYSC4KzVdOc7jtHgAaZqjQF9JyGz82k9Kxsbao5gbZnGkPIqojKjbQg
-         if9eVcpeOcjg6Oom9mPs1oVECYRUiKNPuEPiruF8VTvJNYrCBCwjtBT1Jxsydp7W49G7
-         vjGA==
-X-Gm-Message-State: AOAM533irZ9DTWMZSItHrjOOGCLvbXD0RPmtdzGtpFxBGIrpV7axU4jx
-        xYKBAdjy51r9y8WUg2pJBj7/MM/KwtdlvA==
-X-Google-Smtp-Source: ABdhPJzb68gL6r+ujm/J8Q4+lkVUdBfLMGAQ25az88je/i2Fcfc77uQKbELuRu+nRJeUoRsM064P6g==
-X-Received: by 2002:a05:6a00:1310:b0:494:672b:1e97 with SMTP id j16-20020a056a00131000b00494672b1e97mr40094265pfu.77.1636451312606;
-        Tue, 09 Nov 2021 01:48:32 -0800 (PST)
+        h=x-gm-message-state:from:to:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=/TnOUl4F123mnvANSe6fIkO63Rk+15kCEettwhNh/z0=;
+        b=NY0JJlcfxc8E0rVRSxOUpZXaTrZ4uAzOzg6nWTRwlQpUoomP9yV7OWd3qGC2bRrmmV
+         JNMhJKqexj9G5Lyaa9So/niLvaQUqC/zoOtPF9Knhp4N2FdA6E5d2Bk85ZxZefr364cg
+         HBgvozniTPUPvqVtAocMI5chwBDcm7p5LbTq7+GPhhOdHSSp0Wz0oShcihv6VYAjcvyl
+         0UBgR3UMTx5wHfhfgAYioZCFRZ7HqYvf5h1QX9steTH332vzbRFbD68LJxe7+kMH8YqE
+         llqbYbnVXH02v4WyDJ58QjQE8OuykCxA9iDW/NIJlUAcoSehlkO4cozw7bqxiNaREEzt
+         rTxw==
+X-Gm-Message-State: AOAM531HPObMpjRnaEsWTc/I38FFWw7PE5l/1jveaLafjTkMhheqsN6P
+        /gtoZjIxBSXQoA90Ph90ABS30Q==
+X-Google-Smtp-Source: ABdhPJxslxZmgp6HGLXrNO9ENm+ukRudAEyD3TUYAMc2MiU5skbn5f8H5pd83qLPoeINHQerjDYasg==
+X-Received: by 2002:a05:6a00:1c65:b0:49f:d8d0:c5d9 with SMTP id s37-20020a056a001c6500b0049fd8d0c5d9mr6568239pfw.72.1636451314045;
+        Tue, 09 Nov 2021 01:48:34 -0800 (PST)
 Received: from hsinchu16.internal.sifive.com (59-124-168-89.hinet-ip.hinet.net. [59.124.168.89])
-        by smtp.gmail.com with ESMTPSA id cv1sm1940511pjb.48.2021.11.09.01.48.31
+        by smtp.gmail.com with ESMTPSA id cv1sm1940511pjb.48.2021.11.09.01.48.32
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 09 Nov 2021 01:48:32 -0800 (PST)
+        Tue, 09 Nov 2021 01:48:33 -0800 (PST)
 From:   Greentime Hu <greentime.hu@sifive.com>
 To:     palmer@dabbelt.com, paul.walmsley@sifive.com,
         linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
         aou@eecs.berkeley.edu
-Subject: [PATCH v9 00/17] riscv: Add vector ISA support
-Date:   Tue,  9 Nov 2021 17:48:12 +0800
-Message-Id: <cover.1636362169.git.greentime.hu@sifive.com>
+Subject: [PATCH v9 01/17] riscv: Separate patch for cflags and aflags
+Date:   Tue,  9 Nov 2021 17:48:13 +0800
+Message-Id: <f76b0312113bf960e114724cb578a060b3f101ab.1636362169.git.greentime.hu@sifive.com>
 X-Mailer: git-send-email 2.31.1
+In-Reply-To: <cover.1636362169.git.greentime.hu@sifive.com>
+References: <cover.1636362169.git.greentime.hu@sifive.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patchset is implemented based on vector 1.0 spec to add vector support
-in riscv Linux kernel. There are some assumptions for this implementations.
+From: Guo Ren <ren_guo@c-sky.com>
 
-1. We assume all harts has the same ISA in the system.
-2. We use vector like FPU in some ways instead of using vector like a
-   specific IP.
-3. We disable vector in kernel space by default unless kernel uses
-   kernel mode vector kernel_rvv_begin()/kernel_rvv_end().
-4. We detect "riscv,isa" to determine whether vector is support or not.
+Use "subst fd" in Makefile is a hack way and it's not convenient
+to add new ISA feature. Just separate them into riscv-march-cflags
+and riscv-march-aflags.
 
-We defined a new structure __riscv_v_state in struct thread_struct to save
-/restore the vector related registers. It is used for both kernel space and
-user space.
-
- - In kernel space, the datap pointer in __riscv_v_state will be allocated
-   to save vector registers.
- - In user space,
-	- In signal handler of user space, datap will point to the address
-          of the __riscv_v_state data structure to save vector registers
-	  in stack. We also create a __reserved[] array in sigcontext for
-	  future extensions.
-	- In ptrace, the data will be put in ubuf in which we use
-       	  riscv_vr_get()/riscv_vr_set() to get or set the
-	  __riscv_v_state data structure from/to it, datap pointer
-	  would be zeroed and vector registers will be copied to the
-	  address right after the __riscv_v_state structure in ubuf.
-
-This patchset also adds support for kernel mode vector, kernel XOR
-implementation with vector ISA and includes several bug fixes and code
-refinement.
-
-This patchset is rebased to v5.15 and it is tested by running several
-vector programs simultaneously. It also can get the correct ucontext_t in
-signal handler and restore correct context after sigreturn. It is also
-tested with ptrace() syscall to use PTRACE_GETREGSET/PTRACE_SETREGSET to
-get/set the vector registers.
-
-We have sent patches for vector support to glibc mailing list.
-
-TODO
-1. Refine the __riscv_v_state allocation in start_thread()
-2. Refine the vector context switching functions by lazy save/restore
-3. Add AMP support. To support harts with different ISA
-
- [1] https://github.com/riscv/riscv-v-spec/blob/master/v-spec.adoc
- [2] https://sourceware.org/pipermail/libc-alpha/2021-September/130897.html
- [3] https://github.com/sifive/qemu/tree/rvv-1.0-upstream-v9
-
+Signed-off-by: Guo Ren <ren_guo@c-sky.com>
+Signed-off-by: Guo Ren <guoren@linux.alibaba.com>
+Signed-off-by: Greentime Hu <greentime.hu@sifive.com>
 ---
-Changelog V9
- - Rebase to v5.15
- - Merge several patches
- - Refine codes
- - Fix a kernel panic issue
+ arch/riscv/Makefile | 18 ++++++++++++------
+ 1 file changed, 12 insertions(+), 6 deletions(-)
 
-Changelog V8
- - Rebase to v5.14
- - Refine struct __riscv_v_state with struct __riscv_ctx_hdr
- - Refine has_vector into a static key
- - Defined __reserved space in struct sigcontext for vector and future extensions
-
-Changelog V7
- - Add support for kernel mode vector
- - Add vector extension XOR implementation
- - Optimize task switch codes of vector
- - Allocate space for vector registers in start_thread()
- - Fix an illegal instruction exception when accessing vlenb
- - Optimize vector registers initialization
- - Initialize vector registers with proper vsetvli then it can work normally
- - Refine ptrace porting due to generic API changed
- - Code clean up
-
-Changelog V6
- - Replace vle.v/vse.v instructions with vle8.v/vse8.v based on 0.9 spec
- - Add comments based on mailinglist feedback
- - Fix rv32 build error
-
-Changelog V5
- - Using regset_size() correctly in generic ptrace
- - Fix the ptrace porting
- - Fix compile warning
-
-Changelog V4
- - Support dynamic vlen
- - Fix bugs: lazy save/resotre, not saving vtype
- - Update VS bit offset based on latest vector spec
- - Add new vector csr based on latest vector spec
- - Code refine and removed unused macros
-
-Changelog V3
- - Rebase linux-5.6-rc3 and tested with qemu
- - Seperate patches with Anup's advice
- - Give out a ABI puzzle with unlimited vlen
-
-Changelog V2
- - Fixup typo "vecotr, fstate_save->vstate_save".
- - Fixup wrong saved registers' length in vector.S.
- - Seperate unrelated patches from this one.
-
-Greentime Hu (11):
-  riscv: Add new csr defines related to vector extension
-  riscv: Add has_vector/riscv_vsize to save vector features.
-  riscv: Add vector struct and assembler definitions
-  riscv: Add task switch support for vector
-  riscv: Add ptrace vector support
-  riscv: Add sigcontext save/restore for vector
-  riscv: Add support for kernel mode vector
-  riscv: Use CSR_STATUS to replace sstatus in vector.S
-  riscv: Add vector extension XOR implementation
-  riscv: Fix an illegal instruction exception when accessing vlenb
-    without enable vector first
-  riscv: Fix a kernel panic issue if $s2 is set to a specific value
-    before entering Linux
-
-Guo Ren (5):
-  riscv: Separate patch for cflags and aflags
-  riscv: Rename __switch_to_aux -> fpu
-  riscv: Extending cpufeature.c to detect V-extension
-  riscv: Add vector feature to compile
-  riscv: Reset vector register
-
-Vincent Chen (1):
-  riscv: signal: Report signal frame size to userspace via auxv
-
- arch/riscv/Kconfig                       |   9 ++
- arch/riscv/Makefile                      |  19 ++-
- arch/riscv/include/asm/csr.h             |  16 ++-
- arch/riscv/include/asm/elf.h             |  41 +++---
- arch/riscv/include/asm/processor.h       |   3 +
- arch/riscv/include/asm/switch_to.h       |  72 +++++++++-
- arch/riscv/include/asm/vector.h          |  16 +++
- arch/riscv/include/asm/xor.h             |  66 +++++++++
- arch/riscv/include/uapi/asm/auxvec.h     |   1 +
- arch/riscv/include/uapi/asm/hwcap.h      |   1 +
- arch/riscv/include/uapi/asm/ptrace.h     |  25 ++++
- arch/riscv/include/uapi/asm/sigcontext.h |  24 ++++
- arch/riscv/kernel/Makefile               |   2 +
- arch/riscv/kernel/asm-offsets.c          |   8 ++
- arch/riscv/kernel/cpufeature.c           |  16 +++
- arch/riscv/kernel/entry.S                |   6 +-
- arch/riscv/kernel/head.S                 |  24 +++-
- arch/riscv/kernel/kernel_mode_vector.c   | 146 +++++++++++++++++++
- arch/riscv/kernel/process.c              |  49 +++++++
- arch/riscv/kernel/ptrace.c               |  71 ++++++++++
- arch/riscv/kernel/setup.c                |   4 +
- arch/riscv/kernel/signal.c               | 173 ++++++++++++++++++++++-
- arch/riscv/kernel/vector.S               |  90 ++++++++++++
- arch/riscv/lib/Makefile                  |   1 +
- arch/riscv/lib/xor.S                     |  81 +++++++++++
- include/uapi/linux/elf.h                 |   1 +
- 26 files changed, 929 insertions(+), 36 deletions(-)
- create mode 100644 arch/riscv/include/asm/vector.h
- create mode 100644 arch/riscv/include/asm/xor.h
- create mode 100644 arch/riscv/kernel/kernel_mode_vector.c
- create mode 100644 arch/riscv/kernel/vector.S
- create mode 100644 arch/riscv/lib/xor.S
-
+diff --git a/arch/riscv/Makefile b/arch/riscv/Makefile
+index 0eb4568fbd29..37de70df4fae 100644
+--- a/arch/riscv/Makefile
++++ b/arch/riscv/Makefile
+@@ -48,12 +48,18 @@ endif
+ endif
+ 
+ # ISA string setting
+-riscv-march-$(CONFIG_ARCH_RV32I)	:= rv32ima
+-riscv-march-$(CONFIG_ARCH_RV64I)	:= rv64ima
+-riscv-march-$(CONFIG_FPU)		:= $(riscv-march-y)fd
+-riscv-march-$(CONFIG_RISCV_ISA_C)	:= $(riscv-march-y)c
+-KBUILD_CFLAGS += -march=$(subst fd,,$(riscv-march-y))
+-KBUILD_AFLAGS += -march=$(riscv-march-y)
++riscv-march-cflags-$(CONFIG_ARCH_RV32I)		:= rv32ima
++riscv-march-cflags-$(CONFIG_ARCH_RV64I)		:= rv64ima
++riscv-march-$(CONFIG_FPU)			:= $(riscv-march-y)fd
++riscv-march-cflags-$(CONFIG_RISCV_ISA_C)	:= $(riscv-march-cflags-y)c
++
++riscv-march-aflags-$(CONFIG_ARCH_RV32I)		:= rv32ima
++riscv-march-aflags-$(CONFIG_ARCH_RV64I)		:= rv64ima
++riscv-march-aflags-$(CONFIG_FPU)		:= $(riscv-march-aflags-y)fd
++riscv-march-aflags-$(CONFIG_RISCV_ISA_C)	:= $(riscv-march-aflags-y)c
++
++KBUILD_CFLAGS += -march=$(riscv-march-cflags-y)
++KBUILD_AFLAGS += -march=$(riscv-march-aflags-y)
+ 
+ KBUILD_CFLAGS += -mno-save-restore
+ KBUILD_CFLAGS += -DCONFIG_PAGE_OFFSET=$(CONFIG_PAGE_OFFSET)
 -- 
 2.31.1
 
