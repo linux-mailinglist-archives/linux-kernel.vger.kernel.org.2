@@ -2,80 +2,170 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 13FBE44B47D
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 22:10:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8BC3744B47F
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 22:10:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244946AbhKIVNa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Nov 2021 16:13:30 -0500
-Received: from mout.kundenserver.de ([212.227.126.134]:42233 "EHLO
-        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244936AbhKIVN3 (ORCPT
+        id S244955AbhKIVNk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Nov 2021 16:13:40 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35538 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S244953AbhKIVNh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Nov 2021 16:13:29 -0500
-Received: from mail-wr1-f42.google.com ([209.85.221.42]) by
- mrelayeu.kundenserver.de (mreue009 [213.165.67.97]) with ESMTPSA (Nemesis) id
- 1MqJuN-1mO7bl04NH-00nULT for <linux-kernel@vger.kernel.org>; Tue, 09 Nov 2021
- 22:10:42 +0100
-Received: by mail-wr1-f42.google.com with SMTP id s13so265358wrb.3
-        for <linux-kernel@vger.kernel.org>; Tue, 09 Nov 2021 13:10:41 -0800 (PST)
-X-Gm-Message-State: AOAM533cDyY8aG/itofyma7Vo03K9gA0+0QLzH4g6Md8oERinM9e94ta
-        utS5rbPypAocfkxtUKJsLcVArXQTtSqWOmnvIV8=
-X-Google-Smtp-Source: ABdhPJwz5ivXzVe+sj4hFq2BV5qorjnjOJBJuVHaJtIigROYaCMrlzF4ZqrmVNOhpSjEmGQjAl4UCw4Pc5CRHcWs1TQ=
-X-Received: by 2002:a05:6000:18c7:: with SMTP id w7mr13303414wrq.411.1636492241674;
- Tue, 09 Nov 2021 13:10:41 -0800 (PST)
+        Tue, 9 Nov 2021 16:13:37 -0500
+Received: from mail-yb1-xb32.google.com (mail-yb1-xb32.google.com [IPv6:2607:f8b0:4864:20::b32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4EFE2C061766
+        for <linux-kernel@vger.kernel.org>; Tue,  9 Nov 2021 13:10:51 -0800 (PST)
+Received: by mail-yb1-xb32.google.com with SMTP id u60so826767ybi.9
+        for <linux-kernel@vger.kernel.org>; Tue, 09 Nov 2021 13:10:51 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=AH7epOoySOeiGksyUpz+DkEAzZgrafCUbmWIMI/CpvA=;
+        b=FEbooq+2RPELhpdFibtzf+o6RtKcTzFsITeoOKt5EyoFuC6IGFQm2J3krtoSzQydLL
+         B4Pw9nMMqX6DIJ7Bnd5JqWSxlAspKt1eMv9M5X1HtJLCw04QwCywzM+q6TjE2jgfix/s
+         rHeJ12vkti8Qtay79gedDRZIOlkM97FadiDSjFE+Gnag9L+Ss6jFu2Nkc72Jy4tRXBbN
+         9BX5jGghiz/4yAeWepqXcIAQumnvW+WM8Iev5+zUMoHf55hQQ2wKjaDwuUJOgxzNJVdC
+         6/0oL4h6NQ7i5+EKT217sKfFXA1QEPmJycOwhC41A8/0aQTWLk8hKgwguQwhEvBYakwv
+         QKnQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=AH7epOoySOeiGksyUpz+DkEAzZgrafCUbmWIMI/CpvA=;
+        b=Ckb+ea/xq1roCsD68NC0SfuvgOR28hVyJeHKbH3HTXMIxBA5U1sK460so0Yfigbiaj
+         bE7fJmZ6n5s6ZNu5BIyijsijKH6x+XxQFLFqGw8wMVfq5GduH8bn4cghIcWKMHn0VV+U
+         G3FsMUlaL/NZeClRXThQMhfb99Ll77JaXX0Z9x77QwfGjj4FDAwxzmCUsuGFjq5l/nrU
+         V1vfut2STdcTMpgFJwM9tlKjvirPyo6gu7qSd6xtlPI+Iht813NAXb8OeKqX1HyrgmJT
+         IHCty6Y7xZMzXHVsJKa0F6RwfpJEFcoKgBN+GUG7TdllZeZb+b1WVeOpO6ENEdfG39PF
+         K3TQ==
+X-Gm-Message-State: AOAM531N/vRVpIS5I9c1sZH0z92Jla/ZuNJB5QJ/3Y+f/jYfF2upxIMu
+        4ogwlSJvAB3N06hK8CwxPXpoliBsA9x2J5eyai79Eg==
+X-Google-Smtp-Source: ABdhPJwcasPYsat4S5s+/hNloJW73tDUzzP+zsaaKSgPceFaeVymjL1QX/ZAJDT05FW5wRQnskUlnVrjQV33CM/9lHo=
+X-Received: by 2002:a25:2f58:: with SMTP id v85mr11965850ybv.487.1636492250283;
+ Tue, 09 Nov 2021 13:10:50 -0800 (PST)
 MIME-Version: 1.0
-References: <20210706163033.795805-1-benjamin.gaignard@collabora.com>
- <a1df40c2-f414-56e9-2e42-83e28ad54cee@foss.st.com> <8a1ecd56-5690-7f0b-9c7f-92ff4ca46120@foss.st.com>
-In-Reply-To: <8a1ecd56-5690-7f0b-9c7f-92ff4ca46120@foss.st.com>
-From:   Arnd Bergmann <arnd@arndb.de>
-Date:   Tue, 9 Nov 2021 22:10:25 +0100
-X-Gmail-Original-Message-ID: <CAK8P3a34h_k_y4Xniw=+7DubMgNS52aXpXFjo-kN4JUg1rb=KQ@mail.gmail.com>
-Message-ID: <CAK8P3a34h_k_y4Xniw=+7DubMgNS52aXpXFjo-kN4JUg1rb=KQ@mail.gmail.com>
-Subject: Re: [PATCH] MAINTAINERS: Update Benjamin Gaignard maintainer status
-To:     Philippe CORNU <philippe.cornu@foss.st.com>
-Cc:     Alexandre TORGUE <alexandre.torgue@foss.st.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Benjamin Gaignard <benjamin.gaignard@collabora.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Philippe CORNU <philippe.cornu@st.com>
+References: <CAJuCfpHBoMGPOUvB2ZWQ=TxbFuWBRF++UaKJZDCrQV4mzb5kMA@mail.gmail.com>
+ <YX+nYGlZBOAljoeF@dhcp22.suse.cz> <CAJuCfpGC9-c9P40x7oy=jy5SphMcd0o0G_6U1-+JAziGKG6dGA@mail.gmail.com>
+ <YYDvm9c/7cGtBvw6@dhcp22.suse.cz> <CAJuCfpFX8FRynoK29h8tpRXRT-Kk+sHboiBnc7N-8MY6AAqVLw@mail.gmail.com>
+ <CAJuCfpFOOgs9uZSW2Tp6uBW23rLHFeSA8o5WYQ_D_ykUcKL64Q@mail.gmail.com>
+ <YYrLe2u2zbmu4LfL@dhcp22.suse.cz> <CAJuCfpG0d34yRhuvOj9NX9zMp=6jWLqFPfUGV0sOO6OrwNC89A@mail.gmail.com>
+ <YYrQ/hENQPn6Mk3v@dhcp22.suse.cz> <CAJuCfpFT4-mdHHZ2i43hyJQ4dRKb7sRwnAL8GfRnZu3ecE26Ew@mail.gmail.com>
+ <YYrVmi2xdo1Gr2Bb@dhcp22.suse.cz>
+In-Reply-To: <YYrVmi2xdo1Gr2Bb@dhcp22.suse.cz>
+From:   Suren Baghdasaryan <surenb@google.com>
+Date:   Tue, 9 Nov 2021 13:10:38 -0800
+Message-ID: <CAJuCfpGrYa2Ws4GrVp_nRqVEw8j_cGXk+gprLYUx7NWUOC-uRQ@mail.gmail.com>
+Subject: Re: [PATCH 1/1] mm: prevent a race between process_mrelease and exit_mmap
+To:     Michal Hocko <mhocko@suse.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        David Rientjes <rientjes@google.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Roman Gushchin <guro@fb.com>, Rik van Riel <riel@surriel.com>,
+        Minchan Kim <minchan@kernel.org>,
+        Christian Brauner <christian@brauner.io>,
+        Christoph Hellwig <hch@infradead.org>,
+        Oleg Nesterov <oleg@redhat.com>,
+        David Hildenbrand <david@redhat.com>,
+        Jann Horn <jannh@google.com>,
+        Shakeel Butt <shakeelb@google.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Florian Weimer <fweimer@redhat.com>,
+        Jan Engelhardt <jengelh@inai.de>,
+        Linux API <linux-api@vger.kernel.org>,
+        linux-mm <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        kernel-team <kernel-team@android.com>,
+        "Kirill A. Shutemov" <kirill@shutemov.name>,
+        Andrea Arcangeli <aarcange@redhat.com>
 Content-Type: text/plain; charset="UTF-8"
-X-Provags-ID: V03:K1:Hwg8Ug6Tj2eqlC4ySXYu2VRRH9x7IjHyy7HvJUTcWZMDfAgWmSm
- tmJCGAF2bBWtaxj4l6WOqUmz/cdsbms4I6v9zgg55lzsHI4f8ilDGjahNyUj46GwVmz4DE7
- gwxh5/CfijOQSfrI5mD1AsLwWc59TBE3xaRN+St6YJBV9TuxBs7/2FoeuVHHbcjji/Ukquw
- mSNb9JnjQi4vNstB1l26w==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:zZYy8y0sO0s=:JOfWyVRZ0Kvo0S7BSqxD6S
- af/eou3CVPzIwNpbNv2k5KEElz+ufeo+G8KoEjEjK1w5/vt+ayApx5Pq/s8f5LXtFjfLVgvq5
- Hu39YspcJ+qTDPfWVy9DKqrx6dg4iTDBegZGzo5yzvCZzf8Sq/2ceiztjv/e5L9uURYZwQKZU
- hG+ARiJ061dIkLPBqjpfgIHQxYhDwwzHvg7gQh7Xx5Y97pBykXP5V/KwDu55sv3jp8IAFfUuL
- GeKNDcJpDDnsCkicLUsy7inQuz9twqWp5WIMDu0lb7NuXL32Orar1UiiZV0Z7k6PK54+zocyz
- DPswLuYrNFppK21eMIeUAvVo/KEfXbesWD+jR4OaB2KOluk2gxVCpSIXhZK38lMdCer5tU/5R
- CIp48uDhg/LFL1jnZ0bXj1UsH3P7KOrv0VO5oKvK0Vr0aiSzlKeWDuDGLoFpeCLjMZWhDPD/N
- NZ107h9y8l/HdbQrTKLwY2deziGv5jNNnRwhiGv7hyvHLqeq2HB1zSqQHQ4CmB1bgB9hmeZEJ
- Vcod/idJTTv49HkeUXcUPi7XLISoBs+NoxR4zW1FdMA5bsyWe0Jpj1/i+atReh1+I5yEsXOd/
- Xf24WLg3p4XH70Z4xRSSmtNbUMa52VwEXx5TwczR5abgCyyhG6NR5xMFfYJe9oD5ZWI3XfrPL
- UnWymJNoaT7KnypsEVojwfI2l4xbM8TJA6JyDBClK37FWfMSMOhoMOwfGEKVfXyS8kDs=
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 9, 2021 at 6:15 PM Philippe CORNU
-<philippe.cornu@foss.st.com> wrote:
-> On 7/23/21 5:48 PM, Alexandre TORGUE wrote:
-> > On 7/6/21 6:30 PM, Benjamin Gaignard wrote:
-> >> Update Benjamin Gaignard address and remove it from no more maintained
-> >> drivers.
-> >>
-> >> Signed-off-by: Benjamin Gaignard <benjamin.gaignard@collabora.com>
-> >
-> > How to handle this kind of patch ? Do I take it or do you take it
-> > directly through arm-soc tree ?
+On Tue, Nov 9, 2021 at 12:10 PM Michal Hocko <mhocko@suse.com> wrote:
 >
-> This is a kind reminder email ;-)
+> On Tue 09-11-21 12:02:37, Suren Baghdasaryan wrote:
+> > On Tue, Nov 9, 2021 at 11:50 AM Michal Hocko <mhocko@suse.com> wrote:
+> > >
+> > > On Tue 09-11-21 11:37:06, Suren Baghdasaryan wrote:
+> > > > On Tue, Nov 9, 2021 at 11:26 AM Michal Hocko <mhocko@suse.com> wrote:
+> > > > >
+> > > > > On Tue 09-11-21 11:01:02, Suren Baghdasaryan wrote:
+> > > > > [...]
+> > > > > > Discussing how the patch I want to post works for maple trees that
+> > > > > > Matthew is working on, I've got a question:
+> > > > > >
+> > > > > > IIUC, according to Michal's post here:
+> > > > > > https://lore.kernel.org/all/20170725154514.GN26723@dhcp22.suse.cz,
+> > > > > > unmap_vmas() can race with other mmap_lock read holders (including
+> > > > > > oom_reap_task_mm()) with no issues.
+> > > > > > Maple tree patchset requires rcu read lock or the mmap semaphore be
+> > > > > > held (read or write side) when walking the tree, including inside
+> > > > > > unmap_vmas(). When asked, he told me that he is not sure why it's
+> > > > > > currently "safe" to walk the vma->vm_next list in unmap_vmas() while
+> > > > > > another thread is reaping the mm.
+> > > > > > Michal (or maybe someone else), could you please clarify why
+> > > > > > unmap_vmas() can safely race with oom_reap_task_mm()? Or maybe my
+> > > > > > understanding was wrong?
+> > > > >
+> > > > > I cannot really comment on the mapple tree part. But the existing
+> > > > > synchronization between oom reaper and exit_mmap is based on
+> > > > > - oom_reaper takes mmap_sem for reading
+> > > > > - exit_mmap sets MMF_OOM_SKIP and takes the exclusive mmap_sem before
+> > > > >   unmap_vmas.
+> > > > >
+> > > > > The oom_reaper therefore can either unmap the address space if the lock
+> > > > > is taken before exit_mmap or it would it would bale out on MMF_OOM_SKIP
+> > > > > if it takes the lock afterwards. So the reaper cannot race with
+> > > > > unmap_vmas.
+> > > >
+> > > > I see. So, it's the combination of MMF_OOM_SKIP and mmap_lock working
+> > > > as a barrier which prevent them from racing with each other...
+> > > > I wasn't sure how
+> > > > https://lore.kernel.org/all/20170724072332.31903-1-mhocko@kernel.org/
+> > > > was implementing this synchronization because it would take mmap_sem
+> > > > write side after unmap_vmas() and IIUC there was no
+> > > > "mmap_lock_write(); mmap_unlock_write();" sequence in exit_mmap at
+> > > > that time. I'll need to checkout the old sources to figure this out.
+> > >
+> > > My memory is rather dimm but AFAIR the main problem was freeing page
+> > > tables and freeing vmas not unmap_vmas. That one was no modifying the
+> > > vma list. Essentially it was just a slightly modified madvise don't
+> > > need. So that part was allowed to race with oom_reaper.
+> >
+> > So, both unmap_vmas and __oom_reap_task_mm do not modify vma list and
+> > therefore can execute concurrently. That makes sense, thanks.
+>
+> Yes, those can run concurrently. One thing I completely forgot about is
+> 27ae357fa82b ("mm, oom: fix concurrent munlock and oom reaper unmap, v3")
+> which is about interaction with the munlock.
 
-Sorry for  missing this earlier.  I'm happy to take updates to the MAINTAINER
-file as bugfixes, please either send these to soc@kernel.org so they make it
-into patchwork and I don't miss them, or put them into the normal soc updates
-for the platform specific pull requests.
+Thanks for pointing it out. IIUC, ideally we want to get rid of all
+these special cases and replace them with proper locking. If so, I'll
+see what I can do here.
 
-          Arnd
+>
+> > Then I guess, if we want to be semantically correct in exit_mmap(), we
+> > would have to take mmap_read_lock before unmap_vmas, then drop it and
+> > take mmap_write_lock before free_pgtables.
+>
+> I think it would be just more straightforward to take the exclusive lock
+> for the whole operation.
+
+Ok, but note that this will prevent concurrent memory reaping, so will
+likely affect the speed at which memory is released during oom-kill. I
+saw measurable difference when testing process_mrelease placing
+mmap_write_lock before vs after unmap_vmas. If we take mmap_read_lock
+before unmap_vmas and mmap_write_lock after it, then there won't be
+such issue. You indicated that the speed of memory release should not
+be the deciding factor here but I want to make it clear before
+proceeding.
+Thanks,
+Suren.
+
+> --
+> Michal Hocko
+> SUSE Labs
