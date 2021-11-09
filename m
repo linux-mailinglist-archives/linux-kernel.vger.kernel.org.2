@@ -2,214 +2,223 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A38944AACE
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 10:47:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1007044AAD0
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 10:48:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243914AbhKIJud convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 9 Nov 2021 04:50:33 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48966 "EHLO
+        id S244137AbhKIJvT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Nov 2021 04:51:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49178 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240225AbhKIJub (ORCPT
+        with ESMTP id S243626AbhKIJvS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Nov 2021 04:50:31 -0500
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0806DC061764
-        for <linux-kernel@vger.kernel.org>; Tue,  9 Nov 2021 01:47:44 -0800 (PST)
-Received: from lupine.hi.pengutronix.de ([2001:67c:670:100:3ad5:47ff:feaf:1a17] helo=lupine)
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <p.zabel@pengutronix.de>)
-        id 1mkNj9-0001XH-6x; Tue, 09 Nov 2021 10:47:39 +0100
-Received: from pza by lupine with local (Exim 4.94.2)
-        (envelope-from <p.zabel@pengutronix.de>)
-        id 1mkNj5-000VTx-Fl; Tue, 09 Nov 2021 10:47:35 +0100
-Message-ID: <6d87acc51ed6fea6a93b92dbcc65f46a3c05ac35.camel@pengutronix.de>
-Subject: Re: [PATCH v2 1/2] I2C: Add I2C driver for Sunplus SP7021
-From:   Philipp Zabel <p.zabel@pengutronix.de>
-To:     "LH.Kuo" <lhjeff911@gmail.com>, daniel.thompson@linaro.org,
-        lee.jones@linaro.org, u.kleine-koenig@pengutronix.de,
-        robh+dt@kernel.org, linux-kernel@vger.kernel.org,
-        linux-i2c@vger.kernel.org, devicetree@vger.kernel.org
-Cc:     qinjian@cqplus1.com, wells.lu@sunplus.com,
-        "LH.Kuo" <lh.kuo@sunplus.com>
-Date:   Tue, 09 Nov 2021 10:47:35 +0100
-In-Reply-To: <1636441166-8127-2-git-send-email-lh.kuo@sunplus.com>
-References: <1635496955-13985-1-git-send-email-lh.kuo@sunplus.com>
-         <1636441166-8127-1-git-send-email-lh.kuo@sunplus.com>
-         <1636441166-8127-2-git-send-email-lh.kuo@sunplus.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-User-Agent: Evolution 3.38.3-1 
+        Tue, 9 Nov 2021 04:51:18 -0500
+Received: from mail-pf1-x432.google.com (mail-pf1-x432.google.com [IPv6:2607:f8b0:4864:20::432])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 145F0C061764
+        for <linux-kernel@vger.kernel.org>; Tue,  9 Nov 2021 01:48:33 -0800 (PST)
+Received: by mail-pf1-x432.google.com with SMTP id y5so8695585pfb.4
+        for <linux-kernel@vger.kernel.org>; Tue, 09 Nov 2021 01:48:33 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=sifive.com; s=google;
+        h=from:to:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=g6SI+GiU8941Hm+qpVFQtR2xu0rkhJco6OwMqL6R5Po=;
+        b=dSlutICv3KDh1SAjN1MJn4EzjCtZtor3MjckIrzKKhOz4S8VYwWwLsgKlBrb+0NriO
+         r2M2KkijLNLn9oNPjRidUAawqY3VeaSwOLj1FXuWoPLjY+S0i3X1uthif90L7HHy3xOY
+         3sjnht1EdBRwIn3G9JbFSHKCLwibZUN3TO7eJvHO3/jwpSkkMxX/SKYsG+8LlPDxuZkj
+         w2Zw2gCWK36fqmY+3GQSbubyJ2fc/AZjogfRBQ3HE4keF0DK3/CGplnjQT3h/adRNMo2
+         saFBVjU1bJtOat1FPmVOue0y0EngHn8Q/gwbaoyi5a9PCghfDPhZNyJk0TZ+sStro7wd
+         TmZQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=g6SI+GiU8941Hm+qpVFQtR2xu0rkhJco6OwMqL6R5Po=;
+        b=efN/NnYRy9NxRb36clq0D+xyFeDhx9eJ3TfHtSebi8GxY8mKuqUT4jQl4Z2xArlrvs
+         2quVdei4Nw0plgjrPu1CtiNJ0iS1X3uTbvdh/uAxjs1zwGJ0hC0UQWaf0ZaRLNHq9n+/
+         cHALx7NSCX9738id0gs+Ch4bNb6czyckY6lAYILXJK8daVF/EGQpDA9dgaZBNxfEj+wg
+         tu18ZMLNPu1lVYYSC4KzVdOc7jtHgAaZqjQF9JyGz82k9Kxsbao5gbZnGkPIqojKjbQg
+         if9eVcpeOcjg6Oom9mPs1oVECYRUiKNPuEPiruF8VTvJNYrCBCwjtBT1Jxsydp7W49G7
+         vjGA==
+X-Gm-Message-State: AOAM533irZ9DTWMZSItHrjOOGCLvbXD0RPmtdzGtpFxBGIrpV7axU4jx
+        xYKBAdjy51r9y8WUg2pJBj7/MM/KwtdlvA==
+X-Google-Smtp-Source: ABdhPJzb68gL6r+ujm/J8Q4+lkVUdBfLMGAQ25az88je/i2Fcfc77uQKbELuRu+nRJeUoRsM064P6g==
+X-Received: by 2002:a05:6a00:1310:b0:494:672b:1e97 with SMTP id j16-20020a056a00131000b00494672b1e97mr40094265pfu.77.1636451312606;
+        Tue, 09 Nov 2021 01:48:32 -0800 (PST)
+Received: from hsinchu16.internal.sifive.com (59-124-168-89.hinet-ip.hinet.net. [59.124.168.89])
+        by smtp.gmail.com with ESMTPSA id cv1sm1940511pjb.48.2021.11.09.01.48.31
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 09 Nov 2021 01:48:32 -0800 (PST)
+From:   Greentime Hu <greentime.hu@sifive.com>
+To:     palmer@dabbelt.com, paul.walmsley@sifive.com,
+        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
+        aou@eecs.berkeley.edu
+Subject: [PATCH v9 00/17] riscv: Add vector ISA support
+Date:   Tue,  9 Nov 2021 17:48:12 +0800
+Message-Id: <cover.1636362169.git.greentime.hu@sifive.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-X-SA-Exim-Connect-IP: 2001:67c:670:100:3ad5:47ff:feaf:1a17
-X-SA-Exim-Mail-From: p.zabel@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 2021-11-09 at 14:59 +0800, LH.Kuo wrote:
-[...]
-> +static int sp_i2c_probe(struct platform_device *pdev)
-> +{
-> +	struct sp_i2c_dev *sp_i2c_dev_info;
-> +	struct i2c_adapter *p_adap;
-> +	unsigned int i2c_clk_freq;
-> +	int device_id = 0;
-> +	int ret = I2C_SUCCESS;
-> +	struct device *dev = &pdev->dev;
-> +	const struct i2c_compatible *dev_mode;
-> +
-> +	if (pdev->dev.of_node) {
-> +		pdev->id = of_alias_get_id(pdev->dev.of_node, "i2c");
-> +		dev_err(&pdev->dev, "pdev->id=%d\n", pdev->id);
-> +		device_id = pdev->id;
-> +	}
-> +
-> +	sp_i2c_dev_info = devm_kzalloc(&pdev->dev, sizeof(*sp_i2c_dev_info), GFP_KERNEL);
-> +	if (!sp_i2c_dev_info)
-> +		return -ENOMEM;
-> +
-> +	if (!of_property_read_u32(pdev->dev.of_node, "clock-frequency", &i2c_clk_freq)) {
-> +		dev_err(&pdev->dev, "clk_freq %d\n", i2c_clk_freq);
-> +		sp_i2c_dev_info->i2c_clk_freq = i2c_clk_freq;
-> +	} else {
-> +		sp_i2c_dev_info->i2c_clk_freq = SP_I2C_FREQ*1000;
-> +	}
-> +
-> +	sp_i2c_dev_info->dev = &pdev->dev;
-> +
-> +	ret = _sp_i2cm_get_resources(pdev, sp_i2c_dev_info);
-> +	if (ret != I2C_SUCCESS) {
-> +		dev_err(&pdev->dev, " get resources fail !\n");
-> +		return ret;
-> +	}
-> +
-> +	/* dma alloc*/
-> +	sp_i2c_dev_info->dma_vir_base = dma_alloc_coherent(&pdev->dev, SP_BUFFER_SIZE,
-> +					&sp_i2c_dev_info->dma_phy_base, GFP_ATOMIC);
-> +	if (!sp_i2c_dev_info->dma_vir_base)
-> +		goto free_dma;
+This patchset is implemented based on vector 1.0 spec to add vector support
+in riscv Linux kernel. There are some assumptions for this implementations.
 
-Please fix your error paths, the driver shouldn't try to revert the
-action that just failed.
+1. We assume all harts has the same ISA in the system.
+2. We use vector like FPU in some ways instead of using vector like a
+   specific IP.
+3. We disable vector in kernel space by default unless kernel uses
+   kernel mode vector kernel_rvv_begin()/kernel_rvv_end().
+4. We detect "riscv,isa" to determine whether vector is support or not.
 
-Here you can use dmam_alloc_coherent() and just return -ENOMEM on error.
+We defined a new structure __riscv_v_state in struct thread_struct to save
+/restore the vector related registers. It is used for both kernel space and
+user space.
 
-> +
-> +	sp_i2c_dev_info->clk = devm_clk_get(dev, NULL);
-> +
-> +	if (IS_ERR(sp_i2c_dev_info->clk)) {
-> +		ret = PTR_ERR(sp_i2c_dev_info->clk);
-> +		dev_err(&pdev->dev, "failed to retrieve clk: %d\n", ret);
-> +		goto err_clk_disable;
+ - In kernel space, the datap pointer in __riscv_v_state will be allocated
+   to save vector registers.
+ - In user space,
+	- In signal handler of user space, datap will point to the address
+          of the __riscv_v_state data structure to save vector registers
+	  in stack. We also create a __reserved[] array in sigcontext for
+	  future extensions.
+	- In ptrace, the data will be put in ubuf in which we use
+       	  riscv_vr_get()/riscv_vr_set() to get or set the
+	  __riscv_v_state data structure from/to it, datap pointer
+	  would be zeroed and vector registers will be copied to the
+	  address right after the __riscv_v_state structure in ubuf.
 
-Then this could
+This patchset also adds support for kernel mode vector, kernel XOR
+implementation with vector ISA and includes several bug fixes and code
+refinement.
 
-		return ret;
+This patchset is rebased to v5.15 and it is tested by running several
+vector programs simultaneously. It also can get the correct ucontext_t in
+signal handler and restore correct context after sigreturn. It is also
+tested with ptrace() syscall to use PTRACE_GETREGSET/PTRACE_SETREGSET to
+get/set the vector registers.
 
-Better, use return dev_err_probe().
+We have sent patches for vector support to glibc mailing list.
 
-> +	}
-> +
-> +	sp_i2c_dev_info->rstc = devm_reset_control_get_exclusive(dev, NULL);
-> +
-> +	if (IS_ERR(sp_i2c_dev_info->rstc)) {
-> +		ret = PTR_ERR(sp_i2c_dev_info->rstc);
-> +		dev_err(&pdev->dev, "failed to retrieve reset controller: %d\n", ret);
-> +		goto err_clk_disable;
+TODO
+1. Refine the __riscv_v_state allocation in start_thread()
+2. Refine the vector context switching functions by lazy save/restore
+3. Add AMP support. To support harts with different ISA
 
-Same as above.
+ [1] https://github.com/riscv/riscv-v-spec/blob/master/v-spec.adoc
+ [2] https://sourceware.org/pipermail/libc-alpha/2021-September/130897.html
+ [3] https://github.com/sifive/qemu/tree/rvv-1.0-upstream-v9
 
-> +	}
-> +
-> +	ret = clk_prepare_enable(sp_i2c_dev_info->clk);
-> +
-> +	if (ret) {
-> +		dev_err(&pdev->dev, "failed to enable clk: %d\n", ret);
+---
+Changelog V9
+ - Rebase to v5.15
+ - Merge several patches
+ - Refine codes
+ - Fix a kernel panic issue
 
-Consider using "%pe" and ERR_PTR(ret) to print the error name instead of
-a number [1].
+Changelog V8
+ - Rebase to v5.14
+ - Refine struct __riscv_v_state with struct __riscv_ctx_hdr
+ - Refine has_vector into a static key
+ - Defined __reserved space in struct sigcontext for vector and future extensions
 
-[1] https://www.kernel.org/doc/html/latest/core-api/printk-formats.html?#error-pointers
+Changelog V7
+ - Add support for kernel mode vector
+ - Add vector extension XOR implementation
+ - Optimize task switch codes of vector
+ - Allocate space for vector registers in start_thread()
+ - Fix an illegal instruction exception when accessing vlenb
+ - Optimize vector registers initialization
+ - Initialize vector registers with proper vsetvli then it can work normally
+ - Refine ptrace porting due to generic API changed
+ - Code clean up
 
-> +		goto err_clk_disable;
+Changelog V6
+ - Replace vle.v/vse.v instructions with vle8.v/vse8.v based on 0.9 spec
+ - Add comments based on mailinglist feedback
+ - Fix rv32 build error
 
-		return ret;
+Changelog V5
+ - Using regset_size() correctly in generic ptrace
+ - Fix the ptrace porting
+ - Fix compile warning
 
-> +	}
-> +
-> +	ret = reset_control_deassert(sp_i2c_dev_info->rstc);
-> +
-> +	if (ret) {
-> +		dev_err(&pdev->dev, "failed to deassert reset line: %d\n", ret);
-> +		goto err_reset_assert;
+Changelog V4
+ - Support dynamic vlen
+ - Fix bugs: lazy save/resotre, not saving vtype
+ - Update VS bit offset based on latest vector spec
+ - Add new vector csr based on latest vector spec
+ - Code refine and removed unused macros
 
-		goto err_clk_disable;
+Changelog V3
+ - Rebase linux-5.6-rc3 and tested with qemu
+ - Seperate patches with Anup's advice
+ - Give out a ABI puzzle with unlimited vlen
 
-> +	}
-> +
-> +	init_waitqueue_head(&sp_i2c_dev_info->wait);
-> +
-> +	dev_mode = of_device_get_match_data(&pdev->dev);
-> +	sp_i2c_dev_info->mode = dev_mode->mode;
-> +	sp_i2c_dev_info->total_port = dev_mode->total_port;
-> +	p_adap = &sp_i2c_dev_info->adap;
-> +	sprintf(p_adap->name, "%s%d", SP_DEVICE_NAME, device_id);
-> +	p_adap->algo = &sp_algorithm;
-> +	p_adap->algo_data = sp_i2c_dev_info;
-> +	p_adap->nr = device_id;
-> +	p_adap->class = 0;
-> +	p_adap->retries = 5;
-> +	p_adap->dev.parent = &pdev->dev;
-> +	p_adap->dev.of_node = pdev->dev.of_node;
-> +
-> +	ret = i2c_add_numbered_adapter(p_adap);
-> +
-> +	ret = _sp_i2cm_init(device_id, sp_i2c_dev_info);
-> +	if (ret != 0) {
-> +		dev_err(&pdev->dev, "i2c master %d init error\n", device_id);
-> +		goto err_reset_assert;
+Changelog V2
+ - Fixup typo "vecotr, fstate_save->vstate_save".
+ - Fixup wrong saved registers' length in vector.S.
+ - Seperate unrelated patches from this one.
 
-This one is correct, but I'd also print ret.
+Greentime Hu (11):
+  riscv: Add new csr defines related to vector extension
+  riscv: Add has_vector/riscv_vsize to save vector features.
+  riscv: Add vector struct and assembler definitions
+  riscv: Add task switch support for vector
+  riscv: Add ptrace vector support
+  riscv: Add sigcontext save/restore for vector
+  riscv: Add support for kernel mode vector
+  riscv: Use CSR_STATUS to replace sstatus in vector.S
+  riscv: Add vector extension XOR implementation
+  riscv: Fix an illegal instruction exception when accessing vlenb
+    without enable vector first
+  riscv: Fix a kernel panic issue if $s2 is set to a specific value
+    before entering Linux
 
-> +	}
-> +
-> +	if (ret < 0)
-> +		goto err_reset_assert;
-> +	else
-> +		platform_set_drvdata(pdev, sp_i2c_dev_info);
-> +
-> +	ret = request_irq(sp_i2c_dev_info->irq, _sp_i2cm_irqevent_handler, IRQF_TRIGGER_HIGH,
-> +				p_adap->name, sp_i2c_dev_info);
-> +	if (ret) {
-> +		dev_err(&pdev->dev, "request irq fail !!\n");
-> +		return I2C_ERR_REQUESET_IRQ;
+Guo Ren (5):
+  riscv: Separate patch for cflags and aflags
+  riscv: Rename __switch_to_aux -> fpu
+  riscv: Extending cpufeature.c to detect V-extension
+  riscv: Add vector feature to compile
+  riscv: Reset vector register
 
-Don't return non-standard error codes. This should return ret instead,
-but not before going through the error cleanup path below. Also,
-consider using devm_request_irq().
+Vincent Chen (1):
+  riscv: signal: Report signal frame size to userspace via auxv
 
-> +	}
-> +
-> +	pm_runtime_set_autosuspend_delay(&pdev->dev, 5000);
-> +	pm_runtime_use_autosuspend(&pdev->dev);
-> +	pm_runtime_set_active(&pdev->dev);
-> +	pm_runtime_enable(&pdev->dev);
-> +
-> +	return ret;
-> +
-> +err_reset_assert:
-> +	reset_control_assert(sp_i2c_dev_info->rstc);
-> +err_clk_disable:
-> +	clk_disable_unprepare(sp_i2c_dev_info->clk);
-> +free_dma:
-> +	dma_free_coherent(&pdev->dev, SP_BUFFER_SIZE,
-> +			sp_i2c_dev_info->dma_vir_base, sp_i2c_dev_info->dma_phy_base);
-> +
-> +	return ret;
-> +}
+ arch/riscv/Kconfig                       |   9 ++
+ arch/riscv/Makefile                      |  19 ++-
+ arch/riscv/include/asm/csr.h             |  16 ++-
+ arch/riscv/include/asm/elf.h             |  41 +++---
+ arch/riscv/include/asm/processor.h       |   3 +
+ arch/riscv/include/asm/switch_to.h       |  72 +++++++++-
+ arch/riscv/include/asm/vector.h          |  16 +++
+ arch/riscv/include/asm/xor.h             |  66 +++++++++
+ arch/riscv/include/uapi/asm/auxvec.h     |   1 +
+ arch/riscv/include/uapi/asm/hwcap.h      |   1 +
+ arch/riscv/include/uapi/asm/ptrace.h     |  25 ++++
+ arch/riscv/include/uapi/asm/sigcontext.h |  24 ++++
+ arch/riscv/kernel/Makefile               |   2 +
+ arch/riscv/kernel/asm-offsets.c          |   8 ++
+ arch/riscv/kernel/cpufeature.c           |  16 +++
+ arch/riscv/kernel/entry.S                |   6 +-
+ arch/riscv/kernel/head.S                 |  24 +++-
+ arch/riscv/kernel/kernel_mode_vector.c   | 146 +++++++++++++++++++
+ arch/riscv/kernel/process.c              |  49 +++++++
+ arch/riscv/kernel/ptrace.c               |  71 ++++++++++
+ arch/riscv/kernel/setup.c                |   4 +
+ arch/riscv/kernel/signal.c               | 173 ++++++++++++++++++++++-
+ arch/riscv/kernel/vector.S               |  90 ++++++++++++
+ arch/riscv/lib/Makefile                  |   1 +
+ arch/riscv/lib/xor.S                     |  81 +++++++++++
+ include/uapi/linux/elf.h                 |   1 +
+ 26 files changed, 929 insertions(+), 36 deletions(-)
+ create mode 100644 arch/riscv/include/asm/vector.h
+ create mode 100644 arch/riscv/include/asm/xor.h
+ create mode 100644 arch/riscv/kernel/kernel_mode_vector.c
+ create mode 100644 arch/riscv/kernel/vector.S
+ create mode 100644 arch/riscv/lib/xor.S
 
-regards
-Philipp
+-- 
+2.31.1
+
