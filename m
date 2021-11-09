@@ -2,187 +2,273 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 48D7A44B2CD
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 19:42:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8379444B2D2
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 19:47:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242573AbhKISpL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Nov 2021 13:45:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58406 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238608AbhKISpJ (ORCPT
+        id S242601AbhKISue (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Nov 2021 13:50:34 -0500
+Received: from smtp-out1.suse.de ([195.135.220.28]:47490 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S242084AbhKISud (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Nov 2021 13:45:09 -0500
-Received: from mail-lj1-x22e.google.com (mail-lj1-x22e.google.com [IPv6:2a00:1450:4864:20::22e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6042AC061766
-        for <linux-kernel@vger.kernel.org>; Tue,  9 Nov 2021 10:42:22 -0800 (PST)
-Received: by mail-lj1-x22e.google.com with SMTP id s24so275199lji.12
-        for <linux-kernel@vger.kernel.org>; Tue, 09 Nov 2021 10:42:22 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=InQJGFKmQYllVp7IiaAZn+LAmA7OCtH0DBxbniPKpR0=;
-        b=RtmT1bhWauZj9jI+RdomKFJes0ucsgQhFZWz3On7EK78Gg5p1mXKWZMa+pU09O9QzI
-         i+/g33wS7+C89uC4MHhX5Qi4qnrod6GLyFsWJc355cGkzhhEN5Quwe5VJJk9BPSnv+Wa
-         qVnhA9Yf5ByNArMXFVsHusV0Q9r8No1+hC01fSmnXN/iXSaAniHK2S+VdhapXQ8zXSJV
-         wZWrszGWl9x3NRa0Ll9Fnkdyl1ofinN6ano1IBnKWVHLTjZmqD90cw7w5kdGx6C/824r
-         rGdh+Y3iWoVF7MEJ0w79Q/CTpqulco2q4mGnXPcIYyr8wtv2++wJqSg2p1wA2P7i7RDk
-         xJfA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=InQJGFKmQYllVp7IiaAZn+LAmA7OCtH0DBxbniPKpR0=;
-        b=skUjgKij/WXEo4tThKdG+smQmj0aN3FrF9DpZ+hfxhZnuUsxZicLZXG+IhVsEZ6fLC
-         z+3xoC7ZGsoDalMyPSH6fiA7z4XUxXABB4l+C1kAHv5x2BbKwu9/8WKqy3yjGW9nb/UX
-         8w0pxMZwHusxOUpqUHpZrTob32v+3mGCe7nNaiRdIFnLFGBumup1c9V0sidRKcHNb14n
-         g+Y0QPvwKyQGZP1lqG6ksjq37hPzWsxPRxE8A9fZq2eWV4NtTX4DnFNNcr3kjw7Z7Kq4
-         IKX21LkstRXCV5hmpATwzFJIYHJzNo2fCJrjC2dqyJv1RhYjLAT3yTp6fOkuKnfLwvHe
-         aVig==
-X-Gm-Message-State: AOAM531K4If6Hrc1zBVOBEjD58jOmBYooFSeo36bTfJiqvvbRgzwZWR7
-        q19WohEE8qYMyjDtmryak3ju6gcw4b+zNrqeE6Z+fw==
-X-Google-Smtp-Source: ABdhPJwAZPyc1/1ykNzKwifTludqmxvARMnVfNLCjFtpgzyLA65k6mCir8ivv3rsSe7AYhGJcUeB5FaZBkDDDAisdxY=
-X-Received: by 2002:a05:651c:1035:: with SMTP id w21mr9520966ljm.278.1636483340373;
- Tue, 09 Nov 2021 10:42:20 -0800 (PST)
+        Tue, 9 Nov 2021 13:50:33 -0500
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 2A54B21891;
+        Tue,  9 Nov 2021 18:47:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1636483666; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=Tl20pYAY9isTiU5ioe6IbRR2SERdyiWxrZWCK2XNM5Q=;
+        b=eIyPIbdHtYfPRDMSWXGRcNKFDQ9FTUyaN/6DhhBxe+wncacdegTRk++rjT+PgCPiGDawbv
+        ffxKE/FVGfiiULupJO6aeksqEVpVD8G0zhsdgx+EBjGwFX2JD/SGz6NtwlQiQybRBdHjhO
+        jSFcOVFpG0jljkxrLYdAb1Ow4Frq3bg=
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id EE97213B30;
+        Tue,  9 Nov 2021 18:47:45 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id d3KnOVHCimF3dQAAMHmgww
+        (envelope-from <mkoutny@suse.com>); Tue, 09 Nov 2021 18:47:45 +0000
+Date:   Tue, 9 Nov 2021 19:47:44 +0100
+From:   Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Mathias Krause <minipli@grsecurity.net>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Benjamin Segall <bsegall@google.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Mel Gorman <mgorman@suse.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Valentin Schneider <Valentin.Schneider@arm.com>,
+        linux-kernel@vger.kernel.org, Odin Ugedal <odin@uged.al>,
+        Kevin Tanguy <kevin.tanguy@corp.ovh.com>,
+        Brad Spengler <spender@grsecurity.net>, cgroups@vger.kernel.org
+Subject: Re: [PATCH] sched/fair: Prevent dead task groups from regaining
+ cfs_rq's
+Message-ID: <20211109184744.GA31882@blackbody.suse.cz>
+References: <CAKfTPtBm4vHr=svju=Qg6eZmcv8YDghtM2r_pOahZ2gC3tzTxg@mail.gmail.com>
+ <a6a3c6c9-d5ea-59b6-8871-0f72bff38833@grsecurity.net>
+ <CAKfTPtBxoKBRWs4Z3Pxsk8==Ka9SG7NS3LzfOV33-2UXfhSM=g@mail.gmail.com>
+ <cd3778d3-6980-a804-47e3-82b09dc960a4@grsecurity.net>
+ <CAKfTPtDthksitm02sLowDMKbWZ29efth-YcPi0zVSFqbaZfiMA@mail.gmail.com>
+ <8f4ed996-e6e5-75f4-b5fa-dffb7b7da05b@grsecurity.net>
+ <20211105162914.215420-1-minipli@grsecurity.net>
+ <20211106104854.GU174703@worktop.programming.kicks-ass.net>
+ <9e8b2c49-2a10-2b34-e644-2b99708080bc@grsecurity.net>
+ <YYkMoxLPgMt4uV/g@hirez.programming.kicks-ass.net>
 MIME-Version: 1.0
-References: <20211102142331.3753798-1-pgonda@google.com> <20211102142331.3753798-3-pgonda@google.com>
- <YYqicq5YnNuwTS+B@google.com> <CAMkAt6q37BmPcA2Le98NOFQoz9nAwiDQqrALLD-Ogf5RytSS4g@mail.gmail.com>
- <YYqwT1fGxBQQmFvY@google.com>
-In-Reply-To: <YYqwT1fGxBQQmFvY@google.com>
-From:   Peter Gonda <pgonda@google.com>
-Date:   Tue, 9 Nov 2021 11:42:08 -0700
-Message-ID: <CAMkAt6pF9cLQa5i4rqGVsrkwZSKsXbWBjY4sgGHVs+HT+4NtXA@mail.gmail.com>
-Subject: Re: [PATCH V3 2/4] crypto: ccp - Move SEV_INIT retry for corrupted data
-To:     Sean Christopherson <seanjc@google.com>
-Cc:     Thomas.Lendacky@amd.com, Marc Orr <marcorr@google.com>,
-        David Rientjes <rientjes@google.com>,
-        Brijesh Singh <brijesh.singh@amd.com>,
-        Joerg Roedel <jroedel@suse.de>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        John Allen <john.allen@amd.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YYkMoxLPgMt4uV/g@hirez.programming.kicks-ass.net>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 9, 2021 at 10:31 AM Sean Christopherson <seanjc@google.com> wrote:
->
-> On Tue, Nov 09, 2021, Peter Gonda wrote:
-> > On Tue, Nov 9, 2021 at 9:31 AM Sean Christopherson <seanjc@google.com> wrote:
-> > >
-> > > On Tue, Nov 02, 2021, Peter Gonda wrote:
-> > > > This change moves the data corrupted retry of SEV_INIT into the
-> > >
-> > > Use imperative mood.
-> >
-> > Will do for next revision
-> >
-> > >
-> > > > __sev_platform_init_locked() function. This is for upcoming INIT_EX
-> > > > support as well as helping direct callers of
-> > > > __sev_platform_init_locked() which currently do not support the
-> > > > retry.
-> > > >
-> > > > Signed-off-by: Peter Gonda <pgonda@google.com>
-> > > > Reviewed-by: Marc Orr <marcorr@google.com>
-> > > > Acked-by: David Rientjes <rientjes@google.com>
-> > > > Acked-by: Tom Lendacky <thomas.lendacky@amd.com>
-> > > > Cc: Tom Lendacky <thomas.lendacky@amd.com>
-> > > > Cc: Brijesh Singh <brijesh.singh@amd.com>
-> > > > Cc: Marc Orr <marcorr@google.com>
-> > > > Cc: Joerg Roedel <jroedel@suse.de>
-> > > > Cc: Herbert Xu <herbert@gondor.apana.org.au>
-> > > > Cc: David Rientjes <rientjes@google.com>
-> > > > Cc: John Allen <john.allen@amd.com>
-> > > > Cc: "David S. Miller" <davem@davemloft.net>
-> > > > Cc: Paolo Bonzini <pbonzini@redhat.com>
-> > > > Cc: linux-crypto@vger.kernel.org
-> > > > Cc: linux-kernel@vger.kernel.org
-> > > > ---
-> > > >  drivers/crypto/ccp/sev-dev.c | 24 ++++++++++++------------
-> > > >  1 file changed, 12 insertions(+), 12 deletions(-)
-> > > >
-> > > > diff --git a/drivers/crypto/ccp/sev-dev.c b/drivers/crypto/ccp/sev-dev.c
-> > > > index ec89a82ba267..e4bc833949a0 100644
-> > > > --- a/drivers/crypto/ccp/sev-dev.c
-> > > > +++ b/drivers/crypto/ccp/sev-dev.c
-> > > > @@ -267,6 +267,18 @@ static int __sev_platform_init_locked(int *error)
-> > > >       }
-> > > >
-> > > >       rc = __sev_do_cmd_locked(SEV_CMD_INIT, &data, error);
-> > > > +     if (rc && *error == SEV_RET_SECURE_DATA_INVALID) {
-> > >
-> > > There are no guarantees that @error is non-NULL as this is reachable via an
-> > > exported function, sev_platform_init().  Which ties in with my complaints in the
-> > > previous patch that the API is a bit of a mess.
-> >
-> > That seems like a bug from the caller right? Is it typical that we
-> > sanity-check the caller in these instances?
->
-> sev-dev.c needs to make up its mind.  __sev_do_cmd_locked() very clearly allows
-> a NULL @error, ergo all of the wrappers for sev_do_cmd() support a NULL @error.
->
-> > For example the same comment could be made here:
-> > https://elixir.bootlin.com/linux/latest/source/drivers/crypto/ccp/sev-dev.c#L336
-> >
-> > ```
-> > static int sev_get_platform_state(int *state, int *error)
-> > {
-> > struct sev_user_data_status data;
-> > int rc;
-> >
-> > rc = __sev_do_cmd_locked(SEV_CMD_PLATFORM_STATUS, &data, error);
-> > if (rc)
-> > return rc;
-> >
-> > *state = data.state;  <--- State could be null.
->
-> No, because this is an internal helper and all call sites can be easily audited.
->
-> > return rc;
-> > }
-> > ```
-> >
-> > Example outside of this driver:
-> > https://elixir.bootlin.com/linux/v5.15.1/source/arch/x86/kvm/x86.c#L468
-> >
-> > ```
-> > int kvm_set_apic_base(struct kvm_vcpu *vcpu, struct msr_data *msr_info)
-> > {
-> > enum lapic_mode old_mode = kvm_get_apic_mode(vcpu);
-> > enum lapic_mode new_mode = kvm_apic_mode(msr_info->data);  <---
-> > msr_info could be null here
-> > u64 reserved_bits = kvm_vcpu_reserved_gpa_bits_raw(vcpu) | 0x2ff |
-> > (guest_cpuid_has(vcpu, X86_FEATURE_X2APIC) ? 0 : X2APIC_ENABLE);
-> >
-> > if ((msr_info->data & reserved_bits) != 0 || new_mode == LAPIC_MODE_INVALID)
-> > return 1;
-> > if (!msr_info->host_initiated) {
-> > if (old_mode == LAPIC_MODE_X2APIC && new_mode == LAPIC_MODE_XAPIC)
-> > return 1;
-> > if (old_mode == LAPIC_MODE_DISABLED && new_mode == LAPIC_MODE_X2APIC)
-> > return 1;
-> > }
-> >
-> > kvm_lapic_set_base(vcpu, msr_info->data);
-> > kvm_recalculate_apic_map(vcpu->kvm);
-> > return 0;
-> > }
-> > EXPORT_SYMBOL_GPL(kvm_set_apic_base);
-> > ```
->
-> The difference is that KVM has consistent expecations for a set of functions,
-> whereas sev-dev.c does not.   Yes, KVM will explode if @msr_info is NULL, and
-> there are undoubtedly a bajillion flows in the kernel that would do the same,
-> but unlike the functions declared in include/linux/psp-sev.h() the requirements
-> on the caller are fairly obvious.  E.g. why should this be illegal from a caller's
-> perspective?
->
->         sev_platform_init(NULL);
->         sev_platform_status(&status, NULL);
+Hello.
 
-Ack. I'll store a intermediate error in __sev_platform_init_locked and
-export to @error if its not null.
+Let me add a little summary (and I'm CCing cgroups ML too).
+
+The cgroup API allows following callbacks (simplified explanation):
+
+- .css_offline           called after killing main reference 
+- .css_released          called when css.refcnt hits zero 
+- .css_free              called after css_released and RCU GP 
+
+(The hidden catch is that they're not called directly but through workqueues,
+see css_free_work_fn() for details. .css_free() is queued after RCU GP though.)
+
+How is this currently used in the cpu controller:
+
+- .css_offline           not used
+- .css_released          sched_offline_group / unregister_fair_sched_group
+- .css_free              sched_free_group / free_fair_sched_group
+
+
+On Mon, Nov 08, 2021 at 12:40:19PM +0100, Peter Zijlstra <peterz@infradead.org> wrote:
+> Something like so good?
+
+Thanks for putting this together, in short I understand it reshuffles as follows:
+
+.css_offline    not used
+.css_released   cpu_cgroup_css_released
+                  sched_released_group(tg)
+                    // unlinking from tg tree
+.css_free       cpu_cgroup_css_free
+                  sched_unregister_group(tg)
+                    unregister_fair_sched_group(tg)
+                      for_each(cpu)
+                        remove_entity_load_avg(cfs_rq)
+                        list_del_leaf_cfs_rq(cfs_rq)    (1)
+                      destroy_cfs_bandwidth(tg)         (2)
+                    call_rcu(sched_free_group_rcu)      (3)
+                      [rcu] sched_free_group
+
+I see two following issues with this:
+
+The cfs_bandwidth.period_timer is still active between (1) and (2) and can be
+fired and tg_unthrottle_up() may add a cfs_rq back to the leaf list (subsequent
+GP won't help).
+(Admittedly, this window is shorter than the original window between
+cpu_cgroup_css_released() and cpu_cgroup_css_released().)
+
+Having another call_rcu() at (3) seems overly complex given the cgroup API
+provides a grace period for free (pun intended :-).
+
+
+Therefore, symbolically, the symbolic ordering should be:
+
+.css_offline    not used
+.css_released   cpu_cgroup_css_released
+                  sched_unregister_group(tg)
+                    unregister_fair_sched_group(tg)
+                      destroy_cfs_bandwidth(tg)
+                      for_each(cpu)
+                        remove_entity_load_avg(cfs_rq)
+                        list_del_leaf_cfs_rq(cfs_rq)
+                  sched_released_group(tg)
+                    // unlinking from tg tree
+
+.css_free       cpu_cgroup_css_free
+                  sched_free_group
+
+That is, the destroy_cfs_bandwidth() is called first to make sure the
+tg_unthrottle_up() won't undo some of the cleanups and the respective
+structures are only freed after RCU grace period.
+
+(Considering Vincent's remark, remove_entity_load_avg() and
+list_del_leaf_cfs_rq() should be swapped but I'd keep that for a different
+patch.)
+
+To continue the discussion, the suggestion above in a form of diff (I stripped
+the commit message for now).
+
+--8<--
+diff --git a/kernel/sched/autogroup.c b/kernel/sched/autogroup.c
+index 2067080bb235..8629b37d118e 100644
+--- a/kernel/sched/autogroup.c
++++ b/kernel/sched/autogroup.c
+@@ -31,7 +31,7 @@ static inline void autogroup_destroy(struct kref *kref)
+ 	ag->tg->rt_se = NULL;
+ 	ag->tg->rt_rq = NULL;
+ #endif
+-	sched_offline_group(ag->tg);
++	sched_release_group(ag->tg);
+ 	sched_destroy_group(ag->tg);
+ }
+ 
+diff --git a/kernel/sched/core.c b/kernel/sched/core.c
+index 523fd602ea90..a5ca3ae6837b 100644
+--- a/kernel/sched/core.c
++++ b/kernel/sched/core.c
+@@ -9771,12 +9771,12 @@ void sched_destroy_group(struct task_group *tg)
+ 	call_rcu(&tg->rcu, sched_free_group_rcu);
+ }
+ 
+-void sched_offline_group(struct task_group *tg)
++void sched_release_group(struct task_group *tg)
+ {
+ 	unsigned long flags;
+ 
+-	/* End participation in shares distribution: */
+ 	unregister_fair_sched_group(tg);
++	unregister_rt_sched_group(tg);
+ 
+ 	spin_lock_irqsave(&task_group_lock, flags);
+ 	list_del_rcu(&tg->list);
+@@ -9896,7 +9896,7 @@ static void cpu_cgroup_css_released(struct cgroup_subsys_state *css)
+ {
+ 	struct task_group *tg = css_tg(css);
+ 
+-	sched_offline_group(tg);
++	sched_release_group(tg);
+ }
+ 
+ static void cpu_cgroup_css_free(struct cgroup_subsys_state *css)
+diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+index 13950beb01a2..6e476f6d9435 100644
+--- a/kernel/sched/fair.c
++++ b/kernel/sched/fair.c
+@@ -11456,8 +11456,6 @@ void free_fair_sched_group(struct task_group *tg)
+ {
+ 	int i;
+ 
+-	destroy_cfs_bandwidth(tg_cfs_bandwidth(tg));
+-
+ 	for_each_possible_cpu(i) {
+ 		if (tg->cfs_rq)
+ 			kfree(tg->cfs_rq[i]);
+@@ -11534,6 +11532,8 @@ void unregister_fair_sched_group(struct task_group *tg)
+ 	struct rq *rq;
+ 	int cpu;
+ 
++	destroy_cfs_bandwidth(tg_cfs_bandwidth(tg));
++
+ 	for_each_possible_cpu(cpu) {
+ 		if (tg->se[cpu])
+ 			remove_entity_load_avg(tg->se[cpu]);
+diff --git a/kernel/sched/rt.c b/kernel/sched/rt.c
+index bb945f8faeca..b48baaba2fc2 100644
+--- a/kernel/sched/rt.c
++++ b/kernel/sched/rt.c
+@@ -137,13 +137,17 @@ static inline struct rq *rq_of_rt_se(struct sched_rt_entity *rt_se)
+ 	return rt_rq->rq;
+ }
+ 
+-void free_rt_sched_group(struct task_group *tg)
++void unregister_rt_sched_group(struct task_group *tg)
+ {
+-	int i;
+-
+ 	if (tg->rt_se)
+ 		destroy_rt_bandwidth(&tg->rt_bandwidth);
+ 
++}
++
++void free_rt_sched_group(struct task_group *tg)
++{
++	int i;
++
+ 	for_each_possible_cpu(i) {
+ 		if (tg->rt_rq)
+ 			kfree(tg->rt_rq[i]);
+@@ -250,6 +254,8 @@ static inline struct rt_rq *rt_rq_of_se(struct sched_rt_entity *rt_se)
+ 	return &rq->rt;
+ }
+ 
++void unregister_rt_sched_group(struct task_group *tg) { }
++
+ void free_rt_sched_group(struct task_group *tg) { }
+ 
+ int alloc_rt_sched_group(struct task_group *tg, struct task_group *parent)
+diff --git a/kernel/sched/sched.h b/kernel/sched/sched.h
+index 7f1612d26c18..0e66749486e7 100644
+--- a/kernel/sched/sched.h
++++ b/kernel/sched/sched.h
+@@ -488,6 +488,7 @@ extern void __refill_cfs_bandwidth_runtime(struct cfs_bandwidth *cfs_b);
+ extern void start_cfs_bandwidth(struct cfs_bandwidth *cfs_b);
+ extern void unthrottle_cfs_rq(struct cfs_rq *cfs_rq);
+ 
++extern void unregister_rt_sched_group(struct task_group *tg);
+ extern void free_rt_sched_group(struct task_group *tg);
+ extern int alloc_rt_sched_group(struct task_group *tg, struct task_group *parent);
+ extern void init_tg_rt_entry(struct task_group *tg, struct rt_rq *rt_rq,
+@@ -503,7 +504,7 @@ extern struct task_group *sched_create_group(struct task_group *parent);
+ extern void sched_online_group(struct task_group *tg,
+ 			       struct task_group *parent);
+ extern void sched_destroy_group(struct task_group *tg);
+-extern void sched_offline_group(struct task_group *tg);
++extern void sched_release_group(struct task_group *tg);
+ 
+ extern void sched_move_task(struct task_struct *tsk);
+ 
+
