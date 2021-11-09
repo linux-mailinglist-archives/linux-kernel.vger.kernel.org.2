@@ -2,115 +2,169 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3577244AA8C
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 10:25:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 56A2344AA8E
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 10:26:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244886AbhKIJ2V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Nov 2021 04:28:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43946 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244806AbhKIJ2M (ORCPT
+        id S244858AbhKIJ2y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Nov 2021 04:28:54 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:40834 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S244806AbhKIJ2x (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Nov 2021 04:28:12 -0500
-Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3EF59C061764
-        for <linux-kernel@vger.kernel.org>; Tue,  9 Nov 2021 01:25:26 -0800 (PST)
-Received: by mail-pf1-x444.google.com with SMTP id y5so8645130pfb.4
-        for <linux-kernel@vger.kernel.org>; Tue, 09 Nov 2021 01:25:26 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:reply-to:sender:from:date:message-id:subject:to
-         :content-transfer-encoding;
-        bh=FN8gmeeFosyEMCwP+9T5Qcxe++S6hreeBk1oxhzKQmg=;
-        b=Sl8wYCy8kYu7D9vAHAOvPiYkQYPU75CVJR3RmoPZNLuJze7+GA/MmMiD1S44K3Gswy
-         fodkBDmvJx/olb7kTNK/3KVrf3wc07A+JjXTEwB9J/lYwuwKTw9aA2rTBqFHOEd47Zfk
-         R5OKCOBpjVMap6Y74nnzOs/9IYPrARxfiMvZ3biS58PrhALvGgCLYWRB7Jf8hNE+58I8
-         W4wK6xAn4FQRzBh81g491tcnO2SEoVDs1PJmBnhmTmc5jYz/xF+5sjkGRag1lUNQv7FH
-         14nsJWPAdCPWo4OPXm23EomMNstK34vyHAYrZfOhFsyiDfyxbt99AKe7chgu9E3Pp8vm
-         WR2g==
+        Tue, 9 Nov 2021 04:28:53 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1636449967;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=J+QQlB4mEIMgWLA4xpaMYxJTm2+I9eYnL0fykYkPn+g=;
+        b=LTcGWwPnesHAWLk9UhZzvjh/AqS85TX1ARY4GjgnUJZGizPI8VLLFro8tszwX3X8c7f4vB
+        X95+IcIm9qN8X17KWYiNHpEsf1yx8MQVc/FnD0iDE3tnXNBiWRM/E/izVFAmLoeBFhsQK2
+        Nou7TTon5crgxh9NSgOdl86hkxBly+8=
+Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com
+ [209.85.208.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-441-gHJxlOhyMmuoOpkVHC9pAA-1; Tue, 09 Nov 2021 04:26:04 -0500
+X-MC-Unique: gHJxlOhyMmuoOpkVHC9pAA-1
+Received: by mail-ed1-f70.google.com with SMTP id i22-20020a05640242d600b003e28aecc0afso17400277edc.1
+        for <linux-kernel@vger.kernel.org>; Tue, 09 Nov 2021 01:26:04 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:reply-to:sender:from:date
-         :message-id:subject:to:content-transfer-encoding;
-        bh=FN8gmeeFosyEMCwP+9T5Qcxe++S6hreeBk1oxhzKQmg=;
-        b=ghxeLONukdRCoWj46RdsHoeoC6SfVGBTtTop9pn8EqzvELEuO9SkBm2czVBua/WjAa
-         sI0DE90amVtAo8WGSIug4ZznrjC1l9Jtb6xFM/S+ZM669VKmhT8edgQfrKPKTVK45Ikd
-         NJLI0tWnpWSlUwSMPLbmVtdPz4WF0hdZdr7JY6wA5beWKFGUEqwIwe/zx50Wh0mJ/mdC
-         AN/k5Rs4aJ75MRLcvQLT+Z7vmgdEMBcvlCyItPnTYeKAGn3i14LsDMAQHzWfNQhRwLXI
-         r2ISkTIDcaJwZbTUUTvDaOqRLa5gD6S//WqfjShO4x9oEKmq0yb+KksOsrf8X+GF5/P1
-         DkOw==
-X-Gm-Message-State: AOAM5300wiFspkKwj6b+PkSXfiiPykNzx8mBmkTwcxk9g7arfEqvHxct
-        w66O4g+cjGMVK7wED6vrPslEETiT5RNI+e/EyLE=
-X-Google-Smtp-Source: ABdhPJy5JLvhq6LzZjxzyN+CKSbERa2NPMEsj/LDCi+rAdM56Z4mvhjpuwTTuB7XKFLgopkg1QQkYBkRiySf4l2GCjE=
-X-Received: by 2002:a05:6a00:cc8:b0:49f:c4a9:b9f1 with SMTP id
- b8-20020a056a000cc800b0049fc4a9b9f1mr6617929pfv.32.1636449925223; Tue, 09 Nov
- 2021 01:25:25 -0800 (PST)
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:in-reply-to
+         :content-transfer-encoding;
+        bh=J+QQlB4mEIMgWLA4xpaMYxJTm2+I9eYnL0fykYkPn+g=;
+        b=drVu0+JjW/CCbhoGUbjxgDQaa5ADVedZ/jEeFfSwZRzBySYC7pIEnZffPteIST1cUg
+         NOsVnq4eJIdqPt+ndrDlgnBQ53PvCAZAp69qntEb7n2vASdyICULDMxgnHsH7GbZmW6r
+         YyUJTctfKL+mqrcjfKeAAzaDBPgvAlOhpEQEyOCS+aM9PEpVTGbv3ix/bBr2Ws/F0HyK
+         fJhusQPxhzgIeWMmAgSt4LA2HbxelY2oJtcqt+vkK+q6ethxIBAQnKpE58CajAxt39C9
+         pK0sAB/T3qK06Cu1N9R264WHxbdjLqyGVsFV09N6s8+DsEgOuC8Q9nUKluLOQvNGL00g
+         yKFw==
+X-Gm-Message-State: AOAM532NE6SHCXLFBsyx6IInLirpt0JRKIUF22YuQ4/sQiqTT44gwIdT
+        8OLLJBb5NDjzelExlorVKC7scS2imBEXyyK0jq9rpjDImwJ9k/Fk357XZvj+11KVOCFoU3Vb6rC
+        IjwpBd6qSUAVjMzvr355T2gbS
+X-Received: by 2002:a17:906:ad89:: with SMTP id la9mr7661042ejb.178.1636449963111;
+        Tue, 09 Nov 2021 01:26:03 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJwV3lAQ7ceBM6/iSGdjPmt1FkQx02L/6F0D/9fEsTcklwFBo2OyIgK6AYtahgFKcvIDs3UCHA==
+X-Received: by 2002:a17:906:ad89:: with SMTP id la9mr7661014ejb.178.1636449962899;
+        Tue, 09 Nov 2021 01:26:02 -0800 (PST)
+Received: from ?IPV6:2001:1c00:c1e:bf00:1054:9d19:e0f0:8214? (2001-1c00-0c1e-bf00-1054-9d19-e0f0-8214.cable.dynamic.v6.ziggo.nl. [2001:1c00:c1e:bf00:1054:9d19:e0f0:8214])
+        by smtp.gmail.com with ESMTPSA id hr11sm3700167ejc.108.2021.11.09.01.26.02
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 09 Nov 2021 01:26:02 -0800 (PST)
+Message-ID: <ecface31-f21e-23f4-6400-7555465fc3cd@redhat.com>
+Date:   Tue, 9 Nov 2021 10:26:02 +0100
 MIME-Version: 1.0
-Reply-To: oliviaingra343@gmail.com
-Sender: simtondji@gmail.com
-Received: by 2002:a05:6a10:cacc:0:0:0:0 with HTTP; Tue, 9 Nov 2021 01:25:24
- -0800 (PST)
-From:   Ingram Olivia <oliviaingra@gmail.com>
-Date:   Tue, 9 Nov 2021 09:25:24 +0000
-X-Google-Sender-Auth: pFEDnayqP8zA4f8bYSMg2Oljl7A
-Message-ID: <CAGg0eJzRVMe_6xL42nmYQcHag+1Fhhoys3y2+gw3HXh2hNANmA@mail.gmail.com>
-Subject: I wish you read my mail in a good heart
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.2.0
+Subject: Re: [PATCH] platform/x86: think-lmi: Abort probe on analyze failure
+Content-Language: en-US
+To:     Alex Williamson <alex.williamson@redhat.com>,
+        markpearson@lenovo.com, markgross@kernel.org
+Cc:     platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <163639463588.1330483.15850167112490200219.stgit@omen>
+From:   Hans de Goede <hdegoede@redhat.com>
+In-Reply-To: <163639463588.1330483.15850167112490200219.stgit@omen>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Dear,
+Hi,
 
-I am Mrs. Ingram Olivia, I have decided to donate what I have to
-Motherless babies/ Less privileged/ Widows' because I am dying and
-diagnosed for cancer for about 10 years ago. I have been touched by
-God Almighty to donate from what I have inherited from my late husband
-to you for good work of God Almighty. I have asked Almighty God to
-forgive me and believe he has, because he is a Merciful God, I'm
-presently suffering from Leukemia.
+On 11/8/21 19:03, Alex Williamson wrote:
+> A Lenovo ThinkStation S20 (4157CTO BIOS 60KT41AUS) fails to boot on
+> recent kernels including the think-lmi driver, due to the fact that
+> errors returned by the tlmi_analyze() function are ignored by
+> tlmi_probe(), where  tlmi_sysfs_init() is called unconditionally.
+> This results in making use of an array of already freed, non-null
+> pointers and other uninitialized globals, causing all sorts of nasty
+> kobject and memory faults.
+> 
+> Make use of the analyze function return value, free a couple leaked
+> allocations, and remove the settings_count field, which is incremented
+> but never consumed.
+> 
+> Fixes: a40cd7ef22fb ("platform/x86: think-lmi: Add WMI interface support on Lenovo platforms")
+> Signed-off-by: Alex Williamson <alex.williamson@redhat.com>
 
-My health condition has gotten worse and just two weeks ago my doctor
-informed me that my condition has reach a critical stage, that I have
-just 5 months left. This confirmation from my doctor was and still is
-devastating news; it is hard to know that you have just a little time
-left to live here.
+Thanks, patch looks good to me:
 
-After the doctor=E2=80=99s medical pronunciation that I have just few month=
-s
-to live, I decided to divide my wealth to contribute to your country.
-I want to assist you with the funds to do great charity works in your
-country, this is my last wish. I selected you after searching few
-websites; I prayed and was led to you. I am willing to donate the sum
-of ($8.1million ) to the less privileged through you.
+Reviewed-by: Hans de Goede <hdegoede@redhat.com>
 
-Please I want to transfer this money to you, If you can handle this
-fund and very sure to do charity works on my behalf and from there I
-will travel to meet a specialist as I want to be buried alongside my
-late husband when I passed on.
+I'll send this to Linus in my first fixes pull-req for 5.16
+(once 516-rc1 is out)
 
-Note that this fund is in the financial institution and upon my
-instruction; I will file in an application for the transfer of the
-money into your account for the said purpose.
+Regards,
 
-Lastly, I honestly pray that this money when transferred will be used
-for the said purpose even though I might be late then. I have come to
-find out that wealth is vanity and I made a promise to God that my
-wealth will be used to support the poor and the assist the sick. Do
-let me know
+Hans
 
-if you will be able to handle this fund and use it for the said
-purpose so that I will inform my bank on my decision, If you are
-interested in carrying out this task, get back to me for more details
-on this noble project of mine.
-1: Full name:
-2: Country:
-3:Occupation/position:
-4:Phone/s:
-5: Age:
-6: Sex:
-7: Address:
-God bless you
-Mrs.Ingram Olivia
+
+
+> ---
+>  drivers/platform/x86/think-lmi.c |   13 ++++++++++---
+>  drivers/platform/x86/think-lmi.h |    1 -
+>  2 files changed, 10 insertions(+), 4 deletions(-)
+> 
+> diff --git a/drivers/platform/x86/think-lmi.c b/drivers/platform/x86/think-lmi.c
+> index 9472aae72df2..c4d9c45350f7 100644
+> --- a/drivers/platform/x86/think-lmi.c
+> +++ b/drivers/platform/x86/think-lmi.c
+> @@ -888,8 +888,10 @@ static int tlmi_analyze(void)
+>  			break;
+>  		if (!item)
+>  			break;
+> -		if (!*item)
+> +		if (!*item) {
+> +			kfree(item);
+>  			continue;
+> +		}
+>  
+>  		/* It is not allowed to have '/' for file name. Convert it into '\'. */
+>  		strreplace(item, '/', '\\');
+> @@ -902,6 +904,7 @@ static int tlmi_analyze(void)
+>  		setting = kzalloc(sizeof(*setting), GFP_KERNEL);
+>  		if (!setting) {
+>  			ret = -ENOMEM;
+> +			kfree(item);
+>  			goto fail_clear_attr;
+>  		}
+>  		setting->index = i;
+> @@ -916,7 +919,6 @@ static int tlmi_analyze(void)
+>  		}
+>  		kobject_init(&setting->kobj, &tlmi_attr_setting_ktype);
+>  		tlmi_priv.setting[i] = setting;
+> -		tlmi_priv.settings_count++;
+>  		kfree(item);
+>  	}
+>  
+> @@ -983,7 +985,12 @@ static void tlmi_remove(struct wmi_device *wdev)
+>  
+>  static int tlmi_probe(struct wmi_device *wdev, const void *context)
+>  {
+> -	tlmi_analyze();
+> +	int ret;
+> +
+> +	ret = tlmi_analyze();
+> +	if (ret)
+> +		return ret;
+> +
+>  	return tlmi_sysfs_init();
+>  }
+>  
+> diff --git a/drivers/platform/x86/think-lmi.h b/drivers/platform/x86/think-lmi.h
+> index f8e26823075f..2ce5086a5af2 100644
+> --- a/drivers/platform/x86/think-lmi.h
+> +++ b/drivers/platform/x86/think-lmi.h
+> @@ -55,7 +55,6 @@ struct tlmi_attr_setting {
+>  struct think_lmi {
+>  	struct wmi_device *wmi_device;
+>  
+> -	int settings_count;
+>  	bool can_set_bios_settings;
+>  	bool can_get_bios_selections;
+>  	bool can_set_bios_password;
+> 
+> 
+
