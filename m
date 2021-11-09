@@ -2,118 +2,198 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 660F544A2CD
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 02:23:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E620744A15F
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 02:07:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241821AbhKIBVY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Nov 2021 20:21:24 -0500
-Received: from mail.kernel.org ([198.145.29.99]:44354 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S242266AbhKIBRL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Nov 2021 20:17:11 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5F0F761A4F;
-        Tue,  9 Nov 2021 01:06:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1636420008;
-        bh=2Fz1alJR0sRa2U93z50qxHzPvVUeyZ90gC0q24iS+fI=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=QpdSq6q6q/VLgWJgVYJ1hbyl21HMjJmlNb4rdWpghObedZKkG7no1Tvk20eFxDxjM
-         1HED0qlwsCfnSY+Ad/+bKdTEC1AA83PISEw5byHkzwXfVPgDC5YI/xvbI0u3wxRsHc
-         f+FXGWG7M0W6FCjYRL6Hwm5q5fUgPbfkwpwkEUN1iGC0NDkhgoe2c1vMKfHdLV+qCB
-         4ZzJbOwI9SulFufqz8Zm/DuSsfnz+GEJknF3wnr8YWqtJ6Ce49+Brb95X9fL+Xc3Iz
-         nOT6d9tUkv9RUnqE0FhtgUXLkPuZoD9YgKF4ABgcSpTFvi6ShlhF2a2N0JSCmhF8B2
-         iF0uFJWAC4rOw==
-From:   Sasha Levin <sashal@kernel.org>
-To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Sven Schnelle <svens@stackframe.org>, Helge Deller <deller@gmx.de>,
-        Sasha Levin <sashal@kernel.org>,
-        James.Bottomley@HansenPartnership.com, valentin.schneider@arm.com,
-        peterz@infradead.org, mingo@kernel.org, ardb@kernel.org,
-        linux-parisc@vger.kernel.org
-Subject: [PATCH AUTOSEL 4.19 47/47] parisc/kgdb: add kgdb_roundup() to make kgdb work with idle polling
-Date:   Mon,  8 Nov 2021 12:50:31 -0500
-Message-Id: <20211108175031.1190422-47-sashal@kernel.org>
-X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20211108175031.1190422-1-sashal@kernel.org>
-References: <20211108175031.1190422-1-sashal@kernel.org>
+        id S239688AbhKIBJa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Nov 2021 20:09:30 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43188 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237422AbhKIBHA (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Nov 2021 20:07:00 -0500
+Received: from mail-ot1-x32c.google.com (mail-ot1-x32c.google.com [IPv6:2607:f8b0:4864:20::32c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1D700C0797BC
+        for <linux-kernel@vger.kernel.org>; Mon,  8 Nov 2021 17:01:50 -0800 (PST)
+Received: by mail-ot1-x32c.google.com with SMTP id r10-20020a056830448a00b0055ac7767f5eso28382007otv.3
+        for <linux-kernel@vger.kernel.org>; Mon, 08 Nov 2021 17:01:50 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=t9jW1J5eNwWEbybNdKesq0t74E7W/ck/52E2VJGXkkg=;
+        b=tUpaENN0tjUWzOeNT0UHfb4T1ir5hzA5JvtVSI8sTnzbpAxGN6zqp0AepxIOWpkLrE
+         i9rj1FhfA7LO8kbEZq4e8dfjCkeg4oHqJFDvqkt9f8H5fa1/DFLjivlehpz1he3+ybIc
+         Q+f3LW/VS4P3K/r2DWCugKqeOlb0rhBiRs8/EMU7rwa5+c5sVd59Jq2asZa60hffRYKg
+         5P/aLsIczyg9eYdk9qOGdhojaJLOiZd4vB22879Vx+SQxhM1rhihHRXP3fDeUkTSQq6F
+         B3d9kt0X3OjsfHCCJzKw8UCujLi+edpBxbSvIWJAX9RllF/Mox8o+jiYh7qyGpVK2zBU
+         eWXQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=t9jW1J5eNwWEbybNdKesq0t74E7W/ck/52E2VJGXkkg=;
+        b=Fpeltjpip/AAGAQ4h5tQKWlNyfL/TSUrrctCLlDSuYpXiRkWD3hiXtrHSXxmiHnI8o
+         drc3eqncBNnQD3h9d5dFOZoTDDkeSKOJbRSchrUIiXflJJMA3PtZH4+paxgSWeuWpk3n
+         6Kd7at8w9pda5KLNYiTT4G48xXkA6+rP0n62Xf2zVQgRl3jKdKMAlFG6XCKUS0GcyX9Z
+         edTt743wuGnUmm4fkyBM1qUvP5Qkbeg0ECG4+885suH0fMAKwzpO2yWe08HERsv0Q1s8
+         1XXr3UV1yKd4JHgezJb4YcPO9NADguHqCztKbsnsvWnj57otPkadYiC/aQrvaOuWLysh
+         cwaQ==
+X-Gm-Message-State: AOAM532DwxLX2+iNV7LpSUHOzyXvKp3d8hSh09sRvfGzYN6hClMxB7kl
+        WmJRRB6taJ7VF/xSBmYwWh7Zd2dYjcByuFsCw326jg==
+X-Google-Smtp-Source: ABdhPJw7atefZ+9vTHHn1jZX0FdtT+yhNCn8qx2PNquKXMzwrqP0p2MI7f3sIpXgVuSNJNdGFjLmQJbrTBCj6pV6XZ4=
+X-Received: by 2002:a9d:ed6:: with SMTP id 80mr2644104otj.35.1636419709380;
+ Mon, 08 Nov 2021 17:01:49 -0800 (PST)
 MIME-Version: 1.0
-X-stable: review
-X-Patchwork-Hint: Ignore
-Content-Transfer-Encoding: 8bit
+References: <20211102161125.1144023-1-kernel@esmil.dk> <20211102161125.1144023-13-kernel@esmil.dk>
+ <CAHp75VdmnnrisuP00W0KYta0KgmC+fu3WMxm959dt5X1kpiKTw@mail.gmail.com> <CAHp75VcuGdaq_TjjRS0S8R5y-nryLABZSp7ehrXz-fUS2W3vfA@mail.gmail.com>
+In-Reply-To: <CAHp75VcuGdaq_TjjRS0S8R5y-nryLABZSp7ehrXz-fUS2W3vfA@mail.gmail.com>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Tue, 9 Nov 2021 02:01:37 +0100
+Message-ID: <CACRpkdYe-tW2K2eOQa+FYb-ZXzrA95+pPc6kkLB8ZJLAT8G_eA@mail.gmail.com>
+Subject: Re: [PATCH v3 12/16] pinctrl: starfive: Add pinctrl driver for
+ StarFive SoCs
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc:     Emil Renner Berthing <kernel@esmil.dk>,
+        linux-riscv <linux-riscv@lists.infradead.org>,
+        devicetree <devicetree@vger.kernel.org>,
+        linux-clk <linux-clk@vger.kernel.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        "open list:SERIAL DRIVERS" <linux-serial@vger.kernel.org>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Marc Zyngier <maz@kernel.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        Maximilian Luz <luzmaximilian@gmail.com>,
+        Sagar Kadam <sagar.kadam@sifive.com>,
+        Drew Fustini <drew@beagleboard.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Michael Zhu <michael.zhu@starfivetech.com>,
+        Fu Wei <tekkamanninja@gmail.com>,
+        Anup Patel <anup.patel@wdc.com>,
+        Atish Patra <atish.patra@wdc.com>,
+        Matteo Croce <mcroce@microsoft.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Huan Feng <huan.feng@starfivetech.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sven Schnelle <svens@stackframe.org>
+On Tue, Nov 2, 2021 at 9:08 PM Andy Shevchenko
+<andy.shevchenko@gmail.com> wrote:
+(...)
+> > On Tue, Nov 2, 2021 at 6:50 PM Emil Renner Berthing <kernel@esmil.dk> wrote:
+>
+> ...
+>
+> > > +static int starfive_pinconf_group_set(struct pinctrl_dev *pctldev,
+> > > +                                     unsigned int gsel,
+> > > +                                     unsigned long *configs,
+> > > +                                     unsigned int num_configs)
+> > > +{
+> > > +       struct starfive_pinctrl *sfp = pinctrl_dev_get_drvdata(pctldev);
+> > > +       const struct group_desc *group;
+> > > +       u16 mask, value;
+> > > +       int i;
+> > > +
+> > > +       group = pinctrl_generic_get_group(pctldev, gsel);
+> > > +       if (!group)
+> > > +               return -EINVAL;
+> > > +
+> > > +       mask = 0;
+> > > +       value = 0;
+> > > +       for (i = 0; i < num_configs; i++) {
+> > > +               int param = pinconf_to_config_param(configs[i]);
+> > > +               u32 arg = pinconf_to_config_argument(configs[i]);
+> > > +
+> > > +               switch (param) {
+> > > +               case PIN_CONFIG_BIAS_DISABLE:
+> > > +                       mask |= PAD_BIAS_MASK;
+> > > +                       value = (value & ~PAD_BIAS_MASK) | PAD_BIAS_DISABLE;
+> > > +                       break;
+> > > +               case PIN_CONFIG_BIAS_PULL_DOWN:
+> > > +                       if (arg == 0)
+> > > +                               return -ENOTSUPP;
+> > > +                       mask |= PAD_BIAS_MASK;
+> > > +                       value = (value & ~PAD_BIAS_MASK) | PAD_BIAS_PULL_DOWN;
+> > > +                       break;
+> > > +               case PIN_CONFIG_BIAS_PULL_UP:
+> > > +                       if (arg == 0)
+> > > +                               return -ENOTSUPP;
+> > > +                       mask |= PAD_BIAS_MASK;
+> > > +                       value = value & ~PAD_BIAS_MASK;
+> > > +                       break;
+> > > +               case PIN_CONFIG_DRIVE_STRENGTH:
+> > > +                       mask |= PAD_DRIVE_STRENGTH_MASK;
+> > > +                       value = (value & ~PAD_DRIVE_STRENGTH_MASK) |
+> > > +                               starfive_drive_strength_from_max_mA(arg);
+> > > +                       break;
+> > > +               case PIN_CONFIG_INPUT_ENABLE:
+> > > +                       mask |= PAD_INPUT_ENABLE;
+> > > +                       if (arg)
+> > > +                               value |= PAD_INPUT_ENABLE;
+> > > +                       else
+> > > +                               value &= ~PAD_INPUT_ENABLE;
+> > > +                       break;
+> > > +               case PIN_CONFIG_INPUT_SCHMITT_ENABLE:
+> > > +                       mask |= PAD_INPUT_SCHMITT_ENABLE;
+> > > +                       if (arg)
+> > > +                               value |= PAD_INPUT_SCHMITT_ENABLE;
+> > > +                       else
+> > > +                               value &= ~PAD_INPUT_SCHMITT_ENABLE;
+> > > +                       break;
+> > > +               case PIN_CONFIG_SLEW_RATE:
+> > > +                       mask |= PAD_SLEW_RATE_MASK;
+> > > +                       value = (value & ~PAD_SLEW_RATE_MASK) |
+> > > +                               ((arg << PAD_SLEW_RATE_POS) & PAD_SLEW_RATE_MASK);
+> > > +                       break;
+> > > +               case PIN_CONFIG_STARFIVE_STRONG_PULL_UP:
+> > > +                       if (arg) {
+> > > +                               mask |= PAD_BIAS_MASK;
+> > > +                               value = (value & ~PAD_BIAS_MASK) |
+> > > +                                       PAD_BIAS_STRONG_PULL_UP;
+> > > +                       } else {
+> > > +                               mask |= PAD_BIAS_STRONG_PULL_UP;
+> > > +                               value = value & ~PAD_BIAS_STRONG_PULL_UP;
+> > > +                       }
+> > > +                       break;
+> > > +               default:
+> > > +                       return -ENOTSUPP;
+> > > +               }
+> > > +       }
+> > > +
+> > > +       for (i = 0; i < group->num_pins; i++)
+> > > +               starfive_padctl_rmw(sfp, group->pins[i], mask, value);
+> > > +
+> > > +       return 0;
+> > > +}
+>
+> Linus any comments on this code (sorry if I missed your reply)? The
+> idea behind above is to skip all settings from the same category and
+> apply only the last one, e.g. if we have "bias set to X", ..., "bias
+> disable", ..., "bias set to Y", the hardware will see only the last
+> operation, i.e. "bias set to Y". I think it may not be the best
+> approach (theoretically?) since the hardware definitely may behave
+> differently on the other side in case of such series of the
+> configurations (yes, I have seen some interesting implementations of
+> the touchpad / touchscreen GPIOs that may be affected).
 
-[ Upstream commit 66e29fcda1824f0427966fbee2bd2c85bf362c82 ]
+That sounds weird. I think we need to look at how other drivers
+deal with this.
 
-With idle polling, IPIs are not sent when a CPU idle, but queued
-and run later from do_idle(). The default kgdb_call_nmi_hook()
-implementation gets the pointer to struct pt_regs from get_irq_reqs(),
-which doesn't work in that case because it was not called from the
-IPI interrupt handler. Fix it by defining our own kgdb_roundup()
-function which sents an IPI_ENTER_KGDB. When that IPI is received
-on the target CPU kgdb_nmicallback() is called.
+To me it seems more natural that
+starfive_padctl_rmw(sfp, group->pins[i], mask, value);
+would get called at the end of each iteration of the
+for (i = 0; i < num_configs; i++) loop.
 
-Signed-off-by: Sven Schnelle <svens@stackframe.org>
-Signed-off-by: Helge Deller <deller@gmx.de>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- arch/parisc/kernel/smp.c | 19 +++++++++++++++++--
- 1 file changed, 17 insertions(+), 2 deletions(-)
-
-diff --git a/arch/parisc/kernel/smp.c b/arch/parisc/kernel/smp.c
-index 5e26dbede5fc2..ae4fc8769c38b 100644
---- a/arch/parisc/kernel/smp.c
-+++ b/arch/parisc/kernel/smp.c
-@@ -32,6 +32,7 @@
- #include <linux/bitops.h>
- #include <linux/ftrace.h>
- #include <linux/cpu.h>
-+#include <linux/kgdb.h>
- 
- #include <linux/atomic.h>
- #include <asm/current.h>
-@@ -74,7 +75,10 @@ enum ipi_message_type {
- 	IPI_CALL_FUNC,
- 	IPI_CPU_START,
- 	IPI_CPU_STOP,
--	IPI_CPU_TEST
-+	IPI_CPU_TEST,
-+#ifdef CONFIG_KGDB
-+	IPI_ENTER_KGDB,
-+#endif
- };
- 
- 
-@@ -170,7 +174,12 @@ ipi_interrupt(int irq, void *dev_id)
- 			case IPI_CPU_TEST:
- 				smp_debug(100, KERN_DEBUG "CPU%d is alive!\n", this_cpu);
- 				break;
--
-+#ifdef CONFIG_KGDB
-+			case IPI_ENTER_KGDB:
-+				smp_debug(100, KERN_DEBUG "CPU%d ENTER_KGDB\n", this_cpu);
-+				kgdb_nmicallback(raw_smp_processor_id(), get_irq_regs());
-+				break;
-+#endif
- 			default:
- 				printk(KERN_CRIT "Unknown IPI num on CPU%d: %lu\n",
- 					this_cpu, which);
-@@ -226,6 +235,12 @@ send_IPI_allbutself(enum ipi_message_type op)
- 	}
- }
- 
-+#ifdef CONFIG_KGDB
-+void kgdb_roundup_cpus(void)
-+{
-+	send_IPI_allbutself(IPI_ENTER_KGDB);
-+}
-+#endif
- 
- inline void 
- smp_send_stop(void)	{ send_IPI_allbutself(IPI_CPU_STOP); }
--- 
-2.33.0
-
+Yours,
+Linus Walleij
