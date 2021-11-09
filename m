@@ -2,106 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5232444B046
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 16:23:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F83444B049
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 16:24:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235480AbhKIPZ7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Nov 2021 10:25:59 -0500
-Received: from box.trvn.ru ([194.87.146.52]:48189 "EHLO box.trvn.ru"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231176AbhKIPZ6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Nov 2021 10:25:58 -0500
-Received: from authenticated-user (box.trvn.ru [194.87.146.52])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
-        (No client certificate requested)
-        by box.trvn.ru (Postfix) with ESMTPSA id ECB0A40067;
-        Tue,  9 Nov 2021 20:23:03 +0500 (+05)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=trvn.ru; s=mail;
-        t=1636471388; bh=lS5UJLDxpoH+oMoziJHGViXF/4huuu/aCph+647Nv4s=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=UZjFIatjcBXYl0sPS22SdCvnEGTZkIe1idspEHBqcRGIYgpq6/N39asga8MknX8yj
-         JtINUyNBPuz5u5yl9KmplRVGeW/eaEm9yaYPUfafKIm6tddHegRSuk1Rnsm6g0ad0M
-         6SqRGw/pE+VXA5uN6JskCQWLAzjuuyOXNR5k1q8egk4jsMsS+CDOvH0Hmd0rzi3Hqt
-         iZlQCdRU4use3yIZKrFDfEzKDtqii4GftiOoAkj1vrWZiWMlJecxng9gOGgSse049G
-         DeIxuYlSiUrFY+co6MDnxcQX1fE6N9LJqgNH2ycw4Bub5E92Z0jxQ0OfwOK9Z5FzuF
-         WraZG+Y1CKwOg==
+        id S235769AbhKIP0p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Nov 2021 10:26:45 -0500
+Received: from alexa-out-sd-02.qualcomm.com ([199.106.114.39]:19319 "EHLO
+        alexa-out-sd-02.qualcomm.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234526AbhKIP0n (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Nov 2021 10:26:43 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=quicinc.com; i=@quicinc.com; q=dns/txt; s=qcdkim;
+  t=1636471437; x=1668007437;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=LhDgqmajfz71vOYSGsDh9gMUO7ALBdgAMuleFHkhVRE=;
+  b=TeIK4K0JTNorUsiwPwZwoAGRBmLiCwdqXarvIL6/lsKSeslP7i+DSAm5
+   FOpobIxpW3HemsPqXFd6M7MefewILap3b5pE8Y30QDoDGN810AjLwO9nR
+   ygfAIzZEDO5j876yfLrrtkX+kXNI2C4Z/+KDv0G2y2Y4wsBI57byusRwT
+   Q=;
+Received: from unknown (HELO ironmsg-SD-alpha.qualcomm.com) ([10.53.140.30])
+  by alexa-out-sd-02.qualcomm.com with ESMTP; 09 Nov 2021 07:23:57 -0800
+X-QCInternal: smtphost
+Received: from nasanex01c.na.qualcomm.com ([10.47.97.222])
+  by ironmsg-SD-alpha.qualcomm.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Nov 2021 07:23:56 -0800
+Received: from nalasex01a.na.qualcomm.com (10.47.209.196) by
+ nasanex01c.na.qualcomm.com (10.47.97.222) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.922.7;
+ Tue, 9 Nov 2021 07:23:56 -0800
+Received: from qian-HP-Z2-SFF-G5-Workstation (10.80.80.8) by
+ nalasex01a.na.qualcomm.com (10.47.209.196) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.922.7;
+ Tue, 9 Nov 2021 07:23:55 -0800
+Date:   Tue, 9 Nov 2021 10:23:52 -0500
+From:   Qian Cai <quic_qiancai@quicinc.com>
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>
+CC:     "Rafael J. Wysocki" <rafael@kernel.org>,
+        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Laurentiu Tudor <laurentiu.tudor@nxp.com>,
+        "linux-acpi@vger.kernel.org" <linux-acpi@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Felipe Balbi <balbi@kernel.org>, <linux-usb@vger.kernel.org>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        <linux-arm-kernel@lists.infradead.org>
+Subject: Re: [RFC PATCH] software node: Skip duplicated software_node sysfs
+Message-ID: <YYqSiMwfdYPwQb62@qian-HP-Z2-SFF-G5-Workstation>
+References: <20211101200346.16466-1-quic_qiancai@quicinc.com>
+ <CAHp75VcrWPdR8EVGpcsniQedT0J4X700N7thFs6+srTP1MTgwQ@mail.gmail.com>
+ <52df4a97-1132-d594-0180-132d0ca714d5@quicinc.com>
+ <CAHp75VebOnrce-XZjOnZiivQPz-Cdgq6mor5oiLxK8Y49GiNNg@mail.gmail.com>
+ <1269258d-db4c-3922-776b-f11e6a1e338e@quicinc.com>
+ <YYlnIpGEmLH5GXft@smile.fi.intel.com>
+ <YYn8hpxxmAtw9z5S@qian-HP-Z2-SFF-G5-Workstation>
 MIME-Version: 1.0
-Date:   Tue, 09 Nov 2021 20:23:02 +0500
-From:   Nikita Travkin <nikita@trvn.ru>
-To:     Linus Walleij <linus.walleij@linaro.org>
-Cc:     dmitry.torokhov@gmail.com, robh+dt@kernel.org,
-        Michael.Srba@seznam.cz, broonie@kernel.org,
-        linux-input@vger.kernel.org, devicetree@vger.kernel.org,
-        phone-devel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        ~postmarketos/upstreaming@lists.sr.ht
-Subject: Re: [PATCH 0/6] Add touch-keys support to the Zinitix touch driver
-In-Reply-To: <CACRpkda_EM9mXuJdrZcpFaJCKF1UDgXkfdxkaniyXFHFd_7+Pw@mail.gmail.com>
-References: <20211027181350.91630-1-nikita@trvn.ru>
- <CACRpkda_EM9mXuJdrZcpFaJCKF1UDgXkfdxkaniyXFHFd_7+Pw@mail.gmail.com>
-Message-ID: <ec9185459dbc0e95dc2f2cdf27baa0f6@trvn.ru>
-X-Sender: nikita@trvn.ru
-Content-Type: text/plain; charset=UTF-8;
- format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <YYn8hpxxmAtw9z5S@qian-HP-Z2-SFF-G5-Workstation>
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus,
-
-Linus Walleij писал(а) 09.11.2021 09:45:
-> Hi Nikita,
+On Mon, Nov 08, 2021 at 11:43:54PM -0500, Qian Cai wrote:
+> Then, which functions do you suggest to replace with
+> fwnode_create_software_node()? In dwc3_host_init(),
 > 
-> On Wed, Oct 27, 2021 at 8:15 PM Nikita Travkin <nikita@trvn.ru> wrote:
+> int dwc3_host_init(struct dwc3 *dwc)
+> {
+> 	...
+> 	xhci = platform_device_alloc("xhci-hcd", PLATFORM_DEVID_AUTO);
+> 	...
+> 	ret = platform_device_add(xhci);
 > 
->> This series adds support for the touch-keys that can be present on 
->> some
->> touchscreen configurations, adds the compatible for bt532 and fixes a
->> small race condition bug in the driver probe function.
->> 
->> I also pick up the series that converts the dt bindings to yaml
->> initially submitted by Linus Walleij in [1].
->> I made some minor changes to those patches:
->>  - Fixed dt_schema_check error
->>  - Adressed the review comments from Dmitry on the original series
+> I am wondering if that we could solve the problem by avoiding
+> "xhci-hcd" string here which would unfortunately clash with
+> xhci_plat_init() as mentioned before:
+
+Okay, I suppose that name has to be "xhci-hcd" to match the dirver
+name. Otherwise, the below path did not run to create "xhci-hcd"
+either. I noticed that the regression was discussed a few months ago
+and leave it as is.
+
+https://lore.kernel.org/lkml/e9bc1397-99b7-a57e-4860-80d146848e2c@nxp.com/
+
+Alternatively, we might revert the commit 434b73e61cc6
+("iommu/arm-smmu-v3: Use device properties for pasid-num-bits")
+started to use device_add_properties() in iort_named_component_init()
+which probably does not look pretty either. I can't think of any other
+ways to avoid refactoring at the moment.
+
 > 
-> Thanks for picking this up!
-> 
-> Have you notices some behaviour like surplus touch events
-> (like many press/release events fall through to the UI)
-> when using this driver? I think it might need some z fuzzing
-> but I am not sure.
-> 
+>   sysfs_create_link
+>   software_node_notify
+>   device_create_managed_software_node
+>   iort_named_component_init
+>   iort_iommu_configure_id
+>   acpi_dma_configure_id
+>   platform_dma_configure
+>   really_probe.part.0
+>   really_probe
+>   __driver_probe_device
+>   driver_probe_device
+>   __driver_attach
+>   bus_for_each_dev
+>   driver_attach
+>   bus_add_driver
+>   driver_register
+>   __platform_driver_register
+>   xhci_plat_init
+>   do_one_initcall
+>   kernel_init_freeable
+>   kernel_init
+>   ret_from_fork
 
-On my device (8 inch tablet with BT532) I saw no problems with touch
-so far. However another person with a different tablet (10 inch with 
-ZT7554)
-indeed says that they notice "multiplied" touches that make typing hard
-so maybe that depends on controller model/firmware...
-
-And speaking of that ZT7554: Seems like it's works with the driver
-and I'd like to add the compatible for it in v2 but I'd also have to add 
-it
-to the bindings. Looking at how you add all other similar names for BT* 
-there
-does it make sense to add ZT* as well? Maybe you have some hints where 
-to look
-for a list of the models?
-
-I was planning to send a v2 with all the review fixes near the end of 
-the week
-but I've noticed a yet another quirky issue with the touch controller:
-At least on my device, for some reason enabling touchkeys changes the 
-way the
-controller reports the finger touch events which breaks multi-touch...
-Assuming that *not* enabling the touchkeys leads to calibration being 
-wrong
-(controller assigns the touchkey sense lines to the touch area in that 
-case)
-I now have to resolve this quirk as well...
-
-Thanks,
-Nikita
-
-> Yours,
-> Linus Walleij
