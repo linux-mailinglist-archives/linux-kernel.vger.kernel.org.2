@@ -2,93 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CE5A244AE18
+	by mail.lfdr.de (Postfix) with ESMTP id 6221944AE16
 	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 13:53:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236524AbhKIM4V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Nov 2021 07:56:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34802 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242507AbhKIM4K (ORCPT
+        id S230408AbhKIM4X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Nov 2021 07:56:23 -0500
+Received: from smtp-relay-internal-1.canonical.com ([185.125.188.123]:40064
+        "EHLO smtp-relay-internal-1.canonical.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S242400AbhKIM4K (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 9 Nov 2021 07:56:10 -0500
-Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AD202C06120A;
-        Tue,  9 Nov 2021 04:53:08 -0800 (PST)
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: tonyk)
-        with ESMTPSA id C89B91F44B34
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=collabora.com; s=mail;
-        t=1636462386; bh=6rhxitMRcNQgVh8jUZVAIrl39DOviTw78B3pgynzI/8=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=J01tLFphErXVbo2Cz13hk0mouVzkea+XCNVKE14+gbDip1IiSyUUsitbUqq+SCcuE
-         zw1jFtiTSzzO7AblKSF4eE+rks43ubJziZWgQpGANOR+VXZ/BtEwCp7cLJsMHkGvsB
-         wsz8u4VZbs8JCbmxBcHpMUkah6xwEV7iOn8d9Xx58jrYZvwp0Syj8DM+Z2Gh+lyncu
-         w+lbefh5remRkJnEFRZJbIXEaSf4oh1F7h/qdQLKN5MZgvS2bTK8l5BvK3XbW/LIbf
-         9x2cUpMufMZuVTMuL+GtkOJPH/1mI/0Ozvk9vvedn33C3pLkT4ZXrkRQvDTuAvYWlO
-         L6GDS7m2WhC+g==
-Message-ID: <51bbfe74-33f6-bb92-3ce8-a22e4185820b@collabora.com>
-Date:   Tue, 9 Nov 2021 09:52:58 -0300
+Received: from mail-lj1-f197.google.com (mail-lj1-f197.google.com [209.85.208.197])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-relay-internal-1.canonical.com (Postfix) with ESMTPS id 779AB3F1CE
+        for <linux-kernel@vger.kernel.org>; Tue,  9 Nov 2021 12:53:22 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1636462402;
+        bh=j5tko5riuXms3JFEWKNcXt/poyacQNf52vuml9R0vAg=;
+        h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+         In-Reply-To:Content-Type;
+        b=O6JRxo6dBfipYpSvNoaIBYoID05hGx/gA56XQjZu117joPlyBzp5Vu2sXlJ0cceEi
+         fktSajCu5Ww16aIOG+znuHeN+v0MUuPSTYCabBhGWkiUCioAbbSpX2vg8OW9rzlekg
+         xjwXavLG4UtOx6XWLWnraAwj380xpCtSMXztdseZeE9YIBODrAJunBtQmKX7RGk2O2
+         XloIMvpF7/RjXUHaXon0Ts66rGe5KJ4YNuqojoY72ihZSq+iLjIdt5Bf6t2B+Wu0pC
+         vVFNdk40XnbFWbEXJH+/O2M9JfSWfKxmf6i/0t9ELfTzv/a55XkKNHQX3yTvr1oKH4
+         qe2nXvYCGgY5A==
+Received: by mail-lj1-f197.google.com with SMTP id b16-20020a2ebc10000000b00218d00045c4so1202535ljf.5
+        for <linux-kernel@vger.kernel.org>; Tue, 09 Nov 2021 04:53:22 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:in-reply-to
+         :content-transfer-encoding;
+        bh=j5tko5riuXms3JFEWKNcXt/poyacQNf52vuml9R0vAg=;
+        b=TXmx0zbQ07Eh0IufuhhdpguCeFGvT3Ip3l3FjKG5I+NypuUUJryfkz20GrAHUdmfya
+         3/Sav6y146I6+NkH76fn9serMXVqqismsiwpJYbkrwrg3R9dsp32MPv/fOaMWVKKNMiY
+         QAsinTyobbz6CEBXx/nKqBDimMjw8bqj+5OvBs2VxjSTZ/KmTHl985RhkKIQ3fW3fXKR
+         tDFaNm0t7CpbFtDiNUOwJIxXQop1gTAqMG54wspCZq/wTyno4xcxnwBe0Je2/6JK6CyY
+         jyWGKdAnMCJ7QAk2I11fbLatOcTocZeQpI2g8lo6oRPh01XOoD0sgDMTQTxAnFtXzasq
+         XuLQ==
+X-Gm-Message-State: AOAM531lSsin9st6jtEh+RqLMdfYEYuJy/Uma5bFSrAB6EvpAVP8kbl9
+        0QMCpRI4nT/fesaQ3nNUZFR5Ql4TK0LEbMOVEKuI4uisjfypFsdwlwCCbFltLUyC004CtFUZLdK
+        YGBtiXgXI4ex2jEkSN971u/CvXY6x9QVR5OuPqMmrYg==
+X-Received: by 2002:a19:9148:: with SMTP id y8mr6510846lfj.512.1636462401700;
+        Tue, 09 Nov 2021 04:53:21 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJxj8OuRHAShyPuiff/xoQ2+ShAhXkJXJ57MKAdkVyp0FJ2HQRhii/EaQs7fi9Q9gr6wclBnKQ==
+X-Received: by 2002:a19:9148:: with SMTP id y8mr6510816lfj.512.1636462401453;
+        Tue, 09 Nov 2021 04:53:21 -0800 (PST)
+Received: from [192.168.3.67] (89-77-68-124.dynamic.chello.pl. [89.77.68.124])
+        by smtp.gmail.com with ESMTPSA id i6sm2136859lfr.163.2021.11.09.04.53.19
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 09 Nov 2021 04:53:20 -0800 (PST)
+Message-ID: <0d996393-20b9-4f16-cbd0-c9bff2b54112@canonical.com>
+Date:   Tue, 9 Nov 2021 13:53:18 +0100
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.2.0
-Subject: Re: [PATCH v2 20/22] selftests: futex: Test sys_futex_waitv() timeout
+ Thunderbird/91.2.1
+Subject: Re: [PATCH 10/13] dt-bindings: spi: add bindings for microchip mpfs
+ spi
 Content-Language: en-US
-To:     Vasily Gorbik <gor@linux.ibm.com>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Darren Hart <dvhart@infradead.org>,
-        linux-kernel@vger.kernel.org, Steven Rostedt <rostedt@goodmis.org>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        kernel@collabora.com, krisman@collabora.com,
-        linux-api@vger.kernel.org, libc-alpha@sourceware.org,
-        mtk.manpages@gmail.com, Davidlohr Bueso <dave@stgolabs.net>,
-        Arnd Bergmann <arnd@arndb.de>
-References: <20210923171111.300673-1-andrealmeid@collabora.com>
- <20210923171111.300673-21-andrealmeid@collabora.com>
- <your-ad-here.call-01636456701-ext-5362@work.hours>
-From:   =?UTF-8?Q?Andr=c3=a9_Almeida?= <andrealmeid@collabora.com>
-In-Reply-To: <your-ad-here.call-01636456701-ext-5362@work.hours>
+To:     Conor.Dooley@microchip.com, robh@kernel.org
+Cc:     robh+dt@kernel.org, gregkh@linuxfoundation.org,
+        linus.walleij@linaro.org, linux-riscv@lists.infradead.org,
+        aou@eecs.berkeley.edu, paul.walmsley@sifive.com,
+        linux-usb@vger.kernel.org, Daire.McNamara@microchip.com,
+        linux-spi@vger.kernel.org, geert@linux-m68k.org,
+        devicetree@vger.kernel.org, linux-rtc@vger.kernel.org,
+        linux-gpio@vger.kernel.org, broonie@kernel.org, palmer@dabbelt.com,
+        bgolaszewski@baylibre.com, jassisinghbrar@gmail.com,
+        linux-crypto@vger.kernel.org, Ivan.Griffin@microchip.com,
+        atish.patra@wdc.com, Lewis.Hanly@microchip.com,
+        bin.meng@windriver.com, alexandre.belloni@bootlin.com,
+        linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org,
+        a.zummo@towertech.it
+References: <20211108150554.4457-1-conor.dooley@microchip.com>
+ <20211108150554.4457-11-conor.dooley@microchip.com>
+ <1636430789.935637.743042.nullmailer@robh.at.kernel.org>
+ <96005893-8819-1d76-6dea-7d173655258f@microchip.com>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+In-Reply-To: <96005893-8819-1d76-6dea-7d173655258f@microchip.com>
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Vasily,
+On 09/11/2021 13:16, Conor.Dooley@microchip.com wrote:
+> On 09/11/2021 04:06, Rob Herring wrote:
+>> EXTERNAL EMAIL: Do not click links or open attachments unless you know the content is safe
+>>
+>> On Mon, 08 Nov 2021 15:05:51 +0000, conor.dooley@microchip.com wrote:
+>>> From: Conor Dooley <conor.dooley@microchip.com>
+>>>
+>>> Add device tree bindings for the {q,}spi controller on
+>>> the Microchip PolarFire SoC.
+>>>
+>>> Signed-off-by: Conor Dooley <conor.dooley@microchip.com>
+>>> ---
+>>>   .../bindings/spi/microchip,mpfs-spi.yaml      | 72 +++++++++++++++++++
+>>>   1 file changed, 72 insertions(+)
+>>>   create mode 100644 Documentation/devicetree/bindings/spi/microchip,mpfs-spi.yaml
+>>>
+>>
+>> My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
+>> on your patch (DT_CHECKER_FLAGS is new in v5.13):
+>>
+>> yamllint warnings/errors:
+>>
+>> dtschema/dtc warnings/errors:
+>> Documentation/devicetree/bindings/spi/microchip,mpfs-spi.example.dts:19:18: fatal error: dt-bindings/clock/microchip,mpfs-clock.h: No such file or directory
+>>     19 |         #include "dt-bindings/clock/microchip,mpfs-clock.h"
+> Rob,
+> Should I drop the header from the example or is there a way for me 
+> specify the dependent patch to pass this check?
 
-Às 08:18 de 09/11/21, Vasily Gorbik escreveu:
-> On Thu, Sep 23, 2021 at 02:11:09PM -0300, André Almeida wrote:
->> Test if the futex_waitv timeout is working as expected, using the
->> supported clockid options.
-> 
->> +	/* futex_waitv with CLOCK_MONOTONIC */
->> +	if (futex_get_abs_timeout(CLOCK_MONOTONIC, &to, timeout_ns))
->> +		return RET_FAIL;
->> +	res = futex_waitv(&waitv, 1, 0, &to, CLOCK_MONOTONIC);
->> +	test_timeout(res, &ret, "futex_waitv monotonic", ETIMEDOUT);
->> +
->> +	/* futex_waitv with CLOCK_REALTIME */
->> +	if (futex_get_abs_timeout(CLOCK_REALTIME, &to, timeout_ns))
->> +		return RET_FAIL;
->> +	res = futex_waitv(&waitv, 1, 0, &to, CLOCK_REALTIME);
->> +	test_timeout(res, &ret, "futex_waitv realtime", ETIMEDOUT);
-> 
-> Hi André,
-> 
-> when built with -m32 and run as compat this two futex_waitv calls hang
-> on x86 and s390 (noticed while wiring up futex_waitv). The rest of the
-> futex selftests pass. This suggests some common compat issue? Any ideas?
+The error has to be fixed, although not necessarily by dropping the
+header, but by posting it. How this can pass on your system? There is no
+such file added in this patchset.
 
-The issue is that futex_waitv() only accepts struct timespec that uses
-64bit members. When using -m32, glibc will give you a 32bit timespec,
-thus the timeout won't wort. Someday glibc will provide 64bit timespec
-to 32bit userspace, given that this is affected by y2038 bug.
-
-In previous submissions I added a workaround for that in the
-selftest[0]. Search for "Y2038 section for 32-bit applications" in that
-link. I'll submit something like that for futex_waitv() timeout test.
-
-[0]
-https://lore.kernel.org/lkml/20210709001328.329716-6-andrealmeid@collabora.com/
+Best regards,
+Krzysztof
