@@ -2,180 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B51444A1EF
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 02:14:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 769E744A3BC
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 02:29:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242670AbhKIBOG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Nov 2021 20:14:06 -0500
-Received: from twspam01.aspeedtech.com ([211.20.114.71]:42080 "EHLO
-        twspam01.aspeedtech.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242136AbhKIBJm (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Nov 2021 20:09:42 -0500
-Received: from mail.aspeedtech.com ([192.168.0.24])
-        by twspam01.aspeedtech.com with ESMTP id 1A90gj1h050854;
-        Tue, 9 Nov 2021 08:42:45 +0800 (GMT-8)
-        (envelope-from jammy_huang@aspeedtech.com)
-Received: from [192.168.2.115] (192.168.2.115) by TWMBX02.aspeed.com
- (192.168.0.24) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Tue, 9 Nov
- 2021 09:05:59 +0800
-Message-ID: <acff05a4-38a5-4765-c6ff-011a58caf260@aspeedtech.com>
-Date:   Tue, 9 Nov 2021 09:05:59 +0800
+        id S241816AbhKIB3b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Nov 2021 20:29:31 -0500
+Received: from mail.kernel.org ([198.145.29.99]:44356 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S242267AbhKIBRL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Nov 2021 20:17:11 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8BF4161ACE;
+        Tue,  9 Nov 2021 01:06:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1636420012;
+        bh=tAeMvQvi+vg3kKnhpw01b73sBeDIm/BIgffhPNvBl1w=;
+        h=From:To:Cc:Subject:Date:From;
+        b=AGpminiHhbD/FxdnRC4F3mb4HzgDcYEfoNjd9BvUIQSB1f+sG4ReH60LH49CZS+ut
+         fVKSBsFRLBWp8Zc6wrHEBFaKqAnJIvIiFkA6qDZx0LsoY+yphXykjTwp5WAy8cBhEG
+         7KBgrdrJnigtys6liyZOU9FyKzMJQ5MgeamzUZZwsetkT7CwD+SUg4RUkK7o0wPptC
+         2XqeuJFEylzgHYJGAgP1hzagOaaP4uORXPRt2yni10wPV6cdFY0lDtAc7yIeNod2CY
+         H8NRyfqh0UYkO8/x6fh3G0oMSpxaiN7OEqobMiF/anv6odtKO06sAv0PTMviU2XEmm
+         xjUoHhfTL9mLg==
+From:   Sasha Levin <sashal@kernel.org>
+To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Cc:     Takashi Iwai <tiwai@suse.de>,
+        Marcel Holtmann <marcel@holtmann.org>,
+        Sasha Levin <sashal@kernel.org>, johan.hedberg@gmail.com,
+        luiz.dentz@gmail.com, davem@davemloft.net, kuba@kernel.org,
+        linux-bluetooth@vger.kernel.org, netdev@vger.kernel.org
+Subject: [PATCH AUTOSEL 4.14 01/39] Bluetooth: sco: Fix lock_sock() blockage by memcpy_from_msg()
+Date:   Mon,  8 Nov 2021 20:06:11 -0500
+Message-Id: <20211109010649.1191041-1-sashal@kernel.org>
+X-Mailer: git-send-email 2.33.0
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
- Thunderbird/91.3.0
-Subject: Re: [PATCH] media: aspeed: use reset to replace clk off/on
-Content-Language: en-US
-To:     Hans Verkuil <hverkuil@xs4all.nl>,
-        Jae Hyun Yoo <jae.hyun.yoo@linux.intel.com>,
-        "eajames@linux.ibm.com" <eajames@linux.ibm.com>,
-        "mchehab@kernel.org" <mchehab@kernel.org>,
-        "joel@jms.id.au" <joel@jms.id.au>,
-        "andrew@aj.id.au" <andrew@aj.id.au>,
-        "linux-media@vger.kernel.org" <linux-media@vger.kernel.org>,
-        "openbmc@lists.ozlabs.org" <openbmc@lists.ozlabs.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-aspeed@lists.ozlabs.org" <linux-aspeed@lists.ozlabs.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-References: <20211103054316.25272-1-jammy_huang@aspeedtech.com>
- <883dd517-7996-8c44-8cea-1c8838b367b6@linux.intel.com>
- <HK0PR06MB272258A4BA760E70CF609888F18E9@HK0PR06MB2722.apcprd06.prod.outlook.com>
- <398d37a5-509f-b78b-360b-990d256bde63@xs4all.nl>
-From:   Jammy Huang <jammy_huang@aspeedtech.com>
-In-Reply-To: <398d37a5-509f-b78b-360b-990d256bde63@xs4all.nl>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
+X-stable: review
+X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
-X-Originating-IP: [192.168.2.115]
-X-ClientProxiedBy: TWMBX02.aspeed.com (192.168.0.24) To TWMBX02.aspeed.com
- (192.168.0.24)
-X-DNSRBL: 
-X-MAIL: twspam01.aspeedtech.com 1A90gj1h050854
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Dear Hans,
+From: Takashi Iwai <tiwai@suse.de>
 
-On 2021/11/8 下午 04:53, Hans Verkuil wrote:
-> Hi Jammy,
->
-> On 05/11/2021 02:27, Jammy Huang wrote:
->> Hi Jae,
->>
->> OK, I found it.
->> Thanks for your help.
-> So just so I understand this correctly: this patch can be dropped, right?
->
-> Regards,
->
-> 	Hans
+[ Upstream commit 99c23da0eed4fd20cae8243f2b51e10e66aa0951 ]
 
-Yes, aspeed clk driver will reset the related engine at clk-enabled.
+The sco_send_frame() also takes lock_sock() during memcpy_from_msg()
+call that may be endlessly blocked by a task with userfaultd
+technique, and this will result in a hung task watchdog trigger.
 
-Thus, this modification isn't necessary.
+Just like the similar fix for hci_sock_sendmsg() in commit
+92c685dc5de0 ("Bluetooth: reorganize functions..."), this patch moves
+the  memcpy_from_msg() out of lock_sock() for addressing the hang.
 
->> Regards,
->> Jammy Huang
->>
->> Tel: 886-3-575-1185  ext.8630
->>
->> ************* Email Confidentiality Notice ********************
->> DISCLAIMER:
->> This message (and any attachments) may contain legally privileged and/or other confidential information. If you have received it in error, please notify the sender by reply e-mail and immediately delete the e-mail and any attachments without copying or disclosing the contents. Thank you.
->>
->> -----Original Message-----
->> From: Jae Hyun Yoo <jae.hyun.yoo@linux.intel.com>
->> Sent: Thursday, November 4, 2021 11:54 PM
->> To: Jammy Huang <jammy_huang@aspeedtech.com>; eajames@linux.ibm.com; mchehab@kernel.org; joel@jms.id.au; andrew@aj.id.au; linux-media@vger.kernel.org; openbmc@lists.ozlabs.org; linux-arm-kernel@lists.infradead.org; linux-aspeed@lists.ozlabs.org; linux-kernel@vger.kernel.org
->> Subject: Re: [PATCH] media: aspeed: use reset to replace clk off/on
->>
->> Hi Jammy,
->>
->> On 11/2/2021 10:43 PM, Jammy Huang wrote:
->>> reset should be more proper than clk off/on to bring HW back to good
->>> state.
->>>
->>> Signed-off-by: Jammy Huang <jammy_huang@aspeedtech.com>
->>> ---
->>>    drivers/media/platform/aspeed-video.c | 22 +++++++++++++++++++---
->>>    1 file changed, 19 insertions(+), 3 deletions(-)
->>>
->>> diff --git a/drivers/media/platform/aspeed-video.c
->>> b/drivers/media/platform/aspeed-video.c
->>> index fea5e4d0927e..10d182139809 100644
->>> --- a/drivers/media/platform/aspeed-video.c
->>> +++ b/drivers/media/platform/aspeed-video.c
->>> @@ -23,6 +23,7 @@
->>>    #include <linux/workqueue.h>
->>>    #include <linux/debugfs.h>
->>>    #include <linux/ktime.h>
->>> +#include <linux/reset.h>
->>>    #include <media/v4l2-ctrls.h>
->>>    #include <media/v4l2-dev.h>
->>>    #include <media/v4l2-device.h>
->>> @@ -220,6 +221,7 @@ struct aspeed_video {
->>>    	void __iomem *base;
->>>    	struct clk *eclk;
->>>    	struct clk *vclk;
->>> +	struct reset_control *reset;
->>>    
->>>    	struct device *dev;
->>>    	struct v4l2_ctrl_handler ctrl_handler; @@ -554,6 +556,13 @@ static
->>> void aspeed_video_on(struct aspeed_video *video)
->>>    	set_bit(VIDEO_CLOCKS_ON, &video->flags);
->>>    }
->>>    
->>> +static void aspeed_video_reset(struct aspeed_video *v) {
->>> +	reset_control_assert(v->reset);
->>> +	udelay(100);
->>> +	reset_control_deassert(v->reset);
->>> +}
->>> +
->>>    static void aspeed_video_bufs_done(struct aspeed_video *video,
->>>    				   enum vb2_buffer_state state)
->>>    {
->>> @@ -574,7 +583,9 @@ static void aspeed_video_irq_res_change(struct aspeed_video *video, ulong delay)
->>>    	set_bit(VIDEO_RES_CHANGE, &video->flags);
->>>    	clear_bit(VIDEO_FRAME_INPRG, &video->flags);
->>>    
->>> -	aspeed_video_off(video);
->>> +	aspeed_video_write(video, VE_INTERRUPT_CTRL, 0);
->>> +	aspeed_video_write(video, VE_INTERRUPT_STATUS, 0xffffffff);
->>> +	aspeed_video_reset(video);
->>>    	aspeed_video_bufs_done(video, VB2_BUF_STATE_ERROR);
->>>    
->>>    	schedule_delayed_work(&video->res_work, delay); @@ -1507,8 +1518,7
->>> @@ static void aspeed_video_stop_streaming(struct vb2_queue *q)
->>>    		 * Need to force stop any DMA and try and get HW into a good
->>>    		 * state for future calls to start streaming again.
->>>    		 */
->>> -		aspeed_video_off(video);
->>> -		aspeed_video_on(video);
->>> +		aspeed_video_reset(video);
->> You can find the ECLK configuration in 'clk-aspeed.c' or in 'clk-ast2600.c' that it's coupled with the video engine reset (SCU04[6] for AST2500 / SCU040[6] for AST2600). It means that if we call
->> clk_disable() and clk_enable() through aspeed_video_off() and aspeed_video_on(), the video engine reset will be implicitly asserted and de-asserted by the clock driver so the reset mechanism is already in the existing code.
->>
->> Thanks,
->> Jae
->>
->>>    		aspeed_video_init_regs(video);
->>>    
->>> @@ -1715,6 +1725,12 @@ static int aspeed_video_init(struct aspeed_video *video)
->>>    		return rc;
->>>    	}
->>>    
->>> +	video->reset = devm_reset_control_get(dev, NULL);
->>> +	if (IS_ERR(video->reset)) {
->>> +		dev_err(dev, "Unable to get reset\n");
->>> +		return PTR_ERR(video->reset);
->>> +	}
->>> +
->>>    	video->eclk = devm_clk_get(dev, "eclk");
->>>    	if (IS_ERR(video->eclk)) {
->>>    		dev_err(dev, "Unable to get ECLK\n");
->>>
+This should be the last piece for fixing CVE-2021-3640 after a few
+already queued fixes.
+
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
+Signed-off-by: Marcel Holtmann <marcel@holtmann.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
+---
+ net/bluetooth/sco.c | 24 ++++++++++++++++--------
+ 1 file changed, 16 insertions(+), 8 deletions(-)
+
+diff --git a/net/bluetooth/sco.c b/net/bluetooth/sco.c
+index f681e7ce89457..a5cc8942fc3f8 100644
+--- a/net/bluetooth/sco.c
++++ b/net/bluetooth/sco.c
+@@ -255,7 +255,8 @@ static int sco_connect(struct hci_dev *hdev, struct sock *sk)
+ 	return err;
+ }
+ 
+-static int sco_send_frame(struct sock *sk, struct msghdr *msg, int len)
++static int sco_send_frame(struct sock *sk, void *buf, int len,
++			  unsigned int msg_flags)
+ {
+ 	struct sco_conn *conn = sco_pi(sk)->conn;
+ 	struct sk_buff *skb;
+@@ -267,15 +268,11 @@ static int sco_send_frame(struct sock *sk, struct msghdr *msg, int len)
+ 
+ 	BT_DBG("sk %p len %d", sk, len);
+ 
+-	skb = bt_skb_send_alloc(sk, len, msg->msg_flags & MSG_DONTWAIT, &err);
++	skb = bt_skb_send_alloc(sk, len, msg_flags & MSG_DONTWAIT, &err);
+ 	if (!skb)
+ 		return err;
+ 
+-	if (memcpy_from_msg(skb_put(skb, len), msg, len)) {
+-		kfree_skb(skb);
+-		return -EFAULT;
+-	}
+-
++	memcpy(skb_put(skb, len), buf, len);
+ 	hci_send_sco(conn->hcon, skb);
+ 
+ 	return len;
+@@ -692,6 +689,7 @@ static int sco_sock_sendmsg(struct socket *sock, struct msghdr *msg,
+ 			    size_t len)
+ {
+ 	struct sock *sk = sock->sk;
++	void *buf;
+ 	int err;
+ 
+ 	BT_DBG("sock %p, sk %p", sock, sk);
+@@ -703,14 +701,24 @@ static int sco_sock_sendmsg(struct socket *sock, struct msghdr *msg,
+ 	if (msg->msg_flags & MSG_OOB)
+ 		return -EOPNOTSUPP;
+ 
++	buf = kmalloc(len, GFP_KERNEL);
++	if (!buf)
++		return -ENOMEM;
++
++	if (memcpy_from_msg(buf, msg, len)) {
++		kfree(buf);
++		return -EFAULT;
++	}
++
+ 	lock_sock(sk);
+ 
+ 	if (sk->sk_state == BT_CONNECTED)
+-		err = sco_send_frame(sk, msg, len);
++		err = sco_send_frame(sk, buf, len, msg->msg_flags);
+ 	else
+ 		err = -ENOTCONN;
+ 
+ 	release_sock(sk);
++	kfree(buf);
+ 	return err;
+ }
+ 
 -- 
-Best Regards
-Jammy
+2.33.0
 
