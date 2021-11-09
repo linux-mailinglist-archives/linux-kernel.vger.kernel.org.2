@@ -2,106 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6816144ABE0
+	by mail.lfdr.de (Postfix) with ESMTP id 1CD5E44ABDF
 	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 11:50:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245059AbhKIKxc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Nov 2021 05:53:32 -0500
-Received: from mail.kernel.org ([198.145.29.99]:49076 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S245455AbhKIKxU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Nov 2021 05:53:20 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 17F71611F0;
-        Tue,  9 Nov 2021 10:50:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1636455035;
-        bh=EQ2Y5pkSSbqTDlcZZ+vlV+jRlTkeuJkYjOzMF69zAo0=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=qS1n17lVGL0kEBUQiS9z+dUebAG5JndAxle9gkY6QJ6a4ZppPfdV96Q52ICuCXG2f
-         7Pbsd/Cnh2ppvQDjbBoK7O2t9QSd0/wJRpiNI476jbk5s4xIjPD4O6oEZHJIK7aGBn
-         uNFY/OVX/D9sCtwLIncBdo+ce7jBOA+7oRxeVkH3zFxMbq5yGRWKFKU+s2r3Ftuhjb
-         mVtNgMC3ko3lP3uMhM+IpajSS+rLw3Siy2SVGmB9qTx/iTU7PX9Q/h+DfZYzhAeJ7X
-         4KCSnnA1+r4sqWg9lFKs1jrj771S0/tDmxGx8ht+zYf1uhxOsLR6OD6XVygfvYwfcT
-         pzhumg/d0UmQg==
-Received: by mail-wm1-f48.google.com with SMTP id b184-20020a1c1bc1000000b0033140bf8dd5so1916039wmb.5;
-        Tue, 09 Nov 2021 02:50:35 -0800 (PST)
-X-Gm-Message-State: AOAM532V41LQelJnUQLE/Z+BluKlzW3mar7PIrsnnkQE02cOd+Ik/9PM
-        c54kqCHYUBNGgL61qMLAEKlk4fJEYRxuLDOGmK4=
-X-Google-Smtp-Source: ABdhPJwQBO/Ss3ZA0/3Ekr+aXKUm/5vIOjwi4khqDaKsRbKgRpm/1VlgiHZXFtkNE8I27My8QQVBY/+teVR+2z0Y2Rg=
-X-Received: by 2002:a1c:770e:: with SMTP id t14mr5881966wmi.173.1636455033495;
- Tue, 09 Nov 2021 02:50:33 -0800 (PST)
+        id S243446AbhKIKxa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Nov 2021 05:53:30 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35248 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S241110AbhKIKxL (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Nov 2021 05:53:11 -0500
+Received: from mail-ed1-x542.google.com (mail-ed1-x542.google.com [IPv6:2a00:1450:4864:20::542])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 55587C061764
+        for <linux-kernel@vger.kernel.org>; Tue,  9 Nov 2021 02:50:25 -0800 (PST)
+Received: by mail-ed1-x542.google.com with SMTP id z21so29674852edb.5
+        for <linux-kernel@vger.kernel.org>; Tue, 09 Nov 2021 02:50:25 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=qM00EbVJ/7T27UuUwYkiGLqZXOOMBmNvmKbI82nbeOM=;
+        b=JBIdgUXIkZ5rXYG8f/Rm4oIUkUU+PUYqR8+vjxqThrk5a4LDWTepyTYZ6K/Q1Upc6N
+         BuOOJV0QrCbuP5YWV+96zEK4g6szJN+5FxDDYovxmD9x0Q+ZtmuH9F+3jwZaVopJ9P2z
+         zvyKcM3VsLtVmV6lY7CKLHFjLqta1LmCGRqn9s0/lvaDDj+cDZzuYBSoI1a2CVLeAdWf
+         jOTt+r94jnz6mxixQWJRCGhxtrkOUSB3axhbQ2B/5EYLCdzsqbK9zgNvZhuhHCwk7TA0
+         VH6YV9MnpZ1Irbgcll/+ZR+YDULkQfn++tZdUsa+odXVmaSGRJsazxyCpUFSEUchr2vs
+         eUGA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=qM00EbVJ/7T27UuUwYkiGLqZXOOMBmNvmKbI82nbeOM=;
+        b=XajgcCJuguHpERxqoywe4pnigg5XYC99QzW7xkKXNAI1Aar9DGwRU/NPoJkECAqqFr
+         js7MyJpaw6iLoMKiXi9YtAPqj2MvDa0FLefLvU5HZQHwWjy6hYuyz4u1ERfu1IZtX7Mr
+         Mm9oxHU4wRenDpNODUJImliDmMslTzXcBB4UBWKf4OA9Yc8bRPnuJpC7xb/Q1nKiMG/9
+         fyqucIikZF6wiBhP8ndGWjIptAt4nxAehBG438QtPsBZjmw5P/YhFiVQl7tEPLbQDSOD
+         GLVR5k9HSLSPU+GQIIoO944uxeGptlV7wEaZK9vgGoABTQUIbacTUb18+hKvm5jwosVO
+         vg5w==
+X-Gm-Message-State: AOAM530ED0N9CfabTFakU2Fax/YhHqF5b8XskvnjfOKYnn8JcTsVc22h
+        kDq/pn5AZeX+PotpAEbLtnc4OGSz5dkPVBr/QcwYgadwmjTlN58D
+X-Google-Smtp-Source: ABdhPJxj7UZPq/ujzhieG0C+AA67S+7m7evHOyss7vi3TgtZZR50sFi8PA3W15xN/x+3pRe1CJOPYvqPQW/CmFjtAIs=
+X-Received: by 2002:a17:906:f856:: with SMTP id ks22mr8211713ejb.367.1636455023865;
+ Tue, 09 Nov 2021 02:50:23 -0800 (PST)
 MIME-Version: 1.0
-References: <20211109100207.2474024-1-arnd@kernel.org> <20211109100207.2474024-7-arnd@kernel.org>
- <YYpN3LzXz638l6FG@smile.fi.intel.com>
-In-Reply-To: <YYpN3LzXz638l6FG@smile.fi.intel.com>
-From:   Arnd Bergmann <arnd@kernel.org>
-Date:   Tue, 9 Nov 2021 11:50:17 +0100
-X-Gmail-Original-Message-ID: <CAK8P3a24wkBEAnWG8=LYoVR1oiTo0VKZ3iME+FYbDuHXJDjMOw@mail.gmail.com>
-Message-ID: <CAK8P3a24wkBEAnWG8=LYoVR1oiTo0VKZ3iME+FYbDuHXJDjMOw@mail.gmail.com>
-Subject: Re: [PATCH v2 6/8] gpiolib: remove legacy gpio_export
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <brgl@bgdev.pl>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Received: by 2002:a17:906:1c5:0:0:0:0 with HTTP; Tue, 9 Nov 2021 02:50:23
+ -0800 (PST)
+Reply-To: fredbenson1950@gmail.com
+From:   fred benson <fredbenson113@gmail.com>
+Date:   Tue, 9 Nov 2021 10:50:23 +0000
+Message-ID: <CAKytM5nxoJBbpV5bAqQQaM4O+cFJF5E-YTwyEEOE9f_iNwwu9g@mail.gmail.com>
+Subject: read
+To:     undisclosed-recipients:;
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 9, 2021 at 11:30 AM Andy Shevchenko
-<andriy.shevchenko@linux.intel.com> wrote:
->
-> On Tue, Nov 09, 2021 at 11:02:05AM +0100, Arnd Bergmann wrote:
-> > From: Arnd Bergmann <arnd@arndb.de>
-> >
-> > There are only a handful of users of gpio_export() and
-> > related functions.
-> >
-> > As these are just wrappers around the modern gpiod_export()
-> > helper, remove the wrappers and open-code the gpio_to_desc
-> > in all callers to shrink the legacy API.
->
-> Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
->
-> What I wish to see meanwhile is a section in the TODO list somewhere to clean
-> up those modules that have gpio.h. Linus, do we have one in the kernel or is
-> it your personal TODO?
->
-> In case we have one in the kernel, please add there modules you modified in
-> a way that they still need further attention.
+Dear
+My Name is Fred Benson. Contact me for more information on the
+transfer of ($4.5M) left by my late client. I want to present you
+as business partner to my late client. I will give you the details of
+this transaction, as soon as I hear from you. I need the information's
+below: Full Name: Address: Personal Telephone:
+Best Regards,
+Mr. Fred Benson.
 
-I think the TODO list is in Linus' head, but it would include all the files
-that use one of the interfaces in linux/gpio.h. I found about 350 of them,
-so there is little point in listing them one at a time. IIRC Linus is going
-through those one subsystem at a time.
-
-It might help to make it harder to get new users if we add some pattern
-matching to scripts/checkpatch.pl, and/or something for scripts/coccinelle/.
-I don't think it's possible to convert a gpio_request() user to gpio_get()
-in a scripted way because you usually have to change the platform side
-at the same time as the driver side.
-
-I also found that we have a ton of users of linux/of_gpio.h, which is
-somewhere inbetween the linux/gpio.h interface and the
-linux/gpio/consumer.h version.
-
-> > @@ -259,17 +259,19 @@ static int evm_sw_setup(struct i2c_client *client, int gpio,
-> >       char label[10];
-> >
-> >       for (i = 0; i < 4; ++i) {
-> > +             struct gpio_desc *desc = gpio_to_desc(gpio + i);
-> > +
-> >               snprintf(label, 10, "user_sw%d", i);
-> > -             status = gpio_request(gpio, label);
-> > +             status = gpio_request(gpio + i, label);
->
-> Shouldn't be gpiod_get() or so at the end?
-
-Yes, but that would be a more invasive change that I think should be done
-separately.
-
-        Arnd
+contact (fredbenson1950@gmail.com) for more details
