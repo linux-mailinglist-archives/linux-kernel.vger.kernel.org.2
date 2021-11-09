@@ -2,75 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 48F5D44A583
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 05:06:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E96744A59C
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 05:07:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242560AbhKIEJ0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Nov 2021 23:09:26 -0500
-Received: from mail-ot1-f46.google.com ([209.85.210.46]:45956 "EHLO
-        mail-ot1-f46.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242500AbhKIEJU (ORCPT
+        id S239059AbhKIEJk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Nov 2021 23:09:40 -0500
+Received: from mail-oi1-f174.google.com ([209.85.167.174]:38756 "EHLO
+        mail-oi1-f174.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S242516AbhKIEJZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Nov 2021 23:09:20 -0500
-Received: by mail-ot1-f46.google.com with SMTP id l7-20020a0568302b0700b0055ae988dcc8so25778485otv.12;
-        Mon, 08 Nov 2021 20:06:34 -0800 (PST)
+        Mon, 8 Nov 2021 23:09:25 -0500
+Received: by mail-oi1-f174.google.com with SMTP id r26so10167398oiw.5;
+        Mon, 08 Nov 2021 20:06:40 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:in-reply-to:references:subject:date
          :message-id;
-        bh=sKmNlZSZoAElUfGTKNnaMRLkfv9QOdA2lm06+/ZjStw=;
-        b=PyIxghYkVFjO1cXS3H3e8vnmlrEnx2YNzGOuibgNzYr1xyHLQYIkXXPpdK2kw0cV9Q
-         wji90Af8CTUdGHu1HLOYp1KiAbATjkIVN62aLeCA4tBMXYAqer0wdfc6YUC7YotPONVZ
-         WDFa/iseTzxrPZA6EePdo66bo/elhpMH0wZQ4sqeqL/a1Yx6ecRRtg8EVl4vuQxMO++k
-         o6TduGDDy912c643bcPmGhiXd84vyvrZXDiTELZLbU1XwX38oK3sJ+ZDQvVR5zZCRFvj
-         nwe0/XuD+iZ7HoZe7hcWmWHMKjVsfQJA6IOZu6fUcr50bVE9zl2VC87EfA/D+jRCETKi
-         on1Q==
-X-Gm-Message-State: AOAM533AyWhWnJqBp1wEH81IjY21+8l6s87AhdbfaIjJhsZ7k+x4mfXN
-        Hb1koymOnLhzGgG+S1TgPw==
-X-Google-Smtp-Source: ABdhPJzGMR43jH1r8YoLKO/8WbqHBDKP5KH+Ll0UQu7GMVsnGMEYVBXzIyfexWPbGzgJb90Jc9Q4Fw==
-X-Received: by 2002:a05:6830:1314:: with SMTP id p20mr3292768otq.381.1636430793961;
-        Mon, 08 Nov 2021 20:06:33 -0800 (PST)
+        bh=yWjEoiTmBnd7kKiE2670l9/aYrullxFB3tI7lE4jPLI=;
+        b=I1bEwN3gGz2Nr22VqfPt53yRF6LmRPUiil7GPWzNr0kb5mvcMpf2Jirz2g2YFx4Lq+
+         0MasgCvbpwffiXkoqh68iWOs4hX52BjJpa3/ZJoGHty7OAmlTa4JaieUEsB/S2/MzQA0
+         saUdHqg1tpVivny0AAVnK9TH3eT0m5uHhMUNxcJo3tc3W65euBqM5iqhnAwNJsJn+/JE
+         R/3+5W0xD9/ci4f2dckNlerbxB+Mi6WQXecN6K7tqbkNMi5SFHSpCi0j70/M4CCUn89t
+         DXXkTla5yr7oAbjjS12WJGR71G26kxyNALmWFuAY6NgL/UT3g+JAouzNDGgAf0gI0mgz
+         a9GQ==
+X-Gm-Message-State: AOAM533w8NZnOty+4aYHFNtQQSgaqACe2x9vOA+92urwTr2clwh+E8Yr
+        G++58d9m1PS82+927eEJgRH6CxuBpQ==
+X-Google-Smtp-Source: ABdhPJzE9iIxM9m48OrJ/Egben0+1clK6xGops/L6ZzAdXtZMvt+oX5UJ1xi7S0LdLsDtDAr4S/IYg==
+X-Received: by 2002:a05:6808:2017:: with SMTP id q23mr3108540oiw.122.1636430799739;
+        Mon, 08 Nov 2021 20:06:39 -0800 (PST)
 Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
-        by smtp.gmail.com with ESMTPSA id p133sm6807792oia.11.2021.11.08.20.06.32
+        by smtp.gmail.com with ESMTPSA id k24sm6117571oou.18.2021.11.08.20.06.38
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 08 Nov 2021 20:06:33 -0800 (PST)
-Received: (nullmailer pid 743041 invoked by uid 1000);
+        Mon, 08 Nov 2021 20:06:39 -0800 (PST)
+Received: (nullmailer pid 743047 invoked by uid 1000);
         Tue, 09 Nov 2021 04:06:29 -0000
 From:   Rob Herring <robh@kernel.org>
-To:     conor.dooley@microchip.com
-Cc:     aou@eecs.berkeley.edu, krzysztof.kozlowski@canonical.com,
-        robh+dt@kernel.org, a.zummo@towertech.it, palmer@dabbelt.com,
-        paul.walmsley@sifive.com, jassisinghbrar@gmail.com,
-        bgolaszewski@baylibre.com, devicetree@vger.kernel.org,
-        linux-gpio@vger.kernel.org, linux-i2c@vger.kernel.org,
-        broonie@kernel.org, ivan.griffin@microchip.com,
-        alexandre.belloni@bootlin.com, geert@linux-m68k.org,
-        lewis.hanly@microchip.com, linux-kernel@vger.kernel.org,
-        linux-crypto@vger.kernel.org, atish.patra@wdc.com,
-        linux-usb@vger.kernel.org, bin.meng@windriver.com,
-        linux-rtc@vger.kernel.org, linux-riscv@lists.infradead.org,
-        linus.walleij@linaro.org, gregkh@linuxfoundation.org,
-        daire.mcnamara@microchip.com, linux-spi@vger.kernel.org
-In-Reply-To: <20211108150554.4457-10-conor.dooley@microchip.com>
-References: <20211108150554.4457-1-conor.dooley@microchip.com> <20211108150554.4457-10-conor.dooley@microchip.com>
-Subject: Re: [PATCH 09/13] dt-bindings: gpio: add bindings for microchip mpfs gpio
+To:     Jarrett Schultz <jaschultzms@gmail.com>
+Cc:     Maximilian Luz <luzmaximilian@gmail.com>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        linux-kernel@vger.kernel.org, Felipe Balbi <balbi@kernel.org>,
+        Andy Gross <agross@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Mark Gross <mgross@linux.intel.com>,
+        Jarrett Schultz <jaschultz@microsoft.com>,
+        Hans de Goede <hdegoede@redhat.com>,
+        devicetree@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        Jarrett Schultz <jaschultzMS@gmail.com>,
+        platform-driver-x86@vger.kernel.org
+In-Reply-To: <20211108164449.3036210-2-jaschultz@microsoft.com>
+References: <20211108164449.3036210-1-jaschultz@microsoft.com> <20211108164449.3036210-2-jaschultz@microsoft.com>
+Subject: Re: [PATCH v2 1/5] dt-bindings: platform: microsoft: Document surface xbl
 Date:   Mon, 08 Nov 2021 22:06:29 -0600
-Message-Id: <1636430789.924306.743040.nullmailer@robh.at.kernel.org>
+Message-Id: <1636430789.960811.743046.nullmailer@robh.at.kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 08 Nov 2021 15:05:50 +0000, conor.dooley@microchip.com wrote:
-> From: Conor Dooley <conor.dooley@microchip.com>
+On Mon, 08 Nov 2021 08:44:45 -0800, Jarrett Schultz wrote:
+> Introduce yaml for surface xbl driver.
 > 
-> Add device tree bindings for the gpio controller on
-> the Microchip PolarFire SoC.
+> Signed-off-by: Jarrett Schultz <jaschultz@microsoft.com>
 > 
-> Signed-off-by: Conor Dooley <conor.dooley@microchip.com>
 > ---
->  .../bindings/gpio/microchip,mpfs-gpio.yaml    | 108 ++++++++++++++++++
->  1 file changed, 108 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/gpio/microchip,mpfs-gpio.yaml
+> 
+> Changes in v2:
+>  - Removed json-schema dependence
+>  - Elaborated on description of driver
+>  - Updated example
+> 
+> ---
+> 
+>  .../platform/microsoft/surface-xbl.yaml       | 57 +++++++++++++++++++
+>  MAINTAINERS                                   |  7 +++
+>  2 files changed, 64 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/platform/microsoft/surface-xbl.yaml
 > 
 
 My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
@@ -79,17 +84,22 @@ on your patch (DT_CHECKER_FLAGS is new in v5.13):
 yamllint warnings/errors:
 
 dtschema/dtc warnings/errors:
-Documentation/devicetree/bindings/gpio/microchip,mpfs-gpio.example.dts:19:18: fatal error: dt-bindings/clock/microchip,mpfs-clock.h: No such file or directory
-   19 |         #include "dt-bindings/clock/microchip,mpfs-clock.h"
-      |                  ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-compilation terminated.
-make[1]: *** [scripts/Makefile.lib:385: Documentation/devicetree/bindings/gpio/microchip,mpfs-gpio.example.dt.yaml] Error 1
-make[1]: *** Waiting for unfinished jobs....
-make: *** [Makefile:1441: dt_binding_check] Error 2
+/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/platform/microsoft/surface-xbl.yaml: 'additionalProperties' is a required property
+	hint: A schema without a "$ref" to another schema must define all properties and use "additionalProperties"
+	from schema $id: http://devicetree.org/meta-schemas/base.yaml#
+/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/platform/microsoft/surface-xbl.yaml: ignoring, error in schema: 
+warning: no schema found in file: ./Documentation/devicetree/bindings/platform/microsoft/surface-xbl.yaml
+Documentation/devicetree/bindings/platform/microsoft/surface-xbl.example.dts:44.11-48: Warning (ranges_format): /example-1/imem@146bf000:ranges: "ranges" property has invalid length (16 bytes) (parent #address-cells == 1, child #address-cells == 1, #size-cells == 1)
+/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/platform/microsoft/surface-xbl.example.dt.yaml: example-0: xbl@146bfa94:reg:0: [0, 342620820, 0, 256] is too long
+	From schema: /usr/local/lib/python3.8/dist-packages/dtschema/schemas/reg.yaml
+Documentation/devicetree/bindings/platform/microsoft/surface-xbl.example.dt.yaml:0:0: /example-0/xbl@146bfa94: failed to match any schema with compatible: ['microsoft,sm8150-surface-duo-xbl']
+/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/platform/microsoft/surface-xbl.example.dt.yaml: example-1: imem@146bf000:reg:0: [0, 342618112, 0, 4096] is too long
+	From schema: /usr/local/lib/python3.8/dist-packages/dtschema/schemas/reg.yaml
+Documentation/devicetree/bindings/platform/microsoft/surface-xbl.example.dt.yaml:0:0: /example-1/imem@146bf000/xbl@a94: failed to match any schema with compatible: ['microsoft,sm8150-surface-duo-xbl']
 
 doc reference errors (make refcheckdocs):
 
-See https://patchwork.ozlabs.org/patch/1552384
+See https://patchwork.ozlabs.org/patch/1552442
 
 This check can fail if there are any dependencies. The base for a patch
 series is generally the most recent rc1.
