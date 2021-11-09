@@ -2,96 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 06D2F44B148
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 17:32:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 19A6444B14D
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 17:33:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235422AbhKIQey (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Nov 2021 11:34:54 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56968 "EHLO
+        id S236456AbhKIQg2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Nov 2021 11:36:28 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57340 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235770AbhKIQex (ORCPT
+        with ESMTP id S235827AbhKIQg0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Nov 2021 11:34:53 -0500
-Received: from mail-lj1-x234.google.com (mail-lj1-x234.google.com [IPv6:2a00:1450:4864:20::234])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD430C061766
-        for <linux-kernel@vger.kernel.org>; Tue,  9 Nov 2021 08:32:06 -0800 (PST)
-Received: by mail-lj1-x234.google.com with SMTP id m5so19118584ljp.4
-        for <linux-kernel@vger.kernel.org>; Tue, 09 Nov 2021 08:32:06 -0800 (PST)
+        Tue, 9 Nov 2021 11:36:26 -0500
+Received: from mail-ua1-x934.google.com (mail-ua1-x934.google.com [IPv6:2607:f8b0:4864:20::934])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 97D48C061767
+        for <linux-kernel@vger.kernel.org>; Tue,  9 Nov 2021 08:33:40 -0800 (PST)
+Received: by mail-ua1-x934.google.com with SMTP id p37so38527127uae.8
+        for <linux-kernel@vger.kernel.org>; Tue, 09 Nov 2021 08:33:40 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=M/8dhRfwJVa4DbGul2wXDZMaW1G+0u9Zho02c+0fbvg=;
-        b=i1zsHWvak0Z48bvXbSLAUT9qTUMXTZ/9dt4BWp0/Q5HLRsomYkzEeQm2ZeJhdLWGCv
-         Gs9JaLDadSe+Zj5Jy3m5Y12u+A80/Qko0FnXeWbpwqvcxei2dfio3K6a0wLJi9PLR+MD
-         tPFd57zm+C6gXyXBKIxRFhG6NL7YkBV+JXggQGswjgXIuhL0iMK82zv6Fa+lvA5iDu3d
-         bJrm67+kGoOb7M0RqYvkhRgXePsjif9FZhUzQ0Tc34ssVGmWyMDFg+vPoG1ZWZETxPjj
-         rX5ke2p7xfpXQDLbQyYyNXn7fR5Wwn6Gs8A9vp2kO1C/C0caI4YqRTvYHSQ7Qwt6ZoFL
-         eH/w==
+        d=gmail.com; s=20210112;
+        h=mime-version:sender:from:date:message-id:subject:to;
+        bh=/1Kp2WPJKK5zDIiVHFBMJDxTusj9lTuiNwPf/YrQxIs=;
+        b=krKTySUR9kJeLlqI+ufZ+UQgu06o2J71xODBJ1tzzSXkD9z0jNPiwoyQHU0YT97Hgm
+         dfRQ4gojBHxowS3AdRwrf6cGCLfUNwF/xIyDDBHRTZfS1Ltt22l0g96htMiNn+0WeZFv
+         xUEXolAAt4ufCo7OQgBuvAgucVx8mj2D6iGlXHZD9qh+o7QB5NOsosTu+2Tu2xm/zKJS
+         wcjqGygpRb/mCguZPA9Qksp0V7NVi0LlkixzBrRSMVN8a34CVUg+KJ/3St7G8XnPZzC3
+         Oiz2kVE2DMAXKDmHDFGbhkqFqQRVi7sMwxDbH4woX27YguUWK/4Pac1fT1nJlqzzE0TM
+         Ul9A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=M/8dhRfwJVa4DbGul2wXDZMaW1G+0u9Zho02c+0fbvg=;
-        b=1gXQTZxTcJZBX3om+30dNXlNrPUp48NdHd6ykr8wlr/+JdFFrln1rQ/6BlatnmRwzX
-         ygswq6iNYA+i0ghv5GUwRPungIJ+wGIn6aaIgrdOyPiN8T8m58ZaG0b4j98bZu4Np+Yv
-         U/Ow36C/AHij6MJvGfrwOdAdBs/F0JQ2Uu2Vq58n0v9jI5Gfe3KUE6YtJrrLWA+YrobG
-         y7BSgDMmBEqFgHULBIMksM5Zevh//oAG5QgmZ3oyg+0dDq/9jkxa8rG5K9q+b02R9WER
-         nyI+YKpf5op5FIb80xiwTtRBCwx7DP9SIFCGg5kOntuiBQJr40WKtJ+WEoQpu1soOQxu
-         lx0A==
-X-Gm-Message-State: AOAM5309jxOwpHefgnAaT2wTvKHkDp5bsgt90c9Jh+nCqUgSDaw9aSHq
-        5VU8/1eDIv+1ZKCNTBuigTBnXd2RbpSv5UCcEgJitA==
-X-Google-Smtp-Source: ABdhPJzlzPHziQ7RTqVxchkRg4XOW7Q7HSp1BAF/VSiFuVRmTDjCPXv+cBjfftIRsY+yBCXKUVkRTXptkfRPlKkrijM=
-X-Received: by 2002:a05:651c:1101:: with SMTP id d1mr9135458ljo.373.1636475524928;
- Tue, 09 Nov 2021 08:32:04 -0800 (PST)
+        h=x-gm-message-state:mime-version:sender:from:date:message-id:subject
+         :to;
+        bh=/1Kp2WPJKK5zDIiVHFBMJDxTusj9lTuiNwPf/YrQxIs=;
+        b=pYNTJQQAurx49GUO2OH+vHnX3TMjichj8p1NExdonIWR13SBASagP6YG0Ki3qHurTV
+         yLgYEk8wd85XJdu+DL+UfKosA/KmOzUlm0vs0AKPnnexM4QBhIc6X6/kVShURt0YDKjQ
+         sriNmi3YaSiLqLUZiPSzKffHH2QI2bD7043vAd4HySQxSMAPdvsqCo58QR8STVoTAJ6S
+         YAoA8HSZmU7LrMXg86oDiDv+atwxLQYgPLAvyCUxLoiIhQw1jMmqYMURc2RbFKqEZgj9
+         g880on5NtQxy0okorl9RQ5n2gkAN4Ojgdc88xKEM/bGBELVd3B/RLu+UQvXXOx001prM
+         V/hg==
+X-Gm-Message-State: AOAM532tIo5/6ZEMQz9hW2dba/p7u+K6UZldFoZj+tnsUOptqB3sLAoI
+        RCtAdOU0dKPElJ1uEhrxIIQ7FLddec8PzHLcVlU=
+X-Google-Smtp-Source: ABdhPJyYcAleTa0725gfzSmM2neAWoCfHXy0Zgkbe5Ian9w9ozDZG0w4PmG1svuS9SBGG9zfMSrz1skTGWWo4Ibye+I=
+X-Received: by 2002:a05:6102:41a4:: with SMTP id cd36mr14114257vsb.23.1636475618915;
+ Tue, 09 Nov 2021 08:33:38 -0800 (PST)
 MIME-Version: 1.0
-References: <20211104195804.83240-1-posk@google.com> <CAGsJ_4xRcu1P9EV0-9GF00n7Cg0=0=NRQ8dj1EAe4OZotWWfbQ@mail.gmail.com>
-In-Reply-To: <CAGsJ_4xRcu1P9EV0-9GF00n7Cg0=0=NRQ8dj1EAe4OZotWWfbQ@mail.gmail.com>
-From:   Peter Oskolkov <posk@google.com>
-Date:   Tue, 9 Nov 2021 08:31:53 -0800
-Message-ID: <CAPNVh5eKO7sdEQpCo+YELhGE2koKiDatg-toaHjd4BfvZWUKXg@mail.gmail.com>
-Subject: Re: [PATCH v0.8 0/6] sched,mm,x86/uaccess: implement User Managed
- Concurrency Groups
-To:     Barry Song <21cnbao@gmail.com>
-Cc:     posk@posk.io, Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Linux-MM <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>, linux-api@vger.kernel.org,
-        Paul Turner <pjt@google.com>, Ben Segall <bsegall@google.com>,
-        Andrei Vagin <avagin@google.com>, Jann Horn <jannh@google.com>,
-        Thierry Delisle <tdelisle@uwaterloo.ca>
+Sender: westernunionheadofficebfk@gmail.com
+Received: by 2002:a59:c766:0:b0:239:2ec4:c46b with HTTP; Tue, 9 Nov 2021
+ 08:33:38 -0800 (PST)
+From:   Dr Martin Belem <drbelemmartint@gmail.com>
+Date:   Tue, 9 Nov 2021 08:33:38 -0800
+X-Google-Sender-Auth: veDuxbYDvLIO3S-xF2TOpwKWWG8
+Message-ID: <CAG5o=DAfrMnFKukTV6EjSzqopo+-HgReV1bAu9j3J1_pwTftWQ@mail.gmail.com>
+Subject: From Dr Teju Martin
+To:     undisclosed-recipients:;
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Barry,
+Hello friend I am a banker in ADB BANK. I want to transfer an abandoned
+$18.5Million to your Bank account. 40/percent will be your share.
+No risk involved but keep it as secret. Contact me for more details.
 
-[...]
->
-> Do you have a real workload or an example application using UMCG?
->
-[...]
+And also acknowledge receipt of this message in acceptance of my mutual
+business endeavor by furnishing me with the following:
 
-A google-internal variant of UMCG kernel patches is used extensively
-to enable user-space scheduling of heterogeneous work items. The main
-use case is services that need to ensure user isolation; in addition,
-latency vs throughput workloads served by the same service are also
-well addressed by user-space schedulers.
+1. Your Full Names and Address.
 
-For example, a DBMS needs to ensure that one "hungry" user does not
-adversely affect other well-behaved users; but at the same time if the
-overall load is relatively low, users are allowed to go ahead and
-consume as much CPU as possible, as long as this does not affect other
-users negatively.
+2. Direct Telephone and Fax numbers Of
 
-Services that treat their work uniformly, and care only about raw
-throughput, usually do not benefit from custom user-space scheduling
-that UMCG, or similar, enables.
+Yours
 
-Thanks,
-Peter
+Dr Belem Martin Teju.
