@@ -2,703 +2,530 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 54C5544B095
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 16:45:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A3C5044B098
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 16:46:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234118AbhKIPsN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Nov 2021 10:48:13 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124]:20620 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229955AbhKIPsM (ORCPT
+        id S235863AbhKIPs6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Nov 2021 10:48:58 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46206 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229955AbhKIPs4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Nov 2021 10:48:12 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1636472725;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=wusfj/QY5Zfm1tBL3JiqBppffaSRXvQEivQ9LIV/0Sg=;
-        b=U4Y2RyiLxCQypTcd59JxloMZUOV2c/OG+e6qxmnsWdt3PIfrf6aHfUJEOz4pTQPDQtVk6Z
-        AFk58wUxvzXMh6E9BB3hO4Rc9KEq1eIfQuCBdaqkHiEaoeZqpOVA1MuesljJK9R3h9vuCm
-        BmdfGqxVoG8OKtpRk0nbboB/T2kYrIQ=
-Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
- [209.85.128.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-265-NnuIkqyWPzaPWcGXabvuRQ-1; Tue, 09 Nov 2021 10:45:24 -0500
-X-MC-Unique: NnuIkqyWPzaPWcGXabvuRQ-1
-Received: by mail-wm1-f69.google.com with SMTP id o10-20020a05600c4fca00b0033312e1ed8bso1286031wmq.2
-        for <linux-kernel@vger.kernel.org>; Tue, 09 Nov 2021 07:45:24 -0800 (PST)
+        Tue, 9 Nov 2021 10:48:56 -0500
+Received: from mail-il1-x130.google.com (mail-il1-x130.google.com [IPv6:2607:f8b0:4864:20::130])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C4566C061766
+        for <linux-kernel@vger.kernel.org>; Tue,  9 Nov 2021 07:46:10 -0800 (PST)
+Received: by mail-il1-x130.google.com with SMTP id l8so21071798ilv.3
+        for <linux-kernel@vger.kernel.org>; Tue, 09 Nov 2021 07:46:10 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ndufresne-ca.20210112.gappssmtp.com; s=20210112;
+        h=message-id:subject:from:to:cc:date:in-reply-to:references
+         :user-agent:mime-version:content-transfer-encoding;
+        bh=YFVxeHJ9oDbgrivhdoOLsAuj3xGTk3Ua39KENf+lJ90=;
+        b=2RSqc4EkX3rEiyq5D7gpTX8QSB3RHVumOiJXJ74MYHqQfWzHcagCV6z4cqDkCJP50o
+         hgiQYD15vi2+Q6Nzm052syIQeKyJG5Gb4EPGF8WtaLF7NwKNoEALPBOGwKLISR6SUTZZ
+         jUVX+RchbQ4aaE3NiosEg85j9R8aW5n3XO7Qd0MumKfDyjHeOY90RII4osBeTDCpfXpf
+         sKUphJ89XqOtKe2D6BYgEuEZc48I8B+5tsj0ub7YYDmOjhaX6HZ8cY+j9apY/DFfsNMc
+         zripLamXpffmaeNX5NGgab3D+e5im3pdo/tYUeSZ3HOvqHfQC3gxtyGilLzBYa2kYqNL
+         okfQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=wusfj/QY5Zfm1tBL3JiqBppffaSRXvQEivQ9LIV/0Sg=;
-        b=gdjZC4FPqKrhjRbpg7f6eMMfgcaSr7qpQstmCW3wXk0bub8TJLwVv9JMiXjoToVOpX
-         4pA7qecAu529EWOFOn1PR6TlCkRcgUYLAHrLQViF071O0oPBOO/U/RbujhHKiv6beC3E
-         8kn/KrlI7g31WdxR3laH1T4kpOO1ADdp3PcE1p73iz9/RJ0Q+Op7rxd4HDr4qrN6a1pi
-         MkxVif3wtP6RHYqAi3jzmsqRIChgxiJWfPzwnVCUGXUr8GUvkRt+kDzIVkADHbomfKlh
-         KXDSZ6diA0oq+jFw05HFGYjn5iKSjw4myyI2XnBP5LsBtXqgBDHNqzpK75rzWNHai1IA
-         X0nA==
-X-Gm-Message-State: AOAM533XnnzwnucxxTWWUYTB9DLuZgsm2L1Hi6w9n+ZtkOktV3CEiaoq
-        H5OCuOK3DhK63u+Pc5HiQnXZSGbSQ3UNjWbJyONTr/f4dNEE9JyLKOK9m3URNqAVOQV4MV5ox8W
-        CxCqHcBnXiYtgnc5TKUfugHZD
-X-Received: by 2002:a05:600c:35d2:: with SMTP id r18mr8162832wmq.166.1636472721417;
-        Tue, 09 Nov 2021 07:45:21 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJwiH3880zvdWg3RfHWdcAREl2o1MmXZKkgkNz9tPPhnisH6R0WrwxhRdJhhu+nxOCfOMkk56A==
-X-Received: by 2002:a05:600c:35d2:: with SMTP id r18mr8162774wmq.166.1636472721037;
-        Tue, 09 Nov 2021 07:45:21 -0800 (PST)
-Received: from ?IPv6:2a01:e0a:59e:9d80:527b:9dff:feef:3874? ([2a01:e0a:59e:9d80:527b:9dff:feef:3874])
-        by smtp.gmail.com with ESMTPSA id e12sm25287602wrq.20.2021.11.09.07.45.19
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 09 Nov 2021 07:45:20 -0800 (PST)
-Subject: Re: [PATCH v4 02/21] KVM: arm64: Add SDEI virtualization
- infrastructure
-To:     Gavin Shan <gshan@redhat.com>, kvmarm@lists.cs.columbia.edu
-Cc:     maz@kernel.org, linux-kernel@vger.kernel.org,
-        Jonathan.Cameron@huawei.com, pbonzini@redhat.com, will@kernel.org
-References: <20210815001352.81927-1-gshan@redhat.com>
- <20210815001352.81927-3-gshan@redhat.com>
-From:   Eric Auger <eauger@redhat.com>
-Message-ID: <8108db38-e0fa-774b-c884-70b8606a3ab9@redhat.com>
-Date:   Tue, 9 Nov 2021 16:45:18 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.1
+        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
+         :references:user-agent:mime-version:content-transfer-encoding;
+        bh=YFVxeHJ9oDbgrivhdoOLsAuj3xGTk3Ua39KENf+lJ90=;
+        b=M3eprtKwwPBfdEeoiG/eUfiV/9e9/ERjOwtBsH1VsVEWhj7WpSUd8LSFBB/CPiOti7
+         nAFMNc/dNaLNSqlBEtnOogwWAH3JLPp/dgR/PvpWp50OJYC/zCpYOAThrRPNU7ChWMJR
+         TyRET8AISNGOJi2fLEDejwD3CdADwhLy0guuwbiINuVq1Z6I2icSXKHQWHRCNuVup4wO
+         c7Ub7PbOTUKAuQT8eRa9+tEMT5mC+FGAhOI2EOQ0d1W+qSd4JFC9uYzMkjFR8eezbxIr
+         +Nchn4WaDS+RiK6AIEIe+LDXUdrkqjGC/0pkcv1nEALfOmdS3dOW9g+ZgpSe0YOgFj9/
+         RNSQ==
+X-Gm-Message-State: AOAM530+jFAAbdijuzydIRlHdvtgSBizdhx8yr0x+CXvA42SyDUx9iiL
+        qHJG1xOSTVmhW3Lfq7Tz4qUmDg==
+X-Google-Smtp-Source: ABdhPJzjRrehIK7PUw6c8y6GDy7ekW4o27i4mb8dEfUBUe9Ng1I6FzHMhA8nuTboy998wUygi4SKUw==
+X-Received: by 2002:a92:d03:: with SMTP id 3mr5950460iln.216.1636472770151;
+        Tue, 09 Nov 2021 07:46:10 -0800 (PST)
+Received: from nicolas-tpx395.localdomain (mtl.collabora.ca. [66.171.169.34])
+        by smtp.gmail.com with ESMTPSA id l4sm12241137ilv.46.2021.11.09.07.46.08
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 09 Nov 2021 07:46:09 -0800 (PST)
+Message-ID: <ee14613da52c40f16a239c1216068aa44c9caa58.camel@ndufresne.ca>
+Subject: Re: [PATCH v12 00/13] amphion video decoder/encoder driver
+From:   Nicolas Dufresne <nicolas@ndufresne.ca>
+To:     Ming Qian <ming.qian@nxp.com>, mchehab@kernel.org,
+        shawnguo@kernel.org, robh+dt@kernel.org, s.hauer@pengutronix.de
+Cc:     hverkuil-cisco@xs4all.nl, kernel@pengutronix.de,
+        festevam@gmail.com, linux-imx@nxp.com, aisheng.dong@nxp.com,
+        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+Date:   Tue, 09 Nov 2021 10:46:08 -0500
+In-Reply-To: <cover.1636445575.git.ming.qian@nxp.com>
+References: <cover.1636445575.git.ming.qian@nxp.com>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.42.1 (3.42.1-1.fc35) 
 MIME-Version: 1.0
-In-Reply-To: <20210815001352.81927-3-gshan@redhat.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Gavin,
-On 8/15/21 2:13 AM, Gavin Shan wrote:
-> Software Delegated Exception Interface (SDEI) provides a mechanism for
-> registering and servicing system events. Those system events are high
-> priority events, which must be serviced immediately. It's going to be
-> used by Asynchronous Page Fault (APF) to deliver notification from KVM
-> to guest. It's noted that SDEI is defined by ARM DEN0054A specification.
+Le mardi 09 novembre 2021 à 17:08 +0800, Ming Qian a écrit :
+> Hi all,
 > 
-> This introduces SDEI virtualization infrastructure where the SDEI events
-> are registered and manuplated by the guest through hypercall. The SDEI
-manipulated
-> event is delivered to one specific vCPU by KVM once it's raised. This
-> introduces data structures to represent the needed objects to implement
-> the feature, which is highlighted as below. As those objects could be
-> migrated between VMs, these data structures are partially exported to
-> user space.
+> This patch series adds support for
+> the amphion video encoder and decoder
+> via the VPU block present in imx8q platforms.
+> Currently, support for IMX8QXP and IMX8QM is included.
 > 
->    * kvm_sdei_event
->      SDEI events are exported from KVM so that guest is able to register
->      and manuplate.
-manipulate
->    * kvm_sdei_kvm_event
->      SDEI event that has been registered by guest.
-I would recomment to revisit the names. Why kvm event? Why not
-registered_event instead that actually would tell what it its. also you
-have kvm twice in the struct name.
->    * kvm_sdei_kvm_vcpu
-Didn't you mean kvm_sdei_vcpu_event instead?
->      SDEI event that has been delivered to the target vCPU.
->    * kvm_sdei_kvm
->      Place holder of exported and registered SDEI events.
->    * kvm_sdei_vcpu
->      Auxiliary object to save the preempted context during SDEI event
->      delivery.
+> It features decoding for the following formats:
+> - H.264
+> - HEVC
+> - MPEG4
+> - MPEG2
+> - VC1
+> - VP8
 > 
-> The error is returned for all SDEI hypercalls for now. They will be
-> implemented by the subsequent patches.
+> It features encoding for the following formats:
+> - H.264
 > 
-> Signed-off-by: Gavin Shan <gshan@redhat.com>
-> ---
->  arch/arm64/include/asm/kvm_host.h      |   6 +
->  arch/arm64/include/asm/kvm_sdei.h      | 118 +++++++++++++++
->  arch/arm64/include/uapi/asm/kvm.h      |   1 +
->  arch/arm64/include/uapi/asm/kvm_sdei.h |  60 ++++++++
->  arch/arm64/kvm/Makefile                |   2 +-
->  arch/arm64/kvm/arm.c                   |   7 +
->  arch/arm64/kvm/hypercalls.c            |  18 +++
->  arch/arm64/kvm/sdei.c                  | 198 +++++++++++++++++++++++++
->  8 files changed, 409 insertions(+), 1 deletion(-)
->  create mode 100644 arch/arm64/include/asm/kvm_sdei.h
->  create mode 100644 arch/arm64/include/uapi/asm/kvm_sdei.h
->  create mode 100644 arch/arm64/kvm/sdei.c
+> The driver creates a separate device node for the encoder and decoder.
 > 
-> diff --git a/arch/arm64/include/asm/kvm_host.h b/arch/arm64/include/asm/kvm_host.h
-> index 41911585ae0c..aedf901e1ec7 100644
-> --- a/arch/arm64/include/asm/kvm_host.h
-> +++ b/arch/arm64/include/asm/kvm_host.h
-> @@ -113,6 +113,9 @@ struct kvm_arch {
->  	/* Interrupt controller */
->  	struct vgic_dist	vgic;
->  
-> +	/* SDEI support */
-does not bring much. Why not reusing the commit msg explanation? Here
-and below.
-> +	struct kvm_sdei_kvm *sdei;
-> +
->  	/* Mandated version of PSCI */
->  	u32 psci_version;
->  
-> @@ -339,6 +342,9 @@ struct kvm_vcpu_arch {
->  	 * here.
->  	 */
->  
-> +	/* SDEI support */
-> +	struct kvm_sdei_vcpu *sdei;> +
->  	/*
->  	 * Guest registers we preserve during guest debugging.
->  	 *
-> diff --git a/arch/arm64/include/asm/kvm_sdei.h b/arch/arm64/include/asm/kvm_sdei.h
-> new file mode 100644
-> index 000000000000..b0abc13a0256
-> --- /dev/null
-> +++ b/arch/arm64/include/asm/kvm_sdei.h
-> @@ -0,0 +1,118 @@
-> +/* SPDX-License-Identifier: GPL-2.0-only */
-> +/*
-> + * Definitions of various KVM SDEI events.
-> + *
-> + * Copyright (C) 2021 Red Hat, Inc.
-> + *
-> + * Author(s): Gavin Shan <gshan@redhat.com>
-> + */
-> +
-> +#ifndef __ARM64_KVM_SDEI_H__
-> +#define __ARM64_KVM_SDEI_H__
-> +
-> +#include <uapi/linux/arm_sdei.h>> +#include <uapi/asm/kvm_sdei.h>
-> +#include <linux/bitmap.h>
-> +#include <linux/list.h>
-> +#include <linux/spinlock.h>
-> +
-> +struct kvm_sdei_event {
-> +	struct kvm_sdei_event_state		state;
-> +	struct kvm				*kvm;
-> +	struct list_head			link;
-> +};
-> +
-> +struct kvm_sdei_kvm_event {
-> +	struct kvm_sdei_kvm_event_state		state;
-> +	struct kvm_sdei_event			*kse;
-> +	struct kvm				*kvm;
-can't you reuse the kvm handle in state?
-> +	struct list_head			link;
-> +};
-> +
-> +struct kvm_sdei_vcpu_event {
-> +	struct kvm_sdei_vcpu_event_state	state;
-> +	struct kvm_sdei_kvm_event		*kske;
-> +	struct kvm_vcpu				*vcpu;
-> +	struct list_head			link;
-> +};
-> +
-> +struct kvm_sdei_kvm {
-> +	spinlock_t		lock;
-> +	struct list_head	events;		/* kvm_sdei_event */
-> +	struct list_head	kvm_events;	/* kvm_sdei_kvm_event */
-> +};
-> +
-> +struct kvm_sdei_vcpu {
-> +	spinlock_t                      lock;
-> +	struct kvm_sdei_vcpu_state      state;
-could you explain the fields below?
-> +	struct kvm_sdei_vcpu_event      *critical_event;
-> +	struct kvm_sdei_vcpu_event      *normal_event;
-> +	struct list_head                critical_events;
-> +	struct list_head                normal_events;
-> +};
-> +
-> +/*
-> + * According to SDEI specification (v1.0), the event number spans 32-bits
-> + * and the lower 24-bits are used as the (real) event number. I don't
-> + * think we can use that much SDEI numbers in one system. So we reserve
-> + * two bits from the 24-bits real event number, to indicate its types:
-> + * physical event and virtual event. One reserved bit is enough for now,
-> + * but two bits are reserved for possible extension in future.
-I think this assumption is worth to be mentionned in the commit msg.
-> + *
-> + * The physical events are owned by underly firmware while the virtual
-underly?
-> + * events are used by VMM and KVM.
-> + */
-> +#define KVM_SDEI_EV_NUM_TYPE_SHIFT	22
-> +#define KVM_SDEI_EV_NUM_TYPE_MASK	3
-> +#define KVM_SDEI_EV_NUM_TYPE_PHYS	0
-> +#define KVM_SDEI_EV_NUM_TYPE_VIRT	1
-> +
-> +static inline bool kvm_sdei_is_valid_event_num(unsigned long num)
-the name of the function does does not really describe what it does. It
-actually checks the sdei is a virtual one. suggest kvm_sdei_is_virtual?
-> +{
-> +	unsigned long type;
-> +
-> +	if (num >> 32)
-> +		return false;
-> +
-> +	type = (num >> KVM_SDEI_EV_NUM_TYPE_SHIFT) & KVM_SDEI_EV_NUM_TYPE_MASK;
-I think the the mask generally is applied before shifting. See
-include/linux/irqchip/arm-gic-v3.h
-> +	if (type != KVM_SDEI_EV_NUM_TYPE_VIRT)
-> +		return false;
-> +
-> +	return true;
-> +}
-> +
-> +/* Accessors for the registration or enablement states of KVM event */
-> +#define KVM_SDEI_FLAG_FUNC(field)					   \
-> +static inline bool kvm_sdei_is_##field(struct kvm_sdei_kvm_event *kske,	   \
-> +				       unsigned int index)		   \
-> +{									   \
-> +	return !!test_bit(index, (void *)(kske->state.field));		   \
-> +}									   \
-> +									   \
-> +static inline bool kvm_sdei_empty_##field(struct kvm_sdei_kvm_event *kske) \
-nit: s/empty/none ?
-> +{									   \
-> +	return bitmap_empty((void *)(kske->state.field),		   \
-> +			    KVM_SDEI_MAX_VCPUS);			   \
-> +}									   \
-> +static inline void kvm_sdei_set_##field(struct kvm_sdei_kvm_event *kske,   \
-> +					unsigned int index)		   \
-> +{									   \
-> +	set_bit(index, (void *)(kske->state.field));			   \
-> +}									   \
-> +static inline void kvm_sdei_clear_##field(struct kvm_sdei_kvm_event *kske, \
-> +					  unsigned int index)		   \
-> +{									   \
-> +	clear_bit(index, (void *)(kske->state.field));			   \
-> +}
-> +
-> +KVM_SDEI_FLAG_FUNC(registered)
-> +KVM_SDEI_FLAG_FUNC(enabled)
-> +
-> +/* APIs */
-> +void kvm_sdei_init_vm(struct kvm *kvm);
-> +void kvm_sdei_create_vcpu(struct kvm_vcpu *vcpu);
-> +int kvm_sdei_hypercall(struct kvm_vcpu *vcpu);
-> +void kvm_sdei_destroy_vcpu(struct kvm_vcpu *vcpu);
-> +void kvm_sdei_destroy_vm(struct kvm *kvm);
-> +
-> +#endif /* __ARM64_KVM_SDEI_H__ */
-> diff --git a/arch/arm64/include/uapi/asm/kvm.h b/arch/arm64/include/uapi/asm/kvm.h
-> index b3edde68bc3e..e1b200bb6482 100644
-> --- a/arch/arm64/include/uapi/asm/kvm.h
-> +++ b/arch/arm64/include/uapi/asm/kvm.h
-> @@ -36,6 +36,7 @@
->  #include <linux/types.h>
->  #include <asm/ptrace.h>
->  #include <asm/sve_context.h>
-> +#include <asm/kvm_sdei.h>
->  
->  #define __KVM_HAVE_GUEST_DEBUG
->  #define __KVM_HAVE_IRQ_LINE
-> diff --git a/arch/arm64/include/uapi/asm/kvm_sdei.h b/arch/arm64/include/uapi/asm/kvm_sdei.h
-> new file mode 100644
-> index 000000000000..8928027023f6
-> --- /dev/null
-> +++ b/arch/arm64/include/uapi/asm/kvm_sdei.h
-> @@ -0,0 +1,60 @@
-> +/* SPDX-License-Identifier: GPL-2.0 WITH Linux-syscall-note */
-> +/*
-> + * Definitions of various KVM SDEI event states.
-> + *
-> + * Copyright (C) 2021 Red Hat, Inc.
-> + *
-> + * Author(s): Gavin Shan <gshan@redhat.com>
-> + */
-> +
-> +#ifndef _UAPI__ASM_KVM_SDEI_H
-> +#define _UAPI__ASM_KVM_SDEI_H
-> +
-> +#ifndef __ASSEMBLY__
-> +#include <linux/types.h>
-> +
-> +#define KVM_SDEI_MAX_VCPUS	512
-> +#define KVM_SDEI_INVALID_NUM	0
-> +#define KVM_SDEI_DEFAULT_NUM	0x40400000
-
-The motivation behind introducing such uapi should be clearer (besides
-just telling this aims at migrating). To me atm, this justification does
-not make possible to understand if those structs are well suited. You
-should document the migration process I think.
-
-I would remove _state suffix in all of them.
-> +
-> +struct kvm_sdei_event_state {
-This is not really a state because it cannot be changed by the guest,
-right? I would remove _state and just call it kvm_sdei_event
-> +	__u64	num;
-> +
-> +	__u8	type;
-> +	__u8	signaled;
-> +	__u8	priority;
-you need some padding to be 64-bit aligned. See in generic or aarch64
-kvm.h for instance.
-> +};
-> +
-> +struct kvm_sdei_kvm_event_state {
-I would rename into kvm_sdei_registered_event or smth alike
-> +	__u64	num;
-how does this num differ from the event state one?
-> +	__u32	refcount;
-> +
-> +	__u8	route_mode;
-padding also here. See for instance
-https://lore.kernel.org/kvm/20200911145446.2f9f5eb8@w520.home/T/#m7bac2ff2b28a68f8d2196ec452afd3e46682760d
-
-Maybe put the the route_mode field and refcount at the end and add one
-byte of padding?
-
-Why can't we have a single sdei_event uapi representation where route
-mode defaults to unset and refcount defaults to 0 when not registered?
-
-> +	__u64	route_affinity;
-> +	__u64	entries[KVM_SDEI_MAX_VCPUS];
-> +	__u64	params[KVM_SDEI_MAX_VCPUS];
-I would rename entries into ep_address and params into ep_arg.
-> +	__u64	registered[KVM_SDEI_MAX_VCPUS/64];
-maybe add a comment along with KVM_SDEI_MAX_VCPUS that it must be a
-multiple of 64 (or a build check)
-
-> +	__u64	enabled[KVM_SDEI_MAX_VCPUS/64];
-Also you may clarify what this gets used for a shared event. I guess
-this only makes sense for a private event which can be registered by
-several EPs?
-> +};
-> +
-> +struct kvm_sdei_vcpu_event_state {
-> +	__u64	num;
-> +	__u32	refcount;
-how does it differ from num and refcount of the registered event?
-padding++
-> +};
-> +
-> +struct kvm_sdei_vcpu_regs {
-> +	__u64	regs[18];
-> +	__u64	pc;
-> +	__u64	pstate;
-> +};
-> +
-> +struct kvm_sdei_vcpu_state {
-> +	__u8				masked;
-padding++
-> +	__u64				critical_num;
-> +	__u64				normal_num;
-> +	struct kvm_sdei_vcpu_regs	critical_regs;
-> +	struct kvm_sdei_vcpu_regs	normal_regs;
-> +};> +
-> +#endif /* !__ASSEMBLY__ */
-> +#endif /* _UAPI__ASM_KVM_SDEI_H */
-> diff --git a/arch/arm64/kvm/Makefile b/arch/arm64/kvm/Makefile
-> index 989bb5dad2c8..eefca8ca394d 100644
-> --- a/arch/arm64/kvm/Makefile
-> +++ b/arch/arm64/kvm/Makefile
-> @@ -16,7 +16,7 @@ kvm-y := $(KVM)/kvm_main.o $(KVM)/coalesced_mmio.o $(KVM)/eventfd.o \
->  	 inject_fault.o va_layout.o handle_exit.o \
->  	 guest.o debug.o reset.o sys_regs.o \
->  	 vgic-sys-reg-v3.o fpsimd.o pmu.o \
-> -	 arch_timer.o trng.o\
-> +	 arch_timer.o trng.o sdei.o \
->  	 vgic/vgic.o vgic/vgic-init.o \
->  	 vgic/vgic-irqfd.o vgic/vgic-v2.o \
->  	 vgic/vgic-v3.o vgic/vgic-v4.o \
-> diff --git a/arch/arm64/kvm/arm.c b/arch/arm64/kvm/arm.c
-> index e9a2b8f27792..2f021aa41632 100644
-> --- a/arch/arm64/kvm/arm.c
-> +++ b/arch/arm64/kvm/arm.c
-> @@ -150,6 +150,8 @@ int kvm_arch_init_vm(struct kvm *kvm, unsigned long type)
->  
->  	kvm_vgic_early_init(kvm);
->  
-> +	kvm_sdei_init_vm(kvm);
-> +
->  	/* The maximum number of VCPUs is limited by the host's GIC model */
->  	kvm->arch.max_vcpus = kvm_arm_default_max_vcpus();
->  
-> @@ -179,6 +181,8 @@ void kvm_arch_destroy_vm(struct kvm *kvm)
->  
->  	kvm_vgic_destroy(kvm);
->  
-> +	kvm_sdei_destroy_vm(kvm);
-> +
->  	for (i = 0; i < KVM_MAX_VCPUS; ++i) {
->  		if (kvm->vcpus[i]) {
->  			kvm_vcpu_destroy(kvm->vcpus[i]);
-> @@ -333,6 +337,8 @@ int kvm_arch_vcpu_create(struct kvm_vcpu *vcpu)
->  
->  	kvm_arm_pvtime_vcpu_init(&vcpu->arch);
->  
-> +	kvm_sdei_create_vcpu(vcpu);
-> +
->  	vcpu->arch.hw_mmu = &vcpu->kvm->arch.mmu;
->  
->  	err = kvm_vgic_vcpu_init(vcpu);
-> @@ -354,6 +360,7 @@ void kvm_arch_vcpu_destroy(struct kvm_vcpu *vcpu)
->  	kvm_mmu_free_memory_cache(&vcpu->arch.mmu_page_cache);
->  	kvm_timer_vcpu_terminate(vcpu);
->  	kvm_pmu_vcpu_destroy(vcpu);
-> +	kvm_sdei_destroy_vcpu(vcpu);
->  
->  	kvm_arm_vcpu_destroy(vcpu);
->  }
-> diff --git a/arch/arm64/kvm/hypercalls.c b/arch/arm64/kvm/hypercalls.c
-> index 30da78f72b3b..d3fc893a4f58 100644
-> --- a/arch/arm64/kvm/hypercalls.c
-> +++ b/arch/arm64/kvm/hypercalls.c
-> @@ -139,6 +139,24 @@ int kvm_hvc_call_handler(struct kvm_vcpu *vcpu)
->  	case ARM_SMCCC_TRNG_RND32:
->  	case ARM_SMCCC_TRNG_RND64:
->  		return kvm_trng_call(vcpu);
-> +	case SDEI_1_0_FN_SDEI_VERSION:
-> +	case SDEI_1_0_FN_SDEI_EVENT_REGISTER:
-> +	case SDEI_1_0_FN_SDEI_EVENT_ENABLE:
-> +	case SDEI_1_0_FN_SDEI_EVENT_DISABLE:
-> +	case SDEI_1_0_FN_SDEI_EVENT_CONTEXT:
-> +	case SDEI_1_0_FN_SDEI_EVENT_COMPLETE:
-> +	case SDEI_1_0_FN_SDEI_EVENT_COMPLETE_AND_RESUME:
-> +	case SDEI_1_0_FN_SDEI_EVENT_UNREGISTER:
-> +	case SDEI_1_0_FN_SDEI_EVENT_STATUS:
-> +	case SDEI_1_0_FN_SDEI_EVENT_GET_INFO:
-> +	case SDEI_1_0_FN_SDEI_EVENT_ROUTING_SET:
-> +	case SDEI_1_0_FN_SDEI_PE_MASK:
-> +	case SDEI_1_0_FN_SDEI_PE_UNMASK:
-> +	case SDEI_1_0_FN_SDEI_INTERRUPT_BIND:
-> +	case SDEI_1_0_FN_SDEI_INTERRUPT_RELEASE:
-> +	case SDEI_1_0_FN_SDEI_PRIVATE_RESET:
-> +	case SDEI_1_0_FN_SDEI_SHARED_RESET:
-> +		return kvm_sdei_hypercall(vcpu);
->  	default:
->  		return kvm_psci_call(vcpu);
->  	}
-> diff --git a/arch/arm64/kvm/sdei.c b/arch/arm64/kvm/sdei.c
-> new file mode 100644
-> index 000000000000..ab330b74a965
-> --- /dev/null
-> +++ b/arch/arm64/kvm/sdei.c
-> @@ -0,0 +1,198 @@
-> +// SPDX-License-Identifier: GPL-2.0-only
-> +/*
-> + * SDEI virtualization support.
-> + *
-> + * Copyright (C) 2021 Red Hat, Inc.
-> + *
-> + * Author(s): Gavin Shan <gshan@redhat.com>
-> + */
-> +
-> +#include <linux/kernel.h>
-> +#include <linux/kvm_host.h>
-> +#include <linux/spinlock.h>
-> +#include <linux/slab.h>
-> +#include <kvm/arm_hypercalls.h>
-> +
-> +static struct kvm_sdei_event_state defined_kse[] = {
-> +	{ KVM_SDEI_DEFAULT_NUM,
-> +	  SDEI_EVENT_TYPE_PRIVATE,
-> +	  1,
-> +	  SDEI_EVENT_PRIORITY_CRITICAL
-> +	},
-> +};
-I understand from the above we currently only support a single static (~
-platform) SDEI event with num = KVM_SDEI_DEFAULT_NUM. We do not support
-bound events. You may add a comment here and maybe in the commit msg.
-I would rename the variable into exported_events.
-> +
-> +static void kvm_sdei_remove_events(struct kvm *kvm)
-> +{
-> +	struct kvm_sdei_kvm *ksdei = kvm->arch.sdei;
-> +	struct kvm_sdei_event *kse, *tmp;
-> +
-> +	list_for_each_entry_safe(kse, tmp, &ksdei->events, link) {
-> +		list_del(&kse->link);
-> +		kfree(kse);
-> +	}
-> +}
-> +
-> +static void kvm_sdei_remove_kvm_events(struct kvm *kvm,
-> +				       unsigned int mask,
-> +				       bool force)
-> +{
-> +	struct kvm_sdei_kvm *ksdei = kvm->arch.sdei;
-> +	struct kvm_sdei_event *kse;
-> +	struct kvm_sdei_kvm_event *kske, *tmp;
-> +
-> +	list_for_each_entry_safe(kske, tmp, &ksdei->kvm_events, link) {
-> +		kse = kske->kse;
-> +
-> +		if (!((1 << kse->state.type) & mask))
-> +			continue;
-don't you need to hold a lock before looping? What if sbdy concurrently
-changes the state fields, especially the refcount below?
-> +
-> +		if (!force && kske->state.refcount)
-> +			continue;
-Usually the refcount is used to control the lifetime of the object. The
-'force' flag looks wrong in that context. Shouldn't you make sure all
-users have released their refcounts and on the last decrement, delete
-the object?
-> +
-> +		list_del(&kske->link);
-> +		kfree(kske);
-> +	}
-> +}
-> +
-> +static void kvm_sdei_remove_vcpu_events(struct kvm_vcpu *vcpu)
-> +{
-> +	struct kvm_sdei_vcpu *vsdei = vcpu->arch.sdei;
-> +	struct kvm_sdei_vcpu_event *ksve, *tmp;
-> +
-> +	list_for_each_entry_safe(ksve, tmp, &vsdei->critical_events, link) {
-> +		list_del(&ksve->link);
-> +		kfree(ksve);
-> +	}
-> +
-> +	list_for_each_entry_safe(ksve, tmp, &vsdei->normal_events, link) {
-> +		list_del(&ksve->link);
-> +		kfree(ksve);
-> +	}
-> +}
-> +
-> +int kvm_sdei_hypercall(struct kvm_vcpu *vcpu)
-> +{
-> +	u32 func = smccc_get_function(vcpu);
-> +	bool has_result = true;
-> +	unsigned long ret;
-> +
-> +	switch (func) {
-> +	case SDEI_1_0_FN_SDEI_VERSION:
-> +	case SDEI_1_0_FN_SDEI_EVENT_REGISTER:
-> +	case SDEI_1_0_FN_SDEI_EVENT_ENABLE:
-> +	case SDEI_1_0_FN_SDEI_EVENT_DISABLE:
-> +	case SDEI_1_0_FN_SDEI_EVENT_CONTEXT:
-> +	case SDEI_1_0_FN_SDEI_EVENT_COMPLETE:
-> +	case SDEI_1_0_FN_SDEI_EVENT_COMPLETE_AND_RESUME:
-> +	case SDEI_1_0_FN_SDEI_EVENT_UNREGISTER:
-> +	case SDEI_1_0_FN_SDEI_EVENT_STATUS:
-> +	case SDEI_1_0_FN_SDEI_EVENT_GET_INFO:
-> +	case SDEI_1_0_FN_SDEI_EVENT_ROUTING_SET:
-> +	case SDEI_1_0_FN_SDEI_PE_MASK:
-> +	case SDEI_1_0_FN_SDEI_PE_UNMASK:
-> +	case SDEI_1_0_FN_SDEI_INTERRUPT_BIND:
-> +	case SDEI_1_0_FN_SDEI_INTERRUPT_RELEASE:
-> +	case SDEI_1_0_FN_SDEI_PRIVATE_RESET:
-> +	case SDEI_1_0_FN_SDEI_SHARED_RESET:
-> +	default:
-> +		ret = SDEI_NOT_SUPPORTED;
-> +	}
-> +
-> +	/*
-> +	 * We don't have return value for COMPLETE or COMPLETE_AND_RESUME
-> +	 * hypercalls. Otherwise, the restored context will be corrupted.
-> +	 */
-> +	if (has_result)
-> +		smccc_set_retval(vcpu, ret, 0, 0, 0);
-If I understand the above comment, COMPLETE and COMPLETE_AND_RESUME
-should have has_result set to false whereas in that case they will
-return NOT_SUPPORTED. Is that OK for the context restore?
-> +
-> +	return 1;
-> +}
-> +
-> +void kvm_sdei_init_vm(struct kvm *kvm)
-> +{
-> +	struct kvm_sdei_kvm *ksdei;
-> +	struct kvm_sdei_event *kse;
-> +	int i;
-> +
-> +	ksdei = kzalloc(sizeof(*ksdei), GFP_KERNEL);
-> +	if (!ksdei)
-> +		return;
-> +
-> +	spin_lock_init(&ksdei->lock);
-> +	INIT_LIST_HEAD(&ksdei->events);
-> +	INIT_LIST_HEAD(&ksdei->kvm_events);
-> +
-> +	/*
-> +	 * Populate the defined KVM SDEI events. The whole functionality
-> +	 * will be disabled on any errors.
-You should definitively revise your naming conventions. this brings
-confusion inbetween exported events and registered events. Why not
-simply adopt the spec terminology?
-> +	 */
-> +	for (i = 0; i < ARRAY_SIZE(defined_kse); i++) {
-> +		kse = kzalloc(sizeof(*kse), GFP_KERNEL);
-> +		if (!kse) {
-> +			kvm_sdei_remove_events(kvm);
-> +			kfree(ksdei);
-> +			return;
-> +		}
-Add a comment saying that despite we currently support a single static
-event we prepare for binding support by building a list of exposed events?
-
-Or maybe simplify the implementation at this stage of the development
-assuming a single platform event is supported?
-> +
-> +		kse->kvm   = kvm;
-> +		kse->state = defined_kse[i];
-> +		list_add_tail(&kse->link, &ksdei->events);
-> +	}
-> +
-> +	kvm->arch.sdei = ksdei;
-> +}
-> +
-> +void kvm_sdei_create_vcpu(struct kvm_vcpu *vcpu)
-> +{
-> +	struct kvm *kvm = vcpu->kvm;
-> +	struct kvm_sdei_vcpu *vsdei;
-> +
-> +	if (!kvm->arch.sdei)
-> +		return;
-> +
-> +	vsdei = kzalloc(sizeof(*vsdei), GFP_KERNEL);
-> +	if (!vsdei)
-> +		return;
-> +
-> +	spin_lock_init(&vsdei->lock);
-> +	vsdei->state.masked       = 1;
-> +	vsdei->state.critical_num = KVM_SDEI_INVALID_NUM;
-> +	vsdei->state.normal_num   = KVM_SDEI_INVALID_NUM;
-> +	vsdei->critical_event     = NULL;
-> +	vsdei->normal_event       = NULL;
-> +	INIT_LIST_HEAD(&vsdei->critical_events);
-> +	INIT_LIST_HEAD(&vsdei->normal_events);
-> +
-> +	vcpu->arch.sdei = vsdei;
-> +}
-> +
-> +void kvm_sdei_destroy_vcpu(struct kvm_vcpu *vcpu)
-> +{
-> +	struct kvm_sdei_vcpu *vsdei = vcpu->arch.sdei;
-> +
-> +	if (vsdei) {
-> +		spin_lock(&vsdei->lock);
-> +		kvm_sdei_remove_vcpu_events(vcpu);
-> +		spin_unlock(&vsdei->lock);
-> +
-> +		kfree(vsdei);
-> +		vcpu->arch.sdei = NULL;
-> +	}
-> +}
-> +
-> +void kvm_sdei_destroy_vm(struct kvm *kvm)
-> +{
-> +	struct kvm_sdei_kvm *ksdei = kvm->arch.sdei;
-> +	unsigned int mask = (1 << SDEI_EVENT_TYPE_PRIVATE) |
-> +			    (1 << SDEI_EVENT_TYPE_SHARED);
-> +
-> +	if (ksdei) {
-> +		spin_lock(&ksdei->lock);
-> +		kvm_sdei_remove_kvm_events(kvm, mask, true);> +		kvm_sdei_remove_events(kvm);
-> +		spin_unlock(&ksdei->lock);
-> +
-> +		kfree(ksdei);
-> +		kvm->arch.sdei = NULL;
-> +	}
-> +}
+> This driver is dependent on vpu firmwares.
+> The firmwares have been submitted to linux-firmware.
+> The firmware patch is since commit
+> b563148fd28623f6b6ce68bb06c3dd3bd138b058:
+> linux-firmware: Update firmware file for Intel Bluetooth 9462
+> (Fri Oct 8 16:30:14 2021 +0530)
 > 
-Thanks
+> and it's available in the git repository at:
+>     https://github.com/mingqian-0/linux-firmware.git
+> 
+> for you to fetch changes up to bb3eee4f99589d4910dee4c053a3a685546b5dbb:
+> amphion: add VPU firmwares for NXP i.MX8Q SoCs
+> (Tue Oct 12 15:09:57 2021 +0800)
+> 
+> encoder is tested with gstreamer
+> decoder is tested with gstreamer, but the following patches are required:
+> https://gitlab.freedesktop.org/gstreamer/gst-plugins-base/-/merge_requests/1252
+> https://gitlab.freedesktop.org/gstreamer/gst-plugins-good/-/merge_requests/1098
+> https://gitlab.freedesktop.org/gstreamer/gst-plugins-good/-/merge_requests/1099
 
-Eric
+Just wanted to acknowledge that all these changes are valid and will make their
+way upstream when the development window re-open.
+
+p.s. still hope to give this another round of testing soon, sorry for the delays
+lately.
+
+> 
+> 
+> Changelog:
+> 
+> v12
+> - support reset decoder when starting a new stream
+> - don't append an empty last buffer, set last_buffer_dequeued
+> - improve the resolution change flow
+> - return all buffers if start_streaming fail
+> - fill encoder capture buffer's filed to none
+> - fix a bug in calculating bytesperline
+> 
+> v11
+> - fix dt_binding_check error after upgrade dtschema
+> - remove "default y"
+> - add media device
+> 
+> v10
+> - refine vpu log, remove custom logging infrastructure
+> - support non contiguous planes format nv12m instead of nv12
+> - rename V4L2_PIX_FMT_NV12_8L128 to V4L2_PIX_FMT_NV12MT_8L128
+> - rename V4L2_PIX_FMT_NV12_10BE_8L128 to V4L2_PIX_FMT_NV12MT_10BE_8L128
+> - merge two module into one
+> - fix kernel panic in rmmod
+> 
+> v9
+> - drop V4L2_BUF_FLAG_CODECCONFIG
+> - drop V4L2_EVENT_CODEC_ERROR
+> - drop V4L2_EVENT_SKIP - use the v4l2_buffer.sequence counter
+> - fix some build warnings with W=1 reported by kernel test robot
+> 
+> v8
+> - move driver from driver/media/platform/imx/vpu-8q to
+>   driver/media/platform/amphion
+> - rename driver name to amphion
+> - remove imx_vpu.h
+> - move the definition of V4L2_EVENT_CODEC_ERROR to videodev2.h
+> - move the definition of V4L2_EVENT_SKIP to videodev2.h
+> 
+> v7
+> - fix build warnings with W=1 reported by kernel test robot
+> 
+> v6:
+> - rename V4L2_PIX_FMT_NT8 to V4L2_PIX_FMT_NV12_8L128
+> - rename V4L2_PIX_FMT_NT10 to V4L2_PIX_FMT_NV12_10BE_8L128
+> 
+> v5:
+> - move some definition from imx_vph.h to videodev2.h
+> - remove some unnecessary content
+> - add some documentation descriptions
+> - pass the lateset v4l2-compliance test
+> 
+> v4:
+> - redefine the memory-region in devicetree bindings documentation
+> - use v4l2's mechanism to implement synchronize queuing ioctl
+> - remove the unnecessary mutex ioctl_sync
+> - don't notify source change event if the parameters are same as previously established
+> - add flag V4L2_FMT_FLAG_DYN_RESOLUTION to decoder's capture format
+> 
+> v3:
+> - don't make vpu device node a simple-bus
+> - trigger probing vpu core in the driver
+> - remove unnecessary vpu core index property
+> 
+> v2:
+> - fix dt bindings build error
+> - split driver patch into several parts to avoid exceeding bytes limit
+> 
+> Compliance
+> ==========
+> # v4l2-compliance -d /dev/video0
+> v4l2-compliance 1.21.0-4859, 64 bits, 64-bit time_t
+> v4l2-compliance SHA: 493af03f3c57 2021-10-08 17:23:11
+> 
+> Compliance test for amphion-vpu device /dev/video0:
+> 
+> Driver Info:
+> 	Driver name      : amphion-vpu
+> 	Card type        : amphion vpu decoder
+> 	Bus info         : platform: amphion-vpu
+> 	Driver version   : 5.15.0
+> 	Capabilities     : 0x84204000
+> 		Video Memory-to-Memory Multiplanar
+> 		Streaming
+> 		Extended Pix Format
+> 		Device Capabilities
+> 	Device Caps      : 0x04204000
+> 		Video Memory-to-Memory Multiplanar
+> 		Streaming
+> 		Extended Pix Format
+> 	Detected Stateful Decoder
+> Media Driver Info:
+> 	Driver name      : amphion-vpu
+> 	Model            : amphion-vpu
+> 	Serial           :
+> 	Bus info         : platform: amphion-vpu
+> 	Media version    : 5.15.0
+> 	Hardware revision: 0x00000000 (0)
+> 	Driver version   : 5.15.0
+> Interface Info:
+> 	ID               : 0x0300000c
+> 	Type             : V4L Video
+> Entity Info:
+> 	ID               : 0x00000001 (1)
+> 	Name             : amphion-vpu-decoder-source
+> 	Function         : V4L2 I/O
+> 	Pad 0x01000002   : 0: Source
+> 	  Link 0x02000008: to remote pad 0x1000004 of entity 'amphion-vpu-decoder-proc' (Video Decoder): Data, Enabled, Immutable
+> 
+> Required ioctls:
+> 	test MC information (see 'Media Driver Info' above): OK
+> 	test VIDIOC_QUERYCAP: OK
+> 	test invalid ioctls: OK
+> 
+> Allow for multiple opens:
+> 	test second /dev/video0 open: OK
+> 	test VIDIOC_QUERYCAP: OK
+> 	test VIDIOC_G/S_PRIORITY: OK
+> 	test for unlimited opens: OK
+> 
+> Debug ioctls:
+> 	test VIDIOC_DBG_G/S_REGISTER: OK (Not Supported)
+> 	test VIDIOC_LOG_STATUS: OK (Not Supported)
+> 
+> Input ioctls:
+> 	test VIDIOC_G/S_TUNER/ENUM_FREQ_BANDS: OK (Not Supported)
+> 	test VIDIOC_G/S_FREQUENCY: OK (Not Supported)
+> 	test VIDIOC_S_HW_FREQ_SEEK: OK (Not Supported)
+> 	test VIDIOC_ENUMAUDIO: OK (Not Supported)
+> 	test VIDIOC_G/S/ENUMINPUT: OK (Not Supported)
+> 	test VIDIOC_G/S_AUDIO: OK (Not Supported)
+> 	Inputs: 0 Audio Inputs: 0 Tuners: 0
+> 
+> Output ioctls:
+> 	test VIDIOC_G/S_MODULATOR: OK (Not Supported)
+> 	test VIDIOC_G/S_FREQUENCY: OK (Not Supported)
+> 	test VIDIOC_ENUMAUDOUT: OK (Not Supported)
+> 	test VIDIOC_G/S/ENUMOUTPUT: OK (Not Supported)
+> 	test VIDIOC_G/S_AUDOUT: OK (Not Supported)
+> 	Outputs: 0 Audio Outputs: 0 Modulators: 0
+> 
+> Input/Output configuration ioctls:
+> 	test VIDIOC_ENUM/G/S/QUERY_STD: OK (Not Supported)
+> 	test VIDIOC_ENUM/G/S/QUERY_DV_TIMINGS: OK (Not Supported)
+> 	test VIDIOC_DV_TIMINGS_CAP: OK (Not Supported)
+> 	test VIDIOC_G/S_EDID: OK (Not Supported)
+> 
+> Control ioctls:
+> 	test VIDIOC_QUERY_EXT_CTRL/QUERYMENU: OK
+> 	test VIDIOC_QUERYCTRL: OK
+> 	test VIDIOC_G/S_CTRL: OK
+> 	test VIDIOC_G/S/TRY_EXT_CTRLS: OK
+> 	test VIDIOC_(UN)SUBSCRIBE_EVENT/DQEVENT: OK
+> 	test VIDIOC_G/S_JPEGCOMP: OK (Not Supported)
+> 	Standard Controls: 3 Private Controls: 0
+> 
+> Format ioctls:
+> 	test VIDIOC_ENUM_FMT/FRAMESIZES/FRAMEINTERVALS: OK
+> 	test VIDIOC_G/S_PARM: OK (Not Supported)
+> 	test VIDIOC_G_FBUF: OK (Not Supported)
+> 	test VIDIOC_G_FMT: OK
+> 	test VIDIOC_TRY_FMT: OK
+> 	test VIDIOC_S_FMT: OK
+> 	test VIDIOC_G_SLICED_VBI_CAP: OK (Not Supported)
+> 	test Cropping: OK (Not Supported)
+> 	test Composing: OK
+> 	test Scaling: OK (Not Supported)
+> 
+> Codec ioctls:
+> 	test VIDIOC_(TRY_)ENCODER_CMD: OK (Not Supported)
+> 	test VIDIOC_G_ENC_INDEX: OK (Not Supported)
+> 	test VIDIOC_(TRY_)DECODER_CMD: OK
+> 
+> Buffer ioctls:
+> 	test VIDIOC_REQBUFS/CREATE_BUFS/QUERYBUF: OK
+> 	test VIDIOC_EXPBUF: OK
+> 	test Requests: OK (Not Supported)
+> 
+> Total for amphion-vpu device /dev/video0: 46, Succeeded: 46, Failed: 0, Warnings: 0
+> 
+> # v4l2-compliance -d /dev/video1
+> v4l2-compliance 1.21.0-4859, 64 bits, 64-bit time_t
+> v4l2-compliance SHA: 493af03f3c57 2021-10-08 17:23:11
+> 
+> Compliance test for amphion-vpu device /dev/video1:
+> 
+> Driver Info:
+> 	Driver name      : amphion-vpu
+> 	Card type        : amphion vpu encoder
+> 	Bus info         : platform: amphion-vpu
+> 	Driver version   : 5.15.0
+> 	Capabilities     : 0x84204000
+> 		Video Memory-to-Memory Multiplanar
+> 		Streaming
+> 		Extended Pix Format
+> 		Device Capabilities
+> 	Device Caps      : 0x04204000
+> 		Video Memory-to-Memory Multiplanar
+> 		Streaming
+> 		Extended Pix Format
+> 	Detected Stateful Encoder
+> Media Driver Info:
+> 	Driver name      : amphion-vpu
+> 	Model            : amphion-vpu
+> 	Serial           :
+> 	Bus info         : platform: amphion-vpu
+> 	Media version    : 5.15.0
+> 	Hardware revision: 0x00000000 (0)
+> 	Driver version   : 5.15.0
+> Interface Info:
+> 	ID               : 0x0300001a
+> 	Type             : V4L Video
+> Entity Info:
+> 	ID               : 0x0000000f (15)
+> 	Name             : amphion-vpu-encoder-source
+> 	Function         : V4L2 I/O
+> 	Pad 0x01000010   : 0: Source
+> 	  Link 0x02000016: to remote pad 0x1000012 of entity 'amphion-vpu-encoder-proc' (Video Encoder): Data, Enabled, Immutable
+> 
+> Required ioctls:
+> 	test MC information (see 'Media Driver Info' above): OK
+> 	test VIDIOC_QUERYCAP: OK
+> 	test invalid ioctls: OK
+> 
+> Allow for multiple opens:
+> 	test second /dev/video1 open: OK
+> 	test VIDIOC_QUERYCAP: OK
+> 	test VIDIOC_G/S_PRIORITY: OK
+> 	test for unlimited opens: OK
+> 
+> Debug ioctls:
+> 	test VIDIOC_DBG_G/S_REGISTER: OK (Not Supported)
+> 	test VIDIOC_LOG_STATUS: OK (Not Supported)
+> 
+> Input ioctls:
+> 	test VIDIOC_G/S_TUNER/ENUM_FREQ_BANDS: OK (Not Supported)
+> 	test VIDIOC_G/S_FREQUENCY: OK (Not Supported)
+> 	test VIDIOC_S_HW_FREQ_SEEK: OK (Not Supported)
+> 	test VIDIOC_ENUMAUDIO: OK (Not Supported)
+> 	test VIDIOC_G/S/ENUMINPUT: OK (Not Supported)
+> 	test VIDIOC_G/S_AUDIO: OK (Not Supported)
+> 	Inputs: 0 Audio Inputs: 0 Tuners: 0
+> 
+> Output ioctls:
+> 	test VIDIOC_G/S_MODULATOR: OK (Not Supported)
+> 	test VIDIOC_G/S_FREQUENCY: OK (Not Supported)
+> 	test VIDIOC_ENUMAUDOUT: OK (Not Supported)
+> 	test VIDIOC_G/S/ENUMOUTPUT: OK (Not Supported)
+> 	test VIDIOC_G/S_AUDOUT: OK (Not Supported)
+> 	Outputs: 0 Audio Outputs: 0 Modulators: 0
+> 
+> Input/Output configuration ioctls:
+> 	test VIDIOC_ENUM/G/S/QUERY_STD: OK (Not Supported)
+> 	test VIDIOC_ENUM/G/S/QUERY_DV_TIMINGS: OK (Not Supported)
+> 	test VIDIOC_DV_TIMINGS_CAP: OK (Not Supported)
+> 	test VIDIOC_G/S_EDID: OK (Not Supported)
+> 
+> Control ioctls:
+> 	test VIDIOC_QUERY_EXT_CTRL/QUERYMENU: OK
+> 	test VIDIOC_QUERYCTRL: OK
+> 	test VIDIOC_G/S_CTRL: OK
+> 	test VIDIOC_G/S/TRY_EXT_CTRLS: OK
+> 	test VIDIOC_(UN)SUBSCRIBE_EVENT/DQEVENT: OK
+> 	test VIDIOC_G/S_JPEGCOMP: OK (Not Supported)
+> 	Standard Controls: 20 Private Controls: 0
+> 
+> Format ioctls:
+> 	test VIDIOC_ENUM_FMT/FRAMESIZES/FRAMEINTERVALS: OK
+> 	test VIDIOC_G/S_PARM: OK
+> 	test VIDIOC_G_FBUF: OK (Not Supported)
+> 	test VIDIOC_G_FMT: OK
+> 	test VIDIOC_TRY_FMT: OK
+> 	test VIDIOC_S_FMT: OK
+> 	test VIDIOC_G_SLICED_VBI_CAP: OK (Not Supported)
+> 	test Cropping: OK
+> 	test Composing: OK (Not Supported)
+> 	test Scaling: OK (Not Supported)
+> 
+> Codec ioctls:
+> 	test VIDIOC_(TRY_)ENCODER_CMD: OK
+> 	test VIDIOC_G_ENC_INDEX: OK (Not Supported)
+> 	test VIDIOC_(TRY_)DECODER_CMD: OK (Not Supported)
+> 
+> Buffer ioctls:
+> 	test VIDIOC_REQBUFS/CREATE_BUFS/QUERYBUF: OK
+> 	test VIDIOC_EXPBUF: OK
+> 	test Requests: OK (Not Supported)
+> 
+> Total for amphion-vpu device /dev/video1: 46, Succeeded: 46, Failed: 0, Warnings: 0
+> 
+> # v4l2-compliance -d /dev/media0
+> v4l2-compliance 1.21.0-4859, 64 bits, 64-bit time_t
+> v4l2-compliance SHA: 493af03f3c57 2021-10-08 17:23:11
+> 
+> Compliance test for amphion-vpu device /dev/media0:
+> 
+> Media Driver Info:
+> 	Driver name      : amphion-vpu
+> 	Model            : amphion-vpu
+> 	Serial           :
+> 	Bus info         : platform: amphion-vpu
+> 	Media version    : 5.15.0
+> 	Hardware revision: 0x00000000 (0)
+> 	Driver version   : 5.15.0
+> 
+> Required ioctls:
+> 	test MEDIA_IOC_DEVICE_INFO: OK
+> 	test invalid ioctls: OK
+> 
+> Allow for multiple opens:
+> 	test second /dev/media0 open: OK
+> 	test MEDIA_IOC_DEVICE_INFO: OK
+> 	test for unlimited opens: OK
+> 
+> Media Controller ioctls:
+> 	test MEDIA_IOC_G_TOPOLOGY: OK
+> 	Entities: 6 Interfaces: 2 Pads: 8 Links: 8
+> 	test MEDIA_IOC_ENUM_ENTITIES/LINKS: OK
+> 	test MEDIA_IOC_SETUP_LINK: OK
+> 
+> Total for amphion-vpu device /dev/media0: 8, Succeeded: 8, Failed: 0, Warnings: 0
+> 
+> Ming Qian (13):
+>   dt-bindings: media: amphion: add amphion video codec bindings
+>   media:Add nv12mt_8l128 and nv12mt_10be_8l128 video format.
+>   media: amphion: add amphion vpu device driver
+>   media: amphion: add vpu core driver
+>   media: amphion: implement vpu core communication based on mailbox
+>   media: amphion: add vpu v4l2 m2m support
+>   media: amphion: add v4l2 m2m vpu encoder stateful driver
+>   media: amphion: add v4l2 m2m vpu decoder stateful driver
+>   media: amphion: implement windsor encoder rpc interface
+>   media: amphion: implement malone decoder rpc interface
+>   ARM64: dts: freescale: imx8q: add imx vpu codec entries
+>   firmware: imx: scu-pd: imx8q: add vpu mu resources
+>   MAINTAINERS: add AMPHION VPU CODEC V4L2 driver entry
+> 
+>  .../bindings/media/amphion,vpu.yaml           |  180 ++
+>  .../media/v4l/pixfmt-yuv-planar.rst           |   15 +
+>  MAINTAINERS                                   |    9 +
+>  .../arm64/boot/dts/freescale/imx8-ss-vpu.dtsi |   72 +
+>  arch/arm64/boot/dts/freescale/imx8qxp-mek.dts |   17 +
+>  arch/arm64/boot/dts/freescale/imx8qxp.dtsi    |   24 +
+>  arch/arm64/configs/defconfig                  |    1 +
+>  drivers/firmware/imx/scu-pd.c                 |    4 +
+>  drivers/media/platform/Kconfig                |   19 +
+>  drivers/media/platform/Makefile               |    2 +
+>  drivers/media/platform/amphion/Makefile       |   20 +
+>  drivers/media/platform/amphion/vdec.c         | 1680 +++++++++++++++++
+>  drivers/media/platform/amphion/venc.c         | 1351 +++++++++++++
+>  drivers/media/platform/amphion/vpu.h          |  357 ++++
+>  drivers/media/platform/amphion/vpu_cmds.c     |  431 +++++
+>  drivers/media/platform/amphion/vpu_cmds.h     |   25 +
+>  drivers/media/platform/amphion/vpu_codec.h    |   67 +
+>  drivers/media/platform/amphion/vpu_color.c    |  190 ++
+>  drivers/media/platform/amphion/vpu_core.c     |  906 +++++++++
+>  drivers/media/platform/amphion/vpu_core.h     |   15 +
+>  drivers/media/platform/amphion/vpu_dbg.c      |  495 +++++
+>  drivers/media/platform/amphion/vpu_defs.h     |  186 ++
+>  drivers/media/platform/amphion/vpu_drv.c      |  265 +++
+>  drivers/media/platform/amphion/vpu_helpers.c  |  436 +++++
+>  drivers/media/platform/amphion/vpu_helpers.h  |   71 +
+>  drivers/media/platform/amphion/vpu_imx8q.c    |  271 +++
+>  drivers/media/platform/amphion/vpu_imx8q.h    |  116 ++
+>  drivers/media/platform/amphion/vpu_malone.c   | 1679 ++++++++++++++++
+>  drivers/media/platform/amphion/vpu_malone.h   |   42 +
+>  drivers/media/platform/amphion/vpu_mbox.c     |  124 ++
+>  drivers/media/platform/amphion/vpu_mbox.h     |   16 +
+>  drivers/media/platform/amphion/vpu_msgs.c     |  413 ++++
+>  drivers/media/platform/amphion/vpu_msgs.h     |   14 +
+>  drivers/media/platform/amphion/vpu_rpc.c      |  279 +++
+>  drivers/media/platform/amphion/vpu_rpc.h      |  464 +++++
+>  drivers/media/platform/amphion/vpu_v4l2.c     |  702 +++++++
+>  drivers/media/platform/amphion/vpu_v4l2.h     |   54 +
+>  drivers/media/platform/amphion/vpu_windsor.c  | 1222 ++++++++++++
+>  drivers/media/platform/amphion/vpu_windsor.h  |   39 +
+>  drivers/media/v4l2-core/v4l2-ioctl.c          |    2 +
+>  include/uapi/linux/videodev2.h                |    2 +
+>  41 files changed, 12277 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/media/amphion,vpu.yaml
+>  create mode 100644 arch/arm64/boot/dts/freescale/imx8-ss-vpu.dtsi
+>  create mode 100644 drivers/media/platform/amphion/Makefile
+>  create mode 100644 drivers/media/platform/amphion/vdec.c
+>  create mode 100644 drivers/media/platform/amphion/venc.c
+>  create mode 100644 drivers/media/platform/amphion/vpu.h
+>  create mode 100644 drivers/media/platform/amphion/vpu_cmds.c
+>  create mode 100644 drivers/media/platform/amphion/vpu_cmds.h
+>  create mode 100644 drivers/media/platform/amphion/vpu_codec.h
+>  create mode 100644 drivers/media/platform/amphion/vpu_color.c
+>  create mode 100644 drivers/media/platform/amphion/vpu_core.c
+>  create mode 100644 drivers/media/platform/amphion/vpu_core.h
+>  create mode 100644 drivers/media/platform/amphion/vpu_dbg.c
+>  create mode 100644 drivers/media/platform/amphion/vpu_defs.h
+>  create mode 100644 drivers/media/platform/amphion/vpu_drv.c
+>  create mode 100644 drivers/media/platform/amphion/vpu_helpers.c
+>  create mode 100644 drivers/media/platform/amphion/vpu_helpers.h
+>  create mode 100644 drivers/media/platform/amphion/vpu_imx8q.c
+>  create mode 100644 drivers/media/platform/amphion/vpu_imx8q.h
+>  create mode 100644 drivers/media/platform/amphion/vpu_malone.c
+>  create mode 100644 drivers/media/platform/amphion/vpu_malone.h
+>  create mode 100644 drivers/media/platform/amphion/vpu_mbox.c
+>  create mode 100644 drivers/media/platform/amphion/vpu_mbox.h
+>  create mode 100644 drivers/media/platform/amphion/vpu_msgs.c
+>  create mode 100644 drivers/media/platform/amphion/vpu_msgs.h
+>  create mode 100644 drivers/media/platform/amphion/vpu_rpc.c
+>  create mode 100644 drivers/media/platform/amphion/vpu_rpc.h
+>  create mode 100644 drivers/media/platform/amphion/vpu_v4l2.c
+>  create mode 100644 drivers/media/platform/amphion/vpu_v4l2.h
+>  create mode 100644 drivers/media/platform/amphion/vpu_windsor.c
+>  create mode 100644 drivers/media/platform/amphion/vpu_windsor.h
+> 
+> 
+> base-commit: 57c3b9f55ba875a6f6295fa59f0bdc0a01c544f8
 
