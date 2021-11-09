@@ -2,97 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 627C744A852
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 09:28:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5C25E44A856
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 09:29:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241582AbhKIIb2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Nov 2021 03:31:28 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58738 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236798AbhKIIb1 (ORCPT
+        id S244057AbhKIIcB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Nov 2021 03:32:01 -0500
+Received: from mail-ua1-f45.google.com ([209.85.222.45]:37887 "EHLO
+        mail-ua1-f45.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S241549AbhKIIcA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Nov 2021 03:31:27 -0500
-Received: from mail-ed1-x530.google.com (mail-ed1-x530.google.com [IPv6:2a00:1450:4864:20::530])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9ABEDC061767
-        for <linux-kernel@vger.kernel.org>; Tue,  9 Nov 2021 00:28:41 -0800 (PST)
-Received: by mail-ed1-x530.google.com with SMTP id ee33so73818678edb.8
-        for <linux-kernel@vger.kernel.org>; Tue, 09 Nov 2021 00:28:41 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20210112.gappssmtp.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=AYfmttMzhsd8uEz1aHBUrg2dnF3audYy8hGqqui2EpI=;
-        b=H4a4IucMj8HDXTeG6u/Oz0ceqJbOqvSSg1DGCicM5zW8caqvUxA8hwZwgnomWSI2ju
-         jx9JawN0XSBy/yqwpwZ9Zh81+Fuo/fUQs/OxpGJUzrdHzmFxk15hlK/0iwwrXWslsuU6
-         7wBOt5AIcO4LZEe0egpWgofjLRMJxj93X5VzXOjX/SpKWhk2YBS1Y6vMA/16dUGWHzun
-         Iyl/fitIbpsVL/RWKjRNbCrsDPP65wzA3pwhqy2cyTYX/72Thm/8MkVJLN0Dm5lvdzU9
-         7H9byrChhb3YL7hLSKt3jIMjc6Cmj3XrWrUxwfmyhrS/jDWjCj02eHzhs0sTa0aeFfC+
-         SU9Q==
+        Tue, 9 Nov 2021 03:32:00 -0500
+Received: by mail-ua1-f45.google.com with SMTP id l43so36990095uad.4;
+        Tue, 09 Nov 2021 00:29:14 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=AYfmttMzhsd8uEz1aHBUrg2dnF3audYy8hGqqui2EpI=;
-        b=plNIWRPd40bWeOPw1hsEUTni7gZuIbzhI1t4vCM6jUHlnFijWvAJjvA3RdRPYsSInX
-         2nA2Cm/gV2Vf7siV0a9C4hstDut1F4FQgx5hg6bPawrd3AlosftIwTfd3bgVUktFxhcc
-         DUgfW3b5v2J8ODlLyLYCDv0FTqz3zHoDBdOY07BmzYSeOOkplNihPy+VUbU6JLQWSzLO
-         LC0/QH1RDz+HYwnAcQ6rgQMlWRx8dSytm+TQpWi3OPtIGNLSBKG1uL1f3yPcebGTIEIC
-         /czE7utaBd4c9f3RPoGw9NUtJD/vV0g2r7RPDzC0aEm4cnf2M0Iwhi5LOyXVlaZJvPR5
-         tKfA==
-X-Gm-Message-State: AOAM533L1np62yZBefmyUSsskFd/091zPCfBgOqgn0olFcj78v2EQxLu
-        fT2Wb838mcdo5LKU3MBXNdaTHz2OEM5EFAIlnYl6cEVeBWVPhg==
-X-Google-Smtp-Source: ABdhPJxB/jw6V3td6QOKuKigva5CtXSzFp342x2xvFZDOKc4h+0SujvGiXQJ/XxNHUutJyV2Co4XVI+hSOLUiArgPVU=
-X-Received: by 2002:a17:906:38ce:: with SMTP id r14mr7278587ejd.268.1636446520068;
- Tue, 09 Nov 2021 00:28:40 -0800 (PST)
+        bh=2BwDtO1eLZZUZrT3r0fYqPOHZzqJexnawXyMgbqoDnI=;
+        b=GaNENQOpuXGSOK8cIg30Sr5cXayCg0wxVRgPTHSeq2oimgKVLk9MdsbNUhpGFe3xGo
+         QQ3NhLhYzcwXqKFVoBByiUFtLcW6ZLeg37Nngl04T+1TkvY2VjCGwzWzFqtgLw/Vn/Uc
+         mSetXqc85wgq/CmEDpxdRv+aRcWm+hoJ4S67jQKTp7XO9hrf8dbQ49UimG6i2PEr2ela
+         XfUf/k+k8dqq0YikIUK/K6BSR7DgCxjY9JG2DNE9V6DHhwmyxhTgzCCBW09tOeGOPR5P
+         oAlel0Isl9T+Tf7BV6r3wJCfKAhjt1BS8xh1qMK6BPiUBOC1HEvxhbVIOlk24ekdzwZ3
+         gAcw==
+X-Gm-Message-State: AOAM532tMBHxvKOjmxmzQCbVqrLNR82BylmgVHlL9gJm1wep6kWGha1A
+        y8bDgUcG9jrWFZUetgFMNzdrym5Nz6lfWf6k
+X-Google-Smtp-Source: ABdhPJw+1nJ22cjIVAcjGG+O49/MrAAzlOy2atUYq2nF7D+uuXJOqEhoiLJwGDxqbBCZSNt466/ahA==
+X-Received: by 2002:a67:2dc5:: with SMTP id t188mr17138007vst.2.1636446553167;
+        Tue, 09 Nov 2021 00:29:13 -0800 (PST)
+Received: from mail-ua1-f48.google.com (mail-ua1-f48.google.com. [209.85.222.48])
+        by smtp.gmail.com with ESMTPSA id r11sm3303757uad.7.2021.11.09.00.29.12
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 09 Nov 2021 00:29:13 -0800 (PST)
+Received: by mail-ua1-f48.google.com with SMTP id q13so37048186uaq.2;
+        Tue, 09 Nov 2021 00:29:12 -0800 (PST)
+X-Received: by 2002:a67:c38f:: with SMTP id s15mr9524003vsj.50.1636446552558;
+ Tue, 09 Nov 2021 00:29:12 -0800 (PST)
 MIME-Version: 1.0
-References: <20211027132633.86653-1-ligang.bdlg@bytedance.com>
- <20211028153028.GP3891@suse.de> <b884ad7d-48d3-fcc8-d199-9e7643552a9a@bytedance.com>
- <20211029083751.GR3891@suse.de>
-In-Reply-To: <20211029083751.GR3891@suse.de>
-From:   =?UTF-8?B?5p2O5riv?= <ligang.bdlg@bytedance.com>
-Date:   Tue, 9 Nov 2021 16:28:28 +0800
-Message-ID: <CAMx52ARF1fVH9=YLQMjE=8ckKJ=q3X2-ovtKuQcoTyo564mQnQ@mail.gmail.com>
-Subject: Re: Re: Re: [PATCH v1] sched/numa: add per-process numa_balancing
-To:     Mel Gorman <mgorman@suse.de>
-Cc:     Jonathan Corbet <corbet@lwn.net>, Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        linux-api@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
-        linux-fsdevel@vger.kernel.org, linux-doc@vger.kernel.org
+References: <20211104224033.3997504-1-kieran.bingham+renesas@ideasonboard.com>
+In-Reply-To: <20211104224033.3997504-1-kieran.bingham+renesas@ideasonboard.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Tue, 9 Nov 2021 09:29:01 +0100
+X-Gmail-Original-Message-ID: <CAMuHMdXVBj58ZM3LqCN3cudsE3VJV8AQC5OCOJP96RaqYf4NDQ@mail.gmail.com>
+Message-ID: <CAMuHMdXVBj58ZM3LqCN3cudsE3VJV8AQC5OCOJP96RaqYf4NDQ@mail.gmail.com>
+Subject: Re: [PATCH 0/9] arm64: dts: renesas: Thermal binding validation
+To:     Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>,
+        =?UTF-8?Q?Niklas_S=C3=B6derlund?= 
+        <niklas.soderlund+renesas@ragnatech.se>
+Cc:     Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Rob Herring <robh+dt@kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi, sorry for the late reply.
+Hi Kieran,
 
-On Fri, Oct 29, 2021 at 4:37 PM Mel Gorman <mgorman@suse.de> wrote:
+On Thu, Nov 4, 2021 at 11:40 PM Kieran Bingham
+<kieran.bingham+renesas@ideasonboard.com> wrote:
+> The thermal sensor bindings were not matched correctly against the
+> expected naming scheme.
 >
-> My point is that as it stands,
-> prctl(PR_NUMA_BALANCING,PR_SET_NUMA_BALANCING,1) either does nothing or
-> fails. If per-process numa balancing is to be introduced, it should have
-> meaning with the global tuning affecting default behaviour and the prctl
-> affecting specific behaviour.
+> r8a77980.dtsi also used a different naming scheme compared to the other
+> related platforms.
+
+It lacked the labels, which you added for consistency.
+Is there any point in providing them, as there are no users? Or should
+they be removed instead?
+
+> This series cleans up the dtsi files for the CPU target thermal sensors,
+> allowing the validation to run.
 >
+> Enabling this validation shows up a new validation failure:
+>
+> linux/arch/arm64/boot/dts/renesas/r8a77951-ulcb-kf.dt.yaml: thermal-zones: sensor3-thermal:cooling-maps:map0:contribution:0:0: 1024 is greater than the maximum of 100
+>         From schema: Documentation/devicetree/bindings/thermal/thermal-zones.yaml
+>
+> This validation error appears to be pervasive across all of these
+> bindings, but changing that will be more invasive and require someone to
+> perform dedicated testing with the thermal drivers to ensure that the
+> updates to the ranges do not cause unexpected side effects.
 
-If the global tuning affects default behaviour and the prctl
-affects specific behaviour.  Then when prctl specifies
-numa_balancing for a process, there is no way for the
-global tuning to affect that process. In other words, global tuning
-become a default value, not a switch for global numa_balancing.
+Niklas?
 
-My idea is that the global numa_balancning still has absolute control, and prctl
-can only optionally turn off numa_balancing for process when the global is on.
-After all, It is more common to enable global numa_balancing and disable it in
-several processes than to disable global numa_balancing and enable it in
-several processes.
+> Kieran Bingham (9):
+>   arm64: dts: renesas: r8a774a1: Fix thermal bindings
+>   arm64: dts: renesas: r8a774b1: Fix thermal bindings
+>   arm64: dts: renesas: r8a774e1: Fix thermal bindings
+>   arm64: dts: renesas: r8a77951: Fix thermal bindings
+>   arm64: dts: renesas: r8a77960: Fix thermal bindings
+>   arm64: dts: renesas: r8a77961: Fix thermal bindings
+>   arm64: dts: renesas: r8a77965: Fix thermal bindings
+>   arm64: dts: renesas: r8a77980: Fix thermal bindings
+>   arm64: dts: renesas: r8a779a0: Fix thermal bindings
 
-This is my personal opinion, what do you think.
-:-)
+For the whole series:
+Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
 
-Do we need the global to be a switch, or a default value?
+Gr{oetje,eeting}s,
+
+                        Geert
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
