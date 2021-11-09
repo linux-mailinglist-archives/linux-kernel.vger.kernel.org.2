@@ -2,112 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D986F44A5EB
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 05:52:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 47C8844A5F2
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 05:55:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242882AbhKIEzK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Nov 2021 23:55:10 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39060 "EHLO
+        id S240174AbhKIE5v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Nov 2021 23:57:51 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39644 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242867AbhKIEzJ (ORCPT
+        with ESMTP id S236513AbhKIE5t (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Nov 2021 23:55:09 -0500
-Received: from mail-pf1-x42e.google.com (mail-pf1-x42e.google.com [IPv6:2607:f8b0:4864:20::42e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 87612C061766
-        for <linux-kernel@vger.kernel.org>; Mon,  8 Nov 2021 20:52:24 -0800 (PST)
-Received: by mail-pf1-x42e.google.com with SMTP id 127so18313403pfu.1
-        for <linux-kernel@vger.kernel.org>; Mon, 08 Nov 2021 20:52:24 -0800 (PST)
+        Mon, 8 Nov 2021 23:57:49 -0500
+Received: from mail-oi1-x232.google.com (mail-oi1-x232.google.com [IPv6:2607:f8b0:4864:20::232])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2797CC061764
+        for <linux-kernel@vger.kernel.org>; Mon,  8 Nov 2021 20:55:04 -0800 (PST)
+Received: by mail-oi1-x232.google.com with SMTP id s139so14473366oie.13
+        for <linux-kernel@vger.kernel.org>; Mon, 08 Nov 2021 20:55:04 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=JkapuSwOnwxCbVYO9bfegcqw8wgDzralipX1H1BuD5E=;
-        b=Oq8Hop7UfqF6odaW6RoWQK/Dre2F5iWQRWQwE0ryorhq4KCyAzFVrKhpsKLelcCOLT
-         eLaYcntMkP6D9l28kM3sfnjAoF0i4Dvr9OmjjZOTULC8HzEQysGVQnjrb3i+Q98U2OAk
-         l5M4aVtDq7IlqDrbuwHzqPEsEQwrt5EMFmspVurem58kicyZcN4ZnLTNTy7G1Hsil7FD
-         Zt60JANYdAcZ6/mS6y4fb+NsObX+3f0QIYGPkDzjNbPIOwh0TVqaIuEkaBIwYR6M5QpF
-         cdmJ0JaW8GIpsnOkUlIIm2RItYNV/lYlysK6ElrG0MLDNtWOU603v7S6lGADLyH/FYYR
-         kfgA==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=3d0bpgnKtpNRbrHQNZy5MuUdrJxoJuPOMsuXvuRPMN8=;
+        b=L7BeCSywMcOjoZ/hgoduMlABJb+5iYGwXhMxgvGQrd/1xorjTG4ZAProqrWBWl1xAT
+         KEVmbojM/uoaVuD0l9SQzznTg3/MfQ3zE2qERe4OH6Xk1Wx90ck7rTYoUr+gddUQ5gvp
+         SMb73RnNcjlIcyU0n/g5YanbCxq5Ewif7JXwxWmQNIWOknOqj1sMKC9qdbkJV1/401oy
+         y/eOl+hl+juRhQTUQ6dbBgY4MWLFLTVSYQj+7TNo0Tx7Rm16ff3gF06YBvB8B9MUxqUJ
+         mTcrnv2FZTjN7dKpvuzY8M1qNDfbms80Kw+z1NW3hwU27btKCkJ9JoGfIuG4ZD4qPcNl
+         hZLg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=JkapuSwOnwxCbVYO9bfegcqw8wgDzralipX1H1BuD5E=;
-        b=6b1sZbgom0GdeTplQLZaqKgLRtrXGgOK9yXVEOdHEPG/7T3qABwyqoRqABm977lfpT
-         +J77bYoazRhMsEVsKNOrmMANnyNIgZDoYyrh4JVjrPTB9ZqNtlybsk2cS4AQTmk+qVXd
-         MfWgXMCEPFUrlsObs0r1JJeDQ1hSEdaEfb+V7DrKrSF/kf6es0MGAMCZSlzbxx2nKWIG
-         cN/fh0XsobXcKIyH+ckyb2Y4WE5hOd+LoWWXJBUnTg9ithmDfoeBI7T/WHifo0osvRyF
-         5R3EJL10B6XRp+hJtWLG8Kz9QMaVf0wTQBydWzty+iYmi7bK1v4a6CidqdtWTIxY1x2C
-         G+0A==
-X-Gm-Message-State: AOAM532JIQDZd620S1RARoEMYMny4G//CDxSim/jcpfSdUroWZO9JyQV
-        9CVrK/lz+yN450760OXxdYeNxw==
-X-Google-Smtp-Source: ABdhPJzo3mMOKUdZsnUntoCNQmDl0+nv890fatGtqLtt0zBDXxYrbya9x8UXloTwjlz15zmjWW8Z9A==
-X-Received: by 2002:a05:6a00:230d:b0:49f:b8ad:ae23 with SMTP id h13-20020a056a00230d00b0049fb8adae23mr5043480pfh.80.1636433543998;
-        Mon, 08 Nov 2021 20:52:23 -0800 (PST)
-Received: from localhost ([223.226.77.81])
-        by smtp.gmail.com with ESMTPSA id na13sm976263pjb.11.2021.11.08.20.52.23
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 08 Nov 2021 20:52:23 -0800 (PST)
-Date:   Tue, 9 Nov 2021 10:22:21 +0530
-From:   Viresh Kumar <viresh.kumar@linaro.org>
-To:     Vincent Whitchurch <vincent.whitchurch@axis.com>
-Cc:     "Chen, Conghui" <conghui.chen@intel.com>,
-        "Deng, Jie" <jie.deng@intel.com>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        Wolfram Sang <wsa@kernel.org>,
-        "virtualization@lists.linux-foundation.org" 
-        <virtualization@lists.linux-foundation.org>,
-        "linux-i2c@vger.kernel.org" <linux-i2c@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        kernel <kernel@axis.com>
-Subject: Re: [PATCH 1/2] i2c: virtio: disable timeout handling
-Message-ID: <20211109045221.xd6apt473jannag2@vireshk-i7>
-References: <20211020064128.y2bjsbdmpojn7pjo@vireshk-i7>
- <01d9c992-28cc-6644-1e82-929fc46f91b4@intel.com>
- <20211020105554.GB9985@axis.com>
- <20211020110316.4x7tnxonswjuuoiw@vireshk-i7>
- <df7e6127-05fb-6aad-3896-fc810f213a54@intel.com>
- <20211029122450.GB24060@axis.com>
- <8592a48d-0131-86bf-586a-d33e7989e523@intel.com>
- <MWHPR11MB0030C3489F38FF2AAF7C3D0A908C9@MWHPR11MB0030.namprd11.prod.outlook.com>
- <20211103063745.utpphthou4angs4s@vireshk-i7>
- <20211103144241.GA27285@axis.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=3d0bpgnKtpNRbrHQNZy5MuUdrJxoJuPOMsuXvuRPMN8=;
+        b=r+AAAwLp1dT2+M3+8+nTirmLUB3p86wv34HMq0jxAAaVZfp/Yd02Mnb/RGk+RoIuPz
+         g8Q0d3Ly1AWoU3xhUiE+KyQkftvYeUMmeGI/P2XjEu4uAjHXN4zxnn3S1wUSP/BysgQ7
+         ShSywSxGIgZdcKfR91/U5w0ThFyyOQ5Na2gmEecrhDQplvwYOpzj+bFZ+y91M0Pw8+K8
+         uj/ztmX3+ClKnrNLYVuFCTjghSvvvLdfBgymkyXxh6Uz9NIS3eWD50CXSQctA46l6ctV
+         SK/d6hUy5Mmz3Kg6wKT/hNE4usLYgMYQMyE1FOaTr2AjSRKPbBNMpN5Wyk5q3ndUVBwF
+         0twg==
+X-Gm-Message-State: AOAM5337kHhMOE6NLhIEhoSsf7L0XMOHUrGrrBZwjC3dqupLnLLy/zgf
+        648QwYIOf0p8MT78oLfxQ0cDSmJ6lOyvEI+UrcXEQg==
+X-Google-Smtp-Source: ABdhPJyIS2IsZz4xKbaYthafvjd3nIdS88pgHNCwEs9uL1201EaOoOE0s06/9PFn4U8mcXjX+/4yPUANDO9cNwZmYoQ=
+X-Received: by 2002:a54:4791:: with SMTP id o17mr3428652oic.114.1636433703538;
+ Mon, 08 Nov 2021 20:55:03 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211103144241.GA27285@axis.com>
-User-Agent: NeoMutt/20180716-391-311a52
+References: <20211029004610.35131-1-julianbraha@gmail.com>
+In-Reply-To: <20211029004610.35131-1-julianbraha@gmail.com>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Tue, 9 Nov 2021 05:54:51 +0100
+Message-ID: <CACRpkdYMSMAEp=a6sb9062ohS_F_ak63PhgW4RMuu2wAAtg1Wg@mail.gmail.com>
+Subject: Re: [PATCH] pinctrl: qcom: fix unmet dependencies on GPIOLIB for GPIOLIB_IRQCHIP
+To:     Julian Braha <julianbraha@gmail.com>
+Cc:     agross@kernel.org, bjorn.andersson@linaro.org,
+        linux-arm-msm@vger.kernel.org, linux-gpio@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 03-11-21, 15:42, Vincent Whitchurch wrote:
-> The suggested timeout is not meant to take into account the overhead of
-> virtualization, but to be used by the virtio device as a timeout for the
-> transaction on the I2C bus (presumably by programming this value to the
-> physical I2C controller, if one exists).
-> 
-> Assume that userspace (or an I2C client driver) asks for a timeout of 20
-> ms for a particular transfer because it, say, knows that the particular
-> connected I2C peripheral either responds within 10 ms to a particular
-> register read or never responds, so it doesn't want to waste time
-> waiting unnecessarily long for the transfer to complete.
-> 
-> If the virtio device end does not have any information on what timeout
-> is required (as in the current spec), it must assume some high value
-> which will never cause I2C transactions to spuriously timeout, say 10
-> seconds.  
->
-> Even if the virtio driver is fixed to copy and hold all buffers to avoid
-> memory corruption and to time out and return to the caller after the
-> requested 20 ms, the next I2C transfer can not be issued until 10
-> seconds have passed, since the virtio device end will still be waiting
-> for the hardcoded 10 second timeout and may not respond to new requests
-> until that transfer has timed out.
+On Fri, Oct 29, 2021 at 2:46 AM Julian Braha <julianbraha@gmail.com> wrote:
 
-Okay, so this is more about making sure the device times-out before
-the driver or lets say in an expected time-frame. That should be okay
-I guess.
+> When PINCTRL_QCOM_SPMI_PMIC or PINCTRL_QCOM_SSBI_PMIC
+> is selected, and GPIOLIB is not selected, Kbuild
+> gives the following warnings:
 
--- 
-viresh
+Patch applied for fixes.
+
+Yours,
+Linus Walleij
