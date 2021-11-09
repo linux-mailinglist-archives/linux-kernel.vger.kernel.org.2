@@ -2,294 +2,168 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 28BEB44A6D9
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 07:30:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7589044A6E0
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 07:33:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230174AbhKIGd2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Nov 2021 01:33:28 -0500
-Received: from out30-45.freemail.mail.aliyun.com ([115.124.30.45]:33316 "EHLO
-        out30-45.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S243207AbhKIGdY (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Nov 2021 01:33:24 -0500
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R771e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04423;MF=baolin.wang@linux.alibaba.com;NM=1;PH=DS;RN=11;SR=0;TI=SMTPD_---0Uvk36FK_1636439436;
-Received: from localhost(mailfrom:baolin.wang@linux.alibaba.com fp:SMTPD_---0Uvk36FK_1636439436)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Tue, 09 Nov 2021 14:30:37 +0800
-From:   Baolin Wang <baolin.wang@linux.alibaba.com>
-To:     akpm@linux-foundation.org, ying.huang@intel.com,
-        dave.hansen@linux.intel.com
-Cc:     ziy@nvidia.com, osalvador@suse.de, shy828301@gmail.com,
-        baolin.wang@linux.alibaba.com, zhongjiang-ali@linux.alibaba.com,
-        xlpang@linux.alibaba.com, linux-mm@kvack.org,
+        id S241171AbhKIGgE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Nov 2021 01:36:04 -0500
+Received: from mail-eopbgr1310091.outbound.protection.outlook.com ([40.107.131.91]:46806
+        "EHLO APC01-SG2-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S234506AbhKIGgD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Nov 2021 01:36:03 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=bMxrOTKOYcykki8IAAT40gA2oTMV32ooEyZA40rW9VQcUMItt5j3tb/Za2L9HkLLiQO14exCgZSnCtxnfjIKQ1G/qfz/TgvG83JUllKdB8wzHMgu+UXNdTuFoEqX3TxFQP6ipmjJs7JGH6sbWDUIy0tcLa4LyX0ON1TC+jcOjl0lFLo32RZ/w7FZ5nq5nHFZV+I+Aoo9gE/0ZoKpLHd0pr9x6gn4VFRENvlSUWuSgjkEILtKs5FEPvRj6rQYdnFC3EWJm1wbAoCFAwd/QfBF7UblTUaHiqNAjnBF1E3osUrtFYhaOrSRWgX23Vn+WErFkZAUwv7gy29y9aV2V+mMyQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=R7hncRgd4JTC2oiu0ESN/VpKTWnS/Jgay8bngyl9HfY=;
+ b=bofM2EfHs4FusWK2jwR+ldOj6gU90JrB7y7unVdgsxNPLjCYbWX2nV3OvMJaFJG5lEsZjGsYu7DjZLQB+gdX2bXpvyxsHAx2pY6lUbAynstRJ6+BM0gEJb4fkmI3Ipb2u6k3Do6Lcne4N5cj6PBfHtYDFvwhzMu478DkYGJgEZbg+4scVd+lj/39DIUNxd6OP78hd+pJ3yTFl4DYhFeyeZ2ivmju81Kl6A/6lF2w92gdvkAp8LkQ3BNsnPkcJ1HFF8T/QMnn23lzuRaO1r9nIKxVfYCrctaMozp8jo+mtHqD4ezirhI81yoNnOmON64Awpf11z9Li0BESECNuY5tIw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=vivo.com; dmarc=pass action=none header.from=vivo.com;
+ dkim=pass header.d=vivo.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=vivo0.onmicrosoft.com;
+ s=selector2-vivo0-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=R7hncRgd4JTC2oiu0ESN/VpKTWnS/Jgay8bngyl9HfY=;
+ b=H+6Z3n42HZnHx/IM6ef4WHH6YnCW5omyiPgw8o0ubz5IGgqw8PxQVfOrfm2dgrGUHj0W/4tNU3CYbllqGr56NfIbqGibsrzMkNQxGJOwXUTSCKtO2ID6vnBrfde6VtIzgQzYDtnUm0m4v5ZZIgl42vQJzqaN00g7e3a95JVU11M=
+Authentication-Results: vivo.com; dkim=none (message not signed)
+ header.d=none;vivo.com; dmarc=none action=none header.from=vivo.com;
+Received: from TYZPR06MB4173.apcprd06.prod.outlook.com (2603:1096:400:26::14)
+ by TYAPR06MB2416.apcprd06.prod.outlook.com (2603:1096:404:1b::13) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4669.11; Tue, 9 Nov
+ 2021 06:33:13 +0000
+Received: from TYZPR06MB4173.apcprd06.prod.outlook.com
+ ([fe80::5e:78e1:eba3:7d0e]) by TYZPR06MB4173.apcprd06.prod.outlook.com
+ ([fe80::5e:78e1:eba3:7d0e%8]) with mapi id 15.20.4669.016; Tue, 9 Nov 2021
+ 06:33:13 +0000
+From:   Yihao Han <hanyihao@vivo.com>
+To:     Yihao Han <hanyihao@vivo.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Bhaskar Chowdhury <unixbhaskar@gmail.com>,
         linux-kernel@vger.kernel.org
-Subject: [RFC PATCH v2] mm: migrate: Support multiple target nodes demotion
-Date:   Tue,  9 Nov 2021 14:30:25 +0800
-Message-Id: <f6d68800ff2efcb0720599ae092d30765a640232.1636428988.git.baolin.wang@linux.alibaba.com>
-X-Mailer: git-send-email 1.8.3.1
+Cc:     kernel@vivo.com
+Subject: [PATCH] lib/bch:using swap() instead of tmp variable
+Date:   Mon,  8 Nov 2021 22:32:49 -0800
+Message-Id: <20211109063251.11215-1-hanyihao@vivo.com>
+X-Mailer: git-send-email 2.17.1
+Content-Type: text/plain
+X-ClientProxiedBy: HK2PR02CA0185.apcprd02.prod.outlook.com
+ (2603:1096:201:21::21) To TYZPR06MB4173.apcprd06.prod.outlook.com
+ (2603:1096:400:26::14)
+MIME-Version: 1.0
+Received: from ubuntu.localdomain (218.213.202.189) by HK2PR02CA0185.apcprd02.prod.outlook.com (2603:1096:201:21::21) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4690.15 via Frontend Transport; Tue, 9 Nov 2021 06:33:11 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: b7d00f75-1791-4a76-4f57-08d9a34acdff
+X-MS-TrafficTypeDiagnostic: TYAPR06MB2416:
+X-Microsoft-Antispam-PRVS: <TYAPR06MB2416D64C859CAEB7301E3951A2929@TYAPR06MB2416.apcprd06.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:78;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: NNFXcS9tVkWwSn9+Sd3dZML4G9oD61TaQolSoEgmrd/0Ie06t4JyE5D3g1GhLLoMclyS14znjipoqZ87+kIbEz7n9BElFUt49RJXkWQdsN8Z4IVUeVEpM9PsnmIWqbTz4ukgzSd3VRICQ3C/NQoJskqDc9ZQUfXpyLP4i2Z9BiPv0D+3tz+bpGqP2dxGDhP3CASS3gWYUw7chFSbLu5diasN69CqWbf2JfyXUSvC80e4Ekaw27Uno6WH69wmv7PKI7ZQ4hJZymA08HV9+ojDHT3VB+gX5qj+FAM2Yyu8STB5ChuGTHoIOL509QJuWfpqCXSzNlrS2oDcdQ9pLhtG5QluAToXPEo0l9uZFFUk03vlWEyVjCIl17GL3QrY6lLHJCfyPmLiFErZ3L6llxK/SDAJdTJZubcmoLm4t0SHui2FVILd+AWF+aFYaSQyzbGklbYqqvIxXhIsOrosqpbw0RQtgdpt0OYQAqdd312t+D/s1FC9M52k2BCMVWVhq5bd6f1sc8gZpNdZzJxUA9lpQp5rGccOfLztQYXN9ArCGWq/AMrTHr2x9CRsSAzGSx0uHYwjaDLBm3AG/42evsjFF/eki0ow+kjZeGoodpMxYr445BuuJEj2sHx+14BrZl3qDrIwAvjZnYWJY/FubMwQKNG1+7d8QjGkzQQNVWO51jrtpt6V0szF5EBy7DPYtCo3KV4OQiLuXNjc93mIaQ9tlg==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:TYZPR06MB4173.apcprd06.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(508600001)(8936002)(8676002)(52116002)(4326008)(2906002)(6486002)(26005)(6512007)(107886003)(5660300002)(36756003)(1076003)(6666004)(66946007)(66476007)(66556008)(186003)(38100700002)(38350700002)(956004)(86362001)(2616005)(83380400001)(6506007)(110136005)(316002);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?LXPnOlO/1eJoZSlnzFGZQx4XmBKAcXT69fyuau6kNCclAPS/wekqV+pojGM/?=
+ =?us-ascii?Q?cXl1M3TrWFWCjVjOBtr+r9k39M/JHPmGLoR6ZTRZtA3m+8rpZ7c2jzM4wiTA?=
+ =?us-ascii?Q?n+w7sHgGdnruPkhybNHKhMtnDRcl9WyftadQG2Fkw8F9t/LXh818CN56JJ9M?=
+ =?us-ascii?Q?Mupaiq4qBNFUEUZvrqFRxFzV/wmFTr8CG0M/hidnx7S4FXtEViXG/Olp+1Lc?=
+ =?us-ascii?Q?FjuKVtaAESUxyzZcElKRYyNx6eC+XZ7sL4VYDAxF8jc0kC7WmOiOlwmA8cto?=
+ =?us-ascii?Q?6tD/3rEk4XOTSHk+wSKhZNvRgLGiHBiOhAPVa6bi7PlUvcb77rtZWS8Ihkcm?=
+ =?us-ascii?Q?vbBIdyeAYdngwunzCfcDqKp2KxAvQs66Ht4f7LDDnT2flov0Lco9HRJAoF69?=
+ =?us-ascii?Q?V+FPHfn3a4hBysJ7zrefYgJjuZSJnMmXUPeiiqSAMW4ZttEqhOVAGCN98O8T?=
+ =?us-ascii?Q?c5WT3UpfcD5XmkFiU5AvqKhZXiqO0b9Oyd8zsKhnGBNoHRLSN6qPJjaIKAkY?=
+ =?us-ascii?Q?0le9LdZCS/fJMx3U1ZS4PKi+ckyKyaW3r4NscUjUFxXMPgW6/ba0b6LX4U7q?=
+ =?us-ascii?Q?AvpTx/hvne6354v1iEfe4gfmcWnLIA2ajewbQuZ001Wkf4QoiWi4Mq1yePgs?=
+ =?us-ascii?Q?g6CVpAFvtyKFWcWtf7WN9q36eCItDIwFdbh0KAKS++3AysD2EHdhTQXGxCn5?=
+ =?us-ascii?Q?BYLhEo6vlQs7Vn7ollXiE2RasLf5A1rfGJPJoOtsDSt8VtN+zJ32ookYtROP?=
+ =?us-ascii?Q?5lHZ0o3zR8maLyLiuTD6mefIs+m1PCWmT73e5IW0Mbxh9upaATGJ0hm6SPPA?=
+ =?us-ascii?Q?M3KC21iZGqeoRSihq1qDjDKUuc/KM6GT7fOHPgC81/47s9vGikCNnX9Jydzi?=
+ =?us-ascii?Q?yNqkHv+hNNd9TVLPcab1LEdaHewe6cXQ0gjLe/S8Pu476CQt4p8U8VGFcWV8?=
+ =?us-ascii?Q?RH2Af1YRzYp4GDgT0G1LSytaJCYaOrNZdTSs5zLfDSmVIukWnJxuo3WumiSP?=
+ =?us-ascii?Q?7EqpqF6846EOR/NHbdSIAc7oHxFWT0Xzs7OkdgI0cI44++t81DCAWb80Ve5a?=
+ =?us-ascii?Q?tegbZC7MHXtKwF5ecTLRsvGKv3557gWS5ZzxVoJ5WStphwM+130YdrR7VZyy?=
+ =?us-ascii?Q?Yz3JCegcOLKRxXUQ4hL7fom1XKpiPDQrg8rn5g/fUoniRDa8/c4rbhg67DZu?=
+ =?us-ascii?Q?jvXiQaRDdby/li4rpcg8kikL/L46EvDDxLJVRyhQEQvwaAY4PQiHKNTqiIJl?=
+ =?us-ascii?Q?Ex3Bdci0mNIM01PSR/JmcUtzaUb3LbkM1IPh1559PiJQTa6tkBOjeFzas49V?=
+ =?us-ascii?Q?qoERi/zngGSWSWUJbnEZp8FHI7934juQ6yY7hAJaUqzD7yBQFmrlOreR9oXK?=
+ =?us-ascii?Q?zxYJfYYqtAS9nasZ+6EzOCtzU8MPgY8vTC1JQqBUNbaeTX3P61kLvmuwVI/D?=
+ =?us-ascii?Q?CVbL3gzCW/xW9W+Duc25uB+fkNNVYPs4ExFX/TsgG4/8Y2ZnZxFyHInlqkRN?=
+ =?us-ascii?Q?zxmtq14EaYt4vZGgo+2jgTKmdXhm9OGf/WYqWIlyWanEW0858c+sfOubVjew?=
+ =?us-ascii?Q?lytdnu7XWyaPcJRjj/5IqbyjUev+aP6Whc8JiQXrLhpv6LHQ6CiyBZgVIk5g?=
+ =?us-ascii?Q?N1m/sO77m+ej+9TX87/TyvU=3D?=
+X-OriginatorOrg: vivo.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: b7d00f75-1791-4a76-4f57-08d9a34acdff
+X-MS-Exchange-CrossTenant-AuthSource: TYZPR06MB4173.apcprd06.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 09 Nov 2021 06:33:13.1989
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 923e42dc-48d5-4cbe-b582-1a797a6412ed
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: urvRqXJ9XnzGdV4m42Rp9pRg1LqcIrWDc/wvdW1SM9aGMjOxHtc2d2VZQ75L/9YuzjQ5dxiNuebu5DBiV4gbig==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: TYAPR06MB2416
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-We have some machines with multiple memory types like below, which
-have one fast (DRAM) memory node and two slow (persistent memory) memory
-nodes. According to current node demotion, if node 0 fills up,
-its memory should be migrated to node 1, when node 1 fills up, its
-memory will be migrated to node 2: node 0 -> node 1 -> node 2 ->stop.
+swap() was used instead of the tmp variable to swap values
 
-But this is not efficient and suitbale memory migration route
-for our machine with multiple slow memory nodes. Since the distance
-between node 0 to node 1 and node 0 to node 2 is equal, and memory
-migration between slow memory nodes will increase persistent memory
-bandwidth greatly, which will hurt the whole system's performance.
-
-Thus for this case, we can treat the slow memory node 1 and node 2
-as a whole slow memory region, and we should migrate memory from
-node 0 to node 1 and node 2 if node 0 fills up.
-
-This patch changes the node_demotion data structure to support multiple
-target nodes, and establishes the migration path to support multiple
-target nodes with validating if the node distance is the best or not.
-
-available: 3 nodes (0-2)
-node 0 cpus: 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15
-node 0 size: 62153 MB
-node 0 free: 55135 MB
-node 1 cpus:
-node 1 size: 127007 MB
-node 1 free: 126930 MB
-node 2 cpus:
-node 2 size: 126968 MB
-node 2 free: 126878 MB
-node distances:
-node   0   1   2
-  0:  10  20  20
-  1:  20  10  20
-  2:  20  20  10
-
-Signed-off-by: Baolin Wang <baolin.wang@linux.alibaba.com>
+Signed-off-by: Yihao Han <hanyihao@vivo.com>
 ---
-Changes from RFC v1:
- - Re-define the node_demotion structure.
- - Set up multiple target nodes by validating the node distance.
- - Add more comments.
----
- mm/migrate.c | 132 +++++++++++++++++++++++++++++++++++++++++++----------------
- 1 file changed, 96 insertions(+), 36 deletions(-)
+ lib/bch.c | 16 ++++------------
+ 1 file changed, 4 insertions(+), 12 deletions(-)
 
-diff --git a/mm/migrate.c b/mm/migrate.c
-index cf25b00..95f170d 100644
---- a/mm/migrate.c
-+++ b/mm/migrate.c
-@@ -1119,12 +1119,25 @@ static int __unmap_and_move(struct page *page, struct page *newpage,
-  *
-  * This is represented in the node_demotion[] like this:
-  *
-- *	{  1, // Node 0 migrates to 1
-- *	   2, // Node 1 migrates to 2
-- *	  -1, // Node 2 does not migrate
-- *	   4, // Node 3 migrates to 4
-- *	   5, // Node 4 migrates to 5
-- *	  -1} // Node 5 does not migrate
-+ *	{  nr=1, nodes[0]=1 }, // Node 0 migrates to 1
-+ *	{  nr=1, nodes[0]=2 }, // Node 1 migrates to 2
-+ *	{  nr=0, nodes[0]=-1 }, // Node 2 does not migrate
-+ *	{  nr=1, nodes[0]=4 }, // Node 3 migrates to 4
-+ *	{  nr=1, nodes[0]=5 }, // Node 4 migrates to 5
-+ *	{  nr=0, nodes[0]=-1} // Node 5 does not migrate
-+ *
-+ * Moreover some systems may have multiple same class memory
-+ * types. Suppose a system has one socket with 3 memory nodes,
-+ * node 0 is fast memory type, and node 1/2 both are slow memory
-+ * type, and the distance between fast memory node and slow
-+ * memory node is same. So the migration path should be:
-+ *
-+ *	0 -> 1/2 -> stop
-+ *
-+ * This is represented in the node_demotion[] like this:
-+ *	{ nr=2, {nodes[0]=1, nodes[1]=2} }, // Node 0 migrates to node 1 and node 2
-+ *	{ nr=0, nodes[0]=-1, }, // Node 1 dose not migrate
-+ *	{ nr=0, nodes[0]=-1, }, // Node 2 does not migrate
-  */
- 
- /*
-@@ -1135,8 +1148,13 @@ static int __unmap_and_move(struct page *page, struct page *newpage,
-  * must be held over all reads to ensure that no cycles are
-  * observed.
-  */
--static int node_demotion[MAX_NUMNODES] __read_mostly =
--	{[0 ...  MAX_NUMNODES - 1] = NUMA_NO_NODE};
-+#define DEMOTION_TARGET_NODES 15
-+struct demotion_nodes {
-+	unsigned short nr;
-+	int nodes[DEMOTION_TARGET_NODES];
-+};
-+
-+static struct demotion_nodes node_demotion[MAX_NUMNODES] __read_mostly;
- 
- /**
-  * next_demotion_node() - Get the next node in the demotion path
-@@ -1149,7 +1167,9 @@ static int __unmap_and_move(struct page *page, struct page *newpage,
-  */
- int next_demotion_node(int node)
+diff --git a/lib/bch.c b/lib/bch.c
+index c8095f30f254..1c4ddb2d845c 100644
+--- a/lib/bch.c
++++ b/lib/bch.c
+@@ -500,7 +500,7 @@ static int solve_linear_system(struct bch_control *bch, unsigned int *rows,
+ 			       unsigned int *sol, int nsol)
  {
--	int target;
-+	struct demotion_nodes *current_node_demotion = &node_demotion[node];
-+	int target, i;
-+	nodemask_t target_nodes = NODE_MASK_NONE;
+ 	const int m = GF_M(bch);
+-	unsigned int tmp, mask;
++	unsigned int mask;
+ 	int rem, c, r, p, k, param[BCH_MAX_M];
  
- 	/*
- 	 * node_demotion[] is updated without excluding this
-@@ -1161,9 +1181,21 @@ int next_demotion_node(int node)
- 	 * node_demotion[] reads need to be consistent.
- 	 */
- 	rcu_read_lock();
--	target = READ_ONCE(node_demotion[node]);
-+	for (i = 0; i < DEMOTION_TARGET_NODES; i++) {
-+		target = READ_ONCE(current_node_demotion->nodes[i]);
-+		if (target == NUMA_NO_NODE)
-+			break;
-+
-+		node_set(target, target_nodes);
-+	}
-+
- 	rcu_read_unlock();
- 
-+	if (nodes_empty(target_nodes))
-+		return NUMA_NO_NODE;
-+
-+	/* TODO: Select a target node randomly */
-+	target = node_random(&target_nodes);
- 	return target;
- }
- 
-@@ -2974,10 +3006,13 @@ void migrate_vma_finalize(struct migrate_vma *migrate)
- /* Disable reclaim-based migration. */
- static void __disable_all_migrate_targets(void)
+ 	k = 0;
+@@ -514,9 +514,7 @@ static int solve_linear_system(struct bch_control *bch, unsigned int *rows,
+ 		for (r = p; r < m; r++) {
+ 			if (rows[r] & mask) {
+ 				if (r != p) {
+-					tmp = rows[r];
+-					rows[r] = rows[p];
+-					rows[p] = tmp;
++					swap(rows[r], rows[p]);
+ 				}
+ 				rem = r+1;
+ 				break;
+@@ -833,21 +831,15 @@ static void gf_poly_div(struct bch_control *bch, struct gf_poly *a,
+ static struct gf_poly *gf_poly_gcd(struct bch_control *bch, struct gf_poly *a,
+ 				   struct gf_poly *b)
  {
--	int node;
-+	int node, i;
+-	struct gf_poly *tmp;
+-
+ 	dbg("gcd(%s,%s)=", gf_poly_str(a), gf_poly_str(b));
  
--	for_each_online_node(node)
--		node_demotion[node] = NUMA_NO_NODE;
-+	for_each_online_node(node) {
-+		node_demotion[node].nr = 0;
-+		for (i = 0; i < DEMOTION_TARGET_NODES; i++)
-+			node_demotion[node].nodes[i] = NUMA_NO_NODE;
-+	}
- }
- 
- static void disable_all_migrate_targets(void)
-@@ -3004,26 +3039,34 @@ static void disable_all_migrate_targets(void)
-  * Failing here is OK.  It might just indicate
-  * being at the end of a chain.
-  */
--static int establish_migrate_target(int node, nodemask_t *used)
-+static int establish_migrate_target(int node, nodemask_t *used,
-+				    int best_distance)
- {
--	int migration_target;
-+	int migration_target, index, val;
-+	struct demotion_nodes *current_node_demotion = &node_demotion[node];
-+
-+	migration_target = find_next_best_node(node, used);
-+	if (migration_target == NUMA_NO_NODE)
-+		return NUMA_NO_NODE;
- 
- 	/*
--	 * Can not set a migration target on a
--	 * node with it already set.
--	 *
--	 * No need for READ_ONCE() here since this
--	 * in the write path for node_demotion[].
--	 * This should be the only thread writing.
-+	 * If the node has been set a migration target node before,
-+	 * which means it's the best distance between them. Still
-+	 * check if this node can be demoted to other target nodes
-+	 * if they have a same best distance.
- 	 */
--	if (node_demotion[node] != NUMA_NO_NODE)
--		return NUMA_NO_NODE;
-+	if (best_distance != -1) {
-+		val = node_distance(node, migration_target);
-+		if (val > best_distance)
-+			return NUMA_NO_NODE;
-+	}
- 
--	migration_target = find_next_best_node(node, used);
--	if (migration_target == NUMA_NO_NODE)
-+	index = current_node_demotion->nr;
-+	if (index >= DEMOTION_TARGET_NODES)
- 		return NUMA_NO_NODE;
- 
--	node_demotion[node] = migration_target;
-+	current_node_demotion->nodes[index] = migration_target;
-+	current_node_demotion->nr++;
- 
- 	return migration_target;
- }
-@@ -3039,7 +3082,9 @@ static int establish_migrate_target(int node, nodemask_t *used)
-  *
-  * The difference here is that cycles must be avoided.  If
-  * node0 migrates to node1, then neither node1, nor anything
-- * node1 migrates to can migrate to node0.
-+ * node1 migrates to can migrate to node0. Also one node can
-+ * be migrated to multiple nodes if the target nodes all have
-+ * a same best-distance against the source node.
-  *
-  * This function can run simultaneously with readers of
-  * node_demotion[].  However, it can not run simultaneously
-@@ -3051,7 +3096,7 @@ static void __set_migration_target_nodes(void)
- 	nodemask_t next_pass	= NODE_MASK_NONE;
- 	nodemask_t this_pass	= NODE_MASK_NONE;
- 	nodemask_t used_targets = NODE_MASK_NONE;
--	int node;
-+	int node, best_distance;
- 
- 	/*
- 	 * Avoid any oddities like cycles that could occur
-@@ -3080,18 +3125,33 @@ static void __set_migration_target_nodes(void)
- 	 * multiple source nodes to share a destination.
- 	 */
- 	nodes_or(used_targets, used_targets, this_pass);
--	for_each_node_mask(node, this_pass) {
--		int target_node = establish_migrate_target(node, &used_targets);
- 
--		if (target_node == NUMA_NO_NODE)
--			continue;
-+	for_each_node_mask(node, this_pass) {
-+		best_distance = -1;
- 
- 		/*
--		 * Visit targets from this pass in the next pass.
--		 * Eventually, every node will have been part of
--		 * a pass, and will become set in 'used_targets'.
-+		 * Try to set up the migration path for the node, and the target
-+		 * migration nodes can be multiple, so doing a loop to find all
-+		 * the target nodes if they all have a best node distance.
- 		 */
--		node_set(target_node, next_pass);
-+		do {
-+			int target_node =
-+				establish_migrate_target(node, &used_targets,
-+							 best_distance);
-+
-+			if (target_node == NUMA_NO_NODE)
-+				break;
-+
-+			if (best_distance == -1)
-+				best_distance = node_distance(node, target_node);
-+
-+			/*
-+			 * Visit targets from this pass in the next pass.
-+			 * Eventually, every node will have been part of
-+			 * a pass, and will become set in 'used_targets'.
-+			 */
-+			node_set(target_node, next_pass);
-+		} while (1);
+ 	if (a->deg < b->deg) {
+-		tmp = b;
+-		b = a;
+-		a = tmp;
++		swap(b, a);
  	}
- 	/*
- 	 * 'next_pass' contains nodes which became migration
+ 
+ 	while (b->deg > 0) {
+ 		gf_poly_mod(bch, a, b, NULL);
+-		tmp = b;
+-		b = a;
+-		a = tmp;
++		swap(b, a);
+ 	}
+ 
+ 	dbg("%s\n", gf_poly_str(a));
 -- 
-1.8.3.1
+2.17.1
 
