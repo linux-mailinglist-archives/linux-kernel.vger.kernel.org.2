@@ -2,116 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 246B044B251
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 19:05:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 52E8944B257
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 19:06:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241528AbhKISHv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Nov 2021 13:07:51 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:26660 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S241503AbhKISHu (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Nov 2021 13:07:50 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1636481103;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=Tec7Xd5TXBMhfq8SH++uO6SEozr8c0XF6LBCKmYuU6Y=;
-        b=iCMSNRkzOlze6ghxx67pcHTG46KSXjvZ2kh2RN8yJmQrSkSRMB2czmPHBOjM1ZhjPbVh1I
-        WQs8iu1V0Isdmmt4BrdRrpmx85eTRDcaqSJFNoxVOsUiRqQw8fDpL0ag56mVL0L6ywCBIB
-        me6omwuicc74uGAsQFhyymhEQNQjOOQ=
-Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
- [209.85.128.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-602-34aRryttMaS5OJYjTouHww-1; Tue, 09 Nov 2021 13:05:02 -0500
-X-MC-Unique: 34aRryttMaS5OJYjTouHww-1
-Received: by mail-wm1-f72.google.com with SMTP id 69-20020a1c0148000000b0033214e5b021so8104579wmb.3
-        for <linux-kernel@vger.kernel.org>; Tue, 09 Nov 2021 10:05:02 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=Tec7Xd5TXBMhfq8SH++uO6SEozr8c0XF6LBCKmYuU6Y=;
-        b=xmJBrzaZFkL0CufPFrkPx1jPUYL8241mJiODAGyorEBUklczKCqmFf7jgkyPanWrjM
-         qbtjHDhIHB6YL/Ib8ttMHbI5mBtoVsSj5cLH0pX9JTiLSFB/SYTirCNP133ucqdARb0b
-         /YYd7hWR0IYNL7hLDgJunZEe4SiApnRFBrTH4tSgCzap6qOSBfY2u4PmkbW+sr5zZSz9
-         ZlZvt2kEbI0XnwymjbpX7Fli/RbqTVW8rqvA5cEUOgMJ+nmB6Wl5tAZxhbt+FD1qZfH9
-         fnYZjulgB5p1c0151/m3E6HkczcMxUEj81K/UU2VsxdTPQ50DkUnrLqVAmtAzKVGlwpE
-         K7rg==
-X-Gm-Message-State: AOAM532Iwlg/YoO5VSUb1bRGwLchPI05YRL9tJ3yqyozX7W4qzWfyzvo
-        kutcrC+qsT3aLzwT5x3WAMoUkQjxo2iJjrRSdC070eCOKT/7w4MIGXk3QsxL3QMUlhE/KUtc+PD
-        q+m8lyfcDsyYRE/u6E1VdBN3n
-X-Received: by 2002:a5d:6ac7:: with SMTP id u7mr11547867wrw.57.1636481101225;
-        Tue, 09 Nov 2021 10:05:01 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJy0bJNSgJfrYfAR1GKvjDAZiKadBlY4FBFvmVarxhxi0h4kNA137LZfdYRHh61nITz+dr7CLA==
-X-Received: by 2002:a5d:6ac7:: with SMTP id u7mr11547835wrw.57.1636481101035;
-        Tue, 09 Nov 2021 10:05:01 -0800 (PST)
-Received: from krava (nat-pool-brq-u.redhat.com. [213.175.37.12])
-        by smtp.gmail.com with ESMTPSA id k27sm3596333wms.41.2021.11.09.10.05.00
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 09 Nov 2021 10:05:00 -0800 (PST)
-Date:   Tue, 9 Nov 2021 19:04:59 +0100
-From:   Jiri Olsa <jolsa@redhat.com>
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     Ingo Molnar <mingo@redhat.com>, lkml <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] ftrace/direct: Fix lockup in modify_ftrace_direct_multi
-Message-ID: <YYq4S1peUqh/remN@krava>
-References: <20211109114217.1645296-1-jolsa@kernel.org>
- <20211109110237.4f5d7ef3@gandalf.local.home>
+        id S241621AbhKISIw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Nov 2021 13:08:52 -0500
+Received: from mga12.intel.com ([192.55.52.136]:36213 "EHLO mga12.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S241585AbhKISIu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Nov 2021 13:08:50 -0500
+X-IronPort-AV: E=McAfee;i="6200,9189,10163"; a="212541328"
+X-IronPort-AV: E=Sophos;i="5.87,220,1631602800"; 
+   d="scan'208";a="212541328"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Nov 2021 10:06:04 -0800
+X-IronPort-AV: E=Sophos;i="5.87,220,1631602800"; 
+   d="scan'208";a="533773655"
+Received: from smile.fi.intel.com ([10.237.72.184])
+  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Nov 2021 10:06:02 -0800
+Received: from andy by smile.fi.intel.com with local (Exim 4.95)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1mkVVG-005APw-6V;
+        Tue, 09 Nov 2021 20:05:50 +0200
+Date:   Tue, 9 Nov 2021 20:05:49 +0200
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Tom Rix <trix@redhat.com>
+Cc:     Moritz Fischer <mdf@kernel.org>,
+        Matthew Gerlach <matthew.gerlach@linux.intel.com>,
+        linux-fpga@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Wu Hao <hao.wu@intel.com>, Xu Yilun <yilun.xu@intel.com>
+Subject: Re: [PATCH v1 1/1] fpga: dfl: pci: Use pci_find_vsec_capability()
+ when looking for DFL
+Message-ID: <YYq4fSRoyzFE4Vei@smile.fi.intel.com>
+References: <20211109154127.18455-1-andriy.shevchenko@linux.intel.com>
+ <8ccc133a-fb47-4548-fee3-d57775a5166d@redhat.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20211109110237.4f5d7ef3@gandalf.local.home>
+In-Reply-To: <8ccc133a-fb47-4548-fee3-d57775a5166d@redhat.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 09, 2021 at 11:02:37AM -0500, Steven Rostedt wrote:
-> On Tue,  9 Nov 2021 12:42:17 +0100
-> Jiri Olsa <jolsa@redhat.com> wrote:
-> 
-> > We can't call unregister_ftrace_function under ftrace_lock.
-> 
-> Ouch. 
-> 
-> Do you have a sample module that triggers this?
-> 
-> I thought we had something that tested this code, but I don't see it in my
-> tree.
+On Tue, Nov 09, 2021 at 07:55:43AM -0800, Tom Rix wrote:
+> On 11/9/21 7:41 AM, Andy Shevchenko wrote:
+> > Currently the find_dfls_by_vsec() opens code pci_find_vsec_capability().
+> > Refactor the former to use the latter. No functional change intended.
 
-I triggered that with my bpf batch changes
+Thanks for review, my answers below.
 
-there's not test for modify at the moment,
-just register/unregister I'll add one
+...
 
-jirka
+> > +	u16 voff;
+> The later use of voff in pci_read_config_dword is of type 'int', it may be
+> better to keep voff as an int.
 
+I don't think so. The rule of thumb that the types should match the value they
+got in the first place. In this case it's u16. Compiler will implicitly cast it
+to whatever is needed as long as the type is good for integer promotion.
+
+...
+
+> > +	voff = pci_find_vsec_capability(dev, PCI_VENDOR_ID_INTEL, PCI_VSEC_ID_INTEL_DFLS);
 > 
-> -- Steve
-> 
-> > 
-> > Fixes: ed29271894aa ("ftrace/direct: Do not disable when switching direct callers")
-> > Signed-off-by: Jiri Olsa <jolsa@kernel.org>
-> > ---
-> >  kernel/trace/ftrace.c | 3 ++-
-> >  1 file changed, 2 insertions(+), 1 deletion(-)
-> > 
-> > diff --git a/kernel/trace/ftrace.c b/kernel/trace/ftrace.c
-> > index b4ed1a301232..fc49e8809a56 100644
-> > --- a/kernel/trace/ftrace.c
-> > +++ b/kernel/trace/ftrace.c
-> > @@ -5602,10 +5602,11 @@ int modify_ftrace_direct_multi(struct ftrace_ops *ops, unsigned long addr)
-> >  		}
-> >  	}
-> >  
-> > +	mutex_unlock(&ftrace_lock);
-> > +
-> >  	/* Removing the tmp_ops will add the updated direct callers to the functions */
-> >  	unregister_ftrace_function(&tmp_ops);
-> >  
-> > -	mutex_unlock(&ftrace_lock);
-> >   out_direct:
-> >  	mutex_unlock(&direct_mutex);
-> >  	return err;
-> 
+> This may be a weakness in the origin code, but intel isn't the exclusive
+> user of DFL.
+
+This does not change the original code. If you think so, this can be extended
+later on.
+
+> >   	if (!voff) {
+> >   		dev_dbg(&pcidev->dev, "%s no DFL VSEC found\n", __func__);
+> >   		return -ENODEV;
+
+-- 
+With Best Regards,
+Andy Shevchenko
+
 
