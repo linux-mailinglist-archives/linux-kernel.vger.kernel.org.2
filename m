@@ -2,146 +2,231 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 35AC344AEC7
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 14:31:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4F5B144AECA
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 14:31:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236616AbhKINeD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Nov 2021 08:34:03 -0500
-Received: from mout.gmx.net ([212.227.17.20]:52745 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231612AbhKINeB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Nov 2021 08:34:01 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1636464664;
-        bh=AuH/na3cyedwf5BA+3ZVIBAIKaXaSXRzka0R0nhwZQs=;
-        h=X-UI-Sender-Class:Subject:From:To:Cc:Date:In-Reply-To:References;
-        b=erhV1I3KX23d2+GBbmqVyNw6cjtWQ01ZqoWzt/y0Mol3ueOMCfE+vXzcvNFdhOB2q
-         FvLEhCYP2gN0RocsC1zh/jduvLC3vExQl6dq+IPLEOkpEYF/+JkcEzQmHJjhqGQeGv
-         KytrnK00JNrQvRoP7x1/LVhV8pKje3ATaxjeGWwY=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from homer.fritz.box ([212.114.172.107]) by mail.gmx.net (mrgmx105
- [212.227.17.168]) with ESMTPSA (Nemesis) id 1MWRRT-1nCdTn1MTb-00XsIQ; Tue, 09
- Nov 2021 14:31:04 +0100
-Message-ID: <44e93989570764f074849deaef4bbcc57d1c6891.camel@gmx.de>
-Subject: Re: [PATCH] sched: Tweak default dynamic preempt mode selection
-From:   Mike Galbraith <efault@gmx.de>
-To:     Valentin Schneider <valentin.schneider@arm.com>,
-        linux-kernel@vger.kernel.org
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Frederic Weisbecker <frederic@kernel.org>
-Date:   Tue, 09 Nov 2021 14:31:03 +0100
-In-Reply-To: <87pmr9ser1.mognet@arm.com>
-References: <20211105104035.3112162-1-valentin.schneider@arm.com>
-         <ff53a94401f8d6abe0303ee381f86bfb475ad354.camel@gmx.de>
-         <8735o6uca5.mognet@arm.com>
-         <5543627ee8ac5337a74de4b9671240d617273607.camel@gmx.de>
-         <87zgqesmej.mognet@arm.com>
-         <a8540176424035960b12529c06d5a3dcedd57c77.camel@gmx.de>
-         <87wnlhsljd.mognet@arm.com>
-         <1905cf613576d04f585d752d85ce21a3504a40d6.camel@gmx.de>
-         <87pmr9ser1.mognet@arm.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.42.0 
+        id S237050AbhKINeP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Nov 2021 08:34:15 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43892 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236631AbhKINeM (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Nov 2021 08:34:12 -0500
+Received: from mail-wr1-x436.google.com (mail-wr1-x436.google.com [IPv6:2a00:1450:4864:20::436])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E74AC061766
+        for <linux-kernel@vger.kernel.org>; Tue,  9 Nov 2021 05:31:26 -0800 (PST)
+Received: by mail-wr1-x436.google.com with SMTP id d24so33035907wra.0
+        for <linux-kernel@vger.kernel.org>; Tue, 09 Nov 2021 05:31:26 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=baylibre-com.20210112.gappssmtp.com; s=20210112;
+        h=subject:to:cc:references:from:organization:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=86AV8AGEuTtJ4QffylmpIPKjMvHuoI8bxs5hQf8llAY=;
+        b=w9xzeAza8KlZFaX42qelc+S/cMdIW6ChIbaV1DojbWJGCo6izMck9QurORlvxNYCGl
+         jUG7+qdVbnEaYxkBaAXheWPGbGsDPYH/kbaagSlzq9BG79Lnt1ocOi8Ou3GmDpjayisw
+         7SXG4PPXVrnUvmFxtKSrq0S+/rGxj7Aptr29Oa/CjB9cvy+heJnXM6xzReA2FEWbPilU
+         cNdI+hjqzrLnfjP/IWqqQc2lWFHhLhXpBcL9Frbe5GwnUd0Y54OkUzcj/9tAeOG8Meq3
+         mJz5xRvEGLni6IiihikoAWsjrFuQMLrHW6g4fbUEQ6zKTDy0OwXJ7ADJFRvqzOyfJEdk
+         AcJQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:subject:to:cc:references:from:organization
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=86AV8AGEuTtJ4QffylmpIPKjMvHuoI8bxs5hQf8llAY=;
+        b=XdwaM1QXSETuYDi1dQOOrdv6Q+qyfAsq4EF2LgvytE9l+tZrMTV5fgCeTIOnGvwawm
+         D4Chiv71uFQBXdvg5mBM1D3osyGZi3YY1SS0ptMT13GPfBb5WW4UDzgCLASPZIvCk+j+
+         GI7HVeEHrj4j2y5AktiOjmvXJUgkoo1BPLyyYfDPJ+I3GkDBU1IQowv6/kpKevZ/Hkke
+         U3aHAUe0dlaH12rlkphbdsYFYvaFrJ1aRFEIGYWdmHfaM2iSIM01y5gYMya6oLfTQdZH
+         VG0IAhncNF5Rz6ECAdwdGIQ83Igq62d03cKpdHaKeXdaTA5L1meVPruoIUaAHIQ0+ZMY
+         m28g==
+X-Gm-Message-State: AOAM533MnZU6SEbrvm5Sl4rs1jY7o8axY36TpY6MPaLrnvxYoGe5qln2
+        qFQ893YFz6iyR6t58dTgYGwVfg==
+X-Google-Smtp-Source: ABdhPJyGHoEJzjWdRkYqJG2Ek7+KWBAquFYh3T0VagyVJWHMCZtR7xbZfgCkAvAlNmTBhjyD2W3fUw==
+X-Received: by 2002:adf:f90a:: with SMTP id b10mr9613473wrr.255.1636464684324;
+        Tue, 09 Nov 2021 05:31:24 -0800 (PST)
+Received: from ?IPv6:2001:861:44c0:66c0:d284:de3f:b3d6:f714? ([2001:861:44c0:66c0:d284:de3f:b3d6:f714])
+        by smtp.gmail.com with ESMTPSA id c15sm19538391wrs.19.2021.11.09.05.31.23
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 09 Nov 2021 05:31:23 -0800 (PST)
+Subject: Re: [PATCH v6 9/9] drm/omap: Add a 'right overlay' to plane state
+To:     Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
+Cc:     linux-omap@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org, khilman@baylibre.com,
+        Benoit Parrot <bparrot@ti.com>
+References: <20211018142842.2511200-1-narmstrong@baylibre.com>
+ <20211018142842.2511200-10-narmstrong@baylibre.com>
+ <8fbf92ae-3802-94b6-6ad8-af669974aaf1@ideasonboard.com>
+From:   Neil Armstrong <narmstrong@baylibre.com>
+Organization: Baylibre
+Message-ID: <ed30f74f-033f-6e53-9873-ac2abb7ece12@baylibre.com>
+Date:   Tue, 9 Nov 2021 14:31:22 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: base64
-X-Provags-ID: V03:K1:pG60cZMVPL3DgRJkc7bFdQl/HldO9d5mHzC7U2riZ2jc1GS6dsY
- t9UVVQTQI21qvNBE2j8WK+AutZQkYGOwId50S8NmmMVn7/gmIgr3tWc02AkVuMmNNNQ/T8Q
- ZIdwKr7J+mklmRGZiK/5ucj0jRQ0U8aLdmobb8TXgnmV5RQYJ4BhlgHaagOZX1ptgHneGnB
- 0zBIbxnhZeDaTfSuddv3g==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:weNJH60iUvY=:+x6gzbF6v7fb8YXwArI66J
- 6QltTV34JiObcFDxSd6NqOOfZKSTkztpe6+d51eb+bwE1T3WK27VPMWfN8/6vpzcyxL2jDoQt
- H/2LRftyBVXQ+hkylB36qi2ojQwFk6IiPBIAPYt92Mt2hvrUIQev42lxZyB+6bm8MjXWiCLEV
- t0dgHi/lusGZEpnGypCjTTqLYY7JLFBmMmPx7FsCTU56ZDLU2id0Cp8/c1151r4XJ4xJcINL0
- koYRr6MWAZAzDV8vblDrFb+Rlkj1hkuOQCr6NXJyrtpD1wo60oAIp89XHzX7QTg5pjDVNl6rg
- 4IlOS2CgWaukrsXYvCAEKQTc8CXjD5fD5PthvIDDjF2uplB4rwRzLFA83Af9VfTgIEuA4nB1m
- oMSXVvZ4YliMfdTW1XElGw9A54p/NSZPNi+NXHoALLEfMtpQDHKoCKOTo2JX+HwODX4PmklLO
- 19kn8fuFne5VswiC4F5mQMVXqVBGZipYtkx2hh+htf4jEvxoAk/NVQIa9BDiwk8ouSF0hJs+A
- fmwvZ/n4BAae8QmL0Zal511R9nCC7Qv7gH2mYIBXnaUMXCAvBOGnz+nW2WM29w2bWD94i5hNJ
- +mOaWBnH/r+SUkB2zw5yUhVlNjt08F5MiY2pVv21V4/67lcU/EwvclaabjbUzClcgWPR2ssv/
- dDXGDZMauy7t0JYgyiS3wHj6dfdIL0i/V6XMlfe4jfc0oBWaWaL5VMn5UU54rnKlz6B9o4Raw
- Rq8hjeOnCTolAK0MVAsP/mfbDsoSY6UjE9o2c6krtuLf8iMIiufXbCrByYN2Nt4wDGnk0EtCG
- IZqV1DwFluX//QOtudWEFaIHUb7ifcFNr6WW/6dzhTZUI80gEzhU0Teg+GElr9VffwvsnqpL3
- BVnpwAKJ8IamXlMAzuU1OUkRhGFoeS6488bTuwhXVWjQH0dsIX76033vWkH5reWgNfdHh5SNt
- aXP4KMGunSQKQMQSExEHsOYyHaxth/p2tQFq5x6/+gNiEt5EgztA4pM969a1ZFI5+XUWJCXAQ
- SDFHfi0PCh2IL7X4QnK4SjWxY/eYrTkA28ZxQ9xZ+8Lwp2LQCJ4DJgkX5KM3RjArwHDxQMCYR
- +pT7hO/QN3wdJ0=
+In-Reply-To: <8fbf92ae-3802-94b6-6ad8-af669974aaf1@ideasonboard.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-T24gVHVlLCAyMDIxLTExLTA5IGF0IDEyOjE5ICswMDAwLCBWYWxlbnRpbiBTY2huZWlkZXIgd3Jv
-dGU6DQo+IE9uIDA5LzExLzIxIDEyOjAwLCBNaWtlIEdhbGJyYWl0aCB3cm90ZToNCj4gDQo+IA0K
-PiA+IC1jb25maWcgUFJFRU1QVF9OT05FDQo+ID4gK2lmIFBSRUVNUFRfRFlOQU1JQw0KPiA+ICtj
-b25maWcgUFJFRU1QVA0KPiA+IMKgwqDCoMKgwqAgYm9vbA0KPiA+IA0KPiANCj4gT24gbXkgZW5k
-IHRoaXMgZG9lc24ndCBsZXQgUFJFRU1QVF9EWU5BTUlDIHNlbGVjdCBQUkVFTVBULCB3aGljaCBJ
-IGNhbWUgdG8NCj4gcmVhbGl6ZSB3ZSBuZWVkIChwbGFjZXMgbGlrZSB2ZXJtYWdpYy5oIGFuZCBm
-dHJhY2UncyBwcmludF90cmFjZV9oZWFkZXIoKTsNCj4gYWxzbyBpdCBhdm9pZHMgYSBsb3Qgb2Yg
-aGVhZGFjaGVzKS4NCg0KT29wcy4NCg0KPiANCj4gVGhlIGJlbG93IGxldHMgbWUgaGF2ZSBQUkVF
-TVBUIHcvIFBSRUVNUFRfRFlOQU1JQy4gVGhlIG9uZSBhbm5veWluZyB0aGluZw0KPiBpcyB0aGUg
-UHJlZW1wdGlvbiBNb2RlbCBwcm9tcHQgcmVtYWlucyB2aXNpYmxlIGluIG1lbnVjb25maWcgd2hl
-bg0KPiBQUkVFTVBUX0RZTkFNSUMgaXMgc2VsZWN0ZWQsIGJ1dCBlaC4uLg0KDQpXb3JrcyBmb3Ig
-bWUsIGFuZCBsb29rcyBhIGhlbGwgb2YgYSBsb3QgYmV0dGVyLiAgU2hpcCBpdC4NCg0KPiANCj4g
-LS0tDQo+IGRpZmYgLS1naXQgYS9rZXJuZWwvS2NvbmZpZy5wcmVlbXB0IGIva2VybmVsL0tjb25m
-aWcucHJlZW1wdA0KPiBpbmRleCAxMmFjNDJhMzQxNWYuLmUwMTU4OGY5ZGUxZiAxMDA2NDQNCj4g
-LS0tIGEva2VybmVsL0tjb25maWcucHJlZW1wdA0KPiArKysgYi9rZXJuZWwvS2NvbmZpZy5wcmVl
-bXB0DQo+IEBAIC0xLDE4ICsxLDkgQEANCj4gwqAjIFNQRFgtTGljZW5zZS1JZGVudGlmaWVyOiBH
-UEwtMi4wLW9ubHkNCj4gwqANCj4gLWNob2ljZQ0KPiAtwqDCoMKgwqDCoMKgwqBwcm9tcHQgIlBy
-ZWVtcHRpb24gTW9kZWwiDQo+IC3CoMKgwqDCoMKgwqDCoGRlZmF1bHQgUFJFRU1QVF9TVEFUSUMN
-Cj4gLQ0KPiAtY29uZmlnIFBSRUVNUFRfU1RBVElDDQo+IC3CoMKgwqDCoMKgwqDCoGJvb2wgIlBy
-ZWVtcHRpb24gYmVoYXZpb3VyIGRlZmluZWQgYXQgYnVpbGQiDQo+IC0NCj4gwqBjb25maWcgUFJF
-RU1QVF9EWU5BTUlDDQo+IMKgwqDCoMKgwqDCoMKgwqBib29sICJQcmVlbXB0aW9uIGJlaGF2aW91
-ciBkZWZpbmVkIG9uIGJvb3QiDQo+IMKgwqDCoMKgwqDCoMKgwqBkZXBlbmRzIG9uIEhBVkVfUFJF
-RU1QVF9EWU5BTUlDICYmICFBUkNIX05PX1BSRUVNUFQNCj4gwqDCoMKgwqDCoMKgwqDCoHNlbGVj
-dCBQUkVFTVBUDQo+IC3CoMKgwqDCoMKgwqDCoHNlbGVjdCBQUkVFTVBUSU9ODQo+IC3CoMKgwqDC
-oMKgwqDCoHNlbGVjdCBVTklOTElORV9TUElOX1VOTE9DSyBpZiAhQVJDSF9JTkxJTkVfU1BJTl9V
-TkxPQ0sNCj4gwqDCoMKgwqDCoMKgwqDCoGhlbHANCj4gwqDCoMKgwqDCoMKgwqDCoMKgIFRoaXMg
-b3B0aW9uIGFsbG93cyB0byBkZWZpbmUgdGhlIHByZWVtcHRpb24gbW9kZWwgb24gdGhlIGtlcm5l
-bA0KPiDCoMKgwqDCoMKgwqDCoMKgwqAgY29tbWFuZCBsaW5lIHBhcmFtZXRlciBhbmQgdGh1cyBv
-dmVycmlkZSB0aGUgZGVmYXVsdCBwcmVlbXB0aW9uDQo+IEBAIC0yOCwxNSArMTksMTQgQEAgY29u
-ZmlnIFBSRUVNUFRfRFlOQU1JQw0KPiDCoA0KPiDCoMKgwqDCoMKgwqDCoMKgwqAgSW50ZXJlc3Rp
-bmcgaWYgeW91IHdhbnQgdGhlIHNhbWUgcHJlLWJ1aWx0IGtlcm5lbCBzaG91bGQgYmUgdXNlZCBm
-b3INCj4gwqDCoMKgwqDCoMKgwqDCoMKgIGJvdGggU2VydmVyIGFuZCBEZXNrdG9wIHdvcmtsb2Fk
-cy4NCj4gLWVuZGNob2ljZQ0KPiDCoA0KPiAtaWYgUFJFRU1QVF9TVEFUSUMNCj4gwqBjaG9pY2UN
-Cj4gLcKgwqDCoMKgwqDCoMKgcHJvbXB0ICJQcmVlbXB0aW9uIEZsYXZvciINCj4gK8KgwqDCoMKg
-wqDCoMKgcHJvbXB0ICJQcmVlbXB0aW9uIE1vZGVsIg0KPiDCoMKgwqDCoMKgwqDCoMKgZGVmYXVs
-dCBQUkVFTVBUX05PTkUNCj4gwqANCj4gwqBjb25maWcgUFJFRU1QVF9OT05FDQo+IMKgwqDCoMKg
-wqDCoMKgwqBib29sICJObyBGb3JjZWQgUHJlZW1wdGlvbiAoU2VydmVyKSINCj4gK8KgwqDCoMKg
-wqDCoMKgZGVwZW5kcyBvbiAhUFJFRU1QVF9EWU5BTUlDDQo+IMKgwqDCoMKgwqDCoMKgwqBoZWxw
-DQo+IMKgwqDCoMKgwqDCoMKgwqDCoCBUaGlzIGlzIHRoZSB0cmFkaXRpb25hbCBMaW51eCBwcmVl
-bXB0aW9uIG1vZGVsLCBnZWFyZWQgdG93YXJkcw0KPiDCoMKgwqDCoMKgwqDCoMKgwqAgdGhyb3Vn
-aHB1dC4gSXQgd2lsbCBzdGlsbCBwcm92aWRlIGdvb2QgbGF0ZW5jaWVzIG1vc3Qgb2YgdGhlDQo+
-IEBAIC01MCw3ICs0MCw3IEBAIGNvbmZpZyBQUkVFTVBUX05PTkUNCj4gwqANCj4gwqBjb25maWcg
-UFJFRU1QVF9WT0xVTlRBUlkNCj4gwqDCoMKgwqDCoMKgwqDCoGJvb2wgIlZvbHVudGFyeSBLZXJu
-ZWwgUHJlZW1wdGlvbiAoRGVza3RvcCkiDQo+IC3CoMKgwqDCoMKgwqDCoGRlcGVuZHMgb24gIUFS
-Q0hfTk9fUFJFRU1QVA0KPiArwqDCoMKgwqDCoMKgwqBkZXBlbmRzIG9uICFBUkNIX05PX1BSRUVN
-UFQgJiYgIVBSRUVNUFRfRFlOQU1JQw0KPiDCoMKgwqDCoMKgwqDCoMKgaGVscA0KPiDCoMKgwqDC
-oMKgwqDCoMKgwqAgVGhpcyBvcHRpb24gcmVkdWNlcyB0aGUgbGF0ZW5jeSBvZiB0aGUga2VybmVs
-IGJ5IGFkZGluZyBtb3JlDQo+IMKgwqDCoMKgwqDCoMKgwqDCoCAiZXhwbGljaXQgcHJlZW1wdGlv
-biBwb2ludHMiIHRvIHRoZSBrZXJuZWwgY29kZS4gVGhlc2UgbmV3DQo+IEBAIC04OCw3ICs3OCw3
-IEBAIGNvbmZpZyBQUkVFTVBUDQo+IMKgDQo+IMKgY29uZmlnIFBSRUVNUFRfUlQNCj4gwqDCoMKg
-wqDCoMKgwqDCoGJvb2wgIkZ1bGx5IFByZWVtcHRpYmxlIEtlcm5lbCAoUmVhbC1UaW1lKSINCj4g
-LcKgwqDCoMKgwqDCoMKgZGVwZW5kcyBvbiBFWFBFUlQgJiYgQVJDSF9TVVBQT1JUU19SVA0KPiAr
-wqDCoMKgwqDCoMKgwqBkZXBlbmRzIG9uIEVYUEVSVCAmJiBBUkNIX1NVUFBPUlRTX1JUICYmICFQ
-UkVFTVBUX0RZTkFNSUMNCj4gwqDCoMKgwqDCoMKgwqDCoHNlbGVjdCBQUkVFTVBUSU9ODQo+IMKg
-wqDCoMKgwqDCoMKgwqBoZWxwDQo+IMKgwqDCoMKgwqDCoMKgwqDCoCBUaGlzIG9wdGlvbiB0dXJu
-cyB0aGUga2VybmVsIGludG8gYSByZWFsLXRpbWUga2VybmVsIGJ5IHJlcGxhY2luZw0KPiBAQCAt
-MTA0LDE0ICs5NCwxMCBAQCBjb25maWcgUFJFRU1QVF9SVA0KPiDCoMKgwqDCoMKgwqDCoMKgwqAg
-cmVxdWlyZSByZWFsLXRpbWUgZ3VhcmFudGVlcy4NCj4gwqANCj4gwqBlbmRjaG9pY2UNCj4gLWVu
-ZGlmICMgUFJFRU1QVF9TVEFUSUMNCj4gLQ0KPiAtaWYgUFJFRU1QVF9EWU5BTUlDDQo+IC1jb25m
-aWcgUFJFRU1QVA0KPiAtwqDCoMKgwqDCoMKgwqBib29sDQo+IMKgDQo+IMKgY2hvaWNlDQo+IC3C
-oMKgwqDCoMKgwqDCoHByb21wdCAiQm9vdCBUaW1lIFByZWVtcHRpb24gRmxhdm9yIg0KPiArwqDC
-oMKgwqDCoMKgwqBwcm9tcHQgIkJvb3QgVGltZSBQcmVlbXB0aW9uIE1vZGVsIg0KPiArwqDCoMKg
-wqDCoMKgwqBkZXBlbmRzIG9uIFBSRUVNUFRfRFlOQU1JQw0KPiDCoMKgwqDCoMKgwqDCoMKgZGVm
-YXVsdCBQUkVFTVBUX05PTkVfQkVIQVZJT1INCj4gwqANCj4gwqBjb25maWcgUFJFRU1QVF9OT05F
-X0JFSEFWSU9SDQo+IEBAIC0xMjMsNyArMTA5LDYgQEAgY29uZmlnIFBSRUVNUFRfVk9MVU5UQVJZ
-X0JFSEFWSU9SDQo+IMKgY29uZmlnIFBSRUVNUFRfQkVIQVZJT1INCj4gwqDCoMKgwqDCoMKgwqDC
-oGJvb2wgIlByZWVtcHRpYmxlIEtlcm5lbCAoTG93LUxhdGVuY3kgRGVza3RvcCkiDQo+IMKgZW5k
-Y2hvaWNlDQo+IC1lbmRpZiAjIFBSRUVNUFRfRFlOQU1JQw0KPiDCoA0KPiDCoGNvbmZpZyBQUkVF
-TVBUX0NPVU5UDQo+IMKgwqDCoMKgwqDCoMKgIGJvb2wNCj4gQEAgLTE0OSw1ICsxMzQsMyBAQCBj
-b25maWcgU0NIRURfQ09SRQ0KPiDCoMKgwqDCoMKgwqDCoMKgwqAgU0NIRURfQ09SRSBpcyBkZWZh
-dWx0IGRpc2FibGVkLiBXaGVuIGl0IGlzIGVuYWJsZWQgYW5kIHVudXNlZCwNCj4gwqDCoMKgwqDC
-oMKgwqDCoMKgIHdoaWNoIGlzIHRoZSBsaWtlbHkgdXNhZ2UgYnkgTGludXggZGlzdHJpYnV0aW9u
-cywgdGhlcmUgc2hvdWxkDQo+IMKgwqDCoMKgwqDCoMKgwqDCoCBiZSBubyBtZWFzdXJhYmxlIGlt
-cGFjdCBvbiBwZXJmb3JtYW5jZS4NCj4gLQ0KPiAtDQoNCg==
+Hi,
+
+On 27/10/2021 14:50, Tomi Valkeinen wrote:
+> On 18/10/2021 17:28, Neil Armstrong wrote:
+>> From: Benoit Parrot <bparrot@ti.com>
+>>
+>> If the drm_plane has a source width that's greater than the max width
+>> supported by a single hw overlay, then we assign a 'r_overlay' to it in
+>> omap_plane_atomic_check().
+>>
+>> Both overlays should have the capabilities required to handle the source
+>> framebuffer. The only parameters that vary between the left and right
+>> hwoverlays are the src_w, crtc_w, src_x and crtc_x as we just even chop
+>> the fb into left and right halves.
+>>
+>> We also take care of not creating odd width size when dealing with YUV
+>> formats.
+>>
+>> Since both halves need to be 'appear' side by side the zpos is
+>> recalculated when dealing with dual overlay cases so that the other
+>> planes zpos is consistent.
+>>
+>> Depending on user space usage it is possible that on occasion the number
+>> of requested planes exceeds the numbers of overlays required to display
+>> them. In that case a failure would be returned for the plane that cannot
+>> be handled at that time. It is up to user space to make sure the H/W
+>> resource are not over-subscribed.
+>>
+>> Signed-off-by: Benoit Parrot <bparrot@ti.com>
+>> Signed-off-by: Neil Armstrong <narmstrong@baylibre.com>
+>> ---
+>>   drivers/gpu/drm/omapdrm/omap_drv.c     |  91 ++++++++++++++++++-
+>>   drivers/gpu/drm/omapdrm/omap_fb.c      |  33 ++++++-
+>>   drivers/gpu/drm/omapdrm/omap_fb.h      |   4 +-
+>>   drivers/gpu/drm/omapdrm/omap_overlay.c |  23 ++++-
+>>   drivers/gpu/drm/omapdrm/omap_overlay.h |   3 +-
+>>   drivers/gpu/drm/omapdrm/omap_plane.c   | 120 +++++++++++++++++++++++--
+>>   drivers/gpu/drm/omapdrm/omap_plane.h   |   1 +
+>>   7 files changed, 263 insertions(+), 12 deletions(-)
+>>
+>> diff --git a/drivers/gpu/drm/omapdrm/omap_drv.c b/drivers/gpu/drm/omapdrm/omap_drv.c
+>> index c7912374d393..f088b6313950 100644
+>> --- a/drivers/gpu/drm/omapdrm/omap_drv.c
+>> +++ b/drivers/gpu/drm/omapdrm/omap_drv.c
+>> @@ -117,6 +117,95 @@ static void omap_atomic_commit_tail(struct drm_atomic_state *old_state)
+>>       dispc_runtime_put(priv->dispc);
+>>   }
+>>   +static int drm_atomic_state_normalized_zpos_cmp(const void *a, const void *b)
+>> +{
+>> +    const struct drm_plane_state *sa = *(struct drm_plane_state **)a;
+>> +    const struct drm_plane_state *sb = *(struct drm_plane_state **)b;
+>> +
+>> +    if (sa->normalized_zpos != sb->normalized_zpos)
+>> +        return sa->normalized_zpos - sb->normalized_zpos;
+>> +    else
+>> +        return sa->plane->base.id - sb->plane->base.id;
+>> +}
+> 
+> I think this, or the function below, needs a comment. I don't think it's obvious what's the logic here. It's mostly a copy of drm_atomic_normalize_zpos and drm_atomic_helper_crtc_normalize_zpos, if I'm not mistaken, it migth be good to point out what the difference is.
+
+It's explained in the commit message:
+>> Since both halves need to be 'appear' side by side the zpos is
+>> recalculated when dealing with dual overlay cases so that the other
+>> planes zpos is consistent.
+
+Not sure what to add more, should I add it as comment in the code ?
+
+> 
+> I'm also wondering if these normalize_zpos functions should be split to a separate patch (without the is_omap_plane_dual_overlay call part).
+
+It's tied to the introduction of 'right overlay', impossible to implement it without the
+dual overlays functions and variables.
+
+> 
+>> +static int omap_atomic_update_normalize_zpos(struct drm_device *dev,
+>> +                         struct drm_atomic_state *state)
+>> +{
+>> +    struct drm_crtc *crtc;
+>> +    struct drm_crtc_state *old_state, *new_state;
+>> +    struct drm_plane *plane;
+>> +    int c, i, n, inc;
+>> +    int total_planes = dev->mode_config.num_total_plane;
+>> +    struct drm_plane_state **states;
+>> +    int ret = 0;
+>> +
+>> +    states = kmalloc_array(total_planes, sizeof(*states), GFP_KERNEL);
+>> +    if (!states)
+>> +        return -ENOMEM;
+>> +
+>> +    for_each_oldnew_crtc_in_state(state, crtc, old_state, new_state, c) {
+>> +        if (old_state->plane_mask == new_state->plane_mask &&
+>> +            !new_state->zpos_changed)
+>> +            continue;
+>> +
+>> +        /* Reset plane increment and index value for every crtc */
+>> +        n = 0;
+>> +
+>> +        /*
+>> +         * Normalization process might create new states for planes
+>> +         * which normalized_zpos has to be recalculated.
+>> +         */
+>> +        drm_for_each_plane_mask(plane, dev, new_state->plane_mask) {
+>> +            struct drm_plane_state *plane_state =
+>> +                drm_atomic_get_plane_state(new_state->state,
+>> +                               plane);
+>> +            if (IS_ERR(plane_state)) {
+>> +                ret = PTR_ERR(plane_state);
+>> +                goto done;
+>> +            }
+>> +            states[n++] = plane_state;
+>> +        }
+>> +
+>> +        sort(states, n, sizeof(*states),
+>> +             drm_atomic_state_normalized_zpos_cmp, NULL);
+>> +
+>> +        for (i = 0, inc = 0; i < n; i++) {
+>> +            plane = states[i]->plane;
+>> +
+>> +            states[i]->normalized_zpos = i + inc;
+>> +            DRM_DEBUG_ATOMIC("[PLANE:%d:%s] updated normalized zpos value %d\n",
+>> +                     plane->base.id, plane->name,
+>> +                     states[i]->normalized_zpos);
+>> +
+>> +            if (is_omap_plane_dual_overlay(states[i]))
+>> +                inc++;
+>> +        }
+>> +        new_state->zpos_changed = true;
+>> +    }
+>> +
+>> +done:
+>> +    kfree(states);
+>> +    return ret;
+>> +}
+>> +
+>> +static int omap_atomic_check(struct drm_device *dev,
+>> +                 struct drm_atomic_state *state)
+>> +{
+>> +    int ret;
+>> +
+>> +    ret = drm_atomic_helper_check(dev, state);
+>> +    if (ret)
+>> +        return ret;
+>> +
+>> +    if (dev->mode_config.normalize_zpos) {
+>> +        ret = omap_atomic_update_normalize_zpos(dev, state);
+>> +        if (ret)
+>> +            return ret;
+>> +    }
+>> +
+>> +    return 0;
+>> +}
+>> +
+
+[...]
+
+Thanks,
+Neil
