@@ -2,44 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BDEEF44B2E9
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 19:53:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2DC7944B2EA
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 19:54:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242814AbhKIS4c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Nov 2021 13:56:32 -0500
-Received: from mail.kernel.org ([198.145.29.99]:34058 "EHLO mail.kernel.org"
+        id S242825AbhKIS5W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Nov 2021 13:57:22 -0500
+Received: from mail.kernel.org ([198.145.29.99]:34372 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S242281AbhKIS4b (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Nov 2021 13:56:31 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 909C761186
-        for <linux-kernel@vger.kernel.org>; Tue,  9 Nov 2021 18:53:45 +0000 (UTC)
+        id S242481AbhKIS5V (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Nov 2021 13:57:21 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6DCE9611AF
+        for <linux-kernel@vger.kernel.org>; Tue,  9 Nov 2021 18:54:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1636484025;
-        bh=Y6c/hx60BYko/6uBMRAlqIid7080OuuDa8DpIJcy+Mk=;
+        s=k20201202; t=1636484075;
+        bh=PhYXgD2L6/ysPXkKNuVrDzH7xz+6jYYzXhmSA6THCdo=;
         h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=BrApohIglM+je7NbAJKPCZtL3ovKPtXW/AulRdzNDQXCKP8hsbYOrr09GNlkzqcvr
-         kqPm4nyAwVCaCNQwtHMFQ6+lHPwqKKAYIULz0k0ixAHnvuYDDqaQ51XD/n5aBVfV0h
-         9cHWL04qggQLLT2Oupbs6w7AGrO7/X4261rrao7cXPaHgRkq6P5DKXQELfsaImG+6v
-         e9L7+kyoOD9cVkCPvXuzrEjyKBO9/EcH9eG6XYfW+n7+Y/Uoq1jr8DVOIoe4UZYiNY
-         tioCAZycM46SABpFR++HhPCiQm/hSNTtk9rQOwzi+FRWglXKzDwSk/HuyzEdyH6Jzj
-         kZHR0rjlAxuVg==
-Received: by mail-oi1-f169.google.com with SMTP id q124so452056oig.3
-        for <linux-kernel@vger.kernel.org>; Tue, 09 Nov 2021 10:53:45 -0800 (PST)
-X-Gm-Message-State: AOAM531+kLwUjcS8NEe+K01KQ147LGVRvgHBH0smo7sFcyVkSL7FgIv5
-        /HsZi5PImv7auq2yCK0qXN2lJ4I3aJwgf9Zs9mE=
-X-Google-Smtp-Source: ABdhPJwwoYteUDUAaHG47HrIgd5Ci8KXvfRhQ45VBK9DFgqHm1A/5mmyOXoz2lbuN+VI/5vxMfIcfpnmfNxpIDitUvs=
-X-Received: by 2002:a05:6808:1919:: with SMTP id bf25mr7795460oib.33.1636484024839;
- Tue, 09 Nov 2021 10:53:44 -0800 (PST)
+        b=pDF/ngHAkWReWpzVv+qvNEwQQIDqLJpoHHrroVwA5QDck58B1+Eak2fSfvsYwJ4n+
+         wnPQwlLoHelNhodWC+if2iwutHdmWwd+vW8Q0KTm7klURSjSGXucttd3Pq/ou3akra
+         K36j8xSNavwCaCZDp2xpMyBmB08vaKnG4L5EGwM/Sy4+d64xKfnZLF9Ccg4jitekAJ
+         Ha4ww/MHkxmHKLpg4RqEIgjQv+TGN0d7EkoCLBU576EIPHLEzanv/1GdNbce0iiZ81
+         VYed0+gdn2K/tzzTKT2ENKl3uAULQvzXruPPV4+qrF4R4Ar7iY6zkh1Qa+85bmzGFl
+         Bjwmhrdul2i1A==
+Received: by mail-ot1-f47.google.com with SMTP id o15-20020a9d410f000000b0055c942cc7a0so96663ote.8
+        for <linux-kernel@vger.kernel.org>; Tue, 09 Nov 2021 10:54:35 -0800 (PST)
+X-Gm-Message-State: AOAM530MN++JS2LlPaVdNJx2zCEPemA4BUEWLiWynr+P2YyKvS/O9Ty6
+        k2fWR+5H7kXGAnI9pCCQudBwbOfFV68RFwodklk=
+X-Google-Smtp-Source: ABdhPJyLjEEx35kPxpN0wXWFAk7hWFSgVnImVJYrPLWmZr/7OFq2573eFP3NNR4g1u7+/fOzvNz0zv2h05VI/vZ1SOQ=
+X-Received: by 2002:a05:6830:1514:: with SMTP id k20mr7667802otp.147.1636484074714;
+ Tue, 09 Nov 2021 10:54:34 -0800 (PST)
 MIME-Version: 1.0
-References: <20211109164549.1724710-1-ardb@kernel.org> <20211109164549.1724710-3-ardb@kernel.org>
- <YYrCn3mc+EbY+OB/@hirez.programming.kicks-ass.net>
-In-Reply-To: <YYrCn3mc+EbY+OB/@hirez.programming.kicks-ass.net>
+References: <20211109164549.1724710-1-ardb@kernel.org> <20211109164549.1724710-4-ardb@kernel.org>
+ <YYrDkUsJVcOzxMPL@hirez.programming.kicks-ass.net>
+In-Reply-To: <YYrDkUsJVcOzxMPL@hirez.programming.kicks-ass.net>
 From:   Ard Biesheuvel <ardb@kernel.org>
-Date:   Tue, 9 Nov 2021 19:53:33 +0100
-X-Gmail-Original-Message-ID: <CAMj1kXHArfyvZ-b11vLshpj84drDtuU+T_o+h+cWqhtajpon0A@mail.gmail.com>
-Message-ID: <CAMj1kXHArfyvZ-b11vLshpj84drDtuU+T_o+h+cWqhtajpon0A@mail.gmail.com>
-Subject: Re: [RFC PATCH 2/7] static_call: deal with unexported keys without
- cluttering up the API
+Date:   Tue, 9 Nov 2021 19:54:23 +0100
+X-Gmail-Original-Message-ID: <CAMj1kXEW72y1p-qR+X6EBqM8Rf5+fZnEs2WSSz7b+eU=zvPt6w@mail.gmail.com>
+Message-ID: <CAMj1kXEW72y1p-qR+X6EBqM8Rf5+fZnEs2WSSz7b+eU=zvPt6w@mail.gmail.com>
+Subject: Re: [RFC PATCH 3/7] static_call: use helper to access non-exported key
 To:     Peter Zijlstra <peterz@infradead.org>
 Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
         Linux ARM <linux-arm-kernel@lists.infradead.org>,
@@ -53,89 +52,26 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 9 Nov 2021 at 19:49, Peter Zijlstra <peterz@infradead.org> wrote:
+On Tue, 9 Nov 2021 at 19:53, Peter Zijlstra <peterz@infradead.org> wrote:
 >
-> On Tue, Nov 09, 2021 at 05:45:44PM +0100, Ard Biesheuvel wrote:
->
-> > diff --git a/include/linux/static_call_types.h b/include/linux/static_call_types.h
-> > index 5a00b8b2cf9f..0bb36294cce7 100644
-> > --- a/include/linux/static_call_types.h
-> > +++ b/include/linux/static_call_types.h
-> > @@ -32,15 +32,20 @@
-> >  struct static_call_site {
-> >       s32 addr;
-> >       s32 key;
-> > +     s32 tramp;
-> >  };
->
-> I can't say I'm thrilled at growing this thing, but the cleanup is nice.
-> Perhaps we can increase alignment on struct static_call_key and instead
-> frob it in .key still?
->
-
-This is already a place-relative field, and one points into the data
-section and the other into text. So I don't see how we can squeeze
-enough bits out of it to make this fit.
-
+> On Tue, Nov 09, 2021 at 05:45:45PM +0100, Ard Biesheuvel wrote:
+> > @@ -196,13 +190,21 @@ extern long __static_call_return0(void);
+> >       EXPORT_SYMBOL_GPL(STATIC_CALL_KEY(name));                       \
+> >       EXPORT_SYMBOL_GPL(STATIC_CALL_TRAMP(name))
 > >
-> >  #define DECLARE_STATIC_CALL(name, func)                                      \
-> > -     extern struct static_call_key STATIC_CALL_KEY(name);            \
-> > +     extern __weak struct static_call_key STATIC_CALL_KEY(name);     \
-> >       extern typeof(func) STATIC_CALL_TRAMP(name);
+> > +#define EXPORT_STATIC_CALL_GETKEY_HELPER(name)                               \
+> > +     struct static_call_key *STATIC_CALL_GETKEY(name)(void) {        \
+> > +             BUG_ON(!core_kernel_text(                               \
+> > +                     (unsigned long)__builtin_return_address(0)));   \
+> > +             return &STATIC_CALL_KEY(name);                          \
+> > +     }                                                               \
+> > +     EXPORT_SYMBOL_GPL(STATIC_CALL_GETKEY(name))
 >
-> I'm a little bit confused on how this actually works. What does a __weak
-> extern data symbol do?
->
-> A __weak function definition would create a module local instance of the
-> function barring a strong override.
->
-> But what does a __weak extern do?
->
-
-It is simply a reference that is permitted to remain undefined.
-
-That is why (in another patch) I do sth like
-
-extern __weak foo;
-
-if (&foo)
-  ... use foo
-else
-   ... use sth else
-
-
-> > diff --git a/kernel/static_call.c b/kernel/static_call.c
-> > index 43ba0b1e0edb..360cc3cd0fbf 100644
-> > --- a/kernel/static_call.c
-> > +++ b/kernel/static_call.c
-> > @@ -366,18 +366,18 @@ static int static_call_add_module(struct module *mod)
-> >                * means modules are allowed to call static_call_update() on
-> >                * it.
-> >                *
-> > -              * Otherwise, the key isn't exported, and 'addr' points to the
-> > +              * Otherwise, the key isn't exported, and 'tramp' points to the
-> >                * trampoline so we need to lookup the key.
-> >                *
-> >                * We go through this dance to prevent crazy modules from
-> >                * abusing sensitive static calls.
-> >                */
-> > -             if (!kernel_text_address(addr))
-> > +             if (addr)
-> >                       continue;
->
-> This seems to imply that the __weak extern symbol gets resolved to 0 at
-> module link time.
+> So if I were a nevarious module, I would look up the above symbol from
+> kallsyms (it is exported and easily obtainable) and then simply
+> read the text to discover the key address and we're in business.
 >
 
-Yes, if the referenced symbol is not exported, it just uses 0x0 for its value.
-
-> >
-> > -             key = tramp_key_lookup(addr);
-> > +             key = tramp_key_lookup((unsigned long)offset_to_ptr(&site->tramp));
-> >               if (!key) {
-> > -                     pr_warn("Failed to fixup __raw_static_call() usage at: %ps\n",
-> > +                     pr_warn("Failed to fixup static_call() usage at: %ps\n",
-> >                               static_call_addr(site));
-> >                       return -EINVAL;
->
-> >               }
+Yeah I realised that. So would you prefer to have a
+.static_call_tramp_key section in each module and look up the keys in
+the module loader?
