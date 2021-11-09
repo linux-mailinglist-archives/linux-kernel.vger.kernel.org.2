@@ -2,56 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 56DCB44AF5D
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 15:22:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 461D544AF5F
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 15:22:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237206AbhKIOYh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Nov 2021 09:24:37 -0500
-Received: from mail.kernel.org ([198.145.29.99]:53452 "EHLO mail.kernel.org"
+        id S237625AbhKIOZC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Nov 2021 09:25:02 -0500
+Received: from foss.arm.com ([217.140.110.172]:34354 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236800AbhKIOYb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Nov 2021 09:24:31 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5E15F610F7;
-        Tue,  9 Nov 2021 14:21:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1636467705;
-        bh=mo1+rhyssyl04yagu0+zAJeinO57uVXHKqe+e1wi/cc=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=ljIvXx1f034/vUGuqbD0dxp30MtgksnN5oY5zsfsab+2soYTfYSuIZ2F5CQVX3lLp
-         iDCIhPDgkkAn0c1cLOlMXsReWsOQXeeVBf3WemeDtZi5qYCvJcvGnvwb+tLy74aKC+
-         X8V4KuRyKijr5h/yOUoWVAAPcYpm7CmKNnSfbD3F/yQ1lxXhBuv1eSn1gTpZQbUZIQ
-         OGiiHNUEUnHaS+oMPydWGAOpplHJUPg1KcbN2mXJtcrtiR1CaJS6fn7V2n9BXNpO85
-         FjgQOuPd2Z56cQgxd0AN866V8omi4q/6VYwYa+PQgeE/jBYWre8GM4SibjfJQy4290
-         GpA+DdRWruEIQ==
-Date:   Tue, 9 Nov 2021 06:21:40 -0800
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Ondrej Mosnacek <omosnace@redhat.com>,
-        Xin Long <lucien.xin@gmail.com>
-Cc:     netdev@vger.kernel.org, davem@davemloft.net,
-        Paul Moore <paul@paul-moore.com>,
-        Richard Haines <richard_c_haines@btinternet.com>,
-        Vlad Yasevich <vyasevich@gmail.com>,
-        Neil Horman <nhorman@tuxdriver.com>,
-        Marcelo Ricardo Leitner <marcelo.leitner@gmail.com>,
-        linux-sctp@vger.kernel.org, selinux@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH net] selinux: fix SCTP client peeloff socket labeling
-Message-ID: <20211109062140.2ed84f96@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-In-Reply-To: <20211104195949.135374-1-omosnace@redhat.com>
-References: <20211104195949.135374-1-omosnace@redhat.com>
+        id S237193AbhKIOY5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Nov 2021 09:24:57 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id C4F922B;
+        Tue,  9 Nov 2021 06:22:09 -0800 (PST)
+Received: from ip-10-252-15-108.eu-west-1.compute.internal (unknown [10.252.15.108])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 6AFCD3F800;
+        Tue,  9 Nov 2021 06:22:07 -0800 (PST)
+From:   German Gomez <german.gomez@arm.com>
+To:     linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
+        acme@kernel.org
+Cc:     German Gomez <german.gomez@arm.com>,
+        John Garry <john.garry@huawei.com>,
+        Will Deacon <will@kernel.org>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Leo Yan <leo.yan@linaro.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Mike Leach <mike.leach@linaro.org>,
+        linux-arm-kernel@lists.infradead.org, coresight@lists.linaro.org
+Subject: [PATCH v2 0/2] arm-spe/cs-etm: Print size using consistent format
+Date:   Tue,  9 Nov 2021 14:21:51 +0000
+Message-Id: <20211109142153.56546-1-german.gomez@arm.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu,  4 Nov 2021 20:59:49 +0100 Ondrej Mosnacek wrote:
-> As agreed with Xin Long, I'm posting this fix up instead of him. I am
-> now fairly convinced that this is the right way to deal with the
-> immediate problem of client peeloff socket labeling. I'll work on
-> addressing the side problem regarding selinux_socket_post_create()
-> being called on the peeloff sockets separately.
+Sent as a splitted re-roll of patchset [1] to keep the patches more
+semantically grouped. The patches themselves have been tested and
+reviewed in the previous submission already.
 
-IIUC Paul would like to see this part to come up in the same series.
-Any predictions when such series would materialize?
+Changes since v1:
+  - Sent as a separate patchset.
+  - Added acme to the recipients list as I forgot to include him in [1].
+
+[1] https://lore.kernel.org/all/20210916154635.1525-1-german.gomez@arm.com/
+
+Andrew Kilroy (2):
+  perf cs-etm: Print size using consistent format
+  perf arm-spe: Print size using consistent format
+
+ tools/perf/util/arm-spe.c | 2 +-
+ tools/perf/util/cs-etm.c  | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
+
+-- 
+2.25.1
+
