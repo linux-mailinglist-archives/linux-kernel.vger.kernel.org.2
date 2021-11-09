@@ -2,121 +2,175 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 323DA44B1B0
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 18:03:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 47D0C44B1B5
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 18:05:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240694AbhKIRGL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Nov 2021 12:06:11 -0500
-Received: from frasgout.his.huawei.com ([185.176.79.56]:4077 "EHLO
-        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239427AbhKIRGK (ORCPT
+        id S240722AbhKIRHy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Nov 2021 12:07:54 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:53777 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231883AbhKIRHw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Nov 2021 12:06:10 -0500
-Received: from fraeml713-chm.china.huawei.com (unknown [172.18.147.226])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4HpZ6w6wh2z67gk4;
-        Wed, 10 Nov 2021 01:03:04 +0800 (CST)
-Received: from lhreml710-chm.china.huawei.com (10.201.108.61) by
- fraeml713-chm.china.huawei.com (10.206.15.32) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.15; Tue, 9 Nov 2021 18:03:21 +0100
-Received: from localhost (10.202.226.41) by lhreml710-chm.china.huawei.com
- (10.201.108.61) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.1.2308.15; Tue, 9 Nov
- 2021 17:03:21 +0000
-Date:   Tue, 9 Nov 2021 17:03:20 +0000
-From:   Jonathan Cameron <Jonathan.Cameron@Huawei.com>
-To:     Andrea Merello <andrea.merello@gmail.com>
-CC:     Jonathan Cameron <jic23@kernel.org>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        linux-iio <linux-iio@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        devicetree <devicetree@vger.kernel.org>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        "Rob Herring" <robh+dt@kernel.org>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Matt Ranostay <matt.ranostay@konsulko.com>,
-        Alexandru Ardelean <ardeleanalex@gmail.com>,
-        Jacopo Mondi <jacopo@jmondi.org>,
-        Andrea Merello <andrea.merello@iit.it>
-Subject: Re: [v2 03/10] iio: document euler angles modifiers
-Message-ID: <20211109170320.0000597b@Huawei.com>
-In-Reply-To: <CAN8YU5P97Au5Sq+43czRygGo4saywhR6BzefAsNz8ffDB3uEcg@mail.gmail.com>
-References: <20210715141742.15072-1-andrea.merello@gmail.com>
-        <20211028101840.24632-1-andrea.merello@gmail.com>
-        <20211028101840.24632-4-andrea.merello@gmail.com>
-        <20211028114154.19e596fc@jic23-huawei>
-        <CAN8YU5P97Au5Sq+43czRygGo4saywhR6BzefAsNz8ffDB3uEcg@mail.gmail.com>
-Organization: Huawei Technologies Research and Development (UK) Ltd.
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; i686-w64-mingw32)
+        Tue, 9 Nov 2021 12:07:52 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1636477506;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=C+tFRg598ce+Pkksxlpyq2K1tm7az89DtXstWpm6hqc=;
+        b=IVok75bKRuqJ1xnsFrmUsT7EMxVT6RsSKDEQ8SfRsUqCBge7tUSxCuxhUe3rFHximH5Qol
+        hZvXJxqo9D0+RHwLMRf1K3WxLCSQsbmKxANTBTqslVu/Vq5BgvJWQIH0AXJXE1uHg4PO5E
+        rnebcXTYycmGQj1Bi92Xb5p5fY8yygE=
+Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com
+ [209.85.128.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-46-yYhtFs_OP_mwdUqO9QiHMw-1; Tue, 09 Nov 2021 12:05:05 -0500
+X-MC-Unique: yYhtFs_OP_mwdUqO9QiHMw-1
+Received: by mail-wm1-f70.google.com with SMTP id m18-20020a05600c3b1200b0033283ea5facso629242wms.1
+        for <linux-kernel@vger.kernel.org>; Tue, 09 Nov 2021 09:05:05 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=C+tFRg598ce+Pkksxlpyq2K1tm7az89DtXstWpm6hqc=;
+        b=ZR909O6yiD+MB3Lb9nZJlKLXT3K24FvEsSy7toytzwfJZDZ2Cb++kzruxvqVDtpWq3
+         UPantXaG8RvN4YZErGzpech4qC/LRRUQnYX0tcu6dApMl8jTbhfiIPt1U6xY/FfcGH7s
+         Je9lJ5RKMH+DdNRFBvG66uFX9JwyMakqcpJ50Tcm89iGB6NHbJljHKlkLMPEnWJFu/fQ
+         L54ymQ1RUQSuFQ8xpeqjzJkDedA+4MmHQ/9LJDDbRBqZiqNkd3RB89fMsyYOBDzmhdRJ
+         MenqpOfI66A+W8CgS+8vxtD7SGRTJUWAQhpXD+Nbrdpnvg1cBHxE2o0uymAvzPIh1RxV
+         39uQ==
+X-Gm-Message-State: AOAM531mkAZvGwirvMWewv0naC+tGGaofD/9E0xWs9K13sV1UnQmoE+R
+        SgjcOGCse6+2G7PcHKKRtltkyQIHrSk27FNQ5lwbyD8QoiBf0KlY9ZuevSUilkhjA45dyBtte7b
+        dyOlqAW+eZsqT5GDT+cJRxLNb
+X-Received: by 2002:adf:e2c5:: with SMTP id d5mr11472495wrj.338.1636477503999;
+        Tue, 09 Nov 2021 09:05:03 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJw4zmFD63DlRvgaPFPwC/DJ0LRgwzSloKUJSs78C2aFK91vrl3ZK3k6EtXwUcJIi3p8AMau7A==
+X-Received: by 2002:adf:e2c5:: with SMTP id d5mr11472455wrj.338.1636477503802;
+        Tue, 09 Nov 2021 09:05:03 -0800 (PST)
+Received: from ?IPv6:2a01:e0a:59e:9d80:527b:9dff:feef:3874? ([2a01:e0a:59e:9d80:527b:9dff:feef:3874])
+        by smtp.gmail.com with ESMTPSA id o12sm26601930wrc.85.2021.11.09.09.05.02
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 09 Nov 2021 09:05:03 -0800 (PST)
+Subject: Re: [PATCH v4 07/21] KVM: arm64: Support SDEI_EVENT_UNREGISTER
+ hypercall
+To:     Gavin Shan <gshan@redhat.com>, kvmarm@lists.cs.columbia.edu
+Cc:     maz@kernel.org, linux-kernel@vger.kernel.org,
+        Jonathan.Cameron@huawei.com, pbonzini@redhat.com, will@kernel.org
+References: <20210815001352.81927-1-gshan@redhat.com>
+ <20210815001352.81927-8-gshan@redhat.com>
+From:   Eric Auger <eauger@redhat.com>
+Message-ID: <100a4aa0-6c2d-2fec-6f11-c7e64946ef0b@redhat.com>
+Date:   Tue, 9 Nov 2021 18:05:01 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
+In-Reply-To: <20210815001352.81927-8-gshan@redhat.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.202.226.41]
-X-ClientProxiedBy: lhreml704-chm.china.huawei.com (10.201.108.53) To
- lhreml710-chm.china.huawei.com (10.201.108.61)
-X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 9 Nov 2021 09:15:09 +0100
-Andrea Merello <andrea.merello@gmail.com> wrote:
 
-> Il giorno gio 28 ott 2021 alle ore 12:37 Jonathan Cameron
-> <jic23@kernel.org> ha scritto:
-> >
-> > On Thu, 28 Oct 2021 12:18:33 +0200
-> > Andrea Merello <andrea.merello@gmail.com> wrote:
-> >  
-> > > This patch introduces ABI documentation for new modifiers used for
-> > > reporting rotations expressed as euler angles (i.e. yaw, pitch, roll).
-> > >
-> > > Signed-off-by: Andrea Merello <andrea.merello@iit.it>
-> > > ---
-> > >  Documentation/ABI/testing/sysfs-bus-iio | 8 ++++++++
-> > >  1 file changed, 8 insertions(+)
-> > >
-> > > diff --git a/Documentation/ABI/testing/sysfs-bus-iio b/Documentation/ABI/testing/sysfs-bus-iio
-> > > index 5147a00bf24a..f0adc2c817bd 100644
-> > > --- a/Documentation/ABI/testing/sysfs-bus-iio
-> > > +++ b/Documentation/ABI/testing/sysfs-bus-iio
-> > > @@ -1965,3 +1965,11 @@ KernelVersion: 5.15
-> > >  Contact:     linux-iio@vger.kernel.org
-> > >  Description:
-> > >               Raw (unscaled) linear acceleration readings.
-> > > +
-> > > +What:                /sys/bus/iio/devices/iio:deviceX/in_rot_yaw_raw
-> > > +What:                /sys/bus/iio/devices/iio:deviceX/in_rot_pitch_raw
-> > > +What:                /sys/bus/iio/devices/iio:deviceX/in_rot_roll_raw
-> > > +KernelVersion:       5.15
-> > > +Contact:     linux-iio@vger.kernel.org
-> > > +Description:
-> > > +             Raw (unscaled) euler angles readings.  
-> > Any _raw entry should also include what the units are after application of
-> > offset and scale.   Or you could just add this as more info to the in_rot_raw
-> > block as an extra sentence explaining that they are euler angles.
-> > That will lose the 'KernelVersion' information but honestly I'm not sure we
-> > care that much about that.  
-> 
-> I'm unsure which block you are talking about: I see there are two
-> blocks that refer to rot things: in_rot_quaternion_raw and
-> in_rot_from_north_xxx_raw.
-> 
-> Looking at the 1st one description, it looks very specific to
-> quaternions to me; the 2nd seems very specific to its own thing,
-> whatever it is.. So I would just add the missing information (unit) in
-> the new block just being introduced, if this is ok for you. Or am I
-> missing some other block in which I could  coalesce this new euler
-> thing?
 
-Good point, not sure what I was thinking.  There isn't a sensible block
-to add this to.  So just add the info about units.
-
-Jonathan
-
+On 8/15/21 2:13 AM, Gavin Shan wrote:
+> This supports SDEI_EVENT_UNREGISTER hypercall. It's used by the
+> guest to unregister SDEI event. The SDEI event won't be raised to
+> the guest or specific vCPU after it's unregistered successfully.
+> It's notable the SDEI event is disabled automatically on the guest
+> or specific vCPU once it's unregistered successfully.
 > 
+> Signed-off-by: Gavin Shan <gshan@redhat.com>
+> ---
+>  arch/arm64/kvm/sdei.c | 61 +++++++++++++++++++++++++++++++++++++++++++
+>  1 file changed, 61 insertions(+)
 > 
-> > Jonathan
-> >
-> >  
+> diff --git a/arch/arm64/kvm/sdei.c b/arch/arm64/kvm/sdei.c
+> index b4162efda470..a3ba69dc91cb 100644
+> --- a/arch/arm64/kvm/sdei.c
+> +++ b/arch/arm64/kvm/sdei.c
+> @@ -308,6 +308,65 @@ static unsigned long kvm_sdei_hypercall_context(struct kvm_vcpu *vcpu)
+>  	return ret;
+>  }
+>  
+> +static unsigned long kvm_sdei_hypercall_unregister(struct kvm_vcpu *vcpu)
+> +{
+> +	struct kvm *kvm = vcpu->kvm;
+> +	struct kvm_sdei_kvm *ksdei = kvm->arch.sdei;
+> +	struct kvm_sdei_vcpu *vsdei = vcpu->arch.sdei;
+> +	struct kvm_sdei_event *kse = NULL;
+> +	struct kvm_sdei_kvm_event *kske = NULL;
+> +	unsigned long event_num = smccc_get_arg1(vcpu);
+> +	int index = 0;
+> +	unsigned long ret = SDEI_SUCCESS;
+> +
+> +	/* Sanity check */
+> +	if (!(ksdei && vsdei)) {
+> +		ret = SDEI_NOT_SUPPORTED;
+> +		goto out;
+> +	}
+> +
+> +	if (!kvm_sdei_is_valid_event_num(event_num)) {
+> +		ret = SDEI_INVALID_PARAMETERS;
+> +		goto out;
+> +	}
+> +
+> +	/* Check if the KVM event exists */
+> +	spin_lock(&ksdei->lock);
+> +	kske = kvm_sdei_find_kvm_event(kvm, event_num);
+> +	if (!kske) {
+> +		ret = SDEI_INVALID_PARAMETERS;
+> +		goto unlock;
+> +	}
+> +
+> +	/* Check if there is pending events */
+> +	if (kske->state.refcount) {
+> +		ret = SDEI_PENDING;
+don't you want to record the fact the unregistration is outstanding to
+perform subsequent actions? Otherwise nothing will hapen when the
+current executing handlers complete?
+> +		goto unlock;
+> +	}
+> +
+> +	/* Check if it has been registered */
+> +	kse = kske->kse;
+> +	index = (kse->state.type == SDEI_EVENT_TYPE_PRIVATE) ?
+> +		vcpu->vcpu_idx : 0;
+you could have an inline for the above as this is executed in many
+functions. even including the code below.
+> +	if (!kvm_sdei_is_registered(kske, index)) {
+> +		ret = SDEI_DENIED;
+> +		goto unlock;
+> +	}
+> +
+> +	/* The event is disabled when it's unregistered */
+> +	kvm_sdei_clear_enabled(kske, index);
+> +	kvm_sdei_clear_registered(kske, index);
+> +	if (kvm_sdei_empty_registered(kske)) {
+a refcount mechanism would be cleaner I think.
+> +		list_del(&kske->link);
+> +		kfree(kske);
+> +	}
+> +
+> +unlock:
+> +	spin_unlock(&ksdei->lock);
+> +out:
+> +	return ret;
+> +}
+> +
+>  int kvm_sdei_hypercall(struct kvm_vcpu *vcpu)
+>  {
+>  	u32 func = smccc_get_function(vcpu);
+> @@ -333,6 +392,8 @@ int kvm_sdei_hypercall(struct kvm_vcpu *vcpu)
+>  	case SDEI_1_0_FN_SDEI_EVENT_COMPLETE:
+>  	case SDEI_1_0_FN_SDEI_EVENT_COMPLETE_AND_RESUME:
+>  	case SDEI_1_0_FN_SDEI_EVENT_UNREGISTER:
+> +		ret = kvm_sdei_hypercall_unregister(vcpu);
+> +		break;
+>  	case SDEI_1_0_FN_SDEI_EVENT_STATUS:
+>  	case SDEI_1_0_FN_SDEI_EVENT_GET_INFO:
+>  	case SDEI_1_0_FN_SDEI_EVENT_ROUTING_SET:
+> 
 
