@@ -2,79 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F252449F5E
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 01:16:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 79DD6449F64
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 01:17:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231167AbhKIATj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Nov 2021 19:19:39 -0500
-Received: from mail.kernel.org ([198.145.29.99]:34204 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229854AbhKIATW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Nov 2021 19:19:22 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 04F9261104;
-        Tue,  9 Nov 2021 00:16:33 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1636416997;
-        bh=e6eETMfldk25YhhOCrkCCcAt2VNZWoeJqi7WGDCXDYA=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=ovBqOJljx/XmzXcfiQ71NhXBMqv0jdOpQW/90L/ozBJV36lZvgnTusUibrM/UOQaE
-         JouikJZURVmWWRE27Z1mTVfte3f5ZJmXzBiIK7l3FkWv77uZprpZwMBepL26Fhf1+s
-         UFRlPRHuRD3riePXbgl/5WD5W7wA2PGqq0krDN8GBJwE9r9hQBxqoyovP0MKbov+2w
-         XEX7Bb094YYrIilz4p+2zXHFnq00sOZ+J9/UyGQnNVZabYkWnGqlcG2nT1j9hrHmuU
-         iKSlLXibZ2AZEk+eIGwM3nmCEFzFGCcTiHs6l+tnm6s5lL2wIq94QPsUYe40qJ007Y
-         +XnrRmheNXVAQ==
-Date:   Mon, 8 Nov 2021 16:16:31 -0800
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Joe Perches <joe@perches.com>
-Cc:     "Srivatsa S. Bhat" <srivatsa@csail.mit.edu>, jgross@suse.com,
-        x86@kernel.org, pv-drivers@vmware.com,
-        Nadav Amit <namit@vmware.com>,
-        Vivek Thampi <vithampi@vmware.com>,
-        Vishal Bhakta <vbhakta@vmware.com>,
-        Ronak Doshi <doshir@vmware.com>,
-        linux-graphics-maintainer@vmware.com,
-        dri-devel@lists.freedesktop.org, linux-rdma@vger.kernel.org,
-        linux-scsi@vger.kernel.org, netdev@vger.kernel.org,
-        linux-input@vger.kernel.org, Zack Rusin <zackr@vmware.com>,
-        sdeep@vmware.com, amakhalov@vmware.com,
-        virtualization@lists.linux-foundation.org, keerthanak@vmware.com,
-        srivatsab@vmware.com, anishs@vmware.com,
-        linux-kernel@vger.kernel.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Subject: Re: [PATCH 2/2] MAINTAINERS: Mark VMware mailing list entries as
- private
-Message-ID: <20211108161631.2941f3a7@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-In-Reply-To: <5179a7c097e0bb88f95642a394f53c53e64b66b1.camel@perches.com>
-References: <163640336232.62866.489924062999332446.stgit@srivatsa-dev>
-        <163640339370.62866.3435211389009241865.stgit@srivatsa-dev>
-        <5179a7c097e0bb88f95642a394f53c53e64b66b1.camel@perches.com>
+        id S241178AbhKIAUm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Nov 2021 19:20:42 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32950 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S241154AbhKIAUl (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Nov 2021 19:20:41 -0500
+Received: from mail-yb1-xb2e.google.com (mail-yb1-xb2e.google.com [IPv6:2607:f8b0:4864:20::b2e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D3C2CC061570;
+        Mon,  8 Nov 2021 16:17:56 -0800 (PST)
+Received: by mail-yb1-xb2e.google.com with SMTP id s186so48219365yba.12;
+        Mon, 08 Nov 2021 16:17:56 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Kv70nKReru2U0FWWfEZVZKiB4QAPq6CzVK+RIiY/Pas=;
+        b=KfMuTM8gtKNwavjBrO+oz/leteZBvGcJE1qEg9uYFxdtZjI+cDiSJhu3YwaYRMe0vR
+         NpH22jOvCX8ic6oH8ka484+WQxeWbaixoewVHAL4fSaEMZ7+gadvgP6kc08Px8B4mh0g
+         05qd8TVsUwe6TkgcPEf+ti1tkEjOBwpIRhCawNwjaYE3nsEfr5bJBr7vUj3ewryR+9zG
+         SGrvc+nJeK40600coZ1WGnNrmz4SBQMQ8xULOpZ5miIxShha3yHK2lNPDbKZ0OErg0V0
+         Gjm/K4NTDQatAZ9I3a5uxrrbxZoNnElrkAnTHVbgsln/pZRA+j5uL4xatd1YxbTv/g4G
+         gQhg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Kv70nKReru2U0FWWfEZVZKiB4QAPq6CzVK+RIiY/Pas=;
+        b=e4zmL0NOk2JHMp4ehYU//5C8fBYULk5R8dPSLVoo+Vlzx8Wb8NWUaDmBzpHZOhJ/CL
+         oDky9NZSRRP5e7khxgW7pOiiUsU1BdZJ3VHU/G9PVWoG1Y+QJGR3YIeyQ/uYswDNZuTG
+         hE7VD6OOKUiugFjxhlcBKF8hCeiZt4orSRUfcwckKR3OvzDdAUrI8z/DGO+21/frhJVz
+         qRBD2xopfCueTSTnRy21YydMPmdSS8rcv5ea0mzBDgwEsXa/WUem/u5IQj8zQjrXzUGL
+         b3X0R/wn/DdVLUcfC22ndTDlJaESRIVUtp9bFExxsrfGwHCrb9i/LKEe130WUfK1jsOO
+         Ku3g==
+X-Gm-Message-State: AOAM532eSDL3E2r6IqYtcCyRyGz1GKlkH5Vm03y2YnkxpFJznn+fQZgk
+        u4Zw1sK0J/0361VLMiqERX4AY4tRikQwQsFXaqk=
+X-Google-Smtp-Source: ABdhPJwObN6ajVBlMuqDsnX6vf6ZzuSvu0Hvn7GHKUzd1yOEGu3a5nNPMUk0FTfy4TUawFNCwKqbeHbJZ/NO6O1sWfE=
+X-Received: by 2002:a25:dc4d:: with SMTP id y74mr3596735ybe.422.1636417076117;
+ Mon, 08 Nov 2021 16:17:56 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+References: <20211103173127.13701-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
+ <20211103173127.13701-3-prabhakar.mahadev-lad.rj@bp.renesas.com> <CAMuHMdXE9t5immi5WCVgPOe0dwioj3N_PGTk4Z_tWPaWtyQ6VQ@mail.gmail.com>
+In-Reply-To: <CAMuHMdXE9t5immi5WCVgPOe0dwioj3N_PGTk4Z_tWPaWtyQ6VQ@mail.gmail.com>
+From:   "Lad, Prabhakar" <prabhakar.csengg@gmail.com>
+Date:   Tue, 9 Nov 2021 00:17:30 +0000
+Message-ID: <CA+V-a8vU9jKn2LBo+vVykCH2L_LqOmpXeR7XxX56_L7myi6xLw@mail.gmail.com>
+Subject: Re: [PATCH 2/3] dt-bindings: serial: renesas,sci: Document RZ/G2L SoC
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        "open list:SERIAL DRIVERS" <linux-serial@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux-Renesas <linux-renesas-soc@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 08 Nov 2021 15:37:53 -0800 Joe Perches wrote:
-> > @@ -6134,8 +6134,8 @@ T:	git git://anongit.freedesktop.org/drm/drm-misc
-> >  F:	drivers/gpu/drm/vboxvideo/
-> >  
-> >  DRM DRIVER FOR VMWARE VIRTUAL GPU
-> > -M:	"VMware Graphics" <linux-graphics-maintainer@vmware.com>
-> >  M:	Zack Rusin <zackr@vmware.com>
-> > +L:	linux-graphics-maintainer@vmware.com (private)  
-> 
-> This MAINTAINERS file is for _public_ use, marking something
-> non-public isn't useful.
+Hi Geert,
 
-But Greg has a point. Corporations like to send us code with a list 
-as the maintainer and MODULE_AUTHOR set to corp's name. We deal with
-humans, not legal entities.
+Thank you for the review.
 
-I've been trying to get them to use "M: email" without the name,
-but "L: list (private)" also works.
+On Mon, Nov 8, 2021 at 4:19 PM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
+>
+> Hi Prabhakar,
+>
+> On Wed, Nov 3, 2021 at 6:31 PM Lad Prabhakar
+> <prabhakar.mahadev-lad.rj@bp.renesas.com> wrote:
+> > Add SCI binding documentation for Renesas RZ/G2L SoC.
+> >
+> > Also update the example node with real world DT node.
+> >
+> > Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+> > Reviewed-by: Biju Das <biju.das.jz@bp.renesas.com>
+>
+> > --- a/Documentation/devicetree/bindings/serial/renesas,sci.yaml
+> > +++ b/Documentation/devicetree/bindings/serial/renesas,sci.yaml
+> > @@ -14,7 +14,11 @@ allOf:
+> >
+> >  properties:
+> >    compatible:
+> > -    const: renesas,sci
+> > +    oneOf:
+> > +      - items:
+> > +          - enum:
+> > +              - renesas,r9a07g044-sci     # RZ/G2{L,LC}
+> > +          - const: renesas,sci            # generic SCI compatible UART
+>
+> You added a oneOf, but forgot to keep the old single compatible
+> value as used on H8/300?
+>
+Ouch I grepped renesas,sci only in arm{64}, will fix that.
 
-Either way I feel like we need _some_ way to tell humans from corporate
-"please CC this address" entries.
-
-> private makes no sense and likely these L: entries shouldn't exist.
+Cheers,
+Prabhakar
+> >
+> >    reg:
+> >      maxItems: 1
+>
+> With the above fixed:
+> Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
+>
+> Gr{oetje,eeting}s,
+>
+>                         Geert
+>
+> --
+> Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+>
+> In personal conversations with technical people, I call myself a hacker. But
+> when I'm talking to journalists I just say "programmer" or something like that.
+>                                 -- Linus Torvalds
