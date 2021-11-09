@@ -2,202 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 48AE344B38B
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 20:55:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6115C44B38E
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 20:57:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243951AbhKIT5n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Nov 2021 14:57:43 -0500
-Received: from smtp-out2.suse.de ([195.135.220.29]:53572 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243249AbhKIT5l (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Nov 2021 14:57:41 -0500
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out2.suse.de (Postfix) with ESMTP id ACA3B1FD6F;
-        Tue,  9 Nov 2021 19:54:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1636487693; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=Y2OXf18Y/MTI9Z9OxFGo3yBDa2tKzuDPogvq8TubkCc=;
-        b=gzhTgFdOzsIrvUHTNWLHF+uNXyROpaRjxXE3LcWYYIQJaiTc9LAMxuABnMofgHZM9b36sR
-        j9kFqaLXgXvOAoduC6Xa2ZauP2kPLjkQAuUmFNrphK5THVf8jeixSHiINOTM1lRs2fJgyi
-        g4zJ1lRShfA6KXX8V6OrfEoghJuncCA=
-Received: from suse.cz (unknown [10.100.201.86])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by relay2.suse.de (Postfix) with ESMTPS id 77640A3B81;
-        Tue,  9 Nov 2021 19:54:53 +0000 (UTC)
-Date:   Tue, 9 Nov 2021 20:54:51 +0100
-From:   Michal Hocko <mhocko@suse.com>
-To:     Dennis Zhou <dennis@kernel.org>
-Cc:     Eric Dumazet <eric.dumazet@gmail.com>,
-        Alexey Makhalov <amakhalov@vmware.com>, linux-mm@kvack.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        David Hildenbrand <david@redhat.com>,
-        Oscar Salvador <osalvador@suse.de>, Tejun Heo <tj@kernel.org>,
-        Christoph Lameter <cl@linux.com>, linux-kernel@vger.kernel.org,
-        stable@vger.kernel.org
-Subject: Re: [PATCH v3] mm: fix panic in __alloc_pages
-Message-ID: <YYrSC7vtSQXz652a@dhcp22.suse.cz>
-References: <908909e0-4815-b580-7ff5-d824d36a141c@redhat.com>
- <20211108202325.20304-1-amakhalov@vmware.com>
- <2e191db3-286f-90c6-bf96-3f89891e9926@gmail.com>
- <YYqstfX8PSGDfWsn@dhcp22.suse.cz>
- <YYrGpn/52HaLCAyo@fedora>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YYrGpn/52HaLCAyo@fedora>
+        id S243966AbhKIUAV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Nov 2021 15:00:21 -0500
+Received: from foss.arm.com ([217.140.110.172]:37890 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231740AbhKIUAU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Nov 2021 15:00:20 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 9C47A2B;
+        Tue,  9 Nov 2021 11:57:33 -0800 (PST)
+Received: from e123648.arm.com (unknown [10.57.26.224])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 4B5333F7F5;
+        Tue,  9 Nov 2021 11:57:29 -0800 (PST)
+From:   Lukasz Luba <lukasz.luba@arm.com>
+To:     linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org
+Cc:     linux-arm-kernel@lists.infradead.org,
+        linux-arm-msm@vger.kernel.org, steev@kali.org, lukasz.luba@arm.com,
+        sudeep.holla@arm.com, will@kernel.org, catalin.marinas@arm.com,
+        linux@armlinux.org.uk, gregkh@linuxfoundation.org,
+        rafael@kernel.org, viresh.kumar@linaro.org, amitk@kernel.org,
+        daniel.lezcano@linaro.org, amit.kachhap@gmail.com,
+        thara.gopinath@linaro.org, bjorn.andersson@linaro.org,
+        agross@kernel.org
+Subject: [PATCH v4 0/5] Refactor thermal pressure update to avoid code duplication
+Date:   Tue,  9 Nov 2021 19:57:09 +0000
+Message-Id: <20211109195714.7750-1-lukasz.luba@arm.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue 09-11-21 14:06:14, Dennis Zhou wrote:
-> Hello,
-> 
-> On Tue, Nov 09, 2021 at 06:15:33PM +0100, Michal Hocko wrote:
-> > On Mon 08-11-21 18:08:52, Eric Dumazet wrote:
-> > > 
-> > > 
-> > > On 11/8/21 12:23 PM, Alexey Makhalov wrote:
-> > > > There is a kernel panic caused by pcpu_alloc_pages() passing
-> > > > offlined and uninitialized node to alloc_pages_node() leading
-> > > > to panic by NULL dereferencing uninitialized NODE_DATA(nid).
-> > > > 
-> > > >  CPU2 has been hot-added
-> > > >  BUG: unable to handle page fault for address: 0000000000001608
-> > > >  #PF: supervisor read access in kernel mode
-> > > >  #PF: error_code(0x0000) - not-present page
-> > > >  PGD 0 P4D 0
-> > > >  Oops: 0000 [#1] SMP PTI
-> > > >  CPU: 0 PID: 1 Comm: systemd Tainted: G            E     5.15.0-rc7+ #11
-> > > >  Hardware name: VMware, Inc. VMware7,1/440BX Desktop Reference Platform, BIOS VMW
-> > > > 
-> > > >  RIP: 0010:__alloc_pages+0x127/0x290
-> > > >  Code: 4c 89 f0 5b 41 5c 41 5d 41 5e 41 5f 5d c3 44 89 e0 48 8b 55 b8 c1 e8 0c 83 e0 01 88 45 d0 4c 89 c8 48 85 d2 0f 85 1a 01 00 00 <45> 3b 41 08 0f 82 10 01 00 00 48 89 45 c0 48 8b 00 44 89 e2 81 e2
-> > > >  RSP: 0018:ffffc900006f3bc8 EFLAGS: 00010246
-> > > >  RAX: 0000000000001600 RBX: 0000000000000000 RCX: 0000000000000000
-> > > >  RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000000000000cc2
-> > > >  RBP: ffffc900006f3c18 R08: 0000000000000001 R09: 0000000000001600
-> > > >  R10: ffffc900006f3a40 R11: ffff88813c9fffe8 R12: 0000000000000cc2
-> > > >  R13: 0000000000000000 R14: 0000000000000001 R15: 0000000000000cc2
-> > > >  FS:  00007f27ead70500(0000) GS:ffff88807ce00000(0000) knlGS:0000000000000000
-> > > >  CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> > > >  CR2: 0000000000001608 CR3: 000000000582c003 CR4: 00000000001706b0
-> > > >  Call Trace:
-> > > >   pcpu_alloc_pages.constprop.0+0xe4/0x1c0
-> > > >   pcpu_populate_chunk+0x33/0xb0
-> > > >   pcpu_alloc+0x4d3/0x6f0
-> > > >   __alloc_percpu_gfp+0xd/0x10
-> > > >   alloc_mem_cgroup_per_node_info+0x54/0xb0
-> > > >   mem_cgroup_alloc+0xed/0x2f0
-> > > >   mem_cgroup_css_alloc+0x33/0x2f0
-> > > >   css_create+0x3a/0x1f0
-> > > >   cgroup_apply_control_enable+0x12b/0x150
-> > > >   cgroup_mkdir+0xdd/0x110
-> > > >   kernfs_iop_mkdir+0x4f/0x80
-> > > >   vfs_mkdir+0x178/0x230
-> > > >   do_mkdirat+0xfd/0x120
-> > > >   __x64_sys_mkdir+0x47/0x70
-> > > >   ? syscall_exit_to_user_mode+0x21/0x50
-> > > >   do_syscall_64+0x43/0x90
-> > > >   entry_SYSCALL_64_after_hwframe+0x44/0xae
-> > > > 
-> > > > Panic can be easily reproduced by disabling udev rule for
-> > > > automatic onlining hot added CPU followed by CPU with
-> > > > memoryless node (NUMA node with CPU only) hot add.
-> > > > 
-> > > > Hot adding CPU and memoryless node does not bring the node
-> > > > to online state. Memoryless node will be onlined only during
-> > > > the onlining its CPU.
-> > > > 
-> > > > Node can be in one of the following states:
-> > > > 1. not present.(nid == NUMA_NO_NODE)
-> > > > 2. present, but offline (nid > NUMA_NO_NODE, node_online(nid) == 0,
-> > > > 				NODE_DATA(nid) == NULL)
-> > > > 3. present and online (nid > NUMA_NO_NODE, node_online(nid) > 0,
-> > > > 				NODE_DATA(nid) != NULL)
-> > > > 
-> > > > Percpu code is doing allocations for all possible CPUs. The
-> > > > issue happens when it serves hot added but not yet onlined
-> > > > CPU when its node is in 2nd state. This node is not ready
-> > > > to use, fallback to numa_mem_id().
-> > > > 
-> > > > Signed-off-by: Alexey Makhalov <amakhalov@vmware.com>
-> > > > Reviewed-by: David Hildenbrand <david@redhat.com>
-> > > > Cc: Andrew Morton <akpm@linux-foundation.org>
-> > > > Cc: David Hildenbrand <david@redhat.com>
-> > > > Cc: Michal Hocko <mhocko@suse.com>
-> > > > Cc: Oscar Salvador <osalvador@suse.de>
-> > > > Cc: Dennis Zhou <dennis@kernel.org>
-> > > > Cc: Tejun Heo <tj@kernel.org>
-> > > > Cc: Christoph Lameter <cl@linux.com>
-> > > > Cc: linux-mm@kvack.org
-> > > > Cc: linux-kernel@vger.kernel.org
-> > > > Cc: stable@vger.kernel.org
-> > > > ---
-> > > >  mm/percpu-vm.c | 8 ++++++--
-> > > >  1 file changed, 6 insertions(+), 2 deletions(-)
-> > > > 
-> > > > diff --git a/mm/percpu-vm.c b/mm/percpu-vm.c
-> > > > index 2054c9213..f58d73c92 100644
-> > > > --- a/mm/percpu-vm.c
-> > > > +++ b/mm/percpu-vm.c
-> > > > @@ -84,15 +84,19 @@ static int pcpu_alloc_pages(struct pcpu_chunk *chunk,
-> > > >  			    gfp_t gfp)
-> > > >  {
-> > > >  	unsigned int cpu, tcpu;
-> > > > -	int i;
-> > > > +	int i, nid;
-> > > >  
-> > > >  	gfp |= __GFP_HIGHMEM;
-> > > >  
-> > > >  	for_each_possible_cpu(cpu) {
-> > > > +		nid = cpu_to_node(cpu);
-> > > > +		if (nid == NUMA_NO_NODE || !node_online(nid))
-> > > > +			nid = numa_mem_id();
-> > > 
-> > > Maybe we should fail this fallback if (gfp & __GFP_THISNODE) ?
-> > > 
-> > > Or maybe there is no support for this constraint in per-cpu allocator anyway.
-> > 
-> > I would be really curious about the usecase. Not to mention that pcp
-> > allocation would be effectively unusable on any setups with memory less
-> > nodes.
-> > 
-> 
-> Sorry, I briefly saw this thread last week but was on jury duty and got
-> sequestered when the fix fell into percpu-vm.c.
-> 
-> I'm also not involved with any hotplug work, so my forgive my limited
-> understanding.
-> 
-> I'm understanding this as a cpu/mem hotplug problem that we're papering
-> over with this fix. Given that, I should be looking to take this out
-> when the proper fix to the hotplug subsystem is added. Is that right?
+Hi all,
 
-Yes.
+This patch set v4 aims to refactor the thermal pressure update
+code. There are already two clients which do similar thing:
+convert the capped frequency value into the capacity of
+affected CPU and call the 'set' function to store the 
+reduced capacity into the per-cpu variable.
+There might be more than two of these users. In near future
+it will be scmi-cpufreq driver, which receives notification
+from FW about reduced frequency due to thermal. Other vendors
+might follow. Let's avoid code duplication and potential
+conversion bugs. Move the conversion code into the arch_topology.c
+where the capacity calculation setup code and thermal pressure sit.
 
-> > > I am a bit worried that we do not really know if pages are
-> > > allocated on the right node or not.
-> > 
-> > There hasn't been any guarantee like that. Page allocator would fallback
-> > to other nodes (in the node distance order) unless __GFP_THISNODE is
-> > specified. This patch just papers over the fact that currently we can
-> > end up having an invalid numa node associated with a cpu. This is a bug
-> > in the initialization code. Even if that is fixed the node fallback is
-> > still a real thing that might happen.
-> > 
-> 
-> Percpu has always allocated for_each_possible_cpu(). This means even
-> before a cpu online and corresponding numa node online, we're not
-> allocating on the right node anyway. But to me this just seems like a
-> straight up bug we're papering over as I said above for memoryless node
-> cpu hotplug.
+Apart from that $subject patches, there is one patch (3/5) which fixes
+issue in qcom-cpufreq-hw.c when the thermal pressure is not 
+updated for offline CPUs. It's similar fix that has been merged
+recently for cpufreq_cooling.c:
+2ad8ccc17d1e4270cf65a3f2
 
-Agreed. As mentioned elsewhere in the thread cpu_to_node resp.
-cpu_to_mem shouldn't return a garbage. 
+The patch 4/5 fixes also qcom-cpufreq-hw.c driver code which did
+the translation from frequency to capacity wrongly when there
+was a boost frequency available and stored in 'policy->cpuinfo.max_freq'.
+
+Changes:
+v4:
+- remove the warning when boost frequency is passed and set thermal
+  pressure to 0 in that case, which means the capping is totally removed
+  (issue reported by Steev)
+- remove the check from patch 4/5 with
+  'throttled_freq > policy->cpuinfo.max_freq' since it doesn't have
+  effect; instead relay on new arch_update_thermal_pressure() handling
+  correctly such use case; this would also fix an issue in that original
+  driver code, where the reduced capacity was calculated wrongly due
+  to 'policy->cpuinfo.max_freq' used as a divider
+- adjusted comments stressing the fact that the boost frequencies are
+  supported
+v3 [3]:
+- added warning and check if provided capped frequency is lower than
+  max (Viresh)
+- removed check for empty cpu mask (Viresh)
+- replaced tabs with spaces in the doxygen comment (Viresh)
+- renamed {arch|topology}_thermal_pressure_update() to
+  {arch|topology}_update_thermal_pressure() so it's align with scheme (Dietmar)
+- added info about MHz in freq_factor into patch description (Dietmar)
+v2 [2]:
+- added Reviewed-by from Thara for patch 3/5
+- changed the doxygen comment and used mult_frac()
+  according to Thara's suggestion in patch 1/5
+v1 -> [1]
+
+Regards,
+Lukasz Luba
+
+[1] https://lore.kernel.org/linux-pm/20211007080729.8262-1-lukasz.luba@arm.com/
+[2] https://lore.kernel.org/linux-pm/20211015144550.23719-1-lukasz.luba@arm.com/
+[3] https://lore.kernel.org/linux-pm/20211103161020.26714-1-lukasz.luba@arm.com/
+
+Lukasz Luba (5):
+  arch_topology: Introduce thermal pressure update function
+  thermal: cpufreq_cooling: Use new thermal pressure update function
+  cpufreq: qcom-cpufreq-hw: Update offline CPUs per-cpu thermal pressure
+  cpufreq: qcom-cpufreq-hw: Use new thermal pressure update function
+  arch_topology: Remove unused topology_set_thermal_pressure() and
+    related
+
+ arch/arm/include/asm/topology.h   |  2 +-
+ arch/arm64/include/asm/topology.h |  2 +-
+ drivers/base/arch_topology.c      | 42 ++++++++++++++++++++++++++++---
+ drivers/cpufreq/qcom-cpufreq-hw.c | 14 +++--------
+ drivers/thermal/cpufreq_cooling.c |  6 +----
+ include/linux/arch_topology.h     |  4 +--
+ include/linux/sched/topology.h    |  6 ++---
+ init/Kconfig                      |  2 +-
+ 8 files changed, 50 insertions(+), 28 deletions(-)
+
 -- 
-Michal Hocko
-SUSE Labs
+2.17.1
+
