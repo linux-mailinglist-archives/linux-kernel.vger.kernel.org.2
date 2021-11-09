@@ -2,99 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 879CB44A936
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 09:35:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E48B44A942
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 09:36:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237289AbhKIIiF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Nov 2021 03:38:05 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60120 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239048AbhKIIh4 (ORCPT
+        id S237774AbhKIIjF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Nov 2021 03:39:05 -0500
+Received: from m15112.mail.126.com ([220.181.15.112]:54318 "EHLO
+        m15112.mail.126.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235325AbhKIIjB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Nov 2021 03:37:56 -0500
-Received: from mail-pl1-x634.google.com (mail-pl1-x634.google.com [IPv6:2607:f8b0:4864:20::634])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 630BDC061766;
-        Tue,  9 Nov 2021 00:35:10 -0800 (PST)
-Received: by mail-pl1-x634.google.com with SMTP id y1so19598350plk.10;
-        Tue, 09 Nov 2021 00:35:10 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=o1cvMhjy6fdnuouwYm+15BaMU3WeB3ZqppuOOP+IdbA=;
-        b=NuT+usCXZoscybyvMzPhWmJzLdkr4FzjbII6e+EiSMU0jT0pDUnp0whPvULMcJHsWA
-         5UL0Fj1lfanlgShx2s9Vj8P8rrZVpFU0DEXTfz33PSF2FYvj8R4wooFR7KNru3u/Q5po
-         6v36EgJuQT70yDJX0YltUindh6/tmvzTGZsvjh7BPt8N5lR0bLdqLS51ExQIMxrifsFM
-         MZ509TmpP+ayPKvjDxmpR75mweuxM+MINhhub8rv4hHkgv7UoI87OlalSxZJwsTEWJYp
-         fESmSS/vuLk4NVsKQ0GtnMop3zmKzPi8D2YxvT+i/49v5gwd6/6evlxBtJObm6UWEoYU
-         IjoQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=o1cvMhjy6fdnuouwYm+15BaMU3WeB3ZqppuOOP+IdbA=;
-        b=FHnSiumbt29TzKrSsomdVKvRHUmjVDzXjO/ogZEWAgM2nPuB22/BLUVUg1Xo+6rhls
-         evtxMLnJo3AFNKTbccTVdEW8yOkDkY3RWDt+UvdXKm1SlkGeDUPYNbLs0TQ6av4cg0XY
-         l1LIR3/GWcPGmg45MG4jiTBHYckr9OEuXnQU9MZKUfyyfclvEm+kv6y/jVqCNYmkga8a
-         hnO3BIfKvOVi4bd+5Y2lH5dZJvsbuzn/qBVRtyGBF6l7bxBoRyieI1d8LUKagRsR9vCY
-         lLUyzJLi/31+9CxHF8qoF4WIyDnxVe06MIO52yGZ1zZbrN9w27pF28Zqm8cYcjPERLF/
-         RRzw==
-X-Gm-Message-State: AOAM532+FFN7Y7ZSvOnRC9MiwdBKTnk+lUerV7dDY7e8MTkMhZNSTg9g
-        s6e65hlAyJ3BQ+cke4Arqfc=
-X-Google-Smtp-Source: ABdhPJz1Bmf4Sahmca+Rh+H2qps0zm9EFfGfJvy/OSzIAS6mrpd8zFFFzPtQQDiSLpdRpJurU5eVHw==
-X-Received: by 2002:a17:902:8505:b0:142:892d:918 with SMTP id bj5-20020a170902850500b00142892d0918mr5468434plb.39.1636446909971;
-        Tue, 09 Nov 2021 00:35:09 -0800 (PST)
-Received: from localhost.localdomain ([193.203.214.57])
-        by smtp.gmail.com with ESMTPSA id e11sm1820296pjl.20.2021.11.09.00.35.07
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 09 Nov 2021 00:35:09 -0800 (PST)
-From:   cgel.zte@gmail.com
-X-Google-Original-From: chi.minghao@zte.com.cn
-To:     bbrezillon@kernel.org
-Cc:     arno@natisbad.org, schalla@marvell.com,
-        herbert@gondor.apana.org.au, davem@davemloft.net,
-        lbartosik@marvell.com, chi.minghao@zte.com.cn,
-        schandran@marvell.com, ebiggers@google.com,
-        ovidiu.panait@windriver.com, linux-crypto@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Zeal Robot <zealci@zte.com.cn>
-Subject: [PATCH] crypto:otx2_cptvf_algs: use swap() to make code cleaner
-Date:   Tue,  9 Nov 2021 08:35:03 +0000
-Message-Id: <20211109083503.131468-1-chi.minghao@zte.com.cn>
-X-Mailer: git-send-email 2.25.1
+        Tue, 9 Nov 2021 03:39:01 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=126.com;
+        s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=kla6R
+        9K9d3FCT77Y5F5AOks9pVDk12Rh6lbb/BxZbAQ=; b=NRg9h3K8gfc5Ktyaz0v1f
+        vYgI8onby/qLJMS86oBHZjZtFOJRqZI+gumdBvvYGYHR1VtyQDrlCUor4wI0b/rK
+        hmgIcal9uokbV4xc1+ludXBcOivuQq36imBiAEN38ugJO8zJXrfPL67WXXDlPy6o
+        WCdO7y4anANmG6wBqZxBEQ=
+Received: from pek-lpd-ccm5.wrs.com (unknown [60.247.85.82])
+        by smtp2 (Coremail) with SMTP id DMmowACnon7oMophVTTeBA--.41486S2;
+        Tue, 09 Nov 2021 16:36:03 +0800 (CST)
+From:   Zhaolong Zhang <zhangzl2013@126.com>
+To:     Tony Luck <tony.luck@intel.com>, Borislav Petkov <bp@alien8.de>,
+        Zhaolong Zhang <zhangzl2013@126.com>
+Cc:     x86@kernel.org, linux-edac@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        "Paul E . McKenney" <paulmck@kernel.org>
+Subject: [PATCH] x86/mce: Get rid of cpu_missing
+Date:   Tue,  9 Nov 2021 16:35:47 +0800
+Message-Id: <20211109083547.3546963-1-zhangzl2013@126.com>
+X-Mailer: git-send-email 2.27.0
+In-Reply-To: <776fad3d.3369.17d03d2c2ba.Coremail.zhangzl2013@126.com>
+References: <776fad3d.3369.17d03d2c2ba.Coremail.zhangzl2013@126.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: DMmowACnon7oMophVTTeBA--.41486S2
+X-Coremail-Antispam: 1Uf129KBjvJXoW7Zr1DAFWkJF1kJF18Gw15urg_yoW8Xr1xpr
+        4qv3WrtF4rZa43Cayqy3Z3Zw18A3s3Ka4xG3y7Cw43Xw13ta43tFZ3Xwn5ZF17u395Gr13
+        XFWFqF15KayxJaDanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x07UZjjkUUUUU=
+X-Originating-IP: [60.247.85.82]
+X-CM-SenderInfo: x2kd0wt2osiiat6rjloofrz/1tbikhNGz1pEEwILtgAAs6
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: chiminghao <chi.minghao@zte.com.cn>
+Drop cpu_missing since we have more capable mce_missing_cpus.
 
-Fix the following coccicheck REVIEW:
-./drivers/crypto/marvell/octeontx2/otx2_cptvf_algs.c:1688:16-17 use swap() to make code cleaner
-
-Reported-by: Zeal Robot <zealci@zte.com.cn>
-Signed-off-by: chiminghao <chi.minghao@zte.com.cn>
+Suggested-by: Borislav Petkov <bp@suse.de>
+Signed-off-by: Zhaolong Zhang <zhangzl2013@126.com>
 ---
- drivers/crypto/marvell/octeontx2/otx2_cptvf_algs.c | 5 +----
- 1 file changed, 1 insertion(+), 4 deletions(-)
+ arch/x86/kernel/cpu/mce/core.c | 5 -----
+ 1 file changed, 5 deletions(-)
 
-diff --git a/drivers/crypto/marvell/octeontx2/otx2_cptvf_algs.c b/drivers/crypto/marvell/octeontx2/otx2_cptvf_algs.c
-index 877a948469bd..2748a3327e39 100644
---- a/drivers/crypto/marvell/octeontx2/otx2_cptvf_algs.c
-+++ b/drivers/crypto/marvell/octeontx2/otx2_cptvf_algs.c
-@@ -1682,11 +1682,8 @@ static void swap_func(void *lptr, void *rptr, int size)
+diff --git a/arch/x86/kernel/cpu/mce/core.c b/arch/x86/kernel/cpu/mce/core.c
+index 50a3e455cded..51aefffe39f1 100644
+--- a/arch/x86/kernel/cpu/mce/core.c
++++ b/arch/x86/kernel/cpu/mce/core.c
+@@ -99,7 +99,6 @@ struct mca_config mca_cfg __read_mostly = {
+ 
+ static DEFINE_PER_CPU(struct mce, mces_seen);
+ static unsigned long mce_need_notify;
+-static int cpu_missing;
+ 
+ /*
+  * MCA banks polled by the period polling timer for corrected events.
+@@ -314,8 +313,6 @@ static void mce_panic(const char *msg, struct mce *final, char *exp)
+ 		if (!apei_err)
+ 			apei_err = apei_write_mce(final);
+ 	}
+-	if (cpu_missing)
+-		pr_emerg(HW_ERR "Some CPUs didn't answer in synchronization\n");
+ 	if (exp)
+ 		pr_emerg(HW_ERR "Machine check: %s\n", exp);
+ 	if (!fake_panic) {
+@@ -909,7 +906,6 @@ static int mce_timed_out(u64 *t, const char *msg)
+ 					 cpumask_pr_args(&mce_missing_cpus));
+ 			mce_panic(msg, NULL, NULL);
+ 		}
+-		cpu_missing = 1;
+ 		return 1;
+ 	}
+ 	*t -= SPINUNIT;
+@@ -2720,7 +2716,6 @@ struct dentry *mce_get_debugfs_dir(void)
+ 
+ static void mce_reset(void)
  {
- 	struct cpt_device_desc *ldesc = lptr;
- 	struct cpt_device_desc *rdesc = rptr;
--	struct cpt_device_desc desc;
- 
--	desc = *ldesc;
--	*ldesc = *rdesc;
--	*rdesc = desc;
-+	swap(*ldesc, *rdesc);
- }
- 
- int otx2_cpt_crypto_init(struct pci_dev *pdev, struct module *mod,
+-	cpu_missing = 0;
+ 	atomic_set(&mce_fake_panicked, 0);
+ 	atomic_set(&mce_executing, 0);
+ 	atomic_set(&mce_callin, 0);
 -- 
-2.25.1
+2.27.0
 
