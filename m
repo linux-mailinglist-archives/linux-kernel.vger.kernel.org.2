@@ -2,127 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0DD90449F6A
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 01:20:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0B2A9449F71
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 01:22:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241190AbhKIAWv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Nov 2021 19:22:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33432 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231793AbhKIAWt (ORCPT
+        id S237591AbhKIAZI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Nov 2021 19:25:08 -0500
+Received: from outgoing-stata.csail.mit.edu ([128.30.2.210]:53053 "EHLO
+        outgoing-stata.csail.mit.edu" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231793AbhKIAZH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Nov 2021 19:22:49 -0500
-Received: from mail-yb1-xb35.google.com (mail-yb1-xb35.google.com [IPv6:2607:f8b0:4864:20::b35])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C800CC061570;
-        Mon,  8 Nov 2021 16:20:04 -0800 (PST)
-Received: by mail-yb1-xb35.google.com with SMTP id u60so32439992ybi.9;
-        Mon, 08 Nov 2021 16:20:04 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=q+19nBfRNpo6Y86z6kv2X8Ob+JQpejAbhm0Zous8mTU=;
-        b=R+/Wz1haZE62GVuxS8p7cIkyS8jnoxqDJp8QL12goFC2bfXvbr5rl75Xku0ANNZVi7
-         6EIrEpyKeRklDQV6B+zlbiDyIpyG5j0nDbSJKQRBZX7ZOZfOcbNU1T5GpQXGxu8532Rq
-         bQdwzrh5xx2xj2vk3WPmdNxOdafMVnTBjzVowEJlm67rdFjIQq+nejSSr04nUFiNWJDy
-         5lYkXjOFzsbhrq9c8MzK8F/v9mgIUDu0cgT49f8CD+ujudwLc0Vs2lOebMgecDd/omOy
-         f+SnW4LGtgcp+6N9OHvOGRKUTAbQpAbvXi6WKtVnWc1uhg4HvTFeICTwHSbLdpBiYS5W
-         Zk8g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=q+19nBfRNpo6Y86z6kv2X8Ob+JQpejAbhm0Zous8mTU=;
-        b=wLTg+Tm7oLAHFHXjrunj1uOhDLXgNJEGMICeG73djvxLPG7Ri2lovBGhH+8mGtBv09
-         qRFbv3w57qgLPJypywofzvGahRcXSysKbP1zlop4LV0Usdl3Nt+oO/zyN4thuwxe02sx
-         IFuwASH1GsZP9f5u8gNFqvFYI/ZeTqgAmp0AujfBu9Y785Mj3tIBONaI5+QMJ9LOCDcf
-         phSziOes5j1X5+kL0JtMNy/EkPeuGqeFo4MplsOZt0o5ikVZR5vfSN9/gBIGTtSeiOSa
-         DVnXcmAyQKOTDHndFnx3Vvf1wYqj/mhUhwE0OfJZEIobChWQZjfNHMDdc5j+6xuKzRT2
-         KlsA==
-X-Gm-Message-State: AOAM532GtfavJifX0sle2VZJ2XpMiYfnI6ihisECEHnxqILw7BW/oVdo
-        /Usrx02m8MXK8dDOj9IIHv/GfFEuRbNjNysfe6s=
-X-Google-Smtp-Source: ABdhPJzlF0V0/9y5SlEu+hDsVSOHPsuoD0CYtV+k4hHykhk9iSkqUCRHR+uL8N74nP+LrZ3xp7QgEGcOz9NZDMEoC5M=
-X-Received: by 2002:a25:c792:: with SMTP id w140mr3781812ybe.131.1636417204107;
- Mon, 08 Nov 2021 16:20:04 -0800 (PST)
+        Mon, 8 Nov 2021 19:25:07 -0500
+Received: from c-24-16-8-193.hsd1.wa.comcast.net ([24.16.8.193] helo=srivatsab-a02.vmware.com)
+        by outgoing-stata.csail.mit.edu with esmtpsa (TLS1.2:RSA_AES_128_CBC_SHA1:128)
+        (Exim 4.82)
+        (envelope-from <srivatsa@csail.mit.edu>)
+        id 1mkEu2-000R2P-5t; Mon, 08 Nov 2021 19:22:18 -0500
+To:     Joe Perches <joe@perches.com>, jgross@suse.com, x86@kernel.org,
+        pv-drivers@vmware.com
+Cc:     Nadav Amit <namit@vmware.com>, Vivek Thampi <vithampi@vmware.com>,
+        Vishal Bhakta <vbhakta@vmware.com>,
+        Ronak Doshi <doshir@vmware.com>,
+        linux-graphics-maintainer@vmware.com,
+        dri-devel@lists.freedesktop.org, linux-rdma@vger.kernel.org,
+        linux-scsi@vger.kernel.org, netdev@vger.kernel.org,
+        linux-input@vger.kernel.org, Zack Rusin <zackr@vmware.com>,
+        sdeep@vmware.com, amakhalov@vmware.com,
+        virtualization@lists.linux-foundation.org, keerthanak@vmware.com,
+        srivatsab@vmware.com, anishs@vmware.com,
+        linux-kernel@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
+        gregkh@linuxfoundation.org
+References: <163640336232.62866.489924062999332446.stgit@srivatsa-dev>
+ <163640339370.62866.3435211389009241865.stgit@srivatsa-dev>
+ <5179a7c097e0bb88f95642a394f53c53e64b66b1.camel@perches.com>
+From:   "Srivatsa S. Bhat" <srivatsa@csail.mit.edu>
+Subject: Re: [PATCH 2/2] MAINTAINERS: Mark VMware mailing list entries as
+ private
+Message-ID: <cb03ca42-b777-3d1a-5aba-b01cd19efa9a@csail.mit.edu>
+Date:   Mon, 8 Nov 2021 16:22:14 -0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.12.0
 MIME-Version: 1.0
-References: <20211103173127.13701-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
- <20211103173127.13701-3-prabhakar.mahadev-lad.rj@bp.renesas.com> <CAMuHMdUPYYfPu7NDE2uh9woP7p6_53XinASH-=USG5qwN2m=hA@mail.gmail.com>
-In-Reply-To: <CAMuHMdUPYYfPu7NDE2uh9woP7p6_53XinASH-=USG5qwN2m=hA@mail.gmail.com>
-From:   "Lad, Prabhakar" <prabhakar.csengg@gmail.com>
-Date:   Tue, 9 Nov 2021 00:19:38 +0000
-Message-ID: <CA+V-a8t+Kb2dN8zDV9LNOfiQX=1JnsJnFPdCbV0iEZDF5rqhtw@mail.gmail.com>
-Subject: Re: [PATCH 2/3] dt-bindings: serial: renesas,sci: Document RZ/G2L SoC
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        "open list:SERIAL DRIVERS" <linux-serial@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
-        Biju Das <biju.das.jz@bp.renesas.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <5179a7c097e0bb88f95642a394f53c53e64b66b1.camel@perches.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Geert,
++Greg, Thomas
 
-On Mon, Nov 8, 2021 at 4:21 PM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
->
-> On Wed, Nov 3, 2021 at 6:31 PM Lad Prabhakar
-> <prabhakar.mahadev-lad.rj@bp.renesas.com> wrote:
-> > Add SCI binding documentation for Renesas RZ/G2L SoC.
-> >
-> > Also update the example node with real world DT node.
-> >
-> > Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-> > Reviewed-by: Biju Das <biju.das.jz@bp.renesas.com>
->
-> > --- a/Documentation/devicetree/bindings/serial/renesas,sci.yaml
-> > +++ b/Documentation/devicetree/bindings/serial/renesas,sci.yaml
->
-> > @@ -54,18 +58,45 @@ required:
-> >    - clocks
-> >    - clock-names
-> >
-> > +if:
-> > +  properties:
-> > +    compatible:
-> > +      contains:
-> > +        enum:
-> > +          - renesas,r9a07g044-sci
-> > +then:
-> > +  properties:
-> > +    resets:
-> > +      maxItems: 1
-> > +
-> > +    power-domains:
-> > +      maxItems: 1
-> > +
-> > +  required:
-> > +    - resets
-> > +    - power-domains
->
-> We really should make interrupt-names required everywhere, after
-> fixing the H8/300 DTS files.
->
-Agreed, also in other scif*.yaml files this needs fixing.
+Hi Joe,
 
-Cheers,
-Prabhakar
+On 11/8/21 3:37 PM, Joe Perches wrote:
+> On Mon, 2021-11-08 at 12:30 -0800, Srivatsa S. Bhat wrote:
+>> From: Srivatsa S. Bhat (VMware) <srivatsa@csail.mit.edu>
+>>
+>> VMware mailing lists in the MAINTAINERS file are private lists meant
+>> for VMware-internal review/notification for patches to the respective
+>> subsystems. So, in an earlier discussion [1][2], it was recommended to
+>> mark them as such. Update all the remaining VMware mailing list
+>> references to use that format -- "L: list@address (private)".
+> []
+>> diff --git a/MAINTAINERS b/MAINTAINERS
+> []
+>> @@ -6134,8 +6134,8 @@ T:	git git://anongit.freedesktop.org/drm/drm-misc
+>>  F:	drivers/gpu/drm/vboxvideo/
+>>  
+>>  DRM DRIVER FOR VMWARE VIRTUAL GPU
+>> -M:	"VMware Graphics" <linux-graphics-maintainer@vmware.com>
+>>  M:	Zack Rusin <zackr@vmware.com>
+>> +L:	linux-graphics-maintainer@vmware.com (private)
+> 
+> This MAINTAINERS file is for _public_ use, marking something
+> non-public isn't useful.
+> 
+> private makes no sense and likely these L: entries shouldn't exist.
+> 
+> 
 
-> Gr{oetje,eeting}s,
->
->                         Geert
->
-> --
-> Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
->
-> In personal conversations with technical people, I call myself a hacker. But
-> when I'm talking to journalists I just say "programmer" or something like that.
->                                 -- Linus Torvalds
+Well, the public can send messages to this list, but membership is
+restricted.
+
+In many ways, I believe this is similar to x86@kernel.org, which is an
+email alias that anyone can post to in order to reach the x86
+maintainer community for patch review. I see x86@kernel.org listed as
+both L: and M: in the MAINTAINERS file, among different entries.
+
+Although the @vmware list ids refer to VMware-internal mailing lists
+as opposed to email aliases, they serve a very similar purpose -- to
+inform VMware folks about patches to the relevant subsystems.
+
+Is there a consensus on how such lists should be specified? One
+suggestion (from Greg in the email thread referenced above) was to
+mark it as private, which is what this patch does. Maybe we can find a
+better alternative?
+
+How about specifying such lists using M: (indicating that this address
+can be used to reach maintainers), as long as that is not the only M:
+entry for a given subsystem (i.e., it includes real people's email id
+as well)? I think that would address Greg's primary objection too from
+that other thread (related to personal responsibility as maintainers).
+
+Regards,
+Srivatsa
