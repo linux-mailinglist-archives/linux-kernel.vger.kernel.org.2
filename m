@@ -2,235 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 75D6744B16E
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 17:44:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8438A44B16F
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 17:46:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238382AbhKIQrd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Nov 2021 11:47:33 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59890 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238129AbhKIQra (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Nov 2021 11:47:30 -0500
-Received: from mail-lj1-x236.google.com (mail-lj1-x236.google.com [IPv6:2a00:1450:4864:20::236])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 416B9C061767
-        for <linux-kernel@vger.kernel.org>; Tue,  9 Nov 2021 08:44:44 -0800 (PST)
-Received: by mail-lj1-x236.google.com with SMTP id 1so37500733ljv.2
-        for <linux-kernel@vger.kernel.org>; Tue, 09 Nov 2021 08:44:44 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=zbEeFT9w836IBoUS4GyHRkWfg1L5EahnC9mnhgRpa3s=;
-        b=O/Xk2B4gCaBgszZRqe5iECJPVDp9fgs4np5MIxs6v9rBORhGS6rUWSA/UBp6OvZeNf
-         9rCKhDC3T6UMxauO1Mr2tCrnrQnDQRQwLdjfPStGf2Pv1P8L0WID+i8VXtUHtQmq0QvS
-         GMng+YAE6gQtqBir21OG7ztaOJAUEYsU/4UefVts4Y3XdYXn1lqQZVa+WUQGjrbHwUHf
-         YqIv9W1vdoQ90SOQVrZv99lUsWneQ9vBcUyPSRok0pQyT9voLldbOEG8ZllIJtwiPToM
-         v2sOYJNebzOOorfNiXdWfRJ2YEhghgMmL5tv2jj/dWf8L8dDx+3ftHUOC9jio0udaM/X
-         DkWQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=zbEeFT9w836IBoUS4GyHRkWfg1L5EahnC9mnhgRpa3s=;
-        b=OjT90Gk4k0M2kWaLqAAUbjIwfF21NFm5AlQpUY0hHemRa+r3oKKVCphsJ46cogN+JE
-         /mWfF6Tu45oEEavCBHYXLKOMEXJc4oNs0odaNIIzbVKJyWqYL5wOHazUdgpi06u+Sq5x
-         Etb8tRKRN/9+ZZzS5EO7v2bEz1HHHmTH0/2whOh0OsNwiQUbW3uo57cTeJ7TYYVdfrec
-         6lYdew6+Cj5Jzq9KyuYx8mNw5zTKu8NXkjDd+YaYfyfXMmhRQqQ9fX4xSGIEUutCz3y0
-         OrsDxhXnJ9QSIVigKoOzG+AKv+QOEUP2D/y4S7YT1rJ6VBgTa6btBk73w7JZk2VMFd10
-         LDig==
-X-Gm-Message-State: AOAM530Z/mvQbJSrrg3ShadSWbj7lZ4WhX2ippK95OuFAUf0lkHQ1mD2
-        RudxUVtgw1rUZEiS/gt+nnMIew==
-X-Google-Smtp-Source: ABdhPJyzTBHeQ8PnKC2U7iuglUGCvnD+FFnA9QpJYme7wrZeYt+Q7U2OEsjuI9Wxy55/GZ1kmtUVUw==
-X-Received: by 2002:a2e:b013:: with SMTP id y19mr9034035ljk.132.1636476281128;
-        Tue, 09 Nov 2021 08:44:41 -0800 (PST)
-Received: from localhost ([31.134.121.151])
-        by smtp.gmail.com with ESMTPSA id p3sm737647lfo.162.2021.11.09.08.44.40
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 09 Nov 2021 08:44:40 -0800 (PST)
-From:   Sam Protsenko <semen.protsenko@linaro.org>
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        Sylwester Nawrocki <s.nawrocki@samsung.com>,
-        =?UTF-8?q?Pawe=C5=82=20Chmiel?= <pawel.mikolaj.chmiel@gmail.com>,
-        Chanwoo Choi <cw00.choi@samsung.com>,
-        Tomasz Figa <tomasz.figa@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>
-Cc:     Sumit Semwal <sumit.semwal@linaro.org>, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-clk@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-samsung-soc@vger.kernel.org
-Subject: [PATCH 2/2] clk: samsung: exynos850: Implement CMU_CMGP domain
-Date:   Tue,  9 Nov 2021 18:44:36 +0200
-Message-Id: <20211109164436.11098-3-semen.protsenko@linaro.org>
+        id S238308AbhKIQs4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Nov 2021 11:48:56 -0500
+Received: from mail.kernel.org ([198.145.29.99]:59616 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235519AbhKIQsy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Nov 2021 11:48:54 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4954E60234;
+        Tue,  9 Nov 2021 16:46:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1636476368;
+        bh=7mn3/Rzgs0AY9qDCuvn0WhLRmfJQywPw9A8MRDDKzLU=;
+        h=From:To:Cc:Subject:Date:From;
+        b=j6yw2Ps7uuFlnMGF0owr7OGP80m62VT+w0TM2iomPo2uDkg1kTL0SRyeL3mt2a65F
+         bLFfWW/U2YlV0Qn6VM2XkVKdySdSDRuze4fOBhcB0SW5vD77E8XDbSrOMvu5BQ8E2F
+         qvCxyqVFxjSMX9fdCYeOF0JjLEThic83ZbtcZQJXkHwWY0JOgdYCIgJa6+jY0SvTnT
+         hIIKnmo4IVhGcaMWYeZLIGirS9lvrt59qeAzE03e1gaVrfn/gl3bsHJtigzGR+WtH/
+         AZIW5ZRpzGMJ/ru4B1k6b3T1lpaR3iSd2+oGSeq6+OU0whz4NzllZBpMQDlrGtRguW
+         Ii+9VL5BhXP2Q==
+From:   Ard Biesheuvel <ardb@kernel.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     linux-arm-kernel@lists.infradead.org,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Jason Baron <jbaron@akamai.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Kees Cook <keescook@chromium.org>
+Subject: [RFC PATCH 0/7] static call updates
+Date:   Tue,  9 Nov 2021 17:45:42 +0100
+Message-Id: <20211109164549.1724710-1-ardb@kernel.org>
 X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20211109164436.11098-1-semen.protsenko@linaro.org>
-References: <20211109164436.11098-1-semen.protsenko@linaro.org>
 MIME-Version: 1.0
+X-Developer-Signature: v=1; a=openpgp-sha256; l=2171; h=from:subject; bh=7mn3/Rzgs0AY9qDCuvn0WhLRmfJQywPw9A8MRDDKzLU=; b=owEB7QES/pANAwAKAcNPIjmS2Y8kAcsmYgBhiqWtdRyFdrqkl7Sd3XUJ9SOKDd1pSdhC9TrPDDe5 rN0/E46JAbMEAAEKAB0WIQT72WJ8QGnJQhU3VynDTyI5ktmPJAUCYYqlrQAKCRDDTyI5ktmPJAdPDA CwXhR4xwEapGvcZK4fNMZFehNUvYIv3ZQsaYUL6iMrcu9OD+SFcRwv94D3QGQhWFazkcJ1Pk9PIlxb PTsV/1U0LffZZj2Qk7iXErj6YwB1+99oVGvk5qDoZRg4IasHhTITiQ2lgXWxqyMTCDpBMztL9r+l0H C3l6cSLQc5DNfm+Db+WXJMVH6TTwIcZ4ITjKCmAoG485mzUDUyyk7jevxZPjtJynceOGnpIRJrb4Dq 4fsiermi8hm/nxblWPZ1wZvt1wWo50yNz076qsgI6akY0FFceGBWMhYcXhy+yKCNZFUedC6vugBLNy Uf7IW7TZGIymPe0vfT+aR/89f0T9snG1KZjdRqbtjOOve24nO3x0RKyHQ25hgOeXcqr8k4s4GQKJUU IGHDpuVLwvquqfBH+3UVbveQ/2/wWx4T0ZHRKB/lp+yVNE4XFecWUetjnFrJ5YtRZZNohIsRfVwvbd +Vx8jrsmk7geL4tmsIUzmpLbfiTW2eU23wjujvnkAMsZs=
+X-Developer-Key: i=ardb@kernel.org; a=openpgp; fpr=F43D03328115A198C90016883D200E9CA6329909
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-CMU_CMGP clock domain provides clocks for CMGP IP-core (Common GPIO).
-CMGP module incapsulates next blocks:
-  - 8 GPIO lines
-  - 1 GPADC
-  - 2 USI blocks, each can be configured to provide one of
-    UART/SPI/HSI2C serial interfaces
+This series addresses a number of asymmetries and inconsistencies in
+both the API and the implementation of static calls. The aim is to
+ensure that the documented API is fully implemented and works correctly,
+regardless of which variety of static calls the arch decides to
+implement.
 
-Signed-off-by: Sam Protsenko <semen.protsenko@linaro.org>
----
- drivers/clk/samsung/clk-exynos850.c   | 100 ++++++++++++++++++++++++++
- include/dt-bindings/clock/exynos850.h |  17 +++++
- 2 files changed, 117 insertions(+)
+Another goal of this series is to ensure that the caller of the API does
+not need to choose a particular kind of macro depending on whether the
+static call exports its key and/or whether the static call in question
+may implement the NULL flavor.
 
-diff --git a/drivers/clk/samsung/clk-exynos850.c b/drivers/clk/samsung/clk-exynos850.c
-index ecffa5c7a081..6965e1b44d24 100644
---- a/drivers/clk/samsung/clk-exynos850.c
-+++ b/drivers/clk/samsung/clk-exynos850.c
-@@ -492,6 +492,103 @@ static const struct samsung_cmu_info apm_cmu_info __initconst = {
- 	.clk_name		= "dout_clkcmu_apm_bus",
- };
- 
-+/* ---- CMU_CMGP ------------------------------------------------------------ */
-+
-+/* Register Offset definitions for CMU_CMGP (0x11c00000) */
-+#define CLK_CON_MUX_CLK_CMGP_ADC		0x1000
-+#define CLK_CON_MUX_MUX_CLK_CMGP_USI_CMGP0	0x1004
-+#define CLK_CON_MUX_MUX_CLK_CMGP_USI_CMGP1	0x1008
-+#define CLK_CON_DIV_DIV_CLK_CMGP_ADC		0x1800
-+#define CLK_CON_DIV_DIV_CLK_CMGP_USI_CMGP0	0x1804
-+#define CLK_CON_DIV_DIV_CLK_CMGP_USI_CMGP1	0x1808
-+#define CLK_CON_GAT_GOUT_CMGP_ADC_PCLK_S0	0x200c
-+#define CLK_CON_GAT_GOUT_CMGP_ADC_PCLK_S1	0x2010
-+#define CLK_CON_GAT_GOUT_CMGP_GPIO_PCLK		0x2018
-+#define CLK_CON_GAT_GOUT_CMGP_USI_CMGP0_IPCLK	0x2044
-+#define CLK_CON_GAT_GOUT_CMGP_USI_CMGP0_PCLK	0x2048
-+#define CLK_CON_GAT_GOUT_CMGP_USI_CMGP1_IPCLK	0x204c
-+#define CLK_CON_GAT_GOUT_CMGP_USI_CMGP1_PCLK	0x2050
-+
-+static const unsigned long cmgp_clk_regs[] __initconst = {
-+	CLK_CON_MUX_CLK_CMGP_ADC,
-+	CLK_CON_MUX_MUX_CLK_CMGP_USI_CMGP0,
-+	CLK_CON_MUX_MUX_CLK_CMGP_USI_CMGP1,
-+	CLK_CON_DIV_DIV_CLK_CMGP_ADC,
-+	CLK_CON_DIV_DIV_CLK_CMGP_USI_CMGP0,
-+	CLK_CON_DIV_DIV_CLK_CMGP_USI_CMGP1,
-+	CLK_CON_GAT_GOUT_CMGP_ADC_PCLK_S0,
-+	CLK_CON_GAT_GOUT_CMGP_ADC_PCLK_S1,
-+	CLK_CON_GAT_GOUT_CMGP_GPIO_PCLK,
-+	CLK_CON_GAT_GOUT_CMGP_USI_CMGP0_IPCLK,
-+	CLK_CON_GAT_GOUT_CMGP_USI_CMGP0_PCLK,
-+	CLK_CON_GAT_GOUT_CMGP_USI_CMGP1_IPCLK,
-+	CLK_CON_GAT_GOUT_CMGP_USI_CMGP1_PCLK,
-+};
-+
-+/* List of parent clocks for Muxes in CMU_CMGP */
-+PNAME(mout_cmgp_usi0_p)	= { "clk_rco_cmgp", "gout_clkcmu_cmgp_bus" };
-+PNAME(mout_cmgp_usi1_p)	= { "clk_rco_cmgp", "gout_clkcmu_cmgp_bus" };
-+PNAME(mout_cmgp_adc_p)	= { "oscclk", "dout_cmgp_adc" };
-+
-+static const struct samsung_fixed_rate_clock cmgp_fixed_clks[] __initconst = {
-+	FRATE(CLK_RCO_CMGP, "clk_rco_cmgp", NULL, 0, 49152000),
-+};
-+
-+static const struct samsung_mux_clock cmgp_mux_clks[] __initconst = {
-+	MUX(CLK_MOUT_CMGP_ADC, "mout_cmgp_adc", mout_cmgp_adc_p,
-+	    CLK_CON_MUX_CLK_CMGP_ADC, 0, 1),
-+	MUX(CLK_MOUT_CMGP_USI0, "mout_cmgp_usi0", mout_cmgp_usi0_p,
-+	    CLK_CON_MUX_MUX_CLK_CMGP_USI_CMGP0, 0, 1),
-+	MUX(CLK_MOUT_CMGP_USI1, "mout_cmgp_usi1", mout_cmgp_usi1_p,
-+	    CLK_CON_MUX_MUX_CLK_CMGP_USI_CMGP1, 0, 1),
-+};
-+
-+static const struct samsung_div_clock cmgp_div_clks[] __initconst = {
-+	DIV(CLK_DOUT_CMGP_ADC, "dout_cmgp_adc", "gout_clkcmu_cmgp_bus",
-+	    CLK_CON_DIV_DIV_CLK_CMGP_ADC, 0, 4),
-+	DIV(CLK_DOUT_CMGP_USI0, "dout_cmgp_usi0", "mout_cmgp_usi0",
-+	    CLK_CON_DIV_DIV_CLK_CMGP_USI_CMGP0, 0, 5),
-+	DIV(CLK_DOUT_CMGP_USI1, "dout_cmgp_usi1", "mout_cmgp_usi1",
-+	    CLK_CON_DIV_DIV_CLK_CMGP_USI_CMGP1, 0, 5),
-+};
-+
-+static const struct samsung_gate_clock cmgp_gate_clks[] __initconst = {
-+	GATE(CLK_GOUT_CMGP_ADC_S0_PCLK, "gout_adc_s0_pclk",
-+	     "gout_clkcmu_cmgp_bus",
-+	     CLK_CON_GAT_GOUT_CMGP_ADC_PCLK_S0, 21, 0, 0),
-+	GATE(CLK_GOUT_CMGP_ADC_S1_PCLK, "gout_adc_s1_pclk",
-+	     "gout_clkcmu_cmgp_bus",
-+	     CLK_CON_GAT_GOUT_CMGP_ADC_PCLK_S1, 21, 0, 0),
-+	GATE(CLK_GOUT_CMGP_GPIO_PCLK, "gout_gpio_cmgp_pclk",
-+	     "gout_clkcmu_cmgp_bus",
-+	     CLK_CON_GAT_GOUT_CMGP_GPIO_PCLK, 21, 0, 0),
-+	GATE(CLK_GOUT_CMGP_USI0_IPCLK, "gout_cmgp_usi0_ipclk", "dout_cmgp_usi0",
-+	     CLK_CON_GAT_GOUT_CMGP_USI_CMGP0_IPCLK, 21, 0, 0),
-+	GATE(CLK_GOUT_CMGP_USI0_PCLK, "gout_cmgp_usi0_pclk",
-+	     "gout_clkcmu_cmgp_bus",
-+	     CLK_CON_GAT_GOUT_CMGP_USI_CMGP0_PCLK, 21, 0, 0),
-+	GATE(CLK_GOUT_CMGP_USI1_IPCLK, "gout_cmgp_usi1_ipclk", "dout_cmgp_usi1",
-+	     CLK_CON_GAT_GOUT_CMGP_USI_CMGP1_IPCLK, 21, 0, 0),
-+	GATE(CLK_GOUT_CMGP_USI1_PCLK, "gout_cmgp_usi1_pclk",
-+	     "gout_clkcmu_cmgp_bus",
-+	     CLK_CON_GAT_GOUT_CMGP_USI_CMGP1_PCLK, 21, 0, 0),
-+};
-+
-+static const struct samsung_cmu_info cmgp_cmu_info __initconst = {
-+	.mux_clks		= cmgp_mux_clks,
-+	.nr_mux_clks		= ARRAY_SIZE(cmgp_mux_clks),
-+	.div_clks		= cmgp_div_clks,
-+	.nr_div_clks		= ARRAY_SIZE(cmgp_div_clks),
-+	.gate_clks		= cmgp_gate_clks,
-+	.nr_gate_clks		= ARRAY_SIZE(cmgp_gate_clks),
-+	.fixed_clks		= cmgp_fixed_clks,
-+	.nr_fixed_clks		= ARRAY_SIZE(cmgp_fixed_clks),
-+	.nr_clk_ids		= CMGP_NR_CLK,
-+	.clk_regs		= cmgp_clk_regs,
-+	.nr_clk_regs		= ARRAY_SIZE(cmgp_clk_regs),
-+	.clk_name		= "gout_clkcmu_cmgp_bus",
-+};
-+
- /* ---- CMU_HSI ------------------------------------------------------------- */
- 
- /* Register Offset definitions for CMU_HSI (0x13400000) */
-@@ -956,6 +1053,9 @@ static const struct of_device_id exynos850_cmu_of_match[] = {
- 	{
- 		.compatible = "samsung,exynos850-cmu-apm",
- 		.data = &apm_cmu_info,
-+	}, {
-+		.compatible = "samsung,exynos850-cmu-cmgp",
-+		.data = &cmgp_cmu_info,
- 	}, {
- 		.compatible = "samsung,exynos850-cmu-hsi",
- 		.data = &hsi_cmu_info,
-diff --git a/include/dt-bindings/clock/exynos850.h b/include/dt-bindings/clock/exynos850.h
-index df3978b58304..8aa5e82af0d3 100644
---- a/include/dt-bindings/clock/exynos850.h
-+++ b/include/dt-bindings/clock/exynos850.h
-@@ -84,6 +84,23 @@
- #define CLK_GOUT_SPEEDY_PCLK		21
- #define APM_NR_CLK			22
- 
-+/* CMU_CMGP */
-+#define CLK_RCO_CMGP			1
-+#define CLK_MOUT_CMGP_ADC		2
-+#define CLK_MOUT_CMGP_USI0		3
-+#define CLK_MOUT_CMGP_USI1		4
-+#define CLK_DOUT_CMGP_ADC		5
-+#define CLK_DOUT_CMGP_USI0		6
-+#define CLK_DOUT_CMGP_USI1		7
-+#define CLK_GOUT_CMGP_ADC_S0_PCLK	8
-+#define CLK_GOUT_CMGP_ADC_S1_PCLK	9
-+#define CLK_GOUT_CMGP_GPIO_PCLK		10
-+#define CLK_GOUT_CMGP_USI0_IPCLK	11
-+#define CLK_GOUT_CMGP_USI0_PCLK		12
-+#define CLK_GOUT_CMGP_USI1_IPCLK	13
-+#define CLK_GOUT_CMGP_USI1_PCLK		14
-+#define CMGP_NR_CLK			15
-+
- /* CMU_HSI */
- #define CLK_MOUT_HSI_BUS_USER		1
- #define CLK_MOUT_HSI_MMC_CARD_USER	2
+Cc: Peter Zijlstra <peterz@infradead.org>
+Cc: Josh Poimboeuf <jpoimboe@redhat.com>
+Cc: Jason Baron <jbaron@akamai.com>
+Cc: Steven Rostedt <rostedt@goodmis.org>
+Cc: Mark Rutland <mark.rutland@arm.com>
+Cc: Kees Cook <keescook@chromium.org>
+
+Ard Biesheuvel (7):
+  static_call: get rid of static_call_cond()
+  static_call: deal with unexported keys without cluttering up the API
+  static_call: use helper to access non-exported key
+  static_call: fix broken static_call_query() for non-exported keys
+  static_call: use non-function types to refer to the trampolines
+  static_call: rename EXPORT_ macros to be more self-explanatory
+  static_call: add generic support for non-exported keys
+
+ arch/x86/events/core.c                  |  20 ++--
+ arch/x86/include/asm/kvm_host.h         |   4 +-
+ arch/x86/include/asm/preempt.h          |   4 +-
+ arch/x86/include/asm/static_call.h      |   6 -
+ arch/x86/kvm/irq.c                      |   2 +-
+ arch/x86/kvm/x86.c                      |  10 +-
+ include/asm-generic/vmlinux.lds.h       |   5 +-
+ include/linux/kernel.h                  |   2 +-
+ include/linux/sched.h                   |   2 +-
+ include/linux/static_call.h             | 117 +++++++++-----------
+ include/linux/static_call_types.h       |  54 +++++----
+ kernel/extable.c                        |   1 +
+ kernel/sched/core.c                     |   8 +-
+ kernel/static_call.c                    |  29 +----
+ tools/include/linux/static_call_types.h |  54 +++++----
+ tools/objtool/check.c                   |  43 ++++---
+ 16 files changed, 174 insertions(+), 187 deletions(-)
+
 -- 
 2.30.2
 
