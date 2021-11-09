@@ -2,178 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4417E44A957
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 09:39:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BBC1844A95C
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 09:39:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244321AbhKIImV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Nov 2021 03:42:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33142 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244305AbhKIImU (ORCPT
+        id S244341AbhKIImd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Nov 2021 03:42:33 -0500
+Received: from mail-vk1-f179.google.com ([209.85.221.179]:36498 "EHLO
+        mail-vk1-f179.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S244324AbhKIImc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Nov 2021 03:42:20 -0500
-Received: from mail-wr1-x432.google.com (mail-wr1-x432.google.com [IPv6:2a00:1450:4864:20::432])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C5C79C061764;
-        Tue,  9 Nov 2021 00:39:34 -0800 (PST)
-Received: by mail-wr1-x432.google.com with SMTP id d24so31612290wra.0;
-        Tue, 09 Nov 2021 00:39:34 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=5Sz/735onEF716UXTcImtOWZIbaz1MJB0FnTTfmZwdA=;
-        b=X3PMwiWcZ317j/HKlLoCBfXCTRnxoNpDRG1WPHUTi4jUBM1/6m+mqMs51jGhLP6gRV
-         4z0QqGpmfOyxtKvPp6FR3wxGCs6TDSYdaYpS5i6eA/rw/xhAU0Yr/rT4va4p/17yf1LH
-         LC729puIwIjjod+s3L/XrASkZWUAG8ZyteWCtIGomM6FB7HGBRrzbE/Q1o0yO6GEMSmh
-         m3jGZVEH+hdQwoOFD8LteA1NtiB4qi0X9Mi8PR7w5CDFVSGlqOhxDoapK9qogX4LAHfq
-         DyHao+ujnpWOXZe7y4Ji3N+ecIITMIw6ys9Xb4zly52GvC5/p6sANmo1OW8JYoqSBLQV
-         BeQQ==
+        Tue, 9 Nov 2021 03:42:32 -0500
+Received: by mail-vk1-f179.google.com with SMTP id b192so3968532vkf.3;
+        Tue, 09 Nov 2021 00:39:46 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=5Sz/735onEF716UXTcImtOWZIbaz1MJB0FnTTfmZwdA=;
-        b=J1LSEr4bJh2q7+kDrxLfc9vHJ92oSTz1nqdSzJ3ELx9D1wHD5H8HprPCp5tRZAsOL8
-         MFnpjePDE+PgciSnI35NMwKhOWaJKLXsrFj5BUS2XAvonWH947lQqdKoyliBEQOT52wm
-         lw6nWHq1p38veXtVJqVkdONTis6gk75M8CStsbQTtWYbCpL3ZtqTbcPq8/sH/91bLkN1
-         0tm4YgF5N0gX6BzEtR9YeV0VABt9ofMj7oRERtI08OwK/z1iwmXjfIJsTciMuEhTkGh2
-         18arTbUv7vHgWxul3UTmcO0ByjpTQrBcGJ4LrvwQ8t9g4FQVhmDtnvRZtfeSom/R1Esy
-         HDPQ==
-X-Gm-Message-State: AOAM532e+Wezd9vhOylSBMUAymKuF9lm3MwEE8eQgJ2/ETpQ54IzjmJg
-        m828cK/ReDHnC3cF4i7pYaOYzbIp4mw=
-X-Google-Smtp-Source: ABdhPJxgf9rBYmjZaKV+xzWd9VYwmPlhOUeMrLSY2EYekzdlZyQ5UavAA9+z84DxFT2jkWfuDcGfzg==
-X-Received: by 2002:a05:6000:120a:: with SMTP id e10mr7202115wrx.156.1636447173241;
-        Tue, 09 Nov 2021 00:39:33 -0800 (PST)
-Received: from localhost.localdomain.at (62-178-82-229.cable.dynamic.surfer.at. [62.178.82.229])
-        by smtp.gmail.com with ESMTPSA id q26sm19086055wrc.39.2021.11.09.00.39.32
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 09 Nov 2021 00:39:32 -0800 (PST)
-From:   Christian Gmeiner <christian.gmeiner@gmail.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     Christian Gmeiner <christian.gmeiner@gmail.com>,
-        Ohad Ben-Cohen <ohad@wizery.com>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        linux-remoteproc@vger.kernel.org
-Subject: [RFC PATCH v2 1/1] rpmsg: add syslog driver
-Date:   Tue,  9 Nov 2021 09:39:21 +0100
-Message-Id: <20211109083926.32052-2-christian.gmeiner@gmail.com>
-X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211109083926.32052-1-christian.gmeiner@gmail.com>
-References: <20211109083926.32052-1-christian.gmeiner@gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=RhEU7/cMn0jM+Rvv1TDlHzOAxsTE31x17vOVQ8kJt3g=;
+        b=VZ9g06ZAwQPDkNRttHsK/eL3Y1pHtCeO2Fi2EGhbG7SPzgK7FaVewRgeiu0tAAy215
+         WaCfwzsYUlvbw20LCLfs8fcXsBu77+qPWM2P2bHKELJBsZDdErCXP3wD6xdkMn5soI33
+         5z8ZlBj/h47FFbGuoy9Jc4TJnySsNGZcbiwjyN1l5+pWRAOnbmkuEoGi4xROhiREwWuj
+         gGwoxYlMi3YoKd0KKq7HUe/rk+cP0BdJHGjgS5J+N/NFtDTOcE0fzpULJYhgCabB+Sr3
+         nlv3RyYfI/fDguBE00hHKDeC8Socqcj0Y1HFXZ78vTLpvIXwsCIp654xvJNq85WtbTO0
+         /tZQ==
+X-Gm-Message-State: AOAM530gg5gyF1vWB+qCj2ulOR0jKjPqvXR3QJW7S3fujQpwOorFunAQ
+        k1z8X5qyOZKEYCqGkd5AUzgwhKpNbt3/O49A
+X-Google-Smtp-Source: ABdhPJx0i0radw7kJgP5pqxSrLSZGsN5Cel+MReidhcy9UCfp1QLl3Lbg8JubezsdAGemilOyJAXXA==
+X-Received: by 2002:a05:6122:2090:: with SMTP id i16mr8629246vkd.18.1636447185930;
+        Tue, 09 Nov 2021 00:39:45 -0800 (PST)
+Received: from mail-ua1-f49.google.com (mail-ua1-f49.google.com. [209.85.222.49])
+        by smtp.gmail.com with ESMTPSA id k185sm3593725vsc.21.2021.11.09.00.39.45
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 09 Nov 2021 00:39:45 -0800 (PST)
+Received: by mail-ua1-f49.google.com with SMTP id p37so35895611uae.8;
+        Tue, 09 Nov 2021 00:39:45 -0800 (PST)
+X-Received: by 2002:a05:6102:1354:: with SMTP id j20mr38560622vsl.41.1636447185011;
+ Tue, 09 Nov 2021 00:39:45 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20211108150554.4457-1-conor.dooley@microchip.com> <20211108150554.4457-8-conor.dooley@microchip.com>
+In-Reply-To: <20211108150554.4457-8-conor.dooley@microchip.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Tue, 9 Nov 2021 09:39:33 +0100
+X-Gmail-Original-Message-ID: <CAMuHMdWd_mXWeaDR+1SG=yoD=x6GGZwqXSH9pismXV=v2DOLhg@mail.gmail.com>
+Message-ID: <CAMuHMdWd_mXWeaDR+1SG=yoD=x6GGZwqXSH9pismXV=v2DOLhg@mail.gmail.com>
+Subject: Re: [PATCH 07/13] dt-bindings: rtc: add bindings for microchip mpfs rtc
+To:     Conor Dooley <conor.dooley@microchip.com>
+Cc:     Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Jassi Brar <jassisinghbrar@gmail.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Alessandro Zummo <a.zummo@towertech.it>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Mark Brown <broonie@kernel.org>,
+        Greg KH <gregkh@linuxfoundation.org>,
+        Lewis Hanly <lewis.hanly@microchip.com>,
+        daire.mcnamara@microchip.com, Atish Patra <atish.patra@wdc.com>,
+        ivan.griffin@microchip.com,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux I2C <linux-i2c@vger.kernel.org>,
+        linux-riscv <linux-riscv@lists.infradead.org>,
+        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
+        linux-rtc@vger.kernel.org, linux-spi <linux-spi@vger.kernel.org>,
+        USB list <linux-usb@vger.kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        Bin Meng <bin.meng@windriver.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Allows the remote firmware to log into syslog.
+Hi Conor,
 
-Signed-off-by: Christian Gmeiner <christian.gmeiner@gmail.com>
----
- drivers/rpmsg/Kconfig        |  8 +++++
- drivers/rpmsg/Makefile       |  1 +
- drivers/rpmsg/rpmsg_syslog.c | 65 ++++++++++++++++++++++++++++++++++++
- 3 files changed, 74 insertions(+)
- create mode 100644 drivers/rpmsg/rpmsg_syslog.c
+On Mon, Nov 8, 2021 at 4:07 PM <conor.dooley@microchip.com> wrote:
+> From: Conor Dooley <conor.dooley@microchip.com>
+>
+> Add device tree bindings for the real time clock on
+> the Microchip PolarFire SoC.
+>
+> Signed-off-by: Conor Dooley <conor.dooley@microchip.com>
+> Signed-off-by: Daire McNamara <daire.mcnamara@microchip.com>
 
-diff --git a/drivers/rpmsg/Kconfig b/drivers/rpmsg/Kconfig
-index 0b4407abdf13..801f9956ec21 100644
---- a/drivers/rpmsg/Kconfig
-+++ b/drivers/rpmsg/Kconfig
-@@ -73,4 +73,12 @@ config RPMSG_VIRTIO
- 	select RPMSG_NS
- 	select VIRTIO
- 
-+config RPMSG_SYSLOG
-+	tristate "SYSLOG device interface"
-+	depends on RPMSG
-+	help
-+	  Say Y here to export rpmsg endpoints as device files, usually found
-+	  in /dev. They make it possible for user-space programs to send and
-+	  receive rpmsg packets.
-+
- endmenu
-diff --git a/drivers/rpmsg/Makefile b/drivers/rpmsg/Makefile
-index 8d452656f0ee..75b2ec7133a5 100644
---- a/drivers/rpmsg/Makefile
-+++ b/drivers/rpmsg/Makefile
-@@ -9,3 +9,4 @@ obj-$(CONFIG_RPMSG_QCOM_GLINK_RPM) += qcom_glink_rpm.o
- obj-$(CONFIG_RPMSG_QCOM_GLINK_SMEM) += qcom_glink_smem.o
- obj-$(CONFIG_RPMSG_QCOM_SMD)	+= qcom_smd.o
- obj-$(CONFIG_RPMSG_VIRTIO)	+= virtio_rpmsg_bus.o
-+obj-$(CONFIG_RPMSG_SYSLOG)	+= rpmsg_syslog.o
-diff --git a/drivers/rpmsg/rpmsg_syslog.c b/drivers/rpmsg/rpmsg_syslog.c
-new file mode 100644
-index 000000000000..b3fdae495fd9
---- /dev/null
-+++ b/drivers/rpmsg/rpmsg_syslog.c
-@@ -0,0 +1,65 @@
-+// SPDX-License-Identifier: GPL-2.0
-+
-+#include <linux/kernel.h>
-+#include <linux/module.h>
-+#include <linux/rpmsg.h>
-+
-+static int rpmsg_syslog_cb(struct rpmsg_device *rpdev, void *data, int len,
-+			   void *priv, u32 src)
-+{
-+	const char *buffer = data;
-+
-+	switch (buffer[0]) {
-+	case 'e':
-+		dev_err(&rpdev->dev, "%s", buffer + 1);
-+		break;
-+	case 'w':
-+		dev_warn(&rpdev->dev, "%s", buffer + 1);
-+		break;
-+	case 'i':
-+		dev_info(&rpdev->dev, "%s", buffer + 1);
-+		break;
-+	default:
-+		dev_info(&rpdev->dev, "%s", buffer);
-+		break;
-+	}
-+
-+	return 0;
-+}
-+
-+static int rpmsg_syslog_probe(struct rpmsg_device *rpdev)
-+{
-+	struct rpmsg_endpoint *syslog_ept;
-+	struct rpmsg_channel_info syslog_chinfo = {
-+		.src = 42,
-+		.dst = 42,
-+		.name = "syslog",
-+	};
-+
-+	/*
-+	 * Create the syslog service endpoint associated to the RPMsg
-+	 * device. The endpoint will be automatically destroyed when the RPMsg
-+	 * device will be deleted.
-+	 */
-+	syslog_ept = rpmsg_create_ept(rpdev, rpmsg_syslog_cb, NULL, syslog_chinfo);
-+	if (!syslog_ept) {
-+		dev_err(&rpdev->dev, "failed to create the syslog ept\n");
-+		return -ENOMEM;
-+	}
-+	rpdev->ept = syslog_ept;
-+
-+	return 0;
-+}
-+
-+static struct rpmsg_device_id rpmsg_driver_syslog_id_table[] = {
-+	{ .name = "syslog" },
-+	{ },
-+};
-+MODULE_DEVICE_TABLE(rpmsg, rpmsg_driver_syslog_id_table);
-+
-+static struct rpmsg_driver rpmsg_syslog_client = {
-+	.drv.name       = KBUILD_MODNAME,
-+	.id_table       = rpmsg_driver_syslog_id_table,
-+	.probe          = rpmsg_syslog_probe,
-+};
-+module_rpmsg_driver(rpmsg_syslog_client);
--- 
-2.33.1
+Thanks for your patch!
 
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/rtc/microchip,mfps-rtc.yaml
+> @@ -0,0 +1,61 @@
+
+> +examples:
+> +  - |
+> +    #include <dt-bindings/clock/microchip,mpfs-clock.h>
+> +    soc {
+> +        #address-cells = <2>;
+> +        #size-cells = <2>;
+
+Examples are indeed built with #{address,size}-cells = <1>.
+However, there is no need to override this.  Just drop the zeros in
+the reg property below.
+
+> +        rtc@20124000 {
+> +            compatible = "microchip,mpfs-rtc";
+> +            reg = <0 0x20124000 0 0x1000>;
+> +            clocks = <&clkcfg CLK_RTC>;
+> +            clock-names = "rtc";
+> +            interrupts = <80>;
+> +        };
+> +    };
+> +...
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
