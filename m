@@ -2,78 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BCBDB44B4EA
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 22:51:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4648244B509
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 22:57:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244155AbhKIVxz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Nov 2021 16:53:55 -0500
-Received: from mail.kernel.org ([198.145.29.99]:58626 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241983AbhKIVxy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Nov 2021 16:53:54 -0500
-Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 7C5B361178;
-        Tue,  9 Nov 2021 21:51:06 +0000 (UTC)
-Date:   Tue, 9 Nov 2021 16:51:04 -0500
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Jason Baron <jbaron@akamai.com>
-Cc:     Sai Prakash Ranjan <quic_saipraka@quicinc.com>,
-        Will Deacon <will@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        quic_psodagud@quicinc.com, Marc Zyngier <maz@kernel.org>,
-        gregkh@linuxfoundation.org, arnd@arndb.de,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org, mingo@redhat.com,
-        jim.cromie@gmail.com, seanpaul@chromium.org
-Subject: Re: [PATCHv3 3/3] dynamic_debug: Add a flag for dynamic event
- tracing
-Message-ID: <20211109165104.176b4cf9@gandalf.local.home>
-In-Reply-To: <e037f449-9784-c78e-431d-43f035a9f49f@akamai.com>
-References: <cover.1636452784.git.quic_saipraka@quicinc.com>
-        <3706af20bc64a320ff8f3ff8950738b988f4bdf5.1636452784.git.quic_saipraka@quicinc.com>
-        <20211109104941.2d50eafc@gandalf.local.home>
-        <f7c665b9-dc17-5a7f-de80-9fa0605721fc@quicinc.com>
-        <20211109115951.1c2b5228@gandalf.local.home>
-        <264b77dd-5509-60f9-248c-a93135b01aa9@quicinc.com>
-        <20211109124046.2a772bcb@gandalf.local.home>
-        <c5715db5-965b-c1f5-3e99-04caec3d4f2c@quicinc.com>
-        <e037f449-9784-c78e-431d-43f035a9f49f@akamai.com>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        id S244274AbhKIWA1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Nov 2021 17:00:27 -0500
+Received: from smtprelay0006.hostedemail.com ([216.40.44.6]:49108 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S237422AbhKIWA0 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Nov 2021 17:00:26 -0500
+Received: from omf09.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay07.hostedemail.com (Postfix) with ESMTP id B72C8184C6E43;
+        Tue,  9 Nov 2021 21:57:38 +0000 (UTC)
+Received: from [HIDDEN] (Authenticated sender: joe@perches.com) by omf09.hostedemail.com (Postfix) with ESMTPA id CE6C81E04D4;
+        Tue,  9 Nov 2021 21:57:32 +0000 (UTC)
+Message-ID: <1875b0458294d23d8e3260d2824894b095d6a62d.camel@perches.com>
+Subject: Re: [PATCH 2/2] MAINTAINERS: Mark VMware mailing list entries as
+ private
+From:   Joe Perches <joe@perches.com>
+To:     Nadav Amit <namit@vmware.com>
+Cc:     "srivatsa@csail.mit.edu" <srivatsa@csail.mit.edu>,
+        Juergen Gross <jgross@suse.com>, X86 ML <x86@kernel.org>,
+        Pv-drivers <Pv-drivers@vmware.com>,
+        Vivek Thampi <vithampi@vmware.com>,
+        Vishal Bhakta <vbhakta@vmware.com>,
+        Ronak Doshi <doshir@vmware.com>,
+        Linux-graphics-maintainer <Linux-graphics-maintainer@vmware.com>,
+        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "linux-input@vger.kernel.org" <linux-input@vger.kernel.org>,
+        Zack Rusin <zackr@vmware.com>, Deep Shah <sdeep@vmware.com>,
+        Alexey Makhalov <amakhalov@vmware.com>,
+        Linux Virtualization <virtualization@lists.linux-foundation.org>,
+        Keerthana Kalyanasundaram <keerthanak@vmware.com>,
+        Srivatsa Bhat <srivatsab@vmware.com>,
+        Anish Swaminathan <anishs@vmware.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Date:   Tue, 09 Nov 2021 13:57:31 -0800
+In-Reply-To: <5C24FB2A-D2C0-4D95-A0C0-B48C4B8D5AF4@vmware.com>
+References: <163640336232.62866.489924062999332446.stgit@srivatsa-dev>
+         <163640339370.62866.3435211389009241865.stgit@srivatsa-dev>
+         <5179a7c097e0bb88f95642a394f53c53e64b66b1.camel@perches.com>
+         <cb03ca42-b777-3d1a-5aba-b01cd19efa9a@csail.mit.edu>
+         <dcbd19fcd1625146f4db267f84abd7412513d20e.camel@perches.com>
+         <5C24FB2A-D2C0-4D95-A0C0-B48C4B8D5AF4@vmware.com>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.40.4-1 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
+X-Rspamd-Server: rspamout04
+X-Rspamd-Queue-Id: CE6C81E04D4
+X-Spam-Status: No, score=-4.90
+X-Stat-Signature: xphw7gem3ckanztarthni3x91po8eitn
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Session-ID: U2FsdGVkX18k+m4zQxO7Jw0A5AU3JcKPJ/10qFxleFI=
+X-HE-Tag: 1636495052-266614
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 9 Nov 2021 16:42:48 -0500
-Jason Baron <jbaron@akamai.com> wrote:
+On Tue, 2021-11-09 at 00:58 +0000, Nadav Amit wrote:
+> > On Nov 8, 2021, at 4:37 PM, Joe Perches <joe@perches.com> wrote:
+> > On Mon, 2021-11-08 at 16:22 -0800, Srivatsa S. Bhat wrote:
+> > 
+> > So it's an exploder not an actual maintainer and it likely isn't
+> > publically archived with any normal list mechanism.
+> > 
+> > So IMO "private" isn't appropriate.  Neither is "L:"
+> > Perhaps just mark it as what it is as an "exploder".
+> > 
+> > Or maybe these blocks should be similar to:
+> > 
+> > M:	Name of Lead Developer <somebody@vmware.com>
+> > M:	VMware <foo> maintainers <linux-<foo>-maintainers@vmlinux.com>
 
-> Yeah there is a 'parallel' thread about adding the tracing ring buffer as
-> a 'back end' to the dynamic debug stuff over here:
-> https://lore.kernel.org/lkml/20211105192637.2370737-9-jim.cromie@gmail.com/
+Maybe adding entries like
 
-As the maintainer of tracefs, why am I not Cc'd on that thread :-(
+M:	Named maintainer <whoever@vmware.com>
+R:	VMware <foo> reviewers <linux-<foo>-maintainers@vmware.com>
 
-I'll have to look at that thread later (no time now).
+would be best/simplest.
 
-> 
-> The attempt there is more generic but I realize now that it is adding the
-> tracing to an 'instance' which is specific to dynamic debug which is
-> being created via: trace_array_get_by_name(). I would prefer to just have
-> it print to the 'main' trace buffer such that it's easier to read,
-> although I guess they could still be consolidated via timestamps.
-> Hmmm...I think there was a previous proposal to just add a single
-> tracepoint (that takes a string) to the dynamic debug layer that could be
-> called if a dynamic debug site is enabled for trace buffer output. Would
-> that satisfy the ftrace level filtering requirements that you are looking
-> for?
 
-What we are looking at there is to pass the dynamic debug descriptor to the
-trace event filtering logic, where you could filter on information passed
-to it. For example, on a specific file if a trace event is called by
-several different files or modules.
-
--- Steve
