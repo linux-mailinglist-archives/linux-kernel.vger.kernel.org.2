@@ -2,138 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 822DB44A6BD
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 07:17:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E8DC44A6BC
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 07:17:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243138AbhKIGUL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Nov 2021 01:20:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57680 "EHLO
+        id S243131AbhKIGTq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Nov 2021 01:19:46 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57564 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240993AbhKIGUK (ORCPT
+        with ESMTP id S230011AbhKIGTo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Nov 2021 01:20:10 -0500
-Received: from mail-pf1-x42a.google.com (mail-pf1-x42a.google.com [IPv6:2607:f8b0:4864:20::42a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB5D4C061766
-        for <linux-kernel@vger.kernel.org>; Mon,  8 Nov 2021 22:17:24 -0800 (PST)
-Received: by mail-pf1-x42a.google.com with SMTP id n85so13971024pfd.10
-        for <linux-kernel@vger.kernel.org>; Mon, 08 Nov 2021 22:17:24 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id;
-        bh=+4p8iCSg5fdU2hA+HAu0ciUTCxD+Jovqw6Lw+zBsQn4=;
-        b=c0mYPeIubezW8It6zTFUxpYceqiy3dip6u89M/mAOYYRfpLH8q5Oal3P5CYZCw5CdV
-         vwNCOfuXNDP0oQGFnwzn0skTydWNRzEOxu35+gK1RzddUKbZvPC76yg+QacOLFTOEtFo
-         HzTUTJbRM5hJfM+vSWdWGx0PZHVjpgvkmtWYE0bwE/Jz6gzTVrq78p7QCwbs8CBINvTG
-         lMlIN/z1Jx45f4dBzS+HtV3wrYkRhi+IIXbcKj2gSRQXVjEF2GCdI4HQUBmsJNNozYJf
-         qxkb8ko/OzmEfh5/5KpurbKw082vrTl+96Sbl1biCeGJh78mKfNt/Fbl9fo7YEYt8EFS
-         CoQA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=+4p8iCSg5fdU2hA+HAu0ciUTCxD+Jovqw6Lw+zBsQn4=;
-        b=gUnj+kC81YSNLc9ibWSvvh8Ibtqt3+VREcBEKHhpy7HzICQUQingt1pUXq60MMNJpE
-         hNZw1EspQ9cKY24jxqVpSwU7BjpaGjH5IWGh3aJdyOWBhoYbZIsnmawYebhnPXXBvNyC
-         +hkzEIyOQOU+ZcnOpivbCkkX0p4Zdf7QEcWfdMxXpoeBCVImZbD5fH9t+Lt6uzq5az+r
-         frVEH4NdvKTuWNeOxfSalFB0j5alckJM2g0Y+bO+3XtsB78+SQJyrCf2LwDAQTNqdJSz
-         QejXrm96hr66NKTVJGdabPIbCP/qjkgZnwykUl+Cnrli5d5HUKxunDDx81cUCyaNqXPO
-         P8mw==
-X-Gm-Message-State: AOAM531QSEZ4PKT8AP8u27qichOA6U7IDcqmFUb9cRcszmH+/9jaU6Gh
-        DMnnZPFil5JIFs9cMlrh4ho=
-X-Google-Smtp-Source: ABdhPJw3oDQweJ7mnPkwHh6285Fc0kB7Vmga2oj403dTuyul3HqVfyW9lpBD58b6r2w8K4su/LX/RA==
-X-Received: by 2002:a63:9902:: with SMTP id d2mr370428pge.104.1636438644271;
-        Mon, 08 Nov 2021 22:17:24 -0800 (PST)
-Received: from bj08434pcu.spreadtrum.com ([117.18.48.102])
-        by smtp.gmail.com with ESMTPSA id y18sm7586887pgh.18.2021.11.08.22.17.22
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Mon, 08 Nov 2021 22:17:24 -0800 (PST)
-From:   niuzhiguo84@gmail.com
-To:     jaegeuk@kernel.org, chao@kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net,
-        linux-kernel@vger.kernel.org
-Cc:     Jing.Xia@unisoc.com
-Subject: [PATCH Vx 1/1] f2fs: Avoid deadlock between writeback and checkpoint
-Date:   Tue,  9 Nov 2021 14:16:48 +0800
-Message-Id: <1636438608-27597-1-git-send-email-niuzhiguo84@gmail.com>
-X-Mailer: git-send-email 1.9.1
+        Tue, 9 Nov 2021 01:19:44 -0500
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1234::107])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E17F6C061764;
+        Mon,  8 Nov 2021 22:16:58 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:From:References:To:Subject:Sender:
+        Reply-To:Cc:Content-ID:Content-Description;
+        bh=/tOC4F0dmIvNku/yGuBCvTDhpdB/KMuIFHb37+08Fu4=; b=uc87aere3JNp1ldILlXUD8oOkM
+        i1DNfZl2AW2QSsYzMOm+hEwD4e+DiT1jPselHidr3tAeRCptZ2o8bXLvm1/75jK6A88jsy9dxCbNu
+        fInsCwILgZWGz6kiU8bD8Ij1phD+3KU4a5PLpYt9Jv9uhLjeIuFACHsRk+ARi5sT4g4gwTModqrUR
+        0O5fMFOmQbS69Gf2AjrYRXXVFCXBYFTKDOIb677GD/LLz5MMQkD2K3S0KLKrIByJHz+3u5+OCWxL4
+        nwXw9zcZKu7EN1YWGRzSyzcSBr1mQk9GAVNApfD8IpneC0BYisYDpFyVvhSr+q5d0hW7ty0BSFSjL
+        Yp6ORDLA==;
+Received: from [2601:1c0:6280:3f0::aa0b]
+        by merlin.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mkKRE-008ln8-OM; Tue, 09 Nov 2021 06:16:57 +0000
+Subject: Re: [RFC PATCH v3 1/8] leds: add support for hardware driven LEDs
+To:     Ansuel Smith <ansuelsmth@gmail.com>, Andrew Lunn <andrew@lunn.ch>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Vladimir Oltean <olteanv@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>, Pavel Machek <pavel@ucw.cz>,
+        John Crispin <john@phrozen.org>, netdev@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-leds@vger.kernel.org,
+        =?UTF-8?Q?Marek_Beh=c3=ban?= <kabel@kernel.org>
+References: <20211109022608.11109-1-ansuelsmth@gmail.com>
+ <20211109022608.11109-2-ansuelsmth@gmail.com>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <ece88816-ebe1-19d5-aa7d-16ad26121883@infradead.org>
+Date:   Mon, 8 Nov 2021 22:16:51 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
+MIME-Version: 1.0
+In-Reply-To: <20211109022608.11109-2-ansuelsmth@gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Zhiguo Niu <zhiguo.niu@unisoc.com>
+On 11/8/21 6:26 PM, Ansuel Smith wrote:
+> diff --git a/Documentation/leds/leds-class.rst b/Documentation/leds/leds-class.rst
+> index cd155ead8703..645940b78d81 100644
+> --- a/Documentation/leds/leds-class.rst
+> +++ b/Documentation/leds/leds-class.rst
+> @@ -169,6 +169,34 @@ Setting the brightness to zero with brightness_set() callback function
+>   should completely turn off the LED and cancel the previously programmed
+>   hardware blinking function, if any.
+>   
+> +Hardware driven LEDs
+> +===================================
+> +
+> +Some LEDs can be driven by hardware (for example a LED connected to
+> +an ethernet PHY or an ethernet switch can be configured to blink on activity on
+> +the network, which in software is done by the netdev trigger).
+> +
+> +To do such offloading, LED driver must support this and a supported trigger must
+> +be used.
+> +
+> +LED driver should declare the correct blink_mode supported and should set the
+> +blink_mode parameter to one of HARDWARE_CONTROLLED or SOFTWARE_HARDWARE_CONTROLLED.
+> +The trigger will check this option and fail to activate if the blink_mode is not
+> +supported. By default if a LED driver doesn't declare blink_mode, SOFTWARE_CONTROLLED
+> +is assumed.
+> +
+> +The LED must implement 3 main API:
 
-There could be a scenario as following:
-The inodeA and inodeB are in b_io queue of writeback
-inodeA : f2fs's node inode
-inodeB : a dir inode with only one dirty pages, and the node page
-of inodeB cached into inodeA
+                                  APIs:
 
-writeback:
+> +- hw_control_status(): This asks the LED driver if hardware mode is enabled
+> +    or not. Triggers will check if the hardware mode is active and will try
+> +    to offload their triggers if supported by the driver.
+> +- hw_control_start(): This will simply enable the hardware mode for the LED.
+> +- hw_control_stop(): This will simply disable the hardware mode for the LED.
+> +    It's advised to the driver to put the LED in the old state but this is not
 
-wb_workfn
-wb_writeback
-blk_start_plug
-        loop {
-        queue_io
-        progress=__writeback_inodes_wb
-                __writeback_single_inode
-                        do_writepages
-                                f2fs_write_data_pages
-                                wbc->pages_skipped +=get_dirty_pages
-                        inode->i_state &= ~dirty
-                wrote++
-                requeue_inode
-        }
-blk_finish_plug
+                     for the driver
 
-checkpoint:
+> +    enforcerd and putting the LED off is also accepted.
 
-f2fs_write_checkpoint
-f2fs_sync_dirty_inodes
-filemap_fdatawrite
-do_writepages
-f2fs_write_data_pages
-        f2fs_write_single_data_page
-                f2fs_do_write_data_page
-                        set_page_writeback
-                        f2fs_outplace_write_data
-                                f2fs_update_data_blkaddr
-                                        f2fs_wait_on_page_writeback
-                inode_dec_dirty_pages
+        enforced
 
-1. Writeback thread flush inodeA, and push it's bio request in task's plug;
-2. Checkpoint thread writes inodeB's dirty page, and then wait its node
-    page writeback cached into inodeA which is in writeback task's plug
-3. Writeback thread flush inodeB and skip writing the dirty page as
-    wb_sync_req[DATA] > 0.
-4. As none of the inodeB's page is marked as PAGECACHE_TAG_DIRTY, writeback
-    thread clear inodeB's dirty state.
-5. Then inodeB is moved from b_io to b_dirty because of pages_skipped > 0
-    as checkpoint thread is stuck before dec dirty_pages.
+> +
+> +With HARDWARE_CONTROLLED blink_mode hw_control_status/start/stop is optional
+> +and any software only trigger will reject activation as the LED supports only
+> +hardware mode.
+>   
+>   Known Issues
+>   ============
+> diff --git a/drivers/leds/Kconfig b/drivers/leds/Kconfig
+> index ed800f5da7d8..bd2b19cc77ec 100644
+> --- a/drivers/leds/Kconfig
+> +++ b/drivers/leds/Kconfig
+> @@ -49,6 +49,17 @@ config LEDS_BRIGHTNESS_HW_CHANGED
+>   
+>   	  See Documentation/ABI/testing/sysfs-class-led for details.
+>   
+> +config LEDS_HARDWARE_CONTROL
+> +	bool "LED Hardware Control support"
+> +	help
+> +	  This option enabled Hardware control support used by leds that
 
-This patch collect correct pages_skipped according to the tag state in
-page tree of inode
+	              enables                                  LEDs
 
-Signed-off-by: Zhiguo Niu <zhiguo.niu@unisoc.com>
-Signed-off-by: Jing Xia <jing.xia@unisoc.com>
----
- fs/f2fs/data.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+> +	  can be driven in hardware by using supported triggers.
+> +
+> +	  Hardware blink modes will be exposed by sysfs class in
+> +	  /sys/class/leds based on the trigger currently active.
+> +
+> +	  If unsure, say Y.
 
-diff --git a/fs/f2fs/data.c b/fs/f2fs/data.c
-index f4fd6c246c9a..e98628e3868c 100644
---- a/fs/f2fs/data.c
-+++ b/fs/f2fs/data.c
-@@ -3237,7 +3237,9 @@ static int __f2fs_write_data_pages(struct address_space *mapping,
- 	return ret;
- 
- skip_write:
--	wbc->pages_skipped += get_dirty_pages(inode);
-+	wbc->pages_skipped +=
-+		mapping_tagged(inode->i_mapping, PAGECACHE_TAG_DIRTY) ?
-+		get_dirty_pages(inode) : 0;
- 	trace_f2fs_writepages(mapping->host, wbc, DATA);
- 	return 0;
- }
+
 -- 
-2.28.0
-
+~Randy
