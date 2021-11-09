@@ -2,78 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E88BA44B413
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 21:34:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4345E44B417
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 21:36:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244470AbhKIUhX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Nov 2021 15:37:23 -0500
-Received: from vps0.lunn.ch ([185.16.172.187]:53314 "EHLO vps0.lunn.ch"
+        id S244491AbhKIUjO convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 9 Nov 2021 15:39:14 -0500
+Received: from aposti.net ([89.234.176.197]:52358 "EHLO aposti.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239648AbhKIUhV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Nov 2021 15:37:21 -0500
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
-        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
-        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
-        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
-        bh=NZmg3j0EAUz6SRjH0lLT+qY9ZFf2Fx+/cHi7xXQ221k=; b=minbOTZiNi6GoEgekr24PBPWFW
-        wJdqcet8470M6FxSH98y41OHosHueu8nRrp7A33FuPRnuK9jz/RbQNJFODaSQwxBcTWCfOnfBOjbl
-        wMn1MwCJ+vFP7DxKXM9aCplqrnyoMrzxgqKb+MRLoKdCjkz8fjGaZnS58tPhqRSs+KZw=;
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
-        (envelope-from <andrew@lunn.ch>)
-        id 1mkXp1-00D1Mt-Pd; Tue, 09 Nov 2021 21:34:23 +0100
-Date:   Tue, 9 Nov 2021 21:34:23 +0100
-From:   Andrew Lunn <andrew@lunn.ch>
-To:     Ansuel Smith <ansuelsmth@gmail.com>
-Cc:     Vivien Didelot <vivien.didelot@gmail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Vladimir Oltean <olteanv@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>, Pavel Machek <pavel@ucw.cz>,
-        John Crispin <john@phrozen.org>, netdev@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-leds@vger.kernel.org,
-        Marek =?iso-8859-1?Q?Beh=FAn?= <kabel@kernel.org>
-Subject: Re: [RFC PATCH v3 1/8] leds: add support for hardware driven LEDs
-Message-ID: <YYrbT6pMGXqA2EVn@lunn.ch>
-References: <20211109022608.11109-1-ansuelsmth@gmail.com>
- <20211109022608.11109-2-ansuelsmth@gmail.com>
+        id S244036AbhKIUjN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Nov 2021 15:39:13 -0500
+Date:   Tue, 09 Nov 2021 20:36:06 +0000
+From:   Paul Cercueil <paul@crapouillou.net>
+Subject: Re: [PATCH v5 5/7] MIPS: DTS: jz4780: Account for Synopsys HDMI
+ driver and LCD controllers
+To:     "H. Nikolaus Schaller" <hns@goldelico.com>
+Cc:     Paul Boddie <paul@boddie.org.uk>, Rob Herring <robh+dt@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Kees Cook <keescook@chromium.org>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Robert Foss <robert.foss@linaro.org>,
+        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        Ezequiel Garcia <ezequiel@collabora.com>,
+        Harry Wentland <harry.wentland@amd.com>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        Maxime Ripard <maxime@cerno.tech>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS 
+        <devicetree@vger.kernel.org>,
+        linux-mips <linux-mips@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Discussions about the Letux Kernel 
+        <letux-kernel@openphoenux.org>, Jon as Karlman <jonas@kwiboo.se>,
+        dri-devel <dri-devel@lists.freedesktop.org>
+Message-Id: <6WNB2R.GJ2KT1BB7QOY1@crapouillou.net>
+In-Reply-To: <BF6CBFFA-E8AA-4CCE-A587-4D5D647DEC64@goldelico.com>
+References: <cover.1633436959.git.hns@goldelico.com>
+        <c243176cb5e5a3ab5df1fe77f9246b6d5ec4f88e.1633436959.git.hns@goldelico.com>
+        <O7VI0R.CRIG8R7O0OOI3@crapouillou.net> <3514743.EH6qe8WxYI@jason>
+        <N3YI0R.7ZLKK5JTBXW63@crapouillou.net>
+        <95D1DE70-DDF4-419B-8F0C-E9A6E0995D1F@goldelico.com>
+        <BDU72R.SAKM4CQWCUKI2@crapouillou.net>
+        <BF6CBFFA-E8AA-4CCE-A587-4D5D647DEC64@goldelico.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211109022608.11109-2-ansuelsmth@gmail.com>
+Content-Type: text/plain; charset=iso-8859-1; format=flowed
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 09, 2021 at 03:26:01AM +0100, Ansuel Smith wrote:
-> Some LEDs can be driven by hardware (for example a LED connected to
-> an ethernet PHY or an ethernet switch can be configured to blink on
-> activity on the network, which in software is done by the netdev trigger).
-> 
-> To do such offloading, LED driver must support this and a supported
-> trigger must be used.
-> 
-> LED driver should declare the correct blink_mode supported and should set
-> the blink_mode parameter to one of HARDWARE_CONTROLLED or
-> SOFTWARE_HARDWARE_CONTROLLED.
-> The trigger will check this option and fail to activate if the blink_mode
-> is not supported. By default if a LED driver doesn't declare blink_mode,
-> SOFTWARE_CONTROLLED is assumed.
-> 
-> The LED must implement 3 main API:
-> - trigger_offload_status(): This asks the LED driver if offload mode is
->     enabled or not.
->     Triggers will check if the offload mode is supported and will be
->     activated accordingly. If the trigger can't run in software mode,
->     return -EOPNOTSUPP as the blinking can't be simulated by software.
+Hi Nikolaus,
 
-I don't understand this last part. The LED controller is not
-implementing software mode, other than providing a method to manually
-turn the LED on and off. And there is a well defined call for that. If
-that call is a NULL, it is clear it is not implemented. There is no
-need to ask the driver.
+Le mar., nov. 9 2021 at 21:19:17 +0100, H. Nikolaus Schaller 
+<hns@goldelico.com> a écrit :
+> Hi Paul,
+> 
+>>  Am 07.11.2021 um 20:05 schrieb Paul Cercueil <paul@crapouillou.net>:
+>> 
+>>>  6. Therefore I think it *may* work overclocked with 48MHz
+>>>  but is not guaranteed or reliable above 27 MHz.
+>>>  So everything is ok here.
+>> 
+>>  One thing though - the "assigned-clocks" and 
+>> "assigned-clock-rates", while it works here, should be moved to the 
+>> CGU node, to respect the YAML schemas.
+> 
+> Trying to do this seems to break boot.
+> 
+> I can boot up to
+> 
+> [    8.312926] dw-hdmi-ingenic 10180000.hdmi: registered DesignWare 
+> HDMI I2C bus driver
+> 
+> and
+> 
+> [   11.366899] [drm] Initialized ingenic-drm 1.1.0 20200716 for 
+> 13050000.lcdc0 on minor 0
+> 
+> but then the boot process becomes slow and hangs. Last sign of 
+> activity is
+> 
+> [   19.347659] hub 1-0:1.0: USB hub found
+> [   19.353478] hub 1-0:1.0: 1 port detected
+> [   32.321760] wlan0_power: disabling
+> 
+> What I did was to just move
+> 
+> 		assigned-clocks = <&cgu JZ4780_CLK_HDMI>;
+> 		assigned-clock-rates = <27000000>;
+> 
+> from
+> 
+> 	hdmi: hdmi@10180000 {
+> 
+> to
+> 
+> 	cgu: jz4780-cgu@10000000 {
+> 
+> Does this mean the clock is assigned too early or too late?
+> 
+> Do you have any suggestions since I don't know the details of CGU.
 
-     Andrew
+These properties are already set for the CGU node in ci20.dts:
+
+&cgu {
+	/*
+	 * Use the 32.768 kHz oscillator as the parent of the RTC for a higher
+	 * precision.
+	 */
+	assigned-clocks = <&cgu JZ4780_CLK_OTGPHY>, <&cgu JZ4780_CLK_RTC>;
+	assigned-clock-parents = <0>, <&cgu JZ4780_CLK_RTCLK>;
+	assigned-clock-rates = <48000000>;
+};
+
+So you want to update these properties to add the HDMI clock setting, 
+like this:
+
+	assigned-clocks = <&cgu JZ4780_CLK_OTGPHY>, <&cgu JZ4780_CLK_RTC>, 
+<&cgu JZ4780_CLK_HDMI>;
+	assigned-clock-parents = <0>, <&cgu JZ4780_CLK_RTCLK>;
+	assigned-clock-rates = <48000000>, <0>, <27000000>;
+
+Cheers,
+-Paul
+
+
