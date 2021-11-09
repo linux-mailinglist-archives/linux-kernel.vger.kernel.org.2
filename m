@@ -2,74 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3280844B473
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 22:07:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1DF1E44B479
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 22:09:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244903AbhKIVKi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Nov 2021 16:10:38 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34838 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237576AbhKIVKh (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Nov 2021 16:10:37 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D1F20C061764;
-        Tue,  9 Nov 2021 13:07:50 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=tFaeIRYf4WcX3eLn8IfO976cgyYPtEx7VfB2So48QdA=; b=DxHU78GLXR59U9kZeDDIUeJmWn
-        xF/G+XNLMP3qDVaTBHPeajbM65d8DzpAEGOY2r0jB1ayb8NZf8Nn6XRxZUd7DjRWt6iZ54xoeHv/w
-        Ec45heQ+JWtpIzyNT4ArcAlbsw5gB5I3QbN4v3oMeAPBAi1+zaNMNvcX1lev0DnOZIuQhSNWct6ez
-        UCZoLnCT4tEMNTySiNssJ91zshw7/4BPVUiJytlA9sei693R64BIHqVLSXwvRx2+gl9NfemAJZBfK
-        cw6V+R7xGo0mxrZBOwHDjqd8yZbt4dB3VFDTRJ1BtAB1w7xlEPVVW7RxOvMYlpyr0etu6GtW/K6d1
-        0p9LBiQA==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=worktop.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mkYLA-001LQV-Tr; Tue, 09 Nov 2021 21:07:37 +0000
-Received: by worktop.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 35546985A2A; Tue,  9 Nov 2021 22:07:36 +0100 (CET)
-Date:   Tue, 9 Nov 2021 22:07:36 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Nick Desaulniers <ndesaulniers@google.com>
-Cc:     Bill Wendling <morbo@google.com>,
-        Josh Poimboeuf <jpoimboe@redhat.com>, x86@kernel.org,
-        linux-kernel@vger.kernel.org, mark.rutland@arm.com,
-        dvyukov@google.com, seanjc@google.com, pbonzini@redhat.com,
-        mbenes@suse.cz, llvm@lists.linux.dev,
-        linux-toolchains@vger.kernel.org
-Subject: Re: [PATCH 20/22] x86,word-at-a-time: Remove .fixup usage
-Message-ID: <20211109210736.GV174703@worktop.programming.kicks-ass.net>
-References: <20211105171023.989862879@infradead.org>
- <20211105171821.654356149@infradead.org>
- <20211108164711.mr2cqdcvedin2lvx@treble>
- <YYlshkTmf5zdvf1Q@hirez.programming.kicks-ass.net>
- <CAKwvOdkFZ4PSN0GGmKMmoCrcp7_VVNjau_b0sNRm3MuqVi8yow@mail.gmail.com>
- <YYov8SVHk/ZpFsUn@hirez.programming.kicks-ass.net>
- <CAKwvOdn8yrRopXyfd299=SwZS9TAPfPj4apYgdCnzPb20knhbg@mail.gmail.com>
+        id S244912AbhKIVMe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Nov 2021 16:12:34 -0500
+Received: from vps0.lunn.ch ([185.16.172.187]:53414 "EHLO vps0.lunn.ch"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S237584AbhKIVMc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Nov 2021 16:12:32 -0500
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
+        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
+        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
+        bh=fqMfvevUL4ukmxtHDYzE4N3EIZqfBJykGBfoMdASPoc=; b=EdA5Rkfs5/ZsHFfhINZIQ6inmE
+        xr1hE5zxYp/zcr/mb/MlKKxMvBKAMm70zb3zyoSaTLgp9SOqvO0KpwXMF0UY/0RRJESp2k7eXNYkj
+        AyX/Zjkebe7biSqDhYgH9WnC07Rmh9jiajIC5nKERkr+8B2iqgTypBC6Tv5PekdX7bnE=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
+        (envelope-from <andrew@lunn.ch>)
+        id 1mkYNA-00D1Wk-AZ; Tue, 09 Nov 2021 22:09:40 +0100
+Date:   Tue, 9 Nov 2021 22:09:40 +0100
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     Marek =?iso-8859-1?Q?Beh=FAn?= <kabel@kernel.org>
+Cc:     Ansuel Smith <ansuelsmth@gmail.com>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Vladimir Oltean <olteanv@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>, Pavel Machek <pavel@ucw.cz>,
+        John Crispin <john@phrozen.org>, netdev@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-leds@vger.kernel.org
+Subject: Re: [RFC PATCH v3 6/8] leds: trigger: add hardware-phy-activity
+ trigger
+Message-ID: <YYrjlHz/UgTUwQAm@lunn.ch>
+References: <20211109022608.11109-1-ansuelsmth@gmail.com>
+ <20211109022608.11109-7-ansuelsmth@gmail.com>
+ <20211109042517.03baa809@thinkpad>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAKwvOdn8yrRopXyfd299=SwZS9TAPfPj4apYgdCnzPb20knhbg@mail.gmail.com>
+In-Reply-To: <20211109042517.03baa809@thinkpad>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 09, 2021 at 11:22:44AM -0800, Nick Desaulniers wrote:
+> > +/* Expose sysfs for every blink to be configurable from userspace */
+> > +DEFINE_OFFLOAD_TRIGGER(blink_tx, BLINK_TX);
+> > +DEFINE_OFFLOAD_TRIGGER(blink_rx, BLINK_RX);
+> > +DEFINE_OFFLOAD_TRIGGER(keep_link_10m, KEEP_LINK_10M);
+> > +DEFINE_OFFLOAD_TRIGGER(keep_link_100m, KEEP_LINK_100M);
+> > +DEFINE_OFFLOAD_TRIGGER(keep_link_1000m, KEEP_LINK_1000M);
 
-> I think the use of this feature (label-attributes) here isn't
-> necessary though; because of the use of outputs, the "fallthrough"
-> basic block needs to be placed immediately after the basic block
-> terminated by the asm goto, at least in LLVM.  Was different ordering
-> of basic blocks observed with GCC without this label attribute?
+You might get warnings about CamelCase, but i suggest keep_link_10M,
+keep_link_100M and keep_link_1000M. These are megabits, not millibits.
 
-GCC does the same, but I wanted to have the exception stuff be in
-.text.cold, but alas it doesn't do that. I left the attribute because of
-it's descriptive value.
+> > +DEFINE_OFFLOAD_TRIGGER(keep_half_duplex, KEEP_HALF_DUPLEX);
+> > +DEFINE_OFFLOAD_TRIGGER(keep_full_duplex, KEEP_FULL_DUPLEX);
 
->  Unless the cold attribute is helping move
-> ("shrink-wrap"?) the basic block to a whole other section
-> (.text.cold.)?
+What does keep mean in this context?
 
-I was hoping it would do that, but it doesn't on gcc-11.
+> > +DEFINE_OFFLOAD_TRIGGER(option_linkup_over, OPTION_LINKUP_OVER);
+> > +DEFINE_OFFLOAD_TRIGGER(option_power_on_reset, OPTION_POWER_ON_RESET);
+> > +DEFINE_OFFLOAD_TRIGGER(option_blink_2hz, OPTION_BLINK_2HZ);
+> > +DEFINE_OFFLOAD_TRIGGER(option_blink_4hz, OPTION_BLINK_4HZ);
+> > +DEFINE_OFFLOAD_TRIGGER(option_blink_8hz, OPTION_BLINK_8HZ);
+> 
+> This is very strange. Is option_blink_2hz a trigger on itself? Or just
+> an option for another trigger? It seems that it is an option, so that I
+> can set something like
+>   blink_tx,option_blink_2hz
+> and the LED will blink on tx activity with frequency 2 Hz... If that is
+> so, I think you are misnaming your macros or something, since you are
+> defining option_blink_2hz as a trigger with
+>  DEFINE_OFFLOAD_TRIGGER
+
+Yes, i already said this needs handling differently. The 2Hz, 4Hz and
+8Hz naturally fit the delay_on, delay_of sysfs attributes.
+
+    Andrew
