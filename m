@@ -2,83 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EBADD44A798
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 08:27:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B2F2A44A79C
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 08:30:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241186AbhKIHaU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Nov 2021 02:30:20 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45014 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232740AbhKIHaT (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Nov 2021 02:30:19 -0500
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EBFE1C061764;
-        Mon,  8 Nov 2021 23:27:33 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=In-Reply-To:Content-Type:MIME-Version
-        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=QyYw+d4t66E4FwgbFsWiA0CB429+JCmxgcFifHWAMbE=; b=CnADimQBuYrn4XpRgus7F2e+Pw
-        ZRb/HvO7yy4h5Px2ux4xXe5Ui9f9Iw/g7XYfUvVQCQIv+s0h+utqsmLCbQJ3jGCbr5i9UE/oeL5AX
-        oSagJ5LOVawHyI4FmMkwQ6BpRa9nDjx5Vah04OTIX7vA5C8L4Odzk8Hl5xvwgsrufvHa5gfvz3PyJ
-        rMnZ24hfsT1EmdZbYyoUj+8iuJ9fHNasxFz8X3iNKlKpDH8ymexy4WUsPmz9+yLlDH5MPKTD4QF2z
-        rmRE6OI3x9ZBGyfLN70YFWofO04ujsoSnGkl/GpJFM8pvSGRpuXiVaaBdfMfS3zEzIGCR0gxdel/e
-        kznU0wbw==;
-Received: from hch by bombadil.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mkLXM-000sHh-6h; Tue, 09 Nov 2021 07:27:20 +0000
-Date:   Mon, 8 Nov 2021 23:27:20 -0800
-From:   Christoph Hellwig <hch@infradead.org>
-To:     Jane Chu <jane.chu@oracle.com>
-Cc:     david@fromorbit.com, djwong@kernel.org, dan.j.williams@intel.com,
-        hch@infradead.org, vishal.l.verma@intel.com, dave.jiang@intel.com,
-        agk@redhat.com, snitzer@redhat.com, dm-devel@redhat.com,
-        ira.weiny@intel.com, willy@infradead.org, vgoyal@redhat.com,
-        linux-fsdevel@vger.kernel.org, nvdimm@lists.linux.dev,
-        linux-kernel@vger.kernel.org, linux-xfs@vger.kernel.org
-Subject: Re: [PATCH v2 2/2] dax,pmem: Implement pmem based dax data recovery
-Message-ID: <YYoi2JiwTtmxONvB@infradead.org>
-References: <20211106011638.2613039-1-jane.chu@oracle.com>
- <20211106011638.2613039-3-jane.chu@oracle.com>
+        id S241230AbhKIHdE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Nov 2021 02:33:04 -0500
+Received: from mail-eopbgr1300049.outbound.protection.outlook.com ([40.107.130.49]:35277
+        "EHLO APC01-HK2-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S232740AbhKIHdC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Nov 2021 02:33:02 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=SkRSi4BcBZowoY6fQB+ZqW1yuCx65gU6JGxnvc2F/yc5NMcw8gcQMPPUoq3Q67XGVLwEER9ahvN7Ovayv9/QpnO2sWSNbt31pByDEeXhv3KEI6RH0jAu9PwezgUBqzt7jMeTwsLgamZYaulCwe2lypgwhKL6rxS8IdQkH8vzz87hOR9VRfC4FPGCIQdgHVyvBDULtBZT43asgx6DmfOZjUe2IYHQI+u0VPtmnpVFJKKTSQTd9ZvwYUw8rvDPfZAXZY4Yq7JsOnnX/kvgH/yJY4GlpLvA9jccJF1JW6tIRkNRkPD14Ji/hyGxfP99y9BxyqTGGWAzffvps7TLvhpUCw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=r/hj6X4P9Wa89nsz0roIx6mkjgd5Eg5m5BqyHaFGDOk=;
+ b=bjFblSEbgWrQtQvbybCo/gpHZBlsiDcqkIcpJjbxjRkwyssBPwMAUABLFyXe5Oe69kDDzyYdjw5quBz48RstIUp2n2j1ZN2Jj+AD3fp5R5AaD6jqPVTU+voCGXbNeGOFf7Q0ynyOwERTxtrxzqOeCQz8m4QUHNS5tq/U4HmLBA0x/zjLqPHjUWh37yAugHi1fUG+FPUop/+EMOYBL6bBhp56Fd6vdtTQtTPBoNdQGXmqTcZ50bfVFl333t/v8cdVCyihaKIFHc4Cdmu339YNygfTfXk8LfERVoWrwxprH8eGvtUt3VYCC+g6hhBa0c80ig44Eu6L3UK4ZV/tgvluhw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oppo.com; dmarc=pass action=none header.from=oppo.com;
+ dkim=pass header.d=oppo.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oppo.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=r/hj6X4P9Wa89nsz0roIx6mkjgd5Eg5m5BqyHaFGDOk=;
+ b=tzoAUbl+THiJPsMMtpJbKkiccNvsNZoz/A8c1pM8d7NBPdLpymU9k8hLIZnmhurXDeij6uohDCUODRdSYM1W1adEngJMD2ZbQcln/xzAVgNfZFVzFk+M9+ympA+8MtJzwgztjbT6QEPAfsVuyKe+Do2wCzx7FOFeGJjFLnSEl8A=
+Authentication-Results: oppo.com; dkim=none (message not signed)
+ header.d=none;oppo.com; dmarc=none action=none header.from=oppo.com;
+Received: from SG2PR02MB4108.apcprd02.prod.outlook.com (2603:1096:4:96::19) by
+ SG2PR02MB2557.apcprd02.prod.outlook.com (2603:1096:3:26::22) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.4669.10; Tue, 9 Nov 2021 07:30:13 +0000
+Received: from SG2PR02MB4108.apcprd02.prod.outlook.com
+ ([fe80::7e:59ef:bec3:9988]) by SG2PR02MB4108.apcprd02.prod.outlook.com
+ ([fe80::7e:59ef:bec3:9988%7]) with mapi id 15.20.4669.016; Tue, 9 Nov 2021
+ 07:30:13 +0000
+Subject: Re: [PATCH 1/2] erofs: add sysfs interface
+To:     Gao Xiang <hsiangkao@linux.alibaba.com>
+Cc:     linux-erofs@lists.ozlabs.org, zhangshiming@oppo.com,
+        linux-kernel@vger.kernel.org, yh@oppo.com, guanyuwei@oppo.com,
+        guoweichao@oppo.com
+References: <20211109025445.12427-1-huangjianan@oppo.com>
+ <YYnmmla6xh5Y4d30@B-P7TQMD6M-0146.local>
+From:   Huang Jianan <huangjianan@oppo.com>
+Message-ID: <8ac546a2-25c9-a694-a82d-91984c826436@oppo.com>
+Date:   Tue, 9 Nov 2021 15:29:52 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.14.0
+In-Reply-To: <YYnmmla6xh5Y4d30@B-P7TQMD6M-0146.local>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: HK2PR02CA0187.apcprd02.prod.outlook.com
+ (2603:1096:201:21::23) To SG2PR02MB4108.apcprd02.prod.outlook.com
+ (2603:1096:4:96::19)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211106011638.2613039-3-jane.chu@oracle.com>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
+Received: from [10.118.7.229] (58.252.5.73) by HK2PR02CA0187.apcprd02.prod.outlook.com (2603:1096:201:21::23) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4669.10 via Frontend Transport; Tue, 9 Nov 2021 07:30:11 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: a277261f-5a9e-4a4a-0be4-08d9a352c4a1
+X-MS-TrafficTypeDiagnostic: SG2PR02MB2557:
+X-Microsoft-Antispam-PRVS: <SG2PR02MB25572D34DC88E6EFE9D33A7DC3929@SG2PR02MB2557.apcprd02.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:3631;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: hzPCIBKRkRbBlL+OZ8hbhk9jOl/3oWWXHacsHQiFUhbjfNfXiPNKj9QUnw7jLMuc4P7gQxbYcRMzHYK95ZDHGYe5Qck0lhqpBApdY6z2EfdfNbsPP17kCXweKlAJOdNMGBQkUT31NGEhyZWT4O5ab1u4EvEZ8sVxq/vM6ZrDxkl6GXbLrSHHLWm4ekQXZpJTEAu0h5qq31vJidhU1GLhzLj38Tt3X13oqLIYpF/YA6p7urHPJ8CV/IOPNItP72OUYoXfS6vWeqsEaFMcuzR+cXEYp1gw8Yqx4wtt1wk3e7iuBHZNw6CHuBnyiGwHVA24M82MQJE2fruu1Y0onmp4UVsff8JPPeblqLa2GF2c3W9W3vT2v1GIAvdTp7uCuZkLDQr0yRiiwPoBgM6C3fBOoW3sXlz5Pl6yntx1DYvRy6y4QFqsk+uNxAYc4banIgKpP9TtUCdMUkL5ZnOdLh/7QCvEYkYJ2fZoNxeMXpnXWZPahQ5TPTQlPkNx+TIvoTCgmP6hbm70ecDxn+njzyqGOFLnlMYt0NbaNL6e/nimVUd9m4Oq2ZeONNuN+UWy6T0zZgtdYWPJc3C4UFKBaImi2RPqJ54+eLVSln5V45nKB1wQVxqI8faf1qrK13s1oIJKmu9kJHl6Cs9HQ0zUOIgghtTbJZ0mU8+kL4+pCarPQy3MwzoglpNf+md4pMmQI75HpV2xFKLhyW/tyw+WrMccmrFIbseA3N6f1g8ZQi3ZbJCsUdc4mq0tAN0+PjvYjQnDL6Hk2otEVF0ywxAath+peyYuKUWQkHj+V4h2XJybzTE=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SG2PR02MB4108.apcprd02.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(38350700002)(186003)(26005)(6916009)(6666004)(956004)(2906002)(31686004)(16576012)(38100700002)(31696002)(107886003)(36756003)(4326008)(6486002)(508600001)(5660300002)(66556008)(66946007)(316002)(86362001)(4744005)(66476007)(52116002)(2616005)(8676002)(8936002)(11606007)(43740500002)(45980500001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?c3h0Qk1QUWdSdk9oWnl0ZXhBcGtJUEhYUFgxV0JwbzhiTlNqVXNDOFEvYW5H?=
+ =?utf-8?B?S1lBbk5iM2RaUTdLQjlHVWNWN1hMc0p1L2V2L250R1ZyQ203b09PYlJzM1ZT?=
+ =?utf-8?B?a0NDYUM4OTlnWU9reXJBQ3Q0b1dkYUtISER1YlJXQ1ZEMVAvTFZqQkRSZ0RM?=
+ =?utf-8?B?S2dQV3A4Q2NiTjMwZ3dCU2xldXZyMW1VNFhqbnYySnQ1SVNyTnExaWdsKzFU?=
+ =?utf-8?B?M0RYbnBNckUrVjNzVmZVSzZqRE93Z0lvU2d6VWFkbFhabkN2SXlPT0J5ekN0?=
+ =?utf-8?B?bFZjVTlvcGhKVVZVRTNrRm5ydGhWb25kY01rWlhidDVnTW9xVnhIdWJKaDBa?=
+ =?utf-8?B?cmpSenA1U2V4ODlqNXd1TXhOMkpsUXBET3NBZC9zc2VFT2ovb29RalVaVm42?=
+ =?utf-8?B?Z05rM3ZJZG4yMjJKRlNLYm5PdVpBeGlVK0NVSVYzTUt2a01VOXNnMHB4Qmt2?=
+ =?utf-8?B?VkgwVUdiTjRscHpCZk5TZ294dzhYd3Jwa2lKdXp3STVNNlM0QmFTUzQ1TTNV?=
+ =?utf-8?B?NU9SUW1HRyt0NEZXZ0RwWFNITDFpUnhNTEFNb1hHcDhMSDdMUitvaDNPU1Qy?=
+ =?utf-8?B?NGZKNDJ5Z2xBWWFGUW1qSU80TUFMVFllVkc1cXRjNWtmdDNacm8xTzNpb0R3?=
+ =?utf-8?B?ZXBrN3BlaE9qemZscktYL1FVMmZSM3FWRHFHbFBGTmtlL1FSeGw1MnBRQW82?=
+ =?utf-8?B?Q0NhZmdaNllYTzYxQWUvWXVXcFZLV3IyNWpmWmFQRHhIbUxzT0pJSGZLYWdj?=
+ =?utf-8?B?SWQwQ3NhTk5BZzdXK0tNMk9LWDJGVDFJRERYUHppQ0VCTnlyZHNzRThFenRa?=
+ =?utf-8?B?czhjRW9FblJwTzNibWgwVXlabFZWQ0RueW5HS0xnT1l4YjludHBTYm5TWWc2?=
+ =?utf-8?B?TlJ4MXhUY2t4MXVTcjFqRjUwU1pwcnJjb01reCs4RVRtOWp0Y1JxY2V2Uzhr?=
+ =?utf-8?B?VG8yNDlQcytWUzNRelZYZWcwVlpTQVZpNFljZFZRKzZUUHozMXRPRFZQbldq?=
+ =?utf-8?B?cURYWmxiVFJrTHJpZEtLTUhQTnFWSkk5Zm1EMUk5NzloZHYvN0xvU1hZaktF?=
+ =?utf-8?B?ekZMRWRLTnQzQXlqRm43cFI3amQ1SGM5VGx3UjVTWElXb3lyUlYwRzdRdy9T?=
+ =?utf-8?B?Uis2NzlFVlpWc3c2TXZMbHE2UTlIRWhHVTYvMjNDZmtPZ0ZUNmYxT0FBQ1JZ?=
+ =?utf-8?B?d2JKVTU0S08zWjd1cmxxMU0wdkZxekhIaEROa1VCREJja2FXbUVTaXFPMlVl?=
+ =?utf-8?B?UGVZak5VT014MHp2WmE0dGhGckVFTGNieEVnQTQwYWpVRjlVa2l6dTJQTVUy?=
+ =?utf-8?B?b1pQdkZwcVBRSk1rTjN5dWhkbTBoM1B2ZE9TcEl6Z29rOUk5MUZuTDg1cWx0?=
+ =?utf-8?B?Q2hQMDBYc0VGMFNUS0djSXhUbWZ4MGNlWFozK2s4cVRHdGJOdmU3U1FPREta?=
+ =?utf-8?B?NmRNOHRuczhQNjhWOXFiblBFcGV5ZzdOcWZQRWRCOW1oWjJTU0RPeDdNMDJD?=
+ =?utf-8?B?bmU2NEsxUitPMUdFRVR4cVNXVHVEdEJjUTMzOXp3NlRWNlZjeWpxUHlkQVRT?=
+ =?utf-8?B?bHVONkxDbC9DMmFNUlMrZjJSN0pwWW84WC9QMU1OM1dpS2NuZVdZSFhiVmtX?=
+ =?utf-8?B?WWVHanRQZUZVbWxxN0VtdndXOEc0TGZITmZnNE5YblhmV25rVU9KVzk1T1lU?=
+ =?utf-8?B?Z3dGbjRCV3dvVmVUWHR2aGdrZytONmR3RnYzOHNrWE1WVlhUeGg5NlFwOVBl?=
+ =?utf-8?B?eENhZWFyS1FjM0pQUVB2a2JLMnJXb2FOMnZqTUZpb0xlMmhCRjVCTWN4d1g0?=
+ =?utf-8?B?dlZKSDI4MmVvWGJMWnBpRUt6YnlmaWhiQ0l0L3p3Q05sMGc3SGsrQzBkMmZz?=
+ =?utf-8?B?MzlKdHFSa3J3RFMrSjAwRGs2TFZ2NitQZjBzaGJnRGw1R3ZCWTdEa3NxeElX?=
+ =?utf-8?B?dTJlb3ZnaCtYb05aT1Rza3ZsTjREREY1ZzdSWWVnTmc1cTNMbjZ4RHNSam5Q?=
+ =?utf-8?B?MExjWWt0QjZxcGVuUkdWQ0ZvZVhoNkticUFUQmwvb2c3Wk44emd6VkhYY0Fw?=
+ =?utf-8?B?bXhSR05NeERydkc3Z01Ma2ZTQVhQYXpPcmFjVVdKY1h2dDZRZE94NWZPQU9F?=
+ =?utf-8?B?TDMvbUhBeGc0YS9GdysyamYraTU0STVjSzVQQUFhVW9mQ2VISWo5YSsxQ053?=
+ =?utf-8?Q?sWezQbcnunFWUF8oQDLEmME=3D?=
+X-OriginatorOrg: oppo.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: a277261f-5a9e-4a4a-0be4-08d9a352c4a1
+X-MS-Exchange-CrossTenant-AuthSource: SG2PR02MB4108.apcprd02.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 09 Nov 2021 07:30:13.4408
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: f1905eb1-c353-41c5-9516-62b4a54b5ee6
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 46cFX1FLdNHW6udlquDjOTh6+zpSDaydx8Dsqh/Yj82j6FkWJLb72q5ZC9+OP8IujRQohEKccvpSV026TK+lEQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SG2PR02MB2557
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 05, 2021 at 07:16:38PM -0600, Jane Chu wrote:
->  static size_t pmem_copy_from_iter(struct dax_device *dax_dev, pgoff_t pgoff,
->  		void *addr, size_t bytes, struct iov_iter *i, int mode)
->  {
-> +	phys_addr_t pmem_off;
-> +	size_t len, lead_off;
-> +	struct pmem_device *pmem = dax_get_private(dax_dev);
-> +	struct device *dev = pmem->bb.dev;
-> +
-> +	if (unlikely(mode == DAX_OP_RECOVERY)) {
-> +		lead_off = (unsigned long)addr & ~PAGE_MASK;
-> +		len = PFN_PHYS(PFN_UP(lead_off + bytes));
-> +		if (is_bad_pmem(&pmem->bb, PFN_PHYS(pgoff) / 512, len)) {
-> +			if (lead_off || !(PAGE_ALIGNED(bytes))) {
-> +				dev_warn(dev, "Found poison, but addr(%p) and/or bytes(%#lx) not page aligned\n",
-> +					addr, bytes);
-> +				return (size_t) -EIO;
-> +			}
-> +			pmem_off = PFN_PHYS(pgoff) + pmem->data_offset;
-> +			if (pmem_clear_poison(pmem, pmem_off, bytes) !=
-> +						BLK_STS_OK)
-> +				return (size_t) -EIO;
-> +		}
-> +	}
+Hi Xiang,
 
-This is in the wrong spot.  As seen in my WIP series individual drivers
-really should not hook into copying to and from the iter, because it
-really is just one way to write to a nvdimm.  How would dm-writecache
-clear the errors with this scheme?
+在 2021/11/9 11:10, Gao Xiang 写道:
+> Hi Jianan,
+>
+> On Tue, Nov 09, 2021 at 10:54:44AM +0800, Huang Jianan via Linux-erofs wrote:
+>
+> You might need to add a "From:" tag here, otherwise, the author will
+> show "Huang Jianan via Linux-erofs" due to your mailing server...
+I have used --from, maybe I need to add on the patch manually ... 🙁
+>> Add sysfs interface to configure erofs related parameters in the
+>> future.
+> s/in the future/Later/
+Will be fixed.
+>> Signed-off-by: Huang Jianan <huangjianan@oppo.com>
+>> ---
+>>   fs/erofs/Makefile   |   2 +-
+>>   fs/erofs/internal.h |  10 ++
+>>   fs/erofs/super.c    |  12 +++
+>>   fs/erofs/sysfs.c    | 239 ++++++++++++++++++++++++++++++++++++++++++++
+> At a quick glance, we might need to add sysfs API documentation
+> as well:
+> Documentation/ABI/testing/sysfs-fs-erofs
+I will attach it in the next version.
 
-So IMHO going back to the separate recovery method as in your previous
-patch really is the way to go.  If/when the 64-bit store happens we
-need to figure out a good way to clear the bad block list for that.
+Thanks,
+Jianan
+> Thanks,
+> Gao Xiang
+>
+
