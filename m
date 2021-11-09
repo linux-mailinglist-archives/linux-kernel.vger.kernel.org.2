@@ -2,73 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1EFE144B0A1
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 16:46:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D376144B069
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 16:31:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236543AbhKIPth convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 9 Nov 2021 10:49:37 -0500
-Received: from ppsw-32.csi.cam.ac.uk ([131.111.8.132]:56550 "EHLO
-        ppsw-32.csi.cam.ac.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236482AbhKIPtg (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Nov 2021 10:49:36 -0500
-X-Greylist: delayed 1075 seconds by postgrey-1.27 at vger.kernel.org; Tue, 09 Nov 2021 10:49:35 EST
-X-Cam-AntiVirus: no malware found
-X-Cam-ScannerInfo: https://help.uis.cam.ac.uk/email-scanner-virus
-Received: from hades.srcf.societies.cam.ac.uk ([131.111.179.67]:39002)
-        by ppsw-32.csi.cam.ac.uk (ppsw.cam.ac.uk [131.111.8.136]:25)
-        with esmtps (TLS1.2:ECDHE-RSA-AES256-GCM-SHA384:256)
-        id 1mkT33-000x3r-0M (Exim 4.95)
-        (return-path <amc96@srcf.net>);
-        Tue, 09 Nov 2021 15:28:33 +0000
-Received: from [192.168.1.10] (host-92-12-61-86.as13285.net [92.12.61.86])
-        (Authenticated sender: amc96)
-        by hades.srcf.societies.cam.ac.uk (Postfix) with ESMTPSA id C53601FBEE;
-        Tue,  9 Nov 2021 15:28:32 +0000 (GMT)
-To:     Peter Zijlstra <peterz@infradead.org>,
-        Boris Ostrovsky <boris.ostrovsky@oracle.com>
-Cc:     linux-kernel@vger.kernel.org, xen-devel@lists.xenproject.org,
-        tglx@linutronix.de, bp@alien8.de, dave.hansen@linux.intel.com,
-        x86@kernel.org, hpa@zytor.com, jgross@suse.com
-References: <1635896196-18961-1-git-send-email-boris.ostrovsky@oracle.com>
- <YYk+D17oIOGKWNtN@hirez.programming.kicks-ass.net>
- <48fb48fa-c65d-8e38-dabb-cf9be21365ca@oracle.com>
- <YYqPd1c9HIQH9k/9@hirez.programming.kicks-ass.net>
-From:   Andrew Cooper <amc96@srcf.net>
-Subject: Re: [PATCH] x86/smp: Factor out parts of native_smp_prepare_cpus()
-Message-ID: <aef8093d-f7da-c8b4-ebf6-6053b50b77ba@srcf.net>
-Date:   Tue, 9 Nov 2021 15:28:32 +0000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.14.0
+        id S239420AbhKIPeY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Nov 2021 10:34:24 -0500
+Received: from elvis.franken.de ([193.175.24.41]:39259 "EHLO elvis.franken.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S239167AbhKIPeP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Nov 2021 10:34:15 -0500
+Received: from uucp (helo=alpha)
+        by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
+        id 1mkT5p-00033f-00; Tue, 09 Nov 2021 16:31:25 +0100
+Received: by alpha.franken.de (Postfix, from userid 1000)
+        id 0A943C2C35; Tue,  9 Nov 2021 16:29:06 +0100 (CET)
+Date:   Tue, 9 Nov 2021 16:29:05 +0100
+From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+To:     Florian Fainelli <f.fainelli@gmail.com>
+Cc:     linux-mips@vger.kernel.org, Guenter Roeck <linux@roeck-us.net>,
+        "Maciej W. Rozycki" <macro@orcam.me.uk>,
+        "maintainer:BROADCOM BCM7XXX ARM ARCHITECTURE" 
+        <bcm-kernel-feedback-list@broadcom.com>,
+        Mike Rapoport <rppt@kernel.org>,
+        Yanteng Si <siyanteng@loongson.cn>,
+        Serge Semin <fancer.lancer@gmail.com>,
+        David Hildenbrand <david@redhat.com>,
+        Liam Howlett <liam.howlett@oracle.com>,
+        Jens Axboe <axboe@kernel.dk>,
+        Johannes Thumshirn <johannes.thumshirn@wdc.com>,
+        open list <linux-kernel@vger.kernel.org>,
+        "moderated list:BROADCOM BCM7XXX ARM ARCHITECTURE" 
+        <linux-arm-kernel@lists.infradead.org>
+Subject: Re: [PATCH] MIPS: Allow modules to set board_be_handler
+Message-ID: <20211109152905.GA12535@alpha.franken.de>
+References: <20211105173110.1237734-1-f.fainelli@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <YYqPd1c9HIQH9k/9@hirez.programming.kicks-ass.net>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8BIT
-Content-Language: en-GB
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211105173110.1237734-1-f.fainelli@gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 09/11/2021 15:10, Peter Zijlstra wrote:
-> On Mon, Nov 08, 2021 at 12:20:26PM -0500, Boris Ostrovsky wrote:
->>> But looking at those functions; there seems to be more spurious
->>> differences. For example, the whole sched_topology thing.
->>
->> I did look at that and thought this should be benign given that Xen PV
->> is not really topology-aware. I didn't see anything that would be a
->> cause for concern but perhaps you can point me to things I missed.
-> And me not being Xen aware... What does Xen-PV guests see of the CPUID
-> topology fields? Does it fully sanitize the CPUID data, or is it a clean
-> pass-through from whatever CPU the vCPU happens to run on at the time?
+On Fri, Nov 05, 2021 at 10:30:47AM -0700, Florian Fainelli wrote:
+> After making the brcmstb_gisb driver modular with 707a4cdf86e5 ("bus:
+> brcmstb_gisb: Allow building as module") Guenter reported that mips
+> allmodconfig failed to link because board_be_handler was referenced.
+> 
+> Thomas indicated that if we were to continue making the brcmstb_gisb
+> driver modular for MIPS we would need to introduce a function that
+> allows setting the board_be_handler and export that function towards
+> modules.
+> 
+> This is what is being done here: board_be_handler is made static and is
+> now settable with a mips_set_be_handler() function which is exported.
+> 
+> Reported-by: Guenter Roeck <linux@roeck-us.net>
+> Suggested-by: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+> Fixes: 707a4cdf86e5 ("bus: brcmstb_gisb: Allow building as module")
+> Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
+> ---
+>  arch/mips/dec/setup.c                 | 6 +++---
+>  arch/mips/include/asm/traps.h         | 2 +-
+>  arch/mips/kernel/traps.c              | 8 +++++++-
+>  arch/mips/sgi-ip22/ip22-berr.c        | 2 +-
+>  arch/mips/sgi-ip22/ip28-berr.c        | 2 +-
+>  arch/mips/sgi-ip27/ip27-berr.c        | 2 +-
+>  arch/mips/sgi-ip32/ip32-berr.c        | 2 +-
+>  arch/mips/sibyte/swarm/setup.c        | 2 +-
+>  arch/mips/txx9/generic/setup_tx4927.c | 2 +-
+>  arch/mips/txx9/generic/setup_tx4938.c | 2 +-
+>  arch/mips/txx9/generic/setup_tx4939.c | 2 +-
+>  drivers/bus/brcmstb_gisb.c            | 2 +-
+>  12 files changed, 20 insertions(+), 14 deletions(-)
 
-That depends on hardware support (CPUID Faulting or not), version of Xen
-(anything before Xen 4.7 is totally insane.  Anything more recent is
-only moderately insane), and whether the kernel asks via the enlightened
-CPUID path or not.
+applied to mips-next.
 
-On hardware lacking CPUID faulting, and for a kernel using
-native_cpuid() where it ought to be using the PVOP, it sees the real
-hardware value of the CPU it happens to be running on.
+Thomas.
 
-~Andrew
-
+-- 
+Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
+good idea.                                                [ RFC1925, 2.3 ]
