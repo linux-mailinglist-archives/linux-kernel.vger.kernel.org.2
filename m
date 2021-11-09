@@ -2,102 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F99944AFF6
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 16:02:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 229D044AFF8
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 16:02:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236058AbhKIPEw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Nov 2021 10:04:52 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36146 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232577AbhKIPEu (ORCPT
+        id S236134AbhKIPFA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Nov 2021 10:05:00 -0500
+Received: from conuserg-10.nifty.com ([210.131.2.77]:49280 "EHLO
+        conuserg-10.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236035AbhKIPE6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Nov 2021 10:04:50 -0500
-Received: from mail-wr1-x42e.google.com (mail-wr1-x42e.google.com [IPv6:2a00:1450:4864:20::42e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 27759C061764;
-        Tue,  9 Nov 2021 07:02:04 -0800 (PST)
-Received: by mail-wr1-x42e.google.com with SMTP id w29so21952720wra.12;
-        Tue, 09 Nov 2021 07:02:04 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=RTYWV3nFhsgRzCKGFoDGpSlf4DtT065khk9Y6j+f+zU=;
-        b=jnVS46qwHdRRNGjrF6xSPOakVWUv2P8snKeh6DSfw47Z/ZPpji/GBjMaYDVjAklfoP
-         8lDl2Urn7GhjSQDYvuxL/xn1lOxVnryTwnNpKauHPWCnviBrA+OuHK7GcC5DXlsSdqNK
-         Hmu0eZWD6UdgfF8g94MCvAvO4NK6PYWbW3+XMse3eFkj/2AwsOiKtPs1Y+8VakFStL/q
-         s63Q1nChJMn/4YrgFMpSKYu0JcJe6sM9fyBfndf5MavM5A9I5fkwwhU8jzlf8S5Pq3wb
-         95G1M7lKlAqrcINDGTo2y6wBEJGy3XQmLyYjyn9QxUM3qju933CfkHSRlDH0ukyzYTlG
-         1I0A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=RTYWV3nFhsgRzCKGFoDGpSlf4DtT065khk9Y6j+f+zU=;
-        b=siPx/bNoMg7LzD2NVFTkqrnHJ8kYx8VmN7B4YD1mRvtCEDYj29+vX4W14dMVcwQ7wm
-         OUzpE3WuNJlC+2SI8uNqowd/D4c0PHRXO+xnWsto9FlX91XVKGlkdNxbfJ4APFazD5WG
-         scjzVIFSHDP0FntpVhxGcK8XouKD42+0w4xJqlMnfPIlg2OBiPypZ3eRelWDqu8Od3XA
-         BSH4eWK1HzDfD5+NCOeeBLcYxCh1tT9w9cHNvmTKqJz3uvEw5pl0OvPh1mA57s9EyATN
-         4qeIhe5qMCmqCphkpS94YppVoTKksa8XwD9FnEM5XTlZ+z0BBkg3Oyg/6PJL2e6A2RvL
-         zryQ==
-X-Gm-Message-State: AOAM533IGT7sWUuOIubsQHIN59N7dj9hpXyR0U4IM/blwthM8/RWLpGv
-        PffGreFX0LS009BTQwykTrmACjahMqw6Og==
-X-Google-Smtp-Source: ABdhPJygps4YrjlSn3HJQTTlqp9f+bHTW50W4W1/HeB/RdintfzFv0bAPdQZdHzjGEurWC2jep+I8w==
-X-Received: by 2002:a05:6000:1862:: with SMTP id d2mr9966179wri.251.1636470121226;
-        Tue, 09 Nov 2021 07:02:01 -0800 (PST)
-Received: from localhost.localdomain.at (62-178-82-229.cable.dynamic.surfer.at. [62.178.82.229])
-        by smtp.gmail.com with ESMTPSA id n184sm2703152wme.2.2021.11.09.07.02.00
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 09 Nov 2021 07:02:00 -0800 (PST)
-From:   Christian Gmeiner <christian.gmeiner@gmail.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     Christian Gmeiner <christian.gmeiner@gmail.com>,
-        Grygorii Strashko <grygorii.strashko@ti.com>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Nishanth Menon <nm@ti.com>, Tero Kristo <kristo@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org
-Subject: [PATCH] arm64: dts: ti: k3-am64-main: add timesync router node
-Date:   Tue,  9 Nov 2021 16:01:40 +0100
-Message-Id: <20211109150158.164778-1-christian.gmeiner@gmail.com>
-X-Mailer: git-send-email 2.33.1
+        Tue, 9 Nov 2021 10:04:58 -0500
+X-Greylist: delayed 168096 seconds by postgrey-1.27 at vger.kernel.org; Tue, 09 Nov 2021 10:04:58 EST
+Received: from grover.. (133-32-232-101.west.xps.vectant.ne.jp [133.32.232.101]) (authenticated)
+        by conuserg-10.nifty.com with ESMTP id 1A9F1mTt012230;
+        Wed, 10 Nov 2021 00:01:48 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conuserg-10.nifty.com 1A9F1mTt012230
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
+        s=dec2015msa; t=1636470108;
+        bh=/ijbM1TP6K+JTP7BiPh1WBRya5K6GRIV8U9h0I8JScs=;
+        h=From:To:Cc:Subject:Date:From;
+        b=zXzDGBnDPOrHRZXkE4rN0IXgnOBuTn78Mq9FB2Z1XFV5hHfG1gTxc8xyj4ghBVhmU
+         LuErClpZhazvGX/MFWxCQsdxN7VMt3YRoHmLjXZp+uG0VcdGmeT4l86y33HYqZSaYO
+         i2oz0xtaD252/fWpG476VgCbx/HwbrWfXxGAIus93Y4ZGRdHATDY+ByX2krFTVAqdY
+         IF4RpDywGwf8SVNfG0g49ZXI+RoJCz3o5HkQku50Hpmo9Ce+PCHMaKH2zHBCScHM+b
+         zIglKVVC3Etiw5+/NA2B+Pucg37gBjULRoMK76crIK167RviB6jLW7IhF2UmjHQaFA
+         KYoerpqWtEu3g==
+X-Nifty-SrcIP: [133.32.232.101]
+From:   Masahiro Yamada <masahiroy@kernel.org>
+To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        linux-mips@vger.kernel.org
+Cc:     Masahiro Yamada <masahiroy@kernel.org>,
+        Jason Self <jason@bluehome.net>, linux-kernel@vger.kernel.org
+Subject: [PATCH 1/2] MIPS: fix *-pkg builds for loongson2ef platform
+Date:   Wed, 10 Nov 2021 00:01:45 +0900
+Message-Id: <20211109150146.529428-1-masahiroy@kernel.org>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The Time Sync Event Router (TIMESYNC_INTRTR0) implements a set of
-multiplexers to provide selection of active CPTS time sync events for
-routing to CPTS capable modules.
+Since commit 805b2e1d427a ("kbuild: include Makefile.compiler only when
+compiler is needed"), package builds for the loongson2f platform fail.
 
-This patch adds DT node TIMESYNC_INTRTR0 using "pinctrl-single" bindings.
+  $ make ARCH=mips CROSS_COMPILE=mips64-linux- lemote2f_defconfig bindeb-pkg
+    [ snip ]
+  sh ./scripts/package/builddeb
+  arch/mips/loongson2ef//Platform:36: *** only binutils >= 2.20.2 have needed option -mfix-loongson2f-nop.  Stop.
+  cp: cannot stat '': No such file or directory
+  make[5]: *** [scripts/Makefile.package:87: intdeb-pkg] Error 1
+  make[4]: *** [Makefile:1558: intdeb-pkg] Error 2
+  make[3]: *** [debian/rules:13: binary-arch] Error 2
+  dpkg-buildpackage: error: debian/rules binary subprocess returned exit status 2
+  make[2]: *** [scripts/Makefile.package:83: bindeb-pkg] Error 2
+  make[1]: *** [Makefile:1558: bindeb-pkg] Error 2
+  make: *** [Makefile:350: __build_one_by_one] Error 2
 
-Signed-off-by: Grygorii Strashko <grygorii.strashko@ti.com>
-Signed-off-by: Vignesh Raghavendra <vigneshr@ti.com>
-Signed-off-by: Christian Gmeiner <christian.gmeiner@gmail.com>
+The reason is because "make image_name" fails.
+
+  $ make ARCH=mips CROSS_COMPILE=mips64-linux- image_name
+  arch/mips/loongson2ef//Platform:36: *** only binutils >= 2.20.2 have needed option -mfix-loongson2f-nop.  Stop.
+
+In general, adding $(error ...) in the parse stage is troublesome,
+and it is pointless to check toolchains even if we are not building
+anything. Do not include Kbuild.platform in such cases.
+
+Fixes: 805b2e1d427a ("kbuild: include Makefile.compiler only when compiler is needed")
+Reported-by: Jason Self <jason@bluehome.net>
+Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
 ---
- arch/arm64/boot/dts/ti/k3-am64-main.dtsi | 8 ++++++++
- 1 file changed, 8 insertions(+)
 
-diff --git a/arch/arm64/boot/dts/ti/k3-am64-main.dtsi b/arch/arm64/boot/dts/ti/k3-am64-main.dtsi
-index 42d1d219a3fd..c9321a80353a 100644
---- a/arch/arm64/boot/dts/ti/k3-am64-main.dtsi
-+++ b/arch/arm64/boot/dts/ti/k3-am64-main.dtsi
-@@ -564,6 +564,14 @@ cpts@39000000 {
- 		ti,cpts-ext-ts-inputs = <8>;
- 	};
+ arch/mips/Makefile | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/arch/mips/Makefile b/arch/mips/Makefile
+index e036fc025ccc..ace7f033de07 100644
+--- a/arch/mips/Makefile
++++ b/arch/mips/Makefile
+@@ -253,7 +253,9 @@ endif
+ #
+ # Board-dependent options and extra files
+ #
++ifdef need-compiler
+ include $(srctree)/arch/mips/Kbuild.platforms
++endif
  
-+	timesync_router: timesync-router@a40000 {
-+		compatible = "pinctrl-single";
-+		reg = <0x0 0xa40000 0x0 0x800>;
-+		#pinctrl-cells = <1>;
-+		pinctrl-single,register-width = <32>;
-+		pinctrl-single,function-mask = <0x000107ff>;
-+	};
-+
- 	usbss0: cdns-usb@f900000{
- 		compatible = "ti,am64-usb";
- 		reg = <0x00 0xf900000 0x00 0x100>;
+ ifdef CONFIG_PHYSICAL_START
+ load-y					= $(CONFIG_PHYSICAL_START)
 -- 
-2.33.1
+2.30.2
 
