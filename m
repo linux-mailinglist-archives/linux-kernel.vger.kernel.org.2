@@ -2,105 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 86CA944A85F
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 09:31:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3D30844A861
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 09:31:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244089AbhKIIdy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Nov 2021 03:33:54 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59294 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244073AbhKIIdv (ORCPT
+        id S244100AbhKIIe0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Nov 2021 03:34:26 -0500
+Received: from m1510.mail.126.com ([220.181.15.10]:17221 "EHLO
+        m1510.mail.126.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S244095AbhKIIeX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Nov 2021 03:33:51 -0500
-Received: from mail-wr1-x433.google.com (mail-wr1-x433.google.com [IPv6:2a00:1450:4864:20::433])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 94B87C061766;
-        Tue,  9 Nov 2021 00:31:05 -0800 (PST)
-Received: by mail-wr1-x433.google.com with SMTP id d24so31574470wra.0;
-        Tue, 09 Nov 2021 00:31:05 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=s0IKHA14fyfH6614d1MLit1k252lJikwUDfjSyF9sD4=;
-        b=E6Hj8nsb6ona45YrTSPoMfGXmM9mqwDdNgWFKLMbkZ9FLzu3CrXtZKeg73X1xSsBu+
-         dVpyJV/bgsS1YapHj/gCRJAhL7tT2veJRCPl79gUVFnRF+PLEvVjxRa7dlyRWFu+AQrL
-         YJrQufW36LbeQ+USDh+QGGszGFZ2idKF1JNMPvIgLViyG8CHy4sSG2f3fuxwHqdZGKXB
-         kl9T1Vt8OgIVPPYWiWzI52hReinv0S1lhH/A9j9EWj4bvikdYFySfjcPYEPJc7Z9Lutq
-         BHnjlvWixRbbnl9RnqQeAPeKDyyRMbaFkBWqnZ2J7XR/w22+A7suuoxGVm2CEpZjCv2a
-         yVtg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=s0IKHA14fyfH6614d1MLit1k252lJikwUDfjSyF9sD4=;
-        b=MBf+S+3LGReorGRYWtc5zK1wu7LGeCqIIUwgAg1eMo+lvHNEtqfurd1Kcz/lmaO03M
-         8YPdfGOI8hqamE4m5K2rply3JoVt4Ew3sphS7ApzdL+LvvwrT0OF8kDmmP0ge2fF2uWz
-         BvY+0secwoKJ371OEoJngR8tAG1OXdvXmBdhfQdSavhzk32sjUzgQwlEXJEfu9dpFmVk
-         E6C2crixZDDxkx9qBI+ULcedufy95SER4LQWPwSxGPd++Q0JOrNuNAFM63IxJEv+70G8
-         2CtJqBczJubJuH2QomS8Mnw1YRlHLsyldZgxXcZON2fMNAYO7OIlZrPgQFF/tzfNJ84X
-         xwrw==
-X-Gm-Message-State: AOAM532OklFSXfmJ5yqy73QMOfxuI36s4mv5KNc4j0wlJHGRRHyNe2Vj
-        WaQQQB5tPjDtDNGNeD49pBOgkBOMgoQ=
-X-Google-Smtp-Source: ABdhPJz9ZwtCQbgEDklrL6PF0o4INiZ9dJFQn38KrbMCIQeH6jtTxgNqRJ7ktnJkzD89gwSJv2wMlQ==
-X-Received: by 2002:adf:ed83:: with SMTP id c3mr6941656wro.169.1636446664027;
-        Tue, 09 Nov 2021 00:31:04 -0800 (PST)
-Received: from localhost.localdomain.at (62-178-82-229.cable.dynamic.surfer.at. [62.178.82.229])
-        by smtp.gmail.com with ESMTPSA id v185sm1821600wme.35.2021.11.09.00.31.03
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 09 Nov 2021 00:31:03 -0800 (PST)
-From:   Christian Gmeiner <christian.gmeiner@gmail.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     Christian Gmeiner <christian.gmeiner@gmail.com>,
-        Ohad Ben-Cohen <ohad@wizery.com>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        linux-remoteproc@vger.kernel.org
-Subject: [RFC PATCH 1/1] rpmsg: add syslog driver
-Date:   Tue,  9 Nov 2021 09:30:44 +0100
-Message-Id: <20211109083051.17831-2-christian.gmeiner@gmail.com>
-X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211109083051.17831-1-christian.gmeiner@gmail.com>
-References: <20211109083051.17831-1-christian.gmeiner@gmail.com>
+        Tue, 9 Nov 2021 03:34:23 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=126.com;
+        s=s110527; h=Date:From:Subject:MIME-Version:Message-ID; bh=dLzp2
+        hWh/AXLN2eszbgtSNzCV7q6sPVEhGOup8/b82U=; b=ge2eLYwvmU+LDQ5vYMYQN
+        Pd0kF9qDubWsw+cklAzMAOQFrw9GHqAfZg/Fg2Ynp1RdtJ4Ra+E5WcjMlk92U/TT
+        HnLPdZdYqS6g6qIxauHCXO4pdJPAjKmY/55BmheRF+gRnjeZMTAzsxRUvksXGhBU
+        OeFevefu8w7BIthXKdJBVs=
+Received: from zhangzl2013$126.com ( [60.247.85.82] ) by
+ ajax-webmail-wmsvr10 (Coremail) ; Tue, 9 Nov 2021 16:31:23 +0800 (CST)
+X-Originating-IP: [60.247.85.82]
+Date:   Tue, 9 Nov 2021 16:31:23 +0800 (CST)
+From:   "Zhaolong Zhang" <zhangzl2013@126.com>
+To:     "Borislav Petkov" <bp@alien8.de>
+Cc:     "Tony Luck" <tony.luck@intel.com>, x86@kernel.org,
+        linux-edac@vger.kernel.org, linux-kernel@vger.kernel.org,
+        "Paul E . McKenney" <paulmck@kernel.org>
+Subject: Re: [PATCH] x86/mce: drop cpu_missing since we have more capable
+ mce_missing_cpus
+X-Priority: 3
+X-Mailer: Coremail Webmail Server Version XT5.0.13 build 20210622(1d4788a8)
+ Copyright (c) 2002-2021 www.mailtech.cn 126com
+In-Reply-To: <4a77f582.4434.17cff975224.Coremail.zhangzl2013@126.com>
+References: <572d793c.f2e.17cede4cbf0.Coremail.zhangzl2013@126.com>
+ <20211108082832.142436-1-zhangzl2013@126.com> <YYjuiHN1wKt82fjs@zn.tnic>
+ <4d526023.3cde.17cff097bab.Coremail.zhangzl2013@126.com>
+ <YYj8ir/UYnG/zVK4@zn.tnic>
+ <4a77f582.4434.17cff975224.Coremail.zhangzl2013@126.com>
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset=GBK
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Message-ID: <776fad3d.3369.17d03d2c2ba.Coremail.zhangzl2013@126.com>
+X-Coremail-Locale: zh_CN
+X-CM-TRANSID: CsqowABnf1fcMYphXOxQAQ--.40801W
+X-CM-SenderInfo: x2kd0wt2osiiat6rjloofrz/1tbi4wZGz1pD-fwU9QABsU
+X-Coremail-Antispam: 1U5529EdanIXcx71UUUUU7vcSsGvfC2KfnxnUU==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Allows the remote firmware to log into syslog.
-
-Signed-off-by: Christian Gmeiner <christian.gmeiner@gmail.com>
----
- drivers/rpmsg/Kconfig  | 8 ++++++++
- drivers/rpmsg/Makefile | 1 +
- 2 files changed, 9 insertions(+)
-
-diff --git a/drivers/rpmsg/Kconfig b/drivers/rpmsg/Kconfig
-index 0b4407abdf13..801f9956ec21 100644
---- a/drivers/rpmsg/Kconfig
-+++ b/drivers/rpmsg/Kconfig
-@@ -73,4 +73,12 @@ config RPMSG_VIRTIO
- 	select RPMSG_NS
- 	select VIRTIO
- 
-+config RPMSG_SYSLOG
-+	tristate "SYSLOG device interface"
-+	depends on RPMSG
-+	help
-+	  Say Y here to export rpmsg endpoints as device files, usually found
-+	  in /dev. They make it possible for user-space programs to send and
-+	  receive rpmsg packets.
-+
- endmenu
-diff --git a/drivers/rpmsg/Makefile b/drivers/rpmsg/Makefile
-index 8d452656f0ee..75b2ec7133a5 100644
---- a/drivers/rpmsg/Makefile
-+++ b/drivers/rpmsg/Makefile
-@@ -9,3 +9,4 @@ obj-$(CONFIG_RPMSG_QCOM_GLINK_RPM) += qcom_glink_rpm.o
- obj-$(CONFIG_RPMSG_QCOM_GLINK_SMEM) += qcom_glink_smem.o
- obj-$(CONFIG_RPMSG_QCOM_SMD)	+= qcom_smd.o
- obj-$(CONFIG_RPMSG_VIRTIO)	+= virtio_rpmsg_bus.o
-+obj-$(CONFIG_RPMSG_SYSLOG)	+= rpmsg_syslog.o
--- 
-2.33.1
-
+QXQgMjAyMS0xMS0wOCAyMDo0Nzo1OSwgIlpoYW9sb25nIFpoYW5nIiA8emhhbmd6bDIwMTNAMTI2
+LmNvbT4gd3JvdGU6Cj5BdCAyMDIxLTExLTA4IDE4OjMxOjM4LCAiQm9yaXNsYXYgUGV0a292IiA8
+YnBAYWxpZW44LmRlPiB3cm90ZToKPj5PbiBNb24sIE5vdiAwOCwgMjAyMSBhdCAwNjoxMzowNFBN
+ICswODAwLCBaaGFvbG9uZyBaaGFuZyB3cm90ZToKPj4+IEkgd2FzIGNvbmNlcm5pbmcgdGhhdCBp
+ZiBJIHNpbXBseSByZW1vdmUgdGhlIGNwdV9taXNzaW5nIGNvZGUsIHdlIHdpbGwgbG9zZSB0aGUg
+bG9nIGluIHRoZQo+Pj4gc2l0dWF0aW9uIHdoZXJlIG1jYV9jZmcudG9sZXJhbnQgPiAxIGFuZCBu
+b193YXlfb3V0IGlzIHNldCBhZnRlcndhcmRzLgo+Pj4gCj4+PiBEbyB5b3UgdGhpbmsgd2UgY2Fu
+IHNhZmVseSBpZ25vcmUgdGhhdCBzaXR1YXRpb24/Cj4+Cj4+V2VsbCwgaG93IGxpa2VseSBpcyB0
+byBoYXZlIHN1Y2ggYSBzaXR1YXRpb24gaW4gcHJhY3RpY2U/Cj4KPkl0IGlzIGRpZmZpY3VsdCB0
+byBhbnN3ZXIuLi4KPkJ1dCBzaW5jZSBjdXJyZW50IGNvZGUgaXMgZGVhbGluZyB3aXRoIHRoaXMg
+c2l0dWF0aW9uLCBJIHRoaW5rIEkgc2hvdWxkIGNvdmVyIGl0IHRvbywKPmFsdGhvdWdoIGl0IGlz
+IG9ubHkgYSBwaWVjZSBvZiBsb2cuCgpIaSBCb3JpcywKCkkgcmVjb25zaWRlcmVkIHRoZSBzaXR1
+YXRpb24uCklmIHRoZXJlIGlzIGEgbm9uLXJlY292ZXJhYmxlIG1jZSBhcyB3ZWxsLCBqdXN0IGxl
+dCBpdCBwcmludCB0aGF0IHJlYXNvbi4gTm8gbmVlZCB0byBicmluZyB0aGUKdGltZW91dCBtZXNz
+YWdlIGluZGVlZC4gQmVjYXVzZSBzaW5jZSB0aGUgdG9sZXJhbnQgd2FzIHNldCB0byBhIGhpZ2gg
+bGV2ZWwgdG8gaWdub3JlIHRoZSB0aW1lb3V0LAp3ZSBjYW4gZXZlbnR1YWxseSBpZ25vcmUgdGhl
+bS4KClNvIHNpbXBseSBkcm9wIGNwdV9taXNzaW5nIHZhcmlhYmxlIGFzIHlvdSBtZW50aW9uZWQg
+c2hvdWxkIHdvcmsuCgpJIGFtIG5vdCBzdXJlIHdoZXRoZXIgaXQgc2hvdWxkIGJlIGF1dGhvcmVk
+IGJ5IHlvdSBvciBzdWdnZXN0ZWQgYnkgeW91LgpBbnl3YXksIEkgd2lsbCBwb3N0IGEgbmV3IHBh
+dGNoIGV4YWN0bHkgYXMgeW91IHN1Z2dlc3RlZC4gUGxlYXNlIHBpY2sgaXQgb3IgaWdub3JlIGl0
+IGFzIGFwcHJvcHJpYXRlIDopCgpUaGFua3MsClpoYW9sb25nCg==
