@@ -2,177 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3954344AEAF
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 14:23:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E508444AEB2
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 14:26:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234305AbhKIN0l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Nov 2021 08:26:41 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42186 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234016AbhKIN0k (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Nov 2021 08:26:40 -0500
-Received: from mail-qt1-x82f.google.com (mail-qt1-x82f.google.com [IPv6:2607:f8b0:4864:20::82f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8DEEFC061766
-        for <linux-kernel@vger.kernel.org>; Tue,  9 Nov 2021 05:23:54 -0800 (PST)
-Received: by mail-qt1-x82f.google.com with SMTP id j17so4692287qtx.2
-        for <linux-kernel@vger.kernel.org>; Tue, 09 Nov 2021 05:23:54 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=0DLOTiy6uZY8gn6Kg56dLhNVby+whfyfkmUWkLQ+UOA=;
-        b=f8pVbfVtU3/8Nlsv80NbQejsTjrSvwbHd+l3a81MOru4mYEVYBqz0mSC6JdLqmKQTB
-         /vnbji78y6ZeGFXlWOwg45m5JuCR5r8KfUjjj0AKi/c7LyAasT8E7TH69Ff4mofhe8uc
-         6B9/raP1Wv8x4/57E/wDz1hS3mHcwWGrpd927pvnFBCClMpXNxdehbZaeGVwCKbHEfte
-         bepk/oR4z7+8X+cnmYIXpfjLIzSs6DKfJO6pXWynlecutd/1P1GGu5at1UUXoAwi3Rmx
-         qcd2ylczNGOxNbiNbZ7Nzz2WGyW2msrH9dCoecEqqHbvqGWXw7Ja2AZfEoWtwsHttlW4
-         WC3Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=0DLOTiy6uZY8gn6Kg56dLhNVby+whfyfkmUWkLQ+UOA=;
-        b=SBnj2ZGikNqWfkXZ9ISXXU1E9yXRosrUNF0tH3JQxMezxcT72P6Hbc40G2YXzLvn6I
-         Oc9XZ6PhNWDYdh+y6Z+gIU8YzwKp6ToOZK/ZDSCtPB4Qqzt8KYdjOHAS25FpAUe3v/tH
-         SktFi4Ck96bEVUX8qnTGnVPTjB+p4y6t8VgvN4gJKEZsSeFziLHahDVVfvF7Fn7j55x2
-         Tf/xs0buBMODvGIaoCXLBdsAGgOre/p/NxW/O18HqMZtxMCY4kKC1Zg3SJ5/O5GzxyfZ
-         oKDMqGHCEOcq2jUMR9DNppbNv1xubdSz4Sj72JlCJqGg1CKfxrKemqqmcVizChYFMiOw
-         ZrNA==
-X-Gm-Message-State: AOAM5326ote4kpd0fHGN5VxH6xGfhgnbWJ1qYRWDU3w7TPlf4aNAioRn
-        IcMqinWEbJuUp+/pKRjSdcW+EEPG8S00OsaaKxkEpp9IwS0=
-X-Google-Smtp-Source: ABdhPJxHnSv1ag1UA5YDSEU6aEzZr4vb+6lgWQ1FhKR8ZuYwYjGVbuwc6M+VdPn4JgyJsr8SfH25i8l+XgtGybnggEs=
-X-Received: by 2002:ac8:57cb:: with SMTP id w11mr8208764qta.285.1636464233688;
- Tue, 09 Nov 2021 05:23:53 -0800 (PST)
+        id S234834AbhKIN3L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Nov 2021 08:29:11 -0500
+Received: from mail.kernel.org ([198.145.29.99]:40972 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230190AbhKIN3J (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Nov 2021 08:29:09 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id CCDF361159;
+        Tue,  9 Nov 2021 13:26:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1636464383;
+        bh=J2HKc1MxYjxe9gpE69xTbA5+nRuj4eiTFvnENQOr37k=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=f/gz9DKhinbAoV/QCOVsqbhS3HF4+Pt5r4HFYK237NhSc01SfbPG6nkny+MI+ARf8
+         8P7upGQlo8lYGWFhik7IN/Jum/EauOkZZVVkOnIQud6jIQ/yr53iJ5rgezpToOCRAE
+         DF7PQXrTs+SHEqu5PeBjuls6FEjnEMDr1Q1b753FI0+DvIVxKTQp3MpQtLcf+S44ei
+         axkOjztraSoaXVPGqChqbzNPIIQUnwcGsbZDC4vpxi0VHjQlaHooMe+/xJKLsGnr+d
+         5S6HgE7TwHTejEfB7aPKkpW6CfNvNU5x11c8NUSR789I5VOZEQ3A7bRkp1FAMqmdQQ
+         n5unOukEaiM4g==
+Date:   Tue, 9 Nov 2021 13:26:18 +0000
+From:   Mark Brown <broonie@kernel.org>
+To:     cy_huang <u0084500@gmail.com>
+Cc:     perex@perex.cz, tiwai@suse.com, oder_chiou@realtek.com,
+        lgirdwood@gmail.com, alsa-devel@alsa-project.org,
+        linux-kernel@vger.kernel.org, cy_huang@richtek.com,
+        allen_lin@richtek.com
+Subject: Re: [PATCH 1/2] ASoC: rt9120: Update internal setting and fix auto
+ sync problem
+Message-ID: <YYp2+gqjn6+M/hZ7@sirena.org.uk>
+References: <1636439024-15877-1-git-send-email-u0084500@gmail.com>
+ <1636439024-15877-2-git-send-email-u0084500@gmail.com>
 MIME-Version: 1.0
-References: <1636451248-18889-1-git-send-email-quic_mkrishn@quicinc.com>
-In-Reply-To: <1636451248-18889-1-git-send-email-quic_mkrishn@quicinc.com>
-From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Date:   Tue, 9 Nov 2021 16:23:42 +0300
-Message-ID: <CAA8EJppuuuY+Oksjv8_U80icK-mr5gjgix6DCnyoMDBwHf4A5w@mail.gmail.com>
-Subject: Re: [PATCH v3] drm/msm: use compatible lists to find mdp node
-To:     Krishna Manikandan <quic_mkrishn@quicinc.com>
-Cc:     linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        quic_kalyant@quicinc.com, robdclark@gmail.com, swboyd@chromium.org,
-        freedreno@lists.freedesktop.org, dri-devel@lists.freedesktop.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="HVGDxR7W1SSa3wC/"
+Content-Disposition: inline
+In-Reply-To: <1636439024-15877-2-git-send-email-u0084500@gmail.com>
+X-Cookie: Elevators smell different to midgets.
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 9 Nov 2021 at 12:47, Krishna Manikandan
-<quic_mkrishn@quicinc.com> wrote:
->
-> In the current implementation, substring comparison
-> using device node name is used to find mdp node
-> during driver probe. Use compatible string list instead
-> of node name to get mdp node from the parent mdss node.
->
-> Signed-off-by: Krishna Manikandan <quic_mkrishn@quicinc.com>
->
-> Changes in v2:
->   - Use compatible lists instead of duplicate string
->     check (Stephen Boyd)
->
-> Changes in v3:
->   - Use match tables to find the mdp node (Stephen Boyd)
-> ---
->  drivers/gpu/drm/msm/disp/dpu1/dpu_kms.c  | 3 ++-
->  drivers/gpu/drm/msm/disp/mdp5/mdp5_kms.c | 3 ++-
->  drivers/gpu/drm/msm/msm_drv.c            | 7 ++++---
->  drivers/gpu/drm/msm/msm_kms.h            | 3 +++
->  4 files changed, 11 insertions(+), 5 deletions(-)
->
-> diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_kms.c b/drivers/gpu/drm/msm/disp/dpu1/dpu_kms.c
-> index ad247c0..c778b6d 100644
-> --- a/drivers/gpu/drm/msm/disp/dpu1/dpu_kms.c
-> +++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_kms.c
-> @@ -1273,7 +1273,7 @@ static const struct dev_pm_ops dpu_pm_ops = {
->                                 pm_runtime_force_resume)
->  };
->
-> -static const struct of_device_id dpu_dt_match[] = {
-> +const struct of_device_id dpu_dt_match[] = {
->         { .compatible = "qcom,sdm845-dpu", },
->         { .compatible = "qcom,sc7180-dpu", },
->         { .compatible = "qcom,sc7280-dpu", },
-> @@ -1282,6 +1282,7 @@ static const struct of_device_id dpu_dt_match[] = {
->         {}
->  };
->  MODULE_DEVICE_TABLE(of, dpu_dt_match);
-> +EXPORT_SYMBOL(dpu_dt_match);
 
-There is no need to export these symbols, as they will be used within
-the module.
+--HVGDxR7W1SSa3wC/
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
->
->  static struct platform_driver dpu_driver = {
->         .probe = dpu_dev_probe,
-> diff --git a/drivers/gpu/drm/msm/disp/mdp5/mdp5_kms.c b/drivers/gpu/drm/msm/disp/mdp5/mdp5_kms.c
-> index 7b24224..8b97008 100644
-> --- a/drivers/gpu/drm/msm/disp/mdp5/mdp5_kms.c
-> +++ b/drivers/gpu/drm/msm/disp/mdp5/mdp5_kms.c
-> @@ -1031,13 +1031,14 @@ static const struct dev_pm_ops mdp5_pm_ops = {
->         SET_RUNTIME_PM_OPS(mdp5_runtime_suspend, mdp5_runtime_resume, NULL)
->  };
->
-> -static const struct of_device_id mdp5_dt_match[] = {
-> +const struct of_device_id mdp5_dt_match[] = {
->         { .compatible = "qcom,mdp5", },
->         /* to support downstream DT files */
->         { .compatible = "qcom,mdss_mdp", },
->         {}
->  };
->  MODULE_DEVICE_TABLE(of, mdp5_dt_match);
-> +EXPORT_SYMBOL(mdp5_dt_match);
->
->  static struct platform_driver mdp5_driver = {
->         .probe = mdp5_dev_probe,
-> diff --git a/drivers/gpu/drm/msm/msm_drv.c b/drivers/gpu/drm/msm/msm_drv.c
-> index 7936e8d..445788f 100644
-> --- a/drivers/gpu/drm/msm/msm_drv.c
-> +++ b/drivers/gpu/drm/msm/msm_drv.c
-> @@ -1277,9 +1277,10 @@ static int add_components_mdp(struct device *mdp_dev,
->         return 0;
->  }
->
-> -static int compare_name_mdp(struct device *dev, void *data)
-> +static int find_mdp_node(struct device *dev, void *data)
->  {
-> -       return (strstr(dev_name(dev), "mdp") != NULL);
-> +       return of_match_node(dpu_dt_match, dev->of_node) ||
-> +               of_match_node(mdp5_dt_match, dev->of_node);
->  }
->
->  static int add_display_components(struct platform_device *pdev,
-> @@ -1304,7 +1305,7 @@ static int add_display_components(struct platform_device *pdev,
->                         return ret;
->                 }
->
-> -               mdp_dev = device_find_child(dev, NULL, compare_name_mdp);
-> +               mdp_dev = device_find_child(dev, NULL, find_mdp_node);
->                 if (!mdp_dev) {
->                         DRM_DEV_ERROR(dev, "failed to find MDSS MDP node\n");
->                         of_platform_depopulate(dev);
-> diff --git a/drivers/gpu/drm/msm/msm_kms.h b/drivers/gpu/drm/msm/msm_kms.h
-> index 6a42b81..8b132c8 100644
-> --- a/drivers/gpu/drm/msm/msm_kms.h
-> +++ b/drivers/gpu/drm/msm/msm_kms.h
-> @@ -198,6 +198,9 @@ struct msm_kms *mdp4_kms_init(struct drm_device *dev);
->  struct msm_kms *mdp5_kms_init(struct drm_device *dev);
->  struct msm_kms *dpu_kms_init(struct drm_device *dev);
->
-> +extern const struct of_device_id dpu_dt_match[];
-> +extern const struct of_device_id mdp5_dt_match[];
-> +
->  struct msm_mdss_funcs {
->         int (*enable)(struct msm_mdss *mdss);
->         int (*disable)(struct msm_mdss *mdss);
-> --
-> 2.7.4
->
+On Tue, Nov 09, 2021 at 02:23:43PM +0800, cy_huang wrote:
+> From: ChiYuan Huang <cy_huang@richtek.com>
+>=20
+> - Update internal setting to fix issue.
+> - Disable auto sync if fs is divided by 48.
 
+Please submit one patch per change, each with a clear changelog, as
+covered in SubmittingPatches.  This makes it much easier to review
+things since it's easier to tell if the patch does what it was intended
+to do.  When splitting patches up git gui can be helpful, you can stage
+and unstage individual lines by right clicking on them.
 
--- 
-With best wishes
-Dmitry
+--HVGDxR7W1SSa3wC/
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmGKdvoACgkQJNaLcl1U
+h9CDUwf/empk/L0AB6TG5uu8RYPa6l2xwNsGoK24S7mFsEIsG7ykomIbzY5cn5de
+O6C0OBLyNOZwl6WprWKMRGFtj+yzsAFijk47pq3FYOwEU/EHRt/WtBrcLSlYZQen
+g913L88YViV5l7kCF5LgXQuetDkPMU+uXIFY74zLAPEpE9rCGfzmYkbEAp26bgtm
+b8AMzlh4BBH7YquiB1yyyN23Zf8V7VdUZxzaCJZmLbYXS+iiwFzbTb69FdZvRIwD
+6FVq8+ox0ftvpU4q94bPq/dZCWMIDdfXa1jLRl6axzfGWErvYA+p1+aVyJoy/x2T
+SFvXJh3bMIDIH8XJ7dfn2enhoT62AA==
+=sDK0
+-----END PGP SIGNATURE-----
+
+--HVGDxR7W1SSa3wC/--
