@@ -2,123 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7163A44A83A
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 09:15:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3900244A83E
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 09:20:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243984AbhKIISI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Nov 2021 03:18:08 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55726 "EHLO
+        id S236321AbhKIIXU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Nov 2021 03:23:20 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56888 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235389AbhKIISH (ORCPT
+        with ESMTP id S236169AbhKIIXP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Nov 2021 03:18:07 -0500
-Received: from mail-ua1-x92b.google.com (mail-ua1-x92b.google.com [IPv6:2607:f8b0:4864:20::92b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E4EF7C061764;
-        Tue,  9 Nov 2021 00:15:21 -0800 (PST)
-Received: by mail-ua1-x92b.google.com with SMTP id l43so36928616uad.4;
-        Tue, 09 Nov 2021 00:15:21 -0800 (PST)
+        Tue, 9 Nov 2021 03:23:15 -0500
+Received: from mail-pg1-x52c.google.com (mail-pg1-x52c.google.com [IPv6:2607:f8b0:4864:20::52c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 202AEC061764;
+        Tue,  9 Nov 2021 00:20:28 -0800 (PST)
+Received: by mail-pg1-x52c.google.com with SMTP id 188so5434165pgb.7;
+        Tue, 09 Nov 2021 00:20:28 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:reply-to:from:date:message-id
-         :subject:to:cc;
-        bh=rtQs6j/Tm8dLc64xSXahWAxIc1oOwGIaWX22GHV5zpE=;
-        b=GTZ+Eolk0qHglY4KGiRYpDlbuKBm33j6rLTvOonaqbJCrUnbKAmILLg0f0qgKTCp5s
-         6snIijBnG8XANUlqLhKoOirNY07s2E1VGJQUSMVqJWrGmpcU87Qrji5JKi38VqnCTF5J
-         6tW7UZmLIvZingYlaxX9g+l+HHHW0gK0ZAMJX+yyWWM7q3lEh4m1HcpYZ3uayuHd0GSX
-         J3IuVSa/lpWIejSiNjCwdlL/Y3DsepjqN4KM3gVlYZ77WU4oX6/4XAJZltKS9q6FKaV0
-         0PmmFKaLy4fqF4b4QQ5gTKamp6j+Iq7qT9A3bgrOl5vYDea4sBhPFTvrk5OCUd3AWeu5
-         AE/w==
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=o1cvMhjy6fdnuouwYm+15BaMU3WeB3ZqppuOOP+IdbA=;
+        b=KrG0sirAsWEagpBbEX8nQZ7FYPIbK2kuzVYFkDj7ZtE6HGj8SrUPiR4/RDOQKT+OY3
+         fdW9RzdWm/dNAr9xZkR4K5UnEoZJr1YKpZ2OHEpL7BFuTl5GjyRRAFbQ06bXFtfUw+QW
+         JnAN4wIGlNz4QPRDiWYg9f6QGe/yRo7PCSM1zvfyI7nHRejMSlYTGhB+vrKi5bPh1CrY
+         tfW1kwH3Dfx61A27h/0gNaD8h59qzIi7Cg5oUKC+7/L4o5Q21FLR7hKYizC6kGgfqd7E
+         5rhdafGWx6lfkclrJVIFpniv2SEcUojO5oooIhlsECSHw9ax58rpb7SGtaizY6Xi/7Al
+         ehgA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
-         :from:date:message-id:subject:to:cc;
-        bh=rtQs6j/Tm8dLc64xSXahWAxIc1oOwGIaWX22GHV5zpE=;
-        b=fVZGkvdJNIBgOd/p5WbAOFJ0i2PbrJ+Nn3XTVVVxxsQNBMSzsjl8GuSMKhe42fGvHa
-         wa4xAcRmQsCr5/xrArYEttV2ptUptfRdvqUNUB4O3KchjdX3wIRFrquufFp+A1SMsqyN
-         JKGJqem6DSAoDplR0RiD9gRE/Ki0glZE3/kNXb6b+6fZcYibY/giOk0UFTAuwL3flhd1
-         bPUmKxxAGirjLVgSRgadxJqZ+AXtqDBgQPJYr3yJTgZsH6hj9W8QjsaUU/C9PdNIDEpS
-         GWIoMAzdfIlnmIN8bgDLvpB33ec89vBhaChXF/thD1nzIWxFDAfJfrZhbv0Qsr5QZTjz
-         toFw==
-X-Gm-Message-State: AOAM5314Sm94566gIs3wiS2bHE6XwXmr4i6epsBibupaYIjpknZeQjRZ
-        ZJe9FRmlkN8s73+FVl8oTKnY/Qbz1npsYmadiXg=
-X-Google-Smtp-Source: ABdhPJyX7ZiC8tTuQH95UGaZR23hNqfa347+EkS/MHYig0jEKfPnC5Xco+e8L61HTi8gyyYwFYyg0meXPvN/rqB6eRg=
-X-Received: by 2002:a67:df07:: with SMTP id s7mr8983102vsk.42.1636445721133;
- Tue, 09 Nov 2021 00:15:21 -0800 (PST)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=o1cvMhjy6fdnuouwYm+15BaMU3WeB3ZqppuOOP+IdbA=;
+        b=CLl8BRqJmKzAsonThGyXlDQCo3dqxjeLVG29sAX8cfYkJHWmUj1Ypj3ViFbaNdfXPY
+         AQTCjXpJVsGwHRU5Y9FaqgAm4P2os/Ng36AxR7MnMXmR5oq2lF38uEmurT9xL+mUNn1J
+         EvI3TTL2qsT8rZ6tHjl2xtkyfpC1CdSG+CTJgfVIyjVSVyg7jGFl4ZjVb2dp09vk5ZoU
+         6AZdoA44Y+duhjd9KXHopIIchOc4Uiz3YiwRahpZHVGHf24FERZQTawnGcKnPsgCN64o
+         BurJgXMJR7TlA7vGCLQghUPMzng3nY5dLCUatTid+OVpJUe4+j78oUP9UPKw3pObDZLf
+         8gqg==
+X-Gm-Message-State: AOAM532+/VHkUEG1sHk2tz9j3veUFs0+1tUBPEkqNIbCHvl8XD6B/Rtp
+        Fd5CWU7WUJ4W6X9yO1GqjB3JlsorDX4=
+X-Google-Smtp-Source: ABdhPJxfeAqW6gjIg5gmBU7KDwFoCurqGSJ2F5AE6opnymIRISYnNfFJLtrCVZOYkwKLYAskgx7aJA==
+X-Received: by 2002:a05:6a00:2351:b0:47b:d092:d2e4 with SMTP id j17-20020a056a00235100b0047bd092d2e4mr5865953pfj.76.1636446027594;
+        Tue, 09 Nov 2021 00:20:27 -0800 (PST)
+Received: from localhost.localdomain ([193.203.214.57])
+        by smtp.gmail.com with ESMTPSA id h3sm1696725pjz.43.2021.11.09.00.20.25
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 09 Nov 2021 00:20:27 -0800 (PST)
+From:   cgel.zte@gmail.com
+X-Google-Original-From: chi.minghao@zte.com.cn
+To:     info@metux.net
+Cc:     vireshk@kernel.org, linus.walleij@linaro.org, brgl@bgdev.pl,
+        linux-gpio@vger.kernel.org,
+        virtualization@lists.linux-foundation.org,
+        linux-kernel@vger.kernel.org, chiminghao <chi.minghao@zte.com.cn>,
+        Zeal Robot <zealci@zte.com.cn>
+Subject: [PATCH] crypto:otx2_cptvf_algs: use swap() to make code cleaner
+Date:   Tue,  9 Nov 2021 08:20:20 +0000
+Message-Id: <20211109082020.131146-1-chi.minghao@zte.com.cn>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-References: <20210715141742.15072-1-andrea.merello@gmail.com>
- <20211028101840.24632-1-andrea.merello@gmail.com> <20211028101840.24632-4-andrea.merello@gmail.com>
- <20211028114154.19e596fc@jic23-huawei>
-In-Reply-To: <20211028114154.19e596fc@jic23-huawei>
-Reply-To: andrea.merello@gmail.com
-From:   Andrea Merello <andrea.merello@gmail.com>
-Date:   Tue, 9 Nov 2021 09:15:09 +0100
-Message-ID: <CAN8YU5P97Au5Sq+43czRygGo4saywhR6BzefAsNz8ffDB3uEcg@mail.gmail.com>
-Subject: Re: [v2 03/10] iio: document euler angles modifiers
-To:     Jonathan Cameron <jic23@kernel.org>
-Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        linux-iio <linux-iio@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        devicetree <devicetree@vger.kernel.org>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Rob Herring <robh+dt@kernel.org>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Matt Ranostay <matt.ranostay@konsulko.com>,
-        Alexandru Ardelean <ardeleanalex@gmail.com>,
-        Jacopo Mondi <jacopo@jmondi.org>,
-        Andrea Merello <andrea.merello@iit.it>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Il giorno gio 28 ott 2021 alle ore 12:37 Jonathan Cameron
-<jic23@kernel.org> ha scritto:
->
-> On Thu, 28 Oct 2021 12:18:33 +0200
-> Andrea Merello <andrea.merello@gmail.com> wrote:
->
-> > This patch introduces ABI documentation for new modifiers used for
-> > reporting rotations expressed as euler angles (i.e. yaw, pitch, roll).
-> >
-> > Signed-off-by: Andrea Merello <andrea.merello@iit.it>
-> > ---
-> >  Documentation/ABI/testing/sysfs-bus-iio | 8 ++++++++
-> >  1 file changed, 8 insertions(+)
-> >
-> > diff --git a/Documentation/ABI/testing/sysfs-bus-iio b/Documentation/ABI/testing/sysfs-bus-iio
-> > index 5147a00bf24a..f0adc2c817bd 100644
-> > --- a/Documentation/ABI/testing/sysfs-bus-iio
-> > +++ b/Documentation/ABI/testing/sysfs-bus-iio
-> > @@ -1965,3 +1965,11 @@ KernelVersion: 5.15
-> >  Contact:     linux-iio@vger.kernel.org
-> >  Description:
-> >               Raw (unscaled) linear acceleration readings.
-> > +
-> > +What:                /sys/bus/iio/devices/iio:deviceX/in_rot_yaw_raw
-> > +What:                /sys/bus/iio/devices/iio:deviceX/in_rot_pitch_raw
-> > +What:                /sys/bus/iio/devices/iio:deviceX/in_rot_roll_raw
-> > +KernelVersion:       5.15
-> > +Contact:     linux-iio@vger.kernel.org
-> > +Description:
-> > +             Raw (unscaled) euler angles readings.
-> Any _raw entry should also include what the units are after application of
-> offset and scale.   Or you could just add this as more info to the in_rot_raw
-> block as an extra sentence explaining that they are euler angles.
-> That will lose the 'KernelVersion' information but honestly I'm not sure we
-> care that much about that.
+From: chiminghao <chi.minghao@zte.com.cn>
 
-I'm unsure which block you are talking about: I see there are two
-blocks that refer to rot things: in_rot_quaternion_raw and
-in_rot_from_north_xxx_raw.
+Fix the following coccicheck REVIEW:
+./drivers/crypto/marvell/octeontx2/otx2_cptvf_algs.c:1688:16-17 use swap() to make code cleaner
 
-Looking at the 1st one description, it looks very specific to
-quaternions to me; the 2nd seems very specific to its own thing,
-whatever it is.. So I would just add the missing information (unit) in
-the new block just being introduced, if this is ok for you. Or am I
-missing some other block in which I could  coalesce this new euler
-thing?
+Reported-by: Zeal Robot <zealci@zte.com.cn>
+Signed-off-by: chiminghao <chi.minghao@zte.com.cn>
+---
+ drivers/crypto/marvell/octeontx2/otx2_cptvf_algs.c | 5 +----
+ 1 file changed, 1 insertion(+), 4 deletions(-)
 
+diff --git a/drivers/crypto/marvell/octeontx2/otx2_cptvf_algs.c b/drivers/crypto/marvell/octeontx2/otx2_cptvf_algs.c
+index 877a948469bd..2748a3327e39 100644
+--- a/drivers/crypto/marvell/octeontx2/otx2_cptvf_algs.c
++++ b/drivers/crypto/marvell/octeontx2/otx2_cptvf_algs.c
+@@ -1682,11 +1682,8 @@ static void swap_func(void *lptr, void *rptr, int size)
+ {
+ 	struct cpt_device_desc *ldesc = lptr;
+ 	struct cpt_device_desc *rdesc = rptr;
+-	struct cpt_device_desc desc;
+ 
+-	desc = *ldesc;
+-	*ldesc = *rdesc;
+-	*rdesc = desc;
++	swap(*ldesc, *rdesc);
+ }
+ 
+ int otx2_cpt_crypto_init(struct pci_dev *pdev, struct module *mod,
+-- 
+2.25.1
 
-> Jonathan
->
->
