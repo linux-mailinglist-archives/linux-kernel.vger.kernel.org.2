@@ -2,108 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B388449F7D
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 01:23:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 65DE5449F78
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 01:23:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241211AbhKIA0H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Nov 2021 19:26:07 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34206 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231793AbhKIA0F (ORCPT
+        id S241200AbhKIAZv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Nov 2021 19:25:51 -0500
+Received: from smtprelay0147.hostedemail.com ([216.40.44.147]:44706 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S231793AbhKIAZu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Nov 2021 19:26:05 -0500
-Received: from mail-yb1-xb29.google.com (mail-yb1-xb29.google.com [IPv6:2607:f8b0:4864:20::b29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D4088C061570;
-        Mon,  8 Nov 2021 16:23:20 -0800 (PST)
-Received: by mail-yb1-xb29.google.com with SMTP id j75so48268117ybj.6;
-        Mon, 08 Nov 2021 16:23:20 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=cG7Wupb06Z9xQF0G4D6a+jrtwJKY3UKarR+wT8MzPqY=;
-        b=SB+WZ9U2mWplqjm+cyh8nfhNH60Zg/SaeljbkjA2iWlE76Eg9pEPWPblsxbPtdmyZZ
-         sdrLFrO75CESRmzL/Rw8p9WrVsz9mJHuuND4t+13PWP/JTqo1xFt4+iW8/r/06H7OUaD
-         zdFDdQTHJrv7fe3le59BnKfDzmhf2/xXQo6X4NS7fcuVV3U+aC1ugudapmc99C2waWaf
-         011C9eyczem3e2EDWPYow3zafR9eXEQkQiaMk0kPSMZkAOkxUla1pZZCrkq6KQolBs0U
-         msGx46O5/fzwfQj7siac9ixFHkfKK3zV1kx8YBlNqSlGc3ulftJaswryD22w4qT9vvte
-         VtGw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=cG7Wupb06Z9xQF0G4D6a+jrtwJKY3UKarR+wT8MzPqY=;
-        b=XghSwXyLiHscd5gduK7eImiz/D2pdcdUbJxhBCk0jBiwwXrE9mFQaAphiobXa8qh0y
-         u1J/fEAoiut9GQo5zeRJTZOD5fjzyfVmFngo9+OSUh4nLDntfAtylkDR325WfGvuL8wu
-         w30VgRumGYC2rKF8PqSmGZxx1ncCoX5nlLkCZzuIaV/oSENCPYWdvxGiJ799sx2rSHiK
-         RHd++VFTjEvjiCZkioyJxNEse8m9udG2ZbZuvXnIDzujXCvgPEzPcPzNikauTLAWZ8WV
-         pfTYTWv9T1ahkAY4+znko8s/01Irh4CjblBRglXiG3BKtIPhwWmPZMusLZm4Jsi3VcIC
-         Irfg==
-X-Gm-Message-State: AOAM530Gi1WXTGE7Ca49T1s64k2HX1LeFxx06YLSUSU68m4vmcm/mpr7
-        8H0xlSo9yajq1Ml8sjGojaDgyTBtcKbgdf6EYODft8XL5/w=
-X-Google-Smtp-Source: ABdhPJw6KwXDI8ymK1Z5/o5VRl79NB+E6t/J7YN+r4Py7WtDNudwFMHYUpXPqg20KwLM9hjbZUGw1F/UxY39ryJ5WEg=
-X-Received: by 2002:a25:56c3:: with SMTP id k186mr3764465ybb.543.1636417400147;
- Mon, 08 Nov 2021 16:23:20 -0800 (PST)
+        Mon, 8 Nov 2021 19:25:50 -0500
+Received: from omf19.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay04.hostedemail.com (Postfix) with ESMTP id C9939180F5D2D;
+        Tue,  9 Nov 2021 00:23:03 +0000 (UTC)
+Received: from [HIDDEN] (Authenticated sender: joe@perches.com) by omf19.hostedemail.com (Postfix) with ESMTPA id 1A5E920D751;
+        Tue,  9 Nov 2021 00:22:57 +0000 (UTC)
+Message-ID: <7f193b68b8eb7ee69e6beb5b93c6dba7475359d3.camel@perches.com>
+Subject: Re: [PATCH 2/2] MAINTAINERS: Mark VMware mailing list entries as
+ private
+From:   Joe Perches <joe@perches.com>
+To:     Jakub Kicinski <kuba@kernel.org>
+Cc:     "Srivatsa S. Bhat" <srivatsa@csail.mit.edu>, jgross@suse.com,
+        x86@kernel.org, pv-drivers@vmware.com,
+        Nadav Amit <namit@vmware.com>,
+        Vivek Thampi <vithampi@vmware.com>,
+        Vishal Bhakta <vbhakta@vmware.com>,
+        Ronak Doshi <doshir@vmware.com>,
+        linux-graphics-maintainer@vmware.com,
+        dri-devel@lists.freedesktop.org, linux-rdma@vger.kernel.org,
+        linux-scsi@vger.kernel.org, netdev@vger.kernel.org,
+        linux-input@vger.kernel.org, Zack Rusin <zackr@vmware.com>,
+        sdeep@vmware.com, amakhalov@vmware.com,
+        virtualization@lists.linux-foundation.org, keerthanak@vmware.com,
+        srivatsab@vmware.com, anishs@vmware.com,
+        linux-kernel@vger.kernel.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Date:   Mon, 08 Nov 2021 16:22:57 -0800
+In-Reply-To: <20211108161631.2941f3a7@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+References: <163640336232.62866.489924062999332446.stgit@srivatsa-dev>
+         <163640339370.62866.3435211389009241865.stgit@srivatsa-dev>
+         <5179a7c097e0bb88f95642a394f53c53e64b66b1.camel@perches.com>
+         <20211108161631.2941f3a7@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.40.4-1 
 MIME-Version: 1.0
-References: <20211103195600.23964-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
- <20211103195600.23964-3-prabhakar.mahadev-lad.rj@bp.renesas.com> <CAMuHMdVjXrAhOm0JvE=RH5nARjuv03UKmo45vzRECDSWoXNbtw@mail.gmail.com>
-In-Reply-To: <CAMuHMdVjXrAhOm0JvE=RH5nARjuv03UKmo45vzRECDSWoXNbtw@mail.gmail.com>
-From:   "Lad, Prabhakar" <prabhakar.csengg@gmail.com>
-Date:   Tue, 9 Nov 2021 00:22:54 +0000
-Message-ID: <CA+V-a8vbj=3e5xhV8x69ROFfdC35Env2Rev7CXDCYFoEDFOxtQ@mail.gmail.com>
-Subject: Re: [PATCH 2/3] arm64: dts: renesas: r9a07g044: Add SCI[0-1] nodes
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
-        Magnus Damm <magnus.damm@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Biju Das <biju.das.jz@bp.renesas.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-0.34
+X-Stat-Signature: tojmtwftm96reeo3xe8hqq3d5x9nkse7
+X-Rspamd-Server: rspamout03
+X-Rspamd-Queue-Id: 1A5E920D751
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Session-ID: U2FsdGVkX19aZonmr5dJiZ7OOfE72tvE17w95gAp7eE=
+X-HE-Tag: 1636417377-505114
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Geert,
+On Mon, 2021-11-08 at 16:16 -0800, Jakub Kicinski wrote:
+> On Mon, 08 Nov 2021 15:37:53 -0800 Joe Perches wrote:
+> > > @@ -6134,8 +6134,8 @@ T:	git git://anongit.freedesktop.org/drm/drm-misc
+> > >  F:	drivers/gpu/drm/vboxvideo/
+> > >  
+> > >  DRM DRIVER FOR VMWARE VIRTUAL GPU
+> > > -M:	"VMware Graphics" <linux-graphics-maintainer@vmware.com>
+> > >  M:	Zack Rusin <zackr@vmware.com>
+> > > +L:	linux-graphics-maintainer@vmware.com (private)  
+> > 
+> > This MAINTAINERS file is for _public_ use, marking something
+> > non-public isn't useful.
+> 
+> But Greg has a point. Corporations like to send us code with a list 
+> as the maintainer and MODULE_AUTHOR set to corp's name. We deal with
+> humans, not legal entities.
 
-Thank you for the review.
+MAINTAINERS is used not for corporations private use but
+to find out _who_ to send and cc patches and defect reports.
 
-On Mon, Nov 8, 2021 at 4:26 PM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
->
-> On Wed, Nov 3, 2021 at 8:56 PM Lad Prabhakar
-> <prabhakar.mahadev-lad.rj@bp.renesas.com> wrote:
-> > Add SCI[0-1] nodes to r9a07g044 (RZ/G2L) SoC DTSI.
-> >
-> > Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-> > Reviewed-by: Biju Das <biju.das.jz@bp.renesas.com>
->
-> > --- a/arch/arm64/boot/dts/renesas/r9a07g044.dtsi
-> > +++ b/arch/arm64/boot/dts/renesas/r9a07g044.dtsi
-> > @@ -176,6 +176,36 @@
-> >                         status = "disabled";
-> >                 };
-> >
-> > +               sci0: serial@1004d000 {
->
-> Please keep sort order (by unit address, but grouped by type).
->
-Oops missed that, will fix it in v2.
+A "private" email address used only for corporate internal review
+cannot receive patches.
 
-Chers,
-Prabhakar
+> I've been trying to get them to use "M: email" without the name,
+> but "L: list (private)" also works.
+> 
+> Either way I feel like we need _some_ way to tell humans from corporate
+> "please CC this address" entries.
 
-> With the above fixed:
-> Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
->
-> Gr{oetje,eeting}s,
->
->                         Geert
->
-> --
-> Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
->
-> In personal conversations with technical people, I call myself a hacker. But
-> when I'm talking to journalists I just say "programmer" or something like that.
->                                 -- Linus Torvalds
+This is not the way AFAIKT.
+
+> > private makes no sense and likely these L: entries shouldn't exist.
+
+
