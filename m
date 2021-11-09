@@ -2,208 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2085D44AE75
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 14:07:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B565F44AE77
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 14:08:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231699AbhKINKd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Nov 2021 08:10:33 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38558 "EHLO
+        id S232683AbhKINKt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Nov 2021 08:10:49 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38632 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229591AbhKINKb (ORCPT
+        with ESMTP id S229591AbhKINKr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Nov 2021 08:10:31 -0500
-Received: from mail-yb1-xb34.google.com (mail-yb1-xb34.google.com [IPv6:2607:f8b0:4864:20::b34])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 29EE4C061764;
-        Tue,  9 Nov 2021 05:07:46 -0800 (PST)
-Received: by mail-yb1-xb34.google.com with SMTP id a129so52769512yba.10;
-        Tue, 09 Nov 2021 05:07:46 -0800 (PST)
+        Tue, 9 Nov 2021 08:10:47 -0500
+Received: from mail-ed1-x52e.google.com (mail-ed1-x52e.google.com [IPv6:2a00:1450:4864:20::52e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 00C21C061764
+        for <linux-kernel@vger.kernel.org>; Tue,  9 Nov 2021 05:08:01 -0800 (PST)
+Received: by mail-ed1-x52e.google.com with SMTP id r12so76223668edt.6
+        for <linux-kernel@vger.kernel.org>; Tue, 09 Nov 2021 05:08:01 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Vx8ACzzR7ClOZiFbVt6NTdwPz8XSyKvvQycpeMv1yu4=;
-        b=FXkyq7Qt4Du6/Jg1yT/OpZ68vb86FuM4kkBB5KI7rdNfHLIiExYnXMRsMuVTaeEzyS
-         WJzrmRtpAjNpyMg+1wxs2LhOmrK4QNbBxKvZePJD+pVa3kP2EyrLUXCN/DWmZDOOVtQw
-         80qYWtHz6DnP2D2AyhYcY7yTt+1VN8g/Z3sh9s+OROsbRCE5xklP18Gu2R5UU41Gy+vv
-         OQ2PmvDtLyWP/wFEx3H1/JbBrlSwpvjc+qF5MpuxWsLbUbLsKqla50oOG9qc6fdqtZ8k
-         n4UE9ZeaUJFnG0EVadNK1JZdt6g/QdMJ1YdybXzyJADgq9YKPGgj1v/pEylUVwlxDiSH
-         Eksg==
+        d=linaro.org; s=google;
+        h=mime-version:from:date:message-id:subject:to:cc;
+        bh=z/G52I1JExpiE6TsSsLB/EzgZR9OB61hQ9ixNpsTNBE=;
+        b=CuUtxJN4kwqiRiUowjq6mEvwrxbwdABBDFwboec9BwfBBdNKP+Sd0FJQ2oNClGFe3j
+         6hsijBoQm6PVzx6rpcsIRMF5nRChEyRXjOnRF7zObCZ9zs4W8FYbDC3TqL5MdAIVjBzo
+         milLxaXzmLHeJMIuFzf6v9W2QcdoPHr5bOLCBxuINtH/rYcVZXYJ7/O9um2gEGlnmlV4
+         i4JxLxE1na3/h7vZTOWyGhLU1UZddywmHh87pC7KQNPyFcMH50nZ1Q6NqNgMMVnb6Bun
+         0Qa1yfv8qDXSQfGhd6TknCcoLaUoj/aqjFVp02cArCjNPQuuLnPq24D2oN+Dyssuf2+L
+         cPrA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Vx8ACzzR7ClOZiFbVt6NTdwPz8XSyKvvQycpeMv1yu4=;
-        b=YWG4k9vwhyvlh4Y0RkWm/CZaGptlIXKx2HSkj7W6+bgc1Ir+Xgr6NHSU6y6d3ajZxg
-         VBHZUAhyvEx9hfhhlOmhXGrJ0itpv2mqQ83NYlxZV3wciyWKB4skvgTFVVhNiVYVYLPe
-         OWZzaM9diV1+4XQN7ZkD/JxpQqmZSYKDc3xiBLKeci8oZQe4ZYYOCsq1c/OryiLVYauE
-         Ohg6TdwnZyUC+PUeVNYjdp9SgoxPBu2I7d87tnhBA+qoZXgqHzYv3WE6CMtglB1v/mdt
-         vnJy0CXaa/azjss/2+e4Hmck/tR2KCPWsyAo7rh1fKSUNOkPdhw8HsrCEsjgGwVpArP5
-         P1xA==
-X-Gm-Message-State: AOAM531bGsLv7BNoPMTpdGe1MkltFin/0fdM5uRxNeJfgZp3BNuq7c5i
-        8YIHmFJAz2iBEf0k+gxtuupwf4zIiC8y3kj+mkw=
-X-Google-Smtp-Source: ABdhPJxPF7bznx3Iq5w5DGo3ahtGklJaTLgR+RgnfIWFMmHgwtOpFhicepqYpjMaeWyH3BuKscGFh7EI7nhmMZtJih8=
-X-Received: by 2002:a25:c792:: with SMTP id w140mr8229629ybe.131.1636463265288;
- Tue, 09 Nov 2021 05:07:45 -0800 (PST)
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
+        bh=z/G52I1JExpiE6TsSsLB/EzgZR9OB61hQ9ixNpsTNBE=;
+        b=65OKM62SesnUu3hUEM+lAOvXNHcpnnrqnYXICZV8lwywGNt3ehHncYnKsilGSGTsW6
+         QIHV4VXeXNX43iRoOCNgL9v36pnEnqGkJnGjhFEx+9JVdHHd3dAJbonYH+x0Tq7Beb8b
+         s4gfN5bOuDR0cMfsT2RC1g7EXxGajRigsq0FGCYVUpP+xQcRc5LnFh5ZWA9iCpwlM6qV
+         VeH6saOXX9qzGqla2H2tINQz3HbowlQUQoJBShrnAhbZjOnvbqhDMREx6MSVsHkBv2fg
+         QScP07yKWh/pLviuaOv1MiRpO01utYQVHSV5Cvtr6v3PwceQNIXPwt56FiTEwJXF8Uap
+         +1pQ==
+X-Gm-Message-State: AOAM532xcuqT4y9KgvY2fx0LJbSo81Br9Q4qGEg/RHF+TcuoIhDmcZb/
+        VfRZJjEh3b8ztuJ/zraT2xzKQdp70vXNfsKIG8XdFFlaHJM7rA==
+X-Google-Smtp-Source: ABdhPJwUTCxSCo1QVtNs5QZJ4bfRcHmVDxVbWaA72k99Wgx4nF22yhg3NcwJ+sONSsC0fGX1HlPTvHTRROvNktdXjz4=
+X-Received: by 2002:a50:e184:: with SMTP id k4mr10018486edl.217.1636463280343;
+ Tue, 09 Nov 2021 05:08:00 -0800 (PST)
 MIME-Version: 1.0
-References: <20211109121631.26687-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
- <20211109121631.26687-4-prabhakar.mahadev-lad.rj@bp.renesas.com> <CAMuHMdXAhQMOzbQHyymJrq0So11-uLC5nPT0gU7qj+MH8GmApw@mail.gmail.com>
-In-Reply-To: <CAMuHMdXAhQMOzbQHyymJrq0So11-uLC5nPT0gU7qj+MH8GmApw@mail.gmail.com>
-From:   "Lad, Prabhakar" <prabhakar.csengg@gmail.com>
-Date:   Tue, 9 Nov 2021 13:07:19 +0000
-Message-ID: <CA+V-a8tYFA_jgt+yE5En0OhUYibb38=uR=Y0hmDs+gggqF8R+A@mail.gmail.com>
-Subject: Re: [PATCH v2 3/3] serial: sh-sci: Add support to deassert/assert
- reset line
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        "open list:SERIAL DRIVERS" <linux-serial@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
-        Biju Das <biju.das.jz@bp.renesas.com>
+From:   Naresh Kamboju <naresh.kamboju@linaro.org>
+Date:   Tue, 9 Nov 2021 18:37:48 +0530
+Message-ID: <CA+G9fYvviLKpT7a-1ZDmVp8YN8cCG0ixLpxv2uSubtsw-CkZCQ@mail.gmail.com>
+Subject: powerpc: mcu_mpc8349emitx.c:189:13: error: unused variable 'ret' [-Werror=unused-variable]
+To:     Paul Mackerras <paulus@samba.org>,
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Linux-Next Mailing List <linux-next@vger.kernel.org>
+Cc:     Scott Wood <oss@buserror.net>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        Anders Roxell <anders.roxell@linaro.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Geert,
+[Please ignore this email if it is already reported ]
 
-Thank you for the review.
+Regression found on powerpc gcc-8/9/10 and gcc-11 built with ppc6xx_defconfig
+Following build warnings / errors reported on linux next 20211109.
 
-On Tue, Nov 9, 2021 at 12:58 PM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
->
-> Hi Prabhakar,
->
-> On Tue, Nov 9, 2021 at 1:17 PM Lad Prabhakar
-> <prabhakar.mahadev-lad.rj@bp.renesas.com> wrote:
-> > On RZ/G2L SoC we need to explicitly deassert the reset line
-> > for the device to work, use this opportunity to deassert/assert
-> > reset line in sh-sci driver.
-> >
-> > This patch adds support to read the "resets" property (if available)
-> > from DT and perform deassert/assert when required.
-> >
-> > Also, propagate the error to the caller of sci_parse_dt() instead of
-> > returning NULL in case of failure.
-> >
-> > Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-> > Reviewed-by: Biju Das <biju.das.jz@bp.renesas.com>
-> > ---
-> > v1->v2
-> > * deassert/assert reset line if available on all SoC's
-> > * Updated commit message
->
-> Thanks for the update!
->
-> > --- a/drivers/tty/serial/sh-sci.c
-> > +++ b/drivers/tty/serial/sh-sci.c
-> > @@ -37,6 +37,7 @@
-> >  #include <linux/of_device.h>
-> >  #include <linux/platform_device.h>
-> >  #include <linux/pm_runtime.h>
-> > +#include <linux/reset.h>
-> >  #include <linux/scatterlist.h>
-> >  #include <linux/serial.h>
-> >  #include <linux/serial_sci.h>
-> > @@ -3203,23 +3204,53 @@ static const struct of_device_id of_sci_match[] = {
-> >  };
-> >  MODULE_DEVICE_TABLE(of, of_sci_match);
-> >
-> > +static void sci_reset_control_assert(void *data)
-> > +{
-> > +       reset_control_assert(data);
-> > +}
-> > +
-> >  static struct plat_sci_port *sci_parse_dt(struct platform_device *pdev,
-> >                                           unsigned int *dev_id)
-> >  {
-> >         struct device_node *np = pdev->dev.of_node;
-> > +       const struct of_device_id *of_id;
->
-> Not needed.
->
-Agreed.
+metadata:
+    git_describe: next-20211109
+    git_repo: https://gitlab.com/Linaro/lkft/mirrors/next/linux-next
+    git_short_log: c8109c2ba35e (\"Add linux-next specific files for 20211109\")
+    target_arch: powerpc
+    toolchain: gcc-11
 
-> > +       struct reset_control *rstc;
-> >         struct plat_sci_port *p;
-> >         struct sci_port *sp;
-> >         const void *data;
-> > -       int id;
-> > +       int id, ret;
-> >
-> >         if (!IS_ENABLED(CONFIG_OF) || !np)
-> > -               return NULL;
-> > +               return ERR_PTR(-EINVAL);
-> > +
-> > +       of_id = of_match_device(of_sci_match, &pdev->dev);
-> > +       if (!of_id)
-> > +               return ERR_PTR(-EINVAL);
-> >
-> > -       data = of_device_get_match_data(&pdev->dev);
->
-> Please keep the old construct using of_device_get_match_data().
->
-OK.
+build error :
+--------------
+<stdin>:1559:2: warning: #warning syscall futex_waitv not implemented [-Wcpp]
+arch/powerpc/platforms/83xx/mcu_mpc8349emitx.c: In function 'mcu_remove':
+arch/powerpc/platforms/83xx/mcu_mpc8349emitx.c:189:13: error: unused
+variable 'ret' [-Werror=unused-variable]
+  189 |         int ret;
+      |             ^~~
+cc1: all warnings being treated as errors
+make[4]: *** [scripts/Makefile.build:288:
+arch/powerpc/platforms/83xx/mcu_mpc8349emitx.o] Error 1
+make[4]: Target '__build' not remade because of errors.
+make[3]: *** [scripts/Makefile.build:571: arch/powerpc/platforms/83xx] Error 2
 
-> > +       rstc = devm_reset_control_get_optional_exclusive(&pdev->dev, NULL);
-> > +       if (IS_ERR(rstc)) {
-> > +               dev_err(&pdev->dev, "failed to get reset ctrl %ld\n", PTR_ERR(rstc));
-> > +               return ERR_PTR(PTR_ERR(rstc));
->
-> The error might be -EPROBE_DEFER, so please use
-> "return ERR_PTR(dev_err_probe(...))", to avoid printing the message
-> in case of probe deferral.
->
-Agreed, will use dev_err_probe().
+Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
 
-> BTW, ERR_CAST() is a shorthand for ERR_PTR(PTR_ERR()).
->
-Thanks for the pointer.
+build link:
+-----------
+https://builds.tuxbuild.com/20fICxLPRCpcISasoGwKGICBELv/build.log
 
-> > +       }
-> > +
-> > +       ret = reset_control_deassert(rstc);
-> > +       if (ret) {
-> > +               dev_err(&pdev->dev, "failed to deassert reset %d\n", ret);
-> > +               return ERR_PTR(ret);
-> > +       }
-> > +
-> > +       ret = devm_add_action_or_reset(&pdev->dev, sci_reset_control_assert, rstc);
-> > +       if (ret) {
-> > +               dev_err(&pdev->dev, "failed to register assert devm action, %d\n",
-> > +                       ret);
-> > +               return ERR_PTR(ret);
-> > +       }
-> > +
-> > +       data = of_id->data;
-> >
-> >         p = devm_kzalloc(&pdev->dev, sizeof(struct plat_sci_port), GFP_KERNEL);
-> >         if (!p)
-> > -               return NULL;
-> > +               return ERR_PTR(-ENOMEM);
-> >
-> >         /* Get the line number from the aliases node. */
-> >         id = of_alias_get_id(np, "serial");
->
-> I gave this a try on Salvator-XS, and noticed no regressions.
-> I will test this on more SCIF variants later.
->
-Thanks, I will re-spin a v3 just for this lone patch. I hope that's OK.
+build config:
+-------------
+https://builds.tuxbuild.com/20fICxLPRCpcISasoGwKGICBELv/config
 
-Cheers,
-Prabhakar
+# To install tuxmake on your system globally
+# sudo pip3 install -U tuxmake
+tuxmake --runtime podman --target-arch powerpc --toolchain gcc-11
+--kconfig ppc6xx_defconfig
 
-> Gr{oetje,eeting}s,
->
->                         Geert
->
-> --
-> Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
->
-> In personal conversations with technical people, I call myself a hacker. But
-> when I'm talking to journalists I just say "programmer" or something like that.
->                                 -- Linus Torvalds
+
+--
+Linaro LKFT
+https://lkft.linaro.org
