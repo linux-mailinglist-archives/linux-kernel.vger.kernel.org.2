@@ -2,83 +2,168 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8AFB644AF11
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 14:54:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 288F644AF13
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 14:54:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235972AbhKIN4q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Nov 2021 08:56:46 -0500
-Received: from Galois.linutronix.de ([193.142.43.55]:36310 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231137AbhKIN4p (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Nov 2021 08:56:45 -0500
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1636466038;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type;
-        bh=sZyll560KLUb+apJiZdozn6h/p8K1VyRcQd9fbMYkV4=;
-        b=jXSyoXrPWQ05v+EcHbQ7JZjBockKD4VEiroRhGrc0CEOj/6umKMjlVhAIK+9UvRlmovoFR
-        C1RdytpWI2aPnqbnNbm1ii17ZopLVQdpNHH7lV1JilPg1ecuDHYoO58gS3lZ7ALXnL7q0P
-        fNIoh2c0+ACQEShg+UH8JPIrJQgTFN9R1IwaF6Jtxxrabvulq1XbKS8Bl2xxw737uCJW2m
-        Jno8CcWCL8Bs9XQ9HDJ0TuysEkTpVazrchSUCLE/H30zBxMt326cUqCjaSejm0BOiKpQEO
-        aisTHwBVdq5+BxoCY0aIqjTw10ud/JPLwlfKJbXCjg5LjsiW+rUMDMZKTWIaxQ==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1636466038;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type;
-        bh=sZyll560KLUb+apJiZdozn6h/p8K1VyRcQd9fbMYkV4=;
-        b=mClu8lrQG6dpgIyEqMf1tnrd72p22DENy7mQu9j6RsmxmxYhsEfa7eABVBF8nFRv11s00y
-        JP/sVUmPIfhGZ7DA==
-To:     LKML <linux-kernel@vger.kernel.org>
-Cc:     Greg Kroah Hartmann <gregkh@linuxfoundation.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Marc Zyngier <maz@kernel.org>, linux-pci@vger.kernel.org
-Subject: PCI/MSI: Destroy sysfs before freeing entries
-Date:   Tue, 09 Nov 2021 14:53:57 +0100
-Message-ID: <87sfw5305m.ffs@tglx>
+        id S235995AbhKIN5B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Nov 2021 08:57:01 -0500
+Received: from mail.kernel.org ([198.145.29.99]:47456 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235963AbhKIN47 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Nov 2021 08:56:59 -0500
+Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 6F175610A2;
+        Tue,  9 Nov 2021 13:54:12 +0000 (UTC)
+Date:   Tue, 9 Nov 2021 08:54:10 -0500
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Sai Prakash Ranjan <quic_saipraka@quicinc.com>
+Cc:     Will Deacon <will@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        <quic_psodagud@quicinc.com>, Marc Zyngier <maz@kernel.org>,
+        <gregkh@linuxfoundation.org>, <arnd@arndb.de>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <linux-arm-msm@vger.kernel.org>,
+        <mingo@redhat.com>, <jbaron@akamai.com>, <jim.cromie@gmail.com>,
+        "Prasad Sodagudi" <psodagud@codeaurora.org>
+Subject: Re: [PATCHv3 1/3] tracing: Add register read/write tracing support
+Message-ID: <20211109085410.349edffa@gandalf.local.home>
+In-Reply-To: <d127fdaf198f5766ffe021430cf848e64b4fdf84.1636452784.git.quic_saipraka@quicinc.com>
+References: <cover.1636452784.git.quic_saipraka@quicinc.com>
+        <d127fdaf198f5766ffe021430cf848e64b4fdf84.1636452784.git.quic_saipraka@quicinc.com>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-free_msi_irqs() frees the MSI entries before destroying the sysfs entries
-which are exposing them. Nothing prevents a concurrent free while a sysfs
-file is read and accesses the possibly freed entry.
+On Tue, 9 Nov 2021 17:38:19 +0530
+Sai Prakash Ranjan <quic_saipraka@quicinc.com> wrote:
 
-Move the sysfs release ahead of freeing the entries.
+> From: Prasad Sodagudi <psodagud@codeaurora.org>
+> 
+> Generic MMIO read/write i.e., __raw_{read,write}{b,l,w,q} accessors
+> are typically used to read/write from/to memory mapped registers
+> and can cause hangs or some undefined behaviour in following few
+> cases,
+> 
+> * If the access to the register space is unclocked, for example: if
+>   there is an access to multimedia(MM) block registers without MM
+>   clocks.
+> 
+> * If the register space is protected and not set to be accessible from
+>   non-secure world, for example: only EL3 (EL: Exception level) access
+>   is allowed and any EL2/EL1 access is forbidden.
+> 
+> * If xPU(memory/register protection units) is controlling access to
+>   certain memory/register space for specific clients.
+> 
+> and more...
+> 
+> Such cases usually results in instant reboot/SErrors/NOC or interconnect
+> hangs and tracing these register accesses can be very helpful to debug
+> such issues during initial development stages and also in later stages.
+> 
+> So use ftrace trace events to log such MMIO register accesses which
+> provides rich feature set such as early enablement of trace events,
+> filtering capability, dumping ftrace logs on console and many more.
+> 
+> Sample output:
+> 
+> rwmmio_read: gic_peek_irq+0xd0/0xd8 readl addr=0xffff800010040104
+> rwmmio_write: gic_poke_irq+0xe4/0xf0 writel addr=0xffff800010040184 val=0x40
+> rwmmio_read: gic_do_wait_for_rwp+0x54/0x90 readl addr=0xffff800010040000
+> rwmmio_write: gic_set_affinity+0x1bc/0x1e8 writeq addr=0xffff800010046130 val=0x500
+> 
+> Signed-off-by: Prasad Sodagudi <psodagud@codeaurora.org>
+> [saiprakash: Rewrote commit msg and trace event field edits]
+> Signed-off-by: Sai Prakash Ranjan <quic_saipraka@quicinc.com>
+> ---
+>  include/trace/events/rwmmio.h  | 61 ++++++++++++++++++++++++++++++++++
+>  kernel/trace/Kconfig           |  7 ++++
+>  kernel/trace/Makefile          |  1 +
+>  kernel/trace/trace_readwrite.c | 28 ++++++++++++++++
+>  4 files changed, 97 insertions(+)
+>  create mode 100644 include/trace/events/rwmmio.h
+>  create mode 100644 kernel/trace/trace_readwrite.c
+> 
+> diff --git a/include/trace/events/rwmmio.h b/include/trace/events/rwmmio.h
+> new file mode 100644
+> index 000000000000..cb5261a559f8
+> --- /dev/null
+> +++ b/include/trace/events/rwmmio.h
+> @@ -0,0 +1,61 @@
+> +/* SPDX-License-Identifier: GPL-2.0-only */
+> +/*
+> + * Copyright (c) 2021 Qualcomm Innovation Center, Inc. All rights reserved.
+> + */
+> +#undef TRACE_SYSTEM
+> +#define TRACE_SYSTEM rwmmio
+> +
+> +#if !defined(_TRACE_MMIO_H) || defined(TRACE_HEADER_MULTI_READ)
+> +#define _TRACE_MMIO_H
+> +
+> +#include <linux/tracepoint.h>
+> +
+> +TRACE_EVENT(rwmmio_write,
+> +
+> +	TP_PROTO(unsigned long fn, const char *width, u64 val, volatile void __iomem *addr),
+> +
+> +	TP_ARGS(fn, width, val, addr),
+> +
+> +	TP_STRUCT__entry(
+> +		__field(u64, fn)
+> +		__string(width, width)
+> +		__field(u64, val)
+> +		__field(u64, addr)
 
-Fixes: 1c51b50c2995 ("PCI/MSI: Export MSI mode using attributes, not kobjects")
-Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Cc: stable@vger.kernel.org
----
- drivers/pci/msi.c |   10 +++++-----
- 1 file changed, 5 insertions(+), 5 deletions(-)
+For better space usage, move the __string to the end. Each of the u64
+fields will take up 8 bytes, and the __string only takes up 4 (it's a 2
+byte offset and 2 byte length, where the actual string lies at the end of
+the event). Many archs will leave a 4 byte "hole" between the __string()
+field and the u64 val field. If __string is at the end, it will go nicely
+with the actual string that will be appended behind it.
 
---- a/drivers/pci/msi.c
-+++ b/drivers/pci/msi.c
-@@ -370,6 +370,11 @@ static void free_msi_irqs(struct pci_dev
- 			for (i = 0; i < entry->nvec_used; i++)
- 				BUG_ON(irq_has_action(entry->irq + i));
- 
-+	if (dev->msi_irq_groups) {
-+		msi_destroy_sysfs(&dev->dev, dev->msi_irq_groups);
-+		dev->msi_irq_groups = NULL;
-+	}
-+
- 	pci_msi_teardown_msi_irqs(dev);
- 
- 	list_for_each_entry_safe(entry, tmp, msi_list, list) {
-@@ -381,11 +386,6 @@ static void free_msi_irqs(struct pci_dev
- 		list_del(&entry->list);
- 		free_msi_entry(entry);
- 	}
--
--	if (dev->msi_irq_groups) {
--		msi_destroy_sysfs(&dev->dev, dev->msi_irq_groups);
--		dev->msi_irq_groups = NULL;
--	}
- }
- 
- static void pci_intx_for_msi(struct pci_dev *dev, int enable)
+> +	),
+> +
+> +	TP_fast_assign(
+> +		__entry->fn = fn;
+> +		__assign_str(width, width);
+> +		__entry->val = val;
+> +		__entry->addr = (u64)addr;
+> +	),
+> +
+> +	TP_printk("%pS %s addr=%#llx val=%#llx",
+> +		(void *)__entry->fn, __get_str(width), __entry->addr, __entry->val)
+> +);
+> +
+> +TRACE_EVENT(rwmmio_read,
+> +
+> +	TP_PROTO(unsigned long fn, const char *width, const volatile void __iomem *addr),
+> +
+> +	TP_ARGS(fn, width, addr),
+> +
+> +	TP_STRUCT__entry(
+> +		__field(u64, fn)
+> +		__string(width, width)
+> +		__field(u64, addr)
+
+Same here.
+
+> +	),
+> +
+> +	TP_fast_assign(
+> +		__entry->fn = fn;
+> +		__assign_str(width, width);
+> +		__entry->addr = (u64)addr;
+> +	),
+> +
+> +	TP_printk("%pS %s addr=%#llx",
+> +		 (void *)__entry->fn, __get_str(width), __entry->addr)
+> +);
+> +
+
+-- Steve
