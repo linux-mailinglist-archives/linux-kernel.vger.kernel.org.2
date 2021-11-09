@@ -2,117 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ECCE544AE6A
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 14:05:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 25ACF44AE6D
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 14:05:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240064AbhKINHr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Nov 2021 08:07:47 -0500
-Received: from mail-ua1-f53.google.com ([209.85.222.53]:44689 "EHLO
-        mail-ua1-f53.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239667AbhKINHp (ORCPT
+        id S239667AbhKINI0 convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 9 Nov 2021 08:08:26 -0500
+Received: from mout.kundenserver.de ([212.227.126.135]:42413 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S240104AbhKINIQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Nov 2021 08:07:45 -0500
-Received: by mail-ua1-f53.google.com with SMTP id s13so22783966uaj.11;
-        Tue, 09 Nov 2021 05:04:59 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=vgpOPNVaeGpR0Ki0HulbC5z3/SLOjosZPp/hdlc7Fb8=;
-        b=drohblqOx/XMzIw3YMnCrwywItsRHsvTFD1JITJ5OjhjyRln+Oc1xvi2mmO+8gW8FK
-         SGvsNrm03/vGhZTbMzNsqNW33af+8uUFJdJXHYdeo70AcqLHbzhBlTAlFA+FEz5L8/wa
-         Ji51/dRXLCAGy+4xzLwMIOZ3S5Y1oi19sCY5eeWqTvLpkyJao1tWHjGO4KBTj68qVWNL
-         km5GhbDKxCNqWVbpnZaABJ5k5lZLOTVZyd06IbjWVIhem6Q3Uo2HTNLn1tCKAVYy8LW5
-         X/Kq4c/tNQDGE7RI1wokelu7H6achcnB66eyvFWRV+BSeZQqQJ0xFJcWEnYVq0/UFPAc
-         kfLg==
-X-Gm-Message-State: AOAM530zqT7VhiISgp5Di4YHaJaDfjQAnVT8+NwePRQziNeqwIMaeFDu
-        Z4pz6sOcxKzg/4ZaXSGpvTcKM9duHvH+EA==
-X-Google-Smtp-Source: ABdhPJzSIHC3VI6Q0GnXUC+7/z9SV42n0fCqCCDAJOWXyHFSUkn8RnnuK/2yjvn4mPjT3wb7R6L6Ow==
-X-Received: by 2002:a05:6102:ccd:: with SMTP id g13mr12242714vst.7.1636463098833;
-        Tue, 09 Nov 2021 05:04:58 -0800 (PST)
-Received: from mail-ua1-f51.google.com (mail-ua1-f51.google.com. [209.85.222.51])
-        by smtp.gmail.com with ESMTPSA id b129sm2457512vsc.5.2021.11.09.05.04.57
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 09 Nov 2021 05:04:57 -0800 (PST)
-Received: by mail-ua1-f51.google.com with SMTP id o26so38316213uab.5;
-        Tue, 09 Nov 2021 05:04:57 -0800 (PST)
-X-Received: by 2002:a05:6102:3a07:: with SMTP id b7mr87197501vsu.35.1636463097035;
- Tue, 09 Nov 2021 05:04:57 -0800 (PST)
+        Tue, 9 Nov 2021 08:08:16 -0500
+Received: from mail-wr1-f53.google.com ([209.85.221.53]) by
+ mrelayeu.kundenserver.de (mreue012 [213.165.67.97]) with ESMTPSA (Nemesis) id
+ 1MYcy3-1nEpjv0UKZ-00VgZ9; Tue, 09 Nov 2021 14:05:28 +0100
+Received: by mail-wr1-f53.google.com with SMTP id s13so32913754wrb.3;
+        Tue, 09 Nov 2021 05:05:27 -0800 (PST)
+X-Gm-Message-State: AOAM531obU9zQxZLci0HZGouM7eA/pZPEgynIlxejLNVY4k9ZiZC3ZyY
+        B+XkAhvccXZzszj0gQGHtZNUEBxE73dF2XLXxJw=
+X-Google-Smtp-Source: ABdhPJw59Rmr+DMXszKBukNsUqZ3FsgOiqKQbSlqF8XuY+XgF6EW4Cq5VhV2Y1l1S7CXitxZ6DpXsOJS8z6kaIvCVpE=
+X-Received: by 2002:adf:df89:: with SMTP id z9mr8974988wrl.336.1636463127622;
+ Tue, 09 Nov 2021 05:05:27 -0800 (PST)
 MIME-Version: 1.0
-References: <20211108150554.4457-1-conor.dooley@microchip.com>
- <20211108150554.4457-5-conor.dooley@microchip.com> <CAMuHMdX1Xm9CP2hSpkD4ApVJ8gC_ZAE1L5CT0zjF+b5An4kmqw@mail.gmail.com>
- <198eaf69-8f85-50a7-192e-5900776d044b@microchip.com>
-In-Reply-To: <198eaf69-8f85-50a7-192e-5900776d044b@microchip.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Tue, 9 Nov 2021 14:04:45 +0100
-X-Gmail-Original-Message-ID: <CAMuHMdUs7UnADr2SfHBD4sGs3_giR0cmXnz=6qa4iAP1reDtgA@mail.gmail.com>
-Message-ID: <CAMuHMdUs7UnADr2SfHBD4sGs3_giR0cmXnz=6qa4iAP1reDtgA@mail.gmail.com>
-Subject: Re: [PATCH 04/13] dt-bindings: riscv: update microchip polarfire binds
-To:     Conor Dooley <Conor.Dooley@microchip.com>
-Cc:     Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Jassi Brar <jassisinghbrar@gmail.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Alessandro Zummo <a.zummo@towertech.it>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Mark Brown <broonie@kernel.org>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        Lewis Hanly <Lewis.Hanly@microchip.com>,
-        Daire.McNamara@microchip.com, Atish Patra <atish.patra@wdc.com>,
-        Ivan.Griffin@microchip.com,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
+References: <20210923171111.300673-1-andrealmeid@collabora.com>
+ <20210923171111.300673-21-andrealmeid@collabora.com> <your-ad-here.call-01636456701-ext-5362@work.hours>
+ <51bbfe74-33f6-bb92-3ce8-a22e4185820b@collabora.com>
+In-Reply-To: <51bbfe74-33f6-bb92-3ce8-a22e4185820b@collabora.com>
+From:   Arnd Bergmann <arnd@arndb.de>
+Date:   Tue, 9 Nov 2021 14:05:11 +0100
+X-Gmail-Original-Message-ID: <CAK8P3a3T4qmZvags28bibibsyLBBLjsRQTGJqanLdcergxQTXQ@mail.gmail.com>
+Message-ID: <CAK8P3a3T4qmZvags28bibibsyLBBLjsRQTGJqanLdcergxQTXQ@mail.gmail.com>
+Subject: Re: [PATCH v2 20/22] selftests: futex: Test sys_futex_waitv() timeout
+To:     =?UTF-8?Q?Andr=C3=A9_Almeida?= <andrealmeid@collabora.com>
+Cc:     Vasily Gorbik <gor@linux.ibm.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Darren Hart <dvhart@infradead.org>,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux I2C <linux-i2c@vger.kernel.org>,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
-        linux-rtc@vger.kernel.org, linux-spi <linux-spi@vger.kernel.org>,
-        USB list <linux-usb@vger.kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        Bin Meng <bin.meng@windriver.com>
+        Steven Rostedt <rostedt@goodmis.org>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Collabora kernel ML <kernel@collabora.com>,
+        Gabriel Krisman Bertazi <krisman@collabora.com>,
+        Linux API <linux-api@vger.kernel.org>,
+        GNU C Library <libc-alpha@sourceware.org>,
+        Michael Kerrisk <mtk.manpages@gmail.com>,
+        Davidlohr Bueso <dave@stgolabs.net>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Alistair Francis <alistair.francis@wdc.com>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+X-Provags-ID: V03:K1:j1y24ZLQaCxUnwIlX4UkGzpcQwqR0k9vJ7BzTd4TvS4BhotMlOC
+ dLh9ehv+pKrnceNqMg4UWmtbtGXGXBMlUoXMErYIKABldKOPM08rnx4R7jZufLwY1NaodP3
+ d1rsCDC0rjd5JmgydQKTeIjOaqPgtcqpqGudAdmwtdfeI03ZZ8ixBoY+eJQWoQa4X3Xds1G
+ kEC9WKv/46/Ow+Xv0fVog==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:eFU4pS+yBGA=:0DD8DEJVG7L4LNan7gz6Od
+ ZeJFhjshpJTNml5IVCZj1pXCUd2FCWg0i2N7+OszY5zX8aaOfFLLOfgw4PKfD0s84VXtFTWMQ
+ DR8p2yuD+tTVIxGy4YMslHVXE78O81JeuqePSSlYCztLAQLdFmFApRSwJq1yN7AMjqcl8sP7D
+ SG0OwWyqtUtTp1Vz5+BWgGIXsJwsZhKAH8kxh4KGY3plFo0iQb5YmuqM+hzJpqWGu3gsR/io/
+ g+nsdwbWrZ8dH0D8pLa0hCwJpWdd31H9PmGEqxXt1bxL6kvaa9uWkA8zVzZyYGWNouxAgHG8b
+ MtU8N4khoWL/glgUGJpqdOQaBHy5C/Y/XSayLKtsq/lU8nz6y/ZUYxa6MdKPiInBUJ+99j+sA
+ U/3fZXBpIo4+UGUFy5fL9H6PNwyaTaArUn0Q9X+zGjuz6TdU52mDyGmmxiUB6XjWW0lP3SzJe
+ fovHV/j0ZXR6XBFGOIeioTgNqXcRfR/SRbB/Ko7WU92N8rRwn642876pgwnRIpGveOAW5JOb4
+ j8yp0v5spJHyd/OGiTM4IaKsatXjTwESOA9tr/y4ukzUQaaxZkdsfFhDXw/jbmu8YIZe8MjJl
+ XXnGdXYv8D1gUWG5NrwJ1qibQnC+cFkKBCLbeVooG94/++1Ktea5sv+RQOPXjm43K8F84qGf4
+ zxBJmcG1K0AHBHRKZRuCJeEBorcFifDFVxjJHC99fFnHB7nM5uSoWHGqpc/ffRPWqlXRGUeEH
+ HSkSsJSmgNXGhPmXi8BQ3WhKqcPx06bEIcj4u3oTGgPFbaXhR6uupZCEKVHfatIsw0cqx6wjt
+ 7NGBvT5LOxtG1vm72lV4p5c4SA21EtQHveIg/lAwPWkj/OkCYM=
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Conor,
-
-On Tue, Nov 9, 2021 at 1:08 PM <Conor.Dooley@microchip.com> wrote:
-> On 09/11/2021 08:34, Geert Uytterhoeven wrote:
-> > On Mon, Nov 8, 2021 at 4:06 PM <conor.dooley@microchip.com> wrote:
-> >> From: Conor Dooley <conor.dooley@microchip.com>
-> >>
-> >> Add mpfs-soc to clear undocumented binding warning
-> >>
-> >> Signed-off-by: Conor Dooley <conor.dooley@microchip.com>
-
-> >> --- a/Documentation/devicetree/bindings/riscv/microchip.yaml
-> >> +++ b/Documentation/devicetree/bindings/riscv/microchip.yaml
-> >> @@ -21,6 +21,7 @@ properties:
-> >>         - enum:
-> >>             - microchip,mpfs-icicle-kit
-> >>         - const: microchip,mpfs
-> >> +      - const: microchip,mpfs-soc
+On Tue, Nov 9, 2021 at 1:52 PM André Almeida <andrealmeid@collabora.com> wrote:
+> Às 08:18 de 09/11/21, Vasily Gorbik escreveu:
+> > On Thu, Sep 23, 2021 at 02:11:09PM -0300, André Almeida wrote:
+> >> Test if the futex_waitv timeout is working as expected, using the
+> >> supported clockid options.
 > >
-> > Doesn't the "s" in "mpfs" already stand for "soc"?
-> not wrong, but using mpf-soc would be confusing since "mpf" is the part
-> name for the non soc fpga. is it fine to just reuse "mpfs" for the dtsi
-> overall compatible and for the soc subsection?
+> >> +    /* futex_waitv with CLOCK_MONOTONIC */
+> >> +    if (futex_get_abs_timeout(CLOCK_MONOTONIC, &to, timeout_ns))
+> >> +            return RET_FAIL;
+> >> +    res = futex_waitv(&waitv, 1, 0, &to, CLOCK_MONOTONIC);
+> >> +    test_timeout(res, &ret, "futex_waitv monotonic", ETIMEDOUT);
+> >> +
+> >> +    /* futex_waitv with CLOCK_REALTIME */
+> >> +    if (futex_get_abs_timeout(CLOCK_REALTIME, &to, timeout_ns))
+> >> +            return RET_FAIL;
+> >> +    res = futex_waitv(&waitv, 1, 0, &to, CLOCK_REALTIME);
+> >> +    test_timeout(res, &ret, "futex_waitv realtime", ETIMEDOUT);
+> >
+> > Hi André,
+> >
+> > when built with -m32 and run as compat this two futex_waitv calls hang
+> > on x86 and s390 (noticed while wiring up futex_waitv). The rest of the
+> > futex selftests pass. This suggests some common compat issue? Any ideas?
+>
+> The issue is that futex_waitv() only accepts struct timespec that uses
+> 64bit members. When using -m32, glibc will give you a 32bit timespec,
+> thus the timeout won't wort. Someday glibc will provide 64bit timespec
+> to 32bit userspace, given that this is affected by y2038 bug.
 
-I really meant: what is the difference between "microchip,mpfs" and
-"microchip,mpfs-soc"? Can't you just use the former?
+I think in the latest glibc you should be able to pass -D_TIME_BITS=64 to
+the compiler to get the correct definition. Unfortunately, this only works
+for simple test cases, but breaks if you call any interfaces from another
+(non-glibc) library that depend on a particular time_t definition.
 
-Gr{oetje,eeting}s,
+Alistair Francis also recently posted a set of helpers for the old futex()
+call to make that easier to use from applications regardless of the libc
+interface. I think it would be good to have this for futex_waitv() as well.
 
-                        Geert
-
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+       Arnd
