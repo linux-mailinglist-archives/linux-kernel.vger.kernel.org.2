@@ -2,78 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9836E44B51B
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 23:05:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DBEFB44B521
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 23:07:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235525AbhKIWH7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Nov 2021 17:07:59 -0500
-Received: from mail.skyhub.de ([5.9.137.197]:59390 "EHLO mail.skyhub.de"
+        id S244883AbhKIWKH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Nov 2021 17:10:07 -0500
+Received: from mail.kernel.org ([198.145.29.99]:35812 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229811AbhKIWH6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Nov 2021 17:07:58 -0500
-Received: from zn.tnic (p200300ec2f18aa00aec912b1b11fde1a.dip0.t-ipconnect.de [IPv6:2003:ec:2f18:aa00:aec9:12b1:b11f:de1a])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id BB68F1EC0399;
-        Tue,  9 Nov 2021 23:05:10 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1636495510;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=Hs94rUgeZ2VvaoKiTf4Jbb/sMwdZcSbUHieuZ19TcqA=;
-        b=fU2PxbWCidirYisZ6OjPd6JrMnrj1HtVgU+MeP0yTcnivfn+RE+Ijmn42EDMbA7ChaR9J7
-        hVD5lFRAigc4uF4/NT8hFRjmyS5XnOo+lPKqvlCvgcGcuGdS5ZoCvrssN0uNZ1BijRWnkr
-        TX7zwKlwrh8Rmn8ve7yib/riWLiMhPU=
-Date:   Tue, 9 Nov 2021 23:05:04 +0100
-From:   Borislav Petkov <bp@alien8.de>
-To:     Tony Luck <tony.luck@intel.com>
-Cc:     X86 ML <x86@kernel.org>, LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v0 05/12] x86/mce: Allow instrumentation during task work
- queueing
-Message-ID: <YYrwkKANAz/Qj17f@zn.tnic>
-References: <20211104144035.20107-1-bp@alien8.de>
- <20211104144035.20107-6-bp@alien8.de>
+        id S235632AbhKIWKF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Nov 2021 17:10:05 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D3CE460524;
+        Tue,  9 Nov 2021 22:07:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1636495639;
+        bh=+qSgvYpQTfGO4XzzrvtjFVSaT33ud9DXLSG7u/nEfKs=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:From;
+        b=fq2dTkrvLVbcHQygx3bgnOZwesHj+kuGNINPDowb8PKPAyzzmrBcWAyRx2ZFunkUg
+         0if6hh7IFlxwkpFpQ/F/W+qj0jQbhbDctVE1h9yVj1rWbWu1hnNEGYTQ53Kp8XOVv/
+         81mCqvd37Kktfx/b7Lvje2zcE/wAvz6kTxcGoFLsmIi2ZH6r9AWIRJtDASK6VwZnrk
+         Dr1GkmXmlbDggxypf9yCBwIcCsohexJTK1Dz6cZ1AUEAFzl4AlU7f/HMbZyl4WhmHi
+         WYvVagrMdUsemxqWIHAIOK3Czdsk8kuiprhR8JKmEdQFU1YFH3Fg7k0IkY+3bySgMP
+         Mz2Yt9vWcEBRA==
+Date:   Tue, 9 Nov 2021 16:07:17 -0600
+From:   Bjorn Helgaas <helgaas@kernel.org>
+To:     Hans de Goede <hdegoede@redhat.com>
+Cc:     "Rafael J . Wysocki" <rjw@rjwysocki.net>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Myron Stowe <myron.stowe@redhat.com>,
+        Juha-Pekka Heikkila <juhapekka.heikkila@gmail.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "H . Peter Anvin" <hpa@zytor.com>, linux-acpi@vger.kernel.org,
+        linux-pci@vger.kernel.org, x86@kernel.org,
+        linux-kernel@vger.kernel.org,
+        Benoit =?iso-8859-1?Q?Gr=E9goire?= <benoitg@coeus.ca>,
+        Hui Wang <hui.wang@canonical.com>, stable@vger.kernel.org,
+        "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>
+Subject: Re: [PATCH v5 1/2] x86/PCI: Ignore E820 reservations for bridge
+ windows on newer systems
+Message-ID: <20211109220717.GA1187103@bhelgaas>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20211104144035.20107-6-bp@alien8.de>
+In-Reply-To: <c85a917e-143d-1218-61fa-e4f4810c4950@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 04, 2021 at 03:40:28PM +0100, Borislav Petkov wrote:
-> From: Borislav Petkov <bp@suse.de>
+On Sat, Nov 06, 2021 at 11:15:07AM +0100, Hans de Goede wrote:
+> On 10/20/21 23:14, Bjorn Helgaas wrote:
+> > On Wed, Oct 20, 2021 at 12:23:26PM +0200, Hans de Goede wrote:
+> >> On 10/19/21 23:52, Bjorn Helgaas wrote:
+> >>> On Thu, Oct 14, 2021 at 08:39:42PM +0200, Hans de Goede wrote:
+> >>>> Some BIOS-es contain a bug where they add addresses which map to system
+> >>>> RAM in the PCI host bridge window returned by the ACPI _CRS method, see
+> >>>> commit 4dc2287c1805 ("x86: avoid E820 regions when allocating address
+> >>>> space").
+> >>>>
+> >>>> To work around this bug Linux excludes E820 reserved addresses when
+> >>>> allocating addresses from the PCI host bridge window since 2010.
+> >>>> ...
+> > 
+> >>> I haven't seen anybody else eager to merge this, so I guess I'll stick
+> >>> my neck out here.
+> >>>
+> >>> I applied this to my for-linus branch for v5.15.
+> >>
+> >> Thank you, and sorry about the build-errors which the lkp
+> >> kernel-test-robot found.
+> >>
+> >> I've just send out a patch which fixes these build-errors
+> >> (verified with both .config-s from the lkp reports).
+> >> Feel free to squash this into the original patch (or keep
+> >> them separate, whatever works for you).
+> > 
+> > Thanks, I squashed the fix in.
+> > 
+> > HOWEVER, I think it would be fairly risky to push this into v5.15.
+> > We would be relying on the assumption that current machines have all
+> > fixed the BIOS defect that 4dc2287c1805 addressed, and we have little
+> > evidence for that.
+> >
+> > I'm not sure there's significant benefit to having this in v5.15.
+> > Yes, the mainline v5.15 kernel would work on the affected machines,
+> > but I suspect most people with those machines are running distro
+> > kernels, not mainline kernels.
 > 
-> Fixes
+> I understand that you were reluctant to add this to 5.15 so close
+> near the end of the 5.15 cycle, but can we please get this into
+> 5.16 now ?
 > 
->   vmlinux.o: warning: objtool: do_machine_check()+0xdb1: call to queue_task_work() leaves .noinstr.text section
-> 
-> Signed-off-by: Borislav Petkov <bp@suse.de>
-> ---
->  arch/x86/kernel/cpu/mce/core.c | 5 +++++
->  1 file changed, 5 insertions(+)
-> 
-> diff --git a/arch/x86/kernel/cpu/mce/core.c b/arch/x86/kernel/cpu/mce/core.c
-> index c7181e8e2845..65a8be420aff 100644
-> --- a/arch/x86/kernel/cpu/mce/core.c
-> +++ b/arch/x86/kernel/cpu/mce/core.c
-> @@ -1451,6 +1451,8 @@ noinstr void do_machine_check(struct pt_regs *regs)
->  	if (worst != MCE_AR_SEVERITY && !kill_current_task)
->  		goto out;
->  
-> +	instrumentation_begin();
+> I know you ultimately want to see if there is a better fix,
+> but this is hitting a *lot* of users right now and if we come up
+> with a better fix we can always use that to replace this one
+> later.
 
-<peterz> so it might be nice to have a comment with each sandwich to
-say why sh*t won't go sideways when instrumentation happens in the #MC
-at that point
-<peterz> like this shuts things up, but really we don't want
-instrumentation here either, except blah
+I don't know whether there's a "better" fix, but I do know that if we
+merge what we have right now, nobody will be looking for a better
+one.
 
-note to self: will need to go through the whole set.
+We're in the middle of the merge window, so the v5.16 development
+cycle is over.  The v5.17 cycle is just starting, so we have time to
+hit that.  Obviously a fix can be backported to older kernels as
+needed.
 
--- 
-Regards/Gruss,
-    Boris.
+> So can we please just go with this fix now, so that we can
+> fix the issues a lot of users are seeing caused by the current
+> *wrong* behavior of taking the e820 reservations into account ?
 
-https://people.kernel.org/tglx/notes-about-netiquette
+I think the fix on the table is "ignore E820 for BIOS date >= 2018"
+plus the obvious parameters to force it both ways.
+
+The thing I don't like is that this isn't connected at all to the
+actual BIOS defect.  We have no indication that current BIOSes have
+fixed the defect, and we have no assurance that future ones will not
+have the defect.  It would be better if we had some algorithmic way of
+figuring out what to do.
+
+Thank you very much for chasing down the dmesg log archive
+(https://github.com/linuxhw/Dmesg; see
+https://lore.kernel.org/r/82035130-d810-9f0b-259e-61280de1d81f@redhat.com).
+Unfortunately I haven't had time to look through it myself, and I
+haven't heard of anybody else doing it either.
+
+Bjorn
