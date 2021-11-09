@@ -2,106 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CE92E44AD8C
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 13:31:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D57744AD93
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 13:32:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242518AbhKIMeG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Nov 2021 07:34:06 -0500
-Received: from relmlor1.renesas.com ([210.160.252.171]:13003 "EHLO
-        relmlie5.idc.renesas.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S231250AbhKIMeB (ORCPT
+        id S242604AbhKIMer (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Nov 2021 07:34:47 -0500
+Received: from mx0a-00128a01.pphosted.com ([148.163.135.77]:33646 "EHLO
+        mx0a-00128a01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S241539AbhKIMeq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Nov 2021 07:34:01 -0500
-X-IronPort-AV: E=Sophos;i="5.87,220,1631545200"; 
-   d="scan'208";a="99680378"
-Received: from unknown (HELO relmlir5.idc.renesas.com) ([10.200.68.151])
-  by relmlie5.idc.renesas.com with ESMTP; 09 Nov 2021 21:31:15 +0900
-Received: from localhost.localdomain (unknown [10.226.36.204])
-        by relmlir5.idc.renesas.com (Postfix) with ESMTP id 48DFA4006CC6;
-        Tue,  9 Nov 2021 21:31:13 +0900 (JST)
-From:   Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-To:     Geert Uytterhoeven <geert+renesas@glider.be>,
-        Magnus Damm <magnus.damm@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        linux-renesas-soc@vger.kernel.org, devicetree@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org,
-        Prabhakar <prabhakar.csengg@gmail.com>,
-        Biju Das <biju.das.jz@bp.renesas.com>,
-        Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-Subject: [PATCH v2 2/3] arm64: dts: renesas: r9a07g044: Add SCI[0-1] nodes
-Date:   Tue,  9 Nov 2021 12:31:10 +0000
-Message-Id: <20211109123110.8543-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
-X-Mailer: git-send-email 2.17.1
+        Tue, 9 Nov 2021 07:34:46 -0500
+Received: from pps.filterd (m0167088.ppops.net [127.0.0.1])
+        by mx0a-00128a01.pphosted.com (8.16.1.2/8.16.1.2) with ESMTP id 1A98v5pH019618;
+        Tue, 9 Nov 2021 07:32:00 -0500
+Received: from nwd2mta3.analog.com ([137.71.173.56])
+        by mx0a-00128a01.pphosted.com (PPS) with ESMTPS id 3c7156xte9-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 09 Nov 2021 07:31:59 -0500
+Received: from SCSQMBX11.ad.analog.com (SCSQMBX11.ad.analog.com [10.77.17.10])
+        by nwd2mta3.analog.com (8.14.7/8.14.7) with ESMTP id 1A9CVw2p052994
+        (version=TLSv1/SSLv3 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Tue, 9 Nov 2021 07:31:58 -0500
+Received: from SCSQCASHYB7.ad.analog.com (10.77.17.133) by
+ SCSQMBX11.ad.analog.com (10.77.17.10) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.858.5;
+ Tue, 9 Nov 2021 04:31:57 -0800
+Received: from SCSQMBX11.ad.analog.com (10.77.17.10) by
+ SCSQCASHYB7.ad.analog.com (10.77.17.133) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.858.5;
+ Tue, 9 Nov 2021 04:31:56 -0800
+Received: from zeus.spd.analog.com (10.66.68.11) by scsqmbx11.ad.analog.com
+ (10.77.17.10) with Microsoft SMTP Server id 15.2.858.5 via Frontend
+ Transport; Tue, 9 Nov 2021 04:31:56 -0800
+Received: from amiclaus-VirtualBox.ad.analog.com (AMICLAUS-L02.ad.analog.com [10.48.65.128])
+        by zeus.spd.analog.com (8.15.1/8.15.1) with ESMTP id 1A9CVsSu007733;
+        Tue, 9 Nov 2021 07:31:55 -0500
+From:   Antoniu Miclaus <antoniu.miclaus@analog.com>
+To:     <jic23@kernel.org>, <robh+dt@kernel.org>,
+        <linux-iio@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+CC:     Antoniu Miclaus <antoniu.miclaus@analog.com>
+Subject: [PATCH 0/4] Add support for ADMV8818
+Date:   Tue, 9 Nov 2021 14:31:23 +0200
+Message-ID: <20211109123127.96399-1-antoniu.miclaus@analog.com>
+X-Mailer: git-send-email 2.33.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-ADIRuleOP-NewSCL: Rule Triggered
+X-Proofpoint-GUID: F3fSEDiNXfOLUsaY2hqzXfGj1iwzxAQ3
+X-Proofpoint-ORIG-GUID: F3fSEDiNXfOLUsaY2hqzXfGj1iwzxAQ3
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.205,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.0.607.475
+ definitions=2021-11-09_03,2021-11-08_02,2020-04-07_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
+ bulkscore=0 suspectscore=0 phishscore=0 impostorscore=0 adultscore=0
+ malwarescore=0 priorityscore=1501 mlxlogscore=702 spamscore=0
+ clxscore=1015 mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2110150000 definitions=main-2111090076
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add SCI[0-1] nodes to r9a07g044 (RZ/G2L) SoC DTSI.
+The ADMV8818-EP is a fully monolithic microwave integrated 
+circuit (MMIC) that features a digitally selectable frequency of 
+operation. The device features four independently controlled high-
+pass filters (HPFs) and four independently controlled low-pass 
+filters (LPFs) that span the 2 GHz to 18 GHz frequency range.
 
-Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-Reviewed-by: Biju Das <biju.das.jz@bp.renesas.com>
-Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
----
-Hi Geert,
-Sending this lone patch from series [1] as rest of the patches
-have been queued up.
-[1] https://patchwork.kernel.org/project/linux-renesas-soc/cover/
-    20211103195600.23964-1-prabhakar.mahadev-lad.rj@bp.renesas.com/
+This patch series includes a proposal to add a subsection in the
+IIO subsystem for filter drivers.
 
-Cheers,
-Prabhakar
+NOTE:
+Currently depends on 64-bit architecture since the input
+clock that server as RFIN should support values
+in the range 2 GHz to 18 GHz.
 
-v1->v2
-* Added the nodes in sort order (by unit address)
-* Included RB tag from Geert
+We might need some scaling implementation in the clock
+framework so that u64 types are supported when using 32-bit
+architectures.
 
-v1: https://patchwork.kernel.org/project/linux-renesas-soc/patch/
-20211103195600.23964-3-prabhakar.mahadev-lad.rj@bp.renesas.com/
----
- arch/arm64/boot/dts/renesas/r9a07g044.dtsi | 30 ++++++++++++++++++++++
- 1 file changed, 30 insertions(+)
+Antoniu Miclaus (4):
+  iio: add filter subfolder
+  iio:filter:admv8818: add support for ADMV8818
+  dt-bindings:iio:filter: add admv8818 doc
+  iio:filter:admv8818: Add sysfs ABI documentation
 
-diff --git a/arch/arm64/boot/dts/renesas/r9a07g044.dtsi b/arch/arm64/boot/dts/renesas/r9a07g044.dtsi
-index 09bfdedfac2a..358db254c4ea 100644
---- a/arch/arm64/boot/dts/renesas/r9a07g044.dtsi
-+++ b/arch/arm64/boot/dts/renesas/r9a07g044.dtsi
-@@ -266,6 +266,36 @@
- 			status = "disabled";
- 		};
- 
-+		sci0: serial@1004d000 {
-+			compatible = "renesas,r9a07g044-sci", "renesas,sci";
-+			reg = <0 0x1004d000 0 0x400>;
-+			interrupts = <GIC_SPI 405 IRQ_TYPE_LEVEL_HIGH>,
-+				     <GIC_SPI 406 IRQ_TYPE_LEVEL_HIGH>,
-+				     <GIC_SPI 407 IRQ_TYPE_LEVEL_HIGH>,
-+				     <GIC_SPI 408 IRQ_TYPE_LEVEL_HIGH>;
-+			interrupt-names = "eri", "rxi", "txi", "tei";
-+			clocks = <&cpg CPG_MOD R9A07G044_SCI0_CLKP>;
-+			clock-names = "fck";
-+			power-domains = <&cpg>;
-+			resets = <&cpg R9A07G044_SCI0_RST>;
-+			status = "disabled";
-+		};
-+
-+		sci1: serial@1004d400 {
-+			compatible = "renesas,r9a07g044-sci", "renesas,sci";
-+			reg = <0 0x1004d400 0 0x400>;
-+			interrupts = <GIC_SPI 409 IRQ_TYPE_LEVEL_HIGH>,
-+				     <GIC_SPI 410 IRQ_TYPE_LEVEL_HIGH>,
-+				     <GIC_SPI 411 IRQ_TYPE_LEVEL_HIGH>,
-+				     <GIC_SPI 412 IRQ_TYPE_LEVEL_HIGH>;
-+			interrupt-names = "eri", "rxi", "txi", "tei";
-+			clocks = <&cpg CPG_MOD R9A07G044_SCI1_CLKP>;
-+			clock-names = "fck";
-+			power-domains = <&cpg>;
-+			resets = <&cpg R9A07G044_SCI1_RST>;
-+			status = "disabled";
-+		};
-+
- 		canfd: can@10050000 {
- 			compatible = "renesas,r9a07g044-canfd", "renesas,rzg2l-canfd";
- 			reg = <0 0x10050000 0 0x8000>;
+ .../ABI/testing/sysfs-bus-iio-filter-admv8818 |  60 ++
+ .../bindings/iio/filter/adi,admv8818.yaml     |  78 ++
+ drivers/iio/Kconfig                           |   1 +
+ drivers/iio/Makefile                          |   1 +
+ drivers/iio/filter/Kconfig                    |  18 +
+ drivers/iio/filter/Makefile                   |   7 +
+ drivers/iio/filter/admv8818.c                 | 819 ++++++++++++++++++
+ 7 files changed, 984 insertions(+)
+ create mode 100644 Documentation/ABI/testing/sysfs-bus-iio-filter-admv8818
+ create mode 100644 Documentation/devicetree/bindings/iio/filter/adi,admv8818.yaml
+ create mode 100644 drivers/iio/filter/Kconfig
+ create mode 100644 drivers/iio/filter/Makefile
+ create mode 100644 drivers/iio/filter/admv8818.c
+
 -- 
-2.17.1
+2.33.1
 
