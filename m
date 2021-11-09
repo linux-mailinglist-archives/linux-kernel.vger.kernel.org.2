@@ -2,607 +2,245 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C6A3C44AB84
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 11:31:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7159D44AB8A
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 11:31:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245341AbhKIKdz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Nov 2021 05:33:55 -0500
-Received: from mga03.intel.com ([134.134.136.65]:4007 "EHLO mga03.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S245331AbhKIKdx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Nov 2021 05:33:53 -0500
-X-IronPort-AV: E=McAfee;i="6200,9189,10162"; a="232367508"
-X-IronPort-AV: E=Sophos;i="5.87,220,1631602800"; 
-   d="scan'208";a="232367508"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Nov 2021 02:31:07 -0800
-X-IronPort-AV: E=Sophos;i="5.87,220,1631602800"; 
-   d="scan'208";a="545265484"
-Received: from smile.fi.intel.com ([10.237.72.184])
-  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Nov 2021 02:31:05 -0800
-Received: from andy by smile.fi.intel.com with local (Exim 4.95)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1mkOOz-00538N-4d;
-        Tue, 09 Nov 2021 12:30:53 +0200
-Date:   Tue, 9 Nov 2021 12:30:52 +0200
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Arnd Bergmann <arnd@kernel.org>
-Cc:     linux-gpio@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <brgl@bgdev.pl>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 6/8] gpiolib: remove legacy gpio_export
-Message-ID: <YYpN3LzXz638l6FG@smile.fi.intel.com>
-References: <20211109100207.2474024-1-arnd@kernel.org>
- <20211109100207.2474024-7-arnd@kernel.org>
+        id S245344AbhKIKeR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Nov 2021 05:34:17 -0500
+Received: from mail-db8eur05on2093.outbound.protection.outlook.com ([40.107.20.93]:21441
+        "EHLO EUR05-DB8-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S245347AbhKIKeJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Nov 2021 05:34:09 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=hRRU4aXMF44nL/AhcNTjjoYd17RRks5uxf41BYezt4PsPmeOZVA/ut1/pcyOa5K+BEQhpuu3zDbjF9jQVTzEYLq2J4K6Bdbyss1TvVNHWWKi5Gb/xmBZIN6DEmBMW5S4mFgoOPN6emFFf+jfT+mEszAyKnzns0co59XI8NOhsEzRCxkuNTtOLpvLhTotl2XW6C9LbSfauzDC6HzkSK62eXyoRkXuBjN3vqDsnNqkNufl85vAqOVUF9GARPnzuHeZI60FvzMV9lh66FYgywMOCemZhk8eXKBnLj/Ckbv2oWDom/Q+iBRbQC+3t6BmXyzpmylc+mhk3wPGZoHWbFnU2g==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=muwU5Ab53jdkRahd2AT/NSycEQBmewI7F9kt1A9r2ps=;
+ b=i7mQbxaNLI68qqNpRKPuYnzdtHUW9XBFomjznpLptx38EZYujKVlp3dw71ogFTgaPQ94Zv7Vw65SLSIXWwuf6b+scKAgQs2kFrGUr+Ryeznlz9A5+82OPcCTxfm0LI9s6Xpg7zcXgU1LqANhzcL6xj2O6rqplQjPbrZWi+KceC2+TH85y0p4PCToqM18C4SD1Q5jbaKCnPJJ7fBOtK6QJE9qI+FoBS1FLXrA/QxWC8UipsTgg5e5xjKYt2uj2iIwQOFhgXWtYJHXf12yHKXLttICgmMLsyIx74tGV4E0+vzHo197NYfPGU94OiEPQa6okETjjQL/jPCXEhQSo5GFLw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=eho.link; dmarc=pass action=none header.from=eho.link;
+ dkim=pass header.d=eho.link; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=eho.link; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=muwU5Ab53jdkRahd2AT/NSycEQBmewI7F9kt1A9r2ps=;
+ b=YcIx/A/wYdhacITbeJhgf33PiTppfTddEsKut79gY9sqpCPbJBm94L3dlpK5OR3k0v1mXyFQMUfpTsMxCdlzcCGqfMKJ0p8O0x8+8tGSe3xZE8sXsgfiHOJxqF2aPeBuI5BlPFaDycOeQUH0gli7Q3TPaHtE9f2jmKqJm8qbu4Mt6pzQhdBymBkT8mlf7E+JcvCiqH54CFPyO5AMf/yNmRk4cdS6Oe5HmfZ8FUGSltl0Lf45Q1btTD7Lwl8VNpO1jj8K6DB46r4pN2eqrNKl6JLNFw8QrnnyfGJDM/4MS5/zagYA6c8GYATPwvRyywYY75ywz1uJ9zPFreVEyahp1w==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=eho.link;
+Received: from PAXPR06MB7517.eurprd06.prod.outlook.com (2603:10a6:102:12e::18)
+ by PR3PR06MB6683.eurprd06.prod.outlook.com (2603:10a6:102:6b::12) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4669.13; Tue, 9 Nov
+ 2021 10:31:21 +0000
+Received: from PAXPR06MB7517.eurprd06.prod.outlook.com
+ ([fe80::89b8:d738:4829:5a15]) by PAXPR06MB7517.eurprd06.prod.outlook.com
+ ([fe80::89b8:d738:4829:5a15%8]) with mapi id 15.20.4669.016; Tue, 9 Nov 2021
+ 10:31:21 +0000
+From:   Louis Amas <louis.amas@eho.link>
+To:     Marcin Wojtas <mw@semihalf.com>,
+        Russell King <linux@armlinux.org.uk>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        KP Singh <kpsingh@kernel.org>
+Cc:     Louis Amas <louis.amas@eho.link>,
+        Emmanuel Deloget <emmanuel.deloget@eho.link>,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        bpf@vger.kernel.org
+Subject: [PATCH] net: mvpp2: fix XDP rx queues registering
+Date:   Tue,  9 Nov 2021 11:31:00 +0100
+Message-Id: <20211109103101.92382-1-louis.amas@eho.link>
+X-Mailer: git-send-email 2.25.1
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain
+X-ClientProxiedBy: PR1PR01CA0033.eurprd01.prod.exchangelabs.com
+ (2603:10a6:102::46) To PAXPR06MB7517.eurprd06.prod.outlook.com
+ (2603:10a6:102:12e::18)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20211109100207.2474024-7-arnd@kernel.org>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+Received: from las.edt.fr.ehocorp.admin (2a10:d780:2:103:e360:3559:c48d:bc79) by PR1PR01CA0033.eurprd01.prod.exchangelabs.com (2603:10a6:102::46) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4669.13 via Frontend Transport; Tue, 9 Nov 2021 10:31:20 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 784ca284-34a9-45f7-3bde-08d9a36c125a
+X-MS-TrafficTypeDiagnostic: PR3PR06MB6683:
+X-Microsoft-Antispam-PRVS: <PR3PR06MB66832129ADEF9A6AD38955EEEA929@PR3PR06MB6683.eurprd06.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: vxuuE2FtkZlOAGG13qpdgY6WhdsERSO93lEwVpylUfRGjAION2jlyNCnXkeWTTS5tV0Vw12WSx7/9JcKTqlxehUP1Atek85EM3fPpIA4ymryiPJCpR7wapIGdVIlkg+DvQH6XeDpwX7O8OftkoSUnZda+ZZ9Un401jWurT8r40FP15HqIVn4i2gImvrPjsCXpSuPJs0sV3f1sXm6WlZTKIhyyVpATmGNp9nPw62zW8Y1hb+UtENKtinp/5mwcpsMmqTiIQazS3MMh1tev9dVGjVdnkKFtm8nKzrMyU43G0fUuqyxFVAG88mxNrxMmWo8hbaKT46+tju6iGFQnylT+wrNYtaiQG7b+CI3iDjjxjzVKDvtlsJrzKO6MsD2w4+Nsc0L/wmmt5DroIlstxug3Jjko1Tj1BOOzdEFCUUm8E2SEn0IkZLmHGIm7IZNywiVqjZCQsOeMbGq+rxDhsd516g3WLoplFv4ci79DHlaBHbTFkXMBiSOLCUAmE3U1BKZBz9YQyblFvAiu+iiftluAZVhtu44t4q3mSq/3T9OJAWUAp0WuaKPj31HMCVEjAhzCpB/os5c4YwvNqbozAqUy5Az8qSsyhQqTozJ3B6acjUB90lktKwsQKenH4i3dBZTz+CJzija3933OUc8DmHoer4w+9LbdvORqmviO5i0ylBSYxCc0HUKWMtqR5DPGRsI
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PAXPR06MB7517.eurprd06.prod.outlook.com;PTR:;CAT:NONE;SFS:(346002)(39830400003)(136003)(376002)(396003)(366004)(6666004)(7416002)(45080400002)(2906002)(52116002)(110136005)(316002)(6506007)(5660300002)(36756003)(186003)(54906003)(921005)(83380400001)(4326008)(66556008)(2616005)(66946007)(508600001)(86362001)(6512007)(1076003)(8936002)(8676002)(66476007)(6486002)(44832011)(38100700002);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?mH/WT3uSBbx+2oENSib8M5fha4+SlphkNfB/vkhVbTHhTUsO0JtPxjWvQvf8?=
+ =?us-ascii?Q?IOTnJD4GnXHg0/f38htKlwwXg7VIb8gVjWsHvqefTb2BoQxgcP9f70GDYhtI?=
+ =?us-ascii?Q?CXOzxV4VFaeyrGymr93o6PGyUTMVkBsNlyyT584P1se8BcP8DQ/kjU7OJtXe?=
+ =?us-ascii?Q?OxwVtcEwqyOJ3g40lU4P9Evu7o+X7ASOUHMlqhnktrwVvqVc0lpf+OXb9lcD?=
+ =?us-ascii?Q?VxQ78OdsC+/21oSQ85f2MirGBAI1D17XQ2TryrmAuvXNSpFdXAEIhdUek8WE?=
+ =?us-ascii?Q?1UlrLHXMFoMgS3uHSZKpKnjQZsGfLGkRrk8+GC4xQ1ifOvGvLCM/uU3l5Rr8?=
+ =?us-ascii?Q?e/1ml7NFs2UHnaumbxSk09vaihJN3J6qeaFXKf6eFmjlIFTJMIaZBQ9+jecQ?=
+ =?us-ascii?Q?LJXG9mHL9ny3k0hT9zOJLoPxEr6M2KSDvzCEDpNI7c2I2/VZqHzAGKmdMYO5?=
+ =?us-ascii?Q?ZcuXJXG/nMxXO5nKKdy+nYMGVt125G7Bos0F68fwj8GEf9lg8CvkLi2ndv7P?=
+ =?us-ascii?Q?suFS06Q3nCSxr0QqwMric9H3LCbwMvuY5/jx2yDL19DdS/8thmrmrcsxxUf8?=
+ =?us-ascii?Q?0s4r5lnHowkjTcx7y3zHuzMqyjI+r+9fcWdK1mUcMX4verTn6xeJETNvmWIn?=
+ =?us-ascii?Q?ArkD+hggnEuLcWhOAIrwAu7VKYEFLhrzTfprLFoZlEf8JQ41ISAN57ih7n2t?=
+ =?us-ascii?Q?T5EVJ39yyvcux50m6RZ61H3huJslJSqvN0v0AJbHTZYiKmZUC1RVHLyV3ISm?=
+ =?us-ascii?Q?/d0ca7qslkeXIA+9FwUgh5Q3ayYS9JWWrvfQ1Muq/QdmIjGPrHIsKxkpqR0O?=
+ =?us-ascii?Q?dszpzw46wMlwLFXzTeIq8OxQ8j7iM6frfU9MdC7Y8TnB31AxwAuaXvF9qU76?=
+ =?us-ascii?Q?DnvlhRQlHaY7oRn5W5DB9hp+QoBRXSTL6n/gs7BYqnKZM+RFHmdhs1GfuTfC?=
+ =?us-ascii?Q?v0bOcKsstyUtS/X9u0ftUELEZkvRFcyNsrLxPx4ahNSEfoLTz0LYp0PLiHYZ?=
+ =?us-ascii?Q?8Uzb4TtSHWTFP3FD41gPG6hSNSGIpG+NmqipGcXteI2GxGY86fmGck1H9GF/?=
+ =?us-ascii?Q?D/a4hs9NldeuGPUZ1nMr8eLr0d3Dfyh6y69xrT0n2biR8zEhe+jEY4qdKGAT?=
+ =?us-ascii?Q?E+3XnnEx5w5+wG1AwOvkKXeZkVoUybvfrwVfuD3i0Tyl5BS+fqnb0RvrS74N?=
+ =?us-ascii?Q?T2UpUlHsSJfIeoDloTII+ue0dw4zKoEnd/V52A/gq7xMXjAmnUbOqn21vQLt?=
+ =?us-ascii?Q?UQRjJbZrTGn5hlK9o5/NaNmq6dhX/XaaB2WEm6KPmOnhyOFhhckNNgsCzXkV?=
+ =?us-ascii?Q?vM3a96b5nnpg30HEApI2DAdnrkBjyDXkvENJPy9Nhjvb4tTWGv5qEDWDlQgl?=
+ =?us-ascii?Q?Ub3X43I7Qcn4Otx5FT6fEcnU5FV0X1q5lm5/gs1bhV6PxBRv87KWa1Zozv5S?=
+ =?us-ascii?Q?V9SIRr3dqhSEyQwcKBTbUlukF1kVrnFk/w54dLPl0l0fEfnNpVQ6NV4Xj8o+?=
+ =?us-ascii?Q?7AMWBcqGu3cgBM1I3a1lwo6NV6nZVz5fiPkb8f137Oo34XcYqj/5kiw8OzVC?=
+ =?us-ascii?Q?kYwbiNYWvZL61XAs+0TWgyr9t9iNlocf9hPUPawJsTKwgd9Kt8Q/SVBZl7Q/?=
+ =?us-ascii?Q?K0zjF4bvvG5/rEI4zA5KIv1kI2NrwBakbTSxo1SrMX7NDwJShdNltdXrrFxB?=
+ =?us-ascii?Q?wD0E7O7q9Kp0WDwIOzyIUJNS5Ns=3D?=
+X-OriginatorOrg: eho.link
+X-MS-Exchange-CrossTenant-Network-Message-Id: 784ca284-34a9-45f7-3bde-08d9a36c125a
+X-MS-Exchange-CrossTenant-AuthSource: PAXPR06MB7517.eurprd06.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 09 Nov 2021 10:31:21.0290
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 924d502f-ff7e-4272-8fa5-f920518a3f4c
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: WASN3yKf3aR0Dfl9JTPGag0DoXDgKF91k2vM/u2fhYaWVT+4U66ER/bdF1jfnaRDCn1PO8HKL/8M+WnPfyTzyA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PR3PR06MB6683
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 09, 2021 at 11:02:05AM +0100, Arnd Bergmann wrote:
-> From: Arnd Bergmann <arnd@arndb.de>
-> 
-> There are only a handful of users of gpio_export() and
-> related functions.
-> 
-> As these are just wrappers around the modern gpiod_export()
-> helper, remove the wrappers and open-code the gpio_to_desc
-> in all callers to shrink the legacy API.
+The registration of XDP queue information is incorrect because the RX queue=
+ id we use is invalid.
+When port->id =3D=3D 0 it appears to works as expected yet it's no longer t=
+he case when port->id !=3D 0.
 
-Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+This is due to the fact that the value we use (rxq->id) is not the per-port=
+ queue index which
+XDP expects -- it's a global index which should not be used in this case. I=
+nstead we shall use
+rxq->logic_rxq which is the correct, per-port value.
 
-What I wish to see meanwhile is a section in the TODO list somewhere to clean
-up those modules that have gpio.h. Linus, do we have one in the kernel or is
-it your personal TODO?
+Signed-off-by: Louis Amas <louis.amas@eho.link>
+Signed-off-by: Emmanuel Deloget <emmanuel.deloget@eho.link>
+---
 
-In case we have one in the kernel, please add there modules you modified in
-a way that they still need further attention.
+As we were trying to capture packets using XDP on our mv8040-powered
+MacchiatoBin, we experienced an issue related to rx queue numbering.
 
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-> ---
->  Documentation/admin-guide/gpio/sysfs.rst  |  2 +-
->  Documentation/driver-api/gpio/legacy.rst  | 30 -----------------
->  Documentation/translations/zh_CN/gpio.txt | 26 --------------
->  Documentation/translations/zh_TW/gpio.txt | 27 ---------------
->  arch/arm/mach-davinci/board-dm646x-evm.c  | 28 +++++++++-------
->  arch/arm/mach-omap2/pdata-quirks.c        |  9 ++---
->  arch/sh/boards/mach-ap325rxa/setup.c      |  7 ++--
->  drivers/gpio/gpiolib-sysfs.c              |  4 +--
->  drivers/media/i2c/noon010pc30.c           |  5 +--
->  drivers/media/i2c/ov9650.c                |  4 +--
->  drivers/media/i2c/s5k4ecgx.c              |  3 +-
->  drivers/media/pci/sta2x11/sta2x11_vip.c   | 10 ++++--
->  drivers/mfd/dm355evm_msp.c                |  3 +-
->  drivers/net/ieee802154/ca8210.c           |  3 +-
->  include/linux/gpio.h                      | 41 -----------------------
->  15 files changed, 45 insertions(+), 157 deletions(-)
-> 
-> diff --git a/Documentation/admin-guide/gpio/sysfs.rst b/Documentation/admin-guide/gpio/sysfs.rst
-> index ec09ffd983e7..35171d15f78d 100644
-> --- a/Documentation/admin-guide/gpio/sysfs.rst
-> +++ b/Documentation/admin-guide/gpio/sysfs.rst
-> @@ -145,7 +145,7 @@ requested using gpio_request()::
->  	/* export the GPIO to userspace */
->  	int gpiod_export(struct gpio_desc *desc, bool direction_may_change);
->  
-> -	/* reverse gpio_export() */
-> +	/* reverse gpiod_export() */
->  	void gpiod_unexport(struct gpio_desc *desc);
->  
->  	/* create a sysfs link to an exported GPIO node */
-> diff --git a/Documentation/driver-api/gpio/legacy.rst b/Documentation/driver-api/gpio/legacy.rst
-> index eae185f771d7..34fcb14814db 100644
-> --- a/Documentation/driver-api/gpio/legacy.rst
-> +++ b/Documentation/driver-api/gpio/legacy.rst
-> @@ -717,36 +717,6 @@ gpiochip nodes (possibly in conjunction with schematics) to determine
->  the correct GPIO number to use for a given signal.
->  
->  
-> -Exporting from Kernel code
-> ---------------------------
-> -Kernel code can explicitly manage exports of GPIOs which have already been
-> -requested using gpio_request()::
-> -
-> -	/* export the GPIO to userspace */
-> -	int gpio_export(unsigned gpio, bool direction_may_change);
-> -
-> -	/* reverse gpio_export() */
-> -	void gpio_unexport();
-> -
-> -	/* create a sysfs link to an exported GPIO node */
-> -	int gpio_export_link(struct device *dev, const char *name,
-> -		unsigned gpio)
-> -
-> -After a kernel driver requests a GPIO, it may only be made available in
-> -the sysfs interface by gpio_export().  The driver can control whether the
-> -signal direction may change.  This helps drivers prevent userspace code
-> -from accidentally clobbering important system state.
-> -
-> -This explicit exporting can help with debugging (by making some kinds
-> -of experiments easier), or can provide an always-there interface that's
-> -suitable for documenting as part of a board support package.
-> -
-> -After the GPIO has been exported, gpio_export_link() allows creating
-> -symlinks from elsewhere in sysfs to the GPIO sysfs node.  Drivers can
-> -use this to provide the interface under their own device in sysfs with
-> -a descriptive name.
-> -
-> -
->  API Reference
->  =============
->  
-> diff --git a/Documentation/translations/zh_CN/gpio.txt b/Documentation/translations/zh_CN/gpio.txt
-> index a23ee14fc927..e49fa88a2804 100644
-> --- a/Documentation/translations/zh_CN/gpio.txt
-> +++ b/Documentation/translations/zh_CN/gpio.txt
-> @@ -622,29 +622,3 @@ GPIO 控制器的路径类似 /sys/class/gpio/gpiochip42/ (对于从#42 GPIO
->  固定的,例如在扩展卡上的 GPIO会根据所使用的主板或所在堆叠架构中其他的板子而
->  有所不同。在这种情况下,你可能需要使用 gpiochip 节点(尽可能地结合电路图)来
->  确定给定信号所用的 GPIO 编号。
-> -
-> -
-> -从内核代码中导出
-> --------------
-> -内核代码可以明确地管理那些已通过 gpio_request()申请的 GPIO 的导出:
-> -
-> -	/* 导出 GPIO 到用户空间 */
-> -	int gpio_export(unsigned gpio, bool direction_may_change);
-> -
-> -	/* gpio_export()的逆操作 */
-> -	void gpio_unexport();
-> -
-> -	/* 创建一个 sysfs 连接到已导出的 GPIO 节点 */
-> -	int gpio_export_link(struct device *dev, const char *name,
-> -		unsigned gpio)
-> -
-> -在一个内核驱动申请一个 GPIO 之后，它可以通过 gpio_export()使其在 sysfs
-> -接口中可见。该驱动可以控制信号方向是否可修改。这有助于防止用户空间代码无意间
-> -破坏重要的系统状态。
-> -
-> -这个明确的导出有助于(通过使某些实验更容易来)调试，也可以提供一个始终存在的接口，
-> -与文档配合作为板级支持包的一部分。
-> -
-> -在 GPIO 被导出之后，gpio_export_link()允许在 sysfs 文件系统的任何地方
-> -创建一个到这个 GPIO sysfs 节点的符号链接。这样驱动就可以通过一个描述性的
-> -名字，在 sysfs 中他们所拥有的设备下提供一个(到这个 GPIO sysfs 节点的)接口。
-> diff --git a/Documentation/translations/zh_TW/gpio.txt b/Documentation/translations/zh_TW/gpio.txt
-> index e3c076dd75a5..c9bf3ddd08b3 100644
-> --- a/Documentation/translations/zh_TW/gpio.txt
-> +++ b/Documentation/translations/zh_TW/gpio.txt
-> @@ -622,30 +622,3 @@ GPIO 控制器的路徑類似 /sys/class/gpio/gpiochip42/ (對於從#42 GPIO
->  固定的,例如在擴展卡上的 GPIO會根據所使用的主板或所在堆疊架構中其他的板子而
->  有所不同。在這種情況下,你可能需要使用 gpiochip 節點(儘可能地結合電路圖)來
->  確定給定信號所用的 GPIO 編號。
-> -
-> -
-> -從內核代碼中導出
-> --------------
-> -內核代碼可以明確地管理那些已通過 gpio_request()申請的 GPIO 的導出:
-> -
-> -	/* 導出 GPIO 到用戶空間 */
-> -	int gpio_export(unsigned gpio, bool direction_may_change);
-> -
-> -	/* gpio_export()的逆操作 */
-> -	void gpio_unexport();
-> -
-> -	/* 創建一個 sysfs 連接到已導出的 GPIO 節點 */
-> -	int gpio_export_link(struct device *dev, const char *name,
-> -		unsigned gpio)
-> -
-> -在一個內核驅動申請一個 GPIO 之後，它可以通過 gpio_export()使其在 sysfs
-> -接口中可見。該驅動可以控制信號方向是否可修改。這有助於防止用戶空間代碼無意間
-> -破壞重要的系統狀態。
-> -
-> -這個明確的導出有助於(通過使某些實驗更容易來)調試，也可以提供一個始終存在的接口，
-> -與文檔配合作爲板級支持包的一部分。
-> -
-> -在 GPIO 被導出之後，gpio_export_link()允許在 sysfs 文件系統的任何地方
-> -創建一個到這個 GPIO sysfs 節點的符號連結。這樣驅動就可以通過一個描述性的
-> -名字，在 sysfs 中他們所擁有的設備下提供一個(到這個 GPIO sysfs 節點的)接口。
-> -
-> diff --git a/arch/arm/mach-davinci/board-dm646x-evm.c b/arch/arm/mach-davinci/board-dm646x-evm.c
-> index ee91d81ebbfd..4a258e33021d 100644
-> --- a/arch/arm/mach-davinci/board-dm646x-evm.c
-> +++ b/arch/arm/mach-davinci/board-dm646x-evm.c
-> @@ -19,7 +19,7 @@
->  #include <linux/kernel.h>
->  #include <linux/init.h>
->  #include <linux/leds.h>
-> -#include <linux/gpio.h>
-> +#include <linux/gpio/consumer.h>
->  #include <linux/platform_device.h>
->  #include <linux/i2c.h>
->  #include <linux/property.h>
-> @@ -249,7 +249,7 @@ static int evm_led_teardown(struct i2c_client *client, int gpio,
->  	return 0;
->  }
->  
-> -static int evm_sw_gpio[4] = { -EINVAL, -EINVAL, -EINVAL, -EINVAL };
-> +static struct gpio_desc *evm_sw_gpio[4];
->  
->  static int evm_sw_setup(struct i2c_client *client, int gpio,
->  			unsigned ngpio, void *c)
-> @@ -259,17 +259,19 @@ static int evm_sw_setup(struct i2c_client *client, int gpio,
->  	char label[10];
->  
->  	for (i = 0; i < 4; ++i) {
-> +		struct gpio_desc *desc = gpio_to_desc(gpio + i);
-> +
->  		snprintf(label, 10, "user_sw%d", i);
-> -		status = gpio_request(gpio, label);
-> +		status = gpio_request(gpio + i, label);
+Before I get to the problem itself, a bit of setup:
 
-Shouldn't be gpiod_get() or so at the end?
+* the Macchiato has several ports, all of them handled using the mvpp2
+  ethernet driver. We are able to reproduce our issue on any device whose
+  port->id !=3D 0 (we used eth2 for our tests). When port->id =3D=3D 0 (for
+  example on eth0) everything works as expected ;
 
->  		if (status)
->  			goto out_free;
-> -		evm_sw_gpio[i] = gpio++;
-> +		evm_sw_gpio[i] = desc;
->  
-> -		status = gpio_direction_input(evm_sw_gpio[i]);
-> +		status = gpiod_direction_input(desc);
->  		if (status)
->  			goto out_free;
->  
-> -		status = gpio_export(evm_sw_gpio[i], 0);
-> +		status = gpiod_export(desc, 0);
->  		if (status)
->  			goto out_free;
->  	}
-> @@ -277,9 +279,9 @@ static int evm_sw_setup(struct i2c_client *client, int gpio,
->  
->  out_free:
->  	for (i = 0; i < 4; ++i) {
-> -		if (evm_sw_gpio[i] != -EINVAL) {
-> -			gpio_free(evm_sw_gpio[i]);
-> -			evm_sw_gpio[i] = -EINVAL;
-> +		if (evm_sw_gpio[i]) {
-> +			gpio_free(pin + i);
-> +			evm_sw_gpio[i] = NULL;
->  		}
->  	}
->  	return status;
-> @@ -291,10 +293,10 @@ static int evm_sw_teardown(struct i2c_client *client, int gpio,
->  	int i;
->  
->  	for (i = 0; i < 4; ++i) {
-> -		if (evm_sw_gpio[i] != -EINVAL) {
-> -			gpio_unexport(evm_sw_gpio[i]);
-> -			gpio_free(evm_sw_gpio[i]);
-> -			evm_sw_gpio[i] = -EINVAL;
-> +		if (evm_sw_gpio[i]) {
-> +			gpiod_unexport(evm_sw_gpio[i]);
-> +			gpio_free(gpio + i);
-> +			evm_sw_gpio[i] = NULL;
->  		}
->  	}
->  	return 0;
-> diff --git a/arch/arm/mach-omap2/pdata-quirks.c b/arch/arm/mach-omap2/pdata-quirks.c
-> index e7fd29a502a0..1fdf7fcf091e 100644
-> --- a/arch/arm/mach-omap2/pdata-quirks.c
-> +++ b/arch/arm/mach-omap2/pdata-quirks.c
-> @@ -6,6 +6,7 @@
->   */
->  #include <linux/clk.h>
->  #include <linux/davinci_emac.h>
-> +#include <linux/gpio/consumer.h>
->  #include <linux/gpio.h>
->  #include <linux/init.h>
->  #include <linux/kernel.h>
-> @@ -120,7 +121,7 @@ static int omap3_sbc_t3730_twl_callback(struct device *dev,
->  	if (res)
->  		return res;
->  
-> -	gpio_export(gpio, 0);
-> +	gpiod_export(gpio_to_desc(gpio), 0);
->  
->  	return 0;
->  }
-> @@ -135,7 +136,7 @@ static void __init omap3_sbc_t3x_usb_hub_init(int gpio, char *hub_name)
->  		return;
->  	}
->  
-> -	gpio_export(gpio, 0);
-> +	gpiod_export(gpio_to_desc(gpio), 0);
->  
->  	udelay(10);
->  	gpio_set_value(gpio, 1);
-> @@ -212,8 +213,8 @@ static void __init omap3_sbc_t3517_wifi_init(void)
->  		return;
->  	}
->  
-> -	gpio_export(cm_t3517_wlan_gpios[0].gpio, 0);
-> -	gpio_export(cm_t3517_wlan_gpios[1].gpio, 0);
-> +	gpiod_export(gpio_to_desc(cm_t3517_wlan_gpios[0].gpio), 0);
-> +	gpiod_export(gpio_to_desc(cm_t3517_wlan_gpios[1].gpio), 0);
->  
->  	msleep(100);
->  	gpio_set_value(cm_t3517_wlan_gpios[1].gpio, 0);
-> diff --git a/arch/sh/boards/mach-ap325rxa/setup.c b/arch/sh/boards/mach-ap325rxa/setup.c
-> index c77b5f00a66a..151792162152 100644
-> --- a/arch/sh/boards/mach-ap325rxa/setup.c
-> +++ b/arch/sh/boards/mach-ap325rxa/setup.c
-> @@ -18,6 +18,7 @@
->  #include <linux/delay.h>
->  #include <linux/device.h>
->  #include <linux/gpio.h>
-> +#include <linux/gpio/consumer.h>
->  #include <linux/gpio/machine.h>
->  #include <linux/i2c.h>
->  #include <linux/init.h>
-> @@ -411,16 +412,16 @@ static int __init ap325rxa_devices_setup(void)
->  	/* LD3 and LD4 LEDs */
->  	gpio_request(GPIO_PTX5, NULL); /* RUN */
->  	gpio_direction_output(GPIO_PTX5, 1);
-> -	gpio_export(GPIO_PTX5, 0);
-> +	gpiod_export(gpio_to_desc(GPIO_PTX5), 0);
->  
->  	gpio_request(GPIO_PTX4, NULL); /* INDICATOR */
->  	gpio_direction_output(GPIO_PTX4, 0);
-> -	gpio_export(GPIO_PTX4, 0);
-> +	gpiod_export(gpio_to_desc(GPIO_PTX4), 0);
->  
->  	/* SW1 input */
->  	gpio_request(GPIO_PTF7, NULL); /* MODE */
->  	gpio_direction_input(GPIO_PTF7);
-> -	gpio_export(GPIO_PTF7, 0);
-> +	gpiod_export(gpio_to_desc(GPIO_PTF7), 0);
->  
->  	/* LCDC */
->  	gpio_request(GPIO_FN_LCDD15, NULL);
-> diff --git a/drivers/gpio/gpiolib-sysfs.c b/drivers/gpio/gpiolib-sysfs.c
-> index 4098bc7f88b7..a83fba3649c4 100644
-> --- a/drivers/gpio/gpiolib-sysfs.c
-> +++ b/drivers/gpio/gpiolib-sysfs.c
-> @@ -511,7 +511,7 @@ static ssize_t unexport_store(struct class *class,
->  		goto done;
->  
->  	desc = gpio_to_desc(gpio);
-> -	/* reject bogus commands (gpio_unexport ignores them) */
-> +	/* reject bogus commands (gpiod_unexport ignores them) */
->  	if (!desc) {
->  		pr_warn("%s: invalid GPIO %ld\n", __func__, gpio);
->  		return -EINVAL;
-> @@ -814,7 +814,7 @@ static int __init gpiolib_sysfs_init(void)
->  	 * early (e.g. before the class_register above was called).
->  	 *
->  	 * We run before arch_initcall() so chip->dev nodes can have
-> -	 * registered, and so arch_initcall() can always gpio_export().
-> +	 * registered, and so arch_initcall() can always gpiod_export().
->  	 */
->  	spin_lock_irqsave(&gpio_lock, flags);
->  	list_for_each_entry(gdev, &gpio_devices, list) {
-> diff --git a/drivers/media/i2c/noon010pc30.c b/drivers/media/i2c/noon010pc30.c
-> index f3ac379ef34a..6faa44eb5354 100644
-> --- a/drivers/media/i2c/noon010pc30.c
-> +++ b/drivers/media/i2c/noon010pc30.c
-> @@ -10,6 +10,7 @@
->   */
->  
->  #include <linux/delay.h>
-> +#include <linux/gpio/consumer.h>
->  #include <linux/gpio.h>
->  #include <linux/i2c.h>
->  #include <linux/slab.h>
-> @@ -755,7 +756,7 @@ static int noon010_probe(struct i2c_client *client,
->  			goto np_err;
->  		}
->  		info->gpio_nreset = pdata->gpio_nreset;
-> -		gpio_export(info->gpio_nreset, 0);
-> +		gpiod_export(gpio_to_desc(info->gpio_nreset), 0);
->  	}
->  
->  	if (gpio_is_valid(pdata->gpio_nstby)) {
-> @@ -767,7 +768,7 @@ static int noon010_probe(struct i2c_client *client,
->  			goto np_err;
->  		}
->  		info->gpio_nstby = pdata->gpio_nstby;
-> -		gpio_export(info->gpio_nstby, 0);
-> +		gpiod_export(gpio_to_desc(info->gpio_nstby), 0);
->  	}
->  
->  	for (i = 0; i < NOON010_NUM_SUPPLIES; i++)
-> diff --git a/drivers/media/i2c/ov9650.c b/drivers/media/i2c/ov9650.c
-> index c313e11a9754..021acd20ede2 100644
-> --- a/drivers/media/i2c/ov9650.c
-> +++ b/drivers/media/i2c/ov9650.c
-> @@ -1426,9 +1426,9 @@ static int ov965x_configure_gpios_pdata(struct ov965x *ov965x,
->  			return ret;
->  		v4l2_dbg(1, debug, &ov965x->sd, "set gpio %d to 1\n", gpio);
->  
-> -		gpio_set_value_cansleep(gpio, 1);
-> -		gpio_export(gpio, 0);
->  		ov965x->gpios[i] = gpio_to_desc(gpio);
-> +		gpiod_set_value_cansleep(ov965x->gpios[i], 1);
-> +		gpiod_export(ov965x->gpios[i], 0);
->  	}
->  
->  	return 0;
-> diff --git a/drivers/media/i2c/s5k4ecgx.c b/drivers/media/i2c/s5k4ecgx.c
-> index af9a305242cd..419d03fcc978 100644
-> --- a/drivers/media/i2c/s5k4ecgx.c
-> +++ b/drivers/media/i2c/s5k4ecgx.c
-> @@ -15,6 +15,7 @@
->  #include <linux/ctype.h>
->  #include <linux/delay.h>
->  #include <linux/firmware.h>
-> +#include <linux/gpio/consumer.h>
->  #include <linux/gpio.h>
->  #include <linux/i2c.h>
->  #include <linux/module.h>
-> @@ -852,7 +853,7 @@ static int s5k4ecgx_config_gpio(int nr, int val, const char *name)
->  		return 0;
->  	ret = gpio_request_one(nr, flags, name);
->  	if (!ret)
-> -		gpio_export(nr, 0);
-> +		gpiod_export(gpio_to_desc(nr), 0);
->  
->  	return ret;
->  }
-> diff --git a/drivers/media/pci/sta2x11/sta2x11_vip.c b/drivers/media/pci/sta2x11/sta2x11_vip.c
-> index 524912f20d9f..f7cef598f21d 100644
-> --- a/drivers/media/pci/sta2x11/sta2x11_vip.c
-> +++ b/drivers/media/pci/sta2x11/sta2x11_vip.c
-> @@ -18,6 +18,7 @@
->  #include <linux/pci.h>
->  #include <linux/interrupt.h>
->  #include <linux/io.h>
-> +#include <linux/gpio/consumer.h>
->  #include <linux/gpio.h>
->  #include <linux/i2c.h>
->  #include <linux/delay.h>
-> @@ -893,6 +894,7 @@ static int sta2x11_vip_init_controls(struct sta2x11_vip *vip)
->  static int vip_gpio_reserve(struct device *dev, int pin, int dir,
->  			    const char *name)
->  {
-> +	struct gpio_desc *desc = gpio_to_desc(pin);
->  	int ret = -ENODEV;
->  
->  	if (!gpio_is_valid(pin))
-> @@ -904,7 +906,7 @@ static int vip_gpio_reserve(struct device *dev, int pin, int dir,
->  		return ret;
->  	}
->  
-> -	ret = gpio_direction_output(pin, dir);
-> +	ret = gpiod_direction_output(desc, dir);
->  	if (ret) {
->  		dev_err(dev, "Failed to set direction for pin %d (%s)\n",
->  			pin, name);
-> @@ -912,7 +914,7 @@ static int vip_gpio_reserve(struct device *dev, int pin, int dir,
->  		return ret;
->  	}
->  
-> -	ret = gpio_export(pin, false);
-> +	ret = gpiod_export(desc, false);
->  	if (ret) {
->  		dev_err(dev, "Failed to export pin %d (%s)\n", pin, name);
->  		gpio_free(pin);
-> @@ -932,8 +934,10 @@ static int vip_gpio_reserve(struct device *dev, int pin, int dir,
->  static void vip_gpio_release(struct device *dev, int pin, const char *name)
->  {
->  	if (gpio_is_valid(pin)) {
-> +		struct gpio_desc *desc = gpio_to_desc(pin);
-> +
->  		dev_dbg(dev, "releasing pin %d (%s)\n",	pin, name);
-> -		gpio_unexport(pin);
-> +		gpiod_unexport(desc);
->  		gpio_free(pin);
->  	}
->  }
-> diff --git a/drivers/mfd/dm355evm_msp.c b/drivers/mfd/dm355evm_msp.c
-> index 54fb6cbd2aa0..2388fb4d0121 100644
-> --- a/drivers/mfd/dm355evm_msp.c
-> +++ b/drivers/mfd/dm355evm_msp.c
-> @@ -11,6 +11,7 @@
->  #include <linux/clk.h>
->  #include <linux/module.h>
->  #include <linux/err.h>
-> +#include <linux/gpio/consumer.h>
->  #include <linux/gpio.h>
->  #include <linux/gpio/machine.h>
->  #include <linux/leds.h>
-> @@ -329,7 +330,7 @@ static int add_children(struct i2c_client *client)
->  		gpio_request_one(gpio, GPIOF_IN, config_inputs[i].label);
->  
->  		/* make it easy for userspace to see these */
-> -		gpio_export(gpio, false);
-> +		gpiod_export(gpio_to_desc(gpio), false);
->  	}
->  
->  	/* MMC/SD inputs -- right after the last config input */
-> diff --git a/drivers/net/ieee802154/ca8210.c b/drivers/net/ieee802154/ca8210.c
-> index ece6ff6049f6..6252907b2c92 100644
-> --- a/drivers/net/ieee802154/ca8210.c
-> +++ b/drivers/net/ieee802154/ca8210.c
-> @@ -51,6 +51,7 @@
->  #include <linux/clk-provider.h>
->  #include <linux/debugfs.h>
->  #include <linux/delay.h>
-> +#include <linux/gpio/consumer.h>
->  #include <linux/gpio.h>
->  #include <linux/ieee802154.h>
->  #include <linux/io.h>
-> @@ -2895,7 +2896,7 @@ static int ca8210_interrupt_init(struct spi_device *spi)
->  	);
->  	if (ret) {
->  		dev_crit(&spi->dev, "request_irq %d failed\n", pdata->irq_id);
-> -		gpio_unexport(pdata->gpio_irq);
-> +		gpiod_unexport(gpio_to_desc(pdata->gpio_irq));
->  		gpio_free(pdata->gpio_irq);
->  	}
->  
-> diff --git a/include/linux/gpio.h b/include/linux/gpio.h
-> index 64cc8f09eba8..7ceb93678689 100644
-> --- a/include/linux/gpio.h
-> +++ b/include/linux/gpio.h
-> @@ -144,26 +144,6 @@ extern int gpio_request_one(unsigned gpio, unsigned long flags, const char *labe
->  extern int gpio_request_array(const struct gpio *array, size_t num);
->  extern void gpio_free_array(const struct gpio *array, size_t num);
->  
-> -/*
-> - * A sysfs interface can be exported by individual drivers if they want,
-> - * but more typically is configured entirely from userspace.
-> - */
-> -static inline int gpio_export(unsigned gpio, bool direction_may_change)
-> -{
-> -	return gpiod_export(gpio_to_desc(gpio), direction_may_change);
-> -}
-> -
-> -static inline int gpio_export_link(struct device *dev, const char *name,
-> -				   unsigned gpio)
-> -{
-> -	return gpiod_export_link(dev, name, gpio_to_desc(gpio));
-> -}
-> -
-> -static inline void gpio_unexport(unsigned gpio)
-> -{
-> -	gpiod_unexport(gpio_to_desc(gpio));
-> -}
-> -
->  /* CONFIG_GPIOLIB: bindings for managed devices that want to request gpios */
->  
->  struct device;
-> @@ -253,27 +233,6 @@ static inline void gpio_set_value_cansleep(unsigned gpio, int value)
->  	WARN_ON(1);
->  }
->  
-> -static inline int gpio_export(unsigned gpio, bool direction_may_change)
-> -{
-> -	/* GPIO can never have been requested or set as {in,out}put */
-> -	WARN_ON(1);
-> -	return -EINVAL;
-> -}
-> -
-> -static inline int gpio_export_link(struct device *dev, const char *name,
-> -				unsigned gpio)
-> -{
-> -	/* GPIO can never have been exported */
-> -	WARN_ON(1);
-> -	return -EINVAL;
-> -}
-> -
-> -static inline void gpio_unexport(unsigned gpio)
-> -{
-> -	/* GPIO can never have been exported */
-> -	WARN_ON(1);
-> -}
-> -
->  static inline int gpio_to_irq(unsigned gpio)
->  {
->  	/* GPIO can never have been requested or set as input */
-> -- 
-> 2.29.2
-> 
+* we use xdp-tutorial for our tests ; more specifically, we used the
+  advanced03-AF_XDP tutorial as it provides a simple testbed. We modified
+  the kernel to simplify it:
 
--- 
-With Best Regards,
-Andy Shevchenko
+        SEC("xdp_sock")
+        int xdp_sock_prog(struct xdp_md *ctx)
+        {
+                int index =3D ctx->rx_queue_index;
+
+                /* A set entry here means that the correspnding queue_id
+                 * has an active AF_XDP socket bound to it. */
+                if (bpf_map_lookup_elem(&xsks_map, &index))
+                        return bpf_redirect_map(&xsks_map, index, 0);
+
+                return XDP_PASS;
+        }
+
+* we tested kernel 5.10 (out target) and 5.15 (for reference) ; both kernel=
+s
+  exhibits the same symptoms ; I expect kernel 5.9 (the first linux kernel
+  with XDP support in the mvpp2 driver) to exhibit the same problem.
+
+The normal invocation of this program would be:
+
+        ./af_xdp_user -d ETHDEV
+
+We should then capture packets on this interface. When ETHDEV is eth0
+(port->id =3D=3D 0) everything works as expcted ; when using ETHDEV =3D=3D =
+eth2
+we fail to capture anything.
+
+We investigated the issue and found that XDP rx queues (setup as
+struct xdp_rxq_info by the mvpp2 driver) for this device were wrong. XDP
+expected them to be numbered in [0..3] but we found numbers in [32..35].
+
+The reason for this lies in mvpp2_main.c at lines 2962 and 2966 which are
+of the form (symbolic notation, close to actual code, function
+mvpp2_rxq_init()):
+
+        err =3D xdp_rxq_info_reg(&rxq->some_xdp_rxqinfo, port->dev, rxq->id=
+, 0);
+
+The rxq->id value we pass to this function is incorrect - it's a virtual qu=
+eue
+id which is computed as (symbolic notation, not actual code):
+
+        rxq->id =3D port->id * max_rxq_count + queue_id
+
+In our case, max_rxq_count =3D=3D 32 and port->id =3D=3D 1 for eth2, meanin=
+g our
+rxq->id are in the range [32..35] (for 4 queues).
+
+We tried to force the rx queue id on the XDP side by using:
+
+        ./af_xdp_user -d eth2 -Q 32
+
+But that failed -- as expected, because we should not have more than 4
+rx queues.
+
+The computing of rxq->id is valid, but the use of rxq->id in this context i=
+s
+not. What we really want here is the rx queue id for this port, and this va=
+lue
+is stored in rxq->logic_rxq -- as hinted by the code in mvpp2_rxq_init().
+Replacing rxq->id by this value in the two xdp_rxq_info_reg() calls fixed t=
+he
+issue and allowed us to use XDP on all the Macchiato ethernet ports.
+
+drivers/net/ethernet/marvell/mvpp2/mvpp2_main.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/net/ethernet/marvell/mvpp2/mvpp2_main.c b/drivers/net/=
+ethernet/marvell/mvpp2/mvpp2_main.c
+index 587def69a6f7..f0ea377341c6 100644
+--- a/drivers/net/ethernet/marvell/mvpp2/mvpp2_main.c
++++ b/drivers/net/ethernet/marvell/mvpp2/mvpp2_main.c
+@@ -2959,11 +2959,11 @@ static int mvpp2_rxq_init(struct mvpp2_port *port,
+        mvpp2_rxq_status_update(port, rxq->id, 0, rxq->size);
+
+        if (priv->percpu_pools) {
+-               err =3D xdp_rxq_info_reg(&rxq->xdp_rxq_short, port->dev, rx=
+q->id, 0);
++               err =3D xdp_rxq_info_reg(&rxq->xdp_rxq_short, port->dev, rx=
+q->logic_rxq, 0);
+                if (err < 0)
+                        goto err_free_dma;
+
+-               err =3D xdp_rxq_info_reg(&rxq->xdp_rxq_long, port->dev, rxq=
+->id, 0);
++               err =3D xdp_rxq_info_reg(&rxq->xdp_rxq_long, port->dev, rxq=
+->logic_rxq, 0);
+                if (err < 0)
+                        goto err_unregister_rxq_short;
+
+--
+2.25.1
 
 
+[eho.link event] <https://www.linkedin.com/company/eho.link/>
