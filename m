@@ -2,115 +2,197 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F9C344AA76
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 10:19:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3841E44AA7F
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 10:21:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244790AbhKIJWn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Nov 2021 04:22:43 -0500
-Received: from smtp-out1.suse.de ([195.135.220.28]:38126 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237882AbhKIJWm (ORCPT
+        id S244827AbhKIJYW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Nov 2021 04:24:22 -0500
+Received: from mail-pl1-f179.google.com ([209.85.214.179]:37465 "EHLO
+        mail-pl1-f179.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S244806AbhKIJYT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Nov 2021 04:22:42 -0500
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out1.suse.de (Postfix) with ESMTP id AA69221B00;
-        Tue,  9 Nov 2021 09:19:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1636449595; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=VoQShqrcwMMqCYR87MExPor8l+jSneq67M2Mu0n4wrs=;
-        b=brU2ckUAzDP9fY6EgbYi7+Z8zMVdlLDMoZeLW418r0Rdhxtdsb5rHDuAeCtLPyuvpn0gdu
-        PZ8VU4wtHr3JCzG1w/1pBMDvC0zZwApT0yVg/NCzIms3zyYyAM44zzQCY7FooAClUkuJhx
-        Zs04Dgo8H+MRYyAo32fpGragKOMGV6M=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1636449595;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=VoQShqrcwMMqCYR87MExPor8l+jSneq67M2Mu0n4wrs=;
-        b=nA9UNAuEOKWz7kpODy4vpSFxr1zRLBEmxm7gjQjkFzPXkOVXgfAIKsZHX0gglsSOkKTI/4
-        0vssiUI+Brc7NeDA==
-Received: from suse.de (unknown [10.163.32.246])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by relay2.suse.de (Postfix) with ESMTPS id 0AF12A3B85;
-        Tue,  9 Nov 2021 09:19:53 +0000 (UTC)
-Date:   Tue, 9 Nov 2021 09:19:51 +0000
-From:   Mel Gorman <mgorman@suse.de>
-To:     ?????? <ligang.bdlg@bytedance.com>
-Cc:     Jonathan Corbet <corbet@lwn.net>, Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        linux-api@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
-        linux-fsdevel@vger.kernel.org, linux-doc@vger.kernel.org
-Subject: Re: Re: Re: [PATCH v1] sched/numa: add per-process numa_balancing
-Message-ID: <20211109091951.GW3891@suse.de>
-References: <20211027132633.86653-1-ligang.bdlg@bytedance.com>
- <20211028153028.GP3891@suse.de>
- <b884ad7d-48d3-fcc8-d199-9e7643552a9a@bytedance.com>
- <20211029083751.GR3891@suse.de>
- <CAMx52ARF1fVH9=YLQMjE=8ckKJ=q3X2-ovtKuQcoTyo564mQnQ@mail.gmail.com>
+        Tue, 9 Nov 2021 04:24:19 -0500
+Received: by mail-pl1-f179.google.com with SMTP id n8so19825754plf.4;
+        Tue, 09 Nov 2021 01:21:33 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=vCxzbvDJEmmS0S1dn6IErGyixaEwc//p9ymy/wdvxtw=;
+        b=jRTqA9CjNbMIaAbN2vA83XYv+AFhETkDyDbVjnWvwsHOo2s86fzQ1SraY29Dozzz1U
+         +OeKQjVl2IAeHxhsyd80SK7Qmb0yr7mHowW1KwwnbjCg6t0hyqrIdzZ6aEKUSjuxCe1b
+         fAPfSqIkrPglwsJEE1JFvdbV7Z1AgDXDuNgZapsMHDiqS9QhdYCf0aCWhen8Fkr5Ni2L
+         rhKbEVzM74q3F6nH482PO/m6u322gY57tMyEyucMF6+liCuLnNxoHma0h31R3/O543+r
+         68IPjwx1vLRBYjfK/Be6/TNSq9C9UwuMUZxLlGKfRwfnwtNc3xJ2U2a5cFbQ1J4yeY0z
+         1tTA==
+X-Gm-Message-State: AOAM531tzjR+rIZRVBb943hg/e06zflSN37cQ1lc4883icJFOnpfrBIi
+        OjXtBj8lkygYkYaWnEGM3VGCwY/ddOT7pUV7CC4=
+X-Google-Smtp-Source: ABdhPJxeU3ygXo8r/E5kP4Zn/e69OhIOKZcjPawrK0dUmlnrErW2Q4cDHdP743SYHawatA0U/RlEabrMniGDI/paKZs=
+X-Received: by 2002:a17:903:11c5:b0:13f:ef40:e319 with SMTP id
+ q5-20020a17090311c500b0013fef40e319mr5828558plh.33.1636449693539; Tue, 09 Nov
+ 2021 01:21:33 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-15
-Content-Disposition: inline
-In-Reply-To: <CAMx52ARF1fVH9=YLQMjE=8ckKJ=q3X2-ovtKuQcoTyo564mQnQ@mail.gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <20211102161125.1144023-1-kernel@esmil.dk> <20211102161125.1144023-13-kernel@esmil.dk>
+ <CAHp75VdmnnrisuP00W0KYta0KgmC+fu3WMxm959dt5X1kpiKTw@mail.gmail.com>
+ <CAHp75VcuGdaq_TjjRS0S8R5y-nryLABZSp7ehrXz-fUS2W3vfA@mail.gmail.com> <CACRpkdYe-tW2K2eOQa+FYb-ZXzrA95+pPc6kkLB8ZJLAT8G_eA@mail.gmail.com>
+In-Reply-To: <CACRpkdYe-tW2K2eOQa+FYb-ZXzrA95+pPc6kkLB8ZJLAT8G_eA@mail.gmail.com>
+From:   Emil Renner Berthing <kernel@esmil.dk>
+Date:   Tue, 9 Nov 2021 10:21:22 +0100
+Message-ID: <CANBLGcyo3YjygkjDmdjt4C_H=MZdHQwqumsxnatuObeP2LADAg@mail.gmail.com>
+Subject: Re: [PATCH v3 12/16] pinctrl: starfive: Add pinctrl driver for
+ StarFive SoCs
+To:     Linus Walleij <linus.walleij@linaro.org>
+Cc:     Andy Shevchenko <andy.shevchenko@gmail.com>,
+        linux-riscv <linux-riscv@lists.infradead.org>,
+        devicetree <devicetree@vger.kernel.org>,
+        linux-clk <linux-clk@vger.kernel.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        "open list:SERIAL DRIVERS" <linux-serial@vger.kernel.org>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Marc Zyngier <maz@kernel.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        Maximilian Luz <luzmaximilian@gmail.com>,
+        Sagar Kadam <sagar.kadam@sifive.com>,
+        Drew Fustini <drew@beagleboard.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Michael Zhu <michael.zhu@starfivetech.com>,
+        Fu Wei <tekkamanninja@gmail.com>,
+        Anup Patel <anup.patel@wdc.com>,
+        Atish Patra <atish.patra@wdc.com>,
+        Matteo Croce <mcroce@microsoft.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Huan Feng <huan.feng@starfivetech.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 09, 2021 at 04:28:28PM +0800, ?????? wrote:
-> Hi, sorry for the late reply.
-> 
-> On Fri, Oct 29, 2021 at 4:37 PM Mel Gorman <mgorman@suse.de> wrote:
+On Tue, 9 Nov 2021 at 02:01, Linus Walleij <linus.walleij@linaro.org> wrote:
+>
+> On Tue, Nov 2, 2021 at 9:08 PM Andy Shevchenko
+> <andy.shevchenko@gmail.com> wrote:
+> (...)
+> > > On Tue, Nov 2, 2021 at 6:50 PM Emil Renner Berthing <kernel@esmil.dk> wrote:
 > >
-> > My point is that as it stands,
-> > prctl(PR_NUMA_BALANCING,PR_SET_NUMA_BALANCING,1) either does nothing or
-> > fails. If per-process numa balancing is to be introduced, it should have
-> > meaning with the global tuning affecting default behaviour and the prctl
-> > affecting specific behaviour.
+> > ...
 > >
-> 
-> If the global tuning affects default behaviour and the prctl
-> affects specific behaviour.  Then when prctl specifies
-> numa_balancing for a process, there is no way for the
-> global tuning to affect that process.
+> > > > +static int starfive_pinconf_group_set(struct pinctrl_dev *pctldev,
+> > > > +                                     unsigned int gsel,
+> > > > +                                     unsigned long *configs,
+> > > > +                                     unsigned int num_configs)
+> > > > +{
+> > > > +       struct starfive_pinctrl *sfp = pinctrl_dev_get_drvdata(pctldev);
+> > > > +       const struct group_desc *group;
+> > > > +       u16 mask, value;
+> > > > +       int i;
+> > > > +
+> > > > +       group = pinctrl_generic_get_group(pctldev, gsel);
+> > > > +       if (!group)
+> > > > +               return -EINVAL;
+> > > > +
+> > > > +       mask = 0;
+> > > > +       value = 0;
+> > > > +       for (i = 0; i < num_configs; i++) {
+> > > > +               int param = pinconf_to_config_param(configs[i]);
+> > > > +               u32 arg = pinconf_to_config_argument(configs[i]);
+> > > > +
+> > > > +               switch (param) {
+> > > > +               case PIN_CONFIG_BIAS_DISABLE:
+> > > > +                       mask |= PAD_BIAS_MASK;
+> > > > +                       value = (value & ~PAD_BIAS_MASK) | PAD_BIAS_DISABLE;
+> > > > +                       break;
+> > > > +               case PIN_CONFIG_BIAS_PULL_DOWN:
+> > > > +                       if (arg == 0)
+> > > > +                               return -ENOTSUPP;
+> > > > +                       mask |= PAD_BIAS_MASK;
+> > > > +                       value = (value & ~PAD_BIAS_MASK) | PAD_BIAS_PULL_DOWN;
+> > > > +                       break;
+> > > > +               case PIN_CONFIG_BIAS_PULL_UP:
+> > > > +                       if (arg == 0)
+> > > > +                               return -ENOTSUPP;
+> > > > +                       mask |= PAD_BIAS_MASK;
+> > > > +                       value = value & ~PAD_BIAS_MASK;
+> > > > +                       break;
+> > > > +               case PIN_CONFIG_DRIVE_STRENGTH:
+> > > > +                       mask |= PAD_DRIVE_STRENGTH_MASK;
+> > > > +                       value = (value & ~PAD_DRIVE_STRENGTH_MASK) |
+> > > > +                               starfive_drive_strength_from_max_mA(arg);
+> > > > +                       break;
+> > > > +               case PIN_CONFIG_INPUT_ENABLE:
+> > > > +                       mask |= PAD_INPUT_ENABLE;
+> > > > +                       if (arg)
+> > > > +                               value |= PAD_INPUT_ENABLE;
+> > > > +                       else
+> > > > +                               value &= ~PAD_INPUT_ENABLE;
+> > > > +                       break;
+> > > > +               case PIN_CONFIG_INPUT_SCHMITT_ENABLE:
+> > > > +                       mask |= PAD_INPUT_SCHMITT_ENABLE;
+> > > > +                       if (arg)
+> > > > +                               value |= PAD_INPUT_SCHMITT_ENABLE;
+> > > > +                       else
+> > > > +                               value &= ~PAD_INPUT_SCHMITT_ENABLE;
+> > > > +                       break;
+> > > > +               case PIN_CONFIG_SLEW_RATE:
+> > > > +                       mask |= PAD_SLEW_RATE_MASK;
+> > > > +                       value = (value & ~PAD_SLEW_RATE_MASK) |
+> > > > +                               ((arg << PAD_SLEW_RATE_POS) & PAD_SLEW_RATE_MASK);
+> > > > +                       break;
+> > > > +               case PIN_CONFIG_STARFIVE_STRONG_PULL_UP:
+> > > > +                       if (arg) {
+> > > > +                               mask |= PAD_BIAS_MASK;
+> > > > +                               value = (value & ~PAD_BIAS_MASK) |
+> > > > +                                       PAD_BIAS_STRONG_PULL_UP;
+> > > > +                       } else {
+> > > > +                               mask |= PAD_BIAS_STRONG_PULL_UP;
+> > > > +                               value = value & ~PAD_BIAS_STRONG_PULL_UP;
+> > > > +                       }
+> > > > +                       break;
+> > > > +               default:
+> > > > +                       return -ENOTSUPP;
+> > > > +               }
+> > > > +       }
+> > > > +
+> > > > +       for (i = 0; i < group->num_pins; i++)
+> > > > +               starfive_padctl_rmw(sfp, group->pins[i], mask, value);
+> > > > +
+> > > > +       return 0;
+> > > > +}
+> >
+> > Linus any comments on this code (sorry if I missed your reply)? The
+> > idea behind above is to skip all settings from the same category and
+> > apply only the last one, e.g. if we have "bias set to X", ..., "bias
+> > disable", ..., "bias set to Y", the hardware will see only the last
+> > operation, i.e. "bias set to Y". I think it may not be the best
+> > approach (theoretically?) since the hardware definitely may behave
+> > differently on the other side in case of such series of the
+> > configurations (yes, I have seen some interesting implementations of
+> > the touchpad / touchscreen GPIOs that may be affected).
+>
+> That sounds weird. I think we need to look at how other drivers
+> deal with this.
+>
+> To me it seems more natural that
+> starfive_padctl_rmw(sfp, group->pins[i], mask, value);
+> would get called at the end of each iteration of the
+> for (i = 0; i < num_configs; i++) loop.
 
-Yes.
+That would work, but when the loop is done the end result would be
+exactly the same. The only difference is that the above would rapidly
+"blink" the different states during the loop until it arrives at the
+result. This would certainly be different, but it can never be the
+intended behaviour and only a side-effect on how the pinctrl framework
+works. The order the different states are blinked depends entirely on
+how the pinctrl framework parses the device tree. I still think it
+would be more natural to cleanly go to the end result without this
+blinking.
 
-> In other words, global tuning
-> become a default value, not a switch for global numa_balancing.
-> 
-
-Also yes. The global tuning becomes "all processes default to using NUMA
-balancing unless overridden by prctl".
-
-The main difficulty is that one task using prctl to enable NUMA balancing
-needs to enable the static branch so there is a small global hit.
-
-> My idea is that the global numa_balancning still has absolute control, and prctl
-> can only optionally turn off numa_balancing for process when the global is on.
-> After all, It is more common to enable global numa_balancing and disable it in
-> several processes than to disable global numa_balancing and enable it in
-> several processes.
-
-Then this comment would still apply
-
- My point is that as it stands,
- prctl(PR_NUMA_BALANCING,PR_SET_NUMA_BALANCING,1) either does nothing
- or fails.
-
-While I think it's very likely that the common case will be to disable
-NUMA balancing for specific processes,
-prctl(PR_NUMA_BALANCING,PR_SET_NUMA_BALANCING,1) should still be
-meaningful.
-
--- 
-Mel Gorman
-SUSE Labs
+/Emil
