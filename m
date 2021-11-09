@@ -2,178 +2,259 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1BF3344A566
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 04:48:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 45BBB44A56D
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 05:00:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239100AbhKIDuo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Nov 2021 22:50:44 -0500
-Received: from mailgw02.mediatek.com ([210.61.82.184]:58744 "EHLO
-        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S236843AbhKIDun (ORCPT
+        id S241480AbhKIECs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Nov 2021 23:02:48 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55686 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239667AbhKIECq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Nov 2021 22:50:43 -0500
-X-UUID: fd162331aa2844248900026026701ba0-20211109
-X-UUID: fd162331aa2844248900026026701ba0-20211109
-Received: from mtkcas10.mediatek.inc [(172.21.101.39)] by mailgw02.mediatek.com
-        (envelope-from <chun-jie.chen@mediatek.com>)
-        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 624539531; Tue, 09 Nov 2021 11:47:52 +0800
-Received: from mtkmbs10n2.mediatek.inc (172.21.101.183) by
- mtkmbs10n1.mediatek.inc (172.21.101.34) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.792.15; Tue, 9 Nov 2021 11:47:51 +0800
-Received: from mtksdccf07.mediatek.inc (172.21.84.99) by
- mtkmbs10n2.mediatek.inc (172.21.101.73) with Microsoft SMTP Server id
- 15.2.792.3 via Frontend Transport; Tue, 9 Nov 2021 11:47:51 +0800
-From:   Chun-Jie Chen <chun-jie.chen@mediatek.com>
-To:     Matthias Brugger <matthias.bgg@gmail.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Nicolas Boichat <drinkcat@chromium.org>
-CC:     <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>,
-        <linux-mediatek@lists.infradead.org>, <linux-clk@vger.kernel.org>,
-        <srv_heupstream@mediatek.com>,
-        <Project_Global_Chrome_Upstream_Group@mediatek.com>,
-        Chun-Jie Chen <chun-jie.chen@mediatek.com>
-Subject: [v1] clk: mediatek: Integrated vppsys with mtk-mmsys in MT8195
-Date:   Tue, 9 Nov 2021 11:47:41 +0800
-Message-ID: <20211109034741.27083-1-chun-jie.chen@mediatek.com>
-X-Mailer: git-send-email 2.18.0
+        Mon, 8 Nov 2021 23:02:46 -0500
+Received: from mail-ot1-x32e.google.com (mail-ot1-x32e.google.com [IPv6:2607:f8b0:4864:20::32e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1F03CC061764
+        for <linux-kernel@vger.kernel.org>; Mon,  8 Nov 2021 20:00:01 -0800 (PST)
+Received: by mail-ot1-x32e.google.com with SMTP id g91-20020a9d12e4000000b0055ae68cfc3dso26220158otg.9
+        for <linux-kernel@vger.kernel.org>; Mon, 08 Nov 2021 20:00:01 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=eukiySQcktnrCgOs1xDT7v0DSF/3D+JwoCXCinBpii8=;
+        b=gSWIbfoKiBJg0LOKG01sJ4sPbPVyubMqUKHRLk4Tp+ZtpVhT7P8nYeQ4sw4Hfq9zMU
+         8L6qItibnw49BOIrIhVKjkw6R8uTDgeAgUxy+iEVu5OVj7RUbijhlJYtyY4aZSICSLz/
+         VAp3+/r+HRYJ2lzJNDVVZmpXwC14GZjnKovfWUBhWgd96ViSZpcNZAJ36HPrOrYfeONj
+         L5ugc6nQ1bJBIRXeybYrwCX7fOo/jzdELhJn9omL5T62TiXE26i3WH9C5sNpS9SWndOi
+         p7hQAHMPYtu1YRyUVgcxMbt6nsEpUiNkD+skrln7PeFqtg4O2Bjv4YyxkfpiOlc/J+V2
+         sQNQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=eukiySQcktnrCgOs1xDT7v0DSF/3D+JwoCXCinBpii8=;
+        b=uIF4fR1AyPe7zV+v0opLDtQoW6IRt5RFDVrZYYSMn+2YBgtomIkJp1s1gl4W2hstRj
+         0ksl/GU35MWauKJBaDJp8k780OtwmZvDaN/PiDDX3Ua5WXHWS/qk7rv3kWwXO0GdNU57
+         H3B8FDXLW4BBtp820ObRgAAj+22WKftPi3/Gxge2J7prCUMRrdMOOekMw+cMI6hLP3jF
+         De2+mlHRvlIHE1O9917sybvOqag89j9w1AImZLmr/759Qwo8oABzHxMfa+omUmIA1aXY
+         dZD/W7lbpWOT47sdYvQ94u7A3qFcVTuOPnhX4o+m4wWUVdd6f46hWxFmMmZk+SdA5SGN
+         cKhA==
+X-Gm-Message-State: AOAM5321YV1WQb3+fQFiHxKpcst1SYYnxWlRaQkYWJk8acXK+OVXwAPP
+        CqKVPBCD2yWU2ysnH7zBBkM+QLKsUQoBvlIqkCIbjQ==
+X-Google-Smtp-Source: ABdhPJylbstTrfbzBS3XeO4qBW1r5kHdhaSGvCxdMCtJf3Q5h1gVclMDEWUuzgC+APiSWQ5qCmq2IfFSufVNsHBmB14=
+X-Received: by 2002:a9d:ed6:: with SMTP id 80mr3352500otj.35.1636430400332;
+ Mon, 08 Nov 2021 20:00:00 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-MTK:  N
+References: <1635324926-22319-1-git-send-email-wells.lu@sunplus.com> <1635324926-22319-4-git-send-email-wells.lu@sunplus.com>
+In-Reply-To: <1635324926-22319-4-git-send-email-wells.lu@sunplus.com>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Tue, 9 Nov 2021 04:59:48 +0100
+Message-ID: <CACRpkdaqAtP0rykP2Q25wc+t1Uk2xXYFvcrCdBXyWVRnHNGtGA@mail.gmail.com>
+Subject: Re: [PATCH 3/3] devicetree: bindings: pinctrl: Add bindings doc for
+ Sunplus SP7021.
+To:     Wells Lu <wellslutw@gmail.com>
+Cc:     linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
+        robh+dt@kernel.org, devicetree@vger.kernel.org,
+        qinjian@cqplus1.com, dvorkin@tibbo.com,
+        Wells Lu <wells.lu@sunplus.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Integrated vpp0 and vpp1 with mtk-mmsys driver which
-will populate device by platform_device_register_data
-to start vppsys clock driver.
+Hi Wells Lu,
 
-Signed-off-by: Chun-Jie Chen <chun-jie.chen@mediatek.com>
----
-This patch is based on v5.15-rc7 and [1].
+thanks for your patch!
 
-Due to the modification in [2], the vppsys clock driver will be trigger
-from mmsys driver
+On Wed, Oct 27, 2021 at 10:55 AM Wells Lu <wellslutw@gmail.com> wrote:
 
-[1] https://patchwork.kernel.org/project/linux-mediatek/list/?series=546235
-[2] https://patchwork.kernel.org/project/linux-mediatek/patch/20211020071448.14187-7-roy-cw.yeh@mediatek.com/
----
- drivers/clk/mediatek/clk-mt8195-vpp0.c | 39 +++++++++++++++++---------
- drivers/clk/mediatek/clk-mt8195-vpp1.c | 39 +++++++++++++++++---------
- 2 files changed, 50 insertions(+), 28 deletions(-)
+> +      properties:
+> +        pins:
+> +          description: |
+> +            Define pins which are used by pinctrl node's client device.
+> +
+> +            It consists of one or more integers which represents the config
+> +            setting for corresponding pin. Please use macro SPPCTL_IOPAD to
+> +            define the integers for pins.
+> +
+> +            The first argument of the macro is pin number, the second is pin
+> +            type, the third is type of GPIO, the last is default output state
+> +            of GPIO.
+> +          $ref: /schemas/types.yaml#/definitions/uint32-array
+> +
+> +        function:
+> +          description: |
+> +            Define pin-function which is used by pinctrl node's client device.
+> +            The name should be one of string in the following enumeration.
+> +          $ref: "/schemas/types.yaml#/definitions/string"
+> +          enum: [ SPI_FLASH, SPI_FLASH_4BIT, SPI_NAND, CARD0_EMMC, SD_CARD,
+> +                  UA0, FPGA_IFX, HDMI_TX, LCDIF, USB0_OTG, USB1_OTG ]
+> +
+> +        groups:
+> +          description: |
+> +            Define pin-group in a specified pin-function.
+> +            The name should be one of string in the following enumeration.
+> +          $ref: "/schemas/types.yaml#/definitions/string"
+> +          enum: [ SPI_FLASH1, SPI_FLASH2, SPI_FLASH_4BIT1, SPI_FLASH_4BIT2,
+> +                  SPI_NAND, CARD0_EMMC, SD_CARD, UA0, FPGA_IFX, HDMI_TX1,
+> +                  HDMI_TX2, HDMI_TX3, LCDIF, USB0_OTG, USB1_OTG ]
 
-diff --git a/drivers/clk/mediatek/clk-mt8195-vpp0.c b/drivers/clk/mediatek/clk-mt8195-vpp0.c
-index c3241466a8d0..c7fec35db1e6 100644
---- a/drivers/clk/mediatek/clk-mt8195-vpp0.c
-+++ b/drivers/clk/mediatek/clk-mt8195-vpp0.c
-@@ -86,25 +86,36 @@ static const struct mtk_gate vpp0_clks[] = {
- 	GATE_VPP0_2(CLK_VPP0_WARP1_MDP_DL_ASYNC, "vpp0_warp1_mdp_dl_async", "top_wpe_vpp", 3),
- };
- 
--static const struct mtk_clk_desc vpp0_desc = {
--	.clks = vpp0_clks,
--	.num_clks = ARRAY_SIZE(vpp0_clks),
--};
-+static int clk_mt8195_vpp0_probe(struct platform_device *pdev)
-+{
-+	struct device *dev = &pdev->dev;
-+	struct device_node *node = dev->parent->of_node;
-+	struct clk_onecell_data *clk_data;
-+	int r;
- 
--static const struct of_device_id of_match_clk_mt8195_vpp0[] = {
--	{
--		.compatible = "mediatek,mt8195-vppsys0",
--		.data = &vpp0_desc,
--	}, {
--		/* sentinel */
--	}
--};
-+	clk_data = mtk_alloc_clk_data(CLK_VPP0_NR_CLK);
-+	if (!clk_data)
-+		return -ENOMEM;
-+
-+	r = mtk_clk_register_gates(node, vpp0_clks, ARRAY_SIZE(vpp0_clks), clk_data);
-+	if (r)
-+		goto free_vpp0_data;
-+
-+	r = of_clk_add_provider(node, of_clk_src_onecell_get, clk_data);
-+	if (r)
-+		goto free_vpp0_data;
-+
-+	return r;
-+
-+free_vpp0_data:
-+	mtk_free_clk_data(clk_data);
-+	return r;
-+}
- 
- static struct platform_driver clk_mt8195_vpp0_drv = {
--	.probe = mtk_clk_simple_probe,
-+	.probe = clk_mt8195_vpp0_probe,
- 	.driver = {
- 		.name = "clk-mt8195-vpp0",
--		.of_match_table = of_match_clk_mt8195_vpp0,
- 	},
- };
- builtin_platform_driver(clk_mt8195_vpp0_drv);
-diff --git a/drivers/clk/mediatek/clk-mt8195-vpp1.c b/drivers/clk/mediatek/clk-mt8195-vpp1.c
-index ce0b9a40a179..40ec8c26ede6 100644
---- a/drivers/clk/mediatek/clk-mt8195-vpp1.c
-+++ b/drivers/clk/mediatek/clk-mt8195-vpp1.c
-@@ -84,25 +84,36 @@ static const struct mtk_gate vpp1_clks[] = {
- 	GATE_VPP1_1(CLK_VPP1_VPP_SPLIT_26M, "vpp1_vpp_split_26m", "clk26m", 26),
- };
- 
--static const struct mtk_clk_desc vpp1_desc = {
--	.clks = vpp1_clks,
--	.num_clks = ARRAY_SIZE(vpp1_clks),
--};
-+static int clk_mt8195_vpp1_probe(struct platform_device *pdev)
-+{
-+	struct device *dev = &pdev->dev;
-+	struct device_node *node = dev->parent->of_node;
-+	struct clk_onecell_data *clk_data;
-+	int r;
- 
--static const struct of_device_id of_match_clk_mt8195_vpp1[] = {
--	{
--		.compatible = "mediatek,mt8195-vppsys1",
--		.data = &vpp1_desc,
--	}, {
--		/* sentinel */
--	}
--};
-+	clk_data = mtk_alloc_clk_data(CLK_VPP1_NR_CLK);
-+	if (!clk_data)
-+		return -ENOMEM;
-+
-+	r = mtk_clk_register_gates(node, vpp1_clks, ARRAY_SIZE(vpp1_clks), clk_data);
-+	if (r)
-+		goto free_vpp1_data;
-+
-+	r = of_clk_add_provider(node, of_clk_src_onecell_get, clk_data);
-+	if (r)
-+		goto free_vpp1_data;
-+
-+	return r;
-+
-+free_vpp1_data:
-+	mtk_free_clk_data(clk_data);
-+	return r;
-+}
- 
- static struct platform_driver clk_mt8195_vpp1_drv = {
--	.probe = mtk_clk_simple_probe,
-+	.probe = clk_mt8195_vpp1_probe,
- 	.driver = {
- 		.name = "clk-mt8195-vpp1",
--		.of_match_table = of_match_clk_mt8195_vpp1,
- 	},
- };
- builtin_platform_driver(clk_mt8195_vpp1_drv);
--- 
-2.18.0
+Is it possible to use
+Documentation/devicetree/bindings/pinctrl/pinmux-node.yaml
+for this like other drivers do?
 
+> +        zero_func:
+> +          description: |
+> +            Disabled pins which are not used by pinctrl node's client device.
+> +          $ref: /schemas/types.yaml#/definitions/uint32-array
+
+I have never seen this before. Can't you just use pin control hogs
+for this so the pin controller just take care of these pins?
+
+> +      allOf:
+> +        - if:
+> +            properties:
+> +              function:
+> +                enum:
+> +                  - SPI_FLASH
+> +          then:
+> +            properties:
+> +              groups:
+> +                enum:
+> +                  - SPI_FLASH1
+> +                  - SPI_FLASH2
+> +        - if:
+> +            properties:
+> +              function:
+> +                enum:
+> +                  - SPI_FLASH_4BIT
+> +          then:
+> +            properties:
+> +              groups:
+> +                enum:
+> +                  - SPI_FLASH_4BIT1
+> +                  - SPI_FLASH_4BIT2
+> +        - if:
+> +            properties:
+> +              function:
+> +                enum:
+> +                  - SPI_NAND
+> +          then:
+> +            properties:
+> +              groups:
+> +                enum:
+> +                  - SPI_NAND
+> +        - if:
+> +            properties:
+> +              function:
+> +                enum:
+> +                  - CARD0_EMMC
+> +          then:
+> +            properties:
+> +              groups:
+> +                enum:
+> +                  - CARD0_EMMC
+> +        - if:
+> +            properties:
+> +              function:
+> +                enum:
+> +                  - SD_CARD
+> +          then:
+> +            properties:
+> +              groups:
+> +                enum:
+> +                  - SD_CARD
+> +        - if:
+> +            properties:
+> +              function:
+> +                enum:
+> +                  - UA0
+> +          then:
+> +            properties:
+> +              groups:
+> +                enum:
+> +                  - UA0
+> +        - if:
+> +            properties:
+> +              function:
+> +                enum:
+> +                  - FPGA_IFX
+> +          then:
+> +            properties:
+> +              groups:
+> +                enum:
+> +                  - FPGA_IFX
+> +        - if:
+> +            properties:
+> +              function:
+> +                enum:
+> +                  - HDMI_TX
+> +          then:
+> +            properties:
+> +              groups:
+> +                enum:
+> +                  - HDMI_TX1
+> +                  - HDMI_TX2
+> +                  - HDMI_TX3
+> +        - if:
+> +            properties:
+> +              function:
+> +                enum:
+> +                  - LCDIF
+> +          then:
+> +            properties:
+> +              groups:
+> +                enum:
+> +                  - LCDIF
+> +        - if:
+> +            properties:
+> +              function:
+> +                enum:
+> +                  - USB0_OTG
+> +          then:
+> +            properties:
+> +              groups:
+> +                enum:
+> +                  - USB0_OTG
+> +        - if:
+> +            properties:
+> +              function:
+> +                enum:
+> +                  - USB1_OTG
+> +          then:
+> +            properties:
+> +              groups:
+> +                enum:
+> +                  - USB1_OTG
+
+This looks complex to me, I need feedback from bindings people
+on this.
+
+> +        pins_uart0: pins_uart0 {
+> +            function = "UA0";
+> +            groups = "UA0";
+> +        };
+> +
+> +        pins_uart1: pins_uart1 {
+> +            pins = <
+> +                SPPCTL_IOPAD(11,SPPCTL_PCTL_G_PMUX,MUXF_UA1_TX,0)
+> +                SPPCTL_IOPAD(10,SPPCTL_PCTL_G_PMUX,MUXF_UA1_RX,0)
+> +                SPPCTL_IOPAD(7,SPPCTL_PCTL_G_GPIO,0,SPPCTL_PCTL_L_OUT)
+> +            >;
+> +        };
+
+This first looks like two ways to do the same thing?
+UART0 uses strings for group + function and uart1 control
+individual pins.
+
+Is it possible to just do it one way?
+
+I think the pins = <...> scheme includes also multiplexing settings
+and then it should be named pinmux = <...>:
+
+Please read
+Documentation/devicetree/bindings/pinctrl/pinmux-node.yaml
+closely.
+
+Yours,
+Linus Walleij
