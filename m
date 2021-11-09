@@ -2,15 +2,16 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2047744B906
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 23:52:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 869F844B7B1
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 23:34:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234951AbhKIWym (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Nov 2021 17:54:42 -0500
-Received: from mx3.wp.pl ([212.77.101.10]:11669 "EHLO mx3.wp.pl"
+        id S235303AbhKIWgm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Nov 2021 17:36:42 -0500
+Received: from mx3.wp.pl ([212.77.101.9]:58432 "EHLO mx3.wp.pl"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1344902AbhKIWxn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Nov 2021 17:53:43 -0500
+        id S1345238AbhKIWdl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Nov 2021 17:33:41 -0500
+X-Greylist: delayed 400 seconds by postgrey-1.27 at vger.kernel.org; Tue, 09 Nov 2021 17:33:41 EST
 Received: (wp-smtpd smtp.wp.pl 3499 invoked from network); 9 Nov 2021 23:24:12 +0100
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wp.pl; s=1024a;
           t=1636496652; bh=YAuwhktEqpk2WxIRwbfHGA/QwjMzTLJ3Jr/sbfk2x8s=;
