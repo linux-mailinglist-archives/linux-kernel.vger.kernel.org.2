@@ -2,117 +2,166 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 706A244B2AB
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 19:20:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3CB1044B2B0
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 19:22:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242260AbhKISXZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Nov 2021 13:23:25 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53520 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242389AbhKISXN (ORCPT
+        id S242384AbhKISYn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Nov 2021 13:24:43 -0500
+Received: from smtprelay0170.hostedemail.com ([216.40.44.170]:52236 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S242269AbhKISYj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Nov 2021 13:23:13 -0500
-Received: from mail-pl1-x631.google.com (mail-pl1-x631.google.com [IPv6:2607:f8b0:4864:20::631])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 88017C061764;
-        Tue,  9 Nov 2021 10:20:27 -0800 (PST)
-Received: by mail-pl1-x631.google.com with SMTP id v20so32865plo.7;
-        Tue, 09 Nov 2021 10:20:27 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=I5wTdLmlJ6yAtNAX1aGNMQtVcCvB6wAMhoGw1PgjShw=;
-        b=jDZSHOQwo+2hNDQD2WfbPe4ou0IAujUoXUBQoTO5mynEfV0iZS5IA8uH3Jwtu0rj43
-         i/K8bG8I98oj2qYPYpHHhlSgtuPzeONXIbDQQuBIvsI5BNZZkC8WSrp0/tVIaVeltrZy
-         VnWc59XbHrzOSv1FZKYgZCXQvenHj7fDp8PnZDIg5V6UyatUwhb3VWxz6hRCmrBor3j+
-         8xTVlumwnmvst7bRZN7iRUmOEtpSkXeMtEB568sZvL1dt5GB5yEJG8pdzGBTTIRB+EpA
-         2ct28FrY17iiudsMs4QEQYsSI9ZueO203f7lev4ISHpkhs3omSCOW3Wulkj/J6uO/are
-         /Bvg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=I5wTdLmlJ6yAtNAX1aGNMQtVcCvB6wAMhoGw1PgjShw=;
-        b=xDQBlf5kl+jmp6NwmdZr57TH4OWZsKeZNm3O4LArIPg32Apvt6cf0DCpBbZb1UjchX
-         fna3Y0AJP10YDyxh63/kSxVICvbB9R7MX4CnmsKM/WRCM1oYuoCKeILGT37Tei9KbLLn
-         v23GwZ7I+390UZhSBVDC8ZC/UOAMpvBlXoP/N6S+7QinDQKHxutHLv4w68XEdYVAMjNc
-         nWkFT1FZF480W+KvwNVhRZvJCo78k2DD4jVissojaQhrdwzOe+ak/44Lj7Qed2TOdW76
-         a/o7xTtnp24IFte51KjZ5iXtmdacnqCKwK+yJkhBD4ESJMpWGZutfzmiEaD7k8xQoMNa
-         78oQ==
-X-Gm-Message-State: AOAM533fkgFRhqAHjTG1np6tm+AkYQLXBKpZ0RPrZ9WzJdypUDuNOFzA
-        6okCBF+iuuLD72k1xL2eBXb8gCulGFI=
-X-Google-Smtp-Source: ABdhPJzUMsFFMKjCDJF4+X2TN6M5dpgngkI7pPnNOdNbZWgVxq6UfRXQBcgVomS2x2fPe67sZ9s6bw==
-X-Received: by 2002:a17:90a:9d89:: with SMTP id k9mr9585117pjp.74.1636482026724;
-        Tue, 09 Nov 2021 10:20:26 -0800 (PST)
-Received: from [10.67.48.245] ([192.19.223.252])
-        by smtp.googlemail.com with ESMTPSA id f130sm20142967pfa.81.2021.11.09.10.20.25
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 09 Nov 2021 10:20:26 -0800 (PST)
-Subject: Re: [PATCH v2 2/7] net: dsa: b53: Move struct b53_device to
- include/linux/dsa/b53.h
-To:     Vladimir Oltean <olteanv@gmail.com>
-Cc:     Martin Kaistra <martin.kaistra@linutronix.de>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        Richard Cochran <richardcochran@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        John Stultz <john.stultz@linaro.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Russell King <linux@armlinux.org.uk>,
-        Marc Kleine-Budde <mkl@pengutronix.de>,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org
-References: <20211109095013.27829-1-martin.kaistra@linutronix.de>
- <20211109095013.27829-3-martin.kaistra@linutronix.de>
- <f71396fc-29a3-4022-3f7a-3a37abb9079c@gmail.com>
- <caec2d40-6093-ff06-ab8e-379e7939a85c@gmail.com>
- <CA+h21hp+UKRgCE0UTZr7keyU380W22ZEXdbfORhSTNfzb1S_iw@mail.gmail.com>
-From:   Florian Fainelli <f.fainelli@gmail.com>
-Message-ID: <b04b344e-2a17-eac2-bbcb-746091f9175a@gmail.com>
-Date:   Tue, 9 Nov 2021 10:20:25 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        Tue, 9 Nov 2021 13:24:39 -0500
+Received: from omf04.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay02.hostedemail.com (Postfix) with ESMTP id DA2FC7254D;
+        Tue,  9 Nov 2021 18:21:50 +0000 (UTC)
+Received: from [HIDDEN] (Authenticated sender: joe@perches.com) by omf04.hostedemail.com (Postfix) with ESMTPA id ED2D9D1515;
+        Tue,  9 Nov 2021 18:21:47 +0000 (UTC)
+Message-ID: <80960e445c986408e4ae9a20ac42c5b66d4d8046.camel@perches.com>
+Subject: Re: [v2 10/10] iio: imu: add BNO055 I2C driver
+From:   Joe Perches <joe@perches.com>
+To:     Randy Dunlap <rdunlap@infradead.org>, andrea.merello@gmail.com,
+        Andi Kleen <ak@linux.intel.com>
+Cc:     Jonathan Cameron <jic23@kernel.org>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        linux-iio <linux-iio@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        devicetree <devicetree@vger.kernel.org>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Rob Herring <robh+dt@kernel.org>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Matt Ranostay <matt.ranostay@konsulko.com>,
+        Alexandru Ardelean <ardeleanalex@gmail.com>,
+        Jacopo Mondi <jacopo@jmondi.org>,
+        Andrea Merello <andrea.merello@iit.it>
+Date:   Tue, 09 Nov 2021 10:21:46 -0800
+In-Reply-To: <021c6fe0-8131-a4f9-9cb0-2f4771d35da1@infradead.org>
+References: <20210715141742.15072-1-andrea.merello@gmail.com>
+         <20211028101840.24632-1-andrea.merello@gmail.com>
+         <20211028101840.24632-11-andrea.merello@gmail.com>
+         <85ef90ad-0d3a-6cb7-529f-667562b2ad71@infradead.org>
+         <CAN8YU5NiKz2JiNr-47OC4==N8L67HDshuH45BifnHBae+GUU-g@mail.gmail.com>
+         <021c6fe0-8131-a4f9-9cb0-2f4771d35da1@infradead.org>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.40.4-1 
 MIME-Version: 1.0
-In-Reply-To: <CA+h21hp+UKRgCE0UTZr7keyU380W22ZEXdbfORhSTNfzb1S_iw@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
 Content-Transfer-Encoding: 7bit
+X-Stat-Signature: twcqu5gfawgudegsek9dxu71sby3ankr
+X-Rspamd-Server: rspamout01
+X-Rspamd-Queue-Id: ED2D9D1515
+X-Spam-Status: No, score=-3.40
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Session-ID: U2FsdGVkX19Z3362bnutoA4iFYG1yfO0L9S/2elaolI=
+X-HE-Tag: 1636482107-201099
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/9/21 10:15 AM, Vladimir Oltean wrote:
-> On Tue, 9 Nov 2021 at 20:11, Florian Fainelli <f.fainelli@gmail.com> wrote:
->>
->> On 11/9/21 10:05 AM, Florian Fainelli wrote:
->>> On 11/9/21 1:50 AM, Martin Kaistra wrote:
->>>> In order to access the b53 structs from net/dsa/tag_brcm.c move the
->>>> definitions from drivers/net/dsa/b53/b53_priv.h to the new file
->>>> include/linux/dsa/b53.h.
->>>>
->>>> Signed-off-by: Martin Kaistra <martin.kaistra@linutronix.de>
->>>> ---
->>>>  drivers/net/dsa/b53/b53_priv.h |  90 +----------------------------
->>>>  include/linux/dsa/b53.h        | 100 +++++++++++++++++++++++++++++++++
->>>>  2 files changed, 101 insertions(+), 89 deletions(-)
->>>>  create mode 100644 include/linux/dsa/b53.h
->>>
->>> All you really access is the b53_port_hwtstamp structure within the
->>> tagger, so please make it the only structure exposed to net/dsa/tag_brcm.c.
->>
->> You do access b53_dev in the TX part, still, I would like to find a more
->> elegant solution to exposing everything here, can you create a
->> b53_timecounter_cyc2time() function that is exported to modules but does
->> not require exposing the b53_device to net/dsa/tag_brcm.c?
->> --
->> Florian
-> 
-> Switch drivers can't export symbols to tagging protocol drivers, remember?
-> https://lore.kernel.org/netdev/20210908220834.d7gmtnwrorhharna@skbuf/
+(cc'ing Andi Kleen, who wrote this code a decade ago)
 
-I do now :) How about a function pointer in dsa_switch_ops that driver
-can hook onto?
--- 
-Florian
+On Tue, 2021-11-09 at 07:47 -0800, Randy Dunlap wrote:
+> On 11/9/21 3:56 AM, Andrea Merello wrote:
+> > Il giorno ven 29 ott 2021 alle ore 00:04 Randy Dunlap <rdunlap@infradead.org> ha scritto:
+> > > On 10/28/21 3:18 AM, Andrea Merello wrote:
+> > > > This path adds an I2C driver for communicating to a BNO055 IMU via I2C bus
+> > > > and it enables the BNO055 core driver to work in this scenario.
+> > > > 
+> > > > Signed-off-by: Andrea Merello <andrea.merello@iit.it>
+> > > > ---
+> > > >    drivers/iio/imu/bno055/Kconfig      |  6 ++++
+> > > >    drivers/iio/imu/bno055/Makefile     |  1 +
+[]
+> > > > diff --git a/drivers/iio/imu/bno055/Kconfig b/drivers/iio/imu/bno055/Kconfig
+[]
+> > > > @@ -7,3 +7,9 @@ config BOSH_BNO055_SERIAL
+> > > >        tristate "Bosh BNO055 attached via serial bus"
+> > > >        depends on SERIAL_DEV_BUS
+> > > >        select BOSH_BNO055_IIO
+> > > > +
+> > > > +config BOSH_BNO055_I2C
+> > > > +     tristate "Bosh BNO055 attached via I2C bus"
+> > > > +     depends on I2C
+> > > > +     select REGMAP_I2C
+> > > > +     select BOSH_BNO055_IIO
+[]
+> > > The config entries that have user prompt strings should also
+> > > have help text.  scripts/checkpatch.pl should have told you
+> > > about that...
+> > 
+> > I'll add it, thanks. But FYI checkpatch doesn't complain about that here.
+> 
+> Hm, thanks for adding it and telling me about that.
+> 
+> checkpatch.pl does have some code for checking that but I confirmed
+> that it does not catch this simple case.
+> 
+> Joe, can you identify why checkpatch does not detect missing Kconfig
+> help text is this simple case?
+
+Original patch here: https://lore.kernel.org/all/20211028101840.24632-11-andrea.merello@gmail.com/raw
+
+checkpatch is counting the diff header lines that follow the config entry.
+Maybe this is clearer (better?) code:
+---
+ scripts/checkpatch.pl | 28 +++++++++++++++-------------
+ 1 file changed, 15 insertions(+), 13 deletions(-)
+
+diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
+index 1784921c645da..b3ce8e04d7df7 100755
+--- a/scripts/checkpatch.pl
++++ b/scripts/checkpatch.pl
+@@ -3483,20 +3483,22 @@ sub process {
+ 			my $cnt = $realcnt;
+ 			my $ln = $linenr + 1;
+ 			my $f;
+-			my $is_start = 0;
+-			my $is_end = 0;
++			my $needs_help = 0;
++			my $has_help = 0;
+ 			for (; $cnt > 0 && defined $lines[$ln - 1]; $ln++) {
+ 				$f = $lines[$ln - 1];
+-				$cnt-- if ($lines[$ln - 1] !~ /^-/);
+-				$is_end = $lines[$ln - 1] =~ /^\+/;
++				$cnt-- if ($f !~ /^-/);
+ 
+ 				next if ($f =~ /^-/);
+-				last if (!$file && $f =~ /^\@\@/);
++				last if (!$file && $f =~ /^(?:\@\@|diff )/);
+ 
+-				if ($lines[$ln - 1] =~ /^\+\s*(?:bool|tristate|prompt)\s*["']/) {
+-					$is_start = 1;
+-				} elsif ($lines[$ln - 1] =~ /^\+\s*(?:---)?help(?:---)?$/) {
+-					$length = -1;
++				if ($f =~ /^\+\s*(?:bool|tristate|prompt)\s*["']/) {
++					$needs_help = 1;
++					next;
++				} elsif ($f =~ /^\+\s*help\s*$/) {
++					$length = 0;
++					$has_help = 1;
++					next;
+ 				}
+ 
+ 				$f =~ s/^.//;
+@@ -3510,16 +3512,16 @@ sub process {
+ 				# common words in help texts
+ 				if ($f =~ /^\s*(?:config|menuconfig|choice|endchoice|
+ 						  if|endif|menu|endmenu|source)\b/x) {
+-					$is_end = 1;
+ 					last;
+ 				}
+-				$length++;
++				$length++ if ($has_help);
+ 			}
+-			if ($is_start && $is_end && $length < $min_conf_desc_length) {
++			if ($needs_help &&
++			    (!$has_help ||
++			     ($has_help && $length < $min_conf_desc_length))) {
+ 				WARN("CONFIG_DESCRIPTION",
+ 				     "please write a paragraph that describes the config symbol fully\n" . $herecurr);
+ 			}
+-			#print "is_start<$is_start> is_end<$is_end> length<$length>\n";
+ 		}
+ 
+ # check MAINTAINERS entries
+
+
