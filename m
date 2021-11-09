@@ -2,144 +2,253 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D865244B3B0
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 21:02:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B456144B3B4
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 21:05:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244128AbhKIUFg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Nov 2021 15:05:36 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48380 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242871AbhKIUFf (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Nov 2021 15:05:35 -0500
-Received: from mail-yb1-xb31.google.com (mail-yb1-xb31.google.com [IPv6:2607:f8b0:4864:20::b31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E416CC061764
-        for <linux-kernel@vger.kernel.org>; Tue,  9 Nov 2021 12:02:48 -0800 (PST)
-Received: by mail-yb1-xb31.google.com with SMTP id q74so358265ybq.11
-        for <linux-kernel@vger.kernel.org>; Tue, 09 Nov 2021 12:02:48 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=mNY0y0eA9QFjzP9md2u0evK0gJlRjiM1T7nvr0z7Y1Q=;
-        b=XmpMSGbHisj1bMTeQbWzpoXd566Jd6dd6n20risBDuCFlvhGz1Ka37xSb6eLO7mRqN
-         dSvFoXkqF9JJBFcNtoERd2otIAhGLqbzoceEQ3s/4nOQ2UmJlgxshmVUUOhqIDxl06aZ
-         xxhWUPxXyfRoUQKtl59qgidqVSmuqkJv0g/bjs8k1cAhiUvE7AYVOcPdfiWI5BEZqoSG
-         Ajd2B8TFW80hBcaWql6Q94xBAjmpqzebr7BLvJQKnbMKZ06kvtdK/KRH33IOwF0vB6Yo
-         1AeYbMUsaBh3erYO3q4ir7rN1eQx3rCn83oc3ohBa2X1s+VqxcFWxrl15cMiIq3Z4VxF
-         3iCg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=mNY0y0eA9QFjzP9md2u0evK0gJlRjiM1T7nvr0z7Y1Q=;
-        b=b3CW9Ypc7uQ+NEGvOurbyBGHlKzrdH1n6u6Xn2/O69fSqJ9KlVJCfmCgyWL7U9Lh1X
-         UjhoM+QNQUbofK6YPEk87XTmFZoJdWZYiE+/Eo8r5v/px1VBTffuqJQZvVM00DBfGqtn
-         N4bw+nC+HCqORSSFKPS1z4aLHLvDJI4VZBXsRI4bRphRqN6jzVc3C5iTbP1l0dx4nyh8
-         f8HHRsiVKw/EUq46nGIxnSkbUSO/P8jW7fZsm2fXk7l2Cu5WiUA4ksRNOBECwD2pxbF5
-         a8SGl7kxMelPHIeSDMLz1vaweZ4lRunj1gzVmfMG7IQqnvFOyhHRUFN394csCFiTmLom
-         Gu6A==
-X-Gm-Message-State: AOAM532nSllIx4eVpmgtPT4a4Yua0ZortwC1SU826EL5JQ+cmPwHAI9z
-        0jLQiEbOgccdcEhdeyKE6z1Ey0Q5x+YuNg1CNx5wVA==
-X-Google-Smtp-Source: ABdhPJz66wXBO27AG+ywplv4qSiNKTGTTq3yywP5yCUsTUbLTry0vfQQUkbxdnDAz/wUa9ds4L+wp+VX+HKAUUXChRk=
-X-Received: by 2002:a25:d4d5:: with SMTP id m204mr12480331ybf.418.1636488167925;
- Tue, 09 Nov 2021 12:02:47 -0800 (PST)
+        id S244143AbhKIUIH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Nov 2021 15:08:07 -0500
+Received: from mail.kernel.org ([198.145.29.99]:39012 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S244130AbhKIUIG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Nov 2021 15:08:06 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E332461057;
+        Tue,  9 Nov 2021 20:05:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1636488320;
+        bh=pAYP5FsfQrBCb1kV+iD+1m630Cp0TkRt5IHiAykV0/I=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:From;
+        b=DWdHh7mPShwm0JICakWt13I1cDfFoxveS1bjg+BF/4rAKVtk9zKEQ/XGkPYBzzr6g
+         heqCNVM7Zxq0s7fZCpQ5ZTCHR7k9CpbXjB9CVosnh1d35ZJy1KIJ3sAPSCN1dhOoDj
+         1i68IcAvyVK5MpP0VRCOreAoZZEjoHrhsKPoHFRf+6ab3cewM7ADoZy846v2c054nT
+         EgMYVaGaXhJceh5pvBLlU7cHN2owuanFd8gUrGw9pci7JMXzpLjHPn3n8TN/fngWVg
+         KOp8rkKfcPJcVPagfjYrYMksMDFz/b+n4yZTsjx6pVKUHzKkFgJABKKkvrUE3E8Mo3
+         QqIPioqLJ6Upw==
+Date:   Tue, 9 Nov 2021 14:05:18 -0600
+From:   Bjorn Helgaas <helgaas@kernel.org>
+To:     "Rafael J. Wysocki" <rafael@kernel.org>
+Cc:     Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
+        <u.kleine-koenig@pengutronix.de>,
+        Robert =?utf-8?B?xZp3acSZY2tp?= <robert@swiecki.net>,
+        linux-i2c <linux-i2c@vger.kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Linux PCI <linux-pci@vger.kernel.org>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Subject: Re: [PATCH] pci: Don't call resume callback for nearly bound devices
+Message-ID: <20211109200518.GA1176309@bhelgaas>
 MIME-Version: 1.0
-References: <CAJuCfpFccBJHHqfOKixJvLr7Xta_ojkdHGfGomwTDNKffzziRQ@mail.gmail.com>
- <YXvxBSzA2YIxbwVC@dhcp22.suse.cz> <CAJuCfpHBoMGPOUvB2ZWQ=TxbFuWBRF++UaKJZDCrQV4mzb5kMA@mail.gmail.com>
- <YX+nYGlZBOAljoeF@dhcp22.suse.cz> <CAJuCfpGC9-c9P40x7oy=jy5SphMcd0o0G_6U1-+JAziGKG6dGA@mail.gmail.com>
- <YYDvm9c/7cGtBvw6@dhcp22.suse.cz> <CAJuCfpFX8FRynoK29h8tpRXRT-Kk+sHboiBnc7N-8MY6AAqVLw@mail.gmail.com>
- <CAJuCfpFOOgs9uZSW2Tp6uBW23rLHFeSA8o5WYQ_D_ykUcKL64Q@mail.gmail.com>
- <YYrLe2u2zbmu4LfL@dhcp22.suse.cz> <CAJuCfpG0d34yRhuvOj9NX9zMp=6jWLqFPfUGV0sOO6OrwNC89A@mail.gmail.com>
- <YYrQ/hENQPn6Mk3v@dhcp22.suse.cz>
-In-Reply-To: <YYrQ/hENQPn6Mk3v@dhcp22.suse.cz>
-From:   Suren Baghdasaryan <surenb@google.com>
-Date:   Tue, 9 Nov 2021 12:02:37 -0800
-Message-ID: <CAJuCfpFT4-mdHHZ2i43hyJQ4dRKb7sRwnAL8GfRnZu3ecE26Ew@mail.gmail.com>
-Subject: Re: [PATCH 1/1] mm: prevent a race between process_mrelease and exit_mmap
-To:     Michal Hocko <mhocko@suse.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        David Rientjes <rientjes@google.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Roman Gushchin <guro@fb.com>, Rik van Riel <riel@surriel.com>,
-        Minchan Kim <minchan@kernel.org>,
-        Christian Brauner <christian@brauner.io>,
-        Christoph Hellwig <hch@infradead.org>,
-        Oleg Nesterov <oleg@redhat.com>,
-        David Hildenbrand <david@redhat.com>,
-        Jann Horn <jannh@google.com>,
-        Shakeel Butt <shakeelb@google.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Florian Weimer <fweimer@redhat.com>,
-        Jan Engelhardt <jengelh@inai.de>,
-        Linux API <linux-api@vger.kernel.org>,
-        linux-mm <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        kernel-team <kernel-team@android.com>,
-        "Kirill A. Shutemov" <kirill@shutemov.name>,
-        Andrea Arcangeli <aarcange@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAJZ5v0impb8uscbp8LUTBMExfMoGz=cPrTWhSGh0GF_SANNKPQ@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 9, 2021 at 11:50 AM Michal Hocko <mhocko@suse.com> wrote:
->
-> On Tue 09-11-21 11:37:06, Suren Baghdasaryan wrote:
-> > On Tue, Nov 9, 2021 at 11:26 AM Michal Hocko <mhocko@suse.com> wrote:
-> > >
-> > > On Tue 09-11-21 11:01:02, Suren Baghdasaryan wrote:
-> > > [...]
-> > > > Discussing how the patch I want to post works for maple trees that
-> > > > Matthew is working on, I've got a question:
+On Tue, Nov 09, 2021 at 07:58:47PM +0100, Rafael J. Wysocki wrote:
+> On Tue, Nov 9, 2021 at 7:52 PM Rafael J. Wysocki <rafael@kernel.org> wrote:
+> > On Tue, Nov 9, 2021 at 7:12 PM Bjorn Helgaas <helgaas@kernel.org> wrote:
+> > > On Tue, Nov 09, 2021 at 06:18:18PM +0100, Rafael J. Wysocki wrote:
+> > > > On Tue, Nov 9, 2021 at 7:59 AM Uwe Kleine-König
+> > > > <u.kleine-koenig@pengutronix.de> wrote:
+> > > > > On Mon, Nov 08, 2021 at 08:56:19PM -0600, Bjorn Helgaas wrote:
+> > > > > > [+cc Greg: new device_is_bound() use]
+> > > > >
+> > > > > ack, that's what I would have suggested now, too.
+> > > > >
+> > > > > > On Mon, Nov 08, 2021 at 10:22:26PM +0100, Uwe Kleine-König wrote:
+> > > > > > > pci_pm_runtime_resume() exits early when the device to resume isn't
+> > > > > > > bound yet:
+> > > > > > >
+> > > > > > >     if (!to_pci_driver(dev->driver))
+> > > > > > >             return 0;
+> > > > > > >
+> > > > > > > This however isn't true when the device currently probes and
+> > > > > > > local_pci_probe() calls pm_runtime_get_sync() because then the driver
+> > > > > > > core already setup dev->driver. As a result the driver's resume callback
+> > > > > > > is called before the driver's probe function is called and so more often
+> > > > > > > than not required driver data isn't setup yet.
+> > > > > > >
+> > > > > > > So replace the check for the device being unbound by a check that only
+> > > > > > > becomes true after .probe() succeeded.
+> > > > > >
+> > > > > > I like the fact that this patch is short and simple.
+> > > > > >
+> > > > > > But there are 30+ users of to_pci_driver().  This patch asserts that
+> > > > > > *one* of them, pci_pm_runtime_resume(), is special and needs to test
+> > > > > > device_is_bound() instead of using to_pci_driver().
+> > > > >
+> > > > > Maybe for the other locations using device_is_bound(&pdev->dev) instead
+> > > > > of to_pci_driver(pdev) != NULL would be nice, too?
+> > > > >
+> > > > > I have another doubt: device_is_bound() should (according to its
+> > > > > kernel-doc) be called with the device lock held. For the call stack that
+> > > > > is (maybe) fixed here, the lock is held (by __device_attach). We
+> > > > > probably should check if the lock is also held for the other calls of
+> > > > > pci_pm_runtime_resume().
+> > > > >
+> > > > > Hmm, the device lock is a mutex, the pm functions might be called in
+> > > > > atomic context, right?
+> > > > >
+> > > > > > It's special because the current PM implementation calls it via
+> > > > > > pm_runtime_get_sync() before the driver's .probe() method.  That
+> > > > > > connection is a little bit obscure and fragile.  What if the PM
+> > > > > > implementation changes?
+> > > > >
+> > > > > Maybe a saver bet would be to not use pm_runtime_get_sync() in
+> > > > > local_pci_probe()?
 > > > >
-> > > > IIUC, according to Michal's post here:
-> > > > https://lore.kernel.org/all/20170725154514.GN26723@dhcp22.suse.cz,
-> > > > unmap_vmas() can race with other mmap_lock read holders (including
-> > > > oom_reap_task_mm()) with no issues.
-> > > > Maple tree patchset requires rcu read lock or the mmap semaphore be
-> > > > held (read or write side) when walking the tree, including inside
-> > > > unmap_vmas(). When asked, he told me that he is not sure why it's
-> > > > currently "safe" to walk the vma->vm_next list in unmap_vmas() while
-> > > > another thread is reaping the mm.
-> > > > Michal (or maybe someone else), could you please clarify why
-> > > > unmap_vmas() can safely race with oom_reap_task_mm()? Or maybe my
-> > > > understanding was wrong?
+> > > > Yes, in principle it might be replaced with pm_runtime_get_noresume().
+> > > >
+> > > > In theory, that may be problematic if a device is put into a low-power
+> > > > state on remove and then the driver is bound again to it.
+> > > >
+> > > > > I wonder if the same problem exists on remove, i.e. pci_device_remove()
+> > > > > calls pm_runtime_put_sync() after the driver's .remove() callback was
+> > > > > called.
+> > > >
+> > > > If it is called after ->remove() and before clearing the device's
+> > > > driver pointer, then yes.
 > > >
-> > > I cannot really comment on the mapple tree part. But the existing
-> > > synchronization between oom reaper and exit_mmap is based on
-> > > - oom_reaper takes mmap_sem for reading
-> > > - exit_mmap sets MMF_OOM_SKIP and takes the exclusive mmap_sem before
-> > >   unmap_vmas.
+> > > Yes, that is the case:
 > > >
-> > > The oom_reaper therefore can either unmap the address space if the lock
-> > > is taken before exit_mmap or it would it would bale out on MMF_OOM_SKIP
-> > > if it takes the lock afterwards. So the reaper cannot race with
-> > > unmap_vmas.
+> > >   pci_device_remove
+> > >     if (drv->remove) {
+> > >       pm_runtime_get_sync
+> > >       drv->remove()                # <-- driver ->remove() method
+> > >       pm_runtime_put_noidle
+> > >     }
+> > >     ...
+> > >     pm_runtime_put_sync            # <-- after ->remove()
+> > >
+> > > So pm_runtime_put_sync() is called after drv->remove(), and it may
+> > > call drv->pm->runtime_idle().  I think the driver may not expect this.
+> > >
+> > > > If this is turned into pm_runtime_put_noidle(), all should work.
+> > >
+> > > pci_device_remove() already calls pm_runtime_put_noidle() immediately
+> > > after calling the driver ->remove() method.
+> > >
+> > > Are you saying we should do this, which means pci_device_remove()
+> > > would call pm_runtime_put_noidle() twice?
 > >
-> > I see. So, it's the combination of MMF_OOM_SKIP and mmap_lock working
-> > as a barrier which prevent them from racing with each other...
-> > I wasn't sure how
-> > https://lore.kernel.org/all/20170724072332.31903-1-mhocko@kernel.org/
-> > was implementing this synchronization because it would take mmap_sem
-> > write side after unmap_vmas() and IIUC there was no
-> > "mmap_lock_write(); mmap_unlock_write();" sequence in exit_mmap at
-> > that time. I'll need to checkout the old sources to figure this out.
->
-> My memory is rather dimm but AFAIR the main problem was freeing page
-> tables and freeing vmas not unmap_vmas. That one was no modifying the
-> vma list. Essentially it was just a slightly modified madvise don't
-> need. So that part was allowed to race with oom_reaper.
+> > Well, they are both needed to keep the PM-runtime reference counting in balance.
+> >
+> > This still has an issue, though, because user space would be able to
+> > trigger a runtime suspend via sysfs after we've dropped the last
+> > reference to the device in pci_device_remove().
+> >
+> > So instead, we can drop the pm_runtime_get_sync() and
+> > pm_runtime_put_sync() from local_pci_probe() and pci_device_remove(),
+> > respectively, and add pm_runtine_get_noresume() to pci_pm_init(),
+> > which will prevent PM-runtime from touching the device until it has a
+> > driver that supports PM-runtime.
+> >
+> > We'll lose the theoretical ability to put unbound devices into D3 this
+> > way, but we learned some time ago that this isn't safe in all cases
+> > anyway.
+> 
+> IOW, something like this (untested and most likely white-space-damaged).
 
-So, both unmap_vmas and __oom_reap_task_mm do not modify vma list and
-therefore can execute concurrently. That makes sense, thanks.
+Thanks!  I applied this manually to for-linus in hopes of making the
+the next linux-next build.
 
-Then I guess, if we want to be semantically correct in exit_mmap(), we
-would have to take mmap_read_lock before unmap_vmas, then drop it and
-take mmap_write_lock before free_pgtables.
+Please send any testing reports and corrections to the patch and
+commit log!
 
-> --
-> Michal Hocko
-> SUSE Labs
+commit dd414877b58b ("PCI/PM: Prevent runtime PM until claimed by a driver that supports it")
+Author: Bjorn Helgaas <bhelgaas@google.com>
+Date:   Tue Nov 9 13:36:09 2021 -0600
+
+    PCI/PM: Prevent runtime PM until claimed by a driver that supports it
+    
+    Previously we had a path that could call a driver's ->runtime_resume()
+    method before calling the driver's ->probe() method, which is a problem
+    because ->runtime_resume() often relies on initialization done in
+    ->probe():
+    
+      local_pci_probe
+        pm_runtime_get_sync
+          ...
+            pci_pm_runtime_resume
+              if (!pci_dev->driver)
+                return 0;                          <-- early exit
+              dev->driver->pm->runtime_resume();   <-- driver ->runtime_resume()
+        pci_dev->driver = pci_drv;
+        pci_drv->probe()                           <-- driver ->probe()
+    
+    Prior to 2a4d9408c9e8 ("PCI: Use to_pci_driver() instead of
+    pci_dev->driver"), we took the early exit, which avoided the problem.  But
+    2a4d9408c9e8 removed pci_dev->driver (since it's redundant with
+    device->driver), so we no longer take the early exit, which leads to havoc
+    in ->runtime_resume().
+    
+    Similarly, we could call the driver's ->runtime_idle() method after its
+    ->remove() method.
+    
+    Avoid the problem by dropping the pm_runtime_get_sync() and
+    pm_runtime_put_sync() from local_pci_probe() and pci_device_remove(),
+    respectively.
+    
+    Add pm_runtime_get_noresume(), which uses no driver PM callbacks, to the
+    pci_pm_init() enumeration path.  This will prevent PM-runtime from touching
+    the device until it has a driver that supports PM-runtime.
+    
+    Link: https://lore.kernel.org/r/CAJZ5v0impb8uscbp8LUTBMExfMoGz=cPrTWhSGh0GF_SANNKPQ@mail.gmail.com
+    Fixes: 2a4d9408c9e8 ("PCI: Use to_pci_driver() instead of pci_dev->driver")
+    Reported-by: Robert Święcki <robert@swiecki.net>
+    Suggested-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+    Signed-off-by: Bjorn Helgaas <bhelgaas@google.com>
+
+diff --git a/drivers/pci/pci-driver.c b/drivers/pci/pci-driver.c
+index 1d98c974381c..41cdf510214f 100644
+--- a/drivers/pci/pci-driver.c
++++ b/drivers/pci/pci-driver.c
+@@ -309,16 +309,6 @@ static long local_pci_probe(void *_ddi)
+ 	struct device *dev = &pci_dev->dev;
+ 	int rc;
+ 
+-	/*
+-	 * Unbound PCI devices are always put in D0, regardless of
+-	 * runtime PM status.  During probe, the device is set to
+-	 * active and the usage count is incremented.  If the driver
+-	 * supports runtime PM, it should call pm_runtime_put_noidle(),
+-	 * or any other runtime PM helper function decrementing the usage
+-	 * count, in its probe routine and pm_runtime_get_noresume() in
+-	 * its remove routine.
+-	 */
+-	pm_runtime_get_sync(dev);
+ 	rc = pci_drv->probe(pci_dev, ddi->id);
+ 	if (!rc)
+ 		return rc;
+@@ -464,9 +454,6 @@ static void pci_device_remove(struct device *dev)
+ 	pcibios_free_irq(pci_dev);
+ 	pci_iov_remove(pci_dev);
+ 
+-	/* Undo the runtime PM settings in local_pci_probe() */
+-	pm_runtime_put_sync(dev);
+-
+ 	/*
+ 	 * If the device is still on, set the power state as "unknown",
+ 	 * since it might change by the next time we load the driver.
+diff --git a/drivers/pci/pci.c b/drivers/pci/pci.c
+index b88db815ee01..e9c38b994c73 100644
+--- a/drivers/pci/pci.c
++++ b/drivers/pci/pci.c
+@@ -3097,7 +3097,15 @@ void pci_pm_init(struct pci_dev *dev)
+ 	u16 pmc;
+ 
+ 	pm_runtime_forbid(&dev->dev);
++
++	/*
++	 * Unbound PCI devices are always put in D0.  If the driver supports
++	 * runtime PM, it should call pm_runtime_put_noidle(), or any other
++	 * runtime PM helper function decrementing the usage count, in its
++	 * probe routine and pm_runtime_get_noresume() in its remove routine.
++	 */
+ 	pm_runtime_set_active(&dev->dev);
++	pm_runtime_get_noresume(&dev->dev);
+ 	pm_runtime_enable(&dev->dev);
+ 	device_enable_async_suspend(&dev->dev);
+ 	dev->wakeup_prepared = false;
