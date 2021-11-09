@@ -2,124 +2,180 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1B19744A716
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 07:57:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F21FB44A732
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 08:00:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243318AbhKIG7w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Nov 2021 01:59:52 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38200 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243271AbhKIG7u (ORCPT
+        id S243425AbhKIHDJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Nov 2021 02:03:09 -0500
+Received: from mailgw01.mediatek.com ([60.244.123.138]:36656 "EHLO
+        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S243389AbhKIHDC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Nov 2021 01:59:50 -0500
-Received: from mail-pl1-x632.google.com (mail-pl1-x632.google.com [IPv6:2607:f8b0:4864:20::632])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EFA40C061764
-        for <linux-kernel@vger.kernel.org>; Mon,  8 Nov 2021 22:57:04 -0800 (PST)
-Received: by mail-pl1-x632.google.com with SMTP id b11so5982108pld.12
-        for <linux-kernel@vger.kernel.org>; Mon, 08 Nov 2021 22:57:04 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20210112.gappssmtp.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=/XKMtNbhHard2yRQO8rFCjh0jyp/6c/s8q/mjmligM4=;
-        b=aTp8Ll68DWdBAxBxCtQdANLlQKWtuEhwd0/T75cnUywhLq1CyenVIITsPjrA8sFYT7
-         83PuMbn20BeizsO2YvQkQmA/r3GS752EFHleaeSWbCjJCdp1YOS16rqbzedjbtMPmi9A
-         7hbYkHeMfVi1WOtipvn2NaV2W4z7LuFjzFHIoe08KIWKCV6bEtDk/AciN4XCRX/z+U4f
-         05GZEwCibES9syHsUsdI9UmR5PGvOqErB8iWq30DNe6/YycSul0ZDNnV1GF/ztKV6anN
-         ppoNFGR/Pt5WDiabL5rUUhQTb1fshGQLUtKQPv2D0DHkybiX9SN6QDkHGnc/xZq4l4WB
-         OX7g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=/XKMtNbhHard2yRQO8rFCjh0jyp/6c/s8q/mjmligM4=;
-        b=8AlEoFZ46p5E0+VzlGNc3Zpw2Ia51RjWCLvd/QGaJC79Z77OQ7ZC9D1mYq4FpQHbIG
-         +zLr/qZUGydr4DAxh6qXwgCBVq3jPwjS+3WHPuPpbAYYuHm7ghwncbvSfNAvbikVFbuJ
-         yTxvw0eE2MGajpJmH3RNYc36BxejipkAz9gW/HDKmKrkDII/RiMzPd6pptH/ukIzavmN
-         0z2IQgiJW8kfb5wcBFP0YOppEK3EE4zh/n7li11wHQUxGfuQwN5l2XqtFrFRoiALVxaT
-         bAphcyjLIhwRS9rDtYLV3dVD+sJMUwHpygxeryyGkCR7sZXdBjXaGUAqXwYtofykHQ+2
-         Hc+w==
-X-Gm-Message-State: AOAM530ueqbqOSE+8E2xp0a7GUhMZKD7pubwGpFcaau9H0Zc9PQAsTk0
-        YwnQ7+Qo1azaB5Q2AwWbWvIX78MhXTa6eZYk
-X-Google-Smtp-Source: ABdhPJyDQ8G3NeijGvDl3KVdjcylGfSlt21ZkJwtfAZgL5mIAc9E5GrN9dsW6AZI+zEy2W682XpfLw==
-X-Received: by 2002:a17:902:900c:b0:13f:974c:19b0 with SMTP id a12-20020a170902900c00b0013f974c19b0mr4936931plp.12.1636441024400;
-        Mon, 08 Nov 2021 22:57:04 -0800 (PST)
-Received: from localhost.localdomain ([139.177.225.240])
-        by smtp.gmail.com with ESMTPSA id 142sm14254104pgh.22.2021.11.08.22.57.00
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Mon, 08 Nov 2021 22:57:04 -0800 (PST)
-From:   Muchun Song <songmuchun@bytedance.com>
-To:     akpm@linux-foundation.org, hannes@cmpxchg.org, mhocko@kernel.org,
-        vdavydov.dev@gmail.com
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        Muchun Song <songmuchun@bytedance.com>
-Subject: [PATCH] mm: memcontrol: make cgroup_memory_nokmem static
-Date:   Tue,  9 Nov 2021 14:54:18 +0800
-Message-Id: <20211109065418.21693-1-songmuchun@bytedance.com>
-X-Mailer: git-send-email 2.21.0 (Apple Git-122)
+        Tue, 9 Nov 2021 02:03:02 -0500
+X-UUID: 94ae060bcbb5478296e847ce0c92951a-20211109
+X-UUID: 94ae060bcbb5478296e847ce0c92951a-20211109
+Received: from mtkexhb02.mediatek.inc [(172.21.101.103)] by mailgw01.mediatek.com
+        (envelope-from <rocco.yue@mediatek.com>)
+        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 2058828200; Tue, 09 Nov 2021 15:00:12 +0800
+Received: from mtkmbs10n2.mediatek.inc (172.21.101.183) by
+ mtkmbs07n2.mediatek.inc (172.21.101.141) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Tue, 9 Nov 2021 15:00:10 +0800
+Received: from mbjsdccf07.mediatek.inc (10.15.20.246) by
+ mtkmbs10n2.mediatek.inc (172.21.101.73) with Microsoft SMTP Server id
+ 15.2.792.3 via Frontend Transport; Tue, 9 Nov 2021 15:00:10 +0800
+From:   Rocco Yue <rocco.yue@mediatek.com>
+To:     "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
+        David Ahern <dsahern@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>
+CC:     <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-mediatek@lists.infradead.org>, <Rocco.Yue@gmail.com>,
+        <chao.song@mediatek.com>, <zhuoliang.zhang@mediatek.com>,
+        <yanjie.jiang@mediatek.com>, Rocco Yue <rocco.yue@mediatek.com>
+Subject: [PATCH net-next] ipv6: don't generate link-local addr in random or privacy mode
+Date:   Tue, 9 Nov 2021 14:55:26 +0800
+Message-ID: <20211109065526.16772-1-rocco.yue@mediatek.com>
+X-Mailer: git-send-email 2.18.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-MTK:  N
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The commit 494c1dfe855e ("mm: memcg/slab: create a new set of kmalloc-cg-<n>
-caches") makes cgroup_memory_nokmem global, however, it is unnecessary
-because there is already a function mem_cgroup_kmem_disabled() which
-exports it.
+In the 3GPP TS 29.061, here is a description as follows:
+"In order to avoid any conflict between the link-local address
+of the MS and that of the GGSN, the Interface-Identifier used by
+the MS to build its link-local address shall be assigned by the
+GGSN. The GGSN ensures the uniqueness of this Interface-Identifier.
+The MT shall then enforce the use of this Interface-Identifier by
+the TE"
 
-Just make it static and replace it with mem_cgroup_kmem_disabled()
-in mm/slab_common.c.
+In other words, in the cellular network, GGSN determines whether
+to reply a solicited RA message by identifying the bottom 64 bits
+of the source address of the received RS message. Therefore,
+cellular network device's ipv6 link-local address should be set
+as the format of fe80::(GGSN assigned IID).
 
-Signed-off-by: Muchun Song <songmuchun@bytedance.com>
+To meet the above spec requirement, this patch adds two new
+addr_gen_mode:
+
+1) IN6_ADDR_GEN_MODE_STABLE_PRIVACY_NO_LLA, this mode is suitable
+for cellular networks that support RFC7217. In this mode, the
+kernel doesn't generate a link-local address for the cellular
+NIC, and generates an ipv6 stable privacy global address after
+receiving the RA message.
+
+2) IN6_ADDR_GEN_MODE_RANDOM_NO_LLA, in this mode, the kernel
+doesn't generate a link-local address for the cellular NIC,
+and will use the bottom 64 bits of the link-local address(same
+as the IID assigned by GGSN) to form an ipv6 global address
+after receiveing the RA message.
+
+Signed-off-by: Rocco Yue <rocco.yue@mediatek.com>
 ---
- mm/internal.h    | 5 -----
- mm/memcontrol.c  | 2 +-
- mm/slab_common.c | 2 +-
- 3 files changed, 2 insertions(+), 7 deletions(-)
+ include/uapi/linux/if_link.h       |  2 ++
+ net/ipv6/addrconf.c                | 22 ++++++++++++++++------
+ tools/include/uapi/linux/if_link.h |  2 ++
+ 3 files changed, 20 insertions(+), 6 deletions(-)
 
-diff --git a/mm/internal.h b/mm/internal.h
-index 18256e32a14c..ad15251d7a3c 100644
---- a/mm/internal.h
-+++ b/mm/internal.h
-@@ -137,11 +137,6 @@ extern void putback_lru_page(struct page *page);
- extern pmd_t *mm_find_pmd(struct mm_struct *mm, unsigned long address);
+diff --git a/include/uapi/linux/if_link.h b/include/uapi/linux/if_link.h
+index eebd3894fe89..9c5695744c7d 100644
+--- a/include/uapi/linux/if_link.h
++++ b/include/uapi/linux/if_link.h
+@@ -428,6 +428,8 @@ enum in6_addr_gen_mode {
+ 	IN6_ADDR_GEN_MODE_NONE,
+ 	IN6_ADDR_GEN_MODE_STABLE_PRIVACY,
+ 	IN6_ADDR_GEN_MODE_RANDOM,
++	IN6_ADDR_GEN_MODE_STABLE_PRIVACY_NO_LLA,
++	IN6_ADDR_GEN_MODE_RANDOM_NO_LLA,
+ };
  
- /*
-- * in mm/memcontrol.c:
-- */
--extern bool cgroup_memory_nokmem;
--
--/*
-  * in mm/page_alloc.c
-  */
+ /* Bridge section */
+diff --git a/net/ipv6/addrconf.c b/net/ipv6/addrconf.c
+index 3445f8017430..0045de10f4b5 100644
+--- a/net/ipv6/addrconf.c
++++ b/net/ipv6/addrconf.c
+@@ -392,7 +392,8 @@ static struct inet6_dev *ipv6_add_dev(struct net_device *dev)
+ 	timer_setup(&ndev->rs_timer, addrconf_rs_timer, 0);
+ 	memcpy(&ndev->cnf, dev_net(dev)->ipv6.devconf_dflt, sizeof(ndev->cnf));
  
-diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-index 8f1d9c028897..89fc3ca65b2d 100644
---- a/mm/memcontrol.c
-+++ b/mm/memcontrol.c
-@@ -84,7 +84,7 @@ EXPORT_PER_CPU_SYMBOL_GPL(int_active_memcg);
- static bool cgroup_memory_nosocket __ro_after_init;
+-	if (ndev->cnf.stable_secret.initialized)
++	if (ndev->cnf.stable_secret.initialized &&
++	    ndev->cnf.addr_gen_mode != IN6_ADDR_GEN_MODE_STABLE_PRIVACY_NO_LLA)
+ 		ndev->cnf.addr_gen_mode = IN6_ADDR_GEN_MODE_STABLE_PRIVACY;
  
- /* Kernel memory accounting disabled? */
--bool cgroup_memory_nokmem __ro_after_init;
-+static bool cgroup_memory_nokmem __ro_after_init;
+ 	ndev->cnf.mtu6 = dev->mtu;
+@@ -2578,7 +2579,8 @@ static void manage_tempaddrs(struct inet6_dev *idev,
+ static bool is_addr_mode_generate_stable(struct inet6_dev *idev)
+ {
+ 	return idev->cnf.addr_gen_mode == IN6_ADDR_GEN_MODE_STABLE_PRIVACY ||
+-	       idev->cnf.addr_gen_mode == IN6_ADDR_GEN_MODE_RANDOM;
++	       idev->cnf.addr_gen_mode == IN6_ADDR_GEN_MODE_RANDOM ||
++	       idev->cnf.addr_gen_mode == IN6_ADDR_GEN_MODE_STABLE_PRIVACY_NO_LLA;
+ }
  
- /* Whether the swap controller is active */
- #ifdef CONFIG_MEMCG_SWAP
-diff --git a/mm/slab_common.c b/mm/slab_common.c
-index e5d080a93009..d05203a11201 100644
---- a/mm/slab_common.c
-+++ b/mm/slab_common.c
-@@ -849,7 +849,7 @@ new_kmalloc_cache(int idx, enum kmalloc_cache_type type, slab_flags_t flags)
- 	if (type == KMALLOC_RECLAIM) {
- 		flags |= SLAB_RECLAIM_ACCOUNT;
- 	} else if (IS_ENABLED(CONFIG_MEMCG_KMEM) && (type == KMALLOC_CGROUP)) {
--		if (cgroup_memory_nokmem) {
-+		if (mem_cgroup_kmem_disabled()) {
- 			kmalloc_caches[type][idx] = kmalloc_caches[KMALLOC_NORMAL][idx];
- 			return;
+ int addrconf_prefix_rcv_add_addr(struct net *net, struct net_device *dev,
+@@ -3331,6 +3333,8 @@ static void addrconf_addr_gen(struct inet6_dev *idev, bool prefix_route)
+ 					      0, 0, GFP_KERNEL);
+ 		break;
+ 	case IN6_ADDR_GEN_MODE_NONE:
++	case IN6_ADDR_GEN_MODE_RANDOM_NO_LLA:
++	case IN6_ADDR_GEN_MODE_STABLE_PRIVACY_NO_LLA:
+ 	default:
+ 		/* will not add any link local address */
+ 		break;
+@@ -5798,7 +5802,9 @@ static int check_addr_gen_mode(int mode)
+ 	if (mode != IN6_ADDR_GEN_MODE_EUI64 &&
+ 	    mode != IN6_ADDR_GEN_MODE_NONE &&
+ 	    mode != IN6_ADDR_GEN_MODE_STABLE_PRIVACY &&
+-	    mode != IN6_ADDR_GEN_MODE_RANDOM)
++	    mode != IN6_ADDR_GEN_MODE_RANDOM &&
++	    mode != IN6_ADDR_GEN_MODE_STABLE_PRIVACY_NO_LLA &&
++	    mode != IN6_ADDR_GEN_MODE_RANDOM_NO_LLA)
+ 		return -EINVAL;
+ 	return 1;
+ }
+@@ -6428,15 +6434,19 @@ static int addrconf_sysctl_stable_secret(struct ctl_table *ctl, int write,
+ 		for_each_netdev(net, dev) {
+ 			struct inet6_dev *idev = __in6_dev_get(dev);
+ 
+-			if (idev) {
++			if (idev && idev->cnf.addr_gen_mode !=
++			    IN6_ADDR_GEN_MODE_STABLE_PRIVACY_NO_LLA) {
+ 				idev->cnf.addr_gen_mode =
+ 					IN6_ADDR_GEN_MODE_STABLE_PRIVACY;
+ 			}
  		}
+ 	} else {
+ 		struct inet6_dev *idev = ctl->extra1;
+-
+-		idev->cnf.addr_gen_mode = IN6_ADDR_GEN_MODE_STABLE_PRIVACY;
++		if (idev->cnf.addr_gen_mode !=
++		    IN6_ADDR_GEN_MODE_STABLE_PRIVACY_NO_LLA) {
++			idev->cnf.addr_gen_mode =
++				IN6_ADDR_GEN_MODE_STABLE_PRIVACY;
++		}
+ 	}
+ 
+ out:
+diff --git a/tools/include/uapi/linux/if_link.h b/tools/include/uapi/linux/if_link.h
+index b3610fdd1fee..fb69137aea89 100644
+--- a/tools/include/uapi/linux/if_link.h
++++ b/tools/include/uapi/linux/if_link.h
+@@ -241,6 +241,8 @@ enum in6_addr_gen_mode {
+ 	IN6_ADDR_GEN_MODE_NONE,
+ 	IN6_ADDR_GEN_MODE_STABLE_PRIVACY,
+ 	IN6_ADDR_GEN_MODE_RANDOM,
++	IN6_ADDR_GEN_MODE_STABLE_PRIVACY_NO_LLA,
++	IN6_ADDR_GEN_MODE_RANDOM_NO_LLA,
+ };
+ 
+ /* Bridge section */
 -- 
-2.11.0
+2.18.0
 
