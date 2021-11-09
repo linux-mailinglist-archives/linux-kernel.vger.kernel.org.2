@@ -2,85 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DB78E44A3E7
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 02:29:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3454944A2F8
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 02:23:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242824AbhKIBcA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Nov 2021 20:32:00 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48162 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244190AbhKIB2z (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Nov 2021 20:28:55 -0500
-Received: from mail-oo1-xc30.google.com (mail-oo1-xc30.google.com [IPv6:2607:f8b0:4864:20::c30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30E85C0797B9
-        for <linux-kernel@vger.kernel.org>; Mon,  8 Nov 2021 17:07:26 -0800 (PST)
-Received: by mail-oo1-xc30.google.com with SMTP id w30-20020a4a355e000000b002c2649b8d5fso2429686oog.10
-        for <linux-kernel@vger.kernel.org>; Mon, 08 Nov 2021 17:07:26 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=ednwC4rk+fMRoZ56y8enAsmD1OcJ155WuvM3vrzbF0g=;
-        b=kW2VZKXq10e3+j2pN2rREnvfGn/ed2pBKv/FDDZGYkiJ1B/Tm+e592rBZOssvxp1nL
-         lJ8uNMknOuWUpEbsMD9f5YGmpAyp6iPS1isss6b24feSEfiOdZDz5BB1kClvWeRx3m+k
-         nSKJo7mf0P6cENwhEMcYQl79zQf2G4kpxcTjF8qti3XLvenzR4E8B9owfJGlT5swp/tO
-         0E211Heecg5kaSUuT4hqK7LMmN/Dv9ANQuL2x50Vl2dhZTV7X4DyPTdhV7FFap/gkuZA
-         a7curh+yVVMTtyUoMlA9s4fMN4nseVOWXU0tC4BMuT7AR0lvBWHgKVcMoJw8R1BKkXeI
-         mtJg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=ednwC4rk+fMRoZ56y8enAsmD1OcJ155WuvM3vrzbF0g=;
-        b=hYL14yqiFmMqcFX6WTxu79mKET3O7ANXSRylLdr6HoZik9qOy/rZTPAnBagbJplgoR
-         ONGc2Uqq2vQ29/mElkzqlrPtYeq8Bdz83iBmInZQYXDgY0hjb7zt75I843IIb2R+8PH9
-         64oVI9kpc0TSGO9AbNQTA/yElHesVbzxiy3B/PT7icnMY4fogcSQqJFmpjIZ5UUlEIZS
-         mRpRDalOk/WTlstmrFJPVuvuLrlOO3o6y6TuvHG0E3+GfgvlgTemb9djn050d+RSG+45
-         eTJ7RbM/eh599CCC7jMw5DwZGDmzhIptV4QYcv2ubgCbxgR1aR80uDoWgRyiYWkn2gyb
-         H49g==
-X-Gm-Message-State: AOAM532xHmJ46dL/Qhli48zjNXf/Rz5MlPEuiJ0We/ZoWpsrcyU6z0kf
-        2+61fDLWWAUA9ohiy8l6eFGRD1v907HHMIZH1TETCA==
-X-Google-Smtp-Source: ABdhPJxZSqASgOxakIs7bpwXgWYlDpKIrlNu94fm32sHo3EvuzrjMEZORAzZOMFOE3CUot1IZlKvoozayP2kRdmgAXQ=
-X-Received: by 2002:a4a:e5cd:: with SMTP id r13mr1831608oov.84.1636420045513;
- Mon, 08 Nov 2021 17:07:25 -0800 (PST)
+        id S237897AbhKIBZe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Nov 2021 20:25:34 -0500
+Received: from mail.kernel.org ([198.145.29.99]:50110 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S243189AbhKIBVN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Nov 2021 20:21:13 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 59FC861381;
+        Tue,  9 Nov 2021 01:08:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1636420090;
+        bh=F3dmZxdvQ2jpzrZHz4xGkd3iVO1+ehXqGikQQadSO3s=;
+        h=From:To:Cc:Subject:Date:From;
+        b=pk7qwIG5U+vvRXld++/R9E3QXuPrZeKEZ4cr62l1IvJVoDgciuXhsbjCZfVgjKI5E
+         kQUhm1GyhBw19i9rJ5uPk1u5NzIOseKfHYBRVshky3aioMXQ+I3f4+H2n/EohwU1r4
+         k6fOp+AkLTTejXmp8zJVCD+9E9h49o4Zv83H6c6NucuVixPfVE40YyzfHf1NgJufRy
+         jLRz5vS0Ql+Dr6GhjJHQqKRjnN9y7Apqv0ivoLvdDX/CauHPF1x8b9ZRjfihGoPbDu
+         EYdf/616FfAdFsNvA/MaMA0JLwsncLsaMjFawxbZDQwY6LyKfIPdMFXVizi0sZ7/3e
+         J4suoHFHzSxPQ==
+From:   Sasha Levin <sashal@kernel.org>
+To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Cc:     Takashi Iwai <tiwai@suse.de>,
+        Marcel Holtmann <marcel@holtmann.org>,
+        Sasha Levin <sashal@kernel.org>, johan.hedberg@gmail.com,
+        luiz.dentz@gmail.com, davem@davemloft.net, kuba@kernel.org,
+        linux-bluetooth@vger.kernel.org, netdev@vger.kernel.org
+Subject: [PATCH AUTOSEL 4.9 01/33] Bluetooth: sco: Fix lock_sock() blockage by memcpy_from_msg()
+Date:   Mon,  8 Nov 2021 20:07:35 -0500
+Message-Id: <20211109010807.1191567-1-sashal@kernel.org>
+X-Mailer: git-send-email 2.33.0
 MIME-Version: 1.0
-References: <20211102225701.98944-1-Mr.Bossman075@gmail.com>
- <20211102225701.98944-3-Mr.Bossman075@gmail.com> <1635902437.626178.3880384.nullmailer@robh.at.kernel.org>
- <c97c45ac-d9d6-a21b-9c43-69f58b07f265@gmail.com>
-In-Reply-To: <c97c45ac-d9d6-a21b-9c43-69f58b07f265@gmail.com>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Tue, 9 Nov 2021 02:07:14 +0100
-Message-ID: <CACRpkda9e8FtjR3XB97Lu8X5=yeApk==4+zSqo3Qp6bWxgJAcw@mail.gmail.com>
-Subject: Re: [PATCH v2 02/13] dt-bindings: pinctrl: add i.MXRT1050 pinctrl
- binding doc
-To:     Jesse Taube <mr.bossman075@gmail.com>
-Cc:     Rob Herring <robh@kernel.org>, mturquette@baylibre.com,
-        aisheng.dong@nxp.com, linux@armlinux.org.uk,
-        s.hauer@pengutronix.de, linux-gpio@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, adrian.hunter@intel.com,
-        linux-mmc@vger.kernel.org, kernel@pengutronix.de,
-        shawnguo@kernel.org, linux-serial@vger.kernel.org,
-        jirislaby@kernel.org, robh+dt@kernel.org, abel.vesa@nxp.com,
-        festevam@gmail.com, ulf.hansson@linaro.org,
-        linux-kernel@vger.kernel.org, stefan@agner.ch, olof@lixom.net,
-        sboyd@kernel.org, nobuhiro1.iwamatsu@toshiba.co.jp,
-        linux-clk@vger.kernel.org, arnd@arndb.de,
-        devicetree@vger.kernel.org, linux-imx@nxp.com, soc@kernel.org,
-        gregkh@linuxfoundation.org, giulio.benetti@benettiengineering.com
-Content-Type: text/plain; charset="UTF-8"
+X-stable: review
+X-Patchwork-Hint: Ignore
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 3, 2021 at 2:38 AM Jesse Taube <mr.bossman075@gmail.com> wrote:
+From: Takashi Iwai <tiwai@suse.de>
 
-> Ah I thought it would stop make at error i see it now, is there a way to
-> do one file.
+[ Upstream commit 99c23da0eed4fd20cae8243f2b51e10e66aa0951 ]
 
-Yes:
+The sco_send_frame() also takes lock_sock() during memcpy_from_msg()
+call that may be endlessly blocked by a task with userfaultd
+technique, and this will result in a hung task watchdog trigger.
 
-make dt_binding_check DT_SCHEMA_FILES=Documentation/...
+Just like the similar fix for hci_sock_sendmsg() in commit
+92c685dc5de0 ("Bluetooth: reorganize functions..."), this patch moves
+the  memcpy_from_msg() out of lock_sock() for addressing the hang.
 
-Yours,
-Linus Walleij
+This should be the last piece for fixing CVE-2021-3640 after a few
+already queued fixes.
+
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
+Signed-off-by: Marcel Holtmann <marcel@holtmann.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
+---
+ net/bluetooth/sco.c | 24 ++++++++++++++++--------
+ 1 file changed, 16 insertions(+), 8 deletions(-)
+
+diff --git a/net/bluetooth/sco.c b/net/bluetooth/sco.c
+index 77f88c7df6053..b3b4ffaa394f6 100644
+--- a/net/bluetooth/sco.c
++++ b/net/bluetooth/sco.c
+@@ -254,7 +254,8 @@ static int sco_connect(struct hci_dev *hdev, struct sock *sk)
+ 	return err;
+ }
+ 
+-static int sco_send_frame(struct sock *sk, struct msghdr *msg, int len)
++static int sco_send_frame(struct sock *sk, void *buf, int len,
++			  unsigned int msg_flags)
+ {
+ 	struct sco_conn *conn = sco_pi(sk)->conn;
+ 	struct sk_buff *skb;
+@@ -266,15 +267,11 @@ static int sco_send_frame(struct sock *sk, struct msghdr *msg, int len)
+ 
+ 	BT_DBG("sk %p len %d", sk, len);
+ 
+-	skb = bt_skb_send_alloc(sk, len, msg->msg_flags & MSG_DONTWAIT, &err);
++	skb = bt_skb_send_alloc(sk, len, msg_flags & MSG_DONTWAIT, &err);
+ 	if (!skb)
+ 		return err;
+ 
+-	if (memcpy_from_msg(skb_put(skb, len), msg, len)) {
+-		kfree_skb(skb);
+-		return -EFAULT;
+-	}
+-
++	memcpy(skb_put(skb, len), buf, len);
+ 	hci_send_sco(conn->hcon, skb);
+ 
+ 	return len;
+@@ -693,6 +690,7 @@ static int sco_sock_sendmsg(struct socket *sock, struct msghdr *msg,
+ 			    size_t len)
+ {
+ 	struct sock *sk = sock->sk;
++	void *buf;
+ 	int err;
+ 
+ 	BT_DBG("sock %p, sk %p", sock, sk);
+@@ -704,14 +702,24 @@ static int sco_sock_sendmsg(struct socket *sock, struct msghdr *msg,
+ 	if (msg->msg_flags & MSG_OOB)
+ 		return -EOPNOTSUPP;
+ 
++	buf = kmalloc(len, GFP_KERNEL);
++	if (!buf)
++		return -ENOMEM;
++
++	if (memcpy_from_msg(buf, msg, len)) {
++		kfree(buf);
++		return -EFAULT;
++	}
++
+ 	lock_sock(sk);
+ 
+ 	if (sk->sk_state == BT_CONNECTED)
+-		err = sco_send_frame(sk, msg, len);
++		err = sco_send_frame(sk, buf, len, msg->msg_flags);
+ 	else
+ 		err = -ENOTCONN;
+ 
+ 	release_sock(sk);
++	kfree(buf);
+ 	return err;
+ }
+ 
+-- 
+2.33.0
+
