@@ -2,192 +2,277 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CFE3744A9D0
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 09:56:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 514EC44A9B4
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 09:52:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244603AbhKII7a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Nov 2021 03:59:30 -0500
-Received: from mail-pl1-f176.google.com ([209.85.214.176]:34554 "EHLO
-        mail-pl1-f176.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236483AbhKII72 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Nov 2021 03:59:28 -0500
-Received: by mail-pl1-f176.google.com with SMTP id r5so19745157pls.1;
-        Tue, 09 Nov 2021 00:56:42 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=WBDXAvrVMOF74SvlOY510+Wn6BscpCQ4WL2UuaAH35U=;
-        b=ftPxll5hJLbsBFse6BuYWl9/OedhmNSmetl24Dyh5XHFvwa/2wU6wn47fXGOw8jPp7
-         HyBYErDUnjlzMynO1yjVHEOSUmpDWrFak2bnd+9LyzpGMSJQDTsNsaVlyd4O4eTVDREO
-         xOLY6kHiw68azbZb+L4jluNAD7AF3COwkSPCCDJPHuX3kZPb5/8I8DsE5iEMFwzmfJJV
-         XesrgJiEBx0Tk7+PBTQvy/uAin/xGyFc6hcq53EsWJUzf2/ECqV8UTH+9eRvwtcpcEmt
-         OMJIU2PlyYYEo8iVLF47Wka5dfj9ueJ4/ow9xZssNXnyXzGNegbblI867GHplsmQTwK0
-         Nx0A==
-X-Gm-Message-State: AOAM531Z0YQxkWSGXzzFNOR7V5Na+bRWCzvzq/EqCoPXjdPHSbqoDNHg
-        CmCYArS18WQ01KhcwYr0scd6rAdOERUfYIr1
-X-Google-Smtp-Source: ABdhPJxMt/MNQBOTF55lYEDhNTekyu5Jts9bhFxvILqmY/REW7QXVgl/WWsxMiBuXleXsM+cFqKqdQ==
-X-Received: by 2002:a17:90b:2412:: with SMTP id nr18mr5495829pjb.233.1636448202161;
-        Tue, 09 Nov 2021 00:56:42 -0800 (PST)
-Received: from mail-pf1-f179.google.com (mail-pf1-f179.google.com. [209.85.210.179])
-        by smtp.gmail.com with ESMTPSA id p124sm1448384pfg.110.2021.11.09.00.56.41
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 09 Nov 2021 00:56:41 -0800 (PST)
-Received: by mail-pf1-f179.google.com with SMTP id m26so18893914pff.3;
-        Tue, 09 Nov 2021 00:56:41 -0800 (PST)
-X-Received: by 2002:a67:c38f:: with SMTP id s15mr9690352vsj.50.1636447720630;
- Tue, 09 Nov 2021 00:48:40 -0800 (PST)
-MIME-Version: 1.0
-References: <20211108150554.4457-1-conor.dooley@microchip.com> <20211108150554.4457-12-conor.dooley@microchip.com>
-In-Reply-To: <20211108150554.4457-12-conor.dooley@microchip.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Tue, 9 Nov 2021 09:48:29 +0100
-X-Gmail-Original-Message-ID: <CAMuHMdVtVTEEhjUr7jj4tBoahPTXAYu9uSKVpr54mCeZx_ktqQ@mail.gmail.com>
-Message-ID: <CAMuHMdVtVTEEhjUr7jj4tBoahPTXAYu9uSKVpr54mCeZx_ktqQ@mail.gmail.com>
-Subject: Re: [PATCH 11/13] dt-bindings: usb: add bindings for microchip mpfs musb
-To:     Conor Dooley <conor.dooley@microchip.com>
-Cc:     Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Jassi Brar <jassisinghbrar@gmail.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Alessandro Zummo <a.zummo@towertech.it>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Mark Brown <broonie@kernel.org>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        Lewis Hanly <lewis.hanly@microchip.com>,
-        daire.mcnamara@microchip.com, Atish Patra <atish.patra@wdc.com>,
-        ivan.griffin@microchip.com,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux I2C <linux-i2c@vger.kernel.org>,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
-        linux-rtc@vger.kernel.org, linux-spi <linux-spi@vger.kernel.org>,
-        USB list <linux-usb@vger.kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        Bin Meng <bin.meng@windriver.com>
-Content-Type: text/plain; charset="UTF-8"
+        id S244534AbhKIIzF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Nov 2021 03:55:05 -0500
+Received: from mga18.intel.com ([134.134.136.126]:10464 "EHLO mga18.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234536AbhKIIzD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Nov 2021 03:55:03 -0500
+X-IronPort-AV: E=McAfee;i="6200,9189,10162"; a="219306220"
+X-IronPort-AV: E=Sophos;i="5.87,219,1631602800"; 
+   d="scan'208";a="219306220"
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Nov 2021 00:52:17 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.87,219,1631602800"; 
+   d="scan'208";a="491585301"
+Received: from ipu5-build.bj.intel.com ([10.238.232.188])
+  by orsmga007.jf.intel.com with ESMTP; 09 Nov 2021 00:52:14 -0800
+From:   Bingbu Cao <bingbu.cao@intel.com>
+To:     linux-media@vger.kernel.org, sakari.ailus@linux.intel.com,
+        rafael@kernel.org
+Cc:     shawnx.tu@intel.com, tian.shu.qiu@intel.com,
+        chiranjeevi.rapolu@intel.com, hyungwoo.yang@intel.com,
+        tfiga@chromium.org, senozhatsky@chromium.org,
+        linux-kernel@vger.kernel.org, bingbu.cao@intel.com,
+        bingbu.cao@linux.intel.com
+Subject: [PATCH 1/6] media: ov8856: support device probe in non-zero ACPI D state
+Date:   Tue,  9 Nov 2021 16:48:30 +0800
+Message-Id: <1636447715-15526-2-git-send-email-bingbu.cao@intel.com>
+X-Mailer: git-send-email 2.7.4
+In-Reply-To: <1636447715-15526-1-git-send-email-bingbu.cao@intel.com>
+References: <1636447715-15526-1-git-send-email-bingbu.cao@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Conor,
+Tell ACPI device PM code that the driver supports the device being in
+non-zero ACPI D state when the driver's probe function is entered.
 
-On Mon, Nov 8, 2021 at 4:07 PM <conor.dooley@microchip.com> wrote:
-> From: Conor Dooley <conor.dooley@microchip.com>
->
-> Add device tree bindings for the usb controller on
-> the Microchip PolarFire SoC.
->
-> Signed-off-by: Conor Dooley <conor.dooley@microchip.com>
+Also do identification on the first access of the device, whether in probe
+or when starting streaming.
 
-Thanks for your patch!
+Signed-off-by: Bingbu Cao <bingbu.cao@intel.com>
+---
+ drivers/media/i2c/ov8856.c | 162 +++++++++++++++++++++++++--------------------
+ 1 file changed, 89 insertions(+), 73 deletions(-)
 
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/usb/microchip,mpfs-usb-host.yaml
-> @@ -0,0 +1,70 @@
-> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/usb/microchip,mpfs-usb-host.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: Microchip MPFS USB Controller Device Tree Bindings
-> +
-> +maintainers:
-> +  - Conor Dooley <conor.dooley@microchip.com>
-> +
-> +description: |
-> +  This USB controller is found on the Microchip PolarFire SoC.
-> +
-> +properties:
-> +  compatible:
-> +    enum:
-> +      - microchip,mpfs-usb-host
+diff --git a/drivers/media/i2c/ov8856.c b/drivers/media/i2c/ov8856.c
+index c6c6050cda1a..8785764b7a74 100644
+--- a/drivers/media/i2c/ov8856.c
++++ b/drivers/media/i2c/ov8856.c
+@@ -1445,6 +1445,9 @@ struct ov8856 {
+ 
+ 	const struct ov8856_lane_cfg *priv_lane;
+ 	u8 modes_size;
++
++	/* True if the device has been identified */
++	bool identified;
+ };
+ 
+ struct ov8856_lane_cfg {
+@@ -1685,6 +1688,71 @@ static int ov8856_write_reg_list(struct ov8856 *ov8856,
+ 	return 0;
+ }
+ 
++static int ov8856_identify_module(struct ov8856 *ov8856)
++{
++	struct i2c_client *client = v4l2_get_subdevdata(&ov8856->sd);
++	int ret;
++	u32 val;
++
++	if (ov8856->identified)
++		return 0;
++
++	ret = ov8856_read_reg(ov8856, OV8856_REG_CHIP_ID,
++			      OV8856_REG_VALUE_24BIT, &val);
++	if (ret)
++		return ret;
++
++	if (val != OV8856_CHIP_ID) {
++		dev_err(&client->dev, "chip id mismatch: %x!=%x",
++			OV8856_CHIP_ID, val);
++		return -ENXIO;
++	}
++
++	ret = ov8856_write_reg(ov8856, OV8856_REG_MODE_SELECT,
++			       OV8856_REG_VALUE_08BIT, OV8856_MODE_STREAMING);
++	if (ret)
++		return ret;
++
++	ret = ov8856_write_reg(ov8856, OV8856_OTP_MODE_CTRL,
++			       OV8856_REG_VALUE_08BIT, OV8856_OTP_MODE_AUTO);
++	if (ret) {
++		dev_err(&client->dev, "failed to set otp mode");
++		return ret;
++	}
++
++	ret = ov8856_write_reg(ov8856, OV8856_OTP_LOAD_CTRL,
++			       OV8856_REG_VALUE_08BIT,
++			       OV8856_OTP_LOAD_CTRL_ENABLE);
++	if (ret) {
++		dev_err(&client->dev, "failed to enable load control");
++		return ret;
++	}
++
++	ret = ov8856_read_reg(ov8856, OV8856_MODULE_REVISION,
++			      OV8856_REG_VALUE_08BIT, &val);
++	if (ret) {
++		dev_err(&client->dev, "failed to read module revision");
++		return ret;
++	}
++
++	dev_info(&client->dev, "OV8856 revision %x (%s) at address 0x%02x\n",
++		 val,
++		 val == OV8856_2A_MODULE ? "2A" :
++		 val == OV8856_1B_MODULE ? "1B" : "unknown revision",
++		 client->addr);
++
++	ret = ov8856_write_reg(ov8856, OV8856_REG_MODE_SELECT,
++			       OV8856_REG_VALUE_08BIT, OV8856_MODE_STANDBY);
++	if (ret) {
++		dev_err(&client->dev, "failed to exit streaming mode");
++		return ret;
++	}
++
++	ov8856->identified = true;
++
++	return 0;
++}
++
+ static int ov8856_update_digital_gain(struct ov8856 *ov8856, u32 d_gain)
+ {
+ 	int ret;
+@@ -1969,6 +2037,10 @@ static int ov8856_start_streaming(struct ov8856 *ov8856)
+ 	const struct ov8856_reg_list *reg_list;
+ 	int link_freq_index, ret;
+ 
++	ret = ov8856_identify_module(ov8856);
++	if (ret)
++		return ret;
++
+ 	link_freq_index = ov8856->cur_mode->link_freq_index;
+ 	reg_list = &ov8856->priv_lane->link_freq_configs[link_freq_index].reg_list;
+ 
+@@ -2276,65 +2348,6 @@ static const struct v4l2_subdev_internal_ops ov8856_internal_ops = {
+ 	.open = ov8856_open,
+ };
+ 
+-static int ov8856_identify_module(struct ov8856 *ov8856)
+-{
+-	struct i2c_client *client = v4l2_get_subdevdata(&ov8856->sd);
+-	int ret;
+-	u32 val;
+-
+-	ret = ov8856_read_reg(ov8856, OV8856_REG_CHIP_ID,
+-			      OV8856_REG_VALUE_24BIT, &val);
+-	if (ret)
+-		return ret;
+-
+-	if (val != OV8856_CHIP_ID) {
+-		dev_err(&client->dev, "chip id mismatch: %x!=%x",
+-			OV8856_CHIP_ID, val);
+-		return -ENXIO;
+-	}
+-
+-	ret = ov8856_write_reg(ov8856, OV8856_REG_MODE_SELECT,
+-			       OV8856_REG_VALUE_08BIT, OV8856_MODE_STREAMING);
+-	if (ret)
+-		return ret;
+-
+-	ret = ov8856_write_reg(ov8856, OV8856_OTP_MODE_CTRL,
+-			       OV8856_REG_VALUE_08BIT, OV8856_OTP_MODE_AUTO);
+-	if (ret) {
+-		dev_err(&client->dev, "failed to set otp mode");
+-		return ret;
+-	}
+-
+-	ret = ov8856_write_reg(ov8856, OV8856_OTP_LOAD_CTRL,
+-			       OV8856_REG_VALUE_08BIT,
+-			       OV8856_OTP_LOAD_CTRL_ENABLE);
+-	if (ret) {
+-		dev_err(&client->dev, "failed to enable load control");
+-		return ret;
+-	}
+-
+-	ret = ov8856_read_reg(ov8856, OV8856_MODULE_REVISION,
+-			      OV8856_REG_VALUE_08BIT, &val);
+-	if (ret) {
+-		dev_err(&client->dev, "failed to read module revision");
+-		return ret;
+-	}
+-
+-	dev_info(&client->dev, "OV8856 revision %x (%s) at address 0x%02x\n",
+-		 val,
+-		 val == OV8856_2A_MODULE ? "2A" :
+-		 val == OV8856_1B_MODULE ? "1B" : "unknown revision",
+-		 client->addr);
+-
+-	ret = ov8856_write_reg(ov8856, OV8856_REG_MODE_SELECT,
+-			       OV8856_REG_VALUE_08BIT, OV8856_MODE_STANDBY);
+-	if (ret) {
+-		dev_err(&client->dev, "failed to exit streaming mode");
+-		return ret;
+-	}
+-
+-	return 0;
+-}
+ 
+ static int ov8856_get_hwcfg(struct ov8856 *ov8856, struct device *dev)
+ {
+@@ -2458,6 +2471,7 @@ static int ov8856_probe(struct i2c_client *client)
+ {
+ 	struct ov8856 *ov8856;
+ 	int ret;
++	bool full_power;
+ 
+ 	ov8856 = devm_kzalloc(&client->dev, sizeof(*ov8856), GFP_KERNEL);
+ 	if (!ov8856)
+@@ -2472,16 +2486,19 @@ static int ov8856_probe(struct i2c_client *client)
+ 
+ 	v4l2_i2c_subdev_init(&ov8856->sd, client, &ov8856_subdev_ops);
+ 
+-	ret = __ov8856_power_on(ov8856);
+-	if (ret) {
+-		dev_err(&client->dev, "failed to power on\n");
+-		return ret;
+-	}
++	full_power = acpi_dev_state_d0(&client->dev);
++	if (full_power) {
++		ret = __ov8856_power_on(ov8856);
++		if (ret) {
++			dev_err(&client->dev, "failed to power on\n");
++			return ret;
++		}
+ 
+-	ret = ov8856_identify_module(ov8856);
+-	if (ret) {
+-		dev_err(&client->dev, "failed to find sensor: %d", ret);
+-		goto probe_power_off;
++		ret = ov8856_identify_module(ov8856);
++		if (ret) {
++			dev_err(&client->dev, "failed to find sensor: %d", ret);
++			goto probe_power_off;
++		}
+ 	}
+ 
+ 	mutex_init(&ov8856->mutex);
+@@ -2511,11 +2528,9 @@ static int ov8856_probe(struct i2c_client *client)
+ 		goto probe_error_media_entity_cleanup;
+ 	}
+ 
+-	/*
+-	 * Device is already turned on by i2c-core with ACPI domain PM.
+-	 * Enable runtime PM and turn off the device.
+-	 */
+-	pm_runtime_set_active(&client->dev);
++	/* Set the device's state to active if it's in D0 state. */
++	if (full_power)
++		pm_runtime_set_active(&client->dev);
+ 	pm_runtime_enable(&client->dev);
+ 	pm_runtime_idle(&client->dev);
+ 
+@@ -2562,6 +2577,7 @@ static struct i2c_driver ov8856_i2c_driver = {
+ 	},
+ 	.probe_new = ov8856_probe,
+ 	.remove = ov8856_remove,
++	.flags = I2C_DRV_ACPI_WAIVE_D0_PROBE,
+ };
+ 
+ module_i2c_driver(ov8856_i2c_driver);
+-- 
+2.7.4
 
-"microchip-mpfs-usb", given the dr_mode property below indicates this
-controller is not limited to host mode?
-
-> +
-> +  reg:
-> +    maxItems: 1
-> +
-> +  interrupts:
-> +    maxItems: 1
-> +
-> +  interrupt-names:
-> +    minItems: 2
-> +    items:
-> +      - const: dma
-> +      - const: mc
-> +
-> +  clocks:
-> +    maxItems: 1
-> +
-> +  dr_mode:
-> +    enum:
-> +      - host
-> +      - otg
-> +      - peripheral
-> +
-> +required:
-> +  - compatible
-> +  - reg
-> +  - interrupts
-> +  - interrupt-names
-> +  - clocks
-> +  - dr_mode
-> +
-> +additionalProperties: false
-> +
-> +examples:
-> +  - |
-> +    #include "dt-bindings/clock/microchip,mpfs-clock.h"
-> +    #include "dt-bindings/interrupt-controller/microchip,mpfs-plic.h"
-> +    soc {
-> +      #address-cells = <2>;
-> +      #size-cells = <2>;
-
-Please drop these two...
-
-> +      usb: usb@20201000 {
-> +        compatible = "microchip,mpfs-usb-host";
-> +        reg = <0x0 0x20201000 0x0 0x1000>;
-
-... and the zeros here.
-
-> +        clocks = <&clkcfg CLK_USB>;
-> +        interrupt-parent = <&plic>;
-> +        interrupts = <PLIC_INT_USB_DMA PLIC_INT_USB_MC>;
-
-Please group by angular brackets:
-
-<PLIC_INT_USB_DMA>, <PLIC_INT_USB_MC>.
-
-> +        interrupt-names = "dma","mc";
-> +        dr_mode = "host";
-> +        status = "disabled";
-
-Please drop this.
-
-> +      };
-> +    };
-> +
-> +...
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
