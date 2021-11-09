@@ -2,98 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8ACA444A533
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 04:12:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1354E44A538
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 04:12:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242428AbhKIDPS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Nov 2021 22:15:18 -0500
-Received: from twspam01.aspeedtech.com ([211.20.114.71]:7769 "EHLO
-        twspam01.aspeedtech.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235901AbhKIDPR (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Nov 2021 22:15:17 -0500
-Received: from mail.aspeedtech.com ([192.168.0.24])
-        by twspam01.aspeedtech.com with ESMTP id 1A92nC39061473;
-        Tue, 9 Nov 2021 10:49:12 +0800 (GMT-8)
-        (envelope-from jammy_huang@aspeedtech.com)
-Received: from JammyHuang-PC.aspeed.com (192.168.2.115) by TWMBX02.aspeed.com
- (192.168.0.24) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Tue, 9 Nov
- 2021 11:12:27 +0800
-From:   Jammy Huang <jammy_huang@aspeedtech.com>
-To:     <eajames@linux.ibm.com>, <mchehab@kernel.org>, <joel@jms.id.au>,
-        <andrew@aj.id.au>, <linux-media@vger.kernel.org>,
-        <openbmc@lists.ozlabs.org>, <linux-arm-kernel@lists.infradead.org>,
-        <linux-aspeed@lists.ozlabs.org>, <linux-kernel@vger.kernel.org>
-CC:     Paul Menzel <pmenzel@molgen.mpg.de>
-Subject: [PATCH v2] media: aspeed: Update signal status immediately to ensure sane hw state
-Date:   Tue, 9 Nov 2021 11:12:27 +0800
-Message-ID: <20211109031227.1792-1-jammy_huang@aspeedtech.com>
-X-Mailer: git-send-email 2.25.1
+        id S242459AbhKIDP3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Nov 2021 22:15:29 -0500
+Received: from mail.kernel.org ([198.145.29.99]:34596 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235901AbhKIDP1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Nov 2021 22:15:27 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C7D3C6120A;
+        Tue,  9 Nov 2021 03:12:39 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1636427562;
+        bh=Vj6mN47ETXHPlVPItotZdyR9KltKfth72u8woDTgtlM=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=vE87oTxLQiugl3AAx/5SlS0/ObJ6tzCuAyplAOAPfXhN8q2kKPfxv94RRYc/DRXfi
+         MZilqVeHU5w1B59D43bMqiNpcQcmn5iU+xw6fvlsyM7RRDugxmo1gLYmJe7h45k8y+
+         gYViGpMRsKLXEIHgp7OtjfW7lVUURfcFS0PKcgKDrT56uZLcUbV/uDQtQAqSFl2VWK
+         N+yM2Ll5NxOqatp2ly6jYpSR+acACBlPJq9MHoGFLaOpFvvCVUYpjaBP8kyRcKpFSN
+         W82CTLjvTbcXNCu/S0e6eyChtjr9GvydCwe4ZfLNwvRnITjeNgcJAAcmrUF8ALWo0f
+         gpXMArWL6ubbA==
+Date:   Tue, 9 Nov 2021 04:12:36 +0100
+From:   Marek =?UTF-8?B?QmVow7pu?= <kabel@kernel.org>
+To:     Ansuel Smith <ansuelsmth@gmail.com>
+Cc:     Andrew Lunn <andrew@lunn.ch>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Vladimir Oltean <olteanv@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>, Pavel Machek <pavel@ucw.cz>,
+        John Crispin <john@phrozen.org>, netdev@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-leds@vger.kernel.org
+Subject: Re: [RFC PATCH v3 5/8] leds: trigger: netdev: add hardware control
+ support
+Message-ID: <20211109041236.5bacbc19@thinkpad>
+In-Reply-To: <20211109022608.11109-6-ansuelsmth@gmail.com>
+References: <20211109022608.11109-1-ansuelsmth@gmail.com>
+        <20211109022608.11109-6-ansuelsmth@gmail.com>
+X-Mailer: Claws Mail 3.18.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [192.168.2.115]
-X-ClientProxiedBy: TWMBX02.aspeed.com (192.168.0.24) To TWMBX02.aspeed.com
- (192.168.0.24)
-X-DNSRBL: 
-X-MAIL: twspam01.aspeedtech.com 1A92nC39061473
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-If res-chg, VE_INTERRUPT_MODE_DETECT_WD irq will be raised. But
-v4l2_input_status won't be updated to no-signal immediately until
-aspeed_video_get_resolution() in aspeed_video_resolution_work().
+On Tue,  9 Nov 2021 03:26:05 +0100
+Ansuel Smith <ansuelsmth@gmail.com> wrote:
 
-During the period of time, aspeed_video_start_frame() could be called
-because it doesn't know signal becomes unstable now. If it goes with
-aspeed_video_init_regs() of aspeed_video_irq_res_change()
-simultaneously, it will mess up hw state.
+> Add hardware control support for the Netdev trigger.
+> The trigger on config change will check if the requested trigger can set
+> to blink mode using LED hardware mode and if every blink mode is supported,
+> the trigger will enable hardware mode with the requested configuration.
+> If there is at least one trigger that is not supported and can't run in
+> hardware mode, then software mode will be used instead.
+> 
+> Signed-off-by: Ansuel Smith <ansuelsmth@gmail.com>
+> ---
+>  drivers/leds/trigger/ledtrig-netdev.c | 61 ++++++++++++++++++++++++++-
+>  1 file changed, 60 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/leds/trigger/ledtrig-netdev.c b/drivers/leds/trigger/ledtrig-netdev.c
+> index 0a3c0b54dbb9..28d9def2fbd0 100644
+> --- a/drivers/leds/trigger/ledtrig-netdev.c
+> +++ b/drivers/leds/trigger/ledtrig-netdev.c
+> @@ -37,6 +37,7 @@
+>   */
+>  
+>  struct led_netdev_data {
+> +	bool hw_mode_supported;
+>  	spinlock_t lock;
+>  
+>  	struct delayed_work work;
+> @@ -61,9 +62,52 @@ enum netdev_led_attr {
+>  
+>  static void set_baseline_state(struct led_netdev_data *trigger_data)
+>  {
+> +	bool can_offload;
+>  	int current_brightness;
+> +	u32 hw_blink_mode_supported;
+>  	struct led_classdev *led_cdev = trigger_data->led_cdev;
+>  
+> +	if (trigger_data->hw_mode_supported) {
+> +		if (test_bit(TRIGGER_NETDEV_LINK, &trigger_data->mode) &&
+> +		    led_trigger_blink_mode_is_supported(led_cdev, TRIGGER_NETDEV_LINK))
+> +			hw_blink_mode_supported |= TRIGGER_NETDEV_LINK;
+> +		if (test_bit(TRIGGER_NETDEV_TX, &trigger_data->mode) &&
+> +		    led_trigger_blink_mode_is_supported(led_cdev, TRIGGER_NETDEV_TX))
+> +			hw_blink_mode_supported |= TRIGGER_NETDEV_TX;
+> +		if (test_bit(TRIGGER_NETDEV_RX, &trigger_data->mode) &&
+> +		    led_trigger_blink_mode_is_supported(led_cdev, TRIGGER_NETDEV_RX))
+> +			hw_blink_mode_supported |= TRIGGER_NETDEV_RX;
+> +
+> +		/* All the requested blink mode can be triggered by hardware.
+> +		 * Put it in hardware mode.
+> +		 */
+> +		if (hw_blink_mode_supported == trigger_data->mode)
+> +			can_offload = true;
+> +
+> +		if (can_offload) {
+> +			/* We are refreshing the blink modes. Reset them */
+> +			led_cdev->hw_control_configure(led_cdev, TRIGGER_NETDEV_LINK,
+> +						       BLINK_MODE_ZERO);
+> +
+> +			if (test_bit(TRIGGER_NETDEV_LINK, &trigger_data->mode))
+> +				led_cdev->hw_control_configure(led_cdev, TRIGGER_NETDEV_LINK,
+> +							       BLINK_MODE_ENABLE);
+> +			if (test_bit(TRIGGER_NETDEV_TX, &trigger_data->mode))
+> +				led_cdev->hw_control_configure(led_cdev, TRIGGER_NETDEV_TX,
+> +							       BLINK_MODE_ENABLE);
+> +			if (test_bit(TRIGGER_NETDEV_RX, &trigger_data->mode))
+> +				led_cdev->hw_control_configure(led_cdev, TRIGGER_NETDEV_RX,
+> +							       BLINK_MODE_ENABLE);
+> +			led_cdev->hw_control_start(led_cdev);
 
-To fix this problem, v4l2_input_status is updated to no-signal
-immediately for VE_INTERRUPT_MODE_DETECT_WD irq.
+Please nooo :)
+This is exactly what I wanted to avoid, this logic should be in the LED
+driver itself.
 
-Fixes: d2b4387f3bdf ("media: platform: Add Aspeed Video Engine driver")
-Signed-off-by: Jammy Huang <jammy_huang@aspeedtech.com>
-Acked-by: Paul Menzel <pmenzel@molgen.mpg.de>
----
-v2:
-  - update subject and commit message
----
- drivers/media/platform/aspeed-video.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+Can you please at least read my last proposal?
 
-diff --git a/drivers/media/platform/aspeed-video.c b/drivers/media/platform/aspeed-video.c
-index 1ade264a8b69..3facd7ecc1a1 100644
---- a/drivers/media/platform/aspeed-video.c
-+++ b/drivers/media/platform/aspeed-video.c
-@@ -762,6 +762,8 @@ static void aspeed_video_irq_res_change(struct aspeed_video *video, ulong delay)
- 	set_bit(VIDEO_RES_CHANGE, &video->flags);
- 	clear_bit(VIDEO_FRAME_INPRG, &video->flags);
- 
-+	video->v4l2_input_status = V4L2_IN_ST_NO_SIGNAL;
-+
- 	aspeed_video_off(video);
- 	aspeed_video_on(video);
- 	aspeed_video_bufs_done(video, VB2_BUF_STATE_ERROR);
-@@ -1889,7 +1891,6 @@ static void aspeed_video_resolution_work(struct work_struct *work)
- 	struct delayed_work *dwork = to_delayed_work(work);
- 	struct aspeed_video *video = container_of(dwork, struct aspeed_video,
- 						  res_work);
--	u32 input_status = video->v4l2_input_status;
- 
- 	/* Exit early in case no clients remain */
- 	if (test_bit(VIDEO_STOPPED, &video->flags))
-@@ -1902,8 +1903,7 @@ static void aspeed_video_resolution_work(struct work_struct *work)
- 	aspeed_video_get_resolution(video);
- 
- 	if (video->detected_timings.width != video->active_timings.width ||
--	    video->detected_timings.height != video->active_timings.height ||
--	    input_status != video->v4l2_input_status) {
-+	    video->detected_timings.height != video->active_timings.height) {
- 		static const struct v4l2_event ev = {
- 			.type = V4L2_EVENT_SOURCE_CHANGE,
- 			.u.src_change.changes = V4L2_EVENT_SRC_CH_RESOLUTION,
--- 
-2.25.1
+patch 2
+https://lore.kernel.org/linux-leds/20210601005155.27997-3-kabel@kernel.org/
+adds the trigger_offload() method. This may need to get changed to
+trigger_offload_start() and trigger_offload_stop(), as per Andrew's
+request.
 
+patch 3
+https://lore.kernel.org/linux-leds/20210601005155.27997-4-kabel@kernel.org/
+moves the whole struct led_netdev_data to global include file
+include/linux/ledtrig-netdev.h
+
+patch 4
+https://lore.kernel.org/linux-leds/20210601005155.27997-5-kabel@kernel.org/
+makes netdev trigger to try to call the trigger_offload() method.
+
+So after patch 4, netdev trigger calls trigger_offload() methods and
+passes itself into it.
+
+Example implementation is then in patch 10 of the series
+https://lore.kernel.org/linux-leds/20210601005155.27997-11-kabel@kernel.org/
+Look at omnia_led_trig_offload() function.
+
+The benefit of this API is that it is flexible - all existing triggers
+an be theoretically offloaded to HW (if there is HW that supports it)
+without change to this API, and with minimal changes to the sw
+implementations of the triggers.
+
+Could you please at least try it?
+
+I am willing to work with you on this. We can make a conference call
+tomorrow, if you are able to.
+
+Marek
