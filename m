@@ -2,59 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 68A8644AADA
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 10:49:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9E55144AADE
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 10:50:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244285AbhKIJwd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Nov 2021 04:52:33 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49274 "EHLO
+        id S245057AbhKIJwp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Nov 2021 04:52:45 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49278 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244272AbhKIJvg (ORCPT
+        with ESMTP id S244273AbhKIJvg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 9 Nov 2021 04:51:36 -0500
-Received: from mail-pf1-x432.google.com (mail-pf1-x432.google.com [IPv6:2607:f8b0:4864:20::432])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 91E6AC061220
-        for <linux-kernel@vger.kernel.org>; Tue,  9 Nov 2021 01:48:43 -0800 (PST)
-Received: by mail-pf1-x432.google.com with SMTP id 127so18986754pfu.1
-        for <linux-kernel@vger.kernel.org>; Tue, 09 Nov 2021 01:48:43 -0800 (PST)
+Received: from mail-pl1-x62b.google.com (mail-pl1-x62b.google.com [IPv6:2607:f8b0:4864:20::62b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 062B6C061764
+        for <linux-kernel@vger.kernel.org>; Tue,  9 Nov 2021 01:48:45 -0800 (PST)
+Received: by mail-pl1-x62b.google.com with SMTP id u17so19903811plg.9
+        for <linux-kernel@vger.kernel.org>; Tue, 09 Nov 2021 01:48:45 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=sifive.com; s=google;
         h=from:to:subject:date:message-id:in-reply-to:references:mime-version
          :content-transfer-encoding;
-        bh=QSqFepERE4N2wqVXalvOoo260yooYSe4DI6a5ek1AvE=;
-        b=bb5tQb/6VeknVaR406cXHwsp0nVG1x2yFyshVKlDcHEmIEaibX4qmuCrnx6r7i3Yzy
-         OWdOraOah9Q6ITGHX4vvFKbZMLJelo1T2DmeZmd5HrSYIJM2iKB3Ls4U8bA0j4091ycA
-         4dZum9J1j2u00hjCLTf5AADYx9x7fSyilEbPo9Ew+2AjYBoDXSRxEMitnBEGGl7mKqh9
-         7MLp1wBHB1n4A3S1lWzFu8Xsqhr0mP/L01S7ezDht5Equ+H3qRNPbHZQb9AvS71SHzNv
-         wTxCCUy9H4La495JDszWKYXJl2SRS/rSwWT3Ja+ydDocytajLMyt6FOsFCpcDoJUQYaw
-         yzPQ==
+        bh=EVVuscMQp2lGVvzsl9H0FHRWDyTQs0McQHy078vwuOw=;
+        b=cKAlg7aAY9F/waxsGRhspbhybLa4eWeyPdzqCUQHBxYSasLzV7nLJZCPY6umhcn1aG
+         eZnGgWjISVnVUYv3S4glBB7JqmQwgIxH1B6hhY4qgy00ce0cFNjtAEMxqqOSRpt2YOXi
+         2K1xkyAfnqB8tYfwhCUN+VLIKxPtvqatiaoXMPUP3B9kHW9dWCdCTBMktaKGE+9BwQ0V
+         xYO1NY6Kxh1npu44TLGUhS390GMh2bnqrWOt3L+/9gc6NuJv+arNcMSrHRuVQq+e8ToG
+         qVcP+DnNWcs19/FA/9/Wyoo/SgxyYeUQ02NjdNja5WSvpGLst1sVDM0hL033gm8uTisa
+         zf1g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=QSqFepERE4N2wqVXalvOoo260yooYSe4DI6a5ek1AvE=;
-        b=DrWDdK9Xvi01uSzA5WW59zqYnwSaN08irWjasdJAK8bbwbP10Ajmhb2psTI+IRmJJd
-         RHouldXdTdgXTYczNXm3gcyUvpJYgHuLQcGXH094xxHcOsGk2qqXYZGO6MBTYwBVzsYd
-         Xwjh4UTe1L6FVqdSDjVfUM62ONhHHwv+98c80I+aITQpurS1ORlRkUnFKebs4hp6avwv
-         DquxApjbBGaRPazUfj8fYPEuB5OqiAJ4SeG3YWxYoOGb3DRbc49obWKkMmZwgcQdlGSd
-         7q06RGwh1W6EZ+tkdWA1QHrvu615mvt+CyMj0rkFsE1w5TPnUwzGyg6DhVb3gRoBOwaP
-         4IGQ==
-X-Gm-Message-State: AOAM531Z2qqbH3lNxkvInwZfKAP6pgeXRFqBKaNf38uVdQSAPic8DcTY
-        YatsPFHeYbPyVHToI4At0GHt6g==
-X-Google-Smtp-Source: ABdhPJz+XI26Bw7+LIrDII1mBcw/2IbYLT4/XZjMDBL60+W4P/sUugRbk2XDDdfmD5SP6IMja7V68w==
-X-Received: by 2002:aa7:848a:0:b0:47f:d648:2df4 with SMTP id u10-20020aa7848a000000b0047fd6482df4mr6418681pfn.63.1636451323096;
-        Tue, 09 Nov 2021 01:48:43 -0800 (PST)
+        bh=EVVuscMQp2lGVvzsl9H0FHRWDyTQs0McQHy078vwuOw=;
+        b=V19aJfaXZLQcbzp+hz+lf1S26j6HLwfnCh1MWw+7itWl6RHT5zNP+g7Q/P3Iy5JChq
+         ba4Jz9lZjdbzSNg/tNMtKWOyO0noBtm2woRh3adkpbB0TVNDzjknXl/S+1AcsSTexovc
+         nFuvfHFB+z/LgtunBhCcveYogdVM7tpIPnAWF0iJHTFcHOPa+K9XtnHjgV84vKNSexuW
+         Rak6vzvb15Gyh4R+IGKqGgD40xoxHkKrAnYdYYNeoGEiCDhsz9TFd5XchBLDmIDGtEc2
+         jBV1tekq0r0rl43eHBa2aFdUol2qGKjnJkeTmS3qukPWtZ3v+cD0xqu5HKVo/HIdTnjD
+         1G4Q==
+X-Gm-Message-State: AOAM531Tjn6wfK/S+3xwe3AVNoeLZFSZu0sJGaaGvkEH0kRN7JJekqsq
+        JhnonJcLTpkQ/okSzFOH4uW2DQ==
+X-Google-Smtp-Source: ABdhPJyNsWYWX5NtIoaU64xY9v05FODRqM9JNucFY6hQnnaGUpw+q3cXZivYrJFBQu4T5RAwxjZvNA==
+X-Received: by 2002:a17:902:c947:b0:141:e7f6:d688 with SMTP id i7-20020a170902c94700b00141e7f6d688mr5681010pla.56.1636451324561;
+        Tue, 09 Nov 2021 01:48:44 -0800 (PST)
 Received: from hsinchu16.internal.sifive.com (59-124-168-89.hinet-ip.hinet.net. [59.124.168.89])
-        by smtp.gmail.com with ESMTPSA id cv1sm1940511pjb.48.2021.11.09.01.48.41
+        by smtp.gmail.com with ESMTPSA id cv1sm1940511pjb.48.2021.11.09.01.48.43
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 09 Nov 2021 01:48:42 -0800 (PST)
+        Tue, 09 Nov 2021 01:48:44 -0800 (PST)
 From:   Greentime Hu <greentime.hu@sifive.com>
 To:     palmer@dabbelt.com, paul.walmsley@sifive.com,
         linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
         aou@eecs.berkeley.edu
-Subject: [PATCH v9 07/17] riscv: Reset vector register
-Date:   Tue,  9 Nov 2021 17:48:19 +0800
-Message-Id: <8612e69a10235e67fac8a55864e77a4ab8f771ac.1636362169.git.greentime.hu@sifive.com>
+Subject: [PATCH v9 08/17] riscv: Add vector struct and assembler definitions
+Date:   Tue,  9 Nov 2021 17:48:20 +0800
+Message-Id: <15d09938180ee45bc5481c4a2d41ad656ca23c82.1636362169.git.greentime.hu@sifive.com>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <cover.1636362169.git.greentime.hu@sifive.com>
 References: <cover.1636362169.git.greentime.hu@sifive.com>
@@ -64,83 +64,73 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Guo Ren <guoren@linux.alibaba.com>
+Add vector state context struct in struct thread and asm-offsets.c
+definitions.
 
-Reset vector registers at boot-time and disable vector instructions
-execution for kernel mode.
+The vector registers will be saved in datap pointer of __riscv_v_state. It
+will be dynamically allocated in kernel space. It will be put right after
+the __riscv_v_state data structure in user space.
 
-Signed-off-by: Guo Ren <guoren@linux.alibaba.com>
 Co-developed-by: Vincent Chen <vincent.chen@sifive.com>
 Signed-off-by: Vincent Chen <vincent.chen@sifive.com>
-Co-developed-by: Han-Kuan Chen <hankuan.chen@sifive.com>
-Signed-off-by: Han-Kuan Chen <hankuan.chen@sifive.com>
-Co-developed-by: Greentime Hu <greentime.hu@sifive.com>
 Signed-off-by: Greentime Hu <greentime.hu@sifive.com>
 ---
- arch/riscv/kernel/entry.S |  6 +++---
- arch/riscv/kernel/head.S  | 22 ++++++++++++++++++++--
- 2 files changed, 23 insertions(+), 5 deletions(-)
+ arch/riscv/include/asm/processor.h   |  1 +
+ arch/riscv/include/uapi/asm/ptrace.h | 11 +++++++++++
+ arch/riscv/kernel/asm-offsets.c      |  6 ++++++
+ 3 files changed, 18 insertions(+)
 
-diff --git a/arch/riscv/kernel/entry.S b/arch/riscv/kernel/entry.S
-index 98f502654edd..ad0fa80ada81 100644
---- a/arch/riscv/kernel/entry.S
-+++ b/arch/riscv/kernel/entry.S
-@@ -77,10 +77,10 @@ _save_context:
- 	 * Disable user-mode memory access as it should only be set in the
- 	 * actual user copy routines.
- 	 *
--	 * Disable the FPU to detect illegal usage of floating point in kernel
--	 * space.
-+	 * Disable the FPU/Vector to detect illegal usage of floating point
-+	 * or vector in kernel space.
- 	 */
--	li t0, SR_SUM | SR_FS
-+	li t0, SR_SUM | SR_FS | SR_VS
+diff --git a/arch/riscv/include/asm/processor.h b/arch/riscv/include/asm/processor.h
+index 46b492c78cbb..a268f1382e52 100644
+--- a/arch/riscv/include/asm/processor.h
++++ b/arch/riscv/include/asm/processor.h
+@@ -35,6 +35,7 @@ struct thread_struct {
+ 	unsigned long s[12];	/* s[0]: frame pointer */
+ 	struct __riscv_d_ext_state fstate;
+ 	unsigned long bad_cause;
++	struct __riscv_v_state vstate;
+ };
  
- 	REG_L s0, TASK_TI_USER_SP(tp)
- 	csrrc s1, CSR_STATUS, t0
-diff --git a/arch/riscv/kernel/head.S b/arch/riscv/kernel/head.S
-index 52c5ff9804c5..551afe1de85e 100644
---- a/arch/riscv/kernel/head.S
-+++ b/arch/riscv/kernel/head.S
-@@ -242,10 +242,10 @@ pmp_done:
- .option pop
+ /* Whitelist the fstate from the task_struct for hardened usercopy */
+diff --git a/arch/riscv/include/uapi/asm/ptrace.h b/arch/riscv/include/uapi/asm/ptrace.h
+index 882547f6bd5c..bd3b8a710246 100644
+--- a/arch/riscv/include/uapi/asm/ptrace.h
++++ b/arch/riscv/include/uapi/asm/ptrace.h
+@@ -77,6 +77,17 @@ union __riscv_fp_state {
+ 	struct __riscv_q_ext_state q;
+ };
  
- 	/*
--	 * Disable FPU to detect illegal usage of
-+	 * Disable FPU & VECTOR to detect illegal usage of
- 	 * floating point in kernel space
- 	 */
--	li t0, SR_FS
-+	li t0, SR_FS | SR_VS
- 	csrc CSR_STATUS, t0
++struct __riscv_v_state {
++	unsigned long vstart;
++	unsigned long vl;
++	unsigned long vtype;
++	unsigned long vcsr;
++	void *datap;
++#if __riscv_xlen == 32
++	__u32 __padding;
++#endif
++};
++
+ #endif /* __ASSEMBLY__ */
  
- #ifdef CONFIG_SMP
-@@ -433,6 +433,24 @@ ENTRY(reset_regs)
- 	csrw	fcsr, 0
- 	/* note that the caller must clear SR_FS */
- #endif /* CONFIG_FPU */
+ #endif /* _UAPI_ASM_RISCV_PTRACE_H */
+diff --git a/arch/riscv/kernel/asm-offsets.c b/arch/riscv/kernel/asm-offsets.c
+index 90f8ce64fa6f..34f43c84723a 100644
+--- a/arch/riscv/kernel/asm-offsets.c
++++ b/arch/riscv/kernel/asm-offsets.c
+@@ -72,6 +72,12 @@ void asm_offsets(void)
+ 	OFFSET(TSK_STACK_CANARY, task_struct, stack_canary);
+ #endif
+ 
++	OFFSET(RISCV_V_STATE_VSTART, __riscv_v_state, vstart);
++	OFFSET(RISCV_V_STATE_VL, __riscv_v_state, vl);
++	OFFSET(RISCV_V_STATE_VTYPE, __riscv_v_state, vtype);
++	OFFSET(RISCV_V_STATE_VCSR, __riscv_v_state, vcsr);
++	OFFSET(RISCV_V_STATE_DATAP, __riscv_v_state, datap);
 +
-+#ifdef CONFIG_VECTOR
-+	csrr	t0, CSR_MISA
-+	li	t1, (COMPAT_HWCAP_ISA_V >> 16)
-+	slli	t1, t1, 16
-+	and	t0, t0, t1
-+	beqz	t0, .Lreset_regs_done
-+
-+	li	t1, SR_VS
-+	csrs	CSR_STATUS, t1
-+	vsetvli t1, x0, e8, m8
-+	vmv.v.i v0, 0
-+	vmv.v.i v8, 0
-+	vmv.v.i v16, 0
-+	vmv.v.i v24, 0
-+	/* note that the caller must clear SR_VS */
-+#endif /* CONFIG_VECTOR */
-+
- .Lreset_regs_done:
- 	ret
- END(reset_regs)
+ 	DEFINE(PT_SIZE, sizeof(struct pt_regs));
+ 	OFFSET(PT_EPC, pt_regs, epc);
+ 	OFFSET(PT_RA, pt_regs, ra);
 -- 
 2.31.1
 
