@@ -2,109 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 06A3644B4DC
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 22:39:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 52C1F44B4DF
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 22:39:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243789AbhKIVmM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Nov 2021 16:42:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42030 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231961AbhKIVmK (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Nov 2021 16:42:10 -0500
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 79C64C061764
-        for <linux-kernel@vger.kernel.org>; Tue,  9 Nov 2021 13:39:24 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=hfoJ3mdhOp2wVVmk0izPdp4ZzIGt68u9ejlAidoV8lo=; b=db9/rIn0TZoh+TBuGUP9/OW5of
-        PycxW9RB/VkwZeSGcorbwmwTqYGld7zd3DS/IPxU16pe9s9iyIHJr/k1URpNf9gxLrKkr29kSbdrK
-        BEs6GVFVPRpx6n6Zyg1Kq0gKncfBo0putXZJKcGzKwlxUJIhxefx9QUJi2LrgrBcTBQcLQ5fJWaET
-        U1ilvDKABydsQFPJ63NP1hJE2tfaK+X+LRz9UaROBzo1e1zCPPpYzx7sXtWYX86hcEe6nT6mzEwIG
-        piMU7RNEwMe5tDPoEdh0F360CFIQLSl16Eg40x4UKOe4yOJgypGi+uJOb5NR0KOmXEay5AdgNuFVe
-        X9sx/Sdw==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=worktop.programming.kicks-ass.net)
-        by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mkYpL-00F8sM-M5; Tue, 09 Nov 2021 21:38:48 +0000
-Received: by worktop.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 3A03F9862D2; Tue,  9 Nov 2021 22:38:47 +0100 (CET)
-Date:   Tue, 9 Nov 2021 22:38:47 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Sultan Alsawaf <sultan@kerneltoast.com>
-Cc:     Anton Vorontsov <anton@enomsg.org>,
-        Ben Segall <bsegall@google.com>,
-        Colin Cross <ccross@android.com>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        David Airlie <airlied@linux.ie>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        dri-devel@lists.freedesktop.org, Ingo Molnar <mingo@redhat.com>,
-        John Ogness <john.ogness@linutronix.de>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Kees Cook <keescook@chromium.org>,
-        linux-kernel@vger.kernel.org,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Mel Gorman <mgorman@suse.de>, Petr Mladek <pmladek@suse.com>,
-        Sergey Senozhatsky <senozhatsky@chromium.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        Tony Luck <tony.luck@intel.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>, mkoutny@suse.com
-Subject: Re: printk deadlock due to double lock attempt on current CPU's
- runqueue
-Message-ID: <20211109213847.GY174703@worktop.programming.kicks-ass.net>
-References: <YYrU2PdmdNkulWSM@sultan-box.localdomain>
+        id S243905AbhKIVmm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Nov 2021 16:42:42 -0500
+Received: from mail.kernel.org ([198.145.29.99]:56180 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S243830AbhKIVmh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Nov 2021 16:42:37 -0500
+Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 85D086112D;
+        Tue,  9 Nov 2021 21:39:48 +0000 (UTC)
+Date:   Tue, 9 Nov 2021 16:39:46 -0500
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Beau Belgrave <beaub@linux.microsoft.com>
+Cc:     Masami Hiramatsu <mhiramat@kernel.org>,
+        linux-trace-devel@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v4 02/10] user_events: Add minimal support for
+ trace_event into ftrace
+Message-ID: <20211109163946.55bb6e8b@gandalf.local.home>
+In-Reply-To: <20211109212756.GA1741@kbox>
+References: <20211104170433.2206-3-beaub@linux.microsoft.com>
+        <20211107233115.1f77e93c4bdf3ff649be99c1@kernel.org>
+        <20211108171336.GA1690@kbox>
+        <20211108131639.33a4f186@gandalf.local.home>
+        <20211108202527.GA1862@kbox>
+        <20211109115634.5fb6d984d7b4e701c740d5f3@kernel.org>
+        <20211109190844.GA1529@kbox>
+        <20211109142506.3c280469@gandalf.local.home>
+        <20211109201432.GA1650@kbox>
+        <20211109154520.11995e75@gandalf.local.home>
+        <20211109212756.GA1741@kbox>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YYrU2PdmdNkulWSM@sultan-box.localdomain>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 09, 2021 at 12:06:48PM -0800, Sultan Alsawaf wrote:
-> Hi,
-> 
-> I encountered a printk deadlock on 5.13 which appears to still affect the latest
-> kernel. The deadlock occurs due to printk being used while having the current
-> CPU's runqueue locked, and the underlying framebuffer console attempting to lock
-> the same runqueue when printk tries to flush the log buffer.
+On Tue, 9 Nov 2021 13:27:56 -0800
+Beau Belgrave <beaub@linux.microsoft.com> wrote:
 
-Yes, that's a known 'feature' of some consoles. printk() is in the
-process of being reworked to not call con->write() from the printk()
-calling context, which would go a long way towards fixing this.
+> Where were you thinking the filtering would occur? In the filter /
+> histogram predicates or in user_events directly before buffer commit?
 
->   #27 [ffffc900005b8e28] enqueue_task_fair at ffffffff8129774a  <-- SCHED_WARN_ON(rq->tmp_alone_branch != &rq->leaf_cfs_rq_list);
->   #28 [ffffc900005b8ec0] activate_task at ffffffff8125625d
->   #29 [ffffc900005b8ef0] ttwu_do_activate at ffffffff81257943
->   #30 [ffffc900005b8f28] sched_ttwu_pending at ffffffff8125c71f <-- locks this CPU's runqueue
->   #31 [ffffc900005b8fa0] flush_smp_call_function_queue at ffffffff813c6833
->   #32 [ffffc900005b8fd8] generic_smp_call_function_single_interrupt at ffffffff813c7f58
->   #33 [ffffc900005b8fe0] __sysvec_call_function_single at ffffffff810f1456
->   #34 [ffffc900005b8ff0] sysvec_call_function_single at ffffffff831ec1bc
->   --- <IRQ stack> ---
->   #35 [ffffc9000019fda8] sysvec_call_function_single at ffffffff831ec1bc
->       RIP: ffffffff831ed06e  RSP: ffffed10438a6a49  RFLAGS: 00000001
->       RAX: ffff888100d832c0  RBX: 0000000000000000  RCX: 1ffff92000033fd7
->       RDX: 0000000000000000  RSI: ffff888100d832c0  RDI: ffffed10438a6a49
->       RBP: ffffffff831ec166   R8: dffffc0000000000   R9: 0000000000000000
->       R10: ffffffff83400e22  R11: 0000000000000000  R12: ffffffff831ed83e
->       R13: 0000000000000000  R14: ffffc9000019fde8  R15: ffffffff814d4d9d
->       ORIG_RAX: ffff88821c53524b  CS: 0001  SS: ef073a2
->   WARNING: possibly bogus exception frame
-> ----------------------->8-----------------------
-> 
-> The catalyst is that CONFIG_SCHED_DEBUG is enabled and the tmp_alone_branch
-> assertion fails (Peter, is this bad?).
+In the predicates. But we only care about the dynamic array ones.
 
-Yes, that's not good. IIRC Vincent and Michal were looking at that code
-recently.
-
-> I'm not sure what the *correct* solution is here (don't use printk while having
-> a runqueue locked? don't use schedule_work() from the fbcon path? tell printk
-> to use one of its lock-less backends?), so I've cc'd all the relevant folks.
-
-I'm a firm believer in early_printk serial consoles.
+-- Steve
