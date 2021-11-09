@@ -2,93 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 78D2044ABAE
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 11:39:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B55244ABB3
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 11:41:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245418AbhKIKm1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Nov 2021 05:42:27 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32808 "EHLO
+        id S245428AbhKIKnm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Nov 2021 05:43:42 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33086 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S245408AbhKIKm0 (ORCPT
+        with ESMTP id S245419AbhKIKnh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Nov 2021 05:42:26 -0500
-Received: from mail-ed1-x535.google.com (mail-ed1-x535.google.com [IPv6:2a00:1450:4864:20::535])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 40E88C061764;
-        Tue,  9 Nov 2021 02:39:40 -0800 (PST)
-Received: by mail-ed1-x535.google.com with SMTP id j21so74610414edt.11;
-        Tue, 09 Nov 2021 02:39:40 -0800 (PST)
+        Tue, 9 Nov 2021 05:43:37 -0500
+Received: from mail-pl1-x635.google.com (mail-pl1-x635.google.com [IPv6:2607:f8b0:4864:20::635])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 10721C061766
+        for <linux-kernel@vger.kernel.org>; Tue,  9 Nov 2021 02:40:52 -0800 (PST)
+Received: by mail-pl1-x635.google.com with SMTP id p18so20084611plf.13
+        for <linux-kernel@vger.kernel.org>; Tue, 09 Nov 2021 02:40:52 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=Q4bdOdLYfsLL7H2ViKAtSs2PP+PMsHatQ/9U1YFvzMg=;
-        b=VUt6GtfAcks0r9L9W9Cu1gyEd62lb0BNOvqdQRALzOdM8LB8U1G6W8Llr/4St0Al6N
-         xL/S92+mVpglTscuBue9INE0gqDMvLwB202/NSmjOYOy62Sy4mKDfTwOFSkQnG+nI6Cs
-         1KnH6dPvve363wTYFsfc/euaeMiewKDM1c5rjg7skKW3KzpYIFR0FtvFWGk1a17yhhYi
-         NiELNRRxQpA0eCNCjWv09+olebXBUlWbLDpGYoOAfGWjlHdhUtC6JTtocmRyZ81Y2aWa
-         b1+p61fQvvNq2AJ9QYCZSMxsFo0L1yt0Eet+I5s4etet+u0W+8L+ZZFSdROcnp74RjX0
-         +AkQ==
+        d=bytedance-com.20210112.gappssmtp.com; s=20210112;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=ijkZGpaFpq6LV8Gg8reo+SGCxLMW6UmnTU/srKB0UIc=;
+        b=T3YiUPJYSknWJO0k0ZBPc+Hfc2pdbROPOfOnZ4i3Bzpubl9KUT7aLNzl70vpfrZFd4
+         S8PgbtElpzfz+ter7uV5y4U8QWPW0Md0+qantVOPX3mxmhU//7vzBGlJ7L/jxFxuU3dF
+         be45f4qIlcndP6Em8lOmWG6KHlo6gZsW20iKtn/FmXagbz8rKmwu10WBo+M3RWJo7qQC
+         LLjeIxWF61EQUqZa2aIO+rWRbG2+wVmDr6cpa9AWL16MI5lAeaPKFMjAACnqAOtmH8Xd
+         j0UA8kXzVVj+gd/r9HnVZiYnP+wKj9L9NR/RjfVPuejWnVT6CvC6rv1GPRvJ24UJPl/u
+         DUmQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=Q4bdOdLYfsLL7H2ViKAtSs2PP+PMsHatQ/9U1YFvzMg=;
-        b=wgISzh2TRS2GjUTeSyheW25EwXAc5RacNugLfHqMydkJnw7z7r9XjzksZLToNVGDc0
-         NaEUrBvQHQ5D3Z/gYtgQ/oFL0YGMLIM/HrsSAr+UxyPPexhWQMXRh09XmOEFSzgELDq7
-         Jo7gq+TsI6Dy7KMxBP/WY9eRMjAd//IFirpt0pb5UxyEXOhbkePUselVyScGmIjSEgNm
-         3zpgxeXCsKqY4L69ctOzvrf7uIfTANOeuxUMPTn0QgS/MR/A7MCpoBPQWVhh5QHwN1+3
-         hQdaqWogxhi/wpllu4wE0eZ6Xxq5C/HtAASpnj9dmkF+u8fyWRGdy0CiKi5DrfDGFn9y
-         zzJQ==
-X-Gm-Message-State: AOAM530uNKrIhqNtUhsmev0IbAd/ZesVXEbcSN3G+IBdUSFM+03aNHCj
-        jXfww81YEQPSFMwK6TU2wbQ=
-X-Google-Smtp-Source: ABdhPJyGrsxBm4jFMo11CcUR/sr6JPOBskUDwVLGK3LV+mB5T4WcolCtpOv/4vY+o1pyLGuSO27omw==
-X-Received: by 2002:a17:906:7304:: with SMTP id di4mr8048708ejc.474.1636454378719;
-        Tue, 09 Nov 2021 02:39:38 -0800 (PST)
-Received: from skbuf ([188.25.175.102])
-        by smtp.gmail.com with ESMTPSA id hr17sm586336ejc.57.2021.11.09.02.39.37
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 09 Nov 2021 02:39:38 -0800 (PST)
-Date:   Tue, 9 Nov 2021 12:39:36 +0200
-From:   Vladimir Oltean <olteanv@gmail.com>
-To:     Martin Kaistra <martin.kaistra@linutronix.de>
-Cc:     Florian Fainelli <f.fainelli@gmail.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        Richard Cochran <richardcochran@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        John Stultz <john.stultz@linaro.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Russell King <linux@armlinux.org.uk>,
-        Marc Kleine-Budde <mkl@pengutronix.de>,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org
-Subject: Re: [PATCH v2 0/7] Add PTP support for BCM53128 switch
-Message-ID: <20211109103936.2wjvvwhihhfqjfot@skbuf>
-References: <20211109095013.27829-1-martin.kaistra@linutronix.de>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=ijkZGpaFpq6LV8Gg8reo+SGCxLMW6UmnTU/srKB0UIc=;
+        b=BVQrauCJ3aFTMrntc0FXh0RrSqUdOU1Jr+7UHtKRtMRHjN9BvAEoZvekwPZGJBP2EJ
+         5UA6WpMHF3iFc/KX4jau5W/47dqzZPw0dMXd/grWyln174SRtt1VOHY8UPdL8zAU+TVv
+         IZRo6ZYvtBehw/3L5954yrBX6npwQdmvqNE23sXUdu4ELNFFfDiCGMh2s4C3d1ZKoonB
+         DG1JNufgKvAUx8J8787jh/grqMsfQvII1o5Z0FVuIsuhjLhJyFsW6IKT7XhyzIOcvPqG
+         qy2/xVOlcNXCRGsZAd63XUsaoseD0pbKRAA/fHbA6CEBm2Ih7Z+mQOcfMqb242PW7e44
+         nxqg==
+X-Gm-Message-State: AOAM531pX8Xs6yvGPtdATpBuuUvmehLjQdYrAicuGqBn31WuZ/yjV155
+        VSpHRlXfhLVU+RPkaj4eSC6vUA==
+X-Google-Smtp-Source: ABdhPJyh2eh8cVDZfvZs49FwaWVzUtwCEWQ1SARsnhb2KFJzuK+iPRCqbAddHfiRgdFarLhZ85oEzA==
+X-Received: by 2002:a17:90a:2fc7:: with SMTP id n7mr6006745pjm.141.1636454451646;
+        Tue, 09 Nov 2021 02:40:51 -0800 (PST)
+Received: from [10.254.105.98] ([139.177.225.240])
+        by smtp.gmail.com with ESMTPSA id s2sm8895919pfg.124.2021.11.09.02.40.46
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 09 Nov 2021 02:40:51 -0800 (PST)
+Subject: Re: Re: Re: Re: [PATCH v1] sched/numa: add per-process numa_balancing
+To:     Mel Gorman <mgorman@suse.de>
+Cc:     Jonathan Corbet <corbet@lwn.net>, Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        linux-api@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
+        linux-fsdevel@vger.kernel.org, linux-doc@vger.kernel.org
+References: <20211027132633.86653-1-ligang.bdlg@bytedance.com>
+ <20211028153028.GP3891@suse.de>
+ <b884ad7d-48d3-fcc8-d199-9e7643552a9a@bytedance.com>
+ <20211029083751.GR3891@suse.de>
+ <CAMx52ARF1fVH9=YLQMjE=8ckKJ=q3X2-ovtKuQcoTyo564mQnQ@mail.gmail.com>
+ <20211109091951.GW3891@suse.de>
+From:   Gang Li <ligang.bdlg@bytedance.com>
+Message-ID: <7de25e1b-e548-b8b5-dda5-6a2e001f3c1a@bytedance.com>
+Date:   Tue, 9 Nov 2021 18:40:43 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.14.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211109095013.27829-1-martin.kaistra@linutronix.de>
+In-Reply-To: <20211109091951.GW3891@suse.de>
+Content-Type: text/plain; charset=iso-8859-15; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 09, 2021 at 10:50:02AM +0100, Martin Kaistra wrote:
-> Ideally, for the B53=m case, I would have liked to include the PTP
-> support in the b53_module itself, however I couldn't find a way to do
-> that without renaming either the common source file or the module, which
-> I didn't want to do.
+On 11/9/21 5:19 PM, Mel Gorman wrote:
+> On Tue, Nov 09, 2021 at 04:28:28PM +0800, Gang Li wrote:
+>> If the global tuning affects default behaviour and the prctl
+>> affects specific behaviour.  Then when prctl specifies
+>> numa_balancing for a process, there is no way for the
+>> global tuning to affect that process.
 > 
-> Instead, b53_ptp will be allowed as a loadable module, but only if
-> b53_common is also a module, otherwise it will be built-in.
+> While I think it's very likely that the common case will be to disable
+> NUMA balancing for specific processes,
+> prctl(PR_NUMA_BALANCING,PR_SET_NUMA_BALANCING,1) should still be
+> meaningful.
+> 
 
-Does this not work?
+I'm still a bit confused.
 
-obj-$(CONFIG_B53)		+= b53_common.o
+If we really want to enable/disable numa_balancing for all processes, 
+but some of them override the global numa_balancing using prctl, what 
+should we do?
 
-ifdef CONFIG_B53_PTP
-b53_common-objs += b53_ptp.o
-endif
+Do we iterate through these processes to enable/disable them individually?
 
-(haven't tried though)
+
