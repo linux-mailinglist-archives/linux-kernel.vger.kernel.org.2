@@ -2,95 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A05C44A5AC
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 05:11:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 036C544A5B0
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 05:13:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239849AbhKIEOi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Nov 2021 23:14:38 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58328 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239831AbhKIEO3 (ORCPT
+        id S239720AbhKIEQG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Nov 2021 23:16:06 -0500
+Received: from zg8tmtm5lju5ljm3lje2naaa.icoremail.net ([139.59.37.164]:37683
+        "HELO zg8tmtm5lju5ljm3lje2naaa.icoremail.net" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with SMTP id S236991AbhKIEQF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Nov 2021 23:14:29 -0500
-Received: from mail-pl1-x633.google.com (mail-pl1-x633.google.com [IPv6:2607:f8b0:4864:20::633])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF639C061205;
-        Mon,  8 Nov 2021 20:11:41 -0800 (PST)
-Received: by mail-pl1-x633.google.com with SMTP id v20so18554933plo.7;
-        Mon, 08 Nov 2021 20:11:41 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=aQc0DqPPO6kMsrpf1a2eMeG1Oqju7se8HtSuYmathZ0=;
-        b=U7/JfyAqiO2MKMCYeQeqbbijFBcQVa5T0EkptTY/YLTW8QWwlexKfEOnJ2omEegvxB
-         uF1/wE3YW1h247SpMruInOTDxwNMEHNxRUM8ZwHj2wTdxRKoG/gi5vhVbwzr4AR5BUIA
-         TYAJHzhWN5PU5gktO9OyGWzMn74UepthW2QsG30UPTkL3g+BF53XW2m/LIEqD2I96WAW
-         xgbt/dMqW6IQ8BU/BqiZ4glQm3cFt7qyiLtWRvORZ3DXfSaifWFIfeBi23oSWLSqgIHe
-         e6abn8XTCHj+m4MpBFH2mmclMDomCC25gGe8Vrd/npO31J7O4U9IUPbRVWrbsuGbRQU0
-         t+8w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=aQc0DqPPO6kMsrpf1a2eMeG1Oqju7se8HtSuYmathZ0=;
-        b=nFiF2g5C6lw/sSAl2GTKILWzdK9KSdRxY635pDfAcSGeUfwkLMRDfBqydvQC2oE1XV
-         g15vSWfrN0NfRpsztsUUAdIZ6uHN77AglLIaF/yE1sN+yG03xLQGh/gP6OsWib0mWF/H
-         LnxLorBU+XVsFq5GOyXAqRqXqFVSWi5mgCVNtGh6c4d77MdDa0qp3F0K/TiAeLbk2kDM
-         UjGJ6UcdimVqP3p7MCcGddUEp00XnOm+E53kCs8qsa/+P7aKRqbXNfFLBjHFyVBo5QlH
-         mxD7uE66WuPEZAOtf/xXIDujlqZA74y4GtFkiW/YRZOi2xNUxacAZF2We5nvlBFoFj8L
-         5QZA==
-X-Gm-Message-State: AOAM533He2zwJV90kPJkNYULeVOYdzS5yWBtRpWCs7aUwZ7EcBV1vG3X
-        t8N62r1zEg0R7HrUowqAt9twPkNZCzI=
-X-Google-Smtp-Source: ABdhPJw5RAMBfn9DIjw2V4w3ZE2Oc2Ma5DmxWxSIog1/aLYNvg78RdgoN/I55DMnJioBaGhBoQdvSg==
-X-Received: by 2002:a17:90a:b382:: with SMTP id e2mr3827572pjr.119.1636431101310;
-        Mon, 08 Nov 2021 20:11:41 -0800 (PST)
-Received: from bobo.ozlabs.ibm.com (60-241-46-56.tpgi.com.au. [60.241.46.56])
-        by smtp.gmail.com with ESMTPSA id o19sm18278063pfu.56.2021.11.08.20.11.38
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 08 Nov 2021 20:11:41 -0800 (PST)
-From:   Nicholas Piggin <npiggin@gmail.com>
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     Nicholas Piggin <npiggin@gmail.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Andy Lutomirski <luto@kernel.org>, linux-arch@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
-Subject: [PATCH v5 4/4] powerpc/64s: enable MMU_LAZY_TLB_SHOOTDOWN
-Date:   Tue,  9 Nov 2021 14:11:19 +1000
-Message-Id: <20211109041119.1972927-5-npiggin@gmail.com>
-X-Mailer: git-send-email 2.23.0
-In-Reply-To: <20211109041119.1972927-1-npiggin@gmail.com>
-References: <20211109041119.1972927-1-npiggin@gmail.com>
+        Mon, 8 Nov 2021 23:16:05 -0500
+Received: from fedora33.wangsu.com (unknown [59.61.78.138])
+        by app2 (Coremail) with SMTP id 4zNnewAXH0NT9YlhzlsAAA--.417S2;
+        Tue, 09 Nov 2021 12:13:11 +0800 (CST)
+From:   Lin Feng <linf@wangsu.com>
+To:     colyli@suse.de, kent.overstreet@gmail.com
+Cc:     linux-bcache@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linf@wangsu.com
+Subject: [PATCH] bcache: fix NULL pointer reference in cached_dev_detach_finish
+Date:   Tue,  9 Nov 2021 12:13:04 +0800
+Message-Id: <20211109041304.87225-1-linf@wangsu.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: 4zNnewAXH0NT9YlhzlsAAA--.417S2
+X-Coremail-Antispam: 1UD129KBjvJXoW7Aw1kKrW7try3tFyrKFWkCrg_yoW8tFWUpr
+        Z7XFyUJFWvqw48Ww42yr47uryrta4DAFyfuw1Fya1Y9ryfW347trW5Xas8A3yUJrW7Wa1I
+        yw45Kr4UZFykWaUanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnUUvcSsGvfC2KfnxnUUI43ZEXa7xR_UUUUUUUUU==
+X-CM-SenderInfo: holqwq5zdqw23xof0z/
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On a 16-socket 192-core POWER8 system, a context switching benchmark
-with as many software threads as CPUs (so each switch will go in and
-out of idle), upstream can achieve a rate of about 1 million context
-switches per second, due to contention on the mm refcount.
+Commit 0259d4498ba484("bcache: move calc_cached_dev_sectors to proper
+place on backing device detach") tries to fix calc_cached_dev_sectors
+when bcache device detaches, but now we have:
 
-powerpc/64s meets the prerequisites for CONFIG_MMU_LAZY_TLB_SHOOTDOWN,
-so enable the option. This increases the above benchmark to 118 million.
+cached_dev_detach_finish
+    ...
+    bcache_device_detach(&dc->disk);
+        ...
+        closure_put(&d->c->caching);
+        d->c = NULL; [*explicitly set dc->disk.c to NULL*]
+    list_move(&dc->list, &uncached_devices);
+    calc_cached_dev_sectors(dc->disk.c); [*passing a NULL pointer*]
+    ...
 
-Signed-off-by: Nicholas Piggin <npiggin@gmail.com>
+Upper codeflows shows how bug happens, this patch fix the problem by
+caching dc->disk.c beforehand, and cache_set won't be freed under us
+because c->caching closure at least holds a reference count and closure
+callback __cache_set_unregister only being called by bch_cache_set_stop
+which using closure_queue(&c->caching), that means c->caching closure
+callback for destroying cache_set won't be trigger by previous
+closure_put(&d->c->caching).
+So at this stage(while cached_dev_detach_finish is calling) it's safe to
+access cache_set dc->disk.c.
+
+Fixes: 0259d4498ba484("bcache: move calc_cached_dev_sectors to proper place on backing device detach")
+Signed-off-by: Lin Feng <linf@wangsu.com>
 ---
- arch/powerpc/Kconfig | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/md/bcache/super.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/arch/powerpc/Kconfig b/arch/powerpc/Kconfig
-index ba5b66189358..8a584414ef67 100644
---- a/arch/powerpc/Kconfig
-+++ b/arch/powerpc/Kconfig
-@@ -249,6 +249,7 @@ config PPC
- 	select IRQ_FORCED_THREADING
- 	select MMU_GATHER_PAGE_SIZE
- 	select MMU_GATHER_RCU_TABLE_FREE
-+	select MMU_LAZY_TLB_SHOOTDOWN		if PPC_BOOK3S_64
- 	select MODULES_USE_ELF_RELA
- 	select NEED_DMA_MAP_STATE		if PPC64 || NOT_COHERENT_CACHE
- 	select NEED_SG_DMA_LENGTH
+diff --git a/drivers/md/bcache/super.c b/drivers/md/bcache/super.c
+index 4a9a65dff95e..3d9bc7cd27f8 100644
+--- a/drivers/md/bcache/super.c
++++ b/drivers/md/bcache/super.c
+@@ -1139,6 +1139,7 @@ static void cancel_writeback_rate_update_dwork(struct cached_dev *dc)
+ static void cached_dev_detach_finish(struct work_struct *w)
+ {
+ 	struct cached_dev *dc = container_of(w, struct cached_dev, detach);
++	struct cache_set *c = dc->disk.c;
+ 
+ 	BUG_ON(!test_bit(BCACHE_DEV_DETACHING, &dc->disk.flags));
+ 	BUG_ON(refcount_read(&dc->count));
+@@ -1156,7 +1157,7 @@ static void cached_dev_detach_finish(struct work_struct *w)
+ 
+ 	bcache_device_detach(&dc->disk);
+ 	list_move(&dc->list, &uncached_devices);
+-	calc_cached_dev_sectors(dc->disk.c);
++	calc_cached_dev_sectors(c);
+ 
+ 	clear_bit(BCACHE_DEV_DETACHING, &dc->disk.flags);
+ 	clear_bit(BCACHE_DEV_UNLINK_DONE, &dc->disk.flags);
 -- 
-2.23.0
+2.31.1
 
