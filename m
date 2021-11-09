@@ -2,106 +2,187 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EF8CB44A6B0
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 07:12:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2B26744A6B4
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 07:16:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243096AbhKIGPA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Nov 2021 01:15:00 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56520 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238661AbhKIGO7 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Nov 2021 01:14:59 -0500
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1234::107])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9ABB6C061764;
-        Mon,  8 Nov 2021 22:12:13 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:To:Subject:Sender:
-        Reply-To:Cc:Content-ID:Content-Description;
-        bh=AqxeG9GMAXTBgfM0qk7iHTvqCqKRCutUS/VQ+ILwkaQ=; b=JD/PdfTT2f0wIkwwjCNnTVAPUt
-        7AWcf1S4AGHXEnBbIaUX1X2GHGuH/Ntui4nunaPnLqWOMPY026F6279zfd8ULG6mWzb6507ltebfD
-        ko0pVebCoC7XfOeHhmbW3ThVj7+dIkoBHvepAJme8QPnDWuToX7K4/gwboDIyjHQgoK3OQ9LWM6Dh
-        dP33YPtN8vl1nZFZL3YsFD5qvoe7XVxP7bFWdIDZnt20LtNIx+BSflKfNNa3/kjIZAmJz79tbSBL4
-        yv+Hf8Od9klstS4CONxTxEuXLRbL8tMnzVcz1GiyanDMPRYd1euAYIndWX47naqsTvO1Pk3Mp4man
-        /4+6enXw==;
-Received: from [2601:1c0:6280:3f0::aa0b]
-        by merlin.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mkKMd-008lm1-LJ; Tue, 09 Nov 2021 06:12:12 +0000
-Subject: Re: [RFC PATCH v3 2/8] leds: add function to configure hardware
- controlled LED
-To:     Ansuel Smith <ansuelsmth@gmail.com>, Andrew Lunn <andrew@lunn.ch>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Vladimir Oltean <olteanv@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>, Pavel Machek <pavel@ucw.cz>,
-        John Crispin <john@phrozen.org>, netdev@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-leds@vger.kernel.org,
-        =?UTF-8?Q?Marek_Beh=c3=ban?= <kabel@kernel.org>
-References: <20211109022608.11109-1-ansuelsmth@gmail.com>
- <20211109022608.11109-3-ansuelsmth@gmail.com>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <3e854c1c-25e2-789b-de67-d99344fcb498@infradead.org>
-Date:   Mon, 8 Nov 2021 22:12:05 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        id S240971AbhKIGTb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Nov 2021 01:19:31 -0500
+Received: from mail.kernel.org ([198.145.29.99]:54618 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230011AbhKIGT3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Nov 2021 01:19:29 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 27747611BF;
+        Tue,  9 Nov 2021 06:16:42 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1636438604;
+        bh=Pj0w/765nIeUinsdw2x8elro8Twg48Pg8i+XxslDxxs=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=bPXNt/UaJM8HsokBr6UYcVV3VdTwHbWw43zmUsMUEk0LkPtFVhluqS9SQEfUS2MjE
+         AuftfEYa7KgmveH4dEUY+q956qpISuVkwdsBavto6NkGrEV3K2VEpbxiiiSULhOdBo
+         T6Hq33mkcBl0UtQZAi4UCA1VDcpRqFILaCyjdHs0=
+Date:   Tue, 9 Nov 2021 07:16:30 +0100
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Hans-Gert Dahmen <hans-gert.dahmen@immu.ne>
+Cc:     akpm@linux-foundation.org, linux-kernel@vger.kernel.org,
+        philipp.deppenwiese@immu.ne, mauro.lima@eclypsium.com,
+        hughsient@gmail.com, platform-driver-x86@vger.kernel.org
+Subject: Re: [PATCH] firmware: export x86_64 platform flash bios region via
+ sysfs
+Message-ID: <YYoSPjF3M05dR0PX@kroah.com>
+References: <20211109000130.42361-1-hans-gert.dahmen@immu.ne>
 MIME-Version: 1.0
-In-Reply-To: <20211109022608.11109-3-ansuelsmth@gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20211109000130.42361-1-hans-gert.dahmen@immu.ne>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/8/21 6:26 PM, Ansuel Smith wrote:
-> diff --git a/Documentation/leds/leds-class.rst b/Documentation/leds/leds-class.rst
-> index 645940b78d81..efd2f68c46a7 100644
-> --- a/Documentation/leds/leds-class.rst
-> +++ b/Documentation/leds/leds-class.rst
-> @@ -198,6 +198,31 @@ With HARDWARE_CONTROLLED blink_mode hw_control_status/start/stop is optional
->   and any software only trigger will reject activation as the LED supports only
->   hardware mode.
->   
-> +A trigger once he declared support for hardware controlled blinks, will use the function
+On Tue, Nov 09, 2021 at 01:01:30AM +0100, Hans-Gert Dahmen wrote:
+> Make the 16MiB long memory-mapped BIOS region of the platform SPI flash
+> on X86_64 system available via /sys/kernel/firmware/flash_mmap/bios_region
+> for pen-testing, security analysis and malware detection on kernels
+> which restrict module loading and/or access to /dev/mem.
 
-Maybe this:
-    Once a trigger has declared support for hardware-controller blinks, it will us the function
+That feels like a big security hole we would be opening up for no good
+reason.
 
-> +hw_control_configure() provided by the driver to check support for a particular blink mode.
-> +This function passes as the first argument (flag) a u32 flag.
-> +The second argument (cmd) of hw_control_configure() method can be used to do various
-> +operations for the specific blink mode. We currently support ENABLE, DISABLE, READ, ZERO
-> +and SUPPORTED to enable, disable, read the state of the blink mode, ask the LED
-> +driver if it does supports the specific blink mode and to reset any blink mode active.
+> It will be used by the open source Converged Security Suite.
+> https://github.com/9elements/converged-security-suite
+
+What is the reason for this, and what use is this new interface?
+
+> 
+> Signed-off-by: Hans-Gert Dahmen <hans-gert.dahmen@immu.ne>
+> ---
+>  drivers/firmware/Kconfig             |  9 +++
+>  drivers/firmware/Makefile            |  1 +
+>  drivers/firmware/x86_64_flash_mmap.c | 86 ++++++++++++++++++++++++++++
+
+You forgot to document the new sysfs files in Documentation/ABI/ :(
+
+
+>  3 files changed, 96 insertions(+)
+>  create mode 100644 drivers/firmware/x86_64_flash_mmap.c
+> 
+> diff --git a/drivers/firmware/Kconfig b/drivers/firmware/Kconfig
+> index 75cb91055c17..27c2d0b074e0 100644
+> --- a/drivers/firmware/Kconfig
+> +++ b/drivers/firmware/Kconfig
+> @@ -293,6 +293,15 @@ config TURRIS_MOX_RWTM
+>  	  other manufacturing data and also utilize the Entropy Bit Generator
+>  	  for hardware random number generation.
+>  
+> +config X86_64_FLASH_MMAP
+> +	tristate "Export platform flash memory-mapped BIOS region"
+> +	depends on X86_64
+> +	help
+> +	  Export the memory-mapped BIOS region of the platform SPI flash as
+> +	  a read-only sysfs binary attribute on X86_64 systems. The first 16MiB
+> +	  will be accessible via /sys/devices/platform/flash_mmap/bios_region
+> +	  for security and malware analysis for example.
 > +
-> +In ENABLE/DISABLE hw_control_configure() should configure the LED to enable/disable the
-> +requested blink mode (flag).
-> +In READ hw_control_configure() should return 0 or 1 based on the status of the requested
-> +blink mode (flag).
-> +In SUPPORTED hw_control_configure() should return 0 or 1 if the LED driver supports the
-> +requested blink mode (flags) or not.
-> +In ZERO hw_control_configure() should return 0 with success operation or error.
+>  source "drivers/firmware/arm_ffa/Kconfig"
+>  source "drivers/firmware/broadcom/Kconfig"
+>  source "drivers/firmware/cirrus/Kconfig"
+> diff --git a/drivers/firmware/Makefile b/drivers/firmware/Makefile
+> index 4e58cb474a68..60dc4ea08705 100644
+> --- a/drivers/firmware/Makefile
+> +++ b/drivers/firmware/Makefile
+> @@ -24,6 +24,7 @@ obj-$(CONFIG_SYSFB_SIMPLEFB)	+= sysfb_simplefb.o
+>  obj-$(CONFIG_TI_SCI_PROTOCOL)	+= ti_sci.o
+>  obj-$(CONFIG_TRUSTED_FOUNDATIONS) += trusted_foundations.o
+>  obj-$(CONFIG_TURRIS_MOX_RWTM)	+= turris-mox-rwtm.o
+> +obj-$(CONFIG_X86_64_FLASH_MMAP)	+= x86_64_flash_mmap.o
+>  
+>  obj-y				+= arm_ffa/
+>  obj-y				+= arm_scmi/
+> diff --git a/drivers/firmware/x86_64_flash_mmap.c b/drivers/firmware/x86_64_flash_mmap.c
+> new file mode 100644
+> index 000000000000..23d8655d17bb
+> --- /dev/null
+> +++ b/drivers/firmware/x86_64_flash_mmap.c
+> @@ -0,0 +1,86 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +/*
+> + * Export the memory-mapped BIOS region of the platform SPI flash as
+> + * a read-only sysfs binary attribute on X86_64 systems.
+> + *
+> + * Copyright © 2021 immune GmbH
+> + */
 > +
-> +The unsigned long flag is specific to the trigger and change across them. It's in the LED
+> +#include <linux/version.h>
+> +#include <linux/init.h>
+> +#include <linux/module.h>
+> +#include <linux/io.h>
+> +#include <linux/sysfs.h>
+> +#include <linux/platform_device.h>
+> +
+> +#define FLASH_REGION_START 0xFF000000ULL
+> +#define FLASH_REGION_SIZE 0x1000000ULL
+> +#define FLASH_REGION_MASK (FLASH_REGION_SIZE - 1)
+> +
+> +struct platform_device *pdev;
+> +
+> +static ssize_t bios_region_read(struct file *file, struct kobject *kobj,
+> +				struct bin_attribute *bin_attr, char *buffer,
+> +				loff_t offset, size_t count)
+> +{
+> +	resource_size_t pa;
+> +	size_t copysize, remapsize;
+> +	void __iomem *va;
+> +
+> +	offset = offset & FLASH_REGION_MASK;
+> +	pa = (FLASH_REGION_START + offset) & PAGE_MASK;
+> +
+> +	if ((offset + count) > FLASH_REGION_SIZE)
+> +		copysize = FLASH_REGION_SIZE - offset;
+> +	else
+> +		copysize = min(count, PAGE_SIZE);
+> +
+> +	if (((offset & ~PAGE_MASK) + copysize) > PAGE_SIZE)
+> +		remapsize = 2 * PAGE_SIZE;
+> +	else
+> +		remapsize = PAGE_SIZE;
+> +
+> +	va = ioremap(pa, remapsize);
+> +	memcpy_fromio(buffer, va, copysize);
+> +	iounmap(va);
+> +
+> +	return copysize;
+> +}
+> +
+> +static BIN_ATTR_RO(bios_region, FLASH_REGION_SIZE);
+> +
+> +static struct bin_attribute *flash_mmap_attrs[] = { &bin_attr_bios_region,
+> +						    NULL };
+> +
+> +static const struct attribute_group flash_mmap_group = {
+> +	.bin_attrs = flash_mmap_attrs,
+> +};
+> +
+> +static int __init flash_mmap_init(void)
+> +{
+> +	int ret;
+> +
+> +	pdev = platform_device_register_simple("flash_mmap", -1, NULL, 0);
+> +	if (IS_ERR(pdev))
+> +		return PTR_ERR(pdev);
+> +
+> +	ret = sysfs_create_group(&pdev->dev.kobj, &flash_mmap_group);
 
-                                                          changes
+You just raced with userspace and lost :(
 
-> +driver interest know how to elaborate this flag and to declare support for a
+Please set the attribute to the platform driver before you create the
+device.
 
-    driver's interest to know how to
+Also, you just bound this driver to ANY platform that it was loaded on,
+with no actual detection of the hardware present, which feels like it
+could cause big problems on all platforms.  Please, if you really want
+to do this, restrict it to hardware that actually has the hardware you
+are wanting to access, not all machines in the world.
 
-> +particular trigger. For this exact reason explicit support for the specific
-> +trigger is mandatory or the driver returns -EOPNOTSUPP if asked to enter offload mode
-> +with a not supported trigger.
-> +If the driver returns -EOPNOTSUPP on hw_control_configure(), the trigger activation will
-> +fail as the driver doesn't support that specific offload trigger or doesn't know
-> +how to handle the provided flags.
+thanks,
 
-
--- 
-~Randy
+greg k-h
