@@ -2,112 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 768D244A859
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 09:29:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 03BB944A85E
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 09:31:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244066AbhKIIcP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Nov 2021 03:32:15 -0500
-Received: from foss.arm.com ([217.140.110.172]:58328 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241549AbhKIIcO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Nov 2021 03:32:14 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 57ED02B;
-        Tue,  9 Nov 2021 00:29:28 -0800 (PST)
-Received: from [10.57.26.224] (unknown [10.57.26.224])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 718EB3F5A1;
-        Tue,  9 Nov 2021 00:29:24 -0800 (PST)
-Subject: Re: [PATCH v3 0/5] Refactor thermal pressure update to avoid code
- duplication
-To:     Steev Klimaszewski <steev@kali.org>
-Cc:     Thara Gopinath <thara.gopinath@linaro.org>,
-        linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-arm-msm@vger.kernel.org, sudeep.holla@arm.com,
-        will@kernel.org, catalin.marinas@arm.com, linux@armlinux.org.uk,
-        gregkh@linuxfoundation.org, rafael@kernel.org,
-        viresh.kumar@linaro.org, amitk@kernel.org,
-        daniel.lezcano@linaro.org, amit.kachhap@gmail.com,
-        bjorn.andersson@linaro.org, agross@kernel.org
-References: <20211103161020.26714-1-lukasz.luba@arm.com>
- <c7b526f0-2c26-0cfc-910b-3521c6a6ef51@kali.org>
- <3cba148a-7077-7b6b-f131-dc65045aa348@arm.com>
- <9d533b6e-a81c-e823-fa6f-61fdea92fa65@kali.org>
- <74ea027b-b213-42b8-0f7d-275f3b84712e@linaro.org>
- <74603569-2ff1-999e-9618-79261fdb0ee4@kali.org>
- <b7e76c2a-ceac-500a-ff75-535a3f0d51d6@linaro.org>
- <f955a2aa-f788-00db-1ed8-dc9c7a1b2572@kali.org>
- <59054c90-c1cd-85bf-406e-579df668d7b4@linaro.org>
- <eac00041-a1b8-0780-931d-52249d538800@kali.org>
- <2c54dbbd-2ecb-fb76-fa9f-9752f429c20e@linaro.org>
- <97e93876-d654-0a89-dce1-6fe1189345e2@kali.org>
-From:   Lukasz Luba <lukasz.luba@arm.com>
-Message-ID: <d83a5c25-2eae-3626-f78a-e42915076556@arm.com>
-Date:   Tue, 9 Nov 2021 08:29:21 +0000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.9.0
+        id S244069AbhKIIdw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Nov 2021 03:33:52 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59284 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S244071AbhKIIds (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Nov 2021 03:33:48 -0500
+Received: from mail-wr1-x42c.google.com (mail-wr1-x42c.google.com [IPv6:2a00:1450:4864:20::42c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 54506C061764;
+        Tue,  9 Nov 2021 00:31:02 -0800 (PST)
+Received: by mail-wr1-x42c.google.com with SMTP id d5so31564415wrc.1;
+        Tue, 09 Nov 2021 00:31:02 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=unuXmXs/dvGgqVqGq+uRDlZebRR93xnb/ylYDWpJ5xg=;
+        b=P1smeGAzzLUluvWADi3R9qZ0ZYcDwRTTDgzSFUvEJj+wKkXLLDjyb8iAOzcLu9bXKU
+         PbKYz1Df1nUBlJtrx3o6TBSWB4wzW3+PD6bZLVRRG5sAXkIIXXmBVndw/U8BpEvhqqOO
+         n7QxxrD4XWkOP46fVNDnakxs/IW8YQc6f+gVtAH9chmgi1L8ARNSz01s9pF3imzp5fo/
+         0ptuZ4bc4cIWYYFlAZJC4xsV4xYL9dHCFoSXoTfqzt7MLYr66sZQBTqRAnDPHaxSXNGW
+         m65K1wqHzSHV3c3PkCXkiRN7P+ObHEDj6hQ146hl9w9xpO/kuj2Kvzp8NCuA8UMIRXwZ
+         jisg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=unuXmXs/dvGgqVqGq+uRDlZebRR93xnb/ylYDWpJ5xg=;
+        b=Y8zpcXG4HJbKTVe44fn84OnnRcRX8dKelRwjsmFs/LuFRMIExmKC7XH/0zKcIAI4Qz
+         Lo3mpkXST//SprP4WaMSZnshz01HJ6qY22vDvolbL2Uweau1glxdsDViVAJQvdXfqMs7
+         bcdk1xU2WDqN6ibrAuBiYk7dev0S/2E8be6dqcB34ukCQqVVYRIYScU/FT6jPURV5k+n
+         mtDClNRq6yZUoIdV/a7EcWoTj7ickbA+g4EAxaQAKOGu+lIiVYBXN9gXd2uH0grFLD90
+         DLUsIwlQeZK6SzPnD27DBVttepN9h+tjK+jt4xfeaxhsoKBCAwaNlmDrNQofdxo/B0i4
+         9MqQ==
+X-Gm-Message-State: AOAM533ggja/f5cpq5ltgsLHo06FRHzAoX2P1hoB8Pke565+F3DV6lPE
+        UBBPXR9kMUaiV5IZ8WWqrPQWsr0vKiA=
+X-Google-Smtp-Source: ABdhPJx28T6WgUKO8jYf/Kat6J64nSuGuYoxtKadTtBdt0Nzv6aiBc5KG+k7HjqX2BXIzhYcsnyIdQ==
+X-Received: by 2002:a05:6000:2a3:: with SMTP id l3mr7131173wry.415.1636446660558;
+        Tue, 09 Nov 2021 00:31:00 -0800 (PST)
+Received: from localhost.localdomain.at (62-178-82-229.cable.dynamic.surfer.at. [62.178.82.229])
+        by smtp.gmail.com with ESMTPSA id v185sm1821600wme.35.2021.11.09.00.30.59
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 09 Nov 2021 00:30:59 -0800 (PST)
+From:   Christian Gmeiner <christian.gmeiner@gmail.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     Christian Gmeiner <christian.gmeiner@gmail.com>,
+        Ohad Ben-Cohen <ohad@wizery.com>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        linux-remoteproc@vger.kernel.org
+Subject: [RFC PATCH 0/1] rpmsg: syslog driver
+Date:   Tue,  9 Nov 2021 09:30:43 +0100
+Message-Id: <20211109083051.17831-1-christian.gmeiner@gmail.com>
+X-Mailer: git-send-email 2.33.1
 MIME-Version: 1.0
-In-Reply-To: <97e93876-d654-0a89-dce1-6fe1189345e2@kali.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Steev,
+I am sending this patch as RFC I am am aware that this is
+not ready for inclusion. I am however want to get some
+feedback on this choosen approach. In the end I want to be
+able to get log messages from the remote firmware into syslog.
 
-That's interesting what you've done with Rockchip RK3399.
-I would like to reproduce your experiment on my RockPI 4B v1.3.
-Could you tell me how you to add this boost frequency that you have
-mentioned in some previous emails?
+Christian Gmeiner (1):
+  rpmsg: add syslog driver
 
-I want to have similar setup to yours and I'll check all the subsystems
-involved in the decision making process for triggering this boost freq.
+ drivers/rpmsg/Kconfig  | 8 ++++++++
+ drivers/rpmsg/Makefile | 1 +
+ 2 files changed, 9 insertions(+)
 
-On 11/8/21 11:21 PM, Steev Klimaszewski wrote:
-> Hi Thara,
->> Hi Steev,
->>
->> IIUC, PineBook Pro has Rockchip RK3399 which has 2 Cortex A-72 and 4 
->> Cortex A-52 where as C630 has Qualcomm sdm845 which has 4 Cortex A-75 
->> and 4 Cortex A-55. Task placements and subsequently cpu load will be 
->> different for both the platforms. With the same workload, I will 
->> expect Rockchip to system to be more loaded than sdm845. Having said 
->> that, what cpu-freq governor are you using on both the systems.
->>
-> I'm using sched-util on both of the systems.
-> 
-> I've tried a number of different ways of forcing builds only on the A-75 
-> cores, and I simply cannot get the load to be "enough" to kick in the 
-> boost frequency.
-> 
-> An example being
-> 
-> git clone https://github.com/zellij-org/zellij.git
-> 
-> cd zellij
-> 
-> taskset --cpu-list 4-7 cargo build --release
-> 
-> git clean -fdx
-> 
-> taskset --cpu-list 6-7 cargo build --release
+-- 
+2.33.1
 
-Thanks for the pointers, I'll give it a try when I sort out this
-Rockchip boost setup.
-
-> 
-> 
-> On my C630, it never goes higher than 85C with the 4 cores being used, 
-> and with 2, it never goes about 65C and I do not get any 2.96GHz.  It's 
-> currently sitting at "6" in the time_in_state for 2965800.
-> 
-> 
-> --steev
-> 
-
-Thank you for your support.
-
-Regards,
-Lukasz
