@@ -2,123 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1A47744B136
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 17:29:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D85344B138
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 17:29:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240065AbhKIQcM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Nov 2021 11:32:12 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:35125 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S240138AbhKIQb5 (ORCPT
+        id S240235AbhKIQcT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Nov 2021 11:32:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56170 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S240358AbhKIQcD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Nov 2021 11:31:57 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1636475351;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=jTjE39e8jakWt8Alz/259TmWxOJnW+bt1WeJo+ADs6I=;
-        b=Ymb8Ujcyy223sv//btrb1nYvXmsK63rOSSTGfjtWKP+Xhp2/RyF7yuTvrc4V/em3Umj9pV
-        wSDq35vjHuJLQP1Tnx4sEB9U/+44p6op5XJt4bA11u8TiwDSmNYDESp08S0eIg8S5UpBtw
-        avhvIh81WhYLmfEqTfUjbSNLAQHhCB8=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-212-tmIxbONQOtK-Ot1vXfNK9g-1; Tue, 09 Nov 2021 11:29:04 -0500
-X-MC-Unique: tmIxbONQOtK-Ot1vXfNK9g-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id A54941019984;
-        Tue,  9 Nov 2021 16:29:02 +0000 (UTC)
-Received: from vitty.brq.redhat.com (unknown [10.40.192.207])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 9A0CB64188;
-        Tue,  9 Nov 2021 16:29:00 +0000 (UTC)
-From:   Vitaly Kuznetsov <vkuznets@redhat.com>
-To:     kvm@vger.kernel.org, Paolo Bonzini <pbonzini@redhat.com>
-Cc:     Sean Christopherson <seanjc@google.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Maxim Levitsky <mlevitsk@redhat.com>,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v4 8/8] KVM: nVMX: Implement Enlightened MSR Bitmap feature
-Date:   Tue,  9 Nov 2021 17:28:35 +0100
-Message-Id: <20211109162835.99475-9-vkuznets@redhat.com>
-In-Reply-To: <20211109162835.99475-1-vkuznets@redhat.com>
-References: <20211109162835.99475-1-vkuznets@redhat.com>
+        Tue, 9 Nov 2021 11:32:03 -0500
+Received: from mail-wr1-x435.google.com (mail-wr1-x435.google.com [IPv6:2a00:1450:4864:20::435])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5FED7C06120F
+        for <linux-kernel@vger.kernel.org>; Tue,  9 Nov 2021 08:29:17 -0800 (PST)
+Received: by mail-wr1-x435.google.com with SMTP id i5so34046203wrb.2
+        for <linux-kernel@vger.kernel.org>; Tue, 09 Nov 2021 08:29:17 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=resnulli-us.20210112.gappssmtp.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=uwR1t4o6epDV/t4amIqWEVfEvcX3CRHUyEZbrtcYLdo=;
+        b=t6e/phj9cRmjeaAKKehsThGSsRYGgbk9sanouMI8gS0Eoib+wsYlC8S2GcDnk8iol6
+         r0gPVXPj3/M5B61uy0lptt9IL5cwDLgtmnOo7Ru/ocCYrfD/Fo4RnaDUHGFDxRtxgawl
+         5gvR0Lh00tDtHElEU4i2Ukvm6Uz8QR8LGed8nvi2LBMKirpbIyjglzXNnJdxyXq3JSm9
+         BRqRvuAzteOgjUAlTTjoaP1+TTbTRv7hTjI9xwbFKjR9rOY8bH+Q230l5tAib6ANffpf
+         wjAbnr5wpaA3IkVOVOYX5cHmk9hMrAEeGO8kw9Z40neakSmXJFqlfq4uQJa06HTGDt0d
+         gwpA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=uwR1t4o6epDV/t4amIqWEVfEvcX3CRHUyEZbrtcYLdo=;
+        b=1TyPSXoAae0GJBt5WCRV3z7rJeW7IFHnnw108amobvVu3GiK/7suPjfAx3LQHVsAr5
+         lqV5d9AGmFwz+3x9T8Rh/UJdYhjRSQnPNPfFPb3lpNXJb1uRD2Lh57M49fhbMKmONtgp
+         VrbXdpVdzSx+56KYfRveDd8avyuIhxQMlkVgVdBJf4QbTvxBirdMPoiqMsQNfseGpSN2
+         C48LKhnZvpz1N9RTc4JDM3T0hqIbXg8unceKcxDKf91FqOM+r4O9bJMKIAwf8SwK5Wxf
+         5IjPx5nbQcwG/pOdSGndSXeLg3tiZa8memXGXKgg1SP87CG7p3pU3/epmn8PybWvCOFi
+         dQbQ==
+X-Gm-Message-State: AOAM533senLKy5KcEmkMEN32/rZwU9WkUbI8SkwoQdBn+knwbxfdNzVe
+        unCM365lw+woLlep5jj70rXh2g==
+X-Google-Smtp-Source: ABdhPJyoOr15DD4sd8lgO2lQHThukrLMgZ4EZxk1WEAhx4X/fPA8dwkZQhSB9eWgqcW28RqCRSabCw==
+X-Received: by 2002:adf:ef52:: with SMTP id c18mr11013472wrp.162.1636475356037;
+        Tue, 09 Nov 2021 08:29:16 -0800 (PST)
+Received: from localhost (host-213-179-129-39.customer.m-online.net. [213.179.129.39])
+        by smtp.gmail.com with ESMTPSA id f133sm3183344wmf.31.2021.11.09.08.29.15
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 09 Nov 2021 08:29:15 -0800 (PST)
+Date:   Tue, 9 Nov 2021 17:29:14 +0100
+From:   Jiri Pirko <jiri@resnulli.us>
+To:     Leon Romanovsky <leon@kernel.org>
+Cc:     Jakub Kicinski <kuba@kernel.org>, Ido Schimmel <idosch@idosch.org>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jiri Pirko <jiri@nvidia.com>, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, edwin.peer@broadcom.com
+Subject: Re: [PATCH net-next] devlink: Require devlink lock during device
+ reload
+Message-ID: <YYqh2vDGJ+RxlmoD@nanopsycho>
+References: <YYgJ1bnECwUWvNqD@shredder>
+ <YYgSzEHppKY3oYTb@unreal>
+ <20211108080918.2214996c@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+ <YYlfI4UgpEsMt5QI@unreal>
+ <20211108101646.0a4e5ca4@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+ <YYlrZZTdJKhha0FF@unreal>
+ <20211108104608.378c106e@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+ <YYmBbJ5++iO4MOo7@unreal>
+ <20211108153126.1f3a8fe8@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+ <YYqB0VZcWnmtSS91@unreal>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YYqB0VZcWnmtSS91@unreal>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Updating MSR bitmap for L2 is not cheap and rearly needed. TLFS for Hyper-V
-offers 'Enlightened MSR Bitmap' feature which allows L1 hypervisor to
-inform L0 when it changes MSR bitmap, this eliminates the need to examine
-L1's MSR bitmap for L2 every time when 'real' MSR bitmap for L2 gets
-constructed.
+Tue, Nov 09, 2021 at 03:12:33PM CET, leon@kernel.org wrote:
+>On Mon, Nov 08, 2021 at 03:31:26PM -0800, Jakub Kicinski wrote:
+>> On Mon, 8 Nov 2021 21:58:36 +0200 Leon Romanovsky wrote:
+>> > > > > nfp will benefit from the simplified locking as well, and so will bnxt,
+>> > > > > although I'm not sure the maintainers will opt for using devlink framework
+>> > > > > due to the downstream requirements.    
+>> > > > 
+>> > > > Exactly why devlink should be fixed first.  
+>> > > 
+>> > > If by "fixed first" you mean it needs 5 locks to be added and to remove
+>> > > any guarantees on sub-object lifetime then no thanks.  
+>> > 
+>> > How do you plan to fix pernet_ops_rwsem lock? By exposing devlink state
+>> > to the drivers? By providing unlocked version of unregister_netdevice_notifier?
+>> > 
+>> > This simple scenario has deadlocks:
+>> > sudo ip netns add n1
+>> > sudo devlink dev reload pci/0000:00:09.0 netns n1
+>> > sudo ip netns del n1
+>> 
+>> Okay - I'm not sure why you're asking me this. This is not related to
+>> devlink locking as far as I can tell. Neither are you fixing this
+>> problem in your own RFC.
+>
+>I asked you because you clearly showed to me that things that makes
+>sense for me, doesn't make sense for you and vice versa.
+>
+>I don't want to do work that will be thrown away.
+>
+>> 
+>> You'd need to tell me more about what the notifier is used for (I see
+>> RoCE in the call trace). I don't understand why you need to re-register 
+>> a global (i.e. not per netns) notifier when devlink is switching name
+>> spaces.
+>
+>RDMA subsystem supports two net namespace aware scenarios.
+>
+>We need global netdev_notifier for shared mode. This is legacy mode where
+>we listen to all namespaces. We must support this mode otherwise we break
+>whole RDMA world.
+>
+>See commit below:
+>de641d74fb00 ("Revert "RDMA/mlx5: Fix devlink deadlock on net namespace deletion"")
 
-Use 'vmx->nested.msr_bitmap_changed' flag to implement the feature.
-
-Note, KVM already uses 'Enlightened MSR bitmap' feature when it runs as a
-nested hypervisor on top of Hyper-V. The newly introduced feature is going
-to be used by Hyper-V guests on KVM.
-
-When the feature is enabled for Win10+WSL2, it shaves off around 700 CPU
-cycles from a nested vmexit cost (tight cpuid loop test).
-
-Signed-off-by: Vitaly Kuznetsov <vkuznets@redhat.com>
----
- arch/x86/kvm/hyperv.c     |  2 ++
- arch/x86/kvm/vmx/nested.c | 14 ++++++++++++++
- 2 files changed, 16 insertions(+)
-
-diff --git a/arch/x86/kvm/hyperv.c b/arch/x86/kvm/hyperv.c
-index 4f15c0165c05..948a34139e04 100644
---- a/arch/x86/kvm/hyperv.c
-+++ b/arch/x86/kvm/hyperv.c
-@@ -2516,6 +2516,8 @@ int kvm_get_hv_cpuid(struct kvm_vcpu *vcpu, struct kvm_cpuid2 *cpuid,
- 
- 		case HYPERV_CPUID_NESTED_FEATURES:
- 			ent->eax = evmcs_ver;
-+			if (evmcs_ver)
-+				ent->eax |= HV_X64_NESTED_MSR_BITMAP;
- 
- 			break;
- 
-diff --git a/arch/x86/kvm/vmx/nested.c b/arch/x86/kvm/vmx/nested.c
-index f02e846c944a..5203810dab71 100644
---- a/arch/x86/kvm/vmx/nested.c
-+++ b/arch/x86/kvm/vmx/nested.c
-@@ -591,6 +591,7 @@ static inline bool nested_vmx_prepare_msr_bitmap(struct kvm_vcpu *vcpu,
- 	int msr;
- 	unsigned long *msr_bitmap_l1;
- 	unsigned long *msr_bitmap_l0 = vmx->nested.vmcs02.msr_bitmap;
-+	struct hv_enlightened_vmcs *evmcs = vmx->nested.hv_evmcs;
- 	struct kvm_host_map *map = &vmx->nested.msr_bitmap_map;
- 
- 	/* Nothing to do if the MSR bitmap is not in use.  */
-@@ -598,6 +599,19 @@ static inline bool nested_vmx_prepare_msr_bitmap(struct kvm_vcpu *vcpu,
- 	    !nested_cpu_has(vmcs12, CPU_BASED_USE_MSR_BITMAPS))
- 		return false;
- 
-+	/*
-+	 * MSR bitmap update can be skipped when:
-+	 * - MSR bitmap for L1 hasn't changed.
-+	 * - Nested hypervisor (L1) is attempting to launch the same L2 as
-+	 *   before.
-+	 * - Nested hypervisor (L1) has enabled 'Enlightened MSR Bitmap' feature
-+	 *   and tells KVM (L0) there were no changes in MSR bitmap for L2.
-+	 */
-+	if (!vmx->nested.force_msr_bitmap_recalc && evmcs &&
-+	    evmcs->hv_enlightenments_control.msr_bitmap &&
-+	    evmcs->hv_clean_fields & HV_VMX_ENLIGHTENED_CLEAN_FIELD_MSR_BITMAP)
-+		return true;
-+
- 	if (kvm_vcpu_map(vcpu, gpa_to_gfn(vmcs12->msr_bitmap), map))
- 		return false;
- 
--- 
-2.31.1
-
+If it is not possible for whatever reason to have per-ns notifier, you
+have to register the global notifier probably only once in init, and
+have probably some sort of mechanism to ignore the events while you are
+in the middle of the re-init. I don't see other way.
