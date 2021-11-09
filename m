@@ -2,59 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B8FB44A963
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 09:40:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B87644A972
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 09:41:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244355AbhKIInB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Nov 2021 03:43:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33322 "EHLO
+        id S244373AbhKIIoQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Nov 2021 03:44:16 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33532 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244329AbhKIIm7 (ORCPT
+        with ESMTP id S244457AbhKIIn4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Nov 2021 03:42:59 -0500
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1AA5AC061764;
-        Tue,  9 Nov 2021 00:40:14 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=In-Reply-To:Content-Type:MIME-Version
-        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=BSYDtyvtxeYO/3QhAbbeuQvbeug4v40pkj0aP/DoEd8=; b=gDTBWoIO6TQv0vujnnllbx8Hkt
-        La4VlhI+jfAO1deCZd0J3l1kwnmGPEfHAf0M/b9uLT+slc9BqvxuvcZR8GVQ9GVTGTtenVErS0ZCe
-        q5Ox/tYapOGoAg18MH9GXl4M96lCI/6dEzjpn+swqgsfk+mvKTTszbVfe98A+8YAknacLBNZIirYA
-        /seP70EgsU4yR1cqoz+zy5V+O3t5KJ7wc1jiUSmfxFI4gIbT/HABK7uRxX2opBudqn+MzKDEqcF98
-        o72Ed6sh9YlEpHyJpvM/CtakGIzsQmRX/W/rUMZWMhL4IDQr8ZmejOh0/w6R+8ALtbfbTRqRbZYnK
-        5jnlfJzg==;
-Received: from hch by bombadil.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mkMfs-0013QK-Vk; Tue, 09 Nov 2021 08:40:12 +0000
-Date:   Tue, 9 Nov 2021 00:40:12 -0800
-From:   Christoph Hellwig <hch@infradead.org>
-To:     "Matthew Wilcox (Oracle)" <willy@infradead.org>
-Cc:     "Darrick J . Wong " <djwong@kernel.org>, linux-xfs@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-block@vger.kernel.org, Jens Axboe <axboe@kernel.dk>,
-        Christoph Hellwig <hch@infradead.org>
-Subject: Re: [PATCH v2 02/28] mm: Add functions to zero portions of a folio
-Message-ID: <YYoz7FPK/vHdsV2Z@infradead.org>
-References: <20211108040551.1942823-1-willy@infradead.org>
- <20211108040551.1942823-3-willy@infradead.org>
+        Tue, 9 Nov 2021 03:43:56 -0500
+Received: from mail-ed1-x533.google.com (mail-ed1-x533.google.com [IPv6:2a00:1450:4864:20::533])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ABD42C061764;
+        Tue,  9 Nov 2021 00:41:09 -0800 (PST)
+Received: by mail-ed1-x533.google.com with SMTP id w1so74042451edd.10;
+        Tue, 09 Nov 2021 00:41:09 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=AJX2pUmfzPpLjrrxgxxO1bbzmWpMPOrJUiDQcak4Rxw=;
+        b=Xhx+JkZ1YjdLPVM9vGKZgR/eZK+rAJhk3ZZDvjCiEXEUP6oV33ghLj9du+H3sS+cBZ
+         cMy64rsO3KgnXTLlNZuT0g7csOSOy6xfvfEguLeJqgek/sNrB9mJSgNhXgBBO3oEDKyM
+         vC0Gxy9Mo+D8j8aEiyVXB9sg01pUlraH9dA0yjAXCh0O+XsvRndQqeBjZEeGhPSl14Be
+         OdGaorvu9c7r+RDp44ERCowykm6aWMzwUZFKbpr7EjINat7OXewj8SFkxSJhmM73NIou
+         CY6SDVVjVV+joj1wTkbXfhilwW+86rUeyZNiFA0LsC9jgfMZ1Ki76PdyEEE96qicncG4
+         msdA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=AJX2pUmfzPpLjrrxgxxO1bbzmWpMPOrJUiDQcak4Rxw=;
+        b=uLBbg8LxOk+HBnPhj6/Q6ge60wkDwLSaTTwsUH6MVDzrQK9g5JRe2PBYtlgH+whoZX
+         i8ZqrXaSDlTdQlR2VYQEROwgKaYYIVP6Ib3mQJX4slPIHBmeAVd2BAfT3p+p0G84Rij2
+         kkxJB4/XBFo3rWt/QkR0qIUO1SKgDgD0jkuvCIV/GFRCNcojhG14bvSQol0yMNA4y3Yv
+         8L2dUdVzQBI45QkQG369OOrW8HD6a5VJOLbBoxRORXkZPZbVdU0sUdQY2AVxUWw5NFCd
+         6XD8CnC88qWjQ7e6FU4j95DJluX3bvZ128vp2oAn6jGJFW8Ia/QLx+RjnhiWrb5VeWm3
+         rHSg==
+X-Gm-Message-State: AOAM532fWFTN77zwURGQjufo4cB/ThuKrpmTP657MaEHQUKx0yFK1iMi
+        06p/EoyhYgOpRUo0KchMzyLobgvUbDa7/yTrgfNwd2TNeeg=
+X-Google-Smtp-Source: ABdhPJxW2xe6xbM2FmzJ/BPWyMLO+LNPRG1OB5qvb0UPIHkOH50jO3GIVddC+4hV8eCU8mvE1ukk/t6U5rA8jOFZm+Q=
+X-Received: by 2002:a05:6402:3493:: with SMTP id v19mr7631155edc.149.1636447268090;
+ Tue, 09 Nov 2021 00:41:08 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211108040551.1942823-3-willy@infradead.org>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
+References: <20211109083051.17831-1-christian.gmeiner@gmail.com> <20211109083051.17831-2-christian.gmeiner@gmail.com>
+In-Reply-To: <20211109083051.17831-2-christian.gmeiner@gmail.com>
+From:   Christian Gmeiner <christian.gmeiner@gmail.com>
+Date:   Tue, 9 Nov 2021 09:40:56 +0100
+Message-ID: <CAH9NwWdOt2xnRtbYZFnpU1vornqNcUX5dVUOLut2Zma844FggA@mail.gmail.com>
+Subject: Re: [RFC PATCH 1/1] rpmsg: add syslog driver
+To:     LKML <linux-kernel@vger.kernel.org>
+Cc:     Ohad Ben-Cohen <ohad@wizery.com>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        linux-remoteproc@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 08, 2021 at 04:05:25AM +0000, Matthew Wilcox (Oracle) wrote:
-> These functions are wrappers around zero_user_segments(), which means
-> that zero_user_segments() can now be called for compound pages even when
-> CONFIG_TRANSPARENT_HUGEPAGE is disabled.
+Hi.
 
-Looks good,
+Am Di., 9. Nov. 2021 um 09:31 Uhr schrieb Christian Gmeiner
+<christian.gmeiner@gmail.com>:
+>
+> Allows the remote firmware to log into syslog.
+>
+> Signed-off-by: Christian Gmeiner <christian.gmeiner@gmail.com>
+> ---
+>  drivers/rpmsg/Kconfig  | 8 ++++++++
+>  drivers/rpmsg/Makefile | 1 +
+>  2 files changed, 9 insertions(+)
+>
+> diff --git a/drivers/rpmsg/Kconfig b/drivers/rpmsg/Kconfig
+> index 0b4407abdf13..801f9956ec21 100644
+> --- a/drivers/rpmsg/Kconfig
+> +++ b/drivers/rpmsg/Kconfig
+> @@ -73,4 +73,12 @@ config RPMSG_VIRTIO
+>         select RPMSG_NS
+>         select VIRTIO
+>
+> +config RPMSG_SYSLOG
+> +       tristate "SYSLOG device interface"
+> +       depends on RPMSG
+> +       help
+> +         Say Y here to export rpmsg endpoints as device files, usually found
+> +         in /dev. They make it possible for user-space programs to send and
+> +         receive rpmsg packets.
+> +
+>  endmenu
+> diff --git a/drivers/rpmsg/Makefile b/drivers/rpmsg/Makefile
+> index 8d452656f0ee..75b2ec7133a5 100644
+> --- a/drivers/rpmsg/Makefile
+> +++ b/drivers/rpmsg/Makefile
+> @@ -9,3 +9,4 @@ obj-$(CONFIG_RPMSG_QCOM_GLINK_RPM) += qcom_glink_rpm.o
+>  obj-$(CONFIG_RPMSG_QCOM_GLINK_SMEM) += qcom_glink_smem.o
+>  obj-$(CONFIG_RPMSG_QCOM_SMD)   += qcom_smd.o
+>  obj-$(CONFIG_RPMSG_VIRTIO)     += virtio_rpmsg_bus.o
+> +obj-$(CONFIG_RPMSG_SYSLOG)     += rpmsg_syslog.o
+> --
+> 2.33.1
+>
 
-Reviewed-by: Christoph Hellwig <hch@lst.de>
+I just sent a v2 as I was missing the rpmsg_syslog.c - need more coffee.
 
-Related note: the inline !HIGHMEM version should switch to page_address
-instead of kmap_local_page to make the code more obvious.
+-- 
+greets
+--
+Christian Gmeiner, MSc
+
+https://christian-gmeiner.info/privacypolicy
