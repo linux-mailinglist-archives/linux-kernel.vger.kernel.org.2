@@ -2,114 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 93E9644B27A
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 19:08:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4729644B27C
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 19:09:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241702AbhKISLf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Nov 2021 13:11:35 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50820 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230383AbhKISLd (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Nov 2021 13:11:33 -0500
-Received: from mail-pl1-x632.google.com (mail-pl1-x632.google.com [IPv6:2607:f8b0:4864:20::632])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 76677C061764;
-        Tue,  9 Nov 2021 10:08:47 -0800 (PST)
-Received: by mail-pl1-x632.google.com with SMTP id r5so38593pls.1;
-        Tue, 09 Nov 2021 10:08:47 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=bCGwSmI8NTSILNGyHTY8bibfBV/DYZ+v1YjLw7ldJW8=;
-        b=mYPuj6bgHH/UBiNs/5YKLiid1ATKXLZCXLyQJVKleNkGzn1QmapwDIeTulZ9qpO8+2
-         tIir31gPIX+1agbgs7V+4wTlAm0GuT5fqsrcFfTaTCboHFrNAJGLuobDZn5GoS9Hj8y8
-         Pp8Uv0SSUsLbE3utyAiTgCcyLq/PZD6CadLiHW8TnukPZhYsmYtGX/Wtlti7jv659+Er
-         lSoTlDWQJx4a25eAOdBUwXe0wPZHB2IkDKqEH94y5OXxTeRyXrrr8XNhpOFFxbvdYl62
-         ygRURSqKSLKPZ+AXPWAwJkYDQ6UexnpVEC+KMAe9ZMxvNhTp4M6uQSfWRUEXZCAn1Qy2
-         MktA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=bCGwSmI8NTSILNGyHTY8bibfBV/DYZ+v1YjLw7ldJW8=;
-        b=IHE4gy9tT4CscwkpEjpn5/llV18sR7m2wAlPZI5+YxcFz32weIywsALJF50Z4xl9Im
-         90m0LbdMjGBi4Kdw4kuIioGvHpWXwRIyfB3LFFFemmjSLyYF5WVujJb2spyKKeRt8+uX
-         EkzOiEVSgWv0SOuAsigTY4gsz0DOUPvvthkfqm+ck6cQDFlZdljZ8Hd0LSzbOxrMyAOC
-         jzE82ySz52O1tyN8Hn5Or0RcDJg3h2JXrQplpCMjDuylFeC9U/IQjg+eUXgouISeH6Kx
-         e2hBgkDZGXnjPXY+yHlZSVDqjpeLySgrzX6Ddw8lrH53/hXBvhWT643wZ0/jrZgsPHxS
-         tXhw==
-X-Gm-Message-State: AOAM5338qr+WztyAeqIiJjV7bowTPX6ZlDb08fSdd0ea0V5whfYYUxdr
-        N9UOr8mclvfiLq6UF6Lq0xye+TEGnnI=
-X-Google-Smtp-Source: ABdhPJywfUZyZh7Y26Fc8xCCp9t0+A7C28m7FGHm103B7OET73pgr/En7J0xUw5dWildoPOB+RHxbA==
-X-Received: by 2002:a17:90b:4c88:: with SMTP id my8mr9141713pjb.132.1636481326756;
-        Tue, 09 Nov 2021 10:08:46 -0800 (PST)
-Received: from [10.67.48.245] ([192.19.223.252])
-        by smtp.googlemail.com with ESMTPSA id ep15sm3720434pjb.3.2021.11.09.10.08.45
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 09 Nov 2021 10:08:46 -0800 (PST)
-Subject: Re: [PATCH v2 4/7] net: dsa: b53: Add PHC clock support
-To:     Martin Kaistra <martin.kaistra@linutronix.de>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Vivien Didelot <vivien.didelot@gmail.com>
-Cc:     Richard Cochran <richardcochran@gmail.com>,
-        Vladimir Oltean <olteanv@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        John Stultz <john.stultz@linaro.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Russell King <linux@armlinux.org.uk>,
-        Marc Kleine-Budde <mkl@pengutronix.de>,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org
-References: <20211109095013.27829-1-martin.kaistra@linutronix.de>
- <20211109095013.27829-5-martin.kaistra@linutronix.de>
-From:   Florian Fainelli <f.fainelli@gmail.com>
-Message-ID: <a546e219-607c-1705-e366-7281e1aeedde@gmail.com>
-Date:   Tue, 9 Nov 2021 10:08:44 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        id S241768AbhKISMW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Nov 2021 13:12:22 -0500
+Received: from mail.kernel.org ([198.145.29.99]:53286 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230383AbhKISMU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Nov 2021 13:12:20 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 165BE61078
+        for <linux-kernel@vger.kernel.org>; Tue,  9 Nov 2021 18:09:34 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1636481374;
+        bh=fwZ+9DFgYhOz9JloIi5von5LP751Xa06A2vPFeZb8wg=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=SV/ItxRMN137UwwPpg1gNqwsHTr7p244S4sVhP5T7eNi+5Jg5jAB8odNUmWOocLm2
+         8ryr0JSFKK20+8V/INhpiVSgWadoEocdc3em9eAfCXSQmxWyRfPSDju7HvbBnrxAED
+         H3ba2eqloWpa8VKEHvmSuBekYesww7RnKa+dQftWvud+xdeD5uFN+FDbFAjS9J1Sc7
+         CG6DwVQP3qtK5E2hW0wi6V1/08IUmzJXLgZZgBqSE0XseOpo8IyuPYlCUd7jTJ4SSn
+         6AQP/edyXVPb8gzNFjXW/6nd1oZPvlYi9OE2g5LpmlhoBPRKn6SqEeNAkX5MxB3EEC
+         C6eUJ7ceUSZFw==
+Received: by mail-oi1-f174.google.com with SMTP id bk14so171550oib.7
+        for <linux-kernel@vger.kernel.org>; Tue, 09 Nov 2021 10:09:34 -0800 (PST)
+X-Gm-Message-State: AOAM532YDYSnVowN21StLXpPP7dqGfqyd7Gt0Gezw73Q0EbIpgq6PVT+
+        yaAY4J/OXKlvf9rWH1R3b/h6mfnen1zGafWRuT4=
+X-Google-Smtp-Source: ABdhPJwiYMdDHWuST6V7K8sfBXooK1EZjl8/fpTO5Alzh3cNI4GxNwjPYm53Z6HteXsgGe6yeK5wcy4Vx3Nq65CUud4=
+X-Received: by 2002:aca:ad95:: with SMTP id w143mr6434770oie.47.1636481373229;
+ Tue, 09 Nov 2021 10:09:33 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20211109095013.27829-5-martin.kaistra@linutronix.de>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20211105145917.2828911-1-ardb@kernel.org> <20211105145917.2828911-3-ardb@kernel.org>
+ <YYq1/a10XGBthteg@FVFF77S0Q05N>
+In-Reply-To: <YYq1/a10XGBthteg@FVFF77S0Q05N>
+From:   Ard Biesheuvel <ardb@kernel.org>
+Date:   Tue, 9 Nov 2021 19:09:21 +0100
+X-Gmail-Original-Message-ID: <CAMj1kXHrTjxWWX0cfF1Bx58aTR9Fp=xkfhizkWnQRjYtRm879w@mail.gmail.com>
+Message-ID: <CAMj1kXHrTjxWWX0cfF1Bx58aTR9Fp=xkfhizkWnQRjYtRm879w@mail.gmail.com>
+Subject: Re: [PATCH v6 2/2] arm64: implement support for static call trampolines
+To:     Mark Rutland <mark.rutland@arm.com>
+Cc:     Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Quentin Perret <qperret@google.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        James Morse <james.morse@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Kees Cook <keescook@chromium.org>,
+        Sami Tolvanen <samitolvanen@google.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Steven Rostedt <rostedt@goodmis.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/9/21 1:50 AM, Martin Kaistra wrote:
-> The BCM53128 switch has an internal clock, which can be used for
-> timestamping. Add support for it.
-> 
-> The 32-bit free running clock counts nanoseconds. In order to account
-> for the wrap-around at 999999999 (0x3B9AC9FF) while using the cycle
-> counter infrastructure, we need to set a 30bit mask and use the
-> overflow_point property.
-> 
-> Enable the Broadsync HD timestamping feature in b53_ptp_init() for PTPv2
-> Ethertype (0x88f7).
-> 
-> Signed-off-by: Martin Kaistra <martin.kaistra@linutronix.de>
-> ---
+On Tue, 9 Nov 2021 at 18:55, Mark Rutland <mark.rutland@arm.com> wrote:
+>
+> Hi Ard,
+>
+> On Fri, Nov 05, 2021 at 03:59:17PM +0100, Ard Biesheuvel wrote:
+> > +static void *strip_cfi_jt(void *addr)
+> > +{
+> > +     if (IS_ENABLED(CONFIG_CFI_CLANG)) {
+> > +             void *p = addr;
+> > +             u32 insn;
+> > +
+> > +             /*
+> > +              * Taking the address of a function produces the address of the
+> > +              * jump table entry when Clang CFI is enabled. Such entries are
+> > +              * ordinary jump instructions, preceded by a BTI C instruction
+> > +              * if BTI is enabled for the kernel.
+> > +              */
+> > +             if (IS_ENABLED(CONFIG_ARM64_BTI_KERNEL))
+> > +                     p += 4;
+> > +
+> > +             insn = le32_to_cpup(p);
+> > +             if (aarch64_insn_is_b(insn))
+> > +                     return p + aarch64_get_branch_offset(insn);
+> > +
+> > +             WARN_ON(1);
+> > +     }
+> > +     return addr;
+> > +}
+>
+> I'm somewhat uncomfortable with this, because it seems like the compiler could
+> easily violate our expectations in future, and then we're in for a massive
+> headache. I assume clang doesn't provide any guarnatee as to the format of the
+> jump table entries (and e.g. I can see scope for branch padding breaking this).
+>
+> In trying to sidestep that I ended up with:
+>
+>   https://lore.kernel.org/linux-arm-kernel/20211109172408.49641-1-mark.rutland@arm.com/
+>
+> ... which I think is a good option for PREEMPT_DYNAMIC, but I don't know if
+> there were other places where we believe static calls would be critical for
+> performance rather than a nice-to-have, and whether we truly need static calls
+> on arm64. My mind is leaning towards "avoid if reasonable" at the moment (or at
+> least make that mutually exclusive with CFI so we can avoid that specific fun).
+>
+> I see you had at least one other user in:
+>
+>   https://lore.kernel.org/r/20211109120336.3561463-1-ardb@kernel.org
+>
+> ... what were your thoughts on the criticality of that?
+>
 
-[snip]
+That particular use case does not rely on static calls being fast at
+all, so there it doesn't really matter which variety we implement. The
+reason I sent it out today is because it gives some test coverage for
+static calls used in a way that the API as designed should support,
+but which turned out to be slightly broken in practice.
 
->  struct b53_mib_desc {
->  	u8 size;
-> @@ -1131,12 +1132,24 @@ static int b53_setup(struct dsa_switch *ds)
->  			b53_disable_port(ds, port);
->  	}
->  
-> +	if (dev->broadsync_hd) {
-> +		ret = b53_ptp_init(dev);
-> +		if (ret) {
-> +			dev_err(ds->dev, "failed to initialize PTP\n");
-> +			return ret;
-> +		}
+> FWIW other than the above this looks good to me. My major concern here is
+> fragility/maintenance, and secondly whether we're gaining much in practice. So
+> if you think we really need this, I'm not going to stand in the way.
+>
 
-Can you fold the check for dev->broadsync_hd within b53_ptp_init() as
-requested before? And likewise for b53_ptp_exit.
--- 
-Florian
+Android relies heavily on tracepoints for vendor hooks, and given the
+performance impact of CFI on indirect calls, there has been interest
+in enabling static calls to replace them.
+
+Quentin, anything to add here?
