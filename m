@@ -2,261 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D279D44AB73
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 11:25:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9797C44AB71
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 11:25:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245313AbhKIK1y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Nov 2021 05:27:54 -0500
-Received: from mga12.intel.com ([192.55.52.136]:61631 "EHLO mga12.intel.com"
+        id S245303AbhKIK1v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Nov 2021 05:27:51 -0500
+Received: from mail.kernel.org ([198.145.29.99]:41966 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239354AbhKIK1w (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Nov 2021 05:27:52 -0500
-X-IronPort-AV: E=McAfee;i="6200,9189,10162"; a="212449406"
-X-IronPort-AV: E=Sophos;i="5.87,220,1631602800"; 
-   d="scan'208";a="212449406"
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Nov 2021 02:25:04 -0800
-X-IronPort-AV: E=Sophos;i="5.87,220,1631602800"; 
-   d="scan'208";a="451865754"
-Received: from smile.fi.intel.com ([10.237.72.184])
-  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Nov 2021 02:25:01 -0800
-Received: from andy by smile.fi.intel.com with local (Exim 4.95)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1mkOJ7-00532k-4w;
-        Tue, 09 Nov 2021 12:24:49 +0200
-Date:   Tue, 9 Nov 2021 12:24:48 +0200
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Arnd Bergmann <arnd@kernel.org>
-Cc:     linux-gpio@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <brgl@bgdev.pl>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 5/8] gpiolib: shrink further
-Message-ID: <YYpMcKlcZ3JWqp5M@smile.fi.intel.com>
-References: <20211109100207.2474024-1-arnd@kernel.org>
- <20211109100207.2474024-6-arnd@kernel.org>
+        id S239354AbhKIK1u (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Nov 2021 05:27:50 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id BA2F36115B;
+        Tue,  9 Nov 2021 10:25:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1636453505;
+        bh=rGE10HIXZmbhxN+IHzposILO92jVkMCYBAB1nviliUg=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=MmICFbtlbMar/OkMVCGEg/xP8jorTnUovsyN4nNPTAhbaJpFvyXRsZF/zY7l6Vomg
+         53/kfLbjO+r+oIRMCJt2ZXdjEp2F00kRl5KdDRefgMt6xh9tgoPwDBQuO8pbnOniyK
+         Zt3hB+M8t8udZpIfF0KTyLNHt2X8kUZGATvjwm+imP/dtgiFe/mUjLoTKAPrN2Z27o
+         QyfA93Rrvlr4MhVZoYZLvbwXC130myqDxpWAbzWVgs/HBCiGNqqJJ+YU+87FyvQ3x4
+         nOXIJSEGy+wf171I+rFrV+lt0XeDv8RTPiWeGnuCiaXKHgZVWSNyHl68J/LwxB6Vk1
+         WjoOuPcbG3HVQ==
+Date:   Tue, 9 Nov 2021 11:25:02 +0100
+From:   Frederic Weisbecker <frederic@kernel.org>
+To:     Valentin Schneider <valentin.schneider@arm.com>
+Cc:     linux-kernel@vger.kernel.org,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@kernel.org>, Mike Galbraith <efault@gmx.de>
+Subject: Re: [PATCH] sched: Tweak default dynamic preempt mode selection
+Message-ID: <20211109102502.GA288354@lothringen>
+References: <20211105104035.3112162-1-valentin.schneider@arm.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20211109100207.2474024-6-arnd@kernel.org>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+In-Reply-To: <20211105104035.3112162-1-valentin.schneider@arm.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 09, 2021 at 11:02:04AM +0100, Arnd Bergmann wrote:
-> From: Arnd Bergmann <arnd@arndb.de>
+On Fri, Nov 05, 2021 at 10:40:35AM +0000, Valentin Schneider wrote:
+> Commit c597bfddc9e9 ("sched: Provide Kconfig support for default dynamic
+> preempt mode") changed the selectable config names for the preemption
+> model. This means a config file must now select
 > 
-> gpio_set_debounce() only has a single user, which is trivially
-> converted to gpiod_set_debounce(), while gpio_cansleep() and
-> devm_gpio_free() have no users at all.
+>   CONFIG_PREEMPT_BEHAVIOUR=y
 > 
-> Remove them all to shrink the old gpio interface.
-
-A couple of nit-picks below.
-In either case,
-Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+> rather than
+> 
+>   CONFIG_PREEMPT=y
+> 
+> to get a preemptible kernel. This means all arch config files need to be
+> updated - right now arm64 defconfig selects CONFIG_PREEMPT=y but ends up
+> with CONFIG_PREEMPT_NONE_BEHAVIOUR=y.
+> 
+> Instead, have CONFIG_*PREEMPT be the selectable configs again, and make
+> them select their _BEHAVIOUR equivalent if CONFIG_PREEMPT_DYNAMIC is set.
+> 
+> Signed-off-by: Valentin Schneider <valentin.schneider@arm.com>
 > ---
->  .../driver-api/driver-model/devres.rst        |  1 -
->  Documentation/driver-api/gpio/legacy.rst      |  2 --
->  drivers/gpio/gpiolib-devres.c                 | 25 ----------------
->  drivers/input/touchscreen/ads7846.c           |  3 +-
->  include/linux/gpio.h                          | 29 -------------------
->  5 files changed, 2 insertions(+), 58 deletions(-)
+>  kernel/Kconfig.preempt | 36 ++++++++++++++++++------------------
+>  1 file changed, 18 insertions(+), 18 deletions(-)
 > 
-> diff --git a/Documentation/driver-api/driver-model/devres.rst b/Documentation/driver-api/driver-model/devres.rst
-> index 148e19381b79..52821478decd 100644
-> --- a/Documentation/driver-api/driver-model/devres.rst
-> +++ b/Documentation/driver-api/driver-model/devres.rst
-> @@ -277,7 +277,6 @@ GPIO
->    devm_gpiochip_add_data()
->    devm_gpio_request()
->    devm_gpio_request_one()
-> -  devm_gpio_free()
+> diff --git a/kernel/Kconfig.preempt b/kernel/Kconfig.preempt
+> index 60f1bfc3c7b2..25e8d6a3d9fa 100644
+> --- a/kernel/Kconfig.preempt
+> +++ b/kernel/Kconfig.preempt
+> @@ -1,12 +1,21 @@
+>  # SPDX-License-Identifier: GPL-2.0-only
 >  
->  I2C
->    devm_i2c_new_dummy_device()
-> diff --git a/Documentation/driver-api/gpio/legacy.rst b/Documentation/driver-api/gpio/legacy.rst
-> index 06c05e2d62c1..eae185f771d7 100644
-> --- a/Documentation/driver-api/gpio/legacy.rst
-> +++ b/Documentation/driver-api/gpio/legacy.rst
-> @@ -238,8 +238,6 @@ setup or driver probe/teardown code, so this is an easy constraint.)::
->          ## 	gpio_free_array()
+> +config PREEMPT_NONE_BEHAVIOUR
+> +	bool
+> +
+> +config PREEMPT_VOLUNTARY_BEHAVIOUR
+> +	bool
+> +
+> +config PREEMPT_BEHAVIOUR
+> +	bool
+> +
+>  choice
+>  	prompt "Preemption Model"
+> -	default PREEMPT_NONE_BEHAVIOUR
+> +	default PREEMPT_NONE
 >  
->                  gpio_free()
-> -                gpio_set_debounce()
+> -config PREEMPT_NONE_BEHAVIOUR
+> +config PREEMPT_NONE
+>  	bool "No Forced Preemption (Server)"
+> -	select PREEMPT_NONE if !PREEMPT_DYNAMIC
+> +	select PREEMPT_NONE_BEHAVIOUR if PREEMPT_DYNAMIC
+>  	help
+>  	  This is the traditional Linux preemption model, geared towards
+>  	  throughput. It will still provide good latencies most of the
+> @@ -18,10 +27,10 @@ config PREEMPT_NONE_BEHAVIOUR
+>  	  raw processing power of the kernel, irrespective of scheduling
+>  	  latencies.
+>  
+> -config PREEMPT_VOLUNTARY_BEHAVIOUR
+> +config PREEMPT_VOLUNTARY
+>  	bool "Voluntary Kernel Preemption (Desktop)"
+>  	depends on !ARCH_NO_PREEMPT
+> -	select PREEMPT_VOLUNTARY if !PREEMPT_DYNAMIC
+> +	select PREEMPT_VOLUNTARY_BEHAVIOUR if PREEMPT_DYNAMIC
+>  	help
+>  	  This option reduces the latency of the kernel by adding more
+>  	  "explicit preemption points" to the kernel code. These new
+> @@ -37,10 +46,12 @@ config PREEMPT_VOLUNTARY_BEHAVIOUR
+>  
+>  	  Select this if you are building a kernel for a desktop system.
+>  
+> -config PREEMPT_BEHAVIOUR
+> +config PREEMPT
+>  	bool "Preemptible Kernel (Low-Latency Desktop)"
+>  	depends on !ARCH_NO_PREEMPT
+> -	select PREEMPT
+> +	select PREEMPTION
+> +	select UNINLINE_SPIN_UNLOCK if !ARCH_INLINE_SPIN_UNLOCK
+> +	select PREEMPT_BEHAVIOUR if PREEMPT_DYNAMIC
+>  	help
+>  	  This option reduces the latency of the kernel by making
+>  	  all kernel code (that is not executing in a critical section)
+> @@ -75,17 +86,6 @@ config PREEMPT_RT
+>  
+>  endchoice
+>  
+> -config PREEMPT_NONE
+> -	bool
 > -
->  
-
-One more blank line removal?
-
->  
->  Claiming and Releasing GPIOs
-> diff --git a/drivers/gpio/gpiolib-devres.c b/drivers/gpio/gpiolib-devres.c
-> index 79da85d17b71..55465ead492f 100644
-> --- a/drivers/gpio/gpiolib-devres.c
-> +++ b/drivers/gpio/gpiolib-devres.c
-> @@ -385,13 +385,6 @@ static void devm_gpio_release(struct device *dev, void *res)
->  	gpio_free(*gpio);
->  }
->  
-> -static int devm_gpio_match(struct device *dev, void *res, void *data)
-> -{
-> -	unsigned *this = res, *gpio = data;
+> -config PREEMPT_VOLUNTARY
+> -	bool
 > -
-> -	return *this == *gpio;
-> -}
+> -config PREEMPT
+> -	bool
+> -	select PREEMPTION
+> -	select UNINLINE_SPIN_UNLOCK if !ARCH_INLINE_SPIN_UNLOCK
 > -
->  /**
->   *      devm_gpio_request - request a GPIO for a managed device
->   *      @dev: device to request the GPIO for
-> @@ -459,24 +452,6 @@ int devm_gpio_request_one(struct device *dev, unsigned gpio,
->  }
->  EXPORT_SYMBOL_GPL(devm_gpio_request_one);
->  
-> -/**
-> - *      devm_gpio_free - free a GPIO
-> - *      @dev: device to free GPIO for
-> - *      @gpio: GPIO to free
-> - *
-> - *      Except for the extra @dev argument, this function takes the
-> - *      same arguments and performs the same function as gpio_free().
-> - *      This function instead of gpio_free() should be used to manually
-> - *      free GPIOs allocated with devm_gpio_request().
-> - */
-> -void devm_gpio_free(struct device *dev, unsigned int gpio)
-> -{
-> -
-> -	WARN_ON(devres_release(dev, devm_gpio_release, devm_gpio_match,
-> -		&gpio));
-> -}
-> -EXPORT_SYMBOL_GPL(devm_gpio_free);
-> -
->  static void devm_gpio_chip_release(void *data)
->  {
->  	struct gpio_chip *gc = data;
-> diff --git a/drivers/input/touchscreen/ads7846.c b/drivers/input/touchscreen/ads7846.c
-> index a25a77dd9a32..d0664e3b89bb 100644
-> --- a/drivers/input/touchscreen/ads7846.c
-> +++ b/drivers/input/touchscreen/ads7846.c
-> @@ -27,6 +27,7 @@
->  #include <linux/of.h>
+>  config PREEMPT_COUNT
+>         bool
 
->  #include <linux/of_gpio.h>
+This must be breaking cond_resched() and might_resched() definitions.
 
-(1)
+Since CONFIG_PREEMPT_NONE, CONFIG_PREEMPT_VOLUNTARY and CONFIG_PREEMPT aren't too widely
+spread around within ifdefferies, you can:
 
->  #include <linux/of_device.h>
+1) Rename CONFIG_PREEMPT_NONE to CONFIG_PREEMPT_NONE_STATIC
+   Rename CONFIG_PREEMPT_VOLUNTARY to CONFIG_PREEMPT_VOLUNTARY_STATIC
+   Rename CONFIG_PREEMPT to CONFIG_PREEMPT_STATIC
 
-> +#include <linux/gpio/consumer.h>
+2) Keep the old CONFIG_PREEMPT_NONE, CONFIG_PREEMPT_VOLUNTARY,
+   CONFIG_PREEMPT around for compatibility and make them select their
+   corresponding BEHAVIOUR entries.
 
-(2)
-
->  #include <linux/gpio.h>
-
-(3)
-
-Seems too many...
-
-Are you planning to clean up this driver to get rid of (1) and (3) altogether?
-
-(I understand that for current purposes above is a good quick cleanup)
-
->  #include <linux/spi/spi.h>
->  #include <linux/spi/ads7846.h>
-> @@ -1018,7 +1019,7 @@ static int ads7846_setup_pendown(struct spi_device *spi,
->  		ts->gpio_pendown = pdata->gpio_pendown;
->  
->  		if (pdata->gpio_pendown_debounce)
-> -			gpio_set_debounce(pdata->gpio_pendown,
-> +			gpiod_set_debounce(gpio_to_desc(pdata->gpio_pendown),
->  					  pdata->gpio_pendown_debounce);
->  	} else {
->  		dev_err(&spi->dev, "no get_pendown_state nor gpio_pendown?\n");
-> diff --git a/include/linux/gpio.h b/include/linux/gpio.h
-> index c19256f67e02..64cc8f09eba8 100644
-> --- a/include/linux/gpio.h
-> +++ b/include/linux/gpio.h
-> @@ -117,11 +117,6 @@ static inline int gpio_direction_output(unsigned gpio, int value)
->  	return gpiod_direction_output_raw(gpio_to_desc(gpio), value);
->  }
->  
-> -static inline int gpio_set_debounce(unsigned gpio, unsigned debounce)
-> -{
-> -	return gpiod_set_debounce(gpio_to_desc(gpio), debounce);
-> -}
-> -
->  static inline int gpio_get_value_cansleep(unsigned gpio)
->  {
->  	return gpiod_get_raw_value_cansleep(gpio_to_desc(gpio));
-> @@ -140,11 +135,6 @@ static inline void gpio_set_value(unsigned gpio, int value)
->  	return gpiod_set_raw_value(gpio_to_desc(gpio), value);
->  }
->  
-> -static inline int gpio_cansleep(unsigned gpio)
-> -{
-> -	return gpiod_cansleep(gpio_to_desc(gpio));
-> -}
-> -
->  static inline int gpio_to_irq(unsigned gpio)
->  {
->  	return gpiod_to_irq(gpio_to_desc(gpio));
-> @@ -181,8 +171,6 @@ struct device;
->  int devm_gpio_request(struct device *dev, unsigned gpio, const char *label);
->  int devm_gpio_request_one(struct device *dev, unsigned gpio,
->  			  unsigned long flags, const char *label);
-> -void devm_gpio_free(struct device *dev, unsigned int gpio);
-> -
->  #else /* ! CONFIG_GPIOLIB */
->  
->  #include <linux/kernel.h>
-> @@ -239,11 +227,6 @@ static inline int gpio_direction_output(unsigned gpio, int value)
->  	return -ENOSYS;
->  }
->  
-> -static inline int gpio_set_debounce(unsigned gpio, unsigned debounce)
-> -{
-> -	return -ENOSYS;
-> -}
-> -
->  static inline int gpio_get_value(unsigned gpio)
->  {
->  	/* GPIO can never have been requested or set as {in,out}put */
-> @@ -257,13 +240,6 @@ static inline void gpio_set_value(unsigned gpio, int value)
->  	WARN_ON(1);
->  }
->  
-> -static inline int gpio_cansleep(unsigned gpio)
-> -{
-> -	/* GPIO can never have been requested or set as {in,out}put */
-> -	WARN_ON(1);
-> -	return 0;
-> -}
-> -
->  static inline int gpio_get_value_cansleep(unsigned gpio)
->  {
->  	/* GPIO can never have been requested or set as {in,out}put */
-> @@ -319,11 +295,6 @@ static inline int devm_gpio_request_one(struct device *dev, unsigned gpio,
->  	return -EINVAL;
->  }
->  
-> -static inline void devm_gpio_free(struct device *dev, unsigned int gpio)
-> -{
-> -	WARN_ON(1);
-> -}
-> -
->  #endif /* ! CONFIG_GPIOLIB */
->  
->  #endif /* __LINUX_GPIO_H */
-> -- 
-> 2.29.2
-> 
-
--- 
-With Best Regards,
-Andy Shevchenko
-
-
+Thanks.
+   
