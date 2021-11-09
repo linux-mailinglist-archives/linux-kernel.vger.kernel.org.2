@@ -2,111 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4510844B2B5
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 19:28:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E7F7344B2B9
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 19:28:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242428AbhKISax (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Nov 2021 13:30:53 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:55340 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231396AbhKISat (ORCPT
+        id S242481AbhKISbI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Nov 2021 13:31:08 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55286 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S242446AbhKISbH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Nov 2021 13:30:49 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1636482482;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=rtUoKBqasSeW6Qre3YuNfMu7Ws6mBm3uCqCwPLcQgzo=;
-        b=OjrxGRexXWU4hcZtgKVQUToVERJvi5B7W3TJXhNUbXL+o4BN585979HVk3o4OAzDHk7rHi
-        AnSDTXXaRbxOR1GiYzbhKjJ9Jjc3Hcx0My+NU8FEf19aV7GvTuxZ8Mv3Ft3Sl8fJD4Adav
-        fu7hZ09wwczMT3cKS/ZElbPs8lXnG4c=
-Received: from mail-ot1-f72.google.com (mail-ot1-f72.google.com
- [209.85.210.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-482-8eIaWMMQNbiQXS8SgATANQ-1; Tue, 09 Nov 2021 13:28:01 -0500
-X-MC-Unique: 8eIaWMMQNbiQXS8SgATANQ-1
-Received: by mail-ot1-f72.google.com with SMTP id m23-20020a05683023b700b0055c8a2dcca0so789ots.6
-        for <linux-kernel@vger.kernel.org>; Tue, 09 Nov 2021 10:28:01 -0800 (PST)
+        Tue, 9 Nov 2021 13:31:07 -0500
+Received: from mail-pl1-x629.google.com (mail-pl1-x629.google.com [IPv6:2607:f8b0:4864:20::629])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A639C06127A
+        for <linux-kernel@vger.kernel.org>; Tue,  9 Nov 2021 10:28:21 -0800 (PST)
+Received: by mail-pl1-x629.google.com with SMTP id k4so61384plx.8
+        for <linux-kernel@vger.kernel.org>; Tue, 09 Nov 2021 10:28:21 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=YqtAkERQI/ln6XRRI9t4KGym2pBKGt4SPOY54xOyYmc=;
+        b=PGOJkkhM/AspXaJubyodGGt3bokcuo1nWeF66Ozy2PSHqL4ozl1ealnJ2sESU77Daa
+         5PCgxSnMKmr5LSn7P+UZw5lKAiqvWF452/e/zcO5+QvHTusOJTtt+u60C6PqqZ1Yg/LF
+         XnAN//7pVh4I0+4GH1pCdd6cp3HnHcZsIY7gg=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=rtUoKBqasSeW6Qre3YuNfMu7Ws6mBm3uCqCwPLcQgzo=;
-        b=hmlytHfGKUeBeenz676X0DXXR0S7hkUGsKRc7yXUofdECK5TGUEvH4x8BqqsbSG1RN
-         gs3wlsCJbeYzUKLboNcKOq9utyBmHLF2wxkX18V0MBKtHfjlP/Up8uoOCvgiGklECzob
-         cjkVRb0FtFp89j1zv6tfV38nULfsQe/FSJg8YPSVU2xUzUHnRBCw4ifT5o5E9No0Gysk
-         52P3u1f3+IkOSXFAQDUuoake0a5HWyqre9UNBZuNrTEzC+xUSHL8PN1WEH8W86G8cuAU
-         WYbj3X40FBCFd65cyC/dXPjuO+KgGP32qN4TEiYJXR33v9FZwy85xyR9q/1J1C1z5MpR
-         VohQ==
-X-Gm-Message-State: AOAM530DlTrnYXMUAZ0iEPZbYAVx4Yw7BTpzorrVFYi5Pf6z14CQy+2G
-        lqnSandO/3G4etSgYWt85/L3NXrg3bftTLZuCSIQdZDJtcQ4C9IMX2f4oZ9Y1OBAuA27J7ilzGi
-        xDVQzhlQUShsvgEdHUCON8NMp
-X-Received: by 2002:aca:d956:: with SMTP id q83mr7548460oig.165.1636482480721;
-        Tue, 09 Nov 2021 10:28:00 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJwbTJpzBL7XSS42NEtwyUl4DhJ9VlLaX9+7VZV4Hpia5d1DnpyjnzhwPpK5Eu9G8lqfn/zBTQ==
-X-Received: by 2002:aca:d956:: with SMTP id q83mr7548445oig.165.1636482480585;
-        Tue, 09 Nov 2021 10:28:00 -0800 (PST)
-Received: from localhost.localdomain (075-142-250-213.res.spectrum.com. [75.142.250.213])
-        by smtp.gmail.com with ESMTPSA id q5sm7795022otg.1.2021.11.09.10.27.59
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 09 Nov 2021 10:28:00 -0800 (PST)
-Subject: Re: [PATCH v1 1/1] fpga: dfl: pci: Use pci_find_vsec_capability()
- when looking for DFL
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     Moritz Fischer <mdf@kernel.org>,
-        Matthew Gerlach <matthew.gerlach@linux.intel.com>,
-        linux-fpga@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Wu Hao <hao.wu@intel.com>, Xu Yilun <yilun.xu@intel.com>
-References: <20211109154127.18455-1-andriy.shevchenko@linux.intel.com>
- <8ccc133a-fb47-4548-fee3-d57775a5166d@redhat.com>
- <YYq4fSRoyzFE4Vei@smile.fi.intel.com>
-From:   Tom Rix <trix@redhat.com>
-Message-ID: <39ac1f40-66ab-6c7e-0042-8fcdc062ed00@redhat.com>
-Date:   Tue, 9 Nov 2021 10:27:58 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=YqtAkERQI/ln6XRRI9t4KGym2pBKGt4SPOY54xOyYmc=;
+        b=ct+At4As60XkF9YAmx/1jepOuBoEJft1mVxG+luUq/NiArwXO3PnDmJ1YKNJHQ5d0Z
+         s+Lj7bgyCn+u/aPqDCbUU/CgfmuptCJNKGDaKYzUquzZqyNtC/9f4dquG3w86d7fHLf3
+         ft5gyOxYoKJNMo2ZhzOp2Ye+RBZW1RuqWNLMWTyuivBobHeD5z5gz+sH3g3EE9Babk0r
+         UjqUP3sWAqyVv9hAiOVzrl78xTO5wxjrinAtaE3pQwPiQyZ//IxKs8090ncFn2lOr+l7
+         LQezb8Lrxlk1rUtPOedg/3nzz+0TEPFxENCGLFHFEi3x+ssIbEGtgBgW8I/Vzwgp1tAq
+         0hMg==
+X-Gm-Message-State: AOAM530ex96vOg3cMjaK9q3KGExbF2pJG1vAF/XtqUjKzA9nKcrq8xNq
+        w4ouBW7B6iPMoA1sSQIduyHhsQ==
+X-Google-Smtp-Source: ABdhPJw56zqbHPhzHi/UjO1EuTMs0ckASHUWtACCQVftB6fOpzf6idVKbxIvoc6DXqmWnHNuFyu1UQ==
+X-Received: by 2002:a17:90b:3a89:: with SMTP id om9mr9485773pjb.29.1636482500572;
+        Tue, 09 Nov 2021 10:28:20 -0800 (PST)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id u11sm7194577pfk.152.2021.11.09.10.28.20
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 09 Nov 2021 10:28:20 -0800 (PST)
+Date:   Tue, 9 Nov 2021 10:28:19 -0800
+From:   Kees Cook <keescook@chromium.org>
+To:     Yafang Shao <laoar.shao@gmail.com>
+Cc:     akpm@linux-foundation.org, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, linux-perf-users@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, oliver.sang@intel.com, lkp@intel.com,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>,
+        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        Michal Miroslaw <mirq-linux@rere.qmqm.pl>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        David Hildenbrand <david@redhat.com>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Petr Mladek <pmladek@suse.com>
+Subject: Re: [PATCH 0/7] task comm cleanups
+Message-ID: <202111091027.DEF1B6DD@keescook>
+References: <20211108083840.4627-1-laoar.shao@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <YYq4fSRoyzFE4Vei@smile.fi.intel.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211108083840.4627-1-laoar.shao@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, Nov 08, 2021 at 08:38:33AM +0000, Yafang Shao wrote:
+> This patchset is part of the patchset "extend task comm from 16 to 24"[1].
+> Now we have different opinion that dynamically allocates memory to store 
+> kthread's long name into a separate pointer, so I decide to take the useful
+> cleanups apart from the original patchset and send it separately[2].
+> 
+> These useful cleanups can make the usage around task comm less
+> error-prone. Furthermore, it will be useful if we want to extend task
+> comm in the future.
+> 
+> All of the patches except patch #4 have either a reviewed-by or a
+> acked-by now. I have verfied that the vmcore/crash works well after
+> patch #4.
+> 
+> [1]. https://lore.kernel.org/lkml/20211101060419.4682-1-laoar.shao@gmail.com/
+> [2]. https://lore.kernel.org/lkml/CALOAHbAx55AUo3bm8ZepZSZnw7A08cvKPdPyNTf=E_tPqmw5hw@mail.gmail.com/
 
-On 11/9/21 10:05 AM, Andy Shevchenko wrote:
-> On Tue, Nov 09, 2021 at 07:55:43AM -0800, Tom Rix wrote:
->> On 11/9/21 7:41 AM, Andy Shevchenko wrote:
->>> Currently the find_dfls_by_vsec() opens code pci_find_vsec_capability().
->>> Refactor the former to use the latter. No functional change intended.
-> Thanks for review, my answers below.
->
-> ...
->
->>> +	u16 voff;
->> The later use of voff in pci_read_config_dword is of type 'int', it may be
->> better to keep voff as an int.
-> I don't think so. The rule of thumb that the types should match the value they
-> got in the first place. In this case it's u16. Compiler will implicitly cast it
-> to whatever is needed as long as the type is good for integer promotion.
->
-> ...
->
->>> +	voff = pci_find_vsec_capability(dev, PCI_VENDOR_ID_INTEL, PCI_VSEC_ID_INTEL_DFLS);
->> This may be a weakness in the origin code, but intel isn't the exclusive
->> user of DFL.
-> This does not change the original code. If you think so, this can be extended
-> later on.
+Thanks for collecting this! It all looks good to me.
 
-I would rather see this fixed now or explained why this isn't a problem.
+Andrew, can you take these?
 
-Tom
+-Kees
 
->
->>>    	if (!voff) {
->>>    		dev_dbg(&pcidev->dev, "%s no DFL VSEC found\n", __func__);
->>>    		return -ENODEV;
-
+-- 
+Kees Cook
