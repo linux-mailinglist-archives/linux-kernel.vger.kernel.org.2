@@ -2,538 +2,359 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8927244A5BF
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 05:18:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C93A44A5C7
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 05:30:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240120AbhKIEVF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Nov 2021 23:21:05 -0500
-Received: from out2.migadu.com ([188.165.223.204]:50676 "EHLO out2.migadu.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236033AbhKIEVE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Nov 2021 23:21:04 -0500
-Date:   Tue, 9 Nov 2021 12:18:59 +0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1636431497;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=Zcx9kemVvvPfF/6pbo7VE2DObwW8ePDglZ/Or5HOZg8=;
-        b=eehvuX76yvCqcTM6TuHcdgUGJ0CY2cbXVTVGlOLz5UDLS/c1A89cL550Z2ece0pi14KhW7
-        RA1dDanAzEd7h7RkEod9yX8Iq/SjmpKsJCn9x9YpaF7YQaJBHMD8iVdPcl1G5otnCjBcuC
-        5kQKhAf17z2wvupwhwAu9IWiluBYzFk=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From:   Tao Zhou <tao.zhou@linux.dev>
-To:     Peter Oskolkov <posk@posk.io>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Andy Lutomirski <luto@kernel.org>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, linux-api@vger.kernel.org,
-        Paul Turner <pjt@google.com>, Ben Segall <bsegall@google.com>,
-        Peter Oskolkov <posk@google.com>,
-        Andrei Vagin <avagin@google.com>, Jann Horn <jannh@google.com>,
-        Thierry Delisle <tdelisle@uwaterloo.ca>,
-        Tao Zhou <tao.zhou@linux.dev>
-Subject: Re: [PATCH v0.8 2/6] mm, x86/uaccess: add userspace atomic helpers
-Message-ID: <YYn2s+S6kMrwMW43@geo.homenetwork>
-References: <20211104195804.83240-1-posk@google.com>
- <20211104195804.83240-3-posk@google.com>
+        id S240514AbhKIEdH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Nov 2021 23:33:07 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34134 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236033AbhKIEdD (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Nov 2021 23:33:03 -0500
+Received: from mail-oi1-x234.google.com (mail-oi1-x234.google.com [IPv6:2607:f8b0:4864:20::234])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A7CAC061764
+        for <linux-kernel@vger.kernel.org>; Mon,  8 Nov 2021 20:30:18 -0800 (PST)
+Received: by mail-oi1-x234.google.com with SMTP id o4so31550679oia.10
+        for <linux-kernel@vger.kernel.org>; Mon, 08 Nov 2021 20:30:18 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=3aMCHdg6dYLfrOpFqTf8iRJZcFBmekB2LXHxGiDDgy0=;
+        b=FEnq43hbc5WNuoM0SIDOUtHHWeeE9KevXjdQI4jfDEJeydwFSCvxbAYdm+BFFz/sAn
+         frT29zE+zrEzeWBWvym+0ONUxz/w/3noh81sGPT7bUUQREJM2bt0Rh5+KRIOpXbCcqnn
+         KPs/7V+kKXp0kojmsKOeSwrOz0RPvl5VRPiQXUOqNxPAGsx3B1lExZcY4MQ2BHHQUFAv
+         ngBFfYSVKKVuwTzjMa+QXkLLXX/dTAlOpdV7g81Cztge6DHKCbmEyvtQVlhXaZ8PU7Kb
+         q/oP8Dbnna8ciG9jsA1NeSIxVqbyjggu3axAGrOm0Zysc1kjLRI3XLK+CmED7be14M0I
+         2JWQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=3aMCHdg6dYLfrOpFqTf8iRJZcFBmekB2LXHxGiDDgy0=;
+        b=qk4d1O3d+QzIBFIrgr1oD78GhKjFSdaGOY9Obc3p/FHb6sQI//aXUeP8eTRJ5uGgbU
+         ittRaFfWdOscMqpbuws3Xex5bNDe6blLItXpYVKq/2csxHCDdw8NBbD5pP8GOZil3etD
+         FOLbTV5hX+4PpqF0aaD4xyG0CSMazok41iPE5hJLdr+mvW5rbP1nUMhknPm25udg1nZc
+         YVA6isot5JzjWyHohktEzq8qtLVLD1keYFXOiqAUqkuh+MgAALBF7Xw8lvVrfMYb8Xzq
+         Z7x+pjTEehwuLb8NPre9W6l9T/nfDyH/uIua9hk6xSidWiSeoOxFPplka1XKpBCgPEt+
+         683A==
+X-Gm-Message-State: AOAM5312c+12wmHH6So8MrFqcwZ8GwGCXFQJwKBk3xDUwz4LP4xsDcc2
+        Nai5b4Y4HB7U7ldWP7Dw+GsWdX4Z4bG4WfmaEwqjZw==
+X-Google-Smtp-Source: ABdhPJy8sc8GnKM0PDWYUWc3cieSbMiO3NMOFr6ByPHq55IFQwk3OIhRsn0bB1uprhEHRkHh37Yx1UJ3aF9e8xws67E=
+X-Received: by 2002:a54:4791:: with SMTP id o17mr3332646oic.114.1636432217421;
+ Mon, 08 Nov 2021 20:30:17 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211104195804.83240-3-posk@google.com>
-X-Migadu-Flow: FLOW_OUT
-X-Migadu-Auth-User: tao.zhou@linux.dev
+References: <1635324926-22319-1-git-send-email-wells.lu@sunplus.com>
+ <1635754277-32429-1-git-send-email-wells.lu@sunplus.com> <1635754277-32429-2-git-send-email-wells.lu@sunplus.com>
+In-Reply-To: <1635754277-32429-2-git-send-email-wells.lu@sunplus.com>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Tue, 9 Nov 2021 05:30:05 +0100
+Message-ID: <CACRpkdYSzHW6Y0CS5H=9uJdPxm1HvjAYNYznLXNkiXWwi-JB1w@mail.gmail.com>
+Subject: Re: [PATCH v2 1/3] pinctrl: Add driver for Sunplus SP7021
+To:     Wells Lu <wellslutw@gmail.com>
+Cc:     linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
+        robh+dt@kernel.org, devicetree@vger.kernel.org,
+        qinjian@cqplus1.com, dvorkin@tibbo.com,
+        Wells Lu <wells.lu@sunplus.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 04, 2021 at 12:58:00PM -0700, Peter Oskolkov wrote:
+Hi Wells Lu,
 
-> In addition to futexes needing to do atomic operations in the userspace,
-> a second use case is now in the works (UMCG, see
-> https://lore.kernel.org/all/20210917180323.278250-1-posk@google.com/),
-> so a generic facility to perform these operations has been called for
-> (see https://lore.kernel.org/all/87ilyk9xc0.ffs@tglx/).
-> 
-> Add a set of generic helpers to perform 32/64-bit xchg and cmpxchg
-> operations in the userspace. Also implement the required
-> architecture-specific support on x86_64.
-> 
-> Signed-off-by: Peter Oskolkov <posk@google.com>
-> ---
->  arch/x86/include/asm/uaccess_64.h |  93 +++++++++++
->  include/linux/uaccess.h           |  46 ++++++
->  mm/maccess.c                      | 264 ++++++++++++++++++++++++++++++
->  3 files changed, 403 insertions(+)
-> 
-> diff --git a/arch/x86/include/asm/uaccess_64.h b/arch/x86/include/asm/uaccess_64.h
-> index 45697e04d771..41e2f96d3ec4 100644
-> --- a/arch/x86/include/asm/uaccess_64.h
-> +++ b/arch/x86/include/asm/uaccess_64.h
-> @@ -79,4 +79,97 @@ __copy_from_user_flushcache(void *dst, const void __user *src, unsigned size)
->  	kasan_check_write(dst, size);
->  	return __copy_user_flushcache(dst, src, size);
->  }
-> +
-> +#define ARCH_HAS_ATOMIC_UACCESS_HELPERS 1
-> +
-> +static inline int __try_cmpxchg_user_32(u32 *uval, u32 __user *uaddr,
-> +						u32 oldval, u32 newval)
-> +{
-> +	int ret = 0;
-> +
-> +	asm volatile("\n"
-> +		"1:\t" LOCK_PREFIX "cmpxchgl %4, %2\n"
-> +		"2:\n"
-> +		"\t.section .fixup, \"ax\"\n"
-> +		"3:\tmov     %3, %0\n"
-> +		"\tjmp     2b\n"
-> +		"\t.previous\n"
-> +		_ASM_EXTABLE_UA(1b, 3b)
-> +		: "+r" (ret), "=a" (oldval), "+m" (*uaddr)
-> +		: "i" (-EFAULT), "r" (newval), "1" (oldval)
-> +		: "memory"
-> +	);
-> +	*uval = oldval;
-> +	return ret;
-> +}
-> +
-> +static inline int __try_cmpxchg_user_64(u64 *uval, u64 __user *uaddr,
-> +						u64 oldval, u64 newval)
-> +{
-> +	int ret = 0;
-> +
-> +	asm volatile("\n"
-> +		"1:\t" LOCK_PREFIX "cmpxchgq %4, %2\n"
-> +		"2:\n"
-> +		"\t.section .fixup, \"ax\"\n"
-> +		"3:\tmov     %3, %0\n"
-> +		"\tjmp     2b\n"
-> +		"\t.previous\n"
-> +		_ASM_EXTABLE_UA(1b, 3b)
-> +		: "+r" (ret), "=a" (oldval), "+m" (*uaddr)
-> +		: "i" (-EFAULT), "r" (newval), "1" (oldval)
-> +		: "memory"
-> +	);
-> +	*uval = oldval;
-> +	return ret;
-> +}
-> +
-> +static inline int __try_xchg_user_32(u32 *oval, u32 __user *uaddr, u32 newval)
-> +{
-> +	u32 oldval = 0;
-> +	int ret = 0;
-> +
-> +	asm volatile("\n"
-> +		"1:\txchgl %0, %2\n"
-> +		"2:\n"
-> +		"\t.section .fixup, \"ax\"\n"
-> +		"3:\tmov     %3, %1\n"
-> +		"\tjmp     2b\n"
-> +		"\t.previous\n"
-> +		_ASM_EXTABLE_UA(1b, 3b)
-> +		: "=r" (oldval), "=r" (ret), "+m" (*uaddr)
-> +		: "i" (-EFAULT), "0" (newval), "1" (0)
+thanks for your patch!
 
-"1"(0) can be omitted, that ret is initialized. And the initialization
-of oldval not need.
+This driver needs a bit of work, I will point out some things and I
+think it will be quite different if we also change the bindings.
 
-> +	);
-> +
-> +	if (ret)
-> +		return ret;
-> +
-> +	*oval = oldval;
-> +	return 0;
-> +}
-> +
-> +static inline int __try_xchg_user_64(u64 *oval, u64 __user *uaddr, u64 newval)
-> +{
-> +	u64 oldval = 0;
-> +	int ret = 0;
-> +
-> +	asm volatile("\n"
-> +		"1:\txchgq %0, %2\n"
-> +		"2:\n"
-> +		"\t.section .fixup, \"ax\"\n"
-> +		"3:\tmov     %3, %1\n"
-> +		"\tjmp     2b\n"
-> +		"\t.previous\n"
-> +		_ASM_EXTABLE_UA(1b, 3b)
-> +		: "=r" (oldval), "=r" (ret), "+m" (*uaddr)
-> +		: "i" (-EFAULT), "0" (newval), "1" (0)
+On Mon, Nov 1, 2021 at 9:11 AM Wells Lu <wellslutw@gmail.com> wrote:
 
-Same of above.
+> +config PINCTRL_SPPCTL
+> +       bool "Sunplus SP7021 pinmux and GPIO driver"
+> +       depends on SOC_SP7021
+> +       depends on OF && HAS_IOMEM
+> +       select PINMUX
+> +       select GENERIC_PINCTRL_GROUPS
+> +       select GENERIC_PINMUX_FUNCTIONS
+> +       select PINCONF
+> +       select GENERIC_PINCONF
+> +       select OF_GPIO
+> +       select GPIOLIB
+> +       select GPIO_SYSFS
 
-> +	);
-> +
-> +	if (ret)
-> +		return ret;
-> +
-> +	*oval = oldval;
-> +	return 0;
-> +}
-> +
->  #endif /* _ASM_X86_UACCESS_64_H */
-> diff --git a/include/linux/uaccess.h b/include/linux/uaccess.h
-> index ac0394087f7d..dcb3ac093075 100644
-> --- a/include/linux/uaccess.h
-> +++ b/include/linux/uaccess.h
-> @@ -408,4 +408,50 @@ void __noreturn usercopy_abort(const char *name, const char *detail,
->  			       unsigned long len);
->  #endif
-> 
-> +#ifdef ARCH_HAS_ATOMIC_UACCESS_HELPERS
-> +/**
-> + * cmpxchg_user_[32|64][_nofault|]() - compare_exchange 32/64-bit values
-> + * @uaddr:     Destination address, in user space;
-> + * @curr_val:  Source address, in kernel space;
-> + * @new_val:   The value to write to the destination address.
+Don't do this, sysfs is deprecated.
+
+> +obj-$(CONFIG_PINCTRL_SPPCTL) += sppctl.o
+> +obj-$(CONFIG_PINCTRL_SPPCTL) += sppctl_pinctrl.o
+> +obj-$(CONFIG_PINCTRL_SPPCTL) += sppctl_sysfs.o
+> +obj-$(CONFIG_PINCTRL_SPPCTL) += sppctl_gpio_ops.o
+> +obj-$(CONFIG_PINCTRL_SPPCTL) += sppctl_gpio.o
+> +obj-$(CONFIG_PINCTRL_SPPCTL) += pinctrl_inf_sp7021.o
+> +obj-$(CONFIG_PINCTRL_SPPCTL) += gpio_inf_sp7021.o
+
+This multitide of files makes this a bit hard to read and review,
+usually pin controllers are in one-two files for a single SoC.
+
+> + * This program is free software; you can redistribute it and/or modify
+> + * it under the terms of the GNU General Public License as published by
+> + * the Free Software Foundation; either version 2 of the License, or
+> + * (at your option) any later version.
 > + *
-> + * This is the standard cmpxchg: atomically: compare *@uaddr to *@curr_val;
-> + * if the values match, write @new_val to @uaddr, return 0; if the values
-> + * do not match, write *@uaddr to @curr_val, return -EAGAIN.
-> + *
-> + * The _nofault versions don't fault and can be used in
-> + * atomic/preempt-disabled contexts.
-> + *
-> + * Return:
-> + * 0      : OK/success;
-> + * -EINVAL: @uaddr is not properly aligned ('may fault' versions only);
-> + * -EFAULT: memory access error (including mis-aligned @uaddr in _nofault);
+> + * This program is distributed in the hope that it will be useful,
+> + * but WITHOUT ANY WARRANTY; without even the implied warranty of
+> + * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+> + * GNU General Public License for more details.
 
-(including mis-aligned @uaddr in _fault)
+Drop this boilerplate on all files and just use the SPDX tag.
 
-> + * -EAGAIN: @old did not match.
-> + */
-> +int cmpxchg_user_32_nofault(u32 __user *uaddr, u32 *curr_val, u32 new_val);
-> +int cmpxchg_user_64_nofault(u64 __user *uaddr, u64 *curr_val, u64 new_val);
-> +int cmpxchg_user_32(u32 __user *uaddr, u32 *curr_val, u32 new_val);
-> +int cmpxchg_user_64(u64 __user *uaddr, u64 *curr_val, u64 new_val);
-> +
-> +/**
-> + * xchg_user_[32|64][_nofault|]() - exchange 32/64-bit values
-> + * @uaddr:   Destination address, in user space;
-> + * @val:     Source address, in kernel space.
-> + *
-> + * This is the standard atomic xchg: exchange values pointed to by @uaddr and @val.
-> + *
-> + * The _nofault versions don't fault and can be used in
-> + * atomic/preempt-disabled contexts.
-> + *
-> + * Return:
-> + * 0      : OK/success;
-> + * -EINVAL: @uaddr is not properly aligned ('may fault' versions only);
-> + * -EFAULT: memory access error (including mis-aligned @uaddr in _nofault).
+> +const size_t GPIS_listSZ = sizeof(sppctlgpio_list_s)/sizeof(*(sppctlgpio_list_s));
 
-(including mis-aligned @uaddr in _fault)
+Use only lowercase in variable names.
+This looks like a reimplementation of ARRAY_SIZE(),
+replace with that if this is the case.
 
-> + */
-> +int xchg_user_32_nofault(u32 __user *uaddr, u32 *val);
-> +int xchg_user_64_nofault(u64 __user *uaddr, u64 *val);
-> +int xchg_user_32(u32 __user *uaddr, u32 *val);
-> +int xchg_user_64(u64 __user *uaddr, u64 *val);
-> +#endif		/* ARCH_HAS_ATOMIC_UACCESS_HELPERS */
-> +
->  #endif		/* __LINUX_UACCESS_H__ */
-> diff --git a/mm/maccess.c b/mm/maccess.c
-> index d3f1a1f0b1c1..620556b11550 100644
-> --- a/mm/maccess.c
-> +++ b/mm/maccess.c
-> @@ -335,3 +335,267 @@ long strnlen_user_nofault(const void __user *unsafe_addr, long count)
-> 
->  	return ret;
->  }
-> +
-> +#ifdef ARCH_HAS_ATOMIC_UACCESS_HELPERS
-> +
-> +static int fix_pagefault(unsigned long uaddr, bool write_fault, int bytes)
+> +const size_t sppctlpins_allSZ = ARRAY_SIZE(sppctlpins_all);
+
+Instead of defining consts for random sizes like this,
+just inline ARRAY_SIZE() where you use it.
+
+> +// gpio: is defined in gpio_inf_sp7021.c
+> +const size_t PMUX_listSZ = sizeof(sppctlpmux_list_s)/sizeof(*(sppctlpmux_list_s));
+
+Same comment as above. Etc.
+
+> +/* CEC pin is not used. Release it for others. */
+> +//static const unsigned int pins_hdmi1[] = { D(10, 6), D(10, 7), D(12, 2), D(12, 1) };
+> +//static const unsigned int pins_hdmi2[] = { D(8, 3), D(8, 4), D(8, 5), D(8, 6) };
+> +//static const unsigned int pins_hdmi3[] = { D(7, 4), D(7, 5), D(7, 6), D(7, 7) };
+
+Don't leave commented-out code in the driver. Delete
+all this stuff.
+
+> +void print_device_tree_node(struct device_node *node, int depth)
 > +{
-> +	struct mm_struct *mm = current->mm;
-> +	int ret;
+> +       int i = 0;
+> +       struct device_node *child;
+> +       struct property    *properties;
+> +       char                indent[255] = "";
 > +
-> +	mmap_read_lock(mm);
-> +	ret = fixup_user_fault(mm, uaddr, write_fault ? FAULT_FLAG_WRITE : 0,
-> +			NULL);
-> +	mmap_read_unlock(mm);
+> +       for (i = 0; i < depth * 3; i++)
+> +               indent[i] = ' ';
+> +       indent[i] = '\0';
 > +
-> +	return ret < 0 ? ret : 0;
+> +       ++depth;
+> +       if (depth == 1) {
+> +               pr_info("%s{ name = %s\n", indent, node->name);
+> +               for (properties = node->properties; properties != NULL;
+> +                       properties = properties->next)
+> +                       pr_info("%s  %s (%d)\n", indent, properties->name, properties->length);
+> +               pr_info("%s}\n", indent);
+> +       }
+> +
+> +       for_each_child_of_node(node, child) {
+> +               pr_info("%s{ name = %s\n", indent, child->name);
+> +               for (properties = child->properties; properties != NULL;
+> +                       properties = properties->next)
+> +                       pr_info("%s  %s (%d)\n", indent, properties->name, properties->length);
+> +               print_device_tree_node(child, depth);
+> +               pr_info("%s}\n", indent);
+> +       }
 > +}
-> +
-> +int cmpxchg_user_32_nofault(u32 __user *uaddr, u32 *curr_val, u32 new_val)
+
+This kind of debugging code should be deleted or use what
+is in the device tree core.
+
+> +void sppctl_gmx_set(struct sppctl_pdata_t *_p, uint8_t _roff, uint8_t _boff, uint8_t _bsiz,
+> +                   uint8_t _rval)
 > +{
-> +	int ret = -EFAULT;
-> +	u32 __old = *curr_val;
-> +
-> +	if (unlikely(!access_ok(uaddr, sizeof(*uaddr))))
-> +		return -EFAULT;
-> +
-> +	pagefault_disable();
-> +
-> +	if (!user_access_begin(uaddr, sizeof(*uaddr))) {
-> +		pagefault_enable();
-> +		return -EFAULT;
-> +	}
-> +	ret = __try_cmpxchg_user_32(curr_val, uaddr, __old, new_val);
-> +	user_access_end();
-> +
-> +	if (!ret)
-> +		ret =  *curr_val == __old ? 0 : -EAGAIN;
-> +
-> +	pagefault_enable();
+> +       uint32_t *r;
 
-May this can be moved to be sibling to user_access_end() even do not
-know much about this to me.
+Don't use uint8_t or uint16_t or uint32_t, use the kernel
+short forms u8, u16 or u32, simply.
 
-> +	return ret;
-> +}
+Don't start any variable names with _underscore, it i a
+big confusion for the head because it has ambigous
+semantics.
+
+Try to find concise descriptive variable names.
+
+> +       struct sppctl_reg_t x = { .m = (~(~0 << _bsiz)) << _boff,
+> +                                 .v = ((uint16_t)_rval) << _boff };
 > +
-> +int cmpxchg_user_64_nofault(u64 __user *uaddr, u64 *curr_val, u64 new_val)
+> +       if (_p->debug > 1)
+> +               KDBG(_p->pcdp->dev, "%s(x%X,x%X,x%X,x%X) m:x%X v:x%X\n",
+> +                    __func__, _roff, _boff, _bsiz, _rval, x.m, x.v);
+
+Do not reinvent kernel debugging use the dev_dbg() macro.
+
+> +       r = (uint32_t *)&x;
+
+Try to avoid casting like this. It is usually a sign that something is wrong.
+
+> +       if (_fun % 2 == 0)
+> +               ;
+> +       else {
+> +               x.v <<= 8;
+> +               x.m <<= 8;
+> +       }
+
+This is code that is incredibly terse and deviant from the kernels
+general style. Please read a few other pin control drivers and
+familiarize with how these drivers usually look.
+
+> +uint8_t sppctl_fun_get(struct sppctl_pdata_t *_p,  uint8_t _fun)
 > +{
-> +	int ret = -EFAULT;
-> +	u64 __old = *curr_val;
-> +
-> +	if (unlikely(!access_ok(uaddr, sizeof(*uaddr))))
-> +		return -EFAULT;
-> +
-> +	pagefault_disable();
-> +
-> +	if (!user_access_begin(uaddr, sizeof(*uaddr))) {
-> +		pagefault_enable();
-> +		return -EFAULT;
-> +	}
-> +	ret = __try_cmpxchg_user_64(curr_val, uaddr, __old, new_val);
-> +	user_access_end();
-> +
-> +	if (!ret)
-> +		ret =  *curr_val == __old ? 0 : -EAGAIN;
-> +
-> +	pagefault_enable();
+> +       uint8_t pin = 0x00;
+> +       uint8_t func = (_fun >> 1) << 2;
 
-The same.
+This looks like shting to get rid of bit 0.
+Just use bitwise logic instead.
 
-> +	return ret;
-> +}
-> +
-> +int cmpxchg_user_32(u32 __user *uaddr, u32 *curr_val, u32 new_val)
+> +       ret = request_firmware_nowait(THIS_MODULE, true, _fwname, _dev, GFP_KERNEL, p,
+> +                                     sppctl_fwload_cb);
+
+So this pin controller needs a firmware? That is the first time
+I have ever seen that. Please add comments describing what this
+firmware is and what it does, also explain it in the commit
+message.
+
+> +int sppctl_pctl_resmap(struct platform_device *_pd, struct sppctl_pdata_t *_pc)
 > +{
-> +	int ret = -EFAULT;
-> +	u32 __old = *curr_val;
+> +       struct resource *rp;
 > +
-> +	/* Validate proper alignment. */
-> +	if (unlikely(((unsigned long)uaddr % sizeof(*uaddr)) ||
+> +       // resF
+> +       rp = platform_get_resource(_pd, IORESOURCE_MEM, 0);
+> +       if (IS_ERR(rp)) {
+> +               KERR(&(_pd->dev), "%s get res#F ERR\n", __func__);
+> +               return PTR_ERR(rp);
+> +       }
+> +       KDBG(&(_pd->dev), "mres #F:%p\n", rp);
 
-See address. sizeof(*uaddr) --> sizeof(uaddr).
-The size of address length.
+Thes resF etc are very terse and hard to understand. It seems written
+by someone who knows everything of what they are doing but with
+very little interest to explain it to others. Code readability is important.
 
-> +			((unsigned long)curr_val % sizeof(*curr_val))))
+> +static struct platform_driver sppctl_driver = {
+> +       .driver = {
+> +               .name           = MNAME,
 
-Same. sizeof(*curr_val) -->  sizeof(curr_val)
+Don't abbreviate so compulsively.
+SP7021_MODULE_NAME is fine.
 
-> +		return -EINVAL;
-
-This return should be -EFAULT accord to the comment above
-if not wrong to me.
-
-> +	if (unlikely(!access_ok(uaddr, sizeof(*uaddr))))
-> +		return -EFAULT;
-> +
-> +	pagefault_disable();
-> +
-> +	while (true) {
-> +		ret = -EFAULT;
-> +		if (!user_access_begin(uaddr, sizeof(*uaddr)))
-> +			break;
-> +
-> +		ret = __try_cmpxchg_user_32(curr_val, uaddr, __old, new_val);
-> +		user_access_end();
-> +
-> +		if (!ret) {
-> +			ret =  *curr_val == __old ? 0 : -EAGAIN;
-> +			break;
-> +		}
-> +
-> +		if (fix_pagefault((unsigned long)uaddr, true, sizeof(*uaddr)) < 0)
-> +			break;
-> +	}
-> +
-> +	pagefault_enable();
-> +	return ret;
-> +}
-> +
-> +int cmpxchg_user_64(u64 __user *uaddr, u64 *curr_val, u64 new_val)
+> +static int __init sppctl_drv_reg(void)
 > +{
-> +	int ret = -EFAULT;
-> +	u64 __old = *curr_val;
-> +
-> +	/* Validate proper alignment. */
-> +	if (unlikely(((unsigned long)uaddr % sizeof(*uaddr)) ||
-> +			((unsigned long)curr_val % sizeof(*curr_val))))
-> +		return -EINVAL;
-
-The same as above.. even the address size is equal to the value
-size. Not use value size here.
-
-> +	if (unlikely(!access_ok(uaddr, sizeof(*uaddr))))
-> +		return -EFAULT;
-> +
-> +	pagefault_disable();
-> +
-> +	while (true) {
-> +		ret = -EFAULT;
-> +		if (!user_access_begin(uaddr, sizeof(*uaddr)))
-> +			break;
-> +
-> +		ret = __try_cmpxchg_user_64(curr_val, uaddr, __old, new_val);
-> +		user_access_end();
-> +
-> +		if (!ret) {
-> +			ret =  *curr_val == __old ? 0 : -EAGAIN;
-> +			break;
-> +		}
-> +
-> +		if (fix_pagefault((unsigned long)uaddr, true, sizeof(*uaddr)) < 0)
-> +			break;
-> +	}
-> +
-> +	pagefault_enable();
-> +	return ret;
+> +       return platform_driver_register(&sppctl_driver);
 > +}
-> +
-> +/**
-> + * xchg_user_[32|64][_nofault|]() - exchange 32/64-bit values
-> + * @uaddr:   Destination address, in user space;
-> + * @val:     Source address, in kernel space.
-> + *
-> + * This is the standard atomic xchg: exchange values pointed to by @uaddr and @val.
-> + *
-> + * The _nofault versions don't fault and can be used in
-> + * atomic/preempt-disabled contexts.
-> + *
-> + * Return:
-> + * 0      : OK/success;
-> + * -EINVAL: @uaddr is not properly aligned ('may fault' versions only);
-> + * -EFAULT: memory access error (including mis-aligned @uaddr in _nofault).
-> + */
-> +int xchg_user_32_nofault(u32 __user *uaddr, u32 *val)
-> +{
-> +	int ret;
-> +
-> +	if (unlikely(!access_ok(uaddr, sizeof(*uaddr))))
-> +		return -EFAULT;
-> +
-> +	pagefault_disable();
-> +
-> +	if (!user_access_begin(uaddr, sizeof(*uaddr))) {
-> +		pagefault_enable();
-> +		return -EFAULT;
-> +	}
-> +
-> +	ret = __try_xchg_user_32(val, uaddr, *val);
-> +	user_access_end();
-> +
-> +	pagefault_enable();
-> +
-> +	return ret;
-> +}
-> +
-> +int xchg_user_64_nofault(u64 __user *uaddr, u64 *val)
-> +{
-> +	int ret;
-> +
-> +	if (unlikely(!access_ok(uaddr, sizeof(*uaddr))))
-> +		return -EFAULT;
-> +
-> +	pagefault_disable();
-> +
-> +	if (!user_access_begin(uaddr, sizeof(*uaddr))) {
-> +		pagefault_enable();
-> +		return -EFAULT;
-> +	}
-> +
-> +	ret = __try_xchg_user_64(val, uaddr, *val);
-> +	user_access_end();
-> +
-> +	pagefault_enable();
-> +
-> +	return ret;
-> +}
-> +
-> +int xchg_user_32(u32 __user *uaddr, u32 *val)
-> +{
-> +	int ret = -EFAULT;
-> +
-> +	/* Validate proper alignment. */
-> +	if (unlikely(((unsigned long)uaddr % sizeof(*uaddr)) ||
-> +			((unsigned long)val % sizeof(*val))))
-> +		return -EINVAL;
+> +postcore_initcall(sppctl_drv_reg);
 
-The same as above.
+Why do you need a postcore_initcall()?
 
-> +	if (unlikely(!access_ok(uaddr, sizeof(*uaddr))))
-> +		return -EFAULT;
-> +
-> +	pagefault_disable();
-> +
-> +	while (true) {
-> +		ret = -EFAULT;
-> +		if (!user_access_begin(uaddr, sizeof(*uaddr)))
-> +			break;
-> +
-> +		ret = __try_xchg_user_32(val, uaddr, *val);
-> +		user_access_end();
-> +
-> +		if (!ret)
-> +			break;
-> +
-> +		if (fix_pagefault((unsigned long)uaddr, true, sizeof(*uaddr)) < 0)
-> +			break;
-> +	}
-> +
-> +	pagefault_enable();
-> +
-> +	return ret;
-> +}
-> +
-> +int xchg_user_64(u64 __user *uaddr, u64 *val)
-> +{
-> +	int ret = -EFAULT;
-> +
-> +	/* Validate proper alignment. */
-> +	if (unlikely(((unsigned long)uaddr % sizeof(*uaddr)) ||
-> +			((unsigned long)val % sizeof(*val))))
-> +		return -EINVAL;
+> +MODULE_AUTHOR(M_AUT1);
+> +MODULE_AUTHOR(M_AUT2);
+> +MODULE_DESCRIPTION(M_NAM);
+> +MODULE_LICENSE(M_LIC);
 
-The same as above..
+Just inline the strings, all other drivers do.
 
-> +	if (unlikely(!access_ok(uaddr, sizeof(*uaddr))))
-> +		return -EFAULT;
+> +#define MNAME "sppctl"
+> +#define M_LIC "GPL v2"
+> +#define M_AUT1 "Dvorkin Dmitry <dvorkin@tibbo.com>"
+> +#define M_AUT2 "Wells Lu <wells.lu@sunplus.com>"
+> +#define M_NAM "SP7021 PinCtl"
+> +#define M_ORG "Sunplus/Tibbo Tech."
+> +#define M_CPR "(C) 2020"
+
+This is too much and too abbreviated names, just use
+the strings directly in the macros.
+
+> +#include <linux/version.h>
+
+Why?
+
+> +#include <linux/of_gpio.h>
+
+Never use this include in new code. It is legacy.
+
+> +#define SPPCTL_MAX_NAM 64
+> +#define SPPCTL_MAX_BUF PAGE_SIZE
 > +
-> +	pagefault_disable();
-> +
-> +	while (true) {
-> +		ret = -EFAULT;
-> +		if (!user_access_begin(uaddr, sizeof(*uaddr)))
-> +			break;
-> +
-> +		ret = __try_xchg_user_64(val, uaddr, *val);
-> +		user_access_end();
-> +
-> +		if (!ret)
-> +			break;
-> +
-> +		if (fix_pagefault((unsigned long)uaddr, true, sizeof(*uaddr)) < 0)
-> +			break;
-> +	}
-> +
-> +	pagefault_enable();
-> +
-> +	return ret;
-> +}
-> +#endif		/* ARCH_HAS_ATOMIC_UACCESS_HELPERS */
-> --
-> 2.25.1
-> 
+> +#define KINF(pd, fmt, args...) \
+> +       do { \
+> +               if ((pd) != NULL) \
+> +                       dev_info((pd), fmt, ##args); \
+> +               else \
+> +                       pr_info(MNAME ": " fmt, ##args); \
+> +       } while (0)
+> +#define KERR(pd, fmt, args...) \
+> +       do { \
+> +               if ((pd) != NULL) \
+> +                       dev_info((pd), fmt, ##args); \
+> +               else \
+> +                       pr_err(MNAME ": " fmt, ##args); \
+> +       } while (0)
+> +#ifdef CONFIG_PINCTRL_SPPCTL_DEBUG
+> +#define KDBG(pd, fmt, args...) \
+> +       do { \
+> +               if ((pd) != NULL) \
+> +                       dev_info((pd), fmt, ##args); \
+> +               else \
+> +                       pr_debug(MNAME ": " fmt, ##args); \
+> +       } while (0)
+> +#else
+> +#define KDBG(pd, fmt, args...)
+> +#endif
+
+Don't reimplement kernel debugging use dev_dbg(), dev_info()
+dev_err() etc directly. I don't see why you need
+CONFIG_PINCTRL_SPPCTL_DEBUG at all, if you absolutely
+want to control debugging for these files only just use
+this in your Makefile
+
+subdir-ccflags-$(CONFIG_PINCTRL_SPPCTL_DEBUG)  := -DDEBUG
+
+This will turn on/off the output from dev_dbg().
+
+> +struct sppctl_pdata_t {
+> +       char name[SPPCTL_MAX_NAM];
+> +       uint8_t debug;
+
+Don't use u8 for things like this use bool.
+
+> +       char fwname[SPPCTL_MAX_NAM];
+> +       void *sysfs_sdp;
+> +       void __iomem *baseF;    // functions
+> +       void __iomem *base0;    // MASTER , OE , OUT , IN
+> +       void __iomem *base1;    // I_INV , O_INV , OD
+> +       void __iomem *base2;    // GPIO_FIRST
+> +       void __iomem *baseI;    // IOP
+> +       // pinctrl-related
+> +       struct pinctrl_desc pdesc;
+> +       struct pinctrl_dev *pcdp;
+> +       struct pinctrl_gpio_range gpio_range;
+> +       struct sppctlgpio_chip_t *gpiod;
+
+*gpiod is a bad name because we use it quite a lot
+in the kernel for GPIO descriptors.
+
+> +struct sppctl_reg_t {
+> +       uint16_t v;     // value part
+> +       uint16_t m;     // mask part
+> +};
+
+These are not types (no typedef) so don't add *_t
+suffixes, just drop those everywhere.
+
+> +       const char * const name;
+> +       const uint8_t gval;             // value for register
+> +       const unsigned * const pins;    // list of pins
+> +       const unsigned int pnum;        // number of pins
+
+Use kerneldoc to document struct members.
+
+There will be many more comments but work on these things
+to begin with!
+
+Yours,
+Linus Walleij
