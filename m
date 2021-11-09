@@ -2,72 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1F8F944A7EB
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 08:54:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2AF9F44A7EF
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 08:55:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243792AbhKIH5Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Nov 2021 02:57:16 -0500
-Received: from jabberwock.ucw.cz ([46.255.230.98]:45564 "EHLO
-        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236392AbhKIH5M (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Nov 2021 02:57:12 -0500
-Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
-        id EF81C1C0B9C; Tue,  9 Nov 2021 08:54:24 +0100 (CET)
-Date:   Tue, 9 Nov 2021 08:54:23 +0100
-From:   Pavel Machek <pavel@ucw.cz>
-To:     Sasha Levin <sashal@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-        Charan Teja Reddy <charante@codeaurora.org>,
-        Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
-        sumit.semwal@linaro.org, linux-media@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, linaro-mm-sig@lists.linaro.org
-Subject: AUTOSEL series truncated was -- Re: [PATCH AUTOSEL 5.15 001/146]
- dma-buf: WARN on dmabuf release with pending attachments
-Message-ID: <20211109075423.GA16766@amd>
-References: <20211108174453.1187052-1-sashal@kernel.org>
+        id S243802AbhKIH6i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Nov 2021 02:58:38 -0500
+Received: from verein.lst.de ([213.95.11.211]:48900 "EHLO verein.lst.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S243795AbhKIH6d (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Nov 2021 02:58:33 -0500
+Received: by verein.lst.de (Postfix, from userid 2407)
+        id 9444E68AA6; Tue,  9 Nov 2021 08:55:45 +0100 (CET)
+Date:   Tue, 9 Nov 2021 08:55:45 +0100
+From:   Christoph Hellwig <hch@lst.de>
+To:     Joonas Lahtinen <joonas.lahtinen@linux.intel.com>
+Cc:     Christoph Hellwig <hch@lst.de>,
+        Jani Nikula <jani.nikula@linux.intel.com>,
+        Rodrigo Vivi <rodrigo.vivi@intel.com>,
+        Zhenyu Wang <zhenyuw@linux.intel.com>,
+        Zhi Wang <zhi.a.wang@intel.com>,
+        Jason Gunthorpe <jgg@nvidia.com>,
+        intel-gfx@lists.freedesktop.org,
+        intel-gvt-dev@lists.freedesktop.org,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 02/29] drm/i915/gvt: integrate into the main Makefile
+Message-ID: <20211109075545.GA27339@lst.de>
+References: <20211102070601.155501-1-hch@lst.de> <20211102070601.155501-3-hch@lst.de> <163602902009.4807.3745093259631583283@jlahtine-mobl.ger.corp.intel.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-        protocol="application/pgp-signature"; boundary="AhhlLboLdkugWU4S"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20211108174453.1187052-1-sashal@kernel.org>
-User-Agent: Mutt/1.5.23 (2014-03-12)
+In-Reply-To: <163602902009.4807.3745093259631583283@jlahtine-mobl.ger.corp.intel.com>
+User-Agent: Mutt/1.5.17 (2007-11-01)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, Nov 04, 2021 at 02:30:20PM +0200, Joonas Lahtinen wrote:
+> Quoting Christoph Hellwig (2021-11-02 09:05:34)
+> > Remove the separately included Makefile and just use the relative
+> > reference from the main i915 Makefile as for source files in other
+> > subdirectories.
+> 
+> The thinking behind the split is to avoid any merge conflicts as the
+> gvt/ subdirectory is handled through separate pull request flow and
+> are note part of drm-tip.
+> 
+> The other subdirectories are part of drm-intel-next/drm-intel-gt-next
+> and are part of drm-tip.
+> 
+> So I would rather still see the Makefile live in gvt/ directory.
 
---AhhlLboLdkugWU4S
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-Hi!
-
-This series is truncated .. I only got first patches. Similary, 5.10
-series is truncated, [PATCH AUTOSEL 5.10 035/101] media: s5p-mfc: Add
-checking to s5p_mfc_probe... is last one I got.
-
-I got all the patches before that, so I believe it is not problem on
-my side, but I'd not mind someone confirming they are seeing the same
-problem...
-
-Best regards,
-								Pavel
-
---=20
-http://www.livejournal.com/~pavelmachek
-
---AhhlLboLdkugWU4S
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1
-
-iEYEARECAAYFAmGKKS8ACgkQMOfwapXb+vLl1gCfd+r5euddR11xuPpPtrlVxdPt
-/RIAn2wKamYNq6ES+jXc31enja7CHe16
-=uSLT
------END PGP SIGNATURE-----
-
---AhhlLboLdkugWU4S--
+So the reason I did this is because the include broke doing nice
+little subdir makes or me.  It would also require renaming the kvmgvt.c
+source file later on.
