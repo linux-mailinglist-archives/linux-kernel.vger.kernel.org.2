@@ -2,144 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7210C44B419
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 21:37:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 32F5444B423
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 21:41:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244530AbhKIUkh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Nov 2021 15:40:37 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:27684 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S244511AbhKIUkg (ORCPT
+        id S244564AbhKIUnp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Nov 2021 15:43:45 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56998 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S242487AbhKIUnn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Nov 2021 15:40:36 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1636490269;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=gojg4VWkO45Ypb84clQ7fAq1QopxKBZsDHgCryO6+cM=;
-        b=ahOG6q+GkqScQf5GpkUYnPxN6l+E69ERiTptHaBJlqvz2insw8nb/T/ze/VYbSG6quumL+
-        JvxCDJTfu+B/HRNJ1SodMSEdK+/+RiO1Px9hJ7zr4J05DDLn4eB3emG/I8YdafY72gzHaa
-        Kx3j9NBMXWeIAq1aNKLqGWS6Q3zOnm4=
-Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
- [209.85.128.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-358-075CsU0VPpa0dvYj2PwzFg-1; Tue, 09 Nov 2021 15:37:48 -0500
-X-MC-Unique: 075CsU0VPpa0dvYj2PwzFg-1
-Received: by mail-wm1-f69.google.com with SMTP id a186-20020a1c7fc3000000b00332f1a308e7so1946409wmd.3
-        for <linux-kernel@vger.kernel.org>; Tue, 09 Nov 2021 12:37:48 -0800 (PST)
+        Tue, 9 Nov 2021 15:43:43 -0500
+Received: from mail-wr1-x42b.google.com (mail-wr1-x42b.google.com [IPv6:2a00:1450:4864:20::42b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5F471C061764;
+        Tue,  9 Nov 2021 12:40:57 -0800 (PST)
+Received: by mail-wr1-x42b.google.com with SMTP id d5so163675wrc.1;
+        Tue, 09 Nov 2021 12:40:57 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=mg2e7z58lDe73VgrFciCdoCrTckxjsQdMH47LIpMlD8=;
+        b=Lvp6NHOPZwHxPj+fWGq2BvF2OdAqief2GwNbnsMaefDadOSWDKKRqm4nLRL+frEpyn
+         3KxZbtgCyg5WaAc7md7R3p0k2BKSjcdVrhP1UX8HyvvL8nEyjPsN5gIKQkVZMXEjuZht
+         B9boo/vxS4NoUxhzQF06GsGAvqR63F77yGlkWa3Av52PpHn0WQBXQPFK6NqjB0mukGUl
+         e1ecdTvzm6ZXzm5okWFnbpUUl8Xv52ZoFIygwJ/p/YnYDPpxmmamQBMbyVQf4Au0VQdK
+         8VbYtJ5KUNe1E3SBSIpZfqkYRK2o+H9ydDPeJFetb8HMFLUTDwG/1l64AiNY9Yyja5oh
+         ztLg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=gojg4VWkO45Ypb84clQ7fAq1QopxKBZsDHgCryO6+cM=;
-        b=5aepVtEa3VC+TdhfnB6Uy37FsJKVTCpyJlQDIkgnhBtsyqRP58EHXjo7NK82CyMwsK
-         JQ27zu0xvgv+hNjfBN5GJ+meR5587lV1mTzYsjWJPhst257BVDMMlNVJcZTa0y+XcmyE
-         f9TTJCu7121DdPE9lfC3FJhnAYgnSdJIOFEM2ntHi84/TWZl94kTcoopnzb/RypDZIrA
-         Edq23J83EOZDzgk0mHIk1E7+D4y9j5m7+Hefr9VQR+IYZlH76a1GHc5/zWgG6wWxS6xd
-         wEGFbRN7s7IjRqLgRc/4zM9ZfcO4pI9HahusIJ9BZ+l/GmWWhjDK/NP3Vv7P97p/CBpc
-         0SvA==
-X-Gm-Message-State: AOAM531oOstr1o8qbsaDIxqNDMdzyGRYjhcoGtSTVW/FFOGOzlvVw+aA
-        mm4voPzHVO1X88qDj7QRqsnByR6jRIjgcoUCa2twZ/mQOfrABiqnTLcOViaelBccL3ASl47AvVQ
-        aLxLlDCzlisrVSbAuZjVivmCb
-X-Received: by 2002:a7b:c76e:: with SMTP id x14mr10545291wmk.27.1636490266864;
-        Tue, 09 Nov 2021 12:37:46 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJzo6H+ZdYALE/GrXI74xIQHssW56Lq2WYRl3ECCaurkx5wEG9IUIS+rpCPn8YUhWjFj3YDoZA==
-X-Received: by 2002:a7b:c76e:: with SMTP id x14mr10545277wmk.27.1636490266685;
-        Tue, 09 Nov 2021 12:37:46 -0800 (PST)
-Received: from ?IPv6:2a01:e0a:59e:9d80:527b:9dff:feef:3874? ([2a01:e0a:59e:9d80:527b:9dff:feef:3874])
-        by smtp.gmail.com with ESMTPSA id y12sm20922993wrn.73.2021.11.09.12.37.45
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 09 Nov 2021 12:37:46 -0800 (PST)
-Subject: Re: [PATCH v4 12/21] KVM: arm64: Support SDEI_{PRIVATE, SHARED}_RESET
- hypercall
-To:     Gavin Shan <gshan@redhat.com>, kvmarm@lists.cs.columbia.edu
-Cc:     maz@kernel.org, linux-kernel@vger.kernel.org,
-        Jonathan.Cameron@huawei.com, pbonzini@redhat.com, will@kernel.org
-References: <20210815001352.81927-1-gshan@redhat.com>
- <20210815001352.81927-13-gshan@redhat.com>
-From:   Eric Auger <eauger@redhat.com>
-Message-ID: <a4b91fa5-12b0-afeb-4449-c2acb59e8cd7@redhat.com>
-Date:   Tue, 9 Nov 2021 21:37:43 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.1
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=mg2e7z58lDe73VgrFciCdoCrTckxjsQdMH47LIpMlD8=;
+        b=BMEf8quqlRyJnHb6GvhkduziGhNFEvDoqRpXO/Bc4I4n0pbvjsj/0+THCwEZfNHZ13
+         3VbetPCh7Xnnz8sWbBKVKrO9sg2IGP+uFk1qN2vRVOBthpPTqNnZJT5TTO9xET/Zx20E
+         Zlcq5xCirXYFVRbdmx0iOiqlhyCK96tXk+cN5tQ9sRZSszQqjtR7M8pa3IdQtTxX4blx
+         BZ+q2WFusV8mmGiLYe+BnaBS2uK7qNtrSF5Yb50ofLzCEmS54RlS8wTnztY+ucDikTiZ
+         9JRRwhEreoJh8SHabCERmtzNVwakcq3xsXlPAtV2LqOSsjOE09kjQxLNIbfz1PMczO15
+         v2/Q==
+X-Gm-Message-State: AOAM531920aB0Ti7Xtu0tl5iptidCk4AAcsdVmslkpF2KmXfavq3/KWE
+        RTKWddZv0gRpbZI54oLj1VKFaBhd6WU=
+X-Google-Smtp-Source: ABdhPJwHsR1gf29UiIqSs41HqAedueBMeaFCg5gVeoGSnC2EYmMxGiaTJQFQe7hvoJXGYs2R4Sx2Nw==
+X-Received: by 2002:a05:6000:23a:: with SMTP id l26mr12861034wrz.215.1636490455780;
+        Tue, 09 Nov 2021 12:40:55 -0800 (PST)
+Received: from Ansuel-xps.localdomain ([5.171.121.77])
+        by smtp.gmail.com with ESMTPSA id i17sm3675547wmq.48.2021.11.09.12.40.54
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 09 Nov 2021 12:40:55 -0800 (PST)
+Date:   Tue, 9 Nov 2021 21:40:53 +0100
+From:   Ansuel Smith <ansuelsmth@gmail.com>
+To:     Andrew Lunn <andrew@lunn.ch>
+Cc:     Vivien Didelot <vivien.didelot@gmail.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Vladimir Oltean <olteanv@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>, Pavel Machek <pavel@ucw.cz>,
+        John Crispin <john@phrozen.org>, netdev@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-leds@vger.kernel.org,
+        Marek =?iso-8859-1?Q?Beh=FAn?= <kabel@kernel.org>
+Subject: Re: [RFC PATCH v3 1/8] leds: add support for hardware driven LEDs
+Message-ID: <YYrc1UfhVLEO/Nth@Ansuel-xps.localdomain>
+References: <20211109022608.11109-1-ansuelsmth@gmail.com>
+ <20211109022608.11109-2-ansuelsmth@gmail.com>
+ <YYrbT6pMGXqA2EVn@lunn.ch>
 MIME-Version: 1.0
-In-Reply-To: <20210815001352.81927-13-gshan@redhat.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YYrbT6pMGXqA2EVn@lunn.ch>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 8/15/21 2:13 AM, Gavin Shan wrote:
-> This supports SDEI_{PRIVATE, SHARED}_RESET. They are used by the
-> guest to purge the private or shared SDEI events, which are registered
-to reset all private SDEI event registrations of the calling PE (resp.
-PRIVATE or SHARED)
-> previously.
+On Tue, Nov 09, 2021 at 09:34:23PM +0100, Andrew Lunn wrote:
+> On Tue, Nov 09, 2021 at 03:26:01AM +0100, Ansuel Smith wrote:
+> > Some LEDs can be driven by hardware (for example a LED connected to
+> > an ethernet PHY or an ethernet switch can be configured to blink on
+> > activity on the network, which in software is done by the netdev trigger).
+> > 
+> > To do such offloading, LED driver must support this and a supported
+> > trigger must be used.
+> > 
+> > LED driver should declare the correct blink_mode supported and should set
+> > the blink_mode parameter to one of HARDWARE_CONTROLLED or
+> > SOFTWARE_HARDWARE_CONTROLLED.
+> > The trigger will check this option and fail to activate if the blink_mode
+> > is not supported. By default if a LED driver doesn't declare blink_mode,
+> > SOFTWARE_CONTROLLED is assumed.
+> > 
+> > The LED must implement 3 main API:
+> > - trigger_offload_status(): This asks the LED driver if offload mode is
+> >     enabled or not.
+> >     Triggers will check if the offload mode is supported and will be
+> >     activated accordingly. If the trigger can't run in software mode,
+> >     return -EOPNOTSUPP as the blinking can't be simulated by software.
 > 
-> Signed-off-by: Gavin Shan <gshan@redhat.com>
-> ---
->  arch/arm64/kvm/sdei.c | 29 +++++++++++++++++++++++++++++
->  1 file changed, 29 insertions(+)
+> I don't understand this last part. The LED controller is not
+> implementing software mode, other than providing a method to manually
+> turn the LED on and off. And there is a well defined call for that. If
+> that call is a NULL, it is clear it is not implemented. There is no
+> need to ask the driver.
 > 
-> diff --git a/arch/arm64/kvm/sdei.c b/arch/arm64/kvm/sdei.c
-> index 3fb33258b494..62efee2b67b8 100644
-> --- a/arch/arm64/kvm/sdei.c
-> +++ b/arch/arm64/kvm/sdei.c
-> @@ -582,6 +582,29 @@ static unsigned long kvm_sdei_hypercall_mask(struct kvm_vcpu *vcpu,
->  	return ret;
->  }
->  
-> +static unsigned long kvm_sdei_hypercall_reset(struct kvm_vcpu *vcpu,
-> +					      bool private)
-> +{
-> +	struct kvm *kvm = vcpu->kvm;
-> +	struct kvm_sdei_kvm *ksdei = kvm->arch.sdei;
-> +	struct kvm_sdei_vcpu *vsdei = vcpu->arch.sdei;
-> +	unsigned int mask = private ? (1 << SDEI_EVENT_TYPE_PRIVATE) :
-> +				      (1 << SDEI_EVENT_TYPE_SHARED);
-> +	unsigned long ret = SDEI_SUCCESS;
-> +
-> +	/* Sanity check */
-> +	if (!(ksdei && vsdei)) {
-> +		ret = SDEI_NOT_SUPPORTED;
-> +		goto out;
-> +	}
-> +
-> +	spin_lock(&ksdei->lock);
-> +	kvm_sdei_remove_kvm_events(kvm, mask, false);
-With kvm_sdei_remove_kvm_events() implementation, why do you make sure
-that events which have a running handler get unregistered once the
-handler completes? I just see the refcount check that prevents the "KVM
-event object" from being removed.
-> +	spin_unlock(&ksdei->lock);
-> +out:
-> +	return ret;
-> +}
-> +
->  int kvm_sdei_hypercall(struct kvm_vcpu *vcpu)
->  {
->  	u32 func = smccc_get_function(vcpu);
-> @@ -626,8 +649,14 @@ int kvm_sdei_hypercall(struct kvm_vcpu *vcpu)
->  		break;
->  	case SDEI_1_0_FN_SDEI_INTERRUPT_BIND:
->  	case SDEI_1_0_FN_SDEI_INTERRUPT_RELEASE:
-> +		ret = SDEI_NOT_SUPPORTED;
-> +		break;
->  	case SDEI_1_0_FN_SDEI_PRIVATE_RESET:
-> +		ret = kvm_sdei_hypercall_reset(vcpu, true);
-> +		break;
->  	case SDEI_1_0_FN_SDEI_SHARED_RESET:
-> +		ret = kvm_sdei_hypercall_reset(vcpu, false);
-> +		break;
->  	default:
->  		ret = SDEI_NOT_SUPPORTED;
->  	}
-> 
-Eric
+>      Andrew
 
+You are right I have to remove the last part as it doesn't make sense.
+We already use blink_mode. Will remove in v4.
+
+-- 
+	Ansuel
