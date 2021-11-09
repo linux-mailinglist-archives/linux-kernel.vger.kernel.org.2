@@ -2,137 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AED4F44B307
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 20:08:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 930B444B30B
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 20:09:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242971AbhKITLi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Nov 2021 14:11:38 -0500
-Received: from linux.microsoft.com ([13.77.154.182]:54602 "EHLO
-        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230445AbhKITLf (ORCPT
+        id S242998AbhKITMi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Nov 2021 14:12:38 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36394 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S242976AbhKITMh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Nov 2021 14:11:35 -0500
-Received: from kbox (unknown [24.17.193.74])
-        by linux.microsoft.com (Postfix) with ESMTPSA id D8BA820C34C8;
-        Tue,  9 Nov 2021 11:08:48 -0800 (PST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com D8BA820C34C8
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1636484928;
-        bh=cknltwEoY7oklYnDkYTarvNvRaUsQp6joj++E4ZJNI0=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=qYUpMG6WIRsGID8wWnKrWPD1ZyKKezAe6yrEjHmu+MPmP76rdriJbsJBnt7SKrBFV
-         0M4cx1tZIV7GrtZo0PRTanUfvTkb1sw01teu6IdjVoo433wdhdFJTZTth27AfJ6Pib
-         9rzy4XDjOGfD23uG0blAEg95epD1qXIwj0nqh5lw=
-Date:   Tue, 9 Nov 2021 11:08:44 -0800
-From:   Beau Belgrave <beaub@linux.microsoft.com>
-To:     Masami Hiramatsu <mhiramat@kernel.org>
-Cc:     Steven Rostedt <rostedt@goodmis.org>,
-        linux-trace-devel@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v4 02/10] user_events: Add minimal support for
- trace_event into ftrace
-Message-ID: <20211109190844.GA1529@kbox>
-References: <20211104170433.2206-1-beaub@linux.microsoft.com>
- <20211104170433.2206-3-beaub@linux.microsoft.com>
- <20211107233115.1f77e93c4bdf3ff649be99c1@kernel.org>
- <20211108171336.GA1690@kbox>
- <20211108131639.33a4f186@gandalf.local.home>
- <20211108202527.GA1862@kbox>
- <20211109115634.5fb6d984d7b4e701c740d5f3@kernel.org>
+        Tue, 9 Nov 2021 14:12:37 -0500
+Received: from mail-ot1-x32b.google.com (mail-ot1-x32b.google.com [IPv6:2607:f8b0:4864:20::32b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A5E2CC061766
+        for <linux-kernel@vger.kernel.org>; Tue,  9 Nov 2021 11:09:50 -0800 (PST)
+Received: by mail-ot1-x32b.google.com with SMTP id v40-20020a056830092800b0055591caa9c6so194741ott.4
+        for <linux-kernel@vger.kernel.org>; Tue, 09 Nov 2021 11:09:50 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=kali.org; s=google;
+        h=message-id:date:mime-version:user-agent:subject:content-language:to
+         :cc:references:from:in-reply-to:content-transfer-encoding;
+        bh=YdPVVIaRA9wZMcPze3gudkM9XosVYjHa9S8ytOo71/4=;
+        b=PV9r+D2OqtUgjOJXgrPBeNWTsrgFcJbFCEuXvmhikRrPdG1J9r/ASKdoRvvSskX9Il
+         HskGBwKVkwbj3qIsMU2C3sQqUo6Nja+FSnn7W8S/Xz2Hxl1PvD0/M2wO9LjANltMvxA2
+         1ScTcoRUmzODmo5XsBDgICGbeB+ZHUYq/Iy6SxCJVkxChK+5tl0xbc/EZB28AMxNPqyt
+         zZkv57ukvAgRMgwljljMEP1TAnCR5IKVBc4URObFsHqQJAy9le0mG+A7Kl3GaTpLqO4B
+         LnzLKJNrWAqmWwO/TddryaWv+YpoaZREK/ha6a1B3e//Xn2WF5KyZwP+M3aSt5Sqi9B+
+         reaw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:in-reply-to
+         :content-transfer-encoding;
+        bh=YdPVVIaRA9wZMcPze3gudkM9XosVYjHa9S8ytOo71/4=;
+        b=3i5/yd7gZFDPWyu6CrkKl8+CBw6bpT8GfpyEb+cv9BCybJ5YzuP8NGbg5U8VuCW5MY
+         6ORKnABnKVCXAvQ3y2fubqZWnzjrguj2fUYb9JKCjqk971G/xtDJUQql2cxzqhZuFRxx
+         bSBGuf1VYasCr5mWtwsikjnO8w8IpABgnX8xFkQC27PaqjdBz76ozqI6PdZvJE12VhPh
+         YzdZ6+X9Y4j4nTrBMt9pfYZLlUerxvVOiYb1XqezwpKW5gAyH2INj21i7sS+DyT7sGnr
+         cmUtF3xyRZfjasPRixgZdfi8G+ETK2mZiYvZaChAB9UYIhJOCART5WFSNdQlkJ5qOyEW
+         GEhA==
+X-Gm-Message-State: AOAM533j1inJWCZTq1Nr/O6dTfCY5z7gTD+3alrl2Y+/6fVrGTQ+Eopb
+        SnPRC4rcz25iFFHVgZU947l+Ktngu7s3C3Tg
+X-Google-Smtp-Source: ABdhPJz4F0soEuQPkxct9n1zHSq0FgmCq95t9B6GjehW4Gmx6JlCzEh1+sJsgVPju2IHgoU545c+NQ==
+X-Received: by 2002:a9d:d53:: with SMTP id 77mr7985376oti.156.1636484990081;
+        Tue, 09 Nov 2021 11:09:50 -0800 (PST)
+Received: from [192.168.11.48] (cpe-173-173-107-246.satx.res.rr.com. [173.173.107.246])
+        by smtp.gmail.com with ESMTPSA id y4sm7903049ots.73.2021.11.09.11.09.48
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 09 Nov 2021 11:09:49 -0800 (PST)
+Message-ID: <83bab944-cc89-bdf9-e187-7d61a2494935@kali.org>
+Date:   Tue, 9 Nov 2021 13:09:47 -0600
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211109115634.5fb6d984d7b4e701c740d5f3@kernel.org>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:91.0)
+ Gecko/20100101 Thunderbird/91.3.0
+Subject: Re: [PATCH v3 0/5] Refactor thermal pressure update to avoid code
+ duplication
+Content-Language: en-US
+To:     Lukasz Luba <lukasz.luba@arm.com>
+Cc:     Thara Gopinath <thara.gopinath@linaro.org>,
+        linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-arm-msm@vger.kernel.org, sudeep.holla@arm.com,
+        will@kernel.org, catalin.marinas@arm.com, linux@armlinux.org.uk,
+        gregkh@linuxfoundation.org, rafael@kernel.org,
+        viresh.kumar@linaro.org, amitk@kernel.org,
+        daniel.lezcano@linaro.org, amit.kachhap@gmail.com,
+        bjorn.andersson@linaro.org, agross@kernel.org
+References: <20211103161020.26714-1-lukasz.luba@arm.com>
+ <c7b526f0-2c26-0cfc-910b-3521c6a6ef51@kali.org>
+ <3cba148a-7077-7b6b-f131-dc65045aa348@arm.com>
+ <9d533b6e-a81c-e823-fa6f-61fdea92fa65@kali.org>
+ <74ea027b-b213-42b8-0f7d-275f3b84712e@linaro.org>
+ <74603569-2ff1-999e-9618-79261fdb0ee4@kali.org>
+ <b7e76c2a-ceac-500a-ff75-535a3f0d51d6@linaro.org>
+ <f955a2aa-f788-00db-1ed8-dc9c7a1b2572@kali.org>
+ <59054c90-c1cd-85bf-406e-579df668d7b4@linaro.org>
+ <eac00041-a1b8-0780-931d-52249d538800@kali.org>
+ <2c54dbbd-2ecb-fb76-fa9f-9752f429c20e@linaro.org>
+ <97e93876-d654-0a89-dce1-6fe1189345e2@kali.org>
+ <d83a5c25-2eae-3626-f78a-e42915076556@arm.com>
+ <ac3f1771-0516-48dd-ee4d-5752e0433472@kali.org>
+ <19ecab72-4a2f-1f4a-b999-d3967a4a1a76@arm.com>
+ <676d79ca-ae2e-f5fa-1e54-253efd6934d4@arm.com>
+From:   Steev Klimaszewski <steev@kali.org>
+In-Reply-To: <676d79ca-ae2e-f5fa-1e54-253efd6934d4@arm.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 09, 2021 at 11:56:34AM +0900, Masami Hiramatsu wrote:
-> On Mon, 8 Nov 2021 12:25:27 -0800
-> Beau Belgrave <beaub@linux.microsoft.com> wrote:
-> 
-> > On Mon, Nov 08, 2021 at 01:16:39PM -0500, Steven Rostedt wrote:
-> > > On Mon, 8 Nov 2021 09:13:36 -0800
-> > > Beau Belgrave <beaub@linux.microsoft.com> wrote:
-> > > 
-> > > 
-> > > > Does that mean the decoders in eprobes/histogram don't check event
-> > > > record sizes before accessing the data? Shouldn't that get fix
-> > > > centrally? That would mean a loaded module could do the same thing
-> > > > (user_events only works if the user has access to tracefs, so it's not
-> > > > like it's open to all users).
-> > > 
-> > > There's checks to make sure everything fits in eprobes and kprobes. If it
-> > > doesn't then the event is simply dropped.
-> > > 
-> > > For example, if you look at __eprobe_trace_func() in trace_eprobe.c, you'll
-> > > see that it calls get_eprobe_size(), which goes through and just reads what
-> > > it is about to accept. Then it reserves the amount of data on the ring
-> > > buffer, and then calls store_trace_args() which also passes in the size
-> > > that it found, in case things change. If it's too big, it only records what
-> > > it originally intended.
-> > > 
-> > > -- Steve
-> > 
-> > It seems there are 2 concerns:
-> > 1. If data comes in and it's not in the size that is specified, it's
-> > suspicious and should either be truncated or ignored. Maybe under
-> > ignore, over truncate.
-> 
-> Yes, this is for the events which is defined with fixed-size
-> parameters and what I suggested.
-> 
+Hi Lukasz,
+>>
+>
+> I think I have figure out what is going on with the issue that
+> you've reported. On this rockchip platform you are probably using
+> step-wise thermal governor, which tries to decrease/increase
+> max allowed frequency step-by-step walking through the sorted
+> frequencies. So it would always set the thermal pressure to 0
+> when the thermal throttling is gone.
+> On the Qcom platform there is a different policy in HW/FW which
+> controls thermal and it can simple remove clamping 'instantly'
+> and allow all frequencies also the boost one. The highest possible
+> frequency is passed then to the this thermal pressure machinery.
+> So we see the warning that the boost frequency value is trying to
+> be passed to this arch_update_thermal_pressure(), but we ignore
+> such big frequency value and unfortunately do not clean the previously
+> set thermal pressure. Then the scheduler still sees the reduced
+> capacity on that CPU and cannot request higher frequencies.
+>
+> The v4 patch would allow to pass the boost frequencies values, so
+> the issue would be solved.
+>
+> Regards,
+> Lukasz
 
-Thanks.
+Sounds good, I look forward to testing v4 :)
 
-> > 
-> > 2. If the data is more than specified, it must be checked to see if
-> > there are __data_loc / __rel_loc entries and they must be validated as
-> > within range of accepted limits. If there are no __data_loc / __rel_loc
-> > it should either be truncated or ignored.
-> 
-> Yes, this is for the events, which is defined with variable length
-> parameters, like null-terminated string. In this case, along with the
-> __data/__rel_loc validation, it needs a null termination check.
-> 
+-- steev
 
-Got it.
-
-> > 
-> > Is there more that I may have missed?
-> > 
-> > I'd like to know if I do fix them that the features like filtering will still
-> > be available to user_events or if it's better to just add flags to disable
-> > kernel filtering?
-> 
-> I would rather like that the filters will be available on the user_events.
-> 
-> My question is that you need to log the dynamic data or strings via user-
-> events or not. Since the other user-events, like SDT doesn't support the
-> string variables to trace, I guess that is not a high priority.
-> 
-> Moreover, since now we can use eprobes, if user event records the address of
-> user-string, the eprobes can fetch it.
-> 
-> So, my suggestion is implmenting with fixed-size parameters as the first step
-> and keep filter/histograms/eprobes available on the user-events.
-> If you find any performance issue, you can expand the user-events to support
-> dynamic (array) data and strings.
-> 
-
-We need strings to be able to be emitted and recorded in eBPF, perf and
-ftrace. So I would rather go after a solution that lets us keep these in
-the ring buffers, even if it means a perf hit.
-
-Guess what's left is to where the best place to check is, checking in
-the filter with unsafe flags would let us keep most of the perf (we just
-check the undersize case, 1 branch). When these unsafe types are
-filtered then a perf tax is imposed to keep things safe.
-
-It sounded like Steven wanted to think about this a bit, so I'll wait a
-bit before poking again for consensus :)
-
-Do you have any strong feelings about where it goes?
-
-Thanks,
--Beau
