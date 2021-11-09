@@ -2,128 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E678744A6A0
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 07:08:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ACC2344A6A6
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 07:10:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243067AbhKIGKl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Nov 2021 01:10:41 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55552 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238713AbhKIGKj (ORCPT
+        id S240720AbhKIGNT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Nov 2021 01:13:19 -0500
+Received: from mailgw02.mediatek.com ([210.61.82.184]:32902 "EHLO
+        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S243125AbhKIGNS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Nov 2021 01:10:39 -0500
-Received: from mail-ed1-x543.google.com (mail-ed1-x543.google.com [IPv6:2a00:1450:4864:20::543])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A5E4C061764
-        for <linux-kernel@vger.kernel.org>; Mon,  8 Nov 2021 22:07:53 -0800 (PST)
-Received: by mail-ed1-x543.google.com with SMTP id r12so71993349edt.6
-        for <linux-kernel@vger.kernel.org>; Mon, 08 Nov 2021 22:07:53 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:reply-to:from:date:message-id:subject:to
-         :content-transfer-encoding;
-        bh=b4rYg5SOz5rOM5p5ctP9uplrloJl2DRm6ET8X/kYdOk=;
-        b=kBo7mBgvLMCUeK3t9X7IsxezjbPB3yR34ukkot8nZZtxqh1rkWb6bhBIGRZ4KeF5fo
-         B9vq5Yeo5ublFvL6cCrQaDDXAE3Yh1eG2KBKJoKwllSuI/hgUjrvfnVw4Q+BaznVlkri
-         dTIQTaSSpLlyvfkO3QyQeAYJTxOshiC2Q3aeBVBY3L/8+5Z7JfWhNyd0lfXH5q+koUcg
-         NADFbspiu/Nh9zM6/+t+wNjYO4Rs84nby7oBxNohneNk/xRs9FtzUaxr3A+/vXjxXhsl
-         TUi88ZjiIomdl74Dle+greXpMcjkXvaU0FmVWIfSy/oaHgdws09IaNHb5BHcUtWiyl1W
-         MTrg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to:content-transfer-encoding;
-        bh=b4rYg5SOz5rOM5p5ctP9uplrloJl2DRm6ET8X/kYdOk=;
-        b=08dvYwGMP82vNwuOVM5Gn9Nmr4WWETXAskloubbAoB3m5yz67rmrni5r45MUzXuS8z
-         X8NsiHY2lWhSWYzjEu7AnE73mVpHCcfBERo2gUHOX3EdHUeiODTlQ1/Ylw9xktYwpMSy
-         dxV1V8ycjr8yy4Kl+BFrvsFktuK3Qty+b6qLDR1+gLgoDicbNPx4oD2WnS7A6ngL0wh7
-         G0qw4pOEsSCCcDQphb+GP45Bit/csTlZJ+Z7kTfuKo7rh03ZrjR5o3o0xI4citdgZFh1
-         ELPKT63/jgrDfum4/GEuRk2zaepfjFn3t0bQd/PE7d3jX0OruLyBvmTBaKWE+z4WpL8e
-         Gzgw==
-X-Gm-Message-State: AOAM532eaxQTGwLgp/KElJW+7ytcxYbk53Pry97AGBtJoMp+iKdTxwWm
-        bfimquhuy/EGq0+EK4DRBQj+H1BmiCAx5zsHXh0=
-X-Google-Smtp-Source: ABdhPJzet9IF7Qrd4rW4y7rYDY29VcamKwvfQhls7zchqts5drFrWIw4VykMpgy74Iv9oM21xPy/ThjoT0VNvpXXytQ=
-X-Received: by 2002:a05:6402:350f:: with SMTP id b15mr6888911edd.25.1636438071876;
- Mon, 08 Nov 2021 22:07:51 -0800 (PST)
-MIME-Version: 1.0
-Received: by 2002:a17:906:9c81:0:0:0:0 with HTTP; Mon, 8 Nov 2021 22:07:51
- -0800 (PST)
-Reply-To: msbelinaya892@gmail.com
-From:   msbelinaya <shayelyhaver25@gmail.com>
-Date:   Tue, 9 Nov 2021 06:07:51 +0000
-Message-ID: <CAP8Ny24V1k+nKGPRhKwQ5c+20SORfwVDN7mvXAMS+xTb-DE19Q@mail.gmail.com>
-Subject: =?UTF-8?Q?T=C3=BCrkei?=
-To:     undisclosed-recipients:;
+        Tue, 9 Nov 2021 01:13:18 -0500
+X-UUID: 39f6ff7cd48c4bdc882e8d7e7d2d8f13-20211109
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=5TI9MaGiDCo3zWSVU3oXZEG4tuaeM8OHObYDQ9ZAnOk=;
+        b=Kfl539Brdhh7+cW/qaVcd7GMd7/nntItxF2+s2Y9pIhSQjych/qZCQfOTFFAc9PbhuK+WFT0gOcmjift7ECFLS4YW0wm5qbNd6BadR5nglAbz6yCLkr8WD63RdNNZc9wqEfibPEZQAfthpglFQszOzDQU1hHb7MwAY4v/ripQ0E=;
+X-UUID: 39f6ff7cd48c4bdc882e8d7e7d2d8f13-20211109
+Received: from mtkcas10.mediatek.inc [(172.21.101.39)] by mailgw02.mediatek.com
+        (envelope-from <jianjun.wang@mediatek.com>)
+        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 1300365504; Tue, 09 Nov 2021 14:10:28 +0800
+Received: from mtkexhb02.mediatek.inc (172.21.101.103) by
+ mtkmbs10n2.mediatek.inc (172.21.101.183) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id 15.2.792.3;
+ Tue, 9 Nov 2021 14:10:27 +0800
+Received: from mtkmbs10n2.mediatek.inc (172.21.101.183) by
+ mtkexhb02.mediatek.inc (172.21.101.103) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Tue, 9 Nov 2021 14:10:26 +0800
+Received: from mhfsdcap04 (10.17.3.154) by mtkmbs10n2.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.2.792.3 via Frontend
+ Transport; Tue, 9 Nov 2021 14:10:26 +0800
+Message-ID: <b18f74b8831492c4a75f45fa778c359fd80184d0.camel@mediatek.com>
+Subject: Re: [PATCH v3] PCI: mediatek-gen3: Disable DVFSRC voltage request
+From:   Jianjun Wang <jianjun.wang@mediatek.com>
+To:     Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof =?UTF-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Ryder Lee <ryder.lee@mediatek.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>
+CC:     <linux-pci@vger.kernel.org>, <linux-mediatek@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <qizhong.cheng@mediatek.com>, <Ryan-JH.Yu@mediatek.com>,
+        Tzung-Bi Shih <tzungbi@google.com>
+Date:   Tue, 9 Nov 2021 14:10:25 +0800
+In-Reply-To: <20211015063602.29058-1-jianjun.wang@mediatek.com>
+References: <20211015063602.29058-1-jianjun.wang@mediatek.com>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.2 
+MIME-Version: 1.0
+X-MTK:  N
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Ich biete meine Freundschaft an und glaube, dass Sie mich mit gutem
-Herzen akzeptieren werden. Ich wurde gedr=C3=A4ngt, Sie zu kontaktieren und
-zu sehen, wie wir einander am besten unterst=C3=BCtzen k=C3=B6nnen. Ich bin=
- Frau
-Kodjovi Hegbor aus der T=C3=BCrkei und arbeite als Divisionsleiterin f=C3=
-=BCr
-Operationen bei der StandardBNP bank limited Turkey . Ich glaube, es
-ist der Wille Gottes, dass ich Ihnen jetzt begegnen werde. Ich habe
-ein wichtiges gesch=C3=A4ftliches Gespr=C3=A4ch, das ich mit Ihnen teilen
-m=C3=B6chte, von dem ich glaube, dass es Sie interessiert, da es mit Ihrem
-Nachnamen in Verbindung steht und Sie davon profitieren werden.
+SGkgTWFpbnRhaW5lcnMsDQoNCkp1c3QgZ2VudGxlIHBpbmcgZm9yIHRoaXMgcGF0Y2gsIGlmIHRo
+ZXJlIGlzIGFueXRoaW5nIEkgbmVlZCB0byBtb2RpZnksDQpwbGVhc2Uga2luZGx5IGxldCBtZSBr
+bm93Lg0KDQpUaGFua3MuDQoNCk9uIEZyaSwgMjAyMS0xMC0xNSBhdCAxNDozNiArMDgwMCwgSmlh
+bmp1biBXYW5nIHdyb3RlOg0KPiBXaGVuIHRoZSBEVkZTUkMgKGR5bmFtaWMgdm9sdGFnZSBhbmQg
+ZnJlcXVlbmN5IHNjYWxpbmcgcmVzb3VyY2UNCj4gY29sbGVjdG9yKQ0KPiBmZWF0dXJlIGlzIG5v
+dCBpbXBsZW1lbnRlZCwgdGhlIFBDSWUgaGFyZHdhcmUgd2lsbCBhc3NlcnQgYSB2b2x0YWdlDQo+
+IHJlcXVlc3QNCj4gc2lnbmFsIHdoZW4gZXhpdCBmcm9tIHRoZSBMMSBQTSBTdWJzdGF0ZXMgdG8g
+cmVxdWVzdCBhIHNwZWNpZmljIFZjb3JlDQo+IHZvbHRhZ2UsIGJ1dCBjYW5ub3QgcmVjZWl2ZSB0
+aGUgdm9sdGFnZSByZWFkeSBzaWduYWwsIHdoaWNoIHdpbGwNCj4gY2F1c2UNCj4gdGhlIGxpbmsg
+dG8gZmFpbCB0byBleGl0IHRoZSBMMSBQTSBTdWJzdGF0ZXMuDQo+IA0KPiBEaXNhYmxlIERWRlNS
+QyB2b2x0YWdlIHJlcXVlc3QgYnkgZGVmYXVsdCwgd2UgbmVlZCB0byBmaW5kIGEgY29tbW9uDQo+
+IHdheSB0bw0KPiBlbmFibGUgaXQgaW4gdGhlIGZ1dHVyZS4NCj4gDQo+IEZpeGVzOiBkM2JmNzVi
+NTc5YjkgKCJQQ0k6IG1lZGlhdGVrLWdlbjM6IEFkZCBNZWRpYVRlayBHZW4zIGRyaXZlcg0KPiBm
+b3IgTVQ4MTkyIikNCj4gU2lnbmVkLW9mZi1ieTogSmlhbmp1biBXYW5nIDxqaWFuanVuLndhbmdA
+bWVkaWF0ZWsuY29tPg0KPiBSZXZpZXdlZC1ieTogVHp1bmctQmkgU2hpaCA8dHp1bmdiaUBnb29n
+bGUuY29tPg0KPiBUZXN0ZWQtYnk6IFFpemhvbmcgQ2hlbmcgPHFpemhvbmcuY2hlbmdAbWVkaWF0
+ZWsuY29tPg0KPiAtLS0NCj4gIGRyaXZlcnMvcGNpL2NvbnRyb2xsZXIvcGNpZS1tZWRpYXRlay1n
+ZW4zLmMgfCA4ICsrKysrKysrDQo+ICAxIGZpbGUgY2hhbmdlZCwgOCBpbnNlcnRpb25zKCspDQo+
+IA0KPiBkaWZmIC0tZ2l0IGEvZHJpdmVycy9wY2kvY29udHJvbGxlci9wY2llLW1lZGlhdGVrLWdl
+bjMuYw0KPiBiL2RyaXZlcnMvcGNpL2NvbnRyb2xsZXIvcGNpZS1tZWRpYXRlay1nZW4zLmMNCj4g
+aW5kZXggZjNhZWI4ZDRlYWNhLi43OWZiMTJmY2E2YTkgMTAwNjQ0DQo+IC0tLSBhL2RyaXZlcnMv
+cGNpL2NvbnRyb2xsZXIvcGNpZS1tZWRpYXRlay1nZW4zLmMNCj4gKysrIGIvZHJpdmVycy9wY2kv
+Y29udHJvbGxlci9wY2llLW1lZGlhdGVrLWdlbjMuYw0KPiBAQCAtNzksNiArNzksOSBAQA0KPiAg
+I2RlZmluZSBQQ0lFX0lDTURfUE1fUkVHCQkweDE5OA0KPiAgI2RlZmluZSBQQ0lFX1RVUk5fT0ZG
+X0xJTksJCUJJVCg0KQ0KPiAgDQo+ICsjZGVmaW5lIFBDSUVfTUlTQ19DVFJMX1JFRwkJMHgzNDgN
+Cj4gKyNkZWZpbmUgUENJRV9ESVNBQkxFX0RWRlNSQ19WTFRfUkVRCUJJVCgxKQ0KPiArDQo+ICAj
+ZGVmaW5lIFBDSUVfVFJBTlNfVEFCTEVfQkFTRV9SRUcJMHg4MDANCj4gICNkZWZpbmUgUENJRV9B
+VFJfU1JDX0FERFJfTVNCX09GRlNFVAkweDQNCj4gICNkZWZpbmUgUENJRV9BVFJfVFJTTF9BRERS
+X0xTQl9PRkZTRVQJMHg4DQo+IEBAIC0yOTcsNiArMzAwLDExIEBAIHN0YXRpYyBpbnQgbXRrX3Bj
+aWVfc3RhcnR1cF9wb3J0KHN0cnVjdA0KPiBtdGtfcGNpZV9wb3J0ICpwb3J0KQ0KPiAgCXZhbCAm
+PSB+UENJRV9JTlRYX0VOQUJMRTsNCj4gIAl3cml0ZWxfcmVsYXhlZCh2YWwsIHBvcnQtPmJhc2Ug
+KyBQQ0lFX0lOVF9FTkFCTEVfUkVHKTsNCj4gIA0KPiArCS8qIERpc2FibGUgRFZGU1JDIHZvbHRh
+Z2UgcmVxdWVzdCAqLw0KPiArCXZhbCA9IHJlYWRsX3JlbGF4ZWQocG9ydC0+YmFzZSArIFBDSUVf
+TUlTQ19DVFJMX1JFRyk7DQo+ICsJdmFsIHw9IFBDSUVfRElTQUJMRV9EVkZTUkNfVkxUX1JFUTsN
+Cj4gKwl3cml0ZWxfcmVsYXhlZCh2YWwsIHBvcnQtPmJhc2UgKyBQQ0lFX01JU0NfQ1RSTF9SRUcp
+Ow0KPiArDQo+ICAJLyogQXNzZXJ0IGFsbCByZXNldCBzaWduYWxzICovDQo+ICAJdmFsID0gcmVh
+ZGxfcmVsYXhlZChwb3J0LT5iYXNlICsgUENJRV9SU1RfQ1RSTF9SRUcpOw0KPiAgCXZhbCB8PSBQ
+Q0lFX01BQ19SU1RCIHwgUENJRV9QSFlfUlNUQiB8IFBDSUVfQlJHX1JTVEIgfA0KPiBQQ0lFX1BF
+X1JTVEI7DQo=
 
- Im Jahr 2006 hat ein B=C3=BCrger Ihres Landes bei meiner Bank ein
-Nicht-Residentenkonto f=C3=BCr 36 Monate des Kalenders im Wert von
-=C2=A38.400.000,00 eingerichtet. Das Ablaufdatum f=C3=BCr diesen Depotvertr=
-ag
-war der 16. Januar 2009. Leider starb er w=C3=A4hrend einer Gesch=C3=A4ftsr=
-eise
-bei einem t=C3=B6dlichen Erdbeben am 12. Mai 2008 in Sichuan, China, bei
-dem mindestens 68.000 Menschen ums Leben kamen.
-
-Das Management meiner Bank hat noch nichts von seinem Tod erfahren,
-ich wusste davon, weil er mein Freund war und ich sein Kontof=C3=BChrer
-war, als das Konto vor meiner Bef=C3=B6rderung er=C3=B6ffnet wurde. Jedoch =
-Herr
- erw=C3=A4hnte bei der Kontoer=C3=B6ffnung keine n=C3=A4chsten Verwandten/E=
-rben, und
-er war nicht verheiratet und hatte keine Kinder. Letzte Woche hat
-meine Bankdirektion mich gebeten, Anweisungen zu geben, was mit seinen
-Geldern zu tun ist, wenn der Vertrag verl=C3=A4ngert werden soll.
-
-Ich wei=C3=9F, dass dies passieren wird, und deshalb habe ich nach einem
-Mittel gesucht, um mit der Situation umzugehen, denn wenn meine
-Bankdirektoren wissen, dass sie tot sind und keinen Erben haben,
-werden sie das Geld f=C3=BCr ihren pers=C3=B6nlichen Gebrauch nehmen, also =
-Ich
-m=C3=B6chte nicht, dass so etwas passiert. Als ich Ihren Nachnamen sah, war
-ich gl=C3=BCcklich und suche jetzt Ihre Mitarbeit, um Sie als Next of
-Kin/Erbe des Kontos zu pr=C3=A4sentieren, da Sie den gleichen Nachnamen wie
-er haben und meine Bankzentrale das Konto freigeben wird f=C3=BCr dich. Es
-besteht kein Risiko; die Transaktion wird im Rahmen einer legitimen
-Vereinbarung ausgef=C3=BChrt, die Sie vor Rechtsverletzungen sch=C3=BCtzt.
-
-Es ist besser, dass wir das Geld beanspruchen, als es den
-Bankdirektoren zu erlauben, es zu nehmen, sie sind bereits reich. Ich
-bin kein gieriger Mensch, daher schlage ich vor, dass wir das Geld zu
-gleichen Teilen teilen, 50/50% auf beide Parteien. Mein Anteil wird
-mir helfen, mein eigenes Unternehmen zu gr=C3=BCnden und den Erl=C3=B6s f=
-=C3=BCr
-wohlt=C3=A4tige Zwecke zu verwenden, was mein Traum war.
-
-Teilen Sie mir Ihre Meinung zu meinem Vorschlag mit, bitte, ich
-brauche wirklich Ihre Hilfe bei dieser Transaktion. Ich habe Sie
-ausgew=C3=A4hlt, um mir zu helfen, nicht durch mein eigenes Tun, mein
-Lieber, sondern bei Gott wollte ich, dass Sie wissen, dass ich mir
-Zeit zum Beten genommen habe =C3=BCber diese Mitteilung, bevor ich Sie
-jemals kontaktiert habe, teilen Sie mir Ihre Meinung dazu mit und
-behandeln Sie diese Informationen bitte als STRENG GEHEIM. Nach Erhalt
-Ihrer Antwort, ausschlie=C3=9Flich =C3=BCber meine pers=C3=B6nliche E-Mail-=
-Adresse,
-msbelinaya892@gmail.com
-gibt Ihnen Details zur Transaktion. Und eine Kopie der
-Einlagenbescheinigung des Fonds sowie die Gr=C3=BCndungsurkunde der
-Gesellschaft, die den Fonds erstellt hat.
-Gott segne, in Erwartung Ihrer dringenden Antwort
-Mit freundlichen Gr=C3=BC=C3=9Fen
-Frau Kodjovi Hegbor
-msbelinaya892@gmail.com
