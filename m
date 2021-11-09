@@ -2,75 +2,167 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0FE4A44B436
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 21:45:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B982544B439
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 21:46:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244655AbhKIUsP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Nov 2021 15:48:15 -0500
-Received: from mail.kernel.org ([198.145.29.99]:48036 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S244658AbhKIUsK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Nov 2021 15:48:10 -0500
-Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 48B8661207;
-        Tue,  9 Nov 2021 20:45:23 +0000 (UTC)
-Date:   Tue, 9 Nov 2021 15:45:20 -0500
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Beau Belgrave <beaub@linux.microsoft.com>
-Cc:     Masami Hiramatsu <mhiramat@kernel.org>,
-        linux-trace-devel@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v4 02/10] user_events: Add minimal support for
- trace_event into ftrace
-Message-ID: <20211109154520.11995e75@gandalf.local.home>
-In-Reply-To: <20211109201432.GA1650@kbox>
-References: <20211104170433.2206-1-beaub@linux.microsoft.com>
-        <20211104170433.2206-3-beaub@linux.microsoft.com>
-        <20211107233115.1f77e93c4bdf3ff649be99c1@kernel.org>
-        <20211108171336.GA1690@kbox>
-        <20211108131639.33a4f186@gandalf.local.home>
-        <20211108202527.GA1862@kbox>
-        <20211109115634.5fb6d984d7b4e701c740d5f3@kernel.org>
-        <20211109190844.GA1529@kbox>
-        <20211109142506.3c280469@gandalf.local.home>
-        <20211109201432.GA1650@kbox>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        id S244677AbhKIUtG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Nov 2021 15:49:06 -0500
+Received: from smtprelay0012.hostedemail.com ([216.40.44.12]:35440 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S235551AbhKIUtC (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Nov 2021 15:49:02 -0500
+Received: from omf20.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay02.hostedemail.com (Postfix) with ESMTP id 95F5C7DC92;
+        Tue,  9 Nov 2021 20:46:15 +0000 (UTC)
+Received: from [HIDDEN] (Authenticated sender: joe@perches.com) by omf20.hostedemail.com (Postfix) with ESMTPA id BC36218A600;
+        Tue,  9 Nov 2021 20:46:12 +0000 (UTC)
+Message-ID: <846fb6e2b711ca09b89317d0117826eafc9f5b3d.camel@perches.com>
+Subject: Re: [v2 10/10] iio: imu: add BNO055 I2C driver
+From:   Joe Perches <joe@perches.com>
+To:     Randy Dunlap <rdunlap@infradead.org>, andrea.merello@gmail.com,
+        Andi Kleen <ak@linux.intel.com>
+Cc:     Jonathan Cameron <jic23@kernel.org>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        linux-iio <linux-iio@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        devicetree <devicetree@vger.kernel.org>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Rob Herring <robh+dt@kernel.org>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Matt Ranostay <matt.ranostay@konsulko.com>,
+        Alexandru Ardelean <ardeleanalex@gmail.com>,
+        Jacopo Mondi <jacopo@jmondi.org>,
+        Andrea Merello <andrea.merello@iit.it>
+Date:   Tue, 09 Nov 2021 12:46:10 -0800
+In-Reply-To: <4d812d76-07ca-1eb0-407d-78179628f0ba@infradead.org>
+References: <20210715141742.15072-1-andrea.merello@gmail.com>
+         <20211028101840.24632-1-andrea.merello@gmail.com>
+         <20211028101840.24632-11-andrea.merello@gmail.com>
+         <85ef90ad-0d3a-6cb7-529f-667562b2ad71@infradead.org>
+         <CAN8YU5NiKz2JiNr-47OC4==N8L67HDshuH45BifnHBae+GUU-g@mail.gmail.com>
+         <021c6fe0-8131-a4f9-9cb0-2f4771d35da1@infradead.org>
+         <80960e445c986408e4ae9a20ac42c5b66d4d8046.camel@perches.com>
+         <4d812d76-07ca-1eb0-407d-78179628f0ba@infradead.org>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.40.4-1 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-3.40
+X-Stat-Signature: mhte6ccyh3ngy8e7zurgnsmkyiazqaoh
+X-Rspamd-Server: rspamout05
+X-Rspamd-Queue-Id: BC36218A600
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Session-ID: U2FsdGVkX19+oTqAQeeHzJ5U+ZxRAhPKTw8pIqxtIoE=
+X-HE-Tag: 1636490772-693305
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 9 Nov 2021 12:14:32 -0800
-Beau Belgrave <beaub@linux.microsoft.com> wrote:
+On Tue, 2021-11-09 at 11:11 -0800, Randy Dunlap wrote:
+> On 11/9/21 10:21 AM, Joe Perches wrote:
+> > (cc'ing Andi Kleen, who wrote this code a decade ago)
+> > > Joe, can you identify why checkpatch does not detect missing Kconfig
+> > > help text is this simple case?
+> > 
+> > Original patch here: https://lore.kernel.org/all/20211028101840.24632-11-andrea.merello@gmail.com/raw
+> > 
+> > checkpatch is counting the diff header lines that follow the config entry.
+> > Maybe this is clearer (better?) code:
+> > ---
+> Tested-by: Randy Dunlap <rdunlap@infradead.org>
+> Acked-by: Randy Dunlap <rdunlap@infradead.org>
 
-> The ftrace probe will have a blob even after optimization due to the copy
-> into the ring buffer (assuming we can discard it if it violates a policy).
+Hey Randy/Andi.
 
-Yes it can be discarded. In fact, when filtering is enabled, it tries to
-first use a temporary per cpu buffer to do the filtering and not write it
-into the ring buffer. Only when it passes the filter does it get injected.
+I like this patch below a bit more.
 
-For user events that happen in user context, it will always use this temp
-buffer. But since there's only buffer per CPU, if an interrupt comes in and
-executes a filtered event, it will use the ring buffer itself, and discard
-it if it does not match.
+It shows the Kconfig context block in the output message and
+documents the code a bit more.
 
-> 
-> > That is, the reading of the trace file?
-> >   
-> 
-> We really need to ensure that data can be analyzed on the machine
-> directly (eBPF, ftrace, perf) as well as outside of the machine (ftrace, perf).
-> 
-> The priorities to us are fast recording speed with accurate reading of trace
-> files and event data.
+Care to test it again?
+---
+ scripts/checkpatch.pl | 53 +++++++++++++++++++++++++++------------------------
+ 1 file changed, 28 insertions(+), 25 deletions(-)
 
-OK, then it probably isn't an issue to add checks to the parsing of the
-dynamic arrays (including strings) that makes sure the string is within
-bounds for the filtering.
+diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
+index 1784921c645da..0b5c0363119ff 100755
+--- a/scripts/checkpatch.pl
++++ b/scripts/checkpatch.pl
+@@ -3480,46 +3480,49 @@ sub process {
+ 		    # (\b) rather than a whitespace character (\s)
+ 		    $line =~ /^\+\s*(?:config|menuconfig|choice)\b/) {
+ 			my $length = 0;
+-			my $cnt = $realcnt;
+-			my $ln = $linenr + 1;
+-			my $f;
+-			my $is_start = 0;
+-			my $is_end = 0;
+-			for (; $cnt > 0 && defined $lines[$ln - 1]; $ln++) {
+-				$f = $lines[$ln - 1];
+-				$cnt-- if ($lines[$ln - 1] !~ /^-/);
+-				$is_end = $lines[$ln - 1] =~ /^\+/;
++			my $ln = $linenr;
++			my $needs_help = 0;
++			my $has_help = 0;
++			my $herecfg = $herecurr;
++			while (defined $lines[$ln]) {
++				my $f = $lines[$ln++];
+ 
+ 				next if ($f =~ /^-/);
+-				last if (!$file && $f =~ /^\@\@/);
++				last if (!$file && $f =~ /^(?:\@\@|diff )/);
+ 
+-				if ($lines[$ln - 1] =~ /^\+\s*(?:bool|tristate|prompt)\s*["']/) {
+-					$is_start = 1;
+-				} elsif ($lines[$ln - 1] =~ /^\+\s*(?:---)?help(?:---)?$/) {
+-					$length = -1;
++				$herecfg .= $rawlines[$ln - 1] . "\n";
++				if ($f =~ /^\+\s*(?:bool|tristate|prompt)\s*["']/) {
++					$needs_help = 1;
++					next;
++				}
++				if ($f =~ /^\+\s*help\s*$/) {
++					$has_help = 1;
++					next;
+ 				}
+ 
+-				$f =~ s/^.//;
+-				$f =~ s/#.*//;
+-				$f =~ s/^\s+//;
+-				next if ($f =~ /^$/);
++				$f =~ s/^.//;	# strip patch context [+ ]
++				$f =~ s/#.*//;	# strip # directives
++				$f =~ s/^\s+//;	# strip leading blanks
++				next if ($f =~ /^$/);	# skip blank lines
+ 
++				# At the end of this Kconfig block:
+ 				# This only checks context lines in the patch
+ 				# and so hopefully shouldn't trigger false
+ 				# positives, even though some of these are
+ 				# common words in help texts
+-				if ($f =~ /^\s*(?:config|menuconfig|choice|endchoice|
+-						  if|endif|menu|endmenu|source)\b/x) {
+-					$is_end = 1;
++				if ($f =~ /^(?:config|menuconfig|choice|endchoice|
++					       if|endif|menu|endmenu|source)\b/x) {
++					$herecfg =~ s/.*\n\Z//;	# strip last line
+ 					last;
+ 				}
+-				$length++;
++				$length++ if ($has_help);
+ 			}
+-			if ($is_start && $is_end && $length < $min_conf_desc_length) {
++			if ($needs_help &&
++			    (!$has_help ||
++			     ($has_help && $length < $min_conf_desc_length))) {
+ 				WARN("CONFIG_DESCRIPTION",
+-				     "please write a paragraph that describes the config symbol fully\n" . $herecurr);
++				     "please write a help paragraph that fully describes the config symbol\n" . $herecfg);
+ 			}
+-			#print "is_start<$is_start> is_end<$is_end> length<$length>\n";
+ 		}
+ 
+ # check MAINTAINERS entries
 
--- Steve
 
