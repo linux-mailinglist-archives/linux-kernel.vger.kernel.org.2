@@ -2,181 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AF7CF44B469
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 22:02:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 405DA44B470
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 22:04:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244863AbhKIVFV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Nov 2021 16:05:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33670 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244853AbhKIVFU (ORCPT
+        id S244883AbhKIVHZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Nov 2021 16:07:25 -0500
+Received: from mail-pf1-f182.google.com ([209.85.210.182]:37585 "EHLO
+        mail-pf1-f182.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S244853AbhKIVHV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Nov 2021 16:05:20 -0500
-Received: from mail-pf1-x433.google.com (mail-pf1-x433.google.com [IPv6:2607:f8b0:4864:20::433])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D3059C061767
-        for <linux-kernel@vger.kernel.org>; Tue,  9 Nov 2021 13:02:33 -0800 (PST)
-Received: by mail-pf1-x433.google.com with SMTP id m26so562918pff.3
-        for <linux-kernel@vger.kernel.org>; Tue, 09 Nov 2021 13:02:33 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=intel-com.20210112.gappssmtp.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=NGCSLoiUEixbJUJjsAamjo0128u/1ab9KY+NrB7bwnI=;
-        b=IDKm1rsTtY3dB0GDCmzldy6w5oNdAEtYqYum2g8jAh8YcbdgNPee6EKgJgpVDGvOYm
-         bU6jDw0yL/QcyIuE/xVK1UYwJc49WviERyfg4i3F/XXBlL1DNA+ighGEMF3DuJCCq8tv
-         QWtcGcWkkrl6zbkb1R9aYtSkyT7LRYl6pjn5y+1bV2Wwg+Uy9m6899rhjfE/tggdqcV7
-         mgVw6fzNLoRs6Gtjk9melP5C5jhP0pwQfMd4XIVp2t1qomP89JlhKCbulJn73gqXMq9y
-         yavXZHcca/est+LsSX+OrbpkL8gszp7TwD/gV7PtJ8VksmnTYRybSZLRVsLOHU/acVk3
-         YKlA==
+        Tue, 9 Nov 2021 16:07:21 -0500
+Received: by mail-pf1-f182.google.com with SMTP id y5so563779pfb.4;
+        Tue, 09 Nov 2021 13:04:35 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=NGCSLoiUEixbJUJjsAamjo0128u/1ab9KY+NrB7bwnI=;
-        b=kMBbRDlhZ0uTr5rBDmt8RDQ5vjDoamSx0UBqYPYxkqFPXKc79i7OA3a1BJywXtY4IP
-         y0slSjvyyDMHqgBU4+fokK2rbnjrpPxBQE5VN6S1SsCF5bbkpCaezBK14RKQkC1bCfmI
-         pB6QP33jTVod6eTHryJvv7s2CLtvxKx4xqsppr83FLp88WWpL3PClNAi+o6dcA9uWx1F
-         O/SoiDU0AkDkbQpmM00xdO7g72l2r+A/9rGeeLbjkcNe8C8hHHaMiEe+ZaxS5m251a/a
-         Q+c6ye4WPDDlKkfeTrnPqI3+fcB9ROWlNL3jOtwZjFgMB+DsCTDtIUk5e5sUtu7H2I50
-         Szfw==
-X-Gm-Message-State: AOAM531xmk5uau7mzhcg6mK9MV0BNeEH74WgJgOaV2EOpVypkE8H9Rcm
-        lI2CapNdaWs3kKeJyT03iQ/rVoxfq3Fep90oo+1syA==
-X-Google-Smtp-Source: ABdhPJxLkjcYAJ6xF4i22dGgcThaQc5MIlNV4NzhpLHAutoT4ZKPk8dFHjZwxwWusNLUT463Jmt8uLtznOEGS++66P4=
-X-Received: by 2002:a05:6a00:140e:b0:444:b077:51ef with SMTP id
- l14-20020a056a00140e00b00444b07751efmr11438892pfu.61.1636491753212; Tue, 09
- Nov 2021 13:02:33 -0800 (PST)
+        bh=E8Y2jyNg7h9soMk4rEm6rzTo1BjlaELOxyIkvTVeIKc=;
+        b=qFzg41KmFXXKxf0e7AIwCA80Vj91V/b5yxTOjkUyLj5g3HujBNOJ7qrqd9N4Mwa/P6
+         Sfl4ATULDY2ywqS3ruJg80zTSHpWY+zb9UQJHt9dZcQYnLqvb0dXt2mclUIlsiLZQnaV
+         vpBioGPkcymA/Ri3sCrAlRn2ZtIKOWZLVgqHuXnDtZ00y1DKMg72Uea8lMEFLivX/r8r
+         skk6f/aqTmMGnO0XocjxfLvBrD26RTW9NVGyGIaXbx5VfqMHEQukO8CGEbBUeoprVB4B
+         6M8YuUDbHJK5Yc0SNtY0OQt/eMN8VvyubtqwmF3xoltLU/GBmcMOrJ2TjZLYqJvEYcgf
+         UCXg==
+X-Gm-Message-State: AOAM530BGgMaRBQAP2cGf2AjT2BkjSOVO9gELRy1PUJFVIlumTA8KId7
+        /ajj9eER+M1Szon1rqPIXnQN+ZeMNAy0fTh2z6g=
+X-Google-Smtp-Source: ABdhPJz1YJYHQflXJx0Bc84bAu1eZK8Iidi5ru1YEkbahK+1/iI8yZB/R/hQC6b2vi+cWBbhfBoFSTKZxNwGdzS5FHg=
+X-Received: by 2002:aa7:8883:0:b0:49f:f87a:95de with SMTP id
+ z3-20020aa78883000000b0049ff87a95demr9062124pfe.53.1636491875224; Tue, 09 Nov
+ 2021 13:04:35 -0800 (PST)
 MIME-Version: 1.0
-References: <20211106011638.2613039-1-jane.chu@oracle.com> <20211106011638.2613039-3-jane.chu@oracle.com>
- <YYoi2JiwTtmxONvB@infradead.org> <CAPcyv4hQrUEhDOK-Ys1_=Sxb8f+GJZvpKZHTUPKQvVMaMe8XMg@mail.gmail.com>
- <15f01d51-2611-3566-0d08-bdfbec53f88c@oracle.com>
-In-Reply-To: <15f01d51-2611-3566-0d08-bdfbec53f88c@oracle.com>
-From:   Dan Williams <dan.j.williams@intel.com>
-Date:   Tue, 9 Nov 2021 13:02:23 -0800
-Message-ID: <CAPcyv4gwbZ=Z6xCjDCASpkPnw1EC8NMAJDh9_sa3n2PAG5+zAA@mail.gmail.com>
-Subject: Re: [PATCH v2 2/2] dax,pmem: Implement pmem based dax data recovery
-To:     Jane Chu <jane.chu@oracle.com>
-Cc:     Christoph Hellwig <hch@infradead.org>, david <david@fromorbit.com>,
-        "Darrick J. Wong" <djwong@kernel.org>,
-        Vishal L Verma <vishal.l.verma@intel.com>,
-        Dave Jiang <dave.jiang@intel.com>,
-        Alasdair Kergon <agk@redhat.com>,
-        Mike Snitzer <snitzer@redhat.com>,
-        device-mapper development <dm-devel@redhat.com>,
-        "Weiny, Ira" <ira.weiny@intel.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Vivek Goyal <vgoyal@redhat.com>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        Linux NVDIMM <nvdimm@lists.linux.dev>,
+References: <20211102161125.1144023-1-kernel@esmil.dk> <20211102161125.1144023-13-kernel@esmil.dk>
+ <CAHp75VdmnnrisuP00W0KYta0KgmC+fu3WMxm959dt5X1kpiKTw@mail.gmail.com>
+ <CAHp75VcuGdaq_TjjRS0S8R5y-nryLABZSp7ehrXz-fUS2W3vfA@mail.gmail.com>
+ <CACRpkdYe-tW2K2eOQa+FYb-ZXzrA95+pPc6kkLB8ZJLAT8G_eA@mail.gmail.com>
+ <CANBLGcyo3YjygkjDmdjt4C_H=MZdHQwqumsxnatuObeP2LADAg@mail.gmail.com>
+ <CAHp75VdBaKZVeA7dasHWP4E3c8F2phaGz-90FErj3bB8FJOS9w@mail.gmail.com>
+ <CANBLGcw7X9SY3_=A7ZXW60646vconjCbYBsvb=D2a0BPcyn75A@mail.gmail.com> <CACRpkda7b+j1=X9rUrqwEFhxvp2zVTvFkxanjh3hL7AksqCX1g@mail.gmail.com>
+In-Reply-To: <CACRpkda7b+j1=X9rUrqwEFhxvp2zVTvFkxanjh3hL7AksqCX1g@mail.gmail.com>
+From:   Emil Renner Berthing <kernel@esmil.dk>
+Date:   Tue, 9 Nov 2021 22:04:24 +0100
+Message-ID: <CANBLGcxT_a3J+uaaKazRkfJQoBjGGGiz9agAZUzMEmfJiVXXbw@mail.gmail.com>
+Subject: Re: [PATCH v3 12/16] pinctrl: starfive: Add pinctrl driver for
+ StarFive SoCs
+To:     Linus Walleij <linus.walleij@linaro.org>
+Cc:     Andy Shevchenko <andy.shevchenko@gmail.com>,
+        linux-riscv <linux-riscv@lists.infradead.org>,
+        devicetree <devicetree@vger.kernel.org>,
+        linux-clk <linux-clk@vger.kernel.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        "open list:SERIAL DRIVERS" <linux-serial@vger.kernel.org>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Marc Zyngier <maz@kernel.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        Maximilian Luz <luzmaximilian@gmail.com>,
+        Sagar Kadam <sagar.kadam@sifive.com>,
+        Drew Fustini <drew@beagleboard.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Michael Zhu <michael.zhu@starfivetech.com>,
+        Fu Wei <tekkamanninja@gmail.com>,
+        Anup Patel <anup.patel@wdc.com>,
+        Atish Patra <atish.patra@wdc.com>,
+        Matteo Croce <mcroce@microsoft.com>,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-xfs <linux-xfs@vger.kernel.org>
+        Huan Feng <huan.feng@starfivetech.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 9, 2021 at 11:59 AM Jane Chu <jane.chu@oracle.com> wrote:
+On Tue, 9 Nov 2021 at 21:29, Linus Walleij <linus.walleij@linaro.org> wrote:
+> On Tue, Nov 9, 2021 at 10:40 AM Emil Renner Berthing <kernel@esmil.dk> wrote:
+> > On Tue, 9 Nov 2021 at 10:34, Andy Shevchenko <andy.shevchenko@gmail.com> wrote:
 >
-> On 11/9/2021 10:48 AM, Dan Williams wrote:
-> > On Mon, Nov 8, 2021 at 11:27 PM Christoph Hellwig <hch@infradead.org> wrote:
-> >>
-> >> On Fri, Nov 05, 2021 at 07:16:38PM -0600, Jane Chu wrote:
-> >>>   static size_t pmem_copy_from_iter(struct dax_device *dax_dev, pgoff_t pgoff,
-> >>>                void *addr, size_t bytes, struct iov_iter *i, int mode)
-> >>>   {
-> >>> +     phys_addr_t pmem_off;
-> >>> +     size_t len, lead_off;
-> >>> +     struct pmem_device *pmem = dax_get_private(dax_dev);
-> >>> +     struct device *dev = pmem->bb.dev;
-> >>> +
-> >>> +     if (unlikely(mode == DAX_OP_RECOVERY)) {
-> >>> +             lead_off = (unsigned long)addr & ~PAGE_MASK;
-> >>> +             len = PFN_PHYS(PFN_UP(lead_off + bytes));
-> >>> +             if (is_bad_pmem(&pmem->bb, PFN_PHYS(pgoff) / 512, len)) {
-> >>> +                     if (lead_off || !(PAGE_ALIGNED(bytes))) {
-> >>> +                             dev_warn(dev, "Found poison, but addr(%p) and/or bytes(%#lx) not page aligned\n",
-> >>> +                                     addr, bytes);
-> >>> +                             return (size_t) -EIO;
-> >>> +                     }
-> >>> +                     pmem_off = PFN_PHYS(pgoff) + pmem->data_offset;
-> >>> +                     if (pmem_clear_poison(pmem, pmem_off, bytes) !=
-> >>> +                                             BLK_STS_OK)
-> >>> +                             return (size_t) -EIO;
-> >>> +             }
-> >>> +     }
-> >>
-> >> This is in the wrong spot.  As seen in my WIP series individual drivers
-> >> really should not hook into copying to and from the iter, because it
-> >> really is just one way to write to a nvdimm.  How would dm-writecache
-> >> clear the errors with this scheme?
-> >>
-> >> So IMHO going back to the separate recovery method as in your previous
-> >> patch really is the way to go.  If/when the 64-bit store happens we
-> >> need to figure out a good way to clear the bad block list for that.
+> > > > The order the different states are blinked depends entirely on
+> > > > how the pinctrl framework parses the device tree. I still think it
+> > > > would be more natural to cleanly go to the end result without this
+> > > > blinking.
 > >
-> > I think we just make error management a first class citizen of a
-> > dax-device and stop abstracting it behind a driver callback. That way
-> > the driver that registers the dax-device can optionally register error
-> > management as well. Then fsdax path can do:
-> >
-> >          rc = dax_direct_access(..., &kaddr, ...);
-> >          if (unlikely(rc)) {
-> >                  kaddr = dax_mk_recovery(kaddr);
+> > Hmm.. but if going through the different states is what you want, then
+> > wouldn't you need the device tree to have an ordered list of the
+> > states rather than just a single node and also a way to tune how long
+> > time the different states are blinked?
 >
-> Sorry, what does dax_mk_recovery(kaddr) do?
-
-I was thinking this just does the hackery to set a flag bit in the
-pointer, something like:
-
-return (void *) ((unsigned long) kaddr | DAX_RECOVERY)
-
+> In a way you are correct that the DT is a functional language and it's
+> a bit lite a style sheet or prolog or something in that the end reduction
+> is what counts.
 >
-> >                  dax_direct_access(..., &kaddr, ...);
-> >                  return dax_recovery_{read,write}(..., kaddr, ...);
-> >          }
-> >          return copy_{mc_to_iter,from_iter_flushcache}(...);
-> >
-> > Where, the recovery version of dax_direct_access() has the opportunity
-> > to change the page permissions / use an alias mapping for the access,
+> In this case, I would say something is weird if there are interim states,
+> the yaml validation should not allow you to set the same thing back
+> and forth in your DTS file.
+
+Yes, exactly.
+
+> Alas we are not perfect as in yaml validation isn't perfect either.
+> I can't see what the problem is really, just write proper DTS files
+> and there will not be any interim states, right?
+
+No, I agree. I think it's only that Andy wasn't sure if these interim
+states might be meaningful/useful.
+
+> And if it is possible
+> to write DTS files that have states and sequence requirements,
+> these should be caught in validation. Should be.
 >
-> again, sorry, what 'page permissions'?  memory_failure_dev_pagemap()
-> changes the poisoned page mem_type from 'rw' to 'uc-' (should be NP?),
-> do you mean to reverse the change?
-
-Right, the result of the conversation with Boris is that
-memory_failure() should mark the page as NP in call cases, so
-dax_direct_access() needs to create a UC mapping and
-dax_recover_{read,write}() would sink that operation and either return
-the page to NP after the access completes, or convert it to WB if the
-operation cleared the error.
-
-> > dax_recovery_read() allows reading the good cachelines out of a
-> > poisoned page, and dax_recovery_write() coordinates error list
-> > management and returning a poison page to full write-back caching
-> > operation when no more poisoned cacheline are detected in the page.
-> >
->
-> How about to introduce 3 dax_recover_ APIs:
->    dax_recover_direct_access(): similar to dax_direct_access except
->       it ignores error list and return the kaddr, and hence is also
->       optional, exported by device driver that has the ability to
->       detect error;
->    dax_recovery_read(): optional, supported by pmem driver only,
->       reads as much data as possible up to the poisoned page;
-
-It wouldn't be a property of the pmem driver, I expect it would be a
-flag on the dax device whether to attempt recovery or not. I.e. get
-away from this being a pmem callback and make this a native capability
-of a dax device.
-
->    dax_recovery_write(): optional, supported by pmem driver only,
->       first clear-poison, then write.
->
-> Should we worry about the dm targets?
-
-The dm targets after Christoph's conversion should be able to do all
-the translation at direct access time and then dax_recovery_X can be
-done on the resulting already translated kaddr.
-
-> Both dax_recovery_read/write() are hooked up to dax_iomap_iter().
-
-Yes.
+> Yours,
+> Linus Walleij
