@@ -2,96 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6095A44AD01
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 12:55:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C7EE44AC90
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 12:25:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235770AbhKIL6Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Nov 2021 06:58:25 -0500
-Received: from m15113.mail.126.com ([220.181.15.113]:41509 "EHLO
-        m15113.mail.126.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231356AbhKIL6Y (ORCPT
+        id S245739AbhKIL2Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Nov 2021 06:28:24 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43386 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1343514AbhKIL2V (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Nov 2021 06:58:24 -0500
-X-Greylist: delayed 1867 seconds by postgrey-1.27 at vger.kernel.org; Tue, 09 Nov 2021 06:58:22 EST
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=126.com;
-        s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=drvET
-        QHtBlVmidIFH+pwHevafCVpVnSh4McXssVOrug=; b=XEy3NKQjowaGMZ9CCSZzo
-        q+mHdIC8zFFHObLWSo+IpMLZ5MBVaVnhQyHKIHTZBmZG9PoTliN5AQhLe5u1uq7T
-        0JIsHJArV50occJxfWGlUtDHjq2xD77S3Kcs7KpGAITjPW2MIE6n1OyTj5CdRtn7
-        lJX+m2oc5MGE5nDxGl327g=
-Received: from pek-lpd-ccm5.wrs.com (unknown [60.247.85.82])
-        by smtp3 (Coremail) with SMTP id DcmowABnbAxWWophAXRpCg--.49860S2;
-        Tue, 09 Nov 2021 19:24:11 +0800 (CST)
-From:   Zhaolong Zhang <zhangzl2013@126.com>
-To:     Tony Luck <tony.luck@intel.com>, Borislav Petkov <bp@alien8.de>,
-        Zhaolong Zhang <zhangzl2013@126.com>
-Cc:     x86@kernel.org, linux-edac@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        "Paul E . McKenney" <paulmck@kernel.org>
-Subject: [PATCH v2] x86/mce: Get rid of cpu_missing
-Date:   Tue,  9 Nov 2021 19:23:45 +0800
-Message-Id: <20211109112345.2673403-1-zhangzl2013@126.com>
-X-Mailer: git-send-email 2.27.0
+        Tue, 9 Nov 2021 06:28:21 -0500
+Received: from mail-ot1-x32b.google.com (mail-ot1-x32b.google.com [IPv6:2607:f8b0:4864:20::32b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B3799C061767
+        for <linux-kernel@vger.kernel.org>; Tue,  9 Nov 2021 03:25:35 -0800 (PST)
+Received: by mail-ot1-x32b.google.com with SMTP id h12-20020a056830034c00b0055c8458126fso11401185ote.0
+        for <linux-kernel@vger.kernel.org>; Tue, 09 Nov 2021 03:25:35 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=CDizYRLdhl/XpmR617V9H1nya21GLh5Jm8U5bQ4LhoU=;
+        b=pcchXYWGxC8TUsHCp5znzNf5KqyQkyCyzfUCSvDkKHtx5mWHUOO8WNnGzpEBxmV+6x
+         aS53nZCnimN8PLnkVqe+PR9PUrCbU4qVIArU7eio+orLNFpyUvA57zYi6QtFSL9yQwyK
+         toptpZysma61dUrGogLMOO28VVX3X8hltPZU/6jiQzXHizfhRgzTVDI6omem/foZmPRr
+         By/xAszBff15g/bTqwowz6AwZtZlD+LEJlB7UhaqxNA+cNQGVNdGq1MA4grHWL5Se8Hu
+         nXf9RHpSS2PYZ1saAT1TJe5mHgonWHRqsxCU6t5J5uuEtdrLOdR8Z/RuPs7d9CmpsVrs
+         Ij/g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=CDizYRLdhl/XpmR617V9H1nya21GLh5Jm8U5bQ4LhoU=;
+        b=a0EQcVDAZyPaxg8UD5oQmPMLB4waS2/J7nDbvdqHFJ/PDj5oN5x6FglQFgLVx/XrMD
+         vtBIL/rnKF2qKiXsbBvPI5Mk+u8dxIR8LXjgbnWZus7yVSV3UNcazMDwfWW1JapNmCxv
+         C5A9KbPyQ2SsFRiqBd1o4nKOjezxjZSuybToMZKE3FflgmOoKMygyykoEp5E8k0AXPpJ
+         v0oJ8FF3YMNxh5cGruWRC75NFjNvhaDvAin7h1I5sSV6iw8+8zfu/AgHOyr3BWk5iF/Q
+         nK3YM8HK4gERwahsmjlG9sMkhHxrjZtUZ9rVlCKL5cDhkDEyLUh0I3e4e3NfuiUWmJRg
+         o63A==
+X-Gm-Message-State: AOAM533tSWK8J+qjfs83od4sduD2BOLwPpIiZSqaECq8qHWIjjeHI862
+        69GQBgPuxmtMDNJ3O0YiAR/RNmrthjErSYIHcwq7Hg==
+X-Google-Smtp-Source: ABdhPJyRH7wRwc40p2pr7KQ1rJshmkwLCVnX0dMDih0C93l57ktFNpTLf45fmsBytgVH+zEml5yVgY1zsZUMIy6VYk4=
+X-Received: by 2002:a9d:6348:: with SMTP id y8mr5349659otk.179.1636457135054;
+ Tue, 09 Nov 2021 03:25:35 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: DcmowABnbAxWWophAXRpCg--.49860S2
-X-Coremail-Antispam: 1Uf129KBjvJXoW7ur4kCFykXFWDur17Wr17ZFb_yoW8Wr18pr
-        4v93WrJF4rZa4fCa9Fy3Z3Z348Awn3Ka4xGw47Cw43X3W3t347tFZ3Xw1fZF17u395Gr13
-        XFWFqF1UKa18taDanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x07UZAw3UUUUU=
-X-Originating-IP: [60.247.85.82]
-X-CM-SenderInfo: x2kd0wt2osiiat6rjloofrz/1tbiCxdGz1x5fU24kgAAsq
+References: <20211104133645.1186968-1-arnd@kernel.org>
+In-Reply-To: <20211104133645.1186968-1-arnd@kernel.org>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Tue, 9 Nov 2021 12:25:23 +0100
+Message-ID: <CACRpkdadqcKr-Biq4oS-zeO0RLQHOXk+V3ORLeTbbRk2+XqE4Q@mail.gmail.com>
+Subject: Re: [PATCH] pinctrl: tegra194: remove duplicate initializer again
+To:     Arnd Bergmann <arnd@kernel.org>
+Cc:     Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Prathamesh Shete <pshete@nvidia.com>,
+        Lee Jones <lee.jones@linaro.org>,
+        Arnd Bergmann <arnd@arndb.de>, linux-gpio@vger.kernel.org,
+        linux-tegra@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Get rid of cpu_missing because commit 7bb39313cd62 ("x86/mce: Make
-mce_timed_out() identify holdout CPUs") has provided a more detailed
-message about which CPUs are missing.
+On Thu, Nov 4, 2021 at 2:36 PM Arnd Bergmann <arnd@kernel.org> wrote:
 
-Suggested-by: Borislav Petkov <bp@suse.de>
-Signed-off-by: Zhaolong Zhang <zhangzl2013@126.com>
----
- arch/x86/kernel/cpu/mce/core.c | 5 -----
- 1 file changed, 5 deletions(-)
+> From: Arnd Bergmann <arnd@arndb.de>
+>
+> An earlier bugfix removed a duplicate field initializer in
+> a macro, but it seems that this came back with the following
+> update:
 
-diff --git a/arch/x86/kernel/cpu/mce/core.c b/arch/x86/kernel/cpu/mce/core.c
-index 50a3e455cded..51aefffe39f1 100644
---- a/arch/x86/kernel/cpu/mce/core.c
-+++ b/arch/x86/kernel/cpu/mce/core.c
-@@ -99,7 +99,6 @@ struct mca_config mca_cfg __read_mostly = {
- 
- static DEFINE_PER_CPU(struct mce, mces_seen);
- static unsigned long mce_need_notify;
--static int cpu_missing;
- 
- /*
-  * MCA banks polled by the period polling timer for corrected events.
-@@ -314,8 +313,6 @@ static void mce_panic(const char *msg, struct mce *final, char *exp)
- 		if (!apei_err)
- 			apei_err = apei_write_mce(final);
- 	}
--	if (cpu_missing)
--		pr_emerg(HW_ERR "Some CPUs didn't answer in synchronization\n");
- 	if (exp)
- 		pr_emerg(HW_ERR "Machine check: %s\n", exp);
- 	if (!fake_panic) {
-@@ -909,7 +906,6 @@ static int mce_timed_out(u64 *t, const char *msg)
- 					 cpumask_pr_args(&mce_missing_cpus));
- 			mce_panic(msg, NULL, NULL);
- 		}
--		cpu_missing = 1;
- 		return 1;
- 	}
- 	*t -= SPINUNIT;
-@@ -2720,7 +2716,6 @@ struct dentry *mce_get_debugfs_dir(void)
- 
- static void mce_reset(void)
- {
--	cpu_missing = 0;
- 	atomic_set(&mce_fake_panicked, 0);
- 	atomic_set(&mce_executing, 0);
- 	atomic_set(&mce_callin, 0);
--- 
-2.27.0
+Thanks Arnd, patch applied for fixes.
 
+Yours,
+Linus Walleij
