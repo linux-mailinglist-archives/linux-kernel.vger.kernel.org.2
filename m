@@ -2,59 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B97FC44B345
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 20:32:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 735EE44B34A
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 20:33:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243358AbhKITen (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Nov 2021 14:34:43 -0500
-Received: from mail.kernel.org ([198.145.29.99]:42030 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S243375AbhKITek (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Nov 2021 14:34:40 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPS id B5C9F61381;
-        Tue,  9 Nov 2021 19:31:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1636486314;
-        bh=2eJ7UD3EGkgSIfsmHxP2dOsvpKD24cTvb7/EgsaXCvE=;
-        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-        b=Jg471DVHAcSRRXekSXiMpnHPcK9I7l3VUdkOaBE3yVi1UKRcVXrSGo7W+GR/ZAVUT
-         22l7JGVkNgp4cyyJzH5vRRRrB26NzCfrJAX8T7kUDpTx8CgD4AU/zx62B6oHt9Xtdc
-         4JI27BznDsI2caVLojkydpd2l1H2Or8bIQRjrQYODkbG7b60r9JRJIxoze6ouuzBNn
-         v/Es9f4Ky1kCwrIoB2ZyCiZO+2iv9nDpNm2BXab6ObfjSydNKE/u/UHV1v8ThEdjw7
-         4W90sPFJiV2gTmxoV8zbHR5F7w1V+HFErADDCfNCD6Rw2MenCnr1bN4H12ai2aD99Q
-         iptox6wK05i2g==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id AF99760A3C;
-        Tue,  9 Nov 2021 19:31:54 +0000 (UTC)
-Subject: Re: [GIT PULL] fuse update for 5.16
-From:   pr-tracker-bot@kernel.org
-In-Reply-To: <YYo4pwtSVE12qsLN@miu.piliscsaba.redhat.com>
-References: <YYo4pwtSVE12qsLN@miu.piliscsaba.redhat.com>
-X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <YYo4pwtSVE12qsLN@miu.piliscsaba.redhat.com>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/mszeredi/fuse.git tags/fuse-update-5.16
-X-PR-Tracked-Commit-Id: 712a951025c0667ff00b25afc360f74e639dfabe
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: cdd39b0539c4271d4242bc780fb1f04e130c4377
-Message-Id: <163648631471.13393.13973835146560856191.pr-tracker-bot@kernel.org>
-Date:   Tue, 09 Nov 2021 19:31:54 +0000
-To:     Miklos Szeredi <miklos@szeredi.hu>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org
+        id S243633AbhKITfu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Nov 2021 14:35:50 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41626 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S243613AbhKITfl (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Nov 2021 14:35:41 -0500
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4CAD0C06120B
+        for <linux-kernel@vger.kernel.org>; Tue,  9 Nov 2021 11:32:47 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=6q8o/4Pkkcqnzs9b9O2zsqdgubB0fcTVKR8hrr53nDc=; b=kk3EVhy9UUxRRrN11k4L21uxpj
+        UVHGtyDqnm5clQjHGudLAhYcuwUsgUkYFAAVAWXGWYiL6CU79Y+K/qKTrzhDoP6tZA6JeqBiuq3uZ
+        2CBABtVWk0FCq520AbJydDEJ6XEoX/3H0L2wAEFqwLRFMPhO4IPdJ/C5qU6mOe4ZeQPFad7Kjl26Z
+        uqslipsFl8/XZYKVgaT6KMqZ7++/rjsdgykqcNIo7JHrdTHJ/FmA/WmCoIzGI+OxodxK0UhEWfX/u
+        5te8+sda545OXivI+FBlGHiuOMmt6Tj6303R9JNIyGVVRt/UFvoDuPxS2dwPoQfRuUdGLJGM/+mgX
+        l7zL0uDw==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mkWrB-00F7LI-A8; Tue, 09 Nov 2021 19:32:33 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id A5D4A3001C7;
+        Tue,  9 Nov 2021 20:32:32 +0100 (CET)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 893D02C525D31; Tue,  9 Nov 2021 20:32:32 +0100 (CET)
+Date:   Tue, 9 Nov 2021 20:32:32 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Ard Biesheuvel <ardb@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Jason Baron <jbaron@akamai.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Kees Cook <keescook@chromium.org>
+Subject: Re: [RFC PATCH 1/7] static_call: get rid of static_call_cond()
+Message-ID: <YYrM0JLelRacIXHN@hirez.programming.kicks-ass.net>
+References: <20211109164549.1724710-1-ardb@kernel.org>
+ <20211109164549.1724710-2-ardb@kernel.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211109164549.1724710-2-ardb@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Tue, 9 Nov 2021 10:00:23 +0100:
+On Tue, Nov 09, 2021 at 05:45:43PM +0100, Ard Biesheuvel wrote:
+>  static inline
+>  void __static_call_update(struct static_call_key *key, void *tramp, void *func)
+>  {
+> +	WRITE_ONCE(key->func, func ?: (void *)&__static_call_nop);
+>  }
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/mszeredi/fuse.git tags/fuse-update-5.16
-
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/cdd39b0539c4271d4242bc780fb1f04e130c4377
-
-Thank you!
-
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/prtracker.html
+Ha, yes, I suppose that ought to work.
