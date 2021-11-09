@@ -2,90 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 88A1F44A840
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 09:21:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D940944A841
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 09:21:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244002AbhKIIXn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Nov 2021 03:23:43 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56996 "EHLO
+        id S244012AbhKIIXo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Nov 2021 03:23:44 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57000 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236169AbhKIIXm (ORCPT
+        with ESMTP id S239953AbhKIIXm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 9 Nov 2021 03:23:42 -0500
-Received: from mail-pg1-x536.google.com (mail-pg1-x536.google.com [IPv6:2607:f8b0:4864:20::536])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA856C061764
-        for <linux-kernel@vger.kernel.org>; Tue,  9 Nov 2021 00:20:56 -0800 (PST)
-Received: by mail-pg1-x536.google.com with SMTP id r28so17796690pga.0
-        for <linux-kernel@vger.kernel.org>; Tue, 09 Nov 2021 00:20:56 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=DKVg9sxFF7KkDsYsJ2kyK9iOAkgZCIk72eYOX0sPY7I=;
-        b=qcqOzcb+4K1liquhkvg0C6k9R6kPGF+XGZY3Jt57IOJF4Kog3dkDHhVlcIFKj9jUWG
-         EkOD5mIo/yMJ1/pDLUKXqhZnaIY1zClvP9oYbhtcf79UtIYa8d8uippHbO5C7n2dBI6D
-         iF7NRgtSFKPiEH8s/tuOVmnlpXg/2RBrAwSD+FBt4TnETGDdxp5HeiDH2T+rGuOnC4nq
-         F+vvowMTPZrDJ/DXfB6MR6L32XYafWSlhh6Q1DISoxSUoemkEaaaQ8NrUBYN0Bh93df1
-         HnQWoVFmv1QQaVZMq+7A1TW5nyEJfOgAfLqCi6qt8Mj2h+gY4xtY/uZA/FQNLdzUIBLm
-         zdzg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=DKVg9sxFF7KkDsYsJ2kyK9iOAkgZCIk72eYOX0sPY7I=;
-        b=DNwPXFLbzCGsO5n1pf65wea6zka9T+Vl2Gvm3N5iL7HvGHkjVOBESrjYAMRiSa9Asy
-         ILx92IZANSaRpD371RsWcT15eLJb/dCvC4gXBpisR7aDSsBsrzg8h9aflBzzRBVOyuIf
-         WVnk5u8ZPHbv+iG4VsrblX1KeD9CKefgMyQSaBtQ6+ZVuaR67x54pje5CkyGTRqiPdXu
-         8bUbM0WLpdRfe6lhp5T0VU50Ct1L4ce5YzNXjDSOPcWsFZKcK5eobetK/dXHVr+eruti
-         RmRS7U5stIOb/AfELV3FIBnYWpwCgkvAtbj2lsOHdaWpfwEg8TyOvDkd+4bwRnHtrJkP
-         YEpw==
-X-Gm-Message-State: AOAM533550vNZ8exqTlK6JdiOh1QU5xL8zhKz3ea6Ex3xCIn6Rsj6Z9W
-        v13gstH41su9rhqbCSt4HwcORTMRC6sMEE/+ozM=
-X-Google-Smtp-Source: ABdhPJzJUjRLlyo7JdDdyBu3gcVbAsM6kHhBtoT1Aw3Ze+/090Iz9heLoRZeZ4XrugWpuCyngZl+ic8HFm4NJBmP1r8=
-X-Received: by 2002:a05:6a00:15ca:b0:49f:d22b:afff with SMTP id
- o10-20020a056a0015ca00b0049fd22bafffmr6214367pfu.35.1636446056399; Tue, 09
- Nov 2021 00:20:56 -0800 (PST)
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 62B0AC061764;
+        Tue,  9 Nov 2021 00:20:57 -0800 (PST)
+From:   Kurt Kanzenbach <kurt.kanzenbach@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1636446055;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=XB/jnYZ0uAToeYDc7Y7hi585Z8EzRcsq8mXeI7xQiTE=;
+        b=xLh65Aosy0wl+keM6T5b2UegXmKcoboE5B+wmF8R7inWqAc1nCgGHHEUrufdnempYhnM/5
+        X5p0xVaec+ULF5b5q/X2i/gzDXbZ5XOT5Hqh41KoTYln9KerxDb5oTSr3Uy3VUETQyK0yh
+        VlAeLPlF+Hd/Fv1OGqB2qS5EYqOz8aXGFRcp2JnVVTRNL+Jw7vCyDXtZ8KJ321joa21j6Q
+        svJS/GZszig+ZI0GXN4NMKsoipn0jhgXpVvgcpyJI0nojXn6P13N/UMRJJtB3i0pppTFBh
+        dWsUABHSK1Ar5+fDlUPU915/j7YKFvNhY8uRfZxRhN07H3rqtxMQjVbSBB4AKg==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1636446055;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=XB/jnYZ0uAToeYDc7Y7hi585Z8EzRcsq8mXeI7xQiTE=;
+        b=b2/KdFGJzTuZQm1oEiRtYg5xGPVDKtF4nRMqhODSq10mZ15j1APcTZ/rxCeq+Go+Plie2Q
+        InEqAb+8v7hwY9Bg==
+To:     Vladimir Oltean <vladimir.oltean@nxp.com>, netdev@vger.kernel.org
+Cc:     Giuseppe Cavallaro <peppe.cavallaro@st.com>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        Jose Abreu <joabreu@synopsys.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Xiaoliang Yang <xiaoliang.yang_1@nxp.com>,
+        Yannick Vignon <yannick.vignon@nxp.com>
+Subject: Re: [PATCH net] net: stmmac: allow a tc-taprio base-time of zero
+In-Reply-To: <20211108202854.1740995-1-vladimir.oltean@nxp.com>
+References: <20211108202854.1740995-1-vladimir.oltean@nxp.com>
+Date:   Tue, 09 Nov 2021 09:20:53 +0100
+Message-ID: <87bl2t3fkq.fsf@kurt>
 MIME-Version: 1.0
-References: <20211109003742.GA5423@raspberrypi> <s5h5yt1c0di.wl-tiwai@suse.de>
-In-Reply-To: <s5h5yt1c0di.wl-tiwai@suse.de>
-From:   Austin Kim <austindh.kim@gmail.com>
-Date:   Tue, 9 Nov 2021 17:20:47 +0900
-Message-ID: <CADLLry6o=NmreEhe1BF2czW4dhKAUyi271uQEfUrGoObjpy7QQ@mail.gmail.com>
-Subject: Re: [PATCH] ALSA: missing check for possible NULL after the call to kstrdup
-To:     Takashi Iwai <tiwai@suse.de>
-Cc:     tiwai@suse.com, perex@perex.cz, alsa-devel@alsa-project.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        =?UTF-8?B?6rmA64+Z7ZiE?= <austin.kim@lge.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: multipart/signed; boundary="=-=-=";
+        micalg=pgp-sha512; protocol="application/pgp-signature"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-2021=EB=85=84 11=EC=9B=94 9=EC=9D=BC (=ED=99=94) =EC=98=A4=ED=9B=84 3:24, T=
-akashi Iwai <tiwai@suse.de>=EB=8B=98=EC=9D=B4 =EC=9E=91=EC=84=B1:
->
-> On Tue, 09 Nov 2021 01:37:42 +0100,
-> Austin Kim wrote:
-> >
-> > From: Austin Kim <austin.kim@lge.com>
-> >
-> > If kcalloc() return NULL due to memory starvation, it is possible for
-> > kstrdup() to return NULL in similar case. So add null check after the c=
-all
-> > to kstrdup() is made.
-> >
-> > Signed-off-by: Austin Kim <austin.kim@lge.com>
->
-> Thanks, applied now with a minor coding-style fix (we need no extra
-> parentheses), the correction of the subject line with the proper
-> prefix, and the addition of Cc-to-stable.
->
+--=-=-=
+Content-Type: text/plain
 
-Great, Thanks
+Hi Vladimir,
 
-BR,
-Austin Kim
-
+On Mon Nov 08 2021, Vladimir Oltean wrote:
+> Commit fe28c53ed71d ("net: stmmac: fix taprio configuration when
+> base_time is in the past") allowed some base time values in the past,
+> but apparently not all, the base-time value of 0 (Jan 1st 1970) is still
+> explicitly denied by the driver.
 >
-> Takashi
+> Remove the bogus check.
+>
+> Fixes: b60189e0392f ("net: stmmac: Integrate EST with TAPRIO scheduler API")
+> Signed-off-by: Vladimir Oltean <vladimir.oltean@nxp.com>
+
+I've experienced the same problem and wanted to send a patch for
+it. Thanks!
+
+Reviewed-by: Kurt Kanzenbach <kurt@linutronix.de>
+
+--=-=-=
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQJSBAEBCgA8FiEEooWgvezyxHPhdEojeSpbgcuY8KYFAmGKL2UeHGt1cnQua2Fu
+emVuYmFjaEBsaW51dHJvbml4LmRlAAoJEHkqW4HLmPCm/PoP/27bUDpdMEQXWqTt
+MeXl0o1uh6dc4KXB1elbTcoN+eJscsgO4uex5zH6atF6xlEtAjfmigT1APc1imvH
++1wwP1gaDLc7csegFvuKzfDSGfX6sWwsx4Z5rrfhTzv1COU4WMGspg3gFC/vh8Tk
+vrUJFvwFv7uq0YLEaqbwMUF0wwKs0wxO4uMSpSjjTzPUAL1dQBQAXzlR8TrFZBn0
+WLC4jTmDZhd+9aNtgQYJel9F/mkTAyGn0e9T69ysO1mLv3v0V8OTnvYdVFOZlpc5
+voyNTZwxYNR5oaAbHfhDzG37neCjqou/BWTJt3P8BZzUZENT1B6x74OxIpntGaxV
+TJ2tvnfFtCb2aikxCUTwBqYZDvufYfXduIYCrwp6ub0LavLMdsJycZhRf7S4Jpp0
+rDLFGFd8k4b4x5FeXS6cx7nS8pT8KHwbII92+HEKm9083KlbrS7dxAKgNRSV11k0
+2sdUlC2Z3Am4vYC+mtHF/A1neozXymiRiN67upmdnKz04uhokeUsVjQnaJAmZQ+H
+gY15SKiujkxUjFhVfw5bG5Fe9Zoh13YQnpOMDpjtGkf7aRYsuksTBQCLgdvgF0Ww
+GrHLPbxGhm0UdKnsEYYhB1p5cdaFU0tbjO2Q+F9FYTJETweXtq8wgm/pjkVy2hVH
+dw3uQ6RDYBLDCiH5Nt0ZXAMe5kyX
+=zNUQ
+-----END PGP SIGNATURE-----
+--=-=-=--
