@@ -2,82 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F018C44B52C
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 23:11:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 73C8A44B530
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 23:12:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239916AbhKIWOa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Nov 2021 17:14:30 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49246 "EHLO
+        id S245214AbhKIWPJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Nov 2021 17:15:09 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49396 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235998AbhKIWO3 (ORCPT
+        with ESMTP id S235998AbhKIWPH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Nov 2021 17:14:29 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A359EC061764;
-        Tue,  9 Nov 2021 14:11:42 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=2dap8ibmURuYipx1vLLUctBMVi/xPDv6Pvkxjpj+KQk=; b=jDwM44R26h1wqDoYMo8Vx+RY2r
-        z7ruLPduz90bNV8IoPbEPdlXjXNgCP7sbxxWTkPuATS8cgjehNyuNqNYk3YWMIy6ANFy2RgdeElBQ
-        j/8NF5S3gvf0vJtqcbme23QFCmjsj1xxiTFPPZuKdXPoVmSIFt3JdBOTrUqcPd2XUNIUkP0gyQjtc
-        pKoIJMvdyMH3qtocUBCPTdLib50rqhbN9HN4IoknBjq9YYZO+IZhOTPMXOG9uXUJtjYdjgKZFy/Ro
-        f9F/W9EX22y8VmQIoIaunX6Pyvtu5p9HCsy3O7K/FAQirVPTBlCMBB9nYRF2LxeXwF8cL4wCt7fuw
-        Z36CAVHw==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=worktop.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mkZL0-001Nm4-Eh; Tue, 09 Nov 2021 22:11:31 +0000
-Received: by worktop.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 8E43A9862D2; Tue,  9 Nov 2021 23:11:30 +0100 (CET)
-Date:   Tue, 9 Nov 2021 23:11:30 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Nick Desaulniers <ndesaulniers@google.com>
-Cc:     Bill Wendling <morbo@google.com>,
-        Josh Poimboeuf <jpoimboe@redhat.com>, x86@kernel.org,
-        linux-kernel@vger.kernel.org, mark.rutland@arm.com,
-        dvyukov@google.com, seanjc@google.com, pbonzini@redhat.com,
-        mbenes@suse.cz, llvm@lists.linux.dev,
-        linux-toolchains@vger.kernel.org
-Subject: Re: [PATCH 20/22] x86,word-at-a-time: Remove .fixup usage
-Message-ID: <20211109221130.GA174703@worktop.programming.kicks-ass.net>
-References: <20211105171023.989862879@infradead.org>
- <20211105171821.654356149@infradead.org>
- <20211108164711.mr2cqdcvedin2lvx@treble>
- <YYlshkTmf5zdvf1Q@hirez.programming.kicks-ass.net>
- <CAKwvOdkFZ4PSN0GGmKMmoCrcp7_VVNjau_b0sNRm3MuqVi8yow@mail.gmail.com>
- <YYov8SVHk/ZpFsUn@hirez.programming.kicks-ass.net>
- <CAKwvOdn8yrRopXyfd299=SwZS9TAPfPj4apYgdCnzPb20knhbg@mail.gmail.com>
- <CAGG=3QVecQroYbJ05AGk2f0pe=QOtWuZHyQowzG0i7os8E9fdg@mail.gmail.com>
- <20211109212116.GW174703@worktop.programming.kicks-ass.net>
- <CAKwvOd=3wFr=juT7hXPowHBvOTVPTW7LuB6XwHzURGd=GXkK1Q@mail.gmail.com>
+        Tue, 9 Nov 2021 17:15:07 -0500
+Received: from mail-ot1-x336.google.com (mail-ot1-x336.google.com [IPv6:2607:f8b0:4864:20::336])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D0A6EC061766
+        for <linux-kernel@vger.kernel.org>; Tue,  9 Nov 2021 14:12:20 -0800 (PST)
+Received: by mail-ot1-x336.google.com with SMTP id h12-20020a056830034c00b0055c8458126fso963923ote.0
+        for <linux-kernel@vger.kernel.org>; Tue, 09 Nov 2021 14:12:20 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:in-reply-to:references:from:user-agent:date:message-id
+         :subject:to:cc;
+        bh=q4dY+M8nyiFAt4remZo3SHhwNRe5f+ykJVrEzZX13ZY=;
+        b=dUVV+iZ7gYosXBMozkc7vKB1RNOH5oYuxH+4ETASHmsxotjE4SMaeLcPuNuZo3YgLS
+         VKqrYcvpOjHVanfYHo2JDTh9TG9fBjUwC/5YUeev8lYij4oN6Dvhmr9g993TWSjfRQXA
+         y/Ob41ctB8Ez3blzsLaMRml0A4mz13rP97ljM=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:in-reply-to:references:from
+         :user-agent:date:message-id:subject:to:cc;
+        bh=q4dY+M8nyiFAt4remZo3SHhwNRe5f+ykJVrEzZX13ZY=;
+        b=L9jU/y4IBvA8kfKdbk3orymrkojNCXQvGeCGzlxnhCrTFpxKCushJ6CrQSOAfzToCr
+         u1qW/+fM958vhEe5gIg3r/dSkVgmk8ls08jWEaQRtIz/Vut/L1v0YvBRRaMyazBBBYKV
+         FaqYJknB2MjJWhdruBlauUK0WHov4wF+SXS+8cbOm1wQn90sYaBOZyzikKS/ytIomySw
+         OcPyPrfFfYKPEh8mtyhVDs9h47xvMjPRXLC3kg5dPUmUqvZvjUiz6XzP85LmzisiOS0s
+         TkBUm0We09kcg/LdbuyuFCNLuv40wHaSOpuHxxqRSDHhXSXvwA6eg7iLT5/qk/R11CvB
+         E/7Q==
+X-Gm-Message-State: AOAM533E9gDRzLzIrzqdHq6KnUvibFYHOU3rV05Lo0X1CFEEPbjpnH+i
+        79GUEsStQPjHu8p1eB9NBZnuZ4RyqET84Bllrlak8g==
+X-Google-Smtp-Source: ABdhPJzCxZIvzxfRWv/IW1ZG0J6NJo3QJ4ZuZGIuMdYHfvlxdSbDBBsE6NHiPmYbpRrVGi/S+/NGsMIcLCSrzc29ITI=
+X-Received: by 2002:a9d:2f42:: with SMTP id h60mr8342701otb.159.1636495940269;
+ Tue, 09 Nov 2021 14:12:20 -0800 (PST)
+Received: from 753933720722 named unknown by gmailapi.google.com with
+ HTTPREST; Tue, 9 Nov 2021 22:12:19 +0000
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAKwvOd=3wFr=juT7hXPowHBvOTVPTW7LuB6XwHzURGd=GXkK1Q@mail.gmail.com>
+In-Reply-To: <1636451248-18889-1-git-send-email-quic_mkrishn@quicinc.com>
+References: <1636451248-18889-1-git-send-email-quic_mkrishn@quicinc.com>
+From:   Stephen Boyd <swboyd@chromium.org>
+User-Agent: alot/0.9.1
+Date:   Tue, 9 Nov 2021 22:12:19 +0000
+Message-ID: <CAE-0n50a5LWpi1JoY=BpwPokpuzYC2c3RXv86Ob_azmdCOkgyw@mail.gmail.com>
+Subject: Re: [PATCH v3] drm/msm: use compatible lists to find mdp node
+To:     Krishna Manikandan <quic_mkrishn@quicinc.com>,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     quic_kalyant@quicinc.com, robdclark@gmail.com,
+        freedreno@lists.freedesktop.org, dri-devel@lists.freedesktop.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 09, 2021 at 01:25:47PM -0800, Nick Desaulniers wrote:
-> On Tue, Nov 9, 2021 at 1:21 PM Peter Zijlstra <peterz@infradead.org> wrote:
-> >
-> > On Tue, Nov 09, 2021 at 12:59:12PM -0800, Bill Wendling wrote:
-> > >
-> > > Adding attributes to labels shouldn't be difficult, as you mention. In
-> > > the case of cold/hot, it's adjusting some of the metadata that already
-> > > exists on some basic blocks. It might be enough to allow the normal
-> > > block placement algorithms to move the hot and cold blocks around for
-> > > us. The question becomes how many attributes does GCC allow on labels?
-> >
-> > I'm aware of 3: unused, hot, cold. Also:
-> >
-> >   https://gcc.gnu.org/onlinedocs/gcc/Label-Attributes.html
-> 
-> Re: unused:
-> Being able to selectively disable -Wunused-label via
-> __attribute__((unused)); seems useful, too.
+Quoting Krishna Manikandan (2021-11-09 01:47:28)
+> In the current implementation, substring comparison
+> using device node name is used to find mdp node
+> during driver probe. Use compatible string list instead
+> of node name to get mdp node from the parent mdss node.
+>
+> Signed-off-by: Krishna Manikandan <quic_mkrishn@quicinc.com>
+>
+> Changes in v2:
+>   - Use compatible lists instead of duplicate string
+>     check (Stephen Boyd)
+>
+> Changes in v3:
+>   - Use match tables to find the mdp node (Stephen Boyd)
+> ---
 
-kernel/sched/fair.c:done: __maybe_unused;
+With the export symbol dropped
 
-Yes it is ;-)
+Reviewed-by: Stephen Boyd <swboyd@chromium.org>
