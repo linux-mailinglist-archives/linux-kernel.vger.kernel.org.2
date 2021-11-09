@@ -2,180 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2BC3444B2D4
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 19:48:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8375744B2D9
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 19:49:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242625AbhKISun (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Nov 2021 13:50:43 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:21802 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S242606AbhKISum (ORCPT
+        id S242667AbhKISv5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Nov 2021 13:51:57 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59904 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S242606AbhKISvu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Nov 2021 13:50:42 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1636483675;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=y0RovrZWpwirwAExhIJwYKka0MpzBNZCqhlUn9GM8bg=;
-        b=P92Mp/nD/nuk0XLCSI43W0gt2yUMcJV33sLBrxWgQYoxwIdcMKm4vq2ExgJgnlB/KSqRNn
-        aSrfy1ZsUZdT0rxI1G/yb7DK9OMwl4Z1TtEBinksNY5/DJWTifpJAg/BlB6tOCNpog6s9C
-        rh1c0dCNmlGmFvatzUYAFAjkjZ/0KVw=
-Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
- [209.85.221.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-401-1SPezxh3OiiEbFKE6ASM9w-1; Tue, 09 Nov 2021 13:47:54 -0500
-X-MC-Unique: 1SPezxh3OiiEbFKE6ASM9w-1
-Received: by mail-wr1-f72.google.com with SMTP id h13-20020adfa4cd000000b001883fd029e8so4403924wrb.11
-        for <linux-kernel@vger.kernel.org>; Tue, 09 Nov 2021 10:47:54 -0800 (PST)
+        Tue, 9 Nov 2021 13:51:50 -0500
+Received: from mail-pg1-x52f.google.com (mail-pg1-x52f.google.com [IPv6:2607:f8b0:4864:20::52f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B0E5C061766
+        for <linux-kernel@vger.kernel.org>; Tue,  9 Nov 2021 10:49:02 -0800 (PST)
+Received: by mail-pg1-x52f.google.com with SMTP id g184so19330632pgc.6
+        for <linux-kernel@vger.kernel.org>; Tue, 09 Nov 2021 10:49:02 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=intel-com.20210112.gappssmtp.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=9bp0YO5sOM+lpNoi642x1FUr5VchwTC78oq/dL28lzk=;
+        b=0Q1ubUOlWM8Iug6rvhIAFjz7MaLu3MQqTHHXXNFaAN3qobCKUeard5v3w6hQexzI6j
+         EQcZDkHYWqy9mWUon0Sw5zW0RErSz2I0osX0CHUN1ykL/BCN5ucRl32GT2O6dYVhRDx+
+         DIx0Bq3GMoEu4GQuOAoCsyqrJqRNG5y2MVJRbJCthUwPi140VN85CTlRi+CQIGmDkuoJ
+         o4YlTHfCQyJ4T21m/SW8rbNEAXwp16xbZ8UL7OpvPbBafjrbOh4FjIMKgETwtEC4fnjk
+         Wxk5Ja7eZ0ILW/8jehkfJvL5xHHWw8sddDBe/kDwglw+DIpJultHbe9pcAc33W5VFQaI
+         j5NA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=y0RovrZWpwirwAExhIJwYKka0MpzBNZCqhlUn9GM8bg=;
-        b=LC4RcEZ9L0bxtMkbE6+QQCPq2ogUjtXyFO2IncLWEmzrGJVzHOoVmLA1hO1Yym/Ovq
-         9fyjyqVOp6XTU9KzyT4ArAZgCABrNkM4qAYoPIxO9bd1xBk8moG91Vd+FsOy6sI9Izio
-         Z/4uFCaJep71XVYovUHCVOG46KmZ+XPEe26ssGX0ReGvxDq8TVS8qCeNMuYvkAtGrKKU
-         ThzpowH+d36UaClaBjGXFN5YHxfBSEhJbdTFFxuXU8ghCwiTt3zsc5mRqHZfwsdef8YW
-         3RNWYy02tLaZDbnB2Kh5ymk1mIYn235INvwVCZ8rAPL5E/Xr43JEJXDVYm3ss8csCJS8
-         zP3A==
-X-Gm-Message-State: AOAM531QojMtE6eSAHBgd3P19wEbAj7kQ5dhVwv9DuLvW1pNjS0WIKxZ
-        nTL6u6kIthuPs6wcJFqYdVr9XUjmkEBnvLWo0zuqyRYjMMYAMi49NmVVLw3zoKB7N2gkhAQaQsk
-        W/esZEIB9uBQ5e5loLoq7G6Gx
-X-Received: by 2002:a1c:2b85:: with SMTP id r127mr9674018wmr.134.1636483672874;
-        Tue, 09 Nov 2021 10:47:52 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJxwosnr4qtmp9gIyxAanUH2RRhXq8QfVnuZRB+FSoEkfAQ8fHaZCCxXpv2LDlJQ1Y+laoJpIw==
-X-Received: by 2002:a1c:2b85:: with SMTP id r127mr9673989wmr.134.1636483672615;
-        Tue, 09 Nov 2021 10:47:52 -0800 (PST)
-Received: from ?IPv6:2a01:e0a:59e:9d80:527b:9dff:feef:3874? ([2a01:e0a:59e:9d80:527b:9dff:feef:3874])
-        by smtp.gmail.com with ESMTPSA id p13sm3556837wmi.0.2021.11.09.10.47.51
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 09 Nov 2021 10:47:52 -0800 (PST)
-Subject: Re: [PATCH v4 10/21] KVM: arm64: Support SDEI_EVENT_ROUTING_SET
- hypercall
-To:     Gavin Shan <gshan@redhat.com>, kvmarm@lists.cs.columbia.edu
-Cc:     maz@kernel.org, linux-kernel@vger.kernel.org,
-        Jonathan.Cameron@huawei.com, pbonzini@redhat.com, will@kernel.org
-References: <20210815001352.81927-1-gshan@redhat.com>
- <20210815001352.81927-11-gshan@redhat.com>
-From:   Eric Auger <eauger@redhat.com>
-Message-ID: <0d46c17b-1a37-cbf6-4d34-aa03d30e39ef@redhat.com>
-Date:   Tue, 9 Nov 2021 19:47:50 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=9bp0YO5sOM+lpNoi642x1FUr5VchwTC78oq/dL28lzk=;
+        b=IGvRvuaNXm9YVbzDXXn6k6A/hWNpecc5Lpb3caQ9t+6rhr9VAgfGRGUFsxG/Kla4/z
+         8jiVrBAraxwm2I9r9YMdFpWW5hMb4Oxn2j+DaMgjgYQe+kyhDuVAqCY6URzoeUJnDYK6
+         eRmvucGa8/vWmB450GNLl70Rslt1zKjOAtnGyzzK13Hw6Hm+2yQ/w8mMynGJRoADxhYl
+         AZBOnNn6xAIi3nqye+H9iymg0uDYutbZC0ByXV7uq1plUGriImwmvHcT5z+n5sCra6go
+         0jyfcmo8LOXcTpznxygPHQ7/olqxAVGszpN8GkFrMmsvW3XWjTejZv5HqDF3XlhnHqv1
+         s9RA==
+X-Gm-Message-State: AOAM530P0e9JXFtWtflgfU5jq4bPYGYUeVh+0GO7cPGd5S/FvCPToi2q
+        vUb+IW9MHPuNCR95s/vq0KeabEG+TMALMxnF90qqEA==
+X-Google-Smtp-Source: ABdhPJxiswkGl2pVIvWWZ6aSVUFazaiZRuYEfrTL3uF2sZNR2Ly4HeMeR//UR5dITrLxDj1E3LTcAsgeWYlO0yGvWG4=
+X-Received: by 2002:a05:6a00:1a51:b0:4a0:3c1:4f45 with SMTP id
+ h17-20020a056a001a5100b004a003c14f45mr4740999pfv.86.1636483741722; Tue, 09
+ Nov 2021 10:49:01 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20210815001352.81927-11-gshan@redhat.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20211106011638.2613039-1-jane.chu@oracle.com> <20211106011638.2613039-3-jane.chu@oracle.com>
+ <YYoi2JiwTtmxONvB@infradead.org>
+In-Reply-To: <YYoi2JiwTtmxONvB@infradead.org>
+From:   Dan Williams <dan.j.williams@intel.com>
+Date:   Tue, 9 Nov 2021 10:48:51 -0800
+Message-ID: <CAPcyv4hQrUEhDOK-Ys1_=Sxb8f+GJZvpKZHTUPKQvVMaMe8XMg@mail.gmail.com>
+Subject: Re: [PATCH v2 2/2] dax,pmem: Implement pmem based dax data recovery
+To:     Christoph Hellwig <hch@infradead.org>
+Cc:     Jane Chu <jane.chu@oracle.com>, david <david@fromorbit.com>,
+        "Darrick J. Wong" <djwong@kernel.org>,
+        Vishal L Verma <vishal.l.verma@intel.com>,
+        Dave Jiang <dave.jiang@intel.com>,
+        Alasdair Kergon <agk@redhat.com>,
+        Mike Snitzer <snitzer@redhat.com>,
+        device-mapper development <dm-devel@redhat.com>,
+        "Weiny, Ira" <ira.weiny@intel.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Vivek Goyal <vgoyal@redhat.com>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        Linux NVDIMM <nvdimm@lists.linux.dev>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-xfs <linux-xfs@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Gavin,
-On 8/15/21 2:13 AM, Gavin Shan wrote:
-> This supports SDEI_EVENT_ROUTING_SET hypercall. It's used by the
-> guest to set route mode and affinity for the registered KVM event.
-> It's only valid for the shared events. It's not allowed to do so
-> when the corresponding event has been raised to the guest.
-> 
-> Signed-off-by: Gavin Shan <gshan@redhat.com>
-> ---
->  arch/arm64/kvm/sdei.c | 64 +++++++++++++++++++++++++++++++++++++++++++
->  1 file changed, 64 insertions(+)
-> 
-> diff --git a/arch/arm64/kvm/sdei.c b/arch/arm64/kvm/sdei.c
-> index 5dfa74b093f1..458695c2394f 100644
-> --- a/arch/arm64/kvm/sdei.c
-> +++ b/arch/arm64/kvm/sdei.c
-> @@ -489,6 +489,68 @@ static unsigned long kvm_sdei_hypercall_info(struct kvm_vcpu *vcpu)
->  	return ret;
->  }
->  
-> +static unsigned long kvm_sdei_hypercall_route(struct kvm_vcpu *vcpu)
-> +{
-> +	struct kvm *kvm = vcpu->kvm;
-> +	struct kvm_sdei_kvm *ksdei = kvm->arch.sdei;
-> +	struct kvm_sdei_vcpu *vsdei = vcpu->arch.sdei;
-> +	struct kvm_sdei_event *kse = NULL;
-> +	struct kvm_sdei_kvm_event *kske = NULL;
-> +	unsigned long event_num = smccc_get_arg1(vcpu);
-> +	unsigned long route_mode = smccc_get_arg2(vcpu);
-> +	unsigned long route_affinity = smccc_get_arg3(vcpu);
-> +	int index = 0;
-> +	unsigned long ret = SDEI_SUCCESS;
-> +
-> +	/* Sanity check */
-> +	if (!(ksdei && vsdei)) {
-> +		ret = SDEI_NOT_SUPPORTED;
-> +		goto out;
-> +	}
-> +
-> +	if (!kvm_sdei_is_valid_event_num(event_num)) {
-> +		ret = SDEI_INVALID_PARAMETERS;
-> +		goto out;
-> +	}
-> +
-> +	if (!(route_mode == SDEI_EVENT_REGISTER_RM_ANY ||
-> +	      route_mode == SDEI_EVENT_REGISTER_RM_PE)) {
-> +		ret = SDEI_INVALID_PARAMETERS;
-> +		goto out;
-> +	}
-Some sanity checking on the affinity arg could be made as well according
-to 5.1.2  affinity desc. The fn shall return INVALID_PARAMETER in case
-of invalid affinity.
-> +
-> +	/* Check if the KVM event has been registered */
-> +	spin_lock(&ksdei->lock);
-> +	kske = kvm_sdei_find_kvm_event(kvm, event_num);
-> +	if (!kske) {
-> +		ret = SDEI_INVALID_PARAMETERS;
-> +		goto unlock;
-> +	}
-> +
-> +	/* Validate KVM event state */
-> +	kse = kske->kse;
-> +	if (kse->state.type != SDEI_EVENT_TYPE_SHARED) {
-> +		ret = SDEI_INVALID_PARAMETERS;
-> +		goto unlock;
-> +	}
-> +
-Event handler is in a state other than: handler-registered.
-> +	if (!kvm_sdei_is_registered(kske, index) ||
-> +	    kvm_sdei_is_enabled(kske, index)     ||
-> +	    kske->state.refcount) {
-I am not sure about the refcount role here. Does it make sure the state
-is != handler-enabled and running or handler-unregister-pending?
+On Mon, Nov 8, 2021 at 11:27 PM Christoph Hellwig <hch@infradead.org> wrote:
+>
+> On Fri, Nov 05, 2021 at 07:16:38PM -0600, Jane Chu wrote:
+> >  static size_t pmem_copy_from_iter(struct dax_device *dax_dev, pgoff_t pgoff,
+> >               void *addr, size_t bytes, struct iov_iter *i, int mode)
+> >  {
+> > +     phys_addr_t pmem_off;
+> > +     size_t len, lead_off;
+> > +     struct pmem_device *pmem = dax_get_private(dax_dev);
+> > +     struct device *dev = pmem->bb.dev;
+> > +
+> > +     if (unlikely(mode == DAX_OP_RECOVERY)) {
+> > +             lead_off = (unsigned long)addr & ~PAGE_MASK;
+> > +             len = PFN_PHYS(PFN_UP(lead_off + bytes));
+> > +             if (is_bad_pmem(&pmem->bb, PFN_PHYS(pgoff) / 512, len)) {
+> > +                     if (lead_off || !(PAGE_ALIGNED(bytes))) {
+> > +                             dev_warn(dev, "Found poison, but addr(%p) and/or bytes(%#lx) not page aligned\n",
+> > +                                     addr, bytes);
+> > +                             return (size_t) -EIO;
+> > +                     }
+> > +                     pmem_off = PFN_PHYS(pgoff) + pmem->data_offset;
+> > +                     if (pmem_clear_poison(pmem, pmem_off, bytes) !=
+> > +                                             BLK_STS_OK)
+> > +                             return (size_t) -EIO;
+> > +             }
+> > +     }
+>
+> This is in the wrong spot.  As seen in my WIP series individual drivers
+> really should not hook into copying to and from the iter, because it
+> really is just one way to write to a nvdimm.  How would dm-writecache
+> clear the errors with this scheme?
+>
+> So IMHO going back to the separate recovery method as in your previous
+> patch really is the way to go.  If/when the 64-bit store happens we
+> need to figure out a good way to clear the bad block list for that.
 
-I think we would gain in readibility if we had a helper to check whether
-we are in those states?
-> +		ret = SDEI_DENIED;
-> +		goto unlock;
-> +	}
-> +
-> +	/* Update state */
-> +	kske->state.route_mode     = route_mode;
-> +	kske->state.route_affinity = route_affinity;
-> +
-> +unlock:
-> +	spin_unlock(&ksdei->lock);
-> +out:
-> +	return ret;
-> +}
-> +
->  int kvm_sdei_hypercall(struct kvm_vcpu *vcpu)
->  {
->  	u32 func = smccc_get_function(vcpu);
-> @@ -523,6 +585,8 @@ int kvm_sdei_hypercall(struct kvm_vcpu *vcpu)
->  		ret = kvm_sdei_hypercall_info(vcpu);
->  		break;
->  	case SDEI_1_0_FN_SDEI_EVENT_ROUTING_SET:
-> +		ret = kvm_sdei_hypercall_route(vcpu);
-> +		break;
->  	case SDEI_1_0_FN_SDEI_PE_MASK:
->  	case SDEI_1_0_FN_SDEI_PE_UNMASK:
->  	case SDEI_1_0_FN_SDEI_INTERRUPT_BIND:
-> 
-Eric
+I think we just make error management a first class citizen of a
+dax-device and stop abstracting it behind a driver callback. That way
+the driver that registers the dax-device can optionally register error
+management as well. Then fsdax path can do:
 
+        rc = dax_direct_access(..., &kaddr, ...);
+        if (unlikely(rc)) {
+                kaddr = dax_mk_recovery(kaddr);
+                dax_direct_access(..., &kaddr, ...);
+                return dax_recovery_{read,write}(..., kaddr, ...);
+        }
+        return copy_{mc_to_iter,from_iter_flushcache}(...);
+
+Where, the recovery version of dax_direct_access() has the opportunity
+to change the page permissions / use an alias mapping for the access,
+dax_recovery_read() allows reading the good cachelines out of a
+poisoned page, and dax_recovery_write() coordinates error list
+management and returning a poison page to full write-back caching
+operation when no more poisoned cacheline are detected in the page.
