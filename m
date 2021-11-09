@@ -2,131 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 203EA44B05F
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 16:30:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9673D44B05E
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 16:30:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238808AbhKIPdE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Nov 2021 10:33:04 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42512 "EHLO
+        id S236923AbhKIPdC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Nov 2021 10:33:02 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42504 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236981AbhKIPc6 (ORCPT
+        with ESMTP id S236677AbhKIPc4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Nov 2021 10:32:58 -0500
-Received: from mail-ot1-x32a.google.com (mail-ot1-x32a.google.com [IPv6:2607:f8b0:4864:20::32a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 979BEC061766;
-        Tue,  9 Nov 2021 07:30:12 -0800 (PST)
-Received: by mail-ot1-x32a.google.com with SMTP id q33-20020a056830442100b0055abeab1e9aso31408386otv.7;
-        Tue, 09 Nov 2021 07:30:12 -0800 (PST)
+        Tue, 9 Nov 2021 10:32:56 -0500
+Received: from mail-pg1-x52a.google.com (mail-pg1-x52a.google.com [IPv6:2607:f8b0:4864:20::52a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 918CFC061766
+        for <linux-kernel@vger.kernel.org>; Tue,  9 Nov 2021 07:30:10 -0800 (PST)
+Received: by mail-pg1-x52a.google.com with SMTP id p8so17483663pgh.11
+        for <linux-kernel@vger.kernel.org>; Tue, 09 Nov 2021 07:30:10 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=sender:subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=0WsRLZzA+8WjebZk6MQ2yQcE7NyK/cID66AG50nvoVc=;
-        b=A3ZlGo23Y03n58pNlCX3VHiJ9bXqoKSn3wUaTr67d7afWz8UbNpvScGMEqMCV7Jrc3
-         ok3KIcMo7mXQa1KYm88SQyBLo0JasHLfF3gsxxPQzzGiFMQNeMcepBY/b1+ABOWJccMZ
-         yEwJARs6Iw9+PC8vu3aYoO+PDoqfy4XmCnc+lQ8PxgEw3H1hTiS/eJkab3JtQ+Ge3okZ
-         dxe8K3sEr4J/uAUbu89GY4vZmdJOM+d1QBM1CaGyNIUQTpx8XLeV/yGVbXj7gGLELnon
-         w3CNPvIQ9gEWjQ823XGQR7SbNZ35FdiaGj3qk5jRITqIIFEcdRUPOnmr6Ee5UVVT296X
-         Af2w==
+        d=google.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=3EqcySUYEoHd2AgFzsEj9Knlfuk7MnGFiKAJ/T+gQM4=;
+        b=CXtmBHAQoA7Oin7W4K7yTwMQO6LgmHro8A6oQsigaeq95O0vDZQWrbzV7qlAB/BK74
+         gRA1LZc3J6gMpEZijVCZEEzenPGaneqzvP1AAnHo/opAQJoW7kJn481nhRuoJeK91B0S
+         jxP6MGeb+9ML68/9jFaO2oM+I3veY+W2FhMg79qqSFRSM/IzMuPd5gdOLRuhh31y4h5q
+         RquJZzKxADsmvggR4qAd1nQCULwnG04VHwf/uYbPDCA0FOQmyPQsuq8YgBY5vEXL5MOC
+         DTZMn1B038JdZd0EksiiFQnJJZsCKufner8vUSdQpeihklAbX6WTdEEgFev2JRZEFofY
+         gCng==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:sender:subject:to:cc:references:from:message-id
-         :date:user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=0WsRLZzA+8WjebZk6MQ2yQcE7NyK/cID66AG50nvoVc=;
-        b=MEhWEEc8u+AVbLf3g2RHCFZ8wAwYh4IlrvZnotBipHNvit9bKUhFBwcsgFRb9kbYjJ
-         BnJXPPLintfvXtH0fALWJryEag8URjTDoF07hQXdQENMLy5S4m3jXLPzl304BX59q67c
-         vPLBLaqh90I/AWLmJbLZE/HfumrATzevPM/m9xgtMR/b0L8KsI+s7V2Dzs0QWMkZLFqd
-         fHUUeB41RqBVKbux70VUAvr+Dpce9DrC6kRhVV4yqZHaUdgqC4kCAhJO8zrWTA+6wg7p
-         zimPziYnmqYHEP3alrck2c94DYV5k81/rmzcVerroLhqjQXdCrHmmAqthkNtB8Z3T/fV
-         VZ+g==
-X-Gm-Message-State: AOAM533RnKJ+qWeUDLac2fJLd2knYtVI8eXG2wligJq9K1lQqo/mkzM9
-        dZHOE+goSMeNd3naZ96sCqV+tQ8TJ6g=
-X-Google-Smtp-Source: ABdhPJxpyLpi4skiHMAK0ayI3zl7zHHQ5Xt5N5DUoX1F1aZAsG4RL86djvldh6Ns7Zr1Ru4loTZMow==
-X-Received: by 2002:a9d:2ab:: with SMTP id 40mr6894622otl.208.1636471811989;
-        Tue, 09 Nov 2021 07:30:11 -0800 (PST)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id f12sm3292856ote.75.2021.11.09.07.30.05
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 09 Nov 2021 07:30:07 -0800 (PST)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Subject: Re: [PATCH v4 3/3] watchdog: meson_gxbb_wdt: remove stop_on_reboot
-To:     Art Nikpal <email2tema@gmail.com>,
-        Neil Armstrong <narmstrong@baylibre.com>
-Cc:     wim@linux-watchdog.org, Kevin Hilman <khilman@baylibre.com>,
-        Jerome Brunet <jbrunet@baylibre.com>,
-        Christian Hewitt <christianshewitt@gmail.com>,
-        Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
-        linux-watchdog@vger.kernel.org,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        "open list:ARM/Amlogic Meson..." <linux-amlogic@lists.infradead.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Artem Lapkin <art@khadas.com>, Nick Xie <nick@khadas.com>,
-        Gouwa Wang <gouwa@khadas.com>
-References: <20210730041355.2810397-1-art@khadas.com>
- <20210730041355.2810397-4-art@khadas.com>
- <CAKaHn9KxZDAHdKGZg3-Pi3jZO5E3knESHCFjgaV09u5QYe074A@mail.gmail.com>
-From:   Guenter Roeck <linux@roeck-us.net>
-Message-ID: <24363743-48fb-c01f-eb5d-0cd486d099f7@roeck-us.net>
-Date:   Tue, 9 Nov 2021 07:30:04 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=3EqcySUYEoHd2AgFzsEj9Knlfuk7MnGFiKAJ/T+gQM4=;
+        b=n9nAM/gtLPAZjzbGzvhonEMe/ynEE56ZYmcotWpNQyReN8BHVtWRf4NcoZOQfvxOEe
+         QewgA4WMflkYvm8/ysG9rpn3Yxd57EuiH/psXU5Jnv4ZxtJG8y2JpTnPlFbjy0a2heJB
+         Ah229G/m/OZNMoMSQks9ARP4y8IJYk8sJe+8mlU6mzgC2+XrtLzQWpTJPhMXLmNnlkxr
+         A30l8vukQh2eEP0UFpGaziTwc319Tohn/9TA+vthYJNlQY7PJX6Zjz+KQwNc754YiKeJ
+         AsPG0+eWM/kD5SG0iSVGx0rC3TcSJpPzLLGly9t9/EWDwTAV6NMmQT0VtGTIJPhKlRB3
+         jdiQ==
+X-Gm-Message-State: AOAM5323iqTq/pNCJpuUzt45WLraU6nxZflhnjHT6zA+nmmjyF+jy+OI
+        BpbAnsc+uTkk8bnXoO6+p4uCCQ==
+X-Google-Smtp-Source: ABdhPJxW/Vf5ZzQVboiiwImKBQiI1NzEed2ct/59SKb7DgL0vrXUaMSOqt3Ac0QahWaG4YaudJKvtg==
+X-Received: by 2002:a62:5ec2:0:b0:44d:47e2:4b3b with SMTP id s185-20020a625ec2000000b0044d47e24b3bmr91078717pfb.38.1636471809613;
+        Tue, 09 Nov 2021 07:30:09 -0800 (PST)
+Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
+        by smtp.gmail.com with ESMTPSA id t4sm20638284pfj.13.2021.11.09.07.30.08
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 09 Nov 2021 07:30:09 -0800 (PST)
+Date:   Tue, 9 Nov 2021 15:30:05 +0000
+From:   Sean Christopherson <seanjc@google.com>
+To:     Chenyi Qiang <chenyi.qiang@intel.com>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Xiaoyao Li <xiaoyao.li@intel.com>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v5 3/7] KVM: X86: Expose IA32_PKRS MSR
+Message-ID: <YYqT/cOm3Psf1gj1@google.com>
+References: <20210811101126.8973-1-chenyi.qiang@intel.com>
+ <20210811101126.8973-4-chenyi.qiang@intel.com>
+ <YYliC1kdT9ssX/f7@google.com>
+ <85414ca6-e135-2371-cbce-0f595a7b7a26@intel.com>
 MIME-Version: 1.0
-In-Reply-To: <CAKaHn9KxZDAHdKGZg3-Pi3jZO5E3knESHCFjgaV09u5QYe074A@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <85414ca6-e135-2371-cbce-0f595a7b7a26@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/8/21 11:59 PM, Art Nikpal wrote:
-> hi Guenter Roeck
-> why still not merged to upstream ?
+On Tue, Nov 09, 2021, Chenyi Qiang wrote:
 > 
+> On 11/9/2021 1:44 AM, Sean Christopherson wrote:
+> > Hrm.  Ideally this would be open coded in vmx_set_msr().  Long term, the RESET/INIT
+> > paths should really treat MSR updates as "normal" host_initiated writes instead of
+> > having to manually handle every MSR.
+> > 
+> > That would be a bit gross to handle in vmx_vcpu_reset() since it would have to
+> > create a struct msr_data (because __kvm_set_msr() isn't exposed to vendor code),
+> > but since vcpu->arch.pkrs is relevant to the MMU I think it makes sense to
+> > initiate the write from common x86.
+> > 
+> > E.g. this way there's not out-of-band special code, vmx_vcpu_reset() is kept clean,
+> > and if/when SVM gains support for PKRS this particular path Just Works.  And it would
+> > be an easy conversion for my pipe dream plan of handling MSRs at RESET/INIT via a
+> > list of MSRs+values.
+> > 
+> > diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
+> > index ac83d873d65b..55881d13620f 100644
+> > --- a/arch/x86/kvm/x86.c
+> > +++ b/arch/x86/kvm/x86.c
+> > @@ -11147,6 +11147,9 @@ void kvm_vcpu_reset(struct kvm_vcpu *vcpu, bool init_event)
+> >          kvm_set_rflags(vcpu, X86_EFLAGS_FIXED);
+> >          kvm_rip_write(vcpu, 0xfff0);
+> > 
+> > +       if (kvm_cpu_cap_has(X86_FEATURE_PKS))
+> > +               __kvm_set_msr(vcpu, MSR_IA32_PKRS, 0, true);
+> > +
+> 
+> Got it. In addition, is it necessary to add on-INIT check? like:
+> 
+> if (kvm_cpu_cap_has(X86_FEATURE_PKS) && !init_event)
+> 	__kvm_set_msr(vcpu, MSR_IA32_PKRS, 0, true);
+> 
+> PKRS should be preserved on INIT, not cleared. The SDM doesn't make this
+> clear either.
 
-I had asked you to provide an updated description, without the "personal
-opinion" part which does not belong into a commit log. The other two
-patches wait for Wim to send them upstream.
+Hmm, but your cover letter says:
 
-Guenter
+  To help patches review, one missing info in SDM is that PKSR will be
+  cleared on Powerup/INIT/RESET, which should be listed in Table 9.1
+  "IA-32 and Intel 64 Processor States Following Power-up, Reset, or INIT"
 
+Which honestly makes me a little happy because I thought I was making stuff up
+for a minute :-)
 
-> On Fri, Jul 30, 2021 at 12:14 PM Artem Lapkin <email2tema@gmail.com> wrote:
->>
->> Remove watchdog_stop_on_reboot()
->>
->> Meson platform still have some hardware drivers problems for some
->> configurations which can freeze device on shutdown/reboot stage and i
->> think better to have reboot warranty by default.
->>
->> I feel that it is important to keep the watchdog running during the
->> reboot sequence, in the event that an abnormal driver freezes the reboot
->> process.
->>
->> This is my personal opinion and I hope the driver authors will agree
->> with my proposal, or just ignore this commit if not.
->>
->> https://lore.kernel.org/linux-watchdog/20210729072308.1908904-1-art@khadas.com/T/#t
->>
->> Signed-off-by: Artem Lapkin <art@khadas.com>
->> ---
->>   drivers/watchdog/meson_gxbb_wdt.c | 1 -
->>   1 file changed, 1 deletion(-)
->>
->> diff --git a/drivers/watchdog/meson_gxbb_wdt.c b/drivers/watchdog/meson_gxbb_wdt.c
->> index 945f5e65db57..d3c9e2f6e63b 100644
->> --- a/drivers/watchdog/meson_gxbb_wdt.c
->> +++ b/drivers/watchdog/meson_gxbb_wdt.c
->> @@ -198,7 +198,6 @@ static int meson_gxbb_wdt_probe(struct platform_device *pdev)
->>
->>          meson_gxbb_wdt_set_timeout(&data->wdt_dev, data->wdt_dev.timeout);
->>
->> -       watchdog_stop_on_reboot(&data->wdt_dev);
->>          return devm_watchdog_register_device(dev, &data->wdt_dev);
->>   }
->>
->> --
->> 2.25.1
->>
-
+So which is it?
