@@ -2,191 +2,183 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8AF9444AAD3
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 10:49:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1EAB944AAB8
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 10:42:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244996AbhKIJvz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Nov 2021 04:51:55 -0500
-Received: from esa1.fujitsucc.c3s2.iphmx.com ([68.232.152.245]:15801 "EHLO
-        esa1.fujitsucc.c3s2.iphmx.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S244158AbhKIJvY (ORCPT
+        id S244936AbhKIJpd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Nov 2021 04:45:33 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47826 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239498AbhKIJp3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Nov 2021 04:51:24 -0500
-X-Greylist: delayed 428 seconds by postgrey-1.27 at vger.kernel.org; Tue, 09 Nov 2021 04:51:24 EST
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=fujitsu.com; i=@fujitsu.com; q=dns/txt; s=fj1;
-  t=1636451319; x=1667987319;
-  h=from:to:subject:date:message-id:references:in-reply-to:
-   content-transfer-encoding:mime-version;
-  bh=IuQ5G9CLVDMiWNaMAoQRZUYlsittToi5jg8I4m248EY=;
-  b=nx6iHLqYRNFgWzAOnYWbC7Q5RlFRcygB9eJmlykmAL1hapoVvCJ9Gtzv
-   uOZTYpay8KLfGSAD4KPWzkJCnwQDAUFKxwMXs2CkNz4HJfZ63szWZNDA/
-   Y1lA9tEU1Nz1gSXALVwrvqD2tagyQfCXOFj7cqdgkBH72Y9eqDcs8HQ9J
-   V45+eu0GK5Se6aZiAoMe8PFgp37rVYk1yEn+R+hEANUfKE1bvDwWGO1xO
-   QxPDgEQvJKnvi+tAAl1ljoeeDiPL8vzDOCGun8GQCO/AYJhmM9FLd1ARa
-   eYbmPMQ2WCOnEQxoV2YhS28TCauTVSaWkGW5WPoDpagav3C4D37UbsfgM
-   A==;
-X-IronPort-AV: E=McAfee;i="6200,9189,10162"; a="51380974"
-X-IronPort-AV: E=Sophos;i="5.87,219,1631545200"; 
-   d="scan'208";a="51380974"
-Received: from mail-os2jpn01lp2054.outbound.protection.outlook.com (HELO JPN01-OS2-obe.outbound.protection.outlook.com) ([104.47.92.54])
-  by ob1.fujitsucc.c3s2.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Nov 2021 18:41:26 +0900
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Zr0YDEldKvzdBefNU2lv/1jjWGEr7Kijp4XN7vpmG8aS7ASrFRmWWND2cBLbrkeS73vEs8CgyNlT25p2rD4SAoaoNTlaD3Z/6B8kn9wesdRLHfx8iARwZDC0y4wTYY0MZuiIC5Pdk1Cuf4nBfOcAgm0x5hIOsnZdjwjk8O5BZzdz2m7Yu1H/Uil2PC6kSlHHLRS1NngVnQ7CfCUSgKlkLGweseuM3g3WDcdImtDN1kOpaTr2Ia9oxYO2cxFNjsJrtfH3imZ8B6369lcTwTRx5fzJ/X4hQ18UKOGBsscLAsdeFRM9C7NoCNckLVfBSxCvbh0GgeNCiG3Ar8klsJi9uQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=IuQ5G9CLVDMiWNaMAoQRZUYlsittToi5jg8I4m248EY=;
- b=Ndr4j1t7iJowzZ6HbyMaK5hxRSPEVWwc2I8mpfgLGVDgtVNlUnWiYdhfAI0dG4LDb0Uaj4biSw/sg1wEMdrvIAHNPVHX5FAvcJsvowITe9Imc7XvSNSzicvqPCYI4CIBn/RMjq5cR80jalEaKl1EF7FChxdAy8SZ14MVY8JFNETfyGsgrX5+ic6mOju3PDFMrPafFkhCU6OPDhrSHsUbeXeCY6J+1ApYcJnbBPJSmpU9hnhFbKEvjkPbboa3br/52/V4LWrbUI++VVy+PKkIIt0pfi1ymAxYWIA3vL6+AR5n7e29UVylAG262Llm/uA1W77rNtGAO/eyTHtfA2K9EQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=fujitsu.com; dmarc=pass action=none header.from=fujitsu.com;
- dkim=pass header.d=fujitsu.com; arc=none
+        Tue, 9 Nov 2021 04:45:29 -0500
+Received: from mail-wm1-x331.google.com (mail-wm1-x331.google.com [IPv6:2a00:1450:4864:20::331])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DBF61C061766
+        for <linux-kernel@vger.kernel.org>; Tue,  9 Nov 2021 01:42:43 -0800 (PST)
+Received: by mail-wm1-x331.google.com with SMTP id 133so15294276wme.0
+        for <linux-kernel@vger.kernel.org>; Tue, 09 Nov 2021 01:42:43 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=fujitsu.onmicrosoft.com; s=selector2-fujitsu-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=IuQ5G9CLVDMiWNaMAoQRZUYlsittToi5jg8I4m248EY=;
- b=D+hx0iZHl/gJvLjiun1RIMMn2caOoh8rlXFq02IlqmsmzcwhLc5wwEa34YI4ZKTktdvRNHJsVRy56HSNBlgKdJzdlbKCs8YEouFBfp3EZy5VR62SDz1oS/lvY8LMTOu/SbSCDTvAFY2iur4g8JWj6R8ElPbfFLZiooYBeiZkfIs=
-Received: from OSBPR01MB2037.jpnprd01.prod.outlook.com (2603:1096:603:25::17)
- by OS0PR01MB5554.jpnprd01.prod.outlook.com (2603:1096:604:a7::15) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4690.15; Tue, 9 Nov
- 2021 09:41:23 +0000
-Received: from OSBPR01MB2037.jpnprd01.prod.outlook.com
- ([fe80::816a:2a54:60a9:7124]) by OSBPR01MB2037.jpnprd01.prod.outlook.com
- ([fe80::816a:2a54:60a9:7124%7]) with mapi id 15.20.4669.016; Tue, 9 Nov 2021
- 09:41:23 +0000
-From:   "tarumizu.kohei@fujitsu.com" <tarumizu.kohei@fujitsu.com>
-To:     'Dave Hansen' <dave.hansen@intel.com>,
-        "catalin.marinas@arm.com" <catalin.marinas@arm.com>,
-        "will@kernel.org" <will@kernel.org>,
-        "tglx@linutronix.de" <tglx@linutronix.de>,
-        "mingo@redhat.com" <mingo@redhat.com>,
-        "bp@alien8.de" <bp@alien8.de>,
-        "dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>,
-        "x86@kernel.org" <x86@kernel.org>, "hpa@zytor.com" <hpa@zytor.com>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: RE: [RFC PATCH v2 5/5] docs: ABI: Add sysfs documentation interface
- of hardware prefetch driver
-Thread-Topic: [RFC PATCH v2 5/5] docs: ABI: Add sysfs documentation interface
- of hardware prefetch driver
-Thread-Index: AQHX0Tvv/kPkA9E5NUSVJk6TV6BF/6vzdXUAgAVgQBCAAA1zAIACEpXw
-Date:   Tue, 9 Nov 2021 09:41:23 +0000
-Message-ID: <OSBPR01MB20374AB09F302F5CB0C63EED80929@OSBPR01MB2037.jpnprd01.prod.outlook.com>
-References: <20211104052122.553868-1-tarumizu.kohei@fujitsu.com>
- <20211104052122.553868-6-tarumizu.kohei@fujitsu.com>
- <2a939a62-7016-bbd6-6e2f-2824214687fd@intel.com>
- <OSBPR01MB20379FB0D979C0B130FEAD0280919@OSBPR01MB2037.jpnprd01.prod.outlook.com>
- <d9c31c0a-a0ce-452d-7f7d-df535eb5e918@intel.com>
-In-Reply-To: <d9c31c0a-a0ce-452d-7f7d-df535eb5e918@intel.com>
-Accept-Language: ja-JP, en-US
-Content-Language: ja-JP
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-msip_labels: =?utf-8?B?TVNJUF9MYWJlbF9hNzI5NWNjMS1kMjc5LTQyYWMtYWI0ZC0zYjBmNGZlY2Uw?=
- =?utf-8?B?NTBfQWN0aW9uSWQ9YmQ2OGFhMTktMjg0OS00NDAzLWI0NzQtNDQwN2ZiMDMz?=
- =?utf-8?B?MDNiO01TSVBfTGFiZWxfYTcyOTVjYzEtZDI3OS00MmFjLWFiNGQtM2IwZjRm?=
- =?utf-8?B?ZWNlMDUwX0NvbnRlbnRCaXRzPTA7TVNJUF9MYWJlbF9hNzI5NWNjMS1kMjc5?=
- =?utf-8?B?LTQyYWMtYWI0ZC0zYjBmNGZlY2UwNTBfRW5hYmxlZD10cnVlO01TSVBfTGFi?=
- =?utf-8?B?ZWxfYTcyOTVjYzEtZDI3OS00MmFjLWFiNGQtM2IwZjRmZWNlMDUwX01ldGhv?=
- =?utf-8?B?ZD1TdGFuZGFyZDtNU0lQX0xhYmVsX2E3Mjk1Y2MxLWQyNzktNDJhYy1hYjRk?=
- =?utf-8?B?LTNiMGY0ZmVjZTA1MF9OYW1lPUZVSklUU1UtUkVTVFJJQ1RFRO+/ou++gA==?=
- =?utf-8?B?776LO01TSVBfTGFiZWxfYTcyOTVjYzEtZDI3OS00MmFjLWFiNGQtM2IwZjRm?=
- =?utf-8?B?ZWNlMDUwX1NldERhdGU9MjAyMS0xMS0wOVQwOToyODowN1o7TVNJUF9MYWJl?=
- =?utf-8?B?bF9hNzI5NWNjMS1kMjc5LTQyYWMtYWI0ZC0zYjBmNGZlY2UwNTBfU2l0ZUlk?=
- =?utf-8?Q?=3Da19f121d-81e1-4858-a9d8-736e267fd4c7;?=
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=fujitsu.com;
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: ed71eb7e-ba94-4557-7847-08d9a3651785
-x-ms-traffictypediagnostic: OS0PR01MB5554:
-x-microsoft-antispam-prvs: <OS0PR01MB5554DA9454F40960757FE34F80929@OS0PR01MB5554.jpnprd01.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:9508;
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: HoG/iHa7C/cUeW2IFRMGKjZP48z1BOBTt7CoSHPUvRjEduhmFUaZ4A6eEclDhV5p6qwN5+BfzWyCjpzXggnhZVrMflNo8w54iQDpMgfZIvMVLqPmRrevD+AD2YnPzOAWmitPuz2QzrBOpo1RauWqjPaVe2Mvzxmvw1Otw9lyldukzQ+2DLFqAU45SCdu6K6vOkPotL2f/KQDh/YMXCtSiEAxBgc1lBbGE2zdNBfcN0x5O1vrlU/Qkh79LVsgjw6GNvzGYQ/Qx7x4rPcq7Wh3X6bnIYwVApRe2p8eLDZihdh7F/qM3I4EjZMEJNWLwS5l//tM7RivOAFVPluSxjOTejJZmtnsTML+pnoUpG1Zpwe/O85PNiWdWqpSwXIlE8Oj64g8xC14rWBoDx/ps+1SMBXUT7v0ww0KQx4+uRdpX+ZztvaudnWDytq20auDf29vw971bvGG7kPrG5EJSTrteho72dJS233XggcLqOEuIHCndfASEGLQIb/PIS4e3H70/NGkuYXJDBZ4IKX7Eoyw4fIDrlVIcBCQGU6y9MkN+juAWv4Ni8Ou6oNEd1GoAdsrO/9je+tTeucAqleaVZOOyY+VnpYzTQ0Z9b1z2GPy4r1BzThemqWuch1/n7V8XYuJQdWxesD/KB6WrAg99PMozC3IjO4nOjv7l2y9Wf/wv9DNq/UuaT5uF79O8515C3aeZCiUCBS9yhQQO0BYEglUaGKblzT6vP2pfvqGBJNO/yzI1Ozw3uuXPwxL9i7PlkQdnnYb4W6lXORSbNww5bLLKQEEv0M5wH4ZphMFFnlzdX2MFaRChpCBfveXSO+PCb7P
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:OSBPR01MB2037.jpnprd01.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(85182001)(52536014)(921005)(7416002)(26005)(316002)(5660300002)(2906002)(66946007)(7696005)(76116006)(64756008)(6506007)(55016002)(66476007)(66556008)(66446008)(110136005)(508600001)(71200400001)(33656002)(186003)(38070700005)(8676002)(122000001)(82960400001)(83380400001)(38100700002)(86362001)(9686003)(8936002);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?utf-8?B?S29YQlE3WGhVMVB1dlJYM05jdnZuNS9aRjI1VWhjT1ZsMTc1VDM3L2RZUE9H?=
- =?utf-8?B?YVNKcUpmZGZoM0hKOHdaYktQREhxeFNyeXQvSmcvb2liQlE0cTFuNGtRdEFF?=
- =?utf-8?B?eEdCV2RWSUdpUXM5MEJiMzV6SE44akZ0U0hsMjZDMnM2VzdOajl5cHNMTWNm?=
- =?utf-8?B?YjBwYUxlOXNFa3lmUE9NTjJyK0R1NTNCWktGM1dZMzVZVjhTakp1aHlWaGZ5?=
- =?utf-8?B?SEJuVEJLTGw1eitPMXowVHlDMTlqaDhKNVZQaXFqN0EveHVRSlVBRVYzV0ZF?=
- =?utf-8?B?UkxXaFlDNlhPRXZ4dEgwR0pvVkdvc2JFTjNKY1MweVhpZ1Q3TkxOeXZWWUlR?=
- =?utf-8?B?YVo4cjd0QlY4OW9jclJwbVQ2WlU0THhOSmthM3ZoNzZJNkpvWkdFd04wRS9J?=
- =?utf-8?B?bzE0NTlFcGZQMDlSK3pSMGlDZmZrRDVDV094RXAzR2QzbmVlU2JjTHlRYm1Y?=
- =?utf-8?B?R2NpQmdtMXR6SlRDTGlzUnJhMi9XRjRQQk5rNEVHNmFJNjZBcGJrM2ZmbHFp?=
- =?utf-8?B?V09DV0drY0JmeUJrRmJIMDY1dTJxSGUwK0ZHVnYxY24vemppb3p4SGlKVW9W?=
- =?utf-8?B?Z1BQRVRpbGFRNEM2Q2g3a3g4N3F0cC83Tk1JTGJrRkhCRDFrUURiZDZZNU5a?=
- =?utf-8?B?ejdoT05xbmpFSHlTVzY5dzdrVXBMSUZVU2tXcVgvSHZFOVpDOTBvVE4raXdJ?=
- =?utf-8?B?S2NoU3JJQXFvdUl3dmlWTnVDS1BzbnBlU3ZnVHJnUTZIWXE1UDRSQWoydFJl?=
- =?utf-8?B?cjdVMXo3NTVzOWpEeU9rMHNQMG5pYUZta3k3cXpMaHRreGwyN0JjWVF6MFNT?=
- =?utf-8?B?eUszbUcrYWt6YzVzN3E1MEdNNDNndW1CckhoWHYxR3RQSVhwN0ZoVStHVGxD?=
- =?utf-8?B?VVVWU0ZxTmFXMXdJaDVFRXg4ZjVER01JWkxzeUZQQVE3SjhKOEU1bVdWZ3Jh?=
- =?utf-8?B?U1ZHbDZOaURTRTM0SXB1SUJNV1FOWmU1K1VRNEp4K0lxSXlkTlpxMS9qM1hO?=
- =?utf-8?B?U1VVNFgyUkJiUU5GWFdqVmI1V1ZVemZ4eGQ1N1RuTkNsNWpRZXpzN09HVnVi?=
- =?utf-8?B?RmNPQ1diTzhDdjZmYkdiTDhabmJIT0xKanlXaFlsYkUyN0Zwck5sN0VUVUV6?=
- =?utf-8?B?TVVXUy95dng5cTVBUEJzRUVsWHc0b21oT28rcm9TMVYyQVJEcmNLeUJsT2hs?=
- =?utf-8?B?MUwyOG9mTDM1TVBabnRjM1BicHZqcHBrZkU4bmRPREdTbnIvanlWY28zMDk3?=
- =?utf-8?B?OCt3YUFUZ05CaHBaWnpSQXNWTm81dFFNUmhEcC9NcEtUMDBuRll5RjdBZmt5?=
- =?utf-8?B?N29ldHI1WkJURmlSVFRIazJWaGR4bklURnZYaXhDTGNYTm16R2Q5NURKc0R1?=
- =?utf-8?B?ejkrV2thVnZMS29IZ2RqcDkyZHF0Z3pxck1ubUtZUzJTZDJ1TVVmNlFCU1Fk?=
- =?utf-8?B?R2FzQ1FuajZ6ZnZ0czA1Y2FhOVUwaUhMaWpBUTFRRVFwWGVmQ0VxQitLc1ZL?=
- =?utf-8?B?VnBJZFQzakJQVGVDUEFhVWRnN0J4c1FHeDVTcHNXMHB0Mm4xd2dGUzN5c3c2?=
- =?utf-8?B?WUx0TURNM0t1Q2xXMVhMKzlPVFdNeUVDZFJVVmtvZlNrMmgwTEtVZDc2SUFQ?=
- =?utf-8?B?RURZZ0JGWWFhTTJPdlh1NDNNanpzNnRpc0kwZGp6Q0ZReUtNT05KUFpWWDNa?=
- =?utf-8?B?NWxqcEVpbU9sV29nZFJMZFVFUmNGcG52bWpuTzcyZ1htZDZpQTVQeVU3dzFi?=
- =?utf-8?B?Y2R1YzZoa1J6NGhoeXJ4NTJrbysvUFlXZ2VkL1orT0RQcnFQNGtVOCszZ09U?=
- =?utf-8?B?dzBLLzl6TlJ6ZWF6RUUzdGtJMGQ5QmZGYWJYMlMrVXdmV0tvQm1GR21YNjBs?=
- =?utf-8?B?eW9laTZ2UUdZR2ExbjJXMmpIaW1HdmlLTENOQk05Y3NhOTNaVUY3RXJTOTE3?=
- =?utf-8?B?Tm9aVzN6c3dhRnUralV4S0dua3lCRnNEWFdwV1QzOG1MRUF4dlNqbTkybVhh?=
- =?utf-8?B?Q0g1Nld2RERQOUF3TU9TUWREQzdCY3REWk1DOU5pR3JhVm1GTkkvZk4yWTlJ?=
- =?utf-8?B?aU8vM0hsZG84WDZycEdaK2M5Zk5jcUVqUlJtK25yamZXSlNVYmZNWlBxdjk2?=
- =?utf-8?B?Ymt1VXdKajJHVHNKc1ZleVNPbkU3c0E0YUhUd2hvdldFK3Y3aVBsYUtDN1pm?=
- =?utf-8?B?YTA5QWpsQWUrak5VcEZCVGRzMzRYM05vNnF5NWhmckYvMXkzclJTSTlTRUNO?=
- =?utf-8?B?eXk1Q1ZwMEExRmNaTzBORmFZWkFnPT0=?=
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=ZlOrsEkoUVb7bqgr7Sfqn6tP5yW/fniHUca7AhR1Joc=;
+        b=j6lTuleaVQuysWTJmBVAUX5Vi1a0CJeW0a+VLQ2KMqtSpvOcDEaenjASpqzecBusRG
+         v9ynWNxXelEhUpZir4U8oZcAwa2tdCRwdqDWVtD4bMJEX77V/xm5v13SgZVKRmzcfH0w
+         4diD/jolcXISi1kNIwmedQ+vQuBpIDYXJPGmV7haDYEKzEWhLRyepEDPamiZ0BT1mafQ
+         PY3YK4BI4int135w3Z2lp2jRsM5Swm7RpDDVli+9mmcInAI2bg5FyI+gVoQQIJAKp7C8
+         zJR/O3R05WYy8ZZ78FNVO+ynh6olx6GsLL5QjwxAS+6CJ+qEv2LI8fyyBQnnCwcaJ6MK
+         U68g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=ZlOrsEkoUVb7bqgr7Sfqn6tP5yW/fniHUca7AhR1Joc=;
+        b=blCxWUIP9qDuqyQJrGnEXe9sg8R703VWLH0BG/VuGd2Z/zfPaBvM9izigjqb7UakQQ
+         jmr/l+00DSo9+WG65S4d7rC2hZgAO88Qy7Lo92sBb8m5n3bs9j+BfLVhoBI14uXmTjmX
+         9o7xP6BgYlsV1ZAWaU41/pXPoBGenwiqRzCax8xAvHi8+KEX4MatrHIdt2cUGBFLnvcw
+         5QTzqRuhxdrzdfxrg4xw1KkX0UL2PdJBO42GY7+ovF/aRuSyaCgBjnsSilGkMyopBNiA
+         k2cTlSODS6UvBmFVn+NLH99yfE442nV3Ua/mjF+UlLsIP4l8V1xdJEZWdzwPVQnaTn1Z
+         zvWw==
+X-Gm-Message-State: AOAM533LqXugYPDGlfNhFmeQMD1cvwJfZk00HdRqnkktJpwnIJW1A7pt
+        QXhT/oD2TDJVw8m4JIxkT7pCdQ==
+X-Google-Smtp-Source: ABdhPJxKJKRWBtBIE9hg4QEOm/PlO31qKJRKN3GLEHuR83ElWb+USW1S9VR8EGGle3BJUfsLY5fmhQ==
+X-Received: by 2002:a05:600c:1d01:: with SMTP id l1mr5770302wms.44.1636450962416;
+        Tue, 09 Nov 2021 01:42:42 -0800 (PST)
+Received: from localhost.localdomain ([95.148.6.174])
+        by smtp.gmail.com with ESMTPSA id l18sm20224726wrt.81.2021.11.09.01.42.41
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 09 Nov 2021 01:42:42 -0800 (PST)
+From:   Lee Jones <lee.jones@linaro.org>
+To:     lee.jones@linaro.org
+Cc:     stable@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Andreas Kemnade <andreas@kemnade.info>,
+        "H . Nikolaus Schaller" <hns@goldelico.com>,
+        Johan Hovold <johan@kernel.org>,
+        "David S . Miller" <davem@davemloft.net>
+Subject: [PATCH 4.4 1/2] net: hso: register netdev later to avoid a race condition
+Date:   Tue,  9 Nov 2021 09:42:36 +0000
+Message-Id: <20211109094237.174741-1-lee.jones@linaro.org>
+X-Mailer: git-send-email 2.34.0.rc0.344.g81b53c2807-goog
 MIME-Version: 1.0
-X-OriginatorOrg: fujitsu.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: OSBPR01MB2037.jpnprd01.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: ed71eb7e-ba94-4557-7847-08d9a3651785
-X-MS-Exchange-CrossTenant-originalarrivaltime: 09 Nov 2021 09:41:23.0953
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: a19f121d-81e1-4858-a9d8-736e267fd4c7
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: cg2qzidKeqqLPKXaj/EPXXRjsKokV5Qg18eVLq3jJQoLlW0jEyIoNM3f0V23/n7jBtGHTTZrKjVV8x7OAhLzK3B+Lok3eSf4QWJ66brrdgc=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: OS0PR01MB5554
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-PiBBaGgsIHNvIHlvdSByZWFsbHkgZG8gaW50ZW5kIHRoZSBsMiBkaXJlY3RvcnkgdG8gYmUgZm9y
-ICphbGwqIHRoZSBMMg0KPiBwcmVmZXRjaGVycz8NCg0KWWVzLCB3ZSBpbnRlbmQgdG8gY3JlYXRl
-IHRoZSBsMiBkaXJlY3RvcnkgZm9yICphbGwqIHRoZSBMMiBwcmVmZXRjaGVycw0KKGkuZS4gIkwy
-IEhhcmR3YXJlIFByZWZldGNoZXIgRGlzYWJsZSIgYW5kICJMMiBBZGphY2VudCBDYWNoZSBMaW5l
-DQpQcmVmZXRjaGVyIERpc2FibGUpLiANCg0KPiBJIGd1ZXNzIHRoYXQncyBPSywgYnV0IHdpbGwg
-Zm9sa3MgZXZlciB3YW50IHRvIGRvICJMMg0KPiBIYXJkd2FyZSBQcmVmZXRjaGVyIERpc2FibGUi
-LCBidXQgbm90ICJMMiBBZGphY2VudCBDYWNoZSBMaW5lIFByZWZldGNoZXINCj4gRGlzYWJsZSI/
-DQoNClRoZXJlIGFyZSBwZW9wbGUgd2hvIGFjdHVhbGx5IHRlc3RlZCB0aGUgcGVyZm9ybWFuY2Ug
-aW1wcm92ZW1lbnRbMV0uDQoNClsxXWh0dHBzOi8vZ2l0aHViLmNvbS94bXJpZy94bXJpZy9pc3N1
-ZXMvMTQzMyNpc3N1ZWNvbW1lbnQtNTcyMTI2MTg0DQoNCkluIHRoaXMgcmVwb3J0LCB3cml0ZSA1
-IHRvIE1TUiAweDFhNCAoaS5lLiAiTDIgSGFyZHdhcmUgUHJlZmV0Y2hlcg0KRGlzYWJsZSIsIGJ1
-dCBub3QgIkwyIEFkamFjZW50IENhY2hlIExpbmUgUHJlZmV0Y2hlciBEaXNhYmxlIikNCm9uIGk3
-LTU5MzBLIGZvciBiZXN0IHBlcmZvcm1hbmNlLiBJZiBzdWNoIHR1bmluZyBpcyBwb3NzaWJsZSwg
-aXQgbWF5DQpiZSB1c2VmdWwgZm9yIHNvbWUgcGVvcGxlLg0KDQpXZSBkZXNjcmliZSBob3cgdG8g
-ZGVhbCB0aGVzZSBwYXJhbWV0ZXJzIGluIG91ciBzeXNmcyBpbnRlcmZhY2UgYXQNCiJbUkZDICYg
-RnV0dXJlIHBsYW5dIiBzZWN0aW9uIGluIHRoZSBjb3ZlciBsZXR0ZXIoMC81KSwgYnV0IHdlIGNh
-bid0DQpjb21lIHVwIHdpdGggYW55IGdvb2QgaWRlYXMuDQoNCldlIHRob3VnaHQgdGhhdCB0aGUg
-c3lzZnMgaW50ZXJmYWNlIHNob3VsZCBiZSBnZW5lcmljIGFuZCBjb21tb24sDQphbmQgYXZvaWQg
-c2hvd2luZyBhcmNoaXRlY3R1cmUtZGVwZW5kZW50IHNwZWNpZmljYXRpb25zLg0KDQpXZSBoYXZl
-IGNvbnNpZGVyZWQgdGhlIFByb3Bvc2FsIEIgdGhhdCBtdWx0aXBsZSBoYXJkd2FyZSBwcmVmZXRj
-aA0KdHlwZXMgaW4gb25lIGVuYWJsZSBhdHRyaWJ1dGUgZmlsZSBhdCBhYm92ZSBzZWN0aW9uLiBI
-b3dldmVyLCBpbg0Kb3JkZXIgdG8gdXNlIGl0LCB3ZSBoYXZlIHRvIGtub3cgdGhlIHJlZ2lzdGVy
-IHNwZWNpZmljYXRpb24sIHNvIHdlDQp0aGluayBpdCBpcyBub3QgYXBwcm9wcmlhdGUuDQoNCkRv
-IHlvdSBoYXZlIGFueSBpZGVhIGhvdyB0byByZXByZXNlbnQgYXJjaGl0ZWN0dXJlLWRlcGVuZGVu
-dA0Kc3BlY2lmaWNhdGlvbnMgaW4gc3lzZnMgaW50ZXJmYWNlPw0K
+From: Andreas Kemnade <andreas@kemnade.info>
+
+[ Upstream commit 4c761daf8bb9a2cbda9facf53ea85d9061f4281e ]
+
+If the netdev is accessed before the urbs are initialized,
+there will be NULL pointer dereferences. That is avoided by
+registering it when it is fully initialized.
+
+This case occurs e.g. if dhcpcd is running in the background
+and the device is probed, either after insmod hso or
+when the device appears on the usb bus.
+
+A backtrace is the following:
+
+[ 1357.356048] usb 1-2: new high-speed USB device number 12 using ehci-omap
+[ 1357.551177] usb 1-2: New USB device found, idVendor=0af0, idProduct=8800
+[ 1357.558654] usb 1-2: New USB device strings: Mfr=3, Product=2, SerialNumber=0
+[ 1357.568572] usb 1-2: Product: Globetrotter HSUPA Modem
+[ 1357.574096] usb 1-2: Manufacturer: Option N.V.
+[ 1357.685882] hso 1-2:1.5: Not our interface
+[ 1460.886352] hso: unloaded
+[ 1460.889984] usbcore: deregistering interface driver hso
+[ 1513.769134] hso: ../drivers/net/usb/hso.c: Option Wireless
+[ 1513.846771] Unable to handle kernel NULL pointer dereference at virtual address 00000030
+[ 1513.887664] hso 1-2:1.5: Not our interface
+[ 1513.906890] usbcore: registered new interface driver hso
+[ 1513.937988] pgd = ecdec000
+[ 1513.949890] [00000030] *pgd=acd15831, *pte=00000000, *ppte=00000000
+[ 1513.956573] Internal error: Oops: 817 [#1] PREEMPT SMP ARM
+[ 1513.962371] Modules linked in: hso usb_f_ecm omap2430 bnep bluetooth g_ether usb_f_rndis u_ether libcomposite configfs ipv6 arc4 wl18xx wlcore mac80211 cfg80211 bq27xxx_battery panel_tpo_td028ttec1 omapdrm drm_kms_helper cfbfillrect snd_soc_simple_card syscopyarea cfbimgblt snd_soc_simple_card_utils sysfillrect sysimgblt fb_sys_fops snd_soc_omap_twl4030 cfbcopyarea encoder_opa362 drm twl4030_madc_hwmon wwan_on_off snd_soc_gtm601 pwm_omap_dmtimer generic_adc_battery connector_analog_tv pwm_bl extcon_gpio omap3_isp wlcore_sdio videobuf2_dma_contig videobuf2_memops w1_bq27000 videobuf2_v4l2 videobuf2_core omap_hdq snd_soc_omap_mcbsp ov9650 snd_soc_omap bmp280_i2c bmg160_i2c v4l2_common snd_pcm_dmaengine bmp280 bmg160_core at24 bmc150_magn_i2c nvmem_core videodev phy_twl4030_usb bmc150_accel_i2c tsc2007
+[ 1514.037384]  bmc150_magn bmc150_accel_core media leds_tca6507 bno055 industrialio_triggered_buffer kfifo_buf gpio_twl4030 musb_hdrc snd_soc_twl4030 twl4030_vibra twl4030_madc twl4030_pwrbutton twl4030_charger industrialio w2sg0004 ehci_omap omapdss [last unloaded: hso]
+[ 1514.062622] CPU: 0 PID: 3433 Comm: dhcpcd Tainted: G        W       4.11.0-rc8-letux+ #1
+[ 1514.071136] Hardware name: Generic OMAP36xx (Flattened Device Tree)
+[ 1514.077758] task: ee748240 task.stack: ecdd6000
+[ 1514.082580] PC is at hso_start_net_device+0x50/0xc0 [hso]
+[ 1514.088287] LR is at hso_net_open+0x68/0x84 [hso]
+[ 1514.093231] pc : [<bf79c304>]    lr : [<bf79ced8>]    psr: a00f0013
+sp : ecdd7e20  ip : 00000000  fp : ffffffff
+[ 1514.105316] r10: 00000000  r9 : ed0e080c  r8 : ecd8fe2c
+[ 1514.110839] r7 : bf79cef4  r6 : ecd8fe00  r5 : 00000000  r4 : ed0dbd80
+[ 1514.117706] r3 : 00000000  r2 : c0020c80  r1 : 00000000  r0 : ecdb7800
+[ 1514.124572] Flags: NzCv  IRQs on  FIQs on  Mode SVC_32  ISA ARM  Segment none
+[ 1514.132110] Control: 10c5387d  Table: acdec019  DAC: 00000051
+[ 1514.138153] Process dhcpcd (pid: 3433, stack limit = 0xecdd6218)
+[ 1514.144470] Stack: (0xecdd7e20 to 0xecdd8000)
+[ 1514.149078] 7e20: ed0dbd80 ecd8fe98 00000001 00000000 ecd8f800 ecd8fe00 ecd8fe60 00000000
+[ 1514.157714] 7e40: ed0e080c bf79ced8 bf79ce70 ecd8f800 00000001 bf7a0258 ecd8f830 c068d958
+[ 1514.166320] 7e60: c068d8b8 ecd8f800 00000001 00001091 00001090 c068dba4 ecd8f800 00001090
+[ 1514.174926] 7e80: ecd8f940 ecd8f800 00000000 c068dc60 00000000 00000001 ed0e0800 ecd8f800
+[ 1514.183563] 7ea0: 00000000 c06feaa8 c0ca39c2 beea57dc 00000020 00000000 306f7368 00000000
+[ 1514.192169] 7ec0: 00000000 00000000 00001091 00000000 00000000 00000000 00000000 00008914
+[ 1514.200805] 7ee0: eaa9ab60 beea57dc c0c9bfc0 eaa9ab40 00000006 00000000 00046858 c066a948
+[ 1514.209411] 7f00: beea57dc eaa9ab60 ecc6b0c0 c02837b0 00000006 c0282c90 0000c000 c0283654
+[ 1514.218017] 7f20: c09b0c00 c098bc31 00000001 c0c5e513 c0c5e513 00000000 c0151354 c01a20c0
+[ 1514.226654] 7f40: c0c5e513 c01a3134 ecdd6000 c01a3160 ee7487f0 600f0013 00000000 ee748240
+[ 1514.235260] 7f60: ee748734 00000000 ecc6b0c0 ecc6b0c0 beea57dc 00008914 00000006 00000000
+[ 1514.243896] 7f80: 00046858 c02837b0 00001091 0003a1f0 00046608 0003a248 00000036 c01071e4
+[ 1514.252502] 7fa0: ecdd6000 c0107040 0003a1f0 00046608 00000006 00008914 beea57dc 00001091
+[ 1514.261108] 7fc0: 0003a1f0 00046608 0003a248 00000036 0003ac0c 00046608 00046610 00046858
+[ 1514.269744] 7fe0: 0003a0ac beea57d4 000167eb b6f23106 400f0030 00000006 00000000 00000000
+[ 1514.278411] [<bf79c304>] (hso_start_net_device [hso]) from [<bf79ced8>] (hso_net_open+0x68/0x84 [hso])
+[ 1514.288238] [<bf79ced8>] (hso_net_open [hso]) from [<c068d958>] (__dev_open+0xa0/0xf4)
+[ 1514.296600] [<c068d958>] (__dev_open) from [<c068dba4>] (__dev_change_flags+0x8c/0x130)
+[ 1514.305023] [<c068dba4>] (__dev_change_flags) from [<c068dc60>] (dev_change_flags+0x18/0x48)
+[ 1514.313934] [<c068dc60>] (dev_change_flags) from [<c06feaa8>] (devinet_ioctl+0x348/0x714)
+[ 1514.322540] [<c06feaa8>] (devinet_ioctl) from [<c066a948>] (sock_ioctl+0x2b0/0x308)
+[ 1514.330627] [<c066a948>] (sock_ioctl) from [<c0282c90>] (vfs_ioctl+0x20/0x34)
+[ 1514.338165] [<c0282c90>] (vfs_ioctl) from [<c0283654>] (do_vfs_ioctl+0x82c/0x93c)
+[ 1514.346038] [<c0283654>] (do_vfs_ioctl) from [<c02837b0>] (SyS_ioctl+0x4c/0x74)
+[ 1514.353759] [<c02837b0>] (SyS_ioctl) from [<c0107040>] (ret_fast_syscall+0x0/0x1c)
+[ 1514.361755] Code: e3822103 e3822080 e1822781 e5981014 (e5832030)
+[ 1514.510833] ---[ end trace dfb3e53c657f34a0 ]---
+
+Reported-by: H. Nikolaus Schaller <hns@goldelico.com>
+Signed-off-by: Andreas Kemnade <andreas@kemnade.info>
+Reviewed-by: Johan Hovold <johan@kernel.org>
+Signed-off-by: David S. Miller <davem@davemloft.net>
+Signed-off-by: Lee Jones <lee.jones@linaro.org>
+---
+ drivers/net/usb/hso.c | 14 +++++++-------
+ 1 file changed, 7 insertions(+), 7 deletions(-)
+
+diff --git a/drivers/net/usb/hso.c b/drivers/net/usb/hso.c
+index e6f272019da0d..fa3f1b8700aa8 100644
+--- a/drivers/net/usb/hso.c
++++ b/drivers/net/usb/hso.c
+@@ -2546,13 +2546,6 @@ static struct hso_device *hso_create_net_device(struct usb_interface *interface,
+ 	SET_NETDEV_DEV(net, &interface->dev);
+ 	SET_NETDEV_DEVTYPE(net, &hso_type);
+ 
+-	/* registering our net device */
+-	result = register_netdev(net);
+-	if (result) {
+-		dev_err(&interface->dev, "Failed to register device\n");
+-		goto exit;
+-	}
+-
+ 	/* start allocating */
+ 	for (i = 0; i < MUX_BULK_RX_BUF_COUNT; i++) {
+ 		hso_net->mux_bulk_rx_urb_pool[i] = usb_alloc_urb(0, GFP_KERNEL);
+@@ -2576,6 +2569,13 @@ static struct hso_device *hso_create_net_device(struct usb_interface *interface,
+ 
+ 	add_net_device(hso_dev);
+ 
++	/* registering our net device */
++	result = register_netdev(net);
++	if (result) {
++		dev_err(&interface->dev, "Failed to register device\n");
++		goto exit;
++	}
++
+ 	hso_log_port(hso_dev);
+ 
+ 	hso_create_rfkill(hso_dev, interface);
+-- 
+2.34.0.rc0.344.g81b53c2807-goog
+
