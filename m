@@ -2,56 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CF7C844AC77
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 12:19:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 11D9844AC7A
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 12:20:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245684AbhKILW2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Nov 2021 06:22:28 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42068 "EHLO
+        id S245691AbhKILXN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Nov 2021 06:23:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42234 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S245678AbhKILW0 (ORCPT
+        with ESMTP id S245689AbhKILXK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Nov 2021 06:22:26 -0500
+        Tue, 9 Nov 2021 06:23:10 -0500
 Received: from mail-ot1-x333.google.com (mail-ot1-x333.google.com [IPv6:2607:f8b0:4864:20::333])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 91BE4C061766
-        for <linux-kernel@vger.kernel.org>; Tue,  9 Nov 2021 03:19:40 -0800 (PST)
-Received: by mail-ot1-x333.google.com with SMTP id x19-20020a9d7053000000b0055c8b39420bso9738491otj.1
-        for <linux-kernel@vger.kernel.org>; Tue, 09 Nov 2021 03:19:40 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 08A78C061766
+        for <linux-kernel@vger.kernel.org>; Tue,  9 Nov 2021 03:20:24 -0800 (PST)
+Received: by mail-ot1-x333.google.com with SMTP id l7-20020a0568302b0700b0055ae988dcc8so27133276otv.12
+        for <linux-kernel@vger.kernel.org>; Tue, 09 Nov 2021 03:20:24 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=81oSrvuxBM/j7gpiOLY81PcqBRup1M3UbsvvPZ2iPus=;
-        b=WHzNM7y8f9g7e8SVkE7MzIw0Sw8i4/Pjgh+2C5ZPjqI+1ZlC49KJuMM5uD/IScW8u0
-         2fKiYTzn1/kcpn9Ms1rCUp2/6aVPVUzL86l6Qy5cq7ZaD7DlDbbFHT7TGIxQoYBaHGkr
-         XbOmOEKRkTTFulZLwKv+DY3zff/kZ1papnm+IqqcmLC1brP0oxNTC9RGqsOlPqwwINDW
-         cvwf7ZwTCTQ+kxkuKPEGGyHh6db+m5+p8wCB2mrlw+ArWBBXA9iGAeYSdf+UvF9Yvput
-         5S1365/x1N2xqlQ7ZG98o3YTbxZjtdqBEYNidzvPJhMRZj5+5idyQNXrmv96xPskeNMa
-         KodA==
+        bh=zmTY6+vipDnry1BuH0kglrrDvK4I6FWJBnVtJAkEUJs=;
+        b=kOUcHNJzK1AOTDH7aaitFTk5gIYZEuKw8lAzuSWEaZdIhI0OWuu/0eG1xszEsHXL1G
+         OqZkN8xqPnsfptfvyviEfaaRu04Oj3BBE5SzFLJogpdGAXdPJvc+/38NHjwSCsKwaq2U
+         naAz6SY23VmJO/PYz/d9+oLlpnZgJvtqfKX5s06PeTVz+zF1lgH0GAJHPcCeT4X5Hvoj
+         3silbSjKh3Oh81uU+SFmOnA2iHxOanNEcpVhmZxKatNcn8B7N0a5wuiL6GjllIdXg/S9
+         bMM+EGDucURBUmnsCqZ6FR3IMMJ72D4uXYzhxkPlhxybXW0eAYWslY67rwvitGQiIHEh
+         bgAw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=81oSrvuxBM/j7gpiOLY81PcqBRup1M3UbsvvPZ2iPus=;
-        b=oQgYks4GC3GSL5Ru46ZRHB8KAOYU14ZzLbnbrUWzdM+k2+poWv46YXC6zKpsTRU3VP
-         NmNwVKu6AIaUo9NmASmjBEBv8F8QEvvwEMygw5Lx9nVnmIB2VPUNCtAV/9N4kbVZKI5F
-         pVRdpUNSFUMrgBAJAMYbcqwjIZAV/r3+LyrryUS2Mnmf46Atzg32bHi0QNpwj+WISnRe
-         kgsjkfBUTNc043VMc4OaszU0ihiuboIuBnWpUGHVQLn0hzRjnUIKj8gknZ8nTb20bvzu
-         j5BQjL3e34fzKETMgXdWy5ABnpUahMWHkhNQCA1RvXghfgXBybg7KncRoG5aIBuVOA2j
-         hTWQ==
-X-Gm-Message-State: AOAM533anMR70Ck1RgYhwc/eObDszqKHDLRAIHJlZxluIoi4Or3mWGo1
-        hKxxlLuTYiin+W2T2JqY0se6Dxh8ZtDDq1E+9p38vg==
-X-Google-Smtp-Source: ABdhPJyXrbdxCuwNMNCc5LJpGYdQCSIpOGS4o6GjsfFSpaYbT77UnJcs4vXQ+/eU67CZtB9O9oj6AttHrPrhOmRMxcw=
-X-Received: by 2002:a9d:6348:: with SMTP id y8mr5318661otk.179.1636456779951;
- Tue, 09 Nov 2021 03:19:39 -0800 (PST)
+        bh=zmTY6+vipDnry1BuH0kglrrDvK4I6FWJBnVtJAkEUJs=;
+        b=QWypHm5LY6YLsLGnKZUdRzkrLtrUcbo+MlvIIMQ+wfpxD/4li6w880QeGkgtbRSDVZ
+         zxN5L4N2fWBGdkbPOHfFkIuQ/2r61pLOhrpCw6ppM7CY5j7WGOUhxWZRLUu7DDaUuW//
+         4AcX38LSAd5KMxXOLjav7l3eZ6Ut2vyanBGnIfo/uV1ZKZudx8hySuuRxVMs6MT+YGgD
+         0NppbpeZGRl/7HDbvnC64GSQ6Yy6RFntrAShKF5PC5GgBy9IJx35ENB3e11ZUZXTH7t7
+         fjfGwoOSozPrHGnfzHcfH9U3DvdkkOKMS87UNDdKs9jPdVrcZTKpdhYk8Qo0m/VTM6ao
+         GoKA==
+X-Gm-Message-State: AOAM533gRcN+PCKbyLPtWFLheqvudNwbl2mVnxWhVromQKaDqGxj97kR
+        SQ6SA0qrSDBi8EJ04qYby8ah/Jv22FLHlu4ofwmiDg==
+X-Google-Smtp-Source: ABdhPJxDMEfupeGBt6AnxsEf4co6tdbxFLiopGcMNN4qGF3yJlxIr3ESSWb3FMmX6uWTdwaCxYJ7k3OdDFuJLVX0qwI=
+X-Received: by 2002:a9d:6348:: with SMTP id y8mr5322632otk.179.1636456823276;
+ Tue, 09 Nov 2021 03:20:23 -0800 (PST)
 MIME-Version: 1.0
-References: <cover.1635944413.git.hns@goldelico.com> <90a75a0be2d8e05066765ede1db7a19f9f4d095a.1635944413.git.hns@goldelico.com>
-In-Reply-To: <90a75a0be2d8e05066765ede1db7a19f9f4d095a.1635944413.git.hns@goldelico.com>
+References: <cover.1635944413.git.hns@goldelico.com> <71f77891793dc29bf9afecd6df45d66a66f73e56.1635944413.git.hns@goldelico.com>
+In-Reply-To: <71f77891793dc29bf9afecd6df45d66a66f73e56.1635944413.git.hns@goldelico.com>
 From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Tue, 9 Nov 2021 12:19:28 +0100
-Message-ID: <CACRpkdaXtrxny_aVsiBmvy+wm-3n7k=-nMZGaNYvX6GON4vCBA@mail.gmail.com>
-Subject: Re: [RFC v3 5/6] mmc: core: transplant ti,wl1251 quirks from to be
- retired omap_hsmmc
+Date:   Tue, 9 Nov 2021 12:20:11 +0100
+Message-ID: <CACRpkdZ_cUPmOpeGcgz9kVzucMHpPCsbPjSCP6zWsiy7_yX2sA@mail.gmail.com>
+Subject: Re: [RFC v3 6/6] mmc: host: omap_hsmmc: revert special init for wl1251
 To:     "H. Nikolaus Schaller" <hns@goldelico.com>
 Cc:     Ulf Hansson <ulf.hansson@linaro.org>,
         =?UTF-8?B?SsOpcsO0bWUgUG91aWxsZXI=?= <jerome.pouiller@silabs.com>,
@@ -68,29 +67,20 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 On Wed, Nov 3, 2021 at 2:01 PM H. Nikolaus Schaller <hns@goldelico.com> wrote:
 
-> The TiWi WL1251 WiFi chip needs special setup of the sdio
-> interface before it can be probed.
+> Replaces: commit f6498b922e57 ("mmc: host: omap_hsmmc: add code for special init of wl1251 to get rid of pandora_wl1251_init_card")
+> Requires: commit ("mmc: core: transplant ti,wl1251 quirks from to be retired omap_hsmmc")
 >
-> So far, this is done in omap_hsmmc_init_card() in omap_hsmmc.c
-> which makes it useable only if connected to omap devices
-> which use the omap_hsmmc. The OpenPandora is the most promient
-> example.
+> After moving the wl1251 quirks from omap_hsmmc_init_card() to wl1251_quirk()
+> and sdio_card_init_methods[] we can remove omap_hsmmc_init_card() completely.
 >
-> There are plans to switch to a newer sdhci-omap driver and
-> retire omap_hsmmc. Hence this quirk must be reworked or moved
-> somewhere else. Ideally to some location that is not dependent
-> on the specific SoC mmc host driver.
+> This also removes the specialization on the combination of omap_hsmmc and wl1251.
 >
-> This is achieved by the new mmc_fixup_device() option introduced
-> by ("mmc: allow to match the device tree to apply quirks") to match
-> through device tree compatible string.
->
-> This quirk will be called early right after where host->ops->init_card()
-> and thus omap_hsmmc_init_card() was previously called.
->
+> Related-to: commit f6498b922e57 ("mmc: host: omap_hsmmc: add code for special init of wl1251 to get rid of pandora_wl1251_init_card")
+> Related-to: commit 2398c41d6432 ("omap: pdata-quirks: remove openpandora quirks for mmc3 and wl1251")
+> Related-to: commit f9d50fef4b64 ("ARM: OMAP2+: omap3-pandora: add wifi support")
 > Signed-off-by: H. Nikolaus Schaller <hns@goldelico.com>
 
-Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
+Acked-by: Linus Walleij <linus.walleij@linaro.org>
 
 Yours,
 Linus Walleij
