@@ -2,95 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 851F444AF0F
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 14:53:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8AFB644AF11
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 14:54:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235753AbhKIN40 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Nov 2021 08:56:26 -0500
-Received: from foss.arm.com ([217.140.110.172]:34088 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231137AbhKIN4Y (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Nov 2021 08:56:24 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 26AAF2B;
-        Tue,  9 Nov 2021 05:53:38 -0800 (PST)
-Received: from [10.57.26.224] (unknown [10.57.26.224])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id D33FB3F70D;
-        Tue,  9 Nov 2021 05:53:34 -0800 (PST)
-Subject: Re: [PATCH 6/7] thermal: netlink: Add a new event to notify CPU
- capabilities change
-To:     Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
-Cc:     Ricardo Neri <ricardo.neri-calderon@linux.intel.com>,
-        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        linux-pm@vger.kernel.org, x86@kernel.org,
-        linux-doc@vger.kernel.org, Len Brown <len.brown@intel.com>,
-        Aubrey Li <aubrey.li@linux.intel.com>,
-        Amit Kucheria <amitk@kernel.org>,
-        Andi Kleen <ak@linux.intel.com>,
-        Tim Chen <tim.c.chen@linux.intel.com>,
-        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
-        Ricardo Neri <ricardo.neri@intel.com>,
-        linux-kernel@vger.kernel.org
-References: <20211106013312.26698-1-ricardo.neri-calderon@linux.intel.com>
- <20211106013312.26698-7-ricardo.neri-calderon@linux.intel.com>
- <2160a0b8-59ec-03a1-1fd5-a3f98085be07@arm.com>
- <e244e3aa9fc323973d7da8d3ebc3e1fad1fdb731.camel@linux.intel.com>
-From:   Lukasz Luba <lukasz.luba@arm.com>
-Message-ID: <5e4d7661-1e91-0c72-ae02-b2c60c2ad95e@arm.com>
-Date:   Tue, 9 Nov 2021 13:53:32 +0000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.9.0
+        id S235972AbhKIN4q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Nov 2021 08:56:46 -0500
+Received: from Galois.linutronix.de ([193.142.43.55]:36310 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231137AbhKIN4p (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Nov 2021 08:56:45 -0500
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1636466038;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type;
+        bh=sZyll560KLUb+apJiZdozn6h/p8K1VyRcQd9fbMYkV4=;
+        b=jXSyoXrPWQ05v+EcHbQ7JZjBockKD4VEiroRhGrc0CEOj/6umKMjlVhAIK+9UvRlmovoFR
+        C1RdytpWI2aPnqbnNbm1ii17ZopLVQdpNHH7lV1JilPg1ecuDHYoO58gS3lZ7ALXnL7q0P
+        fNIoh2c0+ACQEShg+UH8JPIrJQgTFN9R1IwaF6Jtxxrabvulq1XbKS8Bl2xxw737uCJW2m
+        Jno8CcWCL8Bs9XQ9HDJ0TuysEkTpVazrchSUCLE/H30zBxMt326cUqCjaSejm0BOiKpQEO
+        aisTHwBVdq5+BxoCY0aIqjTw10ud/JPLwlfKJbXCjg5LjsiW+rUMDMZKTWIaxQ==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1636466038;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type;
+        bh=sZyll560KLUb+apJiZdozn6h/p8K1VyRcQd9fbMYkV4=;
+        b=mClu8lrQG6dpgIyEqMf1tnrd72p22DENy7mQu9j6RsmxmxYhsEfa7eABVBF8nFRv11s00y
+        JP/sVUmPIfhGZ7DA==
+To:     LKML <linux-kernel@vger.kernel.org>
+Cc:     Greg Kroah Hartmann <gregkh@linuxfoundation.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Marc Zyngier <maz@kernel.org>, linux-pci@vger.kernel.org
+Subject: PCI/MSI: Destroy sysfs before freeing entries
+Date:   Tue, 09 Nov 2021 14:53:57 +0100
+Message-ID: <87sfw5305m.ffs@tglx>
 MIME-Version: 1.0
-In-Reply-To: <e244e3aa9fc323973d7da8d3ebc3e1fad1fdb731.camel@linux.intel.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Srinivas,
+free_msi_irqs() frees the MSI entries before destroying the sysfs entries
+which are exposing them. Nothing prevents a concurrent free while a sysfs
+file is read and accesses the possibly freed entry.
 
-On 11/9/21 1:23 PM, Srinivas Pandruvada wrote:
-> Hi Lukasz,
-> 
-> On Tue, 2021-11-09 at 12:39 +0000, Lukasz Luba wrote:
->> Hi Ricardo,
->>
->>
->> On 11/6/21 1:33 AM, Ricardo Neri wrote:
->>> From: Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
->>>
->>> Add a new netlink event to notify change in CPU capabilities in
->>> terms of
->>> performance and efficiency.
->>
->> Is this going to be handled by some 'generic' tools? If yes, maybe
->> the values for 'performance' might be aligned with capacity
->> [0,1024] ? Or are they completely not related so the mapping is
->> simply impossible?
->>
-> 
-> That would have been very useful.
-> 
-> The problem is that we may not know the maximum performance as system
-> may be booting with few CPUs (using maxcpus kernel command line) and
-> then user hot adding them. So we may need to rescale when we get a new
-> maximum performance CPU and send to user space.
-> 
-> We can't just use max from HFI table at in instance as it is not
-> necessary that HFI table contains data for all CPUs.
-> 
-> If HFI max performance value of 255 is a scaled value to max
-> performance CPU value in the system, then this conversion would have
-> been easy. But that is not.
+Move the sysfs release ahead of freeing the entries.
 
-I see. I was asking because I'm working on similar interface and
-just wanted to understand your approach better. In my case we
-would probably simply use 'capacity' scale, or more
-precisely available capacity after subtracting 'thermal pressure' value.
-That might confuse a generic tool which listens to these socket
-messages, though. So probably I would have to add a new
-THERMAL_GENL_ATTR_CPU_CAPABILITY_* id
-to handle this different normalized across CPUs scale.
+Fixes: 1c51b50c2995 ("PCI/MSI: Export MSI mode using attributes, not kobjects")
+Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+Cc: stable@vger.kernel.org
+---
+ drivers/pci/msi.c |   10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
+
+--- a/drivers/pci/msi.c
++++ b/drivers/pci/msi.c
+@@ -370,6 +370,11 @@ static void free_msi_irqs(struct pci_dev
+ 			for (i = 0; i < entry->nvec_used; i++)
+ 				BUG_ON(irq_has_action(entry->irq + i));
+ 
++	if (dev->msi_irq_groups) {
++		msi_destroy_sysfs(&dev->dev, dev->msi_irq_groups);
++		dev->msi_irq_groups = NULL;
++	}
++
+ 	pci_msi_teardown_msi_irqs(dev);
+ 
+ 	list_for_each_entry_safe(entry, tmp, msi_list, list) {
+@@ -381,11 +386,6 @@ static void free_msi_irqs(struct pci_dev
+ 		list_del(&entry->list);
+ 		free_msi_entry(entry);
+ 	}
+-
+-	if (dev->msi_irq_groups) {
+-		msi_destroy_sysfs(&dev->dev, dev->msi_irq_groups);
+-		dev->msi_irq_groups = NULL;
+-	}
+ }
+ 
+ static void pci_intx_for_msi(struct pci_dev *dev, int enable)
