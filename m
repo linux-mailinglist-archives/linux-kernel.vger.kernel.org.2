@@ -2,178 +2,221 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4827D44A648
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 06:26:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 21E7B44A64E
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 06:31:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235776AbhKIF33 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Nov 2021 00:29:29 -0500
-Received: from mga04.intel.com ([192.55.52.120]:7969 "EHLO mga04.intel.com"
+        id S240204AbhKIFds (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Nov 2021 00:33:48 -0500
+Received: from mout.gmx.net ([212.227.17.22]:55275 "EHLO mout.gmx.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232345AbhKIF32 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Nov 2021 00:29:28 -0500
-X-IronPort-AV: E=McAfee;i="6200,9189,10162"; a="231101482"
-X-IronPort-AV: E=Sophos;i="5.87,219,1631602800"; 
-   d="scan'208";a="231101482"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Nov 2021 21:26:42 -0800
-X-IronPort-AV: E=Sophos;i="5.87,219,1631602800"; 
-   d="scan'208";a="491526669"
-Received: from iweiny-desk2.sc.intel.com (HELO localhost) ([10.3.52.147])
-  by orsmga007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Nov 2021 21:26:41 -0800
-Date:   Mon, 8 Nov 2021 21:26:41 -0800
-From:   Ira Weiny <ira.weiny@intel.com>
-To:     Jane Chu <jane.chu@oracle.com>
-Cc:     Dan Williams <dan.j.williams@intel.com>,
-        david <david@fromorbit.com>,
-        "Darrick J. Wong" <djwong@kernel.org>,
-        Christoph Hellwig <hch@infradead.org>,
-        Vishal L Verma <vishal.l.verma@intel.com>,
-        Dave Jiang <dave.jiang@intel.com>,
-        Alasdair Kergon <agk@redhat.com>,
-        Mike Snitzer <snitzer@redhat.com>,
-        device-mapper development <dm-devel@redhat.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Vivek Goyal <vgoyal@redhat.com>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        Linux NVDIMM <nvdimm@lists.linux.dev>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-xfs <linux-xfs@vger.kernel.org>
-Subject: Re: [PATCH v2 1/2] dax: Introduce normal and recovery dax operation
- modes
-Message-ID: <20211109052640.GG3538886@iweiny-DESK2.sc.intel.com>
-References: <20211106011638.2613039-1-jane.chu@oracle.com>
- <20211106011638.2613039-2-jane.chu@oracle.com>
- <CAPcyv4jcgFxgoXFhWL9+BReY8vFtgjb_=Lfai-adFpdzc4-35Q@mail.gmail.com>
- <63f89475-7a1f-e79e-7785-ba996211615b@oracle.com>
+        id S232345AbhKIFdr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Nov 2021 00:33:47 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1636435849;
+        bh=ZMrkrBpKvxlczxXVj4vNL0N8tOeMjAJbOSxcqrr8MNU=;
+        h=X-UI-Sender-Class:Subject:From:To:Cc:Date:In-Reply-To:References;
+        b=huDwumy6/Dao7iXXeSlcYLzDW5pBxNRE1kVHn6rmP8Wd2uFUD2hLvO40EqcHaseRh
+         TyAO35k8znkiy9PJq4WfzGIHAT1i4HlUuOpTHeTcei0P98Pq3FICAp44yN8EE8W/O4
+         FGPllxoYlfBIKYoZNoImidyjfIQAA0It6EKosaoQ=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from homer.fritz.box ([212.114.172.107]) by mail.gmx.net (mrgmx104
+ [212.227.17.168]) with ESMTPSA (Nemesis) id 1MMobU-1n353d0dVc-00Ikzy; Tue, 09
+ Nov 2021 06:30:49 +0100
+Message-ID: <a8540176424035960b12529c06d5a3dcedd57c77.camel@gmx.de>
+Subject: Re: [PATCH] sched: Tweak default dynamic preempt mode selection
+From:   Mike Galbraith <efault@gmx.de>
+To:     Valentin Schneider <valentin.schneider@arm.com>,
+        linux-kernel@vger.kernel.org
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Frederic Weisbecker <frederic@kernel.org>
+Date:   Tue, 09 Nov 2021 06:30:47 +0100
+In-Reply-To: <87zgqesmej.mognet@arm.com>
+References: <20211105104035.3112162-1-valentin.schneider@arm.com>
+         <ff53a94401f8d6abe0303ee381f86bfb475ad354.camel@gmx.de>
+         <8735o6uca5.mognet@arm.com>
+         <5543627ee8ac5337a74de4b9671240d617273607.camel@gmx.de>
+         <87zgqesmej.mognet@arm.com>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.42.0 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <63f89475-7a1f-e79e-7785-ba996211615b@oracle.com>
-User-Agent: Mutt/1.11.1 (2018-12-01)
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:yFcETMee3mvpRFSnQPqt/dgPIKCbir+pQFkoMQPUv+nRTNVH2Uj
+ hRwNxIkwrx0q21lHgbw5T976LIX7ddFjQris3B9Uh4bJCX3wyXip4ifB9xyD02fUtijFSRm
+ cE4LIDClQAKHxR3u8TmkxW9PEkVBg/GNLBChIVybeRjeX0H5HrIiIVjCX8t83d/4lqhaSXS
+ ir/g8dEE9s54N00Kaqdgg==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:VHx6FxrwtFM=:ed2L6EZhLCV0nl2E/lrcNY
+ QnNo9Lbj7G5Wp+4sm/CzaY5cYUO3ml0vt/GrGV/Zjq8qiP6m0tpEm3ENAUeSBQDmg7hQd7LU+
+ +y2D70bcMxXAbamLpzCKSulJVvjUL9I254jYfQcYcfV43eG7kQrSdJLojyMjTUKPGGvQVGEnq
+ YWwbit81NXWTtSlZJES6x/KI895tVu4/kHnjvcntUPJoPbGPqJi9rgsyzmi+szPVrmVJFjj5T
+ JDqpwoG1AfFb0ufSxaixyZLhjSD2BX42jS6HhQOlRA7Cwv9SOJ4SXyZcupY3CP5LxHx3/CD5s
+ D4qxQVlmhKwfyW9kGmfc8+iDSJj4zdJq9GjDoaSlZqd0BeRNS6RKDNpVZyvmDNUOqD91pPuZP
+ Mdu+Uj7sADKOgoZaF+lMspeB/R5IRo5QJL9mAFJ/2d1mC9dqD/2sOtaekRhDoME/RRwvP9Tm2
+ bPvRomzvIDpbyVSz/gYa/1HJFbWM/9qVva15l6UBQQpGZBNXQE3Pw4+XRLL4ZFIS2pewwHB7e
+ N5XloaLdBkofvzCjrR4/aHzysyqmpauh+l5LKfGB4jNeFDQY7PM8iqJnkMgSgoPqZhHVBHYRl
+ GOG9sI2cZYzdoSwOhpjy38rCge8lQX+y811nBTVx+d20qFe3rs9j4gesSLzvhbEW74VnNrAAt
+ 69bwX5AgOEAfyz9ytXl39MDCc0UNesIX9715ge39/vKxeeicw0oCIy1t7EP1cMSgPdLx3U0uj
+ Q0EPcJAaNwFOGUSQGr4dX13MGQnpS2IiF/W6aoUkKqhFjPvjXUV7O7zxLvRCeFTGHdtcThTGw
+ mKW5lZtYhAW0oZdk9BnZN8OKzso3qxn5Y7QAmQvknq/BXE5pYRSmFO8PMcbhiU7oPozTAbsYW
+ i+0/OIMoUm5QfxpJSL3UXsZh4ESDzdPR2YaAGKafOr9PwfXGbR/PefQWruDvJtMJbwSfk4AoU
+ ZrvVamkzv10k/v6fj2SRJ4bQjLFi7KUSmLdPLEOoEaYo2qEXXHOsczA2zZrDzorCAsrCRyo7I
+ KCDzvCwxDIV0F/JYpIDwMN6uPSAj1quN/kHWT4cmKQxYdBNpXBlqzUQx8zF9jGwIsTAphiHb6
+ zyKmzokNTCIKeM=
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 08, 2021 at 09:02:29PM +0000, Jane Chu wrote:
-> On 11/6/2021 9:48 AM, Dan Williams wrote:
-> > On Fri, Nov 5, 2021 at 6:17 PM Jane Chu <jane.chu@oracle.com> wrote:
-> >>
-> >> Introduce DAX_OP_NORMAL and DAX_OP_RECOVERY operation modes to
-> >> {dax_direct_access, dax_copy_from_iter, dax_copy_to_iter}.
-> >> DAX_OP_NORMAL is the default or the existing mode, and
-> >> DAX_OP_RECOVERY is a new mode for data recovery purpose.
-> >>
-> >> When dax-FS suspects dax media error might be encountered
-> >> on a read or write, it can enact the recovery mode read or write
-> >> by setting DAX_OP_RECOVERY in the aforementioned APIs. A read
-> >> in recovery mode attempts to fetch as much data as possible
-> >> until the first poisoned page is encountered. A write in recovery
-> >> mode attempts to clear poison(s) in a page-aligned range and
-> >> then write the user provided data over.
-> >>
-> >> DAX_OP_NORMAL should be used for all non-recovery code path.
-> >>
-> >> Signed-off-by: Jane Chu <jane.chu@oracle.com>
-> > [..]
-> >> diff --git a/include/linux/dax.h b/include/linux/dax.h
-> >> index 324363b798ec..931586df2905 100644
-> >> --- a/include/linux/dax.h
-> >> +++ b/include/linux/dax.h
-> >> @@ -9,6 +9,10 @@
-> >>   /* Flag for synchronous flush */
-> >>   #define DAXDEV_F_SYNC (1UL << 0)
-> >>
-> >> +/* dax operation mode dynamically set by caller */
-> >> +#define        DAX_OP_NORMAL           0
-> > 
-> > Perhaps this should be called DAX_OP_FAILFAST?
-> 
-> Sure.
-> 
-> > 
-> >> +#define        DAX_OP_RECOVERY         1
-> >> +
-> >>   typedef unsigned long dax_entry_t;
-> >>
-> >>   struct dax_device;
-> >> @@ -22,8 +26,8 @@ struct dax_operations {
-> >>           * logical-page-offset into an absolute physical pfn. Return the
-> >>           * number of pages available for DAX at that pfn.
-> >>           */
-> >> -       long (*direct_access)(struct dax_device *, pgoff_t, long,
-> >> -                       void **, pfn_t *);
-> >> +       long (*direct_access)(struct dax_device *, pgoff_t, long, int,
-> > 
-> > Would be nice if that 'int' was an enum, but I'm not sure a new
-> > parameter is needed at all, see below...
-> 
-> Let's do your suggestion below. :)
-> 
-> > 
-> >> +                               void **, pfn_t *);
-> >>          /*
-> >>           * Validate whether this device is usable as an fsdax backing
-> >>           * device.
-> >> @@ -32,10 +36,10 @@ struct dax_operations {
-> >>                          sector_t, sector_t);
-> >>          /* copy_from_iter: required operation for fs-dax direct-i/o */
-> >>          size_t (*copy_from_iter)(struct dax_device *, pgoff_t, void *, size_t,
-> >> -                       struct iov_iter *);
-> >> +                       struct iov_iter *, int);
-> > 
-> > I'm not sure the flag is needed here as the "void *" could carry a
-> > flag in the pointer to indicate that is a recovery kaddr.
-> 
-> Agreed.
+On Mon, 2021-11-08 at 15:21 +0000, Valentin Schneider wrote:
+> On 08/11/21 13:27, Mike Galbraith wrote:
+> >
+> > As long as RT depends on EXPERT it'll be a bit annoying regardless.=C2=
+=A0 I
+> > just thought it worth mention that what you want now and what RT will
+> > presumably want upon merge completion appear to be mutually exclusive.
+> >
+>
+> Hmm actually I think your approach should work, i.e. have
+>
+> =C2=A0 config PREEMPT_DYNAMIC
+> =C2=A0=C2=A0=C2=A0 depends on [...] && !PREEMPT_RT
+>
+> rather than
+>
+> =C2=A0 config PREEMPT_RT
+> =C2=A0=C2=A0=C2=A0 depends on [...] && !PREEMPT_DYNAMIC
+>
+> This essentially gives priority to the preemption model type over the
+> preemption model dynamicness, which I think makes sense. I can fold that=
+ in
+> v2.
 
-Not sure if this is implied but I would like some macros or other helper
-functions to check these flags hidden in the addresses.
+Not seeing your v2 land yet, I grabbed my mallet and had a go at goal
+reconciliation over morning java.  Non-lovely result seems to work.
 
-For me I'm a bit scared about having flags hidden in the address like this
-because I can't lead to some confusions IMO.
+sched, Kconfig: Fix preemption model selection
 
-But if we have some macros or other calls which can make this more obvious of
-what is going on I think that would help.
+Switch PREEMPT_DYNAMIC/PREEMPT_RT dependency around so PREEMPT_RT
+can be selected during the initial preemption model selection.
+Further, since PREEMPT_DYNAMIC requires PREEMPT, make it depend
+upon it instead of selecting it, and add a menu to allow selection
+of the boot time behavior, this to allow arches that do not support
+PREEMPT_DYNAMIC to retain their various configs untouched.
 
-Apologies if this was what you were already going to do...  :-D
+Signed-off-by: Mike Galbraith <efault@gmx.de>
+=2D--
+ kernel/Kconfig.preempt |   46 +++++++++++++++++++++++++---------------
+=2D-----
+ 1 file changed, 25 insertions(+), 21 deletions(-)
 
-Ira
+=2D-- a/kernel/Kconfig.preempt
++++ b/kernel/Kconfig.preempt
+@@ -2,11 +2,10 @@
 
-> 
-> > 
-> >>          /* copy_to_iter: required operation for fs-dax direct-i/o */
-> >>          size_t (*copy_to_iter)(struct dax_device *, pgoff_t, void *, size_t,
-> >> -                       struct iov_iter *);
-> >> +                       struct iov_iter *, int);
-> > 
-> > Same comment here.
-> > 
-> >>          /* zero_page_range: required operation. Zero page range   */
-> >>          int (*zero_page_range)(struct dax_device *, pgoff_t, size_t);
-> >>   };
-> >> @@ -186,11 +190,11 @@ static inline void dax_read_unlock(int id)
-> >>   bool dax_alive(struct dax_device *dax_dev);
-> >>   void *dax_get_private(struct dax_device *dax_dev);
-> >>   long dax_direct_access(struct dax_device *dax_dev, pgoff_t pgoff, long nr_pages,
-> >> -               void **kaddr, pfn_t *pfn);
-> >> +               int mode, void **kaddr, pfn_t *pfn);
-> > 
-> > How about dax_direct_access() calling convention stays the same, but
-> > the kaddr is optionally updated to carry a flag in the lower unused
-> > bits. So:
-> > 
-> > void **kaddr = NULL; /* caller only cares about the pfn */
-> > 
-> > void *failfast = NULL;
-> > void **kaddr = &failfast; /* caller wants -EIO not recovery */
-> > 
-> > void *recovery = (void *) DAX_OP_RECOVERY;
-> > void **kaddr = &recovery; /* caller wants to carefully access page(s)
-> > containing poison */
-> > 
-> 
-> Got it.
-> 
-> thanks!
-> -jane
-> 
+ choice
+ 	prompt "Preemption Model"
+-	default PREEMPT_NONE_BEHAVIOUR
++	default PREEMPT_NONE
+
+-config PREEMPT_NONE_BEHAVIOUR
++config PREEMPT_NONE
+ 	bool "No Forced Preemption (Server)"
+-	select PREEMPT_NONE if !PREEMPT_DYNAMIC
+ 	help
+ 	  This is the traditional Linux preemption model, geared
+towards
+ 	  throughput. It will still provide good latencies most of the
+@@ -18,10 +17,9 @@ config PREEMPT_NONE_BEHAVIOUR
+ 	  raw processing power of the kernel, irrespective of
+scheduling
+ 	  latencies.
+
+-config PREEMPT_VOLUNTARY_BEHAVIOUR
++config PREEMPT_VOLUNTARY
+ 	bool "Voluntary Kernel Preemption (Desktop)"
+ 	depends on !ARCH_NO_PREEMPT
+-	select PREEMPT_VOLUNTARY if !PREEMPT_DYNAMIC
+ 	help
+ 	  This option reduces the latency of the kernel by adding more
+ 	  "explicit preemption points" to the kernel code. These new
+@@ -37,10 +35,11 @@ config PREEMPT_VOLUNTARY_BEHAVIOUR
+
+ 	  Select this if you are building a kernel for a desktop
+system.
+
+-config PREEMPT_BEHAVIOUR
++config PREEMPT
+ 	bool "Preemptible Kernel (Low-Latency Desktop)"
+ 	depends on !ARCH_NO_PREEMPT
+-	select PREEMPT
++	select PREEMPTION
++	select UNINLINE_SPIN_UNLOCK if !ARCH_INLINE_SPIN_UNLOCK
+ 	help
+ 	  This option reduces the latency of the kernel by making
+ 	  all kernel code (that is not executing in a critical
+section)
+@@ -58,7 +57,7 @@ config PREEMPT_BEHAVIOUR
+
+ config PREEMPT_RT
+ 	bool "Fully Preemptible Kernel (Real-Time)"
+-	depends on EXPERT && ARCH_SUPPORTS_RT && !PREEMPT_DYNAMIC
++	depends on EXPERT && ARCH_SUPPORTS_RT
+ 	select PREEMPTION
+ 	help
+ 	  This option turns the kernel into a real-time kernel by
+replacing
+@@ -75,17 +74,6 @@ config PREEMPT_RT
+
+ endchoice
+
+-config PREEMPT_NONE
+-	bool
+-
+-config PREEMPT_VOLUNTARY
+-	bool
+-
+-config PREEMPT
+-	bool
+-	select PREEMPTION
+-	select UNINLINE_SPIN_UNLOCK if !ARCH_INLINE_SPIN_UNLOCK
+-
+ config PREEMPT_COUNT
+        bool
+
+@@ -95,8 +83,7 @@ config PREEMPTION
+
+ config PREEMPT_DYNAMIC
+ 	bool "Preemption behaviour defined on boot"
+-	depends on HAVE_PREEMPT_DYNAMIC
+-	select PREEMPT
++	depends on HAVE_PREEMPT_DYNAMIC && PREEMPT
+ 	default y
+ 	help
+ 	  This option allows to define the preemption model on the
+kernel
+@@ -114,6 +101,23 @@ config PREEMPT_DYNAMIC
+ 	  Interesting if you want the same pre-built kernel should be
+used for
+ 	  both Server and Desktop workloads.
+
++if PREEMPT_DYNAMIC
++choice
++	prompt "Boot Time Preemption Model"
++	default PREEMPT_NONE_BEHAVIOR
++
++config PREEMPT_NONE_BEHAVIOR
++	bool "No Forced Preemption (Server)"
++
++config PREEMPT_VOLUNTARY_BEHAVIOR
++	bool "Voluntary Kernel Preemption (Desktop)"
++
++config PREEMPT_BEHAVIOR
++	bool "Preemptible Kernel (Low-Latency Desktop)"
++
++endchoice
++endif # PREEMPT_DYNAMIC
++
+ config SCHED_CORE
+ 	bool "Core Scheduling for SMT"
+ 	depends on SCHED_SMT
+
