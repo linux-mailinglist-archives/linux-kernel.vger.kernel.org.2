@@ -2,103 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4507B449FEF
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 01:46:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7907F44A001
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 01:53:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235838AbhKIAsx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Nov 2021 19:48:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39546 "EHLO
+        id S236135AbhKIA4C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Nov 2021 19:56:02 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41210 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235349AbhKIAsw (ORCPT
+        with ESMTP id S236043AbhKIA4B (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Nov 2021 19:48:52 -0500
-Received: from mail-ot1-x331.google.com (mail-ot1-x331.google.com [IPv6:2607:f8b0:4864:20::331])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 610D6C061764
-        for <linux-kernel@vger.kernel.org>; Mon,  8 Nov 2021 16:46:07 -0800 (PST)
-Received: by mail-ot1-x331.google.com with SMTP id l7-20020a0568302b0700b0055ae988dcc8so25139859otv.12
-        for <linux-kernel@vger.kernel.org>; Mon, 08 Nov 2021 16:46:07 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=bG3Y/BqnxEVlePdqiSugZ7Hd/V/NSxSTAbSGa+VvoRs=;
-        b=M6szQqyTjFsganR9sNUTE9fnidl9uukXt7LqnK2czDeOY6OBN5fgOVflmA10HlXbqT
-         lSXjpwutL+GQALNCuC1yLgmH/Tw4T4hOVVXH6wSaiVbh7ge7Uq04DuVUfZalIDcXFKc/
-         FiSxguiMBIMljRGqkcw0wu2bdV1c5njLZhxFNcDf/bQBeEwcbCZKb+fS2xr+Ux+0IQ6/
-         eKPVPOTG5dWftFTBl6lnooe3AvycKpiY0cRbyr8cM/sArSde0d779fPCKd8hd6RWvG6T
-         aEsfRwwfb8ze7Lk/2Gfjkfn5+tm9deonu5TsIItVbE2PAQBRdIvCtpxQl0bN18se165b
-         GQXg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=bG3Y/BqnxEVlePdqiSugZ7Hd/V/NSxSTAbSGa+VvoRs=;
-        b=8Pzhrk/aMFdlsjswXTLG0M+Q6lR+RPj7CyFbkpXn9G4XCC4cxdm+RJwsdbw16D6moU
-         WZUiTGs9yIQC6wyJojp5LqA3xglRHGwRYuVnD7d+we5f+hfhZ76grcp9UagwTqflcZyp
-         zPQqEP+7dtNV7rD3p8Gox/mRieRusF3wXEK599rkQ1O/ZZhxB3FfF+YEs/jsaxGWhakh
-         gcZ3qSuuA6Y1IC5p2Q00GkdfqRmZqJuWpuq4uuQlhmiZqgNxfYBVS8D+97fMuTkuGgxU
-         lfGmfFqoUKCKdpZxSgGt0pPXEAGEf6yq2pz4pasgVKLe0XEj3CA4iaJYE9839Td9CBLA
-         pATA==
-X-Gm-Message-State: AOAM5325WEUOUzU4r1hxRT/6fMqN/qeyioRav/am/K8ovj5brsV4u+HK
-        TBbSRGa9amlbAdcApOQAxQHiFhVDlxJkJ2ibacQa7A==
-X-Google-Smtp-Source: ABdhPJyys3qfTJGPVjeVT/HCn3VkOqbY3GVCdzVh24eOXr7uLVD857f62jht8jhypUUWDkrPmq/NlW044n5qV03SLYA=
-X-Received: by 2002:a9d:ed6:: with SMTP id 80mr2580722otj.35.1636418766697;
- Mon, 08 Nov 2021 16:46:06 -0800 (PST)
+        Mon, 8 Nov 2021 19:56:01 -0500
+Received: from gate2.alliedtelesis.co.nz (gate2.alliedtelesis.co.nz [IPv6:2001:df5:b000:5::4])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EBEB5C061570
+        for <linux-kernel@vger.kernel.org>; Mon,  8 Nov 2021 16:53:13 -0800 (PST)
+Received: from svr-chch-seg1.atlnz.lc (mmarshal3.atlnz.lc [10.32.18.43])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by gate2.alliedtelesis.co.nz (Postfix) with ESMTPS id F34F980719;
+        Tue,  9 Nov 2021 13:53:08 +1300 (NZDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alliedtelesis.co.nz;
+        s=mail181024; t=1636419188;
+        bh=MbEImmMvNRigKskabLb75rlla0bXlUamTdNYdy6SOJM=;
+        h=From:To:CC:Subject:Date:References:In-Reply-To;
+        b=GGDmvhgLup1dhq+FreEyZuIdJ/ka1sSiHUsV1v6/0CEEBGQRN8udXjtPGM5CIy5Pn
+         jbJ7kxdBPfovdy2A6LNQz9rat82DIytOhV7ELd85ICn79DAN55H4IKUiNNlLtuh1nT
+         Mqxwz25ZyF0VxJaxJjQ+2vF2/jeoDe0Uv5r+hratJLk0YZQiKCrlxMbpM5OjWayAhu
+         TSxXIk1UDg91vMDfwam5YMG0PytKUd7hIz4feq+9fo+QSwC0fYcwDf1uirL2nASqzL
+         scq9aaqC8+YHreSFSxtZRrkentHQ+jBONutYifzQz2HHySqaaZPpayC5NFHz7v6E9a
+         GiELd2FYNeYUQ==
+Received: from svr-chch-ex1.atlnz.lc (Not Verified[2001:df5:b000:bc8::77]) by svr-chch-seg1.atlnz.lc with Trustwave SEG (v8,2,6,11305)
+        id <B6189c6740001>; Tue, 09 Nov 2021 13:53:08 +1300
+Received: from svr-chch-ex1.atlnz.lc (2001:df5:b000:bc8::77) by
+ svr-chch-ex1.atlnz.lc (2001:df5:b000:bc8::77) with Microsoft SMTP Server
+ (TLS) id 15.0.1497.24; Tue, 9 Nov 2021 13:53:08 +1300
+Received: from svr-chch-ex1.atlnz.lc ([fe80::409d:36f5:8899:92e8]) by
+ svr-chch-ex1.atlnz.lc ([fe80::409d:36f5:8899:92e8%12]) with mapi id
+ 15.00.1497.024; Tue, 9 Nov 2021 13:53:08 +1300
+From:   Chris Packham <Chris.Packham@alliedtelesis.co.nz>
+To:     "andrew@lunn.ch" <andrew@lunn.ch>,
+        "gregory.clement@bootlin.com" <gregory.clement@bootlin.com>,
+        "sebastian.hesselbarth@gmail.com" <sebastian.hesselbarth@gmail.com>,
+        "robh+dt@kernel.org" <robh+dt@kernel.org>
+CC:     "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v2 0/2] arm/arm64: dts: Enable more network hardware
+Thread-Topic: [PATCH v2 0/2] arm/arm64: dts: Enable more network hardware
+Thread-Index: AQHXw70vJ5ycklHEVU65gyB9DuI/yqv5pumA
+Date:   Tue, 9 Nov 2021 00:53:07 +0000
+Message-ID: <c3090ad7-3427-8e97-9536-caaa1f04b84c@alliedtelesis.co.nz>
+References: <20211018011211.3836590-1-chris.packham@alliedtelesis.co.nz>
+In-Reply-To: <20211018011211.3836590-1-chris.packham@alliedtelesis.co.nz>
+Accept-Language: en-NZ, en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-messagesentrepresentingtype: 1
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.32.1.11]
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <C549275BD148C04B8F970386AB7FBB79@atlnz.lc>
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-References: <20211102161125.1144023-1-kernel@esmil.dk> <20211102161125.1144023-12-kernel@esmil.dk>
-In-Reply-To: <20211102161125.1144023-12-kernel@esmil.dk>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Tue, 9 Nov 2021 01:45:55 +0100
-Message-ID: <CACRpkdb0CrJ_uTbtfg-xGq8uu0AKoqfAB03mF2CA_G8ys_8Lzg@mail.gmail.com>
-Subject: Re: [PATCH v3 11/16] dt-bindings: pinctrl: Add StarFive JH7100 bindings
-To:     Emil Renner Berthing <kernel@esmil.dk>
-Cc:     linux-riscv@lists.infradead.org, devicetree@vger.kernel.org,
-        linux-clk@vger.kernel.org, linux-gpio@vger.kernel.org,
-        linux-serial@vger.kernel.org, Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Marc Zyngier <maz@kernel.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        Maximilian Luz <luzmaximilian@gmail.com>,
-        Sagar Kadam <sagar.kadam@sifive.com>,
-        Drew Fustini <drew@beagleboard.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Michael Zhu <michael.zhu@starfivetech.com>,
-        Fu Wei <tekkamanninja@gmail.com>,
-        Anup Patel <anup.patel@wdc.com>,
-        Atish Patra <atish.patra@wdc.com>,
-        Matteo Croce <mcroce@microsoft.com>,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+X-SEG-SpamProfiler-Analysis: v=2.3 cv=eIJtc0h1 c=1 sm=1 tr=0 a=Xf/6aR1Nyvzi7BryhOrcLQ==:117 a=xqWC_Br6kY4A:10 a=oKJsc7D3gJEA:10 a=IkcTkHD0fZMA:10 a=vIxV3rELxO4A:10 a=jYDJZq7GXZI51NWTFi0A:9 a=QEXdDO2ut3YA:10
+X-SEG-SpamProfiler-Score: 0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 2, 2021 at 5:12 PM Emil Renner Berthing <kernel@esmil.dk> wrote:
-
-> Add bindings for the GPIO/pin controller on the JH7100 RISC-V SoC by
-> StarFive Ltd. This is a test chip for their upcoming JH7110 SoC.
->
-> Signed-off-by: Emil Renner Berthing <kernel@esmil.dk>
-> ---
->
-> @Linus: I'm really struggling to find a good way to describe how pin
-> muxing works on the JH7100. As you can see I've now resorted to
-> ascii-art to try to explain it, but please let me know if it's still
-> unclear.
-
-This looks perfectly acceptable to me:
-Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
-
-As it appears to have some cross dependencies I assume
-it will be merged through the SoC tree?
-
-Yours,
-Linus Walleij
+SGkgQWxsLA0KDQpPbiAxOC8xMC8yMSAyOjEyIHBtLCBDaHJpcyBQYWNraGFtIHdyb3RlOg0KPiBU
+aGlzIHNlcmllcyBlbmFibGVzIHRoZSBTd2l0Y2ggYW5kIDIuNUcgRXRoZXJuZXQgcG9ydCBvbiB0
+aGUgQ045MTMwLUNSQi4gVGhlDQo+IGNoYW5nZXMgYXJlIGJhc2VkIG9uIHRoZSBNYXJ2ZWxsIFNE
+Sy4NCj4NCj4gTm90ZSBHcmVnb3J5IGhhcyBhbHJlYWR5IHBpY2tlZCB1cCB0aGUgMi41RyBFdGhl
+cm5ldCBwYXRjaCBmcm9tIHYxIHNvIEkndmUgbm90DQo+IGluY2x1ZGVkIGl0IGluIHYyIG9mIHRo
+aXMgc2VyaWVzLg0KPg0KPiBBbHNvIG5vdGUgdGhhdCBpZiBhbnlvbmUgdHJpZXMgb3V0IHRoZSBT
+RlArIHBvcnQgb24gYSBjb21wbGV0ZSBDUkIgc2hpcHBlZCBmcm9tDQo+IE1hcnZlbGwgdGhlIGNo
+YXNzaXMgcHJldmVudHMgdGhlIGVqZWN0b3IgZnJvbSB3b3JraW5nIHNvIHRoZSBTRlAgd2lsbCBn
+ZXQNCj4gc3R1Y2suIFRha2luZyB0aGUgYm9hcmQgb3V0IG9mIHRoZSBjaGFzc2lzIGFsbG93cyB0
+aGUgU0ZQIHRvIGJlDQo+IGluc3RlcnRlZC9yZW1vdmVkLg0KR2VudGxlIHBpbmcgb24gdGhpcyBz
+ZXJpZXMuIEkndmUgaGFkIGEgcmV2aWV3IGZyb20gQW5kcmV3IGZvciBwYXRjaCAyIA0KYnV0IGhh
+dmVuJ3QgaGVhcmQgYW55dGhpbmcgZWxzZS4NCj4gQ2hyaXMgUGFja2hhbSAoMik6DQo+ICAgIGFy
+bS9hcm02NDogZHRzOiBFbmFibGUgQ1AwIEdQSU9zIGZvciBDTjkxMzAtQ1JCDQo+ICAgIGFybS9h
+cm02NDogZHRzOiBBZGQgTVY4OEU2MzkzWCB0byBDTjkxMzAtQ1JCIGRldmljZSB0cmVlDQo+DQo+
+ICAgYXJjaC9hcm02NC9ib290L2R0cy9tYXJ2ZWxsL2NuOTEzMC1jcmIuZHRzaSB8IDEzOSArKysr
+KysrKysrKysrKysrKysrKw0KPiAgIDEgZmlsZSBjaGFuZ2VkLCAxMzkgaW5zZXJ0aW9ucygrKQ0K
+Pg==
