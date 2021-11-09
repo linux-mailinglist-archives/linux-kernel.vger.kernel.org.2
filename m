@@ -2,86 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7765E44AD33
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 13:10:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 696BB44AD36
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 13:10:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238287AbhKIMNB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Nov 2021 07:13:01 -0500
-Received: from mga18.intel.com ([134.134.136.126]:23388 "EHLO mga18.intel.com"
+        id S239676AbhKIMNM convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 9 Nov 2021 07:13:12 -0500
+Received: from aposti.net ([89.234.176.197]:54412 "EHLO aposti.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236467AbhKIMNA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Nov 2021 07:13:00 -0500
-X-IronPort-AV: E=McAfee;i="6200,9189,10162"; a="219331197"
-X-IronPort-AV: E=Sophos;i="5.87,220,1631602800"; 
-   d="scan'208";a="219331197"
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Nov 2021 04:10:14 -0800
-X-IronPort-AV: E=Sophos;i="5.87,220,1631602800"; 
-   d="scan'208";a="469954033"
-Received: from smile.fi.intel.com ([10.237.72.184])
-  by orsmga002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Nov 2021 04:10:07 -0800
-Received: from andy by smile.fi.intel.com with local (Exim 4.95)
-        (envelope-from <andy.shevchenko@gmail.com>)
-        id 1mkPwo-0054ma-Cc;
-        Tue, 09 Nov 2021 14:09:54 +0200
-Date:   Tue, 9 Nov 2021 14:09:54 +0200
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-To:     Linus Walleij <linus.walleij@linaro.org>
-Cc:     Joe Perches <joe@perches.com>, Bartosz Golaszewski <brgl@bgdev.pl>,
-        Jianqun Xu <jay.xu@rock-chips.com>,
-        Sai Krishna Potthuri <lakshmi.sai.krishna.potthuri@xilinx.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "linux-gpio@vger.kernel.org" <linux-gpio@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-rockchip@lists.infradead.org" 
-        <linux-rockchip@lists.infradead.org>,
-        Bamvor Jian Zhang <bamv2005@gmail.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Gregory Clement <gregory.clement@bootlin.com>,
-        Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
-        Heiko Stuebner <heiko@sntech.de>,
-        Patrice Chotard <patrice.chotard@foss.st.com>,
-        Michal Simek <michal.simek@xilinx.com>,
-        Andy Shevchenko <andy@kernel.org>
-Subject: Re: [PATCH v1 14/19] pinctrl: st: Use temporary variable for struct
- device
-Message-ID: <YYplEi/F24greu+P@smile.fi.intel.com>
-References: <20211105124242.27288-1-andriy.shevchenko@linux.intel.com>
- <20211105124242.27288-14-andriy.shevchenko@linux.intel.com>
- <4b3f1ee1179dd6d4b010cb110b38d26e7d91c19f.camel@perches.com>
- <CAHp75Ve0Bv9VsWFFZxL9wYk=Z_Mm7nat-vf7g8HHTiROi7EY=Q@mail.gmail.com>
- <103d7321a2d18e44fb8c01483b1197766aff645a.camel@perches.com>
- <YYjtLGlSCDPM4UVL@smile.fi.intel.com>
- <CACRpkdZQsR1yisaCgmSDfG8OtkYgu1tWPBa_mw25o++suLjf4A@mail.gmail.com>
+        id S239237AbhKIMNG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Nov 2021 07:13:06 -0500
+Date:   Tue, 09 Nov 2021 12:10:10 +0000
+From:   Paul Cercueil <paul@crapouillou.net>
+Subject: Re: [PATCH] mips: decompressor: do not copy source files while
+ building
+To:     Masahiro Yamada <masahiroy@kernel.org>
+Cc:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        linux-mips@vger.kernel.org, Alexander Lobakin <alobakin@pm.me>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Xingxing Su <suxingxing@loongson.cn>,
+        linux-kernel@vger.kernel.org, zhaoxiao <zhaoxiao@uniontech.com>
+Message-Id: <YG0B2R.AN2GMAOFSVCK1@crapouillou.net>
+In-Reply-To: <20211105023815.85784-1-masahiroy@kernel.org>
+References: <20211105023815.85784-1-masahiroy@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CACRpkdZQsR1yisaCgmSDfG8OtkYgu1tWPBa_mw25o++suLjf4A@mail.gmail.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+Content-Type: text/plain; charset=iso-8859-1; format=flowed
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 09, 2021 at 12:55:44PM +0100, Linus Walleij wrote:
-> On Mon, Nov 8, 2021 at 10:26 AM Andy Shevchenko
-> <andy.shevchenko@gmail.com> wrote:
+Hi Masahiro,
 
-...
+Le ven., nov. 5 2021 at 11:38:14 +0900, Masahiro Yamada 
+<masahiroy@kernel.org> a écrit :
+> As commit 7ae4a78daacf ("ARM: 8969/1: decompressor: simplify libfdt
+> builds") stated, copying source files during the build time may not
+> end up with as clean code as expected.
+> 
+> Do similar for mips to clean up the Makefile and .gitignore.
 
-> I can queue the whole series in pinctrl when you
-> think it's mature.
+What did you base this patch on?
 
-Forgot to react on this.
+It does not apply cleanly here. It tries to create ashldi3.c and 
+bswapsi.c, which already exist.
 
-I have compile tested the pin control stuff (of course, library including)
-and gpio-mockup. To me it's all ready (taking into account the tags we got).
+Cheers,
+-Paul
 
-If you feel like pulling it now, go for it and thanks!
-
--- 
-With Best Regards,
-Andy Shevchenko
+> 
+> Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
+> ---
+> 
+>  arch/mips/boot/compressed/.gitignore   |  3 ---
+>  arch/mips/boot/compressed/Makefile     | 12 ------------
+>  arch/mips/boot/compressed/ashldi3.c    |  2 ++
+>  arch/mips/boot/compressed/bswapsi.c    |  2 ++
+>  arch/mips/boot/compressed/uart-ath79.c |  2 ++
+>  scripts/remove-stale-files             |  5 +++++
+>  6 files changed, 11 insertions(+), 15 deletions(-)
+>  delete mode 100644 arch/mips/boot/compressed/.gitignore
+>  create mode 100644 arch/mips/boot/compressed/ashldi3.c
+>  create mode 100644 arch/mips/boot/compressed/bswapsi.c
+>  create mode 100644 arch/mips/boot/compressed/uart-ath79.c
+> 
+> diff --git a/arch/mips/boot/compressed/.gitignore 
+> b/arch/mips/boot/compressed/.gitignore
+> deleted file mode 100644
+> index d358395614c9..000000000000
+> --- a/arch/mips/boot/compressed/.gitignore
+> +++ /dev/null
+> @@ -1,3 +0,0 @@
+> -# SPDX-License-Identifier: GPL-2.0-only
+> -ashldi3.c
+> -bswapsi.c
+> diff --git a/arch/mips/boot/compressed/Makefile 
+> b/arch/mips/boot/compressed/Makefile
+> index 3548b3b45269..e6584dab2360 100644
+> --- a/arch/mips/boot/compressed/Makefile
+> +++ b/arch/mips/boot/compressed/Makefile
+> @@ -50,20 +50,8 @@ vmlinuzobjs-$(CONFIG_MIPS_ALCHEMY)		   += 
+> $(obj)/uart-alchemy.o
+>  vmlinuzobjs-$(CONFIG_ATH79)			   += $(obj)/uart-ath79.o
+>  endif
+> 
+> -extra-y += uart-ath79.c
+> -$(obj)/uart-ath79.c: $(srctree)/arch/mips/ath79/early_printk.c
+> -	$(call cmd,shipped)
+> -
+>  vmlinuzobjs-$(CONFIG_KERNEL_XZ) += $(obj)/ashldi3.o
+> 
+> -extra-y += ashldi3.c
+> -$(obj)/ashldi3.c: $(obj)/%.c: $(srctree)/lib/%.c FORCE
+> -	$(call if_changed,shipped)
+> -
+> -extra-y += bswapsi.c
+> -$(obj)/bswapsi.c: $(obj)/%.c: $(srctree)/arch/mips/lib/%.c FORCE
+> -	$(call if_changed,shipped)
+> -
+>  targets := $(notdir $(vmlinuzobjs-y))
+> 
+>  targets += vmlinux.bin
+> diff --git a/arch/mips/boot/compressed/ashldi3.c 
+> b/arch/mips/boot/compressed/ashldi3.c
+> new file mode 100644
+> index 000000000000..f7bf6a7aae31
+> --- /dev/null
+> +++ b/arch/mips/boot/compressed/ashldi3.c
+> @@ -0,0 +1,2 @@
+> +// SPDX-License-Identifier: GPL-2.0-only
+> +#include "../../../../lib/ashldi3.c"
+> diff --git a/arch/mips/boot/compressed/bswapsi.c 
+> b/arch/mips/boot/compressed/bswapsi.c
+> new file mode 100644
+> index 000000000000..fdb9c6476904
+> --- /dev/null
+> +++ b/arch/mips/boot/compressed/bswapsi.c
+> @@ -0,0 +1,2 @@
+> +// SPDX-License-Identifier: GPL-2.0-only
+> +#include "../../lib/bswapsi.c"
+> diff --git a/arch/mips/boot/compressed/uart-ath79.c 
+> b/arch/mips/boot/compressed/uart-ath79.c
+> new file mode 100644
+> index 000000000000..d686820921be
+> --- /dev/null
+> +++ b/arch/mips/boot/compressed/uart-ath79.c
+> @@ -0,0 +1,2 @@
+> +// SPDX-License-Identifier: GPL-2.0-only
+> +#include "../../ath79/early_printk.c"
+> diff --git a/scripts/remove-stale-files b/scripts/remove-stale-files
+> index eb630ee287c3..c534fe1eac16 100755
+> --- a/scripts/remove-stale-files
+> +++ b/scripts/remove-stale-files
+> @@ -28,4 +28,9 @@ if [ -n "${building_out_of_srctree}" ]; then
+>  	do
+>  		rm -f arch/arm/boot/compressed/${f}
+>  	done
+> +
+> +	for f in uart-ath79.c ashldi3.c bswapsi.c
+> +	do
+> +		rm -f arch/mips/boot/compressed/${f}
+> +	done
+>  fi
+> --
+> 2.30.2
+> 
 
 
