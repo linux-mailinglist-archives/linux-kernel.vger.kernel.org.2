@@ -2,138 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 42EF044AD9F
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 13:33:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D614544ADA3
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 13:36:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242202AbhKIMfm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Nov 2021 07:35:42 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58878 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235446AbhKIMfl (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Nov 2021 07:35:41 -0500
-Received: from mail-wr1-x42b.google.com (mail-wr1-x42b.google.com [IPv6:2a00:1450:4864:20::42b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2539CC061766
-        for <linux-kernel@vger.kernel.org>; Tue,  9 Nov 2021 04:32:55 -0800 (PST)
-Received: by mail-wr1-x42b.google.com with SMTP id i5so32750091wrb.2
-        for <linux-kernel@vger.kernel.org>; Tue, 09 Nov 2021 04:32:55 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=immu-ne.20210112.gappssmtp.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=6vZ6aUIeCJbBlIO0Lv+WQYFDNRnVtb+GSHZa0RcE2rc=;
-        b=zjefnNTa5dG2lLyDyFwcYr3GkGFdRiMW0BfUjt11dHS7twn/Wx415BTEVSo+UwPmc3
-         RN0qNqol2NwaZG3z4qUFCf1L+MjGfPc8B1g6HqAgGHReiyj4nQRf4VEk71Zh7keJgcML
-         4JitDL82G2/YrG2OQThFdBv9TDmcUQL6KHLjy4E7fNVv9WPjDRDmc6fVQ0O18jau0P8d
-         zGB+NKmzP65RSpSB6dKXEHYDzNm02RKiLbMGIoaOZw9z7lkhR5+v4FhcMFbB20iMBayp
-         o5cdVdLyh28b7gsRtDoHuVB0JzR2jSOeY946ws55eUYej9prMz3GG0QpEeC8obCx5Dkk
-         aF2w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=6vZ6aUIeCJbBlIO0Lv+WQYFDNRnVtb+GSHZa0RcE2rc=;
-        b=bdLIgJBazMZyARdxIOJLwpF9Qx42Iw1o155kSggfWUsPzAu25hoqS7OWKvv0o8bJ/+
-         sDNuM3z8U1b2btFVw76eAdhgFZNbgAgwogWL+YUNTW/bw+B6LmGr6XRc+2mXqNKJcX83
-         L1udkmYt0DPlbLlMS2cX0bCUtZMvEyOkLh9z/btPnlYT8WHKYAgJzIOmmQhxzJE/FrLy
-         xneqJT6mYxwBwQd7bpO3wRUOYdohQfHkT0T6WTSLREfWoVBYXv5x3PZWrs4qI5m5L4eS
-         mhBLRhZIEsJ6F9I2sZI7VhvXb2k+uaWHV7BMQ3kWCh6ThOQl1AySuBRyIBPZ6zmP6S/M
-         uhhQ==
-X-Gm-Message-State: AOAM533jfAjCNhv5YnYYW0N/BA0OTMo6uVFoMuBgBAUlnqOGWUbbO1yT
-        Fb03T8tJO0RL7McNQPftwIbcfmmX8DRH86JYYWDE2g==
-X-Google-Smtp-Source: ABdhPJxBVGq3/twpZtrzbiJORWrfHffp4rl1UwLaiG27C8lDBzeYC7fhbtt4/m1JVkrSQn260BYhdO/Q3ZlAgtSOg5Q=
-X-Received: by 2002:a5d:6c6b:: with SMTP id r11mr8800449wrz.231.1636461173687;
- Tue, 09 Nov 2021 04:32:53 -0800 (PST)
+        id S242783AbhKIMjM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Nov 2021 07:39:12 -0500
+Received: from mail.kernel.org ([198.145.29.99]:48042 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235446AbhKIMjK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Nov 2021 07:39:10 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 64B4461051;
+        Tue,  9 Nov 2021 12:36:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1636461385;
+        bh=bEqtsunkCqzyvLmJ01+UgK4ocxqK5hKbibd6067Iybw=;
+        h=From:To:Cc:Subject:Date:From;
+        b=kKoRygr1aLdjdT2oR+YWhfguWvriEWF/tW6v2t8NCXh74cm3i7DU94YJc524STLk2
+         Y6OPYk9oAhaOce03rtfqXR+EG6Z+6zPvLCYQ97dXKQ+0NLpkgIr62krhKssI6SJMhV
+         uQ5ZFaziUgAdT+mWPDwIfbsKhbt0PHiUrER+iSnkmTLJkKJ1yO2eBuieFVgKgj7/N8
+         BAV9sgq8QktH8gaewev4iGYDdSS+TgvuTUdv1xKfVzOAT23FQ2hzNdODquTQH/0Lrq
+         12NkUIXOJLvdiH18Ej5DFrl3pXhi1dcCR8Uzuyn+iYAXs1HsTccEWJQxTJMgAcK0B2
+         XMgT+420/rY0w==
+From:   Arnd Bergmann <arnd@kernel.org>
+To:     Jan Kara <jack@suse.com>
+Cc:     Arnd Bergmann <arnd@arndb.de>, linux-kernel@vger.kernel.org
+Subject: [PATCH] udf: shut up pointer cast warning
+Date:   Tue,  9 Nov 2021 13:36:08 +0100
+Message-Id: <20211109123621.52474-1-arnd@kernel.org>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-References: <20211109000130.42361-1-hans-gert.dahmen@immu.ne>
- <YYoSPjF3M05dR0PX@kroah.com> <42cea157-55a2-bd12-335b-6348f0ff6525@immu.ne> <YYpNOMtp7Kwf0fho@kroah.com>
-In-Reply-To: <YYpNOMtp7Kwf0fho@kroah.com>
-From:   Hans-Gert Dahmen <hans-gert.dahmen@immu.ne>
-Date:   Tue, 9 Nov 2021 13:32:48 +0100
-Message-ID: <CAHifhD4f676jiQ52siiKQTjUFXFm6Sto8pQjF07w5y+gqrUvFQ@mail.gmail.com>
-Subject: Re: [PATCH] firmware: export x86_64 platform flash bios region via sysfs
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     akpm@linux-foundation.org, linux-kernel@vger.kernel.org,
-        Philipp Deppenwiese <philipp.deppenwiese@immu.ne>,
-        Mauro Lima <mauro.lima@eclypsium.com>,
-        Richard Hughes <hughsient@gmail.com>,
-        platform-driver-x86@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 9 Nov 2021, 11:28 Greg KH, <gregkh@linuxfoundation.org> wrote:
->
-> On Tue, Nov 09, 2021 at 09:52:53AM +0100, Hans-Gert Dahmen wrote:
-> > On 09.11.21 07:16, Greg KH wrote:
-> > > On Tue, Nov 09, 2021 at 01:01:30AM +0100, Hans-Gert Dahmen wrote:
-> > > > Make the 16MiB long memory-mapped BIOS region of the platform SPI flash
-> > > > on X86_64 system available via /sys/kernel/firmware/flash_mmap/bios_region
-> > > > for pen-testing, security analysis and malware detection on kernels
-> > > > which restrict module loading and/or access to /dev/mem.
-> > >
-> > > That feels like a big security hole we would be opening up for no good
-> > > reason.
-> > >
-> > > > It will be used by the open source Converged Security Suite.
-> > > > https://github.com/9elements/converged-security-suite
-> > >
-> > > What is the reason for this, and what use is this new interface?
-> > Because it is very hard to access the SPI flash to read the BIOS contents
-> > for (security) analysis and this works without the more complex and
-> > unfinished SPI drivers and it does so on a system where we may not access
-> > the full /dev/mem.
->
-> Why not fix the spi drivers to do this properly?  What is preventing you
-> from doing that instead of adding a new user/kernel api that you will
-> have to support for the next 20+ years?
->
+From: Arnd Bergmann <arnd@arndb.de>
 
-Because this interface we want to use is inherently tied to the
-workings of x86_64 CPUs. It is very stable and easy to use. The SPI
-drivers in contrast have a history of being complex, buggy and in
-general not reliable. This module will require very little maintenance
-and will probably work in the future without needing modification for
-newer platforms. It generally is meant as a fallback to the real SPI
-flash drivers so that userspace programs are able to provide essential
-functionality.
+On 32-bit architectures, the workaround of storing the directory position
+in the private_data pointer causes a warning, as loff_t does not fit in
+a pointer:
 
-> > > > +static int __init flash_mmap_init(void)
-> > > > +{
-> > > > + int ret;
-> > > > +
-> > > > + pdev = platform_device_register_simple("flash_mmap", -1, NULL, 0);
-> > > > + if (IS_ERR(pdev))
-> > > > +         return PTR_ERR(pdev);
-> > > > +
-> > > > + ret = sysfs_create_group(&pdev->dev.kobj, &flash_mmap_group);
-> > >
-> > > You just raced with userspace and lost  >
-> > > Please set the attribute to the platform driver before you create the
-> > > device.
-> > >
-> >
-> > Sorry, but I went through tons of code and could not find a single instance
-> > where I can use a default group for creation without using a probe function
-> > that does the magic for me. Please help me find the correct way of doing
-> > this without manually creating and adding kobjects.
->
-> The problem here is that you are abusing the platform driver code and
-> making a "fake" device that is not attached to anything real, and
-> without a driver.  That should not be done, as you do not know what
-> hardware this driver is going to be run on.
->
-> Bind to the real hardware resource please.
+fs/udf/dir.c: In function 'udf_readdir':
+fs/udf/dir.c:78:25: error: cast from pointer to integer of different size [-Werror=pointer-to-int-cast]
+   78 |         if (ctx->pos != (uintptr_t)file->private_data) {
+      |                         ^
+fs/udf/dir.c:211:30: error: cast to pointer from integer of different size [-Werror=int-to-pointer-cast]
+  211 |         file->private_data = (void *)(uintptr_t)ctx->pos;
+      |                              ^
 
-In a previous mail in June you suggested this is some sort of platform
-device, that is why I rewrote it as such. The hardware resource here
-is the south bridge for x86_64 CPUs and the module dependencies will
-compile it only for these platforms. The situation is like, if you
-have that CPU, you have the hardware, so it is implicitly bound or it
-just will not execute on a machine code level. I feel like your
-requirement is somewhat impossible to satisfy and I really don't know
-what to do. Please, can anyone help me by pointing out a proper
-example elsewhere in the kernel?
+An extra cast to uintptr_t shuts up the warning. This is of course
+still broken if the position is ever beyond the first 2^32 bytes (4GB).
 
-Hans-Gert
+I have not found a clear information on whether directories this
+large are allowed on UDF, but it seems unlikely.
+
+Fixes: 39a464de961f ("udf: Fix crash after seekdir")
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+---
+ fs/udf/dir.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/fs/udf/dir.c b/fs/udf/dir.c
+index 8ae501d27eff..5aaa82be420a 100644
+--- a/fs/udf/dir.c
++++ b/fs/udf/dir.c
+@@ -75,7 +75,7 @@ static int udf_readdir(struct file *file, struct dir_context *ctx)
+ 	 * identifying beginning of dir entry (names are under user control),
+ 	 * we need to scan the directory from the beginning.
+ 	 */
+-	if (ctx->pos != (loff_t)file->private_data) {
++	if (ctx->pos != (uintptr_t)file->private_data) {
+ 		emit_pos = nf_pos;
+ 		nf_pos = 0;
+ 	}
+@@ -208,7 +208,7 @@ static int udf_readdir(struct file *file, struct dir_context *ctx)
+ 
+ out:
+ 	/* Store position where we've ended */
+-	file->private_data = (void *)ctx->pos;
++	file->private_data = (void *)(uintptr_t)ctx->pos;
+ 	if (fibh.sbh != fibh.ebh)
+ 		brelse(fibh.ebh);
+ 	brelse(fibh.sbh);
+-- 
+2.29.2
+
