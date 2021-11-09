@@ -2,213 +2,205 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 480C544B199
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 17:56:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 411AB44B19B
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 17:56:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240654AbhKIQ6s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Nov 2021 11:58:48 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34272 "EHLO
+        id S240657AbhKIQ7U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Nov 2021 11:59:20 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34410 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240633AbhKIQ6r (ORCPT
+        with ESMTP id S236209AbhKIQ7R (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Nov 2021 11:58:47 -0500
-Received: from mail-pl1-x62e.google.com (mail-pl1-x62e.google.com [IPv6:2607:f8b0:4864:20::62e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A5291C061764;
-        Tue,  9 Nov 2021 08:56:01 -0800 (PST)
-Received: by mail-pl1-x62e.google.com with SMTP id v20so22013053plo.7;
-        Tue, 09 Nov 2021 08:56:01 -0800 (PST)
+        Tue, 9 Nov 2021 11:59:17 -0500
+Received: from mail-lj1-x22d.google.com (mail-lj1-x22d.google.com [IPv6:2a00:1450:4864:20::22d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA41FC061767
+        for <linux-kernel@vger.kernel.org>; Tue,  9 Nov 2021 08:56:30 -0800 (PST)
+Received: by mail-lj1-x22d.google.com with SMTP id e11so18315350ljo.13
+        for <linux-kernel@vger.kernel.org>; Tue, 09 Nov 2021 08:56:30 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=yKSJWjoS4FlMkEwfd1CEg+bbbf+O13lC3d6NjL84SQU=;
-        b=ftNhU2MssZC00s1SE84SmHoY/W/7GRJTNg1cAbnHmPwm8uH/mdYfQDNeM0/q17x1F8
-         ASDFcTr4crfGMTMp9S3QTpGUYn68xnPKjzAVGPE/H+fP6MGA0yNXzb/Xmb1KTzWhwhd5
-         HPfxMOzeTx87I3zA/AlnmECJMoMuYr5c00LuFvZgE1HVTJM+DWxAs0RkW60wIhBloJu1
-         soDrdabodY+dnzPAD7Orbvwk4uAOlgFzqkMj7r+42/YdyUvCRAjisT+RTuo6paSZfp33
-         o2i6dIUrX0t7mARsn4vh/vKlsghjkPxY3TUg41eTInFlUR0NW52n+zIuI3hoKK3KRwRH
-         vAiA==
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=g/boREeiOnUsS7l12hdWo7Yz/43cU9hRgiBg0G45VUI=;
+        b=U644LgmH5os0YhjyX2lXGVcMnJy/jzLf+nmKZWo4uzo4LdV1H8Cv0tRTOTTy7/M6Aq
+         ZrFTYuHQ3V5e40aKm+hxm5JZ08l1WUXxk64GmITWcPwbOWVJbsp1fmyA9DZftQSsHuPR
+         weHY4BIvmTZtEyip2t8+bf6UVbzSFsL/zUI+tS9yGAYBLWSikonnZM7GeKILQesWnuLT
+         woivcyqg6fgqO8+otNCwxgPTTZpGD3uN9/wgeDTmUS6oXMJvaPJrE2qskAb89Vw0/d1k
+         Dx4SDGwPDT8KwiqjSf9kxaa7t45b+eS+I2hVNMgo0QhQvh2N9MALqreUVFN3MxboqNEE
+         d2sg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=yKSJWjoS4FlMkEwfd1CEg+bbbf+O13lC3d6NjL84SQU=;
-        b=j1EmUQ6Y//+7LmmOn3m9xEZOtdgfzcVEBEbEUK+7hrdKSj325LXlTgMD5ZQ3LleESL
-         JnjH4w/czeoT9sCo+LJ+ofG4uAg1D+7TA2W9l9IcutVL+WUe/OAlXNUyKPewQ43FffrX
-         aQ1Wry5JAz9qYNy4QJ1ICPpsYFW8TZplTVPt5cjJDNb0GFrN0GeIDCtI794Aqa2FdcA9
-         KPkYW0nAS8IBIfnifHH1DWSQYczCo1+k55lDC/bDdsJCFxo2Gx22F95whEmZYcWaLInK
-         phlJtChtX1V0Dt9vYLUkBES8N+3bXQ1m3R9AYEfFt+fWRE7IwtXozJ9O2XcAVxJs+fDP
-         h/eA==
-X-Gm-Message-State: AOAM532UB6jwf2mXJNsx9PLYALA+idFAjJjnl4HBIgBFDMwxV5hq/JR9
-        aDCgf2z/9NArd5jB2nprD0xlXKfumtI=
-X-Google-Smtp-Source: ABdhPJwQOEhJkbDXIpZbMRrVVWPXjbBtWw0Cd7CqtFbEkIUAFHxinvd0TFYDLOmn6uoV7KiS/ipuoQ==
-X-Received: by 2002:a17:90b:1b03:: with SMTP id nu3mr8810774pjb.240.1636476960940;
-        Tue, 09 Nov 2021 08:56:00 -0800 (PST)
-Received: from [192.168.86.235] (c-73-241-150-58.hsd1.ca.comcast.net. [73.241.150.58])
-        by smtp.gmail.com with ESMTPSA id l1sm3060889pjh.28.2021.11.09.08.55.59
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 09 Nov 2021 08:56:00 -0800 (PST)
-Subject: Re: [PATCH v3] mm: fix panic in __alloc_pages
-To:     David Hildenbrand <david@redhat.com>,
-        Alexey Makhalov <amakhalov@vmware.com>, linux-mm@kvack.org
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Michal Hocko <mhocko@suse.com>,
-        Oscar Salvador <osalvador@suse.de>,
-        Dennis Zhou <dennis@kernel.org>, Tejun Heo <tj@kernel.org>,
-        Christoph Lameter <cl@linux.com>, linux-kernel@vger.kernel.org,
-        stable@vger.kernel.org
-References: <908909e0-4815-b580-7ff5-d824d36a141c@redhat.com>
- <20211108202325.20304-1-amakhalov@vmware.com>
- <2e191db3-286f-90c6-bf96-3f89891e9926@gmail.com>
- <b6abd371-71d3-858b-9082-3d6a171cb8ef@redhat.com>
-From:   Eric Dumazet <eric.dumazet@gmail.com>
-Message-ID: <dd205eeb-92f4-3eee-e8de-e1f8c4b1ea0e@gmail.com>
-Date:   Tue, 9 Nov 2021 08:55:58 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.14.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=g/boREeiOnUsS7l12hdWo7Yz/43cU9hRgiBg0G45VUI=;
+        b=GtTrLIl4VHjbab+fgnEycBHiMrVT6F86AiT5z+7f5UjE32TLc6FP4GbQPJuJWQ3f3d
+         9zbXGqwBrl0XSYxrVpi7i4IUBwrYkGW/XReL8osdXFxRdUo17FPVLVnc3NgdHq/tfjR0
+         WmKCD7SQ6PfZ6dJMj4luFibUAb2O5xihyyBqmrjJNkK9Osux07iTibqk1dAtPSjI0+ci
+         LjUbiZoSLQuSAZ9QcvIbRyMbUnpfHAMvz514oIS5Fj6h8sdsJgigSoqL5qFRJOU3Ox5Y
+         dgIv1WeOpFlnEvdmbx3PLPAdn8m8I/Kg2aAaciHw7HX1smBZ2btMEaKt7zz9zATdstx0
+         mIgQ==
+X-Gm-Message-State: AOAM533WiE1Qb3GqqioVjMTzWZRsuvgkX9ciTQs5BBtWYCPKHHf/BiI3
+        8jFZ/PE3mUD992rdqev5y9aMMyoIfLP8xM5hIIKaPQ==
+X-Google-Smtp-Source: ABdhPJzDj9Vv1wNyWnEEvLmld2YkGi0DQTUPwiqlGO23z4KMUMdDxmu6xiSKFYw+E4RgCf2MhFP+zpUg6U2e12w0JDE=
+X-Received: by 2002:a2e:b8cd:: with SMTP id s13mr9222842ljp.527.1636476988886;
+ Tue, 09 Nov 2021 08:56:28 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <b6abd371-71d3-858b-9082-3d6a171cb8ef@redhat.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20211102142331.3753798-1-pgonda@google.com> <20211102142331.3753798-3-pgonda@google.com>
+ <YYqicq5YnNuwTS+B@google.com>
+In-Reply-To: <YYqicq5YnNuwTS+B@google.com>
+From:   Peter Gonda <pgonda@google.com>
+Date:   Tue, 9 Nov 2021 09:56:17 -0700
+Message-ID: <CAMkAt6q37BmPcA2Le98NOFQoz9nAwiDQqrALLD-Ogf5RytSS4g@mail.gmail.com>
+Subject: Re: [PATCH V3 2/4] crypto: ccp - Move SEV_INIT retry for corrupted data
+To:     Sean Christopherson <seanjc@google.com>
+Cc:     Thomas.Lendacky@amd.com, Marc Orr <marcorr@google.com>,
+        David Rientjes <rientjes@google.com>,
+        Brijesh Singh <brijesh.singh@amd.com>,
+        Joerg Roedel <jroedel@suse.de>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        John Allen <john.allen@amd.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, Nov 9, 2021 at 9:31 AM Sean Christopherson <seanjc@google.com> wrote:
+>
+> On Tue, Nov 02, 2021, Peter Gonda wrote:
+> > This change moves the data corrupted retry of SEV_INIT into the
+>
+> Use imperative mood.
 
+Will do for next revision
 
-On 11/8/21 11:03 PM, David Hildenbrand wrote:
-> On 09.11.21 03:08, Eric Dumazet wrote:
->>
->>
->> On 11/8/21 12:23 PM, Alexey Makhalov wrote:
->>> There is a kernel panic caused by pcpu_alloc_pages() passing
->>> offlined and uninitialized node to alloc_pages_node() leading
->>> to panic by NULL dereferencing uninitialized NODE_DATA(nid).
->>>
->>>  CPU2 has been hot-added
->>>  BUG: unable to handle page fault for address: 0000000000001608
->>>  #PF: supervisor read access in kernel mode
->>>  #PF: error_code(0x0000) - not-present page
->>>  PGD 0 P4D 0
->>>  Oops: 0000 [#1] SMP PTI
->>>  CPU: 0 PID: 1 Comm: systemd Tainted: G            E     5.15.0-rc7+ #11
->>>  Hardware name: VMware, Inc. VMware7,1/440BX Desktop Reference Platform, BIOS VMW
->>>
->>>  RIP: 0010:__alloc_pages+0x127/0x290
->>>  Code: 4c 89 f0 5b 41 5c 41 5d 41 5e 41 5f 5d c3 44 89 e0 48 8b 55 b8 c1 e8 0c 83 e0 01 88 45 d0 4c 89 c8 48 85 d2 0f 85 1a 01 00 00 <45> 3b 41 08 0f 82 10 01 00 00 48 89 45 c0 48 8b 00 44 89 e2 81 e2
->>>  RSP: 0018:ffffc900006f3bc8 EFLAGS: 00010246
->>>  RAX: 0000000000001600 RBX: 0000000000000000 RCX: 0000000000000000
->>>  RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000000000000cc2
->>>  RBP: ffffc900006f3c18 R08: 0000000000000001 R09: 0000000000001600
->>>  R10: ffffc900006f3a40 R11: ffff88813c9fffe8 R12: 0000000000000cc2
->>>  R13: 0000000000000000 R14: 0000000000000001 R15: 0000000000000cc2
->>>  FS:  00007f27ead70500(0000) GS:ffff88807ce00000(0000) knlGS:0000000000000000
->>>  CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
->>>  CR2: 0000000000001608 CR3: 000000000582c003 CR4: 00000000001706b0
->>>  Call Trace:
->>>   pcpu_alloc_pages.constprop.0+0xe4/0x1c0
->>>   pcpu_populate_chunk+0x33/0xb0
->>>   pcpu_alloc+0x4d3/0x6f0
->>>   __alloc_percpu_gfp+0xd/0x10
->>>   alloc_mem_cgroup_per_node_info+0x54/0xb0
->>>   mem_cgroup_alloc+0xed/0x2f0
->>>   mem_cgroup_css_alloc+0x33/0x2f0
->>>   css_create+0x3a/0x1f0
->>>   cgroup_apply_control_enable+0x12b/0x150
->>>   cgroup_mkdir+0xdd/0x110
->>>   kernfs_iop_mkdir+0x4f/0x80
->>>   vfs_mkdir+0x178/0x230
->>>   do_mkdirat+0xfd/0x120
->>>   __x64_sys_mkdir+0x47/0x70
->>>   ? syscall_exit_to_user_mode+0x21/0x50
->>>   do_syscall_64+0x43/0x90
->>>   entry_SYSCALL_64_after_hwframe+0x44/0xae
->>>
->>> Panic can be easily reproduced by disabling udev rule for
->>> automatic onlining hot added CPU followed by CPU with
->>> memoryless node (NUMA node with CPU only) hot add.
->>>
->>> Hot adding CPU and memoryless node does not bring the node
->>> to online state. Memoryless node will be onlined only during
->>> the onlining its CPU.
->>>
->>> Node can be in one of the following states:
->>> 1. not present.(nid == NUMA_NO_NODE)
->>> 2. present, but offline (nid > NUMA_NO_NODE, node_online(nid) == 0,
->>> 				NODE_DATA(nid) == NULL)
->>> 3. present and online (nid > NUMA_NO_NODE, node_online(nid) > 0,
->>> 				NODE_DATA(nid) != NULL)
->>>
->>> Percpu code is doing allocations for all possible CPUs. The
->>> issue happens when it serves hot added but not yet onlined
->>> CPU when its node is in 2nd state. This node is not ready
->>> to use, fallback to numa_mem_id().
->>>
->>> Signed-off-by: Alexey Makhalov <amakhalov@vmware.com>
->>> Reviewed-by: David Hildenbrand <david@redhat.com>
->>> Cc: Andrew Morton <akpm@linux-foundation.org>
->>> Cc: David Hildenbrand <david@redhat.com>
->>> Cc: Michal Hocko <mhocko@suse.com>
->>> Cc: Oscar Salvador <osalvador@suse.de>
->>> Cc: Dennis Zhou <dennis@kernel.org>
->>> Cc: Tejun Heo <tj@kernel.org>
->>> Cc: Christoph Lameter <cl@linux.com>
->>> Cc: linux-mm@kvack.org
->>> Cc: linux-kernel@vger.kernel.org
->>> Cc: stable@vger.kernel.org
->>> ---
->>>  mm/percpu-vm.c | 8 ++++++--
->>>  1 file changed, 6 insertions(+), 2 deletions(-)
->>>
->>> diff --git a/mm/percpu-vm.c b/mm/percpu-vm.c
->>> index 2054c9213..f58d73c92 100644
->>> --- a/mm/percpu-vm.c
->>> +++ b/mm/percpu-vm.c
->>> @@ -84,15 +84,19 @@ static int pcpu_alloc_pages(struct pcpu_chunk *chunk,
->>>  			    gfp_t gfp)
->>>  {
->>>  	unsigned int cpu, tcpu;
->>> -	int i;
->>> +	int i, nid;
->>>  
->>>  	gfp |= __GFP_HIGHMEM;
->>>  
->>>  	for_each_possible_cpu(cpu) {
->>> +		nid = cpu_to_node(cpu);
->>> +		if (nid == NUMA_NO_NODE || !node_online(nid))
->>> +			nid = numa_mem_id();
->>
->> Maybe we should fail this fallback if (gfp & __GFP_THISNODE) ?
-> 
-> ... and what to do then? Fail the allocation? We could do that, but ...
-> 
->>
->> Or maybe there is no support for this constraint in per-cpu allocator anyway.
->>
-> 
-> ... looking at mm/percpu.c, I don't think there are any users (IOW not
-> supported?).
-> 
->> I am a bit worried that we do not really know if pages are
->> allocated on the right node or not.
-> 
-> Even without __GFP_THISNODE it's sub-optimal. But if there is no memory
-> on that node, there is barely anything we can do than falling back.
+>
+> > __sev_platform_init_locked() function. This is for upcoming INIT_EX
+> > support as well as helping direct callers of
+> > __sev_platform_init_locked() which currently do not support the
+> > retry.
+> >
+> > Signed-off-by: Peter Gonda <pgonda@google.com>
+> > Reviewed-by: Marc Orr <marcorr@google.com>
+> > Acked-by: David Rientjes <rientjes@google.com>
+> > Acked-by: Tom Lendacky <thomas.lendacky@amd.com>
+> > Cc: Tom Lendacky <thomas.lendacky@amd.com>
+> > Cc: Brijesh Singh <brijesh.singh@amd.com>
+> > Cc: Marc Orr <marcorr@google.com>
+> > Cc: Joerg Roedel <jroedel@suse.de>
+> > Cc: Herbert Xu <herbert@gondor.apana.org.au>
+> > Cc: David Rientjes <rientjes@google.com>
+> > Cc: John Allen <john.allen@amd.com>
+> > Cc: "David S. Miller" <davem@davemloft.net>
+> > Cc: Paolo Bonzini <pbonzini@redhat.com>
+> > Cc: linux-crypto@vger.kernel.org
+> > Cc: linux-kernel@vger.kernel.org
+> > ---
+> >  drivers/crypto/ccp/sev-dev.c | 24 ++++++++++++------------
+> >  1 file changed, 12 insertions(+), 12 deletions(-)
+> >
+> > diff --git a/drivers/crypto/ccp/sev-dev.c b/drivers/crypto/ccp/sev-dev.c
+> > index ec89a82ba267..e4bc833949a0 100644
+> > --- a/drivers/crypto/ccp/sev-dev.c
+> > +++ b/drivers/crypto/ccp/sev-dev.c
+> > @@ -267,6 +267,18 @@ static int __sev_platform_init_locked(int *error)
+> >       }
+> >
+> >       rc = __sev_do_cmd_locked(SEV_CMD_INIT, &data, error);
+> > +     if (rc && *error == SEV_RET_SECURE_DATA_INVALID) {
+>
+> There are no guarantees that @error is non-NULL as this is reachable via an
+> exported function, sev_platform_init().  Which ties in with my complaints in the
+> previous patch that the API is a bit of a mess.
 
-Some users need having fine control.
-They would prefer -ENOMEM instead of a fallback.
+That seems like a bug from the caller right? Is it typical that we
+sanity-check the caller in these instances? For example the same
+comment could be made here:
+https://elixir.bootlin.com/linux/latest/source/drivers/crypto/ccp/sev-dev.c#L336
 
-Usually, /prov/vmallocinfo tells us numbers of allocated pages per node,
-but it does not work (yet) with pcpu_get_vm_areas zones.
+```
+static int sev_get_platform_state(int *state, int *error)
+{
+struct sev_user_data_status data;
+int rc;
 
-# grep alloc_large_system_hash /proc/vmallocinfo
-0x00000000fb57af48-0x0000000084e058f0 134221824 alloc_large_system_hash+0x10f/0x2a0 pages=32768 vmalloc vpages N0=16384 N1=16384
+rc = __sev_do_cmd_locked(SEV_CMD_PLATFORM_STATUS, &data, error);
+if (rc)
+return rc;
 
-# grep pcpu_get_vm_areas /proc/vmallocinfo 
-0x000000009d7bd01f-0x000000002aa861cb 12582912 pcpu_get_vm_areas+0x0/0xa90 vmalloc
-0x000000002aa861cb-0x0000000019fb1839 12582912 pcpu_get_vm_areas+0x0/0xa90 vmalloc
-0x0000000019fb1839-0x00000000ba64fb09 12582912 pcpu_get_vm_areas+0x0/0xa90 vmalloc
-0x00000000ba64fb09-0x00000000d688f04b 12582912 pcpu_get_vm_areas+0x0/0xa90 vmalloc
-0x00000000d688f04b-0x0000000074e3854e 12582912 pcpu_get_vm_areas+0x0/0xa90 vmalloc
+*state = data.state;  <--- State could be null.
+return rc;
+}
+```
+
+Example outside of this driver:
+https://elixir.bootlin.com/linux/v5.15.1/source/arch/x86/kvm/x86.c#L468
+
+```
+int kvm_set_apic_base(struct kvm_vcpu *vcpu, struct msr_data *msr_info)
+{
+enum lapic_mode old_mode = kvm_get_apic_mode(vcpu);
+enum lapic_mode new_mode = kvm_apic_mode(msr_info->data);  <---
+msr_info could be null here
+u64 reserved_bits = kvm_vcpu_reserved_gpa_bits_raw(vcpu) | 0x2ff |
+(guest_cpuid_has(vcpu, X86_FEATURE_X2APIC) ? 0 : X2APIC_ENABLE);
+
+if ((msr_info->data & reserved_bits) != 0 || new_mode == LAPIC_MODE_INVALID)
+return 1;
+if (!msr_info->host_initiated) {
+if (old_mode == LAPIC_MODE_X2APIC && new_mode == LAPIC_MODE_XAPIC)
+return 1;
+if (old_mode == LAPIC_MODE_DISABLED && new_mode == LAPIC_MODE_X2APIC)
+return 1;
+}
+
+kvm_lapic_set_base(vcpu, msr_info->data);
+kvm_recalculate_apic_map(vcpu->kvm);
+return 0;
+}
+EXPORT_SYMBOL_GPL(kvm_set_apic_base);
+```
+
+About the API being a mess that seems a little out of scope for this
+change. I am not changing the API surface at all here. Again happy to
+discuss improvements with you and Tom for follow up series.
+
+>
+> > +             /*
+> > +              * INIT command returned an integrity check failure
+> > +              * status code, meaning that firmware load and
+> > +              * validation of SEV related persistent data has
+> > +              * failed and persistent state has been erased.
+> > +              * Retrying INIT command here should succeed.
+> > +              */
+> > +             dev_dbg(sev->dev, "SEV: retrying INIT command");
+> > +             rc = __sev_do_cmd_locked(SEV_CMD_INIT, &data, error);
+> > +     }
+> > +
+> >       if (rc)
+> >               return rc;
+> >
+> > @@ -1091,18 +1103,6 @@ void sev_pci_init(void)
+> >
+> >       /* Initialize the platform */
+> >       rc = sev_platform_init(&error);
+> > -     if (rc && (error == SEV_RET_SECURE_DATA_INVALID)) {
+> > -             /*
+> > -              * INIT command returned an integrity check failure
+> > -              * status code, meaning that firmware load and
+> > -              * validation of SEV related persistent data has
+> > -              * failed and persistent state has been erased.
+> > -              * Retrying INIT command here should succeed.
+> > -              */
+> > -             dev_dbg(sev->dev, "SEV: retrying INIT command");
+> > -             rc = sev_platform_init(&error);
+> > -     }
+> > -
+> >       if (rc) {
+> >               dev_err(sev->dev, "SEV: failed to INIT error %#x, rc %d\n",
+> >                       error, rc);
+> > --
+> > 2.33.1.1089.g2158813163f-goog
+> >
