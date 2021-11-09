@@ -2,160 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0350B44AD80
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 13:28:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E79644AD82
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 13:29:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242080AbhKIMbk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Nov 2021 07:31:40 -0500
-Received: from ixit.cz ([94.230.151.217]:54452 "EHLO ixit.cz"
+        id S242423AbhKIMc0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Nov 2021 07:32:26 -0500
+Received: from foss.arm.com ([217.140.110.172]:33146 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231250AbhKIMbj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Nov 2021 07:31:39 -0500
-Received: from [127.0.0.1] (37-48-50-181.nat.epc.tmcz.cz [37.48.50.181])
-        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by ixit.cz (Postfix) with ESMTPSA id BE6E520064;
-        Tue,  9 Nov 2021 13:28:50 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ixit.cz; s=dkim;
-        t=1636460931;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=/KTxYwpPq7QKcYnuyQGk0KK0u6IPgYbFhdr9d5r8Aqc=;
-        b=QhK8ZufLm8qirdnmNWtHrkyJM9HQwJgcPOQdznKkQ6ITURh3M4mHt2v/X067xI6NKrCepB
-        8FvB4Ves1xltpqQdHOymcejNB/GwxBZNfH9jilgKMygPVM+pPoIRicTlm0B+PCOL5Bp2wj
-        i54Q7l9/cGzMpEJFRzkYWyudv+KqHng=
-Date:   Tue, 09 Nov 2021 12:24:36 +0000
-From:   David Heidelberg <david@ixit.cz>
-To:     Rob Herring <robh@kernel.org>
-CC:     Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>, - <kernel@puri.sm>,
-        ~okias/devicetree@lists.sr.ht, phone-devel@vger.kernel.org,
-        alsa-devel@alsa-project.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] dt-bindings: sound: gtm601: convert to YAML
-In-Reply-To: <YYmQ7OCIIb2AbnjY@robh.at.kernel.org>
-References: <20211030121753.50191-1-david@ixit.cz> <YYmQ7OCIIb2AbnjY@robh.at.kernel.org>
-Message-ID: <A1DBDD90-C79D-4455-9AC7-92C9DFB0F298@ixit.cz>
+        id S231250AbhKIMcZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Nov 2021 07:32:25 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 188BDED1;
+        Tue,  9 Nov 2021 04:29:39 -0800 (PST)
+Received: from [192.168.178.6] (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 26B0F3F7F5;
+        Tue,  9 Nov 2021 04:29:37 -0800 (PST)
+Subject: Re: [Resend PATCH] psi : calc cfs task memstall time more precisely
+To:     Zhaoyang Huang <huangzhaoyang@gmail.com>,
+        Xuewen Yan <xuewen.yan94@gmail.com>
+Cc:     Johannes Weiner <hannes@cmpxchg.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        Zhaoyang Huang <zhaoyang.huang@unisoc.com>,
+        "open list:MEMORY MANAGEMENT" <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        xuewen.yan@unisoc.com, Ke Wang <Ke.Wang@unisoc.com>
+References: <1634278612-17055-1-git-send-email-huangzhaoyang@gmail.com>
+ <YYGV1TxsZXzGXFmx@cmpxchg.org>
+ <CAGWkznEaEEz=m5UmPXRECiizwht7+8Zw_xH9V7Wwyd__10eJDA@mail.gmail.com>
+ <CAGWkznFuX=6mSnj7J7=t7et5QO-GB2BKCMRiHoU37jcH9dPhLA@mail.gmail.com>
+ <78b3f72b-3fe7-f2e0-0e6b-32f28b8ce777@arm.com>
+ <CAGWkznF_8iBp57BPoQKvG4VuNYep=g+ZxgO7D4e0wMDLipJ8uw@mail.gmail.com>
+ <85c81ab7-49ed-aba5-6221-ea6a8f37f8ad@arm.com>
+ <CAB8ipk_0YxWnS-k+HLPnL7DRR1MM+WH-xQfna7jD_+TQ0vKi8Q@mail.gmail.com>
+ <CAGWkznGNb2X_V1ppD2AjBxaKrey_A7U==XO_bnXoNAh2emLs8A@mail.gmail.com>
+From:   Dietmar Eggemann <dietmar.eggemann@arm.com>
+Message-ID: <25828616-1976-6e24-cd7d-a95b789f1bc0@arm.com>
+Date:   Tue, 9 Nov 2021 13:29:35 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <CAGWkznGNb2X_V1ppD2AjBxaKrey_A7U==XO_bnXoNAh2emLs8A@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-I agree, I'll adapt Librem 5 dts to follow original convention and resend=
-=2E
+On 08/11/2021 10:20, Zhaoyang Huang wrote:
+> On Mon, Nov 8, 2021 at 4:49 PM Xuewen Yan <xuewen.yan94@gmail.com> wrote:
+>>
+>> Hi Dietmar
+>>
+>> On Sat, Nov 6, 2021 at 1:20 AM Dietmar Eggemann
+>> <dietmar.eggemann@arm.com> wrote:
+>>>
+>>> On 05/11/2021 06:58, Zhaoyang Huang wrote:
 
+[...]
 
--------- P=C5=AFvodn=C3=AD zpr=C3=A1va --------
-Odes=C3=ADlatel: Rob Herring <robh@kernel=2Eorg>
-Odesl=C3=A1no: 8=2E listopadu 2021 21:04:44 UTC
-Komu: David Heidelberg <david@ixit=2Ecz>
-Kopie: Liam Girdwood <lgirdwood@gmail=2Ecom>, Mark Brown <broonie@kernel=
-=2Eorg>, - <kernel@puri=2Esm>, ~okias/devicetree@lists=2Esr=2Eht, phone-dev=
-el@vger=2Ekernel=2Eorg, alsa-devel@alsa-project=2Eorg, devicetree@vger=2Eke=
-rnel=2Eorg, linux-kernel@vger=2Ekernel=2Eorg
-P=C5=99edm=C4=9Bt: Re: [PATCH v2] dt-bindings: sound: gtm601: convert to Y=
-AML
+>>>>> This will let the idle task (swapper) pass. Is this indented? Or do you
+>>>>> want to only let CFS tasks (including SCHED_IDLE) pass?
+>>>> idle tasks will NOT call psi_memstall_xxx. We just want CFS tasks to
+>>>> scale the STALL time.
+>>>
+>>> Not sure I  get this.
+>>>
+>>> __schedule() -> psi_sched_switch() -> psi_task_change() ->
+>>> psi_group_change() -> record_times() -> psi_memtime_fixup()
+>>>
+>>> is something else than calling psi_memstall_enter() or _leave()?
+>>>
+>>> IMHO, at least record_times() can be called with current equal
+>>> swapper/X. Or is it that PSI_MEM_SOME is never set for the idle task in
+>>> this callstack? I don't know the PSI internals.
+> According to my understanding, PSI_MEM_SOME represents the CORE's
+> state within which there is at least one task trapped in memstall
+> path(only counted in by calling PSI_MEMSTALL_ENTER). record_times is
+> responsible for collecting the delta time of the CORE since it start.
+> What we are doing is to make the delta time more precise. So idle task
+> is irrelevant for these.
 
-On Sat, Oct 30, 2021 at 02:17:52PM +0200, David Heidelberg wrote:
-> Convert GTM601 binding to the YAML format=2E
->=20
-> Signed-off-by: David Heidelberg <david@ixit=2Ecz>
-> ---
-> v2:
->  - add #sound-dai-cells
->  - put kernel@puri=2Esm into maintainers
->=20
->  =2E=2E=2E/devicetree/bindings/sound/gtm601=2Etxt      | 19 ----------
->  =2E=2E=2E/devicetree/bindings/sound/gtm601=2Eyaml     | 36 ++++++++++++=
-+++++++
->  2 files changed, 36 insertions(+), 19 deletions(-)
->  delete mode 100644 Documentation/devicetree/bindings/sound/gtm601=2Etxt
->  create mode 100644 Documentation/devicetree/bindings/sound/gtm601=2Eyam=
-l
->=20
-> diff --git a/Documentation/devicetree/bindings/sound/gtm601=2Etxt b/Docu=
-mentation/devicetree/bindings/sound/gtm601=2Etxt
-> deleted file mode 100644
-> index efa32a486c4a=2E=2E000000000000
-> --- a/Documentation/devicetree/bindings/sound/gtm601=2Etxt
-> +++ /dev/null
-> @@ -1,19 +0,0 @@
-> -GTM601 UMTS modem audio interface CODEC
-> -
-> -This device has no configuration interface=2E The sample rate and chann=
-els are
-> -based on the compatible string
-> -	"option,gtm601" =3D 8kHz mono
-> -	"broadmobi,bm818" =3D 48KHz stereo
-> -
-> -Required properties:
-> -
-> -  - compatible : one of
-> -	"option,gtm601"
-> -	"broadmobi,bm818"
-> -
-> -
-> -Example:
-> -
-> -codec: gtm601_codec {
-> -	compatible =3D "option,gtm601";
-> -};
-> diff --git a/Documentation/devicetree/bindings/sound/gtm601=2Eyaml b/Doc=
-umentation/devicetree/bindings/sound/gtm601=2Eyaml
-> new file mode 100644
-> index 000000000000=2E=2Ee81a6aa75522
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/sound/gtm601=2Eyaml
-> @@ -0,0 +1,36 @@
-> +# SPDX-License-Identifier: GPL-2=2E0-only OR BSD-2-Clause
-> +%YAML 1=2E2
-> +---
-> +$id: http://devicetree=2Eorg/schemas/sound/gtm601=2Eyaml#
-> +$schema: http://devicetree=2Eorg/meta-schemas/core=2Eyaml#
-> +
-> +title: GTM601 UMTS modem audio interface CODEC
-> +
-> +maintainers:
-> +  - kernel@puri=2Esm
-> +
-> +description: >
-> +  This device has no configuration interface=2E The sample rate and cha=
-nnels are
-> +  based on the compatible string
-> +
-> +properties:
-> +  compatible:
-> +    oneOf:
-> +      - items:
-> +          - const: broadmobi,bm818
-> +          - const: option,gtm601
+Coming back to the original snippet of the patch.
 
-This does not match what the binding originally said=2E And generally this=
-=20
-combined with the one below should never be valid=2E
+static unsigned long psi_memtime_fixup(u32 growth)
+{
 
-> +      - items:
-> +          - enum:
-> +              - broadmobi,bm818  # 48 kHz stereo
-> +              - option,gtm601  # 8 kHz mono
-> +
-> +  '#sound-dai-cells':
-> +    const: 0
-> +
-> +additionalProperties: false
-> +
-> +examples:
-> +  - |
-> +    gtm601_codec {
-> +        compatible =3D "option,gtm601";
-> +    };
-> --=20
-> 2=2E33=2E0
->=20
->=20
+    if (!(current->policy == SCHED_NORMAL ||
+          current->policy == SCHED_BATCH))
+        return growth_fixed;
+
+With this condition:
+
+(1) you're not bailing when current is the idle task. It has policy
+    equal 0 (SCHED_NORMAL)
+
+(2) But you're bailing for a SCHED_IDLE (CFS) task.
+
+I'm not sure that this is indented here?
+
+Since you want to do the scaling later based on whats left for CFS tasks
+from the CPU capacity my hunch is that you want to rather do:
+
+    if (current->sched_class != &fair_sched_class)
+        return growth_fixed;
+
+What's the possible sched classes of current in psi_memtime_fixup?
