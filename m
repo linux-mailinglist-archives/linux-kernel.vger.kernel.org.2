@@ -2,253 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B456144B3B4
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 21:05:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B44F144B3BB
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 21:06:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244143AbhKIUIH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Nov 2021 15:08:07 -0500
-Received: from mail.kernel.org ([198.145.29.99]:39012 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S244130AbhKIUIG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Nov 2021 15:08:06 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E332461057;
-        Tue,  9 Nov 2021 20:05:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1636488320;
-        bh=pAYP5FsfQrBCb1kV+iD+1m630Cp0TkRt5IHiAykV0/I=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:From;
-        b=DWdHh7mPShwm0JICakWt13I1cDfFoxveS1bjg+BF/4rAKVtk9zKEQ/XGkPYBzzr6g
-         heqCNVM7Zxq0s7fZCpQ5ZTCHR7k9CpbXjB9CVosnh1d35ZJy1KIJ3sAPSCN1dhOoDj
-         1i68IcAvyVK5MpP0VRCOreAoZZEjoHrhsKPoHFRf+6ab3cewM7ADoZy846v2c054nT
-         EgMYVaGaXhJceh5pvBLlU7cHN2owuanFd8gUrGw9pci7JMXzpLjHPn3n8TN/fngWVg
-         KOp8rkKfcPJcVPagfjYrYMksMDFz/b+n4yZTsjx6pVKUHzKkFgJABKKkvrUE3E8Mo3
-         QqIPioqLJ6Upw==
-Date:   Tue, 9 Nov 2021 14:05:18 -0600
-From:   Bjorn Helgaas <helgaas@kernel.org>
-To:     "Rafael J. Wysocki" <rafael@kernel.org>
-Cc:     Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
-        <u.kleine-koenig@pengutronix.de>,
-        Robert =?utf-8?B?xZp3acSZY2tp?= <robert@swiecki.net>,
-        linux-i2c <linux-i2c@vger.kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Linux PCI <linux-pci@vger.kernel.org>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Subject: Re: [PATCH] pci: Don't call resume callback for nearly bound devices
-Message-ID: <20211109200518.GA1176309@bhelgaas>
+        id S244152AbhKIUJj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Nov 2021 15:09:39 -0500
+Received: from mail-pl1-f176.google.com ([209.85.214.176]:34318 "EHLO
+        mail-pl1-f176.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S241827AbhKIUJi (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Nov 2021 15:09:38 -0500
+Received: by mail-pl1-f176.google.com with SMTP id r5so639634pls.1
+        for <linux-kernel@vger.kernel.org>; Tue, 09 Nov 2021 12:06:52 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:cc:subject:message-id:mime-version
+         :content-disposition;
+        bh=qM0it/Joiu/Pg54IrxtysWeHDwiRHoa6OI2Dc7WUbkw=;
+        b=h//hQJBsskUJOYiYg2xALpr/DiwAmft5ntAtOsS+0NLrmzbyq3ilCo09Gg6AC4B9MR
+         GwPGLQOG1RpAfo6XPIuG8yFl2Z6rJQ/KUbafVH3/J2iV3Oh8jiQJIaJRAh/gJKHbeAIo
+         j8sidMStw65mTRrdeg2o188UTeDctlwAJjec76MSc7L3li02gTJKDtZAM9dQDeKGWKRw
+         5/rcAdvKQBOZKMfnAls5fm6ewEbZcyPBhNv67so7HzDlUB1UJg/Ot2MjVKSb7/Q8imx/
+         0XAccFVByVUKklPV4uCHcU+Y6vl87ceGsaLfvsQSbkFOHddacxvDV3XgVxz9SxHmfLKW
+         kfdg==
+X-Gm-Message-State: AOAM530PlQMBb72nKerR3XqEAk/rK8ldMP1aWFZX2+xKeic7xaERST/T
+        NHzupFmEBR281Jph3qdtkpo=
+X-Google-Smtp-Source: ABdhPJwiXmwRwd6EcY2rhfLWuxqbUXwrvRK6Z4u75zd4PVZF1TX39gv4EIb+3Xc/8N/iDJ38AkrPlg==
+X-Received: by 2002:a17:902:be0f:b0:13a:19b6:6870 with SMTP id r15-20020a170902be0f00b0013a19b66870mr10159496pls.64.1636488411967;
+        Tue, 09 Nov 2021 12:06:51 -0800 (PST)
+Received: from sultan-box.localdomain ([199.116.118.235])
+        by smtp.gmail.com with ESMTPSA id j7sm6274538pfc.74.2021.11.09.12.06.49
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 09 Nov 2021 12:06:51 -0800 (PST)
+Date:   Tue, 9 Nov 2021 12:06:48 -0800
+From:   Sultan Alsawaf <sultan@kerneltoast.com>
+Cc:     Anton Vorontsov <anton@enomsg.org>,
+        Ben Segall <bsegall@google.com>,
+        Colin Cross <ccross@android.com>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        David Airlie <airlied@linux.ie>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        dri-devel@lists.freedesktop.org, Ingo Molnar <mingo@redhat.com>,
+        John Ogness <john.ogness@linutronix.de>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Kees Cook <keescook@chromium.org>,
+        linux-kernel@vger.kernel.org,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Mel Gorman <mgorman@suse.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Petr Mladek <pmladek@suse.com>,
+        Sergey Senozhatsky <senozhatsky@chromium.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Tony Luck <tony.luck@intel.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>
+Subject: printk deadlock due to double lock attempt on current CPU's runqueue
+Message-ID: <YYrU2PdmdNkulWSM@sultan-box.localdomain>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAJZ5v0impb8uscbp8LUTBMExfMoGz=cPrTWhSGh0GF_SANNKPQ@mail.gmail.com>
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 09, 2021 at 07:58:47PM +0100, Rafael J. Wysocki wrote:
-> On Tue, Nov 9, 2021 at 7:52 PM Rafael J. Wysocki <rafael@kernel.org> wrote:
-> > On Tue, Nov 9, 2021 at 7:12 PM Bjorn Helgaas <helgaas@kernel.org> wrote:
-> > > On Tue, Nov 09, 2021 at 06:18:18PM +0100, Rafael J. Wysocki wrote:
-> > > > On Tue, Nov 9, 2021 at 7:59 AM Uwe Kleine-König
-> > > > <u.kleine-koenig@pengutronix.de> wrote:
-> > > > > On Mon, Nov 08, 2021 at 08:56:19PM -0600, Bjorn Helgaas wrote:
-> > > > > > [+cc Greg: new device_is_bound() use]
-> > > > >
-> > > > > ack, that's what I would have suggested now, too.
-> > > > >
-> > > > > > On Mon, Nov 08, 2021 at 10:22:26PM +0100, Uwe Kleine-König wrote:
-> > > > > > > pci_pm_runtime_resume() exits early when the device to resume isn't
-> > > > > > > bound yet:
-> > > > > > >
-> > > > > > >     if (!to_pci_driver(dev->driver))
-> > > > > > >             return 0;
-> > > > > > >
-> > > > > > > This however isn't true when the device currently probes and
-> > > > > > > local_pci_probe() calls pm_runtime_get_sync() because then the driver
-> > > > > > > core already setup dev->driver. As a result the driver's resume callback
-> > > > > > > is called before the driver's probe function is called and so more often
-> > > > > > > than not required driver data isn't setup yet.
-> > > > > > >
-> > > > > > > So replace the check for the device being unbound by a check that only
-> > > > > > > becomes true after .probe() succeeded.
-> > > > > >
-> > > > > > I like the fact that this patch is short and simple.
-> > > > > >
-> > > > > > But there are 30+ users of to_pci_driver().  This patch asserts that
-> > > > > > *one* of them, pci_pm_runtime_resume(), is special and needs to test
-> > > > > > device_is_bound() instead of using to_pci_driver().
-> > > > >
-> > > > > Maybe for the other locations using device_is_bound(&pdev->dev) instead
-> > > > > of to_pci_driver(pdev) != NULL would be nice, too?
-> > > > >
-> > > > > I have another doubt: device_is_bound() should (according to its
-> > > > > kernel-doc) be called with the device lock held. For the call stack that
-> > > > > is (maybe) fixed here, the lock is held (by __device_attach). We
-> > > > > probably should check if the lock is also held for the other calls of
-> > > > > pci_pm_runtime_resume().
-> > > > >
-> > > > > Hmm, the device lock is a mutex, the pm functions might be called in
-> > > > > atomic context, right?
-> > > > >
-> > > > > > It's special because the current PM implementation calls it via
-> > > > > > pm_runtime_get_sync() before the driver's .probe() method.  That
-> > > > > > connection is a little bit obscure and fragile.  What if the PM
-> > > > > > implementation changes?
-> > > > >
-> > > > > Maybe a saver bet would be to not use pm_runtime_get_sync() in
-> > > > > local_pci_probe()?
-> > > >
-> > > > Yes, in principle it might be replaced with pm_runtime_get_noresume().
-> > > >
-> > > > In theory, that may be problematic if a device is put into a low-power
-> > > > state on remove and then the driver is bound again to it.
-> > > >
-> > > > > I wonder if the same problem exists on remove, i.e. pci_device_remove()
-> > > > > calls pm_runtime_put_sync() after the driver's .remove() callback was
-> > > > > called.
-> > > >
-> > > > If it is called after ->remove() and before clearing the device's
-> > > > driver pointer, then yes.
-> > >
-> > > Yes, that is the case:
-> > >
-> > >   pci_device_remove
-> > >     if (drv->remove) {
-> > >       pm_runtime_get_sync
-> > >       drv->remove()                # <-- driver ->remove() method
-> > >       pm_runtime_put_noidle
-> > >     }
-> > >     ...
-> > >     pm_runtime_put_sync            # <-- after ->remove()
-> > >
-> > > So pm_runtime_put_sync() is called after drv->remove(), and it may
-> > > call drv->pm->runtime_idle().  I think the driver may not expect this.
-> > >
-> > > > If this is turned into pm_runtime_put_noidle(), all should work.
-> > >
-> > > pci_device_remove() already calls pm_runtime_put_noidle() immediately
-> > > after calling the driver ->remove() method.
-> > >
-> > > Are you saying we should do this, which means pci_device_remove()
-> > > would call pm_runtime_put_noidle() twice?
-> >
-> > Well, they are both needed to keep the PM-runtime reference counting in balance.
-> >
-> > This still has an issue, though, because user space would be able to
-> > trigger a runtime suspend via sysfs after we've dropped the last
-> > reference to the device in pci_device_remove().
-> >
-> > So instead, we can drop the pm_runtime_get_sync() and
-> > pm_runtime_put_sync() from local_pci_probe() and pci_device_remove(),
-> > respectively, and add pm_runtine_get_noresume() to pci_pm_init(),
-> > which will prevent PM-runtime from touching the device until it has a
-> > driver that supports PM-runtime.
-> >
-> > We'll lose the theoretical ability to put unbound devices into D3 this
-> > way, but we learned some time ago that this isn't safe in all cases
-> > anyway.
-> 
-> IOW, something like this (untested and most likely white-space-damaged).
+Hi,
 
-Thanks!  I applied this manually to for-linus in hopes of making the
-the next linux-next build.
+I encountered a printk deadlock on 5.13 which appears to still affect the latest
+kernel. The deadlock occurs due to printk being used while having the current
+CPU's runqueue locked, and the underlying framebuffer console attempting to lock
+the same runqueue when printk tries to flush the log buffer.
 
-Please send any testing reports and corrections to the patch and
-commit log!
+Here's the backtrace corresponding to the deadlock, with some notes I've added:
+-----------------------8<-----------------------
+  PID: 0      TASK: ffff888100d832c0  CPU: 11  COMMAND: "swapper/11"
+      [exception RIP: native_halt+22]
+      RIP: ffffffff8320eb97  RSP: ffffc900005b8540  RFLAGS: 00000002
+      RAX: 0000000000000001  RBX: ffff88821c534280  RCX: ffffed10438a6850
+      RDX: 0000000000000000  RSI: 0000000000000003  RDI: ffff88821c534280
+      RBP: 0000000000000003   R8: 0000000000000001   R9: ffffffff81302973
+      R10: ffff88821c534280  R11: ffffed10438a6850  R12: ffff88821c535080
+      R13: ffff88825c0b32c0  R14: 0000000000000000  R15: ffff88821c534280
+      CS: 0010  SS: 0018
+   #0 [ffffc900005b8540] kvm_wait at ffffffff81125cc1
+   #1 [ffffc900005b8558] pv_wait_head_or_lock at ffffffff8130294a
+   #2 [ffffc900005b8580] __pv_queued_spin_lock_slowpath at ffffffff81302d2e
+   #3 [ffffc900005b8600] do_raw_spin_lock at ffffffff81303a33
+   #4 [ffffc900005b8668] _raw_spin_lock at ffffffff8320f118     <-- ***DEADLOCK***
+   #5 [ffffc900005b8680] ttwu_queue at ffffffff8125cff9         <-- tries to lock this CPU's runqueue again...
+   #6 [ffffc900005b86f8] try_to_wake_up at ffffffff8125d778
+   #7 [ffffc900005b8780] wake_up_process at ffffffff8125d924
+   #8 [ffffc900005b8788] wake_up_worker at ffffffff8121268b
+   #9 [ffffc900005b8798] insert_work at ffffffff812199aa
+  #10 [ffffc900005b87d0] __queue_work at ffffffff8121dcde
+  #11 [ffffc900005b8810] queue_work_on at ffffffff8121e1ca
+  #12 [ffffc900005b8838] drm_fb_helper_damage at ffffffffc079b0a0 [drm_kms_helper]
+  #13 [ffffc900005b8878] drm_fb_helper_sys_imageblit at ffffffffc079b613 [drm_kms_helper]
+  #14 [ffffc900005b88a8] drm_fbdev_fb_imageblit at ffffffffc079b9e1 [drm_kms_helper]
+  #15 [ffffc900005b88c0] soft_cursor at ffffffff8236ffc9
+  #16 [ffffc900005b8928] bit_cursor at ffffffff8236f207
+  #17 [ffffc900005b8a50] fbcon_cursor at ffffffff82362c0f
+  #18 [ffffc900005b8a88] hide_cursor at ffffffff8253be1c
+  #19 [ffffc900005b8aa0] vt_console_print at ffffffff82543094
+  #20 [ffffc900005b8af0] call_console_drivers at ffffffff81319b32
+  #21 [ffffc900005b8b30] console_unlock at ffffffff8131bd50
+  #22 [ffffc900005b8c68] vprintk_emit at ffffffff8131e0f5
+  #23 [ffffc900005b8ca8] vprintk_default at ffffffff8131e4ff
+  #24 [ffffc900005b8cb0] vprintk at ffffffff8131eee6
+  #25 [ffffc900005b8cd0] printk at ffffffff81318ce0
+  #26 [ffffc900005b8d78] __warn_printk at ffffffff811c7b9d
+  #27 [ffffc900005b8e28] enqueue_task_fair at ffffffff8129774a  <-- SCHED_WARN_ON(rq->tmp_alone_branch != &rq->leaf_cfs_rq_list);
+  #28 [ffffc900005b8ec0] activate_task at ffffffff8125625d
+  #29 [ffffc900005b8ef0] ttwu_do_activate at ffffffff81257943
+  #30 [ffffc900005b8f28] sched_ttwu_pending at ffffffff8125c71f <-- locks this CPU's runqueue
+  #31 [ffffc900005b8fa0] flush_smp_call_function_queue at ffffffff813c6833
+  #32 [ffffc900005b8fd8] generic_smp_call_function_single_interrupt at ffffffff813c7f58
+  #33 [ffffc900005b8fe0] __sysvec_call_function_single at ffffffff810f1456
+  #34 [ffffc900005b8ff0] sysvec_call_function_single at ffffffff831ec1bc
+  --- <IRQ stack> ---
+  #35 [ffffc9000019fda8] sysvec_call_function_single at ffffffff831ec1bc
+      RIP: ffffffff831ed06e  RSP: ffffed10438a6a49  RFLAGS: 00000001
+      RAX: ffff888100d832c0  RBX: 0000000000000000  RCX: 1ffff92000033fd7
+      RDX: 0000000000000000  RSI: ffff888100d832c0  RDI: ffffed10438a6a49
+      RBP: ffffffff831ec166   R8: dffffc0000000000   R9: 0000000000000000
+      R10: ffffffff83400e22  R11: 0000000000000000  R12: ffffffff831ed83e
+      R13: 0000000000000000  R14: ffffc9000019fde8  R15: ffffffff814d4d9d
+      ORIG_RAX: ffff88821c53524b  CS: 0001  SS: ef073a2
+  WARNING: possibly bogus exception frame
+----------------------->8-----------------------
 
-commit dd414877b58b ("PCI/PM: Prevent runtime PM until claimed by a driver that supports it")
-Author: Bjorn Helgaas <bhelgaas@google.com>
-Date:   Tue Nov 9 13:36:09 2021 -0600
+The catalyst is that CONFIG_SCHED_DEBUG is enabled and the tmp_alone_branch
+assertion fails (Peter, is this bad?). The current CPU's runqueue is locked when
+the warning is printed, and then drm_fb_helper_damage() triggers the deadlock
+when it tries to schedule a worker and thus attempts to re-lock the runqueue.
 
-    PCI/PM: Prevent runtime PM until claimed by a driver that supports it
-    
-    Previously we had a path that could call a driver's ->runtime_resume()
-    method before calling the driver's ->probe() method, which is a problem
-    because ->runtime_resume() often relies on initialization done in
-    ->probe():
-    
-      local_pci_probe
-        pm_runtime_get_sync
-          ...
-            pci_pm_runtime_resume
-              if (!pci_dev->driver)
-                return 0;                          <-- early exit
-              dev->driver->pm->runtime_resume();   <-- driver ->runtime_resume()
-        pci_dev->driver = pci_drv;
-        pci_drv->probe()                           <-- driver ->probe()
-    
-    Prior to 2a4d9408c9e8 ("PCI: Use to_pci_driver() instead of
-    pci_dev->driver"), we took the early exit, which avoided the problem.  But
-    2a4d9408c9e8 removed pci_dev->driver (since it's redundant with
-    device->driver), so we no longer take the early exit, which leads to havoc
-    in ->runtime_resume().
-    
-    Similarly, we could call the driver's ->runtime_idle() method after its
-    ->remove() method.
-    
-    Avoid the problem by dropping the pm_runtime_get_sync() and
-    pm_runtime_put_sync() from local_pci_probe() and pci_device_remove(),
-    respectively.
-    
-    Add pm_runtime_get_noresume(), which uses no driver PM callbacks, to the
-    pci_pm_init() enumeration path.  This will prevent PM-runtime from touching
-    the device until it has a driver that supports PM-runtime.
-    
-    Link: https://lore.kernel.org/r/CAJZ5v0impb8uscbp8LUTBMExfMoGz=cPrTWhSGh0GF_SANNKPQ@mail.gmail.com
-    Fixes: 2a4d9408c9e8 ("PCI: Use to_pci_driver() instead of pci_dev->driver")
-    Reported-by: Robert Święcki <robert@swiecki.net>
-    Suggested-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
-    Signed-off-by: Bjorn Helgaas <bhelgaas@google.com>
+I'm not sure what the *correct* solution is here (don't use printk while having
+a runqueue locked? don't use schedule_work() from the fbcon path? tell printk
+to use one of its lock-less backends?), so I've cc'd all the relevant folks.
 
-diff --git a/drivers/pci/pci-driver.c b/drivers/pci/pci-driver.c
-index 1d98c974381c..41cdf510214f 100644
---- a/drivers/pci/pci-driver.c
-+++ b/drivers/pci/pci-driver.c
-@@ -309,16 +309,6 @@ static long local_pci_probe(void *_ddi)
- 	struct device *dev = &pci_dev->dev;
- 	int rc;
- 
--	/*
--	 * Unbound PCI devices are always put in D0, regardless of
--	 * runtime PM status.  During probe, the device is set to
--	 * active and the usage count is incremented.  If the driver
--	 * supports runtime PM, it should call pm_runtime_put_noidle(),
--	 * or any other runtime PM helper function decrementing the usage
--	 * count, in its probe routine and pm_runtime_get_noresume() in
--	 * its remove routine.
--	 */
--	pm_runtime_get_sync(dev);
- 	rc = pci_drv->probe(pci_dev, ddi->id);
- 	if (!rc)
- 		return rc;
-@@ -464,9 +454,6 @@ static void pci_device_remove(struct device *dev)
- 	pcibios_free_irq(pci_dev);
- 	pci_iov_remove(pci_dev);
- 
--	/* Undo the runtime PM settings in local_pci_probe() */
--	pm_runtime_put_sync(dev);
--
- 	/*
- 	 * If the device is still on, set the power state as "unknown",
- 	 * since it might change by the next time we load the driver.
-diff --git a/drivers/pci/pci.c b/drivers/pci/pci.c
-index b88db815ee01..e9c38b994c73 100644
---- a/drivers/pci/pci.c
-+++ b/drivers/pci/pci.c
-@@ -3097,7 +3097,15 @@ void pci_pm_init(struct pci_dev *dev)
- 	u16 pmc;
- 
- 	pm_runtime_forbid(&dev->dev);
-+
-+	/*
-+	 * Unbound PCI devices are always put in D0.  If the driver supports
-+	 * runtime PM, it should call pm_runtime_put_noidle(), or any other
-+	 * runtime PM helper function decrementing the usage count, in its
-+	 * probe routine and pm_runtime_get_noresume() in its remove routine.
-+	 */
- 	pm_runtime_set_active(&dev->dev);
-+	pm_runtime_get_noresume(&dev->dev);
- 	pm_runtime_enable(&dev->dev);
- 	device_enable_async_suspend(&dev->dev);
- 	dev->wakeup_prepared = false;
+Thanks,
+Sultan
