@@ -2,234 +2,241 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5E55F44A9A4
+	by mail.lfdr.de (Postfix) with ESMTP id A795B44A9A6
 	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 09:47:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244491AbhKIItr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Nov 2021 03:49:47 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34960 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244481AbhKIIto (ORCPT
+        id S244500AbhKIItt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Nov 2021 03:49:49 -0500
+Received: from smtp-out2.suse.de ([195.135.220.29]:40420 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S244489AbhKIItr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Nov 2021 03:49:44 -0500
-Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A0EBC061764;
-        Tue,  9 Nov 2021 00:46:58 -0800 (PST)
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: dafna)
-        with ESMTPSA id 1D8A11F44A93
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=collabora.com; s=mail;
-        t=1636447617; bh=GySPsgHaKHrbESaRknpPqJF3dfnlOanZggmDxueWuAY=;
-        h=Subject:From:To:Cc:References:Date:In-Reply-To:From;
-        b=Bso2Z5D1IbJa9dLWHgk6/zlDzpD6MXQzyRIT2GOEbs9Qi31+WEwrythdC2Ao7Iabh
-         Rt8akCUOB+Y9tWDh05UKiLlh6SBVzEW5ofb+twAyF1VVTHn3hbd6DmFY3AzhnTbqCx
-         7S9hJ4GfBN7k5gWGJw+7KbM7J/1GdGDkMoDN0O5Qa/E52Ikjzm9qh5cm4dmZRwY/AU
-         32BXQ6CzxvgmuAHriZGVppDWpxP7ffl5xIGXsY9c43hC9Jlj3jax2dPKClktF+01iY
-         zPlZqLXAhYI5wSW/MAvQ7yPm5slnJ60U4Ki1Ub5CGuqLOdRGlAtErZo5+zsngvgGiy
-         +QHrr+RO6+EjQ==
-Subject: Re: [PATCH v4] media: mtk-vpu: Ensure alignment of 8 for DTCM buffer
-From:   Dafna Hirschfeld <dafna.hirschfeld@collabora.com>
-To:     Irui Wang <irui.wang@mediatek.com>,
-        houlong wei <houlong.wei@mediatek.com>,
-        Alexandre Courbot <acourbot@chromium.org>,
-        Hans Verkuil <hverkuil@xs4all.nl>
-Cc:     Linux Media Mailing List <linux-media@vger.kernel.org>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        "kernel@collabora.com" <kernel@collabora.com>,
-        Dafna Hirschfeld <dafna3@gmail.com>,
-        =?UTF-8?B?VGlmZmFueSBMaW4gKOael+aFp+ePiik=?= 
-        <tiffany.lin@mediatek.com>,
-        =?UTF-8?B?QW5kcmV3LUNUIENoZW4gKOmZs+aZuui/qik=?= 
-        <Andrew-CT.Chen@mediatek.com>,
-        =?UTF-8?B?TWluZ2hzaXUgVHNhaSAo6JSh5piO5L+uKQ==?= 
-        <Minghsiu.Tsai@mediatek.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>
-References: <20210920170408.1561-1-dafna.hirschfeld@collabora.com>
- <c59b7f40-d99e-370a-b797-5dc72979df46@xs4all.nl>
- <CAPBb6MW_i1_Lh2ZaF8jGjcV-4XBhjswtyKkZCk3HxKO7LX79Og@mail.gmail.com>
- <9475ac5b-79fe-da0e-ed1c-a91275cad46e@collabora.com>
- <c01c2c6e2351c915fb6e55b025bf2ab5c449f045.camel@mediatek.com>
- <8dfc07306b853126e8109fc953fd6388b63c65d2.camel@mediatek.com>
- <4e7ff420-f67d-5d4a-8733-f4b83d80af13@collabora.com>
-Message-ID: <428f216d-cdff-e22d-b96e-f9dd9cc158e3@collabora.com>
-Date:   Tue, 9 Nov 2021 10:46:50 +0200
+        Tue, 9 Nov 2021 03:49:47 -0500
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id D81D71FDB7;
+        Tue,  9 Nov 2021 08:47:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1636447620; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=oU9XWgJQlaJrXpUT4FnrNjHqt2Qw25sadfWuBpjts30=;
+        b=fmcvaFxniPGxoGVm+/rtu7J2uWZvWLkiyn30Cz0PZlm1Q29CWkcoD1iBz1yHK8V5j6d54D
+        kGcBULlIN4CFMugjYjpjkqnF5o4MHXY4UpPqEp46fYJCdX9qflvp20IsNJltQ2Ap+E/KlR
+        9r+0HSPIOYe3OnvctsNX/OAlqTVGaiI=
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 65EBA13ADA;
+        Tue,  9 Nov 2021 08:47:00 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id CBQUF4Q1imHUPQAAMHmgww
+        (envelope-from <jgross@suse.com>); Tue, 09 Nov 2021 08:47:00 +0000
+Subject: Re: [PATCH 1/2] x86/kvm: revert commit 76b4f357d0e7d8f6f00
+To:     Ben Gardon <bgardon@google.com>
+Cc:     kvm@vger.kernel.org, x86@kernel.org, linux-kernel@vger.kernel.org,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Eduardo Habkost <ehabkost@redhat.com>
+References: <20210913135745.13944-1-jgross@suse.com>
+ <20210913135745.13944-2-jgross@suse.com>
+ <CANgfPd-DjawJpZDAFzwS54yukPSsUAU+rWsais2_FCeLCZuY0A@mail.gmail.com>
+ <CANgfPd-njeSYSiytAYEXLG8wwTmLBA6viV7YAHj5uVeukPde=g@mail.gmail.com>
+From:   Juergen Gross <jgross@suse.com>
+Message-ID: <c4f051e2-2c85-d367-549a-d5ad34af7a13@suse.com>
+Date:   Tue, 9 Nov 2021 09:46:59 +0100
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+ Thunderbird/78.12.0
 MIME-Version: 1.0
-In-Reply-To: <4e7ff420-f67d-5d4a-8733-f4b83d80af13@collabora.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <CANgfPd-njeSYSiytAYEXLG8wwTmLBA6viV7YAHj5uVeukPde=g@mail.gmail.com>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature";
+ boundary="zmgKaTk2yWz1VVGsXgq6m6uw49XCBq6Ud"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--zmgKaTk2yWz1VVGsXgq6m6uw49XCBq6Ud
+Content-Type: multipart/mixed; boundary="Erc7fE3CVEmgkMtiaUCbT4Wdi5tnCgAsq";
+ protected-headers="v1"
+From: Juergen Gross <jgross@suse.com>
+To: Ben Gardon <bgardon@google.com>
+Cc: kvm@vger.kernel.org, x86@kernel.org, linux-kernel@vger.kernel.org,
+ Paolo Bonzini <pbonzini@redhat.com>, Sean Christopherson
+ <seanjc@google.com>, Vitaly Kuznetsov <vkuznets@redhat.com>,
+ Wanpeng Li <wanpengli@tencent.com>, Jim Mattson <jmattson@google.com>,
+ Joerg Roedel <joro@8bytes.org>, Thomas Gleixner <tglx@linutronix.de>,
+ Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+ "H. Peter Anvin" <hpa@zytor.com>, Eduardo Habkost <ehabkost@redhat.com>
+Message-ID: <c4f051e2-2c85-d367-549a-d5ad34af7a13@suse.com>
+Subject: Re: [PATCH 1/2] x86/kvm: revert commit 76b4f357d0e7d8f6f00
+References: <20210913135745.13944-1-jgross@suse.com>
+ <20210913135745.13944-2-jgross@suse.com>
+ <CANgfPd-DjawJpZDAFzwS54yukPSsUAU+rWsais2_FCeLCZuY0A@mail.gmail.com>
+ <CANgfPd-njeSYSiytAYEXLG8wwTmLBA6viV7YAHj5uVeukPde=g@mail.gmail.com>
+In-Reply-To: <CANgfPd-njeSYSiytAYEXLG8wwTmLBA6viV7YAHj5uVeukPde=g@mail.gmail.com>
 
+--Erc7fE3CVEmgkMtiaUCbT4Wdi5tnCgAsq
+Content-Type: multipart/mixed;
+ boundary="------------C5E462C3B90A44332A89644F"
+Content-Language: en-US
 
-On 03.11.21 13:04, Dafna Hirschfeld wrote:
-> 
-> 
-> On 03.11.21 10:19, Irui Wang wrote:
->> Hi,
+This is a multi-part message in MIME format.
+--------------C5E462C3B90A44332A89644F
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: quoted-printable
+
+On 08.11.21 21:15, Ben Gardon wrote:
+> On Mon, Nov 8, 2021 at 12:14 PM Ben Gardon <bgardon@google.com> wrote:
 >>
->> The "len" of share_buf copied should be always 8 alignment;
->> do you have other logs to prove the len is not 8 alignment when errors
->> appear?
-> 
-> Hi, I found out that "sizeof(mdp_ipi_comm) = 20"
-> this is due to the macro #pragma pack(push, 4) in mtk_mdp_ipi.h
-> 
-> see [1]
-> 
-> [1] http://lkml.iu.edu/hypermail/linux/kernel/2109.2/04978.html
-> 
+>> On Mon, Sep 13, 2021 at 7:51 AM Juergen Gross <jgross@suse.com> wrote:=
 
-Hi Irui Wang,
-Any update regarding that patch?
-Can you give more explanation for that errors that we see
-when the buffer size is not a multiple of 8?
-
-Thanks,
-Dafna
-
-> Thanks,
-> Dafna
-> 
->>>> [58.350841] mtk-mdp 14001000.rdma: processing failed: -22
+>>>
+>>> Commit 76b4f357d0e7d8f6f00 ("x86/kvm: fix vcpu-id indexed array sizes=
+")
+>>> has wrong reasoning, as KVM_MAX_VCPU_ID is not defining the maximum
+>>> allowed vcpu-id as its name suggests, but the number of vcpu-ids.
+>>>
+>>> So revert this patch again.
+>>>
+>>> Suggested-by: Eduardo Habkost <ehabkost@redhat.com>
+>>> Signed-off-by: Juergen Gross <jgross@suse.com>
 >>
->> On Wed, 2021-11-03 at 16:03 +0800, houlong wei wrote:
->>> Add mtk-vpu driver expert irui.wang in the loop.
->>>
->>> On Mon, 2021-10-18 at 15:07 +0800, Dafna Hirschfeld wrote:
->>>>
->>>> On 18.10.21 03:16, Alexandre Courbot wrote:
->>>>> Hi Hans!
->>>>>
->>>>> On Mon, Oct 4, 2021 at 6:37 PM Hans Verkuil <hverkuil@xs4all.nl>
->>>>> wrote:
->>>>>>
->>>>>> On 20/09/2021 19:04, Dafna Hirschfeld wrote:
->>>>>>> From: Alexandre Courbot <acourbot@chromium.org>
->>>>>>>
->>>>>>> When running memcpy_toio:
->>>>>>> memcpy_toio(send_obj->share_buf, buf, len);
->>>>>>> it was found that errors appear if len is not a multiple of
->>>>>>> 8:
->>>>>>>
->>>>>>> [58.350841] mtk-mdp 14001000.rdma: processing failed: -22
->>>>>>
->>>>>> Why do errors appear? Is that due to a HW bug? Some other
->>>>>> reason?
->>>>>
->>>>> MTK folks would be the best placed to answer this, but since the
->>>>> failure is reported by the firmware I'd suspect either a firmware
->>>>> or
->>>>> hardware limitation.
->>>>>
->>>>>>
->>>>>>>
->>>>>>> This patch ensures the copy of a multiple of 8 size by
->>>>>>> calling
->>>>>>> round_up(len, 8) when copying
->>>>>>>
->>>>>>> Fixes: e6599adfad30 ("media: mtk-vpu: avoid unaligned access
->>>>>>> to
->>>>>>> DTCM buffer.")
->>>>>>> Signed-off-by: Alexandre Courbot <acourbot@chromium.org>
->>>>>>> Signed-off-by: Enric Balletbo i Serra <
->>>>>>> enric.balletbo@collabora.com>
->>>>>>> Signed-off-by: Dafna Hirschfeld <
->>>>>>> dafna.hirschfeld@collabora.com
->>>>>>>>
->>>>>>>
->>>>>>> Reviewed-by: Houlong Wei <houlong.wei@mediatek.com>
->>>>>>> ---
->>>>>>> changes since v3:
->>>>>>> 1. multile -> multiple
->>>>>>> 2. add inline doc
->>>>>>>
->>>>>>> changes since v2:
->>>>>>> 1. do the extra copy only if len is not multiple of 8
->>>>>>>
->>>>>>> changes since v1:
->>>>>>> 1. change sign-off-by tags
->>>>>>> 2. change values to memset
->>>>>>>
->>>>>>>    drivers/media/platform/mtk-vpu/mtk_vpu.c | 15
->>>>>>> ++++++++++++++-
->>>>>>>    1 file changed, 14 insertions(+), 1 deletion(-)
->>>>>>>
->>>>>>> diff --git a/drivers/media/platform/mtk-vpu/mtk_vpu.c
->>>>>>> b/drivers/media/platform/mtk-vpu/mtk_vpu.c
->>>>>>> index ec290dde59cf..1df031716c8f 100644
->>>>>>> --- a/drivers/media/platform/mtk-vpu/mtk_vpu.c
->>>>>>> +++ b/drivers/media/platform/mtk-vpu/mtk_vpu.c
->>>>>>> @@ -349,7 +349,20 @@ int vpu_ipi_send(struct platform_device
->>>>>>> *pdev,
->>>>>>>                 }
->>>>>>>         } while (vpu_cfg_readl(vpu, HOST_TO_VPU));
->>>>>>>
->>>>>>> -     memcpy_toio(send_obj->share_buf, buf, len);
->>>>>>> +     /*
->>>>>>> +      * when copying data to the vpu hardware, the
->>>>>>> memcpy_toio
->>>>>>> operation must copy
->>>>>>> +      * a multiple of 8. Otherwise the processing fails
->>>>>>
->>>>>> Same here: it needs to explain why the processing fails.
->>>>
->>>> Is writing 'due to hardware or firmware limitation' enough?
->>>> If not, then we should wait for mediatek people's response to
->>>> explain
->>>> if they know more
->>>>
->>>>>>
->>>>>>> +      */
->>>>>>> +     if (len % 8 != 0) {
->>>>>>> +             unsigned char data[SHARE_BUF_SIZE];
->>>>>>
->>>>>> Wouldn't it be more robust if you say:
->>>>>>
->>>>>>                   unsigned char data[sizeof(send_obj-
->>>>>>> share_buf)];
->>>>>
->>>>> Definitely yes.
->>>>
->>>> I'll send v5 fixing this
->>>>
->>>>>
->>>>>>
->>>>>> I also think that the SHARE_BUF_SIZE define needs a comment
->>>>>> stating that it must be a
->>>>>> multiple of 8, otherwise unexpected things can happen.
->>>>>>
->>>>>> You also noticed that the current SHARE_BUF_SIZE define is too
->>>>>> low, but I saw
->>>>>> no patch correcting this. Shouldn't that be fixed as well?
->>>>>
->>>>> AFAICT the firmware expects this exact size on its end, so I
->>>>> don't
->>>>> believe it can be changed that easily. But maybe someone from MTK
->>>>> can
->>>>> prove me wrong.
->>>>>
->>>>
->>>> I looked further and noted that the structs that are larger than
->>>> 'SHARE_BUF_SIZE'
->>>> (venc_ap_ipi_msg_enc_ext venc_ap_ipi_msg_set_param_ext)
->>>> are used by drivers that don't use this vpu api, so actually
->>>> SHARE_BUF_SIZE is
->>>> not too low and as Corurbot worte probably not changeable.
->>>>
->>>>
->>>> Thanks,
->>>> Dafna
->>>>
->>>>> Cheers,
->>>>> Alex.
->>>>>
->>>
->>>
+>> The original commit 76b4f357d0e7d8f6f00 CC'ed Stable but this revert
+>> does not. Looking at the stable branches, I see the original has been
+>> reverted but this hasn't. Should this be added to Stable as well?
+>=20
+> *the original has been incorporated into the stable branches but this h=
+asn't.
+
+Just yesterday I received mails that this patch has been added to the
+stable branches.
+
+
+Juergen
+
+--------------C5E462C3B90A44332A89644F
+Content-Type: application/pgp-keys;
+ name="OpenPGP_0xB0DE9DD628BF132F.asc"
+Content-Transfer-Encoding: quoted-printable
+Content-Description: OpenPGP public key
+Content-Disposition: attachment;
+ filename="OpenPGP_0xB0DE9DD628BF132F.asc"
+
+-----BEGIN PGP PUBLIC KEY BLOCK-----
+
+xsBNBFOMcBYBCACgGjqjoGvbEouQZw/ToiBg9W98AlM2QHV+iNHsEs7kxWhKMjrioyspZKOBy=
+cWx
+w3ie3j9uvg9EOB3aN4xiTv4qbnGiTr3oJhkB1gsb6ToJQZ8uxGq2kaV2KL9650I1SJvedYm8O=
+f8Z
+d621lSmoKOwlNClALZNew72NjJLEzTalU1OdT7/i1TXkH09XSSI8mEQ/ouNcMvIJNwQpd369y=
+9bf
+IhWUiVXEK7MlRgUG6MvIj6Y3Am/BBLUVbDa4+gmzDC9ezlZkTZG2t14zWPvxXP3FAp2pkW0xq=
+G7/
+377qptDmrk42GlSKN4z76ELnLxussxc7I2hx18NUcbP8+uty4bMxABEBAAHNHEp1ZXJnZW4gR=
+3Jv
+c3MgPGpnQHBmdXBmLm5ldD7CwHkEEwECACMFAlOMcBYCGwMHCwkIBwMCAQYVCAIJCgsEFgIDA=
+QIe
+AQIXgAAKCRCw3p3WKL8TL0KdB/93FcIZ3GCNwFU0u3EjNbNjmXBKDY4FUGNQH2lvWAUy+dnyT=
+hpw
+dtF/jQ6j9RwE8VP0+NXcYpGJDWlNb9/JmYqLiX2Q3TyevpB0CA3dbBQp0OW0fgCetToGIQrg0=
+MbD
+1C/sEOv8Mr4NAfbauXjZlvTj30H2jO0u+6WGM6nHwbh2l5O8ZiHkH32iaSTfN7Eu5RnNVUJbv=
+oPH
+Z8SlM4KWm8rG+lIkGurqqu5gu8q8ZMKdsdGC4bBxdQKDKHEFExLJK/nRPFmAuGlId1E3fe10v=
+5QL
++qHI3EIPtyfE7i9Hz6rVwi7lWKgh7pe0ZvatAudZ+JNIlBKptb64FaiIOAWDCx1SzR9KdWVyZ=
+2Vu
+IEdyb3NzIDxqZ3Jvc3NAc3VzZS5jb20+wsB5BBMBAgAjBQJTjHCvAhsDBwsJCAcDAgEGFQgCC=
+QoL
+BBYCAwECHgECF4AACgkQsN6d1ii/Ey/HmQf/RtI7kv5A2PS4RF7HoZhPVPogNVbC4YA6lW7Dr=
+Wf0
+teC0RR3MzXfy6pJ+7KLgkqMlrAbN/8Dvjoz78X+5vhH/rDLa9BuZQlhFmvcGtCF8eR0T1v0nC=
+/nu
+AFVGy+67q2DH8As3KPu0344TBDpAvr2uYM4tSqxK4DURx5INz4ZZ0WNFHcqsfvlGJALDeE0Lh=
+ITT
+d9jLzdDad1pQSToCnLl6SBJZjDOX9QQcyUigZFtCXFst4dlsvddrxyqT1f17+2cFSdu7+ynLm=
+XBK
+7abQ3rwJY8SbRO2iRulogc5vr/RLMMlscDAiDkaFQWLoqHHOdfO9rURssHNN8WkMnQfvUewRz=
+80h
+SnVlcmdlbiBHcm9zcyA8amdyb3NzQG5vdmVsbC5jb20+wsB5BBMBAgAjBQJTjHDXAhsDBwsJC=
+AcD
+AgEGFQgCCQoLBBYCAwECHgECF4AACgkQsN6d1ii/Ey8PUQf/ehmgCI9jB9hlgexLvgOtf7PJn=
+FOX
+gMLdBQgBlVPO3/D9R8LtF9DBAFPNhlrsfIG/SqICoRCqUcJ96Pn3P7UUinFG/I0ECGF4EvTE1=
+jnD
+kfJZr6jrbjgyoZHiw/4BNwSTL9rWASyLgqlA8u1mf+c2yUwcGhgkRAd1gOwungxcwzwqgljf0=
+N51
+N5JfVRHRtyfwq/ge+YEkDGcTU6Y0sPOuj4Dyfm8fJzdfHNQsWq3PnczLVELStJNdapwPOoE+l=
+otu
+fe3AM2vAEYJ9rTz3Cki4JFUsgLkHFqGZarrPGi1eyQcXeluldO3m91NK/1xMI3/+8jbO0tsn1=
+tqS
+EUGIJi7ox80eSnVlcmdlbiBHcm9zcyA8amdyb3NzQHN1c2UuZGU+wsB5BBMBAgAjBQJTjHDrA=
+hsD
+BwsJCAcDAgEGFQgCCQoLBBYCAwECHgECF4AACgkQsN6d1ii/Ey+LhQf9GL45eU5vOowA2u5N3=
+g3O
+ZUEBmDHVVbqMtzwlmNC4k9Kx39r5s2vcFl4tXqW7g9/ViXYuiDXb0RfUpZiIUW89siKrkzmQ5=
+dM7
+wRqzgJpJwK8Bn2MIxAKArekWpiCKvBOB/Cc+3EXE78XdlxLyOi/NrmSGRIov0karw2RzMNOu5=
+D+j
+LRZQd1Sv27AR+IP3I8U4aqnhLpwhK7MEy9oCILlgZ1QZe49kpcumcZKORmzBTNh30FVKK1Evm=
+V2x
+AKDoaEOgQB4iFQLhJCdP1I5aSgM5IVFdn7v5YgEYuJYx37IoN1EblHI//x/e2AaIHpzK5h88N=
+Eaw
+QsaNRpNSrcfbFmAg987ATQRTjHAWAQgAyzH6AOODMBjgfWE9VeCgsrwH3exNAU32gLq2xvjpW=
+nHI
+s98ndPUDpnoxWQugJ6MpMncr0xSwFmHEgnSEjK/PAjppgmyc57BwKII3sV4on+gDVFJR6Y8ZR=
+wgn
+BC5mVM6JjQ5xDk8WRXljExRfUX9pNhdE5eBOZJrDRoLUmmjDtKzWaDhIg/+1Hzz93X4fCQkNV=
+bVF
+LELU9bMaLPBG/x5q4iYZ2k2ex6d47YE1ZFdMm6YBYMOljGkZKwYde5ldM9mo45mmwe0icXKLk=
+pEd
+IXKTZeKDO+Hdv1aqFuAcccTg9RXDQjmwhC3yEmrmcfl0+rPghO0Iv3OOImwTEe4co3c1mwARA=
+QAB
+wsBfBBgBAgAJBQJTjHAWAhsMAAoJELDendYovxMvQ/gH/1ha96vm4P/L+bQpJwrZ/dneZcmEw=
+Tbe
+8YFsw2V/Buv6Z4Mysln3nQK5ZadD534CF7TDVft7fC4tU4PONxF5D+/tvgkPfDAfF77zy2AH1=
+vJz
+Q1fOU8lYFpZXTXIHb+559UqvIB8AdgR3SAJGHHt4RKA0F7f5ipYBBrC6cyXJyyoprT10EMvU8=
+VGi
+wXvTyJz3fjoYsdFzpWPlJEBRMedCot60g5dmbdrZ5DWClAr0yau47zpWj3enf1tLWaqcsuylW=
+svi
+uGjKGw7KHQd3bxALOknAp4dN3QwBYCKuZ7AddY9yjynVaD5X7nF9nO5BjR/i1DG86lem3iBDX=
+zXs
+ZDn8R38=3D
+=3D2wuH
+-----END PGP PUBLIC KEY BLOCK-----
+
+--------------C5E462C3B90A44332A89644F--
+
+--Erc7fE3CVEmgkMtiaUCbT4Wdi5tnCgAsq--
+
+--zmgKaTk2yWz1VVGsXgq6m6uw49XCBq6Ud
+Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="OpenPGP_signature"
+
+-----BEGIN PGP SIGNATURE-----
+
+wsB5BAABCAAjFiEEhRJncuj2BJSl0Jf3sN6d1ii/Ey8FAmGKNYMFAwAAAAAACgkQsN6d1ii/Ey/v
+mgf6AjsXky5cdrgdticRqBFH8gwzSfijuppud7XFCd+yQ9Tnoqxs7skYvoYAveHNjdJp5rWLwsMy
+Wtnqv5K2aYavhu+EGlt0gBFuT17Es95uda09SjW+inA1IL3BnreTCqSgCM6m/kypno+UNhfa+YUe
+qha6M5PN5WwKtfZka/ctIDkhoQoDS6sM5F0m6S2INK6XTVt/06CenfhKdxPIRnlbONIouxKB8Nrs
+9QpkfZw0PMC+6HjylYGpPmwVsrv9OHcDRp2oTC3zidfqRakg3cKMND/7F1t6KMMVqT236Jbi+9/h
+jlslWSzoHQ3Uv9hEowvzuUVlfyQFQnU3tLPNY+FcNQ==
+=PTv5
+-----END PGP SIGNATURE-----
+
+--zmgKaTk2yWz1VVGsXgq6m6uw49XCBq6Ud--
