@@ -2,91 +2,170 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 209A744AA21
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 10:08:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 25E1844AA24
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 10:08:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242567AbhKIJLA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Nov 2021 04:11:00 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39918 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236483AbhKIJK6 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Nov 2021 04:10:58 -0500
-Received: from mail-ed1-x52d.google.com (mail-ed1-x52d.google.com [IPv6:2a00:1450:4864:20::52d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C470C061767
-        for <linux-kernel@vger.kernel.org>; Tue,  9 Nov 2021 01:08:12 -0800 (PST)
-Received: by mail-ed1-x52d.google.com with SMTP id r12so73658730edt.6
-        for <linux-kernel@vger.kernel.org>; Tue, 09 Nov 2021 01:08:12 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=szeredi.hu; s=google;
-        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
-        bh=VCMCayoiw6jiN14Vy0tGeBad8uf3NfKNTuH/91IaUr0=;
-        b=aYVR3ufOsfMnHBKR9k4Bz0hUl0Kwq/e26/d6he0GM1iUrLEzS3CI5K4ItPWyUJQodh
-         An6ypM1RoUHf7tu6yyKULI98UJUbSfA4NEBEXGMd5ckR8Cioz2N2Z5C0tOTJTh2OfW0z
-         VBS3nFtzRfEPINJeKOGESEauvQ0NYW1XGXC/Q=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition;
-        bh=VCMCayoiw6jiN14Vy0tGeBad8uf3NfKNTuH/91IaUr0=;
-        b=msGSbx6rPZ+s+NfY4UWOVJaSfPwDK9xRqdb8WiqObbk+aqgqaet8hQHwNAMVxbeMoS
-         JxsnroetHSWx01pi3YOZqMULC6etBcQVyb47sb7U8qsbbOLXQLZgn88DK7BktV1ZMa2C
-         xGai/ss9k4dr0BHbklYO9BuSKFcqDr2s1zCFr6bS9uRFmkaT6k9bXWGnLC6QEVJ1B5Od
-         90PiVHuA2n4BIXbxMB2ZefsTUa5RaBrEPZOk6+ggw7mi/0Asxs/6Q2/J3i3bWV2+Vl/3
-         ha0icOV2fXcOa1qNLypzJF7HCSjXSn8Kd69DWqJbX/5WVLqJYglZeZd4eBFZigZyla46
-         U7ng==
-X-Gm-Message-State: AOAM533srJ2uuYvCZJzhRewaRFyIvCuRnC6i6qSehUU2q9gIA5Y1Is1i
-        dt2ZBTcMXVoFnTqY7CKkF53SfQ==
-X-Google-Smtp-Source: ABdhPJz9XrzSOmC4qjtJNbN2RuGiDKIgMwsJ3jk+9wtl12QNXF3iWJ3Zor39pSp4HstnYT3SrZD5wg==
-X-Received: by 2002:a17:906:6a0f:: with SMTP id qw15mr7382844ejc.463.1636448890742;
-        Tue, 09 Nov 2021 01:08:10 -0800 (PST)
-Received: from miu.piliscsaba.redhat.com (catv-178-48-189-3.catv.broadband.hu. [178.48.189.3])
-        by smtp.gmail.com with ESMTPSA id nd36sm9292965ejc.17.2021.11.09.01.08.09
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 09 Nov 2021 01:08:10 -0800 (PST)
-Date:   Tue, 9 Nov 2021 10:08:08 +0100
-From:   Miklos Szeredi <miklos@szeredi.hu>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-unionfs@vger.kernel.org
-Subject: [GIT PULL] overlayfs update for 5.16
-Message-ID: <YYo6eHUbXJXQkogn@miu.piliscsaba.redhat.com>
+        id S244651AbhKIJLh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Nov 2021 04:11:37 -0500
+Received: from mail.kernel.org ([198.145.29.99]:49062 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S242725AbhKIJLg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Nov 2021 04:11:36 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7696F6103C;
+        Tue,  9 Nov 2021 09:08:47 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1636448930;
+        bh=yYnkGHhnjo+Q9QV1P176hjrxDUPD/JGJG+8cOpadDAw=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=KUp1d8MZiO6+zf9A82xf5JJzBmqr/Q+2mQqCidQaW+Zmgu5fHGzHdmljGxlyrACs5
+         F2Qj6ZnXqrKEbcj7woi6oHRFZMdBUboyjWKOXz3jReWFK9gCtW5xgVECfalAc0NODO
+         SCr+f4n8BYp6JYUSohCbsPe050lgRBov+U5AuvP87JbPLy6m4HSeKK+nncsdF+Vvbb
+         og70DjeXFkj2RfP3DZ7b/tehHeSErJjUrjJ+NBICDiwLeZr+uf1HzYi4wIuokeq8wr
+         rXc1D2+GamoDYkg0mA5aqOcfTMEc2l7qv8hAGCHuVFKg8l8K8G+etl0GKCgMzFuYsv
+         uKgGyy3AzygpQ==
+Date:   Tue, 9 Nov 2021 09:08:44 +0000
+From:   Mauro Carvalho Chehab <mchehab@kernel.org>
+To:     Tsuchiya Yuto <kitakar@gmail.com>
+Cc:     Hans de Goede <hdegoede@redhat.com>,
+        Patrik Gfeller <patrik.gfeller@gmail.com>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Kaixu Xia <kaixuxia@tencent.com>,
+        Dan Carpenter <dan.carpenter@oracle.com>,
+        Arnd Bergmann <arnd@arndb.de>, linux-media@vger.kernel.org,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
+Subject: Re: [BUG 5/5] [BUG] media: atomisp: atomisp causes touchscreen to
+ stop working on Microsoft Surface 3
+Message-ID: <20211109090844.4f497196@sal.lan>
+In-Reply-To: <46b212b2f8aeceaf20f7694a53247ae6846ab2b7.camel@gmail.com>
+References: <20211017162337.44860-1-kitakar@gmail.com>
+        <20211017162337.44860-6-kitakar@gmail.com>
+        <103b5438-9f7c-7e89-28b9-29fe11eb818c@redhat.com>
+        <cfad27a4bfdd94417305e1519e2f450a4422844d.camel@gmail.com>
+        <310ace44-93d5-99a3-bb4c-371b0a13462d@redhat.com>
+        <20211108074101.033af4c5@sal.lan>
+        <869d0e2c-b04a-ef35-cfe5-b372c646fce9@redhat.com>
+        <46b212b2f8aeceaf20f7694a53247ae6846ab2b7.camel@gmail.com>
+X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.30; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus,
+Em Tue, 09 Nov 2021 13:18:37 +0900
+Tsuchiya Yuto <kitakar@gmail.com> escreveu:
 
-Please pull from:
+> On Mon, 2021-11-08 at 08:55 +0100, Hans de Goede wrote:
+> > Hi Mauro,
+> > 
+> > On 11/8/21 08:41, Mauro Carvalho Chehab wrote:  
+> > > Em Mon, 8 Nov 2021 00:39:38 +0100
+> > > Hans de Goede <hdegoede@redhat.com> escreveu:
+> > >   
+> > > > Hi,
+> > > > 
+> > > > On 10/21/21 11:52, Tsuchiya Yuto wrote:  
+> > > > > Thank you for your comment :-)
+> > > > > 
+> > > > > First, I need to correct what I said in the previous mail. I later found
+> > > > > that loading only "atomisp" (as well as its dependency,
+> > > > > atomisp_gmin_platform) does not cause this issue.
+> > > > > 
+> > > > > What causes this issue is rather, loading sensor drivers (as well as its
+> > > > > dependency, atomisp_gmin_platform).
+> > > > > 
+> > > > > These sensor drivers for surface3 are both not upstream, but I made them
+> > > > > as similar as possible to the upstreamed ones. So, I guess this issue
+> > > > > can still be reproducible on some other devices.    
+> > > > 
+> > > > I've run some test on my own surface3 and the problem is the writing
+> > > > of 0x62 (which becomes just 0x02) to the 0x57 register of the PMIC,
+> > > > writing 0x00 to that after loading the sensor driver makes things work
+> > > > again.
+> > > > 
+> > > > I have not had time to investigate this further.
+> > > > 
+> > > > I used media-staging + your sensor drivers from:
+> > > > https://github.com/kitakar5525/surface3-atomisp-cameras.git
+> > > > 
+> > > > Which was enough to figure this out, but I've not actually gotten
+> > > > either of the cameras working :|  I get:
+> > > > 
+> > > > [user@fedora nvt]$ ./atomisp-test.sh 
+> > > > p0: OPEN video device `/dev/video2'  
+> > > 
+> > > After the patch that moved the output preview to be the first one,
+> > > you should probably use /dev/video0 here:  
+> > 
+> > Thanks for the hint, but I've not rebased my tree to those latest couple
+> > of patches yet, the same tree does work on the T101HA with /dev/video2 :)
+> > 
+> > I think this may be a module load ordering issue, I believe that the
+> > sensor drivers need to be loaded before the atomisp driver itself
+> > and on the T101HA we are hitting this "sweet spot",  
+> 
+> > where as on
+> > the surface I was loading the not yet merged sensor drivers manually,
+> > causing them to be loaded later.
+> > 
+> > I still need to verify this theory, Tsuchiya can you perhaps confirm 
+> > that the modules must be loaded in this order?  
+> 
+> Sorry I forgot to add a note about a load order in my sensor driver repo
+> for the case if you insmod external drivers. Yes, you need to load sensor
+> drivers _before_ the main atomisp driver.
+> 
+> So, here is the script to load sensor drivers in a proper order. Using
+> rmmod because as I sent a bug report ("[BUG 4/5] [BUG] media: atomisp:
+> `modprobe -r` not working well (dup video4linux, ATOMISP_SUBDEV_{0,1})"),
+> `modprobe -r` does not work well for me.
+> 
+>         rmmod atomisp
+>         insmod atomisp-ar0330.ko
+>         insmod atomisp-ov883x.ko
+>         # IIRC, modprobe works but try insmod instead if weird
+>         modprobe atomisp
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/mszeredi/vfs.git tags/ovl-update-5.16
+Ok, you need to probe first the sensors, because the lack of support
+for V4L2 async kAPI at the driver.
 
- - Fix a regression introduced in the last cycle.
+See, the way atomisp expects is that it will initialize the
+subdevs at:
 
- - Fix a use-after-free in the AIO path.
+	atomisp_subdev_probe() function at atomisp_v4l2.
 
- - Fix a bogus warning reported by syzbot.
+I added a hacky logic there to avoid the need of probing drivers
+manually. It makes atomisp driver to wait up to SUBDEV_WAIT_TIMEOUT_MAX_COUNT
+for a sensor to be detected, and added a FIXME to remind that this requires
+further changes.
 
+Once the first sensor is detected, it waits for 5 * SUBDEV_WAIT_TIMEOUT
+for it to finish probing, hoping that everything will be fine after
+such time. If the second sensor registers on such time (on devices with
+more than one sensor), everything will also be ok, but it seems that
+the time there is not enough for the second sensor to register.
 
-Thanks,
-Miklos
+The right solution here would be, instead:
 
----
-Miklos Szeredi (2):
-      ovl: fix warning in ovl_create_real()
-      ovl: fix filattr copy-up failure
+1. to return -EPROBE_DEFER, if not all sensors are detected. Some
+   care need to be taken doing that, though, in order to avoid
+   troubles re-initializing things;
+2. to let the sensors register themselves, instead of relying on
+   atomisp driver for doing that.
 
-yangerkun (1):
-      ovl: fix use after free in struct ovl_aio_req
+Once the drivers got converted to register themselves as subdevices
+without needing atomisp for doing that (nor the ancillary module
+atomisp_gmin_platform), the right way would be to use the V4L2 async 
+framework, which was designed to ensure that all subdevs are there
+during device's init time.
 
----
- fs/overlayfs/copy_up.c   | 23 ++++++++++++++++++-----
- fs/overlayfs/dir.c       |  3 +--
- fs/overlayfs/file.c      | 16 ++++++++++++++--
- fs/overlayfs/inode.c     |  5 ++++-
- fs/overlayfs/overlayfs.h |  1 +
- fs/overlayfs/super.c     | 12 ++++++++----
- 6 files changed, 46 insertions(+), 14 deletions(-)
+There's a catch, though: the main driver needs to know how many sensors
+it will wait to be probed. Right now, the driver doesn't store or
+gather this information directly.
+
+Regards,
+Mauro
