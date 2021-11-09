@@ -2,138 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D633944B4A0
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 22:26:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D602244B49F
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 22:26:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241778AbhKIV2u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Nov 2021 16:28:50 -0500
-Received: from mga12.intel.com ([192.55.52.136]:52883 "EHLO mga12.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236380AbhKIV2s (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S240038AbhKIV2s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Tue, 9 Nov 2021 16:28:48 -0500
-X-IronPort-AV: E=McAfee;i="6200,9189,10163"; a="212575271"
-X-IronPort-AV: E=Sophos;i="5.87,221,1631602800"; 
-   d="scan'208";a="212575271"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Nov 2021 13:25:52 -0800
-X-IronPort-AV: E=Sophos;i="5.87,221,1631602800"; 
-   d="scan'208";a="503677118"
-Received: from siddaraj-mobl1.gar.corp.intel.com ([10.213.89.120])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Nov 2021 13:25:46 -0800
-Message-ID: <9213e3f8fbe53329aacff1152ca3e20b6cffbbdb.camel@linux.intel.com>
-Subject: Re: [PATCH 6/7] thermal: netlink: Add a new event to notify CPU
- capabilities change
-From:   Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
-To:     Lukasz Luba <lukasz.luba@arm.com>
-Cc:     Ricardo Neri <ricardo.neri-calderon@linux.intel.com>,
-        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        linux-pm@vger.kernel.org, x86@kernel.org,
-        linux-doc@vger.kernel.org, Len Brown <len.brown@intel.com>,
-        Aubrey Li <aubrey.li@linux.intel.com>,
-        Amit Kucheria <amitk@kernel.org>,
-        Andi Kleen <ak@linux.intel.com>,
-        Tim Chen <tim.c.chen@linux.intel.com>,
-        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
-        Ricardo Neri <ricardo.neri@intel.com>,
-        linux-kernel@vger.kernel.org
-Date:   Tue, 09 Nov 2021 13:25:42 -0800
-In-Reply-To: <a2389c0f-c42d-0198-a625-0eb2a97628f0@arm.com>
-References: <20211106013312.26698-1-ricardo.neri-calderon@linux.intel.com>
-         <20211106013312.26698-7-ricardo.neri-calderon@linux.intel.com>
-         <2160a0b8-59ec-03a1-1fd5-a3f98085be07@arm.com>
-         <e244e3aa9fc323973d7da8d3ebc3e1fad1fdb731.camel@linux.intel.com>
-         <5e4d7661-1e91-0c72-ae02-b2c60c2ad95e@arm.com>
-         <94ddfd1177c3f119de2794d9fb659a6578f560c6.camel@linux.intel.com>
-         <a2389c0f-c42d-0198-a625-0eb2a97628f0@arm.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.40.0-1 
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38924 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230248AbhKIV2r (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Nov 2021 16:28:47 -0500
+Received: from mail-lf1-x12a.google.com (mail-lf1-x12a.google.com [IPv6:2a00:1450:4864:20::12a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F0B7FC061764
+        for <linux-kernel@vger.kernel.org>; Tue,  9 Nov 2021 13:26:00 -0800 (PST)
+Received: by mail-lf1-x12a.google.com with SMTP id k37so789158lfv.3
+        for <linux-kernel@vger.kernel.org>; Tue, 09 Nov 2021 13:26:00 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=0pEy8zRbX4M0WulD1O3v1mhyXPMQ6YHtrHY83BsLR0g=;
+        b=m4GdQSz+6PKu49f3JNqC0i9Ir+h0KyfXoFOYlFH4WhD4aZ1lWy7xNAp6CdaNqcc6Om
+         PJoUfVnVTHKpTKfuhhBnTWP5OeSjqM3u5moYAj4FACkujCsLl2Av2YXANeQOmGZASu57
+         Pc1Fju4Fx9mhlkloszkJRUhsrcIwm73AFRVazYvQ+0h2kDIiKGX31LGPt0CcLPDM3jrn
+         ikXuEC0R8rCJjqWYR1fJ3Zny40fRohWvauCds4E70RsEIrNf190nFlSGHg1GcqIdMEZm
+         Su9pp5hly9gWq4FLASd3z49GVs7dWSMcy6QVWUvhB/k7WeLty9YlGb3t8FUUw3PloGyD
+         ToDA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=0pEy8zRbX4M0WulD1O3v1mhyXPMQ6YHtrHY83BsLR0g=;
+        b=U1FLsGlH565yxFI313ZHadWc4KljVsKw7VrjbGqX2X4xJn+8KW2mH1ObZQpbooa1p3
+         4JbwuChMZOUZiH0r5jr7wgr3d7STFTABvCotR+ytHV48mDIINSVn1O6Ru8o8eXsd8V3B
+         dt9Dnzi1bd4kuK5Vb6S1IQYe/JPeeTTsFktrmihzeeg+jmdCrrPq/AlvyL46kfLm73sq
+         gRFN8uvYIIa2L74x+Hz6crSQMvrEiSEwFcRsfPdGk7TeYUcC2W24qsJ5S4TeRVpOMXuO
+         nRuNpU/fKqJ6m5ejrOtueFlNfcwwO2n/i1WBfIWtkLzvezw1ptAoKwc5zZLKbcvwu53w
+         +8qA==
+X-Gm-Message-State: AOAM532TOAr0l8Hmq3ZuOk+hVFWsUdl8Qexu76LxGEAhs2pw6OAPhypl
+        ow1tcLsEVtOtQtaqp4y5/uRHwsvCkvoQ5GQTK611iQ==
+X-Google-Smtp-Source: ABdhPJzAuZ0fJiDD4u+9qnqI2MbQh8ZPVDGKUAVD3PQQU+dwZoFDORUfzFz1zfA/o6wRbHl6wwGW32ZCEBhXHLlM5Zw=
+X-Received: by 2002:a05:6512:110e:: with SMTP id l14mr72283lfg.550.1636493159120;
+ Tue, 09 Nov 2021 13:25:59 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20211105171023.989862879@infradead.org> <20211105171821.654356149@infradead.org>
+ <20211108164711.mr2cqdcvedin2lvx@treble> <YYlshkTmf5zdvf1Q@hirez.programming.kicks-ass.net>
+ <CAKwvOdkFZ4PSN0GGmKMmoCrcp7_VVNjau_b0sNRm3MuqVi8yow@mail.gmail.com>
+ <YYov8SVHk/ZpFsUn@hirez.programming.kicks-ass.net> <CAKwvOdn8yrRopXyfd299=SwZS9TAPfPj4apYgdCnzPb20knhbg@mail.gmail.com>
+ <CAGG=3QVecQroYbJ05AGk2f0pe=QOtWuZHyQowzG0i7os8E9fdg@mail.gmail.com> <20211109212116.GW174703@worktop.programming.kicks-ass.net>
+In-Reply-To: <20211109212116.GW174703@worktop.programming.kicks-ass.net>
+From:   Nick Desaulniers <ndesaulniers@google.com>
+Date:   Tue, 9 Nov 2021 13:25:47 -0800
+Message-ID: <CAKwvOd=3wFr=juT7hXPowHBvOTVPTW7LuB6XwHzURGd=GXkK1Q@mail.gmail.com>
+Subject: Re: [PATCH 20/22] x86,word-at-a-time: Remove .fixup usage
+To:     Bill Wendling <morbo@google.com>
+Cc:     Josh Poimboeuf <jpoimboe@redhat.com>, x86@kernel.org,
+        linux-kernel@vger.kernel.org, mark.rutland@arm.com,
+        dvyukov@google.com, seanjc@google.com, pbonzini@redhat.com,
+        mbenes@suse.cz, llvm@lists.linux.dev,
+        linux-toolchains@vger.kernel.org,
+        Peter Zijlstra <peterz@infradead.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 2021-11-09 at 17:51 +0000, Lukasz Luba wrote:
-> 
-> 
-> On 11/9/21 2:15 PM, Srinivas Pandruvada wrote:
-> > On Tue, 2021-11-09 at 13:53 +0000, Lukasz Luba wrote:
-> > > Hi Srinivas,
-> > > 
-> > > On 11/9/21 1:23 PM, Srinivas Pandruvada wrote:
-> > > > Hi Lukasz,
-> > > > 
-> > > > On Tue, 2021-11-09 at 12:39 +0000, Lukasz Luba wrote:
-> > > > > Hi Ricardo,
-> > > > > 
-> > > > > 
-> > > > > On 11/6/21 1:33 AM, Ricardo Neri wrote:
-> > > > > > From: Srinivas Pandruvada < 
-> > > > > > srinivas.pandruvada@linux.intel.com>
-> > > > > > 
-> > > > > > Add a new netlink event to notify change in CPU capabilities
-> > > > > > in
-> > > > > > terms of
-> > > > > > performance and efficiency.
-> > > > > 
-> > > > > Is this going to be handled by some 'generic' tools? If yes,
-> > > > > maybe
-> > > > > the values for 'performance' might be aligned with capacity
-> > > > > [0,1024] ? Or are they completely not related so the mapping is
-> > > > > simply impossible?
-> > > > > 
-> > > > 
-> > > > That would have been very useful.
-> > > > 
-> > > > The problem is that we may not know the maximum performance as
-> > > > system
-> > > > may be booting with few CPUs (using maxcpus kernel command line)
-> > > > and
-> > > > then user hot adding them. So we may need to rescale when we get
-> > > > a
-> > > > new
-> > > > maximum performance CPU and send to user space.
-> > > > 
-> > > > We can't just use max from HFI table at in instance as it is not
-> > > > necessary that HFI table contains data for all CPUs.
-> > > > 
-> > > > If HFI max performance value of 255 is a scaled value to max
-> > > > performance CPU value in the system, then this conversion would
-> > > > have
-> > > > been easy. But that is not.
-> > > 
-> > > I see. I was asking because I'm working on similar interface and
-> > > just wanted to understand your approach better. In my case we
-> > > would probably simply use 'capacity' scale, or more
-> > > precisely available capacity after subtracting 'thermal pressure'
-> > > value.
-> > > That might confuse a generic tool which listens to these socket
-> > > messages, though. So probably I would have to add a new
-> > > THERMAL_GENL_ATTR_CPU_CAPABILITY_* id
-> > > to handle this different normalized across CPUs scale.
-> > I can add a field capacity_scale. In HFI case it will always be 255.
-> > In
-> > your cases it will 1024.
-> > 
-> > 
-> 
-> Sounds good, with that upper limit those tools would not build
-> up assumptions (they would have to parse that scale value).
-> Although, I would prefer to call it 'performance_scale' if you don't
-> mind.
-Sure.
+On Tue, Nov 9, 2021 at 1:21 PM Peter Zijlstra <peterz@infradead.org> wrote:
+>
+> On Tue, Nov 09, 2021 at 12:59:12PM -0800, Bill Wendling wrote:
+> >
+> > Adding attributes to labels shouldn't be difficult, as you mention. In
+> > the case of cold/hot, it's adjusting some of the metadata that already
+> > exists on some basic blocks. It might be enough to allow the normal
+> > block placement algorithms to move the hot and cold blocks around for
+> > us. The question becomes how many attributes does GCC allow on labels?
+>
+> I'm aware of 3: unused, hot, cold. Also:
+>
+>   https://gcc.gnu.org/onlinedocs/gcc/Label-Attributes.html
 
+Re: unused:
+Being able to selectively disable -Wunused-label via
+__attribute__((unused)); seems useful, too.
+-- 
 Thanks,
-Srinivas
-
-> I've done similar renaming  s/capacity/performance/ in the Energy Model
-> (EM) some time ago [1]. Some reasons:
-> - in the scheduler we have 'Performance Domains (PDs)'
-> - for GPUs we talk about 'performance', because 'capacity' sounds odd
->    in that case
-> 
-> [1] 
-> https://lore.kernel.org/linux-pm/20200527095854.21714-2-lukasz.luba@arm.com/
-
-
+~Nick Desaulniers
