@@ -2,238 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5E11A44AFD0
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 15:57:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 58B3E44AFDD
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Nov 2021 15:58:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237878AbhKIO7g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Nov 2021 09:59:36 -0500
-Received: from mail.kernel.org ([198.145.29.99]:60554 "EHLO mail.kernel.org"
+        id S234388AbhKIPBM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Nov 2021 10:01:12 -0500
+Received: from mail.kernel.org ([198.145.29.99]:60986 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232619AbhKIO7f (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Nov 2021 09:59:35 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 81E2C6108D;
-        Tue,  9 Nov 2021 14:56:47 +0000 (UTC)
+        id S234250AbhKIPA4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Nov 2021 10:00:56 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5561F61211;
+        Tue,  9 Nov 2021 14:58:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1636469809;
-        bh=3klCozlBVnzBXBg6vClaYZADmZT6NoO+cjoqvUwO+eE=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=LMJ/1r7oXg05PS2Uw7GKyhTS1MFsGnxGHoJdokhAqG+vhjx8JElAJV7HfCgK+FiZo
-         BiBHYbPiiMqC9SwGMIAN07sPBIxtrjJ12i+O9plLAzIzQYF9m2+qFUvwqwuwXxxTM7
-         a7ykrLUT4tcu1dVjx9W0PvUH+Nnfyju09vPVT2UpHOauWAyZ5fHCQV6qYs5Vhcor5g
-         0bET8lH5cbctP8/kRzOhEa2PfWOOmGUZijgJvd8kBCmtOlgbhl5BCrR9S/ugGC7rq2
-         jgOoe9YF5fxzSbwJRB0JSasziiyWoo6ocX5vOm+8V9jraciK9YF4Ah7BCIVJGgoyh+
-         +rIuEF08aDORQ==
-Date:   Tue, 9 Nov 2021 14:56:44 +0000
-From:   Mark Brown <broonie@kernel.org>
-To:     "LH.Kuo" <lhjeff911@gmail.com>
-Cc:     p.zabel@pengutronix.de, robh+dt@kernel.org,
-        linux-spi@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, dvorkin@tibbo.com,
-        qinjian@cqplus1.com, wells.lu@sunplus.com,
-        "LH.Kuo" <lh.kuo@sunplus.com>
-Subject: Re: [PATCH v2 1/2] SPI: Add SPI driver for Sunplus SP7021
-Message-ID: <YYqMLPB6VX9k5LUK@sirena.org.uk>
-References: <1635747525-31243-1-git-send-email-lh.kuo@sunplus.com>
- <1636448488-14158-1-git-send-email-lh.kuo@sunplus.com>
- <1636448488-14158-2-git-send-email-lh.kuo@sunplus.com>
-MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="pADVUBww0TEoVRVh"
-Content-Disposition: inline
-In-Reply-To: <1636448488-14158-2-git-send-email-lh.kuo@sunplus.com>
-X-Cookie: Elevators smell different to midgets.
+        s=k20201202; t=1636469890;
+        bh=+9UT4JjEfvmDWmb+FT+mdfKzE0MepG7Qp1SoI0567aU=;
+        h=In-Reply-To:References:Date:From:To:Cc:Subject:From;
+        b=tES8zGCsmzJ78bp2AWpu3CbxhGHSYr+TrJEUdu/i/tstneuZIWFWNEHn0zduEzbSr
+         cSj2Xc5xlNuC9prdBemJI63dbh+TdKLce8FGfubFxkx3cTR5yLDu5iQjTHYurbqZ7r
+         Nnvr3gT5Wonwi8vC8gjoeI13e67rydusl0dKmTZvKbM8wtiMcwLXPUDHNwL3Baugfk
+         AZExFuFAppcrPuRVSb8D9e6f4S7p5XnQXeZUQFQjiB/5at3+2iRyePPL1ktO8TQCmO
+         bKs0St3v3cDm3lQYkcIRIwGvA2GyLM8Ftiji1+gXIkHGXvMIptKMW3Fb/vKxBz66x4
+         VSpSRBvQuNGCA==
+Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
+        by mailauth.nyi.internal (Postfix) with ESMTP id 3D00D27C0054;
+        Tue,  9 Nov 2021 09:58:08 -0500 (EST)
+Received: from imap48 ([10.202.2.98])
+  by compute4.internal (MEProxy); Tue, 09 Nov 2021 09:58:08 -0500
+X-ME-Sender: <xms:f4yKYUXKr4-CT8beC1A5iT6grcp995HCA47W30aSNpR62p8ERrUx_w>
+    <xme:f4yKYYiepNPxP1ASrcrrpr1VvfbSlyN7seq0cR1dPR5kXzHFCJh2ribvqCjqap0RD
+    qmZtA6tZ7crxELWvfo>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvuddrudeggdeilecutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
+    fjughrpefofgggkfgjfhffhffvufgtsehttdertderredtnecuhfhrohhmpedftehnugih
+    ucfnuhhtohhmihhrshhkihdfuceolhhuthhosehkvghrnhgvlhdrohhrgheqnecuggftrf
+    grthhtvghrnheptdfhheettddvtedvtedugfeuuefhtddugedvleevleefvdetleffgfef
+    vdekgeefnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomh
+    eprghnugihodhmvghsmhhtphgruhhthhhpvghrshhonhgrlhhithihqdduudeiudekheei
+    fedvqddvieefudeiiedtkedqlhhuthhopeepkhgvrhhnvghlrdhorhhgsehlihhnuhigrd
+    hluhhtohdruhhs
+X-ME-Proxy: <xmx:f4yKYVSlCrrEAdVakqANq050XSTUaKW3gOiCZ2T5xhCkWhlVIm9WKA>
+    <xmx:f4yKYbHJLMpqr9AxNJh1-vIZp9-Pb6J8uXsuCNKvYLSYTd8doVLcwg>
+    <xmx:f4yKYdnvcc6uundS8jT1bKtoOgeQvlLPNaENjuu4DqYxjeqFsuNJ9A>
+    <xmx:gIyKYaTAIK2SgkeWwfD-3HB9hv9Zp6bdUDiE7T0tJ5KXHNkFJvsY6A>
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+        id C523321E0429; Tue,  9 Nov 2021 09:58:07 -0500 (EST)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.5.0-alpha0-1371-g2296cc3491-fm-20211109.003-g2296cc34
+Mime-Version: 1.0
+Message-Id: <649f4de7-3c91-4974-9af7-d981a2bf6224@www.fastmail.com>
+In-Reply-To: <CADyq12whSxPdJhf4qg_w-7YXgEKWx4SDHByNBNZbfWDOeEY-8w@mail.gmail.com>
+References: <CADyq12yY25-LS8cV5LY-C=6_0HLPVZbSJCKtCDJm+wyHQSeVTg@mail.gmail.com>
+ <cb682c8a-255e-28e5-d4e0-0981c2ab6ffd@intel.com>
+ <85925a39-37c3-a79a-a084-51f2f291ca9c@intel.com>
+ <CADyq12y0o=Y1MOMe7pCghy2ZEV2Y0Dd7jm5e=3o2N4-i088MWw@mail.gmail.com>
+ <472b8dbf-2c55-98c9-39ad-2db32a649a20@intel.com>
+ <CADyq12whSxPdJhf4qg_w-7YXgEKWx4SDHByNBNZbfWDOeEY-8w@mail.gmail.com>
+Date:   Tue, 09 Nov 2021 06:57:47 -0800
+From:   "Andy Lutomirski" <luto@kernel.org>
+To:     "Brian Geffon" <bgeffon@google.com>,
+        "Dave Hansen" <dave.hansen@intel.com>
+Cc:     "Thomas Gleixner" <tglx@linutronix.de>,
+        "Guenter Roeck" <groeck@google.com>,
+        "Borislav Petkov" <bp@suse.de>, stable@vger.kernel.org,
+        "the arch/x86 maintainers" <x86@kernel.org>,
+        "Linux Kernel Mailing List" <linux-kernel@vger.kernel.org>
+Subject: Re: XSAVE / RDPKRU on Intel 11th Gen Core CPUs
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
---pADVUBww0TEoVRVh
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+On Tue, Nov 9, 2021, at 5:43 AM, Brian Geffon wrote:
+> Hi Dave,
+>
+> On Tue, Nov 9, 2021 at 1:49 AM Dave Hansen <dave.hansen@intel.com> wrote:
+>> Well, gosh, it's making it back to the software init value.  If you do:
+>>
+>>         echo 0x15555554 > /sys/kernel/debug/x86/init_pkru
+>>
+>> do you end up with 0x15555554 as the value?
+>
+> What's interesting is that writing to init_pkru fails with -EINVAL for me,
+> and I've traced it down to get_xsave_addr() returning NULL on the following
+> check:
+>
+>   /*
+>   * This assumes the last 'xsave*' instruction to
+>   * have requested that 'xfeature_nr' be saved.
+>   * If it did not, we might be seeing and old value
+>   * of the field in the buffer.
+>   *
+>   * This can happen because the last 'xsave' did not
+>   * request that this feature be saved (unlikely)
+>   * or because the "init optimization" caused it
+>   * to not be saved.
+>   */
+>   if (!(xsave->header.xfeatures & BIT_ULL(xfeature_nr)))
+>      return NULL;
 
-On Tue, Nov 09, 2021 at 05:01:27PM +0800, LH.Kuo wrote:
+Here's an excerpt from an old email that I, perhaps unwisely, sent to Dave but not to a public list:
 
-A lot of my previous feedback on this driver still applies, while some
-of the issues have been addressed most of the major structural issues
-continue to apply here.  A lot of the code is replicating code from the
-core or is really hard to explain, it's hard to see anything super
-unusual with the hardware here that would require such unusual code.
+static inline void write_pkru(u32 pkru)
+{
+        struct pkru_state *pk;
 
-Please don't ignore review comments, people are generally making them
-for a reason and are likely to have the same concerns if issues remain
-unaddressed.  Having to repeat the same comments can get repetitive and
-make people question the value of time spent reviewing.  If you disagree
-with the review comments that's fine but you need to reply and discuss
-your concerns so that the reviewer can understand your decisions.
+        if (!boot_cpu_has(X86_FEATURE_OSPKE))
+                return;
 
-> +static void sp7021_spi_set_cs(struct spi_device *_s, bool _on)
-> +{
-> +	if (_s->mode & SPI_NO_CS)
-> +		return;
-> +	if (!(_s->cs_gpiod))
-> +		return;
-> +	dev_dbg(&(_s->dev), "%d gpiod:%d", _on, desc_to_gpio(_s->cs_gpiod));
-> +	if (_s->mode & SPI_CS_HIGH)
-> +		_on = !_on;
-> +	gpiod_set_value_cansleep(_s->cs_gpiod, _on);
-> +}
+        pk = get_xsave_addr(&current->thread.fpu.state.xsave,
+XFEATURE_PKRU);
 
-This is *still* open coding a GPIO chip select, to repeat what I said
-last time this is not OK - use the core facilities to avoid introducing
-bugs like double application of SPI_CS_HIGH you have here.
+        /*
+         * The PKRU value in xstate needs to be in sync with the value
+that is
+         * written to the CPU. The FPU restore on return to userland would
+         * otherwise load the previous value again.
+         */
+        fpregs_lock();
+        if (pk)
+                pk->pkru = pkru;
 
-> +// spi slave irq handler
-> +static irqreturn_t sp7021_spi_sla_irq(int _irq, void *_dev)
-> +{
-> +	struct sp7021_spi_ctlr *pspim = (struct sp7021_spi_ctlr *)_dev;
+^^^
+else we just write to the PKRU register but leave XINUSE[PKRU] clear on
+return to usermode?  That seems... unwise.
 
-If you need this cast something is very wrong, do you need it?
+        __write_pkru(pkru);
+        fpregs_unlock();
+}
 
-> +int sp7021_spi_sla_rw(struct spi_device *_s, struct spi_transfer *_t, int RW_phase)
-
-Please use the normal kernel coding style, using _s for parameter names
-or mixed case symbol names isn't normal for the kernel.  There's also
-issues with line lengths over 80 columns all over, while it's not a
-strict limit it's still good try to keep things to a reasonable length.
-
-> +	if (RW_phase == SP7021_SLA_WRITE) {
-
-This looks like a switch statement, though given how little code is
-shared it's not clear why this is all in one function.
-
-> +		if (_t->tx_dma == pspim->tx_dma_phy_base)
-> +			memcpy(pspim->tx_dma_vir_base, _t->tx_buf, _t->len);
-
-Why are we copying data into a DMA transfer buffer, doesn't this defeat
-the point of DMA?  I'd expect to DMA data directly.  I'd also expect
-some synchronisation operations to ensure that everything has a
-consistent view of the memory.
-
-> +// spi master irq handler
-> +static irqreturn_t sp7021_spi_mas_irq_dma(int _irq, void *_dev)
-> +{
-> +	struct sp7021_spi_ctlr *pspim = (struct sp7021_spi_ctlr *)_dev;
-> +
-> +	spin_lock_irq(&pspim->lock);
-
-Why are we using spin_lock_irq() when we're already in an interrupt
-handler?
-
-> +	}
-> +}
-> +void sp7021spi_wb(struct sp7021_spi_ctlr *_m, u8 _len)
-
-Blank lines between functions.
-
-> +fin_irq:
-> +	if (isrdone)
-> +		complete(&pspim->isr_done);
-> +	spin_unlock_irqrestore(&pspim->lock, flags);
-> +	return IRQ_HANDLED;
-> +}
-
-This unconditionally reports IRQ_HANDLED even if we didn't actually see
-any interrupt status flagged, this will break shared interrupts and
-reduce the ability of the interrupt core to handle errors.
-
-> +	for (i = 0; i < transfers_cnt; i++) {
-> +		if (t->tx_buf)
-> +			memcpy(&pspim->tx_data_buf[data_len], t->tx_buf, t->len);
-> +		if (t->rx_buf)
-> +			xfer_rx = true;
-> +		data_len += t->len;
-> +		t = list_entry(t->transfer_list.next, struct spi_transfer, transfer_list);
-> +	}
-
-This is still copying all data for no apparent reason as highlighted
-last time.
-
-> +	dev_dbg(&(_c->dev), "data_len %d xfer_rx %d", data_len, xfer_rx);
-> +
-> +	// set SPI FIFO data for full duplex (SPI_FD fifo_data)  91.13
-> +	if (pspim->tx_cur_len < data_len) {
-> +		len_temp = min(pspim->data_unit, data_len);
-> +		sp7021spi_wb(pspim, len_temp);
-> +	}
-
-Is the device full duplex or half duplex?  The code immediately above
-this treats both transmit and recieve buffers as optional.  If the
-device does actually need to be full duplex then the driver should flag
-it as such.
-
-> +// called when child device is registering on the bus
-> +static int sp7021_spi_dev_setup(struct spi_device *_s)
-> +{
-> +	struct sp7021_spi_ctlr *pspim = spi_controller_get_devdata(_s->controller);
-> +	int ret;
-> +
-> +	ret = pm_runtime_get_sync(pspim->dev);
-> +		if (ret < 0)
-> +			return 0;
-> +
-> +	pm_runtime_put(pspim->dev);
-> +
-> +	return 0;
-> +
-> +}
-
-This function does nothing except bounce the power on the device, this
-is obviously not useful and should be removed.
-
-> +static int sp7021_spi_controller_unprepare_message(struct spi_controller *_c,
-> +				    struct spi_message *msg)
-> +{
-> +	return 0;
-> +}
-
-Remove empty functions.
-
-> +static size_t sp7021_spi_max_length(struct spi_device *spi)
-> +{
-> +	return SP7021_SPI_MSG_SIZE;
-> +}
-
-Is there any actual limit in the hardware?  This looks very much like
-it's a completely artificial limit in the driver for no obvious reason.
-
-> +static int sp7021_spi_mas_transfer_one_message(struct spi_controller *_c, struct spi_message *m)
-> +{
-> +	struct sp7021_spi_ctlr *pspim = spi_master_get_devdata(_c);
-> +	struct spi_device *spi = m->spi;
-> +	unsigned int xfer_cnt = 0, total_len = 0;
-> +	bool start_xfer = false;
-> +	struct spi_transfer *xfer, *first_xfer = NULL;
-> +	int ret;
-> +	bool keep_cs = false;
-> +
-> +	pm_runtime_get_sync(pspim->dev);
-
-To repeat the feedback from last time do not open code runtime PM, use
-the core support.
-
-> +	sp7021_spi_set_cs(spi, true);
-> +
-> +	list_for_each_entry(xfer, &m->transfers, transfer_list) {
-> +		if (!first_xfer)
-> +			first_xfer = xfer;
-> +		total_len +=  xfer->len;
-
-To further repeat my prior feedback I can't see any reason why this
-driver doesn't just use transfer_one().
-
---pADVUBww0TEoVRVh
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmGKjCsACgkQJNaLcl1U
-h9D+CwgAg05hfhwyKJDroHzo6DQPDIYOZZQ7dJ6RRuZLsKrk0JvRkDpc/R30oVFO
-B+aeyqR0D6wAdPFTNyDc8wYpqbiB5V2WteSjZM14iOtykE/jCtYgYOUPRC7reQd3
-d/8elkaxojMoyqXNMj5forBmwuO3KiH60ka3bqpZmFO+9n+dPrgecK6wd4k437P9
-7ENoYOV4SDv6AZ3njsyEZ55Ou8xWx+d3dzOUhQeWV31Zcq140g5uJ+r36BeB9ELT
-k5o/5ZFlwueO4svhts0cWn0Da8F6V4fOzElWy5VAd47S/hgSF2xdZbg8ZQrBxSi7
-Nbn10hlmDnxGRlgdyIPY7JzZJlkleA==
-=UItb
------END PGP SIGNATURE-----
-
---pADVUBww0TEoVRVh--
+I bet you're hitting exactly this bug.  The fix ended up being a whole series of patches, but the gist of it is that the write_pkru() slow path needs to set the xfeature bit in the xsave buffer and then do the write.  It should be possible to make a little patch to do just this in a couple lines of code.
