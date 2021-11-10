@@ -2,90 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1314544C451
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 16:23:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 38A5F44C452
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 16:24:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232385AbhKJP0e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Nov 2021 10:26:34 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55008 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232002AbhKJP0c (ORCPT
+        id S232406AbhKJP0p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Nov 2021 10:26:45 -0500
+Received: from smtp-out2.suse.de ([195.135.220.29]:56394 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232388AbhKJP0o (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Nov 2021 10:26:32 -0500
-Received: from mail-ed1-x52d.google.com (mail-ed1-x52d.google.com [IPv6:2a00:1450:4864:20::52d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1DEB1C061764;
-        Wed, 10 Nov 2021 07:23:45 -0800 (PST)
-Received: by mail-ed1-x52d.google.com with SMTP id f4so11905328edx.12;
-        Wed, 10 Nov 2021 07:23:45 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=09YpV3mH/V4aUSTygf2HBQSgzKm63vPNZ7/GlSRpRaA=;
-        b=pVmSGuio1VbZI8v+sHDL4H1gMCOiiirg7U4WceDlApjSsnedR8pOsi5aBXkdTh/er1
-         Bi6lG3kVe64VzMqKX3LtuLxe8sYBYF/9G6hVJMJD/zL6nM0Kr6I0RuB4xKxUXmRAS/7U
-         29pHePG/mmwtuNEy24nlF63Smgv4aFEI0g/cGHboox3Vq5A3qIvr0h+aTNT7Rs8pgZxN
-         car2Ck6ZkY6AoKobyLBZTT78r7q45C1fblrqWJJU1P+WIJ9HnJ7oki3c8f4qFt3D66rc
-         pgbo82rii8NQzJq7Fnpl2b0lGvQ2jQKD+g7x8IpocnTIwl1Mzb+9EObmK3vxNYAB/B+a
-         4qHg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=09YpV3mH/V4aUSTygf2HBQSgzKm63vPNZ7/GlSRpRaA=;
-        b=SRH1Oeio6ILO0Mm/UL+EHN6nCTLC0JdhvpFwC+gVX/C6K6G/pNtz8q2FIhW6nlK6TB
-         uKfwDwz9ywlK4N64XENgcj/6sbXyNu1S6CvbZCIQYSxl0VYLYMMjWvbGKTO1IktBPH9+
-         Qvx3DHbpFbn9qEoiYtaFRqUvRCAi4MIxio1j0mIIXXEOfDs9xH6RDX+ZK82V8XAi5lWh
-         dq2HI9cJqVTem4fWXB1kKc8hXaK+ffl5LgCg8fPcYjSnoGFn2GKD9i2itxmtxaPSBA/n
-         lsZo+LvB3IwRkZBBroRWZIseaNdfzCSbZSlmwAMm48J9au8IXRaCZQCERG567AuiGbb6
-         hQpw==
-X-Gm-Message-State: AOAM530pQJd61g+5aS66b/euQ4mY9GdvoUYOJIMJBkQk6PI8iW75vN8V
-        2jGd1SZo79wnblZvTx27EEY=
-X-Google-Smtp-Source: ABdhPJwRsxB/xSaEUe+rRJ0aVoxguCC2Z9aXsVfadE5TAn7zbYQ5PsmDvLVb0UtLbZsfmCjLtkjCjQ==
-X-Received: by 2002:a17:907:9156:: with SMTP id l22mr502891ejs.220.1636557823506;
-        Wed, 10 Nov 2021 07:23:43 -0800 (PST)
-Received: from skbuf ([188.25.175.102])
-        by smtp.gmail.com with ESMTPSA id ds17sm25643ejc.45.2021.11.10.07.23.42
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 10 Nov 2021 07:23:43 -0800 (PST)
-Date:   Wed, 10 Nov 2021 17:23:41 +0200
-From:   Vladimir Oltean <olteanv@gmail.com>
-To:     Richard Cochran <richardcochran@gmail.com>
-Cc:     Kurt Kanzenbach <kurt@linutronix.de>,
-        Martin Kaistra <martin.kaistra@linutronix.de>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        John Stultz <john.stultz@linaro.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Russell King <linux@armlinux.org.uk>,
-        Marc Kleine-Budde <mkl@pengutronix.de>,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org
-Subject: Re: [PATCH v2 6/7] net: dsa: b53: Add logic for TX timestamping
-Message-ID: <20211110152341.muap5bu5b2tmnnir@skbuf>
-References: <20211109095013.27829-1-martin.kaistra@linutronix.de>
- <20211109095013.27829-7-martin.kaistra@linutronix.de>
- <20211109111213.6vo5swdhxjvgmyjt@skbuf>
- <87ee7o8otj.fsf@kurt>
- <20211110130545.ga7ajracz2vvzotg@skbuf>
- <20211110150855.GD28458@hoboy.vegasvil.org>
+        Wed, 10 Nov 2021 10:26:44 -0500
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 7F4A41FD33;
+        Wed, 10 Nov 2021 15:23:55 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1636557835; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=65uWoP1DQK7QlqEdSvFAIGzipx1+61pvrGfY+gp8isw=;
+        b=jFiK7q62CsXBiGWsHQDacGH7V5iQqFQavEWiWjaZfQhMklWe4aCUDYmUfi7v3gg1Bsc+P1
+        Cix+trxy0Al97B4ryX4Jbn2RuewUx2Bej2bPYGFQB+TCJxC8M8fxQdZ5hRsr2dIe9PGt44
+        BjbvSrCJM20ZY5r+GGcGxxf3yLfp6Qs=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1636557835;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=65uWoP1DQK7QlqEdSvFAIGzipx1+61pvrGfY+gp8isw=;
+        b=CxRxFNJ76/YgecUNBse6J2U1z1h64owAyCvTQ57GcxCv+iCKQdUip3eDa8fWrRXqvbP7lt
+        okYwJl6Fv7P3z0AQ==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id F36A613BFF;
+        Wed, 10 Nov 2021 15:23:54 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id d1oXLQrki2HHXwAAMHmgww
+        (envelope-from <ematsumiya@suse.de>); Wed, 10 Nov 2021 15:23:54 +0000
+Date:   Wed, 10 Nov 2021 12:23:52 -0300
+From:   Enzo Matsumiya <ematsumiya@suse.de>
+To:     Chaitanya Kulkarni <chaitanyak@nvidia.com>
+Cc:     "linux-nvme@lists.infradead.org" <linux-nvme@lists.infradead.org>,
+        Keith Busch <kbusch@kernel.org>, Jens Axboe <axboe@fb.com>,
+        Sagi Grimberg <sagi@grimberg.me>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Christoph Hellwig <hch@lst.de>
+Subject: Re: [RFC PATCH] nvme: add NO APST quirk for Kioxia device
+Message-ID: <20211110152352.44l43fe5gg66mjna@cyberdelia>
+References: <20211106020858.18625-1-ematsumiya@suse.de>
+ <20211109080634.GA28581@lst.de>
+ <20211109150405.uv2he4quk4dlud6p@cyberdelia>
+ <e37edd78-a390-25a6-874b-8b69d2b80182@nvidia.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Disposition: inline
-In-Reply-To: <20211110150855.GD28458@hoboy.vegasvil.org>
+In-Reply-To: <e37edd78-a390-25a6-874b-8b69d2b80182@nvidia.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 10, 2021 at 07:08:55AM -0800, Richard Cochran wrote:
-> In any case, I agree that the driver should enable the capabilities of
-> the HW and not impose artificial limitations.
+Hi Chaitanya,
 
-Which was not my actual point. We were discussing whether the kernel
-should attempt to take a 2-step TX timestamp if a different one is
-outstanding, be it from the same socket or from a different one.
-Whether the hardware supports multiple concurrent TX timestamps is
-orthogonal to that.
+On 11/10, Chaitanya Kulkarni wrote:
+>Enzo,
+>
+>> I didn't, had to google. I see it listed on Kioxia's website as
+>> CD6-V Series (6.4T model), but since customer was running on an
+>> DL380 Gen10, I suspect it could also be HPE PE8030 (PN P19837-B21).
+>>
+>
+>You can get more information about this controller using nvme-cli
+>id-ctrl command.
+
+I'm aware.
+
+I don't have access to the system, but id-ctrl output was shared with
+us.
+
+AFAICS these are the only identifying fields, which all indicate to be
+Kioxia's:
+
+NVME Identify Controller:
+vid       : 0x1e0f
+ssvid     : 0x1e0f
+sn        : [redacted]
+mn        : KCD6XVUL6T40
+fr        : GPK1
+rab       : 2
+ieee      : 8ce38e
+...
+
+Now something that I'm not aware. Would these change even if another
+brand was using this Kioxia's chipset?
+
+Is it crucial to have the product information (vs only chipset information)
+for quirks? I'm already querying the customer for this anyway.
+
+
+Cheers,
+
+Enzo
