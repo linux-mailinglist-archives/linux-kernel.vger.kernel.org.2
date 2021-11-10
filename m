@@ -2,217 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 54ED444BE2D
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 10:59:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 561E044BE14
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 10:51:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231127AbhKJKBq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Nov 2021 05:01:46 -0500
-Received: from so254-9.mailgun.net ([198.61.254.9]:41406 "EHLO
-        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229781AbhKJKBn (ORCPT
+        id S231140AbhKJJyW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Nov 2021 04:54:22 -0500
+Received: from szxga01-in.huawei.com ([45.249.212.187]:14733 "EHLO
+        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230117AbhKJJyU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Nov 2021 05:01:43 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1636538336; h=Content-Transfer-Encoding: Content-Type:
- MIME-Version: Message-ID: In-Reply-To: Date: References: Subject: Cc:
- To: From: Sender; bh=fcAghAoVZ0JxeVWaGkjHk7dhQU80Wv79lwRh7/w5leA=; b=Pps+SI9Usj4DJo9TLGSBMBV70h9IVkfkHhuT8I30e966dX0IpuZMB2w9mcg4tuWootjC5fT1
- s+s8TZY4eP30DihefZP2YD6/epr+U+2tKG8bEQ8/2O5lFLq95waGm1U1ur8kn2fMlj0ZBe3V
- Z7bsVaBmSx7Wbwog55zO+R8kQPU=
-X-Mailgun-Sending-Ip: 198.61.254.9
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n05.prod.us-east-1.postgun.com with SMTP id
- 618b97db0f34c3436a4a4aab (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 10 Nov 2021 09:58:51
- GMT
-Sender: kvalo=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 8A01DC43616; Wed, 10 Nov 2021 09:58:50 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
-        autolearn=no autolearn_force=no version=3.4.0
-Received: from tykki (tynnyri.adurom.net [51.15.11.48])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: kvalo)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 85DE0C4338F;
-        Wed, 10 Nov 2021 09:58:46 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 smtp.codeaurora.org 85DE0C4338F
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=codeaurora.org
-From:   Kalle Valo <kvalo@codeaurora.org>
-To:     =?utf-8?B?SsOpcsO0bWU=?= Pouiller <jerome.pouiller@silabs.com>
-Cc:     linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
-        devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "David S . Miller" <davem@davemloft.net>,
-        devicetree@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
-        linux-mmc@vger.kernel.org,
-        Pali =?utf-8?Q?Roh?= =?utf-8?Q?=C3=A1r?= <pali@kernel.org>,
-        Ulf Hansson <ulf.hansson@linaro.org>
-Subject: Re: [PATCH v7 05/24] wfx: add main.c/main.h
-References: <20210920161136.2398632-1-Jerome.Pouiller@silabs.com>
-        <87zgrl86cx.fsf@codeaurora.org> <87v92985ys.fsf@codeaurora.org>
-        <6117440.dvjIZRh6BQ@pc-42>
-Date:   Wed, 10 Nov 2021 11:58:41 +0200
-In-Reply-To: <6117440.dvjIZRh6BQ@pc-42> (=?utf-8?B?IkrDqXLDtG1l?=
- Pouiller"'s message of "Thu,
-        07 Oct 2021 13:22:14 +0200")
-Message-ID: <87lf1wnxgu.fsf@codeaurora.org>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
+        Wed, 10 Nov 2021 04:54:20 -0500
+Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.55])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4Hq0Rw3Q8kzZd0T;
+        Wed, 10 Nov 2021 17:49:16 +0800 (CST)
+Received: from dggpemm500015.china.huawei.com (7.185.36.181) by
+ dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.15; Wed, 10 Nov 2021 17:51:29 +0800
+Received: from huawei.com (10.175.103.91) by dggpemm500015.china.huawei.com
+ (7.185.36.181) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2308.15; Wed, 10 Nov
+ 2021 17:51:28 +0800
+From:   Wang ShaoBo <bobo.shaobowang@huawei.com>
+To:     <linux-kernel@vger.kernel.org>
+CC:     <rafael@kernel.org>, <gregkh@linuxfoundation.org>,
+        <sudeep.holla@arm.com>, <peterz@infradead.org>,
+        <cj.chengjian@huawei.com>, <huawei.libin@huawei.com>,
+        <weiyongjun1@huawei.com>
+Subject: [PATCH] arch_topology: Fix missing clear cluster_cpumask in remove_cpu_topology()
+Date:   Wed, 10 Nov 2021 17:58:56 +0800
+Message-ID: <20211110095856.469360-1-bobo.shaobowang@huawei.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.103.91]
+X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
+ dggpemm500015.china.huawei.com (7.185.36.181)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-J=C3=A9r=C3=B4me Pouiller <jerome.pouiller@silabs.com> writes:
+When testing cpu online and offline, warning happened like this:
 
-> On Thursday 7 October 2021 12:49:47 CEST Kalle Valo wrote:
->> CAUTION: This email originated from outside of the organization. Do
->> not click links or open attachments unless you recognize the sender
->> and know the content is safe.
->>=20
->>=20
->> Kalle Valo <kvalo@codeaurora.org> writes:
->>=20
->> > J=C3=A9r=C3=B4me Pouiller <jerome.pouiller@silabs.com> writes:
->> >
->> >>> >> >> I'm not really fond of having this kind of ASCII based parser =
-in the
->> >>> >> >> kernel. Do you have an example compressed file somewhere?
->> >>> >> >
->> >>> >> > An example of uncompressed configuration file can be found here=
-[1]. Once
->> >>> >> > compressed with [2], you get:
->> >>> >> >
->> >>> >> >     {a:{a:4,b:1},b:{a:{a:4,b:0,c:0,d:0,e:A},b:{a:4,b:0,c:0,d:0,=
-e:B},c:{a:4,b:0,c:0,d:0,e:C},d:{a:4,b:0,c:0,d:0,e:D},e:{a:4,b:0,c:0,d:0,e:E=
-},f:{a:4,b:0,c:0,d:0,e:F},g:{a:4,b:0,c:0,d:0,e:G},h:{a:4,b:0,c:0,d:0,e:H},i=
-:{a:4,b:0,c:0,d:0,e:I},j:{a:4,b:0,c:0,d:0,e:J},k:{a:4,b:0,c:0,d:0,e:K},l:{a=
-:4,b:0,c:0,d:1,e:L},m:{a:4,b:0,c:0,d:1,e:M}},c:{a:{a:4},b:{a:6},c:{a:6,c:0}=
-,d:{a:6},e:{a:6},f:{a:6}},e:{b:0,c:1},h:{e:0,a:50,b:0,d:0,c:[{a:1,b:[0,0,0,=
-0,0,0]},{a:2,b:[0,0,0,0,0,0]},{a:[3,9],b:[0,0,0,0,0,0]},{a:A,b:[0,0,0,0,0,0=
-]},{a:B,b:[0,0,0,0,0,0]},{a:[C,D],b:[0,0,0,0,0,0]},{a:E,b:[0,0,0,0,0,0]}]},=
-j:{a:0,b:0}}
->> >>> >>
->> >>> >> So what's the grand idea with this braces format? I'm not getting=
- it.
->> >>> >
->> >>> >   - It allows to describe a tree structure
->> >>> >   - It is ascii (easy to dump, easy to copy-paste)
->> >>> >   - It is small (as I explain below, size matters)
->> >>> >   - Since it is similar to JSON, the structure is obvious to many =
-people
->> >>> >
->> >>> > Anyway, I am not the author of that and I have to deal with it.
->> >>>
->> >>> I'm a supported for JSON like formats, flexibility and all that. But
->> >>> they belong to user space, not kernel.
->> >>>
->> >>> >> Usually the drivers just consider this kind of firmware configura=
-tion
->> >>> >> data as a binary blob and dump it to the firmware, without knowin=
-g what
->> >>> >> the data contains. Can't you do the same?
->> >>> >
->> >>> > [I didn't had received this mail :( ]
->> >>> >
->> >>> > The idea was also to send it as a binary blob. However, the firmwa=
-re use
->> >>> > a limited buffer (1500 bytes) to parse it. In most of case the PDS=
- exceeds
->> >>> > this size. So, we have to split the PDS before to send it.
->> >>> >
->> >>> > Unfortunately, we can't split it anywhere. The PDS is a tree struc=
-ture and
->> >>> > the firmware expects to receive a well formatted tree.
->> >>> >
->> >>> > So, the easiest way to send it to the firmware is to split the tree
->> >>> > between each root nodes and send each subtree separately (see also=
- the
->> >>> > comment above wfx_send_pds()).
->> >>> >
->> >>> > Anyway, someone has to cook this configuration before to send it t=
-o the
->> >>> > firmware. This could be done by a script outside of the kernel. Th=
-en we
->> >>> > could change the input format to simplify a bit the processing in =
-the
->> >>> > kernel.
->> >>>
->> >>> I think a binary file with TLV format would be much better, but I'm =
-sure
->> >>> there also other good choises.
->> >>>
->> >>> > However, the driver has already some users and I worry that changi=
-ng
->> >>> > the input format would lead to a mess.
->> >>>
->> >>> You can implement a script which converts the old format to the new
->> >>> format. And you can use different naming scheme in the new format so
->> >>> that we don't accidentally load the old format. And even better if y=
-ou
->> >>> add a some kind of signature in the new format and give a proper err=
-or
->> >>> from the driver if it doesn't match.
->> >>
->> >> Ok. I am going to change the input format. I think the new function is
->> >> going to look like:
->> >>
->> >> int wfx_send_pds(struct wfx_dev *wdev, u8 *buf, size_t buf_len)
->> >> {
->> >>      int ret;
->> >>      int start =3D 0;
->> >>
->> >>      if (buf[start] !=3D '{') {
->> >>              dev_err(wdev->dev, "valid PDS start with '{'. Did you fo=
-rget to compress it?\n");
->> >>              return -EINVAL;
->> >>      }
->> >>      while (start < buf_len) {
->> >>              len =3D strnlen(buf + start, buf_len - start);
->> >>              if (len > WFX_PDS_MAX_SIZE) {
->> >>                      dev_err(wdev->dev, "PDS chunk is too big (legacy=
- format?)\n");
->> >>                      return -EINVAL;
->> >>              }
->> >>              dev_dbg(wdev->dev, "send PDS '%s'\n", buf + start);
->> >>              ret =3D wfx_hif_configuration(wdev, buf + start, len);
->> >>              /* FIXME: Add error handling here */
->> >>              start +=3D len;
->> >>      }
->> >>      return 0;
->> >
->> > Did you read at all what I wrote above? Please ditch the ASCII format
->> > completely.
->>=20
->> Sorry, I read this too hastily. I just saw "buf[start] !=3D '{'" and
->> assumed this is the same ASCII format, but not sure anymore. Can you
->> explain what changes you made now?
->
-> The script I am going to write will compute where the PDS have to be split
-> (this work is currently done by the driver). The script will add a
-> separating character (let's say '\0') between each chunk.
->
-> The driver will just have to find the separating character, send the
-> chunk and repeat.
+[  146.746743] WARNING: CPU: 92 PID: 974 at kernel/sched/topology.c:2215 build_sched_domains+0x81c/0x11b0
+[  146.749988] CPU: 92 PID: 974 Comm: kworker/92:2 Not tainted 5.15.0 #9
+[  146.750402] Hardware name: Huawei TaiShan 2280 V2/BC82AMDDA, BIOS 1.79 08/21/2021
+[  146.751213] Workqueue: events cpuset_hotplug_workfn
+[  146.751629] pstate: 00400009 (nzcv daif +PAN -UAO -TCO -DIT -SSBS BTYPE=--)
+[  146.752048] pc : build_sched_domains+0x81c/0x11b0
+[  146.752461] lr : build_sched_domains+0x414/0x11b0
+[  146.752860] sp : ffff800040a83a80
+[  146.753247] x29: ffff800040a83a80 x28: ffff20801f13a980 x27: ffff20800448ae00
+[  146.753644] x26: ffff800012a858e8 x25: ffff800012ea48c0 x24: 0000000000000000
+[  146.754039] x23: ffff800010ab7d60 x22: ffff800012f03758 x21: 000000000000005f
+[  146.754427] x20: 000000000000005c x19: ffff004080012840 x18: ffffffffffffffff
+[  146.754814] x17: 3661613030303230 x16: 30303078303a3239 x15: ffff800011f92b48
+[  146.755197] x14: ffff20be3f95cef6 x13: 2e6e69616d6f642d x12: 6465686373204c4c
+[  146.755578] x11: ffff20bf7fc83a00 x10: 0000000000000040 x9 : 0000000000000000
+[  146.755957] x8 : 0000000000000002 x7 : ffffffffe0000000 x6 : 0000000000000002
+[  146.756334] x5 : 0000000090000000 x4 : 00000000f0000000 x3 : 0000000000000001
+[  146.756705] x2 : 0000000000000080 x1 : ffff800012f03860 x0 : 0000000000000001
+[  146.757070] Call trace:
+[  146.757421]  build_sched_domains+0x81c/0x11b0
+[  146.757771]  partition_sched_domains_locked+0x57c/0x978
+[  146.758118]  rebuild_sched_domains_locked+0x44c/0x7f0
+[  146.758460]  rebuild_sched_domains+0x2c/0x48
+[  146.758791]  cpuset_hotplug_workfn+0x3fc/0x888
+[  146.759114]  process_one_work+0x1f4/0x480
+[  146.759429]  worker_thread+0x48/0x460
+[  146.759734]  kthread+0x158/0x168
+[  146.760030]  ret_from_fork+0x10/0x20
+[  146.760318] ---[ end trace 82c44aad6900e81a ]---
 
-I would forget ASCII altogether and implement a proper binary format
-like TLV. For example, ath10k uses TLV with board-2.bin files (grep for
-enum ath10k_bd_ie_type).
+For some architectures like risc-v and arm64 which use common code
+clear_cpu_topology() in shutting down CPUx, When CONFIG_SCHED_CLUSTER
+is set, cluster_sibling in cpu_topology of each sibling adjacent
+to CPUx is missed clearing, this causes checking failed in
+topology_span_sane() and rebuilding topology failure at end when CPU online.
 
-Also I recommend changing the file "signature" ('{') to something else
-so that the driver detects incorrect formats. And maybe even use suffix
-.pds2 or something like that to make it more obvious and avoid
-confusion?
+Different sibling's cluster_sibling in cpu_topology[] when CPU92 offline
+(CPU 92, 93, 94, 95 are in one cluster):
 
---=20
-https://patchwork.kernel.org/project/linux-wireless/list/
+Before revision:
+CPU                 [92]      [93]      [94]      [95]
+cluster_sibling     [92]     [92-95]   [92-95]   [92-95]
 
-https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatc=
-hes
+After revision:
+CPU                 [92]      [93]      [94]      [95]
+cluster_sibling     [92]     [93-95]   [93-95]   [93-95]
+
+Signed-off-by: Wang ShaoBo <bobo.shaobowang@huawei.com>
+---
+ drivers/base/arch_topology.c | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/drivers/base/arch_topology.c b/drivers/base/arch_topology.c
+index 981e72a3dafb..ff16a36a908b 100644
+--- a/drivers/base/arch_topology.c
++++ b/drivers/base/arch_topology.c
+@@ -677,6 +677,8 @@ void remove_cpu_topology(unsigned int cpu)
+ 		cpumask_clear_cpu(cpu, topology_core_cpumask(sibling));
+ 	for_each_cpu(sibling, topology_sibling_cpumask(cpu))
+ 		cpumask_clear_cpu(cpu, topology_sibling_cpumask(sibling));
++	for_each_cpu(sibling, topology_cluster_cpumask(cpu))
++		cpumask_clear_cpu(cpu, topology_cluster_cpumask(sibling));
+ 	for_each_cpu(sibling, topology_llc_cpumask(cpu))
+ 		cpumask_clear_cpu(cpu, topology_llc_cpumask(sibling));
+ 
+-- 
+2.25.1
+
