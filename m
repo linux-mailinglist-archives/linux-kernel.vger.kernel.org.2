@@ -2,128 +2,173 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EEB9844C226
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 14:33:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9AC5244C23A
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 14:38:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232029AbhKJNfx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Nov 2021 08:35:53 -0500
-Received: from mail.kernel.org ([198.145.29.99]:55484 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231460AbhKJNfv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Nov 2021 08:35:51 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id AA7C6611AD;
-        Wed, 10 Nov 2021 13:33:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1636551184;
-        bh=2fOPQfcnnYGsAAsZbIczysSMHxsigaGOJywncfgF58U=;
-        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-        b=aT56LUYcfryK8afAqwV7QUlb1VOXsox2IRfA9k3CQD+AbWS5WrGR5btKvGGSJw1ls
-         kFhWTJ4+M8oryzYoJ2toZRmUpEUUVvY/UgV9dixyoQyLKeGu8HxPOXYfAyY8pjK0C1
-         E6B6e/oPwiOypZoBEsUDC5OkTlSMrm+mkU9bP9KiJ4CWgTtNjS17BjA5xORv9hQvO6
-         vA2R1gri9i/NKNOZ7ocjQy59+mN4hsXC9+Akms+CiFVvMgCjmjjX2tvvhVrq/MplG2
-         6ZbhmUnzqNdRKoO5KEhCc1jpiUMoqZf5GbU82wKzu98hTjWGLqJ5FgkIKysU9v6qAN
-         RqDtNznsE/6YQ==
-Message-ID: <a0212b723317677e8601b3f58927eab03ef784de.camel@kernel.org>
-Subject: Re: [PATCH v4 0/5] netfs, 9p, afs, ceph: Support folios, at least
- partially
-From:   Jeff Layton <jlayton@kernel.org>
-To:     David Howells <dhowells@redhat.com>,
-        "Matthew Wilcox (Oracle)" <willy@infradead.org>
-Cc:     kafs-testing@auristor.com, Ilya Dryomov <idryomov@gmail.com>,
-        linux-cachefs@redhat.com, linux-afs@lists.infradead.org,
-        ceph-devel@vger.kernel.org, Marc Dionne <marc.dionne@auristor.com>,
-        Dominique Martinet <asmadeus@codewreck.org>,
-        v9fs-developer@lists.sourceforge.net,
-        linux-fsdevel@vger.kernel.org, linux-cifs@vger.kernel.org,
-        linux-nfs@vger.kernel.org, devel@lists.orangefs.org,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org
-Date:   Wed, 10 Nov 2021 08:33:01 -0500
-In-Reply-To: <163649323416.309189.4637503793406396694.stgit@warthog.procyon.org.uk>
-References: <163649323416.309189.4637503793406396694.stgit@warthog.procyon.org.uk>
-Content-Type: text/plain; charset="ISO-8859-15"
-User-Agent: Evolution 3.42.1 (3.42.1-1.fc35) 
+        id S232036AbhKJNlB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Nov 2021 08:41:01 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58668 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231643AbhKJNk7 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Nov 2021 08:40:59 -0500
+Received: from mail-lf1-x12a.google.com (mail-lf1-x12a.google.com [IPv6:2a00:1450:4864:20::12a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D5FE8C061766;
+        Wed, 10 Nov 2021 05:38:11 -0800 (PST)
+Received: by mail-lf1-x12a.google.com with SMTP id u11so6136538lfs.1;
+        Wed, 10 Nov 2021 05:38:11 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=WtBceGsuNkvJWXKObFPMz3/faWDyi74JI/F+pRXLbvs=;
+        b=lD15/VjqUInHM3dZidzqbDMtU49DALHBS4Ay1C40nUi5lxcF7BMQ5EnHXXzG4e6Wu9
+         KEtaN/+P0k1Njtg3ToWP1/KM8wIXtXfb2GMI1jVOw30JDescBKoGZyWGQkHaeFFMF1Cx
+         557WfM+CudsCe0rfY4tn9Qu/fZ6FXK7hdk9Wu9dTaZ71QukQt6Mf26SjkHrJIeq+MupJ
+         /vckqogxswS5UmhYqlk9vNHYa1S8ChRuc7OrOB+B+82hPJEZwrpCBIceX5S6KM+5NMWF
+         FSm1MYMPHMKiWtHmf2u4gxwpqn+oAaxX8rT7fWDE5HDvTnS5+IytbAjE77fEnTdMp1QG
+         4sBQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=WtBceGsuNkvJWXKObFPMz3/faWDyi74JI/F+pRXLbvs=;
+        b=dR7RIwju1mPuGWy/xF/xjTUNZDjxCj7/xLYHZ0G4XEgsLYxEjxWiODFMVLchb39Avf
+         3PT2MHTzkGrGi0VkpWGh8JBrkkVqXmjWqSKSVyvWcCMiXSGvYEt0sIVmubHV/fSpSCDn
+         XcnTjHclx1GUlEfvJUz81b0scOwyGZUoEB3BOBud7SA5LMvReiMMPqRSgtZYYzfs5+kC
+         B/tgHbJGdHTstc4S9x+4aCkUlxKwkQQCkgvgyY2KwKqnk4wtJwi1y1sx1dz+OWbAvIIl
+         kU6+G5olyje+XVnVW0fELBGXM78/eYCOT44u7snurcXBDph8CIks7m7VABfrstWQQ0cZ
+         znzA==
+X-Gm-Message-State: AOAM530ZdC16NX6+rQ2X0060vkY8vZzZ1rZjM3h6fLK8seXOLgbpewIz
+        S/8sUX6ZWf7JKvuXIGQm32YE88HSLQg=
+X-Google-Smtp-Source: ABdhPJxBHb2JNLIS70NEJi27Oqj8IHGODoK0u1oyS1uV5awJ6mpkyMTiHwL65DF0nZiuWJMJYZ6aSw==
+X-Received: by 2002:a05:6512:c02:: with SMTP id z2mr14599668lfu.445.1636551490068;
+        Wed, 10 Nov 2021 05:38:10 -0800 (PST)
+Received: from [192.168.2.145] (79-139-177-117.dynamic.spd-mgts.ru. [79.139.177.117])
+        by smtp.googlemail.com with ESMTPSA id z25sm60391lja.99.2021.11.10.05.38.07
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 10 Nov 2021 05:38:09 -0800 (PST)
+Subject: Re: [PATCH v2 27/45] mfd: ntxec: Use devm_register_power_handler()
+To:     =?UTF-8?Q?Jonathan_Neusch=c3=a4fer?= <j.neuschaefer@gmx.net>
+Cc:     Guenter Roeck <linux@roeck-us.net>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Lee Jones <lee.jones@linaro.org>,
+        "Rafael J . Wysocki" <rafael@kernel.org>,
+        Mark Brown <broonie@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Russell King <linux@armlinux.org.uk>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>, Guo Ren <guoren@kernel.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Greg Ungerer <gerg@linux-m68k.org>,
+        Joshua Thompson <funaho@jurai.org>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Nick Hu <nickhu@andestech.com>,
+        Greentime Hu <green.hu@gmail.com>,
+        Vincent Chen <deanbo422@gmail.com>,
+        Helge Deller <deller@gmx.de>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Yoshinori Sato <ysato@users.sourceforge.jp>,
+        Rich Felker <dalias@libc.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        Juergen Gross <jgross@suse.com>,
+        Stefano Stabellini <sstabellini@kernel.org>,
+        Len Brown <lenb@kernel.org>,
+        Santosh Shilimkar <ssantosh@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Chen-Yu Tsai <wens@csie.org>, Tony Lindgren <tony@atomide.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Vladimir Zapolskiy <vz@mleia.com>,
+        Avi Fishman <avifishman70@gmail.com>,
+        Tomer Maimon <tmaimon77@gmail.com>,
+        Tali Perry <tali.perry1@gmail.com>,
+        Patrick Venture <venture@google.com>,
+        Nancy Yuen <yuenn@google.com>,
+        Benjamin Fair <benjaminfair@google.com>,
+        Pavel Machek <pavel@ucw.cz>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-csky@vger.kernel.org, linux-ia64@vger.kernel.org,
+        linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org,
+        linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        linux-riscv@lists.infradead.org, linux-sh@vger.kernel.org,
+        xen-devel@lists.xenproject.org, linux-acpi@vger.kernel.org,
+        linux-omap@vger.kernel.org, openbmc@lists.ozlabs.org,
+        linux-tegra@vger.kernel.org, linux-pm@vger.kernel.org
+References: <20211027211715.12671-1-digetx@gmail.com>
+ <20211027211715.12671-28-digetx@gmail.com> <YYbqlmOM95q7Hbjo@latitude>
+ <be0c74c6-05a9-cad5-c285-6626d05f8860@gmail.com>
+ <9a22c22d-94b1-f519-27a2-ae0b8bbf6e99@roeck-us.net>
+ <658cf796-e3b1-f816-1e15-9e9e08b8ade0@gmail.com>
+ <5a17fee3-4214-c2b9-abc1-ab9d6071591b@roeck-us.net>
+ <c0b52994-51f5-806b-b07e-3e70d8217ffc@gmail.com> <YYkIeBSCFka9yrqC@latitude>
+ <04103df3-1ef4-b560-a5cb-fa51737d28ad@gmail.com> <YYuia9KFdi+ETT+I@latitude>
+From:   Dmitry Osipenko <digetx@gmail.com>
+Message-ID: <ceefc854-5d15-b73c-0135-c1cbbbb473b7@gmail.com>
+Date:   Wed, 10 Nov 2021 16:38:07 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.14.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <YYuia9KFdi+ETT+I@latitude>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 2021-11-09 at 21:27 +0000, David Howells wrote:
-> Here's a set of patches to convert netfs, 9p and afs to use folios and to
-> provide sufficient conversion for ceph that it can continue to use the
-> netfs library.  Jeff Layton is working on fully converting ceph.
+10.11.2021 13:43, Jonathan Neuschäfer пишет:
+> On Mon, Nov 08, 2021 at 02:36:42PM +0300, Dmitry Osipenko wrote:
+>> 08.11.2021 14:22, Jonathan Neuschäfer пишет:
+>>> On Sun, Nov 07, 2021 at 08:42:33PM +0300, Dmitry Osipenko wrote:
+>>> [...]
+>>>> EC drivers tend to use higher priority in general. Jonathan, could you
+>>>> please confirm that NTXEC driver is a more preferable restart method
+>>>> than the watchdog?
+>>>
+>>> Yes. The original firmware uses the NTXEC to restart, and it works well,
+>>> so I do think it's preferable.
+>>
+>> Thank you, then I'll update the NTXEC patch like this:
+>>
+>> https://github.com/grate-driver/linux/commit/22da3d91f1734d9a0ed036220ad4ea28465af988
 > 
-> This has been rebased on to the 9p merge in Linus's tree[5] so that it has
-> access to both the 9p conversion to fscache and folios.
+> I tested again, but sys_off_handler_reboot called a bogus pointer
+> (probably reboot_prepare_cb). I think it was left uninitialized in
+> ntxec_probe, which uses devm_kmalloc. I guess we could switch it to
+> devm_kzalloc:
 > 
-> Changes
-> =======
-> ver #4:
->  - Detached and sent the afs symlink split patch separately.
->  - Handed the 9p netfslibisation patch off to Dominique Martinet.
->  - Added a patch to foliate page_endio().
->  - Fixed a bug in afs_redirty_page() whereby it didn't set the next page
->    index in the loop and returned too early.
->  - Simplified a check in v9fs_vfs_write_folio_locked()[4].
->  - Undid a change to afs_symlink_readpage()[4].
->  - Used offset_in_folio() in afs_write_end()[4].
->  - Rebased on 9p-folio merge upstream[5].
-> 
-> ver #3:
->  - Rebased on upstream as folios have been pulled.
->  - Imported a patch to convert 9p to netfslib from my
->    fscache-remove-old-api branch[3].
->  - Foliated netfslib.
-> 
-> ver #2:
->  - Reorder the patches to put both non-folio afs patches to the front.
->  - Use page_offset() rather than manual calculation[1].
->  - Fix folio_inode() to directly access the inode[2].
-> 
-> David
-> 
-> Link: https://lore.kernel.org/r/YST/0e92OdSH0zjg@casper.infradead.org/ [1]
-> Link: https://lore.kernel.org/r/YST8OcVNy02Rivbm@casper.infradead.org/ [2]
-> Link: https://lore.kernel.org/r/163551653404.1877519.12363794970541005441.stgit@warthog.procyon.org.uk/ [3]
-> Link: https://lore.kernel.org/r/YYKa3bfQZxK5/wDN@casper.infradead.org/ [4]
-> Link: https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=f89ce84bc33330607a782e47a8b19406ed109b15 [5]
-> Link: https://lore.kernel.org/r/2408234.1628687271@warthog.procyon.org.uk/ # v0
-> Link: https://lore.kernel.org/r/162981147473.1901565.1455657509200944265.stgit@warthog.procyon.org.uk/ # v1
-> Link: https://lore.kernel.org/r/163005740700.2472992.12365214290752300378.stgit@warthog.procyon.org.uk/ # v2
-> Link: https://lore.kernel.org/r/163584174921.4023316.8927114426959755223.stgit@warthog.procyon.org.uk>/ # v3
-> ---
-> David Howells (5):
->       folio: Add a function to change the private data attached to a folio
->       folio: Add a function to get the host inode for a folio
->       folio: Add replacements for page_endio()
->       netfs, 9p, afs, ceph: Use folios
->       afs: Use folios in directory handling
+> diff --git a/drivers/mfd/ntxec.c b/drivers/mfd/ntxec.c
+> index 1f55dfce14308..30364beb4b1d0 100644
+> --- a/drivers/mfd/ntxec.c
+> +++ b/drivers/mfd/ntxec.c
+> @@ -144,7 +144,7 @@ static int ntxec_probe(struct i2c_client *client)
+>  	const struct mfd_cell *subdevs;
+>  	size_t n_subdevs;
+>  
+> -	ec = devm_kmalloc(&client->dev, sizeof(*ec), GFP_KERNEL);
+> +	ec = devm_kzalloc(&client->dev, sizeof(*ec), GFP_KERNEL);
+>  	if (!ec)
+>  		return -ENOMEM;
+>  
 > 
 > 
->  fs/9p/vfs_addr.c           |  83 +++++----
->  fs/9p/vfs_file.c           |  20 +--
->  fs/afs/dir.c               | 229 ++++++++++--------------
->  fs/afs/dir_edit.c          | 154 ++++++++--------
->  fs/afs/file.c              |  68 ++++----
->  fs/afs/internal.h          |  46 ++---
->  fs/afs/write.c             | 347 ++++++++++++++++++-------------------
->  fs/ceph/addr.c             |  80 +++++----
->  fs/netfs/read_helper.c     | 165 +++++++++---------
->  include/linux/netfs.h      |  12 +-
->  include/linux/pagemap.h    |  23 ++-
->  include/trace/events/afs.h |  21 +--
->  mm/filemap.c               |  64 ++++---
->  mm/page-writeback.c        |   2 +-
->  14 files changed, 666 insertions(+), 648 deletions(-)
-> 
-> 
-> 
-> Tested-by: Jeff Layton <jlayton@kernel.org>
-> Tested-by: Dominique Martinet <asmadeus@codewreck.org>
-> Tested-by: kafs-testing@auristor.com
-> 
+> With that done, it works flawlessly.
 
-I know this already has my Tested-by, but I ran some more tests with
-this series yesterday and it did fine:
+Good catch, thank you! I'll correct this patch and add yours t-b.
 
-(Re-)Tested-by: Jeff Layton <jlayton@kernel.org>
