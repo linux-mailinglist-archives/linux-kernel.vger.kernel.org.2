@@ -2,88 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3095344B9CE
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 01:55:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6575644B9CD
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 01:54:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229652AbhKJA6U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Nov 2021 19:58:20 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57378 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229506AbhKJA6T (ORCPT
+        id S229550AbhKJA5O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Nov 2021 19:57:14 -0500
+Received: from mail-pf1-f174.google.com ([209.85.210.174]:41714 "EHLO
+        mail-pf1-f174.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229506AbhKJA5N (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Nov 2021 19:58:19 -0500
-Received: from mail-oi1-x22c.google.com (mail-oi1-x22c.google.com [IPv6:2607:f8b0:4864:20::22c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 68CAAC061764
-        for <linux-kernel@vger.kernel.org>; Tue,  9 Nov 2021 16:55:32 -0800 (PST)
-Received: by mail-oi1-x22c.google.com with SMTP id r26so2036870oiw.5
-        for <linux-kernel@vger.kernel.org>; Tue, 09 Nov 2021 16:55:32 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Zuwi8VdgrtneqiZTm5AGRBpIkLfz+Yl+0tOyzAoPJUY=;
-        b=AxpcyaLb8qnoVjm6VGIBvrmQPJpBdIrTDymYjlLvgES848fYut9st2UwxNoIzNhART
-         HrRUrFj143C9MIKzKTvEf0XMmMNXf7unaYOGoQx5MXOJgRIxfpWl/t+aFA1OAJ292C8x
-         oHo/nViAX0gFYIIBOZsN74QFDJmVB9ydapY3A=
+        Tue, 9 Nov 2021 19:57:13 -0500
+Received: by mail-pf1-f174.google.com with SMTP id g19so1045608pfb.8;
+        Tue, 09 Nov 2021 16:54:27 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Zuwi8VdgrtneqiZTm5AGRBpIkLfz+Yl+0tOyzAoPJUY=;
-        b=aQI3PaTTDLbO3c2UKsswtOEpU+7xV1z9qfSlcol63EDlHQP04Kk+uce21n+Q5AjuOH
-         P4elFu2r+QuewB0OxM2AO8ZRhz/vbEtGvydEKltudybgyfoqFXTsuBCWas9lJNemXT1z
-         LHCfo+8fJ074CE+RhyC0veDO28Y6YJd1Zc5+/65e5LGPZJwsHLaxN6vFYIPRApDp39Ve
-         AjWW5LgKrEXZUkDxXKfxb+3QIoYe/O7WyNO5F8SbGsm2konFbE+3YPlbHJUEvXTwYAsa
-         Ho6jcnAg2ZiwrqZk0juPNlwZtcfmX0FhfqrkqJAI4+/7trW2bC9BtE8+Fg6ZcbC9HIOJ
-         FCsw==
-X-Gm-Message-State: AOAM531tJHUSXZ4phOMZtXxfaaludDrg4JMlEDWOX2L9WLjEnnq2nzSV
-        xNbpxFLRh/6rwzgvXmHFEHTUPTwozzKGcA==
-X-Google-Smtp-Source: ABdhPJzRA5GJMrYmdF5AmVx7Ig4nACYKERI5ey7Emm9oBUwmqpTumLcLI9J/jwV/E2c9WizzQsCR7w==
-X-Received: by 2002:a05:6808:bc5:: with SMTP id o5mr9407745oik.129.1636505731300;
-        Tue, 09 Nov 2021 16:55:31 -0800 (PST)
-Received: from mail-ot1-f54.google.com (mail-ot1-f54.google.com. [209.85.210.54])
-        by smtp.gmail.com with ESMTPSA id a23sm7142952ool.3.2021.11.09.16.55.30
-        for <linux-kernel@vger.kernel.org>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=kf/FYN+gVGrcd1+PdmA4E4ZA2ZSxzGsOl4BVqKVilsQ=;
+        b=HB8pxVJCX7C+4jsbxsD1jjooFnm48mDJPn6ZMxIOx7ZTKQ+yqMWr65voG6iRN2jamt
+         9TRUnkOEALHkEvyXdJFv/G5yvNqclQp+UxwUpqcthM9GUPXR7agjp12q0xdfcNh/oHnZ
+         2pHI4vhY00BgNHkiXg9QRmcxBvHs0S8OkHbYtAbFwfejwdA4Zf/dYXQQturvLjMeFvW1
+         M/k09wyf5MNBpTT0ZUqLxeYI6zUXO1NpDyMm1VpMlpzGED2IkI926GfUDYk6N7b6p4Ul
+         HjauKU4qzTSYA2M9hbO146enOBxq77RauyBSW7/dDBk6CBm0d0yHPht+cgDm5y97lINq
+         25/A==
+X-Gm-Message-State: AOAM532CRQvQgeFwCNLu3Y8X88Xt5ToBsyoYbcvdllgMRwSbZRkm/qh3
+        gDoDl/O2PPh+czLSnQnlJvg=
+X-Google-Smtp-Source: ABdhPJzEWtt8iAonAa2C4qRPqfJucenAynaePwW92eDYc4TJ+Ir64lLP5hEhOXLPyUmx8r2LN4St0Q==
+X-Received: by 2002:a63:4a24:: with SMTP id x36mr7518498pga.67.1636505666927;
+        Tue, 09 Nov 2021 16:54:26 -0800 (PST)
+Received: from bvanassche-linux.mtv.corp.google.com ([2620:15c:211:201:a582:6939:6a97:9cbf])
+        by smtp.gmail.com with ESMTPSA id l1sm16190987pgn.27.2021.11.09.16.54.25
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 09 Nov 2021 16:55:31 -0800 (PST)
-Received: by mail-ot1-f54.google.com with SMTP id h19-20020a9d3e53000000b0056547b797b2so532598otg.4
-        for <linux-kernel@vger.kernel.org>; Tue, 09 Nov 2021 16:55:30 -0800 (PST)
-X-Received: by 2002:a9d:4b19:: with SMTP id q25mr4612966otf.186.1636505357500;
- Tue, 09 Nov 2021 16:49:17 -0800 (PST)
+        Tue, 09 Nov 2021 16:54:26 -0800 (PST)
+Subject: Re: [PATCH] block: add __must_check for *add_disk*() callers
+To:     Luis Chamberlain <mcgrof@kernel.org>, axboe@kernel.dk,
+        hare@suse.de, hch@infradead.org, jack@suse.cz, tj@kernel.org,
+        ming.lei@redhat.com
+Cc:     linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Christoph Hellwig <hch@lst.de>
+References: <20211110002949.999380-1-mcgrof@kernel.org>
+From:   Bart Van Assche <bvanassche@acm.org>
+Message-ID: <00619aeb-94c0-85a9-4c11-68dec0345188@acm.org>
+Date:   Tue, 9 Nov 2021 16:54:24 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.14.0
 MIME-Version: 1.0
-References: <20211109221641.1233217-1-sashal@kernel.org> <20211109221641.1233217-17-sashal@kernel.org>
- <CA+ASDXNcC4_MpURRjbeXsyXsQ9Qte_YgoXFCJUKtrSWpZsHn-g@mail.gmail.com> <YYsV/OU47QlolwOx@sashalap>
-In-Reply-To: <YYsV/OU47QlolwOx@sashalap>
-From:   Brian Norris <briannorris@chromium.org>
-Date:   Tue, 9 Nov 2021 16:49:05 -0800
-X-Gmail-Original-Message-ID: <CA+ASDXMTAi+jgSDpM3vDoD1Bmimsrqv6iQrZ_=HDtQz6jQufYg@mail.gmail.com>
-Message-ID: <CA+ASDXMTAi+jgSDpM3vDoD1Bmimsrqv6iQrZ_=HDtQz6jQufYg@mail.gmail.com>
-Subject: Re: [PATCH AUTOSEL 5.15 17/82] arm64: dts: rockchip: add Coresight
- debug range for RK3399
-To:     Sasha Levin <sashal@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-        Leo Yan <leo.yan@linaro.org>,
-        Chen-Yu Tsai <wenst@chromium.org>,
-        Douglas Anderson <dianders@chromium.org>,
-        Heiko Stuebner <heiko@sntech.de>, robh+dt@kernel.org,
-        pawel.moll@arm.com, mark.rutland@arm.com,
-        ijc+devicetree@hellion.org.uk, galak@codeaurora.org,
-        catalin.marinas@arm.com, will.deacon@arm.com,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-rockchip@lists.infradead.org
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20211110002949.999380-1-mcgrof@kernel.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 9, 2021 at 4:44 PM Sasha Levin <sashal@kernel.org> wrote:
-> I'll drop it if it depends on patches that didn't make it in. Thanks!
+On 11/9/21 4:29 PM, Luis Chamberlain wrote:
+> Now that we have done a spring cleaning on all drivers and added
+> error checking / handling, let's keep it that way and ensure
+> no new drivers fail to stick with it.
 
-Well, it won't harm anything as-is I suppose (maybe some logspam from
-probe failure? not sure), but it would be extra bad if you managed to
-pick up only _some_ of the dependencies. (There were 2 patches, but I
-won't tell you which they were.) If you only got one of them, you'd
-turn pretty much any RK3399 system into a brick, at least until they
-revert their kernel/DTB upgrade.
-
-Brian
+Reviewed-by: Bart Van Assche <bvanassche@acm.org>
