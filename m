@@ -2,232 +2,291 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7ACC444C5AC
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 18:03:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9842644C5AB
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 18:03:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232268AbhKJRGb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Nov 2021 12:06:31 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49380 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232316AbhKJRG2 (ORCPT
+        id S232338AbhKJRG3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Nov 2021 12:06:29 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:20702 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232177AbhKJRGZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Nov 2021 12:06:28 -0500
-Received: from mail-lf1-x134.google.com (mail-lf1-x134.google.com [IPv6:2a00:1450:4864:20::134])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D2D33C061766
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Nov 2021 09:03:39 -0800 (PST)
-Received: by mail-lf1-x134.google.com with SMTP id u11so7648894lfs.1
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Nov 2021 09:03:39 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=hzD/DAYGhboNaykVpK/opnEQiLFNUkCeLqCnw7cZh98=;
-        b=YWVQ2ftmMy7bjpmmm4spkd+jJC+ZUgbRAMXDyKTjfDBN9p9K12lFZlNRXURPf7H43+
-         g0i7hz8WmBjTyfF4++qw+RPiPDWOVMW1v14FEcFT0FSkfmA3bM2piJu7FHAAd9wYOcp5
-         03HAoNvYCeXjYSN8VhZFTFW7I708+R/vTyICX/Rn+DbFnWeIOpk73LrndCzJi5t08DWA
-         /CXalJqnYiS6pxDpYwKJsbmQXjr3ZOTqFS0ihgIXGsz4iS5RlDSc5/HaZCgJ13Bv78zk
-         Jpf61BKf28+YFxRNur79qvk4257uLFNN3Gdwwa/9WiwfOiwnqMS4T4OOfPcixheyyegh
-         F8Yg==
+        Wed, 10 Nov 2021 12:06:25 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1636563817;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=FQBQ5GV6gdxpV3LZ1YIPdhUG1JWyAiTVUj8IYWvvfMw=;
+        b=afLcOD3BhFQy8Syr3vv5idnYSn1dzEw0+usQXgrbSdxvwVZNMr+I2B7nRbyjs13c5wr5IH
+        1beGPIrjdCnEb9bDgvuKUy/92yrsvUKjD5xcZBT+5DNSMeP3e53sy/cmXdp+bDUCq5wic4
+        Hn/2zqY0LTgOyLUZJzNak1c3GgDcnaQ=
+Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
+ [209.85.221.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-52-d3now_utNg6Wwio4sjJnXA-1; Wed, 10 Nov 2021 12:03:36 -0500
+X-MC-Unique: d3now_utNg6Wwio4sjJnXA-1
+Received: by mail-wr1-f69.google.com with SMTP id y9-20020a5d6209000000b001684625427eso564223wru.7
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Nov 2021 09:03:35 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=hzD/DAYGhboNaykVpK/opnEQiLFNUkCeLqCnw7cZh98=;
-        b=XVj1gVeMXVRMIpu/X/21FWXtgfzkH0tmXEOLFdG7bICpdqSbioZ1ykqiJpjYV9HKA9
-         giEx7baWQOvDyADhlmFHTWEwG4Pd8vq8qv6kewbjIQUQxKjz+QfolnMcPZsPRZJ9ZfG7
-         x2jIQV60sbWDCQAc0mOLdy1g/FtOfB6mis/fmk/Ts2NKzRe1sQVMkeSbq88BetBLR5v8
-         BhTuQuzMJtxj4npRfFv5SLPTHx/bUaT9vDf9ht0/7bJ88ESmrenx8hINhA80PT3ENaDq
-         keDuyLhAMqUCQAT3ZRlx80WUB3E5zWnL75usGD0bnSQxmy96BUBkRdPrRj1Y/BN3nTp9
-         QLqQ==
-X-Gm-Message-State: AOAM531aXxqoywygIql6bTNyZKyCD1rUZynbeSuzMa+tVEXyo7egWMqj
-        dGF1V22W/TxRyy2EmrKUC5TB2BhPqKYB4JnLpdOB+w==
-X-Google-Smtp-Source: ABdhPJxb/dmh5YsoAw5FZOPj2BogW3tCtpsorxgzVNBF2IvsZNngY/zr07OqnbbCsvv8QyY4VYbJqlQC5AsqeT1V+FY=
-X-Received: by 2002:a19:ad4d:: with SMTP id s13mr535246lfd.373.1636563817872;
- Wed, 10 Nov 2021 09:03:37 -0800 (PST)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=FQBQ5GV6gdxpV3LZ1YIPdhUG1JWyAiTVUj8IYWvvfMw=;
+        b=a8gzqnPTICvYgQ+ykJSMbKsx7FUKBtLNeuXODIoCBjn60hV62NXAjmT4fpNpTtTZMx
+         b+XNINT1IYBSCKcC5+cNwOGUQiwPBUhSG8QW4q7e3XJ0RndWEdkpcPjaCBHQyokr1X66
+         7Syz8f4T4rdyA7rpjKG7X8n6Az7XZxt59turv/Kno/mvYjr7ux90ZJ62FAmasKX6ruAa
+         Rrs7DplSnpc8pLZ+mKmPNiTCg8ovPKo6AF+2DlgLz3jw2vR6O+LGyFm2F4zGNJmKSwLn
+         UmFcpHHi/cwD4/Ow2K22Da9PyIRyTuZKZbDH4D2svwuu9JmHqWgcJhm8qanJJMJpGZ8u
+         SIQg==
+X-Gm-Message-State: AOAM532by1JxtYxG/zscIFoOTMd2JLEKLSNDNN+ddQfTghi2xsdxU3JG
+        a+dm1l3eV6c4z+nQ3MeSVtKKxrMnQxM1YzBQDUfZZ9+oYmpW5X4i/nQP1LnDrb4+oeYFUyiWrMH
+        1gAMvP6DsSo+h8qyB3syOvSDD
+X-Received: by 2002:adf:ce0e:: with SMTP id p14mr551574wrn.423.1636563814648;
+        Wed, 10 Nov 2021 09:03:34 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJyrsIiuV6DLoUx3vhu7fe0Z8vzAwRCp5SwwfYqbhWvnsnUeDV0lvT6ihmH7onVoe32Y3qScgA==
+X-Received: by 2002:adf:ce0e:: with SMTP id p14mr551532wrn.423.1636563814405;
+        Wed, 10 Nov 2021 09:03:34 -0800 (PST)
+Received: from ?IPv6:2a01:e0a:59e:9d80:527b:9dff:feef:3874? ([2a01:e0a:59e:9d80:527b:9dff:feef:3874])
+        by smtp.gmail.com with ESMTPSA id p2sm6723185wmq.23.2021.11.10.09.03.31
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 10 Nov 2021 09:03:33 -0800 (PST)
+Subject: Re: [PATCH v4 04/15] KVM: x86: Use generic async PF slot management
+To:     Gavin Shan <gshan@redhat.com>, kvmarm@lists.cs.columbia.edu
+Cc:     kvm@vger.kernel.org, maz@kernel.org, linux-kernel@vger.kernel.org,
+        shan.gavin@gmail.com, Jonathan.Cameron@huawei.com,
+        pbonzini@redhat.com, vkuznets@redhat.com, will@kernel.org
+References: <20210815005947.83699-1-gshan@redhat.com>
+ <20210815005947.83699-5-gshan@redhat.com>
+From:   Eric Auger <eauger@redhat.com>
+Message-ID: <a3b0e70a-eddd-9a85-2c9c-ba5446ac542b@redhat.com>
+Date:   Wed, 10 Nov 2021 18:03:30 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.1
 MIME-Version: 1.0
-References: <cover.1636103151.git.hns@goldelico.com> <3ca9a3099d86d631235b6c03ae260bc581cc8d60.1636103151.git.hns@goldelico.com>
- <CAPDyKFrH8f80cs5dbh=3ugjyEzoUYXhStpHQyhUSd6b9wD78vw@mail.gmail.com>
- <C2F065E7-10C5-4701-A6F7-6B5A6198F0DF@goldelico.com> <CAPDyKFoz6b-+HQYdypYD7EUXxwj7th-=41MAK=ZTnKQWRmLArQ@mail.gmail.com>
- <B6ECEECF-EC1D-431E-B4E4-915B29E31AEE@goldelico.com>
-In-Reply-To: <B6ECEECF-EC1D-431E-B4E4-915B29E31AEE@goldelico.com>
-From:   Ulf Hansson <ulf.hansson@linaro.org>
-Date:   Wed, 10 Nov 2021 18:03:01 +0100
-Message-ID: <CAPDyKFqsBkWBajYvS2DXsHzO01-hgQp7YuzTs61N7vmLkZLgKg@mail.gmail.com>
-Subject: Re: [RFC v4 5/6] mmc: core: transplant ti,wl1251 quirks from to be
- retired omap_hsmmc
-To:     "H. Nikolaus Schaller" <hns@goldelico.com>
-Cc:     =?UTF-8?B?SsOpcsO0bWUgUG91aWxsZXI=?= <Jerome.Pouiller@silabs.com>,
-        Avri Altman <avri.altman@wdc.com>,
-        Shawn Lin <shawn.lin@rock-chips.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Tony Lindgren <tony@atomide.com>,
-        Bean Huo <beanhuo@micron.com>,
-        =?UTF-8?Q?Gra=C5=BEvydas_Ignotas?= <notasas@gmail.com>,
-        linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        letux-kernel@openphoenux.org, kernel@pyra-handheld.com
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210815005947.83699-5-gshan@redhat.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 10 Nov 2021 at 17:36, H. Nikolaus Schaller <hns@goldelico.com> wrote:
->
-> Hi Ulf,
->
-> > Am 09.11.2021 um 21:01 schrieb Ulf Hansson <ulf.hansson@linaro.org>:
-> >
-> > On Tue, 9 Nov 2021 at 11:58, H. Nikolaus Schaller <hns@goldelico.com> wrote:
-> >>
-> >> Hi Ulf,
-> >>
-> >>> Am 08.11.2021 um 16:33 schrieb Ulf Hansson <ulf.hansson@linaro.org>:
-> >>>
-> >>> On Fri, 5 Nov 2021 at 10:06, H. Nikolaus Schaller <hns@goldelico.com> wrote:
-> >>>>
-> >>>> +       card->quirks |= MMC_QUIRK_NONSTD_SDIO;
-> >>>> +       card->cccr.wide_bus = 1;
-> >>>> +       card->cis.vendor = 0x104c;
-> >>>> +       card->cis.device = 0x9066;
-> >>>> +       card->cis.blksize = 512;
-> >>>> +       card->cis.max_dtr = 24000000;
-> >>>> +       card->ocr = 0x80;
-> >>>
-> >>> In the past, we discussed a bit around why card->ocr needs to be set here.
-> >>>
-> >>> The reason could very well be that the DTS file is specifying the
-> >>> vmmc-supply with 1.8V fixed regulator, which seems wrong to me.
-> >>
-> >> I have checked with the schematics but the wlan_en regulator-fixed is just a GPIO
-> >> controlling some pin of the wifi chip.
-> >>
-> >> I guess it enables some regulator or power switch inside the wifi module which
-> >> has unknown voltage.
-> >>
-> >> We can interpret this as two sequential power-switches. The first one controlled
-> >> by the gpio-register bit and switches gpio power to the gpio pad of the SoC. The second
-> >> one switches the battery voltage to the internal circuits of the wifi module.
-> >>
-> >> The GPIO itself is on 1.8V VIO level which seems to be the reason for the min/max.
-> >>
-> >> Now it is a little arbitrary what the DTS describes: the gpio voltage or the unknown
-> >> internal voltage of the second switch.
-> >>
-> >> So from hardware perspective the min/max values are irrelevant.
-> >
-> > I completely agree with you! That's also why I earlier suggested
-> > moving to use an mmc-pwrseq node
-> > (Documentation/devicetree/bindings/mmc/mmc-pwrseq-simple.yaml), that
-> > would allow a better description of the HW.
->
-> Basically yes.
->
-> > Nevertheless, the important point is that the mmc core gets a valid
-> > host->ocr_avail to work with during card initialization. And in this
-> > case, it's probably good enough to model this via changing the
-> > regulator-min|max-microvolt to get a proper value from the
-> > "regulator".
-> >
-> >>
-> >>>
-> >>> I would be very interested to know if we would change
-> >>> "regulator-min|max-microvolt" of the regulator in the DTS, into
-> >>> somewhere in between 2700000-3600000 (2.7-3.6V)
-> >>
-> >> Ok, if the mmc driver does something with these values it may have indeed an influence.
-> >>
-> >>> - and see if that
-> >>> allows us to drop the assignment of "card->ocr =  0x80;" above. Would
-> >>> you mind doing some tests for this?
-> >>
-> >> Well, with min/max=3.3V and no ocr I get:
-> >>
-> >> [    2.765136] omap_hsmmc 480ad000.mmc: card claims to support voltages below defined range
-> >> [    2.776367] omap_hsmmc 480ad000.mmc: found wl1251
-> >> [    2.782287] mmc2: new SDIO card at address 0001
-> >
-> > That's really great information! During the first initialization
-> > attempt, things are working fine and the SDIO card gets properly
-> > detected.
-> >
-> >> [   10.874237] omap_hsmmc 480ad000.mmc: could not set regulator OCR (-22)
-> >> [   10.945373] wl1251_sdio: probe of mmc2:0001:1 failed with error -16
-> >
-> > It looks like the card is being re-initialized when it's time to probe
-> > with the SDIO func driver. This makes sense, assuming it's been
-> > powered off via runtime PM (the "cap-power-off-card" DT property
-> > should be set in the DTS for this card's slot).
-> >
-> > I looked a bit closer to understand the problem above and then I
-> > realized why the card->ocr is being set from omap_hsmmc ->init_card()
-> > callback. It's most likely because the mmc core in
-> > mmc_sdio_init_card() doesn't save the card->ocr when
-> > MMC_QUIRK_NONSTD_SDIO is set. Instead it becomes the responsibility
-> > for the ->init_card() callback to do it, which seems wrong to me.
-> >
-> > Note that the card->ocr is being used when re-initializing the SDIO card.
-> >
-> > I have just sent a patch [1], would you mind trying it, in combination
-> > with not assigning card->ocr in $subject patch?
->
-> Yes, it works! I have not even played with the wlan_en regulator voltage.
+Hi Gavin,
 
-That's great! Thanks for testing, again!
+On 8/15/21 2:59 AM, Gavin Shan wrote:
+> This uses the generic slot management mechanism for asynchronous
+Now we have moved the hash table management in the generic code, Use
+this latter ...
+> page fault by enabling CONFIG_KVM_ASYNC_PF_SLOT because the private
+> implementation is totally duplicate to the generic one.
+> 
+> The changes introduced by this is pretty mechanical and shouldn't
+> cause any logical changes.
+suggest: No functional change intended.
+> 
+> Signed-off-by: Gavin Shan <gshan@redhat.com>
+> ---
+>  arch/x86/include/asm/kvm_host.h |  2 -
+>  arch/x86/kvm/Kconfig            |  1 +
+>  arch/x86/kvm/mmu/mmu.c          |  2 +-
+>  arch/x86/kvm/x86.c              | 86 +++------------------------------
+>  4 files changed, 8 insertions(+), 83 deletions(-)
+> 
+> diff --git a/arch/x86/include/asm/kvm_host.h b/arch/x86/include/asm/kvm_host.h
+> index 974cbfb1eefe..409c1e7137cd 100644
+> --- a/arch/x86/include/asm/kvm_host.h
+> +++ b/arch/x86/include/asm/kvm_host.h
+> @@ -810,7 +810,6 @@ struct kvm_vcpu_arch {
+>  
+>  	struct {
+>  		bool halted;
+> -		gfn_t gfns[ASYNC_PF_PER_VCPU];
+>  		struct gfn_to_hva_cache data;
+>  		u64 msr_en_val; /* MSR_KVM_ASYNC_PF_EN */
+>  		u64 msr_int_val; /* MSR_KVM_ASYNC_PF_INT */
+> @@ -1878,7 +1877,6 @@ void kvm_arch_async_page_ready(struct kvm_vcpu *vcpu,
+>  			       struct kvm_async_pf *work);
+>  void kvm_arch_async_page_present_queued(struct kvm_vcpu *vcpu);
+>  bool kvm_arch_can_dequeue_async_page_present(struct kvm_vcpu *vcpu);
+> -extern bool kvm_find_async_pf_gfn(struct kvm_vcpu *vcpu, gfn_t gfn);
+>  
+>  int kvm_skip_emulated_instruction(struct kvm_vcpu *vcpu);
+>  int kvm_complete_insn_gp(struct kvm_vcpu *vcpu, int err);
+> diff --git a/arch/x86/kvm/Kconfig b/arch/x86/kvm/Kconfig
+> index ac69894eab88..53a6ef30b6ee 100644
+> --- a/arch/x86/kvm/Kconfig
+> +++ b/arch/x86/kvm/Kconfig
+> @@ -32,6 +32,7 @@ config KVM
+>  	select HAVE_KVM_IRQ_ROUTING
+>  	select HAVE_KVM_EVENTFD
+>  	select KVM_ASYNC_PF
+> +	select KVM_ASYNC_PF_SLOT
+>  	select USER_RETURN_NOTIFIER
+>  	select KVM_MMIO
+>  	select SCHED_INFO
+> diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
+> index c4f4fa23320e..cd8aaa662ac2 100644
+> --- a/arch/x86/kvm/mmu/mmu.c
+> +++ b/arch/x86/kvm/mmu/mmu.c
+> @@ -3799,7 +3799,7 @@ static bool try_async_pf(struct kvm_vcpu *vcpu, bool prefault, gfn_t gfn,
+>  
+>  	if (!prefault && kvm_can_do_async_pf(vcpu)) {
+>  		trace_kvm_try_async_get_page(cr2_or_gpa, gfn);
+> -		if (kvm_find_async_pf_gfn(vcpu, gfn)) {
+> +		if (kvm_async_pf_find_slot(vcpu, gfn)) {
+>  			trace_kvm_async_pf_doublefault(cr2_or_gpa, gfn);
+>  			kvm_make_request(KVM_REQ_APF_HALT, vcpu);
+>  			return true;
+> diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
+> index 7f35d9324b99..a5f7d6122178 100644
+> --- a/arch/x86/kvm/x86.c
+> +++ b/arch/x86/kvm/x86.c
+> @@ -332,13 +332,6 @@ static struct kmem_cache *kvm_alloc_emulator_cache(void)
+>  
+>  static int emulator_fix_hypercall(struct x86_emulate_ctxt *ctxt);
+>  
+> -static inline void kvm_async_pf_hash_reset(struct kvm_vcpu *vcpu)
+> -{
+> -	int i;
+> -	for (i = 0; i < ASYNC_PF_PER_VCPU; i++)
+> -		vcpu->arch.apf.gfns[i] = ~0;
+> -}
+> -
+>  static void kvm_on_user_return(struct user_return_notifier *urn)
+>  {
+>  	unsigned slot;
+> @@ -854,7 +847,7 @@ void kvm_post_set_cr0(struct kvm_vcpu *vcpu, unsigned long old_cr0, unsigned lon
+>  {
+>  	if ((cr0 ^ old_cr0) & X86_CR0_PG) {
+>  		kvm_clear_async_pf_completion_queue(vcpu);
+> -		kvm_async_pf_hash_reset(vcpu);
+> +		kvm_async_pf_reset_slot(vcpu);
+>  	}
+>  
+>  	if ((cr0 ^ old_cr0) & KVM_MMU_CR0_ROLE_BITS)
+> @@ -3118,7 +3111,7 @@ static int kvm_pv_enable_async_pf(struct kvm_vcpu *vcpu, u64 data)
+>  
+>  	if (!kvm_pv_async_pf_enabled(vcpu)) {
+>  		kvm_clear_async_pf_completion_queue(vcpu);
+> -		kvm_async_pf_hash_reset(vcpu);
+> +		kvm_async_pf_reset_slot(vcpu);
+>  		return 0;
+>  	}
+>  
+> @@ -10704,7 +10697,7 @@ int kvm_arch_vcpu_create(struct kvm_vcpu *vcpu)
+>  
+>  	vcpu->arch.pat = MSR_IA32_CR_PAT_DEFAULT;
+>  
+> -	kvm_async_pf_hash_reset(vcpu);
+> +	kvm_async_pf_reset_slot(vcpu);
+>  	kvm_pmu_init(vcpu);
+>  
+>  	vcpu->arch.pending_external_vector = -1;
+> @@ -10828,7 +10821,7 @@ void kvm_vcpu_reset(struct kvm_vcpu *vcpu, bool init_event)
+>  	kvmclock_reset(vcpu);
+>  
+>  	kvm_clear_async_pf_completion_queue(vcpu);
+> -	kvm_async_pf_hash_reset(vcpu);
+> +	kvm_async_pf_reset_slot(vcpu);
+>  	vcpu->arch.apf.halted = false;
+>  
+>  	if (vcpu->arch.guest_fpu && kvm_mpx_supported()) {
+> @@ -11737,73 +11730,6 @@ void kvm_arch_async_page_ready(struct kvm_vcpu *vcpu, struct kvm_async_pf *work)
+>  	kvm_mmu_do_page_fault(vcpu, work->cr2_or_gpa, 0, true);
+>  }
+>  
+> -static inline u32 kvm_async_pf_hash_fn(gfn_t gfn)
+> -{
+> -	BUILD_BUG_ON(!is_power_of_2(ASYNC_PF_PER_VCPU));
+> -
+> -	return hash_32(gfn & 0xffffffff, order_base_2(ASYNC_PF_PER_VCPU));
+> -}
+> -
+> -static inline u32 kvm_async_pf_next_probe(u32 key)
+> -{
+> -	return (key + 1) & (ASYNC_PF_PER_VCPU - 1);
+> -}
+> -
+> -static void kvm_add_async_pf_gfn(struct kvm_vcpu *vcpu, gfn_t gfn)
+> -{
+> -	u32 key = kvm_async_pf_hash_fn(gfn);
+> -
+> -	while (vcpu->arch.apf.gfns[key] != ~0)
+> -		key = kvm_async_pf_next_probe(key);
+> -
+> -	vcpu->arch.apf.gfns[key] = gfn;
+> -}
+> -
+> -static u32 kvm_async_pf_gfn_slot(struct kvm_vcpu *vcpu, gfn_t gfn)
+> -{
+> -	int i;
+> -	u32 key = kvm_async_pf_hash_fn(gfn);
+> -
+> -	for (i = 0; i < ASYNC_PF_PER_VCPU &&
+> -		     (vcpu->arch.apf.gfns[key] != gfn &&
+> -		      vcpu->arch.apf.gfns[key] != ~0); i++)
+> -		key = kvm_async_pf_next_probe(key);
+> -
+> -	return key;
+> -}
+> -
+> -bool kvm_find_async_pf_gfn(struct kvm_vcpu *vcpu, gfn_t gfn)
+> -{
+> -	return vcpu->arch.apf.gfns[kvm_async_pf_gfn_slot(vcpu, gfn)] == gfn;
+> -}
+> -
+> -static void kvm_del_async_pf_gfn(struct kvm_vcpu *vcpu, gfn_t gfn)
+> -{
+> -	u32 i, j, k;
+> -
+> -	i = j = kvm_async_pf_gfn_slot(vcpu, gfn);
+> -
+> -	if (WARN_ON_ONCE(vcpu->arch.apf.gfns[i] != gfn))
+> -		return;
+> -
+> -	while (true) {
+> -		vcpu->arch.apf.gfns[i] = ~0;
+> -		do {
+> -			j = kvm_async_pf_next_probe(j);
+> -			if (vcpu->arch.apf.gfns[j] == ~0)
+> -				return;
+> -			k = kvm_async_pf_hash_fn(vcpu->arch.apf.gfns[j]);
+> -			/*
+> -			 * k lies cyclically in ]i,j]
+> -			 * |    i.k.j |
+> -			 * |....j i.k.| or  |.k..j i...|
+> -			 */
+> -		} while ((i <= j) ? (i < k && k <= j) : (i < k || k <= j));
+> -		vcpu->arch.apf.gfns[i] = vcpu->arch.apf.gfns[j];
+> -		i = j;
+> -	}
+> -}
+> -
+>  static inline int apf_put_user_notpresent(struct kvm_vcpu *vcpu)
+>  {
+>  	u32 reason = KVM_PV_REASON_PAGE_NOT_PRESENT;
+> @@ -11867,7 +11793,7 @@ bool kvm_arch_async_page_not_present(struct kvm_vcpu *vcpu,
+>  	struct x86_exception fault;
+>  
+>  	trace_kvm_async_pf_not_present(work->arch.token, work->cr2_or_gpa);
+> -	kvm_add_async_pf_gfn(vcpu, work->arch.gfn);
+> +	kvm_async_pf_add_slot(vcpu, work->arch.gfn);
+>  
+>  	if (kvm_can_deliver_async_pf(vcpu) &&
+>  	    !apf_put_user_notpresent(vcpu)) {
+> @@ -11904,7 +11830,7 @@ void kvm_arch_async_page_present(struct kvm_vcpu *vcpu,
+>  	if (work->wakeup_all)
+>  		work->arch.token = ~0; /* broadcast wakeup */
+>  	else
+> -		kvm_del_async_pf_gfn(vcpu, work->arch.gfn);
+> +		kvm_async_pf_remove_slot(vcpu, work->arch.gfn);
+>  	trace_kvm_async_pf_ready(work->arch.token, work->cr2_or_gpa);
+>  
+>  	if ((work->wakeup_all || work->notpresent_injected) &&
+> 
+Looks good to me
 
->
-> >
-> >>
-> >> Adding back card->ocr = 0x80 (and keeping 3.3V for min/max) shows exactly the same.
-> >>
-> >> Only min/max 1.8V + OCR works:
-> >>
-> >> [    2.824188] mmc2: new SDIO card at address 0001
-> >> [    2.806518] omap_hsmmc 480ad000.mmc: card claims to support voltages below defined range
-> >> [    2.815979] omap_hsmmc 480ad000.mmc: found wl1251
-> >> [   10.981018] omap_hsmmc 480ad000.mmc: found wl1251
-> >> [   11.018280] wl1251: using dedicated interrupt line
-> >> [   11.321136] wl1251: loaded
-> >> [   11.378601] wl1251: initialized
-> >> [   14.521759] omap_hsmmc 480ad000.mmc: found wl1251
-> >> [   38.680725] omap_hsmmc 480ad000.mmc: found wl1251
-> >> [   39.646942] wl1251: 151 tx blocks at 0x3b788, 35 rx blocks at 0x3a780
-> >> [   39.654785] wl1251: firmware booted (Rev 4.0.4.3.7)
-> >>
-> >> Therefore I also tried the 4th combination: min/max 1.8V and no ocr quirk and it fails again.
-> >>
-> >> Finally I tried setting min to 2.7V and max to 3.6V. This ends up in
-> >>
-> >> [    0.402648] reg-fixed-voltage fixed-regulator-wg7210_en: Fixed regulator specified with variable voltages
-> >>
-> >> So it seems that we need both: min/max = 1.8V and OCR. A little unexpected since I had expected
-> >> that min/max is completely irrelevant.
-> >>
-> >>> If that works, we should add some comments about it above, I think.
-> >>
-> >> So at the moment no change for [PATCH v1] which I can now send out.
-> >>
-> >> BR and thanks,
-> >> Nikolaus
-> >>
-> >
-> > Thanks a lot for doing these tests! If I am right, it looks like we
-> > should be able to skip assigning card->ocr for this quirk, but let's
-> > see.
->
-> Indeed we can. That is great.
->
-> Now the question is how to handle the dependency on your patch.
-> Somehow we must ensure that it is merged before my $subject patch.
-> Even if someone decides to backport this to stable.
+Eric
 
-Yes, I can pick up my patch first. As it's not really fixing a
-problem, but rather preparing for your series to work better, I don't
-think we need to care about stable backports, at least for now.
-
-If you re-submit before rc1, then just include my patch early in your series.
-
->
-> BR and thanks,
-> Nikolaus
-
-Kind regards
-Uffe
