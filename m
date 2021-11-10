@@ -2,135 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 55DE544BA61
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 03:36:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D90C944BA65
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 03:38:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229970AbhKJCj2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Nov 2021 21:39:28 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51378 "EHLO
+        id S229998AbhKJCkz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Nov 2021 21:40:55 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51740 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229717AbhKJCjZ (ORCPT
+        with ESMTP id S229717AbhKJCky (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Nov 2021 21:39:25 -0500
-Received: from mail-pf1-x436.google.com (mail-pf1-x436.google.com [IPv6:2607:f8b0:4864:20::436])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9911DC061764;
-        Tue,  9 Nov 2021 18:36:38 -0800 (PST)
-Received: by mail-pf1-x436.google.com with SMTP id x131so1234154pfc.12;
-        Tue, 09 Nov 2021 18:36:38 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=/RI8za/likW6wn/T62JKpZilA0DKYeC75oCxGkpsJyk=;
-        b=j9E8jk4Regjp7QT8Ke5KzZ7nu8DaIRKgAW3S1XNLn8W/bgjcx4rqDK3QBRoc2CRsh/
-         otXq0c+djWOKUxrAMBDXqE7w1Sk5gEytTk22FuMqwFCTgkr/DteMiLX5G666ZPlquONH
-         ISPsFrmR94PbXkYpQJT297IYTg5oHm/xRWV/GihGyD67K9lxN1nRVYhak3R/MJJWRIwX
-         sIgjyP4IEMKr1r5NgS68uWPlzVRwa4V85d3f74Z1neWyGkzRuJzPjQSDErcKHzaiOF/i
-         6s6wMhn/t28facyou/ChEEw+s6Bu0LUZOzJUcjkAcZEICnJ5kbuHilg+dPCj9s5WSXz0
-         zfjA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=/RI8za/likW6wn/T62JKpZilA0DKYeC75oCxGkpsJyk=;
-        b=wiEFKUGxgoJV0bxdW5Sw2Tl1vS6mUfNdbRjigKHwk5bZQcsLKvPoe2xtR1o9+CvLgC
-         x6kRA9Crua+6eZokOaz6kSeK9mEwQemA1TbNb7HQMWX0uzVTNdS8HGQVB5VqZEWmkXe1
-         kT4IQ1/EQA/JE6wZcHVAsoH509pUIdTeXrM/kJ1YX4t1RkiE1xbv1KMG43JAyzJ4oG3T
-         2Uqh8rA63ixVynKWSxgCCbTI4dEF9dDQ8c9DZu8iErRYlC8rwqIAgDGS5oMIxcge6J0O
-         wHeDdhRDmJfjB+1jUxtzbj1xqr0kedXJinWPiJt6LXNv4Z4ZJ9c4olNsLGupTDyu2APF
-         g7Yg==
-X-Gm-Message-State: AOAM533LQkmfGRmBupOwuWBCR4qvSI480LG/L+GLzhdRNzQjBLjQSzuR
-        MdnULeDAjUkCcIg7xDKIkdk=
-X-Google-Smtp-Source: ABdhPJyT7ug2NPRa8K074vc5mtJH4XcGQEBh9sxjpkbZt6xMLAh8fIuHlf3plIUkwvZuqh3/GMaXUw==
-X-Received: by 2002:a65:558f:: with SMTP id j15mr3277836pgs.311.1636511798055;
-        Tue, 09 Nov 2021 18:36:38 -0800 (PST)
-Received: from localhost.localdomain ([193.203.214.57])
-        by smtp.gmail.com with ESMTPSA id gc22sm3769568pjb.57.2021.11.09.18.36.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 09 Nov 2021 18:36:37 -0800 (PST)
-From:   cgel.zte@gmail.com
-X-Google-Original-From: yao.jing2@zte.com.cn
-To:     subbu.seetharaman@broadcom.com
-Cc:     ketan.mukadam@broadcom.com, jitendra.bhivare@broadcom.com,
-        jejb@linux.ibm.com, martin.petersen@oracle.com,
-        linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Jing Yao <yao.jing2@zte.com.cn>, Zeal Robot <zealci@zte.com.cn>
-Subject: [PATCH] scsi: be2iscsi: Replace snprintf in show functions with  sysfs_emit
-Date:   Wed, 10 Nov 2021 02:35:35 +0000
-Message-Id: <20211110023535.135713-1-yao.jing2@zte.com.cn>
-X-Mailer: git-send-email 2.25.1
+        Tue, 9 Nov 2021 21:40:54 -0500
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1234::107])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56C53C061764;
+        Tue,  9 Nov 2021 18:38:07 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:MIME-Version:
+        Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
+        Content-Description:In-Reply-To:References;
+        bh=QxQo/h2U23gdGIw9R8NukNTSdxsKwkzTqfGEtO3iS/U=; b=zd0WO8dX9x+6YrHZ0ZMnDqCZMi
+        6NqKBopFWlDG5V3Hy4XuIZHQHUaJXHtumanXUkGeNIb4XCdrJyNdhktwY1RzIetuDJ4t6csAKGyvP
+        GzUmDTX/9mMRO2YlHsumOwYOXqj5AMDOImPQFix+nFjIkbJzT/saGKZV/wy2xmN7DmcEd73SbJWM/
+        qasTvYfSlwGb+9vTYzUqXsQnJvSB0p/E2Of8AAZt3LdhszSnBqam11Oh0g6thYaFL9nbi7g64SPSm
+        eYzpoqPMM65sjwv9nkWaFfCrvJakZphzpJpgn27fc2UZ6SZpXbzkXuLMkn6Vm9GxEKGyItDdb55vz
+        wvuFGj4w==;
+Received: from [2601:1c0:6280:3f0::aa0b] (helo=merlin.infradead.org)
+        by merlin.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mkdUu-008qVu-BO; Wed, 10 Nov 2021 02:38:03 +0000
+From:   Randy Dunlap <rdunlap@infradead.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Randy Dunlap <rdunlap@infradead.org>,
+        kernel test robot <lkp@intel.com>,
+        Artur Rojek <contact@artur-rojek.eu>,
+        Paul Cercueil <paul@crapouillou.net>,
+        linux-mips@vger.kernel.org, Jonathan Cameron <jic23@kernel.org>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        linux-iio@vger.kernel.org, Florian Fainelli <f.fainelli@gmail.com>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>
+Subject: [PATCH v2] iio/adc: ingenic: fix (MIPS) ingenic-adc build errors
+Date:   Tue,  9 Nov 2021 18:37:55 -0800
+Message-Id: <20211110023755.27176-1-rdunlap@infradead.org>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jing Yao <yao.jing2@zte.com.cn>
+MIPS does not always provide clk*() interfaces and there are no
+always-present stubs for them, so depending on "MIPS || COMPILE_TEST"
+is not strong enough to prevent build errors.
 
-coccicheck complains about the use of snprintf() in sysfs show
-functions:
-WARNING use scnprintf or sprintf
+Likewise MACH_INGENIC_SOC || COMPILE_TEST is not strong enough
+since if only COMPILE_TEST=y (with some other MIPS MACH_ or CPU or
+BOARD setting), there are still the same build errors.
 
-Use sysfs_emit instead of scnprintf, snprintf or sprintf makes more
-sense.
+It looks like depending on MACH_INGENIC is the only thing that is
+sufficient here in order to prevent build errors.
 
-Reported-by: Zeal Robot <zealci@zte.com.cn>
-Signed-off-by: Jing Yao <yao.jing2@zte.com.cn>
+mips-linux-ld: drivers/iio/adc/ingenic-adc.o: in function `jz4770_adc_init_clk_div':
+ingenic-adc.c:(.text+0xe4): undefined reference to `clk_get_parent'
+mips-linux-ld: drivers/iio/adc/ingenic-adc.o: in function `jz4725b_adc_init_clk_div':
+ingenic-adc.c:(.text+0x1b8): undefined reference to `clk_get_parent'
+
+Fixes: 1a78daea107d ("IIO: add Ingenic JZ47xx ADC driver.")
+Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+Reported-by: kernel test robot <lkp@intel.com>
+Cc: Artur Rojek <contact@artur-rojek.eu>
+Cc: Paul Cercueil <paul@crapouillou.net>
+Cc: linux-mips@vger.kernel.org
+Cc: Jonathan Cameron <jic23@kernel.org>
+Cc: Lars-Peter Clausen <lars@metafoo.de>
+Cc: linux-iio@vger.kernel.org
+Cc: Florian Fainelli <f.fainelli@gmail.com>
+Cc: Andy Shevchenko <andy.shevchenko@gmail.com>
 ---
- drivers/scsi/be2iscsi/be_mgmt.c | 14 +++++++-------
- 1 file changed, 7 insertions(+), 7 deletions(-)
+v2: use MACH_INGENIC instead of MACH_INGENIC_SOC (thanks, Paul)
 
-diff --git a/drivers/scsi/be2iscsi/be_mgmt.c b/drivers/scsi/be2iscsi/be_mgmt.c
-index 4e899ec1477d..b0f90b3925fc 100644
---- a/drivers/scsi/be2iscsi/be_mgmt.c
-+++ b/drivers/scsi/be2iscsi/be_mgmt.c
-@@ -1142,7 +1142,7 @@ ssize_t
- beiscsi_drvr_ver_disp(struct device *dev, struct device_attribute *attr,
- 		       char *buf)
- {
--	return snprintf(buf, PAGE_SIZE, BE_NAME "\n");
-+	return sysfs_emit(buf, BE_NAME "\n");
- }
- 
- /**
-@@ -1161,7 +1161,7 @@ beiscsi_fw_ver_disp(struct device *dev, struct device_attribute *attr,
- 	struct Scsi_Host *shost = class_to_shost(dev);
- 	struct beiscsi_hba *phba = iscsi_host_priv(shost);
- 
--	return snprintf(buf, PAGE_SIZE, "%s\n", phba->fw_ver_str);
-+	return sysfs_emit(buf, "%s\n", phba->fw_ver_str);
- }
- 
- /**
-@@ -1248,15 +1248,15 @@ beiscsi_adap_family_disp(struct device *dev, struct device_attribute *attr,
- 	case BE_DEVICE_ID1:
- 	case OC_DEVICE_ID1:
- 	case OC_DEVICE_ID2:
--		return snprintf(buf, PAGE_SIZE,
-+		return sysfs_emit(buf,
- 				"Obsolete/Unsupported BE2 Adapter Family\n");
- 	case BE_DEVICE_ID2:
- 	case OC_DEVICE_ID3:
--		return snprintf(buf, PAGE_SIZE, "BE3-R Adapter Family\n");
-+		return sysfs_emit(buf, "BE3-R Adapter Family\n");
- 	case OC_SKH_ID1:
--		return snprintf(buf, PAGE_SIZE, "Skyhawk-R Adapter Family\n");
-+		return sysfs_emit(buf, "Skyhawk-R Adapter Family\n");
- 	default:
--		return snprintf(buf, PAGE_SIZE,
-+		return sysfs_emit(buf,
- 				"Unknown Adapter Family: 0x%x\n", dev_id);
- 	}
- }
-@@ -1277,7 +1277,7 @@ beiscsi_phys_port_disp(struct device *dev, struct device_attribute *attr,
- 	struct Scsi_Host *shost = class_to_shost(dev);
- 	struct beiscsi_hba *phba = iscsi_host_priv(shost);
- 
--	return snprintf(buf, PAGE_SIZE, "Port Identifier : %u\n",
-+	return sysfs_emit(buf, "Port Identifier : %u\n",
- 			phba->fw_config.phys_port);
- }
- 
--- 
-2.25.1
+ drivers/iio/adc/Kconfig |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
+--- linux-next-20211105.orig/drivers/iio/adc/Kconfig
++++ linux-next-20211105/drivers/iio/adc/Kconfig
+@@ -501,7 +501,7 @@ config INA2XX_ADC
+ 
+ config INGENIC_ADC
+ 	tristate "Ingenic JZ47xx SoCs ADC driver"
+-	depends on MIPS || COMPILE_TEST
++	depends on MACH_INGENIC
+ 	select IIO_BUFFER
+ 	help
+ 	  Say yes here to build support for the Ingenic JZ47xx SoCs ADC unit.
