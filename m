@@ -2,134 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8104944BCDC
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 09:29:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0848644BCE1
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 09:30:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230274AbhKJIbu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Nov 2021 03:31:50 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124]:41210 "EHLO
+        id S230286AbhKJIcx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Nov 2021 03:32:53 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124]:38627 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229931AbhKJIbt (ORCPT
+        by vger.kernel.org with ESMTP id S229791AbhKJIcv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Nov 2021 03:31:49 -0500
+        Wed, 10 Nov 2021 03:32:51 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1636532942;
+        s=mimecast20190719; t=1636533004;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=YihxrOMmNt2oqWpAuNo21m+sY73LGbUIdvBRibcMMgc=;
-        b=BpIFf9/caayvnJhJy4cXwc8pRJ2Q5OMPgDkDNcck1nxlkyKPZ2gH45tKnJWU1vhfRe3R7D
-        RYxdVJTmQIAseIPqQ2/YahvXw959QWruD8Y9B2lvB6bz0QKO3bdGAt6/Zn2CNl2AiQXmNJ
-        kPlNNzQ0mWILqNBPDX9jSxWf2ywi3S4=
-Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com
- [209.85.128.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-309-3XpI7jNqNXGvl77tOUI36Q-1; Wed, 10 Nov 2021 03:29:00 -0500
-X-MC-Unique: 3XpI7jNqNXGvl77tOUI36Q-1
-Received: by mail-wm1-f70.google.com with SMTP id 67-20020a1c0046000000b0032cd88916e5so779926wma.6
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Nov 2021 00:29:00 -0800 (PST)
+         content-transfer-encoding:content-transfer-encoding;
+        bh=ZFcWdRsz7OaakLNSt9pmiFaVGZ1WxUx5Us6fbMaYsT8=;
+        b=B8AEhfi/oDYnTFDt2Zs4/cGbHoj20wQpY1H63iS524d2F3ds8KbslLXlm+sLxnJbzchojM
+        lkNJzsmduI84+LDLt8glEOAPbGKtV0lX88rKlB3bKilsMfMjIzq0EtSS74bEqP1O9/2wIV
+        C1WtEnI7sX9rofoobpVk2JUl9qmsRv4=
+Received: from mail-pf1-f199.google.com (mail-pf1-f199.google.com
+ [209.85.210.199]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-221-AHufwAS_NxS7U5c2G9FcxQ-1; Wed, 10 Nov 2021 03:30:03 -0500
+X-MC-Unique: AHufwAS_NxS7U5c2G9FcxQ-1
+Received: by mail-pf1-f199.google.com with SMTP id h21-20020a056a001a5500b0049fc7bcb45aso1557406pfv.11
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Nov 2021 00:30:03 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:in-reply-to
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=YihxrOMmNt2oqWpAuNo21m+sY73LGbUIdvBRibcMMgc=;
-        b=JrXRbVni0gfmNsmOZ3Ct4WLmxt8ItXDHFjrnkjw1xMRqZxF4PL7ac8y3XrSMM0zpYD
-         T0e7CLjeDzgm7K4NXL0rThJzMksxZzQeCvQFvdLVp4uooqGvGLEcDlavVDFLdp9TgfA+
-         k/X54I+4/AZ7pHc81dk6KNNazGDd/zMs442OAAUYlO9gO2hltuNSxdy2UPMUyKBwh8is
-         AVMepfx9RjU8UEKF+5ESsNsyHUfwXqXfrWK2pi202R4PPk6lygG2rWcYZSmMQ8dnanim
-         SOazssYa/nBF6koQj4EF8Q2bJrCvYAqlI0eGSaxkZB9raAw72Tr9MdhWQETSgQ3B4Pox
-         he7A==
-X-Gm-Message-State: AOAM531geNDvFRJwsIs3iLHUcPR3vD5NPVCGnAxTmSBhmbrUCQWZNEO0
-        wB1wJWFlOMZ0u0a+KrmpQLRQ3apGsFJKr5u0eZ+XDUFfk1KWWEK7Q3rjDuVoKP0oK/vGa4v2EFW
-        icMV0CdzDsKpfKE0SQsT4Ae+1
-X-Received: by 2002:a5d:4e0b:: with SMTP id p11mr17430326wrt.88.1636532939429;
-        Wed, 10 Nov 2021 00:28:59 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJzmgp+ezugnIRRk+GUvYvTjS/Ot8vQ0tBCHC7hCSJeWNNzORcL++Xma9R8mtNWZSEeHS4xhSw==
-X-Received: by 2002:a5d:4e0b:: with SMTP id p11mr17430305wrt.88.1636532939188;
-        Wed, 10 Nov 2021 00:28:59 -0800 (PST)
-Received: from [192.168.1.129] ([92.176.231.106])
-        by smtp.gmail.com with ESMTPSA id d1sm9794879wrz.92.2021.11.10.00.28.58
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 10 Nov 2021 00:28:58 -0800 (PST)
-Message-ID: <864e80df-2be2-ef07-5794-5522774e3e6c@redhat.com>
-Date:   Wed, 10 Nov 2021 09:28:58 +0100
+        bh=ZFcWdRsz7OaakLNSt9pmiFaVGZ1WxUx5Us6fbMaYsT8=;
+        b=H4zgcF6EwGkbq+xISrZtl7LO4u4VHUEyx4IufwI0RUzvHrTSXYmjJ8kC49M5/mm5jV
+         8cUhYArgXiOFhX8+Zqi3l93+U+M9BR8VsjA6SKriJsN0GQ2mB7wCT0zjH1tcI7eF1Vo0
+         P8YbrhPRjpfxSH117Wp3HFpHHpm5kOGfYer+JI7WCPLMnp8Zog1ZLUWwPER/w18rzK8M
+         cvvpKRUK9BtfmAhQKdYQDt7bmkFrsMECUVqxM+Rv/5Q5thUp/mE3lhVJkmCXgVeIPIri
+         pQ6uZ4gxmUz8YBsLRhxhJ4ySZfEK4Yray+HLLdkNgV5AFAd6bMGPfuPPBqILg1e+HLAU
+         RYyw==
+X-Gm-Message-State: AOAM5312OVVz1wMmKz+4YaIN9Sjh1B9Y1YXBsDUUHEalyoF8C7YdVOkT
+        5ptP2w4xpen4gZedEZgLTcOwLsvO6nsjD6ZKSvVsTmt3IPsEWjGc2bQH+ux715s37LcGI3avcYM
+        cC/OXdurTKMswthuml5Aagkpj0//ujQjUO0FbZy+hPwHidzAuaU15IX1Vfs8jPvsM+t5tGao6Og
+        ==
+X-Received: by 2002:a17:902:a50f:b0:143:7dec:567 with SMTP id s15-20020a170902a50f00b001437dec0567mr5309247plq.18.1636533001855;
+        Wed, 10 Nov 2021 00:30:01 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJwEERck+ZH1HW6dD3qoJ6BXiElxaGglbRCS3RSwZktnCqTK+ZBWrGu2dU61vN+ChCkGIUOkGw==
+X-Received: by 2002:a17:902:a50f:b0:143:7dec:567 with SMTP id s15-20020a170902a50f00b001437dec0567mr5309214plq.18.1636533001499;
+        Wed, 10 Nov 2021 00:30:01 -0800 (PST)
+Received: from localhost.localdomain ([94.177.118.35])
+        by smtp.gmail.com with ESMTPSA id s7sm23709986pfu.139.2021.11.10.00.29.57
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Wed, 10 Nov 2021 00:30:00 -0800 (PST)
+From:   Peter Xu <peterx@redhat.com>
+To:     linux-kernel@vger.kernel.org, linux-mm@kvack.org
+Cc:     peterx@redhat.com, Andrew Morton <akpm@linux-foundation.org>,
+        Yang Shi <shy828301@gmail.com>,
+        Hugh Dickins <hughd@google.com>,
+        David Hildenbrand <david@redhat.com>,
+        Alistair Popple <apopple@nvidia.com>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        "Kirill A . Shutemov" <kirill@shutemov.name>
+Subject: [PATCH RFC 0/2] mm: Rework zap ptes on swap entries
+Date:   Wed, 10 Nov 2021 16:29:50 +0800
+Message-Id: <20211110082952.19266-1-peterx@redhat.com>
+X-Mailer: git-send-email 2.32.0
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.2.0
-Subject: Re: [PATCH] spidev: Make probe to fail early if a spidev compatible
- is used
-Content-Language: en-US
-To:     =?UTF-8?Q?Uwe_Kleine-K=c3=b6nig?= <u.kleine-koenig@pengutronix.de>
-Cc:     linux-kernel@vger.kernel.org, Mark Brown <broonie@kernel.org>,
-        linux-spi@vger.kernel.org, kernel@pengutronix.de
-References: <20211109225920.1158920-1-javierm@redhat.com>
- <20211110074247.g7eaq2z27bwdt4m5@pengutronix.de>
-From:   Javier Martinez Canillas <javierm@redhat.com>
-In-Reply-To: <20211110074247.g7eaq2z27bwdt4m5@pengutronix.de>
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Uwe,
+The goal of this small series is to replace the previous patch (which is the
+5th patch of the series):
 
-On 11/10/21 08:42, Uwe Kleine-König wrote:
-> Hello,
-> 
-> On Tue, Nov 09, 2021 at 11:59:20PM +0100, Javier Martinez Canillas wrote:
->> Some Device Trees don't use a real device name in the compatible string
->> for SPI devices nodes, abusing the fact that the spidev driver name is
->> used to match as a fallback when a SPI device ID table is not defined.
->>
->> But since commit 6840615f85f6 ("spi: spidev: Add SPI ID table") a table
->> for SPI device IDs was added to the driver breaking the assumption that
->> these DTs were relying on.
->>
->> There has been a warning message for some time since commit 956b200a846e
->> ("spi: spidev: Warn loudly if instantiated from DT as "spidev""), making
->> quite clear that this case is not really supported by the spidev driver.
->>
->> Since these devices won't match anyways after the mentioned commit, there
->> is no point to continue if an spidev compatible is used. Let's just make
->> the driver probe to fail early.
->>
->> Signed-off-by: Javier Martinez Canillas <javierm@redhat.com>
-> 
-> Up to 6840615f85f6 the choices you had to use the spidev driver were
-> (assuing a dt machine):
-> 
->  a) Use compatible = "spidev" and ignore the warning
->  b) Use compatible = $chipname and add $chipname to the list of
->     supported devices for the spidev driver. (e.g. "rohm,dh2228fv")
->  c) Use compatible = $chipname and force binding the spidev driver using
-> 
->    	echo spidev > /sys/bus/spi/devices/spiX.Y/driver_override
-> 	echo spiX.Y > /sys/bus/spi/drivers/spidev/bind
->
-> Commit 6840615f85f6 changed that in situation a) you had to switch to c)
-> (well, or b) adding "spidev" to the spi id list).
-> 
-> With the change introduced by this patch, you make it impossible to bind
-> the spidev driver to such a device (without kernel source changes) even
-> using approach c). I wonder if this is too harsh given that changing the
-> dtb is difficult on some machines.
->
+https://lore.kernel.org/linux-mm/20210908163628.215052-1-peterx@redhat.com/
 
-Right. I completely forgot about driver_override. I wonder if the warning
-should mention that, so users can know how to get it to match again after
-commit 6840615f85f6.
+This patch used a more aggresive (but IMHO cleaner and correct..) approach by
+removing that trick to skip swap entries, then we handle swap entries always.
 
-Because currently they would notice a change in behavior but may not know
-how to make it to work again.
+The behavior of "skipping swap entries" existed starting from the initial git
+commit that we'll try to skip swap entries when zapping ptes if zap_detail
+pointer specified.
 
-Honestly I would just stop supporting it, since as mentioned it was really
-an abuse on the driver model device matching. But I believe that should be
-made clear what the situation is. What's actually supported and what's not.
+I found that it's probably broken because of the introduction of page migration
+mechanism that does not exist yet in the world of 1st git commit, then we could
+errornously skip scanning the swap entries for file-backed memory, like shmem,
+while we should.  I'm afraid we'll have RSS accounting wrong for those shmem
+pages during migration so there could have leftover SHMEM RSS accounts.
 
-Best regards, -- 
-Javier Martinez Canillas
-Linux Engineering
-Red Hat
+Patch 1 did that removal of the trick, details in the commit message.
+
+Patch 2 is a further cleanup for zap pte swap handling that can be done after
+patch 1, in which there's no functional change intended.
+
+The change should be on the slow path for zapping swap entries (e.g., we handle
+none/present ptes in early code path always, so they're totally not affected),
+but if anyone worries about specific workload that may be affected by this
+patchset, please let me know and I'll be happy to run some more tests.  I could
+also overlook something that was buried in history, in that case please kindly
+point that out.  Marking the patchset RFC for this.
+
+Smoke tested only.  Please review, thanks.
+
+Peter Xu (2):
+  mm: Don't skip swap entry even if zap_details specified
+  mm: Rework swap handling of zap_pte_range
+
+ mm/memory.c | 31 ++++++++++---------------------
+ 1 file changed, 10 insertions(+), 21 deletions(-)
+
+-- 
+2.32.0
 
