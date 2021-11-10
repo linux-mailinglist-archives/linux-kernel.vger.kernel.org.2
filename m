@@ -2,72 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E424444C611
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 18:38:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4691544C615
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 18:39:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232316AbhKJRlk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Nov 2021 12:41:40 -0500
-Received: from smtp-out2.suse.de ([195.135.220.29]:36358 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230230AbhKJRli (ORCPT
+        id S232389AbhKJRm0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Nov 2021 12:42:26 -0500
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:44484 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230230AbhKJRmY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Nov 2021 12:41:38 -0500
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out2.suse.de (Postfix) with ESMTP id 369661FD47;
-        Wed, 10 Nov 2021 17:38:50 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1636565930; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-        bh=qXKuDVk/9tnJzkq1IP49R4NmxO9QDtAcFtG7RTfHNZ0=;
-        b=FTKwF2ipVVAbgWyTgDwAZ2CSEBvmDuoZYerxPQnSTNmUtyb/G0drNL35UQdLaURPoY4eaF
-        IKcUMrOfl0Q5PEzJl1+mpZZzOuP75WwbjRBFhxkTGdepB8FEciSNFCBBXfg7JCxVwjZ0aX
-        wvGoNfMRSyNz9uPuYatwmMgCgu7bnpI=
-Received: from ds.suse.cz (ds.suse.cz [10.100.12.205])
-        by relay2.suse.de (Postfix) with ESMTP id 2EB1BA3B84;
-        Wed, 10 Nov 2021 17:38:50 +0000 (UTC)
-Received: by ds.suse.cz (Postfix, from userid 10065)
-        id 7FA48DA799; Wed, 10 Nov 2021 18:38:10 +0100 (CET)
-From:   David Sterba <dsterba@suse.com>
-To:     torvalds@linux-foundation.org
-Cc:     David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [GIT PULL] Btrfs update, part 2
-Date:   Wed, 10 Nov 2021 18:38:09 +0100
-Message-Id: <cover.1636564333.git.dsterba@suse.com>
-X-Mailer: git-send-email 2.33.0
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        Wed, 10 Nov 2021 12:42:24 -0500
+Received: from pps.filterd (m0098404.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 1AAHCQ7w011648;
+        Wed, 10 Nov 2021 17:39:36 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
+ from : to : cc : date : in-reply-to : references : content-type :
+ mime-version : content-transfer-encoding; s=pp1;
+ bh=DsmJTDmYa8Ou29XXykXIjUTIY5EdNVZGfdayt//X1SI=;
+ b=IFU9TaKB+ZFGGaz6licffK4uHbty8THDCH7Hj6LC2KcUFOvKhWeVl5ijW/nXY9Zztive
+ 5JHCmDUTBUl/a6jIdq0AaCwW7rufgDwdYjGsulZcDVebI9WkwJv7ipBJvOn8edDyeBpc
+ YmcDaTUl/GKz16efuq2ZrL9Jjqn39Tmv5gVra+k8b+6wdckFm64N7QoEQEZ1jB3Jr9pd
+ 7ten2aXSudrLibS2toDXj4kPQs+OlNq4dvbACnUuj2LzMD7ZTVwyJ1y5vBLmaKUePhVn
+ tuVfPWapNlQXhARmn9hYGJ4f4F5cMkiX4dDqnssskovEa2UKwgyrc2iYzLfj0N57bDj7 2A== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3c8j9e0qtv-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 10 Nov 2021 17:39:35 +0000
+Received: from m0098404.ppops.net (m0098404.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 1AAHCs5L014537;
+        Wed, 10 Nov 2021 17:39:35 GMT
+Received: from ppma06fra.de.ibm.com (48.49.7a9f.ip4.static.sl-reverse.com [159.122.73.72])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3c8j9e0qt4-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 10 Nov 2021 17:39:35 +0000
+Received: from pps.filterd (ppma06fra.de.ibm.com [127.0.0.1])
+        by ppma06fra.de.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 1AAHXqCp005851;
+        Wed, 10 Nov 2021 17:39:32 GMT
+Received: from b06avi18626390.portsmouth.uk.ibm.com (b06avi18626390.portsmouth.uk.ibm.com [9.149.26.192])
+        by ppma06fra.de.ibm.com with ESMTP id 3c5gykb91t-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 10 Nov 2021 17:39:32 +0000
+Received: from d06av21.portsmouth.uk.ibm.com (d06av21.portsmouth.uk.ibm.com [9.149.105.232])
+        by b06avi18626390.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 1AAHWpE751315172
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 10 Nov 2021 17:32:51 GMT
+Received: from d06av21.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 7557D52050;
+        Wed, 10 Nov 2021 17:39:30 +0000 (GMT)
+Received: from li-f45666cc-3089-11b2-a85c-c57d1a57929f.ibm.com (unknown [9.160.122.189])
+        by d06av21.portsmouth.uk.ibm.com (Postfix) with ESMTP id 7024F52087;
+        Wed, 10 Nov 2021 17:39:29 +0000 (GMT)
+Message-ID: <6213c2f886637f824b14c67de7f9534349417b49.camel@linux.ibm.com>
+Subject: Re: [RFC PATCH] ima: differentiate overlay, pivot_root, and other
+ pathnames
+From:   Mimi Zohar <zohar@linux.ibm.com>
+To:     Michael Peters <michael00peters@gmail.com>
+Cc:     amir73il@gmail.com, linux-fsdevel@vger.kernel.org,
+        linux-integrity@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-unionfs@vger.kernel.org, miklos@szeredi.hu
+Date:   Wed, 10 Nov 2021 12:39:28 -0500
+In-Reply-To: <CAJQqANe-SFvPEEQcQrGUsn9n1aFybCOQaofvnmS+qZGvnNh7nQ@mail.gmail.com>
+References: <CAJQqANe-SFvPEEQcQrGUsn9n1aFybCOQaofvnmS+qZGvnNh7nQ@mail.gmail.com>
+Content-Type: text/plain; charset="ISO-8859-15"
+X-Mailer: Evolution 3.28.5 (3.28.5-16.el8) 
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: bzOCqSqLSHHbM0ebbLhv52CMp5eObhbZ
+X-Proofpoint-GUID: G5MeeHsLaLTk7BHMG7xNU-B0ujXzhGA3
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.205,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.0.607.475
+ definitions=2021-11-10_06,2021-11-08_02,2020-04-07_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015 suspectscore=0
+ mlxscore=0 adultscore=0 impostorscore=0 mlxlogscore=999 priorityscore=1501
+ bulkscore=0 spamscore=0 phishscore=0 lowpriorityscore=0 malwarescore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2110150000
+ definitions=main-2111100087
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On Wed, 2021-11-10 at 10:28 -0500, Michael Peters wrote:
 
-here's a separate fix that depends on changes that landed last week (the
-iomap + iov_iter merged as c03098d4b9ad).
+> This looks good, but would be even better if the flag that controlled
+> this was settable in the ima_policy. That's much easier to work with
+> in a lot of DevOps toolchains and pipelines and is similar to how the
+> other ima configuration is done.
 
-The fix itself is for a deadlock when direct/buffered IO is done on a
-mmaped file and a fault happens (details in the patch). There's a fstest
-generic/647 that triggers the problem and makes testing hard.
+Thanks, Michael.  Agreed, which is one of the reasons for posting this
+patch as an RFC.  The other reason is that it is an incomplete
+solution, since it doesn't address mount namespaces.  Any suggestions
+for addressing mount namespaces would be appreciated. Assuming there is
+a benefit for a partial solution, I'll add the per policy rule support.
 
-No merge conflicts. Please pull, thanks.
+thanks,
 
-----------------------------------------------------------------
-The following changes since commit c03098d4b9ad76bca2966a8769dcfe59f7f85103:
+Mimi
 
-  Merge tag 'gfs2-v5.15-rc5-mmap-fault' of git://git.kernel.org/pub/scm/linux/kernel/git/gfs2/linux-gfs2 (2021-11-02 12:25:03 -0700)
-
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/kdave/linux.git for-5.16-deadlock-fix-tag
-
-for you to fetch changes up to 51bd9563b6783de8315f38f7baed949e77c42311:
-
-  btrfs: fix deadlock due to page faults during direct IO reads and writes (2021-11-09 13:46:07 +0100)
-
-----------------------------------------------------------------
-Filipe Manana (1):
-      btrfs: fix deadlock due to page faults during direct IO reads and writes
-
- fs/btrfs/file.c | 139 +++++++++++++++++++++++++++++++++++++++++++++++++-------
- 1 file changed, 123 insertions(+), 16 deletions(-)
