@@ -2,38 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A506F44C714
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 19:46:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 088A544C73C
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 19:49:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232957AbhKJSsC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Nov 2021 13:48:02 -0500
-Received: from mail.kernel.org ([198.145.29.99]:46890 "EHLO mail.kernel.org"
+        id S231822AbhKJStY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Nov 2021 13:49:24 -0500
+Received: from mail.kernel.org ([198.145.29.99]:47916 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232830AbhKJSr2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Nov 2021 13:47:28 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 342DB61247;
-        Wed, 10 Nov 2021 18:44:40 +0000 (UTC)
+        id S232854AbhKJSsR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Nov 2021 13:48:17 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5974261205;
+        Wed, 10 Nov 2021 18:45:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1636569880;
-        bh=1Gqceegm+1GqYddfAlC4grL9S7yABjfoSrKw2KQ4diI=;
+        s=korg; t=1636569929;
+        bh=hIOg7iosLKOf9m6silrS1HXbLN9MRTFnNs40RkU/NME=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=q6e/kBAf5PvU9fWBABL1uj35eiAi4QT2NeUYYQ2qIigkOE2XwxlEp3iQSP/o4Z1yN
-         wYJv6OdfzHYSRaZldG6VI7hhCebnUzYwweT+DIvZKQBF8Eq5xspH0fleoMrNe2x0mJ
-         voBSxt7Ma99/0w4PaS0m8W9denhkG794ZGYdPtHA=
+        b=RWVSfPsuCTbmBUsVeUoKK4xZWfxAQBqaaf9qsIxUwz6jeJwjiSzuBTGFzc1u+38eW
+         sM6g9xvMWERzYdJIBNIDo/T/g7VJwym82OT3y48Zmt2DlHb+IVSjO7oBl85VvpR0PV
+         iIePZGzX/UwaosFCfHQJuMCu/FS+8TObB1yPNoyo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Petr Mladek <pmladek@suse.com>, Yi Fan <yfa@google.com>
-Subject: [PATCH 4.9 13/22] printk/console: Allow to disable console output by using console="" or console=null
-Date:   Wed, 10 Nov 2021 19:43:20 +0100
-Message-Id: <20211110182002.007984115@linuxfoundation.org>
+        stable@vger.kernel.org, Changhui Zhong <czhong@redhat.com>,
+        Yi Zhang <yi.zhang@redhat.com>, Ming Lei <ming.lei@redhat.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>
+Subject: [PATCH 4.14 01/22] scsi: core: Put LLD module refcnt after SCSI device is released
+Date:   Wed, 10 Nov 2021 19:43:21 +0100
+Message-Id: <20211110182002.714805076@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211110182001.579561273@linuxfoundation.org>
-References: <20211110182001.579561273@linuxfoundation.org>
+In-Reply-To: <20211110182002.666244094@linuxfoundation.org>
+References: <20211110182002.666244094@linuxfoundation.org>
 User-Agent: quilt/0.66
+X-stable: review
+X-Patchwork-Hint: ignore
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
@@ -41,62 +42,79 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Petr Mladek <pmladek@suse.com>
+From: Ming Lei <ming.lei@redhat.com>
 
-commit 3cffa06aeef7ece30f6b5ac0ea51f264e8fea4d0 upstream.
+commit f2b85040acec9a928b4eb1b57a989324e8e38d3f upstream.
 
-The commit 48021f98130880dd74 ("printk: handle blank console arguments
-passed in.") prevented crash caused by empty console= parameter value.
+SCSI host release is triggered when SCSI device is freed. We have to make
+sure that the low-level device driver module won't be unloaded before SCSI
+host instance is released because shost->hostt is required in the release
+handler.
 
-Unfortunately, this value is widely used on Chromebooks to disable
-the console output. The above commit caused performance regression
-because the messages were pushed on slow console even though nobody
-was watching it.
+Make sure to put LLD module refcnt after SCSI device is released.
 
-Use ttynull driver explicitly for console="" and console=null
-parameters. It has been created for exactly this purpose.
+Fixes a kernel panic of 'BUG: unable to handle page fault for address'
+reported by Changhui and Yi.
 
-It causes that preferred_console is set. As a result, ttySX and ttyX
-are not used as a fallback. And only ttynull console gets registered by
-default.
-
-It still allows to register other consoles either by additional console=
-parameters or SPCR. It prevents regression because it worked this way even
-before. Also it is a sane semantic. Preventing output on all consoles
-should be done another way, for example, by introducing mute_console
-parameter.
-
-Link: https://lore.kernel.org/r/20201006025935.GA597@jagdpanzerIV.localdomain
-Suggested-by: Sergey Senozhatsky <sergey.senozhatsky@gmail.com>
-Reviewed-by: Guenter Roeck <linux@roeck-us.net>
-Tested-by: Guenter Roeck <linux@roeck-us.net>
-Acked-by: Sergey Senozhatsky <sergey.senozhatsky@gmail.com>
-Signed-off-by: Petr Mladek <pmladek@suse.com>
-Link: https://lore.kernel.org/r/20201111135450.11214-3-pmladek@suse.com
-Cc: Yi Fan <yfa@google.com>
+Link: https://lore.kernel.org/r/20211008050118.1440686-1-ming.lei@redhat.com
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Reported-by: Changhui Zhong <czhong@redhat.com>
+Reported-by: Yi Zhang <yi.zhang@redhat.com>
+Tested-by: Yi Zhang <yi.zhang@redhat.com>
+Signed-off-by: Ming Lei <ming.lei@redhat.com>
+Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- kernel/printk/printk.c |    9 ++++++++-
- 1 file changed, 8 insertions(+), 1 deletion(-)
+ drivers/scsi/scsi.c       |    4 +++-
+ drivers/scsi/scsi_sysfs.c |    9 +++++++++
+ 2 files changed, 12 insertions(+), 1 deletion(-)
 
---- a/kernel/printk/printk.c
-+++ b/kernel/printk/printk.c
-@@ -2035,8 +2035,15 @@ static int __init console_setup(char *st
- 	char *s, *options, *brl_options = NULL;
- 	int idx;
+--- a/drivers/scsi/scsi.c
++++ b/drivers/scsi/scsi.c
+@@ -575,8 +575,10 @@ EXPORT_SYMBOL(scsi_device_get);
+  */
+ void scsi_device_put(struct scsi_device *sdev)
+ {
+-	module_put(sdev->host->hostt->module);
++	struct module *mod = sdev->host->hostt->module;
++
+ 	put_device(&sdev->sdev_gendev);
++	module_put(mod);
+ }
+ EXPORT_SYMBOL(scsi_device_put);
  
--	if (str[0] == 0)
-+	/*
-+	 * console="" or console=null have been suggested as a way to
-+	 * disable console output. Use ttynull that has been created
-+	 * for exacly this purpose.
-+	 */
-+	if (str[0] == 0 || strcmp(str, "null") == 0) {
-+		__add_preferred_console("ttynull", 0, NULL, NULL);
- 		return 1;
-+	}
+--- a/drivers/scsi/scsi_sysfs.c
++++ b/drivers/scsi/scsi_sysfs.c
+@@ -430,9 +430,12 @@ static void scsi_device_dev_release_user
+ 	struct list_head *this, *tmp;
+ 	struct scsi_vpd *vpd_pg80 = NULL, *vpd_pg83 = NULL;
+ 	unsigned long flags;
++	struct module *mod;
  
- 	if (_braille_console_setup(&str, &brl_options))
- 		return 1;
+ 	sdev = container_of(work, struct scsi_device, ew.work);
+ 
++	mod = sdev->host->hostt->module;
++
+ 	scsi_dh_release_device(sdev);
+ 
+ 	parent = sdev->sdev_gendev.parent;
+@@ -473,11 +476,17 @@ static void scsi_device_dev_release_user
+ 
+ 	if (parent)
+ 		put_device(parent);
++	module_put(mod);
+ }
+ 
+ static void scsi_device_dev_release(struct device *dev)
+ {
+ 	struct scsi_device *sdp = to_scsi_device(dev);
++
++	/* Set module pointer as NULL in case of module unloading */
++	if (!try_module_get(sdp->host->hostt->module))
++		sdp->host->hostt->module = NULL;
++
+ 	execute_in_process_context(scsi_device_dev_release_usercontext,
+ 				   &sdp->ew);
+ }
 
 
