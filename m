@@ -2,166 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2255144C25B
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 14:47:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 337D844C276
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 14:49:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231484AbhKJNuN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Nov 2021 08:50:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60718 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231526AbhKJNuL (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Nov 2021 08:50:11 -0500
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 01539C061764;
-        Wed, 10 Nov 2021 05:47:23 -0800 (PST)
-From:   Kurt Kanzenbach <kurt@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1636552041;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=/MciXaiM/IuTmIk/zMIlZFbpG5qOYdi18BE9VZB246g=;
-        b=QdH2wN/OUfJa1D4UUw9Z158yvc9J6KaiHGOpk0xV/c0tqp7CrqRK9r8STCXWwofz9sGvGM
-        5zG/+sxajESDEe/WEMSfNV+cVysXCwXZv4BVfd4GYZsEHHLmaufib+Tg10nzB1o2ksabIC
-        9+p6Xw/KmvvEn4zGHvQ35pAgdcDu7XIPEpjf4FL7T9roN+GStDZaJOpjpJQ+SEuTgrHG+j
-        uqMnQFcLnQtSBO5v+FKeMoW/3j6aW3eOjbXEs0ABZylnGhFt38O0EACE9vjDhbUgckx8mf
-        UPDHWShhreB0mNFiB/lyUawGu9BC/d+1MNnazJgF0y5g6fdFlgGpBFq7rFuYow==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1636552041;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=/MciXaiM/IuTmIk/zMIlZFbpG5qOYdi18BE9VZB246g=;
-        b=r8RlS/AQgTnYBJ8q5P3IWsoiij24JoTCzTmVCbkZ9VsEFMn/04rNTxuegKnAY5pnMA2cgA
-        vB8Aszd6wQxvuxAA==
-To:     Vladimir Oltean <olteanv@gmail.com>
-Cc:     Martin Kaistra <martin.kaistra@linutronix.de>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        Richard Cochran <richardcochran@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        John Stultz <john.stultz@linaro.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Russell King <linux@armlinux.org.uk>,
-        Marc Kleine-Budde <mkl@pengutronix.de>,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org
-Subject: Re: [PATCH v2 6/7] net: dsa: b53: Add logic for TX timestamping
-In-Reply-To: <20211110130545.ga7ajracz2vvzotg@skbuf>
-References: <20211109095013.27829-1-martin.kaistra@linutronix.de>
- <20211109095013.27829-7-martin.kaistra@linutronix.de>
- <20211109111213.6vo5swdhxjvgmyjt@skbuf> <87ee7o8otj.fsf@kurt>
- <20211110130545.ga7ajracz2vvzotg@skbuf>
-Date:   Wed, 10 Nov 2021 14:47:19 +0100
-Message-ID: <8735o486mw.fsf@kurt>
+        id S232220AbhKJNuo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Nov 2021 08:50:44 -0500
+Received: from mga01.intel.com ([192.55.52.88]:5719 "EHLO mga01.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232107AbhKJNue (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Nov 2021 08:50:34 -0500
+X-IronPort-AV: E=McAfee;i="6200,9189,10163"; a="256361079"
+X-IronPort-AV: E=Sophos;i="5.87,223,1631602800"; 
+   d="scan'208";a="256361079"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Nov 2021 05:47:46 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.87,223,1631602800"; 
+   d="scan'208";a="534051198"
+Received: from black.fi.intel.com ([10.237.72.28])
+  by orsmga001.jf.intel.com with ESMTP; 10 Nov 2021 05:47:44 -0800
+Received: by black.fi.intel.com (Postfix, from userid 1003)
+        id 64125155; Wed, 10 Nov 2021 15:47:46 +0200 (EET)
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        linux-gpio@vger.kernel.org, linux-acpi@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     Mika Westerberg <mika.westerberg@linux.intel.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <brgl@bgdev.pl>
+Subject: [PATCH v1 1/2] gpiolib: acpi: Remove never used devm_acpi_dev_remove_driver_gpios()
+Date:   Wed, 10 Nov 2021 15:47:42 +0200
+Message-Id: <20211110134743.4300-1-andriy.shevchenko@linux.intel.com>
+X-Mailer: git-send-email 2.33.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="=-=-=";
-        micalg=pgp-sha512; protocol="application/pgp-signature"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---=-=-=
-Content-Type: text/plain
-Content-Transfer-Encoding: quoted-printable
+Remove never used devm_acpi_dev_remove_driver_gpios().
 
-On Wed Nov 10 2021, Vladimir Oltean wrote:
-> Hi Kurt,
->
-> On Wed, Nov 10, 2021 at 08:14:32AM +0100, Kurt Kanzenbach wrote:
->> Hi Vladimir,
->>=20
->> On Tue Nov 09 2021, Vladimir Oltean wrote:
->> >> +void b53_port_txtstamp(struct dsa_switch *ds, int port, struct sk_bu=
-ff *skb)
->> >> +{
->> >> +	struct b53_device *dev =3D ds->priv;
->> >> +	struct b53_port_hwtstamp *ps =3D &dev->ports[port].port_hwtstamp;
->> >> +	struct sk_buff *clone;
->> >> +	unsigned int type;
->> >> +
->> >> +	type =3D ptp_classify_raw(skb);
->> >> +
->> >> +	if (type !=3D PTP_CLASS_V2_L2)
->> >> +		return;
->> >> +
->> >> +	if (!test_bit(B53_HWTSTAMP_ENABLED, &ps->state))
->> >> +		return;
->> >> +
->> >> +	clone =3D skb_clone_sk(skb);
->> >> +	if (!clone)
->> >> +		return;
->> >> +
->> >> +	if (test_and_set_bit_lock(B53_HWTSTAMP_TX_IN_PROGRESS, &ps->state))=
+Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+---
+ drivers/gpio/gpiolib-acpi.c   | 6 ------
+ include/linux/gpio/consumer.h | 2 --
+ 2 files changed, 8 deletions(-)
+
+diff --git a/drivers/gpio/gpiolib-acpi.c b/drivers/gpio/gpiolib-acpi.c
+index 985e8589c58b..25ecc0a37054 100644
+--- a/drivers/gpio/gpiolib-acpi.c
++++ b/drivers/gpio/gpiolib-acpi.c
+@@ -604,12 +604,6 @@ int devm_acpi_dev_add_driver_gpios(struct device *dev,
+ }
+ EXPORT_SYMBOL_GPL(devm_acpi_dev_add_driver_gpios);
+ 
+-void devm_acpi_dev_remove_driver_gpios(struct device *dev)
+-{
+-	WARN_ON(devres_release(dev, devm_acpi_dev_release_driver_gpios, NULL, NULL));
+-}
+-EXPORT_SYMBOL_GPL(devm_acpi_dev_remove_driver_gpios);
+-
+ static bool acpi_get_driver_gpio_data(struct acpi_device *adev,
+ 				      const char *name, int index,
+ 				      struct fwnode_reference_args *args,
+diff --git a/include/linux/gpio/consumer.h b/include/linux/gpio/consumer.h
+index 97a28ad3393b..3ad67b4a72be 100644
+--- a/include/linux/gpio/consumer.h
++++ b/include/linux/gpio/consumer.h
+@@ -690,7 +690,6 @@ void acpi_dev_remove_driver_gpios(struct acpi_device *adev);
+ 
+ int devm_acpi_dev_add_driver_gpios(struct device *dev,
+ 				   const struct acpi_gpio_mapping *gpios);
+-void devm_acpi_dev_remove_driver_gpios(struct device *dev);
+ 
+ struct gpio_desc *acpi_get_and_request_gpiod(char *path, int pin, char *label);
+ 
+@@ -708,7 +707,6 @@ static inline int devm_acpi_dev_add_driver_gpios(struct device *dev,
  {
->> >
->> > Is it ok if you simply don't timestamp a second skb which may be sent
->> > while the first one is in flight, I wonder? What PTP profiles have you
->> > tested with? At just one PTP packet at a time, the switch isn't giving
->> > you a lot.
->>=20
->> PTP only generates a couple of messages per second which need to be
->> timestamped. Therefore, this behavior shouldn't be a problem.
->>=20
->> hellcreek (and mv88e6xxx) do the same thing, simply because the device
->> can only hold only one Tx timestamp. If we'd allow more than one PTP
->> packet in flight, there will be correlation problems. I've tested with
->> default and gPTP profile without any problems. What PTP profiles do have
->> in mind?
->
-> First of all, let's separate "more than one packet in flight" at the
-> hardware/driver level vs user space level. Even if there is any hardware
-> requirement to not request TX timestamping for the 2nd frame until the
-> 1st has been acked, that shouldn't necessarily have an implication upon
-> what user space sees. After all, we don't tell user space anything about
-> the realities of the hardware it's running on.
+ 	return -ENXIO;
+ }
+-static inline void devm_acpi_dev_remove_driver_gpios(struct device *dev) {}
+ 
+ #endif /* CONFIG_GPIOLIB && CONFIG_ACPI */
+ 
+-- 
+2.33.0
 
-Fair enough.
-
->
-> So it is true that ptp4l is single threaded and always polls
-> synchronously for the reception of a TX timestamp on the error queue
-> before proceeding to do anything else. But writing a kernel driver to
-> the specification of a single user space program is questionable.
-> Especially with the SOF_TIMESTAMPING_OPT_ID flag of the SO_TIMESTAMPING
-> socket option, it is quite possible to write a different PTP stack that
-> handles TX timestamps differently. It sends event messages on their
-> respective timer expiry (sync, peer delay request, whatever), and
-> processes TX timestamps as they come, asynchronously instead of blocking.
-> That other PTP stack would not work reliably with this driver (or with
-> mv88e6xxx, or with hellcreek).
-
-Yeah, a PTP stack which e.g. runs delay measurements independently from
-the other tasks (sync, announce, ...) may run into trouble with such as
-an implementation. I'm wondering how would you solve that problem for
-hardware such as hellcreek? If a packet for timestamping is "in-flight"
-the Tx path for a concurrent frame would have to be delayed. That might
-be a surprise to the user as well.
-
-Thanks,
-Kurt
-
---=-=-=
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQJHBAEBCgAxFiEEooWgvezyxHPhdEojeSpbgcuY8KYFAmGLzWcTHGt1cnRAbGlu
-dXRyb25peC5kZQAKCRB5KluBy5jwphxXD/9AAZtvg6YJic2fjwwmSNV2WUUBMVmO
-ztwGA8AvA5luVfVRNBZFWViU1+2F81GfyqZa3311B7lMVWoMcT02ZTsSOiRKVXpM
-Xx8ut3iXN/2D+mfklMYHU5K8qLd/fqk2n7PLJkXN5B0YCV9+l5KRVbIKMnzwbemX
-x3Pkm1D0Nk3+/I81TW22/NmejIde9DJQ+YasgsaxAkWVe1j2ZMGstYkowDUjjjq+
-IGQqzpXxsmK4rLCe0d9wNElbaykiPNA93o+B2uN3nOhwuRo5odhY0QwJ06OjrZto
-C4IyID15l2B8EyLVw7ap4U0jwTmR3HugM/fzWZMgbNiPeiYJsNgxxFN5txu3z+qx
-fzQ0AB11w49qYcIRZCG4G8oC8vWJTHWP1/O02c5yKf5fQjztMynhnHOFtWkIYJUw
-N9gwO9KYVtDS7axyDxwTCkDNc/ncST9nXiajqxxtrcBQHJc24nsqV/YBDN9xMikI
-OThlrPhnh986mXaK7SFfmnyw4172wHc8zcKm/WDgVCcRAB+8MQVa/dCKSKg2tFjP
-rlrhMs9Veo9wkmF17yqSMNgUUHgfcl6nmkIRWk0fKmVfSKzBfWlHHVcOocuyOMvG
-JV9n3yJGpQSRYNbsBQQroEiYiD0h9ZEtJMDPPph4suAF+zbbBHNeyFBJGWTXVqlv
-nadUgwMvQI2XFQ==
-=Uu/4
------END PGP SIGNATURE-----
---=-=-=--
