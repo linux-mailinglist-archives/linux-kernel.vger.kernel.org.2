@@ -2,38 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7665844C72F
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 19:46:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 71D4C44C6E5
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 19:43:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233289AbhKJSs5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Nov 2021 13:48:57 -0500
-Received: from mail.kernel.org ([198.145.29.99]:47660 "EHLO mail.kernel.org"
+        id S232573AbhKJSqe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Nov 2021 13:46:34 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45714 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233137AbhKJSsE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Nov 2021 13:48:04 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A54F361207;
-        Wed, 10 Nov 2021 18:45:16 +0000 (UTC)
+        id S232543AbhKJSqc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Nov 2021 13:46:32 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id AB6DF6117A;
+        Wed, 10 Nov 2021 18:43:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1636569917;
-        bh=7H6NrHchjK1Z34q9gQeFm+AvoKGZtgdek+yNGcRwCKc=;
+        s=korg; t=1636569825;
+        bh=aUxJBoVf4Th1jRRTCdRJlx38T/xtmE2lG68lokh+Y/Y=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=wOnOMwN5LOGMn2AHgaM2dtTwM683kidwfDhxr6dMAonOu+Vc3rNdl6sWoMqDe2y25
-         klR9vqUqU+SPDK4nS0H9ZZoeiSKfYzRIBt2CVjmcZPWwnXuP+54/Vn9pvk+sqKFiCS
-         wrSFm+cmN+a2MdSgBYuuxsJyL8HDz8RONdvpVas0=
+        b=r2pzdbmNHMdTiddHahabVqTXA/f2lD5khjgKVs18fGLldeGxJ2bwp8PmRoUTqgkss
+         8Zrl3fOfWnNs2YxSJ5fLujz6vnqKDMFTu2dqXZJCEDHEUsHzM4llu21QEx4uNpraSf
+         dggUWbV2U9AU01PHYiyVH2gWTfYykFapd8hHrbYs=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        syzbot+44d53c7255bb1aea22d2@syzkaller.appspotmail.com,
-        Dongliang Mu <mudongliangabcd@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Lee Jones <lee.jones@linaro.org>
-Subject: [PATCH 4.9 06/22] usb: hso: fix error handling code of hso_create_net_device
-Date:   Wed, 10 Nov 2021 19:43:13 +0100
-Message-Id: <20211110182001.789907399@linuxfoundation.org>
+        stable@vger.kernel.org, Luca Ellero <luca.ellero@brickedbrain.com>,
+        Ian Abbott <abbotti@mev.co.uk>, Johan Hovold <johan@kernel.org>
+Subject: [PATCH 4.4 12/19] comedi: ni_usb6501: fix NULL-deref in command paths
+Date:   Wed, 10 Nov 2021 19:43:14 +0100
+Message-Id: <20211110182001.655861167@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211110182001.579561273@linuxfoundation.org>
-References: <20211110182001.579561273@linuxfoundation.org>
+In-Reply-To: <20211110182001.257350381@linuxfoundation.org>
+References: <20211110182001.257350381@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,110 +39,53 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dongliang Mu <mudongliangabcd@gmail.com>
+From: Johan Hovold <johan@kernel.org>
 
-commit a6ecfb39ba9d7316057cea823b196b734f6b18ca upstream.
+commit 907767da8f3a925b060c740e0b5c92ea7dbec440 upstream.
 
-The current error handling code of hso_create_net_device is
-hso_free_net_device, no matter which errors lead to. For example,
-WARNING in hso_free_net_device [1].
+The driver uses endpoint-sized USB transfer buffers but had no sanity
+checks on the sizes. This can lead to zero-size-pointer dereferences or
+overflowed transfer buffers in ni6501_port_command() and
+ni6501_counter_command() if a (malicious) device has smaller max-packet
+sizes than expected (or when doing descriptor fuzz testing).
 
-Fix this by refactoring the error handling code of
-hso_create_net_device by handling different errors by different code.
+Add the missing sanity checks to probe().
 
-[1] https://syzkaller.appspot.com/bug?id=66eff8d49af1b28370ad342787413e35bbe76efe
-
-Reported-by: syzbot+44d53c7255bb1aea22d2@syzkaller.appspotmail.com
-Fixes: 5fcfb6d0bfcd ("hso: fix bailout in error case of probe")
-Signed-off-by: Dongliang Mu <mudongliangabcd@gmail.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
-Signed-off-by: Lee Jones <lee.jones@linaro.org>
+Fixes: a03bb00e50ab ("staging: comedi: add NI USB-6501 support")
+Cc: stable@vger.kernel.org      # 3.18
+Cc: Luca Ellero <luca.ellero@brickedbrain.com>
+Reviewed-by: Ian Abbott <abbotti@mev.co.uk>
+Signed-off-by: Johan Hovold <johan@kernel.org>
+Link: https://lore.kernel.org/r/20211027093529.30896-2-johan@kernel.org
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/net/usb/hso.c |   33 +++++++++++++++++++++++----------
- 1 file changed, 23 insertions(+), 10 deletions(-)
+ drivers/staging/comedi/drivers/ni_usb6501.c |   10 ++++++++++
+ 1 file changed, 10 insertions(+)
 
---- a/drivers/net/usb/hso.c
-+++ b/drivers/net/usb/hso.c
-@@ -2512,7 +2512,7 @@ static struct hso_device *hso_create_net
- 			   hso_net_init);
- 	if (!net) {
- 		dev_err(&interface->dev, "Unable to create ethernet device\n");
--		goto exit;
-+		goto err_hso_dev;
- 	}
+--- a/drivers/staging/comedi/drivers/ni_usb6501.c
++++ b/drivers/staging/comedi/drivers/ni_usb6501.c
+@@ -153,6 +153,10 @@ static const u8 READ_COUNTER_RESPONSE[]
+ 					   0x00, 0x00, 0x00, 0x02,
+ 					   0x00, 0x00, 0x00, 0x00};
  
- 	hso_net = netdev_priv(net);
-@@ -2525,13 +2525,13 @@ static struct hso_device *hso_create_net
- 				      USB_DIR_IN);
- 	if (!hso_net->in_endp) {
- 		dev_err(&interface->dev, "Can't find BULK IN endpoint\n");
--		goto exit;
-+		goto err_net;
- 	}
- 	hso_net->out_endp = hso_get_ep(interface, USB_ENDPOINT_XFER_BULK,
- 				       USB_DIR_OUT);
- 	if (!hso_net->out_endp) {
- 		dev_err(&interface->dev, "Can't find BULK OUT endpoint\n");
--		goto exit;
-+		goto err_net;
- 	}
- 	SET_NETDEV_DEV(net, &interface->dev);
- 	SET_NETDEV_DEVTYPE(net, &hso_type);
-@@ -2540,18 +2540,18 @@ static struct hso_device *hso_create_net
- 	for (i = 0; i < MUX_BULK_RX_BUF_COUNT; i++) {
- 		hso_net->mux_bulk_rx_urb_pool[i] = usb_alloc_urb(0, GFP_KERNEL);
- 		if (!hso_net->mux_bulk_rx_urb_pool[i])
--			goto exit;
-+			goto err_mux_bulk_rx;
- 		hso_net->mux_bulk_rx_buf_pool[i] = kzalloc(MUX_BULK_RX_BUF_SIZE,
- 							   GFP_KERNEL);
- 		if (!hso_net->mux_bulk_rx_buf_pool[i])
--			goto exit;
-+			goto err_mux_bulk_rx;
- 	}
- 	hso_net->mux_bulk_tx_urb = usb_alloc_urb(0, GFP_KERNEL);
- 	if (!hso_net->mux_bulk_tx_urb)
--		goto exit;
-+		goto err_mux_bulk_rx;
- 	hso_net->mux_bulk_tx_buf = kzalloc(MUX_BULK_TX_BUF_SIZE, GFP_KERNEL);
- 	if (!hso_net->mux_bulk_tx_buf)
--		goto exit;
-+		goto err_free_tx_urb;
- 
- 	add_net_device(hso_dev);
- 
-@@ -2559,7 +2559,7 @@ static struct hso_device *hso_create_net
- 	result = register_netdev(net);
- 	if (result) {
- 		dev_err(&interface->dev, "Failed to register device\n");
--		goto exit;
-+		goto err_free_tx_buf;
- 	}
- 
- 	hso_log_port(hso_dev);
-@@ -2567,8 +2567,21 @@ static struct hso_device *hso_create_net
- 	hso_create_rfkill(hso_dev, interface);
- 
- 	return hso_dev;
--exit:
--	hso_free_net_device(hso_dev);
++/* Largest supported packets */
++static const size_t TX_MAX_SIZE	= sizeof(SET_PORT_DIR_REQUEST);
++static const size_t RX_MAX_SIZE	= sizeof(READ_PORT_RESPONSE);
 +
-+err_free_tx_buf:
-+	remove_net_device(hso_dev);
-+	kfree(hso_net->mux_bulk_tx_buf);
-+err_free_tx_urb:
-+	usb_free_urb(hso_net->mux_bulk_tx_urb);
-+err_mux_bulk_rx:
-+	for (i = 0; i < MUX_BULK_RX_BUF_COUNT; i++) {
-+		usb_free_urb(hso_net->mux_bulk_rx_urb_pool[i]);
-+		kfree(hso_net->mux_bulk_rx_buf_pool[i]);
-+	}
-+err_net:
-+	free_netdev(net);
-+err_hso_dev:
-+	kfree(hso_dev);
- 	return NULL;
+ enum commands {
+ 	READ_PORT,
+ 	WRITE_PORT,
+@@ -510,6 +514,12 @@ static int ni6501_find_endpoints(struct
+ 	if (!devpriv->ep_rx || !devpriv->ep_tx)
+ 		return -ENODEV;
+ 
++	if (usb_endpoint_maxp(devpriv->ep_rx) < RX_MAX_SIZE)
++		return -ENODEV;
++
++	if (usb_endpoint_maxp(devpriv->ep_tx) < TX_MAX_SIZE)
++		return -ENODEV;
++
+ 	return 0;
  }
  
 
