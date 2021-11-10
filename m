@@ -2,89 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B434344C5C4
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 18:14:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 46A1344C5D8
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 18:17:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232124AbhKJRRa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Nov 2021 12:17:30 -0500
-Received: from frasgout.his.huawei.com ([185.176.79.56]:4079 "EHLO
-        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229995AbhKJRR3 (ORCPT
+        id S232514AbhKJRUK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Nov 2021 12:20:10 -0500
+Received: from mo4-p02-ob.smtp.rzone.de ([85.215.255.83]:18396 "EHLO
+        mo4-p02-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231708AbhKJRUH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Nov 2021 12:17:29 -0500
-Received: from fraeml702-chm.china.huawei.com (unknown [172.18.147.200])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4HqBKR4RSrz67yyF;
-        Thu, 11 Nov 2021 01:14:19 +0800 (CST)
-Received: from lhreml710-chm.china.huawei.com (10.201.108.61) by
- fraeml702-chm.china.huawei.com (10.206.15.51) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2308.15; Wed, 10 Nov 2021 18:14:39 +0100
-Received: from localhost (10.52.121.123) by lhreml710-chm.china.huawei.com
- (10.201.108.61) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2308.15; Wed, 10 Nov
- 2021 17:14:39 +0000
-Date:   Wed, 10 Nov 2021 17:14:37 +0000
-From:   Jonathan Cameron <Jonathan.Cameron@Huawei.com>
-To:     Dan Williams <dan.j.williams@intel.com>
-CC:     <linux-cxl@vger.kernel.org>, Ben Widawsky <ben.widawsky@intel.com>,
-        "Ira Weiny" <ira.weiny@intel.com>, <linux-pci@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v6 07/10] cxl/pci: Split cxl_pci_setup_regs()
-Message-ID: <20211110171437.00007160@Huawei.com>
-In-Reply-To: <163434053788.914258.18412599112859205220.stgit@dwillia2-desk3.amr.corp.intel.com>
-References: <163379787433.692348.2451270397309803556.stgit@dwillia2-desk3.amr.corp.intel.com>
-        <163434053788.914258.18412599112859205220.stgit@dwillia2-desk3.amr.corp.intel.com>
-Organization: Huawei Technologies Research and Development (UK) Ltd.
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; i686-w64-mingw32)
+        Wed, 10 Nov 2021 12:20:07 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1636564634;
+    s=strato-dkim-0002; d=goldelico.com;
+    h=Message-Id:Date:Subject:Cc:To:From:Cc:Date:From:Subject:Sender;
+    bh=BxSWWKTyTSpwkiKaplm50TkH80bkmR2Wjcw/iI6LETA=;
+    b=W1MsbpAXkKx5AmUCx8pXbql1Yjo6Iq/iYx2BXBpHYU9NKNLsDNMmPz0io1dZlUZvLE
+    ffXIv6JLhpcjALdyP6CnhHGONfhAtF1Jf41FLEV/3yvOFP4mYTQ4c9B37qn5C9esGrEJ
+    Z0kFf9GMWL1IxA6QDZvxwre6FzLFA+MXnwCY+KvftJ+FuzKo0DnA54uk11kKRQJr5OsY
+    TCMJaFySCNO8k3O0gQmMwNTMUcfsj/AsqAejXyuScuPu8wwgdFntY2msoMCj/bSs2O2k
+    XtA5BOEEo9Lksn1NsBK3EoViawITQ/PueHwdnGRIauu3Ont1ohCxGv/x9W2ibGj9RIto
+    cl1Q==
+Authentication-Results: strato.com;
+    dkim=none
+X-RZG-AUTH: ":JGIXVUS7cutRB/49FwqZ7WcJeFKiMhflhwDubTJ9o12DNOsPj0lByOdfLlf0"
+X-RZG-CLASS-ID: mo00
+Received: from iMac.fritz.box
+    by smtp.strato.de (RZmta 47.34.5 DYNA|AUTH)
+    with ESMTPSA id Y02aa4xAAHHC51c
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
+        (Client did not present a certificate);
+    Wed, 10 Nov 2021 18:17:12 +0100 (CET)
+From:   "H. Nikolaus Schaller" <hns@goldelico.com>
+To:     Ulf Hansson <ulf.hansson@linaro.org>,
+        =?UTF-8?q?J=C3=A9r=C3=B4me=20Pouiller?= 
+        <jerome.pouiller@silabs.com>, Avri Altman <avri.altman@wdc.com>,
+        Shawn Lin <shawn.lin@rock-chips.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Tony Lindgren <tony@atomide.com>,
+        Bean Huo <beanhuo@micron.com>,
+        "H. Nikolaus Schaller" <hns@goldelico.com>,
+        Kiwoong Kim <kwmad.kim@samsung.com>,
+        Tian Tao <tiantao6@hisilicon.com>,
+        Andreas Kemnade <andreas@kemnade.info>,
+        Yang Li <abaci-bugfix@linux.alibaba.com>
+Cc:     notasas@gmail.com, linux-mmc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, letux-kernel@openphoenux.org,
+        kernel@pyra-handheld.com, linux-omap@vger.kernel.org
+Subject: [PATCH v2 0/6] mmc: core: extend mmc_fixup_device and transplant ti,wl1251 quirks from to be retired omap_hsmmc
+Date:   Wed, 10 Nov 2021 18:17:05 +0100
+Message-Id: <cover.1636564631.git.hns@goldelico.com>
+X-Mailer: git-send-email 2.33.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.52.121.123]
-X-ClientProxiedBy: lhreml748-chm.china.huawei.com (10.201.108.198) To
- lhreml710-chm.china.huawei.com (10.201.108.61)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 15 Oct 2021 16:30:42 -0700
-Dan Williams <dan.j.williams@intel.com> wrote:
+PATCH V2 2021-11-10 18:17:11:
+* remove setting card->ocr = 0x80 because it is no longer needed (by H. Nikolaus Schaller <hns@goldelico.com>)
+* include patch "mmc: core: Fixup storing of OCR for MMC_QUIRK_NONSTD_SDIO" by Ulf Hansson <ulf.hansson@linaro.org>
 
-> From: Ben Widawsky <ben.widawsky@intel.com>
-> 
-> In preparation for moving parts of register mapping to cxl_core, split
-> cxl_pci_setup_regs() into a helper that finds register blocks,
-> (cxl_find_regblock()), and a generic wrapper that probes the precise
-> register sets within a block (cxl_setup_regs()).
-> 
-> Move the actual mapping (cxl_map_regs()) of the only register-set that
-> cxl_pci cares about (memory device registers) up a level from the former
-> cxl_pci_setup_regs() into cxl_pci_probe().
-> 
-> With this change the unused component registers are no longer mapped,
-> but the helpers are primed to move into the core.
-> 
-> [djbw: drop cxl_map_regs() for component registers]
-> 
-> Signed-off-by: Ben Widawsky <ben.widawsky@intel.com>
-> [djbw: rebase on the cxl_register_map refactor]
-> Reviewed-by: Ira Weiny <ira.weiny@intel.com>
-> Reviewed-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
-> Signed-off-by: Dan Williams <dan.j.williams@intel.com>
+PATCH V1 2021-11-09 11:59:08:
+* merge call of mmc_fixup_device for sdio into other commit (suggested by Ulf Hansson <ulf.hansson@linaro.org>)
+* do not call mmc_fixup_device(card, sdio_card_init_methods) for mmc and sd interfaces, just sdio (suggested by Ulf Hansson <ulf.hansson@linaro.org>)
+* do not use a matching list but a single string constant (suggested by Ulf Hansson <ulf.hansson@linaro.org>)
+* switched to "[PATCH v1]" (suggested by Ulf Hansson <ulf.hansson@linaro.org>)
 
-Hi Ben / all,
+RFC V4 2021-11-05 10:05:51:
+* remove const from char *const * (Ulf Hansson <ulf.hansson@linaro.org>)
+* use for_each_child_of_node() to scan compatible children (Ulf Hansson <ulf.hansson@linaro.org>)
+(see: https://lore.kernel.org/lkml/CAPDyKFpr0kpRXoUACNNSwe8pL1S9wJPjnX+GFGS1PNezKCDYzQ@mail.gmail.com/)
 
-This is probably the best patch to comment on for this
-(note it is not a comment about this patch, but more the state we end up
-in after it).
+RFC V3 2021-11-03 14:00:13:
+* patches have been split into smaller ones a little further
+* propose a new macro for setup of device tree compatible quirks
+* directly include patches by jerome.pouiller@silabs.com
+  in this series
 
-cxl_map_regs() is a generic function, but with the new split approach
-as a result of this patch, we now always know at the caller which of
-the types of map we are doing.
+RFC V2 2021-11-01 10:24:26:
+* reworked to not misuse mmc_select_card() but add a call to
+  mmc_fixup_device() right after where host->ops->init_card
+  was called before to apply the wl1251 specific quirks.
+  Device tree matching is done by a new table passed to mmc_fixup_device().
+  suggested by: ulf.hansson@linaro.org
+  based on patches by: jerome.pouiller@silabs.com
 
-I think it would be clearer to embrace that situation and drop cxl_map_regs()
-in favor of directly calling the relevant specific versions such as
-cxl_map_device_regs().  I can't immediately see how the generic cxl_map_regs()
-will be useful to us going forwards.
+RFC V1 2021-10-06 13:24:13:
 
-Jonathan
+
+H. Nikolaus Schaller (3):
+  mmc: core: provide macro and table to match the device tree to apply
+    quirks
+  mmc: core: transplant ti,wl1251 quirks from to be retired omap_hsmmc
+  mmc: host: omap_hsmmc: revert special init for wl1251
+
+Jérôme Pouiller (2):
+  mmc: core: rewrite mmc_fixup_device()
+  mmc: core: allow to match the device tree to apply quirks
+
+Ulf Hansson (1):
+  mmc: core: Fixup storing of OCR for MMC_QUIRK_NONSTD_SDIO
+
+ drivers/mmc/core/card.h       | 36 ++++++++++++++++++++
+ drivers/mmc/core/quirks.h     | 64 +++++++++++++++++++++++++----------
+ drivers/mmc/core/sdio.c       |  5 ++-
+ drivers/mmc/host/omap_hsmmc.c | 36 --------------------
+ 4 files changed, 87 insertions(+), 54 deletions(-)
+
+-- 
+2.33.0
+
