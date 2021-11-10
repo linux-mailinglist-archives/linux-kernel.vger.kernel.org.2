@@ -2,188 +2,285 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2356B44C4AF
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 16:52:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CC50144C4B9
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 16:55:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232487AbhKJPzO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Nov 2021 10:55:14 -0500
-Received: from mail-eopbgr60063.outbound.protection.outlook.com ([40.107.6.63]:61239
-        "EHLO EUR04-DB3-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S232483AbhKJPzL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Nov 2021 10:55:11 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=ZO+9p+W3+HYueqABh3ZR4JVbmLdHmwVnE6/ERNJlM3nl5OCSHm/fgj7BlpIr6arEHug3Jkk2uqku5BWleZso+Kf4q5iCGD1Gskv01IpBD2pectxmjMafEw+PwCRYE0NzvJs9j7XvpsPqE94csbmHRfaa4/f0u4EJLs/tc2ZyVARiT/bq9ShYkHlUkMF/FA+MSNiZfU1FEgTr072KCFy1UN2NVcw+PbjXyhTlBjldifSx/xQLT8By1uHheK2TcwTUnPChaEpdpIBONgMOPsaogHILjFDgdVGHTJ3SL46NRBD4T05prWg+wWrIixZf8KXteokmQagH3+sDiooMjeF/wQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=dmAS/dYJAlW/eR43yaZtZsorQr21y5X61frfyHAOpNI=;
- b=YsEf3jw1EaTbtVBeAz3x7HKHzrbMNrMGBAnlIyASGIFuOvokmHqxowpYjxd7pifg0RGPraaji6I5FliMeVwpiJbFm1Y1F+xB6tgYv+4zAwzfshcGJJg+Fd0jO/iGcwpbtsQznqmDqXkqEpfzrCoYaUmQpG7tGZdsjh8v057+kt7G//S2Y/q0JpXXj9Z/sWyZRsJDCSFoeHv1fjK+jIQQX+9jFusUN1LnpIl/6IEu/fdhLOxwaq9Yrh35g22ujHpRVceTGcR6jKprVpKalcNxMoDaAR1fR14E0EP5nIak2v4qXKLzXzrjw+2zo1xX3qjypyrUky3xpJ5vK9QW9HBvJQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=dmAS/dYJAlW/eR43yaZtZsorQr21y5X61frfyHAOpNI=;
- b=GNRsHsB2RZ01b7p+pMV1zWyYM8SHkqhLtV2Srh8mclS/Mul//SiUBPN9P47duG6Ggr+bWftbKEJpx8spgJP9qNVCqe7OXPJ7BUuCX7wh0S2zhjoQ4A/x8uA4Ph9P1Q5rWz5W2hi1dP29YnzMk5IRw4XTVQMI5tTKW3XYWf1kipU=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nxp.com;
-Received: from VI1PR04MB4688.eurprd04.prod.outlook.com (2603:10a6:803:6a::30)
- by VI1PR0401MB2304.eurprd04.prod.outlook.com (2603:10a6:800:29::15) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4669.15; Wed, 10 Nov
- 2021 15:52:21 +0000
-Received: from VI1PR04MB4688.eurprd04.prod.outlook.com
- ([fe80::885c:ddee:c614:9787]) by VI1PR04MB4688.eurprd04.prod.outlook.com
- ([fe80::885c:ddee:c614:9787%7]) with mapi id 15.20.4690.016; Wed, 10 Nov 2021
- 15:52:21 +0000
-Date:   Wed, 10 Nov 2021 17:52:19 +0200
-From:   Abel Vesa <abel.vesa@nxp.com>
-To:     Rob Herring <robh@kernel.org>
-Cc:     Dong Aisheng <aisheng.dong@nxp.com>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Fabio Estevam <festevam@gmail.com>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        linux-i2c@vger.kernel.org, linux-serial@vger.kernel.org,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org
-Subject: Re: [PATCH v3 09/11] dt-bindings: i2c: i2c-imx-lpi2c: Fix dtbs_check
- compatible oneOf error
-Message-ID: <YYvqswlk59lI0fqH@ryzen>
-References: <1633526764-30151-1-git-send-email-abel.vesa@nxp.com>
- <1633526764-30151-10-git-send-email-abel.vesa@nxp.com>
- <YWiMy5J/J/dxmkY4@robh.at.kernel.org>
+        id S232455AbhKJP6Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Nov 2021 10:58:25 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33900 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231838AbhKJP6X (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Nov 2021 10:58:23 -0500
+Received: from mail-ot1-x334.google.com (mail-ot1-x334.google.com [IPv6:2607:f8b0:4864:20::334])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2BC80C061764;
+        Wed, 10 Nov 2021 07:55:36 -0800 (PST)
+Received: by mail-ot1-x334.google.com with SMTP id h12-20020a056830034c00b0055c8458126fso4642976ote.0;
+        Wed, 10 Nov 2021 07:55:36 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=33y2K1n4+a77pWOR3n6HeGOY3n+xOhILC5MDJChRPQs=;
+        b=lNx1dXg/KoSTJEUrthhuuymEFJiI4KHW5wtQZ5wifVxeU5YV7hD/VMvKQ8u1f3nxp1
+         UD1E0bCOK2aWK3ld6GztgOgLAli498Zgb0mHDrqCwwoW0DNvX/U9s430uxlshlG0mgHD
+         WgX50vixrzGZXvZNaXnPrYpk1NXfTlAjEne5R6jA7Jtxxs6TRXPinKmtanj4jhQKdpjK
+         s+Li88Fuu5avu+vraUlUifA/EjWlQ+xnuYLuXWiRY016aurqXGBjwMRws3GMYy8hF/Be
+         LesgolfkxJvxgYDnk+NUAGGBKkGAso7/IXOcRMFiMTRaCJ+hQtbPcTXyWkckZyCZs56Z
+         tTCw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=33y2K1n4+a77pWOR3n6HeGOY3n+xOhILC5MDJChRPQs=;
+        b=DRljFTFmimh0wAXRgGSXuhATIkY/WVJIvyzFZoodc6YR/1JzK+LDlg4p4VU8ACY2wg
+         AGoxUK9lkP3lCibNWcdJLarJv0iLE/tQDDJUjArUPISLj6Wss1MDkyab2h8GMUVBxSTz
+         X3hxJ8HkGhjeO87XR+fnp6wATeuGVVCwbriosCn5GfzFRFGEoUdcC7050ovhTf1bpZzP
+         +43bhr2QCAtTIIhGuTGH+6pEI0ekz+4FNAX+j7qDjy96RTX4nm1PXfMXtliQik3NUe9o
+         KgzAnqNizxcWVFl3hDBaQ0fusLeK3ujebWZGsWuSzI3TTJy6XX9AOtJAcVleT0kH0D/a
+         tfsA==
+X-Gm-Message-State: AOAM530lwKkT9Br8ktPaQ6Ig//4qRQXO3sngmjGij1JrQ+anhnQ0YS6+
+        RKYXxB9cWZI0TtQQITIYC00=
+X-Google-Smtp-Source: ABdhPJyTsvfV3nJgDRLyuR7Gv6RwKoDLsSEonATegNm7ehO7yJyI+hv3yWf6/cLlDC08wXUuK+rWIA==
+X-Received: by 2002:a05:6830:236b:: with SMTP id r11mr207666oth.145.1636559734819;
+        Wed, 10 Nov 2021 07:55:34 -0800 (PST)
+Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id i15sm45851otu.67.2021.11.10.07.55.32
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 10 Nov 2021 07:55:33 -0800 (PST)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Date:   Wed, 10 Nov 2021 07:55:30 -0800
+From:   Guenter Roeck <linux@roeck-us.net>
+To:     Alistair Francis <alistair@alistair23.me>
+Cc:     lee.jones@linaro.org, broonie@kernel.org, kernel@pengutronix.de,
+        lgirdwood@gmail.com, robh+dt@kernel.org,
+        linux-kernel@vger.kernel.org, rui.zhang@intel.com,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        s.hauer@pengutronix.de, linux-hwmon@vger.kernel.org,
+        amitk@kernel.org, linux-pm@vger.kernel.org, linux-imx@nxp.com,
+        alistair23@gmail.com, andreas@kemnade.info, shawnguo@kernel.org
+Subject: Re: [PATCH v15 5/8] hwmon: sy7636a: Add temperature driver for
+ sy7636a
+Message-ID: <20211110155530.GA2341709@roeck-us.net>
+References: <20211110122948.188683-1-alistair@alistair23.me>
+ <20211110122948.188683-6-alistair@alistair23.me>
+MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <YWiMy5J/J/dxmkY4@robh.at.kernel.org>
-X-ClientProxiedBy: VE1PR03CA0012.eurprd03.prod.outlook.com
- (2603:10a6:802:a0::24) To VI1PR04MB4688.eurprd04.prod.outlook.com
- (2603:10a6:803:6a::30)
-MIME-Version: 1.0
-Received: from ryzen (5.12.226.136) by VE1PR03CA0012.eurprd03.prod.outlook.com (2603:10a6:802:a0::24) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4690.15 via Frontend Transport; Wed, 10 Nov 2021 15:52:21 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 57de3ef6-85a2-4803-6b01-08d9a46214f4
-X-MS-TrafficTypeDiagnostic: VI1PR0401MB2304:
-X-Microsoft-Antispam-PRVS: <VI1PR0401MB23040DBFC736A1F3645A80D3F6939@VI1PR0401MB2304.eurprd04.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:4714;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: /d6gvUo+TVaOlMqnoHKzMf1hAyYCNFUQsuScSU4AYGhWD9KXJd5GxAfMJ2flMUrCmA2UPvT6/kt91AmvE70JMwzyb9LubIkB/t0YNIyDzwZ3LkPU2K4SJz2NO+lDtyBH6qlhnXUsA+BK8rvkDRp51W35HNCaN3RWJHqPWk8EBDPRZ0cTS56lssdOcWQI5R1Jl05u9r08b8RV9akd7DXmaoqbEUJi3B4pK1al+qga7/a/l4uH69qNJNrJ6cKNIe4EgRVE2s2bQ3W68r5qfek+Zl7ukSWMePKKxkOZVTg5k/86YT+91y1XsfLr1BeKkQG8d6px7uARblf71bad1tSUoLkPo12t/CLaabpV8zOwwe5OEYp2eXSdLUX1DXT14ahmPVPihV7h3VHGdbLf41tvkVMjBINZSoFFgVgyAIDCXXRnIB1MFKAgsIgpr6qpxkzeEY+ypYG+SuIX64Wq5WofVKzk4BskmbpAEsOs3y6PoSVjFsZMvZgdu5XsL/QypwebBvvfOl1+c0ileb8GR0dfiYDaO8gmD7isTqDKP1t4VQc5KF+wKeaDo8H9mu8/VmAEUDWDsJ//Dexlvg1S2Uca4OYWs1GHh9a+6mr7cFyDQExK9skYyacWcwjDqtX9l4qe6x2cBKR8aWCtUpf1jBuAPNrPcuXcYW93CzztkaYVOMJ46IxoOjwTsnipvi4K3t4eGNwiy0N6NplWWA8PcDfTnw==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VI1PR04MB4688.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(5660300002)(508600001)(316002)(8676002)(66946007)(6916009)(33716001)(54906003)(4326008)(9576002)(8936002)(7416002)(956004)(83380400001)(2906002)(38100700002)(38350700002)(53546011)(55016002)(66556008)(9686003)(186003)(26005)(66476007)(52116002)(6496006)(44832011)(86362001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?gdGP76ppxksbza41wRzG8snTWZ8CmB3wXpVfddAm7Gi76G41A8Gu0wwfOBHe?=
- =?us-ascii?Q?miQJ23I5b0gijJ74OYVNKDoRtHAMAeUADoIuCHyAfR90JWkZCNHCwsEaGG10?=
- =?us-ascii?Q?ahVhpYSzyCbjl7OHYYXPWPyJ3iMxGqk1rzrexsDfB/xfLnYGa9klYrAaqv7q?=
- =?us-ascii?Q?/ulcJ+9zTOlOt5t5KWiRbmgssFhnjqjg8LnLXMauB2CKRREyZpMlO30ROBiN?=
- =?us-ascii?Q?uNLdKK26CZrAmoiP3jLhlO1uB7jxitVVe7dVn/zsWUGqw1YheTUlQfNvWVu7?=
- =?us-ascii?Q?pbact509PG2e+ZOiV5wCAqaBqB89xVhjEgDFySfzvpXX/gYDcebUWSiXvgzD?=
- =?us-ascii?Q?rjhgghRuEnXDADoluiHbH+XJ/3yF+iaOx20J6KL8vNtEXDc4EjnzM9nEk1O1?=
- =?us-ascii?Q?X5U8wc14x+M47ngdnPWLWQZjttwA5piJKc2FQxZP5tSj+s7mcqCru4IdGNcF?=
- =?us-ascii?Q?5bzgHo5uxDuGFzlc8r1xAOPlBbNty7yVZzW3jMczyxv+RY70/LKF0x1eEYwR?=
- =?us-ascii?Q?wEkKG8kjhc1/QnmZJuQLd3Gt4Tz8io80AnVRWLqu6df+p01U5p/jxqx2bGBa?=
- =?us-ascii?Q?/mazOu6PLhYvqtJAl8dAa61yyWCuV/IFNbKUvHnlwIE924ZCjS7HTX0OvlDJ?=
- =?us-ascii?Q?dsZLgQm94U69IwIEjvsu+7JThX3OZZQhTzFFww/Gs8WtQMdlgo+YXMk3Fkl6?=
- =?us-ascii?Q?KPOQMYppcgaQVDwcos0fokmjq6MZgtWscmQS8j3Fol4+Oj+1ObhllllB8j0C?=
- =?us-ascii?Q?MDmYapNql0XJC6psht5kKFLhfvA26C0Fsl91e9DLEi0HkP2Q8ux0YLdz7shN?=
- =?us-ascii?Q?Ak/ANE6F7kCWlPU2ImqYyMKEFN8+Z3EPXOKVO3kvpIjqR87Lj15glGEci5vU?=
- =?us-ascii?Q?vbxkvIAoIisA2T7/rHfA/RKHoEiwRSihJt8m7CACNnJwYNkY3AnRQBRUskU9?=
- =?us-ascii?Q?KlGiwTg5bXyGRXXFaYEiyND9tInXl9uwp4AzGRhDQre9Pn6RLn2GFO7vHY+/?=
- =?us-ascii?Q?6UdFjsNor9ibJ4j+7Y3yzgOLagTkIfn3oG+U8a8IqLd1+GoRLGgbILphv/Xv?=
- =?us-ascii?Q?AaWdxaIKl634eih0C92D+3CclZhrhCTYdwCnlb3z/JFtoOayAexk/qosAu1+?=
- =?us-ascii?Q?TFnHaJ4iixXRtx2C834nEB/o1qzE4K13bNRb/hGsuOvxENGTyUFkGHESnP/G?=
- =?us-ascii?Q?R19ifay58FwZvxKTQve6HaTB8S9T4Ay0oPMIBt0sziZB73QF7w23cYc6TGrL?=
- =?us-ascii?Q?RQ+Nu+3WD8KGC3N9VQ0LAl8HYsJaz/p/u0JR3mlGiVQBh1DerRVycJATh9wU?=
- =?us-ascii?Q?fqFxxlv2nuh1yKVdE3o3c0Oz0hdYOt0D+tPt2alqJD2B33CBGfrj8NweHFkZ?=
- =?us-ascii?Q?BswXOJwt1Ev2n+EVNJYBddJgADP2hVKRrA7eFXVDV9l1vBduwPorD3vxZ8B3?=
- =?us-ascii?Q?E2d+PL3reL/DlGu6Z1nvsERbYhcctLX04vr0XAy2pQU+4f7aqWa8xw56ceBN?=
- =?us-ascii?Q?YOsd753GM11ff8B/pByZyPuUSlL6lRhmZuk+bQGeuvdAq7i7wbdHk/7AS09X?=
- =?us-ascii?Q?0E9YFl0RR8IzXwDD5DC3q4sipDSpn/tqHtBH6UGw+dt+/MLn8+PB0qOt+2sq?=
- =?us-ascii?Q?Y7Y56ZoRUwEcnLaZa9IFdFA=3D?=
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 57de3ef6-85a2-4803-6b01-08d9a46214f4
-X-MS-Exchange-CrossTenant-AuthSource: VI1PR04MB4688.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 10 Nov 2021 15:52:21.7866
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: YmLacRCceOq7qO2/7XEh70l8oqqPunHPnMG9B0FPIL7TyqTFF8hFwNh2IPu4xMTTh/lgtiPUCgRInap5Rozt8A==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR0401MB2304
+In-Reply-To: <20211110122948.188683-6-alistair@alistair23.me>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 21-10-14 15:02:19, Rob Herring wrote:
-> On Wed, Oct 06, 2021 at 04:26:02PM +0300, Abel Vesa wrote:
-> > Fix following dtbs_check error:
-> > 
-> > arch/arm64/boot/dts/freescale/imx8qm-mek.dt.yaml:
-> > i2c@5a800000: compatible: 'oneOf' conditional failed, one must be fixed:
-> >         ['fsl,imx8qm-lpi2c', 'fsl,imx7ulp-lpi2c'] is too long
-> >         Additional items are not allowed ('fsl,imx7ulp-lpi2c' was
-> > unexpected)
-> >         'fsl,imx8qxp-lpi2c' was expected
-> >         From schema:
-> > Documentation/devicetree/bindings/i2c/i2c-imx-lpi2c.yaml
-> > 
-> > Signed-off-by: Abel Vesa <abel.vesa@nxp.com>
-> > ---
-> >  Documentation/devicetree/bindings/i2c/i2c-imx-lpi2c.yaml | 5 ++++-
-> >  1 file changed, 4 insertions(+), 1 deletion(-)
-> > 
-> > diff --git a/Documentation/devicetree/bindings/i2c/i2c-imx-lpi2c.yaml b/Documentation/devicetree/bindings/i2c/i2c-imx-lpi2c.yaml
-> > index 29b9447f3b84..acf2d5f45f4e 100644
-> > --- a/Documentation/devicetree/bindings/i2c/i2c-imx-lpi2c.yaml
-> > +++ b/Documentation/devicetree/bindings/i2c/i2c-imx-lpi2c.yaml
-> > @@ -18,8 +18,11 @@ properties:
-> >        - enum:
-> >            - fsl,imx7ulp-lpi2c
-> >            - fsl,imx8qm-lpi2c
-> > +          - fsl,imx8qxp-lpi2c
+On Wed, Nov 10, 2021 at 10:29:45PM +1000, Alistair Francis wrote:
+> This is a multi-function device to interface with the sy7636a
+> EPD PMIC chip from Silergy.
 > 
-> Both with and without a fallback should not be valid.
+> Signed-off-by: Alistair Francis <alistair@alistair23.me>
+> ---
+>  Documentation/hwmon/index.rst         |   1 +
+>  Documentation/hwmon/sy7636a-hwmon.rst |  24 ++++++
+>  drivers/hwmon/Kconfig                 |   9 +++
+>  drivers/hwmon/Makefile                |   1 +
+>  drivers/hwmon/sy7636a-hwmon.c         | 108 ++++++++++++++++++++++++++
+>  5 files changed, 143 insertions(+)
+>  create mode 100644 Documentation/hwmon/sy7636a-hwmon.rst
+>  create mode 100644 drivers/hwmon/sy7636a-hwmon.c
 > 
-> Why are you changing fsl,imx8qxp-lpi2c when the error was for 
-> fsl,imx8qm-lpi2c?
+> diff --git a/Documentation/hwmon/index.rst b/Documentation/hwmon/index.rst
+> index 7046bf1870d9..a887308850cd 100644
+> --- a/Documentation/hwmon/index.rst
+> +++ b/Documentation/hwmon/index.rst
+> @@ -180,6 +180,7 @@ Hardware Monitoring Kernel Drivers
+>     smsc47m1
+>     sparx5-temp
+>     stpddc60
+> +   sy7636a-hwmon
+>     tc654
+>     tc74
+>     thmc50
+> diff --git a/Documentation/hwmon/sy7636a-hwmon.rst b/Documentation/hwmon/sy7636a-hwmon.rst
+> new file mode 100644
+> index 000000000000..6b3e36d028dd
+> --- /dev/null
+> +++ b/Documentation/hwmon/sy7636a-hwmon.rst
+> @@ -0,0 +1,24 @@
+> +Kernel driver sy7636a-hwmon
+> +=========================
+> +
+> +Supported chips:
+> +
+> + * Silergy SY7636A PMIC
+> +
+> +
+> +Description
+> +-----------
+> +
+> +This driver adds hardware temperature reading support for
+> +the Silergy SY7636A PMIC.
+> +
+> +The following sensors are supported
+> +
+> +  * Temperature
+> +      - SoC on-die temperature in milli-degree C
+> +
+> +sysfs-Interface
+> +---------------
+> +
+> +temp0_input
+> +	- SoC on-die temperature (milli-degree C)
+> diff --git a/drivers/hwmon/Kconfig b/drivers/hwmon/Kconfig
+> index 64bd3dfba2c4..3139a286c35a 100644
+> --- a/drivers/hwmon/Kconfig
+> +++ b/drivers/hwmon/Kconfig
+> @@ -1662,6 +1662,15 @@ config SENSORS_SIS5595
+>  	  This driver can also be built as a module. If so, the module
+>  	  will be called sis5595.
+>  
+> +config SENSORS_SY7636A
+> +	tristate "Silergy SY7636A"
+> +	help
+> +	  If you say yes here you get support for the thermistor readout of
+> +	  the Silergy SY7636A PMIC.
+> +
+> +	  This driver can also be built as a module.  If so, the module
+> +	  will be called sy7636a-hwmon.
+> +
+>  config SENSORS_DME1737
+>  	tristate "SMSC DME1737, SCH311x and compatibles"
+>  	depends on I2C && !PPC
+> diff --git a/drivers/hwmon/Makefile b/drivers/hwmon/Makefile
+> index baee6a8d4dd1..8f8da52098d1 100644
+> --- a/drivers/hwmon/Makefile
+> +++ b/drivers/hwmon/Makefile
+> @@ -182,6 +182,7 @@ obj-$(CONFIG_SENSORS_SMSC47M1)	+= smsc47m1.o
+>  obj-$(CONFIG_SENSORS_SMSC47M192)+= smsc47m192.o
+>  obj-$(CONFIG_SENSORS_SPARX5)	+= sparx5-temp.o
+>  obj-$(CONFIG_SENSORS_STTS751)	+= stts751.o
+> +obj-$(CONFIG_SENSORS_SY7636A)	+= sy7636a-hwmon.o
+>  obj-$(CONFIG_SENSORS_AMC6821)	+= amc6821.o
+>  obj-$(CONFIG_SENSORS_TC74)	+= tc74.o
+>  obj-$(CONFIG_SENSORS_THMC50)	+= thmc50.o
+> diff --git a/drivers/hwmon/sy7636a-hwmon.c b/drivers/hwmon/sy7636a-hwmon.c
+> new file mode 100644
+> index 000000000000..84ceaae3a404
+> --- /dev/null
+> +++ b/drivers/hwmon/sy7636a-hwmon.c
+> @@ -0,0 +1,108 @@
+> +// SPDX-License-Identifier: GPL-2.0+
+> +/*
+> + * Functions to access SY3686A power management chip temperature
+> + *
+> + * Copyright (C) 2021 reMarkable AS - http://www.remarkable.com/
+> + *
+> + * Authors: Lars Ivar Miljeteig <lars.ivar.miljeteig@remarkable.com>
+> + *          Alistair Francis <alistair@alistair23.me>
+> + */
+> +
+> +#include <linux/err.h>
+> +#include <linux/hwmon.h>
+> +#include <linux/init.h>
+> +#include <linux/module.h>
+> +#include <linux/platform_device.h>
+> +#include <linux/regmap.h>
+> +#include <linux/regulator/machine.h>
+> +
+> +#include <linux/mfd/sy7636a.h>
+> +
+> +static int sy7636a_read(struct device *dev, enum hwmon_sensor_types type,
+> +			 u32 attr, int channel, long *temp)
+> +{
+> +	struct regmap *regmap = dev_get_drvdata(dev);
+> +	int ret, reg_val;
+> +
+> +	ret = regmap_read(regmap,
+> +			SY7636A_REG_TERMISTOR_READOUT, &reg_val);
+> +	if (ret)
+> +		return ret;
+> +
+> +	*temp = reg_val * 1000;
+> +
+> +	return 0;
+> +}
+> +
+> +static umode_t sy7636a_is_visible(const void *data,
+> +				   enum hwmon_sensor_types type,
+> +				   u32 attr, int channel)
+> +{
+> +	if (type != hwmon_temp)
+> +		return 0;
+> +
+> +	if (attr != hwmon_temp_input)
+> +		return 0;
+> +
+> +	return 0444;
+> +}
+> +
+> +static const struct hwmon_ops sy7636a_hwmon_ops = {
+> +	.is_visible = sy7636a_is_visible,
+> +	.read = sy7636a_read,
+> +};
+> +
+> +static const struct hwmon_channel_info *sy7636a_info[] = {
+> +	HWMON_CHANNEL_INFO(chip, HWMON_C_REGISTER_TZ),
+> +	HWMON_CHANNEL_INFO(temp, HWMON_T_INPUT),
+> +	NULL
+> +};
+> +
+> +static const struct hwmon_chip_info sy7636a_chip_info = {
+> +	.ops = &sy7636a_hwmon_ops,
+> +	.info = sy7636a_info,
+> +};
+> +
+> +static int sy7636a_sensor_probe(struct platform_device *pdev)
+> +{
+> +	struct regmap *regmap = dev_get_regmap(pdev->dev.parent, NULL);
+> +	struct regulator *regulator;
+> +	struct device *hwmon_dev;
+> +	int err;
+> +
+> +	if (!regmap)
+> +		return -EPROBE_DEFER;
+> +
+> +	regulator = devm_regulator_get(&pdev->dev, "vcom");
+> +	if (IS_ERR(regulator)) {
+> +		return PTR_ERR(regulator);
+> +	}
+> +
+> +	err = regulator_enable(regulator);
+> +	if (err) {
+> +		regulator_put(regulator);
+
+Is this needed ? I would have assumed that the devm_ function
+above would ensure that the put is handled automatically.
+
+Guenter
+
+> +		return err;
+> +	}
+> +
+> +	hwmon_dev = devm_hwmon_device_register_with_info(&pdev->dev,
+> +			"sy7636a_temperature", regmap, &sy7636a_chip_info, NULL);
+> +
+> +	if (IS_ERR(hwmon_dev)) {
+> +		err = PTR_ERR(hwmon_dev);
+> +		dev_err(&pdev->dev, "Unable to register hwmon device, returned %d\n", err);
+> +		return err;
+> +	}
+> +
+> +	return 0;
+> +}
+> +
+> +static struct platform_driver sy7636a_sensor_driver = {
+> +	.probe = sy7636a_sensor_probe,
+> +	.driver = {
+> +		.name = "sy7636a-temperature",
+> +	},
+> +};
+> +module_platform_driver(sy7636a_sensor_driver);
+> +
+> +MODULE_DESCRIPTION("SY7636A sensor driver");
+> +MODULE_LICENSE("GPL");
+> -- 
+> 2.31.1
 > 
-
-Sorry for the late reply.
-
-I assume the correct way would be like:
-
-    oneOf:                                   
-      - enum:                                
-          - fsl,imx7ulp-lpi2c                
-      - items:                               
-	  - enum:                            
-	      - fsl,imx8dxl-lpi2c            
-	      - fsl,imx8qxp-lpi2c            
-	      - fsl,imx8qm-lpi2c             
-	  - const: fsl,imx7ulp-lpi2c         
-				
-Right ?
-
-Since all the possible combinations are:
-	compatible = "fsl,imx8dxl-lpi2c", "fsl,imx7ulp-lpi2c";
-	compatible = "fsl,imx8qm-lpi2c", "fsl,imx7ulp-lpi2c";
-	compatible = "fsl,imx8qxp-lpi2c", "fsl,imx7ulp-lpi2c";
-	compatible = "fsl,imx7ulp-lpi2c";
-
-
-> >        - items:
-> > -          - const: fsl,imx8qxp-lpi2c
-> > +          - enum:
-> > +              - fsl,imx8qm-lpi2c
-> > +              - fsl,imx8qxp-lpi2c
-> >            - const: fsl,imx7ulp-lpi2c
-> >  
-> >    reg:
-> > -- 
-> > 2.31.1
-> > 
-> >
