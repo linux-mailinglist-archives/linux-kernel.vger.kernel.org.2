@@ -2,147 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 69E8F44CA71
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 21:17:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1467344CA76
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 21:19:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232311AbhKJUUZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Nov 2021 15:20:25 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37208 "EHLO
+        id S232477AbhKJUWI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Nov 2021 15:22:08 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37604 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231609AbhKJUUY (ORCPT
+        with ESMTP id S231254AbhKJUWH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Nov 2021 15:20:24 -0500
-Received: from mail-pj1-x1029.google.com (mail-pj1-x1029.google.com [IPv6:2607:f8b0:4864:20::1029])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 10F42C061767
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Nov 2021 12:17:36 -0800 (PST)
-Received: by mail-pj1-x1029.google.com with SMTP id v23so2487354pjr.5
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Nov 2021 12:17:36 -0800 (PST)
+        Wed, 10 Nov 2021 15:22:07 -0500
+Received: from mail-lf1-x129.google.com (mail-lf1-x129.google.com [IPv6:2a00:1450:4864:20::129])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F33EC061764
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Nov 2021 12:19:19 -0800 (PST)
+Received: by mail-lf1-x129.google.com with SMTP id f18so8808012lfv.6
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Nov 2021 12:19:19 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=kJ30f4yltU8P9D1vIvrgm4JmaUKFVTUymd542MzbX34=;
-        b=g9lNF+pd24Lg+MqAqHCV7wh24XIQNX4IMaEiJo9WPFtT4ECrdlVpmAPO8QVV2WHbFK
-         nQ+O9QSeWTirPqQxEh3uFPZ+WLk8Q0CYxvBO5RUARXtXksYhPr4lmu5668PzlePyOmcl
-         As4OgFb6VXL9nsV00X1BkxHIuNlUxiMXmbd8w=
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=sfkLEyAh2f0FnZgoyr5ZOnaxpuprPl9HQyaWcoACmR8=;
+        b=sqjWIl2uzMEK2g5GksLYcz/qLHpXgLzH13UQB3j1AUlei4YSIvbgoY5o/k2+vT7Wg+
+         VyCIULycAv3lK5CmoVpP+rVNfmeUqzrp7Wb32G8OzooVp1VJQhgghC3VbkRyp+Je7Emh
+         fjc8RFf0NZEGOOFa7AGURqpR+wFVOLhPvpVq+i/TQxQhd3MBY4Hasd5OuCVJWfUZEpce
+         TYvr/rZz2A347yMu2gkQEcknY6LmUYJTvR78OlfQUS6A1xFzVTV55SC0YkyoSpxPG3Gz
+         63RCKroXx6LgLISkyWb2bMemYWJcxVO+nxgTKx2Gov3SlpN+rgtdmkwrBJKg6Y8zrp0m
+         G6CA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=kJ30f4yltU8P9D1vIvrgm4JmaUKFVTUymd542MzbX34=;
-        b=ESZoUQR7lvby5DaOhX72Y6HlJ6lqbTpBLU6pTGV/zBv9P656owxZFj3uYwAjtO5wq3
-         1sm0VeNV3X6Zu8O6cTmG18CMTvW4kq88fDu0MkZfReCByMQ6ZDOT0qr7tFJN4tBni4sV
-         PepC5+Y3XHzamC40mJQT4XcCE/f7DVCiQ7iu/e+ieflPZwI/ZdO8hCH7Vk8/jQ892P16
-         Xn9tJaS0+vuNFvH3PCNt054po/n0FmLkuGI85qLjegzq6eE0CKCle01KFWDaxguL/9d1
-         eDaKp5C2UFKljUyTz/JOhlfx1/PJ5Z8LMyCW486ctv8DJjnZsQv5+Zilqc6hlQ7+524I
-         4y5Q==
-X-Gm-Message-State: AOAM532ARRJCnZofyyziuJI/H3j3i/zZSa4pgov3RLnXr6Rc43dw+GUo
-        9gSW/pDig9ZH7eDD90xH09O/Eg==
-X-Google-Smtp-Source: ABdhPJy9OJ/YGW/eEJO6u7l+llSGLL86Mlc82irnMKIDFwKNMwM8Slu26rVYUZa6XKnHewItU9EAMw==
-X-Received: by 2002:a17:90b:33d0:: with SMTP id lk16mr1928527pjb.66.1636575455497;
-        Wed, 10 Nov 2021 12:17:35 -0800 (PST)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id fw21sm6200587pjb.25.2021.11.10.12.17.35
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 10 Nov 2021 12:17:35 -0800 (PST)
-Date:   Wed, 10 Nov 2021 12:17:34 -0800
-From:   Kees Cook <keescook@chromium.org>
-To:     David Hildenbrand <david@redhat.com>
-Cc:     Yafang Shao <laoar.shao@gmail.com>, akpm@linux-foundation.org,
-        netdev@vger.kernel.org, bpf@vger.kernel.org,
-        linux-perf-users@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        oliver.sang@intel.com, lkp@intel.com,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>,
-        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        Michal Miroslaw <mirq-linux@rere.qmqm.pl>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Petr Mladek <pmladek@suse.com>
-Subject: Re: [PATCH 1/7] fs/exec: make __set_task_comm always set a nul
- terminated string
-Message-ID: <202111101215.A42612FEC@keescook>
-References: <20211108083840.4627-1-laoar.shao@gmail.com>
- <20211108083840.4627-2-laoar.shao@gmail.com>
- <c3571571-320a-3e25-8409-5653ddca895c@redhat.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=sfkLEyAh2f0FnZgoyr5ZOnaxpuprPl9HQyaWcoACmR8=;
+        b=nW5aTAwaP07Mf4v8rERneODJi8kza9MYUHRkSpUm9oeZhicntJ521xkwhFXvOLJANz
+         rA2po/9qwmkdoY9KKmWfAEz8Ad2T+pZONBmzwgzxs8x1h5iYdkEHFnnpAZp1YewJFxLm
+         hILihoWNNk3DuJZN4QDSez6uePD724FTD2mYGC9f+FgLpkWDo+at7F8Jy5XO04s4VuG/
+         Rc5BEi1lKULTJalW9nYhp/7BmsjJns9G6/i5AsmmYx4I3pCwJ627agG7RhM0dIg/m895
+         pJXBU1GSpnUfo/llGmf+qqt/mXeR8YHT8oFwTPkVR6wmjyzHZJ+3BS6YJibXfTVXkKcu
+         rr5A==
+X-Gm-Message-State: AOAM531zjWm6cVyOj4f7nH6lm5x4znvRVY36FSDP+9q8SPxEbrywBT+G
+        /UZjGtdBOAwOGM8q1JQ7nBHsgvgvu5JUu6rGxOMynA==
+X-Google-Smtp-Source: ABdhPJxqn/www7tIhoKSEkqyNjE2zOFSoBeoIMJ138IF8vw8u0UOPO9GEH/e0CpTKJg2Xjx8Ov1vhkFgbm43fEr/eoY=
+X-Received: by 2002:ac2:4d19:: with SMTP id r25mr1658265lfi.82.1636575557693;
+ Wed, 10 Nov 2021 12:19:17 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <c3571571-320a-3e25-8409-5653ddca895c@redhat.com>
+References: <YYhY7GqlrcTZlzuA@fedora>
+In-Reply-To: <YYhY7GqlrcTZlzuA@fedora>
+From:   Nick Desaulniers <ndesaulniers@google.com>
+Date:   Wed, 10 Nov 2021 12:19:06 -0800
+Message-ID: <CAKwvOd=SsrCy=aG_t2=58YFymR-j6Rp-Jxb_RDfFwX3Lfy8E2g@mail.gmail.com>
+Subject: Re: [PATCH] iommu/vt-d: Remove unused dma_to_mm_pfn function
+To:     =?UTF-8?B?TWHDrXJhIENhbmFs?= <maira.canal@usp.br>
+Cc:     dwmw2@infradead.org, baolu.lu@linux.intel.com, joro@8bytes.org,
+        will@kernel.org, nathan@kernel.org,
+        iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org,
+        llvm@lists.linux.dev
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 10, 2021 at 09:28:12AM +0100, David Hildenbrand wrote:
-> On 08.11.21 09:38, Yafang Shao wrote:
-> > Make sure the string set to task comm is always nul terminated.
-> > 
-> 
-> strlcpy: "the result is always a valid NUL-terminated string that fits
-> in the buffer"
-> 
-> The only difference seems to be that strscpy_pad() pads the remainder
-> with zeroes.
-> 
-> Is this description correct and I am missing something important?
+On Sun, Nov 7, 2021 at 2:53 PM Ma=C3=ADra Canal <maira.canal@usp.br> wrote:
+>
+> Remove dma_to_buf_pfn function, which is not used in the codebase.
+>
+> This was pointed by clang with the following warning:
+>
+> drivers/iommu/intel/iommu.c:136:29: warning: unused function
+> 'dma_to_mm_pfn' [-Wunused-function]
+> static inline unsigned long dma_to_mm_pfn(unsigned long dma_pfn)
+>                             ^
 
-Yes, this makes sure it's zero padded just to be robust against full
-tsk->comm copies that got noticed in other places.
+Thanks for the patch!
+Fixes: dd4e831960e4f ("intel-iommu: Change dma_set_pte_addr() to
+dma_set_pte_pfn()")
+Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
 
-The only other change is that we want to remove strlcpy() from the
-kernel generally since it can trigger out-of-bound reads on the source
-string[1].
+>
+> Signed-off-by: Ma=C3=ADra Canal <maira.canal@usp.br>
+> ---
+>  drivers/iommu/intel/iommu.c | 5 -----
+>  1 file changed, 5 deletions(-)
+>
+> diff --git a/drivers/iommu/intel/iommu.c b/drivers/iommu/intel/iommu.c
+> index 0bde0c8b4126..35300b5b69f7 100644
+> --- a/drivers/iommu/intel/iommu.c
+> +++ b/drivers/iommu/intel/iommu.c
+> @@ -133,11 +133,6 @@ static inline unsigned long lvl_to_nr_pages(unsigned=
+ int lvl)
+>
+>  /* VT-d pages must always be _smaller_ than MM pages. Otherwise things
+>     are never going to work. */
+> -static inline unsigned long dma_to_mm_pfn(unsigned long dma_pfn)
+> -{
+> -       return dma_pfn >> (PAGE_SHIFT - VTD_PAGE_SHIFT);
+> -}
+> -
+>  static inline unsigned long mm_to_dma_pfn(unsigned long mm_pfn)
+>  {
+>         return mm_pfn << (PAGE_SHIFT - VTD_PAGE_SHIFT);
+> --
+> 2.31.1
+>
 
-So, in this case, the most robust version is to use strscpy_pad().
 
--Kees
-
-[1] https://github.com/KSPP/linux/issues/89
-
-> 
-> > Signed-off-by: Yafang Shao <laoar.shao@gmail.com>
-> > Reviewed-by: Kees Cook <keescook@chromium.org>
-> > Cc: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-> > Cc: Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>
-> > Cc: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-> > Cc: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-> > Cc: Michal Miroslaw <mirq-linux@rere.qmqm.pl> 
-> > Cc: Peter Zijlstra <peterz@infradead.org>
-> > Cc: Steven Rostedt <rostedt@goodmis.org>
-> > Cc: Matthew Wilcox <willy@infradead.org>
-> > Cc: David Hildenbrand <david@redhat.com>
-> > Cc: Al Viro <viro@zeniv.linux.org.uk>
-> > Cc: Kees Cook <keescook@chromium.org>
-> > Cc: Petr Mladek <pmladek@suse.com>
-> > ---
-> >  fs/exec.c | 2 +-
-> >  1 file changed, 1 insertion(+), 1 deletion(-)
-> > 
-> > diff --git a/fs/exec.c b/fs/exec.c
-> > index a098c133d8d7..404156b5b314 100644
-> > --- a/fs/exec.c
-> > +++ b/fs/exec.c
-> > @@ -1224,7 +1224,7 @@ void __set_task_comm(struct task_struct *tsk, const char *buf, bool exec)
-> >  {
-> >  	task_lock(tsk);
-> >  	trace_task_rename(tsk, buf);
-> > -	strlcpy(tsk->comm, buf, sizeof(tsk->comm));
-> > +	strscpy_pad(tsk->comm, buf, sizeof(tsk->comm));
-> >  	task_unlock(tsk);
-> >  	perf_event_comm(tsk, exec);
-> >  }
-> > 
-> 
-> 
-> -- 
-> Thanks,
-> 
-> David / dhildenb
-> 
-
--- 
-Kees Cook
+--=20
+Thanks,
+~Nick Desaulniers
