@@ -2,85 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B860844C5FB
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 18:30:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2826844C60A
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 18:37:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232239AbhKJRdb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Nov 2021 12:33:31 -0500
-Received: from mga02.intel.com ([134.134.136.20]:35409 "EHLO mga02.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230230AbhKJRda (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Nov 2021 12:33:30 -0500
-X-IronPort-AV: E=McAfee;i="6200,9189,10164"; a="219924230"
-X-IronPort-AV: E=Sophos;i="5.87,224,1631602800"; 
-   d="scan'208";a="219924230"
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Nov 2021 09:30:42 -0800
-X-IronPort-AV: E=Sophos;i="5.87,224,1631602800"; 
-   d="scan'208";a="732571431"
-Received: from rwmcguir-mobl.amr.corp.intel.com (HELO intel.com) ([10.252.137.122])
-  by fmsmga006-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Nov 2021 09:30:41 -0800
-Date:   Wed, 10 Nov 2021 09:30:40 -0800
-From:   Ben Widawsky <ben.widawsky@intel.com>
-To:     Jonathan Cameron <Jonathan.Cameron@huawei.com>
-Cc:     Dan Williams <dan.j.williams@intel.com>, linux-cxl@vger.kernel.org,
-        Ira Weiny <ira.weiny@intel.com>, linux-pci@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v6 07/10] cxl/pci: Split cxl_pci_setup_regs()
-Message-ID: <20211110173040.vttuxu2ggkqxfnza@intel.com>
-References: <163379787433.692348.2451270397309803556.stgit@dwillia2-desk3.amr.corp.intel.com>
- <163434053788.914258.18412599112859205220.stgit@dwillia2-desk3.amr.corp.intel.com>
- <20211110171437.00007160@Huawei.com>
+        id S231793AbhKJRj7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Nov 2021 12:39:59 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56834 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230380AbhKJRj6 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Nov 2021 12:39:58 -0500
+Received: from mail.andi.de1.cc (mail.andi.de1.cc [IPv6:2a01:238:4321:8900:456f:ecd6:43e:202c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B628AC061766;
+        Wed, 10 Nov 2021 09:37:10 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=kemnade.info; s=20180802; h=Content-Transfer-Encoding:Content-Type:
+        MIME-Version:References:In-Reply-To:Message-ID:Subject:Cc:To:From:Date:Sender
+        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
+        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=KlxesLbWPDNXnoH7U/Oi4/4ZNt/bBTzHwkDgmf86Hwg=; b=k5h77rlfxFgN394lib723UsbiC
+        gZdAW788aWrEruU9eYofr8azJIOH7uxyusGDBb82Sn+8fDjquCMkwsKwSEXXcVz3lpNaeXGQwzeTe
+        93DeqK1pdqmdL6u3ZslsioXuEC66aqiavxLejWlufrfrjgtZ6YsjiEh2kLuLsZklJ05s=;
+Received: from [77.247.85.102] (helo=localhost)
+        by mail.andi.de1.cc with esmtpsa (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.89)
+        (envelope-from <andreas@kemnade.info>)
+        id 1mkrWy-0000B7-GL; Wed, 10 Nov 2021 18:37:04 +0100
+Received: from [::1] (helo=localhost)
+        by eeepc with esmtp (Exim 4.92)
+        (envelope-from <andreas@kemnade.info>)
+        id 1mkrWp-00043U-7S; Wed, 10 Nov 2021 18:36:55 +0100
+Date:   Wed, 10 Nov 2021 18:36:54 +0100
+From:   Andreas Kemnade <andreas@kemnade.info>
+To:     Alistair Francis <alistair23@gmail.com>
+Cc:     Alistair Francis <alistair@alistair23.me>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        devicetree <devicetree@vger.kernel.org>,
+        linux-input <linux-input@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Mylene Josserand <mylene.josserand@free-electrons.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Henrik Rydberg <rydberg@bitmath.org>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>
+Subject: Re: [PATCH v2 2/4] Documentation: DT: bindings: input: Add
+ documentation for cyttsp5
+Message-ID: <20211110183654.61328998@kemnade.info>
+In-Reply-To: <CAKmqyKNx00ecsAyOjtLk8i6r75WD0uw=nd=fd9z44yBuau+Vdw@mail.gmail.com>
+References: <20211103114830.62711-1-alistair@alistair23.me>
+        <20211103114830.62711-3-alistair@alistair23.me>
+        <20211105152154.20f5cbd1@aktux>
+        <CAKmqyKNx00ecsAyOjtLk8i6r75WD0uw=nd=fd9z44yBuau+Vdw@mail.gmail.com>
+X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; i686-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211110171437.00007160@Huawei.com>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Spam-Score: -1.0 (-)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 21-11-10 17:14:37, Jonathan Cameron wrote:
-> On Fri, 15 Oct 2021 16:30:42 -0700
-> Dan Williams <dan.j.williams@intel.com> wrote:
-> 
-> > From: Ben Widawsky <ben.widawsky@intel.com>
-> > 
-> > In preparation for moving parts of register mapping to cxl_core, split
-> > cxl_pci_setup_regs() into a helper that finds register blocks,
-> > (cxl_find_regblock()), and a generic wrapper that probes the precise
-> > register sets within a block (cxl_setup_regs()).
-> > 
-> > Move the actual mapping (cxl_map_regs()) of the only register-set that
-> > cxl_pci cares about (memory device registers) up a level from the former
-> > cxl_pci_setup_regs() into cxl_pci_probe().
-> > 
-> > With this change the unused component registers are no longer mapped,
-> > but the helpers are primed to move into the core.
-> > 
-> > [djbw: drop cxl_map_regs() for component registers]
-> > 
-> > Signed-off-by: Ben Widawsky <ben.widawsky@intel.com>
-> > [djbw: rebase on the cxl_register_map refactor]
-> > Reviewed-by: Ira Weiny <ira.weiny@intel.com>
-> > Reviewed-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
-> > Signed-off-by: Dan Williams <dan.j.williams@intel.com>
-> 
-> Hi Ben / all,
-> 
-> This is probably the best patch to comment on for this
-> (note it is not a comment about this patch, but more the state we end up
-> in after it).
-> 
-> cxl_map_regs() is a generic function, but with the new split approach
-> as a result of this patch, we now always know at the caller which of
-> the types of map we are doing.
-> 
-> I think it would be clearer to embrace that situation and drop cxl_map_regs()
-> in favor of directly calling the relevant specific versions such as
-> cxl_map_device_regs().  I can't immediately see how the generic cxl_map_regs()
-> will be useful to us going forwards.
-> 
-> Jonathan
+On Wed, 10 Nov 2021 22:59:50 +1000
+Alistair Francis <alistair23@gmail.com> wrote:
 
-I completely agree. Long term, something like cxl_map_regs() might be desirable
-for a Type2 device, but we have no such user today. Patches welcome?
+[...]
+> >  
+> > > +            reset-gpios = <&pio 7 1 GPIO_ACTIVE_HIGH>;  
+> >
+> > hmm, if the reset gpio at the chip is active low (I guess it is) that
+> > would indicate an inverter between SoC and gpio. So a nonstandard setup
+> > as an example, probably not a good idea.  
+> 
+> It seems to be common for the cypress,tt2100, as the original
+> documentation and the rM2 both do this. Does the Kobo not do this?
+> 
+
+You have a kind of double inversion here, so things are automagically fixed.
+IMHO to describe it correctly would be to set GPIO_ACTIVE_LOW here
+and in the driver
+
+	/* Reset the gpio to be in a reset state */
+	ts->reset_gpio = devm_gpiod_get_optional(dev, "reset", GPIOD_OUT_HIGH);
+	if (IS_ERR(ts->reset_gpio)) {
+		rc = PTR_ERR(ts->reset_gpio);
+		dev_err(dev, "Failed to request reset gpio, error %d\n", rc);
+		return rc;
+	}
+	gpiod_set_value(ts->reset_gpio, 0);
+
+That is the way how other active-low reset lines are handled.
+
+Regards,
+Andreas
