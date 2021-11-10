@@ -2,153 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 70FBC44C901
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 20:34:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A205A44C905
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 20:35:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232793AbhKJThI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Nov 2021 14:37:08 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55166 "EHLO
+        id S232954AbhKJTiO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Nov 2021 14:38:14 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55456 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231979AbhKJThH (ORCPT
+        with ESMTP id S231979AbhKJTiM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Nov 2021 14:37:07 -0500
-Received: from mail-vk1-xa35.google.com (mail-vk1-xa35.google.com [IPv6:2607:f8b0:4864:20::a35])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5F391C061766
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Nov 2021 11:34:19 -0800 (PST)
-Received: by mail-vk1-xa35.google.com with SMTP id k83so1137800vke.7
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Nov 2021 11:34:19 -0800 (PST)
+        Wed, 10 Nov 2021 14:38:12 -0500
+Received: from mail-wm1-x32a.google.com (mail-wm1-x32a.google.com [IPv6:2a00:1450:4864:20::32a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 868A6C061764
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Nov 2021 11:35:24 -0800 (PST)
+Received: by mail-wm1-x32a.google.com with SMTP id y84-20020a1c7d57000000b00330cb84834fso5527492wmc.2
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Nov 2021 11:35:24 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
+        d=baylibre-com.20210112.gappssmtp.com; s=20210112;
         h=from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=rJHh7eaoz0rtcELxkvF4zn32urxXqVSFngW+4w2Rf1M=;
-        b=ggo+wNiLpDV4HHVswfBVwjZWHVRwN5LJPcalbUOFWVu2vONM7Gc4p9hUv3qjOc/k4d
-         1JORW4pmS0ObxFh50/8lVekzBekj5VaHNWn6O2mShfZT+FJoWWrbLaIj68Mzk6YZUQIG
-         BCDQrOwq8mlrpQH2MSxaZNS2aTsk6/OnnOnU4=
+        bh=BDkwgvrUDY3WNqv5c3OEWcmTwIG6Y5n1NIoE/HHargo=;
+        b=WTEPfSkKl1x1pcFcsX0dahL/fokN11844m9pMKwfpY5EKNfTL0T9qPkarOB/O1pipb
+         sR7UtCTsLUe4jWufYwekcni7SPUgKlCSbZHPOtlm1wkKDM/+45p1pZEANOcrwHI4BbsA
+         3SuQ+H0quIMLdOCUOTHS/v78uRLlwm2CcYhKiGTwM58YidI4za3XTdt8pjo30I0c5set
+         LVSbsEkoVM0iSAvJdt4vAkj3L2kaq6OXbQqB66+RfGfM2SZfEUB/Xod0m7IZb73C6TdJ
+         Z/lyz7MSWy86/gecrInJilbffZCfm2jmZhUhsD9/gYpCju26Pyp7P0he5XEUTI6+miyG
+         72jg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=rJHh7eaoz0rtcELxkvF4zn32urxXqVSFngW+4w2Rf1M=;
-        b=SodphYc34x/ImV2bgArCqUtcMed8fyV/PDuLYUiw+Xkx+tLLwV2KThJBbNrgJGtywO
-         y65zITsidbdzSuwdonRQdLIluXzw3jdwzrIRQZTvlUQ0IW/wzkkAqen301w+UTBBITXy
-         C9/XM3OPznrGkMCzj5eO7GBl29dkdcv0M/iS4Zj19VJ81Oeye2gpU9qhMXA3zz33Dtwg
-         jw/cYVWd1oCfiUgpoRCn8xDcP0X4gm0J3O90st7gSpOA3WXosw8O0vwZbc0o3tc4JauR
-         O+Unne8z9hUfVdS4DhEmOdYFd5AReBaUqlGeCsBYNM1gAj3k+5pItJ7yqqDKo3jlDSCI
-         h8QQ==
-X-Gm-Message-State: AOAM530wLul+X7lJsHW9nquxHOaFTKW3fDmaHr4cbZ9CYfbks9fA2icR
-        zxQ71MNOXa0XdRRxYm/eOyROCl8RBmIwNLJe
-X-Google-Smtp-Source: ABdhPJzlHwHz24c2zSNl5Hhws4WdVA+lO8Bb7anT7lg2ow9nWr7ZPTW+kv06o3GES2gBTLH2T01e9Q==
-X-Received: by 2002:a17:903:408c:b0:142:45a9:672c with SMTP id z12-20020a170903408c00b0014245a9672cmr1542283plc.7.1636572847553;
-        Wed, 10 Nov 2021 11:34:07 -0800 (PST)
-Received: from tictac2.mtv.corp.google.com ([2620:15c:202:201:6e36:1327:faf4:fa6a])
-        by smtp.gmail.com with ESMTPSA id d7sm437006pfj.91.2021.11.10.11.34.06
+        bh=BDkwgvrUDY3WNqv5c3OEWcmTwIG6Y5n1NIoE/HHargo=;
+        b=NBnwxWjcvC1wT2cwb8yBCdTy9wMv9gnGzPYhkA97ATLF1Ws0IFe8RnxuaYnenXFYQO
+         qdulMLjbLCZCB3gRRmvJdDxir5EtNDwBPQ+F8TbFGQblm9HJE4epCC9cDJlbzvq4ASua
+         VmW/fgoa/ekJ9WBLTWk57oVnzEzmB421PVG8LLsGQ2pYoJhyxAryr69446DsfHR0eIP/
+         b7cy3j1c5REzfTzVkOOtwxEs0oUl2eBcT2eT225ZOpZYzBa3SI3WaEf4B3evolXMmO7M
+         u76rBaBsoEpBQDAxgR5+thiMeDwEjPVtL+K3LOGNRrpKo/bMrFOxTTo+CTB4LAXEgMRC
+         afmg==
+X-Gm-Message-State: AOAM532uEvyQkUFzQgDnOLscUn3N8gJe2r4McvPljp5V/3mk9jOq2pTM
+        M8ImOaf5y3j+GrHe844DsF95YA==
+X-Google-Smtp-Source: ABdhPJxLSkiQVKdK5iWX3YgkQimNkBMhi7q2SK4uMMDbAIzThyqRP8tMQWTVa/C9vFzbwSeDZeuWLQ==
+X-Received: by 2002:a1c:7910:: with SMTP id l16mr19521732wme.36.1636572923181;
+        Wed, 10 Nov 2021 11:35:23 -0800 (PST)
+Received: from localhost.localdomain ([88.160.162.107])
+        by smtp.gmail.com with ESMTPSA id c5sm791324wrd.13.2021.11.10.11.35.22
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 10 Nov 2021 11:34:07 -0800 (PST)
-From:   Douglas Anderson <dianders@chromium.org>
-To:     Rob Clark <robdclark@gmail.com>
-Cc:     Douglas Anderson <dianders@chromium.org>,
-        Stephen Boyd <swboyd@chromium.org>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        David Airlie <airlied@linux.ie>, Sean Paul <sean@poorly.run>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        dri-devel@lists.freedesktop.org, freedreno@lists.freedesktop.org,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] drm/msm: Fix mmap to include VM_IO and VM_DONTDUMP
-Date:   Wed, 10 Nov 2021 11:33:42 -0800
-Message-Id: <20211110113334.1.I1687e716adb2df746da58b508db3f25423c40b27@changeid>
-X-Mailer: git-send-email 2.34.0.rc1.387.gb447b232ab-goog
+        Wed, 10 Nov 2021 11:35:22 -0800 (PST)
+From:   Fabien Parent <fparent@baylibre.com>
+To:     Rob Herring <robh+dt@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>
+Cc:     Fabien Parent <fparent@baylibre.com>, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: [PATCH RESEND] arm64: dts: mediatek: mt8516: remove 2 invalid i2c clocks
+Date:   Wed, 10 Nov 2021 20:35:20 +0100
+Message-Id: <20211110193520.488-1-fparent@baylibre.com>
+X-Mailer: git-send-email 2.33.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In commit 510410bfc034 ("drm/msm: Implement mmap as GEM object
-function") we switched to a new/cleaner method of doing things. That's
-good, but we missed a little bit.
+The two clocks "main-source" and "main-sel" are not present in the
+driver and not defined in the binding documentation. Remove them
+as they are not used and not described in the documentation.
 
-Before that commit, we used to _first_ run through the
-drm_gem_mmap_obj() case where `obj->funcs->mmap()` was NULL. That meant
-that we ran:
-
-  vma->vm_flags |= VM_IO | VM_PFNMAP | VM_DONTEXPAND | VM_DONTDUMP;
-  vma->vm_page_prot = pgprot_writecombine(vm_get_page_prot(vma->vm_flags));
-  vma->vm_page_prot = pgprot_decrypted(vma->vm_page_prot);
-
-...and _then_ we modified those mappings with our own. Now that
-`obj->funcs->mmap()` is no longer NULL we don't run the default
-code. It looks like the fact that the vm_flags got VM_IO / VM_DONTDUMP
-was important because we're now getting crashes on Chromebooks that
-use ARC++ while logging out. Specifically a crash that looks like this
-(this is on a 5.10 kernel w/ relevant backports but also seen on a
-5.15 kernel):
-
-  Unable to handle kernel paging request at virtual address ffffffc008000000
-  Mem abort info:
-    ESR = 0x96000006
-    EC = 0x25: DABT (current EL), IL = 32 bits
-    SET = 0, FnV = 0
-    EA = 0, S1PTW = 0
-  Data abort info:
-    ISV = 0, ISS = 0x00000006
-    CM = 0, WnR = 0
-  swapper pgtable: 4k pages, 39-bit VAs, pgdp=000000008293d000
-  [ffffffc008000000] pgd=00000001002b3003, p4d=00000001002b3003,
-                     pud=00000001002b3003, pmd=0000000000000000
-  Internal error: Oops: 96000006 [#1] PREEMPT SMP
-  [...]
-  CPU: 7 PID: 15734 Comm: crash_dump64 Tainted: G W 5.10.67 #1 [...]
-  Hardware name: Qualcomm Technologies, Inc. sc7280 IDP SKU2 platform (DT)
-  pstate: 80400009 (Nzcv daif +PAN -UAO -TCO BTYPE=--)
-  pc : __arch_copy_to_user+0xc0/0x30c
-  lr : copyout+0xac/0x14c
-  [...]
-  Call trace:
-   __arch_copy_to_user+0xc0/0x30c
-   copy_page_to_iter+0x1a0/0x294
-   process_vm_rw_core+0x240/0x408
-   process_vm_rw+0x110/0x16c
-   __arm64_sys_process_vm_readv+0x30/0x3c
-   el0_svc_common+0xf8/0x250
-   do_el0_svc+0x30/0x80
-   el0_svc+0x10/0x1c
-   el0_sync_handler+0x78/0x108
-   el0_sync+0x184/0x1c0
-  Code: f8408423 f80008c3 910020c6 36100082 (b8404423)
-
-Let's add the two flags back in.
-
-While we're at it, the fact that we aren't running the default means
-that we _don't_ need to clear out VM_PFNMAP, so remove that and save
-an instruction.
-
-NOTE: it was confirmed that VM_IO was the important flag to fix the
-problem I was seeing, but adding back VM_DONTDUMP seems like a sane
-thing to do so I'm doing that too.
-
-Fixes: 510410bfc034 ("drm/msm: Implement mmap as GEM object function")
-Reported-by: Stephen Boyd <swboyd@chromium.org>
-Signed-off-by: Douglas Anderson <dianders@chromium.org>
+Signed-off-by: Fabien Parent <fparent@baylibre.com>
 ---
+ arch/arm64/boot/dts/mediatek/mt8516.dtsi | 27 ++++++------------------
+ 1 file changed, 6 insertions(+), 21 deletions(-)
 
- drivers/gpu/drm/msm/msm_gem.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
-
-diff --git a/drivers/gpu/drm/msm/msm_gem.c b/drivers/gpu/drm/msm/msm_gem.c
-index 6b03e00cc5f2..ae18bfb22502 100644
---- a/drivers/gpu/drm/msm/msm_gem.c
-+++ b/drivers/gpu/drm/msm/msm_gem.c
-@@ -1056,8 +1056,7 @@ static int msm_gem_object_mmap(struct drm_gem_object *obj, struct vm_area_struct
- {
- 	struct msm_gem_object *msm_obj = to_msm_bo(obj);
- 
--	vma->vm_flags &= ~VM_PFNMAP;
--	vma->vm_flags |= VM_MIXEDMAP | VM_DONTEXPAND;
-+	vma->vm_flags |= VM_IO | VM_MIXEDMAP | VM_DONTEXPAND | VM_DONTDUMP;
- 	vma->vm_page_prot = msm_gem_pgprot(msm_obj, vm_get_page_prot(vma->vm_flags));
- 
- 	return 0;
+diff --git a/arch/arm64/boot/dts/mediatek/mt8516.dtsi b/arch/arm64/boot/dts/mediatek/mt8516.dtsi
+index bbe5a1419eff..d1b67c82d761 100644
+--- a/arch/arm64/boot/dts/mediatek/mt8516.dtsi
++++ b/arch/arm64/boot/dts/mediatek/mt8516.dtsi
+@@ -345,14 +345,9 @@ i2c0: i2c@11009000 {
+ 			reg = <0 0x11009000 0 0x90>,
+ 			      <0 0x11000180 0 0x80>;
+ 			interrupts = <GIC_SPI 80 IRQ_TYPE_LEVEL_LOW>;
+-			clocks = <&topckgen CLK_TOP_AHB_INFRA_D2>,
+-				 <&infracfg CLK_IFR_I2C0_SEL>,
+-				 <&topckgen CLK_TOP_I2C0>,
++			clocks = <&topckgen CLK_TOP_I2C0>,
+ 				 <&topckgen CLK_TOP_APDMA>;
+-			clock-names = "main-source",
+-				      "main-sel",
+-				      "main",
+-				      "dma";
++			clock-names = "main", "dma";
+ 			#address-cells = <1>;
+ 			#size-cells = <0>;
+ 			status = "disabled";
+@@ -364,14 +359,9 @@ i2c1: i2c@1100a000 {
+ 			reg = <0 0x1100a000 0 0x90>,
+ 			      <0 0x11000200 0 0x80>;
+ 			interrupts = <GIC_SPI 81 IRQ_TYPE_LEVEL_LOW>;
+-			clocks = <&topckgen CLK_TOP_AHB_INFRA_D2>,
+-				 <&infracfg CLK_IFR_I2C1_SEL>,
+-				 <&topckgen CLK_TOP_I2C1>,
++			clocks = <&topckgen CLK_TOP_I2C1>,
+ 				 <&topckgen CLK_TOP_APDMA>;
+-			clock-names = "main-source",
+-				      "main-sel",
+-				      "main",
+-				      "dma";
++			clock-names = "main", "dma";
+ 			#address-cells = <1>;
+ 			#size-cells = <0>;
+ 			status = "disabled";
+@@ -383,14 +373,9 @@ i2c2: i2c@1100b000 {
+ 			reg = <0 0x1100b000 0 0x90>,
+ 			      <0 0x11000280 0 0x80>;
+ 			interrupts = <GIC_SPI 82 IRQ_TYPE_LEVEL_LOW>;
+-			clocks = <&topckgen CLK_TOP_AHB_INFRA_D2>,
+-				 <&infracfg CLK_IFR_I2C2_SEL>,
+-				 <&topckgen CLK_TOP_I2C2>,
++			clocks = <&topckgen CLK_TOP_I2C2>,
+ 				 <&topckgen CLK_TOP_APDMA>;
+-			clock-names = "main-source",
+-				      "main-sel",
+-				      "main",
+-				      "dma";
++			clock-names = "main", "dma";
+ 			#address-cells = <1>;
+ 			#size-cells = <0>;
+ 			status = "disabled";
 -- 
-2.34.0.rc1.387.gb447b232ab-goog
+2.33.1
 
