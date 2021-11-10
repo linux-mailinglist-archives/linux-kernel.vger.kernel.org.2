@@ -2,73 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AC59F44C32F
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 15:42:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5A04244C32D
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 15:41:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232290AbhKJOnE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Nov 2021 09:43:04 -0500
-Received: from mail.kernel.org ([198.145.29.99]:40758 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232268AbhKJOm4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Nov 2021 09:42:56 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPS id 80CB261251;
-        Wed, 10 Nov 2021 14:40:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1636555208;
-        bh=ClH1raJ1gNeWlCLe84QT8iMe+pEQxMf3C+dYT1zgwd0=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=LXZy18LKTX0FBQjKi8mqqTAuHMZq3fkFvrsGDLhLtSCZ9FPIwxq572jCFKb1e+dJw
-         oFEm29u1Rox7273GuxsS4ls7O3/LS/pLz25aXlS+yWRMLGxju2m5staZUrgFYZgdO4
-         3Lc01tMlbiCGH4P2b4ohmm4gjxp+FNfZZ5ogLN+5Fz0mo0Jb2EjRPwXbzIGNBY6XWS
-         jYEf10cTUuRTsMooIQrJhs0rgf3Q5TGjXZUzOCRMRi2fWxRR+ja1vEpLQSNgu3385c
-         8yUMMz5sC58Ui5zqyO8ujiSGeQbqxXwV/mO1ymfMytYaAYAMzyJRJLTVtgBhqH+dNK
-         i3r6Txl4FR+vQ==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 73E9860A6B;
-        Wed, 10 Nov 2021 14:40:08 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        id S232335AbhKJOnX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Nov 2021 09:43:23 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44852 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232291AbhKJOnR (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Nov 2021 09:43:17 -0500
+Received: from mail-lf1-x131.google.com (mail-lf1-x131.google.com [IPv6:2a00:1450:4864:20::131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 32201C06127A
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Nov 2021 06:40:30 -0800 (PST)
+Received: by mail-lf1-x131.google.com with SMTP id bu18so6641513lfb.0
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Nov 2021 06:40:30 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=GDfMgbthSI1oXv6bXVFL9A8aOMVOq5lnonjqu7+MiZ0=;
+        b=Hboi08lbhoTrsksP+b1ShjUv7xZGUvVO9qI14ajCxx4PfaI5jpULs3ivxrhKK8svqs
+         ZcdtTfWCr2INLMqU20M5h4PMP/uTkAWAO/LIjymDufw41+ve69eVpmozLkoWpf/nJhOA
+         d+2Q5UuENpAjsRKuEPVLBPZ7ZkvCaqxmwXqzSegkx2LC9LtW0P/MCnCcDIAIKOH24JQ8
+         mWXT9LcxGDdhROhwgaO+59lT8/FY9dh5GY3Nxfc9CbGwhpi16NSFpsLcht4g61K2Ee0i
+         B4bUojSKfFAefhphWsLTJm92HgrnUxPNxJCVAH/jLFHg/Fuu8qLLFXUvjSQjJZL1fPds
+         PIsQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=GDfMgbthSI1oXv6bXVFL9A8aOMVOq5lnonjqu7+MiZ0=;
+        b=lavBLsszT6j47VKX9LVcSCe4LVal8AUy/zQisIxCTH/v0KyWXC5USXrZfK5ZBXUzFX
+         qMgxDjB74QXNpSF5WlHLVybumD1hXa5xHY8YREqhUpuC7WIcl+JClp10+VxzKeoSg65P
+         MDvcL3JCsq9xDaJULhdxxmPDuV37Mp09Iz51+lgF3YSHViqfnP990EttY0pXqDuEPUAY
+         4eDliBWC0dewDiLmNFmVNH50CcZCm1CrdE/oRKcPIFK65m+wobVkOwBy/IKmJCeJ3wZl
+         nJHU6DnfZ0sbLMjDS21H0pIDouoU0a/gFFxdsMaa2kaw3AxO79kEa70Z7JR0DU0SpQI7
+         nG7Q==
+X-Gm-Message-State: AOAM5311o8h1zK2u5AbZ79PYgk1esqML843yzuONXgvggB43Az4LaWRa
+        112cqOnzau3cW/fqxah/UK//PQJ3FKkedtQMDlY=
+X-Google-Smtp-Source: ABdhPJwjnckwCdueHaQF18xtAQuY28hF+J2wOE+VcKLnbjvgijIRQpzNLjwOj2L5TwBgKPWLj/qoVRzzVvZcrplFS5k=
+X-Received: by 2002:ac2:4bc1:: with SMTP id o1mr193758lfq.520.1636555228338;
+ Wed, 10 Nov 2021 06:40:28 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH] net: ethernet: ti: cpsw_ale: Fix access to un-initialized
- memory
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <163655520846.19242.6691586585047743470.git-patchwork-notify@kernel.org>
-Date:   Wed, 10 Nov 2021 14:40:08 +0000
-References: <c709f0325a7244ff133e405d017d9efba3b200f6.1636406827.git.christophe.jaillet@wanadoo.fr>
-In-Reply-To: <c709f0325a7244ff133e405d017d9efba3b200f6.1636406827.git.christophe.jaillet@wanadoo.fr>
-To:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Cc:     grygorii.strashko@ti.com, davem@davemloft.net, kuba@kernel.org,
-        shenyang39@huawei.com, vigneshr@ti.com, linux-omap@vger.kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel-janitors@vger.kernel.org
+Received: by 2002:a05:651c:11c4:0:0:0:0 with HTTP; Wed, 10 Nov 2021 06:40:27
+ -0800 (PST)
+Reply-To: evelyngaby76@gmail.com
+From:   Evelyn Gaby <gae01100224@gmail.com>
+Date:   Wed, 10 Nov 2021 14:40:27 +0000
+Message-ID: <CAJsYELDtypZFD-N3aD_4FxhkNi7DCm+Xkq=RdYHQYy54GteAQg@mail.gmail.com>
+Subject: Hello Dear
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello:
+.
+I will like to disclose something very important to you,
+get back to me for more details please.
 
-This patch was applied to netdev/net.git (master)
-by David S. Miller <davem@davemloft.net>:
-
-On Mon,  8 Nov 2021 22:28:55 +0100 you wrote:
-> It is spurious to allocate a bitmap without initializing it.
-> So, better safe than sorry, initialize it to 0 at least to have some known
-> values.
-> 
-> While at it, switch to the devm_bitmap_ API which is less verbose.
-> 
-> Fixes: 4b41d3436796 ("net: ethernet: ti: cpsw: allow untagged traffic on host port")
-> Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-> 
-> [...]
-
-Here is the summary with links:
-  - net: ethernet: ti: cpsw_ale: Fix access to un-initialized memory
-    https://git.kernel.org/netdev/net/c/7a166854b4e2
-
-You are awesome, thank you!
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
-
+Regards.
+Mrs Evelyn Gaby.
