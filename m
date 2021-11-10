@@ -2,89 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2A93F44BCD0
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 09:26:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7811244BCD2
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 09:27:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229864AbhKJI2q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Nov 2021 03:28:46 -0500
-Received: from new2-smtp.messagingengine.com ([66.111.4.224]:49399 "EHLO
-        new2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229582AbhKJI2p (ORCPT
+        id S230061AbhKJIaM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Nov 2021 03:30:12 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43350 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229582AbhKJIaL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Nov 2021 03:28:45 -0500
-Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
-        by mailnew.nyi.internal (Postfix) with ESMTP id E229A580858;
-        Wed, 10 Nov 2021 03:25:57 -0500 (EST)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute1.internal (MEProxy); Wed, 10 Nov 2021 03:25:57 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kroah.com; h=
-        date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=fm2; bh=cIlTsNIIT4hbZQLMjkWIVkOUHBh
-        6DMvakfyjAaD2FGI=; b=doOdTkxxbaubdu18iLGj2O7vLD8n8e3leX9yK468G5B
-        dZBRs6MuvzZWx4FXNxkN3gZUDxSAGkoYsQqpYNkOAjRXOLlF0jfbikX2GvBomP3z
-        WNLXza81DD2qmJPiHLaZyn07Ydz0b6xlRzTkWqdRbWcsPskoh1Mz7boocEAF/G98
-        DpO7YoO0oLREqcITLCS/0/5qQmq4jS6wsUVMr2k93YpJfB7pLZmhksfurCT/9V90
-        Woj4iTBeDLZlVgE53FM8SBYex0Qpmu5WwIjF1lHmQ0YiesCZ40NnlHXwFEzfKhKr
-        L2TVHu6bud5/ADLIpk4CSZtdsLOm/s+pUunKFELY0qQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=cIlTsN
-        IIT4hbZQLMjkWIVkOUHBh6DMvakfyjAaD2FGI=; b=aUX0lzxXZ7hWZd78tWQ1lD
-        Thp2VbC8z5R3TRmNzebAwML+Id3Bz+oXwcE+w4wICvvMuanqPXh52F9vOKO+zxPn
-        LLL+FTehNZYaH48zEyUbou6DyUkjBDxqNbrGstKGjF9stLgrKt0wOQIu0YZoffY7
-        HTIipwBrYvJx1QKjxcCkAN9DGosaN7BPAopv1vZCTWIQtkSpJL4vdXvHeFzBM/CQ
-        0HE0lZTUS/SCORWrLh3ErIm0cz7Vfhv5OS3xAaoNS96hfIkyBP5xMZ2deiaSZl0z
-        qXendacbMCabdWVCDqCfLY+1SCRnAovCb6reLN7ehTidpuDEvErUY8ixWQABvMcw
-        ==
-X-ME-Sender: <xms:FYKLYavL0M_ssBC5HfcmdPNtEFylslOhOD_wRoIN8lmPhKWYKB_PkQ>
-    <xme:FYKLYfd1fGaM6KHRCdrjeSd5zHb8bn-amb-GaTZFSouKFmKK4lyzDOItgRMYa-AkN
-    rnEw3ZHK0LWmw>
-X-ME-Received: <xmr:FYKLYVx8Dl4IJ4igt9s6J-8kear2_niRuMfBO2k1lvUY-WippNBgoJAjbsaNif86GtZnEmyBJbsujvdUBC3fhKl283UBpMVx>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvuddrudeigddtiecutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
-    fjughrpeffhffvuffkfhggtggujgesthdtredttddtvdenucfhrhhomhepifhrvghgucfm
-    jfcuoehgrhgvgheskhhrohgrhhdrtghomheqnecuggftrfgrthhtvghrnhepueelledthe
-    ekleethfeludduvdfhffeuvdffudevgeehkeegieffveehgeeftefgnecuffhomhgrihhn
-    pehkvghrnhgvlhdrohhrghenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmh
-    grihhlfhhrohhmpehgrhgvgheskhhrohgrhhdrtghomh
-X-ME-Proxy: <xmx:FYKLYVMHmcFYSThEVV9tob9DUbCZa9UMN7kwgv7HCYZQXAFimbuVyg>
-    <xmx:FYKLYa90hOFB5kV5JI2s93n9Pq3hRX-4wdnOmHkSFEm3uDNKOYZ1mg>
-    <xmx:FYKLYdWEddoJsE3qcF1A0uNAzw-4OhDtXudB4UEhhOe0423afLyC5g>
-    <xmx:FYKLYVV6jvmke-9SbwMUQi-iYdAAZFDrlLbzpJD68SLOqQiyyUDB4Q>
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
- 10 Nov 2021 03:25:56 -0500 (EST)
-Date:   Wed, 10 Nov 2021 09:25:55 +0100
-From:   Greg KH <greg@kroah.com>
-To:     Lee Jones <lee.jones@linaro.org>
-Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-        Andreas Kemnade <andreas@kemnade.info>,
-        "H . Nikolaus Schaller" <hns@goldelico.com>,
-        Johan Hovold <johan@kernel.org>,
-        "David S . Miller" <davem@davemloft.net>
-Subject: Re: [PATCH 4.9 1/2] net: hso: register netdev later to avoid a race
- condition
-Message-ID: <YYuCE9EoMu+4zsiF@kroah.com>
-References: <20211109093959.173885-1-lee.jones@linaro.org>
+        Wed, 10 Nov 2021 03:30:11 -0500
+Received: from mail-oi1-x22e.google.com (mail-oi1-x22e.google.com [IPv6:2607:f8b0:4864:20::22e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F3527C061766
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Nov 2021 00:27:23 -0800 (PST)
+Received: by mail-oi1-x22e.google.com with SMTP id u74so3846155oie.8
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Nov 2021 00:27:23 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=wjabyqMriLlEDs0oghOnUdNbhq1Wnfi0um3A6ApanhQ=;
+        b=HQOFMTYJ1V/jOeYgrLDR858/DdP3Vy1c/cct+8fLcNBkXEdEq4sc92loWTLjeuONPg
+         x47uvloqdX08ZQmEbi3QxrYFYH59xFKmkT2fTFowIYf2/12sp30shdW1IuBO1eBef6El
+         YdXTLEbzyYwM3jxajCkH3QibZLkAqs/6pisx3Z1MLcvfheLY1jQ61jeVD7bRjD7SZAD7
+         wtR1DJP0T4PDltZ2aR9tz0t00HGa4/OZkLoNUJr5r6vb134jJtJGd1jV3L/isudr8rv6
+         WM2rj8sdDkizTeDk9vcZTq+lARV6Y47ubXMpY0KSaPx2FYnLfmtlp1IciHLt5PksPAhc
+         bfjg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=wjabyqMriLlEDs0oghOnUdNbhq1Wnfi0um3A6ApanhQ=;
+        b=C+qIYlpxpfImRqZAgiv/oeOyPRzh1aeswIGuygKebTN6V5u27aJlzh9gEZH2Om4JIP
+         2agK+CGcQxNlYJdI2Zyt1Kv2jYSMUP77p+W2pNTrA4yzRhxnUU+etSUjgrVRUUgD5ElG
+         AJo8jy4wE+/oUwKswMi+njG2jXo4spiFmEgLneZ90lRiUfzzh9a6Dh8wFn4u5R4ZHSAa
+         9036feu4KLADFa7HY9guZEwhh1ztdU8NmZcV/BRcoZhm7yCrnLowVHaSuUshdd7MfVOL
+         kM9uyP/EhfHWNQuMArVHIYjJZdWiK1DYCbX/6DNDj0Rk3ugv2EUxN1Eg2FMZe/fhaqis
+         tiuA==
+X-Gm-Message-State: AOAM533oLHgGpPRvLEVWS2/NDiU1Uh4mJksw2bN3Ce1/Y/yWX4J8OwWl
+        xVOfVOtyrCLsUCWxVbIH4tXsiifMM0Ha/P6OJ2BPbQ==
+X-Google-Smtp-Source: ABdhPJyH1LONHLtwhuZMcEBp+Yg0krY6vZeudqTwP0iP/LrQGnLZpNokAje6id0/RVcqCXpcn5QWiO0vgqMwvF5aEME=
+X-Received: by 2002:aca:120f:: with SMTP id 15mr11009740ois.132.1636532843343;
+ Wed, 10 Nov 2021 00:27:23 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211109093959.173885-1-lee.jones@linaro.org>
+References: <20211028141938.3530-1-lukas.bulwahn@gmail.com> <20211028141938.3530-7-lukas.bulwahn@gmail.com>
+In-Reply-To: <20211028141938.3530-7-lukas.bulwahn@gmail.com>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Wed, 10 Nov 2021 09:27:12 +0100
+Message-ID: <CACRpkdZa2Y3yUteqQp9br65dj248WpGfwpf-ZZ5=PXambiwEcw@mail.gmail.com>
+Subject: Re: [PATCH 06/13] arm: ixp4xx: remove dead configs CPU_IXP43X and CPU_IXP46X
+To:     Lukas Bulwahn <lukas.bulwahn@gmail.com>
+Cc:     Russell King <linux@armlinux.org.uk>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        Sekhar Nori <nsekhar@ti.com>,
+        Bartosz Golaszewski <brgl@bgdev.pl>,
+        Linus Walleij <linusw@kernel.org>,
+        Imre Kaloz <kaloz@openwrt.org>,
+        Krzysztof Halasa <khalasa@piap.pl>,
+        Avi Fishman <avifishman70@gmail.com>,
+        Tomer Maimon <tmaimon77@gmail.com>,
+        Tali Perry <tali.perry1@gmail.com>,
+        Patrick Venture <venture@google.com>,
+        Nancy Yuen <yuenn@google.com>,
+        Benjamin Fair <benjaminfair@google.com>,
+        Dinh Nguyen <dinguyen@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        linux-arm-kernel@lists.infradead.org, openbmc@lists.ozlabs.org,
+        kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 09, 2021 at 09:39:58AM +0000, Lee Jones wrote:
-> From: Andreas Kemnade <andreas@kemnade.info>
-> 
-> [ Upstream commit 4c761daf8bb9a2cbda9facf53ea85d9061f4281e ]
+On Thu, Oct 28, 2021 at 4:20 PM Lukas Bulwahn <lukas.bulwahn@gmail.com> wrote:
 
-You already sent this for inclusion:
-	https://lore.kernel.org/r/YYU1KqvnZLyPbFcb@google.com
+> Commit 73d04ca5f4ac ("ARM: ixp4xx: Delete Intel reference design
+> boardfiles") removes the definition of the configs MACH_IXDP465 and
+> MACH_KIXRP435, but misses to remove the configs CPU_IXP43X and CPU_IXP46X
+> that depend on those removed configs, and hence are dead now.
+>
+> Fortunately, ./scripts/checkkconfigsymbols.py warns:
+>
+> MACH_IXDP465
+> Referencing files: arch/arm/mach-ixp4xx/Kconfig
+>
+> MACH_KIXRP435
+> Referencing files: arch/arm/mach-ixp4xx/Kconfig
+>
+> Remove the dead configs CPU_IXP43X and CPU_IXP46X.
+>
+> A further quick grep for the name of those two symbols did not show any
+> use of the two config symbols; so, there are no further clean-up activities
+> beyond this config removal needed.
+>
+> Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
 
-Why send it again?
+Patch applied to my IXP4xx tree!
 
-confused,
-
-greg k-h
+Yours,
+Linus Walleij
