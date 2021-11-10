@@ -2,46 +2,44 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A1D344C331
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 15:42:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CD6E644C326
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 15:40:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232349AbhKJOnK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Nov 2021 09:43:10 -0500
-Received: from mail.kernel.org ([198.145.29.99]:40772 "EHLO mail.kernel.org"
+        id S232307AbhKJOnF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Nov 2021 09:43:05 -0500
+Received: from mail.kernel.org ([198.145.29.99]:40714 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232269AbhKJOm4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Nov 2021 09:42:56 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPS id 9029561264;
+        id S232263AbhKJOmz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Nov 2021 09:42:55 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPS id 5C7296121F;
         Wed, 10 Nov 2021 14:40:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1636555208;
-        bh=ERa8z50UzvcG4hoR2G8XB2JonjF2th8Q8cVgfCVS+Ek=;
+        bh=/kVvdB7+Jw+/dbb44MXjndhNVsEBxJUkSG3nySIN30U=;
         h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=YVD3Hlqwf9ikZ4n1AxK7NU9zWluRyDZ7Z5C2+8Ae/i/BLVKz7/Hqj38qV1mRO4rtZ
-         b+GQ3H3mJMxEWTcjOxC6vbPAgbOF43GwRubeMooTxGiuKfHRFkOBG/b4KrzuPp1iL3
-         rCtLA1dvc8roBgIpEYB5ZeREjbfyIaWhjtE98M6Fq/so3bflO1Y0QwvUz8qyLMA68K
-         L3hxJFaoX2J0kUw5J7UcFc3SQJjLD9DoI0d+ofI8o2BSG8Yb03mQCa+mUqv2XHLVZe
-         T+G8SwVzCL5EQDgoniUnhkI9ic4ISH1Mh3MeCryzqqnV4kER6MXsBVoJaQn75yxZLw
-         CwNTkI87/gCkg==
+        b=tdu/FiTntS43oM5iAEDlOspnSbfSKrUCmUCLey1seL7tAdV4wRC/32C2U5IDQMkXq
+         EAkClk9HBtFa6UlelmgdPOVLR/AQveUvEbnc801HiRv3CSfxpvsVdoqintwtSsXZ2Y
+         c7VsUbXeV8oU6KJBNTdc4+STqx/s6ht/iaiEtAsqfW+jmGHc3uBu+tjCEzb8Qj81Vw
+         08Etep2KCYPHIQsydSQNxb9J7cxLyOh+V1g/cNCyMpHiGA2rJ91hzf/j7bhOPSf1ic
+         XmWMPo49B2BCbTEIOtB13qrCUZqKJ2SC4316ZghKjz6R7qmG4usAmxa0ERdzM61uTo
+         QH8uDxZZ9xUEg==
 Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 7F89A60A5A;
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 5064660A5A;
         Wed, 10 Nov 2021 14:40:08 +0000 (UTC)
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH net] net: stmmac: allow a tc-taprio base-time of zero
+Subject: Re: [PATCH net v2] vsock: prevent unnecessary refcnt inc for nonblocking
+ connect
 From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <163655520851.19242.2773768133414182756.git-patchwork-notify@kernel.org>
+Message-Id: <163655520832.19242.11820946146081406943.git-patchwork-notify@kernel.org>
 Date:   Wed, 10 Nov 2021 14:40:08 +0000
-References: <20211108202854.1740995-1-vladimir.oltean@nxp.com>
-In-Reply-To: <20211108202854.1740995-1-vladimir.oltean@nxp.com>
-To:     Vladimir Oltean <vladimir.oltean@nxp.com>
-Cc:     netdev@vger.kernel.org, peppe.cavallaro@st.com,
-        alexandre.torgue@foss.st.com, joabreu@synopsys.com,
-        davem@davemloft.net, kuba@kernel.org, mcoquelin.stm32@gmail.com,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        xiaoliang.yang_1@nxp.com, yannick.vignon@nxp.com
+References: <20211109001502.9152-1-eiichi.tsukata@nutanix.com>
+In-Reply-To: <20211109001502.9152-1-eiichi.tsukata@nutanix.com>
+To:     Eiichi Tsukata <eiichi.tsukata@nutanix.com>
+Cc:     sgarzare@redhat.com, davem@davemloft.net, kuba@kernel.org,
+        virtualization@lists.linux-foundation.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
@@ -51,19 +49,20 @@ Hello:
 This patch was applied to netdev/net.git (master)
 by David S. Miller <davem@davemloft.net>:
 
-On Mon,  8 Nov 2021 22:28:54 +0200 you wrote:
-> Commit fe28c53ed71d ("net: stmmac: fix taprio configuration when
-> base_time is in the past") allowed some base time values in the past,
-> but apparently not all, the base-time value of 0 (Jan 1st 1970) is still
-> explicitly denied by the driver.
+On Tue,  9 Nov 2021 00:15:02 +0000 you wrote:
+> Currently vosck_connect() increments sock refcount for nonblocking
+> socket each time it's called, which can lead to memory leak if
+> it's called multiple times because connect timeout function decrements
+> sock refcount only once.
 > 
-> Remove the bogus check.
+> Fixes it by making vsock_connect() return -EALREADY immediately when
+> sock state is already SS_CONNECTING.
 > 
 > [...]
 
 Here is the summary with links:
-  - [net] net: stmmac: allow a tc-taprio base-time of zero
-    https://git.kernel.org/netdev/net/c/f64ab8e4f368
+  - [net,v2] vsock: prevent unnecessary refcnt inc for nonblocking connect
+    https://git.kernel.org/netdev/net/c/c7cd82b90599
 
 You are awesome, thank you!
 -- 
