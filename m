@@ -2,73 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C15C444BCE4
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 09:30:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8DA2E44BCE6
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 09:30:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229974AbhKJIdW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Nov 2021 03:33:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44112 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230290AbhKJIdV (ORCPT
+        id S230365AbhKJIdo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Nov 2021 03:33:44 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:20332 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230243AbhKJIdn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Nov 2021 03:33:21 -0500
-Received: from mail-oi1-x232.google.com (mail-oi1-x232.google.com [IPv6:2607:f8b0:4864:20::232])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F3871C061764
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Nov 2021 00:30:33 -0800 (PST)
-Received: by mail-oi1-x232.google.com with SMTP id q124so3909362oig.3
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Nov 2021 00:30:33 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=91gyfFyABZI22tOTUfX9cbK3XuReiLppo1ZP/0NVCe4=;
-        b=AiPykoticmp0EuEr5zKNoopSVK9qqXzXTSWzYZdwl3tFL9GC2FnE3JAWAc2qN4tbP2
-         wVkiqdBntuz3YBusAagAkek3K4H+hj8FlwsdRRTwzm780LDP7yaR+YEiQLzCO+wT9rE/
-         qWwmDICiOeejWPXaQronfOVPMUEB3vuRm0OgpPZnD0Mn5Sv6mzATExKx8Gp3mPDF0ETq
-         Rz2OBnNVdnL+/1pphrKf42yQmTJwGW751zjSc8wS18b/na0QAeT69IxCnsvbSo5Jc4+X
-         21/8jO3w3nZ4vV2q5y9CVWKN122iMlsgOOYqm48C545jgdOn47vnuMoaj6hBS095ny1R
-         Tveg==
+        Wed, 10 Nov 2021 03:33:43 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1636533056;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=ayTHtFS6vxG5PWHe3XGZ+Bm3dOMLAgqt3D/qHsMzfog=;
+        b=RYAOpQQNGdaEu9ilgY0JRqOPOaeYJgi9E7G7GcykkN1zqwBRVBZzvC9pku/nQceb6QlvVt
+        qFSUDb2VNPll0t5Oa0oXYWyt/GNM5itg1gufC/ij9b7/jzINDekpmbEEYzl91HZDJE2T+3
+        UF+A2W7+q3pn4lhhqb4Q0Jkz763XVDs=
+Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
+ [209.85.128.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-36-3TQxmpVrMFSwyA17ptGJGA-1; Wed, 10 Nov 2021 03:30:54 -0500
+X-MC-Unique: 3TQxmpVrMFSwyA17ptGJGA-1
+Received: by mail-wm1-f71.google.com with SMTP id j193-20020a1c23ca000000b003306ae8bfb7so777463wmj.7
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Nov 2021 00:30:54 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=91gyfFyABZI22tOTUfX9cbK3XuReiLppo1ZP/0NVCe4=;
-        b=nTo4epqxaV+TzlLZBFSZbVepPzeBIy/pojMaUgtEOJvmRDQwaGTL9/rbC5e7A9a6zu
-         1LEgoMMM42hH2pJnbnoAeG5LNaSM8mrc9DAEplRrLkUvGMafKGRhRlNcsVWl60AxUnxg
-         UGh3HCQTDmUBbiuaGBKXhGhil0UVaCM+efElI4lmBe2j6CTTSmN2Q86h/hVJSuHbeX73
-         WXooLXqKZPfwrXv516zB2mj7j5WVqxuqRfJygJu+6x7oRWM4V1zl8Ta6uCcif3WVyeZn
-         VgzQ6NzaEmWXcA7ZttjQ3itIU7m8yJRQDNXTnH2x1f7JCI6LIHfMIaxyrI5OozUeTM1S
-         5DeQ==
-X-Gm-Message-State: AOAM531fydPWM3ymnX3rjHWl57CzJYII+4yoXysvm1VyKAwHr1hTeak/
-        FsHAb3E440ByuFdqDeRuZH0lsFsrwVnzd850p1a5/g==
-X-Google-Smtp-Source: ABdhPJxppPbkrGWBzZH57Qj0pH34cjt4aFBcKoWiX/olbU6p73nexapPecR6oMOnoZiLtRZx9k3V1T5GASbOTJZUn40=
-X-Received: by 2002:a05:6808:60e:: with SMTP id y14mr11721868oih.162.1636533033394;
- Wed, 10 Nov 2021 00:30:33 -0800 (PST)
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:organization:in-reply-to
+         :content-transfer-encoding;
+        bh=ayTHtFS6vxG5PWHe3XGZ+Bm3dOMLAgqt3D/qHsMzfog=;
+        b=xpcjqPKtRHVSwyn0zotzfP1oleqOn3K/r7Ofb8SHBUcjP7ct297NDA9MML//n93PiQ
+         It5qdpJCiTn3/WvtwbGPCbpp4EFELbCm7MjLJ6VU5SAzSUsPqKlcw+s8i4CZzphjDF54
+         4llU8DzWlvWacg4M8djIQz+QqEvKUht+Qgyy64WCxn35YJ/bGyn7bMj60Hq6SR6J3gYl
+         ydmzlpOvMaPy6tUB1A9kdgnnD78DjFcZhn7uam4aWrrrti6sC/nw0/tdhU0hi98BcDRU
+         f1Pa4KKQx0GvDliWxmXZjFtlfOjZGIZ07aQ4b2AI9tjFKI0OPqD/S+dK/ulC0u/oJluh
+         lFBw==
+X-Gm-Message-State: AOAM531xzF5bqUrlKG/6+AaB2QOAfb21ZUAatA+j7K64rfMOCVw+NPa3
+        zzNkr1ap+um3tt+k9rS+ixh/mG4gCyLldwC+Lauf6e2+v6e7zCfjL/6nDxLtAcqm4rJ6EQKEsWG
+        ovTWiRUS/9J8dwG1dy2E5+417
+X-Received: by 2002:a05:6000:1010:: with SMTP id a16mr17184399wrx.155.1636533053353;
+        Wed, 10 Nov 2021 00:30:53 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJz8YcFMEsRvKaXtzYm0YXi/nOXwlwvFD48+I3aZMgZRH2q7e3nrnFqGxYiGaWtqCC/IDnNoZA==
+X-Received: by 2002:a05:6000:1010:: with SMTP id a16mr17184370wrx.155.1636533053092;
+        Wed, 10 Nov 2021 00:30:53 -0800 (PST)
+Received: from [192.168.3.132] (p5b0c604f.dip0.t-ipconnect.de. [91.12.96.79])
+        by smtp.gmail.com with ESMTPSA id c5sm19156137wrd.13.2021.11.10.00.30.50
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 10 Nov 2021 00:30:52 -0800 (PST)
+Message-ID: <793685d2-be3f-9a74-c9a3-65c486e0ef1f@redhat.com>
+Date:   Wed, 10 Nov 2021 09:30:50 +0100
 MIME-Version: 1.0
-References: <20211102220203.940290-1-corbet@lwn.net> <20211102220203.940290-8-corbet@lwn.net>
-In-Reply-To: <20211102220203.940290-8-corbet@lwn.net>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Wed, 10 Nov 2021 09:30:22 +0100
-Message-ID: <CACRpkdYsm1mr+aoMEzqmCw158izLHt++Rg0u0Ew7VOXaLwdfpw@mail.gmail.com>
-Subject: Re: [PATCH 7/9] ARM: ixp4xx: remove unused header file pata_ixp4xx_cf.h
-To:     Jonathan Corbet <corbet@lwn.net>
-Cc:     linux-kernel@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>
-Content-Type: text/plain; charset="UTF-8"
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.2.0
+Subject: Re: [PATCH v4] mm: Add PM_HUGE_THP_MAPPING to /proc/pid/pagemap
+Content-Language: en-US
+To:     Peter Xu <peterx@redhat.com>
+Cc:     Mina Almasry <almasrymina@google.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        "Paul E . McKenney" <paulmckrcu@fb.com>,
+        Yu Zhao <yuzhao@google.com>, Jonathan Corbet <corbet@lwn.net>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Ivan Teterevkov <ivan.teterevkov@nutanix.com>,
+        Florian Schmidt <florian.schmidt@nutanix.com>,
+        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-mm@kvack.org
+References: <20211107235754.1395488-1-almasrymina@google.com>
+ <YYtuqsnOSxA44AUX@t490s> <c5ed86d0-8af6-f54f-e352-8871395ad62e@redhat.com>
+ <YYuCaNXikls/9JhS@t490s>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat
+In-Reply-To: <YYuCaNXikls/9JhS@t490s>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 2, 2021 at 11:02 PM Jonathan Corbet <corbet@lwn.net> wrote:
+On 10.11.21 09:27, Peter Xu wrote:
+> On Wed, Nov 10, 2021 at 09:14:42AM +0100, David Hildenbrand wrote:
+>> On 10.11.21 08:03, Peter Xu wrote:
+>>> Hi, Mina,
+>>>
+>>> Sorry to comment late.
+>>>
+>>> On Sun, Nov 07, 2021 at 03:57:54PM -0800, Mina Almasry wrote:
+>>>> diff --git a/Documentation/admin-guide/mm/pagemap.rst b/Documentation/admin-guide/mm/pagemap.rst
+>>>> index fdc19fbc10839..8a0f0064ff336 100644
+>>>> --- a/Documentation/admin-guide/mm/pagemap.rst
+>>>> +++ b/Documentation/admin-guide/mm/pagemap.rst
+>>>> @@ -23,7 +23,8 @@ There are four components to pagemap:
+>>>>      * Bit  56    page exclusively mapped (since 4.2)
+>>>>      * Bit  57    pte is uffd-wp write-protected (since 5.13) (see
+>>>>        :ref:`Documentation/admin-guide/mm/userfaultfd.rst <userfaultfd>`)
+>>>> -    * Bits 57-60 zero
+>>>> +    * Bit  58    page is a huge (PMD size) THP mapping
+>>>> +    * Bits 59-60 zero
+>>>>      * Bit  61    page is file-page or shared-anon (since 3.5)
+>>>>      * Bit  62    page swapped
+>>>>      * Bit  63    page present
+>>>> diff --git a/fs/proc/task_mmu.c b/fs/proc/task_mmu.c
+>>>> index ad667dbc96f5c..6f1403f83b310 100644
+>>>> --- a/fs/proc/task_mmu.c
+>>>> +++ b/fs/proc/task_mmu.c
+>>>> @@ -1302,6 +1302,7 @@ struct pagemapread {
+>>>>  #define PM_SOFT_DIRTY		BIT_ULL(55)
+>>>>  #define PM_MMAP_EXCLUSIVE	BIT_ULL(56)
+>>>>  #define PM_UFFD_WP		BIT_ULL(57)
+>>>> +#define PM_HUGE_THP_MAPPING	BIT_ULL(58)
+>>>
+>>> The ending "_MAPPING" seems redundant to me, how about just call it "PM_THP" or
+>>> "PM_HUGE" (as THP also means HUGE already)?
+>>>
+>>> IMHO the core problem is about permission controls, and it seems to me we're
+>>> actually trying to workaround it by duplicating some information we have.. so
+>>> it's kind of a pity.  Totally not against this patch, but imho it'll be nicer
+>>> if it's the permission part that to be enhanced, rather than a new but slightly
+>>> duplicated interface.
+>>
+>> It's not a permission problem AFAIKS: even with permissions "changed",
+>> any attempt to use /proc/kpageflags is just racy. Let's not go down that
+>> path, it's really the wrong mechanism to export to random userspace.
+> 
+> I agree it's racy, but IMHO that's fine.  These are hints for userspace to make
+> decisions, they cannot be always right.  Even if we fetch atomically and seeing
+> that this pte is swapped out, it can be quickly accessed at the same time and
+> it'll be in-memory again.  Only if we can freeze the whole pgtable but we
+> can't, so they can only be used as hints.
 
-> Commit b00ced38e317 ("ARM: ixp4xx: Delete Avila boardfiles") removed the
-> last use of <linux/platform_data/pata_ixp4xx_cf.h> but left the header file
-> in place.  Nothing uses this file, delete it now.
->
-> Cc: Linus Walleij <linus.walleij@linaro.org>
-> Cc: Arnd Bergmann <arnd@arndb.de>
-> Signed-off-by: Jonathan Corbet <corbet@lwn.net>
+Sorry, I don't think /proc/kpageflags (or exporting the PFNs to random
+users via /proc/self/pagemap) is the way to go.
 
-Patch applied to my IXP4xx tree!
+"Since Linux 4.0 only users with the CAP_SYS_ADMIN capability can get
+PFNs. In 4.0 and 4.1 opens by unprivileged fail with -EPERM.  Starting
+from 4.2 the PFN field is zeroed if the user does not have
+CAP_SYS_ADMIN. Reason: information about PFNs helps in exploiting
+Rowhammer vulnerability."
 
-Yours,
-Linus Walleij
+> 
+>>
+>> We do have an interface to access this information from userspace
+>> already: /proc/self/smaps IIRC. Mina commented that they are seeing
+>> performance issues with that approach.
+>>
+>> It would be valuable to add these details to the patch description,
+>> including a performance difference when using both interfaces we have
+>> available. As the patch description stands, there is no explanation
+>> "why" we want this change.
+> 
+> I didn't notice Mina mention about performance issues with kpageflags, if so
+> then I agree this solution helps. 
+The performance issue seems to be with /proc/self/smaps.
+
+-- 
+Thanks,
+
+David / dhildenb
+
