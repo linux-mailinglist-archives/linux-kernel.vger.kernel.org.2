@@ -2,88 +2,302 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7BAC144C691
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 18:59:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AF86644C699
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 19:02:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232460AbhKJSCV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Nov 2021 13:02:21 -0500
-Received: from mail.kernel.org ([198.145.29.99]:36822 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230311AbhKJSCT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Nov 2021 13:02:19 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D7FAA61159;
-        Wed, 10 Nov 2021 17:59:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1636567172;
-        bh=Ofe7eOWNhRiC50gEQfKlr9CMMuFmkI3ju3xfiZYyFrY=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:From;
-        b=rEP32YbBqIePn8GoT80SgIFr3elQJFDM3gSWJVE1+is3HvHlpnQUw41LBLfsI4h1w
-         YCNfyWeIQLvNjmHqJIpAAudhngNYYdxS+Ij2I39rOcjkUujSJtokc0krejrfk8vVTH
-         +7XYf0bCe76SRrSjh8BY9EkoZ3CReYy0FnrnidFD4uFpXUt3hD3UwLDNQh1h/92g6x
-         /cj84RDYWSoaOrUHhmVqyctQ1UkolBiSKrHfi3P49JFTkAxadb+ncQMeoNN1vrjuSl
-         /ei/em8Bm1b8hgAeqHKnn/z3ShASG2w0bIZi8uVQulI4LEPHI0Y9FV0XT36JA28W4K
-         G9iOBlWvuI4+Q==
-Date:   Wed, 10 Nov 2021 11:59:29 -0600
-From:   Bjorn Helgaas <helgaas@kernel.org>
-To:     "Rafael J. Wysocki" <rafael@kernel.org>
-Cc:     Robert =?utf-8?B?xZp3acSZY2tp?= <robert@swiecki.net>,
-        Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
-        <u.kleine-koenig@pengutronix.de>,
-        linux-i2c <linux-i2c@vger.kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Linux PCI <linux-pci@vger.kernel.org>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Subject: Re: [PATCH] pci: Don't call resume callback for nearly bound devices
-Message-ID: <20211110175929.GA1245597@bhelgaas>
+        id S232270AbhKJSF1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Nov 2021 13:05:27 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:49386 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232350AbhKJSF0 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Nov 2021 13:05:26 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1636567358;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=radZ2QcWSXtZh6QXfoJEuiwlfZVb/U9cwDxo7YjMyxA=;
+        b=YTRXHIXIUcH81sqvBLuCZszxq1FDuTjgrpAe4D6JpvSUaSIDiKHFvgZRzumJkDCDbDK4VL
+        T0XHM4mWOoTrTCefZcLiFswsKNYetj6IBscecUiGKfsKYsm8GzmJyZth2/DpfleiMfi9+8
+        aevHkJmBzJHIwiNrJLXkUfBXQJ7mj/o=
+Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
+ [209.85.128.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-54-meRTlvXvMAijnpyIeL41DQ-1; Wed, 10 Nov 2021 13:02:37 -0500
+X-MC-Unique: meRTlvXvMAijnpyIeL41DQ-1
+Received: by mail-wm1-f71.google.com with SMTP id b145-20020a1c8097000000b003335872db8dso870740wmd.2
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Nov 2021 10:02:36 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=radZ2QcWSXtZh6QXfoJEuiwlfZVb/U9cwDxo7YjMyxA=;
+        b=bKCac08uZf/NePrGKmwf4BjgkkJSJ85F9xPjvpyBkU1CRko7sD4szaLG2+kvb9kJbw
+         hyIyioBoRfOrpy2OOHfZOlgd2eTrj+3hJ6M/Gpz2ZL5YYYcVkll8A6Z6vruuxfcCkECM
+         mLxHh8ZWWi7X5gCnfMbhn3LE3i/FCER376fMdR9Ci25twUJsgXqvQqPoCX3y9hATcG+k
+         EzotIwr3NljyNXfVI6LbuTIJiGU6ImA9tHtdP3/YlBIMoLRR25I8m0NAU4E7ngnN/Gcm
+         djaslRykdbXCIZtPrDl6QBPAOP/+JaNY0tyV57klCOY5iL7gxKpJR/W4g2Ak1QhDaI01
+         jTkw==
+X-Gm-Message-State: AOAM531sHiH2SIAERFIYu/ZowweNDR4bAiGraE3j9Du0xM/YIcgQHMBm
+        nAWFBgVR7FViDs8IXi8yNgT7K6g7fT+wAL1sIXMknfkeEQ49HbtPROkrAm2nrzESa8HpqR9Xsc/
+        A6uLNyiYucwamVgh0IYZ5XX1p
+X-Received: by 2002:a05:6000:18a3:: with SMTP id b3mr1048825wri.343.1636567356035;
+        Wed, 10 Nov 2021 10:02:36 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJzjMf/64QmO6RRLbCaeyEGEL/4U1T0t94aIpEliXsN92QAKKCOi5oa22Vo8gneFXMXpuaSj+w==
+X-Received: by 2002:a05:6000:18a3:: with SMTP id b3mr1048758wri.343.1636567355720;
+        Wed, 10 Nov 2021 10:02:35 -0800 (PST)
+Received: from ?IPv6:2a01:e0a:59e:9d80:527b:9dff:feef:3874? ([2a01:e0a:59e:9d80:527b:9dff:feef:3874])
+        by smtp.gmail.com with ESMTPSA id x13sm605046wrr.47.2021.11.10.10.02.34
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 10 Nov 2021 10:02:35 -0800 (PST)
+Subject: Re: [PATCH v4 05/15] KVM: arm64: Export kvm_handle_user_mem_abort()
+To:     Gavin Shan <gshan@redhat.com>, kvmarm@lists.cs.columbia.edu
+Cc:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        james.morse@arm.com, mark.rutland@arm.com,
+        Jonathan.Cameron@huawei.com, will@kernel.org, maz@kernel.org,
+        pbonzini@redhat.com, vkuznets@redhat.com, shan.gavin@gmail.com
+References: <20210815005947.83699-1-gshan@redhat.com>
+ <20210815005947.83699-6-gshan@redhat.com>
+From:   Eric Auger <eauger@redhat.com>
+Message-ID: <53a578a1-6005-8e66-dda1-bd75d3a6f264@redhat.com>
+Date:   Wed, 10 Nov 2021 19:02:33 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.1
 MIME-Version: 1.0
+In-Reply-To: <20210815005947.83699-6-gshan@redhat.com>
 Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAJZ5v0gGZEpj7bJZx9teNJsDfuVA0YW8PGt+q_aEDdGJPDh=bg@mail.gmail.com>
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 10, 2021 at 05:48:52PM +0100, Rafael J. Wysocki wrote:
-> On Wed, Nov 10, 2021 at 5:33 PM Robert Święcki <robert@swiecki.net> wrote:
-> > śr., 10 lis 2021 o 15:14 Bjorn Helgaas <helgaas@kernel.org> napisał(a):
-> > > On Tue, Nov 09, 2021 at 02:05:18PM -0600, Bjorn Helgaas wrote:
-> > > > On Tue, Nov 09, 2021 at 07:58:47PM +0100, Rafael J. Wysocki wrote:
-> > > > > On Tue, Nov 9, 2021 at 7:52 PM Rafael J. Wysocki <rafael@kernel.org> wrote:
-> > > > > > ...
-> > >
-> > > > > > So instead, we can drop the pm_runtime_get_sync() and
-> > > > > > pm_runtime_put_sync() from local_pci_probe() and pci_device_remove(),
-> > > > > > respectively, and add pm_runtine_get_noresume() to pci_pm_init(),
-> > > > > > which will prevent PM-runtime from touching the device until it has a
-> > > > > > driver that supports PM-runtime.
-> > > > > >
-> > > > > > We'll lose the theoretical ability to put unbound devices into D3 this
-> > > > > > way, but we learned some time ago that this isn't safe in all cases
-> > > > > > anyway.
-> > > > >
-> > > > > IOW, something like this (untested and most likely white-space-damaged).
-> > > >
-> > > > Thanks!  I applied this manually to for-linus in hopes of making the
-> > > > the next linux-next build.
-> > > >
-> > > > Please send any testing reports and corrections to the patch and
-> > > > commit log!
-> > >
-> > > Robert, I hate to ask even more of you, but if you have a chance, it
-> > > would be very helpful if you could test the patch below.  I'm pretty
-> > > sure it should fix the problem you saw, and I hope to ask Linus to
-> > > merge it today.
-> >
-> > I think the most recent patch creates some timeouts and other problems
-> > in pci-related code? Things I haven't seen before.
+Hi Gavin,
+On 8/15/21 2:59 AM, Gavin Shan wrote:
+> The main work of stage-2 page fault is handled by user_mem_abort().
+> When asynchronous page fault is supported, one page fault need to
+> be handled with two calls to this function. It means the page fault
+> needs to be replayed asynchronously in that case.
 > 
-> So I honestly think that commit 2a4d9408c9e8 needs to be reverted,
-> because it clearly does more than it is supposed to and we need to go
-> back to the drawing board and do this again, but correctly.
+>    * This renames the function to kvm_handle_user_mem_abort() and
+>      exports it.
+> 
+>    * Add arguments @esr and @prefault to user_mem_abort(). @esr is
+>      the cached value of ESR_EL2 instead of fetching from the current
+>      vCPU when the page fault is replayed in scenario of asynchronous
+>      page fault. @prefault is used to indicate the page fault is replayed
+>      one or not.
+Also explain that fault_status arg is not needed anymore as derived from
+@esr because otherwise at first sight a distracted reviewer like me may
+have the impression you replaced fault_status by prefault while it is
+totally unrelated
+> 
+>    * Define helper functions esr_dbat_*() in asm/esr.h to extract
+>      or check various fields of the passed ESR_EL2 value because
+>      those helper functions defined in asm/kvm_emulate.h assumes
+>      the ESR_EL2 value has been cached in vCPU struct. It won't
+>      be true on handling the replayed page fault in scenario of
+>      asynchronous page fault.
+I would introduce a seperate preliminary patch with those esr macros and
+changes to the call sites + changes below.
+> 
+>    * Some helper functions defined in asm/kvm_emulate.h are used
+>      by mmu.c only and seem not to be used by other source file
+>      in near future. They are moved to mmu.c and renamed accordingly.>
+>      is_exec_fault: kvm_vcpu_trap_is_exec_fault
+>      is_write_fault: kvm_is_write_fault()
+> 
+> Signed-off-by: Gavin Shan <gshan@redhat.com>
+> ---
+>  arch/arm64/include/asm/esr.h         |  6 ++++
+>  arch/arm64/include/asm/kvm_emulate.h | 27 ++---------------
+>  arch/arm64/include/asm/kvm_host.h    |  4 +++
+>  arch/arm64/kvm/mmu.c                 | 43 ++++++++++++++++++++++------
+>  4 files changed, 48 insertions(+), 32 deletions(-)
+> 
+> diff --git a/arch/arm64/include/asm/esr.h b/arch/arm64/include/asm/esr.h
+> index 29f97eb3dad4..0f2cb27691de 100644
+> --- a/arch/arm64/include/asm/esr.h
+> +++ b/arch/arm64/include/asm/esr.h
+> @@ -321,8 +321,14 @@
+>  					 ESR_ELx_CP15_32_ISS_DIR_READ)
+>  
+>  #ifndef __ASSEMBLY__
+> +#include <linux/bitfield.h>
+>  #include <asm/types.h>
+>  
+> +#define esr_dabt_fault_type(esr)	(esr & ESR_ELx_FSC_TYPE)
+> +#define esr_dabt_fault_level(esr)	(FIELD_GET(ESR_ELx_FSC_LEVEL, esr))
+> +#define esr_dabt_is_wnr(esr)		(!!(FIELD_GET(ESR_ELx_WNR, esr)))
+> +#define esr_dabt_is_s1ptw(esr)		(!!(FIELD_GET(ESR_ELx_S1PTW, esr)))
+> +
+>  static inline bool esr_is_data_abort(u32 esr)
+>  {
+>  	const u32 ec = ESR_ELx_EC(esr);
+> diff --git a/arch/arm64/include/asm/kvm_emulate.h b/arch/arm64/include/asm/kvm_emulate.h
+> index 923b4d08ea9a..90742f4b1acd 100644
+> --- a/arch/arm64/include/asm/kvm_emulate.h
+> +++ b/arch/arm64/include/asm/kvm_emulate.h
+> @@ -285,13 +285,13 @@ static __always_inline int kvm_vcpu_dabt_get_rd(const struct kvm_vcpu *vcpu)
+>  
+>  static __always_inline bool kvm_vcpu_abt_iss1tw(const struct kvm_vcpu *vcpu)
+>  {
+> -	return !!(kvm_vcpu_get_esr(vcpu) & ESR_ELx_S1PTW);
+> +	return esr_dabt_is_s1ptw(kvm_vcpu_get_esr(vcpu));
+>  }
+>  
+>  /* Always check for S1PTW *before* using this. */
+>  static __always_inline bool kvm_vcpu_dabt_iswrite(const struct kvm_vcpu *vcpu)
+>  {
+> -	return kvm_vcpu_get_esr(vcpu) & ESR_ELx_WNR;
+> +	return esr_dabt_is_wnr(kvm_vcpu_get_esr(vcpu));
+>  }
+>  
+>  static inline bool kvm_vcpu_dabt_is_cm(const struct kvm_vcpu *vcpu)
+> @@ -320,11 +320,6 @@ static inline bool kvm_vcpu_trap_is_iabt(const struct kvm_vcpu *vcpu)
+>  	return kvm_vcpu_trap_get_class(vcpu) == ESR_ELx_EC_IABT_LOW;
+>  }
+>  
+> -static inline bool kvm_vcpu_trap_is_exec_fault(const struct kvm_vcpu *vcpu)
+> -{
+> -	return kvm_vcpu_trap_is_iabt(vcpu) && !kvm_vcpu_abt_iss1tw(vcpu);
+> -}
+> -
+>  static __always_inline u8 kvm_vcpu_trap_get_fault(const struct kvm_vcpu *vcpu)
+>  {
+>  	return kvm_vcpu_get_esr(vcpu) & ESR_ELx_FSC;
+> @@ -332,12 +327,7 @@ static __always_inline u8 kvm_vcpu_trap_get_fault(const struct kvm_vcpu *vcpu)
+>  
+>  static __always_inline u8 kvm_vcpu_trap_get_fault_type(const struct kvm_vcpu *vcpu)
+>  {
+> -	return kvm_vcpu_get_esr(vcpu) & ESR_ELx_FSC_TYPE;
+> -}
+> -
+> -static __always_inline u8 kvm_vcpu_trap_get_fault_level(const struct kvm_vcpu *vcpu)
+> -{
+> -	return kvm_vcpu_get_esr(vcpu) & ESR_ELx_FSC_LEVEL;
+> +	return esr_dabt_fault_type(kvm_vcpu_get_esr(vcpu));
+>  }
+>  
+>  static __always_inline bool kvm_vcpu_abt_issea(const struct kvm_vcpu *vcpu)
+> @@ -365,17 +355,6 @@ static __always_inline int kvm_vcpu_sys_get_rt(struct kvm_vcpu *vcpu)
+>  	return ESR_ELx_SYS64_ISS_RT(esr);
+>  }
+>  
+> -static inline bool kvm_is_write_fault(struct kvm_vcpu *vcpu)
+> -{
+> -	if (kvm_vcpu_abt_iss1tw(vcpu))
+> -		return true;
+> -
+> -	if (kvm_vcpu_trap_is_iabt(vcpu))
+> -		return false;
+> -
+> -	return kvm_vcpu_dabt_iswrite(vcpu);
+> -}
+> -
+>  static inline unsigned long kvm_vcpu_get_mpidr_aff(struct kvm_vcpu *vcpu)
+>  {
+>  	return vcpu_read_sys_reg(vcpu, MPIDR_EL1) & MPIDR_HWID_BITMASK;
+> diff --git a/arch/arm64/include/asm/kvm_host.h b/arch/arm64/include/asm/kvm_host.h
+> index 1824f7e1f9ab..581825b9df77 100644
+> --- a/arch/arm64/include/asm/kvm_host.h
+> +++ b/arch/arm64/include/asm/kvm_host.h
+> @@ -606,6 +606,10 @@ int __kvm_arm_vcpu_set_events(struct kvm_vcpu *vcpu,
+>  
+>  #define KVM_ARCH_WANT_MMU_NOTIFIER
+>  
+> +int kvm_handle_user_mem_abort(struct kvm_vcpu *vcpu,
+> +			      struct kvm_memory_slot *memslot,
+> +			      phys_addr_t fault_ipa, unsigned long hva,
+> +			      unsigned int esr, bool prefault);
+>  void kvm_arm_halt_guest(struct kvm *kvm);
+>  void kvm_arm_resume_guest(struct kvm *kvm);
+>  
+> diff --git a/arch/arm64/kvm/mmu.c b/arch/arm64/kvm/mmu.c
+> index 0625bf2353c2..e4038c5e931d 100644
+> --- a/arch/arm64/kvm/mmu.c
+> +++ b/arch/arm64/kvm/mmu.c
+> @@ -892,9 +892,34 @@ static int sanitise_mte_tags(struct kvm *kvm, kvm_pfn_t pfn,
+>  	return 0;
+>  }
+>  
+> -static int user_mem_abort(struct kvm_vcpu *vcpu, phys_addr_t fault_ipa,
+> -			  struct kvm_memory_slot *memslot, unsigned long hva,
+> -			  unsigned long fault_status)
+> +static inline bool is_exec_fault(unsigned int esr)
+> +{
+> +	if (ESR_ELx_EC(esr) != ESR_ELx_EC_IABT_LOW)
+> +		return false;
+> +
+> +	if (esr_dabt_is_s1ptw(esr))
+> +		return false;
+> +
+> +	return true;
+> +}
+> +
+> +static inline bool is_write_fault(unsigned int esr)
+> +{
+> +	if (esr_dabt_is_s1ptw(esr))
+> +		return true;
+> +
+> +	if (ESR_ELx_EC(esr) == ESR_ELx_EC_IABT_LOW)
+> +		return false;
+> +
+> +	return esr_dabt_is_wnr(esr);
+> +}
+> +
+> +int kvm_handle_user_mem_abort(struct kvm_vcpu *vcpu,
+> +			      struct kvm_memory_slot *memslot,
+> +			      phys_addr_t fault_ipa,
+> +			      unsigned long hva,
+> +			      unsigned int esr,
+> +			      bool prefault)
+you added the prefault arg but this latter is not used in the function?
+To me you shall introduce that change in a subsequent patch when relevant.
+>  {
+>  	int ret = 0;
+>  	bool write_fault, writable, force_pte = false;
+> @@ -909,14 +934,15 @@ static int user_mem_abort(struct kvm_vcpu *vcpu, phys_addr_t fault_ipa,
+>  	gfn_t gfn;
+>  	kvm_pfn_t pfn;
+>  	bool logging_active = memslot_is_logging(memslot);
+> -	unsigned long fault_level = kvm_vcpu_trap_get_fault_level(vcpu);
+> +	unsigned int fault_status = esr_dabt_fault_type(esr);
+> +	unsigned long fault_level = esr_dabt_fault_level(esr);
+>  	unsigned long vma_pagesize, fault_granule;
+>  	enum kvm_pgtable_prot prot = KVM_PGTABLE_PROT_R;
+>  	struct kvm_pgtable *pgt;
+>  
+>  	fault_granule = 1UL << ARM64_HW_PGTABLE_LEVEL_SHIFT(fault_level);
+> -	write_fault = kvm_is_write_fault(vcpu);
+> -	exec_fault = kvm_vcpu_trap_is_exec_fault(vcpu);
+> +	write_fault = is_write_fault(kvm_vcpu_get_esr(vcpu));
+> +	exec_fault = is_exec_fault(kvm_vcpu_get_esr(vcpu));
+>  	VM_BUG_ON(write_fault && exec_fault);
+>  
+>  	if (fault_status == FSC_PERM && !write_fault && !exec_fault) {
+> @@ -1176,7 +1202,7 @@ int kvm_handle_guest_abort(struct kvm_vcpu *vcpu)
+>  	gfn = fault_ipa >> PAGE_SHIFT;
+>  	memslot = gfn_to_memslot(vcpu->kvm, gfn);
+>  	hva = gfn_to_hva_memslot_prot(memslot, gfn, &writable);
+> -	write_fault = kvm_is_write_fault(vcpu);
+> +	write_fault = is_write_fault(kvm_vcpu_get_esr(vcpu));
+>  	if (kvm_is_error_hva(hva) || (write_fault && !writable)) {
+>  		/*
+>  		 * The guest has put either its instructions or its page-tables
+> @@ -1231,7 +1257,8 @@ int kvm_handle_guest_abort(struct kvm_vcpu *vcpu)
+>  		goto out_unlock;
+>  	}
+>  
+> -	ret = user_mem_abort(vcpu, fault_ipa, memslot, hva, fault_status);
+> +	ret = kvm_handle_user_mem_abort(vcpu, memslot, fault_ipa, hva,
+> +					kvm_vcpu_get_esr(vcpu), false);>  	if (ret == 0)
+>  		ret = 1;
+>  out:
+> 
+Thanks
 
-Yep, I agree, I'll work on that today.
+Eric
 
-Bjorn
