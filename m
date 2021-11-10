@@ -2,135 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 51B6F44C300
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 15:32:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E212244C303
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 15:33:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232041AbhKJOe4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Nov 2021 09:34:56 -0500
-Received: from mail-oi1-f169.google.com ([209.85.167.169]:39487 "EHLO
-        mail-oi1-f169.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232176AbhKJOey (ORCPT
+        id S232221AbhKJOf6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Nov 2021 09:35:58 -0500
+Received: from smtp-out2.suse.de ([195.135.220.29]:53070 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231731AbhKJOf5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Nov 2021 09:34:54 -0500
-Received: by mail-oi1-f169.google.com with SMTP id bf8so5559161oib.6;
-        Wed, 10 Nov 2021 06:32:06 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
-        bh=/02Exx/ph/UcNJNTQkGez12UzJqq82J9H0P+Kmhe9ik=;
-        b=H5xI42tOcjWG88i17eu80KW/8+8xGgqvoh3NPlYn9laLBJVRar1vHYjqmf1rkJhxmg
-         WlG7TU+pnbPkKzj6U7oR7/Dm3xeqdy+7FVr1LXWi/f+pDxY0EHDDCC5Z8rOBpeCaLQRC
-         0EgHV3huxn8AURLD6LwbWVLorZf4jWhT+4vYKHpUicmoSkVgFrlbfXYqA4zU5RHZKF2/
-         xACEwmJgNcNWwiUDO5c992Ua6Ieuen/7qiSLMFxgIHFmrmmXLou7iSggZRqf9MSxqqp7
-         dsPxXLT3khJ3vfzyKrmWh1clXht8AySPz7KxJ87EKBuLhnI/QUEadXhzGdIdy2ZY45+K
-         saQg==
-X-Gm-Message-State: AOAM532f4nCt0keAWyR0J1hcA5F7dWhiaqK9bfglMO/060yPXYG5YBLE
-        bJpoNRh8G24aSSHW7qrxTuI6lbU2dfPPYswU+aSFuRmSrq8=
-X-Google-Smtp-Source: ABdhPJzpPxPWj610km0kVDhyoJvd8Sm63jEpZ9VWQntHjhS3aR57WlQKbef4tlhe/Yy0GEfQtFY8habtiV8JK4t+Z5U=
-X-Received: by 2002:aca:5c5:: with SMTP id 188mr24097oif.154.1636554726515;
- Wed, 10 Nov 2021 06:32:06 -0800 (PST)
-MIME-Version: 1.0
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Wed, 10 Nov 2021 15:31:55 +0100
-Message-ID: <CAJZ5v0jfXr+6YaQpeAeEN11R47BdvjiM1_JsWfrCSLNpVpt1pw@mail.gmail.com>
-Subject: [GIT PULL] More power management updates for v5.16-rc1
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Linux PM <linux-pm@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        Wed, 10 Nov 2021 09:35:57 -0500
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out2.suse.de (Postfix) with ESMTP id B755B1FD63;
+        Wed, 10 Nov 2021 14:33:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1636554788; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=a7/tXrG1LGQXohNn+eUyg7B/bjycMfboDc+vZ1jI5Rg=;
+        b=FicL/c0kr+EzHMBL2Bq61fxVheD25oMosP70CyIlNBw6uEBMdJFj2umuTeIaxGe/HFeGFn
+        iS82Ab3uYeItt5+s1nRqVaNCThYrcLvU2U1hkHeQpf0OpZGDqgOaDWmfQyqKrJTIS2/b+J
+        NxwFi6vs+1PvZXUR1n+WuTar93jLWCg=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1636554788;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=a7/tXrG1LGQXohNn+eUyg7B/bjycMfboDc+vZ1jI5Rg=;
+        b=jfDZfPEG1xsC2RkB/VfJWkpybybGB1qT8pOSUjs7PD4PsZ5G9logf5i2t6Raq20w6/2U7Y
+        sR5IkRyFzIWklTBg==
+Received: from alsa1.suse.de (alsa1.suse.de [10.160.4.42])
+        by relay2.suse.de (Postfix) with ESMTP id 2141DA3B84;
+        Wed, 10 Nov 2021 14:33:04 +0000 (UTC)
+Date:   Wed, 10 Nov 2021 15:33:08 +0100
+Message-ID: <s5hpmr86py3.wl-tiwai@suse.de>
+From:   Takashi Iwai <tiwai@suse.de>
+To:     Scott Branden <scott.branden@broadcom.com>
+Cc:     perex@perex.cz, tiwai@suse.com, ranjani.sridharan@linux.intel.com,
+        broonie@kernel.org, kai.vehmanen@linux.intel.com,
+        alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
+        regressions@leemhuis.info
+Subject: Re: 5.15 Linux Regression in sound hda
+In-Reply-To: <063e2397-7edb-5f48-7b0d-618b938d9dd8@broadcom.com>
+References: <063e2397-7edb-5f48-7b0d-618b938d9dd8@broadcom.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
+ FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
+ (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus,
+On Tue, 09 Nov 2021 22:12:30 +0100,
+Scott Branden wrote:
+> 
+> I'm reporting a new WARN_ON in sound/hda/hdac_bus.c that was not
+> present in 5.15.  Sorry, I don't have time to bisect this right now
+> but report is below.
+> 
+> dmesg in 5.14 kernel was:
+> snd_hda_intel 0000:00:1f.3: bound 0000:00:02.0 (ops 0xffffffffaa2ac520)
+> GACT probability on
+> Mirror/redirect action on
+> Simple TC action Loaded
+> u32 classifier
+>     Performance counters on
+>     input device check on
+>     Actions configured
+> hdaudio hdaudioC0D0: Unable to bind the codec
+> hdaudio hdaudioC0D2: Unable to bind the codec
+> 
+> dmesg in 5.15 kernel produces WARN_ON in sound/hda/hdac_bus.c
+> snd_hda_intel 0000:00:1f.3: bound 0000:00:02.0 (ops 0xffffffffad8b02a0)
+> GACT probability on
+> Mirror/redirect action on
+> Simple TC action Loaded
+> u32 classifier
+>     Performance counters on
+>     input device check on
+>     Actions configured
+> snd_hda_intel 0000:00:1f.3: Cannot probe codecs, giving up
+> Initializing XFRM netlink socket
+> ------------[ cut here ]------------
+> NET: Registered PF_INET6 protocol family
+> WARNING: CPU: 14 PID: 186 at sound/hda/hdac_bus.c:73
 
-Please pull from the tag
+This indicates the leftover codecs on the bus, and it's likely
+triggered by the recent change to allow retrying the codec probes.
 
- git://git.kernel.org/pub/scm/linux/kernel/git/rafael/linux-pm.git \
- pm-5.16-rc1-2
+Did this HD-audio stuff work at all before 5.15?  The codec bind error
+itself shouldn't be brought by that change.
 
-with top-most commit dcc0b6f2e63ac3bdcea5c9686de4cb1684f2eb33
-
- Merge branches 'pm-opp' and 'pm-cpufreq'
-
-on top of commit 833db72142b93a89211c1e43ca0a1e2e16457756
-
- Merge tag 'pm-5.16-rc1' of
-git://git.kernel.org/pub/scm/linux/kernel/git/rafael/linux-pm
-
-to receive more power management updates for 5.16-rc1.
-
-These fix 3 intel_pstate driver regressions, fix locking in the core
-code suspending and resuming devices during system PM transitions, fix
-the handling of cpuidle drivers based on runtime PM during system-wide
-suspend, fix 2 issues in the operating performance points (OPP)
-framework and resource-managed helpers to it.
-
-Specifics:
-
- - Fix 2 intel_pstate driver regressions related to the HWP interrupt
-   handling added recently (Srinivas Pandruvada).
-
- - Fix intel_pstate driver regression introduced during the 5.11
-   cycle and causing HWP desired performance to be mishandled in
-   some cases when switching driver modes and during system
-   suspend and shutdown (Rafael Wysocki).
-
- - Fix system-wide device suspend and resume locking to avoid
-   deadlocks when device objects are deleted during a system-wide
-   PM transition (Rafael Wysocki).
-
- - Modify system-wide suspend of devices to prevent cpuidle drivers
-   based on runtime PM from misbehaving during the "no IRQ" phase of
-   it (Ulf Hansson).
-
- - Fix return value of _opp_add_static_v2() helper (YueHaibing).
-
- - Fix required-opp handle count (Pavankumar Kondeti).
-
- - Add resource managed OPP helpers, update dev_pm_opp_attach_genpd(),
-   update their devfreq users, and make minor DT binding change (Dmitry
-   Osipenko).
-
-Thanks!
+The warning itself can be solved by the patch below, I suppose
+(note: totally untested!)
 
 
----------------
+thanks,
 
-Dmitry Osipenko (6):
-      opp: Change type of dev_pm_opp_attach_genpd(names) argument
-      opp: Add more resource-managed variants of dev_pm_opp_of_add_table()
-      PM / devfreq: Add devm_devfreq_add_governor()
-      PM / devfreq: tegra30: Use resource-managed helpers
-      PM / devfreq: tegra30: Check whether clk_round_rate() returns zero rate
-      dt-bindings: opp: Allow multi-worded OPP entry name
+Takashi
 
-Pavankumar Kondeti (1):
-      opp: Fix required-opps phandle array count check
-
-Rafael J. Wysocki (2):
-      cpufreq: intel_pstate: Clear HWP desired on suspend/shutdown and offline
-      PM: sleep: Avoid calling put_device() under dpm_list_mtx
-
-Srinivas Pandruvada (2):
-      cpufreq: intel_pstate: Fix unchecked MSR 0x773 access
-      cpufreq: intel_pstate: Clear HWP Status during HWP Interrupt enable
-
-Ulf Hansson (1):
-      PM: sleep: Fix runtime PM based cpuidle support
-
-YueHaibing (1):
-      opp: Fix return in _opp_add_static_v2()
-
----------------
-
- .../devicetree/bindings/opp/opp-v2-base.yaml       |   2 +-
- drivers/base/power/main.c                          |  85 +++++++++++-----
- drivers/cpufreq/intel_pstate.c                     |  36 ++++++-
- drivers/devfreq/devfreq.c                          |  26 +++++
- drivers/devfreq/governor.h                         |   3 +
- drivers/devfreq/tegra30-devfreq.c                  | 109 +++++++++------------
- drivers/opp/core.c                                 |   6 +-
- drivers/opp/of.c                                   |  50 ++++++++--
- include/linux/pm_opp.h                             |  20 +++-
- 9 files changed, 229 insertions(+), 108 deletions(-)
+--- a/sound/pci/hda/hda_intel.c
++++ b/sound/pci/hda/hda_intel.c
+@@ -2327,7 +2327,8 @@ static int azx_probe_continue(struct azx *chip)
+ 
+ out_free:
+ 	if (err < 0) {
+-		azx_free(chip);
++		pci_set_drvdata(pci, NULL);
++		snd_card_free(chip->card);
+ 		return err;
+ 	}
+ 
