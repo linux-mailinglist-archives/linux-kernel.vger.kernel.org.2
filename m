@@ -2,113 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A53D44C9F2
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 21:01:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D51E44C9FE
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 21:04:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231455AbhKJUEM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Nov 2021 15:04:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33322 "EHLO
+        id S231777AbhKJUGu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Nov 2021 15:06:50 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33922 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230345AbhKJUEK (ORCPT
+        with ESMTP id S230230AbhKJUGs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Nov 2021 15:04:10 -0500
-Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com [IPv6:2a00:1450:4864:20::136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C7913C061764
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Nov 2021 12:01:22 -0800 (PST)
-Received: by mail-lf1-x136.google.com with SMTP id f18so8706012lfv.6
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Nov 2021 12:01:22 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=bOoXuUtuBFoRdimZlGd0hZ6ppoJ6XBMiccEP8Jcpxhs=;
-        b=MZmyZ7EZND/KW7gDRJdVoL1TbqyQJZ+vfp6RqIx5B7cXyksXKA7sESwCkNI1+b0W61
-         EH0Sp8GJulueL72ug/1Y1cVwFcAxRLlmfYfVmgysp9MWji2A9TNuJRypFYtqvk9DDKZ2
-         k8SGnFjVgcJNXFD2gQHMO49mW7dXk2zLavEvMen6gJHCzRV6LqTaC8wzyrnXYDkUFv4Y
-         qXyF0S1hvDxP3xrM8k5F/7JjT3R+4IJuEi1IQJxkalqxIY5AhMEQffGvZfXW7fGpM3iM
-         Z1c7koqmZirxdsUK3izqTqdpduaolQooJoYoXJD+8CTYImz3wruLbK++gKKefP8+u1rt
-         2BjA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=bOoXuUtuBFoRdimZlGd0hZ6ppoJ6XBMiccEP8Jcpxhs=;
-        b=sPFvOb0uKeYALviT27lIOU+yj/hudHGn1rkQ1xmKBD5LKy+82ZlzyfrQNRxqmLAPuK
-         45IZhPsuFLr7Nfo2Kun9EFskgxU0w5If6RlG+3uEt/cEZCSS2TJbXCamlIlsO9s6cMPa
-         LxRcuRoiCPyUjSGo6zngi3rxZo8i3b4WyjSyQs8yjJfKh025nw8SmvfuIyfAtLdpaaV5
-         6WiAJMCsWcK/G6Qnb4O/vsq+ZrSo9F0hMZvH1sYSD7K85wLFNgWii32OGy0bPP9r/uPI
-         Jtub31yHcNxZr4vsaah1SPRPgYGBE6emVXRvw2GJqtRX0AfAvMJYG1FkCWpqvfW6vCL/
-         ZREQ==
-X-Gm-Message-State: AOAM533FA4ECrKT45P2TDrefCXnTnOPPPgHBNMdp6LljP+4hDWmQa6NI
-        6dHnBV+2Vmvbqe81s3WnF+rphGqmQ0BwMfPZMqCs+Q==
-X-Google-Smtp-Source: ABdhPJx4e6muE3OOZUnw7SVZuFmf3EKEXLbwnBKp0zptjSoyknQolTyufouyua50ueW4r3IM+Ib/QfQfeJYxsvMJCzQ=
-X-Received: by 2002:a05:6512:607:: with SMTP id b7mr1565363lfe.489.1636574480546;
- Wed, 10 Nov 2021 12:01:20 -0800 (PST)
+        Wed, 10 Nov 2021 15:06:48 -0500
+Received: from mx0b-00190b01.pphosted.com (mx0b-00190b01.pphosted.com [IPv6:2620:100:9005:57f::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 925D6C061764;
+        Wed, 10 Nov 2021 12:04:00 -0800 (PST)
+Received: from pps.filterd (m0122330.ppops.net [127.0.0.1])
+        by mx0b-00190b01.pphosted.com (8.16.1.2/8.16.1.2) with ESMTP id 1AAHNt9Z016267;
+        Wed, 10 Nov 2021 20:03:24 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=akamai.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=jan2016.eng;
+ bh=0QZf4HQX7jtlOGARvRVFXjZAU2DrV+22O8nO5mxMSIY=;
+ b=EtkXDd8kR+mGtVF6R+9eSYSh26TtahzhXCoHBgy1wxGNsvv2x7kh0R47E3UXQxvOi5sl
+ FR3SWj3gCh4ziNNMqF2dPjQx2I3L7Bqva7feLYHf4xcqVsflXdUflrt4PDNLsIxHM7Kt
+ tXgOZ35ckbK1vJu/K8QfLkODYq7XwEZA3HIJiz8QPfiBXTry5f5pacxt63/h98Mjdqry
+ D5T9uhZ1JWmAdFn/ndXsLH0Ws8mICDyviViIRrAsDtOvVWc68brErbGxLXxfqIHc7XA0
+ JoufXHjnnjNEYf5095i9P8O/zAOwzKhYxA539O0yX8KqXyS7Mr8t/QwhnnljWeP2EAPD XA== 
+Received: from prod-mail-ppoint2 (prod-mail-ppoint2.akamai.com [184.51.33.19] (may be forged))
+        by mx0b-00190b01.pphosted.com (PPS) with ESMTPS id 3c8f8ef6jv-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 10 Nov 2021 20:03:24 +0000
+Received: from pps.filterd (prod-mail-ppoint2.akamai.com [127.0.0.1])
+        by prod-mail-ppoint2.akamai.com (8.16.1.2/8.16.1.2) with SMTP id 1AAJpsTs006737;
+        Wed, 10 Nov 2021 15:03:23 -0500
+Received: from prod-mail-relay10.akamai.com ([172.27.118.251])
+        by prod-mail-ppoint2.akamai.com with ESMTP id 3c82mj9j9h-1;
+        Wed, 10 Nov 2021 15:03:22 -0500
+Received: from [0.0.0.0] (prod-ssh-gw01.bos01.corp.akamai.com [172.27.119.138])
+        by prod-mail-relay10.akamai.com (Postfix) with ESMTP id 796B3480BC;
+        Wed, 10 Nov 2021 20:03:22 +0000 (GMT)
+Subject: Re: [PATCHv3 3/3] dynamic_debug: Add a flag for dynamic event tracing
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     Sai Prakash Ranjan <quic_saipraka@quicinc.com>,
+        Will Deacon <will@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        quic_psodagud@quicinc.com, Marc Zyngier <maz@kernel.org>,
+        gregkh@linuxfoundation.org, arnd@arndb.de,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, mingo@redhat.com,
+        jim.cromie@gmail.com, seanpaul@chromium.org,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+References: <cover.1636452784.git.quic_saipraka@quicinc.com>
+ <3706af20bc64a320ff8f3ff8950738b988f4bdf5.1636452784.git.quic_saipraka@quicinc.com>
+ <20211109104941.2d50eafc@gandalf.local.home>
+ <f7c665b9-dc17-5a7f-de80-9fa0605721fc@quicinc.com>
+ <20211109115951.1c2b5228@gandalf.local.home>
+ <264b77dd-5509-60f9-248c-a93135b01aa9@quicinc.com>
+ <20211109124046.2a772bcb@gandalf.local.home>
+ <c5715db5-965b-c1f5-3e99-04caec3d4f2c@quicinc.com>
+ <e037f449-9784-c78e-431d-43f035a9f49f@akamai.com>
+ <20211109165104.176b4cf9@gandalf.local.home>
+ <55a9fe7b-5573-0f80-e075-758b377a6c47@akamai.com>
+ <20211109172848.304b1c19@gandalf.local.home>
+From:   Jason Baron <jbaron@akamai.com>
+Message-ID: <43eeb71b-7a06-1dcb-3ae4-1eca31883df2@akamai.com>
+Date:   Wed, 10 Nov 2021 15:03:22 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-References: <20211107162641.324688-1-masahiroy@kernel.org>
-In-Reply-To: <20211107162641.324688-1-masahiroy@kernel.org>
-From:   Nick Desaulniers <ndesaulniers@google.com>
-Date:   Wed, 10 Nov 2021 12:01:09 -0800
-Message-ID: <CAKwvOdmEU+GD3d+p8n3jnToKXgGcQN4EWSd+ATg_gs4Cwr4+gQ@mail.gmail.com>
-Subject: Re: [PATCH 1/2] x86/vdso: remove -nostdlib compiler flag
-To:     Masahiro Yamada <masahiroy@kernel.org>
-Cc:     x86@kernel.org, Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H . Peter Anvin" <hpa@zytor.com>,
-        clang-built-linux@googlegroups.com,
-        Andy Lutomirski <luto@kernel.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20211109172848.304b1c19@gandalf.local.home>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.425,18.0.790
+ definitions=2021-11-10_08:2021-11-08,2021-11-10 signatures=0
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 phishscore=0 mlxscore=0
+ mlxlogscore=972 suspectscore=0 malwarescore=0 adultscore=0 bulkscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2110150000
+ definitions=main-2111100096
+X-Proofpoint-GUID: hibD0ujbGJkr1-gYS7ht7Rdacj-SHODu
+X-Proofpoint-ORIG-GUID: hibD0ujbGJkr1-gYS7ht7Rdacj-SHODu
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.205,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.0.607.475
+ definitions=2021-11-10_12,2021-11-08_02,2020-04-07_01
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 lowpriorityscore=0
+ bulkscore=0 adultscore=0 clxscore=1011 priorityscore=1501 malwarescore=0
+ mlxlogscore=918 phishscore=0 impostorscore=0 mlxscore=0 suspectscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2110150000
+ definitions=main-2111100097
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Nov 7, 2021 at 8:27 AM Masahiro Yamada <masahiroy@kernel.org> wrote:
->
-> The -nostdlib option requests the compiler to not use the standard
-> system startup files or libraries when linking. It is effective only
-> when $(CC) is used as a linker driver.
->
-> Since
->
->   379d98ddf413 ("x86: vdso: Use $LD instead of $CC to link")
->
-> $(LD) is directly used, hence -nostdlib is unneeded.
->
-> Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
-
-Thanks for the patch!
-Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
-
-> ---
->
->  arch/x86/entry/vdso/Makefile | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/arch/x86/entry/vdso/Makefile b/arch/x86/entry/vdso/Makefile
-> index a2dddcc189f6..693f8b9031fb 100644
-> --- a/arch/x86/entry/vdso/Makefile
-> +++ b/arch/x86/entry/vdso/Makefile
-> @@ -172,7 +172,7 @@ $(obj)/vdso32.so.dbg: $(obj)/vdso32/vdso32.lds $(vobjs32) FORCE
->  # The DSO images are built using a special linker script.
->  #
->  quiet_cmd_vdso = VDSO    $@
-> -      cmd_vdso = $(LD) -nostdlib -o $@ \
-> +      cmd_vdso = $(LD) -o $@ \
->                        $(VDSO_LDFLAGS) $(VDSO_LDFLAGS_$(filter %.lds,$(^F))) \
->                        -T $(filter %.lds,$^) $(filter %.o,$^) && \
->                  sh $(srctree)/$(src)/checkundef.sh '$(NM)' '$@'
-> --
-> 2.30.2
->
-> --
-> You received this message because you are subscribed to the Google Groups "Clang Built Linux" group.
-> To unsubscribe from this group and stop receiving emails from it, send an email to clang-built-linux+unsubscribe@googlegroups.com.
-> To view this discussion on the web visit https://groups.google.com/d/msgid/clang-built-linux/20211107162641.324688-1-masahiroy%40kernel.org.
 
 
+On 11/9/21 5:28 PM, Steven Rostedt wrote:
+> [ Hmm, should add Mathieu in on this discussion ]
+> 
+> On Tue, 9 Nov 2021 17:13:13 -0500
+> Jason Baron <jbaron@akamai.com> wrote:
+> 
+>>> What we are looking at there is to pass the dynamic debug descriptor to the
+>>> trace event filtering logic, where you could filter on information passed
+>>> to it. For example, on a specific file if a trace event is called by
+>>> several different files or modules.
+>>>
+>>> -- Steve  
+>>
+>> Ok, Could this be done at the dynamic debug level as it can already match
+>> on specific files and line numbers currently?
+> 
+> Not sure what you mean by that.
 
--- 
+I was just trying to say that via dynamic debug one could enable all debugs in a kernel source directory as in your example below via:
+# echo "file drivers/soc/qcom/* +p" > /sys/kernel/debug/dynamic_debug/control
+
+So if we are just looking for a printk here, one could just use pr_debug(). Or if we want that print to go the tracing ring buffer we have been
+discussing how to add that as a 'backend' for dynamic debug as well.
+
+If we want to use tracepionts, then yeah I think it's going to require adding the file, line, module data to each tracepoint site. I think this is
+probably done via the tracing macros and then that could be filtered on, but yes that's going to add bloat.
+
+The proposal here seems to be a mix of things - use the file control that dynamic debug already has to match on file name and then enable a tracepoint
+that is behind it. That seems overly complex?
+
 Thanks,
-~Nick Desaulniers
+
+-Jason
+
+> 
+> The idea was that this would only be enabled if dynamic debug is enabled
+> and that the DEFINE_DYNAMIC_DEBUG_METADATA() could be used at the
+> tracepoint function location (trace_foo()) by the tracepoint macros. And
+> then if one of the callbacks registered for the tracepoint had a
+> "dynamic_debug" flag set, it would be passed the descriptor in as a pointer.
+> 
+> And then, for example, the filtering logic of ftrace could then reference
+> the information of the event, if the user passed in something special.
+> 
+>  # echo 'DEBUG_FILE ~ "drivers/soc/qcom/*"' > events/rwmmio/rwmmio_write/filter
+>  # echo 1 > events/rwmmio/rwmmio_write/enable
+> 
+> And then only the rwmmio_write events that came from the qcom directory
+> would be printed.
+> 
+> We would create special event fields like "DEBUG_FILE", "DEBUG_FUNC",
+> "DEBUG_MOD", "DEBUG_LINE", etc, that could be used if dyndebug is enabled
+> in the kernel.
+> 
+> Of course this is going to bloat the kernel as it will create a dynamic
+> debug descriptor at every tracepoint location.
+> 
+> -- Steve
+> 
