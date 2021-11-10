@@ -2,90 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A5CBB44C2F8
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 15:30:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5A74544C2FD
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 15:31:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232191AbhKJOd3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Nov 2021 09:33:29 -0500
-Received: from smtp2.axis.com ([195.60.68.18]:64193 "EHLO smtp2.axis.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232035AbhKJOd2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Nov 2021 09:33:28 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=axis.com; q=dns/txt; s=axis-central1; t=1636554641;
-  x=1668090641;
-  h=subject:to:cc:references:from:message-id:date:
-   mime-version:in-reply-to:content-transfer-encoding;
-  bh=9kI++ufZhv3l81MzwqI23PjZg4/Jwqnhj/RwRBkqNWI=;
-  b=oMvmPYkGaaGSQrAnFQ3GcvTT3U3JzrfYj7D7YX3CssQg2Es8eIIwEAja
-   cg38D9O7JIqI7iUfUMlfR4q54CUWGX1T7VhuIA8VTgn3kPmnRAmgiSpdN
-   8cftsGEKWZ6bbCmBU7ImmK3wny0A79QGN2Dl1jyCLprRkZ2klssn8iRQl
-   ejL+/JxUPApykuF4V2vyznAH53g3uRO2YxIqtGIWL3TayxeKuhBKvJYQl
-   /yj0JJEC+x03ed2Y6zg7VEyc4F5bp/VUnDPhrrsR5GF+pwNo9q25d5pz1
-   ier2CHhYUO27hoYhpAIkoYLnM+4cwzMOj1Yi+AwHRH6i6OU5qvsggJx7T
-   w==;
-Subject: Re: [PATCH] rtc: rs5c372: Add RTC_VL_READ, RTC_VL_CLR ioctls
-To:     Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Camel Guo <Camel.Guo@axis.com>
-CC:     Alessandro Zummo <a.zummo@towertech.it>, kernel <kernel@axis.com>,
-        "linux-rtc@vger.kernel.org" <linux-rtc@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-References: <20211110115455.18699-1-camel.guo@axis.com>
- <YYvPCehWWVE5mKTy@piout.net> <2303e635-dbd0-1730-cc6f-84021eb37223@axis.com>
- <YYvW3T3wM/Qn5jSw@piout.net>
-From:   Camel Guo <camelg@axis.com>
-Message-ID: <fa032379-2ca6-f5ca-0e84-91ae13a19488@axis.com>
-Date:   Wed, 10 Nov 2021 15:30:39 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        id S232211AbhKJOel (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Nov 2021 09:34:41 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:31619 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231969AbhKJOek (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Nov 2021 09:34:40 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1636554712;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=3phrxGZVGN2PjrK9Vm6kxLTJu+dLO8uoepoqEAtKI94=;
+        b=UHXSTsuYv8Dlg9DjLLIutWNVPhS1qrpnwN6epEMrQxObwatg4x9jlEgdhNacqweoCOoPvR
+        U3c1C3ih5JPp0PqAHLfaeJOXo9MEik+4XqRAM7lGrT8SmyOAgV961hTUuzS3RMF+QDX8Su
+        RNJ2apJVoC32G7UwUSDuX993gw/LcEE=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-551-Ff43LWlCMOO8l0IsSnx29g-1; Wed, 10 Nov 2021 09:31:47 -0500
+X-MC-Unique: Ff43LWlCMOO8l0IsSnx29g-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 0C66918125C1;
+        Wed, 10 Nov 2021 14:31:46 +0000 (UTC)
+Received: from warthog.procyon.org.uk (unknown [10.33.37.68])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id AD67619733;
+        Wed, 10 Nov 2021 14:31:38 +0000 (UTC)
+Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
+        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
+        Kingdom.
+        Registered in England and Wales under Company Registration No. 3798903
+From:   David Howells <dhowells@redhat.com>
+In-Reply-To: <202111100533.Qxw3LycR-lkp@intel.com>
+References: <202111100533.Qxw3LycR-lkp@intel.com>
+To:     Dan Carpenter <dan.carpenter@oracle.com>
+Cc:     dhowells@redhat.com, kbuild@lists.01.org, lkp@intel.com,
+        kbuild-all@lists.01.org, linux-kernel@vger.kernel.org
+Subject: Re: [dhowells-fs:fscache-rewrite-indexing-2 50/64] fs/cachefiles/io.c:483 __cachefiles_prepare_write() error: uninitialized symbol 'ret'.
 MIME-Version: 1.0
-In-Reply-To: <YYvW3T3wM/Qn5jSw@piout.net>
-Content-Type: text/plain; charset="windows-1252"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.0.5.60]
-X-ClientProxiedBy: se-mail06w.axis.com (10.20.40.12) To se-mail03w.axis.com
- (10.20.40.9)
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <758371.1636554698.1@warthog.procyon.org.uk>
+Date:   Wed, 10 Nov 2021 14:31:38 +0000
+Message-ID: <758372.1636554698@warthog.procyon.org.uk>
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+That branch is obsolete as Linus was unhappy with the way it does things, but
+I'm keeping it around for the moment for diffing purposes.
 
-On 11/10/21 3:27 PM, Alexandre Belloni wrote:
-> On 10/11/2021 15:03:49+0100, Camel Guo wrote:
->> > On 10/11/2021 12:54:54+0100, Camel Guo wrote:
->> > > From: Camel Guo <camelg@axis.com>
->> > > +     switch (cmd) {
->> > > +     case RTC_VL_READ:
->> > > +             flags = 0;
->> > > +
->> > > +             switch (rs5c->type) {
->> > > +             case rtc_r2025sd:
->> > > +             case rtc_r2221tl:
->> > > +                     if ((rs5c->type == rtc_r2025sd && !(ctrl2 & R2x2x_CTRL2_XSTP)) ||
->> > > +                             (rs5c->type == rtc_r2221tl &&  (ctrl2 & R2x2x_CTRL2_XSTP))) {
->> > > +                             flags |= RTC_VL_DATA_INVALID;
->> > > +                     }
->> > > +                     if (ctrl2 & R2x2x_CTRL2_VDET)
->> > > +                             flags |= RTC_VL_ACCURACY_LOW;
->> > 
->> > Shouldn't that be RTC_VL_BACKUP_LOW?
->> 
->> Some drivers (e.g: rv3029_ioctl and rv8803_ioctl) use RTC_VL_ACCURACY_LOW,
->> but some other drivers (e.g: abx80x_ioctl, pcf2127_rtc_ioctl and
->> pcf8523_rtc_ioctl) use RTC_VL_BACKUP_LOW instead. Is there any guideline or
->> document telling the differences between them?
->> 
-> 
-> RTC_VL_BACKUP_LOW: The backup voltage is low
-> RTC_VL_ACCURACY_LOW: the primary or backup voltage is low, temperature
-> compensation (or similar) has stopped
+David
 
-Then I agree that we should go for RTC_VL_BACKUP_LOW.
-
-> 
-> -- 
-> Alexandre Belloni, co-owner and COO, Bootlin
-> Embedded Linux and Kernel engineering
-> https://bootlin.com
