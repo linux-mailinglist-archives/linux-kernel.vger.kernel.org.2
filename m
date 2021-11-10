@@ -2,96 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B84F44BA56
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 03:32:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E73B44BA59
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 03:33:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229938AbhKJCfg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Nov 2021 21:35:36 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50534 "EHLO
+        id S229958AbhKJCgO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Nov 2021 21:36:14 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50674 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229717AbhKJCff (ORCPT
+        with ESMTP id S229717AbhKJCgM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Nov 2021 21:35:35 -0500
-Received: from mail-pj1-x1029.google.com (mail-pj1-x1029.google.com [IPv6:2607:f8b0:4864:20::1029])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A938C061764;
-        Tue,  9 Nov 2021 18:32:48 -0800 (PST)
-Received: by mail-pj1-x1029.google.com with SMTP id nh10-20020a17090b364a00b001a69adad5ebso332347pjb.2;
-        Tue, 09 Nov 2021 18:32:48 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=ZEwpuSt1yBiIjYpLPBsJFt6s3rbMX5bKS5GbakO7x30=;
-        b=OCX8Ml0Ev46RRm5TOXit5PsCU+sqbr24cVpdt+EV5lVRPYUksHcpCBOOlauVyYNtnx
-         1/hOCKdSdqK//YHQZd0M6S+0Qg/N/68RFpEHico/F5jVIQAq2Fpq4HkTQSbtbJsiCfXE
-         k71OXN5Oism8+BhvYzy2dv2MTETHSe8/r1h3DF3pm7bkSwO1Zhi1GJI4Up27ZYj/Ccsy
-         hs1ZSVWw08GTJhH5AhYLUI3h5L1pwaVQSsINmkghX7G0UEvM6SYRNGVFtk7UGv22M79j
-         aHI4zyDd1gi96bcmTJcxdkAoU2E90bCkXRNdklflQi/spOMc2qJMCbdCXqqH8d9sGNRy
-         kl2w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=ZEwpuSt1yBiIjYpLPBsJFt6s3rbMX5bKS5GbakO7x30=;
-        b=lSNnyBGt/gw1ENfjtk76vFH+JL5Ac95Wc/89imWbA7iV2/sY0+OUwU5cGugrKgVuRN
-         MOyJAZZWWX95dAVg8tnR4cbPVENensTGeXlPh42O4oPbAnguHZdTgzBOz8pFQdI3w1QS
-         fFWxZsiJv8K8YNAfYNJa87yLXA1M++wSQqKxWubb4Q21kMITJrMHWcX1iAm/byXQLgrR
-         kUhCa8ehnq4Zu2uV1M1VOnenHQLkLYdgbxpVzA311NmTABj85zRSB0ZXQpmS+NwDWsTo
-         AUcWx4S/f2w9xDMDdTNcaVOlPavd6HAB0RXv7lG9AAyL+mIXRCIxaK7TtzNeuWcgyvBB
-         0QrQ==
-X-Gm-Message-State: AOAM533aHXFHf7uEiNATsNwxlK4BpXdDMx1TQ0v9I3rGkCZZWitZHY6V
-        yO9SxKoh1wKNtDGWzMRIvB4=
-X-Google-Smtp-Source: ABdhPJylO+oOtoUeHKlNYNhuXwCSwhrDGslaljnjVvvJYTcG5z6gxwIWaO48mjrgLmvA2ThG+la9Vg==
-X-Received: by 2002:a17:902:c404:b0:142:28c5:5416 with SMTP id k4-20020a170902c40400b0014228c55416mr12627173plk.62.1636511568486;
-        Tue, 09 Nov 2021 18:32:48 -0800 (PST)
-Received: from localhost.localdomain ([193.203.214.57])
-        by smtp.gmail.com with ESMTPSA id co4sm3842938pjb.2.2021.11.09.18.32.47
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 09 Nov 2021 18:32:48 -0800 (PST)
-From:   cgel.zte@gmail.com
-X-Google-Original-From: yao.jing2@zte.com.cn
-To:     valentina.manea.m@gmail.com
-Cc:     shuah@kernel.org, gregkh@linuxfoundation.org,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Jing Yao <yao.jing2@zte.com.cn>, Zeal Robot <zealci@zte.com.cn>
-Subject: [PATCH] usbip: vudc: Replace snprintf in show functions with  sysfs_emit
-Date:   Wed, 10 Nov 2021 02:32:44 +0000
-Message-Id: <20211110023244.135621-1-yao.jing2@zte.com.cn>
-X-Mailer: git-send-email 2.25.1
+        Tue, 9 Nov 2021 21:36:12 -0500
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1234::107])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1405CC061764;
+        Tue,  9 Nov 2021 18:33:26 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
+        :Reply-To:Content-ID:Content-Description;
+        bh=vaMquRSSr3aFa23drkfuWw9iKepZuzFpwndhUSYbvRQ=; b=1goCbOPQEKW0bXEYR63uiqnNqR
+        E/LwK+maT7sKLA6Kv/7JPMbQDpfHtaMWPIfk5/H0ka+DFU5EbhoMU4Y5i4+WFfazUE9zWOOT7s5d6
+        2htpB+yfojgD5V174QRt1byC53pjXio9RmJAAbrNBR7+JDf2Ml9wnV+36ty/xnt70gg9RoD0E5OEG
+        QZYcVcDf2pTA9d6QGWXDnrF57BXsVpr65MbYViE6mOP7UWizl+C6mkLMPFk+aH4OQFvUEL0Ax2gKp
+        WBF6hjn8FkqLsqj08exjt136gkFyB4ZvfGVapAcY/s05KDvxfzUpGXPzbQgkhpiZgH+yD3YhQ40J0
+        LUyc2nVw==;
+Received: from [2601:1c0:6280:3f0::aa0b]
+        by merlin.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mkdQF-008qUm-In; Wed, 10 Nov 2021 02:33:12 +0000
+Subject: Re: [PATCH v2 1/2] mmc: Add SD/SDIO driver for Sunplus SP7021
+To:     "LH.Kuo" <lhjeff911@gmail.com>, p.zabel@pengutronix.de,
+        daniel.thompson@linaro.org, lee.jones@linaro.org,
+        u.kleine-koenig@pengutronix.de, ulf.hansson@linaro.org,
+        robh+dt@kernel.org, linux-kernel@vger.kernel.org,
+        linux-mmc@vger.kernel.org, devicetree@vger.kernel.org
+Cc:     qinjian@cqplus1.com, wells.lu@sunplus.com,
+        "LH.Kuo" <lh.kuo@sunplus.com>
+References: <1635487055-18494-1-git-send-email-lh.kuo@sunplus.com>
+ <1636444705-17883-1-git-send-email-lh.kuo@sunplus.com>
+ <1636444705-17883-2-git-send-email-lh.kuo@sunplus.com>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <6c5c6e83-8176-8b4a-9c2c-f01a262de5de@infradead.org>
+Date:   Tue, 9 Nov 2021 18:33:05 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <1636444705-17883-2-git-send-email-lh.kuo@sunplus.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jing Yao <yao.jing2@zte.com.cn>
+Hi--
 
-coccicheck complains about the use of snprintf() in sysfs show
-functions:
-WARNING use scnprintf or sprintf
+On 11/8/21 11:58 PM, LH.Kuo wrote:
+> diff --git a/drivers/mmc/host/Kconfig b/drivers/mmc/host/Kconfig
+> index 5af8494..2aba9eb 100644
+> --- a/drivers/mmc/host/Kconfig
+> +++ b/drivers/mmc/host/Kconfig
+> @@ -1091,5 +1091,15 @@ config MMC_OWL
+>   	  This selects support for the SD/MMC Host Controller on
+>   	  Actions Semi Owl SoCs.
+>   
+> +config MMC_SP_SDV2
+> +	tristate "Sunplus SP7021 SD/SDIO Controller"
+> +	depends on SOC_SP7021
+> +	help
+> +		If you say yes here, you will get support for SD/SDIO host interface
+> +		on sunplus Socs.
 
-Use sysfs_emit instead of scnprintf, snprintf or sprintf makes more
-sense.
+		   Sunplus SoCs.
 
-Reported-by: Zeal Robot <zealci@zte.com.cn>
-Signed-off-by: Jing Yao <yao.jing2@zte.com.cn>
----
- drivers/usb/usbip/vudc_sysfs.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+> +		If you have a controller with this interface, say Y or M here.
+> +		If unsure, say N.
 
-diff --git a/drivers/usb/usbip/vudc_sysfs.c b/drivers/usb/usbip/vudc_sysfs.c
-index d1cf6b51bf85..6af594bd3d5e 100644
---- a/drivers/usb/usbip/vudc_sysfs.c
-+++ b/drivers/usb/usbip/vudc_sysfs.c
-@@ -242,7 +242,7 @@ static ssize_t usbip_status_show(struct device *dev,
- 	status = udc->ud.status;
- 	spin_unlock_irq(&udc->ud.lock);
- 
--	return snprintf(out, PAGE_SIZE, "%d\n", status);
-+	return sysfs_emit(out, "%d\n", status);
- }
- static DEVICE_ATTR_RO(usbip_status);
- 
+All 4 lines of help text should be indented only with one tab + 2 spaces,
+not 2 tabs, per coding-style.rst.
+
+
+> +                Sunplus  SD/SDIO Host Controller support"
+
+I am thinking that this last line should not be here at all... ???
+
+
+thanks.
 -- 
-2.25.1
-
+~Randy
