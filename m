@@ -2,137 +2,175 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 99CA844BAA5
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 04:34:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CB4DC44BAA8
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 04:35:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230232AbhKJDgs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Nov 2021 22:36:48 -0500
-Received: from twspam01.aspeedtech.com ([211.20.114.71]:32101 "EHLO
-        twspam01.aspeedtech.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229963AbhKJDgo (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Nov 2021 22:36:44 -0500
-Received: from mail.aspeedtech.com ([192.168.0.24])
-        by twspam01.aspeedtech.com with ESMTP id 1AA39hMY095864;
-        Wed, 10 Nov 2021 11:09:43 +0800 (GMT-8)
-        (envelope-from jammy_huang@aspeedtech.com)
-Received: from [192.168.2.115] (192.168.2.115) by TWMBX02.aspeed.com
- (192.168.0.24) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Wed, 10 Nov
- 2021 11:33:01 +0800
-Message-ID: <e8b51641-7b5f-376c-92e1-3d52d0f98f46@aspeedtech.com>
-Date:   Wed, 10 Nov 2021 11:33:02 +0800
+        id S230253AbhKJDhv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Nov 2021 22:37:51 -0500
+Received: from mail.loongson.cn ([114.242.206.163]:33858 "EHLO loongson.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S229963AbhKJDhu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Nov 2021 22:37:50 -0500
+Received: from openarena.loongson.cn (unknown [10.20.41.56])
+        by mail.loongson.cn (Coremail) with SMTP id AQAAf9Dxb9PbPYth0MQBAA--.4086S2;
+        Wed, 10 Nov 2021 11:34:51 +0800 (CST)
+From:   suijingfeng <suijingfeng@loongson.cn>
+To:     Huacai Chen <chenhuacai@kernel.org>,
+        Jiaxun Yang <jiaxun.yang@flygoat.com>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        David Airlie <airlied@linux.ie>
+Cc:     linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] mips/loongson64: seperate wbflush_loongson out of setup.c
+Date:   Wed, 10 Nov 2021 11:34:51 +0800
+Message-Id: <20211110033451.326093-1-suijingfeng@loongson.cn>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
- Thunderbird/91.3.0
-Subject: Re: [PATCH] media: aspeed: Fix incorrect resolution detected
-Content-Language: en-US
-To:     Paul Menzel <pmenzel@molgen.mpg.de>
-CC:     "eajames@linux.ibm.com" <eajames@linux.ibm.com>,
-        "mchehab@kernel.org" <mchehab@kernel.org>,
-        "joel@jms.id.au" <joel@jms.id.au>,
-        "andrew@aj.id.au" <andrew@aj.id.au>,
-        "linux-media@vger.kernel.org" <linux-media@vger.kernel.org>,
-        "openbmc@lists.ozlabs.org" <openbmc@lists.ozlabs.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-aspeed@lists.ozlabs.org" <linux-aspeed@lists.ozlabs.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-References: <20211109095453.12363-1-jammy_huang@aspeedtech.com>
- <ac30786b-dbeb-db77-4fd8-6fe1efbdb929@molgen.mpg.de>
-From:   Jammy Huang <jammy_huang@aspeedtech.com>
-In-Reply-To: <ac30786b-dbeb-db77-4fd8-6fe1efbdb929@molgen.mpg.de>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Originating-IP: [192.168.2.115]
-X-ClientProxiedBy: TWMBX02.aspeed.com (192.168.0.24) To TWMBX02.aspeed.com
- (192.168.0.24)
-X-DNSRBL: 
-X-MAIL: twspam01.aspeedtech.com 1AA39hMY095864
+X-CM-TRANSID: AQAAf9Dxb9PbPYth0MQBAA--.4086S2
+X-Coremail-Antispam: 1UD129KBjvJXoWxXr4UZrWkWFWrZr17WrW8Crg_yoWrXr1fpw
+        sYkan5Gr48Zr17Ars3CryUZr45Za95GFs7XF42vFyUZasFq34jvrn3KryrJrWDXry0qayr
+        u34UWrZ8uFy7CaUanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUk0b7Iv0xC_KF4lb4IE77IF4wAFF20E14v26r1j6r4UM7CY07I2
+        0VC2zVCF04k26cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rw
+        A2F7IY1VAKz4vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Gr0_Xr1l84ACjcxK6xII
+        jxv20xvEc7CjxVAFwI0_Gr0_Cr1l84ACjcxK6I8E87Iv67AKxVW8Jr0_Cr1UM28EF7xvwV
+        C2z280aVCY1x0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC
+        0VAKzVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr
+        1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcxkI7VAKI48JMxkIecxEwVCm-wCF04k20xvY
+        0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I
+        0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_JF0_Jw1lIxkGc2Ij64vIr41lIxAI
+        cVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Jr0_Gr1lIxAIcV
+        CF04k26cxKx2IYs7xG6rW3Jr0E3s1lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280
+        aVCY1x0267AKxVWUJVW8JbIYCTnIWIevJa73UjIFyTuYvjxUcDDGUUUUU
+X-CM-SenderInfo: xvxlyxpqjiv03j6o00pqjv00gofq/
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Dear Paul,
+ 1) .set pop is enough, so remove redundant .set mips0
 
-On 2021/11/9 下午 07:22, Paul Menzel wrote:
-> Dear Jammy,
->
->
-> Am 09.11.21 um 10:54 schrieb Jammy Huang:
->> During the process of os-installation, detected resolution's height
->> could be less than the correct one.
-> Can you please elaborate? What OS? What resolution was and what
-> resolution should have been detected?
-My bad. This is the scenario our QA used to find this problem, but it 
-could happen in
-any scenario with successive timing-change condition. I will update to 
-have a more
-elaborate message
->
->> Increase min-required-count of stable signal to fix the problem.
-> So you do two changes in the patch? First use the bitfield access
-> macros, and then change VE_MODE_DT_HOR_STABLE and VE_MODE_DT_VER_STABLE
-> from 6 to 10? Is that the amount of iterations? Why 10 and not 20?
-> How much time do four iterations add?
-VE_MODE_DT_HOR_STABLE means the min required count in detecting stable
-HSYNC signal to set mode detection horizontal signal stable.
-VE_MODE_DT_VER_STABLE means the min required count in detecting stable
-VSYNC signal to set mode detection vertical signal stable.
+ 2) loongson's cpu spec call the write buffers as store fill buffer,
+    it is implemented in ls3a4000, ls3a3000, ls2k1000 etc cpus.
+    wbflush is mean to empty data gathered in the write buffers within
+    the CPU, however the system is still bootable and works normally
+    if we deselect CPU_HAS_WB. This patch provided a convenient way
+    to bypass __wbflush by removing CPU_HAS_WB in arch/mips/Kconfig.
 
-How much time these iterations take varies by the input timing.
-If VE_MODE_DT_VER_STABLE is 10, it means 10 successive stable vsync required
-to make vertical signal stable flag raised. If the current timing is 60 
-fps, it will takes
-at least 10/60 second.
-The suggested min acceptable value for these two are 3 and max is 15.
-> Sorry for my ignorance, but if you could make it two patches, that’d be
-> great.
-Sure, I will make it two patches in next update.
->
->> Fixes: d2b4387f3bdf ("media: platform: Add Aspeed Video Engine driver")
->> Signed-off-by: Jammy Huang <jammy_huang@aspeedtech.com>
->> ---
->>    drivers/media/platform/aspeed-video.c | 13 ++++++++++++-
->>    1 file changed, 12 insertions(+), 1 deletion(-)
->>
->> diff --git a/drivers/media/platform/aspeed-video.c b/drivers/media/platform/aspeed-video.c
->> index 5da52646b298..625a77ddb479 100644
->> --- a/drivers/media/platform/aspeed-video.c
->> +++ b/drivers/media/platform/aspeed-video.c
->> @@ -196,6 +196,12 @@
->>    #define  VE_INTERRUPT_VSYNC_DESC	BIT(11)
->>    
->>    #define VE_MODE_DETECT			0x30c
->> +#define  VE_MODE_DT_HOR_TOLER		GENMASK(31, 28)
->> +#define  VE_MODE_DT_VER_TOLER		GENMASK(27, 24)
->> +#define  VE_MODE_DT_HOR_STABLE		GENMASK(23, 20)
->> +#define  VE_MODE_DT_VER_STABLE		GENMASK(19, 16)
->> +#define  VE_MODE_DT_EDG_THROD		GENMASK(15, 8)
->> +
->>    #define VE_MEM_RESTRICT_START		0x310
->>    #define VE_MEM_RESTRICT_END		0x314
->>    
->> @@ -1199,7 +1205,12 @@ static void aspeed_video_init_regs(struct aspeed_video *video)
->>    	aspeed_video_write(video, VE_SCALING_FILTER3, 0x00200000);
->>    
->>    	/* Set mode detection defaults */
->> -	aspeed_video_write(video, VE_MODE_DETECT, 0x22666500);
->> +	aspeed_video_write(video, VE_MODE_DETECT,
->> +			   FIELD_PREP(VE_MODE_DT_HOR_TOLER, 2) |
->> +			   FIELD_PREP(VE_MODE_DT_VER_TOLER, 2) |
->> +			   FIELD_PREP(VE_MODE_DT_HOR_STABLE, 10) |
->> +			   FIELD_PREP(VE_MODE_DT_VER_STABLE, 10) |
->> +			   FIELD_PREP(VE_MODE_DT_EDG_THROD, 0x65));
->>    
->>    	aspeed_video_write(video, VE_BCD_CTRL, 0);
->>    }
->>
->
-> Kind regards,
->
-> Paul
+Signed-off-by: suijingfeng <suijingfeng@loongson.cn>
+---
+ arch/mips/loongson64/Makefile  |  1 +
+ arch/mips/loongson64/setup.c   | 17 -----------------
+ arch/mips/loongson64/smp.c     |  6 +++---
+ arch/mips/loongson64/wbflush.c | 26 ++++++++++++++++++++++++++
+ 4 files changed, 30 insertions(+), 20 deletions(-)
+ create mode 100644 arch/mips/loongson64/wbflush.c
 
+diff --git a/arch/mips/loongson64/Makefile b/arch/mips/loongson64/Makefile
+index e806280bbb85..ad00d92c2871 100644
+--- a/arch/mips/loongson64/Makefile
++++ b/arch/mips/loongson64/Makefile
+@@ -12,3 +12,4 @@ obj-$(CONFIG_SUSPEND) += pm.o
+ obj-$(CONFIG_PCI_QUIRKS) += vbios_quirk.o
+ obj-$(CONFIG_CPU_LOONGSON3_CPUCFG_EMULATION) += cpucfg-emul.o
+ obj-$(CONFIG_SYSFS) += boardinfo.o
++obj-$(CONFIG_CPU_HAS_WB) += wbflush.o
+diff --git a/arch/mips/loongson64/setup.c b/arch/mips/loongson64/setup.c
+index 6fe3ffffcaa6..cb10d14da433 100644
+--- a/arch/mips/loongson64/setup.c
++++ b/arch/mips/loongson64/setup.c
+@@ -3,10 +3,7 @@
+  * Copyright (C) 2007 Lemote Inc. & Institute of Computing Technology
+  * Author: Fuxin Zhang, zhangfx@lemote.com
+  */
+-#include <linux/export.h>
+ #include <linux/init.h>
+-
+-#include <asm/wbflush.h>
+ #include <asm/bootinfo.h>
+ #include <linux/libfdt.h>
+ #include <linux/of_fdt.h>
+@@ -17,20 +14,6 @@
+ 
+ void *loongson_fdt_blob;
+ 
+-static void wbflush_loongson(void)
+-{
+-	asm(".set\tpush\n\t"
+-	    ".set\tnoreorder\n\t"
+-	    ".set mips3\n\t"
+-	    "sync\n\t"
+-	    "nop\n\t"
+-	    ".set\tpop\n\t"
+-	    ".set mips0\n\t");
+-}
+-
+-void (*__wbflush)(void) = wbflush_loongson;
+-EXPORT_SYMBOL(__wbflush);
+-
+ void __init plat_mem_setup(void)
+ {
+ 	if (loongson_fdt_blob)
+diff --git a/arch/mips/loongson64/smp.c b/arch/mips/loongson64/smp.c
+index 09ebe84a17fe..4a938a29bfb2 100644
+--- a/arch/mips/loongson64/smp.c
++++ b/arch/mips/loongson64/smp.c
+@@ -42,13 +42,13 @@ static uint32_t core0_c0count[NR_CPUS];
+ #define loongson3_ipi_write32(action, addr)	\
+ 	do {					\
+ 		writel(action, addr);		\
+-		__wbflush();			\
++		__sync();			\
+ 	} while (0)
+ /* write a 64bit value to ipi register */
+ #define loongson3_ipi_write64(action, addr)	\
+ 	do {					\
+ 		writeq(action, addr);		\
+-		__wbflush();			\
++		__sync();			\
+ 	} while (0)
+ 
+ static u32 (*ipi_read_clear)(int cpu);
+@@ -418,7 +418,7 @@ static irqreturn_t loongson3_ipi_interrupt(int irq, void *dev_id)
+ 		c0count = c0count ? c0count : 1;
+ 		for (i = 1; i < nr_cpu_ids; i++)
+ 			core0_c0count[i] = c0count;
+-		__wbflush(); /* Let others see the result ASAP */
++		__sync(); /* Let others see the result ASAP */
+ 	}
+ 
+ 	return IRQ_HANDLED;
+diff --git a/arch/mips/loongson64/wbflush.c b/arch/mips/loongson64/wbflush.c
+new file mode 100644
+index 000000000000..7127e43d44e6
+--- /dev/null
++++ b/arch/mips/loongson64/wbflush.c
+@@ -0,0 +1,26 @@
++// SPDX-License-Identifier: GPL-2.0-or-later
++/*
++ * Copyright (C) 2007 Lemote Inc. & Institute of Computing Technology
++ * Author: Fuxin Zhang, zhangfx@lemote.com
++ */
++#include <linux/export.h>
++#include <linux/init.h>
++#include <asm/wbflush.h>
++#include <asm/sync.h>
++
++#ifdef CONFIG_CPU_HAS_WB
++
++static void wbflush_loongson(void)
++{
++	asm(".set push\n\t"
++	    ".set noreorder\n\t"
++	    ".set mips64r2\n\t"
++	    "sync\n\t"
++	    "nop\n\t"
++	    ".set pop\n\t");
++}
++
++void (*__wbflush)(void) = wbflush_loongson;
++EXPORT_SYMBOL(__wbflush);
++
++#endif
 -- 
-Best Regards
-Jammy
+2.25.1
 
