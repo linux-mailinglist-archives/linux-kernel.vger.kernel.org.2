@@ -2,264 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2CBCA44B9EB
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 02:21:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 026C144B9EA
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 02:20:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229697AbhKJBX5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Nov 2021 20:23:57 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:29926 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229445AbhKJBXz (ORCPT
+        id S229595AbhKJBXh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Nov 2021 20:23:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34660 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229445AbhKJBXf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Nov 2021 20:23:55 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1636507268;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=aZak0cu4xlWEqrjFV80M6GUtXoJNhv8adOfgZNsENsc=;
-        b=Cvcy18NWOwZ8SPy/VZxuutvlJdAd0/xKgFz9YUea2ESJYD13Rqdr3soVPVN2U8HHRCAIqy
-        Wn6SOocj0SNJMKaZtD2AKIvwYdLYfpUJ5KqhFFw2T/NxGG6liSpqveMuGSPrvcDJhbX3rT
-        5snTGMIJlnQzr+m1UCzkPc/58rapUDw=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-424-OR7UM8CuPYanQCa0aoXXtA-1; Tue, 09 Nov 2021 20:21:05 -0500
-X-MC-Unique: OR7UM8CuPYanQCa0aoXXtA-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 24FFA10144F0;
-        Wed, 10 Nov 2021 01:21:04 +0000 (UTC)
-Received: from T590 (ovpn-8-19.pek2.redhat.com [10.72.8.19])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 6CD1C5DA61;
-        Wed, 10 Nov 2021 01:20:34 +0000 (UTC)
-Date:   Wed, 10 Nov 2021 09:20:27 +0800
-From:   Ming Lei <ming.lei@redhat.com>
-To:     Petr Mladek <pmladek@suse.com>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org, Luis Chamberlain <mcgrof@kernel.org>,
-        Joe Lawrence <joe.lawrence@redhat.com>, ming.lei@redhat.com
-Subject: Re: [PATCH 2/2] kobject: wait until kobject is cleaned up before
- freeing module
-Message-ID: <YYseW96UYRJ/eE5p@T590>
-References: <20211105063710.4092936-1-ming.lei@redhat.com>
- <20211105063710.4092936-3-ming.lei@redhat.com>
- <YYldwVcrEqShHyq8@alley>
- <YYnWO1Jug3xu+NB+@T590>
- <YYp0IffopQMiOsHN@alley>
+        Tue, 9 Nov 2021 20:23:35 -0500
+Received: from mail-pj1-x102e.google.com (mail-pj1-x102e.google.com [IPv6:2607:f8b0:4864:20::102e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B95FDC061764;
+        Tue,  9 Nov 2021 17:20:48 -0800 (PST)
+Received: by mail-pj1-x102e.google.com with SMTP id w33-20020a17090a6ba400b001a722a06212so698297pjj.0;
+        Tue, 09 Nov 2021 17:20:48 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:from:date:message-id:subject:to;
+        bh=XCSR5iwGqGEBhi6PnLhH0qauR+M79oBnHfHwY8wLXAQ=;
+        b=C2XYj00vc0AopmrYfgu/fZXDCXFakY28FRIGUQ1sS2X28aGT0u2/1iC7Q4hczdoyJr
+         Jg9gTBYMgD42WoJ5I1I2kbd722u93omHz+cvhG/Z3/UjGKBrbCOuiBG8S1893oGW9nMt
+         BW6wi4bVicCPKNjTdA8EEq+OG8PA9UUMGxRFkmaCS0SEeblMrCZuwAO34iAejDlohCzk
+         IbASLjI9zLug9emQbcU4mjNLhm7IT/xHeJ8E/kArDfyX+lePEwscvn05qR1po4sI79G2
+         iYgsFub0PIQlwrQJ37nsdorPNFkjYTMz5bXDOBrMZX0nWx7tqLHU0UPloWnJUHBFTvOX
+         0FEg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
+        bh=XCSR5iwGqGEBhi6PnLhH0qauR+M79oBnHfHwY8wLXAQ=;
+        b=m4ORJC/INp9u4pVrCnpk9uSbQZpEN4tOgsIbUvGWkiMSTlNWFrtAaJqTYfcoL/5/oP
+         n0CENOnArQrtgpnSm80kj/D49XzkqCKmCO3i0ASBLZwx8nzKtXD0pM7M2evvVsVSrpPK
+         fKJLQJ+5r7gYbR0u1NC4ASBNp3h4WqzHrGvNfmSB4yvQgd6y9Dr4VSD+8gQ7IFrSA57a
+         grslb3OXUiLyA4ABSdA4CMB/7vSCi34YjKsmS5dbOmFcv4eDBoPWmJTEAomFd+6xfDVZ
+         /XEGmw28tTIn2RbdHlhtmB0wkQsMViZvwGWjV64RXwrhrvdgq4I7S9O4OjtQBkV6ydIs
+         91hQ==
+X-Gm-Message-State: AOAM532YoxdaYwkj+lnqXFrQYHMM54Z7EUbKCtNwN3TADCsEkFnUYZcd
+        mUaSPkAVviv8aS7MV88qTWabp/SsHOzLgvMHaZh2VPeUZ9i5ZKfBHA==
+X-Google-Smtp-Source: ABdhPJyjNB39y6S7jrRV0AVGeZPvOKiJj/8ancLMTAlS93BByq/0PacMbe38F8Gg3tWiZh4F0p+6WJXzKqXVPTylh04=
+X-Received: by 2002:a17:903:2348:b0:141:d60b:ee90 with SMTP id
+ c8-20020a170903234800b00141d60bee90mr11381103plh.15.1636507248024; Tue, 09
+ Nov 2021 17:20:48 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YYp0IffopQMiOsHN@alley>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
+From:   Hao Sun <sunhao.th@gmail.com>
+Date:   Wed, 10 Nov 2021 09:20:38 +0800
+Message-ID: <CACkBjsasF+eDp4_dtvTBr9Thg-9RyYOQg3nwvRFuu+r3XecHig@mail.gmail.com>
+Subject: WARNING in __folio_mark_dirty
+To:     konishi.ryusuke@gmail.com, linux-nilfs@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        akpm@linux-foundation.org, Linux MM <linux-mm@kvack.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 09, 2021 at 02:14:09PM +0100, Petr Mladek wrote:
-> On Tue 2021-11-09 10:00:27, Ming Lei wrote:
-> > On Mon, Nov 08, 2021 at 06:26:25PM +0100, Petr Mladek wrote:
-> > > On Fri 2021-11-05 14:37:10, Ming Lei wrote:
-> > > > kobject_put() may become asynchronously because of
-> > > > CONFIG_DEBUG_KOBJECT_RELEASE, so once kobject_put() returns, the caller may
-> > > > expect the kobject is released after the last refcnt is dropped, however
-> > > > CONFIG_DEBUG_KOBJECT_RELEASE just schedules one delayed work function
-> > > > for cleaning up the kobject. Inside the cleanup handler, kobj->ktype and
-> > > > kobj->ktype->release are required.
-> > > > 
-> > > > It is supposed that no activity is on kobject itself any more since
-> > > > module_exit() is started, so it is reasonable for the kobject user or
-> > > > driver to expect that kobject can be really released in the last run of
-> > > > kobject_put() in module_exit() code path. Otherwise, it can be thought as
-> > > > one driver's bug since the module is going away.
-> > > 
-> > > Honestly, this looks a bit fragile. What if there is still another
-> > > reference from some reason. IMHO, it is easy to do it wrong.
-> > > The kobject stuff is super-tricky.
-> > > 
-> > > Yes, there is the argument that it is a drivers bug when it does not
-> > > work.
-> > 
-> > That is another 'issue'(even not sure if there is really), and it isn't covered
-> > in this patchset, which focuses on fixing CONFIG_DEBUG_KOBJECT_RELEASE, so
-> > please do not mix the two here.
-> 
-> Yes, it is another issue but the relation is very important.
-> 
-> My understanding is that this patch prevents problems caused by
-> the delayed work. The kobject is added into kobj_cleanup_list
-> only when the delayed work is scheduled. The patch has no effect
-> if the delayed work is not used.
-> 
-> From my POV, this patch kind of removes the effect of the delayed
-> work. My point is:
-> 
-> Does it still make sense to use the delayed work in the first place?
-> Will the delayed work still help to catch some problems?
+Hello,
 
-That depends on the user of CONFIG_DEBUG_KOBJECT_RELEASE, if users
-thought it is useless, I think it is fine to remove it.
+When using Healer to fuzz the latest Linux kernel, the following crash
+was triggered.
 
-Greg, any idea about if CONFIG_DEBUG_KOBJECT_RELEASE is useful now?
+HEAD commit: 6b75d88fa81b Merge branch 'i2c/for-current'
+git tree: upstream
+console output: https://paste.ubuntu.com/p/C22bhzvZP6/
+kernel config: https://paste.ubuntu.com/p/b62Hp7BfJn/
+C reproducer: https://paste.ubuntu.com/p/2mchRNDJr4/
+Syzlang reproducer: https://paste.ubuntu.com/p/xM3DQ2f5Qz/
 
-> 
-> My point is that if this makes CONFIG_DEBUG_KOBJECT_RELEASE useless
+If you fix this issue, please add the following tag to the commit:
+Reported-by: Hao Sun <sunhao.th@gmail.com>
 
-No, that isn't true. CONFIG_DEBUG_KOBJECT_RELEASE still works in its
-original way and the delay is still there, what this patch is doing is
-to make it safe by completing the delayed cleanup before freeing module,
-because ->ktype & related callbacks are often allocated in module static
-memory.
-
-> than we should remove CONFIG_DEBUG_KOBJECT_RELEASE instead.
-> But then we need something else to prevent bugs that this
-> functionality helped to debug.
-> 
-> 
-> > The usual module use model is that module can't be used if someone is
-> > use it. After module_exit() is started, no one should & can 'use' the module
-> > any more, that is done by module's refcnt.
-> 
-> This statement is suspicious. IMHO, no one should 'use' the module
-> after module_exit() _finishes_.
-
-I said after module_exit() is started, not module_exit() is finished.
-
-> 
-> It should be perfectly fine to use the module after module_exit()
-> _starts_ as long as module_exit() callback could wait until
-> the existing users stop using the module.
-
-No, once module_exit() is started, try_module_get() will return false,
-so module isn't supposed to be used any more. See delete_module(),
-->exit() is only called in case of module refcnt being zero.
-
-> 
-> 
-> > So far the driver core subsystem doesn't use module owner info, so no
-> > need to grab module refcnt in case that kobject is used. And that
-> > actually doesn't work here, given we can't hold the module refcnt
-> > during the kobject's lifetime, otherwise the module won't be unloaded
-> > at all. Sort of chicken and egg problem given kobject is often released
-> > during module_exit().
-> >
-> > But driver core does provide kobject_del() interface to wait until
-> > all show()/store() are done.
-> >
-> > So once the driver said now no one uses that device and the module
-> > can be unloaded, then kobject_del() is done inside module_exit(),
-> > who can hold kobject's extra reference? If there is, the caller should
-> > have grabbed the module refcnt to prevent module from being unloaded.
-> > 
-> > We usually think it is driver bug, see one fixed recently:
-> > 
-> > https://lore.kernel.org/linux-scsi/20211008050118.1440686-1-ming.lei@redhat.com/
-> 
-> Honestly, I do not understand how the extra module_get()/module_put()
-> could prevent the race caused by delayed kobject clean up.
-
-If module_get() is successful, module_exit() can't be called
-until the module refcnt is released.
-
-> 
-> scsi_device_dev_release() uses try_module_get(). But it always calls
-> scsi_device_dev_release_usercontext(). Why is it safe when
-> try_module_get() failed?
-> 
-> I guess that the patch reduced the size of the race window but
-> a race might still be there.
-> 
-> Anyway, it is pity that the commit message does not include the
-> backtrace of the page fault. Or that it does not better describe
-> the race that is fixed there.
-> 
-> 
-> > > But I wonder if we could create API that might be used by
-> > > drivers and report the actuall bug. Something like:
-> > >
-> > > int kobject_remove_sync(struct kobject *kobj)
-> >
-> > Not sure if this interface is useful:
-> > 
-> > 1) who need this interface?
-> > - It is basically not possible to audit all drivers for the conversion, and not
-> > necessary too.
-> 
-> It might be useful for people that want to create interface and
-> drivers that are safe to unload.
-
-It is one generic issue because most of ->ktype and related callbacks are stored
-in module static memory, so all modules should be unloaded safely. If the interface
-is created, in theory the last kobject_put() called in _all__ module_exit() should be
-converted to this new interface. That is why I said it is basically not possible,
-cause it isn't easy to figure one which is the last one in each
-driver/module.
-
-Again, any real report which needs such new interface? If there isn't, I
-don't think it makes sense to take effort for making one, especially the
-new API is very hard to use/convert.
-
-> 
-> 
-> > 2) this may break some common open()/release model:
-> > 
-> > - user open() one device, here module refcnt is hold, and device/kobject refcnt
-> >   is hold too
-> > 
-> > - device needs to be deleted by kobject_del() via sysfs or ioctl or
-> >   others, if kobject_remove_sync() is used, it will complain, but it
-> >   is just false warning. There are lots of such examples.
-> 
-> It might be solved the same way as sysfs_break_active_protection().
-> I mean that the API might be aware of that it is removing itself.
-> 
-> 
-> > 3) this way may break some uses if spin_lock() is held before calling
-> > kobject_put().
-> 
-> This is not specific to the new API. The same problem is also with kobject_del().
-
-No, spin_lock can't be held for kobject_del() which will sleep always.
-
-> 
-> 
-> > 4) not usable in deleting kobject itself, or break the deleting me interface
-> > simply.
-> 
-> It will be useful when the deleting is offloaded to a workqueue.
-
-How is it useful?
-
-> I still consider is less hacky than using sysfs_break_active_protection().
-
-OK, if you think wq is better, care to post a patch to replace
-sysfs_break_active_protection() with justification so that every user
-can benefit from it?
-
-> 
-> 
-> > 5) actually only one implicit rule is here: kobject needs to be released
-> > before module exit is done if the kobject is created by this module
-> 
-> It the kobject is created by a module, it should be also destroyed
-> by the module. And this is where some remove_kobject() API might
-> be useful.
-
-Yeah, but why new API is required, you have to provide one real report
-for supporting the idea of new API.
-
-> 
-> 
-> > 6) much less flexible than the usual two stage removal
-> 
-> We still could create a two stage API. The point is that it might be
-> useful to have an API that will wait until the kobject is really
-> released.
-
-You have to know which one is the final release first, not mention not
-every kobject_put() can wait.
-
-
-Thanks,
-Ming
-
+NILFS (loop10): segctord starting. Construction interval = 5 seconds,
+CP frequency < 30 seconds
+------------[ cut here ]------------
+WARNING: CPU: 3 PID: 18327 at include/linux/backing-dev.h:269
+inode_to_wb include/linux/backing-dev.h:269 [inline]
+WARNING: CPU: 3 PID: 18327 at include/linux/backing-dev.h:269
+folio_account_dirtied mm/page-writeback.c:2460 [inline]
+WARNING: CPU: 3 PID: 18327 at include/linux/backing-dev.h:269
+__folio_mark_dirty+0xab2/0xe80 mm/page-writeback.c:2509
+Modules linked in:
+CPU: 3 PID: 18327 Comm: segctord Not tainted 5.15.0+ #6
+Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS
+1.13.0-1ubuntu1.1 04/01/2014
+RIP: 0010:inode_to_wb include/linux/backing-dev.h:269 [inline]
+RIP: 0010:folio_account_dirtied mm/page-writeback.c:2460 [inline]
+RIP: 0010:__folio_mark_dirty+0xab2/0xe80 mm/page-writeback.c:2509
+Code: ff ff ff 48 8d 78 70 e8 8c 69 96 07 31 ff 89 c6 89 44 24 10 e8
+ff 52 d8 ff 8b 44 24 10 85 c0 0f 85 13 fa ff ff e8 8e 51 d8 ff <0f> 0b
+e9 07 fa ff ff e8 82 51 d8 ff e8 9d 6a 96 07 31 ff 41 89 c7
+RSP: 0018:ffffc900076ef7c0 EFLAGS: 00010046
+RAX: 0000000000000000 RBX: ffff88802c478378 RCX: ffff88802fc33980
+RDX: 0000000000000000 RSI: ffff88802fc33980 RDI: 0000000000000002
+RBP: ffffea0000b7ca80 R08: ffffffff819f0012 R09: 0000000000000000
+R10: 0000000000000005 R11: fffff9400016f950 R12: 0000000000000246
+R13: ffff88802c478138 R14: 0000000000000001 R15: 0000000000000001
+FS: 0000000000000000(0000) GS:ffff888135d00000(0000) knlGS:0000000000000000
+CS: 0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 000056054d573c18 CR3: 0000000021c4e000 CR4: 0000000000350ee0
+Call Trace:
+<TASK>
+__set_page_dirty include/linux/pagemap.h:784 [inline]
+mark_buffer_dirty+0x501/0x6a0 fs/buffer.c:1108
+nilfs_btree_propagate_p fs/nilfs2/btree.c:1889 [inline]
+nilfs_btree_propagate+0x4ba/0xce0 fs/nilfs2/btree.c:2085
+nilfs_bmap_propagate+0x73/0x170 fs/nilfs2/bmap.c:337
+nilfs_collect_dat_data+0x45/0xd0 fs/nilfs2/segment.c:625
+nilfs_segctor_apply_buffers+0x149/0x480 fs/nilfs2/segment.c:1009
+nilfs_segctor_scan_file+0x3d9/0x570 fs/nilfs2/segment.c:1058
+nilfs_segctor_collect_blocks+0xa33/0x2fb0 fs/nilfs2/segment.c:1224
+nilfs_segctor_collect fs/nilfs2/segment.c:1494 [inline]
+nilfs_segctor_do_construct+0x1228/0x5ef0 fs/nilfs2/segment.c:2036
+nilfs_segctor_construct+0x79f/0xb10 fs/nilfs2/segment.c:2372
+nilfs_segctor_thread_construct fs/nilfs2/segment.c:2480 [inline]
+nilfs_segctor_thread+0x3be/0xe40 fs/nilfs2/segment.c:2563
+kthread+0x405/0x4f0 kernel/kthread.c:327
+ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:295
+</TASK>
