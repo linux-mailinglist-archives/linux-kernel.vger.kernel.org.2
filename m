@@ -2,133 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A3BC44C207
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 14:21:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D615A44C2AC
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 15:02:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231970AbhKJNYY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Nov 2021 08:24:24 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54992 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231162AbhKJNYX (ORCPT
+        id S231628AbhKJOFS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Nov 2021 09:05:18 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:25555 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231593AbhKJOFQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Nov 2021 08:24:23 -0500
-Received: from mail-wm1-x32d.google.com (mail-wm1-x32d.google.com [IPv6:2a00:1450:4864:20::32d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD627C061764
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Nov 2021 05:21:35 -0800 (PST)
-Received: by mail-wm1-x32d.google.com with SMTP id c71-20020a1c9a4a000000b0032cdcc8cbafso1948927wme.3
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Nov 2021 05:21:35 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ffwll.ch; s=google;
-        h=date:from:to:cc:subject:message-id:mail-followup-to:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=9nSHeg+VR13aOu2Z2zxGZikb83vMLSFkcE3p79Vw4NM=;
-        b=Cj8Du9IdyEn04AQkfT9B2aGGW1ckXszoFiPpaRwkZUM74Wnatk1LUBoSWNcHkQbc0o
-         a5Szh5GJJCfZD99PEeQcu6ygFoVYpy1wakuwo5WZogubUzcRUbYUnC2e5PkgzY2KxFfb
-         6r0CPx4+c7BWPN594V90wjF+d6WPBaLtZBnO8=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id
-         :mail-followup-to:references:mime-version:content-disposition
-         :in-reply-to;
-        bh=9nSHeg+VR13aOu2Z2zxGZikb83vMLSFkcE3p79Vw4NM=;
-        b=thukzkVPoMo6HCGEnXOLML0gWzoiMW5pIxH75GaggGw8y+O4MiDSzjXk04Gc0qllk0
-         +Y4SOyjF4A4k72h3wvdxPF37/srK4PIwnqLTnk3H/V658X4kw4GzXP90bac6IFKtHtGl
-         xMNvc2IrkI+47HUCSSB6HAM/8JPIXlolwiIWfP5FOnjcwegSSK95U4iPsTGQqO1jkL+x
-         Egym13JLufD+Hw7ryApJzOI6H9VepwmDiwvyEGKoftFxqDe/T19ynfJCzdH1HpFCPS2v
-         HU0hgc4qJPxVmngTsEhMA4qOO7qP211cpPSZWOItj75XH5buPnWJPp/euPGB3HqRQy76
-         neTQ==
-X-Gm-Message-State: AOAM531yh3hSeOtZJra9waTqCUvzJ91WTyRzbH408G4ATGl+gC3jsMDG
-        kmtEXHjceSyls0VbSj9TpycmiQ==
-X-Google-Smtp-Source: ABdhPJzk6gaBdUKVq9eBgi4VIxdWtfAgmKffHb3oaPOsqV9BA2PTcP8EqDE+NI+N0VcNuqObmk/fgg==
-X-Received: by 2002:a1c:43c2:: with SMTP id q185mr16319206wma.30.1636550494461;
-        Wed, 10 Nov 2021 05:21:34 -0800 (PST)
-Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
-        by smtp.gmail.com with ESMTPSA id l11sm22401680wrp.61.2021.11.10.05.21.33
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 10 Nov 2021 05:21:33 -0800 (PST)
-Date:   Wed, 10 Nov 2021 14:21:31 +0100
-From:   Daniel Vetter <daniel@ffwll.ch>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Petr Mladek <pmladek@suse.com>,
-        Sultan Alsawaf <sultan@kerneltoast.com>,
-        Anton Vorontsov <anton@enomsg.org>,
-        Ben Segall <bsegall@google.com>,
-        Colin Cross <ccross@android.com>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        David Airlie <airlied@linux.ie>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        dri-devel@lists.freedesktop.org, Ingo Molnar <mingo@redhat.com>,
-        John Ogness <john.ogness@linutronix.de>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Kees Cook <keescook@chromium.org>,
-        linux-kernel@vger.kernel.org,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Mel Gorman <mgorman@suse.de>,
-        Sergey Senozhatsky <senozhatsky@chromium.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        Tony Luck <tony.luck@intel.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>
-Subject: Re: printk deadlock due to double lock attempt on current CPU's
- runqueue
-Message-ID: <YYvHW1OpN1L2uInb@phenom.ffwll.local>
-Mail-Followup-To: Peter Zijlstra <peterz@infradead.org>,
-        Petr Mladek <pmladek@suse.com>,
-        Sultan Alsawaf <sultan@kerneltoast.com>,
-        Anton Vorontsov <anton@enomsg.org>, Ben Segall <bsegall@google.com>,
-        Colin Cross <ccross@android.com>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        David Airlie <airlied@linux.ie>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        dri-devel@lists.freedesktop.org, Ingo Molnar <mingo@redhat.com>,
-        John Ogness <john.ogness@linutronix.de>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Kees Cook <keescook@chromium.org>, linux-kernel@vger.kernel.org,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>, Mel Gorman <mgorman@suse.de>,
-        Sergey Senozhatsky <senozhatsky@chromium.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        Tony Luck <tony.luck@intel.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>
-References: <YYrU2PdmdNkulWSM@sultan-box.localdomain>
- <YYuj/rT+EO3K0LsK@alley>
- <YYuq5d7MYL2wxlOd@hirez.programming.kicks-ass.net>
+        Wed, 10 Nov 2021 09:05:16 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1636552948;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=1TPGlDsYndtj+OjEFiCGDmUdaoybdwvNgP/PovWuwWE=;
+        b=MHZgZwkWeh4E4anL87Igt7l2bnzaS0PrVPKIh6pR7QAiYDySqAJQBi75QZouRMN7raPQIC
+        SH2P5N7oA8aSB5sIOu4Z6tFqKcg4IPa7xs/MHkUWG4II2luPbrx/s1QiQfn3SImgHdzftd
+        YQjZNpo+qKel8muON9JoD7z2n1Z62Tg=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-495-MM8c5JeAMRmm1GLTfZmcJQ-1; Wed, 10 Nov 2021 09:02:24 -0500
+X-MC-Unique: MM8c5JeAMRmm1GLTfZmcJQ-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 18BFE871807;
+        Wed, 10 Nov 2021 14:02:22 +0000 (UTC)
+Received: from fuller.cnet (ovpn-112-5.gru2.redhat.com [10.97.112.5])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 437915D6B1;
+        Wed, 10 Nov 2021 14:01:58 +0000 (UTC)
+Received: by fuller.cnet (Postfix, from userid 1000)
+        id A1A32416952E; Wed, 10 Nov 2021 10:21:59 -0300 (-03)
+Date:   Wed, 10 Nov 2021 10:21:59 -0300
+From:   Marcelo Tosatti <mtosatti@redhat.com>
+To:     Felix Moessbauer <felix.moessbauer@siemens.com>
+Cc:     longman@redhat.com, akpm@linux-foundation.org,
+        cgroups@vger.kernel.org, corbet@lwn.net, frederic@kernel.org,
+        guro@fb.com, hannes@cmpxchg.org, juri.lelli@redhat.com,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-kselftest@vger.kernel.org, lizefan.x@bytedance.com,
+        mkoutny@suse.com, pauld@redhat.com, peterz@infradead.org,
+        shuah@kernel.org, tj@kernel.org, jan.kiszka@siemens.com,
+        henning.schild@siemens.com
+Subject: Re: [PATCH v8 0/6] cgroup/cpuset: Add new cpuset partition type &
+ empty effecitve cpus
+Message-ID: <20211110132159.GA12767@fuller.cnet>
+References: <20211018143619.205065-1-longman@redhat.com>
+ <20211110111357.17617-1-felix.moessbauer@siemens.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <YYuq5d7MYL2wxlOd@hirez.programming.kicks-ass.net>
-X-Operating-System: Linux phenom 5.10.0-8-amd64 
+In-Reply-To: <20211110111357.17617-1-felix.moessbauer@siemens.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 10, 2021 at 12:20:05PM +0100, Peter Zijlstra wrote:
-> On Wed, Nov 10, 2021 at 11:50:38AM +0100, Petr Mladek wrote:
-> > On Tue 2021-11-09 12:06:48, Sultan Alsawaf wrote:
-> > > Hi,
-> > > 
-> > > I encountered a printk deadlock on 5.13 which appears to still affect the latest
-> > > kernel. The deadlock occurs due to printk being used while having the current
-> > > CPU's runqueue locked, and the underlying framebuffer console attempting to lock
-> > > the same runqueue when printk tries to flush the log buffer.
-> > > 
-> > > I'm not sure what the *correct* solution is here (don't use printk while having
-> > > a runqueue locked? don't use schedule_work() from the fbcon path? tell printk
-> > > to use one of its lock-less backends?), so I've cc'd all the relevant folks.
-> > 
-> > At the moment, printk_deferred() could be used here. It defers the
-> > console handling via irq_work().
+On Wed, Nov 10, 2021 at 12:13:57PM +0100, Felix Moessbauer wrote:
+> Hi Weiman,
 > 
-> I think I've rejected that patch at least twice now :-) John's printk
-> stuff will really land real soon now, right.
+> > v8:
+> >  - Reorganize the patch series and rationalize the features and
+> >    constraints of a partition.
+> >  - Update patch descriptions and documentation accordingly.
+> > 
+> > v7:
+> >  - Simplify the documentation patch (patch 5) as suggested by Tejun.
+> >  - Fix a typo in patch 2 and improper commit log in patch 3.
+> > 
+> > v6:
+> >  - Remove duplicated tmpmask from update_prstate() which should fix the
+> >    frame size too large problem reported by kernel test robot.
+> > 
+> > This patchset makes four enhancements to the cpuset v2 code.
+> > 
+> >  Patch 1: Enable partition with no task to have empty cpuset.cpus.effective.
+> > 
+> >  Patch 2: Refining the features and constraints of a cpuset partition
+> >  clarifying what changes are allowed.
+> >
+> >  Patch 3: Add a new partition state "isolated" to create a partition
+> >  root without load balancing. This is for handling intermitten workloads
+> >  that have a strict low latency requirement.
+> 
+> 
+> I just tested this patch-series and can confirm that it works on 5.15.0-rc7-rt15 (PREEMT_RT).
+> 
+> However, I was not able to see any latency improvements when using
+> cpuset.cpus.partition=isolated.
+> The test was performed with jitterdebugger on CPUs 1-3 and the following cmdline:
+> rcu_nocbs=1-4 nohz_full=1-4 irqaffinity=0,5-6,11 intel_pstate=disable
+> On the other cpus, stress-ng was executed to generate load.
 
-Yeah whacking all affected prinkt callers just because of fbcon does not
-sound like a good idea to me either.
--Daniel
--- 
-Daniel Vetter
-Software Engineer, Intel Corporation
-http://blog.ffwll.ch
+enum hk_flags {
+        HK_FLAG_TIMER           = 1,
+        HK_FLAG_RCU             = (1 << 1),
+        HK_FLAG_MISC            = (1 << 2),
+        HK_FLAG_SCHED           = (1 << 3),
+        HK_FLAG_TICK            = (1 << 4),
+        HK_FLAG_DOMAIN          = (1 << 5),
+        HK_FLAG_WQ              = (1 << 6),
+        HK_FLAG_MANAGED_IRQ     = (1 << 7),
+        HK_FLAG_KTHREAD         = (1 << 8),
+};
+
+static int __init housekeeping_nohz_full_setup(char *str)
+{
+        unsigned int flags;
+
+        flags = HK_FLAG_TICK | HK_FLAG_WQ | HK_FLAG_TIMER | HK_FLAG_RCU |
+                HK_FLAG_MISC | HK_FLAG_KTHREAD;
+
+        return housekeeping_setup(str, flags);
+}
+__setup("nohz_full=", housekeeping_nohz_full_setup);
+
+So HK_FLAG_SCHED and HK_FLAG_MANAGED_IRQ are unset in your configuration.
+Perhaps they are affecting your latency numbers?
+
+This tool might be handy to see what is the reason for the latency source:
+
+https://github.com/xzpeter/rt-trace-bpf
+
+./rt-trace-bcc.py -c isolated-cpu
+
+> Just some more general notes:
+> 
+> Even with this new "isolated" type, it is still very tricky to get a similar
+> behavior as with isolcpus (as long as I don't miss something here):
+> 
+> Consider an RT application that consists of a non-rt thread that should be floating
+> and a rt-thread that should be placed in the isolated domain.
+> This requires cgroup.type=threaded on both cgroups and changes to the application
+> (threads have to be born in non-rt group and moved to rt-group).
+> 
+> Theoretically, this could be done externally, but in case the application sets the
+> affinity mask manually, you run into a timing issue (setting affinities to CPUs
+> outside the current cpuset.cpus results in EINVAL).
+> 
+> Best regards,
+> Felix Moessbauer
+> Siemens AG
+> 
+> > Patch 4: Enable the "cpuset.cpus.partition" file to show the reason
+> >  that causes invalid partition like "root invalid (No cpu available
+> >  due to hotplug)".
+> > 
+> > Patch 5 updates the cgroup-v2.rst file accordingly. Patch 6 adds a new
+> > cpuset test to test the new cpuset partition code.
+> 
+> 
+
