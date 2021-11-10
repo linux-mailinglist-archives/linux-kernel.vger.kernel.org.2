@@ -2,114 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 75E3044C007
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 12:17:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F2C7E44BFCB
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 12:07:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231366AbhKJLUN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Nov 2021 06:20:13 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:56844 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229653AbhKJLUL (ORCPT
+        id S231301AbhKJLKU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Nov 2021 06:10:20 -0500
+Received: from mx0a-00128a01.pphosted.com ([148.163.135.77]:1700 "EHLO
+        mx0a-00128a01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229653AbhKJLKT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Nov 2021 06:20:11 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1636543044;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=KSYkdLrFMduO4+IhFpw7zHlUTHCpQ25RS8J86dyqNl4=;
-        b=Mj8h6nteu8o7YUs29V5DRAjQbTq2CV6UrTZaJ2HOQ5ox/dLlJLyKm3olUpN5GeYmQgGIhq
-        5/gCdthrmbicYocy9s/PxC1yhxlfnDRP5RvTOPh6mgYK6v/tzGqmJSwp8LGqrI5Xcelyba
-        J6+cGoVMg+9uTBR+QUu2PGNlyP5BUrc=
-Received: from mail-ed1-f72.google.com (mail-ed1-f72.google.com
- [209.85.208.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-302-KjTI7_ekMuORtnTSvcH6UQ-1; Wed, 10 Nov 2021 06:17:23 -0500
-X-MC-Unique: KjTI7_ekMuORtnTSvcH6UQ-1
-Received: by mail-ed1-f72.google.com with SMTP id y12-20020a056402270c00b003e28de6e995so2023096edd.11
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Nov 2021 03:17:23 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=KSYkdLrFMduO4+IhFpw7zHlUTHCpQ25RS8J86dyqNl4=;
-        b=D7oK1OrID74V7atgjuNtROQP/LbLrsSG1Tnvx9L6pQQV0P4ln0nruF8RjupPzypBre
-         +SDXavwQptDsjZlTijg6joN39Y4J5cbFuKUqxDZJefjsilc03WGsZDKMBCsmPEzN2bRN
-         ApdtdVOtU/6J3NSqF8+GYiOC2CbCgSw2b+AU42d/DUbyqkHQYM/E2BMqglU9aSM6OjrS
-         IigIrzWmExStqHSvOdvM5FzPVvmpn8SsztDURwHWYP1T7U6uN8o3XkSI1BZmbyEtL8qR
-         mZh/LCUDhv3n7raXNvdoE/7Kvv/PKQkGvzwed0/fq4WYCILzMz5xP3UORhenVnYU7lIR
-         dggQ==
-X-Gm-Message-State: AOAM533pAeE3AaoEV3g/GrfpM/jSI13iS1O9hJyLpEu8QNKxDpnOZann
-        PLKu1SdxyBYeH2+b0eP5cAHa9qJ6tHWaQdvAYnqpdOm+BDLsNfsZJxXBn4FvHLa0XVFl272SUHq
-        3kmS5AxVgBhj01bR5HqRy43UO
-X-Received: by 2002:a17:906:388f:: with SMTP id q15mr19532683ejd.145.1636543042060;
-        Wed, 10 Nov 2021 03:17:22 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJw9Hggt89KbVq2bTsmJS1g2xxslDPz/3razPWPk36zSHvvckMwsFjUm1BPRAhX95CFlXwAUng==
-X-Received: by 2002:a17:906:388f:: with SMTP id q15mr19532650ejd.145.1636543041872;
-        Wed, 10 Nov 2021 03:17:21 -0800 (PST)
-Received: from steredhat (host-87-10-72-39.retail.telecomitalia.it. [87.10.72.39])
-        by smtp.gmail.com with ESMTPSA id ar2sm1973327ejc.20.2021.11.10.03.17.20
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 10 Nov 2021 03:17:21 -0800 (PST)
-Date:   Wed, 10 Nov 2021 12:17:18 +0100
-From:   Stefano Garzarella <sgarzare@redhat.com>
-To:     "Wang, Wei W" <wei.w.wang@intel.com>
-Cc:     "davem@davemloft.net" <davem@davemloft.net>,
-        "kuba@kernel.org" <kuba@kernel.org>,
-        Stefan Hajnoczi <stefanha@redhat.com>,
-        "mst@redhat.com" <mst@redhat.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        "kys@microsoft.com" <kys@microsoft.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "virtualization@lists.linux-foundation.org" 
-        <virtualization@lists.linux-foundation.org>,
-        "Yamahata, Isaku" <isaku.yamahata@intel.com>,
-        "Nakajima, Jun" <jun.nakajima@intel.com>,
-        "Kleen, Andi" <andi.kleen@intel.com>,
-        Andra Paraschiv <andraprs@amazon.com>,
-        Sergio Lopez Pascual <slp@redhat.com>
-Subject: Re: [RFC] hypercall-vsock: add a new vsock transport
-Message-ID: <20211110111718.5cvt6vgory3fzqld@steredhat>
-References: <71d7b0463629471e9d4887d7fcef1d8d@intel.com>
+        Wed, 10 Nov 2021 06:10:19 -0500
+Received: from pps.filterd (m0167089.ppops.net [127.0.0.1])
+        by mx0a-00128a01.pphosted.com (8.16.1.2/8.16.1.2) with ESMTP id 1AA82ZPE018401;
+        Wed, 10 Nov 2021 06:07:31 -0500
+Received: from nwd2mta4.analog.com ([137.71.173.58])
+        by mx0a-00128a01.pphosted.com (PPS) with ESMTPS id 3c8a7p0jdb-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 10 Nov 2021 06:07:31 -0500
+Received: from SCSQMBX10.ad.analog.com (SCSQMBX10.ad.analog.com [10.77.17.5])
+        by nwd2mta4.analog.com (8.14.7/8.14.7) with ESMTP id 1AAB7TNQ047980
+        (version=TLSv1/SSLv3 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Wed, 10 Nov 2021 06:07:30 -0500
+Received: from SCSQCASHYB6.ad.analog.com (10.77.17.132) by
+ SCSQMBX10.ad.analog.com (10.77.17.5) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.858.5;
+ Wed, 10 Nov 2021 03:07:28 -0800
+Received: from SCSQMBX10.ad.analog.com (10.77.17.5) by
+ SCSQCASHYB6.ad.analog.com (10.77.17.132) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.858.5;
+ Wed, 10 Nov 2021 03:07:28 -0800
+Received: from zeus.spd.analog.com (10.66.68.11) by scsqmbx10.ad.analog.com
+ (10.77.17.5) with Microsoft SMTP Server id 15.2.858.5 via Frontend Transport;
+ Wed, 10 Nov 2021 03:07:28 -0800
+Received: from localhost.localdomain ([10.48.65.12])
+        by zeus.spd.analog.com (8.15.1/8.15.1) with ESMTP id 1AAB7OD5030773;
+        Wed, 10 Nov 2021 06:07:25 -0500
+From:   <alexandru.tachici@analog.com>
+To:     <linux-iio@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+CC:     <jic23@kernel.org>,
+        Alexandru Tachici <alexandru.tachici@analog.com>
+Subject: [PATCH 0/5] iio: adc: ad_sigma_delta: Add sequencer support
+Date:   Wed, 10 Nov 2021 13:17:45 +0200
+Message-ID: <20211110111750.27263-1-alexandru.tachici@analog.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Disposition: inline
-In-Reply-To: <71d7b0463629471e9d4887d7fcef1d8d@intel.com>
+Content-Type: text/plain
+X-ADIRuleOP-NewSCL: Rule Triggered
+X-Proofpoint-ORIG-GUID: CisWwr8YJYYEuR9F8Q9UqiCGYpwpuhVZ
+X-Proofpoint-GUID: CisWwr8YJYYEuR9F8Q9UqiCGYpwpuhVZ
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.205,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.0.607.475
+ definitions=2021-11-10_03,2021-11-08_02,2020-04-07_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
+ suspectscore=0 spamscore=0 phishscore=0 adultscore=0 mlxlogscore=999
+ clxscore=1011 malwarescore=0 bulkscore=0 impostorscore=0
+ priorityscore=1501 mlxscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2110150000 definitions=main-2111100059
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 10, 2021 at 07:12:36AM +0000, Wang, Wei W wrote:
->Hi,
->
->We plan to add a new vsock transport based on hypercall (e.g. vmcall on Intel CPUs).
->It transports AF_VSOCK packets between the guest and host, which is similar to
->virtio-vsock, vmci-vsock and hyperv-vsock.
->
->Compared to the above listed vsock transports which are designed for high performance,
->the main advantages of hypercall-vsock are:
->
->1)       It is VMM agnostic. For example, one guest working on hypercall-vsock can run on
->
->either KVM, Hyperv, or VMware.
->
->2)       It is simpler. It doesn't rely on any complex bus enumeration
->
->(e.g. virtio-pci based vsock device may need the whole implementation of PCI).
->
->An example usage is the communication between MigTD and host (Page 8 at
->https://static.sched.com/hosted_files/kvmforum2021/ef/TDX%20Live%20Migration_Wei%20Wang.pdf).
->MigTD communicates to host to assist the migration of the target (user) 
->TD.
->MigTD is part of the TCB, so its implementation is expected to be as simple as possible
->(e.g. bare mental implementation without OS, no PCI driver support).
+From: Alexandru Tachici <alexandru.tachici@analog.com>
 
-Adding Andra and Sergio, because IIRC Firecracker and libkrun emulates 
-virtio-vsock with virtio-mmio so the implementation should be simple and 
-also not directly tied to a specific VMM.
+Some sigma-delta chips support sampling of multiple
+channels in continuous mode.
 
-Maybe this fit for your use case too, in this way we don't have to 
-maintain another driver.
+When the operating with more than one channel enabled,
+the channel sequencer cycles through the enabled channels
+in sequential order, from first channel to the last one.
+If a channel is disabled, it is skipped by the sequencer.
 
-Thanks,
-Stefano
+If more than one channel is used in continuous mode,
+instruct the device to append the status to the SPI transfer
+(1 extra byte) every time we receive a sample.
+All sigma-delta chips possessing a sampling sequencer have
+this ability. Inside the status register there will be
+the number of the converted channel. In this way, even
+if the CPU won't keep up with the sampling rate, it won't
+send to userspace wrong channel samples.
 
+1. Fix bug in AD7124 where channels stayed enabled
+even when they are not supposed to, in continuous mode.
+
+2. Fix bug in AD7192 where channels stayed enabled
+even when they are not supposed to, in continuous mode.
+
+3. Add sequencer support for sigma_delta library.
+
+4. Add sigma_delta_info values and callbacks for sequencer
+support in AD7124.
+
+5. Add sigma_delta_info values and callbacks for sequencer
+support in AD7192.
+
+Alexandru Tachici (5):
+  iio: adc: ad7124: Add update_scan_mode
+  iio: adc: ad7192: Add update_scan_mode
+  iio: adc: ad_sigma_delta: Add sequencer support
+  iio: adc: ad7124: add sequencer support
+  iio: adc: ad7192: add sequencer support
+
+ drivers/iio/adc/ad7124.c               |  38 ++++++++-
+ drivers/iio/adc/ad7192.c               |  32 +++++++-
+ drivers/iio/adc/ad_sigma_delta.c       | 106 ++++++++++++++++++++-----
+ include/linux/iio/adc/ad_sigma_delta.h |  22 +++++
+ 4 files changed, 178 insertions(+), 20 deletions(-)
+
+--
+2.25.1
