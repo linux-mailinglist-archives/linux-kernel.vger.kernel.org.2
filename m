@@ -2,160 +2,280 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7ED8844C0BF
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 13:06:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 40B6C44C0C1
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 13:06:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231346AbhKJMIN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Nov 2021 07:08:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37188 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231512AbhKJMIL (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Nov 2021 07:08:11 -0500
-Received: from mail-wm1-x32f.google.com (mail-wm1-x32f.google.com [IPv6:2a00:1450:4864:20::32f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ACFDFC061766
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Nov 2021 04:05:23 -0800 (PST)
-Received: by mail-wm1-x32f.google.com with SMTP id y196so1926573wmc.3
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Nov 2021 04:05:23 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=Gp5rF8yIUfEk3D/39XMLxjenQ09E3dvkpobT9kmUxww=;
-        b=ZuAmRBXN2yYIdS8TNdXiMd17bwWuChKDUIB39IGbVqOmwPMTWW2J+8zM8U0imxsSWS
-         i8cUQSDUb4YHT/+J1gIPjm9BT1TjMmnvh3QUZi7piLSZtDRkDE2lP5bievtqDB4FYL6q
-         Fx3SGkbL1FxMKm6wqTiG2bYP0B/X++d12o83uKYNIEC8jmU+iYTbuZ22fGSIufC3khgG
-         z2BQAlOx4a7yaDEOb8HCcwp5SUT13zdLbiyVkgGq2jRbNizN3pawUwumkSdF614u+dS1
-         9khpn3xwORMRYJRJ4tPt6R1l3pFDr+P4iU+Y0FJjPSLY9rNrHgFYh/Ek7PHKvqSj5k2e
-         J17g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=Gp5rF8yIUfEk3D/39XMLxjenQ09E3dvkpobT9kmUxww=;
-        b=VysOjLyolNwpGw6VHbk77KW6ywsMSZiJYFdGeUVDOsdupAifdfEqAN4BSsm01bZ2bK
-         +wNR+xMfmT6mRqS0qptlVbmYxPCBiGxb3jm0gEIn5Aw2yOiwcVQMY+asaER1tD2UxTWS
-         xlYk9Oh97AeDjQ7SCN7XHCi0/ehoqoOUKzIIM/Xz+FgJnoJWZX6oAVTTyE7fxaNeJOYR
-         KqiRUhvM7WS6hwOurRQBcIxaM19xDWQF+e6n1cMl9pk03Lq/lc2eb41zK+duvKmcBZcV
-         Ohi09O9vaz30qCOAb+9v11DQrg/ZCIYNHHnbPg5gSZFzVmGNgaxxKqxUHeVtN2VGv4FF
-         U/Dw==
-X-Gm-Message-State: AOAM530C0DAJNrJDojw7syFW4FYXf4Bs6mCWIg1gOTe2YRg2Rk9Vzra0
-        Ezy9fu0o03sVlu7ewHIXSaarxv2C9PSDCA==
-X-Google-Smtp-Source: ABdhPJyHB1Cmc0IyyFsJN+8na5IKBcgh2XeNV67jprvvWNgmkAoKH7FEF1/MMcCL/n5MB/rlEuiKrA==
-X-Received: by 2002:a1c:9814:: with SMTP id a20mr15700347wme.18.1636545922081;
-        Wed, 10 Nov 2021 04:05:22 -0800 (PST)
-Received: from google.com ([2a00:79e0:d:210:51e4:1de2:67ff:91bd])
-        by smtp.gmail.com with ESMTPSA id r68sm372697wmr.45.2021.11.10.04.05.21
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 10 Nov 2021 04:05:21 -0800 (PST)
-Date:   Wed, 10 Nov 2021 12:05:18 +0000
-From:   Quentin Perret <qperret@google.com>
-To:     Mark Rutland <mark.rutland@arm.com>
-Cc:     Ard Biesheuvel <ardb@kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        James Morse <james.morse@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Kees Cook <keescook@chromium.org>,
-        Sami Tolvanen <samitolvanen@google.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Steven Rostedt <rostedt@goodmis.org>
-Subject: Re: [PATCH v6 2/2] arm64: implement support for static call
- trampolines
-Message-ID: <YYu1fgvkN/ukqGkQ@google.com>
-References: <20211105145917.2828911-1-ardb@kernel.org>
- <20211105145917.2828911-3-ardb@kernel.org>
- <YYq1/a10XGBthteg@FVFF77S0Q05N>
- <CAMj1kXHrTjxWWX0cfF1Bx58aTR9Fp=xkfhizkWnQRjYtRm879w@mail.gmail.com>
- <YYrFvXg12eANs0gz@google.com>
- <YYuoawC2CpornRSG@FVFF77S0Q05N>
+        id S231560AbhKJMJV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Nov 2021 07:09:21 -0500
+Received: from mail.kernel.org ([198.145.29.99]:52626 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231741AbhKJMIS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Nov 2021 07:08:18 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 64AC4611ED;
+        Wed, 10 Nov 2021 12:05:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1636545931;
+        bh=JzIbMq+7kunI5DNdzU02uwvqlI184e8UlvxT6Wtvzlw=;
+        h=Date:From:To:Cc:Subject:From;
+        b=B28j495gxqjHX4UfKE4GvmqSdEJqXintNPmWBf149xPvkXN1JfQCcF6kWrkbrMHMo
+         5vWGliCZ/jLHnXqqZ9MsCYwvlqaT8jhmTXQVdUkji5+hxfVFf6GTsdeIHUzUEiTaY1
+         B1V+2kFRIc67mGkGS915dQyPK37St4Nb71H2jR+YzBM6wqgXD0epUSEyrgvEGuvGsx
+         +MXT8natMOCbFHJ2HvUAbc7GqVKrNm+W6cWazvUPnX2j1ID4CkOWjuF9QHvr1e0Syo
+         3fLrdxeSMy/5zTSlRTxtQukvz9HP0mIRYQTiICLm5QFwT1Q1yCKW5YLotDRR5YotWy
+         Q4aBoJjsApGIg==
+Date:   Wed, 10 Nov 2021 17:35:26 +0530
+From:   Vinod Koul <vkoul@kernel.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     dma <dmaengine@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: [GIT PULL]: dmaengine updates for v5.16-rc1
+Message-ID: <YYu1huhCBnGJUPZg@matsya>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="55uKwjtuR0hH29Lc"
 Content-Disposition: inline
-In-Reply-To: <YYuoawC2CpornRSG@FVFF77S0Q05N>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Mark,
 
-On Wednesday 10 Nov 2021 at 11:09:40 (+0000), Mark Rutland wrote:
-> Hi,
-> 
-> On Tue, Nov 09, 2021 at 07:02:21PM +0000, Quentin Perret wrote:
-> > On Tuesday 09 Nov 2021 at 19:09:21 (+0100), Ard Biesheuvel wrote:
-> > > Android relies heavily on tracepoints for vendor hooks, and given the
-> > > performance impact of CFI on indirect calls, there has been interest
-> > > in enabling static calls to replace them.
-> 
-> Hhmm.... what exactly is a "vendor hook" in this context, and what is it doing
-> with a tracepoint? From an upstream perspective that sounds somewhat fishy
-> usage.
+--55uKwjtuR0hH29Lc
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Right, 'vendor hooks' are an ugly Android-specific hack that I hope we
-will be able to get rid off overtime. And I don't think upstream should
-care about any of this TBH. But it's not the only use-case in Android
-for having modules attached to tracepoints, and the other is a bit more
-relevant to upstream. So I'd day it makes sense to have that discussion
-here.
+Hello Linus,
 
-Specifically, we've got a bunch of 'empty' tracepoints *upstream* in e.g.
-the scheduler that don't have any trace events associated with them (see
-the exported TPs at the top of kernel/sched/core.c for instance).
-They're exported with no in-kernel user on purpose. The only reason they
-exist is to allow people to attach modules to them, and do whatever they
-need from there (collect stats, write to the trace buffer, ...). That
-way the kernel doesn't commit to any userspace ABI, and the maintenance
-burden falls on whoever maintains the module instead.
+Please pull to receive dmaengine update. Bunch of driver updates, no
+new driver or controller support this time though!
 
-But nowadays virtually every vendor/OEM in the Android world attaches to
-those TPs, in production, to gather stats and whatnot. And given that
-some of them are hooked in scheduler hot paths, we'd really like those
-to be low overhead. I wouldn't be surprised if other distros get the
-same issues at some point FWIW -- they all collect SCHED_DEBUG stats and
-such.
+The following changes since commit 6880fa6c56601bb8ed59df6c30fd390cc5f6dd8f:
 
-> 
-> > > Quentin, anything to add here?
-> > 
-> > Yes, Android should definitely benefit from static calls.
-> > 
-> > Modules attaching to tracepoints cause a measurable overhead w/ CFI as
-> > the jump target is a bit harder to verify if it is not in-kernel.
-> 
-> Where does that additional overhead come from when the target is not in-kernel?
-> 
-> I hope that I am wrong in understanding that __cfi_slowpath_diag() means we're
-> always doing an out-of-line check when calling into a module?
+  Linux 5.15-rc1 (2021-09-12 16:28:37 -0700)
 
-Nope, I think you're right.
+are available in the Git repository at:
 
-> If that were the case, that would seem to be a much more general problem with
-> the current clang CFI scheme, and my fear here is that we're adding fragility
-> and complexity in specific plces to work around general problems with the CFI
-> scheme.
+  git://git.kernel.org/pub/scm/linux/kernel/git/vkoul/dmaengine.git tags/dm=
+aengine-5.16-rc1
 
-Right, no objection from me if we want to optimize the CFI slowpath
-instead if we can find a way to do that.
+for you to fetch changes up to eb91224e47ec33a0a32c9be0ec0fcb3433e555fd:
 
-A few thoughts:
+  dmaengine: ti: k3-udma: Set r/tchan or rflow to NULL if request fail (202=
+1-11-09 11:24:06 +0530)
 
- - attaching and detaching to TPs is a very infrequent operation, so
-   having to do CFI checks (however cheap) before every call is a bit
-   sad as the target doesn't change;
+----------------------------------------------------------------
+dmaengine updates for v5.16-rc1
 
- - so far the CFI overhead has been visible in practice mainly for
-   tracepoints and not really anywhere else. The cost of a
-   kernel-to-module indirect calls for e.g. driver operations seems to
-   often (though not always) be somewhat small compared to the work
-   done by the driver itself. And I think that module-to-kernel calls
-   should be mostly unaffected as we will either resolve them with
-   PC-relative instructions if within range, or via the module PLT
-   which doesn't include CFI checks IIRC.
+Updates:
+ - Another pile of idxd updates
+ - pm routines cleanup for at_xdmac driver
+ - Correct handling of callback_result for few drivers
+ - zynqmp_dma driver updates and descriptor management refinement
+ - Hardware handshaking support for dw-axi-dmac
+ - Support for remotely powered controllers in Qcom bam dma
+ - tegra driver updates
 
-Thanks,
-Quentin
+----------------------------------------------------------------
+Amelie Delaunay (3):
+      dmaengine: stm32-dma: mark pending descriptor complete in terminate_a=
+ll
+      dmaengine: stm32-dma: fix stm32_dma_get_max_width
+      dmaengine: stm32-dma: fix burst in case of unaligned memory address
+
+Anatolij Gustschin (1):
+      dmaengine: bestcomm: fix system boot lockups
+
+Angelo Dureghello (1):
+      dmaengine: fsl-edma: fix for missing dmamux module
+
+Arnd Bergmann (2):
+      dmaengine: remove debugfs #ifdef
+      dmaengine: stm32-dma: avoid 64-bit division in stm32_dma_get_max_width
+
+Artur Rojek (1):
+      dmaengine: jz4780: Set max number of SGs per burst
+
+Biju Das (1):
+      dmaengine: sh: rz-dmac: Add DMA clock handling
+
+Bixuan Cui (1):
+      dmaengine: idxd: Use list_move_tail instead of list_del/list_add_tail
+
+Cai Huoqing (2):
+      dmaengine: sa11x0: Make use of the helper macro SET_NOIRQ_SYSTEM_SLEE=
+P_PM_OPS()
+      dmaengine: sa11x0: Mark PM functions as __maybe_unused
+
+Christophe JAILLET (1):
+      dmaengine: dw-edma: Remove an unused variable
+
+Claudiu Beznea (5):
+      dmaengine: at_xdmac: call at_xdmac_axi_config() on resume path
+      dmaengine: at_xdmac: fix AT_XDMAC_CC_PERID() macro
+      dmaengine: at_xdmac: use __maybe_unused for pm functions
+      dmaengine: at_xdmac: use pm_ptr()
+      dmaengine: at_xdmac: fix compilation warning
+
+Colin Ian King (2):
+      dmaengine: Remove redundant initialization of variable err
+      dmaengine: sh: make array ds_lut static
+
+Dave Jiang (9):
+      dmaengine: idxd: move out percpu_ref_exit() to ensure it's outside su=
+bmission
+      dmaengine: idxd: check GENCAP config support for gencfg register
+      dmaengine: idxd: remove gen cap field per spec 1.2 update
+      dmaengine: idxd: remove kernel wq type set when load configuration
+      dmanegine: idxd: fix resource free ordering on driver removal
+      dmaengine: idxd: add halt interrupt support
+      dmaengine: idxd: reconfig device after device reset command
+      dmaengine: idxd: cleanup completion record allocation
+      dmaengine: idxd: fix resource leak on dmaengine driver disable
+
+Dongliang Mu (3):
+      dmaengine: rcar-dmac: refactor the error handling code of rcar_dmac_p=
+robe
+      dmaengine: tegra210-adma: fix pm runtime unbalance
+      dmaengine: tegra210-adma: fix pm runtime unbalance in tegra_adma_remo=
+ve
+
+Flavio Suligoi (4):
+      dmaengine: imx-sdma: remove useless braces
+      dmaengine: imx-sdma: add missed braces
+      dmaengine: imx-sdma: align statement to open parenthesis
+      dmaengine: imx-sdma: remove space after sizeof
+
+Geert Uytterhoeven (1):
+      dmaengine: dw-axi-dmac: Simplify assignment in dma_chan_pause()
+
+Gustavo A. R. Silva (1):
+      dmaengine: stm32-mdma: Use struct_size() helper in devm_kzalloc()
+
+Joy Zou (1):
+      dmaengine: fsl-edma: support edma memcpy
+
+Kishon Vijay Abraham I (2):
+      dmaengine: ti: k3-udma: Set bchan to NULL if a channel request fail
+      dmaengine: ti: k3-udma: Set r/tchan or rflow to NULL if request fail
+
+Lars-Peter Clausen (4):
+      dmaengine: dmaengine_desc_callback_valid(): Check for `callback_resul=
+t`
+      dmaengine: altera-msgdma: Correctly handle descriptor callbacks
+      dmaengine: xilinx_dma: Correctly handle cyclic descriptor callbacks
+      dmaengine: zynqmp_dma: Correctly handle descriptor callbacks
+
+Len Baker (1):
+      dmaengine: milbeaut-hdmac: Prefer kcalloc over open coded arithmetic
+
+Michael Tretter (7):
+      dmaengine: zynqmp_dma: simplify with dev_err_probe
+      dmaengine: zynqmp_dma: drop message on probe success
+      dmaengine: zynqmp_dma: enable COMPILE_TEST
+      dmaengine: zynqmp_dma: cleanup includes
+      dmaengine: zynqmp_dma: cleanup after completing all descriptors
+      dmaengine: zynqmp_dma: refine dma descriptor locking
+      dmaengine: zynqmp_dma: fix lockdep warning in tasklet
+
+Pandith N (3):
+      dmaengine: dw-axi-dmac: support DMAX_NUM_CHANNELS > 8
+      dmaengine: dw-axi-dmac: Hardware handshake configuration
+      dmaengine: dw-axi-dmac: set coherent mask
+
+Qing Wang (5):
+      dmaengine: dw: switch from 'pci_' to 'dma_' API
+      dmaengine: hisi_dma: switch from 'pci_' to 'dma_' API
+      dmaengine: hsu: switch from 'pci_' to 'dma_' API
+      dmaengine: ioat: switch from 'pci_' to 'dma_' API
+      dmaengine: switch from 'pci_' to 'dma_' API
+
+Sameer Pujar (3):
+      dmaengine: tegra210-adma: Re-order 'has_outstanding_reqs' member
+      dmaengine: tegra210-adma: Add description for 'adma_get_burst_config'
+      dmaengine: tegra210-adma: Override ADMA FIFO size
+
+Shravya Kumbham (1):
+      dmaengine: xilinx_dma: Fix kernel-doc warnings
+
+Stephan Gerhold (2):
+      dt-bindings: dmaengine: bam_dma: Add "powered remotely" mode
+      dmaengine: qcom: bam_dma: Add "powered remotely" mode
+
+Wang Qing (1):
+      dmaengine: dw-edma-pcie: switch from 'pci_' to 'dma_' API
+
+Xin Xiong (1):
+      dmaengine: mmp_pdma: fix reference count leaks in mmp_pdma_probe
+
+ .../devicetree/bindings/dma/qcom_bam_dma.txt       |   2 +
+ drivers/dma/Kconfig                                |   2 +-
+ drivers/dma/altera-msgdma.c                        |  10 +-
+ drivers/dma/at_xdmac.c                             |  69 ++++++-------
+ drivers/dma/bestcomm/ata.c                         |   2 +-
+ drivers/dma/bestcomm/bestcomm.c                    |  22 ++--
+ drivers/dma/bestcomm/fec.c                         |   4 +-
+ drivers/dma/bestcomm/gen_bd.c                      |   4 +-
+ drivers/dma/dma-jz4780.c                           |   1 +
+ drivers/dma/dmaengine.c                            |   3 +-
+ drivers/dma/dmaengine.h                            |   2 +-
+ drivers/dma/dw-axi-dmac/dw-axi-dmac-platform.c     | 112 +++++++++++++++--=
+----
+ drivers/dma/dw-axi-dmac/dw-axi-dmac.h              |  35 ++++++-
+ drivers/dma/dw-edma/dw-edma-core.c                 |   1 -
+ drivers/dma/dw-edma/dw-edma-pcie.c                 |  17 +---
+ drivers/dma/dw/pci.c                               |   6 +-
+ drivers/dma/fsl-edma-common.c                      |  35 ++++++-
+ drivers/dma/fsl-edma-common.h                      |   4 +
+ drivers/dma/fsl-edma.c                             |   7 ++
+ drivers/dma/hisi_dma.c                             |   6 +-
+ drivers/dma/hsu/pci.c                              |   6 +-
+ drivers/dma/idxd/device.c                          |  29 ++----
+ drivers/dma/idxd/dma.c                             |   5 +-
+ drivers/dma/idxd/idxd.h                            |   2 -
+ drivers/dma/idxd/init.c                            |  14 ++-
+ drivers/dma/idxd/irq.c                             |   8 +-
+ drivers/dma/idxd/registers.h                       |   4 +-
+ drivers/dma/imx-sdma.c                             |  28 +++---
+ drivers/dma/ioat/init.c                            |  10 +-
+ drivers/dma/milbeaut-hdmac.c                       |   2 +-
+ drivers/dma/mmp_pdma.c                             |   1 +
+ drivers/dma/plx_dma.c                              |  10 +-
+ drivers/dma/qcom/bam_dma.c                         |  90 +++++++++++------
+ drivers/dma/sa11x0-dma.c                           |  11 +-
+ drivers/dma/sh/rcar-dmac.c                         |  13 +--
+ drivers/dma/sh/rz-dmac.c                           |  16 ++-
+ drivers/dma/stm32-dma.c                            |  24 +++--
+ drivers/dma/stm32-mdma.c                           |   3 +-
+ drivers/dma/tegra210-adma.c                        |  58 +++++++----
+ drivers/dma/ti/k3-udma.c                           |  32 ++++--
+ drivers/dma/xilinx/xilinx_dma.c                    |  14 ++-
+ drivers/dma/xilinx/xilinx_dpdma.c                  |  15 +--
+ drivers/dma/xilinx/zynqmp_dma.c                    |  79 +++++++--------
+ include/linux/dmaengine.h                          |   2 -
+ 44 files changed, 490 insertions(+), 330 deletions(-)
+
+Thanks
+--=20
+~Vinod
+
+--55uKwjtuR0hH29Lc
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAEBCAAdFiEE+vs47OPLdNbVcHzyfBQHDyUjg0cFAmGLtYYACgkQfBQHDyUj
+g0djcw/9EI8k/d3h2ouKB+JwGA12TxNzjAgGf98bj/NHHC3W6XXs1sICkaBHo5T2
+cRIS+87Ku/EzAB1ILLGPl2kDs3XTWKnaHPLrtCm8I4kOlqXJBvEaT1aFrBFwl3pB
+PjR2RBTRRhmXln8J7zWnO8KG+snUei+KtU9mlXRG+I066SYD386YvdfpafxrVphi
+TVnQRp5m17VjiUTyKmiHo76JxcsmqRHimRc+LoaBBSzAukqtpwLiHdU7aNFXF8PD
+jSjlIJWHzamxW8kQUgKTWc0Zs/7fv7Z/DrYM1uS6P4dbykporl8KkqYuFou0pHT0
+zeI2dy8RZ6xFiaT2rUfS6n3+RXlqBTeagfgWUdLBIvzqVkAsGLW+57zPfBBmDH0f
+eHMhO7+C5QDVXQrOpMufEUVe4bzHAwLww7+m33ZPMDYUWj6WarJrRx/858s+yc35
+AF+TOqb0BMVBh+46EVXD3sJv71nZCfFjWC7soMFu2E4VW+t9KcMB5F+bBmSoGaEO
+JbvJe/jxvjWn/2ad+qLs5jxd5Pb9LCT6NJnZ8iWQ4hbWeBZ6p5e+qzxzPD4119FV
+bDbQQqxjMPrPrJDZ+aZqBsM1XqmpAcgnuSY0WogfSlU8B2GP2lLUE1tY4CFj5I6Y
+5Aa4DE+LlwHxjW8TpaEeqFn5yDKgklPa38h3gYMGq0ObDct0Zak=
+=Ug+G
+-----END PGP SIGNATURE-----
+
+--55uKwjtuR0hH29Lc--
