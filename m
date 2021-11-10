@@ -2,32 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E965044C7C2
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 19:53:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8713344C7C4
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 19:53:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233803AbhKJSy6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Nov 2021 13:54:58 -0500
-Received: from mail.kernel.org ([198.145.29.99]:48264 "EHLO mail.kernel.org"
+        id S233597AbhKJSzH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Nov 2021 13:55:07 -0500
+Received: from mail.kernel.org ([198.145.29.99]:48284 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233562AbhKJSw6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Nov 2021 13:52:58 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0C98161268;
-        Wed, 10 Nov 2021 18:48:18 +0000 (UTC)
+        id S233459AbhKJSxG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Nov 2021 13:53:06 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id AD305613D3;
+        Wed, 10 Nov 2021 18:48:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1636570099;
-        bh=O70moGovKKBeff/tnsM89R1q7iqLf2ZLZjTQ0N4uJxQ=;
+        s=korg; t=1636570102;
+        bh=q9aydd/CFdTUD+m0FPc5a7Q3PINsajNfFPjpq+9ald8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=EQG70ZKC5zOgfTQQC7bfsDFF1Pe3X3YHsjZDfhhbp7ZdwXNccjcFQj8/Rt/jBh9zy
-         h60o53DyUNSplO9ERaD2OJcUyTCrteiXivtj67PbeqqPXGSJN/DaJbChke7f2tbmct
-         B06J7y+qrMBQRPmBIjyTRC/JblI3gwecuymIpGcY=
+        b=0XSzBT6ja+OSzcdOSh0xY1PamTKeUfpwPeETIziwWbraD3qoeRJEGu0pmvXt3PzSv
+         xdv7YUDcKoQ70HU7KcALpvHrtjvL5DiwCv8Qsdd6nqs1cAyOruZC4xJchCNSEbwkps
+         w+KjwgKqhEF5isd/YxWJpDZ+/ZeHCSAF8kxhHJL8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org, Johan Hovold <johan@kernel.org>,
         Ian Abbott <abbotti@mev.co.uk>
-Subject: [PATCH 5.10 16/21] comedi: vmk80xx: fix bulk-buffer overflow
-Date:   Wed, 10 Nov 2021 19:44:02 +0100
-Message-Id: <20211110182003.478985878@linuxfoundation.org>
+Subject: [PATCH 5.10 17/21] comedi: vmk80xx: fix bulk and interrupt message timeouts
+Date:   Wed, 10 Nov 2021 19:44:03 +0100
+Message-Id: <20211110182003.509132581@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
 In-Reply-To: <20211110182002.964190708@linuxfoundation.org>
 References: <20211110182002.964190708@linuxfoundation.org>
@@ -41,53 +41,72 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Johan Hovold <johan@kernel.org>
 
-commit 78cdfd62bd54af615fba9e3ca1ba35de39d3871d upstream.
+commit a56d3e40bda460edf3f8d6aac00ec0b322b4ab83 upstream.
 
-The driver is using endpoint-sized buffers but must not assume that the
-tx and rx buffers are of equal size or a malicious device could overflow
-the slab-allocated receive buffer when doing bulk transfers.
+USB bulk and interrupt message timeouts are specified in milliseconds
+and should specifically not vary with CONFIG_HZ.
+
+Note that the bulk-out transfer timeout was set to the endpoint
+bInterval value, which should be ignored for bulk endpoints and is
+typically set to zero. This meant that a failing bulk-out transfer
+would never time out.
+
+Assume that the 10 second timeout used for all other transfers is more
+than enough also for the bulk-out endpoint.
 
 Fixes: 985cafccbf9b ("Staging: Comedi: vmk80xx: Add k8061 support")
+Fixes: 951348b37738 ("staging: comedi: vmk80xx: wait for URBs to complete")
 Cc: stable@vger.kernel.org      # 2.6.31
 Signed-off-by: Johan Hovold <johan@kernel.org>
 Reviewed-by: Ian Abbott <abbotti@mev.co.uk>
-Link: https://lore.kernel.org/r/20211025114532.4599-5-johan@kernel.org
+Link: https://lore.kernel.org/r/20211025114532.4599-6-johan@kernel.org
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/staging/comedi/drivers/vmk80xx.c |   16 +++++++---------
- 1 file changed, 7 insertions(+), 9 deletions(-)
+ drivers/staging/comedi/drivers/vmk80xx.c |   12 +++++++-----
+ 1 file changed, 7 insertions(+), 5 deletions(-)
 
 --- a/drivers/staging/comedi/drivers/vmk80xx.c
 +++ b/drivers/staging/comedi/drivers/vmk80xx.c
-@@ -159,22 +159,20 @@ static void vmk80xx_do_bulk_msg(struct c
- 	__u8 rx_addr;
- 	unsigned int tx_pipe;
- 	unsigned int rx_pipe;
--	size_t size;
-+	size_t tx_size;
-+	size_t rx_size;
+@@ -91,6 +91,7 @@ enum {
+ #define IC6_VERSION		BIT(1)
  
- 	tx_addr = devpriv->ep_tx->bEndpointAddress;
- 	rx_addr = devpriv->ep_rx->bEndpointAddress;
- 	tx_pipe = usb_sndbulkpipe(usb, tx_addr);
- 	rx_pipe = usb_rcvbulkpipe(usb, rx_addr);
--
--	/*
--	 * The max packet size attributes of the K8061
--	 * input/output endpoints are identical
--	 */
--	size = usb_endpoint_maxp(devpriv->ep_tx);
-+	tx_size = usb_endpoint_maxp(devpriv->ep_tx);
-+	rx_size = usb_endpoint_maxp(devpriv->ep_rx);
+ #define MIN_BUF_SIZE		64
++#define PACKET_TIMEOUT		10000	/* ms */
  
- 	usb_bulk_msg(usb, tx_pipe, devpriv->usb_tx_buf,
--		     size, NULL, devpriv->ep_tx->bInterval);
--	usb_bulk_msg(usb, rx_pipe, devpriv->usb_rx_buf, size, NULL, HZ * 10);
-+		     tx_size, NULL, devpriv->ep_tx->bInterval);
-+
-+	usb_bulk_msg(usb, rx_pipe, devpriv->usb_rx_buf, rx_size, NULL, HZ * 10);
+ enum vmk80xx_model {
+ 	VMK8055_MODEL,
+@@ -169,10 +170,11 @@ static void vmk80xx_do_bulk_msg(struct c
+ 	tx_size = usb_endpoint_maxp(devpriv->ep_tx);
+ 	rx_size = usb_endpoint_maxp(devpriv->ep_rx);
+ 
+-	usb_bulk_msg(usb, tx_pipe, devpriv->usb_tx_buf,
+-		     tx_size, NULL, devpriv->ep_tx->bInterval);
++	usb_bulk_msg(usb, tx_pipe, devpriv->usb_tx_buf, tx_size, NULL,
++		     PACKET_TIMEOUT);
+ 
+-	usb_bulk_msg(usb, rx_pipe, devpriv->usb_rx_buf, rx_size, NULL, HZ * 10);
++	usb_bulk_msg(usb, rx_pipe, devpriv->usb_rx_buf, rx_size, NULL,
++		     PACKET_TIMEOUT);
  }
  
  static int vmk80xx_read_packet(struct comedi_device *dev)
+@@ -191,7 +193,7 @@ static int vmk80xx_read_packet(struct co
+ 	pipe = usb_rcvintpipe(usb, ep->bEndpointAddress);
+ 	return usb_interrupt_msg(usb, pipe, devpriv->usb_rx_buf,
+ 				 usb_endpoint_maxp(ep), NULL,
+-				 HZ * 10);
++				 PACKET_TIMEOUT);
+ }
+ 
+ static int vmk80xx_write_packet(struct comedi_device *dev, int cmd)
+@@ -212,7 +214,7 @@ static int vmk80xx_write_packet(struct c
+ 	pipe = usb_sndintpipe(usb, ep->bEndpointAddress);
+ 	return usb_interrupt_msg(usb, pipe, devpriv->usb_tx_buf,
+ 				 usb_endpoint_maxp(ep), NULL,
+-				 HZ * 10);
++				 PACKET_TIMEOUT);
+ }
+ 
+ static int vmk80xx_reset_device(struct comedi_device *dev)
 
 
