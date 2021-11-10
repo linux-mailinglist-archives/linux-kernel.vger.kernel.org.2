@@ -2,98 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B29244C89A
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 20:09:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DDC0144C8A6
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 20:11:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232771AbhKJTMW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Nov 2021 14:12:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49326 "EHLO
+        id S232684AbhKJTOS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Nov 2021 14:14:18 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49798 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232690AbhKJTMT (ORCPT
+        with ESMTP id S232544AbhKJTOQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Nov 2021 14:12:19 -0500
-Received: from mail-wr1-x42a.google.com (mail-wr1-x42a.google.com [IPv6:2a00:1450:4864:20::42a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 62CB0C061764
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Nov 2021 11:09:31 -0800 (PST)
-Received: by mail-wr1-x42a.google.com with SMTP id d27so5769389wrb.6
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Nov 2021 11:09:31 -0800 (PST)
+        Wed, 10 Nov 2021 14:14:16 -0500
+Received: from mail-pf1-x434.google.com (mail-pf1-x434.google.com [IPv6:2607:f8b0:4864:20::434])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 04BE0C061764
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Nov 2021 11:11:29 -0800 (PST)
+Received: by mail-pf1-x434.google.com with SMTP id z6so3514073pfe.7
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Nov 2021 11:11:29 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=pqTtvsJvFDR96EKSx1b5ZcJqIA6TjVY8DfdfVOQQVkg=;
-        b=OraYSJLA7D1e+oAnvKBTUMG0wtMZ2I6D8QLv9+XaEhce03siSYaxzm58bn5DazpP2t
-         f1exfW7FSxxnV/vfFJAcG8QbcZRMrwxX9qYJEtdu9fYqQSVFe5PNjb1fszlRu5dRGnL3
-         shMm+rMdH0A77Mlfi/dy0SOdoZnbFOQO1uQFU86iFHA1GQMJgVQ7Piw3/PJYtM2X8sYS
-         AvC6Ox5AqpxJ1VaKdYVTUYXIQbkYo6Ox8mVeYeF/dSSSGt+GzDOv3rsZNvT2czw1RXCb
-         IGjoqmhnsrTkJlJNnWKecTYMIXewmDT0Gs68F7Kbne4QOdGFvVUJ62mJUuU4QrcX2iwf
-         ZCjw==
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=OqyzeCyoCvvYPV9DVCrFvaqu6R57AheLr6xAlpsogPI=;
+        b=GFs9WOfYWUEgxxeQ4/2M8fM0pX/gUu7eNkTskOt/SgCSPfUU3nXMgs3iIxvUpraxgA
+         lOudnZhmHbTM/WVo52+3xoc3EzUWXuWuuuBKH+5qnchVs+3jtYygzDhZwlzlEMXyKYX/
+         AF3ipfHBwexMnz7NhaPy2SmxJDrqXY3o3aW+ijoLh2WuGD+W1kpXSyq1Wu4cQImznzFu
+         Wzf4uhM9W0pGgOXzXw7pXhksvYJLXgZSmntZmisqkh0KVCLyDXLVEh8+jKib+TlQgPjH
+         wZ9E4wDAKmZxcpKf9mUyxPl1h7lJdnIYSNB6IP5++BvSrgNDqJGCHrApxGOH4afsdBSL
+         XTSw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=pqTtvsJvFDR96EKSx1b5ZcJqIA6TjVY8DfdfVOQQVkg=;
-        b=cwZxm0Ds1W14enoyU54OtKLMV0ZXDEobi1dsNZCaNzltE5GNOb7t7IHCmEC6kTM18s
-         GH4T7ABemIp5MtPKejC4Pyqs/kpL/u2r9g79gJBAd2/iIBjOnx2WsNRiFIDVU4hcKqQF
-         k405WdyoE1xwbG3LZHp73p7hx9KIqwH3kLzdrDvIEPH/pW9+t0exbbPTBqq9l0BsGLom
-         8f9fSEVaDrHkRgMTUpA4IHdmbuuMr4fc6LF9rxfqJlWhFQqv7xScZ3JIt6U66788A72m
-         r4NmQ2irkJSOdSJ59S+uwod+ubGPQQVo1j1VFOA+QbWwvkO5ry+aQLDG8qYr0R6UWqWb
-         LkKA==
-X-Gm-Message-State: AOAM530Ev1TtXEyztd9COIAGF2vaFW7ReVRACs/yEpEk3rCfRKnHBsaV
-        DHMJydMhnh5jJeuRwjDHvrQ=
-X-Google-Smtp-Source: ABdhPJyCmpq9lwW4IvHHyGzr8+6vKj4LGQQ8kLz7wGpBXQJHt+QjAVGJT6iIUpyLzITJtdy/87iWRQ==
-X-Received: by 2002:adf:e38d:: with SMTP id e13mr1632784wrm.402.1636571370063;
-        Wed, 10 Nov 2021 11:09:30 -0800 (PST)
-Received: from kista.localnet (cpe-86-58-29-253.static.triera.net. [86.58.29.253])
-        by smtp.gmail.com with ESMTPSA id k8sm659793wrn.91.2021.11.10.11.09.28
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=OqyzeCyoCvvYPV9DVCrFvaqu6R57AheLr6xAlpsogPI=;
+        b=wfdZHb0GqvvLz7iw0vgSP8LWtmH+Sxm3RjIVmwRAeah0QgQO5LKAMrRrzdGQFnRjfV
+         ZBZOIsFjB3cGn0Y0NZnchq62HU3m8OklIv58gFDmYms1JmILMfWzl1ah6qNcpLCUC65z
+         u0TE+FHQ2rS9eOgST/bk3lgXfVfw4OpJDhrO1UvWSae19B9CJOrO+Nt65T6u40iztnwQ
+         9DOYNJGDV/+Dsu9qezEtKw45u0pGQ5oJ3Ba7t829v4WKdVVqCbhZl0dT3w64elo/3JDN
+         ReYc5pXr21QV6hwCFyrj8MDEuHBdpUqeIjmwHQfveVnXqe6FYfNDu+wMwJxhhuH1bB9X
+         xX0A==
+X-Gm-Message-State: AOAM5316pmLfF1jotxtyq9kAlmijQnzyMR98Tw/1LN+UsFBZ1PHs2vdS
+        r57WbkdOuWEG1mh0OUYwPz0=
+X-Google-Smtp-Source: ABdhPJy3AVp4RRoT7gNVI7XlIFa4jVj+kqj6mCpMofJK/hurnGRFW8fZdgsAQ0MmQjfGP8ekK/DESw==
+X-Received: by 2002:a05:6a00:b49:b0:49f:bad2:bd7c with SMTP id p9-20020a056a000b4900b0049fbad2bd7cmr1308709pfo.64.1636571488481;
+        Wed, 10 Nov 2021 11:11:28 -0800 (PST)
+Received: from google.com ([2620:15c:211:201:11d4:2de3:ab82:be64])
+        by smtp.gmail.com with ESMTPSA id e15sm397567pfv.131.2021.11.10.11.11.27
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 10 Nov 2021 11:09:29 -0800 (PST)
-From:   Jernej =?utf-8?B?xaBrcmFiZWM=?= <jernej.skrabec@gmail.com>
-To:     airlied@linux.ie, daniel@ffwll.ch, wens@csie.org,
-        mripard@kernel.org, Julian Braha <julianbraha@gmail.com>
-Cc:     dri-devel@lists.freedesktop.org,
-        linux-arm-kernel@lists.infradead.org, linux-sunxi@lists.linux.dev,
-        linux-kernel@vger.kernel.org, fazilyildiran@gmail.com
-Subject: Re: [PATCH] [PATCH v2] drm/sun4i: fix unmet dependency on RESET_CONTROLLER for PHY_SUN6I_MIPI_DPHY
-Date:   Wed, 10 Nov 2021 20:09:27 +0100
-Message-ID: <2602978.mvXUDI8C0e@kista>
-In-Reply-To: <20211109032351.43322-1-julianbraha@gmail.com>
-References: <20211109032351.43322-1-julianbraha@gmail.com>
+        Wed, 10 Nov 2021 11:11:28 -0800 (PST)
+Sender: Minchan Kim <minchan.kim@gmail.com>
+Date:   Wed, 10 Nov 2021 11:11:26 -0800
+From:   Minchan Kim <minchan@kernel.org>
+To:     Johannes Weiner <hannes@cmpxchg.org>
+Cc:     Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, kernel-team@fb.com
+Subject: Re: [PATCH 4/4] mm: zswap: add basic meminfo and vmstat coverage
+Message-ID: <YYwZXrL3Fu8/vLZw@google.com>
+References: <20210819195533.211756-1-hannes@cmpxchg.org>
+ <20210819195533.211756-4-hannes@cmpxchg.org>
+ <YS0oV23m5NfyMcJJ@google.com>
+ <YYFT6VtNT1Fvl4Iz@cmpxchg.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YYFT6VtNT1Fvl4Iz@cmpxchg.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Julian,
+Hi Johannes,
 
-Dne torek, 09. november 2021 ob 04:23:51 CET je Julian Braha napisal(a):
-> When PHY_SUN6I_MIPI_DPHY is selected, and RESET_CONTROLLER
-> is not selected, Kbuild gives the following warning:
+On Tue, Nov 02, 2021 at 11:06:17AM -0400, Johannes Weiner wrote:
+> Hi Minchan,
 > 
-> WARNING: unmet direct dependencies detected for PHY_SUN6I_MIPI_DPHY
->   Depends on [n]: (ARCH_SUNXI [=n] || COMPILE_TEST [=y]) && HAS_IOMEM [=y] 
-&& COMMON_CLK [=y] && RESET_CONTROLLER [=n]
->   Selected by [y]:
->   - DRM_SUN6I_DSI [=y] && HAS_IOMEM [=y] && DRM_SUN4I [=y]
+> Sorry about the delay, I'm just now getting back to these patches.
 > 
-> This is because DRM_SUN6I_DSI selects PHY_SUN6I_MIPI_DPHY
-> without selecting or depending on RESET_CONTROLLER, despite
-> PHY_SUN6I_MIPI_DPHY depending on RESET_CONTROLLER.
+> On Mon, Aug 30, 2021 at 11:49:59AM -0700, Minchan Kim wrote:
+> > Hi Johannes,
+> > 
+> > On Thu, Aug 19, 2021 at 03:55:33PM -0400, Johannes Weiner wrote:
+> > > Currently it requires poking at debugfs to figure out the size of the
+> > > zswap cache size on a host. There are no counters for reads and writes
+> > > against the cache. This makes it difficult to understand behavior on
+> > > production systems.
+> > > 
+> > > Print zswap memory consumption in /proc/meminfo, count zswapouts and
+> > > zswapins in /proc/vmstat.
+> > > 
+> > > Signed-off-by: Johannes Weiner <hannes@cmpxchg.org>
+> > > ---
+> > >  fs/proc/meminfo.c             |  4 ++++
+> > >  include/linux/swap.h          |  4 ++++
+> > >  include/linux/vm_event_item.h |  4 ++++
+> > >  mm/vmstat.c                   |  4 ++++
+> > >  mm/zswap.c                    | 11 +++++------
+> > >  5 files changed, 21 insertions(+), 6 deletions(-)
+> > > 
+> > > diff --git a/fs/proc/meminfo.c b/fs/proc/meminfo.c
+> > > index 6fa761c9cc78..2dc474940691 100644
+> > > --- a/fs/proc/meminfo.c
+> > > +++ b/fs/proc/meminfo.c
+> > > @@ -86,6 +86,10 @@ static int meminfo_proc_show(struct seq_file *m, void *v)
+> > >  
+> > >  	show_val_kb(m, "SwapTotal:      ", i.totalswap);
+> > >  	show_val_kb(m, "SwapFree:       ", i.freeswap);
+> > > +#ifdef CONFIG_ZSWAP
+> > > +	seq_printf(m,  "Zswap:          %8lu kB\n",
+> > > +		   (unsigned long)(zswap_pool_total_size >> 10));
+> > 
+> > Since we have zram as well as zswap, it would be great if
+> > we can abstract both at once without introducing another
+> > "Zram: " stuff in meminfo. A note: zram can support fs based on
+> > on zram blk device as well as swap. Thus, term would be better
+> > to say "compressed" rather than "swap".
+> > 
+> > How about this?
+> > 
+> > "Compressed: xx kB"
 > 
-> These unmet dependency bugs were detected by Kismet,
-> a static analysis tool for Kconfig. Please advise if this
-> is not the appropriate solution.
+> Wouldn't it make more sense to keep separate counters? Zswap and zram
+> are quite different from each other.
 > 
-> v2:
-> Fixed indentation to match the rest of the file.
-> 
-> Signed-off-by: Julian Braha <julianbraha@gmail.com>
+> From an MM perspective, zram is an opaque storage backend. zswap OTOH
+> is an explicit MM cache stage which may in the future make different
+> decisions than zram, be integrated into vmscan's LRU hierarchy
+> etc. And in theory, you could put zswap with fast compression in front
+> of a zram device with denser compression, right?
 
-Acked-by: Jernej Skrabec <jernej.skrabec@gmail.com>
+My view is the the allocators aims to store compressed memory.
+Likewise slab allocator, we could use the allocator any places
+and display the total memory usage from the allocator in meminfo
+instead of each subsystem and look at slabinfo if we need further
+break down. I think it could work for this case, too.
 
-Best regards,
-Jernej
+> 
+> I agree zram should probably also have memory counters, but I think it
+> makes sense to recognize zswap as a unique MM layer.
 
-
+Under your view, I think it would introduce Zram-swap, Zram-block
+as well as Zswap. If folks think it's better idea, I am fine and
+happy to post a patch to merge it along with this patch.
