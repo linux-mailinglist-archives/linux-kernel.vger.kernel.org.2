@@ -2,65 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E456A44BFD3
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 12:07:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D8B1344BFC3
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 12:03:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231538AbhKJLKg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Nov 2021 06:10:36 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52066 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231455AbhKJLKd (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Nov 2021 06:10:33 -0500
-Received: from mail-oo1-xc35.google.com (mail-oo1-xc35.google.com [IPv6:2607:f8b0:4864:20::c35])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D5899C06127A
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Nov 2021 03:07:45 -0800 (PST)
-Received: by mail-oo1-xc35.google.com with SMTP id m37-20020a4a9528000000b002b83955f771so655856ooi.7
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Nov 2021 03:07:45 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=S/NPx9ZAU9zKIZ/Wl/wJ5cTCA38rwFqmn27pwAogCrs=;
-        b=SvSfAeEttFgAjMK2kCK4ck79WEmF6aIGJICPPvzYSSjc5AzroHPgPNnsXEPqpP9dZj
-         TQt7bGjupAftoXu223ZLkJJSeFPL9JUoHSuxZbzcr7r8nI6arVW8m2YoiIFR0mNV0Naj
-         4CoU6rllP3Ggnc0Y3SeuU8a5Xpbcvk77uBllGeLTYwO1GnW2LGMwdXZ9kbEe+0mNPyKa
-         a6CPjZ0feeEm9z/hlrE/yA/o3j8AE8D9LYj40AveWshik1Xv50ydPA4L0VjHzaaoYUI+
-         cQXaO1zuvZHqKDZ+/tg1BW0co3P3YDzYsIqP7tDGoZimt4Mcrz+0NwKlSIwAb7khz7VM
-         8xuQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=S/NPx9ZAU9zKIZ/Wl/wJ5cTCA38rwFqmn27pwAogCrs=;
-        b=KH8Q46J/11S4xz0PGq1RbAiiUmn1nFb5g9P0yygiw1tdOvzzdFqH8MDz5zCxa9Jefl
-         OMn6XvXJklRRPk/al4gOZCzQMiZ4GjduWeLFCyPdJetNonyN8kbO6l6jL1LBQ4UNmJZ9
-         cnF7qTSJ4UUZYei6W7ZMQHrCooZv66f3uuWOSN1xR6gA7jEPPNdxcjIKKd+svj+khltH
-         hdsgZOlVmZg4loz8IhB6mWUYATwVubs0+NohjmLcHSqCwLsVQwUKSXOlzExmHcsVWyVm
-         fpcs2FKLed6VFu42DCzSXXelOA4Gr+wNVoB1btkx/N1TjNBbtBsOQDUW7Qi42alFsB7x
-         NeKg==
-X-Gm-Message-State: AOAM532qsRzdYVgQ4CZVnNfZE9qd5EmzLbykKN0p7kz6qSMwm0ewM+WS
-        raeLER2we/l6iL7bWkv8uD8WUZEMAztA+L4dGkpyEmQW5gpkhecL
-X-Google-Smtp-Source: ABdhPJzxcTy/HHizi70zHhXPMUG02Zf41OPnnhsj2oNyGtglANtJQ4VDjtuXx0PpUgzSmnEdbmQ5JmQ5i6eojWL9zLs=
-X-Received: by 2002:a25:32ce:: with SMTP id y197mr15665419yby.282.1636542054456;
- Wed, 10 Nov 2021 03:00:54 -0800 (PST)
+        id S231307AbhKJLGf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Nov 2021 06:06:35 -0500
+Received: from mga14.intel.com ([192.55.52.115]:35396 "EHLO mga14.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231380AbhKJLG2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Nov 2021 06:06:28 -0500
+X-IronPort-AV: E=McAfee;i="6200,9189,10163"; a="232892373"
+X-IronPort-AV: E=Sophos;i="5.87,223,1631602800"; 
+   d="scan'208";a="232892373"
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Nov 2021 03:03:41 -0800
+X-IronPort-AV: E=Sophos;i="5.87,223,1631602800"; 
+   d="scan'208";a="470340341"
+Received: from smile.fi.intel.com ([10.237.72.184])
+  by orsmga002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Nov 2021 03:03:39 -0800
+Received: from andy by smile.fi.intel.com with local (Exim 4.95)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1mklO3-005OZh-Va;
+        Wed, 10 Nov 2021 13:03:27 +0200
+Date:   Wed, 10 Nov 2021 13:03:27 +0200
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Christophe Leroy <christophe.leroy@csgroup.eu>
+Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Paul Mackerras <paulus@samba.org>
+Subject: Re: [PATCH v1 1/1] soc: fsl: Replace kernel.h with the necessary
+ inclusions
+Message-ID: <YYum/7MCMlS+KDlX@smile.fi.intel.com>
+References: <20211027153354.81129-1-andriy.shevchenko@linux.intel.com>
+ <YXwZihLk1njsBNT4@smile.fi.intel.com>
+ <c0524c86-fc7e-632a-8b2a-862695529115@csgroup.eu>
+ <CAHp75VeB8Dmr6Hrupb1Hj=D=oG1zPyJrhCXu37QtXHNNKdNvZg@mail.gmail.com>
+ <064efc28-eb86-b729-0bb0-b1f5ed5bbf60@csgroup.eu>
+ <CAHp75VfRv6gL5qhgOQ0xN=kUdGeoQOGK+8-YDzm26SZAoWa06w@mail.gmail.com>
 MIME-Version: 1.0
-Received: by 2002:a05:7110:81a6:b0:fa:bf14:8958 with HTTP; Wed, 10 Nov 2021
- 03:00:53 -0800 (PST)
-Reply-To: maddahabdwabbo@gmail.com
-From:   Abd-Jafaari Maddah <sensekxb@gmail.com>
-Date:   Wed, 10 Nov 2021 03:00:53 -0800
-Message-ID: <CAHLcUS9h0AnAiJJvPGLnBdWUtGDLHjyfvvNx6p53y0-CKK_W2A@mail.gmail.com>
-Subject: Why Am Writing You Again
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAHp75VfRv6gL5qhgOQ0xN=kUdGeoQOGK+8-YDzm26SZAoWa06w@mail.gmail.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Sat, Oct 30, 2021 at 10:28:01AM +0300, Andy Shevchenko wrote:
+> On Saturday, October 30, 2021, Christophe Leroy <christophe.leroy@csgroup.eu>
+> wrote:
+> > Le 29/10/2021 à 22:31, Andy Shevchenko a écrit :
+
+...
+
+> > That means that Michael considered it is not for him.
+> >
+> > And I think the reason is that in MAINTAINERS you have:
+> >
+> > FREESCALE QUICC ENGINE LIBRARY
+> > M:      Qiang Zhao <qiang.zhao@nxp.com>
+> > L:      linuxppc-dev@lists.ozlabs.org
+> > S:      Maintained
+> > F:      drivers/soc/fsl/qe/
+> > F:      include/soc/fsl/*qe*.h
+> > F:      include/soc/fsl/*ucc*.h
+> >
+> >
+> > FREESCALE SOC DRIVERS
+> > M:      Li Yang <leoyang.li@nxp.com>
+> > L:      linuxppc-dev@lists.ozlabs.org
+> > L:      linux-arm-kernel@lists.infradead.org (moderated for
+> > non-subscribers)
+> > S:      Maintained
+> > F:      Documentation/devicetree/bindings/misc/fsl,dpaa2-console.yaml
+> > F:      Documentation/devicetree/bindings/soc/fsl/
+> > F:      drivers/soc/fsl/
+> > F:      include/linux/fsl/
+> >
+> Thanks! Now I should understand why get_maintainer hadn’t showed above for
+> me.
+
+He-he, there are two bugs in MAINTAINERS.
+v2 has been sent with the corresponding fixes and updated Cc list.
+
 -- 
-Dear,
-I had sent you a mail but i don't think you received it that's why am
-writing you again.It is important you get back to me as soon as you
-can.
-Am waiting,
-Abd-jaafari Maddah
+With Best Regards,
+Andy Shevchenko
+
+
