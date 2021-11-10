@@ -2,139 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AADDC44CA30
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 21:10:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4541544CA2D
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 21:09:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232243AbhKJUMn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Nov 2021 15:12:43 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35362 "EHLO
+        id S232068AbhKJUMd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Nov 2021 15:12:33 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35322 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232287AbhKJUMl (ORCPT
+        with ESMTP id S231160AbhKJUMc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Nov 2021 15:12:41 -0500
-Received: from mail-lf1-x12a.google.com (mail-lf1-x12a.google.com [IPv6:2a00:1450:4864:20::12a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 49C89C061766
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Nov 2021 12:09:53 -0800 (PST)
-Received: by mail-lf1-x12a.google.com with SMTP id z34so8714456lfu.8
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Nov 2021 12:09:53 -0800 (PST)
+        Wed, 10 Nov 2021 15:12:32 -0500
+Received: from mail-pl1-x62f.google.com (mail-pl1-x62f.google.com [IPv6:2607:f8b0:4864:20::62f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B5EEC061764;
+        Wed, 10 Nov 2021 12:09:44 -0800 (PST)
+Received: by mail-pl1-x62f.google.com with SMTP id p18so3880898plf.13;
+        Wed, 10 Nov 2021 12:09:44 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=00x68YJ2x4xVsec0dOpuJh55/HKY/Kh+2U/BGdfsf1Q=;
-        b=cMqbSJKg3qxVw3peYwsclKf0J6UCOPkoa+aWA8rG5txwG0c4Y6hTlI8M8mG/UVj39j
-         ruueogZTvPJQD6/U+xIHXTYmwu9OSc69VrL57h2cGM0Ifu11QSEYpEwhSU45pbH3oXUM
-         SFvllwF1g7nkYdblB6zZOal3Vhy195Vv27OJwVrJM6EaGgv6BQD4rn4itkjb+FxiV/74
-         s2CCFRwq76gtLAc0QHdj3FsdHtrSYCvhyT+WJG2od4uLFnQhCFZtaQWRbGSv+WwAhwHu
-         WN44mBTo8aSZgA8q21MrtLXrpYnTHviFbQKaaqHTn+tcm/otuIU7U7kZVRa864HmB9iL
-         0lWA==
+        d=gmail.com; s=20210112;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=3ubNtsB/mh2b13W1yOgQi+MMV4lMAJM1Ryt/blzWJfg=;
+        b=DWeJrt7Tf7OyoFjhttoAZTZ+lpLogA1sH8mfJZzX3vnosP7CSrompYqPtfF29omlfc
+         hkYauxP/ApgiJEdxjZbA7fftU5kr0SZSZioYnO1X1SFQ0W1cc5DU0d4UqCluPcgg8sZ7
+         gmC7a8n0tKs9Ed4bAPZx0E+xFj0D7VjIZvmmBrMfZBs45b8f+GSrF7EkX826bxSvTYN0
+         BfYCPFcpLO4LUiBUgAKO9XxQYf2nU7tLHm/KjG11xdcURDjjWMa+C93Umn8rxjrJ4E53
+         G3tDyN4Nu/1y6ZYnLC2XLUTm6KNDJju3sw5QqpIEJrshIWYdQK0yMHkSFG+I4HGwpCKK
+         M1BA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=00x68YJ2x4xVsec0dOpuJh55/HKY/Kh+2U/BGdfsf1Q=;
-        b=IPkRd9Mm8DGOX7OWWynJoOCb6TFuw9/Sx7v2sCjlU5rDmBi09QKnd+tOyTtaCmxHB+
-         4W3OlAzLIaxo3SkQG0QSPLMQU/WvHgPNvBmkY1eTVZKzrY0xVzSXdIQgxnBc0EeE3C6P
-         YUoFQ7c/kOQSYfUy/QVj4ak98ak8LzMr7bCpDXpDCQtHNcnUG47xIA5CKwFOHDbpSQ7p
-         5JhwugCGXsiaJZunVSjTTuOgykyKRUFk3cXPcw3m4v5yWBJagsg1YkJo9QTJbC2AYm91
-         +gbvBIMMBfS+FbZwbIvkiOMiDmbNIR8HltlP2dAZDxvDx3Kc/zpYZMLY5Gc5MApCVZ4N
-         mMxQ==
-X-Gm-Message-State: AOAM5312gBNAlZJ6l2m121eK6yn2uB6J52V1b/a/H66usDNxnc4nLzcf
-        kGXiLP0U+ZUgCWsOagPbjSgOi1vWOyQ6HBj+zWijoHhVFn0=
-X-Google-Smtp-Source: ABdhPJyT/wr//p2Nn+W3WcilQKAdqjpq4N7/38Ue/cFfN6ynx6DLK6GrO+vauBVcPHNm8RQI7TrE8+Qw3320smkxI50=
-X-Received: by 2002:a05:6512:3b9c:: with SMTP id g28mr1625162lfv.651.1636574991415;
- Wed, 10 Nov 2021 12:09:51 -0800 (PST)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=3ubNtsB/mh2b13W1yOgQi+MMV4lMAJM1Ryt/blzWJfg=;
+        b=372a+wNhcNhKYoNZqVGq8zGbW6ZLO5KjscqtyTHLBhTRJuB7WwqI+VlkdQCT6OvKHR
+         ewWL/y/5Uw4SgI3lDasXHjb6eTeLrfgV/WOoAOMXjjkRDSE4jfI/dD9ODVUJ+dAHcV+W
+         b2gyzDE/QY/MkJKEHYrnsK3kJp7N3n/tICltcSf0JOE+HxOM210Mk+G2InOANj3HmOZ/
+         1P1vsHm71FBme7s51HFhv+NoCwBuPDlByPQf3jPfXX2PV2IGmPzs2elT5lDxeSPjp35h
+         mgujyqxnXXEqqyTJEWTjYQNGAeoaRNYhoJyy3NtFrsRU/JDflu1/s9xsGRDYAbKaM+rh
+         jKYw==
+X-Gm-Message-State: AOAM531yFb+D33E/XYrf/ZuR9biSRYT1f51mJSUKfwDP/sA7xwsyFBFe
+        uzmFPi1ChQ5ZoW8ofIOeAmjLaC86vDc=
+X-Google-Smtp-Source: ABdhPJwQDoNpvj2uFPxBzcew2c52+hCN0IG4BdqWtEgnyLG3LZ1Rljdve4rcoefJZwPRvR2M+p8CLA==
+X-Received: by 2002:a17:90a:1bc5:: with SMTP id r5mr1863700pjr.90.1636574983418;
+        Wed, 10 Nov 2021 12:09:43 -0800 (PST)
+Received: from [10.67.48.245] ([192.19.223.252])
+        by smtp.googlemail.com with ESMTPSA id w12sm6650570pjq.2.2021.11.10.12.09.41
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 10 Nov 2021 12:09:42 -0800 (PST)
+Subject: Re: [PATCH 5.10 00/21] 5.10.79-rc1 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-kernel@vger.kernel.org
+Cc:     torvalds@linux-foundation.org, akpm@linux-foundation.org,
+        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+        stable@vger.kernel.org
+References: <20211110182002.964190708@linuxfoundation.org>
+From:   Florian Fainelli <f.fainelli@gmail.com>
+Message-ID: <9443d5ba-9b17-bd64-43a9-ff91e23c4273@gmail.com>
+Date:   Wed, 10 Nov 2021 12:09:41 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-References: <CAK8P3a3ZuL9TQbj+tGkdvRRmEv_jT3OvzmaoFKHwdw=5J1w_SA@mail.gmail.com>
- <20211110180359.2338349-1-anders.roxell@linaro.org>
-In-Reply-To: <20211110180359.2338349-1-anders.roxell@linaro.org>
-From:   Nick Desaulniers <ndesaulniers@google.com>
-Date:   Wed, 10 Nov 2021 12:09:40 -0800
-Message-ID: <CAKwvOdkoKvjecTfxbRwZ=BYirvy-Jq64pHtHuct8oWgExv1xPw@mail.gmail.com>
-Subject: Re: [PATCHv2] selftests: timens: exec: use 'labs()' over 'abs()'
-To:     Anders Roxell <anders.roxell@linaro.org>
-Cc:     shuah@kernel.org, nathan@kernel.org,
-        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
-        llvm@lists.linux.dev, Arnd Bergmann <arnd@arndb.de>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20211110182002.964190708@linuxfoundation.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 10, 2021 at 10:04 AM Anders Roxell <anders.roxell@linaro.org> wrote:
->
-> When building selftests/timens with clang, the compiler warn about the
-> function abs() see below:
->
-> exec.c:33:8: error: absolute value function 'abs' given an argument of type 'long' but has parameter of type 'int' which may cause truncation of value [-Werror,-Wabsolute-value]
->                         if (abs(tst.tv_sec - now.tv_sec) > 5)
->                             ^
-> exec.c:33:8: note: use function 'labs' instead
->                         if (abs(tst.tv_sec - now.tv_sec) > 5)
->                             ^~~
->                             labs
->
-> Rework to store the time difference in a 'long long' and pass that to
-> llabs(), since the variable can be an 'int', 'long' or 'long long'
-> depending on the architecture and C library.
->
-> Suggested-by: Arnd Bergmann <arnd@arndb.de>
-> Signed-off-by: Anders Roxell <anders.roxell@linaro.org>
+On 11/10/21 10:43 AM, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 5.10.79 release.
+> There are 21 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+> 
+> Responses should be made by Fri, 12 Nov 2021 18:19:54 +0000.
+> Anything received after that time might be too late.
+> 
+> The whole patch series can be found in one patch at:
+> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.10.79-rc1.gz
+> or in the git tree and branch at:
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.10.y
+> and the diffstat can be found below.
+> 
+> thanks,
+> 
+> greg k-h
 
-Thanks for the patch!
-Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
+On ARCH_BRCMSTB, using 32-bit and 64-bit ARM kernels:
 
-> ---
->  tools/testing/selftests/timens/exec.c | 10 +++++++---
->  1 file changed, 7 insertions(+), 3 deletions(-)
->
-> diff --git a/tools/testing/selftests/timens/exec.c b/tools/testing/selftests/timens/exec.c
-> index e40dc5be2f66..04439e6ac8a2 100644
-> --- a/tools/testing/selftests/timens/exec.c
-> +++ b/tools/testing/selftests/timens/exec.c
-> @@ -21,6 +21,7 @@
->  int main(int argc, char *argv[])
->  {
->         struct timespec now, tst;
-> +       long long timediff;
->         int status, i;
->         pid_t pid;
->
-> @@ -30,7 +31,8 @@ int main(int argc, char *argv[])
->
->                 for (i = 0; i < 2; i++) {
->                         _gettime(CLOCK_MONOTONIC, &tst, i);
-> -                       if (abs(tst.tv_sec - now.tv_sec) > 5)
-> +                       timediff = tst.tv_sec - now.tv_sec;
-> +                       if (llabs(timediff) > 5)
->                                 return pr_fail("%ld %ld\n", now.tv_sec, tst.tv_sec);
->                 }
->                 return 0;
-> @@ -50,7 +52,8 @@ int main(int argc, char *argv[])
->
->         for (i = 0; i < 2; i++) {
->                 _gettime(CLOCK_MONOTONIC, &tst, i);
-> -               if (abs(tst.tv_sec - now.tv_sec) > 5)
-> +               timediff = tst.tv_sec - now.tv_sec;
-> +               if (llabs(timediff) > 5)
->                         return pr_fail("%ld %ld\n",
->                                         now.tv_sec, tst.tv_sec);
->         }
-> @@ -70,7 +73,8 @@ int main(int argc, char *argv[])
->                 /* Check that a child process is in the new timens. */
->                 for (i = 0; i < 2; i++) {
->                         _gettime(CLOCK_MONOTONIC, &tst, i);
-> -                       if (abs(tst.tv_sec - now.tv_sec - OFFSET) > 5)
-> +                       timediff = tst.tv_sec - now.tv_sec - OFFSET;
-> +                       if (llabs(timediff) > 5)
->                                 return pr_fail("%ld %ld\n",
->                                                 now.tv_sec + OFFSET, tst.tv_sec);
->                 }
-> --
-> 2.33.0
->
-
-
+Tested-by: Florian Fainelli <f.fainelli@gmail.com>
 -- 
-Thanks,
-~Nick Desaulniers
+Florian
