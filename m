@@ -2,109 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A3BE744BF7C
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 12:00:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 17E5D44BF5A
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 11:59:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231599AbhKJLDV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Nov 2021 06:03:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50330 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231586AbhKJLC7 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Nov 2021 06:02:59 -0500
-Received: from mail-pl1-x635.google.com (mail-pl1-x635.google.com [IPv6:2607:f8b0:4864:20::635])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F2F1FC06120C
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Nov 2021 03:00:11 -0800 (PST)
-Received: by mail-pl1-x635.google.com with SMTP id y1so2635122plk.10
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Nov 2021 03:00:11 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=cMr0eE8FXgPe+QXcGVoNpVzyu/9rj5/pkeXUEo39aLo=;
-        b=WvLNS+ggr7y59JU7GQNkZ16qg2QM7b5NhBYESPwK0gzPRVg7QE8HFXrALmBXcytmqJ
-         JjD3zTTk78kldYjj4SIyaXQjdJPFu8UES1W3iJx9bsvMucETp5FdWsloIHj+9nub+FlI
-         T+eaEOFxN6Xf9NZFdgGlOwZtyfh4eplPJqV4UIT8p1CZRVzVHTkOsPssRf0AvMm93tke
-         i3gJVZbq7MLHYfM8M93NbWLGqIGh9tRTBOGoDek6pV6VYHfLXFZzMAcExWXw0zQ/aI+Q
-         iYGn78bkkTPMbyfBdutcQO1JzhwFNwe+EZ2MS3nhPBb/R8pjpUxvTfQhBupkmPkdfYwu
-         o5aQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=cMr0eE8FXgPe+QXcGVoNpVzyu/9rj5/pkeXUEo39aLo=;
-        b=v4wCtTwrawygFWC7TCeGr050Q1x9mnMECZ69+0itap+/eh52ubOxA2ck5kXZmTg6nJ
-         CX3LHYHErd04DGJAZJFvYTPov29DrQorhd5O8DYbFiSYA+bPdbyKWfRK50dln9OIelZm
-         GLBVXif1mi4NiKkmOwxrL0cioSjdIyxwJnRvWRRVKO+bgqDZkr+1dWUPqxPZeNhDkBfb
-         Tsg0ztiF2gq3noD8rN0inhgZwqIpDFRqUpqOyAw2KwL0WJnuKiXrXEMuaN48InaIuapu
-         +oYItwUMuISTiFtRlgThjsXClAwgcdAUG+YHhf+bf8/Xof8UsjhSv2+woNGShpvYapIm
-         WS9g==
-X-Gm-Message-State: AOAM531ljuiBvexaZIKQccOObTZCHtGdBhGEEr7JIHWjZNKPu3a/oLCP
-        xj7TZZwItgwlXirneoU2q7/+3Q==
-X-Google-Smtp-Source: ABdhPJzvVpgiH2PlMxXWAmipSkGsWQhyKhW8YmToX7VhyCW0Zali00uwZ+BsJuQ7Wd8QuR87/F3Fpg==
-X-Received: by 2002:a17:902:e851:b0:142:19fe:982a with SMTP id t17-20020a170902e85100b0014219fe982amr14573280plg.13.1636542011471;
-        Wed, 10 Nov 2021 03:00:11 -0800 (PST)
-Received: from localhost.name ([122.161.52.143])
-        by smtp.gmail.com with ESMTPSA id e11sm5585282pjl.20.2021.11.10.03.00.06
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 10 Nov 2021 03:00:11 -0800 (PST)
-From:   Bhupesh Sharma <bhupesh.sharma@linaro.org>
-To:     linux-arm-msm@vger.kernel.org, linux-crypto@vger.kernel.org
-Cc:     bhupesh.sharma@linaro.org, bhupesh.linux@gmail.com,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        robh+dt@kernel.org, agross@kernel.org, herbert@gondor.apana.org.au,
-        davem@davemloft.net, stephan@gerhold.net,
-        Thara Gopinath <thara.gopinath@linaro.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>
-Subject: [PATCH v5 06/22] dt-bindings: qcom-bam: Add "powered remotely" mode
-Date:   Wed, 10 Nov 2021 16:29:06 +0530
-Message-Id: <20211110105922.217895-7-bhupesh.sharma@linaro.org>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20211110105922.217895-1-bhupesh.sharma@linaro.org>
-References: <20211110105922.217895-1-bhupesh.sharma@linaro.org>
+        id S231372AbhKJLCA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Nov 2021 06:02:00 -0500
+Received: from mail.kernel.org ([198.145.29.99]:38748 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231248AbhKJLB7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Nov 2021 06:01:59 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 55276611BF;
+        Wed, 10 Nov 2021 10:59:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1636541952;
+        bh=5TIG1BRWAdpzcni9lSwygVrJFoLLUWjoMyvM0Rtg+Ro=;
+        h=From:To:Cc:Subject:Date:From;
+        b=WsAyqdyKsc1yI/6YFYo2V/W7+NfjKeqsU3tQudqBOKv4ExGPL1Riz57Xee5R+g/lB
+         vu/D3/3884Wsr/KY0m2o2/kTmHFZS2TIcEzeot0R+LW4aqjAay5I5j5rnleALgouCS
+         6w+2fxyFx8Dsu/nk0kvdBHXoLhkKIve/n1cgPJErRwO3yrchQg6eTiaxMIPbJT/MoH
+         e+tQ32PxVScuB7rdsTi0a/jJED5LgLVjoWfUkLYV1vERNwrHrgrVCpgoY6QKhrk5jV
+         Gsvpt1XIz44LQ+5P1PUN/CfyO00N6LzqA+6rQyV3S90PUQ5m7HtPCsUpCd2lJbPccv
+         OBM7rznI6CNaw==
+Received: by mail.kernel.org with local (Exim 4.94.2)
+        (envelope-from <mchehab@kernel.org>)
+        id 1mklJt-002rxD-8E; Wed, 10 Nov 2021 10:59:09 +0000
+From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Cc:     linuxarm@huawei.com, mauro.chehab@huawei.com,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Deepak R Varma <drv@mailo.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>,
+        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
+        linux-staging@lists.linux.dev, Hans Verkuil <hverkuil@xs4all.nl>
+Subject: [PATCH 1/2] media: atomisp-ov2680: initialize return var
+Date:   Wed, 10 Nov 2021 10:59:07 +0000
+Message-Id: <46ec939d911fc94b8a5e217874655e60512ad773.1636541941.git.mchehab+huawei@kernel.org>
+X-Mailer: git-send-email 2.33.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+Sender: Mauro Carvalho Chehab <mchehab@kernel.org>
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In some configurations, the BAM DMA controller is set up by a remote
-processor and the local processor can simply start making use of it
-without setting up the BAM. This is already supported using the
-"qcom,controlled-remotely" property.
+As the settings are only applied when the device is powered on,
+it should return 0 when the device is not powered.
 
-However, for some reason another possible configuration is that the
-remote processor is responsible for powering up the BAM, but we are
-still responsible for initializing it (e.g. resetting it etc). Add
-a "qcom,powered-remotely" property to describe that configuration.
+Not doing that causes a warning:
 
-Cc: Thara Gopinath <thara.gopinath@linaro.org>
-Cc: Bjorn Andersson <bjorn.andersson@linaro.org>
-Cc: Rob Herring <robh+dt@kernel.org>
-Signed-off-by: Bhupesh Sharma <bhupesh.sharma@linaro.org>
-[moved Stephan's change to the YAML dt-binding format]
-Signed-off-by: Stephan Gerhold <stephan@gerhold.net>
+	drivers/staging/media/atomisp/i2c/atomisp-ov2680.c: In function 'ov2680_ioctl':
+	drivers/staging/media/atomisp/i2c/atomisp-ov2680.c:390:16: warning: 'ret' may be used uninitialized in this
+	function [-Wmaybe-uninitialized]
+	  390 |         return ov2680_set_exposure(sd, coarse_itg, analog_gain, digital_gain);
+	      |                ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+	drivers/staging/media/atomisp/i2c/atomisp-ov2680.c:359:13: note: 'ret' was declared here
+	  359 |         int ret;
+	      |             ^~~
+
+Reported-by: Hans Verkuil <hverkuil@xs4all.nl>
+Cc: Hans de Goede <hdegoede@redhat.com>
+Fixes: 6b5b60687ada ("media: atomisp-ov2680: Save/restore exposure and gain over sensor power-down")
+Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 ---
- Documentation/devicetree/bindings/dma/qcom_bam_dma.yaml | 6 ++++++
- 1 file changed, 6 insertions(+)
+ drivers/staging/media/atomisp/i2c/atomisp-ov2680.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/Documentation/devicetree/bindings/dma/qcom_bam_dma.yaml b/Documentation/devicetree/bindings/dma/qcom_bam_dma.yaml
-index cfff3a2286fb..bf0a59e8a2bf 100644
---- a/Documentation/devicetree/bindings/dma/qcom_bam_dma.yaml
-+++ b/Documentation/devicetree/bindings/dma/qcom_bam_dma.yaml
-@@ -73,6 +73,12 @@ properties:
-       Indicates that the bam is controlled by remote proccessor i.e.
-       execution environment.
+diff --git a/drivers/staging/media/atomisp/i2c/atomisp-ov2680.c b/drivers/staging/media/atomisp/i2c/atomisp-ov2680.c
+index 34d008236bd9..497884d332e1 100644
+--- a/drivers/staging/media/atomisp/i2c/atomisp-ov2680.c
++++ b/drivers/staging/media/atomisp/i2c/atomisp-ov2680.c
+@@ -356,7 +356,7 @@ static int ov2680_set_exposure(struct v4l2_subdev *sd, int exposure,
+ 			       int gain, int digitgain)
+ {
+ 	struct ov2680_device *dev = to_ov2680_sensor(sd);
+-	int ret;
++	int ret = 0;
  
-+  qcom,powered-remotely:
-+    $ref: /schemas/types.yaml#/definitions/flag
-+    description:
-+      Indicates that the bam is powered up by a remote processor
-+      but must be initialized by the local processor.
-+
-   qcom,num-ees:
-     $ref: /schemas/types.yaml#/definitions/uint32
-     minimum: 0
+ 	mutex_lock(&dev->input_lock);
+ 
 -- 
-2.31.1
+2.33.1
 
