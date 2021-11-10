@@ -2,112 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BA87844C5B8
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 18:06:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 93D4244C5B9
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 18:06:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230341AbhKJRJL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Nov 2021 12:09:11 -0500
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:41430 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229531AbhKJRJK (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Nov 2021 12:09:10 -0500
-Received: from pps.filterd (m0098409.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 1AAGH9W4030075
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Nov 2021 17:06:22 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=to : cc : subject : from
- : message-id : date : content-type : content-transfer-encoding :
- mime-version; s=pp1; bh=Yk3cHWP742vBHB4thVRR3JQ32BPj70Jto97RwUAnsCo=;
- b=gEMxbzQpMp0GOfHW2XCn7ztSdR+I/qx+Ce1AT3u/kXDOgkrloaIVGamYtL4GMgMrvRPG
- O5T34EeIp7Zj+cZfskKSZEsBK5WAvF3toR1279IPbw708pdNkKVX/qcRmhCfcTILfo3T
- wBsD5C1ApBCUFAKgLUVSkSJYEn+mdxZ5ayI6K3HonKjQWR7PVdKkxeP4OndCVG83tDzH
- 6Gmg50VqiMW5DKASAFHFVZNyVShNPydl6wTJh0tstffwqR6YYPDY1SO9vJcROB6O62mt
- hSIAnrXbZ6kxQuSSppDtVtDURmYvKIYEXqCkVrYHuzlla1uxBaTnQ8PDZE52Gw/mPvZ0 uA== 
-Received: from ppma05wdc.us.ibm.com (1b.90.2fa9.ip4.static.sl-reverse.com [169.47.144.27])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3c8hfg163u-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT)
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Nov 2021 17:06:22 +0000
-Received: from pps.filterd (ppma05wdc.us.ibm.com [127.0.0.1])
-        by ppma05wdc.us.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 1AAGvZPD006426
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Nov 2021 17:06:21 GMT
-Received: from b01cxnp22034.gho.pok.ibm.com (b01cxnp22034.gho.pok.ibm.com [9.57.198.24])
-        by ppma05wdc.us.ibm.com with ESMTP id 3c5hbcj2g3-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT)
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Nov 2021 17:06:21 +0000
-Received: from b01ledav003.gho.pok.ibm.com (b01ledav003.gho.pok.ibm.com [9.57.199.108])
-        by b01cxnp22034.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 1AAH6KZT63832536
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 10 Nov 2021 17:06:20 GMT
-Received: from b01ledav003.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 6D612B2070;
-        Wed, 10 Nov 2021 17:06:20 +0000 (GMT)
-Received: from b01ledav003.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 59876B206E;
-        Wed, 10 Nov 2021 17:06:20 +0000 (GMT)
-Received: from mww0141.wdc07m.mail.ibm.com (unknown [9.208.70.161])
-        by b01ledav003.gho.pok.ibm.com (Postfix) with ESMTPS;
-        Wed, 10 Nov 2021 17:06:20 +0000 (GMT)
-To:     linux-kernel@vger.kernel.org
-Cc:     "Aniket Kulkarni" <aniket.kulkarni@us.ibm.com>,
-        "Rajshekar Iyer" <iyerr@us.ibm.com>,
-        "Pawan Powar" <ppowar@us.ibm.com>, ask@linux.vnet.ibm.com
-Subject: [BUG: Bad page map in process XXXXX  pte:8000000e72680867 pmd:ff48e6067]
- Application is getting bad data when trying to mmap memory allocated by
- kernel device drivers
-From:   "Harish Mara" <Harish.Mara@ibm.com>
-Message-ID: <OFC9FBB3AB.B34DAD21-ON00258789.005D2811-85258789.005DF5B3@ibm.com>
-Date:   Wed, 10 Nov 2021 13:06:17 -0400
-Content-Type: text/plain; charset="ISO-8859-1"
-Content-Transfer-Encoding: quoted-printable
+        id S232284AbhKJRJb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Nov 2021 12:09:31 -0500
+Received: from mail.kernel.org ([198.145.29.99]:51016 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232203AbhKJRJ3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Nov 2021 12:09:29 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2E45E61261
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Nov 2021 17:06:42 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1636564002;
+        bh=LSNqX4XlH2DA2EfyUuc+0taTvvtbGQbiqRrxnTIhyIQ=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=bpqxczzrxFE0G02fm6uopqnHqfx87M9nhh2fQoHCbOZuO5npceTFIcgpLd29Lp7L8
+         0xtQIuO4ezu55+4xmNUNwp9S6N5PYPlCb/JJhI8k17b9WJOz0qqP4UVB3Zc+yCT60l
+         9aZVhiWmVO3cs4eBxOboySYlJQ+1DVh9SwuPJrODbx4HvcDELkMrODkhJ1C1gS42z+
+         BdMM3jN/D0507dfd4X4cAMUOwPelbLCJRiNDPa2uTVWruNw2ilAJtxVGvJFBjRJk+R
+         twgujpZpETO+lCmWzBBMpqYtRAQ9oziIclYlT1+jlc8gjqA99GWMivFSSbQrAoy/LT
+         XfP+X6wXqeZqA==
+Received: by mail-oi1-f174.google.com with SMTP id n66so6417860oia.9
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Nov 2021 09:06:42 -0800 (PST)
+X-Gm-Message-State: AOAM532JuZJ4P1O4lMO6eL9MhplOAUhmi2R1k2iEWnIOBNgd7y2dAYmt
+        Okkojtx2RBIOhXHxX/uBEndaO+e/2h7Hreh4cH4=
+X-Google-Smtp-Source: ABdhPJzpvQYPooMirF8dxQpK5PrmQUKJ5x+FAd4QDHdAAj2fYW7JaS5KSHeTypBKnXildhgozkTt6C33NOVv/dwwiNk=
+X-Received: by 2002:a05:6808:12:: with SMTP id u18mr599162oic.174.1636564001416;
+ Wed, 10 Nov 2021 09:06:41 -0800 (PST)
 MIME-Version: 1.0
-X-KeepSent: C9FBB3AB:B34DAD21-00258789:005D2811; name=$KeepSent; type=4
-X-Mailer: HCL Notes Build V1101FP3_03312021 SHF15 May 21, 2021
-X-Disclaimed: 50439
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: jUCoFJkxLMwz3YLRD_vy5ZZ-r-7FOrj3
-X-Proofpoint-ORIG-GUID: jUCoFJkxLMwz3YLRD_vy5ZZ-r-7FOrj3
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.205,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.0.607.475
- definitions=2021-11-10_06,2021-11-08_02,2020-04-07_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
- lowpriorityscore=0 mlxscore=0 adultscore=0 malwarescore=0 suspectscore=0
- spamscore=0 clxscore=1011 mlxlogscore=903 phishscore=0 impostorscore=0
- bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2110150000 definitions=main-2111100086
+References: <20211110010906.1923210-1-eric.dumazet@gmail.com>
+ <20211110010906.1923210-3-eric.dumazet@gmail.com> <YYuEXQ7Ur9f88pCw@hirez.programming.kicks-ass.net>
+ <CAMj1kXF8makQnZaWDpyzQc2ZiwQEU1ACYhrA91UaFT6S-6RXaQ@mail.gmail.com> <CANn89i+STEwQkEN4hF-gx0WWrL8x5xg=8EDb5O_jf9f3MNVPEQ@mail.gmail.com>
+In-Reply-To: <CANn89i+STEwQkEN4hF-gx0WWrL8x5xg=8EDb5O_jf9f3MNVPEQ@mail.gmail.com>
+From:   Ard Biesheuvel <ardb@kernel.org>
+Date:   Wed, 10 Nov 2021 18:06:28 +0100
+X-Gmail-Original-Message-ID: <CAMj1kXFOznCFN=P-6PMv+GN8w1=pYNL0gpC4S6ke5aCBmh3wTA@mail.gmail.com>
+Message-ID: <CAMj1kXFOznCFN=P-6PMv+GN8w1=pYNL0gpC4S6ke5aCBmh3wTA@mail.gmail.com>
+Subject: Re: [PATCH 2/2] jump_label: refine placement of static_keys
+To:     Eric Dumazet <edumazet@google.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Eric Dumazet <eric.dumazet@gmail.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Jason Baron <jbaron@akamai.com>,
+        "Steven Rostedt (VMware)" <rostedt@goodmis.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-We have kernel drivers that allocate memory using ?alloc=5Fpages=5Fnode?, t=
-he=20
-size of the memory allocation is fixed at 128KB.
-The pages are allocated with ?GFP=5FKERNEL | =5FGFP=5FCOMP?. And the pages =
-thus=20
-allocated are marked as Reserved.
-The driver does multiple such allocations at the beginning. This memory is =
+On Wed, 10 Nov 2021 at 16:22, Eric Dumazet <edumazet@google.com> wrote:
+>
+> On Wed, Nov 10, 2021 at 2:24 AM Ard Biesheuvel <ardb@kernel.org> wrote:
+> >
+> > On Wed, 10 Nov 2021 at 09:36, Peter Zijlstra <peterz@infradead.org> wrote:
+> > >
+> > > On Tue, Nov 09, 2021 at 05:09:06PM -0800, Eric Dumazet wrote:
+> > > > From: Eric Dumazet <edumazet@google.com>
+> > > >
+> > > > With CONFIG_JUMP_LABEL=y, "struct static_key" content is only
+> > > > used for the control path.
+> > > >
+> > > > Marking them __read_mostly is only needed when CONFIG_JUMP_LABEL=n.
+> > > > Otherwise we place them out of the way to increase data locality.
+> > > >
+> > > > This patch adds __static_key to centralize this new policy.
+> > > >
+> > > > Signed-off-by: Eric Dumazet <edumazet@google.com>
+> > > > ---
+> > > >  arch/x86/kvm/lapic.c       |  4 ++--
+> > > >  arch/x86/kvm/x86.c         |  2 +-
+> > > >  include/linux/jump_label.h | 25 +++++++++++++++++--------
+> > > >  kernel/events/core.c       |  2 +-
+> > > >  kernel/sched/fair.c        |  2 +-
+> > > >  net/core/dev.c             |  8 ++++----
+> > > >  net/netfilter/core.c       |  2 +-
+> > > >  net/netfilter/x_tables.c   |  2 +-
+> > > >  8 files changed, 28 insertions(+), 19 deletions(-)
+> > > >
+> > >
+> > > Hurmph, it's a bit cumbersome to always have to add this __static_key
+> > > attribute to every definition, and in fact you seem to have missed some.
+> > >
+> > > Would something like:
+> > >
+> > >         typedef struct static_key __static_key static_key_t;
+> > >
+> > > work? I forever seem to forget the exact things you can make a typedef
+> > > do :/
+> >
+> > No, that doesn't work. Section placement is an attribute of the symbol
+> > not of its type. So we'll need to macro'ify this.
+>
+> Yes, this is also why I chose a short __static_key (initially I was
+> using something more descriptive but longer)
+>
+> >
+> > But I'm not sure I understand why we need different policies here.
+> > Static keys are inherently __read_mostly (unless they are not writable
+> > to begin with), so keeping them all together in one place in the
+> > binary should be sufficient, no?
+>
+> It is not optimal for CONFIG_JUMP_LABEL=n cases.
+>
+> For instance, networking will prefer having rps_needed / rfs_needed in
+> the same cache lines than other hot read_mostly stuff,
+> instead of being far away in other locations.
+>
+> ffffffff830e0f80 D dev_weight_tx_bias
+> ffffffff830e0f84 D dev_rx_weight
+> ffffffff830e0f88 D dev_tx_weight
+> ffffffff830e0f8c D gro_normal_batch
+> ffffffff830e0f90 D rps_sock_flow_table
+> ffffffff830e0f98 D rps_cpu_mask
+> ffffffff830e0f9c D rps_needed
+> ffffffff830e0fa0 D rfs_needed
+> ffffffff830e0fa4 D netdev_flow_limit_table_len
+> ffffffff830e0fa8 d netif_napi_add.__print_once
+> ffffffff830e0fac D netdev_unregister_timeout_secs
+> ffffffff830e0fb0 D ptype_base
+>
+>
+> When CONFIG_JUMP_LABEL=y, rps_needed/xps_needed being in a remote
+> location is a win because it 'saves' 32 bytes than can be used better
 
-reused for various requests the driver handles.
-The linux kernel device drivers also create char devices. The char devices =
+I understand that you want the key out of the way for
+CONFIG_JUMP_LABEL=n, but the question was why we shouldn't do that
+unconditionally. If we put all the keys together in a section, they
+will only share cachelines with each other.
 
-are initialized with our own file=5Foperations that overload owner, read,=20
-poll, unlocked=5Fioctl, mmap, open, release, compat=5Fioctl.
-The mmap also registers vm=5Foperations=5Fstruct to the vm=5Farea=5Fstruct =
-and=20
-sets the VM=5FDONTEXPAND flag. The vm=5Foperations=5Fstruct.fault implement=
-ation=20
-finds the appropriate page and increments the refcount and sets the=20
-vmf->page.
-The user space processes open these device file and mmap the address=20
-range. The size of mmap could be a single allocation (128KB) or multiple=20
-allocations.
-
-The problem we are facing is when the user space mmap?s a size of 2MB.=20
-Sometimes the memory that gets mapped is garbage (not correct) and we=20
-always notice ?Bad page map? errors.=20
-
-P.S: To solve this issue, we removed the ?=5FGFP=5FCOMP? flag from allocati=
-on.=20
-However this created a different problem on some cloud instances, we are=20
-seeing the ?Bad page? errors during the memory allocation that happens at=20
-the initialization phase.
-
+Also, what is the performance impact on a real world use case of this change?
