@@ -2,35 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4FABD44C781
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 19:49:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 38C4644C79B
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 19:53:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233244AbhKJSwW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Nov 2021 13:52:22 -0500
-Received: from mail.kernel.org ([198.145.29.99]:47364 "EHLO mail.kernel.org"
+        id S233631AbhKJSxJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Nov 2021 13:53:09 -0500
+Received: from mail.kernel.org ([198.145.29.99]:48284 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233272AbhKJStu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Nov 2021 13:49:50 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B8A1A61269;
-        Wed, 10 Nov 2021 18:46:40 +0000 (UTC)
+        id S233230AbhKJSvG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Nov 2021 13:51:06 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7CB7061211;
+        Wed, 10 Nov 2021 18:47:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1636570001;
-        bh=q9aydd/CFdTUD+m0FPc5a7Q3PINsajNfFPjpq+9ald8=;
+        s=korg; t=1636570050;
+        bh=BD5P/rENzkQLAA5GsOKYD9XmrUAsWECJt25wfIusa5k=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=SlYOcEywFgjAjT+dGavzxQxvazz8hoGKcXXrmAElLgjFoGvBHQYdBBWZS0MYOpEay
-         EZ0RdWqlcpqSOss7zu5dPTpuFM4aZINwpV0tfJBx9y2tN7ry50F9qmhM8TVS2p8K3r
-         H/08MheVdVovWueiTsILCqeK8rYkLTlCDFRNt0AE=
+        b=Ydg8i9m4R06d64r0+9OWI/L+PrcwkG5bJl5MkZnKlqFaNJofR7P5jXjHd3egUWsCw
+         w5DtXPPnJ8f9/DMcX0fsVPm332eTh1nRMy3cMob6YGziyGO0qyvmQb7Bav+a/NsUrU
+         WQbKDL8irycV2Cg0C9NPiurHSOLEJEv09WyG79v0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Johan Hovold <johan@kernel.org>,
-        Ian Abbott <abbotti@mev.co.uk>
-Subject: [PATCH 4.19 13/16] comedi: vmk80xx: fix bulk and interrupt message timeouts
+        stable@vger.kernel.org,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Petr Mladek <pmladek@suse.com>, Yi Fan <yfa@google.com>
+Subject: [PATCH 5.4 07/17] printk/console: Allow to disable console output by using console="" or console=null
 Date:   Wed, 10 Nov 2021 19:43:46 +0100
-Message-Id: <20211110182002.415756071@linuxfoundation.org>
+Message-Id: <20211110182002.444875720@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211110182001.994215976@linuxfoundation.org>
-References: <20211110182001.994215976@linuxfoundation.org>
+In-Reply-To: <20211110182002.206203228@linuxfoundation.org>
+References: <20211110182002.206203228@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,74 +41,62 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Johan Hovold <johan@kernel.org>
+From: Petr Mladek <pmladek@suse.com>
 
-commit a56d3e40bda460edf3f8d6aac00ec0b322b4ab83 upstream.
+commit 3cffa06aeef7ece30f6b5ac0ea51f264e8fea4d0 upstream.
 
-USB bulk and interrupt message timeouts are specified in milliseconds
-and should specifically not vary with CONFIG_HZ.
+The commit 48021f98130880dd74 ("printk: handle blank console arguments
+passed in.") prevented crash caused by empty console= parameter value.
 
-Note that the bulk-out transfer timeout was set to the endpoint
-bInterval value, which should be ignored for bulk endpoints and is
-typically set to zero. This meant that a failing bulk-out transfer
-would never time out.
+Unfortunately, this value is widely used on Chromebooks to disable
+the console output. The above commit caused performance regression
+because the messages were pushed on slow console even though nobody
+was watching it.
 
-Assume that the 10 second timeout used for all other transfers is more
-than enough also for the bulk-out endpoint.
+Use ttynull driver explicitly for console="" and console=null
+parameters. It has been created for exactly this purpose.
 
-Fixes: 985cafccbf9b ("Staging: Comedi: vmk80xx: Add k8061 support")
-Fixes: 951348b37738 ("staging: comedi: vmk80xx: wait for URBs to complete")
-Cc: stable@vger.kernel.org      # 2.6.31
-Signed-off-by: Johan Hovold <johan@kernel.org>
-Reviewed-by: Ian Abbott <abbotti@mev.co.uk>
-Link: https://lore.kernel.org/r/20211025114532.4599-6-johan@kernel.org
+It causes that preferred_console is set. As a result, ttySX and ttyX
+are not used as a fallback. And only ttynull console gets registered by
+default.
+
+It still allows to register other consoles either by additional console=
+parameters or SPCR. It prevents regression because it worked this way even
+before. Also it is a sane semantic. Preventing output on all consoles
+should be done another way, for example, by introducing mute_console
+parameter.
+
+Link: https://lore.kernel.org/r/20201006025935.GA597@jagdpanzerIV.localdomain
+Suggested-by: Sergey Senozhatsky <sergey.senozhatsky@gmail.com>
+Reviewed-by: Guenter Roeck <linux@roeck-us.net>
+Tested-by: Guenter Roeck <linux@roeck-us.net>
+Acked-by: Sergey Senozhatsky <sergey.senozhatsky@gmail.com>
+Signed-off-by: Petr Mladek <pmladek@suse.com>
+Link: https://lore.kernel.org/r/20201111135450.11214-3-pmladek@suse.com
+Cc: Yi Fan <yfa@google.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/staging/comedi/drivers/vmk80xx.c |   12 +++++++-----
- 1 file changed, 7 insertions(+), 5 deletions(-)
+ kernel/printk/printk.c |    9 ++++++++-
+ 1 file changed, 8 insertions(+), 1 deletion(-)
 
---- a/drivers/staging/comedi/drivers/vmk80xx.c
-+++ b/drivers/staging/comedi/drivers/vmk80xx.c
-@@ -91,6 +91,7 @@ enum {
- #define IC6_VERSION		BIT(1)
+--- a/kernel/printk/printk.c
++++ b/kernel/printk/printk.c
+@@ -2193,8 +2193,15 @@ static int __init console_setup(char *st
+ 	char *s, *options, *brl_options = NULL;
+ 	int idx;
  
- #define MIN_BUF_SIZE		64
-+#define PACKET_TIMEOUT		10000	/* ms */
+-	if (str[0] == 0)
++	/*
++	 * console="" or console=null have been suggested as a way to
++	 * disable console output. Use ttynull that has been created
++	 * for exacly this purpose.
++	 */
++	if (str[0] == 0 || strcmp(str, "null") == 0) {
++		__add_preferred_console("ttynull", 0, NULL, NULL);
+ 		return 1;
++	}
  
- enum vmk80xx_model {
- 	VMK8055_MODEL,
-@@ -169,10 +170,11 @@ static void vmk80xx_do_bulk_msg(struct c
- 	tx_size = usb_endpoint_maxp(devpriv->ep_tx);
- 	rx_size = usb_endpoint_maxp(devpriv->ep_rx);
- 
--	usb_bulk_msg(usb, tx_pipe, devpriv->usb_tx_buf,
--		     tx_size, NULL, devpriv->ep_tx->bInterval);
-+	usb_bulk_msg(usb, tx_pipe, devpriv->usb_tx_buf, tx_size, NULL,
-+		     PACKET_TIMEOUT);
- 
--	usb_bulk_msg(usb, rx_pipe, devpriv->usb_rx_buf, rx_size, NULL, HZ * 10);
-+	usb_bulk_msg(usb, rx_pipe, devpriv->usb_rx_buf, rx_size, NULL,
-+		     PACKET_TIMEOUT);
- }
- 
- static int vmk80xx_read_packet(struct comedi_device *dev)
-@@ -191,7 +193,7 @@ static int vmk80xx_read_packet(struct co
- 	pipe = usb_rcvintpipe(usb, ep->bEndpointAddress);
- 	return usb_interrupt_msg(usb, pipe, devpriv->usb_rx_buf,
- 				 usb_endpoint_maxp(ep), NULL,
--				 HZ * 10);
-+				 PACKET_TIMEOUT);
- }
- 
- static int vmk80xx_write_packet(struct comedi_device *dev, int cmd)
-@@ -212,7 +214,7 @@ static int vmk80xx_write_packet(struct c
- 	pipe = usb_sndintpipe(usb, ep->bEndpointAddress);
- 	return usb_interrupt_msg(usb, pipe, devpriv->usb_tx_buf,
- 				 usb_endpoint_maxp(ep), NULL,
--				 HZ * 10);
-+				 PACKET_TIMEOUT);
- }
- 
- static int vmk80xx_reset_device(struct comedi_device *dev)
+ 	if (_braille_console_setup(&str, &brl_options))
+ 		return 1;
 
 
