@@ -2,115 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5080244BFF5
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 12:12:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A3FC844C012
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 12:20:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231395AbhKJLOv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Nov 2021 06:14:51 -0500
-Received: from mail.kernel.org ([198.145.29.99]:43640 "EHLO mail.kernel.org"
+        id S231425AbhKJLXm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Nov 2021 06:23:42 -0500
+Received: from lizzard.sbs.de ([194.138.37.39]:44290 "EHLO lizzard.sbs.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231158AbhKJLOs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Nov 2021 06:14:48 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C074461260;
-        Wed, 10 Nov 2021 11:12:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1636542720;
-        bh=DIrmlhsVEMMjbUD6J6MA4EEMmL5c5dsr4gEIm6JRuE4=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=rLcl9A8wgQZaKtXsd4UP9JkpSGygklkGDJgkcM5mosz985OjAfomwCSwJvu5J5o3S
-         L5tobzS2ctJ5niu3hvFMLVdrI75YXTQ8luvBfHeKPxyRNozalQn+DzKTcDBcrf8Y8e
-         P0teyts6MgC+hqJWg39YbG7rsZm/nDWb+MrKbrlHiYfhepUQQYEiPwEQAnINfSSsBe
-         P9d3ECTEUtjRF5CZz7fk0XxvLuGczQLn8MtknDx+d0ZnjQ8uc9iVfai2GjASsBQsz+
-         5SBeHiy1mHWzrdqeQtTlR+RsBFS2YzK+d6T8uZxB5R/FeqmQkpS8hqi2ZrGioWDxJu
-         vfsxoKvuBpqGA==
-Received: by mail-oi1-f178.google.com with SMTP id bf8so4542499oib.6;
-        Wed, 10 Nov 2021 03:12:00 -0800 (PST)
-X-Gm-Message-State: AOAM5324YDiRGVs2RbV+eO10pjuTau+Bv0pktSzXj7UYJBGnx9QD/yHb
-        5CyaUWMbfSiVMWV3kzprVR5wG4rmOo1MWPobBYA=
-X-Google-Smtp-Source: ABdhPJwZN/UIu9H2q1yELhLB2lhxVrfqstOPvAxUoM8BigcKPQsBOaOrSGEq6k43AYdy8vOKjGvcPVCaR0Yur1M9MnE=
-X-Received: by 2002:a05:6808:1919:: with SMTP id bf25mr12159740oib.33.1636542720032;
- Wed, 10 Nov 2021 03:12:00 -0800 (PST)
+        id S231325AbhKJLXi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Nov 2021 06:23:38 -0500
+X-Greylist: delayed 376 seconds by postgrey-1.27 at vger.kernel.org; Wed, 10 Nov 2021 06:23:36 EST
+Received: from mail1.sbs.de (mail1.sbs.de [192.129.41.35])
+        by lizzard.sbs.de (8.15.2/8.15.2) with ESMTPS id 1AABDwp1011374
+        (version=TLSv1.2 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 10 Nov 2021 12:13:58 +0100
+Received: from MD1T0KAC-VM.ad001.siemens.net (md1t0kac.ad001.siemens.net [139.25.68.224])
+        by mail1.sbs.de (8.15.2/8.15.2) with ESMTP id 1AABDvXQ030772;
+        Wed, 10 Nov 2021 12:13:57 +0100
+From:   Felix Moessbauer <felix.moessbauer@siemens.com>
+To:     longman@redhat.com
+Cc:     akpm@linux-foundation.org, cgroups@vger.kernel.org, corbet@lwn.net,
+        frederic@kernel.org, guro@fb.com, hannes@cmpxchg.org,
+        juri.lelli@redhat.com, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        lizefan.x@bytedance.com, mkoutny@suse.com, mtosatti@redhat.com,
+        pauld@redhat.com, peterz@infradead.org, shuah@kernel.org,
+        tj@kernel.org, jan.kiszka@siemens.com, henning.schild@siemens.com
+Subject: Re: [PATCH v8 0/6] cgroup/cpuset: Add new cpuset partition type & empty effecitve cpus
+Date:   Wed, 10 Nov 2021 12:13:57 +0100
+Message-Id: <20211110111357.17617-1-felix.moessbauer@siemens.com>
+X-Mailer: git-send-email 2.30.2
+In-Reply-To: <20211018143619.205065-1-longman@redhat.com>
+References: <20211018143619.205065-1-longman@redhat.com>
 MIME-Version: 1.0
-References: <20211110104613.23881-1-baskov@ispras.ru>
-In-Reply-To: <20211110104613.23881-1-baskov@ispras.ru>
-From:   Ard Biesheuvel <ardb@kernel.org>
-Date:   Wed, 10 Nov 2021 12:11:48 +0100
-X-Gmail-Original-Message-ID: <CAMj1kXGzdMfj0bdNFODFZ8jfo0iMaZ5SOfueciwtY7Y4V5G2JQ@mail.gmail.com>
-Message-ID: <CAMj1kXGzdMfj0bdNFODFZ8jfo0iMaZ5SOfueciwtY7Y4V5G2JQ@mail.gmail.com>
-Subject: Re: [PATCH RFC 0/5] Handle UEFI NX-restricted page tables
-To:     Baskov Evgeniy <baskov@ispras.ru>
-Cc:     Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Thomas Gleixner <tglx@linutronix.de>, X86 ML <x86@kernel.org>,
-        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        linux-efi <linux-efi@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 10 Nov 2021 at 11:56, Baskov Evgeniy <baskov@ispras.ru> wrote:
+Hi Weiman,
+
+> v8:
+>  - Reorganize the patch series and rationalize the features and
+>    constraints of a partition.
+>  - Update patch descriptions and documentation accordingly.
+> 
+> v7:
+>  - Simplify the documentation patch (patch 5) as suggested by Tejun.
+>  - Fix a typo in patch 2 and improper commit log in patch 3.
+> 
+> v6:
+>  - Remove duplicated tmpmask from update_prstate() which should fix the
+>    frame size too large problem reported by kernel test robot.
+> 
+> This patchset makes four enhancements to the cpuset v2 code.
+> 
+>  Patch 1: Enable partition with no task to have empty cpuset.cpus.effective.
+> 
+>  Patch 2: Refining the features and constraints of a cpuset partition
+>  clarifying what changes are allowed.
 >
-> Note, that this patch series is RFC, since it is yet untested
-> and possibly incompatible with AMD SEV and related extensions.
->
-> The UEFI specification states that certain memory regions may
-> not have every permission, i.e. may not be writable or executable.
->
-> Furthermore there exist some implementations (at least on i386/x86_64)
-> that restrict execution of memory regions expected by the kernel to
-> be executable. E.g. first megabyte of address space, where trampoline
-> for switching between 4/5 level paging is placed and memory regions,
-> allocated as loader data.
->
-> This patch series allows Linux kernel to boot on such UEFI
-> implementations on i386 and x86_64.
->
-> The simplest way to achieve that on i386 is to disable paging
-> before jumping to potentially relocated code.
->
-> x86_64, on the other hand, does not allow disabling paging so it
-> is required to build temporary page tables containing memory regions
-> required for Linux kernel to boot with appropriate access permissions.
->
-
-Hello Baskov,
-
-To be honest, I am truly not a fan of this approach.
-
-Which systems is this issue occurring on? Did you try something like
-the below to allocate executable memory explicitly?
+>  Patch 3: Add a new partition state "isolated" to create a partition
+>  root without load balancing. This is for handling intermitten workloads
+>  that have a strict low latency requirement.
 
 
-diff --git a/drivers/firmware/efi/libstub/relocate.c
-b/drivers/firmware/efi/libstub/relocate.c
-index 8ee9eb2b9039..b73012a7bcdc 100644
---- a/drivers/firmware/efi/libstub/relocate.c
-+++ b/drivers/firmware/efi/libstub/relocate.c
-@@ -80,7 +80,7 @@ efi_status_t efi_low_alloc_above(unsigned long size,
-unsigned long align,
-                        continue;
+I just tested this patch-series and can confirm that it works on 5.15.0-rc7-rt15 (PREEMT_RT).
 
-                status = efi_bs_call(allocate_pages, EFI_ALLOCATE_ADDRESS,
--                                    EFI_LOADER_DATA, nr_pages, &start);
-+                                    EFI_LOADER_CODE, nr_pages, &start);
-                if (status == EFI_SUCCESS) {
-                        *addr = start;
-                        break;
-@@ -146,7 +146,7 @@ efi_status_t efi_relocate_kernel(unsigned long *image_addr,
-         */
-        nr_pages = round_up(alloc_size, EFI_ALLOC_ALIGN) / EFI_PAGE_SIZE;
-        status = efi_bs_call(allocate_pages, EFI_ALLOCATE_ADDRESS,
--                            EFI_LOADER_DATA, nr_pages, &efi_addr);
-+                            EFI_LOADER_CODE, nr_pages, &efi_addr);
-        new_addr = efi_addr;
-        /*
-         * If preferred address allocation failed allocate as low as
+However, I was not able to see any latency improvements when using
+cpuset.cpus.partition=isolated.
+The test was performed with jitterdebugger on CPUs 1-3 and the following cmdline:
+rcu_nocbs=1-4 nohz_full=1-4 irqaffinity=0,5-6,11 intel_pstate=disable
+On the other cpus, stress-ng was executed to generate load.
 
+Just some more general notes:
 
+Even with this new "isolated" type, it is still very tricky to get a similar
+behavior as with isolcpus (as long as I don't miss something here):
 
--- 
-Ard.
+Consider an RT application that consists of a non-rt thread that should be floating
+and a rt-thread that should be placed in the isolated domain.
+This requires cgroup.type=threaded on both cgroups and changes to the application
+(threads have to be born in non-rt group and moved to rt-group).
+
+Theoretically, this could be done externally, but in case the application sets the
+affinity mask manually, you run into a timing issue (setting affinities to CPUs
+outside the current cpuset.cpus results in EINVAL).
+
+Best regards,
+Felix Moessbauer
+Siemens AG
+
+> Patch 4: Enable the "cpuset.cpus.partition" file to show the reason
+>  that causes invalid partition like "root invalid (No cpu available
+>  due to hotplug)".
+> 
+> Patch 5 updates the cgroup-v2.rst file accordingly. Patch 6 adds a new
+> cpuset test to test the new cpuset partition code.
