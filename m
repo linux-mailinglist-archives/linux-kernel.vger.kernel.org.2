@@ -2,92 +2,263 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4571544BD19
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 09:40:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E21E744BD1B
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 09:41:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230442AbhKJInh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Nov 2021 03:43:37 -0500
-Received: from mo4-p01-ob.smtp.rzone.de ([81.169.146.166]:18688 "EHLO
-        mo4-p01-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230340AbhKJIne (ORCPT
+        id S230244AbhKJIoN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Nov 2021 03:44:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46682 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230031AbhKJIoL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Nov 2021 03:43:34 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1636533623;
-    s=strato-dkim-0002; d=gerhold.net;
-    h=In-Reply-To:References:Message-ID:Subject:Cc:To:From:Date:Cc:Date:
-    From:Subject:Sender;
-    bh=EoxcSaG1zS8onhMLinZTy9RSATOglCLjfc+GAPA1hs4=;
-    b=QsEw7VZu85INtby5O1t1mYNCFSg21OBHBj7ipeYdOBesZ5OdeloR3chtnr/TgorEtu
-    RZdP8SOTcvmcPsajfcaFu3ucQOs2bizqOWV6OreIaLMh9wSFjWB8aJL5A3jZv+Hkabcg
-    92uhU+tXBgn2TGR3BlDGAzkaMFrh+DE9qx1WgBQVj2s3rOBufkCX6uuMUCPYT/Fk+iT/
-    C6BLJnDRNboNkLAdVJqszS/7ccs6LOFiDVL/BIt+ZEzfiZQX4ncUh4/IWnzda52kjqhn
-    vpT0bTgTo+sxB4vXpak56IsfrjoSWxGyvdbRR8qV334zY6P53Jf6hG767bVZhy2TIti3
-    vNgg==
-Authentication-Results: strato.com;
-    dkim=none
-X-RZG-AUTH: ":P3gBZUipdd93FF5ZZvYFPugejmSTVR2nRPhVOQ/OcYgojyw4j34+u267FZF9PwpcNKLVrK8+86Y="
-X-RZG-CLASS-ID: mo00
-Received: from gerhold.net
-    by smtp.strato.de (RZmta 47.34.5 AUTH)
-    with ESMTPSA id j05669xAA8eM2gU
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
-        (Client did not present a certificate);
-    Wed, 10 Nov 2021 09:40:22 +0100 (CET)
-Date:   Wed, 10 Nov 2021 09:40:16 +0100
-From:   Stephan Gerhold <stephan@gerhold.net>
-To:     Sasha Levin <sashal@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        robh+dt@kernel.org, pawel.moll@arm.com, mark.rutland@arm.com,
-        ijc+devicetree@hellion.org.uk, galak@codeaurora.org,
-        catalin.marinas@arm.com, will.deacon@arm.com,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH AUTOSEL 5.15 73/82] arm64: dts: qcom: msm8916: Add CPU
- ACC and SAW/SPM
-Message-ID: <YYuFcOrEXL0b8UEo@gerhold.net>
-References: <20211109221641.1233217-1-sashal@kernel.org>
- <20211109221641.1233217-73-sashal@kernel.org>
+        Wed, 10 Nov 2021 03:44:11 -0500
+Received: from mail-pj1-x1032.google.com (mail-pj1-x1032.google.com [IPv6:2607:f8b0:4864:20::1032])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB521C061764
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Nov 2021 00:41:24 -0800 (PST)
+Received: by mail-pj1-x1032.google.com with SMTP id np3so973848pjb.4
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Nov 2021 00:41:24 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance-com.20210112.gappssmtp.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=s/UIyi2eJnbBswQCTGuCTS0LM6W4YfTsCnVJtEHRzCs=;
+        b=2V47xJVoTRGL4NYWDENvvJDTZnOH8xyNkxPtAfnODGEDGLODL2RYL/OVj6Aee/AJWN
+         e8ZwxwlsKmOM+9WOhfHimf5PQuAcFm5k6hpMkR3aOPLDLxuiqXCaWQripFnD+pb5uGFO
+         t+ra36xfNyqc2Jl+OqOLBBaINZ79qLRxg6x6NtasrAejoyPIhdNZfFlri8aga3eBm83E
+         SBs6LTpUeIK8UM+ypnvMSeEo/rj9Kmx45KPFdFWpyrEddY7IsGg8kJ57uUh6oOWUS5Wg
+         qvh6Fdh+3ggb3r2K9rTgJ2ywyeB91rWwnS+a1Mtx7JFWJTkv9nEfvrYaoOpfDbigOhW7
+         pf1w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=s/UIyi2eJnbBswQCTGuCTS0LM6W4YfTsCnVJtEHRzCs=;
+        b=VPoJuUapxu5vrzN3Uc4Pk1ZpCTKK1/yN4y7SxkXrzuu95m9+2T7yPPLAZ/BVP8Nv4U
+         M5VDk4pIfSkVJDcIisqHLHAZ+zvzWx0n0ZOrAPG8OC0rWOhtZ0SqE8VPuFurjll0vzHf
+         xeMkJ6JN94YJY+ax2FA6EINJFVQoN4/ntSjdWvdB6bPb/W9K9nUNaTXyTwlQw/GwRLeM
+         ykxhVnVwwZ1eufC0dfREd8aGXlK9WLgNJ24QsbgzOUDXJBrzfoMecacl0+MWMkxRNSM2
+         SmFuxf+5M615/DmTG5zqosUYg+B6gyuM4s4JpyLJqqWZBezS9vStUOTqE7Mgal7V6Dk+
+         oqUw==
+X-Gm-Message-State: AOAM530uF0tg7FwnALk0fnP1VD3XfPmDALIv6PPXVtHXn0FLHO/loA/o
+        ryThl93S5gFFl6sYXFsfzItFMw==
+X-Google-Smtp-Source: ABdhPJyn4T4V1iwO3gk4GZwnjKKZanA4QzZdNFSHNjddXJbOZvk8CygQwit4PmfYJ5etG1SC5P67og==
+X-Received: by 2002:a17:90a:d583:: with SMTP id v3mr15145481pju.216.1636533684296;
+        Wed, 10 Nov 2021 00:41:24 -0800 (PST)
+Received: from C02DW0BEMD6R.bytedance.net ([139.177.225.251])
+        by smtp.gmail.com with ESMTPSA id v38sm5485368pgl.38.2021.11.10.00.41.18
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Wed, 10 Nov 2021 00:41:23 -0800 (PST)
+From:   Qi Zheng <zhengqi.arch@bytedance.com>
+To:     akpm@linux-foundation.org, tglx@linutronix.de,
+        kirill.shutemov@linux.intel.com, mika.penttila@nextfour.com,
+        david@redhat.com, jgg@nvidia.com
+Cc:     linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, songmuchun@bytedance.com,
+        zhouchengming@bytedance.com, Qi Zheng <zhengqi.arch@bytedance.com>
+Subject: [PATCH v3 00/15] Free user PTE page table pages
+Date:   Wed, 10 Nov 2021 16:40:42 +0800
+Message-Id: <20211110084057.27676-1-zhengqi.arch@bytedance.com>
+X-Mailer: git-send-email 2.24.3 (Apple Git-128)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211109221641.1233217-73-sashal@kernel.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Sasha,
+Hi,
 
-On Tue, Nov 09, 2021 at 05:16:31PM -0500, Sasha Levin wrote:
-> From: Stephan Gerhold <stephan@gerhold.net>
-> 
-> [ Upstream commit a22f9a766e1dc61f8f6ee2edfe83d4d23d78e059 ]
-> 
-> Add the device tree nodes necessary for SMP bring-up and cpuidle
-> without PSCI on ARM32. The hardware is typically controlled by the
-> PSCI implementation in the TrustZone firmware and is therefore marked
-> as status = "reserved" by default (from the device tree specification):
-> 
->   "Indicates that the device is operational, but should not be used.
->    Typically this is used for devices that are controlled by another
->    software component, such as platform firmware."
-> 
-> Since this is part of the MSM8916 SoC it should be added to msm8916.dtsi
-> but in practice these nodes should only get enabled via an extra include
-> on ARM32.
-> 
-> This is necessary for some devices with signed firmware which is missing
-> both ARM64 and PSCI support and can therefore only boot ARM32 kernels.
-> 
-> Signed-off-by: Stephan Gerhold <stephan@gerhold.net>
-> Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
-> Link: https://lore.kernel.org/r/20211004204955.21077-13-stephan@gerhold.net
-> Signed-off-by: Sasha Levin <sashal@kernel.org>
-> 
+This patch series aims to free user PTE page table pages when all PTE entries
+are empty.
 
-This patch is not useful without other changes that landed in 5.16
-(in particular, the new device actually making use of these nodes).
+The beginning of this story is that some malloc libraries(e.g. jemalloc or
+tcmalloc) usually allocate the amount of VAs by mmap() and do not unmap those VAs.
+They will use madvise(MADV_DONTNEED) to free physical memory if they want.
+But the page tables do not be freed by madvise(), so it can produce many
+page tables when the process touches an enormous virtual address space.
 
-Can you drop this patch?
+The following figures are a memory usage snapshot of one process which actually
+happened on our server:
+
+        VIRT:  55t
+        RES:   590g
+        VmPTE: 110g
+
+As we can see, the PTE page tables size is 110g, while the RES is 590g. In
+theory, the process only need 1.2g PTE page tables to map those physical
+memory. The reason why PTE page tables occupy a lot of memory is that
+madvise(MADV_DONTNEED) only empty the PTE and free physical memory but
+doesn't free the PTE page table pages. So we can free those empty PTE page
+tables to save memory. In the above cases, we can save memory about 108g(best
+case). And the larger the difference between the size of VIRT and RES, the
+more memory we save.
+
+In this patch series, we add a pte_refcount field to the struct page of page
+table to track how many users of PTE page table. Similar to the mechanism of
+page refcount, the user of PTE page table should hold a refcount to it before
+accessing. The PTE page table page will be freed when the last refcount is
+dropped.
+
+Testing:
+
+The following code snippet can show the effect of optimization:
+
+        mmap 50G
+        while (1) {
+                for (; i < 1024 * 25; i++) {
+                        touch 2M memory
+                        madvise MADV_DONTNEED 2M
+                }
+        }
+
+As we can see, the memory usage of VmPTE is reduced:
+
+                        before                          after
+VIRT                   50.0 GB                        50.0 GB
+RES                     3.1 MB                         3.6 MB
+VmPTE                102640 kB                         248 kB
+
+I also have tested the stability by LTP[1] for several weeks. I have not seen
+any crash so far.
+
+The performance of page fault can be affected because of the allocation/freeing
+of PTE page table pages. The following is the test result by using a micro
+benchmark[2]:
+
+root@~# perf stat -e page-faults --repeat 5 ./multi-fault $threads:
+
+threads         before (pf/min)                     after (pf/min)
+    1                32,085,255                         31,880,833 (-0.64%)
+    8               101,674,967                        100,588,311 (-1.17%)
+   16               113,207,000                        112,801,832 (-0.36%)
+
+(The "pfn/min" means how many page faults in one minute.)
+
+The performance of page fault is ~1% slower than before.
+
+And there are no obvious changes in perf hot spots:
+
+before:
+  19.29%  [kernel]  [k] clear_page_rep
+  16.12%  [kernel]  [k] do_user_addr_fault
+   9.57%  [kernel]  [k] _raw_spin_unlock_irqrestore
+   6.16%  [kernel]  [k] get_page_from_freelist
+   5.03%  [kernel]  [k] __handle_mm_fault
+   3.53%  [kernel]  [k] __rcu_read_unlock
+   3.45%  [kernel]  [k] handle_mm_fault
+   3.38%  [kernel]  [k] down_read_trylock
+   2.74%  [kernel]  [k] free_unref_page_list
+   2.17%  [kernel]  [k] up_read
+   1.93%  [kernel]  [k] charge_memcg
+   1.73%  [kernel]  [k] try_charge_memcg
+   1.71%  [kernel]  [k] __alloc_pages
+   1.69%  [kernel]  [k] ___perf_sw_event
+   1.44%  [kernel]  [k] get_mem_cgroup_from_mm
+
+after:
+  18.19%  [kernel]  [k] clear_page_rep
+  16.28%  [kernel]  [k] do_user_addr_fault
+   8.39%  [kernel]  [k] _raw_spin_unlock_irqrestore
+   5.12%  [kernel]  [k] get_page_from_freelist
+   4.81%  [kernel]  [k] __handle_mm_fault
+   4.68%  [kernel]  [k] down_read_trylock
+   3.80%  [kernel]  [k] handle_mm_fault
+   3.59%  [kernel]  [k] get_mem_cgroup_from_mm
+   2.49%  [kernel]  [k] free_unref_page_list
+   2.41%  [kernel]  [k] up_read
+   2.16%  [kernel]  [k] charge_memcg
+   1.92%  [kernel]  [k] __rcu_read_unlock
+   1.88%  [kernel]  [k] ___perf_sw_event
+   1.70%  [kernel]  [k] pte_get_unless_zero
+
+This series is based on next-20211108.
+
+Comments and suggestions are welcome.
 
 Thanks,
-Stephan
+Qi.
+
+[1] https://github.com/linux-test-project/ltp
+[2] https://lore.kernel.org/lkml/20100106160614.ff756f82.kamezawa.hiroyu@jp.fujitsu.com/2-multi-fault-all.c
+
+Changelog in v2 -> v3:
+ - Refactored this patch series:
+        - [PATCH v3 6/15]: Introduce the new dummy helpers first
+        - [PATCH v3 7-12/15]: Convert each subsystem individually
+        - [PATCH v3 13/15]: Implement the actual logic to the dummy helpers
+   And thanks for the advice from David and Jason.
+ - Add a document.
+
+Changelog in v1 -> v2:
+ - Change pte_install() to pmd_install().
+ - Fix some typo and code style problems.
+ - Split [PATCH v1 5/7] into [PATCH v2 4/9], [PATCH v2 5/9]，[PATCH v2 6/9]
+   and [PATCH v2 7/9].
+
+Qi Zheng (15):
+  mm: do code cleanups to filemap_map_pmd()
+  mm: introduce is_huge_pmd() helper
+  mm: move pte_offset_map_lock() to pgtable.h
+  mm: rework the parameter of lock_page_or_retry()
+  mm: add pmd_installed_type return for __pte_alloc() and other friends
+  mm: introduce refcount for user PTE page table page
+  mm/pte_ref: add support for user PTE page table page allocation
+  mm/pte_ref: initialize the refcount of the withdrawn PTE page table
+    page
+  mm/pte_ref: add support for the map/unmap of user PTE page table page
+  mm/pte_ref: add support for page fault path
+  mm/pte_ref: take a refcount before accessing the PTE page table page
+  mm/pte_ref: update the pmd entry in move_normal_pmd()
+  mm/pte_ref: free user PTE page table pages
+  Documentation: add document for pte_ref
+  mm/pte_ref: use mmu_gather to free PTE page table pages
+
+ Documentation/vm/pte_ref.rst | 216 ++++++++++++++++++++++++++++++++++++
+ arch/x86/Kconfig             |   2 +-
+ fs/proc/task_mmu.c           |  24 +++-
+ fs/userfaultfd.c             |   9 +-
+ include/linux/huge_mm.h      |  10 +-
+ include/linux/mm.h           | 170 ++++-------------------------
+ include/linux/mm_types.h     |   6 +-
+ include/linux/pagemap.h      |   8 +-
+ include/linux/pgtable.h      | 152 +++++++++++++++++++++++++-
+ include/linux/pte_ref.h      | 146 +++++++++++++++++++++++++
+ include/linux/rmap.h         |   2 +
+ kernel/events/uprobes.c      |   2 +
+ mm/Kconfig                   |   4 +
+ mm/Makefile                  |   4 +-
+ mm/damon/vaddr.c             |  12 +-
+ mm/debug_vm_pgtable.c        |   5 +-
+ mm/filemap.c                 |  45 +++++---
+ mm/gup.c                     |  25 ++++-
+ mm/hmm.c                     |   5 +-
+ mm/huge_memory.c             |   3 +-
+ mm/internal.h                |   4 +-
+ mm/khugepaged.c              |  21 +++-
+ mm/ksm.c                     |   6 +-
+ mm/madvise.c                 |  21 +++-
+ mm/memcontrol.c              |  12 +-
+ mm/memory-failure.c          |  11 +-
+ mm/memory.c                  | 254 ++++++++++++++++++++++++++++++++-----------
+ mm/mempolicy.c               |   6 +-
+ mm/migrate.c                 |  54 ++++-----
+ mm/mincore.c                 |   7 +-
+ mm/mlock.c                   |   1 +
+ mm/mmu_gather.c              |  40 +++----
+ mm/mprotect.c                |  11 +-
+ mm/mremap.c                  |  14 ++-
+ mm/page_vma_mapped.c         |   4 +
+ mm/pagewalk.c                |  15 ++-
+ mm/pgtable-generic.c         |   1 +
+ mm/pte_ref.c                 | 141 ++++++++++++++++++++++++
+ mm/rmap.c                    |  10 ++
+ mm/swapfile.c                |   3 +
+ mm/userfaultfd.c             |  40 +++++--
+ 41 files changed, 1186 insertions(+), 340 deletions(-)
+ create mode 100644 Documentation/vm/pte_ref.rst
+ create mode 100644 include/linux/pte_ref.h
+ create mode 100644 mm/pte_ref.c
+
+-- 
+2.11.0
+
