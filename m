@@ -2,252 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B9F544C385
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 15:59:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C76444C376
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 15:57:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232380AbhKJPBf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Nov 2021 10:01:35 -0500
-Received: from mail-ua1-f54.google.com ([209.85.222.54]:46665 "EHLO
-        mail-ua1-f54.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232361AbhKJPBd (ORCPT
+        id S232320AbhKJPAL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Nov 2021 10:00:11 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48846 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231743AbhKJPAK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Nov 2021 10:01:33 -0500
-Received: by mail-ua1-f54.google.com with SMTP id az37so5210787uab.13;
-        Wed, 10 Nov 2021 06:58:45 -0800 (PST)
+        Wed, 10 Nov 2021 10:00:10 -0500
+Received: from mail-ot1-x32e.google.com (mail-ot1-x32e.google.com [IPv6:2607:f8b0:4864:20::32e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9DB78C061767
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Nov 2021 06:57:22 -0800 (PST)
+Received: by mail-ot1-x32e.google.com with SMTP id g91-20020a9d12e4000000b0055ae68cfc3dso4254643otg.9
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Nov 2021 06:57:22 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=IVWIafG6+i9xxjsT6NKZgVi6v4U8498TFF3OthQIW6Y=;
+        b=wLsddjtemJvbZuWvnkRiu3a4Emu2EPb9yImANBdNpxFCYrzvCaaaP9FcygHgEO8WSC
+         w8fTQCFN6W7isD+uwVmaUoom3hXJb1+RICWc6LnEMjSoY48VC80jVUB3SAoUmoGF3GXS
+         n9Qw1WpO34h52wM66sv1NjIemiIWjxhBxoTAIyoPEMOLY8J08lcakE8GbOrBz13yAUkx
+         a43jWXqfKwCOwpM+V/LhaNBl5doCaCypefXfuXuID/5Z3XsDtU8JAHielqzfIRQcm7h2
+         DKBwsyQeDeZ/33jJNU0YrrqrAr+Imbmab3Ow9xp9ZTFn/b76QoNJ6KwJHtiNlzxSxOGl
+         g3Dg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=KOCA3CMBp0qlOJqLClVIbzJyqhqqK17pYfXIsSt5kCw=;
-        b=s2ckD5yd0tCPf58F5N8ZxmLHqo8U4MPsopy8nMNC8lD7MWl4ff6tzU07fRkjknooa3
-         FuSSYzwB1/xECvZD5/3AbqhRVIxvzQg8nl0YuyCvJ4JFDAC1tmWExHDS02qaj1cPTRHB
-         N1+pV1GOSQTD5p8TS+2sQXe2Nv5Og5O956VYNQZCteTQz8rfEO3Dt46Cp9PQbYS8FZ1P
-         uo9r1OIYO1U+cJ3Hi3umnQKOXOwSoTkBBE3DUfUvYfViCgbV9fEFsTviiBokteBx9ciw
-         g7qxKhUuVa3VWjMXdtVJ8tW63HioVs8H33W7m2vlqFAf+9wFH+nfK46H3wLrke158GnM
-         fQDA==
-X-Gm-Message-State: AOAM532al23csFXq1CtZmxLDxtIVoZ1WpV2dA+9ZadUU4OlG2+R0yqv9
-        S2TlZKI9vR5SsreCdPPEapVtEN96l0vZig==
-X-Google-Smtp-Source: ABdhPJxRApcmLBzw23ARqFtDlaJ+Dtvn5FUjdW1ehMzWo7KhRfe5iH8X6Uo/W1HIa6gGQWi9G6cChA==
-X-Received: by 2002:ab0:25da:: with SMTP id y26mr627720uan.72.1636556325320;
-        Wed, 10 Nov 2021 06:58:45 -0800 (PST)
-Received: from mail-ua1-f44.google.com (mail-ua1-f44.google.com. [209.85.222.44])
-        by smtp.gmail.com with ESMTPSA id c11sm64450vsh.22.2021.11.10.06.58.44
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 10 Nov 2021 06:58:45 -0800 (PST)
-Received: by mail-ua1-f44.google.com with SMTP id e10so5322234uab.3;
-        Wed, 10 Nov 2021 06:58:44 -0800 (PST)
-X-Received: by 2002:ab0:3154:: with SMTP id e20mr683424uam.14.1636556324638;
- Wed, 10 Nov 2021 06:58:44 -0800 (PST)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=IVWIafG6+i9xxjsT6NKZgVi6v4U8498TFF3OthQIW6Y=;
+        b=BAuNXtOBpu/0AfNSL36DtlFnAhrskwrG9cIfS1CMsRLaURQnkPR6aRVhxRZ1GWyWFq
+         Hck85wTWCemNAao+K5aj7wT2yeP0XmzYEZLPI6xBfLH7+kYn8sddnLYBo0D46XlcIa8T
+         PBR8nTJT1Ah76MCwAQOvX/UebaJydqqU/dONI92hvLJaFUoAPzpa261VD0aMOC/hcxHV
+         LpuwFgPl3up4BTtaQyWCHuzwOVavBEGgql1gJZ4EGaszLYodOWu5NliXxDfjYqceP2IZ
+         RkzbtNhcGKjAm2VwGyKgD7tKbfQqASe/DPpyx8C/2sAkzY1TdmxfOlUdN2mpVrahLYBw
+         bW7A==
+X-Gm-Message-State: AOAM532ZjRfbMm2lIEs892+zbHNWlS4juR7lXx1lcFHlnXbuqjYAPsZs
+        9Lo2bghb50uCozvFu7GYjc4o9A==
+X-Google-Smtp-Source: ABdhPJwJAXzABpKw5ehc6yIDRRZ/JrOG6RbToMjsgBB+lI48bP9ZxSWINSfd8FbgNNITxP408uC1Fg==
+X-Received: by 2002:a9d:7302:: with SMTP id e2mr401519otk.52.1636556241870;
+        Wed, 10 Nov 2021 06:57:21 -0800 (PST)
+Received: from ripper (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
+        by smtp.gmail.com with ESMTPSA id u136sm4064oie.13.2021.11.10.06.57.20
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 10 Nov 2021 06:57:21 -0800 (PST)
+Date:   Wed, 10 Nov 2021 06:58:54 -0800
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     Stephan Gerhold <stephan@gerhold.net>
+Cc:     Shawn Guo <shawn.guo@linaro.org>, Stephen Boyd <sboyd@kernel.org>,
+        Loic Poulain <loic.poulain@linaro.org>,
+        linux-arm-msm@vger.kernel.org, linux-clk@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 0/3] clk: qcom: smd-rpm: Report enable state to framework
+Message-ID: <YYveLqgDUrizgC/Q@ripper>
+References: <20211109022558.14529-1-shawn.guo@linaro.org>
+ <YYpMzau3CWRQYlkJ@gerhold.net>
+ <20211110131507.GJ7231@dragon>
+ <YYvSmEr/Fo2LPJwu@gerhold.net>
 MIME-Version: 1.0
-References: <20211108150554.4457-1-conor.dooley@microchip.com>
- <20211108150554.4457-13-conor.dooley@microchip.com> <CAMuHMdWEhJj0Cqt3sgGvgZe7JSFqBmTgtZRkom30NKqEW27NvQ@mail.gmail.com>
- <0e379411-2469-8c78-1a3f-0645579a967c@microchip.com>
-In-Reply-To: <0e379411-2469-8c78-1a3f-0645579a967c@microchip.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Wed, 10 Nov 2021 15:58:32 +0100
-X-Gmail-Original-Message-ID: <CAMuHMdULO5gJcbnsDzZcVShmYkByyM30f9nYyDD8e4PJ6nrnCQ@mail.gmail.com>
-Message-ID: <CAMuHMdULO5gJcbnsDzZcVShmYkByyM30f9nYyDD8e4PJ6nrnCQ@mail.gmail.com>
-Subject: Re: [PATCH 12/13] riscv: icicle-kit: update microchip icicle kit
- device tree
-To:     Conor Dooley <Conor.Dooley@microchip.com>
-Cc:     Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Jassi Brar <jassisinghbrar@gmail.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Alessandro Zummo <a.zummo@towertech.it>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Mark Brown <broonie@kernel.org>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        Lewis Hanly <Lewis.Hanly@microchip.com>,
-        Daire.McNamara@microchip.com, Atish Patra <atish.patra@wdc.com>,
-        Ivan.Griffin@microchip.com,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>, linux-kernel@vger.kernel.org,
-        linux-i2c@vger.kernel.org, linux-riscv@lists.infradead.org,
-        linux-crypto@vger.kernel.org, linux-rtc@vger.kernel.org,
-        linux-spi@vger.kernel.org, linux-usb@vger.kernel.org,
-        krzysztof.kozlowski@canonical.com, bin.meng@windriver.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YYvSmEr/Fo2LPJwu@gerhold.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Conor,
+On Wed 10 Nov 06:09 PST 2021, Stephan Gerhold wrote:
 
-On Wed, Nov 10, 2021 at 3:20 PM <Conor.Dooley@microchip.com> wrote:
-> On 09/11/2021 09:04, Geert Uytterhoeven wrote:
-> > On Mon, Nov 8, 2021 at 4:07 PM <conor.dooley@microchip.com> wrote:
-> >> From: Conor Dooley <conor.dooley@microchip.com>
-> >>
-> >> Update the device tree for the icicle kit by splitting it into a third part,
-> >> which contains peripherals in the fpga fabric, add new peripherals
-> >> (spi, qspi, gpio, rtc, pcie, system services, i2c), update parts of the memory
-> >> map which have been changed.
-> >>
-> >> Signed-off-by: Conor Dooley <conor.dooley@microchip.com>
+> On Wed, Nov 10, 2021 at 09:15:11PM +0800, Shawn Guo wrote:
+> > On Tue, Nov 09, 2021 at 11:26:21AM +0100, Stephan Gerhold wrote:
+> > > On Tue, Nov 09, 2021 at 10:25:55AM +0800, Shawn Guo wrote:
+> > > > Currently the enable state of smd-rpm clocks are not properly reported
+> > > > back to framework due to missing .is_enabled and .is_prepared hooks.
+> > > > This causes a couple of issues.
+> > > > 
+> > > > - All those unused clocks are not voted for off, because framework has
+> > > >   no knowledge that they are unused.  It becomes a problem for vlow
+> > > >   power mode support, as we do not have every single RPM clock claimed
+> > > >   and voted for off by client devices, and rely on clock framework to
+> > > >   disable those unused RPM clocks.
+> > > > 
+> > > 
+> > > I posted a similar patch a bit more than a year ago [1].
+> > 
+> > Ouch, that's unfortunate!  If your patch landed, I wouldn't have had to
+> > spend such a long time to figure out why my platform fails to reach vlow
+> > power mode :(
+> > 
+> 
+> Sorry, I was waiting for Stephen to reply and eventually decided to
+> shift focus to other things first. :)
+> 
+> The whole low-power topic is kind of frustrating on older platforms
+> because they currently still lack almost everything that is necessary to
+> reach those low power states. Even things that you already consider
+> natural for newer platforms (such as interconnect) are still very much
+> work in progress on all older ones.
+> 
+> > > Back then one
+> > > of the concerns was that we might disable critical clocks just because
+> > > they have no driver using it actively. For example, not all of the
+> > > platforms using clk-smd-rpm already have an interconnect driver.
+> > > Disabling the interconnect related clocks will almost certainly make the
+> > > device lock up completely. (I tried it back then, it definitely does...)
+> > > 
+> > > I proposed adding CLK_IGNORE_UNUSED for the interconnect related clocks
+> > > back then [2] which would allow disabling most of the clocks at least.
+> > > Stephen Boyd had an alternative proposal to instead move the
+> > > interconnect related clocks completely out of clk-smd-rpm [3].
+> > > But I'm still unsure how this would work in a backwards compatible way. [4]
+> > > 
+> > > Since your patches are more or less identical I'm afraid the same
+> > > concerns still need to be solved somehow. :)
+> > 
+> > I do not really understand why smd-rpm clock driver needs to be a special
+> > case.  This is a very common issue, mostly in device early support phase
+> > where not all clock consumer drivers are ready.  Flag CLK_IGNORE_UNUSED
+> > and kernel cmdline 'clk_ignore_unused' are created just for that.  Those
+> > "broken" platforms should be booted with 'clk_ignore_unused' until they
+> > have related consumer drivers in place.  IMHO, properly reporting enable
+> > state to framework is definitely the right thing to do, and should have
+> > been done from day one.
+> > 
+> 
+> ... And therefore I think we should be careful with such changes,
+> especially if they would prevent devices from booting completely.
+> Unfortunately the users trying to make use of old platforms are also
+> often the ones who might not be aware that they suddenly need
+> "clk_ignore_unused" just to boot a system that was previously working
+> (mostly) fine, except for the whole low-power topic.
+> 
+> I fully agree with you that disabling the unused clocks here is the
+> right thing to do, but I think we should try to carefully flag the most
+> important clocks in the driver to avoid causing too many regressions.
+> 
 
-> As I said in the replies to another patch this is my first time doing
-> any upstreaming of a device tree, i didnt realise that this would be a
-> problem.
+I don't fancy the idea of forcing everyone to run with specific kernel
+command line parameters - in particular not as a means to avoid
+"regressions".
 
-No problem, we're here to help you ;-)
+I think the only way around this problem is to figure out how to move
+the clk disablement to sync_state - probably per clock driver.
 
-> >> --- a/arch/riscv/boot/dts/microchip/microchip-mpfs-icicle-kit.dts
-> >> +++ b/arch/riscv/boot/dts/microchip/microchip-mpfs-icicle-kit.dts
-> >> @@ -1,5 +1,5 @@
-> >>   // SPDX-License-Identifier: (GPL-2.0 OR MIT)
-> >> -/* Copyright (c) 2020 Microchip Technology Inc */
-> >> +/* Copyright (c) 2020-2021 Microchip Technology Inc */
-> >>
-> >>   /dts-v1/;
-> >>
-> >> @@ -13,72 +13,187 @@ / {
-> >>          compatible = "microchip,mpfs-icicle-kit", "microchip,mpfs";
-> >>
-> >>          aliases {
-> >> -               ethernet0 = &emac1;
-> >> -               serial0 = &serial0;
-> >> -               serial1 = &serial1;
-> >> -               serial2 = &serial2;
-> >> -               serial3 = &serial3;
-> >> +               mmuart0 = &mmuart0;
-> >> +               mmuart1 = &mmuart1;
-> >> +               mmuart2 = &mmuart2;
-> >> +               mmuart3 = &mmuart3;
-> >> +               mmuart4 = &mmuart4;
-> >
-> > Why? SerialN is the standard alias name.
-> we changed the label to mmuart to match the microchip documentation.
-
-The serialN aliases are standardized, so you cannot change them.
-
-> would it make more sense to call mmuart but alias it to serial?
-> ie serial0 = &mmuart0;
-
-You can change the labels, so that's OK.
-
-> >> +&spi1 {
-> >> +       status = "okay";
-> >
-> > No slave devices specified?
-> no, but its exposed
-
-But without specifying slave devices first you cannot use the
-controller anyway? While I2C supports instantiating slaves from
-userspace by writing to the new_device file in sysfs, SPI doesn't
-have that feature.
-
-> >> +&gpio2 {
-> >> +       interrupts = <PLIC_INT_GPIO2_NON_DIRECT
-> >> +               PLIC_INT_GPIO2_NON_DIRECT
-> >> +               PLIC_INT_GPIO2_NON_DIRECT
-> >> +               PLIC_INT_GPIO2_NON_DIRECT
-> >> +               PLIC_INT_GPIO2_NON_DIRECT
-> >> +               PLIC_INT_GPIO2_NON_DIRECT
-> >> +               PLIC_INT_GPIO2_NON_DIRECT
-> >> +               PLIC_INT_GPIO2_NON_DIRECT
-> >> +               PLIC_INT_GPIO2_NON_DIRECT
-> >> +               PLIC_INT_GPIO2_NON_DIRECT
-> >> +               PLIC_INT_GPIO2_NON_DIRECT
-> >> +               PLIC_INT_GPIO2_NON_DIRECT
-> >> +               PLIC_INT_GPIO2_NON_DIRECT
-> >> +               PLIC_INT_GPIO2_NON_DIRECT
-> >> +               PLIC_INT_GPIO2_NON_DIRECT
-> >> +               PLIC_INT_GPIO2_NON_DIRECT
-> >> +               PLIC_INT_GPIO2_NON_DIRECT
-> >> +               PLIC_INT_GPIO2_NON_DIRECT
-> >> +               PLIC_INT_GPIO2_NON_DIRECT
-> >> +               PLIC_INT_GPIO2_NON_DIRECT
-> >> +               PLIC_INT_GPIO2_NON_DIRECT
-> >> +               PLIC_INT_GPIO2_NON_DIRECT
-> >> +               PLIC_INT_GPIO2_NON_DIRECT
-> >> +               PLIC_INT_GPIO2_NON_DIRECT
-> >> +               PLIC_INT_GPIO2_NON_DIRECT
-> >> +               PLIC_INT_GPIO2_NON_DIRECT
-> >> +               PLIC_INT_GPIO2_NON_DIRECT
-> >> +               PLIC_INT_GPIO2_NON_DIRECT
-> >> +               PLIC_INT_GPIO2_NON_DIRECT
-> >> +               PLIC_INT_GPIO2_NON_DIRECT
-> >> +               PLIC_INT_GPIO2_NON_DIRECT
-> >> +               PLIC_INT_GPIO2_NON_DIRECT>;
-> >
-> > Why override interrupts in the board .dts file?
-> > Doesn't this belong in the SoC .dtsi file?
-> The interrupt setup for the gpio isnt fixed, there is an option to
-> either connect the individual gpio interrupts to the plic *or* they can
-> be connected to a per gpio controller common interrupt, and it is up to
-> the driver to read a register to determine which interrupt triggered the
-> common/NON_DIRECT interrupt. This decision is made by a write to a
-> system register in application code, which to us didn't seem like it
-> belonged in the soc .dtsi.
-
-So it is software policy? Then it doesn't belong in the board DTS either.
-
-> Using the common interrupt for GPIO2 is the default on the
-> polarfire-soc, there are only 38 per gpio line interrupts available of
-> which 14 are connected to gpio0 and 24 to gpio1.
-
-> >>                  plic: interrupt-controller@c000000 {
-> >> -                       #interrupt-cells = <1>;
-> >> -                       compatible = "sifive,fu540-c000-plic", "sifive,plic-1.0.0";
-> >> +                       compatible = "sifive,plic-1.0.0";
-> >
-> > Why drop the first one again?
-> we felt it didnt make sense to have something that specifically
-> references the fu540 in the device tree for this board.
-
-That would be a revert of commit 73d3c44115514616 ("riscv: dts:
-microchip: add missing compatibles for clint and plic"), which you
-supplied an R-b tag for?
-
-Is this the same plic as in the FU540 SoC? Or do we need a new
-microchip,mpfs-plic compatible value?
-
-> >> -               emac1: ethernet@20112000 {
-> >> +               mac0: ethernet@20110000 {
-> >>                          compatible = "cdns,macb";
-> >> -                       reg = <0x0 0x20112000 0x0 0x2000>;
-> >> +                       #address-cells = <1>;
-> >> +                       #size-cells = <0>;
-> >> +                       reg = <0x0 0x20110000 0x0 0x2000>;
-> >> +                       clocks = <&clkcfg CLK_MAC0>, <&clkcfg CLK_AHB>;
-> >> +                       clock-names = "pclk", "hclk";
-> >>                          interrupt-parent = <&plic>;
-> >> -                       interrupts = <70 71 72 73>;
-> >> -                       local-mac-address = [00 00 00 00 00 00];
-> >> -                       clocks = <&clkcfg 5>, <&clkcfg 2>;
-> >> +                       interrupts = <PLIC_INT_MAC0_INT
-> >> +                               PLIC_INT_MAC0_QUEUE1
-> >> +                               PLIC_INT_MAC0_QUEUE2
-> >> +                               PLIC_INT_MAC0_QUEUE3
-> >> +                               PLIC_INT_MAC0_EMAC
-> >> +                               PLIC_INT_MAC0_MMSL>;
-> >
-> > Please group using angular brackets.
-> >
-> >> +                       mac-address = [56 34 12 00 FC 01];
-> >
-> > Please drop this.
-> Is the problem here having mac-address instead of local-, having either
-> at all or that we have populated it rather than just filling with 0s?
-
-MAC addresses are supposed to be unique.
-
-> We set it in u-boot anyway, so I think dropping entirely is okay.
-
-Exactly.
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+Regards,
+Bjorn
