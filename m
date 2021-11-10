@@ -2,100 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A3FC844C012
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 12:20:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E68444C001
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 12:16:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231425AbhKJLXm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Nov 2021 06:23:42 -0500
-Received: from lizzard.sbs.de ([194.138.37.39]:44290 "EHLO lizzard.sbs.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231325AbhKJLXi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Nov 2021 06:23:38 -0500
-X-Greylist: delayed 376 seconds by postgrey-1.27 at vger.kernel.org; Wed, 10 Nov 2021 06:23:36 EST
-Received: from mail1.sbs.de (mail1.sbs.de [192.129.41.35])
-        by lizzard.sbs.de (8.15.2/8.15.2) with ESMTPS id 1AABDwp1011374
-        (version=TLSv1.2 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 10 Nov 2021 12:13:58 +0100
-Received: from MD1T0KAC-VM.ad001.siemens.net (md1t0kac.ad001.siemens.net [139.25.68.224])
-        by mail1.sbs.de (8.15.2/8.15.2) with ESMTP id 1AABDvXQ030772;
-        Wed, 10 Nov 2021 12:13:57 +0100
-From:   Felix Moessbauer <felix.moessbauer@siemens.com>
-To:     longman@redhat.com
-Cc:     akpm@linux-foundation.org, cgroups@vger.kernel.org, corbet@lwn.net,
-        frederic@kernel.org, guro@fb.com, hannes@cmpxchg.org,
-        juri.lelli@redhat.com, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        lizefan.x@bytedance.com, mkoutny@suse.com, mtosatti@redhat.com,
-        pauld@redhat.com, peterz@infradead.org, shuah@kernel.org,
-        tj@kernel.org, jan.kiszka@siemens.com, henning.schild@siemens.com
-Subject: Re: [PATCH v8 0/6] cgroup/cpuset: Add new cpuset partition type & empty effecitve cpus
-Date:   Wed, 10 Nov 2021 12:13:57 +0100
-Message-Id: <20211110111357.17617-1-felix.moessbauer@siemens.com>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20211018143619.205065-1-longman@redhat.com>
-References: <20211018143619.205065-1-longman@redhat.com>
+        id S231383AbhKJLSO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Nov 2021 06:18:14 -0500
+Received: from mail-pg1-f181.google.com ([209.85.215.181]:41734 "EHLO
+        mail-pg1-f181.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231131AbhKJLSL (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Nov 2021 06:18:11 -0500
+Received: by mail-pg1-f181.google.com with SMTP id n23so1947939pgh.8;
+        Wed, 10 Nov 2021 03:15:24 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=ClY6fmDoOxt9WGtpyKfVteeYzW6rEuh6CcP1PbPjKLs=;
+        b=7KS+mc/zYzu8kWe1NUQc4jnk/Sy956byztMcWbM7RwvQFiOJVQl5fUoE9OjRatzH+A
+         xbuPCaaBeT7YGhm1j2Pu152V0l0D3FfYlqSizNg434clsmGbd8M2v05th5sdIYWANjGP
+         gDvr8dnVuLq9zfA+CwVlYL/Iwe9aLTR0XQpu+9RHFFvU11nNnjssGiPg7dqRLhcRsZYT
+         oVWmZG9ZSHZZJcHzrDGrWZc3TtShH0LkftqjxanVT3X6uD51vHCEylctf1e2tdauMj41
+         XoUt8seXiqi+IKvlSGy84rJ4iDlgmbz99QX6EnFgQMMXRKMWFAA2Ius+GttzVf3bML2g
+         31eg==
+X-Gm-Message-State: AOAM530IrVhFzYkUz0Itl9p+iN/zp2Ei/mRG9ppVE/UZua911IMQ6hYJ
+        gJpJhXOPTPMP6TSQL24Fqc6fZtJOhE5Tdvew5+E=
+X-Google-Smtp-Source: ABdhPJytXP1IZu85W3D1n2+CMyE8syz896fxWd4se2sx5oabHakMgfHn+iJX8mmbMFqlgMuJ/UaEDepThBex+/NV1Mg=
+X-Received: by 2002:aa7:91c5:0:b0:49f:a400:9771 with SMTP id
+ z5-20020aa791c5000000b0049fa4009771mr15317197pfa.79.1636542923673; Wed, 10
+ Nov 2021 03:15:23 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20211102161125.1144023-1-kernel@esmil.dk> <20211102161125.1144023-13-kernel@esmil.dk>
+ <CAHp75VdmnnrisuP00W0KYta0KgmC+fu3WMxm959dt5X1kpiKTw@mail.gmail.com>
+ <CAHp75VcuGdaq_TjjRS0S8R5y-nryLABZSp7ehrXz-fUS2W3vfA@mail.gmail.com>
+ <CACRpkdYe-tW2K2eOQa+FYb-ZXzrA95+pPc6kkLB8ZJLAT8G_eA@mail.gmail.com>
+ <CANBLGcyo3YjygkjDmdjt4C_H=MZdHQwqumsxnatuObeP2LADAg@mail.gmail.com>
+ <CAHp75VdBaKZVeA7dasHWP4E3c8F2phaGz-90FErj3bB8FJOS9w@mail.gmail.com>
+ <CANBLGcw7X9SY3_=A7ZXW60646vconjCbYBsvb=D2a0BPcyn75A@mail.gmail.com>
+ <CACRpkda7b+j1=X9rUrqwEFhxvp2zVTvFkxanjh3hL7AksqCX1g@mail.gmail.com>
+ <CANBLGcxT_a3J+uaaKazRkfJQoBjGGGiz9agAZUzMEmfJiVXXbw@mail.gmail.com> <YYt9I7hfugtpeALs@smile.fi.intel.com>
+In-Reply-To: <YYt9I7hfugtpeALs@smile.fi.intel.com>
+From:   Emil Renner Berthing <kernel@esmil.dk>
+Date:   Wed, 10 Nov 2021 12:15:12 +0100
+Message-ID: <CANBLGcwA8q5JRizzaSQKyMAMLmC1eF8tL=z5EJ2PK89488NJFg@mail.gmail.com>
+Subject: Re: [PATCH v3 12/16] pinctrl: starfive: Add pinctrl driver for
+ StarFive SoCs
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc:     Linus Walleij <linus.walleij@linaro.org>,
+        linux-riscv <linux-riscv@lists.infradead.org>,
+        devicetree <devicetree@vger.kernel.org>,
+        linux-clk <linux-clk@vger.kernel.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        "open list:SERIAL DRIVERS" <linux-serial@vger.kernel.org>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Marc Zyngier <maz@kernel.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        Maximilian Luz <luzmaximilian@gmail.com>,
+        Sagar Kadam <sagar.kadam@sifive.com>,
+        Drew Fustini <drew@beagleboard.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Michael Zhu <michael.zhu@starfivetech.com>,
+        Fu Wei <tekkamanninja@gmail.com>,
+        Anup Patel <anup.patel@wdc.com>,
+        Atish Patra <atish.patra@wdc.com>,
+        Matteo Croce <mcroce@microsoft.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Huan Feng <huan.feng@starfivetech.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Weiman,
-
-> v8:
->  - Reorganize the patch series and rationalize the features and
->    constraints of a partition.
->  - Update patch descriptions and documentation accordingly.
-> 
-> v7:
->  - Simplify the documentation patch (patch 5) as suggested by Tejun.
->  - Fix a typo in patch 2 and improper commit log in patch 3.
-> 
-> v6:
->  - Remove duplicated tmpmask from update_prstate() which should fix the
->    frame size too large problem reported by kernel test robot.
-> 
-> This patchset makes four enhancements to the cpuset v2 code.
-> 
->  Patch 1: Enable partition with no task to have empty cpuset.cpus.effective.
-> 
->  Patch 2: Refining the features and constraints of a cpuset partition
->  clarifying what changes are allowed.
+On Wed, 10 Nov 2021 at 09:05, Andy Shevchenko <andy.shevchenko@gmail.com> wrote:
+> On Tue, Nov 09, 2021 at 10:04:24PM +0100, Emil Renner Berthing wrote:
+> > On Tue, 9 Nov 2021 at 21:29, Linus Walleij <linus.walleij@linaro.org> wrote:
+> > > On Tue, Nov 9, 2021 at 10:40 AM Emil Renner Berthing <kernel@esmil.dk> wrote:
 >
->  Patch 3: Add a new partition state "isolated" to create a partition
->  root without load balancing. This is for handling intermitten workloads
->  that have a strict low latency requirement.
+> ...
+>
+> > No, I agree. I think it's only that Andy wasn't sure if these interim
+> > states might be meaningful/useful.
+>
+> Exactly. Because HW could behave differently.
 
+Right. But I think we've now established that what is described in the
+device tree is the state the pins should be in after the function has
+been called, eg. only the reduction matters, and any interim states
+would just be a byproduct of storing the state in the configs list.
 
-I just tested this patch-series and can confirm that it works on 5.15.0-rc7-rt15 (PREEMT_RT).
-
-However, I was not able to see any latency improvements when using
-cpuset.cpus.partition=isolated.
-The test was performed with jitterdebugger on CPUs 1-3 and the following cmdline:
-rcu_nocbs=1-4 nohz_full=1-4 irqaffinity=0,5-6,11 intel_pstate=disable
-On the other cpus, stress-ng was executed to generate load.
-
-Just some more general notes:
-
-Even with this new "isolated" type, it is still very tricky to get a similar
-behavior as with isolcpus (as long as I don't miss something here):
-
-Consider an RT application that consists of a non-rt thread that should be floating
-and a rt-thread that should be placed in the isolated domain.
-This requires cgroup.type=threaded on both cgroups and changes to the application
-(threads have to be born in non-rt group and moved to rt-group).
-
-Theoretically, this could be done externally, but in case the application sets the
-affinity mask manually, you run into a timing issue (setting affinities to CPUs
-outside the current cpuset.cpus results in EINVAL).
-
-Best regards,
-Felix Moessbauer
-Siemens AG
-
-> Patch 4: Enable the "cpuset.cpus.partition" file to show the reason
->  that causes invalid partition like "root invalid (No cpu available
->  due to hotplug)".
-> 
-> Patch 5 updates the cgroup-v2.rst file accordingly. Patch 6 adds a new
-> cpuset test to test the new cpuset partition code.
+> > > And if it is possible
+> > > to write DTS files that have states and sequence requirements,
+> > > these should be caught in validation. Should be.
+>
+> --
+> With Best Regards,
+> Andy Shevchenko
+>
+>
+>
+> _______________________________________________
+> linux-riscv mailing list
+> linux-riscv@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/linux-riscv
