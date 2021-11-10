@@ -2,109 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F08DD44BE1A
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 10:52:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5426C44BE25
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 10:58:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230504AbhKJJzm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Nov 2021 04:55:42 -0500
-Received: from out0.migadu.com ([94.23.1.103]:17010 "EHLO out0.migadu.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229653AbhKJJzk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Nov 2021 04:55:40 -0500
-Date:   Wed, 10 Nov 2021 17:53:27 +0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1636537969;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=ZUAU49u0de/GblU7PLi+j9y9Qvhf4Zz1YEtn3bAYdUU=;
-        b=pKkXSsrtOKd3UG3a0cvN77dBukGPHnt2oiQtUoTqR1nZISNvEIp3hbU34ih9mb9nIn2tn4
-        bdmBAElMC3KyJrl2r6yjZGpyrSKn+SNClPHO2HeQ7EmEerbiuqtqf62Vd+ivtyzTCkIGDp
-        PdyqSOSB6N/ICiAaQcdefVbQC7xJa+0=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From:   Tao Zhou <tao.zhou@linux.dev>
-To:     Mel Gorman <mgorman@techsingularity.net>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Aubrey Li <aubrey.li@linux.intel.com>,
-        Barry Song <song.bao.hua@hisilicon.com>,
-        Mike Galbraith <efault@gmx.de>,
-        Srikar Dronamraju <srikar@linux.vnet.ibm.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Tao Zhou <tao.zhou@linux.dev>
-Subject: Re: [PATCH 1/2] sched/fair: Couple wakee flips with heavy wakers
-Message-ID: <YYuWlxNG+d3G4uTo@geo.homenetwork>
-References: <20211028094834.1312-1-mgorman@techsingularity.net>
- <20211028094834.1312-2-mgorman@techsingularity.net>
- <YXrNfHcfhp2LutiL@geo.homenetwork>
- <20211029084219.GV3959@techsingularity.net>
+        id S230511AbhKJKBB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Nov 2021 05:01:01 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35966 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230440AbhKJKBA (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Nov 2021 05:01:00 -0500
+Received: from mail-wr1-x432.google.com (mail-wr1-x432.google.com [IPv6:2a00:1450:4864:20::432])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 88BA4C061764
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Nov 2021 01:58:12 -0800 (PST)
+Received: by mail-wr1-x432.google.com with SMTP id i5so3006644wrb.2
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Nov 2021 01:58:12 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=3AbiBQH2HhvwDd/cmsVihdBdDFvYCYJXZoH8Ax426TA=;
+        b=VTMuDSrJbZbjIZt8dDCsxg+7KySbWV8k4SzeeO3wirV1IvkgRt/u7zPs/EnQaMMobV
+         qUXkVKpnP5lD1OkivTHqFw3S1fUBtKbuupqEG/O6awQBSmDMcJUCjaOngNk3z7iF7j7D
+         fenSMNHZfkz8HWvr/Rp2HOf0VNTgMocqwJC7PVmW/ayX93E0gro9S51Ijw8FIUC8/teC
+         yRV4dncjCdYEyKULeDoPA+ActfMC6UygutXq/U2q+G+0GdZE9wTyocvT7ObSH6UALUgz
+         a4aJM5hsCmm0cSKVdfXMK3BxQupCnRrRBoBLqkkZDnt3YoRmHG1wBCU/VV8+WxXiSszt
+         f1dw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=3AbiBQH2HhvwDd/cmsVihdBdDFvYCYJXZoH8Ax426TA=;
+        b=lcSXgz5+cCpWX0luOBVMtQCXGbEjyXEpR1BWujaQmyw0iv70aLd23FK/xe1Cv017SR
+         6LdOEK57kAIbXPeG/3c+A8C4VVp2bMCPf5r9wN/NI0ZM9HU0F7L35Ycb6YM1oQD0fZNp
+         PA6KxK7Me8Mrx4YC0kD18NIrkpwcCwnA9M1zpYwt+Qw6Zssj9Ei/F7wKZnnGLEliwIo2
+         YU5hT5Dx6TfPh0EceopCwbYNIgEvIFDwk4BRJw7n7S2GDB3xSkVPiqQvTCRIsTjg0z80
+         L1KnIGpuBSThgbvJDcpBPdfall6S+E4KlT75nK0GwQJG7N40EeGUMd4F7WQEFOjFZFex
+         6SJQ==
+X-Gm-Message-State: AOAM531FPo3vWYkOdxCn58YRq9wKqLTtjSTfKDcxl180fcU6zt9ITA77
+        idfC4qhkJp5J2rxuT/0bAUaXjWYDpu1tqA==
+X-Google-Smtp-Source: ABdhPJxBNXK9ALzwPxILP5oIzJfssmCGJCQJWHw7+v593j8ZZy5c/gZK6PcEoJsvCfYey8wvsbo+Tw==
+X-Received: by 2002:a5d:64ed:: with SMTP id g13mr18129715wri.222.1636538291167;
+        Wed, 10 Nov 2021 01:58:11 -0800 (PST)
+Received: from google.com ([95.148.6.174])
+        by smtp.gmail.com with ESMTPSA id l16sm5376909wmq.46.2021.11.10.01.58.10
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 10 Nov 2021 01:58:10 -0800 (PST)
+Date:   Wed, 10 Nov 2021 09:58:03 +0000
+From:   Lee Jones <lee.jones@linaro.org>
+To:     Greg KH <greg@kroah.com>
+Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+        Andreas Kemnade <andreas@kemnade.info>,
+        "H . Nikolaus Schaller" <hns@goldelico.com>,
+        Johan Hovold <johan@kernel.org>,
+        "David S . Miller" <davem@davemloft.net>
+Subject: Re: [PATCH 4.9 1/2] net: hso: register netdev later to avoid a race
+ condition
+Message-ID: <YYuXq3wOdmWc+8lo@google.com>
+References: <20211109093959.173885-1-lee.jones@linaro.org>
+ <YYuCE9EoMu+4zsiF@kroah.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20211029084219.GV3959@techsingularity.net>
-X-Migadu-Flow: FLOW_OUT
-X-Migadu-Auth-User: tao.zhou@linux.dev
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <YYuCE9EoMu+4zsiF@kroah.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 29, 2021 at 09:42:19AM +0100, Mel Gorman wrote:
-> On Fri, Oct 29, 2021 at 12:19:48AM +0800, Tao Zhou wrote:
-> > Hi Mel,
+On Wed, 10 Nov 2021, Greg KH wrote:
+
+> On Tue, Nov 09, 2021 at 09:39:58AM +0000, Lee Jones wrote:
+> > From: Andreas Kemnade <andreas@kemnade.info>
 > > 
-> > On Thu, Oct 28, 2021 at 10:48:33AM +0100, Mel Gorman wrote:
-> > 
-> > > @@ -5865,6 +5865,14 @@ static void record_wakee(struct task_struct *p)
-> > >  	}
-> > >  
-> > >  	if (current->last_wakee != p) {
-> > > +		int min = __this_cpu_read(sd_llc_size) << 1;
-> > > +		/*
-> > > +		 * Couple the wakee flips to the waker for the case where it
-> > > +		 * doesn't accrue flips, taking care to not push the wakee
-> > > +		 * high enough that the wake_wide() heuristic fails.
-> > > +		 */
-> > > +		if (current->wakee_flips > p->wakee_flips * min)
-> > > +			p->wakee_flips++;
-> > >  		current->last_wakee = p;
-> > >  		current->wakee_flips++;
-> > >  	}
-> > > @@ -5895,7 +5903,7 @@ static int wake_wide(struct task_struct *p)
-> > >  
-> > >  	if (master < slave)
-> > >  		swap(master, slave);
-> > > -	if (slave < factor || master < slave * factor)
-> > > +	if ((slave < factor && master < (factor>>1)*factor) || master < slave * factor)
-> > 
-> > So, the check like this include the above range:
-> > 
-> >   if ((slave < factor && master < slave * factor) ||
-> >        master < slave * factor)
-> > 
-> > That "factor>>1" filter some.
-> > 
-> > If "slave < factor" is true and "master < (factor>>1)*factor" is false,
-> > then we check "master < slave * factor".(This is one path added by the
-> > check "&&  master < (factor>>1)*factor").
-> > In the latter check "slave < factor" must be true, the result of this
-> > check depend on slave in the range [factor, factor>>1] if there is possibility
-> > that "master < slave * factor". If slave in [factor>>1, 0], the check of
-> > "master < slave * factor" is absolutly false and this can be filtered if
-> > we use a variable to load the result of master < (factor>>1)*factor.
-> > 
-> > My random random inputs and continue confusing to move on.
-> > 
+> > [ Upstream commit 4c761daf8bb9a2cbda9facf53ea85d9061f4281e ]
 > 
-> I'm not sure what point you're trying to make.
+> You already sent this for inclusion:
+> 	https://lore.kernel.org/r/YYU1KqvnZLyPbFcb@google.com
+> 
+> Why send it again?
 
-Ok, some days later even can not understand what my saying myself. After 
-wrong and right aross with my wreck head I just try to make this:
+The real question is; why didn't I sent patch 2 at the same time!
 
-if ((slave < factor && master < (factor>>1)*factor) || (slave >= factor>>1) && master < slave * factor)
+> confused,
 
-check "slave > factor>>1" for filter the cases that is calculated if I
-am not wrong. If this have a little effect that will be to not need to
-do "master < slave * factor" for some time not sure.
+I feel ya! ;)
 
+-- 
+Lee Jones [李琼斯]
+Senior Technical Lead - Developer Services
+Linaro.org │ Open source software for Arm SoCs
+Follow Linaro: Facebook | Twitter | Blog
