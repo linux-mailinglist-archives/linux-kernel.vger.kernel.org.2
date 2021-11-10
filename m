@@ -2,60 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1068C44B9ED
+	by mail.lfdr.de (Postfix) with ESMTP id 651FB44B9EE
 	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 02:23:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229647AbhKJBZo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Nov 2021 20:25:44 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35132 "EHLO
+        id S229717AbhKJBZq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Nov 2021 20:25:46 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35138 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229445AbhKJBZn (ORCPT
+        with ESMTP id S229581AbhKJBZo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Nov 2021 20:25:43 -0500
-Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6749EC061764
-        for <linux-kernel@vger.kernel.org>; Tue,  9 Nov 2021 17:22:56 -0800 (PST)
-Received: by mail-pj1-x102d.google.com with SMTP id n15-20020a17090a160f00b001a75089daa3so397595pja.1
-        for <linux-kernel@vger.kernel.org>; Tue, 09 Nov 2021 17:22:56 -0800 (PST)
+        Tue, 9 Nov 2021 20:25:44 -0500
+Received: from mail-pf1-x435.google.com (mail-pf1-x435.google.com [IPv6:2607:f8b0:4864:20::435])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 95D4BC061764
+        for <linux-kernel@vger.kernel.org>; Tue,  9 Nov 2021 17:22:57 -0800 (PST)
+Received: by mail-pf1-x435.google.com with SMTP id b68so1090590pfg.11
+        for <linux-kernel@vger.kernel.org>; Tue, 09 Nov 2021 17:22:57 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=Wl7faxE53/iAzWsLqHmIEzd9rKFTjxg92eUzdY+R6V8=;
-        b=cnSGLcjO+P0IuJlqxSVd//qxR28ex+f/xUcD50Hfo3tBhtFdNVeARx+mSt4ZwQw4Z1
-         9zayXOejS+DWRag1WacWXrJrkekBuFL/3r8I8GfbQr9rx3FZG/HQeYy7Z0rF0mmRPs9Z
-         n5kYG83103X78PkpHsOC795f+4AJcYnpcNEQ93uD5KjzzCjPHjTOadEmcF+r9lX9cT+9
-         353/vd0KFW4p+BZJ9wtdic9O5TB3V1gmem0kCI+4AbnYwiOcmqiFfHDWCekLj1/pYoJn
-         xCuEyNNzpODs1TQ6EcTB1qu5Lk/ryI187lEJgPMWnnDdiH4xYtoovfTyrRKVJtOT3whi
-         68zw==
+        bh=QXi0+HXv1ZcM85XLut5g4f5koCKW+8lc/+zDpXbKQKo=;
+        b=TpDJ2VhU/wIwYlQhROAYLUqYUm4x2AGB/4Bl8Prtpwzs4s6ee91Zc2s90yfFLrhGuJ
+         PYXFF5cE31KgwAR5Os007xTsddj0F863l8MtUC5GNdPppeXOAnb8drPHN37rvtHbYfDD
+         U+Kb7F/NpgQ5AgscUEqfD6D6R1OpG6nM2qMlkr6mtdl+eb24IVIdUiIICIutX1tFicbN
+         /TPSAFA6A/ea+d07WZUp9TK9Eu8f/a1c0cURXwhzjzIueKGRfD5Xr5f9VcguFiBjErjK
+         BlNBXSzmvjjHBNmK6WfuDGCxAmsQnfWXbCtKK+h2f3tndKLNlOOJhMrgAer3CaPPUQJz
+         UAgA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=Wl7faxE53/iAzWsLqHmIEzd9rKFTjxg92eUzdY+R6V8=;
-        b=bGvfCKEmWOBVjJkV9Erpgi7hixyFu4cY7Yw88QGLZIkD+7AvKKJcG3HbRtbVt4FBCY
-         7X4pbGdrPoRSbGR+z5/kVd0JUOTp7bckkQb0F7OzxkEf90yxorA8qYPPEL0BchzTPBPV
-         biYcr9Fuy8VU1alMQB5nQru7dh64Lvlz0K1f0o2ZG6AlJCplUa7Mi/b6beTn7jE3wG0B
-         4TkdMznyqtYFp+95EcVRN8xbaQZwVFQ70qRZX10U/z0pvNNoFRtDJqzsKDb2rN05sq7F
-         1zIzQkmy4ORDxYI/cDpCT9/GOYc8KCzGFuPYN1/dxa2IH3VFyShbgHOQDLiPSUuHpYqx
-         gslw==
-X-Gm-Message-State: AOAM530UYt6T0e5Z/F917tqIq5ZqeWiq1dXCinQsZ5M8ApGv0UVV62uK
-        Xom7TmJjgELBzS5dmrBvt6s=
-X-Google-Smtp-Source: ABdhPJwozwn1Rl2wnLDsJ3BoIZKOVdjB/00cU5WC37kW+Efaxs4Y4iWDWMS/SWCZuTM0i/+AtJk3gQ==
-X-Received: by 2002:a17:90b:1bc4:: with SMTP id oa4mr12502978pjb.179.1636507375813;
-        Tue, 09 Nov 2021 17:22:55 -0800 (PST)
+        bh=QXi0+HXv1ZcM85XLut5g4f5koCKW+8lc/+zDpXbKQKo=;
+        b=XCXW5/y9ceoy4esIhL5gqZCgaMWtJcyFJSiDYUxGc2O2WOvHvu7c6mAEKL3o6MwZp+
+         M/PRqKr5CfcmViCCbd/wOe3PrrTFagr9SHSwnkcj40Fq7ESYqhiujsjL+UPjD+Pw8jlB
+         cBcFadkwvXQvk+MzgGjHPxihS0i34i4io4IOFYBs9S2qUeEHUb02Yl2GafMkiyzSQDIA
+         c+5C73JdP80dOES49zRYOXTU7kXcGbI2ODDIWSZIHA69c2hFoVCDbb/80aKqIFKhVYty
+         rGyRCc2i0jA/y2YQAhrKW5DMslmK8FWCCSHM0fjspZlwx/OFUFqGmhMFBvm92xDQYS3j
+         tIDQ==
+X-Gm-Message-State: AOAM532qkvh6az2jUqP1s8o9AGkUX/rpwBXKs/zO00go29w/O7k6cW3E
+        mWtaWDjNJH0Ee5sTDzHZO/U=
+X-Google-Smtp-Source: ABdhPJzvPNN3hbK+RACQTDwlfzzifuYyyQ02gLDS/4qe1IJmepkk7vy2q/KOvbKSGlDW9/6DJNaMcQ==
+X-Received: by 2002:a63:720d:: with SMTP id n13mr9375256pgc.470.1636507377082;
+        Tue, 09 Nov 2021 17:22:57 -0800 (PST)
 Received: from edumazet1.svl.corp.google.com ([2620:15c:2c4:201:362:8fd3:5950:cf6d])
-        by smtp.gmail.com with ESMTPSA id h2sm3614037pjk.44.2021.11.09.17.22.55
+        by smtp.gmail.com with ESMTPSA id h2sm3614037pjk.44.2021.11.09.17.22.56
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 09 Nov 2021 17:22:55 -0800 (PST)
+        Tue, 09 Nov 2021 17:22:56 -0800 (PST)
 From:   Eric Dumazet <eric.dumazet@gmail.com>
 To:     Peter Zijlstra <peterz@infradead.org>
 Cc:     linux-kernel <linux-kernel@vger.kernel.org>,
         Eric Dumazet <edumazet@google.com>,
         Eric Dumazet <eric.dumazet@gmail.com>
-Subject: [PATCH 1/2] jump_label: use DEFINE_STATIC_KEY_FALSE_RO() where possible
-Date:   Tue,  9 Nov 2021 17:09:05 -0800
-Message-Id: <20211110010906.1923210-2-eric.dumazet@gmail.com>
+Subject: [PATCH 2/2] jump_label: refine placement of static_keys
+Date:   Tue,  9 Nov 2021 17:09:06 -0800
+Message-Id: <20211110010906.1923210-3-eric.dumazet@gmail.com>
 X-Mailer: git-send-email 2.34.0.rc0.344.g81b53c2807-goog
 In-Reply-To: <20211110010906.1923210-1-eric.dumazet@gmail.com>
 References: <20211110010906.1923210-1-eric.dumazet@gmail.com>
@@ -67,224 +67,196 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Eric Dumazet <edumazet@google.com>
 
-Use DEFINE_STATIC_KEY_FALSE_RO(X) instead of
-__ro_after_init DEFINE_STATIC_KEY_FALSE(X)
+With CONFIG_JUMP_LABEL=y, "struct static_key" content is only
+used for the control path.
 
-This is in preparation for following patch,
-and is a functional nop.
+Marking them __read_mostly is only needed when CONFIG_JUMP_LABEL=n.
+Otherwise we place them out of the way to increase data locality.
+
+This patch adds __static_key to centralize this new policy.
 
 Signed-off-by: Eric Dumazet <edumazet@google.com>
 ---
- arch/arm/crypto/chacha-glue.c        | 2 +-
- arch/arm/crypto/curve25519-glue.c    | 2 +-
- arch/arm/crypto/ghash-ce-glue.c      | 2 +-
- arch/arm/crypto/poly1305-glue.c      | 2 +-
- arch/arm64/crypto/chacha-neon-glue.c | 2 +-
- arch/arm64/crypto/poly1305-glue.c    | 2 +-
- arch/powerpc/mm/book3s64/slb.c       | 2 +-
- arch/riscv/kernel/cpufeature.c       | 2 +-
- arch/x86/crypto/aesni-intel_glue.c   | 4 ++--
- arch/x86/crypto/blake2s-glue.c       | 4 ++--
- arch/x86/crypto/chacha_glue.c        | 6 +++---
- arch/x86/crypto/curve25519-x86_64.c  | 2 +-
- arch/x86/crypto/poly1305_glue.c      | 6 +++---
- crypto/aegis128-core.c               | 2 +-
- 14 files changed, 20 insertions(+), 20 deletions(-)
+ arch/x86/kvm/lapic.c       |  4 ++--
+ arch/x86/kvm/x86.c         |  2 +-
+ include/linux/jump_label.h | 25 +++++++++++++++++--------
+ kernel/events/core.c       |  2 +-
+ kernel/sched/fair.c        |  2 +-
+ net/core/dev.c             |  8 ++++----
+ net/netfilter/core.c       |  2 +-
+ net/netfilter/x_tables.c   |  2 +-
+ 8 files changed, 28 insertions(+), 19 deletions(-)
 
-diff --git a/arch/arm/crypto/chacha-glue.c b/arch/arm/crypto/chacha-glue.c
-index cdde8fd01f8f9b167e9ab7a7da1d8fff595197bc..31294e28be96d1a0f5b00114efe4baabe934646f 100644
---- a/arch/arm/crypto/chacha-glue.c
-+++ b/arch/arm/crypto/chacha-glue.c
-@@ -30,7 +30,7 @@ asmlinkage void hchacha_block_neon(const u32 *state, u32 *out, int nrounds);
- asmlinkage void chacha_doarm(u8 *dst, const u8 *src, unsigned int bytes,
- 			     const u32 *state, int nrounds);
- 
--static __ro_after_init DEFINE_STATIC_KEY_FALSE(use_neon);
-+static DEFINE_STATIC_KEY_FALSE_RO(use_neon);
- 
- static inline bool neon_usable(void)
- {
-diff --git a/arch/arm/crypto/curve25519-glue.c b/arch/arm/crypto/curve25519-glue.c
-index 9bdafd57888c859f580ffbcadfd3b63070e8c780..9c41ee494bf37bdf298b24e4750836409c3e37cf 100644
---- a/arch/arm/crypto/curve25519-glue.c
-+++ b/arch/arm/crypto/curve25519-glue.c
-@@ -23,7 +23,7 @@ asmlinkage void curve25519_neon(u8 mypublic[CURVE25519_KEY_SIZE],
- 				const u8 secret[CURVE25519_KEY_SIZE],
- 				const u8 basepoint[CURVE25519_KEY_SIZE]);
- 
--static __ro_after_init DEFINE_STATIC_KEY_FALSE(have_neon);
-+static DEFINE_STATIC_KEY_FALSE_RO(have_neon);
- 
- void curve25519_arch(u8 out[CURVE25519_KEY_SIZE],
- 		     const u8 scalar[CURVE25519_KEY_SIZE],
-diff --git a/arch/arm/crypto/ghash-ce-glue.c b/arch/arm/crypto/ghash-ce-glue.c
-index f13401f3e6693211c95e266d9676c79710755ebf..7bcede16b770635373b4b57e2609cd95822f6c84 100644
---- a/arch/arm/crypto/ghash-ce-glue.c
-+++ b/arch/arm/crypto/ghash-ce-glue.c
-@@ -48,7 +48,7 @@ asmlinkage void pmull_ghash_update_p64(int blocks, u64 dg[], const char *src,
- asmlinkage void pmull_ghash_update_p8(int blocks, u64 dg[], const char *src,
- 				      u64 const h[][2], const char *head);
- 
--static __ro_after_init DEFINE_STATIC_KEY_FALSE(use_p64);
-+static DEFINE_STATIC_KEY_FALSE_RO(use_p64);
- 
- static int ghash_init(struct shash_desc *desc)
- {
-diff --git a/arch/arm/crypto/poly1305-glue.c b/arch/arm/crypto/poly1305-glue.c
-index c31bd8f7c0927e5226984b6573c3d4d76a1d445c..6f90cb56b76233c5ebb3d86834dbd02d78243871 100644
---- a/arch/arm/crypto/poly1305-glue.c
-+++ b/arch/arm/crypto/poly1305-glue.c
-@@ -27,7 +27,7 @@ void __weak poly1305_blocks_neon(void *state, const u8 *src, u32 len, u32 hibit)
- {
+diff --git a/arch/x86/kvm/lapic.c b/arch/x86/kvm/lapic.c
+index d6ac32f3f650c066733ff9afe96ece36bca01523..a4e8ec38cd09aca2969e71242bced1d95e9e9c1f 100644
+--- a/arch/x86/kvm/lapic.c
++++ b/arch/x86/kvm/lapic.c
+@@ -91,8 +91,8 @@ static inline int __apic_test_and_clear_vector(int vec, void *bitmap)
+ 	return __test_and_clear_bit(VEC_POS(vec), (bitmap) + REG_POS(vec));
  }
  
--static __ro_after_init DEFINE_STATIC_KEY_FALSE(have_neon);
-+static DEFINE_STATIC_KEY_FALSE_RO(have_neon);
+-__read_mostly DEFINE_STATIC_KEY_DEFERRED_FALSE(apic_hw_disabled, HZ);
+-__read_mostly DEFINE_STATIC_KEY_DEFERRED_FALSE(apic_sw_disabled, HZ);
++DEFINE_STATIC_KEY_DEFERRED_FALSE(apic_hw_disabled, HZ);
++DEFINE_STATIC_KEY_DEFERRED_FALSE(apic_sw_disabled, HZ);
  
- void poly1305_init_arch(struct poly1305_desc_ctx *dctx, const u8 key[POLY1305_KEY_SIZE])
+ static inline int apic_enabled(struct kvm_lapic *apic)
  {
-diff --git a/arch/arm64/crypto/chacha-neon-glue.c b/arch/arm64/crypto/chacha-neon-glue.c
-index af2bbca38e70fb3514bf594cafffbf907c8eeffa..7af3bad091554fb5f40801948df62d6b4ae0ac72 100644
---- a/arch/arm64/crypto/chacha-neon-glue.c
-+++ b/arch/arm64/crypto/chacha-neon-glue.c
-@@ -37,7 +37,7 @@ asmlinkage void chacha_4block_xor_neon(u32 *state, u8 *dst, const u8 *src,
- 				       int nrounds, int bytes);
- asmlinkage void hchacha_block_neon(const u32 *state, u32 *out, int nrounds);
- 
--static __ro_after_init DEFINE_STATIC_KEY_FALSE(have_neon);
-+static DEFINE_STATIC_KEY_FALSE_RO(have_neon);
- 
- static void chacha_doneon(u32 *state, u8 *dst, const u8 *src,
- 			  int bytes, int nrounds)
-diff --git a/arch/arm64/crypto/poly1305-glue.c b/arch/arm64/crypto/poly1305-glue.c
-index 9c3d86e397bf3a1fd9302c0a3057913f9a6ed9ca..efa8a0ce3c1a4262d3910aa4a4e2823be53f5dae 100644
---- a/arch/arm64/crypto/poly1305-glue.c
-+++ b/arch/arm64/crypto/poly1305-glue.c
-@@ -23,7 +23,7 @@ asmlinkage void poly1305_blocks(void *state, const u8 *src, u32 len, u32 hibit);
- asmlinkage void poly1305_blocks_neon(void *state, const u8 *src, u32 len, u32 hibit);
- asmlinkage void poly1305_emit(void *state, u8 *digest, const u32 *nonce);
- 
--static __ro_after_init DEFINE_STATIC_KEY_FALSE(have_neon);
-+static DEFINE_STATIC_KEY_FALSE_RO(have_neon);
- 
- void poly1305_init_arch(struct poly1305_desc_ctx *dctx, const u8 key[POLY1305_KEY_SIZE])
- {
-diff --git a/arch/powerpc/mm/book3s64/slb.c b/arch/powerpc/mm/book3s64/slb.c
-index f0037bcc47a0eb57a6f3aaf9062fa0bb43843705..ed17fd9753532853550212289561cbabe49985ab 100644
---- a/arch/powerpc/mm/book3s64/slb.c
-+++ b/arch/powerpc/mm/book3s64/slb.c
-@@ -40,7 +40,7 @@ static int __init parse_stress_slb(char *p)
- }
- early_param("stress_slb", parse_stress_slb);
- 
--__ro_after_init DEFINE_STATIC_KEY_FALSE(stress_slb_key);
-+DEFINE_STATIC_KEY_FALSE_RO(stress_slb_key);
- 
- static void assert_slb_presence(bool present, unsigned long ea)
- {
-diff --git a/arch/riscv/kernel/cpufeature.c b/arch/riscv/kernel/cpufeature.c
-index d959d207a40d6cbe5662833b36cf222a3a750eb6..439ef56d183d08a0f1dbccae50e928d9a2241e40 100644
---- a/arch/riscv/kernel/cpufeature.c
-+++ b/arch/riscv/kernel/cpufeature.c
-@@ -19,7 +19,7 @@ unsigned long elf_hwcap __read_mostly;
- static DECLARE_BITMAP(riscv_isa, RISCV_ISA_EXT_MAX) __read_mostly;
- 
- #ifdef CONFIG_FPU
--__ro_after_init DEFINE_STATIC_KEY_FALSE(cpu_hwcap_fpu);
-+DEFINE_STATIC_KEY_FALSE_RO(cpu_hwcap_fpu);
- #endif
- 
- /**
-diff --git a/arch/x86/crypto/aesni-intel_glue.c b/arch/x86/crypto/aesni-intel_glue.c
-index e09f4672dd382f5ac5c6d95a80592653de072072..66e7a5cc6b61c0f783be93bf6bdb24c5acf179be 100644
---- a/arch/x86/crypto/aesni-intel_glue.c
-+++ b/arch/x86/crypto/aesni-intel_glue.c
-@@ -181,8 +181,8 @@ asmlinkage void aesni_gcm_finalize_avx_gen4(void *ctx,
- 				   struct gcm_context_data *gdata,
- 				   u8 *auth_tag, unsigned long auth_tag_len);
- 
--static __ro_after_init DEFINE_STATIC_KEY_FALSE(gcm_use_avx);
--static __ro_after_init DEFINE_STATIC_KEY_FALSE(gcm_use_avx2);
-+static DEFINE_STATIC_KEY_FALSE_RO(gcm_use_avx);
-+static DEFINE_STATIC_KEY_FALSE_RO(gcm_use_avx2);
- 
- static inline struct
- aesni_rfc4106_gcm_ctx *aesni_rfc4106_gcm_ctx_get(struct crypto_aead *tfm)
-diff --git a/arch/x86/crypto/blake2s-glue.c b/arch/x86/crypto/blake2s-glue.c
-index a40365ab301eef7ad3bb86083c02700943f0956a..cbbb3974e3e8526554f29bbed087f8663f4d7ab2 100644
---- a/arch/x86/crypto/blake2s-glue.c
-+++ b/arch/x86/crypto/blake2s-glue.c
-@@ -25,8 +25,8 @@ asmlinkage void blake2s_compress_avx512(struct blake2s_state *state,
- 					const u8 *block, const size_t nblocks,
- 					const u32 inc);
- 
--static __ro_after_init DEFINE_STATIC_KEY_FALSE(blake2s_use_ssse3);
--static __ro_after_init DEFINE_STATIC_KEY_FALSE(blake2s_use_avx512);
-+static DEFINE_STATIC_KEY_FALSE_RO(blake2s_use_ssse3);
-+static DEFINE_STATIC_KEY_FALSE_RO(blake2s_use_avx512);
- 
- void blake2s_compress_arch(struct blake2s_state *state,
- 			   const u8 *block, size_t nblocks,
-diff --git a/arch/x86/crypto/chacha_glue.c b/arch/x86/crypto/chacha_glue.c
-index 7b3a1cf0984be3149ad9ec57b166aa9f4233a671..c2a03c6dd49b52f1b18423f63fd6bf5deca13218 100644
---- a/arch/x86/crypto/chacha_glue.c
-+++ b/arch/x86/crypto/chacha_glue.c
-@@ -35,9 +35,9 @@ asmlinkage void chacha_4block_xor_avx512vl(u32 *state, u8 *dst, const u8 *src,
- asmlinkage void chacha_8block_xor_avx512vl(u32 *state, u8 *dst, const u8 *src,
- 					   unsigned int len, int nrounds);
- 
--static __ro_after_init DEFINE_STATIC_KEY_FALSE(chacha_use_simd);
--static __ro_after_init DEFINE_STATIC_KEY_FALSE(chacha_use_avx2);
--static __ro_after_init DEFINE_STATIC_KEY_FALSE(chacha_use_avx512vl);
-+static DEFINE_STATIC_KEY_FALSE_RO(chacha_use_simd);
-+static DEFINE_STATIC_KEY_FALSE_RO(chacha_use_avx2);
-+static DEFINE_STATIC_KEY_FALSE_RO(chacha_use_avx512vl);
- 
- static unsigned int chacha_advance(unsigned int len, unsigned int maxblocks)
- {
-diff --git a/arch/x86/crypto/curve25519-x86_64.c b/arch/x86/crypto/curve25519-x86_64.c
-index 38caf61cd5b7d59b0180a0260e5962b6790f29ad..2be656f0ac20363e0ed072ec5b852d6ee7fbdc1c 100644
---- a/arch/x86/crypto/curve25519-x86_64.c
-+++ b/arch/x86/crypto/curve25519-x86_64.c
-@@ -1378,7 +1378,7 @@ static void curve25519_ever64_base(u8 *out, const u8 *priv)
- 	memzero_explicit(tmp, sizeof(tmp));
+diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
+index c1c4e2b05a63abd53e01d0671f740a3b900d98e6..051236fedee39e197d6795fc62bdb29849c7ada2 100644
+--- a/arch/x86/kvm/x86.c
++++ b/arch/x86/kvm/x86.c
+@@ -11204,7 +11204,7 @@ bool kvm_vcpu_is_bsp(struct kvm_vcpu *vcpu)
+ 	return (vcpu->arch.apic_base & MSR_IA32_APICBASE_BSP) != 0;
  }
  
--static __ro_after_init DEFINE_STATIC_KEY_FALSE(curve25519_use_bmi2_adx);
-+static DEFINE_STATIC_KEY_FALSE_RO(curve25519_use_bmi2_adx);
+-__read_mostly DEFINE_STATIC_KEY_FALSE(kvm_has_noapic_vcpu);
++DEFINE_STATIC_KEY_FALSE(kvm_has_noapic_vcpu);
+ EXPORT_SYMBOL_GPL(kvm_has_noapic_vcpu);
  
- void curve25519_arch(u8 mypublic[CURVE25519_KEY_SIZE],
- 		     const u8 secret[CURVE25519_KEY_SIZE],
-diff --git a/arch/x86/crypto/poly1305_glue.c b/arch/x86/crypto/poly1305_glue.c
-index 1dfb8af48a3caa7ae7a406b8dbf30ccabc840a20..b47568f086aef7c5e90e0a46be14569c3045a75b 100644
---- a/arch/x86/crypto/poly1305_glue.c
-+++ b/arch/x86/crypto/poly1305_glue.c
-@@ -30,9 +30,9 @@ asmlinkage void poly1305_blocks_avx2(void *ctx, const u8 *inp, const size_t len,
- asmlinkage void poly1305_blocks_avx512(void *ctx, const u8 *inp,
- 				       const size_t len, const u32 padbit);
- 
--static __ro_after_init DEFINE_STATIC_KEY_FALSE(poly1305_use_avx);
--static __ro_after_init DEFINE_STATIC_KEY_FALSE(poly1305_use_avx2);
--static __ro_after_init DEFINE_STATIC_KEY_FALSE(poly1305_use_avx512);
-+static DEFINE_STATIC_KEY_FALSE_RO(poly1305_use_avx);
-+static DEFINE_STATIC_KEY_FALSE_RO(poly1305_use_avx2);
-+static DEFINE_STATIC_KEY_FALSE_RO(poly1305_use_avx512);
- 
- struct poly1305_arch_internal {
- 	union {
-diff --git a/crypto/aegis128-core.c b/crypto/aegis128-core.c
-index c4f1bfa1d04fa9eb00fc55cfaa89ed0690a45607..60c8dfb1c736bdda9ae0eca9970218175eaf2564 100644
---- a/crypto/aegis128-core.c
-+++ b/crypto/aegis128-core.c
-@@ -36,7 +36,7 @@ struct aegis_ctx {
- 	union aegis_block key;
+ void kvm_arch_sched_in(struct kvm_vcpu *vcpu, int cpu)
+diff --git a/include/linux/jump_label.h b/include/linux/jump_label.h
+index 48b9b2a82767d74ec95f102ab1470f5fa79cc97d..13ad61a845a30a91c9f18eabff7ff93cac4028e2 100644
+--- a/include/linux/jump_label.h
++++ b/include/linux/jump_label.h
+@@ -106,10 +106,19 @@ struct static_key {
+ 	};
  };
  
--static __ro_after_init DEFINE_STATIC_KEY_FALSE(have_simd);
-+static DEFINE_STATIC_KEY_FALSE_RO(have_simd);
++/*
++ * With CONFIG_JUMP_LABEL, "struct static_key" are not used in fast path.
++ * We can put them in a separate section to increase data locality.
++ */
++#define __static_key __section(".data.unlikely")
++
+ #else
+ struct static_key {
+ 	atomic_t enabled;
+ };
++
++#define __static_key __read_mostly
++
+ #endif	/* CONFIG_JUMP_LABEL */
+ #endif /* __ASSEMBLY__ */
  
- static const union aegis_block crypto_aegis_const[2] = {
- 	{ .words64 = {
+@@ -367,7 +376,7 @@ struct static_key_false {
+ #define STATIC_KEY_FALSE_INIT (struct static_key_false){ .key = STATIC_KEY_INIT_FALSE, }
+ 
+ #define DEFINE_STATIC_KEY_TRUE(name)	\
+-	struct static_key_true name = STATIC_KEY_TRUE_INIT
++	struct static_key_true __static_key name = STATIC_KEY_TRUE_INIT
+ 
+ #define DEFINE_STATIC_KEY_TRUE_RO(name)	\
+ 	struct static_key_true name __ro_after_init = STATIC_KEY_TRUE_INIT
+@@ -376,7 +385,7 @@ struct static_key_false {
+ 	extern struct static_key_true name
+ 
+ #define DEFINE_STATIC_KEY_FALSE(name)	\
+-	struct static_key_false name = STATIC_KEY_FALSE_INIT
++	struct static_key_false __static_key name = STATIC_KEY_FALSE_INIT
+ 
+ #define DEFINE_STATIC_KEY_FALSE_RO(name)	\
+ 	struct static_key_false name __ro_after_init = STATIC_KEY_FALSE_INIT
+@@ -384,14 +393,14 @@ struct static_key_false {
+ #define DECLARE_STATIC_KEY_FALSE(name)	\
+ 	extern struct static_key_false name
+ 
+-#define DEFINE_STATIC_KEY_ARRAY_TRUE(name, count)		\
+-	struct static_key_true name[count] = {			\
+-		[0 ... (count) - 1] = STATIC_KEY_TRUE_INIT,	\
++#define DEFINE_STATIC_KEY_ARRAY_TRUE(name, count)			\
++	struct static_key_true __static_key name[count] = {	\
++		[0 ... (count) - 1] = STATIC_KEY_TRUE_INIT,		\
+ 	}
+ 
+-#define DEFINE_STATIC_KEY_ARRAY_FALSE(name, count)		\
+-	struct static_key_false name[count] = {			\
+-		[0 ... (count) - 1] = STATIC_KEY_FALSE_INIT,	\
++#define DEFINE_STATIC_KEY_ARRAY_FALSE(name, count)			\
++	struct static_key_false __static_key name[count] = {	\
++		[0 ... (count) - 1] = STATIC_KEY_FALSE_INIT,		\
+ 	}
+ 
+ #define _DEFINE_STATIC_KEY_1(name)	DEFINE_STATIC_KEY_TRUE(name)
+diff --git a/kernel/events/core.c b/kernel/events/core.c
+index f2253ea729a2732b0261f32280f77f1d1a2ebefb..5cd140b3a489bb51c2536bd5f869290bf8395e7b 100644
+--- a/kernel/events/core.c
++++ b/kernel/events/core.c
+@@ -9600,7 +9600,7 @@ static int swevent_hlist_get(void)
+ 	return err;
+ }
+ 
+-struct static_key perf_swevent_enabled[PERF_COUNT_SW_MAX];
++struct static_key __static_key perf_swevent_enabled[PERF_COUNT_SW_MAX];
+ 
+ static void sw_perf_event_destroy(struct perf_event *event)
+ {
+diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+index 13950beb01a251bfb65bf5b75952e3dea9cbc62b..de9b18a244cadd3b47a2ec4ed4c000a034a7fb96 100644
+--- a/kernel/sched/fair.c
++++ b/kernel/sched/fair.c
+@@ -4586,7 +4586,7 @@ entity_tick(struct cfs_rq *cfs_rq, struct sched_entity *curr, int queued)
+ #ifdef CONFIG_CFS_BANDWIDTH
+ 
+ #ifdef CONFIG_JUMP_LABEL
+-static struct static_key __cfs_bandwidth_used;
++static struct static_key __static_key __cfs_bandwidth_used;
+ 
+ static inline bool cfs_bandwidth_used(void)
+ {
+diff --git a/net/core/dev.c b/net/core/dev.c
+index edeb811c454e6caf4298aae723237aea2c363c3c..21d53ca2730d1abb5dc3103ccca053e1cdf676b7 100644
+--- a/net/core/dev.c
++++ b/net/core/dev.c
+@@ -2390,8 +2390,8 @@ int netdev_txq_to_tc(struct net_device *dev, unsigned int txq)
+ EXPORT_SYMBOL(netdev_txq_to_tc);
+ 
+ #ifdef CONFIG_XPS
+-static struct static_key xps_needed __read_mostly;
+-static struct static_key xps_rxqs_needed __read_mostly;
++static struct static_key __static_key xps_needed;
++static struct static_key __static_key xps_rxqs_needed;
+ static DEFINE_MUTEX(xps_map_mutex);
+ #define xmap_dereference(P)		\
+ 	rcu_dereference_protected((P), lockdep_is_held(&xps_map_mutex))
+@@ -4362,9 +4362,9 @@ EXPORT_SYMBOL(rps_sock_flow_table);
+ u32 rps_cpu_mask __read_mostly;
+ EXPORT_SYMBOL(rps_cpu_mask);
+ 
+-struct static_key_false rps_needed __read_mostly;
++struct static_key_false __static_key rps_needed;
+ EXPORT_SYMBOL(rps_needed);
+-struct static_key_false rfs_needed __read_mostly;
++struct static_key_false __static_key rfs_needed;
+ EXPORT_SYMBOL(rfs_needed);
+ 
+ static struct rps_dev_flow *
+diff --git a/net/netfilter/core.c b/net/netfilter/core.c
+index 6dec9cd395f1570c845346b6956ba2586a4235d6..3fd26326a55d95c28ab634eb3caf5a4a851ad20c 100644
+--- a/net/netfilter/core.c
++++ b/net/netfilter/core.c
+@@ -35,7 +35,7 @@ DEFINE_PER_CPU(bool, nf_skb_duplicated);
+ EXPORT_SYMBOL_GPL(nf_skb_duplicated);
+ 
+ #ifdef CONFIG_JUMP_LABEL
+-struct static_key nf_hooks_needed[NFPROTO_NUMPROTO][NF_MAX_HOOKS];
++struct static_key __static_key nf_hooks_needed[NFPROTO_NUMPROTO][NF_MAX_HOOKS];
+ EXPORT_SYMBOL(nf_hooks_needed);
+ #endif
+ 
+diff --git a/net/netfilter/x_tables.c b/net/netfilter/x_tables.c
+index 25524e3933496098f68748286e56839454ee842c..aaf78481b04a0decaa09b03b9f69fa3737740cf4 100644
+--- a/net/netfilter/x_tables.c
++++ b/net/netfilter/x_tables.c
+@@ -1319,7 +1319,7 @@ EXPORT_SYMBOL_GPL(xt_compat_unlock);
+ DEFINE_PER_CPU(seqcount_t, xt_recseq);
+ EXPORT_PER_CPU_SYMBOL_GPL(xt_recseq);
+ 
+-struct static_key xt_tee_enabled __read_mostly;
++struct static_key __static_key xt_tee_enabled;
+ EXPORT_SYMBOL_GPL(xt_tee_enabled);
+ 
+ static int xt_jumpstack_alloc(struct xt_table_info *i)
 -- 
 2.34.0.rc0.344.g81b53c2807-goog
 
