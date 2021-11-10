@@ -2,100 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 393EC44CCFA
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 23:45:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 36B2B44CD01
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 23:46:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233761AbhKJWsC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Nov 2021 17:48:02 -0500
-Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:48909 "EHLO
-        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S233725AbhKJWsA (ORCPT
+        id S233836AbhKJWtV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Nov 2021 17:49:21 -0500
+Received: from relmlor2.renesas.com ([210.160.252.172]:61074 "EHLO
+        relmlie6.idc.renesas.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S233634AbhKJWtT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Nov 2021 17:48:00 -0500
-Received: from cwcc.thunk.org (pool-72-74-133-215.bstnma.fios.verizon.net [72.74.133.215])
-        (authenticated bits=0)
-        (User authenticated as tytso@ATHENA.MIT.EDU)
-        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 1AAMj8oZ020936
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 10 Nov 2021 17:45:09 -0500
-Received: by cwcc.thunk.org (Postfix, from userid 15806)
-        id 431B715C00B9; Wed, 10 Nov 2021 17:45:08 -0500 (EST)
-Date:   Wed, 10 Nov 2021 17:45:08 -0500
-From:   "Theodore Ts'o" <tytso@mit.edu>
-To:     torvalds@linux-foundation.org
-Cc:     linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [GIT PULL] ext4 changes for 5.16-rc1
-Message-ID: <YYxLdGu1Lkcl9HzP@mit.edu>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+        Wed, 10 Nov 2021 17:49:19 -0500
+X-IronPort-AV: E=Sophos;i="5.87,225,1631545200"; 
+   d="scan'208";a="100143058"
+Received: from unknown (HELO relmlir6.idc.renesas.com) ([10.200.68.152])
+  by relmlie6.idc.renesas.com with ESMTP; 11 Nov 2021 07:46:27 +0900
+Received: from localhost.localdomain (unknown [10.226.36.204])
+        by relmlir6.idc.renesas.com (Postfix) with ESMTP id 5DF104131624;
+        Thu, 11 Nov 2021 07:46:25 +0900 (JST)
+From:   Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+To:     Geert Uytterhoeven <geert+renesas@glider.be>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        linux-renesas-soc@vger.kernel.org, linux-gpio@vger.kernel.org,
+        devicetree@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org,
+        Prabhakar <prabhakar.csengg@gmail.com>,
+        Biju Das <biju.das.jz@bp.renesas.com>,
+        Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+Subject: [PATCH v3 0/6] RZ/G2L: pinctrl: Support to get/set drive-strength and output-impedance-ohms
+Date:   Wed, 10 Nov 2021 22:46:16 +0000
+Message-Id: <20211110224622.16022-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following changes since commit 9e1ff307c779ce1f0f810c7ecce3d95bbae40896:
+Hi All,
 
-  Linux 5.15-rc4 (2021-10-03 14:08:47 -0700)
+This patch series add support to get/set drive-strength and
+output-impedance for RZ/G2L SoC. Along with some macro renames
+and code cleanup.
 
-are available in the Git repository at:
+Cheers,
+Prabhakar
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/tytso/ext4.git tags/ext4_for_linus
+Changes for v3:
+* Fixed review comments pointed by Geert.
 
-for you to fetch changes up to 124e7c61deb27d758df5ec0521c36cf08d417f7a:
+Changes for v2:
+* Fixed review comments pointed by Geert, split up patch 4 from series [1]
 
-  ext4: fix error code saved on super block during file system abort (2021-11-04 10:47:39 -0400)
+Note: This patch series is dependent on first two patches of series [1]
 
-----------------------------------------------------------------
-Only bug fixes and cleanups for ext4 this merge window.  Of note are
-fixes for the combination of the inline_data and fast_commit fixes,
-and more accurately calculating when to schedule additional lazy inode
-table init, especially when CONFIG_HZ is 100HZ.
+[1] https://patchwork.kernel.org/project/linux-renesas-soc/cover/
+20211027134509.5036-1-prabhakar.mahadev-lad.rj@bp.renesas.com/
 
-----------------------------------------------------------------
-Austin Kim (1):
-      ext4: remove an unused variable warning with CONFIG_QUOTA=n
+Lad Prabhakar (6):
+  dt-bindings: pinctrl: renesas,rzg2l-pinctrl: Add output-impedance-ohms
+    property
+  pinctrl: renesas: pinctrl-rzg2l: Rename RZG2L_SINGLE_PIN_GET_PORT
+    macro
+  pinctrl: renesas: pinctrl-rzg2l: Add helper functions to read/write
+    pin config
+  pinctrl: renesas: pinctrl-rzg2l: Add support to get/set pin config for
+    GPIO port pins
+  pinctrl: renesas: pinctrl-rzg2l: Rename PIN_CFG_* macros to match HW
+    manual
+  pinctrl: renesas: pinctrl-rzg2l: Add support to get/set drive-strength
+    and output-impedance-ohms
 
-Eric Whitney (1):
-      Revert "ext4: enforce buffer head state assertion in ext4_da_map_blocks"
+ .../pinctrl/renesas,rzg2l-pinctrl.yaml        |   2 +
+ drivers/pinctrl/renesas/pinctrl-rzg2l.c       | 307 ++++++++++++------
+ 2 files changed, 209 insertions(+), 100 deletions(-)
 
-Gabriel Krisman Bertazi (1):
-      ext4: fix error code saved on super block during file system abort
+-- 
+2.17.1
 
-Harshad Shirwadkar (2):
-      ext4: commit inline data during fast commit
-      ext4: inline data inode fast commit replay fixes
-
-Jing Yangyang (1):
-      ext4: fix boolreturn.cocci warnings in fs/ext4/name.c
-
-Lukas Bulwahn (1):
-      ext4: scope ret locally in ext4_try_to_trim_range()
-
-Shaoying Xu (1):
-      ext4: fix lazy initialization next schedule time computation in more granular unit
-
-Xiyu Yang (1):
-      ext4: convert from atomic_t to refcount_t on ext4_io_end->count
-
-Zhang Yi (6):
-      ext4: check for out-of-order index extents in ext4_valid_extent_entries()
-      ext4: check for inconsistent extents between index and leaf block
-      ext4: prevent partial update of the extent blocks
-      ext4: factor out ext4_fill_raw_inode()
-      ext4: move ext4_fill_raw_inode() related functions
-      ext4: prevent getting empty inode buffer
-
-yangerkun (3):
-      ext4: correct the left/middle/right debug message for binsearch
-      ext4: ensure enough credits in ext4_ext_shift_path_extents
-      ext4: refresh the ext4_ext_path struct after dropping i_data_sem.
-
- fs/ext4/ext4.h        |   3 +-
- fs/ext4/extents.c     | 175 ++++++++++++++++------------
- fs/ext4/fast_commit.c |  11 +-
- fs/ext4/inode.c       | 331 +++++++++++++++++++++++++++--------------------------
- fs/ext4/mballoc.c     |   5 +-
- fs/ext4/namei.c       |   2 +-
- fs/ext4/page-io.c     |   8 +-
- fs/ext4/super.c       |  15 +--
- 8 files changed, 300 insertions(+), 250 deletions(-)
