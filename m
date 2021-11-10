@@ -2,89 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E73B44BA59
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 03:33:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B6C4344BA5E
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 03:34:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229958AbhKJCgO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Nov 2021 21:36:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50674 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229717AbhKJCgM (ORCPT
+        id S229990AbhKJCh0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Nov 2021 21:37:26 -0500
+Received: from smtprelay0230.hostedemail.com ([216.40.44.230]:33990 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S229717AbhKJChZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Nov 2021 21:36:12 -0500
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1234::107])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1405CC061764;
-        Tue,  9 Nov 2021 18:33:26 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
-        :Reply-To:Content-ID:Content-Description;
-        bh=vaMquRSSr3aFa23drkfuWw9iKepZuzFpwndhUSYbvRQ=; b=1goCbOPQEKW0bXEYR63uiqnNqR
-        E/LwK+maT7sKLA6Kv/7JPMbQDpfHtaMWPIfk5/H0ka+DFU5EbhoMU4Y5i4+WFfazUE9zWOOT7s5d6
-        2htpB+yfojgD5V174QRt1byC53pjXio9RmJAAbrNBR7+JDf2Ml9wnV+36ty/xnt70gg9RoD0E5OEG
-        QZYcVcDf2pTA9d6QGWXDnrF57BXsVpr65MbYViE6mOP7UWizl+C6mkLMPFk+aH4OQFvUEL0Ax2gKp
-        WBF6hjn8FkqLsqj08exjt136gkFyB4ZvfGVapAcY/s05KDvxfzUpGXPzbQgkhpiZgH+yD3YhQ40J0
-        LUyc2nVw==;
-Received: from [2601:1c0:6280:3f0::aa0b]
-        by merlin.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mkdQF-008qUm-In; Wed, 10 Nov 2021 02:33:12 +0000
-Subject: Re: [PATCH v2 1/2] mmc: Add SD/SDIO driver for Sunplus SP7021
-To:     "LH.Kuo" <lhjeff911@gmail.com>, p.zabel@pengutronix.de,
-        daniel.thompson@linaro.org, lee.jones@linaro.org,
-        u.kleine-koenig@pengutronix.de, ulf.hansson@linaro.org,
-        robh+dt@kernel.org, linux-kernel@vger.kernel.org,
-        linux-mmc@vger.kernel.org, devicetree@vger.kernel.org
-Cc:     qinjian@cqplus1.com, wells.lu@sunplus.com,
-        "LH.Kuo" <lh.kuo@sunplus.com>
-References: <1635487055-18494-1-git-send-email-lh.kuo@sunplus.com>
- <1636444705-17883-1-git-send-email-lh.kuo@sunplus.com>
- <1636444705-17883-2-git-send-email-lh.kuo@sunplus.com>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <6c5c6e83-8176-8b4a-9c2c-f01a262de5de@infradead.org>
-Date:   Tue, 9 Nov 2021 18:33:05 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        Tue, 9 Nov 2021 21:37:25 -0500
+Received: from omf07.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay01.hostedemail.com (Postfix) with ESMTP id 0B5861010B123;
+        Wed, 10 Nov 2021 02:34:38 +0000 (UTC)
+Received: from [HIDDEN] (Authenticated sender: joe@perches.com) by omf07.hostedemail.com (Postfix) with ESMTPA id ED630315D73;
+        Wed, 10 Nov 2021 02:34:36 +0000 (UTC)
+Message-ID: <e8fdc84080c5e87e31525f9f0f61ae629dbcb920.camel@perches.com>
+Subject: Re: [PATCH] ptp: Replace snprintf in show functions with  sysfs_emit
+From:   Joe Perches <joe@perches.com>
+To:     cgel.zte@gmail.com, richardcochran@gmail.com
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Jing Yao <yao.jing2@zte.com.cn>, Zeal Robot <zealci@zte.com.cn>
+Date:   Tue, 09 Nov 2021 18:34:35 -0800
+In-Reply-To: <20211110022331.135418-1-yao.jing2@zte.com.cn>
+References: <20211110022331.135418-1-yao.jing2@zte.com.cn>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.40.4-1 
 MIME-Version: 1.0
-In-Reply-To: <1636444705-17883-2-git-send-email-lh.kuo@sunplus.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
 Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-4.85
+X-Stat-Signature: 63cot9dgmdrumfjdkigs1o9gnk7rsbj7
+X-Rspamd-Server: rspamout03
+X-Rspamd-Queue-Id: ED630315D73
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Session-ID: U2FsdGVkX1/CGTg9XhoPM6P/omVcpJ9kFTceviZYND0=
+X-HE-Tag: 1636511676-736958
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi--
+On Wed, 2021-11-10 at 02:23 +0000, cgel.zte@gmail.com wrote:
+> From: Jing Yao <yao.jing2@zte.com.cn>
+> 
+> coccicheck complains about the use of snprintf() in sysfs show
+> functions:
+> WARNING use scnprintf or sprintf
+> 
+> Use sysfs_emit instead of scnprintf, snprintf or sprintf makes more
+> sense.
+[]
+> Reported-by: Zeal Robot <zealci@zte.com.cn>
+> Signed-off-by: Jing Yao <yao.jing2@zte.com.cn>
+[]
+> diff --git a/drivers/ptp/ptp_sysfs.c b/drivers/ptp/ptp_sysfs.c
+[]
+> @@ -86,7 +86,7 @@ static ssize_t extts_fifo_show(struct device *dev,
+>  	if (!qcnt)
+>  		goto out;
+>  
+> -	cnt = snprintf(page, PAGE_SIZE, "%u %lld %u\n",
+> +	cnt = sysfs_emit(page, "%u %lld %u\n",
+>  		       event.index, event.t.sec, event.t.nsec);
+>  out:
+>  	mutex_unlock(&ptp->tsevq_mux);
+> @@ -387,7 +387,7 @@ static ssize_t ptp_pin_show(struct device *dev, struct device_attribute *attr,
+>  
+>  	mutex_unlock(&ptp->pincfg_mux);
+>  
+> -	return snprintf(page, PAGE_SIZE, "%u %u\n", func, chan);
+> +	return sysfs_emit(page, "%u %u\n", func, chan);
+>  }
+>  
+>  static ssize_t ptp_pin_store(struct device *dev, struct device_attribute *attr,
 
-On 11/8/21 11:58 PM, LH.Kuo wrote:
-> diff --git a/drivers/mmc/host/Kconfig b/drivers/mmc/host/Kconfig
-> index 5af8494..2aba9eb 100644
-> --- a/drivers/mmc/host/Kconfig
-> +++ b/drivers/mmc/host/Kconfig
-> @@ -1091,5 +1091,15 @@ config MMC_OWL
->   	  This selects support for the SD/MMC Host Controller on
->   	  Actions Semi Owl SoCs.
->   
-> +config MMC_SP_SDV2
-> +	tristate "Sunplus SP7021 SD/SDIO Controller"
-> +	depends on SOC_SP7021
-> +	help
-> +		If you say yes here, you will get support for SD/SDIO host interface
-> +		on sunplus Socs.
+If you are going to try to fix these, please do try to fix all of
+the instances in the same file.
 
-		   Sunplus SoCs.
+So here's a macro definition from that file used multiple times:
 
-> +		If you have a controller with this interface, say Y or M here.
-> +		If unsure, say N.
+static ssize_t var##_show(struct device *dev,				\
+			   struct device_attribute *attr, char *page)	\
+{									\
+	struct ptp_clock *ptp = dev_get_drvdata(dev);			\
+	return snprintf(page, PAGE_SIZE-1, "%d\n", ptp->info->var);	\
+}									\
+static DEVICE_ATTR(name, 0444, var##_show, NULL);
 
-All 4 lines of help text should be indented only with one tab + 2 spaces,
-not 2 tabs, per coding-style.rst.
+and another function:
 
+static ssize_t n_vclocks_show(struct device *dev,
+			      struct device_attribute *attr, char *page)
+{
+	struct ptp_clock *ptp = dev_get_drvdata(dev);
+	ssize_t size;
 
-> +                Sunplus  SD/SDIO Host Controller support"
+	if (mutex_lock_interruptible(&ptp->n_vclocks_mux))
+		return -ERESTARTSYS;
 
-I am thinking that this last line should not be here at all... ???
+	size = snprintf(page, PAGE_SIZE - 1, "%u\n", ptp->n_vclocks);
 
+	mutex_unlock(&ptp->n_vclocks_mux);
 
-thanks.
--- 
-~Randy
+	return size;
+}
+
+and yet another function:
+
+static ssize_t max_vclocks_show(struct device *dev,
+				struct device_attribute *attr, char *page)
+{
+	struct ptp_clock *ptp = dev_get_drvdata(dev);
+	ssize_t size;
+
+	size = snprintf(page, PAGE_SIZE - 1, "%u\n", ptp->max_vclocks);
+
+	return size;
+}
+
+	
+
