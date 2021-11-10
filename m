@@ -2,64 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D260C44C06C
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 12:58:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2941B44C06D
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 12:58:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231633AbhKJMBJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Nov 2021 07:01:09 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35264 "EHLO
+        id S231625AbhKJMBN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Nov 2021 07:01:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35294 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231582AbhKJMBA (ORCPT
+        with ESMTP id S231560AbhKJMBH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Nov 2021 07:01:00 -0500
-Received: from mail-pj1-x1029.google.com (mail-pj1-x1029.google.com [IPv6:2607:f8b0:4864:20::1029])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F2216C061764
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Nov 2021 03:58:12 -0800 (PST)
-Received: by mail-pj1-x1029.google.com with SMTP id iq11so1386699pjb.3
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Nov 2021 03:58:12 -0800 (PST)
+        Wed, 10 Nov 2021 07:01:07 -0500
+Received: from mail-pj1-x1031.google.com (mail-pj1-x1031.google.com [IPv6:2607:f8b0:4864:20::1031])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B70DFC061766
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Nov 2021 03:58:19 -0800 (PST)
+Received: by mail-pj1-x1031.google.com with SMTP id gx15-20020a17090b124f00b001a695f3734aso1475370pjb.0
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Nov 2021 03:58:19 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=j+aBXblOzZqJuR0UK2CQdqjmBsiSpe5p02x8xalNLhY=;
-        b=cBpJh0bcbu7MfD9fakpMWYsu15YNry8bnAS96AwdZSSbmNxGmtsuPwLwfgxOBoZrHf
-         er5f8BI0KC2n9rT3Z2LPw8dR8TIqgd33gjY5FbN/eVTT9D/u/DG9vXxwwNbCrebAQwGu
-         KVVsgwkFLSkI//IQpKXIVLkUL5tjCib5Lt0AaMGTHiiJj2XEP6Wm7a9rQ3v2N6p1VNhG
-         OyDQquk3+qVn0O2yvsA3O0xHSbDYE69aQZ95WUY+a1tiMdQBEowsMAX3ObKVYbNSg2pU
-         2qOZECU60+cVrJVjHIo6BrVILQfVpay5Ou6SePgPJL7yjqNA3f7JgZb4M+PnkttvHzPy
-         0VaA==
+        bh=KERbtBPjg9Xgw3qmQtkX07MzJXiLdhnUqwVs/TOwK18=;
+        b=mwTM06nlxcYZcsbR/roeGBtvJqZd2j3ZMgWw/qWaqF1IVcz9pJZJaerzCsG1Lbeykg
+         vXZcpskvAFHwzzvXG49wl8wf3SqaK/6efy6xP1Dy89og7A/NNnaH53KfAxNbe1Kb+t+G
+         g0a2iPTA7Yygy6adFlMO1wr8Gem8OzwSVuOdqAQIO6uWG69WaNvMwuIBmrsFrLSgpGlv
+         WAp86kgF4c2doMHVjgz8ZpCVxZ3XH7yKFghIFYookoGTKsIT6YgicL6HQN1tSvjCngBI
+         h68ZTo/eGGmvZ31bI0altDUPptEGWjxTsl0EX5WviNln/AryjhL2AWdnvQlALscTrKEB
+         A6Gg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=j+aBXblOzZqJuR0UK2CQdqjmBsiSpe5p02x8xalNLhY=;
-        b=zKcCX7lEeximARaukyTceLz6U/1reV9BcuYOpmGpxBNyGM7OLaukIcAIVARRQqpdSA
-         DjrqDEvUEEidWVeDKuNUiE27yLeK/Y2t2JOCSRgwtmLpN7Ign9rgqp4Oyz3HaZzCvJHI
-         usvmZcmkflO3uou+z4qL56PIbxaBVk9pRyVB+Uitsovu2WoCgJjTk0exbnUOYRbhNLyq
-         vqIhZf1fgTPCr+64f25TNLl1/sO4yQe8kmfCRVgFDfAH+ACqLxVQ2UKe98ervBgvoFUw
-         y088Ud6ZpE3AxzjrOVTSxcIrWL7mGJpvZdlKsb21P2zSzHho5/Hfd+95NYNs9F4TEsjY
-         KoSg==
-X-Gm-Message-State: AOAM532nAeGeRF59yrLXBY1GQ95tP2He5UwuUsqxlmW35CL93DbfBOG2
-        Ob7Qs6UaaHU0FOERC+KFkTWV5bDc0kM=
-X-Google-Smtp-Source: ABdhPJwbqwHxBht6m4dPu0GPzM+XILis+8ZMV/nOBn88U1k4layJqDu3soFUWwMVghqgb8+QgDoihg==
-X-Received: by 2002:a17:902:bc8a:b0:141:eb43:81a1 with SMTP id bb10-20020a170902bc8a00b00141eb4381a1mr15153557plb.52.1636545492397;
-        Wed, 10 Nov 2021 03:58:12 -0800 (PST)
+        bh=KERbtBPjg9Xgw3qmQtkX07MzJXiLdhnUqwVs/TOwK18=;
+        b=fui8D3E45KRUcLK1JiUnHDp3eFVLrJG1TI40wi1ViXwXTMeE4n5+5qOsQMPUoxQJV4
+         q6rU2gmEi9M81M58CuEVgXFtvDLlAX7IG7L6mr/0opURBNXJ6QwZ+KG1gn+OvN6ScxFS
+         ri1AJIhN7mZpHPUWfsQ/Ha8gD+bUuoOxGqhrjhGwOTmKlRn9F4oJ8tzJhZ+RjN2QR7rJ
+         mTXgaCVEeh2H9eImubgnTdVdqGL66j+o8o2UWPoeHYChgD79kQBh35Wb7An9e6PAjWjx
+         7QudO6fMJjWeD+Q/qrPY04Y96Qpv9adPIDQCdCgQF/An1AXIbFquy/PpGdywYNcJiMG7
+         oQ3A==
+X-Gm-Message-State: AOAM5335pvr8yECp5NC3lzSUjB5UhUgx1n0rU8F7aPWkmPIyOPNuoMdn
+        n34vhl3pMgw9mVTFzz7h8lwowKBYevU=
+X-Google-Smtp-Source: ABdhPJzZQpiv8nIOvbzbw51aBkKfjWzyCMj+SQSnnOSKxtCJd7+aF61qPyJCkdH+Ll3A5JcLp7381Q==
+X-Received: by 2002:a17:90a:6a82:: with SMTP id u2mr16354285pjj.105.1636545499158;
+        Wed, 10 Nov 2021 03:58:19 -0800 (PST)
 Received: from localhost ([198.11.178.15])
-        by smtp.gmail.com with ESMTPSA id gc22sm5349464pjb.57.2021.11.10.03.58.11
+        by smtp.gmail.com with ESMTPSA id z93sm5640853pjj.7.2021.11.10.03.58.18
         (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 10 Nov 2021 03:58:12 -0800 (PST)
+        Wed, 10 Nov 2021 03:58:18 -0800 (PST)
 From:   Lai Jiangshan <jiangshanlai@gmail.com>
 To:     linux-kernel@vger.kernel.org
 Cc:     x86@kernel.org, Lai Jiangshan <laijs@linux.alibaba.com>,
+        Andy Lutomirski <luto@kernel.org>,
         Thomas Gleixner <tglx@linutronix.de>,
         Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
         Dave Hansen <dave.hansen@linux.intel.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, Juergen Gross <jgross@suse.com>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Joerg Roedel <jroedel@suse.de>
-Subject: [PATCH V5 07/50] x86/entry: Introduce __entry_text for entry code written in C
-Date:   Wed, 10 Nov 2021 19:56:53 +0800
-Message-Id: <20211110115736.3776-8-jiangshanlai@gmail.com>
+        "H. Peter Anvin" <hpa@zytor.com>
+Subject: [PATCH V5 08/50] x86/entry: Move PTI_USER_* to arch/x86/include/asm/processor-flags.h
+Date:   Wed, 10 Nov 2021 19:56:54 +0800
+Message-Id: <20211110115736.3776-9-jiangshanlai@gmail.com>
 X-Mailer: git-send-email 2.19.1.6.gb485710b
 In-Reply-To: <20211110115736.3776-1-jiangshanlai@gmail.com>
 References: <20211110115736.3776-1-jiangshanlai@gmail.com>
@@ -71,32 +70,71 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Lai Jiangshan <laijs@linux.alibaba.com>
 
-Some entry code will be implemented in C files.  __entry_text is needed
-to set them in .entry.text section.  __entry_text disables instrumentation
-like noinstr, but it doesn't disable stack protector since not all
-compiler supported by kernel supporting function level granular
-attribute to disable stack protector.  It will be disabled by C file
-level.
+These constants will be also used in C file, so we move them to
+arch/x86/include/asm/processor-flags.h which already has a kin
+X86_CR3_PTI_PCID_USER_BIT defined in it.
 
 Signed-off-by: Lai Jiangshan <laijs@linux.alibaba.com>
 ---
- arch/x86/include/asm/idtentry.h | 3 +++
- 1 file changed, 3 insertions(+)
+ arch/x86/entry/calling.h               | 10 ----------
+ arch/x86/include/asm/processor-flags.h | 15 +++++++++++++++
+ 2 files changed, 15 insertions(+), 10 deletions(-)
 
-diff --git a/arch/x86/include/asm/idtentry.h b/arch/x86/include/asm/idtentry.h
-index 1345088e9902..6779def97591 100644
---- a/arch/x86/include/asm/idtentry.h
-+++ b/arch/x86/include/asm/idtentry.h
-@@ -11,6 +11,9 @@
+diff --git a/arch/x86/entry/calling.h b/arch/x86/entry/calling.h
+index a4c061fb7c6e..996b041e92d2 100644
+--- a/arch/x86/entry/calling.h
++++ b/arch/x86/entry/calling.h
+@@ -149,16 +149,6 @@ For 32-bit we have the following conventions - kernel is built with
  
- #include <asm/irq_stack.h>
+ #ifdef CONFIG_PAGE_TABLE_ISOLATION
  
-+/* Entry code written in C. */
-+#define __entry_text __noinstr_section(".entry.text")
+-/*
+- * PAGE_TABLE_ISOLATION PGDs are 8k.  Flip bit 12 to switch between the two
+- * halves:
+- */
+-#define PTI_USER_PGTABLE_BIT		PAGE_SHIFT
+-#define PTI_USER_PGTABLE_MASK		(1 << PTI_USER_PGTABLE_BIT)
+-#define PTI_USER_PCID_BIT		X86_CR3_PTI_PCID_USER_BIT
+-#define PTI_USER_PCID_MASK		(1 << PTI_USER_PCID_BIT)
+-#define PTI_USER_PGTABLE_AND_PCID_MASK  (PTI_USER_PCID_MASK | PTI_USER_PGTABLE_MASK)
+-
+ .macro SET_NOFLUSH_BIT	reg:req
+ 	bts	$X86_CR3_PCID_NOFLUSH_BIT, \reg
+ .endm
+diff --git a/arch/x86/include/asm/processor-flags.h b/arch/x86/include/asm/processor-flags.h
+index 02c2cbda4a74..4dd2fbbc861a 100644
+--- a/arch/x86/include/asm/processor-flags.h
++++ b/arch/x86/include/asm/processor-flags.h
+@@ -4,6 +4,7 @@
+ 
+ #include <uapi/asm/processor-flags.h>
+ #include <linux/mem_encrypt.h>
++#include <asm/page_types.h>
+ 
+ #ifdef CONFIG_VM86
+ #define X86_VM_MASK	X86_EFLAGS_VM
+@@ -50,7 +51,21 @@
+ #endif
+ 
+ #ifdef CONFIG_PAGE_TABLE_ISOLATION
 +
- /**
-  * DECLARE_IDTENTRY - Declare functions for simple IDT entry points
-  *		      No error code pushed by hardware
+ # define X86_CR3_PTI_PCID_USER_BIT	11
++
++#ifdef CONFIG_X86_64
++/*
++ * PAGE_TABLE_ISOLATION PGDs are 8k.  Flip bit 12 to switch between the two
++ * halves:
++ */
++#define PTI_USER_PGTABLE_BIT		PAGE_SHIFT
++#define PTI_USER_PGTABLE_MASK		(1 << PTI_USER_PGTABLE_BIT)
++#define PTI_USER_PCID_BIT		X86_CR3_PTI_PCID_USER_BIT
++#define PTI_USER_PCID_MASK		(1 << PTI_USER_PCID_BIT)
++#define PTI_USER_PGTABLE_AND_PCID_MASK  (PTI_USER_PCID_MASK | PTI_USER_PGTABLE_MASK)
++#endif
++
+ #endif
+ 
+ #endif /* _ASM_X86_PROCESSOR_FLAGS_H */
 -- 
 2.19.1.6.gb485710b
 
