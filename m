@@ -2,96 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1603244BF13
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 11:51:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 58CA844BF17
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 11:52:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231251AbhKJKy3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Nov 2021 05:54:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48130 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229653AbhKJKy1 (ORCPT
+        id S231276AbhKJKzB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Nov 2021 05:55:01 -0500
+Received: from alexa-out.qualcomm.com ([129.46.98.28]:7113 "EHLO
+        alexa-out.qualcomm.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231259AbhKJKyz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Nov 2021 05:54:27 -0500
-Received: from mail-pf1-x42f.google.com (mail-pf1-x42f.google.com [IPv6:2607:f8b0:4864:20::42f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1C70AC061764;
-        Wed, 10 Nov 2021 02:51:40 -0800 (PST)
-Received: by mail-pf1-x42f.google.com with SMTP id x131so2283641pfc.12;
-        Wed, 10 Nov 2021 02:51:40 -0800 (PST)
+        Wed, 10 Nov 2021 05:54:55 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=+dzXYDr4i+8E1rpU2w4lIdJbKk6ZeJdjzAy1gZDTXjo=;
-        b=iIwVK3BZa4OjsgzCh7y2ME1f8c/dppxSc8gobbBP1kvkAH5lbWH+RSLXi2YSdI21lG
-         qoRpQi4ZYgq0NYJYChWMWE3GuiC0ehi9DMlgySL6OFRL8igyEglWGENgGjo8yB7rBwhw
-         BiUXeBRl9qMrKdBd+5PIzoX+/BYlj+icjlFlXzKxtjdNnNkpTAuPLXJNAncKtru5Ut+X
-         PGMLr6p6787Ess7MUvPxOOuaC0UQaJqB1GRrf8mhfzo40hzjIQSlGw233zzgrq1Vw9J8
-         sxNI+wPF9TE3GbYQPYA9HTWAS+czqNf23+LrZ0oX5oMts+MKD0z7eFXWh1EvmnRl6XhX
-         Wuvw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=+dzXYDr4i+8E1rpU2w4lIdJbKk6ZeJdjzAy1gZDTXjo=;
-        b=y/BO2PmL5qEiHkDYo1Q46IuDxsrcL5FHG2bghgwlqg/+Yfppbu5nBvu5G5y2EPqKve
-         1oNikz/qYBWijZMQahry+ifwjDPfkfF94XCuBPwGiJM9KhwL5ttq+jZ3ke8vzWsT0yEm
-         gKc6+SyTHZyzo403yRq8EgAtcw+zVS1wIh7iGkKIo6Syh14Yko4c6wK7spV8Ft2Sc6Xr
-         IXdU61L9wBO6lf56PESDviS7v7w7Vv6yxSVtR42tfxrBZtEIi+UYHB2NziFh8Une+CaT
-         EJeL2vw2KSBbv7hka97xnuV7KUYSHe6NYfSazTWMdi5TuaxFKjAubncHTMOGn4AlsTJj
-         M1Lg==
-X-Gm-Message-State: AOAM532rvqPVXktP3p4ZtG0FFC9M9YprxNqSaQF78iJL4b2ktE7fBaYR
-        wqstT9G9JLjkviuBqZSMQmU=
-X-Google-Smtp-Source: ABdhPJwMPdRMzl4AmzcgyZZhbVTwDWb6Obrc6Y5hq7A8Y0uO83r6bdhuU6WCgPatiKQw7X4Roev4wA==
-X-Received: by 2002:a05:6a00:1903:b0:47c:34c1:c6b6 with SMTP id y3-20020a056a00190300b0047c34c1c6b6mr14883980pfi.17.1636541499684;
-        Wed, 10 Nov 2021 02:51:39 -0800 (PST)
-Received: from localhost.localdomain ([193.203.214.57])
-        by smtp.gmail.com with ESMTPSA id h4sm5516552pjm.14.2021.11.10.02.51.37
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 10 Nov 2021 02:51:39 -0800 (PST)
-From:   cgel.zte@gmail.com
-X-Google-Original-From: ye.guojin@zte.com.cn
-To:     stanley.chu@mediatek.com
-Cc:     alim.akhtar@samsung.com, avri.altman@wdc.com, jejb@linux.ibm.com,
-        martin.petersen@oracle.com, matthias.bgg@gmail.com,
-        linux-scsi@vger.kernel.org, linux-mediatek@lists.infradead.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        Ye Guojin <ye.guojin@zte.com.cn>,
-        Zeal Robot <zealci@zte.com.cn>
-Subject: [PATCH] scsi: ufs: ufs-mediatek: add put_device() after of_find_device_by_node()
-Date:   Wed, 10 Nov 2021 10:51:33 +0000
-Message-Id: <20211110105133.150171-1-ye.guojin@zte.com.cn>
-X-Mailer: git-send-email 2.25.1
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+  d=quicinc.com; i=@quicinc.com; q=dns/txt; s=qcdkim;
+  t=1636541528; x=1668077528;
+  h=from:to:cc:subject:date:message-id;
+  bh=7eOsYE5izuBmNzAggjLUvcDK8FJX7OQxEj2Tbgxn/kE=;
+  b=IGImXSvKExTJ83ypUhzhLTVNfm3Xq9ET+1RtIpTSGL4c0Ezp5UMPSvGX
+   t3FMN1BBhkAvLgKdlY450LnksFFbssDtiGb5rDEo7gzGRG65aSxKkMWJp
+   CvfhCoMzalRFBq1eaM97LcNcYq7Ea8yHwTseiDPZEFN9skeWuTKM1d27K
+   A=;
+Received: from ironmsg08-lv.qualcomm.com ([10.47.202.152])
+  by alexa-out.qualcomm.com with ESMTP; 10 Nov 2021 02:52:05 -0800
+X-QCInternal: smtphost
+Received: from ironmsg01-blr.qualcomm.com ([10.86.208.130])
+  by ironmsg08-lv.qualcomm.com with ESMTP/TLS/AES256-SHA; 10 Nov 2021 02:52:02 -0800
+X-QCInternal: smtphost
+Received: from mkrishn-linux.qualcomm.com ([10.204.66.35])
+  by ironmsg01-blr.qualcomm.com with ESMTP; 10 Nov 2021 16:21:49 +0530
+Received: by mkrishn-linux.qualcomm.com (Postfix, from userid 438394)
+        id B6DAC221C5; Wed, 10 Nov 2021 16:21:48 +0530 (IST)
+From:   Krishna Manikandan <quic_mkrishn@quicinc.com>
+To:     linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     Krishna Manikandan <quic_mkrishn@quicinc.com>,
+        quic_kalyant@quicinc.com, robdclark@gmail.com, swboyd@chromium.org,
+        freedreno@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        dmitry.baryshkov@linaro.org
+Subject: [PATCH v4] drm/msm: use compatible lists to find mdp node
+Date:   Wed, 10 Nov 2021 16:21:47 +0530
+Message-Id: <1636541507-5144-1-git-send-email-quic_mkrishn@quicinc.com>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ye Guojin <ye.guojin@zte.com.cn>
+In the current implementation, substring comparison
+using device node name is used to find mdp node
+during driver probe. Use compatible string list instead
+of node name to get mdp node from the parent mdss node.
 
-This was found by coccicheck:
-./drivers/scsi/ufs/ufs-mediatek.c, 211, 1-7, ERROR missing put_device;
-call of_find_device_by_node on line 1185, but without a corresponding
-object release within this function.
+Signed-off-by: Krishna Manikandan <quic_mkrishn@quicinc.com>
+Reviewed-by: Stephen Boyd <swboyd@chromium.org>
 
-Reported-by: Zeal Robot <zealci@zte.com.cn>
-Signed-off-by: Ye Guojin <ye.guojin@zte.com.cn>
+Changes in v2:
+  - Use compatible lists instead of duplicate string
+    check (Stephen Boyd)
+
+Changes in v3:
+  - Use match tables to find the mdp node (Stephen Boyd)
+
+Changes in v4:
+  - Drop EXPORT_SYMBOL (Dmitry Baryshkov)
 ---
- drivers/scsi/ufs/ufs-mediatek.c | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/gpu/drm/msm/disp/dpu1/dpu_kms.c  | 2 +-
+ drivers/gpu/drm/msm/disp/mdp5/mdp5_kms.c | 2 +-
+ drivers/gpu/drm/msm/msm_drv.c            | 7 ++++---
+ drivers/gpu/drm/msm/msm_kms.h            | 3 +++
+ 4 files changed, 9 insertions(+), 5 deletions(-)
 
-diff --git a/drivers/scsi/ufs/ufs-mediatek.c b/drivers/scsi/ufs/ufs-mediatek.c
-index fc5b214347b3..5393b5c9dd9c 100644
---- a/drivers/scsi/ufs/ufs-mediatek.c
-+++ b/drivers/scsi/ufs/ufs-mediatek.c
-@@ -1189,6 +1189,7 @@ static int ufs_mtk_probe(struct platform_device *pdev)
- 	}
- 	link = device_link_add(dev, &reset_pdev->dev,
- 		DL_FLAG_AUTOPROBE_CONSUMER);
-+	put_device(&reset_pdev->dev);
- 	if (!link) {
- 		dev_notice(dev, "add reset device_link fail\n");
- 		goto skip_reset;
+diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_kms.c b/drivers/gpu/drm/msm/disp/dpu1/dpu_kms.c
+index ad247c0..8cbdf0d 100644
+--- a/drivers/gpu/drm/msm/disp/dpu1/dpu_kms.c
++++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_kms.c
+@@ -1273,7 +1273,7 @@ static const struct dev_pm_ops dpu_pm_ops = {
+ 				pm_runtime_force_resume)
+ };
+ 
+-static const struct of_device_id dpu_dt_match[] = {
++const struct of_device_id dpu_dt_match[] = {
+ 	{ .compatible = "qcom,sdm845-dpu", },
+ 	{ .compatible = "qcom,sc7180-dpu", },
+ 	{ .compatible = "qcom,sc7280-dpu", },
+diff --git a/drivers/gpu/drm/msm/disp/mdp5/mdp5_kms.c b/drivers/gpu/drm/msm/disp/mdp5/mdp5_kms.c
+index 7b24224..dcbc8dc 100644
+--- a/drivers/gpu/drm/msm/disp/mdp5/mdp5_kms.c
++++ b/drivers/gpu/drm/msm/disp/mdp5/mdp5_kms.c
+@@ -1031,7 +1031,7 @@ static const struct dev_pm_ops mdp5_pm_ops = {
+ 	SET_RUNTIME_PM_OPS(mdp5_runtime_suspend, mdp5_runtime_resume, NULL)
+ };
+ 
+-static const struct of_device_id mdp5_dt_match[] = {
++const struct of_device_id mdp5_dt_match[] = {
+ 	{ .compatible = "qcom,mdp5", },
+ 	/* to support downstream DT files */
+ 	{ .compatible = "qcom,mdss_mdp", },
+diff --git a/drivers/gpu/drm/msm/msm_drv.c b/drivers/gpu/drm/msm/msm_drv.c
+index 7936e8d..445788f 100644
+--- a/drivers/gpu/drm/msm/msm_drv.c
++++ b/drivers/gpu/drm/msm/msm_drv.c
+@@ -1277,9 +1277,10 @@ static int add_components_mdp(struct device *mdp_dev,
+ 	return 0;
+ }
+ 
+-static int compare_name_mdp(struct device *dev, void *data)
++static int find_mdp_node(struct device *dev, void *data)
+ {
+-	return (strstr(dev_name(dev), "mdp") != NULL);
++	return of_match_node(dpu_dt_match, dev->of_node) ||
++		of_match_node(mdp5_dt_match, dev->of_node);
+ }
+ 
+ static int add_display_components(struct platform_device *pdev,
+@@ -1304,7 +1305,7 @@ static int add_display_components(struct platform_device *pdev,
+ 			return ret;
+ 		}
+ 
+-		mdp_dev = device_find_child(dev, NULL, compare_name_mdp);
++		mdp_dev = device_find_child(dev, NULL, find_mdp_node);
+ 		if (!mdp_dev) {
+ 			DRM_DEV_ERROR(dev, "failed to find MDSS MDP node\n");
+ 			of_platform_depopulate(dev);
+diff --git a/drivers/gpu/drm/msm/msm_kms.h b/drivers/gpu/drm/msm/msm_kms.h
+index 6a42b81..8b132c8 100644
+--- a/drivers/gpu/drm/msm/msm_kms.h
++++ b/drivers/gpu/drm/msm/msm_kms.h
+@@ -198,6 +198,9 @@ struct msm_kms *mdp4_kms_init(struct drm_device *dev);
+ struct msm_kms *mdp5_kms_init(struct drm_device *dev);
+ struct msm_kms *dpu_kms_init(struct drm_device *dev);
+ 
++extern const struct of_device_id dpu_dt_match[];
++extern const struct of_device_id mdp5_dt_match[];
++
+ struct msm_mdss_funcs {
+ 	int (*enable)(struct msm_mdss *mdss);
+ 	int (*disable)(struct msm_mdss *mdss);
 -- 
-2.25.1
+2.7.4
 
