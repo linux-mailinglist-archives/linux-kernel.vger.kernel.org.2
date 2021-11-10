@@ -2,101 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0496844C54C
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 17:46:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5C83844C554
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 17:47:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231792AbhKJQsr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Nov 2021 11:48:47 -0500
-Received: from mail.kernel.org ([198.145.29.99]:47156 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229602AbhKJQsq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Nov 2021 11:48:46 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3043161248;
-        Wed, 10 Nov 2021 16:45:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1636562758;
-        bh=2rKwlyZ/ynAX3ujGshIRvU/bHH1kMmrQsdaEhK7qGGU=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=mo9CR/krq5MNRIVRB638Ym/lZMkpqiYdpC64Dwx9oQKcTiEWBo6iQ81j15GN6XOvZ
-         FGvv2NsdcDHtHtJWfRdV8F+ReKl19MWjJKYlFvJmAsBcmqpsNu2W1Yx5YavvQpjseM
-         56MkZCSxcr8gRefguukzuS0D3harUSgTJcugLdEHgAo0fyPyeWTHklmmkZ1POa+d1l
-         TmSb5BJCRcEYVlGR1uzSEu3YdDlohZ0x6b0dovukDugXM+YRE/1jo0CC6w4ODmiYlA
-         pKHgQQPNN+KjnntlpcJ35qdu9Cz/Y+NestzaNwq6hRHpBmDNnbUBrql9jJMEO36T04
-         bB9usziDKB6Aw==
-Message-ID: <1fd2d97b-7c83-3a82-ada3-46ec5025c3b1@kernel.org>
-Date:   Wed, 10 Nov 2021 18:45:53 +0200
+        id S231811AbhKJQuG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Nov 2021 11:50:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45508 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229602AbhKJQuF (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Nov 2021 11:50:05 -0500
+Received: from mail-ed1-x533.google.com (mail-ed1-x533.google.com [IPv6:2a00:1450:4864:20::533])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA3A6C061764;
+        Wed, 10 Nov 2021 08:47:17 -0800 (PST)
+Received: by mail-ed1-x533.google.com with SMTP id v11so13057833edc.9;
+        Wed, 10 Nov 2021 08:47:17 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Vru0Z1VrDog7j7N8movCWVgL2QBStAjcA++1TbbK3Ws=;
+        b=hLAWi3NLFdpddsqhJQnfcBxnVXJxfw8j+qp+qYxdxPpJjgBid5lYb/g45aUKsEYBit
+         +cxqJdBf7T7a+QtZ43rLTzo5m34o5DzXXWg1ynBAJk0yWuORMhbir5oRTs5A65qM0izC
+         UVaU/1PXPHytbI0mkPN15v1bVNzu924OpM0PhC+pcBi7HWFgnrYEyC1cguwm6p+1a3rZ
+         Wo1jzLGGaV+jeg2jVOATYWREYVhsrfKz4P2iO9clkYidAICwH1DVCrOYgFwlL25yOwlZ
+         YRkiGb+UCl4D0i7LMdGunIq3kYi/wJBu/iaXTqKR5EMvBsqf//px2EozZuPkWTIwfWsy
+         QkpQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Vru0Z1VrDog7j7N8movCWVgL2QBStAjcA++1TbbK3Ws=;
+        b=ISEey+FAVxJafZxo2I7BZO+zJ0eCihItpONDBRolR799Vigk9/Y/GR3+Zj4WyKPx5N
+         jH9DHZLE3HancjTFRJAWS3bvZfRU/U3mHqNeynUFjO1qW4uZQmUIM1NNU5c4gBC8LCrU
+         lReFFOJGS2QZ3m4HSjBemjdOj0kUUUUVhUYb6zbWw5ekAPp00DBtk6bmgXJSdPnG8dAf
+         WQw47rLlVcQXSLgvPk0dS0bwSPe6jVfI1Csf3AIuss2WbWiWJLh2LI5i07XPjbpFGj7c
+         K9vBQW2bue/dhBngKuAHg+4LYHGFVtzPcHq78hbSewyxjiWd433OYfGHbENn0gvhdBeV
+         krew==
+X-Gm-Message-State: AOAM531AZM9wGGq2DX5+oT6nJlB32e7FbQm4/Lip4JR41d1REP72m/Zh
+        Ntrz5XtjX3arLcY6gPcCRhYn5aiSyYWkUBI8iZg0DYJ+ClA=
+X-Google-Smtp-Source: ABdhPJxLf5keCKcm+dAd5nvFtmq/fP7/gtO3OhClVpuYrBJE5blq1MssoJQ7RLvM78SIFB1iXzvAjP/WWLNAxH8DHDU=
+X-Received: by 2002:a17:907:869e:: with SMTP id qa30mr601056ejc.356.1636562836351;
+ Wed, 10 Nov 2021 08:47:16 -0800 (PST)
 MIME-Version: 1.0
-Subject: Re: [RFC] psi: Add additional PSI counters for each type of memory
- pressure
-Content-Language: en-US
-To:     Peter Zijlstra <peterz@infradead.org>,
-        Georgi Djakov <quic_c_gdjako@quicinc.com>
-Cc:     hannes@cmpxchg.org, vincent.guittot@linaro.org,
-        juri.lelli@redhat.com, mingo@redhat.com, rostedt@goodmis.org,
-        bsegall@google.com, mgorman@suse.de, bristot@redhat.com,
-        mhocko@kernel.org, vdavydov.dev@gmail.com, tj@kernel.org,
-        axboe@kernel.dk, cgroups@vger.kernel.org,
-        linux-block@vger.kernel.org, akpm@linux-foundation.org,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org
-References: <1636558597-248294-1-git-send-email-quic_c_gdjako@quicinc.com>
- <20211110161402.GB174703@worktop.programming.kicks-ass.net>
-From:   Georgi Djakov <djakov@kernel.org>
-In-Reply-To: <20211110161402.GB174703@worktop.programming.kicks-ass.net>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+References: <1635747525-31243-1-git-send-email-lh.kuo@sunplus.com>
+ <1635747525-31243-2-git-send-email-lh.kuo@sunplus.com> <YYAzrDuLYQt4U06J@sirena.org.uk>
+In-Reply-To: <YYAzrDuLYQt4U06J@sirena.org.uk>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Wed, 10 Nov 2021 18:46:31 +0200
+Message-ID: <CAHp75Vc8DUyHxhTm2RrdoSmcx9EXjDJvm3FDBRD7Lm4WA5sQ+A@mail.gmail.com>
+Subject: Re: [PATCH 1/2] SPI: Add SPI driver for Sunplus SP7021
+To:     Mark Brown <broonie@kernel.org>
+Cc:     "LH.Kuo" <lhjeff911@gmail.com>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Rob Herring <robh+dt@kernel.org>,
+        linux-spi <linux-spi@vger.kernel.org>,
+        devicetree <devicetree@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        dvorkin@tibbo.com, qinjian@cqplus1.com, wells.lu@sunplus.com,
+        "LH.Kuo" <lh.kuo@sunplus.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, Nov 1, 2021 at 8:37 PM Mark Brown <broonie@kernel.org> wrote:
+> On Mon, Nov 01, 2021 at 02:18:44PM +0800, LH.Kuo wrote:
+>
+> > Add SPI driver for Sunplus SP7021.
+>
+> In general it looks like this needs quite a bit of a refresh for
+> mainline - a lot of it looks to be a combination of minor, easily
+> fixable things and stylistic issues which make things hard to follow but
+> I think there are some more substantial things going on here as well.
 
-On 10.11.21 18:14, Peter Zijlstra wrote:
-> On Wed, Nov 10, 2021 at 07:36:37AM -0800, Georgi Djakov wrote:
->> @@ -21,7 +19,18 @@ enum psi_task_count {
->>   	 * don't have to special case any state tracking for it.
->>   	 */
->>   	NR_ONCPU,
->> -	NR_PSI_TASK_COUNTS = 4,
->> +	NR_BLK_CGROUP_THROTTLE,
->> +	NR_BIO,
->> +	NR_COMPACTION,
->> +	NR_THRASHING,
->> +	NR_CGROUP_RECLAIM_HIGH,
->> +	NR_CGROUP_RECLAIM_HIGH_SLEEP,
->> +	NR_CGROUP_TRY_CHARGE,
->> +	NR_DIRECT_COMPACTION,
->> +	NR_DIRECT_RECLAIM,
->> +	NR_READ_SWAPPAGE,
->> +	NR_KSWAPD,
->> +	NR_PSI_TASK_COUNTS = 16,
->>   };
->>   
-> 
->> @@ -51,9 +80,20 @@ enum psi_states {
->>   	PSI_MEM_FULL,
->>   	PSI_CPU_SOME,
->>   	PSI_CPU_FULL,
->> +	PSI_BLK_CGROUP_THROTTLE,
->> +	PSI_BIO,
->> +	PSI_COMPACTION,
->> +	PSI_THRASHING,
->> +	PSI_CGROUP_RECLAIM_HIGH,
->> +	PSI_CGROUP_RECLAIM_HIGH_SLEEP,
->> +	PSI_CGROUP_TRY_CHARGE,
->> +	PSI_DIRECT_COMPACTION,
->> +	PSI_DIRECT_RECLAIM,
->> +	PSI_READ_SWAPPAGE,
->> +	PSI_KSWAPD,
->>   	/* Only per-CPU, to weigh the CPU in the global average: */
->>   	PSI_NONIDLE,
->> -	NR_PSI_STATES = 7,
->> +	NR_PSI_STATES = 18,
->>   };
-> 
-> Have you considered what this does to psi_group_cpu's size and layout
-> and the impact thereof on performance?
+Just looked at their UART driver submission with the similar idea in mind.
+Asked them to shrink the size 1.5-2x times. I believe this is possible
+(and yes, I already saw a new version which is better, but can be
+cleaned up more).
 
-Thanks, i will definitely add some numbers in case there are no other
-major arguments against this RFC patch.
+Folks, try again for all your drivers for this SoC.
 
-BR,
-Georgi
+-- 
+With Best Regards,
+Andy Shevchenko
