@@ -2,39 +2,46 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BCF4344C70C
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 19:46:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 572F844C721
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 19:46:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232913AbhKJSrs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Nov 2021 13:47:48 -0500
+        id S233260AbhKJSs3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Nov 2021 13:48:29 -0500
 Received: from mail.kernel.org ([198.145.29.99]:46184 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232896AbhKJSrR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Nov 2021 13:47:17 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 94CE56115A;
-        Wed, 10 Nov 2021 18:44:29 +0000 (UTC)
+        id S232890AbhKJSrq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Nov 2021 13:47:46 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6A7D56115A;
+        Wed, 10 Nov 2021 18:44:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1636569870;
-        bh=zcHyq49sTh9mXhWeGeX8Zs82VtijvsSELOCePhpwUxA=;
+        s=korg; t=1636569898;
+        bh=A/a3mWgbDNcCyooqNdGK+K9Dna0CV9VP38v63dTkbLk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=WHbrCj/sUt0V7xw16iBIOC35k6g+E2hBnLl65m76z+IveDkl+XYlbWWMEFA4G5RxN
-         SmP2SrI0/gW9hrM/I/M4OrH3F567Xi43Vtp/gvqwImJ7fnze312PrMClzS9Ca1SvUm
-         KmystQkCszWHJR3TCfisgcCodhempfpBNr/EAF4w=
+        b=Ex0nEeGcvzNwpbJv6dUG6Vhdj2xCXziEDruJ5qtM1wrTZZzM5yIQqMiVjRRhEOHHw
+         4g0JdL+TZFD/xHRM/uvYrZ5J2jtrsib0LLAyaT9bUoUgYSxN+DPG+s2LGQ3hPxKDfP
+         LHsnqWmbl3A4vceQ6Y1Z1VRZWqQOpYaVEvhN6+xs=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Changhui Zhong <czhong@redhat.com>,
-        Yi Zhang <yi.zhang@redhat.com>, Ming Lei <ming.lei@redhat.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>
-Subject: [PATCH 4.9 01/22] scsi: core: Put LLD module refcnt after SCSI device is released
-Date:   Wed, 10 Nov 2021 19:43:08 +0100
-Message-Id: <20211110182001.628982980@linuxfoundation.org>
+        stable@vger.kernel.org,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+        Nitin Gupta <ngupta@vflare.org>,
+        Minchan Kim <minchan@kernel.org>,
+        Andy Lutomirski <luto@amacapital.net>,
+        Borislav Petkov <bp@suse.de>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>,
+        Thomas Gleixner <tglx@linutronix.de>, linux-mm@kvack.org,
+        Ingo Molnar <mingo@kernel.org>,
+        Florian Fainelli <f.fainelli@gmail.com>
+Subject: [PATCH 4.9 02/22] mm/zsmalloc: Prepare to variable MAX_PHYSMEM_BITS
+Date:   Wed, 10 Nov 2021 19:43:09 +0100
+Message-Id: <20211110182001.660492600@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
 In-Reply-To: <20211110182001.579561273@linuxfoundation.org>
 References: <20211110182001.579561273@linuxfoundation.org>
 User-Agent: quilt/0.66
-X-stable: review
-X-Patchwork-Hint: ignore
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
@@ -42,79 +49,76 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ming Lei <ming.lei@redhat.com>
+From: "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
 
-commit f2b85040acec9a928b4eb1b57a989324e8e38d3f upstream.
+commit 02390b87a9459937cdb299e6b34ff33992512ec7 upstream
 
-SCSI host release is triggered when SCSI device is freed. We have to make
-sure that the low-level device driver module won't be unloaded before SCSI
-host instance is released because shost->hostt is required in the release
-handler.
+With boot-time switching between paging mode we will have variable
+MAX_PHYSMEM_BITS.
 
-Make sure to put LLD module refcnt after SCSI device is released.
+Let's use the maximum variable possible for CONFIG_X86_5LEVEL=y
+configuration to define zsmalloc data structures.
 
-Fixes a kernel panic of 'BUG: unable to handle page fault for address'
-reported by Changhui and Yi.
+The patch introduces MAX_POSSIBLE_PHYSMEM_BITS to cover such case.
+It also suits well to handle PAE special case.
 
-Link: https://lore.kernel.org/r/20211008050118.1440686-1-ming.lei@redhat.com
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Reported-by: Changhui Zhong <czhong@redhat.com>
-Reported-by: Yi Zhang <yi.zhang@redhat.com>
-Tested-by: Yi Zhang <yi.zhang@redhat.com>
-Signed-off-by: Ming Lei <ming.lei@redhat.com>
-Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
+Signed-off-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
+Reviewed-by: Nitin Gupta <ngupta@vflare.org>
+Acked-by: Minchan Kim <minchan@kernel.org>
+Cc: Andy Lutomirski <luto@amacapital.net>
+Cc: Borislav Petkov <bp@suse.de>
+Cc: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: Peter Zijlstra <peterz@infradead.org>
+Cc: Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>
+Cc: Thomas Gleixner <tglx@linutronix.de>
+Cc: linux-mm@kvack.org
+Link: http://lkml.kernel.org/r/20180214111656.88514-3-kirill.shutemov@linux.intel.com
+Signed-off-by: Ingo Molnar <mingo@kernel.org>
+[florian: drop arch/x86/include/asm/pgtable_64_types.h changes since
+there is no CONFIG_X86_5LEVEL]
+Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/scsi/scsi.c       |    4 +++-
- drivers/scsi/scsi_sysfs.c |    9 +++++++++
- 2 files changed, 12 insertions(+), 1 deletion(-)
+ arch/x86/include/asm/pgtable-3level_types.h |    1 +
+ mm/zsmalloc.c                               |   13 +++++++------
+ 2 files changed, 8 insertions(+), 6 deletions(-)
 
---- a/drivers/scsi/scsi.c
-+++ b/drivers/scsi/scsi.c
-@@ -951,8 +951,10 @@ EXPORT_SYMBOL(scsi_device_get);
+--- a/arch/x86/include/asm/pgtable-3level_types.h
++++ b/arch/x86/include/asm/pgtable-3level_types.h
+@@ -42,5 +42,6 @@ typedef union {
   */
- void scsi_device_put(struct scsi_device *sdev)
- {
--	module_put(sdev->host->hostt->module);
-+	struct module *mod = sdev->host->hostt->module;
+ #define PTRS_PER_PTE	512
+ 
++#define MAX_POSSIBLE_PHYSMEM_BITS	36
+ 
+ #endif /* _ASM_X86_PGTABLE_3LEVEL_DEFS_H */
+--- a/mm/zsmalloc.c
++++ b/mm/zsmalloc.c
+@@ -83,18 +83,19 @@
+  * This is made more complicated by various memory models and PAE.
+  */
+ 
+-#ifndef MAX_PHYSMEM_BITS
+-#ifdef CONFIG_HIGHMEM64G
+-#define MAX_PHYSMEM_BITS 36
+-#else /* !CONFIG_HIGHMEM64G */
++#ifndef MAX_POSSIBLE_PHYSMEM_BITS
++#ifdef MAX_PHYSMEM_BITS
++#define MAX_POSSIBLE_PHYSMEM_BITS MAX_PHYSMEM_BITS
++#else
+ /*
+  * If this definition of MAX_PHYSMEM_BITS is used, OBJ_INDEX_BITS will just
+  * be PAGE_SHIFT
+  */
+-#define MAX_PHYSMEM_BITS BITS_PER_LONG
++#define MAX_POSSIBLE_PHYSMEM_BITS BITS_PER_LONG
+ #endif
+ #endif
+-#define _PFN_BITS		(MAX_PHYSMEM_BITS - PAGE_SHIFT)
 +
- 	put_device(&sdev->sdev_gendev);
-+	module_put(mod);
- }
- EXPORT_SYMBOL(scsi_device_put);
++#define _PFN_BITS		(MAX_POSSIBLE_PHYSMEM_BITS - PAGE_SHIFT)
  
---- a/drivers/scsi/scsi_sysfs.c
-+++ b/drivers/scsi/scsi_sysfs.c
-@@ -427,9 +427,12 @@ static void scsi_device_dev_release_user
- 	struct device *parent;
- 	struct list_head *this, *tmp;
- 	unsigned long flags;
-+	struct module *mod;
- 
- 	sdev = container_of(work, struct scsi_device, ew.work);
- 
-+	mod = sdev->host->hostt->module;
-+
- 	scsi_dh_release_device(sdev);
- 
- 	parent = sdev->sdev_gendev.parent;
-@@ -461,11 +464,17 @@ static void scsi_device_dev_release_user
- 
- 	if (parent)
- 		put_device(parent);
-+	module_put(mod);
- }
- 
- static void scsi_device_dev_release(struct device *dev)
- {
- 	struct scsi_device *sdp = to_scsi_device(dev);
-+
-+	/* Set module pointer as NULL in case of module unloading */
-+	if (!try_module_get(sdp->host->hostt->module))
-+		sdp->host->hostt->module = NULL;
-+
- 	execute_in_process_context(scsi_device_dev_release_usercontext,
- 				   &sdp->ew);
- }
+ /*
+  * Memory for allocating for handle keeps object position by
 
 
