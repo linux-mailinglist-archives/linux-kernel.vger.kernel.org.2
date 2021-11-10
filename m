@@ -2,113 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F207744C414
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 16:08:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C2AE944C417
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 16:09:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232376AbhKJPLT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Nov 2021 10:11:19 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124]:46889 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231743AbhKJPLQ (ORCPT
+        id S232395AbhKJPLw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Nov 2021 10:11:52 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51624 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232280AbhKJPLr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Nov 2021 10:11:16 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1636556907;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=AmR/7C75Un9rG7eImGgN4ajbaNdyQYmnUmjcof6AyG0=;
-        b=B5xzTBcioujPGg4ZMhbKbW3JZT8ch/BLtieM9pZ1BN2tBMOi7phfKQOeZbmHH+882Hy59l
-        gS0BpxMM2dtIbuBCOy/BLPRJUDpiTRxljrk1E1ieqgdJdscxNhBs8OKOhHCKtrojWgxsed
-        UN/LlnAn9ecmtYT3onAZ8H2M9KZ0DUo=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-21-6YRRtgCBM9GjHZJR58nU1Q-1; Wed, 10 Nov 2021 10:08:24 -0500
-X-MC-Unique: 6YRRtgCBM9GjHZJR58nU1Q-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 192A7BAF83;
-        Wed, 10 Nov 2021 15:08:23 +0000 (UTC)
-Received: from starship (unknown [10.40.194.243])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 3B01B60FFE;
-        Wed, 10 Nov 2021 15:08:05 +0000 (UTC)
-Message-ID: <7c326795af6ef2d876c14e645da1be67de50a928.camel@redhat.com>
-Subject: Re: [PATCH 2/3] KVM: nVMX: restore L1's EFER prior to setting the
- nested state
-From:   Maxim Levitsky <mlevitsk@redhat.com>
-To:     Paolo Bonzini <pbonzini@redhat.com>, kvm@vger.kernel.org
-Cc:     Wanpeng Li <wanpengli@tencent.com>, Borislav Petkov <bp@alien8.de>,
-        Ingo Molnar <mingo@redhat.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, linux-kernel@vger.kernel.org,
-        Sean Christopherson <seanjc@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wed, 10 Nov 2021 10:11:47 -0500
+Received: from mail-pf1-x432.google.com (mail-pf1-x432.google.com [IPv6:2607:f8b0:4864:20::432])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B05E5C061764;
+        Wed, 10 Nov 2021 07:08:58 -0800 (PST)
+Received: by mail-pf1-x432.google.com with SMTP id m14so2888804pfc.9;
+        Wed, 10 Nov 2021 07:08:58 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=odGTnK8OK8r3z3b40pT32upAxG17hXJdJNDrUm3eoyg=;
+        b=RLh3FtXsv6t7xehRHzTeN8HZpcPX7JzXYZ5T8TZGOq5SG4I+zVb/6CDp/euoeWys+g
+         74DEjof6QBoeBhPzIj+E6PNVqq2ntmd3I9EtNm07sNRQQexpo6XDYGoipF0UgmnM9p9K
+         yuDxPbLwiR4R2Tp17ysicxz7M2WTZzsV39t6U6TwpLkBLi47KohVyvjQwCY7rDxS6bn7
+         Jo0KgpNuXTThBc8QVacpKRrX+pXRots+WaCPMN1HAZiBBemBVstuP4L/0HZbyp3CskU4
+         5ydWXKZzgoTcNDxJuUTblnDVAqyWYPAjGddQ9rIp6Axrf2x/BrnXywjW8goDu1jj3XXR
+         EuqA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=odGTnK8OK8r3z3b40pT32upAxG17hXJdJNDrUm3eoyg=;
+        b=XFlvak6HB+gy7nkaMWnRmF3HhC0XH+GlG2FJ4KTNY039I2ytT+3CuDXZEWJTCTQweX
+         ItcuzZNyMWQG5Di5KXal5FZKwOki5X9MqO7v/a4iOmc9nhp8QTAy8NAwY+138rNTcC9o
+         jzZvZwIp8vRAcOEZTtWy0Bqtw1YMakmy3blsY1RwZYrOzg4eCkznVU1M+DxfBrKIduhn
+         Bfln0qHq6Crj//oPXEsbuqrfbFVs+kZTnb/wmb0fs8YMR3VoYwEUbt75EtDfB9plMl5R
+         Qi9oqmqrpepLUUyR/3v5KsnBFMWLSuWSsf4XtasTNJRr8y1ouOLIVCbvF0cuZ+VdtMNb
+         PeuA==
+X-Gm-Message-State: AOAM5331s/bZg9bT15qnTHF5oa9yzTrTXLWe3W8AyQoyZR6JQvndLOB8
+        Xozbv95uslLB9ik9hoNzU1/6i5m7dTo=
+X-Google-Smtp-Source: ABdhPJw1XRGEE93HNGg1VdLi0tEx0u9Y4Gn5Cviu7Eeaqdyk7728x0FUh7eokWhu2BOF2f2YUXuGgQ==
+X-Received: by 2002:a63:86c8:: with SMTP id x191mr333552pgd.153.1636556938091;
+        Wed, 10 Nov 2021 07:08:58 -0800 (PST)
+Received: from hoboy.vegasvil.org ([2601:645:c000:2163:e2d5:5eff:fea5:802f])
+        by smtp.gmail.com with ESMTPSA id t13sm28375pfl.98.2021.11.10.07.08.56
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 10 Nov 2021 07:08:57 -0800 (PST)
+Date:   Wed, 10 Nov 2021 07:08:55 -0800
+From:   Richard Cochran <richardcochran@gmail.com>
+To:     Vladimir Oltean <olteanv@gmail.com>
+Cc:     Kurt Kanzenbach <kurt@linutronix.de>,
+        Martin Kaistra <martin.kaistra@linutronix.de>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        John Stultz <john.stultz@linaro.org>,
         Thomas Gleixner <tglx@linutronix.de>,
-        Jim Mattson <jmattson@google.com>
-Date:   Wed, 10 Nov 2021 17:08:04 +0200
-In-Reply-To: <e6d4e268-da50-c55f-1485-f4a871afdff0@redhat.com>
-References: <20211110100018.367426-1-mlevitsk@redhat.com>
-         <20211110100018.367426-3-mlevitsk@redhat.com>
-         <e6d4e268-da50-c55f-1485-f4a871afdff0@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.36.5 (3.36.5-2.fc32) 
+        Stephen Boyd <sboyd@kernel.org>,
+        Russell King <linux@armlinux.org.uk>,
+        Marc Kleine-Budde <mkl@pengutronix.de>,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org
+Subject: Re: [PATCH v2 6/7] net: dsa: b53: Add logic for TX timestamping
+Message-ID: <20211110150855.GD28458@hoboy.vegasvil.org>
+References: <20211109095013.27829-1-martin.kaistra@linutronix.de>
+ <20211109095013.27829-7-martin.kaistra@linutronix.de>
+ <20211109111213.6vo5swdhxjvgmyjt@skbuf>
+ <87ee7o8otj.fsf@kurt>
+ <20211110130545.ga7ajracz2vvzotg@skbuf>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211110130545.ga7ajracz2vvzotg@skbuf>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 2021-11-10 at 16:01 +0100, Paolo Bonzini wrote:
-> On 11/10/21 11:00, Maxim Levitsky wrote:
-> > +	/*
-> > +	 * The vcpu might currently contain L2's IA32_EFER, due to the way
-> > +	 * some userspace kvm users (e.g qemu) restore nested state.
-> > +	 *
-> > +	 * To fix this, restore its IA32_EFER to the value it would have
-> > +	 * after VM exit from the nested guest.
-> > +	 *
-> > +	 */
-> > +
-> > +	vcpu->arch.efer = nested_vmx_get_vmcs12_host_efer(vcpu, vmcs12);
-> > +
-> 
-> In principle the value of LOAD_HOST_EFER on exit need not be the same as 
-> on entry.  But you don't need all of EFER, only EFER.LME/EFER.LMA, and 
-> those two bits must match ("the values of the LMA and LME bits in the 
-> field must each be that of the “host address-space size” VM-exit 
-> control" from the "Checks on Host Control Registers, MSRs, and SSP"; 
-> plus the "Checks Related to Address-Space Size").
-> 
-> At least it's worth adjusting the comment to explain that.  But the root 
-> cause of the issue is just nested_vmx_check_* accessing vcpu->arch.  So 
-> you can instead:
-> 
-> - split out of nested_vmx_check_host_state a new function 
-> nested_vmx_check_address_state_size that does
-> 
-> #ifdef CONFIG_X86_64
-> 	if (CC(!!(vmcs12->vm_exit_controls & VM_EXIT_HOST_ADDR_SPACE_SIZE) !=
-> 	       !!(vcpu->arch.efer & EFER_LMA)))
-> 		return -EINVAL;
-> #endif
-> 	return 0;
-> 
-> - call it from vmentry but not from migration
-> 
-> - in nested_vmx_check_host_state, assign ia32e from 
-> vmcs12->vm_exit_controls instead of vcpu->arch.efer
+On Wed, Nov 10, 2021 at 03:05:45PM +0200, Vladimir Oltean wrote:
 
-I agree with you. I was thinking do something like that but wasn't sure at all.
+> So it is true that ptp4l is single threaded and always polls
+> synchronously for the reception of a TX timestamp on the error queue
+> before proceeding to do anything else. But writing a kernel driver to
+> the specification of a single user space program is questionable.
 
-Best regards,
-	Maxim Levitsky
+There are a number of HW devices on the market that only support one
+outstanding Tx time stamp.  The implementation of ptp4l follows this
+limitation because a) it allows ptp4l to "just work" with most HW, and
+b) there is as yet no practical advantage to asynchronous Tx time
+stamping.
 
-> 
-> Paolo
-> 
+The premise of (b) might change if you had a GM serving hundreds or
+thousands of unicast clients, for example.
 
+In any case, I agree that the driver should enable the capabilities of
+the HW and not impose artificial limitations.
+
+Thanks,
+Richard
 
