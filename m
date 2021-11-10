@@ -2,102 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8929344C6B6
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 19:16:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D0E5944C6B9
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 19:17:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231997AbhKJSSy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Nov 2021 13:18:54 -0500
-Received: from smtp-out2.suse.de ([195.135.220.29]:38906 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229781AbhKJSSx (ORCPT
+        id S231298AbhKJSUQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Nov 2021 13:20:16 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37688 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229781AbhKJSUP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Nov 2021 13:18:53 -0500
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 01A821FD48;
-        Wed, 10 Nov 2021 18:16:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1636568164; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=WrfmgeAir/bcyFgACSGpgDgNuM+uhrNAmeRnW3A3QN0=;
-        b=CvbVadvRn6in1GwXmbxlxRhD5agTW4BW2HFq6oifyXHR2R6X4K9nvUrApT3LJ7EKkEzPiP
-        kEYCK/rJTOgzQxglqUQNTOwOVaUTJIVMQtXTo9PwTFj/u4ME10JU1UxVtcEYdjkbeyy4MU
-        X+3kR+EBq/NX4NNVl9w/zfUkh8/cVHQ=
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id BF4B013C7D;
-        Wed, 10 Nov 2021 18:16:03 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id TdXOLWMMjGF7OQAAMHmgww
-        (envelope-from <mkoutny@suse.com>); Wed, 10 Nov 2021 18:16:03 +0000
-Date:   Wed, 10 Nov 2021 19:15:58 +0100
-From:   Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>
-To:     "Moessbauer, Felix" <felix.moessbauer@siemens.com>
-Cc:     "longman@redhat.com" <longman@redhat.com>,
-        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
-        "cgroups@vger.kernel.org" <cgroups@vger.kernel.org>,
-        "corbet@lwn.net" <corbet@lwn.net>,
-        "frederic@kernel.org" <frederic@kernel.org>,
-        "guro@fb.com" <guro@fb.com>,
-        "hannes@cmpxchg.org" <hannes@cmpxchg.org>,
-        "juri.lelli@redhat.com" <juri.lelli@redhat.com>,
-        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-kselftest@vger.kernel.org" <linux-kselftest@vger.kernel.org>,
-        "lizefan.x@bytedance.com" <lizefan.x@bytedance.com>,
-        "mtosatti@redhat.com" <mtosatti@redhat.com>,
-        "pauld@redhat.com" <pauld@redhat.com>,
-        "peterz@infradead.org" <peterz@infradead.org>,
-        "shuah@kernel.org" <shuah@kernel.org>,
-        "tj@kernel.org" <tj@kernel.org>,
-        "jan.kiszka@siemens.com" <jan.kiszka@siemens.com>,
-        "henning.schild@siemens.com" <henning.schild@siemens.com>
-Subject: Re: [PATCH v8 0/6] cgroup/cpuset: Add new cpuset partition type &
- empty effecitve cpus
-Message-ID: <20211110181558.GB51149@blackbody.suse.cz>
-References: <20211018143619.205065-1-longman@redhat.com>
- <20211110111357.17617-1-felix.moessbauer@siemens.com>
- <20211110135653.GD20566@blackbody.suse.cz>
- <AM9PR10MB4869C14EAE01B87C0037BF6A89939@AM9PR10MB4869.EURPRD10.PROD.OUTLOOK.COM>
+        Wed, 10 Nov 2021 13:20:15 -0500
+Received: from mail-pf1-x42c.google.com (mail-pf1-x42c.google.com [IPv6:2607:f8b0:4864:20::42c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9154BC061764
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Nov 2021 10:17:27 -0800 (PST)
+Received: by mail-pf1-x42c.google.com with SMTP id y5so3404430pfb.4
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Nov 2021 10:17:27 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
+        bh=wst9WkhAE8w1i/iSuQ87C93Angtcy1Vxyzjf0uVZUto=;
+        b=asUSG0RWhW2jWvbq6j4Ej9ikPSJaUQSEOYrJMLM0+6I1GuHPOGWkSiwni4tKNBOQvx
+         JWYtr0LqOfW0kNrFuGCK015moQRZtxfPsCtcP2P9kQNQEE43W+NNxIC50h7SpIkAxknW
+         6CJ6oTFwQIgvJKWuG0WaoxSKqPBxa5cMhYAQFY7nG5UsEveLi9kHC/n7izVoWK9UMWmG
+         L+kCo5S4vf7v7Ih9TASliMzze94ck6dpK+NKzxJjW+WgUMyCvLgRKSkiCn2yrTliAXQE
+         T3j1PcCZ+Co0b5QE8mEh4fHL0sf2btHtjb01yDHrr+aQ+cBI1eanf56NrPeHLsiblh94
+         jJAg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition;
+        bh=wst9WkhAE8w1i/iSuQ87C93Angtcy1Vxyzjf0uVZUto=;
+        b=NNwbJD5ySe1EdKwDC3wX90syFQ14I5fdK+I1GiQTl7ekGC+uGGzPsXEJ1v2HpPs3xK
+         d9G16p8Viv6M2qogLYqoWxR48YSEUwKluoGXpRazGFC+Y4g9mlVsiLgTWlZtmda9WJ6o
+         g3gnoYfTL0h0B3rRDn/WL4G3wXblM7WrIkRqPVQGCahG2gTHtZN2Gsl9pl687HsItFGi
+         E4FsLJVN7F2KJdDDrfQynDDH/qEV6hRLD8fHyc4YCa7D9AqwrKyyMJ4A7tUyVhCL/I+P
+         PNjcLQjNjEdFLxatxdoQH2GagzzHgQiD7FcLzkf9+zZTU1krq5jftuwKgtfGpy9aB6ev
+         +M8Q==
+X-Gm-Message-State: AOAM530qgXrG5WRSXiKTpz4QDP4OoaqfQgmxmkVuQeOLb6j4AHQcF6uZ
+        pelijNupL9VLp2ASNizB0vY=
+X-Google-Smtp-Source: ABdhPJwrYIjMbU4ewGuA3wIyTKMdc7otU+FFoJxpWYkloMx8VIiOCMTVADOkxI1xhRdMOJbIgCIang==
+X-Received: by 2002:a63:7e42:: with SMTP id o2mr549436pgn.296.1636568246842;
+        Wed, 10 Nov 2021 10:17:26 -0800 (PST)
+Received: from Sauravs-MacBook-Air.local ([59.95.84.75])
+        by smtp.gmail.com with ESMTPSA id nn4sm298205pjb.38.2021.11.10.10.17.22
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 10 Nov 2021 10:17:25 -0800 (PST)
+Date:   Wed, 10 Nov 2021 23:47:15 +0530
+From:   Saurav Girepunje <saurav.girepunje@gmail.com>
+To:     Larry.Finger@lwfinger.net, phil@philpotter.co.uk,
+        gregkh@linuxfoundation.org, straube.linux@gmail.com,
+        martin@kaiser.cx, linux-staging@lists.linux.dev,
+        linux-kernel@vger.kernel.org
+Cc:     saurav.girepunje@hotmail.com
+Subject: [PATCH] staging: r8188eu: core: remove goto statement
+Message-ID: <YYwMq15pQYf7nvt9@Sauravs-MacBook-Air.local>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <AM9PR10MB4869C14EAE01B87C0037BF6A89939@AM9PR10MB4869.EURPRD10.PROD.OUTLOOK.COM>
-User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 10, 2021 at 03:21:54PM +0000, "Moessbauer, Felix" <felix.moessbauer@siemens.com> wrote:
-> 2. Threads can be started on non-rt CPUs and then bound to a specific rt CPU.
-> This binding can be specified before thread creation via pthread_create.
-> By that, you can make sure that at no point in time a thread has a
-> "forbidden" CPU in its affinities.
+Remove the goto statement from _rtw_init_recv_priv(). In this function goto
+can be replace by return statement. As on goto label exit, function
+only return it is not performing any cleanup. Avoiding goto will
+improve the function readability.
 
-It should boil down to some clone$version(2) and sched_setaffinity(2)
-calls, so strictly speaking even with pthread_create(3) the thread is
-shortly running with the parent's affinity.
+Signed-off-by: Saurav Girepunje <saurav.girepunje@gmail.com>
+---
+ drivers/staging/r8188eu/core/rtw_recv.c | 7 ++-----
+ 1 file changed, 2 insertions(+), 5 deletions(-)
 
-> With cgroup2, you cannot guarantee the second aspect, as thread
-> creation and moving to a cgroup is not an atomic operation.
+diff --git a/drivers/staging/r8188eu/core/rtw_recv.c b/drivers/staging/r8188eu/core/rtw_recv.c
+index 51a13262a226..b38af76f3a67 100644
+--- a/drivers/staging/r8188eu/core/rtw_recv.c
++++ b/drivers/staging/r8188eu/core/rtw_recv.c
+@@ -58,10 +58,8 @@ int _rtw_init_recv_priv(struct recv_priv *precvpriv, struct adapter *padapter)
 
-As suggested by others, CLONE_INTO_CGROUP (into cpuset cgroup) can
-actually "hide" the migration into the clone3() call.
+ 	precvpriv->pallocated_frame_buf = vzalloc(NR_RECVFRAME * sizeof(struct recv_frame) + RXFRAME_ALIGN_SZ);
 
-> At creation time, you cannot set the final affinity mask (as you
-> create it in the non-rt group and there the CPU is not in the
-> cpuset.cpus).
-> Once you move the thread to the rt cgroup, it has a default mask and
-> by that can be executed on other rt cores.
+-	if (!precvpriv->pallocated_frame_buf) {
+-		res = _FAIL;
+-		goto exit;
+-	}
++	if (!precvpriv->pallocated_frame_buf)
++		return _FAIL;
 
-Good point. Perhaps you could work this around by having another level
-of (non-root partition) cpuset cgroups for individual CPUs? (Maybe
-there's more clever approach, this is just first to come into my mind.)
+ 	precvpriv->precv_frame_buf = (u8 *)N_BYTE_ALIGMENT((size_t)(precvpriv->pallocated_frame_buf), RXFRAME_ALIGN_SZ);
 
-Michal
+@@ -89,7 +87,6 @@ int _rtw_init_recv_priv(struct recv_priv *precvpriv, struct adapter *padapter)
+ 	precvpriv->signal_stat_sampling_interval = 1000; /* ms */
+
+ 	rtw_set_signal_stat_timer(precvpriv);
+-exit:
+
+ 	return res;
+ }
+--
+2.33.0
+
