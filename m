@@ -2,140 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 21D7344C533
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 17:39:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BC8BB44C535
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 17:40:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231501AbhKJQmY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Nov 2021 11:42:24 -0500
-Received: from smtp-out1.suse.de ([195.135.220.28]:57464 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231455AbhKJQmW (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Nov 2021 11:42:22 -0500
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id F0ADF218B5;
-        Wed, 10 Nov 2021 16:39:33 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1636562373; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=AUg+M4CoLR4vtqm7IzlbWFj3L4sqM4gOnnuSeItB99I=;
-        b=AxsVgLDw/3fmcokgvk849LXAT41fqKuw3KXLpBxpokBMUDRMY4Uh4NnkceKjGoY5yXuhE4
-        Y/sDUf1GO1OcOuFUL/CJ9mCTUc5HbKCd/60FHNNMvXUdr+98dtAjuvMOYFuj990RDRz9uT
-        W2KGhnMbEAaq1RA53kxp8F/oltjISIU=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1636562373;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=AUg+M4CoLR4vtqm7IzlbWFj3L4sqM4gOnnuSeItB99I=;
-        b=Vg5hxQ60mFGAXIzuIWlcFV+MrxJPXC1skwds8PIK0L0FSQIT6XtSueKXUJBq69PAsMk+Hj
-        He/mmqVdHnRassBQ==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id CEC3413CAF;
-        Wed, 10 Nov 2021 16:39:33 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id EwRxMcX1i2HZCwAAMHmgww
-        (envelope-from <tzimmermann@suse.de>); Wed, 10 Nov 2021 16:39:33 +0000
-Message-ID: <d536e7d2-891e-e0a8-6abc-6694987a65f7@suse.de>
-Date:   Wed, 10 Nov 2021 17:39:33 +0100
+        id S231510AbhKJQmq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Nov 2021 11:42:46 -0500
+Received: from mail.kernel.org ([198.145.29.99]:42686 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230101AbhKJQmp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Nov 2021 11:42:45 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 08A1361058;
+        Wed, 10 Nov 2021 16:39:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1636562398;
+        bh=zp2JZUBJUNR07JHTJQqI0CYJegFcSYByxA9sJA2kn8g=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=bfL49UZBmKJAN6oAJwZ4YGTJujUpoSoTVk8UpMQp5B427aB6OlbRbK74e0Oz2nHTD
+         vTvsddJ2xqYk2qz64pOxCeehRx7jKF2sp3K2pLiirOOb12IZ9Ewq1eCWMvfN6BW6ae
+         rRniUu0sfWEJ3vwAtBvvwYVQgOIDdtlpppS6aQQujtP1NYhqb4J9/RZZi5V+581eoc
+         Uf5BvTzX6FcZBc4QgMgwObvrgxO22s7spGQh1E/HFD18m4SbvedmGwCpDv+WlEEhAn
+         TbYc8ZJe9vcql5o1XH9911LJft/ppXsTYCoUBxpo4Gk+37HKjYehA02uaPpGio8L9L
+         dckHQ8YsiIrXw==
+Date:   Wed, 10 Nov 2021 16:39:54 +0000
+From:   Mark Brown <broonie@kernel.org>
+To:     Michael Walle <michael@walle.cc>
+Cc:     linux-spi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
+        <u.kleine-koenig@pengutronix.de>,
+        Vladimir Oltean <olteanv@gmail.com>
+Subject: Re: [RFC PATCH] spi: fix use-after-free of the add_lock mutex
+Message-ID: <YYv12vhqDVpJ1lS9@sirena.org.uk>
+References: <20211110160836.3304104-1-michael@walle.cc>
+ <YYvy79HfTvy8hC5/@sirena.org.uk>
+ <116159a7cf1e7cb3817aa31931b81d91@walle.cc>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.2.1
-Subject: Re: [PATCH v1 1/1] drm: Replace kernel.h with the necessary
- inclusions
-Content-Language: en-US
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc:     David Airlie <airlied@linux.ie>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-References: <20211110102423.54282-1-andriy.shevchenko@linux.intel.com>
- <887a15cb-3a3b-4ba2-aa0f-a241e70a19fa@suse.de>
- <CAHp75VdY57xQBLN8vT3RdagQx=4kLx69qAyuzLwqTvNGC2xUbQ@mail.gmail.com>
-From:   Thomas Zimmermann <tzimmermann@suse.de>
-In-Reply-To: <CAHp75VdY57xQBLN8vT3RdagQx=4kLx69qAyuzLwqTvNGC2xUbQ@mail.gmail.com>
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature";
- boundary="------------REgMkiT6cA1O34ZXa0ub6E3B"
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="loCc5CY+lt08QwUQ"
+Content-Disposition: inline
+In-Reply-To: <116159a7cf1e7cb3817aa31931b81d91@walle.cc>
+X-Cookie: You have junk mail.
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---------------REgMkiT6cA1O34ZXa0ub6E3B
-Content-Type: multipart/mixed; boundary="------------00aJfJ8pyhBdlH0E73oZ2aol";
- protected-headers="v1"
-From: Thomas Zimmermann <tzimmermann@suse.de>
-To: Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc: David Airlie <airlied@linux.ie>,
- Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
- dri-devel <dri-devel@lists.freedesktop.org>,
- Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Message-ID: <d536e7d2-891e-e0a8-6abc-6694987a65f7@suse.de>
-Subject: Re: [PATCH v1 1/1] drm: Replace kernel.h with the necessary
- inclusions
-References: <20211110102423.54282-1-andriy.shevchenko@linux.intel.com>
- <887a15cb-3a3b-4ba2-aa0f-a241e70a19fa@suse.de>
- <CAHp75VdY57xQBLN8vT3RdagQx=4kLx69qAyuzLwqTvNGC2xUbQ@mail.gmail.com>
-In-Reply-To: <CAHp75VdY57xQBLN8vT3RdagQx=4kLx69qAyuzLwqTvNGC2xUbQ@mail.gmail.com>
 
---------------00aJfJ8pyhBdlH0E73oZ2aol
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: base64
+--loCc5CY+lt08QwUQ
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-SGkNCg0KQW0gMTAuMTEuMjEgdW0gMTc6MzQgc2NocmllYiBBbmR5IFNoZXZjaGVua286DQo+
-IE9uIFdlZCwgTm92IDEwLCAyMDIxIGF0IDM6NTUgUE0gVGhvbWFzIFppbW1lcm1hbm4gPHR6
-aW1tZXJtYW5uQHN1c2UuZGU+IHdyb3RlOg0KPj4gQW0gMTAuMTEuMjEgdW0gMTE6MjQgc2No
-cmllYiBBbmR5IFNoZXZjaGVua286DQo+Pj4gV2hlbiBrZXJuZWwuaCBpcyB1c2VkIGluIHRo
-ZSBoZWFkZXJzIGl0IGFkZHMgYSBsb3QgaW50byBkZXBlbmRlbmN5IGhlbGwsDQo+Pj4gZXNw
-ZWNpYWxseSB3aGVuIHRoZXJlIGFyZSBjaXJjdWxhciBkZXBlbmRlbmNpZXMgYXJlIGludm9s
-dmVkLg0KPj4+DQo+Pj4gUmVwbGFjZSBrZXJuZWwuaCBpbmNsdXNpb24gd2l0aCB0aGUgbGlz
-dCBvZiB3aGF0IGlzIHJlYWxseSBiZWluZyB1c2VkLg0KPiANCj4gLi4uDQo+IA0KPj4+ICsj
-aW5jbHVkZSA8bGludXgvY29udGFpbmVyX29mLmg+DQo+Pg0KPj4gSSBidWlsdCB0aGlzIHBh
-dGNoIG9uIGEgcmVjZW50IGRybS1taXNjLW5leHQsIGJ1dCB0aGVyZSdzIG5vDQo+PiBsaW51
-eC9jb250YWluZXJfb2YuaA0KPiANCj4gVGhhbmsgeW91IGZvciB0cnlpbmcuIEl0J3MgaW4g
-dGhlIHVwc3RyZWFtLCB3aGVuZXZlciBkcm0tbWlzYy1uZXh0DQo+IHN3aXRjaGVzIHRvIG5l
-d2VyL25ld2VzdCB1cHN0cmVhbSBpdCB3aWxsIGJlIHRoZXJlLiBJIGFzc3VtZSBpdCB3aWxs
-DQo+IGhhcHBlbiBhZnRlciB2NS4xNi1yYzE/DQoNClllcywgd2UnbGwgY2VydGFpbmx5IGJh
-Y2ttZXJnZSBzb29uIGFmdGVyIHJjMSBoYXMgYmVlbiByZWxlYXNlZC4gSWYgSSANCmZvcmdl
-dCB0byBhZGQgdGhlIHBhdGNoIHRoZW4sIHBsZWFzZSBzZW5kIGEgcmVtaW5kZXIuDQoNCk9u
-Y2UgdGhlIG5lY2Vzc2FyeSBoZWFkZXJzIGFyZSBhdmFpbGFibGUsIHRoZSBwYXRjaCBpcw0K
-DQpBY2tlZC1ieTogVGhvbWFzIFppbW1lcm1hbm4gPHR6aW1tZXJtYW5uQHN1c2UuZGU+DQoN
-CkJlc3QgcmVnYXJkcw0KVGhvbWFzDQoNCj4gDQoNCi0tIA0KVGhvbWFzIFppbW1lcm1hbm4N
-CkdyYXBoaWNzIERyaXZlciBEZXZlbG9wZXINClNVU0UgU29mdHdhcmUgU29sdXRpb25zIEdl
-cm1hbnkgR21iSA0KTWF4ZmVsZHN0ci4gNSwgOTA0MDkgTsO8cm5iZXJnLCBHZXJtYW55DQoo
-SFJCIDM2ODA5LCBBRyBOw7xybmJlcmcpDQpHZXNjaMOkZnRzZsO8aHJlcjogSXZvIFRvdGV2
-DQo=
+On Wed, Nov 10, 2021 at 05:30:48PM +0100, Michael Walle wrote:
+> Am 2021-11-10 17:27, schrieb Mark Brown:
 
---------------00aJfJ8pyhBdlH0E73oZ2aol--
+> > > For reference, the kernel oops is:
+> > > [   20.242505] Unable to handle kernel paging request at virtual
+> > > address 0042a2203dc65260
+> > > [   20.250468] Mem abort info:
+> > > [   20.253270]   ESR = 0x96000044
 
---------------REgMkiT6cA1O34ZXa0ub6E3B
-Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="OpenPGP_signature"
+> > Please think hard before including complete backtraces in upstream
+> > reports, they are very large and contain almost no useful information
+> > relative to their size so often obscure the relevant content in your
+> > message. If part of the backtrace is usefully illustrative (it often is
+> > for search engines if nothing else) then it's usually better to pull out
+> > the relevant sections.
+
+> It was in the comments section of the patch, for exactly this purpose.
+> That's how you're doing it, no?
+
+That helps with what ends up in git but it's still including multiple
+screenfuls of noise in the email which is where the usability problem
+is.
+
+--loCc5CY+lt08QwUQ
+Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-wsF5BAABCAAjFiEExndm/fpuMUdwYFFolh/E3EQov+AFAmGL9cUFAwAAAAAACgkQlh/E3EQov+Cq
-uxAAyc0PGpudbnl6ZhVU52ZufI2XH6HcN6qvx09htMWkUMbykmYmSfbUo7tbS96zfJhg/veTA4Vd
-a/dcnUkCshWQb+i3dm8pOUKFQ+uMw5aT7DnAlg68l3w8UcLUsaMi/fw63CabkbyJ9c9ocFRVSqM9
-zsD3qwEZQm2vvkQgJyxLKk57kmP5kf2CMRZU6K0hSsssVEb6t+Jrlpt9b7N6eMQkR6qBbWDYb604
-AqMb4Cj6BGUyHN78hZeoL7pkPWa3s6gQw/+33xI9iW/kJVyXlX2oLJcoJ8sBmYEadQJgWs4AFYrD
-T+s/mgNa8vy4x3ioqY/5Uogf9IBHxJyYH2a2QMiATVWCyvMVvhs4OxV9spJhZ/0hjI0E4N4ZS6jH
-PC8BEWEfooLGkcdjT8pDII3pQ0Ttks2MSaXNLR8qGuWZENV710QPD6zwoZo/PyOmIHpS5Ugqi6ln
-+i4zz5NuOsMmBqMXWYFssNAqZQm7lySG2fZsQBQw+v+XpRpigFnOXTJwLYjlbuu+cpLFYKrBQ8Ye
-AO35fNW9ijru401SMo4SbXfGBJ44V3Zv4tR+hCGA5HFj/OD+KE7G8tVLHzy3VfpnF7JwMOQlsgns
-mI0fLoVVqw1oamEoE+h1Hzu2tCuJBR+czsWIjPuxCUoKMqDPKCrYzPoFFdBRd2NWyI1q8fZbdjFi
-um4=
-=JgwS
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmGL9dkACgkQJNaLcl1U
+h9D0tgf8DZPzSAc0fsQNrnqkfX76svhpTUWRk6rbXPzPUesHWfOdsrT9Kdz6V1GP
+vIWqHErrwK5UKd5GIhoUy37texlZQMOjvMrdRASzShKU3hYAVPm+k0Uu4pGrfAvu
+QH1z95zapp3nTaetuVfrXMHInz2/ecf6z7867Pn66nB4YuaLX1LGy0R6wJ1aPhi0
+nZ8fcfHj+FcyIx3+C8bE28Y1lH6/QND0NcqyDfXUBG6AJkNNDNogfR/IJRX/I8eR
+MApPCFwM/NHgWaFv9w94d7j0Qy9qEgKqAXs6tsUr5lDhFXT3+hYl1vUowPTJpBIY
+M0+m0F7OSaCfpXOdkNwOcdabVgIdHQ==
+=/U7j
 -----END PGP SIGNATURE-----
 
---------------REgMkiT6cA1O34ZXa0ub6E3B--
+--loCc5CY+lt08QwUQ--
