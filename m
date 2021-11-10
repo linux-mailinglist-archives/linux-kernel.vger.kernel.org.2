@@ -2,72 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 50E9C44C944
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 20:44:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3242F44C949
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 20:44:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233214AbhKJTrZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Nov 2021 14:47:25 -0500
-Received: from mail-oi1-f174.google.com ([209.85.167.174]:42957 "EHLO
-        mail-oi1-f174.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233340AbhKJTrK (ORCPT
+        id S233268AbhKJTr2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Nov 2021 14:47:28 -0500
+Received: from mail-ot1-f50.google.com ([209.85.210.50]:38665 "EHLO
+        mail-ot1-f50.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233343AbhKJTrM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Nov 2021 14:47:10 -0500
-Received: by mail-oi1-f174.google.com with SMTP id n66so7242861oia.9;
-        Wed, 10 Nov 2021 11:44:23 -0800 (PST)
+        Wed, 10 Nov 2021 14:47:12 -0500
+Received: by mail-ot1-f50.google.com with SMTP id z2-20020a9d71c2000000b0055c6a7d08b8so5561940otj.5;
+        Wed, 10 Nov 2021 11:44:24 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:in-reply-to:references:subject:date
          :message-id;
-        bh=likDWmDbN5o7SnT6cQ2yzO1g3PQ+qTt1FP1WspXaXGk=;
-        b=jGpQ36p4/NttbHoLZOMFe/fOUiweQhTOmy7ybWgMfjclXRUgVKrFoUAq/f0m+2flPn
-         d2SqPq/UsYruYfgGhuW9espy2xPJi2aYC8Ckg4Cmh2XnXUY2ShWOB1olkM4v5NzmiDnx
-         dA/fO0wR4fXe4oDoqFFUBbvikqkPcSP/QW4RIUC+hpwqv/6oeS7bc80/DaeKD0hGyrPr
-         8YMQgae85+0bZkcCq7nKtC7NIkjgPsnca7G0Od5B5LbrxYrYHTk+t0IzIAIg+pRANCao
-         9P2lLaInW7B7B+eXh8F7COG5TClE/uI4eAiJdx8H6+XJqa2pAsmljG62BjUGbjzxz30e
-         Hr3Q==
-X-Gm-Message-State: AOAM530IqbSLFccHUCdvpUBpg9VgBjhY53cdwxAheOulNwIEWC7Kr0ZP
-        Ra4bUbTZGUksiYQTicxn6w==
-X-Google-Smtp-Source: ABdhPJwlYFTqlf/pRDAF7GOesoK3aqCR/9qaTWoFXcVxyzNBSZ+QDPSjYJOp7qkgxie7eyK+wcyhhg==
-X-Received: by 2002:aca:be54:: with SMTP id o81mr14764752oif.64.1636573462569;
-        Wed, 10 Nov 2021 11:44:22 -0800 (PST)
+        bh=LwMY7yGoVHRADsH1iBdmXQvs2eZecM5ZTPN7Dz6EBk8=;
+        b=TWMA4dZuGY0e48iapvqIh1nNVUZZah1r3ULOCOKiW9G3ey8PGSWdj0H2Q3V1+P28TE
+         D8VIXbegO2pMwVj1Gs23pdRfDYqwQCjAkt/a/jHeXgJBQskYLHOeuHbgiFplitG+fHAA
+         1r00RReSsJ2jHHrKjNVlkxjnq94x/50HdYlKqTWWLaERdob9GmKxKBargQl7mdqRebR3
+         OCffDmPG33aG1L0naMdAndftqTGrLOq8hFcUpq0DgtekpvjJw68nIunXYrHkrFW3HuuA
+         UerH8G+PXfpzAnMcWUC4gHbDddtQ/koNfx8+5Dd/gsm2vs+s3omr747UOyOpPZaJRZWn
+         9IpA==
+X-Gm-Message-State: AOAM532FS+zi42xOy12S6mgvMC8Ml75ylWadb79EHA/m7u6U/J6gYZEF
+        AYPaWtm/w+xgc6vsk+SsUQ==
+X-Google-Smtp-Source: ABdhPJwhKGD3zE5gwHgBoQy1rxHWG/g8Q1BHdfqtTlTJi1rNu2B51GVLx0DXi7o9Y8ZiTLEAs3H9uQ==
+X-Received: by 2002:a9d:8e9:: with SMTP id 96mr1491465otf.192.1636573464270;
+        Wed, 10 Nov 2021 11:44:24 -0800 (PST)
 Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
-        by smtp.gmail.com with ESMTPSA id 3sm162484otl.60.2021.11.10.11.44.21
+        by smtp.gmail.com with ESMTPSA id t12sm169197oth.21.2021.11.10.11.44.23
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 10 Nov 2021 11:44:22 -0800 (PST)
-Received: (nullmailer pid 1783736 invoked by uid 1000);
+        Wed, 10 Nov 2021 11:44:23 -0800 (PST)
+Received: (nullmailer pid 1783741 invoked by uid 1000);
         Wed, 10 Nov 2021 19:44:20 -0000
 From:   Rob Herring <robh@kernel.org>
-To:     Biao Huang <biao.huang@mediatek.com>
-Cc:     davem@davemloft.net, Jose Abreu <joabreu@synopsys.com>,
-        srv_heupstream@mediatek.com, linux-mediatek@lists.infradead.org,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+To:     Guillaume Ranquet <granquet@baylibre.com>
+Cc:     Chun-Kuang Hu <chunkuang.hu@kernel.org>,
+        devicetree@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
         Matthias Brugger <matthias.bgg@gmail.com>,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        Giuseppe Cavallaro <peppe.cavallaro@st.com>,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        macpaul.lin@mediatek.com, Jakub Kicinski <kuba@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>
-In-Reply-To: <20211110083948.6082-5-biao.huang@mediatek.com>
-References: <20211110083948.6082-1-biao.huang@mediatek.com> <20211110083948.6082-5-biao.huang@mediatek.com>
-Subject: Re: [PATCH 4/5] dt-bindings: net: dwmac: Convert mediatek-dwmac to DT schema
+        dri-devel@lists.freedesktop.org,
+        Markus Schneider-Pargmann <msp@baylibre.com>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        David Airlie <airlied@linux.ie>,
+        Jitao shi <jitao.shi@mediatek.com>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        linux-mediatek@lists.infradead.org,
+        Daniel Vetter <daniel@ffwll.ch>, CK Hu <ck.hu@mediatek.com>
+In-Reply-To: <20211110130623.20553-3-granquet@baylibre.com>
+References: <20211110130623.20553-1-granquet@baylibre.com> <20211110130623.20553-3-granquet@baylibre.com>
+Subject: Re: [PATCH v6 2/7] dt-bindings: mediatek,dp: Add Display Port binding
 Date:   Wed, 10 Nov 2021 13:44:20 -0600
-Message-Id: <1636573460.872424.1783735.nullmailer@robh.at.kernel.org>
+Message-Id: <1636573460.915903.1783740.nullmailer@robh.at.kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 10 Nov 2021 16:39:47 +0800, Biao Huang wrote:
-> Convert mediatek-dwmac to DT schema, and delete old mediatek-dwmac.txt.
+On Wed, 10 Nov 2021 14:06:18 +0100, Guillaume Ranquet wrote:
+> From: Markus Schneider-Pargmann <msp@baylibre.com>
 > 
-> Signed-off-by: Biao Huang <biao.huang@mediatek.com>
+> This controller is present on several mediatek hardware. Currently
+> mt8195 and mt8395 have this controller without a functional difference,
+> so only one compatible field is added.
+> 
+> The controller can have two forms, as a normal display port and as an
+> embedded display port.
+> 
+> Signed-off-by: Markus Schneider-Pargmann <msp@baylibre.com>
+> Signed-off-by: Guillaume Ranquet <granquet@baylibre.com>
+> Reviewed-by: Rob Herring <robh@kernel.org>
 > ---
->  .../bindings/net/mediatek-dwmac.txt           |  91 ---------
->  .../bindings/net/mediatek-dwmac.yaml          | 179 ++++++++++++++++++
->  2 files changed, 179 insertions(+), 91 deletions(-)
->  delete mode 100644 Documentation/devicetree/bindings/net/mediatek-dwmac.txt
->  create mode 100644 Documentation/devicetree/bindings/net/mediatek-dwmac.yaml
+>  .../display/mediatek/mediatek,dp.yaml         | 87 +++++++++++++++++++
+>  1 file changed, 87 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/display/mediatek/mediatek,dp.yaml
 > 
 
 My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
@@ -76,22 +83,17 @@ on your patch (DT_CHECKER_FLAGS is new in v5.13):
 yamllint warnings/errors:
 
 dtschema/dtc warnings/errors:
-/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/net/mediatek-dwmac.yaml: properties:mediatek,tx-delay-ps: '$ref' should not be valid under {'const': '$ref'}
-	hint: Standard unit suffix properties don't need a type $ref
-	from schema $id: http://devicetree.org/meta-schemas/core.yaml#
-/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/net/mediatek-dwmac.yaml: properties:mediatek,rx-delay-ps: '$ref' should not be valid under {'const': '$ref'}
-	hint: Standard unit suffix properties don't need a type $ref
-	from schema $id: http://devicetree.org/meta-schemas/core.yaml#
-/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/net/mediatek-dwmac.yaml: properties:clocks: {'minItems': 5, 'maxItems': 6, 'items': [{'description': 'AXI clock'}, {'description': 'APB clock'}, {'description': 'MAC clock gate'}, {'description': 'MAC Main clock'}, {'description': 'PTP clock'}, {'description': 'RMII reference clock provided by MAC'}]} should not be valid under {'required': ['maxItems']}
-	hint: "maxItems" is not needed with an "items" list
-	from schema $id: http://devicetree.org/meta-schemas/items.yaml#
-/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/net/mediatek-dwmac.yaml: ignoring, error in schema: properties: mediatek,tx-delay-ps
-warning: no schema found in file: ./Documentation/devicetree/bindings/net/mediatek-dwmac.yaml
-Documentation/devicetree/bindings/net/mediatek-dwmac.example.dt.yaml:0:0: /example-0/ethernet@1101c000: failed to match any schema with compatible: ['mediatek,mt2712-gmac', 'snps,dwmac-4.20a']
+Documentation/devicetree/bindings/display/mediatek/mediatek,dp.example.dts:20:18: fatal error: dt-bindings/power/mt8195-power.h: No such file or directory
+   20 |         #include <dt-bindings/power/mt8195-power.h>
+      |                  ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+compilation terminated.
+make[1]: *** [scripts/Makefile.lib:385: Documentation/devicetree/bindings/display/mediatek/mediatek,dp.example.dt.yaml] Error 1
+make[1]: *** Waiting for unfinished jobs....
+make: *** [Makefile:1441: dt_binding_check] Error 2
 
 doc reference errors (make refcheckdocs):
 
-See https://patchwork.ozlabs.org/patch/1553304
+See https://patchwork.ozlabs.org/patch/1553428
 
 This check can fail if there are any dependencies. The base for a patch
 series is generally the most recent rc1.
