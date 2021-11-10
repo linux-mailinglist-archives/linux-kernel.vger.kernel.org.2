@@ -2,93 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A34E644C441
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 16:20:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2394044C445
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 16:21:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232362AbhKJPW5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Nov 2021 10:22:57 -0500
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:57342 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S231148AbhKJPWz (ORCPT
+        id S232339AbhKJPXu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Nov 2021 10:23:50 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124]:44413 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231148AbhKJPXt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Nov 2021 10:22:55 -0500
-Received: from pps.filterd (m0098413.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 1AAEidPo013969;
-        Wed, 10 Nov 2021 15:20:05 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
- subject : message-id : references : mime-version : content-type :
- in-reply-to; s=pp1; bh=KTQMzr8/V0eMZthQi6n6Cwl8vmrIFyIah4GL8IWMuRE=;
- b=iid2yqDUVtPmPbXUdsQTJPUNaPcg+SKxlYFLBc3iIC8pevnagCfEhoRt1/TutRNTly7e
- PC7e4q03/6ECc9Ys6KZYhhqPKcMyBK62pVu0hGh/+JTW5d/z6PIphTVRZJLy+GIfLFfL
- UJvwFxOtKEtac1LpDyNE9zjizfM45Nh4xo5OnDrCIgDRlUQxyRKRfovNZp4z/61YwO1v
- VNF67zNpnhq5J6KaaL6sF/d+JlINsxEscHmCUH9AKP4UEp6kJPgYN1CwMz9X5KYeQApf
- YlSA/sNPRbPkMG3khyeEQDNny742KtsGliy2fcNBbBpIsAGIzg6v//Lu3XUXPN0EQAda mQ== 
-Received: from ppma03ams.nl.ibm.com (62.31.33a9.ip4.static.sl-reverse.com [169.51.49.98])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 3c8g3s0ws7-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 10 Nov 2021 15:20:05 +0000
-Received: from pps.filterd (ppma03ams.nl.ibm.com [127.0.0.1])
-        by ppma03ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 1AAFCnL4029249;
-        Wed, 10 Nov 2021 15:20:03 GMT
-Received: from b06avi18878370.portsmouth.uk.ibm.com (b06avi18878370.portsmouth.uk.ibm.com [9.149.26.194])
-        by ppma03ams.nl.ibm.com with ESMTP id 3c5hbaksuf-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 10 Nov 2021 15:20:03 +0000
-Received: from d06av21.portsmouth.uk.ibm.com (d06av21.portsmouth.uk.ibm.com [9.149.105.232])
-        by b06avi18878370.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 1AAFDIlK63767034
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 10 Nov 2021 15:13:18 GMT
-Received: from d06av21.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 2FE095204F;
-        Wed, 10 Nov 2021 15:20:00 +0000 (GMT)
-Received: from osiris (unknown [9.145.55.149])
-        by d06av21.portsmouth.uk.ibm.com (Postfix) with ESMTPS id CA1C352067;
-        Wed, 10 Nov 2021 15:19:59 +0000 (GMT)
-Date:   Wed, 10 Nov 2021 16:19:58 +0100
-From:   Heiko Carstens <hca@linux.ibm.com>
-To:     Masahiro Yamada <masahiroy@kernel.org>
-Cc:     Vasily Gorbik <gor@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        Alexander Gordeev <agordeev@linux.ibm.com>,
-        linux-s390@vger.kernel.org, clang-built-linux@googlegroups.com,
-        Ilya Leoshkevich <iii@linux.ibm.com>,
-        Sven Schnelle <svens@linux.ibm.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] s390/vdso: remove -nostdlib compiler flag
-Message-ID: <YYvjHjD45+z8wTkH@osiris>
-References: <20211107162111.323701-1-masahiroy@kernel.org>
+        Wed, 10 Nov 2021 10:23:49 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1636557661;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=Lhjq4wAJfTAQzB4aUh8/HWQOCKwr9ITogKZbi8YswJA=;
+        b=i/HnP+j9EaFVfwS3UGABgU+7UWyvEboiNAwF4zoBZzulT8KFitAK+ZyIDgmKGrzpGC+vH/
+        v2ATCj14b4xuYIbwAxqAXnZ2mEIoo4WVIbzZ3j8so81xYfw/uHy4YUo8jt53n3tWqR60hA
+        aMlYuVkw7u35u2QuJZqJFuz/Ua/viXo=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-105-QeCXEl5YPDetK4CXDZDdEg-1; Wed, 10 Nov 2021 10:20:57 -0500
+X-MC-Unique: QeCXEl5YPDetK4CXDZDdEg-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id DE4291B18BD3;
+        Wed, 10 Nov 2021 15:20:54 +0000 (UTC)
+Received: from [10.22.11.131] (unknown [10.22.11.131])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 13BDC56A87;
+        Wed, 10 Nov 2021 15:20:30 +0000 (UTC)
+Message-ID: <e082b943-65ac-e92b-0637-6a2431830054@redhat.com>
+Date:   Wed, 10 Nov 2021 10:20:29 -0500
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211107162111.323701-1-masahiroy@kernel.org>
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: SdVV0oAzT_d2UCPMypGbVaHgE2Aq4K9x
-X-Proofpoint-ORIG-GUID: SdVV0oAzT_d2UCPMypGbVaHgE2Aq4K9x
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.205,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.0.607.475
- definitions=2021-11-10_05,2021-11-08_02,2020-04-07_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 spamscore=0
- priorityscore=1501 lowpriorityscore=0 bulkscore=0 malwarescore=0
- impostorscore=0 suspectscore=0 mlxscore=0 mlxlogscore=693 clxscore=1011
- adultscore=0 phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2110150000 definitions=main-2111100079
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.2.0
+Subject: Re: [PATCH v8 0/6] cgroup/cpuset: Add new cpuset partition type &
+ empty effecitve cpus
+Content-Language: en-US
+To:     Felix Moessbauer <felix.moessbauer@siemens.com>
+Cc:     akpm@linux-foundation.org, cgroups@vger.kernel.org, corbet@lwn.net,
+        frederic@kernel.org, guro@fb.com, hannes@cmpxchg.org,
+        juri.lelli@redhat.com, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        lizefan.x@bytedance.com, mkoutny@suse.com, mtosatti@redhat.com,
+        pauld@redhat.com, peterz@infradead.org, shuah@kernel.org,
+        tj@kernel.org, jan.kiszka@siemens.com, henning.schild@siemens.com
+References: <20211018143619.205065-1-longman@redhat.com>
+ <20211110111357.17617-1-felix.moessbauer@siemens.com>
+From:   Waiman Long <longman@redhat.com>
+In-Reply-To: <20211110111357.17617-1-felix.moessbauer@siemens.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 08, 2021 at 01:21:11AM +0900, Masahiro Yamada wrote:
-> The -nostdlib option requests the compiler to not use the standard
-> system startup files or libraries when linking. It is effective only
-> when $(CC) is used as a linker driver.
-> 
-> Since commit 2b2a25845d53 ("s390/vdso: Use $(LD) instead of $(CC) to
-> link vDSO"), $(LD) is directly used, hence -nostdlib is unneeded.
-> 
-> Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
-> ---
-> 
->  arch/s390/kernel/vdso32/Makefile | 2 +-
->  arch/s390/kernel/vdso64/Makefile | 2 +-
->  2 files changed, 2 insertions(+), 2 deletions(-)
 
-Applied, thanks!
+On 11/10/21 06:13, Felix Moessbauer wrote:
+> Hi Weiman,
+>
+>> v8:
+>>   - Reorganize the patch series and rationalize the features and
+>>     constraints of a partition.
+>>   - Update patch descriptions and documentation accordingly.
+>>
+>> v7:
+>>   - Simplify the documentation patch (patch 5) as suggested by Tejun.
+>>   - Fix a typo in patch 2 and improper commit log in patch 3.
+>>
+>> v6:
+>>   - Remove duplicated tmpmask from update_prstate() which should fix the
+>>     frame size too large problem reported by kernel test robot.
+>>
+>> This patchset makes four enhancements to the cpuset v2 code.
+>>
+>>   Patch 1: Enable partition with no task to have empty cpuset.cpus.effective.
+>>
+>>   Patch 2: Refining the features and constraints of a cpuset partition
+>>   clarifying what changes are allowed.
+>>
+>>   Patch 3: Add a new partition state "isolated" to create a partition
+>>   root without load balancing. This is for handling intermitten workloads
+>>   that have a strict low latency requirement.
+>
+> I just tested this patch-series and can confirm that it works on 5.15.0-rc7-rt15 (PREEMT_RT).
+>
+> However, I was not able to see any latency improvements when using
+> cpuset.cpus.partition=isolated.
+> The test was performed with jitterdebugger on CPUs 1-3 and the following cmdline:
+> rcu_nocbs=1-4 nohz_full=1-4 irqaffinity=0,5-6,11 intel_pstate=disable
+> On the other cpus, stress-ng was executed to generate load.
+>
+> Just some more general notes:
+>
+> Even with this new "isolated" type, it is still very tricky to get a similar
+> behavior as with isolcpus (as long as I don't miss something here):
+>
+> Consider an RT application that consists of a non-rt thread that should be floating
+> and a rt-thread that should be placed in the isolated domain.
+> This requires cgroup.type=threaded on both cgroups and changes to the application
+> (threads have to be born in non-rt group and moved to rt-group).
+>
+> Theoretically, this could be done externally, but in case the application sets the
+> affinity mask manually, you run into a timing issue (setting affinities to CPUs
+> outside the current cpuset.cpus results in EINVAL).
+
+I believe the "isolated" type will have more benefit on non PREEMPT_RT 
+kernel. Anyway, having the "isolated" type is just the first step. It 
+should be equivalent to "isolcpus=domain". There are other patches 
+floating that attempt to move some of the isolcpus=nohz features into 
+cpuset as well. It is not there yet, but we should be able to have 
+better dynamic cpu isolation down the road.
+
+Cheers,
+Longman
+
