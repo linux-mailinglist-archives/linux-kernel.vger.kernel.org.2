@@ -2,109 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A549644CCF8
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 23:45:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 393EC44CCFA
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 23:45:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233704AbhKJWrt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Nov 2021 17:47:49 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124]:45324 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233583AbhKJWrr (ORCPT
+        id S233761AbhKJWsC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Nov 2021 17:48:02 -0500
+Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:48909 "EHLO
+        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S233725AbhKJWsA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Nov 2021 17:47:47 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1636584299;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=uSmqrlgPiKChWo5c33MTnXOthA4T/vd9DTc7OgLD2e4=;
-        b=ZZRMne158GhvkdSE5lhBQuAf1QkhI+SJbA1dSD7lU3qZSxNbxOoNMiSBmUfN76k5qReL/A
-        yinDdQeoAZKvuDLyqPkguXmxdZwPULAdvwjSHK9AiszdM+PPTS5wj977lqnyLl2HsZPZDw
-        oi99N+kFHx/jt90JAHLIxa+3QxGzTSU=
-Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com
- [209.85.208.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-363-uxxCQDg8MDOSTEZaB_KW8A-1; Wed, 10 Nov 2021 17:44:57 -0500
-X-MC-Unique: uxxCQDg8MDOSTEZaB_KW8A-1
-Received: by mail-ed1-f71.google.com with SMTP id h13-20020a05640250cd00b003e35ea5357fso3689286edb.2
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Nov 2021 14:44:57 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:in-reply-to
-         :content-transfer-encoding;
-        bh=uSmqrlgPiKChWo5c33MTnXOthA4T/vd9DTc7OgLD2e4=;
-        b=egQfpwnvnnIs/jJr6EWUxW50umRkghStvWhSxWgqP2d+C91NLnueQAeTFGPTjsQ0U1
-         edtL5cYSXgB+wP73Pgh3oFxzVyEDS+dYCPW77XjD+5OqUzwhkQGxvE8BL7UmWsfvxzIk
-         kpTEcE9/Gik7EQnASf8FEjwNgXtTRiOCI00nAxGz+eQFk9VydFIRHUNfEc4pHNvatHRy
-         LBUy0x7VhTlmuTjuqxU2DCW9k9F2UocO2SpLhn+B7L06jzvP2+og56jKSzudwtwDwSZq
-         k415E8Xwi5NdPE34jrwLfL/+8alfvoXhHa4BnZRB6RAq+UTYw1usBd38nOXxQ7AmzP4n
-         yViA==
-X-Gm-Message-State: AOAM531MFE122sqfYWW+Ep6VL5r/ksI6xOnx0V69NfYMaxxRquHTS2T1
-        TiFc2tIO8OnDFx/2XthTwmmjS48ByaNTwQidmgps8kBED/5me5OMXOFMloC/16pf/h/0GI8Ur5R
-        7CMf60iJdW7l8BIsh1wY90TAB
-X-Received: by 2002:a17:907:3ea7:: with SMTP id hs39mr3581485ejc.164.1636584296670;
-        Wed, 10 Nov 2021 14:44:56 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJwzqO8sPtFDtNmiynR1h4PWHzluTQnK55FNEyoRgrmsJDHLh7W+j4c0z6fxQPp/wGsRhNBveQ==
-X-Received: by 2002:a17:907:3ea7:: with SMTP id hs39mr3581448ejc.164.1636584296430;
-        Wed, 10 Nov 2021 14:44:56 -0800 (PST)
-Received: from ?IPV6:2001:b07:6468:f312:63a7:c72e:ea0e:6045? ([2001:b07:6468:f312:63a7:c72e:ea0e:6045])
-        by smtp.gmail.com with ESMTPSA id go10sm452325ejc.115.2021.11.10.14.44.55
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 10 Nov 2021 14:44:55 -0800 (PST)
-Message-ID: <80407e4a-36e1-e606-ed9f-74429f850e77@redhat.com>
-Date:   Wed, 10 Nov 2021 23:44:54 +0100
+        Wed, 10 Nov 2021 17:48:00 -0500
+Received: from cwcc.thunk.org (pool-72-74-133-215.bstnma.fios.verizon.net [72.74.133.215])
+        (authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 1AAMj8oZ020936
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 10 Nov 2021 17:45:09 -0500
+Received: by cwcc.thunk.org (Postfix, from userid 15806)
+        id 431B715C00B9; Wed, 10 Nov 2021 17:45:08 -0500 (EST)
+Date:   Wed, 10 Nov 2021 17:45:08 -0500
+From:   "Theodore Ts'o" <tytso@mit.edu>
+To:     torvalds@linux-foundation.org
+Cc:     linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [GIT PULL] ext4 changes for 5.16-rc1
+Message-ID: <YYxLdGu1Lkcl9HzP@mit.edu>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.2.0
-Subject: Re: [RFC 11/19] KVM: x86/mmu: Factor shadow_zero_check out of
- make_spte
-Content-Language: en-US
-To:     Ben Gardon <bgardon@google.com>, linux-kernel@vger.kernel.org,
-        kvm@vger.kernel.org
-Cc:     Peter Xu <peterx@redhat.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Peter Shier <pshier@google.com>,
-        David Matlack <dmatlack@google.com>,
-        Mingwei Zhang <mizhang@google.com>,
-        Yulei Zhang <yulei.kernel@gmail.com>,
-        Wanpeng Li <kernellwp@gmail.com>,
-        Xiao Guangrong <xiaoguangrong.eric@gmail.com>,
-        Kai Huang <kai.huang@intel.com>,
-        Keqian Zhu <zhukeqian1@huawei.com>,
-        David Hildenbrand <david@redhat.com>
-References: <20211110223010.1392399-1-bgardon@google.com>
- <20211110223010.1392399-12-bgardon@google.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-In-Reply-To: <20211110223010.1392399-12-bgardon@google.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/10/21 23:30, Ben Gardon wrote:
-> -	WARN_ONCE(is_rsvd_spte(&vcpu->arch.mmu->shadow_zero_check, spte, level),
-> +	WARN_ONCE(is_rsvd_spte(shadow_zero_check, spte, level),
->   		  "spte = 0x%llx, level = %d, rsvd bits = 0x%llx", spte, level,
-> -		  get_rsvd_bits(&vcpu->arch.mmu->shadow_zero_check, spte, level));
-> +		  get_rsvd_bits(shadow_zero_check, spte, level));
+The following changes since commit 9e1ff307c779ce1f0f810c7ecce3d95bbae40896:
 
-Hmm, there is a deeper issue here, in that when using EPT/NPT (on either 
-the legacy aka shadow or the TDP MMU) large parts of vcpu->arch.mmu are 
-really the same for all vCPUs.  The only thing that varies is those 
-parts that actually depend on the guest's paging mode---the extended 
-role, the reserved bits, etc.  Those are needed by the emulator, but 
-don't really belong in vcpu->arch.mmu when EPT/NPT is in use.
+  Linux 5.15-rc4 (2021-10-03 14:08:47 -0700)
 
-I wonder if there's room for splitting kvm_mmu in two parts, such as 
-kvm_mmu and kvm_guest_paging_context, and possibly change the walk_mmu 
-pointer into a pointer to kvm_guest_paging_context.  This way the 
-EPT/NPT MMU (again either shadow or TDP) can be moved to kvm->arch.  It 
-should simplify this series and also David's work on eager page splitting.
+are available in the Git repository at:
 
-I'm not asking you to do this, of course, but perhaps I can trigger 
-Sean's itch to refactor stuff. :)
+  git://git.kernel.org/pub/scm/linux/kernel/git/tytso/ext4.git tags/ext4_for_linus
 
-Paolo
+for you to fetch changes up to 124e7c61deb27d758df5ec0521c36cf08d417f7a:
 
+  ext4: fix error code saved on super block during file system abort (2021-11-04 10:47:39 -0400)
+
+----------------------------------------------------------------
+Only bug fixes and cleanups for ext4 this merge window.  Of note are
+fixes for the combination of the inline_data and fast_commit fixes,
+and more accurately calculating when to schedule additional lazy inode
+table init, especially when CONFIG_HZ is 100HZ.
+
+----------------------------------------------------------------
+Austin Kim (1):
+      ext4: remove an unused variable warning with CONFIG_QUOTA=n
+
+Eric Whitney (1):
+      Revert "ext4: enforce buffer head state assertion in ext4_da_map_blocks"
+
+Gabriel Krisman Bertazi (1):
+      ext4: fix error code saved on super block during file system abort
+
+Harshad Shirwadkar (2):
+      ext4: commit inline data during fast commit
+      ext4: inline data inode fast commit replay fixes
+
+Jing Yangyang (1):
+      ext4: fix boolreturn.cocci warnings in fs/ext4/name.c
+
+Lukas Bulwahn (1):
+      ext4: scope ret locally in ext4_try_to_trim_range()
+
+Shaoying Xu (1):
+      ext4: fix lazy initialization next schedule time computation in more granular unit
+
+Xiyu Yang (1):
+      ext4: convert from atomic_t to refcount_t on ext4_io_end->count
+
+Zhang Yi (6):
+      ext4: check for out-of-order index extents in ext4_valid_extent_entries()
+      ext4: check for inconsistent extents between index and leaf block
+      ext4: prevent partial update of the extent blocks
+      ext4: factor out ext4_fill_raw_inode()
+      ext4: move ext4_fill_raw_inode() related functions
+      ext4: prevent getting empty inode buffer
+
+yangerkun (3):
+      ext4: correct the left/middle/right debug message for binsearch
+      ext4: ensure enough credits in ext4_ext_shift_path_extents
+      ext4: refresh the ext4_ext_path struct after dropping i_data_sem.
+
+ fs/ext4/ext4.h        |   3 +-
+ fs/ext4/extents.c     | 175 ++++++++++++++++------------
+ fs/ext4/fast_commit.c |  11 +-
+ fs/ext4/inode.c       | 331 +++++++++++++++++++++++++++--------------------------
+ fs/ext4/mballoc.c     |   5 +-
+ fs/ext4/namei.c       |   2 +-
+ fs/ext4/page-io.c     |   8 +-
+ fs/ext4/super.c       |  15 +--
+ 8 files changed, 300 insertions(+), 250 deletions(-)
