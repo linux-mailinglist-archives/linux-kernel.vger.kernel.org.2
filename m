@@ -2,171 +2,184 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 96C4244C8F5
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 20:25:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6609744C8F7
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 20:26:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232713AbhKJT1o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Nov 2021 14:27:44 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53020 "EHLO
+        id S232971AbhKJT27 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Nov 2021 14:28:59 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53312 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232718AbhKJT1m (ORCPT
+        with ESMTP id S231598AbhKJT2z (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Nov 2021 14:27:42 -0500
-Received: from mail-wr1-x430.google.com (mail-wr1-x430.google.com [IPv6:2a00:1450:4864:20::430])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B205C061764
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Nov 2021 11:24:54 -0800 (PST)
-Received: by mail-wr1-x430.google.com with SMTP id d3so5828625wrh.8
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Nov 2021 11:24:54 -0800 (PST)
+        Wed, 10 Nov 2021 14:28:55 -0500
+Received: from mail-wr1-x434.google.com (mail-wr1-x434.google.com [IPv6:2a00:1450:4864:20::434])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C32FEC061764;
+        Wed, 10 Nov 2021 11:26:07 -0800 (PST)
+Received: by mail-wr1-x434.google.com with SMTP id s13so5862519wrb.3;
+        Wed, 10 Nov 2021 11:26:07 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=hgxxmvGeWBqoVVWm+aT8y1AIFogI9R6xV+DgrB/wQzg=;
-        b=iybUjt6NruXZ+ansxh33A5/V/Kjub9Ad/KI+A8G1/mu2HhjLxBemhQ/PqkuNtDN3Qo
-         mWIeyHoxFSDcSgRYjZ1ST+cVXoQKdv0Pzqfm+a/6/HcfyjrRlQzTVrenX7pFKQR7bmR0
-         bdcIg5ZGPsGgRxo/cRYuseMzYyUPXpBAuseJRLwyZrX1JR9qxC+o8WK19GM3Kvl6fg+L
-         ix+6IsKFXrrJE18EnuwzRbZcc1Trt1KELfyTTHARMAFQWLAgwiURgi8Y3X2wHm9CCghO
-         ZhpL9sZhrWfR5U2gb8cqLb9CiJgGEUhTbwFvzR6Z0hXr1eGR091KNwJgPkoyZFQtQafa
-         +ysQ==
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=stxfGq5TzEk/m+h1V0oWIaH2yEXT1vhy8334vKhpSbk=;
+        b=HSbkCB5tuRc+2W2n8fgn9E3Tq0iwlPq1i+mBl1CVpMIVh0k5ZYJaWbZ5Hb146uIwb7
+         1m/7OWgXQ6CvJCRl1QHVqTV1f5a/bHcJhkEHoxF8CDvtwhBBc+rOYnUfwkIbMRF8oGxa
+         /0cUt5yNj3ON6xQ+cqwzUZw59rA2Cs0kG8GZBrBdIOI9Cj0nN5iJWMz9e+hD4yGqOImh
+         +g+ElXEzWESJZTGgaRBPCmMiKqGCvjhKUCrDGfCd2WLzYaa10S8wsSJ1USQulhDKhXQW
+         KRHmCIQwul/QBl2TzNKh8MakjGfZZyMLMqvVeZ2FvQn+EhVbW9RKQdgpwWFOCoVbwHGN
+         O8nQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=hgxxmvGeWBqoVVWm+aT8y1AIFogI9R6xV+DgrB/wQzg=;
-        b=NRD3zpVPXfROvYPr5WOmrSru2BsP9+h4Ox0EVNCnGlVpcb21GZEBPPloqBF3Urkf96
-         XcCowx630LLSNb2TlcPXGjil0YoCTxISWCAOs5+H82yKbHJstROnEUzrgUxbscy7IFfU
-         y0JG42JlMsn9tbVQtVVyNCE78hznnuHdUszLKrt3vzvOuDPSHue7rXDKYkSeNlVb9O5n
-         jty5LBOA41a/z+G7bogDnAM1BwmAnaUwJN+Yrg6tCMlAeSeioWm94lb2KISH0ePe4aw3
-         nP7bPwMjngUKaSpj/urymnL8udov7lew6oOPOGNxR8Ky3AMdXtQ5Qjlrl0sSmLACNfuz
-         QncQ==
-X-Gm-Message-State: AOAM530bhRijDk6ws9AxG7pY6z/1VHNO1bTQAlttouoEEAKiO19dUfHD
-        ibUh7zuCGNG2dK/Jf/WV12e0aM+CMbGscSNl/xSZ3Q==
-X-Google-Smtp-Source: ABdhPJyu7rmRJdHQ2mxXsdvx5G3j1bwvAoiFZVmhi+qE5EZUPDk/1xRxjliTsllaG3LdOf8V3w4b2AJtPUipHLS9ja0=
-X-Received: by 2002:a05:6000:1548:: with SMTP id 8mr1798212wry.279.1636572292501;
- Wed, 10 Nov 2021 11:24:52 -0800 (PST)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=stxfGq5TzEk/m+h1V0oWIaH2yEXT1vhy8334vKhpSbk=;
+        b=JFxB37yl65P/zpwLoZ3HO8hJSJpDDNZ3B2svg2E6tOagP0RZYoV1ZL09pV9rvgL8MH
+         GCvcRJcy6DIpsaD2Uj3MQjCsQDDmbCC+oaVpmKfZS6Tq7u1+Nf4Xs0UA0jFVNHfyDd4B
+         Xi9qN/5U0/SFX7jf3KvzpCz4BOxXujvhY0GFsvOc09YF4k1KoFRaw4V7c3hLLGXzPBth
+         dP8UlP2tMX3UH1C+H5lzyfHUD3IYIKGZGATAGvB2wnLah2Xc+RAFymk2PHyGpEsipqr2
+         +bj/1g2g1cJcr5rQoo+eO6YTFOTMKSEJCfm3W+2tfAt0VrW+DCvVNvgFVyVuSvPjvDA5
+         vVgw==
+X-Gm-Message-State: AOAM5309q0A3m5B/09MkMLz2/YcXpKDepL+O1KaOnqpx2yxJbCAYEZHF
+        lZJYwRH35u2GAGOANGporc0=
+X-Google-Smtp-Source: ABdhPJxTG94yTUSY/Xh7rvmJIuspjf0raoj13K6wYdvH8/nsbTpXXHcT2atafOeteM53GX0FbKj6Ow==
+X-Received: by 2002:a05:6000:1688:: with SMTP id y8mr1773432wrd.420.1636572366357;
+        Wed, 10 Nov 2021 11:26:06 -0800 (PST)
+Received: from kista.localnet (cpe-86-58-29-253.static.triera.net. [86.58.29.253])
+        by smtp.gmail.com with ESMTPSA id b197sm610739wmb.24.2021.11.10.11.26.05
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 10 Nov 2021 11:26:05 -0800 (PST)
+From:   Jernej =?utf-8?B?xaBrcmFiZWM=?= <jernej.skrabec@gmail.com>
+To:     mchehab@kernel.org, p.zabel@pengutronix.de,
+        gregkh@linuxfoundation.org, mripard@kernel.org,
+        paul.kocialkowski@bootlin.com, wens@csie.org,
+        hverkuil-cisco@xs4all.nl, jc@kynesim.co.uk,
+        ezequiel@vanguardiasur.com.ar,
+        Benjamin Gaignard <benjamin.gaignard@collabora.com>
+Cc:     linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-rockchip@lists.infradead.org, linux-staging@lists.linux.dev,
+        linux-arm-kernel@lists.infradead.org, linux-sunxi@lists.linux.dev,
+        Benjamin Gaignard <benjamin.gaignard@collabora.com>
+Subject: Re: [PATCH v2 1/4] media: hevc: Remove RPS named flags
+Date:   Wed, 10 Nov 2021 20:26:04 +0100
+Message-ID: <2215692.ElGaqSPkdT@kista>
+In-Reply-To: <20211012143552.661751-2-benjamin.gaignard@collabora.com>
+References: <20211012143552.661751-1-benjamin.gaignard@collabora.com> <20211012143552.661751-2-benjamin.gaignard@collabora.com>
 MIME-Version: 1.0
-References: <20211110191126.1214-1-alexandr.lobakin@intel.com>
-In-Reply-To: <20211110191126.1214-1-alexandr.lobakin@intel.com>
-From:   Eric Dumazet <edumazet@google.com>
-Date:   Wed, 10 Nov 2021 11:24:39 -0800
-Message-ID: <CANn89i+ZH83K9V7-7D6egC5AF=hxBv8FL+rroEqOskB-+TLZCA@mail.gmail.com>
-Subject: Re: [PATCH net] net: fix premature exit from NAPI state polling in napi_disable()
-To:     Alexander Lobakin <alexandr.lobakin@intel.com>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jesse Brandeburg <jesse.brandeburg@intel.com>,
-        Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
-        Michal Swiatkowski <michal.swiatkowski@intel.com>,
-        Xuan Zhuo <xuanzhuo@linux.alibaba.com>,
-        Antoine Tenart <atenart@kernel.org>,
-        Wei Wang <weiwan@google.com>,
-        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 10, 2021 at 11:11 AM Alexander Lobakin
-<alexandr.lobakin@intel.com> wrote:
->
-> Commit 719c57197010 ("net: make napi_disable() symmetric with
-> enable") accidentally introduced a bug sometimes leading to a kernel
-> BUG when bringing an iface up/down under heavy traffic load.
->
-> Prior to this commit, napi_disable() was polling n->state until
-> none of (NAPIF_STATE_SCHED | NAPIF_STATE_NPSVC) is set and then
-> always flip them. Now there's a possibility to get away with the
-> NAPIF_STATE_SCHE unset as 'continue' drops us to the cmpxchg()
-> call with an unitialized variable, rather than straight to
-> another round of the state check.
->
-> Error path looks like:
->
-> napi_disable():
-> unsigned long val, new; /* new is uninitialized */
->
-> do {
->         val = READ_ONCE(n->state); /* NAPIF_STATE_NPSVC and/or
->                                       NAPIF_STATE_SCHED is set */
->         if (val & (NAPIF_STATE_SCHED | NAPIF_STATE_NPSVC)) { /* true */
->                 usleep_range(20, 200);
->                 continue; /* go straight to the condition check */
->         }
->         new = val | <...>
-> } while (cmpxchg(&n->state, val, new) != val); /* state == val, cmpxchg()
->                                                   writes garbage */
->
-> napi_enable():
-> do {
->         val = READ_ONCE(n->state);
->         BUG_ON(!test_bit(NAPI_STATE_SCHED, &val)); /* 50/50 boom */
-> <...>
->
-> while the typical BUG splat is like:
->
-> [
-> Fix this by replacing this 'continue' with a goto to the beginning
-> of the loop body to restore the original behaviour.
-> This could be written without a goto, but would look uglier and
-> require one more indent level.
->
-> Fixes: 719c57197010 ("net: make napi_disable() symmetric with enable")
-> Signed-off-by: Alexander Lobakin <alexandr.lobakin@intel.com>
-> Reviewed-by: Jesse Brandeburg <jesse.brandeburg@intel.com>
+Hi Benjamin,
+
+Dne torek, 12. oktober 2021 ob 16:35:49 CET je Benjamin Gaignard napisal(a):
+> Marking a picture as long-term reference is valid for DPB but not for RPS.
+> Change flag name to match with it description in HEVC spec chapiter
+
+chapiter -> chapter
+
+> "8.3.2 Decoding process for reference picture set".
+> Remove the other unused RPS flags.
+> 
+> Signed-off-by: Benjamin Gaignard <benjamin.gaignard@collabora.com>
 > ---
->  net/core/dev.c | 3 ++-
->  1 file changed, 2 insertions(+), 1 deletion(-)
->
-> diff --git a/net/core/dev.c b/net/core/dev.c
-> index edeb811c454e..5e101c53b9de 100644
-> --- a/net/core/dev.c
-> +++ b/net/core/dev.c
-> @@ -6929,10 +6929,11 @@ void napi_disable(struct napi_struct *n)
->         set_bit(NAPI_STATE_DISABLE, &n->state);
->
->         do {
-> +retry:
->                 val = READ_ONCE(n->state);
->                 if (val & (NAPIF_STATE_SCHED | NAPIF_STATE_NPSVC)) {
->                         usleep_range(20, 200);
-> -                       continue;
-> +                       goto retry;
->                 }
->
->                 new = val | NAPIF_STATE_SCHED | NAPIF_STATE_NPSVC;
-> --
-> 2.33.1
->
+> version 2:
+> - change DPB field name from rps to flags
+> 
+>  Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst | 8 +++-----
+>  drivers/staging/media/hantro/hantro_g2_hevc_dec.c         | 2 +-
+>  drivers/staging/media/sunxi/cedrus/cedrus_h265.c          | 2 +-
+>  include/media/hevc-ctrls.h                                | 6 ++----
+>  4 files changed, 7 insertions(+), 11 deletions(-)
+> 
+> diff --git a/Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst b/
+Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst
+> index e141f0e4eec9..38da33e61c3d 100644
+> --- a/Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst
+> +++ b/Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst
+> @@ -3166,11 +3166,9 @@ enum v4l2_mpeg_video_hevc_size_of_length_field -
+>  	:c:func:`v4l2_timeval_to_ns()` function to convert the struct
+>  	:c:type:`timeval` in struct :c:type:`v4l2_buffer` to a __u64.
+>      * - __u8
+> -      - ``rps``
+> -      - The reference set for the reference frame
+> -        (V4L2_HEVC_DPB_ENTRY_RPS_ST_CURR_BEFORE,
+> -        V4L2_HEVC_DPB_ENTRY_RPS_ST_CURR_AFTER or
+> -        V4L2_HEVC_DPB_ENTRY_RPS_LT_CURR)
+> +      - ``flags``
+> +      - Long term flag for the reference frame
+> +        (V4L2_HEVC_DPB_ENTRY_LONG_TERM_REFERENCE)
+>      * - __u8
+>        - ``field_pic``
+>        - Whether the reference is a field picture or a frame.
+> diff --git a/drivers/staging/media/hantro/hantro_g2_hevc_dec.c b/drivers/
+staging/media/hantro/hantro_g2_hevc_dec.c
+> index 76a921163b9a..bbf71dcea099 100644
+> --- a/drivers/staging/media/hantro/hantro_g2_hevc_dec.c
+> +++ b/drivers/staging/media/hantro/hantro_g2_hevc_dec.c
+> @@ -445,7 +445,7 @@ static int set_ref(struct hantro_ctx *ctx)
+>  		chroma_addr = luma_addr + cr_offset;
+>  		mv_addr = luma_addr + mv_offset;
+>  
+> -		if (dpb[i].rps == V4L2_HEVC_DPB_ENTRY_RPS_LT_CURR)
+> +		if (dpb[i].flags == 
+V4L2_HEVC_DPB_ENTRY_LONG_TERM_REFERENCE)
+>  			dpb_longterm_e |= 
+BIT(V4L2_HEVC_DPB_ENTRIES_NUM_MAX - 1 - i);
+>  
+>  		hantro_write_addr(vpu, G2_REG_ADDR_REF(i), luma_addr);
+> diff --git a/drivers/staging/media/sunxi/cedrus/cedrus_h265.c b/drivers/
+staging/media/sunxi/cedrus/cedrus_h265.c
+> index 3d9561d4aadb..1edfc3823a57 100644
+> --- a/drivers/staging/media/sunxi/cedrus/cedrus_h265.c
+> +++ b/drivers/staging/media/sunxi/cedrus/cedrus_h265.c
+> @@ -169,7 +169,7 @@ static void cedrus_h265_ref_pic_list_write(struct 
+cedrus_dev *dev,
+>  		unsigned int index = list[i];
+>  		u8 value = list[i];
+>  
+> -		if (dpb[index].rps == V4L2_HEVC_DPB_ENTRY_RPS_LT_CURR)
+> +		if (dpb[index].flags == 
+V4L2_HEVC_DPB_ENTRY_LONG_TERM_REFERENCE)
 
-Good catch !
+Flags are usually checked with "&", same goes in Hantro case.
 
-What about replacing the error prone do {...} while (cmpxchg(..)) by
-something less confusing ?
+Once all fixed, this patch is:
+Acked-by: Jernej Skrabec <jernej.skrabec@gmail.com>
 
-This way, no need for a label.
+Best regards,
+Jernej
 
-diff --git a/net/core/dev.c b/net/core/dev.c
-index 5e37d6809317fb3c54686188a908bfcb0bfccdab..9327141892cdaaf0282e082e0c6746abae0f12a7
-100644
---- a/net/core/dev.c
-+++ b/net/core/dev.c
-@@ -6264,7 +6264,7 @@ void napi_disable(struct napi_struct *n)
-        might_sleep();
-        set_bit(NAPI_STATE_DISABLE, &n->state);
+>  			value |= 
+VE_DEC_H265_SRAM_REF_PIC_LIST_LT_REF;
+>  
+>  		/* Each SRAM word gathers up to 4 references. */
+> diff --git a/include/media/hevc-ctrls.h b/include/media/hevc-ctrls.h
+> index ef63bc205756..01ccda48d8c5 100644
+> --- a/include/media/hevc-ctrls.h
+> +++ b/include/media/hevc-ctrls.h
+> @@ -127,15 +127,13 @@ struct v4l2_ctrl_hevc_pps {
+>  	__u64	flags;
+>  };
+>  
+> -#define V4L2_HEVC_DPB_ENTRY_RPS_ST_CURR_BEFORE	0x01
+> -#define V4L2_HEVC_DPB_ENTRY_RPS_ST_CURR_AFTER	0x02
+> -#define V4L2_HEVC_DPB_ENTRY_RPS_LT_CURR		0x03
+> +#define V4L2_HEVC_DPB_ENTRY_LONG_TERM_REFERENCE	0x01
+>  
+>  #define V4L2_HEVC_DPB_ENTRIES_NUM_MAX		16
+>  
+>  struct v4l2_hevc_dpb_entry {
+>  	__u64	timestamp;
+> -	__u8	rps;
+> +	__u8	flags;
+>  	__u8	field_pic;
+>  	__u16	pic_order_cnt[2];
+>  	__u8	padding[2];
+> -- 
+> 2.30.2
+> 
+> 
 
--       do {
-+       for (;;) {
-                val = READ_ONCE(n->state);
-                if (val & (NAPIF_STATE_SCHED | NAPIF_STATE_NPSVC)) {
-                        usleep_range(20, 200);
-@@ -6273,7 +6273,9 @@ void napi_disable(struct napi_struct *n)
 
-                new = val | NAPIF_STATE_SCHED | NAPIF_STATE_NPSVC;
-                new &= ~(NAPIF_STATE_THREADED | NAPIF_STATE_PREFER_BUSY_POLL);
--       } while (cmpxchg(&n->state, val, new) != val);
-+               if (cmpxchg(&n->state, val, new) == val)
-+                       break;
-+       }
-
-        hrtimer_cancel(&n->timer);
