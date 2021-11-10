@@ -2,145 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6176744C20C
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 14:26:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 87BFB44C210
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 14:26:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231721AbhKJN2o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Nov 2021 08:28:44 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124]:55910 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231210AbhKJN2n (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Nov 2021 08:28:43 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1636550755;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=jP0yAKaqi1adm8H9orP2dppOC1y2MfJUJ8VPAeRgaww=;
-        b=VN8e+Ul1wH8bUFbZ61lUmEGzm4mWhZjPLBKrLnhSN0+CXED/p2aL0ZkS0JEclLsUU8Sot0
-        Ki+LiVidm8fMudgJjkGvXlDPHz5/0Ci/L37HpXC1s3ucr5HUEJnImJC+/EwHjHDdlAsTfm
-        BdfYVA0KOJ2kbtY1dODsSFYpPT6qrFw=
-Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
- [209.85.128.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-5-EdVz__2VObKQKGTzWuIjig-1; Wed, 10 Nov 2021 08:25:54 -0500
-X-MC-Unique: EdVz__2VObKQKGTzWuIjig-1
-Received: by mail-wm1-f71.google.com with SMTP id 145-20020a1c0197000000b0032efc3eb9bcso3120771wmb.0
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Nov 2021 05:25:54 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent
-         :content-language:to:cc:references:from:organization:subject
-         :in-reply-to:content-transfer-encoding;
-        bh=jP0yAKaqi1adm8H9orP2dppOC1y2MfJUJ8VPAeRgaww=;
-        b=cVjxNLyzA7Ot71/dUig9+0vguFtCdjVHB6uyYaaygTJgaqwGyVsSB5SmyDEMfQI446
-         JtaJBJ1E4Ek/5gARhDnHTESPRW5L6tiPz8uvlDtcta/kPbmQ+ZcJOvMd8lBVAoni8Thc
-         uzky1PVJY5FwT9Yp1Ji02QVCDrsO4U3kQdry86okDI98jL1zTLm8ovKOzYptbEZWLZTU
-         VW6GMZjzGEJeg3ixhLynAjrhOU4UIjvR/ZwBIU7l0MuG21OMVXABMelG7ZtQZICzO1Hs
-         7NXlBNFUZzBkyj5YhXlF7c8ZVyMdEMVWB30wm+0eqxQGG0bw9ZK89Vhq0aFZqFLgLKHl
-         oSoA==
-X-Gm-Message-State: AOAM5336z8JR5RVRMEYQ4SogKi+gcUDPDO+0TbyZ49YY2w1ZGYRLypdX
-        P2YfdWnKU+305GXUDgV1pYoMOwDreD/V1/oa8J/1b+mvr84W4t2uf+g3eA5mzEdAbjibGnTgn5c
-        E1I9o9z+CNGvu19NiucCsX2Zt
-X-Received: by 2002:adf:f209:: with SMTP id p9mr19347913wro.191.1636550753109;
-        Wed, 10 Nov 2021 05:25:53 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJwJSv+R+IWbpj+s2V4l4f0j/FjSMvgil2sH56ptcxuoK6bsMwBY0CkRGweCqJAhm+KUOnovqA==
-X-Received: by 2002:adf:f209:: with SMTP id p9mr19347881wro.191.1636550752878;
-        Wed, 10 Nov 2021 05:25:52 -0800 (PST)
-Received: from [192.168.3.132] (p5b0c604f.dip0.t-ipconnect.de. [91.12.96.79])
-        by smtp.gmail.com with ESMTPSA id i17sm6016557wmq.48.2021.11.10.05.25.51
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 10 Nov 2021 05:25:52 -0800 (PST)
-Message-ID: <8d0bc258-58ba-52c5-2e0d-a588489f2572@redhat.com>
-Date:   Wed, 10 Nov 2021 14:25:50 +0100
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.2.0
-Content-Language: en-US
-To:     Jason Gunthorpe <jgg@nvidia.com>,
-        Qi Zheng <zhengqi.arch@bytedance.com>
-Cc:     akpm@linux-foundation.org, tglx@linutronix.de,
-        kirill.shutemov@linux.intel.com, mika.penttila@nextfour.com,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, songmuchun@bytedance.com,
-        zhouchengming@bytedance.com
-References: <20211110105428.32458-1-zhengqi.arch@bytedance.com>
- <20211110125601.GQ1740502@nvidia.com>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat
-Subject: Re: [PATCH v3 00/15] Free user PTE page table pages
-In-Reply-To: <20211110125601.GQ1740502@nvidia.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+        id S231986AbhKJN3F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Nov 2021 08:29:05 -0500
+Received: from mail.kernel.org ([198.145.29.99]:51284 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231529AbhKJN3B (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Nov 2021 08:29:01 -0500
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id A482961241;
+        Wed, 10 Nov 2021 13:26:13 +0000 (UTC)
+Received: from sofa.misterjones.org ([185.219.108.64] helo=why.misterjones.org)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <maz@kernel.org>)
+        id 1mkncB-004cLk-MV; Wed, 10 Nov 2021 13:26:11 +0000
+Date:   Wed, 10 Nov 2021 13:26:11 +0000
+Message-ID: <87tugk87m4.wl-maz@kernel.org>
+From:   Marc Zyngier <maz@kernel.org>
+To:     Sunil Muthuswamy <sunilmut@linux.microsoft.com>
+Cc:     kys@microsoft.com, haiyangz@microsoft.com, sthemmin@microsoft.com,
+        wei.liu@kernel.org, decui@microsoft.com, tglx@linutronix.de,
+        mingo@redhat.com, bp@alien8.de, hpa@zytor.com,
+        lorenzo.pieralisi@arm.com, robh@kernel.org, kw@linux.com,
+        bhelgaas@google.com, arnd@arndb.de, sunilmut@microsoft.com,
+        x86@kernel.org, linux-kernel@vger.kernel.org,
+        linux-hyperv@vger.kernel.org, linux-pci@vger.kernel.org,
+        linux-arch@vger.kernel.org
+Subject: Re: [PATCH v4 2/2] arm64: PCI: hv: Add support for Hyper-V vPCI
+In-Reply-To: <87v91087vj.wl-maz@kernel.org>
+References: <1636496060-29424-1-git-send-email-sunilmut@linux.microsoft.com>
+        <1636496060-29424-3-git-send-email-sunilmut@linux.microsoft.com>
+        <87v91087vj.wl-maz@kernel.org>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/27.1
+ (x86_64-pc-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-SA-Exim-Connect-IP: 185.219.108.64
+X-SA-Exim-Rcpt-To: sunilmut@linux.microsoft.com, kys@microsoft.com, haiyangz@microsoft.com, sthemmin@microsoft.com, wei.liu@kernel.org, decui@microsoft.com, tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, hpa@zytor.com, lorenzo.pieralisi@arm.com, robh@kernel.org, kw@linux.com, bhelgaas@google.com, arnd@arndb.de, sunilmut@microsoft.com, x86@kernel.org, linux-kernel@vger.kernel.org, linux-hyperv@vger.kernel.org, linux-pci@vger.kernel.org, linux-arch@vger.kernel.org
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10.11.21 13:56, Jason Gunthorpe wrote:
-> On Wed, Nov 10, 2021 at 06:54:13PM +0800, Qi Zheng wrote:
+On Wed, 10 Nov 2021 13:20:32 +0000,
+Marc Zyngier <maz@kernel.org> wrote:
 > 
->> In this patch series, we add a pte_refcount field to the struct page of page
->> table to track how many users of PTE page table. Similar to the mechanism of
->> page refcount, the user of PTE page table should hold a refcount to it before
->> accessing. The PTE page table page will be freed when the last refcount is
->> dropped.
+> On Tue, 09 Nov 2021 22:14:20 +0000,
+> Sunil Muthuswamy <sunilmut@linux.microsoft.com> wrote:
+> > 
+> > From: Sunil Muthuswamy <sunilmut@microsoft.com>
+> > 
+> > Add support for Hyper-V vPCI for arm64 by implementing the arch specific
+> > interfaces. Introduce an IRQ domain and chip specific to Hyper-v vPCI that
+> > is based on SPIs. The IRQ domain parents itself to the arch GIC IRQ domain
+> > for basic vector management.
+> > 
+> > Signed-off-by: Sunil Muthuswamy <sunilmut@microsoft.com>
+> > ---
+> > In v2, v3 & v4:
+> >  Changes are described in the cover letter.
+> > 
+> >  arch/arm64/include/asm/hyperv-tlfs.h |   9 ++
+> >  drivers/pci/Kconfig                  |   2 +-
+> >  drivers/pci/controller/Kconfig       |   2 +-
+> >  drivers/pci/controller/pci-hyperv.c  | 207 ++++++++++++++++++++++++++-
+> >  4 files changed, 217 insertions(+), 3 deletions(-)
 > 
-> So, this approach basically adds two atomics on every PTE map
+> [...]
 > 
-> If I have it right the reason that zap cannot clean the PTEs today is
-> because zap cannot obtain the mmap lock due to a lock ordering issue
-> with the inode lock vs mmap lock.
-
-There are different ways to zap: madvise(DONTNEED) vs
-fallocate(PUNCH_HOLE). It depends on "from where" we're actually
-comming: a process page table walker or the rmap.
-
-The way locking currently works doesn't allow to remove a page table
-just by holding the mmap lock, not even in write mode. You'll also need
-to hold the respective rmap locks -- which implies that reclaiming apge
-tables crossing VMAs is "problematic". Take a look at khugepaged which
-has to play quite some tricks to remove a page table.
-
-And there are other ways we can create empty page tables via the rmap,
-like reclaim/writeback, although they are rather a secondary concern mostly.
-
+> > +static int hv_pci_vec_irq_domain_activate(struct irq_domain *domain,
+> > +					  struct irq_data *irqd, bool reserve)
+> > +{
+> > +	static int cpu;
+> > +
+> > +	/*
+> > +	 * Pick a cpu using round-robin as the irq affinity that can be
+> > +	 * temporarily used for composing MSI from the hypervisor. GIC
+> > +	 * will eventually set the right affinity for the irq and the
+> > +	 * 'unmask' will retarget the interrupt to that cpu.
+> > +	 */
+> > +	if (cpu >= cpumask_last(cpu_online_mask))
+> > +		cpu = 0;
+> > +	cpu = cpumask_next(cpu, cpu_online_mask);
+> > +	irq_data_update_effective_affinity(irqd, cpumask_of(cpu));
 > 
-> If it could obtain the mmap lock then it could do the zap using the
-> write side as unmapping a vma does.
+> The mind boggles.
 > 
-> Rather than adding a new "lock" to ever PTE I wonder if it would be
-> more efficient to break up the mmap lock and introduce a specific
-> rwsem for the page table itself, in addition to the PTL. Currently the
-> mmap lock is protecting both the vma list and the page table.
+> Let's imagine a single machine. cpu_online_mask only has bit 0 set,
 
-There is the rmap side of things as well. At least the rmap won't
-reclaim alloc/free page tables, but it will walk page tables while
-holding the respective rmap lock.
+single *CPU* machine
 
+> and nr_cpumask_bits is 1. This is the first run, and cpu is 1:
+
+cpu is *obviously* 0:
+
+>
+> 	cpu = cpumask_next(cpu, cpu_online_mask);
 > 
-> I think that would allow the lock ordering issue to be resolved and
-> zap could obtain a page table rwsem.
+> cpu is now set to 1. Which is not a valid CPU number, but a valid
+> return value indicating that there is no next CPU as it is equal to
+> nr_cpumask_bits. cpumask_of(cpu) will then diligently return crap,
+> which you carefully store into the irq descriptor. The IRQ subsystem
+> thanks you.
 > 
-> Compared to two atomics per PTE this would just be two atomic per
-> page table walk operation, it is conceptually a lot simpler, and would
-> allow freeing all the page table levels, not just PTEs.
+> The same reasoning applies to any number of CPUs, and you obviously
+> never checked what any of this does :-(. As to what the behaviour is
+> when multiple CPUs run this function in parallel, let's not even
+> bother (locking is overrated).
+> 
+> Logic and concurrency issues aside, why do you even bother setting
+> some round-robin affinity if all you need is to set *something* so
+> that a hypervisor message can be composed? Why not use the first
+> online CPU? At least it will be correct.
 
-Another alternative is to not do it in the kernel automatically, but
-instead have a madvise(MADV_CLEANUP_PGTABLE) mechanism that will get
-called by user space explicitly once it's reasonable. While this will
-work for the obvious madvise(DONTNEED) users -- like memory allocators
--- that zap memory, it's a bit more complicated once shared memory is
-involved and we're fallocate(PUNCH_HOLE) memory. But it would at least
-work for many use cases that want to optimize memory consumption for
-sparse memory mappings.
+Everything else holds.
 
-Note that PTEs are the biggest memory consumer. On x86-64, a 1 TiB area
-will consume 2 GiB of PTE tables and only 4 MiB of PMD tables. So PTEs
-are most certainly the most important part piece.
+	M.
 
 -- 
-Thanks,
-
-David / dhildenb
-
+Without deviation from the norm, progress is not possible.
