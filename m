@@ -2,53 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A62C844BCA0
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 09:11:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5245C44BCA7
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 09:12:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230191AbhKJINw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Nov 2021 03:13:52 -0500
-Received: from mail.kernel.org ([198.145.29.99]:35132 "EHLO mail.kernel.org"
+        id S230208AbhKJIP1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Nov 2021 03:15:27 -0500
+Received: from mail.kernel.org ([198.145.29.99]:35426 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230006AbhKJINu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Nov 2021 03:13:50 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 28B7261052;
-        Wed, 10 Nov 2021 08:11:02 +0000 (UTC)
+        id S229756AbhKJIP0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Nov 2021 03:15:26 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 37ACC61057;
+        Wed, 10 Nov 2021 08:12:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1636531863;
-        bh=BBjQtxjd+p51t3Jc7H1e6LC25QvgFXdTNenm7EdSd4k=;
+        s=korg; t=1636531959;
+        bh=hOElsn9o0XHWX7llXiy9jQT7NSmeSlmSgpbdWccwyac=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=p0E8KL7OCj8xp1dFKx5c0BhMkAwZFORpJc8AHTfsDUROqvcNgoHZQvmR8wE6YV8JQ
-         +t6sKkUwFiUVjk5TsqSXxevsNt+npqJRIFw/gAVdzi10nD+D5Z76NoKb0bYYX6opwR
-         nKdan/MLahvYqbjwov0CWI8Dg3HwPNoeXJLFAb6I=
-Date:   Wed, 10 Nov 2021 09:11:01 +0100
+        b=XAVOdcMtoGgoVD6OdatAhX/b33DPVo8aDz+DlDTxkyceQH5V+I6VQ6Wqh8Z2d9sIC
+         ucg36FIFR70uVzkOMOU1RWf6JiZzxksUteoqaPcekKKxCdjYrJPevQsWOrpcRd28Qr
+         pPyyfLfb7J67VIpsnAFnTqmthrkJsiFWuTZa/72g=
+Date:   Wed, 10 Nov 2021 09:12:37 +0100
 From:   Greg KH <gregkh@linuxfoundation.org>
 To:     cgel.zte@gmail.com
-Cc:     valentina.manea.m@gmail.com, shuah@kernel.org,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Jing Yao <yao.jing2@zte.com.cn>, Zeal Robot <zealci@zte.com.cn>
-Subject: Re: [PATCH] usbip: vudc: Replace snprintf in show functions with
- sysfs_emit
-Message-ID: <YYt+lXdjBqX6YecN@kroah.com>
-References: <20211110023244.135621-1-yao.jing2@zte.com.cn>
+Cc:     Larry.Finger@lwfinger.net, phil@philpotter.co.uk,
+        straube.linux@gmail.com, linux-staging@lists.linux.dev,
+        linux-kernel@vger.kernel.org,
+        Changcheng Deng <deng.changcheng@zte.com.cn>,
+        Zeal Robot <zealci@zte.com.cn>
+Subject: Re: [PATCH] staging: r8188eu: remove unneeded variable
+Message-ID: <YYt+9d9Jn0SBocVC@kroah.com>
+References: <20211109115307.133100-1-deng.changcheng@zte.com.cn>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20211110023244.135621-1-yao.jing2@zte.com.cn>
+In-Reply-To: <20211109115307.133100-1-deng.changcheng@zte.com.cn>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 10, 2021 at 02:32:44AM +0000, cgel.zte@gmail.com wrote:
-> From: Jing Yao <yao.jing2@zte.com.cn>
+On Tue, Nov 09, 2021 at 11:53:07AM +0000, cgel.zte@gmail.com wrote:
+> From: Changcheng Deng <deng.changcheng@zte.com.cn>
 > 
-> coccicheck complains about the use of snprintf() in sysfs show
-> functions:
-> WARNING use scnprintf or sprintf
+> Fix the following coccicheck review:
+> ./drivers/staging/r8188eu/core/rtw_cmd.c: 66: 5-8: Unneeded variable
 > 
-> Use sysfs_emit instead of scnprintf, snprintf or sprintf makes more
-> sense.
+> Remove unneeded variable used to store return value.
 > 
 > Reported-by: Zeal Robot <zealci@zte.com.cn>
-> Signed-off-by: Jing Yao <yao.jing2@zte.com.cn>
 
-Again, same coments as on the staging driver change.
+But this is coccicheck finding the issue, not the "Zeal Robot", right?
+A script that just runs scripts already in the kernel tree does not mean
+that an entity is deserving of an email address and reported-by tag,
+right?
+
+thanks,
+
+greg k-h
