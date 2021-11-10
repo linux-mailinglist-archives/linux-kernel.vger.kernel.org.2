@@ -2,119 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 026C144B9EA
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 02:20:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B129044B9F0
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 02:23:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229595AbhKJBXh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Nov 2021 20:23:37 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34660 "EHLO
+        id S229568AbhKJB0X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Nov 2021 20:26:23 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35302 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229445AbhKJBXf (ORCPT
+        with ESMTP id S229485AbhKJB0W (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Nov 2021 20:23:35 -0500
-Received: from mail-pj1-x102e.google.com (mail-pj1-x102e.google.com [IPv6:2607:f8b0:4864:20::102e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B95FDC061764;
-        Tue,  9 Nov 2021 17:20:48 -0800 (PST)
-Received: by mail-pj1-x102e.google.com with SMTP id w33-20020a17090a6ba400b001a722a06212so698297pjj.0;
-        Tue, 09 Nov 2021 17:20:48 -0800 (PST)
+        Tue, 9 Nov 2021 20:26:22 -0500
+Received: from mail-pl1-x62b.google.com (mail-pl1-x62b.google.com [IPv6:2607:f8b0:4864:20::62b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED495C061764;
+        Tue,  9 Nov 2021 17:23:35 -0800 (PST)
+Received: by mail-pl1-x62b.google.com with SMTP id u17so1603537plg.9;
+        Tue, 09 Nov 2021 17:23:35 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=mime-version:from:date:message-id:subject:to;
-        bh=XCSR5iwGqGEBhi6PnLhH0qauR+M79oBnHfHwY8wLXAQ=;
-        b=C2XYj00vc0AopmrYfgu/fZXDCXFakY28FRIGUQ1sS2X28aGT0u2/1iC7Q4hczdoyJr
-         Jg9gTBYMgD42WoJ5I1I2kbd722u93omHz+cvhG/Z3/UjGKBrbCOuiBG8S1893oGW9nMt
-         BW6wi4bVicCPKNjTdA8EEq+OG8PA9UUMGxRFkmaCS0SEeblMrCZuwAO34iAejDlohCzk
-         IbASLjI9zLug9emQbcU4mjNLhm7IT/xHeJ8E/kArDfyX+lePEwscvn05qR1po4sI79G2
-         iYgsFub0PIQlwrQJ37nsdorPNFkjYTMz5bXDOBrMZX0nWx7tqLHU0UPloWnJUHBFTvOX
-         0FEg==
+        h=from:to:cc:subject:date:message-id;
+        bh=8KsAKNFuVz5kAl4IdR8XgWDYzhLIM4iFKTO/IbBl8jM=;
+        b=l98xyTblDrwgpcixHuBMvmrGHTaL79voaUPmTqScyLLI/yZa576mu8h5IWKZiN4tW0
+         G2SgpYkx49/m0jwcbWBufXMQwB66Y0naBKvLNLQaqDn0FwLRkGip/d8URMNzhzlwm3Sc
+         8SUZWKHoiKNepKcAEgG+OtgUViYEn1jvpFYjgeW5faYUZv0m2OEwbJwso6p3lzr+c3b7
+         zvgEel4IaemLb3Fkp2Mnn6q5RInoWTWU+JLVloBZAW7EXKPRrL59gylEX4AqEl5Ez2yx
+         0LLzNOmEWdjowAPvvqxRWN20Tq4NVLfOD2w1vt56eES+5e+9lDdEfLltAdWbhf8TI3dL
+         C+BA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
-        bh=XCSR5iwGqGEBhi6PnLhH0qauR+M79oBnHfHwY8wLXAQ=;
-        b=m4ORJC/INp9u4pVrCnpk9uSbQZpEN4tOgsIbUvGWkiMSTlNWFrtAaJqTYfcoL/5/oP
-         n0CENOnArQrtgpnSm80kj/D49XzkqCKmCO3i0ASBLZwx8nzKtXD0pM7M2evvVsVSrpPK
-         fKJLQJ+5r7gYbR0u1NC4ASBNp3h4WqzHrGvNfmSB4yvQgd6y9Dr4VSD+8gQ7IFrSA57a
-         grslb3OXUiLyA4ABSdA4CMB/7vSCi34YjKsmS5dbOmFcv4eDBoPWmJTEAomFd+6xfDVZ
-         /XEGmw28tTIn2RbdHlhtmB0wkQsMViZvwGWjV64RXwrhrvdgq4I7S9O4OjtQBkV6ydIs
-         91hQ==
-X-Gm-Message-State: AOAM532YoxdaYwkj+lnqXFrQYHMM54Z7EUbKCtNwN3TADCsEkFnUYZcd
-        mUaSPkAVviv8aS7MV88qTWabp/SsHOzLgvMHaZh2VPeUZ9i5ZKfBHA==
-X-Google-Smtp-Source: ABdhPJyjNB39y6S7jrRV0AVGeZPvOKiJj/8ancLMTAlS93BByq/0PacMbe38F8Gg3tWiZh4F0p+6WJXzKqXVPTylh04=
-X-Received: by 2002:a17:903:2348:b0:141:d60b:ee90 with SMTP id
- c8-20020a170903234800b00141d60bee90mr11381103plh.15.1636507248024; Tue, 09
- Nov 2021 17:20:48 -0800 (PST)
-MIME-Version: 1.0
-From:   Hao Sun <sunhao.th@gmail.com>
-Date:   Wed, 10 Nov 2021 09:20:38 +0800
-Message-ID: <CACkBjsasF+eDp4_dtvTBr9Thg-9RyYOQg3nwvRFuu+r3XecHig@mail.gmail.com>
-Subject: WARNING in __folio_mark_dirty
-To:     konishi.ryusuke@gmail.com, linux-nilfs@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        akpm@linux-foundation.org, Linux MM <linux-mm@kvack.org>
-Content-Type: text/plain; charset="UTF-8"
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=8KsAKNFuVz5kAl4IdR8XgWDYzhLIM4iFKTO/IbBl8jM=;
+        b=u4FwtD1xS9u4F5PFSasorFm6cw7UYMHiTlFisRd0wJ8ve3hJhKnW0XbkOZeB8GxUsW
+         J+yK1m2xEeza0yogDN/mbbsAvMt9MXKt+XqjCODy7VNMxe4k874Xe0K8OCpEWIg9oufN
+         ZL4dGPVGeC5qjDNqEXEihuEeLcG4b53G9c4oQDFer0NrBAhDfysOIMDxzw10zPqbzj5P
+         SQbtsyI5L/O2t8YnnhIR8caVkHpqnN1vQJYI7HU/bUXGYDke1TDyArQJ0hg8AfxmKKiY
+         Au2k/JokhMdhpfqvt2j7UyTMNx46PcaYNxRpsgJfKSq/UVegATbcT9X3MpjVLbhEDS71
+         oWRQ==
+X-Gm-Message-State: AOAM532iaSgUexOj55h+O+CS3YvaOtkWXHp6TonTfqHMMmuShiwuxcfI
+        KEt0EFL9UWD65cSQIRkbBXi6/L9+bXA=
+X-Google-Smtp-Source: ABdhPJw9EojWf0yLnUAZZFxA4gUUOqn3Osdr+3wuJzYohtAhx/+HYis5OJM2teZOTfWfGAy2C4Ua/A==
+X-Received: by 2002:a17:903:18d:b0:142:8ab:d11f with SMTP id z13-20020a170903018d00b0014208abd11fmr11921617plg.47.1636507415443;
+        Tue, 09 Nov 2021 17:23:35 -0800 (PST)
+Received: from VM-0-3-centos.localdomain ([101.32.213.191])
+        by smtp.gmail.com with ESMTPSA id j6sm16099210pgq.0.2021.11.09.17.23.34
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Tue, 09 Nov 2021 17:23:35 -0800 (PST)
+From:   brookxu <brookxu.cn@gmail.com>
+To:     jejb@linux.ibm.com, martin.petersen@oracle.com
+Cc:     hch@infradead.org, linux-scsi@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v2] scsi: core: use eh_timeout to timeout start_unit command
+Date:   Wed, 10 Nov 2021 09:23:32 +0800
+Message-Id: <1636507412-21678-1-git-send-email-brookxu.cn@gmail.com>
+X-Mailer: git-send-email 1.8.3.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+From: Chunguang Xu <brookxu@tencent.com>
 
-When using Healer to fuzz the latest Linux kernel, the following crash
-was triggered.
+In some abnormal scenarios, STU may timeout. The recovery
+time of 30 seconds is relatively large. Now we need to modify
+rq_timeout to adjust STU timeout value, but it will affect the
+actual IO.
 
-HEAD commit: 6b75d88fa81b Merge branch 'i2c/for-current'
-git tree: upstream
-console output: https://paste.ubuntu.com/p/C22bhzvZP6/
-kernel config: https://paste.ubuntu.com/p/b62Hp7BfJn/
-C reproducer: https://paste.ubuntu.com/p/2mchRNDJr4/
-Syzlang reproducer: https://paste.ubuntu.com/p/xM3DQ2f5Qz/
+commit 9728c0814ecb ("[SCSI] make scsi_eh_try_stu use block
+timeout") use rq_timeout to timeout the STU command, but after
+commit 0816c9251a71 ("[SCSI] Allow error handling timeout to
+be specified") eh_timeout will init to SCSI_DEFAULT_EH_TIMEOUT,
+so it is more reasonable to use eh_timeout as the timeout value
+of STU command. In this way, we can uniformly control recovery
+time through eh_timeout.
 
-If you fix this issue, please add the following tag to the commit:
-Reported-by: Hao Sun <sunhao.th@gmail.com>
+Signed-off-by: Chunguang Xu <brookxu@tencent.com>
+---
+v2: Update commit log and fix some format issues.
 
-NILFS (loop10): segctord starting. Construction interval = 5 seconds,
-CP frequency < 30 seconds
-------------[ cut here ]------------
-WARNING: CPU: 3 PID: 18327 at include/linux/backing-dev.h:269
-inode_to_wb include/linux/backing-dev.h:269 [inline]
-WARNING: CPU: 3 PID: 18327 at include/linux/backing-dev.h:269
-folio_account_dirtied mm/page-writeback.c:2460 [inline]
-WARNING: CPU: 3 PID: 18327 at include/linux/backing-dev.h:269
-__folio_mark_dirty+0xab2/0xe80 mm/page-writeback.c:2509
-Modules linked in:
-CPU: 3 PID: 18327 Comm: segctord Not tainted 5.15.0+ #6
-Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS
-1.13.0-1ubuntu1.1 04/01/2014
-RIP: 0010:inode_to_wb include/linux/backing-dev.h:269 [inline]
-RIP: 0010:folio_account_dirtied mm/page-writeback.c:2460 [inline]
-RIP: 0010:__folio_mark_dirty+0xab2/0xe80 mm/page-writeback.c:2509
-Code: ff ff ff 48 8d 78 70 e8 8c 69 96 07 31 ff 89 c6 89 44 24 10 e8
-ff 52 d8 ff 8b 44 24 10 85 c0 0f 85 13 fa ff ff e8 8e 51 d8 ff <0f> 0b
-e9 07 fa ff ff e8 82 51 d8 ff e8 9d 6a 96 07 31 ff 41 89 c7
-RSP: 0018:ffffc900076ef7c0 EFLAGS: 00010046
-RAX: 0000000000000000 RBX: ffff88802c478378 RCX: ffff88802fc33980
-RDX: 0000000000000000 RSI: ffff88802fc33980 RDI: 0000000000000002
-RBP: ffffea0000b7ca80 R08: ffffffff819f0012 R09: 0000000000000000
-R10: 0000000000000005 R11: fffff9400016f950 R12: 0000000000000246
-R13: ffff88802c478138 R14: 0000000000000001 R15: 0000000000000001
-FS: 0000000000000000(0000) GS:ffff888135d00000(0000) knlGS:0000000000000000
-CS: 0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 000056054d573c18 CR3: 0000000021c4e000 CR4: 0000000000350ee0
-Call Trace:
-<TASK>
-__set_page_dirty include/linux/pagemap.h:784 [inline]
-mark_buffer_dirty+0x501/0x6a0 fs/buffer.c:1108
-nilfs_btree_propagate_p fs/nilfs2/btree.c:1889 [inline]
-nilfs_btree_propagate+0x4ba/0xce0 fs/nilfs2/btree.c:2085
-nilfs_bmap_propagate+0x73/0x170 fs/nilfs2/bmap.c:337
-nilfs_collect_dat_data+0x45/0xd0 fs/nilfs2/segment.c:625
-nilfs_segctor_apply_buffers+0x149/0x480 fs/nilfs2/segment.c:1009
-nilfs_segctor_scan_file+0x3d9/0x570 fs/nilfs2/segment.c:1058
-nilfs_segctor_collect_blocks+0xa33/0x2fb0 fs/nilfs2/segment.c:1224
-nilfs_segctor_collect fs/nilfs2/segment.c:1494 [inline]
-nilfs_segctor_do_construct+0x1228/0x5ef0 fs/nilfs2/segment.c:2036
-nilfs_segctor_construct+0x79f/0xb10 fs/nilfs2/segment.c:2372
-nilfs_segctor_thread_construct fs/nilfs2/segment.c:2480 [inline]
-nilfs_segctor_thread+0x3be/0xe40 fs/nilfs2/segment.c:2563
-kthread+0x405/0x4f0 kernel/kthread.c:327
-ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:295
-</TASK>
+ drivers/scsi/scsi_error.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/scsi/scsi_error.c b/drivers/scsi/scsi_error.c
+index a531336..a665318 100644
+--- a/drivers/scsi/scsi_error.c
++++ b/drivers/scsi/scsi_error.c
+@@ -1404,7 +1404,8 @@ static int scsi_eh_try_stu(struct scsi_cmnd *scmd)
+ 		enum scsi_disposition rtn = NEEDS_RETRY;
+ 
+ 		for (i = 0; rtn == NEEDS_RETRY && i < 2; i++)
+-			rtn = scsi_send_eh_cmnd(scmd, stu_command, 6, scmd->device->request_queue->rq_timeout, 0);
++			rtn = scsi_send_eh_cmnd(scmd, stu_command, 6,
++						scmd->device->eh_timeout, 0);
+ 
+ 		if (rtn == SUCCESS)
+ 			return 0;
+-- 
+1.8.3.1
+
