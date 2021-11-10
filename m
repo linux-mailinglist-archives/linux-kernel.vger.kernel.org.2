@@ -2,137 +2,193 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 46F6A44C9E3
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 20:54:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9B0C944C9E5
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 20:55:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231584AbhKJT5Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Nov 2021 14:57:25 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60032 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230073AbhKJT5U (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Nov 2021 14:57:20 -0500
-Received: from mail-lf1-x133.google.com (mail-lf1-x133.google.com [IPv6:2a00:1450:4864:20::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B0A5C061764
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Nov 2021 11:54:32 -0800 (PST)
-Received: by mail-lf1-x133.google.com with SMTP id bi37so3729505lfb.5
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Nov 2021 11:54:32 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=katFFdjF9yTSPvuIotc4HFJ7jS5Mn6dtEx4FmMbQPg4=;
-        b=MZggrA4RcGMosy2Ga4WoqLZPKaTXzyjlufmlT6zEByT/wd6dNIGqeBo6m+OmBXpvkW
-         75LLdFQAKIW61endN6N1cI/NTleNo3zmNI6/Ek7dm9QlKBdlqqkpqFaT25/nEzdzRI9R
-         3j9n2/NeRe6z3HGDU/Bz7jTTVkV9sw03FRnJ1HPXnrlVSRDn4957pXe/P/ShmmxFClfs
-         llGhO7Pk5YGvShrE8xNQZLdoBx4nfy/rNYoXHSf/d4raA4PWv0xWz78w8WuNnimtIJ9O
-         +ppgIW+LLk7WWRppk1MFW01/0f4dhWeu9eLwtVcBrwv6IU6U01l6kK4yYnFjbA0Gv5WY
-         KrCA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=katFFdjF9yTSPvuIotc4HFJ7jS5Mn6dtEx4FmMbQPg4=;
-        b=C+ExV3uDfqtDMTsvtPb4H2EsX3e8NOjFSB4u6fwOF2jooaETkqhaE5Upv7wYMqOKeA
-         hxm+TJ8fMneXHAUDz1W4gNGOOb1qdFYfQA6RBJo/6FfZa585Nw9BEkwVi6tDf0kLhiZn
-         dcy4s7GWUZLwi52t9xWCJG/9KnQDSi1zcen/3H0rKBD/rDJJoX5mVVbPA/2gjas8fCnP
-         SxaBe6ANxyYHJcixuFS7WfdivAnPzYeTQpkJE0GhKevj7dGVPFUNWt7KSrRk7JjJX9Fc
-         rJCB7Wii0to1KLzLwo+FoUNlHCX2McdMghyFOw17IrIiPjHxvGsffmVIBaYtea9MKQfO
-         FfpQ==
-X-Gm-Message-State: AOAM530tAEZ09hjuQ07HVOiGotZA8VckMGBXoNhkcAT21fSEVQWOPHu7
-        W+BijE2DTyheq1gaMojI27Z8zs7n9dOlqlHMJGwgeg==
-X-Google-Smtp-Source: ABdhPJzFULqa9FMP1hJDixPutwoqlYcQoSFD04OmuzaLunO5v81iEbAfcBW9bBSLNQCvOM2qF9EvJwkAWtQsVLBmPVk=
-X-Received: by 2002:a05:6512:150e:: with SMTP id bq14mr1600909lfb.444.1636574070576;
- Wed, 10 Nov 2021 11:54:30 -0800 (PST)
+        id S231904AbhKJT6D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Nov 2021 14:58:03 -0500
+Received: from mail.kernel.org ([198.145.29.99]:46846 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231396AbhKJT5z (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Nov 2021 14:57:55 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C9773610D2;
+        Wed, 10 Nov 2021 19:55:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1636574104;
+        bh=NPFoTLW/HQ6GrD5T5xy3/bfl9eyQCnjzgqRq9z1nqlM=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=dh2krRVu8Ksgyby/bL96Rlwl1rxABcPP8RPoX3M1yTue04xUN1hQGxSCqBs2g7zHM
+         vTzdQ3r1iEaPpJiiIHa2icYyCAuvfBY9BjbKrMOsT5Q1oh+BeZhO39hg3IwwgZWEp4
+         oWuaG6KkUswrxFpdXaIGNK2Fp7wNxd5YMjvGXc1yXQ0QyFNsZKf/PMqNYqJZGJn4S7
+         2VQ08vv4Becyfh0eq/8uasmOfHaz78nhiBNIkCp8T1exIXCKM3BDYCYoqswd2NEpX5
+         hfMwHF8ZRfUGd4RLUALc3WtHnkbiidYOJXjCTr5O/7CzTfH9LTvshpqfhYpJm1QQNC
+         44dZcNus32goA==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id 909EB5C119C; Wed, 10 Nov 2021 11:55:04 -0800 (PST)
+Date:   Wed, 10 Nov 2021 11:55:04 -0800
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     quic_neeraju <quic_neeraju@quicinc.com>
+Cc:     josh@joshtriplett.org, rostedt@goodmis.org,
+        mathieu.desnoyers@efficios.com, jiangshanlai@gmail.com,
+        joel@joelfernandes.org, rcu@vger.kernel.org,
+        linux-kernel@vger.kernel.org, urezki@gmail.com,
+        frederic@kernel.org, boqun.feng@gmail.com
+Subject: Re: [PATCH] rcu-tasks: Inspect stalled task's trc state in locked
+ state
+Message-ID: <20211110195504.GE641268@paulmck-ThinkPad-P17-Gen-1>
+Reply-To: paulmck@kernel.org
+References: <20211109112214.19618-1-quic_neeraju@quicinc.com>
+ <20211109145235.GV641268@paulmck-ThinkPad-P17-Gen-1>
+ <d099f078-eef7-1c44-7086-b67971218f3f@quicinc.com>
 MIME-Version: 1.0
-References: <20211107162641.324688-1-masahiroy@kernel.org> <20211107162641.324688-2-masahiroy@kernel.org>
- <CAKwvOdmCaXAMvouD7bsWqmgOUxQ9vpdt3LY7qWpzTVm-2gddEw@mail.gmail.com> <20211109000531.k23mgrfjn5tomevv@google.com>
-In-Reply-To: <20211109000531.k23mgrfjn5tomevv@google.com>
-From:   Nick Desaulniers <ndesaulniers@google.com>
-Date:   Wed, 10 Nov 2021 11:54:19 -0800
-Message-ID: <CAKwvOd=gD+Tn1BCHwtLztUuy6tBPqZxUyneddz3849pDqhP7dw@mail.gmail.com>
-Subject: Re: [PATCH 2/2] x86/purgatory: remove -nostdlib compiler flag
-To:     Fangrui Song <maskray@google.com>,
-        Masahiro Yamada <masahiroy@kernel.org>
-Cc:     x86@kernel.org, Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H . Peter Anvin" <hpa@zytor.com>,
-        clang-built-linux@googlegroups.com,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        linux-kernel@vger.kernel.org, llvm@lists.linux.dev
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <d099f078-eef7-1c44-7086-b67971218f3f@quicinc.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 8, 2021 at 4:05 PM 'Fangrui Song' via Clang Built Linux
-<clang-built-linux@googlegroups.com> wrote:
->
-> On 2021-11-08, Nick Desaulniers wrote:
-> >On Sun, Nov 7, 2021 at 8:27 AM Masahiro Yamada <masahiroy@kernel.org> wrote:
-> >>
-> >> The -nostdlib option requests the compiler to not use the standard
-> >> system startup files or libraries when linking. It is effective only
-> >> when $(CC) is used as a linker driver.
-> >
-> >Is that right? ld.lld recognizes --nostdlib and has --help text for it.
->
-> GCC/Clang driver -nostdlib != ld.bfd/ld.lld -nostdlib.
->
-> ld.lld -nostdlib just ignores SEARCH_DIR in a linker script.
-> I think ld.bfd's -nostdlib is more complex than that which also has
-> something to do with its internal linker script location.
-> Anyway, getting of the obscure ld -nostdlib is a good idea.
+On Wed, Nov 10, 2021 at 10:10:27AM +0530, quic_neeraju wrote:
+> Hi Paul,
+> 
+> 
+> On 11/9/2021 8:22 PM, Paul E. McKenney wrote:
+> > On Tue, Nov 09, 2021 at 04:52:14PM +0530, Neeraj Upadhyay wrote:
+> > > On RCU tasks trace stall, inspect the RCU-tasks-trace specific
+> > > states of stalled task in locked down state, using try_invoke_
+> > > on_locked_down_task(), to get reliable trc state of a non-running
+> > > stalled task.
+> > > 
+> > > Signed-off-by: Neeraj Upadhyay <quic_neeraju@quicinc.com>
+> > 
+> > Queued for further review and testing, thank you!
+> > 
+> > Along those lines, what did you do to test this?  I would like to
+> > add that to the commit message.  (The usual approach is to use the
+> > rcutorture.stall_cpu module parameter, in case I have not yet passed
+> > that along.)
+> > 
+> 
+> Before sending the patch, I had tested with TRACE01 and adding long delay
+> before rcu_read_unlock_trace() in tasks_tracing_torture_read_unlock()
+> 
+> static void tasks_tracing_torture_read_unlock(int idx)
+> {
+>         rcu_read_unlock_trace();
+> }
+> 
+> I retested with below commandline (without adding delay in
+> tasks_tracing_torture_read_unlock()):
+> 
+> tools/testing/selftests/rcutorture/bin/kvm.sh --cpus 8 --configs TRACE01
+> --bootargs "rcutorture.torture_type=tasks-tracing rcutorture.stall_cpu=10
+> rcutorture.stall_cpu_block=1 rcupdate.rcu_task_stall_timeout=100"
+> --trust-make
+> 
+> With this, I can see stalls for both RUNNING and WAITING state task:
 
-Ok, I verified that the size of arch/x86/purgatory/purgatory.ro,
-arch/x86/entry/vdso/vdso64.so, and arch/x86/entry/vdso/vdso32.so don't
-change with this series. (ldd is not happy with the .so's regardless).
+Applied, thank you!
 
-I also suspect that the linker when invoked directly can't assuming
-it's linking object files created from C sources (ie. could have been
-assembler sources), so there's no reason to assume that the libc, C
-runtime, or compiler runtime would need to be linked against.
+							Thanx, Paul
 
-Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
-
->
-> >>
-> >> $(LD) is directly used for linking purgatory.{ro,chk} here, hence
-> >> -nostdlib is unneeded.
-> >>
-> >> Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
-> >> ---
-> >>
-> >>  arch/x86/purgatory/Makefile | 2 +-
-> >>  1 file changed, 1 insertion(+), 1 deletion(-)
-> >>
-> >> diff --git a/arch/x86/purgatory/Makefile b/arch/x86/purgatory/Makefile
-> >> index 95ea17a9d20c..ae53d54d7959 100644
-> >> --- a/arch/x86/purgatory/Makefile
-> >> +++ b/arch/x86/purgatory/Makefile
-> >> @@ -16,7 +16,7 @@ CFLAGS_sha256.o := -D__DISABLE_EXPORTS
-> >>
-> >>  # When linking purgatory.ro with -r unresolved symbols are not checked,
-> >>  # also link a purgatory.chk binary without -r to check for unresolved symbols.
-> >> -PURGATORY_LDFLAGS := -e purgatory_start -nostdlib -z nodefaultlib
-> >> +PURGATORY_LDFLAGS := -e purgatory_start -z nodefaultlib
-> >>  LDFLAGS_purgatory.ro := -r $(PURGATORY_LDFLAGS)
-> >>  LDFLAGS_purgatory.chk := $(PURGATORY_LDFLAGS)
-> >>  targets += purgatory.ro purgatory.chk
-> >> --
-> >> 2.30.2
-> >
-> >--
-> >Thanks,
-> >~Nick Desaulniers
->
-> --
-> You received this message because you are subscribed to the Google Groups "Clang Built Linux" group.
-> To unsubscribe from this group and stop receiving emails from it, send an email to clang-built-linux+unsubscribe@googlegroups.com.
-> To view this discussion on the web visit https://groups.google.com/d/msgid/clang-built-linux/20211109000531.k23mgrfjn5tomevv%40google.com.
-
-
-
--- 
-Thanks,
-~Nick Desaulniers
+> [   21.520291] INFO: rcu_tasks_trace detected stalls on tasks:
+> [   21.521292] P85: ... nesting: 1N cpu: 2
+> [   21.521966] task:rcu_torture_sta state:D stack:15080 pid:   85 ppid:
+> 2 flags:0x00004000
+> [   21.523384] Call Trace:
+> [   21.523808]  __schedule+0x273/0x6e0
+> [   21.524428]  schedule+0x35/0xa0
+> [   21.524971]  schedule_timeout+0x1ed/0x270
+> [   21.525690]  ? del_timer_sync+0x30/0x30
+> [   21.526371]  ? rcu_torture_writer+0x720/0x720
+> [   21.527106]  rcu_torture_stall+0x24a/0x270
+> [   21.527816]  kthread+0x115/0x140
+> [   21.528401]  ? set_kthread_struct+0x40/0x40
+> [   21.529136]  ret_from_fork+0x22/0x30
+> [   21.529766]  1 holdouts
+> [   21.632300] INFO: rcu_tasks_trace detected stalls on tasks:
+> [   21.632345] rcu_torture_stall end.
+> [   21.633293] P85: .
+> [   21.633294] task:rcu_torture_sta state:R  running task stack:15080 pid:
+> 85 ppid:     2 flags:0x00004000
+> [   21.633299] Call Trace:
+> [   21.633301]  ? vprintk_emit+0xab/0x180
+> [   21.633306]  ? vprintk_emit+0x11a/0x180
+> [   21.633308]  ? _printk+0x4d/0x69
+> [   21.633311]  ? __default_send_IPI_shortcut+0x1f/0x40
+> 
+> 
+> 
+> Thanks
+> Neeraj
+> 
+> > 							Thanx, Paul
+> > 
+> > > ---
+> > >   kernel/rcu/tasks.h | 43 ++++++++++++++++++++++++++++++++++---------
+> > >   1 file changed, 34 insertions(+), 9 deletions(-)
+> > > 
+> > > diff --git a/kernel/rcu/tasks.h b/kernel/rcu/tasks.h
+> > > index e4a32db9f712..4e49b847971b 100644
+> > > --- a/kernel/rcu/tasks.h
+> > > +++ b/kernel/rcu/tasks.h
+> > > @@ -1073,25 +1073,50 @@ static void rcu_tasks_trace_postscan(struct list_head *hop)
+> > >   	// Any tasks that exit after this point will set ->trc_reader_checked.
+> > >   }
+> > > +/* Communicate task state back to the RCU tasks trace stall warning request. */
+> > > +struct trc_stall_chk_rdr {
+> > > +	int nesting;
+> > > +	int ipi_to_cpu;
+> > > +	u8 needqs;
+> > > +};
+> > > +
+> > > +static bool trc_check_slow_task(struct task_struct *t, void *arg)
+> > > +{
+> > > +	struct trc_stall_chk_rdr *trc_rdrp = arg;
+> > > +
+> > > +	if (task_curr(t))
+> > > +		return false; // It is running, so decline to inspect it.
+> > > +	trc_rdrp->nesting = READ_ONCE(t->trc_reader_nesting);
+> > > +	trc_rdrp->ipi_to_cpu = READ_ONCE(t->trc_ipi_to_cpu);
+> > > +	trc_rdrp->needqs = READ_ONCE(t->trc_reader_special.b.need_qs);
+> > > +	return true;
+> > > +}
+> > > +
+> > >   /* Show the state of a task stalling the current RCU tasks trace GP. */
+> > >   static void show_stalled_task_trace(struct task_struct *t, bool *firstreport)
+> > >   {
+> > >   	int cpu;
+> > > +	struct trc_stall_chk_rdr trc_rdr;
+> > > +	bool is_idle_tsk = is_idle_task(t);
+> > >   	if (*firstreport) {
+> > >   		pr_err("INFO: rcu_tasks_trace detected stalls on tasks:\n");
+> > >   		*firstreport = false;
+> > >   	}
+> > > -	// FIXME: This should attempt to use try_invoke_on_nonrunning_task().
+> > >   	cpu = task_cpu(t);
+> > > -	pr_alert("P%d: %c%c%c nesting: %d%c cpu: %d\n",
+> > > -		 t->pid,
+> > > -		 ".I"[READ_ONCE(t->trc_ipi_to_cpu) >= 0],
+> > > -		 ".i"[is_idle_task(t)],
+> > > -		 ".N"[cpu >= 0 && tick_nohz_full_cpu(cpu)],
+> > > -		 READ_ONCE(t->trc_reader_nesting),
+> > > -		 " N"[!!READ_ONCE(t->trc_reader_special.b.need_qs)],
+> > > -		 cpu);
+> > > +	if (!try_invoke_on_locked_down_task(t, trc_check_slow_task, &trc_rdr))
+> > > +		pr_alert("P%d: %c\n",
+> > > +			 t->pid,
+> > > +			 ".i"[is_idle_tsk]);
+> > > +	else
+> > > +		pr_alert("P%d: %c%c%c nesting: %d%c cpu: %d\n",
+> > > +			 t->pid,
+> > > +			 ".I"[trc_rdr.ipi_to_cpu >= 0],
+> > > +			 ".i"[is_idle_tsk],
+> > > +			 ".N"[cpu >= 0 && tick_nohz_full_cpu(cpu)],
+> > > +			 trc_rdr.nesting,
+> > > +			 " N"[!!trc_rdr.needqs],
+> > > +			 cpu);
+> > >   	sched_show_task(t);
+> > >   }
+> > > -- 
+> > > 2.17.1
+> > > 
