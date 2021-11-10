@@ -2,58 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 58EBD44CCDE
+	by mail.lfdr.de (Postfix) with ESMTP id EAF2E44CCE0
 	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 23:32:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234099AbhKJWeU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Nov 2021 17:34:20 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39262 "EHLO
+        id S234192AbhKJWeX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Nov 2021 17:34:23 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39282 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234175AbhKJWeG (ORCPT
+        with ESMTP id S234064AbhKJWeJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Nov 2021 17:34:06 -0500
-Received: from mail-pf1-x44a.google.com (mail-pf1-x44a.google.com [IPv6:2607:f8b0:4864:20::44a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A0744C061210
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Nov 2021 14:31:10 -0800 (PST)
-Received: by mail-pf1-x44a.google.com with SMTP id a127-20020a627f85000000b0047feae4a8d9so2690209pfd.19
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Nov 2021 14:31:10 -0800 (PST)
+        Wed, 10 Nov 2021 17:34:09 -0500
+Received: from mail-pf1-x449.google.com (mail-pf1-x449.google.com [IPv6:2607:f8b0:4864:20::449])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 37438C061228
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Nov 2021 14:31:13 -0800 (PST)
+Received: by mail-pf1-x449.google.com with SMTP id x14-20020a627c0e000000b0049473df362dso2720443pfc.12
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Nov 2021 14:31:13 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20210112;
         h=date:in-reply-to:message-id:mime-version:references:subject:from:to
          :cc;
-        bh=bZTXtoL6rjrzQ4HwLwZZ68cG+tVDuxM3qYy8DkAd4cQ=;
-        b=baoKiQKjU6YQRi/VZRG/k8cZ6kvnxiNjxD9yt8sWBe/hdX0Q/VLTZWrq30Eona0gDe
-         LvijFooMTQipe3XWgcJZlN0FN2PaJV7BwUkfGPuabQ4n2LlkBlZ1B6PoymrI2YlWPkjl
-         gbbNWMhjZYdmAutSvOIbx/UgznfZG7XGQIKE9SVPjFXhp/M8dZBT4PZSSi1jUOnE3SkY
-         EVYh9EFoN6Gx+e64KvtpEcbqQfjdAf+qoV/dg9lFHyFU1LGag8SmPcFIkULn90THRfQB
-         AeqMVenOvjia/xJ4+xqfg9PH0/nTYu/o+Q2lK1tVOdPMMw5EPbux0HPsScpom9HVcTC9
-         o7vw==
+        bh=kiIatwAlHvvu2uBeY4ii96e1dHU62kAmoLcLl2YIwuU=;
+        b=RnDqEGa/fEcU2We4hgto9VMn8KlebfcLVZiOFRmtEeoUfA42ScMbhhwf2EyLQ657fN
+         mIJcNlq//gcq7sGDAaP2vVXJkRZ9KHQfahF6uNMfjkKte9KKk26GkrRuP78aDPZBlvaN
+         28ulYf5vXbt5A1h6hgPU9OM+XyKvThbrmG+hrgl8mchydnzLzsiP5P50bJEVr5l+Qeo1
+         ewZR2wDzQN+gEhyct5BRm6QZVul+MEvcMKGHwIWe0UKRNUntcWMRkcwIgpVZ0QZ0FVCA
+         ACjP1Hh+pHd9ROVQpC22dUxnSoa0rSHPQU92ogo+RXYssTlhPRTA2Yn6OEr8SuHpgj/m
+         HIBw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:date:in-reply-to:message-id:mime-version
          :references:subject:from:to:cc;
-        bh=bZTXtoL6rjrzQ4HwLwZZ68cG+tVDuxM3qYy8DkAd4cQ=;
-        b=7jGNlVvGDqDPDbaWvb8rbqscpZV6EuNwyiF6xaJoLGfVqdyfzIOWsp66iCfmAsv6iU
-         h33ThLeqtSyafmL8B7jpFR7pUNbLMndBoslULRykgAxfbAEwr1eZWps5+H1A82hgAUFB
-         2h1xe794BEavEzfNXAVPfo2C6k53Mh+brSw6E4Q4GXn1pP2tLoSf4vzIU+gL2yF3T1wR
-         YDHkZys2npYtKXja6+d5v4o5yQ+JeEStvRBk/tpGm7hSgNwByWYjT8Vu9024nTYFUAqN
-         X13rUWVgkRzrzw1+bnXp23td4jsQdjRyUqNXPbYAJ1WB/k9e4S0eDoJ5Be09z0h/lIar
-         HxQQ==
-X-Gm-Message-State: AOAM530oB/bqPcRClqwrzBUBd/wDft0QNJ+C0moOEuPr1cZ6UvYGBv3t
-        ZYy041aeHr2HjEWSg6groNW0TLImgUN1CAF1lCv74BFZsskhjEt+k3eJCwoC1S3UAK6D/oMX7wF
-        4+yyZFTcHAiuw+oWE7dqbusp+HQkPA3SG3SDAhqsYRtNhwc0iOoAXta5uf0bNJ7jXZUM74m5p
-X-Google-Smtp-Source: ABdhPJwl96mkKsHES8Eqe+lbSV/Cm0gOjq4Js/ovxC9x8ZbcgihmVW5WWukxAIvwv6UHgbSSO2vghgeeXVY7
+        bh=kiIatwAlHvvu2uBeY4ii96e1dHU62kAmoLcLl2YIwuU=;
+        b=kCKQmTIufv9UPrkRphgSg/5Ag+NOUt7U56YtGkGxuNm6UAfT5owMLvygbY+Ux3QEth
+         oxZXJ2vSTlyNwApIXFp3P6YI+sFLjWThxH3O72MyR/1Ry9JgrvX9Oc/zAQH0U7tf/viw
+         LmzaPDD0s53D1Z1mp+qpLtu0AnT9FZPirY8iRVb8qgvnwLrcGrHGS5A9dGD0Kw3xbg5T
+         PMnPIweSj4M7Stq5yeh9Oe2mZ/FDOGuYyllF3FNprzihqYP3z4D1TufByYCmZxR1Yi7n
+         Lq5knN0qH6M2lwyU4y+dKDW7CjYhnVtrT958qbyOteUixRhixN3Hvz8YqRLcfuWqahyf
+         OAGg==
+X-Gm-Message-State: AOAM530SpttcMgpYUxhZ+gKkHg7DD4goaDo7roHo+7GY0B+lJ/ghF0Tg
+        u5dZPfSLnS1siykc3caEhd5o9jJl26DQzZn8Z7gHJguKvHEbDnaI3yXT+ZVV3IMUksVpMYronAK
+        4jnDrRHMK6oya9e5PVZmNvhkTRXeqHe5L6PYHFETM/xaq3rWNt4DvWefaU753qwiunUWPybTj
+X-Google-Smtp-Source: ABdhPJxRkOjjvaAjzujyF2bBDUfldGJ3U4LikPZF4vwA1t4IZQZ/JS3wXmtHCpgOAl3XM9zKZg/6GD+smOA7
 X-Received: from bgardon.sea.corp.google.com ([2620:15c:100:202:6586:7b2f:b259:2011])
- (user=bgardon job=sendgmr) by 2002:a05:6a00:1312:b0:44c:becf:b329 with SMTP
- id j18-20020a056a00131200b0044cbecfb329mr2529651pfu.5.1636583470017; Wed, 10
- Nov 2021 14:31:10 -0800 (PST)
-Date:   Wed, 10 Nov 2021 14:30:08 -0800
+ (user=bgardon job=sendgmr) by 2002:a17:90a:4a85:: with SMTP id
+ f5mr21194680pjh.92.1636583472609; Wed, 10 Nov 2021 14:31:12 -0800 (PST)
+Date:   Wed, 10 Nov 2021 14:30:09 -0800
 In-Reply-To: <20211110223010.1392399-1-bgardon@google.com>
-Message-Id: <20211110223010.1392399-18-bgardon@google.com>
+Message-Id: <20211110223010.1392399-19-bgardon@google.com>
 Mime-Version: 1.0
 References: <20211110223010.1392399-1-bgardon@google.com>
 X-Mailer: git-send-email 2.34.0.rc0.344.g81b53c2807-goog
-Subject: [RFC 17/19] KVM: x86/mmu: Add try_get_mt_mask to x86_ops
+Subject: [RFC 18/19] KVM: x86/mmu: Make kvm_is_mmio_pfn usable outside of spte.c
 From:   Ben Gardon <bgardon@google.com>
 To:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org
 Cc:     Paolo Bonzini <pbonzini@redhat.com>, Peter Xu <peterx@redhat.com>,
@@ -73,85 +72,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add another function for getting the memory type mask to x86_ops.
-This version of the function can fail, but it does not require a vCPU
-pointer. It will be used in a subsequent commit for in-place large page
-promotion when disabling dirty logging.
-
-No functional change intended.
+Export kvm_is_mmio_pfn from spte.c. It will be used in a subsequent
+commit for in-place lpage promotion when disabling dirty logging.
 
 
 Signed-off-by: Ben Gardon <bgardon@google.com>
 ---
- arch/x86/include/asm/kvm-x86-ops.h | 1 +
- arch/x86/include/asm/kvm_host.h    | 2 ++
- arch/x86/kvm/svm/svm.c             | 8 ++++++++
- arch/x86/kvm/vmx/vmx.c             | 1 +
- 4 files changed, 12 insertions(+)
+ arch/x86/kvm/mmu/spte.c | 2 +-
+ arch/x86/kvm/mmu/spte.h | 1 +
+ 2 files changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/arch/x86/include/asm/kvm-x86-ops.h b/arch/x86/include/asm/kvm-x86-ops.h
-index cefe1d81e2e8..c86e9629ff1a 100644
---- a/arch/x86/include/asm/kvm-x86-ops.h
-+++ b/arch/x86/include/asm/kvm-x86-ops.h
-@@ -84,6 +84,7 @@ KVM_X86_OP_NULL(sync_pir_to_irr)
- KVM_X86_OP(set_tss_addr)
- KVM_X86_OP(set_identity_map_addr)
- KVM_X86_OP(get_mt_mask)
-+KVM_X86_OP(try_get_mt_mask)
- KVM_X86_OP(load_mmu_pgd)
- KVM_X86_OP_NULL(has_wbinvd_exit)
- KVM_X86_OP(get_l2_tsc_offset)
-diff --git a/arch/x86/include/asm/kvm_host.h b/arch/x86/include/asm/kvm_host.h
-index 88fce6ab4bbd..ae13075f4d4c 100644
---- a/arch/x86/include/asm/kvm_host.h
-+++ b/arch/x86/include/asm/kvm_host.h
-@@ -1400,6 +1400,8 @@ struct kvm_x86_ops {
- 	int (*set_tss_addr)(struct kvm *kvm, unsigned int addr);
- 	int (*set_identity_map_addr)(struct kvm *kvm, u64 ident_addr);
- 	u64 (*get_mt_mask)(struct kvm_vcpu *vcpu, gfn_t gfn, bool is_mmio);
-+	bool (*try_get_mt_mask)(struct kvm *kvm, gfn_t gfn,
-+				bool is_mmio, u64 *mask);
- 
- 	void (*load_mmu_pgd)(struct kvm_vcpu *vcpu, hpa_t root_hpa,
- 			     int root_level);
-diff --git a/arch/x86/kvm/svm/svm.c b/arch/x86/kvm/svm/svm.c
-index 21bb81710e0f..d073cc3985e6 100644
---- a/arch/x86/kvm/svm/svm.c
-+++ b/arch/x86/kvm/svm/svm.c
-@@ -4067,6 +4067,13 @@ static bool svm_has_emulated_msr(struct kvm *kvm, u32 index)
- 	return true;
+diff --git a/arch/x86/kvm/mmu/spte.c b/arch/x86/kvm/mmu/spte.c
+index 7be41d2dbb02..13b6143f6333 100644
+--- a/arch/x86/kvm/mmu/spte.c
++++ b/arch/x86/kvm/mmu/spte.c
+@@ -68,7 +68,7 @@ u64 make_mmio_spte(struct kvm_vcpu *vcpu, u64 gfn, unsigned int access)
+ 	return spte;
  }
  
-+static bool svm_try_get_mt_mask(struct kvm *kvm, gfn_t gfn,
-+				bool is_mmio, u64 *mask)
-+{
-+	*mask = 0;
-+	return true;
-+}
-+
- static u64 svm_get_mt_mask(struct kvm_vcpu *vcpu, gfn_t gfn, bool is_mmio)
+-static bool kvm_is_mmio_pfn(kvm_pfn_t pfn)
++bool kvm_is_mmio_pfn(kvm_pfn_t pfn)
  {
- 	return 0;
-@@ -4660,6 +4667,7 @@ static struct kvm_x86_ops svm_x86_ops __initdata = {
- 	.set_tss_addr = svm_set_tss_addr,
- 	.set_identity_map_addr = svm_set_identity_map_addr,
- 	.get_mt_mask = svm_get_mt_mask,
-+	.try_get_mt_mask = svm_try_get_mt_mask,
+ 	if (pfn_valid(pfn))
+ 		return !is_zero_pfn(pfn) && PageReserved(pfn_to_page(pfn)) &&
+diff --git a/arch/x86/kvm/mmu/spte.h b/arch/x86/kvm/mmu/spte.h
+index d7598506fbad..909c24c733c4 100644
+--- a/arch/x86/kvm/mmu/spte.h
++++ b/arch/x86/kvm/mmu/spte.h
+@@ -347,4 +347,5 @@ u64 kvm_mmu_changed_pte_notifier_make_spte(u64 old_spte, kvm_pfn_t new_pfn);
  
- 	.get_exit_info = svm_get_exit_info,
+ void kvm_mmu_reset_all_pte_masks(void);
  
-diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
-index 4129614262e8..8cd6c1f50d3e 100644
---- a/arch/x86/kvm/vmx/vmx.c
-+++ b/arch/x86/kvm/vmx/vmx.c
-@@ -7658,6 +7658,7 @@ static struct kvm_x86_ops vmx_x86_ops __initdata = {
- 	.set_tss_addr = vmx_set_tss_addr,
- 	.set_identity_map_addr = vmx_set_identity_map_addr,
- 	.get_mt_mask = vmx_get_mt_mask,
-+	.try_get_mt_mask = vmx_try_get_mt_mask,
- 
- 	.get_exit_info = vmx_get_exit_info,
- 
++bool kvm_is_mmio_pfn(kvm_pfn_t pfn);
+ #endif
 -- 
 2.34.0.rc0.344.g81b53c2807-goog
 
