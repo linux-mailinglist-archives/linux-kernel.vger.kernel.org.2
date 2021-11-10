@@ -2,35 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0FEBA44C783
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 19:49:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A120044C7CF
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 19:53:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233326AbhKJSwZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Nov 2021 13:52:25 -0500
-Received: from mail.kernel.org ([198.145.29.99]:48408 "EHLO mail.kernel.org"
+        id S232582AbhKJSzf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Nov 2021 13:55:35 -0500
+Received: from mail.kernel.org ([198.145.29.99]:48510 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232601AbhKJStu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Nov 2021 13:49:50 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4506C61267;
-        Wed, 10 Nov 2021 18:46:43 +0000 (UTC)
+        id S233863AbhKJSxn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Nov 2021 13:53:43 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9165261881;
+        Wed, 10 Nov 2021 18:48:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1636570003;
-        bh=1zfsYFHO3typVfHKqavEHPVblYBSppT0vkLosrRI0X4=;
+        s=korg; t=1636570110;
+        bh=m91u4AUSBvuJlLQR5nC2A9E4fcoxzN+ge/HimR2tUro=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=hwLyQ16zoD1YgrBanXuwa5Wk2Z5+rnWIR5fAi+H0EOABsLdDLdXcR6zWBAYsTL90n
-         xGAk+MRTjDmmIHjty/HaHGOSkc6OrUOHPQUAqSy0ygYT9JG3BTiktvTM5OwMVOmj4H
-         Wbfueh5UwQgbalmaVbQHe+ks5z1Gpd5lCiokuYWU=
+        b=UJaQT+Kn2VWjZmyZTHwns/hRTGYMrtvB7fpZ/J7dm14koHlfPeqr+IYOUkQheodfx
+         robFOPOEQK8kEBkAYJpqzqeMy1O9RFxNkEJ/A3sh8EwoowZqzbklwf/mZhYRW05qkY
+         Wvv7pg3fEr1ieEbp2PDehM0ou4F5rPcD4k/AAmvs=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Larry Finger <Larry.Finger@lwfinger.net>,
-        Johan Hovold <johan@kernel.org>
-Subject: [PATCH 4.19 14/16] staging: r8712u: fix control-message timeout
-Date:   Wed, 10 Nov 2021 19:43:47 +0100
-Message-Id: <20211110182002.447133372@linuxfoundation.org>
+        stable@vger.kernel.org, Eduardo Habkost <ehabkost@redhat.com>,
+        Juergen Gross <jgross@suse.com>,
+        Paolo Bonzini <pbonzini@redhat.com>
+Subject: [PATCH 5.10 02/21] Revert "x86/kvm: fix vcpu-id indexed array sizes"
+Date:   Wed, 10 Nov 2021 19:43:48 +0100
+Message-Id: <20211110182003.041413509@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211110182001.994215976@linuxfoundation.org>
-References: <20211110182001.994215976@linuxfoundation.org>
+In-Reply-To: <20211110182002.964190708@linuxfoundation.org>
+References: <20211110182002.964190708@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,33 +40,55 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Johan Hovold <johan@kernel.org>
+From: Juergen Gross <jgross@suse.com>
 
-commit ce4940525f36ffdcf4fa623bcedab9c2a6db893a upstream.
+commit 1e254d0d86a0f2efd4190a89d5204b37c18c6381 upstream.
 
-USB control-message timeouts are specified in milliseconds and should
-specifically not vary with CONFIG_HZ.
+This reverts commit 76b4f357d0e7d8f6f0013c733e6cba1773c266d3.
 
-Fixes: 2865d42c78a9 ("staging: r8712u: Add the new driver to the mainline kernel")
-Cc: stable@vger.kernel.org      # 2.6.37
-Acked-by: Larry Finger <Larry.Finger@lwfinger.net>
-Signed-off-by: Johan Hovold <johan@kernel.org>
-Link: https://lore.kernel.org/r/20211025120910.6339-3-johan@kernel.org
+The commit has the wrong reasoning, as KVM_MAX_VCPU_ID is not defining the
+maximum allowed vcpu-id as its name suggests, but the number of vcpu-ids.
+So revert this patch again.
+
+Suggested-by: Eduardo Habkost <ehabkost@redhat.com>
+Signed-off-by: Juergen Gross <jgross@suse.com>
+Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
+Message-Id: <20210913135745.13944-2-jgross@suse.com>
+Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/staging/rtl8712/usb_ops_linux.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ arch/x86/kvm/ioapic.c |    2 +-
+ arch/x86/kvm/ioapic.h |    4 ++--
+ 2 files changed, 3 insertions(+), 3 deletions(-)
 
---- a/drivers/staging/rtl8712/usb_ops_linux.c
-+++ b/drivers/staging/rtl8712/usb_ops_linux.c
-@@ -505,7 +505,7 @@ int r8712_usbctrl_vendorreq(struct intf_
- 		memcpy(pIo_buf, pdata, len);
- 	}
- 	status = usb_control_msg(udev, pipe, request, reqtype, value, index,
--				 pIo_buf, len, HZ / 2);
-+				 pIo_buf, len, 500);
- 	if (status > 0) {  /* Success this control transfer. */
- 		if (requesttype == 0x01) {
- 			/* For Control read transfer, we have to copy the read
+--- a/arch/x86/kvm/ioapic.c
++++ b/arch/x86/kvm/ioapic.c
+@@ -96,7 +96,7 @@ static unsigned long ioapic_read_indirec
+ static void rtc_irq_eoi_tracking_reset(struct kvm_ioapic *ioapic)
+ {
+ 	ioapic->rtc_status.pending_eoi = 0;
+-	bitmap_zero(ioapic->rtc_status.dest_map.map, KVM_MAX_VCPU_ID + 1);
++	bitmap_zero(ioapic->rtc_status.dest_map.map, KVM_MAX_VCPU_ID);
+ }
+ 
+ static void kvm_rtc_eoi_tracking_restore_all(struct kvm_ioapic *ioapic);
+--- a/arch/x86/kvm/ioapic.h
++++ b/arch/x86/kvm/ioapic.h
+@@ -43,13 +43,13 @@ struct kvm_vcpu;
+ 
+ struct dest_map {
+ 	/* vcpu bitmap where IRQ has been sent */
+-	DECLARE_BITMAP(map, KVM_MAX_VCPU_ID + 1);
++	DECLARE_BITMAP(map, KVM_MAX_VCPU_ID);
+ 
+ 	/*
+ 	 * Vector sent to a given vcpu, only valid when
+ 	 * the vcpu's bit in map is set
+ 	 */
+-	u8 vectors[KVM_MAX_VCPU_ID + 1];
++	u8 vectors[KVM_MAX_VCPU_ID];
+ };
+ 
+ 
 
 
