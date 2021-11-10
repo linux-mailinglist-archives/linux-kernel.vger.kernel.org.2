@@ -2,51 +2,222 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C92044C57D
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 17:56:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ED72944C579
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 17:55:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232192AbhKJQ6x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Nov 2021 11:58:53 -0500
-Received: from mga03.intel.com ([134.134.136.65]:15090 "EHLO mga03.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231577AbhKJQ6u (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Nov 2021 11:58:50 -0500
-X-IronPort-AV: E=McAfee;i="6200,9189,10164"; a="232658411"
-X-IronPort-AV: E=Sophos;i="5.87,224,1631602800"; 
-   d="scan'208";a="232658411"
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Nov 2021 08:55:10 -0800
-X-IronPort-AV: E=Sophos;i="5.87,224,1631602800"; 
-   d="scan'208";a="669868873"
-Received: from lahna.fi.intel.com (HELO lahna) ([10.237.72.163])
-  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Nov 2021 08:55:07 -0800
-Received: by lahna (sSMTP sendmail emulation); Wed, 10 Nov 2021 18:55:05 +0200
-Date:   Wed, 10 Nov 2021 18:55:05 +0200
-From:   Mika Westerberg <mika.westerberg@linux.intel.com>
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     linux-gpio@vger.kernel.org, linux-acpi@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <brgl@bgdev.pl>
-Subject: Re: [PATCH v1 2/2] gpiolib: acpi: shrink
- devm_acpi_dev_add_driver_gpios()
-Message-ID: <YYv5ab2Xlqae7ExC@lahna>
-References: <20211110134743.4300-1-andriy.shevchenko@linux.intel.com>
- <20211110134743.4300-2-andriy.shevchenko@linux.intel.com>
+        id S232058AbhKJQ6A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Nov 2021 11:58:00 -0500
+Received: from mx07-00178001.pphosted.com ([185.132.182.106]:46334 "EHLO
+        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231577AbhKJQ56 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Nov 2021 11:57:58 -0500
+Received: from pps.filterd (m0046668.ppops.net [127.0.0.1])
+        by mx07-00178001.pphosted.com (8.16.1.2/8.16.1.2) with ESMTP id 1AABtc3e015818;
+        Wed, 10 Nov 2021 17:55:08 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=selector1;
+ bh=mO/Ss6mrE0C3GxnsXQ/FjD90wHACiXPvt8KfcgW7YAU=;
+ b=QcIgqV2ns3xUelpIaoCrKnol31M70ip8/pa4Qy+ikVORg6qfRU2W1Xsn8FuOGajcpJQl
+ tWtRibW+ps0TM/R74IS49dJrVSxEKbIHJDdO1dZE1yTpvOXm94IPVEVDuIYqoP6OdWYY
+ a84VuoPxJyyhbXyzV6JGh3WAtcqueI7TQdyYLBw5HCqWTAl549qXpy3aysDATFhj8Og9
+ Zh1gkwLEzzQ+RZMw3c9LObBeLOaOD4ks/2nzPfnzB85ToXEu1s1mniRuad9IfQvCjwXF
+ +bknFFpNSB7ozdsgECpHcX6zwQJDp3IXVY0SfyaSCyDoVz02+PZz8mcm3zH6hrZOavmY YA== 
+Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
+        by mx07-00178001.pphosted.com (PPS) with ESMTPS id 3c8dmw1u15-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 10 Nov 2021 17:55:08 +0100
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id C506210002A;
+        Wed, 10 Nov 2021 17:55:07 +0100 (CET)
+Received: from Webmail-eu.st.com (sfhdag2node2.st.com [10.75.127.5])
+        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id BB9E820AA92;
+        Wed, 10 Nov 2021 17:55:07 +0100 (CET)
+Received: from lmecxl0889.lme.st.com (10.75.127.44) by SFHDAG2NODE2.st.com
+ (10.75.127.5) with Microsoft SMTP Server (TLS) id 15.0.1497.18; Wed, 10 Nov
+ 2021 17:55:06 +0100
+Subject: Re: [RFC PATCH v2 1/1] rpmsg: add syslog driver
+To:     Christian Gmeiner <christian.gmeiner@gmail.com>
+CC:     <linux-kernel@vger.kernel.org>, Ohad Ben-Cohen <ohad@wizery.com>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        <linux-remoteproc@vger.kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>
+References: <20211109083926.32052-1-christian.gmeiner@gmail.com>
+ <20211109083926.32052-2-christian.gmeiner@gmail.com>
+ <YYq4tjyv0qh+Zpqe@ripper>
+From:   Arnaud POULIQUEN <arnaud.pouliquen@foss.st.com>
+Message-ID: <30de037d-3acd-8e9d-979c-b3d0c1c84002@foss.st.com>
+Date:   Wed, 10 Nov 2021 17:55:05 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211110134743.4300-2-andriy.shevchenko@linux.intel.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+In-Reply-To: <YYq4tjyv0qh+Zpqe@ripper>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.75.127.44]
+X-ClientProxiedBy: SFHDAG2NODE2.st.com (10.75.127.5) To SFHDAG2NODE2.st.com
+ (10.75.127.5)
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.205,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.0.607.475
+ definitions=2021-11-10_06,2021-11-08_02,2020-04-07_01
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 10, 2021 at 03:47:43PM +0200, Andy Shevchenko wrote:
-> If all we want to manage is a single pointer, there's no need to
-> manually allocate and add a new devres. We can simply use
-> devm_add_action_or_reset() and shrink the code by a good bit.
-> 
-> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Hi Christian,
 
-Reviewed-by: Mika Westerberg <mika.westerberg@linux.intel.com>
+On 11/9/21 7:06 PM, Bjorn Andersson wrote:
+> On Tue 09 Nov 00:39 PST 2021, Christian Gmeiner wrote:
+> 
+>> Allows the remote firmware to log into syslog.
+>>
+
+For you information a similar patch has been sent few years ago:
+https://www.spinics.net/lists/kernel/msg3045824.html
+
+The suspend /resume mechanism seems interesting to manage the low power use case.
+
+> 
+> This allows the remote firmware to print log messages in the kernel log,
+> not the syslog (although your system might inject the kernel log into
+> the syslog as well)
+> 
+>> Signed-off-by: Christian Gmeiner <christian.gmeiner@gmail.com>
+>> ---
+>>  drivers/rpmsg/Kconfig        |  8 +++++
+>>  drivers/rpmsg/Makefile       |  1 +
+>>  drivers/rpmsg/rpmsg_syslog.c | 65 ++++++++++++++++++++++++++++++++++++
+> 
+> drivers/rpmsg is for rpmsg bus and transport drivers. Client drivers
+> should live elsewhere.
+> 
+> But perhaps, rather than having a driver for this, you could simply use
+> rpmsg_char and a userspace tool; if you want to get the remote processor
+> logs into syslog, instead of the kernel log?
+
+This is also a question that comes to me while looking at the patch.
+rpmsg_tty service (if available in 5.16) could be another alternative.
+
+Regards,
+Arnaud
+
+> 
+>>  3 files changed, 74 insertions(+)
+>>  create mode 100644 drivers/rpmsg/rpmsg_syslog.c
+>>
+>> diff --git a/drivers/rpmsg/Kconfig b/drivers/rpmsg/Kconfig
+>> index 0b4407abdf13..801f9956ec21 100644
+>> --- a/drivers/rpmsg/Kconfig
+>> +++ b/drivers/rpmsg/Kconfig
+>> @@ -73,4 +73,12 @@ config RPMSG_VIRTIO
+>>  	select RPMSG_NS
+>>  	select VIRTIO
+>>  
+>> +config RPMSG_SYSLOG
+>> +	tristate "SYSLOG device interface"
+>> +	depends on RPMSG
+>> +	help
+>> +	  Say Y here to export rpmsg endpoints as device files, usually found
+>> +	  in /dev. They make it possible for user-space programs to send and
+>> +	  receive rpmsg packets.
+>> +
+>>  endmenu
+>> diff --git a/drivers/rpmsg/Makefile b/drivers/rpmsg/Makefile
+>> index 8d452656f0ee..75b2ec7133a5 100644
+>> --- a/drivers/rpmsg/Makefile
+>> +++ b/drivers/rpmsg/Makefile
+>> @@ -9,3 +9,4 @@ obj-$(CONFIG_RPMSG_QCOM_GLINK_RPM) += qcom_glink_rpm.o
+>>  obj-$(CONFIG_RPMSG_QCOM_GLINK_SMEM) += qcom_glink_smem.o
+>>  obj-$(CONFIG_RPMSG_QCOM_SMD)	+= qcom_smd.o
+>>  obj-$(CONFIG_RPMSG_VIRTIO)	+= virtio_rpmsg_bus.o
+>> +obj-$(CONFIG_RPMSG_SYSLOG)	+= rpmsg_syslog.o
+>> diff --git a/drivers/rpmsg/rpmsg_syslog.c b/drivers/rpmsg/rpmsg_syslog.c
+>> new file mode 100644
+>> index 000000000000..b3fdae495fd9
+>> --- /dev/null
+>> +++ b/drivers/rpmsg/rpmsg_syslog.c
+>> @@ -0,0 +1,65 @@
+>> +// SPDX-License-Identifier: GPL-2.0
+>> +
+>> +#include <linux/kernel.h>
+>> +#include <linux/module.h>
+>> +#include <linux/rpmsg.h>
+>> +
+>> +static int rpmsg_syslog_cb(struct rpmsg_device *rpdev, void *data, int len,
+>> +			   void *priv, u32 src)
+>> +{
+>> +	const char *buffer = data;
+>> +
+>> +	switch (buffer[0]) {
+>> +	case 'e':
+>> +		dev_err(&rpdev->dev, "%s", buffer + 1);
+>> +		break;
+>> +	case 'w':
+>> +		dev_warn(&rpdev->dev, "%s", buffer + 1);
+>> +		break;
+>> +	case 'i':
+>> +		dev_info(&rpdev->dev, "%s", buffer + 1);
+>> +		break;
+>> +	default:
+>> +		dev_info(&rpdev->dev, "%s", buffer);
+>> +		break;
+>> +	}
+>> +
+>> +	return 0;
+>> +}
+>> +
+>> +static int rpmsg_syslog_probe(struct rpmsg_device *rpdev)
+>> +{
+>> +	struct rpmsg_endpoint *syslog_ept;
+>> +	struct rpmsg_channel_info syslog_chinfo = {
+>> +		.src = 42,
+>> +		.dst = 42,
+>> +		.name = "syslog",
+>> +	};
+>> +
+>> +	/*
+>> +	 * Create the syslog service endpoint associated to the RPMsg
+>> +	 * device. The endpoint will be automatically destroyed when the RPMsg
+>> +	 * device will be deleted.
+>> +	 */
+>> +	syslog_ept = rpmsg_create_ept(rpdev, rpmsg_syslog_cb, NULL, syslog_chinfo);
+> 
+> The rpmsg_device_id below should cause the device to probe on the
+> presence of a "syslog" channel announcement, so why are you creating a
+> new endpoint with the same here?
+> 
+> Why aren't you just specifying the callback of the driver?
+> 
+>> +	if (!syslog_ept) {
+>> +		dev_err(&rpdev->dev, "failed to create the syslog ept\n");
+>> +		return -ENOMEM;
+>> +	}
+>> +	rpdev->ept = syslog_ept;
+>> +
+>> +	return 0;
+>> +}
+>> +
+>> +static struct rpmsg_device_id rpmsg_driver_syslog_id_table[] = {
+>> +	{ .name = "syslog" },
+>> +	{ },
+>> +};
+>> +MODULE_DEVICE_TABLE(rpmsg, rpmsg_driver_syslog_id_table);
+>> +
+>> +static struct rpmsg_driver rpmsg_syslog_client = {
+>> +	.drv.name       = KBUILD_MODNAME,
+>> +	.id_table       = rpmsg_driver_syslog_id_table,
+>> +	.probe          = rpmsg_syslog_probe,
+>> +};
+>> +module_rpmsg_driver(rpmsg_syslog_client);
+> 
+> I would expect that building this as a module gives you complaints about
+> lacking MODULE_LICENSE().
+> 
+> Regards,
+> Bjorn
+> 
+>> -- 
+>> 2.33.1
+>>
