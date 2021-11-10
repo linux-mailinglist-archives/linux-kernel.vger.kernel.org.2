@@ -2,137 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0842744BB77
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 06:53:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8000344BB7D
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 06:54:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229870AbhKJF4m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Nov 2021 00:56:42 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37692 "EHLO
+        id S229984AbhKJF5j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Nov 2021 00:57:39 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37912 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229445AbhKJF4k (ORCPT
+        with ESMTP id S229850AbhKJF5h (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Nov 2021 00:56:40 -0500
-Received: from mail-pf1-x42e.google.com (mail-pf1-x42e.google.com [IPv6:2607:f8b0:4864:20::42e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E02C7C061764;
-        Tue,  9 Nov 2021 21:53:53 -0800 (PST)
-Received: by mail-pf1-x42e.google.com with SMTP id b68so1637761pfg.11;
-        Tue, 09 Nov 2021 21:53:53 -0800 (PST)
+        Wed, 10 Nov 2021 00:57:37 -0500
+Received: from mail-lf1-x12b.google.com (mail-lf1-x12b.google.com [IPv6:2a00:1450:4864:20::12b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E66BCC061767
+        for <linux-kernel@vger.kernel.org>; Tue,  9 Nov 2021 21:54:49 -0800 (PST)
+Received: by mail-lf1-x12b.google.com with SMTP id b40so3238931lfv.10
+        for <linux-kernel@vger.kernel.org>; Tue, 09 Nov 2021 21:54:49 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=eUMJHV6ISsdKfy1mWWM3Q3JFhiOT5WxpZzF6+QjqwNg=;
-        b=Vt9VxIzU4aG3ALLwBZC6iYlE6e+REQvXk5XlrOuiydmP1N+q4KMs+JiMhxGxs1TvzE
-         JF3TT4NMZndIYcxaGkM7E4fxQaRIoLX4jO2cbykUGppseQG1ZkIVkiWlKl+tMqGHFWbB
-         qcIykAMWjHE9cll6Ca0woYyO0733CTyAFfa/Jj1WbhmiumDm1BECdALUpIG6P2UsvdbU
-         OOj0r1CXsOp39nil1nkqavhnPPSayeQDJw/MAMt1B9XMgAjWSSi1OJkMI771CfMy8pRP
-         g7RbXPSo7j7Xkd8J3g6k+bKrN/7HDC3v7YNW+hFA6BXPsu71nWpA6d5zB5zeRc79Qhv+
-         g/qA==
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=TgZ5k8tAe/+pJDD+RCLvpCMRygApskgp5M5BH1MTJeA=;
+        b=VgjjGGPKec52KZ2HHoQk88GnQ0q5PYMG5hs02d7pEMoAoX3iW2t5j2CZmkkspTtZM8
+         Adw+v8DRlHu2yzeOUMgmFCyCD4P2J0XUB5YqQkhoG26vf3+lfgkfT8FXcFTAQp79Lmee
+         jV1RYmz6nHUWKjoOxNLcb5/wVkN1ZU47X8Rss=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=eUMJHV6ISsdKfy1mWWM3Q3JFhiOT5WxpZzF6+QjqwNg=;
-        b=ipMIh2K/h/NvgunmX5yHDcJeUFp5Gr8rZskH0LIpAF41dKqKAK9/XnTeY+p00PDYyw
-         dmXDkoNaiOWazzNGOYTYqV4e4lkPQ9R8sKB4hp2IXyvf7PRIWqXJtvn0VNkazTt4ep1x
-         OruqGeddas6pUfsMQlr1D5pzmf3AYvhtwgKk4pOgOd1J/TrbGpaPfew1vwpyqX7RtHFs
-         KDcTuhobRvPzlsno+CXYlAeoWkhGik7h27cG8wPfai/Pqg2w5EOOxB+MmC7bPnSt9PCe
-         ZJZkk/DC0Gx9fLwAUUjKUNX6gsMdKUidFR+0RObRxIJKC0nAPCOwB+81N/so+E1NPsua
-         Vo3w==
-X-Gm-Message-State: AOAM533SDVnWqOJaWk4D4vKIzWr6645QY5b5NyLFVzxz2U/Dx4xfyyr6
-        WAByrrc4wt9TQKy0FX1Mbzg=
-X-Google-Smtp-Source: ABdhPJxXTZYHB2UGHAUNtYwf3kP69Bis45hSi+RvLIuzi4J/8jzDu11Q9GCv9DCihg8WtplitYdf7g==
-X-Received: by 2002:a65:6158:: with SMTP id o24mr10207501pgv.141.1636523633472;
-        Tue, 09 Nov 2021 21:53:53 -0800 (PST)
-Received: from localhost.localdomain (199.19.111.227.16clouds.com. [199.19.111.227])
-        by smtp.gmail.com with ESMTPSA id h10sm22640981pfc.104.2021.11.09.21.53.49
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 09 Nov 2021 21:53:53 -0800 (PST)
-From:   Artem Lapkin <email2tema@gmail.com>
-X-Google-Original-From: Artem Lapkin <art@khadas.com>
-To:     heiko@sntech.de, linux-rockchip@lists.infradead.org
-Cc:     robh+dt@kernel.org, jbx6244@gmail.com, wenst@chromium.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, art@khadas.com,
-        nick@khadas.com, gouwa@khadas.com
-Subject: [PATCH] arm64: dts: rockchip: emmc remove mmc-hs400-enhanced-strobe rk3399-khadas-edge
-Date:   Wed, 10 Nov 2021 13:53:42 +0800
-Message-Id: <20211110055342.1693350-1-art@khadas.com>
-X-Mailer: git-send-email 2.25.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=TgZ5k8tAe/+pJDD+RCLvpCMRygApskgp5M5BH1MTJeA=;
+        b=U9W9a7TBbXdjTBgFt7G+wLkAw3aIOkXQRzdukwapAxb1lPZU2ejt8eVnxiV7SI3cnL
+         Yy5/yivV81UYU7kyiynM8qUQFtn2XLhsFe8pNm1WFgCbfswOOq0D2DWN5UzVUwvob6RD
+         ig/Ybl2IiayXaJZui4CkdYu4Sb8gGpeWzfQjLbdKvvaGmUrYttCkg8t6wJ6eM5TWP8Sl
+         nlb+JxVE6nSDjePXlPWAJnPCagzCOKV/qwWl4/qIy7VCvpPlwSvvwRq/yGGkR6wJBOwu
+         NOryvF1vwp5kJk64trsG1wipFSycPZbVXGHxsMopANZ3xq7W+UxMnCvgDNyg6192kDTF
+         v9LQ==
+X-Gm-Message-State: AOAM530X6wYGB4Dk92rYZv2ojuo87q6KK9yvdaARWme49zm/MIG7+r8I
+        2S1w3Y2RPHVEeW9RAb0Qxa182RYueqIZ4k3rcupSbA==
+X-Google-Smtp-Source: ABdhPJxj2FKRewwrDxr1vDAwxEiLp8eMAeSoq4KW0LmVCVSj17K2eiqMz1j+pgJjsehYBcIRooitI8dgNQhyaqz87FA=
+X-Received: by 2002:a05:6512:2506:: with SMTP id be6mr6901429lfb.597.1636523688194;
+ Tue, 09 Nov 2021 21:54:48 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20211110021411.31761-1-zhiyong.tao@mediatek.com> <20211110021411.31761-2-zhiyong.tao@mediatek.com>
+In-Reply-To: <20211110021411.31761-2-zhiyong.tao@mediatek.com>
+From:   Chen-Yu Tsai <wenst@chromium.org>
+Date:   Wed, 10 Nov 2021 13:54:37 +0800
+Message-ID: <CAGXv+5Entn5QnCODgbUSdDFSds4z+_QJ6cD39yEoLndms+rY7Q@mail.gmail.com>
+Subject: Re: [PATCH v3] pinctrl: mediatek: fix global-out-of-bounds issue
+To:     Zhiyong Tao <zhiyong.tao@mediatek.com>
+Cc:     robh+dt@kernel.org, linus.walleij@linaro.org, mark.rutland@arm.com,
+        matthias.bgg@gmail.com, sean.wang@kernel.org,
+        srv_heupstream@mediatek.com, hui.liu@mediatek.com,
+        light.hsieh@mediatek.com, sean.wang@mediatek.com,
+        seiya.wang@mediatek.com, rex-bc.chen@mediatek.com,
+        guodong.liu@mediatek.com, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, linux-gpio@vger.kernel.org,
+        Guodong Liu <guodong.liu@mediatek.corp-partner.google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Remove mmc-hs400-enhanced-strobe for rk3399-khadas-edge
+On Wed, Nov 10, 2021 at 10:14 AM Zhiyong Tao <zhiyong.tao@mediatek.com> wrote:
+>
+> From: Guodong Liu <guodong.liu@mediatek.corp-partner.google.com>
+>
+> When eint virtual eint number is greater than gpio number,
+> it maybe produce 'desc[eint_n]' size globle-out-of-bounds issue.
+>
+> Signed-off-by: Zhiyong Tao <zhiyong.tao@mediatek.com>
+> Signed-off-by: Guodong Liu <guodong.liu@mediatek.corp-partner.google.com>
 
-Not compitable for some eMMC chips ( BJTD4R 29.1 GiB ). And no
-performance difference in our case from emmc-hs400-enhanced-strobe option
-for other eMMC chips.
+The order of Signed-off-by is still reversed though. The author comes first,
+then comes everyone who subsequently handled the patch.
 
-Problem example ( eMMC chip BJTD4R 29.1 GiB ):
+Once fixed,
 
-[    0.068282] platform ff770000.syscon:phy@f780: Fixing up cyclic dependency with fe330000.mmc
-[    7.001493] mmc2: CQHCI version 5.10
-[    7.027971] mmc2: SDHCI controller on fe330000.mmc [fe330000.mmc] using ADMA
-.......
-[    7.207086] mmc2: mmc_select_hs400es failed, error -110
-[    7.207129] mmc2: error -110 whilst initialising MMC card
-[    7.308893] mmc2: mmc_select_hs400es failed, error -110
-[    7.308921] mmc2: error -110 whilst initialising MMC card
-[    7.427524] mmc2: mmc_select_hs400es failed, error -110
-[    7.427546] mmc2: error -110 whilst initialising MMC card
-[    7.590993] mmc2: mmc_select_hs400es failed, error -110
-[    7.591012] mmc2: error -110 whilst initialising MMC card
+Reviewed-by: Chen-Yu Tsai <wenst@chromium.org>
 
-Workable example without mmc-hs400-enhanced-strobe:
+Also, for single patches, you don't really need to have a cover letter.
+Any info you would convey through the cover letter, such as changelogs,
+additional context, or whose tree you would like it merged through, can
+be put after the triple-dash ...
 
-[    6.960785] mmc2: CQHCI version 5.10
-[    6.984672] mmc2: SDHCI controller on fe330000.mmc [fe330000.mmc] using ADMA
-[    7.175021] mmc2: Command Queue Engine enabled
-[    7.175053] mmc2: new HS400 MMC card at address 0001
-[    7.175808] mmcblk2: mmc2:0001 BJTD4R 29.1 GiB 
-[    7.176033] mmcblk2boot0: mmc2:0001 BJTD4R 4.00 MiB 
-[    7.176245] mmcblk2boot1: mmc2:0001 BJTD4R 4.00 MiB 
-[    7.176495] mmcblk2rpmb: mmc2:0001 BJTD4R 4.00 MiB, chardev (242:0)
+> ---
 
-Performance note for mmc-hs400-enhanced-strobe usage:
+here. Text put here won't get included in the commit log.
 
-Other chips DUTA42 116 GiB works well with or without
-mmc-hs400-enhanced-strobe!
-
-..... mmc-hs400-enhanced-strobe disabled
-
-[    7.175053] mmc2: new HS400 MMC card at address 0001
-
-786432000 bytes (786 MB, 750 MiB) copied, 3 s, 262 MB/s
-
-..... mmc-hs400-enhanced-strobe enabled
-
-[    7.135880] mmc2: Command Queue Engine enabled
-[    7.135928] mmc2: new HS400 Enhanced strobe MMC card at address 0001
-[    7.136992] mmcblk2: mmc2:0001 DUTA42 116 GiB 
-
-1048576000 bytes (1.0 GB, 1000 MiB) copied, 4 s, 262 MB/s
-
-Signed-off-by: Artem Lapkin <art@khadas.com>
----
- arch/arm64/boot/dts/rockchip/rk3399-khadas-edge.dtsi | 1 -
- 1 file changed, 1 deletion(-)
-
-diff --git a/arch/arm64/boot/dts/rockchip/rk3399-khadas-edge.dtsi b/arch/arm64/boot/dts/rockchip/rk3399-khadas-edge.dtsi
-index d5c7648c841d..f1fcc6b5b402 100644
---- a/arch/arm64/boot/dts/rockchip/rk3399-khadas-edge.dtsi
-+++ b/arch/arm64/boot/dts/rockchip/rk3399-khadas-edge.dtsi
-@@ -705,7 +705,6 @@ &sdmmc {
- &sdhci {
- 	bus-width = <8>;
- 	mmc-hs400-1_8v;
--	mmc-hs400-enhanced-strobe;
- 	non-removable;
- 	status = "okay";
- };
--- 
-2.25.1
-
+>  drivers/pinctrl/mediatek/pinctrl-mtk-common-v2.c | 8 ++++++--
+>  1 file changed, 6 insertions(+), 2 deletions(-)
+>
+> diff --git a/drivers/pinctrl/mediatek/pinctrl-mtk-common-v2.c b/drivers/pinctrl/mediatek/pinctrl-mtk-common-v2.c
+> index 45ebdeba985a..12163d3c4bcb 100644
+> --- a/drivers/pinctrl/mediatek/pinctrl-mtk-common-v2.c
+> +++ b/drivers/pinctrl/mediatek/pinctrl-mtk-common-v2.c
+> @@ -285,8 +285,12 @@ static int mtk_xt_get_gpio_n(void *data, unsigned long eint_n,
+>         desc = (const struct mtk_pin_desc *)hw->soc->pins;
+>         *gpio_chip = &hw->chip;
+>
+> -       /* Be greedy to guess first gpio_n is equal to eint_n */
+> -       if (desc[eint_n].eint.eint_n == eint_n)
+> +       /*
+> +        * Be greedy to guess first gpio_n is equal to eint_n.
+> +        * Only eint virtual eint number is greater than gpio number.
+> +        */
+> +       if (hw->soc->npins > eint_n &&
+> +           desc[eint_n].eint.eint_n == eint_n)
+>                 *gpio_n = eint_n;
+>         else
+>                 *gpio_n = mtk_xt_find_eint_num(hw, eint_n);
+> --
+> 2.25.1
+>
+>
+> _______________________________________________
+> Linux-mediatek mailing list
+> Linux-mediatek@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/linux-mediatek
