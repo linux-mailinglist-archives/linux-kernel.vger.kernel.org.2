@@ -2,160 +2,500 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2507C44CA7C
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 21:20:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2884344CA7D
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 21:21:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232656AbhKJUXk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Nov 2021 15:23:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37954 "EHLO
+        id S232585AbhKJUYd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Nov 2021 15:24:33 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38158 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231791AbhKJUXh (ORCPT
+        with ESMTP id S232005AbhKJUYc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Nov 2021 15:23:37 -0500
-Received: from mail-wr1-x435.google.com (mail-wr1-x435.google.com [IPv6:2a00:1450:4864:20::435])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 49ADBC061764
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Nov 2021 12:20:49 -0800 (PST)
-Received: by mail-wr1-x435.google.com with SMTP id d24so6139704wra.0
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Nov 2021 12:20:49 -0800 (PST)
+        Wed, 10 Nov 2021 15:24:32 -0500
+Received: from mail-ed1-x532.google.com (mail-ed1-x532.google.com [IPv6:2a00:1450:4864:20::532])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0CDA3C061764
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Nov 2021 12:21:43 -0800 (PST)
+Received: by mail-ed1-x532.google.com with SMTP id r12so15271401edt.6
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Nov 2021 12:21:43 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=k8N5zck2lZ73SkM2NQ11BK2t2B+PlRhdbOumhV63HC0=;
-        b=qKFvJ0mRzS4onF9aP8HHoue6h98f/odyPmuXAAZhMkapdkqBL9h0Md4lh/FGwrkXuV
-         n8JHRLvMxTIzM5QN+SlzNAWr1ocp1bZgTo9qcotLoxaEO1e2supJ1irdbW8JRM/RyYeu
-         QUpOpI/0pKHwGvbkzQZ7+6qeNyuaORPzTewNfiip6lxqo255Kvtut7I83qebCkbl8RMX
-         MmnWKkIC+cz0IwYa9JHGs1hV9qOwDLs1RD/KWhzq9IG5kYa82gBPRQmMgnc2LWeE6u64
-         AcpkSzfIcm3ETlDl/08zG2wcwPqJ+kK/uVFXkWe1XkW30fUQrPlAz0CqjareIg3cNCTs
-         4TNA==
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-transfer-encoding:content-language;
+        bh=ePDj+E5Fo0UgxeIg0zOPRAn8/70iDOz7sGUrTy/s0/0=;
+        b=OR6BJt2P8UEsZR9oLq2OAeuIEcvPeHhej0r7UGYkDaMeGwGn01izRPUCAMss5VBsXw
+         yCsVY6MopXZfRQI3ogoDTNL4dpiTAgttcFm4iUWY02qLLY//WynggQZeC7Y95rH88k/g
+         cNdLO+djQhV3bn6vXrPMQTQ6bxPPZJ4lE7mOifOpXVXS2Mb5sN4G+5nLf1R5Hv2sD//l
+         O6tnp1QzJL5Ik4hKZHClbGgYCoy1s+n1NG4bM0VZk1JAVWaoD2KFzMmqGdzR9r8MnNLF
+         /cna1pycJ2qpVRcbdrK1CDsbrtMZJOygv2x+ptGHpzRU1QtAWeH667dwhH2s23eFu+h2
+         Garg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=k8N5zck2lZ73SkM2NQ11BK2t2B+PlRhdbOumhV63HC0=;
-        b=RwxVIfZSZcH9WUfMZjZzBwelCyjqHl2PErQ7Q8unPpPigNXUcy5ei05Ud9/aBJbeuR
-         Fpv4BC+jhsoegLLsXQzO57B9SSqpaC6F/SAP7VCOjTNzhBb65t5mVnHpFsMm9fQasaXT
-         fLXzih8Ara8h43kasMmhoLsM04L/yCrjUD01e29b6T1D+a51k5Gfc2aYZ/UR3Mi5Cyoz
-         r45KEn5zD9eYto4qvC0lgmWEljvoTWmqAWXN9R9R0FpPApi/OARbdeZYFksfu6ecAAvK
-         F31DEpMuFGFe/kM7IEz8DyfDayKopFrXelukYfklsdZ0W5LM9YJVSbQRXYULdAQIfOXz
-         QFOg==
-X-Gm-Message-State: AOAM532h9CAm3Sy3b1B1hHK6iIriP947xxPsi6UAZubTdtesZhEB9UXF
-        OxOQe/sQhiSvt66z1VaadkI=
-X-Google-Smtp-Source: ABdhPJzftTRU6i59iGtVuByIAKaTeVB7dAcPFzpVU6OM08HJx1k+5MKpS/V+oIDwsKi1KY00XkkYhw==
-X-Received: by 2002:a5d:5244:: with SMTP id k4mr2220805wrc.77.1636575647926;
-        Wed, 10 Nov 2021 12:20:47 -0800 (PST)
-Received: from kista.localnet (cpe-86-58-29-253.static.triera.net. [86.58.29.253])
-        by smtp.gmail.com with ESMTPSA id x13sm931574wrr.47.2021.11.10.12.20.46
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 10 Nov 2021 12:20:47 -0800 (PST)
-From:   Jernej =?utf-8?B?xaBrcmFiZWM=?= <jernej.skrabec@gmail.com>
-To:     Neil Armstrong <narmstrong@baylibre.com>,
-        Andrzej Hajda <a.hajda@samsung.com>,
-        Robert Foss <robert.foss@linaro.org>,
-        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
-        Alex Bee <knaerzche@gmail.com>
-Cc:     Jonas Karlman <jonas@kwiboo.se>, dri-devel@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org, Alex Bee <knaerzche@gmail.com>
-Subject: Re: [PATCH] drm: bridge: dw-hdmi: Fix RGB to YUV color space conversion
-Date:   Wed, 10 Nov 2021 21:20:46 +0100
-Message-ID: <12887538.uLZWGnKmhe@kista>
-In-Reply-To: <20211106130044.63483-1-knaerzche@gmail.com>
-References: <20211106130044.63483-1-knaerzche@gmail.com>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=ePDj+E5Fo0UgxeIg0zOPRAn8/70iDOz7sGUrTy/s0/0=;
+        b=ic1qIrD1EHjctcxJDfi1XOROS7MKkLEKa3NgMG5IhJ6ENkfaNh8rJhYPC3GhfrC94y
+         fmjeCxzi/jT0P1j/pW2tqyVzCcKYWtargHWdvhay0QdsFaZearYjZBmZplG8rbdQvyQS
+         epdK4ZKiljyKSxZ9n3ObVfG8/c0Y5L35GT30k0lOv1Qjr6UIa/hEsZMwIag1fTV9Fect
+         PRpqA6TZd3+bz7W4OodBo8JeCGEhxVK1Glo7Zvi5w9LAj/TnIlPBaPeF8YJpb+aP0j2N
+         +MYDBvqGGw8vaPZJ8gTRmyfHkpF87NUKBNuGrRWNVjhu00Ln21d0dxpPz/2g6kI02uay
+         WqHA==
+X-Gm-Message-State: AOAM533mlww/KfHmQPJ9Am68NwPZeCfXvIxJTlyWy2ZSEzFCQlUvjJe1
+        1vttdijk1WOHwNeYrsOEMVRMkHX9h/0=
+X-Google-Smtp-Source: ABdhPJzaVT7G2RyDKp26etrOSTUOugc4YeFt2NKR0Vt0fjDA2dG7ngZ+iS/VdPUu927jJDx/P8RFGA==
+X-Received: by 2002:a17:907:216e:: with SMTP id rl14mr2387234ejb.368.1636575702193;
+        Wed, 10 Nov 2021 12:21:42 -0800 (PST)
+Received: from [192.168.1.7] ([212.22.223.21])
+        by smtp.gmail.com with ESMTPSA id d3sm441711edr.0.2021.11.10.12.21.41
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 10 Nov 2021 12:21:41 -0800 (PST)
+Subject: Re: [PATCH V2 4/4] arm/xen: Read extended regions from DT and init
+ Xen resource
+To:     Stefano Stabellini <sstabellini@kernel.org>
+Cc:     xen-devel@lists.xenproject.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Oleksandr Tyshchenko <oleksandr_tyshchenko@epam.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        Juergen Gross <jgross@suse.com>, Julien Grall <julien@xen.org>
+References: <1635264312-3796-1-git-send-email-olekstysh@gmail.com>
+ <1635264312-3796-5-git-send-email-olekstysh@gmail.com>
+ <alpine.DEB.2.21.2110271803060.20134@sstabellini-ThinkPad-T480s>
+From:   Oleksandr <olekstysh@gmail.com>
+Message-ID: <237f832d-5175-5653-18ee-058a7d7fa7a6@gmail.com>
+Date:   Wed, 10 Nov 2021 22:21:40 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
+In-Reply-To: <alpine.DEB.2.21.2110271803060.20134@sstabellini-ThinkPad-T480s>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Alex,
 
-Dne sobota, 06. november 2021 ob 14:00:44 CET je Alex Bee napisal(a):
-> As per CEA-861 quantization range is always limited in case of YUV
-> output - indepentently which CEA mode it is or if it is an DMT mode.
-> 
-> This is already correctly setup in HDMI AVI inforame, but we always do
-> a RGB to YUV conversion which doesn't consider that RGB input can be
-> full range as well.
-> That leads to incorrect colors for all CEA modes except mode 1 for HDMI
-> and always for DVI.
-> 
-> To fix this, provide additional csc coefficents for converting from RGB
-> full range to EITU601/EITU709 limited range and rename the existing
-> arrays to clarify their meaning.
-> 
-> Signed-off-by: Alex Bee <knaerzche@gmail.com>
-> ---
->  drivers/gpu/drm/bridge/synopsys/dw-hdmi.c | 24 +++++++++++++++++++----
->  1 file changed, 20 insertions(+), 4 deletions(-)
-> 
-> diff --git a/drivers/gpu/drm/bridge/synopsys/dw-hdmi.c b/drivers/gpu/drm/
-bridge/synopsys/dw-hdmi.c
-> index 62ae63565d3a..1cba08b70091 100644
-> --- a/drivers/gpu/drm/bridge/synopsys/dw-hdmi.c
-> +++ b/drivers/gpu/drm/bridge/synopsys/dw-hdmi.c
-> @@ -80,13 +80,25 @@ static const u16 csc_coeff_rgb_out_eitu709[3][4] = {
->  	{ 0x2000, 0x0000, 0x3b61, 0x7e25 }
->  };
->  
-> -static const u16 csc_coeff_rgb_in_eitu601[3][4] = {
-> +static const u16 csc_coeff_rgb_full_in_eitu601[3][4] = {
+On 28.10.21 04:40, Stefano Stabellini wrote:
 
-I would rather move "full" and "limited" to the end, since RGB always has full 
-range and we want YUV to have full or limited range.
+Hi Stefano
 
-Just one observation - no other matrix sets bit 15 in any coefficient, but yours 
-do. I can't see anywhere documented if bit 15 is ignored or not. Can you try 
-with it set to 0? If it still works, I would set it to 0 for consistency.
+I am sorry for the late response.
 
-Best regards,
-Jernej
+> On Tue, 26 Oct 2021, Oleksandr Tyshchenko wrote:
+>> From: Oleksandr Tyshchenko <oleksandr_tyshchenko@epam.com>
+>>
+>> This patch implements arch_xen_unpopulated_init() on Arm where
+>> the extended regions (if any) are gathered from DT and inserted
+>> into passed Xen resource to be used as unused address space
+>> for Xen scratch pages by unpopulated-alloc code.
+>>
+>> The extended region (safe range) is a region of guest physical
+>> address space which is unused and could be safely used to create
+>> grant/foreign mappings instead of wasting real RAM pages from
+>> the domain memory for establishing these mappings.
+>>
+>> The extended regions are chosen by the hypervisor at the domain
+>> creation time and advertised to it via "reg" property under
+>> hypervisor node in the guest device-tree. As region 0 is reserved
+>> for grant table space (always present), the indexes for extended
+>> regions are 1...N.
+>>
+>> If arch_xen_unpopulated_init() fails for some reason the default
+>> behaviour will be restored (allocate xenballooned pages).
+>>
+>> This patch also removes XEN_UNPOPULATED_ALLOC dependency on x86.
+>>
+>> Signed-off-by: Oleksandr Tyshchenko <oleksandr_tyshchenko@epam.com>
+>> ---
+>> Changes RFC -> V2:
+>>     - new patch, instead of
+>>      "[RFC PATCH 2/2] xen/unpopulated-alloc: Query hypervisor to provide unallocated space"
+>> ---
+>>   arch/arm/xen/enlighten.c | 112 +++++++++++++++++++++++++++++++++++++++++++++++
+>>   drivers/xen/Kconfig      |   2 +-
+>>   2 files changed, 113 insertions(+), 1 deletion(-)
+>>
+>> diff --git a/arch/arm/xen/enlighten.c b/arch/arm/xen/enlighten.c
+>> index dea46ec..1a1e0d3 100644
+>> --- a/arch/arm/xen/enlighten.c
+>> +++ b/arch/arm/xen/enlighten.c
+>> @@ -62,6 +62,7 @@ static __read_mostly unsigned int xen_events_irq;
+>>   static phys_addr_t xen_grant_frames;
+>>   
+>>   #define GRANT_TABLE_INDEX   0
+>> +#define EXT_REGION_INDEX    1
+>>   
+>>   uint32_t xen_start_flags;
+>>   EXPORT_SYMBOL(xen_start_flags);
+>> @@ -303,6 +304,117 @@ static void __init xen_acpi_guest_init(void)
+>>   #endif
+>>   }
+>>   
+>> +#ifdef CONFIG_XEN_UNPOPULATED_ALLOC
+>> +int arch_xen_unpopulated_init(struct resource *res)
+>> +{
+>> +	struct device_node *np;
+>> +	struct resource *regs, *tmp_res;
+>> +	uint64_t min_gpaddr = -1, max_gpaddr = 0;
+>> +	unsigned int i, nr_reg = 0;
+>> +	struct range mhp_range;
+>> +	int rc;
+>> +
+>> +	if (!xen_domain())
+>> +		return -ENODEV;
+>> +
+>> +	np = of_find_compatible_node(NULL, NULL, "xen,xen");
+>> +	if (WARN_ON(!np))
+>> +		return -ENODEV;
+>> +
+>> +	/* Skip region 0 which is reserved for grant table space */
+>> +	while (of_get_address(np, nr_reg + EXT_REGION_INDEX, NULL, NULL))
+>> +		nr_reg++;
+>> +	if (!nr_reg) {
+>> +		pr_err("No extended regions are found\n");
+>> +		return -EINVAL;
+>> +	}
+>> +
+>> +	regs = kcalloc(nr_reg, sizeof(*regs), GFP_KERNEL);
+>> +	if (!regs)
+>> +		return -ENOMEM;
+>> +
+>> +	/*
+>> +	 * Create resource from extended regions provided by the hypervisor to be
+>> +	 * used as unused address space for Xen scratch pages.
+>> +	 */
+>> +	for (i = 0; i < nr_reg; i++) {
+>> +		rc = of_address_to_resource(np, i + EXT_REGION_INDEX, &regs[i]);
+>> +		if (rc)
+>> +			goto err;
+>> +
+>> +		if (max_gpaddr < regs[i].end)
+>> +			max_gpaddr = regs[i].end;
+>> +		if (min_gpaddr > regs[i].start)
+>> +			min_gpaddr = regs[i].start;
+>> +	}
+>> +
+>> +	/* Check whether the resource range is within the hotpluggable range */
+>> +	mhp_range = mhp_get_pluggable_range(true);
+>> +	if (min_gpaddr < mhp_range.start)
+>> +		min_gpaddr = mhp_range.start;
+>> +	if (max_gpaddr > mhp_range.end)
+>> +		max_gpaddr = mhp_range.end;
+>> +
+>> +	res->start = min_gpaddr;
+>> +	res->end = max_gpaddr;
+>> +
+>> +	/*
+>> +	 * Mark holes between extended regions as unavailable. The rest of that
+>> +	 * address space will be available for the allocation.
+>> +	 */
+>> +	for (i = 1; i < nr_reg; i++) {
+>> +		resource_size_t start, end;
+>> +
+>> +		start = regs[i - 1].end + 1;
+>> +		end = regs[i].start - 1;
+>> +
+>> +		if (start > (end + 1)) {
+> Should this be:
+>
+> if (start >= end)
+>
+> ?
 
-> +	{ 0x2044, 0x106f, 0x0644, 0x0040 },
-> +	{ 0xe677, 0x1c1c, 0xfd46, 0x0200 },
-> +	{ 0xed60, 0xf685, 0x1c1c, 0x0200 }
-> +};
-> +
-> +static const u16 csc_coeff_rgb_limited_in_eitu601[3][4] = {
->  	{ 0x2591, 0x1322, 0x074b, 0x0000 },
->  	{ 0x6535, 0x2000, 0x7acc, 0x0200 },
->  	{ 0x6acd, 0x7534, 0x2000, 0x0200 }
->  };
->  
-> -static const u16 csc_coeff_rgb_in_eitu709[3][4] = {
-> +static const u16 csc_coeff_rgb_full_in_eitu709[3][4] = {
-> +	{ 0x2750, 0x0baf, 0x03f8, 0x0040 },
-> +	{ 0xe677, 0x1c1c, 0xfd6d, 0x0200 },
-> +	{ 0xea55, 0xf98f, 0x1c1c, 0x0200 }
-> +};
-> +
-> +static const u16 csc_coeff_rgb_limted_in_eitu709[3][4] = {
->  	{ 0x2dc5, 0x0d9b, 0x049e, 0x0000 },
->  	{ 0x62f0, 0x2000, 0x7d11, 0x0200 },
->  	{ 0x6756, 0x78ab, 0x2000, 0x0200 }
-> @@ -1023,9 +1035,13 @@ static void dw_hdmi_update_csc_coeffs(struct dw_hdmi 
-*hdmi)
->  			csc_coeff = &csc_coeff_rgb_out_eitu709;
->  	} else if (is_input_rgb && !is_output_rgb) {
->  		if (hdmi->hdmi_data.enc_out_encoding == 
-V4L2_YCBCR_ENC_601)
-> -			csc_coeff = &csc_coeff_rgb_in_eitu601;
-> +			csc_coeff = hdmi->hdmi_data.rgb_limited_range
-> +				? &csc_coeff_rgb_limited_in_eitu601
-> +				: &csc_coeff_rgb_full_in_eitu601;
->  		else
-> -			csc_coeff = &csc_coeff_rgb_in_eitu709;
-> +			csc_coeff = hdmi->hdmi_data.rgb_limited_range
-> +				? &csc_coeff_rgb_limted_in_eitu709
-> +				: &csc_coeff_rgb_full_in_eitu709;
->  		csc_scale = 0;
->  	} else if (is_input_rgb && is_output_rgb &&
->  		   hdmi->hdmi_data.rgb_limited_range) {
-> 
-> base-commit: 89636a06fa2ee7826a19c39c19a9bc99ab9340a9
-> -- 
-> 2.30.2
-> 
-> 
+Yes, we can do this here (since the checks are equivalent) but ...
 
+
+>
+>
+>> +			rc = -EINVAL;
+>> +			goto err;
+>> +		}
+>> +
+>> +		/* There is no hole between regions */
+>> +		if (start == (end + 1))
+> Also here, shouldn't it be:
+>
+> if (start == end)
+>
+> ?
+
+    ... not here.
+
+As
+
+"(start == (end + 1))" is equal to "(regs[i - 1].end + 1 == regs[i].start)"
+
+but
+
+"(start == end)" is equal to "(regs[i - 1].end + 1 == regs[i].start - 1)"
+
+
+>
+> I think I am missing again something in termination accounting :-)
+
+If I understand correctly, we need to follow "end = start + size - 1" 
+rule, so the "end" is the last address inside a range, but not the 
+"first" address outside of a range))
+
+
+>
+>
+>> +			continue;
+>> +
+>> +		/* Check whether the hole range is within the resource range */
+>> +		if (start < res->start || end > res->end) {
+> By definition I don't think this check is necessary as either condition
+> is impossible?
+
+
+This is a good question, let me please explain.
+Not all extended regions provided by the hypervisor can be used here. 
+This is because the addressable physical memory range for which the 
+linear mapping
+could be created has limits on Arm, and maximum addressable range 
+depends on the VA space size (CONFIG_ARM64_VA_BITS_XXX). So we decided 
+to not filter them in hypervisor as this logic could be quite complex as 
+different OS may have different requirement, etc. This means that we 
+need to make sure that regions are within the hotpluggable range to 
+avoid a failure later on when a region is pre-validated by the memory 
+hotplug path.
+
+The following code limits the resource range based on that:
+
++    /* Check whether the resource range is within the hotpluggable range */
++    mhp_range = mhp_get_pluggable_range(true);
++    if (min_gpaddr < mhp_range.start)
++        min_gpaddr = mhp_range.start;
++    if (max_gpaddr > mhp_range.end)
++        max_gpaddr = mhp_range.end;
++
++    res->start = min_gpaddr;
++    res->end = max_gpaddr;
+
+In current loop (when calculating and inserting holes) we also need to 
+make sure that resulting hole range is within the resource range (and 
+adjust/skip it if not true) as regs[] used for the calculations contains 
+raw regions as they described in DT so not updated. Otherwise 
+insert_resource() down the function will return an error for the 
+conflicting operations. Yes, I could took a different route and update 
+regs[] in advance to adjust/skip non-suitable regions in front, but I 
+decided to do it on the fly in the loop here, I thought doing it in 
+advance would add some overhead/complexity. What do you think?
+
+So I am afraid this check is necessary here.
+
+For example in my environment the extended regions are:
+
+(XEN) Extended region 0: 0->0x8000000
+(XEN) Extended region 1: 0xc000000->0x30000000
+(XEN) Extended region 2: 0x40000000->0x47e00000
+(XEN) Extended region 3: 0xd0000000->0xe6000000
+(XEN) Extended region 4: 0xe7800000->0xec000000
+(XEN) Extended region 5: 0xf1200000->0xfd000000
+(XEN) Extended region 6: 0x100000000->0x500000000
+(XEN) Extended region 7: 0x580000000->0x600000000
+(XEN) Extended region 8: 0x680000000->0x700000000
+(XEN) Extended region 9: 0x780000000->0x10000000000
+
+*With* the check the holes are:
+
+holes [47e00000 - cfffffff]
+holes [e6000000 - e77fffff]
+holes [ec000000 - f11fffff]
+holes [fd000000 - ffffffff]
+holes [500000000 - 57fffffff]
+holes [600000000 - 67fffffff]
+holes [700000000 - 77fffffff]
+
+And they seem to look correct, you can see that two possible holes 
+between extended regions 0-1 (8000000-bffffff) and 1-2 
+(30000000-3fffffff) were skipped as they entirely located below res->start
+which is 0x40000000 in my case (48-bit VA: 0x40000000 - 0x80003fffffff).
+
+*Without* the check these two holes won't be skipped and as the result 
+insert_resource() will fail.
+
+
+**********
+
+
+I have one idea how we can simplify filter logic, we can drop all checks 
+here (including confusing one) in Arm code and update common code a bit:
+
+diff --git a/arch/arm/xen/enlighten.c b/arch/arm/xen/enlighten.c
+index 1a1e0d3..ed5b855 100644
+--- a/arch/arm/xen/enlighten.c
++++ b/arch/arm/xen/enlighten.c
+@@ -311,7 +311,6 @@ int arch_xen_unpopulated_init(struct resource *res)
+         struct resource *regs, *tmp_res;
+         uint64_t min_gpaddr = -1, max_gpaddr = 0;
+         unsigned int i, nr_reg = 0;
+-       struct range mhp_range;
+         int rc;
+
+         if (!xen_domain())
+@@ -349,13 +348,6 @@ int arch_xen_unpopulated_init(struct resource *res)
+                         min_gpaddr = regs[i].start;
+         }
+
+-       /* Check whether the resource range is within the hotpluggable 
+range */
+-       mhp_range = mhp_get_pluggable_range(true);
+-       if (min_gpaddr < mhp_range.start)
+-               min_gpaddr = mhp_range.start;
+-       if (max_gpaddr > mhp_range.end)
+-               max_gpaddr = mhp_range.end;
+-
+         res->start = min_gpaddr;
+         res->end = max_gpaddr;
+
+@@ -378,17 +370,6 @@ int arch_xen_unpopulated_init(struct resource *res)
+                 if (start == (end + 1))
+                         continue;
+
+-               /* Check whether the hole range is within the resource 
+range */
+-               if (start < res->start || end > res->end) {
+-                       if (start < res->start)
+-                               start = res->start;
+-                       if (end > res->end)
+-                               end = res->end;
+-
+-                       if (start >= (end + 1))
+-                               continue;
+-               }
+-
+                 tmp_res = kzalloc(sizeof(*tmp_res), GFP_KERNEL);
+                 if (!tmp_res) {
+                         rc = -ENOMEM;
+diff --git a/drivers/xen/unpopulated-alloc.c 
+b/drivers/xen/unpopulated-alloc.c
+index 1f1d8d8..a5d3ebb 100644
+--- a/drivers/xen/unpopulated-alloc.c
++++ b/drivers/xen/unpopulated-alloc.c
+@@ -39,6 +39,7 @@ static int fill_list(unsigned int nr_pages)
+         void *vaddr;
+         unsigned int i, alloc_pages = round_up(nr_pages, 
+PAGES_PER_SECTION);
+         int ret;
++       struct range mhp_range;
+
+         res = kzalloc(sizeof(*res), GFP_KERNEL);
+         if (!res)
+@@ -47,8 +48,10 @@ static int fill_list(unsigned int nr_pages)
+         res->name = "Xen scratch";
+         res->flags = IORESOURCE_MEM | IORESOURCE_BUSY;
+
++       mhp_range = mhp_get_pluggable_range(true);
++
+         ret = allocate_resource(target_resource, res,
+-                               alloc_pages * PAGE_SIZE, 0, -1,
++                               alloc_pages * PAGE_SIZE, 
+mhp_range.start, mhp_range.end,
+                                 PAGES_PER_SECTION * PAGE_SIZE, NULL, NULL);
+         if (ret < 0) {
+                 pr_err("Cannot allocate new IOMEM resource\n");
+(END)
+
+I believe, this will work on x86 as arch_get_mappable_range() is not 
+implemented there,
+and the default option contains exactly what being used currently (0, -1).
+
+struct range __weak arch_get_mappable_range(void)
+{
+     struct range mhp_range = {
+         .start = 0UL,
+         .end = -1ULL,
+     };
+     return mhp_range;
+}
+
+And this is going to be more generic and clear, what do you think?
+
+
+>
+>> +			if (start < res->start)
+>> +				start = res->start;
+>> +			if (end > res->end)
+>> +				end = res->end;
+>> +
+>> +			if (start >= (end + 1))
+>> +				continue;
+>> +		}
+>> +
+>> +		tmp_res = kzalloc(sizeof(*tmp_res), GFP_KERNEL);
+>> +		if (!tmp_res) {
+>> +			rc = -ENOMEM;
+>> +			goto err;
+>> +		}
+>> +
+>> +		tmp_res->name = "Unavailable space";
+>> +		tmp_res->start = start;
+>> +		tmp_res->end = end;
+> Do we need to set any flags so that the system can reuse the memory in
+> the hole, e.g. IORESOURCE_MEM? Or is it not necessary?
+
+
+I might be wrong, but I don't think it is necessary. I don't see how the 
+system can reuse memory in the holes as
+the Xen resource we are constructing here will be exclusively used by 
+the unpopulated-alloc code only. I would leave type-less
+resource here. Or I missed something?
+
+
+>
+>
+>> +		rc = insert_resource(res, tmp_res);
+>> +		if (rc) {
+>> +			pr_err("Cannot insert resource [%llx - %llx] %d\n",
+>> +					tmp_res->start, tmp_res->end, rc);
+> Although it is impossible to enable XEN_UNPOPULATED_ALLOC on arm32 due
+> to unmet dependencies, I would like to keep the implementation of
+> arch_xen_unpopulated_init 32bit clean.
+>
+> I am getting build errors like (by forcing arch_xen_unpopulated_init to
+> compile on arm32):
+>
+> ./include/linux/kern_levels.h:5:18: warning: format ‘%llx’ expects argument of type ‘long long unsigned int’, but argument 3 has type ‘resource_size_t {aka unsigned int}’ [-Wformat=]
+
+Thank you for pointing this out. I will use %pR specifier here and in 
+the common code where I print the same message.
+
+
+>
+>
+>> +			kfree(tmp_res);
+>> +			goto err;
+>> +		}
+>> +	}
+>> +
+>> +err:
+>> +	kfree(regs);
+>> +
+>> +	return rc;
+>> +}
+>> +#endif
+>> +
+>>   static void __init xen_dt_guest_init(void)
+>>   {
+>>   	struct device_node *xen_node;
+>> diff --git a/drivers/xen/Kconfig b/drivers/xen/Kconfig
+>> index 1b2c3ac..e6031fc 100644
+>> --- a/drivers/xen/Kconfig
+>> +++ b/drivers/xen/Kconfig
+>> @@ -297,7 +297,7 @@ config XEN_FRONT_PGDIR_SHBUF
+>>   
+>>   config XEN_UNPOPULATED_ALLOC
+>>   	bool "Use unpopulated memory ranges for guest mappings"
+>> -	depends on X86 && ZONE_DEVICE
+>> +	depends on ZONE_DEVICE
+>>   	default XEN_BACKEND || XEN_GNTDEV || XEN_DOM0
+>>   	help
+>>   	  Use unpopulated memory ranges in order to create mappings for guest
+
+-- 
+Regards,
+
+Oleksandr Tyshchenko
 
