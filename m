@@ -2,93 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 945C144BFDE
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 12:09:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 977CB44BFDF
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 12:10:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231295AbhKJLMl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Nov 2021 06:12:41 -0500
-Received: from foss.arm.com ([217.140.110.172]:45032 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231158AbhKJLMj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Nov 2021 06:12:39 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 55F0D101E;
-        Wed, 10 Nov 2021 03:09:52 -0800 (PST)
-Received: from FVFF77S0Q05N (unknown [10.57.59.50])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 256323F718;
-        Wed, 10 Nov 2021 03:09:50 -0800 (PST)
-Date:   Wed, 10 Nov 2021 11:09:40 +0000
-From:   Mark Rutland <mark.rutland@arm.com>
-To:     Quentin Perret <qperret@google.com>
-Cc:     Ard Biesheuvel <ardb@kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        James Morse <james.morse@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Kees Cook <keescook@chromium.org>,
-        Sami Tolvanen <samitolvanen@google.com>,
-        Andy Lutomirski <luto@kernel.org>,
+        id S231335AbhKJLMz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Nov 2021 06:12:55 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52670 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231303AbhKJLMv (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Nov 2021 06:12:51 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4BB2FC061766;
+        Wed, 10 Nov 2021 03:10:04 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=mdgITkPzF3BfO5swYkj+ahlZhGOLnl+VYeMvWBp1Ch4=; b=EappGx8ZWfi3BFVE5kdMMssiRI
+        RAPxCdQEQpxd3HLCOpE1gxzkECX37cIvJggFAp9Yoz4EINko63XKWYdbyhyoazkXQICH615rleJ3n
+        qfJ8pNOKk630tpnY89QPK5wgx8KXfPxuR+dXqQ2tF1ttKN6HvGNiTDTm0eCIqwhVAnv5q006Luufe
+        BGutNG5xEx3HYbFgRY78TEMZ9xHzbpEQ8bKGCjzc+OVpXCeUNGYd2oPb0yvtq7FaMMq3UcqjPY5FS
+        Xkr+dz5ARAZK3ZBHgf5ehFgjUPc5K0O4hwy2ttPWcOx2Mw5Zp30iWMINbuiU6vBSKCTKpDBiagrru
+        LdNbIFPw==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mklUH-001oJL-GX; Wed, 10 Nov 2021 11:09:54 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id CE2B33000A3;
+        Wed, 10 Nov 2021 12:09:53 +0100 (CET)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id BAF012C799836; Wed, 10 Nov 2021 12:09:53 +0100 (CET)
+Date:   Wed, 10 Nov 2021 12:09:53 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     David Laight <David.Laight@aculab.com>
+Cc:     Nick Desaulniers <ndesaulniers@google.com>,
+        Bill Wendling <morbo@google.com>,
         Josh Poimboeuf <jpoimboe@redhat.com>,
-        Steven Rostedt <rostedt@goodmis.org>
-Subject: Re: [PATCH v6 2/2] arm64: implement support for static call
- trampolines
-Message-ID: <YYuoawC2CpornRSG@FVFF77S0Q05N>
-References: <20211105145917.2828911-1-ardb@kernel.org>
- <20211105145917.2828911-3-ardb@kernel.org>
- <YYq1/a10XGBthteg@FVFF77S0Q05N>
- <CAMj1kXHrTjxWWX0cfF1Bx58aTR9Fp=xkfhizkWnQRjYtRm879w@mail.gmail.com>
- <YYrFvXg12eANs0gz@google.com>
+        "x86@kernel.org" <x86@kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "mark.rutland@arm.com" <mark.rutland@arm.com>,
+        "dvyukov@google.com" <dvyukov@google.com>,
+        "seanjc@google.com" <seanjc@google.com>,
+        "pbonzini@redhat.com" <pbonzini@redhat.com>,
+        "mbenes@suse.cz" <mbenes@suse.cz>,
+        "llvm@lists.linux.dev" <llvm@lists.linux.dev>,
+        "linux-toolchains@vger.kernel.org" <linux-toolchains@vger.kernel.org>
+Subject: Re: [PATCH 20/22] x86,word-at-a-time: Remove .fixup usage
+Message-ID: <YYuogZ+2Dnjyj1ge@hirez.programming.kicks-ass.net>
+References: <20211105171023.989862879@infradead.org>
+ <20211105171821.654356149@infradead.org>
+ <20211108164711.mr2cqdcvedin2lvx@treble>
+ <YYlshkTmf5zdvf1Q@hirez.programming.kicks-ass.net>
+ <CAKwvOdkFZ4PSN0GGmKMmoCrcp7_VVNjau_b0sNRm3MuqVi8yow@mail.gmail.com>
+ <YYov8SVHk/ZpFsUn@hirez.programming.kicks-ass.net>
+ <CAKwvOdn8yrRopXyfd299=SwZS9TAPfPj4apYgdCnzPb20knhbg@mail.gmail.com>
+ <20211109210736.GV174703@worktop.programming.kicks-ass.net>
+ <f6dbe42651e84278b44e44ed7d0ed74f@AcuMS.aculab.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <YYrFvXg12eANs0gz@google.com>
+In-Reply-To: <f6dbe42651e84278b44e44ed7d0ed74f@AcuMS.aculab.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
-
-On Tue, Nov 09, 2021 at 07:02:21PM +0000, Quentin Perret wrote:
-> On Tuesday 09 Nov 2021 at 19:09:21 (+0100), Ard Biesheuvel wrote:
-> > Android relies heavily on tracepoints for vendor hooks, and given the
-> > performance impact of CFI on indirect calls, there has been interest
-> > in enabling static calls to replace them.
-
-Hhmm.... what exactly is a "vendor hook" in this context, and what is it doing
-with a tracepoint? From an upstream perspective that sounds somewhat fishy
-usage.
-
-> > Quentin, anything to add here?
+On Wed, Nov 10, 2021 at 10:46:42AM +0000, David Laight wrote:
+> From: Peter Zijlstra
+> > Sent: 09 November 2021 21:08
+> ...
+> > 
+> > GCC does the same, but I wanted to have the exception stuff be in
+> > .text.cold, but alas it doesn't do that. I left the attribute because of
+> > it's descriptive value.
+> > 
+> > >  Unless the cold attribute is helping move
+> > > ("shrink-wrap"?) the basic block to a whole other section
+> > > (.text.cold.)?
+> > 
+> > I was hoping it would do that, but it doesn't on gcc-11.
 > 
-> Yes, Android should definitely benefit from static calls.
-> 
-> Modules attaching to tracepoints cause a measurable overhead w/ CFI as
-> the jump target is a bit harder to verify if it is not in-kernel.
+> Wouldn't moving part of a function to .text.cold (or .text.unlikely)
+> generate the same problems with the stack backtrace code as the
+> .text.fixup section you are removing had??
 
-Where does that additional overhead come from when the target is not in-kernel?
+GCC can already split a function into func and func.cold today (or
+worse: func, func.isra.N, func.cold, func.isra.N.cold etc..).
 
-I hope that I am wrong in understanding that __cfi_slowpath_diag() means we're
-always doing an out-of-line check when calling into a module?
-
-If that were the case, that would seem to be a much more general problem with
-the current clang CFI scheme, and my fear here is that we're adding fragility
-and complexity in specific plces to work around general problems with the CFI
-scheme.
-
-Thanks,
-Mark.
-
-> But sadly that's a common pattern for GKI. The current 'workaround' in
-> Android has been to just plain disable CFI around all tracepoints in the
-> kernel, which is a bit sad from a security PoV. But there was really no other
-> option at the time, and we needed the performance back. Static calls would be
-> a far superior solution as they would avoid much of the CFI overhead, and are
-> not vulnerable in the CFI sense (that is, the branch target can't be easily
-> overridden with a random OOB write from a dodgy driver). So yes, we'd really
-> like to have those please :)
-> 
-> Thanks,
-> Quentin
+I'm assuming reliable unwind and livepatch know how to deal with this.
