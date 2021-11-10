@@ -2,117 +2,311 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B26A44BBEC
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 08:03:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 42D2944BBEE
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 08:03:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229741AbhKJHGE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Nov 2021 02:06:04 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:27933 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229713AbhKJHGD (ORCPT
+        id S229713AbhKJHGf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Nov 2021 02:06:35 -0500
+Received: from out30-44.freemail.mail.aliyun.com ([115.124.30.44]:59196 "EHLO
+        out30-44.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229558AbhKJHGe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Nov 2021 02:06:03 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1636527795;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=0cadZK7XFbebH7WBSpOeCcH2GLCqGBVv5pJTjTqScgI=;
-        b=MSb6zyufM34Dz/7le2ju8Z/eb/gd2fD9gJrZP5CfMs/HU5ggn5mjxss+POEtqZftBRagQ6
-        SgsiioYqRuhiMeyeZKCBLXK909YE6L5BHV1D0jJrRfyv9lV6ufk33T2WNJv0JwjscPpF1R
-        37vAXkdUci9mThxhEajvpXtW5WwOIQo=
-Received: from mail-pj1-f71.google.com (mail-pj1-f71.google.com
- [209.85.216.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-192-purM7dspPJOb7tUb07asiQ-1; Wed, 10 Nov 2021 02:03:14 -0500
-X-MC-Unique: purM7dspPJOb7tUb07asiQ-1
-Received: by mail-pj1-f71.google.com with SMTP id u11-20020a17090a4bcb00b001a6e77f7312so553471pjl.5
-        for <linux-kernel@vger.kernel.org>; Tue, 09 Nov 2021 23:03:14 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=0cadZK7XFbebH7WBSpOeCcH2GLCqGBVv5pJTjTqScgI=;
-        b=ujpIo8mjUbuAbk0+JJTIRCnp97KKPFuwCdskV/mRECPyqJjtvpm+YQVMrL0VYwETYO
-         j45zSYL6eS1eRL06x8hreIZBTvOqiylDcUsFsov+Zk3lIJItfsLOO7acVvEb9nm8Vsf2
-         6qdNTD0HbThHsE+6Mh+HqqH6/4bGbdrabdBU20C1/rO6vxRL0HPw7o40B0dja+dyafsi
-         uOZ518sQ9Jgel2OUEtRFnE5CoakJBaiA5uuGxO4mueFCso1ovysYgEjvb8Z9ioBUpMS8
-         VpWmk87/pYj1a1aZFP8fU2Aa+ZV1l0sFfNGFqgwLhclkuXk9XaqOis62m2zP8ZH541nQ
-         Pn0Q==
-X-Gm-Message-State: AOAM532biCJ552v1mnrOFOFWdVxjeeBTYpyJM/04lNyvRmxa8mkzNkgl
-        8ESMyPDP+XGaxh2K+MV8HksvlTvslRUIvovyh/DkSk++xiewm2M8v2yBYDx1Wb/tX4Q4ezCCZzM
-        LyTe62vr8hXMN42tiL/aK47+H
-X-Received: by 2002:a17:902:d50d:b0:141:ea03:5193 with SMTP id b13-20020a170902d50d00b00141ea035193mr13204503plg.89.1636527793174;
-        Tue, 09 Nov 2021 23:03:13 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJwADuN2McaK3Hz7vOj8bQd5Tyj05xsqo8F8qbby7T4wFIAY2nEuPkvVgYieWrNTWlsrTqt6ig==
-X-Received: by 2002:a17:902:d50d:b0:141:ea03:5193 with SMTP id b13-20020a170902d50d00b00141ea035193mr13204473plg.89.1636527792955;
-        Tue, 09 Nov 2021 23:03:12 -0800 (PST)
-Received: from t490s ([209.132.188.80])
-        by smtp.gmail.com with ESMTPSA id e15sm1645364pfv.131.2021.11.09.23.03.08
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 09 Nov 2021 23:03:12 -0800 (PST)
-Date:   Wed, 10 Nov 2021 15:03:06 +0800
-From:   Peter Xu <peterx@redhat.com>
-To:     Mina Almasry <almasrymina@google.com>
-Cc:     David Hildenbrand <david@redhat.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        "Paul E . McKenney" <paulmckrcu@fb.com>,
-        Yu Zhao <yuzhao@google.com>, Jonathan Corbet <corbet@lwn.net>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Ivan Teterevkov <ivan.teterevkov@nutanix.com>,
-        Florian Schmidt <florian.schmidt@nutanix.com>,
-        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-mm@kvack.org
-Subject: Re: [PATCH v4] mm: Add PM_HUGE_THP_MAPPING to /proc/pid/pagemap
-Message-ID: <YYtuqsnOSxA44AUX@t490s>
-References: <20211107235754.1395488-1-almasrymina@google.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20211107235754.1395488-1-almasrymina@google.com>
+        Wed, 10 Nov 2021 02:06:34 -0500
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R971e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04400;MF=baolin.wang@linux.alibaba.com;NM=1;PH=DS;RN=11;SR=0;TI=SMTPD_---0UvtXNka_1636527824;
+Received: from localhost(mailfrom:baolin.wang@linux.alibaba.com fp:SMTPD_---0UvtXNka_1636527824)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Wed, 10 Nov 2021 15:03:45 +0800
+From:   Baolin Wang <baolin.wang@linux.alibaba.com>
+To:     akpm@linux-foundation.org, ying.huang@intel.com,
+        dave.hansen@linux.intel.com
+Cc:     ziy@nvidia.com, osalvador@suse.de, shy828301@gmail.com,
+        baolin.wang@linux.alibaba.com, zhongjiang-ali@linux.alibaba.com,
+        xlpang@linux.alibaba.com, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] mm: migrate: Support multiple target nodes demotion
+Date:   Wed, 10 Nov 2021 15:03:36 +0800
+Message-Id: <8850612186ea23eb5d328d84e4008a6b60f418e1.1636514506.git.baolin.wang@linux.alibaba.com>
+X-Mailer: git-send-email 1.8.3.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi, Mina,
+We have some machines with multiple memory types like below, which
+have one fast (DRAM) memory node and two slow (persistent memory) memory
+nodes. According to current node demotion, if node 0 fills up,
+its memory should be migrated to node 1, when node 1 fills up, its
+memory will be migrated to node 2: node 0 -> node 1 -> node 2 ->stop.
 
-Sorry to comment late.
+But this is not efficient and suitbale memory migration route
+for our machine with multiple slow memory nodes. Since the distance
+between node 0 to node 1 and node 0 to node 2 is equal, and memory
+migration between slow memory nodes will increase persistent memory
+bandwidth greatly, which will hurt the whole system's performance.
 
-On Sun, Nov 07, 2021 at 03:57:54PM -0800, Mina Almasry wrote:
-> diff --git a/Documentation/admin-guide/mm/pagemap.rst b/Documentation/admin-guide/mm/pagemap.rst
-> index fdc19fbc10839..8a0f0064ff336 100644
-> --- a/Documentation/admin-guide/mm/pagemap.rst
-> +++ b/Documentation/admin-guide/mm/pagemap.rst
-> @@ -23,7 +23,8 @@ There are four components to pagemap:
->      * Bit  56    page exclusively mapped (since 4.2)
->      * Bit  57    pte is uffd-wp write-protected (since 5.13) (see
->        :ref:`Documentation/admin-guide/mm/userfaultfd.rst <userfaultfd>`)
-> -    * Bits 57-60 zero
-> +    * Bit  58    page is a huge (PMD size) THP mapping
-> +    * Bits 59-60 zero
->      * Bit  61    page is file-page or shared-anon (since 3.5)
->      * Bit  62    page swapped
->      * Bit  63    page present
-> diff --git a/fs/proc/task_mmu.c b/fs/proc/task_mmu.c
-> index ad667dbc96f5c..6f1403f83b310 100644
-> --- a/fs/proc/task_mmu.c
-> +++ b/fs/proc/task_mmu.c
-> @@ -1302,6 +1302,7 @@ struct pagemapread {
->  #define PM_SOFT_DIRTY		BIT_ULL(55)
->  #define PM_MMAP_EXCLUSIVE	BIT_ULL(56)
->  #define PM_UFFD_WP		BIT_ULL(57)
-> +#define PM_HUGE_THP_MAPPING	BIT_ULL(58)
+Thus for this case, we can treat the slow memory node 1 and node 2
+as a whole slow memory region, and we should migrate memory from
+node 0 to node 1 and node 2 if node 0 fills up.
 
-The ending "_MAPPING" seems redundant to me, how about just call it "PM_THP" or
-"PM_HUGE" (as THP also means HUGE already)?
+This patch changes the node_demotion data structure to support multiple
+target nodes, and establishes the migration path to support multiple
+target nodes with validating if the node distance is the best or not.
 
-IMHO the core problem is about permission controls, and it seems to me we're
-actually trying to workaround it by duplicating some information we have.. so
-it's kind of a pity.  Totally not against this patch, but imho it'll be nicer
-if it's the permission part that to be enhanced, rather than a new but slightly
-duplicated interface.
+available: 3 nodes (0-2)
+node 0 cpus: 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15
+node 0 size: 62153 MB
+node 0 free: 55135 MB
+node 1 cpus:
+node 1 size: 127007 MB
+node 1 free: 126930 MB
+node 2 cpus:
+node 2 size: 126968 MB
+node 2 free: 126878 MB
+node distances:
+node   0   1   2
+  0:  10  20  20
+  1:  20  10  20
+  2:  20  20  10
 
-Thanks,
+Signed-off-by: Baolin Wang <baolin.wang@linux.alibaba.com>
+---
+Changes from RFC v2:
+ - Change to 'short' type for target nodes array.
+ - Remove nodemask instead selecting target node directly.
+ - Add WARN_ONCE() if the target nodes exceed the maximum value.
 
+Changes from RFC v1:
+ - Re-define the node_demotion structure.
+ - Set up multiple target nodes by validating the node distance.
+ - Add more comments.
+---
+ mm/migrate.c | 138 +++++++++++++++++++++++++++++++++++++++++++----------------
+ 1 file changed, 102 insertions(+), 36 deletions(-)
+
+diff --git a/mm/migrate.c b/mm/migrate.c
+index cf25b00..7f1d745 100644
+--- a/mm/migrate.c
++++ b/mm/migrate.c
+@@ -50,6 +50,7 @@
+ #include <linux/ptrace.h>
+ #include <linux/oom.h>
+ #include <linux/memory.h>
++#include <linux/random.h>
+ 
+ #include <asm/tlbflush.h>
+ 
+@@ -1119,12 +1120,25 @@ static int __unmap_and_move(struct page *page, struct page *newpage,
+  *
+  * This is represented in the node_demotion[] like this:
+  *
+- *	{  1, // Node 0 migrates to 1
+- *	   2, // Node 1 migrates to 2
+- *	  -1, // Node 2 does not migrate
+- *	   4, // Node 3 migrates to 4
+- *	   5, // Node 4 migrates to 5
+- *	  -1} // Node 5 does not migrate
++ *	{  nr=1, nodes[0]=1 }, // Node 0 migrates to 1
++ *	{  nr=1, nodes[0]=2 }, // Node 1 migrates to 2
++ *	{  nr=0, nodes[0]=-1 }, // Node 2 does not migrate
++ *	{  nr=1, nodes[0]=4 }, // Node 3 migrates to 4
++ *	{  nr=1, nodes[0]=5 }, // Node 4 migrates to 5
++ *	{  nr=0, nodes[0]=-1} // Node 5 does not migrate
++ *
++ * Moreover some systems may have multiple same class memory
++ * types. Suppose a system has one socket with 3 memory nodes,
++ * node 0 is fast memory type, and node 1/2 both are slow memory
++ * type, and the distance between fast memory node and slow
++ * memory node is same. So the migration path should be:
++ *
++ *	0 -> 1/2 -> stop
++ *
++ * This is represented in the node_demotion[] like this:
++ *	{ nr=2, {nodes[0]=1, nodes[1]=2} }, // Node 0 migrates to node 1 and node 2
++ *	{ nr=0, nodes[0]=-1, }, // Node 1 dose not migrate
++ *	{ nr=0, nodes[0]=-1, }, // Node 2 does not migrate
+  */
+ 
+ /*
+@@ -1135,8 +1149,13 @@ static int __unmap_and_move(struct page *page, struct page *newpage,
+  * must be held over all reads to ensure that no cycles are
+  * observed.
+  */
+-static int node_demotion[MAX_NUMNODES] __read_mostly =
+-	{[0 ...  MAX_NUMNODES - 1] = NUMA_NO_NODE};
++#define DEMOTION_TARGET_NODES 15
++struct demotion_nodes {
++	unsigned short nr;
++	short nodes[DEMOTION_TARGET_NODES];
++};
++
++static struct demotion_nodes node_demotion[MAX_NUMNODES] __read_mostly;
+ 
+ /**
+  * next_demotion_node() - Get the next node in the demotion path
+@@ -1149,6 +1168,8 @@ static int __unmap_and_move(struct page *page, struct page *newpage,
+  */
+ int next_demotion_node(int node)
+ {
++	struct demotion_nodes *current_node_demotion = &node_demotion[node];
++	unsigned short target_nr, index;
+ 	int target;
+ 
+ 	/*
+@@ -1161,9 +1182,25 @@ int next_demotion_node(int node)
+ 	 * node_demotion[] reads need to be consistent.
+ 	 */
+ 	rcu_read_lock();
+-	target = READ_ONCE(node_demotion[node]);
+-	rcu_read_unlock();
++	target_nr = READ_ONCE(current_node_demotion->nr);
++
++	if (target_nr == 0) {
++		target = NUMA_NO_NODE;
++		goto out;
++	} else if (target_nr == 1) {
++		index = 0;
++	} else {
++		/*
++		 * If there are multiple target nodes, just select one
++		 * target node randomly.
++		 */
++		index = get_random_int() % target_nr;
++	}
++
++	target = READ_ONCE(current_node_demotion->nodes[index]);
+ 
++out:
++	rcu_read_unlock();
+ 	return target;
+ }
+ 
+@@ -2974,10 +3011,13 @@ void migrate_vma_finalize(struct migrate_vma *migrate)
+ /* Disable reclaim-based migration. */
+ static void __disable_all_migrate_targets(void)
+ {
+-	int node;
++	int node, i;
+ 
+-	for_each_online_node(node)
+-		node_demotion[node] = NUMA_NO_NODE;
++	for_each_online_node(node) {
++		node_demotion[node].nr = 0;
++		for (i = 0; i < DEMOTION_TARGET_NODES; i++)
++			node_demotion[node].nodes[i] = NUMA_NO_NODE;
++	}
+ }
+ 
+ static void disable_all_migrate_targets(void)
+@@ -3004,26 +3044,35 @@ static void disable_all_migrate_targets(void)
+  * Failing here is OK.  It might just indicate
+  * being at the end of a chain.
+  */
+-static int establish_migrate_target(int node, nodemask_t *used)
++static int establish_migrate_target(int node, nodemask_t *used,
++				    int best_distance)
+ {
+-	int migration_target;
++	int migration_target, index, val;
++	struct demotion_nodes *current_node_demotion = &node_demotion[node];
++
++	migration_target = find_next_best_node(node, used);
++	if (migration_target == NUMA_NO_NODE)
++		return NUMA_NO_NODE;
+ 
+ 	/*
+-	 * Can not set a migration target on a
+-	 * node with it already set.
+-	 *
+-	 * No need for READ_ONCE() here since this
+-	 * in the write path for node_demotion[].
+-	 * This should be the only thread writing.
++	 * If the node has been set a migration target node before,
++	 * which means it's the best distance between them. Still
++	 * check if this node can be demoted to other target nodes
++	 * if they have a same best distance.
+ 	 */
+-	if (node_demotion[node] != NUMA_NO_NODE)
+-		return NUMA_NO_NODE;
++	if (best_distance != -1) {
++		val = node_distance(node, migration_target);
++		if (val > best_distance)
++			return NUMA_NO_NODE;
++	}
+ 
+-	migration_target = find_next_best_node(node, used);
+-	if (migration_target == NUMA_NO_NODE)
++	index = current_node_demotion->nr;
++	if (WARN_ONCE(index >= DEMOTION_TARGET_NODES,
++		      "Exceeds maximum demotion target nodes\n"))
+ 		return NUMA_NO_NODE;
+ 
+-	node_demotion[node] = migration_target;
++	current_node_demotion->nodes[index] = migration_target;
++	current_node_demotion->nr++;
+ 
+ 	return migration_target;
+ }
+@@ -3039,7 +3088,9 @@ static int establish_migrate_target(int node, nodemask_t *used)
+  *
+  * The difference here is that cycles must be avoided.  If
+  * node0 migrates to node1, then neither node1, nor anything
+- * node1 migrates to can migrate to node0.
++ * node1 migrates to can migrate to node0. Also one node can
++ * be migrated to multiple nodes if the target nodes all have
++ * a same best-distance against the source node.
+  *
+  * This function can run simultaneously with readers of
+  * node_demotion[].  However, it can not run simultaneously
+@@ -3051,7 +3102,7 @@ static void __set_migration_target_nodes(void)
+ 	nodemask_t next_pass	= NODE_MASK_NONE;
+ 	nodemask_t this_pass	= NODE_MASK_NONE;
+ 	nodemask_t used_targets = NODE_MASK_NONE;
+-	int node;
++	int node, best_distance;
+ 
+ 	/*
+ 	 * Avoid any oddities like cycles that could occur
+@@ -3080,18 +3131,33 @@ static void __set_migration_target_nodes(void)
+ 	 * multiple source nodes to share a destination.
+ 	 */
+ 	nodes_or(used_targets, used_targets, this_pass);
+-	for_each_node_mask(node, this_pass) {
+-		int target_node = establish_migrate_target(node, &used_targets);
+ 
+-		if (target_node == NUMA_NO_NODE)
+-			continue;
++	for_each_node_mask(node, this_pass) {
++		best_distance = -1;
+ 
+ 		/*
+-		 * Visit targets from this pass in the next pass.
+-		 * Eventually, every node will have been part of
+-		 * a pass, and will become set in 'used_targets'.
++		 * Try to set up the migration path for the node, and the target
++		 * migration nodes can be multiple, so doing a loop to find all
++		 * the target nodes if they all have a best node distance.
+ 		 */
+-		node_set(target_node, next_pass);
++		do {
++			int target_node =
++				establish_migrate_target(node, &used_targets,
++							 best_distance);
++
++			if (target_node == NUMA_NO_NODE)
++				break;
++
++			if (best_distance == -1)
++				best_distance = node_distance(node, target_node);
++
++			/*
++			 * Visit targets from this pass in the next pass.
++			 * Eventually, every node will have been part of
++			 * a pass, and will become set in 'used_targets'.
++			 */
++			node_set(target_node, next_pass);
++		} while (1);
+ 	}
+ 	/*
+ 	 * 'next_pass' contains nodes which became migration
 -- 
-Peter Xu
+1.8.3.1
 
