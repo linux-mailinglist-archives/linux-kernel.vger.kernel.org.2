@@ -2,104 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2AD5344BE98
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 11:28:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 07BCE44BE99
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 11:29:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231189AbhKJKbb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Nov 2021 05:31:31 -0500
-Received: from new2-smtp.messagingengine.com ([66.111.4.224]:39313 "EHLO
-        new2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229831AbhKJKba (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Nov 2021 05:31:30 -0500
-Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
-        by mailnew.nyi.internal (Postfix) with ESMTP id 500A5580970;
-        Wed, 10 Nov 2021 05:28:38 -0500 (EST)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute1.internal (MEProxy); Wed, 10 Nov 2021 05:28:38 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kroah.com; h=
-        date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=fm2; bh=RjXB1Z85PlXf53Ln6BgXRbUxPKk
-        x8/JNbrw4pi4atds=; b=bB8PU7WRov9+CfrAurLHmcbMo1JXLXiarjdpCpLM5Kh
-        PbP9vNO47e5spjj9EwNki8Px1RYo5FwIZS0ByPR25NCiqGis7LOydharvzoR+8GA
-        pCf3PkV0V9w3PPgO6AGjE4cOi85y4OlektegmHqnWh1te2HyxINAQtTvC4PqnnyC
-        Ja7oyp6nW6fijG186l84JY89Hr6px4GF6wb5Vrl3N8UqOZT+zen9yDL1jKAkNcLF
-        bs+zfche4iIf1v60mxdygIr6fYkYMyhxK9WiNVanDIPussXzRR6CYZABwNHy9eHH
-        av+s+NuQxNNSSaJ/QXKbZAq7s7CJ6Kxdj1CnH08ebbQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=RjXB1Z
-        85PlXf53Ln6BgXRbUxPKkx8/JNbrw4pi4atds=; b=g5q7zqs1PYp33WEWLcghR2
-        G/y2CpFXqf+IiTUlgr/B+PtIAL1RiMdpVNKmFu2AkTIkA+kISRa6DcjR2R+4zEmW
-        fhUYIfu9L1hu5C87aAuZ4ndFIC1WBsSKnKjnM3TXPNMjIMVzLx2WP8w6lXZ+gmaO
-        80kxRzVRRPWyr9cdp1icaEd7z52MqCth5GdcHYi7Y4ts/dwoAYARechwWM6VO8x3
-        Nce/g3a/rnQVjLfrDf9S5LFbiIurqKpKKQXBH4/NNDgv+lITIab1m/JjcOo/c9m7
-        Kt1+TgLAjdEH9rahiTOeLb+6Lf4mJu24C+qL+NMrqkWvJkRbkB4uRFfjopMvNagg
-        ==
-X-ME-Sender: <xms:1p6LYRI8SnEAZ2JKlrgjFJGumA2MQDzTdLwjO6lIoK_sdLR-lEEmPQ>
-    <xme:1p6LYdLbITNflHeMeOLyfMGV5aUrmHu2kT87PopX1_EBoEH75NJ_NNQj5yVWP8w7L
-    caokqoKmm7K9Q>
-X-ME-Received: <xmr:1p6LYZuc4elX0z4ks6NL8sTebR_D1qQpsJqYjAeGzqxcpImm4T80CyjGBsWaNk9XFGIfmk5I3_xjNGBHXOnVhcUXf-0oaU47>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvuddrudejgdduhecutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
-    fjughrpeffhffvuffkfhggtggujgesthdtredttddtvdenucfhrhhomhepifhrvghgucfm
-    jfcuoehgrhgvgheskhhrohgrhhdrtghomheqnecuggftrfgrthhtvghrnhepueelledthe
-    ekleethfeludduvdfhffeuvdffudevgeehkeegieffveehgeeftefgnecuffhomhgrihhn
-    pehkvghrnhgvlhdrohhrghenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmh
-    grihhlfhhrohhmpehgrhgvgheskhhrohgrhhdrtghomh
-X-ME-Proxy: <xmx:1p6LYSZcilUuC8ymF6Sm7kc3ZZV1PKVMP76HRkhAzMv85fkBVWAy5A>
-    <xmx:1p6LYYYk_903uvP7KjnneWQ-hMzDjqAMWO_1cZNqMUbSjJWJ6bLGMw>
-    <xmx:1p6LYWCN4SDLVpTRt3miOk_71iRnPEllSO9Z9NDzhZRLY7Peo4hDbA>
-    <xmx:1p6LYUSp1n3i3Lj8OY3FC5Rx27Z0Fetaf8BR9S15jHJOXfjMVqL9WA>
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
- 10 Nov 2021 05:28:37 -0500 (EST)
-Date:   Wed, 10 Nov 2021 11:28:35 +0100
-From:   Greg KH <greg@kroah.com>
-To:     Lee Jones <lee.jones@linaro.org>
-Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-        Andreas Kemnade <andreas@kemnade.info>,
-        "H . Nikolaus Schaller" <hns@goldelico.com>,
-        Johan Hovold <johan@kernel.org>,
-        "David S . Miller" <davem@davemloft.net>
-Subject: Re: [PATCH 4.9 1/2] net: hso: register netdev later to avoid a race
- condition
-Message-ID: <YYue00HWr1hW/8cE@kroah.com>
-References: <20211109093959.173885-1-lee.jones@linaro.org>
- <YYuCE9EoMu+4zsiF@kroah.com>
- <YYuXq3wOdmWc+8lo@google.com>
- <YYuYyROE7FKrQgIF@google.com>
+        id S231199AbhKJKb4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Nov 2021 05:31:56 -0500
+Received: from mga01.intel.com ([192.55.52.88]:56795 "EHLO mga01.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229831AbhKJKbz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Nov 2021 05:31:55 -0500
+X-IronPort-AV: E=McAfee;i="6200,9189,10163"; a="256333445"
+X-IronPort-AV: E=Sophos;i="5.87,223,1631602800"; 
+   d="scan'208";a="256333445"
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Nov 2021 02:29:08 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.87,223,1631602800"; 
+   d="scan'208";a="732474328"
+Received: from black.fi.intel.com ([10.237.72.28])
+  by fmsmga005.fm.intel.com with ESMTP; 10 Nov 2021 02:29:05 -0800
+Received: by black.fi.intel.com (Postfix, from userid 1003)
+        id 0FDFF155; Wed, 10 Nov 2021 12:29:07 +0200 (EET)
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
+Cc:     David Airlie <airlied@linux.ie>, Daniel Vetter <daniel@ffwll.ch>
+Subject: [PATCH v1 1/1] drm/i915: Replace kernel.h with the necessary inclusions
+Date:   Wed, 10 Nov 2021 12:28:57 +0200
+Message-Id: <20211110102857.59604-1-andriy.shevchenko@linux.intel.com>
+X-Mailer: git-send-email 2.33.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YYuYyROE7FKrQgIF@google.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 10, 2021 at 10:02:49AM +0000, Lee Jones wrote:
-> On Wed, 10 Nov 2021, Lee Jones wrote:
-> 
-> > On Wed, 10 Nov 2021, Greg KH wrote:
-> > 
-> > > On Tue, Nov 09, 2021 at 09:39:58AM +0000, Lee Jones wrote:
-> > > > From: Andreas Kemnade <andreas@kemnade.info>
-> > > > 
-> > > > [ Upstream commit 4c761daf8bb9a2cbda9facf53ea85d9061f4281e ]
-> > > 
-> > > You already sent this for inclusion:
-> > > 	https://lore.kernel.org/r/YYU1KqvnZLyPbFcb@google.com
-> > > 
-> > > Why send it again?
-> > 
-> > The real question is; why didn't I sent patch 2 at the same time!
-> 
-> Also, why didn't it go away when I rebased prior to sending this?
+When kernel.h is used in the headers it adds a lot into dependency hell,
+especially when there are circular dependencies are involved.
 
-Because it is still in the queue and has not been in a released 4.4.y or
-4.9.y kernel yet.
+Replace kernel.h inclusion with the list of what is really being used.
 
-thanks,
+Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+---
+ include/drm/intel-gtt.h | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
-greg k-h
+diff --git a/include/drm/intel-gtt.h b/include/drm/intel-gtt.h
+index abfefaaf897a..4e5f8e7e25d0 100644
+--- a/include/drm/intel-gtt.h
++++ b/include/drm/intel-gtt.h
+@@ -6,7 +6,10 @@
+ 
+ #include <linux/agp_backend.h>
+ #include <linux/intel-iommu.h>
+-#include <linux/kernel.h>
++#include <linux/types.h>
++
++struct pci_dev;
++struct sg_table;
+ 
+ void intel_gtt_get(u64 *gtt_total,
+ 		   phys_addr_t *mappable_base,
+-- 
+2.33.0
+
