@@ -2,104 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0855E44CCAD
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 23:28:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AD54144CCB7
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 23:29:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233690AbhKJWap (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Nov 2021 17:30:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38322 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233519AbhKJWao (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Nov 2021 17:30:44 -0500
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E49C1C061766;
-        Wed, 10 Nov 2021 14:27:55 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-        Content-Type:In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:
-        Subject:Sender:Reply-To:Content-ID:Content-Description;
-        bh=ajE2E1oSo9dMdca3nNcODp4DAhXTWNhCgu0RAXyw3Ts=; b=zZ9gUMnX+5lgCf/ZDSs2giGD2x
-        pYvIHVANyt+wE9U86AVXKNBSFYn2SLmKPKhTE6Ek4pOcdOtRG2KLOFqI1LF0XYp/+yNnj6do2TwyP
-        qb82kSIOdOwCqoLvUuJIndcEJo+8rihYLaaIad1cR4sk2T3Db5bh73eRBNwPHBYnu0xMVy3BSg9TD
-        qQIOVkzo6aXJM8ba1+5AleepYAoLPnRskqqJEsuhcwxoJHFQlJ8iqSpHX0E3JRwkYml/JtYEyy+Lb
-        4/claBL7QjKZDCOnJfYjui1utRDVX7teIlBW3dp2cW1jmIBg0rmp2Jq8PsFPp3WoqbmXYvn2A16F1
-        Tfxz46FQ==;
-Received: from [2601:1c0:6280:3f0::aa0b]
-        by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mkw3z-006Xsi-SV; Wed, 10 Nov 2021 22:27:27 +0000
-Subject: Re: [PATCH v7 43/45] virt: Add SEV-SNP guest driver
-To:     Brijesh Singh <brijesh.singh@amd.com>, x86@kernel.org,
-        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        linux-efi@vger.kernel.org, platform-driver-x86@vger.kernel.org,
-        linux-coco@lists.linux.dev, linux-mm@kvack.org
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Joerg Roedel <jroedel@suse.de>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, Ard Biesheuvel <ardb@kernel.org>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Jim Mattson <jmattson@google.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Sergio Lopez <slp@redhat.com>, Peter Gonda <pgonda@google.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        David Rientjes <rientjes@google.com>,
-        Dov Murik <dovmurik@linux.ibm.com>,
-        Tobin Feldman-Fitzthum <tobin@ibm.com>,
-        Borislav Petkov <bp@alien8.de>,
-        Michael Roth <michael.roth@amd.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        "Kirill A . Shutemov" <kirill@shutemov.name>,
-        Andi Kleen <ak@linux.intel.com>,
-        "Dr . David Alan Gilbert" <dgilbert@redhat.com>,
-        tony.luck@intel.com, marcorr@google.com,
-        sathyanarayanan.kuppuswamy@linux.intel.com
-References: <20211110220731.2396491-1-brijesh.singh@amd.com>
- <20211110220731.2396491-44-brijesh.singh@amd.com>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <e8baf85f-8f17-d43e-4656-ed9003affaa8@infradead.org>
-Date:   Wed, 10 Nov 2021 14:27:25 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        id S233675AbhKJWcO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Nov 2021 17:32:14 -0500
+Received: from vps0.lunn.ch ([185.16.172.187]:55458 "EHLO vps0.lunn.ch"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233569AbhKJWcN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Nov 2021 17:32:13 -0500
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
+        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
+        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
+        bh=CQp3sJnWCgQNkvm7ChGXxG1WwznWPcDLEIyWH0r1PmM=; b=XAl/F94XLVrlMxYh0nNeM8Srlt
+        X7mGUkrqoxrOKL0pfD9P2iFpbuX/zxXOB4vdgQAat5VXHfMEfG/WX3yBvnZIQj8mXvIXRoKHQmFFD
+        MeAG1lLz58gbUEn0fvPonTu3b29ehGkC+deBlzl157o3qyClPWsDjypJXLToJJmE+2Yc=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
+        (envelope-from <andrew@lunn.ch>)
+        id 1mkw5o-00D96S-HT; Wed, 10 Nov 2021 23:29:20 +0100
+Date:   Wed, 10 Nov 2021 23:29:20 +0100
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     Ansuel Smith <ansuelsmth@gmail.com>
+Cc:     Vivien Didelot <vivien.didelot@gmail.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Vladimir Oltean <olteanv@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>, Pavel Machek <pavel@ucw.cz>,
+        John Crispin <john@phrozen.org>, netdev@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-leds@vger.kernel.org,
+        Marek =?iso-8859-1?Q?Beh=FAn?= <kabel@kernel.org>
+Subject: Re: [RFC PATCH v3 4/8] leds: trigger: netdev: rename and expose
+ NETDEV trigger enum modes
+Message-ID: <YYxHwJLdNpDLPLd4@lunn.ch>
+References: <20211109022608.11109-1-ansuelsmth@gmail.com>
+ <20211109022608.11109-5-ansuelsmth@gmail.com>
+ <YYrg870zccL13+Mk@lunn.ch>
+ <YYwkJPQeej3/eRUl@Ansuel-xps.localdomain>
 MIME-Version: 1.0
-In-Reply-To: <20211110220731.2396491-44-brijesh.singh@amd.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YYwkJPQeej3/eRUl@Ansuel-xps.localdomain>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On Wed, Nov 10, 2021 at 08:57:24PM +0100, Ansuel Smith wrote:
+> On Tue, Nov 09, 2021 at 09:58:27PM +0100, Andrew Lunn wrote:
+> > On Tue, Nov 09, 2021 at 03:26:04AM +0100, Ansuel Smith wrote:
+> > > Rename NETDEV trigger enum modes to a more simbolic name and move them
+> > 
+> > symbolic. Randy is slipping :-)
+> > 
+> > > in leds.h to make them accessible by any user.
+> > 
+> > any user? I would be more specific than that. Other triggers dealing
+> > with netdev states?
+> >
+> 
+> Ok will be more specific. A LED driver require to explicitly support the
+> trigger to run in hardware mode. The LED driver will take the
+> trigger_data and elaborate his struct to parse all the option
+> (blink_mode bitmap, interval)
+> 
+> So the user would be a LED driver that adds support for that specific
+> trigger. That is also the reason we need to export them.
 
-On 11/10/21 2:07 PM, Brijesh Singh wrote:
-> diff --git a/drivers/virt/coco/sevguest/Kconfig b/drivers/virt/coco/sevguest/Kconfig
-> new file mode 100644
-> index 000000000000..96190919cca8
-> --- /dev/null
-> +++ b/drivers/virt/coco/sevguest/Kconfig
-> @@ -0,0 +1,9 @@
-> +config SEV_GUEST
-> +	tristate "AMD SEV Guest driver"
-> +	default y
+Say i have a SATA controller where i can configure it to blink on
+reads, or writes, or both. It also needs to understand these netdev
+modes? I was meaning you need to narrow the comment down to a trigger
+which has something to do with netdev. I assume other sorts of
+hardware offloads will appear in the future, once the generic
+infrastructure is there.
 
-For this to remain as "default y", you need to justify it.
-E.g., if a board cannot boot with an interrupt controller,
-the driver for the interrupt controller can be "default y".
-
-So why is this default y?
-No other drivers in drivers/virt/ are default y.
-
-> +	depends on AMD_MEM_ENCRYPT && CRYPTO_AEAD2
-> +	help
-> +	  The driver can be used by the SEV-SNP guest to communicate with the PSP to
-> +	  request the attestation report and more.
-> +
-> +	  If you choose 'M' here, this module will be called sevguest.
-
-thanks.
--- 
-~Randy
+	 Andrew
