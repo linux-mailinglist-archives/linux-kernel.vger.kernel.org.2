@@ -2,129 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 74C3F44BA4E
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 03:25:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DDB1D44BA50
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 03:25:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229923AbhKJC1s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Nov 2021 21:27:48 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48824 "EHLO
+        id S229934AbhKJC2g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Nov 2021 21:28:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49002 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229756AbhKJC1r (ORCPT
+        with ESMTP id S229717AbhKJC2d (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Nov 2021 21:27:47 -0500
-Received: from mail-wm1-x331.google.com (mail-wm1-x331.google.com [IPv6:2a00:1450:4864:20::331])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E90D3C061764;
-        Tue,  9 Nov 2021 18:25:00 -0800 (PST)
-Received: by mail-wm1-x331.google.com with SMTP id 67-20020a1c1946000000b0030d4c90fa87so825397wmz.2;
-        Tue, 09 Nov 2021 18:25:00 -0800 (PST)
+        Tue, 9 Nov 2021 21:28:33 -0500
+Received: from mail-pg1-x52d.google.com (mail-pg1-x52d.google.com [IPv6:2607:f8b0:4864:20::52d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E2963C061764;
+        Tue,  9 Nov 2021 18:25:46 -0800 (PST)
+Received: by mail-pg1-x52d.google.com with SMTP id g28so833621pgg.3;
+        Tue, 09 Nov 2021 18:25:46 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=TTkLFHcGvtH+pB13GJ0NadfjTaTC8FpUPnqsIBnvMb4=;
-        b=cWS5tAL5aLeFhdVmI1OhD3cCg43m/oSbq+cFcLaTDxkJgDbU+YqbtglrGDWkcynju1
-         KNN8Uf8+RDxHka85Q9CPkhY/YleqzKgF1PSqBdyARj4KUX/ZYtR23Aw2DdVRRg8qFy8D
-         c1y1eHQeJvEhAXu9yh5ixbnurF30yFABZojhtbzlOgSes99j6PFWvH8mS/BBNk4GUaUv
-         nkfNoWaizv8QPzCnHhUdprP+GLcYU7UuLju01oB5+kMyqmtjCpa6NcSMf9hBE9xNJQOx
-         C8uHNCN2rDf3ev87xmMkt7wPR7UT5zpJzUrVcxVCINOUrcbr+VDWnvqL0SGzxN3osC/D
-         53ZA==
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=q5hdjzL4fx6MCYrF1luLAHmrqgFH4sajhljBKE+bpBg=;
+        b=Wp+933VhmWr8dtWw/LmFTkCFPa157nh6dtoQBDi+ZbQOVf3NDHU9wcEzgG+H7BEI7K
+         NLYHDVZoKBLpaQJMIEjYvlK3Bd/AHs17vskCadVZyTFRr0VdRi86b5RAMizT5UzaxWAs
+         EkwfgaYc5n9QNImDflB5KLxL1KBdZC+2VEwXtYeo6zHrUxyzP7xy0NYs8GW6Iwd/ygzs
+         RtdBVGVE6Ed7qcZCeUd4S6mfbS77ZXzIix9Gxlv/wp7h70D7WejVaL1L2g/x2nNxNIyO
+         GnxU/Sd+s3ZebXJTQtOSNnIJTTvMvoS766KbPjeb1HLUWB4XnAc9i05bwChVHxjLIqDW
+         SsOQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=TTkLFHcGvtH+pB13GJ0NadfjTaTC8FpUPnqsIBnvMb4=;
-        b=NmWf2HIZiiZl85yPZMD6Kk194xzfnd6XURbCEBVr4v+Uash1RSP8HgtN0CI8vFEBje
-         FZBKMucmUEVrokSbrsLY9n5t6L/SK6G5W1uDWbErGcxajhyMDSN16Ya52YPYWtrSCghD
-         +DbaClta20k+6lbAD63BmTmLltWwI876Tth5CY0+bLbWHDb72J+SoYNkKzq/rQOiIZZJ
-         5FGvWhU0I5I3EqSXjDgbxXA/if8lPlkXK8sYy9vFhCzxyXtYO0/t5yYZLWXbAa0tAq6Y
-         nUELPfYQuvC0WWgRiYlSM1+u2rHlSNmnAsrqZWf9mw8NzpMfJZRMG67Gu57AXRhYS1+1
-         zamg==
-X-Gm-Message-State: AOAM530oaAfF9lWWILnlzJqIQF3eDsTkmz8JwgpqnPzXZvuQTx0qO2+c
-        q22c23dEXZSPL8AakCkFR6td8o5mLwWL3g==
-X-Google-Smtp-Source: ABdhPJzVkybnhbbiylMGuVpKDnT4vmNArLyKUyyJI7Ez1O6Xmr5h/Z/dR9RHq7d8Wf5/S4087/HqSQ==
-X-Received: by 2002:a1c:770e:: with SMTP id t14mr12342584wmi.173.1636511099468;
-        Tue, 09 Nov 2021 18:24:59 -0800 (PST)
-Received: from pc ([197.49.136.152])
-        by smtp.gmail.com with ESMTPSA id o10sm13129089wri.15.2021.11.09.18.24.57
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=q5hdjzL4fx6MCYrF1luLAHmrqgFH4sajhljBKE+bpBg=;
+        b=UV/lu9zhEl4W04gNbWPubqKN1qMC+LjCzMteE3sxPA5ruA6dNAAN6ExZpO8m7xR1lB
+         f4iT5/V3Iz51ZdxckK0sWrwGt2gav6EPpkPBe3jG1dv/ZR4ttM0RucykuCwm2TZr0DI0
+         tqsGLpmgi29C8YFjBWzlQU3MnZ9SiB78NzXYnzaxx9QLFEybf85G/Aq2gXq2k6LQugvM
+         VqmmIvcPvWX0iEQSk8xJRO8xfomKNrIUEpzbV1iLqbXG4dJONgNM8aAaXkf6RU5ETsKp
+         ePB1mMzImyB8yYwZZAxleEr5XMBkKujeSaC1GUMZryE4DbyVRd5lsdiBg4frP4wIej3Z
+         FyjQ==
+X-Gm-Message-State: AOAM530N1s7IMrR3zMwc1h61dedBCPWPdwvZj6KbuUN5oZsHFmb/BWhI
+        DRNKB1ZWCTsBb8luHESiKAM=
+X-Google-Smtp-Source: ABdhPJz1UTTIA0xBXm0xDek+ozp9l2COtEg6hY65GnBGdHEijkLASf7Z9daKMsPvfSp9vInmptn37A==
+X-Received: by 2002:a63:b50d:: with SMTP id y13mr9418770pge.286.1636511146444;
+        Tue, 09 Nov 2021 18:25:46 -0800 (PST)
+Received: from localhost.localdomain (199.19.111.227.16clouds.com. [199.19.111.227])
+        by smtp.gmail.com with ESMTPSA id ns21sm3647887pjb.37.2021.11.09.18.25.40
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 09 Nov 2021 18:24:59 -0800 (PST)
-Date:   Wed, 10 Nov 2021 04:24:56 +0200
-From:   Sohaib Mohamed <sohaib.amhmd@gmail.com>
-To:     Ian Rogers <irogers@google.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Pierre Gondois <Pierre.Gondois@arm.com>,
-        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] perf bench: Fix memory leaks.
-Message-ID: <20211110022456.yd5m5on7v2jbqyzg@pc>
-References: <20211108044826.138781-1-sohaib.amhmd@gmail.com>
- <CAP-5=fUc1uPti1MN3BZJ1JFus=ZYU66+gjh3bW30pUkE2sUxBQ@mail.gmail.com>
+        Tue, 09 Nov 2021 18:25:46 -0800 (PST)
+From:   Artem Lapkin <email2tema@gmail.com>
+X-Google-Original-From: Artem Lapkin <art@khadas.com>
+To:     narmstrong@baylibre.com
+Cc:     wim@linux-watchdog.org, linux@roeck-us.net, khilman@baylibre.com,
+        jbrunet@baylibre.com, christianshewitt@gmail.com,
+        martin.blumenstingl@googlemail.com, linux-watchdog@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-amlogic@lists.infradead.org, linux-kernel@vger.kernel.org,
+        art@khadas.com, nick@khadas.com, gouwa@khadas.com
+Subject: [PATCH] watchdog: meson_gxbb_wdt: remove stop_on_reboot
+Date:   Wed, 10 Nov 2021 10:25:18 +0800
+Message-Id: <20211110022518.1676834-1-art@khadas.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAP-5=fUc1uPti1MN3BZJ1JFus=ZYU66+gjh3bW30pUkE2sUxBQ@mail.gmail.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 08, 2021 at 10:57:25AM -0800, Ian Rogers wrote:
-> On Sun, Nov 7, 2021 at 8:49 PM Sohaib Mohamed <sohaib.amhmd@gmail.com> wrote:
-> >
-> > ASan reports memory leaks while running:
-> >
-> > $ perf bench sched all
-> >
-> > Signed-off-by: Sohaib Mohamed <sohaib.amhmd@gmail.com>
->
-> Acked-by: Ian Rogers <irogers@google.com>
->
-> I think you can add:
-> Fixes: e27454cc6352c ("perf bench: Add sched-messaging.c: Benchmark
-> for scheduler and IPC mechanisms based on hackbench")
->
-> This will then get the fix backported to older stable perf commands.
+Remove watchdog_stop_on_reboot()
 
-I just added these two lines to version 2:
-https://lore.kernel.org/linux-perf-users/20211110022012.16620-1-sohaib.amhmd@gmail.com/
+The Meson platform still has some hardware drivers problems for some
+configurations which can freeze devices on shutdown/reboot.
 
-Thanks,
-Sohaib
+Remove watchdog_stop_on_reboot() to catch this situation and ensure that
+the reboot happens anyway. Users who still want to stop the watchdog on
+reboot can still do so using the watchdog.stop_on_reboot=1 module
+parameter.
 
->
-> Thanks,
-> Ian
->
-> > ---
-> >  tools/perf/bench/sched-messaging.c | 4 ++++
-> >  1 file changed, 4 insertions(+)
-> >
-> > diff --git a/tools/perf/bench/sched-messaging.c b/tools/perf/bench/sched-messaging.c
-> > index 488f6e6ba1a5..fa0ff4ce2b74 100644
-> > --- a/tools/perf/bench/sched-messaging.c
-> > +++ b/tools/perf/bench/sched-messaging.c
-> > @@ -223,6 +223,8 @@ static unsigned int group(pthread_t *pth,
-> >                 snd_ctx->out_fds[i] = fds[1];
-> >                 if (!thread_mode)
-> >                         close(fds[0]);
-> > +
-> > +               free(ctx);
-> >         }
-> >
-> >         /* Now we have all the fds, fork the senders */
-> > @@ -239,6 +241,8 @@ static unsigned int group(pthread_t *pth,
-> >                 for (i = 0; i < num_fds; i++)
-> >                         close(snd_ctx->out_fds[i]);
-> >
-> > +       free(snd_ctx);
-> > +
-> >         /* Return number of children to reap */
-> >         return num_fds * 2;
-> >  }
-> > --
-> > 2.25.1
-> >
+https://lore.kernel.org/linux-watchdog/20210729072308.1908904-1-art@khadas.com/T/#t
+
+Signed-off-by: Artem Lapkin <art@khadas.com>
+---
+ drivers/watchdog/meson_gxbb_wdt.c | 1 -
+ 1 file changed, 1 deletion(-)
+
+diff --git a/drivers/watchdog/meson_gxbb_wdt.c b/drivers/watchdog/meson_gxbb_wdt.c
+index 5a9ca10fbcfa..3f86530c33b0 100644
+--- a/drivers/watchdog/meson_gxbb_wdt.c
++++ b/drivers/watchdog/meson_gxbb_wdt.c
+@@ -186,7 +186,6 @@ static int meson_gxbb_wdt_probe(struct platform_device *pdev)
+ 
+ 	meson_gxbb_wdt_set_timeout(&data->wdt_dev, data->wdt_dev.timeout);
+ 
+-	watchdog_stop_on_reboot(&data->wdt_dev);
+ 	return devm_watchdog_register_device(dev, &data->wdt_dev);
+ }
+ 
+-- 
+2.25.1
+
