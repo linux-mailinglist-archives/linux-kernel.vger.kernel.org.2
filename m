@@ -2,69 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C1E1D44BCB4
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 09:17:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3DAEC44BCB7
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 09:19:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230088AbhKJIUe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Nov 2021 03:20:34 -0500
-Received: from mail.kernel.org ([198.145.29.99]:36066 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229791AbhKJIUc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Nov 2021 03:20:32 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id AA39E61077;
-        Wed, 10 Nov 2021 08:17:44 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1636532265;
-        bh=paSp9h4l6mtUom1KRr5x8WCqOZmhDbnqIvrmF41Gm/A=;
-        h=Date:From:To:cc:Subject:In-Reply-To:References:From;
-        b=RRpWkSAbF024szt0ZjJIn6S6cqIpsV1Bp31ej2PoJKg2BSIs3O+adctI+tdwf2vur
-         mHbyKe7e6Lkze5+KnSY/S02scyuvoVFVRD4k/bJGBxtXOtqxEtD7WCQENHHgpk4+7s
-         vLuVUeuRY02rJNjSe6hxHDvzx1u5/TqEcO38x6Il5n7qlqTcSyjD9UcSLgGONAnwXZ
-         5YPFPzmA9cs4FXZC8HbsfAl+I00qCnYYT2DsOyf2fU83CGkj2AgY5tAZRJvXe8k/rs
-         vhGMtV/ASauR19kdIJ9kDTW6Kn8oACOlqqDHzKy1qcsXAs7oei52gmViuFAbEmoVsJ
-         TZIs3NhtH52OQ==
-Date:   Wed, 10 Nov 2021 09:17:42 +0100 (CET)
-From:   Jiri Kosina <jikos@kernel.org>
-To:     Stephen Rothwell <sfr@canb.auug.org.au>,
-        =?ISO-8859-15?Q?Thomas_Wei=DFschuh?= <linux@weissschuh.net>
-cc:     Benjamin Tissoires <benjamin.tissoires@redhat.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: Re: linux-next: build warning after merge of the hid tree
-In-Reply-To: <20211110150639.7db57ae2@canb.auug.org.au>
-Message-ID: <nycvar.YFH.7.76.2111100915550.12554@cbobk.fhfr.pm>
-References: <20211110150639.7db57ae2@canb.auug.org.au>
-User-Agent: Alpine 2.21 (LSU 202 2017-01-01)
+        id S230165AbhKJIVy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Nov 2021 03:21:54 -0500
+Received: from Galois.linutronix.de ([193.142.43.55]:41408 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230136AbhKJIVx (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Nov 2021 03:21:53 -0500
+Message-ID: <c342fbf3-44b2-ce22-888f-363b709ea986@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1636532345;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=BN0MsiNbgeRKb+wkl1o9CWyi634gHXLRKnp+TwIJuMo=;
+        b=2jdebMqMvjbryDpOrBpDXQUQiTiL/S+JXKDJMKO3RJSXmVPI76It05CXknKsVBf2Oy77jn
+        Ymgsk64r+QZnCwiXlZ0I2lDZH5Wgsh0YnfF19Ro6TKOJkJ8SIisSVXgZ0BYDj0SerJBh/h
+        nAFmOYN6PnXtpx6Bz/UmJHcyOQ/uvpn79MpVFPvVpQBmhhYPj2yuXbe2UHrm1i4I3zQ4H+
+        ZZUuwysRn+eFjGR/H3c0eKlJ/KYR5rUImOwycRZQC9TmtISKEi8GEp6Ow2zMxqk+mHr1Tm
+        sRc7LMONau9rQQXXMHv4M8gE/yxly4utyFxY43GLIPIJUXzyOJJjgkq2VwSVDA==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1636532345;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=BN0MsiNbgeRKb+wkl1o9CWyi634gHXLRKnp+TwIJuMo=;
+        b=T5DrVa8i7km/keaSIh/JD0Zt7lo6ne8WiNRjMVgAoz6JJ0FrbPR34+ri4LBep3Jpqfg5oF
+        4zByVAA3oQK1OrAQ==
+Date:   Wed, 10 Nov 2021 09:19:04 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Subject: Re: [PATCH v2 1/7] net: dsa: b53: Add BroadSync HD register
+ definitions
+Content-Language: en-US
+To:     Florian Fainelli <f.fainelli@gmail.com>
+Cc:     Richard Cochran <richardcochran@gmail.com>,
+        Kurt Kanzenbach <kurt@linutronix.de>,
+        Vladimir Oltean <olteanv@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        John Stultz <john.stultz@linaro.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Russell King <linux@armlinux.org.uk>,
+        Marc Kleine-Budde <mkl@pengutronix.de>,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        Andrew Lunn <andrew@lunn.ch>,
+        Vivien Didelot <vivien.didelot@gmail.com>
+References: <20211109095013.27829-1-martin.kaistra@linutronix.de>
+ <20211109095013.27829-2-martin.kaistra@linutronix.de>
+ <6839c4e9-123d-227a-630d-fae8a2df6483@gmail.com>
+From:   Martin Kaistra <martin.kaistra@linutronix.de>
+In-Reply-To: <6839c4e9-123d-227a-630d-fae8a2df6483@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 10 Nov 2021, Stephen Rothwell wrote:
-
-> Hi all,
+Am 09.11.21 um 19:04 schrieb Florian Fainelli:
+> On 11/9/21 1:50 AM, Martin Kaistra wrote:
+>> From: Kurt Kanzenbach <kurt@linutronix.de>
+>>
+>> Add register definitions for the BroadSync HD features of
+>> BCM53128. These will be used to enable PTP support.
+>>
+>> Signed-off-by: Kurt Kanzenbach <kurt@linutronix.de>
+>> Signed-off-by: Martin Kaistra <martin.kaistra@linutronix.de>
+>> ---
 > 
-> After merging the hid tree, today's linux-next build (htmldocs) produced
-> this warning:
+> [snip]
 > 
-> include/linux/mod_devicetable.h:909: warning: Function parameter or member 'guid' not described in 'ishtp_device_id'
+>> +/*************************************************************************
+>> + * ARL Control Registers
+>> + *************************************************************************/
+>> +
+>> +/* Multiport Control Register (16 bit) */
+>> +#define B53_MPORT_CTRL			0x0e
+>> +#define   MPORT_CTRL_DIS_FORWARD	0
+>> +#define   MPORT_CTRL_CMP_ETYPE		1
+>> +#define   MPORT_CTRL_CMP_ADDR		2
+>> +#define   MPORT_CTRL_CMP_ADDR_ETYPE	3
+>> +#define   MPORT_CTRL_SHIFT(x)		((x) << 1)
+>> +#define   MPORT_CTRL_MASK		0x2
 > 
-> Introduced by commit
+> The mask should be 0x3 since this is a 2-bit wide field.
 > 
->   fa443bc3c1e4 ("HID: intel-ish-hid: add support for MODULE_DEVICE_TABLE()")
-> 
-> I also notice that there is a @context description, but no field.
 
-Thanks for spotting it. The kerneldoc is clearly wrong there both on the 
-'guid' member name, and also the description (mind the '36 char' part, 
-where it should have been '16 char' instead).
-
-Thomas, could you please send me a fixup patch for that?
-
-Thanks,
-
--- 
-Jiri Kosina
-SUSE Labs
-
+Correct, thanks.
+Currently, this mask is not used, as I am just writing
+MPORT0_TS_EN |
+  (MPORT_CTRL_CMP_ETYPE << MPORT_CTRL_SHIFT(0))
+to the register. Should I keep the definition anyway?
