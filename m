@@ -2,60 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5A74544C2FD
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 15:31:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 51B6F44C300
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 15:32:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232211AbhKJOel (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Nov 2021 09:34:41 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:31619 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231969AbhKJOek (ORCPT
+        id S232041AbhKJOe4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Nov 2021 09:34:56 -0500
+Received: from mail-oi1-f169.google.com ([209.85.167.169]:39487 "EHLO
+        mail-oi1-f169.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232176AbhKJOey (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Nov 2021 09:34:40 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1636554712;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=3phrxGZVGN2PjrK9Vm6kxLTJu+dLO8uoepoqEAtKI94=;
-        b=UHXSTsuYv8Dlg9DjLLIutWNVPhS1qrpnwN6epEMrQxObwatg4x9jlEgdhNacqweoCOoPvR
-        U3c1C3ih5JPp0PqAHLfaeJOXo9MEik+4XqRAM7lGrT8SmyOAgV961hTUuzS3RMF+QDX8Su
-        RNJ2apJVoC32G7UwUSDuX993gw/LcEE=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-551-Ff43LWlCMOO8l0IsSnx29g-1; Wed, 10 Nov 2021 09:31:47 -0500
-X-MC-Unique: Ff43LWlCMOO8l0IsSnx29g-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 0C66918125C1;
-        Wed, 10 Nov 2021 14:31:46 +0000 (UTC)
-Received: from warthog.procyon.org.uk (unknown [10.33.37.68])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id AD67619733;
-        Wed, 10 Nov 2021 14:31:38 +0000 (UTC)
-Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
-        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
-        Kingdom.
-        Registered in England and Wales under Company Registration No. 3798903
-From:   David Howells <dhowells@redhat.com>
-In-Reply-To: <202111100533.Qxw3LycR-lkp@intel.com>
-References: <202111100533.Qxw3LycR-lkp@intel.com>
-To:     Dan Carpenter <dan.carpenter@oracle.com>
-Cc:     dhowells@redhat.com, kbuild@lists.01.org, lkp@intel.com,
-        kbuild-all@lists.01.org, linux-kernel@vger.kernel.org
-Subject: Re: [dhowells-fs:fscache-rewrite-indexing-2 50/64] fs/cachefiles/io.c:483 __cachefiles_prepare_write() error: uninitialized symbol 'ret'.
+        Wed, 10 Nov 2021 09:34:54 -0500
+Received: by mail-oi1-f169.google.com with SMTP id bf8so5559161oib.6;
+        Wed, 10 Nov 2021 06:32:06 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
+        bh=/02Exx/ph/UcNJNTQkGez12UzJqq82J9H0P+Kmhe9ik=;
+        b=H5xI42tOcjWG88i17eu80KW/8+8xGgqvoh3NPlYn9laLBJVRar1vHYjqmf1rkJhxmg
+         WlG7TU+pnbPkKzj6U7oR7/Dm3xeqdy+7FVr1LXWi/f+pDxY0EHDDCC5Z8rOBpeCaLQRC
+         0EgHV3huxn8AURLD6LwbWVLorZf4jWhT+4vYKHpUicmoSkVgFrlbfXYqA4zU5RHZKF2/
+         xACEwmJgNcNWwiUDO5c992Ua6Ieuen/7qiSLMFxgIHFmrmmXLou7iSggZRqf9MSxqqp7
+         dsPxXLT3khJ3vfzyKrmWh1clXht8AySPz7KxJ87EKBuLhnI/QUEadXhzGdIdy2ZY45+K
+         saQg==
+X-Gm-Message-State: AOAM532f4nCt0keAWyR0J1hcA5F7dWhiaqK9bfglMO/060yPXYG5YBLE
+        bJpoNRh8G24aSSHW7qrxTuI6lbU2dfPPYswU+aSFuRmSrq8=
+X-Google-Smtp-Source: ABdhPJzpPxPWj610km0kVDhyoJvd8Sm63jEpZ9VWQntHjhS3aR57WlQKbef4tlhe/Yy0GEfQtFY8habtiV8JK4t+Z5U=
+X-Received: by 2002:aca:5c5:: with SMTP id 188mr24097oif.154.1636554726515;
+ Wed, 10 Nov 2021 06:32:06 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <758371.1636554698.1@warthog.procyon.org.uk>
-Date:   Wed, 10 Nov 2021 14:31:38 +0000
-Message-ID: <758372.1636554698@warthog.procyon.org.uk>
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Wed, 10 Nov 2021 15:31:55 +0100
+Message-ID: <CAJZ5v0jfXr+6YaQpeAeEN11R47BdvjiM1_JsWfrCSLNpVpt1pw@mail.gmail.com>
+Subject: [GIT PULL] More power management updates for v5.16-rc1
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Linux PM <linux-pm@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-That branch is obsolete as Linus was unhappy with the way it does things, but
-I'm keeping it around for the moment for diffing purposes.
+Hi Linus,
 
-David
+Please pull from the tag
 
+ git://git.kernel.org/pub/scm/linux/kernel/git/rafael/linux-pm.git \
+ pm-5.16-rc1-2
+
+with top-most commit dcc0b6f2e63ac3bdcea5c9686de4cb1684f2eb33
+
+ Merge branches 'pm-opp' and 'pm-cpufreq'
+
+on top of commit 833db72142b93a89211c1e43ca0a1e2e16457756
+
+ Merge tag 'pm-5.16-rc1' of
+git://git.kernel.org/pub/scm/linux/kernel/git/rafael/linux-pm
+
+to receive more power management updates for 5.16-rc1.
+
+These fix 3 intel_pstate driver regressions, fix locking in the core
+code suspending and resuming devices during system PM transitions, fix
+the handling of cpuidle drivers based on runtime PM during system-wide
+suspend, fix 2 issues in the operating performance points (OPP)
+framework and resource-managed helpers to it.
+
+Specifics:
+
+ - Fix 2 intel_pstate driver regressions related to the HWP interrupt
+   handling added recently (Srinivas Pandruvada).
+
+ - Fix intel_pstate driver regression introduced during the 5.11
+   cycle and causing HWP desired performance to be mishandled in
+   some cases when switching driver modes and during system
+   suspend and shutdown (Rafael Wysocki).
+
+ - Fix system-wide device suspend and resume locking to avoid
+   deadlocks when device objects are deleted during a system-wide
+   PM transition (Rafael Wysocki).
+
+ - Modify system-wide suspend of devices to prevent cpuidle drivers
+   based on runtime PM from misbehaving during the "no IRQ" phase of
+   it (Ulf Hansson).
+
+ - Fix return value of _opp_add_static_v2() helper (YueHaibing).
+
+ - Fix required-opp handle count (Pavankumar Kondeti).
+
+ - Add resource managed OPP helpers, update dev_pm_opp_attach_genpd(),
+   update their devfreq users, and make minor DT binding change (Dmitry
+   Osipenko).
+
+Thanks!
+
+
+---------------
+
+Dmitry Osipenko (6):
+      opp: Change type of dev_pm_opp_attach_genpd(names) argument
+      opp: Add more resource-managed variants of dev_pm_opp_of_add_table()
+      PM / devfreq: Add devm_devfreq_add_governor()
+      PM / devfreq: tegra30: Use resource-managed helpers
+      PM / devfreq: tegra30: Check whether clk_round_rate() returns zero rate
+      dt-bindings: opp: Allow multi-worded OPP entry name
+
+Pavankumar Kondeti (1):
+      opp: Fix required-opps phandle array count check
+
+Rafael J. Wysocki (2):
+      cpufreq: intel_pstate: Clear HWP desired on suspend/shutdown and offline
+      PM: sleep: Avoid calling put_device() under dpm_list_mtx
+
+Srinivas Pandruvada (2):
+      cpufreq: intel_pstate: Fix unchecked MSR 0x773 access
+      cpufreq: intel_pstate: Clear HWP Status during HWP Interrupt enable
+
+Ulf Hansson (1):
+      PM: sleep: Fix runtime PM based cpuidle support
+
+YueHaibing (1):
+      opp: Fix return in _opp_add_static_v2()
+
+---------------
+
+ .../devicetree/bindings/opp/opp-v2-base.yaml       |   2 +-
+ drivers/base/power/main.c                          |  85 +++++++++++-----
+ drivers/cpufreq/intel_pstate.c                     |  36 ++++++-
+ drivers/devfreq/devfreq.c                          |  26 +++++
+ drivers/devfreq/governor.h                         |   3 +
+ drivers/devfreq/tegra30-devfreq.c                  | 109 +++++++++------------
+ drivers/opp/core.c                                 |   6 +-
+ drivers/opp/of.c                                   |  50 ++++++++--
+ include/linux/pm_opp.h                             |  20 +++-
+ 9 files changed, 229 insertions(+), 108 deletions(-)
