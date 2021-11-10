@@ -2,116 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 386D444C6AA
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 19:15:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8929344C6B6
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 19:16:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231679AbhKJSRc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Nov 2021 13:17:32 -0500
-Received: from out03.mta.xmission.com ([166.70.13.233]:50940 "EHLO
-        out03.mta.xmission.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229969AbhKJSR1 (ORCPT
+        id S231997AbhKJSSy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Nov 2021 13:18:54 -0500
+Received: from smtp-out2.suse.de ([195.135.220.29]:38906 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229781AbhKJSSx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Nov 2021 13:17:27 -0500
-Received: from in02.mta.xmission.com ([166.70.13.52]:52310)
-        by out03.mta.xmission.com with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.93)
-        (envelope-from <ebiederm@xmission.com>)
-        id 1mks7K-000pJ1-DU; Wed, 10 Nov 2021 11:14:38 -0700
-Received: from ip68-227-160-95.om.om.cox.net ([68.227.160.95]:44490 helo=email.froward.int.ebiederm.org.xmission.com)
-        by in02.mta.xmission.com with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.93)
-        (envelope-from <ebiederm@xmission.com>)
-        id 1mks7J-007tkI-Hf; Wed, 10 Nov 2021 11:14:38 -0700
-From:   ebiederm@xmission.com (Eric W. Biederman)
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     <linux-kernel@vger.kernel.org>, <linux-arch@vger.kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Christoph Hellwig <hch@infradead.org>,
-        Andy Lutomirski <luto@amacapital.net>
-References: <87tugkm3gc.fsf@disp2133>
-Date:   Wed, 10 Nov 2021 12:14:02 -0600
-In-Reply-To: <87tugkm3gc.fsf@disp2133> (Eric W. Biederman's message of "Wed,
-        10 Nov 2021 09:32:19 -0600")
-Message-ID: <874k8j3ml1.fsf@email.froward.int.ebiederm.org>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
+        Wed, 10 Nov 2021 13:18:53 -0500
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 01A821FD48;
+        Wed, 10 Nov 2021 18:16:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1636568164; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=WrfmgeAir/bcyFgACSGpgDgNuM+uhrNAmeRnW3A3QN0=;
+        b=CvbVadvRn6in1GwXmbxlxRhD5agTW4BW2HFq6oifyXHR2R6X4K9nvUrApT3LJ7EKkEzPiP
+        kEYCK/rJTOgzQxglqUQNTOwOVaUTJIVMQtXTo9PwTFj/u4ME10JU1UxVtcEYdjkbeyy4MU
+        X+3kR+EBq/NX4NNVl9w/zfUkh8/cVHQ=
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id BF4B013C7D;
+        Wed, 10 Nov 2021 18:16:03 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id TdXOLWMMjGF7OQAAMHmgww
+        (envelope-from <mkoutny@suse.com>); Wed, 10 Nov 2021 18:16:03 +0000
+Date:   Wed, 10 Nov 2021 19:15:58 +0100
+From:   Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>
+To:     "Moessbauer, Felix" <felix.moessbauer@siemens.com>
+Cc:     "longman@redhat.com" <longman@redhat.com>,
+        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
+        "cgroups@vger.kernel.org" <cgroups@vger.kernel.org>,
+        "corbet@lwn.net" <corbet@lwn.net>,
+        "frederic@kernel.org" <frederic@kernel.org>,
+        "guro@fb.com" <guro@fb.com>,
+        "hannes@cmpxchg.org" <hannes@cmpxchg.org>,
+        "juri.lelli@redhat.com" <juri.lelli@redhat.com>,
+        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-kselftest@vger.kernel.org" <linux-kselftest@vger.kernel.org>,
+        "lizefan.x@bytedance.com" <lizefan.x@bytedance.com>,
+        "mtosatti@redhat.com" <mtosatti@redhat.com>,
+        "pauld@redhat.com" <pauld@redhat.com>,
+        "peterz@infradead.org" <peterz@infradead.org>,
+        "shuah@kernel.org" <shuah@kernel.org>,
+        "tj@kernel.org" <tj@kernel.org>,
+        "jan.kiszka@siemens.com" <jan.kiszka@siemens.com>,
+        "henning.schild@siemens.com" <henning.schild@siemens.com>
+Subject: Re: [PATCH v8 0/6] cgroup/cpuset: Add new cpuset partition type &
+ empty effecitve cpus
+Message-ID: <20211110181558.GB51149@blackbody.suse.cz>
+References: <20211018143619.205065-1-longman@redhat.com>
+ <20211110111357.17617-1-felix.moessbauer@siemens.com>
+ <20211110135653.GD20566@blackbody.suse.cz>
+ <AM9PR10MB4869C14EAE01B87C0037BF6A89939@AM9PR10MB4869.EURPRD10.PROD.OUTLOOK.COM>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-XM-SPF: eid=1mks7J-007tkI-Hf;;;mid=<874k8j3ml1.fsf@email.froward.int.ebiederm.org>;;;hst=in02.mta.xmission.com;;;ip=68.227.160.95;;;frm=ebiederm@xmission.com;;;spf=neutral
-X-XM-AID: U2FsdGVkX1/PDsEsELP7apBRzH/mY/wQRDe8KsIvi4k=
-X-SA-Exim-Connect-IP: 68.227.160.95
-X-SA-Exim-Mail-From: ebiederm@xmission.com
-X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on sa03.xmission.com
-X-Spam-Level: **
-X-Spam-Status: No, score=2.1 required=8.0 tests=ALL_TRUSTED,BAYES_50,
-        DCC_CHECK_NEGATIVE,T_TM2_M_HEADER_IN_MSG,XMSubMetaSxObfu_03,
-        XMSubMetaSx_00 autolearn=disabled version=3.4.2
-X-Spam-Virus: No
-X-Spam-Report: * -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
-        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
-        *      [score: 0.5000]
-        *  0.0 T_TM2_M_HEADER_IN_MSG BODY: No description available.
-        * -0.0 DCC_CHECK_NEGATIVE Not listed in DCC
-        *      [sa03 1397; Body=1 Fuz1=1 Fuz2=1]
-        *  1.0 XMSubMetaSx_00 1+ Sexy Words
-        *  1.2 XMSubMetaSxObfu_03 Obfuscated Sexy Noun-People
-X-Spam-DCC: XMission; sa03 1397; Body=1 Fuz1=1 Fuz2=1 
-X-Spam-Combo: **;Linus Torvalds <torvalds@linux-foundation.org>
-X-Spam-Relay-Country: 
-X-Spam-Timing: total 333 ms - load_scoreonly_sql: 0.03 (0.0%),
-        signal_user_changed: 3.9 (1.2%), b_tie_ro: 2.7 (0.8%), parse: 0.62
-        (0.2%), extract_message_metadata: 12 (3.7%), get_uri_detail_list: 1.15
-        (0.3%), tests_pri_-1000: 17 (5.2%), tests_pri_-950: 1.08 (0.3%),
-        tests_pri_-900: 0.82 (0.2%), tests_pri_-90: 78 (23.5%), check_bayes:
-        77 (23.1%), b_tokenize: 4.6 (1.4%), b_tok_get_all: 6 (1.7%),
-        b_comp_prob: 1.50 (0.5%), b_tok_touch_all: 62 (18.7%), b_finish: 0.73
-        (0.2%), tests_pri_0: 208 (62.5%), check_dkim_signature: 0.38 (0.1%),
-        check_dkim_adsp: 1.60 (0.5%), poll_dns_idle: 0.19 (0.1%),
-        tests_pri_10: 1.71 (0.5%), tests_pri_500: 6 (1.8%), rewrite_mail: 0.00
-        (0.0%)
-Subject: Re: [GIT PULL] exit cleanups for v5.16
-X-SA-Exim-Version: 4.2.1 (built Sat, 08 Feb 2020 21:53:50 +0000)
-X-SA-Exim-Scanned: Yes (on in02.mta.xmission.com)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <AM9PR10MB4869C14EAE01B87C0037BF6A89939@AM9PR10MB4869.EURPRD10.PROD.OUTLOOK.COM>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-ebiederm@xmission.com (Eric W. Biederman) writes:
+On Wed, Nov 10, 2021 at 03:21:54PM +0000, "Moessbauer, Felix" <felix.moessbauer@siemens.com> wrote:
+> 2. Threads can be started on non-rt CPUs and then bound to a specific rt CPU.
+> This binding can be specified before thread creation via pthread_create.
+> By that, you can make sure that at no point in time a thread has a
+> "forbidden" CPU in its affinities.
 
-> Linus,
->
-> Please pull the exit-cleanups-for-v5.16 branch from the git tree:
->
->   git://git.kernel.org/pub/scm/linux/kernel/git/ebiederm/user-namespace.git exit-cleanups-for-v5.16
->
->   HEAD: f91140e4553408cacd326624cd50fc367725e04a Arnd Bergmann <arnd@arndb.de>
->
->
-> While looking at some issues related to the exit path in the kernel I
-> found several instances where the code is not using the existing
-> abstractions properly.
->
-> This set of changes introduces force_fatal_sig a way of sending
-> a signal and not allowing it to be caught, and corrects the
-> misuse of the existing abstractions that I found.
->
-> A lot of the misuse of the existing abstractions are silly things such
-> as doing something after calling a no return function, rolling BUG by
-> hand, doing more work than necessary to terminate a kernel thread, or
-> calling do_exit(SIGKILL) instead of calling force_sig(SIGKILL).
->
-> In the review a deficiency in force_fatal_sig and force_sig_seccomp
-> where ptrace or sigaction could prevent the delivery of the signal was
-> found.  I have added a change that adds SA_IMMUTABLE to change that
-> makes it impossible to interrupt the delivery of those signals, and
-> allows backporting to fix force_sig_seccomp.
->
-> Arnd found an issue where a function passed to kthread_run had the wrong
-> prototype, and after my cleanup was failing to build.
+It should boil down to some clone$version(2) and sched_setaffinity(2)
+calls, so strictly speaking even with pthread_create(3) the thread is
+shortly running with the parent's affinity.
 
-I forgot to mention there is a minor conflict with the staging tree.
-One of the functions that I cleaned up was in a file that was completely
-removed from staging.  The result is that when you encounter the
-conflict that file can simply be removed.
+> With cgroup2, you cannot guarantee the second aspect, as thread
+> creation and moving to a cgroup is not an atomic operation.
 
-Eric
+As suggested by others, CLONE_INTO_CGROUP (into cpuset cgroup) can
+actually "hide" the migration into the clone3() call.
+
+> At creation time, you cannot set the final affinity mask (as you
+> create it in the non-rt group and there the CPU is not in the
+> cpuset.cpus).
+> Once you move the thread to the rt cgroup, it has a default mask and
+> by that can be executed on other rt cores.
+
+Good point. Perhaps you could work this around by having another level
+of (non-root partition) cpuset cgroups for individual CPUs? (Maybe
+there's more clever approach, this is just first to come into my mind.)
+
+Michal
