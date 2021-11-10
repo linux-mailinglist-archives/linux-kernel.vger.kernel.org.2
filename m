@@ -2,311 +2,233 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C906044CD16
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 23:47:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 973FE44CD1B
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 23:48:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234083AbhKJWtn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Nov 2021 17:49:43 -0500
-Received: from relmlor1.renesas.com ([210.160.252.171]:42893 "EHLO
-        relmlie5.idc.renesas.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S233979AbhKJWtd (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Nov 2021 17:49:33 -0500
-X-IronPort-AV: E=Sophos;i="5.87,225,1631545200"; 
-   d="scan'208";a="99833864"
-Received: from unknown (HELO relmlir6.idc.renesas.com) ([10.200.68.152])
-  by relmlie5.idc.renesas.com with ESMTP; 11 Nov 2021 07:46:42 +0900
-Received: from localhost.localdomain (unknown [10.226.36.204])
-        by relmlir6.idc.renesas.com (Postfix) with ESMTP id E34C9413162C;
-        Thu, 11 Nov 2021 07:46:39 +0900 (JST)
-From:   Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-To:     Geert Uytterhoeven <geert+renesas@glider.be>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        linux-renesas-soc@vger.kernel.org, linux-gpio@vger.kernel.org,
-        devicetree@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org,
-        Prabhakar <prabhakar.csengg@gmail.com>,
-        Biju Das <biju.das.jz@bp.renesas.com>,
-        Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-Subject: [PATCH v3 6/6] pinctrl: renesas: pinctrl-rzg2l: Add support to get/set drive-strength and output-impedance-ohms
-Date:   Wed, 10 Nov 2021 22:46:22 +0000
-Message-Id: <20211110224622.16022-7-prabhakar.mahadev-lad.rj@bp.renesas.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20211110224622.16022-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
-References: <20211110224622.16022-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
+        id S233802AbhKJWvT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Nov 2021 17:51:19 -0500
+Received: from mail-cusazon11020024.outbound.protection.outlook.com ([52.101.61.24]:20283
+        "EHLO na01-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S233569AbhKJWvQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Nov 2021 17:51:16 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=WAXeoBKRIeVX3uVF4cWyq4fMFmp+xL5I6ngEXmSUgBJhi1QbmNgDlgFZHClB9pymL2c4sMz+EkoSH1gNjPk/gsv8pxeE9h3VO9fAt1XtpyFczApUh2eYsG6CUHIAy4iPxBnasoYs7W+FRHdb5z1uqiSVGHt9+TS9/6CcJT+S9vf9K8IOjcbxnTEXHJxFDI/bM4o8lwf+GfGM6fZNMdjzHbjeotPUeMW72QOBB/jQbG/+KVhRrIrnE7SxZlgggMNQHkl5Sr8d+tD3Ixbo5iHR92u1vepNLu+OThkWt8i8YuPaCMij62O8YBD91daRQz3A7bsrw8dQZb9Tx3e3UZfMjA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=3JdLUl7J48CDYNkvR5SrfXw7aWSZE3ofeqpCtisizsc=;
+ b=TKblW/m+uLmfMVK7kiZkda9BRREr1/k7YxVBM7N4c0DF5FprC66o8+rHmhZrryWmzB6uHk5363wFJ0BenKO02b9fZcD6gw2V01wB70Io495oAuR7RER8UtjxBncrP/1KzKQVI8w+wWyb/SD6L30f71VuWOCgH6vltXFeEwK2J9+DeHnT226AMkZ18k1PS4xWyOpAKApkhYDWu9kFzFS2WS79Z1RFNDHkyTkLkBk2KtK+QpZPTpYYDmM9YXb6VqkObC3LQBgCuK+ElJngYdx/TcYFaLMoADwcNuV7JNdBjOZK5k2jk1rNe40uLKrEiuy2x1NccYG0WX/7/OO//nv2nA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=microsoft.com; dmarc=pass action=none
+ header.from=microsoft.com; dkim=pass header.d=microsoft.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=3JdLUl7J48CDYNkvR5SrfXw7aWSZE3ofeqpCtisizsc=;
+ b=j3QOGLorzWxs/rN4KYduK6dz3wOfmCpRedeiV+zkXf8Yh1CMulTxr8+L33hIixibn01uAmXrEF9rQPDemX+ZLu+KmLXhBQU5G8pP7wAGZ1ode1lo8HzCIAnF6uqGyTx2T39cCq4NCpzhyILtskl+hH8yWNnBcW0rgRkYvmlU1fQ=
+Received: from BN8PR21MB1140.namprd21.prod.outlook.com (20.179.72.139) by
+ BN7PR21MB1666.namprd21.prod.outlook.com (52.135.243.21) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.4713.3; Wed, 10 Nov 2021 22:48:24 +0000
+Received: from BN8PR21MB1140.namprd21.prod.outlook.com
+ ([fe80::48fb:8577:ba03:23a5]) by BN8PR21MB1140.namprd21.prod.outlook.com
+ ([fe80::48fb:8577:ba03:23a5%9]) with mapi id 15.20.4713.005; Wed, 10 Nov 2021
+ 22:48:24 +0000
+From:   Sunil Muthuswamy <sunilmut@microsoft.com>
+To:     Sunil Muthuswamy <sunilmut@microsoft.com>,
+        Marc Zyngier <maz@kernel.org>,
+        Sunil Muthuswamy <sunilmut@linux.microsoft.com>
+CC:     KY Srinivasan <kys@microsoft.com>,
+        Haiyang Zhang <haiyangz@microsoft.com>,
+        Stephen Hemminger <sthemmin@microsoft.com>,
+        "wei.liu@kernel.org" <wei.liu@kernel.org>,
+        Dexuan Cui <decui@microsoft.com>,
+        "tglx@linutronix.de" <tglx@linutronix.de>,
+        "mingo@redhat.com" <mingo@redhat.com>,
+        "bp@alien8.de" <bp@alien8.de>, "hpa@zytor.com" <hpa@zytor.com>,
+        "lorenzo.pieralisi@arm.com" <lorenzo.pieralisi@arm.com>,
+        "robh@kernel.org" <robh@kernel.org>, "kw@linux.com" <kw@linux.com>,
+        "bhelgaas@google.com" <bhelgaas@google.com>,
+        "arnd@arndb.de" <arnd@arndb.de>, "x86@kernel.org" <x86@kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
+        "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
+        "linux-arch@vger.kernel.org" <linux-arch@vger.kernel.org>
+Subject: RE: [EXTERNAL] Re: [PATCH v4 2/2] arm64: PCI: hv: Add support for
+ Hyper-V vPCI
+Thread-Topic: [EXTERNAL] Re: [PATCH v4 2/2] arm64: PCI: hv: Add support for
+ Hyper-V vPCI
+Thread-Index: AQHX1bderE/dJFbGykyqoP6WpgV6hqv8wAoAgAABlYCAAEjSEIAAU4WQ
+Date:   Wed, 10 Nov 2021 22:48:24 +0000
+Message-ID: <BN8PR21MB1140C4416E0B338A8FDBA18BC0939@BN8PR21MB1140.namprd21.prod.outlook.com>
+References: <1636496060-29424-1-git-send-email-sunilmut@linux.microsoft.com>
+        <1636496060-29424-3-git-send-email-sunilmut@linux.microsoft.com>
+        <87v91087vj.wl-maz@kernel.org> <87tugk87m4.wl-maz@kernel.org>
+ <BN8PR21MB1140769D6EC879C646E7DB92C0939@BN8PR21MB1140.namprd21.prod.outlook.com>
+In-Reply-To: <BN8PR21MB1140769D6EC879C646E7DB92C0939@BN8PR21MB1140.namprd21.prod.outlook.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+msip_labels: MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ActionId=54c4b1b7-16a5-4b88-8df4-065c7b9b4d8f;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ContentBits=0;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Enabled=true;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Method=Standard;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Name=Internal;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SetDate=2021-11-10T17:46:49Z;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SiteId=72f988bf-86f1-41af-91ab-2d7cd011db47;
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=microsoft.com;
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 54c539aa-5bdb-4ff8-ecf5-08d9a49c33f6
+x-ms-traffictypediagnostic: BN7PR21MB1666:
+x-microsoft-antispam-prvs: <BN7PR21MB1666B5F85B686389BCF5617DC0939@BN7PR21MB1666.namprd21.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:9508;
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: R/3UmAUQ+ha9yYo30/33GerQpr0/ei6+Lqz4/810EhVv3L9Fy+r7i8EJxFSypPtZ9+pigpUCM2F0WY1YsxCBIS5oTKyHerQwCRS0t8fnL5fxgJBXExyp/em4wCYVvno3O6vM7I2YiV1AD+E8MMH3tfu8cuVvQgMw7GzzGegvVvNLJppbiONcUbot8ynL0miheBTC/lpm+CSyAb7lK2qard3vwtVVDAAM5LZk0AEU/rwtCGJ7hsmHvwTi6CrYCYdD693OdPVa2XE5bo1MG+0fHlOUaQ6VNFglgHcrgu9ST/ENv20OiyoP3LkdJA/cedKcYhB5AfdRw0/hdUtDt30QPu9FgvIvlCpaXRhc8WkqU6f5oq7Q236sAPd4S8Hc91hIWb4SUn+gIf/ZI7Dij+3HNH21ZyK8evsRZmGRYD+ZzWniwAyI/ytHxZLvR5tMlZg5rQ/eC2PQU9xdBjwlg3badF2+/iX9sqcVQ9ehPgWKa+9EXlzpQJQG79Fgnv56xQIir5b5HU9Zns7us/F5NIgm3+VDYcPOH6JUZkpAKbYoBOxVub+pCSak/XUc1nDRhZJytcRX1udTtN2Pvo8EC5bmVZYTlBNVtIjdIkjhTJ7TYGsKYmvv14G0PVin2AHIVkJb69KQVNMlhqH8HNKUPdAUswZUFv2iwSgGcooLnFitAtbRD6VpieBj0ieMPyjwSKBWHpBEfTF+El7l5GaxDUHmeA==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BN8PR21MB1140.namprd21.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230001)(4636009)(366004)(2906002)(8936002)(66446008)(8676002)(64756008)(4326008)(8990500004)(186003)(38070700005)(122000001)(38100700002)(86362001)(83380400001)(2940100002)(110136005)(66556008)(7696005)(10290500003)(76116006)(7416002)(5660300002)(316002)(33656002)(82950400001)(82960400001)(54906003)(66476007)(508600001)(71200400001)(9686003)(6506007)(66946007)(52536014);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?OYdZ7C/69NWeeQWQayPnzAPa/5xFTzVSpt+4FklOg7+R2qHcJIFsNDEKey2u?=
+ =?us-ascii?Q?h7Kg5BVNQxnWMGJ7tVXaZ4La231WVAZkDLA37F6vIr0s54QYlZtn7JBG/0Qf?=
+ =?us-ascii?Q?Xl/mz5trNs6a8VgNx+1ZNzihMNjEMddWalocf+E3jkIQ7G2YyYRH9w3r08uH?=
+ =?us-ascii?Q?G/O6v7kiBUVl+nkvNaofcX2uiZTXhpu5s38sdEAE5KeFFa8D2QNXwVO57QGW?=
+ =?us-ascii?Q?ahEDP4jz0D5hCqrOHS22mmf/VsTXZf/6NmfUMHGslwxZmrIq5eEUqb2ZR/Fu?=
+ =?us-ascii?Q?Wthz5SpyzsVJWNsRz6DqhS2cEa7ap/t7phG5axIHGmjhTkkOKBeD0CeDVeYy?=
+ =?us-ascii?Q?Au1jvTjXhDW/OXUgmKEU0k28fNTVFiPliDIXspph8Gm5GMQmiJDU0h2rBYwA?=
+ =?us-ascii?Q?g/PRl4XWRpAQOWLw0hAyqpPqxnkCZnlvf+jMEQ9tXScHg6wFF5D6aHLRKb9Y?=
+ =?us-ascii?Q?HKfNBYvCNSlPCsDeUQwXEuYMybMNujEpgIcupSc9sLyLzHu2jnc3uxG3B2su?=
+ =?us-ascii?Q?2QaeWcHhBth/Dylp1Z1cH5rA0S1e1EXiqnEQDIh/gcaBTThZ1XLRUsNN+JIO?=
+ =?us-ascii?Q?o6+m+CaKxbMMDyrM/iYFvgXkh+ENNd2NJsAud8HzjoH1moHUhvRPoIRJHJ7P?=
+ =?us-ascii?Q?465ZzV/GTXHsZKe5M8hkNFc/THIjeAWvE0ysRKRX2DNEfjgHDCsavIMXCOBv?=
+ =?us-ascii?Q?fDeD1qTi6TbuP6eYU77j66YkzsRN6PoD1+kDTwyCmJng6ntYlDowHtnp6k1H?=
+ =?us-ascii?Q?Z99hOVxbEgwTSxGFH3ydfloaOORslILgRq5/IOJhlByJZzVv+xr1CUlJd+6b?=
+ =?us-ascii?Q?FV9Rz9OQ0DKOTGIAkW/eWpNUb6Rk/V++OwdG9JVuckKKlOlh3LGby+0zwdSS?=
+ =?us-ascii?Q?UwGKmo+Gy/pbtDOv38/3H8bgldluWzhpgYT6W8tjJyL/7oP4bKltw2VBpxaw?=
+ =?us-ascii?Q?HJViFXjyY/387dl5qXvScUrJUJB6wgXLRL176LYXP821wasf9xJOuB3LsIiW?=
+ =?us-ascii?Q?7ZU8m+qHV16UWXcpHoFjGN81DxJQmGHfcWo/LKz/OWcfnCao4s2Xpp8TiabK?=
+ =?us-ascii?Q?81WWIDHBLXkM3gswWVKfQQsa2gz2RA5MnxIRkmO0Xga0SQjMosOy0WBWGOiR?=
+ =?us-ascii?Q?LbQzs82dLZ5gKxwsDoiMhYoMEDg/l84Fv+zJ0asj1ScjJhtOKRcDkteTpKCv?=
+ =?us-ascii?Q?OYSIOpBx/XQJPWecZAzHs/kS89/Qa4v7YWhgMkkHKiqFTUDt6sq9h3Ju3fxG?=
+ =?us-ascii?Q?1dlkiNp1qgQwMth1LS70xnJ2+gN8js5DC2x8d8t6wJdbJAyX33lIBkFKrVPs?=
+ =?us-ascii?Q?cN7Y/gD3qTN6FxrLQZkXVXMHq5nVZ+mJMSRUtyvy1yXj9+NiVPPWUE1q+uTA?=
+ =?us-ascii?Q?/o1gWiURdGgAEOiRLweXGkIel07EGQ8mC4A0/B7YD+PFsvbAuhZhpewPVBX0?=
+ =?us-ascii?Q?qgSJJP//jrUEMv2sZ5GhAPaa+k4+eht9MVgvnVWuj+Xx8tJ814ecW6+fxl1u?=
+ =?us-ascii?Q?9SLrua6ivzW5Fm/yEBHtUaaAQManmllvOWwaXFWsQXExqhzZH9J6TuATHyk/?=
+ =?us-ascii?Q?vJJAYMy9Mf5vMxZjr68cueI+xd1736Q454rOIozL/4w+r6PinKsWxUf964PE?=
+ =?us-ascii?Q?gAHeZztgfDRrGzNx3TXbJVYItmivaDXVx+AzKGes0PA9ARF6e/mHafrksUmB?=
+ =?us-ascii?Q?GpzlvZ+HmnE9EgC9EcXxYJNxA1lInRyo6d44S7OVBaMdMf3bf799pp71j/sX?=
+ =?us-ascii?Q?bioji6qlmA=3D=3D?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+X-OriginatorOrg: microsoft.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: BN8PR21MB1140.namprd21.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 54c539aa-5bdb-4ff8-ecf5-08d9a49c33f6
+X-MS-Exchange-CrossTenant-originalarrivaltime: 10 Nov 2021 22:48:24.2320
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 72f988bf-86f1-41af-91ab-2d7cd011db47
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: ZzOz+8a97RLD09nIgnUMbqrgT69Bh9Yb8S6+4V5u1pzd61Ka6jgrlvlj7Mcl1m0mehGy1g3haHbvqdezn2h/NDAFvTFmbVX+/Gz0EflZ5X8=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN7PR21MB1666
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-RZ/G2L supports two groups of pins Group-A and Group-B. For Group-A
-pins drive-strength can be configured and for Group-B output-impedance
-can be configured.
+> > > On Tue, 09 Nov 2021 22:14:20 +0000,
+> > > Sunil Muthuswamy <sunilmut@linux.microsoft.com> wrote:
+> > > >
+> > > > From: Sunil Muthuswamy <sunilmut@microsoft.com>
+> > > >
+> > > > Add support for Hyper-V vPCI for arm64 by implementing the arch spe=
+cific
+> > > > interfaces. Introduce an IRQ domain and chip specific to Hyper-v vP=
+CI that
+> > > > is based on SPIs. The IRQ domain parents itself to the arch GIC IRQ=
+ domain
+> > > > for basic vector management.
+> > > >
+> > > > Signed-off-by: Sunil Muthuswamy <sunilmut@microsoft.com>
+> > > > ---
+> > > > In v2, v3 & v4:
+> > > >  Changes are described in the cover letter.
+> > > >
+> > > >  arch/arm64/include/asm/hyperv-tlfs.h |   9 ++
+> > > >  drivers/pci/Kconfig                  |   2 +-
+> > > >  drivers/pci/controller/Kconfig       |   2 +-
+> > > >  drivers/pci/controller/pci-hyperv.c  | 207 +++++++++++++++++++++++=
++++-
+> > > >  4 files changed, 217 insertions(+), 3 deletions(-)
+> > >
+> > > [...]
+> > >
+> > > > +static int hv_pci_vec_irq_domain_activate(struct irq_domain *domai=
+n,
+> > > > +					  struct irq_data *irqd, bool reserve)
+> > > > +{
+> > > > +	static int cpu;
+> > > > +
+> > > > +	/*
+> > > > +	 * Pick a cpu using round-robin as the irq affinity that can be
+> > > > +	 * temporarily used for composing MSI from the hypervisor. GIC
+> > > > +	 * will eventually set the right affinity for the irq and the
+> > > > +	 * 'unmask' will retarget the interrupt to that cpu.
+> > > > +	 */
+> > > > +	if (cpu >=3D cpumask_last(cpu_online_mask))
+> > > > +		cpu =3D 0;
+> > > > +	cpu =3D cpumask_next(cpu, cpu_online_mask);
+> > > > +	irq_data_update_effective_affinity(irqd, cpumask_of(cpu));
+> > >
+> > > The mind boggles.
+> > >
+> > > Let's imagine a single machine. cpu_online_mask only has bit 0 set,
+> >
+> > single *CPU* machine
+> >
+> > > and nr_cpumask_bits is 1. This is the first run, and cpu is 1:
+> >
+> > cpu is *obviously* 0:
+> >
+> > >
+> > > 	cpu =3D cpumask_next(cpu, cpu_online_mask);
+> > >
+> > > cpu is now set to 1. Which is not a valid CPU number, but a valid
+> > > return value indicating that there is no next CPU as it is equal to
+> > > nr_cpumask_bits. cpumask_of(cpu) will then diligently return crap,
+> > > which you carefully store into the irq descriptor. The IRQ subsystem
+> > > thanks you.
+> > >
+> > > The same reasoning applies to any number of CPUs, and you obviously
+> > > never checked what any of this does :-(. As to what the behaviour is
+> > > when multiple CPUs run this function in parallel, let's not even
+> > > bother (locking is overrated).
+> > >
+> > > Logic and concurrency issues aside, why do you even bother setting
+> > > some round-robin affinity if all you need is to set *something* so
+> > > that a hypervisor message can be composed? Why not use the first
+> > > online CPU? At least it will be correct.
+> >
+> > Everything else holds.
+> >
+> > 	M.
+>=20
+> Good call on not being able to pick cpu 0 and that being a problem for
+> single cpu system. The cpu initialization should have been '-1' to be abl=
+e
+> to successfully pick cpu 0.
+>=20
+> I don't see concurrency an issue because this was a best-case effort to
+> randomize the interrupt distribution across cpu's. So, even if two irq's
+> ended up with the same cpu, that will still work.
+>=20
+> I also had thoughts of just using the first online cpu since this is just
+> temporary. So, I will go with that as that will also simplify things. Tha=
+nks
+> for your feedback.
+>=20
+> - Sunil
 
-This patch splits PIN_CFG_IOLH macro to PIN_CFG_IOLH_A/B and adds
-support to get/set drive-strength and output-impedance-ohms for the
-supported pins.
+But, yes, for the concurrency, I do see a possibility of a race condition
+with the last cpu check and 'cpumask_next' call where it could lead
+to a failure. v5 moves this to the first online cpu and that should
+fix this issue.
 
-Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-Reviewed-by: Biju Das <biju.das.jz@bp.renesas.com>
-Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
----
-v2->v3
-* Dropped port_pin flag
-* Included RB tag
----
- drivers/pinctrl/renesas/pinctrl-rzg2l.c | 161 +++++++++++++++++-------
- 1 file changed, 113 insertions(+), 48 deletions(-)
-
-diff --git a/drivers/pinctrl/renesas/pinctrl-rzg2l.c b/drivers/pinctrl/renesas/pinctrl-rzg2l.c
-index b26f878423d6..a589efa46e7d 100644
---- a/drivers/pinctrl/renesas/pinctrl-rzg2l.c
-+++ b/drivers/pinctrl/renesas/pinctrl-rzg2l.c
-@@ -35,20 +35,21 @@
- #define MUX_FUNC(pinconf)	(((pinconf) & MUX_FUNC_MASK) >> MUX_FUNC_OFFS)
- 
- /* PIN capabilities */
--#define PIN_CFG_IOLH			BIT(0)
--#define PIN_CFG_SR			BIT(1)
--#define PIN_CFG_IEN			BIT(2)
--#define PIN_CFG_PUPD			BIT(3)
--#define PIN_CFG_IO_VMC_SD0		BIT(4)
--#define PIN_CFG_IO_VMC_SD1		BIT(5)
--#define PIN_CFG_IO_VMC_QSPI		BIT(6)
--#define PIN_CFG_IO_VMC_ETH0		BIT(7)
--#define PIN_CFG_IO_VMC_ETH1		BIT(8)
--#define PIN_CFG_FILONOFF		BIT(9)
--#define PIN_CFG_FILNUM			BIT(10)
--#define PIN_CFG_FILCLKSEL		BIT(11)
--
--#define RZG2L_MPXED_PIN_FUNCS		(PIN_CFG_IOLH | \
-+#define PIN_CFG_IOLH_A			BIT(0)
-+#define PIN_CFG_IOLH_B			BIT(1)
-+#define PIN_CFG_SR			BIT(2)
-+#define PIN_CFG_IEN			BIT(3)
-+#define PIN_CFG_PUPD			BIT(4)
-+#define PIN_CFG_IO_VMC_SD0		BIT(5)
-+#define PIN_CFG_IO_VMC_SD1		BIT(6)
-+#define PIN_CFG_IO_VMC_QSPI		BIT(7)
-+#define PIN_CFG_IO_VMC_ETH0		BIT(8)
-+#define PIN_CFG_IO_VMC_ETH1		BIT(9)
-+#define PIN_CFG_FILONOFF		BIT(10)
-+#define PIN_CFG_FILNUM			BIT(11)
-+#define PIN_CFG_FILCLKSEL		BIT(12)
-+
-+#define RZG2L_MPXED_PIN_FUNCS		(PIN_CFG_IOLH_A | \
- 					 PIN_CFG_SR | \
- 					 PIN_CFG_PUPD | \
- 					 PIN_CFG_FILONOFF | \
-@@ -86,6 +87,7 @@
- #define PMC(n)			(0x0200 + 0x10 + (n))
- #define PFC(n)			(0x0400 + 0x40 + (n) * 4)
- #define PIN(n)			(0x0800 + 0x10 + (n))
-+#define IOLH(n)			(0x1000 + (n) * 8)
- #define IEN(n)			(0x1800 + (n) * 8)
- #define PWPR			(0x3014)
- #define SD_CH(n)		(0x3000 + (n) * 4)
-@@ -101,6 +103,7 @@
- #define PVDD_MASK		0x01
- #define PFC_MASK		0x07
- #define IEN_MASK		0x01
-+#define IOLH_MASK		0x03
- 
- #define PM_INPUT		0x1
- #define PM_OUTPUT		0x2
-@@ -138,6 +141,9 @@ struct rzg2l_pinctrl {
- 	spinlock_t			lock;
- };
- 
-+static const unsigned int iolh_groupa_mA[] = { 2, 4, 8, 12 };
-+static const unsigned int iolh_groupb_oi[] = { 100, 66, 50, 33 };
-+
- static void rzg2l_pinctrl_set_pfc_mode(struct rzg2l_pinctrl *pctrl,
- 				       u8 port, u8 pin, u8 func)
- {
-@@ -529,6 +535,28 @@ static int rzg2l_pinctrl_pinconf_get(struct pinctrl_dev *pctldev,
- 		break;
- 	}
- 
-+	case PIN_CONFIG_DRIVE_STRENGTH: {
-+		unsigned int index;
-+
-+		if (!(cfg & PIN_CFG_IOLH_A))
-+			return -EINVAL;
-+
-+		index = rzg2l_read_pin_config(pctrl, IOLH(port_offset), bit, IOLH_MASK);
-+		arg = iolh_groupa_mA[index];
-+		break;
-+	}
-+
-+	case PIN_CONFIG_OUTPUT_IMPEDANCE_OHMS: {
-+		unsigned int index;
-+
-+		if (!(cfg & PIN_CFG_IOLH_B))
-+			return -EINVAL;
-+
-+		index = rzg2l_read_pin_config(pctrl, IOLH(port_offset), bit, IOLH_MASK);
-+		arg = iolh_groupb_oi[index];
-+		break;
-+	}
-+
- 	default:
- 		return -ENOTSUPP;
- 	}
-@@ -606,6 +634,43 @@ static int rzg2l_pinctrl_pinconf_set(struct pinctrl_dev *pctldev,
- 			spin_unlock_irqrestore(&pctrl->lock, flags);
- 			break;
- 		}
-+
-+		case PIN_CONFIG_DRIVE_STRENGTH: {
-+			unsigned int arg = pinconf_to_config_argument(_configs[i]);
-+			unsigned int index;
-+
-+			if (!(cfg & PIN_CFG_IOLH_A))
-+				return -EINVAL;
-+
-+			for (index = 0; index < ARRAY_SIZE(iolh_groupa_mA); index++) {
-+				if (arg == iolh_groupa_mA[index])
-+					break;
-+			}
-+			if (index >= ARRAY_SIZE(iolh_groupa_mA))
-+				return -EINVAL;
-+
-+			rzg2l_rmw_pin_config(pctrl, IOLH(port_offset), bit, IOLH_MASK, index);
-+			break;
-+		}
-+
-+		case PIN_CONFIG_OUTPUT_IMPEDANCE_OHMS: {
-+			unsigned int arg = pinconf_to_config_argument(_configs[i]);
-+			unsigned int index;
-+
-+			if (!(cfg & PIN_CFG_IOLH_B))
-+				return -EINVAL;
-+
-+			for (index = 0; index < ARRAY_SIZE(iolh_groupb_oi); index++) {
-+				if (arg == iolh_groupb_oi[index])
-+					break;
-+			}
-+			if (index >= ARRAY_SIZE(iolh_groupb_oi))
-+				return -EINVAL;
-+
-+			rzg2l_rmw_pin_config(pctrl, IOLH(port_offset), bit, IOLH_MASK, index);
-+			break;
-+		}
-+
- 		default:
- 			return -EOPNOTSUPP;
- 		}
-@@ -932,75 +997,75 @@ static  struct rzg2l_dedicated_configs rzg2l_dedicated_pins[] = {
- 	{ "NMI", RZG2L_SINGLE_PIN_PACK(0x1, 0,
- 	 (PIN_CFG_FILONOFF | PIN_CFG_FILNUM | PIN_CFG_FILCLKSEL)) },
- 	{ "TMS/SWDIO", RZG2L_SINGLE_PIN_PACK(0x2, 0,
--	 (PIN_CFG_SR | PIN_CFG_IOLH | PIN_CFG_IEN)) },
-+	 (PIN_CFG_SR | PIN_CFG_IOLH_A | PIN_CFG_IEN)) },
- 	{ "TDO", RZG2L_SINGLE_PIN_PACK(0x3, 0,
--	 (PIN_CFG_IOLH | PIN_CFG_SR | PIN_CFG_IEN)) },
-+	 (PIN_CFG_IOLH_A | PIN_CFG_SR | PIN_CFG_IEN)) },
- 	{ "AUDIO_CLK1", RZG2L_SINGLE_PIN_PACK(0x4, 0, PIN_CFG_IEN) },
- 	{ "AUDIO_CLK2", RZG2L_SINGLE_PIN_PACK(0x4, 1, PIN_CFG_IEN) },
- 	{ "SD0_CLK", RZG2L_SINGLE_PIN_PACK(0x6, 0,
--	 (PIN_CFG_IOLH | PIN_CFG_SR | PIN_CFG_IO_VMC_SD0)) },
-+	 (PIN_CFG_IOLH_B | PIN_CFG_SR | PIN_CFG_IO_VMC_SD0)) },
- 	{ "SD0_CMD", RZG2L_SINGLE_PIN_PACK(0x6, 1,
--	 (PIN_CFG_IOLH | PIN_CFG_SR | PIN_CFG_IEN | PIN_CFG_IO_VMC_SD0)) },
-+	 (PIN_CFG_IOLH_B | PIN_CFG_SR | PIN_CFG_IEN | PIN_CFG_IO_VMC_SD0)) },
- 	{ "SD0_RST#", RZG2L_SINGLE_PIN_PACK(0x6, 2,
--	 (PIN_CFG_IOLH | PIN_CFG_SR | PIN_CFG_IO_VMC_SD0)) },
-+	 (PIN_CFG_IOLH_B | PIN_CFG_SR | PIN_CFG_IO_VMC_SD0)) },
- 	{ "SD0_DATA0", RZG2L_SINGLE_PIN_PACK(0x7, 0,
--	 (PIN_CFG_IOLH | PIN_CFG_SR | PIN_CFG_IEN | PIN_CFG_IO_VMC_SD0)) },
-+	 (PIN_CFG_IOLH_B | PIN_CFG_SR | PIN_CFG_IEN | PIN_CFG_IO_VMC_SD0)) },
- 	{ "SD0_DATA1", RZG2L_SINGLE_PIN_PACK(0x7, 1,
--	 (PIN_CFG_IOLH | PIN_CFG_SR | PIN_CFG_IEN | PIN_CFG_IO_VMC_SD0)) },
-+	 (PIN_CFG_IOLH_B | PIN_CFG_SR | PIN_CFG_IEN | PIN_CFG_IO_VMC_SD0)) },
- 	{ "SD0_DATA2", RZG2L_SINGLE_PIN_PACK(0x7, 2,
--	 (PIN_CFG_IOLH | PIN_CFG_SR | PIN_CFG_IEN | PIN_CFG_IO_VMC_SD0)) },
-+	 (PIN_CFG_IOLH_B | PIN_CFG_SR | PIN_CFG_IEN | PIN_CFG_IO_VMC_SD0)) },
- 	{ "SD0_DATA3", RZG2L_SINGLE_PIN_PACK(0x7, 3,
--	 (PIN_CFG_IOLH | PIN_CFG_SR | PIN_CFG_IEN | PIN_CFG_IO_VMC_SD0)) },
-+	 (PIN_CFG_IOLH_B | PIN_CFG_SR | PIN_CFG_IEN | PIN_CFG_IO_VMC_SD0)) },
- 	{ "SD0_DATA4", RZG2L_SINGLE_PIN_PACK(0x7, 4,
--	 (PIN_CFG_IOLH | PIN_CFG_SR | PIN_CFG_IEN | PIN_CFG_IO_VMC_SD0)) },
-+	 (PIN_CFG_IOLH_B | PIN_CFG_SR | PIN_CFG_IEN | PIN_CFG_IO_VMC_SD0)) },
- 	{ "SD0_DATA5", RZG2L_SINGLE_PIN_PACK(0x7, 5,
--	 (PIN_CFG_IOLH | PIN_CFG_SR | PIN_CFG_IEN | PIN_CFG_IO_VMC_SD0)) },
-+	 (PIN_CFG_IOLH_B | PIN_CFG_SR | PIN_CFG_IEN | PIN_CFG_IO_VMC_SD0)) },
- 	{ "SD0_DATA6", RZG2L_SINGLE_PIN_PACK(0x7, 6,
--	 (PIN_CFG_IOLH | PIN_CFG_SR | PIN_CFG_IEN | PIN_CFG_IO_VMC_SD0)) },
-+	 (PIN_CFG_IOLH_B | PIN_CFG_SR | PIN_CFG_IEN | PIN_CFG_IO_VMC_SD0)) },
- 	{ "SD0_DATA7", RZG2L_SINGLE_PIN_PACK(0x7, 7,
--	 (PIN_CFG_IOLH | PIN_CFG_SR | PIN_CFG_IEN | PIN_CFG_IO_VMC_SD0)) },
-+	 (PIN_CFG_IOLH_B | PIN_CFG_SR | PIN_CFG_IEN | PIN_CFG_IO_VMC_SD0)) },
- 	{ "SD1_CLK", RZG2L_SINGLE_PIN_PACK(0x8, 0,
--	 (PIN_CFG_IOLH | PIN_CFG_SR | PIN_CFG_IO_VMC_SD1))},
-+	 (PIN_CFG_IOLH_B | PIN_CFG_SR | PIN_CFG_IO_VMC_SD1)) },
- 	{ "SD1_CMD", RZG2L_SINGLE_PIN_PACK(0x8, 1,
--	 (PIN_CFG_IOLH | PIN_CFG_SR | PIN_CFG_IEN | PIN_CFG_IO_VMC_SD1)) },
-+	 (PIN_CFG_IOLH_B | PIN_CFG_SR | PIN_CFG_IEN | PIN_CFG_IO_VMC_SD1)) },
- 	{ "SD1_DATA0", RZG2L_SINGLE_PIN_PACK(0x9, 0,
--	 (PIN_CFG_IOLH | PIN_CFG_SR | PIN_CFG_IEN | PIN_CFG_IO_VMC_SD1)) },
-+	 (PIN_CFG_IOLH_B | PIN_CFG_SR | PIN_CFG_IEN | PIN_CFG_IO_VMC_SD1)) },
- 	{ "SD1_DATA1", RZG2L_SINGLE_PIN_PACK(0x9, 1,
--	 (PIN_CFG_IOLH | PIN_CFG_SR | PIN_CFG_IEN | PIN_CFG_IO_VMC_SD1)) },
-+	 (PIN_CFG_IOLH_B | PIN_CFG_SR | PIN_CFG_IEN | PIN_CFG_IO_VMC_SD1)) },
- 	{ "SD1_DATA2", RZG2L_SINGLE_PIN_PACK(0x9, 2,
--	 (PIN_CFG_IOLH | PIN_CFG_SR | PIN_CFG_IEN | PIN_CFG_IO_VMC_SD1)) },
-+	 (PIN_CFG_IOLH_B | PIN_CFG_SR | PIN_CFG_IEN | PIN_CFG_IO_VMC_SD1)) },
- 	{ "SD1_DATA3", RZG2L_SINGLE_PIN_PACK(0x9, 3,
--	 (PIN_CFG_IOLH | PIN_CFG_SR | PIN_CFG_IEN | PIN_CFG_IO_VMC_SD1)) },
-+	 (PIN_CFG_IOLH_B | PIN_CFG_SR | PIN_CFG_IEN | PIN_CFG_IO_VMC_SD1)) },
- 	{ "QSPI0_SPCLK", RZG2L_SINGLE_PIN_PACK(0xa, 0,
--	 (PIN_CFG_IOLH | PIN_CFG_SR | PIN_CFG_IO_VMC_QSPI)) },
-+	 (PIN_CFG_IOLH_B | PIN_CFG_SR | PIN_CFG_IO_VMC_QSPI)) },
- 	{ "QSPI0_IO0", RZG2L_SINGLE_PIN_PACK(0xa, 1,
--	 (PIN_CFG_IOLH | PIN_CFG_SR | PIN_CFG_IO_VMC_QSPI)) },
-+	 (PIN_CFG_IOLH_B | PIN_CFG_SR | PIN_CFG_IO_VMC_QSPI)) },
- 	{ "QSPI0_IO1", RZG2L_SINGLE_PIN_PACK(0xa, 2,
--	 (PIN_CFG_IOLH | PIN_CFG_SR | PIN_CFG_IO_VMC_QSPI)) },
-+	 (PIN_CFG_IOLH_B | PIN_CFG_SR | PIN_CFG_IO_VMC_QSPI)) },
- 	{ "QSPI0_IO2", RZG2L_SINGLE_PIN_PACK(0xa, 3,
--	 (PIN_CFG_IOLH | PIN_CFG_SR | PIN_CFG_IO_VMC_QSPI)) },
-+	 (PIN_CFG_IOLH_B | PIN_CFG_SR | PIN_CFG_IO_VMC_QSPI)) },
- 	{ "QSPI0_IO3", RZG2L_SINGLE_PIN_PACK(0xa, 4,
--	 (PIN_CFG_IOLH | PIN_CFG_SR | PIN_CFG_IO_VMC_QSPI)) },
-+	 (PIN_CFG_IOLH_B | PIN_CFG_SR | PIN_CFG_IO_VMC_QSPI)) },
- 	{ "QSPI0_SSL", RZG2L_SINGLE_PIN_PACK(0xa, 5,
--	 (PIN_CFG_IOLH | PIN_CFG_SR | PIN_CFG_IO_VMC_QSPI)) },
-+	 (PIN_CFG_IOLH_B | PIN_CFG_SR | PIN_CFG_IO_VMC_QSPI)) },
- 	{ "QSPI1_SPCLK", RZG2L_SINGLE_PIN_PACK(0xb, 0,
--	 (PIN_CFG_IOLH | PIN_CFG_SR | PIN_CFG_IO_VMC_QSPI)) },
-+	 (PIN_CFG_IOLH_B | PIN_CFG_SR | PIN_CFG_IO_VMC_QSPI)) },
- 	{ "QSPI1_IO0", RZG2L_SINGLE_PIN_PACK(0xb, 1,
--	 (PIN_CFG_IOLH | PIN_CFG_SR | PIN_CFG_IO_VMC_QSPI)) },
-+	 (PIN_CFG_IOLH_B | PIN_CFG_SR | PIN_CFG_IO_VMC_QSPI)) },
- 	{ "QSPI1_IO1", RZG2L_SINGLE_PIN_PACK(0xb, 2,
--	 (PIN_CFG_IOLH | PIN_CFG_SR | PIN_CFG_IO_VMC_QSPI)) },
-+	 (PIN_CFG_IOLH_B | PIN_CFG_SR | PIN_CFG_IO_VMC_QSPI)) },
- 	{ "QSPI1_IO2", RZG2L_SINGLE_PIN_PACK(0xb, 3,
--	 (PIN_CFG_IOLH | PIN_CFG_SR | PIN_CFG_IO_VMC_QSPI)) },
-+	 (PIN_CFG_IOLH_B | PIN_CFG_SR | PIN_CFG_IO_VMC_QSPI)) },
- 	{ "QSPI1_IO3", RZG2L_SINGLE_PIN_PACK(0xb, 4,
--	 (PIN_CFG_IOLH | PIN_CFG_SR  | PIN_CFG_IO_VMC_QSPI)) },
-+	 (PIN_CFG_IOLH_B | PIN_CFG_SR  | PIN_CFG_IO_VMC_QSPI)) },
- 	{ "QSPI1_SSL", RZG2L_SINGLE_PIN_PACK(0xb, 5,
--	 (PIN_CFG_IOLH | PIN_CFG_SR | PIN_CFG_IO_VMC_QSPI)) },
-+	 (PIN_CFG_IOLH_B | PIN_CFG_SR | PIN_CFG_IO_VMC_QSPI)) },
- 	{ "QSPI_RESET#", RZG2L_SINGLE_PIN_PACK(0xc, 0,
--	 (PIN_CFG_IOLH | PIN_CFG_SR | PIN_CFG_IO_VMC_QSPI)) },
-+	 (PIN_CFG_IOLH_B | PIN_CFG_SR | PIN_CFG_IO_VMC_QSPI)) },
- 	{ "QSPI_WP#", RZG2L_SINGLE_PIN_PACK(0xc, 1,
--	 (PIN_CFG_IOLH | PIN_CFG_SR | PIN_CFG_IO_VMC_QSPI)) },
-+	 (PIN_CFG_IOLH_B | PIN_CFG_SR | PIN_CFG_IO_VMC_QSPI)) },
- 	{ "QSPI_INT#", RZG2L_SINGLE_PIN_PACK(0xc, 2, (PIN_CFG_SR | PIN_CFG_IO_VMC_QSPI)) },
--	{ "WDTOVF_PERROUT#", RZG2L_SINGLE_PIN_PACK(0xd, 0, (PIN_CFG_IOLH | PIN_CFG_SR)) },
-+	{ "WDTOVF_PERROUT#", RZG2L_SINGLE_PIN_PACK(0xd, 0, (PIN_CFG_IOLH_A | PIN_CFG_SR)) },
- 	{ "RIIC0_SDA", RZG2L_SINGLE_PIN_PACK(0xe, 0, PIN_CFG_IEN) },
- 	{ "RIIC0_SCL", RZG2L_SINGLE_PIN_PACK(0xe, 1, PIN_CFG_IEN) },
- 	{ "RIIC1_SDA", RZG2L_SINGLE_PIN_PACK(0xe, 2, PIN_CFG_IEN) },
--- 
-2.17.1
-
+- Sunil
