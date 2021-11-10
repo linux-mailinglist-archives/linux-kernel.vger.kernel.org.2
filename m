@@ -2,94 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D616844C100
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 13:10:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8725344C103
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 13:11:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231978AbhKJMMt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Nov 2021 07:12:49 -0500
-Received: from so254-9.mailgun.net ([198.61.254.9]:41495 "EHLO
-        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231806AbhKJMMa (ORCPT
+        id S231876AbhKJMNd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Nov 2021 07:13:33 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:24724 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232036AbhKJMNZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Nov 2021 07:12:30 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1636546183; h=Message-Id: Date: Subject: Cc: To: From:
- Sender; bh=xI64hCz1HNiVpcCIETPeu0F3pBC1lsCOTonaWoQ+rrQ=; b=cpwRxkea+bdvXtfjKuQn9tK5o1Vd82hc3uh3wOUx6Dj3fV9E9qk0uUbAsIfTwMAX+tNiDeeH
- M9T8ZAn6UDvZb/KuGRdfW+h5AKpxmbUUBU3/dQxsthg8MjAZOuPX/010fDuCaGZDQxQNYpbE
- jAaDw9iw30Ox3bslUi+FWZvpK6E=
-X-Mailgun-Sending-Ip: 198.61.254.9
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n05.prod.us-east-1.postgun.com with SMTP id
- 618bb6850f34c3436aca1693 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 10 Nov 2021 12:09:41
- GMT
-Sender: zijuhu=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id DB611C43635; Wed, 10 Nov 2021 12:09:40 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
-        autolearn=no autolearn_force=no version=3.4.0
-Received: from zijuhu-gv.qualcomm.com (unknown [180.166.53.21])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: zijuhu)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id A83B3C43618;
-        Wed, 10 Nov 2021 12:09:27 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 smtp.codeaurora.org A83B3C43618
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=codeaurora.org
-From:   Zijun Hu <zijuhu@codeaurora.org>
-To:     marcel@holtmann.org, johan.hedberg@gmail.com, luiz.dentz@gmail.com
-Cc:     linux-kernel@vger.kernel.org, linux-bluetooth@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org, c-hbandi@codeaurora.org,
-        hemantg@codeaurora.org, rjliao@codeaurora.org,
-        zijuhu@codeaurora.org, Zijun Hu <quic_zijuhu@quicinc.com>
-Subject: [PATCH v1] Bluetooth: hci_h4: Fix padding calculation error within h4_recv_buf()
-Date:   Wed, 10 Nov 2021 20:09:19 +0800
-Message-Id: <1636546159-8339-1-git-send-email-zijuhu@codeaurora.org>
-X-Mailer: git-send-email 2.7.4
+        Wed, 10 Nov 2021 07:13:25 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1636546228;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=Rr36Cb2Y1cvFR41scNcUzd8wBnS/OAi/NVPg1Fb83xQ=;
+        b=WCyx7NqO0zlXbv6T1k6wAvWpEp6FQzDNQLjrfkV/D50aCWeubwxf7Gcq3OwYGqB9leNOar
+        1vLLczfzBhjW4EZP0sWFeenRkerdgpfK16FPVIAAZ7ucmEZ6miigGaJfr/4KgaZ7YrsxRK
+        W5mKHpzf9Nhh0YocHN2blBLqb/DhVHU=
+Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com
+ [209.85.208.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-598-daiFPBbkNeCOKiPMainlDw-1; Wed, 10 Nov 2021 07:10:27 -0500
+X-MC-Unique: daiFPBbkNeCOKiPMainlDw-1
+Received: by mail-ed1-f70.google.com with SMTP id i9-20020a508709000000b003dd4b55a3caso2122987edb.19
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Nov 2021 04:10:27 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=Rr36Cb2Y1cvFR41scNcUzd8wBnS/OAi/NVPg1Fb83xQ=;
+        b=j1NiAw2AVvA2spygpaSUqjw6tqOYjvk3bFZeBE1j57WwsIJGUP7eRclKZBNd8RbJxg
+         vnQ85WHtlnFtjVWcAcHlGSVLj6YPGz5eHhb6QbwCExibU20GLNX6lWRqLC9Awii08cah
+         dXs4B9C8YBK3Tv5ZdlGT+cn4iaTlBh4n7LNMk8AdT36Ae5A1MnYaMsT2TyWulJpr2RGL
+         eQA+g0mOy1p3NL13AGH90EBHCNPgUUCpPPv8IBq6/AHuEtlZm3wnAaS3tCn+RZtnHUWE
+         C58z2D7EKoYq2vJ/B1rHQEnyz1pui/jUj76/d48Zc2WF6lXSSZGiGFZzA/QWiFzhNgHI
+         5nFg==
+X-Gm-Message-State: AOAM530zu39L87rUv5xkkq43ukCPNeI3TCLvaGXcYNnEn7f1AInEgji/
+        WO1JzbDofp3H6XdYx/6+PueNv5wLhFlgmvq8joSFHqZKpCWU1FIXISdLIKwgLuLH/+FVO09+96B
+        px6sRDK0kmcYyWq2i2RrjaJkIFR/42H17Kr8a7H/k
+X-Received: by 2002:a17:906:ad89:: with SMTP id la9mr19787428ejb.178.1636546226126;
+        Wed, 10 Nov 2021 04:10:26 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJwf4XP8fkeIWWNmHm7LmReGjzuQX86h1/sC+gmwglVaX4WVJuIk3uu0SgugELXK3xZxJVQ9JlvsL+t5QFcdnjo=
+X-Received: by 2002:a17:906:ad89:: with SMTP id la9mr19787400ejb.178.1636546225940;
+ Wed, 10 Nov 2021 04:10:25 -0800 (PST)
+MIME-Version: 1.0
+References: <20211029201402.428284-1-wander@redhat.com> <CAHp75VeZBp4gKvGBDzaD=EpGRDZ1-wTvD8K9Ui6Q59kDjmkXmQ@mail.gmail.com>
+ <CAAq0SUmzHqEzNk3aw3SEgYVWRukQeHK1WtcJ3MjXcQKJrbC1Dw@mail.gmail.com> <CAHp75Vf6DjNcPWpE4Dh3SuzUMJbFQjq1UNCkrCa60uw35SpqKg@mail.gmail.com>
+In-Reply-To: <CAHp75Vf6DjNcPWpE4Dh3SuzUMJbFQjq1UNCkrCa60uw35SpqKg@mail.gmail.com>
+From:   Wander Costa <wcosta@redhat.com>
+Date:   Wed, 10 Nov 2021 09:10:14 -0300
+Message-ID: <CAAq0SU=wYZ9e9NJvwcLvEvxj-J7PhAPFjRAu2uFVYPprR7A_qQ@mail.gmail.com>
+Subject: Re: [PATCH] tty: serial: Use fifo in 8250 console driver
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc:     wander@redhat.com, Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        "Maciej W. Rozycki" <macro@orcam.me.uk>,
+        Johan Hovold <johan@kernel.org>,
+        Andrew Jeffery <andrew@aj.id.au>,
+        "open list:SERIAL DRIVERS" <linux-serial@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Zijun Hu <quic_zijuhu@quicinc.com>
+On Mon, Nov 1, 2021 at 12:33 PM Andy Shevchenko
+<andy.shevchenko@gmail.com> wrote:
+>
+> On Mon, Nov 1, 2021 at 5:22 PM Wander Costa <wcosta@redhat.com> wrote:
+> > Em s=C3=A1b., 30 de out. de 2021 04:41, Andy Shevchenko
+> > <andy.shevchenko@gmail.com> escreveu:
+> > > On Friday, October 29, 2021, <wander@redhat.com> wrote:
+>
+> ...
+>
+> > > I don't see any links.
+> >
+> > Oops, sorry about that. I must have accidentally deleted it while
+> > editing the commit message.
+> > Here it is https://github.com/walac/serial-console-test.
+> > I will update the patch with the link.
+>
+> Thanks!
+>
+> ...
+>
+> > > On how many different UARTs have you tested this? Have you tested oop=
+s and NMI contexts?
+> > >
+> > I only tested in a half dozen machines that I have available. I tried
+> > it in panic, warnings, IRQ contexts, etc. Theoretically, this change
+> > should not be affected by the context. Theoretically...
+> >
+> > > What I would like to say here is that the code is being used on zilli=
+ons of different 8250 implementations here and I would be rather skeptical =
+about enabling the feature for everyone.
+> > >
+> > I did my homework and studied the 16550 datasheets, but yes, there is
+> > always this risk. Maybe people more experienced with PC serial ports
+> > than me might think the patch is not worth the risk of breaking some
+> > unknown number of devices out there, and I am ok with that. It is a
+> > valid point.
+>
+> Here is a translation of my comment to a roadmap.
+>
+> 1. Introduce yet another UART quirk or capability (see corresponding
+> UART_CAP_* or UART_*_QUIRK definitions)
+> 2. Add your patch conditionally based on the above
+> 3. Enable it on UART(s) you _have tested_
+>
+Thank you for the feedback, I submitted a v2 patch with your proposed chang=
+es,
 
-it is erroneous to calculate padding by subtracting length of type
-indication from skb->len, it will cause data analysis error for
-alignment which is greater than 1, so fixed by adding length of type
-indication with skb->len.
+Cheers,
+Wander
 
-Signed-off-by: Zijun Hu <quic_zijuhu@quicinc.com>
----
- drivers/bluetooth/hci_h4.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/bluetooth/hci_h4.c b/drivers/bluetooth/hci_h4.c
-index 4b3b14a34794..1d0cdf023243 100644
---- a/drivers/bluetooth/hci_h4.c
-+++ b/drivers/bluetooth/hci_h4.c
-@@ -252,7 +252,7 @@ struct sk_buff *h4_recv_buf(struct hci_dev *hdev, struct sk_buff *skb,
- 			}
- 
- 			if (!dlen) {
--				hu->padding = (skb->len - 1) % alignment;
-+				hu->padding = (skb->len + 1) % alignment;
- 				hu->padding = (alignment - hu->padding) % alignment;
- 
- 				/* No more data, complete frame */
-@@ -260,7 +260,7 @@ struct sk_buff *h4_recv_buf(struct hci_dev *hdev, struct sk_buff *skb,
- 				skb = NULL;
- 			}
- 		} else {
--			hu->padding = (skb->len - 1) % alignment;
-+			hu->padding = (skb->len + 1) % alignment;
- 			hu->padding = (alignment - hu->padding) % alignment;
- 
- 			/* Complete frame */
--- 
-The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum, a Linux Foundation Collaborative Project
+> --
+> With Best Regards,
+> Andy Shevchenko
+>
 
