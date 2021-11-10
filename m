@@ -2,171 +2,172 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C86A44BAB2
+	by mail.lfdr.de (Postfix) with ESMTP id E52DA44BAB3
 	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 04:51:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230313AbhKJDs2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Nov 2021 22:48:28 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38084 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229963AbhKJDsZ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Nov 2021 22:48:25 -0500
-Received: from mail-pl1-x636.google.com (mail-pl1-x636.google.com [IPv6:2607:f8b0:4864:20::636])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 39BA1C061766
-        for <linux-kernel@vger.kernel.org>; Tue,  9 Nov 2021 19:45:39 -0800 (PST)
-Received: by mail-pl1-x636.google.com with SMTP id k4so1847504plx.8
-        for <linux-kernel@vger.kernel.org>; Tue, 09 Nov 2021 19:45:39 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=Fe2DNRNkXeR676K2UnXemGHLWR3/blj3DgcVGP77Sl4=;
-        b=d2Lnis2lVAn3Shp2hgnHRRuzKn0sQXgQ2yZevjqWlfL5Vp8YIVg1w2yam0cfj92wqZ
-         pav63t4EAazrt4Dzy697fEkJUeQBD/BdAhCFpgl8uFYW8mkAJ0rPqVcGN6KGOEMbfjjx
-         KGWf7GOkaO8phjeWoa312aVqbiWgoBQ9KgoOuhhz+XLYVZrVBDURS28h1Ur81IjSlHv+
-         VdaLD6mNtX2iC/hoOARpqrFrAvHLQzvpSwkK74FbSGlRfwSDs4iDCq7yTd824kjcNYmB
-         TFsUfc81pj/5he7S/Bs6Z7yI+hlwRu4C29vbu04Jf4d4wbVcoJPIqBodPqnMbd3YVEYr
-         Kbbw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references;
-        bh=Fe2DNRNkXeR676K2UnXemGHLWR3/blj3DgcVGP77Sl4=;
-        b=7wjbfOAABJ9im+McMDnSG52w1B70u8/PclRG5Dn8qFEe6iYbnwaa1vMUUsmb/l0TLg
-         Ch6b3ws23V82BmCeNFaKF+ff1ufEvtrI/rYDguoYEst/MPtDBJn+W85e4OS4oQCDefFZ
-         EjeoF6C5WnOQb+eIGjy7n93z2WvRFgYPpejjQE8iUtpfsy8BYe3QYxH4V+dYYjHJqTBq
-         WCAkjyFsuTbTMdYFwGxYJW5ca7S9oERlaCSx3IFPzc4+M62RGG+/vjkNPHogltK7YToe
-         qEFzrnLpZfGkeypuCs4pvI4GmeA8XP9Bye8BfcG/PPYylNds0uDuhllO9Fo6nW1LpKV5
-         wZgw==
-X-Gm-Message-State: AOAM532m6dQDlcuc4lGAdAIVdhX6zGagJHdxgOR8zMnOOLQuDganM3MD
-        SNI1HtoJc9HprlB0fVRlKiC76e77JUA=
-X-Google-Smtp-Source: ABdhPJw3CwBfo/2T2/e7B8O1i1tAIhXztFwJ3KhMS69aDE3ak9G4yX1W8/VfM4Te+LqpSvQdNv9M+Q==
-X-Received: by 2002:a17:90a:6782:: with SMTP id o2mr13385208pjj.165.1636515938601;
-        Tue, 09 Nov 2021 19:45:38 -0800 (PST)
-Received: from localhost.localdomain ([2402:7500:46a:f117:d5ee:c3e5:104f:c135])
-        by smtp.gmail.com with ESMTPSA id q6sm5995293pgn.42.2021.11.09.19.45.35
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 09 Nov 2021 19:45:38 -0800 (PST)
-From:   cy_huang <u0084500@gmail.com>
-To:     broonie@kernel.org, perex@perex.cz, tiwai@suse.com
-Cc:     oder_chiou@realtek.com, lgirdwood@gmail.com,
-        alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
-        cy_huang@richtek.com, allen_lin@richtek.com
-Subject: [PATCH v2 3/3] ASoC: rt9120: Add the compatibility with rt9120s
-Date:   Wed, 10 Nov 2021 11:45:21 +0800
-Message-Id: <1636515921-31694-4-git-send-email-u0084500@gmail.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1636515921-31694-1-git-send-email-u0084500@gmail.com>
-References: <1636515921-31694-1-git-send-email-u0084500@gmail.com>
+        id S230306AbhKJDuB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Nov 2021 22:50:01 -0500
+Received: from ptr.189.cn ([183.61.185.101]:11367 "EHLO 189.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S229963AbhKJDuA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Nov 2021 22:50:00 -0500
+HMM_SOURCE_IP: 10.64.8.31:45218.1712933027
+HMM_ATTACHE_NUM: 0000
+HMM_SOURCE_TYPE: SMTP
+Received: from clientip-114.242.206.180 (unknown [10.64.8.31])
+        by 189.cn (HERMES) with SMTP id BC86410013F;
+        Wed, 10 Nov 2021 11:47:06 +0800 (CST)
+Received: from  ([14.17.101.176])
+        by gateway-151646-dep-b7fbf7d79-bwdqx with ESMTP id 2d4330556833488a80fac8471e799c55 for chenhuacai@kernel.org;
+        Wed, 10 Nov 2021 11:47:06 CST
+X-Transaction-ID: 2d4330556833488a80fac8471e799c55
+X-Real-From: 15330273260@189.cn
+X-Receive-IP: 14.17.101.176
+X-MEDUSA-Status: 0
+Sender: 15330273260@189.cn
+From:   Sui Jingfeng <15330273260@189.cn>
+To:     Huacai Chen <chenhuacai@kernel.org>,
+        Jiaxun Yang <jiaxun.yang@flygoat.com>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        David Airlie <airlied@linux.ie>
+Cc:     linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
+        suijingfeng <suijingfeng@loongson.cn>
+Subject: [PATCH] mips/loongson64: seperate wbflush_loongson out of setup.c
+Date:   Wed, 10 Nov 2021 11:46:53 +0800
+Message-Id: <20211110034653.2404-1-15330273260@189.cn>
+X-Mailer: git-send-email 2.20.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: ChiYuan Huang <cy_huang@richtek.com>
+From: suijingfeng <suijingfeng@loongson.cn>
 
-Use device id reg to be compatible with rt9120 and rt9120s.
+ 1) .set pop is enough, so remove redundant .set mips0
 
-Signed-off-by: ChiYuan Huang <cy_huang@richtek.com>
+ 2) loongson's cpu spec call the write buffers as store fill buffer,
+    it is implemented in ls3a4000, ls3a3000, ls2k1000 etc cpus.
+    wbflush is mean to empty data gathered in the write buffers within
+    the CPU, however the system is still bootable and works normally
+    if we deselect CPU_HAS_WB. This patch provided a convenient way
+    to bypass __wbflush by removing CPU_HAS_WB in arch/mips/Kconfig.
+
+Signed-off-by: suijingfeng <suijingfeng@loongson.cn>
 ---
- sound/soc/codecs/rt9120.c | 33 +++++++++++++++++++++++++++++----
- 1 file changed, 29 insertions(+), 4 deletions(-)
+ arch/mips/loongson64/Makefile  |  1 +
+ arch/mips/loongson64/setup.c   | 17 -----------------
+ arch/mips/loongson64/smp.c     |  6 +++---
+ arch/mips/loongson64/wbflush.c | 26 ++++++++++++++++++++++++++
+ 4 files changed, 30 insertions(+), 20 deletions(-)
+ create mode 100644 arch/mips/loongson64/wbflush.c
 
-diff --git a/sound/soc/codecs/rt9120.c b/sound/soc/codecs/rt9120.c
-index 981aead..7aa1772 100644
---- a/sound/soc/codecs/rt9120.c
-+++ b/sound/soc/codecs/rt9120.c
-@@ -1,6 +1,7 @@
- // SPDX-License-Identifier: GPL-2.0
+diff --git a/arch/mips/loongson64/Makefile b/arch/mips/loongson64/Makefile
+index e806280bbb85..ad00d92c2871 100644
+--- a/arch/mips/loongson64/Makefile
++++ b/arch/mips/loongson64/Makefile
+@@ -12,3 +12,4 @@ obj-$(CONFIG_SUSPEND) += pm.o
+ obj-$(CONFIG_PCI_QUIRKS) += vbios_quirk.o
+ obj-$(CONFIG_CPU_LOONGSON3_CPUCFG_EMULATION) += cpucfg-emul.o
+ obj-$(CONFIG_SYSFS) += boardinfo.o
++obj-$(CONFIG_CPU_HAS_WB) += wbflush.o
+diff --git a/arch/mips/loongson64/setup.c b/arch/mips/loongson64/setup.c
+index 6fe3ffffcaa6..cb10d14da433 100644
+--- a/arch/mips/loongson64/setup.c
++++ b/arch/mips/loongson64/setup.c
+@@ -3,10 +3,7 @@
+  * Copyright (C) 2007 Lemote Inc. & Institute of Computing Technology
+  * Author: Fuxin Zhang, zhangfx@lemote.com
+  */
+-#include <linux/export.h>
+ #include <linux/init.h>
+-
+-#include <asm/wbflush.h>
+ #include <asm/bootinfo.h>
+ #include <linux/libfdt.h>
+ #include <linux/of_fdt.h>
+@@ -17,20 +14,6 @@
  
- #include <linux/bits.h>
-+#include <linux/bitfield.h>
- #include <linux/delay.h>
- #include <linux/gpio/consumer.h>
- #include <linux/i2c.h>
-@@ -23,6 +24,7 @@
- #define RT9120_REG_ERRRPT	0x10
- #define RT9120_REG_MSVOL	0x20
- #define RT9120_REG_SWRESET	0x40
-+#define RT9120_REG_INTERCFG	0x63
- #define RT9120_REG_INTERNAL0	0x65
- #define RT9120_REG_INTERNAL1	0x69
- #define RT9120_REG_UVPOPT	0x6C
-@@ -49,7 +51,8 @@
- #define RT9120_DVDD_UVSEL_MASK	GENMASK(5, 4)
- #define RT9120_AUTOSYNC_MASK	BIT(6)
+ void *loongson_fdt_blob;
  
--#define RT9120_VENDOR_ID	0x4200
-+#define RT9120_VENDOR_ID	0x42
-+#define RT9120S_VENDOR_ID	0x43
- #define RT9120_RESET_WAITMS	20
- #define RT9120_CHIPON_WAITMS	20
- #define RT9120_AMPON_WAITMS	50
-@@ -63,9 +66,16 @@
- 				 SNDRV_PCM_FMTBIT_S24_LE |\
- 				 SNDRV_PCM_FMTBIT_S32_LE)
+-static void wbflush_loongson(void)
+-{
+-	asm(".set\tpush\n\t"
+-	    ".set\tnoreorder\n\t"
+-	    ".set mips3\n\t"
+-	    "sync\n\t"
+-	    "nop\n\t"
+-	    ".set\tpop\n\t"
+-	    ".set mips0\n\t");
+-}
+-
+-void (*__wbflush)(void) = wbflush_loongson;
+-EXPORT_SYMBOL(__wbflush);
+-
+ void __init plat_mem_setup(void)
+ {
+ 	if (loongson_fdt_blob)
+diff --git a/arch/mips/loongson64/smp.c b/arch/mips/loongson64/smp.c
+index 09ebe84a17fe..4a938a29bfb2 100644
+--- a/arch/mips/loongson64/smp.c
++++ b/arch/mips/loongson64/smp.c
+@@ -42,13 +42,13 @@ static uint32_t core0_c0count[NR_CPUS];
+ #define loongson3_ipi_write32(action, addr)	\
+ 	do {					\
+ 		writel(action, addr);		\
+-		__wbflush();			\
++		__sync();			\
+ 	} while (0)
+ /* write a 64bit value to ipi register */
+ #define loongson3_ipi_write64(action, addr)	\
+ 	do {					\
+ 		writeq(action, addr);		\
+-		__wbflush();			\
++		__sync();			\
+ 	} while (0)
  
-+enum {
-+	CHIP_IDX_RT9120 = 0,
-+	CHIP_IDX_RT9120S,
-+	CHIP_IDX_MAX
-+};
-+
- struct rt9120_data {
- 	struct device *dev;
- 	struct regmap *regmap;
-+	int chip_idx;
- };
- 
- /* 11bit [min,max,step] = [-103.9375dB, 24dB, 0.0625dB] */
-@@ -151,7 +161,12 @@ static int rt9120_codec_probe(struct snd_soc_component *comp)
- 	snd_soc_component_init_regmap(comp, data->regmap);
- 
- 	/* Internal setting */
--	snd_soc_component_write(comp, RT9120_REG_INTERNAL0, 0x04);
-+	if (data->chip_idx == CHIP_IDX_RT9120S) {
-+		snd_soc_component_write(comp, RT9120_REG_INTERCFG, 0xde);
-+		snd_soc_component_write(comp, RT9120_REG_INTERNAL0, 0x66);
-+	} else
-+		snd_soc_component_write(comp, RT9120_REG_INTERNAL0, 0x04);
-+
- 	return 0;
- }
- 
-@@ -290,6 +305,7 @@ static const struct regmap_range rt9120_rd_yes_ranges[] = {
- 	regmap_reg_range(0x20, 0x27),
- 	regmap_reg_range(0x30, 0x38),
- 	regmap_reg_range(0x3A, 0x40),
-+	regmap_reg_range(0x63, 0x63),
- 	regmap_reg_range(0x65, 0x65),
- 	regmap_reg_range(0x69, 0x69),
- 	regmap_reg_range(0x6C, 0x6C),
-@@ -309,6 +325,7 @@ static const struct regmap_range rt9120_wr_yes_ranges[] = {
- 	regmap_reg_range(0x30, 0x38),
- 	regmap_reg_range(0x3A, 0x3D),
- 	regmap_reg_range(0x40, 0x40),
-+	regmap_reg_range(0x63, 0x63),
- 	regmap_reg_range(0x65, 0x65),
- 	regmap_reg_range(0x69, 0x69),
- 	regmap_reg_range(0x6C, 0x6C),
-@@ -401,8 +418,16 @@ static int rt9120_check_vendor_info(struct rt9120_data *data)
- 	if (ret)
- 		return ret;
- 
--	if ((devid & RT9120_VID_MASK) != RT9120_VENDOR_ID) {
--		dev_err(data->dev, "DEVID not correct [0x%04x]\n", devid);
-+	devid = FIELD_GET(RT9120_VID_MASK, devid);
-+	switch (devid) {
-+	case RT9120_VENDOR_ID:
-+		data->chip_idx = CHIP_IDX_RT9120;
-+		break;
-+	case RT9120S_VENDOR_ID:
-+		data->chip_idx = CHIP_IDX_RT9120S;
-+		break;
-+	default:
-+		dev_err(data->dev, "DEVID not correct [0x%0x]\n", devid);
- 		return -ENODEV;
+ static u32 (*ipi_read_clear)(int cpu);
+@@ -418,7 +418,7 @@ static irqreturn_t loongson3_ipi_interrupt(int irq, void *dev_id)
+ 		c0count = c0count ? c0count : 1;
+ 		for (i = 1; i < nr_cpu_ids; i++)
+ 			core0_c0count[i] = c0count;
+-		__wbflush(); /* Let others see the result ASAP */
++		__sync(); /* Let others see the result ASAP */
  	}
  
+ 	return IRQ_HANDLED;
+diff --git a/arch/mips/loongson64/wbflush.c b/arch/mips/loongson64/wbflush.c
+new file mode 100644
+index 000000000000..7127e43d44e6
+--- /dev/null
++++ b/arch/mips/loongson64/wbflush.c
+@@ -0,0 +1,26 @@
++// SPDX-License-Identifier: GPL-2.0-or-later
++/*
++ * Copyright (C) 2007 Lemote Inc. & Institute of Computing Technology
++ * Author: Fuxin Zhang, zhangfx@lemote.com
++ */
++#include <linux/export.h>
++#include <linux/init.h>
++#include <asm/wbflush.h>
++#include <asm/sync.h>
++
++#ifdef CONFIG_CPU_HAS_WB
++
++static void wbflush_loongson(void)
++{
++	asm(".set push\n\t"
++	    ".set noreorder\n\t"
++	    ".set mips64r2\n\t"
++	    "sync\n\t"
++	    "nop\n\t"
++	    ".set pop\n\t");
++}
++
++void (*__wbflush)(void) = wbflush_loongson;
++EXPORT_SYMBOL(__wbflush);
++
++#endif
 -- 
-2.7.4
+2.25.1
 
