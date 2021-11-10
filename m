@@ -2,177 +2,232 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DBEF544C5A7
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 18:03:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7ACC444C5AC
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 18:03:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231826AbhKJRGM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Nov 2021 12:06:12 -0500
-Received: from conssluserg-06.nifty.com ([210.131.2.91]:35998 "EHLO
-        conssluserg-06.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229995AbhKJRGK (ORCPT
+        id S232268AbhKJRGb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Nov 2021 12:06:31 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49380 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232316AbhKJRG2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Nov 2021 12:06:10 -0500
-Received: from mail-pj1-f51.google.com (mail-pj1-f51.google.com [209.85.216.51]) (authenticated)
-        by conssluserg-06.nifty.com with ESMTP id 1AAH3ADH018807;
-        Thu, 11 Nov 2021 02:03:11 +0900
-DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-06.nifty.com 1AAH3ADH018807
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
-        s=dec2015msa; t=1636563791;
-        bh=eqx2h1z+6W91aA/paM9MjCJ0BZjnMQ4qAp13AQGRbeE=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=E4XXbUBVeXAkGnZwmz02Jan9k6ovOFMaOWhPOo9y7gcLa1g3Fl/okFY8viRF5f5rt
-         gUsIn+c9BYr6/ZoZM4eLDAm3xcRhlCCpyykfvsLs/yHHHrzfGpcArK3WJIr143H/bG
-         uEPr2JPolRLVpeTGlfKyBxSAPCetMvJCegrG/w5V1nCAexoOFTKXZEGN2GmEjXv7H9
-         w9PnLHz0GzY1OOqn+N1SY6B5Qv9QvGg1wTfjCkpv9Nq4jkQ8Lg5TXr9yT1D/6/OpxD
-         0BFMgGIzqtirwvGnNAXZ3WiHENNFZ345IA9YtDP+pC55HkOpm/O5fTpF/tKbETljAN
-         UIce5pTLeJIDw==
-X-Nifty-SrcIP: [209.85.216.51]
-Received: by mail-pj1-f51.google.com with SMTP id h24so2073672pjq.2;
-        Wed, 10 Nov 2021 09:03:11 -0800 (PST)
-X-Gm-Message-State: AOAM532PZ4zMM3CmdD+X/ki5g0nsEWqLw5lezr3O1lgbjWifg/sQWrW2
-        p7mnRYoaj/tkUIKPKbzLgcMBBYSoDfCwtMQSYZU=
-X-Google-Smtp-Source: ABdhPJxvdmcS7OUUiIebqY+I3qXPmj8cGP/mDgerY+4hpX6evADqnQTk5inxfqi0xbWgM/t5aFUCfT91nRKNzeXE0Ac=
-X-Received: by 2002:a17:90b:1d0f:: with SMTP id on15mr401529pjb.144.1636563790191;
- Wed, 10 Nov 2021 09:03:10 -0800 (PST)
+        Wed, 10 Nov 2021 12:06:28 -0500
+Received: from mail-lf1-x134.google.com (mail-lf1-x134.google.com [IPv6:2a00:1450:4864:20::134])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D2D33C061766
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Nov 2021 09:03:39 -0800 (PST)
+Received: by mail-lf1-x134.google.com with SMTP id u11so7648894lfs.1
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Nov 2021 09:03:39 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=hzD/DAYGhboNaykVpK/opnEQiLFNUkCeLqCnw7cZh98=;
+        b=YWVQ2ftmMy7bjpmmm4spkd+jJC+ZUgbRAMXDyKTjfDBN9p9K12lFZlNRXURPf7H43+
+         g0i7hz8WmBjTyfF4++qw+RPiPDWOVMW1v14FEcFT0FSkfmA3bM2piJu7FHAAd9wYOcp5
+         03HAoNvYCeXjYSN8VhZFTFW7I708+R/vTyICX/Rn+DbFnWeIOpk73LrndCzJi5t08DWA
+         /CXalJqnYiS6pxDpYwKJsbmQXjr3ZOTqFS0ihgIXGsz4iS5RlDSc5/HaZCgJ13Bv78zk
+         Jpf61BKf28+YFxRNur79qvk4257uLFNN3Gdwwa/9WiwfOiwnqMS4T4OOfPcixheyyegh
+         F8Yg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=hzD/DAYGhboNaykVpK/opnEQiLFNUkCeLqCnw7cZh98=;
+        b=XVj1gVeMXVRMIpu/X/21FWXtgfzkH0tmXEOLFdG7bICpdqSbioZ1ykqiJpjYV9HKA9
+         giEx7baWQOvDyADhlmFHTWEwG4Pd8vq8qv6kewbjIQUQxKjz+QfolnMcPZsPRZJ9ZfG7
+         x2jIQV60sbWDCQAc0mOLdy1g/FtOfB6mis/fmk/Ts2NKzRe1sQVMkeSbq88BetBLR5v8
+         BhTuQuzMJtxj4npRfFv5SLPTHx/bUaT9vDf9ht0/7bJ88ESmrenx8hINhA80PT3ENaDq
+         keDuyLhAMqUCQAT3ZRlx80WUB3E5zWnL75usGD0bnSQxmy96BUBkRdPrRj1Y/BN3nTp9
+         QLqQ==
+X-Gm-Message-State: AOAM531aXxqoywygIql6bTNyZKyCD1rUZynbeSuzMa+tVEXyo7egWMqj
+        dGF1V22W/TxRyy2EmrKUC5TB2BhPqKYB4JnLpdOB+w==
+X-Google-Smtp-Source: ABdhPJxb/dmh5YsoAw5FZOPj2BogW3tCtpsorxgzVNBF2IvsZNngY/zr07OqnbbCsvv8QyY4VYbJqlQC5AsqeT1V+FY=
+X-Received: by 2002:a19:ad4d:: with SMTP id s13mr535246lfd.373.1636563817872;
+ Wed, 10 Nov 2021 09:03:37 -0800 (PST)
 MIME-Version: 1.0
-References: <20211105023815.85784-1-masahiroy@kernel.org> <20211110084927.GA5976@alpha.franken.de>
-In-Reply-To: <20211110084927.GA5976@alpha.franken.de>
-From:   Masahiro Yamada <masahiroy@kernel.org>
-Date:   Thu, 11 Nov 2021 02:02:32 +0900
-X-Gmail-Original-Message-ID: <CAK7LNASKBJ6BT+PD7=KhGZ6wPfY7maEaj5g0rtkEhfmfxjxWuA@mail.gmail.com>
-Message-ID: <CAK7LNASKBJ6BT+PD7=KhGZ6wPfY7maEaj5g0rtkEhfmfxjxWuA@mail.gmail.com>
-Subject: Re: [PATCH] mips: decompressor: do not copy source files while building
-To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-Cc:     "open list:BROADCOM NVRAM DRIVER" <linux-mips@vger.kernel.org>,
-        Alexander Lobakin <alobakin@pm.me>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Paul Cercueil <paul@crapouillou.net>,
-        Xingxing Su <suxingxing@loongson.cn>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        zhaoxiao <zhaoxiao@uniontech.com>
+References: <cover.1636103151.git.hns@goldelico.com> <3ca9a3099d86d631235b6c03ae260bc581cc8d60.1636103151.git.hns@goldelico.com>
+ <CAPDyKFrH8f80cs5dbh=3ugjyEzoUYXhStpHQyhUSd6b9wD78vw@mail.gmail.com>
+ <C2F065E7-10C5-4701-A6F7-6B5A6198F0DF@goldelico.com> <CAPDyKFoz6b-+HQYdypYD7EUXxwj7th-=41MAK=ZTnKQWRmLArQ@mail.gmail.com>
+ <B6ECEECF-EC1D-431E-B4E4-915B29E31AEE@goldelico.com>
+In-Reply-To: <B6ECEECF-EC1D-431E-B4E4-915B29E31AEE@goldelico.com>
+From:   Ulf Hansson <ulf.hansson@linaro.org>
+Date:   Wed, 10 Nov 2021 18:03:01 +0100
+Message-ID: <CAPDyKFqsBkWBajYvS2DXsHzO01-hgQp7YuzTs61N7vmLkZLgKg@mail.gmail.com>
+Subject: Re: [RFC v4 5/6] mmc: core: transplant ti,wl1251 quirks from to be
+ retired omap_hsmmc
+To:     "H. Nikolaus Schaller" <hns@goldelico.com>
+Cc:     =?UTF-8?B?SsOpcsO0bWUgUG91aWxsZXI=?= <Jerome.Pouiller@silabs.com>,
+        Avri Altman <avri.altman@wdc.com>,
+        Shawn Lin <shawn.lin@rock-chips.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Tony Lindgren <tony@atomide.com>,
+        Bean Huo <beanhuo@micron.com>,
+        =?UTF-8?Q?Gra=C5=BEvydas_Ignotas?= <notasas@gmail.com>,
+        linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        letux-kernel@openphoenux.org, kernel@pyra-handheld.com
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 10, 2021 at 5:56 PM Thomas Bogendoerfer
-<tsbogend@alpha.franken.de> wrote:
+On Wed, 10 Nov 2021 at 17:36, H. Nikolaus Schaller <hns@goldelico.com> wrote:
 >
-> On Fri, Nov 05, 2021 at 11:38:14AM +0900, Masahiro Yamada wrote:
-> > As commit 7ae4a78daacf ("ARM: 8969/1: decompressor: simplify libfdt
-> > builds") stated, copying source files during the build time may not
-> > end up with as clean code as expected.
-> >
-> > Do similar for mips to clean up the Makefile and .gitignore.
-> >
-> > Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
-> > ---
-> >
-> >  arch/mips/boot/compressed/.gitignore   |  3 ---
-> >  arch/mips/boot/compressed/Makefile     | 12 ------------
-> >  arch/mips/boot/compressed/ashldi3.c    |  2 ++
-> >  arch/mips/boot/compressed/bswapsi.c    |  2 ++
-> >  arch/mips/boot/compressed/uart-ath79.c |  2 ++
-> >  scripts/remove-stale-files             |  5 +++++
-> >  6 files changed, 11 insertions(+), 15 deletions(-)
-> >  delete mode 100644 arch/mips/boot/compressed/.gitignore
-> >  create mode 100644 arch/mips/boot/compressed/ashldi3.c
-> >  create mode 100644 arch/mips/boot/compressed/bswapsi.c
-> >  create mode 100644 arch/mips/boot/compressed/uart-ath79.c
-> >
-> > diff --git a/arch/mips/boot/compressed/.gitignore b/arch/mips/boot/compressed/.gitignore
-> > deleted file mode 100644
-> > index d358395614c9..000000000000
-> > --- a/arch/mips/boot/compressed/.gitignore
-> > +++ /dev/null
-> > @@ -1,3 +0,0 @@
-> > -# SPDX-License-Identifier: GPL-2.0-only
-> > -ashldi3.c
-> > -bswapsi.c
-> > diff --git a/arch/mips/boot/compressed/Makefile b/arch/mips/boot/compressed/Makefile
-> > index 3548b3b45269..e6584dab2360 100644
-> > --- a/arch/mips/boot/compressed/Makefile
-> > +++ b/arch/mips/boot/compressed/Makefile
-> > @@ -50,20 +50,8 @@ vmlinuzobjs-$(CONFIG_MIPS_ALCHEMY)            += $(obj)/uart-alchemy.o
-> >  vmlinuzobjs-$(CONFIG_ATH79)                     += $(obj)/uart-ath79.o
-> >  endif
-> >
-> > -extra-y += uart-ath79.c
-> > -$(obj)/uart-ath79.c: $(srctree)/arch/mips/ath79/early_printk.c
-> > -     $(call cmd,shipped)
-> > -
-> >  vmlinuzobjs-$(CONFIG_KERNEL_XZ) += $(obj)/ashldi3.o
-> >
-> > -extra-y += ashldi3.c
-> > -$(obj)/ashldi3.c: $(obj)/%.c: $(srctree)/lib/%.c FORCE
-> > -     $(call if_changed,shipped)
-> > -
-> > -extra-y += bswapsi.c
-> > -$(obj)/bswapsi.c: $(obj)/%.c: $(srctree)/arch/mips/lib/%.c FORCE
-> > -     $(call if_changed,shipped)
-> > -
-> >  targets := $(notdir $(vmlinuzobjs-y))
-> >
-> >  targets += vmlinux.bin
-> > diff --git a/arch/mips/boot/compressed/ashldi3.c b/arch/mips/boot/compressed/ashldi3.c
-> > new file mode 100644
-> > index 000000000000..f7bf6a7aae31
-> > --- /dev/null
-> > +++ b/arch/mips/boot/compressed/ashldi3.c
-> > @@ -0,0 +1,2 @@
-> > +// SPDX-License-Identifier: GPL-2.0-only
-> > +#include "../../../../lib/ashldi3.c"
-> > diff --git a/arch/mips/boot/compressed/bswapsi.c b/arch/mips/boot/compressed/bswapsi.c
-> > new file mode 100644
-> > index 000000000000..fdb9c6476904
-> > --- /dev/null
-> > +++ b/arch/mips/boot/compressed/bswapsi.c
-> > @@ -0,0 +1,2 @@
-> > +// SPDX-License-Identifier: GPL-2.0-only
-> > +#include "../../lib/bswapsi.c"
-> > diff --git a/arch/mips/boot/compressed/uart-ath79.c b/arch/mips/boot/compressed/uart-ath79.c
-> > new file mode 100644
-> > index 000000000000..d686820921be
-> > --- /dev/null
-> > +++ b/arch/mips/boot/compressed/uart-ath79.c
-> > @@ -0,0 +1,2 @@
-> > +// SPDX-License-Identifier: GPL-2.0-only
-> > +#include "../../ath79/early_printk.c"
-> > diff --git a/scripts/remove-stale-files b/scripts/remove-stale-files
-> > index eb630ee287c3..c534fe1eac16 100755
-> > --- a/scripts/remove-stale-files
-> > +++ b/scripts/remove-stale-files
-> > @@ -28,4 +28,9 @@ if [ -n "${building_out_of_srctree}" ]; then
-> >       do
-> >               rm -f arch/arm/boot/compressed/${f}
-> >       done
-> > +
-> > +     for f in uart-ath79.c ashldi3.c bswapsi.c
-> > +     do
-> > +             rm -f arch/mips/boot/compressed/${f}
-> > +     done
+> Hi Ulf,
 >
-> hmm, isn't this the wrong action now that these files have been added
-> to git ?
+> > Am 09.11.2021 um 21:01 schrieb Ulf Hansson <ulf.hansson@linaro.org>:
+> >
+> > On Tue, 9 Nov 2021 at 11:58, H. Nikolaus Schaller <hns@goldelico.com> wrote:
+> >>
+> >> Hi Ulf,
+> >>
+> >>> Am 08.11.2021 um 16:33 schrieb Ulf Hansson <ulf.hansson@linaro.org>:
+> >>>
+> >>> On Fri, 5 Nov 2021 at 10:06, H. Nikolaus Schaller <hns@goldelico.com> wrote:
+> >>>>
+> >>>> +       card->quirks |= MMC_QUIRK_NONSTD_SDIO;
+> >>>> +       card->cccr.wide_bus = 1;
+> >>>> +       card->cis.vendor = 0x104c;
+> >>>> +       card->cis.device = 0x9066;
+> >>>> +       card->cis.blksize = 512;
+> >>>> +       card->cis.max_dtr = 24000000;
+> >>>> +       card->ocr = 0x80;
+> >>>
+> >>> In the past, we discussed a bit around why card->ocr needs to be set here.
+> >>>
+> >>> The reason could very well be that the DTS file is specifying the
+> >>> vmmc-supply with 1.8V fixed regulator, which seems wrong to me.
+> >>
+> >> I have checked with the schematics but the wlan_en regulator-fixed is just a GPIO
+> >> controlling some pin of the wifi chip.
+> >>
+> >> I guess it enables some regulator or power switch inside the wifi module which
+> >> has unknown voltage.
+> >>
+> >> We can interpret this as two sequential power-switches. The first one controlled
+> >> by the gpio-register bit and switches gpio power to the gpio pad of the SoC. The second
+> >> one switches the battery voltage to the internal circuits of the wifi module.
+> >>
+> >> The GPIO itself is on 1.8V VIO level which seems to be the reason for the min/max.
+> >>
+> >> Now it is a little arbitrary what the DTS describes: the gpio voltage or the unknown
+> >> internal voltage of the second switch.
+> >>
+> >> So from hardware perspective the min/max values are irrelevant.
+> >
+> > I completely agree with you! That's also why I earlier suggested
+> > moving to use an mmc-pwrseq node
+> > (Documentation/devicetree/bindings/mmc/mmc-pwrseq-simple.yaml), that
+> > would allow a better description of the HW.
 >
-> Thomas.
+> Basically yes.
+>
+> > Nevertheless, the important point is that the mmc core gets a valid
+> > host->ocr_avail to work with during card initialization. And in this
+> > case, it's probably good enough to model this via changing the
+> > regulator-min|max-microvolt to get a proper value from the
+> > "regulator".
+> >
+> >>
+> >>>
+> >>> I would be very interested to know if we would change
+> >>> "regulator-min|max-microvolt" of the regulator in the DTS, into
+> >>> somewhere in between 2700000-3600000 (2.7-3.6V)
+> >>
+> >> Ok, if the mmc driver does something with these values it may have indeed an influence.
+> >>
+> >>> - and see if that
+> >>> allows us to drop the assignment of "card->ocr =  0x80;" above. Would
+> >>> you mind doing some tests for this?
+> >>
+> >> Well, with min/max=3.3V and no ocr I get:
+> >>
+> >> [    2.765136] omap_hsmmc 480ad000.mmc: card claims to support voltages below defined range
+> >> [    2.776367] omap_hsmmc 480ad000.mmc: found wl1251
+> >> [    2.782287] mmc2: new SDIO card at address 0001
+> >
+> > That's really great information! During the first initialization
+> > attempt, things are working fine and the SDIO card gets properly
+> > detected.
+> >
+> >> [   10.874237] omap_hsmmc 480ad000.mmc: could not set regulator OCR (-22)
+> >> [   10.945373] wl1251_sdio: probe of mmc2:0001:1 failed with error -16
+> >
+> > It looks like the card is being re-initialized when it's time to probe
+> > with the SDIO func driver. This makes sense, assuming it's been
+> > powered off via runtime PM (the "cap-power-off-card" DT property
+> > should be set in the DTS for this card's slot).
+> >
+> > I looked a bit closer to understand the problem above and then I
+> > realized why the card->ocr is being set from omap_hsmmc ->init_card()
+> > callback. It's most likely because the mmc core in
+> > mmc_sdio_init_card() doesn't save the card->ocr when
+> > MMC_QUIRK_NONSTD_SDIO is set. Instead it becomes the responsibility
+> > for the ->init_card() callback to do it, which seems wrong to me.
+> >
+> > Note that the card->ocr is being used when re-initializing the SDIO card.
+> >
+> > I have just sent a patch [1], would you mind trying it, in combination
+> > with not assigning card->ocr in $subject patch?
+>
+> Yes, it works! I have not even played with the wlan_en regulator voltage.
 
+That's great! Thanks for testing, again!
 
-Please note that the entire code block is enclosed by:
+>
+> >
+> >>
+> >> Adding back card->ocr = 0x80 (and keeping 3.3V for min/max) shows exactly the same.
+> >>
+> >> Only min/max 1.8V + OCR works:
+> >>
+> >> [    2.824188] mmc2: new SDIO card at address 0001
+> >> [    2.806518] omap_hsmmc 480ad000.mmc: card claims to support voltages below defined range
+> >> [    2.815979] omap_hsmmc 480ad000.mmc: found wl1251
+> >> [   10.981018] omap_hsmmc 480ad000.mmc: found wl1251
+> >> [   11.018280] wl1251: using dedicated interrupt line
+> >> [   11.321136] wl1251: loaded
+> >> [   11.378601] wl1251: initialized
+> >> [   14.521759] omap_hsmmc 480ad000.mmc: found wl1251
+> >> [   38.680725] omap_hsmmc 480ad000.mmc: found wl1251
+> >> [   39.646942] wl1251: 151 tx blocks at 0x3b788, 35 rx blocks at 0x3a780
+> >> [   39.654785] wl1251: firmware booted (Rev 4.0.4.3.7)
+> >>
+> >> Therefore I also tried the 4th combination: min/max 1.8V and no ocr quirk and it fails again.
+> >>
+> >> Finally I tried setting min to 2.7V and max to 3.6V. This ends up in
+> >>
+> >> [    0.402648] reg-fixed-voltage fixed-regulator-wg7210_en: Fixed regulator specified with variable voltages
+> >>
+> >> So it seems that we need both: min/max = 1.8V and OCR. A little unexpected since I had expected
+> >> that min/max is completely irrelevant.
+> >>
+> >>> If that works, we should add some comments about it above, I think.
+> >>
+> >> So at the moment no change for [PATCH v1] which I can now send out.
+> >>
+> >> BR and thanks,
+> >> Nikolaus
+> >>
+> >
+> > Thanks a lot for doing these tests! If I am right, it looks like we
+> > should be able to skip assigning card->ocr for this quirk, but let's
+> > see.
+>
+> Indeed we can. That is great.
+>
+> Now the question is how to handle the dependency on your patch.
+> Somehow we must ensure that it is merged before my $subject patch.
+> Even if someone decides to backport this to stable.
 
-if [ -n "${building_out_of_srctree}" ]; then
-           ...
-fi
+Yes, I can pick up my patch first. As it's not really fixing a
+problem, but rather preparing for your series to work better, I don't
+think we need to care about stable backports, at least for now.
 
+If you re-submit before rc1, then just include my patch early in your series.
 
-"building_out_of_srctree" is set when you are doing
-out-of-tree build  (O=<output-dir>).
+>
+> BR and thanks,
+> Nikolaus
 
-So, only the generated files are removed.
-
-
-
-
--- 
-Best Regards
-Masahiro Yamada
+Kind regards
+Uffe
