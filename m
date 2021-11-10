@@ -2,172 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 97B5E44BD74
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 09:57:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6689644BD76
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 09:57:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230337AbhKJJA0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Nov 2021 04:00:26 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124]:28620 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229831AbhKJJAY (ORCPT
+        id S230392AbhKJJAh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Nov 2021 04:00:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50570 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229931AbhKJJAg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Nov 2021 04:00:24 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1636534657;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=3KAQ2TyWknxx/QWCYCyvuZx1be3dMQ9P5XgzUpSmndc=;
-        b=MZDhOT/lTm7o5GtbTCHSDiqSXaqNIowNt3b2ThU7g3/lLA3BRVjcb9L4FuuI2FhTJ3kgk9
-        GDdrv7R2i+nsD8UPYQAsVt5a1nP4OYu3CtJ9wh8r1x6yVlvLW/SvK44Fk1Ghsae5SNefEv
-        +6anAF9MAvvuXpTZCTXl6qMlMIcmkjU=
-Received: from mail-pl1-f199.google.com (mail-pl1-f199.google.com
- [209.85.214.199]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-157-7djMeK6eNxmSkvGxwnIIew-1; Wed, 10 Nov 2021 03:57:36 -0500
-X-MC-Unique: 7djMeK6eNxmSkvGxwnIIew-1
-Received: by mail-pl1-f199.google.com with SMTP id f16-20020a170902ce9000b001436ba39b2bso1366337plg.3
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Nov 2021 00:57:36 -0800 (PST)
+        Wed, 10 Nov 2021 04:00:36 -0500
+Received: from mail-ot1-x334.google.com (mail-ot1-x334.google.com [IPv6:2607:f8b0:4864:20::334])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E7E9DC061764;
+        Wed, 10 Nov 2021 00:57:48 -0800 (PST)
+Received: by mail-ot1-x334.google.com with SMTP id z2-20020a9d71c2000000b0055c6a7d08b8so2911300otj.5;
+        Wed, 10 Nov 2021 00:57:48 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=KNAhI7CSQmz7QpgQGUaWZTNs+orZfVJ9zpLu0/GLqlo=;
+        b=k7OzgszVJehWaeHzhP2ip5n9J/fhlbgI9iM8uUlcNMokat9pvz4I4OBgWlsKpC0X0t
+         lJLgcfLoQTJTIdm567ahiScOcb4sLAh2dsQoutfTIaeVhR1qZ3JUalSHaBUV7UWZ92ne
+         FZCQpLEs/HSkseOF2kGWj0xu+vOhtfSYKPrnL4OP1jg/N2if9YZJ4FJNofg9xdM7E8VL
+         HY1FIJPt5KHRGp+PmugTassyoPHcPF+f53VfsAhPYmBZ+4IbCnzwMY8QePSxmzInulUP
+         OetLlaTCSiknLIOrTR3qrAa3jfBWPhbfZaiNlhGHexplVEUygyTj3X87v+2oRFHmPhEW
+         WPQQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=3KAQ2TyWknxx/QWCYCyvuZx1be3dMQ9P5XgzUpSmndc=;
-        b=GAkCRs/TKoUznc26dSrlnEW3d8sk1S81BROf8RpFg0aEiVNyKEG7xkDcCIDgMxIN/r
-         5o36ZecZUA/Kv816CSGkNTVrp12l17jld/2k4ebMsHGOIEWTitekj/0mIRpgXhpnEKN7
-         YM1IpvSvlEpK94xk+G4d3+tjIcaUA446HwK0BpP0boYTJkVTAc1/6QrEpgfXVZBrrEOP
-         fdk8oakm9hAVCYgWIeYUxm16pqtsvKzAv500NBJkmZpOGVSU+m3apIbHB9agsfm6dwlv
-         wW2x+APrIDH91BrTbS15Qhgp20PWk/5ZH5ZRVNehkbmZtTApMLQrpWErSAjMaKei9Sd4
-         Uq0g==
-X-Gm-Message-State: AOAM531UMs8YmbchWC2rglMpcSGhvu8U9exTVtcyFwBw7e+cdaSDPs1X
-        rZXCaFLmxGwVDYocuUhMTlAC3/sDFzOAhHbsb28Ghi6L/UWryHrCgQ9+Z1gad4hQryiwAqJD8Cv
-        HMVz9s9oRIACueYKbgkqWbwWD
-X-Received: by 2002:a63:8b4b:: with SMTP id j72mr10705950pge.10.1636534655294;
-        Wed, 10 Nov 2021 00:57:35 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJyYVeA1YbnxCLJHeUVTE40Yp83p8k+PlYnN0X+h7COcawOK6O3AMBdyxxdFewwYzccU/o+c1Q==
-X-Received: by 2002:a63:8b4b:: with SMTP id j72mr10705930pge.10.1636534654994;
-        Wed, 10 Nov 2021 00:57:34 -0800 (PST)
-Received: from xz-m1.local ([94.177.118.35])
-        by smtp.gmail.com with ESMTPSA id x33sm11454976pfh.133.2021.11.10.00.57.29
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 10 Nov 2021 00:57:34 -0800 (PST)
-Date:   Wed, 10 Nov 2021 16:57:27 +0800
-From:   Peter Xu <peterx@redhat.com>
-To:     David Hildenbrand <david@redhat.com>
-Cc:     Mina Almasry <almasrymina@google.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        "Paul E . McKenney" <paulmckrcu@fb.com>,
-        Yu Zhao <yuzhao@google.com>, Jonathan Corbet <corbet@lwn.net>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Ivan Teterevkov <ivan.teterevkov@nutanix.com>,
-        Florian Schmidt <florian.schmidt@nutanix.com>,
-        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-mm@kvack.org
-Subject: Re: [PATCH v4] mm: Add PM_HUGE_THP_MAPPING to /proc/pid/pagemap
-Message-ID: <YYuJd9ZBQiY50dVs@xz-m1.local>
-References: <20211107235754.1395488-1-almasrymina@google.com>
- <YYtuqsnOSxA44AUX@t490s>
- <c5ed86d0-8af6-f54f-e352-8871395ad62e@redhat.com>
- <YYuCaNXikls/9JhS@t490s>
- <793685d2-be3f-9a74-c9a3-65c486e0ef1f@redhat.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=KNAhI7CSQmz7QpgQGUaWZTNs+orZfVJ9zpLu0/GLqlo=;
+        b=oxGLnF2Xt4AOplf4QdkP9Acn/Bcp2K7pD0CGjzMGNJO3LSV6LH4uwcnjbnmwsaKlND
+         lvgyPzfR2CSUsmHBkZjLzrK3SMFFsUHDHvvzzT727fJB7X3ZYyrPzexKPkgSvGbSd4UI
+         gL9Sb8W0y5VpAVMRr+mliQi3i+Z9C2qwvtGCUKMYfqTBT4SJ3FkSyH2cOD9HFDx13Ppu
+         u0Bk5KPU6admxhjH6ferLhmRc8GYVSugdHBWdy5QwjIL2ofn+RqlZ0c/j5eaW9P4yfIJ
+         DdKTY2JUuANQUhpohHp91JYLNlcb09yLEKt7q91TJQPAU7jwoEAe523/NM8FIIP8JVbr
+         hfRw==
+X-Gm-Message-State: AOAM530i2kVqSQn4EetOce7kKzm9h/XfR4m1CFcJdhIYTQeW1O6OBVYT
+        NxtviLIi0ZvxqwZ3sSTUnjF91WiVnZJoBPI9J2ObNLB1
+X-Google-Smtp-Source: ABdhPJzGgF7d4SuhfvCiQ9lIJq2yEtOmA7GirINiHnC5wGlnzYUbmHX2S1N/2LMlQFP5ydVqPQOtcmBqjMMX4HKjW1A=
+X-Received: by 2002:a9d:7617:: with SMTP id k23mr11177292otl.351.1636534668336;
+ Wed, 10 Nov 2021 00:57:48 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <793685d2-be3f-9a74-c9a3-65c486e0ef1f@redhat.com>
+References: <20211106092041.43745-1-ajaygargnsit@gmail.com>
+ <9eafae1f-d9f0-298d-cf20-212865d0becc@gmail.com> <868025b485b94480ad17d0ec971b3ee9@AcuMS.aculab.com>
+ <CAHP4M8Ww0-VqCBKX=iLd=zy1AcDoNdzTOqJuaqRxCGZsMhoX9w@mail.gmail.com>
+ <CAHP4M8UcZ=ttB8jbN1yOY6YH8SiQ27NhdEKi9SDH1CWG-GY6eg@mail.gmail.com>
+ <6b58a3e1-f2ea-cc4c-03b2-06334b559373@gmail.com> <CAHP4M8Vs8a8u98enuHXaBcC7D4fCZzCOtEq06VnvuPUqhqPK=Q@mail.gmail.com>
+ <9717b429-597f-7778-c880-94361bcdee7f@gmail.com> <CAHP4M8XtFiAa1kF5A_rPbcui3DP8L6iyfP8GbwgLLzo0Bo+TNQ@mail.gmail.com>
+ <65c45951-08ba-26bb-f96b-3d4442b1d4d4@gmail.com> <08c9e717-4367-5316-87cd-90b5ceb13ed9@kernel.org>
+ <1305bb43-b4bf-e129-af6e-957d1f30f269@gmail.com>
+In-Reply-To: <1305bb43-b4bf-e129-af6e-957d1f30f269@gmail.com>
+From:   Ajay Garg <ajaygargnsit@gmail.com>
+Date:   Wed, 10 Nov 2021 14:27:36 +0530
+Message-ID: <CAHP4M8XfCJ8btBCf42GEZGWm_4ywhPKyXtxoBbHR4U190=gg_A@mail.gmail.com>
+Subject: Re: [PATCH] tty: vt: keyboard: do not copy an extra-byte in copy_to_user
+To:     Pavel Skripkin <paskripkin@gmail.com>
+Cc:     Jiri Slaby <jirislaby@kernel.org>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Greg KH <gregkh@linuxfoundation.org>, kernel@esmil.dk,
+        David Laight <David.Laight@aculab.com>,
+        "linux-serial@vger.kernel.org" <linux-serial@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 10, 2021 at 09:30:50AM +0100, David Hildenbrand wrote:
-> On 10.11.21 09:27, Peter Xu wrote:
-> > On Wed, Nov 10, 2021 at 09:14:42AM +0100, David Hildenbrand wrote:
-> >> On 10.11.21 08:03, Peter Xu wrote:
-> >>> Hi, Mina,
-> >>>
-> >>> Sorry to comment late.
-> >>>
-> >>> On Sun, Nov 07, 2021 at 03:57:54PM -0800, Mina Almasry wrote:
-> >>>> diff --git a/Documentation/admin-guide/mm/pagemap.rst b/Documentation/admin-guide/mm/pagemap.rst
-> >>>> index fdc19fbc10839..8a0f0064ff336 100644
-> >>>> --- a/Documentation/admin-guide/mm/pagemap.rst
-> >>>> +++ b/Documentation/admin-guide/mm/pagemap.rst
-> >>>> @@ -23,7 +23,8 @@ There are four components to pagemap:
-> >>>>      * Bit  56    page exclusively mapped (since 4.2)
-> >>>>      * Bit  57    pte is uffd-wp write-protected (since 5.13) (see
-> >>>>        :ref:`Documentation/admin-guide/mm/userfaultfd.rst <userfaultfd>`)
-> >>>> -    * Bits 57-60 zero
-> >>>> +    * Bit  58    page is a huge (PMD size) THP mapping
-> >>>> +    * Bits 59-60 zero
-> >>>>      * Bit  61    page is file-page or shared-anon (since 3.5)
-> >>>>      * Bit  62    page swapped
-> >>>>      * Bit  63    page present
-> >>>> diff --git a/fs/proc/task_mmu.c b/fs/proc/task_mmu.c
-> >>>> index ad667dbc96f5c..6f1403f83b310 100644
-> >>>> --- a/fs/proc/task_mmu.c
-> >>>> +++ b/fs/proc/task_mmu.c
-> >>>> @@ -1302,6 +1302,7 @@ struct pagemapread {
-> >>>>  #define PM_SOFT_DIRTY		BIT_ULL(55)
-> >>>>  #define PM_MMAP_EXCLUSIVE	BIT_ULL(56)
-> >>>>  #define PM_UFFD_WP		BIT_ULL(57)
-> >>>> +#define PM_HUGE_THP_MAPPING	BIT_ULL(58)
-> >>>
-> >>> The ending "_MAPPING" seems redundant to me, how about just call it "PM_THP" or
-> >>> "PM_HUGE" (as THP also means HUGE already)?
-> >>>
-> >>> IMHO the core problem is about permission controls, and it seems to me we're
-> >>> actually trying to workaround it by duplicating some information we have.. so
-> >>> it's kind of a pity.  Totally not against this patch, but imho it'll be nicer
-> >>> if it's the permission part that to be enhanced, rather than a new but slightly
-> >>> duplicated interface.
-> >>
-> >> It's not a permission problem AFAIKS: even with permissions "changed",
-> >> any attempt to use /proc/kpageflags is just racy. Let's not go down that
-> >> path, it's really the wrong mechanism to export to random userspace.
-> > 
-> > I agree it's racy, but IMHO that's fine.  These are hints for userspace to make
-> > decisions, they cannot be always right.  Even if we fetch atomically and seeing
-> > that this pte is swapped out, it can be quickly accessed at the same time and
-> > it'll be in-memory again.  Only if we can freeze the whole pgtable but we
-> > can't, so they can only be used as hints.
-> 
-> Sorry, I don't think /proc/kpageflags (or exporting the PFNs to random
-> users via /proc/self/pagemap) is the way to go.
-> 
-> "Since Linux 4.0 only users with the CAP_SYS_ADMIN capability can get
-> PFNs. In 4.0 and 4.1 opens by unprivileged fail with -EPERM.  Starting
-> from 4.2 the PFN field is zeroed if the user does not have
-> CAP_SYS_ADMIN. Reason: information about PFNs helps in exploiting
-> Rowhammer vulnerability."
+>
+> Ajay wants to be safe and he thinks, that relying on fact, that
+> strlen(func_table[kb_func]) < sizeof(user_kdgkb->kb_string) is not good
+> approach, since it's external for vt_do_kdgkb_ioctl. (I hope, I've
+> explained his idea in the right way)
+>
 
-IMHO these are two problems that you mentioned.  That's also what I was
-wondering about: could the app be granted with CAP_SYS_ADMIN then?
-
-I am not sure whether that'll work well with /proc/kpage* though, as it's by
-default 0400.  So perhaps we need to manual adjust the file permission too to
-make sure the app can both access PFNs (with SYS_ADMIN) and the flags.  Totally
-no expert on the permissions..
-
-> 
-> > 
-> >>
-> >> We do have an interface to access this information from userspace
-> >> already: /proc/self/smaps IIRC. Mina commented that they are seeing
-> >> performance issues with that approach.
-> >>
-> >> It would be valuable to add these details to the patch description,
-> >> including a performance difference when using both interfaces we have
-> >> available. As the patch description stands, there is no explanation
-> >> "why" we want this change.
-> > 
-> > I didn't notice Mina mention about performance issues with kpageflags, if so
-> > then I agree this solution helps. 
-> The performance issue seems to be with /proc/self/smaps.
-
-This also reminded me that we've got issue with smaps being too slow, and in
-many cases we're only interested in a small portion of the whole memory.  This
-made me wonder how about a new smaps interface taking memory range as input.
-
-Thanks,
-
--- 
-Peter Xu
-
+That's right Pavel.
+Every function must work correctly as it "advertises", instead of
+relying on "chancy correctness" of the calls leading to the method.
