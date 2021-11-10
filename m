@@ -2,124 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0EAC044BFC1
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 12:03:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0E49D44BFA7
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 12:02:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231246AbhKJLF6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Nov 2021 06:05:58 -0500
-Received: from imap3.hz.codethink.co.uk ([176.9.8.87]:42796 "EHLO
-        imap3.hz.codethink.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231660AbhKJLFw (ORCPT
+        id S231875AbhKJLEr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Nov 2021 06:04:47 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50348 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231792AbhKJLEd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Nov 2021 06:05:52 -0500
-X-Greylist: delayed 1477 seconds by postgrey-1.27 at vger.kernel.org; Wed, 10 Nov 2021 06:05:52 EST
-Received: from cpc152649-stkp13-2-0-cust121.10-2.cable.virginm.net ([86.15.83.122] helo=[192.168.0.21])
-        by imap3.hz.codethink.co.uk with esmtpsa  (Exim 4.92 #3 (Debian))
-        id 1mkkzl-0007o9-D5; Wed, 10 Nov 2021 10:38:21 +0000
-Subject: Re: [PATCH v9 16/17] riscv: Fix an illegal instruction exception when
- accessing vlenb without enable vector first
-To:     Greentime Hu <greentime.hu@sifive.com>, palmer@dabbelt.com,
-        paul.walmsley@sifive.com, linux-riscv@lists.infradead.org,
-        linux-kernel@vger.kernel.org, aou@eecs.berkeley.edu
-References: <cover.1636362169.git.greentime.hu@sifive.com>
- <3c0297d8335e4cac54a4397c880092c1c983e04e.1636362169.git.greentime.hu@sifive.com>
-From:   Ben Dooks <ben.dooks@codethink.co.uk>
-Organization: Codethink Limited.
-Message-ID: <2d08f105-64fd-a43a-1dea-24870ff7c5b0@codethink.co.uk>
-Date:   Wed, 10 Nov 2021 10:38:20 +0000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.14.0
+        Wed, 10 Nov 2021 06:04:33 -0500
+Received: from mail-pg1-x532.google.com (mail-pg1-x532.google.com [IPv6:2607:f8b0:4864:20::532])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3731CC061227
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Nov 2021 03:01:03 -0800 (PST)
+Received: by mail-pg1-x532.google.com with SMTP id q126so1901041pgq.13
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Nov 2021 03:01:03 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=Zajz8wlcJ/lmsrGc+Bku0OSeAwVpyzSmtcytIJmQ1Lo=;
+        b=Rl/9j+gVyJ49tf3n/+dMojXFkhnC4v0DXwaB0ozTMpSH5XBLHxac76ivFTKmJcCUpV
+         1xZwL16K7gNbIyx+N4e5tENrdu7WD5dxr9/qwfBpb+1Re9eELaTp1/C38ey1rd+Fzz/3
+         7867dycwCsInKyRM/qdCzVGXzutOmDbeTUcRRSN/PlIvVcYCji0ysxMHfA3ETYgMWA3K
+         RlynN0vw17HB/udoO2JslImMWG0HqHeTogLiFXeAzxjZkHHs1HdlVzzDk12WI3NHbRHy
+         umsRGwdv9vDNh4pHdovg4Ehi0Zshyx4VuLOEmAUWN6IfnXloLgaunpPol5SrR81DtOPn
+         aGtw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=Zajz8wlcJ/lmsrGc+Bku0OSeAwVpyzSmtcytIJmQ1Lo=;
+        b=TOFZhcsKM6fCriK7urGx08GSIBw6/Jbgw5mg/VewyadW3fEF6Xb5mfIV1tpkxSFBhy
+         ugTiS3C0VgxePOa4XuMdNMe/fkZC0N50nYYh6JXMjd6XvY5TVECIrCH+URfJAWJWe+pX
+         oRrBXFhH8HsetOOzYkpTunZ7up6USE0lqDmu3Ty1n0/wJMhohaHYXcVyKiDQo+FPheGI
+         B8v9uBt4TBwHkGnn/wZX9M6gd6+7+OAYvuyW2uxZvPlTttwr9hGhLGEU6QsP23MdyTC4
+         WxGY0GtHKitJJFZqX/CRThqizjyBT0pZiR5QKWXWM1MxFnKhq/9Ds9Carr/xu4ICnETo
+         r24A==
+X-Gm-Message-State: AOAM533kgZ6RUXIDuD+TfCe3ax6Tsy0TnwmyidkoGb+S3AT6Pp3eq7Bz
+        iegczuEcmn9g2+tJam+F34l3Dw==
+X-Google-Smtp-Source: ABdhPJwd7pZZQElvm6V1On9VHWVR8qHrrG6qVljBZ0zfBJeLZ4TAJLio9NR5kWfoi/eDpB8ctO6cIg==
+X-Received: by 2002:a63:8bc3:: with SMTP id j186mr10954336pge.250.1636542062715;
+        Wed, 10 Nov 2021 03:01:02 -0800 (PST)
+Received: from localhost.name ([122.161.52.143])
+        by smtp.gmail.com with ESMTPSA id e11sm5585282pjl.20.2021.11.10.03.00.58
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 10 Nov 2021 03:01:02 -0800 (PST)
+From:   Bhupesh Sharma <bhupesh.sharma@linaro.org>
+To:     linux-arm-msm@vger.kernel.org, linux-crypto@vger.kernel.org
+Cc:     bhupesh.sharma@linaro.org, bhupesh.linux@gmail.com,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        robh+dt@kernel.org, agross@kernel.org, herbert@gondor.apana.org.au,
+        davem@davemloft.net, stephan@gerhold.net,
+        Thara Gopinath <thara.gopinath@linaro.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>
+Subject: [PATCH v5 16/22] crypto: qce: core: Make clocks optional
+Date:   Wed, 10 Nov 2021 16:29:16 +0530
+Message-Id: <20211110105922.217895-17-bhupesh.sharma@linaro.org>
+X-Mailer: git-send-email 2.31.1
+In-Reply-To: <20211110105922.217895-1-bhupesh.sharma@linaro.org>
+References: <20211110105922.217895-1-bhupesh.sharma@linaro.org>
 MIME-Version: 1.0
-In-Reply-To: <3c0297d8335e4cac54a4397c880092c1c983e04e.1636362169.git.greentime.hu@sifive.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 09/11/2021 09:48, Greentime Hu wrote:
-> It triggered an illegal instruction exception when accessing vlenb CSR
-> without enable vector first. To fix this issue, we should enable vector
-> before using it and disable vector after using it.
-> 
-> Co-developed-by: Vincent Chen <vincent.chen@sifive.com>
-> Signed-off-by: Vincent Chen <vincent.chen@sifive.com>
-> Signed-off-by: Greentime Hu <greentime.hu@sifive.com>
-> ---
->   arch/riscv/include/asm/vector.h        | 2 ++
->   arch/riscv/kernel/cpufeature.c         | 2 ++
->   arch/riscv/kernel/kernel_mode_vector.c | 6 ++++--
->   3 files changed, 8 insertions(+), 2 deletions(-)
-> 
-> diff --git a/arch/riscv/include/asm/vector.h b/arch/riscv/include/asm/vector.h
-> index 5d7f14453f68..ca063c8f47f2 100644
-> --- a/arch/riscv/include/asm/vector.h
-> +++ b/arch/riscv/include/asm/vector.h
-> @@ -8,6 +8,8 @@
->   
->   #include <linux/types.h>
->   
-> +void rvv_enable(void);
-> +void rvv_disable(void);
->   void kernel_rvv_begin(void);
->   void kernel_rvv_end(void);
->   
-> diff --git a/arch/riscv/kernel/cpufeature.c b/arch/riscv/kernel/cpufeature.c
-> index 8e7557980faf..0139ec20adce 100644
-> --- a/arch/riscv/kernel/cpufeature.c
-> +++ b/arch/riscv/kernel/cpufeature.c
-> @@ -159,7 +159,9 @@ void __init riscv_fill_hwcap(void)
->   	if (elf_hwcap & COMPAT_HWCAP_ISA_V) {
->   		static_branch_enable(&cpu_hwcap_vector);
->   		/* There are 32 vector registers with vlenb length. */
-> +		rvv_enable();
->   		riscv_vsize = csr_read(CSR_VLENB) * 32;
-> +		rvv_disable();
->   	}
->   #endif
+From: Thara Gopinath <thara.gopinath@linaro.org>
 
-Would it be better to enable this here, and then restore the original
-state instead of calling rvv_disable? If it was enabled then maybe
-something else is going to rely on that state?
+On certain Snapdragon processors, the crypto engine clocks are enabled by
+default by security firmware and the driver need not/ should not handle the
+clocks. Make acquiring of all the clocks optional in crypto engine driver
+so that the driver initializes properly even if no clocks are specified in
+the dt.
 
-Maybe something like:
+Cc: Bjorn Andersson <bjorn.andersson@linaro.org>
+Cc: Rob Herring <robh+dt@kernel.org>
+Signed-off-by: Bhupesh Sharma <bhupesh.sharma@linaro.org>
+[Massage the commit log]
+Signed-off-by: Thara Gopinath <thara.gopinath@linaro.org>
+---
+ drivers/crypto/qce/core.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-		prev = rvv_enable()
-		riscv_vsize = csr_read(CSR_VLENB) * 32;
-		rvv_restore(prev);
-
-
->   }
-> diff --git a/arch/riscv/kernel/kernel_mode_vector.c b/arch/riscv/kernel/kernel_mode_vector.c
-> index 8d2e53ea25c1..1ecb6ec5c56d 100644
-> --- a/arch/riscv/kernel/kernel_mode_vector.c
-> +++ b/arch/riscv/kernel/kernel_mode_vector.c
-> @@ -71,15 +71,17 @@ static void put_cpu_vector_context(void)
->   	preempt_enable();
->   }
->   
-> -static void rvv_enable(void)
-> +void rvv_enable(void)
->   {
->   	csr_set(CSR_STATUS, SR_VS);
->   }
-> +EXPORT_SYMBOL(rvv_enable);
->   
-> -static void rvv_disable(void)
-> +void rvv_disable(void)
->   {
->   	csr_clear(CSR_STATUS, SR_VS);
->   }
-> +EXPORT_SYMBOL(rvv_disable);
->   
->   /*
->    * kernel_rvv_begin(): obtain the CPU vector registers for use by the calling
-> 
-
-
+diff --git a/drivers/crypto/qce/core.c b/drivers/crypto/qce/core.c
+index dd2604f5ce6a..98784d63d78c 100644
+--- a/drivers/crypto/qce/core.c
++++ b/drivers/crypto/qce/core.c
+@@ -213,19 +213,19 @@ static int qce_crypto_probe(struct platform_device *pdev)
+ 	if (IS_ERR(qce->mem_path))
+ 		return PTR_ERR(qce->mem_path);
+ 
+-	qce->core = devm_clk_get(qce->dev, "core");
++	qce->core = devm_clk_get_optional(qce->dev, "core");
+ 	if (IS_ERR(qce->core)) {
+ 		ret = PTR_ERR(qce->core);
+ 		goto err;
+ 	}
+ 
+-	qce->iface = devm_clk_get(qce->dev, "iface");
++	qce->iface = devm_clk_get_optional(qce->dev, "iface");
+ 	if (IS_ERR(qce->iface)) {
+ 		ret = PTR_ERR(qce->iface);
+ 		goto err;
+ 	}
+ 
+-	qce->bus = devm_clk_get(qce->dev, "bus");
++	qce->bus = devm_clk_get_optional(qce->dev, "bus");
+ 	if (IS_ERR(qce->bus)) {
+ 		ret = PTR_ERR(qce->bus);
+ 		goto err;
 -- 
-Ben Dooks				http://www.codethink.co.uk/
-Senior Engineer				Codethink - Providing Genius
+2.31.1
 
-https://www.codethink.co.uk/privacy.html
