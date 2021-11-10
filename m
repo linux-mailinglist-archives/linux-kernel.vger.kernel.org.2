@@ -2,95 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1A08444BE85
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 11:24:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 06AC444BE87
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 11:24:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231176AbhKJK1M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Nov 2021 05:27:12 -0500
-Received: from mail.kernel.org ([198.145.29.99]:57942 "EHLO mail.kernel.org"
+        id S231187AbhKJK1W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Nov 2021 05:27:22 -0500
+Received: from mga01.intel.com ([192.55.52.88]:56560 "EHLO mga01.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231171AbhKJK1L (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Nov 2021 05:27:11 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 75E7161246
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Nov 2021 10:24:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1636539864;
-        bh=QeVNYL1CDnVnsGgYCWWDeh9BlVaKep9JspI98WE81KQ=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=Hi1N5m0lKVCCZVpEKK2WpErMzrO1B9aH44pHFN1lHi6V0THXhZyOmQMbMynDypCN1
-         EwTWwwqzqJ2bfvBT379BhRhGsHRDe/wCX9ndAsiMuvQ2ru425W175IYFSN0Wd0PoLK
-         rBKaqiZQ1N3e+1au5hejsar8bFxbz2c2X/mE5+uuGqCmfVD1X3dNzOyDt2iclEPf7J
-         jzl7HnCXW/RlF2fcyW/nZ3YCul7xHTHLjpEOnfIIKS5nmP6x0NriOlGCbJ8mQzl3Vu
-         NhkGmwOTjX6Lh9HQE3snAJ6qVCDKpS8PTavGNLxpe4y2TmyOfVxajJAahWcgYS1DRG
-         AAW5DZjwlFT+Q==
-Received: by mail-ot1-f44.google.com with SMTP id g91-20020a9d12e4000000b0055ae68cfc3dso3149991otg.9
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Nov 2021 02:24:24 -0800 (PST)
-X-Gm-Message-State: AOAM533icfrr8YUTB/izkTPr4Ooeb3vt4oD8RwB1SAU/9wUO4F4dm8Le
-        Od2zj3iPR+XemU0yqVYeoTcjZwNjWgkmH+cStOI=
-X-Google-Smtp-Source: ABdhPJzpKSeMW3/rqwzqWmvxviEwLNeCA6Xp6S06gu8Uudu/UsATvGwvwlX7d3lW10EU51NZewVH1WGkoZIN/mOwdmA=
-X-Received: by 2002:a05:6830:1445:: with SMTP id w5mr3992681otp.112.1636539863786;
- Wed, 10 Nov 2021 02:24:23 -0800 (PST)
+        id S231180AbhKJK1R (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Nov 2021 05:27:17 -0500
+X-IronPort-AV: E=McAfee;i="6200,9189,10163"; a="256332912"
+X-IronPort-AV: E=Sophos;i="5.87,223,1631602800"; 
+   d="scan'208";a="256332912"
+Received: from fmsmga007.fm.intel.com ([10.253.24.52])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Nov 2021 02:24:27 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.87,223,1631602800"; 
+   d="scan'208";a="501330380"
+Received: from black.fi.intel.com ([10.237.72.28])
+  by fmsmga007.fm.intel.com with ESMTP; 10 Nov 2021 02:24:25 -0800
+Received: by black.fi.intel.com (Postfix, from userid 1003)
+        id 963FD155; Wed, 10 Nov 2021 12:24:27 +0200 (EET)
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Thomas Zimmermann <tzimmermann@suse.de>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
+Cc:     Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>
+Subject: [PATCH v1 1/1] drm: Replace kernel.h with the necessary inclusions
+Date:   Wed, 10 Nov 2021 12:24:23 +0200
+Message-Id: <20211110102423.54282-1-andriy.shevchenko@linux.intel.com>
+X-Mailer: git-send-email 2.33.0
 MIME-Version: 1.0
-References: <20211110010906.1923210-1-eric.dumazet@gmail.com>
- <20211110010906.1923210-3-eric.dumazet@gmail.com> <YYuEXQ7Ur9f88pCw@hirez.programming.kicks-ass.net>
-In-Reply-To: <YYuEXQ7Ur9f88pCw@hirez.programming.kicks-ass.net>
-From:   Ard Biesheuvel <ardb@kernel.org>
-Date:   Wed, 10 Nov 2021 11:24:12 +0100
-X-Gmail-Original-Message-ID: <CAMj1kXF8makQnZaWDpyzQc2ZiwQEU1ACYhrA91UaFT6S-6RXaQ@mail.gmail.com>
-Message-ID: <CAMj1kXF8makQnZaWDpyzQc2ZiwQEU1ACYhrA91UaFT6S-6RXaQ@mail.gmail.com>
-Subject: Re: [PATCH 2/2] jump_label: refine placement of static_keys
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Eric Dumazet <eric.dumazet@gmail.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Eric Dumazet <edumazet@google.com>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Jason Baron <jbaron@akamai.com>,
-        "Steven Rostedt (VMware)" <rostedt@goodmis.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 10 Nov 2021 at 09:36, Peter Zijlstra <peterz@infradead.org> wrote:
->
-> On Tue, Nov 09, 2021 at 05:09:06PM -0800, Eric Dumazet wrote:
-> > From: Eric Dumazet <edumazet@google.com>
-> >
-> > With CONFIG_JUMP_LABEL=y, "struct static_key" content is only
-> > used for the control path.
-> >
-> > Marking them __read_mostly is only needed when CONFIG_JUMP_LABEL=n.
-> > Otherwise we place them out of the way to increase data locality.
-> >
-> > This patch adds __static_key to centralize this new policy.
-> >
-> > Signed-off-by: Eric Dumazet <edumazet@google.com>
-> > ---
-> >  arch/x86/kvm/lapic.c       |  4 ++--
-> >  arch/x86/kvm/x86.c         |  2 +-
-> >  include/linux/jump_label.h | 25 +++++++++++++++++--------
-> >  kernel/events/core.c       |  2 +-
-> >  kernel/sched/fair.c        |  2 +-
-> >  net/core/dev.c             |  8 ++++----
-> >  net/netfilter/core.c       |  2 +-
-> >  net/netfilter/x_tables.c   |  2 +-
-> >  8 files changed, 28 insertions(+), 19 deletions(-)
-> >
->
-> Hurmph, it's a bit cumbersome to always have to add this __static_key
-> attribute to every definition, and in fact you seem to have missed some.
->
-> Would something like:
->
->         typedef struct static_key __static_key static_key_t;
->
-> work? I forever seem to forget the exact things you can make a typedef
-> do :/
+When kernel.h is used in the headers it adds a lot into dependency hell,
+especially when there are circular dependencies are involved.
 
-No, that doesn't work. Section placement is an attribute of the symbol
-not of its type. So we'll need to macro'ify this.
+Replace kernel.h inclusion with the list of what is really being used.
 
-But I'm not sure I understand why we need different policies here.
-Static keys are inherently __read_mostly (unless they are not writable
-to begin with), so keeping them all together in one place in the
-binary should be sufficient, no?
+Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+---
+ include/drm/drm_gem_ttm_helper.h  | 2 +-
+ include/drm/drm_gem_vram_helper.h | 2 +-
+ include/drm/drm_mm.h              | 4 +++-
+ 3 files changed, 5 insertions(+), 3 deletions(-)
+
+diff --git a/include/drm/drm_gem_ttm_helper.h b/include/drm/drm_gem_ttm_helper.h
+index c1aa02bd4c89..78040f6cc6f3 100644
+--- a/include/drm/drm_gem_ttm_helper.h
++++ b/include/drm/drm_gem_ttm_helper.h
+@@ -3,7 +3,7 @@
+ #ifndef DRM_GEM_TTM_HELPER_H
+ #define DRM_GEM_TTM_HELPER_H
+ 
+-#include <linux/kernel.h>
++#include <linux/container_of.h>
+ 
+ #include <drm/drm_device.h>
+ #include <drm/drm_gem.h>
+diff --git a/include/drm/drm_gem_vram_helper.h b/include/drm/drm_gem_vram_helper.h
+index d3cf06c9af65..b4ce27a72773 100644
+--- a/include/drm/drm_gem_vram_helper.h
++++ b/include/drm/drm_gem_vram_helper.h
+@@ -11,8 +11,8 @@
+ #include <drm/ttm/ttm_bo_api.h>
+ #include <drm/ttm/ttm_bo_driver.h>
+ 
++#include <linux/container_of.h>
+ #include <linux/dma-buf-map.h>
+-#include <linux/kernel.h> /* for container_of() */
+ 
+ struct drm_mode_create_dumb;
+ struct drm_plane;
+diff --git a/include/drm/drm_mm.h b/include/drm/drm_mm.h
+index 9b4292f229c6..ac33ba1b18bc 100644
+--- a/include/drm/drm_mm.h
++++ b/include/drm/drm_mm.h
+@@ -39,13 +39,15 @@
+  */
+ #include <linux/bug.h>
+ #include <linux/rbtree.h>
+-#include <linux/kernel.h>
++#include <linux/limits.h>
+ #include <linux/mm_types.h>
+ #include <linux/list.h>
+ #include <linux/spinlock.h>
+ #ifdef CONFIG_DRM_DEBUG_MM
+ #include <linux/stackdepot.h>
+ #endif
++#include <linux/types.h>
++
+ #include <drm/drm_print.h>
+ 
+ #ifdef CONFIG_DRM_DEBUG_MM
+-- 
+2.33.0
+
