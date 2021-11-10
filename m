@@ -2,122 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B6C4344BA5E
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 03:34:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 55DE544BA61
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 03:36:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229990AbhKJCh0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Nov 2021 21:37:26 -0500
-Received: from smtprelay0230.hostedemail.com ([216.40.44.230]:33990 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S229717AbhKJChZ (ORCPT
+        id S229970AbhKJCj2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Nov 2021 21:39:28 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51378 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229717AbhKJCjZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Nov 2021 21:37:25 -0500
-Received: from omf07.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay01.hostedemail.com (Postfix) with ESMTP id 0B5861010B123;
-        Wed, 10 Nov 2021 02:34:38 +0000 (UTC)
-Received: from [HIDDEN] (Authenticated sender: joe@perches.com) by omf07.hostedemail.com (Postfix) with ESMTPA id ED630315D73;
-        Wed, 10 Nov 2021 02:34:36 +0000 (UTC)
-Message-ID: <e8fdc84080c5e87e31525f9f0f61ae629dbcb920.camel@perches.com>
-Subject: Re: [PATCH] ptp: Replace snprintf in show functions with  sysfs_emit
-From:   Joe Perches <joe@perches.com>
-To:     cgel.zte@gmail.com, richardcochran@gmail.com
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Tue, 9 Nov 2021 21:39:25 -0500
+Received: from mail-pf1-x436.google.com (mail-pf1-x436.google.com [IPv6:2607:f8b0:4864:20::436])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9911DC061764;
+        Tue,  9 Nov 2021 18:36:38 -0800 (PST)
+Received: by mail-pf1-x436.google.com with SMTP id x131so1234154pfc.12;
+        Tue, 09 Nov 2021 18:36:38 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=/RI8za/likW6wn/T62JKpZilA0DKYeC75oCxGkpsJyk=;
+        b=j9E8jk4Regjp7QT8Ke5KzZ7nu8DaIRKgAW3S1XNLn8W/bgjcx4rqDK3QBRoc2CRsh/
+         otXq0c+djWOKUxrAMBDXqE7w1Sk5gEytTk22FuMqwFCTgkr/DteMiLX5G666ZPlquONH
+         ISPsFrmR94PbXkYpQJT297IYTg5oHm/xRWV/GihGyD67K9lxN1nRVYhak3R/MJJWRIwX
+         sIgjyP4IEMKr1r5NgS68uWPlzVRwa4V85d3f74Z1neWyGkzRuJzPjQSDErcKHzaiOF/i
+         6s6wMhn/t28facyou/ChEEw+s6Bu0LUZOzJUcjkAcZEICnJ5kbuHilg+dPCj9s5WSXz0
+         zfjA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=/RI8za/likW6wn/T62JKpZilA0DKYeC75oCxGkpsJyk=;
+        b=wiEFKUGxgoJV0bxdW5Sw2Tl1vS6mUfNdbRjigKHwk5bZQcsLKvPoe2xtR1o9+CvLgC
+         x6kRA9Crua+6eZokOaz6kSeK9mEwQemA1TbNb7HQMWX0uzVTNdS8HGQVB5VqZEWmkXe1
+         kT4IQ1/EQA/JE6wZcHVAsoH509pUIdTeXrM/kJ1YX4t1RkiE1xbv1KMG43JAyzJ4oG3T
+         2Uqh8rA63ixVynKWSxgCCbTI4dEF9dDQ8c9DZu8iErRYlC8rwqIAgDGS5oMIxcge6J0O
+         wHeDdhRDmJfjB+1jUxtzbj1xqr0kedXJinWPiJt6LXNv4Z4ZJ9c4olNsLGupTDyu2APF
+         g7Yg==
+X-Gm-Message-State: AOAM533LQkmfGRmBupOwuWBCR4qvSI480LG/L+GLzhdRNzQjBLjQSzuR
+        MdnULeDAjUkCcIg7xDKIkdk=
+X-Google-Smtp-Source: ABdhPJyT7ug2NPRa8K074vc5mtJH4XcGQEBh9sxjpkbZt6xMLAh8fIuHlf3plIUkwvZuqh3/GMaXUw==
+X-Received: by 2002:a65:558f:: with SMTP id j15mr3277836pgs.311.1636511798055;
+        Tue, 09 Nov 2021 18:36:38 -0800 (PST)
+Received: from localhost.localdomain ([193.203.214.57])
+        by smtp.gmail.com with ESMTPSA id gc22sm3769568pjb.57.2021.11.09.18.36.36
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 09 Nov 2021 18:36:37 -0800 (PST)
+From:   cgel.zte@gmail.com
+X-Google-Original-From: yao.jing2@zte.com.cn
+To:     subbu.seetharaman@broadcom.com
+Cc:     ketan.mukadam@broadcom.com, jitendra.bhivare@broadcom.com,
+        jejb@linux.ibm.com, martin.petersen@oracle.com,
+        linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
         Jing Yao <yao.jing2@zte.com.cn>, Zeal Robot <zealci@zte.com.cn>
-Date:   Tue, 09 Nov 2021 18:34:35 -0800
-In-Reply-To: <20211110022331.135418-1-yao.jing2@zte.com.cn>
-References: <20211110022331.135418-1-yao.jing2@zte.com.cn>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.40.4-1 
+Subject: [PATCH] scsi: be2iscsi: Replace snprintf in show functions with  sysfs_emit
+Date:   Wed, 10 Nov 2021 02:35:35 +0000
+Message-Id: <20211110023535.135713-1-yao.jing2@zte.com.cn>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.85
-X-Stat-Signature: 63cot9dgmdrumfjdkigs1o9gnk7rsbj7
-X-Rspamd-Server: rspamout03
-X-Rspamd-Queue-Id: ED630315D73
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Session-ID: U2FsdGVkX1/CGTg9XhoPM6P/omVcpJ9kFTceviZYND0=
-X-HE-Tag: 1636511676-736958
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 2021-11-10 at 02:23 +0000, cgel.zte@gmail.com wrote:
-> From: Jing Yao <yao.jing2@zte.com.cn>
-> 
-> coccicheck complains about the use of snprintf() in sysfs show
-> functions:
-> WARNING use scnprintf or sprintf
-> 
-> Use sysfs_emit instead of scnprintf, snprintf or sprintf makes more
-> sense.
-[]
-> Reported-by: Zeal Robot <zealci@zte.com.cn>
-> Signed-off-by: Jing Yao <yao.jing2@zte.com.cn>
-[]
-> diff --git a/drivers/ptp/ptp_sysfs.c b/drivers/ptp/ptp_sysfs.c
-[]
-> @@ -86,7 +86,7 @@ static ssize_t extts_fifo_show(struct device *dev,
->  	if (!qcnt)
->  		goto out;
->  
-> -	cnt = snprintf(page, PAGE_SIZE, "%u %lld %u\n",
-> +	cnt = sysfs_emit(page, "%u %lld %u\n",
->  		       event.index, event.t.sec, event.t.nsec);
->  out:
->  	mutex_unlock(&ptp->tsevq_mux);
-> @@ -387,7 +387,7 @@ static ssize_t ptp_pin_show(struct device *dev, struct device_attribute *attr,
->  
->  	mutex_unlock(&ptp->pincfg_mux);
->  
-> -	return snprintf(page, PAGE_SIZE, "%u %u\n", func, chan);
-> +	return sysfs_emit(page, "%u %u\n", func, chan);
->  }
->  
->  static ssize_t ptp_pin_store(struct device *dev, struct device_attribute *attr,
+From: Jing Yao <yao.jing2@zte.com.cn>
 
-If you are going to try to fix these, please do try to fix all of
-the instances in the same file.
+coccicheck complains about the use of snprintf() in sysfs show
+functions:
+WARNING use scnprintf or sprintf
 
-So here's a macro definition from that file used multiple times:
+Use sysfs_emit instead of scnprintf, snprintf or sprintf makes more
+sense.
 
-static ssize_t var##_show(struct device *dev,				\
-			   struct device_attribute *attr, char *page)	\
-{									\
-	struct ptp_clock *ptp = dev_get_drvdata(dev);			\
-	return snprintf(page, PAGE_SIZE-1, "%d\n", ptp->info->var);	\
-}									\
-static DEVICE_ATTR(name, 0444, var##_show, NULL);
+Reported-by: Zeal Robot <zealci@zte.com.cn>
+Signed-off-by: Jing Yao <yao.jing2@zte.com.cn>
+---
+ drivers/scsi/be2iscsi/be_mgmt.c | 14 +++++++-------
+ 1 file changed, 7 insertions(+), 7 deletions(-)
 
-and another function:
-
-static ssize_t n_vclocks_show(struct device *dev,
-			      struct device_attribute *attr, char *page)
-{
-	struct ptp_clock *ptp = dev_get_drvdata(dev);
-	ssize_t size;
-
-	if (mutex_lock_interruptible(&ptp->n_vclocks_mux))
-		return -ERESTARTSYS;
-
-	size = snprintf(page, PAGE_SIZE - 1, "%u\n", ptp->n_vclocks);
-
-	mutex_unlock(&ptp->n_vclocks_mux);
-
-	return size;
-}
-
-and yet another function:
-
-static ssize_t max_vclocks_show(struct device *dev,
-				struct device_attribute *attr, char *page)
-{
-	struct ptp_clock *ptp = dev_get_drvdata(dev);
-	ssize_t size;
-
-	size = snprintf(page, PAGE_SIZE - 1, "%u\n", ptp->max_vclocks);
-
-	return size;
-}
-
-	
+diff --git a/drivers/scsi/be2iscsi/be_mgmt.c b/drivers/scsi/be2iscsi/be_mgmt.c
+index 4e899ec1477d..b0f90b3925fc 100644
+--- a/drivers/scsi/be2iscsi/be_mgmt.c
++++ b/drivers/scsi/be2iscsi/be_mgmt.c
+@@ -1142,7 +1142,7 @@ ssize_t
+ beiscsi_drvr_ver_disp(struct device *dev, struct device_attribute *attr,
+ 		       char *buf)
+ {
+-	return snprintf(buf, PAGE_SIZE, BE_NAME "\n");
++	return sysfs_emit(buf, BE_NAME "\n");
+ }
+ 
+ /**
+@@ -1161,7 +1161,7 @@ beiscsi_fw_ver_disp(struct device *dev, struct device_attribute *attr,
+ 	struct Scsi_Host *shost = class_to_shost(dev);
+ 	struct beiscsi_hba *phba = iscsi_host_priv(shost);
+ 
+-	return snprintf(buf, PAGE_SIZE, "%s\n", phba->fw_ver_str);
++	return sysfs_emit(buf, "%s\n", phba->fw_ver_str);
+ }
+ 
+ /**
+@@ -1248,15 +1248,15 @@ beiscsi_adap_family_disp(struct device *dev, struct device_attribute *attr,
+ 	case BE_DEVICE_ID1:
+ 	case OC_DEVICE_ID1:
+ 	case OC_DEVICE_ID2:
+-		return snprintf(buf, PAGE_SIZE,
++		return sysfs_emit(buf,
+ 				"Obsolete/Unsupported BE2 Adapter Family\n");
+ 	case BE_DEVICE_ID2:
+ 	case OC_DEVICE_ID3:
+-		return snprintf(buf, PAGE_SIZE, "BE3-R Adapter Family\n");
++		return sysfs_emit(buf, "BE3-R Adapter Family\n");
+ 	case OC_SKH_ID1:
+-		return snprintf(buf, PAGE_SIZE, "Skyhawk-R Adapter Family\n");
++		return sysfs_emit(buf, "Skyhawk-R Adapter Family\n");
+ 	default:
+-		return snprintf(buf, PAGE_SIZE,
++		return sysfs_emit(buf,
+ 				"Unknown Adapter Family: 0x%x\n", dev_id);
+ 	}
+ }
+@@ -1277,7 +1277,7 @@ beiscsi_phys_port_disp(struct device *dev, struct device_attribute *attr,
+ 	struct Scsi_Host *shost = class_to_shost(dev);
+ 	struct beiscsi_hba *phba = iscsi_host_priv(shost);
+ 
+-	return snprintf(buf, PAGE_SIZE, "Port Identifier : %u\n",
++	return sysfs_emit(buf, "Port Identifier : %u\n",
+ 			phba->fw_config.phys_port);
+ }
+ 
+-- 
+2.25.1
 
