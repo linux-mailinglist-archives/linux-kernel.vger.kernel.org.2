@@ -2,57 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 531B644BE9F
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 11:30:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 26EAC44BEA4
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 11:30:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231216AbhKJKcq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Nov 2021 05:32:46 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43212 "EHLO
+        id S231237AbhKJKc4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Nov 2021 05:32:56 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43260 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229831AbhKJKcp (ORCPT
+        with ESMTP id S231224AbhKJKcx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Nov 2021 05:32:45 -0500
-Received: from mail-pl1-x62f.google.com (mail-pl1-x62f.google.com [IPv6:2607:f8b0:4864:20::62f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CBC55C061766
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Nov 2021 02:29:57 -0800 (PST)
-Received: by mail-pl1-x62f.google.com with SMTP id u17so2584091plg.9
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Nov 2021 02:29:57 -0800 (PST)
+        Wed, 10 Nov 2021 05:32:53 -0500
+Received: from mail-pf1-x431.google.com (mail-pf1-x431.google.com [IPv6:2607:f8b0:4864:20::431])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A834C0613F5
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Nov 2021 02:30:06 -0800 (PST)
+Received: by mail-pf1-x431.google.com with SMTP id c4so2289960pfj.2
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Nov 2021 02:30:06 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=gSFvUJLaZR+mAVPFBcPx1oudAViqkL4IwyGNB8LdK80=;
-        b=eZ9Whpt501+2K7l26U4wtjldeo6V0MKg+IPh8nJFxzg+klzAvlhvUlX5uL9FGT/dEK
-         ojkFp0NnQHczMBoADFUXVAU/qQyUOXo+5+KLWMv8gABEsMPWVDyurFkliVDOH9YEvoc9
-         4QebnxuMUulAfKSS2P7FsdGLV2EGOTowxGCKkcDVKp76t0Hu0boOwos3GlvDg48jOxzC
-         cbtKSl55U8seclKFJsrrZiKepcOuv2XvwmCmExMnFSekL4Ejhh0VN6fddzdRVLdxzJJC
-         zEScDfB9Uwz7QGYIXR5l60zIehXlOZNSan/aU1SZpgLVK3zo/GK1e31s8jAjTxx449DX
-         1XTQ==
+        bh=rtnO7Bm6moxapJOpDmqW3UadGBsmBZSmf1oZQVTs5BY=;
+        b=P3Zjx0Hyq+32RzMf/e+0TH7R6bZPDc1VQVGRm6mJklPXjJ3E2y7zll3a/h5hwzInd2
+         d63C9cHfkm618jGYGz2nEbxTURHcRncu7AQy7kda908zmtTJmYdpod2M+GxzBQkOgAaW
+         3pyJW9FPadAoWPwK/fx0Dc1zYve3/+A99znjsQy0RNF26CBDA/mW1FQOyXjer+8hdQVg
+         KHPaswheEtKBH09v60AmcUAH3/2TMbbowGDQYdmswgZ4HnwD6jwN7jpBmhO36SZb2VhP
+         uAzn+IF5SvZbDi5vO8caloxssl1Sqt0FspfoohNqFJyd62Cg6vs5JINLSu6arcJ/cviJ
+         L0bg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=gSFvUJLaZR+mAVPFBcPx1oudAViqkL4IwyGNB8LdK80=;
-        b=VM6lj+EbP3AcPNJ+qN7n8/VuWlrNT3L+avVfhd2GFCe46/a89UXiPu/hWdaZsXXrxW
-         IsVbrRy1PcGcQ454EQAjLcc/qFd7VFNZavorRx/0bU9ZBIZA+3X1m80xqLr6qbZZ4/+a
-         l0LhBIBpZq/j5/OCSq3QU7tj9BaznUW4s3GFhaIERSybuTjVNq9w7cTrW8i7MkhTS92B
-         SP6Qc5WsCLeoDkkl1zzQWNHvQ8+AElHLa+cXNTbU3a0FVmgVQAvzrTmSEePPT4JBndzp
-         SRv1KIRF/0ttEbP2A2lKs/ceG5DvxW3r8Jo9/Gb30cedVzXzbtP1wJ/pVGkXXwbRWXSn
-         0CBQ==
-X-Gm-Message-State: AOAM533/NbzA2R3k9JT+F+iGcGdNGYZrHUTWjjCGN/+cHE+5aD1f2vZ8
-        8eb6ccoKq1FTJnmpLMC5TVIFnrjBki2dlKTV63+XNQ==
-X-Google-Smtp-Source: ABdhPJx+7Gq0bm/h5nRmAWFRad83G/chU5WO/BoJHnti7WjK4AP/ZWkCcRzV6CRZ8T8FumyHzs27HMxGy7nk1YEJlzM=
-X-Received: by 2002:a17:902:7289:b0:142:805f:e2c with SMTP id
- d9-20020a170902728900b00142805f0e2cmr14239605pll.42.1636540196956; Wed, 10
- Nov 2021 02:29:56 -0800 (PST)
+        bh=rtnO7Bm6moxapJOpDmqW3UadGBsmBZSmf1oZQVTs5BY=;
+        b=TqqUQX5IVjsAcRGgmOmY4cyi1ySQRB0kKwDCY4UuIX91ELxqVvSvTrMn0LejW0l67t
+         GBs+V4VXLlW5ht45ANbzAnu7ySmEmQ6lg4dMvYDOuUHDCS5X93HG/OyhYO0r+Fn6NPGY
+         qYq90IlYPwwrjrPcjM1rOonyouALe9b4rKf/35bL5BgYiGcvb4ktcn+TxaN+WwC6A4/w
+         BYLzSOsgnce95mPpsAziquWa64ucRmcFl5volyZOjCSi1tJ/qj1f5Pz64xBCCVr17VNx
+         Fwz471ETGgnRXXdSEY7JFSg5lErPsfPGno+JLlAIvcHzgNb1FQ1pS0Ka3O+h4p6eN1N6
+         HN8g==
+X-Gm-Message-State: AOAM531Odvb7QpnlxcB9EZ+LLBXRnfwjzvud8QiFwaAzLPPiVvGG+voi
+        PjPTGJl+wIb2cFm7v9yIDIxZxYLADqCkAXo/7Vj/2A==
+X-Google-Smtp-Source: ABdhPJybXxLo5OYv4x3FX2EtYjPECd+qMB38G5dsYqeB2wevijTEozvPGP7GKTPKRoWDFUr1d6wpqdx/mT+1NE8lE1U=
+X-Received: by 2002:a63:9518:: with SMTP id p24mr11113932pgd.80.1636540205425;
+ Wed, 10 Nov 2021 02:30:05 -0800 (PST)
 MIME-Version: 1.0
-References: <20211109125030.26299-1-yunfei.dong@mediatek.com> <20211109125030.26299-3-yunfei.dong@mediatek.com>
-In-Reply-To: <20211109125030.26299-3-yunfei.dong@mediatek.com>
+References: <20211109125030.26299-1-yunfei.dong@mediatek.com> <20211109125030.26299-4-yunfei.dong@mediatek.com>
+In-Reply-To: <20211109125030.26299-4-yunfei.dong@mediatek.com>
 From:   Tzung-Bi Shih <tzungbi@google.com>
-Date:   Wed, 10 Nov 2021 18:29:45 +0800
-Message-ID: <CA+Px+wWNg060xNcBSnu696OHPcp5Mqy=ovbAW_dtBTnoVXLMmg@mail.gmail.com>
-Subject: Re: [PATCH v9, 02/19] media: mtk-vcodec: Align vcodec wake up
- interrupt interface
+Date:   Wed, 10 Nov 2021 18:29:54 +0800
+Message-ID: <CA+Px+wXw96jDAbtuJ-Mt5MnY9D4xPX-6wGZq5U_hwhrg+5UNPA@mail.gmail.com>
+Subject: Re: [PATCH v9, 03/19] media: mtk-vcodec: Refactor vcodec pm interface
 To:     Yunfei Dong <Yunfei.Dong@mediatek.com>
 Cc:     Alexandre Courbot <acourbot@chromium.org>,
         Hans Verkuil <hverkuil-cisco@xs4all.nl>,
@@ -79,7 +77,7 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 09, 2021 at 08:50:13PM +0800, Yunfei Dong wrote:
+On Tue, Nov 09, 2021 at 08:50:14PM +0800, Yunfei Dong wrote:
 > Reviewed-By: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
 
 s/B/b/, the suggested tag name is "Reviewed-by"[1].
