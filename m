@@ -2,148 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D997B44BC22
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 08:33:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 81B3944BC24
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 08:33:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229707AbhKJHg3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Nov 2021 02:36:29 -0500
-Received: from szxga08-in.huawei.com ([45.249.212.255]:27125 "EHLO
-        szxga08-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229567AbhKJHg2 (ORCPT
+        id S229776AbhKJHgm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Nov 2021 02:36:42 -0500
+Received: from fllv0016.ext.ti.com ([198.47.19.142]:54860 "EHLO
+        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229749AbhKJHgl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Nov 2021 02:36:28 -0500
-Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.54])
-        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4HpxNp5XvLz1DJJb;
-        Wed, 10 Nov 2021 15:31:22 +0800 (CST)
-Received: from dggpemm500004.china.huawei.com (7.185.36.219) by
- dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.15; Wed, 10 Nov 2021 15:33:36 +0800
-Received: from [10.174.177.69] (10.174.177.69) by
- dggpemm500004.china.huawei.com (7.185.36.219) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.15; Wed, 10 Nov 2021 15:33:36 +0800
-Message-ID: <3190660d-452e-690c-371f-e75744d37785@huawei.com>
-Date:   Wed, 10 Nov 2021 15:33:35 +0800
+        Wed, 10 Nov 2021 02:36:41 -0500
+Received: from fllv0035.itg.ti.com ([10.64.41.0])
+        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 1AA7XmvN087423;
+        Wed, 10 Nov 2021 01:33:48 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1636529628;
+        bh=p7q5H6QSE5r6OR28KUphghlhD38VcA2L1tg1LZW+X1Y=;
+        h=From:To:CC:Subject:Date;
+        b=CyaSwzoiSejYHu6jVxPyM4QK+djLHK+C7XsXhSu2KBetHyBwR1R+oEMcx/pwjxi38
+         jgTS3d9UYauo5dE2pk5qMFIBlZUU/3Gy2docDtUoNnghjvMeMONgQjahDr+/yExkvZ
+         7s9ATY11U/nPMaN7QVbmHBaylPiTrhOQFHpV5h4A=
+Received: from DLEE102.ent.ti.com (dlee102.ent.ti.com [157.170.170.32])
+        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 1AA7XmWr065115
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Wed, 10 Nov 2021 01:33:48 -0600
+Received: from DLEE112.ent.ti.com (157.170.170.23) by DLEE102.ent.ti.com
+ (157.170.170.32) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14; Wed, 10
+ Nov 2021 01:33:47 -0600
+Received: from lelv0327.itg.ti.com (10.180.67.183) by DLEE112.ent.ti.com
+ (157.170.170.23) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14 via
+ Frontend Transport; Wed, 10 Nov 2021 01:33:47 -0600
+Received: from a0393678-lt.ent.ti.com (ileax41-snat.itg.ti.com [10.172.224.153])
+        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 1AA7XiT1020054;
+        Wed, 10 Nov 2021 01:33:44 -0600
+From:   Kishon Vijay Abraham I <kishon@ti.com>
+To:     Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Rob Herring <robh@kernel.org>,
+        =?UTF-8?q?Krzysztof=20Wilczy=C5=84ski?= <kw@linux.com>,
+        Bjorn Helgaas <bhelgaas@google.com>
+CC:     <linux-pci@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        Kishon Vijay Abraham I <kishon@ti.com>
+Subject: [PATCH 0/3] PCI: Keystone: Misc fixes for TI's AM65x PCIe
+Date:   Wed, 10 Nov 2021 13:03:40 +0530
+Message-ID: <20211110073343.12396-1-kishon@ti.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
- Thunderbird/91.1.0
-Subject: Re: [PATCH -next] blk-mq: fix tag_get wait task can't be awakened
-Content-Language: en-US
-References: <dddba25b-82d3-39c7-a58d-9d2b1adda8ae@huawei.com>
-To:     <ming.lei@redhat.com>, <axboe@kernel.dk>,
-        <linux-kernel@vger.kernel.org>, <linux-block@vger.kernel.org>
-CC:     <martin.petersen@oracle.com>, <hare@suse.de>,
-        <asml.silence@gmail.com>, <bvanassche@acm.org>
-From:   QiuLaibin <qiulaibin@huawei.com>
-In-Reply-To: <dddba25b-82d3-39c7-a58d-9d2b1adda8ae@huawei.com>
-X-Forwarded-Message-Id: <dddba25b-82d3-39c7-a58d-9d2b1adda8ae@huawei.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.177.69]
-X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
- dggpemm500004.china.huawei.com (7.185.36.219)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Patch series includes miscellaneous fixes for TI's AM65x SoC
+"PCI: keystone: Add workaround for Errata #i2037 (AM65x SR 1.0)"  has
+already been sent before [1]
 
-Hi Ming,
+The other patch is to prevent PCIEPORTBUS driver to write to
+MSI-X table (which is not mapped) leading to ~10sec delay
+due to msix_mask_all().
 
-On 2021/09/26 20:48, Ming Lei wrote:
- > Hi Laibin,
- >
- > On Mon, Sep 13, 2021 at 04:12:48PM +0800, Laibin Qiu wrote:
- >> When multiple hctx share one tagset. The wake_batch is calculated
- >> during initialization by queue_depth. But when multiple hctx share one
- >> tagset. The queue depth assigned to each user may be smaller than
- >> wakeup_batch. This may cause the waiting queue to fail to wakup and
- >> leads to Hang.
- > In case of shared tags, there might be more than one hctx which 
-allocates tag from single tags, and each hctx is limited to allocate at 
-most:
- >
- > hctx_max_depth = max((bt->sb.depth + users - 1) / users, 4U);
- >
- > and
- >
- > users = atomic_read(&hctx->tags->active_queues)
- >
- > See hctx_may_queue().
- >
- > tag idle detection is lazy, and may be delayed for 30sec, so there 
-could be just one real active hctx(queue) but all others are actually 
-idle and still accounted as active because of the lazy idle detection. 
-Then if wake_batch is > hctx_max_depth, driver tag allocation may wait 
-forever on this real active hctx.
- >
- > Correct me if my understanding is wrong.
+[1] -> https://lore.kernel.org/r/20210325090026.8843-7-kishon@ti.com
 
-Your understanding is right. When we add lots of users for one shared 
-tag, it will make wake_batch > hctx_max_dept. So driver tag allocation 
-may wait forever on this real active hctx.
+Kishon Vijay Abraham I (3):
+  PCI: keystone: Add workaround for Errata #i2037 (AM65x SR 1.0)
+  PCI: keystone: Add quirk to mark AM654 RC BAR flag as IORESOURCE_UNSET
+  PCI: keystone: Set DMA mask and coherent DMA mask
 
- >> Fix this by recalculating wake_batch when inc or dec active_queues.
- >>
- >> Fixes: 0d2602ca30e41 ("blk-mq: improve support for shared tags maps")
- >> Signed-off-by: Laibin Qiu <qiulaibin@huawei.com>
- >> ---
- >> block/blk-mq-tag.c | 44 +++++++++++++++++++++++++++++++++++++++--
- >> include/linux/sbitmap.h | 8 ++++++++
- >> lib/sbitmap.c | 3 ++-
- >> 3 files changed, 52 insertions(+), 3 deletions(-)
- >>
- >> diff --git a/block/blk-mq-tag.c b/block/blk-mq-tag.c index
- >> 86f87346232a..d02f5ac0004c 100644
- >> --- a/block/blk-mq-tag.c
- >> +++ b/block/blk-mq-tag.c
- >> @@ -16,6 +16,27 @@
- >> #include "blk-mq-sched.h"
- >> #include "blk-mq-tag.h"
- >> +static void bt_update_wake_batch(struct sbitmap_queue *bt, unsigned
- >> +int users) {
- >> + unsigned int depth;
- >> +
- >> + depth = max((bt->sb.depth + users - 1) / users, 4U);
- >> + sbitmap_queue_update_wake_batch(bt, depth);
- > Use the hctx's max queue depth could reduce wake_batch a lot, then 
-performance may be degraded.
- >
- > Just wondering why not set sbq->wake_batch as hctx_max_depth if
- > sbq->wake_batch is < hctx_max_depth?
- >
+ drivers/pci/controller/dwc/pci-keystone.c | 56 ++++++++++++++++++++++-
+ 1 file changed, 55 insertions(+), 1 deletion(-)
 
-__blk_mq_tag_busy() will add Users and __blk_mq_tag_idle() will decrease 
-Users. Only changes in Users will affect each user's max depth. So we 
-recalculate the matching wake_batch by 
-sbitmap_queue_update_wake_batch(). sbitmap_queue_update_wake_batch() 
-will calculate wake_batch by incoming depth. The value of 
-sbq->wake_batch will only be changed when the calculated wake_batch changes.
+-- 
+2.17.1
 
-static void sbitmap_queue_update_wake_batch(struct sbitmap_queue *sbq,
-                                             unsigned int depth)
-{
-         unsigned int wake_batch = sbq_calc_wake_batch(sbq, depth);
-^^^^^^^^^^^^^^^^^
-         int i;
-         if (sbq->wake_batch != wake_batch) {
-             ^^^^^^^^^^^^^^^^^^
-                 WRITE_ONCE(sbq->wake_batch, wake_batch);
-                 /*
-                  * Pairs with the memory barrier in sbitmap_queue_wake_up()
-                  * to ensure that the batch size is updated before the wait
-                  * counts.
-                  */
-                 smp_mb();
-                 for (i = 0; i < SBQ_WAIT_QUEUES; i++)
-                         atomic_set(&sbq->ws[i].wait_cnt, 1);
-         }
-}
-
- >
- > Thanks,
- > Ming
-
-Thanks
-Laibin
