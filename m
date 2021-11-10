@@ -2,90 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BC8BB44C535
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 17:40:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5EA5B44C53B
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 17:42:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231510AbhKJQmq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Nov 2021 11:42:46 -0500
-Received: from mail.kernel.org ([198.145.29.99]:42686 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230101AbhKJQmp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Nov 2021 11:42:45 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 08A1361058;
-        Wed, 10 Nov 2021 16:39:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1636562398;
-        bh=zp2JZUBJUNR07JHTJQqI0CYJegFcSYByxA9sJA2kn8g=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=bfL49UZBmKJAN6oAJwZ4YGTJujUpoSoTVk8UpMQp5B427aB6OlbRbK74e0Oz2nHTD
-         vTvsddJ2xqYk2qz64pOxCeehRx7jKF2sp3K2pLiirOOb12IZ9Ewq1eCWMvfN6BW6ae
-         rRniUu0sfWEJ3vwAtBvvwYVQgOIDdtlpppS6aQQujtP1NYhqb4J9/RZZi5V+581eoc
-         Uf5BvTzX6FcZBc4QgMgwObvrgxO22s7spGQh1E/HFD18m4SbvedmGwCpDv+WlEEhAn
-         TbYc8ZJe9vcql5o1XH9911LJft/ppXsTYCoUBxpo4Gk+37HKjYehA02uaPpGio8L9L
-         dckHQ8YsiIrXw==
-Date:   Wed, 10 Nov 2021 16:39:54 +0000
-From:   Mark Brown <broonie@kernel.org>
-To:     Michael Walle <michael@walle.cc>
-Cc:     linux-spi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
-        <u.kleine-koenig@pengutronix.de>,
-        Vladimir Oltean <olteanv@gmail.com>
-Subject: Re: [RFC PATCH] spi: fix use-after-free of the add_lock mutex
-Message-ID: <YYv12vhqDVpJ1lS9@sirena.org.uk>
-References: <20211110160836.3304104-1-michael@walle.cc>
- <YYvy79HfTvy8hC5/@sirena.org.uk>
- <116159a7cf1e7cb3817aa31931b81d91@walle.cc>
+        id S230513AbhKJQpA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Nov 2021 11:45:00 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44318 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229531AbhKJQo7 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Nov 2021 11:44:59 -0500
+Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com [IPv6:2a00:1450:4864:20::52b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 70B30C061764;
+        Wed, 10 Nov 2021 08:42:11 -0800 (PST)
+Received: by mail-ed1-x52b.google.com with SMTP id b15so12809945edd.7;
+        Wed, 10 Nov 2021 08:42:11 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=IfRD0rz25tMThx/BwiIkkgEd/KlpJso7Ze4Lvb9GtgQ=;
+        b=PkWEKBIvugLM4cOygl+bQAGLktwfu5jSga5kGzZMwzdOW7UFUYOiYW3u37a/nLdqJv
+         anVnS9C4UD7MBkUVk3tS34zLlxbf7MLGKj9fJiAb6GA67FlOKCVVZln3+utfSPNZJYzr
+         Bzff+hYGIYugu8WN4bHKzr+og98fLBZcf8f3ZJtdL5kB830JIP7Cf+MZ4FIkQts4Gifa
+         DKb9vpsCVYfngmfDJEMcGLdUkPBsEGNbLfryiRDe68zvtoqmcTJ9jzED9kv4VbNzpRD9
+         EqJ8EF2bYYVJ6PEX4GRYlEwhFKPPN9uM+N2xL8m0preGEK9rO2P6gmgp1Tq9qtAgfgWV
+         GeMw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=IfRD0rz25tMThx/BwiIkkgEd/KlpJso7Ze4Lvb9GtgQ=;
+        b=fIyoX4ZrK2K/G586KY9Gba9Kyqf37zI0+mfF53OgQ4yeVQe7ZN33Q729E9vMehmRkA
+         IV4ER8LWpXzoSOe+5ieW28OtJsIEqxqC66RE+ZAiuxQ83G6gOYuX3vH6Wt9q4/2WmkXE
+         eAQCDiKzvwcTKOXua1jVD4vc+Ej92B5tVHaCbjoe+CvYcNPSriQW0EEpdQxFi1OgMDLq
+         xUThnUIp0CGvh6SJ+2MVa5qZ0Vx4UZ3HN7EtOEi8XeXOQbej302lgZYwjjNyTi4VKuOO
+         C0g6q+n3u6sA1+BBp9Rt24awtBB06yZokdOn/p6+0t2ejBqGgoHxzpvQOq4j6CR4vqzL
+         YR1A==
+X-Gm-Message-State: AOAM530qBUi38Kg8am/AH9jmwRy4mjq3cVR4ljwDFKEsXcg3b+AK576I
+        iGBhGN7eC73vzpfTZGobXNufoqdNtA0dmA/oN5amqy3FsmE=
+X-Google-Smtp-Source: ABdhPJxQesTiSTH7GZ8mP0J33LzdzX8/yrJFXEljr74ODZBbPHN39U6V3MJQDQ2I/pvhOpUuiyqeev71xPSK6tmJSlw=
+X-Received: by 2002:aa7:cb09:: with SMTP id s9mr303311edt.359.1636562529816;
+ Wed, 10 Nov 2021 08:42:09 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="loCc5CY+lt08QwUQ"
-Content-Disposition: inline
-In-Reply-To: <116159a7cf1e7cb3817aa31931b81d91@walle.cc>
-X-Cookie: You have junk mail.
+References: <1635752903-14968-1-git-send-email-hammer.hsieh@sunplus.com> <1636530670-6995-1-git-send-email-hammer.hsieh@sunplus.com>
+In-Reply-To: <1636530670-6995-1-git-send-email-hammer.hsieh@sunplus.com>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Wed, 10 Nov 2021 18:41:25 +0200
+Message-ID: <CAHp75VcZuN0-zJjQUk5Afgqd-ON5PjVzMSjfM2Mouiq-EXjcWw@mail.gmail.com>
+Subject: Re: [PATCH v2 0/2] Add UART driver for Suplus SP7021 SoC
+To:     Hammer Hsieh <hammerh0314@gmail.com>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        "open list:SERIAL DRIVERS" <linux-serial@vger.kernel.org>,
+        devicetree <devicetree@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>, tony.huang@sunplus.com,
+        wells.lu@sunplus.com, Hammer Hsieh <hammer.hsieh@sunplus.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, Nov 10, 2021 at 9:51 AM Hammer Hsieh <hammerh0314@gmail.com> wrote:
+>
+> This is a patch series for UART driver for Suplus SP7021 SoC.
+>
+> Sunplus SP7021 is an ARM Cortex A7 (4 cores) based SoC. It integrates
+> many peripherals (ex: UART. I2C, SPI, SDIO, eMMC, USB, SD card and
+> etc.) into a single chip. It is designed for industrial control.
+>
+> Refer to:
+> https://sunplus-tibbo.atlassian.net/wiki/spaces/doc/overview
+> https://tibbo.com/store/plus1.html
 
---loCc5CY+lt08QwUQ
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+...
 
-On Wed, Nov 10, 2021 at 05:30:48PM +0100, Michael Walle wrote:
-> Am 2021-11-10 17:27, schrieb Mark Brown:
+>  drivers/tty/serial/sunplus-uart.c                  | 1591 ++++++++++++++++++++
+>  include/soc/sunplus/sp_uart.h                      |  147 ++
 
-> > > For reference, the kernel oops is:
-> > > [   20.242505] Unable to handle kernel paging request at virtual
-> > > address 0042a2203dc65260
-> > > [   20.250468] Mem abort info:
-> > > [   20.253270]   ESR = 0x96000044
+Sorry, but I do not believe this driver requires so many LOCs. Please,
+try to get it under 1000, I am pretty sure it's possible and
+achievable.
 
-> > Please think hard before including complete backtraces in upstream
-> > reports, they are very large and contain almost no useful information
-> > relative to their size so often obscure the relevant content in your
-> > message. If part of the backtrace is usefully illustrative (it often is
-> > for search engines if nothing else) then it's usually better to pull out
-> > the relevant sections.
-
-> It was in the comments section of the patch, for exactly this purpose.
-> That's how you're doing it, no?
-
-That helps with what ends up in git but it's still including multiple
-screenfuls of noise in the email which is where the usability problem
-is.
-
---loCc5CY+lt08QwUQ
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmGL9dkACgkQJNaLcl1U
-h9D0tgf8DZPzSAc0fsQNrnqkfX76svhpTUWRk6rbXPzPUesHWfOdsrT9Kdz6V1GP
-vIWqHErrwK5UKd5GIhoUy37texlZQMOjvMrdRASzShKU3hYAVPm+k0Uu4pGrfAvu
-QH1z95zapp3nTaetuVfrXMHInz2/ecf6z7867Pn66nB4YuaLX1LGy0R6wJ1aPhi0
-nZ8fcfHj+FcyIx3+C8bE28Y1lH6/QND0NcqyDfXUBG6AJkNNDNogfR/IJRX/I8eR
-MApPCFwM/NHgWaFv9w94d7j0Qy9qEgKqAXs6tsUr5lDhFXT3+hYl1vUowPTJpBIY
-M0+m0F7OSaCfpXOdkNwOcdabVgIdHQ==
-=/U7j
------END PGP SIGNATURE-----
-
---loCc5CY+lt08QwUQ--
+-- 
+With Best Regards,
+Andy Shevchenko
