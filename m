@@ -2,105 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F320B44BD91
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 10:05:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 327C044BD8E
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 10:04:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230453AbhKJJH4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Nov 2021 04:07:56 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52252 "EHLO
+        id S230438AbhKJJHf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Nov 2021 04:07:35 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52166 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230421AbhKJJHz (ORCPT
+        with ESMTP id S229653AbhKJJHe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Nov 2021 04:07:55 -0500
-Received: from mail-ed1-x532.google.com (mail-ed1-x532.google.com [IPv6:2a00:1450:4864:20::532])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B8EDEC061764;
-        Wed, 10 Nov 2021 01:05:07 -0800 (PST)
-Received: by mail-ed1-x532.google.com with SMTP id f4so7568025edx.12;
-        Wed, 10 Nov 2021 01:05:07 -0800 (PST)
+        Wed, 10 Nov 2021 04:07:34 -0500
+Received: from mail-lf1-x130.google.com (mail-lf1-x130.google.com [IPv6:2a00:1450:4864:20::130])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1671AC061764
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Nov 2021 01:04:47 -0800 (PST)
+Received: by mail-lf1-x130.google.com with SMTP id l22so4342986lfg.7
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Nov 2021 01:04:47 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=hIFQMP97lXgcfF/c8vV0niSbjCH1d4Of4vsIHv9JKyo=;
-        b=G01fsO/wDgLA6L+2gBeDX3tSg3SBeWZm+rL7R4Qpg18CyPeoEk4UckOOri+qGWUU/o
-         lo+LdKZreHWiwpw8a6287qnZvRycxfcOC1L5HgqhlFfQ4gR84oFSvQPAvmh1PWePnnre
-         qDTS6iY7W7a/0xP1b4URyTBLwvrxHpEmEpXEwHkPgKBZ5PKEEaEnao2mrrB3cTy8NFNM
-         hREyjbkebudx4O02g/OveCIHbao8Okhy1do0/+fXD6/Jsg2FHFyK4W3HfDW3ZnxWFX8J
-         AgterQiO1nrWLKbZvHvfnmveZg4j2o2on74zI1tBQmCmj+3zXhIcE0F01o3PdYLa45S9
-         0lbw==
+        h=date:from:to:cc:subject:message-id:in-reply-to:references
+         :mime-version;
+        bh=HQWUub7VLNdwBSHnx+JE2hlji0Dkf+2DqDY0ZqCPbLc=;
+        b=lQiUzHeGkagsLJbfrGTBkjqm8aetPqgR3GbDFWg1BAHcoQew+DGIVL2ov8Ne0HES2k
+         Yo7E9nK25aJnSqNzgjagzgzWyCogccHltSgbCCRvLnxjqe6/OSzl/P9XOJCuifM8iLyT
+         X+8laDbXuRlrwYR9SdwF+XS/SY0IAUrM8YsFTFkZVSpPpv1QmNh2xlsOsDo2Haal9ij0
+         KINdfHpNCq8RgX7IgIey7eCNNw4DubkMpAuJ2zU4FgoGs4savYFltZ69s6CIlW+5oc+5
+         w9YzD6zqHkP3zq389BuI0Bzzlm6P+MBQAm1QTqxzZm6syLBjf3IZo6kD3db7sUar3WRP
+         UTiQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=hIFQMP97lXgcfF/c8vV0niSbjCH1d4Of4vsIHv9JKyo=;
-        b=nzw14t25P9/1/4IbLyATxaEx3tKCmNWyBUVgQYndPKlXstn3oYbPVmIncWaAvBWfYV
-         NM9GQuasPZ1yXySipJQm96lgdh7jsQhYUeXluF8FiLyW9I4fLNn6OSLbDXmJqamMUEs/
-         2OjFyL1gfxyCVz+WCdk7JGgRzfU7HBqnngaze1M8g5jWJX7hN456gE6fNVi07bsAdJii
-         E0QISeRgT5nDz1Gkt4yROSPDIM3VbusEyCwy0be08YtuFkizBTWP9Vjlq5aoVGmS5nDV
-         q1H119a4SnHVTAq82powpr564kbzVpH9/zh7Jp+23ZmaBEwb32ZxbxZ4PwwJz44FtStN
-         9aEw==
-X-Gm-Message-State: AOAM530DQ+o0dxp7VfiGnI0+ZBFYk8FvH2DS3n8JqzG/QsXQ+AIHhHT1
-        i92vxAVdUcvwuljDBzoFbh1JZNMedkR+oeJVIXk/8I9a9iBr6g==
-X-Google-Smtp-Source: ABdhPJxPnCtP0Gi7FXft3hNhtYdID7QFXnaTineAVYD0OAEfwrCPbrQW/UM3+bjEnyIVgok+c8SwcucP314wg/u0T+Y=
-X-Received: by 2002:a17:906:489b:: with SMTP id v27mr17872542ejq.567.1636535106048;
- Wed, 10 Nov 2021 01:05:06 -0800 (PST)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:in-reply-to
+         :references:mime-version;
+        bh=HQWUub7VLNdwBSHnx+JE2hlji0Dkf+2DqDY0ZqCPbLc=;
+        b=NVrJ9C8pUzhIjgqyWDLbdRJqd5Y0WeAuLzNHZbEI8LHzJtRAVQR21Hs9IqmMA3HSVn
+         2OSmFXTdhu3m4BbUaL8Z6cwYck2yFjfGGSu8vDZV6D7aXfQBHxOYFpqEGWEtziBSb2Zi
+         DAcxxuVrsqpwX28sQUDpaJGT3QGhSATBe/8UkUSmKQ0Hmh+G46buw5nSvpVwJTS5ur3L
+         6aXox8f2j9fuhm+q6YZ2NCW4XbyQL5G6inZfrGf/O+/nFG+anj5FPhIWdbvYyohAr1Km
+         2OzdzEeCB2Q7OlQNngaKXRpmgt8yU5Q6A1for+HtuN3USm16wZHnPykWrQAfXgoj8aJ+
+         s4Aw==
+X-Gm-Message-State: AOAM530GP/icryEbH2vGztQ6xNsufynHbI65yEepdLF5xjBwQx1FyyC8
+        S13mQU3HbFkOAR7AQ0ohv04=
+X-Google-Smtp-Source: ABdhPJztyr/6yDe3gRE12AMmYSUao1rUN8CaKuWnrLvV0yuzBjFNj4OCIsCu/TrZseTLavBK+DWESg==
+X-Received: by 2002:ac2:4c55:: with SMTP id o21mr13107354lfk.408.1636535085468;
+        Wed, 10 Nov 2021 01:04:45 -0800 (PST)
+Received: from eldfell ([194.136.85.206])
+        by smtp.gmail.com with ESMTPSA id c2sm484485ljf.50.2021.11.10.01.04.44
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 10 Nov 2021 01:04:45 -0800 (PST)
+Date:   Wed, 10 Nov 2021 11:04:42 +0200
+From:   Pekka Paalanen <ppaalanen@gmail.com>
+To:     Neal Gompa <ngompa13@gmail.com>
+Cc:     Thomas Zimmermann <tzimmermann@suse.de>,
+        Javier Martinez Canillas <javierm@redhat.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Peter Robinson <pbrobinson@gmail.com>,
+        Daniel Vetter <daniel.vetter@ffwll.ch>,
+        Michel =?UTF-8?B?RMOkbnplcg==?= <michel@daenzer.net>
+Subject: Re: [PATCH 2/5] drm: Move nomodeset kernel parameter handler to the
+ DRM subsystem
+Message-ID: <20211110110442.1743b0d2@eldfell>
+In-Reply-To: <CAEg-Je-mmwZOGR-J-dTcOs-8x2BfgCtv5GwFy_d9rBkxOZ1YBg@mail.gmail.com>
+References: <20211103104812.1022936-1-javierm@redhat.com>
+        <20211103104812.1022936-3-javierm@redhat.com>
+        <CAEg-Je_3n9vFpP-vmVzkbDZY154g3xOK5JqPN7r9kGXJ1Zp0+w@mail.gmail.com>
+        <1dbc7d15-a314-677b-1870-276b0cca1705@suse.de>
+        <CAEg-Je-mmwZOGR-J-dTcOs-8x2BfgCtv5GwFy_d9rBkxOZ1YBg@mail.gmail.com>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-References: <20211109000130.42361-1-hans-gert.dahmen@immu.ne>
- <YYoSPjF3M05dR0PX@kroah.com> <42cea157-55a2-bd12-335b-6348f0ff6525@immu.ne>
- <YYpNOMtp7Kwf0fho@kroah.com> <CAHifhD4f676jiQ52siiKQTjUFXFm6Sto8pQjF07w5y+gqrUvFQ@mail.gmail.com>
- <YYpsq/umygfTb8mM@kroah.com> <CAHifhD6K5hbpHS-X+2L=pfUe+7OpyTbB7uyh8WGbdaeBMwoYPg@mail.gmail.com>
- <CAHp75VfbYsyC=7Ncnex1f_jiwrZhExDF7iy4oSGZgS1cHmsN0Q@mail.gmail.com> <CAHifhD5V9vwJenRLcPRH5ZMeLa_JnjZKfdcFZw1CjceBtC6=Ew@mail.gmail.com>
-In-Reply-To: <CAHifhD5V9vwJenRLcPRH5ZMeLa_JnjZKfdcFZw1CjceBtC6=Ew@mail.gmail.com>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Wed, 10 Nov 2021 11:04:21 +0200
-Message-ID: <CAHp75VeyQEaABFOnEUh2pdFx9ROJvRcud-BuEbKWmaEWpL9_Uw@mail.gmail.com>
-Subject: Re: [PATCH] firmware: export x86_64 platform flash bios region via sysfs
-To:     Hans-Gert Dahmen <hans-gert.dahmen@immu.ne>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>
-Cc:     Greg KH <gregkh@linuxfoundation.org>,
-        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Philipp Deppenwiese <philipp.deppenwiese@immu.ne>,
-        Mauro Lima <mauro.lima@eclypsium.com>,
-        Richard Hughes <hughsient@gmail.com>,
-        "platform-driver-x86@vger.kernel.org" 
-        <platform-driver-x86@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: multipart/signed; boundary="Sig_/GBZoySIpsQ2kQYmHUWrMzmj";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 10, 2021 at 10:37 AM Hans-Gert Dahmen
-<hans-gert.dahmen@immu.ne> wrote:
-> Am Mi., 10. Nov. 2021 um 07:35 Uhr schrieb Andy Shevchenko
-> <andy.shevchenko@gmail.com>:
-> > On Tuesday, November 9, 2021, Hans-Gert Dahmen <hans-gert.dahmen@immu.n=
-e> wrote:
-> >> Am Di., 9. Nov. 2021 um 13:42 Uhr schrieb Greg KH <gregkh@linuxfoundat=
-ion.org>:
+--Sig_/GBZoySIpsQ2kQYmHUWrMzmj
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-> >> > Do you have a pointer to these complex and buggy drivers anywhere?
-> >>
-> >> I am talking about the linux-mtd intel-spi driver for example, but I
-> >> feel that this gets the discussion in the wrong direction.
+On Wed, 3 Nov 2021 08:34:20 -0400
+Neal Gompa <ngompa13@gmail.com> wrote:
+
+> On Wed, Nov 3, 2021 at 8:32 AM Thomas Zimmermann <tzimmermann@suse.de> wr=
+ote:
 > >
-> > This is the driver that covers all BIOSes on modern x86\64. What=E2=80=
-=99s wrong with it? Why do you need this?!
+> > Hi
 > >
-> > If it=E2=80=99s buggy, where is the bug reports from you or somebody el=
-se?
->
-> Please see Mauro's mail in this thread from yesterday below:
+> > Am 03.11.21 um 12:05 schrieb Neal Gompa: =20
+> > > On Wed, Nov 3, 2021 at 6:48 AM Javier Martinez Canillas
+> > > <javierm@redhat.com> wrote: =20
+> > >>
+> > >> The "nomodeset" kernel cmdline parameter is handled by the vgacon dr=
+iver
+> > >> but the exported vgacon_text_force() symbol is only used by DRM driv=
+ers.
+> > >>
+> > >> It makes much more sense for the parameter logic to be in the subsys=
+tem
+> > >> of the drivers that are making use of it. Let's move that to DRM.
+> > >>
+> > >> Suggested-by: Daniel Vetter <daniel.vetter@ffwll.ch>
+> > >> Signed-off-by: Javier Martinez Canillas <javierm@redhat.com>
+> > >> --- =20
+> > >
+> > > Please no, I'd much rather have a better, more meaningful option
+> > > instead of "nomodeset". If anything, I would like this option to
+> > > eventually do nothing and replace it with a better named option that's
+> > > namespaced by drm on the command-line. That was part of the feedback I
+> > > gave in the original patch set, and I still stand by that. =20
+> >
+> > This was nack'ed for now during irc chats with others. There was no
+> > clear semantics for the new parameter and nomodeset is good enough for
+> > now. I agree that nomodeset is badly named, though.
+> > =20
+>=20
+> Where are these chats happening? I'm mostly talking to Javier in the
+> #devel:fedoraproject.org Matrix room, so I don't know about anything
+> else...
 
-I didn't get this. What's wrong with the response from the author of
-intel-spi (since we are speaking about it, let me add him to the
-thread)?
-What you are trying to do is to sneak around with ugly hack behind the
-proper subsystem's back.
+OFTC IRC channel #dri-devel
 
-NAK as I already said.
 
---=20
-With Best Regards,
-Andy Shevchenko
+Thanks,
+pq
+
+--Sig_/GBZoySIpsQ2kQYmHUWrMzmj
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAEBCAAdFiEEJQjwWQChkWOYOIONI1/ltBGqqqcFAmGLiyoACgkQI1/ltBGq
+qqcaUw/+Jk5Wb0tkqXt5grtkWI9ckpKkt2KRzVhuRjoUEAo47Tpntm5dlETkT8Ah
+EJEaKvYvI9gw91BVSy3teCLbUu2TAdfnK/maO4Kg3n8JhAW9OxPJrMbZoUaR3kNa
+O5qxgE1DuM8qjNcLwvYU4p8/F1hMFNG6KHM2g2Jx9CX1W2fmpbSxEpTTnugGQxRW
+mQVx4/YgC2WcWOwtjLO+NP915PTuJjMhdpBGLsUYCy8bEQHZEMeatsA/5qqQMIK0
+2kpDN1YV9k7ALtzHtTdArKgz3AqmDlFOzglt+XFgpr7YcBe02ulKDkruf0kQe4X2
+MGXsLHetaEDZ6nErLKsw87wQSf+qi6esQnI7aH+TZu7RQr48qUSeraXj2r3/6s46
+gFwUUd1IqoMxY3h+0O4Y61R/z3Wp0o4ZtoAVCO7gzgeQuxWai6M0+MZpnKCG4GjP
+oJYRp38ckrXN1xC02Xb3n8awNTQSUb1+PARthBG4hMedKAeHy/0BllAeO01QUx3u
+g+jaYKXDk1npj65lyB42KTgdOzrIJ6cEbWDftNg91kn/nSu5GjqIaegPbB2d59of
+c7meiRpM/SgRcbkwkkAbM+ohn35FtP6usQ8LFXgcRK13T1p1W9E3RreddxYUQaBN
+j2d92zAbUaWXLkc/fK+BHTMDMFcoQkbiWyTDLx/VotKsvkq3Rsw=
+=RkEM
+-----END PGP SIGNATURE-----
+
+--Sig_/GBZoySIpsQ2kQYmHUWrMzmj--
