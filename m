@@ -2,93 +2,209 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D90C944BA65
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 03:38:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DA1A144BA68
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 03:39:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229998AbhKJCkz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Nov 2021 21:40:55 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51740 "EHLO
+        id S230011AbhKJCly (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Nov 2021 21:41:54 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51960 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229717AbhKJCky (ORCPT
+        with ESMTP id S229717AbhKJClx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Nov 2021 21:40:54 -0500
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1234::107])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56C53C061764;
-        Tue,  9 Nov 2021 18:38:07 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:MIME-Version:
-        Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
-        Content-Description:In-Reply-To:References;
-        bh=QxQo/h2U23gdGIw9R8NukNTSdxsKwkzTqfGEtO3iS/U=; b=zd0WO8dX9x+6YrHZ0ZMnDqCZMi
-        6NqKBopFWlDG5V3Hy4XuIZHQHUaJXHtumanXUkGeNIb4XCdrJyNdhktwY1RzIetuDJ4t6csAKGyvP
-        GzUmDTX/9mMRO2YlHsumOwYOXqj5AMDOImPQFix+nFjIkbJzT/saGKZV/wy2xmN7DmcEd73SbJWM/
-        qasTvYfSlwGb+9vTYzUqXsQnJvSB0p/E2Of8AAZt3LdhszSnBqam11Oh0g6thYaFL9nbi7g64SPSm
-        eYzpoqPMM65sjwv9nkWaFfCrvJakZphzpJpgn27fc2UZ6SZpXbzkXuLMkn6Vm9GxEKGyItDdb55vz
-        wvuFGj4w==;
-Received: from [2601:1c0:6280:3f0::aa0b] (helo=merlin.infradead.org)
-        by merlin.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mkdUu-008qVu-BO; Wed, 10 Nov 2021 02:38:03 +0000
-From:   Randy Dunlap <rdunlap@infradead.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Randy Dunlap <rdunlap@infradead.org>,
-        kernel test robot <lkp@intel.com>,
-        Artur Rojek <contact@artur-rojek.eu>,
-        Paul Cercueil <paul@crapouillou.net>,
-        linux-mips@vger.kernel.org, Jonathan Cameron <jic23@kernel.org>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        linux-iio@vger.kernel.org, Florian Fainelli <f.fainelli@gmail.com>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>
-Subject: [PATCH v2] iio/adc: ingenic: fix (MIPS) ingenic-adc build errors
-Date:   Tue,  9 Nov 2021 18:37:55 -0800
-Message-Id: <20211110023755.27176-1-rdunlap@infradead.org>
-X-Mailer: git-send-email 2.31.1
+        Tue, 9 Nov 2021 21:41:53 -0500
+Received: from mail-pf1-x42e.google.com (mail-pf1-x42e.google.com [IPv6:2607:f8b0:4864:20::42e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC532C061764;
+        Tue,  9 Nov 2021 18:39:06 -0800 (PST)
+Received: by mail-pf1-x42e.google.com with SMTP id n85so1246285pfd.10;
+        Tue, 09 Nov 2021 18:39:06 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Mkk7gNnp0YbcgFN+jbyPPP0eQtmzhbTwC6PXKFwoF30=;
+        b=KL7KVnMFCClji6KlA9p7MuR0LxCDQRRL+NPJNYdld0H4EkWwSNJGWhvnPM8qHsyPzB
+         aGT6R98M2BSxUTnGmdOz9rKuRZu1aLYsINvOX62Kh1NKe6edOJz+sDlI9AVvjwd7VGdY
+         b9NKPcR4EciR10xM6u43Yd2t+BeFErnT3KW714lBG0DS7twp8Q76vvQVQMsag34ceNDi
+         3CP6BWq2dSFQskCMGIsG5uBoRtoH0LbAv2xo6okuRl3QEbSLdFhlj8yB8du3Mz4rmHTw
+         NqOYd54LQj9wN/IoRzotr9vCMzwPNzCyIHLHHwtgMPfT07pAt/AlJevjvaUAASKBpP60
+         oD4g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Mkk7gNnp0YbcgFN+jbyPPP0eQtmzhbTwC6PXKFwoF30=;
+        b=c17XimLUrvbk6ZZrVSISwD84wSL+EmPDTYHacz7Kfc99vg3mOm3upWpahyrQMDre8x
+         gqKY7jv8XJIW9vqNGXJAs0ThkRTsAvgHVWj8CAi4GeMrOOtduAe6O2rKDEVUrnhM7GWW
+         yENysgTDwfAzoZLAXM5Byw9qsle54YGq3rJSQjEtzNUiEH1FzrbWPwPJNU2sx/d2nPfq
+         uXjG7qxB7pOHdokpN8AAqGEDdb+WZcJO3wufMIHrJYj3IEzmcSJXGRy2nUP4VjjQKoUf
+         Rw9IUtqkLEYVq9SoXVnShRWiC5mq2bT5OxdodFtbJvLLlazv2YAibT6iBrQ/O0SMLWFn
+         vBtA==
+X-Gm-Message-State: AOAM531LcdyOl01NR9VCIpE/BwX8/DTH23TeVuRrnQm4ckoS1mNnAjid
+        QSR5mLRd2biiZ744NcW2OV1rhQ9ArA4=
+X-Google-Smtp-Source: ABdhPJxgLJOQnDEmsTET+jLnbw+6l4UJubpySbki3xtlwreUujDvyjgy75RCan+NVJjNvFtI+QTJOA==
+X-Received: by 2002:a05:6a00:1693:b0:44c:64a3:d318 with SMTP id k19-20020a056a00169300b0044c64a3d318mr13547511pfc.81.1636511946240;
+        Tue, 09 Nov 2021 18:39:06 -0800 (PST)
+Received: from localhost.localdomain ([193.203.214.57])
+        by smtp.gmail.com with ESMTPSA id k1sm3715889pjj.54.2021.11.09.18.39.04
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 09 Nov 2021 18:39:06 -0800 (PST)
+From:   cgel.zte@gmail.com
+X-Google-Original-From: yao.jing2@zte.com.cn
+To:     hare@kernel.org
+Cc:     jejb@linux.ibm.com, martin.petersen@oracle.com,
+        linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Jing Yao <yao.jing2@zte.com.cn>, Zeal Robot <zealci@zte.com.cn>
+Subject: [PATCH] scsi: myrs: Replace snprintf in show functions with sysfs_emit
+Date:   Wed, 10 Nov 2021 02:39:01 +0000
+Message-Id: <20211110023901.135804-1-yao.jing2@zte.com.cn>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-MIPS does not always provide clk*() interfaces and there are no
-always-present stubs for them, so depending on "MIPS || COMPILE_TEST"
-is not strong enough to prevent build errors.
+From: Jing Yao <yao.jing2@zte.com.cn>
 
-Likewise MACH_INGENIC_SOC || COMPILE_TEST is not strong enough
-since if only COMPILE_TEST=y (with some other MIPS MACH_ or CPU or
-BOARD setting), there are still the same build errors.
+coccicheck complains about the use of snprintf() in sysfs show
+functions:
+WARNING use scnprintf or sprintf
 
-It looks like depending on MACH_INGENIC is the only thing that is
-sufficient here in order to prevent build errors.
+Use sysfs_emit instead of scnprintf, snprintf or sprintf makes more
+sense.
 
-mips-linux-ld: drivers/iio/adc/ingenic-adc.o: in function `jz4770_adc_init_clk_div':
-ingenic-adc.c:(.text+0xe4): undefined reference to `clk_get_parent'
-mips-linux-ld: drivers/iio/adc/ingenic-adc.o: in function `jz4725b_adc_init_clk_div':
-ingenic-adc.c:(.text+0x1b8): undefined reference to `clk_get_parent'
-
-Fixes: 1a78daea107d ("IIO: add Ingenic JZ47xx ADC driver.")
-Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-Reported-by: kernel test robot <lkp@intel.com>
-Cc: Artur Rojek <contact@artur-rojek.eu>
-Cc: Paul Cercueil <paul@crapouillou.net>
-Cc: linux-mips@vger.kernel.org
-Cc: Jonathan Cameron <jic23@kernel.org>
-Cc: Lars-Peter Clausen <lars@metafoo.de>
-Cc: linux-iio@vger.kernel.org
-Cc: Florian Fainelli <f.fainelli@gmail.com>
-Cc: Andy Shevchenko <andy.shevchenko@gmail.com>
+Reported-by: Zeal Robot <zealci@zte.com.cn>
+Signed-off-by: Jing Yao <yao.jing2@zte.com.cn>
 ---
-v2: use MACH_INGENIC instead of MACH_INGENIC_SOC (thanks, Paul)
+ drivers/scsi/myrs.c | 32 ++++++++++++++++----------------
+ 1 file changed, 16 insertions(+), 16 deletions(-)
 
- drivers/iio/adc/Kconfig |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
---- linux-next-20211105.orig/drivers/iio/adc/Kconfig
-+++ linux-next-20211105/drivers/iio/adc/Kconfig
-@@ -501,7 +501,7 @@ config INA2XX_ADC
+diff --git a/drivers/scsi/myrs.c b/drivers/scsi/myrs.c
+index 6ea323e9a2e3..22cb819c0c06 100644
+--- a/drivers/scsi/myrs.c
++++ b/drivers/scsi/myrs.c
+@@ -941,7 +941,7 @@ static ssize_t raid_state_show(struct device *dev,
+ 	int ret;
  
- config INGENIC_ADC
- 	tristate "Ingenic JZ47xx SoCs ADC driver"
--	depends on MIPS || COMPILE_TEST
-+	depends on MACH_INGENIC
- 	select IIO_BUFFER
- 	help
- 	  Say yes here to build support for the Ingenic JZ47xx SoCs ADC unit.
+ 	if (!sdev->hostdata)
+-		return snprintf(buf, 16, "Unknown\n");
++		return sysfs_emit(buf, "Unknown\n");
+ 
+ 	if (sdev->channel >= cs->ctlr_info->physchan_present) {
+ 		struct myrs_ldev_info *ldev_info = sdev->hostdata;
+@@ -949,9 +949,9 @@ static ssize_t raid_state_show(struct device *dev,
+ 
+ 		name = myrs_devstate_name(ldev_info->dev_state);
+ 		if (name)
+-			ret = snprintf(buf, 32, "%s\n", name);
++			ret = sysfs_emit(buf, "%s\n", name);
+ 		else
+-			ret = snprintf(buf, 32, "Invalid (%02X)\n",
++			ret = sysfs_emit(buf, "Invalid (%02X)\n",
+ 				       ldev_info->dev_state);
+ 	} else {
+ 		struct myrs_pdev_info *pdev_info;
+@@ -960,9 +960,9 @@ static ssize_t raid_state_show(struct device *dev,
+ 		pdev_info = sdev->hostdata;
+ 		name = myrs_devstate_name(pdev_info->dev_state);
+ 		if (name)
+-			ret = snprintf(buf, 32, "%s\n", name);
++			ret = sysfs_emit(buf, "%s\n", name);
+ 		else
+-			ret = snprintf(buf, 32, "Invalid (%02X)\n",
++			ret = sysfs_emit(buf, "Invalid (%02X)\n",
+ 				       pdev_info->dev_state);
+ 	}
+ 	return ret;
+@@ -1060,7 +1060,7 @@ static ssize_t raid_level_show(struct device *dev,
+ 	const char *name = NULL;
+ 
+ 	if (!sdev->hostdata)
+-		return snprintf(buf, 16, "Unknown\n");
++		return sysfs_emit(buf, "Unknown\n");
+ 
+ 	if (sdev->channel >= cs->ctlr_info->physchan_present) {
+ 		struct myrs_ldev_info *ldev_info;
+@@ -1068,13 +1068,13 @@ static ssize_t raid_level_show(struct device *dev,
+ 		ldev_info = sdev->hostdata;
+ 		name = myrs_raid_level_name(ldev_info->raid_level);
+ 		if (!name)
+-			return snprintf(buf, 32, "Invalid (%02X)\n",
++			return sysfs_emit(buf, "Invalid (%02X)\n",
+ 					ldev_info->dev_state);
+ 
+ 	} else
+ 		name = myrs_raid_level_name(MYRS_RAID_PHYSICAL);
+ 
+-	return snprintf(buf, 32, "%s\n", name);
++	return sysfs_emit(buf, "%s\n", name);
+ }
+ static DEVICE_ATTR_RO(raid_level);
+ 
+@@ -1088,7 +1088,7 @@ static ssize_t rebuild_show(struct device *dev,
+ 	unsigned char status;
+ 
+ 	if (sdev->channel < cs->ctlr_info->physchan_present)
+-		return snprintf(buf, 32, "physical device - not rebuilding\n");
++		return sysfs_emit(buf, "physical device - not rebuilding\n");
+ 
+ 	ldev_info = sdev->hostdata;
+ 	ldev_num = ldev_info->ldev_num;
+@@ -1100,11 +1100,11 @@ static ssize_t rebuild_show(struct device *dev,
+ 		return -EIO;
+ 	}
+ 	if (ldev_info->rbld_active) {
+-		return snprintf(buf, 32, "rebuilding block %zu of %zu\n",
++		return sysfs_emit(buf, "rebuilding block %zu of %zu\n",
+ 				(size_t)ldev_info->rbld_lba,
+ 				(size_t)ldev_info->cfg_devsize);
+ 	} else
+-		return snprintf(buf, 32, "not rebuilding\n");
++		return sysfs_emit(buf, "not rebuilding\n");
+ }
+ 
+ static ssize_t rebuild_store(struct device *dev,
+@@ -1192,7 +1192,7 @@ static ssize_t consistency_check_show(struct device *dev,
+ 	unsigned short ldev_num;
+ 
+ 	if (sdev->channel < cs->ctlr_info->physchan_present)
+-		return snprintf(buf, 32, "physical device - not checking\n");
++		return sysfs_emit(buf, "physical device - not checking\n");
+ 
+ 	ldev_info = sdev->hostdata;
+ 	if (!ldev_info)
+@@ -1200,11 +1200,11 @@ static ssize_t consistency_check_show(struct device *dev,
+ 	ldev_num = ldev_info->ldev_num;
+ 	myrs_get_ldev_info(cs, ldev_num, ldev_info);
+ 	if (ldev_info->cc_active)
+-		return snprintf(buf, 32, "checking block %zu of %zu\n",
++		return sysfs_emit(buf, "checking block %zu of %zu\n",
+ 				(size_t)ldev_info->cc_lba,
+ 				(size_t)ldev_info->cfg_devsize);
+ 	else
+-		return snprintf(buf, 32, "not checking\n");
++		return sysfs_emit(buf, "not checking\n");
+ }
+ 
+ static ssize_t consistency_check_store(struct device *dev,
+@@ -1305,7 +1305,7 @@ static ssize_t serial_show(struct device *dev,
+ 
+ 	memcpy(serial, cs->ctlr_info->serial_number, 16);
+ 	serial[16] = '\0';
+-	return snprintf(buf, 16, "%s\n", serial);
++	return sysfs_emit(buf, "%s\n", serial);
+ }
+ static DEVICE_ATTR_RO(serial);
+ 
+@@ -1315,7 +1315,7 @@ static ssize_t ctlr_num_show(struct device *dev,
+ 	struct Scsi_Host *shost = class_to_shost(dev);
+ 	struct myrs_hba *cs = shost_priv(shost);
+ 
+-	return snprintf(buf, 20, "%d\n", cs->host->host_no);
++	return sysfs_emit(buf, "%d\n", cs->host->host_no);
+ }
+ static DEVICE_ATTR_RO(ctlr_num);
+ 
+-- 
+2.25.1
+
