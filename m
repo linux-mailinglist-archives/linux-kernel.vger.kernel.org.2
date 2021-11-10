@@ -2,198 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C08D44BEFD
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 11:46:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4406944BEF0
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 11:44:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231249AbhKJKs5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Nov 2021 05:48:57 -0500
-Received: from mout.gmx.net ([212.227.15.18]:48747 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231171AbhKJKsx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Nov 2021 05:48:53 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1636541050;
-        bh=h45DiQjGY0Dfm8CE9cn4qF+342ykeQ4Uk5C/gkooaIw=;
-        h=X-UI-Sender-Class:Date:From:To:Cc:Subject:References:In-Reply-To;
-        b=kmUfRHIzmoViydSucYTxEQG1FNJ8CWRzX0F3WYOX1d2VD3eujCwT6kC0uAXqWmZLt
-         eMJ+M/8iTWkQKI5o+Bspt5/1og5A5qZCqV0IRSD+beJIRF0/33jVnOkUer8fEeU46q
-         NY7uVn1Yx5reMWfFjuhrJ2jc6HS5QmKSQvralaIo=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from longitude ([5.146.194.160]) by mail.gmx.net (mrgmx004
- [212.227.17.190]) with ESMTPSA (Nemesis) id 1MYeQr-1nEmW91Bsx-00Vcng; Wed, 10
- Nov 2021 11:44:10 +0100
-Date:   Wed, 10 Nov 2021 11:43:55 +0100
-From:   Jonathan =?utf-8?Q?Neusch=C3=A4fer?= <j.neuschaefer@gmx.net>
-To:     Dmitry Osipenko <digetx@gmail.com>
-Cc:     Jonathan =?utf-8?Q?Neusch=C3=A4fer?= <j.neuschaefer@gmx.net>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Lee Jones <lee.jones@linaro.org>,
-        "Rafael J . Wysocki" <rafael@kernel.org>,
-        Mark Brown <broonie@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Russell King <linux@armlinux.org.uk>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>, Guo Ren <guoren@kernel.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Greg Ungerer <gerg@linux-m68k.org>,
-        Joshua Thompson <funaho@jurai.org>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Nick Hu <nickhu@andestech.com>,
-        Greentime Hu <green.hu@gmail.com>,
-        Vincent Chen <deanbo422@gmail.com>,
-        Helge Deller <deller@gmx.de>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Yoshinori Sato <ysato@users.sourceforge.jp>,
-        Rich Felker <dalias@libc.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        Juergen Gross <jgross@suse.com>,
-        Stefano Stabellini <sstabellini@kernel.org>,
-        Len Brown <lenb@kernel.org>,
-        Santosh Shilimkar <ssantosh@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Chen-Yu Tsai <wens@csie.org>, Tony Lindgren <tony@atomide.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Vladimir Zapolskiy <vz@mleia.com>,
-        Avi Fishman <avifishman70@gmail.com>,
-        Tomer Maimon <tmaimon77@gmail.com>,
-        Tali Perry <tali.perry1@gmail.com>,
-        Patrick Venture <venture@google.com>,
-        Nancy Yuen <yuenn@google.com>,
-        Benjamin Fair <benjaminfair@google.com>,
-        Pavel Machek <pavel@ucw.cz>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-csky@vger.kernel.org, linux-ia64@vger.kernel.org,
-        linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org,
-        linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        linux-riscv@lists.infradead.org, linux-sh@vger.kernel.org,
-        xen-devel@lists.xenproject.org, linux-acpi@vger.kernel.org,
-        linux-omap@vger.kernel.org, openbmc@lists.ozlabs.org,
-        linux-tegra@vger.kernel.org, linux-pm@vger.kernel.org
-Subject: Re: [PATCH v2 27/45] mfd: ntxec: Use devm_register_power_handler()
-Message-ID: <YYuia9KFdi+ETT+I@latitude>
-References: <20211027211715.12671-1-digetx@gmail.com>
- <20211027211715.12671-28-digetx@gmail.com>
- <YYbqlmOM95q7Hbjo@latitude>
- <be0c74c6-05a9-cad5-c285-6626d05f8860@gmail.com>
- <9a22c22d-94b1-f519-27a2-ae0b8bbf6e99@roeck-us.net>
- <658cf796-e3b1-f816-1e15-9e9e08b8ade0@gmail.com>
- <5a17fee3-4214-c2b9-abc1-ab9d6071591b@roeck-us.net>
- <c0b52994-51f5-806b-b07e-3e70d8217ffc@gmail.com>
- <YYkIeBSCFka9yrqC@latitude>
- <04103df3-1ef4-b560-a5cb-fa51737d28ad@gmail.com>
+        id S231178AbhKJKrG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Nov 2021 05:47:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46466 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229653AbhKJKrF (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Nov 2021 05:47:05 -0500
+Received: from mail-wm1-x335.google.com (mail-wm1-x335.google.com [IPv6:2a00:1450:4864:20::335])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 33A35C061764
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Nov 2021 02:44:18 -0800 (PST)
+Received: by mail-wm1-x335.google.com with SMTP id 133so1761931wme.0
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Nov 2021 02:44:18 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ffwll.ch; s=google;
+        h=date:from:to:cc:subject:message-id:mail-followup-to:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=p35G3ijWYSUCO76ZEBrzccMf7240Z+98t5Me52oGPwQ=;
+        b=IbF5MqhTtHW6snonBwLIrT+7aciMv/DVbtIJrIF+PIQqh6aSvt9j57AKt4wyV+ZDBD
+         pIt2OlK+LFmEOGeAKY49BIb7entn9QskIGwyLrGOIHRQDgDLNBZHd5y6ru/Htz4y5IIq
+         /FJjYb5t8SnSfjm8gi6LqKRLmgR72Vq79tB90=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id
+         :mail-followup-to:references:mime-version:content-disposition
+         :in-reply-to;
+        bh=p35G3ijWYSUCO76ZEBrzccMf7240Z+98t5Me52oGPwQ=;
+        b=ATWF/S9knQTdLzSHwH4RSvlX8vn5Xr8gH69Foog7gbdP1hH7xi2axdDLHOcu94QjyN
+         gSLEYTPzj23S5ssgqULfTzGHlna0AMk6WcdAJ2I/ilYLK1yUVwphGGWjI8NTefkv5DV1
+         yNFv/ehhPCa0Moyt/0p3DQ5XxpUuRtsSVY/KYESYSOz2KQ035s/WxnvRPHtcBYqZIDgk
+         WAKKfz1c3k0blVMnKhJVsSdpuWoPruyXsQG3jHfBklo7BQSkX0qed1h9YrXnMDf8OgHq
+         gVAHL67OsQKovdprgiiKwUefTvLgV5VCG+5geeKV667UdtIjUF1LZkR6EKyVEn6HETa8
+         Q34g==
+X-Gm-Message-State: AOAM5300bUomRcoygu9yfQzidrokw7FzM/7IZb3tFnEOEITC0mhhPY5w
+        5Sa8WQegfLkJIRF++zn1KHY/gA==
+X-Google-Smtp-Source: ABdhPJzH6O4jsCGRpjkebrKGva92XLIAnPh2IE1dOn2/jVwMLzYzmdkh44S5Z0sZdH5khZ2i/ETk/A==
+X-Received: by 2002:a05:600c:a55:: with SMTP id c21mr15214691wmq.191.1636541056794;
+        Wed, 10 Nov 2021 02:44:16 -0800 (PST)
+Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
+        by smtp.gmail.com with ESMTPSA id a9sm22383643wrt.66.2021.11.10.02.44.15
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 10 Nov 2021 02:44:16 -0800 (PST)
+Date:   Wed, 10 Nov 2021 11:44:14 +0100
+From:   Daniel Vetter <daniel@ffwll.ch>
+To:     John Ogness <john.ogness@linutronix.de>
+Cc:     Daniel Vetter <daniel@ffwll.ch>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Sultan Alsawaf <sultan@kerneltoast.com>,
+        Anton Vorontsov <anton@enomsg.org>,
+        Ben Segall <bsegall@google.com>,
+        Colin Cross <ccross@android.com>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        David Airlie <airlied@linux.ie>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        dri-devel@lists.freedesktop.org, Ingo Molnar <mingo@redhat.com>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Kees Cook <keescook@chromium.org>,
+        linux-kernel@vger.kernel.org,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Mel Gorman <mgorman@suse.de>, Petr Mladek <pmladek@suse.com>,
+        Sergey Senozhatsky <senozhatsky@chromium.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Tony Luck <tony.luck@intel.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>, mkoutny@suse.com
+Subject: Re: printk deadlock due to double lock attempt on current CPU's
+ runqueue
+Message-ID: <YYuifp8voMuTtMh3@phenom.ffwll.local>
+Mail-Followup-To: John Ogness <john.ogness@linutronix.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Sultan Alsawaf <sultan@kerneltoast.com>,
+        Anton Vorontsov <anton@enomsg.org>, Ben Segall <bsegall@google.com>,
+        Colin Cross <ccross@android.com>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        David Airlie <airlied@linux.ie>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        dri-devel@lists.freedesktop.org, Ingo Molnar <mingo@redhat.com>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Kees Cook <keescook@chromium.org>, linux-kernel@vger.kernel.org,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>, Mel Gorman <mgorman@suse.de>,
+        Petr Mladek <pmladek@suse.com>,
+        Sergey Senozhatsky <senozhatsky@chromium.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Tony Luck <tony.luck@intel.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>, mkoutny@suse.com
+References: <YYrU2PdmdNkulWSM@sultan-box.localdomain>
+ <20211109213847.GY174703@worktop.programming.kicks-ass.net>
+ <YYuS1uNhxWOEX1Ci@phenom.ffwll.local>
+ <87fss4wcgm.fsf@jogness.linutronix.de>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="2Vc8voT8F+nWl+5t"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <04103df3-1ef4-b560-a5cb-fa51737d28ad@gmail.com>
-X-Provags-ID: V03:K1:Jd3HsvpIvSkd1z9MZ8A+M8pmRMEjtJGTIH5/rKKzl1zv92guAhj
- 9dWDOhUd2UJZ9MerqFJu2sL0Vqy01eD3StlZDn4FJIminWyxKafYCrFSKtByuDa87GeS9OR
- qeoUp0E4UiW3sjAndGidVfCkZjgUQcURUuhYsgKl5H5XKG1g/BTOt0/CSBYYpcJ5Udag/gd
- 3wpmaE1MgAr/8Zxl8PaIg==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:9zHz1F4x458=:7Vp+bYm0dzpDVbvG6/Jg2u
- qI4IrtGWKiV/jMQFkG7dyJBbQvpEWwPJ76d/zJSyX1M1lKNm0KMizgdWYVXyIW/XoqBwKPv1D
- 53+DzXdLuVgOm0wkoIG2GeQ/nb/c84AhvSEAoevpHCl6VEXR6fOvbN82cXa7985eDdl8UKM+O
- 4h3Is/MA4WoDtRBZ1OqiFsYx8FLL1RBd0E7FqR319PSJ/bJwJAdPbaC1JvQk6kHH3/NBFt26i
- Q3DgkmG6muY/n8xv9b9V7t/ZWlppYtelF1o5MvHu2J00j2PbYSZX9eozu/Doat8V94rSWUKYb
- 8pSdnLPUWq70O5KtVp9tTAFvyw/H1FShEa0gt9n4kbbOSofwKtWPp3w6ndwZn0vqQiMqSpx5F
- pW+VpkbxvWsOFEWJJsTGH2eqGFH7HNRknQZl+87wW5wtL7KvGgF3QsbsIAWrKtzB9X/8WrLGE
- Q2bThe7j50/eherGVoafg+OX1FpxcH8SkWxWRwHOYPY6MAcfWvoCbb0Lrq1TuMCEIR21SYzz/
- nKcIQ2MIMbO6pJev1gnsMMspAiK9v/yDDf2YfwA5W5cMnog6ZH1EP7GjRP+V1L4WGIVmIYWjZ
- cHGTxKjNY18j227bPzrRrZw1mR3FZxmby4QNq9M2UubsB6oeBGdjh2aJPUPJBCfs/+3a18KA+
- xA6FQOnu4L1XhctfO1s8iX0YD6ideSBMb0KHUFr1N0LQgA0QEITEwNFtzGkPBB/gQ91Mtb/BO
- /mpnNG0EzJaO/w5CiG92jdML3JVtyvpMLyLhPWE0HyQ2mtmYYeRjCDxP5oDHzH4e/JAELuTV1
- U+KgtcC4SdatS1E3xSGfYaEWJnZD3guRw2ZDMVMPz1QzGYvBbk1uTXDDTpqBpiWB9POVDvyMU
- RZN7S/dzQnujlcpYxqJMiIBsYFZJI3saxm1eCZh79EkYKtr+yxECJAHRe1ooDxlvmf+PdmvFz
- teW5eV+FQ6Z8TxYl0+/Pxm1aaTMg360Uf5O3Yxxq+6pW+Cr9pdW+jbwf3FWQ4Opb03KxmWDUJ
- J/4DosOxyxjcCBCxt9avnDv6aic7H0cD/lL1HPIA+I+KJ0H2Wh10gm+vMHpsdMkzEHCpK13Dh
- +VtVl/6MSAYdCs=
+In-Reply-To: <87fss4wcgm.fsf@jogness.linutronix.de>
+X-Operating-System: Linux phenom 5.10.0-8-amd64 
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, Nov 10, 2021 at 11:13:37AM +0106, John Ogness wrote:
+> On 2021-11-10, Daniel Vetter <daniel@ffwll.ch> wrote:
+> > I'm a bit out of the loop but from lwn articles my understanding is
+> > that part of upstreaming from -rt we no longer have the explicit "I'm
+> > a safe console for direct printing" opt-in. Which I get from a
+> > backwards compat pov, but I still think for at least fbcon we really
+> > should never attempt a direct printk con->write, it's just all around
+> > terrible.
+> 
+> Right now we don't have an explicit "I'm a safe console for direct
+> printing" option. Right now all printing is direct. But it sounds to me
+> that we should add this console flag when we introduce kthread printers.
 
---2Vc8voT8F+nWl+5t
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Ah I wasnt' clear whether this was merged already or not yet.
 
-On Mon, Nov 08, 2021 at 02:36:42PM +0300, Dmitry Osipenko wrote:
-> 08.11.2021 14:22, Jonathan Neusch=C3=A4fer =D0=BF=D0=B8=D1=88=D0=B5=D1=82:
-> > On Sun, Nov 07, 2021 at 08:42:33PM +0300, Dmitry Osipenko wrote:
-> > [...]
-> >> EC drivers tend to use higher priority in general. Jonathan, could you
-> >> please confirm that NTXEC driver is a more preferable restart method
-> >> than the watchdog?
-> >=20
-> > Yes. The original firmware uses the NTXEC to restart, and it works well,
-> > so I do think it's preferable.
->=20
-> Thank you, then I'll update the NTXEC patch like this:
->=20
-> https://github.com/grate-driver/linux/commit/22da3d91f1734d9a0ed036220ad4=
-ea28465af988
+> > So yeah for fbcon at least I think we really should throw out direct
+> > con->write from printk completely.
+> 
+> Even after we introduce kthread printers, there will still be situations
+> where direct printing is used: booting (before kthreads exist) and
+> shutdown/suspend/crash situations, when the kthreads may not be
+> active.
+> 
+> I will introduce a console flag so that consoles can opt-out for direct
+> printing. (opt-out rather than opt-in is probably easier, since there
+> are only a few that would need to opt-out).
 
-I tested again, but sys_off_handler_reboot called a bogus pointer
-(probably reboot_prepare_cb). I think it was left uninitialized in
-ntxec_probe, which uses devm_kmalloc. I guess we could switch it to
-devm_kzalloc:
+Yeah opt-out for fbcon sounds good to me, and then across the board (even
+when the kthread is not yet or no longer running, it really doesn't make
+anything better). Maybe with a fbcon module (or system wide
+force_direct_printk) option to disable that flag in case someone needs
+it.
 
-diff --git a/drivers/mfd/ntxec.c b/drivers/mfd/ntxec.c
-index 1f55dfce14308..30364beb4b1d0 100644
---- a/drivers/mfd/ntxec.c
-+++ b/drivers/mfd/ntxec.c
-@@ -144,7 +144,7 @@ static int ntxec_probe(struct i2c_client *client)
- 	const struct mfd_cell *subdevs;
- 	size_t n_subdevs;
-=20
--	ec =3D devm_kmalloc(&client->dev, sizeof(*ec), GFP_KERNEL);
-+	ec =3D devm_kzalloc(&client->dev, sizeof(*ec), GFP_KERNEL);
- 	if (!ec)
- 		return -ENOMEM;
-=20
+> Since kthread printers do not yet exist (hoping to get them in for
+> 5.17), I am not sure how we should address the reported bug for existing
+> kernels.
 
+I think we just can't. This thing keeps popping up in all kinds of places,
+and in some cases it's really not possible to fix it. Like in
+oops_in_progress we can just give up, but for normal printk from funny
+places we'd corrupt the console (plus there's no flag to even detect these
+cases), since we really need to launch these work_struct to get stuff to
+the screen.
 
-With that done, it works flawlessly.
-
-
-Thanks,
-Jonathan
-
---2Vc8voT8F+nWl+5t
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEEvHAHGBBjQPVy+qvDCDBEmo7zX9sFAmGLoj4ACgkQCDBEmo7z
-X9tbGw/9GW9TBNeJDqVwinH41nEM2TsnygEKpr7D3uPWXiWIIh7wxva0XnLkeDOr
-YZUOSFjLglCoW9n8UjIgpmScFQ9OY5em2dY9iSOPk55FYy/kkD1LKXl8Qbto3Xjr
-XRwv4EDIxlfO2uvjXgc07E2zGjiZdqaFwcIiMz1l8Rns6jC+AbzO0KFcoffXXKCg
-oCDi/e1hnVfze/XGWTTSXbofwfAKHJPVE11uF8lK2Uqv0THOAbvpIQdZiQPaNuVe
-bZuJ1p6wMxzjc6HiB8C6aJ0sy5Po98ZKWTAvvqFXBitgvOx0VCgKfJfqS+06qxiA
-gYnxdQAIJjcwrBJYfpry4rg9nBYvH7Jao/uKYoXSm73mtXdEqG4oIQIZ0eC7jS/d
-dRGjzR5mrhaA3G8mWMssxg6RX1EGpYBimy7XGpgml/bIXrEjGYZi3FaGZSnk9UTd
-oAutr3b9I43OZFYo/gRKjQmEl9C1Ru/ZsmKDin75X8hfCzrFOoAUCLQ7X/tbbPoF
-As6x8TUBJY8Zd9xBW2i/4sm+ZPAuMG5TMzzpRj/DEs2RN5UouXycBqzTFNleFYYf
-LuwPDYZYSqe75uXgu0K0weup8tULnVfBuvOJDR5yMF7tf90iNku7JIcIXjtKglWH
-EA0twe/kQWknjeUcmaR65U1v+cf8ekV6V8TVrEKb4cCEYf3HPBw=
-=z+7h
------END PGP SIGNATURE-----
-
---2Vc8voT8F+nWl+5t--
+I think in the past we sometimes managed to work around the issue by
+moving the printk outside of locks, but that's rarely a good idea just
+because fbcon.
+-Daniel
+-- 
+Daniel Vetter
+Software Engineer, Intel Corporation
+http://blog.ffwll.ch
