@@ -2,63 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4406944BEF0
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 11:44:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 305C544BEF4
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 11:45:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231178AbhKJKrG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Nov 2021 05:47:06 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46466 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229653AbhKJKrF (ORCPT
+        id S231222AbhKJKsB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Nov 2021 05:48:01 -0500
+Received: from smtp-out2.suse.de ([195.135.220.29]:39196 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229653AbhKJKsA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Nov 2021 05:47:05 -0500
-Received: from mail-wm1-x335.google.com (mail-wm1-x335.google.com [IPv6:2a00:1450:4864:20::335])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 33A35C061764
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Nov 2021 02:44:18 -0800 (PST)
-Received: by mail-wm1-x335.google.com with SMTP id 133so1761931wme.0
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Nov 2021 02:44:18 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ffwll.ch; s=google;
-        h=date:from:to:cc:subject:message-id:mail-followup-to:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=p35G3ijWYSUCO76ZEBrzccMf7240Z+98t5Me52oGPwQ=;
-        b=IbF5MqhTtHW6snonBwLIrT+7aciMv/DVbtIJrIF+PIQqh6aSvt9j57AKt4wyV+ZDBD
-         pIt2OlK+LFmEOGeAKY49BIb7entn9QskIGwyLrGOIHRQDgDLNBZHd5y6ru/Htz4y5IIq
-         /FJjYb5t8SnSfjm8gi6LqKRLmgR72Vq79tB90=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id
-         :mail-followup-to:references:mime-version:content-disposition
-         :in-reply-to;
-        bh=p35G3ijWYSUCO76ZEBrzccMf7240Z+98t5Me52oGPwQ=;
-        b=ATWF/S9knQTdLzSHwH4RSvlX8vn5Xr8gH69Foog7gbdP1hH7xi2axdDLHOcu94QjyN
-         gSLEYTPzj23S5ssgqULfTzGHlna0AMk6WcdAJ2I/ilYLK1yUVwphGGWjI8NTefkv5DV1
-         yNFv/ehhPCa0Moyt/0p3DQ5XxpUuRtsSVY/KYESYSOz2KQ035s/WxnvRPHtcBYqZIDgk
-         WAKKfz1c3k0blVMnKhJVsSdpuWoPruyXsQG3jHfBklo7BQSkX0qed1h9YrXnMDf8OgHq
-         gVAHL67OsQKovdprgiiKwUefTvLgV5VCG+5geeKV667UdtIjUF1LZkR6EKyVEn6HETa8
-         Q34g==
-X-Gm-Message-State: AOAM5300bUomRcoygu9yfQzidrokw7FzM/7IZb3tFnEOEITC0mhhPY5w
-        5Sa8WQegfLkJIRF++zn1KHY/gA==
-X-Google-Smtp-Source: ABdhPJzH6O4jsCGRpjkebrKGva92XLIAnPh2IE1dOn2/jVwMLzYzmdkh44S5Z0sZdH5khZ2i/ETk/A==
-X-Received: by 2002:a05:600c:a55:: with SMTP id c21mr15214691wmq.191.1636541056794;
-        Wed, 10 Nov 2021 02:44:16 -0800 (PST)
-Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
-        by smtp.gmail.com with ESMTPSA id a9sm22383643wrt.66.2021.11.10.02.44.15
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 10 Nov 2021 02:44:16 -0800 (PST)
-Date:   Wed, 10 Nov 2021 11:44:14 +0100
-From:   Daniel Vetter <daniel@ffwll.ch>
-To:     John Ogness <john.ogness@linutronix.de>
-Cc:     Daniel Vetter <daniel@ffwll.ch>,
-        Peter Zijlstra <peterz@infradead.org>,
+        Wed, 10 Nov 2021 05:48:00 -0500
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id AE4A31FD3F;
+        Wed, 10 Nov 2021 10:45:11 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1636541111; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=GUpTvZNhgXgXObp506QhXsYR81By+iDPFzAbaJOpy7E=;
+        b=TnHZI7aCI7ViBAvgZ+UQC9O8UDlyQVUJBgV0QPZ0nOaVXq6ntU/j3fSteNuQoFjxEp4pqA
+        sB7sLjxYQF6EqJg+SNCJbDVuQgSjEdwqUYMaWjVeLKGDZj1qhnwUo1wveJNtfIjldukL/C
+        KQp3O7Wh6+WSEy66KMHjfi9VSa6x7u0=
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 6A92A13BEA;
+        Wed, 10 Nov 2021 10:45:11 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id JyhlGbeii2GhQAAAMHmgww
+        (envelope-from <mkoutny@suse.com>); Wed, 10 Nov 2021 10:45:11 +0000
+Date:   Wed, 10 Nov 2021 11:45:10 +0100
+From:   Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>
+To:     Vincent Guittot <vincent.guittot@linaro.org>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
         Sultan Alsawaf <sultan@kerneltoast.com>,
         Anton Vorontsov <anton@enomsg.org>,
         Ben Segall <bsegall@google.com>,
         Colin Cross <ccross@android.com>,
         Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
         David Airlie <airlied@linux.ie>,
         Dietmar Eggemann <dietmar.eggemann@arm.com>,
         dri-devel@lists.freedesktop.org, Ingo Molnar <mingo@redhat.com>,
+        John Ogness <john.ogness@linutronix.de>,
         Juri Lelli <juri.lelli@redhat.com>,
         Kees Cook <keescook@chromium.org>,
         linux-kernel@vger.kernel.org,
@@ -68,92 +59,36 @@ Cc:     Daniel Vetter <daniel@ffwll.ch>,
         Sergey Senozhatsky <senozhatsky@chromium.org>,
         Steven Rostedt <rostedt@goodmis.org>,
         Thomas Zimmermann <tzimmermann@suse.de>,
-        Tony Luck <tony.luck@intel.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>, mkoutny@suse.com
+        Tony Luck <tony.luck@intel.com>
 Subject: Re: printk deadlock due to double lock attempt on current CPU's
  runqueue
-Message-ID: <YYuifp8voMuTtMh3@phenom.ffwll.local>
-Mail-Followup-To: John Ogness <john.ogness@linutronix.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Sultan Alsawaf <sultan@kerneltoast.com>,
-        Anton Vorontsov <anton@enomsg.org>, Ben Segall <bsegall@google.com>,
-        Colin Cross <ccross@android.com>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        David Airlie <airlied@linux.ie>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        dri-devel@lists.freedesktop.org, Ingo Molnar <mingo@redhat.com>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Kees Cook <keescook@chromium.org>, linux-kernel@vger.kernel.org,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>, Mel Gorman <mgorman@suse.de>,
-        Petr Mladek <pmladek@suse.com>,
-        Sergey Senozhatsky <senozhatsky@chromium.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        Tony Luck <tony.luck@intel.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>, mkoutny@suse.com
+Message-ID: <20211110104510.GB20566@blackbody.suse.cz>
 References: <YYrU2PdmdNkulWSM@sultan-box.localdomain>
  <20211109213847.GY174703@worktop.programming.kicks-ass.net>
- <YYuS1uNhxWOEX1Ci@phenom.ffwll.local>
- <87fss4wcgm.fsf@jogness.linutronix.de>
+ <CAKfTPtC_A-_sfQ+rm440oHwd2gUZ222FMwsi-JTkyLPc-x0qrw@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <87fss4wcgm.fsf@jogness.linutronix.de>
-X-Operating-System: Linux phenom 5.10.0-8-amd64 
+In-Reply-To: <CAKfTPtC_A-_sfQ+rm440oHwd2gUZ222FMwsi-JTkyLPc-x0qrw@mail.gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 10, 2021 at 11:13:37AM +0106, John Ogness wrote:
-> On 2021-11-10, Daniel Vetter <daniel@ffwll.ch> wrote:
-> > I'm a bit out of the loop but from lwn articles my understanding is
-> > that part of upstreaming from -rt we no longer have the explicit "I'm
-> > a safe console for direct printing" opt-in. Which I get from a
-> > backwards compat pov, but I still think for at least fbcon we really
-> > should never attempt a direct printk con->write, it's just all around
-> > terrible.
+On Wed, Nov 10, 2021 at 10:00:35AM +0100, Vincent Guittot <vincent.guittot@linaro.org> wrote:
+> Is it the same SCHED_WARN_ON(rq->tmp_alone_branch !=
+> &rq->leaf_cfs_rq_list); that generates the deadlock on v5.15 too ?
 > 
-> Right now we don't have an explicit "I'm a safe console for direct
-> printing" option. Right now all printing is direct. But it sounds to me
-> that we should add this console flag when we introduce kthread printers.
+> one remaining tmp_alone_branch warning has been fixed in v5.15 with
+> 2630cde26711 ("sched/fair: Add ancestors of unthrottled undecayed cfs_rq")
 
-Ah I wasnt' clear whether this was merged already or not yet.
+AFAIK, the warning is typically triggered on v5.13 when CPU throttling is
+employeed. The cfs_rq list is mis-ordered but it shouldn't be fatal.
+But the throttling currently (since v5.13 too) also exposes a race on
+task_group removal that can lead to corrupting the cfs_rq list (another
+thread [1], I'll leave this thread for printk (non)-locking).
 
-> > So yeah for fbcon at least I think we really should throw out direct
-> > con->write from printk completely.
-> 
-> Even after we introduce kthread printers, there will still be situations
-> where direct printing is used: booting (before kthreads exist) and
-> shutdown/suspend/crash situations, when the kthreads may not be
-> active.
-> 
-> I will introduce a console flag so that consoles can opt-out for direct
-> printing. (opt-out rather than opt-in is probably easier, since there
-> are only a few that would need to opt-out).
+HTH,
+Michal
 
-Yeah opt-out for fbcon sounds good to me, and then across the board (even
-when the kthread is not yet or no longer running, it really doesn't make
-anything better). Maybe with a fbcon module (or system wide
-force_direct_printk) option to disable that flag in case someone needs
-it.
-
-> Since kthread printers do not yet exist (hoping to get them in for
-> 5.17), I am not sure how we should address the reported bug for existing
-> kernels.
-
-I think we just can't. This thing keeps popping up in all kinds of places,
-and in some cases it's really not possible to fix it. Like in
-oops_in_progress we can just give up, but for normal printk from funny
-places we'd corrupt the console (plus there's no flag to even detect these
-cases), since we really need to launch these work_struct to get stuff to
-the screen.
-
-I think in the past we sometimes managed to work around the issue by
-moving the printk outside of locks, but that's rarely a good idea just
-because fbcon.
--Daniel
--- 
-Daniel Vetter
-Software Engineer, Intel Corporation
-http://blog.ffwll.ch
+[1] https://lore.kernel.org/r/20211011172236.11223-1-mkoutny@suse.com/
