@@ -2,281 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2FB7844C405
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 16:05:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C76144C406
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 16:05:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232424AbhKJPHn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Nov 2021 10:07:43 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50300 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232593AbhKJPGr (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Nov 2021 10:06:47 -0500
-Received: from mail-ot1-x32e.google.com (mail-ot1-x32e.google.com [IPv6:2607:f8b0:4864:20::32e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0D05EC061228
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Nov 2021 07:03:24 -0800 (PST)
-Received: by mail-ot1-x32e.google.com with SMTP id x19-20020a9d7053000000b0055c8b39420bso4318580otj.1
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Nov 2021 07:03:24 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=DZ1rNip2BWzE9XrbLXmI80jkgZVMhDv14Vt1iPMqCbA=;
-        b=loAx3mn3I8tWvXV9J1CnehL8M/0oCBse5fknnRXtFQ5ksEew7DOimzooF1jaf5/EV4
-         HmiNBAch/VSjTgSPIoTYJywurvPDJy+OLYUclxNhqd2bg2OkZ3YonXUvVQ2zK7NtRDnn
-         w2wXVfpiSRJCNI5B/i6YMSI2FEPUDk0JQuS3qw7M1VcVpDe/qTWKbkJLmHI9GSzlZHNl
-         MPz8rCYXCN/e3KcXQ31C5LHVDmIPVbY7XsCgoXd6BMTrRY3qOtgn3zDvdO8SPgu9c5c4
-         ruyamG0cLl7l5/sfOwEPMJifCQYsryJwamrduJIw1NXFL87ojjbJYd4xf4xszJwUt4lQ
-         NiZA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=DZ1rNip2BWzE9XrbLXmI80jkgZVMhDv14Vt1iPMqCbA=;
-        b=6OnDFQtBWyHUuyJCCnyr8zLsYh+eSditoVjhShc/z+U3Iuf3aSxnHHS8zYc9mdoLes
-         8xI9yNW8GGEEYlsjemIq3tG4sn0fcjEJ8zCBJi7g/8f/qddpRXbBrmClR0jR4m8bK6TQ
-         ZCTYF8Mmecek28JFQq8+/LHAQXsL4Wg2cUYfVMKsz49mzqG+B420VRSD6zm24dQdQRQh
-         vUSlQzSixBU6iuVguiip5wNliOq473JcA90Caz7su/gaIB50V+yQS1kS9kgKdRVNd598
-         f7bzfrOlxPia9PVy4sHQQ7aE6o986E27rKk0bdMeeHf/tTgzBtPQLLveDvTmKqFA5BUo
-         4sjQ==
-X-Gm-Message-State: AOAM531HlsyiSPfgRphcGz5gXU3JUv2PaTNVUmqgOuhYZRuX731oHPJw
-        rcPgpaRsMAmFk3f+zalFIo04QkiJiKdzlV0saCPWag==
-X-Google-Smtp-Source: ABdhPJwazvzeSXOEKajsDgodjc/c//1LVtnjIgmPemDFAc9R7quZv0M8t8RohN3ugFQrsugA1Ktl7wjNmZEeaGtu+U4=
-X-Received: by 2002:a9d:7548:: with SMTP id b8mr424220otl.92.1636556602777;
- Wed, 10 Nov 2021 07:03:22 -0800 (PST)
+        id S232409AbhKJPHy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Nov 2021 10:07:54 -0500
+Received: from mail.kernel.org ([198.145.29.99]:48036 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232339AbhKJPHk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Nov 2021 10:07:40 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9E76561051;
+        Wed, 10 Nov 2021 15:04:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1636556692;
+        bh=qtocZ3hkzt64qXgyIeHo10k+iZQM7znfrDaOz+wsqGg=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=vMwqSGPyb2cDGIhmWJQraSt5kCP4cX1rxlLy7Qf1W8w2NcArCGt4gv+f+jNx98oUz
+         BlZdS1nxF9dGOMiYuQzDdLaFO0Xkh58XchNct0I1tOtomLgNYGA/sxYM5AOOgAcfd/
+         UhY2z4sul/NUYLj6aBFXyfj5c2YHzrT+LO5CUFy2LMurKbwEb4z3gzfwuuvTSLnHZN
+         vk1xSckiI1i2EIZU10a5ZXOmGU6au9amQy+Fe1XU2Yi+5+asgQoWxzHdQNhzaVDXAo
+         EGdjOFyLgsvkNiq/PWj8AY7+CMZdaDgu1cJsPW2/6ki/WSR0ZhV7jBOgVm0V3vjtjB
+         FzWKHnqMOAaOQ==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id 711F95C0848; Wed, 10 Nov 2021 07:04:52 -0800 (PST)
+Date:   Wed, 10 Nov 2021 07:04:52 -0800
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Heiner Kallweit <hkallweit1@gmail.com>
+Cc:     John Stultz <john.stultz@linaro.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Feng Tang <feng.tang@intel.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] clocksource: Improve cs_watchdog_read()
+Message-ID: <20211110150452.GB641268@paulmck-ThinkPad-P17-Gen-1>
+Reply-To: paulmck@kernel.org
+References: <8f13ba8d-03b5-76de-4d59-4ca8786afb83@gmail.com>
+ <20211110124821.GZ641268@paulmck-ThinkPad-P17-Gen-1>
+ <a1e75119-bf60-8dff-71c5-29d1a137587d@gmail.com>
 MIME-Version: 1.0
-References: <20211109151057.3489223-1-valentin.schneider@arm.com>
- <20211110011738.GD288354@lothringen> <beec14cee84de7a4bedd7a63c2acdf150a82bc09.camel@gmx.de>
- <87h7cks16n.mognet@arm.com> <87bl2srrvq.mognet@arm.com>
-In-Reply-To: <87bl2srrvq.mognet@arm.com>
-From:   Marco Elver <elver@google.com>
-Date:   Wed, 10 Nov 2021 16:03:10 +0100
-Message-ID: <CANpmjNN7mW=7jjkXDPHV6=SbjAMYq=vFRDi+6aGFCdPFm1LZ-A@mail.gmail.com>
-Subject: Re: [PATCH] sched: Split preemption model selection between DYNAMIC & !DYNAMIC
-To:     Valentin Schneider <valentin.schneider@arm.com>
-Cc:     Mike Galbraith <efault@gmx.de>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        linux-kernel@vger.kernel.org,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <a1e75119-bf60-8dff-71c5-29d1a137587d@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 10 Nov 2021 at 15:45, Valentin Schneider
-<valentin.schneider@arm.com> wrote:
->
-> On 10/11/21 11:24, Valentin Schneider wrote:
-> > Following Frederic's _STATIC suggestion, I got to the below. The nice thing
-> > is if a defconfig picks say PREEMPT_VOLUNTARY and the arch supports
-> > PREEMPT_DYNAMIC, then it'll pick PREEMPT_VOLUNTARY_BEHAVIOUR. The less nice
-> > thing is that we end up selecting PREEMPT_STATIC for PREEMPT_DYNAMIC
-> > kernels, naming's hard... Maybe _BUILD rather than _STATIC?
-> >
->
-> And now without a legacy compatibility layer crud...
+On Wed, Nov 10, 2021 at 02:53:27PM +0100, Heiner Kallweit wrote:
+> On 10.11.2021 13:48, Paul E. McKenney wrote:
+> > On Tue, Nov 09, 2021 at 09:55:08PM +0100, Heiner Kallweit wrote:
+> >> If max_cswd_read_retries is set to 0 or 1 then the current warning
+> >> behavior doesn't seem to make too much sense to me.
+> >> If set to 0, then we'd warn with each watchdog run.
+> >> If set to 1, then we'd warn at the first retry, even though the commit
+> >> description of db3a34e17433 states that one retry is expected behavior.
+> >> If printing a message at all in this case, then it should be debug
+> >> level.
+> > 
+> > The behavior for max_cswd_read_retries==1 is exactly what you want when
+> > you are checking to see whether or not your system would retry at all
+> > for the duration of a given run.
+> > 
+> > The behavior for max_cswd_read_retries==0 is exactly what you want when
+> > you are testing the ability to print that message on a system that will
+> > not do a retry in a reasonable period of time.
+> > 
+> > Or am I missing something here?
+> > 
+> For me this mixes production warning and debug features.
 
-If this works for everyone else, then I think this is the least
-intrusive and hopefully won't require telling everyone about this
-config change.
+I know of no law saying that a given module parameter cannot be used for
+both debugging and production features.  In fact, there are any number
+of parameters that take ranges of values, some of which should not be
+used in production.  In addition, Linux supports such a wide range of
+environments and workloads that people supporting different production
+environments will have very different ideas about the advisability of
+setting a given value for a given module parameter.
 
-For the final version, it seems to be missing s/_BEHAVIOUR// in
-kernel/sched/core.c.
+So if your production environments don't like setting the value of
+clocksource.max_cswd_read_retries to less than two, why not just prohibit
+such settings in your production environments?
 
-And the kcsan_test.c change can be reverted, I think it's broken
-either way now, because it wants the dynamic state (the test still
-works in most configs, so fixing this isn't super urgent). Similarly
-for kernel/trace/trace.c, which appears mainly cosmetic. So I'd defer
-changing these until there are real helpers to get the true preemption
-behaviour of the running system.
+> To support your debug use cases, maybe use something like this?
+> 
+> if (nretries > 1)
+> 	pr_warn()
+> else if (nretries >= max_cswd_read_retries)
+> 	pr_debug()
 
-Thanks,
--- Marco
+I am sorry, but I am not seeing the benefit of this change.  How does
+this help you?
 
-> ---
-> diff --git a/include/linux/kernel.h b/include/linux/kernel.h
-> index 2776423a587e..9c7d774ef809 100644
-> --- a/include/linux/kernel.h
-> +++ b/include/linux/kernel.h
-> @@ -88,7 +88,7 @@
->  struct completion;
->  struct user;
->
-> -#ifdef CONFIG_PREEMPT_VOLUNTARY
-> +#ifdef CONFIG_PREEMPT_VOLUNTARY_BUILD
->
->  extern int __cond_resched(void);
->  # define might_resched() __cond_resched()
-> diff --git a/include/linux/vermagic.h b/include/linux/vermagic.h
-> index 1eaaa93c37bf..f2b71920024c 100644
-> --- a/include/linux/vermagic.h
-> +++ b/include/linux/vermagic.h
-> @@ -15,7 +15,7 @@
->  #else
->  #define MODULE_VERMAGIC_SMP ""
->  #endif
-> -#ifdef CONFIG_PREEMPT
-> +#ifdef CONFIG_PREEMPT_BUILD
->  #define MODULE_VERMAGIC_PREEMPT "preempt "
->  #elif defined(CONFIG_PREEMPT_RT)
->  #define MODULE_VERMAGIC_PREEMPT "preempt_rt "
-> @@ -39,9 +39,9 @@
->  #define MODULE_RANDSTRUCT_PLUGIN
->  #endif
->
-> -#define VERMAGIC_STRING                                                \
-> +#define VERMAGIC_STRING                                                        \
->         UTS_RELEASE " "                                                 \
-> -       MODULE_VERMAGIC_SMP MODULE_VERMAGIC_PREEMPT                     \
-> +       MODULE_VERMAGIC_SMP MODULE_VERMAGIC_PREEMPT                     \
->         MODULE_VERMAGIC_MODULE_UNLOAD MODULE_VERMAGIC_MODVERSIONS       \
->         MODULE_ARCH_VERMAGIC                                            \
->         MODULE_RANDSTRUCT_PLUGIN
-> diff --git a/init/Makefile b/init/Makefile
-> index 2846113677ee..04eeee12c076 100644
-> --- a/init/Makefile
-> +++ b/init/Makefile
-> @@ -30,7 +30,7 @@ $(obj)/version.o: include/generated/compile.h
->  quiet_cmd_compile.h = CHK     $@
->        cmd_compile.h = \
->         $(CONFIG_SHELL) $(srctree)/scripts/mkcompile_h $@       \
-> -       "$(UTS_MACHINE)" "$(CONFIG_SMP)" "$(CONFIG_PREEMPT)"    \
-> +       "$(UTS_MACHINE)" "$(CONFIG_SMP)" "$(CONFIG_PREEMPT_BUILD)"      \
->         "$(CONFIG_PREEMPT_RT)" $(CONFIG_CC_VERSION_TEXT) "$(LD)"
->
->  include/generated/compile.h: FORCE
-> diff --git a/kernel/Kconfig.preempt b/kernel/Kconfig.preempt
-> index 60f1bfc3c7b2..ce77f0265660 100644
-> --- a/kernel/Kconfig.preempt
-> +++ b/kernel/Kconfig.preempt
-> @@ -1,12 +1,23 @@
->  # SPDX-License-Identifier: GPL-2.0-only
->
-> +config PREEMPT_NONE_BUILD
-> +       bool
-> +
-> +config PREEMPT_VOLUNTARY_BUILD
-> +       bool
-> +
-> +config PREEMPT_BUILD
-> +       bool
-> +       select PREEMPTION
-> +       select UNINLINE_SPIN_UNLOCK if !ARCH_INLINE_SPIN_UNLOCK
-> +
->  choice
->         prompt "Preemption Model"
-> -       default PREEMPT_NONE_BEHAVIOUR
-> +       default PREEMPT_NONE
->
-> -config PREEMPT_NONE_BEHAVIOUR
-> +config PREEMPT_NONE
->         bool "No Forced Preemption (Server)"
-> -       select PREEMPT_NONE if !PREEMPT_DYNAMIC
-> +       select PREEMPT_NONE_BUILD if !PREEMPT_DYNAMIC
->         help
->           This is the traditional Linux preemption model, geared towards
->           throughput. It will still provide good latencies most of the
-> @@ -18,10 +29,10 @@ config PREEMPT_NONE_BEHAVIOUR
->           raw processing power of the kernel, irrespective of scheduling
->           latencies.
->
-> -config PREEMPT_VOLUNTARY_BEHAVIOUR
-> +config PREEMPT_VOLUNTARY
->         bool "Voluntary Kernel Preemption (Desktop)"
->         depends on !ARCH_NO_PREEMPT
-> -       select PREEMPT_VOLUNTARY if !PREEMPT_DYNAMIC
-> +       select PREEMPT_VOLUNTARY_BUILD if !PREEMPT_DYNAMIC
->         help
->           This option reduces the latency of the kernel by adding more
->           "explicit preemption points" to the kernel code. These new
-> @@ -37,10 +48,10 @@ config PREEMPT_VOLUNTARY_BEHAVIOUR
->
->           Select this if you are building a kernel for a desktop system.
->
-> -config PREEMPT_BEHAVIOUR
-> +config PREEMPT
->         bool "Preemptible Kernel (Low-Latency Desktop)"
->         depends on !ARCH_NO_PREEMPT
-> -       select PREEMPT
-> +       select PREEMPT_BUILD
->         help
->           This option reduces the latency of the kernel by making
->           all kernel code (that is not executing in a critical section)
-> @@ -58,7 +69,7 @@ config PREEMPT_BEHAVIOUR
->
->  config PREEMPT_RT
->         bool "Fully Preemptible Kernel (Real-Time)"
-> -       depends on EXPERT && ARCH_SUPPORTS_RT && !PREEMPT_DYNAMIC
-> +       depends on EXPERT && ARCH_SUPPORTS_RT
->         select PREEMPTION
->         help
->           This option turns the kernel into a real-time kernel by replacing
-> @@ -75,17 +86,6 @@ config PREEMPT_RT
->
->  endchoice
->
-> -config PREEMPT_NONE
-> -       bool
-> -
-> -config PREEMPT_VOLUNTARY
-> -       bool
-> -
-> -config PREEMPT
-> -       bool
-> -       select PREEMPTION
-> -       select UNINLINE_SPIN_UNLOCK if !ARCH_INLINE_SPIN_UNLOCK
-> -
->  config PREEMPT_COUNT
->         bool
->
-> @@ -95,8 +95,8 @@ config PREEMPTION
->
->  config PREEMPT_DYNAMIC
->         bool "Preemption behaviour defined on boot"
-> -       depends on HAVE_PREEMPT_DYNAMIC
-> -       select PREEMPT
-> +       depends on HAVE_PREEMPT_DYNAMIC && !PREEMPT_RT
-> +       select PREEMPT_BUILD
->         default y
->         help
->           This option allows to define the preemption model on the kernel
-> diff --git a/kernel/kcsan/kcsan_test.c b/kernel/kcsan/kcsan_test.c
-> index dc55fd5a36fc..845b17cf7811 100644
-> --- a/kernel/kcsan/kcsan_test.c
-> +++ b/kernel/kcsan/kcsan_test.c
-> @@ -1005,13 +1005,13 @@ static const void *nthreads_gen_params(const void *prev, char *desc)
->         else
->                 nthreads *= 2;
->
-> -       if (!IS_ENABLED(CONFIG_PREEMPT) || !IS_ENABLED(CONFIG_KCSAN_INTERRUPT_WATCHER)) {
-> +       if (!IS_ENABLED(CONFIG_PREEMPTION) || !IS_ENABLED(CONFIG_KCSAN_INTERRUPT_WATCHER)) {
->                 /*
->                  * Without any preemption, keep 2 CPUs free for other tasks, one
->                  * of which is the main test case function checking for
->                  * completion or failure.
->                  */
-> -               const long min_unused_cpus = IS_ENABLED(CONFIG_PREEMPT_NONE) ? 2 : 0;
-> +               const long min_unused_cpus = IS_ENABLED(CONFIG_PREEMPT_NONE_BUILD) ? 2 : 0;
->                 const long min_required_cpus = 2 + min_unused_cpus;
->
->                 if (num_online_cpus() < min_required_cpus) {
-> diff --git a/kernel/trace/trace.c b/kernel/trace/trace.c
-> index 7896d30d90f7..3b3226ffbafa 100644
-> --- a/kernel/trace/trace.c
-> +++ b/kernel/trace/trace.c
-> @@ -4271,11 +4271,11 @@ print_trace_header(struct seq_file *m, struct trace_iterator *iter)
->                    entries,
->                    total,
->                    buf->cpu,
-> -#if defined(CONFIG_PREEMPT_NONE)
-> +#if defined(CONFIG_PREEMPT_NONE_BUILD)
->                    "server",
-> -#elif defined(CONFIG_PREEMPT_VOLUNTARY)
-> +#elif defined(CONFIG_PREEMPT_VOLUNTARY_BUILD)
->                    "desktop",
-> -#elif defined(CONFIG_PREEMPT)
-> +#elif defined(CONFIG_PREEMPT_BUILD)
->                    "preempt",
->  #elif defined(CONFIG_PREEMPT_RT)
->                    "preempt_rt",
+							Thanx, Paul
+
+> >> Whilst being at it, move declaration of wd_end and wd_delta into the
+> >> loop and remove not needed braces.
+> > 
+> > I am OK with moving those two variables into the "for" loop.
+> > 
+> > I am personally OK removing the braces, but if I remember correctly,
+> > my upstream maintainer asked that I add them due to the statement being
+> > split across two lines.
+> > 
+> > 							Thanx, Paul
+> > 
+> >> Signed-off-by: Heiner Kallweit <hkallweit1@gmail.com>
+> >> ---
+> >>  kernel/time/clocksource.c | 6 +++---
+> >>  1 file changed, 3 insertions(+), 3 deletions(-)
+> >>
+> >> diff --git a/kernel/time/clocksource.c b/kernel/time/clocksource.c
+> >> index f29d1a524..8c0be9c02 100644
+> >> --- a/kernel/time/clocksource.c
+> >> +++ b/kernel/time/clocksource.c
+> >> @@ -208,10 +208,11 @@ module_param(verify_n_cpus, int, 0644);
+> >>  static bool cs_watchdog_read(struct clocksource *cs, u64 *csnow, u64 *wdnow)
+> >>  {
+> >>  	unsigned int nretries;
+> >> -	u64 wd_end, wd_delta;
+> >>  	int64_t wd_delay;
+> >>  
+> >>  	for (nretries = 0; nretries <= max_cswd_read_retries; nretries++) {
+> >> +		u64 wd_end, wd_delta;
+> >> +
+> >>  		local_irq_disable();
+> >>  		*wdnow = watchdog->read(watchdog);
+> >>  		*csnow = cs->read(cs);
+> >> @@ -222,10 +223,9 @@ static bool cs_watchdog_read(struct clocksource *cs, u64 *csnow, u64 *wdnow)
+> >>  		wd_delay = clocksource_cyc2ns(wd_delta, watchdog->mult,
+> >>  					      watchdog->shift);
+> >>  		if (wd_delay <= WATCHDOG_MAX_SKEW) {
+> >> -			if (nretries > 1 || nretries >= max_cswd_read_retries) {
+> >> +			if (nretries > 1)
+> >>  				pr_warn("timekeeping watchdog on CPU%d: %s retried %d times before success\n",
+> >>  					smp_processor_id(), watchdog->name, nretries);
+> >> -			}
+> >>  			return true;
+> >>  		}
+> >>  	}
+> >> -- 
+> >> 2.33.1
+> >>
+> 
