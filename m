@@ -2,102 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4ED9C44C624
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 18:44:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C4D944C628
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 18:44:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232467AbhKJRqt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Nov 2021 12:46:49 -0500
-Received: from frasgout.his.huawei.com ([185.176.79.56]:4081 "EHLO
-        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232364AbhKJRqs (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Nov 2021 12:46:48 -0500
-Received: from fraeml715-chm.china.huawei.com (unknown [172.18.147.201])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4HqBzG1qYnz67gsl;
-        Thu, 11 Nov 2021 01:43:38 +0800 (CST)
-Received: from lhreml710-chm.china.huawei.com (10.201.108.61) by
- fraeml715-chm.china.huawei.com (10.206.15.34) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.15; Wed, 10 Nov 2021 18:43:58 +0100
-Received: from localhost (10.52.121.123) by lhreml710-chm.china.huawei.com
- (10.201.108.61) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2308.15; Wed, 10 Nov
- 2021 17:43:57 +0000
-Date:   Wed, 10 Nov 2021 17:43:56 +0000
-From:   Jonathan Cameron <Jonathan.Cameron@Huawei.com>
-To:     Ben Widawsky <ben.widawsky@intel.com>
-CC:     Dan Williams <dan.j.williams@intel.com>,
-        <linux-cxl@vger.kernel.org>, "Ira Weiny" <ira.weiny@intel.com>,
-        <linux-pci@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v6 07/10] cxl/pci: Split cxl_pci_setup_regs()
-Message-ID: <20211110174356.000000d1@Huawei.com>
-In-Reply-To: <20211110173040.vttuxu2ggkqxfnza@intel.com>
-References: <163379787433.692348.2451270397309803556.stgit@dwillia2-desk3.amr.corp.intel.com>
-        <163434053788.914258.18412599112859205220.stgit@dwillia2-desk3.amr.corp.intel.com>
-        <20211110171437.00007160@Huawei.com>
-        <20211110173040.vttuxu2ggkqxfnza@intel.com>
-Organization: Huawei Technologies Research and Development (UK) Ltd.
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; i686-w64-mingw32)
-MIME-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.52.121.123]
-X-ClientProxiedBy: lhreml748-chm.china.huawei.com (10.201.108.198) To
- lhreml710-chm.china.huawei.com (10.201.108.61)
-X-CFilter-Loop: Reflected
+        id S232463AbhKJRrh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Nov 2021 12:47:37 -0500
+Received: from mail.kernel.org ([198.145.29.99]:60144 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229937AbhKJRrg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Nov 2021 12:47:36 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPS id BA5AF61208;
+        Wed, 10 Nov 2021 17:44:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1636566288;
+        bh=tPRHogl7vIHG6jTHr0v3I5Y3flPNxHxzs54UiJ91Zyc=;
+        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
+        b=KGcGxuHiPt1t/Aev0yq1cmGC8I0Jrq/SsXDLAKhyI/T1HCYYxakN1vMIe2mDSBRgA
+         zXetZEKERpfk1/Qs8210GVPzPxer1ppV10Y/TMqipcL76EV3BA3SeqxEWWQDFokq1E
+         Cr//hzYeXkMs7borSoiFTFyvb6cNp9sq+xVME8HTGLn4j+hilhDm28XgP5SkBIcDvA
+         U9AdGgSfra5/iJuk6zU7iNBfQGjIyRxyyVMMMmbptoCNcLPQ0ppOYA/cMkXwU1LnHI
+         AdV22ic5wHBet1hXpzVLwCXOepQZ1Usq7ZfwuOhO0Yw9+AJSZ4F3Lg8PArXVVKjeFy
+         Lq2535NTdjqKA==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id B06D060A5A;
+        Wed, 10 Nov 2021 17:44:48 +0000 (UTC)
+Subject: Re: [GIT PULL] remoteproc updates for v5.16
+From:   pr-tracker-bot@kernel.org
+In-Reply-To: <20211108173830.2478246-1-bjorn.andersson@linaro.org>
+References: <20211108173830.2478246-1-bjorn.andersson@linaro.org>
+X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
+X-PR-Tracked-Message-Id: <20211108173830.2478246-1-bjorn.andersson@linaro.org>
+X-PR-Tracked-Remote: https://git.kernel.org/pub/scm/linux/kernel/git/remoteproc/linux.git tags/rproc-v5.16
+X-PR-Tracked-Commit-Id: 9955548919c47a6987b40d90a30fd56bbc043e7b
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: bd485d274be3935da61c349dc82cb7471bac0a9a
+Message-Id: <163656628871.12313.8282799098455245701.pr-tracker-bot@kernel.org>
+Date:   Wed, 10 Nov 2021 17:44:48 +0000
+To:     Bjorn Andersson <bjorn.andersson@linaro.org>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Ohad Ben-Cohen <ohad@wizery.com>,
+        linux-remoteproc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Sibi Sankar <sibis@codeaurora.org>,
+        Dong Aisheng <aisheng.dong@nxp.com>,
+        Shengjiu Wang <shengjiu.wang@nxp.com>,
+        Tinghan Shen <tinghan.shen@mediatek.com>,
+        Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>,
+        Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
+        Sinthu Raja <sinthu.raja@ti.com>,
+        Stephen Boyd <swboyd@chromium.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+        Colin Ian King <colin.king@canonical.com>,
+        Dan Carpenter <dan.carpenter@oracle.com>,
+        Deepak Kumar Singh <deesin@codeaurora.org>,
+        Peng Fan <peng.fan@nxp.com>,
+        Wolfram Sang <wsa+renesas@sang-engineering.com>,
+        Yassine Oudjana <y.oudjana@protonmail.com>,
+        zhaoxiao <long870912@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 10 Nov 2021 09:30:40 -0800
-Ben Widawsky <ben.widawsky@intel.com> wrote:
+The pull request you sent on Mon,  8 Nov 2021 11:38:30 -0600:
 
-> On 21-11-10 17:14:37, Jonathan Cameron wrote:
-> > On Fri, 15 Oct 2021 16:30:42 -0700
-> > Dan Williams <dan.j.williams@intel.com> wrote:
-> >   
-> > > From: Ben Widawsky <ben.widawsky@intel.com>
-> > > 
-> > > In preparation for moving parts of register mapping to cxl_core, split
-> > > cxl_pci_setup_regs() into a helper that finds register blocks,
-> > > (cxl_find_regblock()), and a generic wrapper that probes the precise
-> > > register sets within a block (cxl_setup_regs()).
-> > > 
-> > > Move the actual mapping (cxl_map_regs()) of the only register-set that
-> > > cxl_pci cares about (memory device registers) up a level from the former
-> > > cxl_pci_setup_regs() into cxl_pci_probe().
-> > > 
-> > > With this change the unused component registers are no longer mapped,
-> > > but the helpers are primed to move into the core.
-> > > 
-> > > [djbw: drop cxl_map_regs() for component registers]
-> > > 
-> > > Signed-off-by: Ben Widawsky <ben.widawsky@intel.com>
-> > > [djbw: rebase on the cxl_register_map refactor]
-> > > Reviewed-by: Ira Weiny <ira.weiny@intel.com>
-> > > Reviewed-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
-> > > Signed-off-by: Dan Williams <dan.j.williams@intel.com>  
-> > 
-> > Hi Ben / all,
-> > 
-> > This is probably the best patch to comment on for this
-> > (note it is not a comment about this patch, but more the state we end up
-> > in after it).
-> > 
-> > cxl_map_regs() is a generic function, but with the new split approach
-> > as a result of this patch, we now always know at the caller which of
-> > the types of map we are doing.
-> > 
-> > I think it would be clearer to embrace that situation and drop cxl_map_regs()
-> > in favor of directly calling the relevant specific versions such as
-> > cxl_map_device_regs().  I can't immediately see how the generic cxl_map_regs()
-> > will be useful to us going forwards.
-> > 
-> > Jonathan  
-> 
-> I completely agree. Long term, something like cxl_map_regs() might be desirable
-> for a Type2 device, but we have no such user today. Patches welcome?
+> https://git.kernel.org/pub/scm/linux/kernel/git/remoteproc/linux.git tags/rproc-v5.16
 
-Sure, will do.
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/bd485d274be3935da61c349dc82cb7471bac0a9a
 
-J
+Thank you!
+
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
