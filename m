@@ -2,108 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9327B44BF9A
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 12:01:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0EAC044BFC1
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 12:03:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231845AbhKJLEU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Nov 2021 06:04:20 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50358 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231847AbhKJLD4 (ORCPT
+        id S231246AbhKJLF6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Nov 2021 06:05:58 -0500
+Received: from imap3.hz.codethink.co.uk ([176.9.8.87]:42796 "EHLO
+        imap3.hz.codethink.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231660AbhKJLFw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Nov 2021 06:03:56 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E50DC06120C
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Nov 2021 03:00:49 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Transfer-Encoding:
-        Content-Type:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
-        Sender:Reply-To:Content-ID:Content-Description;
-        bh=3QWgB4jgH1oOTnBTc67bHn9ZnzyC8lfbTd3CFqnLiv4=; b=fJeZnC/2p+39zc9XhEuKgzGZcB
-        8kltMsayqURhUXbMWDvWMpM6qdE51LASa0zCLChrTNoPtbbYRMTAkNVw5T2kZY0SYPweC3nJ7u+Vu
-        qPJSXG+aFui5hvpE9/80pmF68bBoirYjbfLQO/+C/b/UE+4gYCAhDcUFay+92gWT3gdEraCwwhHuK
-        0xU4ezn/uoh/jAA+rdAJFW5zCSwJglwa5hnuZr0boHMrkx3KwpckHMSwGfljzsf5DXeRg5EnKw1yU
-        IEYf6u1U3S6dyg40j/B2M7xytfox0Z3BG8GQviWoPgeYqYwNeFkKnBrXlc8LG905/jQZwUCKOWdRB
-        GYR9vHDw==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mklLL-001ns0-QK; Wed, 10 Nov 2021 11:00:40 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id CA7D830003C;
-        Wed, 10 Nov 2021 12:00:39 +0100 (CET)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 8D8F1210EC044; Wed, 10 Nov 2021 12:00:39 +0100 (CET)
-Date:   Wed, 10 Nov 2021 12:00:39 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Juergen Gross <jgross@suse.com>
-Cc:     x86@kernel.org, linux-kernel@vger.kernel.org, jpoimboe@redhat.com,
-        mark.rutland@arm.com, dvyukov@google.com, seanjc@google.com,
-        pbonzini@redhat.com, mbenes@suse.cz
-Subject: Re: [PATCH v2 11/23] x86,xen: Remove .fixup usage
-Message-ID: <YYumVx7qO3gY2tgD@hirez.programming.kicks-ass.net>
-References: <20211110100102.250793167@infradead.org>
- <20211110101325.545019822@infradead.org>
- <42933d6b-c6f4-7420-1d0f-7f5d6ec17d8e@suse.com>
+        Wed, 10 Nov 2021 06:05:52 -0500
+X-Greylist: delayed 1477 seconds by postgrey-1.27 at vger.kernel.org; Wed, 10 Nov 2021 06:05:52 EST
+Received: from cpc152649-stkp13-2-0-cust121.10-2.cable.virginm.net ([86.15.83.122] helo=[192.168.0.21])
+        by imap3.hz.codethink.co.uk with esmtpsa  (Exim 4.92 #3 (Debian))
+        id 1mkkzl-0007o9-D5; Wed, 10 Nov 2021 10:38:21 +0000
+Subject: Re: [PATCH v9 16/17] riscv: Fix an illegal instruction exception when
+ accessing vlenb without enable vector first
+To:     Greentime Hu <greentime.hu@sifive.com>, palmer@dabbelt.com,
+        paul.walmsley@sifive.com, linux-riscv@lists.infradead.org,
+        linux-kernel@vger.kernel.org, aou@eecs.berkeley.edu
+References: <cover.1636362169.git.greentime.hu@sifive.com>
+ <3c0297d8335e4cac54a4397c880092c1c983e04e.1636362169.git.greentime.hu@sifive.com>
+From:   Ben Dooks <ben.dooks@codethink.co.uk>
+Organization: Codethink Limited.
+Message-ID: <2d08f105-64fd-a43a-1dea-24870ff7c5b0@codethink.co.uk>
+Date:   Wed, 10 Nov 2021 10:38:20 +0000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.14.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <42933d6b-c6f4-7420-1d0f-7f5d6ec17d8e@suse.com>
+In-Reply-To: <3c0297d8335e4cac54a4397c880092c1c983e04e.1636362169.git.greentime.hu@sifive.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 10, 2021 at 11:35:37AM +0100, Juergen Gross wrote:
-> On 10.11.21 11:01, Peter Zijlstra wrote:
-> > Employ the fancy new EX_TYPE_IMM_REG to store -EFAULT in the return
-> > register and use this to remove some Xen .fixup usage.
-> >=20
-> > All callers of these functions only test for 0 return, so the actual
-> > return value change from -1 to -EFAULT is immaterial.
-> >=20
-> > Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-> > ---
-> >   arch/x86/include/asm/xen/page.h |   14 +++-----------
-> >   1 file changed, 3 insertions(+), 11 deletions(-)
-> >=20
-> > --- a/arch/x86/include/asm/xen/page.h
-> > +++ b/arch/x86/include/asm/xen/page.h
-> > @@ -96,11 +96,7 @@ static inline int xen_safe_write_ulong(u
-> >   	asm volatile("1: mov %[val], %[ptr]\n"
-> >   		     "2:\n"
-> > -		     ".section .fixup, \"ax\"\n"
-> > -		     "3: sub $1, %[ret]\n"
-> > -		     "   jmp 2b\n"
-> > -		     ".previous\n"
-> > -		     _ASM_EXTABLE(1b, 3b)
-> > +		     _ASM_EXTABLE_TYPE_REG(1b, 2b, EX_TYPE_EFAULT_REG, %[ret])
-> >   		     : [ret] "+r" (ret), [ptr] "=3Dm" (*addr)
-> >   		     : [val] "r" (val));
-> > @@ -110,16 +106,12 @@ static inline int xen_safe_write_ulong(u
-> >   static inline int xen_safe_read_ulong(const unsigned long *addr,
-> >   				      unsigned long *val)
-> >   {
-> > -	int ret =3D 0;
-> >   	unsigned long rval =3D ~0ul;
-> > +	int ret =3D 0;
->=20
-> Spurious change.
+On 09/11/2021 09:48, Greentime Hu wrote:
+> It triggered an illegal instruction exception when accessing vlenb CSR
+> without enable vector first. To fix this issue, we should enable vector
+> before using it and disable vector after using it.
+> 
+> Co-developed-by: Vincent Chen <vincent.chen@sifive.com>
+> Signed-off-by: Vincent Chen <vincent.chen@sifive.com>
+> Signed-off-by: Greentime Hu <greentime.hu@sifive.com>
+> ---
+>   arch/riscv/include/asm/vector.h        | 2 ++
+>   arch/riscv/kernel/cpufeature.c         | 2 ++
+>   arch/riscv/kernel/kernel_mode_vector.c | 6 ++++--
+>   3 files changed, 8 insertions(+), 2 deletions(-)
+> 
+> diff --git a/arch/riscv/include/asm/vector.h b/arch/riscv/include/asm/vector.h
+> index 5d7f14453f68..ca063c8f47f2 100644
+> --- a/arch/riscv/include/asm/vector.h
+> +++ b/arch/riscv/include/asm/vector.h
+> @@ -8,6 +8,8 @@
+>   
+>   #include <linux/types.h>
+>   
+> +void rvv_enable(void);
+> +void rvv_disable(void);
+>   void kernel_rvv_begin(void);
+>   void kernel_rvv_end(void);
+>   
+> diff --git a/arch/riscv/kernel/cpufeature.c b/arch/riscv/kernel/cpufeature.c
+> index 8e7557980faf..0139ec20adce 100644
+> --- a/arch/riscv/kernel/cpufeature.c
+> +++ b/arch/riscv/kernel/cpufeature.c
+> @@ -159,7 +159,9 @@ void __init riscv_fill_hwcap(void)
+>   	if (elf_hwcap & COMPAT_HWCAP_ISA_V) {
+>   		static_branch_enable(&cpu_hwcap_vector);
+>   		/* There are 32 vector registers with vlenb length. */
+> +		rvv_enable();
+>   		riscv_vsize = csr_read(CSR_VLENB) * 32;
+> +		rvv_disable();
+>   	}
+>   #endif
 
-Yeah, can't help myself, must be reverse xmas tree :-)
+Would it be better to enable this here, and then restore the original
+state instead of calling rvv_disable? If it was enabled then maybe
+something else is going to rely on that state?
 
-> >   	asm volatile("1: mov %[ptr], %[rval]\n"
-> >   		     "2:\n"
-> > -		     ".section .fixup, \"ax\"\n"
-> > -		     "3: sub $1, %[ret]\n"
-> > -		     "   jmp 2b\n"
-> > -		     ".previous\n"
-> > -		     _ASM_EXTABLE(1b, 3b)
-> > +		     _ASM_EXTABLE_TYPE_REG(1b, 2b, EX_TYPE_EFAUL_REG, %[ret])
->=20
-> I guess you didn't compile that? There is a typo: s/EFAUL/EFAULT/
+Maybe something like:
 
-Damn.. I figure that must've gotten lost in the robot spam telling me
-clang can't do __cold on labels :/
+		prev = rvv_enable()
+		riscv_vsize = csr_read(CSR_VLENB) * 32;
+		rvv_restore(prev);
+
+
+>   }
+> diff --git a/arch/riscv/kernel/kernel_mode_vector.c b/arch/riscv/kernel/kernel_mode_vector.c
+> index 8d2e53ea25c1..1ecb6ec5c56d 100644
+> --- a/arch/riscv/kernel/kernel_mode_vector.c
+> +++ b/arch/riscv/kernel/kernel_mode_vector.c
+> @@ -71,15 +71,17 @@ static void put_cpu_vector_context(void)
+>   	preempt_enable();
+>   }
+>   
+> -static void rvv_enable(void)
+> +void rvv_enable(void)
+>   {
+>   	csr_set(CSR_STATUS, SR_VS);
+>   }
+> +EXPORT_SYMBOL(rvv_enable);
+>   
+> -static void rvv_disable(void)
+> +void rvv_disable(void)
+>   {
+>   	csr_clear(CSR_STATUS, SR_VS);
+>   }
+> +EXPORT_SYMBOL(rvv_disable);
+>   
+>   /*
+>    * kernel_rvv_begin(): obtain the CPU vector registers for use by the calling
+> 
+
+
+-- 
+Ben Dooks				http://www.codethink.co.uk/
+Senior Engineer				Codethink - Providing Genius
+
+https://www.codethink.co.uk/privacy.html
