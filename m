@@ -2,208 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 53CF644C6C9
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 19:29:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C68E444C6CC
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 19:30:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232213AbhKJScF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Nov 2021 13:32:05 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124]:47110 "EHLO
+        id S232350AbhKJSd0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Nov 2021 13:33:26 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:26046 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229969AbhKJScE (ORCPT
+        by vger.kernel.org with ESMTP id S229969AbhKJSdZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Nov 2021 13:32:04 -0500
+        Wed, 10 Nov 2021 13:33:25 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1636568956;
+        s=mimecast20190719; t=1636569037;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=ckaC4HApZN9hZGfKlYmJ3lbe5VmvvuXCdyrcPx2tqXY=;
-        b=dXZ+mj9PSYdGN6wcmLKEIlR22RALd0khlrpCuhvFiWV+vE9xlSyw+sAO7dtqhWBz0jYnXQ
-        SBIhtuUS2HXuPS136EuiT/mbreMZ4FXUXCCuSNfdb4xx41jixVmYfZbN0Nt5+NXL0p525L
-        qPIvvlDALMoxMFb/2dM0FCJvuZC1GtI=
-Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com
- [209.85.128.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-249-ZwHOOO8nM5iiw5GP7ajfAQ-1; Wed, 10 Nov 2021 13:29:14 -0500
-X-MC-Unique: ZwHOOO8nM5iiw5GP7ajfAQ-1
-Received: by mail-wm1-f70.google.com with SMTP id 205-20020a1c00d6000000b003335d1384f1so543030wma.3
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Nov 2021 10:29:14 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=ckaC4HApZN9hZGfKlYmJ3lbe5VmvvuXCdyrcPx2tqXY=;
-        b=S+Jg2u7hmaBkZCrrBEOmGPZXEr6zdxFqtUblsLvBVaDPhDvf30UPVQgcKEc/C2HpZ0
-         nz3zfBZ/gb34cg9L5IUaHvDfZRaKE8CviByhlrb9cRk+vCRgPCRpUU+4BSEHi7P5aPmH
-         DxmTDNrloDbJYoliI5U7hNQuXP6F+I5C9hlrIG9SLQnMPYPdcnLPLpAZBTk0nYKMmqMo
-         BQRQvmD0KU7uCIs50H2xiPGOVqyszZRk6TpSldSwrnh3A39izWj7LNAIPaxvWcp/52sT
-         0tyO/uJA8wNN/LOxLpzyCLZvd0hJL+ZqmoBXabVDPIyBAM/p3Im4zbjcSo11l8DeTxJP
-         6jIQ==
-X-Gm-Message-State: AOAM530dHJQ6Kxf4ZBj31SvrfhxMcO8leeQL8rUUlTGO9k87KHYnn4+u
-        +x0pZWI8kwJ4vL1Nq+hfSr4MEFmZuOtrM3GD4hKRZ9vXLJ/3LOUbxfLipStMKabaChAQZW/Z6dh
-        DzW8u9u9QMSD04ZHpJbALYvCw
-X-Received: by 2002:a05:600c:a0b:: with SMTP id z11mr19161381wmp.147.1636568953469;
-        Wed, 10 Nov 2021 10:29:13 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJxLNc+b6q1bOBa1tUYi+GlKpjxtH5KVHH3xHHPQdLoHjDBHgBPOijDSdCW1wnanyUW0q4ladg==
-X-Received: by 2002:a05:600c:a0b:: with SMTP id z11mr19161343wmp.147.1636568953236;
-        Wed, 10 Nov 2021 10:29:13 -0800 (PST)
-Received: from krava (nat-pool-brq-u.redhat.com. [213.175.37.12])
-        by smtp.gmail.com with ESMTPSA id o12sm601367wmq.12.2021.11.10.10.29.12
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 10 Nov 2021 10:29:12 -0800 (PST)
-Date:   Wed, 10 Nov 2021 19:29:11 +0100
-From:   Jiri Olsa <jolsa@redhat.com>
-To:     Ian Rogers <irogers@google.com>
-Cc:     Andi Kleen <ak@linux.intel.com>, Jin Yao <yao.jin@linux.intel.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        John Garry <john.garry@huawei.com>,
-        Kajol Jain <kjain@linux.ibm.com>,
-        "Paul A . Clarke" <pc@us.ibm.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Riccardo Mancini <rickyman7@gmail.com>,
-        Kan Liang <kan.liang@linux.intel.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Madhavan Srinivasan <maddy@linux.ibm.com>,
-        Song Liu <song@kernel.org>, Wan Jiabing <wanjiabing@vivo.com>,
-        Yury Norov <yury.norov@gmail.com>,
-        Changbin Du <changbin.du@intel.com>,
-        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 6/7] perf expr: Add metric literals for topology.
-Message-ID: <YYwPdzgVlbenb2ai@krava>
-References: <20211105170943.3479315-1-irogers@google.com>
- <20211105170943.3479315-7-irogers@google.com>
- <YYvBhfyizI+z8SAC@krava>
- <CAP-5=fWRzptEG2TUALNJaVLdP2egHhyhPZ=9HuP2da68jiPPTA@mail.gmail.com>
- <YYvYnYPg43acgkvs@krava>
- <CAP-5=fU4JCn_8VY3KstN3bZeV-uRptO0hzyBFy=rGNtap1WRbw@mail.gmail.com>
+        bh=RpX5BvbKEHNdXgGoPmln1SO/jawptVK+J9B4IT3zhNs=;
+        b=YXLPHBwYwk0aZH9NUhJLaIokoqEU0ssukY/tUlVr9zWYJCyB428+0y2/dAh30Q59dT+8/7
+        xMTZPelHdwn+zpqLT7lZOTHXFci3k70aBasEXRWIR6GFxfXfGOLS3ojhlihxA/4hHRbANa
+        BKB3u92jDYn1CALa47tl+VNv0bgjs1A=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-454-1sbKNL0MP_Ka4HrBtgzDqQ-1; Wed, 10 Nov 2021 13:30:34 -0500
+X-MC-Unique: 1sbKNL0MP_Ka4HrBtgzDqQ-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id C653F1006AA0;
+        Wed, 10 Nov 2021 18:30:30 +0000 (UTC)
+Received: from [10.22.19.24] (unknown [10.22.19.24])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 97F0767856;
+        Wed, 10 Nov 2021 18:30:23 +0000 (UTC)
+Message-ID: <a6b9f5e7-3d4d-ba84-2c80-ba70187c3e10@redhat.com>
+Date:   Wed, 10 Nov 2021 13:30:23 -0500
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAP-5=fU4JCn_8VY3KstN3bZeV-uRptO0hzyBFy=rGNtap1WRbw@mail.gmail.com>
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.2.0
+Subject: Re: [PATCH v8 0/6] cgroup/cpuset: Add new cpuset partition type &
+ empty effecitve cpus
+Content-Language: en-US
+To:     Marcelo Tosatti <mtosatti@redhat.com>,
+        Jan Kiszka <jan.kiszka@siemens.com>
+Cc:     "Moessbauer, Felix" <felix.moessbauer@siemens.com>,
+        =?UTF-8?Q?Michal_Koutn=c3=bd?= <mkoutny@suse.com>,
+        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
+        "cgroups@vger.kernel.org" <cgroups@vger.kernel.org>,
+        "corbet@lwn.net" <corbet@lwn.net>,
+        "frederic@kernel.org" <frederic@kernel.org>,
+        "guro@fb.com" <guro@fb.com>,
+        "hannes@cmpxchg.org" <hannes@cmpxchg.org>,
+        "juri.lelli@redhat.com" <juri.lelli@redhat.com>,
+        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-kselftest@vger.kernel.org" <linux-kselftest@vger.kernel.org>,
+        "lizefan.x@bytedance.com" <lizefan.x@bytedance.com>,
+        "pauld@redhat.com" <pauld@redhat.com>,
+        "peterz@infradead.org" <peterz@infradead.org>,
+        "shuah@kernel.org" <shuah@kernel.org>,
+        "tj@kernel.org" <tj@kernel.org>,
+        "henning.schild@siemens.com" <henning.schild@siemens.com>
+References: <20211018143619.205065-1-longman@redhat.com>
+ <20211110111357.17617-1-felix.moessbauer@siemens.com>
+ <20211110135653.GD20566@blackbody.suse.cz>
+ <AM9PR10MB4869C14EAE01B87C0037BF6A89939@AM9PR10MB4869.EURPRD10.PROD.OUTLOOK.COM>
+ <20211110161020.GA20101@fuller.cnet>
+ <c1e94031-a179-dc72-e5ee-3f8197bea492@siemens.com>
+ <20211110172946.GA30250@fuller.cnet>
+From:   Waiman Long <longman@redhat.com>
+In-Reply-To: <20211110172946.GA30250@fuller.cnet>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 10, 2021 at 09:58:57AM -0800, Ian Rogers wrote:
-> On Wed, Nov 10, 2021 at 6:35 AM Jiri Olsa <jolsa@redhat.com> wrote:
-> >
-> > On Wed, Nov 10, 2021 at 06:19:04AM -0800, Ian Rogers wrote:
-> > > On Wed, Nov 10, 2021 at 4:56 AM Jiri Olsa <jolsa@redhat.com> wrote:
-> > > >
-> > > > On Fri, Nov 05, 2021 at 10:09:42AM -0700, Ian Rogers wrote:
-> > > > > Allow the number of cpus, cores, dies and packages to be queried by a
-> > > > > metric expression.
-> > > > >
-> > > > > Signed-off-by: Ian Rogers <irogers@google.com>
-> > > > > ---
-> > > > >  tools/perf/tests/expr.c | 12 +++++++++++-
-> > > > >  tools/perf/util/expr.c  | 27 +++++++++++++++++++++++++++
-> > > > >  2 files changed, 38 insertions(+), 1 deletion(-)
-> > > > >
-> > > > > diff --git a/tools/perf/tests/expr.c b/tools/perf/tests/expr.c
-> > > > > index 9ee2dc91c27b..0c09ccc76665 100644
-> > > > > --- a/tools/perf/tests/expr.c
-> > > > > +++ b/tools/perf/tests/expr.c
-> > > > > @@ -66,7 +66,7 @@ int test__expr(struct test *t __maybe_unused, int subtest __maybe_unused)
-> > > > >  {
-> > > > >       struct expr_id_data *val_ptr;
-> > > > >       const char *p;
-> > > > > -     double val;
-> > > > > +     double val, num_cpus, num_cores, num_dies, num_packages;
-> > > > >       int ret;
-> > > > >       struct expr_parse_ctx *ctx;
-> > > > >
-> > > > > @@ -161,6 +161,16 @@ int test__expr(struct test *t __maybe_unused, int subtest __maybe_unused)
-> > > > >                       NULL, ctx) == 0);
-> > > > >       TEST_ASSERT_VAL("find ids", hashmap__size(ctx->ids) == 0);
-> > > > >
-> > > > > +     /* Test toplogy constants appear well ordered. */
-> > > > > +     expr__ctx_clear(ctx);
-> > > > > +     TEST_ASSERT_VAL("#num_cpus", expr__parse(&num_cpus, ctx, "#num_cpus") == 0);
-> > > > > +     TEST_ASSERT_VAL("#num_cores", expr__parse(&num_cores, ctx, "#num_cores") == 0);
-> > > > > +     TEST_ASSERT_VAL("#num_cpus >= #num_cores", num_cpus >= num_cores);
-> > > > > +     TEST_ASSERT_VAL("#num_dies", expr__parse(&num_dies, ctx, "#num_dies") == 0);
-> > > > > +     TEST_ASSERT_VAL("#num_cores >= #num_dies", num_cores >= num_dies);
-> > > > > +     TEST_ASSERT_VAL("#num_packages", expr__parse(&num_packages, ctx, "#num_packages") == 0);
-> > > > > +     TEST_ASSERT_VAL("#num_dies >= #num_packages", num_dies >= num_packages);
-> > > > > +
-> > > > >       expr__ctx_free(ctx);
-> > > > >
-> > > > >       return 0;
-> > > > > diff --git a/tools/perf/util/expr.c b/tools/perf/util/expr.c
-> > > > > index 7464739c2890..15af8b8ef5e7 100644
-> > > > > --- a/tools/perf/util/expr.c
-> > > > > +++ b/tools/perf/util/expr.c
-> > > > > @@ -5,6 +5,8 @@
-> > > > >  #include <stdlib.h>
-> > > > >  #include <string.h>
-> > > > >  #include "metricgroup.h"
-> > > > > +#include "cpumap.h"
-> > > > > +#include "cputopo.h"
-> > > > >  #include "debug.h"
-> > > > >  #include "expr.h"
-> > > > >  #include "expr-bison.h"
-> > > > > @@ -375,9 +377,34 @@ double expr_id_data__value(const struct expr_id_data *data)
-> > > > >
-> > > > >  double expr__get_literal(const char *literal)
-> > > > >  {
-> > > > > +     static struct cpu_topology *topology;
-> > > > > +
-> > > > >       if (!strcmp("#smt_on", literal))
-> > > > >               return smt_on() > 0 ? 1.0 : 0.0;
-> > > > >
-> > > > > +     if (!strcmp("#num_cpus", literal))
-> > > > > +             return cpu__max_present_cpu();
-> > > > > +
-> > > > > +     /*
-> > > > > +      * Assume that topology strings are consistent, such as CPUs "0-1"
-> > > > > +      * wouldn't be listed as "0,1", and so after deduplication the number of
-> > > > > +      * these strings gives an indication of the number of packages, dies,
-> > > > > +      * etc.
-> > > > > +      */
-> > > > > +     if (!topology) {
-> > > > > +             topology = cpu_topology__new();
-> > > >
-> > > > any chance we could propagate expr_scanner_ctx in here and store topology
-> > > > to it and release it at the end? I think we have several places like this,
-> > > > so it'd be nice not to make more if it's possible ;-)
-> > >
-> > > The topology here is static and so will only get computed once per
-> > > execution rather than once pre expression parse. I was worried about
-> > > the cost of recomputing the topology for something like 'perf stat -I
-> > > 1000 -M ...' in which case the static will do less recomputation.
-> >
-> > can't we have the topology created/release on the top fo the parsing
-> > and released after all expressions are parsed?
-> >
-> > or we could come up with some generic way to handle this kind of release
-> 
-> Creating the topology at the top of metric parsing would incur a sysfs
-> parsing cost on metrics regardless of whether they used the topology.
-> I feel a lazy approach is better to avoid this cost. We could make
-> this part of the expression context and lazily initialize it there.
-> It'd be good to keep the expression context around in 'perf stat' in
-> that case. I quite like this approach as really the topology should be
-> part of the perf environment and part of the header. It is interesting
-> to think how can we get metrics to work with 'perf stat record'.
-> Currently you will get metrics for something like 'perf stat record -e
-> instructions,cycles -a sleep 2; perf stat report', but none baked in
-> metrics don't work and we don't even have the metric-id to make this
-> work (even using '-M IPC' doesn't work). Putting the environment in
-> the session, making the topology part of it, writing/reading data
-> based on that seems like worthwhile clean up but beyond the scope of
-> what I was trying to do here.
-> 
-> In terms of releasing for the sake of memory leaks, leak sanitizer
-> doesn't treat memory allocated and reachable from a global as a leak.
-> We can't precompute the topology and so this style of approach is what
-> I'm used to. Putting the topology into the parsing context and lazily
-> initializing would be the second best option imo, and I can do that if
-> this is a blocker.
 
-ok, let's leave it as it is.. thanks for the details
+On 11/10/21 12:29, Marcelo Tosatti wrote:
+> On Wed, Nov 10, 2021 at 05:15:41PM +0100, Jan Kiszka wrote:
+>> On 10.11.21 17:10, Marcelo Tosatti wrote:
+>>> On Wed, Nov 10, 2021 at 03:21:54PM +0000, Moessbauer, Felix wrote:
+>>>>
+>>>>> -----Original Message-----
+>>>>> From: Michal Koutný <mkoutny@suse.com>
+>>>>> Sent: Wednesday, November 10, 2021 2:57 PM
+>>>>> To: Moessbauer, Felix (T RDA IOT SES-DE) <felix.moessbauer@siemens.com>
+>>>>> Cc: longman@redhat.com; akpm@linux-foundation.org;
+>>>>> cgroups@vger.kernel.org; corbet@lwn.net; frederic@kernel.org; guro@fb.com;
+>>>>> hannes@cmpxchg.org; juri.lelli@redhat.com; linux-doc@vger.kernel.org; linux-
+>>>>> kernel@vger.kernel.org; linux-kselftest@vger.kernel.org;
+>>>>> lizefan.x@bytedance.com; mtosatti@redhat.com; pauld@redhat.com;
+>>>>> peterz@infradead.org; shuah@kernel.org; tj@kernel.org; Kiszka, Jan (T RDA
+>>>>> IOT) <jan.kiszka@siemens.com>; Schild, Henning (T RDA IOT SES-DE)
+>>>>> <henning.schild@siemens.com>
+>>>>> Subject: Re: [PATCH v8 0/6] cgroup/cpuset: Add new cpuset partition type &
+>>>>> empty effecitve cpus
+>>>>>
+>>>>> Hello.
+>>>>>
+>>>>> On Wed, Nov 10, 2021 at 12:13:57PM +0100, Felix Moessbauer
+>>>>> <felix.moessbauer@siemens.com> wrote:
+>>>>>> However, I was not able to see any latency improvements when using
+>>>>>> cpuset.cpus.partition=isolated.
+>>>>> Interesting. What was the baseline against which you compared it (isolcpus, no
+>>>>> cpusets,...)?
+>>>> For this test, I just compared both settings cpuset.cpus.partition=isolated|root.
+>>>> There, I did not see a significant difference (but I know, RT tuning depends on a ton of things).
+>>>>
+>>>>>> The test was performed with jitterdebugger on CPUs 1-3 and the following
+>>>>> cmdline:
+>>>>>> rcu_nocbs=1-4 nohz_full=1-4 irqaffinity=0,5-6,11 intel_pstate=disable
+>>>>>> On the other cpus, stress-ng was executed to generate load.
+>>>>>> [...]
+>>>>>> This requires cgroup.type=threaded on both cgroups and changes to the
+>>>>>> application (threads have to be born in non-rt group and moved to rt-group).
+>>>>> But even with isolcpus the application would need to set affinity of threads to
+>>>>> the selected CPUs (cf cgroup migrating). Do I miss anything?
+>>>> Yes, that's true. But there are two differences (given that you use isolcpus):
+>>>> 1. the application only has to set the affinity for rt threads.
+>>>>   Threads that do not explicitly set the affinity are automatically excluded from the isolated cores.
+>>>>   Even common rt test applications like jitterdebugger do not pin their non-rt threads.
+>>>> 2. Threads can be started on non-rt CPUs and then bound to a specific rt CPU.
+>>>> This binding can be specified before thread creation via pthread_create.
+>>>> By that, you can make sure that at no point in time a thread has a "forbidden" CPU in its affinities.
+>>>>
+>>>> With cgroup2, you cannot guarantee the second aspect, as thread creation and moving to a cgroup is not an atomic operation.
+>>>> Also - please correct me if I'm wrong - you first have to create a thread before moving it into a group.
+>>>> At creation time, you cannot set the final affinity mask (as you create it in the non-rt group and there the CPU is not in the cpuset.cpus).
+>>>> Once you move the thread to the rt cgroup, it has a default mask and by that can be executed on other rt cores.
+>>> man clone3:
+>>>
+>>>         CLONE_NEWCGROUP (since Linux 4.6)
+>>>                Create  the  process  in  a  new cgroup namespace.  If this flag is not set, then (as with fork(2)) the
+>>>                process is created in the same cgroup namespaces as the calling process.
+>>>
+>>>                For further information on cgroup namespaces, see cgroup_namespaces(7).
+>>>
+>>>                Only a privileged process (CAP_SYS_ADMIN) can employ CLONE_NEWCGROUP.
+>>>
+>> Is there pthread_attr_setcgroup_np()?
+>>
+>> Jan
+> Don't know... Waiman?
 
-jirka
+I don't think there is such libpthread call yet.
+
+-Longman
 
