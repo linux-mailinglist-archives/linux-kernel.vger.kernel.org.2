@@ -2,37 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 22F8544C851
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 19:59:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C3ED744C7FB
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 19:57:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233086AbhKJTBL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Nov 2021 14:01:11 -0500
-Received: from mail.kernel.org ([198.145.29.99]:57156 "EHLO mail.kernel.org"
+        id S234014AbhKJS5d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Nov 2021 13:57:33 -0500
+Received: from mail.kernel.org ([198.145.29.99]:54840 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233811AbhKJS6q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Nov 2021 13:58:46 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5A7F36134F;
-        Wed, 10 Nov 2021 18:51:06 +0000 (UTC)
+        id S233666AbhKJSza (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Nov 2021 13:55:30 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2094361350;
+        Wed, 10 Nov 2021 18:49:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1636570266;
-        bh=Z6Gf3WeKWInQjiqHu8rm6LAt2+pgWjN01N8mKEz43pc=;
+        s=korg; t=1636570158;
+        bh=1L9r2yyzSsAOmtNaiHDdQ5cNj/rQOmUbFno8IhlvdNE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=aHgN3mIGr/TwIlmBcV8WucPuMd9NK0NoWrt4R4RVR7hd3PS+m7O4UB3JboqRoMkR6
-         wNRJ6mjAdyS0/yjvOHcV6mreaqGiVY+D6G6jw3KIyWW0RVVBNNID7Q2mY5lpZL+VQB
-         PkmhIJQBjESOhQH2WcVQDmNb7cvTAGrrBDLeZGdw=
+        b=cEEZQ1Y4T7Wl2y620fhNwfIsvQNbQMNTi/QWjPQtvZW9R4eggDByr1w7zpvutos4Z
+         dTgwnLMpk293R2kmgl3l8rvwVMNUFbEy5b40uGSa70DrhRLujHHFEgRam4VUdvdtKi
+         bHby5Ezq+warGPGX+TlcGNe+Cw7eZQBm3Xi7ICAo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jann Horn <jannh@google.com>,
-        Todd Kjos <tkjos@google.com>,
-        Casey Schaufler <casey@schaufler-ca.com>,
-        Paul Moore <paul@paul-moore.com>
-Subject: [PATCH 5.15 09/26] binder: use cred instead of task for selinux checks
-Date:   Wed, 10 Nov 2021 19:44:08 +0100
-Message-Id: <20211110182004.003104683@linuxfoundation.org>
+        stable@vger.kernel.org, Luca Ellero <luca.ellero@brickedbrain.com>,
+        Ian Abbott <abbotti@mev.co.uk>, Johan Hovold <johan@kernel.org>
+Subject: [PATCH 5.14 17/24] comedi: ni_usb6501: fix NULL-deref in command paths
+Date:   Wed, 10 Nov 2021 19:44:09 +0100
+Message-Id: <20211110182003.888035618@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211110182003.700594531@linuxfoundation.org>
-References: <20211110182003.700594531@linuxfoundation.org>
+In-Reply-To: <20211110182003.342919058@linuxfoundation.org>
+References: <20211110182003.342919058@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,319 +39,54 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Todd Kjos <tkjos@google.com>
+From: Johan Hovold <johan@kernel.org>
 
-commit 52f88693378a58094c538662ba652aff0253c4fe upstream.
+commit 907767da8f3a925b060c740e0b5c92ea7dbec440 upstream.
 
-Since binder was integrated with selinux, it has passed
-'struct task_struct' associated with the binder_proc
-to represent the source and target of transactions.
-The conversion of task to SID was then done in the hook
-implementations. It turns out that there are race conditions
-which can result in an incorrect security context being used.
+The driver uses endpoint-sized USB transfer buffers but had no sanity
+checks on the sizes. This can lead to zero-size-pointer dereferences or
+overflowed transfer buffers in ni6501_port_command() and
+ni6501_counter_command() if a (malicious) device has smaller max-packet
+sizes than expected (or when doing descriptor fuzz testing).
 
-Fix by using the 'struct cred' saved during binder_open and pass
-it to the selinux subsystem.
+Add the missing sanity checks to probe().
 
-Cc: stable@vger.kernel.org # 5.14 (need backport for earlier stables)
-Fixes: 79af73079d75 ("Add security hooks to binder and implement the hooks for SELinux.")
-Suggested-by: Jann Horn <jannh@google.com>
-Signed-off-by: Todd Kjos <tkjos@google.com>
-Acked-by: Casey Schaufler <casey@schaufler-ca.com>
-Signed-off-by: Paul Moore <paul@paul-moore.com>
+Fixes: a03bb00e50ab ("staging: comedi: add NI USB-6501 support")
+Cc: stable@vger.kernel.org      # 3.18
+Cc: Luca Ellero <luca.ellero@brickedbrain.com>
+Reviewed-by: Ian Abbott <abbotti@mev.co.uk>
+Signed-off-by: Johan Hovold <johan@kernel.org>
+Link: https://lore.kernel.org/r/20211027093529.30896-2-johan@kernel.org
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/android/binder.c      |   12 +++++-----
- include/linux/lsm_hook_defs.h |   14 ++++++------
- include/linux/lsm_hooks.h     |   14 ++++++------
- include/linux/security.h      |   28 ++++++++++++------------
- security/security.c           |   14 ++++++------
- security/selinux/hooks.c      |   48 +++++++++++-------------------------------
- 6 files changed, 54 insertions(+), 76 deletions(-)
+ drivers/comedi/drivers/ni_usb6501.c |   10 ++++++++++
+ 1 file changed, 10 insertions(+)
 
---- a/drivers/android/binder.c
-+++ b/drivers/android/binder.c
-@@ -2056,7 +2056,7 @@ static int binder_translate_binder(struc
- 		ret = -EINVAL;
- 		goto done;
- 	}
--	if (security_binder_transfer_binder(proc->tsk, target_proc->tsk)) {
-+	if (security_binder_transfer_binder(proc->cred, target_proc->cred)) {
- 		ret = -EPERM;
- 		goto done;
- 	}
-@@ -2102,7 +2102,7 @@ static int binder_translate_handle(struc
- 				  proc->pid, thread->pid, fp->handle);
- 		return -EINVAL;
- 	}
--	if (security_binder_transfer_binder(proc->tsk, target_proc->tsk)) {
-+	if (security_binder_transfer_binder(proc->cred, target_proc->cred)) {
- 		ret = -EPERM;
- 		goto done;
- 	}
-@@ -2190,7 +2190,7 @@ static int binder_translate_fd(u32 fd, b
- 		ret = -EBADF;
- 		goto err_fget;
- 	}
--	ret = security_binder_transfer_file(proc->tsk, target_proc->tsk, file);
-+	ret = security_binder_transfer_file(proc->cred, target_proc->cred, file);
- 	if (ret < 0) {
- 		ret = -EPERM;
- 		goto err_security;
-@@ -2595,8 +2595,8 @@ static void binder_transaction(struct bi
- 			return_error_line = __LINE__;
- 			goto err_invalid_target_handle;
- 		}
--		if (security_binder_transaction(proc->tsk,
--						target_proc->tsk) < 0) {
-+		if (security_binder_transaction(proc->cred,
-+						target_proc->cred) < 0) {
- 			return_error = BR_FAILED_REPLY;
- 			return_error_param = -EPERM;
- 			return_error_line = __LINE__;
-@@ -4565,7 +4565,7 @@ static int binder_ioctl_set_ctx_mgr(stru
- 		ret = -EBUSY;
- 		goto out;
- 	}
--	ret = security_binder_set_context_mgr(proc->tsk);
-+	ret = security_binder_set_context_mgr(proc->cred);
- 	if (ret < 0)
- 		goto out;
- 	if (uid_valid(context->binder_context_mgr_uid)) {
---- a/include/linux/lsm_hook_defs.h
-+++ b/include/linux/lsm_hook_defs.h
-@@ -26,13 +26,13 @@
-  *   #undef LSM_HOOK
-  * };
-  */
--LSM_HOOK(int, 0, binder_set_context_mgr, struct task_struct *mgr)
--LSM_HOOK(int, 0, binder_transaction, struct task_struct *from,
--	 struct task_struct *to)
--LSM_HOOK(int, 0, binder_transfer_binder, struct task_struct *from,
--	 struct task_struct *to)
--LSM_HOOK(int, 0, binder_transfer_file, struct task_struct *from,
--	 struct task_struct *to, struct file *file)
-+LSM_HOOK(int, 0, binder_set_context_mgr, const struct cred *mgr)
-+LSM_HOOK(int, 0, binder_transaction, const struct cred *from,
-+	 const struct cred *to)
-+LSM_HOOK(int, 0, binder_transfer_binder, const struct cred *from,
-+	 const struct cred *to)
-+LSM_HOOK(int, 0, binder_transfer_file, const struct cred *from,
-+	 const struct cred *to, struct file *file)
- LSM_HOOK(int, 0, ptrace_access_check, struct task_struct *child,
- 	 unsigned int mode)
- LSM_HOOK(int, 0, ptrace_traceme, struct task_struct *parent)
---- a/include/linux/lsm_hooks.h
-+++ b/include/linux/lsm_hooks.h
-@@ -1313,22 +1313,22 @@
-  *
-  * @binder_set_context_mgr:
-  *	Check whether @mgr is allowed to be the binder context manager.
-- *	@mgr contains the task_struct for the task being registered.
-+ *	@mgr contains the struct cred for the current binder process.
-  *	Return 0 if permission is granted.
-  * @binder_transaction:
-  *	Check whether @from is allowed to invoke a binder transaction call
-  *	to @to.
-- *	@from contains the task_struct for the sending task.
-- *	@to contains the task_struct for the receiving task.
-+ *	@from contains the struct cred for the sending process.
-+ *	@to contains the struct cred for the receiving process.
-  * @binder_transfer_binder:
-  *	Check whether @from is allowed to transfer a binder reference to @to.
-- *	@from contains the task_struct for the sending task.
-- *	@to contains the task_struct for the receiving task.
-+ *	@from contains the struct cred for the sending process.
-+ *	@to contains the struct cred for the receiving process.
-  * @binder_transfer_file:
-  *	Check whether @from is allowed to transfer @file to @to.
-- *	@from contains the task_struct for the sending task.
-+ *	@from contains the struct cred for the sending process.
-  *	@file contains the struct file being transferred.
-- *	@to contains the task_struct for the receiving task.
-+ *	@to contains the struct cred for the receiving process.
-  *
-  * @ptrace_access_check:
-  *	Check permission before allowing the current process to trace the
---- a/include/linux/security.h
-+++ b/include/linux/security.h
-@@ -258,13 +258,13 @@ extern int security_init(void);
- extern int early_security_init(void);
+--- a/drivers/comedi/drivers/ni_usb6501.c
++++ b/drivers/comedi/drivers/ni_usb6501.c
+@@ -144,6 +144,10 @@ static const u8 READ_COUNTER_RESPONSE[]
+ 					   0x00, 0x00, 0x00, 0x02,
+ 					   0x00, 0x00, 0x00, 0x00};
  
- /* Security operations */
--int security_binder_set_context_mgr(struct task_struct *mgr);
--int security_binder_transaction(struct task_struct *from,
--				struct task_struct *to);
--int security_binder_transfer_binder(struct task_struct *from,
--				    struct task_struct *to);
--int security_binder_transfer_file(struct task_struct *from,
--				  struct task_struct *to, struct file *file);
-+int security_binder_set_context_mgr(const struct cred *mgr);
-+int security_binder_transaction(const struct cred *from,
-+				const struct cred *to);
-+int security_binder_transfer_binder(const struct cred *from,
-+				    const struct cred *to);
-+int security_binder_transfer_file(const struct cred *from,
-+				  const struct cred *to, struct file *file);
- int security_ptrace_access_check(struct task_struct *child, unsigned int mode);
- int security_ptrace_traceme(struct task_struct *parent);
- int security_capget(struct task_struct *target,
-@@ -508,25 +508,25 @@ static inline int early_security_init(vo
++/* Largest supported packets */
++static const size_t TX_MAX_SIZE	= sizeof(SET_PORT_DIR_REQUEST);
++static const size_t RX_MAX_SIZE	= sizeof(READ_PORT_RESPONSE);
++
+ enum commands {
+ 	READ_PORT,
+ 	WRITE_PORT,
+@@ -501,6 +505,12 @@ static int ni6501_find_endpoints(struct
+ 	if (!devpriv->ep_rx || !devpriv->ep_tx)
+ 		return -ENODEV;
+ 
++	if (usb_endpoint_maxp(devpriv->ep_rx) < RX_MAX_SIZE)
++		return -ENODEV;
++
++	if (usb_endpoint_maxp(devpriv->ep_tx) < TX_MAX_SIZE)
++		return -ENODEV;
++
  	return 0;
  }
  
--static inline int security_binder_set_context_mgr(struct task_struct *mgr)
-+static inline int security_binder_set_context_mgr(const struct cred *mgr)
- {
- 	return 0;
- }
- 
--static inline int security_binder_transaction(struct task_struct *from,
--					      struct task_struct *to)
-+static inline int security_binder_transaction(const struct cred *from,
-+					      const struct cred *to)
- {
- 	return 0;
- }
- 
--static inline int security_binder_transfer_binder(struct task_struct *from,
--						  struct task_struct *to)
-+static inline int security_binder_transfer_binder(const struct cred *from,
-+						  const struct cred *to)
- {
- 	return 0;
- }
- 
--static inline int security_binder_transfer_file(struct task_struct *from,
--						struct task_struct *to,
-+static inline int security_binder_transfer_file(const struct cred *from,
-+						const struct cred *to,
- 						struct file *file)
- {
- 	return 0;
---- a/security/security.c
-+++ b/security/security.c
-@@ -747,25 +747,25 @@ static int lsm_superblock_alloc(struct s
- 
- /* Security operations */
- 
--int security_binder_set_context_mgr(struct task_struct *mgr)
-+int security_binder_set_context_mgr(const struct cred *mgr)
- {
- 	return call_int_hook(binder_set_context_mgr, 0, mgr);
- }
- 
--int security_binder_transaction(struct task_struct *from,
--				struct task_struct *to)
-+int security_binder_transaction(const struct cred *from,
-+				const struct cred *to)
- {
- 	return call_int_hook(binder_transaction, 0, from, to);
- }
- 
--int security_binder_transfer_binder(struct task_struct *from,
--				    struct task_struct *to)
-+int security_binder_transfer_binder(const struct cred *from,
-+				    const struct cred *to)
- {
- 	return call_int_hook(binder_transfer_binder, 0, from, to);
- }
- 
--int security_binder_transfer_file(struct task_struct *from,
--				  struct task_struct *to, struct file *file)
-+int security_binder_transfer_file(const struct cred *from,
-+				  const struct cred *to, struct file *file)
- {
- 	return call_int_hook(binder_transfer_file, 0, from, to, file);
- }
---- a/security/selinux/hooks.c
-+++ b/security/selinux/hooks.c
-@@ -255,29 +255,6 @@ static inline u32 task_sid_obj(const str
- 	return sid;
- }
- 
--/*
-- * get the security ID of a task for use with binder
-- */
--static inline u32 task_sid_binder(const struct task_struct *task)
--{
--	/*
--	 * In many case where this function is used we should be using the
--	 * task's subjective SID, but we can't reliably access the subjective
--	 * creds of a task other than our own so we must use the objective
--	 * creds/SID, which are safe to access.  The downside is that if a task
--	 * is temporarily overriding it's creds it will not be reflected here;
--	 * however, it isn't clear that binder would handle that case well
--	 * anyway.
--	 *
--	 * If this ever changes and we can safely reference the subjective
--	 * creds/SID of another task, this function will make it easier to
--	 * identify the various places where we make use of the task SIDs in
--	 * the binder code.  It is also likely that we will need to adjust
--	 * the main drivers/android binder code as well.
--	 */
--	return task_sid_obj(task);
--}
--
- static int inode_doinit_with_dentry(struct inode *inode, struct dentry *opt_dentry);
- 
- /*
-@@ -2066,18 +2043,19 @@ static inline u32 open_file_to_av(struct
- 
- /* Hook functions begin here. */
- 
--static int selinux_binder_set_context_mgr(struct task_struct *mgr)
-+static int selinux_binder_set_context_mgr(const struct cred *mgr)
- {
- 	return avc_has_perm(&selinux_state,
--			    current_sid(), task_sid_binder(mgr), SECCLASS_BINDER,
-+			    current_sid(), cred_sid(mgr), SECCLASS_BINDER,
- 			    BINDER__SET_CONTEXT_MGR, NULL);
- }
- 
--static int selinux_binder_transaction(struct task_struct *from,
--				      struct task_struct *to)
-+static int selinux_binder_transaction(const struct cred *from,
-+				      const struct cred *to)
- {
- 	u32 mysid = current_sid();
--	u32 fromsid = task_sid_binder(from);
-+	u32 fromsid = cred_sid(from);
-+	u32 tosid = cred_sid(to);
- 	int rc;
- 
- 	if (mysid != fromsid) {
-@@ -2088,24 +2066,24 @@ static int selinux_binder_transaction(st
- 			return rc;
- 	}
- 
--	return avc_has_perm(&selinux_state, fromsid, task_sid_binder(to),
-+	return avc_has_perm(&selinux_state, fromsid, tosid,
- 			    SECCLASS_BINDER, BINDER__CALL, NULL);
- }
- 
--static int selinux_binder_transfer_binder(struct task_struct *from,
--					  struct task_struct *to)
-+static int selinux_binder_transfer_binder(const struct cred *from,
-+					  const struct cred *to)
- {
- 	return avc_has_perm(&selinux_state,
--			    task_sid_binder(from), task_sid_binder(to),
-+			    cred_sid(from), cred_sid(to),
- 			    SECCLASS_BINDER, BINDER__TRANSFER,
- 			    NULL);
- }
- 
--static int selinux_binder_transfer_file(struct task_struct *from,
--					struct task_struct *to,
-+static int selinux_binder_transfer_file(const struct cred *from,
-+					const struct cred *to,
- 					struct file *file)
- {
--	u32 sid = task_sid_binder(to);
-+	u32 sid = cred_sid(to);
- 	struct file_security_struct *fsec = selinux_file(file);
- 	struct dentry *dentry = file->f_path.dentry;
- 	struct inode_security_struct *isec;
 
 
