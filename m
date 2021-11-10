@@ -2,94 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4DCAD44C8E9
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 20:20:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E68C44C8F0
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 20:24:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232862AbhKJTXC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Nov 2021 14:23:02 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51868 "EHLO
+        id S232752AbhKJT11 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Nov 2021 14:27:27 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52910 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231238AbhKJTW7 (ORCPT
+        with ESMTP id S232539AbhKJT1Y (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Nov 2021 14:22:59 -0500
-Received: from mail-wm1-x333.google.com (mail-wm1-x333.google.com [IPv6:2a00:1450:4864:20::333])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 80E9FC061766;
-        Wed, 10 Nov 2021 11:20:11 -0800 (PST)
-Received: by mail-wm1-x333.google.com with SMTP id 77-20020a1c0450000000b0033123de3425so5528423wme.0;
-        Wed, 10 Nov 2021 11:20:11 -0800 (PST)
+        Wed, 10 Nov 2021 14:27:24 -0500
+Received: from mail-wr1-x434.google.com (mail-wr1-x434.google.com [IPv6:2a00:1450:4864:20::434])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E6FD3C061764
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Nov 2021 11:24:35 -0800 (PST)
+Received: by mail-wr1-x434.google.com with SMTP id w29so5797122wra.12
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Nov 2021 11:24:35 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=googlemail.com; s=20210112;
+        d=baylibre-com.20210112.gappssmtp.com; s=20210112;
         h=from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=T2gR6okmLSMlMIhfCQTlyRrP9i8TvjzjbMxZ8UL3G+U=;
-        b=ZlL6MzG25MmTPSIhCaqmFE0o5ZJkk4P7wI+ZLWAO7W2YXoHzfKEDDkqljk6vNfXl03
-         aap+e71LCTcBSvUkcYJGpUr8i5Bq5C9xhl0k3FbeiPc2tf/aiLp5pT/HQ+CebYpUbHVK
-         KXTu4FCuvWWukJXO8/JvYhiwe5CpL5GIe9oQpjoH87LgPTt7W1nBLDm9vth3+dAHnvMY
-         lH9SvJDeGDOxZdcyWi4U8H6dq5dW8TIHKCEl9WRGj+6+AGjTfHZfXKGJg9uI0qB/DJTu
-         IiuHdMxjNKCOpdix7OyBMrgCarV7KW2XF5nPkQkj6bfEHiX0xAPbSylRkduhORU7PlEM
-         K27w==
+        bh=ZBcNPte2JXqPPCbEyKj3qBnsYEms5FQgmkXXyIOHj4o=;
+        b=g1uERBZq8p2ygU7G/w6WcKWaEF0vsLuDSAM24vOncFKQu6RUj7RcLgPl5GXCxE+9pX
+         4YpW4iLSPc96b7BKxII6r88zDn7HNPI9RjkhMn9T0sH6Oot09NPQb6fb4690M69mTiR/
+         +ZQZmvO+Rw6QQUGOx2QUwK2eVOCzFtN5ir7wY0KH+6bITt8fkx21LrgIcZgtUEiwn4C8
+         eBgIARzp/Vf3VvREVqCtloMZp/qVEf1Q+Q5jxIu4eSCikcUcVISJWI8bWnsMUgFZswLw
+         EbCjKsIhWzabKpbpbEJCK9NoVSznd5ISCSt4jSw/1dtaDssSVaVFG4NjuDUu8T+PE4ZT
+         o2tA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=T2gR6okmLSMlMIhfCQTlyRrP9i8TvjzjbMxZ8UL3G+U=;
-        b=LMx13GQtK4GMeGjFBkZ8DtvxeO+grstIFjK1TFCI0AjyKJc26naA+tSDpBDcFuUhQO
-         J2cqkF49wYXYzJsaJuiUTYhXFenHSN45JWYcIoZRzV2+RjupGhaRhsUbx6GEcq+JaZrB
-         P4wvm9zYHyZPX3P19Y3yf8xNRJImma3jq7Zn7UuNkskCyjJdSK+ZhixJdEojywKF5ghG
-         B0ZY3m5vkBFI60415HunHuR7h+kiXHPqEn0h22Lpld8dH0QVTWCxFLOOU/H6gjFERC9c
-         n8FPattOhmru4+oFE/TKEL3B5imvWgchXk+Mmb+GJRtDbZwfpuwEGs1MsVJvLnMCx3gR
-         OjSA==
-X-Gm-Message-State: AOAM530Yk7Sr1OsMtK87BeexpQdDMOxYcONwxirSwosnjXfAjP22OnAA
-        N9XMDdcC0l2yYA==
-X-Google-Smtp-Source: ABdhPJxkjsyfnVhoNjji26QSNCrhZkbSE262C9r9Z1O3juc2nhpF2kfC5Ou0624AkR7HAjaHO6LhfA==
-X-Received: by 2002:a05:600c:a42:: with SMTP id c2mr19334580wmq.154.1636572010145;
-        Wed, 10 Nov 2021 11:20:10 -0800 (PST)
-Received: from localhost (cpc154979-craw9-2-0-cust193.16-3.cable.virginm.net. [80.193.200.194])
-        by smtp.gmail.com with ESMTPSA id b197sm598885wmb.24.2021.11.10.11.20.09
+        bh=ZBcNPte2JXqPPCbEyKj3qBnsYEms5FQgmkXXyIOHj4o=;
+        b=UToHyiACHquwhJJ8lfq7tsioqdBhNFYSkEsLLbzGH4+/vNxgXbNElhhDO2ejBCoU9n
+         5J9j5hNGUdZ8Af5VHzvfdNwhneUh5DIF1QGajFByeKMNkzQ3ZI95/nZJo85ztrD5VWbn
+         w8haK3+c7WzxvBloFYWFrmyYBMVKfQ1/aNiLlNkEFWUSm4Wh9FzT4rlU4Fgu4EzAeNPC
+         QEaXSyttk3GivqJxelZqxR71IjFmioEHzqsV4SidgbvlqwTqmFotM9PjooaNJRwAgyS8
+         Y9BHZ3wUsBj4dZRAmvSEaa9Az/V08rGvAn7DFlrnsd5znSHVcKVBg//LK4IAlVrPZmTz
+         1RvA==
+X-Gm-Message-State: AOAM531pZ07GeBjzJcyPn9PROd39nYJHF+UsPGNQi2bdWEC0C4uWyP7f
+        ArC2Wsl8NfkehB92TsE6+Pup6A==
+X-Google-Smtp-Source: ABdhPJz2CFovYIbvWQjxyj3Y/wTT7TED3FY5M53+Mhy5pC+92jywXsPb6uDNVPidlkv4OHjR3R7s/g==
+X-Received: by 2002:adf:eece:: with SMTP id a14mr1689076wrp.333.1636572274488;
+        Wed, 10 Nov 2021 11:24:34 -0800 (PST)
+Received: from localhost.localdomain ([88.160.162.107])
+        by smtp.gmail.com with ESMTPSA id d16sm6250113wmb.37.2021.11.10.11.24.33
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 10 Nov 2021 11:20:09 -0800 (PST)
-From:   Colin Ian King <colin.i.king@googlemail.com>
-X-Google-Original-From: Colin Ian King <colin.i.king@gmail.com>
-To:     Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>, Qu Wenruo <wqu@suse.com>,
-        linux-btrfs@vger.kernel.org
-Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] btrfs: make 1-bit bit-fields unsigned int
-Date:   Wed, 10 Nov 2021 19:20:08 +0000
-Message-Id: <20211110192008.311901-1-colin.i.king@gmail.com>
-X-Mailer: git-send-email 2.32.0
+        Wed, 10 Nov 2021 11:24:34 -0800 (PST)
+From:   Fabien Parent <fparent@baylibre.com>
+To:     Rob Herring <robh+dt@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>
+Cc:     Pi-Hsun Shih <pihsun@chromium.org>,
+        Jitao Shi <jitao.shi@mediatek.com>,
+        Fabien Parent <fparent@baylibre.com>,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: [PATCH 1/3] arm64: dts: mt8183: add dpi node to mt8183
+Date:   Wed, 10 Nov 2021 20:24:15 +0100
+Message-Id: <20211110192417.4177741-1-fparent@baylibre.com>
+X-Mailer: git-send-email 2.33.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The bitfields have_csum and io_error are currently signed which is
-not recommended as the representation is an implementation defined
-behaviour. Fix this by making the bit-fields unsigned ints.
+From: Pi-Hsun Shih <pihsun@chromium.org>
 
-Fixes: 2c36395430b0 ("btrfs: scrub: remove the anonymous structure from scrub_page")
-Signed-off-by: Colin Ian King <colin.i.king@gmail.com>
+Add dpi node to mt8183.
+
+Signed-off-by: Jitao Shi <jitao.shi@mediatek.com>
+Signed-off-by: Pi-Hsun Shih <pihsun@chromium.org>
+Signed-off-by: Fabien Parent <fparent@baylibre.com>
 ---
- fs/btrfs/scrub.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ arch/arm64/boot/dts/mediatek/mt8183.dtsi | 11 +++++++++++
+ 1 file changed, 11 insertions(+)
 
-diff --git a/fs/btrfs/scrub.c b/fs/btrfs/scrub.c
-index cf82ea6f54fb..8f6ceea33969 100644
---- a/fs/btrfs/scrub.c
-+++ b/fs/btrfs/scrub.c
-@@ -73,8 +73,8 @@ struct scrub_page {
- 	u64			physical_for_dev_replace;
- 	atomic_t		refs;
- 	u8			mirror_num;
--	int			have_csum:1;
--	int			io_error:1;
-+	unsigned int		have_csum:1;
-+	unsigned int		io_error:1;
- 	u8			csum[BTRFS_CSUM_SIZE];
+diff --git a/arch/arm64/boot/dts/mediatek/mt8183.dtsi b/arch/arm64/boot/dts/mediatek/mt8183.dtsi
+index ba4584faca5a..7c283c0b68b5 100644
+--- a/arch/arm64/boot/dts/mediatek/mt8183.dtsi
++++ b/arch/arm64/boot/dts/mediatek/mt8183.dtsi
+@@ -1443,6 +1443,17 @@ dsi0: dsi@14014000 {
+ 			phy-names = "dphy";
+ 		};
  
- 	struct scrub_recover	*recover;
++		dpi0: dpi@14015000 {
++			compatible = "mediatek,mt8183-dpi";
++			reg = <0 0x14015000 0 0x1000>;
++			interrupts = <GIC_SPI 237 IRQ_TYPE_LEVEL_LOW>;
++			power-domains = <&spm MT8183_POWER_DOMAIN_DISP>;
++			clocks = <&mmsys CLK_MM_DPI_IF>,
++				 <&mmsys CLK_MM_DPI_MM>,
++				 <&apmixedsys CLK_APMIXED_TVDPLL>;
++			clock-names = "pixel", "engine", "pll";
++		};
++
+ 		mutex: mutex@14016000 {
+ 			compatible = "mediatek,mt8183-disp-mutex";
+ 			reg = <0 0x14016000 0 0x1000>;
 -- 
-2.32.0
+2.33.1
 
