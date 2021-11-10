@@ -2,38 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1053644C80B
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 19:57:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 412E744C844
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 19:57:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233926AbhKJS54 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Nov 2021 13:57:56 -0500
-Received: from mail.kernel.org ([198.145.29.99]:53674 "EHLO mail.kernel.org"
+        id S233181AbhKJTAg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Nov 2021 14:00:36 -0500
+Received: from mail.kernel.org ([198.145.29.99]:54426 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232949AbhKJSzn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Nov 2021 13:55:43 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A75F4619F7;
-        Wed, 10 Nov 2021 18:49:41 +0000 (UTC)
+        id S234279AbhKJS6V (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Nov 2021 13:58:21 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9C54461A3A;
+        Wed, 10 Nov 2021 18:50:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1636570182;
-        bh=0oH85cjq7vTw6si60/MnAKRM5WZ4EBlcJF4dA31QY9c=;
+        s=korg; t=1636570251;
+        bh=5IF/tV6ydWjsDd0Np+mHunEbyk2bXecu20EzsY5VWWI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ZLBm3omHtw8CXgZxxKP1eo2vYMUWBTCVjelMQR6G2MndmLfpUiJyS85Kq7eFD31AX
-         5W1EteGdAERAU53YYMWQtpXfbErtRHfmjXu1mpiBFuwqEmIfdxO6t/oCUJcvIexNYc
-         kECM1jdu8Sl8/yJy16N3Tl1UIAYOsfdS5HwIJVf4=
+        b=bajFWT84EgzkmANvktzXW3Z1qKKoqU/IpuvF33n6YFtKJXluCpepnmQ64tEhDWGXH
+         JqXojQaOqDZVQ+R18J//W2MS5+az2LMQNx+PUyKMSCKQjzp1nd4APlh06TYSK8g+3M
+         jzRyaQ5JZ86AY+Dp7I0HLkC4JCK6SXRWpk41HaXw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, kernel test robot <oliver.sang@intel.com>,
-        Vito Caputo <vcaputo@pengaru.com>,
-        Jann Horn <jannh@google.com>,
-        Kees Cook <keescook@chromium.org>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>
-Subject: [PATCH 5.14 09/24] Revert "proc/wchan: use printk format instead of lookup_symbol_name()"
-Date:   Wed, 10 Nov 2021 19:44:01 +0100
-Message-Id: <20211110182003.631273586@linuxfoundation.org>
+        stable@vger.kernel.org, Tao Ren <rentao.bupt@gmail.com>,
+        Alan Stern <stern@rowland.harvard.edu>,
+        Neal Liu <neal_liu@aspeedtech.com>,
+        Joel Stanley <joel@jms.id.au>
+Subject: [PATCH 5.15 03/26] usb: ehci: handshake CMD_RUN instead of STS_HALT
+Date:   Wed, 10 Nov 2021 19:44:02 +0100
+Message-Id: <20211110182003.826259357@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211110182003.342919058@linuxfoundation.org>
-References: <20211110182003.342919058@linuxfoundation.org>
+In-Reply-To: <20211110182003.700594531@linuxfoundation.org>
+References: <20211110182003.700594531@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,66 +41,71 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Kees Cook <keescook@chromium.org>
+From: Neal Liu <neal_liu@aspeedtech.com>
 
-commit 54354c6a9f7fd5572d2b9ec108117c4f376d4d23 upstream.
+commit 7f2d73788d9067fd4f677ac5f60ffd25945af7af upstream.
 
-This reverts commit 152c432b128cb043fc107e8f211195fe94b2159c.
+For Aspeed, HCHalted status depends on not only Run/Stop but also
+ASS/PSS status.
+Handshake CMD_RUN on startup instead.
 
-When a kernel address couldn't be symbolized for /proc/$pid/wchan, it
-would leak the raw value, a potential information exposure. This is a
-regression compared to the safer pre-v5.12 behavior.
-
-Reported-by: kernel test robot <oliver.sang@intel.com>
-Reported-by: Vito Caputo <vcaputo@pengaru.com>
-Reported-by: Jann Horn <jannh@google.com>
-Signed-off-by: Kees Cook <keescook@chromium.org>
-Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Cc: stable@vger.kernel.org
-Link: https://lkml.kernel.org/r/20211008111626.090829198@infradead.org
+Tested-by: Tao Ren <rentao.bupt@gmail.com>
+Reviewed-by: Tao Ren <rentao.bupt@gmail.com>
+Acked-by: Alan Stern <stern@rowland.harvard.edu>
+Signed-off-by: Neal Liu <neal_liu@aspeedtech.com>
+Link: https://lore.kernel.org/r/20210910073619.26095-1-neal_liu@aspeedtech.com
+Cc: Joel Stanley <joel@jms.id.au>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- fs/proc/base.c |   21 ++++++++++++---------
- 1 file changed, 12 insertions(+), 9 deletions(-)
+ drivers/usb/host/ehci-hcd.c      |   11 ++++++++++-
+ drivers/usb/host/ehci-platform.c |    6 ++++++
+ drivers/usb/host/ehci.h          |    1 +
+ 3 files changed, 17 insertions(+), 1 deletion(-)
 
---- a/fs/proc/base.c
-+++ b/fs/proc/base.c
-@@ -67,6 +67,7 @@
- #include <linux/mm.h>
- #include <linux/swap.h>
- #include <linux/rcupdate.h>
-+#include <linux/kallsyms.h>
- #include <linux/stacktrace.h>
- #include <linux/resource.h>
- #include <linux/module.h>
-@@ -385,17 +386,19 @@ static int proc_pid_wchan(struct seq_fil
- 			  struct pid *pid, struct task_struct *task)
- {
- 	unsigned long wchan;
-+	char symname[KSYM_NAME_LEN];
- 
--	if (ptrace_may_access(task, PTRACE_MODE_READ_FSCREDS))
--		wchan = get_wchan(task);
--	else
--		wchan = 0;
--
--	if (wchan)
--		seq_printf(m, "%ps", (void *) wchan);
--	else
--		seq_putc(m, '0');
-+	if (!ptrace_may_access(task, PTRACE_MODE_READ_FSCREDS))
-+		goto print0;
- 
-+	wchan = get_wchan(task);
-+	if (wchan && !lookup_symbol_name(wchan, symname)) {
-+		seq_puts(m, symname);
-+		return 0;
-+	}
+--- a/drivers/usb/host/ehci-hcd.c
++++ b/drivers/usb/host/ehci-hcd.c
+@@ -635,7 +635,16 @@ static int ehci_run (struct usb_hcd *hcd
+ 	/* Wait until HC become operational */
+ 	ehci_readl(ehci, &ehci->regs->command);	/* unblock posted writes */
+ 	msleep(5);
+-	rc = ehci_handshake(ehci, &ehci->regs->status, STS_HALT, 0, 100 * 1000);
 +
-+print0:
-+	seq_putc(m, '0');
- 	return 0;
- }
- #endif /* CONFIG_KALLSYMS */
++	/* For Aspeed, STS_HALT also depends on ASS/PSS status.
++	 * Check CMD_RUN instead.
++	 */
++	if (ehci->is_aspeed)
++		rc = ehci_handshake(ehci, &ehci->regs->command, CMD_RUN,
++				    1, 100 * 1000);
++	else
++		rc = ehci_handshake(ehci, &ehci->regs->status, STS_HALT,
++				    0, 100 * 1000);
+ 
+ 	up_write(&ehci_cf_port_reset_rwsem);
+ 
+--- a/drivers/usb/host/ehci-platform.c
++++ b/drivers/usb/host/ehci-platform.c
+@@ -297,6 +297,12 @@ static int ehci_platform_probe(struct pl
+ 					  "has-transaction-translator"))
+ 			hcd->has_tt = 1;
+ 
++		if (of_device_is_compatible(dev->dev.of_node,
++					    "aspeed,ast2500-ehci") ||
++		    of_device_is_compatible(dev->dev.of_node,
++					    "aspeed,ast2600-ehci"))
++			ehci->is_aspeed = 1;
++
+ 		if (soc_device_match(quirk_poll_match))
+ 			priv->quirk_poll = true;
+ 
+--- a/drivers/usb/host/ehci.h
++++ b/drivers/usb/host/ehci.h
+@@ -219,6 +219,7 @@ struct ehci_hcd {			/* one per controlle
+ 	unsigned		need_oc_pp_cycle:1; /* MPC834X port power */
+ 	unsigned		imx28_write_fix:1; /* For Freescale i.MX28 */
+ 	unsigned		spurious_oc:1;
++	unsigned		is_aspeed:1;
+ 
+ 	/* required for usb32 quirk */
+ 	#define OHCI_CTRL_HCFS          (3 << 6)
 
 
