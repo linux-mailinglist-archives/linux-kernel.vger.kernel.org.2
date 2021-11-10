@@ -2,33 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D8BC44C75E
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 19:49:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D9CD44C760
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 19:49:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233535AbhKJSuc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Nov 2021 13:50:32 -0500
-Received: from mail.kernel.org ([198.145.29.99]:47790 "EHLO mail.kernel.org"
+        id S233168AbhKJSuj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Nov 2021 13:50:39 -0500
+Received: from mail.kernel.org ([198.145.29.99]:47820 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233157AbhKJStJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Nov 2021 13:49:09 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id EF6516135E;
-        Wed, 10 Nov 2021 18:46:14 +0000 (UTC)
+        id S233197AbhKJStO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Nov 2021 13:49:14 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 84EBD6137F;
+        Wed, 10 Nov 2021 18:46:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1636569975;
-        bh=m91u4AUSBvuJlLQR5nC2A9E4fcoxzN+ge/HimR2tUro=;
+        s=korg; t=1636569978;
+        bh=9vh4/Poq6fHp7ATT1zlN7oohjKfXqdwbh1vvydivTTo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=NclDQQwxQAfMlEemTdqBPmCch0PjGZ4L+UNp13bhupuy5RNrwE2GPGSuvcjwA3irR
-         gbqV0EdsceZuLBUjeqV1P4v07LLPZUZqjoanx6sEtOMCfvZm7HQW27LwTCCHi31m9J
-         uQzQrxRReUiKzTMxSVdL6N6Rj1bayF5KJVs0ZGcA=
+        b=b8f0Actsn6hZnoCWOQde6lp2xRS4sj4o+BElF687fqCQd4MDNZ9mkPIp6S0C3sJlp
+         Z/2YwaMjoHVUdYFG+UKN281L87Dnm72eNFRuEtkKEmwM/vtpTP7rb8/7Wp+NqEqM5p
+         AYPl7Ldwf+j5msydmN0bU3hjD1umh7ZZlts6aPII=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Eduardo Habkost <ehabkost@redhat.com>,
-        Juergen Gross <jgross@suse.com>,
-        Paolo Bonzini <pbonzini@redhat.com>
-Subject: [PATCH 4.14 09/22] Revert "x86/kvm: fix vcpu-id indexed array sizes"
-Date:   Wed, 10 Nov 2021 19:43:29 +0100
-Message-Id: <20211110182002.966272752@linuxfoundation.org>
+        stable@vger.kernel.org, Li Yang <leoyang.li@nxp.com>,
+        Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: [PATCH 4.14 10/22] usb: gadget: Mark USB_FSL_QE broken on 64-bit
+Date:   Wed, 10 Nov 2021 19:43:30 +0100
+Message-Id: <20211110182003.000335549@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
 In-Reply-To: <20211110182002.666244094@linuxfoundation.org>
 References: <20211110182002.666244094@linuxfoundation.org>
@@ -40,55 +39,42 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Juergen Gross <jgross@suse.com>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
 
-commit 1e254d0d86a0f2efd4190a89d5204b37c18c6381 upstream.
+commit a0548b26901f082684ad1fb3ba397d2de3a1406a upstream.
 
-This reverts commit 76b4f357d0e7d8f6f0013c733e6cba1773c266d3.
+On 64-bit:
 
-The commit has the wrong reasoning, as KVM_MAX_VCPU_ID is not defining the
-maximum allowed vcpu-id as its name suggests, but the number of vcpu-ids.
-So revert this patch again.
+    drivers/usb/gadget/udc/fsl_qe_udc.c: In function ‘qe_ep0_rx’:
+    drivers/usb/gadget/udc/fsl_qe_udc.c:842:13: error: cast from pointer to integer of different size [-Werror=pointer-to-int-cast]
+      842 |     vaddr = (u32)phys_to_virt(in_be32(&bd->buf));
+	  |             ^
+    In file included from drivers/usb/gadget/udc/fsl_qe_udc.c:41:
+    drivers/usb/gadget/udc/fsl_qe_udc.c:843:28: error: cast to pointer from integer of different size [-Werror=int-to-pointer-cast]
+      843 |     frame_set_data(pframe, (u8 *)vaddr);
+	  |                            ^
 
-Suggested-by: Eduardo Habkost <ehabkost@redhat.com>
-Signed-off-by: Juergen Gross <jgross@suse.com>
-Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
-Message-Id: <20210913135745.13944-2-jgross@suse.com>
-Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
+The driver assumes physical and virtual addresses are 32-bit, hence it
+cannot work on 64-bit platforms.
+
+Acked-by: Li Yang <leoyang.li@nxp.com>
+Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
+Link: https://lore.kernel.org/r/20211027080849.3276289-1-geert@linux-m68k.org
+Cc: stable <stable@vger.kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- arch/x86/kvm/ioapic.c |    2 +-
- arch/x86/kvm/ioapic.h |    4 ++--
- 2 files changed, 3 insertions(+), 3 deletions(-)
+ drivers/usb/gadget/udc/Kconfig |    1 +
+ 1 file changed, 1 insertion(+)
 
---- a/arch/x86/kvm/ioapic.c
-+++ b/arch/x86/kvm/ioapic.c
-@@ -96,7 +96,7 @@ static unsigned long ioapic_read_indirec
- static void rtc_irq_eoi_tracking_reset(struct kvm_ioapic *ioapic)
- {
- 	ioapic->rtc_status.pending_eoi = 0;
--	bitmap_zero(ioapic->rtc_status.dest_map.map, KVM_MAX_VCPU_ID + 1);
-+	bitmap_zero(ioapic->rtc_status.dest_map.map, KVM_MAX_VCPU_ID);
- }
- 
- static void kvm_rtc_eoi_tracking_restore_all(struct kvm_ioapic *ioapic);
---- a/arch/x86/kvm/ioapic.h
-+++ b/arch/x86/kvm/ioapic.h
-@@ -43,13 +43,13 @@ struct kvm_vcpu;
- 
- struct dest_map {
- 	/* vcpu bitmap where IRQ has been sent */
--	DECLARE_BITMAP(map, KVM_MAX_VCPU_ID + 1);
-+	DECLARE_BITMAP(map, KVM_MAX_VCPU_ID);
- 
- 	/*
- 	 * Vector sent to a given vcpu, only valid when
- 	 * the vcpu's bit in map is set
- 	 */
--	u8 vectors[KVM_MAX_VCPU_ID + 1];
-+	u8 vectors[KVM_MAX_VCPU_ID];
- };
- 
- 
+--- a/drivers/usb/gadget/udc/Kconfig
++++ b/drivers/usb/gadget/udc/Kconfig
+@@ -328,6 +328,7 @@ config USB_AMD5536UDC
+ config USB_FSL_QE
+ 	tristate "Freescale QE/CPM USB Device Controller"
+ 	depends on FSL_SOC && (QUICC_ENGINE || CPM)
++	depends on !64BIT || BROKEN
+ 	help
+ 	   Some of Freescale PowerPC processors have a Full Speed
+ 	   QE/CPM2 USB controller, which support device mode with 4
 
 
