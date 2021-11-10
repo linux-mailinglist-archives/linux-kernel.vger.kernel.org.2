@@ -2,173 +2,355 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DEA4044C45B
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 16:27:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C62FB44C463
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 16:29:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232295AbhKJPaU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Nov 2021 10:30:20 -0500
-Received: from mail-eopbgr60063.outbound.protection.outlook.com ([40.107.6.63]:29503
-        "EHLO EUR04-DB3-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S231408AbhKJPaT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Nov 2021 10:30:19 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=asLgTVHkMoLI5g/zoN9lGqOeWx/E3bRwD3psrz15Y8OQ/OLthXj8ipoQD9MBfUhi91ODVdT229C22qYBwX6jZAHN0aiygcRisIsG+hCTVWWAv/Ug5+A7fSRR42bG8M4LcbrpZ2Y57GT/aptfXF5mf8EXy784C6kVK1Uk25EETDf2f8tJgppHUKQ7aGfUd4CmehiXdOo4ARl2rwHChOR5bskH6HXdftHhcpC5aDZXpjiw1mj7tpMm0VrolcRJCzpPm2ZCqKAtZ/8OGG8QnzR3aQgkGpzSQtu7fKqFlIGNhhS28bg4ZnK+xcuQg63WZruHxcDEuu7YmINzDHR70kYMvA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=x5eeSTCNSaDL0Yz8AHq65QUqZG92k6jwv73iNBtVjfI=;
- b=Qq1xex+R4JuaS6J9EDPX+N8aNthwSn26ElV+U3taD2OSB9V5BD0QPgDLBg1keH5HFqSa/DIcFhVbVGj9oAhtfNWxgYE4Cl4lWCmG+UWZbJV869QZCCSgjmn1QKBolUsqgsFcDLy3b/uICLJQtwR4jTA+pNgve22adVpUPyf5fMy8BT3JUWWOiAwNJU3usrE9IWjeJTd7zwhiWO6j16tmngtZCAmLY+F51axzApH8gV6KTCqREmyLdG68GRvoYBh5NSM7bNaRK61tX9gW+dVg/i3x5Zak4Y8gppud+mNY5t3rR4N0dWPdmRM7JZMKlCOuiX0ECA8X6ReiUIObfxPltw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=x5eeSTCNSaDL0Yz8AHq65QUqZG92k6jwv73iNBtVjfI=;
- b=S0I8z5w+DoROnTP1Bn4jkbFgEOVPjurCfS/DMKrKoBklZDGtS+F+1KhmgXfQb9IGSFt13zfZQruIU5DSX53PdSRmgrY7cx7UiykEVCttnSLSD0wLQZIWyBIHF0IlnYKRy/T8/yAINV8icsIRnYw5Cme0WcwRU1UYvfVnn+stX6Y=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nxp.com;
-Received: from VI1PR04MB5151.eurprd04.prod.outlook.com (2603:10a6:803:61::28)
- by VI1PR0401MB2653.eurprd04.prod.outlook.com (2603:10a6:800:57::20) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4690.16; Wed, 10 Nov
- 2021 15:27:29 +0000
-Received: from VI1PR04MB5151.eurprd04.prod.outlook.com
- ([fe80::85af:f8be:aa99:ba5f]) by VI1PR04MB5151.eurprd04.prod.outlook.com
- ([fe80::85af:f8be:aa99:ba5f%3]) with mapi id 15.20.4669.016; Wed, 10 Nov 2021
- 15:27:29 +0000
-Subject: Re: [PATCH] ASoC: SOF: build compression interface into snd_sof.ko
-To:     Arnd Bergmann <arnd@kernel.org>,
-        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
-        Kai Vehmanen <kai.vehmanen@linux.intel.com>
-Cc:     Arnd Bergmann <arnd@arndb.de>, Mark Brown <broonie@kernel.org>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>,
-        Colin Ian King <colin.king@canonical.com>,
-        Peter Ujfalusi <peter.ujfalusi@linux.intel.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Bud Liviu-Alexandru <budliviu@gmail.com>,
-        Paul Olaru <paul.olaru@oss.nxp.com>,
-        sound-open-firmware@alsa-project.org, alsa-devel@alsa-project.org,
-        linux-kernel@vger.kernel.org
-References: <20211108111132.3800548-1-arnd@kernel.org>
-From:   Daniel Baluta <daniel.baluta@nxp.com>
-Message-ID: <dd1031ba-5867-1392-4fe7-b09ac0d71fa0@nxp.com>
-Date:   Wed, 10 Nov 2021 17:27:26 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
-In-Reply-To: <20211108111132.3800548-1-arnd@kernel.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-ClientProxiedBy: AM0PR02CA0139.eurprd02.prod.outlook.com
- (2603:10a6:20b:28d::6) To VI1PR04MB5151.eurprd04.prod.outlook.com
- (2603:10a6:803:61::28)
+        id S232308AbhKJPbu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Nov 2021 10:31:50 -0500
+Received: from so254-9.mailgun.net ([198.61.254.9]:53128 "EHLO
+        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231408AbhKJPbt (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Nov 2021 10:31:49 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1636558142; h=Content-Transfer-Encoding: Content-Type:
+ In-Reply-To: From: References: Cc: To: Subject: MIME-Version: Date:
+ Message-ID: Sender; bh=oMeas4CJdev7rH6eOO7SATLTTz7lb/FnVSsLtDM/czY=; b=RUBfZZNy15F8Ym7wGqUmPlYpI8+0DA895MhXId5TvY0U+HeOGgSg2zxL/80hAaMhsaaDLDFe
+ D1d7MBsTQ+eiW4DLe90fNPMJJn3wD3Py0XYwFNOxmcu9Y5YSIVldb57/+lyAJ/5haRPa/CdJ
+ ynwU4C7726AbequKCLzpbtpITp4=
+X-Mailgun-Sending-Ip: 198.61.254.9
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n01.prod.us-east-1.postgun.com with SMTP id
+ 618be532a4b510b38f56a9d0 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 10 Nov 2021 15:28:50
+ GMT
+Sender: akhilpo=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 655BAC43460; Wed, 10 Nov 2021 15:28:49 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-4.6 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        NICE_REPLY_A,SPF_FAIL autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from [192.168.1.16] (unknown [117.210.185.95])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: akhilpo)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 38A5EC4338F;
+        Wed, 10 Nov 2021 15:28:42 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 smtp.codeaurora.org 38A5EC4338F
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=codeaurora.org
+Message-ID: <e9e50cad-2341-cb25-ef84-0d61a2cb7469@codeaurora.org>
+Date:   Wed, 10 Nov 2021 20:58:40 +0530
 MIME-Version: 1.0
-Received: from [IPv6:2a02:2f08:570c:ca00:8fb8:5033:9d1f:8d33] (2a02:2f08:570c:ca00:8fb8:5033:9d1f:8d33) by AM0PR02CA0139.eurprd02.prod.outlook.com (2603:10a6:20b:28d::6) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4690.15 via Frontend Transport; Wed, 10 Nov 2021 15:27:28 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 803df9a5-8b83-4977-a0b1-08d9a45e9bb4
-X-MS-TrafficTypeDiagnostic: VI1PR0401MB2653:
-X-Microsoft-Antispam-PRVS: <VI1PR0401MB2653E1ED2D94C5F0E887ECCEF9939@VI1PR0401MB2653.eurprd04.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:6790;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: dZ3XxJA1MDBePYP0lg0Wb3fYtn+dsgJhRZNC/DQcAYnGKk0nGSWIOTdL7Hnx9VvA4pAR2HwGaJE0Z/nZPdxGgmQAFScDMbcC7dKd7bCNmYh8yXgOxJZTRLJQ7BW1VVL4w4bonz7r3xglXm1j+HdFjE2/LKJDd+6hkIKJEskxVet1de8CAPERP+zCyy5c/dwshR+dqrUsBceVLLXI2bwFwalv2u5FMzMQtFu02OejFZhwVTq0FQgq/HzzQk04dfIPgECTz4wRcuJaxZcRWM7XWaJyfv96i0vkrzza87cyZ18diLspRpZo+z5oh7qg7cJsaYdimw3FqyELF12VxaEAfQc60BLR4E0rdt1TGjvGVDRwfa3jl4Mom5+LnlYvnu8HYob1FbS4GJmSrfpS65hovKfJBeLQW5D2HkxyABN3bX6ZE706UixEYBuxm2IiTWGHhT7ZWu97oX/nuua5aQbxPF0iVjmS09erCsZIqSwT3VP7lUQuZj4xztpFqFqpqLecIJubqGBhptZZzzrXNDDhnjGwCgKYr+J8xGak5Ub7LLv8UvNnc9u1FUxR1foujCew6GYfZ0IypeLfwFCbcz7+ULHIi0cEJEcD6BI/iIU3AC3Ub7oLGlJcP+2cH/XuvXc5L3cM9URwE2FmfygNu2AGyeICMV8kJ6W0Tfi1RHTJfZQJIA/CrpYjPHh3Kn2kV+rVUm00IOPU39tUx8qBXb6KVQShnX3DcOGTYQZ3MigtcR4=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VI1PR04MB5151.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(110136005)(186003)(54906003)(52116002)(31696002)(53546011)(4326008)(8676002)(5660300002)(2906002)(8936002)(2616005)(316002)(44832011)(66556008)(508600001)(86362001)(38100700002)(36756003)(7416002)(66476007)(66946007)(31686004)(6486002)(83380400001)(43740500002)(45980500001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?SEdDbWQvUVRFRGtvV1VFUXJYSllLTFVtVXVZOFJ3c2NUbS9xTSt0QWRZRTIw?=
- =?utf-8?B?MXFDa09NRmkxeUt2eHZNaE1Fajd4NHZnSXVUbFNqTzIrd3hJVWtTa0lnT3JN?=
- =?utf-8?B?TTBSWi9IaEdZSVlVODVjVmF5TEZmOURhQzR2QUpOSk0vYXhaU1JNbHA0TTBV?=
- =?utf-8?B?eUlWVXVHVFU1OGt1Sk5wdmY1SklEbVZCSGVFd3JVKzNkMVVyeHl5eEdlODVp?=
- =?utf-8?B?T01TUGxXRmxhaUpTYlhseU5tZkRBV2o4WHA2UlVGN3VzMFFCRjhmWmIxWVo1?=
- =?utf-8?B?VGpNWXFLNVQzQTFWRTk2cFNBNHZialU5bmpyTC9xUkZsM0tuaHRVekM0M3Zz?=
- =?utf-8?B?SHZqY3BMMmR5b3BUaGZKT3UveU45c0dhRHkrZEhoSFIzRjMrY3JQSk1GdEdX?=
- =?utf-8?B?Z2RZUG5yNXFFWlB0NzVzUXEzajloVmk1WllHa2c2c0t1WXlRWUJVdUVSZjA0?=
- =?utf-8?B?UUVSZTlhOVVZV1dqVWhXRk9kYzJhV2U5cWwrbmlLblplRkEwWTdycFNlT00w?=
- =?utf-8?B?NFFuRjQvcmtDYVNIM0t1QXFMdVk2MURhb2FhNnkxV3N3ZVptYWdEelFBaHNN?=
- =?utf-8?B?aVFnOWFYT3dpbWgwVk5Uc2Faa2NTaElJb2pBSnp0N3MwMHJTMDc3TDFYQldi?=
- =?utf-8?B?bnZ2R0hHdTNwVWV5aTZ5V3UrR094amlhRHVXTTBaQ2lwNlF2ZEJXWGR5dUZu?=
- =?utf-8?B?SXo5OVRoakN2RFptWWJmVUQ0ODQ3dVZNVy9VY0d6OWVMcC9ON0hUSmpyTm1q?=
- =?utf-8?B?cTZ1RTkzRDRWSEZGdTVDVHROZHY0WVcxZ0xhQ0NwbG5ZY0oxbGs3STRDR01E?=
- =?utf-8?B?SHUwdmt4cDVXcnlCYWxSa0U1dEtmbXBGczY3anJlM3RNU1kzTG5jdlVxcjQr?=
- =?utf-8?B?TzViSlZNUXJ2MmIwVVZnZHBjaFNzck9HMEVVUnJORUQ3OGMyZmUxekx0U1Ex?=
- =?utf-8?B?TlVDTFYwamRwMk15dVhSYWczUGNjcE4reWdRS0x2bWM4S3Z2Ym5JRFQya3lV?=
- =?utf-8?B?ajAwRXU5Q2g4NXhzdkJVTnFERzduNU1qVUw4WE1HR0FVbC9uVUVSeURPMzY1?=
- =?utf-8?B?bHhyWU9weHBNYVh1eThBbU1lWkVwbm83RDh6cW1KaGdrL1graVNESjhHMmpY?=
- =?utf-8?B?Q1IxTm5hekU5MDFqZFZhS3F2cEhNamVkY09TeFc3WjV0OWM1U2VkeW9sU1Bw?=
- =?utf-8?B?eCs4WElYWkpzT09PZ0syT0gvR0FoNXJDSHFpUjUwRTBrVC9CZkMxUHBhajZY?=
- =?utf-8?B?bEVyWDNtZVNrclNnSjMrWStvVjJOTmRDNi9oR0tlZnpPTmFUUHdURkJvaTRE?=
- =?utf-8?B?eGdxRVJaN2dxemU0czFvbkRBZHNPcWU3RlZQVXJuZURYVzlEeTczY3Vva2tN?=
- =?utf-8?B?SU83TzgvZ0pUN0lwczF5UThCVlhCMVcxYm83TDdkcFNISk5nalhrZ1lvejdP?=
- =?utf-8?B?T2ljZFRuQ0pxNEVtZTI2Nk01RHc2Z04yT0xMR2EvNEZ3NE1mSWFaa0NPVFZs?=
- =?utf-8?B?WElXNTVPc1pJNS9BSjFrTzN0MkEwMjRRRWRYYzM2QUJtWG1MSHZYdzkzSnNo?=
- =?utf-8?B?OWNmT0FXamFFV3pBbkFCeHI5SmV4a0JYZFUzME1yQ0piTU9qaGtiRzFEa3pl?=
- =?utf-8?B?dndKSmpod3VCWHRFRzhmOVY1L1U0OGlSSFhoY2VtQy9xRFdDY1ZWZW9WeDN0?=
- =?utf-8?B?WVNkd3JDeGN1cUhPK2lwbUFqcnBSU0lNY1dBaXI3K1NhT3ljMnBXeDhXRTRW?=
- =?utf-8?B?NVpUUlllb0pnbVY2aG93cG8vb2JXN2JzVFpjbjlpUnhCMW1NV0IweXV5WC9m?=
- =?utf-8?B?bDg5aFVNdkNBQnhpSWVVdVVPZUg2ck90Z0lBMlZTczMyeXprMUxKRC9qcWRz?=
- =?utf-8?B?UldUQXUwQVBYT1Y5NFh6NzFSTGd4N0hBQmVuWjRxUXVVeVNwNEhxc1I0OXNm?=
- =?utf-8?B?STFBMDVSOFlaVUFvREhsS2FMWXVtL0JuY2JYNTlmUjYyTXdyTEtKVG1Oblkz?=
- =?utf-8?B?SnFNVUtJa3lHZXdiem4wenpvemw3Z1pOZ1V4dzJxR2Z4T1RtRkc2c3BTZDdT?=
- =?utf-8?B?QnFRYVJMajhhL0hZZUdSR0toRkJBYWJQYjRycGp5YkJrR2J2MTBxMFZWK003?=
- =?utf-8?B?MUF0V1F3RzV5Ti93bS9XNE4yRm1mNUVmMHdoRFpaUmt4Z1VKcTB3aFg2WmlU?=
- =?utf-8?B?WDVPejRMSkZPR3dLOVovMkpIR3NUVjA1Qkt2VFZrc0YyYk11bmFTRDJsMXZB?=
- =?utf-8?Q?gUH/gMN5YhyP4lcSz2SbGm41Zf2aIOKtTdTGY7Wp7A=3D?=
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 803df9a5-8b83-4977-a0b1-08d9a45e9bb4
-X-MS-Exchange-CrossTenant-AuthSource: VI1PR04MB5151.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 10 Nov 2021 15:27:29.8181
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: P2MuA5xbO2ebOemjvgHkTSZ7iRwUhfFJs8kUQpkbXM67lmyl0vVwCtcMqTjGbcRMIno8LX1vGO+FUz+SPAhOvA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR0401MB2653
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
+ Thunderbird/91.1.1
+Subject: Re: [PATCH v4 07/13] drm/msm: Track "seqno" fences by idr
+Content-Language: en-US
+To:     Rob Clark <robdclark@gmail.com>, dri-devel@lists.freedesktop.org
+Cc:     Rob Clark <robdclark@chromium.org>,
+        David Airlie <airlied@linux.ie>,
+        freedreno@lists.freedesktop.org,
+        open list <linux-kernel@vger.kernel.org>,
+        "moderated list:DMA BUFFER SHARING FRAMEWORK" 
+        <linaro-mm-sig@lists.linaro.org>,
+        "open list:DRM DRIVER FOR MSM ADRENO GPU" 
+        <linux-arm-msm@vger.kernel.org>, Sean Paul <sean@poorly.run>,
+        =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>,
+        "open list:DMA BUFFER SHARING FRAMEWORK" 
+        <linux-media@vger.kernel.org>
+References: <20210728010632.2633470-1-robdclark@gmail.com>
+ <20210728010632.2633470-8-robdclark@gmail.com>
+From:   Akhil P Oommen <akhilpo@codeaurora.org>
+In-Reply-To: <20210728010632.2633470-8-robdclark@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-On 11/8/21 1:11 PM, Arnd Bergmann wrote:
-> From: Arnd Bergmann <arnd@arndb.de>
->
-> With CONFIG_SND_SOC_SOF_COMPRESS=m, the compression code is
-> not built into a the main SOF driver when that is built-in:
->
-> x86_64-linux-ld: sound/soc/sof/ipc.o: in function `ipc_stream_message':
-> ipc.c:(.text+0x5a2): undefined reference to `snd_sof_compr_fragment_elapsed'
-> x86_64-linux-ld: sound/soc/sof/topology.o: in function `sof_dai_load':
-> topology.c:(.text+0x32d1): undefined reference to `snd_sof_compr_init_elapsed_work'
-> x86_64-linux-ld: topology.c:(.text+0x32e1): undefined reference to `snd_sof_compr_init_elapsed_work'
->
-> Make this a 'bool' symbol so it just decides whether the
-> code gets built at all.
->
-> Fixes: 858f7a5c45ca ("ASoC: SOF: Introduce fragment elapsed notification API")
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-
-Indeed this is a bug and must be fixed. Thanks Arnd!
-
-Reviewed-by: Daniel Baluta <daniel.baluta@nxp.com>
-
+On 7/28/2021 6:36 AM, Rob Clark wrote:
+> From: Rob Clark <robdclark@chromium.org>
+> 
+> Previously the (non-fd) fence returned from submit ioctl was a raw
+> seqno, which is scoped to the ring.  But from UABI standpoint, the
+> ioctls related to seqno fences all specify a submitqueue.  We can
+> take advantage of that to replace the seqno fences with a cyclic idr
+> handle.
+> 
+> This is in preperation for moving to drm scheduler, at which point
+> the submit ioctl will return after queuing the submit job to the
+> scheduler, but before the submit is written into the ring (and
+> therefore before a ring seqno has been assigned).  Which means we
+> need to replace the dma_fence that userspace may need to wait on
+> with a scheduler fence.
+> 
+> Signed-off-by: Rob Clark <robdclark@chromium.org>
+> Acked-by: Christian König <christian.koenig@amd.com>
 > ---
->   sound/soc/sof/Kconfig | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/sound/soc/sof/Kconfig b/sound/soc/sof/Kconfig
-> index 6bb4db87af03..041c54639c4d 100644
-> --- a/sound/soc/sof/Kconfig
-> +++ b/sound/soc/sof/Kconfig
-> @@ -47,7 +47,7 @@ config SND_SOC_SOF_OF
->   	  Say Y if you need this option. If unsure select "N".
+>   drivers/gpu/drm/msm/msm_drv.c         | 30 +++++++++++++++++--
+>   drivers/gpu/drm/msm/msm_fence.c       | 42 ---------------------------
+>   drivers/gpu/drm/msm/msm_fence.h       |  3 --
+>   drivers/gpu/drm/msm/msm_gem.h         |  1 +
+>   drivers/gpu/drm/msm/msm_gem_submit.c  | 23 ++++++++++++++-
+>   drivers/gpu/drm/msm/msm_gpu.h         |  5 ++++
+>   drivers/gpu/drm/msm/msm_submitqueue.c |  5 ++++
+>   7 files changed, 61 insertions(+), 48 deletions(-)
+> 
+> diff --git a/drivers/gpu/drm/msm/msm_drv.c b/drivers/gpu/drm/msm/msm_drv.c
+> index 9b8fa2ad0d84..1594ae39d54f 100644
+> --- a/drivers/gpu/drm/msm/msm_drv.c
+> +++ b/drivers/gpu/drm/msm/msm_drv.c
+> @@ -911,6 +911,7 @@ static int msm_ioctl_wait_fence(struct drm_device *dev, void *data,
+>   	ktime_t timeout = to_ktime(args->timeout);
+>   	struct msm_gpu_submitqueue *queue;
+>   	struct msm_gpu *gpu = priv->gpu;
+> +	struct dma_fence *fence;
+>   	int ret;
 >   
->   config SND_SOC_SOF_COMPRESS
-> -	tristate
-> +	bool
->   	select SND_SOC_COMPRESS
+>   	if (args->pad) {
+> @@ -925,10 +926,35 @@ static int msm_ioctl_wait_fence(struct drm_device *dev, void *data,
+>   	if (!queue)
+>   		return -ENOENT;
 >   
->   config SND_SOC_SOF_DEBUG_PROBES
+> -	ret = msm_wait_fence(gpu->rb[queue->prio]->fctx, args->fence, &timeout,
+> -		true);
+> +	/*
+> +	 * Map submitqueue scoped "seqno" (which is actually an idr key)
+> +	 * back to underlying dma-fence
+> +	 *
+> +	 * The fence is removed from the fence_idr when the submit is
+> +	 * retired, so if the fence is not found it means there is nothing
+> +	 * to wait for
+> +	 */
+> +	ret = mutex_lock_interruptible(&queue->lock);
+> +	if (ret)
+> +		return ret;
+> +	fence = idr_find(&queue->fence_idr, args->fence);
+> +	if (fence)
+> +		fence = dma_fence_get_rcu(fence);
+> +	mutex_unlock(&queue->lock);
+> +
+> +	if (!fence)
+> +		return 0;
+>   
+> +	ret = dma_fence_wait_timeout(fence, true, timeout_to_jiffies(&timeout));
+> +	if (ret == 0) {
+> +		ret = -ETIMEDOUT;
+> +	} else if (ret != -ERESTARTSYS) {
+> +		ret = 0;
+> +	}
+> +
+> +	dma_fence_put(fence);
+>   	msm_submitqueue_put(queue);
+> +
+>   	return ret;
+>   }
+>   
+> diff --git a/drivers/gpu/drm/msm/msm_fence.c b/drivers/gpu/drm/msm/msm_fence.c
+> index b92a9091a1e2..f2cece542c3f 100644
+> --- a/drivers/gpu/drm/msm/msm_fence.c
+> +++ b/drivers/gpu/drm/msm/msm_fence.c
+> @@ -24,7 +24,6 @@ msm_fence_context_alloc(struct drm_device *dev, volatile uint32_t *fenceptr,
+>   	strncpy(fctx->name, name, sizeof(fctx->name));
+>   	fctx->context = dma_fence_context_alloc(1);
+>   	fctx->fenceptr = fenceptr;
+> -	init_waitqueue_head(&fctx->event);
+>   	spin_lock_init(&fctx->spinlock);
+>   
+>   	return fctx;
+> @@ -45,53 +44,12 @@ static inline bool fence_completed(struct msm_fence_context *fctx, uint32_t fenc
+>   		(int32_t)(*fctx->fenceptr - fence) >= 0;
+>   }
+>   
+> -/* legacy path for WAIT_FENCE ioctl: */
+> -int msm_wait_fence(struct msm_fence_context *fctx, uint32_t fence,
+> -		ktime_t *timeout, bool interruptible)
+> -{
+> -	int ret;
+> -
+> -	if (fence > fctx->last_fence) {
+> -		DRM_ERROR_RATELIMITED("%s: waiting on invalid fence: %u (of %u)\n",
+> -				fctx->name, fence, fctx->last_fence);
+> -		return -EINVAL;
+
+Rob, we changed this pre-existing behaviour in this patch. Now, when 
+userspace tries to wait on a future fence, we don't return an error.
+
+I just want to check if this was accidental or not?
+
+-Akhil.
+
+> -	}
+> -
+> -	if (!timeout) {
+> -		/* no-wait: */
+> -		ret = fence_completed(fctx, fence) ? 0 : -EBUSY;
+> -	} else {
+> -		unsigned long remaining_jiffies = timeout_to_jiffies(timeout);
+> -
+> -		if (interruptible)
+> -			ret = wait_event_interruptible_timeout(fctx->event,
+> -				fence_completed(fctx, fence),
+> -				remaining_jiffies);
+> -		else
+> -			ret = wait_event_timeout(fctx->event,
+> -				fence_completed(fctx, fence),
+> -				remaining_jiffies);
+> -
+> -		if (ret == 0) {
+> -			DBG("timeout waiting for fence: %u (completed: %u)",
+> -					fence, fctx->completed_fence);
+> -			ret = -ETIMEDOUT;
+> -		} else if (ret != -ERESTARTSYS) {
+> -			ret = 0;
+> -		}
+> -	}
+> -
+> -	return ret;
+> -}
+> -
+>   /* called from workqueue */
+>   void msm_update_fence(struct msm_fence_context *fctx, uint32_t fence)
+>   {
+>   	spin_lock(&fctx->spinlock);
+>   	fctx->completed_fence = max(fence, fctx->completed_fence);
+>   	spin_unlock(&fctx->spinlock);
+> -
+> -	wake_up_all(&fctx->event);
+>   }
+>   
+>   struct msm_fence {
+> diff --git a/drivers/gpu/drm/msm/msm_fence.h b/drivers/gpu/drm/msm/msm_fence.h
+> index 6ab97062ff1a..4783db528bcc 100644
+> --- a/drivers/gpu/drm/msm/msm_fence.h
+> +++ b/drivers/gpu/drm/msm/msm_fence.h
+> @@ -49,7 +49,6 @@ struct msm_fence_context {
+>   	 */
+>   	volatile uint32_t *fenceptr;
+>   
+> -	wait_queue_head_t event;
+>   	spinlock_t spinlock;
+>   };
+>   
+> @@ -57,8 +56,6 @@ struct msm_fence_context * msm_fence_context_alloc(struct drm_device *dev,
+>   		volatile uint32_t *fenceptr, const char *name);
+>   void msm_fence_context_free(struct msm_fence_context *fctx);
+>   
+> -int msm_wait_fence(struct msm_fence_context *fctx, uint32_t fence,
+> -		ktime_t *timeout, bool interruptible);
+>   void msm_update_fence(struct msm_fence_context *fctx, uint32_t fence);
+>   
+>   struct dma_fence * msm_fence_alloc(struct msm_fence_context *fctx);
+> diff --git a/drivers/gpu/drm/msm/msm_gem.h b/drivers/gpu/drm/msm/msm_gem.h
+> index da3af702a6c8..e0579abda5b9 100644
+> --- a/drivers/gpu/drm/msm/msm_gem.h
+> +++ b/drivers/gpu/drm/msm/msm_gem.h
+> @@ -320,6 +320,7 @@ struct msm_gem_submit {
+>   	struct ww_acquire_ctx ticket;
+>   	uint32_t seqno;		/* Sequence number of the submit on the ring */
+>   	struct dma_fence *fence;
+> +	int fence_id;       /* key into queue->fence_idr */
+>   	struct msm_gpu_submitqueue *queue;
+>   	struct pid *pid;    /* submitting process */
+>   	bool fault_dumped;  /* Limit devcoredump dumping to one per submit */
+> diff --git a/drivers/gpu/drm/msm/msm_gem_submit.c b/drivers/gpu/drm/msm/msm_gem_submit.c
+> index 4f02fa3c78f9..f6f595aae2c5 100644
+> --- a/drivers/gpu/drm/msm/msm_gem_submit.c
+> +++ b/drivers/gpu/drm/msm/msm_gem_submit.c
+> @@ -68,7 +68,14 @@ void __msm_gem_submit_destroy(struct kref *kref)
+>   			container_of(kref, struct msm_gem_submit, ref);
+>   	unsigned i;
+>   
+> +	if (submit->fence_id) {
+> +		mutex_lock(&submit->queue->lock);
+> +		idr_remove(&submit->queue->fence_idr, submit->fence_id);
+> +		mutex_unlock(&submit->queue->lock);
+> +	}
+> +
+>   	dma_fence_put(submit->fence);
+> +
+>   	put_pid(submit->pid);
+>   	msm_submitqueue_put(submit->queue);
+>   
+> @@ -872,6 +879,20 @@ int msm_ioctl_gem_submit(struct drm_device *dev, void *data,
+>   		goto out;
+>   	}
+>   
+> +	/*
+> +	 * Allocate an id which can be used by WAIT_FENCE ioctl to map back
+> +	 * to the underlying fence.
+> +	 */
+> +	mutex_lock(&queue->lock);
+> +	submit->fence_id = idr_alloc_cyclic(&queue->fence_idr,
+> +			submit->fence, 0, INT_MAX, GFP_KERNEL);
+> +	mutex_unlock(&queue->lock);
+> +	if (submit->fence_id < 0) {
+> +		ret = submit->fence_id = 0;
+> +		submit->fence_id = 0;
+> +		goto out;
+> +	}
+> +
+>   	if (args->flags & MSM_SUBMIT_FENCE_FD_OUT) {
+>   		struct sync_file *sync_file = sync_file_create(submit->fence);
+>   		if (!sync_file) {
+> @@ -886,7 +907,7 @@ int msm_ioctl_gem_submit(struct drm_device *dev, void *data,
+>   
+>   	msm_gpu_submit(gpu, submit);
+>   
+> -	args->fence = submit->fence->seqno;
+> +	args->fence = submit->fence_id;
+>   
+>   	msm_reset_syncobjs(syncobjs_to_reset, args->nr_in_syncobjs);
+>   	msm_process_post_deps(post_deps, args->nr_out_syncobjs,
+> diff --git a/drivers/gpu/drm/msm/msm_gpu.h b/drivers/gpu/drm/msm/msm_gpu.h
+> index 96efcb31e502..579627252540 100644
+> --- a/drivers/gpu/drm/msm/msm_gpu.h
+> +++ b/drivers/gpu/drm/msm/msm_gpu.h
+> @@ -263,6 +263,9 @@ struct msm_gpu_perfcntr {
+>    *             which set of pgtables do submits jobs associated with the
+>    *             submitqueue use)
+>    * @node:      node in the context's list of submitqueues
+> + * @fence_idr: maps fence-id to dma_fence for userspace visible fence
+> + *             seqno, protected by submitqueue lock
+> + * @lock:      submitqueue lock
+>    * @ref:       reference count
+>    */
+>   struct msm_gpu_submitqueue {
+> @@ -272,6 +275,8 @@ struct msm_gpu_submitqueue {
+>   	int faults;
+>   	struct msm_file_private *ctx;
+>   	struct list_head node;
+> +	struct idr fence_idr;
+> +	struct mutex lock;
+>   	struct kref ref;
+>   };
+>   
+> diff --git a/drivers/gpu/drm/msm/msm_submitqueue.c b/drivers/gpu/drm/msm/msm_submitqueue.c
+> index 9e9fec61d629..66f8d0fb38b0 100644
+> --- a/drivers/gpu/drm/msm/msm_submitqueue.c
+> +++ b/drivers/gpu/drm/msm/msm_submitqueue.c
+> @@ -12,6 +12,8 @@ void msm_submitqueue_destroy(struct kref *kref)
+>   	struct msm_gpu_submitqueue *queue = container_of(kref,
+>   		struct msm_gpu_submitqueue, ref);
+>   
+> +	idr_destroy(&queue->fence_idr);
+> +
+>   	msm_file_private_put(queue->ctx);
+>   
+>   	kfree(queue);
+> @@ -89,6 +91,9 @@ int msm_submitqueue_create(struct drm_device *drm, struct msm_file_private *ctx,
+>   	if (id)
+>   		*id = queue->id;
+>   
+> +	idr_init(&queue->fence_idr);
+> +	mutex_init(&queue->lock);
+> +
+>   	list_add_tail(&queue->node, &ctx->submitqueues);
+>   
+>   	write_unlock(&ctx->queuelock);
+> 
+
