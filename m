@@ -2,35 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 853C244C6F3
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 19:44:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BF7DB44C73E
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 19:49:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232167AbhKJSrI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Nov 2021 13:47:08 -0500
-Received: from mail.kernel.org ([198.145.29.99]:46092 "EHLO mail.kernel.org"
+        id S233242AbhKJSt2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Nov 2021 13:49:28 -0500
+Received: from mail.kernel.org ([198.145.29.99]:47974 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232658AbhKJSqv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Nov 2021 13:46:51 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 221056117A;
-        Wed, 10 Nov 2021 18:44:02 +0000 (UTC)
+        id S231238AbhKJSsU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Nov 2021 13:48:20 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id ED2AD61268;
+        Wed, 10 Nov 2021 18:45:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1636569843;
-        bh=8jST38o3KStDR26PTQ6PNGLoSeQnWA9v6PYh7V4vGKA=;
+        s=korg; t=1636569932;
+        bh=ZtMcIPaq0ozHNqUsWMJxCNqpDXASe3FXSjLcKXjJfoU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=w8nSP0d10E1aaujrPHvfpZlL8v/33VvAnBuH9xEvV/bwVIbRpya6PlN2TxkFT9ADm
-         tLBpITyePBN+E9p2dTrVhZ7nIY6mmwaUgC6fvwy8k2rqr/qVBU/Ug5RFhYc8hCly0n
-         8ecSYoxvWLXv40HTpIfKSY+A/p6YpNSifjuN8NKM=
+        b=ZozV/RM3LsqlxfBu2utEW8AsB97Sh3ke4F0UirpCeXSs9GeVFVPrUaZy+hmQsbOWU
+         Yw0dTXthFi8dKX3LJILZb1m0VugiycrDviqJU3404Cxl1CLrXXMTUWpDjRB99clkyL
+         dULwolYTQPBie1pRKjsj29LZd6qx3uUyTjMICHnM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Johan Hovold <johan@kernel.org>,
-        Kalle Valo <kvalo@codeaurora.org>
-Subject: [PATCH 4.4 19/19] rsi: fix control-message timeout
-Date:   Wed, 10 Nov 2021 19:43:21 +0100
-Message-Id: <20211110182001.882371301@linuxfoundation.org>
+        stable@vger.kernel.org, Luo Likang <luolikang@nsfocus.com>,
+        Dan Carpenter <dan.carpenter@oracle.com>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Subject: [PATCH 4.14 02/22] media: firewire: firedtv-avc: fix a buffer overflow in avc_ca_pmt()
+Date:   Wed, 10 Nov 2021 19:43:22 +0100
+Message-Id: <20211110182002.747251860@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211110182001.257350381@linuxfoundation.org>
-References: <20211110182001.257350381@linuxfoundation.org>
+In-Reply-To: <20211110182002.666244094@linuxfoundation.org>
+References: <20211110182002.666244094@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,36 +41,84 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Johan Hovold <johan@kernel.org>
+From: Dan Carpenter <dan.carpenter@oracle.com>
 
-commit 541fd20c3ce5b0bc39f0c6a52414b6b92416831c upstream.
+commit 35d2969ea3c7d32aee78066b1f3cf61a0d935a4e upstream.
 
-USB control-message timeouts are specified in milliseconds and should
-specifically not vary with CONFIG_HZ.
+The bounds checking in avc_ca_pmt() is not strict enough.  It should
+be checking "read_pos + 4" because it's reading 5 bytes.  If the
+"es_info_length" is non-zero then it reads a 6th byte so there needs to
+be an additional check for that.
 
-Use the common control-message timeout define for the five-second
-timeout.
+I also added checks for the "write_pos".  I don't think these are
+required because "read_pos" and "write_pos" are tied together so
+checking one ought to be enough.  But they make the code easier to
+understand for me.  The check on write_pos is:
 
-Fixes: dad0d04fa7ba ("rsi: Add RS9113 wireless driver")
-Cc: stable@vger.kernel.org      # 3.15
-Signed-off-by: Johan Hovold <johan@kernel.org>
-Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
-Link: https://lore.kernel.org/r/20211025120522.6045-5-johan@kernel.org
+	if (write_pos + 4 >= sizeof(c->operand) - 4) {
+
+The first "+ 4" is because we're writing 5 bytes and the last " - 4"
+is to leave space for the CRC.
+
+The other problem is that "length" can be invalid.  It comes from
+"data_length" in fdtv_ca_pmt().
+
+Cc: stable@vger.kernel.org
+Reported-by: Luo Likang <luolikang@nsfocus.com>
+Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+Signed-off-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
+Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/net/wireless/rsi/rsi_91x_usb.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/media/firewire/firedtv-avc.c |   14 +++++++++++---
+ drivers/media/firewire/firedtv-ci.c  |    2 ++
+ 2 files changed, 13 insertions(+), 3 deletions(-)
 
---- a/drivers/net/wireless/rsi/rsi_91x_usb.c
-+++ b/drivers/net/wireless/rsi/rsi_91x_usb.c
-@@ -42,7 +42,7 @@ static int rsi_usb_card_write(struct rsi
- 			      buf,
- 			      len,
- 			      &transfer,
--			      HZ * 5);
-+			      USB_CTRL_SET_TIMEOUT);
+--- a/drivers/media/firewire/firedtv-avc.c
++++ b/drivers/media/firewire/firedtv-avc.c
+@@ -1169,7 +1169,11 @@ int avc_ca_pmt(struct firedtv *fdtv, cha
+ 		read_pos += program_info_length;
+ 		write_pos += program_info_length;
+ 	}
+-	while (read_pos < length) {
++	while (read_pos + 4 < length) {
++		if (write_pos + 4 >= sizeof(c->operand) - 4) {
++			ret = -EINVAL;
++			goto out;
++		}
+ 		c->operand[write_pos++] = msg[read_pos++];
+ 		c->operand[write_pos++] = msg[read_pos++];
+ 		c->operand[write_pos++] = msg[read_pos++];
+@@ -1181,13 +1185,17 @@ int avc_ca_pmt(struct firedtv *fdtv, cha
+ 		c->operand[write_pos++] = es_info_length >> 8;
+ 		c->operand[write_pos++] = es_info_length & 0xff;
+ 		if (es_info_length > 0) {
++			if (read_pos >= length) {
++				ret = -EINVAL;
++				goto out;
++			}
+ 			pmt_cmd_id = msg[read_pos++];
+ 			if (pmt_cmd_id != 1 && pmt_cmd_id != 4)
+ 				dev_err(fdtv->device, "invalid pmt_cmd_id %d at stream level\n",
+ 					pmt_cmd_id);
  
- 	if (status < 0) {
- 		rsi_dbg(ERR_ZONE,
+-			if (es_info_length > sizeof(c->operand) - 4 -
+-					     write_pos) {
++			if (es_info_length > sizeof(c->operand) - 4 - write_pos ||
++			    es_info_length > length - read_pos) {
+ 				ret = -EINVAL;
+ 				goto out;
+ 			}
+--- a/drivers/media/firewire/firedtv-ci.c
++++ b/drivers/media/firewire/firedtv-ci.c
+@@ -138,6 +138,8 @@ static int fdtv_ca_pmt(struct firedtv *f
+ 	} else {
+ 		data_length = msg->msg[3];
+ 	}
++	if (data_length > sizeof(msg->msg) - data_pos)
++		return -EINVAL;
+ 
+ 	return avc_ca_pmt(fdtv, &msg->msg[data_pos], data_length);
+ }
 
 
