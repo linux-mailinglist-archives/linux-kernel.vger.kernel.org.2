@@ -2,90 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 00B3E44C5F1
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 18:27:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 869EC44C5F3
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 18:29:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231331AbhKJRaL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Nov 2021 12:30:11 -0500
-Received: from mga17.intel.com ([192.55.52.151]:50243 "EHLO mga17.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230230AbhKJRaK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Nov 2021 12:30:10 -0500
-X-IronPort-AV: E=McAfee;i="6200,9189,10164"; a="213446698"
-X-IronPort-AV: E=Sophos;i="5.87,224,1631602800"; 
-   d="scan'208";a="213446698"
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Nov 2021 09:27:18 -0800
-X-IronPort-AV: E=Sophos;i="5.87,224,1631602800"; 
-   d="scan'208";a="602279130"
-Received: from smile.fi.intel.com ([10.237.72.184])
-  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Nov 2021 09:27:15 -0800
-Received: from andy by smile.fi.intel.com with local (Exim 4.95)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1mkrNH-005UQG-Ii;
-        Wed, 10 Nov 2021 19:27:03 +0200
-Date:   Wed, 10 Nov 2021 19:27:03 +0200
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Puranjay Mohan <puranjay12@gmail.com>
-Cc:     Greg KH <gregkh@linuxfoundation.org>, rafael@kernel.org,
-        heikki.krogerus@linux.intel.com, kuba@kernel.org,
-        saravanak@google.com,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        "Hennerich, Michael" <Michael.Hennerich@analog.com>,
-        Jonathan Cameron <jic23@kernel.org>,
-        linux-iio <linux-iio@vger.kernel.org>
-Subject: Re: [PATCH v2 1/2] device property: Add fwnode_irq_get_byname()
-Message-ID: <YYwA5/8Zoq6BT29P@smile.fi.intel.com>
-References: <20211109200840.135019-1-puranjay12@gmail.com>
- <20211109200840.135019-2-puranjay12@gmail.com>
- <YYuIcPLx0uoUZ88B@smile.fi.intel.com>
- <CANk7y0jRKVrTRZCzq0W1G7_Ef1QqF5yqKs==DwsR+xuhra3b4A@mail.gmail.com>
+        id S231577AbhKJRcS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Nov 2021 12:32:18 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55138 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230230AbhKJRcP (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Nov 2021 12:32:15 -0500
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 66571C061764
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Nov 2021 09:29:27 -0800 (PST)
+Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1mkrPY-0007kx-0L; Wed, 10 Nov 2021 18:29:24 +0100
+Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
+        by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1mkrPX-0003Je-5O; Wed, 10 Nov 2021 18:29:22 +0100
+Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1mkrPV-00010t-UG; Wed, 10 Nov 2021 18:29:21 +0100
+Date:   Wed, 10 Nov 2021 18:28:47 +0100
+From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
+To:     Michael Walle <michael@walle.cc>
+Cc:     linux-spi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Mark Brown <broonie@kernel.org>,
+        Vladimir Oltean <olteanv@gmail.com>
+Subject: Re: [RFC PATCH] spi: fix use-after-free of the add_lock mutex
+Message-ID: <20211110172847.4wbi5k57zs3zn3vq@pengutronix.de>
+References: <20211110160836.3304104-1-michael@walle.cc>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="x75mmyzinzb2pknf"
 Content-Disposition: inline
-In-Reply-To: <CANk7y0jRKVrTRZCzq0W1G7_Ef1QqF5yqKs==DwsR+xuhra3b4A@mail.gmail.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+In-Reply-To: <20211110160836.3304104-1-michael@walle.cc>
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
+X-SA-Exim-Mail-From: ukl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 10, 2021 at 10:34:43PM +0530, Puranjay Mohan wrote:
-> On Wed, Nov 10, 2021 at 2:23 PM Andy Shevchenko
-> <andriy.shevchenko@linux.intel.com> wrote:
-> > On Wed, Nov 10, 2021 at 01:38:39AM +0530, Puranjay Mohan wrote:
 
-> I wrote this function keeping the device tree in mind. I will have to
-> look into ACPI and see how the cases you mentioned can be implemented.
-> Let's see how far I can get with understanding the ACPI.
+--x75mmyzinzb2pknf
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Yeah.
+Hello,
 
-What you need to have is
-1) expand fwnode_irq_get() to support ACPI GPIO IRQ resources.
-2) provide a simple version of the fwnode_irq_get_by_name() like
+On Wed, Nov 10, 2021 at 05:08:36PM +0100, Michael Walle wrote:
+> Commit 6098475d4cb4 ("spi: Fix deadlock when adding SPI controllers on
+> SPI buses") introduced a per-controller mutex. But mutex_unlock() of
+> said lock is called after the controller is already freed:
+>=20
+>   spi_unregister_controller(ctlr)
+>    -> put_device(&ctlr->dev)
+>     -> spi_controller_release(dev)
+>   mutex_unlock(&ctrl->add_lock)
 
-	if (is_of_node())
-		return of_...();
+This is indented in a misleading way. mutex_unlock() has to be on the
+same level as put_device().
 
-	return acpi_dev_gpio_irq_get_by();
+> Move the put_device() after the mutex_unlock().
+>=20
+> Fixes: 6098475d4cb4 ("spi: Fix deadlock when adding SPI controllers on SP=
+I buses")
+> Signed-off-by: Michael Walle <michael@walle.cc>
 
-3) establish understanding about naming for ACPI and
-4) extend fwnode_irq_get_by_name() by it
+I first thought this was wrong, and the put_device must be dropped
+altogether, but after some code reading I agree this is the right fix.
 
-	if (is_of_node())
-		return of_...();
+Reviewed-by: Uwe Kleine-K=F6nig <u.kleine-koenig@pengutronix.de>
 
-	ret = acpi_irq_get_by_name();
-	if (ret > 0)
-		return ret;
+> ---
+> I'm not sure if this is the correct fix. I don't know if the put_device()
+> will have to be protected by the add_lock (remember before, the add_lock
+> was a global lock).
 
-	return acpi_dev_gpio_irq_get_by();
+No, put_device doesn't need to be protected by this lock.
 
-As I mentioned, items 1 and 2 are easy to achieve with currently existing APIs.
+Best regards and thanks for the report and diagnosis,
+Uwe
 
--- 
-With Best Regards,
-Andy Shevchenko
+--=20
+Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
+Industrial Linux Solutions                 | https://www.pengutronix.de/ |
 
+--x75mmyzinzb2pknf
+Content-Type: application/pgp-signature; name="signature.asc"
 
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEfnIqFpAYrP8+dKQLwfwUeK3K7AkFAmGMAUUACgkQwfwUeK3K
+7An/JAf/QD3dP2/+T7j4TVgz5FpwOMq4zDRjuMCkLrEKbHHOwFtMy52mlKcsQUN8
+shMwOBofc9MWYrAxbEzp9k74g2mheDwUsOZCbLXEHAifMkHbc7csL0s09Cgg27Vi
+xYdqbgpO5dogFgRFNHtazUJOKZLrr4UENE4QiB8YoNC67m5GH+xiNT6n3elbIP9C
+eJqp2Z3GoRlimpbr0JdKsWsQDAtd/oOr+/+G19Ecu6js7TSq2LQ/qeiDjCLxHed/
+w1lgE7Cu13JoThNYB7wtPBKXFMPWM7EVb6PhcQXMnEgVe2+YHZg6avDLkcWEGBbb
+Nre+ah1h9gkofYkNcfVOd/yF7n90vg==
+=5jyf
+-----END PGP SIGNATURE-----
+
+--x75mmyzinzb2pknf--
