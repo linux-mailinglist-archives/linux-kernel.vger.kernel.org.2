@@ -2,90 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8EC0944BF5B
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 11:59:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F013844BF82
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 12:00:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231391AbhKJLCC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Nov 2021 06:02:02 -0500
-Received: from mail.kernel.org ([198.145.29.99]:38760 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231344AbhKJLB7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Nov 2021 06:01:59 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 59A4061205;
-        Wed, 10 Nov 2021 10:59:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1636541952;
-        bh=lrO+JY2QDNzmXXL3NwoO4JWc7UMB3ftP9XCOGAxG6Qo=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ggSMzIbB/yz1AWLoILW3lJ7p+JCvoN2xJmnfaX7rvGHp43H0DszcoOr0lIb6EZTtx
-         ndi/nHK25x5lyoBwCEjd2DgdRKYSme3901q3CYujZcq9K/E0byynw8iFiA0DnI7wHD
-         5xzOLKGDy5ClimLt8ivFanE0mOuGOk/HzyzFvxuNVC96o0UIuvdC4X/5xll0gbLe65
-         IDrSb3JVhhxltMlcibNkgQ7sOgpCEpY3X3UQ8PA8vlcv0s8z2ELAFy3jK68whppOJ5
-         KUqTvUYsTgb/WAGGIQofK826pe2nSQaZbIpGUy03suxFbQQUj2Q4nxvZkxuJi2FKZj
-         qvYMAyqND0zFw==
-Received: by mail.kernel.org with local (Exim 4.94.2)
-        (envelope-from <mchehab@kernel.org>)
-        id 1mklJt-002rxG-8u; Wed, 10 Nov 2021 10:59:09 +0000
-From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Cc:     linuxarm@huawei.com, mauro.chehab@huawei.com,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Deepak R Varma <drv@mailo.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>,
-        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
-        linux-staging@lists.linux.dev, Hans Verkuil <hverkuil@xs4all.nl>
-Subject: [PATCH 2/2] media: atomisp-ov2680: properly set the vts value
-Date:   Wed, 10 Nov 2021 10:59:08 +0000
-Message-Id: <4bada6cb5cb0d70d736ecb93f9c6dc2719d4241c.1636541941.git.mchehab+huawei@kernel.org>
-X-Mailer: git-send-email 2.33.1
-In-Reply-To: <46ec939d911fc94b8a5e217874655e60512ad773.1636541941.git.mchehab+huawei@kernel.org>
-References: <46ec939d911fc94b8a5e217874655e60512ad773.1636541941.git.mchehab+huawei@kernel.org>
+        id S231715AbhKJLDb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Nov 2021 06:03:31 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50374 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231706AbhKJLDO (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Nov 2021 06:03:14 -0500
+Received: from mail-pj1-x1035.google.com (mail-pj1-x1035.google.com [IPv6:2607:f8b0:4864:20::1035])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B85BC061767
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Nov 2021 03:00:22 -0800 (PST)
+Received: by mail-pj1-x1035.google.com with SMTP id gf14-20020a17090ac7ce00b001a7a2a0b5c3so1322468pjb.5
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Nov 2021 03:00:22 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=KAyZqAMlAmUiHf1dIx2+pecIBOy9N3N7dPQhBsif/R8=;
+        b=f0pHnEifAzmDAArN/HwII5bNPgjK419EZhSz1sjI9mvSbAYTen9l0dp90oBGPBk/BO
+         7hoBIr5HLj4UOUQTzY6OYvKe2h73SGzJRouL12bxGEh9hhRKRVtPnXkyGpUrnebx09GO
+         7/vjTmNDN7CVMWWMGKnE27lLVMbH/m03d3O7fAXSEXrCOzK31BvKSctLyFpwYAdqu8Pj
+         dE+M6PKFKQiElWR8iCd4eEpBqg5wOexQu+zv4s3CU+JtcKrVWqxElYCT4MDaGAJlSWXg
+         GXw5f4OMUcbCwsSAZ44b2EatbGDGDHaPff7r/Clf/gFFD94o7qosT1lNasckiZPvafil
+         j6LQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=KAyZqAMlAmUiHf1dIx2+pecIBOy9N3N7dPQhBsif/R8=;
+        b=H821INByQLL5Ai3sTEUyxDsKNVAPC/NjC0PyCN5ZHw+W9FZumVzpsKgub+38HthYDc
+         dwS3OTXtXEQLVaT/9iSg9fLh+2s8mijA0XLBpDRTGFB0dB72YaawusOdqUmqnziCqyrZ
+         MNnQcaAn8CD9yU+oHmEXW9FXrnFYFllEOGOJ52Yu0ZDJCevJeer7ZBhGXqSnb6tDECf9
+         /LVVKbiG9i3HgDreBtZMOnBlY8cj1tVBuSGNbWSHCqAAitg1XwK6/UE2FXxbGOcSJ9va
+         RhtRJMOFBlIa9tEyMy3rW7Bzf2e9sJDy92zREkyFB3nIuczj/qq5zLpGes/iwwsuC9hD
+         WaOA==
+X-Gm-Message-State: AOAM531Ax6jgUv5/t1maKHth0+RlqU+4aHq9fB7XrBY1kVHdUQ/uaPtR
+        CXmnRab/HSlnF1Tc3DOoEX1U/g==
+X-Google-Smtp-Source: ABdhPJwHqUeKDR5q61yigu2TuQjbamu1gW52Bf126KWU3sYBRESwbfSmA++ahBXu3lZKz6URwfYh3g==
+X-Received: by 2002:a17:90a:df01:: with SMTP id gp1mr15736659pjb.28.1636542021917;
+        Wed, 10 Nov 2021 03:00:21 -0800 (PST)
+Received: from localhost.name ([122.161.52.143])
+        by smtp.gmail.com with ESMTPSA id e11sm5585282pjl.20.2021.11.10.03.00.17
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 10 Nov 2021 03:00:21 -0800 (PST)
+From:   Bhupesh Sharma <bhupesh.sharma@linaro.org>
+To:     linux-arm-msm@vger.kernel.org, linux-crypto@vger.kernel.org
+Cc:     bhupesh.sharma@linaro.org, bhupesh.linux@gmail.com,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        robh+dt@kernel.org, agross@kernel.org, herbert@gondor.apana.org.au,
+        davem@davemloft.net, stephan@gerhold.net,
+        Thara Gopinath <thara.gopinath@linaro.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>
+Subject: [PATCH v5 08/22] dt-bindings: qcom-qce: Add 'interconnects' and 'interconnect-names'
+Date:   Wed, 10 Nov 2021 16:29:08 +0530
+Message-Id: <20211110105922.217895-9-bhupesh.sharma@linaro.org>
+X-Mailer: git-send-email 2.31.1
+In-Reply-To: <20211110105922.217895-1-bhupesh.sharma@linaro.org>
+References: <20211110105922.217895-1-bhupesh.sharma@linaro.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Sender: Mauro Carvalho Chehab <mchehab@kernel.org>
-To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The vts value should be set before being checked, as otherwise a
-warning will arise:
+Add 'interconnects' and 'interconnect-names' as optional properties
+to the device-tree binding documentation for qcom crypto IP.
 
-	drivers/staging/media/atomisp/i2c/atomisp-ov2680.c: In function 'ov2680_set_fmt':
-	drivers/staging/media/atomisp/i2c/atomisp-ov2680.c:873:33: warning: 'vts' may be used uninitialized
-	[-Wmaybe-uninitialized]
-	  873 |         if (dev->exposure > vts - OV2680_INTEGRATION_TIME_MARGIN)
+These properties describe the interconnect path between crypto and main
+memory and the interconnect type respectively.
 
-Reported-by: Hans Verkuil <hverkuil@xs4all.nl>
-Cc: Hans de Goede <hdegoede@redhat.com>
-Fixes: 62b984359b6f ("media: atomisp-ov2680: Fix ov2680_set_fmt() messing up high exposure settings")
-Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Cc: Thara Gopinath <thara.gopinath@linaro.org>
+Cc: Bjorn Andersson <bjorn.andersson@linaro.org>
+Cc: Rob Herring <robh+dt@kernel.org>
+Signed-off-by: Bhupesh Sharma <bhupesh.sharma@linaro.org>
 ---
- drivers/staging/media/atomisp/i2c/atomisp-ov2680.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ Documentation/devicetree/bindings/crypto/qcom-qce.yaml | 8 ++++++++
+ 1 file changed, 8 insertions(+)
 
-diff --git a/drivers/staging/media/atomisp/i2c/atomisp-ov2680.c b/drivers/staging/media/atomisp/i2c/atomisp-ov2680.c
-index 497884d332e1..d24f8830fd94 100644
---- a/drivers/staging/media/atomisp/i2c/atomisp-ov2680.c
-+++ b/drivers/staging/media/atomisp/i2c/atomisp-ov2680.c
-@@ -869,11 +869,11 @@ static int ov2680_set_fmt(struct v4l2_subdev *sd,
- 		dev_err(&client->dev,
- 			"ov2680 write resolution register err: %d\n", ret);
+diff --git a/Documentation/devicetree/bindings/crypto/qcom-qce.yaml b/Documentation/devicetree/bindings/crypto/qcom-qce.yaml
+index 3a839c159d92..30deaa0fa93d 100644
+--- a/Documentation/devicetree/bindings/crypto/qcom-qce.yaml
++++ b/Documentation/devicetree/bindings/crypto/qcom-qce.yaml
+@@ -32,6 +32,14 @@ properties:
+       - const: bus
+       - const: core
  
-+	vts = dev->res->lines_per_frame;
++  interconnects:
++    maxItems: 1
++    description:
++      Interconnect path between qce crypto and main memory.
 +
- 	/* If necessary increase the VTS to match exposure + MARGIN */
- 	if (dev->exposure > vts - OV2680_INTEGRATION_TIME_MARGIN)
- 		vts = dev->exposure + OV2680_INTEGRATION_TIME_MARGIN;
--	else
--		vts = dev->res->lines_per_frame;
- 
- 	ret = ov2680_write_reg(client, 2, OV2680_TIMING_VTS_H, vts);
- 	if (ret)
++  interconnect-names:
++    const: memory
++
+   dmas:
+     items:
+       - description: DMA specifiers for rx dma channel.
 -- 
-2.33.1
+2.31.1
 
