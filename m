@@ -2,208 +2,182 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3676844C483
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 16:37:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A7A2A44C484
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 16:37:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231674AbhKJPkA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Nov 2021 10:40:00 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:45046 "EHLO
+        id S232452AbhKJPkI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Nov 2021 10:40:08 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124]:47505 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231408AbhKJPj7 (ORCPT
+        by vger.kernel.org with ESMTP id S232457AbhKJPkH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Nov 2021 10:39:59 -0500
+        Wed, 10 Nov 2021 10:40:07 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1636558631;
+        s=mimecast20190719; t=1636558639;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=TsMK8Ym36EtrROun3gA7xiKiYj4bqI5P7kgHHKBVFyA=;
-        b=D6+xZiYlf5a/kWyUzRdJbYXH5SjHYm7zu22ObyIdochIYGdTX6zIabrC3T+iqKwfKoV+D1
-        UBHAkmOzLEKMXzixZd3WFgH9EF0dVCFBBzEtZ+FBFfppeoYtfga4kpdlI1uUGiS2KXKXza
-        iUo9hAIh8ZTpanW4xhFuT+/10mdSvxA=
-Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
- [209.85.221.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-395-1BbL__crP1KCcCERRxfqog-1; Wed, 10 Nov 2021 10:37:09 -0500
-X-MC-Unique: 1BbL__crP1KCcCERRxfqog-1
-Received: by mail-wr1-f69.google.com with SMTP id h7-20020adfaa87000000b001885269a937so503119wrc.17
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Nov 2021 07:37:08 -0800 (PST)
+        bh=+erTvGbViXM/hcAqiyOBnjNlThmQiYYMieKA809wTio=;
+        b=FTisEmXwb1hrb3nqOW0bk5tHKCoUufI9DtcFV3VlFQiZaWrhENHVGaYWzXTWeFCeUi6Ety
+        5qbRLdaMdFRQFnBA6iBrqAIx6g5N+X5if+jVuO+zIMb/bUfNQs8Sa6eV6aAuUHc1d6CHXM
+        UTjJqKnbXwvYy9VOLKQO+dVzyoVUx6c=
+Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com
+ [209.85.128.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-145-9XFtCmAbN8S3ZwgjGlFjtQ-1; Wed, 10 Nov 2021 10:37:18 -0500
+X-MC-Unique: 9XFtCmAbN8S3ZwgjGlFjtQ-1
+Received: by mail-wm1-f70.google.com with SMTP id b145-20020a1c8097000000b003335872db8dso685538wmd.2
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Nov 2021 07:37:17 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=TsMK8Ym36EtrROun3gA7xiKiYj4bqI5P7kgHHKBVFyA=;
-        b=ND9De0Ew5ZV9hxlXLnNAxHgj3e29TsCwKqQFvizo+EGAj9nLpGAjgSMZrxsY680lXE
-         5z5mOGXOlkrXiw3qaGi79DurkIhMmeoJV2jLHh+qREM4lak9eN6TxA4QFkAAWBfr+fWm
-         YgfUxyc9ClFD14I3b0IlgskDVMQGaJc0zvafNmc+YhMeg3Lvpi4wKEHoNVNxgi5lDXOZ
-         2nWiaqQyfYnA6C6qla++auISLW1j78AqVupdpY3i4K7JkwP6LWEgbQgZNWxHuZAZXdO+
-         1D78HHBQgTv2i+tFH3OZzPPpOoa+J2ysAcZs4z0wpxzFTXImfp0V9yjiSfvbwbd+Lex/
-         21Fw==
-X-Gm-Message-State: AOAM532y+6068yRd+hyclu00yNCmqmPwzRoKCu0Fz0WrRFQdA7VButGS
-        MpKMEB18mGCXxeHhmtigjvCnZ5r4qqMLan3aGTdrhB2ceHIEbB7KuRFt/w6UQvzq2B4qgMlcXWM
-        2BzVWn5kjlkRY19dxRBEAAxDA
-X-Received: by 2002:a5d:6501:: with SMTP id x1mr747759wru.390.1636558625622;
-        Wed, 10 Nov 2021 07:37:05 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJycXSjChwKB0BbkM3ANwTjPHehWgOpLyLq/W1gEpfqQx0APhVPiRmZJycKMvLPxdh+qEJNvlg==
-X-Received: by 2002:a5d:6501:: with SMTP id x1mr747721wru.390.1636558625424;
-        Wed, 10 Nov 2021 07:37:05 -0800 (PST)
-Received: from ?IPv6:2a01:e0a:59e:9d80:527b:9dff:feef:3874? ([2a01:e0a:59e:9d80:527b:9dff:feef:3874])
-        by smtp.gmail.com with ESMTPSA id n32sm6983581wms.1.2021.11.10.07.37.04
+        h=x-gm-message-state:message-id:date:mime-version:user-agent
+         :content-language:to:cc:references:from:organization:subject
+         :in-reply-to:content-transfer-encoding;
+        bh=+erTvGbViXM/hcAqiyOBnjNlThmQiYYMieKA809wTio=;
+        b=F3BdyMCRnVA5KqiQKnmSM2GgD3Q15aKNwr50iX8EXwpYLFrL85LeTPXo7L7cUBnUyd
+         xMtvujh7NE03Wjl0OJQRx6eKR2ukfXhMGMgQ5yPt11HD6P2UI7lO5jbWNaGuRqy7RNwS
+         gSQE7v002uTUbZWZx8NtUYsgePmiOnYEW8HkhKuEds6wdXAWjXYSftbLzIYLnKeLh/2D
+         jW1KgzYbRIu8R+rwrOfqPiR/mvxW2CFhO4JiJT0lh5ENDEXrPPnheg72eO7yZ0EspdA7
+         nbWTcSahydZcLU3yfrFlGd5M8Fvtn0TYLqk8k5kq0pCZo33WHlzpX6/oR7ES52T8vCE/
+         VGgw==
+X-Gm-Message-State: AOAM531RaYMh8KBwfyreQUF/bl0GKIEUmrvasz+izQ6GNPZuzS6J3jME
+        jiadeTs5usIzqK6UURILFdmYXt8Jh+pyXgttuOsy1OGcVca6PzRC30ijp0Vs6ximIMu1myR/4SW
+        9C2BWeY2zIzP6l9zW3QbXbw7U
+X-Received: by 2002:a1c:7c14:: with SMTP id x20mr17027517wmc.75.1636558636859;
+        Wed, 10 Nov 2021 07:37:16 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJz2LQ5JcN0cXDrvYwjew6cnwoFMvhJ5Q7w+5u8XlCspgHp/gRqQ3EEVovEOZf72U3nS7PJ2TA==
+X-Received: by 2002:a1c:7c14:: with SMTP id x20mr17027483wmc.75.1636558636591;
+        Wed, 10 Nov 2021 07:37:16 -0800 (PST)
+Received: from [192.168.3.132] (p5b0c604f.dip0.t-ipconnect.de. [91.12.96.79])
+        by smtp.gmail.com with ESMTPSA id h16sm267667wrm.27.2021.11.10.07.37.15
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 10 Nov 2021 07:37:04 -0800 (PST)
-Subject: Re: [PATCH v4 02/15] KVM: async_pf: Add helper function to check
- completion queue
-To:     Gavin Shan <gshan@redhat.com>, kvmarm@lists.cs.columbia.edu
-Cc:     kvm@vger.kernel.org, maz@kernel.org, linux-kernel@vger.kernel.org,
-        shan.gavin@gmail.com, Jonathan.Cameron@huawei.com,
-        pbonzini@redhat.com, vkuznets@redhat.com, will@kernel.org
-References: <20210815005947.83699-1-gshan@redhat.com>
- <20210815005947.83699-3-gshan@redhat.com>
-From:   Eric Auger <eauger@redhat.com>
-Message-ID: <56d8dbec-a8fd-b109-0c0f-b01c1aef4741@redhat.com>
-Date:   Wed, 10 Nov 2021 16:37:03 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.1
+        Wed, 10 Nov 2021 07:37:15 -0800 (PST)
+Message-ID: <6ac9cc0d-7dea-0e19-51b3-625ec6561ac7@redhat.com>
+Date:   Wed, 10 Nov 2021 16:37:14 +0100
 MIME-Version: 1.0
-In-Reply-To: <20210815005947.83699-3-gshan@redhat.com>
-Content-Type: text/plain; charset=utf-8
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.2.0
 Content-Language: en-US
+To:     Jason Gunthorpe <jgg@nvidia.com>
+Cc:     Qi Zheng <zhengqi.arch@bytedance.com>, akpm@linux-foundation.org,
+        tglx@linutronix.de, kirill.shutemov@linux.intel.com,
+        mika.penttila@nextfour.com, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        songmuchun@bytedance.com, zhouchengming@bytedance.com
+References: <20211110105428.32458-1-zhengqi.arch@bytedance.com>
+ <20211110125601.GQ1740502@nvidia.com>
+ <8d0bc258-58ba-52c5-2e0d-a588489f2572@redhat.com>
+ <20211110143859.GS1740502@nvidia.com>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat
+Subject: Re: [PATCH v3 00/15] Free user PTE page table pages
+In-Reply-To: <20211110143859.GS1740502@nvidia.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Gavin,
+On 10.11.21 15:38, Jason Gunthorpe wrote:
+> On Wed, Nov 10, 2021 at 02:25:50PM +0100, David Hildenbrand wrote:
+>> On 10.11.21 13:56, Jason Gunthorpe wrote:
+>>> On Wed, Nov 10, 2021 at 06:54:13PM +0800, Qi Zheng wrote:
+>>>
+>>>> In this patch series, we add a pte_refcount field to the struct page of page
+>>>> table to track how many users of PTE page table. Similar to the mechanism of
+>>>> page refcount, the user of PTE page table should hold a refcount to it before
+>>>> accessing. The PTE page table page will be freed when the last refcount is
+>>>> dropped.
+>>>
+>>> So, this approach basically adds two atomics on every PTE map
+>>>
+>>> If I have it right the reason that zap cannot clean the PTEs today is
+>>> because zap cannot obtain the mmap lock due to a lock ordering issue
+>>> with the inode lock vs mmap lock.
+>>
+>> There are different ways to zap: madvise(DONTNEED) vs
+>> fallocate(PUNCH_HOLE). It depends on "from where" we're actually
+>> comming: a process page table walker or the rmap.
+> 
+> AFAIK rmap is the same issue, it can't lock the mmap_sem
+> 
+>> The way locking currently works doesn't allow to remove a page table
+>> just by holding the mmap lock, not even in write mode. 
+> 
+> I'm not sure I understand this. If the goal is to free the PTE tables
+> then the main concern is use-after free on page table walkers (which
+> this series is addressing). Ignoring bugs, we have only three ways to
+> read the page table:
 
-On 8/15/21 2:59 AM, Gavin Shan wrote:
-> This adds inline helper kvm_check_async_pf_completion_queue() to
-> check if there are pending completion in the queue. The empty stub
-> is also added on !CONFIG_KVM_ASYNC_PF so that the caller needn't
-> consider if CONFIG_KVM_ASYNC_PF is enabled.
-> 
-> All checks on the completion queue is done by the newly added inline
-> function since list_empty() and list_empty_careful() are interchangeable.
-why is it interchangeable?
+Yes, use-after-free and reuse-while-freeing are the two challenges AFAIKs.
 
 > 
-> Signed-off-by: Gavin Shan <gshan@redhat.com>
-> ---
->  arch/x86/kvm/x86.c       |  2 +-
->  include/linux/kvm_host.h | 10 ++++++++++
->  virt/kvm/async_pf.c      | 10 +++++-----
->  virt/kvm/kvm_main.c      |  4 +---
->  4 files changed, 17 insertions(+), 9 deletions(-)
-> 
-> diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-> index e5d5c5ed7dd4..7f35d9324b99 100644
-> --- a/arch/x86/kvm/x86.c
-> +++ b/arch/x86/kvm/x86.c
-> @@ -11591,7 +11591,7 @@ static inline bool kvm_guest_apic_has_interrupt(struct kvm_vcpu *vcpu)
->  
->  static inline bool kvm_vcpu_has_events(struct kvm_vcpu *vcpu)
->  {
-> -	if (!list_empty_careful(&vcpu->async_pf.done))
-> +	if (kvm_check_async_pf_completion_queue(vcpu))
->  		return true;
->  
->  	if (kvm_apic_has_events(vcpu))
-> diff --git a/include/linux/kvm_host.h b/include/linux/kvm_host.h
-> index 85b61a456f1c..a5f990f6dc35 100644
-> --- a/include/linux/kvm_host.h
-> +++ b/include/linux/kvm_host.h
-> @@ -339,12 +339,22 @@ struct kvm_async_pf {
->  	bool				notpresent_injected;
->  };
->  
-> +static inline bool kvm_check_async_pf_completion_queue(struct kvm_vcpu *vcpu)
-> +{
-> +	return !list_empty_careful(&vcpu->async_pf.done);
-> +}
-> +
->  void kvm_clear_async_pf_completion_queue(struct kvm_vcpu *vcpu);
->  void kvm_check_async_pf_completion(struct kvm_vcpu *vcpu);
->  bool kvm_setup_async_pf(struct kvm_vcpu *vcpu, gpa_t cr2_or_gpa,
->  			unsigned long hva, struct kvm_arch_async_pf *arch);
->  int kvm_async_pf_wakeup_all(struct kvm_vcpu *vcpu);
->  #else
-> +static inline bool kvm_check_async_pf_completion_queue(struct kvm_vcpu *vcpu)
-> +{
-> +	return false;
-> +}
-> +
->  static inline void kvm_check_async_pf_completion(struct kvm_vcpu *vcpu) { }
->  #endif
->  
-> diff --git a/virt/kvm/async_pf.c b/virt/kvm/async_pf.c
-> index dd777688d14a..d145a61a046a 100644
-> --- a/virt/kvm/async_pf.c
-> +++ b/virt/kvm/async_pf.c
-> @@ -70,7 +70,7 @@ static void async_pf_execute(struct work_struct *work)
->  		kvm_arch_async_page_present(vcpu, apf);
->  
->  	spin_lock(&vcpu->async_pf.lock);
-> -	first = list_empty(&vcpu->async_pf.done);
-> +	first = !kvm_check_async_pf_completion_queue(vcpu);
->  	list_add_tail(&apf->link, &vcpu->async_pf.done);
->  	apf->vcpu = NULL;
->  	spin_unlock(&vcpu->async_pf.lock);
-> @@ -122,7 +122,7 @@ void kvm_clear_async_pf_completion_queue(struct kvm_vcpu *vcpu)
->  		spin_lock(&vcpu->async_pf.lock);
->  	}
->  
-> -	while (!list_empty(&vcpu->async_pf.done)) {
-> +	while (kvm_check_async_pf_completion_queue(vcpu)) {
-this is replaced by a stronger check. Please can you explain why is it
-equivalent?
->  		struct kvm_async_pf *work =
->  			list_first_entry(&vcpu->async_pf.done,
->  					 typeof(*work), link);
-> @@ -138,7 +138,7 @@ void kvm_check_async_pf_completion(struct kvm_vcpu *vcpu)
->  {
->  	struct kvm_async_pf *work;
->  
-> -	while (!list_empty_careful(&vcpu->async_pf.done) &&
-> +	while (kvm_check_async_pf_completion_queue(vcpu) &&
->  	      kvm_arch_can_dequeue_async_page_present(vcpu)) {
->  		spin_lock(&vcpu->async_pf.lock);
->  		work = list_first_entry(&vcpu->async_pf.done, typeof(*work),
-> @@ -205,7 +205,7 @@ int kvm_async_pf_wakeup_all(struct kvm_vcpu *vcpu)
->  	struct kvm_async_pf *work;
->  	bool first;
->  
-> -	if (!list_empty_careful(&vcpu->async_pf.done))
-> +	if (kvm_check_async_pf_completion_queue(vcpu))
->  		return 0;
->  
->  	work = kmem_cache_zalloc(async_pf_cache, GFP_ATOMIC);
-> @@ -216,7 +216,7 @@ int kvm_async_pf_wakeup_all(struct kvm_vcpu *vcpu)
->  	INIT_LIST_HEAD(&work->queue); /* for list_del to work */
->  
->  	spin_lock(&vcpu->async_pf.lock);
-> -	first = list_empty(&vcpu->async_pf.done);
-> +	first = !kvm_check_async_pf_completion_queue(vcpu);
->  	list_add_tail(&work->link, &vcpu->async_pf.done);
->  	spin_unlock(&vcpu->async_pf.lock);
->  
-> diff --git a/virt/kvm/kvm_main.c b/virt/kvm/kvm_main.c
-> index b50dbe269f4b..8795503651b1 100644
-> --- a/virt/kvm/kvm_main.c
-> +++ b/virt/kvm/kvm_main.c
-> @@ -3282,10 +3282,8 @@ static bool vcpu_dy_runnable(struct kvm_vcpu *vcpu)
->  	if (kvm_arch_dy_runnable(vcpu))
->  		return true;
->  
-> -#ifdef CONFIG_KVM_ASYNC_PF
-> -	if (!list_empty_careful(&vcpu->async_pf.done))
-> +	if (kvm_check_async_pf_completion_queue(vcpu))
->  		return true;
-> -#endif
->  
->  	return false;
->  }
-> 
-Thanks
+>  - Fully locked. Under the PTLs (gup slow is an example)
+>  - Semi-locked. Under the read mmap lock and no PTLs (hmm is an example)
+>  - hw-locked. Barriered with TLB flush (gup fast is an example)
 
-Eric
+Three additions as far as I can tell:
+
+1. Fully locked currently needs the read mmap lock OR the rmap lock in
+   read. PTLs on their own are not sufficient AFAIKT.
+2. #1 and #2 can currently only walk within VMA ranges.
+3. We can theoretically walk page tables outside VMA ranges with the
+write mmap lock, because page tables get removed with the mmap lock in
+read mode and heavy-weight operations (VMA layout, khugepaged) are
+performed under the write mmap lock.
+
+The rmap locks protect from modifications where we want to exclude rmap
+walkers similarly to how we grab the mmap lock in write, where the PTLs
+are not sufficient.
+
+See mm/mremap.c:move_ptes() as an example which performs VMA layout +
+page table modifications. See khugepagd which doesn't perform VMA layout
+modifications but page table modifications.
+
+> 
+> #1 should be completely safe as the PTLs will protect eveything
+> #2 is safe so long as the write side is held during any layout changes
+> #3 interacts with the TLB flush, and is also safe with zap
+> 
+> rmap itself is a #1 page table walker, ie it gets the PTLs under
+> page_vma_mapped_walk().
+
+When you talk about PTLs, do you mean only PTE-PTLs or also PMD-PTLs?
+
+Because the PMD-PTLs re usually not taken in case we know there is a
+page table (nothing would currently change it without heavy locking).
+And if they are taken, they are only held while allocating/checking a
+PMDE, not while actually *using* the page table that's mapped in that entry.
+
+For example, walk_page_range() requires the mmap lock in read and grabs
+the PTE-PTLs.
+
+> 
+> The sin we have comitted here is that both the mmap lock and the PTLs
+> are being used to protect the page table itself with a very
+> complicated dual semantic.
+> 
+> Splitting the sleeping mmap lock into 'covers vma' and 'covers page
+> tables' lets us solve the lock ordering and semi-locked can become
+> more fully locked by the new lock, instead of by abusing mmap sem.
+
+It would still be a fairly coarse-grained locking, I am not sure if that
+is a step into the right direction. If you want to modify *some* page
+table in your process you have exclude each and every page table walker.
+Or did I mis-interpret what you were saying?
+
+> 
+> I'd suggest to make this new lock a special rwsem which allows either
+> concurrent read access OR concurrent PTL access, but not both. This
+
+I looked into such a lock recently in similar context and something like
+that does not exist yet (and fairness will be challenging). You either
+have a single reader or multiple writer. I'd be interested if someone
+knows of something like that.
+
+
+-- 
+Thanks,
+
+David / dhildenb
 
