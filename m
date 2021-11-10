@@ -2,168 +2,177 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 12D3744C2A9
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 15:00:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4DEEF44C2B0
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 15:03:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232082AbhKJODj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Nov 2021 09:03:39 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35636 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231607AbhKJODh (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Nov 2021 09:03:37 -0500
-Received: from mail-ed1-x536.google.com (mail-ed1-x536.google.com [IPv6:2a00:1450:4864:20::536])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8608EC061764;
-        Wed, 10 Nov 2021 06:00:49 -0800 (PST)
-Received: by mail-ed1-x536.google.com with SMTP id f4so10833904edx.12;
-        Wed, 10 Nov 2021 06:00:49 -0800 (PST)
+        id S232099AbhKJOGj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Nov 2021 09:06:39 -0500
+Received: from smtp2.axis.com ([195.60.68.18]:43706 "EHLO smtp2.axis.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231593AbhKJOGi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Nov 2021 09:06:38 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=fA8D8LQx/YlXJQkaVJ74h14pOC3ijTEjTXiuJ9pKPnM=;
-        b=HD9VcgWKF8LgMg5q5Bq3yYcwOVFUKV370Y+JxFK5pWvhIsudDy9N+3Plv6YfUcAuMh
-         hMqR9+NThlduVa6K5G8gFr+YmiBly/RxJa/q3PSjXkWXBxpjIfG+8FM+OA666YmwFdjy
-         mhtPtBqbGfViVsv6ExBIf3TiPG72ApVJL6hAv6iQf5wJvgGXmLsE/L5qafS6QUeSFDtb
-         WpUpO/b73SltIxv2KoQfsBKy4vV5lkAzPczxhK97OXIUBivylaHUcQmcIXmkS3Dz2JSv
-         mL/fztJ06PIRAMsJ9VeLUs1qZPWfNCNLiFHcnQrYPJTiiCOt7i9EbiyfY5bp9tsJgx38
-         aloQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=fA8D8LQx/YlXJQkaVJ74h14pOC3ijTEjTXiuJ9pKPnM=;
-        b=UaijSr15PB7n3BE7XjMKF7f0tsi/o2ZF6Ijhcj2LG0Ek9NHM6uGEUrYRxBk6fyVGLc
-         Ysj7nN3+bwDKdWSmHjO5ZGS79rIf6JlNnGGf1CSnqoLKktVXNgNVOO9qv9R1NMX0iEUS
-         /gZhclYLehVYubu7SSsbqhKVdk8huIslE+JccmAg0KtA7jO0t0QhfY43MhswHzc5ReuP
-         Rz0bsrjLmWzsa0HkxYVTh3kWNPg0niYsJjQrQSBySNsBRwO8JlVImRPWF2K7FGSiex4E
-         pH+JOkPowDpNHlaApqKxMj0Jd2S9eiFFJ557aXUaf+IkfemIXPjpzCfdBtcMVB78OnRs
-         Ke5w==
-X-Gm-Message-State: AOAM5333F4iOrqJgr7LIU5BgYJRIVnZ/cWUJVA8rScE3ES8Y+FIY/9yB
-        BNNTTphDiwZqE7FtEl4krFw=
-X-Google-Smtp-Source: ABdhPJz0AxGxyM39WNtkOjgFEJf9//jgLKeboZV4AMdH1nNuR6GOhmSxxLxjLrJlDefjVy2qK2Jz7Q==
-X-Received: by 2002:a05:6402:34d0:: with SMTP id w16mr21260996edc.360.1636552846305;
-        Wed, 10 Nov 2021 06:00:46 -0800 (PST)
-Received: from skbuf ([188.25.175.102])
-        by smtp.gmail.com with ESMTPSA id mc3sm8246022ejb.24.2021.11.10.06.00.44
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 10 Nov 2021 06:00:45 -0800 (PST)
-Date:   Wed, 10 Nov 2021 16:00:44 +0200
-From:   Vladimir Oltean <olteanv@gmail.com>
-To:     Kurt Kanzenbach <kurt@linutronix.de>
-Cc:     Martin Kaistra <martin.kaistra@linutronix.de>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        Richard Cochran <richardcochran@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        John Stultz <john.stultz@linaro.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Russell King <linux@armlinux.org.uk>,
-        Marc Kleine-Budde <mkl@pengutronix.de>,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org
-Subject: Re: [PATCH v2 6/7] net: dsa: b53: Add logic for TX timestamping
-Message-ID: <20211110140044.6qgnwqn4lpabymle@skbuf>
-References: <20211109095013.27829-1-martin.kaistra@linutronix.de>
- <20211109095013.27829-7-martin.kaistra@linutronix.de>
- <20211109111213.6vo5swdhxjvgmyjt@skbuf>
- <87ee7o8otj.fsf@kurt>
- <20211110130545.ga7ajracz2vvzotg@skbuf>
- <8735o486mw.fsf@kurt>
+  d=axis.com; q=dns/txt; s=axis-central1; t=1636553031;
+  x=1668089031;
+  h=subject:to:cc:references:from:message-id:date:
+   mime-version:in-reply-to:content-transfer-encoding;
+  bh=HuCiF8G+jOOXtwRxwBSLvB0wx9C5GATuW1MgbDIV+CM=;
+  b=elrwR5KzziUXKI6DLzYHoAXqcEBjHM0xOXkbhs9T6LoqVRS4tlYLTjjQ
+   qhlK81Pv+XTKWlRDDrRG+qH1RRSClv/j4ZlXZv7FqguSDTlGmUYjqLcwp
+   iQDjlgxl5GOJg5HdcYy5quJyzHxIe6Gwj1ehRoJIeGZwd4RYCRe26gV/v
+   1FBUq34OI1B2pwHevq6EjQ7XV6jD83dZoZArvfVDmKhz04QRdmlbBckVo
+   bGP9SnvdRDbAze9dB9TvqcNZHnSKXCUj087P5rcIG/C4SYoLjqIxSgmTn
+   9Q2N7jLN9Q11L9Ey3KSFS9JxhUw5iImUE5JjYMEAP7VjddMVEnGrwcqRU
+   A==;
+Subject: Re: [PATCH] rtc: rs5c372: Add RTC_VL_READ, RTC_VL_CLR ioctls
+To:     Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Camel Guo <Camel.Guo@axis.com>
+CC:     Alessandro Zummo <a.zummo@towertech.it>, kernel <kernel@axis.com>,
+        "linux-rtc@vger.kernel.org" <linux-rtc@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+References: <20211110115455.18699-1-camel.guo@axis.com>
+ <YYvPCehWWVE5mKTy@piout.net>
+From:   Camel Guo <camelg@axis.com>
+Message-ID: <2303e635-dbd0-1730-cc6f-84021eb37223@axis.com>
+Date:   Wed, 10 Nov 2021 15:03:49 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <8735o486mw.fsf@kurt>
+In-Reply-To: <YYvPCehWWVE5mKTy@piout.net>
+Content-Type: text/plain; charset="windows-1252"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.0.5.60]
+X-ClientProxiedBy: se-mail06w.axis.com (10.20.40.12) To se-mail03w.axis.com
+ (10.20.40.9)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 10, 2021 at 02:47:19PM +0100, Kurt Kanzenbach wrote:
-> On Wed Nov 10 2021, Vladimir Oltean wrote:
-> > Hi Kurt,
-> >
-> > On Wed, Nov 10, 2021 at 08:14:32AM +0100, Kurt Kanzenbach wrote:
-> >> Hi Vladimir,
-> >> 
-> >> On Tue Nov 09 2021, Vladimir Oltean wrote:
-> >> >> +void b53_port_txtstamp(struct dsa_switch *ds, int port, struct sk_buff *skb)
-> >> >> +{
-> >> >> +	struct b53_device *dev = ds->priv;
-> >> >> +	struct b53_port_hwtstamp *ps = &dev->ports[port].port_hwtstamp;
-> >> >> +	struct sk_buff *clone;
-> >> >> +	unsigned int type;
-> >> >> +
-> >> >> +	type = ptp_classify_raw(skb);
-> >> >> +
-> >> >> +	if (type != PTP_CLASS_V2_L2)
-> >> >> +		return;
-> >> >> +
-> >> >> +	if (!test_bit(B53_HWTSTAMP_ENABLED, &ps->state))
-> >> >> +		return;
-> >> >> +
-> >> >> +	clone = skb_clone_sk(skb);
-> >> >> +	if (!clone)
-> >> >> +		return;
-> >> >> +
-> >> >> +	if (test_and_set_bit_lock(B53_HWTSTAMP_TX_IN_PROGRESS, &ps->state)) {
-> >> >
-> >> > Is it ok if you simply don't timestamp a second skb which may be sent
-> >> > while the first one is in flight, I wonder? What PTP profiles have you
-> >> > tested with? At just one PTP packet at a time, the switch isn't giving
-> >> > you a lot.
-> >> 
-> >> PTP only generates a couple of messages per second which need to be
-> >> timestamped. Therefore, this behavior shouldn't be a problem.
-> >> 
-> >> hellcreek (and mv88e6xxx) do the same thing, simply because the device
-> >> can only hold only one Tx timestamp. If we'd allow more than one PTP
-> >> packet in flight, there will be correlation problems. I've tested with
-> >> default and gPTP profile without any problems. What PTP profiles do have
-> >> in mind?
-> >
-> > First of all, let's separate "more than one packet in flight" at the
-> > hardware/driver level vs user space level. Even if there is any hardware
-> > requirement to not request TX timestamping for the 2nd frame until the
-> > 1st has been acked, that shouldn't necessarily have an implication upon
-> > what user space sees. After all, we don't tell user space anything about
-> > the realities of the hardware it's running on.
-> 
-> Fair enough.
-> 
-> >
-> > So it is true that ptp4l is single threaded and always polls
-> > synchronously for the reception of a TX timestamp on the error queue
-> > before proceeding to do anything else. But writing a kernel driver to
-> > the specification of a single user space program is questionable.
-> > Especially with the SOF_TIMESTAMPING_OPT_ID flag of the SO_TIMESTAMPING
-> > socket option, it is quite possible to write a different PTP stack that
-> > handles TX timestamps differently. It sends event messages on their
-> > respective timer expiry (sync, peer delay request, whatever), and
-> > processes TX timestamps as they come, asynchronously instead of blocking.
-> > That other PTP stack would not work reliably with this driver (or with
-> > mv88e6xxx, or with hellcreek).
-> 
-> Yeah, a PTP stack which e.g. runs delay measurements independently from
-> the other tasks (sync, announce, ...) may run into trouble with such as
-> an implementation. I'm wondering how would you solve that problem for
-> hardware such as hellcreek? If a packet for timestamping is "in-flight"
-> the Tx path for a concurrent frame would have to be delayed. That might
-> be a surprise to the user as well.
 
-Yes, of course it would have to be delayed. But it would at least see
-the timestamp, on the other hand...
 
-Christian Eggers, while working on the mythical ksz9477 PTP support, had
-the same kind of hardware to work with, and he unconditionally deferred
-PTP packets, then in a kthread owned by the driver (not the tagger), he
-initialized a completion structure, sent the packet, slept until the
-completion was done (signaled by an irq thread in his case, can be
-signaled by the tagger in Martin's case), and proceeded with the next
-packet. See ksz9477_defer_xmit() here:
-https://patchwork.ozlabs.org/project/netdev/patch/20201203102117.8995-9-ceggers@arri.de/
+On 11/10/21 2:54 PM, Alexandre Belloni wrote:
+> Hello,
+> 
+> On 10/11/2021 12:54:54+0100, Camel Guo wrote:
+>> From: Camel Guo <camelg@axis.com>
+>> 
+>> In order to make it possible to get battery voltage status, this commit
+>> adds RTC_VL_READ, RTC_VL_CLR ioctl commands to rtc-rs5c372.
+>> 
+>> Signed-off-by: Camel Guo <camelg@axis.com>
+>> ---
+>>  drivers/rtc/rtc-rs5c372.c | 66 +++++++++++++++++++++++++++++++++++++++
+>>  1 file changed, 66 insertions(+)
+>> 
+>> diff --git a/drivers/rtc/rtc-rs5c372.c b/drivers/rtc/rtc-rs5c372.c
+>> index 80980414890c..5a96e5d3663a 100644
+>> --- a/drivers/rtc/rtc-rs5c372.c
+>> +++ b/drivers/rtc/rtc-rs5c372.c
+>> @@ -485,6 +485,71 @@ static int rs5c372_rtc_proc(struct device *dev, struct seq_file *seq)
+>>  #define      rs5c372_rtc_proc        NULL
+>>  #endif
+>>  
+>> +#ifdef CONFIG_RTC_INTF_DEV
+>> +static int rs5c372_ioctl(struct device *dev, unsigned int cmd, unsigned long arg)
+>> +{
+>> +     struct rs5c372  *rs5c = i2c_get_clientdata(to_i2c_client(dev));
+>> +     unsigned char   ctrl2;
+>> +     int             addr;
+>> +     unsigned int    flags;
+>> +
+>> +     dev_dbg(dev, "%s: cmd=%x\n", __func__, cmd);
+>> +
+>> +     addr = RS5C_ADDR(RS5C_REG_CTRL2);
+>> +     ctrl2 = i2c_smbus_read_byte_data(rs5c->client, addr);
+>> +
+>> +     switch (cmd) {
+>> +     case RTC_VL_READ:
+>> +             flags = 0;
+>> +
+>> +             switch (rs5c->type) {
+>> +             case rtc_r2025sd:
+>> +             case rtc_r2221tl:
+>> +                     if ((rs5c->type == rtc_r2025sd && !(ctrl2 & R2x2x_CTRL2_XSTP)) ||
+>> +                             (rs5c->type == rtc_r2221tl &&  (ctrl2 & R2x2x_CTRL2_XSTP))) {
+>> +                             flags |= RTC_VL_DATA_INVALID;
+>> +                     }
+>> +                     if (ctrl2 & R2x2x_CTRL2_VDET)
+>> +                             flags |= RTC_VL_ACCURACY_LOW;
+> 
+> Shouldn't that be RTC_VL_BACKUP_LOW?
 
-It might look like I'm trying really hard to sell deferred xmit here,
-and that's not the case - I really hate it myself. But when putting two
-and two together, it really seems to be what is needed.
+Some drivers (e.g: rv3029_ioctl and rv8803_ioctl) use 
+RTC_VL_ACCURACY_LOW, but some other drivers (e.g: abx80x_ioctl, 
+pcf2127_rtc_ioctl and pcf8523_rtc_ioctl) use RTC_VL_BACKUP_LOW instead. 
+Is there any guideline or document telling the differences between them?
+
+I can change it to RTC_VL_BACKUP_LOW of course.
+
+> 
+>> +                     break;
+>> +             default:
+>> +                     if (ctrl2 & RS5C_CTRL2_XSTP)
+>> +                             flags |= RTC_VL_DATA_INVALID;
+>> +                     break;
+>> +             }
+>> +
+>> +             return put_user(flags, (unsigned int __user *)arg);
+>> +     case RTC_VL_CLR:
+>> +             /* clear rtc VDET, PON and XSTP bits */
+>> +             switch (rs5c->type) {
+>> +             case rtc_r2025sd:
+>> +             case rtc_r2221tl:
+>> +                     ctrl2 &= ~(R2x2x_CTRL2_VDET | R2x2x_CTRL2_PON);
+>> +                     if (rs5c->type == rtc_r2025sd)
+>> +                             ctrl2 |= R2x2x_CTRL2_XSTP;
+>> +                     else
+>> +                             ctrl2 &= ~R2x2x_CTRL2_XSTP;
+>> +                     break;
+>> +             default:
+>> +                     ctrl2 &= ~RS5C_CTRL2_XSTP;
+> 
+> You can clear VDET but you must nt clear PON or XSTP as they are used to
+> know whether the time on the RTC has been set correctly. Clearing those
+> can only be done in .set_time.
+
+Will update shortly.
+
+> 
+>> +                     break;
+>> +             }
+>> +
+>> +             if (i2c_smbus_write_byte_data(rs5c->client, addr, ctrl2) < 0) {
+>> +                     dev_dbg(&rs5c->client->dev, "%s: write error in line %i\n",
+>> +                                     __func__, __LINE__);
+>> +                     return -EIO;
+>> +             }
+>> +             return 0;
+>> +     default:
+>> +             return -ENOIOCTLCMD;
+>> +     }
+>> +     return 0;
+>> +}
+>> +#else
+>> +#define rs5c372_ioctl        NULL
+>> +#endif
+>> +
+>>  static const struct rtc_class_ops rs5c372_rtc_ops = {
+>>        .proc           = rs5c372_rtc_proc,
+>>        .read_time      = rs5c372_rtc_read_time,
+>> @@ -492,6 +557,7 @@ static const struct rtc_class_ops rs5c372_rtc_ops = {
+>>        .read_alarm     = rs5c_read_alarm,
+>>        .set_alarm      = rs5c_set_alarm,
+>>        .alarm_irq_enable = rs5c_rtc_alarm_irq_enable,
+>> +     .ioctl          = rs5c372_ioctl,
+>>  };
+>>  
+>>  #if IS_ENABLED(CONFIG_RTC_INTF_SYSFS)
+>> -- 
+>> 2.20.1
+>> 
+> 
+> -- 
+> Alexandre Belloni, co-owner and COO, Bootlin
+> Embedded Linux and Kernel engineering
+> https://bootlin.com
