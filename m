@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 24FA544BF2E
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 11:55:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E1D2E44BF31
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 11:55:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231410AbhKJK6T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Nov 2021 05:58:19 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49024 "EHLO
+        id S231411AbhKJK60 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Nov 2021 05:58:26 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49052 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231344AbhKJK6R (ORCPT
+        with ESMTP id S231389AbhKJK6X (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Nov 2021 05:58:17 -0500
+        Wed, 10 Nov 2021 05:58:23 -0500
 Received: from mail-pj1-x1036.google.com (mail-pj1-x1036.google.com [IPv6:2607:f8b0:4864:20::1036])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B6D97C061766
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Nov 2021 02:55:30 -0800 (PST)
-Received: by mail-pj1-x1036.google.com with SMTP id gt5so1250233pjb.1
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Nov 2021 02:55:30 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8FF4AC061767
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Nov 2021 02:55:36 -0800 (PST)
+Received: by mail-pj1-x1036.google.com with SMTP id y14-20020a17090a2b4e00b001a5824f4918so1496609pjc.4
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Nov 2021 02:55:36 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=bytedance-com.20210112.gappssmtp.com; s=20210112;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=rjaHrKt+DJP4IEAgkVBlHHfdXPa5cKGowXjGMRJo0SA=;
-        b=bohHfjmxZ4ZcWawmPp+rornoIkAb2F2k0T2i/2zrWsyapWl4Ylm3nc76Jt5S7tfezp
-         jrhFNsqJBS267/XPU3lw7pFUzftAqmJZIfx4/qTLAqxkCVdglXFnCru+/WY5HbT2uD4M
-         4CirUXzR4167QO+3TFurAHdy3fFyZCXgjl3jS0wp6cMqgfC3MM7bZU29ru5yGrkVRZGf
-         rfYw1s6EQuUZuXEdZIzMqL18bNNZ6hI6C2I/lF3CYybV+wCRZdszoao0qCNT7LIi3RS7
-         iUNAb9+SYWg7R5yRGg1kqk9OsnYT1Jpm0vDF0+L2ZqK56ykVx8Glj+mTP80y+4/4kxmP
-         Drjw==
+        bh=FzKPEOc5mm0TwBqhdoOl1DzQcSNXKD+dBXA3Ds/gQ/s=;
+        b=mEzS5XATpkqsdNV1d5pMNaa7xKmkAkT+cSCulJa0YMKoxdETv0iA2ujFJiRBU/GpxD
+         qiCEOhEFYq+kBBYrxfGR4u0rULYIUHAbIFauW9mXYm20ZJd2r8x7e4UKN5vQPOAWzClH
+         3edYvbjiyAPquf0l0aKgNQAhHjZ/U4TE4k9AY4YteFLAlZhpL17O7+K+/VzvPi+2/vb8
+         Fp0+EEeN/+7cHZBv/1WjkdRlh6ItgfZN4Ck+oSrV9WC2gw6cXlugOIjGwvRSftQUEhCR
+         YZS5V5Q81rCXG6MsM6fTQhOwpsPosLA6LB4ebl821L04tpytE4pZdIupEEP7WgAhNk1k
+         B3Xw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=rjaHrKt+DJP4IEAgkVBlHHfdXPa5cKGowXjGMRJo0SA=;
-        b=VR8AiqaQn/qvpt2KGHKU1vcEqIi07q+HDIjp62mvJ9NU/a7kx32bOTDP7j2NYka7rL
-         RrIcFou4O5/CG0e2vp1SG3HSVlPncToaDkbqmT73qAIbgZI0VuHgbSKD2NFe6APXjC77
-         5/o/ZKNK166T/SC3L4BAM+dMw0vvkmzcQYm5k+c6KkyOn0cddzkUaJhP6CVzP1p2Simv
-         9E6tlOQtHCyyeitHz3cbBSU9/5M2JBEJHOL5bck2IoPxMUcu+E1AXuR3uQjyczFyujEJ
-         Ssqmgiwdj4Tw9Yrtb3eRIVRwxKVhnrMyImoYpYsrgsHMmaXg95wukmtI2uNos8w9hmT9
-         eU/Q==
-X-Gm-Message-State: AOAM5334BOz9euOclxSy9peNttAH/pCSvM5nBGpSS41QSCNynLKI1zvt
-        mUvxV2puDw/atx09NUuJm4EWzw==
-X-Google-Smtp-Source: ABdhPJx61Muq4erBWz9RHv7Hs5Kp1jlvYakuNGtRa0LQxAmzOWxpx2nB52avVkka16rva5zUkNLNJg==
-X-Received: by 2002:a17:90b:1644:: with SMTP id il4mr15565944pjb.39.1636541730201;
-        Wed, 10 Nov 2021 02:55:30 -0800 (PST)
+        bh=FzKPEOc5mm0TwBqhdoOl1DzQcSNXKD+dBXA3Ds/gQ/s=;
+        b=HNed57ZWPpvaL7O/rvyyUiFhHCJ+u+43sMel09HJSMcLj2b5lIPdly5U18Q+Bi+w0U
+         Rf5I2RY6+w1dtJYcKEPQzEraPclHE8hsMdOySmY/XORuW103s6Ji4g4UrrxJFQxyrzCH
+         /EJ2FRjJiC2mw8dxNlC+etXV4JNVDj3v+oty25oe4G02yuWQPko+lreoCmGAga4SPM7y
+         Ck05L8HgcZOt2AS+wZ+GoIdc8gnGFlZdU0JCsDrqkFMKW2nOagXB69OeH+ugEkXxX6xr
+         tcIM1ATm+QgBwn81cXsvjQJJZaOEGaoliWUD+c3slN7k9Pg2QGRueQmd+s/GRSPFEsFC
+         MMLg==
+X-Gm-Message-State: AOAM530PlTk1qe3jJp+v/YOs+xHfTPB7WY9HB68cs7d3Su/aMhA1+T+I
+        NDk30ElMLfYD9iL31lKIB5vP2g==
+X-Google-Smtp-Source: ABdhPJy+FoE6Pd2qFnrKTUzrIZoCmmPyO4ssefhZxWp4+uu4twU52l9a97OY9avZJGJf8URTBIrhSw==
+X-Received: by 2002:a17:902:b718:b0:143:72b7:409e with SMTP id d24-20020a170902b71800b0014372b7409emr10879675pls.28.1636541736145;
+        Wed, 10 Nov 2021 02:55:36 -0800 (PST)
 Received: from C02DW0BEMD6R.bytedance.net ([139.177.225.251])
-        by smtp.gmail.com with ESMTPSA id v38sm5865829pgl.38.2021.11.10.02.55.25
+        by smtp.gmail.com with ESMTPSA id v38sm5865829pgl.38.2021.11.10.02.55.30
         (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 10 Nov 2021 02:55:29 -0800 (PST)
+        Wed, 10 Nov 2021 02:55:35 -0800 (PST)
 From:   Qi Zheng <zhengqi.arch@bytedance.com>
 To:     akpm@linux-foundation.org, tglx@linutronix.de,
         kirill.shutemov@linux.intel.com, mika.penttila@nextfour.com,
@@ -55,9 +55,9 @@ To:     akpm@linux-foundation.org, tglx@linutronix.de,
 Cc:     linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
         linux-mm@kvack.org, songmuchun@bytedance.com,
         zhouchengming@bytedance.com, Qi Zheng <zhengqi.arch@bytedance.com>
-Subject: [PATCH v3 09/15] mm/pte_ref: add support for the map/unmap of user PTE page table page
-Date:   Wed, 10 Nov 2021 18:54:22 +0800
-Message-Id: <20211110105428.32458-10-zhengqi.arch@bytedance.com>
+Subject: [PATCH v3 10/15] mm/pte_ref: add support for page fault path
+Date:   Wed, 10 Nov 2021 18:54:23 +0800
+Message-Id: <20211110105428.32458-11-zhengqi.arch@bytedance.com>
 X-Mailer: git-send-email 2.24.3 (Apple Git-128)
 In-Reply-To: <20211110105428.32458-1-zhengqi.arch@bytedance.com>
 References: <20211110105428.32458-1-zhengqi.arch@bytedance.com>
@@ -67,414 +67,198 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The !pte_none() entry will take a reference on the user PTE page
-table page, such as regular page table entry that map physical
-pages, or swap entry, or migrate entry, etc.
+In the page fault path, we need to take a reference of
+the PTE page table page if the pmd entry is not none,
+which ensures the PTE page table page will not be released
+by other threads.
 
-So a pte_none() entry is mapped, it needs to increase the refcount
-of the PTE page table page. When a !pte_none() entry becomes none,
-the refcount of the PTE page table page needs to be decreased.
+And the mmap_lock may be unlocked in advance in some cases
+in handle_pte_fault(), then the pmd entry will no longer
+be stable:
 
-For swap or migrate cases, which only change the content of
-the PTE entry, we keep the refcount unchanged.
+	thread A		thread B
+	page fault		collapse_huge_page
+	==========		==================
+
+	mmap_read_unlock()
+				mmap_write_lock()
+				pgtable_trans_huge_deposit()
+				set_pmd_at()
+	/* pmd entry is changed! */
+	pte_put()
+
+So we should call pte_put() before dropping the mmap_lock.
 
 Signed-off-by: Qi Zheng <zhengqi.arch@bytedance.com>
 ---
- kernel/events/uprobes.c |  2 ++
- mm/filemap.c            |  3 +++
- mm/madvise.c            |  5 +++++
- mm/memory.c             | 42 +++++++++++++++++++++++++++++++++++-------
- mm/migrate.c            |  1 +
- mm/mremap.c             |  7 +++++++
- mm/rmap.c               | 10 ++++++++++
- mm/userfaultfd.c        |  2 ++
- 8 files changed, 65 insertions(+), 7 deletions(-)
+ fs/userfaultfd.c |  1 +
+ mm/filemap.c     |  2 ++
+ mm/internal.h    |  1 +
+ mm/khugepaged.c  |  8 +++++++-
+ mm/memory.c      | 33 ++++++++++++++++++++++++---------
+ 5 files changed, 35 insertions(+), 10 deletions(-)
 
-diff --git a/kernel/events/uprobes.c b/kernel/events/uprobes.c
-index 6357c3580d07..96dd2959e1ac 100644
---- a/kernel/events/uprobes.c
-+++ b/kernel/events/uprobes.c
-@@ -200,6 +200,8 @@ static int __replace_page(struct vm_area_struct *vma, unsigned long addr,
- 	if (new_page)
- 		set_pte_at_notify(mm, addr, pvmw.pte,
- 				  mk_pte(new_page, vma->vm_page_prot));
-+	else
-+		pte_put(mm, pte_to_pmd(pvmw.pte), addr);
+diff --git a/fs/userfaultfd.c b/fs/userfaultfd.c
+index 22bf14ab2d16..ddbcefa7e0a6 100644
+--- a/fs/userfaultfd.c
++++ b/fs/userfaultfd.c
+@@ -509,6 +509,7 @@ vm_fault_t handle_userfault(struct vm_fault *vmf, unsigned long reason)
+ 		must_wait = userfaultfd_huge_must_wait(ctx, vmf->vma,
+ 						       vmf->address,
+ 						       vmf->flags, reason);
++	pte_put_vmf(vmf);
+ 	mmap_read_unlock(mm);
  
- 	page_remove_rmap(old_page, false);
- 	if (!page_mapped(old_page))
+ 	if (likely(must_wait && !READ_ONCE(ctx->released))) {
 diff --git a/mm/filemap.c b/mm/filemap.c
-index 1e7e9e4fd759..aa47ee11a3d8 100644
+index aa47ee11a3d8..4fdc74dc6736 100644
 --- a/mm/filemap.c
 +++ b/mm/filemap.c
-@@ -3309,6 +3309,7 @@ vm_fault_t filemap_map_pages(struct vm_fault *vmf,
- 	struct page *head, *page;
- 	unsigned int mmap_miss = READ_ONCE(file->f_ra.mmap_miss);
- 	vm_fault_t ret = 0;
-+	unsigned int nr_get = 0;
+@@ -1708,6 +1708,7 @@ bool __folio_lock_or_retry(struct folio *folio, struct vm_fault *vmf)
+ 		if (flags & FAULT_FLAG_RETRY_NOWAIT)
+ 			return false;
  
- 	rcu_read_lock();
- 	head = first_map_page(mapping, &xas, end_pgoff);
-@@ -3342,6 +3343,7 @@ vm_fault_t filemap_map_pages(struct vm_fault *vmf,
- 			ret = VM_FAULT_NOPAGE;
++		pte_put_vmf(vmf);
+ 		mmap_read_unlock(mm);
+ 		if (flags & FAULT_FLAG_KILLABLE)
+ 			folio_wait_locked_killable(folio);
+@@ -1720,6 +1721,7 @@ bool __folio_lock_or_retry(struct folio *folio, struct vm_fault *vmf)
  
- 		do_set_pte(vmf, page, addr);
-+		nr_get++;
- 		/* no need to invalidate: a not-present page won't be cached */
- 		update_mmu_cache(vma, addr, vmf->pte);
- 		unlock_page(head);
-@@ -3351,6 +3353,7 @@ vm_fault_t filemap_map_pages(struct vm_fault *vmf,
- 		put_page(head);
- 	} while ((head = next_map_page(mapping, &xas, end_pgoff)) != NULL);
- 	pte_unmap_unlock(vmf->pte, vmf->ptl);
-+	pte_get_many(vmf->pmd, nr_get);
- 	pte_put(vma->vm_mm, vmf->pmd, start);
- out:
- 	rcu_read_unlock();
-diff --git a/mm/madvise.c b/mm/madvise.c
-index 0734db8d53a7..82fc40b6dcbf 100644
---- a/mm/madvise.c
-+++ b/mm/madvise.c
-@@ -580,6 +580,8 @@ static int madvise_free_pte_range(pmd_t *pmd, unsigned long addr,
- 	struct page *page;
- 	int nr_swap = 0;
- 	unsigned long next;
-+	unsigned int nr_put = 0;
-+	unsigned long start = addr;
+ 		ret = __folio_lock_killable(folio);
+ 		if (ret) {
++			pte_put_vmf(vmf);
+ 			mmap_read_unlock(mm);
+ 			return false;
+ 		}
+diff --git a/mm/internal.h b/mm/internal.h
+index 474d6e3443f8..460418828a76 100644
+--- a/mm/internal.h
++++ b/mm/internal.h
+@@ -488,6 +488,7 @@ static inline struct file *maybe_unlock_mmap_for_io(struct vm_fault *vmf,
+ 	if (fault_flag_allow_retry_first(flags) &&
+ 	    !(flags & FAULT_FLAG_RETRY_NOWAIT)) {
+ 		fpin = get_file(vmf->vma->vm_file);
++		pte_put_vmf(vmf);
+ 		mmap_read_unlock(vmf->vma->vm_mm);
+ 	}
+ 	return fpin;
+diff --git a/mm/khugepaged.c b/mm/khugepaged.c
+index e99101162f1a..92b0494f4a00 100644
+--- a/mm/khugepaged.c
++++ b/mm/khugepaged.c
+@@ -1019,10 +1019,13 @@ static bool __collapse_huge_page_swapin(struct mm_struct *mm,
+ 			.pmd = pmd,
+ 		};
  
- 	next = pmd_addr_end(addr, end);
- 	if (pmd_trans_huge(*pmd))
-@@ -612,6 +614,7 @@ static int madvise_free_pte_range(pmd_t *pmd, unsigned long addr,
- 			nr_swap--;
- 			free_swap_and_cache(entry);
- 			pte_clear_not_present_full(mm, addr, pte, tlb->fullmm);
-+			nr_put++;
+-		vmf.pte = pte_offset_map(pmd, address);
++		vmf.pte = pte_tryget_map(pmd, address);
++		if (!vmf.pte)
++			continue;
+ 		vmf.orig_pte = *vmf.pte;
+ 		if (!is_swap_pte(vmf.orig_pte)) {
+ 			pte_unmap(vmf.pte);
++			pte_put_vmf(&vmf);
  			continue;
  		}
- 
-@@ -696,6 +699,8 @@ static int madvise_free_pte_range(pmd_t *pmd, unsigned long addr,
- 	}
- 	arch_leave_lazy_mmu_mode();
- 	pte_unmap_unlock(orig_pte, ptl);
-+	if (nr_put)
-+		pte_put_many(mm, pmd, start, nr_put);
- 	cond_resched();
- next:
- 	return 0;
+ 		swapped_in++;
+@@ -1041,7 +1044,10 @@ static bool __collapse_huge_page_swapin(struct mm_struct *mm,
+ 				trace_mm_collapse_huge_page_swapin(mm, swapped_in, referenced, 0);
+ 				return false;
+ 			}
++		} else {
++			pte_put_vmf(&vmf);
+ 		}
++
+ 		if (ret & VM_FAULT_ERROR) {
+ 			trace_mm_collapse_huge_page_swapin(mm, swapped_in, referenced, 0);
+ 			return false;
 diff --git a/mm/memory.c b/mm/memory.c
-index 0b9af38cfa11..ea4d651ac8c7 100644
+index ea4d651ac8c7..5cc4ce0af665 100644
 --- a/mm/memory.c
 +++ b/mm/memory.c
-@@ -878,6 +878,7 @@ copy_nonpresent_pte(struct mm_struct *dst_mm, struct mm_struct *src_mm,
- 	if (!userfaultfd_wp(dst_vma))
- 		pte = pte_swp_clear_uffd_wp(pte);
- 	set_pte_at(dst_mm, addr, dst_pte, pte);
-+	pte_get(pte_to_pmd(dst_pte));
- 	return 0;
- }
- 
-@@ -946,6 +947,7 @@ copy_present_page(struct vm_area_struct *dst_vma, struct vm_area_struct *src_vma
- 		/* Uffd-wp needs to be delivered to dest pte as well */
- 		pte = pte_wrprotect(pte_mkuffd_wp(pte));
- 	set_pte_at(dst_vma->vm_mm, addr, dst_pte, pte);
-+	pte_get(pte_to_pmd(dst_pte));
- 	return 0;
- }
- 
-@@ -998,6 +1000,7 @@ copy_present_pte(struct vm_area_struct *dst_vma, struct vm_area_struct *src_vma,
- 		pte = pte_clear_uffd_wp(pte);
- 
- 	set_pte_at(dst_vma->vm_mm, addr, dst_pte, pte);
-+	pte_get(pte_to_pmd(dst_pte));
- 	return 0;
- }
- 
-@@ -1335,6 +1338,8 @@ static unsigned long zap_pte_range(struct mmu_gather *tlb,
- 	pte_t *start_pte;
- 	pte_t *pte;
- 	swp_entry_t entry;
-+	unsigned int nr_put = 0;
-+	unsigned long start = addr;
- 
- 	tlb_change_page_size(tlb, PAGE_SIZE);
- again:
-@@ -1359,6 +1364,7 @@ static unsigned long zap_pte_range(struct mmu_gather *tlb,
- 				continue;
- 			ptent = ptep_get_and_clear_full(mm, addr, pte,
- 							tlb->fullmm);
-+			nr_put++;
- 			tlb_remove_tlb_entry(tlb, pte, addr);
- 			if (unlikely(!page))
- 				continue;
-@@ -1392,6 +1398,7 @@ static unsigned long zap_pte_range(struct mmu_gather *tlb,
- 			if (unlikely(zap_skip_check_mapping(details, page)))
- 				continue;
- 			pte_clear_not_present_full(mm, addr, pte, tlb->fullmm);
-+			nr_put++;
- 			rss[mm_counter(page)]--;
- 
- 			if (is_device_private_entry(entry))
-@@ -1416,6 +1423,7 @@ static unsigned long zap_pte_range(struct mmu_gather *tlb,
- 		if (unlikely(!free_swap_and_cache(entry)))
- 			print_bad_pte(vma, addr, ptent, NULL);
- 		pte_clear_not_present_full(mm, addr, pte, tlb->fullmm);
-+		nr_put++;
- 	} while (pte++, addr += PAGE_SIZE, addr != end);
- 
- 	add_mm_rss_vec(mm, rss);
-@@ -1442,6 +1450,9 @@ static unsigned long zap_pte_range(struct mmu_gather *tlb,
- 		goto again;
- 	}
- 
-+	if (nr_put)
-+		pte_put_many(mm, pmd, start, nr_put);
-+
- 	return addr;
- }
- 
-@@ -1759,6 +1770,7 @@ static int insert_page_into_pte_locked(struct mm_struct *mm, pte_t *pte,
- 	inc_mm_counter_fast(mm, mm_counter_file(page));
- 	page_add_file_rmap(page, false);
- 	set_pte_at(mm, addr, pte, mk_pte(page, prot));
-+	pte_get(pte_to_pmd(pte));
- 	return 0;
- }
- 
-@@ -2085,6 +2097,7 @@ static vm_fault_t insert_pfn(struct vm_area_struct *vma, unsigned long addr,
- 	}
- 
- 	set_pte_at(mm, addr, pte, entry);
-+	pte_get(pte_to_pmd(pte));
- 	update_mmu_cache(vma, addr, pte); /* XXX: why not for insert_page? */
- 
- out_unlock:
-@@ -2291,6 +2304,7 @@ static int remap_pte_range(struct mm_struct *mm, pmd_t *pmd,
- 			unsigned long pfn, pgprot_t prot)
+@@ -4571,8 +4571,10 @@ static vm_fault_t wp_huge_pud(struct vm_fault *vmf, pud_t orig_pud)
+ static vm_fault_t handle_pte_fault(struct vm_fault *vmf)
  {
- 	unsigned long start = addr;
-+	unsigned int nr_get = 0;
- 	pte_t *pte, *mapped_pte;
- 	spinlock_t *ptl;
- 	int err = 0;
-@@ -2306,10 +2320,12 @@ static int remap_pte_range(struct mm_struct *mm, pmd_t *pmd,
- 			break;
+ 	pte_t entry;
++	vm_fault_t ret;
+ 
+-	if (unlikely(pmd_none(*vmf->pmd))) {
++retry:
++	if (unlikely(pmd_none(READ_ONCE(*vmf->pmd)))) {
+ 		/*
+ 		 * Leave __pte_alloc() until later: because vm_ops->fault may
+ 		 * want to allocate huge page, and if we expose page table
+@@ -4595,13 +4597,16 @@ static vm_fault_t handle_pte_fault(struct vm_fault *vmf)
+ 		 */
+ 		if (pmd_devmap_trans_unstable(vmf->pmd))
+ 			return 0;
++
+ 		/*
+ 		 * A regular pmd is established and it can't morph into a huge
+ 		 * pmd from under us anymore at this point because we hold the
+ 		 * mmap_lock read mode and khugepaged takes it in write mode.
+ 		 * So now it's safe to run pte_offset_map().
+ 		 */
+-		vmf->pte = pte_offset_map(vmf->pmd, vmf->address);
++		vmf->pte = pte_tryget_map(vmf->pmd, vmf->address);
++		if (!vmf->pte)
++			goto retry;
+ 		vmf->orig_pte = *vmf->pte;
+ 
+ 		/*
+@@ -4616,6 +4621,7 @@ static vm_fault_t handle_pte_fault(struct vm_fault *vmf)
+ 		if (pte_none(vmf->orig_pte)) {
+ 			pte_unmap(vmf->pte);
+ 			vmf->pte = NULL;
++			pte_put_vmf(vmf);
  		}
- 		set_pte_at(mm, addr, pte, pte_mkspecial(pfn_pte(pfn, prot)));
-+		nr_get++;
- 		pfn++;
- 	} while (pte++, addr += PAGE_SIZE, addr != end);
- 	arch_leave_lazy_mmu_mode();
- 	pte_unmap_unlock(mapped_pte, ptl);
-+	pte_get_many(pmd, nr_get);
- 	pte_put(mm, pmd, start);
- 	return err;
- }
-@@ -2524,6 +2540,7 @@ static int apply_to_pte_range(struct mm_struct *mm, pmd_t *pmd,
- 	pte_t *pte, *mapped_pte;
- 	int err = 0;
- 	spinlock_t *ptl;
-+	unsigned int nr_put = 0, nr_get = 0;
- 
- 	if (create) {
- 		mapped_pte = pte = (mm == &init_mm) ?
-@@ -2531,6 +2548,7 @@ static int apply_to_pte_range(struct mm_struct *mm, pmd_t *pmd,
- 			pte_alloc_map_lock(mm, pmd, addr, &ptl);
- 		if (!pte)
- 			return -ENOMEM;
-+		nr_put++;
- 	} else {
- 		mapped_pte = pte = (mm == &init_mm) ?
- 			pte_offset_kernel(pmd, addr) :
-@@ -2543,11 +2561,17 @@ static int apply_to_pte_range(struct mm_struct *mm, pmd_t *pmd,
- 
- 	if (fn) {
- 		do {
--			if (create || !pte_none(*pte)) {
-+			if (create) {
- 				err = fn(pte++, addr, data);
--				if (err)
--					break;
-+				if (mm != &init_mm && !pte_none(*(pte-1)))
-+					nr_get++;
-+			} else if (!pte_none(*pte)) {
-+				err = fn(pte++, addr, data);
-+				if (mm != &init_mm && pte_none(*(pte-1)))
-+					nr_put++;
- 			}
-+			if (err)
-+				break;
- 		} while (addr += PAGE_SIZE, addr != end);
  	}
- 	*mask |= PGTBL_PTE_MODIFIED;
-@@ -2556,8 +2580,9 @@ static int apply_to_pte_range(struct mm_struct *mm, pmd_t *pmd,
  
- 	if (mm != &init_mm) {
- 		pte_unmap_unlock(mapped_pte, ptl);
--		if (create)
--			pte_put(mm, pmd, start);
-+		pte_get_many(pmd, nr_get);
-+		if (nr_put)
-+			pte_put_many(mm, pmd, start, nr_put);
+@@ -4626,11 +4632,15 @@ static vm_fault_t handle_pte_fault(struct vm_fault *vmf)
+ 			return do_fault(vmf);
  	}
- 	return err;
- }
-@@ -3835,6 +3860,7 @@ static vm_fault_t do_anonymous_page(struct vm_fault *vmf)
- 	lru_cache_add_inactive_or_unevictable(page, vma);
- setpte:
- 	set_pte_at(vma->vm_mm, vmf->address, vmf->pte, entry);
-+	pte_get(vmf->pmd);
  
- 	/* No need to invalidate - it was non-present before */
- 	update_mmu_cache(vma, vmf->address, vmf->pte);
-@@ -4086,10 +4112,12 @@ vm_fault_t finish_fault(struct vm_fault *vmf)
- 				      vmf->address, &vmf->ptl);
- 	ret = 0;
- 	/* Re-check under ptl */
--	if (likely(pte_none(*vmf->pte)))
-+	if (likely(pte_none(*vmf->pte))) {
- 		do_set_pte(vmf, page, vmf->address);
--	else
-+		pte_get(vmf->pmd);
-+	} else {
- 		ret = VM_FAULT_NOPAGE;
+-	if (!pte_present(vmf->orig_pte))
+-		return do_swap_page(vmf);
++	if (!pte_present(vmf->orig_pte)) {
++		ret = do_swap_page(vmf);
++		goto put;
 +	}
  
- 	update_mmu_tlb(vma, vmf->address, vmf->pte);
- 	pte_unmap_unlock(vmf->pte, vmf->ptl);
-diff --git a/mm/migrate.c b/mm/migrate.c
-index 26f16a4836d8..c03ac25f42a9 100644
---- a/mm/migrate.c
-+++ b/mm/migrate.c
-@@ -2807,6 +2807,7 @@ static void migrate_vma_insert_page(struct migrate_vma *migrate,
- 	} else {
- 		/* No need to invalidate - it was non-present before */
- 		set_pte_at(mm, addr, ptep, entry);
-+		pte_get(pmdp);
- 		update_mmu_cache(vma, addr, ptep);
+-	if (pte_protnone(vmf->orig_pte) && vma_is_accessible(vmf->vma))
+-		return do_numa_page(vmf);
++	if (pte_protnone(vmf->orig_pte) && vma_is_accessible(vmf->vma)) {
++		ret = do_numa_page(vmf);
++		goto put;
++	}
+ 
+ 	vmf->ptl = pte_lockptr(vmf->vma->vm_mm, vmf->pmd);
+ 	spin_lock(vmf->ptl);
+@@ -4640,8 +4650,10 @@ static vm_fault_t handle_pte_fault(struct vm_fault *vmf)
+ 		goto unlock;
  	}
- 
-diff --git a/mm/mremap.c b/mm/mremap.c
-index f80c628db25d..088a7a75cb4b 100644
---- a/mm/mremap.c
-+++ b/mm/mremap.c
-@@ -141,6 +141,8 @@ static void move_ptes(struct vm_area_struct *vma, pmd_t *old_pmd,
- 	spinlock_t *old_ptl, *new_ptl;
- 	bool force_flush = false;
- 	unsigned long len = old_end - old_addr;
-+	unsigned int nr_put = 0, nr_get = 0;
-+	unsigned long old_start = old_addr;
- 
- 	/*
- 	 * When need_rmap_locks is true, we take the i_mmap_rwsem and anon_vma
-@@ -181,6 +183,7 @@ static void move_ptes(struct vm_area_struct *vma, pmd_t *old_pmd,
- 			continue;
- 
- 		pte = ptep_get_and_clear(mm, old_addr, old_pte);
-+		nr_put++;
- 		/*
- 		 * If we are remapping a valid PTE, make sure
- 		 * to flush TLB before we drop the PTL for the
-@@ -197,6 +200,7 @@ static void move_ptes(struct vm_area_struct *vma, pmd_t *old_pmd,
- 		pte = move_pte(pte, new_vma->vm_page_prot, old_addr, new_addr);
- 		pte = move_soft_dirty_pte(pte);
- 		set_pte_at(mm, new_addr, new_pte, pte);
-+		nr_get++;
- 	}
- 
- 	arch_leave_lazy_mmu_mode();
-@@ -206,6 +210,9 @@ static void move_ptes(struct vm_area_struct *vma, pmd_t *old_pmd,
- 		spin_unlock(new_ptl);
- 	pte_unmap(new_pte - 1);
- 	pte_unmap_unlock(old_pte - 1, old_ptl);
-+	pte_get_many(new_pmd, nr_get);
-+	if (nr_put)
-+		pte_put_many(mm, old_pmd, old_start, nr_put);
- 	if (need_rmap_locks)
- 		drop_rmap_locks(vma);
- }
-diff --git a/mm/rmap.c b/mm/rmap.c
-index 2908d637bcad..630ce8a036b5 100644
---- a/mm/rmap.c
-+++ b/mm/rmap.c
-@@ -1404,6 +1404,7 @@ static bool try_to_unmap_one(struct page *page, struct vm_area_struct *vma,
- 	bool ret = true;
- 	struct mmu_notifier_range range;
- 	enum ttu_flags flags = (enum ttu_flags)(long)arg;
-+	unsigned int nr_put = 0;
- 
- 	/*
- 	 * When racing against e.g. zap_pte_range() on another cpu,
-@@ -1551,6 +1552,7 @@ static bool try_to_unmap_one(struct page *page, struct vm_area_struct *vma,
- 			/* We have to invalidate as we cleared the pte */
- 			mmu_notifier_invalidate_range(mm, address,
- 						      address + PAGE_SIZE);
-+			nr_put++;
- 		} else if (PageAnon(page)) {
- 			swp_entry_t entry = { .val = page_private(subpage) };
- 			pte_t swp_pte;
-@@ -1564,6 +1566,7 @@ static bool try_to_unmap_one(struct page *page, struct vm_area_struct *vma,
- 				/* We have to invalidate as we cleared the pte */
- 				mmu_notifier_invalidate_range(mm, address,
- 							address + PAGE_SIZE);
-+				pte_put(mm, pvmw.pmd, address);
- 				page_vma_mapped_walk_done(&pvmw);
- 				break;
- 			}
-@@ -1575,6 +1578,7 @@ static bool try_to_unmap_one(struct page *page, struct vm_area_struct *vma,
- 					mmu_notifier_invalidate_range(mm,
- 						address, address + PAGE_SIZE);
- 					dec_mm_counter(mm, MM_ANONPAGES);
-+					nr_put++;
- 					goto discard;
- 				}
- 
-@@ -1630,6 +1634,7 @@ static bool try_to_unmap_one(struct page *page, struct vm_area_struct *vma,
- 			 * See Documentation/vm/mmu_notifier.rst
- 			 */
- 			dec_mm_counter(mm, mm_counter_file(page));
-+			nr_put++;
- 		}
- discard:
- 		/*
-@@ -1641,6 +1646,10 @@ static bool try_to_unmap_one(struct page *page, struct vm_area_struct *vma,
- 		 */
- 		page_remove_rmap(subpage, PageHuge(page));
- 		put_page(page);
-+		if (nr_put) {
-+			pte_put_many(mm, pvmw.pmd, address, nr_put);
-+			nr_put = 0;
+ 	if (vmf->flags & FAULT_FLAG_WRITE) {
+-		if (!pte_write(entry))
+-			return do_wp_page(vmf);
++		if (!pte_write(entry)) {
++			ret = do_wp_page(vmf);
++			goto put;
 +		}
+ 		entry = pte_mkdirty(entry);
  	}
+ 	entry = pte_mkyoung(entry);
+@@ -4663,7 +4675,10 @@ static vm_fault_t handle_pte_fault(struct vm_fault *vmf)
+ 	}
+ unlock:
+ 	pte_unmap_unlock(vmf->pte, vmf->ptl);
+-	return 0;
++	ret = 0;
++put:
++	pte_put_vmf(vmf);
++	return ret;
+ }
  
- 	mmu_notifier_invalidate_range_end(&range);
-@@ -1871,6 +1880,7 @@ static bool try_to_migrate_one(struct page *page, struct vm_area_struct *vma,
- 			/* We have to invalidate as we cleared the pte */
- 			mmu_notifier_invalidate_range(mm, address,
- 						      address + PAGE_SIZE);
-+			pte_put(mm, pvmw.pmd, address);
- 		} else {
- 			swp_entry_t entry;
- 			pte_t swp_pte;
-diff --git a/mm/userfaultfd.c b/mm/userfaultfd.c
-index 37df899a1b9d..b87c61b94065 100644
---- a/mm/userfaultfd.c
-+++ b/mm/userfaultfd.c
-@@ -110,6 +110,7 @@ int mfill_atomic_install_pte(struct mm_struct *dst_mm, pmd_t *dst_pmd,
- 		lru_cache_add_inactive_or_unevictable(page, dst_vma);
- 
- 	set_pte_at(dst_mm, dst_addr, dst_pte, _dst_pte);
-+	pte_get(dst_pmd);
- 
- 	/* No need to invalidate - it was non-present before */
- 	update_mmu_cache(dst_vma, dst_addr, dst_pte);
-@@ -204,6 +205,7 @@ static int mfill_zeropage_pte(struct mm_struct *dst_mm,
- 	if (!pte_none(*dst_pte))
- 		goto out_unlock;
- 	set_pte_at(dst_mm, dst_addr, dst_pte, _dst_pte);
-+	pte_get(dst_pmd);
- 	/* No need to invalidate - it was non-present before */
- 	update_mmu_cache(dst_vma, dst_addr, dst_pte);
- 	ret = 0;
+ /*
 -- 
 2.11.0
 
