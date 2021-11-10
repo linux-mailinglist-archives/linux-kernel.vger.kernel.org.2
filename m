@@ -2,193 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B0C944C9E5
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 20:55:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9064044C9E8
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 20:56:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231904AbhKJT6D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Nov 2021 14:58:03 -0500
-Received: from mail.kernel.org ([198.145.29.99]:46846 "EHLO mail.kernel.org"
+        id S231804AbhKJT7F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Nov 2021 14:59:05 -0500
+Received: from mga17.intel.com ([192.55.52.151]:63653 "EHLO mga17.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231396AbhKJT5z (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Nov 2021 14:57:55 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C9773610D2;
-        Wed, 10 Nov 2021 19:55:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1636574104;
-        bh=NPFoTLW/HQ6GrD5T5xy3/bfl9eyQCnjzgqRq9z1nqlM=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=dh2krRVu8Ksgyby/bL96Rlwl1rxABcPP8RPoX3M1yTue04xUN1hQGxSCqBs2g7zHM
-         vTzdQ3r1iEaPpJiiIHa2icYyCAuvfBY9BjbKrMOsT5Q1oh+BeZhO39hg3IwwgZWEp4
-         oWuaG6KkUswrxFpdXaIGNK2Fp7wNxd5YMjvGXc1yXQ0QyFNsZKf/PMqNYqJZGJn4S7
-         2VQ08vv4Becyfh0eq/8uasmOfHaz78nhiBNIkCp8T1exIXCKM3BDYCYoqswd2NEpX5
-         hfMwHF8ZRfUGd4RLUALc3WtHnkbiidYOJXjCTr5O/7CzTfH9LTvshpqfhYpJm1QQNC
-         44dZcNus32goA==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 909EB5C119C; Wed, 10 Nov 2021 11:55:04 -0800 (PST)
-Date:   Wed, 10 Nov 2021 11:55:04 -0800
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     quic_neeraju <quic_neeraju@quicinc.com>
-Cc:     josh@joshtriplett.org, rostedt@goodmis.org,
-        mathieu.desnoyers@efficios.com, jiangshanlai@gmail.com,
-        joel@joelfernandes.org, rcu@vger.kernel.org,
-        linux-kernel@vger.kernel.org, urezki@gmail.com,
-        frederic@kernel.org, boqun.feng@gmail.com
-Subject: Re: [PATCH] rcu-tasks: Inspect stalled task's trc state in locked
- state
-Message-ID: <20211110195504.GE641268@paulmck-ThinkPad-P17-Gen-1>
-Reply-To: paulmck@kernel.org
-References: <20211109112214.19618-1-quic_neeraju@quicinc.com>
- <20211109145235.GV641268@paulmck-ThinkPad-P17-Gen-1>
- <d099f078-eef7-1c44-7086-b67971218f3f@quicinc.com>
+        id S230195AbhKJT7E (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Nov 2021 14:59:04 -0500
+X-IronPort-AV: E=McAfee;i="6200,9189,10164"; a="213478931"
+X-IronPort-AV: E=Sophos;i="5.87,224,1631602800"; 
+   d="scan'208";a="213478931"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Nov 2021 11:56:16 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.87,224,1631602800"; 
+   d="scan'208";a="504107409"
+Received: from irvmail001.ir.intel.com ([10.43.11.63])
+  by orsmga008.jf.intel.com with ESMTP; 10 Nov 2021 11:56:12 -0800
+Received: from alobakin-mobl.ger.corp.intel.com (acetnero-MOBL1.ger.corp.intel.com [10.213.0.197])
+        by irvmail001.ir.intel.com (8.14.3/8.13.6/MailSET/Hub) with ESMTP id 1AAJuAjV016265;
+        Wed, 10 Nov 2021 19:56:11 GMT
+From:   Alexander Lobakin <alexandr.lobakin@intel.com>
+To:     "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>
+Cc:     Alexander Lobakin <alexandr.lobakin@intel.com>,
+        Jesse Brandeburg <jesse.brandeburg@intel.com>,
+        Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
+        Michal Swiatkowski <michal.swiatkowski@intel.com>,
+        Xuan Zhuo <xuanzhuo@linux.alibaba.com>,
+        Antoine Tenart <atenart@kernel.org>,
+        Eric Dumazet <edumazet@google.com>,
+        Wei Wang <weiwan@google.com>,
+        =?UTF-8?q?Bj=C3=B6rn=20T=C3=B6pel?= <bjorn@kernel.org>,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v2 net] net: fix premature exit from NAPI state polling in napi_disable()
+Date:   Wed, 10 Nov 2021 20:56:05 +0100
+Message-Id: <20211110195605.1304-1-alexandr.lobakin@intel.com>
+X-Mailer: git-send-email 2.33.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <d099f078-eef7-1c44-7086-b67971218f3f@quicinc.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 10, 2021 at 10:10:27AM +0530, quic_neeraju wrote:
-> Hi Paul,
-> 
-> 
-> On 11/9/2021 8:22 PM, Paul E. McKenney wrote:
-> > On Tue, Nov 09, 2021 at 04:52:14PM +0530, Neeraj Upadhyay wrote:
-> > > On RCU tasks trace stall, inspect the RCU-tasks-trace specific
-> > > states of stalled task in locked down state, using try_invoke_
-> > > on_locked_down_task(), to get reliable trc state of a non-running
-> > > stalled task.
-> > > 
-> > > Signed-off-by: Neeraj Upadhyay <quic_neeraju@quicinc.com>
-> > 
-> > Queued for further review and testing, thank you!
-> > 
-> > Along those lines, what did you do to test this?  I would like to
-> > add that to the commit message.  (The usual approach is to use the
-> > rcutorture.stall_cpu module parameter, in case I have not yet passed
-> > that along.)
-> > 
-> 
-> Before sending the patch, I had tested with TRACE01 and adding long delay
-> before rcu_read_unlock_trace() in tasks_tracing_torture_read_unlock()
-> 
-> static void tasks_tracing_torture_read_unlock(int idx)
-> {
->         rcu_read_unlock_trace();
-> }
-> 
-> I retested with below commandline (without adding delay in
-> tasks_tracing_torture_read_unlock()):
-> 
-> tools/testing/selftests/rcutorture/bin/kvm.sh --cpus 8 --configs TRACE01
-> --bootargs "rcutorture.torture_type=tasks-tracing rcutorture.stall_cpu=10
-> rcutorture.stall_cpu_block=1 rcupdate.rcu_task_stall_timeout=100"
-> --trust-make
-> 
-> With this, I can see stalls for both RUNNING and WAITING state task:
+Commit 719c57197010 ("net: make napi_disable() symmetric with
+enable") accidentally introduced a bug sometimes leading to a kernel
+BUG when bringing an iface up/down under heavy traffic load.
 
-Applied, thank you!
+Prior to this commit, napi_disable() was polling n->state until
+none of (NAPIF_STATE_SCHED | NAPIF_STATE_NPSVC) is set and then
+always flip them. Now there's a possibility to get away with the
+NAPIF_STATE_SCHE unset as 'continue' drops us to the cmpxchg()
+call with an unitialized variable, rather than straight to
+another round of the state check.
 
-							Thanx, Paul
+Error path looks like:
 
-> [   21.520291] INFO: rcu_tasks_trace detected stalls on tasks:
-> [   21.521292] P85: ... nesting: 1N cpu: 2
-> [   21.521966] task:rcu_torture_sta state:D stack:15080 pid:   85 ppid:
-> 2 flags:0x00004000
-> [   21.523384] Call Trace:
-> [   21.523808]  __schedule+0x273/0x6e0
-> [   21.524428]  schedule+0x35/0xa0
-> [   21.524971]  schedule_timeout+0x1ed/0x270
-> [   21.525690]  ? del_timer_sync+0x30/0x30
-> [   21.526371]  ? rcu_torture_writer+0x720/0x720
-> [   21.527106]  rcu_torture_stall+0x24a/0x270
-> [   21.527816]  kthread+0x115/0x140
-> [   21.528401]  ? set_kthread_struct+0x40/0x40
-> [   21.529136]  ret_from_fork+0x22/0x30
-> [   21.529766]  1 holdouts
-> [   21.632300] INFO: rcu_tasks_trace detected stalls on tasks:
-> [   21.632345] rcu_torture_stall end.
-> [   21.633293] P85: .
-> [   21.633294] task:rcu_torture_sta state:R  running task stack:15080 pid:
-> 85 ppid:     2 flags:0x00004000
-> [   21.633299] Call Trace:
-> [   21.633301]  ? vprintk_emit+0xab/0x180
-> [   21.633306]  ? vprintk_emit+0x11a/0x180
-> [   21.633308]  ? _printk+0x4d/0x69
-> [   21.633311]  ? __default_send_IPI_shortcut+0x1f/0x40
-> 
-> 
-> 
-> Thanks
-> Neeraj
-> 
-> > 							Thanx, Paul
-> > 
-> > > ---
-> > >   kernel/rcu/tasks.h | 43 ++++++++++++++++++++++++++++++++++---------
-> > >   1 file changed, 34 insertions(+), 9 deletions(-)
-> > > 
-> > > diff --git a/kernel/rcu/tasks.h b/kernel/rcu/tasks.h
-> > > index e4a32db9f712..4e49b847971b 100644
-> > > --- a/kernel/rcu/tasks.h
-> > > +++ b/kernel/rcu/tasks.h
-> > > @@ -1073,25 +1073,50 @@ static void rcu_tasks_trace_postscan(struct list_head *hop)
-> > >   	// Any tasks that exit after this point will set ->trc_reader_checked.
-> > >   }
-> > > +/* Communicate task state back to the RCU tasks trace stall warning request. */
-> > > +struct trc_stall_chk_rdr {
-> > > +	int nesting;
-> > > +	int ipi_to_cpu;
-> > > +	u8 needqs;
-> > > +};
-> > > +
-> > > +static bool trc_check_slow_task(struct task_struct *t, void *arg)
-> > > +{
-> > > +	struct trc_stall_chk_rdr *trc_rdrp = arg;
-> > > +
-> > > +	if (task_curr(t))
-> > > +		return false; // It is running, so decline to inspect it.
-> > > +	trc_rdrp->nesting = READ_ONCE(t->trc_reader_nesting);
-> > > +	trc_rdrp->ipi_to_cpu = READ_ONCE(t->trc_ipi_to_cpu);
-> > > +	trc_rdrp->needqs = READ_ONCE(t->trc_reader_special.b.need_qs);
-> > > +	return true;
-> > > +}
-> > > +
-> > >   /* Show the state of a task stalling the current RCU tasks trace GP. */
-> > >   static void show_stalled_task_trace(struct task_struct *t, bool *firstreport)
-> > >   {
-> > >   	int cpu;
-> > > +	struct trc_stall_chk_rdr trc_rdr;
-> > > +	bool is_idle_tsk = is_idle_task(t);
-> > >   	if (*firstreport) {
-> > >   		pr_err("INFO: rcu_tasks_trace detected stalls on tasks:\n");
-> > >   		*firstreport = false;
-> > >   	}
-> > > -	// FIXME: This should attempt to use try_invoke_on_nonrunning_task().
-> > >   	cpu = task_cpu(t);
-> > > -	pr_alert("P%d: %c%c%c nesting: %d%c cpu: %d\n",
-> > > -		 t->pid,
-> > > -		 ".I"[READ_ONCE(t->trc_ipi_to_cpu) >= 0],
-> > > -		 ".i"[is_idle_task(t)],
-> > > -		 ".N"[cpu >= 0 && tick_nohz_full_cpu(cpu)],
-> > > -		 READ_ONCE(t->trc_reader_nesting),
-> > > -		 " N"[!!READ_ONCE(t->trc_reader_special.b.need_qs)],
-> > > -		 cpu);
-> > > +	if (!try_invoke_on_locked_down_task(t, trc_check_slow_task, &trc_rdr))
-> > > +		pr_alert("P%d: %c\n",
-> > > +			 t->pid,
-> > > +			 ".i"[is_idle_tsk]);
-> > > +	else
-> > > +		pr_alert("P%d: %c%c%c nesting: %d%c cpu: %d\n",
-> > > +			 t->pid,
-> > > +			 ".I"[trc_rdr.ipi_to_cpu >= 0],
-> > > +			 ".i"[is_idle_tsk],
-> > > +			 ".N"[cpu >= 0 && tick_nohz_full_cpu(cpu)],
-> > > +			 trc_rdr.nesting,
-> > > +			 " N"[!!trc_rdr.needqs],
-> > > +			 cpu);
-> > >   	sched_show_task(t);
-> > >   }
-> > > -- 
-> > > 2.17.1
-> > > 
+napi_disable():
+unsigned long val, new; /* new is uninitialized */
+
+do {
+	val = READ_ONCE(n->state); /* NAPIF_STATE_NPSVC and/or
+				      NAPIF_STATE_SCHED is set */
+	if (val & (NAPIF_STATE_SCHED | NAPIF_STATE_NPSVC)) { /* true */
+		usleep_range(20, 200);
+		continue; /* go straight to the condition check */
+	}
+	new = val | <...>
+} while (cmpxchg(&n->state, val, new) != val); /* state == val, cmpxchg()
+						  writes garbage */
+
+napi_enable():
+do {
+	val = READ_ONCE(n->state);
+	BUG_ON(!test_bit(NAPI_STATE_SCHED, &val)); /* 50/50 boom */
+<...>
+
+while the typical BUG splat is like:
+
+[  172.652461] ------------[ cut here ]------------
+[  172.652462] kernel BUG at net/core/dev.c:6937!
+[  172.656914] invalid opcode: 0000 [#1] PREEMPT SMP PTI
+[  172.661966] CPU: 36 PID: 2829 Comm: xdp_redirect_cp Tainted: G          I       5.15.0 #42
+[  172.670222] Hardware name: Intel Corporation S2600WFT/S2600WFT, BIOS SE5C620.86B.02.01.0014.082620210524 08/26/2021
+[  172.680646] RIP: 0010:napi_enable+0x5a/0xd0
+[  172.684832] Code: 07 49 81 cc 00 01 00 00 4c 89 e2 48 89 d8 80 e6 fb f0 48 0f b1 55 10 48 39 c3 74 10 48 8b 5d 10 f6 c7 04 75 3d f6 c3 01 75 b4 <0f> 0b 5b 5d 41 5c c3 65 ff 05 b8 e5 61 53 48 c7 c6 c0 f3 34 ad 48
+[  172.703578] RSP: 0018:ffffa3c9497477a8 EFLAGS: 00010246
+[  172.708803] RAX: ffffa3c96615a014 RBX: 0000000000000000 RCX: ffff8a4b575301a0
+< snip >
+[  172.782403] Call Trace:
+[  172.784857]  <TASK>
+[  172.786963]  ice_up_complete+0x6f/0x210 [ice]
+[  172.791349]  ice_xdp+0x136/0x320 [ice]
+[  172.795108]  ? ice_change_mtu+0x180/0x180 [ice]
+[  172.799648]  dev_xdp_install+0x61/0xe0
+[  172.803401]  dev_xdp_attach+0x1e0/0x550
+[  172.807240]  dev_change_xdp_fd+0x1e6/0x220
+[  172.811338]  do_setlink+0xee8/0x1010
+[  172.814917]  rtnl_setlink+0xe5/0x170
+[  172.818499]  ? bpf_lsm_binder_set_context_mgr+0x10/0x10
+[  172.823732]  ? security_capable+0x36/0x50
+< snip >
+
+Fix this by replacing 'do { } while (cmpxchg())' with an "infinite"
+for-loop with an explicit break.
+
+From v1 [0]:
+ - just use a for-loop to simplify both the fix and the existing
+   code (Eric).
+
+[0] https://lore.kernel.org/netdev/20211110191126.1214-1-alexandr.lobakin@intel.com
+
+Fixes: 719c57197010 ("net: make napi_disable() symmetric with enable")
+Suggested-by: Eric Dumazet <edumazet@google.com> # for-loop
+Signed-off-by: Alexander Lobakin <alexandr.lobakin@intel.com>
+Reviewed-by: Jesse Brandeburg <jesse.brandeburg@intel.com>
+---
+ net/core/dev.c | 7 +++++--
+ 1 file changed, 5 insertions(+), 2 deletions(-)
+
+diff --git a/net/core/dev.c b/net/core/dev.c
+index edeb811c454e..15ac064b5562 100644
+--- a/net/core/dev.c
++++ b/net/core/dev.c
+@@ -6928,7 +6928,7 @@ void napi_disable(struct napi_struct *n)
+ 	might_sleep();
+ 	set_bit(NAPI_STATE_DISABLE, &n->state);
+ 
+-	do {
++	for ( ; ; ) {
+ 		val = READ_ONCE(n->state);
+ 		if (val & (NAPIF_STATE_SCHED | NAPIF_STATE_NPSVC)) {
+ 			usleep_range(20, 200);
+@@ -6937,7 +6937,10 @@ void napi_disable(struct napi_struct *n)
+ 
+ 		new = val | NAPIF_STATE_SCHED | NAPIF_STATE_NPSVC;
+ 		new &= ~(NAPIF_STATE_THREADED | NAPIF_STATE_PREFER_BUSY_POLL);
+-	} while (cmpxchg(&n->state, val, new) != val);
++
++		if (cmpxchg(&n->state, val, new) == val)
++			break;
++	}
+ 
+ 	hrtimer_cancel(&n->timer);
+ 
+-- 
+2.33.1
+
