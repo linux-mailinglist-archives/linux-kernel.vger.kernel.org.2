@@ -2,147 +2,220 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 551BF44BCD5
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 09:27:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A7DAA44BCF6
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 09:35:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230268AbhKJIaU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Nov 2021 03:30:20 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124]:44500 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230234AbhKJIaQ (ORCPT
+        id S230060AbhKJIip (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Nov 2021 03:38:45 -0500
+Received: from esa11.hc1455-7.c3s2.iphmx.com ([207.54.90.137]:2972 "EHLO
+        esa11.hc1455-7.c3s2.iphmx.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229919AbhKJIio (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Nov 2021 03:30:16 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1636532849;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=zky/vWToC3C8LiDo8BNPLluCNBMJ39ylhYqpXz2GoPI=;
-        b=DLqjjdQfCGUdtqTHSdnziDN9igmqtS9QEXT5Nxe8P86BW7Pbk64rEOGfz8+eWDKIEOKXsF
-        jI1uPZeuet/cfkP0qnMmkkRkeVq/B2rQ7AOxI3tJ8BqcY72SZAxalUyY+ZLdCVY2Zz07n1
-        sPPJNVfOFVpBq7wo5qJQ1yh8Sseijp0=
-Received: from mail-pf1-f198.google.com (mail-pf1-f198.google.com
- [209.85.210.198]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-127-qwoEkcOTP1e2tg2bO1Sd3Q-1; Wed, 10 Nov 2021 03:27:27 -0500
-X-MC-Unique: qwoEkcOTP1e2tg2bO1Sd3Q-1
-Received: by mail-pf1-f198.google.com with SMTP id 134-20020a62198c000000b0047bf0981003so1581050pfz.4
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Nov 2021 00:27:27 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=zky/vWToC3C8LiDo8BNPLluCNBMJ39ylhYqpXz2GoPI=;
-        b=AwTydAFh0UeFg0/+p63wNU/e+BNGqYQkbLg8ugU6cefV8vE6Rwthi5EbYM3rQAN5Cj
-         4O2dsuJyO0z4ph+yrjh58ItX8uWfB+J4dW02P96DXH3vpUP7IbgeTtlN8TlseWL2Fb7h
-         Q0F0qYpuYXrX+vgYcBzIiHYjzMVgrcfRILuPTfK+IYHLOBfpHOyiWjapVcxsL2d5EH6i
-         rEmToPEtS7h9ZJffifVhuf3E684TOxe3LGbQ/lULUb4TGevQiqbJpIr265hF3wwJoXuU
-         IAaKkQkFEC0y0ocgRs2IXJ2oG1CasijkqKZJv0VDB5or4mWbYuaetWPOzbCziiRfMkgz
-         1WjA==
-X-Gm-Message-State: AOAM531AEG87FPHSNJkSCQ+z215vFEHe1+AJlXVZmUUM+lwThU8QPM61
-        KE1QSmuA1QRoHhM0uu+SJYZD64B94GrkLwQ2BWNRPGdDff/wcxzDwo61tHNzZirMuw6v/gvHTRX
-        oeE7HkCgGjGJhiJRRrdFR7oph
-X-Received: by 2002:a05:6a00:1151:b0:492:62e1:5968 with SMTP id b17-20020a056a00115100b0049262e15968mr14506328pfm.75.1636532846743;
-        Wed, 10 Nov 2021 00:27:26 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJyOKflnGQgX7O2PA+X5kdlAqd3MkOusyaBbTGvH2hKDFVlvijLehbB5yQCaRdyGTfDaYWw8ZA==
-X-Received: by 2002:a05:6a00:1151:b0:492:62e1:5968 with SMTP id b17-20020a056a00115100b0049262e15968mr14506300pfm.75.1636532846480;
-        Wed, 10 Nov 2021 00:27:26 -0800 (PST)
-Received: from t490s ([209.132.188.80])
-        by smtp.gmail.com with ESMTPSA id u10sm21143749pfh.49.2021.11.10.00.27.22
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 10 Nov 2021 00:27:25 -0800 (PST)
-Date:   Wed, 10 Nov 2021 16:27:20 +0800
-From:   Peter Xu <peterx@redhat.com>
-To:     David Hildenbrand <david@redhat.com>
-Cc:     Mina Almasry <almasrymina@google.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        "Paul E . McKenney" <paulmckrcu@fb.com>,
-        Yu Zhao <yuzhao@google.com>, Jonathan Corbet <corbet@lwn.net>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Ivan Teterevkov <ivan.teterevkov@nutanix.com>,
-        Florian Schmidt <florian.schmidt@nutanix.com>,
-        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-mm@kvack.org
-Subject: Re: [PATCH v4] mm: Add PM_HUGE_THP_MAPPING to /proc/pid/pagemap
-Message-ID: <YYuCaNXikls/9JhS@t490s>
-References: <20211107235754.1395488-1-almasrymina@google.com>
- <YYtuqsnOSxA44AUX@t490s>
- <c5ed86d0-8af6-f54f-e352-8871395ad62e@redhat.com>
+        Wed, 10 Nov 2021 03:38:44 -0500
+X-Greylist: delayed 430 seconds by postgrey-1.27 at vger.kernel.org; Wed, 10 Nov 2021 03:38:43 EST
+IronPort-SDR: bRvmrCCjfmNJ3KhaQEZRWVpVap0DobbxEc57XaKm52SmvUtN4yhWWq0pEvgblv1iAuBoxt/Wkz
+ tKphh5icNRZCeB4Hvti2bK63F+qJ+lIfDgqonvD6HNpbzTPxpKsvApGKEA+ZBWaF6NbWQkJ5Bs
+ 3UjVPVMcZyGVBRtZAe8Wj1l+2tlYWjxTA6ItuPgwy081FQMWsy31WsxvggGbeKIf0BP3erFhUO
+ KqQGajx6VALqiuZtORALUCSw7o4TCQA35Jhh6bZoFDSE6Vb8he038saJdQGMpv0PXG289tX0tH
+ y9HJLm4z9iqxlrLrdoX7Giys
+X-IronPort-AV: E=McAfee;i="6200,9189,10163"; a="31702384"
+X-IronPort-AV: E=Sophos;i="5.87,223,1631545200"; 
+   d="scan'208";a="31702384"
+Received: from unknown (HELO yto-r2.gw.nic.fujitsu.com) ([218.44.52.218])
+  by esa11.hc1455-7.c3s2.iphmx.com with ESMTP; 10 Nov 2021 17:28:27 +0900
+Received: from yto-m1.gw.nic.fujitsu.com (yto-nat-yto-m1.gw.nic.fujitsu.com [192.168.83.64])
+        by yto-r2.gw.nic.fujitsu.com (Postfix) with ESMTP id 18A96122D1B;
+        Wed, 10 Nov 2021 17:28:27 +0900 (JST)
+Received: from oym-om3.fujitsu.com (oym-om3.o.css.fujitsu.com [10.85.58.163])
+        by yto-m1.gw.nic.fujitsu.com (Postfix) with ESMTP id 4B89FDA65B;
+        Wed, 10 Nov 2021 17:28:26 +0900 (JST)
+Received: from localhost.localdomain (n3235113.np.ts.nmh.cs.fujitsu.co.jp [10.123.235.113])
+        by oym-om3.fujitsu.com (Postfix) with ESMTP id 6EFFC4019A4C3;
+        Wed, 10 Nov 2021 17:28:25 +0900 (JST)
+From:   Shaopeng Tan <tan.shaopeng@jp.fujitsu.com>
+To:     Fenghua Yu <fenghua.yu@intel.com>,
+        Reinette Chatre <reinette.chatre@intel.com>,
+        Shuah Khan <shuah@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        tan.shaopeng@jp.fujitsu.com
+Subject: [PATCH] selftests/resctrl: Skip MBM&CMT tests when Intel Sub-NUMA
+Date:   Wed, 10 Nov 2021 17:27:34 +0900
+Message-Id: <20211110082734.3184985-1-tan.shaopeng@jp.fujitsu.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <c5ed86d0-8af6-f54f-e352-8871395ad62e@redhat.com>
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 10, 2021 at 09:14:42AM +0100, David Hildenbrand wrote:
-> On 10.11.21 08:03, Peter Xu wrote:
-> > Hi, Mina,
-> > 
-> > Sorry to comment late.
-> > 
-> > On Sun, Nov 07, 2021 at 03:57:54PM -0800, Mina Almasry wrote:
-> >> diff --git a/Documentation/admin-guide/mm/pagemap.rst b/Documentation/admin-guide/mm/pagemap.rst
-> >> index fdc19fbc10839..8a0f0064ff336 100644
-> >> --- a/Documentation/admin-guide/mm/pagemap.rst
-> >> +++ b/Documentation/admin-guide/mm/pagemap.rst
-> >> @@ -23,7 +23,8 @@ There are four components to pagemap:
-> >>      * Bit  56    page exclusively mapped (since 4.2)
-> >>      * Bit  57    pte is uffd-wp write-protected (since 5.13) (see
-> >>        :ref:`Documentation/admin-guide/mm/userfaultfd.rst <userfaultfd>`)
-> >> -    * Bits 57-60 zero
-> >> +    * Bit  58    page is a huge (PMD size) THP mapping
-> >> +    * Bits 59-60 zero
-> >>      * Bit  61    page is file-page or shared-anon (since 3.5)
-> >>      * Bit  62    page swapped
-> >>      * Bit  63    page present
-> >> diff --git a/fs/proc/task_mmu.c b/fs/proc/task_mmu.c
-> >> index ad667dbc96f5c..6f1403f83b310 100644
-> >> --- a/fs/proc/task_mmu.c
-> >> +++ b/fs/proc/task_mmu.c
-> >> @@ -1302,6 +1302,7 @@ struct pagemapread {
-> >>  #define PM_SOFT_DIRTY		BIT_ULL(55)
-> >>  #define PM_MMAP_EXCLUSIVE	BIT_ULL(56)
-> >>  #define PM_UFFD_WP		BIT_ULL(57)
-> >> +#define PM_HUGE_THP_MAPPING	BIT_ULL(58)
-> > 
-> > The ending "_MAPPING" seems redundant to me, how about just call it "PM_THP" or
-> > "PM_HUGE" (as THP also means HUGE already)?
-> > 
-> > IMHO the core problem is about permission controls, and it seems to me we're
-> > actually trying to workaround it by duplicating some information we have.. so
-> > it's kind of a pity.  Totally not against this patch, but imho it'll be nicer
-> > if it's the permission part that to be enhanced, rather than a new but slightly
-> > duplicated interface.
-> 
-> It's not a permission problem AFAIKS: even with permissions "changed",
-> any attempt to use /proc/kpageflags is just racy. Let's not go down that
-> path, it's really the wrong mechanism to export to random userspace.
+From: "Tan, Shaopeng" <tan.shaopeng@jp.fujitsu.com>
 
-I agree it's racy, but IMHO that's fine.  These are hints for userspace to make
-decisions, they cannot be always right.  Even if we fetch atomically and seeing
-that this pte is swapped out, it can be quickly accessed at the same time and
-it'll be in-memory again.  Only if we can freeze the whole pgtable but we
-can't, so they can only be used as hints.
+When the Intel Sub-NUMA Clustering(SNC) feature is enabled,
+the CMT and MBM counters may not be accurate.
+In this case, skip MBM&CMT tests.
 
-> 
-> We do have an interface to access this information from userspace
-> already: /proc/self/smaps IIRC. Mina commented that they are seeing
-> performance issues with that approach.
-> 
-> It would be valuable to add these details to the patch description,
-> including a performance difference when using both interfaces we have
-> available. As the patch description stands, there is no explanation
-> "why" we want this change.
+Signed-off-by: Shaopeng Tan <tan.shaopeng@jp.fujitsu.com>
+---
+Hello,
 
-I didn't notice Mina mention about performance issues with kpageflags, if so
-then I agree this solution helps.  I doubt the performance is an issue, though,
-as THP info shouldn't be something changing rapidly so it should be some hint
-to do sanity checks only (e.g., to make sure no unwanted split of THP
-happening, but the scanning should not require to be super fast; it could be
-done with a relatively long scanning period).  If there's a performance
-concern, yes it would be great to mention it too in the commit message.
+According to the Intel RDT reference Manual, 
+when the sub-numa clustering feature is enabled, the CMT and MBM counters may not be accurate.
+When running CMT tests and MBM tests on Intel processor, the result is "not ok".
+So, fix it to skip the CMT & MBM test When the Intel Sub-NUMA Clustering(SNC) feature is enabled.
 
+Thanks,
+
+ tools/testing/selftests/resctrl/resctrl.h       |  1 +
+ tools/testing/selftests/resctrl/resctrl_tests.c | 51 +++++++++++++++++++++++++
+ tools/testing/selftests/resctrl/resctrlfs.c     | 26 +++++++++++++
+ 3 files changed, 78 insertions(+)
+
+diff --git a/tools/testing/selftests/resctrl/resctrl.h b/tools/testing/selftests/resctrl/resctrl.h
+index 1ad10c4..8e82ce3 100644
+--- a/tools/testing/selftests/resctrl/resctrl.h
++++ b/tools/testing/selftests/resctrl/resctrl.h
+@@ -85,6 +85,7 @@ struct resctrl_val_param {
+ int validate_bw_report_request(char *bw_report);
+ bool validate_resctrl_feature_request(const char *resctrl_val);
+ char *fgrep(FILE *inf, const char *str);
++char *fgrep_last_match_line(FILE *inf, const char *str);
+ int taskset_benchmark(pid_t bm_pid, int cpu_no);
+ void run_benchmark(int signum, siginfo_t *info, void *ucontext);
+ int write_schemata(char *ctrlgrp, char *schemata, int cpu_no,
+diff --git a/tools/testing/selftests/resctrl/resctrl_tests.c b/tools/testing/selftests/resctrl/resctrl_tests.c
+index 973f09a..122aab6 100644
+--- a/tools/testing/selftests/resctrl/resctrl_tests.c
++++ b/tools/testing/selftests/resctrl/resctrl_tests.c
+@@ -8,12 +8,15 @@
+  *    Sai Praneeth Prakhya <sai.praneeth.prakhya@intel.com>,
+  *    Fenghua Yu <fenghua.yu@intel.com>
+  */
++#include <numa.h>
++#include <string.h>
+ #include "resctrl.h"
+ 
+ #define BENCHMARK_ARGS		64
+ #define BENCHMARK_ARG_SIZE	64
+ 
+ bool is_amd;
++bool sub_numa_cluster_enable;
+ 
+ void detect_amd(void)
+ {
+@@ -34,6 +37,35 @@ void detect_amd(void)
+ 	fclose(inf);
+ }
+ 
++void check_sub_numa_cluster(void)
++{
++	FILE *inf = fopen("/proc/cpuinfo", "r");
++	char *res, *s;
++	int socket_num = 0;
++	int numa_nodes = 0;
++
++	if (!inf)
++		return;
++
++	res = fgrep_last_match_line(inf, "physical id");
++
++	if (res) {
++		s = strpbrk(res, "1234567890");
++		socket_num = atoi(s) + 1;
++		free(res);
++	}
++	fclose(inf);
++
++	numa_nodes = numa_max_node() + 1;
++
++	/*
++	 * when the Sub-NUMA Clustering(SNC) feature is enabled,
++	 * the number of numa nodes is twice the number of sockets.
++	 */
++	if (numa_nodes == (2 * socket_num))
++		sub_numa_cluster_enable = true;
++}
++
+ static void cmd_help(void)
+ {
+ 	printf("usage: resctrl_tests [-h] [-b \"benchmark_cmd [options]\"] [-t test list] [-n no_of_bits]\n");
+@@ -61,6 +93,13 @@ static void run_mbm_test(bool has_ben, char **benchmark_cmd, int span,
+ 
+ 	ksft_print_msg("Starting MBM BW change ...\n");
+ 
++	/* when the Sub-NUMA Clustering(SNC) feature is enabled,
++	 * the CMT and MBM counters may not be accurate
++	 */
++	if (sub_numa_cluster_enable) {
++		ksft_test_result_skip("Sub-NUMA Clustering(SNC) feature is enabled, the MBM counters may not be accurate.\n");
++		return;
++	}
+ 	if (!validate_resctrl_feature_request(MBM_STR)) {
+ 		ksft_test_result_skip("Hardware does not support MBM or MBM is disabled\n");
+ 		return;
+@@ -97,6 +136,14 @@ static void run_cmt_test(bool has_ben, char **benchmark_cmd, int cpu_no)
+ 	int res;
+ 
+ 	ksft_print_msg("Starting CMT test ...\n");
++
++	/* when the Sub-NUMA Clustering(SNC) feature is enabled,
++	 * the CMT and MBM counters may not be accurate
++	 */
++	if (sub_numa_cluster_enable) {
++		ksft_test_result_skip("Sub-NUMA Clustering(SNC) feature is enabled, the CMT counters may not be accurate.\n");
++		return;
++	}
+ 	if (!validate_resctrl_feature_request(CMT_STR)) {
+ 		ksft_test_result_skip("Hardware does not support CMT or CMT is disabled\n");
+ 		return;
+@@ -210,6 +257,10 @@ int main(int argc, char **argv)
+ 	/* Detect AMD vendor */
+ 	detect_amd();
+ 
++	/* check whether sub numa clustering is enable or not */
++	if (!is_amd)
++		check_sub_numa_cluster();
++
+ 	if (has_ben) {
+ 		/* Extract benchmark command from command line. */
+ 		for (i = ben_ind; i < argc; i++) {
+diff --git a/tools/testing/selftests/resctrl/resctrlfs.c b/tools/testing/selftests/resctrl/resctrlfs.c
+index 5f5a166..1908ecb 100644
+--- a/tools/testing/selftests/resctrl/resctrlfs.c
++++ b/tools/testing/selftests/resctrl/resctrlfs.c
+@@ -606,6 +606,32 @@ char *fgrep(FILE *inf, const char *str)
+ }
+ 
+ /*
++ * Find the last matched line.
++ * Return a pointer to the string of the matched line,
++ * else retuen NULL if no matched line
++ */
++char *fgrep_last_match_line(FILE *inf, const char *str)
++{
++	char line[256];
++	char result_line[256];
++	int slen = strlen(str);
++
++	while (!feof(inf)) {
++		if (!fgets(line, 256, inf))
++			break;
++		if (strncmp(line, str, slen))
++			continue;
++
++		strcpy(result_line, line);
++	}
++
++	if (strlen(result_line) >= slen)
++		return strdup(result_line);
++
++	return NULL;
++}
++
++/*
+  * validate_resctrl_feature_request - Check if requested feature is valid.
+  * @resctrl_val:	Requested feature
+  *
 -- 
-Peter Xu
+1.8.3.1
 
