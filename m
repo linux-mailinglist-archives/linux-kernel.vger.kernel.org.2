@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E212344BF38
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 11:56:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 92CA044BF3A
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 11:56:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231431AbhKJK6w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Nov 2021 05:58:52 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49140 "EHLO
+        id S231476AbhKJK6x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Nov 2021 05:58:53 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49162 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231380AbhKJK6m (ORCPT
+        with ESMTP id S231464AbhKJK6r (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Nov 2021 05:58:42 -0500
-Received: from mail-pl1-x634.google.com (mail-pl1-x634.google.com [IPv6:2607:f8b0:4864:20::634])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 59079C06127A
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Nov 2021 02:55:55 -0800 (PST)
-Received: by mail-pl1-x634.google.com with SMTP id u17so2634262plg.9
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Nov 2021 02:55:55 -0800 (PST)
+        Wed, 10 Nov 2021 05:58:47 -0500
+Received: from mail-pg1-x536.google.com (mail-pg1-x536.google.com [IPv6:2607:f8b0:4864:20::536])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F40CC061764
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Nov 2021 02:56:00 -0800 (PST)
+Received: by mail-pg1-x536.google.com with SMTP id p17so1933377pgj.2
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Nov 2021 02:56:00 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=bytedance-com.20210112.gappssmtp.com; s=20210112;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=BEkgVbZuVsA0FhlYXGGaJBi830ur6y858NAr5lK/SlI=;
-        b=fDInN7lDg/WOd26P7ACBdvTx8SeMC7Ds7sXvURJA9gmFdDBbfrcR0a6J5AlvkegzCB
-         A/BxGt0L/fuy21RUR5VlbRRybOHrySj7zuw015WCcRgHXeUQrwB3a1W/MBid9gOnPDkw
-         JBp4l90W1LFmgq3oVLyf6TIZIDuVWw+tcEjaCub7DprpdrFSD2qakI8Re2BeCcyEsTXq
-         gja6TuaztelGhb3BvANmH72PL+0NJ6G4Yynpd/WrTJ1H3xvcxo/36mnjYbVUzdznQS4U
-         6tGstJXrl5BpzllHZ8E8ehMzvene9l1J7jJ8KL5uw6poPa9L8vGdRV+KDBrRDPLiYRkz
-         Wxcw==
+        bh=oACp49gXaGAjKIiwkR+ZeBWqiQkGBkUqqKqI3adW4JI=;
+        b=mYFTL8nAGfoCHW+ltxTYZYlXDGFJnMrF2VCPBAxylGRD2oFy5grbsGypUkK/thKoL5
+         +HDEBjxveBsreY4/QAXWNNN3NCUjVtlIu+dXA+sEVew8eBN/NOAYKTD8bjGwoAg4DT8P
+         nA266BKFpGTAEUchN6jo4bbemK6xw1SgSz2wcj6mmPJTV26W1ZLUbJaHy4pY4MRTLkeP
+         PkEhNjCiFFyj9cs63AMuh07LHAzL6EP1KxHwQ1DFzPXqQpKGj9BFHTcFbR/9G4aFjL09
+         ssmWBBRktXlg+M4KvdgY2ZD6i03sO0ej9Ly0sv9VqbPWsh2Hu1JFwr7baM2VV55tG4qT
+         SffQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=BEkgVbZuVsA0FhlYXGGaJBi830ur6y858NAr5lK/SlI=;
-        b=fPOfegsv7kr2X1reYqeMrQyrPLdqai6eKig0XmVRxbnAm2DIFPbc66HSGSoaJBbkdl
-         +u7IVg18I1w8CS8Ss+lVOlQQVIaM6ZHJI1kLuCFG6jumPu5YU96WgWxO6YNyTBcqmg8/
-         M8fxLI6SY1oSnfl73nqav/gtNM7x9YdoqmnkNGoQEJ2VxkaqGdmT7fmOiXkT+Se0DyeP
-         40r3nb29UFry7XJu+H4SU5ORFEgy2/C6DFhP9T03oxspRSOdpW9adgsurd1VZJcytd6+
-         k+HCcTV8XNWqVlS12Y1zQVq83YZZwEKOVuDc2hM7CP28fdY2GUY9Unm/esAJj7YnjTrf
-         O5nQ==
-X-Gm-Message-State: AOAM530E1mcms7OhUGuboJ5d9i+eBOoTvT+vGMJS5jRUVstKK92SURRK
-        oJwsfq2VS3kvJAyLvYAf87r0cw==
-X-Google-Smtp-Source: ABdhPJzEQ/iU9FptzK8teQahqEayhIxvuxDSVPhhvBP66Hk7CNTA+H93MNXC4UqhOzmnr4h/baHdyA==
-X-Received: by 2002:a17:90a:d583:: with SMTP id v3mr15985016pju.216.1636541754871;
-        Wed, 10 Nov 2021 02:55:54 -0800 (PST)
+        bh=oACp49gXaGAjKIiwkR+ZeBWqiQkGBkUqqKqI3adW4JI=;
+        b=ZI1ETw+qviUotfYNOrPKbgiwVjWYqYTu8C8lQ/h0Gd7Z8d0+mOuliSG2Tq2KwR4Gm6
+         nPjPWqh2PxR2uqXw07sODR2c0JJSf1l3R1m19VHlyyv2hW21Yy3v46ljrlr7NGF1XXPb
+         FBOj/3Yq+n5CpRkZMa4Y1IMqQFpC67mDMYUYI9/MWS0mOgEHPskGJk6zsq3vThwYlwfT
+         HNx2eCyJoRtVz5hpQlJojAhP6E4Qg1YBfHDg6Yz/EBClZZXb4RKQVKSQ3sZ7LrB2C9yd
+         kDzq555fyalfpjYcMm/1RaUeIGAdvoJAbOS4MJOeCNy07kUzZ1btN4Lb/il0QJ/v3vuy
+         YKtw==
+X-Gm-Message-State: AOAM530ydHHzZe2j3DTWq61AQmaNU/2zlucMNcaJ05BlNhQUHyjU369/
+        oMtAZaLsDMcL/as1I1wJWed4KA==
+X-Google-Smtp-Source: ABdhPJxsiLB9lgCGapZu/Cp89rN/P3dimmlX2wiU05T9FeDDXf/uTbUmrVDMvDWMjGH9ivQ2d5gBsg==
+X-Received: by 2002:a63:8048:: with SMTP id j69mr11183988pgd.111.1636541759762;
+        Wed, 10 Nov 2021 02:55:59 -0800 (PST)
 Received: from C02DW0BEMD6R.bytedance.net ([139.177.225.251])
-        by smtp.gmail.com with ESMTPSA id v38sm5865829pgl.38.2021.11.10.02.55.49
+        by smtp.gmail.com with ESMTPSA id v38sm5865829pgl.38.2021.11.10.02.55.55
         (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 10 Nov 2021 02:55:54 -0800 (PST)
+        Wed, 10 Nov 2021 02:55:59 -0800 (PST)
 From:   Qi Zheng <zhengqi.arch@bytedance.com>
 To:     akpm@linux-foundation.org, tglx@linutronix.de,
         kirill.shutemov@linux.intel.com, mika.penttila@nextfour.com,
@@ -55,9 +55,9 @@ To:     akpm@linux-foundation.org, tglx@linutronix.de,
 Cc:     linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
         linux-mm@kvack.org, songmuchun@bytedance.com,
         zhouchengming@bytedance.com, Qi Zheng <zhengqi.arch@bytedance.com>
-Subject: [PATCH v3 13/15] mm/pte_ref: free user PTE page table pages
-Date:   Wed, 10 Nov 2021 18:54:26 +0800
-Message-Id: <20211110105428.32458-14-zhengqi.arch@bytedance.com>
+Subject: [PATCH v3 14/15] Documentation: add document for pte_ref
+Date:   Wed, 10 Nov 2021 18:54:27 +0800
+Message-Id: <20211110105428.32458-15-zhengqi.arch@bytedance.com>
 X-Mailer: git-send-email 2.24.3 (Apple Git-128)
 In-Reply-To: <20211110105428.32458-1-zhengqi.arch@bytedance.com>
 References: <20211110105428.32458-1-zhengqi.arch@bytedance.com>
@@ -67,344 +67,232 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This commit introduces CONFIG_FREE_USER_PTE option and
-implements the actual logic to the dummy helpers about
-pte_ref.
+This commit adds document for pte_ref under `Documentation/vm/`.
 
 Signed-off-by: Qi Zheng <zhengqi.arch@bytedance.com>
 ---
- include/linux/mm.h      |  2 ++
- include/linux/pgtable.h |  3 +-
- include/linux/pte_ref.h | 53 ++++++++++++++++++++++++----
- mm/Kconfig              |  4 +++
- mm/debug_vm_pgtable.c   |  2 ++
- mm/memory.c             | 15 ++++++++
- mm/pte_ref.c            | 91 +++++++++++++++++++++++++++++++++++++++++++++----
- 7 files changed, 156 insertions(+), 14 deletions(-)
+ Documentation/vm/pte_ref.rst | 212 +++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 212 insertions(+)
+ create mode 100644 Documentation/vm/pte_ref.rst
 
-diff --git a/include/linux/mm.h b/include/linux/mm.h
-index 753a9435e0d0..18fbf9e0996a 100644
---- a/include/linux/mm.h
-+++ b/include/linux/mm.h
-@@ -437,6 +437,7 @@ extern pgprot_t protection_map[16];
-  * @FAULT_FLAG_REMOTE: The fault is not for current task/mm.
-  * @FAULT_FLAG_INSTRUCTION: The fault was during an instruction fetch.
-  * @FAULT_FLAG_INTERRUPTIBLE: The fault can be interrupted by non-fatal signals.
-+ * @FAULT_FLAG_PTE_GET: This means the refcount of the pte has been got.
-  *
-  * About @FAULT_FLAG_ALLOW_RETRY and @FAULT_FLAG_TRIED: we can specify
-  * whether we would allow page faults to retry by specifying these two
-@@ -468,6 +469,7 @@ enum fault_flag {
- 	FAULT_FLAG_REMOTE =		1 << 7,
- 	FAULT_FLAG_INSTRUCTION =	1 << 8,
- 	FAULT_FLAG_INTERRUPTIBLE =	1 << 9,
-+	FAULT_FLAG_PTE_GET =		1 << 10,
- };
- 
- /*
-diff --git a/include/linux/pgtable.h b/include/linux/pgtable.h
-index c8f045705c1e..6ac51d58f11a 100644
---- a/include/linux/pgtable.h
-+++ b/include/linux/pgtable.h
-@@ -480,7 +480,6 @@ static inline pte_t ptep_get_lockless(pte_t *ptep)
- }
- #endif /* CONFIG_GUP_GET_PTE_LOW_HIGH */
- 
--#ifdef CONFIG_TRANSPARENT_HUGEPAGE
- #ifndef __HAVE_ARCH_PMDP_HUGE_GET_AND_CLEAR
- static inline pmd_t pmdp_huge_get_and_clear(struct mm_struct *mm,
- 					    unsigned long address,
-@@ -491,6 +490,8 @@ static inline pmd_t pmdp_huge_get_and_clear(struct mm_struct *mm,
- 	return pmd;
- }
- #endif /* __HAVE_ARCH_PMDP_HUGE_GET_AND_CLEAR */
+diff --git a/Documentation/vm/pte_ref.rst b/Documentation/vm/pte_ref.rst
+new file mode 100644
+index 000000000000..c5323a263464
+--- /dev/null
++++ b/Documentation/vm/pte_ref.rst
+@@ -0,0 +1,212 @@
++.. _pte_ref:
 +
-+#ifdef CONFIG_TRANSPARENT_HUGEPAGE
- #ifndef __HAVE_ARCH_PUDP_HUGE_GET_AND_CLEAR
- static inline pud_t pudp_huge_get_and_clear(struct mm_struct *mm,
- 					    unsigned long address,
-diff --git a/include/linux/pte_ref.h b/include/linux/pte_ref.h
-index b6d8335bdc59..8a26eaba83ef 100644
---- a/include/linux/pte_ref.h
-+++ b/include/linux/pte_ref.h
-@@ -8,6 +8,7 @@
- #define _LINUX_PTE_REF_H
- 
- #include <linux/pgtable.h>
-+#include <linux/page-flags.h>
- 
- enum pte_tryget_type {
- 	TRYGET_SUCCESSED,
-@@ -16,12 +17,49 @@ enum pte_tryget_type {
- 	TRYGET_FAILED_HUGE_PMD,
- };
- 
--bool pte_get_unless_zero(pmd_t *pmd);
--enum pte_tryget_type pte_try_get(pmd_t *pmd);
- void pte_put_vmf(struct vm_fault *vmf);
-+enum pte_tryget_type pte_try_get(pmd_t *pmd);
-+bool pte_get_unless_zero(pmd_t *pmd);
++============================================================================
++pte_ref: Tracking about how many references to each user PTE page table page
++============================================================================
 +
-+#ifdef CONFIG_FREE_USER_PTE
-+void free_user_pte_table(struct mm_struct *mm, pmd_t *pmdp, unsigned long addr);
- 
- static inline void pte_ref_init(pgtable_t pte, pmd_t *pmd, int count)
- {
-+	pte->pmd = pmd;
-+	atomic_set(&pte->pte_refcount, count);
-+}
++.. contents:: :local:
 +
-+static inline pmd_t *pte_to_pmd(pte_t *pte)
-+{
-+	return virt_to_page(pte)->pmd;
-+}
++1. Preface
++==========
 +
-+static inline void pte_update_pmd(pmd_t old_pmd, pmd_t *new_pmd)
-+{
-+	pmd_pgtable(old_pmd)->pmd = new_pmd;
-+}
++Now in order to pursue high performance, applications mostly use some
++high-performance user-mode memory allocators, such as jemalloc or tcmalloc.
++These memory allocators use ``madvise(MADV_DONTNEED or MADV_FREE)`` to release
++physical memory for the following reasons::
 +
-+static inline void pte_get_many(pmd_t *pmd, unsigned int nr)
-+{
-+	pgtable_t pte = pmd_pgtable(*pmd);
++ First of all, we should hold as few write locks of mmap_lock as possible,since
++ the mmap_lock semaphore has long been a contention point in the memory
++ management subsystem. The mmap()/munmap() hold the write lock, and the
++ madvise(MADV_DONTNEED or MADV_FREE) hold the read lock, so using madvise()
++ instead of munmap() to released physical memory can reduce the competition of
++ the mmap_lock.
 +
-+	VM_BUG_ON(!PageTable(pte));
-+	atomic_add(nr, &pte->pte_refcount);
-+}
++ Secondly, after using madvise() to release physical memory, there is no need to
++ build vma and allocate page tables again when accessing the same virtual
++ address again, which can also save some time.
 +
-+static inline void pte_put_many(struct mm_struct *mm, pmd_t *pmd,
-+				unsigned long addr, unsigned int nr)
-+{
-+	pgtable_t pte = pmd_pgtable(*pmd);
++The following is the largest user PTE page table memory that can be allocated by
++a single user process in a 32-bit and a 64-bit system.
 +
-+	VM_BUG_ON(!PageTable(pte));
-+	if (atomic_sub_and_test(nr, &pte->pte_refcount))
-+		free_user_pte_table(mm, pmd, addr & PMD_MASK);
-+}
-+#else
-+static inline void pte_ref_init(pgtable_t pte, pmd_t *pmd, int count)
-+{
- }
- 
- static inline pmd_t *pte_to_pmd(pte_t *pte)
-@@ -37,6 +75,12 @@ static inline void pte_get_many(pmd_t *pmd, unsigned int nr)
- {
- }
- 
-+static inline void pte_put_many(struct mm_struct *mm, pmd_t *pmd,
-+				unsigned long addr, unsigned int nr)
-+{
-+}
-+#endif /* CONFIG_FREE_USER_PTE */
+++---------------------------+--------+---------+
++|                           | 32-bit | 64-bit  |
+++===========================+========+=========+
++| user PTE page table pages | 3 MiB  | 512 GiB |
+++---------------------------+--------+---------+
++| user PMD page table pages | 3 KiB  | 1 GiB   |
+++---------------------------+--------+---------+
 +
- /*
-  * pte_get - Increment refcount for the PTE page table.
-  * @pmd: a pointer to the pmd entry corresponding to the PTE page table.
-@@ -66,11 +110,6 @@ static inline pte_t *pte_tryget_map_lock(struct mm_struct *mm, pmd_t *pmd,
- 	return pte_offset_map_lock(mm, pmd, address, ptlp);
- }
- 
--static inline void pte_put_many(struct mm_struct *mm, pmd_t *pmd,
--				unsigned long addr, unsigned int nr)
--{
--}
--
- /*
-  * pte_put - Decrement refcount for the PTE page table.
-  * @mm: the mm_struct of the target address space.
-diff --git a/mm/Kconfig b/mm/Kconfig
-index 5c5508fafcec..44549d287869 100644
---- a/mm/Kconfig
-+++ b/mm/Kconfig
-@@ -898,6 +898,10 @@ config IO_MAPPING
- config SECRETMEM
- 	def_bool ARCH_HAS_SET_DIRECT_MAP && !EMBEDDED
- 
-+config FREE_USER_PTE
-+	def_bool y
-+	depends on X86_64
++(for 32-bit, take 3G user address space, 4K page size as an example; for 64-bit,
++take 48-bit address width, 4K page size as an example.)
 +
- source "mm/damon/Kconfig"
- 
- endmenu
-diff --git a/mm/debug_vm_pgtable.c b/mm/debug_vm_pgtable.c
-index 52f006654664..757dd84ee254 100644
---- a/mm/debug_vm_pgtable.c
-+++ b/mm/debug_vm_pgtable.c
-@@ -1049,8 +1049,10 @@ static void __init destroy_args(struct pgtable_debug_args *args)
- 	/* Free page table entries */
- 	if (args->start_ptep) {
- 		pte_put(args->mm, args->start_pmdp, args->vaddr);
-+#ifndef CONFIG_FREE_USER_PTE
- 		pte_free(args->mm, args->start_ptep);
- 		mm_dec_nr_ptes(args->mm);
-+#endif
- 	}
- 
- 	if (args->start_pmdp) {
-diff --git a/mm/memory.c b/mm/memory.c
-index e360ecd37a71..4d1ede78d1b0 100644
---- a/mm/memory.c
-+++ b/mm/memory.c
-@@ -219,6 +219,17 @@ static void check_sync_rss_stat(struct task_struct *task)
- 
- #endif /* SPLIT_RSS_COUNTING */
- 
-+#ifdef CONFIG_FREE_USER_PTE
-+static inline void free_pte_range(struct mmu_gather *tlb, pmd_t *pmd,
-+				  unsigned long addr)
-+{
-+	/*
-+	 * We should never reach here since the PTE page tables are
-+	 * dynamically freed.
-+	 */
-+	BUG();
-+}
-+#else
- /*
-  * Note: this doesn't free the actual pages themselves. That
-  * has been handled earlier when unmapping all the memory regions.
-@@ -231,6 +242,7 @@ static void free_pte_range(struct mmu_gather *tlb, pmd_t *pmd,
- 	pte_free_tlb(tlb, token, addr);
- 	mm_dec_nr_ptes(tlb->mm);
- }
-+#endif /* CONFIG_FREE_USER_PTE */
- 
- static inline void free_pmd_range(struct mmu_gather *tlb, pud_t *pud,
- 				unsigned long addr, unsigned long end,
-@@ -4631,6 +4643,9 @@ static vm_fault_t handle_pte_fault(struct vm_fault *vmf)
- 			goto retry;
- 		vmf->orig_pte = *vmf->pte;
- 
-+		if (IS_ENABLED(CONFIG_FREE_USER_PTE))
-+			vmf->flags |= FAULT_FLAG_PTE_GET;
++After using ``madvise()``, everything looks good, but as can be seen from the
++above table, a single process can create a large number of PTE page tables on a
++64-bit system, since both of the ``MADV_DONTNEED`` and ``MADV_FREE`` will not
++release page table memory. And before the process exits or calls ``munmap()``,
++the kernel cannot reclaim these pages even if these PTE page tables do not map
++anything.
 +
- 		/*
- 		 * some architectures can have larger ptes than wordsize,
- 		 * e.g.ppc44x-defconfig has CONFIG_PTE_64BIT=y and
-diff --git a/mm/pte_ref.c b/mm/pte_ref.c
-index de109905bc8f..728e61cea25e 100644
---- a/mm/pte_ref.c
-+++ b/mm/pte_ref.c
-@@ -7,7 +7,10 @@
- 
- #include <linux/pte_ref.h>
- #include <linux/mm.h>
-+#include <linux/hugetlb.h>
-+#include <asm/tlbflush.h>
- 
-+#ifdef CONFIG_FREE_USER_PTE
- /*
-  * pte_get_unless_zero - Increment refcount for the PTE page table
-  *			 unless it is zero.
-@@ -15,7 +18,10 @@
-  */
- bool pte_get_unless_zero(pmd_t *pmd)
- {
--	return true;
-+	pgtable_t pte = pmd_pgtable(*pmd);
++Therefore, we decided to introduce reference count to manage the PTE page table
++life cycle, so that some free PTE page table memory in the system can be
++dynamically released.
 +
-+	VM_BUG_ON(!PageTable(pte));
-+	return atomic_inc_not_zero(&pte->pte_refcount);
- }
- 
- /*
-@@ -32,12 +38,20 @@ bool pte_get_unless_zero(pmd_t *pmd)
-  */
- enum pte_tryget_type pte_try_get(pmd_t *pmd)
- {
--	if (unlikely(pmd_none(*pmd)))
--		return TRYGET_FAILED_NONE;
--	if (unlikely(is_huge_pmd(*pmd)))
--		return TRYGET_FAILED_HUGE_PMD;
-+	int retval = TRYGET_SUCCESSED;
-+	pmd_t pmdval;
- 
--	return TRYGET_SUCCESSED;
-+	rcu_read_lock();
-+	pmdval = READ_ONCE(*pmd);
-+	if (unlikely(pmd_none(pmdval)))
-+		retval = TRYGET_FAILED_NONE;
-+	else if (unlikely(is_huge_pmd(pmdval)))
-+		retval = TRYGET_FAILED_HUGE_PMD;
-+	else if (!pte_get_unless_zero(&pmdval))
-+		retval = TRYGET_FAILED_ZERO;
-+	rcu_read_unlock();
++2. The reference count of user PTE page table pages
++===================================================
 +
-+	return retval;
- }
- 
- /*
-@@ -52,4 +66,69 @@ enum pte_tryget_type pte_try_get(pmd_t *pmd)
-  */
- void pte_put_vmf(struct vm_fault *vmf)
- {
-+	if (!(vmf->flags & FAULT_FLAG_PTE_GET))
-+		return;
-+	vmf->flags &= ~FAULT_FLAG_PTE_GET;
++We introduce two members for the ``struct page`` of the user PTE page table
++page::
 +
-+	pte_put(vmf->vma->vm_mm, vmf->pmd, vmf->address);
-+}
-+#else
-+bool pte_get_unless_zero(pmd_t *pmd)
-+{
-+	return true;
-+}
++ union {
++	pgtable_t pmd_huge_pte; /* protected by page->ptl */
++	pmd_t *pmd;             /* PTE page only */
++ };
++ union {
++	struct mm_struct *pt_mm; /* x86 pgds only */
++	atomic_t pt_frag_refcount; /* powerpc */
++	atomic_t pte_refcount;  /* PTE page only */
++ };
 +
-+enum pte_tryget_type pte_try_get(pmd_t *pmd)
-+{
-+	if (unlikely(pmd_none(*pmd)))
-+		return TRYGET_FAILED_NONE;
++The ``pmd`` member record the pmd entry that maps the user PTE page table page,
++the ``pte_refcount`` member keep track of how many references to the user PTE
++page table page.
 +
-+	if (unlikely(is_huge_pmd(*pmd)))
-+		return TRYGET_FAILED_HUGE_PMD;
++The following people will hold a reference on the user PTE page table page::
 +
-+	return TRYGET_SUCCESSED;
-+}
++ The !pte_none() entry, such as regular page table entry that map physical
++ pages, or swap entry, or migrate entry, etc.
 +
-+void pte_put_vmf(struct vm_fault *vmf)
-+{
-+}
-+#endif /* CONFIG_FREE_USER_PTE */
++ Visitor to the PTE page table entries, such as page table walker.
 +
-+#ifdef CONFIG_DEBUG_VM
-+static void pte_free_debug(pmd_t pmd)
-+{
-+	pte_t *ptep = (pte_t *)pmd_page_vaddr(pmd);
-+	int i = 0;
++Any ``!pte_none()`` entry and visitor can be regarded as the user of its PTE
++page table page. When the ``pte_refcount`` is reduced to 0, it means that no one
++is using the PTE page table page, then this free PTE page table page can be
++released back to the system at this time.
 +
-+	for (i = 0; i < PTRS_PER_PTE; i++)
-+		BUG_ON(!pte_none(*ptep++));
-+}
-+#else
-+static inline void pte_free_debug(pmd_t pmd)
-+{
-+}
-+#endif
++3. Competitive relationship
++===========================
 +
-+static void pte_free_rcu(struct rcu_head *rcu)
-+{
-+	struct page *page = container_of(rcu, struct page, rcu_head);
++Now, the user page table will only be released by calling ``free_pgtables()``
++when the process exits or ``unmap_region()`` is called (e.g. ``munmap()`` path).
++So other threads only need to ensure mutual exclusion with these paths to ensure
++that the page table is not released. For example::
 +
-+	pgtable_pte_page_dtor(page);
-+	__free_page(page);
-+}
++	thread A			thread B
++	page table walker		munmap
++	=================		======
 +
-+void free_user_pte_table(struct mm_struct *mm, pmd_t *pmd, unsigned long addr)
-+{
-+	struct vm_area_struct vma = TLB_FLUSH_VMA(mm, 0);
-+	spinlock_t *ptl;
-+	pmd_t pmdval;
++	mmap_read_lock()
++	if (!pte_none() && pte_present() && !pmd_trans_unstable()) {
++		pte_offset_map_lock()
++		*walk page table*
++		pte_unmap_unlock()
++	}
++	mmap_read_unlock()
 +
-+	ptl = pmd_lock(mm, pmd);
-+	pmdval = pmdp_huge_get_and_clear(mm, addr, pmd);
-+	flush_tlb_range(&vma, addr, addr + PMD_SIZE);
-+	spin_unlock(ptl);
++					mmap_write_lock_killable()
++					detach_vmas_to_be_unmapped()
++					unmap_region()
++					--> free_pgtables()
 +
-+	pte_free_debug(pmdval);
-+	mm_dec_nr_ptes(mm);
-+	call_rcu(&pmd_pgtable(pmdval)->rcu_head, pte_free_rcu);
- }
++But after we introduce the reference count for the user PTE page table page,
++these existing balances will be broken. The page can be released at any time
++when its ``pte_refcount`` is reduced to 0. Therefore, the following case may
++happen::
++
++	thread A		thread B			thread C
++	page table walker	madvise(MADV_DONTNEED)		page fault
++	=================	======================		==========
++
++	mmap_read_lock()
++	if (!pte_none() && pte_present() && !pmd_trans_unstable()) {
++
++				mmap_read_lock()
++				unmap_page_range()
++				--> zap_pte_range()
++				    *the pte_refcount is reduced to 0*
++				    --> *free PTE page table page*
++
++		/* broken!! */					mmap_read_lock()
++		pte_offset_map_lock()
++
++As we can see, all of the thread A, B and C hold the read lock of mmap_lock, so
++they can execute concurrently. When thread B releases the PTE page table page,
++the value in the corresponding pmd entry will become unstable, which may be
++none or huge pmd, or map a new PTE page table page again. This will cause system
++chaos and even panic.
++
++So as described in the section "The reference count of user PTE page table
++pages", we need to try to take a reference to the PTE page table page before
++walking page table, then the system will become orderly again::
++
++	thread A		thread B
++	page table walker	madvise(MADV_DONTNEED)
++	=================	======================
++
++	mmap_read_lock()
++	if (!pte_none() && pte_present() && !pmd_trans_unstable()) {
++		pte_try_get()
++		--> pte_get_unless_zero
++		*if successfully, then:*
++
++				mmap_read_lock()
++				unmap_page_range()
++				--> zap_pte_range()
++				    *the pte_refcount is reduced to 1*
++
++		pte_offset_map_lock()
++		*walk page table*
++		pte_unmap_unlock()
++		pte_put()
++		--> *the pte_refcount is reduced to 0*
++		    --> *free PTE page table page*
++
++There is also a lock-less scenario(such as fast GUP). Fortunately, we don't need
++to do any additional operations to ensure that the system is in order. Take fast
++GUP as an example::
++
++	thread A		thread B
++	fast GUP		madvise(MADV_DONTNEED)
++	========		======================
++
++	get_user_pages_fast_only()
++	--> local_irq_save();
++				*free PTE page table page*
++				--> unhook page
++				    /* The CPU where thread A is located closed
++				     * the local interrupt and cannot respond to
++				     * IPI, so it will block here */
++				    TLB invalidate page
++	    gup_pgd_range();
++	    local_irq_restore();
++	    			    *free page*
++
++4. Helpers
++==========
++
+++---------------------+-------------------------------------------------+
++| pte_ref_init        | Initialize the pte_refcount and pmd             |
+++---------------------+-------------------------------------------------+
++| pte_to_pmd          | Get the corresponding pmd                       |
+++---------------------+-------------------------------------------------+
++| pte_update_pmd      | Update the corresponding pmd                    |
+++---------------------+-------------------------------------------------+
++| pte_get             | Increment a pte_refcount                        |
+++---------------------+-------------------------------------------------+
++| pte_get_many        | Add a value to a pte_refcount                   |
+++---------------------+-------------------------------------------------+
++| pte_get_unless_zero | Increment a pte_refcount unless it is 0         |
+++---------------------+-------------------------------------------------+
++| pte_try_get         | Try to increment a pte_refcount                 |
+++---------------------+-------------------------------------------------+
++| pte_tryget_map      | Try to increment a pte_refcount before          |
++|                     | pte_offset_map()                                |
+++---------------------+-------------------------------------------------+
++| pte_tryget_map_lock | Try to increment a pte_refcount before          |
++|                     | pte_offset_map_lock()                           |
+++---------------------+-------------------------------------------------+
++| pte_put             | Decrement a pte_refcount                        |
+++---------------------+-------------------------------------------------+
++| pte_put_many        | Sub a value to a pte_refcount                   |
+++---------------------+-------------------------------------------------+
++| pte_put_vmf         | Decrement a pte_refcount in the page fault path |
+++---------------------+-------------------------------------------------+
 -- 
 2.11.0
 
