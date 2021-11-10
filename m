@@ -2,95 +2,217 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5426C44BE25
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 10:58:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 54ED444BE2D
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 10:59:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230511AbhKJKBB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Nov 2021 05:01:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35966 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230440AbhKJKBA (ORCPT
+        id S231127AbhKJKBq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Nov 2021 05:01:46 -0500
+Received: from so254-9.mailgun.net ([198.61.254.9]:41406 "EHLO
+        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229781AbhKJKBn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Nov 2021 05:01:00 -0500
-Received: from mail-wr1-x432.google.com (mail-wr1-x432.google.com [IPv6:2a00:1450:4864:20::432])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 88BA4C061764
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Nov 2021 01:58:12 -0800 (PST)
-Received: by mail-wr1-x432.google.com with SMTP id i5so3006644wrb.2
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Nov 2021 01:58:12 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=3AbiBQH2HhvwDd/cmsVihdBdDFvYCYJXZoH8Ax426TA=;
-        b=VTMuDSrJbZbjIZt8dDCsxg+7KySbWV8k4SzeeO3wirV1IvkgRt/u7zPs/EnQaMMobV
-         qUXkVKpnP5lD1OkivTHqFw3S1fUBtKbuupqEG/O6awQBSmDMcJUCjaOngNk3z7iF7j7D
-         fenSMNHZfkz8HWvr/Rp2HOf0VNTgMocqwJC7PVmW/ayX93E0gro9S51Ijw8FIUC8/teC
-         yRV4dncjCdYEyKULeDoPA+ActfMC6UygutXq/U2q+G+0GdZE9wTyocvT7ObSH6UALUgz
-         a4aJM5hsCmm0cSKVdfXMK3BxQupCnRrRBoBLqkkZDnt3YoRmHG1wBCU/VV8+WxXiSszt
-         f1dw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=3AbiBQH2HhvwDd/cmsVihdBdDFvYCYJXZoH8Ax426TA=;
-        b=lcSXgz5+cCpWX0luOBVMtQCXGbEjyXEpR1BWujaQmyw0iv70aLd23FK/xe1Cv017SR
-         6LdOEK57kAIbXPeG/3c+A8C4VVp2bMCPf5r9wN/NI0ZM9HU0F7L35Ycb6YM1oQD0fZNp
-         PA6KxK7Me8Mrx4YC0kD18NIrkpwcCwnA9M1zpYwt+Qw6Zssj9Ei/F7wKZnnGLEliwIo2
-         YU5hT5Dx6TfPh0EceopCwbYNIgEvIFDwk4BRJw7n7S2GDB3xSkVPiqQvTCRIsTjg0z80
-         L1KnIGpuBSThgbvJDcpBPdfall6S+E4KlT75nK0GwQJG7N40EeGUMd4F7WQEFOjFZFex
-         6SJQ==
-X-Gm-Message-State: AOAM531FPo3vWYkOdxCn58YRq9wKqLTtjSTfKDcxl180fcU6zt9ITA77
-        idfC4qhkJp5J2rxuT/0bAUaXjWYDpu1tqA==
-X-Google-Smtp-Source: ABdhPJxBNXK9ALzwPxILP5oIzJfssmCGJCQJWHw7+v593j8ZZy5c/gZK6PcEoJsvCfYey8wvsbo+Tw==
-X-Received: by 2002:a5d:64ed:: with SMTP id g13mr18129715wri.222.1636538291167;
-        Wed, 10 Nov 2021 01:58:11 -0800 (PST)
-Received: from google.com ([95.148.6.174])
-        by smtp.gmail.com with ESMTPSA id l16sm5376909wmq.46.2021.11.10.01.58.10
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 10 Nov 2021 01:58:10 -0800 (PST)
-Date:   Wed, 10 Nov 2021 09:58:03 +0000
-From:   Lee Jones <lee.jones@linaro.org>
-To:     Greg KH <greg@kroah.com>
-Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-        Andreas Kemnade <andreas@kemnade.info>,
-        "H . Nikolaus Schaller" <hns@goldelico.com>,
-        Johan Hovold <johan@kernel.org>,
-        "David S . Miller" <davem@davemloft.net>
-Subject: Re: [PATCH 4.9 1/2] net: hso: register netdev later to avoid a race
- condition
-Message-ID: <YYuXq3wOdmWc+8lo@google.com>
-References: <20211109093959.173885-1-lee.jones@linaro.org>
- <YYuCE9EoMu+4zsiF@kroah.com>
+        Wed, 10 Nov 2021 05:01:43 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1636538336; h=Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Message-ID: In-Reply-To: Date: References: Subject: Cc:
+ To: From: Sender; bh=fcAghAoVZ0JxeVWaGkjHk7dhQU80Wv79lwRh7/w5leA=; b=Pps+SI9Usj4DJo9TLGSBMBV70h9IVkfkHhuT8I30e966dX0IpuZMB2w9mcg4tuWootjC5fT1
+ s+s8TZY4eP30DihefZP2YD6/epr+U+2tKG8bEQ8/2O5lFLq95waGm1U1ur8kn2fMlj0ZBe3V
+ Z7bsVaBmSx7Wbwog55zO+R8kQPU=
+X-Mailgun-Sending-Ip: 198.61.254.9
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n05.prod.us-east-1.postgun.com with SMTP id
+ 618b97db0f34c3436a4a4aab (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 10 Nov 2021 09:58:51
+ GMT
+Sender: kvalo=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 8A01DC43616; Wed, 10 Nov 2021 09:58:50 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
+        autolearn=no autolearn_force=no version=3.4.0
+Received: from tykki (tynnyri.adurom.net [51.15.11.48])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: kvalo)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 85DE0C4338F;
+        Wed, 10 Nov 2021 09:58:46 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 smtp.codeaurora.org 85DE0C4338F
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=codeaurora.org
+From:   Kalle Valo <kvalo@codeaurora.org>
+To:     =?utf-8?B?SsOpcsO0bWU=?= Pouiller <jerome.pouiller@silabs.com>
+Cc:     linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
+        devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "David S . Miller" <davem@davemloft.net>,
+        devicetree@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
+        linux-mmc@vger.kernel.org,
+        Pali =?utf-8?Q?Roh?= =?utf-8?Q?=C3=A1r?= <pali@kernel.org>,
+        Ulf Hansson <ulf.hansson@linaro.org>
+Subject: Re: [PATCH v7 05/24] wfx: add main.c/main.h
+References: <20210920161136.2398632-1-Jerome.Pouiller@silabs.com>
+        <87zgrl86cx.fsf@codeaurora.org> <87v92985ys.fsf@codeaurora.org>
+        <6117440.dvjIZRh6BQ@pc-42>
+Date:   Wed, 10 Nov 2021 11:58:41 +0200
+In-Reply-To: <6117440.dvjIZRh6BQ@pc-42> (=?utf-8?B?IkrDqXLDtG1l?=
+ Pouiller"'s message of "Thu,
+        07 Oct 2021 13:22:14 +0200")
+Message-ID: <87lf1wnxgu.fsf@codeaurora.org>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <YYuCE9EoMu+4zsiF@kroah.com>
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 10 Nov 2021, Greg KH wrote:
+J=C3=A9r=C3=B4me Pouiller <jerome.pouiller@silabs.com> writes:
 
-> On Tue, Nov 09, 2021 at 09:39:58AM +0000, Lee Jones wrote:
-> > From: Andreas Kemnade <andreas@kemnade.info>
-> > 
-> > [ Upstream commit 4c761daf8bb9a2cbda9facf53ea85d9061f4281e ]
-> 
-> You already sent this for inclusion:
-> 	https://lore.kernel.org/r/YYU1KqvnZLyPbFcb@google.com
-> 
-> Why send it again?
+> On Thursday 7 October 2021 12:49:47 CEST Kalle Valo wrote:
+>> CAUTION: This email originated from outside of the organization. Do
+>> not click links or open attachments unless you recognize the sender
+>> and know the content is safe.
+>>=20
+>>=20
+>> Kalle Valo <kvalo@codeaurora.org> writes:
+>>=20
+>> > J=C3=A9r=C3=B4me Pouiller <jerome.pouiller@silabs.com> writes:
+>> >
+>> >>> >> >> I'm not really fond of having this kind of ASCII based parser =
+in the
+>> >>> >> >> kernel. Do you have an example compressed file somewhere?
+>> >>> >> >
+>> >>> >> > An example of uncompressed configuration file can be found here=
+[1]. Once
+>> >>> >> > compressed with [2], you get:
+>> >>> >> >
+>> >>> >> >     {a:{a:4,b:1},b:{a:{a:4,b:0,c:0,d:0,e:A},b:{a:4,b:0,c:0,d:0,=
+e:B},c:{a:4,b:0,c:0,d:0,e:C},d:{a:4,b:0,c:0,d:0,e:D},e:{a:4,b:0,c:0,d:0,e:E=
+},f:{a:4,b:0,c:0,d:0,e:F},g:{a:4,b:0,c:0,d:0,e:G},h:{a:4,b:0,c:0,d:0,e:H},i=
+:{a:4,b:0,c:0,d:0,e:I},j:{a:4,b:0,c:0,d:0,e:J},k:{a:4,b:0,c:0,d:0,e:K},l:{a=
+:4,b:0,c:0,d:1,e:L},m:{a:4,b:0,c:0,d:1,e:M}},c:{a:{a:4},b:{a:6},c:{a:6,c:0}=
+,d:{a:6},e:{a:6},f:{a:6}},e:{b:0,c:1},h:{e:0,a:50,b:0,d:0,c:[{a:1,b:[0,0,0,=
+0,0,0]},{a:2,b:[0,0,0,0,0,0]},{a:[3,9],b:[0,0,0,0,0,0]},{a:A,b:[0,0,0,0,0,0=
+]},{a:B,b:[0,0,0,0,0,0]},{a:[C,D],b:[0,0,0,0,0,0]},{a:E,b:[0,0,0,0,0,0]}]},=
+j:{a:0,b:0}}
+>> >>> >>
+>> >>> >> So what's the grand idea with this braces format? I'm not getting=
+ it.
+>> >>> >
+>> >>> >   - It allows to describe a tree structure
+>> >>> >   - It is ascii (easy to dump, easy to copy-paste)
+>> >>> >   - It is small (as I explain below, size matters)
+>> >>> >   - Since it is similar to JSON, the structure is obvious to many =
+people
+>> >>> >
+>> >>> > Anyway, I am not the author of that and I have to deal with it.
+>> >>>
+>> >>> I'm a supported for JSON like formats, flexibility and all that. But
+>> >>> they belong to user space, not kernel.
+>> >>>
+>> >>> >> Usually the drivers just consider this kind of firmware configura=
+tion
+>> >>> >> data as a binary blob and dump it to the firmware, without knowin=
+g what
+>> >>> >> the data contains. Can't you do the same?
+>> >>> >
+>> >>> > [I didn't had received this mail :( ]
+>> >>> >
+>> >>> > The idea was also to send it as a binary blob. However, the firmwa=
+re use
+>> >>> > a limited buffer (1500 bytes) to parse it. In most of case the PDS=
+ exceeds
+>> >>> > this size. So, we have to split the PDS before to send it.
+>> >>> >
+>> >>> > Unfortunately, we can't split it anywhere. The PDS is a tree struc=
+ture and
+>> >>> > the firmware expects to receive a well formatted tree.
+>> >>> >
+>> >>> > So, the easiest way to send it to the firmware is to split the tree
+>> >>> > between each root nodes and send each subtree separately (see also=
+ the
+>> >>> > comment above wfx_send_pds()).
+>> >>> >
+>> >>> > Anyway, someone has to cook this configuration before to send it t=
+o the
+>> >>> > firmware. This could be done by a script outside of the kernel. Th=
+en we
+>> >>> > could change the input format to simplify a bit the processing in =
+the
+>> >>> > kernel.
+>> >>>
+>> >>> I think a binary file with TLV format would be much better, but I'm =
+sure
+>> >>> there also other good choises.
+>> >>>
+>> >>> > However, the driver has already some users and I worry that changi=
+ng
+>> >>> > the input format would lead to a mess.
+>> >>>
+>> >>> You can implement a script which converts the old format to the new
+>> >>> format. And you can use different naming scheme in the new format so
+>> >>> that we don't accidentally load the old format. And even better if y=
+ou
+>> >>> add a some kind of signature in the new format and give a proper err=
+or
+>> >>> from the driver if it doesn't match.
+>> >>
+>> >> Ok. I am going to change the input format. I think the new function is
+>> >> going to look like:
+>> >>
+>> >> int wfx_send_pds(struct wfx_dev *wdev, u8 *buf, size_t buf_len)
+>> >> {
+>> >>      int ret;
+>> >>      int start =3D 0;
+>> >>
+>> >>      if (buf[start] !=3D '{') {
+>> >>              dev_err(wdev->dev, "valid PDS start with '{'. Did you fo=
+rget to compress it?\n");
+>> >>              return -EINVAL;
+>> >>      }
+>> >>      while (start < buf_len) {
+>> >>              len =3D strnlen(buf + start, buf_len - start);
+>> >>              if (len > WFX_PDS_MAX_SIZE) {
+>> >>                      dev_err(wdev->dev, "PDS chunk is too big (legacy=
+ format?)\n");
+>> >>                      return -EINVAL;
+>> >>              }
+>> >>              dev_dbg(wdev->dev, "send PDS '%s'\n", buf + start);
+>> >>              ret =3D wfx_hif_configuration(wdev, buf + start, len);
+>> >>              /* FIXME: Add error handling here */
+>> >>              start +=3D len;
+>> >>      }
+>> >>      return 0;
+>> >
+>> > Did you read at all what I wrote above? Please ditch the ASCII format
+>> > completely.
+>>=20
+>> Sorry, I read this too hastily. I just saw "buf[start] !=3D '{'" and
+>> assumed this is the same ASCII format, but not sure anymore. Can you
+>> explain what changes you made now?
+>
+> The script I am going to write will compute where the PDS have to be split
+> (this work is currently done by the driver). The script will add a
+> separating character (let's say '\0') between each chunk.
+>
+> The driver will just have to find the separating character, send the
+> chunk and repeat.
 
-The real question is; why didn't I sent patch 2 at the same time!
+I would forget ASCII altogether and implement a proper binary format
+like TLV. For example, ath10k uses TLV with board-2.bin files (grep for
+enum ath10k_bd_ie_type).
 
-> confused,
+Also I recommend changing the file "signature" ('{') to something else
+so that the driver detects incorrect formats. And maybe even use suffix
+.pds2 or something like that to make it more obvious and avoid
+confusion?
 
-I feel ya! ;)
+--=20
+https://patchwork.kernel.org/project/linux-wireless/list/
 
--- 
-Lee Jones [李琼斯]
-Senior Technical Lead - Developer Services
-Linaro.org │ Open source software for Arm SoCs
-Follow Linaro: Facebook | Twitter | Blog
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatc=
+hes
