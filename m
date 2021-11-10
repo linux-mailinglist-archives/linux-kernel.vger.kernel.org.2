@@ -2,73 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D70C44BF45
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 11:56:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 969F644BF03
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 11:46:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231486AbhKJK7j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Nov 2021 05:59:39 -0500
-Received: from mail.ispras.ru ([83.149.199.84]:53914 "EHLO mail.ispras.ru"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231398AbhKJK7i (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Nov 2021 05:59:38 -0500
-X-Greylist: delayed 586 seconds by postgrey-1.27 at vger.kernel.org; Wed, 10 Nov 2021 05:59:37 EST
-Received: from localhost.localdomain (unknown [80.240.223.29])
-        by mail.ispras.ru (Postfix) with ESMTPSA id A635440A2BD7;
-        Wed, 10 Nov 2021 10:47:03 +0000 (UTC)
-From:   Baskov Evgeniy <baskov@ispras.ru>
-To:     Ard Biesheuvel <ardb@kernel.org>
-Cc:     Baskov Evgeniy <baskov@ispras.ru>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Thomas Gleixner <tglx@linutronix.de>, x86@kernel.org,
-        linux-doc@vger.kernel.org, linux-efi@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH RFC 5/5] Docs: document notemppt option
-Date:   Wed, 10 Nov 2021 13:46:13 +0300
-Message-Id: <20211110104613.23881-6-baskov@ispras.ru>
-X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211110104613.23881-1-baskov@ispras.ru>
-References: <20211110104613.23881-1-baskov@ispras.ru>
+        id S231241AbhKJKte convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 10 Nov 2021 05:49:34 -0500
+Received: from eu-smtp-delivery-151.mimecast.com ([185.58.86.151]:49628 "EHLO
+        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231175AbhKJKtd (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Nov 2021 05:49:33 -0500
+Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) (Using
+ TLS) by relay.mimecast.com with ESMTP id
+ uk-mta-287-8KJ161tcNHKlvygMg9XwRA-1; Wed, 10 Nov 2021 10:46:44 +0000
+X-MC-Unique: 8KJ161tcNHKlvygMg9XwRA-1
+Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) by
+ AcuMS.aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) with Microsoft SMTP
+ Server (TLS) id 15.0.1497.24; Wed, 10 Nov 2021 10:46:42 +0000
+Received: from AcuMS.Aculab.com ([fe80::994c:f5c2:35d6:9b65]) by
+ AcuMS.aculab.com ([fe80::994c:f5c2:35d6:9b65%12]) with mapi id
+ 15.00.1497.024; Wed, 10 Nov 2021 10:46:42 +0000
+From:   David Laight <David.Laight@ACULAB.COM>
+To:     'Peter Zijlstra' <peterz@infradead.org>,
+        Nick Desaulniers <ndesaulniers@google.com>
+CC:     Bill Wendling <morbo@google.com>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        "x86@kernel.org" <x86@kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "mark.rutland@arm.com" <mark.rutland@arm.com>,
+        "dvyukov@google.com" <dvyukov@google.com>,
+        "seanjc@google.com" <seanjc@google.com>,
+        "pbonzini@redhat.com" <pbonzini@redhat.com>,
+        "mbenes@suse.cz" <mbenes@suse.cz>,
+        "llvm@lists.linux.dev" <llvm@lists.linux.dev>,
+        "linux-toolchains@vger.kernel.org" <linux-toolchains@vger.kernel.org>
+Subject: RE: [PATCH 20/22] x86,word-at-a-time: Remove .fixup usage
+Thread-Topic: [PATCH 20/22] x86,word-at-a-time: Remove .fixup usage
+Thread-Index: AQHX1a3cTPOCK2YRr06RWvi0T9RbLav8lJ+g
+Date:   Wed, 10 Nov 2021 10:46:42 +0000
+Message-ID: <f6dbe42651e84278b44e44ed7d0ed74f@AcuMS.aculab.com>
+References: <20211105171023.989862879@infradead.org>
+ <20211105171821.654356149@infradead.org>
+ <20211108164711.mr2cqdcvedin2lvx@treble>
+ <YYlshkTmf5zdvf1Q@hirez.programming.kicks-ass.net>
+ <CAKwvOdkFZ4PSN0GGmKMmoCrcp7_VVNjau_b0sNRm3MuqVi8yow@mail.gmail.com>
+ <YYov8SVHk/ZpFsUn@hirez.programming.kicks-ass.net>
+ <CAKwvOdn8yrRopXyfd299=SwZS9TAPfPj4apYgdCnzPb20knhbg@mail.gmail.com>
+ <20211109210736.GV174703@worktop.programming.kicks-ass.net>
+In-Reply-To: <20211109210736.GV174703@worktop.programming.kicks-ass.net>
+Accept-Language: en-GB, en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.202.205.107]
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Authentication-Results: relay.mimecast.com;
+        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
+Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This option allows to disable building temporary page tables when
-booting via efistub with CONFIG_EFI_STRICT_PGTABLE enabled.
+From: Peter Zijlstra
+> Sent: 09 November 2021 21:08
+...
+> 
+> GCC does the same, but I wanted to have the exception stuff be in
+> .text.cold, but alas it doesn't do that. I left the attribute because of
+> it's descriptive value.
+> 
+> >  Unless the cold attribute is helping move
+> > ("shrink-wrap"?) the basic block to a whole other section
+> > (.text.cold.)?
+> 
+> I was hoping it would do that, but it doesn't on gcc-11.
 
-Signed-off-by: Baskov Evgeniy <baskov@ispras.ru>
----
- Documentation/admin-guide/kernel-parameters.txt | 7 ++++++-
- 1 file changed, 6 insertions(+), 1 deletion(-)
+Wouldn't moving part of a function to .text.cold (or .text.unlikely)
+generate the same problems with the stack backtrace code as the
+.text.fixup section you are removing had??
 
-diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
-index 43dc35fe5bc0..0c4ed43cd13c 100644
---- a/Documentation/admin-guide/kernel-parameters.txt
-+++ b/Documentation/admin-guide/kernel-parameters.txt
-@@ -1294,7 +1294,8 @@
- 	efi=		[EFI]
- 			Format: { "debug", "disable_early_pci_dma",
- 				  "nochunk", "noruntime", "nosoftreserve",
--				  "novamap", "no_disable_early_pci_dma" }
-+				  "novamap", "no_disable_early_pci_dma",
-+				  "notemppt" }
- 			debug: enable misc debug output.
- 			disable_early_pci_dma: disable the busmaster bit on all
- 			PCI bridges while in the EFI boot stub.
-@@ -1311,6 +1312,10 @@
- 			novamap: do not call SetVirtualAddressMap().
- 			no_disable_early_pci_dma: Leave the busmaster bit set
- 			on all PCI bridges while in the EFI boot stub
-+			notemppt: disable temporary page table creation in EFISTUB
-+			for CONFIG_EFI_STRICT_PGTABLE on x86_64. Can very slightly
-+			increase boot speed. Page copying is not required by most
-+			EFI implementations.
- 
- 	efi_no_storage_paranoia [EFI; X86]
- 			Using this parameter you can use more than 50% of
--- 
-2.33.1
+	David
+
+-
+Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
+Registration No: 1397386 (Wales)
 
