@@ -2,90 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 30D2944C005
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 12:16:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 75E3044C007
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 12:17:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231389AbhKJLTf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Nov 2021 06:19:35 -0500
-Received: from mga01.intel.com ([192.55.52.88]:59937 "EHLO mga01.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229653AbhKJLTc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Nov 2021 06:19:32 -0500
-X-IronPort-AV: E=McAfee;i="6200,9189,10163"; a="256340017"
-X-IronPort-AV: E=Sophos;i="5.87,223,1631602800"; 
-   d="scan'208";a="256340017"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Nov 2021 03:16:44 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.87,223,1631602800"; 
-   d="scan'208";a="534016057"
-Received: from black.fi.intel.com ([10.237.72.28])
-  by orsmga001.jf.intel.com with ESMTP; 10 Nov 2021 03:16:42 -0800
-Received: by black.fi.intel.com (Postfix, from userid 1003)
-        id 62DC118E; Wed, 10 Nov 2021 13:16:44 +0200 (EET)
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Wei Liu <wei.liu@kernel.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        linux-acpi@vger.kernel.org, devel@acpica.org,
-        linux-kernel@vger.kernel.org
-Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
-        Len Brown <lenb@kernel.org>,
-        Robert Moore <robert.moore@intel.com>
-Subject: [PATCH v1 1/1] ACPI: Replace kernel.h with the necessary inclusions
-Date:   Wed, 10 Nov 2021 13:16:40 +0200
-Message-Id: <20211110111640.62807-1-andriy.shevchenko@linux.intel.com>
-X-Mailer: git-send-email 2.33.0
+        id S231366AbhKJLUN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Nov 2021 06:20:13 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:56844 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229653AbhKJLUL (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Nov 2021 06:20:11 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1636543044;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=KSYkdLrFMduO4+IhFpw7zHlUTHCpQ25RS8J86dyqNl4=;
+        b=Mj8h6nteu8o7YUs29V5DRAjQbTq2CV6UrTZaJ2HOQ5ox/dLlJLyKm3olUpN5GeYmQgGIhq
+        5/gCdthrmbicYocy9s/PxC1yhxlfnDRP5RvTOPh6mgYK6v/tzGqmJSwp8LGqrI5Xcelyba
+        J6+cGoVMg+9uTBR+QUu2PGNlyP5BUrc=
+Received: from mail-ed1-f72.google.com (mail-ed1-f72.google.com
+ [209.85.208.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-302-KjTI7_ekMuORtnTSvcH6UQ-1; Wed, 10 Nov 2021 06:17:23 -0500
+X-MC-Unique: KjTI7_ekMuORtnTSvcH6UQ-1
+Received: by mail-ed1-f72.google.com with SMTP id y12-20020a056402270c00b003e28de6e995so2023096edd.11
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Nov 2021 03:17:23 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=KSYkdLrFMduO4+IhFpw7zHlUTHCpQ25RS8J86dyqNl4=;
+        b=D7oK1OrID74V7atgjuNtROQP/LbLrsSG1Tnvx9L6pQQV0P4ln0nruF8RjupPzypBre
+         +SDXavwQptDsjZlTijg6joN39Y4J5cbFuKUqxDZJefjsilc03WGsZDKMBCsmPEzN2bRN
+         ApdtdVOtU/6J3NSqF8+GYiOC2CbCgSw2b+AU42d/DUbyqkHQYM/E2BMqglU9aSM6OjrS
+         IigIrzWmExStqHSvOdvM5FzPVvmpn8SsztDURwHWYP1T7U6uN8o3XkSI1BZmbyEtL8qR
+         mZh/LCUDhv3n7raXNvdoE/7Kvv/PKQkGvzwed0/fq4WYCILzMz5xP3UORhenVnYU7lIR
+         dggQ==
+X-Gm-Message-State: AOAM533pAeE3AaoEV3g/GrfpM/jSI13iS1O9hJyLpEu8QNKxDpnOZann
+        PLKu1SdxyBYeH2+b0eP5cAHa9qJ6tHWaQdvAYnqpdOm+BDLsNfsZJxXBn4FvHLa0XVFl272SUHq
+        3kmS5AxVgBhj01bR5HqRy43UO
+X-Received: by 2002:a17:906:388f:: with SMTP id q15mr19532683ejd.145.1636543042060;
+        Wed, 10 Nov 2021 03:17:22 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJw9Hggt89KbVq2bTsmJS1g2xxslDPz/3razPWPk36zSHvvckMwsFjUm1BPRAhX95CFlXwAUng==
+X-Received: by 2002:a17:906:388f:: with SMTP id q15mr19532650ejd.145.1636543041872;
+        Wed, 10 Nov 2021 03:17:21 -0800 (PST)
+Received: from steredhat (host-87-10-72-39.retail.telecomitalia.it. [87.10.72.39])
+        by smtp.gmail.com with ESMTPSA id ar2sm1973327ejc.20.2021.11.10.03.17.20
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 10 Nov 2021 03:17:21 -0800 (PST)
+Date:   Wed, 10 Nov 2021 12:17:18 +0100
+From:   Stefano Garzarella <sgarzare@redhat.com>
+To:     "Wang, Wei W" <wei.w.wang@intel.com>
+Cc:     "davem@davemloft.net" <davem@davemloft.net>,
+        "kuba@kernel.org" <kuba@kernel.org>,
+        Stefan Hajnoczi <stefanha@redhat.com>,
+        "mst@redhat.com" <mst@redhat.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        "kys@microsoft.com" <kys@microsoft.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "virtualization@lists.linux-foundation.org" 
+        <virtualization@lists.linux-foundation.org>,
+        "Yamahata, Isaku" <isaku.yamahata@intel.com>,
+        "Nakajima, Jun" <jun.nakajima@intel.com>,
+        "Kleen, Andi" <andi.kleen@intel.com>,
+        Andra Paraschiv <andraprs@amazon.com>,
+        Sergio Lopez Pascual <slp@redhat.com>
+Subject: Re: [RFC] hypercall-vsock: add a new vsock transport
+Message-ID: <20211110111718.5cvt6vgory3fzqld@steredhat>
+References: <71d7b0463629471e9d4887d7fcef1d8d@intel.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Disposition: inline
+In-Reply-To: <71d7b0463629471e9d4887d7fcef1d8d@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When kernel.h is used in the headers it adds a lot into dependency hell,
-especially when there are circular dependencies are involved.
+On Wed, Nov 10, 2021 at 07:12:36AM +0000, Wang, Wei W wrote:
+>Hi,
+>
+>We plan to add a new vsock transport based on hypercall (e.g. vmcall on Intel CPUs).
+>It transports AF_VSOCK packets between the guest and host, which is similar to
+>virtio-vsock, vmci-vsock and hyperv-vsock.
+>
+>Compared to the above listed vsock transports which are designed for high performance,
+>the main advantages of hypercall-vsock are:
+>
+>1)       It is VMM agnostic. For example, one guest working on hypercall-vsock can run on
+>
+>either KVM, Hyperv, or VMware.
+>
+>2)       It is simpler. It doesn't rely on any complex bus enumeration
+>
+>(e.g. virtio-pci based vsock device may need the whole implementation of PCI).
+>
+>An example usage is the communication between MigTD and host (Page 8 at
+>https://static.sched.com/hosted_files/kvmforum2021/ef/TDX%20Live%20Migration_Wei%20Wang.pdf).
+>MigTD communicates to host to assist the migration of the target (user) 
+>TD.
+>MigTD is part of the TCB, so its implementation is expected to be as simple as possible
+>(e.g. bare mental implementation without OS, no PCI driver support).
 
-Replace kernel.h inclusion with the list of what is really being used.
+Adding Andra and Sergio, because IIRC Firecracker and libkrun emulates 
+virtio-vsock with virtio-mmio so the implementation should be simple and 
+also not directly tied to a specific VMM.
 
-Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
----
- include/acpi/acpi_numa.h | 1 -
- include/acpi/processor.h | 7 ++++++-
- 2 files changed, 6 insertions(+), 2 deletions(-)
+Maybe this fit for your use case too, in this way we don't have to 
+maintain another driver.
 
-diff --git a/include/acpi/acpi_numa.h b/include/acpi/acpi_numa.h
-index 68e4d80c1b32..b5f594754a9e 100644
---- a/include/acpi/acpi_numa.h
-+++ b/include/acpi/acpi_numa.h
-@@ -3,7 +3,6 @@
- #define __ACPI_NUMA_H
- 
- #ifdef CONFIG_ACPI_NUMA
--#include <linux/kernel.h>
- #include <linux/numa.h>
- 
- /* Proximity bitmap length */
-diff --git a/include/acpi/processor.h b/include/acpi/processor.h
-index 683e124ad517..194027371928 100644
---- a/include/acpi/processor.h
-+++ b/include/acpi/processor.h
-@@ -2,11 +2,16 @@
- #ifndef __ACPI_PROCESSOR_H
- #define __ACPI_PROCESSOR_H
- 
--#include <linux/kernel.h>
- #include <linux/cpu.h>
- #include <linux/cpufreq.h>
- #include <linux/pm_qos.h>
-+#include <linux/printk.h>
-+#include <linux/sched.h>
-+#include <linux/smp.h>
- #include <linux/thermal.h>
-+#include <linux/types.h>
-+#include <linux/workqueue.h>
-+
- #include <asm/acpi.h>
- 
- #define ACPI_PROCESSOR_CLASS		"processor"
--- 
-2.33.0
+Thanks,
+Stefano
 
