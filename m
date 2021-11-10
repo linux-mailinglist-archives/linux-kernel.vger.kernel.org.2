@@ -2,134 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 93D4244C5B9
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 18:06:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 087EA44C5BB
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 18:09:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232284AbhKJRJb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Nov 2021 12:09:31 -0500
-Received: from mail.kernel.org ([198.145.29.99]:51016 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232203AbhKJRJ3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Nov 2021 12:09:29 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2E45E61261
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Nov 2021 17:06:42 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1636564002;
-        bh=LSNqX4XlH2DA2EfyUuc+0taTvvtbGQbiqRrxnTIhyIQ=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=bpqxczzrxFE0G02fm6uopqnHqfx87M9nhh2fQoHCbOZuO5npceTFIcgpLd29Lp7L8
-         0xtQIuO4ezu55+4xmNUNwp9S6N5PYPlCb/JJhI8k17b9WJOz0qqP4UVB3Zc+yCT60l
-         9aZVhiWmVO3cs4eBxOboySYlJQ+1DVh9SwuPJrODbx4HvcDELkMrODkhJ1C1gS42z+
-         BdMM3jN/D0507dfd4X4cAMUOwPelbLCJRiNDPa2uTVWruNw2ilAJtxVGvJFBjRJk+R
-         twgujpZpETO+lCmWzBBMpqYtRAQ9oziIclYlT1+jlc8gjqA99GWMivFSSbQrAoy/LT
-         XfP+X6wXqeZqA==
-Received: by mail-oi1-f174.google.com with SMTP id n66so6417860oia.9
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Nov 2021 09:06:42 -0800 (PST)
-X-Gm-Message-State: AOAM532JuZJ4P1O4lMO6eL9MhplOAUhmi2R1k2iEWnIOBNgd7y2dAYmt
-        Okkojtx2RBIOhXHxX/uBEndaO+e/2h7Hreh4cH4=
-X-Google-Smtp-Source: ABdhPJzpvQYPooMirF8dxQpK5PrmQUKJ5x+FAd4QDHdAAj2fYW7JaS5KSHeTypBKnXildhgozkTt6C33NOVv/dwwiNk=
-X-Received: by 2002:a05:6808:12:: with SMTP id u18mr599162oic.174.1636564001416;
- Wed, 10 Nov 2021 09:06:41 -0800 (PST)
-MIME-Version: 1.0
-References: <20211110010906.1923210-1-eric.dumazet@gmail.com>
- <20211110010906.1923210-3-eric.dumazet@gmail.com> <YYuEXQ7Ur9f88pCw@hirez.programming.kicks-ass.net>
- <CAMj1kXF8makQnZaWDpyzQc2ZiwQEU1ACYhrA91UaFT6S-6RXaQ@mail.gmail.com> <CANn89i+STEwQkEN4hF-gx0WWrL8x5xg=8EDb5O_jf9f3MNVPEQ@mail.gmail.com>
-In-Reply-To: <CANn89i+STEwQkEN4hF-gx0WWrL8x5xg=8EDb5O_jf9f3MNVPEQ@mail.gmail.com>
-From:   Ard Biesheuvel <ardb@kernel.org>
-Date:   Wed, 10 Nov 2021 18:06:28 +0100
-X-Gmail-Original-Message-ID: <CAMj1kXFOznCFN=P-6PMv+GN8w1=pYNL0gpC4S6ke5aCBmh3wTA@mail.gmail.com>
-Message-ID: <CAMj1kXFOznCFN=P-6PMv+GN8w1=pYNL0gpC4S6ke5aCBmh3wTA@mail.gmail.com>
-Subject: Re: [PATCH 2/2] jump_label: refine placement of static_keys
-To:     Eric Dumazet <edumazet@google.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Eric Dumazet <eric.dumazet@gmail.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Jason Baron <jbaron@akamai.com>,
-        "Steven Rostedt (VMware)" <rostedt@goodmis.org>
-Content-Type: text/plain; charset="UTF-8"
+        id S231931AbhKJRMd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Nov 2021 12:12:33 -0500
+Received: from mo4-p02-ob.smtp.rzone.de ([81.169.146.168]:18124 "EHLO
+        mo4-p02-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229995AbhKJRMc (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Nov 2021 12:12:32 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1636564167;
+    s=strato-dkim-0002; d=goldelico.com;
+    h=To:References:Message-Id:Cc:Date:In-Reply-To:From:Subject:Cc:Date:
+    From:Subject:Sender;
+    bh=VogIBdJ+pahIETg+bq9eGn8JF1e4igREsQzr4VmxO4I=;
+    b=cFAGJFtzKTtwUKaohFsiRrMmnxtlRRZoa0bYpY65bZT0DUKm7LuPt1zvUJJCqNaQdS
+    4h3b8bPh7mO2GL9sPxJRB8rgvJkgzQXdNa3R2V6koqaDu/+dtM6moO+dRnZ8sOXKu7ED
+    AByW7QPFeLEHGvGw5KBpXLX6+lEz3PoNSSaQGZbDmnwzEHFlB51WBQP4j82Ng92eRbh3
+    R9wWTAmtNn3hURdInJbwO6uutQle81qGZJH8imKCWKC8dfWd7YfYxklpy3h5wJy877o2
+    PtaqcqkY16G0jkGxkf62lazyIU2UNyu1sXH6L2Hua5B2mT+7lEI9xXRGM2vT1XMQMMDI
+    umCA==
+Authentication-Results: strato.com;
+    dkim=none
+X-RZG-AUTH: ":JGIXVUS7cutRB/49FwqZ7WcJeFKiMgPgp8VKxflSZ1P34KBj4Qpw9iZeHWElw47pgLk="
+X-RZG-CLASS-ID: mo00
+Received: from imac.fritz.box
+    by smtp.strato.de (RZmta 47.34.5 DYNA|AUTH)
+    with ESMTPSA id Y02aa4xAAH9R50Y
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (curve X9_62_prime256v1 with 256 ECDH bits, eq. 3072 bits RSA))
+        (Client did not present a certificate);
+    Wed, 10 Nov 2021 18:09:27 +0100 (CET)
+Content-Type: text/plain;
+        charset=us-ascii
+Mime-Version: 1.0 (Mac OS X Mail 12.4 \(3445.104.21\))
+Subject: Re: [RFC v4 5/6] mmc: core: transplant ti,wl1251 quirks from to be
+ retired omap_hsmmc
+From:   "H. Nikolaus Schaller" <hns@goldelico.com>
+In-Reply-To: <CAPDyKFqsBkWBajYvS2DXsHzO01-hgQp7YuzTs61N7vmLkZLgKg@mail.gmail.com>
+Date:   Wed, 10 Nov 2021 18:09:26 +0100
+Cc:     =?utf-8?B?SsOpcsO0bWUgUG91aWxsZXI=?= <Jerome.Pouiller@silabs.com>,
+        Avri Altman <avri.altman@wdc.com>,
+        Shawn Lin <shawn.lin@rock-chips.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Tony Lindgren <tony@atomide.com>,
+        Bean Huo <beanhuo@micron.com>,
+        =?utf-8?Q?Gra=C5=BEvydas_Ignotas?= <notasas@gmail.com>,
+        linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        letux-kernel@openphoenux.org, kernel@pyra-handheld.com
+Content-Transfer-Encoding: quoted-printable
+Message-Id: <B7FC3305-7C27-4D17-9BBD-856CF6C542C8@goldelico.com>
+References: <cover.1636103151.git.hns@goldelico.com>
+ <3ca9a3099d86d631235b6c03ae260bc581cc8d60.1636103151.git.hns@goldelico.com>
+ <CAPDyKFrH8f80cs5dbh=3ugjyEzoUYXhStpHQyhUSd6b9wD78vw@mail.gmail.com>
+ <C2F065E7-10C5-4701-A6F7-6B5A6198F0DF@goldelico.com>
+ <CAPDyKFoz6b-+HQYdypYD7EUXxwj7th-=41MAK=ZTnKQWRmLArQ@mail.gmail.com>
+ <B6ECEECF-EC1D-431E-B4E4-915B29E31AEE@goldelico.com>
+ <CAPDyKFqsBkWBajYvS2DXsHzO01-hgQp7YuzTs61N7vmLkZLgKg@mail.gmail.com>
+To:     Ulf Hansson <ulf.hansson@linaro.org>
+X-Mailer: Apple Mail (2.3445.104.21)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 10 Nov 2021 at 16:22, Eric Dumazet <edumazet@google.com> wrote:
->
-> On Wed, Nov 10, 2021 at 2:24 AM Ard Biesheuvel <ardb@kernel.org> wrote:
-> >
-> > On Wed, 10 Nov 2021 at 09:36, Peter Zijlstra <peterz@infradead.org> wrote:
-> > >
-> > > On Tue, Nov 09, 2021 at 05:09:06PM -0800, Eric Dumazet wrote:
-> > > > From: Eric Dumazet <edumazet@google.com>
-> > > >
-> > > > With CONFIG_JUMP_LABEL=y, "struct static_key" content is only
-> > > > used for the control path.
-> > > >
-> > > > Marking them __read_mostly is only needed when CONFIG_JUMP_LABEL=n.
-> > > > Otherwise we place them out of the way to increase data locality.
-> > > >
-> > > > This patch adds __static_key to centralize this new policy.
-> > > >
-> > > > Signed-off-by: Eric Dumazet <edumazet@google.com>
-> > > > ---
-> > > >  arch/x86/kvm/lapic.c       |  4 ++--
-> > > >  arch/x86/kvm/x86.c         |  2 +-
-> > > >  include/linux/jump_label.h | 25 +++++++++++++++++--------
-> > > >  kernel/events/core.c       |  2 +-
-> > > >  kernel/sched/fair.c        |  2 +-
-> > > >  net/core/dev.c             |  8 ++++----
-> > > >  net/netfilter/core.c       |  2 +-
-> > > >  net/netfilter/x_tables.c   |  2 +-
-> > > >  8 files changed, 28 insertions(+), 19 deletions(-)
-> > > >
-> > >
-> > > Hurmph, it's a bit cumbersome to always have to add this __static_key
-> > > attribute to every definition, and in fact you seem to have missed some.
-> > >
-> > > Would something like:
-> > >
-> > >         typedef struct static_key __static_key static_key_t;
-> > >
-> > > work? I forever seem to forget the exact things you can make a typedef
-> > > do :/
-> >
-> > No, that doesn't work. Section placement is an attribute of the symbol
-> > not of its type. So we'll need to macro'ify this.
->
-> Yes, this is also why I chose a short __static_key (initially I was
-> using something more descriptive but longer)
->
-> >
-> > But I'm not sure I understand why we need different policies here.
-> > Static keys are inherently __read_mostly (unless they are not writable
-> > to begin with), so keeping them all together in one place in the
-> > binary should be sufficient, no?
->
-> It is not optimal for CONFIG_JUMP_LABEL=n cases.
->
-> For instance, networking will prefer having rps_needed / rfs_needed in
-> the same cache lines than other hot read_mostly stuff,
-> instead of being far away in other locations.
->
-> ffffffff830e0f80 D dev_weight_tx_bias
-> ffffffff830e0f84 D dev_rx_weight
-> ffffffff830e0f88 D dev_tx_weight
-> ffffffff830e0f8c D gro_normal_batch
-> ffffffff830e0f90 D rps_sock_flow_table
-> ffffffff830e0f98 D rps_cpu_mask
-> ffffffff830e0f9c D rps_needed
-> ffffffff830e0fa0 D rfs_needed
-> ffffffff830e0fa4 D netdev_flow_limit_table_len
-> ffffffff830e0fa8 d netif_napi_add.__print_once
-> ffffffff830e0fac D netdev_unregister_timeout_secs
-> ffffffff830e0fb0 D ptype_base
->
->
-> When CONFIG_JUMP_LABEL=y, rps_needed/xps_needed being in a remote
-> location is a win because it 'saves' 32 bytes than can be used better
 
-I understand that you want the key out of the way for
-CONFIG_JUMP_LABEL=n, but the question was why we shouldn't do that
-unconditionally. If we put all the keys together in a section, they
-will only share cachelines with each other.
 
-Also, what is the performance impact on a real world use case of this change?
+> Am 10.11.2021 um 18:03 schrieb Ulf Hansson <ulf.hansson@linaro.org>:
+>=20
+> On Wed, 10 Nov 2021 at 17:36, H. Nikolaus Schaller <hns@goldelico.com> =
+wrote:
+>>=20
+>>=20
+>> Indeed we can. That is great.
+>>=20
+>> Now the question is how to handle the dependency on your patch.
+>> Somehow we must ensure that it is merged before my $subject patch.
+>> Even if someone decides to backport this to stable.
+>=20
+> Yes, I can pick up my patch first. As it's not really fixing a
+> problem, but rather preparing for your series to work better, I don't
+> think we need to care about stable backports, at least for now.
+>=20
+> If you re-submit before rc1, then just include my patch early in your =
+series.
+
+Ok, I'll submit a v2 asap (isn't much work since I have your patch =
+already in my test branch).
+
+BR and thanks,
+Nikolaus
+
