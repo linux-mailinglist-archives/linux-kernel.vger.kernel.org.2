@@ -2,35 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6902C44C77E
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 19:49:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E9B1F44C74E
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 19:49:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232852AbhKJSwO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Nov 2021 13:52:14 -0500
-Received: from mail.kernel.org ([198.145.29.99]:48616 "EHLO mail.kernel.org"
+        id S233450AbhKJSt6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Nov 2021 13:49:58 -0500
+Received: from mail.kernel.org ([198.145.29.99]:48432 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233481AbhKJSuG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Nov 2021 13:50:06 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0697661360;
-        Wed, 10 Nov 2021 18:46:55 +0000 (UTC)
+        id S232607AbhKJSsm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Nov 2021 13:48:42 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B49A46128B;
+        Wed, 10 Nov 2021 18:45:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1636570016;
-        bh=9vh4/Poq6fHp7ATT1zlN7oohjKfXqdwbh1vvydivTTo=;
+        s=korg; t=1636569954;
+        bh=T2zwrgKGNGeYAak/xemcBJlwt7RESecGo7IRwjHuNww=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=KALeciXJeDLwzuG4iB//ZNGuVPP+Lz6joN9RYo7xXKyatVxMzBB4FXgZESeGqlLEc
-         09odE8HwZ/rXsf6/U1yLoxuq+VQ8FueOHwyZ1KL9NoSWw2n00rJQmD4jbPNuKy19PC
-         Y0iFu6ZUrxEZLhSH1sMcu8d/ThYzC9Cj0NJ7UqkA=
+        b=l+HJW9a0WCYmAi2HfUEIDTE8TJjxka0KjBzGHFH7Uat4XY+3kUVnw5YN5l5Zkvh/i
+         KaNUiC7Q2XkRajn5dSk2Vjx6d+Wyn1BttAo29y6e4QiD6AG8paTBu9vwwzhTv72uNl
+         B44kPRNinJnvVGCxkOi20n3xBF41GWbaghoaC5No=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Li Yang <leoyang.li@nxp.com>,
-        Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: [PATCH 4.19 04/16] usb: gadget: Mark USB_FSL_QE broken on 64-bit
-Date:   Wed, 10 Nov 2021 19:43:37 +0100
-Message-Id: <20211110182002.134980347@linuxfoundation.org>
+        stable@vger.kernel.org, Johan Hovold <johan@kernel.org>,
+        Ian Abbott <abbotti@mev.co.uk>
+Subject: [PATCH 4.14 18/22] comedi: vmk80xx: fix bulk-buffer overflow
+Date:   Wed, 10 Nov 2021 19:43:38 +0100
+Message-Id: <20211110182003.249934211@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211110182001.994215976@linuxfoundation.org>
-References: <20211110182001.994215976@linuxfoundation.org>
+In-Reply-To: <20211110182002.666244094@linuxfoundation.org>
+References: <20211110182002.666244094@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,42 +39,55 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Geert Uytterhoeven <geert@linux-m68k.org>
+From: Johan Hovold <johan@kernel.org>
 
-commit a0548b26901f082684ad1fb3ba397d2de3a1406a upstream.
+commit 78cdfd62bd54af615fba9e3ca1ba35de39d3871d upstream.
 
-On 64-bit:
+The driver is using endpoint-sized buffers but must not assume that the
+tx and rx buffers are of equal size or a malicious device could overflow
+the slab-allocated receive buffer when doing bulk transfers.
 
-    drivers/usb/gadget/udc/fsl_qe_udc.c: In function ‘qe_ep0_rx’:
-    drivers/usb/gadget/udc/fsl_qe_udc.c:842:13: error: cast from pointer to integer of different size [-Werror=pointer-to-int-cast]
-      842 |     vaddr = (u32)phys_to_virt(in_be32(&bd->buf));
-	  |             ^
-    In file included from drivers/usb/gadget/udc/fsl_qe_udc.c:41:
-    drivers/usb/gadget/udc/fsl_qe_udc.c:843:28: error: cast to pointer from integer of different size [-Werror=int-to-pointer-cast]
-      843 |     frame_set_data(pframe, (u8 *)vaddr);
-	  |                            ^
-
-The driver assumes physical and virtual addresses are 32-bit, hence it
-cannot work on 64-bit platforms.
-
-Acked-by: Li Yang <leoyang.li@nxp.com>
-Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
-Link: https://lore.kernel.org/r/20211027080849.3276289-1-geert@linux-m68k.org
-Cc: stable <stable@vger.kernel.org>
+Fixes: 985cafccbf9b ("Staging: Comedi: vmk80xx: Add k8061 support")
+Cc: stable@vger.kernel.org      # 2.6.31
+Signed-off-by: Johan Hovold <johan@kernel.org>
+Reviewed-by: Ian Abbott <abbotti@mev.co.uk>
+Link: https://lore.kernel.org/r/20211025114532.4599-5-johan@kernel.org
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/usb/gadget/udc/Kconfig |    1 +
- 1 file changed, 1 insertion(+)
+ drivers/staging/comedi/drivers/vmk80xx.c |   16 +++++++---------
+ 1 file changed, 7 insertions(+), 9 deletions(-)
 
---- a/drivers/usb/gadget/udc/Kconfig
-+++ b/drivers/usb/gadget/udc/Kconfig
-@@ -328,6 +328,7 @@ config USB_AMD5536UDC
- config USB_FSL_QE
- 	tristate "Freescale QE/CPM USB Device Controller"
- 	depends on FSL_SOC && (QUICC_ENGINE || CPM)
-+	depends on !64BIT || BROKEN
- 	help
- 	   Some of Freescale PowerPC processors have a Full Speed
- 	   QE/CPM2 USB controller, which support device mode with 4
+--- a/drivers/staging/comedi/drivers/vmk80xx.c
++++ b/drivers/staging/comedi/drivers/vmk80xx.c
+@@ -168,22 +168,20 @@ static void vmk80xx_do_bulk_msg(struct c
+ 	__u8 rx_addr;
+ 	unsigned int tx_pipe;
+ 	unsigned int rx_pipe;
+-	size_t size;
++	size_t tx_size;
++	size_t rx_size;
+ 
+ 	tx_addr = devpriv->ep_tx->bEndpointAddress;
+ 	rx_addr = devpriv->ep_rx->bEndpointAddress;
+ 	tx_pipe = usb_sndbulkpipe(usb, tx_addr);
+ 	rx_pipe = usb_rcvbulkpipe(usb, rx_addr);
+-
+-	/*
+-	 * The max packet size attributes of the K8061
+-	 * input/output endpoints are identical
+-	 */
+-	size = usb_endpoint_maxp(devpriv->ep_tx);
++	tx_size = usb_endpoint_maxp(devpriv->ep_tx);
++	rx_size = usb_endpoint_maxp(devpriv->ep_rx);
+ 
+ 	usb_bulk_msg(usb, tx_pipe, devpriv->usb_tx_buf,
+-		     size, NULL, devpriv->ep_tx->bInterval);
+-	usb_bulk_msg(usb, rx_pipe, devpriv->usb_rx_buf, size, NULL, HZ * 10);
++		     tx_size, NULL, devpriv->ep_tx->bInterval);
++
++	usb_bulk_msg(usb, rx_pipe, devpriv->usb_rx_buf, rx_size, NULL, HZ * 10);
+ }
+ 
+ static int vmk80xx_read_packet(struct comedi_device *dev)
 
 
