@@ -2,111 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B28544BA77
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 03:54:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 68A0F44BA7D
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 03:54:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230038AbhKJC4g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Nov 2021 21:56:36 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55114 "EHLO
+        id S230076AbhKJC5N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Nov 2021 21:57:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55262 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229717AbhKJC4f (ORCPT
+        with ESMTP id S230059AbhKJC5L (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Nov 2021 21:56:35 -0500
-Received: from mail-pj1-x1035.google.com (mail-pj1-x1035.google.com [IPv6:2607:f8b0:4864:20::1035])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 66A37C061764
-        for <linux-kernel@vger.kernel.org>; Tue,  9 Nov 2021 18:53:48 -0800 (PST)
-Received: by mail-pj1-x1035.google.com with SMTP id np3so341221pjb.4
-        for <linux-kernel@vger.kernel.org>; Tue, 09 Nov 2021 18:53:48 -0800 (PST)
+        Tue, 9 Nov 2021 21:57:11 -0500
+Received: from mail-yb1-xb31.google.com (mail-yb1-xb31.google.com [IPv6:2607:f8b0:4864:20::b31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2227EC061766
+        for <linux-kernel@vger.kernel.org>; Tue,  9 Nov 2021 18:54:25 -0800 (PST)
+Received: by mail-yb1-xb31.google.com with SMTP id y3so2727055ybf.2
+        for <linux-kernel@vger.kernel.org>; Tue, 09 Nov 2021 18:54:25 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=ohzx1aIRfwFT26a19YtMARoAWIS8GAJtqILCOlSCnhk=;
-        b=hqflX7QjNSookI+lB7vuKiiWNkEZv5tfqOnXRJHRP0PLWw4isB+0YDGOmGHqrlzJSS
-         1tTJyI4dqYEY8iiHATwiG1brOyww6rOuHa5pKJy45UNGa3C5p8HxGAADQR7iejf0hzse
-         qtJsSztn+JxSJqJ/Osl2Wu8h0J6UPJAZvqylBX5Z584XKGvu7ORIMp0IVhpNSppjMCmH
-         Gi3H6tnAFMG/kDaU0RNBQKUlge7HbEENh0vUvmOYdfGWwrn1ZI1/A7QLVYpaq6H7wTPu
-         XexD/izGLV7boBk05Rass/LO8VQX3iMsCGWR8tbkWQwsJEav4nkT6Pn7OxMijbTj2f0v
-         MVoA==
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=1Br/N6WhyVMlujnGsxiPG2oa5QW+rtf7KlXAbdHBbwA=;
+        b=X5fyFRWMAcpVF9Da3XjIoRcvbG+cn6bkfJ6v7IbQ9jMG8yNGhjKEyqyA6X3XeCnKT1
+         vYYUlpDMLw5RzRcdrfi8Ljl4We6+lHFNuTxCPGRmdHI2ibp3aHVC2kFvtGTA9A97Z5ix
+         NXnA6RhLWcVeK4yB9H7tpSO65DOjMWSjONqbbD/Ln4GjKQP0y9OaMCGQTYnnedxrfWGd
+         4tzOv8L01WBRcf85ghUNSCn49FODyrkABFXrh1ZbeCc0Yg+SBdtQpNdr7VZ/ikb+FBOa
+         MCr4Ww4m+HDDzgBUvKl3nrFNPlF7NFnQ7k/VsI43U0jZVUJxY34PiSyYbwYdqbX4xlf2
+         rfSA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=ohzx1aIRfwFT26a19YtMARoAWIS8GAJtqILCOlSCnhk=;
-        b=xWwywjIOFU++cWsO0jSeqUn41QrtWrABGH062I3oCQjRkxvJ6oCmc5ODJ/L50G1lQ3
-         5FDlFCsT3kI90DxuezKYLUV2tjWq8c9vatM0gBjDg5dk6KOQwhtVbSI75ttaqimgHl2g
-         OshQnhUUGaNY8t5dbiEcim032k6hdIZ82Oe4fF5ouPsesuOH6QuFVws2QPPHF3BermGo
-         lhTYQYYO3gyfpvPdiCmJLJdTuSXP/7A5UbRuJs2V7uKL9YfLJPm+sF2tNeQ/TwpjMj4P
-         BGFbpOWx2J4CKzg7iz0EeudqevpAgptSjEpsQdVU05cu32ItqvCiaOD5iMTli99HO7UM
-         fdyA==
-X-Gm-Message-State: AOAM532ZjTki1QNo/ssWmbqfgmC47vA4+t6/jfO9YgN5XPIUg5HigckV
-        TQm9mB6OJT3upsNK+X3MZd0=
-X-Google-Smtp-Source: ABdhPJxsC5vxISr0KYKO6Q/N+yXgZPIMMnST5Weylcos+rGQYcDVFEeE5aBPAKqpfWBf9d5ebj375w==
-X-Received: by 2002:a17:90b:1b04:: with SMTP id nu4mr13026823pjb.72.1636512827855;
-        Tue, 09 Nov 2021 18:53:47 -0800 (PST)
-Received: from localhost.localdomain ([193.203.214.57])
-        by smtp.gmail.com with ESMTPSA id b15sm5238190pfv.48.2021.11.09.18.53.46
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 09 Nov 2021 18:53:47 -0800 (PST)
-From:   cgel.zte@gmail.com
-X-Google-Original-From: yao.jing2@zte.com.cn
-To:     johan@kernel.org
-Cc:     cgel.zte@gmail.com, gregkh@linuxfoundation.org,
-        linux-kernel@vger.kernel.org, yao.jing2@zte.com.cn,
-        zealci@zte.com.cn
-Subject: [PATCH v3] most: usb: replace snprintf in show functions with sysfs_emit
-Date:   Wed, 10 Nov 2021 02:53:41 +0000
-Message-Id: <20211110025341.136194-1-yao.jing2@zte.com.cn>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <YYjy3QRXk/VL2Lze@hovoldconsulting.com>
-References: <YYjy3QRXk/VL2Lze@hovoldconsulting.com>
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=1Br/N6WhyVMlujnGsxiPG2oa5QW+rtf7KlXAbdHBbwA=;
+        b=f3bhvz8Cicxi73fr5EkCbspzkGkEIushmMfButImATITpiUQQCyFEsTGKVtd7PqRbq
+         2b0RgoWvicHqUtkLMq7rbpD1jIJ4jNMKnpx58KZ+1XkfeTfvErovxx2sX9NpitC8PKHl
+         bvNXodD8wsM8wo+eqrgIqP8rAUtMERks96chfp63OwBkpZk7s7HLRWaulDW4EOK6hzvP
+         YmiY1nsu1RJkpkjaJx7Ouled9RaMmVWXKVSqHMXgOP1VLp9Yp6IgIFEx2wIwNt+48CuW
+         2Oh6hET3YJayDWLK8c2micLXF09Sj6+JOWV7Xo/l6xbd1u4tY+ci+jjcHAAil4vK4irF
+         BarQ==
+X-Gm-Message-State: AOAM531X7Sn2OSAHUOFTw7OhoWpJxWM7IxmqDA1HLgN2Ho76hqzj9Ioy
+        lvqHAnNM4jpRugftPDrFK6dSwXTQtmPp1yeUwhA=
+X-Google-Smtp-Source: ABdhPJwk3DHU7X1eSJOku5aBkVZ2eJvmJufPTvAViXvxe6vC60lFx0/fJrVHNUwB3Rm6GDOIy6LblzyidzqZTmO6/2Y=
+X-Received: by 2002:a25:cc4d:: with SMTP id l74mr13824916ybf.335.1636512864344;
+ Tue, 09 Nov 2021 18:54:24 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Received: by 2002:a05:7110:7184:b0:103:1474:3411 with HTTP; Tue, 9 Nov 2021
+ 18:54:24 -0800 (PST)
+Reply-To: mrsbillchantallawrence58@gmail.com
+From:   mrsbillchantal <msrjutconpolamcompola888@gmail.com>
+Date:   Wed, 10 Nov 2021 03:54:24 +0100
+Message-ID: <CABt-Z7Evtho=Gb8JJhdD_iAPQq3_R+ypQXxGjXSD046ozu1hbQ@mail.gmail.com>
+Subject: Dear Friend, My present internet connection is very slow in case you
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jing Yao <yao.jing2@zte.com.cn>
+hello....
 
-coccicheck complains about the use of snprintf() in sysfs show
-functions:
-WARNING use scnprintf or sprintf
+You have been compensated with the sum of 5.5 million dollars in this
+united nation the payment will be issue into atm visa card and send to
+you from the santander bank we need your address and your  Whatsapp
+this my email.ID (  mrsbillchantallawrence58@gmail.com)  contact  me
 
-Use sysfs_emit instead of scnprintf, snprintf or sprintf makes more
-sense.
+Thanks my
 
-Reported-by: Zeal Robot <zealci@zte.com.cn>
-Signed-off-by: Jing Yao <yao.jing2@zte.com.cn>
----
-
-Changes since v2:
- - Revise the inappropriate Subject.
-
- drivers/most/most_usb.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/most/most_usb.c b/drivers/most/most_usb.c
-index acabb7715b42..73258b24fea7 100644
---- a/drivers/most/most_usb.c
-+++ b/drivers/most/most_usb.c
-@@ -831,7 +831,7 @@ static ssize_t value_show(struct device *dev, struct device_attribute *attr,
- 	int err;
- 
- 	if (sysfs_streq(name, "arb_address"))
--		return snprintf(buf, PAGE_SIZE, "%04x\n", dci_obj->reg_addr);
-+		return sysfs_emit(buf, "%04x\n", dci_obj->reg_addr);
- 
- 	if (sysfs_streq(name, "arb_value"))
- 		reg_addr = dci_obj->reg_addr;
-@@ -843,7 +843,7 @@ static ssize_t value_show(struct device *dev, struct device_attribute *attr,
- 	if (err < 0)
- 		return err;
- 
--	return snprintf(buf, PAGE_SIZE, "%04x\n", val);
-+	return sysfs_emit(buf, "%04x\n", val);
- }
- 
- static ssize_t value_store(struct device *dev, struct device_attribute *attr,
--- 
-2.25.1
-
+mrs chantal
