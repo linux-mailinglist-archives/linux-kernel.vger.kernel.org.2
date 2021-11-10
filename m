@@ -2,122 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F09D944BFBE
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 12:02:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E456A44BFD3
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 12:07:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231523AbhKJLFY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Nov 2021 06:05:24 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50336 "EHLO
+        id S231538AbhKJLKg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Nov 2021 06:10:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52066 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231390AbhKJLFH (ORCPT
+        with ESMTP id S231455AbhKJLKd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Nov 2021 06:05:07 -0500
-Received: from mail-pf1-x42b.google.com (mail-pf1-x42b.google.com [IPv6:2607:f8b0:4864:20::42b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2A737C06120C
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Nov 2021 03:01:33 -0800 (PST)
-Received: by mail-pf1-x42b.google.com with SMTP id x131so2303163pfc.12
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Nov 2021 03:01:33 -0800 (PST)
+        Wed, 10 Nov 2021 06:10:33 -0500
+Received: from mail-oo1-xc35.google.com (mail-oo1-xc35.google.com [IPv6:2607:f8b0:4864:20::c35])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D5899C06127A
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Nov 2021 03:07:45 -0800 (PST)
+Received: by mail-oo1-xc35.google.com with SMTP id m37-20020a4a9528000000b002b83955f771so655856ooi.7
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Nov 2021 03:07:45 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=jxo26PM+v+FavVwWJDiflViEe+y1rULkr8xHn7NoreQ=;
-        b=zhftXFPYnO12H4n30/cgoywIiLqysx+A7rPrWK22HI7wvhzbJwGLfp2YaFIpdBKxZ2
-         C2uHrfQ7YgTL+K6kIkFJigdyw9jy0vE5FwcIWmfEde4bswYdI40yrRBaxRprUOmjKrwv
-         zSlF/X1iO+sJ0SBudjcl7j9ud4HCBdOvjeOJl+cnHrzWMidplmYiEs6KPsUBYgUBbeOv
-         7y4uVSUUnRsDh42AVPrB+5cnc5lTxjBURJ2jJv0poNUmsPyOjTjLPi+2Gn0pgdRwXcVU
-         XsV6RwYTs1SHUlm0GNWE744r1IgXycmFobSd/alnPxDfZQiTq/haljbfWNGu1vSxF1B4
-         iCKg==
+        d=gmail.com; s=20210112;
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=S/NPx9ZAU9zKIZ/Wl/wJ5cTCA38rwFqmn27pwAogCrs=;
+        b=SvSfAeEttFgAjMK2kCK4ck79WEmF6aIGJICPPvzYSSjc5AzroHPgPNnsXEPqpP9dZj
+         TQt7bGjupAftoXu223ZLkJJSeFPL9JUoHSuxZbzcr7r8nI6arVW8m2YoiIFR0mNV0Naj
+         4CoU6rllP3Ggnc0Y3SeuU8a5Xpbcvk77uBllGeLTYwO1GnW2LGMwdXZ9kbEe+0mNPyKa
+         a6CPjZ0feeEm9z/hlrE/yA/o3j8AE8D9LYj40AveWshik1Xv50ydPA4L0VjHzaaoYUI+
+         cQXaO1zuvZHqKDZ+/tg1BW0co3P3YDzYsIqP7tDGoZimt4Mcrz+0NwKlSIwAb7khz7VM
+         8xuQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=jxo26PM+v+FavVwWJDiflViEe+y1rULkr8xHn7NoreQ=;
-        b=IMRwF0iGZghqJJ0RugBeWJ3RVm9pwn0WhZ6GOgk3iYfZQyJfrww21WaPBLs6F6PRPt
-         CautqCe9LJNA6UBhGkXNbL4qwW+MqRE1nIUkrsYrFo0Ka9COY4pNibPiTyD7PwONOYQf
-         0YQosCh0siFG8J3REU4IkiuZbdNEABiU8vnSNPz3Rbxqb3fjmlcDq4IP6gLDb34YM6td
-         PiRcpbptBhaaiXo9VFsjuU8pqFjuZqJDEjv10rPRVN+0AFVMM2PjmvU8X3lggagGkgru
-         c0QIh18Rigb04RllLynxw0hDv6lxSs0CYRFDc5wZno6LgRUcnlxzzXoKqWbAWDT2I/Qp
-         w3BA==
-X-Gm-Message-State: AOAM5311yENZRt/8fxN21dp/L0P1FKfKimn+rfN8iWt9/gxG4AvjdJas
-        nQJrF3McEIRm4lwRrJndYFSoqg==
-X-Google-Smtp-Source: ABdhPJwfrC9ZDNHn68Fi6Mn1jXishCHGAfMAf6ZHJ5MivI8p6rLke2bsknx/eSpwXFD+wj09yjYriw==
-X-Received: by 2002:a05:6a00:168c:b0:44c:dc5a:7ee0 with SMTP id k12-20020a056a00168c00b0044cdc5a7ee0mr15974796pfc.40.1636542092668;
-        Wed, 10 Nov 2021 03:01:32 -0800 (PST)
-Received: from localhost.name ([122.161.52.143])
-        by smtp.gmail.com with ESMTPSA id e11sm5585282pjl.20.2021.11.10.03.01.28
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 10 Nov 2021 03:01:32 -0800 (PST)
-From:   Bhupesh Sharma <bhupesh.sharma@linaro.org>
-To:     linux-arm-msm@vger.kernel.org, linux-crypto@vger.kernel.org
-Cc:     bhupesh.sharma@linaro.org, bhupesh.linux@gmail.com,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        robh+dt@kernel.org, agross@kernel.org, herbert@gondor.apana.org.au,
-        davem@davemloft.net, stephan@gerhold.net,
-        Thara Gopinath <thara.gopinath@linaro.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>
-Subject: [PATCH v5 22/22] arm64/dts: qcom: sm8150: Add dt entries to support crypto engine.
-Date:   Wed, 10 Nov 2021 16:29:22 +0530
-Message-Id: <20211110105922.217895-23-bhupesh.sharma@linaro.org>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20211110105922.217895-1-bhupesh.sharma@linaro.org>
-References: <20211110105922.217895-1-bhupesh.sharma@linaro.org>
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=S/NPx9ZAU9zKIZ/Wl/wJ5cTCA38rwFqmn27pwAogCrs=;
+        b=KH8Q46J/11S4xz0PGq1RbAiiUmn1nFb5g9P0yygiw1tdOvzzdFqH8MDz5zCxa9Jefl
+         OMn6XvXJklRRPk/al4gOZCzQMiZ4GjduWeLFCyPdJetNonyN8kbO6l6jL1LBQ4UNmJZ9
+         cnF7qTSJ4UUZYei6W7ZMQHrCooZv66f3uuWOSN1xR6gA7jEPPNdxcjIKKd+svj+khltH
+         hdsgZOlVmZg4loz8IhB6mWUYATwVubs0+NohjmLcHSqCwLsVQwUKSXOlzExmHcsVWyVm
+         fpcs2FKLed6VFu42DCzSXXelOA4Gr+wNVoB1btkx/N1TjNBbtBsOQDUW7Qi42alFsB7x
+         NeKg==
+X-Gm-Message-State: AOAM532qsRzdYVgQ4CZVnNfZE9qd5EmzLbykKN0p7kz6qSMwm0ewM+WS
+        raeLER2we/l6iL7bWkv8uD8WUZEMAztA+L4dGkpyEmQW5gpkhecL
+X-Google-Smtp-Source: ABdhPJzxcTy/HHizi70zHhXPMUG02Zf41OPnnhsj2oNyGtglANtJQ4VDjtuXx0PpUgzSmnEdbmQ5JmQ5i6eojWL9zLs=
+X-Received: by 2002:a25:32ce:: with SMTP id y197mr15665419yby.282.1636542054456;
+ Wed, 10 Nov 2021 03:00:54 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Received: by 2002:a05:7110:81a6:b0:fa:bf14:8958 with HTTP; Wed, 10 Nov 2021
+ 03:00:53 -0800 (PST)
+Reply-To: maddahabdwabbo@gmail.com
+From:   Abd-Jafaari Maddah <sensekxb@gmail.com>
+Date:   Wed, 10 Nov 2021 03:00:53 -0800
+Message-ID: <CAHLcUS9h0AnAiJJvPGLnBdWUtGDLHjyfvvNx6p53y0-CKK_W2A@mail.gmail.com>
+Subject: Why Am Writing You Again
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add crypto engine (CE) and CE BAM related nodes and definitions to
-"sm8150.dtsi".
-
-Cc: Thara Gopinath <thara.gopinath@linaro.org>
-Cc: Bjorn Andersson <bjorn.andersson@linaro.org>
-Cc: Rob Herring <robh+dt@kernel.org>
-Signed-off-by: Bhupesh Sharma <bhupesh.sharma@linaro.org>
----
- arch/arm64/boot/dts/qcom/sm8150.dtsi | 28 ++++++++++++++++++++++++++++
- 1 file changed, 28 insertions(+)
-
-diff --git a/arch/arm64/boot/dts/qcom/sm8150.dtsi b/arch/arm64/boot/dts/qcom/sm8150.dtsi
-index 81b4ff2cc4cd..2af74a11da69 100644
---- a/arch/arm64/boot/dts/qcom/sm8150.dtsi
-+++ b/arch/arm64/boot/dts/qcom/sm8150.dtsi
-@@ -3672,6 +3672,34 @@ wifi: wifi@18800000 {
- 			iommus = <&apps_smmu 0x0640 0x1>;
- 			status = "disabled";
- 		};
-+
-+		cryptobam: dma-controller@1dc4000 {
-+			compatible = "qcom,bam-v1.7.0";
-+			reg = <0 0x01dc4000 0 0x24000>;
-+			interrupts = <GIC_SPI 272 IRQ_TYPE_LEVEL_HIGH>;
-+			#dma-cells = <1>;
-+			qcom,ee = <0>;
-+			qcom,controlled-remotely;
-+			iommus = <&apps_smmu 0x504 0x0011>,
-+				 <&apps_smmu 0x506 0x0011>,
-+				 <&apps_smmu 0x514 0x0011>,
-+				 <&apps_smmu 0x516 0x0011>;
-+			interconnects = <&aggre2_noc MASTER_CRYPTO_CORE_0 &mc_virt SLAVE_EBI_CH0>;
-+			interconnect-names = "memory";
-+		};
-+
-+		crypto: crypto@1dfa000 {
-+			compatible = "qcom,sm8150-qce";
-+			reg = <0 0x01dfa000 0 0x6000>;
-+			dmas = <&cryptobam 4>, <&cryptobam 5>;
-+			dma-names = "rx", "tx";
-+			iommus = <&apps_smmu 0x504 0x0011>,
-+				 <&apps_smmu 0x506 0x0011>,
-+				 <&apps_smmu 0x514 0x0011>,
-+				 <&apps_smmu 0x516 0x0011>;
-+			interconnects = <&aggre2_noc MASTER_CRYPTO_CORE_0 &mc_virt SLAVE_EBI_CH0>;
-+			interconnect-names = "memory";
-+		};
- 	};
- 
- 	timer {
 -- 
-2.31.1
-
+Dear,
+I had sent you a mail but i don't think you received it that's why am
+writing you again.It is important you get back to me as soon as you
+can.
+Am waiting,
+Abd-jaafari Maddah
