@@ -2,250 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C36F644BE79
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 11:19:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4374344BE73
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 11:18:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231304AbhKJKVc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Nov 2021 05:21:32 -0500
-Received: from mail-co1nam11on2073.outbound.protection.outlook.com ([40.107.220.73]:61701
-        "EHLO NAM11-CO1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S231209AbhKJKV1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Nov 2021 05:21:27 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=UW9MugQ+GUYdfdjf5yYIJGfpPwihrQy43QZ49XOTtAXZYmg6Sj8FVDyRCOf10l7Zuj0S0HmNU6vk+JLl6ooNrD6USWUk67SSP8Z0/MWDW/Yls3tdQFabwCBCWGavonNM7tFeajH/dmaJaO1RaA3xbIPzBU7DErIGIH2gpWLZtSFsWk9iuesBgLwCDk5dRDWXFJ1YEZblFAHYda64a1z3wQmwIjZ+/G4Pz+EE1bUpvattFhsL3aQyzKgpjSjlOYWtaXstwZVfOjv0bYk9Mwc8ZAiEXKFO1vbVnE+pGdfFNvxUg6Y6K1LcR97hLqphnTZzpT67MuLUswmS37UonTSuvg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=sN3KTU2T3+BSLdubD5iCle52NOu4cmjSf5Z5AGhMixQ=;
- b=DDHF8RwDvN/fpZobLSAtuc0eC1Sigyvjce4Kiu4xo3EgoEYK1QCbo2KPHqKBjG5dj4sXiA8af03FdpdDk7WMKyyLrhltAViGxh7QbmuH+asDoJQcGhPHlJjm3k5QlBf9FPdDIwh2VuYn+jygWNID+UQWSG6dj5yw6K/FoeqvoO+/81jlxuT7SDBNnuZy97putpmPxtBMouYR5SV9uL2NYeERt+nLP+cmj5UBl3i8gGi7x40FmkIjwge5mSdAiLPcZsJcTU/EaLPqa3tGtjgXTdsPLODrUrEQFXjDZ8qepOxiKEIaYMk0qM+41E/znD7rlk02GImEn23wPS9rvUq40Q==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 165.204.84.17) smtp.rcpttodomain=vger.kernel.org smtp.mailfrom=amd.com;
- dmarc=pass (p=quarantine sp=quarantine pct=100) action=none
- header.from=amd.com; dkim=none (message not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=sN3KTU2T3+BSLdubD5iCle52NOu4cmjSf5Z5AGhMixQ=;
- b=qGU7TzOXDAxHRWUGgZi8kINTTz6cQmbD5dUtsF8Mr/7qPvzsacN3FqKs7m6oawcGbxiMMafbbs3OPERbMqD/dAOxAyccl4HwgqVEXiFhjmZwo3EwCSWY3ai0XpofgpG0lLyxtEK0+haVB+nQjhfrsEzYHb52iUVouvlGc5O/zd0=
-Received: from DM6PR14CA0043.namprd14.prod.outlook.com (2603:10b6:5:18f::20)
- by SJ0PR12MB5405.namprd12.prod.outlook.com (2603:10b6:a03:3af::11) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4649.15; Wed, 10 Nov
- 2021 10:18:36 +0000
-Received: from DM6NAM11FT010.eop-nam11.prod.protection.outlook.com
- (2603:10b6:5:18f:cafe::ae) by DM6PR14CA0043.outlook.office365.com
- (2603:10b6:5:18f::20) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4669.11 via Frontend
- Transport; Wed, 10 Nov 2021 10:18:36 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
- smtp.mailfrom=amd.com; vger.kernel.org; dkim=none (message not signed)
- header.d=none;vger.kernel.org; dmarc=pass action=none header.from=amd.com;
-Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
- 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
- client-ip=165.204.84.17; helo=SATLEXMB04.amd.com;
-Received: from SATLEXMB04.amd.com (165.204.84.17) by
- DM6NAM11FT010.mail.protection.outlook.com (10.13.172.222) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.4690.15 via Frontend Transport; Wed, 10 Nov 2021 10:18:36 +0000
-Received: from sos-ubuntu2004-quartz01.amd.com (10.180.168.240) by
- SATLEXMB04.amd.com (10.181.40.145) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.17; Wed, 10 Nov 2021 04:18:35 -0600
-From:   Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>
-To:     <linux-kernel@vger.kernel.org>, <kvm@vger.kernel.org>,
-        <x86@kernel.org>
-CC:     <pbonzini@redhat.com>, <joro@8bytes.org>, <tglx@linutronix.de>,
-        <mingo@redhat.com>, <bp@alien8.de>, <peterz@infradead.org>,
-        <hpa@zytor.com>, <thomas.lendacky@amd.com>, <jon.grimm@amd.com>,
-        Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>
-Subject: [PATCH 2/2] KVM: SVM: Extend host physical APIC ID field to support more than 8-bit
-Date:   Wed, 10 Nov 2021 04:18:05 -0600
-Message-ID: <20211110101805.16343-3-suravee.suthikulpanit@amd.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20211110101805.16343-1-suravee.suthikulpanit@amd.com>
-References: <20211110101805.16343-1-suravee.suthikulpanit@amd.com>
+        id S230456AbhKJKVW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Nov 2021 05:21:22 -0500
+Received: from mail-il1-f198.google.com ([209.85.166.198]:55898 "EHLO
+        mail-il1-f198.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231172AbhKJKVO (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Nov 2021 05:21:14 -0500
+Received: by mail-il1-f198.google.com with SMTP id d14-20020a056e02214e00b0026cd53452f7so1385625ilv.22
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Nov 2021 02:18:27 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=b4Uvl9vCnp35fmvppL43Oih5hA4XWhqHuac0VaEviow=;
+        b=5LTm+oeBEabZ8YkW4F/rZ9g8qkC/tvM6vRAosGiJbY2PxcCjqF6RJenBQhOeUYZyeU
+         voZk0LnLyaK+E59n4u7zIGt4KIv7bagW/Qs8++Ek5KfiQov9YPx96f1dk0+sFi4FFF3R
+         vvF+Wn/Fa27VsNl/2+ZinvOaGRpjrSeHHLiFSEg80kw5WfBMKiUrP/eUGNyG+aVfLJG5
+         Mlr1INHbF5ur8F6x5wIaP0qZ7VFRaKdU4/2+gZvlQQt+Eljbtoav9fHdcqVo84ObsDX0
+         1XmsBrb3rcd7kHq/G4JkyrS8TpSXzbtNN2MmhJZB76ZRkAH617xJzwAYTqeTekNQb0Ie
+         /MQg==
+X-Gm-Message-State: AOAM53356An6lozJwdmy0dbcO6Gx+Ey5q2IiKsq5ZqYbHZThSjiKDI0+
+        cU1ZISbJGG73oojMjVKrXU6ZjAneCBxuAOOfcB7ZIb+Wgwx2
+X-Google-Smtp-Source: ABdhPJz+EVSf+rwWHuqwhVg3UU8X8NJ365l5Iz0LyVQkN6iDtJRLL5fSuVc7vlLqJ5xsa9iQTYBGB2UYmjD/vJYGEvILLXIulHvQ
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Originating-IP: [10.180.168.240]
-X-ClientProxiedBy: SATLEXMB03.amd.com (10.181.40.144) To SATLEXMB04.amd.com
- (10.181.40.145)
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 6b4dfdbd-ea52-48be-b4bc-08d9a4337523
-X-MS-TrafficTypeDiagnostic: SJ0PR12MB5405:
-X-Microsoft-Antispam-PRVS: <SJ0PR12MB540503C30710DF8A127C4E12F3939@SJ0PR12MB5405.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:4502;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 99Zz3j+GREiMM8R+5+red5bd+hQQSeClHVRk29uUK4nknsZE0cLbSvZe4qXe5vbsFl17O6ydfPZUry/Dtv2aFkAByuPCwN5Uq2EckcsSlzlYRav2fXriEQO+08THMcQJL4vcUmKB0RBMRyTPfTJEogT/PI/VHDKaVZWO2YodkG30YkfFaoyXIP17mbq1bYDOqxRNycLqgLT5Vj+4p0jHtJiispCQzntNA9vwPqiW1tBrk0Md5t/iDeFI690HyU6g10t6LBy73+Vf9q+ld2Go2Wf3KBUOrt0oyPogfg9W/3Dz5Fl17vVIQVs3G1m1w9S/kIu0xUFT0HGPNlfYjmmj2lOtBEgxdv7aKXbDGRJt+jUPH+thjWNrXFtbtWeL4sf1Cjczu8ErpbO29td9FT0Q03JDBHFIEBqmpuvzLI6a81/kzxv61sgiaCoGGsZ90UaGKlL4JTA/J2uHGVWpk1sNESe6NB0mx4FrOdudKMzMtT9cV91FE1Z7ZOzRYCnetVQqcvf+vCPkrUvOkTydLlDIZlLvawl45brtsXmipA4dn4RVuuZWUU/XAdpWYLdQ8i+hoveYi7hX9uX7q4CuxXs3okP/NCzJvydi/lG3rRpKeu56Fd+wRPLtbtIoD0Iko4DWkiwd+UrYG/6/VjjF4OOiBpG7w6LR7llcxgd91vh7gq1cUYcZKtae4Bhn6SpgF4puqaHKZ+tSHSdPc+ooAsHC8/Y6hpflvv4vSOQD/RchuXM=
-X-Forefront-Antispam-Report: CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(4636009)(46966006)(36840700001)(356005)(186003)(70586007)(1076003)(5660300002)(16526019)(83380400001)(26005)(86362001)(36860700001)(47076005)(2906002)(8936002)(44832011)(2616005)(70206006)(36756003)(316002)(7416002)(7696005)(82310400003)(336012)(426003)(8676002)(54906003)(6666004)(110136005)(81166007)(4326008)(508600001)(36900700001);DIR:OUT;SFP:1101;
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 10 Nov 2021 10:18:36.4198
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 6b4dfdbd-ea52-48be-b4bc-08d9a4337523
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
-X-MS-Exchange-CrossTenant-AuthSource: DM6NAM11FT010.eop-nam11.prod.protection.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ0PR12MB5405
+X-Received: by 2002:a92:c846:: with SMTP id b6mr10584871ilq.255.1636539506635;
+ Wed, 10 Nov 2021 02:18:26 -0800 (PST)
+Date:   Wed, 10 Nov 2021 02:18:26 -0800
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000f43bb905d06c8b7f@google.com>
+Subject: [syzbot] BUG: sleeping function called from invalid context in __might_resched
+From:   syzbot <syzbot+5f47a8cea6a12b77a876@syzkaller.appspotmail.com>
+To:     gregkh@linuxfoundation.org, jirislaby@kernel.org,
+        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The AVIC physical APIC ID table entry contains the host physical
-APIC ID field, which the hardware uses to keep track of where each
-vCPU is running. Originally, the field is an 8-bit value, which can
-only support physical APIC ID up to 255.
+Hello,
 
-To support system with larger APIC ID, the AVIC hardware extends
-this field to support up to the largest possible physical APIC ID
-available on the system.
+syzbot found the following issue on:
 
-Therefore, replace the hard-coded mask value with the value
-calculated from the maximum possible physical APIC ID in the system.
+HEAD commit:    e851dfae4371 Merge tag 'kgdb-5.16-rc1' of git://git.kernel..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=14078392b00000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=25617f80cd596994
+dashboard link: https://syzkaller.appspot.com/bug?extid=5f47a8cea6a12b77a876
+compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.2
 
-Reviewed-by: Tom Lendacky <thomas.lendacky@amd.com>
-Signed-off-by: Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>
+Unfortunately, I don't have any reproducer for this issue yet.
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+5f47a8cea6a12b77a876@syzkaller.appspotmail.com
+
+BUG: sleeping function called from invalid context at kernel/printk/printk.c:2522
+in_atomic(): 1, irqs_disabled(): 1, non_block: 0, pid: 21727, name: syz-executor.3
+preempt_count: 1, expected: 0
+RCU nest depth: 0, expected: 0
+3 locks held by syz-executor.3/21727:
+ #0: ffff888022671098 (&tty->ldisc_sem){++++}-{0:0}, at: tty_ldisc_ref_wait+0x22/0x80 drivers/tty/tty_ldisc.c:252
+ #1: ffff888022671468 (&tty->flow.lock){....}-{2:2}, at: spin_lock_irq include/linux/spinlock.h:375 [inline]
+ #1: ffff888022671468 (&tty->flow.lock){....}-{2:2}, at: n_tty_ioctl_helper+0xb6/0x2d0 drivers/tty/tty_ioctl.c:877
+ #2: ffff888022671098 (&tty->ldisc_sem){++++}-{0:0}, at: tty_ldisc_ref+0x1d/0x80 drivers/tty/tty_ldisc.c:273
+irq event stamp: 236
+hardirqs last  enabled at (235): [<ffffffff81be7585>] kasan_quarantine_put+0xf5/0x210 mm/kasan/quarantine.c:220
+hardirqs last disabled at (236): [<ffffffff893c12f1>] __raw_spin_lock_irq include/linux/spinlock_api_smp.h:117 [inline]
+hardirqs last disabled at (236): [<ffffffff893c12f1>] _raw_spin_lock_irq+0x41/0x50 kernel/locking/spinlock.c:170
+softirqs last  enabled at (0): [<ffffffff8144aeac>] copy_process+0x1e8c/0x75a0 kernel/fork.c:2136
+softirqs last disabled at (0): [<0000000000000000>] 0x0
+Preemption disabled at:
+[<0000000000000000>] 0x0
+CPU: 0 PID: 21727 Comm: syz-executor.3 Not tainted 5.15.0-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Call Trace:
+ <TASK>
+ __dump_stack lib/dump_stack.c:88 [inline]
+ dump_stack_lvl+0xcd/0x134 lib/dump_stack.c:106
+ __might_resched.cold+0x222/0x26b kernel/sched/core.c:9539
+ console_lock+0x17/0x80 kernel/printk/printk.c:2522
+ do_con_write+0x10f/0x1e40 drivers/tty/vt/vt.c:2908
+ con_write+0x21/0x40 drivers/tty/vt/vt.c:3295
+ n_hdlc_send_frames+0x24b/0x490 drivers/tty/n_hdlc.c:290
+ tty_wakeup+0xe1/0x120 drivers/tty/tty_io.c:534
+ __start_tty drivers/tty/tty_io.c:806 [inline]
+ __start_tty+0xfb/0x130 drivers/tty/tty_io.c:799
+ n_tty_ioctl_helper+0x299/0x2d0 drivers/tty/tty_ioctl.c:880
+ n_hdlc_tty_ioctl+0xd2/0x340 drivers/tty/n_hdlc.c:633
+ tty_ioctl+0xc69/0x1670 drivers/tty/tty_io.c:2814
+ vfs_ioctl fs/ioctl.c:51 [inline]
+ __do_sys_ioctl fs/ioctl.c:874 [inline]
+ __se_sys_ioctl fs/ioctl.c:860 [inline]
+ __x64_sys_ioctl+0x193/0x200 fs/ioctl.c:860
+ do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+ do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
+ entry_SYSCALL_64_after_hwframe+0x44/0xae
+RIP: 0033:0x7f5a77a72ae9
+Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 bc ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007f5a74fe8188 EFLAGS: 00000246 ORIG_RAX: 0000000000000010
+RAX: ffffffffffffffda RBX: 00007f5a77b85f60 RCX: 00007f5a77a72ae9
+RDX: 0000000000000001 RSI: 000000000000540a RDI: 0000000000000003
+RBP: 00007f5a77accf25 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
+R13: 00007f5a780b9b2f R14: 00007f5a74fe8300 R15: 0000000000022000
+ </TASK>
+BUG: scheduling while atomic: syz-executor.3/21727/0x00000002
+3 locks held by syz-executor.3/21727:
+ #0: ffff888022671098 (&tty->ldisc_sem){++++}-{0:0}, at: tty_ldisc_ref_wait+0x22/0x80 drivers/tty/tty_ldisc.c:252
+ #1: ffff888022671468 (&tty->flow.lock){+.+.}-{2:2}, at: spin_lock_irq include/linux/spinlock.h:375 [inline]
+ #1: ffff888022671468 (&tty->flow.lock){+.+.}-{2:2}, at: n_tty_ioctl_helper+0xb6/0x2d0 drivers/tty/tty_ioctl.c:877
+ #2: ffff888022671098 (&tty->ldisc_sem){++++}-{0:0}, at: tty_ldisc_ref+0x1d/0x80 drivers/tty/tty_ldisc.c:273
+Modules linked in:
+Preemption disabled at:
+[<0000000000000000>] 0x0
+
 
 ---
- arch/x86/kvm/svm/avic.c | 53 ++++++++++++++++++++++++++++++++++-------
- arch/x86/kvm/svm/svm.c  |  6 +++++
- arch/x86/kvm/svm/svm.h  |  2 +-
- 3 files changed, 52 insertions(+), 9 deletions(-)
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-diff --git a/arch/x86/kvm/svm/avic.c b/arch/x86/kvm/svm/avic.c
-index 8052d92069e0..0b073f63dabd 100644
---- a/arch/x86/kvm/svm/avic.c
-+++ b/arch/x86/kvm/svm/avic.c
-@@ -19,6 +19,7 @@
- #include <linux/amd-iommu.h>
- #include <linux/kvm_host.h>
- 
-+#include <asm/apic.h>
- #include <asm/irq_remapping.h>
- 
- #include "trace.h"
-@@ -63,6 +64,7 @@
- static DEFINE_HASHTABLE(svm_vm_data_hash, SVM_VM_DATA_HASH_BITS);
- static u32 next_vm_id = 0;
- static bool next_vm_id_wrapped = 0;
-+static u64 avic_host_physical_id_mask;
- static DEFINE_SPINLOCK(svm_vm_data_hash_lock);
- 
- /*
-@@ -133,6 +135,46 @@ void avic_vm_destroy(struct kvm *kvm)
- 	spin_unlock_irqrestore(&svm_vm_data_hash_lock, flags);
- }
- 
-+int avic_init_host_physical_apicid_mask(void)
-+{
-+	unsigned int eax, ebx, ecx, edx;
-+	u32 level_type, core_mask_width, max_phys_mask_width;
-+
-+	/*
-+	 * Calculate minimum number of bits required to represent
-+	 * host physical APIC ID for each processor (level type 2)
-+	 * using CPUID leaf 0xb sub-leaf 0x1.
-+	 */
-+	cpuid_count(0xb, 0x1, &eax, &ebx, &ecx, &edx);
-+	level_type = (ecx >> 8) & 0xff;
-+
-+	/*
-+	 * If level-type 2 (i.e. processor type) not available,
-+	 * or host is in xAPIC mode, default to only 8-bit mask.
-+	 */
-+	if (level_type != 2 || !x2apic_mode) {
-+		avic_host_physical_id_mask = 0xffULL;
-+		goto out;
-+	}
-+
-+	core_mask_width = eax & 0xF;
-+
-+	max_phys_mask_width = get_count_order(apic_get_max_phys_apicid());
-+
-+	/*
-+	 * Sanity check to ensure core_mask_width for a processor does not
-+	 * exceed the calculated mask.
-+	 */
-+	if (WARN_ON(core_mask_width > max_phys_mask_width))
-+		return -EINVAL;
-+
-+	avic_host_physical_id_mask = BIT(max_phys_mask_width) - 1;
-+out:
-+	pr_debug("Using AVIC host physical APIC ID mask %#0llx\n",
-+		 avic_host_physical_id_mask);
-+	return 0;
-+}
-+
- int avic_vm_init(struct kvm *kvm)
- {
- 	unsigned long flags;
-@@ -943,22 +985,17 @@ avic_update_iommu_vcpu_affinity(struct kvm_vcpu *vcpu, int cpu, bool r)
- void avic_vcpu_load(struct kvm_vcpu *vcpu, int cpu)
- {
- 	u64 entry;
--	/* ID = 0xff (broadcast), ID > 0xff (reserved) */
- 	int h_physical_id = kvm_cpu_get_apicid(cpu);
- 	struct vcpu_svm *svm = to_svm(vcpu);
- 
--	/*
--	 * Since the host physical APIC id is 8 bits,
--	 * we can support host APIC ID upto 255.
--	 */
--	if (WARN_ON(h_physical_id > AVIC_PHYSICAL_ID_ENTRY_HOST_PHYSICAL_ID_MASK))
-+	if (WARN_ON(h_physical_id > avic_host_physical_id_mask))
- 		return;
- 
- 	entry = READ_ONCE(*(svm->avic_physical_id_cache));
- 	WARN_ON(entry & AVIC_PHYSICAL_ID_ENTRY_IS_RUNNING_MASK);
- 
--	entry &= ~AVIC_PHYSICAL_ID_ENTRY_HOST_PHYSICAL_ID_MASK;
--	entry |= (h_physical_id & AVIC_PHYSICAL_ID_ENTRY_HOST_PHYSICAL_ID_MASK);
-+	entry &= ~avic_host_physical_id_mask;
-+	entry |= h_physical_id;
- 
- 	entry &= ~AVIC_PHYSICAL_ID_ENTRY_IS_RUNNING_MASK;
- 	if (svm->avic_is_running)
-diff --git a/arch/x86/kvm/svm/svm.c b/arch/x86/kvm/svm/svm.c
-index 989685098b3e..0b066bb5149d 100644
---- a/arch/x86/kvm/svm/svm.c
-+++ b/arch/x86/kvm/svm/svm.c
-@@ -1031,6 +1031,12 @@ static __init int svm_hardware_setup(void)
- 			nrips = false;
- 	}
- 
-+	if (avic) {
-+		r = avic_init_host_physical_apicid_mask();
-+		if (r)
-+			avic = false;
-+	}
-+
- 	enable_apicv = avic = avic && npt_enabled && boot_cpu_has(X86_FEATURE_AVIC);
- 
- 	if (enable_apicv) {
-diff --git a/arch/x86/kvm/svm/svm.h b/arch/x86/kvm/svm/svm.h
-index 5d30db599e10..e215092d0411 100644
---- a/arch/x86/kvm/svm/svm.h
-+++ b/arch/x86/kvm/svm/svm.h
-@@ -497,7 +497,6 @@ extern struct kvm_x86_nested_ops svm_nested_ops;
- #define AVIC_LOGICAL_ID_ENTRY_VALID_BIT			31
- #define AVIC_LOGICAL_ID_ENTRY_VALID_MASK		(1 << 31)
- 
--#define AVIC_PHYSICAL_ID_ENTRY_HOST_PHYSICAL_ID_MASK	(0xFFULL)
- #define AVIC_PHYSICAL_ID_ENTRY_BACKING_PAGE_MASK	(0xFFFFFFFFFFULL << 12)
- #define AVIC_PHYSICAL_ID_ENTRY_IS_RUNNING_MASK		(1ULL << 62)
- #define AVIC_PHYSICAL_ID_ENTRY_VALID_MASK		(1ULL << 63)
-@@ -525,6 +524,7 @@ int avic_init_vcpu(struct vcpu_svm *svm);
- void avic_vcpu_load(struct kvm_vcpu *vcpu, int cpu);
- void avic_vcpu_put(struct kvm_vcpu *vcpu);
- void avic_post_state_restore(struct kvm_vcpu *vcpu);
-+int avic_init_host_physical_apicid_mask(void);
- void svm_set_virtual_apic_mode(struct kvm_vcpu *vcpu);
- void svm_refresh_apicv_exec_ctrl(struct kvm_vcpu *vcpu);
- bool svm_check_apicv_inhibit_reasons(ulong bit);
--- 
-2.25.1
-
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
