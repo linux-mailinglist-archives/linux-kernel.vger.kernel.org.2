@@ -2,103 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A13044C117
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 13:16:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 302D044C11B
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 13:17:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231592AbhKJMT1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Nov 2021 07:19:27 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40048 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231131AbhKJMT0 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Nov 2021 07:19:26 -0500
-Received: from mail-pj1-x102c.google.com (mail-pj1-x102c.google.com [IPv6:2607:f8b0:4864:20::102c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B6672C061764;
-        Wed, 10 Nov 2021 04:16:38 -0800 (PST)
-Received: by mail-pj1-x102c.google.com with SMTP id t5-20020a17090a4e4500b001a0a284fcc2so1693128pjl.2;
-        Wed, 10 Nov 2021 04:16:38 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=d1kXfwfcDtODWa9uzbuhDs0/KwXOsZ3LY3iX8QnvlxA=;
-        b=pHsI2vJSNu8g0GHaN1RV4BQKDHgk3fZtMh3FGHTCYoZElo1D9iSmylhyGxWcjK5otK
-         CBHmEHtzOIT90awgZUstknnWs0BOyeF5LpcRCiwBRvKuHUzFIGKU2kmIUDjV7qC2LE6U
-         3+Fmf/ZUZF27nB7SQkIEbNzSv/T7ozYCpzSQvamZDPh3o8uxPZ++30LLGK4N9ssFZX8I
-         Ai3imO+Zr3ajF9huOii3Rm7EIgmNkA5CdWxAA5aiQoT+id1Ud3TeFmZ6xU230fhqgWeZ
-         PSPLDXeNrimaBq+100xsFm83lvwlB3fpHlFCeZqJ7eBeHqbaB+w88lh96j0UOlkyxM7T
-         x2Sg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=d1kXfwfcDtODWa9uzbuhDs0/KwXOsZ3LY3iX8QnvlxA=;
-        b=qBKSS1KxX+YLboN4SIqElxKxsMivr1odsz1MGG0W6EpBH1Nl2YnavihrznQHg1JrE1
-         8PMWLnswNBA8GYx85eZQgMz3A0u5/rRvPQg3K8Z0EQ9J8SKkJmFCKXFzvDYXMZrDT6KE
-         3M99jTx1lo5UuVHeNN8gIcoNvfGCPyqM7I8/1CwsSiXAwV7q9HZrF3crVI1nrcB/5N+c
-         d638HcgezmIyLY1RhiDeGcAoEMHPBvjg2EAIrWUYEPXqhs96c7XSDbj96Uo6NkEuWLF+
-         D/9vUxgApOLuo8w45lwGd0+3NZy4rGGsDlqyjrXO9FxuhSifrpCjtj2VKEF4ki3aVe1s
-         HOwA==
-X-Gm-Message-State: AOAM530L1i3zrzImtWrSbUkdyfxm7y/VTEmmzVMF/G0dbgPFlOEbHPIu
-        LqExgNBSsCIAsoBBekRC6Kg=
-X-Google-Smtp-Source: ABdhPJw/Y3uEEX/L9s6wkAehsjYngCEUqPJ0ZZe3Y3EVsOf/ObsoKu1tSTLKkYMLV47N+a1AUV2Ocg==
-X-Received: by 2002:a17:90a:3d42:: with SMTP id o2mr16805227pjf.150.1636546598267;
-        Wed, 10 Nov 2021 04:16:38 -0800 (PST)
-Received: from localhost.localdomain ([193.203.214.57])
-        by smtp.gmail.com with ESMTPSA id k7sm19316104pgn.47.2021.11.10.04.16.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 10 Nov 2021 04:16:38 -0800 (PST)
-From:   cgel.zte@gmail.com
-X-Google-Original-From: deng.changcheng@zte.com.cn
-To:     brking@us.ibm.com
-Cc:     jejb@linux.ibm.com, martin.petersen@oracle.com,
-        linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Changcheng Deng <deng.changcheng@zte.com.cn>,
-        Zeal Robot <zealci@zte.com.cn>
-Subject: [PATCH] scsi: ipr: remove unneeded variable
-Date:   Wed, 10 Nov 2021 12:16:31 +0000
-Message-Id: <20211110121631.151422-1-deng.changcheng@zte.com.cn>
-X-Mailer: git-send-email 2.25.1
+        id S231627AbhKJMTx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Nov 2021 07:19:53 -0500
+Received: from todd.t-8ch.de ([159.69.126.157]:35805 "EHLO todd.t-8ch.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229653AbhKJMTv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Nov 2021 07:19:51 -0500
+From:   =?UTF-8?q?Thomas=20Wei=C3=9Fschuh?= <linux@weissschuh.net>
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=weissschuh.net;
+        s=mail; t=1636546622;
+        bh=GHoGBpI/7Ww3lV2tjGUcrMHObJ3JBrS7JijlpX7Q/W0=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=SMEEjlwpDHPfsZB+lGcohnS+GvUJBoeUfiV/kpxHOiq5xRLQyi8ml327+0vUHtQ/U
+         8IE4mjJs7ZOE1n6/PCWk2Cy/dcpritoiDI0O8It6jMU1c6l6zVGhJnK6XcSeSjVqlh
+         v7eroqFV+QPVDOMc4w+2BFhRJA6XnPKYGoD2i8Hk=
+To:     Jiri Kosina <jikos@kernel.org>, linux-input@vger.kernel.org
+Cc:     =?UTF-8?q?Thomas=20Wei=C3=9Fschuh?= <linux@weissschuh.net>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
+        linux-kernel@vger.kernel.org, linux-next@vger.kernel.org
+Subject: [PATCH] mod_devicetable: fix kdocs for ishtp_device_id
+Date:   Wed, 10 Nov 2021 13:16:55 +0100
+Message-Id: <20211110121655.675664-1-linux@weissschuh.net>
+X-Mailer: git-send-email 2.33.1
+In-Reply-To: <20211110150639.7db57ae2@canb.auug.org.au>
+References: <20211110150639.7db57ae2@canb.auug.org.au>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Changcheng Deng <deng.changcheng@zte.com.cn>
+The kdocs were copied from another device_id struct and not adapted.
 
-Fix the following coccicheck review:
-./drivers/scsi/ipr.c: 9512: 5-7: Unneeded variable
-
-Remove unneeded variable used to store return value.
-
-Reported-by: Zeal Robot <zealci@zte.com.cn>
-Signed-off-by: Changcheng Deng <deng.changcheng@zte.com.cn>
+Fixes: fa443bc3c1e4 ("HID: intel-ish-hid: add support for MODULE_DEVICE_TABLE()")
+Signed-off-by: Thomas Weißschuh <linux@weissschuh.net>
 ---
- drivers/scsi/ipr.c | 3 +--
+ include/linux/mod_devicetable.h | 3 +--
  1 file changed, 1 insertion(+), 2 deletions(-)
 
-diff --git a/drivers/scsi/ipr.c b/drivers/scsi/ipr.c
-index 104bee9b3a9d..013a43b6a12a 100644
---- a/drivers/scsi/ipr.c
-+++ b/drivers/scsi/ipr.c
-@@ -9509,7 +9509,6 @@ static pci_ers_result_t ipr_pci_error_detected(struct pci_dev *pdev,
-  **/
- static int ipr_probe_ioa_part2(struct ipr_ioa_cfg *ioa_cfg)
- {
--	int rc = 0;
- 	unsigned long host_lock_flags = 0;
- 
- 	ENTER;
-@@ -9525,7 +9524,7 @@ static int ipr_probe_ioa_part2(struct ipr_ioa_cfg *ioa_cfg)
- 	spin_unlock_irqrestore(ioa_cfg->host->host_lock, host_lock_flags);
- 
- 	LEAVE;
--	return rc;
-+	return 0;
- }
+diff --git a/include/linux/mod_devicetable.h b/include/linux/mod_devicetable.h
+index befbf53c4b7c..c70abe7aaef2 100644
+--- a/include/linux/mod_devicetable.h
++++ b/include/linux/mod_devicetable.h
+@@ -901,8 +901,7 @@ struct dfl_device_id {
  
  /**
+  * struct ishtp_device_id - ISHTP device identifier
+- * @guid_string: 36 char string of the form fa50ff2b-f2e8-45de-83fa-65417f2f49ba
+- * @context: pointer to driver specific data
++ * @guid: GUID of the device.
+  */
+ struct ishtp_device_id {
+ 	guid_t guid;
+
+base-commit: 7fb0413baa7f8a04caef0c504df9af7e0623d296
 -- 
-2.25.1
+2.33.1
 
