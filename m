@@ -2,63 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6575644B9CD
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 01:54:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 77F6544B9D1
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 01:56:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229550AbhKJA5O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Nov 2021 19:57:14 -0500
-Received: from mail-pf1-f174.google.com ([209.85.210.174]:41714 "EHLO
-        mail-pf1-f174.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229506AbhKJA5N (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Nov 2021 19:57:13 -0500
-Received: by mail-pf1-f174.google.com with SMTP id g19so1045608pfb.8;
-        Tue, 09 Nov 2021 16:54:27 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=kf/FYN+gVGrcd1+PdmA4E4ZA2ZSxzGsOl4BVqKVilsQ=;
-        b=HB8pxVJCX7C+4jsbxsD1jjooFnm48mDJPn6ZMxIOx7ZTKQ+yqMWr65voG6iRN2jamt
-         9TRUnkOEALHkEvyXdJFv/G5yvNqclQp+UxwUpqcthM9GUPXR7agjp12q0xdfcNh/oHnZ
-         2pHI4vhY00BgNHkiXg9QRmcxBvHs0S8OkHbYtAbFwfejwdA4Zf/dYXQQturvLjMeFvW1
-         M/k09wyf5MNBpTT0ZUqLxeYI6zUXO1NpDyMm1VpMlpzGED2IkI926GfUDYk6N7b6p4Ul
-         HjauKU4qzTSYA2M9hbO146enOBxq77RauyBSW7/dDBk6CBm0d0yHPht+cgDm5y97lINq
-         25/A==
-X-Gm-Message-State: AOAM532CRQvQgeFwCNLu3Y8X88Xt5ToBsyoYbcvdllgMRwSbZRkm/qh3
-        gDoDl/O2PPh+czLSnQnlJvg=
-X-Google-Smtp-Source: ABdhPJzEWtt8iAonAa2C4qRPqfJucenAynaePwW92eDYc4TJ+Ir64lLP5hEhOXLPyUmx8r2LN4St0Q==
-X-Received: by 2002:a63:4a24:: with SMTP id x36mr7518498pga.67.1636505666927;
-        Tue, 09 Nov 2021 16:54:26 -0800 (PST)
-Received: from bvanassche-linux.mtv.corp.google.com ([2620:15c:211:201:a582:6939:6a97:9cbf])
-        by smtp.gmail.com with ESMTPSA id l1sm16190987pgn.27.2021.11.09.16.54.25
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 09 Nov 2021 16:54:26 -0800 (PST)
-Subject: Re: [PATCH] block: add __must_check for *add_disk*() callers
-To:     Luis Chamberlain <mcgrof@kernel.org>, axboe@kernel.dk,
-        hare@suse.de, hch@infradead.org, jack@suse.cz, tj@kernel.org,
-        ming.lei@redhat.com
-Cc:     linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Christoph Hellwig <hch@lst.de>
-References: <20211110002949.999380-1-mcgrof@kernel.org>
-From:   Bart Van Assche <bvanassche@acm.org>
-Message-ID: <00619aeb-94c0-85a9-4c11-68dec0345188@acm.org>
-Date:   Tue, 9 Nov 2021 16:54:24 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.14.0
+        id S229723AbhKJA7g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Nov 2021 19:59:36 -0500
+Received: from mga09.intel.com ([134.134.136.24]:29430 "EHLO mga09.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229506AbhKJA7e (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Nov 2021 19:59:34 -0500
+X-IronPort-AV: E=McAfee;i="6200,9189,10163"; a="232417678"
+X-IronPort-AV: E=Sophos;i="5.87,221,1631602800"; 
+   d="scan'208";a="232417678"
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Nov 2021 16:56:47 -0800
+X-IronPort-AV: E=Sophos;i="5.87,221,1631602800"; 
+   d="scan'208";a="491894028"
+Received: from cqiang-mobl.ccr.corp.intel.com (HELO [10.238.2.71]) ([10.238.2.71])
+  by orsmga007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Nov 2021 16:56:44 -0800
+Message-ID: <0b1ac54e-5706-4864-a4a9-1d1a2cff354a@intel.com>
+Date:   Wed, 10 Nov 2021 08:56:41 +0800
 MIME-Version: 1.0
-In-Reply-To: <20211110002949.999380-1-mcgrof@kernel.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
+ Firefox/91.0 Thunderbird/91.3.0
+Subject: Re: [PATCH v5 3/7] KVM: X86: Expose IA32_PKRS MSR
 Content-Language: en-US
+To:     Sean Christopherson <seanjc@google.com>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Xiaoyao Li <xiaoyao.li@intel.com>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20210811101126.8973-1-chenyi.qiang@intel.com>
+ <20210811101126.8973-4-chenyi.qiang@intel.com> <YYliC1kdT9ssX/f7@google.com>
+ <85414ca6-e135-2371-cbce-0f595a7b7a26@intel.com>
+ <YYqT/cOm3Psf1gj1@google.com>
+From:   Chenyi Qiang <chenyi.qiang@intel.com>
+In-Reply-To: <YYqT/cOm3Psf1gj1@google.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/9/21 4:29 PM, Luis Chamberlain wrote:
-> Now that we have done a spring cleaning on all drivers and added
-> error checking / handling, let's keep it that way and ensure
-> no new drivers fail to stick with it.
 
-Reviewed-by: Bart Van Assche <bvanassche@acm.org>
+
+On 11/9/2021 11:30 PM, Sean Christopherson wrote:
+> On Tue, Nov 09, 2021, Chenyi Qiang wrote:
+>>
+>> On 11/9/2021 1:44 AM, Sean Christopherson wrote:
+>>> Hrm.  Ideally this would be open coded in vmx_set_msr().  Long term, the RESET/INIT
+>>> paths should really treat MSR updates as "normal" host_initiated writes instead of
+>>> having to manually handle every MSR.
+>>>
+>>> That would be a bit gross to handle in vmx_vcpu_reset() since it would have to
+>>> create a struct msr_data (because __kvm_set_msr() isn't exposed to vendor code),
+>>> but since vcpu->arch.pkrs is relevant to the MMU I think it makes sense to
+>>> initiate the write from common x86.
+>>>
+>>> E.g. this way there's not out-of-band special code, vmx_vcpu_reset() is kept clean,
+>>> and if/when SVM gains support for PKRS this particular path Just Works.  And it would
+>>> be an easy conversion for my pipe dream plan of handling MSRs at RESET/INIT via a
+>>> list of MSRs+values.
+>>>
+>>> diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
+>>> index ac83d873d65b..55881d13620f 100644
+>>> --- a/arch/x86/kvm/x86.c
+>>> +++ b/arch/x86/kvm/x86.c
+>>> @@ -11147,6 +11147,9 @@ void kvm_vcpu_reset(struct kvm_vcpu *vcpu, bool init_event)
+>>>           kvm_set_rflags(vcpu, X86_EFLAGS_FIXED);
+>>>           kvm_rip_write(vcpu, 0xfff0);
+>>>
+>>> +       if (kvm_cpu_cap_has(X86_FEATURE_PKS))
+>>> +               __kvm_set_msr(vcpu, MSR_IA32_PKRS, 0, true);
+>>> +
+>>
+>> Got it. In addition, is it necessary to add on-INIT check? like:
+>>
+>> if (kvm_cpu_cap_has(X86_FEATURE_PKS) && !init_event)
+>> 	__kvm_set_msr(vcpu, MSR_IA32_PKRS, 0, true);
+>>
+>> PKRS should be preserved on INIT, not cleared. The SDM doesn't make this
+>> clear either.
+> 
+> Hmm, but your cover letter says:
+> 
+>    To help patches review, one missing info in SDM is that PKSR will be
+>    cleared on Powerup/INIT/RESET, which should be listed in Table 9.1
+>    "IA-32 and Intel 64 Processor States Following Power-up, Reset, or INIT"
+> 
+> Which honestly makes me a little happy because I thought I was making stuff up
+> for a minute :-)
+> 
+> So which is it?
+
+Sorry about the confusion. PKRS is preserved on INIT. I tried to correct 
+my statement in previous ping mail but seems not so obvious.
+
+> 
