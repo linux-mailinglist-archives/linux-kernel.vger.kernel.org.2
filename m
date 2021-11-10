@@ -2,35 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A6E2644C7EB
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 19:57:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8EA7B44C84D
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 19:59:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233348AbhKJS44 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Nov 2021 13:56:56 -0500
-Received: from mail.kernel.org ([198.145.29.99]:54534 "EHLO mail.kernel.org"
+        id S234608AbhKJTAs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Nov 2021 14:00:48 -0500
+Received: from mail.kernel.org ([198.145.29.99]:54840 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233560AbhKJSyy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Nov 2021 13:54:54 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C523561267;
-        Wed, 10 Nov 2021 18:49:10 +0000 (UTC)
+        id S234455AbhKJS6o (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Nov 2021 13:58:44 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2585A61207;
+        Wed, 10 Nov 2021 18:51:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1636570151;
-        bh=r4EKlAP/qT+/vmwpqdDkK+ExL9hnK0ixt3w74HlTU88=;
+        s=korg; t=1636570261;
+        bh=mdqLijaQs1sokXQW7Xr0i9zNw8ATJOaPjtPAZ0iG5IA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Cb1sjnAe8ujhYraIKWD3Y5h9EIpYwbVOVYOV/1EgCvVLTPSjz7tQypQF9SfhwU0YF
-         ogcizPZ/0u3jyNgzI5txDVlEsgFgKAaRDKWCDWI1dKyAJzJGcCYtXxddqPpteNX6Uw
-         +jDwWgf9URpmpu3CR3xGMhN4gBTK3D0jQdlkpLqQ=
+        b=cQY1d+PPtqqxnxACY+A+cFYaFFW91pfgpzVqhCZWv1/LFgIHWR4yr9Cwa+GZL2zzs
+         fyVf6dXZy6VL+OdFQg+8u5BnMHYM05Qh/6AMCpzF4moZU9uDYiKiQ9m69En05+/uqV
+         xQscjgycZlaD60WAUVEXx6fXjj6I5jd9+GH9amws=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Pavel Skripkin <paskripkin@gmail.com>,
-        syzbot+c55162be492189fb4f51@syzkaller.appspotmail.com
-Subject: [PATCH 5.14 14/24] staging: rtl8712: fix use-after-free in rtl8712_dl_fw
+        stable@vger.kernel.org, kernel test robot <oliver.sang@intel.com>,
+        Vito Caputo <vcaputo@pengaru.com>,
+        Jann Horn <jannh@google.com>,
+        Kees Cook <keescook@chromium.org>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>
+Subject: [PATCH 5.15 07/26] Revert "proc/wchan: use printk format instead of lookup_symbol_name()"
 Date:   Wed, 10 Nov 2021 19:44:06 +0100
-Message-Id: <20211110182003.788283916@linuxfoundation.org>
+Message-Id: <20211110182003.943843760@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211110182003.342919058@linuxfoundation.org>
-References: <20211110182003.342919058@linuxfoundation.org>
+In-Reply-To: <20211110182003.700594531@linuxfoundation.org>
+References: <20211110182003.700594531@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,59 +42,66 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Pavel Skripkin <paskripkin@gmail.com>
+From: Kees Cook <keescook@chromium.org>
 
-commit c052cc1a069c3e575619cf64ec427eb41176ca70 upstream.
+commit 54354c6a9f7fd5572d2b9ec108117c4f376d4d23 upstream.
 
-Syzbot reported use-after-free in rtl8712_dl_fw(). The problem was in
-race condition between r871xu_dev_remove() ->ndo_open() callback.
+This reverts commit 152c432b128cb043fc107e8f211195fe94b2159c.
 
-It's easy to see from crash log, that driver accesses released firmware
-in ->ndo_open() callback. It may happen, since driver was releasing
-firmware _before_ unregistering netdev. Fix it by moving
-unregister_netdev() before cleaning up resources.
+When a kernel address couldn't be symbolized for /proc/$pid/wchan, it
+would leak the raw value, a potential information exposure. This is a
+regression compared to the safer pre-v5.12 behavior.
 
-Call Trace:
-...
- rtl871x_open_fw drivers/staging/rtl8712/hal_init.c:83 [inline]
- rtl8712_dl_fw+0xd95/0xe10 drivers/staging/rtl8712/hal_init.c:170
- rtl8712_hal_init drivers/staging/rtl8712/hal_init.c:330 [inline]
- rtl871x_hal_init+0xae/0x180 drivers/staging/rtl8712/hal_init.c:394
- netdev_open+0xe6/0x6c0 drivers/staging/rtl8712/os_intfs.c:380
- __dev_open+0x2bc/0x4d0 net/core/dev.c:1484
-
-Freed by task 1306:
-...
- release_firmware+0x1b/0x30 drivers/base/firmware_loader/main.c:1053
- r871xu_dev_remove+0xcc/0x2c0 drivers/staging/rtl8712/usb_intf.c:599
- usb_unbind_interface+0x1d8/0x8d0 drivers/usb/core/driver.c:458
-
-Fixes: 8c213fa59199 ("staging: r8712u: Use asynchronous firmware loading")
-Cc: stable <stable@vger.kernel.org>
-Reported-and-tested-by: syzbot+c55162be492189fb4f51@syzkaller.appspotmail.com
-Signed-off-by: Pavel Skripkin <paskripkin@gmail.com>
-Link: https://lore.kernel.org/r/20211019211718.26354-1-paskripkin@gmail.com
+Reported-by: kernel test robot <oliver.sang@intel.com>
+Reported-by: Vito Caputo <vcaputo@pengaru.com>
+Reported-by: Jann Horn <jannh@google.com>
+Signed-off-by: Kees Cook <keescook@chromium.org>
+Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+Cc: stable@vger.kernel.org
+Link: https://lkml.kernel.org/r/20211008111626.090829198@infradead.org
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/staging/rtl8712/usb_intf.c |    4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ fs/proc/base.c |   21 ++++++++++++---------
+ 1 file changed, 12 insertions(+), 9 deletions(-)
 
---- a/drivers/staging/rtl8712/usb_intf.c
-+++ b/drivers/staging/rtl8712/usb_intf.c
-@@ -595,12 +595,12 @@ static void r871xu_dev_remove(struct usb
+--- a/fs/proc/base.c
++++ b/fs/proc/base.c
+@@ -67,6 +67,7 @@
+ #include <linux/mm.h>
+ #include <linux/swap.h>
+ #include <linux/rcupdate.h>
++#include <linux/kallsyms.h>
+ #include <linux/stacktrace.h>
+ #include <linux/resource.h>
+ #include <linux/module.h>
+@@ -386,17 +387,19 @@ static int proc_pid_wchan(struct seq_fil
+ 			  struct pid *pid, struct task_struct *task)
+ {
+ 	unsigned long wchan;
++	char symname[KSYM_NAME_LEN];
  
- 	/* never exit with a firmware callback pending */
- 	wait_for_completion(&padapter->rtl8712_fw_ready);
-+	if (pnetdev->reg_state != NETREG_UNINITIALIZED)
-+		unregister_netdev(pnetdev); /* will call netdev_close() */
- 	usb_set_intfdata(pusb_intf, NULL);
- 	release_firmware(padapter->fw);
- 	if (drvpriv.drv_registered)
- 		padapter->surprise_removed = true;
--	if (pnetdev->reg_state != NETREG_UNINITIALIZED)
--		unregister_netdev(pnetdev); /* will call netdev_close() */
- 	r8712_flush_rwctrl_works(padapter);
- 	r8712_flush_led_works(padapter);
- 	udelay(1);
+-	if (ptrace_may_access(task, PTRACE_MODE_READ_FSCREDS))
+-		wchan = get_wchan(task);
+-	else
+-		wchan = 0;
+-
+-	if (wchan)
+-		seq_printf(m, "%ps", (void *) wchan);
+-	else
+-		seq_putc(m, '0');
++	if (!ptrace_may_access(task, PTRACE_MODE_READ_FSCREDS))
++		goto print0;
+ 
++	wchan = get_wchan(task);
++	if (wchan && !lookup_symbol_name(wchan, symname)) {
++		seq_puts(m, symname);
++		return 0;
++	}
++
++print0:
++	seq_putc(m, '0');
+ 	return 0;
+ }
+ #endif /* CONFIG_KALLSYMS */
 
 
