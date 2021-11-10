@@ -2,99 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A827144CB5E
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 22:40:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3241544CB61
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 22:42:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233411AbhKJVmo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Nov 2021 16:42:44 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55722 "EHLO
+        id S233424AbhKJVox (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Nov 2021 16:44:53 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56188 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233284AbhKJVmn (ORCPT
+        with ESMTP id S233284AbhKJVov (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Nov 2021 16:42:43 -0500
-Received: from mail-lj1-x22a.google.com (mail-lj1-x22a.google.com [IPv6:2a00:1450:4864:20::22a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 35A2AC0613F5
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Nov 2021 13:39:55 -0800 (PST)
-Received: by mail-lj1-x22a.google.com with SMTP id i63so7951625lji.3
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Nov 2021 13:39:55 -0800 (PST)
+        Wed, 10 Nov 2021 16:44:51 -0500
+Received: from mail-pj1-x102f.google.com (mail-pj1-x102f.google.com [IPv6:2607:f8b0:4864:20::102f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD5FBC061766;
+        Wed, 10 Nov 2021 13:42:03 -0800 (PST)
+Received: by mail-pj1-x102f.google.com with SMTP id gt5so2628316pjb.1;
+        Wed, 10 Nov 2021 13:42:03 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=9fhwG8JiKxShnSZ6QQTuDODf/U79N+SImDenfsND+wk=;
-        b=oUscIYcAOyGNfe6068weJD3o7F8eiMzWJsLWdyJHFlZkjw33u5QetZpv4QE+Mhla9O
-         8GpEs73hv+7Loye8oARnHeEIJcEswipTkyEy3noPdsFodzIQ+no4YZidLUFNbWMdoeIB
-         gkJrvz1KBAPbbzQ8mYtWRjJzMz4kcqqiEzV/hYqavmrOrvgkNdNYtraJLkLld6CHOfiq
-         EMhssthtLoIuiVgdCYXNfKHUAWX/uP6uqWcQmDQl+idQ6TT9YPc/FtTlyAh5mnZssFgb
-         rHtix1iiFGKrSvaAYhKv8R21On0pjmXxfWLnAY6WPfdvKRtgWgMOQv0u3xFItqU8Xt/a
-         zC5A==
+        d=gmail.com; s=20210112;
+        h=message-id:date:from:in-reply-to:subject:to:cc
+         :content-transfer-encoding;
+        bh=uhVvGvVYqwDOBxsemQ0lNiOOnNEqohtMc7/gkkEKXOw=;
+        b=IVjXUim5EMcs+9U8v8Jo6Py5rDpxWl+8QlvBWL26fN607PbwRFowuVIQ2UDEhyuu7T
+         PRhDa4gCrmvts3XJB3RGQ6egroFZuaoiMbIW1s4pO72lCO0ibzhvpS1n6gW1cOY5ed2V
+         S0UJk5H4GIGgpXWGP1NsPpfKFmSXc2Ei9jApGfhNmgytG0GKGYhVbOXP7q4cRr4ceAs6
+         PaZ2BRf9GQzLEeAsNI8GC/6hk/IZ3Jfm+CY9QET+/gRgSzqMwDT3Xjpar3YVIuTlNANO
+         wN2YBNowuT4Zd6/trHnD9hkh2XzvoLgc+bCRTvyfgAKDxALQR0+0VeoeTllqIDtfA2iy
+         0SvQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=9fhwG8JiKxShnSZ6QQTuDODf/U79N+SImDenfsND+wk=;
-        b=60fzn+wW601TZ/5CcDGl4TnCXd0S4wTvx69DmZX5VWgRyLURHbchPDuEdS3pOqsq+P
-         yDC2U5E80MkLVyJ325TIOD79+q1+FmCY49L9cAh4OVCr4WYVrUPuV7qk8eV01h4Uu4hc
-         rNKfhFNX5Q24SR2kAMOXuKPFkK40zkqIFqHnpwmzWEzF4ayp9Pzozkukrk1Nk0EXS4KY
-         yHbUSirRAQTSQm+Tu9mT0TsV8S1aUDytiyyqSMQ8QHEt6BKxbUD1j1xlp7H/yEcZ6NPX
-         Omd0SpLiWoTjlpVcv+9YMwBMZmk1BVsQv3LfqsR3kqpuGGWgfLSV1IUDTAaOKB15JgVF
-         M5tQ==
-X-Gm-Message-State: AOAM5311J+kDMvaTcIFIJpVmzFI56m+xu3n+W6KV/izuksQph92GK0Zu
-        56ZY9dbqHEdp00EQUcu2e4v/q1xU+NMKYmF1YXDclQ==
-X-Google-Smtp-Source: ABdhPJzUIhrOS4hmYH9FaPKnAudImegiTctFFSRfcQrJlee75A8HV4vHD3JDgxaGjvxmuKS9yUY/zPoQiH0ftQbO2FU=
-X-Received: by 2002:a2e:9a8c:: with SMTP id p12mr2167251lji.526.1636580393318;
- Wed, 10 Nov 2021 13:39:53 -0800 (PST)
-MIME-Version: 1.0
-References: <20211104133735.1223989-1-arnd@kernel.org> <CAKwvOd=vrUe7xWohkPZkfui2BM-uP2Q79v02NzTJs9XJJ1CTjw@mail.gmail.com>
-In-Reply-To: <CAKwvOd=vrUe7xWohkPZkfui2BM-uP2Q79v02NzTJs9XJJ1CTjw@mail.gmail.com>
-From:   Nick Desaulniers <ndesaulniers@google.com>
-Date:   Wed, 10 Nov 2021 13:39:41 -0800
-Message-ID: <CAKwvOdm1zU8nhp-KVNDwQK6SfxzwZQgkWvPwpbzn_a-VzVbkXA@mail.gmail.com>
-Subject: Re: [PATCH] iwlwifi: pcie: fix constant-conversion warning
-To:     Arnd Bergmann <arnd@kernel.org>
-Cc:     Luca Coelho <luciano.coelho@intel.com>,
-        Kalle Valo <kvalo@codeaurora.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Johannes Berg <johannes.berg@intel.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Yaara Baruch <yaara.baruch@intel.com>,
-        Matti Gottlieb <matti.gottlieb@intel.com>,
-        Emmanuel Grumbach <emmanuel.grumbach@intel.com>,
-        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, llvm@lists.linux.dev
-Content-Type: text/plain; charset="UTF-8"
+        h=x-gm-message-state:message-id:date:from:in-reply-to:subject:to:cc
+         :content-transfer-encoding;
+        bh=uhVvGvVYqwDOBxsemQ0lNiOOnNEqohtMc7/gkkEKXOw=;
+        b=HqYunadE/FWzw0SHPE+ebvtTHbaoZJoEALIwAdW8Fgd9wISyneJOL0CsMadRwOuzI+
+         Ls4KF2NkviDSMxFC3bTzoxqef12w5/Dy+ttjTuaQ5oH/w3dFcqS3SXW6+HhynLRtpzFT
+         hNmEnZiLP4+tQulA3sHebNTd4K53cR8OpxmAqAAf362NwYmU3TSvu3mGI3FRXXd0en1W
+         hRTX/6NORfLH+OLoae7sIwVIAEG0pZHHYQqe9VcA/2PsQCg/noRZC9CLW7zvjDkgPOs4
+         zOQRePIDCX5VMeaeCSuluFv2vlW+Wfr8prZuOBkfXvnOP4JNjXg5BuW8YHsuSLZH32ka
+         1gRA==
+X-Gm-Message-State: AOAM531aC3/PT5wog7fkH8PaAmESS3b7DZv4ZsM3JejB9cstl6jMNOgg
+        F1yAN9ehm7lWPgqml14XztWQsugloIo3eWBkhQ8=
+X-Google-Smtp-Source: ABdhPJxoBypp4XYzqmcWEPh+xtID+iW20IrecAZmKu3RdENfsXg6KWDfWug5EnSmf0+Ec+dHQwcfqg==
+X-Received: by 2002:a17:902:8695:b0:142:7171:abf5 with SMTP id g21-20020a170902869500b001427171abf5mr2593647plo.74.1636580522522;
+        Wed, 10 Nov 2021 13:42:02 -0800 (PST)
+Received: from cl-arch-kdev (cl-arch-kdev.xen.prgmr.com. [2605:2700:0:2:a800:ff:fed6:fc0d])
+        by smtp.gmail.com with ESMTPSA id z30sm563709pfg.30.2021.11.10.13.42.01
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 10 Nov 2021 13:42:01 -0800 (PST)
+Message-ID: <618c3ca9.1c69fb81.71eb9.2869@mx.google.com>
+Date:   Wed, 10 Nov 2021 13:42:01 -0800 (PST)
+X-Google-Original-Date: Wed, 10 Nov 2021 21:42:00 GMT
+From:   Fox Chen <foxhlchen@gmail.com>
+In-Reply-To: <20211110182002.964190708@linuxfoundation.org>
+Subject: RE: [PATCH 5.10 00/21] 5.10.79-rc1 review
+To:     linux-kernel@vger.kernel.org
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        torvalds@linux-foundation.org, akpm@linux-foundation.org,
+        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+        f.fainelli@gmail.com, stable@vger.kernel.org,
+        Fox Chen <foxhlchen@gmail.com>
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 10, 2021 at 1:38 PM Nick Desaulniers
-<ndesaulniers@google.com> wrote:
->
-> On Thu, Nov 4, 2021 at 6:37 AM Arnd Bergmann <arnd@kernel.org> wrote:
-> >
-> > From: Arnd Bergmann <arnd@arndb.de>
-> >
-> > clang points out a potential issue with integer overflow when
-> > the iwl_dev_info_table[] array is empty:
-> >
-> > drivers/net/wireless/intel/iwlwifi/pcie/drv.c:1344:42: error: implicit conversion from 'unsigned long' to 'int' changes value from 18446744073709551615 to -1 [-Werror,-Wconstant-conversion]
-> >         for (i = ARRAY_SIZE(iwl_dev_info_table) - 1; i >= 0; i--) {
-> >                ~ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~
-> >
-> > This is still harmless, as the loop correctly terminates, but adding
-> > an (int) cast makes that clearer to the compiler.
-> >
-> > Fixes: 3f7320428fa4 ("iwlwifi: pcie: simplify iwl_pci_find_dev_info()")
-> > Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+On Wed, 10 Nov 2021 19:43:46 +0100, Greg Kroah-Hartman <gregkh@linuxfoundation.org> wrote:
+> This is the start of the stable review cycle for the 5.10.79 release.
+> There are 21 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+> 
+> Responses should be made by Fri, 12 Nov 2021 18:19:54 +0000.
+> Anything received after that time might be too late.
+> 
+> The whole patch series can be found in one patch at:
+> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.10.79-rc1.gz
+> or in the git tree and branch at:
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.10.y
+> and the diffstat can be found below.
+> 
+> thanks,
+> 
+> greg k-h
+> 
 
-Also, looks like 0day bot reported as well:
-https://lore.kernel.org/lkml/202111070825.gigxmmDq-lkp@intel.com/
+5.10.79-rc1 Successfully Compiled and booted on my Raspberry PI 4b (8g) (bcm2711)
+                
+Tested-by: Fox Chen <foxhlchen@gmail.com>
 
-Reported-by: kernel test robot <lkp@intel.com>
-
-
--- 
-Thanks,
-~Nick Desaulniers
