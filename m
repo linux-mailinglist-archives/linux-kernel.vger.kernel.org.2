@@ -2,157 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D615A44C2AC
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 15:02:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6176744C20C
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 14:26:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231628AbhKJOFS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Nov 2021 09:05:18 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:25555 "EHLO
+        id S231721AbhKJN2o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Nov 2021 08:28:44 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124]:55910 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231593AbhKJOFQ (ORCPT
+        by vger.kernel.org with ESMTP id S231210AbhKJN2n (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Nov 2021 09:05:16 -0500
+        Wed, 10 Nov 2021 08:28:43 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1636552948;
+        s=mimecast20190719; t=1636550755;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=1TPGlDsYndtj+OjEFiCGDmUdaoybdwvNgP/PovWuwWE=;
-        b=MHZgZwkWeh4E4anL87Igt7l2bnzaS0PrVPKIh6pR7QAiYDySqAJQBi75QZouRMN7raPQIC
-        SH2P5N7oA8aSB5sIOu4Z6tFqKcg4IPa7xs/MHkUWG4II2luPbrx/s1QiQfn3SImgHdzftd
-        YQjZNpo+qKel8muON9JoD7z2n1Z62Tg=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-495-MM8c5JeAMRmm1GLTfZmcJQ-1; Wed, 10 Nov 2021 09:02:24 -0500
-X-MC-Unique: MM8c5JeAMRmm1GLTfZmcJQ-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 18BFE871807;
-        Wed, 10 Nov 2021 14:02:22 +0000 (UTC)
-Received: from fuller.cnet (ovpn-112-5.gru2.redhat.com [10.97.112.5])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 437915D6B1;
-        Wed, 10 Nov 2021 14:01:58 +0000 (UTC)
-Received: by fuller.cnet (Postfix, from userid 1000)
-        id A1A32416952E; Wed, 10 Nov 2021 10:21:59 -0300 (-03)
-Date:   Wed, 10 Nov 2021 10:21:59 -0300
-From:   Marcelo Tosatti <mtosatti@redhat.com>
-To:     Felix Moessbauer <felix.moessbauer@siemens.com>
-Cc:     longman@redhat.com, akpm@linux-foundation.org,
-        cgroups@vger.kernel.org, corbet@lwn.net, frederic@kernel.org,
-        guro@fb.com, hannes@cmpxchg.org, juri.lelli@redhat.com,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-kselftest@vger.kernel.org, lizefan.x@bytedance.com,
-        mkoutny@suse.com, pauld@redhat.com, peterz@infradead.org,
-        shuah@kernel.org, tj@kernel.org, jan.kiszka@siemens.com,
-        henning.schild@siemens.com
-Subject: Re: [PATCH v8 0/6] cgroup/cpuset: Add new cpuset partition type &
- empty effecitve cpus
-Message-ID: <20211110132159.GA12767@fuller.cnet>
-References: <20211018143619.205065-1-longman@redhat.com>
- <20211110111357.17617-1-felix.moessbauer@siemens.com>
+        bh=jP0yAKaqi1adm8H9orP2dppOC1y2MfJUJ8VPAeRgaww=;
+        b=VN8e+Ul1wH8bUFbZ61lUmEGzm4mWhZjPLBKrLnhSN0+CXED/p2aL0ZkS0JEclLsUU8Sot0
+        Ki+LiVidm8fMudgJjkGvXlDPHz5/0Ci/L37HpXC1s3ucr5HUEJnImJC+/EwHjHDdlAsTfm
+        BdfYVA0KOJ2kbtY1dODsSFYpPT6qrFw=
+Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
+ [209.85.128.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-5-EdVz__2VObKQKGTzWuIjig-1; Wed, 10 Nov 2021 08:25:54 -0500
+X-MC-Unique: EdVz__2VObKQKGTzWuIjig-1
+Received: by mail-wm1-f71.google.com with SMTP id 145-20020a1c0197000000b0032efc3eb9bcso3120771wmb.0
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Nov 2021 05:25:54 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:message-id:date:mime-version:user-agent
+         :content-language:to:cc:references:from:organization:subject
+         :in-reply-to:content-transfer-encoding;
+        bh=jP0yAKaqi1adm8H9orP2dppOC1y2MfJUJ8VPAeRgaww=;
+        b=cVjxNLyzA7Ot71/dUig9+0vguFtCdjVHB6uyYaaygTJgaqwGyVsSB5SmyDEMfQI446
+         JtaJBJ1E4Ek/5gARhDnHTESPRW5L6tiPz8uvlDtcta/kPbmQ+ZcJOvMd8lBVAoni8Thc
+         uzky1PVJY5FwT9Yp1Ji02QVCDrsO4U3kQdry86okDI98jL1zTLm8ovKOzYptbEZWLZTU
+         VW6GMZjzGEJeg3ixhLynAjrhOU4UIjvR/ZwBIU7l0MuG21OMVXABMelG7ZtQZICzO1Hs
+         7NXlBNFUZzBkyj5YhXlF7c8ZVyMdEMVWB30wm+0eqxQGG0bw9ZK89Vhq0aFZqFLgLKHl
+         oSoA==
+X-Gm-Message-State: AOAM5336z8JR5RVRMEYQ4SogKi+gcUDPDO+0TbyZ49YY2w1ZGYRLypdX
+        P2YfdWnKU+305GXUDgV1pYoMOwDreD/V1/oa8J/1b+mvr84W4t2uf+g3eA5mzEdAbjibGnTgn5c
+        E1I9o9z+CNGvu19NiucCsX2Zt
+X-Received: by 2002:adf:f209:: with SMTP id p9mr19347913wro.191.1636550753109;
+        Wed, 10 Nov 2021 05:25:53 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJwJSv+R+IWbpj+s2V4l4f0j/FjSMvgil2sH56ptcxuoK6bsMwBY0CkRGweCqJAhm+KUOnovqA==
+X-Received: by 2002:adf:f209:: with SMTP id p9mr19347881wro.191.1636550752878;
+        Wed, 10 Nov 2021 05:25:52 -0800 (PST)
+Received: from [192.168.3.132] (p5b0c604f.dip0.t-ipconnect.de. [91.12.96.79])
+        by smtp.gmail.com with ESMTPSA id i17sm6016557wmq.48.2021.11.10.05.25.51
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 10 Nov 2021 05:25:52 -0800 (PST)
+Message-ID: <8d0bc258-58ba-52c5-2e0d-a588489f2572@redhat.com>
+Date:   Wed, 10 Nov 2021 14:25:50 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211110111357.17617-1-felix.moessbauer@siemens.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.2.0
+Content-Language: en-US
+To:     Jason Gunthorpe <jgg@nvidia.com>,
+        Qi Zheng <zhengqi.arch@bytedance.com>
+Cc:     akpm@linux-foundation.org, tglx@linutronix.de,
+        kirill.shutemov@linux.intel.com, mika.penttila@nextfour.com,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, songmuchun@bytedance.com,
+        zhouchengming@bytedance.com
+References: <20211110105428.32458-1-zhengqi.arch@bytedance.com>
+ <20211110125601.GQ1740502@nvidia.com>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat
+Subject: Re: [PATCH v3 00/15] Free user PTE page table pages
+In-Reply-To: <20211110125601.GQ1740502@nvidia.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 10, 2021 at 12:13:57PM +0100, Felix Moessbauer wrote:
-> Hi Weiman,
+On 10.11.21 13:56, Jason Gunthorpe wrote:
+> On Wed, Nov 10, 2021 at 06:54:13PM +0800, Qi Zheng wrote:
 > 
-> > v8:
-> >  - Reorganize the patch series and rationalize the features and
-> >    constraints of a partition.
-> >  - Update patch descriptions and documentation accordingly.
-> > 
-> > v7:
-> >  - Simplify the documentation patch (patch 5) as suggested by Tejun.
-> >  - Fix a typo in patch 2 and improper commit log in patch 3.
-> > 
-> > v6:
-> >  - Remove duplicated tmpmask from update_prstate() which should fix the
-> >    frame size too large problem reported by kernel test robot.
-> > 
-> > This patchset makes four enhancements to the cpuset v2 code.
-> > 
-> >  Patch 1: Enable partition with no task to have empty cpuset.cpus.effective.
-> > 
-> >  Patch 2: Refining the features and constraints of a cpuset partition
-> >  clarifying what changes are allowed.
-> >
-> >  Patch 3: Add a new partition state "isolated" to create a partition
-> >  root without load balancing. This is for handling intermitten workloads
-> >  that have a strict low latency requirement.
+>> In this patch series, we add a pte_refcount field to the struct page of page
+>> table to track how many users of PTE page table. Similar to the mechanism of
+>> page refcount, the user of PTE page table should hold a refcount to it before
+>> accessing. The PTE page table page will be freed when the last refcount is
+>> dropped.
 > 
+> So, this approach basically adds two atomics on every PTE map
 > 
-> I just tested this patch-series and can confirm that it works on 5.15.0-rc7-rt15 (PREEMT_RT).
-> 
-> However, I was not able to see any latency improvements when using
-> cpuset.cpus.partition=isolated.
-> The test was performed with jitterdebugger on CPUs 1-3 and the following cmdline:
-> rcu_nocbs=1-4 nohz_full=1-4 irqaffinity=0,5-6,11 intel_pstate=disable
-> On the other cpus, stress-ng was executed to generate load.
+> If I have it right the reason that zap cannot clean the PTEs today is
+> because zap cannot obtain the mmap lock due to a lock ordering issue
+> with the inode lock vs mmap lock.
 
-enum hk_flags {
-        HK_FLAG_TIMER           = 1,
-        HK_FLAG_RCU             = (1 << 1),
-        HK_FLAG_MISC            = (1 << 2),
-        HK_FLAG_SCHED           = (1 << 3),
-        HK_FLAG_TICK            = (1 << 4),
-        HK_FLAG_DOMAIN          = (1 << 5),
-        HK_FLAG_WQ              = (1 << 6),
-        HK_FLAG_MANAGED_IRQ     = (1 << 7),
-        HK_FLAG_KTHREAD         = (1 << 8),
-};
+There are different ways to zap: madvise(DONTNEED) vs
+fallocate(PUNCH_HOLE). It depends on "from where" we're actually
+comming: a process page table walker or the rmap.
 
-static int __init housekeeping_nohz_full_setup(char *str)
-{
-        unsigned int flags;
+The way locking currently works doesn't allow to remove a page table
+just by holding the mmap lock, not even in write mode. You'll also need
+to hold the respective rmap locks -- which implies that reclaiming apge
+tables crossing VMAs is "problematic". Take a look at khugepaged which
+has to play quite some tricks to remove a page table.
 
-        flags = HK_FLAG_TICK | HK_FLAG_WQ | HK_FLAG_TIMER | HK_FLAG_RCU |
-                HK_FLAG_MISC | HK_FLAG_KTHREAD;
+And there are other ways we can create empty page tables via the rmap,
+like reclaim/writeback, although they are rather a secondary concern mostly.
 
-        return housekeeping_setup(str, flags);
-}
-__setup("nohz_full=", housekeeping_nohz_full_setup);
-
-So HK_FLAG_SCHED and HK_FLAG_MANAGED_IRQ are unset in your configuration.
-Perhaps they are affecting your latency numbers?
-
-This tool might be handy to see what is the reason for the latency source:
-
-https://github.com/xzpeter/rt-trace-bpf
-
-./rt-trace-bcc.py -c isolated-cpu
-
-> Just some more general notes:
 > 
-> Even with this new "isolated" type, it is still very tricky to get a similar
-> behavior as with isolcpus (as long as I don't miss something here):
+> If it could obtain the mmap lock then it could do the zap using the
+> write side as unmapping a vma does.
 > 
-> Consider an RT application that consists of a non-rt thread that should be floating
-> and a rt-thread that should be placed in the isolated domain.
-> This requires cgroup.type=threaded on both cgroups and changes to the application
-> (threads have to be born in non-rt group and moved to rt-group).
+> Rather than adding a new "lock" to ever PTE I wonder if it would be
+> more efficient to break up the mmap lock and introduce a specific
+> rwsem for the page table itself, in addition to the PTL. Currently the
+> mmap lock is protecting both the vma list and the page table.
+
+There is the rmap side of things as well. At least the rmap won't
+reclaim alloc/free page tables, but it will walk page tables while
+holding the respective rmap lock.
+
 > 
-> Theoretically, this could be done externally, but in case the application sets the
-> affinity mask manually, you run into a timing issue (setting affinities to CPUs
-> outside the current cpuset.cpus results in EINVAL).
+> I think that would allow the lock ordering issue to be resolved and
+> zap could obtain a page table rwsem.
 > 
-> Best regards,
-> Felix Moessbauer
-> Siemens AG
-> 
-> > Patch 4: Enable the "cpuset.cpus.partition" file to show the reason
-> >  that causes invalid partition like "root invalid (No cpu available
-> >  due to hotplug)".
-> > 
-> > Patch 5 updates the cgroup-v2.rst file accordingly. Patch 6 adds a new
-> > cpuset test to test the new cpuset partition code.
-> 
-> 
+> Compared to two atomics per PTE this would just be two atomic per
+> page table walk operation, it is conceptually a lot simpler, and would
+> allow freeing all the page table levels, not just PTEs.
+
+Another alternative is to not do it in the kernel automatically, but
+instead have a madvise(MADV_CLEANUP_PGTABLE) mechanism that will get
+called by user space explicitly once it's reasonable. While this will
+work for the obvious madvise(DONTNEED) users -- like memory allocators
+-- that zap memory, it's a bit more complicated once shared memory is
+involved and we're fallocate(PUNCH_HOLE) memory. But it would at least
+work for many use cases that want to optimize memory consumption for
+sparse memory mappings.
+
+Note that PTEs are the biggest memory consumer. On x86-64, a 1 TiB area
+will consume 2 GiB of PTE tables and only 4 MiB of PMD tables. So PTEs
+are most certainly the most important part piece.
+
+-- 
+Thanks,
+
+David / dhildenb
 
