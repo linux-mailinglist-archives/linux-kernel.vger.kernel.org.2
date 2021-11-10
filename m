@@ -2,121 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D842944C18C
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 13:48:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F39644C198
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 13:51:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231753AbhKJMvV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Nov 2021 07:51:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47370 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231210AbhKJMvU (ORCPT
+        id S231819AbhKJMxw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Nov 2021 07:53:52 -0500
+Received: from out30-130.freemail.mail.aliyun.com ([115.124.30.130]:32850 "EHLO
+        out30-130.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229653AbhKJMxs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Nov 2021 07:51:20 -0500
-Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EDD84C061764
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Nov 2021 04:48:32 -0800 (PST)
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: dafna)
-        with ESMTPSA id A47AA1F45536
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=collabora.com; s=mail;
-        t=1636548511; bh=jwsdJub026Wwb55SAebMDORQGiD7sU4q5d/5s4UeTkg=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=sOaxVK8iLM1IIiBSNuKl6RpdA3raabAR4Ef1dztCdzH8+31hU+41orsEBRtAJa5ZD
-         lzais0ceb8fIGpwmYySyCXqg5WDtNTwqOsgbUEBrxHF1/l0/umaNzTQ90nTBGJNN3t
-         3Gavr8rcHvETpLlBtSuUUlW6w4cMVq19fUfGw084oPfHF2IgpvgmVhg6xtyRlr/gAA
-         pF8SJb+mHHNJ3wHyuznBSr+gctQ1Tamq2N3WS4eUYuCbF8OMkO9xcyxcZIyHKV108k
-         3uaPHvwWLwtk6zR5qwJPAzhsrlPoXY5lxetg9LfdnJjBzIGQxUSbecR3T1HoJ18Se9
-         7w+D6MwjybfsQ==
-Subject: Re: [PATCH v2 3/3] drm/bridge: parade-ps8640: Perform full poweroff
- if poweron fails
-To:     AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>, a.hajda@samsung.com
-Cc:     narmstrong@baylibre.com, robert.foss@linaro.org,
-        Laurent.pinchart@ideasonboard.com, jonas@kwiboo.se,
-        jernej.skrabec@gmail.com, airlied@linux.ie, daniel@ffwll.ch,
-        dri-devel@lists.freedesktop.org, kernel@collabora.com,
-        linux-kernel@vger.kernel.org
-References: <20211102093618.114928-1-angelogioacchino.delregno@collabora.com>
- <20211102093618.114928-3-angelogioacchino.delregno@collabora.com>
-From:   Dafna Hirschfeld <dafna.hirschfeld@collabora.com>
-Message-ID: <6a1ee7d7-abc7-ed9f-fca0-91a0950b13a8@collabora.com>
-Date:   Wed, 10 Nov 2021 14:48:27 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        Wed, 10 Nov 2021 07:53:48 -0500
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R261e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04395;MF=guwen@linux.alibaba.com;NM=1;PH=DS;RN=10;SR=0;TI=SMTPD_---0UvuzFxJ_1636548651;
+Received: from e02h04404.eu6sqa(mailfrom:guwen@linux.alibaba.com fp:SMTPD_---0UvuzFxJ_1636548651)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Wed, 10 Nov 2021 20:50:58 +0800
+From:   Wen Gu <guwen@linux.alibaba.com>
+To:     kgraul@linux.ibm.com, tonylu@linux.alibaba.com
+Cc:     davem@davemloft.net, kuba@kernel.org, linux-s390@vger.kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        dust.li@linux.alibaba.com, xuanzhuo@linux.alibaba.com,
+        guwen@linux.alibaba.com
+Subject: [RFC PATCH 0/2] Two RFC patches for the same SMC socket wait queue mismatch issue
+Date:   Wed, 10 Nov 2021 20:50:49 +0800
+Message-Id: <1636548651-44649-1-git-send-email-guwen@linux.alibaba.com>
+X-Mailer: git-send-email 1.8.3.1
 MIME-Version: 1.0
-In-Reply-To: <20211102093618.114928-3-angelogioacchino.delregno@collabora.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi, Karsten
 
+Thanks for your reply. The previous discussion about the issue of socket
+wait queue mismatch in SMC fallback can be referred from:
+https://lore.kernel.org/all/db9acf73-abef-209e-6ec2-8ada92e2cfbc@linux.ibm.com/
 
-On 02.11.21 11:36, AngeloGioacchino Del Regno wrote:
-> In function ps8640_bridge_poweron(), in case of a failure not relative
-> to the regulators enablement, the code was disabling the regulators but
-> the gpio changes that happened during the poweron sequence were not
-> being reverted back to a clean poweroff state.
-> 
-> Since it is expected that, when we enter ps8640_bridge_poweron(), the
-> powerdown and reset GPIOs are both in active state exactly as they were
-> left in the poweroff function before, we can simply call function
-> __ps8640_bridge_poweroff() in the failure case, reverting every change
-> that was done during the power on sequence.
-> 
-> Of course it was chosen to call the poweroff function instead of adding
-> code to revert the GPIO changes to the poweron one to avoid duplicating
-> code, as we would be doing exactly what the poweroff function does.
-> 
-> Signed-off-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+This set of patches includes two RFC patches, they are both aimed to fix
+the same issue, the mismatch of socket wait queue in SMC fallback.
 
-Reviewed-by: Dafna Hirschfeld <dafna.hirschfeld@collabora.com>
+In your last reply, I am suggested to add the complete description about
+the intention of initial patch in order that readers can understand the
+idea behind it. This has been done in "[RFC PATCH net v2 0/2] net/smc: Fix
+socket wait queue mismatch issue caused by fallback" of this mail.
 
-> ---
->   drivers/gpu/drm/bridge/parade-ps8640.c | 11 +++++------
->   1 file changed, 5 insertions(+), 6 deletions(-)
-> 
-> diff --git a/drivers/gpu/drm/bridge/parade-ps8640.c b/drivers/gpu/drm/bridge/parade-ps8640.c
-> index 41f5d511d516..ef1b51d8b676 100644
-> --- a/drivers/gpu/drm/bridge/parade-ps8640.c
-> +++ b/drivers/gpu/drm/bridge/parade-ps8640.c
-> @@ -344,7 +344,7 @@ static int ps8640_bridge_poweron(struct ps8640 *ps_bridge)
->   
->   	if (ret < 0) {
->   		DRM_ERROR("failed read PAGE2_GPIO_H: %d\n", ret);
-> -		goto err_regulators_disable;
-> +		goto err_poweroff;
->   	}
->   
->   	msleep(50);
-> @@ -360,23 +360,22 @@ static int ps8640_bridge_poweron(struct ps8640 *ps_bridge)
->   	ret = regmap_update_bits(map, PAGE2_MCS_EN, MCS_EN, 0);
->   	if (ret < 0) {
->   		DRM_ERROR("failed write PAGE2_MCS_EN: %d\n", ret);
-> -		goto err_regulators_disable;
-> +		goto err_poweroff;
->   	}
->   
->   	/* Switch access edp panel's edid through i2c */
->   	ret = regmap_write(map, PAGE2_I2C_BYPASS, I2C_BYPASS_EN);
->   	if (ret < 0) {
->   		DRM_ERROR("failed write PAGE2_I2C_BYPASS: %d\n", ret);
-> -		goto err_regulators_disable;
-> +		goto err_poweroff;
->   	}
->   
->   	ps_bridge->powered = true;
->   
->   	return 0;
->   
-> -err_regulators_disable:
-> -	regulator_bulk_disable(ARRAY_SIZE(ps_bridge->supplies),
-> -			       ps_bridge->supplies);
-> +err_poweroff:
-> +	__ps8640_bridge_poweroff(ps_bridge);
->   
->   	return ret;
->   }
-> 
+Unfortunately, I found a defect later in the solution of the initial patch
+or the v2 patch mentioned above. The defect is about fasync_list and related
+to 67f562e3e14 ("net/smc: transfer fasync_list in case of fallback").
+
+When user applications use sock_fasync() to insert entries into fasync_list,
+the wait queue they operate is smc socket->wq. But in initial patch or
+the v2 patch, I swapped sk->sk_wq of smc socket and clcsocket in smc_create(),
+thus the sk_data_ready / sk_write_space.. of smc will wake up clcsocket->wq
+finally. So the entries added into smc socket->wq.fasync_list won't be woken
+up at all before fallback.
+
+So the solution in initial patch or the v2 patch of this mail by swapping
+sk->sk_wq of smc socket and clcsocket seems a bad way to fix this issue.
+
+Therefore, I tried another solution by removing the wait queue entries from
+smc socket->wq to clcsocket->wq during the fallback, which is described in the
+"[RFC PATCH net 2/2] net/smc: Transfer remaining wait queue entries" of this
+mail. In our test environment, this patch can fix the fallback issue well.
+
+I am looking forward to hear your opinions. Thank you.
+
+Cheers,
+Wen Gu
+
+Wen Gu (2):
+  net/smc: Fix socket wait queue mismatch issue caused by fallback
+  net/smc: Transfer remaining wait queue entries
+
