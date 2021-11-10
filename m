@@ -2,88 +2,179 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EE16A44C61E
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 18:41:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A013F44C621
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 18:42:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232177AbhKJRoZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Nov 2021 12:44:25 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57874 "EHLO
+        id S231873AbhKJRp3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Nov 2021 12:45:29 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58104 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230230AbhKJRoY (ORCPT
+        with ESMTP id S230100AbhKJRp1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Nov 2021 12:44:24 -0500
-Received: from mail-wr1-x436.google.com (mail-wr1-x436.google.com [IPv6:2a00:1450:4864:20::436])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 612EDC061764
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Nov 2021 09:41:36 -0800 (PST)
-Received: by mail-wr1-x436.google.com with SMTP id i5so5436441wrb.2
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Nov 2021 09:41:36 -0800 (PST)
+        Wed, 10 Nov 2021 12:45:27 -0500
+Received: from mail-wm1-x32b.google.com (mail-wm1-x32b.google.com [IPv6:2a00:1450:4864:20::32b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 262E0C061764
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Nov 2021 09:42:39 -0800 (PST)
+Received: by mail-wm1-x32b.google.com with SMTP id n33-20020a05600c502100b0032fb900951eso601wmr.4
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Nov 2021 09:42:39 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=immu-ne.20210112.gappssmtp.com; s=20210112;
+        d=google.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=m3+k//Nw67MSP2v/Is5OlRANaMhMhhGq5VfcqBVvIeI=;
-        b=h0TnXrD4xWQ+vuoN/VoZapw9MGYZH6Bzdw4vSjINkEqJJtqiL7jRWbZKk2Q0vmMAI8
-         1mZ0ixZmDX4yMo9d87EaJpB4wU1QLhxjix19LfJb0TSlKXcn8oNf9zdKMHrTKBowDLAS
-         qKmBrK/d/igVl4OisJ6xoOAJOuUtqjyIPJu6InPmaHc5feX514lsYg2vaJRujmDbx51b
-         FnkTz4b6pg7wcI8GwA20p8x20faTwAY9TPNtjMAh7NxAREkrXjKhOsCv3cqolysvOrTm
-         teo6l3u3sgTRf+9wZtzznWdOf7Dnt1T6PEgY8v+CSCo0krQQHk8VOm94AWcsqtxZm0vL
-         8C8g==
+        bh=BmJmTnzPfpqvgfeS3ZzzZ3LIV2vZGhaQGUrN4OQ9GVc=;
+        b=A7oSaQ/R3coHeHC40rJ1CdryOdtv8cF/yEknlJz/6t2IQ9dnili9EARfpQDCBm28ji
+         +wyP8Y4NxaIga5rYkU9newjPK83r3XxBCUjtZFwOW/TvYSLyjyj+BCBKGQ1IGfRjvLI8
+         2bECtGd3vIUMuWU3wVJSqgwLGQZUAMpg38XCzAk9lIWGt7kzaxFdOuGOsCLoEz1YLXcz
+         FbsqZ6pCB+WNLHTk5aAH5wn6EMrs4x60kSWI9cwwRUcg6kgOoVefgrL+ipnZsugspW4J
+         yV0/8taOfuVhsurV1P76C8PWRMlnTr9vtgqt8XYUynssRc4DoF4uB61vyljyljf85GDs
+         0/BQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=m3+k//Nw67MSP2v/Is5OlRANaMhMhhGq5VfcqBVvIeI=;
-        b=KDHGIBgAUNCogsJRh4zep/8J2AoArYf48Y4vtbEQR8G8daskeHa86cTxV0ohF5KdDU
-         K2vnHI6Zn9iJXQTXsVVrFFKh0jvPiBoDUlJsNWETaRqrxiL1wtu3EN9iwvEq7y+CE+uh
-         +MoDktJh515iQWQCqfUscP91lEaWFZNBduTj4SddxTEuXGhMhwMn7LdI77HL6qzOu2/P
-         JVIXEbPsg3by/tFyQtxFDAOTgxbuijf31E+e3B0iy8Ufs0t+1/SIiF65KIYnKrWTCer3
-         NZRMzklDgAckMlI5bZvp9A39o5Te3QCj4PxTQXlTn1bzlfihsQwnhhMvov5SHFUxYHPS
-         BlOQ==
-X-Gm-Message-State: AOAM5318pKHJe7oabKlqHXhbebD05LLXnfmnJKHAX2IU9h7MamfuPELc
-        vd19DQDQjmVAs7BiMjmarpKUt+6+nNZ/EruJYOgafg==
-X-Google-Smtp-Source: ABdhPJyji08Osmbo8jcHLe3P6SPGfKGQxGSCchRvUfkB1TcfZeMkaHCGFi4DFTbQb1Gf/AUBJBAIvEb7YplPbDdi46A=
-X-Received: by 2002:adf:dd0d:: with SMTP id a13mr847349wrm.259.1636566094916;
- Wed, 10 Nov 2021 09:41:34 -0800 (PST)
+        bh=BmJmTnzPfpqvgfeS3ZzzZ3LIV2vZGhaQGUrN4OQ9GVc=;
+        b=nwwbN4BN7VW/TosI2ktvYXZfN4jVj/05OjwaZDsHCfau56iPSlJcCLH9QsME70vTL7
+         CEfj59EtMSGNFA/37xueTAxlEUcu36/YVsk96khQdvsGsiI9JKT114Vs3nlElBoQaSqi
+         gZ+K3hhqN0Smrj9Q5Bh3g9Chs5rV7ZuE6t5GimgkfGCRVVro208prf9nY5REJUWr2LSI
+         GAf6Ct1E5GAPy6lbF64FzoB5PGIVNWXEXkdLC6tBep768A1qGj8v9A5kmnK1eowMVTU/
+         bLDhoPAYntZbMqs4xvEfIojwOzHFC6bn+qiifVKbPKmfN4K1HCmzJn4PfCRfAmPGUMWd
+         NYTA==
+X-Gm-Message-State: AOAM533ARjhfxXiM01bhgmq2bOps4XsGUHEezK+lY3t9+wfoZXwav/tT
+        M44UpK/RImfTNAhIaIc75QZ3OvjWTvjf8W0pr6Jxrw==
+X-Google-Smtp-Source: ABdhPJzaIRfLIlvC2xdnSw40WJRg4en26VatfTndhl34g3jZs25Ylo2D5RvkxNkOG3tMYShQ+X6yeP3O+PNjG70M6HA=
+X-Received: by 2002:a05:600c:190b:: with SMTP id j11mr1023411wmq.112.1636566157490;
+ Wed, 10 Nov 2021 09:42:37 -0800 (PST)
 MIME-Version: 1.0
-References: <20211109000130.42361-1-hans-gert.dahmen@immu.ne>
- <YYoSPjF3M05dR0PX@kroah.com> <42cea157-55a2-bd12-335b-6348f0ff6525@immu.ne>
- <YYpNOMtp7Kwf0fho@kroah.com> <CAHifhD4f676jiQ52siiKQTjUFXFm6Sto8pQjF07w5y+gqrUvFQ@mail.gmail.com>
- <YYpsq/umygfTb8mM@kroah.com> <CAHifhD6K5hbpHS-X+2L=pfUe+7OpyTbB7uyh8WGbdaeBMwoYPg@mail.gmail.com>
- <CAHp75VfbYsyC=7Ncnex1f_jiwrZhExDF7iy4oSGZgS1cHmsN0Q@mail.gmail.com>
- <CAHifhD5V9vwJenRLcPRH5ZMeLa_JnjZKfdcFZw1CjceBtC6=Ew@mail.gmail.com>
- <CAHp75VeyQEaABFOnEUh2pdFx9ROJvRcud-BuEbKWmaEWpL9_Uw@mail.gmail.com>
- <CAHifhD7Qf7+dc7K-MjNguqmiCWUxOJZmQoCTRUZOR-RWMm_JPw@mail.gmail.com>
- <CAHp75Ve9BMNy3gP=-Dajm+Lgu+E4FCqc4phLgV1_cr2qUnTX_w@mail.gmail.com>
- <CAHifhD4n7O5eWFPOjRAmHYL52tW0K=uXXzVj7L5+enTFwFXW2A@mail.gmail.com>
- <CAArk9MP5cKJ+VhAZUseW4LnQNRvux=MZe2eSy3rQkbHKnUsGig@mail.gmail.com> <CAHp75VdRwvU5WjFP5E4gg8U+_e34A0Lwze+nz_wVHoB49jLeLg@mail.gmail.com>
-In-Reply-To: <CAHp75VdRwvU5WjFP5E4gg8U+_e34A0Lwze+nz_wVHoB49jLeLg@mail.gmail.com>
-From:   Hans-Gert Dahmen <hans-gert.dahmen@immu.ne>
-Date:   Wed, 10 Nov 2021 18:41:23 +0100
-Message-ID: <CAHifhD7baCPKnRsM3Vfc_EDJoa=Lzqgq=K68_+WS59n9bvCOvw@mail.gmail.com>
-Subject: Re: [PATCH] firmware: export x86_64 platform flash bios region via sysfs
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc:     Mauro Lima <mauro.lima@eclypsium.com>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Philipp Deppenwiese <philipp.deppenwiese@immu.ne>,
-        Richard Hughes <hughsient@gmail.com>,
-        "platform-driver-x86@vger.kernel.org" 
-        <platform-driver-x86@vger.kernel.org>
+References: <20211107235754.1395488-1-almasrymina@google.com>
+ <YYtuqsnOSxA44AUX@t490s> <c5ed86d0-8af6-f54f-e352-8871395ad62e@redhat.com>
+ <YYuCaNXikls/9JhS@t490s> <793685d2-be3f-9a74-c9a3-65c486e0ef1f@redhat.com>
+ <YYuJd9ZBQiY50dVs@xz-m1.local> <8032a24c-3800-16e5-41b7-5565e74d3863@redhat.com>
+In-Reply-To: <8032a24c-3800-16e5-41b7-5565e74d3863@redhat.com>
+From:   Mina Almasry <almasrymina@google.com>
+Date:   Wed, 10 Nov 2021 09:42:25 -0800
+Message-ID: <CAHS8izPKN96M2GbHBC6_-XCr1pYy7uA-vNw2FHe01XbYMVdKUQ@mail.gmail.com>
+Subject: Re: [PATCH v4] mm: Add PM_HUGE_THP_MAPPING to /proc/pid/pagemap
+To:     David Hildenbrand <david@redhat.com>
+Cc:     Peter Xu <peterx@redhat.com>, Matthew Wilcox <willy@infradead.org>,
+        "Paul E . McKenney" <paulmckrcu@fb.com>,
+        Yu Zhao <yuzhao@google.com>, Jonathan Corbet <corbet@lwn.net>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Ivan Teterevkov <ivan.teterevkov@nutanix.com>,
+        Florian Schmidt <florian.schmidt@nutanix.com>,
+        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-mm@kvack.org
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Am Mi., 10. Nov. 2021 um 17:32 Uhr schrieb Andy Shevchenko
-<andy.shevchenko@gmail.com>:
-> Why do we see this instead?
+On Wed, Nov 10, 2021 at 12:57 AM Peter Xu <peterx@redhat.com> wrote:
+>
+>
+> This also reminded me that we've got issue with smaps being too slow, and in
+> many cases we're only interested in a small portion of the whole memory.  This
+> made me wonder how about a new smaps interface taking memory range as input.
+>
 
-I personally do not need this patch to be in the kernel. This is my
-first ever submission to the LKML and all I was trying to do is do
-other open source tools a favor in my spare time during my HOLIDAY. At
-least for me that is it. After this horrible experience you can be
-sure to never ever see anything again from me in the Linux community.
+Does a patch like I'm providing here address the perf issues you're seeing?
 
-Hans-Gert
+> Thanks,
+>
+> --
+> Peter Xu
+>
+
+On Wed, Nov 10, 2021 at 2:24 AM David Hildenbrand <david@redhat.com> wrote:
+>
+> On 10.11.21 09:57, Peter Xu wrote:
+> > On Wed, Nov 10, 2021 at 09:30:50AM +0100, David Hildenbrand wrote:
+> >> On 10.11.21 09:27, Peter Xu wrote:
+> >>> On Wed, Nov 10, 2021 at 09:14:42AM +0100, David Hildenbrand wrote:
+> >>>> On 10.11.21 08:03, Peter Xu wrote:
+> >>>>> Hi, Mina,
+> >>>>>
+> >>>>> Sorry to comment late.
+> >>>>>
+> >>>>> On Sun, Nov 07, 2021 at 03:57:54PM -0800, Mina Almasry wrote:
+> >>>>>> diff --git a/Documentation/admin-guide/mm/pagemap.rst b/Documentation/admin-guide/mm/pagemap.rst
+> >>>>>> index fdc19fbc10839..8a0f0064ff336 100644
+> >>>>>> --- a/Documentation/admin-guide/mm/pagemap.rst
+> >>>>>> +++ b/Documentation/admin-guide/mm/pagemap.rst
+> >>>>>> @@ -23,7 +23,8 @@ There are four components to pagemap:
+> >>>>>>      * Bit  56    page exclusively mapped (since 4.2)
+> >>>>>>      * Bit  57    pte is uffd-wp write-protected (since 5.13) (see
+> >>>>>>        :ref:`Documentation/admin-guide/mm/userfaultfd.rst <userfaultfd>`)
+> >>>>>> -    * Bits 57-60 zero
+> >>>>>> +    * Bit  58    page is a huge (PMD size) THP mapping
+> >>>>>> +    * Bits 59-60 zero
+> >>>>>>      * Bit  61    page is file-page or shared-anon (since 3.5)
+> >>>>>>      * Bit  62    page swapped
+> >>>>>>      * Bit  63    page present
+> >>>>>> diff --git a/fs/proc/task_mmu.c b/fs/proc/task_mmu.c
+> >>>>>> index ad667dbc96f5c..6f1403f83b310 100644
+> >>>>>> --- a/fs/proc/task_mmu.c
+> >>>>>> +++ b/fs/proc/task_mmu.c
+> >>>>>> @@ -1302,6 +1302,7 @@ struct pagemapread {
+> >>>>>>  #define PM_SOFT_DIRTY           BIT_ULL(55)
+> >>>>>>  #define PM_MMAP_EXCLUSIVE       BIT_ULL(56)
+> >>>>>>  #define PM_UFFD_WP              BIT_ULL(57)
+> >>>>>> +#define PM_HUGE_THP_MAPPING     BIT_ULL(58)
+> >>>>>
+> >>>>> The ending "_MAPPING" seems redundant to me, how about just call it "PM_THP" or
+> >>>>> "PM_HUGE" (as THP also means HUGE already)?
+> >>>>>
+> >>>>> IMHO the core problem is about permission controls, and it seems to me we're
+> >>>>> actually trying to workaround it by duplicating some information we have.. so
+> >>>>> it's kind of a pity.  Totally not against this patch, but imho it'll be nicer
+> >>>>> if it's the permission part that to be enhanced, rather than a new but slightly
+> >>>>> duplicated interface.
+> >>>>
+> >>>> It's not a permission problem AFAIKS: even with permissions "changed",
+> >>>> any attempt to use /proc/kpageflags is just racy. Let's not go down that
+> >>>> path, it's really the wrong mechanism to export to random userspace.
+> >>>
+> >>> I agree it's racy, but IMHO that's fine.  These are hints for userspace to make
+> >>> decisions, they cannot be always right.  Even if we fetch atomically and seeing
+> >>> that this pte is swapped out, it can be quickly accessed at the same time and
+> >>> it'll be in-memory again.  Only if we can freeze the whole pgtable but we
+> >>> can't, so they can only be used as hints.
+> >>
+> >> Sorry, I don't think /proc/kpageflags (or exporting the PFNs to random
+> >> users via /proc/self/pagemap) is the way to go.
+> >>
+> >> "Since Linux 4.0 only users with the CAP_SYS_ADMIN capability can get
+> >> PFNs. In 4.0 and 4.1 opens by unprivileged fail with -EPERM.  Starting
+> >> from 4.2 the PFN field is zeroed if the user does not have
+> >> CAP_SYS_ADMIN. Reason: information about PFNs helps in exploiting
+> >> Rowhammer vulnerability."
+> >
+> > IMHO these are two problems that you mentioned.  That's also what I was
+> > wondering about: could the app be granted with CAP_SYS_ADMIN then?
+> >
+> > I am not sure whether that'll work well with /proc/kpage* though, as it's by
+> > default 0400.  So perhaps we need to manual adjust the file permission too to
+> > make sure the app can both access PFNs (with SYS_ADMIN) and the flags.  Totally
+> > no expert on the permissions..
+>
+> Me too :)
+>
+> IIRC changing permissions that was not an option -- which is why the
+> first approach suggested a new /proc/self/pageflags. But I guess Mina
+> can remind us (and eventually document all that in the patch description
+> :) ).
+>
+
+Sorry, yes I should update the commit message with this info. The
+issues with smaps are:
+1. Performance: I've pinged our network service folks to obtain a
+rough perf comparison but I haven't been able to get one. I can try to
+get a performance measurement myself but Peter seems to be also seeing
+this.
+2. smaps output is human readable and a bit convoluted for userspace to parse.
+
+>
+> --
+> Thanks,
+>
+> David / dhildenb
+>
