@@ -2,166 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A79F344BE84
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 11:24:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A08444BE85
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 11:24:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231167AbhKJK1D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Nov 2021 05:27:03 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124]:34481 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230117AbhKJK1C (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Nov 2021 05:27:02 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1636539854;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=1AM6xM7SxUCC79CInqY7ZFCL0tWuszI3QiZ+cxT6yto=;
-        b=eIJCVn+CpDDbIq2BiHls8ghjGIqz2aeS+mqjBHcjMBJOlNGnb642428sgznseSAM0h2SZe
-        Wcbtwm4w81bGZBc1FuBTHHUbYcJ43mWa09IqMOa9m1KFFvbzKiBMyqnO6FybMnpBuR8fVu
-        Iq0ysXL6Og9HHW2FNPiC0mSVxMvmjy8=
-Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
- [209.85.221.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-361-z1rkDqilO3OMFFENwoYQ2Q-1; Wed, 10 Nov 2021 05:24:13 -0500
-X-MC-Unique: z1rkDqilO3OMFFENwoYQ2Q-1
-Received: by mail-wr1-f72.google.com with SMTP id k8-20020a5d5248000000b001763e7c9ce5so311213wrc.22
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Nov 2021 02:24:13 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:organization:in-reply-to
-         :content-transfer-encoding;
-        bh=1AM6xM7SxUCC79CInqY7ZFCL0tWuszI3QiZ+cxT6yto=;
-        b=6Ncw49cnxC8A0C3Do1w9IEbBqmbkqeDw6My8M+syqowPAsClk7vsyu2UX1wMAS0ii7
-         32xQhWjkMdHEkGm9PXC77oqWIN//r456UQ9P8Y1H7A1jQXhzaxZx0xi3RyqVr4XJoi5N
-         pthwFNSweIlPOELp/vGd6Ey9uRGgZnD7ZAqjQSNRlF47B4SPosOCJ5E6KUouhTbqkU1K
-         A8ZElOslV+o5ZCWtaRQhPG3cVEVxK6y4qS7+oO4M6NfenRV5tlpgJzZj99CisoHw8LgQ
-         sMI1kdZCP99XaI77QregVqGjyDTISw2c5pSmWcS5sAkQP1t6Uu+nAz7EQtrs8S6u4Yeq
-         /Mlw==
-X-Gm-Message-State: AOAM53380FOppLbsiQ3YCIBoExx90StwlkZ4pMhZkXBXAXv0mMY/eAU3
-        12tyFG+AMYQPLX/H55a9uhhLSkLAO0rZ2wIv0Odwo7/f4b9miqXXp26PB0As8ozFIpvlmucvZov
-        WOSKcVa6IfRBhiT08cMy6xdim
-X-Received: by 2002:a5d:6510:: with SMTP id x16mr18317957wru.2.1636539852584;
-        Wed, 10 Nov 2021 02:24:12 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJyX3A+4KVwXJvj7AxWl/jJg0VnnA5Opg1sFCSUSqSFzkdUXNL+FUnsAKgEfveOV4qc00zOx+g==
-X-Received: by 2002:a5d:6510:: with SMTP id x16mr18317927wru.2.1636539852386;
-        Wed, 10 Nov 2021 02:24:12 -0800 (PST)
-Received: from [192.168.3.132] (p5b0c604f.dip0.t-ipconnect.de. [91.12.96.79])
-        by smtp.gmail.com with ESMTPSA id p13sm5552185wmi.0.2021.11.10.02.24.11
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 10 Nov 2021 02:24:11 -0800 (PST)
-Message-ID: <8032a24c-3800-16e5-41b7-5565e74d3863@redhat.com>
-Date:   Wed, 10 Nov 2021 11:24:10 +0100
+        id S231176AbhKJK1M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Nov 2021 05:27:12 -0500
+Received: from mail.kernel.org ([198.145.29.99]:57942 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231171AbhKJK1L (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Nov 2021 05:27:11 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 75E7161246
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Nov 2021 10:24:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1636539864;
+        bh=QeVNYL1CDnVnsGgYCWWDeh9BlVaKep9JspI98WE81KQ=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=Hi1N5m0lKVCCZVpEKK2WpErMzrO1B9aH44pHFN1lHi6V0THXhZyOmQMbMynDypCN1
+         EwTWwwqzqJ2bfvBT379BhRhGsHRDe/wCX9ndAsiMuvQ2ru425W175IYFSN0Wd0PoLK
+         rBKaqiZQ1N3e+1au5hejsar8bFxbz2c2X/mE5+uuGqCmfVD1X3dNzOyDt2iclEPf7J
+         jzl7HnCXW/RlF2fcyW/nZ3YCul7xHTHLjpEOnfIIKS5nmP6x0NriOlGCbJ8mQzl3Vu
+         NhkGmwOTjX6Lh9HQE3snAJ6qVCDKpS8PTavGNLxpe4y2TmyOfVxajJAahWcgYS1DRG
+         AAW5DZjwlFT+Q==
+Received: by mail-ot1-f44.google.com with SMTP id g91-20020a9d12e4000000b0055ae68cfc3dso3149991otg.9
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Nov 2021 02:24:24 -0800 (PST)
+X-Gm-Message-State: AOAM533icfrr8YUTB/izkTPr4Ooeb3vt4oD8RwB1SAU/9wUO4F4dm8Le
+        Od2zj3iPR+XemU0yqVYeoTcjZwNjWgkmH+cStOI=
+X-Google-Smtp-Source: ABdhPJzpKSeMW3/rqwzqWmvxviEwLNeCA6Xp6S06gu8Uudu/UsATvGwvwlX7d3lW10EU51NZewVH1WGkoZIN/mOwdmA=
+X-Received: by 2002:a05:6830:1445:: with SMTP id w5mr3992681otp.112.1636539863786;
+ Wed, 10 Nov 2021 02:24:23 -0800 (PST)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.2.0
-Subject: Re: [PATCH v4] mm: Add PM_HUGE_THP_MAPPING to /proc/pid/pagemap
-Content-Language: en-US
-To:     Peter Xu <peterx@redhat.com>
-Cc:     Mina Almasry <almasrymina@google.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        "Paul E . McKenney" <paulmckrcu@fb.com>,
-        Yu Zhao <yuzhao@google.com>, Jonathan Corbet <corbet@lwn.net>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Ivan Teterevkov <ivan.teterevkov@nutanix.com>,
-        Florian Schmidt <florian.schmidt@nutanix.com>,
-        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-mm@kvack.org
-References: <20211107235754.1395488-1-almasrymina@google.com>
- <YYtuqsnOSxA44AUX@t490s> <c5ed86d0-8af6-f54f-e352-8871395ad62e@redhat.com>
- <YYuCaNXikls/9JhS@t490s> <793685d2-be3f-9a74-c9a3-65c486e0ef1f@redhat.com>
- <YYuJd9ZBQiY50dVs@xz-m1.local>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat
-In-Reply-To: <YYuJd9ZBQiY50dVs@xz-m1.local>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+References: <20211110010906.1923210-1-eric.dumazet@gmail.com>
+ <20211110010906.1923210-3-eric.dumazet@gmail.com> <YYuEXQ7Ur9f88pCw@hirez.programming.kicks-ass.net>
+In-Reply-To: <YYuEXQ7Ur9f88pCw@hirez.programming.kicks-ass.net>
+From:   Ard Biesheuvel <ardb@kernel.org>
+Date:   Wed, 10 Nov 2021 11:24:12 +0100
+X-Gmail-Original-Message-ID: <CAMj1kXF8makQnZaWDpyzQc2ZiwQEU1ACYhrA91UaFT6S-6RXaQ@mail.gmail.com>
+Message-ID: <CAMj1kXF8makQnZaWDpyzQc2ZiwQEU1ACYhrA91UaFT6S-6RXaQ@mail.gmail.com>
+Subject: Re: [PATCH 2/2] jump_label: refine placement of static_keys
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Eric Dumazet <eric.dumazet@gmail.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Eric Dumazet <edumazet@google.com>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Jason Baron <jbaron@akamai.com>,
+        "Steven Rostedt (VMware)" <rostedt@goodmis.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10.11.21 09:57, Peter Xu wrote:
-> On Wed, Nov 10, 2021 at 09:30:50AM +0100, David Hildenbrand wrote:
->> On 10.11.21 09:27, Peter Xu wrote:
->>> On Wed, Nov 10, 2021 at 09:14:42AM +0100, David Hildenbrand wrote:
->>>> On 10.11.21 08:03, Peter Xu wrote:
->>>>> Hi, Mina,
->>>>>
->>>>> Sorry to comment late.
->>>>>
->>>>> On Sun, Nov 07, 2021 at 03:57:54PM -0800, Mina Almasry wrote:
->>>>>> diff --git a/Documentation/admin-guide/mm/pagemap.rst b/Documentation/admin-guide/mm/pagemap.rst
->>>>>> index fdc19fbc10839..8a0f0064ff336 100644
->>>>>> --- a/Documentation/admin-guide/mm/pagemap.rst
->>>>>> +++ b/Documentation/admin-guide/mm/pagemap.rst
->>>>>> @@ -23,7 +23,8 @@ There are four components to pagemap:
->>>>>>      * Bit  56    page exclusively mapped (since 4.2)
->>>>>>      * Bit  57    pte is uffd-wp write-protected (since 5.13) (see
->>>>>>        :ref:`Documentation/admin-guide/mm/userfaultfd.rst <userfaultfd>`)
->>>>>> -    * Bits 57-60 zero
->>>>>> +    * Bit  58    page is a huge (PMD size) THP mapping
->>>>>> +    * Bits 59-60 zero
->>>>>>      * Bit  61    page is file-page or shared-anon (since 3.5)
->>>>>>      * Bit  62    page swapped
->>>>>>      * Bit  63    page present
->>>>>> diff --git a/fs/proc/task_mmu.c b/fs/proc/task_mmu.c
->>>>>> index ad667dbc96f5c..6f1403f83b310 100644
->>>>>> --- a/fs/proc/task_mmu.c
->>>>>> +++ b/fs/proc/task_mmu.c
->>>>>> @@ -1302,6 +1302,7 @@ struct pagemapread {
->>>>>>  #define PM_SOFT_DIRTY		BIT_ULL(55)
->>>>>>  #define PM_MMAP_EXCLUSIVE	BIT_ULL(56)
->>>>>>  #define PM_UFFD_WP		BIT_ULL(57)
->>>>>> +#define PM_HUGE_THP_MAPPING	BIT_ULL(58)
->>>>>
->>>>> The ending "_MAPPING" seems redundant to me, how about just call it "PM_THP" or
->>>>> "PM_HUGE" (as THP also means HUGE already)?
->>>>>
->>>>> IMHO the core problem is about permission controls, and it seems to me we're
->>>>> actually trying to workaround it by duplicating some information we have.. so
->>>>> it's kind of a pity.  Totally not against this patch, but imho it'll be nicer
->>>>> if it's the permission part that to be enhanced, rather than a new but slightly
->>>>> duplicated interface.
->>>>
->>>> It's not a permission problem AFAIKS: even with permissions "changed",
->>>> any attempt to use /proc/kpageflags is just racy. Let's not go down that
->>>> path, it's really the wrong mechanism to export to random userspace.
->>>
->>> I agree it's racy, but IMHO that's fine.  These are hints for userspace to make
->>> decisions, they cannot be always right.  Even if we fetch atomically and seeing
->>> that this pte is swapped out, it can be quickly accessed at the same time and
->>> it'll be in-memory again.  Only if we can freeze the whole pgtable but we
->>> can't, so they can only be used as hints.
->>
->> Sorry, I don't think /proc/kpageflags (or exporting the PFNs to random
->> users via /proc/self/pagemap) is the way to go.
->>
->> "Since Linux 4.0 only users with the CAP_SYS_ADMIN capability can get
->> PFNs. In 4.0 and 4.1 opens by unprivileged fail with -EPERM.  Starting
->> from 4.2 the PFN field is zeroed if the user does not have
->> CAP_SYS_ADMIN. Reason: information about PFNs helps in exploiting
->> Rowhammer vulnerability."
-> 
-> IMHO these are two problems that you mentioned.  That's also what I was
-> wondering about: could the app be granted with CAP_SYS_ADMIN then?
-> 
-> I am not sure whether that'll work well with /proc/kpage* though, as it's by
-> default 0400.  So perhaps we need to manual adjust the file permission too to
-> make sure the app can both access PFNs (with SYS_ADMIN) and the flags.  Totally
-> no expert on the permissions..
+On Wed, 10 Nov 2021 at 09:36, Peter Zijlstra <peterz@infradead.org> wrote:
+>
+> On Tue, Nov 09, 2021 at 05:09:06PM -0800, Eric Dumazet wrote:
+> > From: Eric Dumazet <edumazet@google.com>
+> >
+> > With CONFIG_JUMP_LABEL=y, "struct static_key" content is only
+> > used for the control path.
+> >
+> > Marking them __read_mostly is only needed when CONFIG_JUMP_LABEL=n.
+> > Otherwise we place them out of the way to increase data locality.
+> >
+> > This patch adds __static_key to centralize this new policy.
+> >
+> > Signed-off-by: Eric Dumazet <edumazet@google.com>
+> > ---
+> >  arch/x86/kvm/lapic.c       |  4 ++--
+> >  arch/x86/kvm/x86.c         |  2 +-
+> >  include/linux/jump_label.h | 25 +++++++++++++++++--------
+> >  kernel/events/core.c       |  2 +-
+> >  kernel/sched/fair.c        |  2 +-
+> >  net/core/dev.c             |  8 ++++----
+> >  net/netfilter/core.c       |  2 +-
+> >  net/netfilter/x_tables.c   |  2 +-
+> >  8 files changed, 28 insertions(+), 19 deletions(-)
+> >
+>
+> Hurmph, it's a bit cumbersome to always have to add this __static_key
+> attribute to every definition, and in fact you seem to have missed some.
+>
+> Would something like:
+>
+>         typedef struct static_key __static_key static_key_t;
+>
+> work? I forever seem to forget the exact things you can make a typedef
+> do :/
 
-Me too :)
+No, that doesn't work. Section placement is an attribute of the symbol
+not of its type. So we'll need to macro'ify this.
 
-IIRC changing permissions that was not an option -- which is why the
-first approach suggested a new /proc/self/pageflags. But I guess Mina
-can remind us (and eventually document all that in the patch description
-:) ).
-
-
--- 
-Thanks,
-
-David / dhildenb
-
+But I'm not sure I understand why we need different policies here.
+Static keys are inherently __read_mostly (unless they are not writable
+to begin with), so keeping them all together in one place in the
+binary should be sufficient, no?
