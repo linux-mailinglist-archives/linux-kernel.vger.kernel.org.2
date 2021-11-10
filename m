@@ -2,35 +2,45 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D192444C717
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 19:46:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 144B744C73F
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 19:49:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233151AbhKJSsG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Nov 2021 13:48:06 -0500
-Received: from mail.kernel.org ([198.145.29.99]:46938 "EHLO mail.kernel.org"
+        id S233357AbhKJSta (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Nov 2021 13:49:30 -0500
+Received: from mail.kernel.org ([198.145.29.99]:47098 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232834AbhKJSre (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Nov 2021 13:47:34 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B44FD61207;
-        Wed, 10 Nov 2021 18:44:45 +0000 (UTC)
+        id S233236AbhKJSsW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Nov 2021 13:48:22 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6B51161269;
+        Wed, 10 Nov 2021 18:45:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1636569886;
-        bh=RjInd3JGIV8bHmngubFKVhbNniHOFgdPRRrxz8odIdY=;
+        s=korg; t=1636569934;
+        bh=VmkCSf4uZAdOTZpl5CA/e3RJuIksd6qNs76xKDlPZwg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=pVYztOj1EFamlVdwrBBbTHZO9jEZYFPD6JsZSPsBuH8AN3J79FmRqBua+2sDGvtgl
-         aVFoRnnVhzAFeulmVQ6lwE6382/wBpJkKUymS8vzyx40YbapIIVEk2+LJJzV6spiE0
-         kRsTO2BGCcYZk7cmSgHNJGIUWYKbG7miYDTcRFgQ=
+        b=lnBLSJ6Xv8o9HRxKhfa0/c8ve4LqkNilFNPX+uMvAfnoWwYL+BhR4LOOJCilCZRl7
+         nBpxkuo+02CvWxNE4AaHUEOpN4lUM4oX8HJtQIlDdT8Ta/KIc5kyya48Ou1uup2Jl3
+         wplNhcsjwRXAzdWvl41ZydrZBHx/e0aoYF2bNSlM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Ian Abbott <abbotti@mev.co.uk>,
-        Johan Hovold <johan@kernel.org>
-Subject: [PATCH 4.9 15/22] comedi: dt9812: fix DMA buffers on stack
-Date:   Wed, 10 Nov 2021 19:43:22 +0100
-Message-Id: <20211110182002.079299235@linuxfoundation.org>
+        stable@vger.kernel.org,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+        Nitin Gupta <ngupta@vflare.org>,
+        Minchan Kim <minchan@kernel.org>,
+        Andy Lutomirski <luto@amacapital.net>,
+        Borislav Petkov <bp@suse.de>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>,
+        Thomas Gleixner <tglx@linutronix.de>, linux-mm@kvack.org,
+        Ingo Molnar <mingo@kernel.org>,
+        Florian Fainelli <f.fainelli@gmail.com>
+Subject: [PATCH 4.14 03/22] mm/zsmalloc: Prepare to variable MAX_PHYSMEM_BITS
+Date:   Wed, 10 Nov 2021 19:43:23 +0100
+Message-Id: <20211110182002.778299568@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211110182001.579561273@linuxfoundation.org>
-References: <20211110182001.579561273@linuxfoundation.org>
+In-Reply-To: <20211110182002.666244094@linuxfoundation.org>
+References: <20211110182002.666244094@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,209 +49,86 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Johan Hovold <johan@kernel.org>
+From: "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
 
-commit 536de747bc48262225889a533db6650731ab25d3 upstream.
+commit 02390b87a9459937cdb299e6b34ff33992512ec7 upstream
 
-USB transfer buffers are typically mapped for DMA and must not be
-allocated on the stack or transfers will fail.
+With boot-time switching between paging mode we will have variable
+MAX_PHYSMEM_BITS.
 
-Allocate proper transfer buffers in the various command helpers and
-return an error on short transfers instead of acting on random stack
-data.
+Let's use the maximum variable possible for CONFIG_X86_5LEVEL=y
+configuration to define zsmalloc data structures.
 
-Note that this also fixes a stack info leak on systems where DMA is not
-used as 32 bytes are always sent to the device regardless of how short
-the command is.
+The patch introduces MAX_POSSIBLE_PHYSMEM_BITS to cover such case.
+It also suits well to handle PAE special case.
 
-Fixes: 63274cd7d38a ("Staging: comedi: add usb dt9812 driver")
-Cc: stable@vger.kernel.org      # 2.6.29
-Reviewed-by: Ian Abbott <abbotti@mev.co.uk>
-Signed-off-by: Johan Hovold <johan@kernel.org>
-Link: https://lore.kernel.org/r/20211027093529.30896-3-johan@kernel.org
+Signed-off-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
+Reviewed-by: Nitin Gupta <ngupta@vflare.org>
+Acked-by: Minchan Kim <minchan@kernel.org>
+Cc: Andy Lutomirski <luto@amacapital.net>
+Cc: Borislav Petkov <bp@suse.de>
+Cc: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: Peter Zijlstra <peterz@infradead.org>
+Cc: Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>
+Cc: Thomas Gleixner <tglx@linutronix.de>
+Cc: linux-mm@kvack.org
+Link: http://lkml.kernel.org/r/20180214111656.88514-3-kirill.shutemov@linux.intel.com
+Signed-off-by: Ingo Molnar <mingo@kernel.org>
+Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/staging/comedi/drivers/dt9812.c |  115 +++++++++++++++++++++++---------
- 1 file changed, 86 insertions(+), 29 deletions(-)
+ arch/x86/include/asm/pgtable-3level_types.h |    1 +
+ arch/x86/include/asm/pgtable_64_types.h     |    2 ++
+ mm/zsmalloc.c                               |   13 +++++++------
+ 3 files changed, 10 insertions(+), 6 deletions(-)
 
---- a/drivers/staging/comedi/drivers/dt9812.c
-+++ b/drivers/staging/comedi/drivers/dt9812.c
-@@ -41,6 +41,7 @@
- #include <linux/kernel.h>
- #include <linux/module.h>
- #include <linux/errno.h>
-+#include <linux/slab.h>
- #include <linux/uaccess.h>
+--- a/arch/x86/include/asm/pgtable-3level_types.h
++++ b/arch/x86/include/asm/pgtable-3level_types.h
+@@ -44,5 +44,6 @@ typedef union {
+  */
+ #define PTRS_PER_PTE	512
  
- #include "../comedi_usb.h"
-@@ -246,22 +247,42 @@ static int dt9812_read_info(struct comed
- {
- 	struct usb_device *usb = comedi_to_usb_dev(dev);
- 	struct dt9812_private *devpriv = dev->private;
--	struct dt9812_usb_cmd cmd;
-+	struct dt9812_usb_cmd *cmd;
-+	size_t tbuf_size;
- 	int count, ret;
-+	void *tbuf;
++#define MAX_POSSIBLE_PHYSMEM_BITS	36
  
--	cmd.cmd = cpu_to_le32(DT9812_R_FLASH_DATA);
--	cmd.u.flash_data_info.address =
-+	tbuf_size = max(sizeof(*cmd), buf_size);
+ #endif /* _ASM_X86_PGTABLE_3LEVEL_DEFS_H */
+--- a/arch/x86/include/asm/pgtable_64_types.h
++++ b/arch/x86/include/asm/pgtable_64_types.h
+@@ -40,6 +40,8 @@ typedef struct { pteval_t pte; } pte_t;
+ #define P4D_SIZE	(_AC(1, UL) << P4D_SHIFT)
+ #define P4D_MASK	(~(P4D_SIZE - 1))
+ 
++#define MAX_POSSIBLE_PHYSMEM_BITS	52
 +
-+	tbuf = kzalloc(tbuf_size, GFP_KERNEL);
-+	if (!tbuf)
-+		return -ENOMEM;
+ #else /* CONFIG_X86_5LEVEL */
+ 
+ /*
+--- a/mm/zsmalloc.c
++++ b/mm/zsmalloc.c
+@@ -83,18 +83,19 @@
+  * This is made more complicated by various memory models and PAE.
+  */
+ 
+-#ifndef MAX_PHYSMEM_BITS
+-#ifdef CONFIG_HIGHMEM64G
+-#define MAX_PHYSMEM_BITS 36
+-#else /* !CONFIG_HIGHMEM64G */
++#ifndef MAX_POSSIBLE_PHYSMEM_BITS
++#ifdef MAX_PHYSMEM_BITS
++#define MAX_POSSIBLE_PHYSMEM_BITS MAX_PHYSMEM_BITS
++#else
+ /*
+  * If this definition of MAX_PHYSMEM_BITS is used, OBJ_INDEX_BITS will just
+  * be PAGE_SHIFT
+  */
+-#define MAX_PHYSMEM_BITS BITS_PER_LONG
++#define MAX_POSSIBLE_PHYSMEM_BITS BITS_PER_LONG
+ #endif
+ #endif
+-#define _PFN_BITS		(MAX_PHYSMEM_BITS - PAGE_SHIFT)
 +
-+	cmd = tbuf;
-+
-+	cmd->cmd = cpu_to_le32(DT9812_R_FLASH_DATA);
-+	cmd->u.flash_data_info.address =
- 	    cpu_to_le16(DT9812_DIAGS_BOARD_INFO_ADDR + offset);
--	cmd.u.flash_data_info.numbytes = cpu_to_le16(buf_size);
-+	cmd->u.flash_data_info.numbytes = cpu_to_le16(buf_size);
++#define _PFN_BITS		(MAX_POSSIBLE_PHYSMEM_BITS - PAGE_SHIFT)
  
- 	/* DT9812 only responds to 32 byte writes!! */
- 	ret = usb_bulk_msg(usb, usb_sndbulkpipe(usb, devpriv->cmd_wr.addr),
--			   &cmd, 32, &count, DT9812_USB_TIMEOUT);
-+			   cmd, sizeof(*cmd), &count, DT9812_USB_TIMEOUT);
- 	if (ret)
--		return ret;
-+		goto out;
-+
-+	ret = usb_bulk_msg(usb, usb_rcvbulkpipe(usb, devpriv->cmd_rd.addr),
-+			   tbuf, buf_size, &count, DT9812_USB_TIMEOUT);
-+	if (!ret) {
-+		if (count == buf_size)
-+			memcpy(buf, tbuf, buf_size);
-+		else
-+			ret = -EREMOTEIO;
-+	}
-+out:
-+	kfree(tbuf);
- 
--	return usb_bulk_msg(usb, usb_rcvbulkpipe(usb, devpriv->cmd_rd.addr),
--			    buf, buf_size, &count, DT9812_USB_TIMEOUT);
-+	return ret;
- }
- 
- static int dt9812_read_multiple_registers(struct comedi_device *dev,
-@@ -270,22 +291,42 @@ static int dt9812_read_multiple_register
- {
- 	struct usb_device *usb = comedi_to_usb_dev(dev);
- 	struct dt9812_private *devpriv = dev->private;
--	struct dt9812_usb_cmd cmd;
-+	struct dt9812_usb_cmd *cmd;
- 	int i, count, ret;
-+	size_t buf_size;
-+	void *buf;
-+
-+	buf_size = max_t(size_t, sizeof(*cmd), reg_count);
-+
-+	buf = kzalloc(buf_size, GFP_KERNEL);
-+	if (!buf)
-+		return -ENOMEM;
-+
-+	cmd = buf;
- 
--	cmd.cmd = cpu_to_le32(DT9812_R_MULTI_BYTE_REG);
--	cmd.u.read_multi_info.count = reg_count;
-+	cmd->cmd = cpu_to_le32(DT9812_R_MULTI_BYTE_REG);
-+	cmd->u.read_multi_info.count = reg_count;
- 	for (i = 0; i < reg_count; i++)
--		cmd.u.read_multi_info.address[i] = address[i];
-+		cmd->u.read_multi_info.address[i] = address[i];
- 
- 	/* DT9812 only responds to 32 byte writes!! */
- 	ret = usb_bulk_msg(usb, usb_sndbulkpipe(usb, devpriv->cmd_wr.addr),
--			   &cmd, 32, &count, DT9812_USB_TIMEOUT);
-+			   cmd, sizeof(*cmd), &count, DT9812_USB_TIMEOUT);
- 	if (ret)
--		return ret;
-+		goto out;
- 
--	return usb_bulk_msg(usb, usb_rcvbulkpipe(usb, devpriv->cmd_rd.addr),
--			    value, reg_count, &count, DT9812_USB_TIMEOUT);
-+	ret = usb_bulk_msg(usb, usb_rcvbulkpipe(usb, devpriv->cmd_rd.addr),
-+			   buf, reg_count, &count, DT9812_USB_TIMEOUT);
-+	if (!ret) {
-+		if (count == reg_count)
-+			memcpy(value, buf, reg_count);
-+		else
-+			ret = -EREMOTEIO;
-+	}
-+out:
-+	kfree(buf);
-+
-+	return ret;
- }
- 
- static int dt9812_write_multiple_registers(struct comedi_device *dev,
-@@ -294,19 +335,27 @@ static int dt9812_write_multiple_registe
- {
- 	struct usb_device *usb = comedi_to_usb_dev(dev);
- 	struct dt9812_private *devpriv = dev->private;
--	struct dt9812_usb_cmd cmd;
-+	struct dt9812_usb_cmd *cmd;
- 	int i, count;
-+	int ret;
- 
--	cmd.cmd = cpu_to_le32(DT9812_W_MULTI_BYTE_REG);
--	cmd.u.read_multi_info.count = reg_count;
-+	cmd = kzalloc(sizeof(*cmd), GFP_KERNEL);
-+	if (!cmd)
-+		return -ENOMEM;
-+
-+	cmd->cmd = cpu_to_le32(DT9812_W_MULTI_BYTE_REG);
-+	cmd->u.read_multi_info.count = reg_count;
- 	for (i = 0; i < reg_count; i++) {
--		cmd.u.write_multi_info.write[i].address = address[i];
--		cmd.u.write_multi_info.write[i].value = value[i];
-+		cmd->u.write_multi_info.write[i].address = address[i];
-+		cmd->u.write_multi_info.write[i].value = value[i];
- 	}
- 
- 	/* DT9812 only responds to 32 byte writes!! */
--	return usb_bulk_msg(usb, usb_sndbulkpipe(usb, devpriv->cmd_wr.addr),
--			    &cmd, 32, &count, DT9812_USB_TIMEOUT);
-+	ret = usb_bulk_msg(usb, usb_sndbulkpipe(usb, devpriv->cmd_wr.addr),
-+			   cmd, sizeof(*cmd), &count, DT9812_USB_TIMEOUT);
-+	kfree(cmd);
-+
-+	return ret;
- }
- 
- static int dt9812_rmw_multiple_registers(struct comedi_device *dev,
-@@ -315,17 +364,25 @@ static int dt9812_rmw_multiple_registers
- {
- 	struct usb_device *usb = comedi_to_usb_dev(dev);
- 	struct dt9812_private *devpriv = dev->private;
--	struct dt9812_usb_cmd cmd;
-+	struct dt9812_usb_cmd *cmd;
- 	int i, count;
-+	int ret;
-+
-+	cmd = kzalloc(sizeof(*cmd), GFP_KERNEL);
-+	if (!cmd)
-+		return -ENOMEM;
- 
--	cmd.cmd = cpu_to_le32(DT9812_RMW_MULTI_BYTE_REG);
--	cmd.u.rmw_multi_info.count = reg_count;
-+	cmd->cmd = cpu_to_le32(DT9812_RMW_MULTI_BYTE_REG);
-+	cmd->u.rmw_multi_info.count = reg_count;
- 	for (i = 0; i < reg_count; i++)
--		cmd.u.rmw_multi_info.rmw[i] = rmw[i];
-+		cmd->u.rmw_multi_info.rmw[i] = rmw[i];
- 
- 	/* DT9812 only responds to 32 byte writes!! */
--	return usb_bulk_msg(usb, usb_sndbulkpipe(usb, devpriv->cmd_wr.addr),
--			    &cmd, 32, &count, DT9812_USB_TIMEOUT);
-+	ret = usb_bulk_msg(usb, usb_sndbulkpipe(usb, devpriv->cmd_wr.addr),
-+			   cmd, sizeof(*cmd), &count, DT9812_USB_TIMEOUT);
-+	kfree(cmd);
-+
-+	return ret;
- }
- 
- static int dt9812_digital_in(struct comedi_device *dev, u8 *bits)
+ /*
+  * Memory for allocating for handle keeps object position by
 
 
