@@ -2,149 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C76444C376
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 15:57:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 95EAE44C38C
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 16:01:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232320AbhKJPAL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Nov 2021 10:00:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48846 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231743AbhKJPAK (ORCPT
+        id S232384AbhKJPD5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Nov 2021 10:03:57 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:51401 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232338AbhKJPD4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Nov 2021 10:00:10 -0500
-Received: from mail-ot1-x32e.google.com (mail-ot1-x32e.google.com [IPv6:2607:f8b0:4864:20::32e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9DB78C061767
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Nov 2021 06:57:22 -0800 (PST)
-Received: by mail-ot1-x32e.google.com with SMTP id g91-20020a9d12e4000000b0055ae68cfc3dso4254643otg.9
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Nov 2021 06:57:22 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=IVWIafG6+i9xxjsT6NKZgVi6v4U8498TFF3OthQIW6Y=;
-        b=wLsddjtemJvbZuWvnkRiu3a4Emu2EPb9yImANBdNpxFCYrzvCaaaP9FcygHgEO8WSC
-         w8fTQCFN6W7isD+uwVmaUoom3hXJb1+RICWc6LnEMjSoY48VC80jVUB3SAoUmoGF3GXS
-         n9Qw1WpO34h52wM66sv1NjIemiIWjxhBxoTAIyoPEMOLY8J08lcakE8GbOrBz13yAUkx
-         a43jWXqfKwCOwpM+V/LhaNBl5doCaCypefXfuXuID/5Z3XsDtU8JAHielqzfIRQcm7h2
-         DKBwsyQeDeZ/33jJNU0YrrqrAr+Imbmab3Ow9xp9ZTFn/b76QoNJ6KwJHtiNlzxSxOGl
-         g3Dg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=IVWIafG6+i9xxjsT6NKZgVi6v4U8498TFF3OthQIW6Y=;
-        b=BAuNXtOBpu/0AfNSL36DtlFnAhrskwrG9cIfS1CMsRLaURQnkPR6aRVhxRZ1GWyWFq
-         Hck85wTWCemNAao+K5aj7wT2yeP0XmzYEZLPI6xBfLH7+kYn8sddnLYBo0D46XlcIa8T
-         PBR8nTJT1Ah76MCwAQOvX/UebaJydqqU/dONI92hvLJaFUoAPzpa261VD0aMOC/hcxHV
-         LpuwFgPl3up4BTtaQyWCHuzwOVavBEGgql1gJZ4EGaszLYodOWu5NliXxDfjYqceP2IZ
-         RkzbtNhcGKjAm2VwGyKgD7tKbfQqASe/DPpyx8C/2sAkzY1TdmxfOlUdN2mpVrahLYBw
-         bW7A==
-X-Gm-Message-State: AOAM532ZjRfbMm2lIEs892+zbHNWlS4juR7lXx1lcFHlnXbuqjYAPsZs
-        9Lo2bghb50uCozvFu7GYjc4o9A==
-X-Google-Smtp-Source: ABdhPJwJAXzABpKw5ehc6yIDRRZ/JrOG6RbToMjsgBB+lI48bP9ZxSWINSfd8FbgNNITxP408uC1Fg==
-X-Received: by 2002:a9d:7302:: with SMTP id e2mr401519otk.52.1636556241870;
-        Wed, 10 Nov 2021 06:57:21 -0800 (PST)
-Received: from ripper (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
-        by smtp.gmail.com with ESMTPSA id u136sm4064oie.13.2021.11.10.06.57.20
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 10 Nov 2021 06:57:21 -0800 (PST)
-Date:   Wed, 10 Nov 2021 06:58:54 -0800
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Stephan Gerhold <stephan@gerhold.net>
-Cc:     Shawn Guo <shawn.guo@linaro.org>, Stephen Boyd <sboyd@kernel.org>,
-        Loic Poulain <loic.poulain@linaro.org>,
-        linux-arm-msm@vger.kernel.org, linux-clk@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 0/3] clk: qcom: smd-rpm: Report enable state to framework
-Message-ID: <YYveLqgDUrizgC/Q@ripper>
-References: <20211109022558.14529-1-shawn.guo@linaro.org>
- <YYpMzau3CWRQYlkJ@gerhold.net>
- <20211110131507.GJ7231@dragon>
- <YYvSmEr/Fo2LPJwu@gerhold.net>
+        Wed, 10 Nov 2021 10:03:56 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1636556468;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=cuzPpu25xMZj9bq/LSjhEetjUdKRTAJi3G60ivnlha8=;
+        b=KhdTlH7oEJ15o27HhFijs2BZKLrL5HJp9v+zBtMlvtvK6TXDBkxpkSfJkFDJbEWAeS6EZa
+        /RCNytnO/sBwK2ogJ5a5nPhfiRITN7qc48K8CDEZmWGAljopupcIgl/HwByJfTphLWnFSX
+        GuyQSpiEs+awWNzum88/IIYO2+8dvQE=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-399-fDpyC4X_NH6CpTCXrN6_fw-1; Wed, 10 Nov 2021 10:00:59 -0500
+X-MC-Unique: fDpyC4X_NH6CpTCXrN6_fw-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 471C680A5D6;
+        Wed, 10 Nov 2021 15:00:56 +0000 (UTC)
+Received: from starship (unknown [10.40.194.243])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 6C7CB1017E37;
+        Wed, 10 Nov 2021 15:00:46 +0000 (UTC)
+Message-ID: <18d77c7a10f283848c4efe0370401c436869f3a2.camel@redhat.com>
+Subject: Re: [PATCH 3/3] KVM: x86/mmu: don't skip mmu initialization when
+ mmu root level changes
+From:   Maxim Levitsky <mlevitsk@redhat.com>
+To:     Vitaly Kuznetsov <vkuznets@redhat.com>, kvm@vger.kernel.org
+Cc:     Wanpeng Li <wanpengli@tencent.com>, Borislav Petkov <bp@alien8.de>,
+        Ingo Molnar <mingo@redhat.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, linux-kernel@vger.kernel.org,
+        Sean Christopherson <seanjc@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Jim Mattson <jmattson@google.com>
+Date:   Wed, 10 Nov 2021 17:00:45 +0200
+In-Reply-To: <87r1bom5h3.fsf@vitty.brq.redhat.com>
+References: <20211110100018.367426-1-mlevitsk@redhat.com>
+         <20211110100018.367426-4-mlevitsk@redhat.com>
+         <87r1bom5h3.fsf@vitty.brq.redhat.com>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.36.5 (3.36.5-2.fc32) 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YYvSmEr/Fo2LPJwu@gerhold.net>
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed 10 Nov 06:09 PST 2021, Stephan Gerhold wrote:
-
-> On Wed, Nov 10, 2021 at 09:15:11PM +0800, Shawn Guo wrote:
-> > On Tue, Nov 09, 2021 at 11:26:21AM +0100, Stephan Gerhold wrote:
-> > > On Tue, Nov 09, 2021 at 10:25:55AM +0800, Shawn Guo wrote:
-> > > > Currently the enable state of smd-rpm clocks are not properly reported
-> > > > back to framework due to missing .is_enabled and .is_prepared hooks.
-> > > > This causes a couple of issues.
-> > > > 
-> > > > - All those unused clocks are not voted for off, because framework has
-> > > >   no knowledge that they are unused.  It becomes a problem for vlow
-> > > >   power mode support, as we do not have every single RPM clock claimed
-> > > >   and voted for off by client devices, and rely on clock framework to
-> > > >   disable those unused RPM clocks.
-> > > > 
-> > > 
-> > > I posted a similar patch a bit more than a year ago [1].
+On Wed, 2021-11-10 at 15:48 +0100, Vitaly Kuznetsov wrote:
+> Maxim Levitsky <mlevitsk@redhat.com> writes:
+> 
+> > When running mix of 32 and 64 bit guests, it is possible to have mmu
+> > reset with same mmu role but different root level (32 bit vs 64 bit paging)
 > > 
-> > Ouch, that's unfortunate!  If your patch landed, I wouldn't have had to
-> > spend such a long time to figure out why my platform fails to reach vlow
-> > power mode :(
+> > Signed-off-by: Maxim Levitsky <mlevitsk@redhat.com>
+> > ---
+> >  arch/x86/kvm/mmu/mmu.c | 14 ++++++++++----
+> >  1 file changed, 10 insertions(+), 4 deletions(-)
 > > 
+> > diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
+> > index 354d2ca92df4d..763867475860f 100644
+> > --- a/arch/x86/kvm/mmu/mmu.c
+> > +++ b/arch/x86/kvm/mmu/mmu.c
+> > @@ -4745,7 +4745,10 @@ static void init_kvm_tdp_mmu(struct kvm_vcpu *vcpu)
+> >  	union kvm_mmu_role new_role =
+> >  		kvm_calc_tdp_mmu_root_page_role(vcpu, &regs, false);
+> >  
+> > -	if (new_role.as_u64 == context->mmu_role.as_u64)
+> > +	u8 new_root_level = role_regs_to_root_level(&regs);
+> > +
+> > +	if (new_role.as_u64 == context->mmu_role.as_u64 &&
+> > +	    context->root_level == new_root_level)
+> >  		return;
 > 
-> Sorry, I was waiting for Stephen to reply and eventually decided to
-> shift focus to other things first. :)
-> 
-> The whole low-power topic is kind of frustrating on older platforms
-> because they currently still lack almost everything that is necessary to
-> reach those low power states. Even things that you already consider
-> natural for newer platforms (such as interconnect) are still very much
-> work in progress on all older ones.
-> 
-> > > Back then one
-> > > of the concerns was that we might disable critical clocks just because
-> > > they have no driver using it actively. For example, not all of the
-> > > platforms using clk-smd-rpm already have an interconnect driver.
-> > > Disabling the interconnect related clocks will almost certainly make the
-> > > device lock up completely. (I tried it back then, it definitely does...)
-> > > 
-> > > I proposed adding CLK_IGNORE_UNUSED for the interconnect related clocks
-> > > back then [2] which would allow disabling most of the clocks at least.
-> > > Stephen Boyd had an alternative proposal to instead move the
-> > > interconnect related clocks completely out of clk-smd-rpm [3].
-> > > But I'm still unsure how this would work in a backwards compatible way. [4]
-> > > 
-> > > Since your patches are more or less identical I'm afraid the same
-> > > concerns still need to be solved somehow. :)
-> > 
-> > I do not really understand why smd-rpm clock driver needs to be a special
-> > case.  This is a very common issue, mostly in device early support phase
-> > where not all clock consumer drivers are ready.  Flag CLK_IGNORE_UNUSED
-> > and kernel cmdline 'clk_ignore_unused' are created just for that.  Those
-> > "broken" platforms should be booted with 'clk_ignore_unused' until they
-> > have related consumer drivers in place.  IMHO, properly reporting enable
-> > state to framework is definitely the right thing to do, and should have
-> > been done from day one.
-> > 
-> 
-> ... And therefore I think we should be careful with such changes,
-> especially if they would prevent devices from booting completely.
-> Unfortunately the users trying to make use of old platforms are also
-> often the ones who might not be aware that they suddenly need
-> "clk_ignore_unused" just to boot a system that was previously working
-> (mostly) fine, except for the whole low-power topic.
-> 
-> I fully agree with you that disabling the unused clocks here is the
-> right thing to do, but I think we should try to carefully flag the most
-> important clocks in the driver to avoid causing too many regressions.
-> 
+> role_regs_to_root_level() uses 3 things: CR0.PG, EFER.LMA and CR4.PAE
+> and two of these three are already encoded into extended mmu role
+> (kvm_calc_mmu_role_ext()). Could we achieve the same result by adding
+> EFER.LMA there?
 
-I don't fancy the idea of forcing everyone to run with specific kernel
-command line parameters - in particular not as a means to avoid
-"regressions".
+Absolutely. I just wanted your feedback on this to see if there is any reason to not
+do this.
 
-I think the only way around this problem is to figure out how to move
-the clk disablement to sync_state - probably per clock driver.
+Also it seems that only basic role is compared here.
 
-Regards,
-Bjorn
+I don't 100% know the reason why we have basic and extended roles - there is a
+comment about basic/extended mmu role to minimize the size of arch.gfn_track,
+but I haven't yet studied in depth why.
+
+Best regards,
+	Maxim Levitsky
+
+> 
+> >  
+> >  	context->mmu_role.as_u64 = new_role.as_u64;
+> > @@ -4757,7 +4760,7 @@ static void init_kvm_tdp_mmu(struct kvm_vcpu *vcpu)
+> >  	context->get_guest_pgd = get_cr3;
+> >  	context->get_pdptr = kvm_pdptr_read;
+> >  	context->inject_page_fault = kvm_inject_page_fault;
+> > -	context->root_level = role_regs_to_root_level(&regs);
+> > +	context->root_level = new_root_level;
+> >  
+> >  	if (!is_cr0_pg(context))
+> >  		context->gva_to_gpa = nonpaging_gva_to_gpa;
+> > @@ -4806,7 +4809,10 @@ static void shadow_mmu_init_context(struct kvm_vcpu *vcpu, struct kvm_mmu *conte
+> >  				    struct kvm_mmu_role_regs *regs,
+> >  				    union kvm_mmu_role new_role)
+> >  {
+> > -	if (new_role.as_u64 == context->mmu_role.as_u64)
+> > +	u8 new_root_level = role_regs_to_root_level(regs);
+> > +
+> > +	if (new_role.as_u64 == context->mmu_role.as_u64 &&
+> > +	    context->root_level == new_root_level)
+> >  		return;
+> >  
+> >  	context->mmu_role.as_u64 = new_role.as_u64;
+> > @@ -4817,8 +4823,8 @@ static void shadow_mmu_init_context(struct kvm_vcpu *vcpu, struct kvm_mmu *conte
+> >  		paging64_init_context(context);
+> >  	else
+> >  		paging32_init_context(context);
+> > -	context->root_level = role_regs_to_root_level(regs);
+> >  
+> > +	context->root_level = new_root_level;
+> >  	reset_guest_paging_metadata(vcpu, context);
+> >  	context->shadow_root_level = new_role.base.level;
+
+
