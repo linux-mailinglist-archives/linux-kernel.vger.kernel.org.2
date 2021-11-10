@@ -2,153 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1680044CDE6
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Nov 2021 00:29:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E8A6544CDEA
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Nov 2021 00:30:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234242AbhKJXcY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Nov 2021 18:32:24 -0500
-Received: from relmlor1.renesas.com ([210.160.252.171]:7015 "EHLO
-        relmlie5.idc.renesas.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S234254AbhKJXcW (ORCPT
+        id S234218AbhKJXdo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Nov 2021 18:33:44 -0500
+Received: from hera.aquilenet.fr ([185.233.100.1]:49632 "EHLO
+        hera.aquilenet.fr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233948AbhKJXdn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Nov 2021 18:32:22 -0500
-X-IronPort-AV: E=Sophos;i="5.87,225,1631545200"; 
-   d="scan'208";a="99837100"
-Received: from unknown (HELO relmlir6.idc.renesas.com) ([10.200.68.152])
-  by relmlie5.idc.renesas.com with ESMTP; 11 Nov 2021 08:29:33 +0900
-Received: from localhost.localdomain (unknown [10.226.36.204])
-        by relmlir6.idc.renesas.com (Postfix) with ESMTP id 783BD4143452;
-        Thu, 11 Nov 2021 08:29:31 +0900 (JST)
-From:   Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-To:     Geert Uytterhoeven <geert+renesas@glider.be>,
+        Wed, 10 Nov 2021 18:33:43 -0500
+Received: from localhost (localhost [127.0.0.1])
+        by hera.aquilenet.fr (Postfix) with ESMTP id 4B5E6259;
+        Thu, 11 Nov 2021 00:30:49 +0100 (CET)
+X-Virus-Scanned: Debian amavisd-new at aquilenet.fr
+Received: from hera.aquilenet.fr ([127.0.0.1])
+        by localhost (hera.aquilenet.fr [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id lJ3lmmwPk29I; Thu, 11 Nov 2021 00:30:48 +0100 (CET)
+Received: from begin.home (unknown [IPv6:2a01:cb19:956:1b00:de41:a9ff:fe47:ec49])
+        by hera.aquilenet.fr (Postfix) with ESMTPSA id 084A31F3;
+        Thu, 11 Nov 2021 00:30:47 +0100 (CET)
+Received: from samy by begin.home with local (Exim 4.95)
+        (envelope-from <samuel.thibault@ens-lyon.org>)
+        id 1mkx3H-005xLf-8g;
+        Thu, 11 Nov 2021 00:30:47 +0100
+Date:   Thu, 11 Nov 2021 00:30:47 +0100
+From:   Samuel Thibault <samuel.thibault@ens-lyon.org>
+To:     Colin Ian King <colin.i.king@googlemail.com>
+Cc:     William Hubbs <w.d.hubbs@gmail.com>,
+        Chris Brannon <chris@the-brannons.com>,
+        Kirk Reiser <kirk@reisers.ca>,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>
-Cc:     linux-serial@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
-        Prabhakar <prabhakar.csengg@gmail.com>,
-        Biju Das <biju.das.jz@bp.renesas.com>,
-        Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-Subject: [PATCH v3 3/3] serial: sh-sci: Add support to deassert/assert reset line
-Date:   Wed, 10 Nov 2021 23:29:20 +0000
-Message-Id: <20211110232920.19198-4-prabhakar.mahadev-lad.rj@bp.renesas.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20211110232920.19198-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
-References: <20211110232920.19198-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
+        speakup@linux-speakup.org, kernel-janitors@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] speakup: remove redundant assignment of variable i
+Message-ID: <20211110233047.iuyndyfae4n3xaef@begin>
+Mail-Followup-To: Samuel Thibault <samuel.thibault@ens-lyon.org>,
+        Colin Ian King <colin.i.king@googlemail.com>,
+        William Hubbs <w.d.hubbs@gmail.com>,
+        Chris Brannon <chris@the-brannons.com>,
+        Kirk Reiser <kirk@reisers.ca>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        speakup@linux-speakup.org, kernel-janitors@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20211110225301.315573-1-colin.i.king@gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211110225301.315573-1-colin.i.king@gmail.com>
+Organization: I am not organized
+User-Agent: NeoMutt/20170609 (1.8.3)
+X-Spamd-Bar: +
+X-Spam-Level: *
+X-Rspamd-Server: hera
+Authentication-Results: hera.aquilenet.fr;
+        none
+X-Rspamd-Queue-Id: 4B5E6259
+X-Spamd-Result: default: False [1.90 / 15.00];
+         ARC_NA(0.00)[];
+         RCVD_VIA_SMTP_AUTH(0.00)[];
+         FROM_HAS_DN(0.00)[];
+         TO_DN_SOME(0.00)[];
+         FREEMAIL_ENVRCPT(0.00)[gmail.com];
+         TO_MATCH_ENVRCPT_ALL(0.00)[];
+         TAGGED_RCPT(0.00)[];
+         MIME_GOOD(-0.10)[text/plain];
+         HAS_ORG_HEADER(0.00)[];
+         RCVD_COUNT_THREE(0.00)[3];
+         RCPT_COUNT_SEVEN(0.00)[8];
+         FREEMAIL_TO(0.00)[googlemail.com];
+         FROM_EQ_ENVFROM(0.00)[];
+         MIME_TRACE(0.00)[0:+];
+         RCVD_TLS_LAST(0.00)[];
+         FREEMAIL_CC(0.00)[gmail.com,the-brannons.com,reisers.ca,linuxfoundation.org,linux-speakup.org,vger.kernel.org];
+         MID_RHS_NOT_FQDN(0.50)[];
+         SUSPICIOUS_RECIPS(1.50)[]
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On RZ/G2L SoC we need to explicitly deassert the reset line
-for the device to work, use this opportunity to deassert/assert
-reset line in sh-sci driver.
+Colin Ian King, le mer. 10 nov. 2021 22:53:01 +0000, a ecrit:
+> From: Colin Ian King <colin.king@canonical.com>
+> 
+> The variable i is being initialized a value that is never read, it is
+> re-assigned later on in a for-loop.  The assignment is redundant and
+> can be removed.
+> 
+> Signed-off-by: Colin Ian King <colin.king@canonical.com>
 
-This patch adds support to read the "resets" property (if available)
-from DT and perform deassert/assert when required.
+Reviewed-by: Samuel Thibault <samuel.thibault@ens-lyon.org>
 
-Also, propagate the error to the caller of sci_parse_dt() instead of
-returning NULL in case of failure.
-
-Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-Reviewed-by: Biju Das <biju.das.jz@bp.renesas.com>
-Reviewed-by: Philipp Zabel <p.zabel@pengutronix.de>
----
-v2->v3
-* Dropped of_match_device
-* Included RB tag
----
- drivers/tty/serial/sh-sci.c | 39 ++++++++++++++++++++++++++++++-------
- 1 file changed, 32 insertions(+), 7 deletions(-)
-
-diff --git a/drivers/tty/serial/sh-sci.c b/drivers/tty/serial/sh-sci.c
-index 89ee43061d3a..88005d2fc2a0 100644
---- a/drivers/tty/serial/sh-sci.c
-+++ b/drivers/tty/serial/sh-sci.c
-@@ -37,6 +37,7 @@
- #include <linux/of_device.h>
- #include <linux/platform_device.h>
- #include <linux/pm_runtime.h>
-+#include <linux/reset.h>
- #include <linux/scatterlist.h>
- #include <linux/serial.h>
- #include <linux/serial_sci.h>
-@@ -3203,23 +3204,47 @@ static const struct of_device_id of_sci_match[] = {
- };
- MODULE_DEVICE_TABLE(of, of_sci_match);
- 
-+static void sci_reset_control_assert(void *data)
-+{
-+	reset_control_assert(data);
-+}
-+
- static struct plat_sci_port *sci_parse_dt(struct platform_device *pdev,
- 					  unsigned int *dev_id)
- {
- 	struct device_node *np = pdev->dev.of_node;
-+	struct reset_control *rstc;
- 	struct plat_sci_port *p;
- 	struct sci_port *sp;
- 	const void *data;
--	int id;
-+	int id, ret;
- 
- 	if (!IS_ENABLED(CONFIG_OF) || !np)
--		return NULL;
-+		return ERR_PTR(-EINVAL);
- 
- 	data = of_device_get_match_data(&pdev->dev);
- 
-+	rstc = devm_reset_control_get_optional_exclusive(&pdev->dev, NULL);
-+	if (IS_ERR(rstc))
-+		return ERR_PTR(dev_err_probe(&pdev->dev, PTR_ERR(rstc),
-+					     "failed to get reset ctrl\n"));
-+
-+	ret = reset_control_deassert(rstc);
-+	if (ret) {
-+		dev_err(&pdev->dev, "failed to deassert reset %d\n", ret);
-+		return ERR_PTR(ret);
-+	}
-+
-+	ret = devm_add_action_or_reset(&pdev->dev, sci_reset_control_assert, rstc);
-+	if (ret) {
-+		dev_err(&pdev->dev, "failed to register assert devm action, %d\n",
-+			ret);
-+		return ERR_PTR(ret);
-+	}
-+
- 	p = devm_kzalloc(&pdev->dev, sizeof(struct plat_sci_port), GFP_KERNEL);
- 	if (!p)
--		return NULL;
-+		return ERR_PTR(-ENOMEM);
- 
- 	/* Get the line number from the aliases node. */
- 	id = of_alias_get_id(np, "serial");
-@@ -3227,11 +3252,11 @@ static struct plat_sci_port *sci_parse_dt(struct platform_device *pdev,
- 		id = ffz(sci_ports_in_use);
- 	if (id < 0) {
- 		dev_err(&pdev->dev, "failed to get alias id (%d)\n", id);
--		return NULL;
-+		return ERR_PTR(-EINVAL);
- 	}
- 	if (id >= ARRAY_SIZE(sci_ports)) {
- 		dev_err(&pdev->dev, "serial%d out of range\n", id);
--		return NULL;
-+		return ERR_PTR(-EINVAL);
- 	}
- 
- 	sp = &sci_ports[id];
-@@ -3318,8 +3343,8 @@ static int sci_probe(struct platform_device *dev)
- 
- 	if (dev->dev.of_node) {
- 		p = sci_parse_dt(dev, &dev_id);
--		if (p == NULL)
--			return -EINVAL;
-+		if (IS_ERR(p))
-+			return PTR_ERR(p);
- 	} else {
- 		p = dev->dev.platform_data;
- 		if (p == NULL) {
--- 
-2.17.1
-
+> ---
+>  drivers/accessibility/speakup/speakup_acntpc.c | 2 +-
+>  drivers/accessibility/speakup/speakup_dtlk.c   | 2 +-
+>  drivers/accessibility/speakup/speakup_keypc.c  | 2 +-
+>  3 files changed, 3 insertions(+), 3 deletions(-)
+> 
+> diff --git a/drivers/accessibility/speakup/speakup_acntpc.c b/drivers/accessibility/speakup/speakup_acntpc.c
+> index c1ec087dca13..023172ca22ef 100644
+> --- a/drivers/accessibility/speakup/speakup_acntpc.c
+> +++ b/drivers/accessibility/speakup/speakup_acntpc.c
+> @@ -247,7 +247,7 @@ static void synth_flush(struct spk_synth *synth)
+>  static int synth_probe(struct spk_synth *synth)
+>  {
+>  	unsigned int port_val = 0;
+> -	int i = 0;
+> +	int i;
+>  
+>  	pr_info("Probing for %s.\n", synth->long_name);
+>  	if (port_forced) {
+> diff --git a/drivers/accessibility/speakup/speakup_dtlk.c b/drivers/accessibility/speakup/speakup_dtlk.c
+> index 92838d3ae9eb..a9dd5c45d237 100644
+> --- a/drivers/accessibility/speakup/speakup_dtlk.c
+> +++ b/drivers/accessibility/speakup/speakup_dtlk.c
+> @@ -316,7 +316,7 @@ static struct synth_settings *synth_interrogate(struct spk_synth *synth)
+>  static int synth_probe(struct spk_synth *synth)
+>  {
+>  	unsigned int port_val = 0;
+> -	int i = 0;
+> +	int i;
+>  	struct synth_settings *sp;
+>  
+>  	pr_info("Probing for DoubleTalk.\n");
+> diff --git a/drivers/accessibility/speakup/speakup_keypc.c b/drivers/accessibility/speakup/speakup_keypc.c
+> index 311f4aa0be22..1618be87bff1 100644
+> --- a/drivers/accessibility/speakup/speakup_keypc.c
+> +++ b/drivers/accessibility/speakup/speakup_keypc.c
+> @@ -254,7 +254,7 @@ static void synth_flush(struct spk_synth *synth)
+>  static int synth_probe(struct spk_synth *synth)
+>  {
+>  	unsigned int port_val = 0;
+> -	int i = 0;
+> +	int i;
+>  
+>  	pr_info("Probing for %s.\n", synth->long_name);
+>  	if (port_forced) {
+> -- 
+> 2.32.0
+> 
