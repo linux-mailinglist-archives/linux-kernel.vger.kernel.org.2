@@ -2,102 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A614344C297
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 14:56:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C75C44C29B
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 14:57:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232052AbhKJN7W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Nov 2021 08:59:22 -0500
-Received: from mail.kernel.org ([198.145.29.99]:34288 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231460AbhKJN7U (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Nov 2021 08:59:20 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 77F36610FC;
-        Wed, 10 Nov 2021 13:56:32 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1636552593;
-        bh=EuP/VlAeIDY5tLCRfz2qT/DBs8AmsePg/eemPlSyrPI=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=M/p7su7S8FuKiIxan6QlfSK8GuYJZTK3hFeF9sAKIpVJJ7/ybxVBlIWInry0WiDr/
-         5l5ohbG7llY5/2ZoauaxqtV3SnNGrugpiwUkzasihhPAhCXKVSPLQI/en12Xux73/k
-         ccHZQwkhv8eBdjBoWgbQnHHiTPUEmB0hQTQ9dj48AWKKQbhhwMSm9H70n0tTGY7ZzB
-         fdOFaxpYmH+7xFeGV5r9ogxzj4jls6S7mSet39TJMwh6p2omSoercINtxigCeezKfa
-         jL2a6xFcSl/6HoagSDqDwfF4UKHlZZ+53T+eloXjwRAu4FiNZ1eJIdoHlOyb4hnXx9
-         pKzzueGJOy8jA==
-Date:   Wed, 10 Nov 2021 22:56:30 +0900
-From:   Masami Hiramatsu <mhiramat@kernel.org>
-To:     Beau Belgrave <beaub@linux.microsoft.com>
-Cc:     Steven Rostedt <rostedt@goodmis.org>,
-        linux-trace-devel@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v4 02/10] user_events: Add minimal support for
- trace_event into ftrace
-Message-Id: <20211110225630.babcd70ec85f97e369b0e446@kernel.org>
-In-Reply-To: <20211109190844.GA1529@kbox>
-References: <20211104170433.2206-1-beaub@linux.microsoft.com>
-        <20211104170433.2206-3-beaub@linux.microsoft.com>
-        <20211107233115.1f77e93c4bdf3ff649be99c1@kernel.org>
-        <20211108171336.GA1690@kbox>
-        <20211108131639.33a4f186@gandalf.local.home>
-        <20211108202527.GA1862@kbox>
-        <20211109115634.5fb6d984d7b4e701c740d5f3@kernel.org>
-        <20211109190844.GA1529@kbox>
-X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        id S232125AbhKJN7t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Nov 2021 08:59:49 -0500
+Received: from smtp-out2.suse.de ([195.135.220.29]:50034 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231460AbhKJN7o (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Nov 2021 08:59:44 -0500
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 7731E1FD63;
+        Wed, 10 Nov 2021 13:56:55 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1636552615; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=jqt2z7sKN4l4GAdAXxs3m4wrEVKXKmm1Vj0eGW+xqyg=;
+        b=n5XqFDRHYOL0PjFz0tieqrIrYuiBsvCzxNHnR2Mjn9qopJ7gtFZjaWjQRXjG5ELp5uBzyv
+        5GXGsx3YQ0yqoBCEoJCqIVL2L42tgLG7f5wBqDp2iHHcYlo/rxG52qXctMY2uDVAsPH8xc
+        ml+20N890xovCdvobm7CmkOkDTJhms0=
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 236A513BFF;
+        Wed, 10 Nov 2021 13:56:55 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id 87UNCKfPi2EHLgAAMHmgww
+        (envelope-from <mkoutny@suse.com>); Wed, 10 Nov 2021 13:56:55 +0000
+Date:   Wed, 10 Nov 2021 14:56:53 +0100
+From:   Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>
+To:     Felix Moessbauer <felix.moessbauer@siemens.com>
+Cc:     longman@redhat.com, akpm@linux-foundation.org,
+        cgroups@vger.kernel.org, corbet@lwn.net, frederic@kernel.org,
+        guro@fb.com, hannes@cmpxchg.org, juri.lelli@redhat.com,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-kselftest@vger.kernel.org, lizefan.x@bytedance.com,
+        mtosatti@redhat.com, pauld@redhat.com, peterz@infradead.org,
+        shuah@kernel.org, tj@kernel.org, jan.kiszka@siemens.com,
+        henning.schild@siemens.com
+Subject: Re: [PATCH v8 0/6] cgroup/cpuset: Add new cpuset partition type &
+ empty effecitve cpus
+Message-ID: <20211110135653.GD20566@blackbody.suse.cz>
+References: <20211018143619.205065-1-longman@redhat.com>
+ <20211110111357.17617-1-felix.moessbauer@siemens.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211110111357.17617-1-felix.moessbauer@siemens.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 9 Nov 2021 11:08:44 -0800
-Beau Belgrave <beaub@linux.microsoft.com> wrote:
+Hello.
 
-> > > I'd like to know if I do fix them that the features like filtering will still
-> > > be available to user_events or if it's better to just add flags to disable
-> > > kernel filtering?
-> > 
-> > I would rather like that the filters will be available on the user_events.
-> > 
-> > My question is that you need to log the dynamic data or strings via user-
-> > events or not. Since the other user-events, like SDT doesn't support the
-> > string variables to trace, I guess that is not a high priority.
-> > 
-> > Moreover, since now we can use eprobes, if user event records the address of
-> > user-string, the eprobes can fetch it.
-> > 
-> > So, my suggestion is implmenting with fixed-size parameters as the first step
-> > and keep filter/histograms/eprobes available on the user-events.
-> > If you find any performance issue, you can expand the user-events to support
-> > dynamic (array) data and strings.
-> > 
-> 
-> We need strings to be able to be emitted and recorded in eBPF, perf and
-> ftrace. So I would rather go after a solution that lets us keep these in
-> the ring buffers, even if it means a perf hit.
+On Wed, Nov 10, 2021 at 12:13:57PM +0100, Felix Moessbauer <felix.moessbauer@siemens.com> wrote:
+> However, I was not able to see any latency improvements when using
+> cpuset.cpus.partition=isolated.
 
-OK, my concern is based on the current implementation, so in that case
-you can add some additional verification. That is good.
+Interesting. What was the baseline against which you compared it
+(isolcpus, no cpusets,...)?
 
-> Guess what's left is to where the best place to check is, checking in
-> the filter with unsafe flags would let us keep most of the perf (we just
-> check the undersize case, 1 branch). When these unsafe types are
-> filtered then a perf tax is imposed to keep things safe.
+> The test was performed with jitterdebugger on CPUs 1-3 and the following cmdline:
+> rcu_nocbs=1-4 nohz_full=1-4 irqaffinity=0,5-6,11 intel_pstate=disable
+> On the other cpus, stress-ng was executed to generate load.
+> [...]
 
-I would like to keep verifying in writer side then we can ensure the
-data on ring buffer (of perf and of ftrace) is sane. If you add the unsafe
-flag, you have to change all the code which access the ring buffer, not only
-the filter but also eprobes, histograms, perf-tools, and other user-space
-tracing tools which reads the tracing buffer directly.
+> This requires cgroup.type=threaded on both cgroups and changes to the application
+> (threads have to be born in non-rt group and moved to rt-group).
 
-> It sounded like Steven wanted to think about this a bit, so I'll wait a
-> bit before poking again for consensus :)
-> 
-> Do you have any strong feelings about where it goes?
+But even with isolcpus the application would need to set affinity of
+threads to the selected CPUs (cf cgroup migrating). Do I miss anything?
 
-I recommend you to start verifying the writer side, it should make the
-change as small as possible. Unsafe flag idea may involve many other
-tools. And it is not fundamentary required for user-events.
-
-Thank you,
-
--- 
-Masami Hiramatsu <mhiramat@kernel.org>
+Thanks,
+Michal
