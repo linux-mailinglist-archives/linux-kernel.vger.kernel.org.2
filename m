@@ -2,71 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D171244C11D
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 13:18:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5E67A44C110
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 13:16:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231611AbhKJMU5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Nov 2021 07:20:57 -0500
-Received: from gate.crashing.org ([63.228.1.57]:57167 "EHLO gate.crashing.org"
+        id S231494AbhKJMSy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Nov 2021 07:18:54 -0500
+Received: from comms.puri.sm ([159.203.221.185]:47426 "EHLO comms.puri.sm"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229653AbhKJMU4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Nov 2021 07:20:56 -0500
-Received: from gate.crashing.org (localhost.localdomain [127.0.0.1])
-        by gate.crashing.org (8.14.1/8.14.1) with ESMTP id 1AACEZvq030022;
-        Wed, 10 Nov 2021 06:14:36 -0600
-Received: (from segher@localhost)
-        by gate.crashing.org (8.14.1/8.14.1/Submit) id 1AACESJE030011;
-        Wed, 10 Nov 2021 06:14:28 -0600
-X-Authentication-Warning: gate.crashing.org: segher set sender to segher@kernel.crashing.org using -f
-Date:   Wed, 10 Nov 2021 06:14:28 -0600
-From:   Segher Boessenkool <segher@kernel.crashing.org>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Nick Desaulniers <ndesaulniers@google.com>,
-        Bill Wendling <morbo@google.com>,
-        Josh Poimboeuf <jpoimboe@redhat.com>, x86@kernel.org,
-        linux-kernel@vger.kernel.org, mark.rutland@arm.com,
-        dvyukov@google.com, seanjc@google.com, pbonzini@redhat.com,
-        mbenes@suse.cz, llvm@lists.linux.dev,
-        linux-toolchains@vger.kernel.org
-Subject: Re: [PATCH 20/22] x86,word-at-a-time: Remove .fixup usage
-Message-ID: <20211110121428.GD614@gate.crashing.org>
-References: <20211105171023.989862879@infradead.org> <20211105171821.654356149@infradead.org> <20211108164711.mr2cqdcvedin2lvx@treble> <YYlshkTmf5zdvf1Q@hirez.programming.kicks-ass.net> <CAKwvOdkFZ4PSN0GGmKMmoCrcp7_VVNjau_b0sNRm3MuqVi8yow@mail.gmail.com> <YYov8SVHk/ZpFsUn@hirez.programming.kicks-ass.net> <CAKwvOdn8yrRopXyfd299=SwZS9TAPfPj4apYgdCnzPb20knhbg@mail.gmail.com> <20211109210736.GV174703@worktop.programming.kicks-ass.net>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211109210736.GV174703@worktop.programming.kicks-ass.net>
-User-Agent: Mutt/1.4.2.3i
+        id S231229AbhKJMSx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Nov 2021 07:18:53 -0500
+Received: from localhost (localhost [127.0.0.1])
+        by comms.puri.sm (Postfix) with ESMTP id 01291DFD9F;
+        Wed, 10 Nov 2021 04:15:36 -0800 (PST)
+Received: from comms.puri.sm ([127.0.0.1])
+        by localhost (comms.puri.sm [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id zz40ZZMGPKYC; Wed, 10 Nov 2021 04:15:35 -0800 (PST)
+Message-ID: <e9a3a64dcfec858e612037199df7627b77ececd9.camel@puri.sm>
+Subject: Re: [RFC 06/19] devfreq: imx8m-ddrc: Add late system sleep PM ops
+From:   Martin Kepplinger <martin.kepplinger@puri.sm>
+To:     Abel Vesa <abel.vesa@nxp.com>, Rob Herring <robh@kernel.org>,
+        Dong Aisheng <aisheng.dong@nxp.com>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        "catalin.marinas@arm.com" <catalin.marinas@arm.com>,
+        Will Deacon <will.deacon@arm.com>,
+        MyungJoo Ham <myungjoo.ham@samsung.com>,
+        Kyungmin Park <kyungmin.park@samsung.com>,
+        Chanwoo Choi <cw00.choi@samsung.com>,
+        Georgi Djakov <djakov@kernel.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Ahmad Fatoum <a.fatoum@pengutronix.de>
+Cc:     Pengutronix Kernel Team <kernel@pengutronix.de>,
+        linux-serial@vger.kernel.org, NXP Linux Team <linux-imx@nxp.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        devicetree@vger.kernel.org, linux-pm@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org
+Date:   Wed, 10 Nov 2021 13:15:26 +0100
+In-Reply-To: <1631554694-9599-7-git-send-email-abel.vesa@nxp.com>
+References: <1631554694-9599-1-git-send-email-abel.vesa@nxp.com>
+         <1631554694-9599-7-git-send-email-abel.vesa@nxp.com>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.38.3-1 
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi!
+Am Montag, dem 13.09.2021 um 20:38 +0300 schrieb Abel Vesa:
+> Seems that, in order to be able to resume from suspend, the dram rate
+> needs to be the highest one available. Therefore, add the late system
+> suspend/resume PM ops which set the highest rate on suspend and the
+> latest one used before suspending on resume.
 
-On Tue, Nov 09, 2021 at 10:07:36PM +0100, Peter Zijlstra wrote:
-> On Tue, Nov 09, 2021 at 11:22:44AM -0800, Nick Desaulniers wrote:
-> > I think the use of this feature (label-attributes) here isn't
-> > necessary though; because of the use of outputs, the "fallthrough"
-> > basic block needs to be placed immediately after the basic block
-> > terminated by the asm goto, at least in LLVM.  Was different ordering
-> > of basic blocks observed with GCC without this label attribute?
+Hi Abel, wouldn't this mean that s2idle / freeze would be kind of
+broken by this?
+
+Does is make sense to test the lowest rate? How would I force that
+here? (just for testing)
+
+Also, you could think about splitting this series up a bit and do this
+patch seperately onto mainline (before or after the other work).
+
+thank you
+                          martin
+
+
 > 
-> GCC does the same, but I wanted to have the exception stuff be in
-> .text.cold, but alas it doesn't do that. I left the attribute because of
-> it's descriptive value.
+> Signed-off-by: Abel Vesa <abel.vesa@nxp.com>
+> ---
+>  drivers/devfreq/imx8m-ddrc.c | 28 +++++++++++++++++++++++++++-
+>  1 file changed, 27 insertions(+), 1 deletion(-)
 > 
-> >  Unless the cold attribute is helping move
-> > ("shrink-wrap"?)
+> diff --git a/drivers/devfreq/imx8m-ddrc.c b/drivers/devfreq/imx8m-
+> ddrc.c
+> index f18a5c3c1c03..f39741b4a0b0 100644
+> --- a/drivers/devfreq/imx8m-ddrc.c
+> +++ b/drivers/devfreq/imx8m-ddrc.c
+> @@ -72,6 +72,8 @@ struct imx8m_ddrc {
+>         struct clk *dram_alt;
+>         struct clk *dram_apb;
+>  
+> +       unsigned long suspend_rate;
+> +       unsigned long resume_rate;
+>         int freq_count;
+>         struct imx8m_ddrc_freq freq_table[IMX8M_DDRC_MAX_FREQ_COUNT];
+>  };
+> @@ -271,6 +273,22 @@ static int imx8m_ddrc_target(struct device *dev,
+> unsigned long *freq, u32 flags)
+>         return ret;
+>  }
+>  
+> +static int imx8m_ddrc_suspend(struct device *dev)
+> +{
+> +       struct imx8m_ddrc *priv = dev_get_drvdata(dev);
+> +
+> +       priv->resume_rate = clk_get_rate(priv->dram_core);
+> +
+> +       return imx8m_ddrc_target(dev, &priv->suspend_rate, 0);
+> +}
+> +
+> +static int imx8m_ddrc_resume(struct device *dev)
+> +{
+> +       struct imx8m_ddrc *priv = dev_get_drvdata(dev);
+> +
+> +       return imx8m_ddrc_target(dev, &priv->resume_rate, 0);
+> +}
+> +
+>  static int imx8m_ddrc_get_cur_freq(struct device *dev, unsigned long
+> *freq)
+>  {
+>         struct imx8m_ddrc *priv = dev_get_drvdata(dev);
+> @@ -324,6 +342,9 @@ static int imx8m_ddrc_init_freq_info(struct
+> device *dev)
+>  
+>                 if (dev_pm_opp_add(dev, freq->rate * 250000, 0))
+>                         return -ENODEV;
+> +
+> +               if (index ==  0)
+> +                       priv->suspend_rate = freq->rate * 250000;
+>         }
+>  
+>         return 0;
+> @@ -399,11 +420,16 @@ static const struct of_device_id
+> imx8m_ddrc_of_match[] = {
+>  };
+>  MODULE_DEVICE_TABLE(of, imx8m_ddrc_of_match);
+>  
+> +static const struct dev_pm_ops imx8m_ddrc_pm_ops = {
+> +       SET_LATE_SYSTEM_SLEEP_PM_OPS(imx8m_ddrc_suspend,
+> imx8m_ddrc_resume)
+> +};
+> +
+>  static struct platform_driver imx8m_ddrc_platdrv = {
+>         .probe          = imx8m_ddrc_probe,
+>         .driver = {
+>                 .name   = "imx8m-ddrc-devfreq",
+> -               .of_match_table = imx8m_ddrc_of_match,
+> +               .pm = &imx8m_ddrc_pm_ops,
+> +               .of_match_table = of_match_ptr(imx8m_ddrc_of_match),
+>         },
+>  };
+>  module_platform_driver(imx8m_ddrc_platdrv);
 
-Shrink-wrapping is something else entirely.
 
->>  the basic block to a whole other section
-> > (.text.cold.)?
-> 
-> I was hoping it would do that, but it doesn't on gcc-11.
-
-A cold basic block can never dominate a non-cold basic block.  GCC will
-fix things up when it notices this property is violated, so marking
-random blocks as "cold" will not be very effective.
-
-
-Segher
