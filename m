@@ -2,169 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C13D344BD4E
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 09:51:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E1E844BD53
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 09:52:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230203AbhKJIyo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Nov 2021 03:54:44 -0500
-Received: from mga18.intel.com ([134.134.136.126]:44812 "EHLO mga18.intel.com"
+        id S230381AbhKJIz0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Nov 2021 03:55:26 -0500
+Received: from mail.vivotek.com ([60.248.39.150]:57250 "EHLO mail.vivotek.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229831AbhKJIyn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Nov 2021 03:54:43 -0500
-X-IronPort-AV: E=McAfee;i="6200,9189,10163"; a="219525053"
-X-IronPort-AV: E=Sophos;i="5.87,223,1631602800"; 
-   d="scan'208";a="219525053"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Nov 2021 00:51:55 -0800
-X-IronPort-AV: E=Sophos;i="5.87,223,1631602800"; 
-   d="scan'208";a="503882677"
-Received: from yhuang6-desk2.sh.intel.com (HELO yhuang6-desk2.ccr.corp.intel.com) ([10.239.159.101])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Nov 2021 00:51:53 -0800
-From:   "Huang, Ying" <ying.huang@intel.com>
-To:     Baolin Wang <baolin.wang@linux.alibaba.com>
-Cc:     <akpm@linux-foundation.org>, <dave.hansen@linux.intel.com>,
-        <ziy@nvidia.com>, <osalvador@suse.de>, <shy828301@gmail.com>,
-        <zhongjiang-ali@linux.alibaba.com>, <xlpang@linux.alibaba.com>,
-        <linux-mm@kvack.org>, <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] mm: migrate: Support multiple target nodes demotion
-References: <8850612186ea23eb5d328d84e4008a6b60f418e1.1636514506.git.baolin.wang@linux.alibaba.com>
-Date:   Wed, 10 Nov 2021 16:51:50 +0800
-In-Reply-To: <8850612186ea23eb5d328d84e4008a6b60f418e1.1636514506.git.baolin.wang@linux.alibaba.com>
-        (Baolin Wang's message of "Wed, 10 Nov 2021 15:03:36 +0800")
-Message-ID: <87ee7opf4p.fsf@yhuang6-desk2.ccr.corp.intel.com>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/27.1 (gnu/linux)
+        id S230338AbhKJIzZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Nov 2021 03:55:25 -0500
+Received: from pps.filterd (vivotekpps.vivotek.com [127.0.0.1])
+        by vivotekpps.vivotek.com (8.16.1.2/8.16.1.2) with SMTP id 1AA8kL6Y011355;
+        Wed, 10 Nov 2021 16:52:21 +0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=vivotek.com; h=from : to : cc :
+ subject : date : message-id : references : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=dkim;
+ bh=o6OWrAMXOMRL7b2L/h0+gN2U4tPL7Uq9VeK68ThZvDQ=;
+ b=AraZ7w2zqMag0SEC/HI0MXiIVHW8HH4Z5cHcPIF4mufyhuFgKKPN6dve9aBpae7xgFS4
+ 3bm8K882C05C7yAvXxDVtjmUPvYHcJplCgrzSXi/kF6yEaEP3GjPQITLFoo+JjoD01jk
+ 2YOHCF6jpv42duKI6ds9VXghRUoWjXpCstk= 
+Received: from cas01.vivotek.tw ([192.168.0.58])
+        by vivotekpps.vivotek.com with ESMTP id 3c87khr838-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
+        Wed, 10 Nov 2021 16:52:07 +0800
+Received: from MBS07.vivotek.tw ([fe80::2027:4d67:6c01:78d8]) by
+ CAS01.vivotek.tw ([::1]) with mapi id 14.03.0513.000; Wed, 10 Nov 2021
+ 16:52:06 +0800
+From:   <Michael.Wu@vatics.com>
+To:     <joe@perches.com>, <apw@canonical.com>
+CC:     <dwaipayanray1@gmail.com>, <lukas.bulwahn@gmail.com>,
+        <linux-kernel@vger.kernel.org>
+Subject: RE: checkpatch warns a symbolic link has not a newline
+Thread-Topic: checkpatch warns a symbolic link has not a newline
+Thread-Index: AdfV/ap0o7FQpZ4YSCGIdlNiqjhb1v//kwOA//9zhLA=
+Date:   Wed, 10 Nov 2021 08:52:05 +0000
+Message-ID: <5DB475451BAA174CB158B5E897FC1525D8B304C4@MBS07.vivotek.tw>
+References: <5DB475451BAA174CB158B5E897FC1525D8B30486@MBS07.vivotek.tw>
+ <1f8f989b9610bb558fc081c93b6e792c548ca76f.camel@perches.com>
+In-Reply-To: <1f8f989b9610bb558fc081c93b6e792c548ca76f.camel@perches.com>
+Accept-Language: zh-TW, en-US
+Content-Language: zh-TW
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [192.168.17.134]
+Content-Type: text/plain; charset="big5"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: text/plain; charset=ascii
+X-Proofpoint-GUID: gRzlKTIsZ7_SnZ8I5IwIySSzTACLSUaR
+X-Proofpoint-ORIG-GUID: gRzlKTIsZ7_SnZ8I5IwIySSzTACLSUaR
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.425,18.0.790
+ definitions=2021-11-10_03:2021-11-08,2021-11-10 signatures=0
+X-Proofpoint-Spam-Reason: safe
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Baolin Wang <baolin.wang@linux.alibaba.com> writes:
-
-> We have some machines with multiple memory types like below, which
-> have one fast (DRAM) memory node and two slow (persistent memory) memory
-> nodes. According to current node demotion, if node 0 fills up,
-                              ~~~~~~~~~~~~~
-
-node demotion policy?
-
-
-> its memory should be migrated to node 1, when node 1 fills up, its
-> memory will be migrated to node 2: node 0 -> node 1 -> node 2 ->stop.
->
-> But this is not efficient and suitbale memory migration route
-> for our machine with multiple slow memory nodes. Since the distance
-> between node 0 to node 1 and node 0 to node 2 is equal, and memory
-> migration between slow memory nodes will increase persistent memory
-> bandwidth greatly, which will hurt the whole system's performance.
->
-> Thus for this case, we can treat the slow memory node 1 and node 2
-> as a whole slow memory region, and we should migrate memory from
-> node 0 to node 1 and node 2 if node 0 fills up.
->
-> This patch changes the node_demotion data structure to support multiple
-> target nodes, and establishes the migration path to support multiple
-> target nodes with validating if the node distance is the best or not.
->
-> available: 3 nodes (0-2)
-> node 0 cpus: 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15
-> node 0 size: 62153 MB
-> node 0 free: 55135 MB
-> node 1 cpus:
-> node 1 size: 127007 MB
-> node 1 free: 126930 MB
-> node 2 cpus:
-> node 2 size: 126968 MB
-> node 2 free: 126878 MB
-> node distances:
-> node   0   1   2
->   0:  10  20  20
->   1:  20  10  20
->   2:  20  20  10
->
-> Signed-off-by: Baolin Wang <baolin.wang@linux.alibaba.com>
-> ---
-> Changes from RFC v2:
->  - Change to 'short' type for target nodes array.
->  - Remove nodemask instead selecting target node directly.
->  - Add WARN_ONCE() if the target nodes exceed the maximum value.
->
-> Changes from RFC v1:
->  - Re-define the node_demotion structure.
->  - Set up multiple target nodes by validating the node distance.
->  - Add more comments.
-> ---
->  mm/migrate.c | 138 +++++++++++++++++++++++++++++++++++++++++++----------------
->  1 file changed, 102 insertions(+), 36 deletions(-)
->
-> diff --git a/mm/migrate.c b/mm/migrate.c
-> index cf25b00..7f1d745 100644
-> --- a/mm/migrate.c
-> +++ b/mm/migrate.c
-> @@ -50,6 +50,7 @@
->  #include <linux/ptrace.h>
->  #include <linux/oom.h>
->  #include <linux/memory.h>
-> +#include <linux/random.h>
->  
->  #include <asm/tlbflush.h>
->  
-> @@ -1119,12 +1120,25 @@ static int __unmap_and_move(struct page *page, struct page *newpage,
->   *
->   * This is represented in the node_demotion[] like this:
->   *
-> - *	{  1, // Node 0 migrates to 1
-> - *	   2, // Node 1 migrates to 2
-> - *	  -1, // Node 2 does not migrate
-> - *	   4, // Node 3 migrates to 4
-> - *	   5, // Node 4 migrates to 5
-> - *	  -1} // Node 5 does not migrate
-> + *	{  nr=1, nodes[0]=1 }, // Node 0 migrates to 1
-> + *	{  nr=1, nodes[0]=2 }, // Node 1 migrates to 2
-> + *	{  nr=0, nodes[0]=-1 }, // Node 2 does not migrate
-> + *	{  nr=1, nodes[0]=4 }, // Node 3 migrates to 4
-> + *	{  nr=1, nodes[0]=5 }, // Node 4 migrates to 5
-> + *	{  nr=0, nodes[0]=-1} // Node 5 does not migrate
-> + *
-> + * Moreover some systems may have multiple same class memory
-> + * types.  Suppose a system has one socket with 3 memory nodes,
-
-s/same class memory types/slow memory nodes/
-
-?
-
-We don't support multiple fast memory types, right?
-
-> + * node 0 is fast memory type, and node 1/2 both are slow memory
-> + * type, and the distance between fast memory node and slow
-> + * memory node is same. So the migration path should be:
-> + *
-> + *	0 -> 1/2 -> stop
-> + *
-> + * This is represented in the node_demotion[] like this:
-> + *	{ nr=2, {nodes[0]=1, nodes[1]=2} }, // Node 0 migrates to node 1 and node 2
-> + *	{ nr=0, nodes[0]=-1, }, // Node 1 dose not migrate
-> + *	{ nr=0, nodes[0]=-1, }, // Node 2 does not migrate
->   */
->  
->  /*
-> @@ -1135,8 +1149,13 @@ static int __unmap_and_move(struct page *page, struct page *newpage,
->   * must be held over all reads to ensure that no cycles are
->   * observed.
->   */
-> -static int node_demotion[MAX_NUMNODES] __read_mostly =
-> -	{[0 ...  MAX_NUMNODES - 1] = NUMA_NO_NODE};
-> +#define DEMOTION_TARGET_NODES 15
-> +struct demotion_nodes {
-> +	unsigned short nr;
-> +	short nodes[DEMOTION_TARGET_NODES];
-> +};
-> +
-> +static struct demotion_nodes node_demotion[MAX_NUMNODES] __read_mostly;
-
-If MAX_NUMNODES is 1024, the total size will be (16 * 2 * 1024) = 32K
-bytes.  That appears too large.  We may consider to allocate
-node_demotion[] dynamically.
-
-Best Regards,
-Huang, Ying
+SGkgSm9lLA0KDQpUaGUgZm9sbG93aW5nIGlzIGEgZGVtb25zdHJhdGVkIHBhdGNoIHdoaWNoIGNy
+ZWF0ZXMgYSBzeW1ib2xpYyBsaW5rDQpwb2ludGluZyB0byBhIGV4aXN0ZWQgZmlsZS4NCg0KZGlm
+ZiAtLWdpdCBhL3Rvb2xzL2dwaW8vZHVtbXkuaCBiL3Rvb2xzL2dwaW8vZHVtbXkuaA0KbmV3IGZp
+bGUgbW9kZSAxMjAwMDANCmluZGV4IDAwMDAwMDAwMDAwMC4uYWNlNGRmNjBiYWM2DQotLS0gL2Rl
+di9udWxsDQorKysgYi90b29scy9ncGlvL2R1bW15LmgNCkBAIC0wLDAgKzEgQEANCitncGlvLXV0
+aWxzLmgNClwgTm8gbmV3bGluZSBhdCBlbmQgb2YgZmlsZQ0KDQp0b29scy9ncGlvL2R1bW15Lmgg
+aXMgY3JlYXRlZCBieSBjb21tYW5kICdsbiAtcyBncGlvLXV0aWxzLmggZHVtbXkuaCcuDQpzY3Jp
+cHRzL2NoZWNrcGF0Y2gucGwgcmV0dXJuZWQgYSB3YXJuaW5nIGxpa2VzIHRoYXQ6DQoNCldBUk5J
+Tkc6IGFkZGluZyBhIGxpbmUgd2l0aG91dCBuZXdsaW5lIGF0IGVuZCBvZiBmaWxlDQojMjI6IEZJ
+TEU6IHRvb2xzL2dwaW8vZHVtbXkuaDoxOg0KK2dwaW8tdXRpbHMuaA0KDQpjb21tYW5kICdsbiAt
+cycgY3JlYXRlcyBhIHN5bWJvbGljIGxpbmsgd2hpY2ggaGFzIG5vIG5ld2xpbmUgYXQgZW5kIG9m
+DQpmaWxlLiBGb3IgYSBzeW1ib2xpYyBsaW5rIGNyZWF0ZWQgYnkgJ2xuIC1zJyBhbHdheXMgZ2V0
+IHRoZSB3YXJuaW5nLg0KDQpJZiBzeW1ib2xpYyBsaW5rcyBhcmUgYWxsb3dlZCwgaXQgc2hvdWxk
+IG5vdCBiZSB3YXJuZWQsIGlzIGl0Pw0KDQpCZXN0IFJlZ2FyZHMsDQpNaWNoYWVsIFd1DQoNCj4g
+LS0tLS1PcmlnaW5hbCBNZXNzYWdlLS0tLS0NCj4gRnJvbTogSm9lIFBlcmNoZXMgW21haWx0bzpq
+b2VAcGVyY2hlcy5jb21dDQo+IFNlbnQ6IFdlZG5lc2RheSwgTm92ZW1iZXIgMTAsIDIwMjEgNDow
+OSBQTQ0KPiBUbzogTWljaGFlbC5XdSinZKm+r3EpDQo+IFN1YmplY3Q6IFJlOiBjaGVja3BhdGNo
+IHdhcm5zIGEgc3ltYm9saWMgbGluayBoYXMgbm90IGEgbmV3bGluZQ0KPiANCj4gT24gV2VkLCAy
+MDIxLTExLTEwIGF0IDA2OjM5ICswMDAwLCBNaWNoYWVsLld1QHZhdGljcy5jb20gd3JvdGU6DQo+
+ID4gSGkgQW5keSAmIEpvZSwNCj4gPg0KPiA+IEkgaGF2ZSBhIGNvbW1pdCB0aGF0IGNvbnRhaW5z
+IGEgbmV3bHkgY3JlYXRlZCBzeW1ib2xpYyBsaW5rIHBvaW50aW5nIHRvIGENCj4gY2VydGFpbiBm
+aWxlLiBJIHVzZWQgLi9zY3JpcHRzL2NoZWNrcGF0Y2gucGwgdG8gY2hlY2sgdGhpcyBjb21taXQg
+YW5kIHRoZW4gSSBnb3QgYQ0KPiBXQVJOSU5HOiBhZGRpbmcgYSBsaW5lIHdpdGhvdXQgbmV3bGlu
+ZSBhdCBlbmQgb2YgZmlsZS4gVGhlIHN5bWJvbGljIGxpbmsgd2FzDQo+IGNyZWF0ZWQgYnkgbG4g
+LXMuDQo+ID4NCj4gPiBJJ20gY29uZnVzZWQgd2h5IGl0IHJldHVybmVkIHN1Y2ggYSB3YXJuaW5n
+LiBJcyB0aGUgY29udGVudCBvZiB0aGUgcGF0Y2ggbm90DQo+IGFsbG93ZWQgdG8gY29udGFpbiBz
+eW1ib2xpYyBsaW5rcz8gSWYgaXQgaXMgYWxsb3dlZCwgSSB0aGluayBjaGVja3BhdGNoLnBsIGNh
+bg0KPiBtYWtlIHNvbWUgaW1wcm92ZW1lbnRzLCBzbyB0aGF0IHN5bWJvbGljIGxpbmtzIHdpbGwg
+bm90IGJlIHRyZWF0ZWQgYQ0KPiB3YXJuaW5ncyBiZWNhdXNlIG9mIG1pc3NpbmcgbmV3bGluZSBh
+dCBlbmQgb2YgZmlsZS4NCj4gPg0KPiA+IEJlc3QgUmVnYXJkcywNCj4gPiBNaWNoYWVsIFd1DQo+
+IA0KPiBTZW5kIG1lIGFuIGVtYWlsIHRoYXQgY29udGFpbnMgdGhlIHBhdGNoIHRoYXQgcHJvZHVj
+ZXMgdGhpcyBtZXNzYWdlIHBsZWFzZS4NCj4gDQoNCg==
