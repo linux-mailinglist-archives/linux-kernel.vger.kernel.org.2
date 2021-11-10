@@ -2,175 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CB4DC44BAA8
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 04:35:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C151944BAB5
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 04:52:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230253AbhKJDhv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Nov 2021 22:37:51 -0500
-Received: from mail.loongson.cn ([114.242.206.163]:33858 "EHLO loongson.cn"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229963AbhKJDhu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Nov 2021 22:37:50 -0500
-Received: from openarena.loongson.cn (unknown [10.20.41.56])
-        by mail.loongson.cn (Coremail) with SMTP id AQAAf9Dxb9PbPYth0MQBAA--.4086S2;
-        Wed, 10 Nov 2021 11:34:51 +0800 (CST)
-From:   suijingfeng <suijingfeng@loongson.cn>
-To:     Huacai Chen <chenhuacai@kernel.org>,
-        Jiaxun Yang <jiaxun.yang@flygoat.com>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        David Airlie <airlied@linux.ie>
-Cc:     linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] mips/loongson64: seperate wbflush_loongson out of setup.c
-Date:   Wed, 10 Nov 2021 11:34:51 +0800
-Message-Id: <20211110033451.326093-1-suijingfeng@loongson.cn>
-X-Mailer: git-send-email 2.25.1
+        id S230248AbhKJDyk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Nov 2021 22:54:40 -0500
+Received: from mga04.intel.com ([192.55.52.120]:42692 "EHLO mga04.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229963AbhKJDyj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Nov 2021 22:54:39 -0500
+X-IronPort-AV: E=McAfee;i="6200,9189,10163"; a="231319822"
+X-IronPort-AV: E=Sophos;i="5.87,222,1631602800"; 
+   d="scan'208";a="231319822"
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Nov 2021 19:51:52 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.87,222,1631602800"; 
+   d="scan'208";a="602061612"
+Received: from yilunxu-optiplex-7050.sh.intel.com (HELO localhost) ([10.239.159.68])
+  by orsmga004.jf.intel.com with ESMTP; 09 Nov 2021 19:51:49 -0800
+Date:   Wed, 10 Nov 2021 11:44:57 +0800
+From:   Xu Yilun <yilun.xu@intel.com>
+To:     matthew.gerlach@linux.intel.com
+Cc:     Tom Rix <trix@redhat.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Moritz Fischer <mdf@kernel.org>, linux-fpga@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Wu Hao <hao.wu@intel.com>
+Subject: Re: [PATCH v1 1/1] fpga: dfl: pci: Use pci_find_vsec_capability()
+  when looking for DFL
+Message-ID: <20211110034457.GA286728@yilunxu-OptiPlex-7050>
+References: <20211109154127.18455-1-andriy.shevchenko@linux.intel.com>
+ <8ccc133a-fb47-4548-fee3-d57775a5166d@redhat.com>
+ <YYq4fSRoyzFE4Vei@smile.fi.intel.com>
+ <39ac1f40-66ab-6c7e-0042-8fcdc062ed00@redhat.com>
+ <alpine.DEB.2.22.394.2111091044060.1548144@rhweight-WRK1>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: AQAAf9Dxb9PbPYth0MQBAA--.4086S2
-X-Coremail-Antispam: 1UD129KBjvJXoWxXr4UZrWkWFWrZr17WrW8Crg_yoWrXr1fpw
-        sYkan5Gr48Zr17Ars3CryUZr45Za95GFs7XF42vFyUZasFq34jvrn3KryrJrWDXry0qayr
-        u34UWrZ8uFy7CaUanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUk0b7Iv0xC_KF4lb4IE77IF4wAFF20E14v26r1j6r4UM7CY07I2
-        0VC2zVCF04k26cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rw
-        A2F7IY1VAKz4vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Gr0_Xr1l84ACjcxK6xII
-        jxv20xvEc7CjxVAFwI0_Gr0_Cr1l84ACjcxK6I8E87Iv67AKxVW8Jr0_Cr1UM28EF7xvwV
-        C2z280aVCY1x0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC
-        0VAKzVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr
-        1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcxkI7VAKI48JMxkIecxEwVCm-wCF04k20xvY
-        0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I
-        0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_JF0_Jw1lIxkGc2Ij64vIr41lIxAI
-        cVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Jr0_Gr1lIxAIcV
-        CF04k26cxKx2IYs7xG6rW3Jr0E3s1lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280
-        aVCY1x0267AKxVWUJVW8JbIYCTnIWIevJa73UjIFyTuYvjxUcDDGUUUUU
-X-CM-SenderInfo: xvxlyxpqjiv03j6o00pqjv00gofq/
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <alpine.DEB.2.22.394.2111091044060.1548144@rhweight-WRK1>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
- 1) .set pop is enough, so remove redundant .set mips0
+On Tue, Nov 09, 2021 at 10:51:33AM -0800, matthew.gerlach@linux.intel.com wrote:
+> 
+> 
+> On Tue, 9 Nov 2021, Tom Rix wrote:
+> 
+> > 
+> > On 11/9/21 10:05 AM, Andy Shevchenko wrote:
+> > > On Tue, Nov 09, 2021 at 07:55:43AM -0800, Tom Rix wrote:
+> > > > On 11/9/21 7:41 AM, Andy Shevchenko wrote:
+> > > > > Currently the find_dfls_by_vsec() opens code pci_find_vsec_capability().
+> > > > > Refactor the former to use the latter. No functional change intended.
+> > > Thanks for review, my answers below.
+> > > 
+> > > ...
+> > > 
+> > > > > +	u16 voff;
+> > > > The later use of voff in pci_read_config_dword is of type 'int', it may be
+> > > > better to keep voff as an int.
+> > > I don't think so. The rule of thumb that the types should match the
+> > > value they
+> > > got in the first place. In this case it's u16. Compiler will
+> > > implicitly cast it
+> > > to whatever is needed as long as the type is good for integer promotion.
+> > > 
+> 
+> I think u16 is more precise than int, but I think it'll get promoted to an
+> int anywhen when used with calls to pci_read_config_dword().  Was this
 
- 2) loongson's cpu spec call the write buffers as store fill buffer,
-    it is implemented in ls3a4000, ls3a3000, ls2k1000 etc cpus.
-    wbflush is mean to empty data gathered in the write buffers within
-    the CPU, however the system is still bootable and works normally
-    if we deselect CPU_HAS_WB. This patch provided a convenient way
-    to bypass __wbflush by removing CPU_HAS_WB in arch/mips/Kconfig.
+I agree u16 is OK.
 
-Signed-off-by: suijingfeng <suijingfeng@loongson.cn>
----
- arch/mips/loongson64/Makefile  |  1 +
- arch/mips/loongson64/setup.c   | 17 -----------------
- arch/mips/loongson64/smp.c     |  6 +++---
- arch/mips/loongson64/wbflush.c | 26 ++++++++++++++++++++++++++
- 4 files changed, 30 insertions(+), 20 deletions(-)
- create mode 100644 arch/mips/loongson64/wbflush.c
+A minor concern, is it better we also change the dfl_res_off to u16?
+dfl_res_off & voff are the same type of variables needed on positioning
+the DFL, so I'd like them listed together.
 
-diff --git a/arch/mips/loongson64/Makefile b/arch/mips/loongson64/Makefile
-index e806280bbb85..ad00d92c2871 100644
---- a/arch/mips/loongson64/Makefile
-+++ b/arch/mips/loongson64/Makefile
-@@ -12,3 +12,4 @@ obj-$(CONFIG_SUSPEND) += pm.o
- obj-$(CONFIG_PCI_QUIRKS) += vbios_quirk.o
- obj-$(CONFIG_CPU_LOONGSON3_CPUCFG_EMULATION) += cpucfg-emul.o
- obj-$(CONFIG_SYSFS) += boardinfo.o
-+obj-$(CONFIG_CPU_HAS_WB) += wbflush.o
-diff --git a/arch/mips/loongson64/setup.c b/arch/mips/loongson64/setup.c
-index 6fe3ffffcaa6..cb10d14da433 100644
---- a/arch/mips/loongson64/setup.c
-+++ b/arch/mips/loongson64/setup.c
-@@ -3,10 +3,7 @@
-  * Copyright (C) 2007 Lemote Inc. & Institute of Computing Technology
-  * Author: Fuxin Zhang, zhangfx@lemote.com
-  */
--#include <linux/export.h>
- #include <linux/init.h>
--
--#include <asm/wbflush.h>
- #include <asm/bootinfo.h>
- #include <linux/libfdt.h>
- #include <linux/of_fdt.h>
-@@ -17,20 +14,6 @@
- 
- void *loongson_fdt_blob;
- 
--static void wbflush_loongson(void)
--{
--	asm(".set\tpush\n\t"
--	    ".set\tnoreorder\n\t"
--	    ".set mips3\n\t"
--	    "sync\n\t"
--	    "nop\n\t"
--	    ".set\tpop\n\t"
--	    ".set mips0\n\t");
--}
--
--void (*__wbflush)(void) = wbflush_loongson;
--EXPORT_SYMBOL(__wbflush);
--
- void __init plat_mem_setup(void)
- {
- 	if (loongson_fdt_blob)
-diff --git a/arch/mips/loongson64/smp.c b/arch/mips/loongson64/smp.c
-index 09ebe84a17fe..4a938a29bfb2 100644
---- a/arch/mips/loongson64/smp.c
-+++ b/arch/mips/loongson64/smp.c
-@@ -42,13 +42,13 @@ static uint32_t core0_c0count[NR_CPUS];
- #define loongson3_ipi_write32(action, addr)	\
- 	do {					\
- 		writel(action, addr);		\
--		__wbflush();			\
-+		__sync();			\
- 	} while (0)
- /* write a 64bit value to ipi register */
- #define loongson3_ipi_write64(action, addr)	\
- 	do {					\
- 		writeq(action, addr);		\
--		__wbflush();			\
-+		__sync();			\
- 	} while (0)
- 
- static u32 (*ipi_read_clear)(int cpu);
-@@ -418,7 +418,7 @@ static irqreturn_t loongson3_ipi_interrupt(int irq, void *dev_id)
- 		c0count = c0count ? c0count : 1;
- 		for (i = 1; i < nr_cpu_ids; i++)
- 			core0_c0count[i] = c0count;
--		__wbflush(); /* Let others see the result ASAP */
-+		__sync(); /* Let others see the result ASAP */
- 	}
- 
- 	return IRQ_HANDLED;
-diff --git a/arch/mips/loongson64/wbflush.c b/arch/mips/loongson64/wbflush.c
-new file mode 100644
-index 000000000000..7127e43d44e6
---- /dev/null
-+++ b/arch/mips/loongson64/wbflush.c
-@@ -0,0 +1,26 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
-+/*
-+ * Copyright (C) 2007 Lemote Inc. & Institute of Computing Technology
-+ * Author: Fuxin Zhang, zhangfx@lemote.com
-+ */
-+#include <linux/export.h>
-+#include <linux/init.h>
-+#include <asm/wbflush.h>
-+#include <asm/sync.h>
-+
-+#ifdef CONFIG_CPU_HAS_WB
-+
-+static void wbflush_loongson(void)
-+{
-+	asm(".set push\n\t"
-+	    ".set noreorder\n\t"
-+	    ".set mips64r2\n\t"
-+	    "sync\n\t"
-+	    "nop\n\t"
-+	    ".set pop\n\t");
-+}
-+
-+void (*__wbflush)(void) = wbflush_loongson;
-+EXPORT_SYMBOL(__wbflush);
-+
-+#endif
--- 
-2.25.1
+> change tested on real or emulated HW?
+> 
+> > > ...
+> > > 
+> > > > > +	voff = pci_find_vsec_capability(dev, PCI_VENDOR_ID_INTEL,
+> > > > > PCI_VSEC_ID_INTEL_DFLS);
+> > > > This may be a weakness in the origin code, but intel isn't the exclusive
+> > > > user of DFL.
+> > > This does not change the original code. If you think so, this can be
+> > > extended
+> > > later on.
+> > 
+> > I would rather see this fixed now or explained why this isn't a problem.
+> 
+> I agree that a single Vendor/VSEC id being supported is a problem, but I
+> think fixing it should be a separate patch.  Do we need to change this a
 
+I agree. The vendor_id should be checked before VSEC ID is meaningful,
+and now this Vendor/VSEC pair is the only supported one, so this piece of
+code is good to me.
+
+> table lookup of Vendor/VSEC id's, or do we need to reserve a more generic
+> Vendor/VSEC pair?
+
+A generic Vendor/VSEC pair means all vendors must use the unified
+vendor_id if they want to use DFL. I'm not sure if this is proper.
+
+Thanks,
+Yilun
+
+> 
+> > 
+> > Tom
+> > 
+> > > 
+> > > > >    	if (!voff) {
+> > > > >    		dev_dbg(&pcidev->dev, "%s no DFL VSEC found\n", __func__);
+> > > > >    		return -ENODEV;
+> > 
+> > 
