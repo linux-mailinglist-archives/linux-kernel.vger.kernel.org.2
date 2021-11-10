@@ -2,118 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 39D6544CCE7
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 23:32:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DC7D044CCEC
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 23:32:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234119AbhKJWfL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Nov 2021 17:35:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39564 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233893AbhKJWfK (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Nov 2021 17:35:10 -0500
-Received: from mail-lj1-x236.google.com (mail-lj1-x236.google.com [IPv6:2a00:1450:4864:20::236])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1FB17C061767;
-        Wed, 10 Nov 2021 14:32:22 -0800 (PST)
-Received: by mail-lj1-x236.google.com with SMTP id t11so8160747ljh.6;
-        Wed, 10 Nov 2021 14:32:22 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Rg/Hge5syR4s3WTaka8d1F2LrCctSfO9o0lxQ0YuX6Y=;
-        b=haG3yjZvXmcEKTwKd7bAjso/aTGXm1PMFeKN702tvQdrKSO4xARhS0dXe1fdYQknJG
-         jDTHvR8OoFEbUGpAvKWXqVrP/XhFs4EJAz7QAJirMdWidyu+e7jwEU3SA1Q2EkYuz/H8
-         wPugi9F1CQRlyJdgZcMjuPBqHKJ7eM8XosUthsDlIcrWdOYlxtcW7gPDRJLMQ3dasIV5
-         ukRsbjFYY51j1Ib4/32+cyT1g34NS2SltkP5m4mtdULvEuJnoTKGmrp2GBITNvvv26Y+
-         PfQDMAgD0ES4i8YQ14u/fkqcbGA1B3eQ2ED5XFAlQXV2tKnxcKOtfbtMCUYpJ38j1taI
-         jNSQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Rg/Hge5syR4s3WTaka8d1F2LrCctSfO9o0lxQ0YuX6Y=;
-        b=uXpDkSKkYfXlUp6G3KelWq1owIuuuGI434920Upavk1zxjlI6994AxUqX/S6rHoCNc
-         fjp8+Io6qwRQF5X0al6MwsgT9WRXkNP2z0PJ+nYNAoz0VKaaJd6GEXxVN9J31t6Fxpte
-         /HDuas/MHu8mi4PvY8o1Em3BCHoh9BenNZHMwIwyqEB1v2oYLfkOL8grbRueZLvz9qwH
-         e2JZzgRBlB2iAWVH7JLUxLbH1gZhminX5pZ3WOYtDYTT6/rCf1Ehvk4tQn5+kPq7vynE
-         gI/ZAGxmgTahf/2hZj2aY+sVZIQZh90DC3D5TsCIR34qXXFSBUocW4ErKefV5umoSRCz
-         hDOg==
-X-Gm-Message-State: AOAM5324wmAAj1f2brFjV7CW7AQDqkdXZOwyN0Qp+pZIBL19T88hQuCp
-        bAIOZdUD7Oek61WzNUn3uPKB2T8ckS0axe1Ln08=
-X-Google-Smtp-Source: ABdhPJx6Ti/YQFyAw67QKVHgWO/EJiIobthutrJfGSf8fDbMnbb3L+QEKnr8oxwnBIAPVjUZqhXtsVGUAGaGe5JOkzU=
-X-Received: by 2002:a2e:9107:: with SMTP id m7mr2365756ljg.209.1636583540395;
- Wed, 10 Nov 2021 14:32:20 -0800 (PST)
+        id S233864AbhKJWfP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Nov 2021 17:35:15 -0500
+Received: from vps0.lunn.ch ([185.16.172.187]:55480 "EHLO vps0.lunn.ch"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234140AbhKJWfN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Nov 2021 17:35:13 -0500
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
+        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
+        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
+        bh=/9jSI9XXJ0BNTrF7wiBWFlu2npPyfj2u1QvVr6UGl4k=; b=fTc2niDtnC2xPmySOUN95UWhyE
+        1JAe/fwaQx23vdc+3TddqrVkfEc9As9YzYR7C8PCm+f1DJjlipYtidNH4BXhl0bbGfe/skAehHBLh
+        3fnxfiRgCqtWjCEzv5ldtzu/sMWeimOYtB/uQ2oGzju7w21FhM7L/srChq0/VvMHECmk=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
+        (envelope-from <andrew@lunn.ch>)
+        id 1mkw8i-00D97l-92; Wed, 10 Nov 2021 23:32:20 +0100
+Date:   Wed, 10 Nov 2021 23:32:20 +0100
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     Ansuel Smith <ansuelsmth@gmail.com>
+Cc:     Marek =?iso-8859-1?Q?Beh=FAn?= <kabel@kernel.org>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Vladimir Oltean <olteanv@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>, Pavel Machek <pavel@ucw.cz>,
+        John Crispin <john@phrozen.org>, netdev@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-leds@vger.kernel.org
+Subject: Re: [RFC PATCH v3 6/8] leds: trigger: add hardware-phy-activity
+ trigger
+Message-ID: <YYxIdAH4JW9OMawS@lunn.ch>
+References: <20211109022608.11109-1-ansuelsmth@gmail.com>
+ <20211109022608.11109-7-ansuelsmth@gmail.com>
+ <20211109042517.03baa809@thinkpad>
+ <YYrjlHz/UgTUwQAm@lunn.ch>
+ <YYwl0ursbAtsBdxX@Ansuel-xps.localdomain>
 MIME-Version: 1.0
-References: <20211111085746.46746d4f@canb.auug.org.au>
-In-Reply-To: <20211111085746.46746d4f@canb.auug.org.au>
-From:   Steve French <smfrench@gmail.com>
-Date:   Wed, 10 Nov 2021 16:32:09 -0600
-Message-ID: <CAH2r5msHBRrU+E1__oxQ=qojrjHsmQtf-z-eu2GcnSjeOZCYZg@mail.gmail.com>
-Subject: Re: linux-next: build failure after merge of the cifs tree
-To:     Stephen Rothwell <sfr@canb.auug.org.au>
-Cc:     CIFS <linux-cifs@vger.kernel.org>,
-        "Paulo Alcantara (SUSE)" <pc@cjr.nz>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YYwl0ursbAtsBdxX@Ansuel-xps.localdomain>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-I had a cut-n-paste error in updating one of Paulo's patches this
-morning.  Fixed now in cifs-2.6.git for-next
+On Wed, Nov 10, 2021 at 09:04:34PM +0100, Ansuel Smith wrote:
+> On Tue, Nov 09, 2021 at 10:09:40PM +0100, Andrew Lunn wrote:
+> > > > +/* Expose sysfs for every blink to be configurable from userspace */
+> > > > +DEFINE_OFFLOAD_TRIGGER(blink_tx, BLINK_TX);
+> > > > +DEFINE_OFFLOAD_TRIGGER(blink_rx, BLINK_RX);
+> > > > +DEFINE_OFFLOAD_TRIGGER(keep_link_10m, KEEP_LINK_10M);
+> > > > +DEFINE_OFFLOAD_TRIGGER(keep_link_100m, KEEP_LINK_100M);
+> > > > +DEFINE_OFFLOAD_TRIGGER(keep_link_1000m, KEEP_LINK_1000M);
+> > 
+> > You might get warnings about CamelCase, but i suggest keep_link_10M,
+> > keep_link_100M and keep_link_1000M. These are megabits, not millibits.
+> > 
+> > > > +DEFINE_OFFLOAD_TRIGGER(keep_half_duplex, KEEP_HALF_DUPLEX);
+> > > > +DEFINE_OFFLOAD_TRIGGER(keep_full_duplex, KEEP_FULL_DUPLEX);
+> > 
+> > What does keep mean in this context?
+> >
+> 
+> LED is turned on but doesn't blink. Hint for a better name?
 
-On Wed, Nov 10, 2021 at 3:57 PM Stephen Rothwell <sfr@canb.auug.org.au> wrote:
->
-> Hi all,
->
-> After merging the cifs tree, today's linux-next build (powerpc
-> ppc64_defconfig) failed like this:
->
-> <stdin>:1559:2: warning: #warning syscall futex_waitv not implemented [-Wcpp]
-> fs/cifs/connect.c: In function 'clean_demultiplex_info':
-> fs/cifs/connect.c:841:2: error: stray '#' in program
->   841 | +#ifdef CONFIG_CIFS_DFS_UPCALL
->       |  ^
-> fs/cifs/connect.c:841:3: error: 'ifdef' undeclared (first use in this function)
->   841 | +#ifdef CONFIG_CIFS_DFS_UPCALL
->       |   ^~~~~
-> fs/cifs/connect.c:841:3: note: each undeclared identifier is reported only once for each function it appears in
-> fs/cifs/connect.c:841:8: error: expected ';' before 'CONFIG_CIFS_DFS_UPCALL'
->   841 | +#ifdef CONFIG_CIFS_DFS_UPCALL
->       |        ^~~~~~~~~~~~~~~~~~~~~~~
->       |        ;
-> fs/cifs/connect.c:843:15: error: 'struct TCP_Server_Info' has no member named 'leaf_fullpath'
->   843 | + kfree(server->leaf_fullpath);
->       |               ^~
-> fs/cifs/connect.c:844:2: error: stray '#' in program
->   844 | +#endif
->       |  ^
-> fs/cifs/connect.c:844:3: error: 'endif' undeclared (first use in this function); did you mean 'gendisk'?
->   844 | +#endif
->       |   ^~~~~
->       |   gendisk
-> fs/cifs/connect.c:844:8: error: expected ';' before 'kfree'
->   844 | +#endif
->       |        ^
->       |        ;
->   845 |  kfree(server);
->       |  ~~~~~
->
-> Caused by commit
->
->   58b90aa95977 ("cifs: support nested dfs links over reconnect")
->
-> I have used the cifs tree from next-20211110 for today.
->
-> --
-> Cheers,
-> Stephen Rothwell
+I would just drop the keep. You have blink_ as a prefix for those
+modes that blink.
 
-
-
--- 
-Thanks,
-
-Steve
+      Andrew
