@@ -2,120 +2,171 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 13B8944C8F3
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 20:24:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 96C4244C8F5
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 20:25:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232884AbhKJT1b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Nov 2021 14:27:31 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52928 "EHLO
+        id S232713AbhKJT1o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Nov 2021 14:27:44 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53020 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232718AbhKJT10 (ORCPT
+        with ESMTP id S232718AbhKJT1m (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Nov 2021 14:27:26 -0500
-Received: from mail-wm1-x32b.google.com (mail-wm1-x32b.google.com [IPv6:2a00:1450:4864:20::32b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9057FC061764
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Nov 2021 11:24:38 -0800 (PST)
-Received: by mail-wm1-x32b.google.com with SMTP id o29so3167228wms.2
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Nov 2021 11:24:38 -0800 (PST)
+        Wed, 10 Nov 2021 14:27:42 -0500
+Received: from mail-wr1-x430.google.com (mail-wr1-x430.google.com [IPv6:2a00:1450:4864:20::430])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B205C061764
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Nov 2021 11:24:54 -0800 (PST)
+Received: by mail-wr1-x430.google.com with SMTP id d3so5828625wrh.8
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Nov 2021 11:24:54 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20210112.gappssmtp.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=hGC5vbTP7eVhWvQa6obMxUPyW7fE6TkeuAmRY62poPc=;
-        b=o8YgN3Yr2RJVNTOVw0QWOGogKTBQMT4+qFJOEYABx2bj6SGGv63pxe/SJ4WVcCC3jn
-         S05I4wPHD8+z79WW8vHnLfVOVCRrvtfEbM0/n3C7vWEAhsPrY0b4qbqwJixF8XZ6zP5U
-         t9iCkujPvC/hTFn2vw7e85oBE8a126iesSSEPM7b21YMhn2y7EXSS5A7k/Lm4H6EI3VQ
-         D9NTMrB8kCHJgzWX/9+4BDtAepVPqgHEJBSpZGf6y6io+5o3D1ucoHi3oeUB8Ko8aXpy
-         AMIRhMvdNEHXMpDoABTqi5nFy1ORDwR4ZjebDc2S0fEpdHIvzVLWIaQEBZb8sdP2GT1u
-         eSEA==
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=hgxxmvGeWBqoVVWm+aT8y1AIFogI9R6xV+DgrB/wQzg=;
+        b=iybUjt6NruXZ+ansxh33A5/V/Kjub9Ad/KI+A8G1/mu2HhjLxBemhQ/PqkuNtDN3Qo
+         mWIeyHoxFSDcSgRYjZ1ST+cVXoQKdv0Pzqfm+a/6/HcfyjrRlQzTVrenX7pFKQR7bmR0
+         bdcIg5ZGPsGgRxo/cRYuseMzYyUPXpBAuseJRLwyZrX1JR9qxC+o8WK19GM3Kvl6fg+L
+         ix+6IsKFXrrJE18EnuwzRbZcc1Trt1KELfyTTHARMAFQWLAgwiURgi8Y3X2wHm9CCghO
+         ZhpL9sZhrWfR5U2gb8cqLb9CiJgGEUhTbwFvzR6Z0hXr1eGR091KNwJgPkoyZFQtQafa
+         +ysQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=hGC5vbTP7eVhWvQa6obMxUPyW7fE6TkeuAmRY62poPc=;
-        b=2JzSdjq5p/SJ3IvVL4DyI2yy/6pa8/iSxOoo4vG6RQXGjCbqwkQMWJlR6Wldq9blUb
-         vF2Qo5qBuV7dShOPxv9j1ya75Ksh8MNmOMkIW8DubB8ydZW5q5T5G+1NaLVJWM59xq6h
-         q14clxLC2OteWadOPt3s1Kx9TI550p7PEGhkF4r/464/Lm/QkXD0P4n/S1xzw5N9nfE4
-         LqKszKvd9n914BCC7IrzD6ro9cocdokaazX2E2Pcr1CXHoHXy9b3gGGL087eMaUUTiRm
-         zbZg6TJlBQDucqMgZkYtKqyj3b59Hym41ZxTp/TFqDf0KxwnoGnbghZ5331NbZ4xQI/6
-         uGrg==
-X-Gm-Message-State: AOAM530Qbza3G6cAjC6u6txdr8h0EmjssvThA1syfvBGOHf8tiWVu3X3
-        FzTz6UwA6D2PmBHFUeSVR8M1MA==
-X-Google-Smtp-Source: ABdhPJwaqqXQvPtpGCJMftdZKiPsBPV2gDWdi4b770EA4FIRU+mVpBnIMR/wI0wlnRlRhRDKVUbAUw==
-X-Received: by 2002:a1c:3546:: with SMTP id c67mr1721206wma.43.1636572277143;
-        Wed, 10 Nov 2021 11:24:37 -0800 (PST)
-Received: from localhost.localdomain ([88.160.162.107])
-        by smtp.gmail.com with ESMTPSA id d16sm6250113wmb.37.2021.11.10.11.24.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 10 Nov 2021 11:24:36 -0800 (PST)
-From:   Fabien Parent <fparent@baylibre.com>
-To:     Rob Herring <robh+dt@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>
-Cc:     Fabien Parent <fparent@baylibre.com>, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 3/3] arm64: dts: mediatek: mt8183-pumpkin: add USB host support
-Date:   Wed, 10 Nov 2021 20:24:17 +0100
-Message-Id: <20211110192417.4177741-3-fparent@baylibre.com>
-X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211110192417.4177741-1-fparent@baylibre.com>
-References: <20211110192417.4177741-1-fparent@baylibre.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=hgxxmvGeWBqoVVWm+aT8y1AIFogI9R6xV+DgrB/wQzg=;
+        b=NRD3zpVPXfROvYPr5WOmrSru2BsP9+h4Ox0EVNCnGlVpcb21GZEBPPloqBF3Urkf96
+         XcCowx630LLSNb2TlcPXGjil0YoCTxISWCAOs5+H82yKbHJstROnEUzrgUxbscy7IFfU
+         y0JG42JlMsn9tbVQtVVyNCE78hznnuHdUszLKrt3vzvOuDPSHue7rXDKYkSeNlVb9O5n
+         jty5LBOA41a/z+G7bogDnAM1BwmAnaUwJN+Yrg6tCMlAeSeioWm94lb2KISH0ePe4aw3
+         nP7bPwMjngUKaSpj/urymnL8udov7lew6oOPOGNxR8Ky3AMdXtQ5Qjlrl0sSmLACNfuz
+         QncQ==
+X-Gm-Message-State: AOAM530bhRijDk6ws9AxG7pY6z/1VHNO1bTQAlttouoEEAKiO19dUfHD
+        ibUh7zuCGNG2dK/Jf/WV12e0aM+CMbGscSNl/xSZ3Q==
+X-Google-Smtp-Source: ABdhPJyu7rmRJdHQ2mxXsdvx5G3j1bwvAoiFZVmhi+qE5EZUPDk/1xRxjliTsllaG3LdOf8V3w4b2AJtPUipHLS9ja0=
+X-Received: by 2002:a05:6000:1548:: with SMTP id 8mr1798212wry.279.1636572292501;
+ Wed, 10 Nov 2021 11:24:52 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20211110191126.1214-1-alexandr.lobakin@intel.com>
+In-Reply-To: <20211110191126.1214-1-alexandr.lobakin@intel.com>
+From:   Eric Dumazet <edumazet@google.com>
+Date:   Wed, 10 Nov 2021 11:24:39 -0800
+Message-ID: <CANn89i+ZH83K9V7-7D6egC5AF=hxBv8FL+rroEqOskB-+TLZCA@mail.gmail.com>
+Subject: Re: [PATCH net] net: fix premature exit from NAPI state polling in napi_disable()
+To:     Alexander Lobakin <alexandr.lobakin@intel.com>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Jesse Brandeburg <jesse.brandeburg@intel.com>,
+        Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
+        Michal Swiatkowski <michal.swiatkowski@intel.com>,
+        Xuan Zhuo <xuanzhuo@linux.alibaba.com>,
+        Antoine Tenart <atenart@kernel.org>,
+        Wei Wang <weiwan@google.com>,
+        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The MT8183 Pumpkin board provides USB host support through 2 type-A
-ports. In addition the board provides Ethernet support
-with the LAN9512 IP connected on the USB bus.
+On Wed, Nov 10, 2021 at 11:11 AM Alexander Lobakin
+<alexandr.lobakin@intel.com> wrote:
+>
+> Commit 719c57197010 ("net: make napi_disable() symmetric with
+> enable") accidentally introduced a bug sometimes leading to a kernel
+> BUG when bringing an iface up/down under heavy traffic load.
+>
+> Prior to this commit, napi_disable() was polling n->state until
+> none of (NAPIF_STATE_SCHED | NAPIF_STATE_NPSVC) is set and then
+> always flip them. Now there's a possibility to get away with the
+> NAPIF_STATE_SCHE unset as 'continue' drops us to the cmpxchg()
+> call with an unitialized variable, rather than straight to
+> another round of the state check.
+>
+> Error path looks like:
+>
+> napi_disable():
+> unsigned long val, new; /* new is uninitialized */
+>
+> do {
+>         val = READ_ONCE(n->state); /* NAPIF_STATE_NPSVC and/or
+>                                       NAPIF_STATE_SCHED is set */
+>         if (val & (NAPIF_STATE_SCHED | NAPIF_STATE_NPSVC)) { /* true */
+>                 usleep_range(20, 200);
+>                 continue; /* go straight to the condition check */
+>         }
+>         new = val | <...>
+> } while (cmpxchg(&n->state, val, new) != val); /* state == val, cmpxchg()
+>                                                   writes garbage */
+>
+> napi_enable():
+> do {
+>         val = READ_ONCE(n->state);
+>         BUG_ON(!test_bit(NAPI_STATE_SCHED, &val)); /* 50/50 boom */
+> <...>
+>
+> while the typical BUG splat is like:
+>
+> [
+> Fix this by replacing this 'continue' with a goto to the beginning
+> of the loop body to restore the original behaviour.
+> This could be written without a goto, but would look uglier and
+> require one more indent level.
+>
+> Fixes: 719c57197010 ("net: make napi_disable() symmetric with enable")
+> Signed-off-by: Alexander Lobakin <alexandr.lobakin@intel.com>
+> Reviewed-by: Jesse Brandeburg <jesse.brandeburg@intel.com>
+> ---
+>  net/core/dev.c | 3 ++-
+>  1 file changed, 2 insertions(+), 1 deletion(-)
+>
+> diff --git a/net/core/dev.c b/net/core/dev.c
+> index edeb811c454e..5e101c53b9de 100644
+> --- a/net/core/dev.c
+> +++ b/net/core/dev.c
+> @@ -6929,10 +6929,11 @@ void napi_disable(struct napi_struct *n)
+>         set_bit(NAPI_STATE_DISABLE, &n->state);
+>
+>         do {
+> +retry:
+>                 val = READ_ONCE(n->state);
+>                 if (val & (NAPIF_STATE_SCHED | NAPIF_STATE_NPSVC)) {
+>                         usleep_range(20, 200);
+> -                       continue;
+> +                       goto retry;
+>                 }
+>
+>                 new = val | NAPIF_STATE_SCHED | NAPIF_STATE_NPSVC;
+> --
+> 2.33.1
+>
 
-Signed-off-by: Fabien Parent <fparent@baylibre.com>
----
- .../boot/dts/mediatek/mt8183-pumpkin.dts      | 26 +++++++++++++++++++
- 1 file changed, 26 insertions(+)
+Good catch !
 
-diff --git a/arch/arm64/boot/dts/mediatek/mt8183-pumpkin.dts b/arch/arm64/boot/dts/mediatek/mt8183-pumpkin.dts
-index d5a6628e9c5b..541b382c0e81 100644
---- a/arch/arm64/boot/dts/mediatek/mt8183-pumpkin.dts
-+++ b/arch/arm64/boot/dts/mediatek/mt8183-pumpkin.dts
-@@ -434,6 +434,18 @@ pins_gpio {
- 				 <PINMUX_GPIO28__FUNC_GPIO28>;
- 		};
- 	};
-+
-+	usb_pins: usb-pins {
-+		pins_usb {
-+			pinmux = <PINMUX_GPIO42__FUNC_GPIO42>;
-+			output-low;
-+		};
-+
-+		pins_hub_rst {
-+			pinmux = <PINMUX_GPIO9__FUNC_GPIO9>;
-+			output-low;
-+		};
-+	};
- };
- 
- &mfg {
-@@ -496,3 +508,17 @@ dpi_out: endpoint {
- 		};
- 	};
- };
-+
-+&ssusb {
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&usb_pins>;
-+	maximum-speed = "high-speed";
-+	dr_mode = "host";
-+	vusb33-supply = <&mt6358_vusb_reg>;
-+	status = "okay";
-+};
-+
-+&usb_host {
-+	vusb33-supply = <&mt6358_vusb_reg>;
-+	status = "okay";
-+};
--- 
-2.33.1
+What about replacing the error prone do {...} while (cmpxchg(..)) by
+something less confusing ?
 
+This way, no need for a label.
+
+diff --git a/net/core/dev.c b/net/core/dev.c
+index 5e37d6809317fb3c54686188a908bfcb0bfccdab..9327141892cdaaf0282e082e0c6746abae0f12a7
+100644
+--- a/net/core/dev.c
++++ b/net/core/dev.c
+@@ -6264,7 +6264,7 @@ void napi_disable(struct napi_struct *n)
+        might_sleep();
+        set_bit(NAPI_STATE_DISABLE, &n->state);
+
+-       do {
++       for (;;) {
+                val = READ_ONCE(n->state);
+                if (val & (NAPIF_STATE_SCHED | NAPIF_STATE_NPSVC)) {
+                        usleep_range(20, 200);
+@@ -6273,7 +6273,9 @@ void napi_disable(struct napi_struct *n)
+
+                new = val | NAPIF_STATE_SCHED | NAPIF_STATE_NPSVC;
+                new &= ~(NAPIF_STATE_THREADED | NAPIF_STATE_PREFER_BUSY_POLL);
+-       } while (cmpxchg(&n->state, val, new) != val);
++               if (cmpxchg(&n->state, val, new) == val)
++                       break;
++       }
+
+        hrtimer_cancel(&n->timer);
