@@ -2,32 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2F88D44C71B
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 19:46:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 13E0244C71D
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 19:46:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232992AbhKJSsS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Nov 2021 13:48:18 -0500
-Received: from mail.kernel.org ([198.145.29.99]:47032 "EHLO mail.kernel.org"
+        id S232676AbhKJSsW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Nov 2021 13:48:22 -0500
+Received: from mail.kernel.org ([198.145.29.99]:47098 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232777AbhKJSrj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Nov 2021 13:47:39 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C4C0861205;
-        Wed, 10 Nov 2021 18:44:50 +0000 (UTC)
+        id S232866AbhKJSrl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Nov 2021 13:47:41 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 57C4D61250;
+        Wed, 10 Nov 2021 18:44:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1636569891;
-        bh=s2V5MnLlW1fKa6K6bEJQ+I6bI2Bx4vdOgM2Q2Toj/sw=;
+        s=korg; t=1636569893;
+        bh=T2zwrgKGNGeYAak/xemcBJlwt7RESecGo7IRwjHuNww=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=dSOoulDF/YQwo9BUndr8IRgsz8kGx2X8BfSyfMAJTWQjos6hwrTSNHRTFE4JIAb5D
-         quDBWd47J6F4RIZ14xFSt2oZC9PiTS+Nt2xg4/VNZm6+nsFH2mDdfFYf+ND5fyMyQ2
-         p+w/gW9EPx1RbLr7xfbFLbbojrnc5RTRLutabdm4=
+        b=IjEURKYllUmM0eQqoSWPOpYJ99/MGfVa2YmqIzj8cBcI0KPvGwW3Z1jUvcdydmBUK
+         vmNUrjkwwypakcV65jUP6cT2fzgYXSQFUqjEBUfcl+hsWCNIAmerh2+EOF6ImbDlk4
+         v3JkU0L+Ml3HfDvAGJH9XCvBLAKATFbesD+cpuYM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org, Johan Hovold <johan@kernel.org>,
         Ian Abbott <abbotti@mev.co.uk>
-Subject: [PATCH 4.9 17/22] comedi: vmk80xx: fix transfer-buffer overflows
-Date:   Wed, 10 Nov 2021 19:43:24 +0100
-Message-Id: <20211110182002.141625945@linuxfoundation.org>
+Subject: [PATCH 4.9 18/22] comedi: vmk80xx: fix bulk-buffer overflow
+Date:   Wed, 10 Nov 2021 19:43:25 +0100
+Message-Id: <20211110182002.172243020@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
 In-Reply-To: <20211110182001.579561273@linuxfoundation.org>
 References: <20211110182001.579561273@linuxfoundation.org>
@@ -41,60 +41,53 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Johan Hovold <johan@kernel.org>
 
-commit a23461c47482fc232ffc9b819539d1f837adf2b1 upstream.
+commit 78cdfd62bd54af615fba9e3ca1ba35de39d3871d upstream.
 
-The driver uses endpoint-sized USB transfer buffers but up until
-recently had no sanity checks on the sizes.
-
-Commit e1f13c879a7c ("staging: comedi: check validity of wMaxPacketSize
-of usb endpoints found") inadvertently fixed NULL-pointer dereferences
-when accessing the transfer buffers in case a malicious device has a
-zero wMaxPacketSize.
-
-Make sure to allocate buffers large enough to handle also the other
-accesses that are done without a size check (e.g. byte 18 in
-vmk80xx_cnt_insn_read() for the VMK8061_MODEL) to avoid writing beyond
-the buffers, for example, when doing descriptor fuzzing.
-
-The original driver was for a low-speed device with 8-byte buffers.
-Support was later added for a device that uses bulk transfers and is
-presumably a full-speed device with a maximum 64-byte wMaxPacketSize.
+The driver is using endpoint-sized buffers but must not assume that the
+tx and rx buffers are of equal size or a malicious device could overflow
+the slab-allocated receive buffer when doing bulk transfers.
 
 Fixes: 985cafccbf9b ("Staging: Comedi: vmk80xx: Add k8061 support")
 Cc: stable@vger.kernel.org      # 2.6.31
 Signed-off-by: Johan Hovold <johan@kernel.org>
 Reviewed-by: Ian Abbott <abbotti@mev.co.uk>
-Link: https://lore.kernel.org/r/20211025114532.4599-4-johan@kernel.org
+Link: https://lore.kernel.org/r/20211025114532.4599-5-johan@kernel.org
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/staging/comedi/drivers/vmk80xx.c |    6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+ drivers/staging/comedi/drivers/vmk80xx.c |   16 +++++++---------
+ 1 file changed, 7 insertions(+), 9 deletions(-)
 
 --- a/drivers/staging/comedi/drivers/vmk80xx.c
 +++ b/drivers/staging/comedi/drivers/vmk80xx.c
-@@ -99,6 +99,8 @@ enum {
- #define IC3_VERSION		BIT(0)
- #define IC6_VERSION		BIT(1)
+@@ -168,22 +168,20 @@ static void vmk80xx_do_bulk_msg(struct c
+ 	__u8 rx_addr;
+ 	unsigned int tx_pipe;
+ 	unsigned int rx_pipe;
+-	size_t size;
++	size_t tx_size;
++	size_t rx_size;
  
-+#define MIN_BUF_SIZE		64
-+
- enum vmk80xx_model {
- 	VMK8055_MODEL,
- 	VMK8061_MODEL
-@@ -687,12 +689,12 @@ static int vmk80xx_alloc_usb_buffers(str
- 	struct vmk80xx_private *devpriv = dev->private;
- 	size_t size;
- 
--	size = usb_endpoint_maxp(devpriv->ep_rx);
-+	size = max(usb_endpoint_maxp(devpriv->ep_rx), MIN_BUF_SIZE);
- 	devpriv->usb_rx_buf = kzalloc(size, GFP_KERNEL);
- 	if (!devpriv->usb_rx_buf)
- 		return -ENOMEM;
- 
+ 	tx_addr = devpriv->ep_tx->bEndpointAddress;
+ 	rx_addr = devpriv->ep_rx->bEndpointAddress;
+ 	tx_pipe = usb_sndbulkpipe(usb, tx_addr);
+ 	rx_pipe = usb_rcvbulkpipe(usb, rx_addr);
+-
+-	/*
+-	 * The max packet size attributes of the K8061
+-	 * input/output endpoints are identical
+-	 */
 -	size = usb_endpoint_maxp(devpriv->ep_tx);
-+	size = max(usb_endpoint_maxp(devpriv->ep_rx), MIN_BUF_SIZE);
- 	devpriv->usb_tx_buf = kzalloc(size, GFP_KERNEL);
- 	if (!devpriv->usb_tx_buf)
- 		return -ENOMEM;
++	tx_size = usb_endpoint_maxp(devpriv->ep_tx);
++	rx_size = usb_endpoint_maxp(devpriv->ep_rx);
+ 
+ 	usb_bulk_msg(usb, tx_pipe, devpriv->usb_tx_buf,
+-		     size, NULL, devpriv->ep_tx->bInterval);
+-	usb_bulk_msg(usb, rx_pipe, devpriv->usb_rx_buf, size, NULL, HZ * 10);
++		     tx_size, NULL, devpriv->ep_tx->bInterval);
++
++	usb_bulk_msg(usb, rx_pipe, devpriv->usb_rx_buf, rx_size, NULL, HZ * 10);
+ }
+ 
+ static int vmk80xx_read_packet(struct comedi_device *dev)
 
 
