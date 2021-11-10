@@ -2,4183 +2,739 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8597044C1E9
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 14:07:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0A3BB44C1EC
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 14:12:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232094AbhKJNJv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Nov 2021 08:09:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51674 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232051AbhKJNJn (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Nov 2021 08:09:43 -0500
-Received: from mail-wr1-x42a.google.com (mail-wr1-x42a.google.com [IPv6:2a00:1450:4864:20::42a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A496C0613F5
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Nov 2021 05:06:55 -0800 (PST)
-Received: by mail-wr1-x42a.google.com with SMTP id i5so3963570wrb.2
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Nov 2021 05:06:54 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20210112.gappssmtp.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=pkEzlVe9qFWauunGqME7hIhiReMyTOCOuR6LVYvxLms=;
-        b=8R6Gbx8++6SDeoXR3pmLYC392lxjAa90WbFwISmrYgPH882glB6TP8kDxgCd6F3hM7
-         5Ls9Txb39+7QFM6eElB0AW9dmN5zC7raXrB2uCk7+KC0QXZNjZgb169JUxMk8YIx75Ez
-         pQRojQWPnN2YUcYbEgTDgzOfzB/U7i9Ax9Z1S0THdqhXfHloTrSF0hPe/blpVu4M8HHF
-         Ixunrpt5rARud9K9PF6w2OaGsEcvtnG2P9xmyHoXK9qLCnUPCpleo9pIGtk1AgfyDpTN
-         fUg6atzhgBMcLV2F4ou8kv7tiEPosKNruSl4TpAgW0DzYDzXQ4ZDURXj3V3uULnLNwXk
-         267w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=pkEzlVe9qFWauunGqME7hIhiReMyTOCOuR6LVYvxLms=;
-        b=ZqkIltWNQdE1HFvlIjv0ESDuojm181b4Cxk2lOmkq/HyIKdtHOPQ2MZwT8D6bYoaEv
-         KCp5CrJltxhuFlH413PHOmjq3Q6u/u4dp22/ZXPmCts4LLlfh0UX3sk3s32mzqZ5LXiC
-         VmeTJd3g4BbDte/8VrJIfleod8HU8gCJCL/aY8covVQq6PEzz/w0vaHIe9lvS5lX7sDm
-         JxJwGzX+NHVj2oIoNuxT64UGr33MCJlv33+6k7e8/SumgJAriJPQp51tugXOI4EzqN0Z
-         961LwXyPDmi5Ssw21CVTuNxP1u97EM936x6LQ6mP2Js3W3Fh0PJNS8f1qn9zWC/+SHJh
-         xklQ==
-X-Gm-Message-State: AOAM532PZsJ0mIemfPPv57tDkCG/vtSgjKEbjXfKjgXyMCSbgC8uevbw
-        QvHxktjudm01OkOLuHFqH14mtA==
-X-Google-Smtp-Source: ABdhPJyF1HWZeqXUtGKGpfBg+slSNgW9LJmEYYRhNKNDO+Cqm8+q8iKJ99o9idDCCTdoA8nL2Umlpg==
-X-Received: by 2002:adf:e5c7:: with SMTP id a7mr18761196wrn.318.1636549612922;
-        Wed, 10 Nov 2021 05:06:52 -0800 (PST)
-Received: from localhost.localdomain (laubervilliers-656-1-151-143.w92-154.abo.wanadoo.fr. [92.154.18.143])
-        by smtp.gmail.com with ESMTPSA id i17sm5952175wmq.48.2021.11.10.05.06.51
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 10 Nov 2021 05:06:52 -0800 (PST)
-From:   Guillaume Ranquet <granquet@baylibre.com>
-To:     Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Chun-Kuang Hu <chunkuang.hu@kernel.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Matthias Brugger <matthias.bgg@gmail.com>
-Cc:     Markus Schneider-Pargmann <msp@baylibre.com>,
-        kernel test robot <lkp@intel.com>,
-        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        linux-mediatek@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org
-Subject: [PATCH v6 7/7] drm/mediatek: Add mt8195 DisplayPort driver
-Date:   Wed, 10 Nov 2021 14:06:23 +0100
-Message-Id: <20211110130623.20553-8-granquet@baylibre.com>
-X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20211110130623.20553-1-granquet@baylibre.com>
-References: <20211110130623.20553-1-granquet@baylibre.com>
+        id S231820AbhKJNPl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Nov 2021 08:15:41 -0500
+Received: from mga02.intel.com ([134.134.136.20]:10286 "EHLO mga02.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231162AbhKJNPj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Nov 2021 08:15:39 -0500
+X-IronPort-AV: E=McAfee;i="6200,9189,10163"; a="219867861"
+X-IronPort-AV: E=Sophos;i="5.87,223,1631602800"; 
+   d="gz'50?scan'50,208,50";a="219867861"
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Nov 2021 05:12:44 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.87,223,1631602800"; 
+   d="gz'50?scan'50,208,50";a="669796280"
+Received: from lkp-server02.sh.intel.com (HELO c20d8bc80006) ([10.239.97.151])
+  by orsmga005.jf.intel.com with ESMTP; 10 Nov 2021 05:12:42 -0800
+Received: from kbuild by c20d8bc80006 with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1mknP7-000F0C-Pl; Wed, 10 Nov 2021 13:12:41 +0000
+Date:   Wed, 10 Nov 2021 21:12:33 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Marek Vasut <marek.vasut+renesas@gmail.com>
+Cc:     kbuild-all@lists.01.org, linux-kernel@vger.kernel.org,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
+Subject: pcie-rcar-host.c:undefined reference to `__clk_is_enabled'
+Message-ID: <202111102128.juvvSJzh-lkp@intel.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/mixed; boundary="EVF5PPMfhYS0aIcm"
+Content-Disposition: inline
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Markus Schneider-Pargmann <msp@baylibre.com>
 
-This patch adds a DisplayPort driver for the Mediatek mt8195 SoC and a
-according phy driver mediatek-dp-phy.
+--EVF5PPMfhYS0aIcm
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-It supports both functional units on the mt8195, the embedded
-DisplayPort as well as the external DisplayPort units. It offers
-hot-plug-detection, audio up to 8 channels, and DisplayPort 1.4 with up
-to 4 lanes.
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+head:   cb690f5238d71f543f4ce874aa59237cf53a877c
+commit: a115b1bd3af0c2963e72f6e47143724c59251be6 PCI: rcar: Add L1 link state fix into data abort hook
+date:   3 months ago
+config: arm-randconfig-r011-20211018 (attached as .config)
+compiler: arm-linux-gnueabi-gcc (GCC) 11.2.0
+reproduce (this is a W=1 build):
+        wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
+        chmod +x ~/bin/make.cross
+        # https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=a115b1bd3af0c2963e72f6e47143724c59251be6
+        git remote add linus https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
+        git fetch --no-tags linus master
+        git checkout a115b1bd3af0c2963e72f6e47143724c59251be6
+        # save the attached .config to linux build tree
+        mkdir build_dir
+        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-11.2.0 make.cross O=build_dir ARCH=arm SHELL=/bin/bash
 
-The driver creates a child device for the phy. The child device will
-never exist without the parent being active. As they are sharing a
-register range, the parent passes a regmap pointer to the child so that
-both can work with the same register range. The phy driver sets device
-data that is read by the parent to get the phy device that can be used
-to control the phy properties.
-
-This driver is based on an initial version by
-Jason-JH.Lin <jason-jh.lin@mediatek.com>.
-
-Signed-off-by: Markus Schneider-Pargmann <msp@baylibre.com>
-Signed-off-by: Guillaume Ranquet <granquet@baylibre.com>
+If you fix the issue, kindly add following tag as appropriate
 Reported-by: kernel test robot <lkp@intel.com>
+
+All errors (new ones prefixed by >>):
+
+   arm-linux-gnueabi-ld: drivers/pci/controller/pcie-rcar-host.o: in function `rcar_pcie_aarch32_abort_handler':
+>> pcie-rcar-host.c:(.text+0x1050): undefined reference to `__clk_is_enabled'
+   arm-linux-gnueabi-ld: drivers/firmware/qcom_scm-smc.o: in function `__scm_smc_do_quirk':
+   qcom_scm-smc.c:(.text+0x5c): undefined reference to `__arm_smccc_smc'
+   arm-linux-gnueabi-ld: drivers/firmware/qcom_scm-legacy.o: in function `scm_legacy_call':
+   qcom_scm-legacy.c:(.text+0x160): undefined reference to `__arm_smccc_smc'
+   arm-linux-gnueabi-ld: drivers/firmware/qcom_scm-legacy.o: in function `scm_legacy_call_atomic':
+   qcom_scm-legacy.c:(.text+0x3d8): undefined reference to `__arm_smccc_smc'
+
+Kconfig warnings: (for reference only)
+   WARNING: unmet direct dependencies detected for QCOM_SCM
+   Depends on (ARM || ARM64) && HAVE_ARM_SMCCC
+   Selected by
+   - ARM_QCOM_SPM_CPUIDLE && CPU_IDLE && (ARM || ARM64) && (ARCH_QCOM || COMPILE_TEST && !ARM64 && MMU
+
 ---
- drivers/gpu/drm/drm_edid.c              |    2 +-
- drivers/gpu/drm/mediatek/Kconfig        |    7 +
- drivers/gpu/drm/mediatek/Makefile       |    2 +
- drivers/gpu/drm/mediatek/mtk_dp.c       | 3094 +++++++++++++++++++++++
- drivers/gpu/drm/mediatek/mtk_dp_reg.h   |  568 +++++
- drivers/gpu/drm/mediatek/mtk_dpi.c      |  111 +-
- drivers/gpu/drm/mediatek/mtk_dpi_regs.h |   26 +
- drivers/gpu/drm/mediatek/mtk_drm_drv.c  |    1 +
- drivers/gpu/drm/mediatek/mtk_drm_drv.h  |    1 +
- 9 files changed, 3799 insertions(+), 13 deletions(-)
- create mode 100644 drivers/gpu/drm/mediatek/mtk_dp.c
- create mode 100644 drivers/gpu/drm/mediatek/mtk_dp_reg.h
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
 
-diff --git a/drivers/gpu/drm/drm_edid.c b/drivers/gpu/drm/drm_edid.c
-index 500279a82167a..bfd98b50ceb5b 100644
---- a/drivers/gpu/drm/drm_edid.c
-+++ b/drivers/gpu/drm/drm_edid.c
-@@ -5183,7 +5183,7 @@ static void drm_parse_hdmi_deep_color_info(struct drm_connector *connector,
- 	 * modes and forbids YCRCB422 support for all video modes per
- 	 * HDMI 1.3 spec.
- 	 */
--	info->color_formats = DRM_COLOR_FORMAT_RGB444;
-+	info->color_formats |= DRM_COLOR_FORMAT_RGB444;
- 
- 	/* YCRCB444 is optional according to spec. */
- 	if (hdmi[6] & DRM_EDID_HDMI_DC_Y444) {
-diff --git a/drivers/gpu/drm/mediatek/Kconfig b/drivers/gpu/drm/mediatek/Kconfig
-index 2976d21e9a34a..029b94c716131 100644
---- a/drivers/gpu/drm/mediatek/Kconfig
-+++ b/drivers/gpu/drm/mediatek/Kconfig
-@@ -28,3 +28,10 @@ config DRM_MEDIATEK_HDMI
- 	select PHY_MTK_HDMI
- 	help
- 	  DRM/KMS HDMI driver for Mediatek SoCs
-+
-+config MTK_DPTX_SUPPORT
-+	tristate "DRM DPTX Support for Mediatek SoCs"
-+	depends on DRM_MEDIATEK
-+	select PHY_MTK_DP
-+	help
-+	  DRM/KMS Display Port driver for Mediatek SoCs.
-diff --git a/drivers/gpu/drm/mediatek/Makefile b/drivers/gpu/drm/mediatek/Makefile
-index 29098d7c8307c..d86a6406055e6 100644
---- a/drivers/gpu/drm/mediatek/Makefile
-+++ b/drivers/gpu/drm/mediatek/Makefile
-@@ -21,3 +21,5 @@ mediatek-drm-hdmi-objs := mtk_cec.o \
- 			  mtk_hdmi_ddc.o
- 
- obj-$(CONFIG_DRM_MEDIATEK_HDMI) += mediatek-drm-hdmi.o
-+
-+obj-$(CONFIG_MTK_DPTX_SUPPORT) += mtk_dp.o
-diff --git a/drivers/gpu/drm/mediatek/mtk_dp.c b/drivers/gpu/drm/mediatek/mtk_dp.c
-new file mode 100644
-index 0000000000000..83087219d5a5e
---- /dev/null
-+++ b/drivers/gpu/drm/mediatek/mtk_dp.c
-@@ -0,0 +1,3094 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * Copyright (c) 2019 MediaTek Inc.
-+ * Copyright (c) 2021 BayLibre
-+ */
-+
-+#include <drm/drm_atomic_helper.h>
-+#include <drm/drm_bridge.h>
-+#include <drm/drm_crtc.h>
-+#include <drm/drm_dp_helper.h>
-+#include <drm/drm_edid.h>
-+#include <drm/drm_of.h>
-+#include <drm/drm_panel.h>
-+#include <drm/drm_print.h>
-+#include <drm/drm_probe_helper.h>
-+#include <linux/arm-smccc.h>
-+#include <linux/clk.h>
-+#include <linux/delay.h>
-+#include <linux/errno.h>
-+#include <linux/kernel.h>
-+#include <linux/nvmem-consumer.h>
-+#include <linux/of.h>
-+#include <linux/of_irq.h>
-+#include <linux/of_platform.h>
-+#include <linux/phy/phy.h>
-+#include <linux/platform_device.h>
-+#include <linux/pm_runtime.h>
-+#include <linux/regmap.h>
-+#include <sound/hdmi-codec.h>
-+#include <video/videomode.h>
-+
-+#include "mtk_dp_reg.h"
-+
-+#define MTK_DP_AUX_WAIT_REPLY_COUNT 20
-+#define MTK_DP_CHECK_SINK_CAP_TIMEOUT_COUNT 3
-+
-+#define MTK_DP_MAX_LANES 4
-+#define MTK_DP_MAX_LINK_RATE MTK_DP_LINKRATE_HBR3
-+
-+#define MTK_DP_TBC_BUF_READ_START_ADDR 0x08
-+
-+#define MTK_DP_TRAIN_RETRY_LIMIT 8
-+#define MTK_DP_TRAIN_MAX_ITERATIONS 5
-+
-+#define MTK_DP_AUX_WRITE_READ_WAIT_TIME_US 20
-+
-+#define MTK_DP_DP_VERSION_11 0x11
-+
-+enum mtk_dp_state {
-+	MTK_DP_STATE_INITIAL,
-+	MTK_DP_STATE_IDLE,
-+	MTK_DP_STATE_PREPARE,
-+	MTK_DP_STATE_NORMAL,
-+};
-+
-+enum mtk_dp_train_state {
-+	MTK_DP_TRAIN_STATE_STARTUP = 0,
-+	MTK_DP_TRAIN_STATE_CHECKCAP,
-+	MTK_DP_TRAIN_STATE_CHECKEDID,
-+	MTK_DP_TRAIN_STATE_TRAINING_PRE,
-+	MTK_DP_TRAIN_STATE_TRAINING,
-+	MTK_DP_TRAIN_STATE_CHECKTIMING,
-+	MTK_DP_TRAIN_STATE_NORMAL,
-+	MTK_DP_TRAIN_STATE_POWERSAVE,
-+	MTK_DP_TRAIN_STATE_DPIDLE,
-+};
-+
-+struct mtk_dp_timings {
-+	struct videomode vm;
-+
-+	u16 htotal;
-+	u16 vtotal;
-+	u8 frame_rate;
-+	u32 pix_rate_khz;
-+};
-+
-+struct mtk_dp_train_info {
-+	bool tps3;
-+	bool tps4;
-+	bool sink_ssc;
-+	bool cable_plugged_in;
-+	bool cable_state_change;
-+	bool cr_done;
-+	bool eq_done;
-+
-+	// link_rate is in multiple of 0.27Gbps
-+	int link_rate;
-+	int lane_count;
-+
-+	int irq_status;
-+	int check_cap_count;
-+};
-+
-+// Same values as used by the DP Spec for MISC0 bits 1 and 2
-+enum mtk_dp_color_format {
-+	MTK_DP_COLOR_FORMAT_RGB_444 = 0,
-+	MTK_DP_COLOR_FORMAT_YUV_422 = 1,
-+	MTK_DP_COLOR_FORMAT_YUV_444 = 2,
-+	MTK_DP_COLOR_FORMAT_YUV_420 = 3,
-+	MTK_DP_COLOR_FORMAT_YONLY = 4,
-+	MTK_DP_COLOR_FORMAT_RAW = 5,
-+	MTK_DP_COLOR_FORMAT_RESERVED = 6,
-+	MTK_DP_COLOR_FORMAT_DEFAULT = MTK_DP_COLOR_FORMAT_RGB_444,
-+	MTK_DP_COLOR_FORMAT_UNKNOWN = 15,
-+};
-+
-+// Multiple of 0.27Gbps
-+enum mtk_dp_linkrate {
-+	MTK_DP_LINKRATE_RBR = 0x6,
-+	MTK_DP_LINKRATE_HBR = 0xA,
-+	MTK_DP_LINKRATE_HBR2 = 0x14,
-+	MTK_DP_LINKRATE_HBR25 = 0x19,
-+	MTK_DP_LINKRATE_HBR3 = 0x1E,
-+};
-+
-+// Same values as used for DP Spec MISC0 bits 5,6,7
-+enum mtk_dp_color_depth {
-+	MTK_DP_COLOR_DEPTH_6BIT = 0,
-+	MTK_DP_COLOR_DEPTH_8BIT = 1,
-+	MTK_DP_COLOR_DEPTH_10BIT = 2,
-+	MTK_DP_COLOR_DEPTH_12BIT = 3,
-+	MTK_DP_COLOR_DEPTH_16BIT = 4,
-+	MTK_DP_COLOR_DEPTH_UNKNOWN = 5,
-+};
-+
-+struct mtk_dp_audio_cfg {
-+	int sample_rate;
-+	int word_length_bits;
-+	int channels;
-+};
-+
-+struct mtk_dp_info {
-+	enum mtk_dp_color_depth depth;
-+	enum mtk_dp_color_format format;
-+	struct mtk_dp_audio_cfg audio_caps;
-+	struct mtk_dp_timings timings;
-+};
-+
-+struct dp_cal_data {
-+	unsigned int glb_bias_trim;
-+	unsigned int clktx_impse;
-+
-+	unsigned int ln0_tx_impsel_pmos;
-+	unsigned int ln0_tx_impsel_nmos;
-+	unsigned int ln1_tx_impsel_pmos;
-+	unsigned int ln1_tx_impsel_nmos;
-+	unsigned int ln2_tx_impsel_pmos;
-+	unsigned int ln2_tx_impsel_nmos;
-+	unsigned int ln3_tx_impsel_pmos;
-+	unsigned int ln3_tx_impsel_nmos;
-+};
-+
-+struct mtk_dp {
-+	struct device *dev;
-+	struct platform_device *phy_dev;
-+	struct phy *phy;
-+	struct dp_cal_data cal_data;
-+
-+	struct drm_device *drm_dev;
-+	struct drm_bridge bridge;
-+	struct drm_bridge *next_bridge;
-+	struct drm_dp_aux aux;
-+
-+	struct mutex edid_lock;
-+	struct edid *edid;
-+
-+	u8 rx_cap[DP_RECEIVER_CAP_SIZE];
-+
-+	struct mtk_dp_info info;
-+	enum mtk_dp_state state;
-+
-+	struct mtk_dp_train_info train_info;
-+	enum mtk_dp_train_state train_state;
-+	unsigned int input_fmt;
-+
-+	struct regmap *regs;
-+	struct clk *dp_tx_clk;
-+
-+	bool enabled;
-+	bool audio_enable;
-+
-+	bool has_fec;
-+	struct mutex dp_lock;
-+
-+	struct mutex update_plugged_status_lock;
-+
-+	hdmi_codec_plugged_cb plugged_cb;
-+	struct device *codec_dev;
-+	u8 connector_eld[MAX_ELD_BYTES];
-+};
-+
-+enum mtk_dp_sdp_type {
-+	MTK_DP_SDP_NONE = 0x00,
-+	MTK_DP_SDP_ACM = 0x01,
-+	MTK_DP_SDP_ISRC = 0x02,
-+	MTK_DP_SDP_AVI = 0x03,
-+	MTK_DP_SDP_AUI = 0x04,
-+	MTK_DP_SDP_SPD = 0x05,
-+	MTK_DP_SDP_MPEG = 0x06,
-+	MTK_DP_SDP_NTSC = 0x07,
-+	MTK_DP_SDP_VSP = 0x08,
-+	MTK_DP_SDP_VSC = 0x09,
-+	MTK_DP_SDP_EXT = 0x0A,
-+	MTK_DP_SDP_PPS0 = 0x0B,
-+	MTK_DP_SDP_PPS1 = 0x0C,
-+	MTK_DP_SDP_PPS2 = 0x0D,
-+	MTK_DP_SDP_PPS3 = 0x0E,
-+	MTK_DP_SDP_DRM = 0x10,
-+	MTK_DP_SDP_MAX_NUM
-+};
-+
-+struct mtk_dp_sdp_packet {
-+	enum mtk_dp_sdp_type type;
-+	struct dp_sdp sdp;
-+};
-+
-+#define MTK_DP_IEC_CHANNEL_STATUS_LEN 5
-+union mtk_dp_audio_channel_status {
-+	struct {
-+		u8 rev : 1;
-+		u8 is_lpcm : 1;
-+		u8 copy_right : 1;
-+		u8 additional_format_info : 3;
-+		u8 channel_status_mode : 2;
-+		u8 category_code;
-+		u8 src_num : 4;
-+		u8 channel_num : 4;
-+		u8 sampling_freq : 4;
-+		u8 clk_accuracy : 2;
-+		u8 rev2 : 2;
-+		u8 word_len : 4;
-+		u8 original_sampling_freq : 4;
-+	} iec;
-+
-+	u8 buf[MTK_DP_IEC_CHANNEL_STATUS_LEN];
-+};
-+
-+static struct regmap_config mtk_dp_regmap_config = {
-+	.reg_bits = 32,
-+	.val_bits = 32,
-+	.reg_stride = 4,
-+	.max_register = SEC_OFFSET + 0x90,
-+	.name = "mtk-dp-registers",
-+};
-+
-+static bool mtk_dp_is_edp(struct mtk_dp *mtk_dp)
-+{
-+	return mtk_dp->next_bridge != NULL;
-+}
-+
-+static struct mtk_dp *mtk_dp_from_bridge(struct drm_bridge *b)
-+{
-+	return container_of(b, struct mtk_dp, bridge);
-+}
-+
-+static u32 mtk_dp_read(struct mtk_dp *mtk_dp, u32 offset)
-+{
-+	u32 read_val;
-+	int ret;
-+
-+	ret = regmap_read(mtk_dp->regs, offset, &read_val);
-+	if (ret) {
-+		dev_err(mtk_dp->dev, "Failed to read register 0x%x: %d\n",
-+			offset, ret);
-+		return 0;
-+	}
-+
-+	return read_val;
-+}
-+
-+static void mtk_dp_write(struct mtk_dp *mtk_dp, u32 offset, u32 val)
-+{
-+	int ret;
-+
-+	ret = regmap_write(mtk_dp->regs, offset, val);
-+	if (ret)
-+		dev_err(mtk_dp->dev,
-+			"Failed to write register 0x%x with value 0x%x: %d\n",
-+			offset, val, ret);
-+}
-+
-+static void mtk_dp_update_bits(struct mtk_dp *mtk_dp, u32 offset, u32 val,
-+			       u32 mask)
-+{
-+	int ret;
-+
-+	ret = regmap_update_bits(mtk_dp->regs, offset, mask, val);
-+	if (ret)
-+		dev_err(mtk_dp->dev,
-+			"Failed to update register 0x%x with value 0x%x, mask 0x%x: %d\n",
-+			offset, val, mask, ret);
-+}
-+
-+static void mtk_dp_bulk_16bit_write(struct mtk_dp *mtk_dp, u32 offset, u8 *buf,
-+				    size_t length)
-+{
-+	int i;
-+	int num_regs = (length + 1) / 2;
-+
-+	// 2 bytes per register
-+	for (i = 0; i < num_regs; i++) {
-+		u32 val = buf[i * 2] |
-+			  (i * 2 + 1 < length ? buf[i * 2 + 1] << 8 : 0);
-+
-+		mtk_dp_write(mtk_dp, offset + i * 4, val);
-+	}
-+}
-+
-+static unsigned long mtk_dp_sip_atf_call(unsigned int cmd, unsigned int para)
-+{
-+	struct arm_smccc_res res;
-+
-+	arm_smccc_smc(MTK_DP_SIP_CONTROL_AARCH32, cmd, para, 0, 0, 0, 0, 0,
-+		      &res);
-+
-+	pr_debug("[DPTX]%s cmd 0x%x, p1 0x%x, ret 0x%lx-0x%lx", __func__, cmd,
-+		 para, res.a0, res.a1);
-+	return res.a1;
-+}
-+
-+static void mtk_dp_msa_bypass_disable(struct mtk_dp *mtk_dp)
-+{
-+	const u16 bits_to_set =
-+		BIT(HTOTAL_SEL_DP_ENC0_P0_SHIFT) |
-+		BIT(VTOTAL_SEL_DP_ENC0_P0_SHIFT) |
-+		BIT(HSTART_SEL_DP_ENC0_P0_SHIFT) |
-+		BIT(VSTART_SEL_DP_ENC0_P0_SHIFT) |
-+		BIT(HWIDTH_SEL_DP_ENC0_P0_SHIFT) |
-+		BIT(VHEIGHT_SEL_DP_ENC0_P0_SHIFT) |
-+		BIT(HSP_SEL_DP_ENC0_P0_SHIFT) | BIT(HSW_SEL_DP_ENC0_P0_SHIFT) |
-+		BIT(VSP_SEL_DP_ENC0_P0_SHIFT) | BIT(VSW_SEL_DP_ENC0_P0_SHIFT);
-+	mtk_dp_update_bits(mtk_dp, MTK_DP_ENC0_P0_3030, bits_to_set,
-+			   bits_to_set);
-+}
-+
-+static void mtk_dp_set_msa(struct mtk_dp *mtk_dp)
-+{
-+	struct mtk_dp_timings *timings = &mtk_dp->info.timings;
-+
-+	mtk_dp_update_bits(mtk_dp, MTK_DP_ENC0_P0_3010, timings->htotal,
-+			   HTOTAL_SW_DP_ENC0_P0_MASK);
-+	mtk_dp_update_bits(mtk_dp, MTK_DP_ENC0_P0_3018,
-+			   timings->vm.hsync_len + timings->vm.hback_porch,
-+			   HSTART_SW_DP_ENC0_P0_MASK);
-+	mtk_dp_update_bits(mtk_dp, MTK_DP_ENC0_P0_3028,
-+			   timings->vm.hsync_len << HSW_SW_DP_ENC0_P0_SHIFT,
-+			   HSW_SW_DP_ENC0_P0_MASK);
-+	mtk_dp_update_bits(mtk_dp, MTK_DP_ENC0_P0_3028, 0,
-+			   HSP_SW_DP_ENC0_P0_MASK);
-+	mtk_dp_update_bits(mtk_dp, MTK_DP_ENC0_P0_3020, timings->vm.hactive,
-+			   HWIDTH_SW_DP_ENC0_P0_MASK);
-+	mtk_dp_update_bits(mtk_dp, MTK_DP_ENC0_P0_3014, timings->vtotal,
-+			   VTOTAL_SW_DP_ENC0_P0_MASK);
-+	mtk_dp_update_bits(mtk_dp, MTK_DP_ENC0_P0_301C,
-+			   timings->vm.vsync_len + timings->vm.vback_porch,
-+			   VSTART_SW_DP_ENC0_P0_MASK);
-+	mtk_dp_update_bits(mtk_dp, MTK_DP_ENC0_P0_302C,
-+			   timings->vm.vsync_len << VSW_SW_DP_ENC0_P0_SHIFT,
-+			   VSW_SW_DP_ENC0_P0_MASK);
-+	mtk_dp_update_bits(mtk_dp, MTK_DP_ENC0_P0_302C, 0,
-+			   VSP_SW_DP_ENC0_P0_MASK);
-+	mtk_dp_update_bits(mtk_dp, MTK_DP_ENC0_P0_3024, timings->vm.vactive,
-+			   VHEIGHT_SW_DP_ENC0_P0_MASK);
-+
-+	mtk_dp_update_bits(mtk_dp, MTK_DP_ENC0_P0_3064, timings->vm.hactive,
-+			   HDE_NUM_LAST_DP_ENC0_P0_MASK);
-+
-+	mtk_dp_update_bits(mtk_dp, MTK_DP_ENC0_P0_3154, timings->htotal,
-+			   PGEN_HTOTAL_DP_ENC0_P0_MASK);
-+	mtk_dp_update_bits(mtk_dp, MTK_DP_ENC0_P0_3158,
-+			   timings->vm.hfront_porch,
-+			   PGEN_HSYNC_RISING_DP_ENC0_P0_MASK);
-+	mtk_dp_update_bits(mtk_dp, MTK_DP_ENC0_P0_315C, timings->vm.hsync_len,
-+			   PGEN_HSYNC_PULSE_WIDTH_DP_ENC0_P0_MASK);
-+	mtk_dp_update_bits(mtk_dp, MTK_DP_ENC0_P0_3160,
-+			   timings->vm.hback_porch + timings->vm.hsync_len,
-+			   PGEN_HFDE_START_DP_ENC0_P0_MASK);
-+	mtk_dp_update_bits(mtk_dp, MTK_DP_ENC0_P0_3164, timings->vm.hactive,
-+			   PGEN_HFDE_ACTIVE_WIDTH_DP_ENC0_P0_MASK);
-+	mtk_dp_update_bits(mtk_dp, MTK_DP_ENC0_P0_3168, timings->vtotal,
-+			   PGEN_VTOTAL_DP_ENC0_P0_MASK);
-+	mtk_dp_update_bits(mtk_dp, MTK_DP_ENC0_P0_316C,
-+			   timings->vm.vfront_porch,
-+			   PGEN_VSYNC_RISING_DP_ENC0_P0_MASK);
-+	mtk_dp_update_bits(mtk_dp, MTK_DP_ENC0_P0_3170, timings->vm.vsync_len,
-+			   PGEN_VSYNC_PULSE_WIDTH_DP_ENC0_P0_MASK);
-+	mtk_dp_update_bits(mtk_dp, MTK_DP_ENC0_P0_3174,
-+			   timings->vm.vback_porch + timings->vm.vsync_len,
-+			   PGEN_VFDE_START_DP_ENC0_P0_MASK);
-+	mtk_dp_update_bits(mtk_dp, MTK_DP_ENC0_P0_3178, timings->vm.vactive,
-+			   PGEN_VFDE_ACTIVE_WIDTH_DP_ENC0_P0_MASK);
-+}
-+
-+static void mtk_dp_set_color_format(struct mtk_dp *mtk_dp,
-+				    enum mtk_dp_color_format color_format)
-+{
-+	u32 val;
-+
-+	mtk_dp->info.format = color_format;
-+
-+	// Update MISC0
-+	mtk_dp_update_bits(mtk_dp, MTK_DP_ENC0_P0_3034,
-+			   color_format << DP_TEST_COLOR_FORMAT_SHIFT,
-+			   DP_TEST_COLOR_FORMAT_MASK);
-+
-+	switch (color_format) {
-+	case MTK_DP_COLOR_FORMAT_YUV_422:
-+		val = PIXEL_ENCODE_FORMAT_DP_ENC0_P0_YCBCR422;
-+		break;
-+	case MTK_DP_COLOR_FORMAT_YUV_420:
-+		val = PIXEL_ENCODE_FORMAT_DP_ENC0_P0_YCBCR420;
-+		break;
-+	case MTK_DP_COLOR_FORMAT_YONLY:
-+	case MTK_DP_COLOR_FORMAT_RAW:
-+	case MTK_DP_COLOR_FORMAT_RESERVED:
-+	case MTK_DP_COLOR_FORMAT_UNKNOWN:
-+		drm_warn(mtk_dp->drm_dev, "Unsupported color format: %d\n",
-+			 color_format);
-+		fallthrough;
-+	case MTK_DP_COLOR_FORMAT_RGB_444:
-+	case MTK_DP_COLOR_FORMAT_YUV_444:
-+		val = PIXEL_ENCODE_FORMAT_DP_ENC0_P0_RGB;
-+		break;
-+	}
-+
-+	mtk_dp_update_bits(mtk_dp, MTK_DP_ENC0_P0_303C, val,
-+			   PIXEL_ENCODE_FORMAT_DP_ENC0_P0_MASK);
-+}
-+
-+static void mtk_dp_set_color_depth(struct mtk_dp *mtk_dp,
-+				   enum mtk_dp_color_depth color_depth)
-+{
-+	u32 val;
-+
-+	mtk_dp->info.depth = color_depth;
-+
-+	// Update MISC0
-+	mtk_dp_update_bits(mtk_dp, MTK_DP_ENC0_P0_3034,
-+			   color_depth << DP_TEST_BIT_DEPTH_SHIFT,
-+			   DP_TEST_BIT_DEPTH_MASK);
-+
-+	switch (color_depth) {
-+	case MTK_DP_COLOR_DEPTH_6BIT:
-+		val = VIDEO_COLOR_DEPTH_DP_ENC0_P0_6BIT;
-+		break;
-+	case MTK_DP_COLOR_DEPTH_8BIT:
-+		val = VIDEO_COLOR_DEPTH_DP_ENC0_P0_8BIT;
-+		break;
-+	case MTK_DP_COLOR_DEPTH_10BIT:
-+		val = VIDEO_COLOR_DEPTH_DP_ENC0_P0_10BIT;
-+		break;
-+	case MTK_DP_COLOR_DEPTH_12BIT:
-+		val = VIDEO_COLOR_DEPTH_DP_ENC0_P0_12BIT;
-+		break;
-+	case MTK_DP_COLOR_DEPTH_16BIT:
-+		val = VIDEO_COLOR_DEPTH_DP_ENC0_P0_16BIT;
-+		break;
-+	case MTK_DP_COLOR_DEPTH_UNKNOWN:
-+		drm_warn(mtk_dp->drm_dev, "Unsupported color depth %d\n",
-+			 color_depth);
-+		return;
-+	}
-+
-+	mtk_dp_update_bits(mtk_dp, MTK_DP_ENC0_P0_303C, val,
-+			   VIDEO_COLOR_DEPTH_DP_ENC0_P0_MASK);
-+}
-+
-+static void mtk_dp_mn_overwrite_disable(struct mtk_dp *mtk_dp)
-+{
-+	mtk_dp_update_bits(mtk_dp, MTK_DP_ENC0_P0_3004, 0,
-+			   VIDEO_M_CODE_SEL_DP_ENC0_P0_MASK);
-+}
-+
-+static void mtk_dp_set_sram_read_start(struct mtk_dp *mtk_dp, u32 val)
-+{
-+	mtk_dp_update_bits(mtk_dp, MTK_DP_ENC0_P0_303C,
-+			   val << SRAM_START_READ_THRD_DP_ENC0_P0_SHIFT,
-+			   SRAM_START_READ_THRD_DP_ENC0_P0_MASK);
-+}
-+
-+static void mtk_dp_setup_encoder(struct mtk_dp *mtk_dp)
-+{
-+	mtk_dp_update_bits(mtk_dp, MTK_DP_ENC0_P0_303C,
-+			   BIT(VIDEO_MN_GEN_EN_DP_ENC0_P0_SHIFT),
-+			   VIDEO_MN_GEN_EN_DP_ENC0_P0_MASK);
-+	mtk_dp_update_bits(mtk_dp, MTK_DP_ENC0_P0_3040,
-+			   0x20 << SDP_DOWN_CNT_INIT_DP_ENC0_P0_SHIFT,
-+			   SDP_DOWN_CNT_INIT_DP_ENC0_P0_MASK);
-+	mtk_dp_update_bits(mtk_dp, MTK_DP_ENC1_P0_3364,
-+			   0x20 << SDP_DOWN_CNT_INIT_IN_HBLANK_DP_ENC1_P0_SHIFT,
-+			   SDP_DOWN_CNT_INIT_IN_HBLANK_DP_ENC1_P0_MASK);
-+	mtk_dp_update_bits(mtk_dp, MTK_DP_ENC1_P0_3300,
-+			   2 << VIDEO_AFIFO_RDY_SEL_DP_ENC1_P0_SHIFT,
-+			   VIDEO_AFIFO_RDY_SEL_DP_ENC1_P0_MASK);
-+	mtk_dp_update_bits(mtk_dp, MTK_DP_ENC1_P0_3364,
-+			   4 << FIFO_READ_START_POINT_DP_ENC1_P0_SHIFT,
-+			   FIFO_READ_START_POINT_DP_ENC1_P0_MASK);
-+	mtk_dp_write(mtk_dp, MTK_DP_ENC1_P0_3368,
-+		     1 << VIDEO_SRAM_FIFO_CNT_RESET_SEL_DP_ENC1_P0_SHIFT |
-+			     1 << VIDEO_STABLE_CNT_THRD_DP_ENC1_P0_SHIFT |
-+			     BIT(SDP_DP13_EN_DP_ENC1_P0_SHIFT) |
-+			     1 << BS2BS_MODE_DP_ENC1_P0_SHIFT);
-+}
-+
-+static void mtk_dp_pg_disable(struct mtk_dp *mtk_dp)
-+{
-+	mtk_dp_update_bits(mtk_dp, MTK_DP_ENC0_P0_3038, 0,
-+			   VIDEO_SOURCE_SEL_DP_ENC0_P0_MASK);
-+	mtk_dp_update_bits(mtk_dp, MTK_DP_ENC0_P0_31B0,
-+			   4 << PGEN_PATTERN_SEL_SHIFT, PGEN_PATTERN_SEL_MASK);
-+}
-+
-+static void mtk_dp_audio_setup_channels(struct mtk_dp *mtk_dp,
-+					struct mtk_dp_audio_cfg *cfg)
-+{
-+	u32 channel_enable_bits;
-+
-+	mtk_dp_update_bits(mtk_dp, MTK_DP_ENC1_P0_3324,
-+			   AUDIO_SOURCE_MUX_DP_ENC1_P0_DPRX,
-+			   AUDIO_SOURCE_MUX_DP_ENC1_P0_MASK);
-+
-+	//audio channel count change reset
-+	mtk_dp_update_bits(mtk_dp, MTK_DP_ENC1_P0_33F4, BIT(9), BIT(9));
-+
-+	mtk_dp_update_bits(mtk_dp, MTK_DP_ENC1_P0_3304,
-+			   AU_PRTY_REGEN_DP_ENC1_P0_MASK,
-+			   AU_PRTY_REGEN_DP_ENC1_P0_MASK);
-+	mtk_dp_update_bits(mtk_dp, MTK_DP_ENC1_P0_3304,
-+			   AU_CH_STS_REGEN_DP_ENC1_P0_MASK,
-+			   AU_CH_STS_REGEN_DP_ENC1_P0_MASK);
-+	mtk_dp_update_bits(mtk_dp, MTK_DP_ENC1_P0_3304,
-+			   AUDIO_SAMPLE_PRSENT_REGEN_DP_ENC1_P0_MASK,
-+			   AUDIO_SAMPLE_PRSENT_REGEN_DP_ENC1_P0_MASK);
-+
-+	switch (cfg->channels) {
-+	case 2:
-+		channel_enable_bits = AUDIO_2CH_SEL_DP_ENC0_P0_MASK |
-+				      AUDIO_2CH_EN_DP_ENC0_P0_MASK;
-+		break;
-+	case 8:
-+	default:
-+		channel_enable_bits = AUDIO_8CH_SEL_DP_ENC0_P0_MASK |
-+				      AUDIO_8CH_EN_DP_ENC0_P0_MASK;
-+		break;
-+	}
-+	mtk_dp_update_bits(
-+		mtk_dp, MTK_DP_ENC0_P0_3088,
-+		channel_enable_bits | AU_EN_DP_ENC0_P0_MASK,
-+		AUDIO_2CH_SEL_DP_ENC0_P0_MASK | AUDIO_2CH_EN_DP_ENC0_P0_MASK |
-+			AUDIO_8CH_SEL_DP_ENC0_P0_MASK |
-+			AUDIO_8CH_EN_DP_ENC0_P0_MASK | AU_EN_DP_ENC0_P0_MASK);
-+
-+	//audio channel count change reset
-+	mtk_dp_update_bits(mtk_dp, MTK_DP_ENC1_P0_33F4, 0, BIT(9));
-+
-+	//enable audio reset
-+	mtk_dp_update_bits(mtk_dp, MTK_DP_ENC1_P0_33F4, BIT(0), BIT(0));
-+}
-+
-+static void mtk_dp_audio_channel_status_set(struct mtk_dp *mtk_dp,
-+					    struct mtk_dp_audio_cfg *cfg)
-+{
-+	union mtk_dp_audio_channel_status channel_status;
-+
-+	memset(&channel_status, 0, sizeof(channel_status));
-+
-+	switch (cfg->sample_rate) {
-+	case 32000:
-+		channel_status.iec.sampling_freq = 3;
-+		break;
-+	case 44100:
-+		channel_status.iec.sampling_freq = 0;
-+		break;
-+	case 48000:
-+		channel_status.iec.sampling_freq = 2;
-+		break;
-+	case 88200:
-+		channel_status.iec.sampling_freq = 8;
-+		break;
-+	case 96000:
-+		channel_status.iec.sampling_freq = 0xA;
-+		break;
-+	case 192000:
-+		channel_status.iec.sampling_freq = 0xE;
-+		break;
-+	default:
-+		channel_status.iec.sampling_freq = 0x1;
-+		break;
-+	}
-+
-+	switch (cfg->word_length_bits) {
-+	case 16:
-+		channel_status.iec.word_len = 0x02;
-+		break;
-+	case 20:
-+		channel_status.iec.word_len = 0x03;
-+		break;
-+	case 24:
-+		channel_status.iec.word_len = 0x0B;
-+		break;
-+	}
-+
-+	// IEC 60958 consumer channel status bits
-+	mtk_dp_update_bits(mtk_dp, MTK_DP_ENC0_P0_308C,
-+			   channel_status.buf[1] << 8 | channel_status.buf[0],
-+			   CH_STATUS_0_DP_ENC0_P0_MASK);
-+	mtk_dp_update_bits(mtk_dp, MTK_DP_ENC0_P0_3090,
-+			   channel_status.buf[3] << 8 | channel_status.buf[2],
-+			   CH_STATUS_1_DP_ENC0_P0_MASK);
-+	mtk_dp_update_bits(mtk_dp, MTK_DP_ENC0_P0_3094, channel_status.buf[4],
-+			   CH_STATUS_2_DP_ENC0_P0_MASK);
-+}
-+
-+static void mtk_dp_audio_sdp_asp_set_channels(struct mtk_dp *mtk_dp,
-+					      int channels)
-+{
-+	if (channels != 2 && channels != 8)
-+		channels = 8;
-+
-+	mtk_dp_update_bits(mtk_dp, MTK_DP_ENC0_P0_312C,
-+			   (channels - 1) << ASP_HB3_DP_ENC0_P0_SHIFT,
-+			   ASP_HB2_DP_ENC0_P0_MASK | ASP_HB3_DP_ENC0_P0_MASK);
-+}
-+
-+static void mtk_dp_audio_set_divider(struct mtk_dp *mtk_dp)
-+{
-+	mtk_dp_update_bits(mtk_dp, MTK_DP_ENC0_P0_30BC,
-+			   AUDIO_M_CODE_MULT_DIV_SEL_DP_ENC0_P0_DIV_2,
-+			   AUDIO_M_CODE_MULT_DIV_SEL_DP_ENC0_P0_MASK);
-+}
-+
-+static bool mtk_dp_plug_state(struct mtk_dp *mtk_dp)
-+{
-+	return !!(mtk_dp_read(mtk_dp, MTK_DP_TRANS_P0_3414) &
-+		  HPD_DB_DP_TRANS_P0_MASK);
-+}
-+
-+static void mtk_dp_sdp_trigger_packet(struct mtk_dp *mtk_dp,
-+				      enum mtk_dp_sdp_type type)
-+{
-+	mtk_dp_update_bits(mtk_dp, MTK_DP_ENC1_P0_3280, type,
-+			   SDP_PACKET_TYPE_DP_ENC1_P0_MASK);
-+	mtk_dp_update_bits(mtk_dp, MTK_DP_ENC1_P0_3280, SDP_PACKET_W_DP_ENC1_P0,
-+			   SDP_PACKET_W_DP_ENC1_P0);
-+}
-+
-+static void mtk_dp_sdp_set_data(struct mtk_dp *mtk_dp, u8 *data_bytes)
-+{
-+	mtk_dp_bulk_16bit_write(mtk_dp, MTK_DP_ENC1_P0_3200, data_bytes, 0x10);
-+}
-+
-+static void mtk_dp_sdp_set_header(struct mtk_dp *mtk_dp,
-+				  enum mtk_dp_sdp_type type,
-+				  struct dp_sdp_header *header)
-+{
-+	u32 db_addr;
-+
-+	switch (type) {
-+	case MTK_DP_SDP_DRM:
-+		db_addr = MTK_DP_ENC0_P0_3138;
-+		break;
-+	case MTK_DP_SDP_PPS0:
-+	case MTK_DP_SDP_PPS1:
-+	case MTK_DP_SDP_PPS2:
-+	case MTK_DP_SDP_PPS3:
-+		db_addr = MTK_DP_ENC0_P0_3130;
-+		break;
-+	default:
-+		db_addr = MTK_DP_ENC0_P0_30D8 + (type - MTK_DP_SDP_ACM) * 8;
-+	}
-+
-+	mtk_dp_bulk_16bit_write(mtk_dp, db_addr, (u8 *)header, 4);
-+}
-+
-+static const u32 mtk_dp_sdp_type_to_reg[MTK_DP_SDP_MAX_NUM] = {
-+	/* MTK_DP_SDP_NONE => */ 0x0,
-+	/* MTK_DP_SDP_ACM  => */ MTK_DP_ENC0_P0_30B4,
-+	/* MTK_DP_SDP_ISRC => */ MTK_DP_ENC0_P0_30B4 + 1,
-+	/* MTK_DP_SDP_AVI  => */ MTK_DP_ENC0_P0_30A4 + 1,
-+	/* MTK_DP_SDP_AUI  => */ MTK_DP_ENC0_P0_30A8,
-+	/* MTK_DP_SDP_SPD  => */ MTK_DP_ENC0_P0_30A8 + 1,
-+	/* MTK_DP_SDP_MPEG => */ MTK_DP_ENC0_P0_30AC,
-+	/* MTK_DP_SDP_NTSC => */ MTK_DP_ENC0_P0_30AC + 1,
-+	/* MTK_DP_SDP_VSP  => */ MTK_DP_ENC0_P0_30B0,
-+	/* MTK_DP_SDP_VSC  => */ MTK_DP_ENC0_P0_30B8,
-+	/* MTK_DP_SDP_EXT  => */ MTK_DP_ENC0_P0_30B0 + 1,
-+	/* MTK_DP_SDP_PPS0 => */ MTK_DP_ENC0_P0_31E8,
-+	/* MTK_DP_SDP_PPS1 => */ MTK_DP_ENC0_P0_31E8,
-+	/* MTK_DP_SDP_PPS2 => */ MTK_DP_ENC0_P0_31E8,
-+	/* MTK_DP_SDP_PPS3 => */ MTK_DP_ENC0_P0_31E8,
-+	/* MTK_DP_SDP_DRM  => */ MTK_DP_ENC0_P0_31DC,
-+};
-+
-+static void mtk_dp_disable_sdp(struct mtk_dp *mtk_dp, enum mtk_dp_sdp_type type)
-+{
-+	if (type == MTK_DP_SDP_NONE)
-+		return;
-+
-+	// Disable periodic send
-+	mtk_dp_update_bits(mtk_dp, mtk_dp_sdp_type_to_reg[type] & 0xfffc, 0,
-+			   0xFF << ((mtk_dp_sdp_type_to_reg[type] & 3) * 8));
-+}
-+
-+static void mtk_dp_setup_sdp(struct mtk_dp *mtk_dp,
-+			     struct mtk_dp_sdp_packet *packet)
-+{
-+	mtk_dp_sdp_set_data(mtk_dp, packet->sdp.db);
-+	mtk_dp_sdp_set_header(mtk_dp, packet->type, &packet->sdp.sdp_header);
-+
-+	mtk_dp_disable_sdp(mtk_dp, packet->type);
-+
-+	switch (packet->type) {
-+	case MTK_DP_SDP_NONE:
-+		break;
-+	case MTK_DP_SDP_ISRC:
-+		mtk_dp_update_bits(mtk_dp, MTK_DP_ENC0_P0_31EC,
-+				   0x1C << ISRC1_HB3_DP_ENC0_P0_SHIFT,
-+				   ISRC1_HB3_DP_ENC0_P0_MASK);
-+		mtk_dp_update_bits(mtk_dp, MTK_DP_ENC1_P0_3280, MTK_DP_SDP_ISRC,
-+				   SDP_PACKET_TYPE_DP_ENC1_P0_MASK);
-+
-+		if (packet->sdp.sdp_header.HB3 & BIT(2))
-+			mtk_dp_update_bits(mtk_dp, MTK_DP_ENC0_P0_30BC,
-+					   BIT(ISRC_CONT_DP_ENC0_P0_SHIFT),
-+					   ISRC_CONT_DP_ENC0_P0_MASK);
-+		else
-+			mtk_dp_update_bits(mtk_dp, MTK_DP_ENC0_P0_30BC, 0,
-+					   ISRC_CONT_DP_ENC0_P0_MASK);
-+
-+		mtk_dp_update_bits(mtk_dp, MTK_DP_ENC1_P0_3280,
-+				   SDP_PACKET_W_DP_ENC1_P0,
-+				   SDP_PACKET_W_DP_ENC1_P0);
-+		mtk_dp_update_bits(mtk_dp, MTK_DP_ENC0_P0_30B4,
-+				   5 << ISRC_CFG_DP_ENC0_P0_SHIFT,
-+				   ISRC_CFG_DP_ENC0_P0_MASK);
-+		break;
-+	case MTK_DP_SDP_DRM:
-+		mtk_dp_sdp_trigger_packet(mtk_dp, packet->type);
-+		mtk_dp_update_bits(mtk_dp, MTK_DP_ENC0_P0_31DC,
-+				   5 << HDR0_CFG_DP_ENC0_P0_SHIFT,
-+				   HDR0_CFG_DP_ENC0_P0_MASK);
-+		break;
-+	case MTK_DP_SDP_ACM:
-+	case MTK_DP_SDP_AVI:
-+	case MTK_DP_SDP_AUI:
-+	case MTK_DP_SDP_SPD:
-+	case MTK_DP_SDP_MPEG:
-+	case MTK_DP_SDP_NTSC:
-+	case MTK_DP_SDP_VSP:
-+	case MTK_DP_SDP_VSC:
-+	case MTK_DP_SDP_EXT:
-+	case MTK_DP_SDP_PPS0:
-+	case MTK_DP_SDP_PPS1:
-+	case MTK_DP_SDP_PPS2:
-+	case MTK_DP_SDP_PPS3:
-+		mtk_dp_sdp_trigger_packet(mtk_dp, packet->type);
-+		// Enable periodic sending
-+		mtk_dp_update_bits(
-+			mtk_dp, mtk_dp_sdp_type_to_reg[packet->type] & 0xfffc,
-+			0x05 << ((mtk_dp_sdp_type_to_reg[packet->type] & 3) *
-+				 8),
-+			0xff << ((mtk_dp_sdp_type_to_reg[packet->type] & 3) *
-+				 8));
-+		break;
-+	default:
-+		break;
-+	}
-+}
-+
-+static void mtk_dp_sdp_vsc_ext_disable(struct mtk_dp *mtk_dp)
-+{
-+	mtk_dp_update_bits(mtk_dp, MTK_DP_ENC0_P0_30A0, 0,
-+			   BIT(7) | BIT(8) | BIT(12));
-+	mtk_dp_update_bits(mtk_dp, MTK_DP_ENC1_P0_328C, 0, BIT(7));
-+}
-+
-+static void mtk_dp_aux_irq_clear(struct mtk_dp *mtk_dp)
-+{
-+	mtk_dp_write(
-+		mtk_dp, MTK_DP_AUX_P0_3640,
-+		BIT(AUX_400US_TIMEOUT_IRQ_AUX_TX_P0_SHIFT) |
-+			BIT(AUX_RX_DATA_RECV_IRQ_AUX_TX_P0_SHIFT) |
-+			BIT(AUX_RX_ADDR_RECV_IRQ_AUX_TX_P0_SHIFT) |
-+			BIT(AUX_RX_CMD_RECV_IRQ_AUX_TX_P0_SHIFT) |
-+			BIT(AUX_RX_MCCS_RECV_COMPLETE_IRQ_AUX_TX_P0_SHIFT) |
-+			BIT(AUX_RX_EDID_RECV_COMPLETE_IRQ_AUX_TX_P0_SHIFT) |
-+			BIT(AUX_RX_AUX_RECV_COMPLETE_IRQ_AUX_TX_P0_SHIFT));
-+}
-+
-+static void mtk_dp_aux_set_cmd(struct mtk_dp *mtk_dp, u8 cmd, u32 addr)
-+{
-+	mtk_dp_update_bits(mtk_dp, MTK_DP_AUX_P0_3644, cmd,
-+			   MCU_REQUEST_COMMAND_AUX_TX_P0_MASK);
-+	mtk_dp_update_bits(mtk_dp, MTK_DP_AUX_P0_3648, addr,
-+			   MCU_REQUEST_ADDRESS_LSB_AUX_TX_P0_MASK);
-+	mtk_dp_update_bits(mtk_dp, MTK_DP_AUX_P0_364C, addr >> 16,
-+			   MCU_REQUEST_ADDRESS_MSB_AUX_TX_P0_MASK);
-+}
-+
-+static void mtk_dp_aux_cmd_complete(struct mtk_dp *mtk_dp)
-+{
-+	mtk_dp_update_bits(mtk_dp, MTK_DP_AUX_P0_3650,
-+			   BIT(MCU_ACK_TRAN_COMPLETE_AUX_TX_P0_SHIFT),
-+			   MCU_ACK_TRAN_COMPLETE_AUX_TX_P0_MASK |
-+				   PHY_FIFO_RST_AUX_TX_P0_MASK |
-+				   MCU_REQ_DATA_NUM_AUX_TX_P0_MASK);
-+}
-+
-+static void mtk_dp_aux_request_ready(struct mtk_dp *mtk_dp)
-+{
-+	mtk_dp_update_bits(mtk_dp, MTK_DP_AUX_P0_3630,
-+			   BIT(AUX_TX_REQUEST_READY_AUX_TX_P0_SHIFT),
-+			   AUX_TX_REQUEST_READY_AUX_TX_P0_MASK);
-+}
-+
-+static void mtk_dp_aux_fill_write_fifo(struct mtk_dp *mtk_dp, u8 *buf,
-+				       size_t length)
-+{
-+	mtk_dp_bulk_16bit_write(mtk_dp, MTK_DP_AUX_P0_3708, buf, length);
-+}
-+
-+static void mtk_dp_aux_read_rx_fifo(struct mtk_dp *mtk_dp, u8 *buf,
-+				    size_t length, int read_delay)
-+{
-+	int read_pos;
-+
-+	mtk_dp_update_bits(mtk_dp, MTK_DP_AUX_P0_3620, 0,
-+			   AUX_RD_MODE_AUX_TX_P0_MASK);
-+
-+	for (read_pos = 0; read_pos < length; read_pos++) {
-+		mtk_dp_update_bits(mtk_dp, MTK_DP_AUX_P0_3620,
-+				   BIT(AUX_RX_FIFO_R_PULSE_TX_P0_SHIFT),
-+				   AUX_RX_FIFO_READ_PULSE_TX_P0_MASK);
-+		usleep_range(read_delay, read_delay * 2);
-+		buf[read_pos] =
-+			(u8)(mtk_dp_read(mtk_dp, MTK_DP_AUX_P0_3620) &
-+			     AUX_RX_FIFO_READ_DATA_AUX_TX_P0_MASK >>
-+				     AUX_RX_FIFO_READ_DATA_AUX_TX_P0_SHIFT);
-+	}
-+}
-+
-+static void mtk_dp_aux_set_length(struct mtk_dp *mtk_dp, size_t length)
-+{
-+	if (length > 0) {
-+		mtk_dp_update_bits(mtk_dp, MTK_DP_AUX_P0_3650,
-+				   (length - 1)
-+					   << MCU_REQ_DATA_NUM_AUX_TX_P0_SHIFT,
-+				   MCU_REQ_DATA_NUM_AUX_TX_P0_MASK);
-+		mtk_dp_update_bits(mtk_dp, MTK_DP_AUX_P0_362C, 0,
-+				   AUX_NO_LENGTH_AUX_TX_P0_MASK |
-+					   AUX_TX_AUXTX_OV_EN_AUX_TX_P0_MASK |
-+					   AUX_RESERVED_RW_0_AUX_TX_P0_MASK);
-+	} else {
-+		mtk_dp_update_bits(mtk_dp, MTK_DP_AUX_P0_362C,
-+				   BIT(AUX_NO_LENGTH_AUX_TX_P0_SHIFT),
-+				   AUX_NO_LENGTH_AUX_TX_P0_MASK |
-+					   AUX_TX_AUXTX_OV_EN_AUX_TX_P0_MASK |
-+					   AUX_RESERVED_RW_0_AUX_TX_P0_MASK);
-+	}
-+}
-+
-+static int mtk_dp_aux_wait_for_completion(struct mtk_dp *mtk_dp, bool is_read)
-+{
-+	int wait_reply = MTK_DP_AUX_WAIT_REPLY_COUNT;
-+
-+	while (--wait_reply) {
-+		u32 aux_irq_status;
-+
-+		if (is_read) {
-+			u32 fifo_status =
-+				mtk_dp_read(mtk_dp, MTK_DP_AUX_P0_3618);
-+
-+			if (fifo_status &
-+			    (AUX_RX_FIFO_WRITE_POINTER_AUX_TX_P0_MASK |
-+			     AUX_RX_FIFO_FULL_AUX_TX_P0_MASK)) {
-+				return 0;
-+			}
-+		}
-+
-+		aux_irq_status = mtk_dp_read(mtk_dp, MTK_DP_AUX_P0_3640);
-+		if (aux_irq_status & AUX_RX_RECV_COMPLETE_IRQ_TX_P0_MASK)
-+			return 0;
-+
-+		if (aux_irq_status & AUX_400US_TIMEOUT_IRQ_AUX_TX_P0_MASK)
-+			return -ETIMEDOUT;
-+
-+		usleep_range(100, 500);
-+	}
-+
-+	return -ETIMEDOUT;
-+}
-+
-+static int mtk_dp_aux_do_transfer(struct mtk_dp *mtk_dp, bool is_read, u8 cmd,
-+				  u32 addr, u8 *buf, size_t length)
-+{
-+	int ret;
-+	u32 reply_cmd;
-+
-+	if (is_read && (length > DP_AUX_MAX_PAYLOAD_BYTES ||
-+			(cmd == DP_AUX_NATIVE_READ && !length)))
-+		return -EINVAL;
-+
-+	if (!is_read)
-+		mtk_dp_update_bits(mtk_dp, MTK_DP_AUX_P0_3704,
-+				   BIT(AUX_TX_FIFO_NEW_MODE_EN_AUX_TX_P0_SHIFT),
-+				   AUX_TX_FIFO_NEW_MODE_EN_AUX_TX_P0_MASK);
-+
-+	mtk_dp_aux_cmd_complete(mtk_dp);
-+	mtk_dp_aux_irq_clear(mtk_dp);
-+	usleep_range(MTK_DP_AUX_WRITE_READ_WAIT_TIME_US,
-+		     MTK_DP_AUX_WRITE_READ_WAIT_TIME_US * 2);
-+
-+	mtk_dp_aux_set_cmd(mtk_dp, cmd, addr);
-+	mtk_dp_aux_set_length(mtk_dp, length);
-+
-+	if (!is_read) {
-+		if (length)
-+			mtk_dp_aux_fill_write_fifo(mtk_dp, buf, length);
-+
-+		mtk_dp_update_bits(
-+			mtk_dp, MTK_DP_AUX_P0_3704,
-+			AUX_TX_FIFO_WRITE_DATA_NEW_MODE_TOGGLE_AUX_TX_P0_MASK,
-+			AUX_TX_FIFO_WRITE_DATA_NEW_MODE_TOGGLE_AUX_TX_P0_MASK);
-+	}
-+
-+	mtk_dp_aux_request_ready(mtk_dp);
-+
-+	ret = mtk_dp_aux_wait_for_completion(mtk_dp, is_read);
-+
-+	reply_cmd = mtk_dp_read(mtk_dp, MTK_DP_AUX_P0_3624) &
-+		    AUX_RX_REPLY_COMMAND_AUX_TX_P0_MASK;
-+
-+	if (ret || reply_cmd) {
-+		u32 phy_status = mtk_dp_read(mtk_dp, MTK_DP_AUX_P0_3628) &
-+				 AUX_RX_PHY_STATE_AUX_TX_P0_MASK;
-+		if (phy_status != AUX_RX_PHY_STATE_AUX_TX_P0_RX_IDLE) {
-+			drm_err(mtk_dp->drm_dev,
-+				"AUX Rx Aux hang, need SW reset\n");
-+			ret = -EIO;
-+		}
-+
-+		mtk_dp_aux_cmd_complete(mtk_dp);
-+		mtk_dp_aux_irq_clear(mtk_dp);
-+
-+		usleep_range(MTK_DP_AUX_WRITE_READ_WAIT_TIME_US,
-+			     MTK_DP_AUX_WRITE_READ_WAIT_TIME_US * 2);
-+		return -ETIMEDOUT;
-+	}
-+
-+	if (!length) {
-+		mtk_dp_update_bits(mtk_dp, MTK_DP_AUX_P0_362C, 0,
-+				   AUX_NO_LENGTH_AUX_TX_P0_MASK |
-+					   AUX_TX_AUXTX_OV_EN_AUX_TX_P0_MASK |
-+					   AUX_RESERVED_RW_0_AUX_TX_P0_MASK);
-+	} else if (is_read) {
-+		int read_delay;
-+
-+		if (cmd == (DP_AUX_I2C_READ | DP_AUX_I2C_MOT) ||
-+		    cmd == DP_AUX_I2C_READ)
-+			read_delay = 500;
-+		else
-+			read_delay = 100;
-+
-+		mtk_dp_aux_read_rx_fifo(mtk_dp, buf, length, read_delay);
-+	}
-+
-+	mtk_dp_aux_cmd_complete(mtk_dp);
-+	mtk_dp_aux_irq_clear(mtk_dp);
-+	usleep_range(MTK_DP_AUX_WRITE_READ_WAIT_TIME_US,
-+		     MTK_DP_AUX_WRITE_READ_WAIT_TIME_US * 2);
-+
-+	return 0;
-+}
-+
-+static bool mtk_dp_set_swing_pre_emphasis(struct mtk_dp *mtk_dp, int lane_num,
-+					  int swing_val, int preemphasis)
-+{
-+	u32 lane_shift = lane_num * DP_TX1_VOLT_SWING_SHIFT;
-+
-+	if (lane_num < 0 || lane_num > 3)
-+		return false;
-+
-+	dev_dbg(mtk_dp->dev,
-+		"link training swing_val= 0x%x, preemphasis = 0x%x\n",
-+		swing_val, preemphasis);
-+
-+	mtk_dp_update_bits(mtk_dp, MTK_DP_TOP_SWING_EMP,
-+			   swing_val << (DP_TX0_VOLT_SWING_SHIFT + lane_shift),
-+			   DP_TX0_VOLT_SWING_MASK << lane_shift);
-+	mtk_dp_update_bits(mtk_dp, MTK_DP_TOP_SWING_EMP,
-+			   preemphasis << (DP_TX0_PRE_EMPH_SHIFT + lane_shift),
-+			   DP_TX0_PRE_EMPH_MASK << lane_shift);
-+
-+	return true;
-+}
-+
-+static void mtk_dp_reset_swing_pre_emphasis(struct mtk_dp *mtk_dp)
-+{
-+	mtk_dp_update_bits(mtk_dp, MTK_DP_TOP_SWING_EMP, 0,
-+			   DP_TX0_VOLT_SWING_MASK | DP_TX1_VOLT_SWING_MASK |
-+				   DP_TX2_VOLT_SWING_MASK |
-+				   DP_TX3_VOLT_SWING_MASK |
-+				   DP_TX0_PRE_EMPH_MASK | DP_TX1_PRE_EMPH_MASK |
-+				   DP_TX2_PRE_EMPH_MASK | DP_TX3_PRE_EMPH_MASK);
-+}
-+
-+static void mtk_dp_fec_enable(struct mtk_dp *mtk_dp, bool enable)
-+{
-+	mtk_dp_update_bits(mtk_dp, MTK_DP_TRANS_P0_3540,
-+			   enable ? BIT(FEC_EN_DP_TRANS_P0_SHIFT) : 0,
-+			   FEC_EN_DP_TRANS_P0_MASK);
-+}
-+
-+static u32 mtk_dp_swirq_get_clear(struct mtk_dp *mtk_dp)
-+{
-+	u32 irq_status = mtk_dp_read(mtk_dp, MTK_DP_TRANS_P0_35D0) &
-+			 SW_IRQ_FINAL_STATUS_DP_TRANS_P0_MASK;
-+
-+	if (irq_status) {
-+		mtk_dp_update_bits(mtk_dp, MTK_DP_TRANS_P0_35C8, irq_status,
-+				   SW_IRQ_CLR_DP_TRANS_P0_MASK);
-+		mtk_dp_update_bits(mtk_dp, MTK_DP_TRANS_P0_35C8, 0,
-+				   SW_IRQ_CLR_DP_TRANS_P0_MASK);
-+	}
-+
-+	return irq_status;
-+}
-+
-+static u32 mtk_dp_hwirq_get_clear(struct mtk_dp *mtk_dp)
-+{
-+	u8 irq_status = (mtk_dp_read(mtk_dp, MTK_DP_TRANS_P0_3418) &
-+			 IRQ_STATUS_DP_TRANS_P0_MASK) >>
-+			IRQ_STATUS_DP_TRANS_P0_SHIFT;
-+
-+	if (irq_status) {
-+		mtk_dp_update_bits(mtk_dp, MTK_DP_TRANS_P0_3418, irq_status,
-+				   IRQ_CLR_DP_TRANS_P0_MASK);
-+		mtk_dp_update_bits(mtk_dp, MTK_DP_TRANS_P0_3418, 0,
-+				   IRQ_CLR_DP_TRANS_P0_MASK);
-+	}
-+
-+	return irq_status;
-+}
-+
-+static void mtk_dp_hwirq_enable(struct mtk_dp *mtk_dp, bool enable)
-+{
-+	u32 val = 0;
-+
-+	if (!enable)
-+		val = IRQ_MASK_DP_TRANS_P0_DISC_IRQ |
-+		      IRQ_MASK_DP_TRANS_P0_CONN_IRQ |
-+		      IRQ_MASK_DP_TRANS_P0_INT_IRQ;
-+	mtk_dp_update_bits(mtk_dp, MTK_DP_TRANS_P0_3418, val,
-+			   IRQ_MASK_DP_TRANS_P0_MASK);
-+}
-+
-+void mtk_dp_initialize_settings(struct mtk_dp *mtk_dp)
-+{
-+	mtk_dp_update_bits(mtk_dp, MTK_DP_TRANS_P0_342C,
-+			   XTAL_FREQ_DP_TRANS_P0_DEFAULT,
-+			   XTAL_FREQ_DP_TRANS_P0_MASK);
-+	mtk_dp_update_bits(mtk_dp, MTK_DP_TRANS_P0_3540,
-+			   BIT(FEC_CLOCK_EN_MODE_DP_TRANS_P0_SHIFT),
-+			   FEC_CLOCK_EN_MODE_DP_TRANS_P0_MASK);
-+	mtk_dp_update_bits(mtk_dp, MTK_DP_ENC0_P0_31EC,
-+			   BIT(AUDIO_CH_SRC_SEL_DP_ENC0_P0_SHIFT),
-+			   AUDIO_CH_SRC_SEL_DP_ENC0_P0_MASK);
-+	mtk_dp_update_bits(mtk_dp, MTK_DP_ENC0_P0_304C, 0,
-+			   SDP_VSYNC_RISING_MASK_DP_ENC0_P0_MASK);
-+	mtk_dp_update_bits(mtk_dp, MTK_DP_TOP_IRQ_MASK, IRQ_MASK_AUX_TOP_IRQ,
-+			   IRQ_MASK_AUX_TOP_IRQ);
-+}
-+
-+static void mtk_dp_initialize_hpd_detect_settings(struct mtk_dp *mtk_dp)
-+{
-+	// Debounce threshold
-+	mtk_dp_update_bits(mtk_dp, MTK_DP_TRANS_P0_3410,
-+			   8 << HPD_DEB_THD_DP_TRANS_P0_SHIFT,
-+			   HPD_DEB_THD_DP_TRANS_P0_MASK);
-+	mtk_dp_update_bits(mtk_dp, MTK_DP_TRANS_P0_3410,
-+			   (HPD_INT_THD_DP_TRANS_P0_LOWER_500US |
-+			    HPD_INT_THD_DP_TRANS_P0_UPPER_1100US)
-+				   << HPD_INT_THD_DP_TRANS_P0_SHIFT,
-+			   HPD_INT_THD_DP_TRANS_P0_MASK);
-+
-+	// Connect threshold 1.5ms + 5 x 0.1ms = 2ms
-+	// Disconnect threshold 1.5ms + 5 x 0.1ms = 2ms
-+	mtk_dp_update_bits(mtk_dp, MTK_DP_TRANS_P0_3410,
-+			   (5 << HPD_DISC_THD_DP_TRANS_P0_SHIFT) |
-+				   (5 << HPD_CONN_THD_DP_TRANS_P0_SHIFT),
-+			   HPD_DISC_THD_DP_TRANS_P0_MASK |
-+				   HPD_CONN_THD_DP_TRANS_P0_MASK);
-+	mtk_dp_update_bits(mtk_dp, MTK_DP_TRANS_P0_3430,
-+			   HPD_INT_THD_ECO_DP_TRANS_P0_HIGH_BOUND_EXT,
-+			   HPD_INT_THD_ECO_DP_TRANS_P0_MASK);
-+}
-+
-+static void mtk_dp_initialize_aux_settings(struct mtk_dp *mtk_dp)
-+{
-+	// modify timeout threshold = 1595 [12 : 8]
-+	mtk_dp_update_bits(mtk_dp, MTK_DP_AUX_P0_360C, 0x1595,
-+			   AUX_TIMEOUT_THR_AUX_TX_P0_MASK);
-+	mtk_dp_update_bits(mtk_dp, MTK_DP_AUX_P0_3658, 0,
-+			   AUX_TX_OV_EN_AUX_TX_P0_MASK);
-+	// 25 for 26M
-+	mtk_dp_update_bits(mtk_dp, MTK_DP_AUX_P0_3634,
-+			   25 << AUX_TX_OVER_SAMPLE_RATE_AUX_TX_P0_SHIFT,
-+			   AUX_TX_OVER_SAMPLE_RATE_AUX_TX_P0_MASK);
-+	// 13 for 26M
-+	mtk_dp_update_bits(mtk_dp, MTK_DP_AUX_P0_3614,
-+			   13 << AUX_RX_UI_CNT_THR_AUX_TX_P0_SHIFT,
-+			   AUX_RX_UI_CNT_THR_AUX_TX_P0_MASK);
-+	mtk_dp_update_bits(mtk_dp, MTK_DP_AUX_P0_37C8,
-+			   BIT(MTK_ATOP_EN_AUX_TX_P0_SHIFT),
-+			   MTK_ATOP_EN_AUX_TX_P0_MASK);
-+}
-+
-+static void mtk_dp_initialize_digital_settings(struct mtk_dp *mtk_dp)
-+{
-+	mtk_dp_update_bits(mtk_dp, MTK_DP_ENC0_P0_304C, 0,
-+			   VBID_VIDEO_MUTE_DP_ENC0_P0_MASK);
-+	mtk_dp_set_color_format(mtk_dp, MTK_DP_COLOR_FORMAT_RGB_444);
-+	mtk_dp_set_color_depth(mtk_dp, MTK_DP_COLOR_DEPTH_8BIT);
-+	mtk_dp_update_bits(mtk_dp, MTK_DP_ENC1_P0_3368,
-+			   1 << BS2BS_MODE_DP_ENC1_P0_SHIFT,
-+			   BS2BS_MODE_DP_ENC1_P0_MASK);
-+
-+	// dp tx encoder reset all sw
-+	mtk_dp_update_bits(mtk_dp, MTK_DP_ENC0_P0_3004,
-+			   BIT(DP_TX_ENCODER_4P_RESET_SW_DP_ENC0_P0_SHIFT),
-+			   DP_TX_ENCODER_4P_RESET_SW_DP_ENC0_P0_MASK);
-+	usleep_range(1000, 5000);
-+	mtk_dp_update_bits(mtk_dp, MTK_DP_ENC0_P0_3004, 0,
-+			   DP_TX_ENCODER_4P_RESET_SW_DP_ENC0_P0_MASK);
-+}
-+
-+static void mtk_dp_digital_sw_reset(struct mtk_dp *mtk_dp)
-+{
-+	mtk_dp_update_bits(mtk_dp, MTK_DP_TRANS_P0_340C,
-+			   BIT(DP_TX_TRANSMITTER_4P_RESET_SW_DP_TRANS_P0_SHIFT),
-+			   DP_TX_TRANSMITTER_4P_RESET_SW_DP_TRANS_P0_MASK);
-+	usleep_range(1000, 5000);
-+	mtk_dp_update_bits(mtk_dp, MTK_DP_TRANS_P0_340C, 0,
-+			   DP_TX_TRANSMITTER_4P_RESET_SW_DP_TRANS_P0_MASK);
-+}
-+
-+static void mtk_dp_set_lanes(struct mtk_dp *mtk_dp, int lanes)
-+{
-+	mtk_dp_update_bits(mtk_dp, MTK_DP_TRANS_P0_35F0,
-+			   lanes == 0 ? 0 : BIT(3), BIT(3) | BIT(2));
-+	mtk_dp_update_bits(mtk_dp, MTK_DP_ENC0_P0_3000, lanes,
-+			   LANE_NUM_DP_ENC0_P0_MASK);
-+	mtk_dp_update_bits(mtk_dp, MTK_DP_TRANS_P0_34A4,
-+			   lanes << LANE_NUM_DP_TRANS_P0_SHIFT,
-+			   LANE_NUM_DP_TRANS_P0_MASK);
-+}
-+
-+static int link_rate_to_mb_per_s(struct mtk_dp *mtk_dp,
-+				 enum mtk_dp_linkrate linkrate)
-+{
-+	switch (linkrate) {
-+	default:
-+		drm_err(mtk_dp->drm_dev,
-+			"Implementation error, unknown linkrate %d\n",
-+			linkrate);
-+		fallthrough;
-+	case MTK_DP_LINKRATE_RBR:
-+		return 1620;
-+	case MTK_DP_LINKRATE_HBR:
-+		return 2700;
-+	case MTK_DP_LINKRATE_HBR2:
-+		return 5400;
-+	case MTK_DP_LINKRATE_HBR3:
-+		return 8100;
-+	}
-+}
-+
-+static u32 check_cal_data_valid(u32 min, u32 max, u32 val, u32 default_val)
-+{
-+	if (val < min || val > max)
-+		return default_val;
-+
-+	return val;
-+}
-+
-+static int mtk_dp_get_calibration_data(struct mtk_dp *mtk_dp)
-+{
-+	struct dp_cal_data *cal_data = &mtk_dp->cal_data;
-+	struct device *dev = mtk_dp->dev;
-+	struct nvmem_cell *cell;
-+	u32 *buf;
-+	size_t len;
-+
-+	cell = nvmem_cell_get(dev, "dp_calibration_data");
-+	if (IS_ERR(cell)) {
-+		dev_err(dev,
-+			"Error: Failed to get nvmem cell dp_calibration_data\n");
-+		return PTR_ERR(cell);
-+	}
-+
-+	buf = (u32 *)nvmem_cell_read(cell, &len);
-+	nvmem_cell_put(cell);
-+
-+	if (IS_ERR(buf) || ((len / sizeof(u32)) != 4)) {
-+		dev_err(dev,
-+			"Error: Failed to read nvmem_cell_read fail len %ld\n",
-+			(len / sizeof(u32)));
-+		return PTR_ERR(buf);
-+	}
-+
-+	if (mtk_dp_is_edp(mtk_dp)) {
-+		cal_data->glb_bias_trim = check_cal_data_valid(
-+			1, 0x1e, (buf[3] >> 27) & 0x1f, 0xf);
-+		cal_data->clktx_impse =
-+			check_cal_data_valid(1, 0xe, (buf[0] >> 9) & 0xf, 0x8);
-+		cal_data->ln0_tx_impsel_pmos =
-+			check_cal_data_valid(1, 0xe, (buf[2] >> 28) & 0xf, 0x8);
-+		cal_data->ln0_tx_impsel_nmos =
-+			check_cal_data_valid(1, 0xe, (buf[2] >> 24) & 0xf, 0x8);
-+		cal_data->ln1_tx_impsel_pmos =
-+			check_cal_data_valid(1, 0xe, (buf[2] >> 20) & 0xf, 0x8);
-+		cal_data->ln1_tx_impsel_nmos =
-+			check_cal_data_valid(1, 0xe, (buf[2] >> 16) & 0xf, 0x8);
-+		cal_data->ln2_tx_impsel_pmos =
-+			check_cal_data_valid(1, 0xe, (buf[2] >> 12) & 0xf, 0x8);
-+		cal_data->ln2_tx_impsel_nmos =
-+			check_cal_data_valid(1, 0xe, (buf[2] >> 8) & 0xf, 0x8);
-+		cal_data->ln3_tx_impsel_pmos =
-+			check_cal_data_valid(1, 0xe, (buf[2] >> 4) & 0xf, 0x8);
-+		cal_data->ln3_tx_impsel_nmos =
-+			check_cal_data_valid(1, 0xe, buf[2] & 0xf, 0x8);
-+	} else {
-+		cal_data->glb_bias_trim = check_cal_data_valid(
-+			1, 0x1e, (buf[0] >> 27) & 0x1f, 0xf);
-+		cal_data->clktx_impse =
-+			check_cal_data_valid(1, 0xe, (buf[0] >> 13) & 0xf, 0x8);
-+		cal_data->ln0_tx_impsel_pmos =
-+			check_cal_data_valid(1, 0xe, (buf[1] >> 28) & 0xf, 0x8);
-+		cal_data->ln0_tx_impsel_nmos =
-+			check_cal_data_valid(1, 0xe, (buf[1] >> 24) & 0xf, 0x8);
-+		cal_data->ln1_tx_impsel_pmos =
-+			check_cal_data_valid(1, 0xe, (buf[1] >> 20) & 0xf, 0x8);
-+		cal_data->ln1_tx_impsel_nmos =
-+			check_cal_data_valid(1, 0xe, (buf[1] >> 16) & 0xf, 0x8);
-+		cal_data->ln2_tx_impsel_pmos =
-+			check_cal_data_valid(1, 0xe, (buf[1] >> 12) & 0xf, 0x8);
-+		cal_data->ln2_tx_impsel_nmos =
-+			check_cal_data_valid(1, 0xe, (buf[1] >> 8) & 0xf, 0x8);
-+		cal_data->ln3_tx_impsel_pmos =
-+			check_cal_data_valid(1, 0xe, (buf[1] >> 4) & 0xf, 0x8);
-+		cal_data->ln3_tx_impsel_nmos =
-+			check_cal_data_valid(1, 0xe, buf[1] & 0xf, 0x8);
-+	}
-+
-+	kfree(buf);
-+
-+	return 0;
-+}
-+
-+void mtk_dp_set_cal_data(struct mtk_dp *mtk_dp)
-+{
-+	struct dp_cal_data *cal_data = &mtk_dp->cal_data;
-+
-+	mtk_dp_update_bits(mtk_dp, DP_PHY_GLB_DPAUX_TX,
-+			   cal_data->clktx_impse << 20, RG_CKM_PT0_CKTX_IMPSEL);
-+	mtk_dp_update_bits(mtk_dp, DP_PHY_GLB_BIAS_GEN_00,
-+			   cal_data->glb_bias_trim << 16,
-+			   RG_XTP_GLB_BIAS_INTR_CTRL);
-+	mtk_dp_update_bits(mtk_dp, DP_PHY_LANE_TX_0,
-+			   cal_data->ln0_tx_impsel_pmos << 12,
-+			   RG_XTP_LN0_TX_IMPSEL_PMOS);
-+	mtk_dp_update_bits(mtk_dp, DP_PHY_LANE_TX_0,
-+			   cal_data->ln0_tx_impsel_nmos << 16,
-+			   RG_XTP_LN0_TX_IMPSEL_NMOS);
-+	mtk_dp_update_bits(mtk_dp, DP_PHY_LANE_TX_1,
-+			   cal_data->ln1_tx_impsel_pmos << 12,
-+			   RG_XTP_LN1_TX_IMPSEL_PMOS);
-+	mtk_dp_update_bits(mtk_dp, DP_PHY_LANE_TX_1,
-+			   cal_data->ln1_tx_impsel_nmos << 16,
-+			   RG_XTP_LN1_TX_IMPSEL_NMOS);
-+	mtk_dp_update_bits(mtk_dp, DP_PHY_LANE_TX_2,
-+			   cal_data->ln2_tx_impsel_pmos << 12,
-+			   RG_XTP_LN2_TX_IMPSEL_PMOS);
-+	mtk_dp_update_bits(mtk_dp, DP_PHY_LANE_TX_2,
-+			   cal_data->ln2_tx_impsel_nmos << 16,
-+			   RG_XTP_LN2_TX_IMPSEL_NMOS);
-+	mtk_dp_update_bits(mtk_dp, DP_PHY_LANE_TX_3,
-+			   cal_data->ln3_tx_impsel_pmos << 12,
-+			   RG_XTP_LN3_TX_IMPSEL_PMOS);
-+	mtk_dp_update_bits(mtk_dp, DP_PHY_LANE_TX_3,
-+			   cal_data->ln3_tx_impsel_nmos << 16,
-+			   RG_XTP_LN3_TX_IMPSEL_NMOS);
-+}
-+
-+static int mtk_dp_phy_configure(struct mtk_dp *mtk_dp,
-+				enum mtk_dp_linkrate link_rate, int lane_count)
-+{
-+	int ret;
-+	union phy_configure_opts
-+		phy_opts = { .dp = {
-+				     .link_rate = link_rate_to_mb_per_s(
-+					     mtk_dp, link_rate),
-+				     .set_rate = 1,
-+				     .lanes = lane_count,
-+				     .set_lanes = 1,
-+				     .ssc = mtk_dp->train_info.sink_ssc,
-+			     } };
-+
-+	mtk_dp_update_bits(mtk_dp, MTK_DP_TOP_PWR_STATE, DP_PWR_STATE_BANDGAP,
-+			   DP_PWR_STATE_MASK);
-+
-+	ret = phy_configure(mtk_dp->phy, &phy_opts);
-+
-+	mtk_dp_set_cal_data(mtk_dp);
-+	mtk_dp_update_bits(mtk_dp, MTK_DP_TOP_PWR_STATE,
-+			   DP_PWR_STATE_BANDGAP_TPLL_LANE, DP_PWR_STATE_MASK);
-+	return ret;
-+}
-+
-+static void mtk_dp_set_idle_pattern(struct mtk_dp *mtk_dp, bool enable)
-+{
-+	const u32 val = POST_MISC_DATA_LANE0_OV_DP_TRANS_P0_MASK |
-+			POST_MISC_DATA_LANE1_OV_DP_TRANS_P0_MASK |
-+			POST_MISC_DATA_LANE2_OV_DP_TRANS_P0_MASK |
-+			POST_MISC_DATA_LANE3_OV_DP_TRANS_P0_MASK;
-+	mtk_dp_update_bits(mtk_dp, MTK_DP_TRANS_P0_3580, enable ? val : 0, val);
-+}
-+
-+static void mtk_dp_train_set_pattern(struct mtk_dp *mtk_dp, int pattern)
-+{
-+	if (pattern < 0 || pattern > 4) {
-+		drm_err(mtk_dp->drm_dev,
-+			"Implementation error, no such pattern %d\n", pattern);
-+		return;
-+	}
-+
-+	if (pattern == 1) // TPS1
-+		mtk_dp_set_idle_pattern(mtk_dp, false);
-+
-+	mtk_dp_update_bits(
-+		mtk_dp, MTK_DP_TRANS_P0_3400,
-+		pattern ? BIT(pattern - 1) << PATTERN1_EN_DP_TRANS_P0_SHIFT : 0,
-+		PATTERN1_EN_DP_TRANS_P0_MASK | PATTERN2_EN_DP_TRANS_P0_MASK |
-+			PATTERN3_EN_DP_TRANS_P0_MASK |
-+			PATTERN4_EN_DP_TRANS_P0_MASK);
-+}
-+
-+static void mtk_dp_set_enhanced_frame_mode(struct mtk_dp *mtk_dp, bool enable)
-+{
-+	mtk_dp_update_bits(mtk_dp, MTK_DP_ENC0_P0_3000,
-+			   enable ? BIT(ENHANCED_FRAME_EN_DP_ENC0_P0_SHIFT) : 0,
-+			   ENHANCED_FRAME_EN_DP_ENC0_P0_MASK);
-+}
-+
-+static void mtk_dp_training_set_scramble(struct mtk_dp *mtk_dp, bool enable)
-+{
-+	mtk_dp_update_bits(mtk_dp, MTK_DP_TRANS_P0_3404,
-+			   enable ? DP_SCR_EN_DP_TRANS_P0_MASK : 0,
-+			   DP_SCR_EN_DP_TRANS_P0_MASK);
-+}
-+
-+static void mtk_dp_video_mute(struct mtk_dp *mtk_dp, bool enable)
-+{
-+	u32 val = BIT(VIDEO_MUTE_SEL_DP_ENC0_P0_SHIFT);
-+
-+	if (enable)
-+		val |= BIT(VIDEO_MUTE_SW_DP_ENC0_P0_SHIFT);
-+	mtk_dp_update_bits(mtk_dp, MTK_DP_ENC0_P0_3000, val,
-+			   VIDEO_MUTE_SEL_DP_ENC0_P0_MASK |
-+				   VIDEO_MUTE_SW_DP_ENC0_P0_MASK);
-+
-+	if (mtk_dp_is_edp(mtk_dp))
-+		mtk_dp_sip_atf_call(MTK_DP_SIP_ATF_EDP_VIDEO_UNMUTE, enable);
-+	else
-+		mtk_dp_sip_atf_call(MTK_DP_SIP_ATF_VIDEO_UNMUTE, enable);
-+}
-+
-+static void mtk_dp_audio_mute(struct mtk_dp *mtk_dp, bool mute)
-+{
-+	if (mute) {
-+		mtk_dp_update_bits(
-+			mtk_dp, MTK_DP_ENC0_P0_3030,
-+			BIT(VBID_AUDIO_MUTE_SW_DP_ENC0_P0_SHIFT) |
-+				BIT(VBID_AUDIO_MUTE_SEL_DP_ENC0_P0_SHIFT),
-+			VBID_AUDIO_MUTE_FLAG_SW_DP_ENC0_P0_MASK |
-+				VBID_AUDIO_MUTE_FLAG_SEL_DP_ENC0_P0_MASK);
-+
-+		mtk_dp_update_bits(mtk_dp, MTK_DP_ENC0_P0_3088, 0,
-+				   AU_EN_DP_ENC0_P0_MASK);
-+		mtk_dp_update_bits(mtk_dp, MTK_DP_ENC0_P0_30A4, 0,
-+				   AU_TS_CFG_DP_ENC0_P0_MASK);
-+
-+	} else {
-+		mtk_dp_update_bits(
-+			mtk_dp, MTK_DP_ENC0_P0_3030, 0,
-+			VBID_AUDIO_MUTE_FLAG_SW_DP_ENC0_P0_MASK |
-+				VBID_AUDIO_MUTE_FLAG_SEL_DP_ENC0_P0_MASK);
-+
-+		mtk_dp_update_bits(mtk_dp, MTK_DP_ENC0_P0_3088,
-+				   BIT(AU_EN_DP_ENC0_P0_SHIFT),
-+				   AU_EN_DP_ENC0_P0_MASK);
-+		// Send one every two frames
-+		mtk_dp_update_bits(mtk_dp, MTK_DP_ENC0_P0_30A4, 0x0F,
-+				   AU_TS_CFG_DP_ENC0_P0_MASK);
-+	}
-+}
-+
-+static void mtk_dp_power_enable(struct mtk_dp *mtk_dp)
-+{
-+	mtk_dp_update_bits(mtk_dp, MTK_DP_TOP_RESET_AND_PROBE, 0,
-+			   SW_RST_B_PHYD);
-+	usleep_range(10, 200);
-+	mtk_dp_update_bits(mtk_dp, MTK_DP_TOP_RESET_AND_PROBE, SW_RST_B_PHYD,
-+			   SW_RST_B_PHYD);
-+}
-+
-+static void mtk_dp_power_disable(struct mtk_dp *mtk_dp)
-+{
-+	mtk_dp_write(mtk_dp, MTK_DP_TOP_PWR_STATE, 0);
-+	usleep_range(10, 200);
-+	mtk_dp_write(mtk_dp, MTK_DP_0034,
-+		     DA_CKM_CKTX0_EN_FORCE_EN | DA_CKM_BIAS_LPF_EN_FORCE_VAL |
-+			     DA_CKM_BIAS_EN_FORCE_VAL |
-+			     DA_XTP_GLB_LDO_EN_FORCE_VAL |
-+			     DA_XTP_GLB_AVD10_ON_FORCE_VAL);
-+	// Disable RX
-+	mtk_dp_write(mtk_dp, MTK_DP_1040, 0);
-+	mtk_dp_write(mtk_dp, MTK_DP_TOP_MEM_PD,
-+		     0x550 | BIT(FUSE_SEL_SHIFT) | BIT(MEM_ISO_EN_SHIFT));
-+}
-+
-+static void mtk_dp_initialize_priv_data(struct mtk_dp *mtk_dp)
-+{
-+	mtk_dp->train_info.link_rate = MTK_DP_LINKRATE_HBR2;
-+	mtk_dp->train_info.lane_count = MTK_DP_MAX_LANES;
-+	mtk_dp->train_info.irq_status = 0;
-+	mtk_dp->train_info.cable_plugged_in = false;
-+	mtk_dp->train_info.cable_state_change = false;
-+	mtk_dp->train_state = MTK_DP_TRAIN_STATE_STARTUP;
-+	mtk_dp->state = MTK_DP_STATE_INITIAL;
-+
-+	mtk_dp->info.format = MTK_DP_COLOR_FORMAT_RGB_444;
-+	mtk_dp->info.depth = MTK_DP_COLOR_DEPTH_8BIT;
-+	memset(&mtk_dp->info.timings, 0, sizeof(struct mtk_dp_timings));
-+	mtk_dp->info.timings.frame_rate = 60;
-+
-+	mtk_dp->has_fec = false;
-+	mtk_dp->audio_enable = false;
-+}
-+
-+static void mtk_dp_sdp_set_down_cnt_init(struct mtk_dp *mtk_dp,
-+					 u32 sram_read_start)
-+{
-+	u32 sdp_down_cnt_init = 0;
-+	u32 dc_offset;
-+
-+	if (mtk_dp->info.timings.pix_rate_khz > 0)
-+		sdp_down_cnt_init = sram_read_start *
-+				    mtk_dp->train_info.link_rate * 2700 * 8 /
-+				    (mtk_dp->info.timings.pix_rate_khz * 4);
-+
-+	switch (mtk_dp->train_info.lane_count) {
-+	case 1:
-+		sdp_down_cnt_init = sdp_down_cnt_init > 0x1A ?
-+						  sdp_down_cnt_init :
-+						  0x1A; //26
-+		break;
-+	case 2:
-+		// case for LowResolution && High Audio Sample Rate
-+		dc_offset = mtk_dp->info.timings.vtotal <= 525 ? 0x04 : 0x00;
-+		sdp_down_cnt_init = sdp_down_cnt_init > 0x10 ?
-+						  sdp_down_cnt_init :
-+						  0x10 + dc_offset; //20 or 16
-+		break;
-+	case 4:
-+	default:
-+		sdp_down_cnt_init =
-+			sdp_down_cnt_init > 0x06 ? sdp_down_cnt_init : 0x06; //6
-+		break;
-+	}
-+
-+	mtk_dp_update_bits(mtk_dp, MTK_DP_ENC0_P0_3040,
-+			   sdp_down_cnt_init
-+				   << SDP_DOWN_CNT_INIT_DP_ENC0_P0_SHIFT,
-+			   SDP_DOWN_CNT_INIT_DP_ENC0_P0_MASK);
-+}
-+
-+static void mtk_dp_sdp_set_down_cnt_init_in_hblank(struct mtk_dp *mtk_dp)
-+{
-+	int pix_clk_mhz;
-+	u32 dc_offset;
-+	u32 spd_down_cnt_init = 0;
-+
-+	pix_clk_mhz = mtk_dp->info.format == MTK_DP_COLOR_FORMAT_YUV_420 ?
-+				    mtk_dp->info.timings.pix_rate_khz / 2000 :
-+				    mtk_dp->info.timings.pix_rate_khz / 1000;
-+
-+	switch (mtk_dp->train_info.lane_count) {
-+	case 1:
-+		spd_down_cnt_init = 0x20;
-+		break;
-+	case 2:
-+		dc_offset = (mtk_dp->info.timings.vtotal <= 525) ? 0x14 : 0x00;
-+		spd_down_cnt_init = 0x18 + dc_offset;
-+		break;
-+	case 4:
-+	default:
-+		dc_offset = (mtk_dp->info.timings.vtotal <= 525) ? 0x08 : 0x00;
-+		if (pix_clk_mhz > mtk_dp->train_info.link_rate * 27)
-+			spd_down_cnt_init = 0x8;
-+		else
-+			spd_down_cnt_init = 0x10 + dc_offset;
-+		break;
-+	}
-+	mtk_dp_update_bits(mtk_dp, MTK_DP_ENC1_P0_3364, spd_down_cnt_init,
-+			   SDP_DOWN_CNT_INIT_IN_HBLANK_DP_ENC1_P0_MASK);
-+}
-+
-+static void mtk_dp_setup_tu(struct mtk_dp *mtk_dp)
-+{
-+	u32 sram_read_start = MTK_DP_TBC_BUF_READ_START_ADDR;
-+
-+	if (mtk_dp->train_info.lane_count > 0) {
-+		sram_read_start = min_t(
-+			u32, MTK_DP_TBC_BUF_READ_START_ADDR,
-+			mtk_dp->info.timings.vm.hactive /
-+				(mtk_dp->train_info.lane_count * 4 * 2 * 2));
-+		mtk_dp_set_sram_read_start(mtk_dp, sram_read_start);
-+	}
-+
-+	mtk_dp_setup_encoder(mtk_dp);
-+	mtk_dp_sdp_set_down_cnt_init_in_hblank(mtk_dp);
-+	mtk_dp_sdp_set_down_cnt_init(mtk_dp, sram_read_start);
-+}
-+
-+static void mtk_dp_calculate_pixrate(struct mtk_dp *mtk_dp)
-+{
-+	int target_frame_rate = 60;
-+	int target_pixel_clk;
-+
-+	if (mtk_dp->info.timings.frame_rate > 0) {
-+		target_frame_rate = mtk_dp->info.timings.frame_rate;
-+		target_pixel_clk = (int)mtk_dp->info.timings.htotal *
-+				   (int)mtk_dp->info.timings.vtotal *
-+				   target_frame_rate;
-+	} else if (mtk_dp->info.timings.pix_rate_khz > 0) {
-+		target_pixel_clk = mtk_dp->info.timings.pix_rate_khz * 1000;
-+	} else {
-+		target_pixel_clk = (int)mtk_dp->info.timings.htotal *
-+				   (int)mtk_dp->info.timings.vtotal *
-+				   target_frame_rate;
-+	}
-+
-+	if (target_pixel_clk > 0)
-+		mtk_dp->info.timings.pix_rate_khz = target_pixel_clk / 1000;
-+}
-+
-+static void mtk_dp_set_tx_out(struct mtk_dp *mtk_dp)
-+{
-+	mtk_dp_msa_bypass_disable(mtk_dp);
-+	mtk_dp_calculate_pixrate(mtk_dp);
-+	mtk_dp_pg_disable(mtk_dp);
-+	mtk_dp_setup_tu(mtk_dp);
-+}
-+
-+static void mtk_dp_edid_free(struct mtk_dp *mtk_dp)
-+{
-+	mutex_lock(&mtk_dp->edid_lock);
-+	kfree(mtk_dp->edid);
-+	mtk_dp->edid = NULL;
-+	mutex_unlock(&mtk_dp->edid_lock);
-+}
-+
-+static void mtk_dp_hpd_sink_event(struct mtk_dp *mtk_dp)
-+{
-+	ssize_t ret;
-+	u8 sink_count;
-+	u8 link_status[DP_LINK_STATUS_SIZE] = {};
-+	u32 sink_count_reg;
-+	u32 link_status_reg;
-+	bool locked;
-+
-+	sink_count_reg = DP_SINK_COUNT_ESI;
-+	link_status_reg = DP_LANE0_1_STATUS;
-+
-+	ret = drm_dp_dpcd_readb(&mtk_dp->aux, sink_count_reg, &sink_count);
-+	if (ret < 0) {
-+		drm_info(mtk_dp->drm_dev, "Read sink count failed: %ld\n", ret);
-+		return;
-+	}
-+
-+	ret = drm_dp_dpcd_readb(&mtk_dp->aux, DP_SINK_COUNT, &sink_count);
-+	if (ret < 0) {
-+		drm_info(mtk_dp->drm_dev,
-+			 "Read DP_SINK_COUNT_ESI failed: %ld\n", ret);
-+		return;
-+	}
-+
-+	ret = drm_dp_dpcd_read(&mtk_dp->aux, link_status_reg, link_status,
-+			       sizeof(link_status));
-+	if (!ret) {
-+		drm_info(mtk_dp->drm_dev, "Read link status failed: %ld\n",
-+			 ret);
-+		return;
-+	}
-+
-+	locked = drm_dp_channel_eq_ok(link_status,
-+				      mtk_dp->train_info.lane_count);
-+	if (!locked && mtk_dp->train_state > MTK_DP_TRAIN_STATE_TRAINING_PRE)
-+		mtk_dp->train_state = MTK_DP_TRAIN_STATE_TRAINING_PRE;
-+
-+	if (link_status[1] & DP_REMOTE_CONTROL_COMMAND_PENDING)
-+		drm_dp_dpcd_writeb(&mtk_dp->aux, DP_DEVICE_SERVICE_IRQ_VECTOR,
-+				   DP_REMOTE_CONTROL_COMMAND_PENDING);
-+
-+	if (DP_GET_SINK_COUNT(sink_count) &&
-+	    (link_status[2] & DP_DOWNSTREAM_PORT_STATUS_CHANGED)) {
-+		mtk_dp_edid_free(mtk_dp);
-+		mtk_dp->train_info.check_cap_count = 0;
-+		mtk_dp->train_state = MTK_DP_TRAIN_STATE_CHECKEDID;
-+		msleep(20);
-+	}
-+}
-+
-+static void mtk_dp_sdp_stop_sending(struct mtk_dp *mtk_dp)
-+{
-+	u8 packet_type;
-+
-+	for (packet_type = MTK_DP_SDP_ACM; packet_type < MTK_DP_SDP_MAX_NUM;
-+	     packet_type++)
-+		mtk_dp_disable_sdp(mtk_dp, packet_type);
-+
-+	mtk_dp_sdp_vsc_ext_disable(mtk_dp);
-+}
-+
-+static void mtk_dp_train_update_swing_pre(struct mtk_dp *mtk_dp, int lanes,
-+					  u8 dpcd_adjust_req[2])
-+{
-+	int lane;
-+
-+	for (lane = 0; lane < lanes; ++lane) {
-+		u8 val;
-+		u8 swing;
-+		u8 preemphasis;
-+		int index = lane / 2;
-+		int shift = lane % 2 ? DP_ADJUST_VOLTAGE_SWING_LANE1_SHIFT : 0;
-+
-+		swing = (dpcd_adjust_req[index] >> shift) &
-+			DP_ADJUST_VOLTAGE_SWING_LANE0_MASK;
-+		preemphasis = ((dpcd_adjust_req[index] >> shift) &
-+			       DP_ADJUST_PRE_EMPHASIS_LANE0_MASK) >>
-+			      DP_ADJUST_PRE_EMPHASIS_LANE0_SHIFT;
-+		val = swing << DP_TRAIN_VOLTAGE_SWING_SHIFT |
-+		      preemphasis << DP_TRAIN_PRE_EMPHASIS_SHIFT;
-+
-+		if (swing == DP_TRAIN_VOLTAGE_SWING_LEVEL_3)
-+			val |= DP_TRAIN_MAX_SWING_REACHED;
-+		if (preemphasis == 3)
-+			val |= DP_TRAIN_MAX_PRE_EMPHASIS_REACHED;
-+
-+		mtk_dp_set_swing_pre_emphasis(mtk_dp, lane, swing, preemphasis);
-+		drm_dp_dpcd_writeb(&mtk_dp->aux, DP_TRAINING_LANE0_SET + lane,
-+				   val);
-+	}
-+
-+	// Wait for the signal to be stable enough
-+	usleep_range(2000, 5000);
-+}
-+
-+static void mtk_dp_read_link_status(struct mtk_dp *mtk_dp,
-+				    u8 link_status[DP_LINK_STATUS_SIZE])
-+{
-+	drm_dp_dpcd_read(&mtk_dp->aux, DP_LANE0_1_STATUS, link_status,
-+			 DP_LINK_STATUS_SIZE);
-+}
-+
-+static int mtk_dp_train_flow(struct mtk_dp *mtk_dp, int target_link_rate,
-+			     int target_lane_count)
-+{
-+	u8 link_status[DP_LINK_STATUS_SIZE] = {};
-+	u8 lane_adjust[2] = {};
-+	bool pass_tps1 = false;
-+	bool pass_tps2_3 = false;
-+	int train_retries;
-+	int status_control;
-+	int iteration_count;
-+	u8 prev_lane_adjust;
-+	u8 val;
-+
-+	drm_dp_dpcd_writeb(&mtk_dp->aux, DP_LINK_BW_SET, target_link_rate);
-+	drm_dp_dpcd_writeb(&mtk_dp->aux, DP_LANE_COUNT_SET,
-+			   target_lane_count | DP_LANE_COUNT_ENHANCED_FRAME_EN);
-+
-+	if (mtk_dp->train_info.sink_ssc)
-+		drm_dp_dpcd_writeb(&mtk_dp->aux, DP_DOWNSPREAD_CTRL,
-+				   DP_SPREAD_AMP_0_5);
-+
-+	train_retries = 0;
-+	status_control = 0;
-+	iteration_count = 1;
-+	prev_lane_adjust = 0xFF;
-+
-+	mtk_dp_set_lanes(mtk_dp, target_lane_count / 2);
-+	mtk_dp_phy_configure(mtk_dp, target_link_rate, target_lane_count);
-+
-+	dev_dbg(mtk_dp->dev,
-+		"Link train target_link_rate = 0x%x, target_lane_count = 0x%x\n",
-+		target_link_rate, target_lane_count);
-+
-+	do {
-+		train_retries++;
-+		if (!mtk_dp->train_info.cable_plugged_in ||
-+		    ((mtk_dp->train_info.irq_status & MTK_DP_HPD_DISCONNECT) !=
-+		     0x0)) {
-+			return -ENODEV;
-+		}
-+
-+		if (mtk_dp->train_state < MTK_DP_TRAIN_STATE_TRAINING)
-+			return -EAGAIN;
-+
-+		if (!pass_tps1) {
-+			mtk_dp_training_set_scramble(mtk_dp, false);
-+
-+			if (status_control == 0) {
-+				status_control = 1;
-+				mtk_dp_train_set_pattern(mtk_dp, 1);
-+				val = DP_LINK_SCRAMBLING_DISABLE |
-+				      DP_TRAINING_PATTERN_1;
-+				drm_dp_dpcd_writeb(
-+					&mtk_dp->aux, DP_TRAINING_PATTERN_SET,
-+					DP_LINK_SCRAMBLING_DISABLE |
-+						DP_TRAINING_PATTERN_1);
-+				drm_dp_dpcd_read(&mtk_dp->aux,
-+						 DP_ADJUST_REQUEST_LANE0_1,
-+						 lane_adjust,
-+						 sizeof(lane_adjust));
-+				iteration_count++;
-+
-+				mtk_dp_train_update_swing_pre(
-+					mtk_dp, target_lane_count, lane_adjust);
-+			}
-+
-+			drm_dp_link_train_clock_recovery_delay(&mtk_dp->aux,
-+							       mtk_dp->rx_cap);
-+			mtk_dp_read_link_status(mtk_dp, link_status);
-+
-+			if (drm_dp_clock_recovery_ok(link_status,
-+						     target_lane_count)) {
-+				mtk_dp->train_info.cr_done = true;
-+				pass_tps1 = true;
-+				train_retries = 0;
-+				iteration_count = 1;
-+				dev_dbg(mtk_dp->dev, "Link train CR pass\n");
-+			} else if (prev_lane_adjust == link_status[4]) {
-+				iteration_count++;
-+				if (prev_lane_adjust &
-+				    DP_ADJUST_VOLTAGE_SWING_LANE0_MASK)
-+					break;
-+			} else {
-+				prev_lane_adjust = link_status[4];
-+			}
-+			dev_dbg(mtk_dp->dev, "Link train CQ fail\n");
-+		} else if (pass_tps1 && !pass_tps2_3) {
-+			if (status_control == 1) {
-+				status_control = 2;
-+				if (mtk_dp->train_info.tps4) {
-+					mtk_dp_train_set_pattern(mtk_dp, 4);
-+					val = DP_TRAINING_PATTERN_4;
-+				} else if (mtk_dp->train_info.tps3) {
-+					mtk_dp_train_set_pattern(mtk_dp, 3);
-+					val = DP_LINK_SCRAMBLING_DISABLE |
-+					      DP_TRAINING_PATTERN_3;
-+				} else {
-+					mtk_dp_train_set_pattern(mtk_dp, 2);
-+					val = DP_LINK_SCRAMBLING_DISABLE |
-+					      DP_TRAINING_PATTERN_2;
-+				}
-+				drm_dp_dpcd_writeb(&mtk_dp->aux,
-+						   DP_TRAINING_PATTERN_SET,
-+						   val);
-+
-+				drm_dp_dpcd_read(&mtk_dp->aux,
-+						 DP_ADJUST_REQUEST_LANE0_1,
-+						 lane_adjust,
-+						 sizeof(lane_adjust));
-+
-+				iteration_count++;
-+				mtk_dp_train_update_swing_pre(
-+					mtk_dp, target_lane_count, lane_adjust);
-+			}
-+
-+			drm_dp_link_train_channel_eq_delay(&mtk_dp->aux,
-+							   mtk_dp->rx_cap);
-+
-+			mtk_dp_read_link_status(mtk_dp, link_status);
-+
-+			if (!drm_dp_clock_recovery_ok(link_status,
-+						      target_lane_count)) {
-+				mtk_dp->train_info.cr_done = false;
-+				mtk_dp->train_info.eq_done = false;
-+				dev_dbg(mtk_dp->dev, "Link train EQ fail\n");
-+				break;
-+			}
-+
-+			if (drm_dp_channel_eq_ok(link_status,
-+						 target_lane_count)) {
-+				mtk_dp->train_info.eq_done = true;
-+				pass_tps2_3 = true;
-+				dev_dbg(mtk_dp->dev, "Link train EQ pass\n");
-+				break;
-+			}
-+
-+			if (prev_lane_adjust == link_status[4])
-+				iteration_count++;
-+			else
-+				prev_lane_adjust = link_status[4];
-+		}
-+
-+		drm_dp_dpcd_read(&mtk_dp->aux, DP_ADJUST_REQUEST_LANE0_1,
-+				 lane_adjust, sizeof(lane_adjust));
-+		mtk_dp_train_update_swing_pre(mtk_dp, target_lane_count,
-+					      lane_adjust);
-+	} while (train_retries < MTK_DP_TRAIN_RETRY_LIMIT &&
-+		 iteration_count < MTK_DP_TRAIN_MAX_ITERATIONS);
-+
-+	drm_dp_dpcd_writeb(&mtk_dp->aux, DP_TRAINING_PATTERN_SET,
-+			   DP_TRAINING_PATTERN_DISABLE);
-+	mtk_dp_train_set_pattern(mtk_dp, 0);
-+
-+	if (pass_tps2_3) {
-+		mtk_dp->train_info.link_rate = target_link_rate;
-+		mtk_dp->train_info.lane_count = target_lane_count;
-+
-+		mtk_dp_training_set_scramble(mtk_dp, true);
-+
-+		drm_dp_dpcd_writeb(&mtk_dp->aux, DP_LANE_COUNT_SET,
-+				   target_lane_count |
-+					   DP_LANE_COUNT_ENHANCED_FRAME_EN);
-+		mtk_dp_set_enhanced_frame_mode(mtk_dp, true);
-+
-+		return 0;
-+	}
-+
-+	return -ETIMEDOUT;
-+}
-+
-+static bool mtk_dp_parse_capabilities(struct mtk_dp *mtk_dp)
-+{
-+	u8 buf[DP_RECEIVER_CAP_SIZE] = {};
-+	u8 val;
-+	struct mtk_dp_train_info *train_info = &mtk_dp->train_info;
-+
-+	if (!mtk_dp_plug_state(mtk_dp))
-+		return false;
-+
-+	drm_dp_dpcd_writeb(&mtk_dp->aux, DP_SET_POWER, DP_SET_POWER_D0);
-+	usleep_range(2000, 5000);
-+
-+	drm_dp_read_dpcd_caps(&mtk_dp->aux, buf);
-+
-+	memcpy(mtk_dp->rx_cap, buf, min(sizeof(mtk_dp->rx_cap), sizeof(buf)));
-+	mtk_dp->rx_cap[DP_TRAINING_AUX_RD_INTERVAL] &= DP_TRAINING_AUX_RD_MASK;
-+
-+	train_info->link_rate =
-+		min_t(int, MTK_DP_MAX_LINK_RATE, buf[DP_MAX_LINK_RATE]);
-+	train_info->lane_count =
-+		min_t(int, MTK_DP_MAX_LANES, drm_dp_max_lane_count(buf));
-+
-+	train_info->tps3 = drm_dp_tps3_supported(buf);
-+	train_info->tps4 = drm_dp_tps4_supported(buf);
-+
-+	train_info->sink_ssc =
-+		!!(buf[DP_MAX_DOWNSPREAD] & DP_MAX_DOWNSPREAD_0_5);
-+
-+	train_info->sink_ssc = false;
-+
-+	drm_dp_dpcd_readb(&mtk_dp->aux, DP_MSTM_CAP, &val);
-+	if (val & DP_MST_CAP) {
-+		// Clear DP_DEVICE_SERVICE_IRQ_VECTOR_ESI0
-+		drm_dp_dpcd_readb(&mtk_dp->aux,
-+				  DP_DEVICE_SERVICE_IRQ_VECTOR_ESI0, &val);
-+		if (val)
-+			drm_dp_dpcd_writeb(&mtk_dp->aux,
-+					   DP_DEVICE_SERVICE_IRQ_VECTOR_ESI0,
-+					   val);
-+	}
-+
-+	return true;
-+}
-+
-+static int mtk_dp_edid_parse_audio_capabilities(struct mtk_dp *mtk_dp,
-+						struct mtk_dp_audio_cfg *cfg)
-+{
-+	struct cea_sad *sads;
-+	int sad_count;
-+	int i;
-+	int ret = 0;
-+
-+	mutex_lock(&mtk_dp->edid_lock);
-+	if (!mtk_dp->edid) {
-+		mutex_unlock(&mtk_dp->edid_lock);
-+		dev_err(mtk_dp->dev, "EDID not found!\n");
-+		return -EINVAL;
-+	}
-+
-+	sad_count = drm_edid_to_sad(mtk_dp->edid, &sads);
-+	mutex_unlock(&mtk_dp->edid_lock);
-+	if (sad_count <= 0) {
-+		drm_info(mtk_dp->drm_dev, "The SADs is NULL\n");
-+		return 0;
-+	}
-+
-+	for (i = 0; i < sad_count; i++) {
-+		int sample_rate;
-+		int word_length;
-+		// Only PCM supported at the moment
-+		if (sads[i].format != HDMI_AUDIO_CODING_TYPE_PCM)
-+			continue;
-+
-+		sample_rate = drm_cea_sad_get_sample_rate(&sads[i]);
-+		word_length =
-+			drm_cea_sad_get_uncompressed_word_length(&sads[i]);
-+		if (sample_rate <= 0 || word_length <= 0)
-+			continue;
-+
-+		cfg->channels = sads[i].channels;
-+		cfg->word_length_bits = word_length;
-+		cfg->sample_rate = sample_rate;
-+		ret = 1;
-+		break;
-+	}
-+	kfree(sads);
-+
-+	return ret;
-+}
-+
-+static void mtk_dp_train_change_mode(struct mtk_dp *mtk_dp)
-+{
-+	phy_reset(mtk_dp->phy);
-+	mtk_dp_reset_swing_pre_emphasis(mtk_dp);
-+
-+	usleep_range(2000, 5000);
-+}
-+
-+static int mtk_dp_train_start(struct mtk_dp *mtk_dp)
-+{
-+	int ret = 0;
-+	int lane_count;
-+	int link_rate;
-+	int train_limit;
-+	int max_link_rate;
-+	int plug_wait;
-+
-+	for (plug_wait = 7; !mtk_dp_plug_state(mtk_dp) && plug_wait > 0;
-+	     --plug_wait)
-+		usleep_range(1000, 5000);
-+	if (plug_wait == 0) {
-+		mtk_dp->train_state = MTK_DP_TRAIN_STATE_DPIDLE;
-+		return -ENODEV;
-+	}
-+
-+	link_rate = mtk_dp->rx_cap[1];
-+	lane_count = mtk_dp->rx_cap[2] & 0x1F;
-+
-+	mtk_dp->train_info.link_rate = min(MTK_DP_MAX_LINK_RATE, link_rate);
-+	mtk_dp->train_info.lane_count = min(MTK_DP_MAX_LANES, lane_count);
-+	link_rate = mtk_dp->train_info.link_rate;
-+	lane_count = mtk_dp->train_info.lane_count;
-+
-+	switch (link_rate) {
-+	case MTK_DP_LINKRATE_RBR:
-+	case MTK_DP_LINKRATE_HBR:
-+	case MTK_DP_LINKRATE_HBR2:
-+	case MTK_DP_LINKRATE_HBR25:
-+	case MTK_DP_LINKRATE_HBR3:
-+		break;
-+	default:
-+		mtk_dp->train_info.link_rate = MTK_DP_LINKRATE_HBR3;
-+		break;
-+	};
-+
-+	max_link_rate = link_rate;
-+	for (train_limit = 0; train_limit <= 6; ++train_limit) {
-+		mtk_dp->train_info.cr_done = false;
-+		mtk_dp->train_info.eq_done = false;
-+
-+		mtk_dp_train_change_mode(mtk_dp);
-+		ret = mtk_dp_train_flow(mtk_dp, link_rate, lane_count);
-+		if (ret == -ENODEV || ret == -EAGAIN)
-+			return ret;
-+
-+		if (!mtk_dp->train_info.cr_done) {
-+			switch (link_rate) {
-+			case MTK_DP_LINKRATE_RBR:
-+				lane_count = lane_count / 2;
-+				link_rate = max_link_rate;
-+				if (lane_count == 0x0) {
-+					mtk_dp->train_state =
-+						MTK_DP_TRAIN_STATE_DPIDLE;
-+					return -EIO;
-+				}
-+				break;
-+			case MTK_DP_LINKRATE_HBR:
-+				link_rate = MTK_DP_LINKRATE_RBR;
-+				break;
-+			case MTK_DP_LINKRATE_HBR2:
-+				link_rate = MTK_DP_LINKRATE_HBR;
-+				break;
-+			case MTK_DP_LINKRATE_HBR3:
-+				link_rate = MTK_DP_LINKRATE_HBR2;
-+				break;
-+			default:
-+				return -EINVAL;
-+			};
-+		} else if (!mtk_dp->train_info.eq_done) {
-+			lane_count /= 2;
-+			if (lane_count == 0)
-+				return -EIO;
-+		} else {
-+			return 0;
-+		}
-+	}
-+
-+	return -ETIMEDOUT;
-+}
-+
-+static int mtk_dp_train_handler(struct mtk_dp *mtk_dp)
-+{
-+	int ret = 0;
-+
-+	if (mtk_dp->train_state == MTK_DP_TRAIN_STATE_NORMAL)
-+		return ret;
-+
-+	switch (mtk_dp->train_state) {
-+	case MTK_DP_TRAIN_STATE_STARTUP:
-+		mtk_dp->train_state = MTK_DP_TRAIN_STATE_CHECKCAP;
-+		break;
-+
-+	case MTK_DP_TRAIN_STATE_CHECKCAP:
-+		if (mtk_dp_parse_capabilities(mtk_dp)) {
-+			mtk_dp->train_info.check_cap_count = 0;
-+			mtk_dp->train_state = MTK_DP_TRAIN_STATE_CHECKEDID;
-+		} else {
-+			mtk_dp->train_info.check_cap_count++;
-+
-+			if (mtk_dp->train_info.check_cap_count >
-+			    MTK_DP_CHECK_SINK_CAP_TIMEOUT_COUNT) {
-+				mtk_dp->train_info.check_cap_count = 0;
-+				mtk_dp->train_state = MTK_DP_TRAIN_STATE_DPIDLE;
-+				ret = -ETIMEDOUT;
-+			}
-+		}
-+		break;
-+
-+	case MTK_DP_TRAIN_STATE_CHECKEDID: {
-+		int caps_found = mtk_dp_edid_parse_audio_capabilities(
-+			mtk_dp, &mtk_dp->info.audio_caps);
-+		mtk_dp->audio_enable = caps_found > 0;
-+		if (!mtk_dp->audio_enable)
-+			memset(&mtk_dp->info.audio_caps, 0,
-+			       sizeof(mtk_dp->info.audio_caps));
-+	}
-+
-+		mtk_dp->train_state = MTK_DP_TRAIN_STATE_TRAINING_PRE;
-+		break;
-+
-+	case MTK_DP_TRAIN_STATE_TRAINING_PRE:
-+		mtk_dp->train_state = MTK_DP_TRAIN_STATE_TRAINING;
-+		break;
-+
-+	case MTK_DP_TRAIN_STATE_TRAINING:
-+		ret = mtk_dp_train_start(mtk_dp);
-+		if (!ret) {
-+			mtk_dp_video_mute(mtk_dp, true);
-+			mtk_dp_audio_mute(mtk_dp, true);
-+			mtk_dp->train_state = MTK_DP_TRAIN_STATE_CHECKTIMING;
-+			mtk_dp_fec_enable(mtk_dp, mtk_dp->has_fec);
-+		} else if (ret != -EAGAIN) {
-+			mtk_dp->train_state = MTK_DP_TRAIN_STATE_DPIDLE;
-+		}
-+
-+		ret = 0;
-+		break;
-+
-+	case MTK_DP_TRAIN_STATE_CHECKTIMING:
-+		mtk_dp->train_state = MTK_DP_TRAIN_STATE_NORMAL;
-+		break;
-+	case MTK_DP_TRAIN_STATE_NORMAL:
-+		break;
-+	case MTK_DP_TRAIN_STATE_POWERSAVE:
-+		break;
-+	case MTK_DP_TRAIN_STATE_DPIDLE:
-+		break;
-+	default:
-+		break;
-+	}
-+
-+	return ret;
-+}
-+
-+static void mtk_dp_video_enable(struct mtk_dp *mtk_dp, bool enable)
-+{
-+	if (enable) {
-+		mtk_dp_set_tx_out(mtk_dp);
-+		mtk_dp_video_mute(mtk_dp, false);
-+	} else {
-+		mtk_dp_video_mute(mtk_dp, true);
-+	}
-+}
-+
-+static void mtk_dp_audio_sdp_setup(struct mtk_dp *mtk_dp,
-+				   struct mtk_dp_audio_cfg *cfg)
-+{
-+	struct mtk_dp_sdp_packet packet;
-+	struct hdmi_audio_infoframe frame;
-+
-+	hdmi_audio_infoframe_init(&frame);
-+	frame.coding_type = HDMI_AUDIO_CODING_TYPE_PCM;
-+	frame.channels = cfg->channels;
-+	frame.sample_frequency = cfg->sample_rate;
-+
-+	switch (cfg->word_length_bits) {
-+	case 16:
-+		frame.sample_size = HDMI_AUDIO_SAMPLE_SIZE_16;
-+		break;
-+	case 20:
-+		frame.sample_size = HDMI_AUDIO_SAMPLE_SIZE_20;
-+		break;
-+	case 24:
-+	default:
-+		frame.sample_size = HDMI_AUDIO_SAMPLE_SIZE_24;
-+		break;
-+	}
-+
-+	packet.type = MTK_DP_SDP_AUI;
-+	hdmi_audio_infoframe_pack_for_dp(&frame, &packet.sdp,
-+					 MTK_DP_DP_VERSION_11);
-+
-+	mtk_dp_audio_sdp_asp_set_channels(mtk_dp, cfg->channels);
-+	mtk_dp_setup_sdp(mtk_dp, &packet);
-+}
-+
-+static void mtk_dp_audio_setup(struct mtk_dp *mtk_dp,
-+			       struct mtk_dp_audio_cfg *cfg)
-+{
-+	mtk_dp_audio_sdp_setup(mtk_dp, cfg);
-+	mtk_dp_audio_channel_status_set(mtk_dp, cfg);
-+
-+	mtk_dp_audio_setup_channels(mtk_dp, cfg);
-+	mtk_dp_audio_set_divider(mtk_dp);
-+}
-+
-+static void mtk_dp_video_config(struct mtk_dp *mtk_dp)
-+{
-+	mtk_dp_mn_overwrite_disable(mtk_dp);
-+
-+	mtk_dp_set_msa(mtk_dp);
-+
-+	mtk_dp_set_color_depth(mtk_dp, mtk_dp->info.depth);
-+	mtk_dp_set_color_format(mtk_dp, mtk_dp->info.format);
-+}
-+
-+static int mtk_dp_state_handler(struct mtk_dp *mtk_dp)
-+{
-+	int ret = 0;
-+
-+	switch (mtk_dp->state) {
-+	case MTK_DP_STATE_INITIAL:
-+		mtk_dp_video_mute(mtk_dp, true);
-+		mtk_dp_audio_mute(mtk_dp, true);
-+		mtk_dp->state = MTK_DP_STATE_IDLE;
-+		break;
-+
-+	case MTK_DP_STATE_IDLE:
-+		if (mtk_dp->train_state == MTK_DP_TRAIN_STATE_NORMAL)
-+			mtk_dp->state = MTK_DP_STATE_PREPARE;
-+		break;
-+
-+	case MTK_DP_STATE_PREPARE:
-+		mtk_dp_video_config(mtk_dp);
-+		mtk_dp_video_enable(mtk_dp, true);
-+
-+		if (mtk_dp->audio_enable) {
-+			mtk_dp_audio_setup(mtk_dp, &mtk_dp->info.audio_caps);
-+			mtk_dp_audio_mute(mtk_dp, false);
-+		}
-+
-+		mtk_dp->state = MTK_DP_STATE_NORMAL;
-+		break;
-+
-+	case MTK_DP_STATE_NORMAL:
-+		if (mtk_dp->train_state != MTK_DP_TRAIN_STATE_NORMAL) {
-+			mtk_dp_video_mute(mtk_dp, true);
-+			mtk_dp_audio_mute(mtk_dp, true);
-+			mtk_dp_sdp_stop_sending(mtk_dp);
-+			mtk_dp->state = MTK_DP_STATE_IDLE;
-+		}
-+		break;
-+
-+	default:
-+		break;
-+	}
-+
-+	return ret;
-+}
-+
-+static void mtk_dp_init_port(struct mtk_dp *mtk_dp)
-+{
-+	mtk_dp_set_idle_pattern(mtk_dp, true);
-+	mtk_dp_initialize_priv_data(mtk_dp);
-+
-+	mtk_dp_initialize_settings(mtk_dp);
-+	mtk_dp_initialize_aux_settings(mtk_dp);
-+	mtk_dp_initialize_digital_settings(mtk_dp);
-+	mtk_dp_update_bits(mtk_dp, MTK_DP_AUX_P0_3690,
-+			   BIT(RX_REPLY_COMPLETE_MODE_AUX_TX_P0_SHIFT),
-+			   RX_REPLY_COMPLETE_MODE_AUX_TX_P0_MASK);
-+	mtk_dp_initialize_hpd_detect_settings(mtk_dp);
-+
-+	mtk_dp_digital_sw_reset(mtk_dp);
-+}
-+
-+static irqreturn_t mtk_dp_hpd_event_thread(int hpd, void *dev)
-+{
-+	struct mtk_dp *mtk_dp = dev;
-+	int event;
-+	u8 buf[DP_RECEIVER_CAP_SIZE] = {};
-+
-+	event = mtk_dp_plug_state(mtk_dp) ? connector_status_connected :
-+						  connector_status_disconnected;
-+
-+	if (event < 0)
-+		return IRQ_HANDLED;
-+
-+	if (mtk_dp->drm_dev) {
-+		dev_info(mtk_dp->dev, "drm_helper_hpd_irq_event\n");
-+		drm_helper_hpd_irq_event(mtk_dp->bridge.dev);
-+	}
-+
-+	if (mtk_dp->train_info.cable_state_change) {
-+		mtk_dp->train_info.cable_state_change = false;
-+
-+		mtk_dp->train_state = MTK_DP_TRAIN_STATE_STARTUP;
-+
-+		if (!mtk_dp->train_info.cable_plugged_in ||
-+		    !mtk_dp_plug_state(mtk_dp)) {
-+			mtk_dp_video_mute(mtk_dp, true);
-+			mtk_dp_audio_mute(mtk_dp, true);
-+
-+			mtk_dp_initialize_priv_data(mtk_dp);
-+			mtk_dp_set_idle_pattern(mtk_dp, true);
-+			if (mtk_dp->has_fec)
-+				mtk_dp_fec_enable(mtk_dp, false);
-+			mtk_dp_sdp_stop_sending(mtk_dp);
-+
-+			mtk_dp_edid_free(mtk_dp);
-+			mtk_dp_update_bits(mtk_dp, MTK_DP_TOP_PWR_STATE,
-+					   DP_PWR_STATE_BANDGAP_TPLL,
-+					   DP_PWR_STATE_MASK);
-+		} else {
-+			mtk_dp_update_bits(mtk_dp, MTK_DP_TOP_PWR_STATE,
-+					   DP_PWR_STATE_BANDGAP_TPLL_LANE,
-+					   DP_PWR_STATE_MASK);
-+			drm_dp_read_dpcd_caps(&mtk_dp->aux, buf);
-+			mtk_dp->train_info.link_rate =
-+				min_t(int, MTK_DP_MAX_LINK_RATE,
-+				      buf[DP_MAX_LINK_RATE]);
-+			mtk_dp->train_info.lane_count =
-+				min_t(int, MTK_DP_MAX_LANES,
-+				      drm_dp_max_lane_count(buf));
-+		}
-+	}
-+
-+	if (mtk_dp->train_info.irq_status & MTK_DP_HPD_INTERRUPT) {
-+		dev_info(mtk_dp->dev, "MTK_DP_HPD_INTERRUPT\n");
-+		mtk_dp->train_info.irq_status &= ~MTK_DP_HPD_INTERRUPT;
-+		mtk_dp_hpd_sink_event(mtk_dp);
-+	}
-+
-+	return IRQ_HANDLED;
-+}
-+
-+static irqreturn_t mtk_dp_hpd_isr_handler(struct mtk_dp *mtk_dp)
-+{
-+	bool connected;
-+	u16 swirq_status = mtk_dp_swirq_get_clear(mtk_dp);
-+	u8 hwirq_status = mtk_dp_hwirq_get_clear(mtk_dp);
-+	struct mtk_dp_train_info *train_info = &mtk_dp->train_info;
-+
-+	train_info->irq_status |= hwirq_status | swirq_status;
-+
-+	if (!train_info->irq_status)
-+		return IRQ_HANDLED;
-+
-+	connected = mtk_dp_plug_state(mtk_dp);
-+	if (connected || !train_info->cable_plugged_in)
-+		train_info->irq_status &= ~MTK_DP_HPD_DISCONNECT;
-+	else if (!connected || train_info->cable_plugged_in)
-+		train_info->irq_status &= ~MTK_DP_HPD_CONNECT;
-+
-+	if (!(train_info->irq_status &
-+	      (MTK_DP_HPD_CONNECT | MTK_DP_HPD_DISCONNECT)))
-+		return IRQ_HANDLED;
-+
-+	if (train_info->irq_status & MTK_DP_HPD_CONNECT) {
-+		train_info->irq_status &= ~MTK_DP_HPD_CONNECT;
-+		train_info->cable_plugged_in = true;
-+	} else {
-+		train_info->irq_status &= ~MTK_DP_HPD_DISCONNECT;
-+		train_info->cable_plugged_in = false;
-+		mtk_dp->train_state = MTK_DP_TRAIN_STATE_STARTUP;
-+	}
-+	train_info->cable_state_change = true;
-+	return IRQ_WAKE_THREAD;
-+}
-+
-+static irqreturn_t mtk_dp_hpd_event(int hpd, void *dev)
-+{
-+	struct mtk_dp *mtk_dp = dev;
-+	u32 irq_status;
-+
-+	irq_status = mtk_dp_read(mtk_dp, MTK_DP_TOP_IRQ_STATUS);
-+
-+	if (!irq_status)
-+		return IRQ_HANDLED;
-+
-+	if (irq_status & RGS_IRQ_STATUS_TRANSMITTER)
-+		return mtk_dp_hpd_isr_handler(mtk_dp);
-+
-+	return IRQ_HANDLED;
-+}
-+
-+static int mtk_dp_dt_parse_pdata(struct mtk_dp *mtk_dp,
-+				 struct platform_device *pdev)
-+{
-+	struct device *dev = &pdev->dev;
-+	int ret = 0;
-+	void __iomem *base;
-+
-+	base = devm_platform_ioremap_resource(pdev, 0);
-+	if (IS_ERR(base))
-+		return PTR_ERR(base);
-+
-+	mtk_dp->regs = devm_regmap_init_mmio(dev, base, &mtk_dp_regmap_config);
-+	if (IS_ERR(mtk_dp->regs))
-+		return PTR_ERR(mtk_dp->regs);
-+
-+	mtk_dp->dp_tx_clk = devm_clk_get(dev, "faxi");
-+	if (IS_ERR(mtk_dp->dp_tx_clk)) {
-+		ret = PTR_ERR(mtk_dp->dp_tx_clk);
-+		dev_err(dev, "Failed to get dptx clock: %d\n", ret);
-+		mtk_dp->dp_tx_clk = NULL;
-+	}
-+
-+	return 0;
-+}
-+
-+static void mtk_dp_update_plugged_status(struct mtk_dp *mtk_dp)
-+{
-+	bool connected, has_audio;
-+
-+	mutex_lock(&mtk_dp->update_plugged_status_lock);
-+	connected = mtk_dp_plug_state(mtk_dp);
-+	has_audio = drm_detect_monitor_audio(mtk_dp->edid);
-+	if (mtk_dp->plugged_cb && mtk_dp->codec_dev)
-+		mtk_dp->plugged_cb(mtk_dp->codec_dev, connected & has_audio);
-+	mutex_unlock(&mtk_dp->update_plugged_status_lock);
-+}
-+
-+static enum drm_connector_status mtk_dp_bdg_detect(struct drm_bridge *bridge)
-+{
-+	struct mtk_dp *mtk_dp = mtk_dp_from_bridge(bridge);
-+	enum drm_connector_status ret = connector_status_disconnected;
-+	u8 sink_count = 0;
-+
-+	if (mtk_dp_is_edp(mtk_dp))
-+		return connector_status_connected;
-+
-+	if (mtk_dp_plug_state(mtk_dp)) {
-+		drm_dp_dpcd_readb(&mtk_dp->aux, DP_SINK_COUNT, &sink_count);
-+		if (DP_GET_SINK_COUNT(sink_count))
-+			ret = connector_status_connected;
-+	}
-+
-+	mtk_dp_update_plugged_status(mtk_dp);
-+	return ret;
-+}
-+
-+static struct edid *mtk_dp_get_edid(struct drm_bridge *bridge,
-+				    struct drm_connector *connector)
-+{
-+	struct mtk_dp *mtk_dp = mtk_dp_from_bridge(bridge);
-+	bool enabled = mtk_dp->enabled;
-+	struct edid *new_edid = NULL;
-+
-+	if (!enabled)
-+		drm_bridge_chain_pre_enable(bridge);
-+
-+	drm_dp_dpcd_writeb(&mtk_dp->aux, DP_SET_POWER, DP_SET_POWER_D0);
-+	usleep_range(2000, 5000);
-+
-+	if (mtk_dp_plug_state(mtk_dp))
-+		new_edid = drm_get_edid(connector, &mtk_dp->aux.ddc);
-+
-+	if (!enabled)
-+		drm_bridge_chain_post_disable(bridge);
-+
-+	mutex_lock(&mtk_dp->edid_lock);
-+	kfree(mtk_dp->edid);
-+	mtk_dp->edid = NULL;
-+
-+	if (!new_edid) {
-+		mutex_unlock(&mtk_dp->edid_lock);
-+		return NULL;
-+	}
-+
-+	mtk_dp->edid = drm_edid_duplicate(new_edid);
-+	mutex_unlock(&mtk_dp->edid_lock);
-+
-+	return new_edid;
-+}
-+
-+static ssize_t mtk_dp_aux_transfer(struct drm_dp_aux *mtk_aux,
-+				   struct drm_dp_aux_msg *msg)
-+{
-+	ssize_t err = -EAGAIN;
-+	struct mtk_dp *mtk_dp;
-+	bool is_read;
-+	u8 request;
-+	size_t accessed_bytes = 0;
-+	int retry = 3, ret = 0;
-+
-+	mtk_dp = container_of(mtk_aux, struct mtk_dp, aux);
-+
-+	if (!mtk_dp->train_info.cable_plugged_in ||
-+	    mtk_dp->train_info.irq_status & MTK_DP_HPD_DISCONNECT) {
-+		mtk_dp->train_state = MTK_DP_TRAIN_STATE_CHECKCAP;
-+		err = -EAGAIN;
-+		goto err;
-+	}
-+
-+	switch (msg->request) {
-+	case DP_AUX_I2C_MOT:
-+	case DP_AUX_I2C_WRITE:
-+	case DP_AUX_NATIVE_WRITE:
-+	case DP_AUX_I2C_WRITE_STATUS_UPDATE:
-+	case DP_AUX_I2C_WRITE_STATUS_UPDATE | DP_AUX_I2C_MOT:
-+		request = msg->request & ~DP_AUX_I2C_WRITE_STATUS_UPDATE;
-+		is_read = false;
-+		break;
-+	case DP_AUX_I2C_READ:
-+	case DP_AUX_NATIVE_READ:
-+	case DP_AUX_I2C_READ | DP_AUX_I2C_MOT:
-+		request = msg->request;
-+		is_read = true;
-+		break;
-+	default:
-+		drm_err(mtk_aux->drm_dev, "invalid aux cmd = %d\n",
-+			msg->request);
-+		err = -EINVAL;
-+		goto err;
-+	}
-+
-+	if (msg->size == 0) {
-+		mtk_dp_aux_do_transfer(mtk_dp, is_read, request,
-+				       msg->address + accessed_bytes,
-+				       msg->buffer + accessed_bytes, 0);
-+	} else {
-+		while (accessed_bytes < msg->size) {
-+			size_t to_access =
-+				min_t(size_t, DP_AUX_MAX_PAYLOAD_BYTES,
-+				      msg->size - accessed_bytes);
-+			retry = 3;
-+			while (retry--) {
-+				ret = mtk_dp_aux_do_transfer(
-+					mtk_dp, is_read, request,
-+					msg->address + accessed_bytes,
-+					msg->buffer + accessed_bytes,
-+					to_access);
-+				if (ret == 0)
-+					break;
-+				udelay(50);
-+			}
-+			if (!retry && ret) {
-+				drm_info(mtk_dp->drm_dev,
-+					 "Failed to do AUX transfer: %d\n",
-+					 ret);
-+				break;
-+			}
-+			accessed_bytes += to_access;
-+		}
-+	}
-+err:
-+	if (!ret) {
-+		msg->reply = DP_AUX_NATIVE_REPLY_ACK | DP_AUX_I2C_REPLY_ACK;
-+		ret = msg->size;
-+	} else {
-+		msg->reply = DP_AUX_NATIVE_REPLY_NACK | DP_AUX_I2C_REPLY_NACK;
-+		return err;
-+	}
-+
-+	msg->reply = DP_AUX_NATIVE_REPLY_ACK | DP_AUX_I2C_REPLY_ACK;
-+	return msg->size;
-+}
-+
-+static void mtk_dp_aux_init(struct mtk_dp *mtk_dp)
-+{
-+	drm_dp_aux_init(&mtk_dp->aux);
-+	mtk_dp->aux.name = "aux_mtk_dp";
-+	mtk_dp->aux.transfer = mtk_dp_aux_transfer;
-+}
-+
-+static void mtk_dp_poweroff(struct mtk_dp *mtk_dp)
-+{
-+	mutex_lock(&mtk_dp->dp_lock);
-+
-+	mtk_dp_hwirq_enable(mtk_dp, false);
-+	mtk_dp_power_disable(mtk_dp);
-+	phy_exit(mtk_dp->phy);
-+	clk_disable_unprepare(mtk_dp->dp_tx_clk);
-+
-+	mutex_unlock(&mtk_dp->dp_lock);
-+}
-+
-+static int mtk_dp_poweron(struct mtk_dp *mtk_dp)
-+{
-+	int ret = 0;
-+
-+	mutex_lock(&mtk_dp->dp_lock);
-+
-+	ret = clk_prepare_enable(mtk_dp->dp_tx_clk);
-+	if (ret < 0) {
-+		dev_err(mtk_dp->dev, "Fail to enable clock: %d\n", ret);
-+		goto err;
-+	}
-+	ret = phy_init(mtk_dp->phy);
-+	if (ret) {
-+		dev_err(mtk_dp->dev, "Failed to initialize phy: %d\n", ret);
-+		goto err_phy_init;
-+	}
-+	ret = mtk_dp_phy_configure(mtk_dp, MTK_DP_LINKRATE_RBR, 1);
-+	if (ret) {
-+		dev_err(mtk_dp->dev, "Failed to configure phy: %d\n", ret);
-+		goto err_phy_config;
-+	}
-+
-+	mtk_dp_init_port(mtk_dp);
-+	mtk_dp_power_enable(mtk_dp);
-+	mtk_dp_hwirq_enable(mtk_dp, true);
-+
-+err_phy_config:
-+	phy_exit(mtk_dp->phy);
-+err_phy_init:
-+	clk_disable_unprepare(mtk_dp->dp_tx_clk);
-+err:
-+	mutex_unlock(&mtk_dp->dp_lock);
-+	return ret;
-+}
-+
-+static int mtk_dp_bridge_attach(struct drm_bridge *bridge,
-+				enum drm_bridge_attach_flags flags)
-+{
-+	struct mtk_dp *mtk_dp = mtk_dp_from_bridge(bridge);
-+	int ret;
-+
-+	if (!(flags & DRM_BRIDGE_ATTACH_NO_CONNECTOR)) {
-+		dev_err(mtk_dp->dev, "Driver does not provide a connector!");
-+		return -EINVAL;
-+	}
-+
-+	ret = mtk_dp_poweron(mtk_dp);
-+	if (ret)
-+		return ret;
-+
-+	if (mtk_dp->next_bridge) {
-+		ret = drm_bridge_attach(bridge->encoder, mtk_dp->next_bridge,
-+					&mtk_dp->bridge, flags);
-+		if (ret) {
-+			drm_warn(mtk_dp->drm_dev,
-+				 "Failed to attach external bridge: %d\n", ret);
-+			goto err_bridge_attach;
-+		}
-+	}
-+
-+	mtk_dp->drm_dev = bridge->dev;
-+
-+	return 0;
-+
-+err_bridge_attach:
-+	mtk_dp_poweroff(mtk_dp);
-+	return ret;
-+}
-+
-+static void mtk_dp_bridge_detach(struct drm_bridge *bridge)
-+{
-+	struct mtk_dp *mtk_dp = mtk_dp_from_bridge(bridge);
-+
-+	mtk_dp->drm_dev = NULL;
-+
-+	mtk_dp_poweroff(mtk_dp);
-+}
-+
-+static void mtk_dp_bridge_atomic_disable(struct drm_bridge *bridge,
-+					 struct drm_bridge_state *old_state)
-+{
-+	struct mtk_dp *mtk_dp = mtk_dp_from_bridge(bridge);
-+
-+	mtk_dp_video_mute(mtk_dp, true);
-+	mtk_dp_audio_mute(mtk_dp, true);
-+	mtk_dp->state = MTK_DP_STATE_IDLE;
-+	mtk_dp->train_state = MTK_DP_TRAIN_STATE_STARTUP;
-+
-+	mtk_dp->enabled = false;
-+	msleep(100);
-+}
-+
-+static void mtk_dp_parse_drm_mode_timings(struct mtk_dp *mtk_dp,
-+					  struct drm_display_mode *mode)
-+{
-+	struct mtk_dp_timings *timings = &mtk_dp->info.timings;
-+
-+	drm_display_mode_to_videomode(mode, &timings->vm);
-+	timings->frame_rate = mode->clock * 1000 / mode->htotal / mode->vtotal;
-+	timings->htotal = mode->htotal;
-+	timings->vtotal = mode->vtotal;
-+}
-+
-+static void mtk_dp_bridge_atomic_enable(struct drm_bridge *bridge,
-+					struct drm_bridge_state *old_state)
-+{
-+	struct mtk_dp *mtk_dp = mtk_dp_from_bridge(bridge);
-+	struct drm_connector *conn;
-+	struct drm_connector_state *conn_state;
-+	struct drm_crtc *crtc;
-+	struct drm_crtc_state *crtc_state;
-+	int ret = 0;
-+	int i;
-+
-+	conn = drm_atomic_get_new_connector_for_encoder(old_state->base.state,
-+							bridge->encoder);
-+	if (!conn) {
-+		drm_err(mtk_dp->drm_dev,
-+			"Can't enable bridge as connector is missing\n");
-+		return;
-+	}
-+
-+	memcpy(mtk_dp->connector_eld, conn->eld, MAX_ELD_BYTES);
-+
-+	conn_state =
-+		drm_atomic_get_new_connector_state(old_state->base.state, conn);
-+	if (!conn_state) {
-+		drm_err(mtk_dp->drm_dev,
-+			"Can't enable bridge as connector state is missing\n");
-+		return;
-+	}
-+
-+	crtc = conn_state->crtc;
-+	if (!crtc) {
-+		drm_err(mtk_dp->drm_dev,
-+			"Can't enable bridge as connector state doesn't have a crtc\n");
-+		return;
-+	}
-+
-+	crtc_state = drm_atomic_get_new_crtc_state(old_state->base.state, crtc);
-+	if (!crtc_state) {
-+		drm_err(mtk_dp->drm_dev,
-+			"Can't enable bridge as crtc state is missing\n");
-+		return;
-+	}
-+
-+	mtk_dp_parse_drm_mode_timings(mtk_dp, &crtc_state->adjusted_mode);
-+	if (!mtk_dp_parse_capabilities(mtk_dp)) {
-+		drm_err(mtk_dp->drm_dev,
-+			"Can't enable bridge as nothing is plugged in\n");
-+		return;
-+	}
-+
-+	//training
-+	for (i = 0; i < 50; i++) {
-+		ret = mtk_dp_train_handler(mtk_dp);
-+		if (ret) {
-+			drm_err(mtk_dp->drm_dev, "Train handler failed %d\n",
-+				ret);
-+			return;
-+		}
-+
-+		ret = mtk_dp_state_handler(mtk_dp);
-+		if (ret) {
-+			drm_err(mtk_dp->drm_dev, "State handler failed %d\n",
-+				ret);
-+			return;
-+		}
-+	}
-+
-+	mtk_dp->enabled = true;
-+	mtk_dp_update_plugged_status(mtk_dp);
-+}
-+
-+static enum drm_mode_status
-+mtk_dp_bridge_mode_valid(struct drm_bridge *bridge,
-+			 const struct drm_display_info *info,
-+			 const struct drm_display_mode *mode)
-+{
-+	struct mtk_dp *mtk_dp = mtk_dp_from_bridge(bridge);
-+	u32 rx_linkrate;
-+	u32 bpp;
-+
-+	bpp = info->color_formats & DRM_COLOR_FORMAT_YCRCB422 ? 16 : 24;
-+	rx_linkrate = (u32)mtk_dp->train_info.link_rate * 27000;
-+	if (rx_linkrate * mtk_dp->train_info.lane_count < mode->clock * bpp / 8)
-+		return MODE_CLOCK_HIGH;
-+
-+	if (mode->clock > 600000)
-+		return MODE_CLOCK_HIGH;
-+
-+	if ((mode->clock * 1000) / (mode->htotal * mode->vtotal) > 62)
-+		return MODE_CLOCK_HIGH;
-+
-+	return MODE_OK;
-+}
-+
-+static u32 *mtk_dp_bridge_atomic_get_output_bus_fmts(
-+	struct drm_bridge *bridge, struct drm_bridge_state *bridge_state,
-+	struct drm_crtc_state *crtc_state,
-+	struct drm_connector_state *conn_state, unsigned int *num_output_fmts)
-+{
-+	u32 *output_fmts;
-+
-+	*num_output_fmts = 0;
-+	output_fmts = kcalloc(1, sizeof(*output_fmts), GFP_KERNEL);
-+	if (!output_fmts)
-+		return NULL;
-+	*num_output_fmts = 1;
-+	output_fmts[0] = MEDIA_BUS_FMT_FIXED;
-+	return output_fmts;
-+}
-+
-+static const u32 mt8195_input_fmts[] = {
-+	MEDIA_BUS_FMT_RGB888_1X24,
-+	MEDIA_BUS_FMT_YUV8_1X24,
-+	MEDIA_BUS_FMT_YUYV8_1X16,
-+};
-+
-+static u32 *mtk_dp_bridge_atomic_get_input_bus_fmts(
-+	struct drm_bridge *bridge, struct drm_bridge_state *bridge_state,
-+	struct drm_crtc_state *crtc_state,
-+	struct drm_connector_state *conn_state, u32 output_fmt,
-+	unsigned int *num_input_fmts)
-+{
-+	u32 *input_fmts;
-+	struct mtk_dp *mtk_dp = mtk_dp_from_bridge(bridge);
-+	struct drm_display_mode *mode = &crtc_state->adjusted_mode;
-+	struct drm_display_info *display_info =
-+		&conn_state->connector->display_info;
-+	u32 rx_linkrate;
-+	u32 bpp;
-+
-+	bpp = (display_info->color_formats & DRM_COLOR_FORMAT_YCRCB422) ? 16 :
-+										24;
-+	rx_linkrate = (u32)mtk_dp->train_info.link_rate * 27000;
-+	*num_input_fmts = 0;
-+	input_fmts = kcalloc(ARRAY_SIZE(mt8195_input_fmts), sizeof(*input_fmts),
-+			     GFP_KERNEL);
-+	if (!input_fmts)
-+		return NULL;
-+
-+	*num_input_fmts = ARRAY_SIZE(mt8195_input_fmts);
-+
-+	memcpy(input_fmts, mt8195_input_fmts,
-+	       sizeof(*input_fmts) * ARRAY_SIZE(mt8195_input_fmts));
-+
-+	if (((rx_linkrate * mtk_dp->train_info.lane_count) <
-+	     (mode->clock * 24 / 8)) &&
-+	    ((rx_linkrate * mtk_dp->train_info.lane_count) >
-+	     (mode->clock * 16 / 8)) &&
-+	    (display_info->color_formats & DRM_COLOR_FORMAT_YCRCB422)) {
-+		kfree(input_fmts);
-+		input_fmts = kcalloc(1, sizeof(*input_fmts), GFP_KERNEL);
-+		*num_input_fmts = 1;
-+		input_fmts[0] = MEDIA_BUS_FMT_YUYV8_1X16;
-+	}
-+
-+	return input_fmts;
-+}
-+
-+static int mtk_dp_bridge_atomic_check(struct drm_bridge *bridge,
-+				      struct drm_bridge_state *bridge_state,
-+				      struct drm_crtc_state *crtc_state,
-+				      struct drm_connector_state *conn_state)
-+{
-+	struct mtk_dp *mtk_dp = mtk_dp_from_bridge(bridge);
-+	unsigned int input_bus_format;
-+
-+	input_bus_format = bridge_state->input_bus_cfg.format;
-+
-+	dev_info(mtk_dp->dev, "input format 0x%04x, output format 0x%04x\n",
-+		 bridge_state->input_bus_cfg.format,
-+		 bridge_state->output_bus_cfg.format);
-+
-+	mtk_dp->input_fmt = input_bus_format;
-+	if (mtk_dp->input_fmt == MEDIA_BUS_FMT_YUYV8_1X16)
-+		mtk_dp->info.format = MTK_DP_COLOR_FORMAT_YUV_422;
-+	else
-+		mtk_dp->info.format = MTK_DP_COLOR_FORMAT_RGB_444;
-+
-+	return 0;
-+}
-+
-+static const struct drm_bridge_funcs mtk_dp_bridge_funcs = {
-+	.atomic_check = mtk_dp_bridge_atomic_check,
-+	.atomic_duplicate_state = drm_atomic_helper_bridge_duplicate_state,
-+	.atomic_destroy_state = drm_atomic_helper_bridge_destroy_state,
-+	.atomic_get_output_bus_fmts = mtk_dp_bridge_atomic_get_output_bus_fmts,
-+	.atomic_get_input_bus_fmts = mtk_dp_bridge_atomic_get_input_bus_fmts,
-+	.atomic_reset = drm_atomic_helper_bridge_reset,
-+	.attach = mtk_dp_bridge_attach,
-+	.detach = mtk_dp_bridge_detach,
-+	.atomic_enable = mtk_dp_bridge_atomic_enable,
-+	.atomic_disable = mtk_dp_bridge_atomic_disable,
-+	.mode_valid = mtk_dp_bridge_mode_valid,
-+	.get_edid = mtk_dp_get_edid,
-+	.detect = mtk_dp_bdg_detect,
-+};
-+
-+/*
-+ * HDMI audio codec callbacks
-+ */
-+static int mtk_dp_audio_hw_params(struct device *dev, void *data,
-+				  struct hdmi_codec_daifmt *daifmt,
-+				  struct hdmi_codec_params *params)
-+{
-+	struct mtk_dp *mtk_dp = dev_get_drvdata(dev);
-+	struct mtk_dp_audio_cfg cfg;
-+
-+	if (!mtk_dp->enabled) {
-+		pr_err("%s, DP is not ready!\n", __func__);
-+		return -ENODEV;
-+	}
-+
-+	cfg.channels = params->cea.channels;
-+	cfg.sample_rate = params->sample_rate;
-+	cfg.word_length_bits = 24;
-+
-+	mtk_dp_audio_setup(mtk_dp, &cfg);
-+
-+	return 0;
-+}
-+
-+static int mtk_dp_audio_startup(struct device *dev, void *data)
-+{
-+	struct mtk_dp *mtk_dp = dev_get_drvdata(dev);
-+
-+	mtk_dp_audio_mute(mtk_dp, false);
-+
-+	return 0;
-+}
-+
-+static void mtk_dp_audio_shutdown(struct device *dev, void *data)
-+{
-+	struct mtk_dp *mtk_dp = dev_get_drvdata(dev);
-+
-+	mtk_dp_audio_mute(mtk_dp, true);
-+}
-+
-+static int mtk_dp_audio_get_eld(struct device *dev, void *data, uint8_t *buf,
-+				size_t len)
-+{
-+	struct mtk_dp *mtk_dp = dev_get_drvdata(dev);
-+
-+	if (mtk_dp->enabled)
-+		memcpy(buf, mtk_dp->connector_eld, len);
-+	else
-+		memset(buf, 0, len);
-+
-+	return 0;
-+}
-+
-+static int mtk_dp_audio_hook_plugged_cb(struct device *dev, void *data,
-+					hdmi_codec_plugged_cb fn,
-+					struct device *codec_dev)
-+{
-+	struct mtk_dp *mtk_dp = data;
-+
-+	mutex_lock(&mtk_dp->update_plugged_status_lock);
-+	mtk_dp->plugged_cb = fn;
-+	mtk_dp->codec_dev = codec_dev;
-+	mutex_unlock(&mtk_dp->update_plugged_status_lock);
-+
-+	mtk_dp_update_plugged_status(mtk_dp);
-+
-+	return 0;
-+}
-+
-+static const struct hdmi_codec_ops mtk_dp_audio_codec_ops = {
-+	.hw_params = mtk_dp_audio_hw_params,
-+	.audio_startup = mtk_dp_audio_startup,
-+	.audio_shutdown = mtk_dp_audio_shutdown,
-+	.get_eld = mtk_dp_audio_get_eld,
-+	.hook_plugged_cb = mtk_dp_audio_hook_plugged_cb,
-+	.no_capture_mute = 1,
-+};
-+
-+static int mtk_dp_register_audio_driver(struct device *dev)
-+{
-+	struct mtk_dp *mtk_dp = dev_get_drvdata(dev);
-+	struct hdmi_codec_pdata codec_data = {
-+		.ops = &mtk_dp_audio_codec_ops,
-+		.max_i2s_channels = 8,
-+		.i2s = 1,
-+		.data = mtk_dp,
-+	};
-+	struct platform_device *pdev;
-+
-+	pdev = platform_device_register_data(dev, HDMI_CODEC_DRV_NAME,
-+					     PLATFORM_DEVID_AUTO, &codec_data,
-+					     sizeof(codec_data));
-+	if (IS_ERR(pdev))
-+		return PTR_ERR(pdev);
-+
-+	return 0;
-+}
-+
-+static int mtk_dp_probe(struct platform_device *pdev)
-+{
-+	struct mtk_dp *mtk_dp;
-+	struct device *dev = &pdev->dev;
-+	int ret;
-+	int irq_num = 0;
-+	struct drm_panel *panel = NULL;
-+
-+	mtk_dp = devm_kzalloc(dev, sizeof(*mtk_dp), GFP_KERNEL);
-+	if (!mtk_dp)
-+		return -ENOMEM;
-+
-+	mtk_dp->dev = dev;
-+
-+	irq_num = platform_get_irq(pdev, 0);
-+	if (irq_num < 0) {
-+		dev_err(dev, "failed to request dp irq resource\n");
-+		return -EPROBE_DEFER;
-+	}
-+
-+	ret = drm_of_find_panel_or_bridge(dev->of_node, 1, 0, &panel,
-+					  &mtk_dp->next_bridge);
-+	if (ret == -ENODEV) {
-+		dev_info(
-+			dev,
-+			"No panel connected in devicetree, continuing as external DP\n");
-+		mtk_dp->next_bridge = NULL;
-+	} else if (ret) {
-+		dev_err(dev, "Failed to find panel or bridge: %d\n", ret);
-+		return ret;
-+	}
-+
-+	if (panel) {
-+		mtk_dp->next_bridge = devm_drm_panel_bridge_add(dev, panel);
-+		if (IS_ERR(mtk_dp->next_bridge)) {
-+			ret = PTR_ERR(mtk_dp->next_bridge);
-+			dev_err(dev, "Failed to create bridge: %d\n", ret);
-+			return -EPROBE_DEFER;
-+		}
-+	}
-+
-+	ret = mtk_dp_dt_parse_pdata(mtk_dp, pdev);
-+	if (ret)
-+		return ret;
-+
-+	mtk_dp_aux_init(mtk_dp);
-+
-+	ret = devm_request_threaded_irq(dev, irq_num, mtk_dp_hpd_event,
-+					mtk_dp_hpd_event_thread,
-+					IRQ_TYPE_LEVEL_HIGH, dev_name(dev),
-+					mtk_dp);
-+	if (ret) {
-+		dev_err(dev, "failed to request mediatek dptx irq\n");
-+		return -EPROBE_DEFER;
-+	}
-+
-+	mutex_init(&mtk_dp->dp_lock);
-+	mutex_init(&mtk_dp->edid_lock);
-+
-+	platform_set_drvdata(pdev, mtk_dp);
-+
-+	if (!mtk_dp_is_edp(mtk_dp)) {
-+		mutex_init(&mtk_dp->update_plugged_status_lock);
-+		ret = mtk_dp_register_audio_driver(dev);
-+		if (ret) {
-+			dev_err(dev, "Failed to register audio driver: %d\n",
-+				ret);
-+			return ret;
-+		}
-+	}
-+
-+	mtk_dp->phy_dev = platform_device_register_data(dev, "mediatek-dp-phy",
-+							PLATFORM_DEVID_AUTO,
-+							&mtk_dp->regs,
-+							sizeof(&mtk_dp->regs));
-+	if (IS_ERR(mtk_dp->phy_dev)) {
-+		dev_err(dev, "Failed to create device mediatek-dp-phy: %ld\n",
-+			PTR_ERR(mtk_dp->phy_dev));
-+		return PTR_ERR(mtk_dp->phy_dev);
-+	}
-+
-+	mtk_dp_get_calibration_data(mtk_dp);
-+
-+	mtk_dp->phy = dev_get_drvdata(&mtk_dp->phy_dev->dev);
-+	if (IS_ERR(mtk_dp->phy)) {
-+		dev_err(dev, "Failed to get phy: %ld\n", PTR_ERR(mtk_dp->phy));
-+		platform_device_unregister(mtk_dp->phy_dev);
-+		return PTR_ERR(mtk_dp->phy);
-+	}
-+
-+	mtk_dp->bridge.funcs = &mtk_dp_bridge_funcs;
-+	mtk_dp->bridge.of_node = dev->of_node;
-+	if (mtk_dp_is_edp(mtk_dp))
-+		mtk_dp->bridge.type = DRM_MODE_CONNECTOR_eDP;
-+	else
-+		mtk_dp->bridge.type = DRM_MODE_CONNECTOR_DisplayPort;
-+
-+	mtk_dp->bridge.ops =
-+		DRM_BRIDGE_OP_DETECT | DRM_BRIDGE_OP_EDID | DRM_BRIDGE_OP_HPD;
-+	drm_bridge_add(&mtk_dp->bridge);
-+
-+	pm_runtime_enable(dev);
-+	pm_runtime_get_sync(dev);
-+
-+	return 0;
-+}
-+
-+static int mtk_dp_remove(struct platform_device *pdev)
-+{
-+	struct mtk_dp *mtk_dp = platform_get_drvdata(pdev);
-+
-+	platform_device_unregister(mtk_dp->phy_dev);
-+
-+	mtk_dp_video_mute(mtk_dp, true);
-+	mtk_dp_audio_mute(mtk_dp, true);
-+
-+	pm_runtime_disable(&pdev->dev);
-+
-+	return 0;
-+}
-+
-+#ifdef CONFIG_PM_SLEEP
-+static int mtk_dp_suspend(struct device *dev)
-+{
-+	struct mtk_dp *mtk_dp = dev_get_drvdata(dev);
-+
-+	mtk_dp_power_disable(mtk_dp);
-+	mtk_dp_hwirq_enable(mtk_dp, false);
-+
-+	pm_runtime_put_sync(dev);
-+
-+	return 0;
-+}
-+
-+static int mtk_dp_resume(struct device *dev)
-+{
-+	struct mtk_dp *mtk_dp = dev_get_drvdata(dev);
-+
-+	pm_runtime_get_sync(dev);
-+
-+	mtk_dp_init_port(mtk_dp);
-+	mtk_dp_power_enable(mtk_dp);
-+	mtk_dp_hwirq_enable(mtk_dp, true);
-+
-+	return 0;
-+}
-+#endif
-+
-+static SIMPLE_DEV_PM_OPS(mtk_dp_pm_ops, mtk_dp_suspend, mtk_dp_resume);
-+
-+static const struct of_device_id mtk_dp_of_match[] = {
-+	{
-+		.compatible = "mediatek,mt8195-dp-tx",
-+	},
-+	{},
-+};
-+MODULE_DEVICE_TABLE(of, mtk_dp_of_match);
-+
-+struct platform_driver mtk_dp_driver = {
-+	.probe = mtk_dp_probe,
-+	.remove = mtk_dp_remove,
-+	.driver = {
-+		.name = "mediatek-drm-dp",
-+		.of_match_table = mtk_dp_of_match,
-+		.pm = &mtk_dp_pm_ops,
-+	},
-+};
-+
-+MODULE_AUTHOR("Jason-JH.Lin <jason-jh.lin@mediatek.com>");
-+MODULE_AUTHOR("Markus Schneider-Pargmann <msp@baylibre.com>");
-+MODULE_DESCRIPTION("MediaTek DisplayPort Driver");
-+MODULE_LICENSE("GPL v2");
-diff --git a/drivers/gpu/drm/mediatek/mtk_dp_reg.h b/drivers/gpu/drm/mediatek/mtk_dp_reg.h
-new file mode 100644
-index 0000000000000..79952ac30e9e6
---- /dev/null
-+++ b/drivers/gpu/drm/mediatek/mtk_dp_reg.h
-@@ -0,0 +1,568 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
-+/*
-+ * Copyright (c) 2019 MediaTek Inc.
-+ * Copyright (c) 2021 BayLibre
-+ */
-+#ifndef _MTK_DP_REG_H_
-+#define _MTK_DP_REG_H_
-+
-+#define MTK_DP_SIP_CONTROL_AARCH32 0x82000523
-+#define MTK_DP_SIP_ATF_VIDEO_UNMUTE 0x20
-+#define MTK_DP_SIP_ATF_EDP_VIDEO_UNMUTE 0x21
-+
-+#define DP_PHY_GLB_BIAS_GEN_00 0x0000
-+#define RG_XTP_GLB_BIAS_INTR_CTRL (0x1f << 16)
-+
-+#define DP_PHY_GLB_DPAUX_TX 0x0008
-+#define RG_CKM_PT0_CKTX_IMPSEL (0xf << 20)
-+
-+#define DP_PHY_LANE_TX_0 0x104
-+#define RG_XTP_LN0_TX_IMPSEL_PMOS (0xf << 12)
-+#define RG_XTP_LN0_TX_IMPSEL_NMOS (0xf << 16)
-+
-+#define DP_PHY_LANE_TX_1 0x204
-+#define RG_XTP_LN1_TX_IMPSEL_PMOS (0xf << 12)
-+#define RG_XTP_LN1_TX_IMPSEL_NMOS (0xf << 16)
-+
-+#define DP_PHY_LANE_TX_2 0x304
-+#define RG_XTP_LN2_TX_IMPSEL_PMOS (0xf << 12)
-+#define RG_XTP_LN2_TX_IMPSEL_NMOS (0xf << 16)
-+
-+#define DP_PHY_LANE_TX_3 0x404
-+#define RG_XTP_LN3_TX_IMPSEL_PMOS (0xf << 12)
-+#define RG_XTP_LN3_TX_IMPSEL_NMOS (0xf << 16)
-+
-+#define TOP_OFFSET 0x2000
-+#define ENC0_OFFSET 0x3000
-+#define ENC1_OFFSET 0x3200
-+#define TRANS_OFFSET 0x3400
-+#define AUX_OFFSET 0x3600
-+#define SEC_OFFSET 0x4000
-+
-+#define MTK_DP_HPD_DISCONNECT BIT(1)
-+#define MTK_DP_HPD_CONNECT BIT(2)
-+#define MTK_DP_HPD_INTERRUPT BIT(3)
-+
-+#define MTK_DP_0034 0x034
-+#define DA_XTP_GLB_CKDET_EN_FORCE_VAL BIT(15)
-+#define DA_XTP_GLB_CKDET_EN_FORCE_EN BIT(14)
-+#define DA_CKM_INTCKTX_EN_FORCE_VAL BIT(13)
-+#define DA_CKM_INTCKTX_EN_FORCE_EN BIT(12)
-+#define DA_CKM_CKTX0_EN_FORCE_VAL BIT(11)
-+#define DA_CKM_CKTX0_EN_FORCE_EN BIT(10)
-+#define DA_CKM_XTAL_CK_FORCE_VAL BIT(9)
-+#define DA_CKM_XTAL_CK_FORCE_EN BIT(8)
-+#define DA_CKM_BIAS_LPF_EN_FORCE_VAL BIT(7)
-+#define DA_CKM_BIAS_LPF_EN_FORCE_EN BIT(6)
-+#define DA_CKM_BIAS_EN_FORCE_VAL BIT(5)
-+#define DA_CKM_BIAS_EN_FORCE_EN BIT(4)
-+#define DA_XTP_GLB_AVD10_ON_FORCE_VAL BIT(3)
-+#define DA_XTP_GLB_AVD10_ON_FORCE BIT(2)
-+#define DA_XTP_GLB_LDO_EN_FORCE_VAL BIT(1)
-+#define DA_XTP_GLB_LDO_EN_FORCE_EN BIT(0)
-+
-+#define MTK_DP_1040 0x1040
-+#define RG_DPAUX_RX_VALID_DEGLITCH_EN BIT(2)
-+#define RG_XTP_GLB_CKDET_EN BIT(1)
-+#define RG_DPAUX_RX_EN BIT(0)
-+
-+#define MTK_DP_ENC0_P0_3000 (ENC0_OFFSET + 0x000)
-+#define LANE_NUM_DP_ENC0_P0_MASK 0x3
-+#define VIDEO_MUTE_SW_DP_ENC0_P0_MASK 0x4
-+#define VIDEO_MUTE_SW_DP_ENC0_P0_SHIFT 2
-+#define VIDEO_MUTE_SEL_DP_ENC0_P0_MASK 0x8
-+#define VIDEO_MUTE_SEL_DP_ENC0_P0_SHIFT 3
-+#define ENHANCED_FRAME_EN_DP_ENC0_P0_MASK 0x10
-+#define ENHANCED_FRAME_EN_DP_ENC0_P0_SHIFT 4
-+
-+#define MTK_DP_ENC0_P0_3004 (ENC0_OFFSET + 0x004)
-+#define VIDEO_M_CODE_SEL_DP_ENC0_P0_MASK 0x100
-+#define VIDEO_M_CODE_SEL_DP_ENC0_P0_SHIFT 8
-+#define DP_TX_ENCODER_4P_RESET_SW_DP_ENC0_P0_MASK 0x200
-+#define DP_TX_ENCODER_4P_RESET_SW_DP_ENC0_P0_SHIFT 9
-+
-+#define MTK_DP_ENC0_P0_3008 (ENC0_OFFSET + 0x008)
-+#define VIDEO_M_CODE_SW_0_DP_ENC0_P0_MASK 0xffff
-+
-+#define MTK_DP_ENC0_P0_300C (ENC0_OFFSET + 0x00C)
-+#define VIDEO_M_CODE_SW_1_DP_ENC0_P0_MASK 0xff
-+
-+#define MTK_DP_ENC0_P0_3010 (ENC0_OFFSET + 0x010)
-+#define HTOTAL_SW_DP_ENC0_P0_MASK 0xffff
-+
-+#define MTK_DP_ENC0_P0_3014 (ENC0_OFFSET + 0x014)
-+#define VTOTAL_SW_DP_ENC0_P0_MASK 0xffff
-+
-+#define MTK_DP_ENC0_P0_3018 (ENC0_OFFSET + 0x018)
-+#define HSTART_SW_DP_ENC0_P0_MASK 0xffff
-+
-+#define MTK_DP_ENC0_P0_301C (ENC0_OFFSET + 0x01C)
-+#define VSTART_SW_DP_ENC0_P0_MASK 0xffff
-+
-+#define MTK_DP_ENC0_P0_3020 (ENC0_OFFSET + 0x020)
-+#define HWIDTH_SW_DP_ENC0_P0_MASK 0xffff
-+
-+#define MTK_DP_ENC0_P0_3024 (ENC0_OFFSET + 0x024)
-+#define VHEIGHT_SW_DP_ENC0_P0_MASK 0xffff
-+
-+#define MTK_DP_ENC0_P0_3028 (ENC0_OFFSET + 0x028)
-+#define HSW_SW_DP_ENC0_P0_MASK 0x7fff
-+#define HSW_SW_DP_ENC0_P0_SHIFT 0
-+#define HSP_SW_DP_ENC0_P0_MASK 0x8000
-+
-+#define MTK_DP_ENC0_P0_302C (ENC0_OFFSET + 0x02C)
-+#define VSW_SW_DP_ENC0_P0_MASK 0x7fff
-+#define VSW_SW_DP_ENC0_P0_SHIFT 0
-+#define VSP_SW_DP_ENC0_P0_MASK 0x8000
-+
-+#define MTK_DP_ENC0_P0_3030 (ENC0_OFFSET + 0x030)
-+#define HTOTAL_SEL_DP_ENC0_P0_SHIFT 0
-+#define VTOTAL_SEL_DP_ENC0_P0_SHIFT 1
-+#define HSTART_SEL_DP_ENC0_P0_SHIFT 2
-+#define VSTART_SEL_DP_ENC0_P0_SHIFT 3
-+#define HWIDTH_SEL_DP_ENC0_P0_SHIFT 4
-+#define VHEIGHT_SEL_DP_ENC0_P0_SHIFT 5
-+#define HSP_SEL_DP_ENC0_P0_SHIFT 6
-+#define HSW_SEL_DP_ENC0_P0_SHIFT 7
-+#define VSP_SEL_DP_ENC0_P0_SHIFT 8
-+#define VSW_SEL_DP_ENC0_P0_SHIFT 9
-+#define VBID_AUDIO_MUTE_FLAG_SW_DP_ENC0_P0_MASK 0x800
-+#define VBID_AUDIO_MUTE_SW_DP_ENC0_P0_SHIFT 11
-+#define VBID_AUDIO_MUTE_FLAG_SEL_DP_ENC0_P0_MASK 0x1000
-+#define VBID_AUDIO_MUTE_SEL_DP_ENC0_P0_SHIFT 12
-+
-+#define MTK_DP_ENC0_P0_3034 (ENC0_OFFSET + 0x034)
-+
-+#define MTK_DP_ENC0_P0_3038 (ENC0_OFFSET + 0x038)
-+#define VIDEO_SOURCE_SEL_DP_ENC0_P0_MASK 0x800
-+#define VIDEO_SOURCE_SEL_DP_ENC0_P0_SHIFT 11
-+
-+#define MTK_DP_ENC0_P0_303C (ENC0_OFFSET + 0x03C)
-+#define SRAM_START_READ_THRD_DP_ENC0_P0_MASK 0x3f
-+#define SRAM_START_READ_THRD_DP_ENC0_P0_SHIFT 0
-+#define VIDEO_COLOR_DEPTH_DP_ENC0_P0_MASK 0x700
-+#define VIDEO_COLOR_DEPTH_DP_ENC0_P0_SHIFT 8
-+#define VIDEO_COLOR_DEPTH_DP_ENC0_P0_16BIT                                     \
-+	(0 << VIDEO_COLOR_DEPTH_DP_ENC0_P0_SHIFT)
-+#define VIDEO_COLOR_DEPTH_DP_ENC0_P0_12BIT                                     \
-+	(1 << VIDEO_COLOR_DEPTH_DP_ENC0_P0_SHIFT)
-+#define VIDEO_COLOR_DEPTH_DP_ENC0_P0_10BIT                                     \
-+	(2 << VIDEO_COLOR_DEPTH_DP_ENC0_P0_SHIFT)
-+#define VIDEO_COLOR_DEPTH_DP_ENC0_P0_8BIT                                      \
-+	(3 << VIDEO_COLOR_DEPTH_DP_ENC0_P0_SHIFT)
-+#define VIDEO_COLOR_DEPTH_DP_ENC0_P0_6BIT                                      \
-+	(4 << VIDEO_COLOR_DEPTH_DP_ENC0_P0_SHIFT)
-+#define PIXEL_ENCODE_FORMAT_DP_ENC0_P0_MASK 0x7000
-+#define PIXEL_ENCODE_FORMAT_DP_ENC0_P0_SHIFT 12
-+#define PIXEL_ENCODE_FORMAT_DP_ENC0_P0_RGB                                     \
-+	(0 << PIXEL_ENCODE_FORMAT_DP_ENC0_P0_SHIFT)
-+#define PIXEL_ENCODE_FORMAT_DP_ENC0_P0_YCBCR422                                \
-+	(1 << PIXEL_ENCODE_FORMAT_DP_ENC0_P0_SHIFT)
-+#define PIXEL_ENCODE_FORMAT_DP_ENC0_P0_YCBCR420                                \
-+	(2 << PIXEL_ENCODE_FORMAT_DP_ENC0_P0_SHIFT)
-+#define VIDEO_MN_GEN_EN_DP_ENC0_P0_MASK 0x8000
-+#define VIDEO_MN_GEN_EN_DP_ENC0_P0_SHIFT 15
-+
-+#define MTK_DP_ENC0_P0_3040 (ENC0_OFFSET + 0x040)
-+#define SDP_DOWN_CNT_INIT_DP_ENC0_P0_MASK 0xfff
-+#define SDP_DOWN_CNT_INIT_DP_ENC0_P0_SHIFT 0
-+
-+#define MTK_DP_ENC0_P0_3044 (ENC0_OFFSET + 0x044)
-+#define VIDEO_N_CODE_0_DP_ENC0_P0_MASK 0xffff
-+
-+#define MTK_DP_ENC0_P0_3048 (ENC0_OFFSET + 0x048)
-+#define VIDEO_N_CODE_1_DP_ENC0_P0_MASK 0xff
-+
-+#define MTK_DP_ENC0_P0_304C (ENC0_OFFSET + 0x04C)
-+#define VBID_VIDEO_MUTE_DP_ENC0_P0_MASK 0x4
-+#define SDP_VSYNC_RISING_MASK_DP_ENC0_P0_MASK 0x100
-+
-+#define MTK_DP_ENC0_P0_3050 (ENC0_OFFSET + 0x050)
-+#define VIDEO_N_CODE_MN_GEN_0_DP_ENC0_P0_MASK 0xffff
-+
-+#define MTK_DP_ENC0_P0_3054 (ENC0_OFFSET + 0x054)
-+#define VIDEO_N_CODE_MN_GEN_1_DP_ENC0_P0_MASK 0xff
-+
-+#define MTK_DP_ENC0_P0_3064 (ENC0_OFFSET + 0x064)
-+#define HDE_NUM_LAST_DP_ENC0_P0_MASK 0xffff
-+
-+#define MTK_DP_ENC0_P0_3088 (ENC0_OFFSET + 0x088)
-+#define AU_EN_DP_ENC0_P0_MASK 0x40
-+#define AU_EN_DP_ENC0_P0_SHIFT 6
-+#define AUDIO_8CH_EN_DP_ENC0_P0_MASK 0x80
-+#define AUDIO_8CH_SEL_DP_ENC0_P0_MASK 0x100
-+#define AUDIO_2CH_EN_DP_ENC0_P0_MASK 0x4000
-+#define AUDIO_2CH_SEL_DP_ENC0_P0_MASK 0x8000
-+
-+#define MTK_DP_ENC0_P0_308C (ENC0_OFFSET + 0x08C)
-+#define CH_STATUS_0_DP_ENC0_P0_MASK 0xffff
-+
-+#define MTK_DP_ENC0_P0_3090 (ENC0_OFFSET + 0x090)
-+#define CH_STATUS_1_DP_ENC0_P0_MASK 0xffff
-+
-+#define MTK_DP_ENC0_P0_3094 (ENC0_OFFSET + 0x094)
-+#define CH_STATUS_2_DP_ENC0_P0_MASK 0xff
-+
-+#define MTK_DP_ENC0_P0_30A0 (ENC0_OFFSET + 0x0A0)
-+
-+#define MTK_DP_ENC0_P0_30A4 (ENC0_OFFSET + 0x0A4)
-+#define AU_TS_CFG_DP_ENC0_P0_MASK 0xff
-+
-+#define MTK_DP_ENC0_P0_30A8 (ENC0_OFFSET + 0x0A8)
-+
-+#define MTK_DP_ENC0_P0_30AC (ENC0_OFFSET + 0x0AC)
-+
-+#define MTK_DP_ENC0_P0_30B0 (ENC0_OFFSET + 0x0B0)
-+
-+#define MTK_DP_ENC0_P0_30B4 (ENC0_OFFSET + 0x0B4)
-+#define ISRC_CFG_DP_ENC0_P0_MASK 0xff00
-+#define ISRC_CFG_DP_ENC0_P0_SHIFT 8
-+
-+#define MTK_DP_ENC0_P0_30B8 (ENC0_OFFSET + 0x0B8)
-+
-+#define MTK_DP_ENC0_P0_30BC (ENC0_OFFSET + 0x0BC)
-+#define ISRC_CONT_DP_ENC0_P0_MASK 0x1
-+#define ISRC_CONT_DP_ENC0_P0_SHIFT 0
-+#define AUDIO_M_CODE_MULT_DIV_SEL_DP_ENC0_P0_MASK 0x700
-+#define AUDIO_M_CODE_MULT_DIV_SEL_DP_ENC0_P0_SHIFT 8
-+#define AUDIO_M_CODE_MULT_DIV_SEL_DP_ENC0_P0_MUL_2                             \
-+	(1 << AUDIO_M_CODE_MULT_DIV_SEL_DP_ENC0_P0_SHIFT)
-+#define AUDIO_M_CODE_MULT_DIV_SEL_DP_ENC0_P0_MUL_4                             \
-+	(2 << AUDIO_M_CODE_MULT_DIV_SEL_DP_ENC0_P0_SHIFT)
-+#define AUDIO_M_CODE_MULT_DIV_SEL_DP_ENC0_P0_MUL_8                             \
-+	(3 << AUDIO_M_CODE_MULT_DIV_SEL_DP_ENC0_P0_SHIFT)
-+#define AUDIO_M_CODE_MULT_DIV_SEL_DP_ENC0_P0_DIV_2                             \
-+	(5 << AUDIO_M_CODE_MULT_DIV_SEL_DP_ENC0_P0_SHIFT)
-+#define AUDIO_M_CODE_MULT_DIV_SEL_DP_ENC0_P0_DIV_4                             \
-+	(6 << AUDIO_M_CODE_MULT_DIV_SEL_DP_ENC0_P0_SHIFT)
-+#define AUDIO_M_CODE_MULT_DIV_SEL_DP_ENC0_P0_DIV_8                             \
-+	(7 << AUDIO_M_CODE_MULT_DIV_SEL_DP_ENC0_P0_SHIFT)
-+
-+#define MTK_DP_ENC0_P0_30D8 (ENC0_OFFSET + 0x0D8)
-+
-+#define MTK_DP_ENC0_P0_312C (ENC0_OFFSET + 0x12C)
-+#define ASP_HB2_DP_ENC0_P0_MASK 0xff
-+#define ASP_HB3_DP_ENC0_P0_MASK 0xff00
-+#define ASP_HB3_DP_ENC0_P0_SHIFT 8
-+
-+#define MTK_DP_ENC0_P0_3130 (ENC0_OFFSET + 0x130)
-+
-+#define MTK_DP_ENC0_P0_3138 (ENC0_OFFSET + 0x138)
-+
-+#define MTK_DP_ENC0_P0_3154 (ENC0_OFFSET + 0x154)
-+#define PGEN_HTOTAL_DP_ENC0_P0_MASK 0x3fff
-+
-+#define MTK_DP_ENC0_P0_3158 (ENC0_OFFSET + 0x158)
-+#define PGEN_HSYNC_RISING_DP_ENC0_P0_MASK 0x3fff
-+
-+#define MTK_DP_ENC0_P0_315C (ENC0_OFFSET + 0x15C)
-+#define PGEN_HSYNC_PULSE_WIDTH_DP_ENC0_P0_MASK 0x3fff
-+
-+#define MTK_DP_ENC0_P0_3160 (ENC0_OFFSET + 0x160)
-+#define PGEN_HFDE_START_DP_ENC0_P0_MASK 0x3fff
-+
-+#define MTK_DP_ENC0_P0_3164 (ENC0_OFFSET + 0x164)
-+#define PGEN_HFDE_ACTIVE_WIDTH_DP_ENC0_P0_MASK 0x3fff
-+
-+#define MTK_DP_ENC0_P0_3168 (ENC0_OFFSET + 0x168)
-+#define PGEN_VTOTAL_DP_ENC0_P0_MASK 0x1fff
-+
-+#define MTK_DP_ENC0_P0_316C (ENC0_OFFSET + 0x16C)
-+#define PGEN_VSYNC_RISING_DP_ENC0_P0_MASK 0x1fff
-+
-+#define MTK_DP_ENC0_P0_3170 (ENC0_OFFSET + 0x170)
-+#define PGEN_VSYNC_PULSE_WIDTH_DP_ENC0_P0_MASK 0x1fff
-+
-+#define MTK_DP_ENC0_P0_3174 (ENC0_OFFSET + 0x174)
-+#define PGEN_VFDE_START_DP_ENC0_P0_MASK 0x1fff
-+
-+#define MTK_DP_ENC0_P0_3178 (ENC0_OFFSET + 0x178)
-+#define PGEN_VFDE_ACTIVE_WIDTH_DP_ENC0_P0_MASK 0x1fff
-+
-+#define MTK_DP_ENC0_P0_31B0 (ENC0_OFFSET + 0x1B0)
-+#define PGEN_PATTERN_SEL_SHIFT 4
-+#define PGEN_PATTERN_SEL_MASK 0x0070
-+
-+#define MTK_DP_ENC0_P0_31C8 (ENC0_OFFSET + 0x1C8)
-+#define VSC_EXT_VESA_HB0_DP_ENC0_P0_MASK 0xff
-+#define VSC_EXT_VESA_HB1_DP_ENC0_P0_MASK 0xff00
-+#define VSC_EXT_VESA_HB1_DP_ENC0_P0_SHIFT 8
-+
-+#define MTK_DP_ENC0_P0_31CC (ENC0_OFFSET + 0x1CC)
-+#define VSC_EXT_VESA_HB2_DP_ENC0_P0_MASK 0xff
-+#define VSC_EXT_VESA_HB2_DP_ENC0_P0_SHIFT 0
-+#define VSC_EXT_VESA_HB3_DP_ENC0_P0_MASK 0xff00
-+
-+#define MTK_DP_ENC0_P0_31D0 (ENC0_OFFSET + 0x1D0)
-+#define VSC_EXT_CEA_HB0_DP_ENC0_P0_MASK 0xff
-+#define VSC_EXT_CEA_HB1_DP_ENC0_P0_MASK 0xff00
-+#define VSC_EXT_CEA_HB1_DP_ENC0_P0_SHIFT 8
-+
-+#define MTK_DP_ENC0_P0_31D4 (ENC0_OFFSET + 0x1D4)
-+#define VSC_EXT_CEA_HB2_DP_ENC0_P0_MASK 0xff
-+#define VSC_EXT_CEA_HB2_DP_ENC0_P0_SHIFT 0
-+#define VSC_EXT_CEA_HB3_DP_ENC0_P0_MASK 0xff00
-+
-+#define MTK_DP_ENC0_P0_31D8 (ENC0_OFFSET + 0x1D8)
-+#define VSC_EXT_VESA_NUM_DP_ENC0_P0_MASK 0x3f
-+#define VSC_EXT_VESA_NUM_DP_ENC0_P0_SHIFT 0
-+#define VSC_EXT_CEA_NUM_DP_ENC0_P0_MASK 0x3f00
-+#define VSC_EXT_CEA_NUM_DP_ENC0_P0_SHIFT 8
-+
-+#define MTK_DP_ENC0_P0_31DC (ENC0_OFFSET + 0x1DC)
-+#define HDR0_CFG_DP_ENC0_P0_MASK 0xff
-+#define HDR0_CFG_DP_ENC0_P0_SHIFT 0
-+
-+#define MTK_DP_ENC0_P0_31E8 (ENC0_OFFSET + 0x1E8)
-+
-+#define MTK_DP_ENC0_P0_31EC (ENC0_OFFSET + 0x1EC)
-+#define AUDIO_CH_SRC_SEL_DP_ENC0_P0_MASK 0x10
-+#define AUDIO_CH_SRC_SEL_DP_ENC0_P0_SHIFT 4
-+#define ISRC1_HB3_DP_ENC0_P0_MASK 0xff00
-+#define ISRC1_HB3_DP_ENC0_P0_SHIFT 8
-+
-+#define MTK_DP_ENC1_P0_3200 (ENC1_OFFSET + 0x000)
-+
-+#define MTK_DP_ENC1_P0_3280 (ENC1_OFFSET + 0x080)
-+#define SDP_PACKET_TYPE_DP_ENC1_P0_MASK 0x1f
-+#define SDP_PACKET_W_DP_ENC1_P0 0x20
-+#define SDP_PACKET_W_DP_ENC1_P0_MASK 0x20
-+#define SDP_PACKET_W_DP_ENC1_P0_SHIFT 5
-+
-+#define MTK_DP_ENC1_P0_328C (ENC1_OFFSET + 0x08C)
-+
-+#define MTK_DP_ENC1_P0_3290 (ENC1_OFFSET + 0x090)
-+
-+#define MTK_DP_ENC1_P0_32A0 (ENC1_OFFSET + 0x0A0)
-+
-+#define MTK_DP_ENC1_P0_32A4 (ENC1_OFFSET + 0x0A4)
-+
-+#define MTK_DP_ENC1_P0_3300 (ENC1_OFFSET + 0x100)
-+#define VIDEO_AFIFO_RDY_SEL_DP_ENC1_P0_MASK 0x300
-+#define VIDEO_AFIFO_RDY_SEL_DP_ENC1_P0_SHIFT 8
-+
-+#define MTK_DP_ENC1_P0_3304 (ENC1_OFFSET + 0x104)
-+#define AU_PRTY_REGEN_DP_ENC1_P0_MASK 0x100
-+#define AU_CH_STS_REGEN_DP_ENC1_P0_MASK 0x200
-+#define AUDIO_SAMPLE_PRSENT_REGEN_DP_ENC1_P0_MASK 0x1000
-+
-+#define MTK_DP_ENC1_P0_3324 (ENC1_OFFSET + 0x124)
-+#define AUDIO_SOURCE_MUX_DP_ENC1_P0_MASK 0x300
-+#define AUDIO_SOURCE_MUX_DP_ENC1_P0_SHIFT 8
-+#define AUDIO_SOURCE_MUX_DP_ENC1_P0_DPRX                                       \
-+	(0 << AUDIO_SOURCE_MUX_DP_ENC1_P0_SHIFT)
-+
-+#define MTK_DP_ENC1_P0_3364 (ENC1_OFFSET + 0x164)
-+#define SDP_DOWN_CNT_INIT_IN_HBLANK_DP_ENC1_P0_MASK 0xfff
-+#define SDP_DOWN_CNT_INIT_IN_HBLANK_DP_ENC1_P0_SHIFT 0
-+#define FIFO_READ_START_POINT_DP_ENC1_P0_MASK 0xf000
-+#define FIFO_READ_START_POINT_DP_ENC1_P0_SHIFT 12
-+
-+#define MTK_DP_ENC1_P0_3368 (ENC1_OFFSET + 0x168)
-+#define VIDEO_SRAM_FIFO_CNT_RESET_SEL_DP_ENC1_P0_SHIFT 0
-+#define VIDEO_STABLE_CNT_THRD_DP_ENC1_P0_SHIFT 4
-+#define SDP_DP13_EN_DP_ENC1_P0_SHIFT 8
-+#define BS2BS_MODE_DP_ENC1_P0_MASK 0x3000
-+#define BS2BS_MODE_DP_ENC1_P0_SHIFT 12
-+
-+#define MTK_DP_ENC1_P0_33F4 (ENC1_OFFSET + 0x1F4)
-+
-+#define MTK_DP_TRANS_P0_3400 (TRANS_OFFSET + 0x000)
-+#define PATTERN1_EN_DP_TRANS_P0_MASK 0x1000
-+#define PATTERN1_EN_DP_TRANS_P0_SHIFT 12
-+#define PATTERN2_EN_DP_TRANS_P0_MASK 0x2000
-+#define PATTERN3_EN_DP_TRANS_P0_MASK 0x4000
-+#define PATTERN4_EN_DP_TRANS_P0_MASK 0x8000
-+
-+#define MTK_DP_TRANS_P0_3404 (TRANS_OFFSET + 0x004)
-+#define DP_SCR_EN_DP_TRANS_P0_MASK 0x1
-+
-+#define MTK_DP_TRANS_P0_340C (TRANS_OFFSET + 0x00C)
-+#define DP_TX_TRANSMITTER_4P_RESET_SW_DP_TRANS_P0_MASK 0x2000
-+#define DP_TX_TRANSMITTER_4P_RESET_SW_DP_TRANS_P0_SHIFT 13
-+
-+#define MTK_DP_TRANS_P0_3410 (TRANS_OFFSET + 0x010)
-+#define HPD_DEB_THD_DP_TRANS_P0_MASK 0xf
-+#define HPD_DEB_THD_DP_TRANS_P0_SHIFT 0
-+#define HPD_INT_THD_DP_TRANS_P0_MASK 0xf0
-+#define HPD_INT_THD_DP_TRANS_P0_SHIFT 4
-+#define HPD_INT_THD_DP_TRANS_P0_LOWER_500US (2 << HPD_INT_THD_DP_TRANS_P0_SHIFT)
-+#define HPD_INT_THD_DP_TRANS_P0_UPPER_1100US                                   \
-+	(2 << (HPD_INT_THD_DP_TRANS_P0_SHIFT + 2))
-+#define HPD_DISC_THD_DP_TRANS_P0_MASK 0xf00
-+#define HPD_DISC_THD_DP_TRANS_P0_SHIFT 8
-+#define HPD_CONN_THD_DP_TRANS_P0_MASK 0xf000
-+#define HPD_CONN_THD_DP_TRANS_P0_SHIFT 12
-+
-+#define MTK_DP_TRANS_P0_3414 (TRANS_OFFSET + 0x014)
-+#define HPD_DB_DP_TRANS_P0_MASK 0x4
-+
-+#define MTK_DP_TRANS_P0_3418 (TRANS_OFFSET + 0x018)
-+#define IRQ_CLR_DP_TRANS_P0_MASK 0xf
-+#define IRQ_MASK_DP_TRANS_P0_MASK 0xf0
-+#define IRQ_MASK_DP_TRANS_P0_SHIFT 4
-+#define IRQ_MASK_DP_TRANS_P0_DISC_IRQ (BIT(1) << IRQ_MASK_DP_TRANS_P0_SHIFT)
-+#define IRQ_MASK_DP_TRANS_P0_CONN_IRQ (BIT(2) << IRQ_MASK_DP_TRANS_P0_SHIFT)
-+#define IRQ_MASK_DP_TRANS_P0_INT_IRQ (BIT(3) << IRQ_MASK_DP_TRANS_P0_SHIFT)
-+#define IRQ_STATUS_DP_TRANS_P0_MASK 0xf000
-+#define IRQ_STATUS_DP_TRANS_P0_SHIFT 12
-+
-+#define MTK_DP_TRANS_P0_342C (TRANS_OFFSET + 0x02C)
-+#define XTAL_FREQ_DP_TRANS_P0_DEFAULT 0x69
-+#define XTAL_FREQ_DP_TRANS_P0_MASK 0xff
-+
-+#define MTK_DP_TRANS_P0_3430 (TRANS_OFFSET + 0x030)
-+#define HPD_INT_THD_ECO_DP_TRANS_P0_MASK 0x3
-+#define HPD_INT_THD_ECO_DP_TRANS_P0_HIGH_BOUND_EXT BIT(1)
-+
-+#define MTK_DP_TRANS_P0_34A4 (TRANS_OFFSET + 0x0A4)
-+#define LANE_NUM_DP_TRANS_P0_MASK 0xc
-+#define LANE_NUM_DP_TRANS_P0_SHIFT 2
-+
-+#define MTK_DP_TRANS_P0_3540 (TRANS_OFFSET + 0x140)
-+#define FEC_EN_DP_TRANS_P0_MASK 0x1
-+#define FEC_EN_DP_TRANS_P0_SHIFT 0
-+#define FEC_CLOCK_EN_MODE_DP_TRANS_P0_MASK 0x8
-+#define FEC_CLOCK_EN_MODE_DP_TRANS_P0_SHIFT 3
-+
-+#define MTK_DP_TRANS_P0_3580 (TRANS_OFFSET + 0x180)
-+#define POST_MISC_DATA_LANE0_OV_DP_TRANS_P0_MASK 0x100
-+#define POST_MISC_DATA_LANE1_OV_DP_TRANS_P0_MASK 0x200
-+#define POST_MISC_DATA_LANE2_OV_DP_TRANS_P0_MASK 0x400
-+#define POST_MISC_DATA_LANE3_OV_DP_TRANS_P0_MASK 0x800
-+
-+#define MTK_DP_TRANS_P0_35C4 (TRANS_OFFSET + 0x1C4)
-+#define SW_IRQ_MASK_DP_TRANS_P0_MASK 0xffff
-+
-+#define MTK_DP_TRANS_P0_35C8 (TRANS_OFFSET + 0x1C8)
-+#define SW_IRQ_CLR_DP_TRANS_P0_MASK 0xffff
-+
-+#define SW_IRQ_STATUS_DP_TRANS_P0_MASK 0xffff
-+#define SW_IRQ_STATUS_DP_TRANS_P0_SHIFT 0
-+
-+#define MTK_DP_TRANS_P0_35D0 (TRANS_OFFSET + 0x1D0)
-+#define SW_IRQ_FINAL_STATUS_DP_TRANS_P0_MASK 0xffff
-+
-+#define MTK_DP_TRANS_P0_35F0 (TRANS_OFFSET + 0x1F0)
-+
-+#define MTK_DP_AUX_P0_360C (AUX_OFFSET + 0x00C)
-+#define AUX_TIMEOUT_THR_AUX_TX_P0_MASK 0x1fff
-+
-+#define MTK_DP_AUX_P0_3614 (AUX_OFFSET + 0x014)
-+#define AUX_RX_UI_CNT_THR_AUX_TX_P0_MASK 0x7f
-+#define AUX_RX_UI_CNT_THR_AUX_TX_P0_SHIFT 0
-+
-+#define MTK_DP_AUX_P0_3618 (AUX_OFFSET + 0x018)
-+#define AUX_RX_FIFO_FULL_AUX_TX_P0_MASK 0x200
-+#define AUX_RX_FIFO_WRITE_POINTER_AUX_TX_P0_MASK 0xf
-+
-+#define MTK_DP_AUX_P0_3620 (AUX_OFFSET + 0x020)
-+#define AUX_RD_MODE_AUX_TX_P0_MASK 0x200
-+#define AUX_RX_FIFO_READ_PULSE_TX_P0_MASK 0x100
-+#define AUX_RX_FIFO_R_PULSE_TX_P0_SHIFT 8
-+#define AUX_RX_FIFO_READ_DATA_AUX_TX_P0_MASK 0xff
-+#define AUX_RX_FIFO_READ_DATA_AUX_TX_P0_SHIFT 0
-+
-+#define MTK_DP_AUX_P0_3624 (AUX_OFFSET + 0x024)
-+#define AUX_RX_REPLY_COMMAND_AUX_TX_P0_MASK 0xf
-+
-+#define MTK_DP_AUX_P0_3628 (AUX_OFFSET + 0x028)
-+#define AUX_RX_PHY_STATE_AUX_TX_P0_MASK 0x3ff
-+#define AUX_RX_PHY_STATE_AUX_TX_P0_SHIFT 0
-+#define AUX_RX_PHY_STATE_AUX_TX_P0_RX_IDLE                                     \
-+	(BIT(0) << AUX_RX_PHY_STATE_AUX_TX_P0_SHIFT)
-+
-+#define MTK_DP_AUX_P0_362C (AUX_OFFSET + 0x02C)
-+#define AUX_NO_LENGTH_AUX_TX_P0_MASK 0x1
-+#define AUX_NO_LENGTH_AUX_TX_P0_SHIFT 0
-+#define AUX_TX_AUXTX_OV_EN_AUX_TX_P0_MASK 0x2
-+#define AUX_RESERVED_RW_0_AUX_TX_P0_MASK 0xfffc
-+
-+#define MTK_DP_AUX_P0_3630 (AUX_OFFSET + 0x030)
-+#define AUX_TX_REQUEST_READY_AUX_TX_P0_MASK 0x8
-+#define AUX_TX_REQUEST_READY_AUX_TX_P0_SHIFT 3
-+
-+#define MTK_DP_AUX_P0_3634 (AUX_OFFSET + 0x034)
-+#define AUX_TX_OVER_SAMPLE_RATE_AUX_TX_P0_MASK 0xff00
-+#define AUX_TX_OVER_SAMPLE_RATE_AUX_TX_P0_SHIFT 8
-+
-+#define MTK_DP_AUX_P0_3640 (AUX_OFFSET + 0x040)
-+#define AUX_RX_RECV_COMPLETE_IRQ_TX_P0_MASK 0x40
-+#define AUX_RX_AUX_RECV_COMPLETE_IRQ_AUX_TX_P0_SHIFT 6
-+#define AUX_RX_EDID_RECV_COMPLETE_IRQ_AUX_TX_P0_SHIFT 5
-+#define AUX_RX_MCCS_RECV_COMPLETE_IRQ_AUX_TX_P0_SHIFT 4
-+#define AUX_RX_CMD_RECV_IRQ_AUX_TX_P0_SHIFT 3
-+#define AUX_RX_ADDR_RECV_IRQ_AUX_TX_P0_SHIFT 2
-+#define AUX_RX_DATA_RECV_IRQ_AUX_TX_P0_SHIFT 1
-+#define AUX_400US_TIMEOUT_IRQ_AUX_TX_P0_MASK 0x1
-+#define AUX_400US_TIMEOUT_IRQ_AUX_TX_P0_SHIFT 0
-+
-+#define MTK_DP_AUX_P0_3644 (AUX_OFFSET + 0x044)
-+#define MCU_REQUEST_COMMAND_AUX_TX_P0_MASK 0xf
-+
-+#define MTK_DP_AUX_P0_3648 (AUX_OFFSET + 0x048)
-+#define MCU_REQUEST_ADDRESS_LSB_AUX_TX_P0_MASK 0xffff
-+
-+#define MTK_DP_AUX_P0_364C (AUX_OFFSET + 0x04C)
-+#define MCU_REQUEST_ADDRESS_MSB_AUX_TX_P0_MASK 0xf
-+
-+#define MTK_DP_AUX_P0_3650 (AUX_OFFSET + 0x050)
-+#define MCU_REQ_DATA_NUM_AUX_TX_P0_MASK 0xf000
-+#define MCU_REQ_DATA_NUM_AUX_TX_P0_SHIFT 12
-+#define PHY_FIFO_RST_AUX_TX_P0_MASK 0x200
-+#define MCU_ACK_TRAN_COMPLETE_AUX_TX_P0_MASK 0x100
-+#define MCU_ACK_TRAN_COMPLETE_AUX_TX_P0_SHIFT 8
-+
-+#define MTK_DP_AUX_P0_3658 (AUX_OFFSET + 0x058)
-+#define AUX_TX_OV_EN_AUX_TX_P0_MASK 0x1
-+
-+#define MTK_DP_AUX_P0_3690 (AUX_OFFSET + 0x090)
-+#define RX_REPLY_COMPLETE_MODE_AUX_TX_P0_MASK 0x100
-+#define RX_REPLY_COMPLETE_MODE_AUX_TX_P0_SHIFT 8
-+
-+#define MTK_DP_AUX_P0_3704 (AUX_OFFSET + 0x104)
-+#define AUX_TX_FIFO_WRITE_DATA_NEW_MODE_TOGGLE_AUX_TX_P0_MASK 0x2
-+#define AUX_TX_FIFO_NEW_MODE_EN_AUX_TX_P0_MASK 0x4
-+#define AUX_TX_FIFO_NEW_MODE_EN_AUX_TX_P0_SHIFT 2
-+
-+#define MTK_DP_AUX_P0_3708 (AUX_OFFSET + 0x108)
-+
-+#define MTK_DP_AUX_P0_37C8 (AUX_OFFSET + 0x1C8)
-+#define MTK_ATOP_EN_AUX_TX_P0_MASK 0x1
-+#define MTK_ATOP_EN_AUX_TX_P0_SHIFT 0
-+
-+#define MTK_DP_TOP_PWR_STATE (TOP_OFFSET + 0x00)
-+#define DP_PWR_STATE_MASK 0x3
-+#define DP_PWR_STATE_BANDGAP 1
-+#define DP_PWR_STATE_BANDGAP_TPLL 2
-+#define DP_PWR_STATE_BANDGAP_TPLL_LANE 3
-+
-+#define MTK_DP_TOP_SWING_EMP (TOP_OFFSET + 0x04)
-+#define DP_TX0_VOLT_SWING_MASK 0x3
-+#define DP_TX0_VOLT_SWING_SHIFT 0
-+#define DP_TX0_PRE_EMPH_MASK 0xc
-+#define DP_TX0_PRE_EMPH_SHIFT 2
-+#define DP_TX1_VOLT_SWING_MASK 0x300
-+#define DP_TX1_VOLT_SWING_SHIFT 8
-+#define DP_TX1_PRE_EMPH_MASK 0xc00
-+#define DP_TX2_VOLT_SWING_MASK 0x30000
-+#define DP_TX2_PRE_EMPH_MASK 0xc0000
-+#define DP_TX3_VOLT_SWING_MASK 0x3000000
-+#define DP_TX3_PRE_EMPH_MASK 0xc000000
-+
-+#define MTK_DP_TOP_RESET_AND_PROBE (TOP_OFFSET + 0x20)
-+#define SW_RST_B_SHIFT 0
-+#define SW_RST_B_PHYD (BIT(4) << SW_RST_B_SHIFT)
-+
-+#define MTK_DP_TOP_IRQ_STATUS (TOP_OFFSET + 0x28)
-+#define RGS_IRQ_STATUS_SHIFT 0
-+#define RGS_IRQ_STATUS_TRANSMITTER (BIT(1) << RGS_IRQ_STATUS_SHIFT)
-+
-+#define MTK_DP_TOP_IRQ_MASK (TOP_OFFSET + 0x2C)
-+#define IRQ_MASK_AUX_TOP_IRQ BIT(2)
-+
-+#define MTK_DP_TOP_MEM_PD (TOP_OFFSET + 0x38)
-+#define MEM_ISO_EN_SHIFT 0
-+#define FUSE_SEL_SHIFT 2
-+
-+#endif /*_MTK_DP_REG_H_*/
-diff --git a/drivers/gpu/drm/mediatek/mtk_dpi.c b/drivers/gpu/drm/mediatek/mtk_dpi.c
-index 384074f69111b..e6e88e3cd811d 100644
---- a/drivers/gpu/drm/mediatek/mtk_dpi.c
-+++ b/drivers/gpu/drm/mediatek/mtk_dpi.c
-@@ -63,6 +63,14 @@ enum mtk_dpi_out_color_format {
- 	MTK_DPI_COLOR_FORMAT_YCBCR_422_FULL
- };
- 
-+enum TVDPLL_CLK {
-+	TVDPLL_PLL = 0,
-+	TVDPLL_D2 = 2,
-+	TVDPLL_D4 = 4,
-+	TVDPLL_D8 = 8,
-+	TVDPLL_D16 = 16,
-+};
-+
- struct mtk_dpi {
- 	struct drm_encoder encoder;
- 	struct drm_bridge bridge;
-@@ -71,8 +79,10 @@ struct mtk_dpi {
- 	void __iomem *regs;
- 	struct device *dev;
- 	struct clk *engine_clk;
-+	struct clk *dpi_ck_cg;
- 	struct clk *pixel_clk;
- 	struct clk *tvd_clk;
-+	struct clk *pclk_src[5];
- 	int irq;
- 	struct drm_display_mode mode;
- 	const struct mtk_dpi_conf *conf;
-@@ -135,6 +145,7 @@ struct mtk_dpi_conf {
- 	u32 hvsize_mask;
- 	u32 channel_swap_shift;
- 	u32 yuv422_en_bit;
-+	u32 csc_enable_bit;
- 	const struct mtk_dpi_yc_limit *limit;
- };
- 
-@@ -365,7 +376,7 @@ static void mtk_dpi_config_yuv422_enable(struct mtk_dpi *dpi, bool enable)
- 
- static void mtk_dpi_config_csc_enable(struct mtk_dpi *dpi, bool enable)
- {
--	mtk_dpi_mask(dpi, DPI_CON, enable ? CSC_ENABLE : 0, CSC_ENABLE);
-+	mtk_dpi_mask(dpi, DPI_CON, enable ? dpi->conf->csc_enable_bit : 0, dpi->conf->csc_enable_bit);
- }
- 
- static void mtk_dpi_config_swap_input(struct mtk_dpi *dpi, bool enable)
-@@ -384,22 +395,45 @@ static void mtk_dpi_config_disable_edge(struct mtk_dpi *dpi)
- 		mtk_dpi_mask(dpi, dpi->conf->reg_h_fre_con, 0, EDGE_SEL_EN);
- }
- 
-+static void mtk_dpi_matrix_sel(struct mtk_dpi *dpi, enum mtk_dpi_out_color_format format)
-+{
-+	u32 matrix_sel = 0;
-+
-+	switch (format) {
-+	case MTK_DPI_COLOR_FORMAT_YCBCR_422:
-+	case MTK_DPI_COLOR_FORMAT_YCBCR_422_FULL:
-+	case MTK_DPI_COLOR_FORMAT_YCBCR_444:
-+	case MTK_DPI_COLOR_FORMAT_YCBCR_444_FULL:
-+	case MTK_DPI_COLOR_FORMAT_XV_YCC:
-+		if (dpi->mode.hdisplay <= 720)
-+			matrix_sel = 0x2;
-+		break;
-+	default:
-+		break;
-+	}
-+	mtk_dpi_mask(dpi, DPI_MATRIX_SET, matrix_sel, INT_MATRIX_SEL_MASK);
-+}
-+
- static void mtk_dpi_config_color_format(struct mtk_dpi *dpi,
- 					enum mtk_dpi_out_color_format format)
- {
- 	if ((format == MTK_DPI_COLOR_FORMAT_YCBCR_444) ||
- 	    (format == MTK_DPI_COLOR_FORMAT_YCBCR_444_FULL)) {
- 		mtk_dpi_config_yuv422_enable(dpi, false);
--		if (dpi->conf->csc_support)
-+		if (dpi->conf->csc_support) {
- 			mtk_dpi_config_csc_enable(dpi, true);
-+			mtk_dpi_matrix_sel(dpi, format);
-+		}
- 		if (dpi->conf->swap_input_support)
- 			mtk_dpi_config_swap_input(dpi, false);
- 		mtk_dpi_config_channel_swap(dpi, MTK_DPI_OUT_CHANNEL_SWAP_BGR);
- 	} else if ((format == MTK_DPI_COLOR_FORMAT_YCBCR_422) ||
- 		   (format == MTK_DPI_COLOR_FORMAT_YCBCR_422_FULL)) {
- 		mtk_dpi_config_yuv422_enable(dpi, true);
--		if (dpi->conf->csc_support)
-+		if (dpi->conf->csc_support) {
- 			mtk_dpi_config_csc_enable(dpi, true);
-+			mtk_dpi_matrix_sel(dpi, format);
-+		}
- 		if (dpi->conf->swap_input_support)
- 			mtk_dpi_config_swap_input(dpi, true);
- 		mtk_dpi_config_channel_swap(dpi, MTK_DPI_OUT_CHANNEL_SWAP_RGB);
-@@ -441,6 +475,8 @@ static void mtk_dpi_power_off(struct mtk_dpi *dpi)
- 	mtk_dpi_disable(dpi);
- 	clk_disable_unprepare(dpi->pixel_clk);
- 	clk_disable_unprepare(dpi->engine_clk);
-+	clk_disable_unprepare(dpi->dpi_ck_cg);
-+	clk_disable_unprepare(dpi->tvd_clk);
- }
- 
- static int mtk_dpi_power_on(struct mtk_dpi *dpi)
-@@ -450,12 +486,24 @@ static int mtk_dpi_power_on(struct mtk_dpi *dpi)
- 	if (++dpi->refcount != 1)
- 		return 0;
- 
-+	ret = clk_prepare_enable(dpi->tvd_clk);
-+	if (ret) {
-+		dev_err(dpi->dev, "Failed to enable tvd pll: %d\n", ret);
-+		goto err_pixel;
-+	}
-+
- 	ret = clk_prepare_enable(dpi->engine_clk);
- 	if (ret) {
- 		dev_err(dpi->dev, "Failed to enable engine clock: %d\n", ret);
- 		goto err_refcount;
- 	}
- 
-+	ret = clk_prepare_enable(dpi->dpi_ck_cg);
-+	if (ret) {
-+		dev_err(dpi->dev, "Failed to enable dpi_ck_cg clock: %d\n", ret);
-+		goto err_ck_cg;
-+	}
-+
- 	ret = clk_prepare_enable(dpi->pixel_clk);
- 	if (ret) {
- 		dev_err(dpi->dev, "Failed to enable pixel clock: %d\n", ret);
-@@ -465,10 +513,11 @@ static int mtk_dpi_power_on(struct mtk_dpi *dpi)
- 	if (dpi->pinctrl && dpi->pins_dpi)
- 		pinctrl_select_state(dpi->pinctrl, dpi->pins_dpi);
- 
--	mtk_dpi_enable(dpi);
- 	return 0;
- 
- err_pixel:
-+	clk_disable_unprepare(dpi->dpi_ck_cg);
-+err_ck_cg:
- 	clk_disable_unprepare(dpi->engine_clk);
- err_refcount:
- 	dpi->refcount--;
-@@ -500,9 +549,16 @@ static int mtk_dpi_set_display_mode(struct mtk_dpi *dpi,
- 	pll_rate = clk_get_rate(dpi->tvd_clk);
- 
- 	vm.pixelclock = pll_rate / factor;
--	if (dpi->conf->is_dpintf)
--		clk_set_rate(dpi->pixel_clk, vm.pixelclock / 4);
--	else if ((dpi->output_fmt == MEDIA_BUS_FMT_RGB888_2X12_LE) ||
-+	if (dpi->conf->is_dpintf) {
-+		if (factor == 1)
-+			clk_set_parent(dpi->pixel_clk, dpi->pclk_src[2]);
-+		else if (factor == 2)
-+			clk_set_parent(dpi->pixel_clk, dpi->pclk_src[3]);
-+		else if (factor == 4)
-+			clk_set_parent(dpi->pixel_clk, dpi->pclk_src[4]);
-+		else
-+			clk_set_parent(dpi->pixel_clk, dpi->pclk_src[2]);
-+	} else if ((dpi->output_fmt == MEDIA_BUS_FMT_RGB888_2X12_LE) ||
- 		 (dpi->output_fmt == MEDIA_BUS_FMT_RGB888_2X12_BE))
- 		clk_set_rate(dpi->pixel_clk, vm.pixelclock * 2);
- 	else
-@@ -581,6 +637,8 @@ static int mtk_dpi_set_display_mode(struct mtk_dpi *dpi,
- 	}
- 	mtk_dpi_sw_reset(dpi, false);
- 
-+	mtk_dpi_enable(dpi);
-+
- 	return 0;
- }
- 
-@@ -623,7 +681,6 @@ static u32 *mtk_dpi_bridge_atomic_get_input_bus_fmts(struct drm_bridge *bridge,
- 	u32 *input_fmts;
- 
- 	*num_input_fmts = 0;
--
- 	input_fmts = kcalloc(1, sizeof(*input_fmts),
- 			     GFP_KERNEL);
- 	if (!input_fmts)
-@@ -649,7 +706,7 @@ static int mtk_dpi_bridge_atomic_check(struct drm_bridge *bridge,
- 		if (dpi->conf->num_output_fmts)
- 			out_bus_format = dpi->conf->output_fmts[0];
- 
--	dev_dbg(dpi->dev, "input format 0x%04x, output format 0x%04x\n",
-+	dev_info(dpi->dev, "input format 0x%04x, output format 0x%04x\n",
- 		bridge_state->input_bus_cfg.format,
- 		bridge_state->output_bus_cfg.format);
- 
-@@ -657,7 +714,10 @@ static int mtk_dpi_bridge_atomic_check(struct drm_bridge *bridge,
- 	dpi->bit_num = MTK_DPI_OUT_BIT_NUM_8BITS;
- 	dpi->channel_swap = MTK_DPI_OUT_CHANNEL_SWAP_RGB;
- 	dpi->yc_map = MTK_DPI_OUT_YC_MAP_RGB;
--	dpi->color_format = MTK_DPI_COLOR_FORMAT_RGB;
-+	if (out_bus_format == MEDIA_BUS_FMT_YUYV8_1X16)
-+		dpi->color_format = MTK_DPI_COLOR_FORMAT_YCBCR_422_FULL;
-+	else
-+		dpi->color_format = MTK_DPI_COLOR_FORMAT_RGB;
- 
- 	return 0;
- }
-@@ -835,6 +895,12 @@ static const u32 mt8183_output_fmts[] = {
- 	MEDIA_BUS_FMT_RGB888_2X12_BE,
- };
- 
-+static const u32 mt8195_output_fmts[] = {
-+	MEDIA_BUS_FMT_RGB888_1X24,
-+	MEDIA_BUS_FMT_YUV8_1X24,
-+	MEDIA_BUS_FMT_YUYV8_1X16,
-+};
-+
- static const struct mtk_dpi_yc_limit mtk_dpi_limit = {
- 	.c_bottom = 0x0010,
- 	.c_top = 0x0FE0,
-@@ -862,6 +928,7 @@ static const struct mtk_dpi_conf mt8173_conf = {
- 	.hvsize_mask = HSIZE_MASK,
- 	.channel_swap_shift = CH_SWAP,
- 	.yuv422_en_bit = YUV422_EN,
-+	.csc_enable_bit = CSC_ENABLE,
- 	.limit = &mtk_dpi_limit,
- };
- 
-@@ -879,6 +946,7 @@ static const struct mtk_dpi_conf mt2701_conf = {
- 	.hvsize_mask = HSIZE_MASK,
- 	.channel_swap_shift = CH_SWAP,
- 	.yuv422_en_bit = YUV422_EN,
-+	.csc_enable_bit = CSC_ENABLE,
- 	.limit = &mtk_dpi_limit,
- };
- 
-@@ -895,6 +963,7 @@ static const struct mtk_dpi_conf mt8183_conf = {
- 	.hvsize_mask = HSIZE_MASK,
- 	.channel_swap_shift = CH_SWAP,
- 	.yuv422_en_bit = YUV422_EN,
-+	.csc_enable_bit = CSC_ENABLE,
- 	.limit = &mtk_dpi_limit,
- };
- 
-@@ -911,18 +980,21 @@ static const struct mtk_dpi_conf mt8192_conf = {
- 	.hvsize_mask = HSIZE_MASK,
- 	.channel_swap_shift = CH_SWAP,
- 	.yuv422_en_bit = YUV422_EN,
-+	.csc_enable_bit = CSC_ENABLE,
- 	.limit = &mtk_dpi_limit,
- };
- 
- static const struct mtk_dpi_conf mt8195_dpintf_conf = {
- 	.cal_factor = mt8195_dpintf_calculate_factor,
--	.output_fmts = mt8173_output_fmts,
--	.num_output_fmts = ARRAY_SIZE(mt8173_output_fmts),
-+	.output_fmts = mt8195_output_fmts,
-+	.num_output_fmts = ARRAY_SIZE(mt8195_output_fmts),
- 	.is_dpintf = true,
-+	.csc_support = true,
- 	.dimension_mask = DPINTF_HPW_MASK,
- 	.hvsize_mask = DPINTF_HSIZE_MASK,
- 	.channel_swap_shift = DPINTF_CH_SWAP,
- 	.yuv422_en_bit = DPINTF_YUV422_EN,
-+	.csc_enable_bit = DPINTF_CSC_ENABLE,
- 	.limit = &mtk_dpintf_limit,
- };
- 
-@@ -979,6 +1051,16 @@ static int mtk_dpi_probe(struct platform_device *pdev)
- 		return ret;
- 	}
- 
-+	dpi->dpi_ck_cg = devm_clk_get(dev, "ck_cg");
-+	if (IS_ERR(dpi->dpi_ck_cg)) {
-+		ret = PTR_ERR(dpi->dpi_ck_cg);
-+		if (ret != -EPROBE_DEFER)
-+			dev_err(dev, "Failed to get dpi ck cg clock: %d\n",
-+				ret);
-+
-+		return ret;
-+	}
-+
- 	dpi->pixel_clk = devm_clk_get(dev, "pixel");
- 	if (IS_ERR(dpi->pixel_clk)) {
- 		ret = PTR_ERR(dpi->pixel_clk);
-@@ -997,6 +1079,11 @@ static int mtk_dpi_probe(struct platform_device *pdev)
- 		return ret;
- 	}
- 
-+	dpi->pclk_src[1] = devm_clk_get(dev, "TVDPLL_D2");
-+	dpi->pclk_src[2] = devm_clk_get(dev, "TVDPLL_D4");
-+	dpi->pclk_src[3] = devm_clk_get(dev, "TVDPLL_D8");
-+	dpi->pclk_src[4] = devm_clk_get(dev, "TVDPLL_D16");
-+
- 	dpi->irq = platform_get_irq(pdev, 0);
- 	if (dpi->irq <= 0)
- 		return -EINVAL;
-diff --git a/drivers/gpu/drm/mediatek/mtk_dpi_regs.h b/drivers/gpu/drm/mediatek/mtk_dpi_regs.h
-index 72efe6ee25842..91b32dfffced2 100644
---- a/drivers/gpu/drm/mediatek/mtk_dpi_regs.h
-+++ b/drivers/gpu/drm/mediatek/mtk_dpi_regs.h
-@@ -41,6 +41,7 @@
- #define FAKE_DE_RODD			BIT(22)
- #define FAKE_DE_REVEN			BIT(23)
- #define DPINTF_YUV422_EN		BIT(24)
-+#define DPINTF_CSC_ENABLE		BIT(26)
- #define DPINTF_INPUT_2P_EN		BIT(29)
- 
- #define DPI_OUTPUT_SETTING	0x14
-@@ -229,4 +230,29 @@
- 
- #define EDGE_SEL_EN			BIT(5)
- #define H_FRE_2N			BIT(25)
-+
-+#define DPI_MATRIX_SET	0xB4
-+#define INT_MATRIX_SEL			BIT(0)
-+#define INT_MATRIX_SEL_MASK		(0x1F << 0)
-+#define RGB_TO_JPEG			0x00
-+#define RGB_TO_FULL709			0x01
-+#define RGB_TO_BT601			0x02
-+#define RGB_TO_BT709			0x03
-+#define JPEG_TO_RGB			0x04
-+#define FULL709_TO_RGB			0x05
-+#define BT601_TO_RGB			0x06
-+#define BT709_TO_RGB			0x07
-+#define JPEG_TO_BT601			0x08
-+#define JPEG_TO_BT709			0x09
-+#define BT601_TO_JPEG			0xA
-+#define BT709_TO_JPEG			0xB
-+#define BT709_TO_BT601			0xC
-+#define BT601_TO_BT709			0xD
-+#define JPEG_TO_CERGB			0x14
-+#define FULL709_TO_CERGB		0x15
-+#define BT601_TO_CERGB			0x16
-+#define BT709_TO_CERGB			0x17
-+#define RGB_TO_CERGB			0x1C
-+#define MATRIX_BIT			BIT(8)
-+#define EXT_MATRIX_EN			BIT(12)
- #endif /* __MTK_DPI_REGS_H */
-diff --git a/drivers/gpu/drm/mediatek/mtk_drm_drv.c b/drivers/gpu/drm/mediatek/mtk_drm_drv.c
-index 1ff4e31c86345..65c7ccaaf1969 100644
---- a/drivers/gpu/drm/mediatek/mtk_drm_drv.c
-+++ b/drivers/gpu/drm/mediatek/mtk_drm_drv.c
-@@ -672,6 +672,7 @@ static struct platform_driver * const mtk_drm_drivers[] = {
- 	&mtk_disp_ovl_driver,
- 	&mtk_disp_rdma_driver,
- 	&mtk_dpi_driver,
-+	&mtk_dp_driver,
- 	&mtk_drm_platform_driver,
- 	&mtk_dsi_driver,
- };
-diff --git a/drivers/gpu/drm/mediatek/mtk_drm_drv.h b/drivers/gpu/drm/mediatek/mtk_drm_drv.h
-index 3e7d1e6fbe010..8926416f4419d 100644
---- a/drivers/gpu/drm/mediatek/mtk_drm_drv.h
-+++ b/drivers/gpu/drm/mediatek/mtk_drm_drv.h
-@@ -53,6 +53,7 @@ extern struct platform_driver mtk_disp_gamma_driver;
- extern struct platform_driver mtk_disp_ovl_driver;
- extern struct platform_driver mtk_disp_rdma_driver;
- extern struct platform_driver mtk_dpi_driver;
-+extern struct platform_driver mtk_dp_driver;
- extern struct platform_driver mtk_dsi_driver;
- 
- #endif /* MTK_DRM_DRV_H */
--- 
-2.32.0
+--EVF5PPMfhYS0aIcm
+Content-Type: application/gzip
+Content-Disposition: attachment; filename=".config.gz"
+Content-Transfer-Encoding: base64
 
+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
+
+--EVF5PPMfhYS0aIcm--
