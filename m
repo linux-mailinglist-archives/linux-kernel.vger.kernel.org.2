@@ -2,85 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1BA2744BE11
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 10:50:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F08DD44BE1A
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 10:52:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231132AbhKJJxb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Nov 2021 04:53:31 -0500
-Received: from mail-ed1-f48.google.com ([209.85.208.48]:44809 "EHLO
-        mail-ed1-f48.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230505AbhKJJx3 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Nov 2021 04:53:29 -0500
-Received: by mail-ed1-f48.google.com with SMTP id j21so8064116edt.11
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Nov 2021 01:50:42 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:in-reply-to
-         :content-transfer-encoding;
-        bh=KeIlVKt/9xSQQTs2L6NDOm0eWEpONTN7EdsmQwnJyHM=;
-        b=PGP2Na4ZS+lL0pA47xBtjo4cWDLsx5yD2ayc494kfGsFlxTFZymCiDEV6zStH2vw/y
-         MSYcPc+ZPivYqW2nO7mkA4V5nW/RfFNX5j46k33yC0YLzGMEENO84Zc8p9jBDXQzAnhu
-         07M1IeAfrJzKmYoFiaOrp3U8+SxUax6vE6WVvnCwyVwT/2Vxaeqa7QGqGl74gumyAF3M
-         eHUnCK0pOKgs5q28/mjrS9pWV0RH7UZN8cKXs71Bg7vMD0pH8Pe0AdWyYJA1g2UnsbLr
-         RAzJhEvE7yibhnPFT/hdIpWTiTXtYKyf0MaxKY2p3DQ5OklX6r9F08xuqNlM/sE1D3Os
-         WkBw==
-X-Gm-Message-State: AOAM532jwbY16ugUgjYBuHa0q0lSzb0MWK18SOgwJAILfCB52CFv4HB2
-        GpGKtpTnHnoB5PfoCh5+nsI=
-X-Google-Smtp-Source: ABdhPJxKfaZW904QDKTo7q9yWc1H43QHgLcLPxIAtd3mUHIdQihHXv+xeNKdZIGKy5224MSbtl4xFw==
-X-Received: by 2002:a17:907:7f8b:: with SMTP id qk11mr18953761ejc.313.1636537841497;
-        Wed, 10 Nov 2021 01:50:41 -0800 (PST)
-Received: from ?IPV6:2a0b:e7c0:0:107::49? ([2a0b:e7c0:0:107::49])
-        by smtp.gmail.com with ESMTPSA id g10sm12304528edr.56.2021.11.10.01.50.40
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 10 Nov 2021 01:50:41 -0800 (PST)
-Message-ID: <e2ff335d-5d21-345f-d899-8985477ffa53@kernel.org>
-Date:   Wed, 10 Nov 2021 10:50:40 +0100
+        id S230504AbhKJJzm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Nov 2021 04:55:42 -0500
+Received: from out0.migadu.com ([94.23.1.103]:17010 "EHLO out0.migadu.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229653AbhKJJzk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Nov 2021 04:55:40 -0500
+Date:   Wed, 10 Nov 2021 17:53:27 +0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+        t=1636537969;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=ZUAU49u0de/GblU7PLi+j9y9Qvhf4Zz1YEtn3bAYdUU=;
+        b=pKkXSsrtOKd3UG3a0cvN77dBukGPHnt2oiQtUoTqR1nZISNvEIp3hbU34ih9mb9nIn2tn4
+        bdmBAElMC3KyJrl2r6yjZGpyrSKn+SNClPHO2HeQ7EmEerbiuqtqf62Vd+ivtyzTCkIGDp
+        PdyqSOSB6N/ICiAaQcdefVbQC7xJa+0=
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From:   Tao Zhou <tao.zhou@linux.dev>
+To:     Mel Gorman <mgorman@techsingularity.net>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        Aubrey Li <aubrey.li@linux.intel.com>,
+        Barry Song <song.bao.hua@hisilicon.com>,
+        Mike Galbraith <efault@gmx.de>,
+        Srikar Dronamraju <srikar@linux.vnet.ibm.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Tao Zhou <tao.zhou@linux.dev>
+Subject: Re: [PATCH 1/2] sched/fair: Couple wakee flips with heavy wakers
+Message-ID: <YYuWlxNG+d3G4uTo@geo.homenetwork>
+References: <20211028094834.1312-1-mgorman@techsingularity.net>
+ <20211028094834.1312-2-mgorman@techsingularity.net>
+ <YXrNfHcfhp2LutiL@geo.homenetwork>
+ <20211029084219.GV3959@techsingularity.net>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.2.1
-Subject: Re: [PATCH v12 1/2] tty: hvc: pass DMA capable memory to put_chars()
-Content-Language: en-US
-To:     Xianting Tian <xianting.tian@linux.alibaba.com>,
-        gregkh@linuxfoundation.org, amit@kernel.org, arnd@arndb.de,
-        osandov@fb.com
-Cc:     shile.zhang@linux.alibaba.com, sfr@canb.auug.org.au,
-        linuxppc-dev@lists.ozlabs.org,
-        virtualization@lists.linux-foundation.org,
-        linux-kernel@vger.kernel.org
-References: <20211028150954.1356334-1-xianting.tian@linux.alibaba.com>
- <20211028150954.1356334-2-xianting.tian@linux.alibaba.com>
- <55b28b16-33f4-2a69-b2f1-6781d0241b99@kernel.org>
- <7dde342a-c2b7-32fe-7410-e372c82a4a68@linux.alibaba.com>
-From:   Jiri Slaby <jirislaby@kernel.org>
-In-Reply-To: <7dde342a-c2b7-32fe-7410-e372c82a4a68@linux.alibaba.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211029084219.GV3959@techsingularity.net>
+X-Migadu-Flow: FLOW_OUT
+X-Migadu-Auth-User: tao.zhou@linux.dev
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 04. 11. 21, 14:06, Xianting Tian wrote:
->> OTOH, you need c[N_OUTBUF] in the console case (hvc_console_print), but
->> not whole hvc_struct. So cons_hvcs should be an array of structs
->> composed of only the lock and the buffer.
-> It is ok for me.
->> =============
->>
->> And I would do it even simpler now. One c[N_OUTBUF] buffer for all 
->> consoles and a single lock.
->>
->> And "char c" in struct hvc_struct.
->>
->> No need for the complex logic in hvc_console_print.
+On Fri, Oct 29, 2021 at 09:42:19AM +0100, Mel Gorman wrote:
+> On Fri, Oct 29, 2021 at 12:19:48AM +0800, Tao Zhou wrote:
+> > Hi Mel,
+> > 
+> > On Thu, Oct 28, 2021 at 10:48:33AM +0100, Mel Gorman wrote:
+> > 
+> > > @@ -5865,6 +5865,14 @@ static void record_wakee(struct task_struct *p)
+> > >  	}
+> > >  
+> > >  	if (current->last_wakee != p) {
+> > > +		int min = __this_cpu_read(sd_llc_size) << 1;
+> > > +		/*
+> > > +		 * Couple the wakee flips to the waker for the case where it
+> > > +		 * doesn't accrue flips, taking care to not push the wakee
+> > > +		 * high enough that the wake_wide() heuristic fails.
+> > > +		 */
+> > > +		if (current->wakee_flips > p->wakee_flips * min)
+> > > +			p->wakee_flips++;
+> > >  		current->last_wakee = p;
+> > >  		current->wakee_flips++;
+> > >  	}
+> > > @@ -5895,7 +5903,7 @@ static int wake_wide(struct task_struct *p)
+> > >  
+> > >  	if (master < slave)
+> > >  		swap(master, slave);
+> > > -	if (slave < factor || master < slave * factor)
+> > > +	if ((slave < factor && master < (factor>>1)*factor) || master < slave * factor)
+> > 
+> > So, the check like this include the above range:
+> > 
+> >   if ((slave < factor && master < slave * factor) ||
+> >        master < slave * factor)
+> > 
+> > That "factor>>1" filter some.
+> > 
+> > If "slave < factor" is true and "master < (factor>>1)*factor" is false,
+> > then we check "master < slave * factor".(This is one path added by the
+> > check "&&  master < (factor>>1)*factor").
+> > In the latter check "slave < factor" must be true, the result of this
+> > check depend on slave in the range [factor, factor>>1] if there is possibility
+> > that "master < slave * factor". If slave in [factor>>1, 0], the check of
+> > "master < slave * factor" is absolutly false and this can be filtered if
+> > we use a variable to load the result of master < (factor>>1)*factor.
+> > 
+> > My random random inputs and continue confusing to move on.
+> > 
 > 
-> So you will implement this?
+> I'm not sure what point you're trying to make.
 
-No, there is a slight difference between "I would" and "I will" :). I 
-don't have anything to test this hvc change on…
+Ok, some days later even can not understand what my saying myself. After 
+wrong and right aross with my wreck head I just try to make this:
 
-thanks,
--- 
-js
-suse labs
+if ((slave < factor && master < (factor>>1)*factor) || (slave >= factor>>1) && master < slave * factor)
+
+check "slave > factor>>1" for filter the cases that is calculated if I
+am not wrong. If this have a little effect that will be to not need to
+do "master < slave * factor" for some time not sure.
+
