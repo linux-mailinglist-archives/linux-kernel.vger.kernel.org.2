@@ -2,65 +2,50 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 302D044C11B
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 13:17:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A439544C11E
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 13:19:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231627AbhKJMTx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Nov 2021 07:19:53 -0500
-Received: from todd.t-8ch.de ([159.69.126.157]:35805 "EHLO todd.t-8ch.de"
+        id S231463AbhKJMWL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Nov 2021 07:22:11 -0500
+Received: from foss.arm.com ([217.140.110.172]:45718 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229653AbhKJMTv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Nov 2021 07:19:51 -0500
-From:   =?UTF-8?q?Thomas=20Wei=C3=9Fschuh?= <linux@weissschuh.net>
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=weissschuh.net;
-        s=mail; t=1636546622;
-        bh=GHoGBpI/7Ww3lV2tjGUcrMHObJ3JBrS7JijlpX7Q/W0=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=SMEEjlwpDHPfsZB+lGcohnS+GvUJBoeUfiV/kpxHOiq5xRLQyi8ml327+0vUHtQ/U
-         8IE4mjJs7ZOE1n6/PCWk2Cy/dcpritoiDI0O8It6jMU1c6l6zVGhJnK6XcSeSjVqlh
-         v7eroqFV+QPVDOMc4w+2BFhRJA6XnPKYGoD2i8Hk=
-To:     Jiri Kosina <jikos@kernel.org>, linux-input@vger.kernel.org
-Cc:     =?UTF-8?q?Thomas=20Wei=C3=9Fschuh?= <linux@weissschuh.net>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
-        linux-kernel@vger.kernel.org, linux-next@vger.kernel.org
-Subject: [PATCH] mod_devicetable: fix kdocs for ishtp_device_id
-Date:   Wed, 10 Nov 2021 13:16:55 +0100
-Message-Id: <20211110121655.675664-1-linux@weissschuh.net>
-X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211110150639.7db57ae2@canb.auug.org.au>
-References: <20211110150639.7db57ae2@canb.auug.org.au>
+        id S231316AbhKJMWJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Nov 2021 07:22:09 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 33E2F101E;
+        Wed, 10 Nov 2021 04:19:22 -0800 (PST)
+Received: from e113632-lin (e113632-lin.cambridge.arm.com [10.1.196.57])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 67AC23F718;
+        Wed, 10 Nov 2021 04:19:21 -0800 (PST)
+From:   Valentin Schneider <valentin.schneider@arm.com>
+To:     Marco Elver <elver@google.com>,
+        Frederic Weisbecker <frederic@kernel.org>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Ingo Molnar <mingo@kernel.org>
+Subject: Re: [PATCH v3] sched: Provide Kconfig support for default dynamic preempt mode
+In-Reply-To: <YYuvzzZPuIZPe2iU@elver.google.com>
+References: <20210914103134.11309-1-frederic@kernel.org> <YYuvzzZPuIZPe2iU@elver.google.com>
+Date:   Wed, 10 Nov 2021 12:19:18 +0000
+Message-ID: <87ee7orynt.mognet@arm.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The kdocs were copied from another device_id struct and not adapted.
+On 10/11/21 12:41, Marco Elver wrote:
+> Is there some way to avoid introducing *_BEHAVIOUR and keep the old
+> user-settable config options?
+>
+> That would make the transition more seamless and avoid this predictable
+> issue when 5.16 is released.
+>
 
-Fixes: fa443bc3c1e4 ("HID: intel-ish-hid: add support for MODULE_DEVICE_TABLE()")
-Signed-off-by: Thomas Weißschuh <linux@weissschuh.net>
----
- include/linux/mod_devicetable.h | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+We're looking at it, but Kconfig be hard :-)
 
-diff --git a/include/linux/mod_devicetable.h b/include/linux/mod_devicetable.h
-index befbf53c4b7c..c70abe7aaef2 100644
---- a/include/linux/mod_devicetable.h
-+++ b/include/linux/mod_devicetable.h
-@@ -901,8 +901,7 @@ struct dfl_device_id {
- 
- /**
-  * struct ishtp_device_id - ISHTP device identifier
-- * @guid_string: 36 char string of the form fa50ff2b-f2e8-45de-83fa-65417f2f49ba
-- * @context: pointer to driver specific data
-+ * @guid: GUID of the device.
-  */
- struct ishtp_device_id {
- 	guid_t guid;
+http://lore.kernel.org/r/20211105104035.3112162-1-valentin.schneider@arm.com
+http://lore.kernel.org/r/20211109151057.3489223-1-valentin.schneider@arm.com
 
-base-commit: 7fb0413baa7f8a04caef0c504df9af7e0623d296
--- 
-2.33.1
-
+> Thanks,
+> -- Marco
