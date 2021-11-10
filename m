@@ -2,45 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 93FC644B9A2
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 01:34:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AE77844B99A
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 01:30:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231159AbhKJAhI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Nov 2021 19:37:08 -0500
-Received: from li1434-30.members.linode.com ([45.33.107.30]:46204 "EHLO
-        node.akkea.ca" rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230369AbhKJAhF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Nov 2021 19:37:05 -0500
-X-Greylist: delayed 563 seconds by postgrey-1.27 at vger.kernel.org; Tue, 09 Nov 2021 19:37:05 EST
-Received: from localhost (localhost [127.0.0.1])
-        by node.akkea.ca (Postfix) with ESMTP id 14B1C5DE02F;
-        Wed, 10 Nov 2021 00:24:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=akkea.ca; s=mail;
-        t=1636503896; bh=fV1/s/8BNEP4rofaEIpdzzOvWDJaKNztJSjH9886HB8=;
-        h=From:To:Cc:Subject:Date;
-        b=i1NqxdibxkLCEO0qZoDS49QGLASKaFFnzcr73R9A7SVqt+KJNkrsfQkMGag/QEwYc
-         oijHyDiD2eVLCiGvnlTxOQENEoT4D5Md3skfoBHDed8wxQmwPpQSLmLoU6kgktCvLK
-         fjOQ6K2X+UPV+5wQAyzIMwsgTJ7Ii9ymbMbqKjm0=
-X-Virus-Scanned: Debian amavisd-new at mail.akkea.ca
-Received: from node.akkea.ca ([127.0.0.1])
-        by localhost (mail.akkea.ca [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id dlzn0ko_5TOf; Wed, 10 Nov 2021 00:24:55 +0000 (UTC)
-Received: from midas.localdomain (S0106788a2041785e.gv.shawcable.net [70.66.86.75])
-        by node.akkea.ca (Postfix) with ESMTPSA id 5C7535DE01D;
-        Wed, 10 Nov 2021 00:24:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=akkea.ca; s=mail;
-        t=1636503895; bh=fV1/s/8BNEP4rofaEIpdzzOvWDJaKNztJSjH9886HB8=;
-        h=From:To:Cc:Subject:Date;
-        b=h1/QL0rfr0gQusd5Z5tPzpo3dQZv1xUv7ZLujymVUU6iPWN6xL/C8pzdRzqiK4hBf
-         tT0fnlPZ52pXSzyhC5OpyDuxXHq+vW70FSa4kImjpTmV1ZvtJC2eGBUF0+ROQ7XpLA
-         LJ0d4UnYgoSEgxRErCZL3U7oDJAogQc2v43LTRzM=
-From:   Angus Ainslie <angus@akkea.ca>
-To:     Sebastian Reichel <sre@kernel.org>
-Cc:     linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel@puri.sm, Angus Ainslie <angus@akkea.ca>
-Subject: [PATCH] power: bq25890: temperature is also an adc value
-Date:   Tue,  9 Nov 2021 16:24:40 -0800
-Message-Id: <20211110002440.71404-1-angus@akkea.ca>
+        id S230476AbhKJAcH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Nov 2021 19:32:07 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51664 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230101AbhKJAcG (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Nov 2021 19:32:06 -0500
+Received: from mail-pf1-x42c.google.com (mail-pf1-x42c.google.com [IPv6:2607:f8b0:4864:20::42c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D6C74C061764
+        for <linux-kernel@vger.kernel.org>; Tue,  9 Nov 2021 16:29:19 -0800 (PST)
+Received: by mail-pf1-x42c.google.com with SMTP id c126so1066037pfb.0
+        for <linux-kernel@vger.kernel.org>; Tue, 09 Nov 2021 16:29:19 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=AEzErmitUUc1WCRwF90GY08l0xszb/xghqlykO8h5XQ=;
+        b=HoUfE9FMPs9FbWg+kuLPHy/L4ScIui5grCU8JXDkrj4jNnMmSBVDJH9ybI+5cI5KyM
+         kiyqA9oGfmaiIp0bg7woJAxlerKajDVP0Qk/XBfycWTsDVEnm1Ig5L4uf/WmUu841bRT
+         aNkR/veAg2w3ULbimJTbQGJEpcF5Bo9bGvdaS3Hf7dsxkwwBaE7ip0vnfwZv8XFHmCcc
+         e57WL3zXoxDqavdn1mSjovQXAXN0QC3Tk6KmEJPh+BtWVmMDtqURDnpB9os97UMcTwr0
+         BAlnEEVb28PTC+hW82HQT5m9w4tC7U+/pinOH0TFk24abX3MYyx4ZcJMfaNlYxmeY9Q0
+         km0g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=AEzErmitUUc1WCRwF90GY08l0xszb/xghqlykO8h5XQ=;
+        b=Ub6F+hHdLUUM+tt+ntOcKaeA5td8QFJZl8YbJgSL0vpANC6FtOEUfJJEkaG9j/QFKI
+         hAz0AzvPaw+CewAkhmWVBm5tw069lw+IaKuTpCaMY/3W9TpzXS3A5oMmCr+WfUxnO5Au
+         6/6cCrxn1hUrOdMVOgBuJfzMqkBqK2pE8GIKqS4NdWjn6tM+ma+n6d+Md0M8W5p7t9rQ
+         lo+HMPDVugRODQEtspyfauV98wcq1vKUN6Rv2D9ttI7KzWQtnbDPsqb4It2QgW0bEynR
+         NntAUmwA+I1C6KrRbjeeMBe5iNGV9T73HOTgbMTV+M51UTHWqrdZ0IYkPVC2zyWmiJX4
+         TuMA==
+X-Gm-Message-State: AOAM532J5V1WwhCCKa26hypwL1M8O47CtJDmFC2YOHpGE+NBN9W5y4Kx
+        xedKfuF8lTvLlMqq+zQuEZM=
+X-Google-Smtp-Source: ABdhPJye/VUSnlCLCAknWO+RWaynEg+Kow/VhPktmT23o2DuN4Tmpy6jXdqg82E0C967zkissHr4bg==
+X-Received: by 2002:a05:6a00:1a50:b0:49f:fc2a:fa9f with SMTP id h16-20020a056a001a5000b0049ffc2afa9fmr8630020pfv.43.1636504159274;
+        Tue, 09 Nov 2021 16:29:19 -0800 (PST)
+Received: from localhost.localdomain ([193.203.214.57])
+        by smtp.gmail.com with ESMTPSA id f185sm9515716pfg.39.2021.11.09.16.29.15
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 09 Nov 2021 16:29:18 -0800 (PST)
+From:   cgel.zte@gmail.com
+X-Google-Original-From: ye.guojin@zte.com.cn
+To:     nicoleotsuka@gmail.com
+Cc:     Xiubo.Lee@gmail.com, festevam@gmail.com, shengjiu.wang@gmail.com,
+        lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz,
+        tiwai@suse.com, shawnguo@kernel.org, s.hauer@pengutronix.de,
+        kernel@pengutronix.de, linux-imx@nxp.com,
+        alsa-devel@alsa-project.org, linuxppc-dev@lists.ozlabs.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Ye Guojin <ye.guojin@zte.com.cn>,
+        Zeal Robot <zealci@zte.com.cn>
+Subject: [PATCH] ASoC: imx-hdmi: add put_device() after of_find_device_by_node()
+Date:   Wed, 10 Nov 2021 00:29:10 +0000
+Message-Id: <20211110002910.134915-1-ye.guojin@zte.com.cn>
 X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -48,26 +69,32 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Make sure that a conversion is forced when the power supply is offline so
-the temperature is valid.
+From: Ye Guojin <ye.guojin@zte.com.cn>
 
-Signed-off-by: Angus Ainslie <angus@akkea.ca>
+This was found by coccicheck:
+./sound/soc/fsl/imx-hdmi.c,209,1-7,ERROR  missing put_device; call
+of_find_device_by_node on line 119, but without a corresponding object
+release within this function.
+
+Reported-by: Zeal Robot <zealci@zte.com.cn>
+Signed-off-by: Ye Guojin <ye.guojin@zte.com.cn>
 ---
- drivers/power/supply/bq25890_charger.c | 1 +
- 1 file changed, 1 insertion(+)
+ sound/soc/fsl/imx-hdmi.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/drivers/power/supply/bq25890_charger.c b/drivers/power/supply/bq25890_charger.c
-index 945c3257ca93..23a91c5d1f9d 100644
---- a/drivers/power/supply/bq25890_charger.c
-+++ b/drivers/power/supply/bq25890_charger.c
-@@ -388,6 +388,7 @@ static bool bq25890_is_adc_property(enum power_supply_property psp)
- 	switch (psp) {
- 	case POWER_SUPPLY_PROP_VOLTAGE_NOW:
- 	case POWER_SUPPLY_PROP_CURRENT_NOW:
-+	case POWER_SUPPLY_PROP_TEMP:
- 		return true;
+diff --git a/sound/soc/fsl/imx-hdmi.c b/sound/soc/fsl/imx-hdmi.c
+index f10359a28800..929f69b758af 100644
+--- a/sound/soc/fsl/imx-hdmi.c
++++ b/sound/soc/fsl/imx-hdmi.c
+@@ -145,6 +145,8 @@ static int imx_hdmi_probe(struct platform_device *pdev)
+ 	data->dai.capture_only = false;
+ 	data->dai.init = imx_hdmi_init;
  
- 	default:
++	put_device(&cpu_pdev->dev);
++
+ 	if (of_node_name_eq(cpu_np, "sai")) {
+ 		data->cpu_priv.sysclk_id[1] = FSL_SAI_CLK_MAST1;
+ 		data->cpu_priv.sysclk_id[0] = FSL_SAI_CLK_MAST1;
 -- 
 2.25.1
 
