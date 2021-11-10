@@ -2,80 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ADA3E44C317
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 15:39:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DC50344C31E
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 15:40:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232236AbhKJOmC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Nov 2021 09:42:02 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44514 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232193AbhKJOmB (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Nov 2021 09:42:01 -0500
-Received: from ms.lwn.net (ms.lwn.net [IPv6:2600:3c01:e000:3a1::42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 828CDC061764;
-        Wed, 10 Nov 2021 06:39:13 -0800 (PST)
-Received: from localhost (unknown [151.44.43.70])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ms.lwn.net (Postfix) with ESMTPSA id AB5545ECC;
-        Wed, 10 Nov 2021 14:39:11 +0000 (UTC)
-DKIM-Filter: OpenDKIM Filter v2.11.0 ms.lwn.net AB5545ECC
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=lwn.net; s=20201203;
-        t=1636555152; bh=bhz6uOAGwgBI+FNK0TNABGLPC5xHyy5joqyJG3fY4CY=;
-        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-        b=X5cGVqBPvZ24t4VTjC8EjU2+llJvu9LbXb0CJzZ1rg3LqyxMwagaa46P0CfHgCA3a
-         b25jBHCPXonsm/fyUoC6YtKtDKvbpBTkd4pawbYeck2mBBMFgyJGBWktPF4AVVmm5b
-         mZ3x/ijRBjJXpdCpeSYcRuEAKXpE7gp5gb9E2+Yu5k7j0cGz4nxLgSAfA07HZ25y1B
-         hTtXavVWN2ff1e3Ub/tTaARZuCAqPZ4jDmrD48qR7csorFZgQik0iWXZCVZ8vunLyH
-         8F2oPv/1UvCEx+d1tHJ4cw6/PBQRhpgkeB/H70CT/kjtWb0tYqGNhuJe3eIw9AvZso
-         r9KQ7/fhP343g==
-From:   Jonathan Corbet <corbet@lwn.net>
-To:     Qi Zheng <zhengqi.arch@bytedance.com>, akpm@linux-foundation.org,
-        tglx@linutronix.de, kirill.shutemov@linux.intel.com,
-        mika.penttila@nextfour.com, david@redhat.com, jgg@nvidia.com
-Cc:     linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, songmuchun@bytedance.com,
-        zhouchengming@bytedance.com, Qi Zheng <zhengqi.arch@bytedance.com>
-Subject: Re: [PATCH v3 14/15] Documentation: add document for pte_ref
-In-Reply-To: <20211110105428.32458-15-zhengqi.arch@bytedance.com>
-References: <20211110105428.32458-1-zhengqi.arch@bytedance.com>
- <20211110105428.32458-15-zhengqi.arch@bytedance.com>
-Date:   Wed, 10 Nov 2021 07:39:08 -0700
-Message-ID: <875yt0krcj.fsf@meer.lwn.net>
+        id S232252AbhKJOmu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Nov 2021 09:42:50 -0500
+Received: from mail.kernel.org ([198.145.29.99]:40590 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232197AbhKJOms (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Nov 2021 09:42:48 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1378B61106;
+        Wed, 10 Nov 2021 14:39:57 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1636555201;
+        bh=xqZi6iTYc50vjoO0XtxsyimzxbnA+3z6Sn+/RRjZgtk=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=XXVWX7fuRz9fJ47j8xk7hCkr3Lt0XQmfYcrFDGwOaNHgVd1OrZS7Y51zxZeK6N6cQ
+         mzcdnC/kngo0vr7stFva55y6D13ypLXGNr+vc7wG6zkAcyIApK5YI42TE74y1ALbWg
+         92WS+Df4Z2/OuJ9kMdPshfQubomOWn+g+jLab5Ef/+jsxBdhwvMx+NsuUqXyJ2aQsS
+         WCFR6OrsJ+l7TECGzjw2viaFBT4lcWKTev/AIhMb7kqOhqBD6bHJnGLSeUpxdgmDP5
+         xpsyLPHjbrOnT+isXgBhRw/InkgCtvYXNwCWP3uccmRp3s4hygKYCRWy9SNnpwjcYj
+         s8BMumMnSIeow==
+Date:   Wed, 10 Nov 2021 14:39:54 +0000
+From:   Mark Brown <broonie@kernel.org>
+To:     Alistair Francis <alistair@alistair23.me>
+Cc:     lee.jones@linaro.org, kernel@pengutronix.de, lgirdwood@gmail.com,
+        robh+dt@kernel.org, linux-kernel@vger.kernel.org,
+        rui.zhang@intel.com, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, s.hauer@pengutronix.de,
+        linux-hwmon@vger.kernel.org, amitk@kernel.org,
+        linux-pm@vger.kernel.org, linux-imx@nxp.com, alistair23@gmail.com,
+        andreas@kemnade.info, shawnguo@kernel.org
+Subject: Re: [PATCH v15 4/8] regulator: sy7636a: Remove requirement on
+ sy7636a mfd
+Message-ID: <YYvZuo+VWhe23fgN@sirena.org.uk>
+References: <20211110122948.188683-1-alistair@alistair23.me>
+ <20211110122948.188683-5-alistair@alistair23.me>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="mSiTZPc7Z0AF7E/8"
+Content-Disposition: inline
+In-Reply-To: <20211110122948.188683-5-alistair@alistair23.me>
+X-Cookie: You have junk mail.
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Qi Zheng <zhengqi.arch@bytedance.com> writes:
 
-> This commit adds document for pte_ref under `Documentation/vm/`.
+--mSiTZPc7Z0AF7E/8
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Thanks for documenting this work!
+On Wed, Nov 10, 2021 at 10:29:44PM +1000, Alistair Francis wrote:
+> Signed-off-by: Alistair Francis <alistair@alistair23.me>
 
-> Signed-off-by: Qi Zheng <zhengqi.arch@bytedance.com>
-> ---
->  Documentation/vm/pte_ref.rst | 212 +++++++++++++++++++++++++++++++++++++++++++
->  1 file changed, 212 insertions(+)
->  create mode 100644 Documentation/vm/pte_ref.rst
+Acked-by: Mark Brown <broonie@kernel.org>
 
-When you add a new RST file, you also need to add it to the associated
-index.rst file or it won't be included in the docs build.  Instead,
-you'll get the "not included in any toctree" warning that you surely saw
-when you tested the docs build with this file :)
+--mSiTZPc7Z0AF7E/8
+Content-Type: application/pgp-signature; name="signature.asc"
 
-> diff --git a/Documentation/vm/pte_ref.rst b/Documentation/vm/pte_ref.rst
-> new file mode 100644
-> index 000000000000..c5323a263464
-> --- /dev/null
-> +++ b/Documentation/vm/pte_ref.rst
-> @@ -0,0 +1,212 @@
-> +.. _pte_ref:
+-----BEGIN PGP SIGNATURE-----
 
-Do you need this label anywhere?  If not, I'd leave it out.
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmGL2boACgkQJNaLcl1U
+h9Bx3gf/XHLIMEoOui17lfMQpG17TCnihVcc6BYCq5EZQlOOwi5yLEqwMqwFDKc2
+TnbR6hpDO7wm7eUevhDb9E9FRY8vyGXoV/bZE07XaKlJh7C9h7qiJCzdXroJvZVl
+ClLrBTcMBLKRJGVU4Ff8bvohEigK6iH8Oq2b5whh2mZfA9s8ne5A8K+7edsqwl/u
+FWeYyAwXEYFhaRHJ6wkN5iFwX1XftgkTxUMS4jUBypFM68t9qtCrHNo6nNsArfPU
+6gefYO8LS8FvnJtf84F+oWqiiPalOcGJGw30tYGoyjCJwKSn4ilS8Y5Fj+1MUI14
+oUkyet/xZzRwfpGdbO1ZE8k3KHonyA==
+=QAPF
+-----END PGP SIGNATURE-----
 
-Thanks,
-
-jon
+--mSiTZPc7Z0AF7E/8--
