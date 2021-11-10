@@ -2,159 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DD90444C6A4
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 19:06:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 386D444C6AA
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 19:15:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230429AbhKJSJX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Nov 2021 13:09:23 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:53940 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232516AbhKJSJS (ORCPT
+        id S231679AbhKJSRc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Nov 2021 13:17:32 -0500
+Received: from out03.mta.xmission.com ([166.70.13.233]:50940 "EHLO
+        out03.mta.xmission.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229969AbhKJSR1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Nov 2021 13:09:18 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1636567590;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=cqzkKKVU1TFefm2txuHW5tA1oBvnHRU7MmXEb01dQtg=;
-        b=eb8/yY8Qrat3GpF2HRQ0JwZ32/mQXy19R/dZRo1iP+0iGPOfZk+Ysq46/VTR4KpdtMdawL
-        E4wmlpCA8Y0Wx6h2ZcH5p6VWkpBMIbuPVdo+NVZgcaoUmvB3iqzwkED8tUfTNDT96hqxIt
-        VCG6no8G2Egkq6FmWQGj3FY9c7qtIDk=
-Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
- [209.85.128.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-280-5Zf20JidNVib__DhEhKDJQ-1; Wed, 10 Nov 2021 13:06:28 -0500
-X-MC-Unique: 5Zf20JidNVib__DhEhKDJQ-1
-Received: by mail-wm1-f71.google.com with SMTP id m1-20020a1ca301000000b003231d5b3c4cso3462238wme.5
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Nov 2021 10:06:27 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=cqzkKKVU1TFefm2txuHW5tA1oBvnHRU7MmXEb01dQtg=;
-        b=NqTTdeZrYGVtP6bQ0xx3d7JCrznogEXgeRRmK3ErskT8tlBQzV4no19Id4GHQ5u4oi
-         MnxcAC2xqPOF70AZ1lOkBUUytadkN7QlAnRqc1aiG9l924Y1bIKQM1oTaFeY0gnthgaR
-         uoSCQcM9zIa3A0NpmzzSoauY6CG7jRjp6knM0S+AY7vEAU9eHb4zywHFZGA5wb5SG7p4
-         z6K+BHxPwn7etyIYXoZJtE3dbCu06jYoQqmnjcHi7fvlW3FMaMeofMxwo9iPlttDW03c
-         Y3WlIVKh6k7TsLC1HQ4Cy+TlLflMYbT7NUJ6wvbvoCPnizVf2grbsHgYb73vHmXLtH8C
-         S4fw==
-X-Gm-Message-State: AOAM530/YKayXGiFa+yCWEPjWgQgRIRuSuKkndWHMuz/+h1vX9uAVRo2
-        4LKHyDa8ivEMbjx1sEEXU7awqIe/r5pgWs4uXjhi2sl2rgNbQ6Mmwt2R0jUgakRQMVgXxHRU3H8
-        1mtYhJfGKGzEAdc2uzjdO8/CG
-X-Received: by 2002:a05:600c:510d:: with SMTP id o13mr18448378wms.104.1636567584355;
-        Wed, 10 Nov 2021 10:06:24 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJxU9y/NX64qlc3vXZ1ejqNHzYKNDlRCKkpWhRwE8xA5Lk7aS9uc4qTP3ah1NLedT0vvveXpAw==
-X-Received: by 2002:a05:600c:510d:: with SMTP id o13mr18448327wms.104.1636567584080;
-        Wed, 10 Nov 2021 10:06:24 -0800 (PST)
-Received: from ?IPv6:2a01:e0a:59e:9d80:527b:9dff:feef:3874? ([2a01:e0a:59e:9d80:527b:9dff:feef:3874])
-        by smtp.gmail.com with ESMTPSA id y6sm621380wrh.18.2021.11.10.10.06.22
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 10 Nov 2021 10:06:23 -0800 (PST)
-Subject: Re: [PATCH v4 06/15] KVM: arm64: Add paravirtualization header files
-To:     Gavin Shan <gshan@redhat.com>, kvmarm@lists.cs.columbia.edu
-Cc:     kvm@vger.kernel.org, maz@kernel.org, linux-kernel@vger.kernel.org,
-        shan.gavin@gmail.com, Jonathan.Cameron@huawei.com,
-        pbonzini@redhat.com, vkuznets@redhat.com, will@kernel.org
-References: <20210815005947.83699-1-gshan@redhat.com>
- <20210815005947.83699-7-gshan@redhat.com>
-From:   Eric Auger <eauger@redhat.com>
-Message-ID: <82506a31-7b32-f8e2-c0cb-0f39d204ef3a@redhat.com>
-Date:   Wed, 10 Nov 2021 19:06:22 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.1
+        Wed, 10 Nov 2021 13:17:27 -0500
+Received: from in02.mta.xmission.com ([166.70.13.52]:52310)
+        by out03.mta.xmission.com with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.93)
+        (envelope-from <ebiederm@xmission.com>)
+        id 1mks7K-000pJ1-DU; Wed, 10 Nov 2021 11:14:38 -0700
+Received: from ip68-227-160-95.om.om.cox.net ([68.227.160.95]:44490 helo=email.froward.int.ebiederm.org.xmission.com)
+        by in02.mta.xmission.com with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.93)
+        (envelope-from <ebiederm@xmission.com>)
+        id 1mks7J-007tkI-Hf; Wed, 10 Nov 2021 11:14:38 -0700
+From:   ebiederm@xmission.com (Eric W. Biederman)
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     <linux-kernel@vger.kernel.org>, <linux-arch@vger.kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Christoph Hellwig <hch@infradead.org>,
+        Andy Lutomirski <luto@amacapital.net>
+References: <87tugkm3gc.fsf@disp2133>
+Date:   Wed, 10 Nov 2021 12:14:02 -0600
+In-Reply-To: <87tugkm3gc.fsf@disp2133> (Eric W. Biederman's message of "Wed,
+        10 Nov 2021 09:32:19 -0600")
+Message-ID: <874k8j3ml1.fsf@email.froward.int.ebiederm.org>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
 MIME-Version: 1.0
-In-Reply-To: <20210815005947.83699-7-gshan@redhat.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
+X-XM-SPF: eid=1mks7J-007tkI-Hf;;;mid=<874k8j3ml1.fsf@email.froward.int.ebiederm.org>;;;hst=in02.mta.xmission.com;;;ip=68.227.160.95;;;frm=ebiederm@xmission.com;;;spf=neutral
+X-XM-AID: U2FsdGVkX1/PDsEsELP7apBRzH/mY/wQRDe8KsIvi4k=
+X-SA-Exim-Connect-IP: 68.227.160.95
+X-SA-Exim-Mail-From: ebiederm@xmission.com
+X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on sa03.xmission.com
+X-Spam-Level: **
+X-Spam-Status: No, score=2.1 required=8.0 tests=ALL_TRUSTED,BAYES_50,
+        DCC_CHECK_NEGATIVE,T_TM2_M_HEADER_IN_MSG,XMSubMetaSxObfu_03,
+        XMSubMetaSx_00 autolearn=disabled version=3.4.2
+X-Spam-Virus: No
+X-Spam-Report: * -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
+        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
+        *      [score: 0.5000]
+        *  0.0 T_TM2_M_HEADER_IN_MSG BODY: No description available.
+        * -0.0 DCC_CHECK_NEGATIVE Not listed in DCC
+        *      [sa03 1397; Body=1 Fuz1=1 Fuz2=1]
+        *  1.0 XMSubMetaSx_00 1+ Sexy Words
+        *  1.2 XMSubMetaSxObfu_03 Obfuscated Sexy Noun-People
+X-Spam-DCC: XMission; sa03 1397; Body=1 Fuz1=1 Fuz2=1 
+X-Spam-Combo: **;Linus Torvalds <torvalds@linux-foundation.org>
+X-Spam-Relay-Country: 
+X-Spam-Timing: total 333 ms - load_scoreonly_sql: 0.03 (0.0%),
+        signal_user_changed: 3.9 (1.2%), b_tie_ro: 2.7 (0.8%), parse: 0.62
+        (0.2%), extract_message_metadata: 12 (3.7%), get_uri_detail_list: 1.15
+        (0.3%), tests_pri_-1000: 17 (5.2%), tests_pri_-950: 1.08 (0.3%),
+        tests_pri_-900: 0.82 (0.2%), tests_pri_-90: 78 (23.5%), check_bayes:
+        77 (23.1%), b_tokenize: 4.6 (1.4%), b_tok_get_all: 6 (1.7%),
+        b_comp_prob: 1.50 (0.5%), b_tok_touch_all: 62 (18.7%), b_finish: 0.73
+        (0.2%), tests_pri_0: 208 (62.5%), check_dkim_signature: 0.38 (0.1%),
+        check_dkim_adsp: 1.60 (0.5%), poll_dns_idle: 0.19 (0.1%),
+        tests_pri_10: 1.71 (0.5%), tests_pri_500: 6 (1.8%), rewrite_mail: 0.00
+        (0.0%)
+Subject: Re: [GIT PULL] exit cleanups for v5.16
+X-SA-Exim-Version: 4.2.1 (built Sat, 08 Feb 2020 21:53:50 +0000)
+X-SA-Exim-Scanned: Yes (on in02.mta.xmission.com)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Gavin,
+ebiederm@xmission.com (Eric W. Biederman) writes:
 
-On 8/15/21 2:59 AM, Gavin Shan wrote:
-> We need put more stuff in the paravirtualization header files when
-> the asynchronous page fault is supported. The generic header files
-> can't meet the goal.
-you need to explain why
- This duplicate the generic header files to be
-s/This duplicate/Duplicate
-> our platform specific header files. It's the preparatory work to
-> support the asynchronous page fault in the subsequent patches:
-why duplication and not move. Shouldn't it be squashed with another
-subsequent patch?
+> Linus,
+>
+> Please pull the exit-cleanups-for-v5.16 branch from the git tree:
+>
+>   git://git.kernel.org/pub/scm/linux/kernel/git/ebiederm/user-namespace.git exit-cleanups-for-v5.16
+>
+>   HEAD: f91140e4553408cacd326624cd50fc367725e04a Arnd Bergmann <arnd@arndb.de>
+>
+>
+> While looking at some issues related to the exit path in the kernel I
+> found several instances where the code is not using the existing
+> abstractions properly.
+>
+> This set of changes introduces force_fatal_sig a way of sending
+> a signal and not allowing it to be caught, and corrects the
+> misuse of the existing abstractions that I found.
+>
+> A lot of the misuse of the existing abstractions are silly things such
+> as doing something after calling a no return function, rolling BUG by
+> hand, doing more work than necessary to terminate a kernel thread, or
+> calling do_exit(SIGKILL) instead of calling force_sig(SIGKILL).
+>
+> In the review a deficiency in force_fatal_sig and force_sig_seccomp
+> where ptrace or sigaction could prevent the delivery of the signal was
+> found.  I have added a change that adds SA_IMMUTABLE to change that
+> makes it impossible to interrupt the delivery of those signals, and
+> allows backporting to fix force_sig_seccomp.
+>
+> Arnd found an issue where a function passed to kthread_run had the wrong
+> prototype, and after my cleanup was failing to build.
+
+I forgot to mention there is a minor conflict with the staging tree.
+One of the functions that I cleaned up was in a file that was completely
+removed from staging.  The result is that when you encounter the
+conflict that file can simply be removed.
 
 Eric
-> 
->    include/uapi/asm-generic/kvm_para.h
->    include/asm-generic/kvm_para.h
-> 
->    arch/arm64/include/uapi/asm/kvm_para.h
->    arch/arm64/include/asm/kvm_para.h
-> 
-> Signed-off-by: Gavin Shan <gshan@redhat.com>
-> ---
->  arch/arm64/include/asm/kvm_para.h      | 27 ++++++++++++++++++++++++++
->  arch/arm64/include/uapi/asm/Kbuild     |  2 --
->  arch/arm64/include/uapi/asm/kvm_para.h |  5 +++++
->  3 files changed, 32 insertions(+), 2 deletions(-)
->  create mode 100644 arch/arm64/include/asm/kvm_para.h
->  create mode 100644 arch/arm64/include/uapi/asm/kvm_para.h
-> 
-> diff --git a/arch/arm64/include/asm/kvm_para.h b/arch/arm64/include/asm/kvm_para.h
-> new file mode 100644
-> index 000000000000..0ea481dd1c7a
-> --- /dev/null
-> +++ b/arch/arm64/include/asm/kvm_para.h
-> @@ -0,0 +1,27 @@
-> +/* SPDX-License-Identifier: GPL-2.0 */
-> +#ifndef _ASM_ARM_KVM_PARA_H
-> +#define _ASM_ARM_KVM_PARA_H
-> +
-> +#include <uapi/asm/kvm_para.h>
-> +
-> +static inline bool kvm_check_and_clear_guest_paused(void)
-> +{
-> +	return false;
-> +}
-> +
-> +static inline unsigned int kvm_arch_para_features(void)
-> +{
-> +	return 0;
-> +}
-> +
-> +static inline unsigned int kvm_arch_para_hints(void)
-> +{
-> +	return 0;
-> +}
-> +
-> +static inline bool kvm_para_available(void)
-> +{
-> +	return false;
-> +}
-> +
-> +#endif /* _ASM_ARM_KVM_PARA_H */
-> diff --git a/arch/arm64/include/uapi/asm/Kbuild b/arch/arm64/include/uapi/asm/Kbuild
-> index 602d137932dc..f66554cd5c45 100644
-> --- a/arch/arm64/include/uapi/asm/Kbuild
-> +++ b/arch/arm64/include/uapi/asm/Kbuild
-> @@ -1,3 +1 @@
->  # SPDX-License-Identifier: GPL-2.0
-> -
-> -generic-y += kvm_para.h
-> diff --git a/arch/arm64/include/uapi/asm/kvm_para.h b/arch/arm64/include/uapi/asm/kvm_para.h
-> new file mode 100644
-> index 000000000000..cd212282b90c
-> --- /dev/null
-> +++ b/arch/arm64/include/uapi/asm/kvm_para.h
-> @@ -0,0 +1,5 @@
-> +/* SPDX-License-Identifier: GPL-2.0 WITH Linux-syscall-note */
-> +#ifndef _UAPI_ASM_ARM_KVM_PARA_H
-> +#define _UAPI_ASM_ARM_KVM_PARA_H
-> +
-> +#endif /* _UAPI_ASM_ARM_KVM_PARA_H */
-> 
-
