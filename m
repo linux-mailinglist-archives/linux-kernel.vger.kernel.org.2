@@ -2,154 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F3B644C5B5
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 18:05:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BA87844C5B8
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 18:06:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232453AbhKJRHt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Nov 2021 12:07:49 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49692 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231612AbhKJRHs (ORCPT
+        id S230341AbhKJRJL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Nov 2021 12:09:11 -0500
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:41430 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229531AbhKJRJK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Nov 2021 12:07:48 -0500
-Received: from mail-lj1-x22b.google.com (mail-lj1-x22b.google.com [IPv6:2a00:1450:4864:20::22b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 65A8BC061764;
-        Wed, 10 Nov 2021 09:05:00 -0800 (PST)
-Received: by mail-lj1-x22b.google.com with SMTP id 13so6560053ljj.11;
-        Wed, 10 Nov 2021 09:05:00 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=rZ1Zl46xEZQDGHVO4B1TxjrGhlKCxJ4w4SjGu0D6fHk=;
-        b=gMl53kRifDnyOXBEmqc2rS3j2CJi4CTk6mbenQ2nClx/ZrA3OMyT8RpLruWFfHGXt8
-         cjvacfW0ZBNqM9QNV5JiD/dlzNXo4bYZSVQDYYr5IpQIXc7nm4xJm5tu/+w5H9bO9/je
-         hY6RmnYaRiZyyl23ifJd6iS7tNGk7LUcJrVjwvWy9A/14rroSUVARFqp/ELbRHyTMAyF
-         VyzKUQ+3Qu/vwiK6xcfg4sVvHHjWMeX5bR6FkFDUzIVGpic/CL7gyAOfnfEeHROK5Q8w
-         V62sVYF2/ddX/JTwGK7en6LtNEFMtgI1Cfri/L2kFD5GxN5C3euxdGQAuOrxNTwSDbZb
-         c0Lg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=rZ1Zl46xEZQDGHVO4B1TxjrGhlKCxJ4w4SjGu0D6fHk=;
-        b=QzQ/d1uk68FZcEUvuMBSbyhY5VnQ16+dT3mFj+KFy3YO3Yu3ANOoRn3r4tXiCyBaIk
-         QWeO/tVp/Asj6AxWrtjvzA96SLXjnMpj+Agk7aR50xM4Nr6yqnhbD6U7YOTWh8M0Y8Wg
-         UVQqlMTHOpL/oVs0Qo8n9WOMo1V5AjdMsarH4E21OmXou3D3Zod4kzrazAS8XfKg4tcX
-         3h3VicJ/b5DATWg/caTFgALatjIXdVIfyswSaSy4BRGd1AyteBR6mMrrpojp821KQGGh
-         fLtJ0ZrputC4Dhf2TtFCHuoojrmNUF33f4+O9qusa9/2mrdZ9XeTnKHYLDqzWYCBp7r0
-         f8gw==
-X-Gm-Message-State: AOAM533RV9lfmMOJty1YqxWUtTrsVDWzAKLOVimUEHLeKXEmHaQWTr98
-        Ojy4nKvP6TTqlb1jFQDaqDg17kveU7xt2nuMpT8=
-X-Google-Smtp-Source: ABdhPJwJnmkr6d7fuImEGD4NV4cjsFo+YJ+wFedBnB1RYFcqsr4CHdHdYFy6pl1MpKliBr7HkZG3kfmpGYcXmGcPcxI=
-X-Received: by 2002:a2e:2f1d:: with SMTP id v29mr410304ljv.439.1636563898700;
- Wed, 10 Nov 2021 09:04:58 -0800 (PST)
+        Wed, 10 Nov 2021 12:09:10 -0500
+Received: from pps.filterd (m0098409.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 1AAGH9W4030075
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Nov 2021 17:06:22 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=to : cc : subject : from
+ : message-id : date : content-type : content-transfer-encoding :
+ mime-version; s=pp1; bh=Yk3cHWP742vBHB4thVRR3JQ32BPj70Jto97RwUAnsCo=;
+ b=gEMxbzQpMp0GOfHW2XCn7ztSdR+I/qx+Ce1AT3u/kXDOgkrloaIVGamYtL4GMgMrvRPG
+ O5T34EeIp7Zj+cZfskKSZEsBK5WAvF3toR1279IPbw708pdNkKVX/qcRmhCfcTILfo3T
+ wBsD5C1ApBCUFAKgLUVSkSJYEn+mdxZ5ayI6K3HonKjQWR7PVdKkxeP4OndCVG83tDzH
+ 6Gmg50VqiMW5DKASAFHFVZNyVShNPydl6wTJh0tstffwqR6YYPDY1SO9vJcROB6O62mt
+ hSIAnrXbZ6kxQuSSppDtVtDURmYvKIYEXqCkVrYHuzlla1uxBaTnQ8PDZE52Gw/mPvZ0 uA== 
+Received: from ppma05wdc.us.ibm.com (1b.90.2fa9.ip4.static.sl-reverse.com [169.47.144.27])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3c8hfg163u-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT)
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Nov 2021 17:06:22 +0000
+Received: from pps.filterd (ppma05wdc.us.ibm.com [127.0.0.1])
+        by ppma05wdc.us.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 1AAGvZPD006426
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Nov 2021 17:06:21 GMT
+Received: from b01cxnp22034.gho.pok.ibm.com (b01cxnp22034.gho.pok.ibm.com [9.57.198.24])
+        by ppma05wdc.us.ibm.com with ESMTP id 3c5hbcj2g3-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT)
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Nov 2021 17:06:21 +0000
+Received: from b01ledav003.gho.pok.ibm.com (b01ledav003.gho.pok.ibm.com [9.57.199.108])
+        by b01cxnp22034.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 1AAH6KZT63832536
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 10 Nov 2021 17:06:20 GMT
+Received: from b01ledav003.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 6D612B2070;
+        Wed, 10 Nov 2021 17:06:20 +0000 (GMT)
+Received: from b01ledav003.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 59876B206E;
+        Wed, 10 Nov 2021 17:06:20 +0000 (GMT)
+Received: from mww0141.wdc07m.mail.ibm.com (unknown [9.208.70.161])
+        by b01ledav003.gho.pok.ibm.com (Postfix) with ESMTPS;
+        Wed, 10 Nov 2021 17:06:20 +0000 (GMT)
+To:     linux-kernel@vger.kernel.org
+Cc:     "Aniket Kulkarni" <aniket.kulkarni@us.ibm.com>,
+        "Rajshekar Iyer" <iyerr@us.ibm.com>,
+        "Pawan Powar" <ppowar@us.ibm.com>, ask@linux.vnet.ibm.com
+Subject: [BUG: Bad page map in process XXXXX  pte:8000000e72680867 pmd:ff48e6067]
+ Application is getting bad data when trying to mmap memory allocated by
+ kernel device drivers
+From:   "Harish Mara" <Harish.Mara@ibm.com>
+Message-ID: <OFC9FBB3AB.B34DAD21-ON00258789.005D2811-85258789.005DF5B3@ibm.com>
+Date:   Wed, 10 Nov 2021 13:06:17 -0400
+Content-Type: text/plain; charset="ISO-8859-1"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-References: <20211109200840.135019-1-puranjay12@gmail.com> <20211109200840.135019-2-puranjay12@gmail.com>
- <YYuIcPLx0uoUZ88B@smile.fi.intel.com>
-In-Reply-To: <YYuIcPLx0uoUZ88B@smile.fi.intel.com>
-From:   Puranjay Mohan <puranjay12@gmail.com>
-Date:   Wed, 10 Nov 2021 22:34:43 +0530
-Message-ID: <CANk7y0jRKVrTRZCzq0W1G7_Ef1QqF5yqKs==DwsR+xuhra3b4A@mail.gmail.com>
-Subject: Re: [PATCH v2 1/2] device property: Add fwnode_irq_get_byname()
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     Greg KH <gregkh@linuxfoundation.org>, rafael@kernel.org,
-        heikki.krogerus@linux.intel.com, kuba@kernel.org,
-        saravanak@google.com,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        "Hennerich, Michael" <Michael.Hennerich@analog.com>,
-        Jonathan Cameron <jic23@kernel.org>,
-        linux-iio <linux-iio@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+X-KeepSent: C9FBB3AB:B34DAD21-00258789:005D2811; name=$KeepSent; type=4
+X-Mailer: HCL Notes Build V1101FP3_03312021 SHF15 May 21, 2021
+X-Disclaimed: 50439
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: jUCoFJkxLMwz3YLRD_vy5ZZ-r-7FOrj3
+X-Proofpoint-ORIG-GUID: jUCoFJkxLMwz3YLRD_vy5ZZ-r-7FOrj3
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.205,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.0.607.475
+ definitions=2021-11-10_06,2021-11-08_02,2020-04-07_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
+ lowpriorityscore=0 mlxscore=0 adultscore=0 malwarescore=0 suspectscore=0
+ spamscore=0 clxscore=1011 mlxlogscore=903 phishscore=0 impostorscore=0
+ bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2110150000 definitions=main-2111100086
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 10, 2021 at 2:23 PM Andy Shevchenko
-<andriy.shevchenko@linux.intel.com> wrote:
->
-> On Wed, Nov 10, 2021 at 01:38:39AM +0530, Puranjay Mohan wrote:
-> > The fwnode framework did not have means to obtain the IRQ number from
-> > the name of a node.
-> > Add that now, in form of the fwnode_irq_get_byname() function.
->
-> ...
->
-> > +int fwnode_irq_get_byname(struct fwnode_handle *fwnode, const char *name)
-> > +{
-> > +     int index;
-> > +
-> > +     if (unlikely(!name))
-> > +             return -EINVAL;
->
-> > +     index = fwnode_property_match_string(fwnode, "interrupt-names", name);
-> > +     if (index < 0)
-> > +             return index;
->
-> It won't work like this. The ACPI table quite likely won't have this in them.
-> Also it doesn't cover the GPIO interrupts in ACPI case.
->
-> > +     return fwnode_irq_get(fwnode, index);
->
-> Neither this covers GPIO IRQs.
->
-> > +}
-> > +EXPORT_SYMBOL(fwnode_irq_get_byname);
->
-> So, first you need to provide a design for this how ACPI cases can be handled.
->
-> Imagine these cases (at least) for _CRS method in ACPI:
->   1/ Single GSI
->
->         Interrupt()
->
->   2/ Single GPIO IRQ
->
->         GpioInt()
->
->   3/ Both in different orders
->     a)
->         Interrupt()
->         GpioInt()
->
->     b)
->         GpioInt()
->         Interrupt()
->
->   4/ Mixed (complicated cases)
->
->         Interrupt()
->         Interrupt()
->         GpioInt()
->         Interrupt()
->         GpioInt()
->
-> Obvious question, what does the index mean in all these cases?
->
-> Next one is, how can we quirk out the platforms with the old ACPI tables
-> where no properties are provided? For GPIO there is struct acpi_gpio_params
-> which goes deep into ACPI glue layer.
->
-> Luckily, the GPIO IRQ case has already available APIs for indexing and naming
-> match: acpi_dev_gpio_irq_get_by().
->
-> Hence, the main task is to define index in cases like 4 and see what can be
-> done for the GSI cases.
->
-> --
-> With Best Regards,
-> Andy Shevchenko
->
->
-Hi Andy,
-I wrote this function keeping the device tree in mind. I will have to
-look into ACPI and see how the cases you mentioned can be implemented.
-Let's see how far I can get with understanding the ACPI.
+We have kernel drivers that allocate memory using ?alloc=5Fpages=5Fnode?, t=
+he=20
+size of the memory allocation is fixed at 128KB.
+The pages are allocated with ?GFP=5FKERNEL | =5FGFP=5FCOMP?. And the pages =
+thus=20
+allocated are marked as Reserved.
+The driver does multiple such allocations at the beginning. This memory is =
 
--- 
-Thanks and Regards
+reused for various requests the driver handles.
+The linux kernel device drivers also create char devices. The char devices =
 
-Yours Truly,
+are initialized with our own file=5Foperations that overload owner, read,=20
+poll, unlocked=5Fioctl, mmap, open, release, compat=5Fioctl.
+The mmap also registers vm=5Foperations=5Fstruct to the vm=5Farea=5Fstruct =
+and=20
+sets the VM=5FDONTEXPAND flag. The vm=5Foperations=5Fstruct.fault implement=
+ation=20
+finds the appropriate page and increments the refcount and sets the=20
+vmf->page.
+The user space processes open these device file and mmap the address=20
+range. The size of mmap could be a single allocation (128KB) or multiple=20
+allocations.
 
-Puranjay Mohan
+The problem we are facing is when the user space mmap?s a size of 2MB.=20
+Sometimes the memory that gets mapped is garbage (not correct) and we=20
+always notice ?Bad page map? errors.=20
+
+P.S: To solve this issue, we removed the ?=5FGFP=5FCOMP? flag from allocati=
+on.=20
+However this created a different problem on some cloud instances, we are=20
+seeing the ?Bad page? errors during the memory allocation that happens at=20
+the initialization phase.
+
