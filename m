@@ -2,131 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 16B4244C5F5
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 18:30:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B860844C5FB
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 18:30:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231823AbhKJRc5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Nov 2021 12:32:57 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55300 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230230AbhKJRc4 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Nov 2021 12:32:56 -0500
-Received: from mail-lf1-x12b.google.com (mail-lf1-x12b.google.com [IPv6:2a00:1450:4864:20::12b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2071FC061764
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Nov 2021 09:30:08 -0800 (PST)
-Received: by mail-lf1-x12b.google.com with SMTP id f18so7774287lfv.6
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Nov 2021 09:30:08 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=k62P9OFKi7tZqOtk4kBzcgOA3yFmavp9RFu5P0iMC0g=;
-        b=ljxJneVdEcWQ3qyU1mPxpDQlUwwN8+KNbwvfNpwpuRkApjgLJxOKjjW48ozjxduyk2
-         0dDyEfPebZH4w1FESanp5t9gnvTDOczY8fqIlI5+nl/rxqWSZcF4Na+asDo6Qet0sFZ6
-         1oWiDAMSMEefSXvc1kOaOojDK13HmRJ33IgYQUvnlFbKjZ4/1VJlM9cZ2T8fvaRjMp7J
-         PW+ccuSHzksl0bB/SF5CD1zX5V8xo6camlxe6oUpF70m/inV3eZPZ0FhKtMTHaEvZCq5
-         bNNwUMxUPC44MCWw3SiWm5WIV8ioSFUhcZ/3CmEbxdCUiHgdVtSTOHaY1XcVXil0yUYh
-         EdzQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=k62P9OFKi7tZqOtk4kBzcgOA3yFmavp9RFu5P0iMC0g=;
-        b=3HxZxGiGJ6NAn7zCuNNPCym0fUvwqH6dDc6zrilhwcA9XnXUNbLB+a7wYX2vz9NUQy
-         Q0Y7GCKt/Ml1ArC0SS6McWr86P7nXlVt2Qm31ymG/EGYOGkLo8Ao3shSLZgdMyX90oNa
-         x6DxET1Mm8UGR+hU7YnTS5ZBC8y+9HFGzQe0yWzdCSrp8+udSY32+rmn0E9OC59b4phb
-         FGZMkTsekAtVzgR6j+QTZne6PX6aZv6LCy3eNZDdhXSsujqBa4hcrKRnpAPd2xjeJarK
-         gZkkMZ515zjSazj9PS5WlhKZKhRj0VP5e1i5GxBTZGpZek50zG2c73S/V/hsalNj7ffy
-         Bw0w==
-X-Gm-Message-State: AOAM531MYYW0EucVYTRO9ykQf7dcg+fMR3gFGhguha0SnzaBOMxYJ5nb
-        sOlirfAynTM3vNFezrqWofpnsjMatztNaSkD87dGvA==
-X-Google-Smtp-Source: ABdhPJw2bxIy8Du772N/Ij9qar0UNe2w1m5oda+QNyfinfOMVNeyPkdm0Q5Sgwf4E99E7hLDHhk9QDbDtomvdcxfc+E=
-X-Received: by 2002:a05:6512:3e12:: with SMTP id i18mr718737lfv.456.1636565406166;
- Wed, 10 Nov 2021 09:30:06 -0800 (PST)
+        id S232239AbhKJRdb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Nov 2021 12:33:31 -0500
+Received: from mga02.intel.com ([134.134.136.20]:35409 "EHLO mga02.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230230AbhKJRda (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Nov 2021 12:33:30 -0500
+X-IronPort-AV: E=McAfee;i="6200,9189,10164"; a="219924230"
+X-IronPort-AV: E=Sophos;i="5.87,224,1631602800"; 
+   d="scan'208";a="219924230"
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Nov 2021 09:30:42 -0800
+X-IronPort-AV: E=Sophos;i="5.87,224,1631602800"; 
+   d="scan'208";a="732571431"
+Received: from rwmcguir-mobl.amr.corp.intel.com (HELO intel.com) ([10.252.137.122])
+  by fmsmga006-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Nov 2021 09:30:41 -0800
+Date:   Wed, 10 Nov 2021 09:30:40 -0800
+From:   Ben Widawsky <ben.widawsky@intel.com>
+To:     Jonathan Cameron <Jonathan.Cameron@huawei.com>
+Cc:     Dan Williams <dan.j.williams@intel.com>, linux-cxl@vger.kernel.org,
+        Ira Weiny <ira.weiny@intel.com>, linux-pci@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v6 07/10] cxl/pci: Split cxl_pci_setup_regs()
+Message-ID: <20211110173040.vttuxu2ggkqxfnza@intel.com>
+References: <163379787433.692348.2451270397309803556.stgit@dwillia2-desk3.amr.corp.intel.com>
+ <163434053788.914258.18412599112859205220.stgit@dwillia2-desk3.amr.corp.intel.com>
+ <20211110171437.00007160@Huawei.com>
 MIME-Version: 1.0
-References: <20211102142331.3753798-1-pgonda@google.com> <20211102142331.3753798-2-pgonda@google.com>
- <YYqhT+Enba5xa4cO@google.com> <CAMkAt6oVySH-1g+EXKvxQ9vmBV8rwTLq=qfe2+VZC+c6vATL7w@mail.gmail.com>
- <45af7051-aab0-2b19-2904-64eceec93df5@amd.com>
-In-Reply-To: <45af7051-aab0-2b19-2904-64eceec93df5@amd.com>
-From:   Peter Gonda <pgonda@google.com>
-Date:   Wed, 10 Nov 2021 10:29:54 -0700
-Message-ID: <CAMkAt6pivYG=nV_EhP9Uj2gB8kBQB4dAnTcSeGd9249KuWzsyg@mail.gmail.com>
-Subject: Re: [PATCH V3 1/4] crypto: ccp - Fix SEV_INIT error logging on init
-To:     Tom Lendacky <Thomas.Lendacky@amd.com>
-Cc:     Sean Christopherson <seanjc@google.com>,
-        Marc Orr <marcorr@google.com>,
-        David Rientjes <rientjes@google.com>,
-        Brijesh Singh <brijesh.singh@amd.com>,
-        Joerg Roedel <jroedel@suse.de>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        John Allen <john.allen@amd.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211110171437.00007160@Huawei.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 9, 2021 at 12:25 PM Tom Lendacky <thomas.lendacky@amd.com> wrote:
->
-> On 11/9/21 10:46 AM, Peter Gonda wrote:
-> > On Tue, Nov 9, 2021 at 9:27 AM Sean Christopherson <seanjc@google.com> wrote:
-> >> On Tue, Nov 02, 2021, Peter Gonda wrote:
->
-> ...
->
-> >>
-> >>          SEV: failed to INIT error 0, rc -16
-> >>
-> >> which a bit head scratching without looking at the code.  AFAICT, the PSP return
-> >> codes aren't intrinsically hex, so printing error as a signed demical and thus
-> >>
-> >>          SEV: failed to INIT error -1, rc -16
-> >>
-> >> would be less confusing.
-> >>
-> >> And IMO requiring the caller to initialize error is will be neverending game of
-> >> whack-a-mole.  E.g. sev_ioctl() fails to set "error" in the userspace structure,
-> >> and literally every function exposed via include/linux/psp-sev.h has this same
-> >> issue.  Case in point, the retry path fails to re-initialize "error" and will
-> >> display stale information if the second sev_platform_init() fails without reaching
-> >> the PSP.
-> >
-> > OK I can update __sev_platform_init_locked() to set error to -1. That
-> > seems pretty reasonable. Tom, is that OK with you?
->
-> Yup, I'm ok with using -1.
->
-> >
->
-> ...
->
-> >
-> > These comments seem fine to me. But I'll refrain from updating
-> > anything here since this seems out-of-scope of this series. Happy to
-> > discuss further and work on that if Tom is interested in those
-> > refactors too.
->
-> That's one of those things we've wanted to get around to improving but
-> just haven't had the time. So, yes, if you wish to refactor the 'error'
-> related area, that would be great.
+On 21-11-10 17:14:37, Jonathan Cameron wrote:
+> On Fri, 15 Oct 2021 16:30:42 -0700
+> Dan Williams <dan.j.williams@intel.com> wrote:
+> 
+> > From: Ben Widawsky <ben.widawsky@intel.com>
+> > 
+> > In preparation for moving parts of register mapping to cxl_core, split
+> > cxl_pci_setup_regs() into a helper that finds register blocks,
+> > (cxl_find_regblock()), and a generic wrapper that probes the precise
+> > register sets within a block (cxl_setup_regs()).
+> > 
+> > Move the actual mapping (cxl_map_regs()) of the only register-set that
+> > cxl_pci cares about (memory device registers) up a level from the former
+> > cxl_pci_setup_regs() into cxl_pci_probe().
+> > 
+> > With this change the unused component registers are no longer mapped,
+> > but the helpers are primed to move into the core.
+> > 
+> > [djbw: drop cxl_map_regs() for component registers]
+> > 
+> > Signed-off-by: Ben Widawsky <ben.widawsky@intel.com>
+> > [djbw: rebase on the cxl_register_map refactor]
+> > Reviewed-by: Ira Weiny <ira.weiny@intel.com>
+> > Reviewed-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+> > Signed-off-by: Dan Williams <dan.j.williams@intel.com>
+> 
+> Hi Ben / all,
+> 
+> This is probably the best patch to comment on for this
+> (note it is not a comment about this patch, but more the state we end up
+> in after it).
+> 
+> cxl_map_regs() is a generic function, but with the new split approach
+> as a result of this patch, we now always know at the caller which of
+> the types of map we are doing.
+> 
+> I think it would be clearer to embrace that situation and drop cxl_map_regs()
+> in favor of directly calling the relevant specific versions such as
+> cxl_map_device_regs().  I can't immediately see how the generic cxl_map_regs()
+> will be useful to us going forwards.
+> 
+> Jonathan
 
-OK so when I actually sat down to work on this. I realized this is
-bigger than I thought. If we want to have error == -1 for all return
-from psp-sev.h functions where the PSP isn't called yet there are a
-lot of changes. For example if CONFIG_CRYPTO_DEV_SP_PSP is not defined
-all these stubs need to be to set `*errror == -`, basically all these
-functions need to be updated.
-
-So to keep this series more targeted. I think I'll drop the error
-here. And just have this patch print the rc value. If what I said
-above seems reasonable I'll do those error refactors. Are people
-envisioning something else for the error fixups?
-
->
-> Thanks,
-> Tom
->
-> >
+I completely agree. Long term, something like cxl_map_regs() might be desirable
+for a Type2 device, but we have no such user today. Patches welcome?
