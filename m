@@ -2,35 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 94D7644C7D8
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 19:53:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A65744C7C6
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 19:53:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233918AbhKJSzv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Nov 2021 13:55:51 -0500
-Received: from mail.kernel.org ([198.145.29.99]:53486 "EHLO mail.kernel.org"
+        id S232933AbhKJSzX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Nov 2021 13:55:23 -0500
+Received: from mail.kernel.org ([198.145.29.99]:47728 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233931AbhKJSxw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Nov 2021 13:53:52 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5196361994;
-        Wed, 10 Nov 2021 18:48:47 +0000 (UTC)
+        id S233283AbhKJSwX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Nov 2021 13:52:23 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1B66361213;
+        Wed, 10 Nov 2021 18:47:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1636570127;
-        bh=08oGUgCNKqZEEcbBNz54bpGRAWPqPM6qIl8eztjzCSo=;
+        s=korg; t=1636570076;
+        bh=IRD058EqffoU4oR3zn7sHGTIZFLRmGBQfY8p/Vh51RM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=R16DxcV1x0RT3u/wSgqL4x5zvKWGg1pAnXc/8OnP5zemRgmLyDt3D8Zm7f+EAR1tg
-         uawrKHQb1GXhe4GnMIfq1YxdProxwgCh8h/BAMQ4nCal/7xWKPXipZBQXQ6xLY2hqJ
-         WWb1m0iZsNbR4iajhFYOXPOSGEa3h0wSrxYePXe4=
+        b=bDnoLLaP7kOCGlaB4vKm02IRGYcMUhsO/hgh3M8tpBWGCH2p9Uj815PLRgScJI/Tk
+         otV+Z1maJkRZo9LXOe4q4xrSPo6GYDAe4kOVemneamrfo4rV2wwaytvOhjH711MpHf
+         2YXqOUEfZeVQEntV1jNLjAFF+EbXb9MgGbIdhTTU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Alan Stern <stern@rowland.harvard.edu>,
-        James Buren <braewoods+lkml@braewoods.net>
-Subject: [PATCH 5.10 08/21] usb-storage: Add compatibility quirk flags for iODD 2531/2541
+        stable@vger.kernel.org, Larry Finger <Larry.Finger@lwfinger.net>,
+        Johan Hovold <johan@kernel.org>
+Subject: [PATCH 5.4 15/17] staging: rtl8192u: fix control-message timeouts
 Date:   Wed, 10 Nov 2021 19:43:54 +0100
-Message-Id: <20211110182003.227552888@linuxfoundation.org>
+Message-Id: <20211110182002.699183829@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211110182002.964190708@linuxfoundation.org>
-References: <20211110182002.964190708@linuxfoundation.org>
+In-Reply-To: <20211110182002.206203228@linuxfoundation.org>
+References: <20211110182002.206203228@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,43 +39,105 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: James Buren <braewoods+lkml@braewoods.net>
+From: Johan Hovold <johan@kernel.org>
 
-commit 05c8f1b67e67dcd786ae3fe44492bbc617b4bd12 upstream.
+commit 4cfa36d312d6789448b59a7aae770ac8425017a3 upstream.
 
-These drive enclosures have firmware bugs that make it impossible to mount
-a new virtual ISO image after Linux ejects the old one if the device is
-locked by Linux. Windows bypasses this problem by the fact that they do
-not lock the device. Add a quirk to disable device locking for these
-drive enclosures.
+USB control-message timeouts are specified in milliseconds and should
+specifically not vary with CONFIG_HZ.
 
-Acked-by: Alan Stern <stern@rowland.harvard.edu>
-Signed-off-by: James Buren <braewoods+lkml@braewoods.net>
-Cc: stable <stable@vger.kernel.org>
-Link: https://lore.kernel.org/r/20211014015504.2695089-1-braewoods+lkml@braewoods.net
+Fixes: 8fc8598e61f6 ("Staging: Added Realtek rtl8192u driver to staging")
+Cc: stable@vger.kernel.org      # 2.6.33
+Acked-by: Larry Finger <Larry.Finger@lwfinger.net>
+Signed-off-by: Johan Hovold <johan@kernel.org>
+Link: https://lore.kernel.org/r/20211025120910.6339-2-johan@kernel.org
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/usb/storage/unusual_devs.h |   10 ++++++++++
- 1 file changed, 10 insertions(+)
+ drivers/staging/rtl8192u/r8192U_core.c |   18 +++++++++---------
+ 1 file changed, 9 insertions(+), 9 deletions(-)
 
---- a/drivers/usb/storage/unusual_devs.h
-+++ b/drivers/usb/storage/unusual_devs.h
-@@ -407,6 +407,16 @@ UNUSUAL_DEV(  0x04b8, 0x0602, 0x0110, 0x
- 		USB_SC_SCSI, USB_PR_BULK, NULL, US_FL_SINGLE_LUN),
+--- a/drivers/staging/rtl8192u/r8192U_core.c
++++ b/drivers/staging/rtl8192u/r8192U_core.c
+@@ -236,7 +236,7 @@ int write_nic_byte_E(struct net_device *
  
- /*
-+ * Reported by James Buren <braewoods+lkml@braewoods.net>
-+ * Virtual ISOs cannot be remounted if ejected while the device is locked
-+ * Disable locking to mimic Windows behavior that bypasses the issue
-+ */
-+UNUSUAL_DEV(  0x04c5, 0x2028, 0x0001, 0x0001,
-+		"iODD",
-+		"2531/2541",
-+		USB_SC_DEVICE, USB_PR_DEVICE, NULL, US_FL_NOT_LOCKABLE),
-+
-+/*
-  * Not sure who reported this originally but
-  * Pavel Machek <pavel@ucw.cz> reported that the extra US_FL_SINGLE_LUN
-  * flag be added */
+ 	status = usb_control_msg(udev, usb_sndctrlpipe(udev, 0),
+ 				 RTL8187_REQ_SET_REGS, RTL8187_REQT_WRITE,
+-				 indx | 0xfe00, 0, usbdata, 1, HZ / 2);
++				 indx | 0xfe00, 0, usbdata, 1, 500);
+ 	kfree(usbdata);
+ 
+ 	if (status < 0) {
+@@ -258,7 +258,7 @@ int read_nic_byte_E(struct net_device *d
+ 
+ 	status = usb_control_msg(udev, usb_rcvctrlpipe(udev, 0),
+ 				 RTL8187_REQ_GET_REGS, RTL8187_REQT_READ,
+-				 indx | 0xfe00, 0, usbdata, 1, HZ / 2);
++				 indx | 0xfe00, 0, usbdata, 1, 500);
+ 	*data = *usbdata;
+ 	kfree(usbdata);
+ 
+@@ -286,7 +286,7 @@ int write_nic_byte(struct net_device *de
+ 	status = usb_control_msg(udev, usb_sndctrlpipe(udev, 0),
+ 				 RTL8187_REQ_SET_REGS, RTL8187_REQT_WRITE,
+ 				 (indx & 0xff) | 0xff00, (indx >> 8) & 0x0f,
+-				 usbdata, 1, HZ / 2);
++				 usbdata, 1, 500);
+ 	kfree(usbdata);
+ 
+ 	if (status < 0) {
+@@ -313,7 +313,7 @@ int write_nic_word(struct net_device *de
+ 	status = usb_control_msg(udev, usb_sndctrlpipe(udev, 0),
+ 				 RTL8187_REQ_SET_REGS, RTL8187_REQT_WRITE,
+ 				 (indx & 0xff) | 0xff00, (indx >> 8) & 0x0f,
+-				 usbdata, 2, HZ / 2);
++				 usbdata, 2, 500);
+ 	kfree(usbdata);
+ 
+ 	if (status < 0) {
+@@ -340,7 +340,7 @@ int write_nic_dword(struct net_device *d
+ 	status = usb_control_msg(udev, usb_sndctrlpipe(udev, 0),
+ 				 RTL8187_REQ_SET_REGS, RTL8187_REQT_WRITE,
+ 				 (indx & 0xff) | 0xff00, (indx >> 8) & 0x0f,
+-				 usbdata, 4, HZ / 2);
++				 usbdata, 4, 500);
+ 	kfree(usbdata);
+ 
+ 
+@@ -367,7 +367,7 @@ int read_nic_byte(struct net_device *dev
+ 	status = usb_control_msg(udev, usb_rcvctrlpipe(udev, 0),
+ 				 RTL8187_REQ_GET_REGS, RTL8187_REQT_READ,
+ 				 (indx & 0xff) | 0xff00, (indx >> 8) & 0x0f,
+-				 usbdata, 1, HZ / 2);
++				 usbdata, 1, 500);
+ 	*data = *usbdata;
+ 	kfree(usbdata);
+ 
+@@ -394,7 +394,7 @@ int read_nic_word(struct net_device *dev
+ 	status = usb_control_msg(udev, usb_rcvctrlpipe(udev, 0),
+ 				 RTL8187_REQ_GET_REGS, RTL8187_REQT_READ,
+ 				 (indx & 0xff) | 0xff00, (indx >> 8) & 0x0f,
+-				 usbdata, 2, HZ / 2);
++				 usbdata, 2, 500);
+ 	*data = *usbdata;
+ 	kfree(usbdata);
+ 
+@@ -418,7 +418,7 @@ static int read_nic_word_E(struct net_de
+ 
+ 	status = usb_control_msg(udev, usb_rcvctrlpipe(udev, 0),
+ 				 RTL8187_REQ_GET_REGS, RTL8187_REQT_READ,
+-				 indx | 0xfe00, 0, usbdata, 2, HZ / 2);
++				 indx | 0xfe00, 0, usbdata, 2, 500);
+ 	*data = *usbdata;
+ 	kfree(usbdata);
+ 
+@@ -444,7 +444,7 @@ int read_nic_dword(struct net_device *de
+ 	status = usb_control_msg(udev, usb_rcvctrlpipe(udev, 0),
+ 				 RTL8187_REQ_GET_REGS, RTL8187_REQT_READ,
+ 				 (indx & 0xff) | 0xff00, (indx >> 8) & 0x0f,
+-				 usbdata, 4, HZ / 2);
++				 usbdata, 4, 500);
+ 	*data = *usbdata;
+ 	kfree(usbdata);
+ 
 
 
