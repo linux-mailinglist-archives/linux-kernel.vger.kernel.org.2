@@ -2,86 +2,173 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6456244C457
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 16:26:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DEA4044C45B
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 16:27:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232111AbhKJP2p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Nov 2021 10:28:45 -0500
-Received: from smtp-out2.suse.de ([195.135.220.29]:56702 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231148AbhKJP2o (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Nov 2021 10:28:44 -0500
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out2.suse.de (Postfix) with ESMTP id 802A61FDC1;
-        Wed, 10 Nov 2021 15:25:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1636557956; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=IZxAl8IxEx6VpBy1oHZJ4kum57LRrM+qb7phkdnBSqI=;
-        b=scXAnA1lG/086lPT1rd7mX84NA7NUMzC68HjRrr2TSsBIdy0A3AHVWfs1/t+p8rzjSaTrD
-        ahq2llDApqAE7NRK8FCWcKzUntUTHYqs3iSuMI9tWtz2aqVvPP4dVAB5RzDb5lZcRnQ/pv
-        mX4TG+7CuX9pvvDttsL7Bfym9JcFPCA=
-Received: from suse.cz (unknown [10.100.216.66])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by relay2.suse.de (Postfix) with ESMTPS id DB69AA3B89;
-        Wed, 10 Nov 2021 15:25:51 +0000 (UTC)
-Date:   Wed, 10 Nov 2021 16:25:56 +0100
-From:   Petr Mladek <pmladek@suse.com>
-To:     Nicholas Piggin <npiggin@gmail.com>
-Cc:     John Ogness <john.ogness@linutronix.de>,
+        id S232295AbhKJPaU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Nov 2021 10:30:20 -0500
+Received: from mail-eopbgr60063.outbound.protection.outlook.com ([40.107.6.63]:29503
+        "EHLO EUR04-DB3-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S231408AbhKJPaT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Nov 2021 10:30:19 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=asLgTVHkMoLI5g/zoN9lGqOeWx/E3bRwD3psrz15Y8OQ/OLthXj8ipoQD9MBfUhi91ODVdT229C22qYBwX6jZAHN0aiygcRisIsG+hCTVWWAv/Ug5+A7fSRR42bG8M4LcbrpZ2Y57GT/aptfXF5mf8EXy784C6kVK1Uk25EETDf2f8tJgppHUKQ7aGfUd4CmehiXdOo4ARl2rwHChOR5bskH6HXdftHhcpC5aDZXpjiw1mj7tpMm0VrolcRJCzpPm2ZCqKAtZ/8OGG8QnzR3aQgkGpzSQtu7fKqFlIGNhhS28bg4ZnK+xcuQg63WZruHxcDEuu7YmINzDHR70kYMvA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=x5eeSTCNSaDL0Yz8AHq65QUqZG92k6jwv73iNBtVjfI=;
+ b=Qq1xex+R4JuaS6J9EDPX+N8aNthwSn26ElV+U3taD2OSB9V5BD0QPgDLBg1keH5HFqSa/DIcFhVbVGj9oAhtfNWxgYE4Cl4lWCmG+UWZbJV869QZCCSgjmn1QKBolUsqgsFcDLy3b/uICLJQtwR4jTA+pNgve22adVpUPyf5fMy8BT3JUWWOiAwNJU3usrE9IWjeJTd7zwhiWO6j16tmngtZCAmLY+F51axzApH8gV6KTCqREmyLdG68GRvoYBh5NSM7bNaRK61tX9gW+dVg/i3x5Zak4Y8gppud+mNY5t3rR4N0dWPdmRM7JZMKlCOuiX0ECA8X6ReiUIObfxPltw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=x5eeSTCNSaDL0Yz8AHq65QUqZG92k6jwv73iNBtVjfI=;
+ b=S0I8z5w+DoROnTP1Bn4jkbFgEOVPjurCfS/DMKrKoBklZDGtS+F+1KhmgXfQb9IGSFt13zfZQruIU5DSX53PdSRmgrY7cx7UiykEVCttnSLSD0wLQZIWyBIHF0IlnYKRy/T8/yAINV8icsIRnYw5Cme0WcwRU1UYvfVnn+stX6Y=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nxp.com;
+Received: from VI1PR04MB5151.eurprd04.prod.outlook.com (2603:10a6:803:61::28)
+ by VI1PR0401MB2653.eurprd04.prod.outlook.com (2603:10a6:800:57::20) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4690.16; Wed, 10 Nov
+ 2021 15:27:29 +0000
+Received: from VI1PR04MB5151.eurprd04.prod.outlook.com
+ ([fe80::85af:f8be:aa99:ba5f]) by VI1PR04MB5151.eurprd04.prod.outlook.com
+ ([fe80::85af:f8be:aa99:ba5f%3]) with mapi id 15.20.4669.016; Wed, 10 Nov 2021
+ 15:27:29 +0000
+Subject: Re: [PATCH] ASoC: SOF: build compression interface into snd_sof.ko
+To:     Arnd Bergmann <arnd@kernel.org>,
+        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
+        Kai Vehmanen <kai.vehmanen@linux.intel.com>
+Cc:     Arnd Bergmann <arnd@arndb.de>, Mark Brown <broonie@kernel.org>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>,
+        Colin Ian King <colin.king@canonical.com>,
+        Peter Ujfalusi <peter.ujfalusi@linux.intel.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Bud Liviu-Alexandru <budliviu@gmail.com>,
+        Paul Olaru <paul.olaru@oss.nxp.com>,
+        sound-open-firmware@alsa-project.org, alsa-devel@alsa-project.org,
         linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] printk: restore flushing of NMI buffers on remote CPUs
- after NMI backtraces
-Message-ID: <YYvkhAQiYF5Uy9AK@alley>
-References: <20211107045116.1754411-1-npiggin@gmail.com>
+References: <20211108111132.3800548-1-arnd@kernel.org>
+From:   Daniel Baluta <daniel.baluta@nxp.com>
+Message-ID: <dd1031ba-5867-1392-4fe7-b09ac0d71fa0@nxp.com>
+Date:   Wed, 10 Nov 2021 17:27:26 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
+In-Reply-To: <20211108111132.3800548-1-arnd@kernel.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-ClientProxiedBy: AM0PR02CA0139.eurprd02.prod.outlook.com
+ (2603:10a6:20b:28d::6) To VI1PR04MB5151.eurprd04.prod.outlook.com
+ (2603:10a6:803:61::28)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211107045116.1754411-1-npiggin@gmail.com>
+Received: from [IPv6:2a02:2f08:570c:ca00:8fb8:5033:9d1f:8d33] (2a02:2f08:570c:ca00:8fb8:5033:9d1f:8d33) by AM0PR02CA0139.eurprd02.prod.outlook.com (2603:10a6:20b:28d::6) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4690.15 via Frontend Transport; Wed, 10 Nov 2021 15:27:28 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 803df9a5-8b83-4977-a0b1-08d9a45e9bb4
+X-MS-TrafficTypeDiagnostic: VI1PR0401MB2653:
+X-Microsoft-Antispam-PRVS: <VI1PR0401MB2653E1ED2D94C5F0E887ECCEF9939@VI1PR0401MB2653.eurprd04.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:6790;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: dZ3XxJA1MDBePYP0lg0Wb3fYtn+dsgJhRZNC/DQcAYnGKk0nGSWIOTdL7Hnx9VvA4pAR2HwGaJE0Z/nZPdxGgmQAFScDMbcC7dKd7bCNmYh8yXgOxJZTRLJQ7BW1VVL4w4bonz7r3xglXm1j+HdFjE2/LKJDd+6hkIKJEskxVet1de8CAPERP+zCyy5c/dwshR+dqrUsBceVLLXI2bwFwalv2u5FMzMQtFu02OejFZhwVTq0FQgq/HzzQk04dfIPgECTz4wRcuJaxZcRWM7XWaJyfv96i0vkrzza87cyZ18diLspRpZo+z5oh7qg7cJsaYdimw3FqyELF12VxaEAfQc60BLR4E0rdt1TGjvGVDRwfa3jl4Mom5+LnlYvnu8HYob1FbS4GJmSrfpS65hovKfJBeLQW5D2HkxyABN3bX6ZE706UixEYBuxm2IiTWGHhT7ZWu97oX/nuua5aQbxPF0iVjmS09erCsZIqSwT3VP7lUQuZj4xztpFqFqpqLecIJubqGBhptZZzzrXNDDhnjGwCgKYr+J8xGak5Ub7LLv8UvNnc9u1FUxR1foujCew6GYfZ0IypeLfwFCbcz7+ULHIi0cEJEcD6BI/iIU3AC3Ub7oLGlJcP+2cH/XuvXc5L3cM9URwE2FmfygNu2AGyeICMV8kJ6W0Tfi1RHTJfZQJIA/CrpYjPHh3Kn2kV+rVUm00IOPU39tUx8qBXb6KVQShnX3DcOGTYQZ3MigtcR4=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VI1PR04MB5151.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(110136005)(186003)(54906003)(52116002)(31696002)(53546011)(4326008)(8676002)(5660300002)(2906002)(8936002)(2616005)(316002)(44832011)(66556008)(508600001)(86362001)(38100700002)(36756003)(7416002)(66476007)(66946007)(31686004)(6486002)(83380400001)(43740500002)(45980500001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?SEdDbWQvUVRFRGtvV1VFUXJYSllLTFVtVXVZOFJ3c2NUbS9xTSt0QWRZRTIw?=
+ =?utf-8?B?MXFDa09NRmkxeUt2eHZNaE1Fajd4NHZnSXVUbFNqTzIrd3hJVWtTa0lnT3JN?=
+ =?utf-8?B?TTBSWi9IaEdZSVlVODVjVmF5TEZmOURhQzR2QUpOSk0vYXhaU1JNbHA0TTBV?=
+ =?utf-8?B?eUlWVXVHVFU1OGt1Sk5wdmY1SklEbVZCSGVFd3JVKzNkMVVyeHl5eEdlODVp?=
+ =?utf-8?B?T01TUGxXRmxhaUpTYlhseU5tZkRBV2o4WHA2UlVGN3VzMFFCRjhmWmIxWVo1?=
+ =?utf-8?B?VGpNWXFLNVQzQTFWRTk2cFNBNHZialU5bmpyTC9xUkZsM0tuaHRVekM0M3Zz?=
+ =?utf-8?B?SHZqY3BMMmR5b3BUaGZKT3UveU45c0dhRHkrZEhoSFIzRjMrY3JQSk1GdEdX?=
+ =?utf-8?B?Z2RZUG5yNXFFWlB0NzVzUXEzajloVmk1WllHa2c2c0t1WXlRWUJVdUVSZjA0?=
+ =?utf-8?B?UUVSZTlhOVVZV1dqVWhXRk9kYzJhV2U5cWwrbmlLblplRkEwWTdycFNlT00w?=
+ =?utf-8?B?NFFuRjQvcmtDYVNIM0t1QXFMdVk2MURhb2FhNnkxV3N3ZVptYWdEelFBaHNN?=
+ =?utf-8?B?aVFnOWFYT3dpbWgwVk5Uc2Faa2NTaElJb2pBSnp0N3MwMHJTMDc3TDFYQldi?=
+ =?utf-8?B?bnZ2R0hHdTNwVWV5aTZ5V3UrR094amlhRHVXTTBaQ2lwNlF2ZEJXWGR5dUZu?=
+ =?utf-8?B?SXo5OVRoakN2RFptWWJmVUQ0ODQ3dVZNVy9VY0d6OWVMcC9ON0hUSmpyTm1q?=
+ =?utf-8?B?cTZ1RTkzRDRWSEZGdTVDVHROZHY0WVcxZ0xhQ0NwbG5ZY0oxbGs3STRDR01E?=
+ =?utf-8?B?SHUwdmt4cDVXcnlCYWxSa0U1dEtmbXBGczY3anJlM3RNU1kzTG5jdlVxcjQr?=
+ =?utf-8?B?TzViSlZNUXJ2MmIwVVZnZHBjaFNzck9HMEVVUnJORUQ3OGMyZmUxekx0U1Ex?=
+ =?utf-8?B?TlVDTFYwamRwMk15dVhSYWczUGNjcE4reWdRS0x2bWM4S3Z2Ym5JRFQya3lV?=
+ =?utf-8?B?ajAwRXU5Q2g4NXhzdkJVTnFERzduNU1qVUw4WE1HR0FVbC9uVUVSeURPMzY1?=
+ =?utf-8?B?bHhyWU9weHBNYVh1eThBbU1lWkVwbm83RDh6cW1KaGdrL1graVNESjhHMmpY?=
+ =?utf-8?B?Q1IxTm5hekU5MDFqZFZhS3F2cEhNamVkY09TeFc3WjV0OWM1U2VkeW9sU1Bw?=
+ =?utf-8?B?eCs4WElYWkpzT09PZ0syT0gvR0FoNXJDSHFpUjUwRTBrVC9CZkMxUHBhajZY?=
+ =?utf-8?B?bEVyWDNtZVNrclNnSjMrWStvVjJOTmRDNi9oR0tlZnpPTmFUUHdURkJvaTRE?=
+ =?utf-8?B?eGdxRVJaN2dxemU0czFvbkRBZHNPcWU3RlZQVXJuZURYVzlEeTczY3Vva2tN?=
+ =?utf-8?B?SU83TzgvZ0pUN0lwczF5UThCVlhCMVcxYm83TDdkcFNISk5nalhrZ1lvejdP?=
+ =?utf-8?B?T2ljZFRuQ0pxNEVtZTI2Nk01RHc2Z04yT0xMR2EvNEZ3NE1mSWFaa0NPVFZs?=
+ =?utf-8?B?WElXNTVPc1pJNS9BSjFrTzN0MkEwMjRRRWRYYzM2QUJtWG1MSHZYdzkzSnNo?=
+ =?utf-8?B?OWNmT0FXamFFV3pBbkFCeHI5SmV4a0JYZFUzME1yQ0piTU9qaGtiRzFEa3pl?=
+ =?utf-8?B?dndKSmpod3VCWHRFRzhmOVY1L1U0OGlSSFhoY2VtQy9xRFdDY1ZWZW9WeDN0?=
+ =?utf-8?B?WVNkd3JDeGN1cUhPK2lwbUFqcnBSU0lNY1dBaXI3K1NhT3ljMnBXeDhXRTRW?=
+ =?utf-8?B?NVpUUlllb0pnbVY2aG93cG8vb2JXN2JzVFpjbjlpUnhCMW1NV0IweXV5WC9m?=
+ =?utf-8?B?bDg5aFVNdkNBQnhpSWVVdVVPZUg2ck90Z0lBMlZTczMyeXprMUxKRC9qcWRz?=
+ =?utf-8?B?UldUQXUwQVBYT1Y5NFh6NzFSTGd4N0hBQmVuWjRxUXVVeVNwNEhxc1I0OXNm?=
+ =?utf-8?B?STFBMDVSOFlaVUFvREhsS2FMWXVtL0JuY2JYNTlmUjYyTXdyTEtKVG1Oblkz?=
+ =?utf-8?B?SnFNVUtJa3lHZXdiem4wenpvemw3Z1pOZ1V4dzJxR2Z4T1RtRkc2c3BTZDdT?=
+ =?utf-8?B?QnFRYVJMajhhL0hZZUdSR0toRkJBYWJQYjRycGp5YkJrR2J2MTBxMFZWK003?=
+ =?utf-8?B?MUF0V1F3RzV5Ti93bS9XNE4yRm1mNUVmMHdoRFpaUmt4Z1VKcTB3aFg2WmlU?=
+ =?utf-8?B?WDVPejRMSkZPR3dLOVovMkpIR3NUVjA1Qkt2VFZrc0YyYk11bmFTRDJsMXZB?=
+ =?utf-8?Q?gUH/gMN5YhyP4lcSz2SbGm41Zf2aIOKtTdTGY7Wp7A=3D?=
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 803df9a5-8b83-4977-a0b1-08d9a45e9bb4
+X-MS-Exchange-CrossTenant-AuthSource: VI1PR04MB5151.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 10 Nov 2021 15:27:29.8181
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: P2MuA5xbO2ebOemjvgHkTSZ7iRwUhfFJs8kUQpkbXM67lmyl0vVwCtcMqTjGbcRMIno8LX1vGO+FUz+SPAhOvA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR0401MB2653
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun 2021-11-07 14:51:16, Nicholas Piggin wrote:
-> printk from NMI context relies on irq work being raised on the local CPU
-> to print to console. This can be a problem if the NMI was raised by a
-> lockup detector to print lockup stack and regs, because the CPU may not
-> enable irqs (because it is locked up).
-> 
-> Introduce printk_trigger_flush() that can be called another CPU to try
-> to get those messages to the console, call that where printk_safe_flush
-> was previously called.
-> 
-> --- a/arch/powerpc/kernel/watchdog.c
-> +++ b/arch/powerpc/kernel/watchdog.c
-> @@ -227,6 +227,12 @@ static void watchdog_smp_panic(int cpu)
->  		cpumask_clear(&wd_smp_cpus_ipi);
->  	}
 
-The above context did not apply. I guess that it is a pending change
-that did not even reached linux-next yet.
+On 11/8/21 1:11 PM, Arnd Bergmann wrote:
+> From: Arnd Bergmann <arnd@arndb.de>
+>
+> With CONFIG_SND_SOC_SOF_COMPRESS=m, the compression code is
+> not built into a the main SOF driver when that is built-in:
+>
+> x86_64-linux-ld: sound/soc/sof/ipc.o: in function `ipc_stream_message':
+> ipc.c:(.text+0x5a2): undefined reference to `snd_sof_compr_fragment_elapsed'
+> x86_64-linux-ld: sound/soc/sof/topology.o: in function `sof_dai_load':
+> topology.c:(.text+0x32d1): undefined reference to `snd_sof_compr_init_elapsed_work'
+> x86_64-linux-ld: topology.c:(.text+0x32e1): undefined reference to `snd_sof_compr_init_elapsed_work'
+>
+> Make this a 'bool' symbol so it just decides whether the
+> code gets built at all.
+>
+> Fixes: 858f7a5c45ca ("ASoC: SOF: Introduce fragment elapsed notification API")
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 
-The pushed code might be seen at
-https://git.kernel.org/pub/scm/linux/kernel/git/printk/linux.git/commit/?h=rework/printk_safe-removal&id=5d5e4522a7f404d1a96fd6c703989d32a9c9568d
+Indeed this is a bug and must be fixed. Thanks Arnd!
 
->  
-> +	/*
-> +	 * Force flush any remote buffers that might be stuck in IRQ context
-> +	 * and therefore could not run their irq_work.
-> +	 */
-> +	printk_trigger_flush();
-> +
->  	if (hardlockup_panic)
->  		nmi_panic(NULL, "Hard LOCKUP");
->  
+Reviewed-by: Daniel Baluta <daniel.baluta@nxp.com>
 
-The patch has been committed into printk/linux.git,
-branch rework/printk_safe-removal.
-
-I am going to add it into the pull request for 5.16-rc2 following week.
-
-Best Regards,
-Petr
+> ---
+>   sound/soc/sof/Kconfig | 2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/sound/soc/sof/Kconfig b/sound/soc/sof/Kconfig
+> index 6bb4db87af03..041c54639c4d 100644
+> --- a/sound/soc/sof/Kconfig
+> +++ b/sound/soc/sof/Kconfig
+> @@ -47,7 +47,7 @@ config SND_SOC_SOF_OF
+>   	  Say Y if you need this option. If unsure select "N".
+>   
+>   config SND_SOC_SOF_COMPRESS
+> -	tristate
+> +	bool
+>   	select SND_SOC_COMPRESS
+>   
+>   config SND_SOC_SOF_DEBUG_PROBES
