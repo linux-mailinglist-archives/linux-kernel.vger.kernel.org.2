@@ -2,32 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B85A44C703
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 19:46:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1EDCC44C705
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 19:46:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232977AbhKJSrg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Nov 2021 13:47:36 -0500
-Received: from mail.kernel.org ([198.145.29.99]:46092 "EHLO mail.kernel.org"
+        id S232984AbhKJSrh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Nov 2021 13:47:37 -0500
+Received: from mail.kernel.org ([198.145.29.99]:46474 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232845AbhKJSrH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Nov 2021 13:47:07 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 378FC61205;
-        Wed, 10 Nov 2021 18:44:18 +0000 (UTC)
+        id S232764AbhKJSrK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Nov 2021 13:47:10 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D7DC961213;
+        Wed, 10 Nov 2021 18:44:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1636569859;
-        bh=f3ccSE1tL1LOo6UtJCpOCCFVaVTv1tNMq5fnMOqcWWE=;
+        s=korg; t=1636569862;
+        bh=9qeTEcK0cxC7wR+2x8uKgz1nZEgn9hsYDu8gXYVGLXI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=pWQaROiybgMErNlkvqWfpZMVj1erjmGnuvxWRfo56SUkwjyZs7rNrB53OUNbBaTdT
-         OoutfW7WYVN6KCVLkVXhTrz2Jaag41rSchiUN1pm84wdULKj1OoFRIVK+F9TYTdyMX
-         7wApUp6Lg1HnhnD7/u+my3fuMRbVIEnzEbz+T7Oc=
+        b=1Aie/qrKcaNUO075nLDOspmtKc4UgYw479LkZbkTfYy2PKu3sPcUgwWaM7xVKz3Fq
+         8dJwfrxZXJZnTQMAdbMR5P2GvfQ5ChMw9w/Jy6CQsrdTrAYd9CMqT49SDxsbkmOOtt
+         5PyLtuOXkYz5RmadNGuIrbCQqx6EGs7D0fEDNMqw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Alan Stern <stern@rowland.harvard.edu>,
-        James Buren <braewoods+lkml@braewoods.net>
-Subject: [PATCH 4.4 07/19] usb-storage: Add compatibility quirk flags for iODD 2531/2541
-Date:   Wed, 10 Nov 2021 19:43:09 +0100
-Message-Id: <20211110182001.498181764@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Petr Mladek <pmladek@suse.com>, Yi Fan <yfa@google.com>
+Subject: [PATCH 4.4 08/19] printk/console: Allow to disable console output by using console="" or console=null
+Date:   Wed, 10 Nov 2021 19:43:10 +0100
+Message-Id: <20211110182001.529534986@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
 In-Reply-To: <20211110182001.257350381@linuxfoundation.org>
 References: <20211110182001.257350381@linuxfoundation.org>
@@ -39,43 +41,62 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: James Buren <braewoods+lkml@braewoods.net>
+From: Petr Mladek <pmladek@suse.com>
 
-commit 05c8f1b67e67dcd786ae3fe44492bbc617b4bd12 upstream.
+commit 3cffa06aeef7ece30f6b5ac0ea51f264e8fea4d0 upstream.
 
-These drive enclosures have firmware bugs that make it impossible to mount
-a new virtual ISO image after Linux ejects the old one if the device is
-locked by Linux. Windows bypasses this problem by the fact that they do
-not lock the device. Add a quirk to disable device locking for these
-drive enclosures.
+The commit 48021f98130880dd74 ("printk: handle blank console arguments
+passed in.") prevented crash caused by empty console= parameter value.
 
-Acked-by: Alan Stern <stern@rowland.harvard.edu>
-Signed-off-by: James Buren <braewoods+lkml@braewoods.net>
-Cc: stable <stable@vger.kernel.org>
-Link: https://lore.kernel.org/r/20211014015504.2695089-1-braewoods+lkml@braewoods.net
+Unfortunately, this value is widely used on Chromebooks to disable
+the console output. The above commit caused performance regression
+because the messages were pushed on slow console even though nobody
+was watching it.
+
+Use ttynull driver explicitly for console="" and console=null
+parameters. It has been created for exactly this purpose.
+
+It causes that preferred_console is set. As a result, ttySX and ttyX
+are not used as a fallback. And only ttynull console gets registered by
+default.
+
+It still allows to register other consoles either by additional console=
+parameters or SPCR. It prevents regression because it worked this way even
+before. Also it is a sane semantic. Preventing output on all consoles
+should be done another way, for example, by introducing mute_console
+parameter.
+
+Link: https://lore.kernel.org/r/20201006025935.GA597@jagdpanzerIV.localdomain
+Suggested-by: Sergey Senozhatsky <sergey.senozhatsky@gmail.com>
+Reviewed-by: Guenter Roeck <linux@roeck-us.net>
+Tested-by: Guenter Roeck <linux@roeck-us.net>
+Acked-by: Sergey Senozhatsky <sergey.senozhatsky@gmail.com>
+Signed-off-by: Petr Mladek <pmladek@suse.com>
+Link: https://lore.kernel.org/r/20201111135450.11214-3-pmladek@suse.com
+Cc: Yi Fan <yfa@google.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/usb/storage/unusual_devs.h |   10 ++++++++++
- 1 file changed, 10 insertions(+)
+ kernel/printk/printk.c |    9 ++++++++-
+ 1 file changed, 8 insertions(+), 1 deletion(-)
 
---- a/drivers/usb/storage/unusual_devs.h
-+++ b/drivers/usb/storage/unusual_devs.h
-@@ -311,6 +311,16 @@ UNUSUAL_DEV(  0x045e, 0xffff, 0x0000, 0x
- 		US_FL_MAX_SECTORS_64 ),
+--- a/kernel/printk/printk.c
++++ b/kernel/printk/printk.c
+@@ -2032,8 +2032,15 @@ static int __init console_setup(char *st
+ 	char *s, *options, *brl_options = NULL;
+ 	int idx;
  
- /*
-+ * Reported by James Buren <braewoods+lkml@braewoods.net>
-+ * Virtual ISOs cannot be remounted if ejected while the device is locked
-+ * Disable locking to mimic Windows behavior that bypasses the issue
-+ */
-+UNUSUAL_DEV(  0x04c5, 0x2028, 0x0001, 0x0001,
-+		"iODD",
-+		"2531/2541",
-+		USB_SC_DEVICE, USB_PR_DEVICE, NULL, US_FL_NOT_LOCKABLE),
-+
-+/*
-  * This virtual floppy is found in Sun equipment (x4600, x4200m2, etc.)
-  * Reported by Pete Zaitcev <zaitcev@redhat.com>
-  * This device chokes on both version of MODE SENSE which we have, so
+-	if (str[0] == 0)
++	/*
++	 * console="" or console=null have been suggested as a way to
++	 * disable console output. Use ttynull that has been created
++	 * for exacly this purpose.
++	 */
++	if (str[0] == 0 || strcmp(str, "null") == 0) {
++		__add_preferred_console("ttynull", 0, NULL, NULL);
+ 		return 1;
++	}
+ 
+ 	if (_braille_console_setup(&str, &brl_options))
+ 		return 1;
 
 
