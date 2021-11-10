@@ -2,162 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8DA2E44BCE6
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 09:30:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B461344BCF0
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 09:32:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230365AbhKJIdo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Nov 2021 03:33:44 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:20332 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230243AbhKJIdn (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Nov 2021 03:33:43 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1636533056;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=ayTHtFS6vxG5PWHe3XGZ+Bm3dOMLAgqt3D/qHsMzfog=;
-        b=RYAOpQQNGdaEu9ilgY0JRqOPOaeYJgi9E7G7GcykkN1zqwBRVBZzvC9pku/nQceb6QlvVt
-        qFSUDb2VNPll0t5Oa0oXYWyt/GNM5itg1gufC/ij9b7/jzINDekpmbEEYzl91HZDJE2T+3
-        UF+A2W7+q3pn4lhhqb4Q0Jkz763XVDs=
-Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
- [209.85.128.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-36-3TQxmpVrMFSwyA17ptGJGA-1; Wed, 10 Nov 2021 03:30:54 -0500
-X-MC-Unique: 3TQxmpVrMFSwyA17ptGJGA-1
-Received: by mail-wm1-f71.google.com with SMTP id j193-20020a1c23ca000000b003306ae8bfb7so777463wmj.7
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Nov 2021 00:30:54 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:organization:in-reply-to
-         :content-transfer-encoding;
-        bh=ayTHtFS6vxG5PWHe3XGZ+Bm3dOMLAgqt3D/qHsMzfog=;
-        b=xpcjqPKtRHVSwyn0zotzfP1oleqOn3K/r7Ofb8SHBUcjP7ct297NDA9MML//n93PiQ
-         It5qdpJCiTn3/WvtwbGPCbpp4EFELbCm7MjLJ6VU5SAzSUsPqKlcw+s8i4CZzphjDF54
-         4llU8DzWlvWacg4M8djIQz+QqEvKUht+Qgyy64WCxn35YJ/bGyn7bMj60Hq6SR6J3gYl
-         ydmzlpOvMaPy6tUB1A9kdgnnD78DjFcZhn7uam4aWrrrti6sC/nw0/tdhU0hi98BcDRU
-         f1Pa4KKQx0GvDliWxmXZjFtlfOjZGIZ07aQ4b2AI9tjFKI0OPqD/S+dK/ulC0u/oJluh
-         lFBw==
-X-Gm-Message-State: AOAM531xzF5bqUrlKG/6+AaB2QOAfb21ZUAatA+j7K64rfMOCVw+NPa3
-        zzNkr1ap+um3tt+k9rS+ixh/mG4gCyLldwC+Lauf6e2+v6e7zCfjL/6nDxLtAcqm4rJ6EQKEsWG
-        ovTWiRUS/9J8dwG1dy2E5+417
-X-Received: by 2002:a05:6000:1010:: with SMTP id a16mr17184399wrx.155.1636533053353;
-        Wed, 10 Nov 2021 00:30:53 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJz8YcFMEsRvKaXtzYm0YXi/nOXwlwvFD48+I3aZMgZRH2q7e3nrnFqGxYiGaWtqCC/IDnNoZA==
-X-Received: by 2002:a05:6000:1010:: with SMTP id a16mr17184370wrx.155.1636533053092;
-        Wed, 10 Nov 2021 00:30:53 -0800 (PST)
-Received: from [192.168.3.132] (p5b0c604f.dip0.t-ipconnect.de. [91.12.96.79])
-        by smtp.gmail.com with ESMTPSA id c5sm19156137wrd.13.2021.11.10.00.30.50
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 10 Nov 2021 00:30:52 -0800 (PST)
-Message-ID: <793685d2-be3f-9a74-c9a3-65c486e0ef1f@redhat.com>
-Date:   Wed, 10 Nov 2021 09:30:50 +0100
+        id S230332AbhKJIfI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Nov 2021 03:35:08 -0500
+Received: from mga01.intel.com ([192.55.52.88]:48154 "EHLO mga01.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230053AbhKJIfH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Nov 2021 03:35:07 -0500
+X-IronPort-AV: E=McAfee;i="6200,9189,10163"; a="256313675"
+X-IronPort-AV: E=Sophos;i="5.87,223,1631602800"; 
+   d="scan'208";a="256313675"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Nov 2021 00:32:19 -0800
+X-IronPort-AV: E=Sophos;i="5.87,223,1631602800"; 
+   d="scan'208";a="589202538"
+Received: from smile.fi.intel.com ([10.237.72.184])
+  by fmsmga002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Nov 2021 00:32:17 -0800
+Received: from andy by smile.fi.intel.com with local (Exim 4.95)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1mkj1Z-005LwK-GT;
+        Wed, 10 Nov 2021 10:32:05 +0200
+Date:   Wed, 10 Nov 2021 10:32:05 +0200
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Saravana Kannan <saravanak@google.com>
+Cc:     Puranjay Mohan <puranjay12@gmail.com>, gregkh@linuxfoundation.org,
+        rafael@kernel.org, heikki.krogerus@linux.intel.com,
+        kuba@kernel.org, linux-kernel@vger.kernel.org, lars@metafoo.de,
+        Michael.Hennerich@analog.com, jic23@kernel.org,
+        linux-iio@vger.kernel.org
+Subject: Re: [PATCH v2 0/2] device property: Adding fwnode_irq_get_byname()
+Message-ID: <YYuDhTlMIn9qxlvo@smile.fi.intel.com>
+References: <20211109200840.135019-1-puranjay12@gmail.com>
+ <CAGETcx9-WoAa8VbEPSthseYNz=L-gnoXLcHFtHrD_+yhQXmJnA@mail.gmail.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.2.0
-Subject: Re: [PATCH v4] mm: Add PM_HUGE_THP_MAPPING to /proc/pid/pagemap
-Content-Language: en-US
-To:     Peter Xu <peterx@redhat.com>
-Cc:     Mina Almasry <almasrymina@google.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        "Paul E . McKenney" <paulmckrcu@fb.com>,
-        Yu Zhao <yuzhao@google.com>, Jonathan Corbet <corbet@lwn.net>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Ivan Teterevkov <ivan.teterevkov@nutanix.com>,
-        Florian Schmidt <florian.schmidt@nutanix.com>,
-        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-mm@kvack.org
-References: <20211107235754.1395488-1-almasrymina@google.com>
- <YYtuqsnOSxA44AUX@t490s> <c5ed86d0-8af6-f54f-e352-8871395ad62e@redhat.com>
- <YYuCaNXikls/9JhS@t490s>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat
-In-Reply-To: <YYuCaNXikls/9JhS@t490s>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAGETcx9-WoAa8VbEPSthseYNz=L-gnoXLcHFtHrD_+yhQXmJnA@mail.gmail.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10.11.21 09:27, Peter Xu wrote:
-> On Wed, Nov 10, 2021 at 09:14:42AM +0100, David Hildenbrand wrote:
->> On 10.11.21 08:03, Peter Xu wrote:
->>> Hi, Mina,
->>>
->>> Sorry to comment late.
->>>
->>> On Sun, Nov 07, 2021 at 03:57:54PM -0800, Mina Almasry wrote:
->>>> diff --git a/Documentation/admin-guide/mm/pagemap.rst b/Documentation/admin-guide/mm/pagemap.rst
->>>> index fdc19fbc10839..8a0f0064ff336 100644
->>>> --- a/Documentation/admin-guide/mm/pagemap.rst
->>>> +++ b/Documentation/admin-guide/mm/pagemap.rst
->>>> @@ -23,7 +23,8 @@ There are four components to pagemap:
->>>>      * Bit  56    page exclusively mapped (since 4.2)
->>>>      * Bit  57    pte is uffd-wp write-protected (since 5.13) (see
->>>>        :ref:`Documentation/admin-guide/mm/userfaultfd.rst <userfaultfd>`)
->>>> -    * Bits 57-60 zero
->>>> +    * Bit  58    page is a huge (PMD size) THP mapping
->>>> +    * Bits 59-60 zero
->>>>      * Bit  61    page is file-page or shared-anon (since 3.5)
->>>>      * Bit  62    page swapped
->>>>      * Bit  63    page present
->>>> diff --git a/fs/proc/task_mmu.c b/fs/proc/task_mmu.c
->>>> index ad667dbc96f5c..6f1403f83b310 100644
->>>> --- a/fs/proc/task_mmu.c
->>>> +++ b/fs/proc/task_mmu.c
->>>> @@ -1302,6 +1302,7 @@ struct pagemapread {
->>>>  #define PM_SOFT_DIRTY		BIT_ULL(55)
->>>>  #define PM_MMAP_EXCLUSIVE	BIT_ULL(56)
->>>>  #define PM_UFFD_WP		BIT_ULL(57)
->>>> +#define PM_HUGE_THP_MAPPING	BIT_ULL(58)
->>>
->>> The ending "_MAPPING" seems redundant to me, how about just call it "PM_THP" or
->>> "PM_HUGE" (as THP also means HUGE already)?
->>>
->>> IMHO the core problem is about permission controls, and it seems to me we're
->>> actually trying to workaround it by duplicating some information we have.. so
->>> it's kind of a pity.  Totally not against this patch, but imho it'll be nicer
->>> if it's the permission part that to be enhanced, rather than a new but slightly
->>> duplicated interface.
->>
->> It's not a permission problem AFAIKS: even with permissions "changed",
->> any attempt to use /proc/kpageflags is just racy. Let's not go down that
->> path, it's really the wrong mechanism to export to random userspace.
+On Tue, Nov 09, 2021 at 02:42:35PM -0800, Saravana Kannan wrote:
+> On Tue, Nov 9, 2021 at 12:09 PM Puranjay Mohan <puranjay12@gmail.com> wrote:
+> >
+> > The first patch in this series adds the fwnode_irq_get_byname() which is
+> > the generic version of the of_irq_get_byname(). It is used to get the
+> > IRQ number from name of the interrupt.
+> >
+> > The second patch in this series uses the fwnode_irq_get_byname()
+> > function in the IIO driver of the ADXL355 accelerometer. The driver has
+> > been tested after applying this patch on a Raspberry PI. The ADXL355 was
+> > connected to the Raspberry Pi using I2C and fwnode_irq_get_byname() was
+> > used to get the IRQ number for the "DRDY" interrupt. Earlier this driver
+> > was using of_irq_get_byname() to get this IRQ number.
 > 
-> I agree it's racy, but IMHO that's fine.  These are hints for userspace to make
-> decisions, they cannot be always right.  Even if we fetch atomically and seeing
-> that this pte is swapped out, it can be quickly accessed at the same time and
-> it'll be in-memory again.  Only if we can freeze the whole pgtable but we
-> can't, so they can only be used as hints.
+> Why do we need these changes though? Is there a non-OF device this
+> driver would ever probe?
 
-Sorry, I don't think /proc/kpageflags (or exporting the PFNs to random
-users via /proc/self/pagemap) is the way to go.
-
-"Since Linux 4.0 only users with the CAP_SYS_ADMIN capability can get
-PFNs. In 4.0 and 4.1 opens by unprivileged fail with -EPERM.  Starting
-from 4.2 the PFN field is zeroed if the user does not have
-CAP_SYS_ADMIN. Reason: information about PFNs helps in exploiting
-Rowhammer vulnerability."
-
-> 
->>
->> We do have an interface to access this information from userspace
->> already: /proc/self/smaps IIRC. Mina commented that they are seeing
->> performance issues with that approach.
->>
->> It would be valuable to add these details to the patch description,
->> including a performance difference when using both interfaces we have
->> available. As the patch description stands, there is no explanation
->> "why" we want this change.
-> 
-> I didn't notice Mina mention about performance issues with kpageflags, if so
-> then I agree this solution helps. 
-The performance issue seems to be with /proc/self/smaps.
+Strange question, TBH. All discrete component drivers are subject to
+be enumerated on any type of the systems. So, of course the answer
+to it "Definitely yes".
 
 -- 
-Thanks,
+With Best Regards,
+Andy Shevchenko
 
-David / dhildenb
 
