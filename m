@@ -2,31 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4B31244C809
+	by mail.lfdr.de (Postfix) with ESMTP id BB4BF44C80A
 	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 19:57:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234084AbhKJS5x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Nov 2021 13:57:53 -0500
-Received: from mail.kernel.org ([198.145.29.99]:54866 "EHLO mail.kernel.org"
+        id S234094AbhKJS5y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Nov 2021 13:57:54 -0500
+Received: from mail.kernel.org ([198.145.29.99]:53486 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233027AbhKJSzd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Nov 2021 13:55:33 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 57F1E61279;
-        Wed, 10 Nov 2021 18:49:36 +0000 (UTC)
+        id S233834AbhKJSzg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Nov 2021 13:55:36 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3752E619F9;
+        Wed, 10 Nov 2021 18:49:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1636570176;
-        bh=JNdynLpeDmu9NFBKceo37u4Nd1rMzCB8lZ4lphLDOWU=;
+        s=korg; t=1636570179;
+        bh=08oGUgCNKqZEEcbBNz54bpGRAWPqPM6qIl8eztjzCSo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=MT5PXV8+JsdbWC5vrlM95Q9w9CDQ+qTFvIIgIyHqgJftcOIRWJgRPPDK1ZRNtCEwX
-         I7jtyXbJznixhNBz88sovhtcQYdilvM9AYRm3VGyPGybXnIHtghECJ6/84aCrygVvb
-         jXxs1AazkocMzXJN+Pcdc8uDkv73/QllW6lU2jSM=
+        b=GoIKQURYtjByiRZszTvl2bf9HRtgipTzNa2FwQ8A4vS1ZgS0BNQKnQJlQ5r5O1lCW
+         vQtAYGfEOckUoVjDPfb2sRGQhGh9jj0Eoz3fErOh53aBs30w91RBha85FRtXJIVkXl
+         WMyW5dPR+ofekP8ZaFDAD7CWwhTSFFNdbQsrduH0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Viraj Shah <viraj.shah@linutronix.de>
-Subject: [PATCH 5.14 07/24] usb: musb: Balance list entry in musb_gadget_queue
-Date:   Wed, 10 Nov 2021 19:43:59 +0100
-Message-Id: <20211110182003.568255857@linuxfoundation.org>
+        stable@vger.kernel.org, Alan Stern <stern@rowland.harvard.edu>,
+        James Buren <braewoods+lkml@braewoods.net>
+Subject: [PATCH 5.14 08/24] usb-storage: Add compatibility quirk flags for iODD 2531/2541
+Date:   Wed, 10 Nov 2021 19:44:00 +0100
+Message-Id: <20211110182003.600220659@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
 In-Reply-To: <20211110182003.342919058@linuxfoundation.org>
 References: <20211110182003.342919058@linuxfoundation.org>
@@ -38,42 +39,43 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Viraj Shah <viraj.shah@linutronix.de>
+From: James Buren <braewoods+lkml@braewoods.net>
 
-commit 21b5fcdccb32ff09b6b63d4a83c037150665a83f upstream.
+commit 05c8f1b67e67dcd786ae3fe44492bbc617b4bd12 upstream.
 
-musb_gadget_queue() adds the passed request to musb_ep::req_list. If the
-endpoint is idle and it is the first request then it invokes
-musb_queue_resume_work(). If the function returns an error then the
-error is passed to the caller without any clean-up and the request
-remains enqueued on the list. If the caller enqueues the request again
-then the list corrupts.
+These drive enclosures have firmware bugs that make it impossible to mount
+a new virtual ISO image after Linux ejects the old one if the device is
+locked by Linux. Windows bypasses this problem by the fact that they do
+not lock the device. Add a quirk to disable device locking for these
+drive enclosures.
 
-Remove the request from the list on error.
-
-Fixes: ea2f35c01d5ea ("usb: musb: Fix sleeping function called from invalid context for hdrc glue")
+Acked-by: Alan Stern <stern@rowland.harvard.edu>
+Signed-off-by: James Buren <braewoods+lkml@braewoods.net>
 Cc: stable <stable@vger.kernel.org>
-Signed-off-by: Viraj Shah <viraj.shah@linutronix.de>
-Link: https://lore.kernel.org/r/20211021093644.4734-1-viraj.shah@linutronix.de
+Link: https://lore.kernel.org/r/20211014015504.2695089-1-braewoods+lkml@braewoods.net
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/usb/musb/musb_gadget.c |    4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ drivers/usb/storage/unusual_devs.h |   10 ++++++++++
+ 1 file changed, 10 insertions(+)
 
---- a/drivers/usb/musb/musb_gadget.c
-+++ b/drivers/usb/musb/musb_gadget.c
-@@ -1247,9 +1247,11 @@ static int musb_gadget_queue(struct usb_
- 		status = musb_queue_resume_work(musb,
- 						musb_ep_restart_resume_work,
- 						request);
--		if (status < 0)
-+		if (status < 0) {
- 			dev_err(musb->controller, "%s resume work: %i\n",
- 				__func__, status);
-+			list_del(&request->list);
-+		}
- 	}
+--- a/drivers/usb/storage/unusual_devs.h
++++ b/drivers/usb/storage/unusual_devs.h
+@@ -407,6 +407,16 @@ UNUSUAL_DEV(  0x04b8, 0x0602, 0x0110, 0x
+ 		USB_SC_SCSI, USB_PR_BULK, NULL, US_FL_SINGLE_LUN),
  
- unlock:
+ /*
++ * Reported by James Buren <braewoods+lkml@braewoods.net>
++ * Virtual ISOs cannot be remounted if ejected while the device is locked
++ * Disable locking to mimic Windows behavior that bypasses the issue
++ */
++UNUSUAL_DEV(  0x04c5, 0x2028, 0x0001, 0x0001,
++		"iODD",
++		"2531/2541",
++		USB_SC_DEVICE, USB_PR_DEVICE, NULL, US_FL_NOT_LOCKABLE),
++
++/*
+  * Not sure who reported this originally but
+  * Pavel Machek <pavel@ucw.cz> reported that the extra US_FL_SINGLE_LUN
+  * flag be added */
 
 
