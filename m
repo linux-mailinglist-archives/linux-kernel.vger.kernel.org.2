@@ -2,119 +2,417 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 83C5844C571
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 17:54:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 747D044C563
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 17:50:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230489AbhKJQ4v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Nov 2021 11:56:51 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:33327 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229582AbhKJQ4u (ORCPT
+        id S232103AbhKJQw6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Nov 2021 11:52:58 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46192 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232022AbhKJQwz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Nov 2021 11:56:50 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1636563241;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=3skehNDJHqZFHvrdLObhkU+zt+1yZ5NMVqO6+J/UxgE=;
-        b=TwAfJd+iw0jbqaX2LxYcHdCGbfcN9wsrZ1kA3K9Kp+Lpva8hRNTlqeVrwmyY42h+aM3h63
-        ncAq1xtU9L0Jx5p25zZ4Zmr/n2cQieoosGy/5VXVxF1Ohw+URLDhGBIIy7/pAvkeHn4vmb
-        bbW0OalaB8TkucEOzLSAk2P6kvqWYCA=
-Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
- [209.85.221.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-547-qOTpxmp-Mm2Pk9aWqMiC-w-1; Wed, 10 Nov 2021 11:54:00 -0500
-X-MC-Unique: qOTpxmp-Mm2Pk9aWqMiC-w-1
-Received: by mail-wr1-f69.google.com with SMTP id z5-20020a5d6405000000b00182083d7d2aso550636wru.13
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Nov 2021 08:54:00 -0800 (PST)
+        Wed, 10 Nov 2021 11:52:55 -0500
+Received: from mail-wr1-x430.google.com (mail-wr1-x430.google.com [IPv6:2a00:1450:4864:20::430])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 95898C061766;
+        Wed, 10 Nov 2021 08:50:07 -0800 (PST)
+Received: by mail-wr1-x430.google.com with SMTP id u18so5138379wrg.5;
+        Wed, 10 Nov 2021 08:50:07 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=eR4jNFzMGlAgEWXem5yydSyKU3CgC5+uZrpi0np/BnQ=;
+        b=ZYQUsMDqqIb3S5lvoSokg+PHpbVHP3e01n/9MbjlRUiyS4zKcZwHcA0eLG5qD6ryCa
+         FVLFqSu6dd8q1IGyziMgbaPbzd92M0F2vx/NwLglYpSSDfHh2fn622kvhYwfCShAMPuz
+         ePdlD2tkxP5pqIDC95YiN9VhtcOJ3DZ2vG5t0lCuqjV4U2U+wIk8/AczlFYpOv+jaT4v
+         8Y4/Js2QUntPaBQtJyipYtDIuvw2T1mO3B9jDUissSaq6xFLu2Uwn4uYMPggVZm0/3Fe
+         DLYocrbLBAT0aPvu+MxbIYzW+eP8/d4WHtJxxmaXxoTavg6VpaAHoz3cjMBAST9+vyNm
+         9A9w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:organization:in-reply-to
-         :content-transfer-encoding;
-        bh=3skehNDJHqZFHvrdLObhkU+zt+1yZ5NMVqO6+J/UxgE=;
-        b=R6PZrYr0TDPoF9fNzMm9TBnGzyxwRC46X9/ZvKSqy/NHI9eo2eFFr+yj0E884K4CnB
-         1cKtdEWC1rs0rb21OaSjUgBDf35YcLy3c9E/mbPrXOAGOiJv1jkNlOlvdJGSnbwPmSKi
-         FbnUucUDYWprL5bffsDyfDy1ci0+OLvvv9PYfMKvDcrKsjVI12isxY5RfH3NEKNnKoJT
-         mnMCBucaAyZIQnrBoh8lP/lIFWG3gNwBpG6itaM+Q95RorymSl/uVFb9HsZrKNDtczqo
-         br59ZAf0X6pK19kLg6qSAMDpkFdhj8bfUmQOwphiVVYWi7bu8aFyPNMP/BD5mfzcfnqf
-         Q/vg==
-X-Gm-Message-State: AOAM5323xTezAw75Mjvva+O4aAMlBgNB8WtxY1+BQ7ewEVOoVw1insGU
-        T3G/pbuPrZk6rjydQBrdZ/t+o0/3tPVXxIuK38IcUEgHn7nJx3JatBFvpueUv/evLgrIP6L/Iro
-        Kt9gF1V1xjoQsW/EDeIE3y0LZ
-X-Received: by 2002:a5d:59ab:: with SMTP id p11mr541382wrr.340.1636563239612;
-        Wed, 10 Nov 2021 08:53:59 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJzmw7VPt89V/wQDpl+r2pm834mtB3sAdR7mcz3Tn1FXjAMGhv2J/CUV7Ygff/myU9JVf71JCw==
-X-Received: by 2002:a5d:59ab:: with SMTP id p11mr541350wrr.340.1636563239362;
-        Wed, 10 Nov 2021 08:53:59 -0800 (PST)
-Received: from [192.168.3.132] (p5b0c604f.dip0.t-ipconnect.de. [91.12.96.79])
-        by smtp.gmail.com with ESMTPSA id n8sm363484wrp.95.2021.11.10.08.53.58
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 10 Nov 2021 08:53:58 -0800 (PST)
-Message-ID: <b9ea9c5b-2b7e-a6a9-f1b3-241c0882197c@redhat.com>
-Date:   Wed, 10 Nov 2021 17:53:57 +0100
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=eR4jNFzMGlAgEWXem5yydSyKU3CgC5+uZrpi0np/BnQ=;
+        b=W2AFdvOxwCG0rcfVazj0326N2JSI4otFzyy4RTY2GG/eMPQPTLyA5pxgFSHPZigDJz
+         WKN4eXqFCe48tscOzKqgyGC7R0zw6I5XT3B6eM+DiaiLVt4IS4ek0+r6PGwCjTsaAM8g
+         6lYPw11+J+NSQPsUVCNO8BY908WEhMc8BMuq+bUxyXQRwJ+FozvwoAlqlOpSXejx5xPS
+         B3s5zkme2JfdPHRytDb4t7sPcyKG0Rmjeom2Lw5Djsn61stYNfyLcV/eW+tA6pGIMQlv
+         rnMj8nYcsnfpXE1mC3RA8RsaJ6uf6PnrmJy69+eWpJ/pc7AKrTxhvazbBkGTbn0jIU+k
+         BZoA==
+X-Gm-Message-State: AOAM533Ge0ARetGs+oUydC841toQdm4vuYd8Yra5HVbMDbRaFNOJynUO
+        lv3xXHL1EiyF8y4NfRs82suBqc7oHvTFBpitAuA=
+X-Google-Smtp-Source: ABdhPJwVuDS+zysjF5ok8TtxlNYkrrfY22PLS/0jF/6GPm4eWx86xHtk/lOCfL8BHHHpd+cCwwcxLN0nfz6rsacY3LM=
+X-Received: by 2002:a05:6000:1acd:: with SMTP id i13mr512528wry.398.1636563005724;
+ Wed, 10 Nov 2021 08:50:05 -0800 (PST)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.2.0
-Subject: Re: [PATCH v3 00/15] Free user PTE page table pages
-Content-Language: en-US
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     Jason Gunthorpe <jgg@nvidia.com>,
-        Qi Zheng <zhengqi.arch@bytedance.com>,
-        akpm@linux-foundation.org, tglx@linutronix.de,
-        kirill.shutemov@linux.intel.com, mika.penttila@nextfour.com,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, songmuchun@bytedance.com,
-        zhouchengming@bytedance.com
-References: <20211110105428.32458-1-zhengqi.arch@bytedance.com>
- <20211110125601.GQ1740502@nvidia.com>
- <8d0bc258-58ba-52c5-2e0d-a588489f2572@redhat.com>
- <20211110143859.GS1740502@nvidia.com>
- <6ac9cc0d-7dea-0e19-51b3-625ec6561ac7@redhat.com>
- <YYv4Msg7zVLS3KE/@casper.infradead.org>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat
-In-Reply-To: <YYv4Msg7zVLS3KE/@casper.infradead.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+References: <20210728010632.2633470-1-robdclark@gmail.com> <20210728010632.2633470-8-robdclark@gmail.com>
+ <e9e50cad-2341-cb25-ef84-0d61a2cb7469@codeaurora.org>
+In-Reply-To: <e9e50cad-2341-cb25-ef84-0d61a2cb7469@codeaurora.org>
+From:   Rob Clark <robdclark@gmail.com>
+Date:   Wed, 10 Nov 2021 08:55:04 -0800
+Message-ID: <CAF6AEGvTyy-MCv6wdkpPyohLwUg4U_2ACT0gsXRG2z6iOYQ+Tg@mail.gmail.com>
+Subject: Re: [PATCH v4 07/13] drm/msm: Track "seqno" fences by idr
+To:     Akhil P Oommen <akhilpo@codeaurora.org>
+Cc:     dri-devel <dri-devel@lists.freedesktop.org>,
+        Rob Clark <robdclark@chromium.org>,
+        David Airlie <airlied@linux.ie>,
+        freedreno <freedreno@lists.freedesktop.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        "moderated list:DMA BUFFER SHARING FRAMEWORK" 
+        <linaro-mm-sig@lists.linaro.org>,
+        "open list:DRM DRIVER FOR MSM ADRENO GPU" 
+        <linux-arm-msm@vger.kernel.org>, Sean Paul <sean@poorly.run>,
+        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
+        "open list:DMA BUFFER SHARING FRAMEWORK" 
+        <linux-media@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10.11.21 17:49, Matthew Wilcox wrote:
-> On Wed, Nov 10, 2021 at 04:37:14PM +0100, David Hildenbrand wrote:
->>> I'd suggest to make this new lock a special rwsem which allows either
->>> concurrent read access OR concurrent PTL access, but not both. This
->>
->> I looked into such a lock recently in similar context and something like
->> that does not exist yet (and fairness will be challenging). You either
->> have a single reader or multiple writer. I'd be interested if someone
->> knows of something like that.
-> 
-> We've talked about having such a lock before for filesystems which want
-> to permit either many direct-IO accesses or many buffered-IO accesses, but
-> want to exclude a mixture of direct-IO and buffered-IO.  The name we came
-> up with for such a lock was the red-blue lock.  Either Team Red has the
-> lock, or Team Blue has the lock (or it's free).  Indicate free with velue
-> zero, Team Red with positive numbers and Team Blue with negative numbers.
-> If we need to indicate an opposing team is waiting for the semaphore,
-> we can use a high bit (1 << 30) to indicate no new team members can
-> acquire the lock.  Not sure whether anybody ever coded it up.
+On Wed, Nov 10, 2021 at 7:28 AM Akhil P Oommen <akhilpo@codeaurora.org> wro=
+te:
+>
+> On 7/28/2021 6:36 AM, Rob Clark wrote:
+> > From: Rob Clark <robdclark@chromium.org>
+> >
+> > Previously the (non-fd) fence returned from submit ioctl was a raw
+> > seqno, which is scoped to the ring.  But from UABI standpoint, the
+> > ioctls related to seqno fences all specify a submitqueue.  We can
+> > take advantage of that to replace the seqno fences with a cyclic idr
+> > handle.
+> >
+> > This is in preperation for moving to drm scheduler, at which point
+> > the submit ioctl will return after queuing the submit job to the
+> > scheduler, but before the submit is written into the ring (and
+> > therefore before a ring seqno has been assigned).  Which means we
+> > need to replace the dma_fence that userspace may need to wait on
+> > with a scheduler fence.
+> >
+> > Signed-off-by: Rob Clark <robdclark@chromium.org>
+> > Acked-by: Christian K=C3=B6nig <christian.koenig@amd.com>
+> > ---
+> >   drivers/gpu/drm/msm/msm_drv.c         | 30 +++++++++++++++++--
+> >   drivers/gpu/drm/msm/msm_fence.c       | 42 --------------------------=
+-
+> >   drivers/gpu/drm/msm/msm_fence.h       |  3 --
+> >   drivers/gpu/drm/msm/msm_gem.h         |  1 +
+> >   drivers/gpu/drm/msm/msm_gem_submit.c  | 23 ++++++++++++++-
+> >   drivers/gpu/drm/msm/msm_gpu.h         |  5 ++++
+> >   drivers/gpu/drm/msm/msm_submitqueue.c |  5 ++++
+> >   7 files changed, 61 insertions(+), 48 deletions(-)
+> >
+> > diff --git a/drivers/gpu/drm/msm/msm_drv.c b/drivers/gpu/drm/msm/msm_dr=
+v.c
+> > index 9b8fa2ad0d84..1594ae39d54f 100644
+> > --- a/drivers/gpu/drm/msm/msm_drv.c
+> > +++ b/drivers/gpu/drm/msm/msm_drv.c
+> > @@ -911,6 +911,7 @@ static int msm_ioctl_wait_fence(struct drm_device *=
+dev, void *data,
+> >       ktime_t timeout =3D to_ktime(args->timeout);
+> >       struct msm_gpu_submitqueue *queue;
+> >       struct msm_gpu *gpu =3D priv->gpu;
+> > +     struct dma_fence *fence;
+> >       int ret;
+> >
+> >       if (args->pad) {
+> > @@ -925,10 +926,35 @@ static int msm_ioctl_wait_fence(struct drm_device=
+ *dev, void *data,
+> >       if (!queue)
+> >               return -ENOENT;
+> >
+> > -     ret =3D msm_wait_fence(gpu->rb[queue->prio]->fctx, args->fence, &=
+timeout,
+> > -             true);
+> > +     /*
+> > +      * Map submitqueue scoped "seqno" (which is actually an idr key)
+> > +      * back to underlying dma-fence
+> > +      *
+> > +      * The fence is removed from the fence_idr when the submit is
+> > +      * retired, so if the fence is not found it means there is nothin=
+g
+> > +      * to wait for
+> > +      */
+> > +     ret =3D mutex_lock_interruptible(&queue->lock);
+> > +     if (ret)
+> > +             return ret;
+> > +     fence =3D idr_find(&queue->fence_idr, args->fence);
+> > +     if (fence)
+> > +             fence =3D dma_fence_get_rcu(fence);
+> > +     mutex_unlock(&queue->lock);
+> > +
+> > +     if (!fence)
+> > +             return 0;
+> >
+> > +     ret =3D dma_fence_wait_timeout(fence, true, timeout_to_jiffies(&t=
+imeout));
+> > +     if (ret =3D=3D 0) {
+> > +             ret =3D -ETIMEDOUT;
+> > +     } else if (ret !=3D -ERESTARTSYS) {
+> > +             ret =3D 0;
+> > +     }
+> > +
+> > +     dma_fence_put(fence);
+> >       msm_submitqueue_put(queue);
+> > +
+> >       return ret;
+> >   }
+> >
+> > diff --git a/drivers/gpu/drm/msm/msm_fence.c b/drivers/gpu/drm/msm/msm_=
+fence.c
+> > index b92a9091a1e2..f2cece542c3f 100644
+> > --- a/drivers/gpu/drm/msm/msm_fence.c
+> > +++ b/drivers/gpu/drm/msm/msm_fence.c
+> > @@ -24,7 +24,6 @@ msm_fence_context_alloc(struct drm_device *dev, volat=
+ile uint32_t *fenceptr,
+> >       strncpy(fctx->name, name, sizeof(fctx->name));
+> >       fctx->context =3D dma_fence_context_alloc(1);
+> >       fctx->fenceptr =3D fenceptr;
+> > -     init_waitqueue_head(&fctx->event);
+> >       spin_lock_init(&fctx->spinlock);
+> >
+> >       return fctx;
+> > @@ -45,53 +44,12 @@ static inline bool fence_completed(struct msm_fence=
+_context *fctx, uint32_t fenc
+> >               (int32_t)(*fctx->fenceptr - fence) >=3D 0;
+> >   }
+> >
+> > -/* legacy path for WAIT_FENCE ioctl: */
+> > -int msm_wait_fence(struct msm_fence_context *fctx, uint32_t fence,
+> > -             ktime_t *timeout, bool interruptible)
+> > -{
+> > -     int ret;
+> > -
+> > -     if (fence > fctx->last_fence) {
+> > -             DRM_ERROR_RATELIMITED("%s: waiting on invalid fence: %u (=
+of %u)\n",
+> > -                             fctx->name, fence, fctx->last_fence);
+> > -             return -EINVAL;
+>
+> Rob, we changed this pre-existing behaviour in this patch. Now, when
+> userspace tries to wait on a future fence, we don't return an error.
+>
+> I just want to check if this was accidental or not?
 
-Interesting, thanks for sharing!
+Hmm, perhaps we should do this to restore the previous behavior:
 
-My excessive google search didn't reveal anything back then (~3 months
-ago) -- only questions on popular coding websites asking essentially for
-the same thing without any helpful replies. But maybe I used the wrong
-keywords (e.g., "multiple reader, multiple writer", I certainly didn't
-search for "red-blue lock", but I do like the name :) ).
+-------------
+diff --git a/drivers/gpu/drm/msm/msm_drv.c b/drivers/gpu/drm/msm/msm_drv.c
+index 73e827641024..3dd6da56eae6 100644
+--- a/drivers/gpu/drm/msm/msm_drv.c
++++ b/drivers/gpu/drm/msm/msm_drv.c
+@@ -1000,8 +1000,12 @@ static int msm_ioctl_wait_fence(struct
+drm_device *dev, void *data,
+                fence =3D dma_fence_get_rcu(fence);
+        mutex_unlock(&queue->lock);
 
-Fairness might still be the biggest issue, but I am certainly no locking
-expert.
+-       if (!fence)
+-               return 0;
++       if (!fence) {
++               struct msm_fence_context *fctx =3D gpu->rb[queue->ring_nr]-=
+>fctx;
++               DRM_ERROR_RATELIMITED("%s: waiting on invalid fence:
+%u (of %u)\n",
++                                     fctx->name, fence, fctx->last_fence);
++               return -EINVAL;
++       }
 
--- 
-Thanks,
+        ret =3D dma_fence_wait_timeout(fence, true, timeout_to_jiffies(&tim=
+eout));
+        if (ret =3D=3D 0) {
+-------------
 
-David / dhildenb
+BR,
+-R
 
+> -Akhil.
+>
+> > -     }
+> > -
+> > -     if (!timeout) {
+> > -             /* no-wait: */
+> > -             ret =3D fence_completed(fctx, fence) ? 0 : -EBUSY;
+> > -     } else {
+> > -             unsigned long remaining_jiffies =3D timeout_to_jiffies(ti=
+meout);
+> > -
+> > -             if (interruptible)
+> > -                     ret =3D wait_event_interruptible_timeout(fctx->ev=
+ent,
+> > -                             fence_completed(fctx, fence),
+> > -                             remaining_jiffies);
+> > -             else
+> > -                     ret =3D wait_event_timeout(fctx->event,
+> > -                             fence_completed(fctx, fence),
+> > -                             remaining_jiffies);
+> > -
+> > -             if (ret =3D=3D 0) {
+> > -                     DBG("timeout waiting for fence: %u (completed: %u=
+)",
+> > -                                     fence, fctx->completed_fence);
+> > -                     ret =3D -ETIMEDOUT;
+> > -             } else if (ret !=3D -ERESTARTSYS) {
+> > -                     ret =3D 0;
+> > -             }
+> > -     }
+> > -
+> > -     return ret;
+> > -}
+> > -
+> >   /* called from workqueue */
+> >   void msm_update_fence(struct msm_fence_context *fctx, uint32_t fence)
+> >   {
+> >       spin_lock(&fctx->spinlock);
+> >       fctx->completed_fence =3D max(fence, fctx->completed_fence);
+> >       spin_unlock(&fctx->spinlock);
+> > -
+> > -     wake_up_all(&fctx->event);
+> >   }
+> >
+> >   struct msm_fence {
+> > diff --git a/drivers/gpu/drm/msm/msm_fence.h b/drivers/gpu/drm/msm/msm_=
+fence.h
+> > index 6ab97062ff1a..4783db528bcc 100644
+> > --- a/drivers/gpu/drm/msm/msm_fence.h
+> > +++ b/drivers/gpu/drm/msm/msm_fence.h
+> > @@ -49,7 +49,6 @@ struct msm_fence_context {
+> >        */
+> >       volatile uint32_t *fenceptr;
+> >
+> > -     wait_queue_head_t event;
+> >       spinlock_t spinlock;
+> >   };
+> >
+> > @@ -57,8 +56,6 @@ struct msm_fence_context * msm_fence_context_alloc(st=
+ruct drm_device *dev,
+> >               volatile uint32_t *fenceptr, const char *name);
+> >   void msm_fence_context_free(struct msm_fence_context *fctx);
+> >
+> > -int msm_wait_fence(struct msm_fence_context *fctx, uint32_t fence,
+> > -             ktime_t *timeout, bool interruptible);
+> >   void msm_update_fence(struct msm_fence_context *fctx, uint32_t fence)=
+;
+> >
+> >   struct dma_fence * msm_fence_alloc(struct msm_fence_context *fctx);
+> > diff --git a/drivers/gpu/drm/msm/msm_gem.h b/drivers/gpu/drm/msm/msm_ge=
+m.h
+> > index da3af702a6c8..e0579abda5b9 100644
+> > --- a/drivers/gpu/drm/msm/msm_gem.h
+> > +++ b/drivers/gpu/drm/msm/msm_gem.h
+> > @@ -320,6 +320,7 @@ struct msm_gem_submit {
+> >       struct ww_acquire_ctx ticket;
+> >       uint32_t seqno;         /* Sequence number of the submit on the r=
+ing */
+> >       struct dma_fence *fence;
+> > +     int fence_id;       /* key into queue->fence_idr */
+> >       struct msm_gpu_submitqueue *queue;
+> >       struct pid *pid;    /* submitting process */
+> >       bool fault_dumped;  /* Limit devcoredump dumping to one per submi=
+t */
+> > diff --git a/drivers/gpu/drm/msm/msm_gem_submit.c b/drivers/gpu/drm/msm=
+/msm_gem_submit.c
+> > index 4f02fa3c78f9..f6f595aae2c5 100644
+> > --- a/drivers/gpu/drm/msm/msm_gem_submit.c
+> > +++ b/drivers/gpu/drm/msm/msm_gem_submit.c
+> > @@ -68,7 +68,14 @@ void __msm_gem_submit_destroy(struct kref *kref)
+> >                       container_of(kref, struct msm_gem_submit, ref);
+> >       unsigned i;
+> >
+> > +     if (submit->fence_id) {
+> > +             mutex_lock(&submit->queue->lock);
+> > +             idr_remove(&submit->queue->fence_idr, submit->fence_id);
+> > +             mutex_unlock(&submit->queue->lock);
+> > +     }
+> > +
+> >       dma_fence_put(submit->fence);
+> > +
+> >       put_pid(submit->pid);
+> >       msm_submitqueue_put(submit->queue);
+> >
+> > @@ -872,6 +879,20 @@ int msm_ioctl_gem_submit(struct drm_device *dev, v=
+oid *data,
+> >               goto out;
+> >       }
+> >
+> > +     /*
+> > +      * Allocate an id which can be used by WAIT_FENCE ioctl to map ba=
+ck
+> > +      * to the underlying fence.
+> > +      */
+> > +     mutex_lock(&queue->lock);
+> > +     submit->fence_id =3D idr_alloc_cyclic(&queue->fence_idr,
+> > +                     submit->fence, 0, INT_MAX, GFP_KERNEL);
+> > +     mutex_unlock(&queue->lock);
+> > +     if (submit->fence_id < 0) {
+> > +             ret =3D submit->fence_id =3D 0;
+> > +             submit->fence_id =3D 0;
+> > +             goto out;
+> > +     }
+> > +
+> >       if (args->flags & MSM_SUBMIT_FENCE_FD_OUT) {
+> >               struct sync_file *sync_file =3D sync_file_create(submit->=
+fence);
+> >               if (!sync_file) {
+> > @@ -886,7 +907,7 @@ int msm_ioctl_gem_submit(struct drm_device *dev, vo=
+id *data,
+> >
+> >       msm_gpu_submit(gpu, submit);
+> >
+> > -     args->fence =3D submit->fence->seqno;
+> > +     args->fence =3D submit->fence_id;
+> >
+> >       msm_reset_syncobjs(syncobjs_to_reset, args->nr_in_syncobjs);
+> >       msm_process_post_deps(post_deps, args->nr_out_syncobjs,
+> > diff --git a/drivers/gpu/drm/msm/msm_gpu.h b/drivers/gpu/drm/msm/msm_gp=
+u.h
+> > index 96efcb31e502..579627252540 100644
+> > --- a/drivers/gpu/drm/msm/msm_gpu.h
+> > +++ b/drivers/gpu/drm/msm/msm_gpu.h
+> > @@ -263,6 +263,9 @@ struct msm_gpu_perfcntr {
+> >    *             which set of pgtables do submits jobs associated with =
+the
+> >    *             submitqueue use)
+> >    * @node:      node in the context's list of submitqueues
+> > + * @fence_idr: maps fence-id to dma_fence for userspace visible fence
+> > + *             seqno, protected by submitqueue lock
+> > + * @lock:      submitqueue lock
+> >    * @ref:       reference count
+> >    */
+> >   struct msm_gpu_submitqueue {
+> > @@ -272,6 +275,8 @@ struct msm_gpu_submitqueue {
+> >       int faults;
+> >       struct msm_file_private *ctx;
+> >       struct list_head node;
+> > +     struct idr fence_idr;
+> > +     struct mutex lock;
+> >       struct kref ref;
+> >   };
+> >
+> > diff --git a/drivers/gpu/drm/msm/msm_submitqueue.c b/drivers/gpu/drm/ms=
+m/msm_submitqueue.c
+> > index 9e9fec61d629..66f8d0fb38b0 100644
+> > --- a/drivers/gpu/drm/msm/msm_submitqueue.c
+> > +++ b/drivers/gpu/drm/msm/msm_submitqueue.c
+> > @@ -12,6 +12,8 @@ void msm_submitqueue_destroy(struct kref *kref)
+> >       struct msm_gpu_submitqueue *queue =3D container_of(kref,
+> >               struct msm_gpu_submitqueue, ref);
+> >
+> > +     idr_destroy(&queue->fence_idr);
+> > +
+> >       msm_file_private_put(queue->ctx);
+> >
+> >       kfree(queue);
+> > @@ -89,6 +91,9 @@ int msm_submitqueue_create(struct drm_device *drm, st=
+ruct msm_file_private *ctx,
+> >       if (id)
+> >               *id =3D queue->id;
+> >
+> > +     idr_init(&queue->fence_idr);
+> > +     mutex_init(&queue->lock);
+> > +
+> >       list_add_tail(&queue->node, &ctx->submitqueues);
+> >
+> >       write_unlock(&ctx->queuelock);
+> >
+>
