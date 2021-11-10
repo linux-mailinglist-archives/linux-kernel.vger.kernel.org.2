@@ -2,135 +2,218 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DC20644C5E5
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 18:17:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 80F5E44C5CE
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 18:16:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231708AbhKJRUh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Nov 2021 12:20:37 -0500
-Received: from mo4-p03-ob.smtp.rzone.de ([85.215.255.101]:29839 "EHLO
-        mo4-p03-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232531AbhKJRUR (ORCPT
+        id S232454AbhKJRTp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Nov 2021 12:19:45 -0500
+Received: from outgoing-stata.csail.mit.edu ([128.30.2.210]:48272 "EHLO
+        outgoing-stata.csail.mit.edu" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230471AbhKJRTn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Nov 2021 12:20:17 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1636564637;
-    s=strato-dkim-0002; d=goldelico.com;
-    h=References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Cc:Date:
-    From:Subject:Sender;
-    bh=ytqJC3tzZimA/vKcRado/QdQBzzBwoUDJjRTyS4f9aA=;
-    b=EyOzxBlGkWfsOzL1IyznACWamAo+HRmO4uhsrHV+K5khnzF01XHHLSudLFEhfnZQdr
-    bRBI2JRPAmzq7j2YEuoSz83btKAqzWInQDRbv+zM+IAQ1OfxUtnQ/CVkixg+kUEZzUI5
-    JS6jMaFzDE+Ea7mO80Id/YOR6b/UegluClGUjLXH8yZt4gbVT0ZCyqq7eSp8ekUrmBv0
-    kJJqGioTztglisIaComB8tKGYuaQR0DCa7BQYjnR1RellVcbTBE14dLm/Y7/NJ44O/wQ
-    WfvycOZaieaMj2zFFwwQ9vhRP8R7ODz6DceZBeXe2Lxwow3KZD+/+KVtuOqzJ6+p69ew
-    7igA==
-Authentication-Results: strato.com;
-    dkim=none
-X-RZG-AUTH: ":JGIXVUS7cutRB/49FwqZ7WcJeFKiMhflhwDubTJ9o12DNOsPj0lByOdfLlf0"
-X-RZG-CLASS-ID: mo00
-Received: from iMac.fritz.box
-    by smtp.strato.de (RZmta 47.34.5 DYNA|AUTH)
-    with ESMTPSA id Y02aa4xAAHHG51i
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
-        (Client did not present a certificate);
-    Wed, 10 Nov 2021 18:17:16 +0100 (CET)
-From:   "H. Nikolaus Schaller" <hns@goldelico.com>
-To:     Ulf Hansson <ulf.hansson@linaro.org>,
-        =?UTF-8?q?J=C3=A9r=C3=B4me=20Pouiller?= 
-        <jerome.pouiller@silabs.com>, Avri Altman <avri.altman@wdc.com>,
-        Shawn Lin <shawn.lin@rock-chips.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Tony Lindgren <tony@atomide.com>,
-        Bean Huo <beanhuo@micron.com>,
-        "H. Nikolaus Schaller" <hns@goldelico.com>,
-        Kiwoong Kim <kwmad.kim@samsung.com>,
-        Tian Tao <tiantao6@hisilicon.com>,
-        Andreas Kemnade <andreas@kemnade.info>,
-        Yang Li <abaci-bugfix@linux.alibaba.com>
-Cc:     notasas@gmail.com, linux-mmc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, letux-kernel@openphoenux.org,
-        kernel@pyra-handheld.com, linux-omap@vger.kernel.org
-Subject: [PATCH v2 6/6] mmc: host: omap_hsmmc: revert special init for wl1251
-Date:   Wed, 10 Nov 2021 18:17:11 +0100
-Message-Id: <77d313b97d1e18b0eb7ed2d88d718d960f329bb0.1636564631.git.hns@goldelico.com>
-X-Mailer: git-send-email 2.33.0
-In-Reply-To: <cover.1636564631.git.hns@goldelico.com>
-References: <cover.1636564631.git.hns@goldelico.com>
+        Wed, 10 Nov 2021 12:19:43 -0500
+Received: from [128.177.79.46] (helo=csail.mit.edu)
+        by outgoing-stata.csail.mit.edu with esmtpsa (TLS1.2:RSA_AES_256_CBC_SHA1:256)
+        (Exim 4.82)
+        (envelope-from <srivatsa@csail.mit.edu>)
+        id 1mkrDM-000Nx5-Kq; Wed, 10 Nov 2021 12:16:48 -0500
+Date:   Wed, 10 Nov 2021 09:20:00 -0800
+From:   "Srivatsa S. Bhat" <srivatsa@csail.mit.edu>
+To:     Joe Perches <joe@perches.com>
+Cc:     Nadav Amit <namit@vmware.com>, Juergen Gross <jgross@suse.com>,
+        X86 ML <x86@kernel.org>, Pv-drivers <Pv-drivers@vmware.com>,
+        Vivek Thampi <vithampi@vmware.com>,
+        Vishal Bhakta <vbhakta@vmware.com>,
+        Ronak Doshi <doshir@vmware.com>,
+        Linux-graphics-maintainer <Linux-graphics-maintainer@vmware.com>,
+        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "linux-input@vger.kernel.org" <linux-input@vger.kernel.org>,
+        Zack Rusin <zackr@vmware.com>, Deep Shah <sdeep@vmware.com>,
+        Alexey Makhalov <amakhalov@vmware.com>,
+        Linux Virtualization <virtualization@lists.linux-foundation.org>,
+        Keerthana Kalyanasundaram <keerthanak@vmware.com>,
+        Srivatsa Bhat <srivatsab@vmware.com>,
+        Anish Swaminathan <anishs@vmware.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Subject: Re: [PATCH 2/2] MAINTAINERS: Mark VMware mailing list entries as
+ private
+Message-ID: <20211110172000.GA121926@csail.mit.edu>
+References: <163640336232.62866.489924062999332446.stgit@srivatsa-dev>
+ <163640339370.62866.3435211389009241865.stgit@srivatsa-dev>
+ <5179a7c097e0bb88f95642a394f53c53e64b66b1.camel@perches.com>
+ <cb03ca42-b777-3d1a-5aba-b01cd19efa9a@csail.mit.edu>
+ <dcbd19fcd1625146f4db267f84abd7412513d20e.camel@perches.com>
+ <5C24FB2A-D2C0-4D95-A0C0-B48C4B8D5AF4@vmware.com>
+ <1875b0458294d23d8e3260d2824894b095d6a62d.camel@perches.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1875b0458294d23d8e3260d2824894b095d6a62d.camel@perches.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Replaces: commit f6498b922e57 ("mmc: host: omap_hsmmc: add code for special init of wl1251 to get rid of pandora_wl1251_init_card")
-Requires: commit ("mmc: core: transplant ti,wl1251 quirks from to be retired omap_hsmmc")
+On Tue, Nov 09, 2021 at 01:57:31PM -0800, Joe Perches wrote:
+> On Tue, 2021-11-09 at 00:58 +0000, Nadav Amit wrote:
+> > > On Nov 8, 2021, at 4:37 PM, Joe Perches <joe@perches.com> wrote:
+> > > On Mon, 2021-11-08 at 16:22 -0800, Srivatsa S. Bhat wrote:
+> > > 
+> > > So it's an exploder not an actual maintainer and it likely isn't
+> > > publically archived with any normal list mechanism.
+> > > 
+> > > So IMO "private" isn't appropriate.  Neither is "L:"
+> > > Perhaps just mark it as what it is as an "exploder".
+> > > 
+> > > Or maybe these blocks should be similar to:
+> > > 
+> > > M:	Name of Lead Developer <somebody@vmware.com>
+> > > M:	VMware <foo> maintainers <linux-<foo>-maintainers@vmlinux.com>
+> 
+> Maybe adding entries like
+> 
+> M:	Named maintainer <whoever@vmware.com>
+> R:	VMware <foo> reviewers <linux-<foo>-maintainers@vmware.com>
+> 
+> would be best/simplest.
+> 
 
-After moving the wl1251 quirks from omap_hsmmc_init_card() to wl1251_quirk()
-and sdio_card_init_methods[] we can remove omap_hsmmc_init_card() completely.
+Sure, that sounds good to me. I also considered adding "(email alias)"
+like Juergen suggested, but I think the R: entry is clear enough.
+Please find the updated patch below.
 
-This also removes the specialization on the combination of omap_hsmmc and wl1251.
-
-Related-to: commit f6498b922e57 ("mmc: host: omap_hsmmc: add code for special init of wl1251 to get rid of pandora_wl1251_init_card")
-Related-to: commit 2398c41d6432 ("omap: pdata-quirks: remove openpandora quirks for mmc3 and wl1251")
-Related-to: commit f9d50fef4b64 ("ARM: OMAP2+: omap3-pandora: add wifi support")
-Signed-off-by: H. Nikolaus Schaller <hns@goldelico.com>
 ---
- drivers/mmc/host/omap_hsmmc.c | 36 -----------------------------------
- 1 file changed, 36 deletions(-)
 
-diff --git a/drivers/mmc/host/omap_hsmmc.c b/drivers/mmc/host/omap_hsmmc.c
-index 6960e305e0a39..9749639ea8977 100644
---- a/drivers/mmc/host/omap_hsmmc.c
-+++ b/drivers/mmc/host/omap_hsmmc.c
-@@ -1504,41 +1504,6 @@ static void omap_hsmmc_set_ios(struct mmc_host *mmc, struct mmc_ios *ios)
- 	omap_hsmmc_set_bus_mode(host);
- }
+From f66faa238facf504cfc66325912ce7af8cbf79ec Mon Sep 17 00:00:00 2001
+From: "Srivatsa S. Bhat (VMware)" <srivatsa@csail.mit.edu>
+Date: Mon, 8 Nov 2021 11:46:57 -0800
+Subject: [PATCH v2 2/2] MAINTAINERS: Mark VMware mailing list entries as email
+ aliases
+
+VMware mailing lists in the MAINTAINERS file are private lists meant
+for VMware-internal review/notification for patches to the respective
+subsystems. Anyone can post to these addresses, but there is no public
+read access like open mailing lists, which makes them more like email
+aliases instead (to reach out to reviewers).
+
+So update all the VMware mailing list references in the MAINTAINERS
+file to mark them as such, using "R: email-alias@vmware.com".
+
+Signed-off-by: Srivatsa S. Bhat (VMware) <srivatsa@csail.mit.edu>
+Cc: Zack Rusin <zackr@vmware.com>
+Cc: Nadav Amit <namit@vmware.com>
+Cc: Vivek Thampi <vithampi@vmware.com>
+Cc: Vishal Bhakta <vbhakta@vmware.com>
+Cc: Ronak Doshi <doshir@vmware.com>
+Cc: pv-drivers@vmware.com
+Cc: linux-graphics-maintainer@vmware.com
+Cc: dri-devel@lists.freedesktop.org
+Cc: linux-rdma@vger.kernel.org
+Cc: linux-scsi@vger.kernel.org
+Cc: netdev@vger.kernel.org
+Cc: linux-input@vger.kernel.org
+---
+ MAINTAINERS | 22 +++++++++++-----------
+ 1 file changed, 11 insertions(+), 11 deletions(-)
+
+diff --git a/MAINTAINERS b/MAINTAINERS
+index 118cf8170d02..4372d79027e9 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -6134,8 +6134,8 @@ T:	git git://anongit.freedesktop.org/drm/drm-misc
+ F:	drivers/gpu/drm/vboxvideo/
  
--static void omap_hsmmc_init_card(struct mmc_host *mmc, struct mmc_card *card)
--{
--	struct omap_hsmmc_host *host = mmc_priv(mmc);
--
--	if (card->type == MMC_TYPE_SDIO || card->type == MMC_TYPE_SD_COMBO) {
--		struct device_node *np = mmc_dev(mmc)->of_node;
--
--		/*
--		 * REVISIT: should be moved to sdio core and made more
--		 * general e.g. by expanding the DT bindings of child nodes
--		 * to provide a mechanism to provide this information:
--		 * Documentation/devicetree/bindings/mmc/mmc-card.txt
--		 */
--
--		np = of_get_compatible_child(np, "ti,wl1251");
--		if (np) {
--			/*
--			 * We have TI wl1251 attached to MMC3. Pass this
--			 * information to the SDIO core because it can't be
--			 * probed by normal methods.
--			 */
--
--			dev_info(host->dev, "found wl1251\n");
--			card->quirks |= MMC_QUIRK_NONSTD_SDIO;
--			card->cccr.wide_bus = 1;
--			card->cis.vendor = 0x104c;
--			card->cis.device = 0x9066;
--			card->cis.blksize = 512;
--			card->cis.max_dtr = 24000000;
--			card->ocr = 0x80;
--			of_node_put(np);
--		}
--	}
--}
--
- static void omap_hsmmc_enable_sdio_irq(struct mmc_host *mmc, int enable)
- {
- 	struct omap_hsmmc_host *host = mmc_priv(mmc);
-@@ -1667,7 +1632,6 @@ static struct mmc_host_ops omap_hsmmc_ops = {
- 	.set_ios = omap_hsmmc_set_ios,
- 	.get_cd = mmc_gpio_get_cd,
- 	.get_ro = mmc_gpio_get_ro,
--	.init_card = omap_hsmmc_init_card,
- 	.enable_sdio_irq = omap_hsmmc_enable_sdio_irq,
- };
+ DRM DRIVER FOR VMWARE VIRTUAL GPU
+-M:	"VMware Graphics" <linux-graphics-maintainer@vmware.com>
+ M:	Zack Rusin <zackr@vmware.com>
++R:	VMware Graphics Reviewers <linux-graphics-maintainer@vmware.com>
+ L:	dri-devel@lists.freedesktop.org
+ S:	Supported
+ T:	git git://anongit.freedesktop.org/drm/drm-misc
+@@ -14189,7 +14189,7 @@ F:	include/uapi/linux/ppdev.h
+ PARAVIRT_OPS INTERFACE
+ M:	Juergen Gross <jgross@suse.com>
+ M:	Srivatsa S. Bhat (VMware) <srivatsa@csail.mit.edu>
+-L:	pv-drivers@vmware.com (private)
++R:	VMware PV-Drivers Reviewers <pv-drivers@vmware.com>
+ L:	virtualization@lists.linux-foundation.org
+ L:	x86@kernel.org
+ S:	Supported
+@@ -20032,7 +20032,7 @@ F:	tools/testing/vsock/
  
+ VMWARE BALLOON DRIVER
+ M:	Nadav Amit <namit@vmware.com>
+-M:	"VMware, Inc." <pv-drivers@vmware.com>
++R:	VMware PV-Drivers Reviewers <pv-drivers@vmware.com>
+ L:	linux-kernel@vger.kernel.org
+ S:	Maintained
+ F:	drivers/misc/vmw_balloon.c
+@@ -20040,7 +20040,7 @@ F:	drivers/misc/vmw_balloon.c
+ VMWARE HYPERVISOR INTERFACE
+ M:	Srivatsa S. Bhat (VMware) <srivatsa@csail.mit.edu>
+ M:	Alexey Makhalov <amakhalov@vmware.com>
+-L:	pv-drivers@vmware.com (private)
++R:	VMware PV-Drivers Reviewers <pv-drivers@vmware.com>
+ L:	virtualization@lists.linux-foundation.org
+ L:	x86@kernel.org
+ S:	Supported
+@@ -20050,14 +20050,14 @@ F:	arch/x86/kernel/cpu/vmware.c
+ 
+ VMWARE PVRDMA DRIVER
+ M:	Adit Ranadive <aditr@vmware.com>
+-M:	VMware PV-Drivers <pv-drivers@vmware.com>
++R:	VMware PV-Drivers Reviewers <pv-drivers@vmware.com>
+ L:	linux-rdma@vger.kernel.org
+ S:	Maintained
+ F:	drivers/infiniband/hw/vmw_pvrdma/
+ 
+ VMware PVSCSI driver
+ M:	Vishal Bhakta <vbhakta@vmware.com>
+-M:	VMware PV-Drivers <pv-drivers@vmware.com>
++R:	VMware PV-Drivers Reviewers <pv-drivers@vmware.com>
+ L:	linux-scsi@vger.kernel.org
+ S:	Maintained
+ F:	drivers/scsi/vmw_pvscsi.c
+@@ -20065,7 +20065,7 @@ F:	drivers/scsi/vmw_pvscsi.h
+ 
+ VMWARE VIRTUAL PTP CLOCK DRIVER
+ M:	Vivek Thampi <vithampi@vmware.com>
+-M:	"VMware, Inc." <pv-drivers@vmware.com>
++R:	VMware PV-Drivers Reviewers <pv-drivers@vmware.com>
+ L:	netdev@vger.kernel.org
+ S:	Supported
+ F:	drivers/ptp/ptp_vmw.c
+@@ -20073,14 +20073,14 @@ F:	drivers/ptp/ptp_vmw.c
+ VMWARE VMCI DRIVER
+ M:	Jorgen Hansen <jhansen@vmware.com>
+ M:	Vishnu Dasa <vdasa@vmware.com>
++R:	VMware PV-Drivers Reviewers <pv-drivers@vmware.com>
+ L:	linux-kernel@vger.kernel.org
+-L:	pv-drivers@vmware.com (private)
+ S:	Maintained
+ F:	drivers/misc/vmw_vmci/
+ 
+ VMWARE VMMOUSE SUBDRIVER
+-M:	"VMware Graphics" <linux-graphics-maintainer@vmware.com>
+-M:	"VMware, Inc." <pv-drivers@vmware.com>
++R:	VMware Graphics Reviewers <linux-graphics-maintainer@vmware.com>
++R:	VMware PV-Drivers Reviewers <pv-drivers@vmware.com>
+ L:	linux-input@vger.kernel.org
+ S:	Maintained
+ F:	drivers/input/mouse/vmmouse.c
+@@ -20088,7 +20088,7 @@ F:	drivers/input/mouse/vmmouse.h
+ 
+ VMWARE VMXNET3 ETHERNET DRIVER
+ M:	Ronak Doshi <doshir@vmware.com>
+-M:	pv-drivers@vmware.com
++R:	VMware PV-Drivers Reviewers <pv-drivers@vmware.com>
+ L:	netdev@vger.kernel.org
+ S:	Maintained
+ F:	drivers/net/vmxnet3/
 -- 
-2.33.0
+2.25.1
 
