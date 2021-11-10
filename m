@@ -2,164 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 14E9B44C6DD
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 19:42:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 84D9B44C709
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 19:46:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232096AbhKJSpk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Nov 2021 13:45:40 -0500
-Received: from lelv0142.ext.ti.com ([198.47.23.249]:50912 "EHLO
-        lelv0142.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229969AbhKJSph (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Nov 2021 13:45:37 -0500
-Received: from fllv0034.itg.ti.com ([10.64.40.246])
-        by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 1AAIgmSt010504;
-        Wed, 10 Nov 2021 12:42:48 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1636569768;
-        bh=20xiynZ1X3msxg/XvoGGOO3+AYxPfmrR9XazGsyvlR0=;
-        h=Date:From:To:CC:Subject:References:In-Reply-To;
-        b=IJB4q1oCSJgkAVNnpIM0spujLm+M1z0cMUpuAqyh/BcrL+M8XiLZS8yf0h9XFemPG
-         ZxHZcwFXPwsC5NGM8ujtHavijLIBl44wDzf4Y14BRWd/0CyH5TGfy1d+NvpeCR7vMw
-         6eIfZrkKNoT4HH/mEABhTNfEh/3fHw/oubv0Te/Y=
-Received: from DLEE105.ent.ti.com (dlee105.ent.ti.com [157.170.170.35])
-        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 1AAIgm26020127
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Wed, 10 Nov 2021 12:42:48 -0600
-Received: from DLEE115.ent.ti.com (157.170.170.26) by DLEE105.ent.ti.com
- (157.170.170.35) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14; Wed, 10
- Nov 2021 12:42:48 -0600
-Received: from lelv0327.itg.ti.com (10.180.67.183) by DLEE115.ent.ti.com
- (157.170.170.26) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14 via
- Frontend Transport; Wed, 10 Nov 2021 12:42:48 -0600
-Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
-        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 1AAIglmW084083;
-        Wed, 10 Nov 2021 12:42:47 -0600
-Date:   Thu, 11 Nov 2021 00:12:46 +0530
-From:   Pratyush Yadav <p.yadav@ti.com>
-To:     Dinh Nguyen <dinguyen@kernel.org>
-CC:     <broonie@kernel.org>, <a-nandan@ti.com>,
-        <linux-spi@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] spi: cadence-quadspi: fix write completion support
-Message-ID: <20211110184246.zermc35sgyzpjedd@ti.com>
-References: <20211108200854.3616121-1-dinguyen@kernel.org>
+        id S233023AbhKJSrq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Nov 2021 13:47:46 -0500
+Received: from mail.kernel.org ([198.145.29.99]:46536 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232876AbhKJSrP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Nov 2021 13:47:15 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 032C461186;
+        Wed, 10 Nov 2021 18:44:27 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1636569867;
+        bh=E/1F/uLSXz5eaPY9WDOyt6HffJjzlsNkefA+H1LkuRw=;
+        h=From:To:Cc:Subject:Date:From;
+        b=boNJnbInbQzrvOI9JaqEbzxF9pp0DWdp/XwYCJ01Eb2DezlKp/fP9pTdF1MuhHxy6
+         D6PuNykL5aFBKi6Xnl9KZkWl7Q43kiS12IgET2sWbbery/xuuOnRzaawI5Ib50FQDs
+         bZSv/QrlNXkhBSn6TqZyfCEV0cJuzfGXMD55B5z4=
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        torvalds@linux-foundation.org, akpm@linux-foundation.org,
+        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+        f.fainelli@gmail.com, stable@vger.kernel.org
+Subject: [PATCH 4.4 00/19] 4.4.292-rc1 review
+Date:   Wed, 10 Nov 2021 19:43:02 +0100
+Message-Id: <20211110182001.257350381@linuxfoundation.org>
+X-Mailer: git-send-email 2.33.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <20211108200854.3616121-1-dinguyen@kernel.org>
-User-Agent: NeoMutt/20171215
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+User-Agent: quilt/0.66
+X-stable: review
+X-Patchwork-Hint: ignore
+X-KernelTest-Patch: http://kernel.org/pub/linux/kernel/v4.x/stable-review/patch-4.4.292-rc1.gz
+X-KernelTest-Tree: git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git
+X-KernelTest-Branch: linux-4.4.y
+X-KernelTest-Patches: git://git.kernel.org/pub/scm/linux/kernel/git/stable/stable-queue.git
+X-KernelTest-Version: 4.4.292-rc1
+X-KernelTest-Deadline: 2021-11-12T18:20+00:00
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 08/11/21 02:08PM, Dinh Nguyen wrote:
-> Some versions of the Cadence QSPI controller does not have the write
-> completion register implemented(CQSPI_REG_WR_COMPLETION_CTRL). On the
-> Intel SoCFPGA platform the CQSPI_REG_WR_COMPLETION_CTRL register is
-> not configured.
-> 
-> Add a quirk to not write to the CQSPI_REG_WR_COMPLETION_CTRL register.
-> 
-> Fixes: 9cb2ff111712 ("spi: cadence-quadspi: Disable Auto-HW polling)
-> Signed-off-by: Dinh Nguyen <dinguyen@kernel.org>
-> ---
->  drivers/spi/spi-cadence-quadspi.c | 24 +++++++++++++++++++++---
->  1 file changed, 21 insertions(+), 3 deletions(-)
-> 
-> diff --git a/drivers/spi/spi-cadence-quadspi.c b/drivers/spi/spi-cadence-quadspi.c
-> index 8b3d268ac63c..b808c94641fa 100644
-> --- a/drivers/spi/spi-cadence-quadspi.c
-> +++ b/drivers/spi/spi-cadence-quadspi.c
-> @@ -37,6 +37,7 @@
->  #define CQSPI_NEEDS_WR_DELAY		BIT(0)
->  #define CQSPI_DISABLE_DAC_MODE		BIT(1)
->  #define CQSPI_SUPPORT_EXTERNAL_DMA	BIT(2)
-> +#define CQSPI_NO_SUPPORT_WR_COMPLETION	BIT(3)
->  
->  /* Capabilities */
->  #define CQSPI_SUPPORTS_OCTAL		BIT(0)
-> @@ -86,6 +87,7 @@ struct cqspi_st {
->  	struct cqspi_flash_pdata f_pdata[CQSPI_MAX_CHIPSELECT];
->  	bool			use_dma_read;
->  	u32			pd_dev_id;
-> +	bool			wr_completion;
+This is the start of the stable review cycle for the 4.4.292 release.
+There are 19 patches in this series, all will be posted as a response
+to this one.  If anyone has any issues with these being applied, please
+let me know.
 
-We have a bunch of bools lying around in this struct: is_decoded_cs, 
-rclk_en, use_direct_mode, use_dma_read, and now wr_completion. It is 
-probably worth it to use bitfields and save some memory.
+Responses should be made by Fri, 12 Nov 2021 18:19:54 +0000.
+Anything received after that time might be too late.
 
-Anyway, I don't consider this a blocker. So either way,
+The whole patch series can be found in one patch at:
+	https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-4.4.292-rc1.gz
+or in the git tree and branch at:
+	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-4.4.y
+and the diffstat can be found below.
 
-Reviewed-by: Pratyush Yadav <p.yadav@ti.com>
+thanks,
 
->  };
->  
->  struct cqspi_driver_platdata {
-> @@ -996,9 +998,11 @@ static int cqspi_write_setup(struct cqspi_flash_pdata *f_pdata,
->  	 * polling on the controller's side. spinand and spi-nor will take
->  	 * care of polling the status register.
->  	 */
-> -	reg = readl(reg_base + CQSPI_REG_WR_COMPLETION_CTRL);
-> -	reg |= CQSPI_REG_WR_DISABLE_AUTO_POLL;
-> -	writel(reg, reg_base + CQSPI_REG_WR_COMPLETION_CTRL);
-> +	if (cqspi->wr_completion) {
-> +		reg = readl(reg_base + CQSPI_REG_WR_COMPLETION_CTRL);
-> +		reg |= CQSPI_REG_WR_DISABLE_AUTO_POLL;
-> +		writel(reg, reg_base + CQSPI_REG_WR_COMPLETION_CTRL);
-> +	}
->  
->  	reg = readl(reg_base + CQSPI_REG_SIZE);
->  	reg &= ~CQSPI_REG_SIZE_ADDRESS_MASK;
-> @@ -1736,6 +1740,10 @@ static int cqspi_probe(struct platform_device *pdev)
->  
->  	cqspi->master_ref_clk_hz = clk_get_rate(cqspi->clk);
->  	master->max_speed_hz = cqspi->master_ref_clk_hz;
-> +
-> +	/* write completion is supported by default */
-> +	cqspi->wr_completion = true;
-> +
->  	ddata  = of_device_get_match_data(dev);
->  	if (ddata) {
->  		if (ddata->quirks & CQSPI_NEEDS_WR_DELAY)
-> @@ -1747,6 +1755,8 @@ static int cqspi_probe(struct platform_device *pdev)
->  			cqspi->use_direct_mode = true;
->  		if (ddata->quirks & CQSPI_SUPPORT_EXTERNAL_DMA)
->  			cqspi->use_dma_read = true;
-> +		if (ddata->quirks & CQSPI_NO_SUPPORT_WR_COMPLETION)
-> +			cqspi->wr_completion = false;
->  
->  		if (of_device_is_compatible(pdev->dev.of_node,
->  					    "xlnx,versal-ospi-1.0"))
-> @@ -1859,6 +1869,10 @@ static const struct cqspi_driver_platdata intel_lgm_qspi = {
->  	.quirks = CQSPI_DISABLE_DAC_MODE,
->  };
->  
-> +static const struct cqspi_driver_platdata socfpga_qspi = {
-> +	.quirks = CQSPI_NO_SUPPORT_WR_COMPLETION,
-> +};
-> +
->  static const struct cqspi_driver_platdata versal_ospi = {
->  	.hwcaps_mask = CQSPI_SUPPORTS_OCTAL,
->  	.quirks = CQSPI_DISABLE_DAC_MODE | CQSPI_SUPPORT_EXTERNAL_DMA,
-> @@ -1887,6 +1901,10 @@ static const struct of_device_id cqspi_dt_ids[] = {
->  		.compatible = "xlnx,versal-ospi-1.0",
->  		.data = (void *)&versal_ospi,
->  	},
-> +	{
-> +		.compatible = "intel,socfpga-qspi",
-> +		.data = (void *)&socfpga_qspi,
-> +	},
->  	{ /* end of table */ }
->  };
->  
-> -- 
-> 2.25.1
-> 
+greg k-h
 
--- 
-Regards,
-Pratyush Yadav
-Texas Instruments Inc.
+-------------
+Pseudo-Shortlog of commits:
+
+Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+    Linux 4.4.292-rc1
+
+Johan Hovold <johan@kernel.org>
+    rsi: fix control-message timeout
+
+Johan Hovold <johan@kernel.org>
+    staging: rtl8192u: fix control-message timeouts
+
+Johan Hovold <johan@kernel.org>
+    staging: r8712u: fix control-message timeout
+
+Johan Hovold <johan@kernel.org>
+    comedi: vmk80xx: fix bulk and interrupt message timeouts
+
+Johan Hovold <johan@kernel.org>
+    comedi: vmk80xx: fix bulk-buffer overflow
+
+Johan Hovold <johan@kernel.org>
+    comedi: vmk80xx: fix transfer-buffer overflows
+
+Cheah Kok Cheong <thrust73@gmail.com>
+    staging: comedi: drivers: replace le16_to_cpu() with usb_endpoint_maxp()
+
+Johan Hovold <johan@kernel.org>
+    comedi: ni_usb6501: fix NULL-deref in command paths
+
+Johan Hovold <johan@kernel.org>
+    comedi: dt9812: fix DMA buffers on stack
+
+Jan Kara <jack@suse.cz>
+    isofs: Fix out of bound access for corrupted isofs image
+
+Dongliang Mu <mudongliangabcd@gmail.com>
+    usb: hso: fix error handling code of hso_create_net_device
+
+Petr Mladek <pmladek@suse.com>
+    printk/console: Allow to disable console output by using console="" or console=null
+
+James Buren <braewoods+lkml@braewoods.net>
+    usb-storage: Add compatibility quirk flags for iODD 2531/2541
+
+Geert Uytterhoeven <geert@linux-m68k.org>
+    usb: gadget: Mark USB_FSL_QE broken on 64-bit
+
+Mike Marciniszyn <mike.marciniszyn@cornelisnetworks.com>
+    IB/qib: Protect from buffer overflow in struct qib_user_sdma_pkt fields
+
+Gustavo A. R. Silva <gustavo@embeddedor.com>
+    IB/qib: Use struct_size() helper
+
+Andreas Kemnade <andreas@kemnade.info>
+    net: hso: register netdev later to avoid a race condition
+
+Wang Kefeng <wangkefeng.wang@huawei.com>
+    ARM: 9120/1: Revert "amba: make use of -1 IRQs warn"
+
+Ming Lei <ming.lei@redhat.com>
+    scsi: core: Put LLD module refcnt after SCSI device is released
+
+
+-------------
+
+Diffstat:
+
+ Makefile                                    |   4 +-
+ drivers/amba/bus.c                          |   3 -
+ drivers/infiniband/hw/qib/qib_user_sdma.c   |  35 +++++---
+ drivers/net/usb/hso.c                       |  45 +++++++----
+ drivers/net/wireless/rsi/rsi_91x_usb.c      |   2 +-
+ drivers/scsi/scsi.c                         |   4 +-
+ drivers/scsi/scsi_sysfs.c                   |   9 +++
+ drivers/staging/comedi/drivers/dt9812.c     | 119 ++++++++++++++++++++--------
+ drivers/staging/comedi/drivers/ni_usb6501.c |  14 +++-
+ drivers/staging/comedi/drivers/vmk80xx.c    |  34 ++++----
+ drivers/staging/rtl8192u/r8192U_core.c      |  18 ++---
+ drivers/staging/rtl8712/usb_ops_linux.c     |   2 +-
+ drivers/usb/gadget/udc/Kconfig              |   1 +
+ drivers/usb/storage/unusual_devs.h          |  10 +++
+ fs/isofs/inode.c                            |   2 +
+ kernel/printk/printk.c                      |   9 ++-
+ 16 files changed, 218 insertions(+), 93 deletions(-)
+
+
