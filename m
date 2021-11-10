@@ -2,123 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A67344C105
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 13:11:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B4CF44C108
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 13:12:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231883AbhKJMNi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Nov 2021 07:13:38 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38644 "EHLO
+        id S231649AbhKJMOj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Nov 2021 07:14:39 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38918 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231707AbhKJMNc (ORCPT
+        with ESMTP id S231254AbhKJMOh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Nov 2021 07:13:32 -0500
-Received: from mail-pj1-x1030.google.com (mail-pj1-x1030.google.com [IPv6:2607:f8b0:4864:20::1030])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 35328C061764
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Nov 2021 04:10:45 -0800 (PST)
-Received: by mail-pj1-x1030.google.com with SMTP id gf14-20020a17090ac7ce00b001a7a2a0b5c3so1474973pjb.5
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Nov 2021 04:10:45 -0800 (PST)
+        Wed, 10 Nov 2021 07:14:37 -0500
+Received: from mail-pf1-x435.google.com (mail-pf1-x435.google.com [IPv6:2607:f8b0:4864:20::435])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B9454C061766;
+        Wed, 10 Nov 2021 04:11:49 -0800 (PST)
+Received: by mail-pf1-x435.google.com with SMTP id x64so2486900pfd.6;
+        Wed, 10 Nov 2021 04:11:49 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=mime-version:reply-to:sender:from:date:message-id:subject:to;
-        bh=wfObxgQwuyRXydIOAszGehlxqr/mh0958dqVi1SwA2c=;
-        b=D+15ip5bpsUDWFz1jGEb9Z3kUB3Jt2jI94smYET9VVybl4rHyacwsdhGgc7vzBV3uE
-         HAkgAnbelvbrivgIWZ2zeeUzxF9K/HRPk02JKlie2Y5la/v6cG0kwM6xTeCn1+Ld6qcE
-         fon5Q/T5D1DFaMnfJdjVDN7qRt9KoK60GsWjmdJ6udGlXGHjrBxToZ+eAwbQJ5yDej4p
-         +Wj6Rrf0V+W7tdXSOBcKY8l6o1VwQbfrM0OovsBj9Jk5s4EhlwkdkvDMdZZYTMBsbV8N
-         3Ym/zQiGYCAakw4gQlVj/KKvCVC6cUmuykan4yPzVzSzniUienwIrFEfslqwcVFnHLXw
-         iorg==
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Bd62kUhFHKorEdg0sPrkxQ7qB2nMKiUIB+3qfTaStf0=;
+        b=DXNNf6K83ULfqyjdU1hySEHbe4hiMeTVhtpocirou30jBV6NRaemNjAufpb0tBihXH
+         2DLCTDGVDwmndpCuL0aC+TyVpSh0yy+Tl74jpCmLyVKHLkx3smRG+s7UWFI85KXS/9+t
+         OCCn3trCcxjiJ4ZMMkpaxBIDqvctok7B3jDYyndKdUxHLDgGXKPlvUuRSUCnihxj1QJ4
+         V2cPeIS2lpgpcWx0aqOCAKjUO7y85sGSUKnMrF2jkc9EGBvaJ7RbL3wad61bmjg5f7gg
+         SJlnEcW7j5tEF//16yAuU9N++kKFJsjzLUrV9MaBfgBABUSy9bowEWa42WxhECguSn9Q
+         35Jw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:reply-to:sender:from:date
-         :message-id:subject:to;
-        bh=wfObxgQwuyRXydIOAszGehlxqr/mh0958dqVi1SwA2c=;
-        b=U7nKf1383yDHYlZaDWlokuOpMNX8iKQ1zbl8g5GfSSk9szMY6C093cKS8Ftw5Zq57d
-         U21CA7r1VdNeuRRM9srBqibKtYkQM0U5UI/9jW/ZjMsgrekuQimIZ+bASk7lqIKrvJOl
-         PgLMiDPvWUIogeyKByqXt8qkARaci42VahFYpnb1Bzx+8+Vok8dPmQLrUHJ8jfFF11+V
-         INQw1TwG8UsbySlc3gSilS4s+k2dMurEEsHnXe1RRvPnydFX5cLsmLPavMeg1HLikghI
-         wlAPFMaBp21wKkR+qGCgBf4OKIInhEDDuP+FrEgBxdblnKH/NKKlesfzkK/AeZr72tVB
-         1TcQ==
-X-Gm-Message-State: AOAM531bg4h/ATtbzg8ME/H/iB8QUqq6+6kqY6I/P44nqbchGiZDrRwZ
-        dcbCMiaqyIZUAQOz0UVuiebkLwMjqZKKHIau/A4=
-X-Google-Smtp-Source: ABdhPJwxHWQ/I43HkEKrxQjEFBAVO0h9C5vCih5mQn5Sj0AC8S8aqXHxzwX8uW7lH26bsUQohovNlUe4DVve3deWM5U=
-X-Received: by 2002:a17:90a:aa0e:: with SMTP id k14mr16541748pjq.88.1636546244619;
- Wed, 10 Nov 2021 04:10:44 -0800 (PST)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Bd62kUhFHKorEdg0sPrkxQ7qB2nMKiUIB+3qfTaStf0=;
+        b=spN0YSUUZaxS5lajVZRXt/e1pnWbcTDgGg8b7qIOP3/SAzPV0lC8OnNbY94bAbuz4T
+         6NQTmHgDJtI1XPG4/NPVjP8HVG6RgmlPC6DzBxfyRW4w3V3KIuTDv5JT9q9eFR//WZMG
+         9vF0e+UQ3UIKtgL2f3HYSMOq8iU/HoAZe9TiYvdpoC/N4cu19Dpbo+YSvI0P3+1yCkwb
+         wrY/07NYS1O/5RqrowqDCJDDXd8vKb43P9012AYn/wMb5DqyEGFoiXcIBcird80hYJv6
+         WFZE9/5wAcyv8H5F0Iukjh+cdRhmDPFx47n4CF3LxL+/y2xe8WKO3AW8+wG0I9GDFv89
+         Xarw==
+X-Gm-Message-State: AOAM5330F2jzX3eHBTeKmxXEqxQEk+t7StSR1jj801VGHqCvHrzf7us3
+        jvtEwkccnn8qYBJqdncPark=
+X-Google-Smtp-Source: ABdhPJwr4wIOT77bNfmqObauPfPmEKjjSNks6dI4WNWcOOTv92WOABSsSJOe/B2ifrX8ypuaLuksyg==
+X-Received: by 2002:a05:6a00:10d1:b0:47b:aa9b:1e7a with SMTP id d17-20020a056a0010d100b0047baa9b1e7amr96981336pfu.57.1636546309355;
+        Wed, 10 Nov 2021 04:11:49 -0800 (PST)
+Received: from localhost.localdomain ([193.203.214.57])
+        by smtp.gmail.com with ESMTPSA id m19sm7935319pgh.75.2021.11.10.04.11.46
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 10 Nov 2021 04:11:49 -0800 (PST)
+From:   cgel.zte@gmail.com
+X-Google-Original-From: deng.changcheng@zte.com.cn
+To:     kvalo@codeaurora.org
+Cc:     davem@davemloft.net, kuba@kernel.org, deng.changcheng@zte.com.cn,
+        pkshih@realtek.com, linux-wireless@vger.kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Zeal Robot <zealci@zte.com.cn>
+Subject: [PATCH] rtw89: remove unneeded variable
+Date:   Wed, 10 Nov 2021 12:11:35 +0000
+Message-Id: <20211110121135.151187-1-deng.changcheng@zte.com.cn>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Reply-To: ymrzerbo@gmail.com
-Sender: dr.siaokabore@gmail.com
-Received: by 2002:a05:6a20:c11a:b0:5d:6cc2:96e with HTTP; Wed, 10 Nov 2021
- 04:10:44 -0800 (PST)
-From:   "Mr.Zerbo Yameogo" <ymrzerbo@gmail.com>
-Date:   Wed, 10 Nov 2021 12:10:44 +0000
-X-Google-Sender-Auth: zMMbKcw6h3BIew_eqWmi7iw_428
-Message-ID: <CA+rg4NvpR8Z-2ocriK9_M2MtWrq+u6RL9vf2ofDeTddrsisGTw@mail.gmail.com>
-Subject: VERY VERY URGENT.
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-FROM MR.ZERBO YAMEOGO
-AUDIT& ACCOUNT MANAGER
-BANK OF AFRICA (B.O.A)
-OUAGADOUGOU BURKINA FASO
-WEST AFRICA.
+From: Changcheng Deng <deng.changcheng@zte.com.cn>
 
-Dear Friend,
+Fix the following coccicheck review:
+./drivers/net/wireless/realtek/rtw89/mac.c: 1096: 5-8: Unneeded variable
 
-With due respect, I have decided to contact you on a business transaction
-that will be beneficial to both of us. At the bank last account and
-auditing evaluation, my staffs came across an old account which was being
-maintained by a foreign client who we learn was among the deceased
-passengers of motor accident on November.2003, the deceased was unable to
-run this account since his death. The account has remained dormant without
-the knowledge of his family since it was put in a safe deposit account in
-the bank for future investment by the client.
+Remove unneeded variable used to store return value.
 
-Since his demise, even the members of his family haven't applied for claims
-over this fund and it has been in the safe deposit account until I
-discovered that it cannot be claimed since our client is a foreign national
-and we are sure that he has no next of kin here to file claims over the
-money. As the director of the department, this discovery was brought to my
-office so as to decide what is to be done. I decided to seek ways through
-which to transfer this money out of the bank and out of the country too.
+Reported-by: Zeal Robot <zealci@zte.com.cn>
+Signed-off-by: Changcheng Deng <deng.changcheng@zte.com.cn>
+---
+ drivers/net/wireless/realtek/rtw89/mac.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-The total amount in the account is $18.5 millions with my positions as
-staffs of the bank, I am handicapped because I cannot operate foreign
-accounts and cannot lay bonafide claim over this money. The client was a
-foreign national and you will only be asked to act as his next of kin and I
-will supply you with all the necessary information and bank data to assist
-you in being able to transfer this money to any bank of your choice where
-this money could be transferred into.
+diff --git a/drivers/net/wireless/realtek/rtw89/mac.c b/drivers/net/wireless/realtek/rtw89/mac.c
+index 0171a5a7b1de..b93ac242b305 100644
+--- a/drivers/net/wireless/realtek/rtw89/mac.c
++++ b/drivers/net/wireless/realtek/rtw89/mac.c
+@@ -1093,7 +1093,6 @@ static int cmac_func_en(struct rtw89_dev *rtwdev, u8 mac_idx, bool en)
+ static int dmac_func_en(struct rtw89_dev *rtwdev)
+ {
+ 	u32 val32;
+-	u32 ret = 0;
+ 
+ 	val32 = (B_AX_MAC_FUNC_EN | B_AX_DMAC_FUNC_EN | B_AX_MAC_SEC_EN |
+ 		 B_AX_DISPATCHER_EN | B_AX_DLE_CPUIO_EN | B_AX_PKT_IN_EN |
+@@ -1107,7 +1106,7 @@ static int dmac_func_en(struct rtw89_dev *rtwdev)
+ 		 B_AX_WD_RLS_CLK_EN);
+ 	rtw89_write32(rtwdev, R_AX_DMAC_CLK_EN, val32);
+ 
+-	return ret;
++	return 0;
+ }
+ 
+ static int chip_func_en(struct rtw89_dev *rtwdev)
+-- 
+2.25.1
 
-The total sum will be shared as follows: 50% for me, 50% for you and
-expenses incidental occur during the transfer will be incur by both of us.
-The transfer is risk free on both sides hence you are going to follow my
-instruction till the fund transfer to your account. Since I work in this
-bank that is why you should be confident in the success of this transaction
-because you will be updated with information as at when desired.
-
-I will wish you to keep this transaction secret and confidential as I am
-hoping to retire with my share of this money at the end of transaction
-which will be when this money is safety in your account. I will then come
-over to your country for sharing according to the previously agreed
-percentages. You might even have to advise me on possibilities of
-investment in your country or elsewhere of our choice. May God help you to
-help me to a restive retirement, Amen,
-
-Please for further information and inquires feel free to contact me back
-immediately for more explanation and better understanding I want you to
-assure me your capability of handling this project with trust by providing
-me your following information details such as:
-
-(1)NAME..............
-(2)AGE:................
-(3)SEX:.....................
-(4)PHONE NUMBER:.................
-(5)OCCUPATION:................ .....
-(6)YOUR COUNTRY:.....................
-
-Yours sincerely,
-
-Mr.Zerbo Yameogo.
