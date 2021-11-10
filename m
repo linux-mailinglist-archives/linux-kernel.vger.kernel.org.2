@@ -2,113 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D3EE144C371
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 15:55:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 525D144C378
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 15:57:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232204AbhKJO6k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Nov 2021 09:58:40 -0500
-Received: from mail.kernel.org ([198.145.29.99]:43858 "EHLO mail.kernel.org"
+        id S232328AbhKJPAW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Nov 2021 10:00:22 -0500
+Received: from m43-7.mailgun.net ([69.72.43.7]:26132 "EHLO m43-7.mailgun.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231703AbhKJO6i (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Nov 2021 09:58:38 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 755F6611ED;
-        Wed, 10 Nov 2021 14:55:50 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1636556151;
-        bh=nl20ydh3JSvF+/L4nJPk1QcZPmefAyyYo/AMwHP+7E4=;
-        h=From:To:Cc:Subject:Date:From;
-        b=kJ+UWrKQdL38c4ggvHQzo3VcpwI++Z6Zli6VsdINBfWDs5xdfUoakgstUUFaTezwH
-         yGHdWvTFzNiMZR5YsKbqqZxxcwu9LYqyeTOaPEEVONGSxFizV8xy2uJSnydd9ih2jG
-         Sx6WlG4T7W6XSuA3FaoLndW0aTgCVQFJiJWm/Q5PWaL5/7e/fTzTHH6boJGQUqd9Nb
-         of4M3Ixe9ly42O1q25R3bEg5FPoMdSPw6MSi+YGKowBHJjNHVCCUE6W2BPvMxGdupS
-         FZ4z0D4XnFUCAVtCILEIk8acTZgcMpEOuZpOh3BCdK9uf+f8aCXATduqHI3SnnXgcM
-         z6JyGr4eLBAmQ==
-From:   Christian Brauner <brauner@kernel.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     linux-kernel@vger.kernel.org
-Subject: [GIT PULL] prctl updates
-Date:   Wed, 10 Nov 2021 15:55:26 +0100
-Message-Id: <20211110145526.1968029-1-brauner@kernel.org>
-X-Mailer: git-send-email 2.30.2
+        id S231743AbhKJPAU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Nov 2021 10:00:20 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1636556252; h=Content-Type: MIME-Version: Message-ID:
+ In-Reply-To: Date: References: Subject: Cc: To: From: Sender;
+ bh=dmIHW85tjPyxELq9nBNqjGH0mPhL4e4EOmNfAyJp0cs=; b=QvAGcjMLQzTZUiHwYXPj53qDYbju2xd5WQL7RQ8n0Zcj52vU0Z7tQpbnzwzbRPRBWjTZioln
+ xCZOcT9tsKRWFXpy75ep5UeyDAYIeaCAkPcoBSjIFzIYiW/pZWRwSDxmsdgU40tRAlrML5Co
+ vX9hIHU0Zye16DyV3O4nqThiRYY=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n06.prod.us-east-1.postgun.com with SMTP id
+ 618bddbca4b510b38f197fe7 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 10 Nov 2021 14:57:00
+ GMT
+Sender: kvalo=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id A7573C43616; Wed, 10 Nov 2021 14:56:58 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
+        autolearn=no autolearn_force=no version=3.4.0
+Received: from tykki (tynnyri.adurom.net [51.15.11.48])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: kvalo)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 32A49C4338F;
+        Wed, 10 Nov 2021 14:56:55 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 smtp.codeaurora.org 32A49C4338F
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=codeaurora.org
+From:   Kalle Valo <kvalo@codeaurora.org>
+To:     Zekun Shen <bruceshenzk@gmail.com>
+Cc:     Pontus Fuchs <pontus.fuchs@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] ar5523: Fix null-ptr-deref with unexpected WDCMSG_TARGET_START  =?ISO-8859-1?Q?=20r?=
+        =?ISO-8859-1?Q?eply=1B?=
+References: <YXsmPQ3awHFLuAj2@10-18-43-117.dynapool.wireless.nyu.edu>
+        <87tuh0xz9h.fsf@tynnyri.adurom.net>
+        <YXv82KfKCW3eHhE6@Zekuns-MBP-16.fios-router.home>
+Date:   Wed, 10 Nov 2021 16:56:52 +0200
+In-Reply-To: <YXv82KfKCW3eHhE6@Zekuns-MBP-16.fios-router.home> (Zekun Shen's
+        message of "Fri, 29 Oct 2021 09:53:28 -0400")
+Message-ID: <87czn8m53f.fsf@codeaurora.org>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus,
+Zekun Shen <bruceshenzk@gmail.com> writes:
 
-/* Summary */
-This contains the missing prctl uapi pieces for PR_SCHED_CORE. In order to
-activate core scheduling the caller is expected to specify the scope of the new
-core scheduling domain. For example, passing 2 in the 4th argument of
-prctl(PR_SCHED_CORE, PR_SCHED_CORE_CREATE, <pid>, 2, 0);
-would indicate that the new core scheduling domain encompasses all tasks in the
-process group of <pid>. Specifying 0 would only create a core scheduling domain
-for the thread identified by <pid> and 2 would encompass the whole thread-group
-of <pid>.
+> On Fri, Oct 29, 2021 at 06:53:30AM +0300, Kalle Valo wrote:
+>> Zekun Shen <bruceshenzk@gmail.com> writes:
+>> 
+>> > Unexpected WDCMSG_TARGET_START replay can lead to null-ptr-deref
+>> > when ar->tx_cmd->odata is NULL. The patch adds a null check to
+>> > prevent such case.
+>> >
+>> > KASAN: null-ptr-deref in range [0x0000000000000000-0x0000000000000007]
+>> >  ar5523_cmd+0x46a/0x581 [ar5523]
+>> >  ar5523_probe.cold+0x1b7/0x18da [ar5523]
+>> >  ? ar5523_cmd_rx_cb+0x7a0/0x7a0 [ar5523]
+>> >  ? __pm_runtime_set_status+0x54a/0x8f0
+>> >  ? _raw_spin_trylock_bh+0x120/0x120
+>> >  ? pm_runtime_barrier+0x220/0x220
+>> >  ? __pm_runtime_resume+0xb1/0xf0
+>> >  usb_probe_interface+0x25b/0x710
+>> >  really_probe+0x209/0x5d0
+>> >  driver_probe_device+0xc6/0x1b0
+>> >  device_driver_attach+0xe2/0x120
+>> >
+>> > Signed-off-by: Zekun Shen <bruceshenzk@gmail.com>
+>> 
+>> How did you test this?
+>
+> I found the bug using a custome USBFuzz port. It's a research work
+> to fuzz USB stack/drivers. I modified it to fuzz ath9k driver only,
+> providing hand-crafted usb descriptors to QEMU.
+>
+> After fixing the code (fourth byte in usb packet) to WDCMSG_TARGET_START, 
+> I got the null-ptr-deref bug. I believe the bug is triggerable whenever
+> cmd->odata is NULL. After patching, I tested with the same input and no
+> longer see the KASAN report.
 
-Note, the values 0, 1, and 2 correspond to PIDTYPE_PID, PIDTYPE_TGID, and
-PIDTYPE_PGID. A first version tried to expose those values directly to which I
-objected because:
+Ok, so you didn't test this on a real device at all. I'll mention that
+in the commit log and also copy what you wrote above.
 
-- PIDTYPE_* is an enum that is kernel internal which we should not expose to
-  userspace directly.
-- PIDTYPE_* indicates what a given struct pid is used for it doesn't express a
-  scope.
+-- 
+https://patchwork.kernel.org/project/linux-wireless/list/
 
-But what the 4th argument of PR_SCHED_CORE prctl() expresses is the scope of
-the operation, i.e. the scope of the core scheduling domain at creation time.
-So Eugene's patch now simply introduces three new defines
-PR_SCHED_CORE_SCOPE_THREAD, PR_SCHED_CORE_SCOPE_THREAD_GROUP, and
-PR_SCHED_CORE_SCOPE_PROCESS_GROUP. They simply express what happens.
-
-This has been on the mailing list for quite a while with all relevant scheduler
-folks Cced. I announced multiple times that I'd pick this up if I don't see or
-her anyone else doing it. None of this touches proper scheduler code but only
-concerns uapi so I think this is fine.
-
-With core scheduling being quite common now for vm managers (e.g. moving
-individual vcpu threads into their own core scheduling domain) and container
-managers (e.g. moving the init process into its own core scheduling domain and
-letting all created children inherit it) having to rely on raw numbers passed
-as the 4th argument in prctl() is a bit annoying and everyone is starting to
-come up with their own defines.
-
-/* Testing */
-All patches have been in linux-next since 5.15-rc3. No build failures or
-warnings were observed. All old and new tests are passing.
-
-/** Conflicts */
-At the time of creating this PR no merge conflicts were reported from
-linux-next and no merge conflicts showed up doing a test-merge with current
-mainline.
-
-The following changes since commit 5816b3e6577eaa676ceb00a848f0fd65fe2adc29:
-
-  Linux 5.15-rc3 (2021-09-26 14:08:19 -0700)
-
-are available in the Git repository at:
-
-  git@gitolite.kernel.org:pub/scm/linux/kernel/git/brauner/linux tags/kernel.sys.v5.16
-
-for you to fetch changes up to 61bc346ce64a3864ac55f5d18bdc1572cda4fb18:
-
-  uapi/linux/prctl: provide macro definitions for the PR_SCHED_CORE type argument (2021-09-29 13:00:05 +0200)
-
-Please consider pulling these changes from the signed kernel.sys.v5.16 tag.
-
-Thanks!
-Christian
-
-----------------------------------------------------------------
-kernel.sys.v5.16
-
-----------------------------------------------------------------
-Eugene Syromiatnikov (1):
-      uapi/linux/prctl: provide macro definitions for the PR_SCHED_CORE type argument
-
- Documentation/admin-guide/hw-vuln/core-scheduling.rst | 5 +++--
- include/uapi/linux/prctl.h                            | 3 +++
- kernel/sched/core_sched.c                             | 4 ++++
- 3 files changed, 10 insertions(+), 2 deletions(-)
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
