@@ -2,38 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AFC3944C768
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 19:49:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 45CF544C769
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 19:49:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233624AbhKJSuw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Nov 2021 13:50:52 -0500
-Received: from mail.kernel.org ([198.145.29.99]:47974 "EHLO mail.kernel.org"
+        id S233265AbhKJSu4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Nov 2021 13:50:56 -0500
+Received: from mail.kernel.org ([198.145.29.99]:48126 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232861AbhKJStX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Nov 2021 13:49:23 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2C20061213;
-        Wed, 10 Nov 2021 18:46:25 +0000 (UTC)
+        id S232895AbhKJSte (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Nov 2021 13:49:34 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3D7D0611C9;
+        Wed, 10 Nov 2021 18:46:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1636569985;
-        bh=7DS4N2LAyz8Z9TbnDN6W5IBnwi9lDyJSPiDIMzpTAyY=;
+        s=korg; t=1636569990;
+        bh=/VzR6fTrF7cg/rn0LeHhBXa/700fkIa8fGD0E1bGZoE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=jZfWHt6lqLQ3GC6ELh8G6K0kblh6wBHhheSqugqtv6avJFzub5NiYshYvBYPmFOrH
-         oaXzCvkEweIfEOc5ezceb3ZPOXJoAgurO1b4B8sLz/dC13uDq4XNpK726dWeNAt+9a
-         7LPqgVxXw5t1gFP/s89eVuAaNRHLy6EtcdQnGLU8=
+        b=DkuDnfsLyY3KzeTM44Rl73LYAbYc/XVkfpAHzy1+hVN/VNG/fQLVK9nLxSyhStxtc
+         jQNE6iLthA+HXC6rlKHpQIhx359sIIGLHWaRR+ihisKkydjYQ67EkIu6R8BSEqB4uf
+         G0612FHlpxs+VY6L3Ka7wJSVhO154yAuGZA+W4+Q=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Petr Mladek <pmladek@suse.com>, Yi Fan <yfa@google.com>
-Subject: [PATCH 4.14 13/22] printk/console: Allow to disable console output by using console="" or console=null
-Date:   Wed, 10 Nov 2021 19:43:33 +0100
-Message-Id: <20211110182003.095006247@linuxfoundation.org>
+        stable@vger.kernel.org, Christoph Hellwig <hch@lst.de>,
+        Omar Sandoval <osandov@fb.com>, Ming Lei <ming.lei@redhat.com>,
+        Jens Axboe <axboe@kernel.dk>, Zubin Mithra <zsm@chromium.org>
+Subject: [PATCH 4.19 01/16] block: introduce multi-page bvec helpers
+Date:   Wed, 10 Nov 2021 19:43:34 +0100
+Message-Id: <20211110182002.041203616@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211110182002.666244094@linuxfoundation.org>
-References: <20211110182002.666244094@linuxfoundation.org>
+In-Reply-To: <20211110182001.994215976@linuxfoundation.org>
+References: <20211110182001.994215976@linuxfoundation.org>
 User-Agent: quilt/0.66
+X-stable: review
+X-Patchwork-Hint: ignore
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
@@ -41,62 +42,113 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Petr Mladek <pmladek@suse.com>
+From: Ming Lei <ming.lei@redhat.com>
 
-commit 3cffa06aeef7ece30f6b5ac0ea51f264e8fea4d0 upstream.
+commit 3d75ca0adef4280650c6690a0c4702a74a6f3c95 upstream.
 
-The commit 48021f98130880dd74 ("printk: handle blank console arguments
-passed in.") prevented crash caused by empty console= parameter value.
+This patch introduces helpers of 'mp_bvec_iter_*' for multi-page bvec
+support.
 
-Unfortunately, this value is widely used on Chromebooks to disable
-the console output. The above commit caused performance regression
-because the messages were pushed on slow console even though nobody
-was watching it.
+The introduced helpers treate one bvec as real multi-page segment,
+which may include more than one pages.
 
-Use ttynull driver explicitly for console="" and console=null
-parameters. It has been created for exactly this purpose.
+The existed helpers of bvec_iter_* are interfaces for supporting current
+bvec iterator which is thought as single-page by drivers, fs, dm and
+etc. These introduced helpers will build single-page bvec in flight, so
+this way won't break current bio/bvec users, which needn't any change.
 
-It causes that preferred_console is set. As a result, ttySX and ttyX
-are not used as a fallback. And only ttynull console gets registered by
-default.
+Follows some multi-page bvec background:
 
-It still allows to register other consoles either by additional console=
-parameters or SPCR. It prevents regression because it worked this way even
-before. Also it is a sane semantic. Preventing output on all consoles
-should be done another way, for example, by introducing mute_console
-parameter.
+- bvecs stored in bio->bi_io_vec is always multi-page style
 
-Link: https://lore.kernel.org/r/20201006025935.GA597@jagdpanzerIV.localdomain
-Suggested-by: Sergey Senozhatsky <sergey.senozhatsky@gmail.com>
-Reviewed-by: Guenter Roeck <linux@roeck-us.net>
-Tested-by: Guenter Roeck <linux@roeck-us.net>
-Acked-by: Sergey Senozhatsky <sergey.senozhatsky@gmail.com>
-Signed-off-by: Petr Mladek <pmladek@suse.com>
-Link: https://lore.kernel.org/r/20201111135450.11214-3-pmladek@suse.com
-Cc: Yi Fan <yfa@google.com>
+- bvec(struct bio_vec) represents one physically contiguous I/O
+  buffer, now the buffer may include more than one page after
+  multi-page bvec is supported, and all these pages represented
+  by one bvec is physically contiguous. Before multi-page bvec
+  support, at most one page is included in one bvec, we call it
+  single-page bvec.
+
+- .bv_page of the bvec points to the 1st page in the multi-page bvec
+
+- .bv_offset of the bvec is the offset of the buffer in the bvec
+
+The effect on the current drivers/filesystem/dm/bcache/...:
+
+- almost everyone supposes that one bvec only includes one single
+  page, so we keep the sp interface not changed, for example,
+  bio_for_each_segment() still returns single-page bvec
+
+- bio_for_each_segment_all() will return single-page bvec too
+
+- during iterating, iterator variable(struct bvec_iter) is always
+  updated in multi-page bvec style, and bvec_iter_advance() is kept
+  not changed
+
+- returned(copied) single-page bvec is built in flight by bvec
+  helpers from the stored multi-page bvec
+
+Reviewed-by: Christoph Hellwig <hch@lst.de>
+Reviewed-by: Omar Sandoval <osandov@fb.com>
+Signed-off-by: Ming Lei <ming.lei@redhat.com>
+Signed-off-by: Jens Axboe <axboe@kernel.dk>
+Cc: Zubin Mithra <zsm@chromium.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- kernel/printk/printk.c |    9 ++++++++-
- 1 file changed, 8 insertions(+), 1 deletion(-)
+ include/linux/bvec.h |   30 +++++++++++++++++++++++++++---
+ 1 file changed, 27 insertions(+), 3 deletions(-)
 
---- a/kernel/printk/printk.c
-+++ b/kernel/printk/printk.c
-@@ -2092,8 +2092,15 @@ static int __init console_setup(char *st
- 	char *s, *options, *brl_options = NULL;
- 	int idx;
+--- a/include/linux/bvec.h
++++ b/include/linux/bvec.h
+@@ -23,6 +23,7 @@
+ #include <linux/kernel.h>
+ #include <linux/bug.h>
+ #include <linux/errno.h>
++#include <linux/mm.h>
  
--	if (str[0] == 0)
-+	/*
-+	 * console="" or console=null have been suggested as a way to
-+	 * disable console output. Use ttynull that has been created
-+	 * for exacly this purpose.
-+	 */
-+	if (str[0] == 0 || strcmp(str, "null") == 0) {
-+		__add_preferred_console("ttynull", 0, NULL, NULL);
- 		return 1;
-+	}
+ /*
+  * was unsigned short, but we might as well be ready for > 64kB I/O pages
+@@ -52,16 +53,39 @@ struct bvec_iter {
+  */
+ #define __bvec_iter_bvec(bvec, iter)	(&(bvec)[(iter).bi_idx])
  
- 	if (_braille_console_setup(&str, &brl_options))
- 		return 1;
+-#define bvec_iter_page(bvec, iter)				\
++/* multi-page (mp_bvec) helpers */
++#define mp_bvec_iter_page(bvec, iter)				\
+ 	(__bvec_iter_bvec((bvec), (iter))->bv_page)
+ 
+-#define bvec_iter_len(bvec, iter)				\
++#define mp_bvec_iter_len(bvec, iter)				\
+ 	min((iter).bi_size,					\
+ 	    __bvec_iter_bvec((bvec), (iter))->bv_len - (iter).bi_bvec_done)
+ 
+-#define bvec_iter_offset(bvec, iter)				\
++#define mp_bvec_iter_offset(bvec, iter)				\
+ 	(__bvec_iter_bvec((bvec), (iter))->bv_offset + (iter).bi_bvec_done)
+ 
++#define mp_bvec_iter_page_idx(bvec, iter)			\
++	(mp_bvec_iter_offset((bvec), (iter)) / PAGE_SIZE)
++
++#define mp_bvec_iter_bvec(bvec, iter)				\
++((struct bio_vec) {						\
++	.bv_page	= mp_bvec_iter_page((bvec), (iter)),	\
++	.bv_len		= mp_bvec_iter_len((bvec), (iter)),	\
++	.bv_offset	= mp_bvec_iter_offset((bvec), (iter)),	\
++})
++
++/* For building single-page bvec in flight */
++ #define bvec_iter_offset(bvec, iter)				\
++	(mp_bvec_iter_offset((bvec), (iter)) % PAGE_SIZE)
++
++#define bvec_iter_len(bvec, iter)				\
++	min_t(unsigned, mp_bvec_iter_len((bvec), (iter)),		\
++	      PAGE_SIZE - bvec_iter_offset((bvec), (iter)))
++
++#define bvec_iter_page(bvec, iter)				\
++	nth_page(mp_bvec_iter_page((bvec), (iter)),		\
++		 mp_bvec_iter_page_idx((bvec), (iter)))
++
+ #define bvec_iter_bvec(bvec, iter)				\
+ ((struct bio_vec) {						\
+ 	.bv_page	= bvec_iter_page((bvec), (iter)),	\
 
 
