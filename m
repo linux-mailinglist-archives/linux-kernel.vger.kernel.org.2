@@ -2,87 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0146A44C8B1
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 20:16:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C38544C8E2
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 20:17:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232605AbhKJTTC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Nov 2021 14:19:02 -0500
-Received: from mga07.intel.com ([134.134.136.100]:19615 "EHLO mga07.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229781AbhKJTTB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Nov 2021 14:19:01 -0500
-X-IronPort-AV: E=McAfee;i="6200,9189,10164"; a="296187210"
-X-IronPort-AV: E=Sophos;i="5.87,224,1631602800"; 
-   d="scan'208";a="296187210"
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Nov 2021 11:16:13 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.87,224,1631602800"; 
-   d="scan'208";a="669931055"
-Received: from fmsmsx602.amr.corp.intel.com ([10.18.126.82])
-  by orsmga005.jf.intel.com with ESMTP; 10 Nov 2021 11:16:13 -0800
-Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
- fmsmsx602.amr.corp.intel.com (10.18.126.82) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2242.12; Wed, 10 Nov 2021 11:16:12 -0800
-Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
- fmsmsx610.amr.corp.intel.com (10.18.126.90) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2242.12; Wed, 10 Nov 2021 11:16:12 -0800
-Received: from fmsmsx610.amr.corp.intel.com ([10.18.126.90]) by
- fmsmsx610.amr.corp.intel.com ([10.18.126.90]) with mapi id 15.01.2242.012;
- Wed, 10 Nov 2021 11:16:12 -0800
-From:   "Luck, Tony" <tony.luck@intel.com>
-To:     "Chatre, Reinette" <reinette.chatre@intel.com>,
-        Jarkko Sakkinen <jarkko@kernel.org>,
-        "dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>,
-        "tglx@linutronix.de" <tglx@linutronix.de>,
-        "bp@alien8.de" <bp@alien8.de>,
-        "mingo@redhat.com" <mingo@redhat.com>,
-        "linux-sgx@vger.kernel.org" <linux-sgx@vger.kernel.org>,
-        "x86@kernel.org" <x86@kernel.org>
-CC:     "seanjc@google.com" <seanjc@google.com>,
-        "hpa@zytor.com" <hpa@zytor.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "stable@vger.kernel.org" <stable@vger.kernel.org>
-Subject: RE: [PATCH V2] x86/sgx: Fix free page accounting
-Thread-Topic: [PATCH V2] x86/sgx: Fix free page accounting
-Thread-Index: AQHX1aSNA6jpVsmpAU6yO0Emm2q6Nqv9ZWUAgAA9SYD//37xcA==
-Date:   Wed, 10 Nov 2021 19:16:12 +0000
-Message-ID: <bcc3a465dde24f8dab469b4260753e40@intel.com>
-References: <b2e69e9febcae5d98d331de094d9cc7ce3217e66.1636487172.git.reinette.chatre@intel.com>
- <8e0bb87f05b79317a06ed2d8ab5e2f5cf6132b6a.camel@kernel.org>
- <794a7034-f6a7-4aff-7958-b1bd959ced24@intel.com>
-In-Reply-To: <794a7034-f6a7-4aff-7958-b1bd959ced24@intel.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-dlp-product: dlpe-windows
-dlp-reaction: no-action
-dlp-version: 11.6.200.16
-x-originating-ip: [10.1.200.100]
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+        id S232244AbhKJTUA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Nov 2021 14:20:00 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51162 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232490AbhKJTT6 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Nov 2021 14:19:58 -0500
+Received: from mail-pl1-x630.google.com (mail-pl1-x630.google.com [IPv6:2607:f8b0:4864:20::630])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3FF56C061764;
+        Wed, 10 Nov 2021 11:17:11 -0800 (PST)
+Received: by mail-pl1-x630.google.com with SMTP id y1so3802330plk.10;
+        Wed, 10 Nov 2021 11:17:11 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
+        bh=hdOTGadr8Ex9gtj+XAkOSOOv2nJ7N3DNP23DIr6L3AU=;
+        b=dWAaFqKZgag1WzlhK1qHQzqMSbfeL2u/9jwQcv88GAuiEFAb5CFSU8NXxgC11WdBu/
+         /YI/WRCGZjn1rjSyMBQu4VJJwBUVbDvT2RptRFRxCxgKsHhgWoYy6nSaGrcfVP8M7/ZE
+         /+qXbTC9nubxzaeMNume8Olae40ijS5T1xHpjjqtBoC6RPvxvqLtor38omj9/0Rf8Zsb
+         k1PzmOlf9R/V5UHgdyGDMLEXfFMmBkltm+cewdOioqMNS86O1NkQx7W3/cIN/acYJFdl
+         vykrMk8FnPiG8MoOMtU1ueROsKRSRNo6OQRuFE2F+q+WmdNmdKc++PBaegDAeO6FJ0Ts
+         ZxYQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition;
+        bh=hdOTGadr8Ex9gtj+XAkOSOOv2nJ7N3DNP23DIr6L3AU=;
+        b=aRo+y7mDastLmXJyVFtuDTprY283zS1iynCENitRlD/wXiimczX3I3Vk/YZ/XYK2CP
+         eHHyOI2NPJwABBVDxseWvcJzo0owW7BZVMvMtRCHYtrMh7oUIzh8Opge6QMVDvrHx2QB
+         tqF4pBKcy0HgJvXbONm1Q/9KeN6zZPRDnMsk90ghj8ycoMJJLiFWL+8uI20a56UThFBD
+         VIg5G5Mur+sAAXQ9vQi15KfJ8xBOotea4eXVBDZPQq/s30mSZx8fSZhSTUQgunzS+zr/
+         5/CdlM7AeKJLhdJnME/jkyFMCrRF6ll5wZdaIHSCuM7Z6x8PGfbrQduNTooqIUzA8qM3
+         DHVA==
+X-Gm-Message-State: AOAM530GanoUAOqbnVJJuhesjtFsfgE4TAtNyHfDwOnj2o8Mxrcel7n5
+        mNUlKv4qdE69EQ/ZCArNBz9YTpbijQ+rsZN3VfQ=
+X-Google-Smtp-Source: ABdhPJwwYf9qtGwKi7uBwZ5ak9iN48PyE4XlwlVfIyvxwwOM3xYUZNxh6R4MKJqIcWRl11rsffaGwQ==
+X-Received: by 2002:a17:90b:4b0e:: with SMTP id lx14mr18179761pjb.160.1636571830331;
+        Wed, 10 Nov 2021 11:17:10 -0800 (PST)
+Received: from makvihas ([103.85.8.15])
+        by smtp.gmail.com with ESMTPSA id fw21sm6138095pjb.25.2021.11.10.11.17.09
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 10 Nov 2021 11:17:09 -0800 (PST)
+Date:   Thu, 11 Nov 2021 00:47:07 +0530
+From:   Vihas Mak <makvihas@gmail.com>
+To:     ssantosh@kernel.org
+Cc:     nm@ti.com, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-pm@vger.kernel.org
+Subject: [PATCH] soc: ti: Use DEFINE_DEBUGFS_ATTRIBUTE
+Message-ID: <20211110191707.GA98778@makvihas>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Pj4+IFRoZSBjb25zZXF1ZW5jZSBvZiBzZ3hfbnJfZnJlZV9wYWdlcyBub3QgYmVpbmcgcHJvdGVj
-dGVkIGlzIHRoYXQNCj4+PiBpdHMgdmFsdWUgbWF5IG5vdCBhY2N1cmF0ZWx5IHJlZmxlY3QgdGhl
-IGFjdHVhbCBudW1iZXIgb2YgZnJlZQ0KPj4+IHBhZ2VzIG9uIHRoZSBzeXN0ZW0sIGltcGFjdGlu
-ZyB0aGUgYXZhaWxhYmlsaXR5IG9mIGZyZWUgcGFnZXMgaW4NCj4+PiBzdXBwb3J0IG9mIG1hbnkg
-Zmxvd3MuIFRoZSBwcm9ibGVtYXRpYyBzY2VuYXJpbyBpc3Ugd2hlbiB0aGUNCj4+IA0KPiA+IElu
-IG5vbi1hdG9taWNpdHkgaXMgbm90IGEgcHJvYmxlbSwgd2hlbiBpdCBpcyBub3QgYSBwcm9ibGVt
-IDotKQ0KDQpUaGlzIGlzIG1vc3QgZGVmaW5pdGVseSBhIHByb2JsZW0uDQoNCnN0YXJ0IHdpdGgg
-c2d4X25yX2ZyZWVfcGFnZXMgPT0gMTAwDQoNCk5vdyBoYXZlIGEgY3B1IG9uIG5vZGUwIGFsbG9j
-YXRlIGEgcGFnZSBhdCB0aGUgc2FtZSB0aW1lIGFzIGFub3RoZXINCmNwdSBvbiBub2RlMSBhbGxj
-b2F0ZXMgYSBwYWdlLiBFYWNoIGhvbGRzIHRoZSByZWxldmVudCBwZXItbm9kZSBsb2NrLA0KYnV0
-IHRoYXQgZG9lc24ndCBzdG9wIGJvdGggQ1BVcyBmcm9tIGFjY2Vzc2luZyB0aGUgZ2xvYmFsIHRv
-Z2V0aGVyOg0KDQoJQ1BVIG9uIG5vZGUwCQlDUFUgb24gbm9kZTENCglzZ3hfbnJfZnJlZV9wYWdl
-cy0tOwkJc2d4X25yX2ZyZWVfcGFnZXMtLTsNCg0KV2hhdCBpcyB0aGUgdmFsdWUgb2Ygc2d4X25y
-X2ZyZWVfcGFnZXMgbm93PyBXZSB3YW50IGl0IHRvIGJlIDk4LA0KYnV0IGl0IGNvdWxkIGJlIDk5
-Lg0KDQpSaW5zZSwgcmVwZWF0IHRob3VzYW5kcyBvZiB0aW1lcy4gRXZlbnR1YWxseSB0aGUgdmFs
-dWUgb2Ygc2d4X25yX2ZyZWVfcGFnZXMNCmhhcyBub3QgZXZlbiBhIGNsb3NlIGNvbm5lY3Rpb24g
-dG8gdGhlIG51bWJlciBvZiBmcmVlIHBhZ2VzLg0KDQotVG9ueQ0KDQoNCg==
+Use DEFINE_DEBUGFS_ATTRIBUTE instead of DEFINE_SIMPLE_ATTRIBUTE as
+pm_sr_fops is used to create a debugfs file.
+
+This solves following warning generated by coccicheck:
+
+./drivers/soc/ti/smartreflex.c:815:0-23: WARNING: pm_sr_fops should be defined with DEFINE_DEBUGFS_ATTRIBUTE
+
+Signed-off-by: Vihas Mak <makvihas@gmail.com>
+---
+ drivers/soc/ti/smartreflex.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/soc/ti/smartreflex.c b/drivers/soc/ti/smartreflex.c
+index b5b2fa538..14b69307d 100644
+--- a/drivers/soc/ti/smartreflex.c
++++ b/drivers/soc/ti/smartreflex.c
+@@ -812,7 +812,7 @@ static int omap_sr_autocomp_store(void *data, u64 val)
+ 	return 0;
+ }
+ 
+-DEFINE_SIMPLE_ATTRIBUTE(pm_sr_fops, omap_sr_autocomp_show,
++DEFINE_DEBUGFS_ATTRIBUTE(pm_sr_fops, omap_sr_autocomp_show,
+ 			omap_sr_autocomp_store, "%llu\n");
+ 
+ static int omap_sr_probe(struct platform_device *pdev)
+-- 
+2.25.1
+
