@@ -2,35 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0483544C7D6
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 19:53:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4EC5E44C7AF
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 19:53:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233130AbhKJSzq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Nov 2021 13:55:46 -0500
-Received: from mail.kernel.org ([198.145.29.99]:48616 "EHLO mail.kernel.org"
+        id S233420AbhKJSyS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Nov 2021 13:54:18 -0500
+Received: from mail.kernel.org ([198.145.29.99]:47598 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233881AbhKJSxo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Nov 2021 13:53:44 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6A410617E5;
-        Wed, 10 Nov 2021 18:48:42 +0000 (UTC)
+        id S233243AbhKJSwG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Nov 2021 13:52:06 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 11CDF6137F;
+        Wed, 10 Nov 2021 18:47:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1636570122;
-        bh=ZUCszzkNHx3BjscZ/Nt/SZfHTDRtReBAGaPyf3rdx9Q=;
+        s=korg; t=1636570071;
+        bh=q9aydd/CFdTUD+m0FPc5a7Q3PINsajNfFPjpq+9ald8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=GvnbUmUFFFRK1mwOviX6byTIy2dEj1uqn6Tvxca31ZGadbn6poKf4qf7dPDwQoJ10
-         3sMfJ4x8DfBl65SJiAXwBDtINr59Vi3kP8AM5KWCxG8f6dfVQNBOr6q6xlDnbIFdKw
-         /HGkRV09Il/NWpibx8ZQY6Ko17Yn7qP3E5Xggrq0=
+        b=sWvASUwsZyZ6tICixRTKgT0fL/NGeKZAvI519Rq6k8HH6F4YeFtOBvmzNviiasGcW
+         LeQTTVCG2iA+th6Ms3yYeNtlsH1Ju1ERrpUlirx5TQbqVsSgppCdqLgfXuVpvRYPwK
+         OmjbaNOuFJc0fCgiDAX1YUYpIKrjWtolASK3Ic7Y=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Li Yang <leoyang.li@nxp.com>,
-        Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: [PATCH 5.10 06/21] usb: gadget: Mark USB_FSL_QE broken on 64-bit
+        stable@vger.kernel.org, Johan Hovold <johan@kernel.org>,
+        Ian Abbott <abbotti@mev.co.uk>
+Subject: [PATCH 5.4 13/17] comedi: vmk80xx: fix bulk and interrupt message timeouts
 Date:   Wed, 10 Nov 2021 19:43:52 +0100
-Message-Id: <20211110182003.168347043@linuxfoundation.org>
+Message-Id: <20211110182002.638114007@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211110182002.964190708@linuxfoundation.org>
-References: <20211110182002.964190708@linuxfoundation.org>
+In-Reply-To: <20211110182002.206203228@linuxfoundation.org>
+References: <20211110182002.206203228@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,47 +39,74 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Geert Uytterhoeven <geert@linux-m68k.org>
+From: Johan Hovold <johan@kernel.org>
 
-commit a0548b26901f082684ad1fb3ba397d2de3a1406a upstream.
+commit a56d3e40bda460edf3f8d6aac00ec0b322b4ab83 upstream.
 
-On 64-bit:
+USB bulk and interrupt message timeouts are specified in milliseconds
+and should specifically not vary with CONFIG_HZ.
 
-    drivers/usb/gadget/udc/fsl_qe_udc.c: In function ‘qe_ep0_rx’:
-    drivers/usb/gadget/udc/fsl_qe_udc.c:842:13: error: cast from pointer to integer of different size [-Werror=pointer-to-int-cast]
-      842 |     vaddr = (u32)phys_to_virt(in_be32(&bd->buf));
-	  |             ^
-    In file included from drivers/usb/gadget/udc/fsl_qe_udc.c:41:
-    drivers/usb/gadget/udc/fsl_qe_udc.c:843:28: error: cast to pointer from integer of different size [-Werror=int-to-pointer-cast]
-      843 |     frame_set_data(pframe, (u8 *)vaddr);
-	  |                            ^
+Note that the bulk-out transfer timeout was set to the endpoint
+bInterval value, which should be ignored for bulk endpoints and is
+typically set to zero. This meant that a failing bulk-out transfer
+would never time out.
 
-The driver assumes physical and virtual addresses are 32-bit, hence it
-cannot work on 64-bit platforms.
+Assume that the 10 second timeout used for all other transfers is more
+than enough also for the bulk-out endpoint.
 
-Acked-by: Li Yang <leoyang.li@nxp.com>
-Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
-Link: https://lore.kernel.org/r/20211027080849.3276289-1-geert@linux-m68k.org
-Cc: stable <stable@vger.kernel.org>
+Fixes: 985cafccbf9b ("Staging: Comedi: vmk80xx: Add k8061 support")
+Fixes: 951348b37738 ("staging: comedi: vmk80xx: wait for URBs to complete")
+Cc: stable@vger.kernel.org      # 2.6.31
+Signed-off-by: Johan Hovold <johan@kernel.org>
+Reviewed-by: Ian Abbott <abbotti@mev.co.uk>
+Link: https://lore.kernel.org/r/20211025114532.4599-6-johan@kernel.org
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/usb/gadget/udc/Kconfig | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/staging/comedi/drivers/vmk80xx.c |   12 +++++++-----
+ 1 file changed, 7 insertions(+), 5 deletions(-)
 
-diff --git a/drivers/usb/gadget/udc/Kconfig b/drivers/usb/gadget/udc/Kconfig
-index 8c614bb86c66..69394dc1cdfb 100644
---- a/drivers/usb/gadget/udc/Kconfig
-+++ b/drivers/usb/gadget/udc/Kconfig
-@@ -330,6 +330,7 @@ config USB_AMD5536UDC
- config USB_FSL_QE
- 	tristate "Freescale QE/CPM USB Device Controller"
- 	depends on FSL_SOC && (QUICC_ENGINE || CPM)
-+	depends on !64BIT || BROKEN
- 	help
- 	   Some of Freescale PowerPC processors have a Full Speed
- 	   QE/CPM2 USB controller, which support device mode with 4
--- 
-2.33.1
-
+--- a/drivers/staging/comedi/drivers/vmk80xx.c
++++ b/drivers/staging/comedi/drivers/vmk80xx.c
+@@ -91,6 +91,7 @@ enum {
+ #define IC6_VERSION		BIT(1)
+ 
+ #define MIN_BUF_SIZE		64
++#define PACKET_TIMEOUT		10000	/* ms */
+ 
+ enum vmk80xx_model {
+ 	VMK8055_MODEL,
+@@ -169,10 +170,11 @@ static void vmk80xx_do_bulk_msg(struct c
+ 	tx_size = usb_endpoint_maxp(devpriv->ep_tx);
+ 	rx_size = usb_endpoint_maxp(devpriv->ep_rx);
+ 
+-	usb_bulk_msg(usb, tx_pipe, devpriv->usb_tx_buf,
+-		     tx_size, NULL, devpriv->ep_tx->bInterval);
++	usb_bulk_msg(usb, tx_pipe, devpriv->usb_tx_buf, tx_size, NULL,
++		     PACKET_TIMEOUT);
+ 
+-	usb_bulk_msg(usb, rx_pipe, devpriv->usb_rx_buf, rx_size, NULL, HZ * 10);
++	usb_bulk_msg(usb, rx_pipe, devpriv->usb_rx_buf, rx_size, NULL,
++		     PACKET_TIMEOUT);
+ }
+ 
+ static int vmk80xx_read_packet(struct comedi_device *dev)
+@@ -191,7 +193,7 @@ static int vmk80xx_read_packet(struct co
+ 	pipe = usb_rcvintpipe(usb, ep->bEndpointAddress);
+ 	return usb_interrupt_msg(usb, pipe, devpriv->usb_rx_buf,
+ 				 usb_endpoint_maxp(ep), NULL,
+-				 HZ * 10);
++				 PACKET_TIMEOUT);
+ }
+ 
+ static int vmk80xx_write_packet(struct comedi_device *dev, int cmd)
+@@ -212,7 +214,7 @@ static int vmk80xx_write_packet(struct c
+ 	pipe = usb_sndintpipe(usb, ep->bEndpointAddress);
+ 	return usb_interrupt_msg(usb, pipe, devpriv->usb_tx_buf,
+ 				 usb_endpoint_maxp(ep), NULL,
+-				 HZ * 10);
++				 PACKET_TIMEOUT);
+ }
+ 
+ static int vmk80xx_reset_device(struct comedi_device *dev)
 
 
