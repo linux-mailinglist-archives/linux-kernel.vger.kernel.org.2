@@ -2,53 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C879544CB63
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 22:43:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BB21344CB68
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 22:45:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233504AbhKJVp5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Nov 2021 16:45:57 -0500
-Received: from vps0.lunn.ch ([185.16.172.187]:55336 "EHLO vps0.lunn.ch"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233284AbhKJVp4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Nov 2021 16:45:56 -0500
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
-        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
-        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
-        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
-        bh=RiSyE+EVKYVY2Tb3uQccY7RA9TLCliIY6PxoCw7V/h4=; b=Eg4j/MQZYXmcjoZS+NYQrga7RG
-        R195QVs1SdBax2wK/Tv5J3go84XrzuNZZY3r1JkJCsfULcCJ3fthwX02X/IV4k/t7Nv/LWRqEoO7Q
-        1JXKcxR5+zODycC3xtmQzCwaNPTElby3+3Wav7qb1aNePlTFjGCIawtJeOC6Rg57JLvk=;
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
-        (envelope-from <andrew@lunn.ch>)
-        id 1mkvMy-00D8tO-IS; Wed, 10 Nov 2021 22:43:00 +0100
-Date:   Wed, 10 Nov 2021 22:43:00 +0100
-From:   Andrew Lunn <andrew@lunn.ch>
-To:     Apeksha Gupta <apeksha.gupta@nxp.com>
-Cc:     qiangqing.zhang@nxp.com, davem@davemloft.net, kuba@kernel.org,
-        arnd@arndb.de, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-devel@linux.nxdi.nxp.com,
-        LnxRevLi@nxp.com, sachin.saxena@nxp.com, hemant.agrawal@nxp.com,
-        nipun.gupta@nxp.com
-Subject: Re: [PATCH 1/3] fec_phy: add new PHY file
-Message-ID: <YYw85MeF8sbRRiXM@lunn.ch>
-References: <20211110053617.13497-1-apeksha.gupta@nxp.com>
- <20211110053617.13497-2-apeksha.gupta@nxp.com>
+        id S233508AbhKJVsV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Nov 2021 16:48:21 -0500
+Received: from smtp-relay-canonical-0.canonical.com ([185.125.188.120]:44194
+        "EHLO smtp-relay-canonical-0.canonical.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233484AbhKJVsS (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Nov 2021 16:48:18 -0500
+Received: from [192.168.192.153] (unknown [50.126.114.69])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by smtp-relay-canonical-0.canonical.com (Postfix) with ESMTPSA id 584543F1C0;
+        Wed, 10 Nov 2021 21:45:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1636580726;
+        bh=eMB5uDmzC4Gy3XB9mLPnZzPySUDtGeEv8TCnrzSwWNg=;
+        h=From:Subject:To:Cc:Message-ID:Date:MIME-Version:Content-Type;
+        b=btzhvul1UNBqSCtZP7UA3/RY7OgJAMdM9B5Bm2+PHbAi+A36KHwsxUSEB1eHrpUut
+         oBdyv+CiXcTuGoC5WIUfQrcYGly3PPD9M0PCQXnfEc83OVDGnfAwdjcA7lyCtahHbK
+         DPptxMxiZimsuVGBbLKjMldWFHOkL0aEKDqpoZykhipcsszUie6sTnzwGV/ZDT8sWn
+         7dzZTEaLgeiEJiUfqBMfOn6XnrlE4eeHO+DNRGwXYUJGav092jNtZ+rgYoQyCSfSWC
+         OErmgS8l0uZx7QIZsrj2XSaIDKD3gDv1RRz7QKX9pKuv+WbnGpkwNfOnsiOxujwhIq
+         aW6J2s83sn9Sg==
+From:   John Johansen <john.johansen@canonical.com>
+Subject: [GIT PULL] apparmor changes for 5.16
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     LKLM <linux-kernel@vger.kernel.org>,
+        "open list:SECURITY SUBSYSTEM" 
+        <linux-security-module@vger.kernel.org>
+Organization: Canonical
+Message-ID: <92f2d63e-02ac-0990-672d-43a646c2c42a@canonical.com>
+Date:   Wed, 10 Nov 2021 13:45:25 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211110053617.13497-2-apeksha.gupta@nxp.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 10, 2021 at 11:06:15AM +0530, Apeksha Gupta wrote:
-> Added common file for both fec and fec_uio driver.
-> fec_phy.h and fec_phy.c have phy related API's.
-> Now the PHY functions can be used in both FEC and
-> FEC_UIO driver independently.
+Hi Linus,
 
-You appear to be missing a patch. I don't see any changes to FEC_UIO
-driver to make use of this.
+sorry this is so late, we had some issues with the test infrastructure. If you
+prefer I can send an alternate PR with just the bug fixes.
 
-	Andrew
+thanks
+john
+
+
+
+The following changes since commit e37986097ba63c94b1af9d5ad5486d120a809f72:
+
+  apparmor: Use true and false for bool variable (2020-05-15 14:26:33 -0700)
+
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/jj/linux-apparmor tags/apparmor-pr-2021-11-10
+
+for you to fetch changes up to 582122f1d73af28407234321c94711e09aa3fd04:
+
+  apparmor: remove duplicated 'Returns:' comments (2021-11-03 15:57:51 -0700)
+
+----------------------------------------------------------------
++ Features
+  - use per file locks for transactional queries
+  - update policy management capability checks to work with LSM stacking
+
++ Bug Fixes
+  - check/put label on apparmor_sk_clone_security()
+  - fix error check on update of label hname
+  - fix introspection of of task mode for unconfined tasks
+
++ Cleanups
+  - avoid -Wempty-body warning
+  - remove duplicated 'Returns:' comments
+  - fix doc warning
+  - remove unneeded one-line hook wrappers
+  - Use struct_size() helper in kzalloc()
+  - fix zero-length compiler warning in AA_BUG()
+  - file.h: delete duplicated word
+  - delete repeated words in comments
+  - Remove the repeated declaration
+
+----------------------------------------------------------------
+Arnd Bergmann (1):
+      apparmor: avoid -Wempty-body warning
+
+Austin Kim (1):
+      apparmor: remove duplicated 'Returns:' comments
+
+ChenXiaoSong (1):
+      apparmor: fix doc warning
+
+Florian Westphal (1):
+      apparmor: remove unneeded one-line hook wrappers
+
+Gustavo A. R. Silva (1):
+      apparmor: Use struct_size() helper in kzalloc()
+
+Hamza Mahfooz (1):
+      apparmor: use per file locks for transactional queries
+
+John Johansen (5):
+      apparmor: fix introspection of of task mode for unconfined tasks
+      apparmor: update policy capable checks to use a label
+      apparmor: switch to apparmor to internal capable check for policy management
+      apparmor: Fix internal policy capable check for policy management
+      apparmor: fix zero-length compiler warning in AA_BUG()
+
+Mauricio Faria de Oliveira (1):
+      apparmor: check/put label on apparmor_sk_clone_security()
+
+Randy Dunlap (2):
+      security: apparmor: file.h: delete duplicated word
+      security: apparmor: delete repeated words in comments
+
+Shaokun Zhang (1):
+      apparmor: Remove the repeated declaration
+
+Tom Rix (1):
+      apparmor: fix error check
+
+ security/apparmor/apparmorfs.c     | 17 +++++------
+ security/apparmor/include/file.h   |  2 +-
+ security/apparmor/include/label.h  |  5 +--
+ security/apparmor/include/lib.h    |  9 ++++--
+ security/apparmor/include/policy.h |  6 ++--
+ security/apparmor/label.c          | 11 +++----
+ security/apparmor/lsm.c            | 47 +++++++++++------------------
+ security/apparmor/path.c           |  2 +-
+ security/apparmor/policy.c         | 62 +++++++++++++++++++++++++++++++-------
+ security/apparmor/policy_unpack.c  |  2 +-
+ security/apparmor/procattr.c       |  2 --
+ 11 files changed, 97 insertions(+), 68 deletions(-)
