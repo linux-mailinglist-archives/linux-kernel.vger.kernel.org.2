@@ -2,110 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9238644CDC6
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Nov 2021 00:25:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 84BEA44CDC9
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Nov 2021 00:25:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234147AbhKJX2L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Nov 2021 18:28:11 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:47360 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233965AbhKJX2J (ORCPT
+        id S234189AbhKJX2c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Nov 2021 18:28:32 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52040 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233964AbhKJX23 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Nov 2021 18:28:09 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1636586721;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=AzAB+Kqpxu5YXTt/hX4iRHES0vaHqUHxVYdvPknvBGU=;
-        b=Y2sgk7OgzihVQ4Esr/C6glATmwvkreJoKC8IxlmFVk7F0UHmRo2u6PvPfaX2z1EDb+udZd
-        F4OXSV1lBXdQ4SvjdqXAYPGi+X04WikGBZ/qAw4aK6UIJKBDybDiNEjTnT0+Z86r3YTgTN
-        M3psc7n8oR+FtHDvoCTyx8ePq80UfSg=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-260-aVjNzJ23NUWdEQSSR72g3Q-1; Wed, 10 Nov 2021 18:25:18 -0500
-X-MC-Unique: aVjNzJ23NUWdEQSSR72g3Q-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 8B4E51023F4E;
-        Wed, 10 Nov 2021 23:25:16 +0000 (UTC)
-Received: from [10.22.17.102] (unknown [10.22.17.102])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 6905467849;
-        Wed, 10 Nov 2021 23:25:15 +0000 (UTC)
-Message-ID: <1f43bfad-434f-88d5-b794-4cf1116e9924@redhat.com>
-Date:   Wed, 10 Nov 2021 18:25:14 -0500
+        Wed, 10 Nov 2021 18:28:29 -0500
+Received: from mail-wr1-x432.google.com (mail-wr1-x432.google.com [IPv6:2a00:1450:4864:20::432])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 64C75C061766;
+        Wed, 10 Nov 2021 15:25:41 -0800 (PST)
+Received: by mail-wr1-x432.google.com with SMTP id i5so6757192wrb.2;
+        Wed, 10 Nov 2021 15:25:41 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=googlemail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=v/V7ixtvM0wJB1Jk1MWAaJATghrtxgTP4T3O07Mrdu8=;
+        b=LILZhyChTSUnQFuhxiecQFf7BFCwtIEeMMhAGYGeU3TiqOPt2MBkeFcD2biuRKK/s2
+         nmKapnBpB3NFuRxSWLC/OOtIZhF1jiUxgqTXeHPhD1IUTTxEBFvuyizRc8P/I8CoTZmJ
+         41FSIgvVFJelikXD8K2GXOGQ0QTnza5onqn2b3rc0uzFIPoYf2VfDePflmLgLl6/i7bz
+         3ikCGyCrQU4WnWwXBSnsD9kc3Od2H8TueEJAVgsphQl4ji5VIpxYz4PFqgrkNU9njHxq
+         F1eIvXU/h9ijIzRI0aA8Fev3QTv82aEAY6BFSRACuSZKaoZsU97vIpYtGW1JhvpXb1hh
+         mjNw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=v/V7ixtvM0wJB1Jk1MWAaJATghrtxgTP4T3O07Mrdu8=;
+        b=HjOYzIjAOthQIezFC9ECKxYbo4XAfUlGxBz/KZKkPynGHtKrS7THFMWfjWgbLdnLAZ
+         3zLC5YFNMOvn8Rt1rGux2OtqKm1qDcQSN6HWwnKcBo/UUcsuPjhSQ6sK6+SZbHn7a4nU
+         c+WMoJCEUouTYgJ/V6F3X5vFYAY5o5iE2WiFtOfAmxBBE3kUFQGI0s3lY/xBMAZ2bvzi
+         CwcTkov6XYrz9q61kwSWjWQSGHIxGYj2F25SgjSxs0qiD6L+IGBKo5v3E1VFi1Y40hd/
+         g22DjSAcYpUCd5q2BYoboH6nOgAvM/6/PvRBBp30DSh/w5r9p4PflbbYCkwmB6UoxoHN
+         Kt9g==
+X-Gm-Message-State: AOAM533tivCCB6lE9GouNCPk3bcje4c/bbnOvEar/Av0Txvwb3WztRQf
+        iextg8xpekG32w==
+X-Google-Smtp-Source: ABdhPJyn1HgNoM2PuLTIIsBKun1kehkVMuJbkmEmNTpqdSvwCz/414bbsmxAE/9bo0LnPKqrDbA0Gg==
+X-Received: by 2002:a5d:4107:: with SMTP id l7mr3355393wrp.209.1636586740056;
+        Wed, 10 Nov 2021 15:25:40 -0800 (PST)
+Received: from localhost (cpc154979-craw9-2-0-cust193.16-3.cable.virginm.net. [80.193.200.194])
+        by smtp.gmail.com with ESMTPSA id l4sm1118662wrv.94.2021.11.10.15.25.39
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 10 Nov 2021 15:25:39 -0800 (PST)
+From:   Colin Ian King <colin.i.king@googlemail.com>
+X-Google-Original-From: Colin Ian King <colin.i.king@gmail.com>
+To:     Paul Burton <paulburton@kernel.org>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Ralf Baechle <ralf@linux-mips.org>,
+        James Hogan <jhogan@kernel.org>, linux-mips@vger.kernel.org
+Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] MIPS: generic/yamon-dt: fix uninitialized variable error
+Date:   Wed, 10 Nov 2021 23:25:38 +0000
+Message-Id: <20211110232538.1372250-1-colin.i.king@gmail.com>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.2.0
-Subject: Re: [PATCH 0/2] clocksource: Avoid incorrect hpet fallback
-Content-Language: en-US
-To:     paulmck@kernel.org
-Cc:     John Stultz <john.stultz@linaro.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Stephen Boyd <sboyd@kernel.org>, linux-kernel@vger.kernel.org,
-        Peter Zijlstra <peterz@infradead.org>,
-        Cassio Neri <cassio.neri@gmail.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Feng Tang <feng.tang@intel.com>
-References: <20211110221732.272986-1-longman@redhat.com>
- <20211110223250.GG641268@paulmck-ThinkPad-P17-Gen-1>
-From:   Waiman Long <longman@redhat.com>
-In-Reply-To: <20211110223250.GG641268@paulmck-ThinkPad-P17-Gen-1>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+From: Colin Ian King <colin.king@canonical.com>
 
-On 11/10/21 17:32, Paul E. McKenney wrote:
-> On Wed, Nov 10, 2021 at 05:17:30PM -0500, Waiman Long wrote:
->> It was found that when an x86 system was being stressed by running
->> various different benchmark suites, the clocksource watchdog might
->> occasionally mark TSC as unstable and fall back to hpet which will
->> have a signficant impact on system performance.
->>
->> The current watchdog clocksource skew threshold of 50us is found to be
->> insufficient. So it is changed back to 100us before commit 2e27e793e280
->> ("clocksource: Reduce clocksource-skew threshold") in patch 1. Patch 2
->> adds a Kconfig option to allow kernel builder to control the actual
->> threshold to be used.
->>
->> Waiman Long (2):
->>    clocksource: Avoid accidental unstable marking of clocksources
->>    clocksource: Add a Kconfig option for WATCHDOG_MAX_SKEW
-> The ability to control the fine-grained threshold seems useful, but is
-> the TSC still marked unstable when this commit from -rcu is applied?
-> It has passed significant testing on other workloads.
->
-> 2a43fb0479aa ("clocksource: Forgive repeated long-latency watchdog clocksource reads")
->
-> If the patch below takes care of your situation, my thought is to
-> also take your second patch, which would allow people to set the
-> cutoff more loosely or more tightly, as their situation dictates.
->
-> Thoughts?
+In the case where fw_getenv returns an error when fetching values
+for ememsizea and memsize then variable phys_memsize is not assigned
+a variable and will be uninitialized on a zero check of phys_memsize.
+Fix this by initializing phys_memsize to zero.
 
-That is commit 14dbb29eda51 ("clocksource: Forgive repeated long-latency 
-watchdog clocksource reads") in your linux-rcu git tree. From reading 
-the patch, I believe it should be able to address the hpet fallback 
-problem that Red Hat had encountered. Your patch said it was an 
-out-of-tree patch. Are you planning to mainline it?
+Cleans up cppcheck error:
+arch/mips/generic/yamon-dt.c:100:7: error: Uninitialized variable: phys_memsize [uninitvar]
 
-Patch 1 of this series contains some testing data that caused hpet 
-fallback in our testing runs. In summary, a clock skew of 100us is found 
-to be enough to avoid the problem with benchmark runs. However, we have 
-some cases where TSC was marked unstable at bootup time with a skew of 
-200us or more which, I believe, was caused by the thermal stress that 
-the system was experiencing after running stressful benchmarks for hours.
+Fixes: f41d2430bbd6 ("MIPS: generic/yamon-dt: Support > 256MB of RAM")
+Signed-off-by: Colin Ian King <colin.king@canonical.com>
+---
+ arch/mips/generic/yamon-dt.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-At the end, we have to revert your clocksource patches before shipping 
-RHEL9 beta last week.
-
-Cheers,
-Longman
+diff --git a/arch/mips/generic/yamon-dt.c b/arch/mips/generic/yamon-dt.c
+index a3aa22c77cad..a07a5edbcda7 100644
+--- a/arch/mips/generic/yamon-dt.c
++++ b/arch/mips/generic/yamon-dt.c
+@@ -75,7 +75,7 @@ static unsigned int __init gen_fdt_mem_array(
+ __init int yamon_dt_append_memory(void *fdt,
+ 				  const struct yamon_mem_region *regions)
+ {
+-	unsigned long phys_memsize, memsize;
++	unsigned long phys_memsize = 0, memsize;
+ 	__be32 mem_array[2 * MAX_MEM_ARRAY_ENTRIES];
+ 	unsigned int mem_entries;
+ 	int i, err, mem_off;
+-- 
+2.32.0
 
