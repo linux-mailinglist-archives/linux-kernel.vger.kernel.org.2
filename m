@@ -2,101 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 90EEF44C908
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 20:36:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9002244C910
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 20:39:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232967AbhKJTjb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Nov 2021 14:39:31 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55738 "EHLO
+        id S232502AbhKJTmF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Nov 2021 14:42:05 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56306 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230388AbhKJTjZ (ORCPT
+        with ESMTP id S231979AbhKJTmE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Nov 2021 14:39:25 -0500
-Received: from mail-wr1-x42f.google.com (mail-wr1-x42f.google.com [IPv6:2a00:1450:4864:20::42f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ABC1DC061764;
-        Wed, 10 Nov 2021 11:36:37 -0800 (PST)
-Received: by mail-wr1-x42f.google.com with SMTP id u18so5891826wrg.5;
-        Wed, 10 Nov 2021 11:36:37 -0800 (PST)
+        Wed, 10 Nov 2021 14:42:04 -0500
+Received: from mail-io1-xd2b.google.com (mail-io1-xd2b.google.com [IPv6:2607:f8b0:4864:20::d2b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ADF75C061764
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Nov 2021 11:39:16 -0800 (PST)
+Received: by mail-io1-xd2b.google.com with SMTP id c3so4151389iob.6
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Nov 2021 11:39:16 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=googlemail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=6Z8SMunWQcnk6H7z0v7bcp6qKVk9GWG+Oiz8OpqEszI=;
-        b=oXIysTlNVbQRqVPcfuFaK+8pnGVtAvR/go8VDsPZbXbW5IRK582fEcwaxvWkrVUkts
-         6CvO/a6K4cVEdcVhI+g3uCdJEWfbM1jjpH3wn55zbMO85O1CaLALThPknDVyX6E/JYP8
-         +wDF9Z00irYxSgWcn0u5TTF//8gXbJLRv98DwMozzFwWUA9ZEHeZfo02lG9sYfTETJuA
-         QeG1Xi0dt8qbLwiFGl5x42+vjdhw9xt5Z7HDi9dzNhL83GQz/dg+um6DyVVPvNzlBgU/
-         CDJBufGmQrvh9auLzKZSXbU+qLVofPHj3Vpq0iyoUekogBz89p7xWmFEnFIwQ7//eadF
-         xh9A==
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=3SMO6CvmxSEBfAp8KRqD5IqUtmLkFi+eG/hFeuiApP8=;
+        b=iWKXYgP9R3gSr4gDRcARv/crjntS2rM0iP2PE/LljM8uKwf0j1yR5MlUvbJg8d/xTD
+         +9yLepHT95qJ7Fwacjeek0WliLgYmr2VKtLQ9ZcbooDP5LgbMBUO2sBAdfbyeYUaa+LK
+         ingTWUTI0t/8h1OB4pQs1fkjtOkwdO5dPDRUS0BRal0usDL3P7Egah95an25GExQxmWj
+         99AZ1yLqaRMP4vpmsqNt+sonVhYvyYt+INZQeGJyoLrjVxOhMSiLA6yFPqTp6lzYqPm3
+         ZX2x5WB/AeJtabBly0XYS9Czdz1mB3cQsbTKS6XVMHzJFgRngnen5+dosoWpYFSOIre8
+         EAHg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=6Z8SMunWQcnk6H7z0v7bcp6qKVk9GWG+Oiz8OpqEszI=;
-        b=epre1jDr1rUcaMrNfo6HU+I5dn9FHJ5yfO7QLpb7+oq31xXzq/uTs0hentr30VmVYn
-         RF96O2FF0EWpiAGF0/ADdhdgyEYKlKiuYwJPIGJK1PCKMMsEXw9797jrGcStDQELy3wx
-         oiMhkERbZdYoikFviv+wIBb8zCc076VNG9WFmiBF3zFy329O6PYT1OIdlgttqE90QPyN
-         WHuK2i0TfH4FvWtQfOh7IZV/udw5vaCuLxYNj2pk5sD4hnVuDr+MTfMbROBBaeNFsJzU
-         huHPQx2r9HH3IX9UD+8HF0oTb44pHkhZieS2ouTz6bv3KJ/iUoK04HVWX320wDYQsihC
-         Yw9A==
-X-Gm-Message-State: AOAM532vp1wI0QDXkaXsKSWWt8AEL9tLaUbqoHd3sEMv9ZRPEH61ZocY
-        ZvuSgPrKJ1dqXQ==
-X-Google-Smtp-Source: ABdhPJyEPqNej1qS/wX6Ss4Bd6tM6SnB5Dz2gtv4liSwPZVQZWxIX1ItETpYJTswugwKLMv+oNRcZA==
-X-Received: by 2002:a5d:534b:: with SMTP id t11mr1807334wrv.75.1636572996346;
-        Wed, 10 Nov 2021 11:36:36 -0800 (PST)
-Received: from localhost (cpc154979-craw9-2-0-cust193.16-3.cable.virginm.net. [80.193.200.194])
-        by smtp.gmail.com with ESMTPSA id h204sm650777wmh.33.2021.11.10.11.36.35
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 10 Nov 2021 11:36:36 -0800 (PST)
-From:   Colin Ian King <colin.i.king@googlemail.com>
-X-Google-Original-From: Colin Ian King <colin.i.king@gmail.com>
-To:     Emma Anholt <emma@anholt.net>, David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>, Melissa Wen <mwen@igalia.com>,
-        Iago Toral Quiroga <itoral@igalia.com>,
-        dri-devel@lists.freedesktop.org
-Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] drm/v3d: pass null pointers using NULL
-Date:   Wed, 10 Nov 2021 19:36:35 +0000
-Message-Id: <20211110193635.312328-1-colin.i.king@gmail.com>
-X-Mailer: git-send-email 2.32.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=3SMO6CvmxSEBfAp8KRqD5IqUtmLkFi+eG/hFeuiApP8=;
+        b=25eO3C5nL6N8usLooQSyKm5m4s/1Km9NvxAMlD9YdcC7esTJ9h/rqoP/sfKL0/yQZj
+         bYe7dVdxLoQgARWe2Ih4eg00BSkiqhuK7VK4vf3MiF3etyL2u8dpz2oeYOOtDTs75N51
+         45ics+qSDFQg57Ngjy3rnUBVi7C+LsQyNX5Ghq+xNogqdyU7/Jgsec8TY0ftJNnIuFyu
+         XD41NvNrV2J4l4xG9cTj02jc27Katxrq7LhQ3bPnXmPDi34gGJaNldJy6227AZRoSPKv
+         JxacnCEJIbiLJP1eJA5xZfv6XYMDRIup5pR4QDfm37UF7IwJl1IMRMkRHP2JvWROJw7D
+         nL6Q==
+X-Gm-Message-State: AOAM531WtdPbT5nDD29t/7oEdZadhdLSh1eOW6M0RevQU+eCOQvpX6t9
+        QWLb564Hvv5QkV8aVT+VJl4AkQdDeyexJt/ckBdKCw==
+X-Google-Smtp-Source: ABdhPJwVnD0vAGqngGi1Bc5alFWYVWNyYEvf9pOTUc2f5EnygsxhdxmMwhBXDb8EVLNsL6FIhsyRL5X672qOA8Iglpo=
+X-Received: by 2002:a6b:2cc5:: with SMTP id s188mr1078380ios.218.1636573155950;
+ Wed, 10 Nov 2021 11:39:15 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+References: <YUixqL+SRVaVNF07@google.com> <20210921095838.GA17357@ashkalra_ubuntu_server>
+ <YUnjEU+1icuihmbR@google.com> <YUnxa2gy4DzEI2uY@zn.tnic> <YUoDJxfNZgNjY8zh@google.com>
+ <YUr5gCgNe7tT0U/+@zn.tnic> <20210922121008.GA18744@ashkalra_ubuntu_server>
+ <YUs1ejsDB4W4wKGF@zn.tnic> <CABayD+eFeu1mWG-UGXC0QZuYu68B9wJNWJhjUo=HHgc_jsfBag@mail.gmail.com>
+ <2213EC9B-E3EC-4F23-BC1A-B11DF6288EE3@amd.com> <YVRRsEgjID4CbbRS@zn.tnic>
+In-Reply-To: <YVRRsEgjID4CbbRS@zn.tnic>
+From:   Steve Rutherford <srutherford@google.com>
+Date:   Wed, 10 Nov 2021 11:38:39 -0800
+Message-ID: <CABayD+dM8OafXkw6_Af17uvthnNG+k3majitc3uGwsm+Lr8DAQ@mail.gmail.com>
+Subject: Re: [PATCH v6 1/5] x86/kvm: Add AMD SEV specific Hypercall3
+To:     Borislav Petkov <bp@alien8.de>
+Cc:     "Kalra, Ashish" <Ashish.Kalra@amd.com>,
+        Sean Christopherson <seanjc@google.com>,
+        "pbonzini@redhat.com" <pbonzini@redhat.com>,
+        "tglx@linutronix.de" <tglx@linutronix.de>,
+        "mingo@redhat.com" <mingo@redhat.com>,
+        "hpa@zytor.com" <hpa@zytor.com>,
+        "joro@8bytes.org" <joro@8bytes.org>,
+        "Lendacky, Thomas" <thomas.lendacky@amd.com>,
+        "x86@kernel.org" <x86@kernel.org>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "Singh, Brijesh" <brijesh.singh@amd.com>,
+        "dovmurik@linux.ibm.com" <dovmurik@linux.ibm.com>,
+        "tobin@linux.ibm.com" <tobin@linux.ibm.com>,
+        "jejb@linux.ibm.com" <jejb@linux.ibm.com>,
+        "dgilbert@redhat.com" <dgilbert@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There are a couple of calls that are passing null pointers as
-integer zeros rather than NULL. Fix this by using NULL instead.
+On Wed, Sep 29, 2021 at 4:44 AM Borislav Petkov <bp@alien8.de> wrote:
+>
+> On Tue, Sep 28, 2021 at 07:26:32PM +0000, Kalra, Ashish wrote:
+> > Yes that=E2=80=99s what I mentioned to Boris.
+>
+> Right, and as far as I'm concerned, the x86 bits look ok to me and I'm
+> fine with this going through the kvm tree.
+>
+> There will be a conflict with this:
+>
+> https://lkml.kernel.org/r/20210928191009.32551-1-bp@alien8.de
+>
+> resulting in:
+>
+> arch/x86/kernel/kvm.c: In function =E2=80=98setup_efi_kvm_sev_migration=
+=E2=80=99:
+> arch/x86/kernel/kvm.c:563:7: error: implicit declaration of function =E2=
+=80=98sev_active=E2=80=99; did you mean =E2=80=98cpu_active=E2=80=99? [-Wer=
+ror=3Dimplicit-function-declaration]
+>   563 |  if (!sev_active() ||
+>       |       ^~~~~~~~~~
+>       |       cpu_active
+> cc1: some warnings being treated as errors
+> make[2]: *** [scripts/Makefile.build:277: arch/x86/kernel/kvm.o] Error 1
+> make[2]: *** Waiting for unfinished jobs....
+> make[1]: *** [scripts/Makefile.build:540: arch/x86/kernel] Error 2
+> make: *** [Makefile:1868: arch/x86] Error 2
+> make: *** Waiting for unfinished jobs....
+>
+> but Paolo and I will figure out what to do - I'll likely have a separate
+> branch out which he can merge and that sev_active() will need to be
+> converted to
+>
+>         if (!cc_platform_has(CC_ATTR_GUEST_MEM_ENCRYPT))
+>
+> which is trivial.
+>
+> Thx.
+>
+> --
+> Regards/Gruss,
+>     Boris.
+>
+> https://people.kernel.org/tglx/notes-about-netiquette
 
-Fixes: 07c2a41658c4 ("drm/v3d: alloc and init job in one shot")
-Signed-off-by: Colin Ian King <colin.i.king@gmail.com>
----
- drivers/gpu/drm/v3d/v3d_gem.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+Hey All,
 
-diff --git a/drivers/gpu/drm/v3d/v3d_gem.c b/drivers/gpu/drm/v3d/v3d_gem.c
-index e47ae40a865a..c7ed2e1cbab6 100644
---- a/drivers/gpu/drm/v3d/v3d_gem.c
-+++ b/drivers/gpu/drm/v3d/v3d_gem.c
-@@ -774,7 +774,7 @@ v3d_submit_cl_ioctl(struct drm_device *dev, void *data,
- 
- 	if (args->flags & DRM_V3D_SUBMIT_CL_FLUSH_CACHE) {
- 		ret = v3d_job_init(v3d, file_priv, (void *)&clean_job, sizeof(*clean_job),
--				   v3d_job_free, 0, 0, V3D_CACHE_CLEAN);
-+				   v3d_job_free, 0, NULL, V3D_CACHE_CLEAN);
- 		if (ret)
- 			goto fail;
- 
-@@ -1007,7 +1007,7 @@ v3d_submit_csd_ioctl(struct drm_device *dev, void *data,
- 		goto fail;
- 
- 	ret = v3d_job_init(v3d, file_priv, (void *)&clean_job, sizeof(*clean_job),
--			   v3d_job_free, 0, 0, V3D_CACHE_CLEAN);
-+			   v3d_job_free, 0, NULL, V3D_CACHE_CLEAN);
- 	if (ret)
- 		goto fail;
- 
--- 
-2.32.0
+Bumping this thread again, since I believe these patches are good to go.
 
+Let me know if there is anything I can do to help here,
+Thanks,
+Steve
