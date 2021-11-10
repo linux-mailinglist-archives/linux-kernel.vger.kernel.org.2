@@ -2,42 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D7F644C7F2
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 19:57:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0694F44C7AE
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 19:53:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233612AbhKJS5T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Nov 2021 13:57:19 -0500
-Received: from mail.kernel.org ([198.145.29.99]:48554 "EHLO mail.kernel.org"
+        id S232741AbhKJSyP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Nov 2021 13:54:15 -0500
+Received: from mail.kernel.org ([198.145.29.99]:48616 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233877AbhKJSxo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Nov 2021 13:53:44 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 34562619E0;
-        Wed, 10 Nov 2021 18:48:37 +0000 (UTC)
+        id S230235AbhKJSwF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Nov 2021 13:52:05 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8F3EE6134F;
+        Wed, 10 Nov 2021 18:47:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1636570117;
-        bh=ujny/hXFp3AvZh0QyayQ+Hh5MkuhK45jjzRAg3IQCKY=;
+        s=korg; t=1636570069;
+        bh=O70moGovKKBeff/tnsM89R1q7iqLf2ZLZjTQ0N4uJxQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=PA3KzbzdLFl+69MY+b2oqPe51QtDmDQKJynQYxPzZuRlfgTJOPb6vCVtvkY25gFeH
-         uNNQgbS02/zncmkeyfrmImLaLnnpVoRBBz/i2/+iJm6SnfjWujSsRYtM3+h5gYnfz+
-         bHsBhjsK1AV7cPmxRLBKQM5tLM02UpauOOENZabI=
+        b=ugokaStO79A8kK8fVbhVCdvjxufu5e266tS+LfPpb8gdb6DInaut4QUvPdWdR0fyd
+         oR3XZgS09Ezg0EAqJs430pyWEf8IntUj06hzHCJUqmUquvJubZanxxk6x+I93B9z1D
+         RLvu8kZub7cymhX7J40gFn4jmJiJHQDISGlpWinI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Yang Shi <shy828301@gmail.com>,
-        Naoya Horiguchi <naoya.horiguchi@nec.com>,
-        Hugh Dickins <hughd@google.com>,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Oscar Salvador <osalvador@suse.de>,
-        Peter Xu <peterx@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Subject: [PATCH 5.10 04/21] mm: hwpoison: remove the unnecessary THP check
-Date:   Wed, 10 Nov 2021 19:43:50 +0100
-Message-Id: <20211110182003.102822046@linuxfoundation.org>
+        stable@vger.kernel.org, Johan Hovold <johan@kernel.org>,
+        Ian Abbott <abbotti@mev.co.uk>
+Subject: [PATCH 5.4 12/17] comedi: vmk80xx: fix bulk-buffer overflow
+Date:   Wed, 10 Nov 2021 19:43:51 +0100
+Message-Id: <20211110182002.606462810@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211110182002.964190708@linuxfoundation.org>
-References: <20211110182002.964190708@linuxfoundation.org>
+In-Reply-To: <20211110182002.206203228@linuxfoundation.org>
+References: <20211110182002.206203228@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -46,63 +39,55 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Yang Shi <shy828301@gmail.com>
+From: Johan Hovold <johan@kernel.org>
 
-commit c7cb42e94473aafe553c0f2a3d8ca904599399ed upstream.
+commit 78cdfd62bd54af615fba9e3ca1ba35de39d3871d upstream.
 
-When handling THP hwpoison checked if the THP is in allocation or free
-stage since hwpoison may mistreat it as hugetlb page.  After commit
-415c64c1453a ("mm/memory-failure: split thp earlier in memory error
-handling") the problem has been fixed, so this check is no longer
-needed.  Remove it.  The side effect of the removal is hwpoison may
-report unsplit THP instead of unknown error for shmem THP.  It seems not
-like a big deal.
+The driver is using endpoint-sized buffers but must not assume that the
+tx and rx buffers are of equal size or a malicious device could overflow
+the slab-allocated receive buffer when doing bulk transfers.
 
-The following patch "mm: filemap: check if THP has hwpoisoned subpage
-for PMD page fault" depends on this, which fixes shmem THP with
-hwpoisoned subpage(s) are mapped PMD wrongly.  So this patch needs to be
-backported to -stable as well.
-
-Link: https://lkml.kernel.org/r/20211020210755.23964-2-shy828301@gmail.com
-Signed-off-by: Yang Shi <shy828301@gmail.com>
-Suggested-by: Naoya Horiguchi <naoya.horiguchi@nec.com>
-Acked-by: Naoya Horiguchi <naoya.horiguchi@nec.com>
-Cc: Hugh Dickins <hughd@google.com>
-Cc: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
-Cc: Matthew Wilcox <willy@infradead.org>
-Cc: Oscar Salvador <osalvador@suse.de>
-Cc: Peter Xu <peterx@redhat.com>
-Cc: <stable@vger.kernel.org>
-Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
-Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+Fixes: 985cafccbf9b ("Staging: Comedi: vmk80xx: Add k8061 support")
+Cc: stable@vger.kernel.org      # 2.6.31
+Signed-off-by: Johan Hovold <johan@kernel.org>
+Reviewed-by: Ian Abbott <abbotti@mev.co.uk>
+Link: https://lore.kernel.org/r/20211025114532.4599-5-johan@kernel.org
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
 ---
- mm/memory-failure.c |   14 --------------
- 1 file changed, 14 deletions(-)
+ drivers/staging/comedi/drivers/vmk80xx.c |   16 +++++++---------
+ 1 file changed, 7 insertions(+), 9 deletions(-)
 
---- a/mm/memory-failure.c
-+++ b/mm/memory-failure.c
-@@ -956,20 +956,6 @@ static int get_hwpoison_page(struct page
- {
- 	struct page *head = compound_head(page);
+--- a/drivers/staging/comedi/drivers/vmk80xx.c
++++ b/drivers/staging/comedi/drivers/vmk80xx.c
+@@ -159,22 +159,20 @@ static void vmk80xx_do_bulk_msg(struct c
+ 	__u8 rx_addr;
+ 	unsigned int tx_pipe;
+ 	unsigned int rx_pipe;
+-	size_t size;
++	size_t tx_size;
++	size_t rx_size;
  
--	if (!PageHuge(head) && PageTransHuge(head)) {
--		/*
--		 * Non anonymous thp exists only in allocation/free time. We
--		 * can't handle such a case correctly, so let's give it up.
--		 * This should be better than triggering BUG_ON when kernel
--		 * tries to touch the "partially handled" page.
--		 */
--		if (!PageAnon(head)) {
--			pr_err("Memory failure: %#lx: non anonymous thp\n",
--				page_to_pfn(page));
--			return 0;
--		}
--	}
+ 	tx_addr = devpriv->ep_tx->bEndpointAddress;
+ 	rx_addr = devpriv->ep_rx->bEndpointAddress;
+ 	tx_pipe = usb_sndbulkpipe(usb, tx_addr);
+ 	rx_pipe = usb_rcvbulkpipe(usb, rx_addr);
 -
- 	if (get_page_unless_zero(head)) {
- 		if (head == compound_head(page))
- 			return 1;
+-	/*
+-	 * The max packet size attributes of the K8061
+-	 * input/output endpoints are identical
+-	 */
+-	size = usb_endpoint_maxp(devpriv->ep_tx);
++	tx_size = usb_endpoint_maxp(devpriv->ep_tx);
++	rx_size = usb_endpoint_maxp(devpriv->ep_rx);
+ 
+ 	usb_bulk_msg(usb, tx_pipe, devpriv->usb_tx_buf,
+-		     size, NULL, devpriv->ep_tx->bInterval);
+-	usb_bulk_msg(usb, rx_pipe, devpriv->usb_rx_buf, size, NULL, HZ * 10);
++		     tx_size, NULL, devpriv->ep_tx->bInterval);
++
++	usb_bulk_msg(usb, rx_pipe, devpriv->usb_rx_buf, rx_size, NULL, HZ * 10);
+ }
+ 
+ static int vmk80xx_read_packet(struct comedi_device *dev)
 
 
