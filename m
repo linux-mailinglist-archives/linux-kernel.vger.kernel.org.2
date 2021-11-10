@@ -2,89 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0564744B9DC
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 02:07:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3005F44B9EC
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 02:22:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229652AbhKJBJ4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Nov 2021 20:09:56 -0500
-Received: from mail-ot1-f49.google.com ([209.85.210.49]:39554 "EHLO
-        mail-ot1-f49.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229512AbhKJBJz (ORCPT
+        id S229520AbhKJBZm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Nov 2021 20:25:42 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35128 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229445AbhKJBZl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Nov 2021 20:09:55 -0500
-Received: by mail-ot1-f49.google.com with SMTP id r10-20020a056830080a00b0055c8fd2cebdso1413182ots.6;
-        Tue, 09 Nov 2021 17:07:08 -0800 (PST)
+        Tue, 9 Nov 2021 20:25:41 -0500
+Received: from mail-pj1-x1034.google.com (mail-pj1-x1034.google.com [IPv6:2607:f8b0:4864:20::1034])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B0E5C061764
+        for <linux-kernel@vger.kernel.org>; Tue,  9 Nov 2021 17:22:55 -0800 (PST)
+Received: by mail-pj1-x1034.google.com with SMTP id t5-20020a17090a4e4500b001a0a284fcc2so392445pjl.2
+        for <linux-kernel@vger.kernel.org>; Tue, 09 Nov 2021 17:22:55 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=HAv9f1iLhDmsnrrCKVtiLE42tkSUT43wkvQCu0XMYW8=;
+        b=RhdKrGHcwd4f/gFqVn2qpIRbuQi3OjjKFNGpcMcnBxPLFB+2KFJzoZmJyAofTzyMOq
+         zc2u7rJ2vGzMpOUP+EjEOH+bXs6axp3zgEF4rJRGHCUH0ROwgv74xgB3sl77KX64UDJw
+         R5PaJBZXNSpK25amuq/NfcqBol2PG8+uEpPIlRYZgnlVkLoiQL+vZisTDwc+Q/E45EV3
+         BccWWu+LDSNo8hfYLO6sIX4dZtF8b3xoVNliy+tkj5gBkCFCzwE17tfAkGBrHsU019+i
+         xyfSri6XCynCraBZaqScyD1blyXJrqA7A0t0Dj0NbIeHN6jJQApOc3nWoqOTl43B86cj
+         LkuA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:in-reply-to:references:subject:date
-         :message-id;
-        bh=XVy96mJGWAltgt7UegL9Otd1SwtIvQvMyrZTa4hhou0=;
-        b=Iptavy81VH3Oz99JI6L9poAiXb+yDSAIUf4HVyKpCMSVSoSB2gXt2pAKg+t+NWNHlP
-         hmjCFc3vDO1VJ59SAEIE0JLet/aEjdT3biTsyt46v91xKoocZa8LpOt4B8PU7MM0JGui
-         zpWZClJZt4oV+KieF4sNPEaKuMUV4qHln2njUSdEh1bCIqIg3E0Db3tBghipuM0b5I63
-         q0UBGmdwBkoQPm+GAM2VQRTWhwn444vjYxLWwzp7YYCgRiq6SPLORPnxuYIV89Fl6+7O
-         7v8DoaKedIDBP8CX2TDYN7fytmNo4g8jr5q1a1z8R4KFfRwjN/EWuPliQyjMocWQezUj
-         d+vg==
-X-Gm-Message-State: AOAM5336vjw3fvQXgOdR/gBatT88d/tTD1ZE7FWlB4s5Lw07JxAkX2+5
-        52GBf+Y/mf8vDzjcDtm4qF2b+bmYjQ==
-X-Google-Smtp-Source: ABdhPJx9pN6F8YVjrzduGrvQpecWUeRByej2GoCjnvs7ACsSkC/DZAwpGEuXa596mR8zK5CSZEnMUA==
-X-Received: by 2002:a9d:7b51:: with SMTP id f17mr6824298oto.88.1636506427801;
-        Tue, 09 Nov 2021 17:07:07 -0800 (PST)
-Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
-        by smtp.gmail.com with ESMTPSA id e2sm6919606ooh.40.2021.11.09.17.07.06
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=HAv9f1iLhDmsnrrCKVtiLE42tkSUT43wkvQCu0XMYW8=;
+        b=L8s6KZWHOuBBlkifnGyONWZMDc87h/dVwoueauFLHGSEZqU/dHjvvqTB/5IiGpWoaq
+         LXhng1rD8Ta6DUV0UFT+EQFyfDIgd95y3NJHWrCx3b0a2qR6oORNY65VKfijldVcgCut
+         1F1hN1SkAYhEnx9ZJ1rUOQYZ3cNVG1bmK0KH3Ldt6iVOEFF1zfdblEp5Mw51nYekxW1L
+         rw2ZEIsXjO/Rd1OQO+eFmvQuh8s8ca4UfsjC9fMW0I4rlLzMkIE0CxbvYDgrGvE293Ua
+         FOF4xRmS/ct9pms+TBfCn7hLLyOCcTPxI/XMC7I+aKmy8OPMju/FqVTXHmcojx7pITG1
+         5O7w==
+X-Gm-Message-State: AOAM530gvFv39SoC0UcUYJCgiDGM2jgxKNBBdubykSmoph4zqacrdugg
+        x/tfmpvsWonqfZBcIonTR1S4KGgW6y8=
+X-Google-Smtp-Source: ABdhPJxjJ66nGGgFcEV2cebo02ye7n+fmfGjZIdLtq6pik5cOQ++Cx/8ai5I3r1T+Ro0rFKFmiR6fg==
+X-Received: by 2002:a17:90a:6b0d:: with SMTP id v13mr12412700pjj.138.1636507374535;
+        Tue, 09 Nov 2021 17:22:54 -0800 (PST)
+Received: from edumazet1.svl.corp.google.com ([2620:15c:2c4:201:362:8fd3:5950:cf6d])
+        by smtp.gmail.com with ESMTPSA id h2sm3614037pjk.44.2021.11.09.17.22.53
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 09 Nov 2021 17:07:07 -0800 (PST)
-Received: (nullmailer pid 3016195 invoked by uid 1000);
-        Wed, 10 Nov 2021 01:07:06 -0000
-From:   Rob Herring <robh@kernel.org>
-To:     Antoniu Miclaus <antoniu.miclaus@analog.com>
-Cc:     jic23@kernel.org, linux-iio@vger.kernel.org,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        robh+dt@kernel.org
-In-Reply-To: <20211109123127.96399-4-antoniu.miclaus@analog.com>
-References: <20211109123127.96399-1-antoniu.miclaus@analog.com> <20211109123127.96399-4-antoniu.miclaus@analog.com>
-Subject: Re: [PATCH 3/4] dt-bindings:iio:filter: add admv8818 doc
-Date:   Tue, 09 Nov 2021 19:07:06 -0600
-Message-Id: <1636506426.248164.3016194.nullmailer@robh.at.kernel.org>
+        Tue, 09 Nov 2021 17:22:54 -0800 (PST)
+From:   Eric Dumazet <eric.dumazet@gmail.com>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     linux-kernel <linux-kernel@vger.kernel.org>,
+        Eric Dumazet <edumazet@google.com>,
+        Eric Dumazet <eric.dumazet@gmail.com>
+Subject: [PATCH 0/2] jump_label: add __static_key macro
+Date:   Tue,  9 Nov 2021 17:09:04 -0800
+Message-Id: <20211110010906.1923210-1-eric.dumazet@gmail.com>
+X-Mailer: git-send-email 2.34.0.rc0.344.g81b53c2807-goog
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 09 Nov 2021 14:31:26 +0200, Antoniu Miclaus wrote:
-> Add device tree bindings for the ADMV8818 Filter.
-> 
-> Signed-off-by: Antoniu Miclaus <antoniu.miclaus@analog.com>
-> ---
->  .../bindings/iio/filter/adi,admv8818.yaml     | 78 +++++++++++++++++++
->  1 file changed, 78 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/iio/filter/adi,admv8818.yaml
-> 
+From: Eric Dumazet <edumazet@google.com>
 
-My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
-on your patch (DT_CHECKER_FLAGS is new in v5.13):
+First patch removes uses of open coded 
+__ro_after_init DEFINE_STATIC_KEY_FALSE(XXX)
 
-yamllint warnings/errors:
+Second patch adds __static_key macro to put static_key away
+for CONFIG_JUMP_LABEL=y builds.
 
-dtschema/dtc warnings/errors:
-/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/iio/filter/adi,admv8818.yaml: properties:adi,bw-hz: '$ref' should not be valid under {'const': '$ref'}
-	hint: Standard unit suffix properties don't need a type $ref
-	from schema $id: http://devicetree.org/meta-schemas/core.yaml#
-/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/iio/filter/adi,admv8818.yaml: ignoring, error in schema: properties: adi,bw-hz
-warning: no schema found in file: ./Documentation/devicetree/bindings/iio/filter/adi,admv8818.yaml
-Documentation/devicetree/bindings/iio/filter/adi,admv8818.example.dt.yaml:0:0: /example-0/spi/admv8818@0: failed to match any schema with compatible: ['adi,admv8818']
+Eric Dumazet (2):
+  jump_label: use DEFINE_STATIC_KEY_FALSE_RO() where possible
+  jump_label: refine placement of static_keys
 
-doc reference errors (make refcheckdocs):
+ arch/arm/crypto/chacha-glue.c        |  2 +-
+ arch/arm/crypto/curve25519-glue.c    |  2 +-
+ arch/arm/crypto/ghash-ce-glue.c      |  2 +-
+ arch/arm/crypto/poly1305-glue.c      |  2 +-
+ arch/arm64/crypto/chacha-neon-glue.c |  2 +-
+ arch/arm64/crypto/poly1305-glue.c    |  2 +-
+ arch/powerpc/mm/book3s64/slb.c       |  2 +-
+ arch/riscv/kernel/cpufeature.c       |  2 +-
+ arch/x86/crypto/aesni-intel_glue.c   |  4 ++--
+ arch/x86/crypto/blake2s-glue.c       |  4 ++--
+ arch/x86/crypto/chacha_glue.c        |  6 +++---
+ arch/x86/crypto/curve25519-x86_64.c  |  2 +-
+ arch/x86/crypto/poly1305_glue.c      |  6 +++---
+ arch/x86/kvm/lapic.c                 |  4 ++--
+ arch/x86/kvm/x86.c                   |  2 +-
+ crypto/aegis128-core.c               |  2 +-
+ include/linux/jump_label.h           | 25 +++++++++++++++++--------
+ kernel/events/core.c                 |  2 +-
+ kernel/sched/fair.c                  |  2 +-
+ net/core/dev.c                       |  8 ++++----
+ net/netfilter/core.c                 |  2 +-
+ net/netfilter/x_tables.c             |  2 +-
+ 22 files changed, 48 insertions(+), 39 deletions(-)
 
-See https://patchwork.ozlabs.org/patch/1552959
-
-This check can fail if there are any dependencies. The base for a patch
-series is generally the most recent rc1.
-
-If you already ran 'make dt_binding_check' and didn't see the above
-error(s), then make sure 'yamllint' is installed and dt-schema is up to
-date:
-
-pip3 install dtschema --upgrade
-
-Please check and re-submit.
+-- 
+2.34.0.rc0.344.g81b53c2807-goog
 
