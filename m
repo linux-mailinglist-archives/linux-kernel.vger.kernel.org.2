@@ -2,863 +2,2001 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C59F44CB14
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 22:10:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 897AC44CB0B
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 22:09:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233294AbhKJVNi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Nov 2021 16:13:38 -0500
-Received: from mga05.intel.com ([192.55.52.43]:29800 "EHLO mga05.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230230AbhKJVNh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Nov 2021 16:13:37 -0500
-X-IronPort-AV: E=McAfee;i="6200,9189,10164"; a="318983490"
-X-IronPort-AV: E=Sophos;i="5.87,224,1631602800"; 
-   d="gz'50?scan'50,208,50";a="318983490"
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Nov 2021 13:09:04 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.87,224,1631602800"; 
-   d="gz'50?scan'50,208,50";a="602357110"
-Received: from lkp-server02.sh.intel.com (HELO c20d8bc80006) ([10.239.97.151])
-  by orsmga004.jf.intel.com with ESMTP; 10 Nov 2021 13:09:01 -0800
-Received: from kbuild by c20d8bc80006 with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1mkuq5-000FVk-1S; Wed, 10 Nov 2021 21:09:01 +0000
-Date:   Thu, 11 Nov 2021 05:08:33 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Bean Huo <beanhuo@micron.com>
-Cc:     kbuild-all@lists.01.org, linux-kernel@vger.kernel.org,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Avri Altman <avri.altman@wdc.com>
-Subject: drivers/scsi/ufs/ufshpb.c:335:27: sparse: sparse: cast from
- restricted __be64
-Message-ID: <202111110526.4qqthI3i-lkp@intel.com>
+        id S233340AbhKJVL4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Nov 2021 16:11:56 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:37228 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233332AbhKJVLz (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Nov 2021 16:11:55 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1636578546;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=XqByNyT+bm6qbw+Cs0omImlyVXcrYWwCT6lLMqXdgTo=;
+        b=gfxVXPLvmS+s/jqZfmnzEjT8nSpmC8q0Rh5ezW4I+qsFtqQRWTJWYWX99YxvshxBBO50a9
+        1u60SIcChLp6Rt9QmU4MoruKH/QeHFtPX8lD5Osuq3F5UoNvfpTiXo6IpW2dMiHQ/3qWN6
+        RmxDWm63RXyRssEvfM/KCk3yglnNPAs=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-471-y-xSx6vqPtSdTUZo4rlFxA-1; Wed, 10 Nov 2021 16:08:57 -0500
+X-MC-Unique: y-xSx6vqPtSdTUZo4rlFxA-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 512ADCC623;
+        Wed, 10 Nov 2021 21:08:55 +0000 (UTC)
+Received: from warthog.procyon.org.uk (unknown [10.33.37.68])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 637EC101E59D;
+        Wed, 10 Nov 2021 21:08:45 +0000 (UTC)
+Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
+        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
+        Kingdom.
+        Registered in England and Wales under Company Registration No. 3798903
+Subject: [PATCH v5 3/4] netfs, 9p, afs, ceph: Use folios
+From:   David Howells <dhowells@redhat.com>
+To:     "Matthew Wilcox (Oracle)" <willy@infradead.org>
+Cc:     Jeff Layton <jlayton@kernel.org>, Jeff Layton <jlayton@kernel.org>,
+        Dominique Martinet <asmadeus@codewreck.org>,
+        kafs-testing@auristor.com, Marc Dionne <marc.dionne@auristor.com>,
+        Ilya Dryomov <idryomov@gmail.com>,
+        Dominique Martinet <asmadeus@codewreck.org>,
+        v9fs-developer@lists.sourceforge.net,
+        linux-afs@lists.infradead.org, ceph-devel@vger.kernel.org,
+        linux-cachefs@redhat.com, dhowells@redhat.com,
+        Jeff Layton <jlayton@kernel.org>,
+        Ilya Dryomov <idryomov@gmail.com>,
+        Dominique Martinet <asmadeus@codewreck.org>,
+        linux-fsdevel@vger.kernel.org, linux-cachefs@redhat.com,
+        v9fs-developer@lists.sourceforge.net,
+        linux-afs@lists.infradead.org, ceph-devel@vger.kernel.org,
+        linux-cifs@vger.kernel.org, linux-nfs@vger.kernel.org,
+        devel@lists.orangefs.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Date:   Wed, 10 Nov 2021 21:08:44 +0000
+Message-ID: <163657852454.834781.9265101983152100556.stgit@warthog.procyon.org.uk>
+In-Reply-To: <163657847613.834781.7923681076643317435.stgit@warthog.procyon.org.uk>
+References: <163657847613.834781.7923681076643317435.stgit@warthog.procyon.org.uk>
+User-Agent: StGit/0.23
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="sdtB3X0nJg68CQEu"
-Content-Disposition: inline
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Convert the netfs helper library to use folios throughout, convert the 9p
+and afs filesystems to use folios in their file I/O paths and convert the
+ceph filesystem to use just enough folios to compile.
 
---sdtB3X0nJg68CQEu
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+With these changes, afs passes -g quick xfstests.
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-head:   881007522c8fcc3785c75432dbb149ca1b78e106
-commit: 63522bf3aced0a782b59f0314dbad5cdc8b14c59 scsi: ufs: core: Add L2P entry swap quirk for Micron UFS
-date:   3 months ago
-config: i386-randconfig-s001-20211109 (attached as .config)
-compiler: gcc-9 (Debian 9.3.0-22) 9.3.0
-reproduce:
-        # apt-get install sparse
-        # sparse version: v0.6.4-dirty
-        # https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=63522bf3aced0a782b59f0314dbad5cdc8b14c59
-        git remote add linus https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
-        git fetch --no-tags linus master
-        git checkout 63522bf3aced0a782b59f0314dbad5cdc8b14c59
-        # save the attached .config to linux build tree
-        make W=1 C=1 CF='-fdiagnostic-prefix -D__CHECK_ENDIAN__' O=build_dir ARCH=i386 SHELL=/bin/bash drivers/scsi/ufs/
+Changes
+=======
+ver #5:
+ - Got rid of folio_end{io,_read,_write}() and inlined the stuff it does
+   instead (Willy decided he didn't want this after all).
 
-If you fix the issue, kindly add following tag as appropriate
-Reported-by: kernel test robot <lkp@intel.com>
+ver #4:
+ - Fixed a bug in afs_redirty_page() whereby it didn't set the next page
+   index in the loop and returned too early.
+ - Simplified a check in v9fs_vfs_write_folio_locked()[1].
+ - Undid a change to afs_symlink_readpage()[1].
+ - Used offset_in_folio() in afs_write_end()[1].
+ - Changed from using page_endio() to folio_end{io,_read,_write}()[1].
 
+ver #2:
+ - Add 9p foliation.
 
-sparse warnings: (new ones prefixed by >>)
->> drivers/scsi/ufs/ufshpb.c:335:27: sparse: sparse: cast from restricted __be64
->> drivers/scsi/ufs/ufshpb.c:335:25: sparse: sparse: incorrect type in assignment (different base types) @@     expected restricted __be64 [usertype] ppn_tmp @@     got unsigned long long [usertype] @@
-   drivers/scsi/ufs/ufshpb.c:335:25: sparse:     expected restricted __be64 [usertype] ppn_tmp
-   drivers/scsi/ufs/ufshpb.c:335:25: sparse:     got unsigned long long [usertype]
-
-vim +335 drivers/scsi/ufs/ufshpb.c
-
-   324	
-   325	static void
-   326	ufshpb_set_hpb_read_to_upiu(struct ufs_hba *hba, struct ufshpb_lu *hpb,
-   327				    struct ufshcd_lrb *lrbp, u32 lpn, __be64 ppn,
-   328				    u8 transfer_len, int read_id)
-   329	{
-   330		unsigned char *cdb = lrbp->cmd->cmnd;
-   331		__be64 ppn_tmp = ppn;
-   332		cdb[0] = UFSHPB_READ;
-   333	
-   334		if (hba->dev_quirks & UFS_DEVICE_QUIRK_SWAP_L2P_ENTRY_FOR_HPB_READ)
- > 335			ppn_tmp = swab64(ppn);
-   336	
-   337		/* ppn value is stored as big-endian in the host memory */
-   338		memcpy(&cdb[6], &ppn_tmp, sizeof(__be64));
-   339		cdb[14] = transfer_len;
-   340		cdb[15] = read_id;
-   341	
-   342		lrbp->cmd->cmd_len = UFS_CDB_SIZE;
-   343	}
-   344	
-
+Signed-off-by: David Howells <dhowells@redhat.com>
+Reviewed-by: Jeff Layton <jlayton@kernel.org>
+Tested-by: Jeff Layton <jlayton@kernel.org>
+Tested-by: Dominique Martinet <asmadeus@codewreck.org>
+Tested-by: kafs-testing@auristor.com
+cc: Matthew Wilcox (Oracle) <willy@infradead.org>
+cc: Marc Dionne <marc.dionne@auristor.com>
+cc: Ilya Dryomov <idryomov@gmail.com>
+cc: Dominique Martinet <asmadeus@codewreck.org>
+cc: v9fs-developer@lists.sourceforge.net
+cc: linux-afs@lists.infradead.org
+cc: ceph-devel@vger.kernel.org
+cc: linux-cachefs@redhat.com
+Link: https://lore.kernel.org/r/YYKa3bfQZxK5/wDN@casper.infradead.org/ [1]
+Link: https://lore.kernel.org/r/2408234.1628687271@warthog.procyon.org.uk/ # rfc
+Link: https://lore.kernel.org/r/162877311459.3085614.10601478228012245108.stgit@warthog.procyon.org.uk/
+Link: https://lore.kernel.org/r/162981153551.1901565.3124454657133703341.stgit@warthog.procyon.org.uk/
+Link: https://lore.kernel.org/r/163005745264.2472992.9852048135392188995.stgit@warthog.procyon.org.uk/ # v2
+Link: https://lore.kernel.org/r/163584187452.4023316.500389675405550116.stgit@warthog.procyon.org.uk/ # v3
+Link: https://lore.kernel.org/r/163649328026.309189.1124218109373941936.stgit@warthog.procyon.org.uk/ # v4
 ---
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
 
---sdtB3X0nJg68CQEu
-Content-Type: application/gzip
-Content-Disposition: attachment; filename=".config.gz"
-Content-Transfer-Encoding: base64
+ fs/9p/vfs_addr.c           |   83 ++++++-----
+ fs/9p/vfs_file.c           |   20 +--
+ fs/afs/file.c              |   70 +++++----
+ fs/afs/internal.h          |   46 +++---
+ fs/afs/write.c             |  347 +++++++++++++++++++++-----------------------
+ fs/ceph/addr.c             |   80 +++++-----
+ fs/netfs/read_helper.c     |  165 +++++++++++----------
+ include/linux/netfs.h      |   12 +-
+ include/trace/events/afs.h |   21 +--
+ 9 files changed, 428 insertions(+), 416 deletions(-)
 
-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
-05V+ggIA
+diff --git a/fs/9p/vfs_addr.c b/fs/9p/vfs_addr.c
+index adafdf86f42f..fac918ccb305 100644
+--- a/fs/9p/vfs_addr.c
++++ b/fs/9p/vfs_addr.c
+@@ -108,7 +108,9 @@ static const struct netfs_read_request_ops v9fs_req_ops = {
+  */
+ static int v9fs_vfs_readpage(struct file *file, struct page *page)
+ {
+-	return netfs_readpage(file, page, &v9fs_req_ops, NULL);
++	struct folio *folio = page_folio(page);
++
++	return netfs_readpage(file, folio, &v9fs_req_ops, NULL);
+ }
+ 
+ /**
+@@ -130,13 +132,15 @@ static void v9fs_vfs_readahead(struct readahead_control *ractl)
+ 
+ static int v9fs_release_page(struct page *page, gfp_t gfp)
+ {
+-	if (PagePrivate(page))
++	struct folio *folio = page_folio(page);
++
++	if (folio_test_private(folio))
+ 		return 0;
+ #ifdef CONFIG_9P_FSCACHE
+-	if (PageFsCache(page)) {
++	if (folio_test_fscache(folio)) {
+ 		if (!(gfp & __GFP_DIRECT_RECLAIM) || !(gfp & __GFP_FS))
+ 			return 0;
+-		wait_on_page_fscache(page);
++		folio_wait_fscache(folio);
+ 	}
+ #endif
+ 	return 1;
+@@ -152,55 +156,58 @@ static int v9fs_release_page(struct page *page, gfp_t gfp)
+ static void v9fs_invalidate_page(struct page *page, unsigned int offset,
+ 				 unsigned int length)
+ {
+-	wait_on_page_fscache(page);
++	struct folio *folio = page_folio(page);
++
++	folio_wait_fscache(folio);
+ }
+ 
+-static int v9fs_vfs_writepage_locked(struct page *page)
++static int v9fs_vfs_write_folio_locked(struct folio *folio)
+ {
+-	struct inode *inode = page->mapping->host;
++	struct inode *inode = folio_inode(folio);
+ 	struct v9fs_inode *v9inode = V9FS_I(inode);
+-	loff_t start = page_offset(page);
+-	loff_t size = i_size_read(inode);
++	loff_t start = folio_pos(folio);
++	loff_t i_size = i_size_read(inode);
+ 	struct iov_iter from;
+-	int err, len;
++	size_t len = folio_size(folio);
++	int err;
++
++	if (start >= i_size)
++		return 0; /* Simultaneous truncation occurred */
+ 
+-	if (page->index == size >> PAGE_SHIFT)
+-		len = size & ~PAGE_MASK;
+-	else
+-		len = PAGE_SIZE;
++	len = min_t(loff_t, i_size - start, len);
+ 
+-	iov_iter_xarray(&from, WRITE, &page->mapping->i_pages, start, len);
++	iov_iter_xarray(&from, WRITE, &folio_mapping(folio)->i_pages, start, len);
+ 
+ 	/* We should have writeback_fid always set */
+ 	BUG_ON(!v9inode->writeback_fid);
+ 
+-	set_page_writeback(page);
++	folio_start_writeback(folio);
+ 
+ 	p9_client_write(v9inode->writeback_fid, start, &from, &err);
+ 
+-	end_page_writeback(page);
++	folio_end_writeback(folio);
+ 	return err;
+ }
+ 
+ static int v9fs_vfs_writepage(struct page *page, struct writeback_control *wbc)
+ {
++	struct folio *folio = page_folio(page);
+ 	int retval;
+ 
+-	p9_debug(P9_DEBUG_VFS, "page %p\n", page);
++	p9_debug(P9_DEBUG_VFS, "folio %p\n", folio);
+ 
+-	retval = v9fs_vfs_writepage_locked(page);
++	retval = v9fs_vfs_write_folio_locked(folio);
+ 	if (retval < 0) {
+ 		if (retval == -EAGAIN) {
+-			redirty_page_for_writepage(wbc, page);
++			folio_redirty_for_writepage(wbc, folio);
+ 			retval = 0;
+ 		} else {
+-			SetPageError(page);
+-			mapping_set_error(page->mapping, retval);
++			mapping_set_error(folio_mapping(folio), retval);
+ 		}
+ 	} else
+ 		retval = 0;
+ 
+-	unlock_page(page);
++	folio_unlock(folio);
+ 	return retval;
+ }
+ 
+@@ -213,14 +220,15 @@ static int v9fs_vfs_writepage(struct page *page, struct writeback_control *wbc)
+ 
+ static int v9fs_launder_page(struct page *page)
+ {
++	struct folio *folio = page_folio(page);
+ 	int retval;
+ 
+-	if (clear_page_dirty_for_io(page)) {
+-		retval = v9fs_vfs_writepage_locked(page);
++	if (folio_clear_dirty_for_io(folio)) {
++		retval = v9fs_vfs_write_folio_locked(folio);
+ 		if (retval)
+ 			return retval;
+ 	}
+-	wait_on_page_fscache(page);
++	folio_wait_fscache(folio);
+ 	return 0;
+ }
+ 
+@@ -265,10 +273,10 @@ v9fs_direct_IO(struct kiocb *iocb, struct iov_iter *iter)
+ 
+ static int v9fs_write_begin(struct file *filp, struct address_space *mapping,
+ 			    loff_t pos, unsigned int len, unsigned int flags,
+-			    struct page **pagep, void **fsdata)
++			    struct page **subpagep, void **fsdata)
+ {
+ 	int retval;
+-	struct page *page;
++	struct folio *folio;
+ 	struct v9fs_inode *v9inode = V9FS_I(mapping->host);
+ 
+ 	p9_debug(P9_DEBUG_VFS, "filp %p, mapping %p\n", filp, mapping);
+@@ -279,31 +287,32 @@ static int v9fs_write_begin(struct file *filp, struct address_space *mapping,
+ 	 * file.  We need to do this before we get a lock on the page in case
+ 	 * there's more than one writer competing for the same cache block.
+ 	 */
+-	retval = netfs_write_begin(filp, mapping, pos, len, flags, &page, fsdata,
++	retval = netfs_write_begin(filp, mapping, pos, len, flags, &folio, fsdata,
+ 				   &v9fs_req_ops, NULL);
+ 	if (retval < 0)
+ 		return retval;
+ 
+-	*pagep = find_subpage(page, pos / PAGE_SIZE);
++	*subpagep = &folio->page;
+ 	return retval;
+ }
+ 
+ static int v9fs_write_end(struct file *filp, struct address_space *mapping,
+ 			  loff_t pos, unsigned int len, unsigned int copied,
+-			  struct page *page, void *fsdata)
++			  struct page *subpage, void *fsdata)
+ {
+ 	loff_t last_pos = pos + copied;
+-	struct inode *inode = page->mapping->host;
++	struct folio *folio = page_folio(subpage);
++	struct inode *inode = mapping->host;
+ 
+ 	p9_debug(P9_DEBUG_VFS, "filp %p, mapping %p\n", filp, mapping);
+ 
+-	if (!PageUptodate(page)) {
++	if (!folio_test_uptodate(folio)) {
+ 		if (unlikely(copied < len)) {
+ 			copied = 0;
+ 			goto out;
+ 		}
+ 
+-		SetPageUptodate(page);
++		folio_mark_uptodate(folio);
+ 	}
+ 
+ 	/*
+@@ -314,10 +323,10 @@ static int v9fs_write_end(struct file *filp, struct address_space *mapping,
+ 		inode_add_bytes(inode, last_pos - inode->i_size);
+ 		i_size_write(inode, last_pos);
+ 	}
+-	set_page_dirty(page);
++	folio_mark_dirty(folio);
+ out:
+-	unlock_page(page);
+-	put_page(page);
++	folio_unlock(folio);
++	folio_put(folio);
+ 
+ 	return copied;
+ }
+diff --git a/fs/9p/vfs_file.c b/fs/9p/vfs_file.c
+index 4244d48398ef..612e297f3763 100644
+--- a/fs/9p/vfs_file.c
++++ b/fs/9p/vfs_file.c
+@@ -528,13 +528,13 @@ static vm_fault_t
+ v9fs_vm_page_mkwrite(struct vm_fault *vmf)
+ {
+ 	struct v9fs_inode *v9inode;
+-	struct page *page = vmf->page;
++	struct folio *folio = page_folio(vmf->page);
+ 	struct file *filp = vmf->vma->vm_file;
+ 	struct inode *inode = file_inode(filp);
+ 
+ 
+-	p9_debug(P9_DEBUG_VFS, "page %p fid %lx\n",
+-		 page, (unsigned long)filp->private_data);
++	p9_debug(P9_DEBUG_VFS, "folio %p fid %lx\n",
++		 folio, (unsigned long)filp->private_data);
+ 
+ 	v9inode = V9FS_I(inode);
+ 
+@@ -542,24 +542,24 @@ v9fs_vm_page_mkwrite(struct vm_fault *vmf)
+ 	 * be modified.  We then assume the entire page will need writing back.
+ 	 */
+ #ifdef CONFIG_9P_FSCACHE
+-	if (PageFsCache(page) &&
+-	    wait_on_page_fscache_killable(page) < 0)
+-		return VM_FAULT_RETRY;
++	if (folio_test_fscache(folio) &&
++	    folio_wait_fscache_killable(folio) < 0)
++		return VM_FAULT_NOPAGE;
+ #endif
+ 
+ 	/* Update file times before taking page lock */
+ 	file_update_time(filp);
+ 
+ 	BUG_ON(!v9inode->writeback_fid);
+-	if (lock_page_killable(page) < 0)
++	if (folio_lock_killable(folio) < 0)
+ 		return VM_FAULT_RETRY;
+-	if (page->mapping != inode->i_mapping)
++	if (folio_mapping(folio) != inode->i_mapping)
+ 		goto out_unlock;
+-	wait_for_stable_page(page);
++	folio_wait_stable(folio);
+ 
+ 	return VM_FAULT_LOCKED;
+ out_unlock:
+-	unlock_page(page);
++	folio_unlock(folio);
+ 	return VM_FAULT_NOPAGE;
+ }
+ 
+diff --git a/fs/afs/file.c b/fs/afs/file.c
+index eb11d047c0ae..cb6ad61eec3b 100644
+--- a/fs/afs/file.c
++++ b/fs/afs/file.c
+@@ -324,21 +324,24 @@ static int afs_symlink_readpage(struct file *file, struct page *page)
+ {
+ 	struct afs_vnode *vnode = AFS_FS_I(page->mapping->host);
+ 	struct afs_read *fsreq;
++	struct folio *folio = page_folio(page);
+ 	int ret;
+ 
+ 	fsreq = afs_alloc_read(GFP_NOFS);
+ 	if (!fsreq)
+ 		return -ENOMEM;
+ 
+-	fsreq->pos	= page->index * PAGE_SIZE;
+-	fsreq->len	= PAGE_SIZE;
++	fsreq->pos	= folio_pos(folio);
++	fsreq->len	= folio_size(folio);
+ 	fsreq->vnode	= vnode;
+ 	fsreq->iter	= &fsreq->def_iter;
+ 	iov_iter_xarray(&fsreq->def_iter, READ, &page->mapping->i_pages,
+ 			fsreq->pos, fsreq->len);
+ 
+ 	ret = afs_fetch_data(fsreq->vnode, fsreq);
+-	page_endio(page, false, ret);
++	if (ret == 0)
++		SetPageUptodate(page);
++	unlock_page(page);
+ 	return ret;
+ }
+ 
+@@ -362,7 +365,7 @@ static int afs_begin_cache_operation(struct netfs_read_request *rreq)
+ }
+ 
+ static int afs_check_write_begin(struct file *file, loff_t pos, unsigned len,
+-				 struct page *page, void **_fsdata)
++				 struct folio *folio, void **_fsdata)
+ {
+ 	struct afs_vnode *vnode = AFS_FS_I(file_inode(file));
+ 
+@@ -385,7 +388,9 @@ const struct netfs_read_request_ops afs_req_ops = {
+ 
+ static int afs_readpage(struct file *file, struct page *page)
+ {
+-	return netfs_readpage(file, page, &afs_req_ops, NULL);
++	struct folio *folio = page_folio(page);
++
++	return netfs_readpage(file, folio, &afs_req_ops, NULL);
+ }
+ 
+ static void afs_readahead(struct readahead_control *ractl)
+@@ -397,29 +402,29 @@ static void afs_readahead(struct readahead_control *ractl)
+  * Adjust the dirty region of the page on truncation or full invalidation,
+  * getting rid of the markers altogether if the region is entirely invalidated.
+  */
+-static void afs_invalidate_dirty(struct page *page, unsigned int offset,
++static void afs_invalidate_dirty(struct folio *folio, unsigned int offset,
+ 				 unsigned int length)
+ {
+-	struct afs_vnode *vnode = AFS_FS_I(page->mapping->host);
++	struct afs_vnode *vnode = AFS_FS_I(folio_inode(folio));
+ 	unsigned long priv;
+ 	unsigned int f, t, end = offset + length;
+ 
+-	priv = page_private(page);
++	priv = (unsigned long)folio_get_private(folio);
+ 
+ 	/* we clean up only if the entire page is being invalidated */
+-	if (offset == 0 && length == thp_size(page))
++	if (offset == 0 && length == folio_size(folio))
+ 		goto full_invalidate;
+ 
+ 	 /* If the page was dirtied by page_mkwrite(), the PTE stays writable
+ 	  * and we don't get another notification to tell us to expand it
+ 	  * again.
+ 	  */
+-	if (afs_is_page_dirty_mmapped(priv))
++	if (afs_is_folio_dirty_mmapped(priv))
+ 		return;
+ 
+ 	/* We may need to shorten the dirty region */
+-	f = afs_page_dirty_from(page, priv);
+-	t = afs_page_dirty_to(page, priv);
++	f = afs_folio_dirty_from(folio, priv);
++	t = afs_folio_dirty_to(folio, priv);
+ 
+ 	if (t <= offset || f >= end)
+ 		return; /* Doesn't overlap */
+@@ -437,17 +442,17 @@ static void afs_invalidate_dirty(struct page *page, unsigned int offset,
+ 	if (f == t)
+ 		goto undirty;
+ 
+-	priv = afs_page_dirty(page, f, t);
+-	set_page_private(page, priv);
+-	trace_afs_page_dirty(vnode, tracepoint_string("trunc"), page);
++	priv = afs_folio_dirty(folio, f, t);
++	folio_change_private(folio, (void *)priv);
++	trace_afs_folio_dirty(vnode, tracepoint_string("trunc"), folio);
+ 	return;
+ 
+ undirty:
+-	trace_afs_page_dirty(vnode, tracepoint_string("undirty"), page);
+-	clear_page_dirty_for_io(page);
++	trace_afs_folio_dirty(vnode, tracepoint_string("undirty"), folio);
++	folio_clear_dirty_for_io(folio);
+ full_invalidate:
+-	trace_afs_page_dirty(vnode, tracepoint_string("inval"), page);
+-	detach_page_private(page);
++	trace_afs_folio_dirty(vnode, tracepoint_string("inval"), folio);
++	folio_detach_private(folio);
+ }
+ 
+ /*
+@@ -458,14 +463,16 @@ static void afs_invalidate_dirty(struct page *page, unsigned int offset,
+ static void afs_invalidatepage(struct page *page, unsigned int offset,
+ 			       unsigned int length)
+ {
+-	_enter("{%lu},%u,%u", page->index, offset, length);
++	struct folio *folio = page_folio(page);
++
++	_enter("{%lu},%u,%u", folio_index(folio), offset, length);
+ 
+ 	BUG_ON(!PageLocked(page));
+ 
+ 	if (PagePrivate(page))
+-		afs_invalidate_dirty(page, offset, length);
++		afs_invalidate_dirty(folio, offset, length);
+ 
+-	wait_on_page_fscache(page);
++	folio_wait_fscache(folio);
+ 	_leave("");
+ }
+ 
+@@ -475,30 +482,31 @@ static void afs_invalidatepage(struct page *page, unsigned int offset,
+  */
+ static int afs_releasepage(struct page *page, gfp_t gfp_flags)
+ {
+-	struct afs_vnode *vnode = AFS_FS_I(page->mapping->host);
++	struct folio *folio = page_folio(page);
++	struct afs_vnode *vnode = AFS_FS_I(folio_inode(folio));
+ 
+ 	_enter("{{%llx:%llu}[%lu],%lx},%x",
+-	       vnode->fid.vid, vnode->fid.vnode, page->index, page->flags,
++	       vnode->fid.vid, vnode->fid.vnode, folio_index(folio), folio->flags,
+ 	       gfp_flags);
+ 
+ 	/* deny if page is being written to the cache and the caller hasn't
+ 	 * elected to wait */
+ #ifdef CONFIG_AFS_FSCACHE
+-	if (PageFsCache(page)) {
++	if (folio_test_fscache(folio)) {
+ 		if (!(gfp_flags & __GFP_DIRECT_RECLAIM) || !(gfp_flags & __GFP_FS))
+ 			return false;
+-		wait_on_page_fscache(page);
++		folio_wait_fscache(folio);
+ 	}
+ #endif
+ 
+-	if (PagePrivate(page)) {
+-		trace_afs_page_dirty(vnode, tracepoint_string("rel"), page);
+-		detach_page_private(page);
++	if (folio_test_private(folio)) {
++		trace_afs_folio_dirty(vnode, tracepoint_string("rel"), folio);
++		folio_detach_private(folio);
+ 	}
+ 
+-	/* indicate that the page can be released */
++	/* Indicate that the folio can be released */
+ 	_leave(" = T");
+-	return 1;
++	return true;
+ }
+ 
+ static void afs_add_open_mmap(struct afs_vnode *vnode)
+diff --git a/fs/afs/internal.h b/fs/afs/internal.h
+index 9357c53faa69..aa4c0d6c9780 100644
+--- a/fs/afs/internal.h
++++ b/fs/afs/internal.h
+@@ -876,59 +876,59 @@ struct afs_vnode_cache_aux {
+ } __packed;
+ 
+ /*
+- * We use page->private to hold the amount of the page that we've written to,
++ * We use folio->private to hold the amount of the folio that we've written to,
+  * splitting the field into two parts.  However, we need to represent a range
+- * 0...PAGE_SIZE, so we reduce the resolution if the size of the page
++ * 0...FOLIO_SIZE, so we reduce the resolution if the size of the folio
+  * exceeds what we can encode.
+  */
+ #ifdef CONFIG_64BIT
+-#define __AFS_PAGE_PRIV_MASK	0x7fffffffUL
+-#define __AFS_PAGE_PRIV_SHIFT	32
+-#define __AFS_PAGE_PRIV_MMAPPED	0x80000000UL
++#define __AFS_FOLIO_PRIV_MASK		0x7fffffffUL
++#define __AFS_FOLIO_PRIV_SHIFT		32
++#define __AFS_FOLIO_PRIV_MMAPPED	0x80000000UL
+ #else
+-#define __AFS_PAGE_PRIV_MASK	0x7fffUL
+-#define __AFS_PAGE_PRIV_SHIFT	16
+-#define __AFS_PAGE_PRIV_MMAPPED	0x8000UL
++#define __AFS_FOLIO_PRIV_MASK		0x7fffUL
++#define __AFS_FOLIO_PRIV_SHIFT		16
++#define __AFS_FOLIO_PRIV_MMAPPED	0x8000UL
+ #endif
+ 
+-static inline unsigned int afs_page_dirty_resolution(struct page *page)
++static inline unsigned int afs_folio_dirty_resolution(struct folio *folio)
+ {
+-	int shift = thp_order(page) + PAGE_SHIFT - (__AFS_PAGE_PRIV_SHIFT - 1);
++	int shift = folio_shift(folio) - (__AFS_FOLIO_PRIV_SHIFT - 1);
+ 	return (shift > 0) ? shift : 0;
+ }
+ 
+-static inline size_t afs_page_dirty_from(struct page *page, unsigned long priv)
++static inline size_t afs_folio_dirty_from(struct folio *folio, unsigned long priv)
+ {
+-	unsigned long x = priv & __AFS_PAGE_PRIV_MASK;
++	unsigned long x = priv & __AFS_FOLIO_PRIV_MASK;
+ 
+ 	/* The lower bound is inclusive */
+-	return x << afs_page_dirty_resolution(page);
++	return x << afs_folio_dirty_resolution(folio);
+ }
+ 
+-static inline size_t afs_page_dirty_to(struct page *page, unsigned long priv)
++static inline size_t afs_folio_dirty_to(struct folio *folio, unsigned long priv)
+ {
+-	unsigned long x = (priv >> __AFS_PAGE_PRIV_SHIFT) & __AFS_PAGE_PRIV_MASK;
++	unsigned long x = (priv >> __AFS_FOLIO_PRIV_SHIFT) & __AFS_FOLIO_PRIV_MASK;
+ 
+ 	/* The upper bound is immediately beyond the region */
+-	return (x + 1) << afs_page_dirty_resolution(page);
++	return (x + 1) << afs_folio_dirty_resolution(folio);
+ }
+ 
+-static inline unsigned long afs_page_dirty(struct page *page, size_t from, size_t to)
++static inline unsigned long afs_folio_dirty(struct folio *folio, size_t from, size_t to)
+ {
+-	unsigned int res = afs_page_dirty_resolution(page);
++	unsigned int res = afs_folio_dirty_resolution(folio);
+ 	from >>= res;
+ 	to = (to - 1) >> res;
+-	return (to << __AFS_PAGE_PRIV_SHIFT) | from;
++	return (to << __AFS_FOLIO_PRIV_SHIFT) | from;
+ }
+ 
+-static inline unsigned long afs_page_dirty_mmapped(unsigned long priv)
++static inline unsigned long afs_folio_dirty_mmapped(unsigned long priv)
+ {
+-	return priv | __AFS_PAGE_PRIV_MMAPPED;
++	return priv | __AFS_FOLIO_PRIV_MMAPPED;
+ }
+ 
+-static inline bool afs_is_page_dirty_mmapped(unsigned long priv)
++static inline bool afs_is_folio_dirty_mmapped(unsigned long priv)
+ {
+-	return priv & __AFS_PAGE_PRIV_MMAPPED;
++	return priv & __AFS_FOLIO_PRIV_MMAPPED;
+ }
+ 
+ #include <trace/events/afs.h>
+diff --git a/fs/afs/write.c b/fs/afs/write.c
+index 8b1d9c2f6bec..ca4909baf5e6 100644
+--- a/fs/afs/write.c
++++ b/fs/afs/write.c
+@@ -32,7 +32,7 @@ int afs_write_begin(struct file *file, struct address_space *mapping,
+ 		    struct page **_page, void **fsdata)
+ {
+ 	struct afs_vnode *vnode = AFS_FS_I(file_inode(file));
+-	struct page *page;
++	struct folio *folio;
+ 	unsigned long priv;
+ 	unsigned f, from;
+ 	unsigned t, to;
+@@ -46,12 +46,12 @@ int afs_write_begin(struct file *file, struct address_space *mapping,
+ 	 * file.  We need to do this before we get a lock on the page in case
+ 	 * there's more than one writer competing for the same cache block.
+ 	 */
+-	ret = netfs_write_begin(file, mapping, pos, len, flags, &page, fsdata,
++	ret = netfs_write_begin(file, mapping, pos, len, flags, &folio, fsdata,
+ 				&afs_req_ops, NULL);
+ 	if (ret < 0)
+ 		return ret;
+ 
+-	index = page->index;
++	index = folio_index(folio);
+ 	from = pos - index * PAGE_SIZE;
+ 	to = from + len;
+ 
+@@ -59,14 +59,14 @@ int afs_write_begin(struct file *file, struct address_space *mapping,
+ 	/* See if this page is already partially written in a way that we can
+ 	 * merge the new write with.
+ 	 */
+-	if (PagePrivate(page)) {
+-		priv = page_private(page);
+-		f = afs_page_dirty_from(page, priv);
+-		t = afs_page_dirty_to(page, priv);
++	if (folio_test_private(folio)) {
++		priv = (unsigned long)folio_get_private(folio);
++		f = afs_folio_dirty_from(folio, priv);
++		t = afs_folio_dirty_to(folio, priv);
+ 		ASSERTCMP(f, <=, t);
+ 
+-		if (PageWriteback(page)) {
+-			trace_afs_page_dirty(vnode, tracepoint_string("alrdy"), page);
++		if (folio_test_writeback(folio)) {
++			trace_afs_folio_dirty(vnode, tracepoint_string("alrdy"), folio);
+ 			goto flush_conflicting_write;
+ 		}
+ 		/* If the file is being filled locally, allow inter-write
+@@ -78,7 +78,7 @@ int afs_write_begin(struct file *file, struct address_space *mapping,
+ 			goto flush_conflicting_write;
+ 	}
+ 
+-	*_page = page;
++	*_page = &folio->page;
+ 	_leave(" = 0");
+ 	return 0;
+ 
+@@ -87,17 +87,17 @@ int afs_write_begin(struct file *file, struct address_space *mapping,
+ 	 */
+ flush_conflicting_write:
+ 	_debug("flush conflict");
+-	ret = write_one_page(page);
++	ret = folio_write_one(folio);
+ 	if (ret < 0)
+ 		goto error;
+ 
+-	ret = lock_page_killable(page);
++	ret = folio_lock_killable(folio);
+ 	if (ret < 0)
+ 		goto error;
+ 	goto try_again;
+ 
+ error:
+-	put_page(page);
++	folio_put(folio);
+ 	_leave(" = %d", ret);
+ 	return ret;
+ }
+@@ -107,24 +107,25 @@ int afs_write_begin(struct file *file, struct address_space *mapping,
+  */
+ int afs_write_end(struct file *file, struct address_space *mapping,
+ 		  loff_t pos, unsigned len, unsigned copied,
+-		  struct page *page, void *fsdata)
++		  struct page *subpage, void *fsdata)
+ {
++	struct folio *folio = page_folio(subpage);
+ 	struct afs_vnode *vnode = AFS_FS_I(file_inode(file));
+ 	unsigned long priv;
+-	unsigned int f, from = pos & (thp_size(page) - 1);
++	unsigned int f, from = offset_in_folio(folio, pos);
+ 	unsigned int t, to = from + copied;
+ 	loff_t i_size, maybe_i_size;
+ 
+ 	_enter("{%llx:%llu},{%lx}",
+-	       vnode->fid.vid, vnode->fid.vnode, page->index);
++	       vnode->fid.vid, vnode->fid.vnode, folio_index(folio));
+ 
+-	if (!PageUptodate(page)) {
++	if (!folio_test_uptodate(folio)) {
+ 		if (copied < len) {
+ 			copied = 0;
+ 			goto out;
+ 		}
+ 
+-		SetPageUptodate(page);
++		folio_mark_uptodate(folio);
+ 	}
+ 
+ 	if (copied == 0)
+@@ -141,29 +142,29 @@ int afs_write_end(struct file *file, struct address_space *mapping,
+ 		write_sequnlock(&vnode->cb_lock);
+ 	}
+ 
+-	if (PagePrivate(page)) {
+-		priv = page_private(page);
+-		f = afs_page_dirty_from(page, priv);
+-		t = afs_page_dirty_to(page, priv);
++	if (folio_test_private(folio)) {
++		priv = (unsigned long)folio_get_private(folio);
++		f = afs_folio_dirty_from(folio, priv);
++		t = afs_folio_dirty_to(folio, priv);
+ 		if (from < f)
+ 			f = from;
+ 		if (to > t)
+ 			t = to;
+-		priv = afs_page_dirty(page, f, t);
+-		set_page_private(page, priv);
+-		trace_afs_page_dirty(vnode, tracepoint_string("dirty+"), page);
++		priv = afs_folio_dirty(folio, f, t);
++		folio_change_private(folio, (void *)priv);
++		trace_afs_folio_dirty(vnode, tracepoint_string("dirty+"), folio);
+ 	} else {
+-		priv = afs_page_dirty(page, from, to);
+-		attach_page_private(page, (void *)priv);
+-		trace_afs_page_dirty(vnode, tracepoint_string("dirty"), page);
++		priv = afs_folio_dirty(folio, from, to);
++		folio_attach_private(folio, (void *)priv);
++		trace_afs_folio_dirty(vnode, tracepoint_string("dirty"), folio);
+ 	}
+ 
+-	if (set_page_dirty(page))
+-		_debug("dirtied %lx", page->index);
++	if (folio_mark_dirty(folio))
++		_debug("dirtied %lx", folio_index(folio));
+ 
+ out:
+-	unlock_page(page);
+-	put_page(page);
++	folio_unlock(folio);
++	folio_put(folio);
+ 	return copied;
+ }
+ 
+@@ -174,40 +175,32 @@ static void afs_kill_pages(struct address_space *mapping,
+ 			   loff_t start, loff_t len)
+ {
+ 	struct afs_vnode *vnode = AFS_FS_I(mapping->host);
+-	struct pagevec pv;
+-	unsigned int loop, psize;
++	struct folio *folio;
++	pgoff_t index = start / PAGE_SIZE;
++	pgoff_t last = (start + len - 1) / PAGE_SIZE, next;
+ 
+ 	_enter("{%llx:%llu},%llx @%llx",
+ 	       vnode->fid.vid, vnode->fid.vnode, len, start);
+ 
+-	pagevec_init(&pv);
+-
+ 	do {
+-		_debug("kill %llx @%llx", len, start);
+-
+-		pv.nr = find_get_pages_contig(mapping, start / PAGE_SIZE,
+-					      PAGEVEC_SIZE, pv.pages);
+-		if (pv.nr == 0)
+-			break;
++		_debug("kill %lx (to %lx)", index, last);
+ 
+-		for (loop = 0; loop < pv.nr; loop++) {
+-			struct page *page = pv.pages[loop];
++		folio = filemap_get_folio(mapping, index);
++		if (!folio) {
++			next = index + 1;
++			continue;
++		}
+ 
+-			if (page->index * PAGE_SIZE >= start + len)
+-				break;
++		next = folio_next_index(folio);
+ 
+-			psize = thp_size(page);
+-			start += psize;
+-			len -= psize;
+-			ClearPageUptodate(page);
+-			end_page_writeback(page);
+-			lock_page(page);
+-			generic_error_remove_page(mapping, page);
+-			unlock_page(page);
+-		}
++		folio_clear_uptodate(folio);
++		folio_end_writeback(folio);
++		folio_lock(folio);
++		generic_error_remove_page(mapping, &folio->page);
++		folio_unlock(folio);
++		folio_put(folio);
+ 
+-		__pagevec_release(&pv);
+-	} while (len > 0);
++	} while (index = next, index <= last);
+ 
+ 	_leave("");
+ }
+@@ -220,37 +213,27 @@ static void afs_redirty_pages(struct writeback_control *wbc,
+ 			      loff_t start, loff_t len)
+ {
+ 	struct afs_vnode *vnode = AFS_FS_I(mapping->host);
+-	struct pagevec pv;
+-	unsigned int loop, psize;
++	struct folio *folio;
++	pgoff_t index = start / PAGE_SIZE;
++	pgoff_t last = (start + len - 1) / PAGE_SIZE, next;
+ 
+ 	_enter("{%llx:%llu},%llx @%llx",
+ 	       vnode->fid.vid, vnode->fid.vnode, len, start);
+ 
+-	pagevec_init(&pv);
+-
+ 	do {
+ 		_debug("redirty %llx @%llx", len, start);
+ 
+-		pv.nr = find_get_pages_contig(mapping, start / PAGE_SIZE,
+-					      PAGEVEC_SIZE, pv.pages);
+-		if (pv.nr == 0)
+-			break;
+-
+-		for (loop = 0; loop < pv.nr; loop++) {
+-			struct page *page = pv.pages[loop];
+-
+-			if (page->index * PAGE_SIZE >= start + len)
+-				break;
+-
+-			psize = thp_size(page);
+-			start += psize;
+-			len -= psize;
+-			redirty_page_for_writepage(wbc, page);
+-			end_page_writeback(page);
++		folio = filemap_get_folio(mapping, index);
++		if (!folio) {
++			next = index + 1;
++			continue;
+ 		}
+ 
+-		__pagevec_release(&pv);
+-	} while (len > 0);
++		next = index + folio_nr_pages(folio);
++		folio_redirty_for_writepage(wbc, folio);
++		folio_end_writeback(folio);
++		folio_put(folio);
++	} while (index = next, index <= last);
+ 
+ 	_leave("");
+ }
+@@ -261,7 +244,7 @@ static void afs_redirty_pages(struct writeback_control *wbc,
+ static void afs_pages_written_back(struct afs_vnode *vnode, loff_t start, unsigned int len)
+ {
+ 	struct address_space *mapping = vnode->vfs_inode.i_mapping;
+-	struct page *page;
++	struct folio *folio;
+ 	pgoff_t end;
+ 
+ 	XA_STATE(xas, &mapping->i_pages, start / PAGE_SIZE);
+@@ -272,15 +255,16 @@ static void afs_pages_written_back(struct afs_vnode *vnode, loff_t start, unsign
+ 	rcu_read_lock();
+ 
+ 	end = (start + len - 1) / PAGE_SIZE;
+-	xas_for_each(&xas, page, end) {
+-		if (!PageWriteback(page)) {
+-			kdebug("bad %x @%llx page %lx %lx", len, start, page->index, end);
+-			ASSERT(PageWriteback(page));
++	xas_for_each(&xas, folio, end) {
++		if (!folio_test_writeback(folio)) {
++			kdebug("bad %x @%llx page %lx %lx",
++			       len, start, folio_index(folio), end);
++			ASSERT(folio_test_writeback(folio));
+ 		}
+ 
+-		trace_afs_page_dirty(vnode, tracepoint_string("clear"), page);
+-		detach_page_private(page);
+-		page_endio(page, true, 0);
++		trace_afs_folio_dirty(vnode, tracepoint_string("clear"), folio);
++		folio_detach_private(folio);
++		folio_end_writeback(folio);
+ 	}
+ 
+ 	rcu_read_unlock();
+@@ -437,7 +421,7 @@ static void afs_extend_writeback(struct address_space *mapping,
+ 				 unsigned int *_len)
+ {
+ 	struct pagevec pvec;
+-	struct page *page;
++	struct folio *folio;
+ 	unsigned long priv;
+ 	unsigned int psize, filler = 0;
+ 	unsigned int f, t;
+@@ -456,43 +440,43 @@ static void afs_extend_writeback(struct address_space *mapping,
+ 		 */
+ 		rcu_read_lock();
+ 
+-		xas_for_each(&xas, page, ULONG_MAX) {
++		xas_for_each(&xas, folio, ULONG_MAX) {
+ 			stop = true;
+-			if (xas_retry(&xas, page))
++			if (xas_retry(&xas, folio))
+ 				continue;
+-			if (xa_is_value(page))
++			if (xa_is_value(folio))
+ 				break;
+-			if (page->index != index)
++			if (folio_index(folio) != index)
+ 				break;
+ 
+-			if (!page_cache_get_speculative(page)) {
++			if (!folio_try_get_rcu(folio)) {
+ 				xas_reset(&xas);
+ 				continue;
+ 			}
+ 
+ 			/* Has the page moved or been split? */
+-			if (unlikely(page != xas_reload(&xas))) {
+-				put_page(page);
++			if (unlikely(folio != xas_reload(&xas))) {
++				folio_put(folio);
+ 				break;
+ 			}
+ 
+-			if (!trylock_page(page)) {
+-				put_page(page);
++			if (!folio_trylock(folio)) {
++				folio_put(folio);
+ 				break;
+ 			}
+-			if (!PageDirty(page) || PageWriteback(page)) {
+-				unlock_page(page);
+-				put_page(page);
++			if (!folio_test_dirty(folio) || folio_test_writeback(folio)) {
++				folio_unlock(folio);
++				folio_put(folio);
+ 				break;
+ 			}
+ 
+-			psize = thp_size(page);
+-			priv = page_private(page);
+-			f = afs_page_dirty_from(page, priv);
+-			t = afs_page_dirty_to(page, priv);
++			psize = folio_size(folio);
++			priv = (unsigned long)folio_get_private(folio);
++			f = afs_folio_dirty_from(folio, priv);
++			t = afs_folio_dirty_to(folio, priv);
+ 			if (f != 0 && !new_content) {
+-				unlock_page(page);
+-				put_page(page);
++				folio_unlock(folio);
++				folio_put(folio);
+ 				break;
+ 			}
+ 
+@@ -503,8 +487,8 @@ static void afs_extend_writeback(struct address_space *mapping,
+ 			else if (t == psize || new_content)
+ 				stop = false;
+ 
+-			index += thp_nr_pages(page);
+-			if (!pagevec_add(&pvec, page))
++			index += folio_nr_pages(folio);
++			if (!pagevec_add(&pvec, &folio->page))
+ 				break;
+ 			if (stop)
+ 				break;
+@@ -521,16 +505,16 @@ static void afs_extend_writeback(struct address_space *mapping,
+ 			break;
+ 
+ 		for (i = 0; i < pagevec_count(&pvec); i++) {
+-			page = pvec.pages[i];
+-			trace_afs_page_dirty(vnode, tracepoint_string("store+"), page);
++			folio = page_folio(pvec.pages[i]);
++			trace_afs_folio_dirty(vnode, tracepoint_string("store+"), folio);
+ 
+-			if (!clear_page_dirty_for_io(page))
++			if (!folio_clear_dirty_for_io(folio))
+ 				BUG();
+-			if (test_set_page_writeback(page))
++			if (folio_start_writeback(folio))
+ 				BUG();
+ 
+-			*_count -= thp_nr_pages(page);
+-			unlock_page(page);
++			*_count -= folio_nr_pages(folio);
++			folio_unlock(folio);
+ 		}
+ 
+ 		pagevec_release(&pvec);
+@@ -544,10 +528,10 @@ static void afs_extend_writeback(struct address_space *mapping,
+  * Synchronously write back the locked page and any subsequent non-locked dirty
+  * pages.
+  */
+-static ssize_t afs_write_back_from_locked_page(struct address_space *mapping,
+-					       struct writeback_control *wbc,
+-					       struct page *page,
+-					       loff_t start, loff_t end)
++static ssize_t afs_write_back_from_locked_folio(struct address_space *mapping,
++						struct writeback_control *wbc,
++						struct folio *folio,
++						loff_t start, loff_t end)
+ {
+ 	struct afs_vnode *vnode = AFS_FS_I(mapping->host);
+ 	struct iov_iter iter;
+@@ -558,22 +542,22 @@ static ssize_t afs_write_back_from_locked_page(struct address_space *mapping,
+ 	long count = wbc->nr_to_write;
+ 	int ret;
+ 
+-	_enter(",%lx,%llx-%llx", page->index, start, end);
++	_enter(",%lx,%llx-%llx", folio_index(folio), start, end);
+ 
+-	if (test_set_page_writeback(page))
++	if (folio_start_writeback(folio))
+ 		BUG();
+ 
+-	count -= thp_nr_pages(page);
++	count -= folio_nr_pages(folio);
+ 
+ 	/* Find all consecutive lockable dirty pages that have contiguous
+ 	 * written regions, stopping when we find a page that is not
+ 	 * immediately lockable, is not dirty or is missing, or we reach the
+ 	 * end of the range.
+ 	 */
+-	priv = page_private(page);
+-	offset = afs_page_dirty_from(page, priv);
+-	to = afs_page_dirty_to(page, priv);
+-	trace_afs_page_dirty(vnode, tracepoint_string("store"), page);
++	priv = (unsigned long)folio_get_private(folio);
++	offset = afs_folio_dirty_from(folio, priv);
++	to = afs_folio_dirty_to(folio, priv);
++	trace_afs_folio_dirty(vnode, tracepoint_string("store"), folio);
+ 
+ 	len = to - offset;
+ 	start += offset;
+@@ -586,7 +570,7 @@ static ssize_t afs_write_back_from_locked_page(struct address_space *mapping,
+ 		max_len = min_t(unsigned long long, max_len, i_size - start);
+ 
+ 		if (len < max_len &&
+-		    (to == thp_size(page) || new_content))
++		    (to == folio_size(folio) || new_content))
+ 			afs_extend_writeback(mapping, vnode, &count,
+ 					     start, max_len, new_content, &len);
+ 		len = min_t(loff_t, len, max_len);
+@@ -596,7 +580,7 @@ static ssize_t afs_write_back_from_locked_page(struct address_space *mapping,
+ 	 * set; the first page is still locked at this point, but all the rest
+ 	 * have been unlocked.
+ 	 */
+-	unlock_page(page);
++	folio_unlock(folio);
+ 
+ 	if (start < i_size) {
+ 		_debug("write back %x @%llx [%llx]", len, start, i_size);
+@@ -657,16 +641,17 @@ static ssize_t afs_write_back_from_locked_page(struct address_space *mapping,
+  * write a page back to the server
+  * - the caller locked the page for us
+  */
+-int afs_writepage(struct page *page, struct writeback_control *wbc)
++int afs_writepage(struct page *subpage, struct writeback_control *wbc)
+ {
++	struct folio *folio = page_folio(subpage);
+ 	ssize_t ret;
+ 	loff_t start;
+ 
+-	_enter("{%lx},", page->index);
++	_enter("{%lx},", folio_index(folio));
+ 
+-	start = page->index * PAGE_SIZE;
+-	ret = afs_write_back_from_locked_page(page->mapping, wbc, page,
+-					      start, LLONG_MAX - start);
++	start = folio_index(folio) * PAGE_SIZE;
++	ret = afs_write_back_from_locked_folio(folio_mapping(folio), wbc,
++					       folio, start, LLONG_MAX - start);
+ 	if (ret < 0) {
+ 		_leave(" = %zd", ret);
+ 		return ret;
+@@ -683,7 +668,8 @@ static int afs_writepages_region(struct address_space *mapping,
+ 				 struct writeback_control *wbc,
+ 				 loff_t start, loff_t end, loff_t *_next)
+ {
+-	struct page *page;
++	struct folio *folio;
++	struct page *head_page;
+ 	ssize_t ret;
+ 	int n;
+ 
+@@ -693,13 +679,14 @@ static int afs_writepages_region(struct address_space *mapping,
+ 		pgoff_t index = start / PAGE_SIZE;
+ 
+ 		n = find_get_pages_range_tag(mapping, &index, end / PAGE_SIZE,
+-					     PAGECACHE_TAG_DIRTY, 1, &page);
++					     PAGECACHE_TAG_DIRTY, 1, &head_page);
+ 		if (!n)
+ 			break;
+ 
+-		start = (loff_t)page->index * PAGE_SIZE; /* May regress with THPs */
++		folio = page_folio(head_page);
++		start = folio_pos(folio); /* May regress with THPs */
+ 
+-		_debug("wback %lx", page->index);
++		_debug("wback %lx", folio_index(folio));
+ 
+ 		/* At this point we hold neither the i_pages lock nor the
+ 		 * page lock: the page may be truncated or invalidated
+@@ -707,37 +694,38 @@ static int afs_writepages_region(struct address_space *mapping,
+ 		 * back from swapper_space to tmpfs file mapping
+ 		 */
+ 		if (wbc->sync_mode != WB_SYNC_NONE) {
+-			ret = lock_page_killable(page);
++			ret = folio_lock_killable(folio);
+ 			if (ret < 0) {
+-				put_page(page);
++				folio_put(folio);
+ 				return ret;
+ 			}
+ 		} else {
+-			if (!trylock_page(page)) {
+-				put_page(page);
++			if (!folio_trylock(folio)) {
++				folio_put(folio);
+ 				return 0;
+ 			}
+ 		}
+ 
+-		if (page->mapping != mapping || !PageDirty(page)) {
+-			start += thp_size(page);
+-			unlock_page(page);
+-			put_page(page);
++		if (folio_mapping(folio) != mapping ||
++		    !folio_test_dirty(folio)) {
++			start += folio_size(folio);
++			folio_unlock(folio);
++			folio_put(folio);
+ 			continue;
+ 		}
+ 
+-		if (PageWriteback(page)) {
+-			unlock_page(page);
++		if (folio_test_writeback(folio)) {
++			folio_unlock(folio);
+ 			if (wbc->sync_mode != WB_SYNC_NONE)
+-				wait_on_page_writeback(page);
+-			put_page(page);
++				folio_wait_writeback(folio);
++			folio_put(folio);
+ 			continue;
+ 		}
+ 
+-		if (!clear_page_dirty_for_io(page))
++		if (!folio_clear_dirty_for_io(folio))
+ 			BUG();
+-		ret = afs_write_back_from_locked_page(mapping, wbc, page, start, end);
+-		put_page(page);
++		ret = afs_write_back_from_locked_folio(mapping, wbc, folio, start, end);
++		folio_put(folio);
+ 		if (ret < 0) {
+ 			_leave(" = %zd", ret);
+ 			return ret;
+@@ -862,7 +850,6 @@ int afs_fsync(struct file *file, loff_t start, loff_t end, int datasync)
+ vm_fault_t afs_page_mkwrite(struct vm_fault *vmf)
+ {
+ 	struct folio *folio = page_folio(vmf->page);
+-	struct page *page = &folio->page;
+ 	struct file *file = vmf->vma->vm_file;
+ 	struct inode *inode = file_inode(file);
+ 	struct afs_vnode *vnode = AFS_FS_I(inode);
+@@ -870,7 +857,7 @@ vm_fault_t afs_page_mkwrite(struct vm_fault *vmf)
+ 	unsigned long priv;
+ 	vm_fault_t ret = VM_FAULT_RETRY;
+ 
+-	_enter("{{%llx:%llu}},{%lx}", vnode->fid.vid, vnode->fid.vnode, page->index);
++	_enter("{{%llx:%llu}},{%lx}", vnode->fid.vid, vnode->fid.vnode, folio_index(folio));
+ 
+ 	afs_validate(vnode, af->key);
+ 
+@@ -880,18 +867,18 @@ vm_fault_t afs_page_mkwrite(struct vm_fault *vmf)
+ 	 * be modified.  We then assume the entire page will need writing back.
+ 	 */
+ #ifdef CONFIG_AFS_FSCACHE
+-	if (PageFsCache(page) &&
+-	    wait_on_page_fscache_killable(page) < 0)
++	if (folio_test_fscache(folio) &&
++	    folio_wait_fscache_killable(folio) < 0)
+ 		goto out;
+ #endif
+ 
+ 	if (folio_wait_writeback_killable(folio))
+ 		goto out;
+ 
+-	if (lock_page_killable(page) < 0)
++	if (folio_lock_killable(folio) < 0)
+ 		goto out;
+ 
+-	/* We mustn't change page->private until writeback is complete as that
++	/* We mustn't change folio->private until writeback is complete as that
+ 	 * details the portion of the page we need to write back and we might
+ 	 * need to redirty the page if there's a problem.
+ 	 */
+@@ -900,14 +887,14 @@ vm_fault_t afs_page_mkwrite(struct vm_fault *vmf)
+ 		goto out;
+ 	}
+ 
+-	priv = afs_page_dirty(page, 0, thp_size(page));
+-	priv = afs_page_dirty_mmapped(priv);
+-	if (PagePrivate(page)) {
+-		set_page_private(page, priv);
+-		trace_afs_page_dirty(vnode, tracepoint_string("mkwrite+"), page);
++	priv = afs_folio_dirty(folio, 0, folio_size(folio));
++	priv = afs_folio_dirty_mmapped(priv);
++	if (folio_test_private(folio)) {
++		folio_change_private(folio, (void *)priv);
++		trace_afs_folio_dirty(vnode, tracepoint_string("mkwrite+"), folio);
+ 	} else {
+-		attach_page_private(page, (void *)priv);
+-		trace_afs_page_dirty(vnode, tracepoint_string("mkwrite"), page);
++		folio_attach_private(folio, (void *)priv);
++		trace_afs_folio_dirty(vnode, tracepoint_string("mkwrite"), folio);
+ 	}
+ 	file_update_time(file);
+ 
+@@ -948,38 +935,38 @@ void afs_prune_wb_keys(struct afs_vnode *vnode)
+ /*
+  * Clean up a page during invalidation.
+  */
+-int afs_launder_page(struct page *page)
++int afs_launder_page(struct page *subpage)
+ {
+-	struct address_space *mapping = page->mapping;
+-	struct afs_vnode *vnode = AFS_FS_I(mapping->host);
++	struct folio *folio = page_folio(subpage);
++	struct afs_vnode *vnode = AFS_FS_I(folio_inode(folio));
+ 	struct iov_iter iter;
+ 	struct bio_vec bv[1];
+ 	unsigned long priv;
+ 	unsigned int f, t;
+ 	int ret = 0;
+ 
+-	_enter("{%lx}", page->index);
++	_enter("{%lx}", folio_index(folio));
+ 
+-	priv = page_private(page);
+-	if (clear_page_dirty_for_io(page)) {
++	priv = (unsigned long)folio_get_private(folio);
++	if (folio_clear_dirty_for_io(folio)) {
+ 		f = 0;
+-		t = thp_size(page);
+-		if (PagePrivate(page)) {
+-			f = afs_page_dirty_from(page, priv);
+-			t = afs_page_dirty_to(page, priv);
++		t = folio_size(folio);
++		if (folio_test_private(folio)) {
++			f = afs_folio_dirty_from(folio, priv);
++			t = afs_folio_dirty_to(folio, priv);
+ 		}
+ 
+-		bv[0].bv_page = page;
++		bv[0].bv_page = &folio->page;
+ 		bv[0].bv_offset = f;
+ 		bv[0].bv_len = t - f;
+ 		iov_iter_bvec(&iter, WRITE, bv, 1, bv[0].bv_len);
+ 
+-		trace_afs_page_dirty(vnode, tracepoint_string("launder"), page);
+-		ret = afs_store_data(vnode, &iter, page_offset(page) + f, true);
++		trace_afs_folio_dirty(vnode, tracepoint_string("launder"), folio);
++		ret = afs_store_data(vnode, &iter, folio_pos(folio) + f, true);
+ 	}
+ 
+-	trace_afs_page_dirty(vnode, tracepoint_string("laundered"), page);
+-	detach_page_private(page);
+-	wait_on_page_fscache(page);
++	trace_afs_folio_dirty(vnode, tracepoint_string("laundered"), folio);
++	folio_detach_private(folio);
++	folio_wait_fscache(folio);
+ 	return ret;
+ }
+diff --git a/fs/ceph/addr.c b/fs/ceph/addr.c
+index 99b80b5c7a93..04bbe853bcb1 100644
+--- a/fs/ceph/addr.c
++++ b/fs/ceph/addr.c
+@@ -63,7 +63,7 @@
+ 	 (CONGESTION_ON_THRESH(congestion_kb) >> 2))
+ 
+ static int ceph_netfs_check_write_begin(struct file *file, loff_t pos, unsigned int len,
+-					struct page *page, void **_fsdata);
++					struct folio *folio, void **_fsdata);
+ 
+ static inline struct ceph_snap_context *page_snap_context(struct page *page)
+ {
+@@ -317,13 +317,14 @@ static const struct netfs_read_request_ops ceph_netfs_read_ops = {
+ };
+ 
+ /* read a single page, without unlocking it. */
+-static int ceph_readpage(struct file *file, struct page *page)
++static int ceph_readpage(struct file *file, struct page *subpage)
+ {
++	struct folio *folio = page_folio(subpage);
+ 	struct inode *inode = file_inode(file);
+ 	struct ceph_inode_info *ci = ceph_inode(inode);
+ 	struct ceph_vino vino = ceph_vino(inode);
+-	u64 off = page_offset(page);
+-	u64 len = thp_size(page);
++	size_t len = folio_size(folio);
++	u64 off = folio_file_pos(folio);
+ 
+ 	if (ci->i_inline_version != CEPH_INLINE_NONE) {
+ 		/*
+@@ -331,19 +332,19 @@ static int ceph_readpage(struct file *file, struct page *page)
+ 		 * into page cache while getting Fcr caps.
+ 		 */
+ 		if (off == 0) {
+-			unlock_page(page);
++			folio_unlock(folio);
+ 			return -EINVAL;
+ 		}
+-		zero_user_segment(page, 0, thp_size(page));
+-		SetPageUptodate(page);
+-		unlock_page(page);
++		zero_user_segment(&folio->page, 0, folio_size(folio));
++		folio_mark_uptodate(folio);
++		folio_unlock(folio);
+ 		return 0;
+ 	}
+ 
+-	dout("readpage ino %llx.%llx file %p off %llu len %llu page %p index %lu\n",
+-	     vino.ino, vino.snap, file, off, len, page, page->index);
++	dout("readpage ino %llx.%llx file %p off %llu len %zu folio %p index %lu\n",
++	     vino.ino, vino.snap, file, off, len, folio, folio_index(folio));
+ 
+-	return netfs_readpage(file, page, &ceph_netfs_read_ops, NULL);
++	return netfs_readpage(file, folio, &ceph_netfs_read_ops, NULL);
+ }
+ 
+ static void ceph_readahead(struct readahead_control *ractl)
+@@ -1187,18 +1188,18 @@ ceph_find_incompatible(struct page *page)
+ }
+ 
+ static int ceph_netfs_check_write_begin(struct file *file, loff_t pos, unsigned int len,
+-					struct page *page, void **_fsdata)
++					struct folio *folio, void **_fsdata)
+ {
+ 	struct inode *inode = file_inode(file);
+ 	struct ceph_inode_info *ci = ceph_inode(inode);
+ 	struct ceph_snap_context *snapc;
+ 
+-	snapc = ceph_find_incompatible(page);
++	snapc = ceph_find_incompatible(folio_page(folio, 0));
+ 	if (snapc) {
+ 		int r;
+ 
+-		unlock_page(page);
+-		put_page(page);
++		folio_unlock(folio);
++		folio_put(folio);
+ 		if (IS_ERR(snapc))
+ 			return PTR_ERR(snapc);
+ 
+@@ -1216,12 +1217,12 @@ static int ceph_netfs_check_write_begin(struct file *file, loff_t pos, unsigned
+  * clean, or already dirty within the same snap context.
+  */
+ static int ceph_write_begin(struct file *file, struct address_space *mapping,
+-			    loff_t pos, unsigned len, unsigned flags,
++			    loff_t pos, unsigned len, unsigned aop_flags,
+ 			    struct page **pagep, void **fsdata)
+ {
+ 	struct inode *inode = file_inode(file);
+ 	struct ceph_inode_info *ci = ceph_inode(inode);
+-	struct page *page = NULL;
++	struct folio *folio = NULL;
+ 	pgoff_t index = pos >> PAGE_SHIFT;
+ 	int r;
+ 
+@@ -1230,39 +1231,43 @@ static int ceph_write_begin(struct file *file, struct address_space *mapping,
+ 	 * for inline_version sent to the MDS.
+ 	 */
+ 	if (ci->i_inline_version != CEPH_INLINE_NONE) {
+-		page = grab_cache_page_write_begin(mapping, index, flags);
+-		if (!page)
++		unsigned int fgp_flags = FGP_LOCK | FGP_WRITE | FGP_CREAT | FGP_STABLE;
++		if (aop_flags & AOP_FLAG_NOFS)
++			fgp_flags |= FGP_NOFS;
++		folio = __filemap_get_folio(mapping, index, fgp_flags,
++					    mapping_gfp_mask(mapping));
++		if (!folio)
+ 			return -ENOMEM;
+ 
+ 		/*
+ 		 * The inline_version on a new inode is set to 1. If that's the
+-		 * case, then the page is brand new and isn't yet Uptodate.
++		 * case, then the folio is brand new and isn't yet Uptodate.
+ 		 */
+ 		r = 0;
+ 		if (index == 0 && ci->i_inline_version != 1) {
+-			if (!PageUptodate(page)) {
++			if (!folio_test_uptodate(folio)) {
+ 				WARN_ONCE(1, "ceph: write_begin called on still-inlined inode (inline_version %llu)!\n",
+ 					  ci->i_inline_version);
+ 				r = -EINVAL;
+ 			}
+ 			goto out;
+ 		}
+-		zero_user_segment(page, 0, thp_size(page));
+-		SetPageUptodate(page);
++		zero_user_segment(&folio->page, 0, folio_size(folio));
++		folio_mark_uptodate(folio);
+ 		goto out;
+ 	}
+ 
+-	r = netfs_write_begin(file, inode->i_mapping, pos, len, 0, &page, NULL,
++	r = netfs_write_begin(file, inode->i_mapping, pos, len, 0, &folio, NULL,
+ 			      &ceph_netfs_read_ops, NULL);
+ out:
+ 	if (r == 0)
+-		wait_on_page_fscache(page);
++		folio_wait_fscache(folio);
+ 	if (r < 0) {
+-		if (page)
+-			put_page(page);
++		if (folio)
++			folio_put(folio);
+ 	} else {
+-		WARN_ON_ONCE(!PageLocked(page));
+-		*pagep = page;
++		WARN_ON_ONCE(!folio_test_locked(folio));
++		*pagep = &folio->page;
+ 	}
+ 	return r;
+ }
+@@ -1273,32 +1278,33 @@ static int ceph_write_begin(struct file *file, struct address_space *mapping,
+  */
+ static int ceph_write_end(struct file *file, struct address_space *mapping,
+ 			  loff_t pos, unsigned len, unsigned copied,
+-			  struct page *page, void *fsdata)
++			  struct page *subpage, void *fsdata)
+ {
++	struct folio *folio = page_folio(subpage);
+ 	struct inode *inode = file_inode(file);
+ 	bool check_cap = false;
+ 
+-	dout("write_end file %p inode %p page %p %d~%d (%d)\n", file,
+-	     inode, page, (int)pos, (int)copied, (int)len);
++	dout("write_end file %p inode %p folio %p %d~%d (%d)\n", file,
++	     inode, folio, (int)pos, (int)copied, (int)len);
+ 
+-	if (!PageUptodate(page)) {
++	if (!folio_test_uptodate(folio)) {
+ 		/* just return that nothing was copied on a short copy */
+ 		if (copied < len) {
+ 			copied = 0;
+ 			goto out;
+ 		}
+-		SetPageUptodate(page);
++		folio_mark_uptodate(folio);
+ 	}
+ 
+ 	/* did file size increase? */
+ 	if (pos+copied > i_size_read(inode))
+ 		check_cap = ceph_inode_set_size(inode, pos+copied);
+ 
+-	set_page_dirty(page);
++	folio_mark_dirty(folio);
+ 
+ out:
+-	unlock_page(page);
+-	put_page(page);
++	folio_unlock(folio);
++	folio_put(folio);
+ 
+ 	if (check_cap)
+ 		ceph_check_caps(ceph_inode(inode), CHECK_CAPS_AUTHONLY, NULL);
+diff --git a/fs/netfs/read_helper.c b/fs/netfs/read_helper.c
+index 994ec22d4040..9320a42dfaf9 100644
+--- a/fs/netfs/read_helper.c
++++ b/fs/netfs/read_helper.c
+@@ -230,7 +230,7 @@ static void netfs_rreq_completed(struct netfs_read_request *rreq, bool was_async
+ 
+ /*
+  * Deal with the completion of writing the data to the cache.  We have to clear
+- * the PG_fscache bits on the pages involved and release the caller's ref.
++ * the PG_fscache bits on the folios involved and release the caller's ref.
+  *
+  * May be called in softirq mode and we inherit a ref from the caller.
+  */
+@@ -238,7 +238,7 @@ static void netfs_rreq_unmark_after_write(struct netfs_read_request *rreq,
+ 					  bool was_async)
+ {
+ 	struct netfs_read_subrequest *subreq;
+-	struct page *page;
++	struct folio *folio;
+ 	pgoff_t unlocked = 0;
+ 	bool have_unlocked = false;
+ 
+@@ -247,14 +247,14 @@ static void netfs_rreq_unmark_after_write(struct netfs_read_request *rreq,
+ 	list_for_each_entry(subreq, &rreq->subrequests, rreq_link) {
+ 		XA_STATE(xas, &rreq->mapping->i_pages, subreq->start / PAGE_SIZE);
+ 
+-		xas_for_each(&xas, page, (subreq->start + subreq->len - 1) / PAGE_SIZE) {
++		xas_for_each(&xas, folio, (subreq->start + subreq->len - 1) / PAGE_SIZE) {
+ 			/* We might have multiple writes from the same huge
+-			 * page, but we mustn't unlock a page more than once.
++			 * folio, but we mustn't unlock a folio more than once.
+ 			 */
+-			if (have_unlocked && page->index <= unlocked)
++			if (have_unlocked && folio_index(folio) <= unlocked)
+ 				continue;
+-			unlocked = page->index;
+-			end_page_fscache(page);
++			unlocked = folio_index(folio);
++			folio_end_fscache(folio);
+ 			have_unlocked = true;
+ 		}
+ 	}
+@@ -367,18 +367,17 @@ static void netfs_rreq_write_to_cache(struct netfs_read_request *rreq,
+ }
+ 
+ /*
+- * Unlock the pages in a read operation.  We need to set PG_fscache on any
+- * pages we're going to write back before we unlock them.
++ * Unlock the folios in a read operation.  We need to set PG_fscache on any
++ * folios we're going to write back before we unlock them.
+  */
+ static void netfs_rreq_unlock(struct netfs_read_request *rreq)
+ {
+ 	struct netfs_read_subrequest *subreq;
+-	struct page *page;
++	struct folio *folio;
+ 	unsigned int iopos, account = 0;
+ 	pgoff_t start_page = rreq->start / PAGE_SIZE;
+ 	pgoff_t last_page = ((rreq->start + rreq->len) / PAGE_SIZE) - 1;
+ 	bool subreq_failed = false;
+-	int i;
+ 
+ 	XA_STATE(xas, &rreq->mapping->i_pages, start_page);
+ 
+@@ -403,9 +402,9 @@ static void netfs_rreq_unlock(struct netfs_read_request *rreq)
+ 	trace_netfs_rreq(rreq, netfs_rreq_trace_unlock);
+ 
+ 	rcu_read_lock();
+-	xas_for_each(&xas, page, last_page) {
+-		unsigned int pgpos = (page->index - start_page) * PAGE_SIZE;
+-		unsigned int pgend = pgpos + thp_size(page);
++	xas_for_each(&xas, folio, last_page) {
++		unsigned int pgpos = (folio_index(folio) - start_page) * PAGE_SIZE;
++		unsigned int pgend = pgpos + folio_size(folio);
+ 		bool pg_failed = false;
+ 
+ 		for (;;) {
+@@ -414,7 +413,7 @@ static void netfs_rreq_unlock(struct netfs_read_request *rreq)
+ 				break;
+ 			}
+ 			if (test_bit(NETFS_SREQ_WRITE_TO_CACHE, &subreq->flags))
+-				set_page_fscache(page);
++				folio_start_fscache(folio);
+ 			pg_failed |= subreq_failed;
+ 			if (pgend < iopos + subreq->len)
+ 				break;
+@@ -433,17 +432,16 @@ static void netfs_rreq_unlock(struct netfs_read_request *rreq)
+ 		}
+ 
+ 		if (!pg_failed) {
+-			for (i = 0; i < thp_nr_pages(page); i++)
+-				flush_dcache_page(page);
+-			SetPageUptodate(page);
++			flush_dcache_folio(folio);
++			folio_mark_uptodate(folio);
+ 		}
+ 
+-		if (!test_bit(NETFS_RREQ_DONT_UNLOCK_PAGES, &rreq->flags)) {
+-			if (page->index == rreq->no_unlock_page &&
+-			    test_bit(NETFS_RREQ_NO_UNLOCK_PAGE, &rreq->flags))
++		if (!test_bit(NETFS_RREQ_DONT_UNLOCK_FOLIOS, &rreq->flags)) {
++			if (folio_index(folio) == rreq->no_unlock_folio &&
++			    test_bit(NETFS_RREQ_NO_UNLOCK_FOLIO, &rreq->flags))
+ 				_debug("no unlock");
+ 			else
+-				unlock_page(page);
++				folio_unlock(folio);
+ 		}
+ 	}
+ 	rcu_read_unlock();
+@@ -876,7 +874,6 @@ void netfs_readahead(struct readahead_control *ractl,
+ 		     void *netfs_priv)
+ {
+ 	struct netfs_read_request *rreq;
+-	struct page *page;
+ 	unsigned int debug_index = 0;
+ 	int ret;
+ 
+@@ -911,11 +908,11 @@ void netfs_readahead(struct readahead_control *ractl,
+ 
+ 	} while (rreq->submitted < rreq->len);
+ 
+-	/* Drop the refs on the pages here rather than in the cache or
++	/* Drop the refs on the folios here rather than in the cache or
+ 	 * filesystem.  The locks will be dropped in netfs_rreq_unlock().
+ 	 */
+-	while ((page = readahead_page(ractl)))
+-		put_page(page);
++	while (readahead_folio(ractl))
++		;
+ 
+ 	/* If we decrement nr_rd_ops to 0, the ref belongs to us. */
+ 	if (atomic_dec_and_test(&rreq->nr_rd_ops))
+@@ -935,7 +932,7 @@ EXPORT_SYMBOL(netfs_readahead);
+ /**
+  * netfs_readpage - Helper to manage a readpage request
+  * @file: The file to read from
+- * @page: The page to read
++ * @folio: The folio to read
+  * @ops: The network filesystem's operations for the helper to use
+  * @netfs_priv: Private netfs data to be retained in the request
+  *
+@@ -950,7 +947,7 @@ EXPORT_SYMBOL(netfs_readahead);
+  * This is usable whether or not caching is enabled.
+  */
+ int netfs_readpage(struct file *file,
+-		   struct page *page,
++		   struct folio *folio,
+ 		   const struct netfs_read_request_ops *ops,
+ 		   void *netfs_priv)
+ {
+@@ -958,23 +955,23 @@ int netfs_readpage(struct file *file,
+ 	unsigned int debug_index = 0;
+ 	int ret;
+ 
+-	_enter("%lx", page_index(page));
++	_enter("%lx", folio_index(folio));
+ 
+ 	rreq = netfs_alloc_read_request(ops, netfs_priv, file);
+ 	if (!rreq) {
+ 		if (netfs_priv)
+-			ops->cleanup(netfs_priv, page_file_mapping(page));
+-		unlock_page(page);
++			ops->cleanup(netfs_priv, folio_file_mapping(folio));
++		folio_unlock(folio);
+ 		return -ENOMEM;
+ 	}
+-	rreq->mapping	= page_file_mapping(page);
+-	rreq->start	= page_file_offset(page);
+-	rreq->len	= thp_size(page);
++	rreq->mapping	= folio_file_mapping(folio);
++	rreq->start	= folio_file_pos(folio);
++	rreq->len	= folio_size(folio);
+ 
+ 	if (ops->begin_cache_operation) {
+ 		ret = ops->begin_cache_operation(rreq);
+ 		if (ret == -ENOMEM || ret == -EINTR || ret == -ERESTARTSYS) {
+-			unlock_page(page);
++			folio_unlock(folio);
+ 			goto out;
+ 		}
+ 	}
+@@ -1012,40 +1009,40 @@ int netfs_readpage(struct file *file,
+ EXPORT_SYMBOL(netfs_readpage);
+ 
+ /**
+- * netfs_skip_page_read - prep a page for writing without reading first
+- * @page: page being prepared
++ * netfs_skip_folio_read - prep a folio for writing without reading first
++ * @folio: The folio being prepared
+  * @pos: starting position for the write
+  * @len: length of write
+  *
+  * In some cases, write_begin doesn't need to read at all:
+- * - full page write
+- * - write that lies in a page that is completely beyond EOF
+- * - write that covers the the page from start to EOF or beyond it
++ * - full folio write
++ * - write that lies in a folio that is completely beyond EOF
++ * - write that covers the folio from start to EOF or beyond it
+  *
+  * If any of these criteria are met, then zero out the unwritten parts
+- * of the page and return true. Otherwise, return false.
++ * of the folio and return true. Otherwise, return false.
+  */
+-static bool netfs_skip_page_read(struct page *page, loff_t pos, size_t len)
++static bool netfs_skip_folio_read(struct folio *folio, loff_t pos, size_t len)
+ {
+-	struct inode *inode = page->mapping->host;
++	struct inode *inode = folio_inode(folio);
+ 	loff_t i_size = i_size_read(inode);
+-	size_t offset = offset_in_thp(page, pos);
++	size_t offset = offset_in_folio(folio, pos);
+ 
+-	/* Full page write */
+-	if (offset == 0 && len >= thp_size(page))
++	/* Full folio write */
++	if (offset == 0 && len >= folio_size(folio))
+ 		return true;
+ 
+-	/* pos beyond last page in the file */
++	/* pos beyond last folio in the file */
+ 	if (pos - offset >= i_size)
+ 		goto zero_out;
+ 
+-	/* Write that covers from the start of the page to EOF or beyond */
++	/* Write that covers from the start of the folio to EOF or beyond */
+ 	if (offset == 0 && (pos + len) >= i_size)
+ 		goto zero_out;
+ 
+ 	return false;
+ zero_out:
+-	zero_user_segments(page, 0, offset, offset + len, thp_size(page));
++	zero_user_segments(&folio->page, 0, offset, offset + len, folio_size(folio));
+ 	return true;
+ }
+ 
+@@ -1054,9 +1051,9 @@ static bool netfs_skip_page_read(struct page *page, loff_t pos, size_t len)
+  * @file: The file to read from
+  * @mapping: The mapping to read from
+  * @pos: File position at which the write will begin
+- * @len: The length of the write (may extend beyond the end of the page chosen)
+- * @flags: AOP_* flags
+- * @_page: Where to put the resultant page
++ * @len: The length of the write (may extend beyond the end of the folio chosen)
++ * @aop_flags: AOP_* flags
++ * @_folio: Where to put the resultant folio
+  * @_fsdata: Place for the netfs to store a cookie
+  * @ops: The network filesystem's operations for the helper to use
+  * @netfs_priv: Private netfs data to be retained in the request
+@@ -1072,37 +1069,41 @@ static bool netfs_skip_page_read(struct page *page, loff_t pos, size_t len)
+  * issue_op, is mandatory.
+  *
+  * The check_write_begin() operation can be provided to check for and flush
+- * conflicting writes once the page is grabbed and locked.  It is passed a
++ * conflicting writes once the folio is grabbed and locked.  It is passed a
+  * pointer to the fsdata cookie that gets returned to the VM to be passed to
+  * write_end.  It is permitted to sleep.  It should return 0 if the request
+- * should go ahead; unlock the page and return -EAGAIN to cause the page to be
+- * regot; or return an error.
++ * should go ahead; unlock the folio and return -EAGAIN to cause the folio to
++ * be regot; or return an error.
+  *
+  * This is usable whether or not caching is enabled.
+  */
+ int netfs_write_begin(struct file *file, struct address_space *mapping,
+-		      loff_t pos, unsigned int len, unsigned int flags,
+-		      struct page **_page, void **_fsdata,
++		      loff_t pos, unsigned int len, unsigned int aop_flags,
++		      struct folio **_folio, void **_fsdata,
+ 		      const struct netfs_read_request_ops *ops,
+ 		      void *netfs_priv)
+ {
+ 	struct netfs_read_request *rreq;
+-	struct page *page, *xpage;
++	struct folio *folio;
+ 	struct inode *inode = file_inode(file);
+-	unsigned int debug_index = 0;
++	unsigned int debug_index = 0, fgp_flags;
+ 	pgoff_t index = pos >> PAGE_SHIFT;
+ 	int ret;
+ 
+ 	DEFINE_READAHEAD(ractl, file, NULL, mapping, index);
+ 
+ retry:
+-	page = grab_cache_page_write_begin(mapping, index, flags);
+-	if (!page)
++	fgp_flags = FGP_LOCK | FGP_WRITE | FGP_CREAT | FGP_STABLE;
++	if (aop_flags & AOP_FLAG_NOFS)
++		fgp_flags |= FGP_NOFS;
++	folio = __filemap_get_folio(mapping, index, fgp_flags,
++				    mapping_gfp_mask(mapping));
++	if (!folio)
+ 		return -ENOMEM;
+ 
+ 	if (ops->check_write_begin) {
+ 		/* Allow the netfs (eg. ceph) to flush conflicts. */
+-		ret = ops->check_write_begin(file, pos, len, page, _fsdata);
++		ret = ops->check_write_begin(file, pos, len, folio, _fsdata);
+ 		if (ret < 0) {
+ 			trace_netfs_failure(NULL, NULL, ret, netfs_fail_check_write_begin);
+ 			if (ret == -EAGAIN)
+@@ -1111,28 +1112,28 @@ int netfs_write_begin(struct file *file, struct address_space *mapping,
+ 		}
+ 	}
+ 
+-	if (PageUptodate(page))
+-		goto have_page;
++	if (folio_test_uptodate(folio))
++		goto have_folio;
+ 
+ 	/* If the page is beyond the EOF, we want to clear it - unless it's
+ 	 * within the cache granule containing the EOF, in which case we need
+ 	 * to preload the granule.
+ 	 */
+ 	if (!ops->is_cache_enabled(inode) &&
+-	    netfs_skip_page_read(page, pos, len)) {
++	    netfs_skip_folio_read(folio, pos, len)) {
+ 		netfs_stat(&netfs_n_rh_write_zskip);
+-		goto have_page_no_wait;
++		goto have_folio_no_wait;
+ 	}
+ 
+ 	ret = -ENOMEM;
+ 	rreq = netfs_alloc_read_request(ops, netfs_priv, file);
+ 	if (!rreq)
+ 		goto error;
+-	rreq->mapping		= page->mapping;
+-	rreq->start		= page_offset(page);
+-	rreq->len		= thp_size(page);
+-	rreq->no_unlock_page	= page->index;
+-	__set_bit(NETFS_RREQ_NO_UNLOCK_PAGE, &rreq->flags);
++	rreq->mapping		= folio_file_mapping(folio);
++	rreq->start		= folio_file_pos(folio);
++	rreq->len		= folio_size(folio);
++	rreq->no_unlock_folio	= folio_index(folio);
++	__set_bit(NETFS_RREQ_NO_UNLOCK_FOLIO, &rreq->flags);
+ 	netfs_priv = NULL;
+ 
+ 	if (ops->begin_cache_operation) {
+@@ -1147,14 +1148,14 @@ int netfs_write_begin(struct file *file, struct address_space *mapping,
+ 	/* Expand the request to meet caching requirements and download
+ 	 * preferences.
+ 	 */
+-	ractl._nr_pages = thp_nr_pages(page);
++	ractl._nr_pages = folio_nr_pages(folio);
+ 	netfs_rreq_expand(rreq, &ractl);
+ 	netfs_get_read_request(rreq);
+ 
+-	/* We hold the page locks, so we can drop the references */
+-	while ((xpage = readahead_page(&ractl)))
+-		if (xpage != page)
+-			put_page(xpage);
++	/* We hold the folio locks, so we can drop the references */
++	folio_get(folio);
++	while (readahead_folio(&ractl))
++		;
+ 
+ 	atomic_set(&rreq->nr_rd_ops, 1);
+ 	do {
+@@ -1184,22 +1185,22 @@ int netfs_write_begin(struct file *file, struct address_space *mapping,
+ 	if (ret < 0)
+ 		goto error;
+ 
+-have_page:
+-	ret = wait_on_page_fscache_killable(page);
++have_folio:
++	ret = folio_wait_fscache_killable(folio);
+ 	if (ret < 0)
+ 		goto error;
+-have_page_no_wait:
++have_folio_no_wait:
+ 	if (netfs_priv)
+ 		ops->cleanup(netfs_priv, mapping);
+-	*_page = page;
++	*_folio = folio;
+ 	_leave(" = 0");
+ 	return 0;
+ 
+ error_put:
+ 	netfs_put_read_request(rreq, false);
+ error:
+-	unlock_page(page);
+-	put_page(page);
++	folio_unlock(folio);
++	folio_put(folio);
+ 	if (netfs_priv)
+ 		ops->cleanup(netfs_priv, mapping);
+ 	_leave(" = %d", ret);
+diff --git a/include/linux/netfs.h b/include/linux/netfs.h
+index 12c4177f7703..ca0683b9e3d1 100644
+--- a/include/linux/netfs.h
++++ b/include/linux/netfs.h
+@@ -166,13 +166,13 @@ struct netfs_read_request {
+ 	short			error;		/* 0 or error that occurred */
+ 	loff_t			i_size;		/* Size of the file */
+ 	loff_t			start;		/* Start position */
+-	pgoff_t			no_unlock_page;	/* Don't unlock this page after read */
++	pgoff_t			no_unlock_folio; /* Don't unlock this folio after read */
+ 	refcount_t		usage;
+ 	unsigned long		flags;
+ #define NETFS_RREQ_INCOMPLETE_IO	0	/* Some ioreqs terminated short or with error */
+ #define NETFS_RREQ_WRITE_TO_CACHE	1	/* Need to write to the cache */
+-#define NETFS_RREQ_NO_UNLOCK_PAGE	2	/* Don't unlock no_unlock_page on completion */
+-#define NETFS_RREQ_DONT_UNLOCK_PAGES	3	/* Don't unlock the pages on completion */
++#define NETFS_RREQ_NO_UNLOCK_FOLIO	2	/* Don't unlock no_unlock_folio on completion */
++#define NETFS_RREQ_DONT_UNLOCK_FOLIOS	3	/* Don't unlock the folios on completion */
+ #define NETFS_RREQ_FAILED		4	/* The request failed */
+ #define NETFS_RREQ_IN_PROGRESS		5	/* Unlocked when the request completes */
+ 	const struct netfs_read_request_ops *netfs_ops;
+@@ -190,7 +190,7 @@ struct netfs_read_request_ops {
+ 	void (*issue_op)(struct netfs_read_subrequest *subreq);
+ 	bool (*is_still_valid)(struct netfs_read_request *rreq);
+ 	int (*check_write_begin)(struct file *file, loff_t pos, unsigned len,
+-				 struct page *page, void **_fsdata);
++				 struct folio *folio, void **_fsdata);
+ 	void (*done)(struct netfs_read_request *rreq);
+ 	void (*cleanup)(struct address_space *mapping, void *netfs_priv);
+ };
+@@ -240,11 +240,11 @@ extern void netfs_readahead(struct readahead_control *,
+ 			    const struct netfs_read_request_ops *,
+ 			    void *);
+ extern int netfs_readpage(struct file *,
+-			  struct page *,
++			  struct folio *,
+ 			  const struct netfs_read_request_ops *,
+ 			  void *);
+ extern int netfs_write_begin(struct file *, struct address_space *,
+-			     loff_t, unsigned int, unsigned int, struct page **,
++			     loff_t, unsigned int, unsigned int, struct folio **,
+ 			     void **,
+ 			     const struct netfs_read_request_ops *,
+ 			     void *);
+diff --git a/include/trace/events/afs.h b/include/trace/events/afs.h
+index bca73e8c8cde..499f5fabd20f 100644
+--- a/include/trace/events/afs.h
++++ b/include/trace/events/afs.h
+@@ -1016,31 +1016,32 @@ TRACE_EVENT(afs_dir_check_failed,
+ 		      __entry->vnode, __entry->off, __entry->i_size)
+ 	    );
+ 
+-TRACE_EVENT(afs_page_dirty,
+-	    TP_PROTO(struct afs_vnode *vnode, const char *where, struct page *page),
++TRACE_EVENT(afs_folio_dirty,
++	    TP_PROTO(struct afs_vnode *vnode, const char *where, struct folio *folio),
+ 
+-	    TP_ARGS(vnode, where, page),
++	    TP_ARGS(vnode, where, folio),
+ 
+ 	    TP_STRUCT__entry(
+ 		    __field(struct afs_vnode *,		vnode		)
+ 		    __field(const char *,		where		)
+-		    __field(pgoff_t,			page		)
++		    __field(pgoff_t,			index		)
+ 		    __field(unsigned long,		from		)
+ 		    __field(unsigned long,		to		)
+ 			     ),
+ 
+ 	    TP_fast_assign(
++		    unsigned long priv = (unsigned long)folio_get_private(folio);
+ 		    __entry->vnode = vnode;
+ 		    __entry->where = where;
+-		    __entry->page = page->index;
+-		    __entry->from = afs_page_dirty_from(page, page->private);
+-		    __entry->to = afs_page_dirty_to(page, page->private);
+-		    __entry->to |= (afs_is_page_dirty_mmapped(page->private) ?
+-				    (1UL << (BITS_PER_LONG - 1)) : 0);
++		    __entry->index = folio_index(folio);
++		    __entry->from  = afs_folio_dirty_from(folio, priv);
++		    __entry->to    = afs_folio_dirty_to(folio, priv);
++		    __entry->to   |= (afs_is_folio_dirty_mmapped(priv) ?
++				      (1UL << (BITS_PER_LONG - 1)) : 0);
+ 			   ),
+ 
+ 	    TP_printk("vn=%p %lx %s %lx-%lx%s",
+-		      __entry->vnode, __entry->page, __entry->where,
++		      __entry->vnode, __entry->index, __entry->where,
+ 		      __entry->from,
+ 		      __entry->to & ~(1UL << (BITS_PER_LONG - 1)),
+ 		      __entry->to & (1UL << (BITS_PER_LONG - 1)) ? " M" : "")
 
---sdtB3X0nJg68CQEu--
+
