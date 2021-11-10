@@ -2,148 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F3C1A44BD8D
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 10:04:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F320B44BD91
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 10:05:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230212AbhKJJHZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Nov 2021 04:07:25 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52118 "EHLO
+        id S230453AbhKJJH4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Nov 2021 04:07:56 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52252 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229653AbhKJJHX (ORCPT
+        with ESMTP id S230421AbhKJJHz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Nov 2021 04:07:23 -0500
-Received: from mail-qk1-x734.google.com (mail-qk1-x734.google.com [IPv6:2607:f8b0:4864:20::734])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 38CB8C061764
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Nov 2021 01:04:36 -0800 (PST)
-Received: by mail-qk1-x734.google.com with SMTP id bk22so1843408qkb.6
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Nov 2021 01:04:36 -0800 (PST)
+        Wed, 10 Nov 2021 04:07:55 -0500
+Received: from mail-ed1-x532.google.com (mail-ed1-x532.google.com [IPv6:2a00:1450:4864:20::532])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B8EDEC061764;
+        Wed, 10 Nov 2021 01:05:07 -0800 (PST)
+Received: by mail-ed1-x532.google.com with SMTP id f4so7568025edx.12;
+        Wed, 10 Nov 2021 01:05:07 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=OfmFNwr+aVtdehKioEcpUngJUmRgTzAF3GcrUhygPBc=;
-        b=lPHB8F/JVchkS0M1d9X4iOqu8LGGmPWqijuWSfWDuJVgfua/d7PF2mB4BU1cswgZh3
-         VeU17KVNzCHED+9ja+0WGteSoOXimLD2x9u74BoSY4hT6+K1H6vz74u6isrzpObHLiya
-         ljud+uOnmHrtgXTq/ZcCFpOOEENRpr90e3d8aTu7ZgKIUa/JfIvZGXHxXQwBoxqYbJZn
-         AycQ1IWyIP+PADqEOn/bkEumhtca2RRCZwDsB0V8oqfjDC9BjaUBNNzqdOIXMlr9AVnY
-         kgHrm9l4EPXKQkIYoA6vfaW2ljuGcQBCrmaDcyrnMBYopHOsy82TH5DJyCYSfF+NenLL
-         GwEA==
+         :cc:content-transfer-encoding;
+        bh=hIFQMP97lXgcfF/c8vV0niSbjCH1d4Of4vsIHv9JKyo=;
+        b=G01fsO/wDgLA6L+2gBeDX3tSg3SBeWZm+rL7R4Qpg18CyPeoEk4UckOOri+qGWUU/o
+         lo+LdKZreHWiwpw8a6287qnZvRycxfcOC1L5HgqhlFfQ4gR84oFSvQPAvmh1PWePnnre
+         qDTS6iY7W7a/0xP1b4URyTBLwvrxHpEmEpXEwHkPgKBZ5PKEEaEnao2mrrB3cTy8NFNM
+         hREyjbkebudx4O02g/OveCIHbao8Okhy1do0/+fXD6/Jsg2FHFyK4W3HfDW3ZnxWFX8J
+         AgterQiO1nrWLKbZvHvfnmveZg4j2o2on74zI1tBQmCmj+3zXhIcE0F01o3PdYLa45S9
+         0lbw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=OfmFNwr+aVtdehKioEcpUngJUmRgTzAF3GcrUhygPBc=;
-        b=FuL6JOIhepNfojVTibttbWxfn79NBizlvKOfh/VN5FnVxkHnSm+Tojd/FdpANcOTUz
-         eEAgy/pGmEcN9Nz2rr/VNraQ8Mg8NyCAYfWAsw/ArMF9/3Z+Ha/QjPrUzSi5R1QuaC76
-         7vaRvzrOdFlg6Vpj/RgMXPMDNKS19mBOHqqwXMihDa7/G+CUun6MFQy61pcGbj02XWYI
-         HZaId8vrcpKmBxe75hf7zbHe2q6R0lfFHaYXDiXjsEWRg+ZKx8t7hcwLZ8H/80n3ncUJ
-         kATkSKetd+K9BAZOaxp+ecjCXxow2DFv251qlyBFWaHIDHtzeTN2zrzbaAnMZ9kNqteH
-         iecQ==
-X-Gm-Message-State: AOAM5305CjeAt8UsHWKWlHR7xQPI1zVvTXTc+RE5HZ0o1IYl8Nt+eaEB
-        hu8ibcItON+iJkCsYJ87vFDxrzgfSjcNJX05iNU=
-X-Google-Smtp-Source: ABdhPJxXZI3RG/ewp+YCny9S+xPFxMW+JahhkmYAalGpHIIOv/XBRAMhua860RZgfTHKB6d6lS5zo0luPqBTLf6YU+U=
-X-Received: by 2002:a37:4041:: with SMTP id n62mr10973112qka.225.1636535075083;
- Wed, 10 Nov 2021 01:04:35 -0800 (PST)
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=hIFQMP97lXgcfF/c8vV0niSbjCH1d4Of4vsIHv9JKyo=;
+        b=nzw14t25P9/1/4IbLyATxaEx3tKCmNWyBUVgQYndPKlXstn3oYbPVmIncWaAvBWfYV
+         NM9GQuasPZ1yXySipJQm96lgdh7jsQhYUeXluF8FiLyW9I4fLNn6OSLbDXmJqamMUEs/
+         2OjFyL1gfxyCVz+WCdk7JGgRzfU7HBqnngaze1M8g5jWJX7hN456gE6fNVi07bsAdJii
+         E0QISeRgT5nDz1Gkt4yROSPDIM3VbusEyCwy0be08YtuFkizBTWP9Vjlq5aoVGmS5nDV
+         q1H119a4SnHVTAq82powpr564kbzVpH9/zh7Jp+23ZmaBEwb32ZxbxZ4PwwJz44FtStN
+         9aEw==
+X-Gm-Message-State: AOAM530DQ+o0dxp7VfiGnI0+ZBFYk8FvH2DS3n8JqzG/QsXQ+AIHhHT1
+        i92vxAVdUcvwuljDBzoFbh1JZNMedkR+oeJVIXk/8I9a9iBr6g==
+X-Google-Smtp-Source: ABdhPJxPnCtP0Gi7FXft3hNhtYdID7QFXnaTineAVYD0OAEfwrCPbrQW/UM3+bjEnyIVgok+c8SwcucP314wg/u0T+Y=
+X-Received: by 2002:a17:906:489b:: with SMTP id v27mr17872542ejq.567.1636535106048;
+ Wed, 10 Nov 2021 01:05:06 -0800 (PST)
 MIME-Version: 1.0
-References: <1634278612-17055-1-git-send-email-huangzhaoyang@gmail.com>
- <YYGV1TxsZXzGXFmx@cmpxchg.org> <YYqMJLXcQ4a+Lh/4@hirez.programming.kicks-ass.net>
- <CAKfTPtAVQ+mtYkGv5xJnbjBO9L9z7jSKOvzhObd0MvVpxakezw@mail.gmail.com>
-In-Reply-To: <CAKfTPtAVQ+mtYkGv5xJnbjBO9L9z7jSKOvzhObd0MvVpxakezw@mail.gmail.com>
-From:   Zhaoyang Huang <huangzhaoyang@gmail.com>
-Date:   Wed, 10 Nov 2021 17:04:14 +0800
-Message-ID: <CAGWkznFQxzykv=WEB7QJY4zz8WaWFzF1ZTyFGinvEPZKKgZbwg@mail.gmail.com>
-Subject: Re: [Resend PATCH] psi : calc cfs task memstall time more precisely
-To:     Vincent Guittot <vincent.guittot@linaro.org>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        Zhaoyang Huang <zhaoyang.huang@unisoc.com>,
-        "open list:MEMORY MANAGEMENT" <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>
+References: <20211109000130.42361-1-hans-gert.dahmen@immu.ne>
+ <YYoSPjF3M05dR0PX@kroah.com> <42cea157-55a2-bd12-335b-6348f0ff6525@immu.ne>
+ <YYpNOMtp7Kwf0fho@kroah.com> <CAHifhD4f676jiQ52siiKQTjUFXFm6Sto8pQjF07w5y+gqrUvFQ@mail.gmail.com>
+ <YYpsq/umygfTb8mM@kroah.com> <CAHifhD6K5hbpHS-X+2L=pfUe+7OpyTbB7uyh8WGbdaeBMwoYPg@mail.gmail.com>
+ <CAHp75VfbYsyC=7Ncnex1f_jiwrZhExDF7iy4oSGZgS1cHmsN0Q@mail.gmail.com> <CAHifhD5V9vwJenRLcPRH5ZMeLa_JnjZKfdcFZw1CjceBtC6=Ew@mail.gmail.com>
+In-Reply-To: <CAHifhD5V9vwJenRLcPRH5ZMeLa_JnjZKfdcFZw1CjceBtC6=Ew@mail.gmail.com>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Wed, 10 Nov 2021 11:04:21 +0200
+Message-ID: <CAHp75VeyQEaABFOnEUh2pdFx9ROJvRcud-BuEbKWmaEWpL9_Uw@mail.gmail.com>
+Subject: Re: [PATCH] firmware: export x86_64 platform flash bios region via sysfs
+To:     Hans-Gert Dahmen <hans-gert.dahmen@immu.ne>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>
+Cc:     Greg KH <gregkh@linuxfoundation.org>,
+        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Philipp Deppenwiese <philipp.deppenwiese@immu.ne>,
+        Mauro Lima <mauro.lima@eclypsium.com>,
+        Richard Hughes <hughsient@gmail.com>,
+        "platform-driver-x86@vger.kernel.org" 
+        <platform-driver-x86@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 10, 2021 at 4:49 PM Vincent Guittot
-<vincent.guittot@linaro.org> wrote:
+On Wed, Nov 10, 2021 at 10:37 AM Hans-Gert Dahmen
+<hans-gert.dahmen@immu.ne> wrote:
+> Am Mi., 10. Nov. 2021 um 07:35 Uhr schrieb Andy Shevchenko
+> <andy.shevchenko@gmail.com>:
+> > On Tuesday, November 9, 2021, Hans-Gert Dahmen <hans-gert.dahmen@immu.n=
+e> wrote:
+> >> Am Di., 9. Nov. 2021 um 13:42 Uhr schrieb Greg KH <gregkh@linuxfoundat=
+ion.org>:
+
+> >> > Do you have a pointer to these complex and buggy drivers anywhere?
+> >>
+> >> I am talking about the linux-mtd intel-spi driver for example, but I
+> >> feel that this gets the discussion in the wrong direction.
+> >
+> > This is the driver that covers all BIOSes on modern x86\64. What=E2=80=
+=99s wrong with it? Why do you need this?!
+> >
+> > If it=E2=80=99s buggy, where is the bug reports from you or somebody el=
+se?
 >
-> On Tue, 9 Nov 2021 at 15:56, Peter Zijlstra <peterz@infradead.org> wrote:
-> >
-> > On Tue, Nov 02, 2021 at 03:47:33PM -0400, Johannes Weiner wrote:
-> > > CC peterz as well for rt and timekeeping magic
-> > >
-> > > On Fri, Oct 15, 2021 at 02:16:52PM +0800, Huangzhaoyang wrote:
-> > > > From: Zhaoyang Huang <zhaoyang.huang@unisoc.com>
-> > > >
-> > > > In an EAS enabled system, there are two scenarios discordant to current design,
-> > > >
-> > > > 1. workload used to be heavy uneven among cores for sake of scheduler policy.
-> > > > RT task usually preempts CFS task in little core.
-> > > > 2. CFS task's memstall time is counted as simple as exit - entry so far, which
-> > > > ignore the preempted time by RT, DL and Irqs.
-> >
-> > It ignores preemption full-stop. I don't see why RT/IRQ should be
-> > special cased here.
-> >
-> > > > With these two constraints, the percpu nonidle time would be mainly consumed by
-> > > > none CFS tasks and couldn't be averaged. Eliminating them by calc the time growth
-> > > > via the proportion of cfs_rq's utilization on the whole rq.
-> >
-> >
-> > > > +static unsigned long psi_memtime_fixup(u32 growth)
-> > > > +{
-> > > > +   struct rq *rq = task_rq(current);
-> > > > +   unsigned long growth_fixed = (unsigned long)growth;
-> > > > +
-> > > > +   if (!(current->policy == SCHED_NORMAL || current->policy == SCHED_BATCH))
-> > > > +           return growth_fixed;
-> > > > +
-> > > > +   if (current->in_memstall)
-> > > > +           growth_fixed = div64_ul((1024 - rq->avg_rt.util_avg - rq->avg_dl.util_avg
-> > > > +                                   - rq->avg_irq.util_avg + 1) * growth, 1024);
-> > > > +
-> > > > +   return growth_fixed;
-> > > > +}
-> > > > +
-> > > >  static void init_triggers(struct psi_group *group, u64 now)
-> > > >  {
-> > > >     struct psi_trigger *t;
-> > > > @@ -658,6 +675,7 @@ static void record_times(struct psi_group_cpu *groupc, u64 now)
-> > > >     }
-> > > >
-> > > >     if (groupc->state_mask & (1 << PSI_MEM_SOME)) {
-> > > > +           delta = psi_memtime_fixup(delta);
-> > >
-> > > Ok, so we want to deduct IRQ and RT preemption time from the memstall
-> > > period of an active reclaimer, since it's technically not stalled on
-> > > memory during this time but on CPU.
-> > >
-> > > However, we do NOT want to deduct IRQ and RT time from memstalls that
-> > > are sleeping on refaults swapins, since they are not affected by what
-> > > is going on on the CPU.
-> >
-> > I think that focus on RT/IRQ is mis-guided here, and the implementation
-> > is horrendous.
-> >
-> > So the fundamental question seems to be; and I think Johannes is the one
-> > to answer that: What time-base do these metrics want to use?
-> >
-> > Do some of these states want to account in task-time instead of
-> > wall-time perhaps? I can't quite remember, but vague memories are
-> > telling me most of the PSI accounting was about blocked tasks, not
-> > running tasks, which makes all this rather more complicated.
->
-> I tend to agree with this.
-> Using rq_clock_task(rq) instead of cpu_clock(cpu) will remove the time
-> spent under interrupt as an example
-> and AFAICT, rq->clock_task is updated before calling psi function
-thanks vincent. Could rq_clock_task help on removing the preempted
-time of CFS task by RT/DL, which is the mainly part we want to solve
-on memstall time.
->
-> >
-> > Randomly scaling time as proposed seems almost certainly wrong. What
-> > would that make the stats mean?
+> Please see Mauro's mail in this thread from yesterday below:
+
+I didn't get this. What's wrong with the response from the author of
+intel-spi (since we are speaking about it, let me add him to the
+thread)?
+What you are trying to do is to sneak around with ugly hack behind the
+proper subsystem's back.
+
+NAK as I already said.
+
+--=20
+With Best Regards,
+Andy Shevchenko
