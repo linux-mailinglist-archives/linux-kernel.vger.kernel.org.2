@@ -2,131 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 894EE44C1F0
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 14:13:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 842DF44C1F8
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 14:15:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231849AbhKJNQF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Nov 2021 08:16:05 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:36377 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231162AbhKJNQE (ORCPT
+        id S232008AbhKJNSS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Nov 2021 08:18:18 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53582 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231998AbhKJNSH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Nov 2021 08:16:04 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1636549996;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=visrAIrttqVR0Qhg0wAKCuRIxyMBo+QeZK/AFJCCiKY=;
-        b=FRAIPBUrsxYdynGV0e4Z2o+oWG9VCBRN5Bd735iYbWqbAOcmwTO8O+s1tHb7L0xkaE2SAE
-        fW6wu3zDOhuwu83zlL8a574k+NuJmqoe3aFGuuAxw8hjGpu96/vGokLIu6olKO9H+II4Md
-        0agJuxkMUnkbXWb9KS8PrMBG0h98+Pg=
-Received: from mail-ed1-f72.google.com (mail-ed1-f72.google.com
- [209.85.208.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-571-Gn_EyFmfMb-FVjqq1KoW0Q-1; Wed, 10 Nov 2021 08:13:15 -0500
-X-MC-Unique: Gn_EyFmfMb-FVjqq1KoW0Q-1
-Received: by mail-ed1-f72.google.com with SMTP id i22-20020a05640242d600b003e28aecc0afso2311097edc.1
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Nov 2021 05:13:15 -0800 (PST)
+        Wed, 10 Nov 2021 08:18:07 -0500
+Received: from mail-pj1-x1033.google.com (mail-pj1-x1033.google.com [IPv6:2607:f8b0:4864:20::1033])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7719DC061764
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Nov 2021 05:15:19 -0800 (PST)
+Received: by mail-pj1-x1033.google.com with SMTP id y14-20020a17090a2b4e00b001a5824f4918so1808672pjc.4
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Nov 2021 05:15:19 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=1yCHgjbyfVlE9NXxBH+wF0Mqhh6seG348lIJvipGlOA=;
+        b=N6h2wrcPPFOSS6IWRK2dv6tAVz5v/j8iu2nbifO6aO2oDG4kVTex/fi7sVth7yhquL
+         extanHsAjvvRRVuv+L4vlF+EuSY2YcTNxap7ZruDZKIE0pbhLHcs3eTU7W0kvffTJYAT
+         YweAYoKP4yCn8ZC2Ndlef3ypIDaph4tb5du7aataTCiaTbcq8077pq1mz+/B3mDII9/P
+         RymE67mMbIL0uZpDngyY7ECNQ3hlduuaoj/Rrd5pXu4S3JW2W6gZrX0RrhxPowG0RwAD
+         axup6E3Mug324XJ0hHJH6QuMl8cQhkXlL6J7ZTdlqfiaimhh9wvXRCbhkqfd9dCP1AaV
+         GvSg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:in-reply-to
-         :content-transfer-encoding;
-        bh=visrAIrttqVR0Qhg0wAKCuRIxyMBo+QeZK/AFJCCiKY=;
-        b=vPK2sVHemIy7Bwl9YlnZw6fVxn/cBH9IMM2zxKMi7b7oBEB6YS2/3hzvxGwrJZ2vFG
-         cOO1vXUDOO6gXzE5UQ0sFcCFmbnV2CynyvREEVWO8F3a5YHu2A1oAFzIp0mVjnQOplay
-         QfC9Mj7oqJc3RHYI6F2njevactmeCTd92OY+567RZWjjp5Kqlaqun6IXIXstXsGxy2M3
-         MpamLVOUyv6ee1yfbU/QHzoNXDMv02GXwLjQOCl3IN5ShJeObNYT6deEmA3fU5nSOTvG
-         Yrs1ZzdSqIr2aAiyRAkZz/KXjqgPQu1/M1NSFfYjMkpwVeABH1zWoTq/iKZVrm4shD6Z
-         lATQ==
-X-Gm-Message-State: AOAM531MuK5ENGghlmQLeEkNKorN1nWeKMxZdn72Fq+UnwpYMMJfnGPx
-        busM117Zpmf79ZMO2ggHGbBPXV7Pga2Eoyj3c7gQgP367E7FJf3ZDkabA+fFsmh8n5fUzg+8UaK
-        zH8tUSRX5K7uwpMmNdVdMcOt5
-X-Received: by 2002:a17:907:1c9c:: with SMTP id nb28mr19528804ejc.184.1636549994173;
-        Wed, 10 Nov 2021 05:13:14 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJzsZeVMKhyqzXRMT2Tt5mW+GV9dQ5b7pgNmjMkK2crXtbT9GQ+RVUtrD/M7/ZdJTobu8NVQVg==
-X-Received: by 2002:a17:907:1c9c:: with SMTP id nb28mr19528766ejc.184.1636549993863;
-        Wed, 10 Nov 2021 05:13:13 -0800 (PST)
-Received: from ?IPV6:2001:1c00:c1e:bf00:1054:9d19:e0f0:8214? (2001-1c00-0c1e-bf00-1054-9d19-e0f0-8214.cable.dynamic.v6.ziggo.nl. [2001:1c00:c1e:bf00:1054:9d19:e0f0:8214])
-        by smtp.gmail.com with ESMTPSA id e1sm7529747ejy.82.2021.11.10.05.13.13
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 10 Nov 2021 05:13:13 -0800 (PST)
-Message-ID: <2cff5849-3f59-2bde-b9ff-02b2a423cbb6@redhat.com>
-Date:   Wed, 10 Nov 2021 14:13:12 +0100
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=1yCHgjbyfVlE9NXxBH+wF0Mqhh6seG348lIJvipGlOA=;
+        b=Iudxw02IG2lxZy1HPRlPfvlLgcerfehIF1lkG3VYNgv5xxuMQnm6mLEXDcDIMz9eqF
+         IvfjGDe8J4Iy88okwW9NRl3IQmHp8YlbnMK9XKhWjCOzuBlFlVmaT+eDEXjNfQa50sqw
+         aZ7kG2naNvZv0mevMUgJAyYCYAzfwkyj4NLPSJN4RGY8Fo1atfGfQx5EK+7zgq1eT7WT
+         DOOkUAmhHC9G4s6cubCyqASLCp/2Eq1apGWtAXRGxil7HuhW1MHWmmcFBeCxwYa+ncKT
+         aYHBGsDZeVBNHmcbCZkUDGZGA5b6CLXZ83voNgdMpeqFfFJjHy2yfPuzEgW14ptPaj7U
+         QSpQ==
+X-Gm-Message-State: AOAM533VtVMlK+9Z49xslP1FINrWx3tW8XgqkJWsD02qH81CLzaM/g22
+        aqZ2IUtjNhVeoFsXSgOw9szZ64fwOPjq5w==
+X-Google-Smtp-Source: ABdhPJzQfRHy8Bof3ksBZq0H3GOzhBX8F3k9/A14gnSDUBFTiRa1dTMMFRd5W9HTmPnBXYlYjLutrg==
+X-Received: by 2002:a17:90a:6b0d:: with SMTP id v13mr16783750pjj.138.1636550118896;
+        Wed, 10 Nov 2021 05:15:18 -0800 (PST)
+Received: from dragon (80.251.214.228.16clouds.com. [80.251.214.228])
+        by smtp.gmail.com with ESMTPSA id k16sm18236804pfu.183.2021.11.10.05.15.16
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Wed, 10 Nov 2021 05:15:18 -0800 (PST)
+Date:   Wed, 10 Nov 2021 21:15:11 +0800
+From:   Shawn Guo <shawn.guo@linaro.org>
+To:     Stephan Gerhold <stephan@gerhold.net>
+Cc:     Stephen Boyd <sboyd@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Loic Poulain <loic.poulain@linaro.org>,
+        linux-arm-msm@vger.kernel.org, linux-clk@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 0/3] clk: qcom: smd-rpm: Report enable state to framework
+Message-ID: <20211110131507.GJ7231@dragon>
+References: <20211109022558.14529-1-shawn.guo@linaro.org>
+ <YYpMzau3CWRQYlkJ@gerhold.net>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.2.0
-Subject: Re: [PATCH 1/2] media: atomisp-ov2680: initialize return var
-Content-Language: en-US
-To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Cc:     linuxarm@huawei.com, mauro.chehab@huawei.com,
-        Deepak R Varma <drv@mailo.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>,
-        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
-        linux-staging@lists.linux.dev, Hans Verkuil <hverkuil@xs4all.nl>
-References: <46ec939d911fc94b8a5e217874655e60512ad773.1636541941.git.mchehab+huawei@kernel.org>
-From:   Hans de Goede <hdegoede@redhat.com>
-In-Reply-To: <46ec939d911fc94b8a5e217874655e60512ad773.1636541941.git.mchehab+huawei@kernel.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YYpMzau3CWRQYlkJ@gerhold.net>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+Hi Stephan,
 
-On 11/10/21 11:59, Mauro Carvalho Chehab wrote:
-> As the settings are only applied when the device is powered on,
-> it should return 0 when the device is not powered.
+On Tue, Nov 09, 2021 at 11:26:21AM +0100, Stephan Gerhold wrote:
+> Hi Shawn,
 > 
-> Not doing that causes a warning:
+> On Tue, Nov 09, 2021 at 10:25:55AM +0800, Shawn Guo wrote:
+> > Currently the enable state of smd-rpm clocks are not properly reported
+> > back to framework due to missing .is_enabled and .is_prepared hooks.
+> > This causes a couple of issues.
+> > 
+> > - All those unused clocks are not voted for off, because framework has
+> >   no knowledge that they are unused.  It becomes a problem for vlow
+> >   power mode support, as we do not have every single RPM clock claimed
+> >   and voted for off by client devices, and rely on clock framework to
+> >   disable those unused RPM clocks.
+> > 
 > 
-> 	drivers/staging/media/atomisp/i2c/atomisp-ov2680.c: In function 'ov2680_ioctl':
-> 	drivers/staging/media/atomisp/i2c/atomisp-ov2680.c:390:16: warning: 'ret' may be used uninitialized in this
-> 	function [-Wmaybe-uninitialized]
-> 	  390 |         return ov2680_set_exposure(sd, coarse_itg, analog_gain, digital_gain);
-> 	      |                ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-> 	drivers/staging/media/atomisp/i2c/atomisp-ov2680.c:359:13: note: 'ret' was declared here
-> 	  359 |         int ret;
-> 	      |             ^~~
+> I posted a similar patch a bit more than a year ago [1].
+
+Ouch, that's unfortunate!  If your patch landed, I wouldn't have had to
+spend such a long time to figure out why my platform fails to reach vlow
+power mode :(
+
+> Back then one
+> of the concerns was that we might disable critical clocks just because
+> they have no driver using it actively. For example, not all of the
+> platforms using clk-smd-rpm already have an interconnect driver.
+> Disabling the interconnect related clocks will almost certainly make the
+> device lock up completely. (I tried it back then, it definitely does...)
 > 
-> Reported-by: Hans Verkuil <hverkuil@xs4all.nl>
-> Cc: Hans de Goede <hdegoede@redhat.com>
-> Fixes: 6b5b60687ada ("media: atomisp-ov2680: Save/restore exposure and gain over sensor power-down")
-> Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-
-Thanks, the series looks good to me (weird that my compiler version
-did not complain):
-
-Reviewed-by: Hans de Goede <hdegoede@redhat.com>
-
-For the series.
-
-Regards,
-
-Hans
-
-> ---
->  drivers/staging/media/atomisp/i2c/atomisp-ov2680.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+> I proposed adding CLK_IGNORE_UNUSED for the interconnect related clocks
+> back then [2] which would allow disabling most of the clocks at least.
+> Stephen Boyd had an alternative proposal to instead move the
+> interconnect related clocks completely out of clk-smd-rpm [3].
+> But I'm still unsure how this would work in a backwards compatible way. [4]
 > 
-> diff --git a/drivers/staging/media/atomisp/i2c/atomisp-ov2680.c b/drivers/staging/media/atomisp/i2c/atomisp-ov2680.c
-> index 34d008236bd9..497884d332e1 100644
-> --- a/drivers/staging/media/atomisp/i2c/atomisp-ov2680.c
-> +++ b/drivers/staging/media/atomisp/i2c/atomisp-ov2680.c
-> @@ -356,7 +356,7 @@ static int ov2680_set_exposure(struct v4l2_subdev *sd, int exposure,
->  			       int gain, int digitgain)
->  {
->  	struct ov2680_device *dev = to_ov2680_sensor(sd);
-> -	int ret;
-> +	int ret = 0;
->  
->  	mutex_lock(&dev->input_lock);
->  
-> 
+> Since your patches are more or less identical I'm afraid the same
+> concerns still need to be solved somehow. :)
 
+I do not really understand why smd-rpm clock driver needs to be a special
+case.  This is a very common issue, mostly in device early support phase
+where not all clock consumer drivers are ready.  Flag CLK_IGNORE_UNUSED
+and kernel cmdline 'clk_ignore_unused' are created just for that.  Those
+"broken" platforms should be booted with 'clk_ignore_unused' until they
+have related consumer drivers in place.  IMHO, properly reporting enable
+state to framework is definitely the right thing to do, and should have
+been done from day one.
+
+Shawn
+
+> [1]: https://lore.kernel.org/linux-arm-msm/20200817140908.185976-1-stephan@gerhold.net/
+> [2]: https://lore.kernel.org/linux-arm-msm/20200818080738.GA46574@gerhold.net/
+> [3]: https://lore.kernel.org/linux-arm-msm/159796605593.334488.8355244657387381953@swboyd.mtv.corp.google.com/
+> [4]: https://lore.kernel.org/linux-arm-msm/20200821064857.GA905@gerhold.net/
