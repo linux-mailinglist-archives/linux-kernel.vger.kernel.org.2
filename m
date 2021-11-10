@@ -2,36 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8534E44C832
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 19:57:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 326D544C7C0
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 19:53:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234487AbhKJS7x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Nov 2021 13:59:53 -0500
-Received: from mail.kernel.org ([198.145.29.99]:53486 "EHLO mail.kernel.org"
+        id S233035AbhKJSyt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Nov 2021 13:54:49 -0500
+Received: from mail.kernel.org ([198.145.29.99]:48172 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234029AbhKJS5h (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Nov 2021 13:57:37 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 938FA61A03;
-        Wed, 10 Nov 2021 18:50:29 +0000 (UTC)
+        id S232884AbhKJSww (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Nov 2021 13:52:52 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 909EA61205;
+        Wed, 10 Nov 2021 18:48:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1636570230;
-        bh=NsbIr5bChjjcUDITu5+6wWc7IBaJx+yTotGfwq4f0Ic=;
+        s=korg; t=1636570097;
+        bh=c8ra0pIBJ5eI7IiPbFL8LoXo1mqKH+PpSvWSjzsxwt0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=LU80CqhTtIdoTs4hEEF15pEK2rXVL/DdYdLIRVJSxAb7czhr7TtGq30YSGljGLOSZ
-         AepfcrcimeMOQPs2KGKooLT+eGE+WGrBspSlraxs7UbD+pz8PBNogwPsYFTAbfAsq7
-         dBvI0rE+rUwg6IAOA7BkWi5sAsbm4IAYXNhGth3E=
+        b=nE4Fob1aJ0BwIdut8mktv1Sm1E0nZeev29RvhTkrlUiqK8yvRWwY/a6Xa6VjMAx2y
+         3mmDp88NWelUwaCLgMrddP3OJjxQf6QQg4Ca8LHxkcXOrB1VLiQaEjpXc7RSMrqsOP
+         pAbVvhbbeptalqgsKMN+DEh+NeKcJMXklSI473uU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Eduardo Habkost <ehabkost@redhat.com>,
-        Juergen Gross <jgross@suse.com>,
-        Paolo Bonzini <pbonzini@redhat.com>
-Subject: [PATCH 5.15 02/26] Revert "x86/kvm: fix vcpu-id indexed array sizes"
+        stable@vger.kernel.org, Johan Hovold <johan@kernel.org>,
+        Ian Abbott <abbotti@mev.co.uk>
+Subject: [PATCH 5.10 15/21] comedi: vmk80xx: fix transfer-buffer overflows
 Date:   Wed, 10 Nov 2021 19:44:01 +0100
-Message-Id: <20211110182003.794713588@linuxfoundation.org>
+Message-Id: <20211110182003.447634505@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211110182003.700594531@linuxfoundation.org>
-References: <20211110182003.700594531@linuxfoundation.org>
+In-Reply-To: <20211110182002.964190708@linuxfoundation.org>
+References: <20211110182002.964190708@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,55 +39,62 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Juergen Gross <jgross@suse.com>
+From: Johan Hovold <johan@kernel.org>
 
-commit 1e254d0d86a0f2efd4190a89d5204b37c18c6381 upstream.
+commit a23461c47482fc232ffc9b819539d1f837adf2b1 upstream.
 
-This reverts commit 76b4f357d0e7d8f6f0013c733e6cba1773c266d3.
+The driver uses endpoint-sized USB transfer buffers but up until
+recently had no sanity checks on the sizes.
 
-The commit has the wrong reasoning, as KVM_MAX_VCPU_ID is not defining the
-maximum allowed vcpu-id as its name suggests, but the number of vcpu-ids.
-So revert this patch again.
+Commit e1f13c879a7c ("staging: comedi: check validity of wMaxPacketSize
+of usb endpoints found") inadvertently fixed NULL-pointer dereferences
+when accessing the transfer buffers in case a malicious device has a
+zero wMaxPacketSize.
 
-Suggested-by: Eduardo Habkost <ehabkost@redhat.com>
-Signed-off-by: Juergen Gross <jgross@suse.com>
-Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
-Message-Id: <20210913135745.13944-2-jgross@suse.com>
-Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
+Make sure to allocate buffers large enough to handle also the other
+accesses that are done without a size check (e.g. byte 18 in
+vmk80xx_cnt_insn_read() for the VMK8061_MODEL) to avoid writing beyond
+the buffers, for example, when doing descriptor fuzzing.
+
+The original driver was for a low-speed device with 8-byte buffers.
+Support was later added for a device that uses bulk transfers and is
+presumably a full-speed device with a maximum 64-byte wMaxPacketSize.
+
+Fixes: 985cafccbf9b ("Staging: Comedi: vmk80xx: Add k8061 support")
+Cc: stable@vger.kernel.org      # 2.6.31
+Signed-off-by: Johan Hovold <johan@kernel.org>
+Reviewed-by: Ian Abbott <abbotti@mev.co.uk>
+Link: https://lore.kernel.org/r/20211025114532.4599-4-johan@kernel.org
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- arch/x86/kvm/ioapic.c |    2 +-
- arch/x86/kvm/ioapic.h |    4 ++--
- 2 files changed, 3 insertions(+), 3 deletions(-)
+ drivers/staging/comedi/drivers/vmk80xx.c |    6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
---- a/arch/x86/kvm/ioapic.c
-+++ b/arch/x86/kvm/ioapic.c
-@@ -96,7 +96,7 @@ static unsigned long ioapic_read_indirec
- static void rtc_irq_eoi_tracking_reset(struct kvm_ioapic *ioapic)
- {
- 	ioapic->rtc_status.pending_eoi = 0;
--	bitmap_zero(ioapic->rtc_status.dest_map.map, KVM_MAX_VCPU_ID + 1);
-+	bitmap_zero(ioapic->rtc_status.dest_map.map, KVM_MAX_VCPU_ID);
- }
+--- a/drivers/staging/comedi/drivers/vmk80xx.c
++++ b/drivers/staging/comedi/drivers/vmk80xx.c
+@@ -90,6 +90,8 @@ enum {
+ #define IC3_VERSION		BIT(0)
+ #define IC6_VERSION		BIT(1)
  
- static void kvm_rtc_eoi_tracking_restore_all(struct kvm_ioapic *ioapic);
---- a/arch/x86/kvm/ioapic.h
-+++ b/arch/x86/kvm/ioapic.h
-@@ -39,13 +39,13 @@ struct kvm_vcpu;
++#define MIN_BUF_SIZE		64
++
+ enum vmk80xx_model {
+ 	VMK8055_MODEL,
+ 	VMK8061_MODEL
+@@ -678,12 +680,12 @@ static int vmk80xx_alloc_usb_buffers(str
+ 	struct vmk80xx_private *devpriv = dev->private;
+ 	size_t size;
  
- struct dest_map {
- 	/* vcpu bitmap where IRQ has been sent */
--	DECLARE_BITMAP(map, KVM_MAX_VCPU_ID + 1);
-+	DECLARE_BITMAP(map, KVM_MAX_VCPU_ID);
+-	size = usb_endpoint_maxp(devpriv->ep_rx);
++	size = max(usb_endpoint_maxp(devpriv->ep_rx), MIN_BUF_SIZE);
+ 	devpriv->usb_rx_buf = kzalloc(size, GFP_KERNEL);
+ 	if (!devpriv->usb_rx_buf)
+ 		return -ENOMEM;
  
- 	/*
- 	 * Vector sent to a given vcpu, only valid when
- 	 * the vcpu's bit in map is set
- 	 */
--	u8 vectors[KVM_MAX_VCPU_ID + 1];
-+	u8 vectors[KVM_MAX_VCPU_ID];
- };
- 
- 
+-	size = usb_endpoint_maxp(devpriv->ep_tx);
++	size = max(usb_endpoint_maxp(devpriv->ep_rx), MIN_BUF_SIZE);
+ 	devpriv->usb_tx_buf = kzalloc(size, GFP_KERNEL);
+ 	if (!devpriv->usb_tx_buf)
+ 		return -ENOMEM;
 
 
