@@ -2,85 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7234B44C9FA
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 21:03:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C2C0044CA0B
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 21:05:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231654AbhKJUGe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Nov 2021 15:06:34 -0500
-Received: from mail-pl1-f175.google.com ([209.85.214.175]:38607 "EHLO
-        mail-pl1-f175.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230230AbhKJUGc (ORCPT
+        id S232198AbhKJUH3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Nov 2021 15:07:29 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34076 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231609AbhKJUH1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Nov 2021 15:06:32 -0500
-Received: by mail-pl1-f175.google.com with SMTP id o14so3938506plg.5
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Nov 2021 12:03:45 -0800 (PST)
+        Wed, 10 Nov 2021 15:07:27 -0500
+Received: from mail-ed1-x52e.google.com (mail-ed1-x52e.google.com [IPv6:2a00:1450:4864:20::52e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 14EE2C061764;
+        Wed, 10 Nov 2021 12:04:39 -0800 (PST)
+Received: by mail-ed1-x52e.google.com with SMTP id b15so14951716edd.7;
+        Wed, 10 Nov 2021 12:04:39 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=cEprkKWugIyir4IOICGqOMOwdA9a4f1VHM/48xPomgc=;
+        b=EKnMoFbi1i1znGD1K1TC4EnD6lyMHP8+WdWFz0V5zGQah9W/wqE2dAel2/Gc/VlcaT
+         7NDkvRa40moEenshF8oBQyouT97g4fZuHdo9vNRI2osAI5TE2ryejnWqKRH93xpR4C9P
+         UcOr1wgdwLJhrQ6OlvebhtdzoVe8K1a2Xh+34F/T0CZlG5v1ysYSNIpPb2pYPTAF/rE7
+         ZIMQ/aJwJnF/OYUa6tn7eFi62v3letZYSF/1gYJ6PeZ1XbciJsKGfT6pT+TFOLZS2svB
+         gIKMvOXDRYzahIxptOc+4ES47W/twRt56LtaB5fsoLHDakSvMxJogBaV10292xDNpqkk
+         kEbg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=cIlvWeNZo6S7NB8/mVE36tUxBBajUlrl42axwAlyXyk=;
-        b=y3lN9Y3JBlj76sfatOaUu7KsLt8qtux1HF8aqbfA3CzQqvk7ml9qXM7sw8V1BETmA9
-         7Kn3WuD9DlnDa6a1SMHYezqB0ckei9+YvuKioVct8ZDjiyxWl4z/kThmfoOYSjIehV3P
-         waQOpSzO6XfuTxNdYw0+i06rwwQrg8rsArjjaU6yVq4f/sBinBGiN/YSLbV87tV6a3rG
-         BOzdIhWb5ufZ7TlmTwfHgPeDZ8EWnrnHtxUnDpD5TUhWSSJSKpTm3M2zXvSiDz0E35qt
-         pKfDYxVrXgot5UGYUNEI+Hk3qvy4DPQV07tCHWmRbpnkgV5NC4JxiKKI5xuKNRIMjoSp
-         2keQ==
-X-Gm-Message-State: AOAM532RIJW+a7og+C+ZhUXfkcw5m0MJcGgJchxY7Lnq/9PVirJOtIKN
-        uQv7uy9Y8IC86OtFHVA4lKL5ceOYyw8acQ==
-X-Google-Smtp-Source: ABdhPJxbf0ym4tQoEUXmUhiY1kni30w1bAq/gA3YYv9+uo4kA2qpDC0AcveRpv3V8lpBfX+icly3mw==
-X-Received: by 2002:a17:90a:ce02:: with SMTP id f2mr1771441pju.77.1636574624742;
-        Wed, 10 Nov 2021 12:03:44 -0800 (PST)
-Received: from sultan-box.localdomain ([199.116.118.235])
-        by smtp.gmail.com with ESMTPSA id e7sm317936pgk.90.2021.11.10.12.03.42
+        bh=cEprkKWugIyir4IOICGqOMOwdA9a4f1VHM/48xPomgc=;
+        b=FhOwRBGkcQX8RfM3sMvWYX45hWnJEVVpSn+uC7ljrwr239eIt5dcIm/9FfTzU6sOFJ
+         rxFsmFI8BDO7Z7N+QL4bRQMMgyKx8M1Pbh2GcHNCK0smKMEgUh9ayCVoR4MFKEd8+e1n
+         umxaIr65vWZmIFKZ12LPW0JVj34+cCGWEtYxR7R3x3GARDuteHrjpX6rawyNji3rbVq/
+         RzX0Z67OiV8GQ2yiqqi/rKn6ICjb+LQFwjbTn4/snCTVtD5raHVtyHCB1WubUf7IMptd
+         u/NdiRR2zDPjdeJ3TTf4dT28M4ySawHnKLURzk0bp2bDovVH9euoJD+ldwRhr6U7+35z
+         lnBQ==
+X-Gm-Message-State: AOAM5306JYq6zWpfo3sQQSE6oP/ML8nGGGiKgeX+9HW1Dt3OC+j+vSZy
+        WSQsorLzySFTD49nZY1nxZo=
+X-Google-Smtp-Source: ABdhPJwDL9HUK6sva11ruWXjITB3NLPQGUdvKguPe5k9Tye3HPZxgraLisj3BDzXc/1YwgYcy7xflA==
+X-Received: by 2002:a05:6402:2554:: with SMTP id l20mr2096866edb.33.1636574676922;
+        Wed, 10 Nov 2021 12:04:36 -0800 (PST)
+Received: from Ansuel-xps.localdomain (93-42-71-246.ip85.fastwebnet.it. [93.42.71.246])
+        by smtp.gmail.com with ESMTPSA id e20sm389977edv.64.2021.11.10.12.04.35
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 10 Nov 2021 12:03:44 -0800 (PST)
-Date:   Wed, 10 Nov 2021 12:03:40 -0800
-From:   Sultan Alsawaf <sultan@kerneltoast.com>
-To:     John Ogness <john.ogness@linutronix.de>
-Cc:     Daniel Vetter <daniel@ffwll.ch>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Anton Vorontsov <anton@enomsg.org>,
-        Ben Segall <bsegall@google.com>,
-        Colin Cross <ccross@android.com>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        David Airlie <airlied@linux.ie>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        dri-devel@lists.freedesktop.org, Ingo Molnar <mingo@redhat.com>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Kees Cook <keescook@chromium.org>,
-        linux-kernel@vger.kernel.org,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Mel Gorman <mgorman@suse.de>, Petr Mladek <pmladek@suse.com>,
-        Sergey Senozhatsky <senozhatsky@chromium.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        Tony Luck <tony.luck@intel.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>, mkoutny@suse.com
-Subject: Re: printk deadlock due to double lock attempt on current CPU's
- runqueue
-Message-ID: <YYwlnEQO0raDwS86@sultan-box.localdomain>
-References: <YYrU2PdmdNkulWSM@sultan-box.localdomain>
- <20211109213847.GY174703@worktop.programming.kicks-ass.net>
- <YYuS1uNhxWOEX1Ci@phenom.ffwll.local>
- <87fss4wcgm.fsf@jogness.linutronix.de>
+        Wed, 10 Nov 2021 12:04:36 -0800 (PST)
+Date:   Wed, 10 Nov 2021 21:04:34 +0100
+From:   Ansuel Smith <ansuelsmth@gmail.com>
+To:     Andrew Lunn <andrew@lunn.ch>
+Cc:     Marek =?iso-8859-1?Q?Beh=FAn?= <kabel@kernel.org>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Vladimir Oltean <olteanv@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>, Pavel Machek <pavel@ucw.cz>,
+        John Crispin <john@phrozen.org>, netdev@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-leds@vger.kernel.org
+Subject: Re: [RFC PATCH v3 6/8] leds: trigger: add hardware-phy-activity
+ trigger
+Message-ID: <YYwl0ursbAtsBdxX@Ansuel-xps.localdomain>
+References: <20211109022608.11109-1-ansuelsmth@gmail.com>
+ <20211109022608.11109-7-ansuelsmth@gmail.com>
+ <20211109042517.03baa809@thinkpad>
+ <YYrjlHz/UgTUwQAm@lunn.ch>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <87fss4wcgm.fsf@jogness.linutronix.de>
+In-Reply-To: <YYrjlHz/UgTUwQAm@lunn.ch>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 10, 2021 at 11:13:37AM +0106, John Ogness wrote:
-> Even after we introduce kthread printers, there will still be situations
-> where direct printing is used: booting (before kthreads exist) and
-> shutdown/suspend/crash situations, when the kthreads may not be
-> active.
+On Tue, Nov 09, 2021 at 10:09:40PM +0100, Andrew Lunn wrote:
+> > > +/* Expose sysfs for every blink to be configurable from userspace */
+> > > +DEFINE_OFFLOAD_TRIGGER(blink_tx, BLINK_TX);
+> > > +DEFINE_OFFLOAD_TRIGGER(blink_rx, BLINK_RX);
+> > > +DEFINE_OFFLOAD_TRIGGER(keep_link_10m, KEEP_LINK_10M);
+> > > +DEFINE_OFFLOAD_TRIGGER(keep_link_100m, KEEP_LINK_100M);
+> > > +DEFINE_OFFLOAD_TRIGGER(keep_link_1000m, KEEP_LINK_1000M);
+> 
+> You might get warnings about CamelCase, but i suggest keep_link_10M,
+> keep_link_100M and keep_link_1000M. These are megabits, not millibits.
+> 
+> > > +DEFINE_OFFLOAD_TRIGGER(keep_half_duplex, KEEP_HALF_DUPLEX);
+> > > +DEFINE_OFFLOAD_TRIGGER(keep_full_duplex, KEEP_FULL_DUPLEX);
+> 
+> What does keep mean in this context?
+>
 
-Although I'm unaware of any ongoing kthread printer work, I'm curious to know
-how a kthread approach wouldn't employ a try_to_wake_up() from directly inside
-printk(), since the try_to_wake_up() hit from inside the fbcon code is what
-caused my deadlock.
+LED is turned on but doesn't blink. Hint for a better name?
 
-Sultan
+> > > +DEFINE_OFFLOAD_TRIGGER(option_linkup_over, OPTION_LINKUP_OVER);
+> > > +DEFINE_OFFLOAD_TRIGGER(option_power_on_reset, OPTION_POWER_ON_RESET);
+> > > +DEFINE_OFFLOAD_TRIGGER(option_blink_2hz, OPTION_BLINK_2HZ);
+> > > +DEFINE_OFFLOAD_TRIGGER(option_blink_4hz, OPTION_BLINK_4HZ);
+> > > +DEFINE_OFFLOAD_TRIGGER(option_blink_8hz, OPTION_BLINK_8HZ);
+> > 
+> > This is very strange. Is option_blink_2hz a trigger on itself? Or just
+> > an option for another trigger? It seems that it is an option, so that I
+> > can set something like
+> >   blink_tx,option_blink_2hz
+> > and the LED will blink on tx activity with frequency 2 Hz... If that is
+> > so, I think you are misnaming your macros or something, since you are
+> > defining option_blink_2hz as a trigger with
+> >  DEFINE_OFFLOAD_TRIGGER
+> 
+> Yes, i already said this needs handling differently. The 2Hz, 4Hz and
+> 8Hz naturally fit the delay_on, delay_of sysfs attributes.
+> 
+>     Andrew
+
+You are totally right. I tought the blink control was something specific
+that only some PHY had, but considering we have more than 1 that
+supports a variant of it, I can see how it should be handled separately.
+I assume even more have this kind of customizzation.
+
+-- 
+	Ansuel
