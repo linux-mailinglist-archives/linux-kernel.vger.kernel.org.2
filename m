@@ -2,107 +2,187 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 59CEC44C12F
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 13:27:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B533744C133
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 13:28:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231371AbhKJMaj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Nov 2021 07:30:39 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124]:34915 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229653AbhKJMai (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Nov 2021 07:30:38 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1636547270;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=dYLRQH0TP4O3xvYZerqmbmFmpTBL4DQnhLEPVVOshr8=;
-        b=EBCJu5UKB2pL/rSLZltY/V/UZz25FGGuuF0XPnWUCOLG34uV6/IaZGHopirAC3ZbbsQaoJ
-        /j0Br+ESGVMAP2n58UzW6j3NhKgBjsAhrrmSs4sMUP4BL6rniDVkCIthuKiSbrm2fSPCHE
-        GMP4p0sILCMMFApkCddgoyL6mn2E694=
-Received: from mail-oi1-f199.google.com (mail-oi1-f199.google.com
- [209.85.167.199]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-201-iK2fQjZzMF-WRq_jkZtL_g-1; Wed, 10 Nov 2021 07:27:49 -0500
-X-MC-Unique: iK2fQjZzMF-WRq_jkZtL_g-1
-Received: by mail-oi1-f199.google.com with SMTP id r10-20020aca440a000000b002a81c7a19ccso1492012oia.7
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Nov 2021 04:27:48 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=dYLRQH0TP4O3xvYZerqmbmFmpTBL4DQnhLEPVVOshr8=;
-        b=zeoLPi1s+sjD9wtoB0rb+HhPR6Ptzfs0gEo6OGfi0Y4tQEjfJMDFc7YCBh7L0cGaF8
-         eLP+yBLXDEWbZR5YNd58j20t9feU1qBkXxz4vKtYVfMpzK4AsvwvSogA9aVjnbZ3CFvz
-         goFPzB1fADCWLJdJImPcOrLLe1KaWEFEbVozFQZ/ukSKv2h2Jgp3KTeDI5xzYXSPdkh7
-         W+D8qRXZ5f/18gdfJ4ZtaN+GtLxVi0nrFO6pwR45SyGTdg6QTkqmj6yy39rL21/6Tn/K
-         cr0PGgTy+w/3Sb02/UFqdxw3NAnIljhjqJrPAgq7hIlddG29oyORN9Yfsc7eLDCecEWr
-         oVZA==
-X-Gm-Message-State: AOAM532CKMgpc2L59ASjLUr9G2zSYrAdCeFhk/oznuGrWAw3XDgMrdYr
-        4wQ6aT2cwmoMMhn+fOjyGJbP0o2W1wtUfWmuFYF6j59sxlnJsraXy7n01hqDH4fWi/Rmw24vME+
-        CmYy0JmFY1nkDkFVgmGonAdeU
-X-Received: by 2002:a05:6830:25c6:: with SMTP id d6mr12545951otu.240.1636547268278;
-        Wed, 10 Nov 2021 04:27:48 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJxnXhWz6Tm1aQTYJ1ZH0K0WyVfJMRvn68Fsd1Y8zL14GrIvur82vWO2ukeKeUAu5n+umO8QFA==
-X-Received: by 2002:a05:6830:25c6:: with SMTP id d6mr12545936otu.240.1636547268109;
-        Wed, 10 Nov 2021 04:27:48 -0800 (PST)
-Received: from localhost.localdomain (075-142-250-213.res.spectrum.com. [75.142.250.213])
-        by smtp.gmail.com with ESMTPSA id l7sm7389756oog.22.2021.11.10.04.27.46
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 10 Nov 2021 04:27:47 -0800 (PST)
-Subject: Re: [PATCH v1 1/1] fpga: dfl: pci: Use pci_find_vsec_capability()
- when looking for DFL
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     Moritz Fischer <mdf@kernel.org>,
-        Matthew Gerlach <matthew.gerlach@linux.intel.com>,
-        linux-fpga@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Wu Hao <hao.wu@intel.com>, Xu Yilun <yilun.xu@intel.com>
-References: <20211109154127.18455-1-andriy.shevchenko@linux.intel.com>
- <8ccc133a-fb47-4548-fee3-d57775a5166d@redhat.com>
- <YYq4fSRoyzFE4Vei@smile.fi.intel.com>
- <39ac1f40-66ab-6c7e-0042-8fcdc062ed00@redhat.com>
- <YYuBz0tdduAk1c/6@smile.fi.intel.com>
-From:   Tom Rix <trix@redhat.com>
-Message-ID: <3106bd57-9144-6a4d-8ad9-3ebf804018ab@redhat.com>
-Date:   Wed, 10 Nov 2021 04:27:45 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        id S231573AbhKJMbi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Nov 2021 07:31:38 -0500
+Received: from mail-bn7nam10on2042.outbound.protection.outlook.com ([40.107.92.42]:22881
+        "EHLO NAM10-BN7-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S231298AbhKJMbg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Nov 2021 07:31:36 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=QwnyDj7AxwYUPFgG86/rwZKzBu4uU3/8mHJV8LN7aGUHm3SCOlBBlC+NEhgYoFutTmm7Xy9ecNjO3KEs53dHGEZdh4RAJhJLxz2NWrmJeDZdw7bLvbOxyd35Ryw5JNGgntKVNZK+F+NFBKJN7swq+mLk3ATNR+2yvbNhHCdQBr4yCmMyiFdiwhS0A8jRLSz0zcHWAg/u8xV8onRS2MypRfKY6H/a7UkXw8SIMBo/UQaMkFkURi2cIcozgPc5kXcocERwP3pFjPSPs3C6Lbd1UBKLgFN5n+4LVQPt5bKcKJ7qp4StZm6zg0TPcZP3NTETgRAOQVlTyFXqK/sD2VWFag==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=ltK+dLjVLcnH6eXlNnB0W8qZsjqslyklxkAWNMznTi4=;
+ b=cneygVRRwt0SabUjOjekgiS5cELDJzbZqreeLuXgDscgM5mn23hPaI00TOgHSLPk07gETwD2qGnYuq0lYCzdKOIJvg3IGtJn3fZtPCUJkyaHSOdOAODGDO3E/NK2u7suaKOw8Bgur2zQ1xnyWDKTGDbqAQ49BtN9hkXB87Iczl7ydCTQYzLxgrZlbLMDhPyJvldNPWinJ8qJJwJts5tWiNemLcB1ydirsAznJGPG1QTt9IceF1KGJGi19PttZ5nUkDpQ0u9Z9CtSskJXb3ha5y/Z1UWh4ZjMmtQoWhfGdsHn91jrgjyrO87wUuPqmhryKJv0aXr8z+FvJ3ys9SZVOA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=ltK+dLjVLcnH6eXlNnB0W8qZsjqslyklxkAWNMznTi4=;
+ b=1YtxP7jN/onhARyi3LKEwRKmgBANfjVPb1aQzIhDMV+K+QCQBmMgn4HOmcIedqkPs9pEC3mU3qzpHARWYxEYk1iukKlJbmr/6H2EEQdjvl0dEKBXiNWCZqv3zfA3lmrwViv4GVVHT6QhPoXHXz39hlXDqaJgzXptBi7IxXOPvMA=
+Authentication-Results: amd.com; dkim=none (message not signed)
+ header.d=none;amd.com; dmarc=none action=none header.from=amd.com;
+Received: from CY4PR1201MB0246.namprd12.prod.outlook.com
+ (2603:10b6:910:23::16) by CY4PR12MB1381.namprd12.prod.outlook.com
+ (2603:10b6:903:42::18) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4669.13; Wed, 10 Nov
+ 2021 12:28:45 +0000
+Received: from CY4PR1201MB0246.namprd12.prod.outlook.com
+ ([fe80::5d29:d78d:3e89:b697]) by CY4PR1201MB0246.namprd12.prod.outlook.com
+ ([fe80::5d29:d78d:3e89:b697%3]) with mapi id 15.20.4669.016; Wed, 10 Nov 2021
+ 12:28:45 +0000
+Date:   Wed, 10 Nov 2021 20:28:06 +0800
+From:   Huang Rui <ray.huang@amd.com>
+To:     "Fontenot, Nathan" <Nathan.Fontenot@amd.com>
+Cc:     "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Shuah Khan <skhan@linuxfoundation.org>,
+        Borislav Petkov <bp@suse.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Giovanni Gherdovich <ggherdovich@suse.cz>,
+        "linux-pm@vger.kernel.org" <linux-pm@vger.kernel.org>,
+        "Sharma, Deepak" <Deepak.Sharma@amd.com>,
+        "Deucher, Alexander" <Alexander.Deucher@amd.com>,
+        "Limonciello, Mario" <Mario.Limonciello@amd.com>,
+        Steven Noonan <steven@valvesoftware.com>,
+        "Su, Jinzhou (Joe)" <Jinzhou.Su@amd.com>,
+        "Du, Xiaojian" <Xiaojian.Du@amd.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "x86@kernel.org" <x86@kernel.org>
+Subject: Re: [PATCH v3 11/21] cpufreq: amd: add amd-pstate frequencies
+ attributes
+Message-ID: <YYu61g+eyegKDnuN@hr-amd>
+References: <20211029130241.1984459-1-ray.huang@amd.com>
+ <20211029130241.1984459-12-ray.huang@amd.com>
+ <b4a2b9df-1074-dc86-be76-7f47af202b9e@amd.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <b4a2b9df-1074-dc86-be76-7f47af202b9e@amd.com>
+X-ClientProxiedBy: HK2PR06CA0022.apcprd06.prod.outlook.com
+ (2603:1096:202:2e::34) To CY4PR1201MB0246.namprd12.prod.outlook.com
+ (2603:10b6:910:23::16)
 MIME-Version: 1.0
-In-Reply-To: <YYuBz0tdduAk1c/6@smile.fi.intel.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+Received: from hr-amd (165.204.134.251) by HK2PR06CA0022.apcprd06.prod.outlook.com (2603:1096:202:2e::34) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4669.13 via Frontend Transport; Wed, 10 Nov 2021 12:28:40 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 679e7b04-992c-4e02-5ef8-08d9a445a36f
+X-MS-TrafficTypeDiagnostic: CY4PR12MB1381:
+X-Microsoft-Antispam-PRVS: <CY4PR12MB138162F12F67EAE714EC15B5EC939@CY4PR12MB1381.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:6430;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: Fuy4PHVMWGlxjml+BgcNRU4qXrLH+HqoPLD/nAmXuNvZLZzBqvYi18iMu0YaXspC+/aZ7CDCubXB+8xZr5QamaBiq3ISc6d/u6/zWyuGYkz7uP5bXbW04GOgE6oG6fOWhY1HCalcm+NzsKTWWOkHUsQ9TS3mccHwy4gd7bIcUB2q91W7ca6nyseJhIc0MLMi20x2ckaYRtplvdv9C7D8EvlTLEc41Z/rUS8z9hYmjIf+gCEvWw1/12IlEldCOmzMiyfzcgkTIO2L0xNKrbatTBY6MxtnBbMb9M7ef7c0Y5KaB/cQvaYpvWNOTavUO0ThnO+rP3mXmgAl8wpOG7X3PoaZO92cnFzmTYyT2CFi6awHJ3eG5Ix+QhwPzt+yS6IQSHsEOOWnbH+NDpsicYR/OX97R0anXPK5C3qu4Wtbbb5g/rqi4C181WeU0aNeCQNsmfvPazZtRBwY46EleLaz5U1qWCGZw+WRKktFHz0u7r5ycd89JBXfX1n12H8npCKsmJ9zKpnkaSSdiOeEIQGJ+baUwCSgPK2whzp8uyXcjJyKB+mEb3NlU4pxkj6+qoWn/EBzXGnHrpEpyAVCMCwABKUhanSpfBQuF8Cp4KDdbcWIFD1s+d6jjinvlmCI4TCVLtkFZyCCv7ihrKD5UlPA01jX4MMM7Duo1CZxdVidNnU+giQ0o1cpKyu3q3AntMxoAcIjiC7n816w3abL4KAs2w==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CY4PR1201MB0246.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(66946007)(508600001)(55016002)(316002)(5660300002)(54906003)(33716001)(53546011)(9686003)(66476007)(66556008)(2906002)(8676002)(6862004)(956004)(6666004)(26005)(8936002)(4326008)(6636002)(7416002)(38100700002)(86362001)(186003)(6496006)(67856001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?KSRwkpYy7ONy9N7nk9IchuuT8J0EzaJ3S7gHJ6YUfJyHKOZi4cnrylyF8IsM?=
+ =?us-ascii?Q?l/kZzs0J1ehaUZru0/afozztbMkBOEA+QGNNYvD/xwAN91jmJdSYYlAMs3YP?=
+ =?us-ascii?Q?6DEFYLMQqsnOkin1ecVqtyzwiYe8rlsXobzWxiV1d8Fcgt8yvPva2mW5XEkZ?=
+ =?us-ascii?Q?dHNctKFgXDTwkahpbjQO6h4gKln43j7Fp4LVUzDUD6uokBo0Vc2PDlXtDN20?=
+ =?us-ascii?Q?QhxHcrhcocCIB/B3uDIpQNlLsIXID4I2lWUFTMlJbMVl4vfSJrT/Om/wyOvR?=
+ =?us-ascii?Q?o0AWedB12KUHIHWAU4kh+2N5EXZLNVtSOm5J7JGEDyXiMFWtD25xgCxl9I5n?=
+ =?us-ascii?Q?iSWQaanNtQ8IuHKfQM0+MU+yRm90pXel8QNEFPMFBHpxoauAqiA1U89jLTLP?=
+ =?us-ascii?Q?eVxFQ5xtQ0OzPuHZqKZvPYSin5fKpLmAGVupKp1iD1EO/T12Ry0m9PAp4ye4?=
+ =?us-ascii?Q?AHVCjez1Wrrzu7C8jXPgu7iucVSd31QZzbnK6Fyt/ZTnQxxSAgmeLzSeP6LN?=
+ =?us-ascii?Q?Kaiuia4qFx9QwOdrHx8xmEEHpYbqBrXY2kU4nmKqrirb4QGU/qw18Q83/83+?=
+ =?us-ascii?Q?ORzQcJc9QgZIp7Cv5E3lj5Oq+Rm+Z5cC+UhRr26nBpQDv9WphR06QdYYWNR6?=
+ =?us-ascii?Q?7I19iGDQMhpLixuE3kGIU/YVEKdmrf/L74uj9iTcUvEHyOewy75HAnKmdg1T?=
+ =?us-ascii?Q?UoTsY7Hn09eb9OC1ptI192SN7BLCR3DLPNL/zv0GqkS6LzYf/BVYgGQ5Hk7H?=
+ =?us-ascii?Q?r1epkRUjt7kSSnhTJ9V8b7VyhBxk+sENpzz7I2xsMNXgWXwW9qHsbJC5/ugJ?=
+ =?us-ascii?Q?8le5CBqQ2Ed1M7NjU2qpL3F7AF9T82QtzA+Slpbe+KWqL8A3JjOu8wondSWs?=
+ =?us-ascii?Q?x37b2qvCs2Q5fOG2TOS4tW/nx9JKEMC9vS2xVYDXSBa14Z487qGPDSLDdS0M?=
+ =?us-ascii?Q?GrMzALQJdh4RiRvfRR4aoHyPa11lVfn85JvE1L0J72+AnusI4pDgsVBdBJXO?=
+ =?us-ascii?Q?XfjIbm5r2CJn9GpsA2Vj42eaz0RD7Slw+EGvfCuSxwrK4V8524NG1ulhZ5ur?=
+ =?us-ascii?Q?c6nW0wk/0JgxyeAYEhQsch8NNTJ4ROe90jiNtCBdFOIiucPToSWdJXkwVBhd?=
+ =?us-ascii?Q?+B/7z7IKNxjvPSYVc7OyMW/eOds7PrTgwow5Bjbs9JbwPk1grFl30O+KUZKk?=
+ =?us-ascii?Q?6XBW/iRo9jvQTHRJPvqWD+XANH9lQeMyS5fHj/Bv5aWuL/LdsiHRhI35qZfD?=
+ =?us-ascii?Q?FK/RNaAfqu0wfXeRCIzzArdxMsycP8orUpK3CSCvKCKWOOgf68tW2YUM4DXb?=
+ =?us-ascii?Q?e8H+7H2y48G37/DvEhjiaQXTglIYzQBQzU4Ayut1tCtYbSRVD8CgUOeKiKUU?=
+ =?us-ascii?Q?oPiuilTJg1UKARumySgh0lDLaMgG9+ST5Z5QjoFAxCiJzF3Uq7Z3spW4h75G?=
+ =?us-ascii?Q?euGUreRhch3WOJ6diGVWGK5KufojzbRz766hD1Qd9fRoqZXBCU7WWqq/w8tj?=
+ =?us-ascii?Q?NiAWrIzeePxAXY9t/mlLYmMmUYwyJRwwO25omVCSbu15CuQ9CYcKvPkFtGoy?=
+ =?us-ascii?Q?bzFqyjmdwyCdA//i38h4IJ1xXy77fYeXuVn1n2a4wK2cbYl1A9MdYdDVHdKR?=
+ =?us-ascii?Q?aQi8vxuJ1vVJHcSfLLCAcZY=3D?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 679e7b04-992c-4e02-5ef8-08d9a445a36f
+X-MS-Exchange-CrossTenant-AuthSource: CY4PR1201MB0246.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 10 Nov 2021 12:28:45.3618
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: JC02B0iQbyzPdbP2WewSrHNXASlvnpsyI+LyKV/JOV8vII4iPq0I6KA2wZjHwP0eA851v4ytDFEt164LSGzCoA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY4PR12MB1381
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Sat, Nov 06, 2021 at 02:59:55AM +0800, Fontenot, Nathan wrote:
+> On 10/29/21 8:02 AM, Huang Rui wrote:
+> > Introduce sysfs attributes to get the different level processor
+> > frequencies.
+> > 
+> > Signed-off-by: Huang Rui <ray.huang@amd.com>
+> > ---
+> >  drivers/cpufreq/amd-pstate.c | 63 ++++++++++++++++++++++++++++++++++++
+> >  1 file changed, 63 insertions(+)
+> > 
+> > diff --git a/drivers/cpufreq/amd-pstate.c b/drivers/cpufreq/amd-pstate.c
+> > index 9af27ac1f818..8cf1e80f44e0 100644
+> > --- a/drivers/cpufreq/amd-pstate.c
+> > +++ b/drivers/cpufreq/amd-pstate.c
+> > @@ -485,6 +485,68 @@ static int amd_pstate_cpu_exit(struct cpufreq_policy *policy)
+> >  	return 0;
+> >  }
+> >  
+> > +/* Sysfs attributes */
+> > +
+> > +/* This frequency is to indicate the maximum hardware frequency.
+> > + * If boost is not active but supported, the frequency will be larger than the
+> > + * one in cpuinfo.
+> > + */
+> > +static ssize_t show_amd_pstate_max_freq(struct cpufreq_policy *policy,
+> > +					char *buf)
+> > +{
+> > +	int max_freq;
+> > +	struct amd_cpudata *cpudata;
+> > +
+> > +	cpudata = policy->driver_data;
+> > +
+> > +	max_freq = amd_get_max_freq(cpudata);
+> > +	if (max_freq < 0)
+> > +		return max_freq;
+> > +
+> > +	return sprintf(&buf[0], "%u\n", max_freq);
+> > +}
+> > +
+> > +static ssize_t show_amd_pstate_nominal_freq(struct cpufreq_policy *policy,
+> > +					    char *buf)
+> > +{
+> > +	int nominal_freq;
+> > +	struct amd_cpudata *cpudata;
+> > +
+> > +	cpudata = policy->driver_data;
+> > +
+> > +	nominal_freq = amd_get_nominal_freq(cpudata);
+> > +	if (nominal_freq < 0)
+> > +		return nominal_freq;
+> > +
+> > +	return sprintf(&buf[0], "%u\n", nominal_freq);
+> > +}
+> 
+> The nominal_freq valus is already reported in sysfs by drivers/acpi since this
+> value is part of the ACPI spec. Is there a reason to have multiple sysfs entries 
+> for the same value?
+> 
 
-On 11/10/21 12:24 AM, Andy Shevchenko wrote:
-> On Tue, Nov 09, 2021 at 10:27:58AM -0800, Tom Rix wrote:
->> On 11/9/21 10:05 AM, Andy Shevchenko wrote:
->>> On Tue, Nov 09, 2021 at 07:55:43AM -0800, Tom Rix wrote:
->>>> On 11/9/21 7:41 AM, Andy Shevchenko wrote:
-> ...
->
->>>>> +	voff = pci_find_vsec_capability(dev, PCI_VENDOR_ID_INTEL, PCI_VSEC_ID_INTEL_DFLS);
->>>> This may be a weakness in the origin code, but intel isn't the exclusive
->>>> user of DFL.
->>> This does not change the original code. If you think so, this can be extended
->>> later on.
->> I would rather see this fixed now or explained why this isn't a problem.
-> This is out of scope of this change in a few ways:
->   - we don't do 2+ things in one patch
->   - the change doesn't change behaviour
->   - the change is a simple cleanup
->   - another vendor may well have quite different VSEC ID for DFL
->
-> If you think that it should be needed, one can come up with it later on.
+I will clean them up in V4. Thanks!
 
-Fixing a problem is more useful than a cleanup. The fix should come first.
-
-Tom
-
->
-
+Ray
