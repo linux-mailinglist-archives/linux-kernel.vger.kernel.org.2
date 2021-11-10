@@ -2,74 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4BD8744BD9A
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 10:06:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2774D44BD9F
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 10:08:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230461AbhKJJJZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Nov 2021 04:09:25 -0500
-Received: from mail.kernel.org ([198.145.29.99]:46272 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229831AbhKJJJY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Nov 2021 04:09:24 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1D20061241;
-        Wed, 10 Nov 2021 09:06:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1636535197;
-        bh=cQh2gtzFbpiUqUoKtpQ5ieN8FrH0G315r3j++GSu4uo=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=yH7VPWK6HT/e2u3+UQ6g9J3HCJea5fPZ2hGGJ6qTG0xTa3Wkv5aFsIQYGDVin+iNR
-         pxQYpklmdQyOsJe64EyRBgUeNKCghHU63D06RHAykSC88qY8gJKvoIYLotk0T7kKNJ
-         eYqcFWAlVIhP/CcUoEZxaCdC53GWegCJPkrNs7i4=
-Date:   Wed, 10 Nov 2021 10:06:32 +0100
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Ajay Garg <ajaygargnsit@gmail.com>
-Cc:     Pavel Skripkin <paskripkin@gmail.com>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>, kernel@esmil.dk,
-        David Laight <David.Laight@aculab.com>,
-        "linux-serial@vger.kernel.org" <linux-serial@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] tty: vt: keyboard: do not copy an extra-byte in
- copy_to_user
-Message-ID: <YYuLmMxbKLqHD+ZW@kroah.com>
-References: <CAHP4M8Ww0-VqCBKX=iLd=zy1AcDoNdzTOqJuaqRxCGZsMhoX9w@mail.gmail.com>
- <CAHP4M8UcZ=ttB8jbN1yOY6YH8SiQ27NhdEKi9SDH1CWG-GY6eg@mail.gmail.com>
- <6b58a3e1-f2ea-cc4c-03b2-06334b559373@gmail.com>
- <CAHP4M8Vs8a8u98enuHXaBcC7D4fCZzCOtEq06VnvuPUqhqPK=Q@mail.gmail.com>
- <9717b429-597f-7778-c880-94361bcdee7f@gmail.com>
- <CAHP4M8XtFiAa1kF5A_rPbcui3DP8L6iyfP8GbwgLLzo0Bo+TNQ@mail.gmail.com>
- <65c45951-08ba-26bb-f96b-3d4442b1d4d4@gmail.com>
- <08c9e717-4367-5316-87cd-90b5ceb13ed9@kernel.org>
- <1305bb43-b4bf-e129-af6e-957d1f30f269@gmail.com>
- <CAHP4M8XfCJ8btBCf42GEZGWm_4ywhPKyXtxoBbHR4U190=gg_A@mail.gmail.com>
+        id S230263AbhKJJLm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Nov 2021 04:11:42 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53118 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229931AbhKJJLl (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Nov 2021 04:11:41 -0500
+Received: from mail-wm1-x32e.google.com (mail-wm1-x32e.google.com [IPv6:2a00:1450:4864:20::32e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC571C061764
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Nov 2021 01:08:53 -0800 (PST)
+Received: by mail-wm1-x32e.google.com with SMTP id b2-20020a1c8002000000b0032fb900951eso4011414wmd.4
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Nov 2021 01:08:53 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=teTpbIWMqP19cYw1tGp6eE48hT4P1O4XsJC6/1SCuq0=;
+        b=J1B8gY57c0HGSQTVBkK6Wzx/tQUfOa65/KSM1dz8AKNHKnU6TxbE3rw0JQ3MpW0PNa
+         ZhFiBhiDuJROo+fwg1YojPwLAgmoMwn/5JKM/u5Gmsfx75nn3QVytYdbw9rx8sGWQzI5
+         45u3M3MLM6+GGsiOymi13U2U5D7kOZVR253Xp0M0hn77LxNaCM+T/Qq7nC8MVvBwrwhh
+         sYvPAx53VBKeJ3bcWQxdRfUhhkujxGQLoYk7NgdSM5A+I6/0xsGI5mHIWNV9KmOqwjDf
+         JcSuQG8qSVKVBzBkLi0mx0zmV1RTKDvh7Ne3wZKqp6Pr6WfisdCOTtlg42lBOh7IIAW9
+         jgfA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=teTpbIWMqP19cYw1tGp6eE48hT4P1O4XsJC6/1SCuq0=;
+        b=g9RyhwPRzcMlUUYdkLw3yh4+ZqNJEsJB8O3yjJzolcvQ+/kDQ1RBx3/GaK+xsOlVYa
+         efwqOtR9RbDgOxc6V0K+hvGVHR9/0gkYgKu23iGIsJzeGC4SCbMWh1gpyZijjYlPcuoY
+         zOG1O9VIQHoIP04oLOUxgDQvVlBtVfiTwqJWoPz66Fq+owO9YMKTtKgqfIHxnnE2lYYg
+         hwnVE0+zBNdr2uI8avZN24rVh3dhdFfJ3L0Rzb34ydzHHPJO3vsYl1GiXM3l2rotjF9t
+         V1NZmpzD09iZsl/v1Eh349o29Af9YybxMoFSbzljcCQm7xfTgsPCFPcq9MNF3WFT6wnE
+         Ctnw==
+X-Gm-Message-State: AOAM531wSI0h+odjt5phjwq0YeUh5Z2YXh7CFPdPNiugUDXAI9AErOGa
+        tKzd/P8iCbky3IfQX9XI+G00YCM90v6oNA==
+X-Google-Smtp-Source: ABdhPJyMi57au9h9/Aqfcx+Azuam1ghDXSU0NgI1nzqrK8fT3t+0fOnhaTCeKd+cjqC8JDoz9UEblw==
+X-Received: by 2002:a7b:c155:: with SMTP id z21mr14390600wmi.107.1636535332123;
+        Wed, 10 Nov 2021 01:08:52 -0800 (PST)
+Received: from elver.google.com ([2a00:79e0:15:13:5b79:8e57:35c2:52])
+        by smtp.gmail.com with ESMTPSA id x21sm4942772wmc.14.2021.11.10.01.08.51
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 10 Nov 2021 01:08:51 -0800 (PST)
+Date:   Wed, 10 Nov 2021 10:08:45 +0100
+From:   Marco Elver <elver@google.com>
+To:     Russell King - ARM Linux admin <linux@armlinux.org.uk>
+Cc:     Mark Rutland <mark.rutland@arm.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        syzbot <syzbot+f09a12b2c77bfbbf51bd@syzkaller.appspotmail.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Alexandre Chartre <alexandre.chartre@oracle.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
+        Thomas Gleixner <tglx@linutronix.de>
+Subject: Re: [syzbot] upstream boot error: WARNING in __context_tracking_enter
+Message-ID: <YYuMHchsq7UKwiD8@elver.google.com>
+References: <0000000000004f14c105bde08f75@google.com>
+ <CACT4Y+bLkFSc8manYrCukj-_nzwVsV9y6xYWXmGyYFS-PoBRPQ@mail.gmail.com>
+ <20210319101043.GU1463@shell.armlinux.org.uk>
+ <20210322172241.GB80352@C02TD0UTHF1T.local>
+ <CACT4Y+ZaFKB6xd9BiPjYsE+13GJb3d_4aRTkB8xrNMaexpLaFA@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAHP4M8XfCJ8btBCf42GEZGWm_4ywhPKyXtxoBbHR4U190=gg_A@mail.gmail.com>
+In-Reply-To: <CACT4Y+ZaFKB6xd9BiPjYsE+13GJb3d_4aRTkB8xrNMaexpLaFA@mail.gmail.com>
+User-Agent: Mutt/2.0.5 (2021-01-21)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 10, 2021 at 02:27:36PM +0530, Ajay Garg wrote:
-> >
-> > Ajay wants to be safe and he thinks, that relying on fact, that
-> > strlen(func_table[kb_func]) < sizeof(user_kdgkb->kb_string) is not good
-> > approach, since it's external for vt_do_kdgkb_ioctl. (I hope, I've
-> > explained his idea in the right way)
-> >
+On Tue, Apr 13, 2021 at 07:14AM +0200, Dmitry Vyukov wrote:
+[...]
+> Hi Russell,
 > 
-> That's right Pavel.
-> Every function must work correctly as it "advertises", instead of
-> relying on "chancy correctness" of the calls leading to the method.
+> Does Mark's comment make sense to you?
+> lockdep_assert_preemption_disabled() also checks "&&
+> this_cpu_read(hardirqs_enabled)", so is it that we also need hardirq's
+> disabled around user_enter/exit?
+> This issue currently prevents ARM boot on syzbot.
 
-That is not how the kernel works, sorry.  Otherwise every function would
-have to always verify all parameters passed to them, causing slow downs
-and redundant checks everywhere.
+We've disabled lockdep on syzbot's arm32 instance now as that instance had
+been dead since March:
+https://github.com/google/syzkaller/commit/be386ae8800e02b4a9a3239c9565e9d40e253c84
 
-When all users of functions are in the kernel tree itself, you can use
-tools and manual verification that the code is correct, because those
-are the only users of the functions.
+It's running again. There may be an influx of new bugs.
 
-thanks,
-
-greg k-h
+Thanks,
+-- Marco
