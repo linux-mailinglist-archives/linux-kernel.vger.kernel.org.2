@@ -2,179 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A013F44C621
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 18:42:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A20F44C622
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 18:44:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231873AbhKJRp3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Nov 2021 12:45:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58104 "EHLO
+        id S232333AbhKJRqn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Nov 2021 12:46:43 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58380 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230100AbhKJRp1 (ORCPT
+        with ESMTP id S230100AbhKJRqm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Nov 2021 12:45:27 -0500
-Received: from mail-wm1-x32b.google.com (mail-wm1-x32b.google.com [IPv6:2a00:1450:4864:20::32b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 262E0C061764
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Nov 2021 09:42:39 -0800 (PST)
-Received: by mail-wm1-x32b.google.com with SMTP id n33-20020a05600c502100b0032fb900951eso601wmr.4
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Nov 2021 09:42:39 -0800 (PST)
+        Wed, 10 Nov 2021 12:46:42 -0500
+Received: from mail-wr1-x436.google.com (mail-wr1-x436.google.com [IPv6:2a00:1450:4864:20::436])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 77F6DC061764
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Nov 2021 09:43:54 -0800 (PST)
+Received: by mail-wr1-x436.google.com with SMTP id d3so5395921wrh.8
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Nov 2021 09:43:54 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=BmJmTnzPfpqvgfeS3ZzzZ3LIV2vZGhaQGUrN4OQ9GVc=;
-        b=A7oSaQ/R3coHeHC40rJ1CdryOdtv8cF/yEknlJz/6t2IQ9dnili9EARfpQDCBm28ji
-         +wyP8Y4NxaIga5rYkU9newjPK83r3XxBCUjtZFwOW/TvYSLyjyj+BCBKGQ1IGfRjvLI8
-         2bECtGd3vIUMuWU3wVJSqgwLGQZUAMpg38XCzAk9lIWGt7kzaxFdOuGOsCLoEz1YLXcz
-         FbsqZ6pCB+WNLHTk5aAH5wn6EMrs4x60kSWI9cwwRUcg6kgOoVefgrL+ipnZsugspW4J
-         yV0/8taOfuVhsurV1P76C8PWRMlnTr9vtgqt8XYUynssRc4DoF4uB61vyljyljf85GDs
-         0/BQ==
+        bh=B/HycvNCB34/xdYOHnt+wT2oilNf61VQEBagu7b9/H0=;
+        b=TFGa9Tteoxl+FrsLUJDcW3zqFTZQpIYagnB11lyM0oQP+8FCohxCS6+wdeAY5UVpeg
+         2IRt0R7SovCnTuhUwLIs88YXfLVIT6yHEdWn8s4K0+5dUM1wQmHkMgcAcrge2lkqESLv
+         dtJALp26jLrqSlLJq/MeNd804P7z7/hOoUxhm6nYDWmauGA4g49EhaitRap8LQDxBTVt
+         iIxd++2V8WaOBwOZCYaN63f9eDOWL204Y475hYPSE/R518oS1wu7i2uUheNvNXvBhuO9
+         z5rJgh4YlqZ6KrxSN55S1DXbaoMWqZJJnJy8h1zEy2xjrmil1a/WrtdNlQLIHlvPhVH1
+         smDA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=BmJmTnzPfpqvgfeS3ZzzZ3LIV2vZGhaQGUrN4OQ9GVc=;
-        b=nwwbN4BN7VW/TosI2ktvYXZfN4jVj/05OjwaZDsHCfau56iPSlJcCLH9QsME70vTL7
-         CEfj59EtMSGNFA/37xueTAxlEUcu36/YVsk96khQdvsGsiI9JKT114Vs3nlElBoQaSqi
-         gZ+K3hhqN0Smrj9Q5Bh3g9Chs5rV7ZuE6t5GimgkfGCRVVro208prf9nY5REJUWr2LSI
-         GAf6Ct1E5GAPy6lbF64FzoB5PGIVNWXEXkdLC6tBep768A1qGj8v9A5kmnK1eowMVTU/
-         bLDhoPAYntZbMqs4xvEfIojwOzHFC6bn+qiifVKbPKmfN4K1HCmzJn4PfCRfAmPGUMWd
-         NYTA==
-X-Gm-Message-State: AOAM533ARjhfxXiM01bhgmq2bOps4XsGUHEezK+lY3t9+wfoZXwav/tT
-        M44UpK/RImfTNAhIaIc75QZ3OvjWTvjf8W0pr6Jxrw==
-X-Google-Smtp-Source: ABdhPJzaIRfLIlvC2xdnSw40WJRg4en26VatfTndhl34g3jZs25Ylo2D5RvkxNkOG3tMYShQ+X6yeP3O+PNjG70M6HA=
-X-Received: by 2002:a05:600c:190b:: with SMTP id j11mr1023411wmq.112.1636566157490;
- Wed, 10 Nov 2021 09:42:37 -0800 (PST)
+        bh=B/HycvNCB34/xdYOHnt+wT2oilNf61VQEBagu7b9/H0=;
+        b=Tq4uzOszGAI9wvQ8DtL+V17NJ+Tw3KL8ThZuEFWP8u7QzlEyAAdBOGGpPFZCSOlgV0
+         H0EqhObBUyStXhntpmPS003KlhkZzg3fPH8FR/aDHKvOuvFQmEqhetfesokp3fcftqTE
+         sdM4DC3iIvyiKrk0dVG5qiR6x2RuWnRjZFK7LX/P6VTe9a/I3s2x+nEPR691FL7PKmVt
+         ejzzub4obM8QdCaQaQ1Rfmsoj+gvZIDHuuq1Qo1hCB1p9pxcB4/XUdUyfrS8WhQZ6uwI
+         ARVAC0ReDC4bVsDV6wip2CTzlDRHmb8XA9wf6cWCPI0w0HcqVsyCWAp/jNSh2aPzhmcB
+         oAMQ==
+X-Gm-Message-State: AOAM533bjjVaPvBqyqIIXOEDwfGPXOqnc7dEmCxXd0t/DlN42GZpZ3yx
+        +ryWuvv0gEuMxVRjT1GqgyPovdc/8pgtTfZD0ZBaFa9dmdQIYWrB
+X-Google-Smtp-Source: ABdhPJyCP46pjtoIZCgSJuKrg6d5/8D3VwMyLEeMwPCgg45LURy8bNHHwNTkKGXKEooSn07Bac68o+dHf+sKdBA4WMA=
+X-Received: by 2002:adf:f40b:: with SMTP id g11mr991302wro.296.1636566232638;
+ Wed, 10 Nov 2021 09:43:52 -0800 (PST)
 MIME-Version: 1.0
-References: <20211107235754.1395488-1-almasrymina@google.com>
- <YYtuqsnOSxA44AUX@t490s> <c5ed86d0-8af6-f54f-e352-8871395ad62e@redhat.com>
- <YYuCaNXikls/9JhS@t490s> <793685d2-be3f-9a74-c9a3-65c486e0ef1f@redhat.com>
- <YYuJd9ZBQiY50dVs@xz-m1.local> <8032a24c-3800-16e5-41b7-5565e74d3863@redhat.com>
-In-Reply-To: <8032a24c-3800-16e5-41b7-5565e74d3863@redhat.com>
-From:   Mina Almasry <almasrymina@google.com>
-Date:   Wed, 10 Nov 2021 09:42:25 -0800
-Message-ID: <CAHS8izPKN96M2GbHBC6_-XCr1pYy7uA-vNw2FHe01XbYMVdKUQ@mail.gmail.com>
-Subject: Re: [PATCH v4] mm: Add PM_HUGE_THP_MAPPING to /proc/pid/pagemap
-To:     David Hildenbrand <david@redhat.com>
-Cc:     Peter Xu <peterx@redhat.com>, Matthew Wilcox <willy@infradead.org>,
-        "Paul E . McKenney" <paulmckrcu@fb.com>,
-        Yu Zhao <yuzhao@google.com>, Jonathan Corbet <corbet@lwn.net>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Ivan Teterevkov <ivan.teterevkov@nutanix.com>,
-        Florian Schmidt <florian.schmidt@nutanix.com>,
-        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-mm@kvack.org
+References: <20211110010906.1923210-1-eric.dumazet@gmail.com>
+ <20211110010906.1923210-3-eric.dumazet@gmail.com> <YYuEXQ7Ur9f88pCw@hirez.programming.kicks-ass.net>
+ <CAMj1kXF8makQnZaWDpyzQc2ZiwQEU1ACYhrA91UaFT6S-6RXaQ@mail.gmail.com>
+ <CANn89i+STEwQkEN4hF-gx0WWrL8x5xg=8EDb5O_jf9f3MNVPEQ@mail.gmail.com> <CAMj1kXFOznCFN=P-6PMv+GN8w1=pYNL0gpC4S6ke5aCBmh3wTA@mail.gmail.com>
+In-Reply-To: <CAMj1kXFOznCFN=P-6PMv+GN8w1=pYNL0gpC4S6ke5aCBmh3wTA@mail.gmail.com>
+From:   Eric Dumazet <edumazet@google.com>
+Date:   Wed, 10 Nov 2021 09:43:39 -0800
+Message-ID: <CANn89iKAhZx3xRBO4gH-4SCZzUJoZy0HwkB8d5-zcA_uGQ4b1g@mail.gmail.com>
+Subject: Re: [PATCH 2/2] jump_label: refine placement of static_keys
+To:     Ard Biesheuvel <ardb@kernel.org>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Eric Dumazet <eric.dumazet@gmail.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Jason Baron <jbaron@akamai.com>,
+        "Steven Rostedt (VMware)" <rostedt@goodmis.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 10, 2021 at 12:57 AM Peter Xu <peterx@redhat.com> wrote:
+On Wed, Nov 10, 2021 at 9:06 AM Ard Biesheuvel <ardb@kernel.org> wrote:
 >
->
-> This also reminded me that we've got issue with smaps being too slow, and in
-> many cases we're only interested in a small portion of the whole memory.  This
-> made me wonder how about a new smaps interface taking memory range as input.
->
-
-Does a patch like I'm providing here address the perf issues you're seeing?
-
-> Thanks,
->
-> --
-> Peter Xu
->
-
-On Wed, Nov 10, 2021 at 2:24 AM David Hildenbrand <david@redhat.com> wrote:
->
-> On 10.11.21 09:57, Peter Xu wrote:
-> > On Wed, Nov 10, 2021 at 09:30:50AM +0100, David Hildenbrand wrote:
-> >> On 10.11.21 09:27, Peter Xu wrote:
-> >>> On Wed, Nov 10, 2021 at 09:14:42AM +0100, David Hildenbrand wrote:
-> >>>> On 10.11.21 08:03, Peter Xu wrote:
-> >>>>> Hi, Mina,
-> >>>>>
-> >>>>> Sorry to comment late.
-> >>>>>
-> >>>>> On Sun, Nov 07, 2021 at 03:57:54PM -0800, Mina Almasry wrote:
-> >>>>>> diff --git a/Documentation/admin-guide/mm/pagemap.rst b/Documentation/admin-guide/mm/pagemap.rst
-> >>>>>> index fdc19fbc10839..8a0f0064ff336 100644
-> >>>>>> --- a/Documentation/admin-guide/mm/pagemap.rst
-> >>>>>> +++ b/Documentation/admin-guide/mm/pagemap.rst
-> >>>>>> @@ -23,7 +23,8 @@ There are four components to pagemap:
-> >>>>>>      * Bit  56    page exclusively mapped (since 4.2)
-> >>>>>>      * Bit  57    pte is uffd-wp write-protected (since 5.13) (see
-> >>>>>>        :ref:`Documentation/admin-guide/mm/userfaultfd.rst <userfaultfd>`)
-> >>>>>> -    * Bits 57-60 zero
-> >>>>>> +    * Bit  58    page is a huge (PMD size) THP mapping
-> >>>>>> +    * Bits 59-60 zero
-> >>>>>>      * Bit  61    page is file-page or shared-anon (since 3.5)
-> >>>>>>      * Bit  62    page swapped
-> >>>>>>      * Bit  63    page present
-> >>>>>> diff --git a/fs/proc/task_mmu.c b/fs/proc/task_mmu.c
-> >>>>>> index ad667dbc96f5c..6f1403f83b310 100644
-> >>>>>> --- a/fs/proc/task_mmu.c
-> >>>>>> +++ b/fs/proc/task_mmu.c
-> >>>>>> @@ -1302,6 +1302,7 @@ struct pagemapread {
-> >>>>>>  #define PM_SOFT_DIRTY           BIT_ULL(55)
-> >>>>>>  #define PM_MMAP_EXCLUSIVE       BIT_ULL(56)
-> >>>>>>  #define PM_UFFD_WP              BIT_ULL(57)
-> >>>>>> +#define PM_HUGE_THP_MAPPING     BIT_ULL(58)
-> >>>>>
-> >>>>> The ending "_MAPPING" seems redundant to me, how about just call it "PM_THP" or
-> >>>>> "PM_HUGE" (as THP also means HUGE already)?
-> >>>>>
-> >>>>> IMHO the core problem is about permission controls, and it seems to me we're
-> >>>>> actually trying to workaround it by duplicating some information we have.. so
-> >>>>> it's kind of a pity.  Totally not against this patch, but imho it'll be nicer
-> >>>>> if it's the permission part that to be enhanced, rather than a new but slightly
-> >>>>> duplicated interface.
-> >>>>
-> >>>> It's not a permission problem AFAIKS: even with permissions "changed",
-> >>>> any attempt to use /proc/kpageflags is just racy. Let's not go down that
-> >>>> path, it's really the wrong mechanism to export to random userspace.
-> >>>
-> >>> I agree it's racy, but IMHO that's fine.  These are hints for userspace to make
-> >>> decisions, they cannot be always right.  Even if we fetch atomically and seeing
-> >>> that this pte is swapped out, it can be quickly accessed at the same time and
-> >>> it'll be in-memory again.  Only if we can freeze the whole pgtable but we
-> >>> can't, so they can only be used as hints.
-> >>
-> >> Sorry, I don't think /proc/kpageflags (or exporting the PFNs to random
-> >> users via /proc/self/pagemap) is the way to go.
-> >>
-> >> "Since Linux 4.0 only users with the CAP_SYS_ADMIN capability can get
-> >> PFNs. In 4.0 and 4.1 opens by unprivileged fail with -EPERM.  Starting
-> >> from 4.2 the PFN field is zeroed if the user does not have
-> >> CAP_SYS_ADMIN. Reason: information about PFNs helps in exploiting
-> >> Rowhammer vulnerability."
+> On Wed, 10 Nov 2021 at 16:22, Eric Dumazet <edumazet@google.com> wrote:
 > >
-> > IMHO these are two problems that you mentioned.  That's also what I was
-> > wondering about: could the app be granted with CAP_SYS_ADMIN then?
+> > On Wed, Nov 10, 2021 at 2:24 AM Ard Biesheuvel <ardb@kernel.org> wrote:
+> > >
+> > > On Wed, 10 Nov 2021 at 09:36, Peter Zijlstra <peterz@infradead.org> wrote:
+> > > >
+> > > > On Tue, Nov 09, 2021 at 05:09:06PM -0800, Eric Dumazet wrote:
+> > > > > From: Eric Dumazet <edumazet@google.com>
+> > > > >
+> > > > > With CONFIG_JUMP_LABEL=y, "struct static_key" content is only
+> > > > > used for the control path.
+> > > > >
+> > > > > Marking them __read_mostly is only needed when CONFIG_JUMP_LABEL=n.
+> > > > > Otherwise we place them out of the way to increase data locality.
+> > > > >
+> > > > > This patch adds __static_key to centralize this new policy.
+> > > > >
+> > > > > Signed-off-by: Eric Dumazet <edumazet@google.com>
+> > > > > ---
+> > > > >  arch/x86/kvm/lapic.c       |  4 ++--
+> > > > >  arch/x86/kvm/x86.c         |  2 +-
+> > > > >  include/linux/jump_label.h | 25 +++++++++++++++++--------
+> > > > >  kernel/events/core.c       |  2 +-
+> > > > >  kernel/sched/fair.c        |  2 +-
+> > > > >  net/core/dev.c             |  8 ++++----
+> > > > >  net/netfilter/core.c       |  2 +-
+> > > > >  net/netfilter/x_tables.c   |  2 +-
+> > > > >  8 files changed, 28 insertions(+), 19 deletions(-)
+> > > > >
+> > > >
+> > > > Hurmph, it's a bit cumbersome to always have to add this __static_key
+> > > > attribute to every definition, and in fact you seem to have missed some.
+> > > >
+> > > > Would something like:
+> > > >
+> > > >         typedef struct static_key __static_key static_key_t;
+> > > >
+> > > > work? I forever seem to forget the exact things you can make a typedef
+> > > > do :/
+> > >
+> > > No, that doesn't work. Section placement is an attribute of the symbol
+> > > not of its type. So we'll need to macro'ify this.
 > >
-> > I am not sure whether that'll work well with /proc/kpage* though, as it's by
-> > default 0400.  So perhaps we need to manual adjust the file permission too to
-> > make sure the app can both access PFNs (with SYS_ADMIN) and the flags.  Totally
-> > no expert on the permissions..
+> > Yes, this is also why I chose a short __static_key (initially I was
+> > using something more descriptive but longer)
+> >
+> > >
+> > > But I'm not sure I understand why we need different policies here.
+> > > Static keys are inherently __read_mostly (unless they are not writable
+> > > to begin with), so keeping them all together in one place in the
+> > > binary should be sufficient, no?
+> >
+> > It is not optimal for CONFIG_JUMP_LABEL=n cases.
+> >
+> > For instance, networking will prefer having rps_needed / rfs_needed in
+> > the same cache lines than other hot read_mostly stuff,
+> > instead of being far away in other locations.
+> >
+> > ffffffff830e0f80 D dev_weight_tx_bias
+> > ffffffff830e0f84 D dev_rx_weight
+> > ffffffff830e0f88 D dev_tx_weight
+> > ffffffff830e0f8c D gro_normal_batch
+> > ffffffff830e0f90 D rps_sock_flow_table
+> > ffffffff830e0f98 D rps_cpu_mask
+> > ffffffff830e0f9c D rps_needed
+> > ffffffff830e0fa0 D rfs_needed
+> > ffffffff830e0fa4 D netdev_flow_limit_table_len
+> > ffffffff830e0fa8 d netif_napi_add.__print_once
+> > ffffffff830e0fac D netdev_unregister_timeout_secs
+> > ffffffff830e0fb0 D ptype_base
+> >
+> >
+> > When CONFIG_JUMP_LABEL=y, rps_needed/xps_needed being in a remote
+> > location is a win because it 'saves' 32 bytes than can be used better
 >
-> Me too :)
+> I understand that you want the key out of the way for
+> CONFIG_JUMP_LABEL=n, but the question was why we shouldn't do that
+> unconditionally. If we put all the keys together in a section, they
+> will only share cachelines with each other.
 >
-> IIRC changing permissions that was not an option -- which is why the
-> first approach suggested a new /proc/self/pageflags. But I guess Mina
-> can remind us (and eventually document all that in the patch description
-> :) ).
->
+> Also, what is the performance impact on a real world use case of this change?
 
-Sorry, yes I should update the commit message with this info. The
-issues with smaps are:
-1. Performance: I've pinged our network service folks to obtain a
-rough perf comparison but I haven't been able to get one. I can try to
-get a performance measurement myself but Peter seems to be also seeing
-this.
-2. smaps output is human readable and a bit convoluted for userspace to parse.
+Yes, this matters for low latency stuff, mostly.
 
->
-> --
-> Thanks,
->
-> David / dhildenb
->
+For CONFIG_JUMP_LABEL=n, I suggest we do not change the current layout,
+there is no need to. I do not want to risk performance regressions for
+no good reason.
+
+Unless you have something in mind _requiring_ all these atomic_t being
+grouped together ?
