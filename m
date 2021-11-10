@@ -2,96 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 954F144BBEB
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 08:03:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9B26A44BBEC
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 08:03:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229673AbhKJHF5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Nov 2021 02:05:57 -0500
-Received: from mail.kernel.org ([198.145.29.99]:55092 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229558AbhKJHF4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Nov 2021 02:05:56 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 541806117A;
-        Wed, 10 Nov 2021 07:03:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1636527789;
-        bh=mHhCBH/u9iDuf3oprEAHP5N9DJ2RYOny0X9ESwacX0U=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=gDlV2/paJcwTtxeLnkacv4mhy1r/qhW38rl36ihcXJ8+JHNc9eIyIVIMpv+5gSAGp
-         qX0nYDprgHUUjhpKoGE7qu/ED3jyLdSB/wsfmQyU0BzLFSycxstl3eO5tqR/i+DZMk
-         mW4VXRl6W265otA2tGfXotLXb7g5mTEiWZDuItM4=
-Date:   Wed, 10 Nov 2021 08:03:04 +0100
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Ming Lei <ming.lei@redhat.com>
-Cc:     Petr Mladek <pmladek@suse.com>, linux-kernel@vger.kernel.org,
-        Luis Chamberlain <mcgrof@kernel.org>,
-        Joe Lawrence <joe.lawrence@redhat.com>
-Subject: Re: [PATCH 2/2] kobject: wait until kobject is cleaned up before
- freeing module
-Message-ID: <YYtuqF2Pj/D9iEBa@kroah.com>
-References: <20211105063710.4092936-1-ming.lei@redhat.com>
- <20211105063710.4092936-3-ming.lei@redhat.com>
- <YYldwVcrEqShHyq8@alley>
- <YYnWO1Jug3xu+NB+@T590>
- <YYp0IffopQMiOsHN@alley>
- <YYseW96UYRJ/eE5p@T590>
+        id S229741AbhKJHGE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Nov 2021 02:06:04 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:27933 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229713AbhKJHGD (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Nov 2021 02:06:03 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1636527795;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=0cadZK7XFbebH7WBSpOeCcH2GLCqGBVv5pJTjTqScgI=;
+        b=MSb6zyufM34Dz/7le2ju8Z/eb/gd2fD9gJrZP5CfMs/HU5ggn5mjxss+POEtqZftBRagQ6
+        SgsiioYqRuhiMeyeZKCBLXK909YE6L5BHV1D0jJrRfyv9lV6ufk33T2WNJv0JwjscPpF1R
+        37vAXkdUci9mThxhEajvpXtW5WwOIQo=
+Received: from mail-pj1-f71.google.com (mail-pj1-f71.google.com
+ [209.85.216.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-192-purM7dspPJOb7tUb07asiQ-1; Wed, 10 Nov 2021 02:03:14 -0500
+X-MC-Unique: purM7dspPJOb7tUb07asiQ-1
+Received: by mail-pj1-f71.google.com with SMTP id u11-20020a17090a4bcb00b001a6e77f7312so553471pjl.5
+        for <linux-kernel@vger.kernel.org>; Tue, 09 Nov 2021 23:03:14 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=0cadZK7XFbebH7WBSpOeCcH2GLCqGBVv5pJTjTqScgI=;
+        b=ujpIo8mjUbuAbk0+JJTIRCnp97KKPFuwCdskV/mRECPyqJjtvpm+YQVMrL0VYwETYO
+         j45zSYL6eS1eRL06x8hreIZBTvOqiylDcUsFsov+Zk3lIJItfsLOO7acVvEb9nm8Vsf2
+         6qdNTD0HbThHsE+6Mh+HqqH6/4bGbdrabdBU20C1/rO6vxRL0HPw7o40B0dja+dyafsi
+         uOZ518sQ9Jgel2OUEtRFnE5CoakJBaiA5uuGxO4mueFCso1ovysYgEjvb8Z9ioBUpMS8
+         VpWmk87/pYj1a1aZFP8fU2Aa+ZV1l0sFfNGFqgwLhclkuXk9XaqOis62m2zP8ZH541nQ
+         Pn0Q==
+X-Gm-Message-State: AOAM532biCJ552v1mnrOFOFWdVxjeeBTYpyJM/04lNyvRmxa8mkzNkgl
+        8ESMyPDP+XGaxh2K+MV8HksvlTvslRUIvovyh/DkSk++xiewm2M8v2yBYDx1Wb/tX4Q4ezCCZzM
+        LyTe62vr8hXMN42tiL/aK47+H
+X-Received: by 2002:a17:902:d50d:b0:141:ea03:5193 with SMTP id b13-20020a170902d50d00b00141ea035193mr13204503plg.89.1636527793174;
+        Tue, 09 Nov 2021 23:03:13 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJwADuN2McaK3Hz7vOj8bQd5Tyj05xsqo8F8qbby7T4wFIAY2nEuPkvVgYieWrNTWlsrTqt6ig==
+X-Received: by 2002:a17:902:d50d:b0:141:ea03:5193 with SMTP id b13-20020a170902d50d00b00141ea035193mr13204473plg.89.1636527792955;
+        Tue, 09 Nov 2021 23:03:12 -0800 (PST)
+Received: from t490s ([209.132.188.80])
+        by smtp.gmail.com with ESMTPSA id e15sm1645364pfv.131.2021.11.09.23.03.08
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 09 Nov 2021 23:03:12 -0800 (PST)
+Date:   Wed, 10 Nov 2021 15:03:06 +0800
+From:   Peter Xu <peterx@redhat.com>
+To:     Mina Almasry <almasrymina@google.com>
+Cc:     David Hildenbrand <david@redhat.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        "Paul E . McKenney" <paulmckrcu@fb.com>,
+        Yu Zhao <yuzhao@google.com>, Jonathan Corbet <corbet@lwn.net>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Ivan Teterevkov <ivan.teterevkov@nutanix.com>,
+        Florian Schmidt <florian.schmidt@nutanix.com>,
+        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-mm@kvack.org
+Subject: Re: [PATCH v4] mm: Add PM_HUGE_THP_MAPPING to /proc/pid/pagemap
+Message-ID: <YYtuqsnOSxA44AUX@t490s>
+References: <20211107235754.1395488-1-almasrymina@google.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <YYseW96UYRJ/eE5p@T590>
+In-Reply-To: <20211107235754.1395488-1-almasrymina@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 10, 2021 at 09:20:27AM +0800, Ming Lei wrote:
-> On Tue, Nov 09, 2021 at 02:14:09PM +0100, Petr Mladek wrote:
-> > On Tue 2021-11-09 10:00:27, Ming Lei wrote:
-> > > On Mon, Nov 08, 2021 at 06:26:25PM +0100, Petr Mladek wrote:
-> > > > On Fri 2021-11-05 14:37:10, Ming Lei wrote:
-> > > > > kobject_put() may become asynchronously because of
-> > > > > CONFIG_DEBUG_KOBJECT_RELEASE, so once kobject_put() returns, the caller may
-> > > > > expect the kobject is released after the last refcnt is dropped, however
-> > > > > CONFIG_DEBUG_KOBJECT_RELEASE just schedules one delayed work function
-> > > > > for cleaning up the kobject. Inside the cleanup handler, kobj->ktype and
-> > > > > kobj->ktype->release are required.
-> > > > > 
-> > > > > It is supposed that no activity is on kobject itself any more since
-> > > > > module_exit() is started, so it is reasonable for the kobject user or
-> > > > > driver to expect that kobject can be really released in the last run of
-> > > > > kobject_put() in module_exit() code path. Otherwise, it can be thought as
-> > > > > one driver's bug since the module is going away.
-> > > > 
-> > > > Honestly, this looks a bit fragile. What if there is still another
-> > > > reference from some reason. IMHO, it is easy to do it wrong.
-> > > > The kobject stuff is super-tricky.
-> > > > 
-> > > > Yes, there is the argument that it is a drivers bug when it does not
-> > > > work.
-> > > 
-> > > That is another 'issue'(even not sure if there is really), and it isn't covered
-> > > in this patchset, which focuses on fixing CONFIG_DEBUG_KOBJECT_RELEASE, so
-> > > please do not mix the two here.
-> > 
-> > Yes, it is another issue but the relation is very important.
-> > 
-> > My understanding is that this patch prevents problems caused by
-> > the delayed work. The kobject is added into kobj_cleanup_list
-> > only when the delayed work is scheduled. The patch has no effect
-> > if the delayed work is not used.
-> > 
-> > From my POV, this patch kind of removes the effect of the delayed
-> > work. My point is:
-> > 
-> > Does it still make sense to use the delayed work in the first place?
-> > Will the delayed work still help to catch some problems?
-> 
-> That depends on the user of CONFIG_DEBUG_KOBJECT_RELEASE, if users
-> thought it is useless, I think it is fine to remove it.
-> 
-> Greg, any idea about if CONFIG_DEBUG_KOBJECT_RELEASE is useful now?
+Hi, Mina,
 
-Yes it is, it finds driver bugs where they do things wrong.
+Sorry to comment late.
 
-I've been ignoring this thread until after 5.16-rc1 is out, sorry.
+On Sun, Nov 07, 2021 at 03:57:54PM -0800, Mina Almasry wrote:
+> diff --git a/Documentation/admin-guide/mm/pagemap.rst b/Documentation/admin-guide/mm/pagemap.rst
+> index fdc19fbc10839..8a0f0064ff336 100644
+> --- a/Documentation/admin-guide/mm/pagemap.rst
+> +++ b/Documentation/admin-guide/mm/pagemap.rst
+> @@ -23,7 +23,8 @@ There are four components to pagemap:
+>      * Bit  56    page exclusively mapped (since 4.2)
+>      * Bit  57    pte is uffd-wp write-protected (since 5.13) (see
+>        :ref:`Documentation/admin-guide/mm/userfaultfd.rst <userfaultfd>`)
+> -    * Bits 57-60 zero
+> +    * Bit  58    page is a huge (PMD size) THP mapping
+> +    * Bits 59-60 zero
+>      * Bit  61    page is file-page or shared-anon (since 3.5)
+>      * Bit  62    page swapped
+>      * Bit  63    page present
+> diff --git a/fs/proc/task_mmu.c b/fs/proc/task_mmu.c
+> index ad667dbc96f5c..6f1403f83b310 100644
+> --- a/fs/proc/task_mmu.c
+> +++ b/fs/proc/task_mmu.c
+> @@ -1302,6 +1302,7 @@ struct pagemapread {
+>  #define PM_SOFT_DIRTY		BIT_ULL(55)
+>  #define PM_MMAP_EXCLUSIVE	BIT_ULL(56)
+>  #define PM_UFFD_WP		BIT_ULL(57)
+> +#define PM_HUGE_THP_MAPPING	BIT_ULL(58)
 
-greg k-h
+The ending "_MAPPING" seems redundant to me, how about just call it "PM_THP" or
+"PM_HUGE" (as THP also means HUGE already)?
+
+IMHO the core problem is about permission controls, and it seems to me we're
+actually trying to workaround it by duplicating some information we have.. so
+it's kind of a pity.  Totally not against this patch, but imho it'll be nicer
+if it's the permission part that to be enhanced, rather than a new but slightly
+duplicated interface.
+
+Thanks,
+
+-- 
+Peter Xu
+
