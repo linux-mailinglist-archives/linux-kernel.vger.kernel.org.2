@@ -2,226 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AB7FE44C68D
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 18:59:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7BAC144C691
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 18:59:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232010AbhKJSCB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Nov 2021 13:02:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33628 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230311AbhKJSCA (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Nov 2021 13:02:00 -0500
-Received: from mail-wm1-x32c.google.com (mail-wm1-x32c.google.com [IPv6:2a00:1450:4864:20::32c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2BCE4C061766
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Nov 2021 09:59:12 -0800 (PST)
-Received: by mail-wm1-x32c.google.com with SMTP id o29so2987786wms.2
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Nov 2021 09:59:12 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=sgIGbQ+ELnZoSxdoafp+PyrTLIczqcJkb+RcXGdEEjQ=;
-        b=d/vtuumeAYdigLXhsngLtZQ3LOyVMXKR59zYrqBFvpI6OFuJxMtg67LZaaXSpHFZYt
-         d7JAJSrBqNa95Eg09MrvY0peCY+RMGBzPQ8UNLTroP0tFb3b0wD8+ZH5l65OCtBhaIKp
-         kHrX+D4IEIV/mQMKpJbFl2yOn1OCcenjrT61Zw2j2UHrjPCyIw8J3fs2I7KtCb43n+Vh
-         3USSZwm0A08MZOEnVQZITxxoZbkvnMnWxHBIBTwgvSG92oA68sZyXZvs52TUK1eensU5
-         6N/oMbwbIgAkO4OVr8urbCg1XblpTJ1/gLgNmJluzgsMdxuBGBWlkBFWoqB+HQe8RyzX
-         ++eQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=sgIGbQ+ELnZoSxdoafp+PyrTLIczqcJkb+RcXGdEEjQ=;
-        b=VCC4g24+PIHxrBhPSHWkzaJXFtdHu94eb0gZNtKiQpXy2H6aPNSzVrbs/iFJ/9Ozg0
-         Vt/mzBe9gFYlHlhTFWPzW5Z6lKZHBqzmMwumw8Q3B8dT+laXqBUcKwmlO0dXcHdtt3Ar
-         OZiuarar4z2YqLiDuVfLis4QWxrL9op5e0jGwVUyC2cTNpT+gczZ254+J7+v94sO/2Vy
-         3zTB2NfZCRV+4/sbaO3r92npk4CmnqIlYGi7yhE3mqMakGQbUlMQIApDuxwlerArDZHq
-         wr44JMazaPnGkeGdk1CSflWA5Doyymd1AaTXgIUQrRH6cERT0dVjdzst3xFVKT+sQWcr
-         vL3g==
-X-Gm-Message-State: AOAM533M28ixoKl83Pk5bMF/Y18w17YloF4TXpHQUyTHku2NexoRTvcW
-        6EDnRuG7xAjLwy4gtVXHy+/HaaouxskvOqCBhXh+6g==
-X-Google-Smtp-Source: ABdhPJzVOeErgr6Vf0sFYcN9jag0yuKJlP5kR1fHeL7WaglNJCR0i6mRudPPfGaAjRaIW5LD691y6pzB5rD+f6zdwWU=
-X-Received: by 2002:a1c:770e:: with SMTP id t14mr18046026wmi.173.1636567150039;
- Wed, 10 Nov 2021 09:59:10 -0800 (PST)
+        id S232460AbhKJSCV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Nov 2021 13:02:21 -0500
+Received: from mail.kernel.org ([198.145.29.99]:36822 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230311AbhKJSCT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Nov 2021 13:02:19 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D7FAA61159;
+        Wed, 10 Nov 2021 17:59:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1636567172;
+        bh=Ofe7eOWNhRiC50gEQfKlr9CMMuFmkI3ju3xfiZYyFrY=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:From;
+        b=rEP32YbBqIePn8GoT80SgIFr3elQJFDM3gSWJVE1+is3HvHlpnQUw41LBLfsI4h1w
+         YCNfyWeIQLvNjmHqJIpAAudhngNYYdxS+Ij2I39rOcjkUujSJtokc0krejrfk8vVTH
+         +7XYf0bCe76SRrSjh8BY9EkoZ3CReYy0FnrnidFD4uFpXUt3hD3UwLDNQh1h/92g6x
+         /cj84RDYWSoaOrUHhmVqyctQ1UkolBiSKrHfi3P49JFTkAxadb+ncQMeoNN1vrjuSl
+         /ei/em8Bm1b8hgAeqHKnn/z3ShASG2w0bIZi8uVQulI4LEPHI0Y9FV0XT36JA28W4K
+         G9iOBlWvuI4+Q==
+Date:   Wed, 10 Nov 2021 11:59:29 -0600
+From:   Bjorn Helgaas <helgaas@kernel.org>
+To:     "Rafael J. Wysocki" <rafael@kernel.org>
+Cc:     Robert =?utf-8?B?xZp3acSZY2tp?= <robert@swiecki.net>,
+        Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
+        <u.kleine-koenig@pengutronix.de>,
+        linux-i2c <linux-i2c@vger.kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Linux PCI <linux-pci@vger.kernel.org>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Subject: Re: [PATCH] pci: Don't call resume callback for nearly bound devices
+Message-ID: <20211110175929.GA1245597@bhelgaas>
 MIME-Version: 1.0
-References: <20211105170943.3479315-1-irogers@google.com> <20211105170943.3479315-7-irogers@google.com>
- <YYvBhfyizI+z8SAC@krava> <CAP-5=fWRzptEG2TUALNJaVLdP2egHhyhPZ=9HuP2da68jiPPTA@mail.gmail.com>
- <YYvYnYPg43acgkvs@krava>
-In-Reply-To: <YYvYnYPg43acgkvs@krava>
-From:   Ian Rogers <irogers@google.com>
-Date:   Wed, 10 Nov 2021 09:58:57 -0800
-Message-ID: <CAP-5=fU4JCn_8VY3KstN3bZeV-uRptO0hzyBFy=rGNtap1WRbw@mail.gmail.com>
-Subject: Re: [PATCH 6/7] perf expr: Add metric literals for topology.
-To:     Jiri Olsa <jolsa@redhat.com>
-Cc:     Andi Kleen <ak@linux.intel.com>, Jin Yao <yao.jin@linux.intel.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        John Garry <john.garry@huawei.com>,
-        Kajol Jain <kjain@linux.ibm.com>,
-        "Paul A . Clarke" <pc@us.ibm.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Riccardo Mancini <rickyman7@gmail.com>,
-        Kan Liang <kan.liang@linux.intel.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Madhavan Srinivasan <maddy@linux.ibm.com>,
-        Song Liu <song@kernel.org>, Wan Jiabing <wanjiabing@vivo.com>,
-        Yury Norov <yury.norov@gmail.com>,
-        Changbin Du <changbin.du@intel.com>,
-        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAJZ5v0gGZEpj7bJZx9teNJsDfuVA0YW8PGt+q_aEDdGJPDh=bg@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 10, 2021 at 6:35 AM Jiri Olsa <jolsa@redhat.com> wrote:
->
-> On Wed, Nov 10, 2021 at 06:19:04AM -0800, Ian Rogers wrote:
-> > On Wed, Nov 10, 2021 at 4:56 AM Jiri Olsa <jolsa@redhat.com> wrote:
+On Wed, Nov 10, 2021 at 05:48:52PM +0100, Rafael J. Wysocki wrote:
+> On Wed, Nov 10, 2021 at 5:33 PM Robert Święcki <robert@swiecki.net> wrote:
+> > śr., 10 lis 2021 o 15:14 Bjorn Helgaas <helgaas@kernel.org> napisał(a):
+> > > On Tue, Nov 09, 2021 at 02:05:18PM -0600, Bjorn Helgaas wrote:
+> > > > On Tue, Nov 09, 2021 at 07:58:47PM +0100, Rafael J. Wysocki wrote:
+> > > > > On Tue, Nov 9, 2021 at 7:52 PM Rafael J. Wysocki <rafael@kernel.org> wrote:
+> > > > > > ...
 > > >
-> > > On Fri, Nov 05, 2021 at 10:09:42AM -0700, Ian Rogers wrote:
-> > > > Allow the number of cpus, cores, dies and packages to be queried by a
-> > > > metric expression.
+> > > > > > So instead, we can drop the pm_runtime_get_sync() and
+> > > > > > pm_runtime_put_sync() from local_pci_probe() and pci_device_remove(),
+> > > > > > respectively, and add pm_runtine_get_noresume() to pci_pm_init(),
+> > > > > > which will prevent PM-runtime from touching the device until it has a
+> > > > > > driver that supports PM-runtime.
+> > > > > >
+> > > > > > We'll lose the theoretical ability to put unbound devices into D3 this
+> > > > > > way, but we learned some time ago that this isn't safe in all cases
+> > > > > > anyway.
+> > > > >
+> > > > > IOW, something like this (untested and most likely white-space-damaged).
 > > > >
-> > > > Signed-off-by: Ian Rogers <irogers@google.com>
-> > > > ---
-> > > >  tools/perf/tests/expr.c | 12 +++++++++++-
-> > > >  tools/perf/util/expr.c  | 27 +++++++++++++++++++++++++++
-> > > >  2 files changed, 38 insertions(+), 1 deletion(-)
+> > > > Thanks!  I applied this manually to for-linus in hopes of making the
+> > > > the next linux-next build.
 > > > >
-> > > > diff --git a/tools/perf/tests/expr.c b/tools/perf/tests/expr.c
-> > > > index 9ee2dc91c27b..0c09ccc76665 100644
-> > > > --- a/tools/perf/tests/expr.c
-> > > > +++ b/tools/perf/tests/expr.c
-> > > > @@ -66,7 +66,7 @@ int test__expr(struct test *t __maybe_unused, int subtest __maybe_unused)
-> > > >  {
-> > > >       struct expr_id_data *val_ptr;
-> > > >       const char *p;
-> > > > -     double val;
-> > > > +     double val, num_cpus, num_cores, num_dies, num_packages;
-> > > >       int ret;
-> > > >       struct expr_parse_ctx *ctx;
-> > > >
-> > > > @@ -161,6 +161,16 @@ int test__expr(struct test *t __maybe_unused, int subtest __maybe_unused)
-> > > >                       NULL, ctx) == 0);
-> > > >       TEST_ASSERT_VAL("find ids", hashmap__size(ctx->ids) == 0);
-> > > >
-> > > > +     /* Test toplogy constants appear well ordered. */
-> > > > +     expr__ctx_clear(ctx);
-> > > > +     TEST_ASSERT_VAL("#num_cpus", expr__parse(&num_cpus, ctx, "#num_cpus") == 0);
-> > > > +     TEST_ASSERT_VAL("#num_cores", expr__parse(&num_cores, ctx, "#num_cores") == 0);
-> > > > +     TEST_ASSERT_VAL("#num_cpus >= #num_cores", num_cpus >= num_cores);
-> > > > +     TEST_ASSERT_VAL("#num_dies", expr__parse(&num_dies, ctx, "#num_dies") == 0);
-> > > > +     TEST_ASSERT_VAL("#num_cores >= #num_dies", num_cores >= num_dies);
-> > > > +     TEST_ASSERT_VAL("#num_packages", expr__parse(&num_packages, ctx, "#num_packages") == 0);
-> > > > +     TEST_ASSERT_VAL("#num_dies >= #num_packages", num_dies >= num_packages);
-> > > > +
-> > > >       expr__ctx_free(ctx);
-> > > >
-> > > >       return 0;
-> > > > diff --git a/tools/perf/util/expr.c b/tools/perf/util/expr.c
-> > > > index 7464739c2890..15af8b8ef5e7 100644
-> > > > --- a/tools/perf/util/expr.c
-> > > > +++ b/tools/perf/util/expr.c
-> > > > @@ -5,6 +5,8 @@
-> > > >  #include <stdlib.h>
-> > > >  #include <string.h>
-> > > >  #include "metricgroup.h"
-> > > > +#include "cpumap.h"
-> > > > +#include "cputopo.h"
-> > > >  #include "debug.h"
-> > > >  #include "expr.h"
-> > > >  #include "expr-bison.h"
-> > > > @@ -375,9 +377,34 @@ double expr_id_data__value(const struct expr_id_data *data)
-> > > >
-> > > >  double expr__get_literal(const char *literal)
-> > > >  {
-> > > > +     static struct cpu_topology *topology;
-> > > > +
-> > > >       if (!strcmp("#smt_on", literal))
-> > > >               return smt_on() > 0 ? 1.0 : 0.0;
-> > > >
-> > > > +     if (!strcmp("#num_cpus", literal))
-> > > > +             return cpu__max_present_cpu();
-> > > > +
-> > > > +     /*
-> > > > +      * Assume that topology strings are consistent, such as CPUs "0-1"
-> > > > +      * wouldn't be listed as "0,1", and so after deduplication the number of
-> > > > +      * these strings gives an indication of the number of packages, dies,
-> > > > +      * etc.
-> > > > +      */
-> > > > +     if (!topology) {
-> > > > +             topology = cpu_topology__new();
+> > > > Please send any testing reports and corrections to the patch and
+> > > > commit log!
 > > >
-> > > any chance we could propagate expr_scanner_ctx in here and store topology
-> > > to it and release it at the end? I think we have several places like this,
-> > > so it'd be nice not to make more if it's possible ;-)
+> > > Robert, I hate to ask even more of you, but if you have a chance, it
+> > > would be very helpful if you could test the patch below.  I'm pretty
+> > > sure it should fix the problem you saw, and I hope to ask Linus to
+> > > merge it today.
 > >
-> > The topology here is static and so will only get computed once per
-> > execution rather than once pre expression parse. I was worried about
-> > the cost of recomputing the topology for something like 'perf stat -I
-> > 1000 -M ...' in which case the static will do less recomputation.
->
-> can't we have the topology created/release on the top fo the parsing
-> and released after all expressions are parsed?
->
-> or we could come up with some generic way to handle this kind of release
+> > I think the most recent patch creates some timeouts and other problems
+> > in pci-related code? Things I haven't seen before.
+> 
+> So I honestly think that commit 2a4d9408c9e8 needs to be reverted,
+> because it clearly does more than it is supposed to and we need to go
+> back to the drawing board and do this again, but correctly.
 
-Creating the topology at the top of metric parsing would incur a sysfs
-parsing cost on metrics regardless of whether they used the topology.
-I feel a lazy approach is better to avoid this cost. We could make
-this part of the expression context and lazily initialize it there.
-It'd be good to keep the expression context around in 'perf stat' in
-that case. I quite like this approach as really the topology should be
-part of the perf environment and part of the header. It is interesting
-to think how can we get metrics to work with 'perf stat record'.
-Currently you will get metrics for something like 'perf stat record -e
-instructions,cycles -a sleep 2; perf stat report', but none baked in
-metrics don't work and we don't even have the metric-id to make this
-work (even using '-M IPC' doesn't work). Putting the environment in
-the session, making the topology part of it, writing/reading data
-based on that seems like worthwhile clean up but beyond the scope of
-what I was trying to do here.
+Yep, I agree, I'll work on that today.
 
-In terms of releasing for the sake of memory leaks, leak sanitizer
-doesn't treat memory allocated and reachable from a global as a leak.
-We can't precompute the topology and so this style of approach is what
-I'm used to. Putting the topology into the parsing context and lazily
-initializing would be the second best option imo, and I can do that if
-this is a blocker.
-
-Thanks,
-Ian
-
-> jirka
->
-> >
-> > Thanks,
-> > Ian
-> >
-> > > thanks,
-> > > jirka
-> > >
-> > > > +             if (!topology) {
-> > > > +                     pr_err("Error creating CPU topology");
-> > > > +                     return NAN;
-> > > > +             }
-> > > > +     }
-> > > > +     if (!strcmp("#num_packages", literal))
-> > > > +             return topology->package_cpus_lists;
-> > > > +     if (!strcmp("#num_dies", literal))
-> > > > +             return topology->die_cpus_lists;
-> > > > +     if (!strcmp("#num_cores", literal))
-> > > > +             return topology->core_cpus_lists;
-> > > > +
-> > > >       pr_err("Unrecognized literal '%s'", literal);
-> > > >       return NAN;
-> > > >  }
-> > > > --
-> > > > 2.34.0.rc0.344.g81b53c2807-goog
-> > > >
-> > >
-> >
->
+Bjorn
