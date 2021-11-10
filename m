@@ -2,79 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0EC3444CC99
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 23:23:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2945444CCA6
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 23:25:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234096AbhKJWZx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Nov 2021 17:25:53 -0500
-Received: from inva020.nxp.com ([92.121.34.13]:36246 "EHLO inva020.nxp.com"
+        id S233679AbhKJW14 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Nov 2021 17:27:56 -0500
+Received: from vps0.lunn.ch ([185.16.172.187]:55422 "EHLO vps0.lunn.ch"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233655AbhKJWZ0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Nov 2021 17:25:26 -0500
-Received: from inva020.nxp.com (localhost [127.0.0.1])
-        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 292D61A11A6;
-        Wed, 10 Nov 2021 23:22:38 +0100 (CET)
-Received: from smtp.na-rdc02.nxp.com (usphx01srsp001v.us-phx01.nxp.com [134.27.49.11])
-        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id D4E261A1196;
-        Wed, 10 Nov 2021 23:22:37 +0100 (CET)
-Received: from right.am.freescale.net (right.am.freescale.net [10.81.116.142])
-        by usphx01srsp001v.us-phx01.nxp.com (Postfix) with ESMTP id 3C3E540A85;
-        Wed, 10 Nov 2021 15:22:37 -0700 (MST)
-From:   Li Yang <leoyang.li@nxp.com>
-To:     Shawn Guo <shawnguo@kernel.org>, Rob Herring <robh+dt@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>
-Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        Yangbo Lu <yangbo.lu@nxp.com>, Li Yang <leoyang.li@nxp.com>
-Subject: [PATCH 11/11] arm64: dts: lx2162aqds: support SD UHS-I and eMMC HS400 modes
-Date:   Wed, 10 Nov 2021 16:22:00 -0600
-Message-Id: <20211110222200.6780-12-leoyang.li@nxp.com>
-X-Mailer: git-send-email 2.25.1.377.g2d2118b
-In-Reply-To: <20211110222200.6780-1-leoyang.li@nxp.com>
-References: <20211110222200.6780-1-leoyang.li@nxp.com>
+        id S233552AbhKJW1z (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Nov 2021 17:27:55 -0500
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
+        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
+        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
+        bh=6c7O9hvf//7ub1+0PLLd9pZ0Zd9X3mBxwS7SrJoaOIw=; b=aQMlY2ZIhrflITkxdfmcBwng62
+        wFM9qpYp8HuEJd6lyYIrJXjB3i4EPMasctvzVpUopFvVd5a1dywemthxZO5ivY0/UomxgPdqFOZpy
+        grMYLlM87sH6DmRsfZHkYh7S/TeX0cr24HjK/VdzLAuR70oJz7ok54yDgvktn+eviZLk=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
+        (envelope-from <andrew@lunn.ch>)
+        id 1mkw1a-00D937-Nb; Wed, 10 Nov 2021 23:24:58 +0100
+Date:   Wed, 10 Nov 2021 23:24:58 +0100
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     Ansuel Smith <ansuelsmth@gmail.com>
+Cc:     Marek =?iso-8859-1?Q?Beh=FAn?= <kabel@kernel.org>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Vladimir Oltean <olteanv@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>, Pavel Machek <pavel@ucw.cz>,
+        John Crispin <john@phrozen.org>, netdev@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-leds@vger.kernel.org
+Subject: Re: [RFC PATCH v3 2/8] leds: add function to configure hardware
+ controlled LED
+Message-ID: <YYxGuloRkpsCI1oJ@lunn.ch>
+References: <20211109022608.11109-1-ansuelsmth@gmail.com>
+ <20211109022608.11109-3-ansuelsmth@gmail.com>
+ <20211109040103.7b56bf82@thinkpad>
+ <YYqEPZpGmjNgFj0L@Ansuel-xps.localdomain>
+ <YYre31rVDcs8OWre@lunn.ch>
+ <YYwisR8XLL7TnwCB@Ansuel-xps.localdomain>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Virus-Scanned: ClamAV using ClamSMTP
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YYwisR8XLL7TnwCB@Ansuel-xps.localdomain>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Yangbo Lu <yangbo.lu@nxp.com>
+> If we should reuse blink_set to control hw blink I need to understand 2
+> thing.
+> 
+> The idea to implement the function hw_control_configure was to provide
+> the triggers some way to configure the various blink_mode. (and by using
+> the cmd enum provide different info based on the return value)
+> 
+> The advised path from Marek is to make the changes in the trigger_data
+> and the LED driver will then use that to configure blink mode.
+> 
+> I need to call an example to explain my concern:
+> qca8k switch. Can both run in hardware mode and software mode (by
+> controlling the reg to trigger manual blink) and also there is an extra
+> mode to blink permanently at 4hz.
+> 
+> Now someone would declare the brightness_set to control the led
+> manually and blink_set (for the permanent 4hz blink feature)
+> So that's where my idea comes about introducting another function and
+> the fact that it wouldn't match that well with blink_set with some LED.
+> 
+> I mean if we really want to use blink_set also for this(hw_control), we
+> can consider adding a bool to understand when hw_control is active or not.
+> So blink_set can be used for both feature.
 
-The default NXP SDHC adapter cards for LX2162AQDS are SD 2.0/3.0
-adapter card for eSDHC1, and eMMC 5.1 adapter card for eSDHC2.
-Add speed modes properties supported by the two adapters in device
-tree node.
+I don't see why we need the bool. The driver should know that speeds
+it supports. If asked to do something it cannot do in the current mode
+it should return either -EINVAL, or maybe -EOPNOTSUPP. Depending on
+how to the trigger works, we might want -EOPNOTSUPP when in a hardware
+offload mode, which gets returned to user space. If we are in a
+software blinking mode -EINVAL, so that the trigger does the blinking
+in software.
 
-Signed-off-by: Yangbo Lu <yangbo.lu@nxp.com>
-Signed-off-by: Li Yang <leoyang.li@nxp.com>
----
- arch/arm64/boot/dts/freescale/fsl-lx2162a-qds.dts | 7 +++++++
- 1 file changed, 7 insertions(+)
-
-diff --git a/arch/arm64/boot/dts/freescale/fsl-lx2162a-qds.dts b/arch/arm64/boot/dts/freescale/fsl-lx2162a-qds.dts
-index e1defee1ad27..1db9c1b58e7a 100644
---- a/arch/arm64/boot/dts/freescale/fsl-lx2162a-qds.dts
-+++ b/arch/arm64/boot/dts/freescale/fsl-lx2162a-qds.dts
-@@ -226,10 +226,17 @@ &emdio2 {
- };
- 
- &esdhc0 {
-+	sd-uhs-sdr104;
-+	sd-uhs-sdr50;
-+	sd-uhs-sdr25;
-+	sd-uhs-sdr12;
- 	status = "okay";
- };
- 
- &esdhc1 {
-+	mmc-hs200-1_8v;
-+	mmc-hs400-1_8v;
-+	bus-width = <8>;
- 	status = "okay";
- };
- 
--- 
-2.25.1
-
+   Andrew
