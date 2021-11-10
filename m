@@ -2,163 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 07B5744C961
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 20:46:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9EA7544C94A
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 20:44:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232354AbhKJTtB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Nov 2021 14:49:01 -0500
-Received: from mga06.intel.com ([134.134.136.31]:31091 "EHLO mga06.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231859AbhKJTtA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Nov 2021 14:49:00 -0500
-X-IronPort-AV: E=McAfee;i="6200,9189,10164"; a="293580829"
-X-IronPort-AV: E=Sophos;i="5.87,224,1631602800"; 
-   d="scan'208";a="293580829"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Nov 2021 11:44:20 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.87,224,1631602800"; 
-   d="scan'208";a="589470791"
-Received: from irvmail001.ir.intel.com ([10.43.11.63])
-  by fmsmga002.fm.intel.com with ESMTP; 10 Nov 2021 11:44:16 -0800
-Received: from alobakin-mobl.ger.corp.intel.com (acetnero-MOBL1.ger.corp.intel.com [10.213.0.197])
-        by irvmail001.ir.intel.com (8.14.3/8.13.6/MailSET/Hub) with ESMTP id 1AAJiEIX013510;
-        Wed, 10 Nov 2021 19:44:14 GMT
-From:   Alexander Lobakin <alexandr.lobakin@intel.com>
-To:     Eric Dumazet <edumazet@google.com>
-Cc:     Alexander Lobakin <alexandr.lobakin@intel.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jesse Brandeburg <jesse.brandeburg@intel.com>,
-        Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
-        Michal Swiatkowski <michal.swiatkowski@intel.com>,
-        Xuan Zhuo <xuanzhuo@linux.alibaba.com>,
-        Antoine Tenart <atenart@kernel.org>,
-        Wei Wang <weiwan@google.com>,
-        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH net] net: fix premature exit from NAPI state polling in napi_disable()
-Date:   Wed, 10 Nov 2021 20:43:37 +0100
-Message-Id: <20211110194337.179-1-alexandr.lobakin@intel.com>
-X-Mailer: git-send-email 2.33.1
-In-Reply-To: <CANn89i+ZH83K9V7-7D6egC5AF=hxBv8FL+rroEqOskB-+TLZCA@mail.gmail.com>
-References: <20211110191126.1214-1-alexandr.lobakin@intel.com> <CANn89i+ZH83K9V7-7D6egC5AF=hxBv8FL+rroEqOskB-+TLZCA@mail.gmail.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        id S233309AbhKJTra (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Nov 2021 14:47:30 -0500
+Received: from mail-oi1-f182.google.com ([209.85.167.182]:42974 "EHLO
+        mail-oi1-f182.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233352AbhKJTrO (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Nov 2021 14:47:14 -0500
+Received: by mail-oi1-f182.google.com with SMTP id n66so7243201oia.9;
+        Wed, 10 Nov 2021 11:44:26 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:in-reply-to:references:subject:date
+         :message-id;
+        bh=PWYGAVGAa4OmQjHBrfYueh1qVok7v9Q7bchlBqeE0Is=;
+        b=q+VWBQhPNtv81R0awcP6wjA6rCBV1bYxIrCz3Kt9Arma5C5O4dPynvBpDzVJphh+lQ
+         /2uIxLK5BesRXDvXBFBAGj2X+QJ/clEPnqGu0qqKafcDNfyF5KVhVBJX5eIS5TecxDk/
+         S6YcHeeBQ5l+cA5u1uD3hsBLKH4w1cHi2cRYpgMDr7IL2xTjetTkSwd3Ud02vG6jNXtp
+         P1v8WkwmQxWTg5+Es9K+234yynWdQiNwwl2qaen1wzBvsMrhzDUE6+n/svC4iakuqQ/P
+         KYlpb2bSLiYA0mQLb5qrjoSJRsO7MTBdjx+6dOyjNG79+SFu6/BuhXXSdbQDY5RUMF91
+         z3Kw==
+X-Gm-Message-State: AOAM53206cFAlTC666uoge4Buh40++SJsLZrfHeh7cvpYasZJOYPqvZc
+        IoB1W9P1s3DIhPBkek+fRg==
+X-Google-Smtp-Source: ABdhPJx5hf7+JaWUtnKl1lTMYWOOqV0Ndfp17JshlWQb6ln0RW7bmree3bBTV0pVVk8UJ71HplKHhg==
+X-Received: by 2002:a05:6808:1641:: with SMTP id az1mr14582249oib.67.1636573465825;
+        Wed, 10 Nov 2021 11:44:25 -0800 (PST)
+Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
+        by smtp.gmail.com with ESMTPSA id n189sm94013oif.33.2021.11.10.11.44.24
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 10 Nov 2021 11:44:25 -0800 (PST)
+Received: (nullmailer pid 1783739 invoked by uid 1000);
+        Wed, 10 Nov 2021 19:44:20 -0000
+From:   Rob Herring <robh@kernel.org>
+To:     Shawn Guo <shawn.guo@linaro.org>
+Cc:     linux-pm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
+        Loic Poulain <loic.poulain@linaro.org>,
+        linux-kernel@vger.kernel.org,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Georgi Djakov <djakov@kernel.org>
+In-Reply-To: <20211110120716.6401-6-shawn.guo@linaro.org>
+References: <20211110120716.6401-1-shawn.guo@linaro.org> <20211110120716.6401-6-shawn.guo@linaro.org>
+Subject: Re: [PATCH 5/6] dt-bindings: interconnect: Add Qualcomm QCM2290 NoC support
+Date:   Wed, 10 Nov 2021 13:44:20 -0600
+Message-Id: <1636573460.901134.1783738.nullmailer@robh.at.kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Eric Dumazet <edumazet@google.com>
-Date: Wed, 10 Nov 2021 11:24:39 -0800
+On Wed, 10 Nov 2021 20:07:15 +0800, Shawn Guo wrote:
+> Add bindings for Qualcomm QCM2290 Network-On-Chip interconnect devices.
+> 
+> Signed-off-by: Shawn Guo <shawn.guo@linaro.org>
+> ---
+>  .../bindings/interconnect/qcom,qcm2290.yaml   | 117 ++++++++++++++++++
+>  .../dt-bindings/interconnect/qcom,qcm2290.h   |  94 ++++++++++++++
+>  2 files changed, 211 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/interconnect/qcom,qcm2290.yaml
+>  create mode 100644 include/dt-bindings/interconnect/qcom,qcm2290.h
+> 
 
-> On Wed, Nov 10, 2021 at 11:11 AM Alexander Lobakin
-> <alexandr.lobakin@intel.com> wrote:
-> >
-> > Commit 719c57197010 ("net: make napi_disable() symmetric with
-> > enable") accidentally introduced a bug sometimes leading to a kernel
-> > BUG when bringing an iface up/down under heavy traffic load.
-> >
-> > Prior to this commit, napi_disable() was polling n->state until
-> > none of (NAPIF_STATE_SCHED | NAPIF_STATE_NPSVC) is set and then
-> > always flip them. Now there's a possibility to get away with the
-> > NAPIF_STATE_SCHE unset as 'continue' drops us to the cmpxchg()
-> > call with an unitialized variable, rather than straight to
-> > another round of the state check.
-> >
-> > Error path looks like:
-> >
-> > napi_disable():
-> > unsigned long val, new; /* new is uninitialized */
-> >
-> > do {
-> >         val = READ_ONCE(n->state); /* NAPIF_STATE_NPSVC and/or
-> >                                       NAPIF_STATE_SCHED is set */
-> >         if (val & (NAPIF_STATE_SCHED | NAPIF_STATE_NPSVC)) { /* true */
-> >                 usleep_range(20, 200);
-> >                 continue; /* go straight to the condition check */
-> >         }
-> >         new = val | <...>
-> > } while (cmpxchg(&n->state, val, new) != val); /* state == val, cmpxchg()
-> >                                                   writes garbage */
-> >
-> > napi_enable():
-> > do {
-> >         val = READ_ONCE(n->state);
-> >         BUG_ON(!test_bit(NAPI_STATE_SCHED, &val)); /* 50/50 boom */
-> > <...>
-> >
-> > while the typical BUG splat is like:
-> >
-> > [
-> > Fix this by replacing this 'continue' with a goto to the beginning
-> > of the loop body to restore the original behaviour.
-> > This could be written without a goto, but would look uglier and
-> > require one more indent level.
-> >
-> > Fixes: 719c57197010 ("net: make napi_disable() symmetric with enable")
-> > Signed-off-by: Alexander Lobakin <alexandr.lobakin@intel.com>
-> > Reviewed-by: Jesse Brandeburg <jesse.brandeburg@intel.com>
-> > ---
-> >  net/core/dev.c | 3 ++-
-> >  1 file changed, 2 insertions(+), 1 deletion(-)
-> >
-> > diff --git a/net/core/dev.c b/net/core/dev.c
-> > index edeb811c454e..5e101c53b9de 100644
-> > --- a/net/core/dev.c
-> > +++ b/net/core/dev.c
-> > @@ -6929,10 +6929,11 @@ void napi_disable(struct napi_struct *n)
-> >         set_bit(NAPI_STATE_DISABLE, &n->state);
-> >
-> >         do {
-> > +retry:
-> >                 val = READ_ONCE(n->state);
-> >                 if (val & (NAPIF_STATE_SCHED | NAPIF_STATE_NPSVC)) {
-> >                         usleep_range(20, 200);
-> > -                       continue;
-> > +                       goto retry;
-> >                 }
-> >
-> >                 new = val | NAPIF_STATE_SCHED | NAPIF_STATE_NPSVC;
-> > --
-> > 2.33.1
-> >
-> 
-> Good catch !
+My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
+on your patch (DT_CHECKER_FLAGS is new in v5.13):
 
-Thanks!
+yamllint warnings/errors:
 
-> What about replacing the error prone do {...} while (cmpxchg(..)) by
-> something less confusing ?
-> 
-> This way, no need for a label.
-> 
-> diff --git a/net/core/dev.c b/net/core/dev.c
-> index 5e37d6809317fb3c54686188a908bfcb0bfccdab..9327141892cdaaf0282e082e0c6746abae0f12a7
-> 100644
-> --- a/net/core/dev.c
-> +++ b/net/core/dev.c
-> @@ -6264,7 +6264,7 @@ void napi_disable(struct napi_struct *n)
->         might_sleep();
->         set_bit(NAPI_STATE_DISABLE, &n->state);
-> 
-> -       do {
-> +       for (;;) {
->                 val = READ_ONCE(n->state);
->                 if (val & (NAPIF_STATE_SCHED | NAPIF_STATE_NPSVC)) {
->                         usleep_range(20, 200);
-> @@ -6273,7 +6273,9 @@ void napi_disable(struct napi_struct *n)
-> 
->                 new = val | NAPIF_STATE_SCHED | NAPIF_STATE_NPSVC;
->                 new &= ~(NAPIF_STATE_THREADED | NAPIF_STATE_PREFER_BUSY_POLL);
-> -       } while (cmpxchg(&n->state, val, new) != val);
-> +               if (cmpxchg(&n->state, val, new) == val)
-> +                       break;
-> +       }
-> 
->         hrtimer_cancel(&n->timer);
+dtschema/dtc warnings/errors:
+Documentation/devicetree/bindings/interconnect/qcom,qcm2290.example.dts:20:18: fatal error: dt-bindings/clock/qcom,gcc-qcm2290.h: No such file or directory
+   20 |         #include <dt-bindings/clock/qcom,gcc-qcm2290.h>
+      |                  ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+compilation terminated.
+make[1]: *** [scripts/Makefile.lib:385: Documentation/devicetree/bindings/interconnect/qcom,qcm2290.example.dt.yaml] Error 1
+make[1]: *** Waiting for unfinished jobs....
+make: *** [Makefile:1441: dt_binding_check] Error 2
 
-LFTM, I'l queue v2 in a moment with you in Suggested-by.
+doc reference errors (make refcheckdocs):
 
-Thanks,
-Al
+See https://patchwork.ozlabs.org/patch/1553401
+
+This check can fail if there are any dependencies. The base for a patch
+series is generally the most recent rc1.
+
+If you already ran 'make dt_binding_check' and didn't see the above
+error(s), then make sure 'yamllint' is installed and dt-schema is up to
+date:
+
+pip3 install dtschema --upgrade
+
+Please check and re-submit.
+
