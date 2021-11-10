@@ -2,76 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 45CB944BCCD
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 09:25:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A93F44BCD0
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 09:26:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230224AbhKJI16 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Nov 2021 03:27:58 -0500
-Received: from mga14.intel.com ([192.55.52.115]:24874 "EHLO mga14.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229850AbhKJI15 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Nov 2021 03:27:57 -0500
-X-IronPort-AV: E=McAfee;i="6200,9189,10163"; a="232869524"
-X-IronPort-AV: E=Sophos;i="5.87,223,1631602800"; 
-   d="scan'208";a="232869524"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Nov 2021 00:25:01 -0800
-X-IronPort-AV: E=Sophos;i="5.87,223,1631602800"; 
-   d="scan'208";a="492009144"
-Received: from smile.fi.intel.com ([10.237.72.184])
-  by orsmga007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Nov 2021 00:24:59 -0800
-Received: from andy by smile.fi.intel.com with local (Exim 4.95)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1mkiuV-005LpB-Jm;
-        Wed, 10 Nov 2021 10:24:47 +0200
-Date:   Wed, 10 Nov 2021 10:24:47 +0200
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Tom Rix <trix@redhat.com>
-Cc:     Moritz Fischer <mdf@kernel.org>,
-        Matthew Gerlach <matthew.gerlach@linux.intel.com>,
-        linux-fpga@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Wu Hao <hao.wu@intel.com>, Xu Yilun <yilun.xu@intel.com>
-Subject: Re: [PATCH v1 1/1] fpga: dfl: pci: Use pci_find_vsec_capability()
- when looking for DFL
-Message-ID: <YYuBz0tdduAk1c/6@smile.fi.intel.com>
-References: <20211109154127.18455-1-andriy.shevchenko@linux.intel.com>
- <8ccc133a-fb47-4548-fee3-d57775a5166d@redhat.com>
- <YYq4fSRoyzFE4Vei@smile.fi.intel.com>
- <39ac1f40-66ab-6c7e-0042-8fcdc062ed00@redhat.com>
+        id S229864AbhKJI2q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Nov 2021 03:28:46 -0500
+Received: from new2-smtp.messagingengine.com ([66.111.4.224]:49399 "EHLO
+        new2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229582AbhKJI2p (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Nov 2021 03:28:45 -0500
+Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
+        by mailnew.nyi.internal (Postfix) with ESMTP id E229A580858;
+        Wed, 10 Nov 2021 03:25:57 -0500 (EST)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute1.internal (MEProxy); Wed, 10 Nov 2021 03:25:57 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kroah.com; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=fm2; bh=cIlTsNIIT4hbZQLMjkWIVkOUHBh
+        6DMvakfyjAaD2FGI=; b=doOdTkxxbaubdu18iLGj2O7vLD8n8e3leX9yK468G5B
+        dZBRs6MuvzZWx4FXNxkN3gZUDxSAGkoYsQqpYNkOAjRXOLlF0jfbikX2GvBomP3z
+        WNLXza81DD2qmJPiHLaZyn07Ydz0b6xlRzTkWqdRbWcsPskoh1Mz7boocEAF/G98
+        DpO7YoO0oLREqcITLCS/0/5qQmq4jS6wsUVMr2k93YpJfB7pLZmhksfurCT/9V90
+        Woj4iTBeDLZlVgE53FM8SBYex0Qpmu5WwIjF1lHmQ0YiesCZ40NnlHXwFEzfKhKr
+        L2TVHu6bud5/ADLIpk4CSZtdsLOm/s+pUunKFELY0qQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=cIlTsN
+        IIT4hbZQLMjkWIVkOUHBh6DMvakfyjAaD2FGI=; b=aUX0lzxXZ7hWZd78tWQ1lD
+        Thp2VbC8z5R3TRmNzebAwML+Id3Bz+oXwcE+w4wICvvMuanqPXh52F9vOKO+zxPn
+        LLL+FTehNZYaH48zEyUbou6DyUkjBDxqNbrGstKGjF9stLgrKt0wOQIu0YZoffY7
+        HTIipwBrYvJx1QKjxcCkAN9DGosaN7BPAopv1vZCTWIQtkSpJL4vdXvHeFzBM/CQ
+        0HE0lZTUS/SCORWrLh3ErIm0cz7Vfhv5OS3xAaoNS96hfIkyBP5xMZ2deiaSZl0z
+        qXendacbMCabdWVCDqCfLY+1SCRnAovCb6reLN7ehTidpuDEvErUY8ixWQABvMcw
+        ==
+X-ME-Sender: <xms:FYKLYavL0M_ssBC5HfcmdPNtEFylslOhOD_wRoIN8lmPhKWYKB_PkQ>
+    <xme:FYKLYfd1fGaM6KHRCdrjeSd5zHb8bn-amb-GaTZFSouKFmKK4lyzDOItgRMYa-AkN
+    rnEw3ZHK0LWmw>
+X-ME-Received: <xmr:FYKLYVx8Dl4IJ4igt9s6J-8kear2_niRuMfBO2k1lvUY-WippNBgoJAjbsaNif86GtZnEmyBJbsujvdUBC3fhKl283UBpMVx>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvuddrudeigddtiecutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
+    fjughrpeffhffvuffkfhggtggujgesthdtredttddtvdenucfhrhhomhepifhrvghgucfm
+    jfcuoehgrhgvgheskhhrohgrhhdrtghomheqnecuggftrfgrthhtvghrnhepueelledthe
+    ekleethfeludduvdfhffeuvdffudevgeehkeegieffveehgeeftefgnecuffhomhgrihhn
+    pehkvghrnhgvlhdrohhrghenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmh
+    grihhlfhhrohhmpehgrhgvgheskhhrohgrhhdrtghomh
+X-ME-Proxy: <xmx:FYKLYVMHmcFYSThEVV9tob9DUbCZa9UMN7kwgv7HCYZQXAFimbuVyg>
+    <xmx:FYKLYa90hOFB5kV5JI2s93n9Pq3hRX-4wdnOmHkSFEm3uDNKOYZ1mg>
+    <xmx:FYKLYdWEddoJsE3qcF1A0uNAzw-4OhDtXudB4UEhhOe0423afLyC5g>
+    <xmx:FYKLYVV6jvmke-9SbwMUQi-iYdAAZFDrlLbzpJD68SLOqQiyyUDB4Q>
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
+ 10 Nov 2021 03:25:56 -0500 (EST)
+Date:   Wed, 10 Nov 2021 09:25:55 +0100
+From:   Greg KH <greg@kroah.com>
+To:     Lee Jones <lee.jones@linaro.org>
+Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+        Andreas Kemnade <andreas@kemnade.info>,
+        "H . Nikolaus Schaller" <hns@goldelico.com>,
+        Johan Hovold <johan@kernel.org>,
+        "David S . Miller" <davem@davemloft.net>
+Subject: Re: [PATCH 4.9 1/2] net: hso: register netdev later to avoid a race
+ condition
+Message-ID: <YYuCE9EoMu+4zsiF@kroah.com>
+References: <20211109093959.173885-1-lee.jones@linaro.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <39ac1f40-66ab-6c7e-0042-8fcdc062ed00@redhat.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+In-Reply-To: <20211109093959.173885-1-lee.jones@linaro.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 09, 2021 at 10:27:58AM -0800, Tom Rix wrote:
-> On 11/9/21 10:05 AM, Andy Shevchenko wrote:
-> > On Tue, Nov 09, 2021 at 07:55:43AM -0800, Tom Rix wrote:
-> > > On 11/9/21 7:41 AM, Andy Shevchenko wrote:
-
-...
-
-> > > > +	voff = pci_find_vsec_capability(dev, PCI_VENDOR_ID_INTEL, PCI_VSEC_ID_INTEL_DFLS);
-> > > This may be a weakness in the origin code, but intel isn't the exclusive
-> > > user of DFL.
-> > This does not change the original code. If you think so, this can be extended
-> > later on.
+On Tue, Nov 09, 2021 at 09:39:58AM +0000, Lee Jones wrote:
+> From: Andreas Kemnade <andreas@kemnade.info>
 > 
-> I would rather see this fixed now or explained why this isn't a problem.
+> [ Upstream commit 4c761daf8bb9a2cbda9facf53ea85d9061f4281e ]
 
-This is out of scope of this change in a few ways:
- - we don't do 2+ things in one patch
- - the change doesn't change behaviour
- - the change is a simple cleanup
- - another vendor may well have quite different VSEC ID for DFL
+You already sent this for inclusion:
+	https://lore.kernel.org/r/YYU1KqvnZLyPbFcb@google.com
 
-If you think that it should be needed, one can come up with it later on.
+Why send it again?
 
--- 
-With Best Regards,
-Andy Shevchenko
+confused,
 
-
+greg k-h
