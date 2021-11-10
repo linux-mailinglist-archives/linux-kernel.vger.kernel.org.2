@@ -2,32 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C0A544C6E7
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 19:44:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4120344C6EA
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 19:44:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232596AbhKJSqk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Nov 2021 13:46:40 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45782 "EHLO mail.kernel.org"
+        id S232709AbhKJSqp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Nov 2021 13:46:45 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45860 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232565AbhKJSqf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Nov 2021 13:46:35 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 345C261178;
-        Wed, 10 Nov 2021 18:43:47 +0000 (UTC)
+        id S232657AbhKJSqi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Nov 2021 13:46:38 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id CD19A6115A;
+        Wed, 10 Nov 2021 18:43:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1636569827;
-        bh=oFKwCQFb63dsIhIomre8j/FdVdpATOETvtTkP3uHTB4=;
+        s=korg; t=1636569830;
+        bh=s2V5MnLlW1fKa6K6bEJQ+I6bI2Bx4vdOgM2Q2Toj/sw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=p/sMC4+oociwGvYnvKE9JNTQ+RT2m8Sb5cdAsvQqQ+i1UWOm3lJVhu6jCFr0C6H5g
-         WlAIABendK3iNoZHP3LIO3JMZAYPIoKGYFoNpXNZgY1XcADLfydx0JHcR6paG7g0nu
-         X7RxvJv23qs7zUDZtvJ8z3E0B7u6pclOjOl7ykCw=
+        b=nue4RRShJzzC/jSvoRGvIrXMyqBaeefkQDamScCusAgVCp6QaAKv65z3NUvWld2Za
+         5KqI45BT46rp6RHTE5bJ7Ki41sU1z7W1CkNnqwCcMLep16kqvUM41dkaXqg2f+Ux2t
+         caYL9uLWB1uU4gz40+GOJTG89Cjn3E69fT3KZTbs=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Cheah Kok Cheong <thrust73@gmail.com>,
+        stable@vger.kernel.org, Johan Hovold <johan@kernel.org>,
         Ian Abbott <abbotti@mev.co.uk>
-Subject: [PATCH 4.4 13/19] staging: comedi: drivers: replace le16_to_cpu() with usb_endpoint_maxp()
-Date:   Wed, 10 Nov 2021 19:43:15 +0100
-Message-Id: <20211110182001.689336223@linuxfoundation.org>
+Subject: [PATCH 4.4 14/19] comedi: vmk80xx: fix transfer-buffer overflows
+Date:   Wed, 10 Nov 2021 19:43:16 +0100
+Message-Id: <20211110182001.723648936@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
 In-Reply-To: <20211110182001.257350381@linuxfoundation.org>
 References: <20211110182001.257350381@linuxfoundation.org>
@@ -39,107 +39,60 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Cheah Kok Cheong <thrust73@gmail.com>
+From: Johan Hovold <johan@kernel.org>
 
-commit 62190d498c1d1cee970176840f24822fc14d27d1 upstream.
+commit a23461c47482fc232ffc9b819539d1f837adf2b1 upstream.
 
-Use macro introduced in commit 939f325f4a0f
-("usb: add usb_endpoint_maxp() macro")
+The driver uses endpoint-sized USB transfer buffers but up until
+recently had no sanity checks on the sizes.
 
-Signed-off-by: Cheah Kok Cheong <thrust73@gmail.com>
+Commit e1f13c879a7c ("staging: comedi: check validity of wMaxPacketSize
+of usb endpoints found") inadvertently fixed NULL-pointer dereferences
+when accessing the transfer buffers in case a malicious device has a
+zero wMaxPacketSize.
+
+Make sure to allocate buffers large enough to handle also the other
+accesses that are done without a size check (e.g. byte 18 in
+vmk80xx_cnt_insn_read() for the VMK8061_MODEL) to avoid writing beyond
+the buffers, for example, when doing descriptor fuzzing.
+
+The original driver was for a low-speed device with 8-byte buffers.
+Support was later added for a device that uses bulk transfers and is
+presumably a full-speed device with a maximum 64-byte wMaxPacketSize.
+
+Fixes: 985cafccbf9b ("Staging: Comedi: vmk80xx: Add k8061 support")
+Cc: stable@vger.kernel.org      # 2.6.31
+Signed-off-by: Johan Hovold <johan@kernel.org>
 Reviewed-by: Ian Abbott <abbotti@mev.co.uk>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Link: https://lore.kernel.org/r/20211025114532.4599-4-johan@kernel.org
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/staging/comedi/drivers/dt9812.c     |    4 ++--
- drivers/staging/comedi/drivers/ni_usb6501.c |    4 ++--
- drivers/staging/comedi/drivers/vmk80xx.c    |   12 ++++++------
- 3 files changed, 10 insertions(+), 10 deletions(-)
+ drivers/staging/comedi/drivers/vmk80xx.c |    6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
---- a/drivers/staging/comedi/drivers/dt9812.c
-+++ b/drivers/staging/comedi/drivers/dt9812.c
-@@ -717,12 +717,12 @@ static int dt9812_find_endpoints(struct
- 		case 1:
- 			dir = USB_DIR_OUT;
- 			devpriv->cmd_wr.addr = ep->bEndpointAddress;
--			devpriv->cmd_wr.size = le16_to_cpu(ep->wMaxPacketSize);
-+			devpriv->cmd_wr.size = usb_endpoint_maxp(ep);
- 			break;
- 		case 2:
- 			dir = USB_DIR_IN;
- 			devpriv->cmd_rd.addr = ep->bEndpointAddress;
--			devpriv->cmd_rd.size = le16_to_cpu(ep->wMaxPacketSize);
-+			devpriv->cmd_rd.size = usb_endpoint_maxp(ep);
- 			break;
- 		case 3:
- 			/* unused write stream */
---- a/drivers/staging/comedi/drivers/ni_usb6501.c
-+++ b/drivers/staging/comedi/drivers/ni_usb6501.c
-@@ -469,12 +469,12 @@ static int ni6501_alloc_usb_buffers(stru
- 	struct ni6501_private *devpriv = dev->private;
- 	size_t size;
- 
--	size = le16_to_cpu(devpriv->ep_rx->wMaxPacketSize);
-+	size = usb_endpoint_maxp(devpriv->ep_rx);
- 	devpriv->usb_rx_buf = kzalloc(size, GFP_KERNEL);
- 	if (!devpriv->usb_rx_buf)
- 		return -ENOMEM;
- 
--	size = le16_to_cpu(devpriv->ep_tx->wMaxPacketSize);
-+	size = usb_endpoint_maxp(devpriv->ep_tx);
- 	devpriv->usb_tx_buf = kzalloc(size, GFP_KERNEL);
- 	if (!devpriv->usb_tx_buf)
- 		return -ENOMEM;
 --- a/drivers/staging/comedi/drivers/vmk80xx.c
 +++ b/drivers/staging/comedi/drivers/vmk80xx.c
-@@ -177,7 +177,7 @@ static void vmk80xx_do_bulk_msg(struct c
- 	 * The max packet size attributes of the K8061
- 	 * input/output endpoints are identical
- 	 */
--	size = le16_to_cpu(devpriv->ep_tx->wMaxPacketSize);
-+	size = usb_endpoint_maxp(devpriv->ep_tx);
+@@ -99,6 +99,8 @@ enum {
+ #define IC3_VERSION		BIT(0)
+ #define IC6_VERSION		BIT(1)
  
- 	usb_bulk_msg(usb, tx_pipe, devpriv->usb_tx_buf,
- 		     size, NULL, devpriv->ep_tx->bInterval);
-@@ -199,7 +199,7 @@ static int vmk80xx_read_packet(struct co
- 	ep = devpriv->ep_rx;
- 	pipe = usb_rcvintpipe(usb, ep->bEndpointAddress);
- 	return usb_interrupt_msg(usb, pipe, devpriv->usb_rx_buf,
--				 le16_to_cpu(ep->wMaxPacketSize), NULL,
-+				 usb_endpoint_maxp(ep), NULL,
- 				 HZ * 10);
- }
- 
-@@ -220,7 +220,7 @@ static int vmk80xx_write_packet(struct c
- 	ep = devpriv->ep_tx;
- 	pipe = usb_sndintpipe(usb, ep->bEndpointAddress);
- 	return usb_interrupt_msg(usb, pipe, devpriv->usb_tx_buf,
--				 le16_to_cpu(ep->wMaxPacketSize), NULL,
-+				 usb_endpoint_maxp(ep), NULL,
- 				 HZ * 10);
- }
- 
-@@ -230,7 +230,7 @@ static int vmk80xx_reset_device(struct c
- 	size_t size;
- 	int retval;
- 
--	size = le16_to_cpu(devpriv->ep_tx->wMaxPacketSize);
-+	size = usb_endpoint_maxp(devpriv->ep_tx);
- 	memset(devpriv->usb_tx_buf, 0, size);
- 	retval = vmk80xx_write_packet(dev, VMK8055_CMD_RST);
- 	if (retval)
-@@ -687,12 +687,12 @@ static int vmk80xx_alloc_usb_buffers(str
++#define MIN_BUF_SIZE		64
++
+ enum vmk80xx_model {
+ 	VMK8055_MODEL,
+ 	VMK8061_MODEL
+@@ -687,12 +689,12 @@ static int vmk80xx_alloc_usb_buffers(str
  	struct vmk80xx_private *devpriv = dev->private;
  	size_t size;
  
--	size = le16_to_cpu(devpriv->ep_rx->wMaxPacketSize);
-+	size = usb_endpoint_maxp(devpriv->ep_rx);
+-	size = usb_endpoint_maxp(devpriv->ep_rx);
++	size = max(usb_endpoint_maxp(devpriv->ep_rx), MIN_BUF_SIZE);
  	devpriv->usb_rx_buf = kzalloc(size, GFP_KERNEL);
  	if (!devpriv->usb_rx_buf)
  		return -ENOMEM;
  
--	size = le16_to_cpu(devpriv->ep_tx->wMaxPacketSize);
-+	size = usb_endpoint_maxp(devpriv->ep_tx);
+-	size = usb_endpoint_maxp(devpriv->ep_tx);
++	size = max(usb_endpoint_maxp(devpriv->ep_rx), MIN_BUF_SIZE);
  	devpriv->usb_tx_buf = kzalloc(size, GFP_KERNEL);
  	if (!devpriv->usb_tx_buf)
  		return -ENOMEM;
