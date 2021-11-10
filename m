@@ -2,160 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6786B44C310
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 15:35:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9DB2A44C313
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 15:38:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232248AbhKJOi0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Nov 2021 09:38:26 -0500
-Received: from mail.kernel.org ([198.145.29.99]:39892 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231969AbhKJOiZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Nov 2021 09:38:25 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3B7076112F;
-        Wed, 10 Nov 2021 14:35:37 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1636554937;
-        bh=6/avLN0ytZ52L76U6lI/X1ZEvbgZ3/HFg27qqtTLmEU=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:From;
-        b=NZQrfXwxS5lTnKpSIrxjxgu3N/GLEAWrc6vRgzMtOy+BYSVEb/GUiYyc0THQtX4RU
-         8M1z/1q3MWcZy/VQjT/9cMly7IV/bfccEGSXMPK1uU257zEfaY0sv53xEqhZ1cG5G3
-         kWnJQU1vjOVYr0bxkoWYeGYDHNE85NMCKEA/HXCJBsISExtoXhigNSZfC9tHvGz8cr
-         ePddbZWoWsNZoVMkP5fXNvjUoWU2JJ9ADjZXI5GH+KhcX633mHuh56SExEeopk920U
-         dj0zkAc3LeAWVnYNEdZuG+Zl7tr21NjwxqEf0aVSGtYHAKiQptZnM9gRhMsUZMWLZ2
-         +nzTKcSL4S8Pg==
-From:   SeongJae Park <sj@kernel.org>
-To:     Alex Shi <seakeel@gmail.com>
-Cc:     SeongJae Park <sj@kernel.org>, Alex Shi <alexs@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [RFC PATCH] mm/damon: remove damon_lock
-Date:   Wed, 10 Nov 2021 14:35:35 +0000
-Message-Id: <20211110143535.15809-1-sj@kernel.org>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <CAJy-AmmOMGEhTLgeUepFCXxBFpEPriAFtj_qKhOxHjq7i6T5mQ@mail.gmail.com>
+        id S232214AbhKJOln (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Nov 2021 09:41:43 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:60069 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232186AbhKJOlm (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Nov 2021 09:41:42 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1636555134;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=E2r2UR3h929x6RcaYO1V3yxJtIaHTa00azzlSm0m4Ro=;
+        b=jMgjn1Li21bnhlQRYtPSTQ0d1AdmvSQS+yJvFRPwFXyq0JTPPZUmaAWoTTUqIaf52weclS
+        6hsGNDGpHbIXpn6ImQqrLH9hqkehONkl0MphVniPH9wWCkQvHoQUBTcHF7hmQ7U8Jfn7IF
+        VKVPC4vFfb62W2Pqt06dH5VQ84ylN14=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-96-p5p9y7XoNjaDRT3jRT4ZBA-1; Wed, 10 Nov 2021 09:38:51 -0500
+X-MC-Unique: p5p9y7XoNjaDRT3jRT4ZBA-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 882AECC639;
+        Wed, 10 Nov 2021 14:38:49 +0000 (UTC)
+Received: from wcosta.com (ovpn-116-123.gru2.redhat.com [10.97.116.123])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 1486160CA0;
+        Wed, 10 Nov 2021 14:38:13 +0000 (UTC)
+From:   Wander Lairson Costa <wander@redhat.com>
+To:     Davidlohr Bueso <dave@stgolabs.net>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        linux-kernel@vger.kernel.org (open list:TORTURE-TEST MODULES),
+        rcu@vger.kernel.org (open list:READ-COPY UPDATE (RCU))
+Cc:     Wander Lairson Costa <wander@redhat.com>
+Subject: [PATCH v3 0/1] rcutorture: Avoid soft lockup during cpu stall
+Date:   Wed, 10 Nov 2021 11:37:44 -0300
+Message-Id: <20211110143745.468361-1-wander@redhat.com>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 10 Nov 2021 22:04:55 +0800 Alex Shi <seakeel@gmail.com> wrote:
+This version fixes the include in the beggining of the source file.
 
-> On Wed, Nov 10, 2021 at 9:41 PM Alex Shi <seakeel@gmail.com> wrote:
-> >
-> > On Wed, Nov 10, 2021 at 8:40 PM SeongJae Park <sj@kernel.org> wrote:
-> > >
-> > > Thank you for this patch, Alex!
-> > >
-> > > On Wed, 10 Nov 2021 19:47:21 +0800 alexs@kernel.org wrote:
-> > >
-> > > > From: Alex Shi <alexs@kernel.org>
-> > > >
-> > > > Variable nr_running_ctxs guards by damon_lock, but a lock for a int
-> > > > variable seems a bit heavy, a atomic_t is enough.
-> > >
-> > > The lock is not only for protecting nr_running_ctxs, but also for avoiding
-> > > different users concurrently executing damon_start(), because that could allow
-> > > the users interfering others.
-> >
-> > That's right. but it could be resolved by atomic too. like the following.
+The patch applies cleanly to 
 
-Sure.
+git://git.kernel.org/pub/scm/linux/kernel/git/paulmck/linux-rcu.git
 
-> > >
-> > > >
-> > > > Signed-off-by: Alex Shi <alexs@kernel.org>
-> > > > Cc: SeongJae Park <sj@kernel.org>
-> > > > Cc: Andrew Morton <akpm@linux-foundation.org>
-> > > > Cc: linux-mm@kvack.org
-> > > > Cc: linux-kernel@vger.kernel.org
-> > > > ---
-> > > >  include/linux/damon.h |  1 -
-> > > >  mm/damon/core.c       | 31 +++++--------------------------
-> > > >  mm/damon/dbgfs.c      |  8 +++++---
-> > > >  3 files changed, 10 insertions(+), 30 deletions(-)
-> > > >
-> > > > diff --git a/include/linux/damon.h b/include/linux/damon.h
-> > > > index b4d4be3cc987..e5dcc6336ef2 100644
-> > > > --- a/include/linux/damon.h
-> > > > +++ b/include/linux/damon.h
-> > > > @@ -453,7 +453,6 @@ int damon_set_attrs(struct damon_ctx *ctx, unsigned long sample_int,
-> > > >               unsigned long min_nr_reg, unsigned long max_nr_reg);
-> > > >  int damon_set_schemes(struct damon_ctx *ctx,
-> > > >                       struct damos **schemes, ssize_t nr_schemes);
-> > > > -int damon_nr_running_ctxs(void);
-> > > >
-> > > >  int damon_start(struct damon_ctx **ctxs, int nr_ctxs);
-> > > >  int damon_stop(struct damon_ctx **ctxs, int nr_ctxs);
-> > > > diff --git a/mm/damon/core.c b/mm/damon/core.c
-> > > > index c381b3c525d0..e821e36d5c10 100644
-> > > > --- a/mm/damon/core.c
-> > > > +++ b/mm/damon/core.c
-> > > [...]
-> > > > @@ -437,19 +422,15 @@ int damon_start(struct damon_ctx **ctxs, int nr_ctxs)
-> > > >       int i;
-> > > >       int err = 0;
-> > > >
-> > > > -     mutex_lock(&damon_lock);
-> > > > -     if (nr_running_ctxs) {
-> > > > -             mutex_unlock(&damon_lock);
-> > > > +     if (atomic_read(&nr_running_ctxs))
-> >
-> > if (atomic_inc_not_zero(&nr_running_ctxs))
-> 
-> Ops, my fault. The following should be right?
-> 
-> Thanks
-> 
-> int a = 0;
-> if (!atomic_try_cmpxchg(&nr_running_ctxs, &a, 1))
-> > > >               return -EBUSY;
-> > > > -     }
-> > > >
-> > > >       for (i = 0; i < nr_ctxs; i++) {
-> > > >               err = __damon_start(ctxs[i]);
-> > > >               if (err)
-> > > >                       break;
-> > > > -             nr_running_ctxs++;
-> > > > +             atomic_inc(&nr_running_ctxs);
-> > > >       }
-> > > > -     mutex_unlock(&damon_lock);
-> > > >
-> >
-> >  atomic_dec(&nr_running_ctxs);
-> >
-> > Is it save the multiple ctxs issue?
+Wander Lairson Costa (1):
+  rcutorture: Avoid soft lockup during cpu stall
 
-Yes, it would effectively avoid the problem case.  However, I'm unsure how much
-performance gain this change is providing, as apparently the lock is not being
-used in performance critical parts.
+ kernel/rcu/rcutorture.c | 5 +++++
+ 1 file changed, 5 insertions(+)
 
-I'm also unsure if this change is reducing the complexity of the code or not.
-For an example, this change allows someone to show non-zero nr_running_ctxs
-while no real kdamond is running, before __damon_start() is called, or when it
-failed.  I think this would never be a real issue, but might make my poor brain
-a little bit confused when debugging.
+-- 
+2.27.0
 
-Also, we might add some more variables and code section that should be mutually
-exclusive to concurrent DAMON users in future.
-
-atomic_t is obviously enough for protecting a variable.  But, IMHO, it might
-not necessarily be the best choice for non-performance-critical mutex sections.
-
-Please feel free to let me know if I'm missing something.
-
-
-Thanks,
-SJ
-
-> >
-> > Thanks
-> >
-> > > >       return err;
-> > > >  }
-> > >
-> > > This would let multiple concurrent threads seeing nr_running_ctxs of zero and
-> > > therefore proceed together.
-> > >
-> > >
-> > > Thanks,
-> > > SJ
-> 
