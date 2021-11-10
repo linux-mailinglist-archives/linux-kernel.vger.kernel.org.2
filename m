@@ -2,168 +2,226 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F16844C68C
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 18:56:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AB7FE44C68D
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 18:59:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231218AbhKJR7k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Nov 2021 12:59:40 -0500
-Received: from inva020.nxp.com ([92.121.34.13]:60082 "EHLO inva020.nxp.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230311AbhKJR7j (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Nov 2021 12:59:39 -0500
-Received: from inva020.nxp.com (localhost [127.0.0.1])
-        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id C176C1A10D4;
-        Wed, 10 Nov 2021 18:56:50 +0100 (CET)
-Received: from inva024.eu-rdc02.nxp.com (inva024.eu-rdc02.nxp.com [134.27.226.22])
-        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id B0C0C1A10CD;
-        Wed, 10 Nov 2021 18:56:50 +0100 (CET)
-Received: from fsr-ub1664-175.ea.freescale.net (fsr-ub1664-175.ea.freescale.net [10.171.82.40])
-        by inva024.eu-rdc02.nxp.com (Postfix) with ESMTP id 3E20B20399;
-        Wed, 10 Nov 2021 18:56:50 +0100 (CET)
-From:   Abel Vesa <abel.vesa@nxp.com>
-To:     Mike Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>
-Cc:     NXP Linux Team <linux-imx@nxp.com>, linux-clk@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Jacky Bai <ping.bai@nxp.com>, Abel Vesa <abel.vesa@nxp.com>
-Subject: [PATCH] clk: imx: Add imx8dxl clk driver
-Date:   Wed, 10 Nov 2021 19:56:40 +0200
-Message-Id: <1636567000-24145-1-git-send-email-abel.vesa@nxp.com>
-X-Mailer: git-send-email 2.7.4
-X-Virus-Scanned: ClamAV using ClamSMTP
+        id S232010AbhKJSCB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Nov 2021 13:02:01 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33628 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230311AbhKJSCA (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Nov 2021 13:02:00 -0500
+Received: from mail-wm1-x32c.google.com (mail-wm1-x32c.google.com [IPv6:2a00:1450:4864:20::32c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2BCE4C061766
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Nov 2021 09:59:12 -0800 (PST)
+Received: by mail-wm1-x32c.google.com with SMTP id o29so2987786wms.2
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Nov 2021 09:59:12 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=sgIGbQ+ELnZoSxdoafp+PyrTLIczqcJkb+RcXGdEEjQ=;
+        b=d/vtuumeAYdigLXhsngLtZQ3LOyVMXKR59zYrqBFvpI6OFuJxMtg67LZaaXSpHFZYt
+         d7JAJSrBqNa95Eg09MrvY0peCY+RMGBzPQ8UNLTroP0tFb3b0wD8+ZH5l65OCtBhaIKp
+         kHrX+D4IEIV/mQMKpJbFl2yOn1OCcenjrT61Zw2j2UHrjPCyIw8J3fs2I7KtCb43n+Vh
+         3USSZwm0A08MZOEnVQZITxxoZbkvnMnWxHBIBTwgvSG92oA68sZyXZvs52TUK1eensU5
+         6N/oMbwbIgAkO4OVr8urbCg1XblpTJ1/gLgNmJluzgsMdxuBGBWlkBFWoqB+HQe8RyzX
+         ++eQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=sgIGbQ+ELnZoSxdoafp+PyrTLIczqcJkb+RcXGdEEjQ=;
+        b=VCC4g24+PIHxrBhPSHWkzaJXFtdHu94eb0gZNtKiQpXy2H6aPNSzVrbs/iFJ/9Ozg0
+         Vt/mzBe9gFYlHlhTFWPzW5Z6lKZHBqzmMwumw8Q3B8dT+laXqBUcKwmlO0dXcHdtt3Ar
+         OZiuarar4z2YqLiDuVfLis4QWxrL9op5e0jGwVUyC2cTNpT+gczZ254+J7+v94sO/2Vy
+         3zTB2NfZCRV+4/sbaO3r92npk4CmnqIlYGi7yhE3mqMakGQbUlMQIApDuxwlerArDZHq
+         wr44JMazaPnGkeGdk1CSflWA5Doyymd1AaTXgIUQrRH6cERT0dVjdzst3xFVKT+sQWcr
+         vL3g==
+X-Gm-Message-State: AOAM533M28ixoKl83Pk5bMF/Y18w17YloF4TXpHQUyTHku2NexoRTvcW
+        6EDnRuG7xAjLwy4gtVXHy+/HaaouxskvOqCBhXh+6g==
+X-Google-Smtp-Source: ABdhPJzVOeErgr6Vf0sFYcN9jag0yuKJlP5kR1fHeL7WaglNJCR0i6mRudPPfGaAjRaIW5LD691y6pzB5rD+f6zdwWU=
+X-Received: by 2002:a1c:770e:: with SMTP id t14mr18046026wmi.173.1636567150039;
+ Wed, 10 Nov 2021 09:59:10 -0800 (PST)
+MIME-Version: 1.0
+References: <20211105170943.3479315-1-irogers@google.com> <20211105170943.3479315-7-irogers@google.com>
+ <YYvBhfyizI+z8SAC@krava> <CAP-5=fWRzptEG2TUALNJaVLdP2egHhyhPZ=9HuP2da68jiPPTA@mail.gmail.com>
+ <YYvYnYPg43acgkvs@krava>
+In-Reply-To: <YYvYnYPg43acgkvs@krava>
+From:   Ian Rogers <irogers@google.com>
+Date:   Wed, 10 Nov 2021 09:58:57 -0800
+Message-ID: <CAP-5=fU4JCn_8VY3KstN3bZeV-uRptO0hzyBFy=rGNtap1WRbw@mail.gmail.com>
+Subject: Re: [PATCH 6/7] perf expr: Add metric literals for topology.
+To:     Jiri Olsa <jolsa@redhat.com>
+Cc:     Andi Kleen <ak@linux.intel.com>, Jin Yao <yao.jin@linux.intel.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        John Garry <john.garry@huawei.com>,
+        Kajol Jain <kjain@linux.ibm.com>,
+        "Paul A . Clarke" <pc@us.ibm.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Riccardo Mancini <rickyman7@gmail.com>,
+        Kan Liang <kan.liang@linux.intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Madhavan Srinivasan <maddy@linux.ibm.com>,
+        Song Liu <song@kernel.org>, Wan Jiabing <wanjiabing@vivo.com>,
+        Yury Norov <yury.norov@gmail.com>,
+        Changbin Du <changbin.du@intel.com>,
+        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jacky Bai <ping.bai@nxp.com>
+On Wed, Nov 10, 2021 at 6:35 AM Jiri Olsa <jolsa@redhat.com> wrote:
+>
+> On Wed, Nov 10, 2021 at 06:19:04AM -0800, Ian Rogers wrote:
+> > On Wed, Nov 10, 2021 at 4:56 AM Jiri Olsa <jolsa@redhat.com> wrote:
+> > >
+> > > On Fri, Nov 05, 2021 at 10:09:42AM -0700, Ian Rogers wrote:
+> > > > Allow the number of cpus, cores, dies and packages to be queried by a
+> > > > metric expression.
+> > > >
+> > > > Signed-off-by: Ian Rogers <irogers@google.com>
+> > > > ---
+> > > >  tools/perf/tests/expr.c | 12 +++++++++++-
+> > > >  tools/perf/util/expr.c  | 27 +++++++++++++++++++++++++++
+> > > >  2 files changed, 38 insertions(+), 1 deletion(-)
+> > > >
+> > > > diff --git a/tools/perf/tests/expr.c b/tools/perf/tests/expr.c
+> > > > index 9ee2dc91c27b..0c09ccc76665 100644
+> > > > --- a/tools/perf/tests/expr.c
+> > > > +++ b/tools/perf/tests/expr.c
+> > > > @@ -66,7 +66,7 @@ int test__expr(struct test *t __maybe_unused, int subtest __maybe_unused)
+> > > >  {
+> > > >       struct expr_id_data *val_ptr;
+> > > >       const char *p;
+> > > > -     double val;
+> > > > +     double val, num_cpus, num_cores, num_dies, num_packages;
+> > > >       int ret;
+> > > >       struct expr_parse_ctx *ctx;
+> > > >
+> > > > @@ -161,6 +161,16 @@ int test__expr(struct test *t __maybe_unused, int subtest __maybe_unused)
+> > > >                       NULL, ctx) == 0);
+> > > >       TEST_ASSERT_VAL("find ids", hashmap__size(ctx->ids) == 0);
+> > > >
+> > > > +     /* Test toplogy constants appear well ordered. */
+> > > > +     expr__ctx_clear(ctx);
+> > > > +     TEST_ASSERT_VAL("#num_cpus", expr__parse(&num_cpus, ctx, "#num_cpus") == 0);
+> > > > +     TEST_ASSERT_VAL("#num_cores", expr__parse(&num_cores, ctx, "#num_cores") == 0);
+> > > > +     TEST_ASSERT_VAL("#num_cpus >= #num_cores", num_cpus >= num_cores);
+> > > > +     TEST_ASSERT_VAL("#num_dies", expr__parse(&num_dies, ctx, "#num_dies") == 0);
+> > > > +     TEST_ASSERT_VAL("#num_cores >= #num_dies", num_cores >= num_dies);
+> > > > +     TEST_ASSERT_VAL("#num_packages", expr__parse(&num_packages, ctx, "#num_packages") == 0);
+> > > > +     TEST_ASSERT_VAL("#num_dies >= #num_packages", num_dies >= num_packages);
+> > > > +
+> > > >       expr__ctx_free(ctx);
+> > > >
+> > > >       return 0;
+> > > > diff --git a/tools/perf/util/expr.c b/tools/perf/util/expr.c
+> > > > index 7464739c2890..15af8b8ef5e7 100644
+> > > > --- a/tools/perf/util/expr.c
+> > > > +++ b/tools/perf/util/expr.c
+> > > > @@ -5,6 +5,8 @@
+> > > >  #include <stdlib.h>
+> > > >  #include <string.h>
+> > > >  #include "metricgroup.h"
+> > > > +#include "cpumap.h"
+> > > > +#include "cputopo.h"
+> > > >  #include "debug.h"
+> > > >  #include "expr.h"
+> > > >  #include "expr-bison.h"
+> > > > @@ -375,9 +377,34 @@ double expr_id_data__value(const struct expr_id_data *data)
+> > > >
+> > > >  double expr__get_literal(const char *literal)
+> > > >  {
+> > > > +     static struct cpu_topology *topology;
+> > > > +
+> > > >       if (!strcmp("#smt_on", literal))
+> > > >               return smt_on() > 0 ? 1.0 : 0.0;
+> > > >
+> > > > +     if (!strcmp("#num_cpus", literal))
+> > > > +             return cpu__max_present_cpu();
+> > > > +
+> > > > +     /*
+> > > > +      * Assume that topology strings are consistent, such as CPUs "0-1"
+> > > > +      * wouldn't be listed as "0,1", and so after deduplication the number of
+> > > > +      * these strings gives an indication of the number of packages, dies,
+> > > > +      * etc.
+> > > > +      */
+> > > > +     if (!topology) {
+> > > > +             topology = cpu_topology__new();
+> > >
+> > > any chance we could propagate expr_scanner_ctx in here and store topology
+> > > to it and release it at the end? I think we have several places like this,
+> > > so it'd be nice not to make more if it's possible ;-)
+> >
+> > The topology here is static and so will only get computed once per
+> > execution rather than once pre expression parse. I was worried about
+> > the cost of recomputing the topology for something like 'perf stat -I
+> > 1000 -M ...' in which case the static will do less recomputation.
+>
+> can't we have the topology created/release on the top fo the parsing
+> and released after all expressions are parsed?
+>
+> or we could come up with some generic way to handle this kind of release
 
-Add files for imx8dxl clk driver which is based on imx8qxp clock driver.
+Creating the topology at the top of metric parsing would incur a sysfs
+parsing cost on metrics regardless of whether they used the topology.
+I feel a lazy approach is better to avoid this cost. We could make
+this part of the expression context and lazily initialize it there.
+It'd be good to keep the expression context around in 'perf stat' in
+that case. I quite like this approach as really the topology should be
+part of the perf environment and part of the header. It is interesting
+to think how can we get metrics to work with 'perf stat record'.
+Currently you will get metrics for something like 'perf stat record -e
+instructions,cycles -a sleep 2; perf stat report', but none baked in
+metrics don't work and we don't even have the metric-id to make this
+work (even using '-M IPC' doesn't work). Putting the environment in
+the session, making the topology part of it, writing/reading data
+based on that seems like worthwhile clean up but beyond the scope of
+what I was trying to do here.
 
-Signed-off-by: Jacky Bai <ping.bai@nxp.com>
-Signed-off-by: Abel Vesa <abel.vesa@nxp.com>
----
- drivers/clk/imx/Makefile           |  3 +-
- drivers/clk/imx/clk-imx8dxl-rsrc.c | 66 ++++++++++++++++++++++++++++++
- drivers/clk/imx/clk-imx8qxp.c      |  1 +
- drivers/clk/imx/clk-scu.h          |  1 +
- 4 files changed, 70 insertions(+), 1 deletion(-)
- create mode 100644 drivers/clk/imx/clk-imx8dxl-rsrc.c
+In terms of releasing for the sake of memory leaks, leak sanitizer
+doesn't treat memory allocated and reachable from a global as a leak.
+We can't precompute the topology and so this style of approach is what
+I'm used to. Putting the topology into the parsing context and lazily
+initializing would be the second best option imo, and I can do that if
+this is a blocker.
 
-diff --git a/drivers/clk/imx/Makefile b/drivers/clk/imx/Makefile
-index b5e040026dfb..f8a44c4ca94a 100644
---- a/drivers/clk/imx/Makefile
-+++ b/drivers/clk/imx/Makefile
-@@ -28,7 +28,8 @@ obj-$(CONFIG_CLK_IMX8MQ) += clk-imx8mq.o
- 
- obj-$(CONFIG_MXC_CLK_SCU) += clk-imx-scu.o clk-imx-lpcg-scu.o
- clk-imx-scu-$(CONFIG_CLK_IMX8QXP) += clk-scu.o clk-imx8qxp.o \
--				     clk-imx8qxp-rsrc.o clk-imx8qm-rsrc.o
-+				     clk-imx8qxp-rsrc.o clk-imx8qm-rsrc.o \
-+				     clk-imx8dxl-rsrc.o
- clk-imx-lpcg-scu-$(CONFIG_CLK_IMX8QXP) += clk-lpcg-scu.o clk-imx8qxp-lpcg.o
- 
- obj-$(CONFIG_CLK_IMX8ULP) += clk-imx8ulp.o
-diff --git a/drivers/clk/imx/clk-imx8dxl-rsrc.c b/drivers/clk/imx/clk-imx8dxl-rsrc.c
-new file mode 100644
-index 000000000000..69b7aa34fff5
---- /dev/null
-+++ b/drivers/clk/imx/clk-imx8dxl-rsrc.c
-@@ -0,0 +1,66 @@
-+// SPDX-License-Identifier: GPL-2.0+
-+/*
-+ * Copyright 2019~2020 NXP
-+ */
-+
-+#include <dt-bindings/firmware/imx/rsrc.h>
-+
-+#include "clk-scu.h"
-+
-+/* Keep sorted in the ascending order */
-+static u32 imx8dxl_clk_scu_rsrc_table[] = {
-+	IMX_SC_R_SPI_0,
-+	IMX_SC_R_SPI_1,
-+	IMX_SC_R_SPI_2,
-+	IMX_SC_R_SPI_3,
-+	IMX_SC_R_UART_0,
-+	IMX_SC_R_UART_1,
-+	IMX_SC_R_UART_2,
-+	IMX_SC_R_UART_3,
-+	IMX_SC_R_I2C_0,
-+	IMX_SC_R_I2C_1,
-+	IMX_SC_R_I2C_2,
-+	IMX_SC_R_I2C_3,
-+	IMX_SC_R_ADC_0,
-+	IMX_SC_R_FTM_0,
-+	IMX_SC_R_FTM_1,
-+	IMX_SC_R_CAN_0,
-+	IMX_SC_R_LCD_0,
-+	IMX_SC_R_LCD_0_PWM_0,
-+	IMX_SC_R_PWM_0,
-+	IMX_SC_R_PWM_1,
-+	IMX_SC_R_PWM_2,
-+	IMX_SC_R_PWM_3,
-+	IMX_SC_R_PWM_4,
-+	IMX_SC_R_PWM_5,
-+	IMX_SC_R_PWM_6,
-+	IMX_SC_R_PWM_7,
-+	IMX_SC_R_GPT_0,
-+	IMX_SC_R_GPT_1,
-+	IMX_SC_R_GPT_2,
-+	IMX_SC_R_GPT_3,
-+	IMX_SC_R_GPT_4,
-+	IMX_SC_R_FSPI_0,
-+	IMX_SC_R_FSPI_1,
-+	IMX_SC_R_SDHC_0,
-+	IMX_SC_R_SDHC_1,
-+	IMX_SC_R_SDHC_2,
-+	IMX_SC_R_ENET_0,
-+	IMX_SC_R_ENET_1,
-+	IMX_SC_R_MLB_0,
-+	IMX_SC_R_USB_1,
-+	IMX_SC_R_NAND,
-+	IMX_SC_R_M4_0_I2C,
-+	IMX_SC_R_M4_0_UART,
-+	IMX_SC_R_ELCDIF_PLL,
-+	IMX_SC_R_AUDIO_PLL_0,
-+	IMX_SC_R_AUDIO_PLL_1,
-+	IMX_SC_R_AUDIO_CLK_0,
-+	IMX_SC_R_AUDIO_CLK_1,
-+	IMX_SC_R_A35
-+};
-+
-+const struct imx_clk_scu_rsrc_table imx_clk_scu_rsrc_imx8dxl = {
-+	.rsrc = imx8dxl_clk_scu_rsrc_table,
-+	.num = ARRAY_SIZE(imx8dxl_clk_scu_rsrc_table),
-+};
-diff --git a/drivers/clk/imx/clk-imx8qxp.c b/drivers/clk/imx/clk-imx8qxp.c
-index c53a688d8ccc..7f4893706cc2 100644
---- a/drivers/clk/imx/clk-imx8qxp.c
-+++ b/drivers/clk/imx/clk-imx8qxp.c
-@@ -297,6 +297,7 @@ static const struct of_device_id imx8qxp_match[] = {
- 	{ .compatible = "fsl,scu-clk", },
- 	{ .compatible = "fsl,imx8qxp-clk", &imx_clk_scu_rsrc_imx8qxp, },
- 	{ .compatible = "fsl,imx8qm-clk", &imx_clk_scu_rsrc_imx8qm, },
-+	{ .compatible = "fsl,imx8dxl-clk", &imx_clk_scu_rsrc_imx8dxl, },
- 	{ /* sentinel */ }
- };
- 
-diff --git a/drivers/clk/imx/clk-scu.h b/drivers/clk/imx/clk-scu.h
-index 22156e93b85d..7d8069886b0c 100644
---- a/drivers/clk/imx/clk-scu.h
-+++ b/drivers/clk/imx/clk-scu.h
-@@ -23,6 +23,7 @@ extern struct list_head imx_scu_clks[];
- extern const struct dev_pm_ops imx_clk_lpcg_scu_pm_ops;
- extern const struct imx_clk_scu_rsrc_table imx_clk_scu_rsrc_imx8qxp;
- extern const struct imx_clk_scu_rsrc_table imx_clk_scu_rsrc_imx8qm;
-+extern const struct imx_clk_scu_rsrc_table imx_clk_scu_rsrc_imx8dxl;
- 
- int imx_clk_scu_init(struct device_node *np,
- 		     const struct imx_clk_scu_rsrc_table *data);
--- 
-2.31.1
+Thanks,
+Ian
 
+> jirka
+>
+> >
+> > Thanks,
+> > Ian
+> >
+> > > thanks,
+> > > jirka
+> > >
+> > > > +             if (!topology) {
+> > > > +                     pr_err("Error creating CPU topology");
+> > > > +                     return NAN;
+> > > > +             }
+> > > > +     }
+> > > > +     if (!strcmp("#num_packages", literal))
+> > > > +             return topology->package_cpus_lists;
+> > > > +     if (!strcmp("#num_dies", literal))
+> > > > +             return topology->die_cpus_lists;
+> > > > +     if (!strcmp("#num_cores", literal))
+> > > > +             return topology->core_cpus_lists;
+> > > > +
+> > > >       pr_err("Unrecognized literal '%s'", literal);
+> > > >       return NAN;
+> > > >  }
+> > > > --
+> > > > 2.34.0.rc0.344.g81b53c2807-goog
+> > > >
+> > >
+> >
+>
