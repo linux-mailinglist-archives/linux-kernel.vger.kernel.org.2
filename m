@@ -2,96 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 155D644CDF9
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Nov 2021 00:43:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 77C6B44CE00
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Nov 2021 00:48:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234223AbhKJXqa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Nov 2021 18:46:30 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56066 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233948AbhKJXq3 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Nov 2021 18:46:29 -0500
-Received: from mail-pl1-x62f.google.com (mail-pl1-x62f.google.com [IPv6:2607:f8b0:4864:20::62f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9E4AEC061766;
-        Wed, 10 Nov 2021 15:43:41 -0800 (PST)
-Received: by mail-pl1-x62f.google.com with SMTP id u17so4281416plg.9;
-        Wed, 10 Nov 2021 15:43:41 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=1VK3rLRn6OYaOmxBqnHyRzVXgoVp+e8leNU4bJO8vw8=;
-        b=cogiWocK65YeIFa2SAoHNh9+pyz4vSOJEZsA2BuZnMXOWI5c+/uTyeHQnAGaCsJYxr
-         Eh2g+fwo5opcronxZbN5Izc2YiRXVayjvpmsX8g0LfytqejaTIXHktotIQhp0vSA0yVV
-         6ZutOvs34gu50uhNajubBj+FxfShRiqPfiJ7p/d7kV5MxrSvYaBTbfE3aBXzao0QeU6r
-         mnkicAsPL+LrIQlxiiniZf61qUsmBvf02c5AzOsA6uhaRlByJG2tcOPzyS43cD9/G43q
-         LcYkCr5WFr+CXHzotQjXB4s7gG2OP7laW/GAEccyoOfN177CvaPT+76pCAurWvqZx+GC
-         UuXg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=1VK3rLRn6OYaOmxBqnHyRzVXgoVp+e8leNU4bJO8vw8=;
-        b=NX8WpFELV6Mjwa71eGeGzBhGSbnCE8HjmCPqc0RxnEPNAtobYfTXvw5jEsEGr47VIM
-         71CfqcwLQhW8pIKk2k6y1tt07JqUmHVW4ChGNf34HaouLotm6CEPvPeFh3VfstHFmDCA
-         M50G0+E4DHjTK+awzfWd7mTzExh9JjIdZo0HnIyL2TCpzzkLHyX/1yl49cyGVXXOs5jV
-         Z8O/KBo58esnubjbDJALPBDqRVqvgTOTPFBxR3LPNLC9cDcSy5aq3JApL7bg+n24Djmj
-         u+6cpLmPW6Tv80GLhpFxbBfnXGU2sH4hriehdsLp0Pqfu/6uh0IW8fvPrfjjmyOXGw5v
-         Fs2w==
-X-Gm-Message-State: AOAM53211Ml+aaRux7NbTXucRtHoAO12ng7onrWuON96OZTpxMR2allD
-        Jky+BhbbQMTw88ztu4JcvTEi+IjIceQ=
-X-Google-Smtp-Source: ABdhPJwqthERfb8HW2LPWTXJ4qcBZ+St7rtfvExpPze2X+ufVKcgMukcsnb6qABKq+S3uW37YzNdFw==
-X-Received: by 2002:a17:90b:fd5:: with SMTP id gd21mr3358691pjb.37.1636587820758;
-        Wed, 10 Nov 2021 15:43:40 -0800 (PST)
-Received: from [10.67.48.245] ([192.19.223.252])
-        by smtp.googlemail.com with ESMTPSA id p19sm747485pfo.92.2021.11.10.15.43.39
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 10 Nov 2021 15:43:39 -0800 (PST)
-Subject: Re: [PATCH 5.15 00/26] 5.15.2-rc1 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org
-Cc:     torvalds@linux-foundation.org, akpm@linux-foundation.org,
-        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
-        stable@vger.kernel.org
-References: <20211110182003.700594531@linuxfoundation.org>
-From:   Florian Fainelli <f.fainelli@gmail.com>
-Message-ID: <6e6488da-ed66-6595-668c-98136189af6a@gmail.com>
-Date:   Wed, 10 Nov 2021 15:43:38 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        id S234272AbhKJXux (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Nov 2021 18:50:53 -0500
+Received: from mout.gmx.net ([212.227.15.15]:34209 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234005AbhKJXuv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Nov 2021 18:50:51 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1636588075;
+        bh=hFZEda4jT6qK2iwx4Zd6aOTn+Vq4l11Q+5u4SkV+Wts=;
+        h=X-UI-Sender-Class:Date:Subject:To:Cc:References:From:In-Reply-To;
+        b=Sc67zSKoen4DipDXfWW1k5rQcGPVO809jMl+z+wZtZmxmuRg7eb/pDLhqzZDw6Vcl
+         2H9KNnKN5h77BVzYrSbWy0u1JMyEN1iTgMKTsyLb8PmQeCpgctap01I9Dipbx/0P2E
+         bvMsZ0lXtmcK4p9MvhaKXf4hq2E5thC62uwxlIw8=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx005
+ [212.227.17.184]) with ESMTPSA (Nemesis) id 1Mz9Un-1mYdIn3aDr-00wAOh; Thu, 11
+ Nov 2021 00:47:55 +0100
+Message-ID: <9717059f-cbd3-3dc3-90a2-f9ef7c32b8d9@gmx.com>
+Date:   Thu, 11 Nov 2021 07:47:49 +0800
 MIME-Version: 1.0
-In-Reply-To: <20211110182003.700594531@linuxfoundation.org>
-Content-Type: text/plain; charset=utf-8
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.3.0
+Subject: Re: [PATCH] btrfs: make 1-bit bit-fields unsigned int
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+To:     Colin Ian King <colin.i.king@googlemail.com>,
+        Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>, Qu Wenruo <wqu@suse.com>,
+        linux-btrfs@vger.kernel.org
+Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20211110192008.311901-1-colin.i.king@gmail.com>
+From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
+In-Reply-To: <20211110192008.311901-1-colin.i.king@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:fyaJGUPyE1oNaAC5f4f7jc3gueg3Ub582k9Vp+FYWRJebtb/FYV
+ 7cjrAMkzfaRTZ7jsSAdledCunV4lKFUMALec6QwQI8J5um+7938JZnAjkDPJLpfphxcdQSF
+ pqkSR7rkke/+7P3Mlf3zHNI+kEWytDLiPqiUGmx0Kmn/deOhgtI2urPa9oeC36bUVRvuzZf
+ iLBlddTPbHM+NTL0XyOLA==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:iOmM1IkaDQM=:VcNPISPAQzrA64Dl4Wznr4
+ Bc2Xl1lPcJ5Zc4tR+exRZrEs6lrvErNv2xdJ+4UwUo3O6J8OwEU3diVXxUAkYbuocMeN0Ub0c
+ 1ZmCHWc6ngI/Yc5KvBITdqssAnzPoyQaYbupoDC1JHvLPAnUWdr0HTgqk5rV9dXRUEtEPAIxg
+ P6TBh9NGRV9y8cz6c1kgBZDxVZ/MzIqtxLOnucY22/n8g5uoRyitTYTPi8GUL3D8Nc0FwDbAQ
+ fgYRrBEK2cFYOv04sYRmPyvj5kqW7+rXtvH5T9lh+HZ+SUwsXiX7I7KJX9D/4jYtUtOH5YglT
+ pyT36qSsuT8KZ3H59hLMLkfhe5+SVnIqgChbqZQAlL7WziOLRc6NLFas1dyG4B7dy2kLy5fYP
+ USx5ivyBFg3fdhxuhw5cqGhKhkfyN0C/uwELL/2LEQ78yVrPs0xbsjATmXP/9tXz+IwA+JWrB
+ yPfsQ1rMPCzE6caUeU5DJ2sRCfPasklL7Jlar7E+jCeNvFM1gJjnD21sqhsLY0XsgaBU1Z5ZB
+ 1qVLKt1HyhfwtNu9AF/V5OS24pQ7xlw98XuJiFXlbznkb48nTHauGDhWi1LLm2gq1AEvhtozl
+ j27wacA7/7DFSLjcTqqNpcBvtd/H3rNozF+izioESf4e5UUHSz3RmFBCsUtsojmT49QjWc00f
+ AHYMeCinEMKwZF3Sdnr7QIEWnPSkyiwpsv8ML2HFnyXSotKfLDXJB/C+Xp70NYxSllyEX3ufU
+ WrRYuriHBaCYM1q1Aoz2cLQmsYQ+gDbz+Rjt9o5fA0GtyF3y0yBPl3MCuoDUF+ZK/QC/mnD6F
+ 8fvsWfKy3sCN9C0WZUPs3AAComYklSJvRTJOVxzHnYRzg9+AMODuEaUpwNEC4PgHmtI/N/vxZ
+ buua1P73F9bKtvkcPaIuv6nXIQnuCk++w8vWIimyg49KL+YdcUyCh90l4Nimy6+2fDrwiVWsq
+ +1EcN5Y4TVbkAh6+YiuZpysXddQ5Bp/JUu/nCLcJ+YNkv+HAqUdxL+rfY+DiO5+fgPh9v/VQ/
+ 2BOOuILYPn6CQZ/hDbghUoaxzmvh3w0+NbZH/IQcDD5QNm0LOfwg/EE4jzDzU5CPRZeYrD9Pf
+ cR+hLce2aj2YJg=
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/10/21 10:43 AM, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 5.15.2 release.
-> There are 26 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
-> 
-> Responses should be made by Fri, 12 Nov 2021 18:19:54 +0000.
-> Anything received after that time might be too late.
-> 
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.15.2-rc1.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.15.y
-> and the diffstat can be found below.
-> 
-> thanks,
-> 
-> greg k-h
 
-On ARCH_BRCMSTB, using 32-bit and 64-bit ARM kernels:
 
-Tested-by: Florian Fainelli <f.fainelli@gmail.com>
--- 
-Florian
+On 2021/11/11 03:20, Colin Ian King wrote:
+> The bitfields have_csum and io_error are currently signed which is
+> not recommended as the representation is an implementation defined
+> behaviour. Fix this by making the bit-fields unsigned ints.
+>
+> Fixes: 2c36395430b0 ("btrfs: scrub: remove the anonymous structure from =
+scrub_page")
+> Signed-off-by: Colin Ian King <colin.i.king@gmail.com>
+
+Reviewed-by: Qu Wenruo <wqu@suse.com>
+
+Thanks,
+Qu
+> ---
+>   fs/btrfs/scrub.c | 4 ++--
+>   1 file changed, 2 insertions(+), 2 deletions(-)
+>
+> diff --git a/fs/btrfs/scrub.c b/fs/btrfs/scrub.c
+> index cf82ea6f54fb..8f6ceea33969 100644
+> --- a/fs/btrfs/scrub.c
+> +++ b/fs/btrfs/scrub.c
+> @@ -73,8 +73,8 @@ struct scrub_page {
+>   	u64			physical_for_dev_replace;
+>   	atomic_t		refs;
+>   	u8			mirror_num;
+> -	int			have_csum:1;
+> -	int			io_error:1;
+> +	unsigned int		have_csum:1;
+> +	unsigned int		io_error:1;
+>   	u8			csum[BTRFS_CSUM_SIZE];
+>
+>   	struct scrub_recover	*recover;
+>
