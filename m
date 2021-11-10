@@ -2,58 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7AD2044BCAF
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 09:15:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C1E1D44BCB4
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 09:17:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230151AbhKJISJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Nov 2021 03:18:09 -0500
-Received: from mail.kernel.org ([198.145.29.99]:35766 "EHLO mail.kernel.org"
+        id S230088AbhKJIUe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Nov 2021 03:20:34 -0500
+Received: from mail.kernel.org ([198.145.29.99]:36066 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229931AbhKJISH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Nov 2021 03:18:07 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4C57D61076;
-        Wed, 10 Nov 2021 08:15:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1636532120;
-        bh=qI7P6LTFX/PIzJyqkpmIJDTbDtNLNqaURf0IuYYimj8=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=RBsQsjcljl/2u7hM1qx752Y1bN8cpRLugElYh5vBZEkTrFv0ALKmswT1bTPUitkTw
-         0hpDPVLRxi8b6FVoXGycYNDVfEha99T/vCJGF12G4IYPD4dk1CukeeToLI6Kf1+6rV
-         wsrGUncwDpm1IGkUsY1Lw9vMHfQET0Dz00TqgyyI=
-Date:   Wed, 10 Nov 2021 09:15:18 +0100
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Martin Kaiser <martin@kaiser.cx>
-Cc:     Larry Finger <Larry.Finger@lwfinger.net>,
-        Phillip Potter <phil@philpotter.co.uk>,
-        Michael Straube <straube.linux@gmail.com>,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
-        Martin Kaiser <martin.kaiser@paytec.ch>
-Subject: Re: [PATCH 0/4] staging: r8188eu: clean up the calibration code
-Message-ID: <YYt/lkcYBN80g4tU@kroah.com>
-References: <20211107143100.9047-1-martin@kaiser.cx>
- <20211107144324.xqoab3imqxawymfz@viti.kaiser.cx>
+        id S229791AbhKJIUc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Nov 2021 03:20:32 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id AA39E61077;
+        Wed, 10 Nov 2021 08:17:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1636532265;
+        bh=paSp9h4l6mtUom1KRr5x8WCqOZmhDbnqIvrmF41Gm/A=;
+        h=Date:From:To:cc:Subject:In-Reply-To:References:From;
+        b=RRpWkSAbF024szt0ZjJIn6S6cqIpsV1Bp31ej2PoJKg2BSIs3O+adctI+tdwf2vur
+         mHbyKe7e6Lkze5+KnSY/S02scyuvoVFVRD4k/bJGBxtXOtqxEtD7WCQENHHgpk4+7s
+         vLuVUeuRY02rJNjSe6hxHDvzx1u5/TqEcO38x6Il5n7qlqTcSyjD9UcSLgGONAnwXZ
+         5YPFPzmA9cs4FXZC8HbsfAl+I00qCnYYT2DsOyf2fU83CGkj2AgY5tAZRJvXe8k/rs
+         vhGMtV/ASauR19kdIJ9kDTW6Kn8oACOlqqDHzKy1qcsXAs7oei52gmViuFAbEmoVsJ
+         TZIs3NhtH52OQ==
+Date:   Wed, 10 Nov 2021 09:17:42 +0100 (CET)
+From:   Jiri Kosina <jikos@kernel.org>
+To:     Stephen Rothwell <sfr@canb.auug.org.au>,
+        =?ISO-8859-15?Q?Thomas_Wei=DFschuh?= <linux@weissschuh.net>
+cc:     Benjamin Tissoires <benjamin.tissoires@redhat.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: Re: linux-next: build warning after merge of the hid tree
+In-Reply-To: <20211110150639.7db57ae2@canb.auug.org.au>
+Message-ID: <nycvar.YFH.7.76.2111100915550.12554@cbobk.fhfr.pm>
+References: <20211110150639.7db57ae2@canb.auug.org.au>
+User-Agent: Alpine 2.21 (LSU 202 2017-01-01)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211107144324.xqoab3imqxawymfz@viti.kaiser.cx>
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Nov 07, 2021 at 03:43:24PM +0100, Martin Kaiser wrote:
-> Hello Greg,
-> 
-> Thus wrote Martin Kaiser (martin@kaiser.cx):
-> 
-> > From: Martin Kaiser <martin.kaiser@paytec.ch>
-> 
-> Sorry, the cover letter uses the wrong address.
-> The actual patches are ok.
-> 
-> Could you take the patches anyway or should I resend the series?
+On Wed, 10 Nov 2021, Stephen Rothwell wrote:
 
-No worries, I took these as-is.
+> Hi all,
+> 
+> After merging the hid tree, today's linux-next build (htmldocs) produced
+> this warning:
+> 
+> include/linux/mod_devicetable.h:909: warning: Function parameter or member 'guid' not described in 'ishtp_device_id'
+> 
+> Introduced by commit
+> 
+>   fa443bc3c1e4 ("HID: intel-ish-hid: add support for MODULE_DEVICE_TABLE()")
+> 
+> I also notice that there is a @context description, but no field.
 
-thanks,
+Thanks for spotting it. The kerneldoc is clearly wrong there both on the 
+'guid' member name, and also the description (mind the '36 char' part, 
+where it should have been '16 char' instead).
 
-greg k-h
+Thomas, could you please send me a fixup patch for that?
+
+Thanks,
+
+-- 
+Jiri Kosina
+SUSE Labs
+
