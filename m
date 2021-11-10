@@ -2,224 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 828D144BE50
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 11:12:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8CF8A44BE75
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 11:19:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231154AbhKJKP2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Nov 2021 05:15:28 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39194 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231131AbhKJKPV (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Nov 2021 05:15:21 -0500
-Received: from mail-ed1-x532.google.com (mail-ed1-x532.google.com [IPv6:2a00:1450:4864:20::532])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 26D11C061767
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Nov 2021 02:12:34 -0800 (PST)
-Received: by mail-ed1-x532.google.com with SMTP id c8so8238779ede.13
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Nov 2021 02:12:34 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=iwrQkGdUPhk+QMSVvZiSAulM37+6icUvxRn7kPKP+hw=;
-        b=uP3euyDDsU9oS9V9jaeqz+9kbCdTk2b/bFUScZCBdkhwnGVOlDfYzb9X/NVGZbY5Wl
-         dzsUhlwUCbR0xRdiDe5bVaBSGfoOxxxYmuZgoMofeTGxL8EkJWBqm/Y6ZgyZ4y0xzrWQ
-         aYoBHmP0/93iceTpdPCoh04IMRytqrdWYPkLs5T/5pPvyCuTAxF3Um+SuZd9l6c8NdBb
-         kA4xuXl3TnWRmCEnL9IcJZssNfTE0uACotqi4UmIe0/vkjDwxs9QnLMGRFNssKy+2t8A
-         Z8X33Y5Wlam0kkD7Q9H8rHYgCxy5imrrxEbBI5rwbH/8QNA3JIHG8ne0wDSj8igRMWLp
-         al1A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=iwrQkGdUPhk+QMSVvZiSAulM37+6icUvxRn7kPKP+hw=;
-        b=z1vAo0pGyWiUTr4lT7pG6Hk/YXRnJQpFWH2RgoVR3MtJDVLmEypji5Jb9sszNjkZXT
-         oQ3eL1bxidkbjbFCVVSYvSBmkbqi0mup0cpzwvDQQpAIZlPdSOTBuPqkxsxsO+57bj3L
-         0lt0U8Nv1jnUjlNpfOl9t2xKXpMIkb/XL+Bt/RX/8GujEkLGkgijIwGto/wMYjpQkGWs
-         jIphlUEkBg4BaHnFssSv5at3GQJspaHCH3gQn6cJhUNw9WHXypcKroF+Dz9tm7S0HllW
-         Dnj4swIX1V9kNrOarvX8O9RMsPQI17GuxhFE4vdlJeD9TeXpQsujxdREOM1/INq1Sb+o
-         0uMg==
-X-Gm-Message-State: AOAM53244sMlcrJsFRAKZ9Du+SOGcqtvI6omI/ahyS1xEggxuXGd5wEB
-        g56cuoV+JPlY6GAFlx60JFE2+A==
-X-Google-Smtp-Source: ABdhPJyFMAADT0iNvQneqnoq3jXcfQ9exfItDCCBzjODGF6El21zfS6VYYeAkF3SXF3XSP6ZcoJNwg==
-X-Received: by 2002:a05:6402:42c8:: with SMTP id i8mr20478536edc.60.1636539152289;
-        Wed, 10 Nov 2021 02:12:32 -0800 (PST)
-Received: from [192.168.86.34] (cpc86377-aztw32-2-0-cust226.18-1.cable.virginm.net. [92.233.226.227])
-        by smtp.googlemail.com with ESMTPSA id r19sm12287575edt.54.2021.11.10.02.12.30
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 10 Nov 2021 02:12:31 -0800 (PST)
-Subject: Re: [PATCH] ASoC: codecs: MBHC: Add support for special headset
-To:     Srinivasa Rao Mandadapu <srivasam@codeaurora.org>,
-        agross@kernel.org, bjorn.andersson@linaro.org, lgirdwood@gmail.com,
-        broonie@kernel.org, robh+dt@kernel.org, plai@codeaurora.org,
-        bgoswami@codeaurora.org, perex@perex.cz, tiwai@suse.com,
-        rohitkr@codeaurora.org, linux-arm-msm@vger.kernel.org,
-        alsa-devel@alsa-project.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, swboyd@chromium.org,
-        judyhsiao@chromium.org
-Cc:     Venkata Prasad Potturu <potturu@codeaurora.org>
-References: <1635938324-17763-1-git-send-email-srivasam@codeaurora.org>
-From:   Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Message-ID: <8422a82f-5aa7-2458-8080-87f330fa63ea@linaro.org>
-Date:   Wed, 10 Nov 2021 10:12:30 +0000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        id S231190AbhKJKV2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Nov 2021 05:21:28 -0500
+Received: from mail-dm6nam11on2086.outbound.protection.outlook.com ([40.107.223.86]:43008
+        "EHLO NAM11-DM6-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S231301AbhKJKVY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Nov 2021 05:21:24 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=V89wRff+Ee9H2nae6+azjrWAkzua/rBFjlUP4wu1vJ2f3xyCFNe9VwyxBLHfM5RXp1Njomz7LBL9TgZDhn9vQRDEOVmX5R2+2Nq9dpUmDXVS1NX8eB6B8BZ8w0eJgozne6tugB2kEAvJgRiePbVxkIXmzU3X/mNK4YTEQCivoivGwoAqugmXqzRjnvcmZ5DJdzy0hYXdEbJDCvfCWX/56YL6WYWQZI/QC81QzmSZQe5Gx+D8ql74j3hRL4Kd/gVTAVGMA+7SVRPeHAaqHtj3b+RwDop0EAWlMg1Hf1PcJhhzsSc1UYJBLQorNyhmXWCJgQprLV9/HAYpf2Vcs9OfsQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=H5J8ssTIU/OU5qPUZiOrKmwTeNzk6kwInLYfpFmL0uA=;
+ b=nxidZqLNjR2uxeGZOsdJHotdv+kGD3Z8Yz7y/WpsDuCd9YTXDYw7buarkogXkQUlL8tZO77PHNx/KXI3yMBdCoqxlJ+cweh1z89eBsInzfJZLBIzWEa3UlT1H6YP4HW2pJkjls+94sq2OjXxRiKBPZNn6euCsL6P6GaMcMdokXd/MIGNljAhAuyE985sK9dcWqMvcmt9avlP2zh1gNChVMvgvC2M/EaK4qRJHOtXFf81Zftk3R39Um8JXDnavK+7maEGx18u2PwH8E7klLo6YvmDOwJWDw/cvboeYCgT43HVxuYxO6TerR27xcx/3QsFQgWSiWbskUmFlT6mWK/Yag==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 165.204.84.17) smtp.rcpttodomain=vger.kernel.org smtp.mailfrom=amd.com;
+ dmarc=pass (p=quarantine sp=quarantine pct=100) action=none
+ header.from=amd.com; dkim=none (message not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=H5J8ssTIU/OU5qPUZiOrKmwTeNzk6kwInLYfpFmL0uA=;
+ b=vseLOa/EdOX329Jn7GZuK4ctV1TgHTldvFNdEM4PK1EKqBOK0619qvr31wETH1PjyH62q1vMJ49XyE98cUzyaxNG7tKsFsFsuNvSIvuLBUEBqP5SUt2IjloTazd0tk/kxgyKMO26CM233SaeAZDW7Q+w0djv5TvuYmz8DFmc20Y=
+Received: from DM6PR13CA0024.namprd13.prod.outlook.com (2603:10b6:5:bc::37) by
+ BY5PR12MB4641.namprd12.prod.outlook.com (2603:10b6:a03:1f7::29) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4690.16; Wed, 10 Nov
+ 2021 10:18:35 +0000
+Received: from DM6NAM11FT021.eop-nam11.prod.protection.outlook.com
+ (2603:10b6:5:bc:cafe::29) by DM6PR13CA0024.outlook.office365.com
+ (2603:10b6:5:bc::37) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4690.6 via Frontend
+ Transport; Wed, 10 Nov 2021 10:18:34 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
+ smtp.mailfrom=amd.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=amd.com;
+Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
+ 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
+ client-ip=165.204.84.17; helo=SATLEXMB04.amd.com;
+Received: from SATLEXMB04.amd.com (165.204.84.17) by
+ DM6NAM11FT021.mail.protection.outlook.com (10.13.173.76) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.20.4690.15 via Frontend Transport; Wed, 10 Nov 2021 10:18:34 +0000
+Received: from sos-ubuntu2004-quartz01.amd.com (10.180.168.240) by
+ SATLEXMB04.amd.com (10.181.40.145) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.17; Wed, 10 Nov 2021 04:18:33 -0600
+From:   Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>
+To:     <linux-kernel@vger.kernel.org>, <kvm@vger.kernel.org>,
+        <x86@kernel.org>
+CC:     <pbonzini@redhat.com>, <joro@8bytes.org>, <tglx@linutronix.de>,
+        <mingo@redhat.com>, <bp@alien8.de>, <peterz@infradead.org>,
+        <hpa@zytor.com>, <thomas.lendacky@amd.com>, <jon.grimm@amd.com>,
+        Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>
+Subject: [PATCH 0/2] svm: avic: Allow AVIC support on system w/ physical APIC ID > 255
+Date:   Wed, 10 Nov 2021 04:18:03 -0600
+Message-ID: <20211110101805.16343-1-suravee.suthikulpanit@amd.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-In-Reply-To: <1635938324-17763-1-git-send-email-srivasam@codeaurora.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [10.180.168.240]
+X-ClientProxiedBy: SATLEXMB03.amd.com (10.181.40.144) To SATLEXMB04.amd.com
+ (10.181.40.145)
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: a92f3ed0-0a96-459b-e702-08d9a4337420
+X-MS-TrafficTypeDiagnostic: BY5PR12MB4641:
+X-Microsoft-Antispam-PRVS: <BY5PR12MB4641384B9611E16339E695F0F3939@BY5PR12MB4641.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:7219;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: X6l3Iq50ctwPx7SBd72OGl5fDZus3uA9QSMMhchl4oLi5xRYw2SzaiFuXriwRssTnBQ+sRq/jgSG5DN8dGgeLe4ysW0b5dK5kn3RFwMxmiqykzzOjuHM+o0BsM1SjRID3uT+4KCblLcOHWJxKe2R3UjcVoAti1J+G4K25hfn13bN0FJqRJRJ+ezv7ambkvZv7ntUcqc1d91Ut7tunFo54JLA+5DJjotRXtMTuI693/dCSP8cQQd+11GIc+DLMgUSsCaN+W6yiQQdsu8RH/A1D9YDQBquHwzd6G3i/DpUI6AvxiBlFVhPQBouzHZ4p46TtKYxw1MqTCSldQU87rvVnmooveVOB8loBeVAhJkSBENOFczwXXp64bi/caBPaibpiH/lSEPuW42qfQfLO1C5xVRZ+oIATjJHYrbhfmTHhOPF/f+zneaiVSbQbZbX8kZmcwTCq2ryS7L+qXw4Hj0tPfpQ0h+ddjC4Sn4pbbHnzAqYk0os9xhw+Mi9Lul+Vr6B/0SyQwAkXzLLq80Mg7oqaLShZoFo5os6c0T10A13mTe9TLE1dMfS/WF7dcr+i6jrVDlphQuHETwngXtoxPxNnbpnpYRtKQVE22ryz49cRVxrMDHhSXWXSXDrzFDYwA0Qa9bLCZET18BuM5PJZK4DpIEFZ8eTqanR+5IzS8CIe19vgV0D/JHLIPYbDCeuNRQtCFg3bYL/jsvVa5mJToYCoqvoYCc+h7oOvFvnSI2d5Rg=
+X-Forefront-Antispam-Report: CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(4636009)(36840700001)(46966006)(8936002)(1076003)(336012)(186003)(508600001)(16526019)(83380400001)(316002)(7696005)(4744005)(110136005)(2616005)(70586007)(70206006)(26005)(82310400003)(356005)(5660300002)(6666004)(4326008)(44832011)(47076005)(36756003)(36860700001)(2906002)(86362001)(8676002)(7416002)(426003)(81166007)(54906003)(36900700001);DIR:OUT;SFP:1101;
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 10 Nov 2021 10:18:34.7506
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: a92f3ed0-0a96-459b-e702-08d9a4337420
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
+X-MS-Exchange-CrossTenant-AuthSource: DM6NAM11FT021.eop-nam11.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY5PR12MB4641
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Thanks for adding this support.
+Originally, AMD SVM AVIC supports 8-bit host physical APIC ID.
+However, newer AMD systems can have physical APIC ID larger than 255,
+and AVIC hardware has been extended to support upto the maximum physical
+APIC ID available in the system.
 
-few minor nits,
+This series introduces a helper function in the APIC subsystem to get
+the maximum physical APIC ID allowing the SVM AVIC driver to calculate
+the number of bits to program the host physical APIC ID in the AVIC
+physical APIC ID table entry.
 
-On 03/11/2021 11:18, Srinivasa Rao Mandadapu wrote:
-> Update MBHC driver to support special headset such as apple
-> and huwawei headsets.
-> 
-> Signed-off-by: Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
-> Co-developed-by: Venkata Prasad Potturu <potturu@codeaurora.org>
-> Signed-off-by: Venkata Prasad Potturu <potturu@codeaurora.org>
-> ---
->   sound/soc/codecs/wcd-mbhc-v2.c | 78 +++++++++++++++++++++++++++++++++++++++---
->   1 file changed, 74 insertions(+), 4 deletions(-)
-> 
-> diff --git a/sound/soc/codecs/wcd-mbhc-v2.c b/sound/soc/codecs/wcd-mbhc-v2.c
-> index 405128c..3b4cd39 100644
-> --- a/sound/soc/codecs/wcd-mbhc-v2.c
-> +++ b/sound/soc/codecs/wcd-mbhc-v2.c
-> @@ -1022,6 +1022,57 @@ static int wcd_mbhc_get_plug_from_adc(struct wcd_mbhc *mbhc, int adc_result)
->   	return plug_type;
->   }
->   
-> +static int wcd_mbhc_get_spl_hs_thres(struct wcd_mbhc *mbhc)
-> +{
-> +	int hs_threshold, micbias_mv;
-> +
-> +	micbias_mv = wcd_mbhc_get_micbias(mbhc);
-> +	if (mbhc->cfg->hs_thr && mbhc->cfg->micb_mv != WCD_MBHC_ADC_MICBIAS_MV) {
-> +		if (mbhc->cfg->micb_mv == micbias_mv)
-> +			hs_threshold = mbhc->cfg->hs_thr;
-> +		else
-> +			hs_threshold = (mbhc->cfg->hs_thr * micbias_mv) /
-> +								mbhc->cfg->micb_mv;
+Regards,
+Suravee Suthikulpanit
 
-You should consider using 100 chars per line, so that reading is much easy.
+Suravee Suthikulpanit (2):
+  x86/apic: Add helper function to get maximum physical APIC ID
+  KVM: SVM: Extend host physical APIC ID field to support more than
+    8-bit
 
-> +	} else {
-> +		hs_threshold = ((WCD_MBHC_ADC_HS_THRESHOLD_MV * micbias_mv) /
-> +							WCD_MBHC_ADC_MICBIAS_MV);
-> +	}
-> +	return hs_threshold;
-> +}
-> +
-> +static bool wcd_mbhc_check_for_spl_headset(struct wcd_mbhc *mbhc)
-> +{
-> +	bool is_spl_hs = false;
-> +	int output_mv, hs_threshold, hph_threshold;
-> +
-> +	if (!mbhc->mbhc_cb->mbhc_micb_ctrl_thr_mic)
-> +		return false;
-> +
-> +	/* Bump up MIC_BIAS2 to 2.7V */
-> +	mbhc->mbhc_cb->mbhc_micb_ctrl_thr_mic(mbhc->component, MIC_BIAS_2, true);
-> +	usleep_range(10000, 10100);
-> +
-> +	output_mv = wcd_measure_adc_once(mbhc, MUX_CTL_IN2P);
-> +	hs_threshold = wcd_mbhc_get_spl_hs_thres(mbhc);
-> +	hph_threshold = wcd_mbhc_adc_get_hph_thres(mbhc);
-> +
-> +	if (output_mv > hs_threshold || output_mv < hph_threshold) {
-> +		if (mbhc->force_linein == true)
-> +			is_spl_hs = false;
-> +	} else {
-> +		is_spl_hs = true;
-> +	}
-> +
-> +	/* Back MIC_BIAS2 to 1.8v if the type is not special headset */
-> +	if (!is_spl_hs) {
-> +		mbhc->mbhc_cb->mbhc_micb_ctrl_thr_mic(mbhc->component, MIC_BIAS_2, false);
-> +		/* Add 10ms delay for micbias to settle */
-> +		usleep_range(10000, 10100);
-> +	}
-> +
-> +	return is_spl_hs;
-> +}
-> +
->   static void wcd_correct_swch_plug(struct work_struct *work)
->   {
->   	struct wcd_mbhc *mbhc;
-> @@ -1029,12 +1080,14 @@ static void wcd_correct_swch_plug(struct work_struct *work)
->   	enum wcd_mbhc_plug_type plug_type = MBHC_PLUG_TYPE_INVALID;
->   	unsigned long timeout;
->   	int pt_gnd_mic_swap_cnt = 0;
-> -	int output_mv, cross_conn, hs_threshold, try = 0;
-> +	int output_mv, cross_conn, hs_threshold, try = 0, micbias_mv;
-> +	bool is_spl_hs = false;
->   	bool is_pa_on;
->   
->   	mbhc = container_of(work, struct wcd_mbhc, correct_plug_swch);
->   	component = mbhc->component;
->   
-> +	micbias_mv = wcd_mbhc_get_micbias(mbhc);
->   	hs_threshold = wcd_mbhc_adc_get_hs_thres(mbhc);
->   
->   	/* Mask ADC COMPLETE interrupt */
-> @@ -1097,6 +1150,18 @@ static void wcd_correct_swch_plug(struct work_struct *work)
->   		plug_type = wcd_mbhc_get_plug_from_adc(mbhc, output_mv);
->   		is_pa_on = wcd_mbhc_read_field(mbhc, WCD_MBHC_HPH_PA_EN);
->   
-> +
-unnecessary extra new line here.
+ arch/x86/include/asm/apic.h |  1 +
+ arch/x86/kernel/apic/apic.c |  6 +++++
+ arch/x86/kvm/svm/avic.c     | 53 +++++++++++++++++++++++++++++++------
+ arch/x86/kvm/svm/svm.c      |  6 +++++
+ arch/x86/kvm/svm/svm.h      |  2 +-
+ 5 files changed, 59 insertions(+), 9 deletions(-)
 
-> +		if ((output_mv > hs_threshold) &&
-> +		    (!is_spl_hs)) {
-wrap to 100 chars and unneccessary brackets around the conditions.
+-- 
+2.25.1
 
-With those fixed
-
-
-Reviewed-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-
---srini
-
-> +			is_spl_hs = wcd_mbhc_check_for_spl_headset(mbhc);
-> +			output_mv = wcd_measure_adc_once(mbhc, MUX_CTL_IN2P);
-> +
-> +			if (is_spl_hs) {
-> +				hs_threshold = (hs_threshold * wcd_mbhc_get_micbias(mbhc)) /
-> +									micbias_mv; > +			}
-> +		}
-> +
->   		if ((output_mv <= hs_threshold) && !is_pa_on) {
->   			/* Check for cross connection*/
->   			cross_conn = wcd_check_cross_conn(mbhc);
-> @@ -1122,14 +1187,19 @@ static void wcd_correct_swch_plug(struct work_struct *work)
->   			}
->   		}
->   
-> -		if (output_mv > hs_threshold) /* cable is extension cable */
-> +		/* cable is extension cable */
-> +		if (output_mv > hs_threshold || mbhc->force_linein == true)
->   			plug_type = MBHC_PLUG_TYPE_HIGH_HPH;
->   	}
->   
->   	wcd_mbhc_bcs_enable(mbhc, plug_type, true);
->   
-> -	if (plug_type == MBHC_PLUG_TYPE_HIGH_HPH)
-> -		wcd_mbhc_write_field(mbhc, WCD_MBHC_ELECT_ISRC_EN, 1);
-> +	if (plug_type == MBHC_PLUG_TYPE_HIGH_HPH) {
-> +		if (is_spl_hs)
-> +			plug_type = MBHC_PLUG_TYPE_HEADSET;
-> +		else
-> +			wcd_mbhc_write_field(mbhc, WCD_MBHC_ELECT_ISRC_EN, 1);
-> +	}
->   
->   	wcd_mbhc_write_field(mbhc, WCD_MBHC_ADC_MODE, 0);
->   	wcd_mbhc_write_field(mbhc, WCD_MBHC_ADC_EN, 0);
-> 
