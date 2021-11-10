@@ -2,123 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F06844C541
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 17:44:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AA75744C544
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 17:44:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231458AbhKJQrF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Nov 2021 11:47:05 -0500
-Received: from mail.kernel.org ([198.145.29.99]:46590 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229995AbhKJQrD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Nov 2021 11:47:03 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3601A61205;
-        Wed, 10 Nov 2021 16:44:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1636562656;
-        bh=+KD0uJ2aB7eJaed+K7AZZWyM1PljfTbjc0UOLx5oQwI=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=GCuoIdz3rtrlenZb/iekEtbbVNoLUsF5Ph+BRZeFdlWQBTW83JegBac5JIZbzpG98
-         6ftpT5J+cUO8WNdGhbbkwNAXULax0yQic2elPllzArXFmZAlcpxHfXzvlmYDKne+mC
-         pP6pDZ5VvqXZlk0k9bpRMKs+UV4Ap7eItJFNAbJTjfDu5yXs/iOxVss4B2A6HbbBSi
-         qjuVHu80iREW6lfVk3wzUXeNx4shH3kZlMc6C7s3YkH5YpW2ure4oTkrbe1WR4CiP2
-         Lg844WNAkkzVaLEeDjLMOMJjgLSP737hdsyZb50zr9ApUA4J7EODueEppO2qprxjHs
-         KO9Fgsl9YfT5w==
-Date:   Wed, 10 Nov 2021 09:44:10 -0700
-From:   Nathan Chancellor <nathan@kernel.org>
-To:     Thomas =?iso-8859-1?Q?Wei=DFschuh?= <linux@weissschuh.net>
-Cc:     linux-input@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        Rushikesh S Kadam <rushikesh.s.kadam@intel.com>,
-        Jiri Kosina <jikos@kernel.org>,
-        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
-        Benson Leung <bleung@chromium.org>,
-        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
-        Guenter Roeck <groeck@chromium.org>, llvm@lists.linux.dev
-Subject: Re: [PATCH 5/6] platform/chrome: chros_ec_ishtp: only load for
- matching devices
-Message-ID: <YYv22iWQ7yTfMNC5@archlinux-ax161>
-References: <20211029152901.297939-1-linux@weissschuh.net>
- <20211029152901.297939-2-linux@weissschuh.net>
- <20211029152901.297939-3-linux@weissschuh.net>
- <20211029152901.297939-4-linux@weissschuh.net>
- <20211029152901.297939-5-linux@weissschuh.net>
- <20211029152901.297939-6-linux@weissschuh.net>
+        id S231624AbhKJQrU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Nov 2021 11:47:20 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44868 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229785AbhKJQrR (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Nov 2021 11:47:17 -0500
+Received: from mail-qt1-x82a.google.com (mail-qt1-x82a.google.com [IPv6:2607:f8b0:4864:20::82a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 83DEDC061764
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Nov 2021 08:44:29 -0800 (PST)
+Received: by mail-qt1-x82a.google.com with SMTP id t34so2675515qtc.7
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Nov 2021 08:44:29 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cmpxchg-org.20210112.gappssmtp.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=ZCxppkGRFPsisss/DePYM7NyPAJRZFk6RHTjGPknvLs=;
+        b=28ajj1Fad3jjq+pJTimln90y/+YAp3rK8HrgZJ21bws99je/aLNwJ1RbEpp+VOFLI5
+         wziDVyxazBE/4vX294wuICHRhpFBHB277qKLsw4E7XbZCqlr79wMi6mexuoOlNCT2KUg
+         +NThEa6rl1rpAb+x7b8Rg4YUzUR8AM6Ceh3SYN01pPaJ/6Lyf5BF97stdDC1tk/xfD4L
+         MatKRp0x77doAxnpSTgyQIAE+RbjFZK+sFICvR5ftw0sObz/cQGUCjcW4BHDuCaT/UW7
+         ZtSdZBb+RcfyxV4BMmMhvyBiL+x9D+twDGmCbtBBWkQJXPNaKFaLz1F5nl/w/CkVPb7q
+         dY2g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=ZCxppkGRFPsisss/DePYM7NyPAJRZFk6RHTjGPknvLs=;
+        b=uzY2kGMCguwobKWFXe3Igx5plk3YE58UTWSlG8crg4EZtTWjsYr0sjIxL3jjJbtkrk
+         GNYekHwktqv2thC+B6mY/pAnu43B3whu9TBsQ9AQdhvNFoR2nJ3C/BWGIfKarZmSoXuT
+         CodPBrQmIZl2hF0du4Qg6Gzix815tlsGBidyYSNHn0PO/unXL0yg+eTj7vkcHg6cM4wR
+         cq7fYXCzI3DhyDNA70zw0/f1hnQ7TMbn9MTD1KnhT1/BoKqPmU7DeHHCj4qpEvR50rvx
+         vdFV0g1mc86kThTnj6LI7dQ0SOi3m792OKaGEg9s5S/vchQt0sbxXdE5WBot0gA4/qf0
+         CeFw==
+X-Gm-Message-State: AOAM531Bor3YAjDTxtzeHwOd8VbdVFe+usTKB4cWwBGNIFT+xtmyMBmy
+        7XSH4dNFrkv8ZYqAwmzjKefVTw==
+X-Google-Smtp-Source: ABdhPJyXJCZeuCpxmXpqp5FKxeBTTeomL3BRKFix1AtSjZfJpqxWml8B3kiSR8y7SGuQQAjMSe1H+A==
+X-Received: by 2002:a05:622a:13c9:: with SMTP id p9mr375242qtk.47.1636562668626;
+        Wed, 10 Nov 2021 08:44:28 -0800 (PST)
+Received: from localhost (cpe-98-15-154-102.hvc.res.rr.com. [98.15.154.102])
+        by smtp.gmail.com with ESMTPSA id y14sm205869qta.86.2021.11.10.08.44.27
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 10 Nov 2021 08:44:28 -0800 (PST)
+Date:   Wed, 10 Nov 2021 11:44:26 -0500
+From:   Johannes Weiner <hannes@cmpxchg.org>
+To:     Georgi Djakov <quic_c_gdjako@quicinc.com>
+Cc:     vincent.guittot@linaro.org, juri.lelli@redhat.com,
+        peterz@infradead.org, mingo@redhat.com, rostedt@goodmis.org,
+        bsegall@google.com, mgorman@suse.de, bristot@redhat.com,
+        mhocko@kernel.org, vdavydov.dev@gmail.com, tj@kernel.org,
+        axboe@kernel.dk, cgroups@vger.kernel.org,
+        linux-block@vger.kernel.org, akpm@linux-foundation.org,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org, djakov@kernel.org
+Subject: Re: [RFC] psi: Add additional PSI counters for each type of memory
+ pressure
+Message-ID: <YYv26rKib03JnYZN@cmpxchg.org>
+References: <1636558597-248294-1-git-send-email-quic_c_gdjako@quicinc.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20211029152901.297939-6-linux@weissschuh.net>
+In-Reply-To: <1636558597-248294-1-git-send-email-quic_c_gdjako@quicinc.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 29, 2021 at 05:29:00PM +0200, Thomas Weiﬂschuh wrote:
-> Previously it was loaded for all ISHTP devices.
+On Wed, Nov 10, 2021 at 07:36:37AM -0800, Georgi Djakov wrote:
+> From: Carlos Ramirez <carlrami@codeaurora.org>
 > 
-> Signed-off-by: Thomas Weiﬂschuh <linux@weissschuh.net>
-> 
-> ---
-> 
-> Cc: Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
-> Cc: Rushikesh S Kadam <rushikesh.s.kadam@intel.com>
-> Cc: Jiri Kosina <jikos@kernel.org>
-> Cc: Benjamin Tissoires <benjamin.tissoires@redhat.com>
-> Cc: linux-input@vger.kernel.org
-> Cc: Benson Leung <bleung@chromium.org>
-> Cc: Enric Balletbo i Serra <enric.balletbo@collabora.com>
-> Cc: Guenter Roeck <groeck@chromium.org>
-> ---
->  drivers/platform/chrome/cros_ec_ishtp.c | 7 ++++++-
->  1 file changed, 6 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/platform/chrome/cros_ec_ishtp.c b/drivers/platform/chrome/cros_ec_ishtp.c
-> index 9d1e7e03628e..8c17358e84c1 100644
-> --- a/drivers/platform/chrome/cros_ec_ishtp.c
-> +++ b/drivers/platform/chrome/cros_ec_ishtp.c
-> @@ -774,6 +774,12 @@ static struct ishtp_cl_driver	cros_ec_ishtp_driver = {
->  	},
->  };
->  
-> +static const struct ishtp_device_id cros_ec_ishtp_id_table[] = {
-> +	{ cros_ish_guid },
-> +	{ }
-> +};
-> +MODULE_DEVICE_TABLE(ishtp, cros_ec_ishtp_id_table);
-> +
->  static int __init cros_ec_ishtp_mod_init(void)
->  {
->  	return ishtp_cl_driver_register(&cros_ec_ishtp_driver, THIS_MODULE);
-> @@ -791,4 +797,3 @@ MODULE_DESCRIPTION("ChromeOS EC ISHTP Client Driver");
->  MODULE_AUTHOR("Rushikesh S Kadam <rushikesh.s.kadam@intel.com>");
->  
->  MODULE_LICENSE("GPL v2");
-> -MODULE_ALIAS("ishtp:*");
-> -- 
-> 2.33.1
-> 
-> 
+> Calculates psi totals for memory pressure subevents:
+> compaction, thrashing, direct compaction, direct reclaim, and kswapd0.
+> Uses upper 16 bits of psi_flags to track memory subevents.
 
-This patch in -next as commit facfe0a4fdce ("platform/chrome:
-chros_ec_ishtp: only load for matching devices") and the following one
-as commit f155dfeaa4ee ("platform/x86: isthp_eclite: only load for
-matching devices") break clang and GCC prior to 8.1 (output from
-Debian's GCC 6.3.0 below):
+Oof, that's quite heavy both in terms of branches, but also in terms
+of cache - which, depending on wakeup pattern and cpu topology can
+really hurt those paths.
 
-$ make -skj"$(nproc)" distclean allmodconfig drivers/platform/
-drivers/platform/chrome/cros_ec_ishtp.c:778:4: error: initializer element is not constant
-  { cros_ish_guid },
-    ^~~~~~~~~~~~~
-drivers/platform/chrome/cros_ec_ishtp.c:778:4: note: (near initialization for 'cros_ec_ishtp_id_table[0].guid')
-scripts/Makefile.build:288: recipe for target 'drivers/platform/chrome/cros_ec_ishtp.o' failed
-make[4]: *** [drivers/platform/chrome/cros_ec_ishtp.o] Error 1
-drivers/platform/x86/intel/ishtp_eclite.c:685:4: error: initializer element is not constant
-  { ecl_ishtp_guid },
-    ^~~~~~~~~~~~~~
-drivers/platform/x86/intel/ishtp_eclite.c:685:4: note: (near initialization for 'ecl_ishtp_id_table[0].guid')
+What's the usecase? Do you have automation that needs to act on one
+type of stall but not the others, for example?
 
-I am sure clang should be fixed to recognize this value as a compile
-time constant but the kernel supports GCC back to 5.1.0 so this should
-be fixed here as well.
+I find that looking at vmstat events on hosts with elevated pressure
+tends to give a pretty good idea of the source. It should also be
+possible to whip up a short bpftrace script to track down culprit
+callstacks of psi_memstall_*.
 
-Cheers,
-Nathan
+> @@ -1053,19 +1128,56 @@ int psi_show(struct seq_file *m, struct psi_group *group, enum psi_res res)
+> +		seq_printf(m, "%s avg10=%lu.%02lu avg60=%lu.%02lu avg300=%lu.%02lu total=%llu %llu %llu %llu %llu %llu %llu %llu %llu %llu %llu %llu\n",
+>  			   full ? "full" : "some",
+>  			   LOAD_INT(avg[0]), LOAD_FRAC(avg[0]),
+>  			   LOAD_INT(avg[1]), LOAD_FRAC(avg[1]),
+>  			   LOAD_INT(avg[2]), LOAD_FRAC(avg[2]),
+> -			   total);
+> +			   total, total_blk_cgroup_throttle, total_bio, total_compaction,
+> +			   total_thrashing, total_cgroup_reclaim_high,
+> +			   total_cgroup_reclaim_high_sleep, total_cgroup_try_charge,
+> +			   total_direct_compaction, total_direct_reclaim, total_read_swappage,
+> +			   total_kswapd);
+
+The file format is a can of worms. I doubt we can change this at this
+point without breaking parsers, so those numbers would have to live
+somewhere else. But let's figure out the above questions before
+worrying about this.
