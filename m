@@ -2,136 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6899344C4ED
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 17:16:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0850444C4EF
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 17:17:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230201AbhKJQTE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Nov 2021 11:19:04 -0500
-Received: from gecko.sbs.de ([194.138.37.40]:50079 "EHLO gecko.sbs.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229473AbhKJQTD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Nov 2021 11:19:03 -0500
-Received: from mail2.sbs.de (mail2.sbs.de [192.129.41.66])
-        by gecko.sbs.de (8.15.2/8.15.2) with ESMTPS id 1AAGFiIM029239
-        (version=TLSv1.2 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 10 Nov 2021 17:15:44 +0100
-Received: from [167.87.75.31] ([167.87.75.31])
-        by mail2.sbs.de (8.15.2/8.15.2) with ESMTP id 1AAGFfna016041;
-        Wed, 10 Nov 2021 17:15:41 +0100
-Subject: Re: [PATCH v8 0/6] cgroup/cpuset: Add new cpuset partition type &
- empty effecitve cpus
-To:     Marcelo Tosatti <mtosatti@redhat.com>,
-        "Moessbauer, Felix" <felix.moessbauer@siemens.com>
-Cc:     =?UTF-8?Q?Michal_Koutn=c3=bd?= <mkoutny@suse.com>,
-        "longman@redhat.com" <longman@redhat.com>,
-        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
-        "cgroups@vger.kernel.org" <cgroups@vger.kernel.org>,
-        "corbet@lwn.net" <corbet@lwn.net>,
-        "frederic@kernel.org" <frederic@kernel.org>,
-        "guro@fb.com" <guro@fb.com>,
-        "hannes@cmpxchg.org" <hannes@cmpxchg.org>,
-        "juri.lelli@redhat.com" <juri.lelli@redhat.com>,
-        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-kselftest@vger.kernel.org" <linux-kselftest@vger.kernel.org>,
-        "lizefan.x@bytedance.com" <lizefan.x@bytedance.com>,
-        "pauld@redhat.com" <pauld@redhat.com>,
-        "peterz@infradead.org" <peterz@infradead.org>,
-        "shuah@kernel.org" <shuah@kernel.org>,
-        "tj@kernel.org" <tj@kernel.org>,
-        "henning.schild@siemens.com" <henning.schild@siemens.com>
-References: <20211018143619.205065-1-longman@redhat.com>
- <20211110111357.17617-1-felix.moessbauer@siemens.com>
- <20211110135653.GD20566@blackbody.suse.cz>
- <AM9PR10MB4869C14EAE01B87C0037BF6A89939@AM9PR10MB4869.EURPRD10.PROD.OUTLOOK.COM>
- <20211110161020.GA20101@fuller.cnet>
-From:   Jan Kiszka <jan.kiszka@siemens.com>
-Message-ID: <c1e94031-a179-dc72-e5ee-3f8197bea492@siemens.com>
-Date:   Wed, 10 Nov 2021 17:15:41 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        id S229926AbhKJQUA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Nov 2021 11:20:00 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38648 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229473AbhKJQT7 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Nov 2021 11:19:59 -0500
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F037BC061764
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Nov 2021 08:17:11 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Transfer-Encoding:
+        Content-Type:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
+        Sender:Reply-To:Content-ID:Content-Description;
+        bh=UWDh+GMb6sWN4ytXlAiAuYYmuWguzVsqO0bFdWf3SH0=; b=UsVeTI4F/S3KbJ/NJU7Rt8vqv7
+        Ke5DLye4hvFBWXoNeyYs7joByByP9MU48PmOyROslgun0dA+iC/lD2pHD4HsppCu5DNGzqJNPM9O8
+        8FrW3T5+cuQI5O67G0fqipdjPartvSI174j3JPwnLR/oySwOUrSf53LcSG+BYi+esFmeSr24pgO9T
+        oo33xckSxwrJMJFCOCjKcc+rzo/zaFVll0G0eAyO3jiJZnLGGQZSxJUhc2onNzU5jx9AvXF3pD2ze
+        xdSG58nsk37oxKCi9VEhtCaUMbvpNP31mGgOjtC1voXXmv+eE1Tl7mGW0CD3rBM+khAeqRZTIxmlW
+        ZTqY+KJA==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=worktop.programming.kicks-ass.net)
+        by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mkqHV-00FIp3-2Q; Wed, 10 Nov 2021 16:17:01 +0000
+Received: by worktop.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 3199B986972; Wed, 10 Nov 2021 17:17:00 +0100 (CET)
+Date:   Wed, 10 Nov 2021 17:17:00 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Juergen Gross <jgross@suse.com>
+Cc:     x86@kernel.org, linux-kernel@vger.kernel.org, jpoimboe@redhat.com,
+        mark.rutland@arm.com, dvyukov@google.com, seanjc@google.com,
+        pbonzini@redhat.com, mbenes@suse.cz
+Subject: Re: [PATCH v2 11/23] x86,xen: Remove .fixup usage
+Message-ID: <20211110161700.GC174703@worktop.programming.kicks-ass.net>
+References: <20211110100102.250793167@infradead.org>
+ <20211110101325.545019822@infradead.org>
+ <42933d6b-c6f4-7420-1d0f-7f5d6ec17d8e@suse.com>
+ <YYumVx7qO3gY2tgD@hirez.programming.kicks-ass.net>
+ <YYu/Mg8lSO9zX01z@hirez.programming.kicks-ass.net>
+ <62c65309-b37e-4974-c4c1-733081357808@suse.com>
 MIME-Version: 1.0
-In-Reply-To: <20211110161020.GA20101@fuller.cnet>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <62c65309-b37e-4974-c4c1-733081357808@suse.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10.11.21 17:10, Marcelo Tosatti wrote:
-> On Wed, Nov 10, 2021 at 03:21:54PM +0000, Moessbauer, Felix wrote:
->>
->>
->>> -----Original Message-----
->>> From: Michal Koutný <mkoutny@suse.com>
->>> Sent: Wednesday, November 10, 2021 2:57 PM
->>> To: Moessbauer, Felix (T RDA IOT SES-DE) <felix.moessbauer@siemens.com>
->>> Cc: longman@redhat.com; akpm@linux-foundation.org;
->>> cgroups@vger.kernel.org; corbet@lwn.net; frederic@kernel.org; guro@fb.com;
->>> hannes@cmpxchg.org; juri.lelli@redhat.com; linux-doc@vger.kernel.org; linux-
->>> kernel@vger.kernel.org; linux-kselftest@vger.kernel.org;
->>> lizefan.x@bytedance.com; mtosatti@redhat.com; pauld@redhat.com;
->>> peterz@infradead.org; shuah@kernel.org; tj@kernel.org; Kiszka, Jan (T RDA
->>> IOT) <jan.kiszka@siemens.com>; Schild, Henning (T RDA IOT SES-DE)
->>> <henning.schild@siemens.com>
->>> Subject: Re: [PATCH v8 0/6] cgroup/cpuset: Add new cpuset partition type &
->>> empty effecitve cpus
->>>
->>> Hello.
->>>
->>> On Wed, Nov 10, 2021 at 12:13:57PM +0100, Felix Moessbauer
->>> <felix.moessbauer@siemens.com> wrote:
->>>> However, I was not able to see any latency improvements when using
->>>> cpuset.cpus.partition=isolated.
->>>
->>> Interesting. What was the baseline against which you compared it (isolcpus, no
->>> cpusets,...)?
->>
->> For this test, I just compared both settings cpuset.cpus.partition=isolated|root.
->> There, I did not see a significant difference (but I know, RT tuning depends on a ton of things).
->>
->>>
->>>> The test was performed with jitterdebugger on CPUs 1-3 and the following
->>> cmdline:
->>>> rcu_nocbs=1-4 nohz_full=1-4 irqaffinity=0,5-6,11 intel_pstate=disable
->>>> On the other cpus, stress-ng was executed to generate load.
->>>> [...]
->>>
->>>> This requires cgroup.type=threaded on both cgroups and changes to the
->>>> application (threads have to be born in non-rt group and moved to rt-group).
->>>
->>> But even with isolcpus the application would need to set affinity of threads to
->>> the selected CPUs (cf cgroup migrating). Do I miss anything?
->>
->> Yes, that's true. But there are two differences (given that you use isolcpus):
->> 1. the application only has to set the affinity for rt threads.
->>  Threads that do not explicitly set the affinity are automatically excluded from the isolated cores.
->>  Even common rt test applications like jitterdebugger do not pin their non-rt threads.
->> 2. Threads can be started on non-rt CPUs and then bound to a specific rt CPU.
->> This binding can be specified before thread creation via pthread_create.
->> By that, you can make sure that at no point in time a thread has a "forbidden" CPU in its affinities.
->>
->> With cgroup2, you cannot guarantee the second aspect, as thread creation and moving to a cgroup is not an atomic operation.
->> Also - please correct me if I'm wrong - you first have to create a thread before moving it into a group.
->> At creation time, you cannot set the final affinity mask (as you create it in the non-rt group and there the CPU is not in the cpuset.cpus).
->> Once you move the thread to the rt cgroup, it has a default mask and by that can be executed on other rt cores.
-> 
-> man clone3:
-> 
->        CLONE_NEWCGROUP (since Linux 4.6)
->               Create  the  process  in  a  new cgroup namespace.  If this flag is not set, then (as with fork(2)) the
->               process is created in the same cgroup namespaces as the calling process.
-> 
->               For further information on cgroup namespaces, see cgroup_namespaces(7).
-> 
->               Only a privileged process (CAP_SYS_ADMIN) can employ CLONE_NEWCGROUP.
-> 
+On Wed, Nov 10, 2021 at 01:52:57PM +0100, Juergen Gross wrote:
+> On 10.11.21 13:46, Peter Zijlstra wrote:
+> > On Wed, Nov 10, 2021 at 12:00:39PM +0100, Peter Zijlstra wrote:
+> > > On Wed, Nov 10, 2021 at 11:35:37AM +0100, Juergen Gross wrote:
+> >=20
+> > > > > +		     _ASM_EXTABLE_TYPE_REG(1b, 2b, EX_TYPE_EFAUL_REG, %[ret])
+> > > >=20
+> > > > I guess you didn't compile that? There is a typo: s/EFAUL/EFAULT/
+> > >=20
+> > > Damn.. I figure that must've gotten lost in the robot spam telling me
+> > > clang can't do __cold on labels :/
+> >=20
+> > new patch at:
+> >=20
+> >    https://lkml.kernel.org/r/YYu/AteC/Wamqn46@hirez.programming.kicks-a=
+ss.net
+> >=20
+>=20
+> "not found"
 
-Is there pthread_attr_setcgroup_np()?
+Argh.. msgid contains '/' and that doesn't really work with URLs.
 
-Jan
+https://lore.kernel.org/lkml/YYu%2FAteC%2FWamqn46@hirez.programming.kicks-a=
+ss.net/
 
--- 
-Siemens AG, T RDA IOT
-Corporate Competence Center Embedded Linux
+is the right url, in case you hand't yet found the actual email.
+
+
