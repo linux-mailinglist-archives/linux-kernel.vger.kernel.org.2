@@ -2,454 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 985E444CB77
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 22:53:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3847244CB7F
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 22:58:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233549AbhKJV4V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Nov 2021 16:56:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58764 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233314AbhKJV4U (ORCPT
+        id S233528AbhKJWAk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Nov 2021 17:00:40 -0500
+Received: from gandalf.ozlabs.org ([150.107.74.76]:56667 "EHLO
+        gandalf.ozlabs.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233218AbhKJWAj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Nov 2021 16:56:20 -0500
-Received: from mail-qk1-x72b.google.com (mail-qk1-x72b.google.com [IPv6:2607:f8b0:4864:20::72b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 59A9EC061766
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Nov 2021 13:53:32 -0800 (PST)
-Received: by mail-qk1-x72b.google.com with SMTP id bi29so3947652qkb.5
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Nov 2021 13:53:32 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=U9hKXVwy0fPLp0MtOdfzxJKE2FfEkLBhoojYFxg7gv4=;
-        b=YAT+a9qHX0iV0PgtjAxbwcqJyey/jF3Pp2VnPicTxrqrP6wGD1Y2+j1d660vESCfRy
-         diSaXUCjJKoYme6BESa1jcQ7b1ddfRqk3sb1oLlHUsQ6UjKYBifEwC3qSBB4qxwP8PUc
-         6SQFC574Ef40RVJCUBALgkX6IHS6SFnYA7tADB1fo9fB89xhVfOZj5FlwXEnu1hJCKHT
-         ZdVu68QfJo3Na69H1Ci8Mz72FLvefFnZbBhllyKA7aiC2hWJ2i2LQZYFZ/gvVAchQoCg
-         v8FuwuCZCO4FOd6iHRdjJNj4w0Z1AnClki++QQhfTKpoVKHiX9LEHq6QaGoW/+D/hMxk
-         Km7A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=U9hKXVwy0fPLp0MtOdfzxJKE2FfEkLBhoojYFxg7gv4=;
-        b=R8f84/Ov7oJqjM8qRSxC6BMXmIxaPGFFV+soyCPOf5XdXO5PnIv2h+U3qh2pGAUlnU
-         90Y51ermqhaEHqdKxrTWnaZq3jHY7HXBUBI+i2X2v5ETw6dLY53V+/6XSSMzyd51jpxa
-         P+IGBycLZNoU32C2iGxhrytzbmbiZ4EZwuhL7krQV905UVSWIR6rI7Xag73nYtk+GkJh
-         uP774TKaCGePgISLC6Z1WBI4fvwOgTAFWWvgsn22A8zZIEmFJFUaUkPS9UukDadCoR5Y
-         PqViR3qSSgPN+1ns0OovBJpniR3fRCJ5ooTjK5dffuABhkgvkfddHwXH5a0XJ2K0+NgW
-         4PnQ==
-X-Gm-Message-State: AOAM531kD3bbZrjf9M+A10112BoB1QFu+CXTY8Te+EKEd0tngrvZAZtm
-        DIkEYvspws5O42GpngbKnwI0mg==
-X-Google-Smtp-Source: ABdhPJxdeVcwWGDL+CJPV+CMLBCn7rt/jM7Y8pT9G/OFYwnO/BlZSzJx3SaA+WpgrjdAKf+ZYjGC/Q==
-X-Received: by 2002:a05:620a:2e3:: with SMTP id a3mr2130693qko.451.1636581211467;
-        Wed, 10 Nov 2021 13:53:31 -0800 (PST)
-Received: from pop-os.fios-router.home (pool-71-163-245-5.washdc.fios.verizon.net. [71.163.245.5])
-        by smtp.googlemail.com with ESMTPSA id u27sm747325qtc.58.2021.11.10.13.53.30
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 10 Nov 2021 13:53:31 -0800 (PST)
-From:   Thara Gopinath <thara.gopinath@linaro.org>
-To:     agross@kernel.org, bjorn.andersson@linaro.org, robh+dt@kernel.org
-Cc:     linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] arm64: dts: qcom: sm8250: Add CPU opp tables
-Date:   Wed, 10 Nov 2021 16:53:30 -0500
-Message-Id: <20211110215330.74257-1-thara.gopinath@linaro.org>
-X-Mailer: git-send-email 2.25.1
+        Wed, 10 Nov 2021 17:00:39 -0500
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4HqJcY3V0dz4xbw;
+        Thu, 11 Nov 2021 08:57:49 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+        s=201702; t=1636581470;
+        bh=LXaLTfNPSqg2YHBBxx7bwVvYha2FAuo39XdXtM+fUYo=;
+        h=Date:From:To:Cc:Subject:From;
+        b=M+Zm8IfTXJ1gonVsRzgYwys8g/fxWeGmBUUcKIzUeiEw1HhP6yMM5DPl4zEmQFEra
+         HP5eBo6SbufNr3Nqd1QliRPhXwlObNMyrsT5GCQlD6wIs6Fp24upEpRVtude7qp+QH
+         PSWHpSSMRd/VmAFsO8lgx1xNdEu2RVfZJhQfl8pDoP+VpuG0IHGjTrk+Zen15smm4T
+         RcLkG4o8nQ5QM2gF44Zpup2Q9yi4P3e3p7DUoFwsUVn+0lRTZMq/VbZ/BWGfx/PWCO
+         DMIk+1c2jwpNQCHXcDWtrB0s3U8BMG+fimSjkoKU9tBFWYyMRgvrt8S6NcUXr8k9y5
+         Xl8xfajUctXlg==
+Date:   Thu, 11 Nov 2021 08:57:46 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Steve French <smfrench@gmail.com>,
+        CIFS <linux-cifs@vger.kernel.org>
+Cc:     "Paulo Alcantara (SUSE)" <pc@cjr.nz>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: build failure after merge of the cifs tree
+Message-ID: <20211111085746.46746d4f@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; boundary="Sig_/MG692s2akANc1mz/MXD1yu.";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add OPP tables to scale DDR and L3 with CPUs for SM8250 SoCs.
+--Sig_/MG692s2akANc1mz/MXD1yu.
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Signed-off-by: Thara Gopinath <thara.gopinath@linaro.org>
----
- arch/arm64/boot/dts/qcom/sm8250.dtsi | 314 +++++++++++++++++++++++++++
- 1 file changed, 314 insertions(+)
+Hi all,
 
-diff --git a/arch/arm64/boot/dts/qcom/sm8250.dtsi b/arch/arm64/boot/dts/qcom/sm8250.dtsi
-index d12e4cbfc852..7c35415a05be 100644
---- a/arch/arm64/boot/dts/qcom/sm8250.dtsi
-+++ b/arch/arm64/boot/dts/qcom/sm8250.dtsi
-@@ -100,6 +100,9 @@ CPU0: cpu@0 {
- 			dynamic-power-coefficient = <205>;
- 			next-level-cache = <&L2_0>;
- 			qcom,freq-domain = <&cpufreq_hw 0>;
-+			operating-points-v2 = <&cpu0_opp_table>;
-+			interconnects = <&gem_noc MASTER_AMPSS_M0 &mc_virt SLAVE_EBI_CH0>,
-+					<&epss_l3 MASTER_OSM_L3_APPS &epss_l3 SLAVE_OSM_L3>;
- 			#cooling-cells = <2>;
- 			L2_0: l2-cache {
- 				compatible = "cache";
-@@ -119,6 +122,9 @@ CPU1: cpu@100 {
- 			dynamic-power-coefficient = <205>;
- 			next-level-cache = <&L2_100>;
- 			qcom,freq-domain = <&cpufreq_hw 0>;
-+			operating-points-v2 = <&cpu0_opp_table>;
-+			interconnects = <&gem_noc MASTER_AMPSS_M0 &mc_virt SLAVE_EBI_CH0>,
-+					<&epss_l3 MASTER_OSM_L3_APPS &epss_l3 SLAVE_OSM_L3>;
- 			#cooling-cells = <2>;
- 			L2_100: l2-cache {
- 				compatible = "cache";
-@@ -135,6 +141,9 @@ CPU2: cpu@200 {
- 			dynamic-power-coefficient = <205>;
- 			next-level-cache = <&L2_200>;
- 			qcom,freq-domain = <&cpufreq_hw 0>;
-+			operating-points-v2 = <&cpu0_opp_table>;
-+			interconnects = <&gem_noc MASTER_AMPSS_M0 &mc_virt SLAVE_EBI_CH0>,
-+					<&epss_l3 MASTER_OSM_L3_APPS &epss_l3 SLAVE_OSM_L3>;
- 			#cooling-cells = <2>;
- 			L2_200: l2-cache {
- 				compatible = "cache";
-@@ -151,6 +160,9 @@ CPU3: cpu@300 {
- 			dynamic-power-coefficient = <205>;
- 			next-level-cache = <&L2_300>;
- 			qcom,freq-domain = <&cpufreq_hw 0>;
-+			operating-points-v2 = <&cpu0_opp_table>;
-+			interconnects = <&gem_noc MASTER_AMPSS_M0 &mc_virt SLAVE_EBI_CH0>,
-+					<&epss_l3 MASTER_OSM_L3_APPS &epss_l3 SLAVE_OSM_L3>;
- 			#cooling-cells = <2>;
- 			L2_300: l2-cache {
- 				compatible = "cache";
-@@ -167,6 +179,9 @@ CPU4: cpu@400 {
- 			dynamic-power-coefficient = <379>;
- 			next-level-cache = <&L2_400>;
- 			qcom,freq-domain = <&cpufreq_hw 1>;
-+			operating-points-v2 = <&cpu4_opp_table>;
-+			interconnects = <&gem_noc MASTER_AMPSS_M0 &mc_virt SLAVE_EBI_CH0>,
-+					<&epss_l3 MASTER_OSM_L3_APPS &epss_l3 SLAVE_OSM_L3>;
- 			#cooling-cells = <2>;
- 			L2_400: l2-cache {
- 				compatible = "cache";
-@@ -183,6 +198,9 @@ CPU5: cpu@500 {
- 			dynamic-power-coefficient = <379>;
- 			next-level-cache = <&L2_500>;
- 			qcom,freq-domain = <&cpufreq_hw 1>;
-+			operating-points-v2 = <&cpu4_opp_table>;
-+			interconnects = <&gem_noc MASTER_AMPSS_M0 &mc_virt SLAVE_EBI_CH0>,
-+					<&epss_l3 MASTER_OSM_L3_APPS &epss_l3 SLAVE_OSM_L3>;
- 			#cooling-cells = <2>;
- 			L2_500: l2-cache {
- 				compatible = "cache";
-@@ -200,6 +218,9 @@ CPU6: cpu@600 {
- 			dynamic-power-coefficient = <379>;
- 			next-level-cache = <&L2_600>;
- 			qcom,freq-domain = <&cpufreq_hw 1>;
-+			operating-points-v2 = <&cpu4_opp_table>;
-+			interconnects = <&gem_noc MASTER_AMPSS_M0 &mc_virt SLAVE_EBI_CH0>,
-+					<&epss_l3 MASTER_OSM_L3_APPS &epss_l3 SLAVE_OSM_L3>;
- 			#cooling-cells = <2>;
- 			L2_600: l2-cache {
- 				compatible = "cache";
-@@ -216,6 +237,9 @@ CPU7: cpu@700 {
- 			dynamic-power-coefficient = <444>;
- 			next-level-cache = <&L2_700>;
- 			qcom,freq-domain = <&cpufreq_hw 2>;
-+			operating-points-v2 = <&cpu7_opp_table>;
-+			interconnects = <&gem_noc MASTER_AMPSS_M0 &mc_virt SLAVE_EBI_CH0>,
-+					<&epss_l3 MASTER_OSM_L3_APPS &epss_l3 SLAVE_OSM_L3>;
- 			#cooling-cells = <2>;
- 			L2_700: l2-cache {
- 				compatible = "cache";
-@@ -260,6 +284,296 @@ core7 {
- 		};
- 	};
- 
-+	cpu0_opp_table: cpu0_opp_table {
-+		compatible = "operating-points-v2";
-+		opp-shared;
-+
-+		cpu0_opp1: opp-300000000 {
-+			opp-hz = /bits/ 64 <300000000>;
-+			opp-peak-kBps = <800000 9600000>;
-+		};
-+
-+		cpu0_opp2: opp-403200000 {
-+			opp-hz = /bits/ 64 <403200000>;
-+			opp-peak-kBps = <800000 9600000>;
-+		};
-+
-+		cpu0_opp3: opp-518400000 {
-+			opp-hz = /bits/ 64 <518400000>;
-+			opp-peak-kBps = <800000 16588800>;
-+		};
-+
-+		cpu0_opp4: opp-614400000 {
-+			opp-hz = /bits/ 64 <614400000>;
-+			opp-peak-kBps = <800000 16588800>;
-+		};
-+
-+		cpu0_opp5: opp-691200000 {
-+			opp-hz = /bits/ 64 <691200000>;
-+			opp-peak-kBps = <800000 19660800>;
-+		};
-+
-+		cpu0_opp6: opp-787200000 {
-+			opp-hz = /bits/ 64 <787200000>;
-+			opp-peak-kBps = <1804000 19660800>;
-+		};
-+
-+		cpu0_opp7: opp-883200000 {
-+			opp-hz = /bits/ 64 <883200000>;
-+			opp-peak-kBps = <1804000 23347200>;
-+		};
-+
-+		cpu0_opp8: opp-979200000 {
-+			opp-hz = /bits/ 64 <979200000>;
-+			opp-peak-kBps = <1804000 26419200>;
-+		};
-+
-+		cpu0_opp9: opp-1075200000 {
-+			opp-hz = /bits/ 64 <1075200000>;
-+			opp-peak-kBps = <1804000 29491200>;
-+		};
-+
-+		cpu0_opp10: opp-1171200000 {
-+			opp-hz = /bits/ 64 <1171200000>;
-+			opp-peak-kBps = <1804000 32563200>;
-+		};
-+
-+		cpu0_opp11: opp-1248000000 {
-+			opp-hz = /bits/ 64 <1248000000>;
-+			opp-peak-kBps = <1804000 36249600>;
-+		};
-+
-+		cpu0_opp12: opp-1344000000 {
-+			opp-hz = /bits/ 64 <1344000000>;
-+			opp-peak-kBps = <2188000 36249600>;
-+		};
-+
-+		cpu0_opp13: opp-1420800000 {
-+			opp-hz = /bits/ 64 <1420800000>;
-+			opp-peak-kBps = <2188000 39321600>;
-+		};
-+
-+		cpu0_opp14: opp-1516800000 {
-+			opp-hz = /bits/ 64 <1516800000>;
-+			opp-peak-kBps = <3072000 42393600>;
-+		};
-+
-+		cpu0_opp15: opp-1612800000 {
-+			opp-hz = /bits/ 64 <1612800000>;
-+			opp-peak-kBps = <3072000 42393600>;
-+		};
-+
-+		cpu0_opp16: opp-1708800000 {
-+			opp-hz = /bits/ 64 <1708800000>;
-+			opp-peak-kBps = <4068000 42393600>;
-+		};
-+
-+		cpu0_opp17: opp-1804800000 {
-+			opp-hz = /bits/ 64 <1804800000>;
-+			opp-peak-kBps = <4068000 42393600>;
-+		};
-+	};
-+
-+	cpu4_opp_table: cpu4_opp_table {
-+		compatible = "operating-points-v2";
-+		opp-shared;
-+
-+		cpu4_opp1: opp-710400000 {
-+			opp-hz = /bits/ 64 <710400000>;
-+			opp-peak-kBps = <1804000 19660800>;
-+		};
-+
-+		cpu4_opp2: opp-825600000 {
-+			opp-hz = /bits/ 64 <825600000>;
-+			opp-peak-kBps = <2188000 23347200>;
-+		};
-+
-+		cpu4_opp3: opp-940800000 {
-+			opp-hz = /bits/ 64 <940800000>;
-+			opp-peak-kBps = <2188000 26419200>;
-+		};
-+
-+		cpu4_opp4: opp-1056000000 {
-+			opp-hz = /bits/ 64 <1056000000>;
-+			opp-peak-kBps = <3072000 26419200>;
-+		};
-+
-+		cpu4_opp5: opp-1171200000 {
-+			opp-hz = /bits/ 64 <1171200000>;
-+			opp-peak-kBps = <3072000 29491200>;
-+		};
-+
-+		cpu4_opp6: opp-1286400000 {
-+			opp-hz = /bits/ 64 <1286400000>;
-+			opp-peak-kBps = <4068000 29491200>;
-+		};
-+
-+		cpu4_opp7: opp-1382400000 {
-+			opp-hz = /bits/ 64 <1382400000>;
-+			opp-peak-kBps = <4068000 32563200>;
-+		};
-+
-+		cpu4_opp8: opp-1478400000 {
-+			opp-hz = /bits/ 64 <1478400000>;
-+			opp-peak-kBps = <4068000 32563200>;
-+		};
-+
-+		cpu4_opp9: opp-1574400000 {
-+			opp-hz = /bits/ 64 <1574400000>;
-+			opp-peak-kBps = <5412000 39321600>;
-+		};
-+
-+		cpu4_opp10: opp-1670400000 {
-+			opp-hz = /bits/ 64 <1670400000>;
-+			opp-peak-kBps = <5412000 42393600>;
-+		};
-+
-+		cpu4_opp11: opp-1766400000 {
-+			opp-hz = /bits/ 64 <1766400000>;
-+			opp-peak-kBps = <5412000 45465600>;
-+		};
-+
-+		cpu4_opp12: opp-1862400000 {
-+			opp-hz = /bits/ 64 <1862400000>;
-+			opp-peak-kBps = <6220000 45465600>;
-+		};
-+
-+		cpu4_opp13: opp-1958400000 {
-+			opp-hz = /bits/ 64 <1958400000>;
-+			opp-peak-kBps = <6220000 48537600>;
-+		};
-+
-+		cpu4_opp14: opp-2054400000 {
-+			opp-hz = /bits/ 64 <2054400000>;
-+			opp-peak-kBps = <7216000 48537600>;
-+		};
-+
-+		cpu4_opp15: opp-2150400000 {
-+			opp-hz = /bits/ 64 <2150400000>;
-+			opp-peak-kBps = <7216000 51609600>;
-+		};
-+
-+		cpu4_opp16: opp-2246400000 {
-+			opp-hz = /bits/ 64 <2246400000>;
-+			opp-peak-kBps = <7216000 51609600>;
-+		};
-+
-+		cpu4_opp17: opp-2342400000 {
-+			opp-hz = /bits/ 64 <2342400000>;
-+			opp-peak-kBps = <8368000 51609600>;
-+		};
-+
-+		cpu4_opp18: opp-2419200000 {
-+			opp-hz = /bits/ 64 <2419200000>;
-+			opp-peak-kBps = <8368000 51609600>;
-+		};
-+	};
-+
-+	cpu7_opp_table: cpu7_opp_table {
-+		compatible = "operating-points-v2";
-+		opp-shared;
-+
-+		cpu7_opp1: opp-844800000 {
-+			opp-hz = /bits/ 64 <844800000>;
-+			opp-peak-kBps = <2188000 19660800>;
-+		};
-+
-+		cpu7_opp2: opp-960000000 {
-+			opp-hz = /bits/ 64 <960000000>;
-+			opp-peak-kBps = <2188000 26419200>;
-+		};
-+
-+		cpu7_opp3: opp-1075200000 {
-+			opp-hz = /bits/ 64 <1075200000>;
-+			opp-peak-kBps = <3072000 26419200>;
-+		};
-+
-+		cpu7_opp4: opp-1190400000 {
-+			opp-hz = /bits/ 64 <1190400000>;
-+			opp-peak-kBps = <3072000 29491200>;
-+		};
-+
-+		cpu7_opp5: opp-1305600000 {
-+			opp-hz = /bits/ 64 <1305600000>;
-+			opp-peak-kBps = <4068000 32563200>;
-+		};
-+
-+		cpu7_opp6: opp-1401600000 {
-+			opp-hz = /bits/ 64 <1401600000>;
-+			opp-peak-kBps = <4068000 32563200>;
-+		};
-+
-+		cpu7_opp7: opp-1516800000 {
-+			opp-hz = /bits/ 64 <1516800000>;
-+			opp-peak-kBps = <4068000 36249600>;
-+		};
-+
-+		cpu7_opp8: opp-1632000000 {
-+			opp-hz = /bits/ 64 <1632000000>;
-+			opp-peak-kBps = <5412000 39321600>;
-+		};
-+
-+		cpu7_opp9: opp-1747200000 {
-+			opp-hz = /bits/ 64 <1708800000>;
-+			opp-peak-kBps = <5412000 42393600>;
-+		};
-+
-+		cpu7_opp10: opp-1862400000 {
-+			opp-hz = /bits/ 64 <1862400000>;
-+			opp-peak-kBps = <6220000 45465600>;
-+		};
-+
-+		cpu7_opp11: opp-1977600000 {
-+			opp-hz = /bits/ 64 <1977600000>;
-+			opp-peak-kBps = <6220000 48537600>;
-+		};
-+
-+		cpu7_opp12: opp-2073600000 {
-+			opp-hz = /bits/ 64 <2073600000>;
-+			opp-peak-kBps = <7216000 48537600>;
-+		};
-+
-+		cpu7_opp13: opp-2169600000 {
-+			opp-hz = /bits/ 64 <2169600000>;
-+			opp-peak-kBps = <7216000 51609600>;
-+		};
-+
-+		cpu7_opp14: opp-2265600000 {
-+			opp-hz = /bits/ 64 <2265600000>;
-+			opp-peak-kBps = <7216000 51609600>;
-+		};
-+
-+		cpu7_opp15: opp-2361600000 {
-+			opp-hz = /bits/ 64 <2361600000>;
-+			opp-peak-kBps = <8368000 51609600>;
-+		};
-+
-+		cpu7_opp16: opp-2457600000 {
-+			opp-hz = /bits/ 64 <2457600000>;
-+			opp-peak-kBps = <8368000 51609600>;
-+		};
-+
-+		cpu7_opp17: opp-2553600000 {
-+			opp-hz = /bits/ 64 <2553600000>;
-+			opp-peak-kBps = <8368000 51609600>;
-+		};
-+
-+		cpu7_opp18: opp-2649600000 {
-+			opp-hz = /bits/ 64 <2649600000>;
-+			opp-peak-kBps = <8368000 51609600>;
-+		};
-+
-+		cpu7_opp19: opp-2745600000 {
-+			opp-hz = /bits/ 64 <2745600000>;
-+			opp-peak-kBps = <8368000 51609600>;
-+		};
-+
-+		cpu7_opp20: opp-2841600000 {
-+			opp-hz = /bits/ 64 <2841600000>;
-+			opp-peak-kBps = <8368000 51609600>;
-+		};
-+	};
-+
- 	firmware {
- 		scm: scm {
- 			compatible = "qcom,scm";
--- 
-2.25.1
+After merging the cifs tree, today's linux-next build (powerpc
+ppc64_defconfig) failed like this:
 
+<stdin>:1559:2: warning: #warning syscall futex_waitv not implemented [-Wcp=
+p]
+fs/cifs/connect.c: In function 'clean_demultiplex_info':
+fs/cifs/connect.c:841:2: error: stray '#' in program
+  841 | +#ifdef CONFIG_CIFS_DFS_UPCALL
+      |  ^
+fs/cifs/connect.c:841:3: error: 'ifdef' undeclared (first use in this funct=
+ion)
+  841 | +#ifdef CONFIG_CIFS_DFS_UPCALL
+      |   ^~~~~
+fs/cifs/connect.c:841:3: note: each undeclared identifier is reported only =
+once for each function it appears in
+fs/cifs/connect.c:841:8: error: expected ';' before 'CONFIG_CIFS_DFS_UPCALL'
+  841 | +#ifdef CONFIG_CIFS_DFS_UPCALL
+      |        ^~~~~~~~~~~~~~~~~~~~~~~
+      |        ;
+fs/cifs/connect.c:843:15: error: 'struct TCP_Server_Info' has no member nam=
+ed 'leaf_fullpath'
+  843 | + kfree(server->leaf_fullpath);
+      |               ^~
+fs/cifs/connect.c:844:2: error: stray '#' in program
+  844 | +#endif
+      |  ^
+fs/cifs/connect.c:844:3: error: 'endif' undeclared (first use in this funct=
+ion); did you mean 'gendisk'?
+  844 | +#endif
+      |   ^~~~~
+      |   gendisk
+fs/cifs/connect.c:844:8: error: expected ';' before 'kfree'
+  844 | +#endif
+      |        ^
+      |        ;
+  845 |  kfree(server);
+      |  ~~~~~ =20
+
+Caused by commit
+
+  58b90aa95977 ("cifs: support nested dfs links over reconnect")
+
+I have used the cifs tree from next-20211110 for today.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/MG692s2akANc1mz/MXD1yu.
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmGMQFoACgkQAVBC80lX
+0GxcVgf/VqLLX6dRvrQSGIHQROWHyxWiosq8IrD1VNT4CxFwaSLYdzyCNCfLiAvS
+GXnSEOwSc8ncJCs6I/qZ5ZOG8Sjop3l9gIPdGPlX02VcEVttt2j0Dp5Zagkkdbi5
+tPVlnzl4qLXov1EZ+9SlF05BhMQZECuxP64egqHzCCnzTXO+C19qdJb52LauF+t4
+mogShRKreQv6M9/hPljc5FhgyYCFQehzJrY9WfyN92wrBDPrcwDtwgwTZlj9Gdyy
+WXQ31rb76Otif9WtdG05Dv0zRorUl1kzkIjm1HblBeid+J54CA1ZwHxgqoF++FLc
+vbUqn0W6aHx7Ke/dr2Hi4CootV0xUg==
+=HZ7Z
+-----END PGP SIGNATURE-----
+
+--Sig_/MG692s2akANc1mz/MXD1yu.--
