@@ -2,113 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BD18744C18A
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 13:48:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D842944C18C
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 13:48:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231768AbhKJMvJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Nov 2021 07:51:09 -0500
-Received: from mail.kernel.org ([198.145.29.99]:35830 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231210AbhKJMvI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Nov 2021 07:51:08 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4D27C61038;
-        Wed, 10 Nov 2021 12:48:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1636548501;
-        bh=pm0d6lfxt8O+eIsLRFeukWvOkeMhX6O8nYjnhXPCqxA=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=OmED0I1V5Xw8pLiH22MczeykgxtLWQ4Sx2oWdb8abdmCPElKeuOi75U3EsBXE9Fqy
-         56T6P1fEfG2U6TLxoNUnGsmywim6cu3nbEzg7qc58dKkCraEXJhV0NUV515tMeRbr0
-         /gb23SOdg+UsX9SIHPZdpvXdeszoQBnJ9WgrdqH4H/I9U12Uaph16IktbfI71RDQHJ
-         tXWQ6+BrS0q6g8pr2TnZnzPwGtsAf3I+lYQA+jzM9oIJR35/qeqHxtCwGjxlrEPVyT
-         Naaku+WefuZ3rewQNF6I5SeiM1Bt+OVPmPuxO3/1mDCpQIrnpGyWK22/33lFBzcKlK
-         ZXZFV63hnxeKA==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 159ED5C0527; Wed, 10 Nov 2021 04:48:21 -0800 (PST)
-Date:   Wed, 10 Nov 2021 04:48:21 -0800
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Heiner Kallweit <hkallweit1@gmail.com>
-Cc:     John Stultz <john.stultz@linaro.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Feng Tang <feng.tang@intel.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] clocksource: Improve cs_watchdog_read()
-Message-ID: <20211110124821.GZ641268@paulmck-ThinkPad-P17-Gen-1>
-Reply-To: paulmck@kernel.org
-References: <8f13ba8d-03b5-76de-4d59-4ca8786afb83@gmail.com>
+        id S231753AbhKJMvV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Nov 2021 07:51:21 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47370 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231210AbhKJMvU (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Nov 2021 07:51:20 -0500
+Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EDD84C061764
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Nov 2021 04:48:32 -0800 (PST)
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: dafna)
+        with ESMTPSA id A47AA1F45536
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=collabora.com; s=mail;
+        t=1636548511; bh=jwsdJub026Wwb55SAebMDORQGiD7sU4q5d/5s4UeTkg=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=sOaxVK8iLM1IIiBSNuKl6RpdA3raabAR4Ef1dztCdzH8+31hU+41orsEBRtAJa5ZD
+         lzais0ceb8fIGpwmYySyCXqg5WDtNTwqOsgbUEBrxHF1/l0/umaNzTQ90nTBGJNN3t
+         3Gavr8rcHvETpLlBtSuUUlW6w4cMVq19fUfGw084oPfHF2IgpvgmVhg6xtyRlr/gAA
+         pF8SJb+mHHNJ3wHyuznBSr+gctQ1Tamq2N3WS4eUYuCbF8OMkO9xcyxcZIyHKV108k
+         3uaPHvwWLwtk6zR5qwJPAzhsrlPoXY5lxetg9LfdnJjBzIGQxUSbecR3T1HoJ18Se9
+         7w+D6MwjybfsQ==
+Subject: Re: [PATCH v2 3/3] drm/bridge: parade-ps8640: Perform full poweroff
+ if poweron fails
+To:     AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>, a.hajda@samsung.com
+Cc:     narmstrong@baylibre.com, robert.foss@linaro.org,
+        Laurent.pinchart@ideasonboard.com, jonas@kwiboo.se,
+        jernej.skrabec@gmail.com, airlied@linux.ie, daniel@ffwll.ch,
+        dri-devel@lists.freedesktop.org, kernel@collabora.com,
+        linux-kernel@vger.kernel.org
+References: <20211102093618.114928-1-angelogioacchino.delregno@collabora.com>
+ <20211102093618.114928-3-angelogioacchino.delregno@collabora.com>
+From:   Dafna Hirschfeld <dafna.hirschfeld@collabora.com>
+Message-ID: <6a1ee7d7-abc7-ed9f-fca0-91a0950b13a8@collabora.com>
+Date:   Wed, 10 Nov 2021 14:48:27 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <8f13ba8d-03b5-76de-4d59-4ca8786afb83@gmail.com>
+In-Reply-To: <20211102093618.114928-3-angelogioacchino.delregno@collabora.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 09, 2021 at 09:55:08PM +0100, Heiner Kallweit wrote:
-> If max_cswd_read_retries is set to 0 or 1 then the current warning
-> behavior doesn't seem to make too much sense to me.
-> If set to 0, then we'd warn with each watchdog run.
-> If set to 1, then we'd warn at the first retry, even though the commit
-> description of db3a34e17433 states that one retry is expected behavior.
-> If printing a message at all in this case, then it should be debug
-> level.
 
-The behavior for max_cswd_read_retries==1 is exactly what you want when
-you are checking to see whether or not your system would retry at all
-for the duration of a given run.
 
-The behavior for max_cswd_read_retries==0 is exactly what you want when
-you are testing the ability to print that message on a system that will
-not do a retry in a reasonable period of time.
-
-Or am I missing something here?
-
-> Whilst being at it, move declaration of wd_end and wd_delta into the
-> loop and remove not needed braces.
-
-I am OK with moving those two variables into the "for" loop.
-
-I am personally OK removing the braces, but if I remember correctly,
-my upstream maintainer asked that I add them due to the statement being
-split across two lines.
-
-							Thanx, Paul
-
-> Signed-off-by: Heiner Kallweit <hkallweit1@gmail.com>
-> ---
->  kernel/time/clocksource.c | 6 +++---
->  1 file changed, 3 insertions(+), 3 deletions(-)
+On 02.11.21 11:36, AngeloGioacchino Del Regno wrote:
+> In function ps8640_bridge_poweron(), in case of a failure not relative
+> to the regulators enablement, the code was disabling the regulators but
+> the gpio changes that happened during the poweron sequence were not
+> being reverted back to a clean poweroff state.
 > 
-> diff --git a/kernel/time/clocksource.c b/kernel/time/clocksource.c
-> index f29d1a524..8c0be9c02 100644
-> --- a/kernel/time/clocksource.c
-> +++ b/kernel/time/clocksource.c
-> @@ -208,10 +208,11 @@ module_param(verify_n_cpus, int, 0644);
->  static bool cs_watchdog_read(struct clocksource *cs, u64 *csnow, u64 *wdnow)
->  {
->  	unsigned int nretries;
-> -	u64 wd_end, wd_delta;
->  	int64_t wd_delay;
->  
->  	for (nretries = 0; nretries <= max_cswd_read_retries; nretries++) {
-> +		u64 wd_end, wd_delta;
-> +
->  		local_irq_disable();
->  		*wdnow = watchdog->read(watchdog);
->  		*csnow = cs->read(cs);
-> @@ -222,10 +223,9 @@ static bool cs_watchdog_read(struct clocksource *cs, u64 *csnow, u64 *wdnow)
->  		wd_delay = clocksource_cyc2ns(wd_delta, watchdog->mult,
->  					      watchdog->shift);
->  		if (wd_delay <= WATCHDOG_MAX_SKEW) {
-> -			if (nretries > 1 || nretries >= max_cswd_read_retries) {
-> +			if (nretries > 1)
->  				pr_warn("timekeeping watchdog on CPU%d: %s retried %d times before success\n",
->  					smp_processor_id(), watchdog->name, nretries);
-> -			}
->  			return true;
->  		}
->  	}
-> -- 
-> 2.33.1
+> Since it is expected that, when we enter ps8640_bridge_poweron(), the
+> powerdown and reset GPIOs are both in active state exactly as they were
+> left in the poweroff function before, we can simply call function
+> __ps8640_bridge_poweroff() in the failure case, reverting every change
+> that was done during the power on sequence.
+> 
+> Of course it was chosen to call the poweroff function instead of adding
+> code to revert the GPIO changes to the poweron one to avoid duplicating
+> code, as we would be doing exactly what the poweroff function does.
+> 
+> Signed-off-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+
+Reviewed-by: Dafna Hirschfeld <dafna.hirschfeld@collabora.com>
+
+> ---
+>   drivers/gpu/drm/bridge/parade-ps8640.c | 11 +++++------
+>   1 file changed, 5 insertions(+), 6 deletions(-)
+> 
+> diff --git a/drivers/gpu/drm/bridge/parade-ps8640.c b/drivers/gpu/drm/bridge/parade-ps8640.c
+> index 41f5d511d516..ef1b51d8b676 100644
+> --- a/drivers/gpu/drm/bridge/parade-ps8640.c
+> +++ b/drivers/gpu/drm/bridge/parade-ps8640.c
+> @@ -344,7 +344,7 @@ static int ps8640_bridge_poweron(struct ps8640 *ps_bridge)
+>   
+>   	if (ret < 0) {
+>   		DRM_ERROR("failed read PAGE2_GPIO_H: %d\n", ret);
+> -		goto err_regulators_disable;
+> +		goto err_poweroff;
+>   	}
+>   
+>   	msleep(50);
+> @@ -360,23 +360,22 @@ static int ps8640_bridge_poweron(struct ps8640 *ps_bridge)
+>   	ret = regmap_update_bits(map, PAGE2_MCS_EN, MCS_EN, 0);
+>   	if (ret < 0) {
+>   		DRM_ERROR("failed write PAGE2_MCS_EN: %d\n", ret);
+> -		goto err_regulators_disable;
+> +		goto err_poweroff;
+>   	}
+>   
+>   	/* Switch access edp panel's edid through i2c */
+>   	ret = regmap_write(map, PAGE2_I2C_BYPASS, I2C_BYPASS_EN);
+>   	if (ret < 0) {
+>   		DRM_ERROR("failed write PAGE2_I2C_BYPASS: %d\n", ret);
+> -		goto err_regulators_disable;
+> +		goto err_poweroff;
+>   	}
+>   
+>   	ps_bridge->powered = true;
+>   
+>   	return 0;
+>   
+> -err_regulators_disable:
+> -	regulator_bulk_disable(ARRAY_SIZE(ps_bridge->supplies),
+> -			       ps_bridge->supplies);
+> +err_poweroff:
+> +	__ps8640_bridge_poweroff(ps_bridge);
+>   
+>   	return ret;
+>   }
 > 
