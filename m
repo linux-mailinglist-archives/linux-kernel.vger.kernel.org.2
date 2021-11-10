@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A97A444BD1F
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 09:41:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AF3A844BD21
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 09:41:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230285AbhKJIo3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Nov 2021 03:44:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46770 "EHLO
+        id S230376AbhKJIof (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Nov 2021 03:44:35 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46802 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230376AbhKJIo1 (ORCPT
+        with ESMTP id S230448AbhKJIod (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Nov 2021 03:44:27 -0500
-Received: from mail-pj1-x102b.google.com (mail-pj1-x102b.google.com [IPv6:2607:f8b0:4864:20::102b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 44FC7C061766
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Nov 2021 00:41:40 -0800 (PST)
-Received: by mail-pj1-x102b.google.com with SMTP id f20-20020a17090a639400b001a772f524d1so1043374pjj.5
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Nov 2021 00:41:40 -0800 (PST)
+        Wed, 10 Nov 2021 03:44:33 -0500
+Received: from mail-pg1-x52c.google.com (mail-pg1-x52c.google.com [IPv6:2607:f8b0:4864:20::52c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8FA50C061764
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Nov 2021 00:41:46 -0800 (PST)
+Received: by mail-pg1-x52c.google.com with SMTP id 200so1675923pga.1
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Nov 2021 00:41:46 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=bytedance-com.20210112.gappssmtp.com; s=20210112;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=2uW/yCeCX04tsKzmi9YATgmqhnOC3lon0JZ/8HxInXE=;
-        b=PC+0ptR3CRoiOYcuGEmuCfx1B/fVgoY+9n0GDJwvB0oHxq/KL0GzNuaNhQWJfTxdbu
-         8iQm+guscstXIodBn6FwCjrPmfhOfjR+syyiUsqg0Tn9NxACOneyl4y2Ul6SnMgLFnXk
-         5PWxJOUo97aTooEHI1WGfcZOiR7Bju7rK6pVN9/peaGEJtze+F9+3tHZRiYygTWMcw1w
-         krsleb0BfFAYoSOaXKwuXtRqNzkeyZ3gM8EsE3+sS6PB32wayzedhbRsCtS4JcEvHwuP
-         WvJOiI/Hq68rpmjTlfItIauKn++7RGwbuKWwoYXOP9rO59iABWDh1PpN4VkN/AgXK+Jp
-         5cSQ==
+        bh=+MsbkM47+d/dKbMtk5lgpAD1nJiQP3KKT2CTa5NSKic=;
+        b=GuFa/5BcXtMLjpHuNLAp2Mnf/7GkFL52x24pA3lEgtCnzLHWO5lTrLy51FIHsdt83B
+         4imAZ63u/gZvnnmGR/psKmQLnCcmy0pR+MSpEqCiwKmZoAAgqdagxW17FZJpE6hhc7gO
+         vVPel1rnEia8H5kQnGCtX/aNkXSC5QBlkHBoVhopYid3AafHIc5Y1R/9hWqNLAfg2VBK
+         iJep1gtL33gnVF3YHiQ+iKrN6q182/+lVLZtdGNZ3gJYAztjDVfH7sAym3JKK9CE/9WA
+         DTkAC42KcZ4N8vetclu+iZF+7aH3SqB4sOaPmrg8gAvaojycy/TExfSmkqNlHZp5HKS2
+         /9Tg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=2uW/yCeCX04tsKzmi9YATgmqhnOC3lon0JZ/8HxInXE=;
-        b=sKrkjDweRY//lXSEXc8fquDSy75vtf8eSVMBIx/KhX5JhnAo4HiAkY+d9X4Xir6d6T
-         CVhW0Pxp1rrdG5aQmmsIHhYeKB6lcc5N5wequHxzAWIXxBevu0R5MIt6gL43Qx7msJ6U
-         x9f45dqFU3NQaHnDmn/6BuTb71zat6ak38o962ANyVRqwE/KcukkwPeZZ70AdcykFJIK
-         Kp5XKqIY1Q9nw7M/x0ubXD3lbGn6E8IIgjsBJN3NRglPylxzdLu5xhfkBQhGZTRk8bEJ
-         dw0YSXfMZggaB5CcmDqjtVT1/Pw1FqmnCVglTZyGgYWdykUcKkG3P3+VP/zG7yheFVTC
-         6AXA==
-X-Gm-Message-State: AOAM531m33Jg71vdlWkpNzIUnTnObPHDPahGdPzSojW78akKhot9ercg
-        KwQU35YWCsCfTXCOb+HC5X56mOpbOZ85cQ==
-X-Google-Smtp-Source: ABdhPJxDUHb3N0EB7fBRSwo8sSEnmyV/FEoadE7ZqM0uRUd7DpuLRPGmQQH7K5eaSOY8PlhYWxmgaw==
-X-Received: by 2002:a17:90a:e389:: with SMTP id b9mr14737638pjz.235.1636533699652;
-        Wed, 10 Nov 2021 00:41:39 -0800 (PST)
+        bh=+MsbkM47+d/dKbMtk5lgpAD1nJiQP3KKT2CTa5NSKic=;
+        b=QP+bqxqJouZ/aiu8p+yVfdh2LZx5MToDwB+XJNvOCCpaWTs27OvRslyjNkh4iLxj8H
+         qAOZjUS6Eaq+idsLgNJsusl9JU904jsvsh5J2PmORrdEU+TMjVPjyZyzKwop4D6KP+CE
+         RABj//OIxcEwr+ZQpTuR/hzZqokYt2pacKt1MB0rKnrwMeUNd8j0bWPeH8UvYG7Dpjov
+         7SsokftpP6E10EjUFxQADMquYZ6Ajhjx9UJdN9nqTz9/9UKOGp2cZdvlrwVcP2wrzvsi
+         gHbqgwStnvUJnJfXm5WIzWktZrEdffMpAEmQ9nToTvOOO3KdTAaYrDd4ZvqRvWQBtQxe
+         0JVQ==
+X-Gm-Message-State: AOAM533QK8vDqK3yJ2LurVqYEhqzktcQQ0aEicmnNS+awNyT9aq1x2th
+        2zRIT4w8gEgfYl8vSSA/kLGOQQ==
+X-Google-Smtp-Source: ABdhPJyPCEn8p6Ohih2He2iy9+cyYyAw6gzc+KNszWRgtMh1Y+BFZ0nU8LGE69AIg/v7UjCdnutsNA==
+X-Received: by 2002:a63:30a:: with SMTP id 10mr10531729pgd.229.1636533706058;
+        Wed, 10 Nov 2021 00:41:46 -0800 (PST)
 Received: from C02DW0BEMD6R.bytedance.net ([139.177.225.251])
-        by smtp.gmail.com with ESMTPSA id v38sm5485368pgl.38.2021.11.10.00.41.31
+        by smtp.gmail.com with ESMTPSA id v38sm5485368pgl.38.2021.11.10.00.41.40
         (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 10 Nov 2021 00:41:39 -0800 (PST)
+        Wed, 10 Nov 2021 00:41:45 -0800 (PST)
 From:   Qi Zheng <zhengqi.arch@bytedance.com>
 To:     akpm@linux-foundation.org, tglx@linutronix.de,
         kirill.shutemov@linux.intel.com, mika.penttila@nextfour.com,
@@ -55,9 +55,9 @@ To:     akpm@linux-foundation.org, tglx@linutronix.de,
 Cc:     linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
         linux-mm@kvack.org, songmuchun@bytedance.com,
         zhouchengming@bytedance.com, Qi Zheng <zhengqi.arch@bytedance.com>
-Subject: [PATCH v3 02/15] mm: introduce is_huge_pmd() helper
-Date:   Wed, 10 Nov 2021 16:40:44 +0800
-Message-Id: <20211110084057.27676-3-zhengqi.arch@bytedance.com>
+Subject: [PATCH v3 03/15] mm: move pte_offset_map_lock() to pgtable.h
+Date:   Wed, 10 Nov 2021 16:40:45 +0800
+Message-Id: <20211110084057.27676-4-zhengqi.arch@bytedance.com>
 X-Mailer: git-send-email 2.24.3 (Apple Git-128)
 In-Reply-To: <20211110084057.27676-1-zhengqi.arch@bytedance.com>
 References: <20211110084057.27676-1-zhengqi.arch@bytedance.com>
@@ -67,119 +67,366 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Currently we have some times the following judgments repeated in the
-code:
+pte_offset_map() is in include/linux/pgtable.h, so move its
+friend pte_offset_map_lock() to pgtable.h together.
 
-	is_swap_pmd(*pmd) || pmd_trans_huge(*pmd) || pmd_devmap(*pmd)
-
-which is to determine whether the *pmd is a huge pmd, so introduce
-is_huge_pmd() helper to deduplicate them.
+pte_lockptr() is required for pte_offset_map_lock(), so
+also move {pte,pmd,pud}_lockptr() to pgtable.h.
 
 Signed-off-by: Qi Zheng <zhengqi.arch@bytedance.com>
 ---
- include/linux/huge_mm.h | 10 +++++++---
- mm/huge_memory.c        |  3 +--
- mm/memory.c             |  5 ++---
- mm/mprotect.c           |  2 +-
- mm/mremap.c             |  3 +--
- 5 files changed, 12 insertions(+), 11 deletions(-)
+ include/linux/mm.h      | 149 ------------------------------------------------
+ include/linux/pgtable.h | 149 ++++++++++++++++++++++++++++++++++++++++++++++++
+ 2 files changed, 149 insertions(+), 149 deletions(-)
 
-diff --git a/include/linux/huge_mm.h b/include/linux/huge_mm.h
-index f280f33ff223..b37a89180846 100644
---- a/include/linux/huge_mm.h
-+++ b/include/linux/huge_mm.h
-@@ -199,8 +199,7 @@ void __split_huge_pmd(struct vm_area_struct *vma, pmd_t *pmd,
- #define split_huge_pmd(__vma, __pmd, __address)				\
- 	do {								\
- 		pmd_t *____pmd = (__pmd);				\
--		if (is_swap_pmd(*____pmd) || pmd_trans_huge(*____pmd)	\
--					|| pmd_devmap(*____pmd))	\
-+		if (is_huge_pmd(*____pmd))				\
- 			__split_huge_pmd(__vma, __pmd, __address,	\
- 						false, NULL);		\
- 	}  while (0)
-@@ -232,11 +231,16 @@ static inline int is_swap_pmd(pmd_t pmd)
- 	return !pmd_none(pmd) && !pmd_present(pmd);
+diff --git a/include/linux/mm.h b/include/linux/mm.h
+index a7e4a9e7d807..706da081b9f8 100644
+--- a/include/linux/mm.h
++++ b/include/linux/mm.h
+@@ -2284,70 +2284,6 @@ static inline pmd_t *pmd_alloc(struct mm_struct *mm, pud_t *pud, unsigned long a
+ }
+ #endif /* CONFIG_MMU */
+ 
+-#if USE_SPLIT_PTE_PTLOCKS
+-#if ALLOC_SPLIT_PTLOCKS
+-void __init ptlock_cache_init(void);
+-extern bool ptlock_alloc(struct page *page);
+-extern void ptlock_free(struct page *page);
+-
+-static inline spinlock_t *ptlock_ptr(struct page *page)
+-{
+-	return page->ptl;
+-}
+-#else /* ALLOC_SPLIT_PTLOCKS */
+-static inline void ptlock_cache_init(void)
+-{
+-}
+-
+-static inline bool ptlock_alloc(struct page *page)
+-{
+-	return true;
+-}
+-
+-static inline void ptlock_free(struct page *page)
+-{
+-}
+-
+-static inline spinlock_t *ptlock_ptr(struct page *page)
+-{
+-	return &page->ptl;
+-}
+-#endif /* ALLOC_SPLIT_PTLOCKS */
+-
+-static inline spinlock_t *pte_lockptr(struct mm_struct *mm, pmd_t *pmd)
+-{
+-	return ptlock_ptr(pmd_page(*pmd));
+-}
+-
+-static inline bool ptlock_init(struct page *page)
+-{
+-	/*
+-	 * prep_new_page() initialize page->private (and therefore page->ptl)
+-	 * with 0. Make sure nobody took it in use in between.
+-	 *
+-	 * It can happen if arch try to use slab for page table allocation:
+-	 * slab code uses page->slab_cache, which share storage with page->ptl.
+-	 */
+-	VM_BUG_ON_PAGE(*(unsigned long *)&page->ptl, page);
+-	if (!ptlock_alloc(page))
+-		return false;
+-	spin_lock_init(ptlock_ptr(page));
+-	return true;
+-}
+-
+-#else	/* !USE_SPLIT_PTE_PTLOCKS */
+-/*
+- * We use mm->page_table_lock to guard all pagetable pages of the mm.
+- */
+-static inline spinlock_t *pte_lockptr(struct mm_struct *mm, pmd_t *pmd)
+-{
+-	return &mm->page_table_lock;
+-}
+-static inline void ptlock_cache_init(void) {}
+-static inline bool ptlock_init(struct page *page) { return true; }
+-static inline void ptlock_free(struct page *page) {}
+-#endif /* USE_SPLIT_PTE_PTLOCKS */
+-
+ static inline void pgtable_init(void)
+ {
+ 	ptlock_cache_init();
+@@ -2370,20 +2306,6 @@ static inline void pgtable_pte_page_dtor(struct page *page)
+ 	dec_lruvec_page_state(page, NR_PAGETABLE);
  }
  
-+static inline int is_huge_pmd(pmd_t pmd)
+-#define pte_offset_map_lock(mm, pmd, address, ptlp)	\
+-({							\
+-	spinlock_t *__ptl = pte_lockptr(mm, pmd);	\
+-	pte_t *__pte = pte_offset_map(pmd, address);	\
+-	*(ptlp) = __ptl;				\
+-	spin_lock(__ptl);				\
+-	__pte;						\
+-})
+-
+-#define pte_unmap_unlock(pte, ptl)	do {		\
+-	spin_unlock(ptl);				\
+-	pte_unmap(pte);					\
+-} while (0)
+-
+ #define pte_alloc(mm, pmd) (unlikely(pmd_none(*(pmd))) && __pte_alloc(mm, pmd))
+ 
+ #define pte_alloc_map(mm, pmd, address)			\
+@@ -2397,58 +2319,6 @@ static inline void pgtable_pte_page_dtor(struct page *page)
+ 	((unlikely(pmd_none(*(pmd))) && __pte_alloc_kernel(pmd))? \
+ 		NULL: pte_offset_kernel(pmd, address))
+ 
+-#if USE_SPLIT_PMD_PTLOCKS
+-
+-static struct page *pmd_to_page(pmd_t *pmd)
+-{
+-	unsigned long mask = ~(PTRS_PER_PMD * sizeof(pmd_t) - 1);
+-	return virt_to_page((void *)((unsigned long) pmd & mask));
+-}
+-
+-static inline spinlock_t *pmd_lockptr(struct mm_struct *mm, pmd_t *pmd)
+-{
+-	return ptlock_ptr(pmd_to_page(pmd));
+-}
+-
+-static inline bool pmd_ptlock_init(struct page *page)
+-{
+-#ifdef CONFIG_TRANSPARENT_HUGEPAGE
+-	page->pmd_huge_pte = NULL;
+-#endif
+-	return ptlock_init(page);
+-}
+-
+-static inline void pmd_ptlock_free(struct page *page)
+-{
+-#ifdef CONFIG_TRANSPARENT_HUGEPAGE
+-	VM_BUG_ON_PAGE(page->pmd_huge_pte, page);
+-#endif
+-	ptlock_free(page);
+-}
+-
+-#define pmd_huge_pte(mm, pmd) (pmd_to_page(pmd)->pmd_huge_pte)
+-
+-#else
+-
+-static inline spinlock_t *pmd_lockptr(struct mm_struct *mm, pmd_t *pmd)
+-{
+-	return &mm->page_table_lock;
+-}
+-
+-static inline bool pmd_ptlock_init(struct page *page) { return true; }
+-static inline void pmd_ptlock_free(struct page *page) {}
+-
+-#define pmd_huge_pte(mm, pmd) ((mm)->pmd_huge_pte)
+-
+-#endif
+-
+-static inline spinlock_t *pmd_lock(struct mm_struct *mm, pmd_t *pmd)
+-{
+-	spinlock_t *ptl = pmd_lockptr(mm, pmd);
+-	spin_lock(ptl);
+-	return ptl;
+-}
+-
+ static inline bool pgtable_pmd_page_ctor(struct page *page)
+ {
+ 	if (!pmd_ptlock_init(page))
+@@ -2465,25 +2335,6 @@ static inline void pgtable_pmd_page_dtor(struct page *page)
+ 	dec_lruvec_page_state(page, NR_PAGETABLE);
+ }
+ 
+-/*
+- * No scalability reason to split PUD locks yet, but follow the same pattern
+- * as the PMD locks to make it easier if we decide to.  The VM should not be
+- * considered ready to switch to split PUD locks yet; there may be places
+- * which need to be converted from page_table_lock.
+- */
+-static inline spinlock_t *pud_lockptr(struct mm_struct *mm, pud_t *pud)
+-{
+-	return &mm->page_table_lock;
+-}
+-
+-static inline spinlock_t *pud_lock(struct mm_struct *mm, pud_t *pud)
+-{
+-	spinlock_t *ptl = pud_lockptr(mm, pud);
+-
+-	spin_lock(ptl);
+-	return ptl;
+-}
+-
+ extern void __init pagecache_init(void);
+ extern void __init free_area_init_memoryless_node(int nid);
+ extern void free_initmem(void);
+diff --git a/include/linux/pgtable.h b/include/linux/pgtable.h
+index e24d2c992b11..c8f045705c1e 100644
+--- a/include/linux/pgtable.h
++++ b/include/linux/pgtable.h
+@@ -84,6 +84,141 @@ static inline unsigned long pud_index(unsigned long address)
+ #define pgd_index(a)  (((a) >> PGDIR_SHIFT) & (PTRS_PER_PGD - 1))
+ #endif
+ 
++#if USE_SPLIT_PTE_PTLOCKS
++#if ALLOC_SPLIT_PTLOCKS
++void __init ptlock_cache_init(void);
++extern bool ptlock_alloc(struct page *page);
++extern void ptlock_free(struct page *page);
++
++static inline spinlock_t *ptlock_ptr(struct page *page)
 +{
-+	return is_swap_pmd(pmd) || pmd_trans_huge(pmd) || pmd_devmap(pmd);
++	return page->ptl;
++}
++#else /* ALLOC_SPLIT_PTLOCKS */
++static inline void ptlock_cache_init(void)
++{
 +}
 +
- /* mmap_lock must be held on entry */
- static inline spinlock_t *pmd_trans_huge_lock(pmd_t *pmd,
- 		struct vm_area_struct *vma)
++static inline bool ptlock_alloc(struct page *page)
++{
++	return true;
++}
++
++static inline void ptlock_free(struct page *page)
++{
++}
++
++static inline spinlock_t *ptlock_ptr(struct page *page)
++{
++	return &page->ptl;
++}
++#endif /* ALLOC_SPLIT_PTLOCKS */
++
++static inline spinlock_t *pte_lockptr(struct mm_struct *mm, pmd_t *pmd)
++{
++	return ptlock_ptr(pmd_page(*pmd));
++}
++
++static inline bool ptlock_init(struct page *page)
++{
++	/*
++	 * prep_new_page() initialize page->private (and therefore page->ptl)
++	 * with 0. Make sure nobody took it in use in between.
++	 *
++	 * It can happen if arch try to use slab for page table allocation:
++	 * slab code uses page->slab_cache, which share storage with page->ptl.
++	 */
++	VM_BUG_ON_PAGE(*(unsigned long *)&page->ptl, page);
++	if (!ptlock_alloc(page))
++		return false;
++	spin_lock_init(ptlock_ptr(page));
++	return true;
++}
++
++#else	/* !USE_SPLIT_PTE_PTLOCKS */
++/*
++ * We use mm->page_table_lock to guard all pagetable pages of the mm.
++ */
++static inline spinlock_t *pte_lockptr(struct mm_struct *mm, pmd_t *pmd)
++{
++	return &mm->page_table_lock;
++}
++static inline void ptlock_cache_init(void) {}
++static inline bool ptlock_init(struct page *page) { return true; }
++static inline void ptlock_free(struct page *page) {}
++#endif /* USE_SPLIT_PTE_PTLOCKS */
++
++#if USE_SPLIT_PMD_PTLOCKS
++
++static struct page *pmd_to_page(pmd_t *pmd)
++{
++	unsigned long mask = ~(PTRS_PER_PMD * sizeof(pmd_t) - 1);
++	return virt_to_page((void *)((unsigned long) pmd & mask));
++}
++
++static inline spinlock_t *pmd_lockptr(struct mm_struct *mm, pmd_t *pmd)
++{
++	return ptlock_ptr(pmd_to_page(pmd));
++}
++
++static inline bool pmd_ptlock_init(struct page *page)
++{
++#ifdef CONFIG_TRANSPARENT_HUGEPAGE
++	page->pmd_huge_pte = NULL;
++#endif
++	return ptlock_init(page);
++}
++
++static inline void pmd_ptlock_free(struct page *page)
++{
++#ifdef CONFIG_TRANSPARENT_HUGEPAGE
++	VM_BUG_ON_PAGE(page->pmd_huge_pte, page);
++#endif
++	ptlock_free(page);
++}
++
++#define pmd_huge_pte(mm, pmd) (pmd_to_page(pmd)->pmd_huge_pte)
++
++#else
++
++static inline spinlock_t *pmd_lockptr(struct mm_struct *mm, pmd_t *pmd)
++{
++	return &mm->page_table_lock;
++}
++
++static inline bool pmd_ptlock_init(struct page *page) { return true; }
++static inline void pmd_ptlock_free(struct page *page) {}
++
++#define pmd_huge_pte(mm, pmd) ((mm)->pmd_huge_pte)
++
++#endif
++
++static inline spinlock_t *pmd_lock(struct mm_struct *mm, pmd_t *pmd)
++{
++	spinlock_t *ptl = pmd_lockptr(mm, pmd);
++	spin_lock(ptl);
++	return ptl;
++}
++
++/*
++ * No scalability reason to split PUD locks yet, but follow the same pattern
++ * as the PMD locks to make it easier if we decide to.  The VM should not be
++ * considered ready to switch to split PUD locks yet; there may be places
++ * which need to be converted from page_table_lock.
++ */
++static inline spinlock_t *pud_lockptr(struct mm_struct *mm, pud_t *pud)
++{
++	return &mm->page_table_lock;
++}
++
++static inline spinlock_t *pud_lock(struct mm_struct *mm, pud_t *pud)
++{
++	spinlock_t *ptl = pud_lockptr(mm, pud);
++
++	spin_lock(ptl);
++	return ptl;
++}
++
+ #ifndef pte_offset_kernel
+ static inline pte_t *pte_offset_kernel(pmd_t *pmd, unsigned long address)
  {
--	if (is_swap_pmd(*pmd) || pmd_trans_huge(*pmd) || pmd_devmap(*pmd))
-+	if (is_huge_pmd(*pmd))
- 		return __pmd_trans_huge_lock(pmd, vma);
- 	else
- 		return NULL;
-diff --git a/mm/huge_memory.c b/mm/huge_memory.c
-index e5483347291c..e76ee2e1e423 100644
---- a/mm/huge_memory.c
-+++ b/mm/huge_memory.c
-@@ -1832,8 +1832,7 @@ spinlock_t *__pmd_trans_huge_lock(pmd_t *pmd, struct vm_area_struct *vma)
- {
- 	spinlock_t *ptl;
- 	ptl = pmd_lock(vma->vm_mm, pmd);
--	if (likely(is_swap_pmd(*pmd) || pmd_trans_huge(*pmd) ||
--			pmd_devmap(*pmd)))
-+	if (likely(is_huge_pmd(*pmd)))
- 		return ptl;
- 	spin_unlock(ptl);
- 	return NULL;
-diff --git a/mm/memory.c b/mm/memory.c
-index 855486fff526..b00cd60fc368 100644
---- a/mm/memory.c
-+++ b/mm/memory.c
-@@ -1146,8 +1146,7 @@ copy_pmd_range(struct vm_area_struct *dst_vma, struct vm_area_struct *src_vma,
- 	src_pmd = pmd_offset(src_pud, addr);
- 	do {
- 		next = pmd_addr_end(addr, end);
--		if (is_swap_pmd(*src_pmd) || pmd_trans_huge(*src_pmd)
--			|| pmd_devmap(*src_pmd)) {
-+		if (is_huge_pmd(*src_pmd)) {
- 			int err;
- 			VM_BUG_ON_VMA(next-addr != HPAGE_PMD_SIZE, src_vma);
- 			err = copy_huge_pmd(dst_mm, src_mm, dst_pmd, src_pmd,
-@@ -1441,7 +1440,7 @@ static inline unsigned long zap_pmd_range(struct mmu_gather *tlb,
- 	pmd = pmd_offset(pud, addr);
- 	do {
- 		next = pmd_addr_end(addr, end);
--		if (is_swap_pmd(*pmd) || pmd_trans_huge(*pmd) || pmd_devmap(*pmd)) {
-+		if (is_huge_pmd(*pmd)) {
- 			if (next - addr != HPAGE_PMD_SIZE)
- 				__split_huge_pmd(vma, pmd, addr, false, NULL);
- 			else if (zap_huge_pmd(tlb, vma, pmd, addr))
-diff --git a/mm/mprotect.c b/mm/mprotect.c
-index e552f5e0ccbd..2d5064a4631c 100644
---- a/mm/mprotect.c
-+++ b/mm/mprotect.c
-@@ -257,7 +257,7 @@ static inline unsigned long change_pmd_range(struct vm_area_struct *vma,
- 			mmu_notifier_invalidate_range_start(&range);
- 		}
+@@ -102,6 +237,20 @@ static inline pte_t *pte_offset_kernel(pmd_t *pmd, unsigned long address)
+ #define pte_unmap(pte) ((void)(pte))	/* NOP */
+ #endif
  
--		if (is_swap_pmd(*pmd) || pmd_trans_huge(*pmd) || pmd_devmap(*pmd)) {
-+		if (is_huge_pmd(*pmd)) {
- 			if (next - addr != HPAGE_PMD_SIZE) {
- 				__split_huge_pmd(vma, pmd, addr, false, NULL);
- 			} else {
-diff --git a/mm/mremap.c b/mm/mremap.c
-index 002eec83e91e..c6e9da09dd0a 100644
---- a/mm/mremap.c
-+++ b/mm/mremap.c
-@@ -532,8 +532,7 @@ unsigned long move_page_tables(struct vm_area_struct *vma,
- 		new_pmd = alloc_new_pmd(vma->vm_mm, vma, new_addr);
- 		if (!new_pmd)
- 			break;
--		if (is_swap_pmd(*old_pmd) || pmd_trans_huge(*old_pmd) ||
--		    pmd_devmap(*old_pmd)) {
-+		if (is_huge_pmd(*old_pmd)) {
- 			if (extent == HPAGE_PMD_SIZE &&
- 			    move_pgt_entry(HPAGE_PMD, vma, old_addr, new_addr,
- 					   old_pmd, new_pmd, need_rmap_locks))
++#define pte_offset_map_lock(mm, pmd, address, ptlp)	\
++({							\
++	spinlock_t *__ptl = pte_lockptr(mm, pmd);	\
++	pte_t *__pte = pte_offset_map(pmd, address);	\
++	*(ptlp) = __ptl;				\
++	spin_lock(__ptl);				\
++	__pte;						\
++})
++
++#define pte_unmap_unlock(pte, ptl)	do {		\
++	spin_unlock(ptl);				\
++	pte_unmap(pte);					\
++} while (0)
++
+ /* Find an entry in the second-level page table.. */
+ #ifndef pmd_offset
+ static inline pmd_t *pmd_offset(pud_t *pud, unsigned long address)
 -- 
 2.11.0
 
