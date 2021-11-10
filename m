@@ -2,118 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B61A44BD92
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 10:05:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 84FEC44BD96
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 10:06:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230478AbhKJJII (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Nov 2021 04:08:08 -0500
-Received: from smtp-out1.suse.de ([195.135.220.28]:56474 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230460AbhKJJID (ORCPT
+        id S230434AbhKJJJK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Nov 2021 04:09:10 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52540 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229831AbhKJJJI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Nov 2021 04:08:03 -0500
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out1.suse.de (Postfix) with ESMTP id 41178218A4;
-        Wed, 10 Nov 2021 09:05:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1636535113; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=Y5Ckp7bAlAHqmEvV5Hz921lWUV1q9resWcR3XrOvBvA=;
-        b=e+v4KhqIqJ2V3we/ihsoQCar99AqQxiatlmuKoLYfqUhMO0+ayna1RegeLG6uJgVb6vuy/
-        oQNJsitOH0e1EM4y9oaUXJsBSxGG2GrWF5VBIotShKV/HJB4QKkFqIlr43kYPC/F3+sWRj
-        0+u6Bt9h1YCdWHUgo3priy+9tt2LZC0=
-Received: from suse.cz (unknown [10.100.216.66])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by relay2.suse.de (Postfix) with ESMTPS id 236F9A3B83;
-        Wed, 10 Nov 2021 09:05:13 +0000 (UTC)
-Date:   Wed, 10 Nov 2021 10:05:12 +0100
-From:   Petr Mladek <pmladek@suse.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Ming Lei <ming.lei@redhat.com>, linux-kernel@vger.kernel.org,
-        Luis Chamberlain <mcgrof@kernel.org>,
-        Joe Lawrence <joe.lawrence@redhat.com>
-Subject: Re: [PATCH 2/2] kobject: wait until kobject is cleaned up before
- freeing module
-Message-ID: <YYuLSGBfgBJpaBbH@alley>
-References: <20211105063710.4092936-1-ming.lei@redhat.com>
- <20211105063710.4092936-3-ming.lei@redhat.com>
- <YYldwVcrEqShHyq8@alley>
- <YYnWO1Jug3xu+NB+@T590>
- <YYp0IffopQMiOsHN@alley>
- <YYseW96UYRJ/eE5p@T590>
- <YYtuqF2Pj/D9iEBa@kroah.com>
+        Wed, 10 Nov 2021 04:09:08 -0500
+Received: from mail-qk1-x731.google.com (mail-qk1-x731.google.com [IPv6:2607:f8b0:4864:20::731])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8E205C061764;
+        Wed, 10 Nov 2021 01:06:21 -0800 (PST)
+Received: by mail-qk1-x731.google.com with SMTP id bk22so1847021qkb.6;
+        Wed, 10 Nov 2021 01:06:21 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=ImnqB797AKnJuD4oPIYf8Tox3YCxcvXVphwHiRaIbIY=;
+        b=oMfCBYvauO8zRBwa2KehEw6l9I/gVh/IsHK2ianpEu/xIihkSVB/V6SY3F/ttzaM9E
+         nezbT4CmBgHKehn2yU5PaH/ZIe37KBZYxptntmlE84NkrCX9sBVx5fvOJ97WuHyjLu81
+         ySMip7zDVDJzC8Ud+eLEDqMIyFDT68YJu/vMGfrUMMkvIb9Gy3UDZ9KieYePa59ndf9w
+         2iNH/0Swtlcmca7uxTSVZ6+cgn0aA6kyAsyRtDOUv343TMFcvYUnDbmDYL36Evv24Use
+         DEXFPEpNZYt0Ltjw511zdD5Yt5ts2oQXhSF1bjzx+hLVoi83rzncSdyXWjhsWQZSkQMW
+         9DAA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=ImnqB797AKnJuD4oPIYf8Tox3YCxcvXVphwHiRaIbIY=;
+        b=ZHPMhG1+eAE+XkQoyRl7mhWJuUqqVqyiabOx+0COCv+ahau8SNoIei1BkhJyn2eeot
+         1YIkXijJhN9Ln70UBrF31t4+Z4LjdJGA3F1qzThf0RlEJ4v5RFtpjhQch4gLc/v0agiu
+         3EiGG5g3VEU3+8n/CJfREpxT2pFNL8jCcnDgBbKsVAMhFYzceBM+vcErw9JDFMHesUf9
+         LqaUG1f2s+kDSd9KWQ+RGOlrrg7HYlm9BuRMA8xHwV8bfY7zRumokPUA3s3YI/LKq/sx
+         g/JYDrxWjzr/ecqV5dhBWbjBTq6Yt/Av17ngtpdYOS5l4gvIUcXnsZXYJlusSJLg/lN6
+         sCtg==
+X-Gm-Message-State: AOAM531D3c52Gu8LD0gPKcS8wwpSsqrtLyYN5fbPMu8bEOQtyae8VYBQ
+        EaoPcF8GYwcUbVyOnb7f9my+n8QMiZYGdxqp+Gk=
+X-Google-Smtp-Source: ABdhPJxecwxlgh5Be+apIVbyhK9b5EOBmc1BMU6ZqqxInFojT85GAhLJhs4ImfIMb89COAJxX42mTS13PbNiDO5tpM0=
+X-Received: by 2002:a37:e97:: with SMTP id 145mr11499308qko.116.1636535180801;
+ Wed, 10 Nov 2021 01:06:20 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YYtuqF2Pj/D9iEBa@kroah.com>
+References: <20211108083840.4627-1-laoar.shao@gmail.com> <20211108083840.4627-2-laoar.shao@gmail.com>
+ <c3571571-320a-3e25-8409-5653ddca895c@redhat.com>
+In-Reply-To: <c3571571-320a-3e25-8409-5653ddca895c@redhat.com>
+From:   Yafang Shao <laoar.shao@gmail.com>
+Date:   Wed, 10 Nov 2021 17:05:44 +0800
+Message-ID: <CALOAHbCexkBs7FCdmQcatQbc+RsGTSoJkNBop0khsZX=g8Ftkg@mail.gmail.com>
+Subject: Re: [PATCH 1/7] fs/exec: make __set_task_comm always set a nul
+ terminated string
+To:     David Hildenbrand <david@redhat.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        netdev <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        "linux-perf-use." <linux-perf-users@vger.kernel.org>,
+        linux-fsdevel@vger.kernel.org, Linux MM <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        kernel test robot <oliver.sang@intel.com>,
+        kbuild test robot <lkp@intel.com>,
+        Kees Cook <keescook@chromium.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>,
+        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        Michal Miroslaw <mirq-linux@rere.qmqm.pl>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Petr Mladek <pmladek@suse.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed 2021-11-10 08:03:04, Greg Kroah-Hartman wrote:
-> On Wed, Nov 10, 2021 at 09:20:27AM +0800, Ming Lei wrote:
-> > On Tue, Nov 09, 2021 at 02:14:09PM +0100, Petr Mladek wrote:
-> > > On Tue 2021-11-09 10:00:27, Ming Lei wrote:
-> > > > On Mon, Nov 08, 2021 at 06:26:25PM +0100, Petr Mladek wrote:
-> > > > > On Fri 2021-11-05 14:37:10, Ming Lei wrote:
-> > > > > > kobject_put() may become asynchronously because of
-> > > > > > CONFIG_DEBUG_KOBJECT_RELEASE, so once kobject_put() returns, the caller may
-> > > > > > expect the kobject is released after the last refcnt is dropped, however
-> > > > > > CONFIG_DEBUG_KOBJECT_RELEASE just schedules one delayed work function
-> > > > > > for cleaning up the kobject. Inside the cleanup handler, kobj->ktype and
-> > > > > > kobj->ktype->release are required.
-> > > > > > 
-> > > > > > It is supposed that no activity is on kobject itself any more since
-> > > > > > module_exit() is started, so it is reasonable for the kobject user or
-> > > > > > driver to expect that kobject can be really released in the last run of
-> > > > > > kobject_put() in module_exit() code path. Otherwise, it can be thought as
-> > > > > > one driver's bug since the module is going away.
-> > > > > 
-> > > > > Honestly, this looks a bit fragile. What if there is still another
-> > > > > reference from some reason. IMHO, it is easy to do it wrong.
-> > > > > The kobject stuff is super-tricky.
-> > > > > 
-> > > > > Yes, there is the argument that it is a drivers bug when it does not
-> > > > > work.
-> > > > 
-> > > > That is another 'issue'(even not sure if there is really), and it isn't covered
-> > > > in this patchset, which focuses on fixing CONFIG_DEBUG_KOBJECT_RELEASE, so
-> > > > please do not mix the two here.
-> > > 
-> > > Yes, it is another issue but the relation is very important.
-> > > 
-> > > My understanding is that this patch prevents problems caused by
-> > > the delayed work. The kobject is added into kobj_cleanup_list
-> > > only when the delayed work is scheduled. The patch has no effect
-> > > if the delayed work is not used.
-> > > 
-> > > From my POV, this patch kind of removes the effect of the delayed
-> > > work. My point is:
-> > > 
-> > > Does it still make sense to use the delayed work in the first place?
-> > > Will the delayed work still help to catch some problems?
-> > 
-> > That depends on the user of CONFIG_DEBUG_KOBJECT_RELEASE, if users
-> > thought it is useless, I think it is fine to remove it.
-> > 
-> > Greg, any idea about if CONFIG_DEBUG_KOBJECT_RELEASE is useful now?
-> 
-> Yes it is, it finds driver bugs where they do things wrong.
+On Wed, Nov 10, 2021 at 4:28 PM David Hildenbrand <david@redhat.com> wrote:
+>
+> On 08.11.21 09:38, Yafang Shao wrote:
+> > Make sure the string set to task comm is always nul terminated.
+> >
+>
+> strlcpy: "the result is always a valid NUL-terminated string that fits
+> in the buffer"
+>
+> The only difference seems to be that strscpy_pad() pads the remainder
+> with zeroes.
+>
+> Is this description correct and I am missing something important?
+>
 
-Please, do you have any idea what particular wrong things might happen?
+In a earlier version [1], the checkpatch.py found a warning:
+WARNING: Prefer strscpy over strlcpy - see:
+https://lore.kernel.org/r/CAHk-=wgfRnXz0W3D37d01q3JFkr_i_uTL=V6A6G1oUZcprmknw@mail.gmail.com/
+So I replaced strlcpy() with strscpy() to fix this warning.
+And then in v5[2], the strscpy() was replaced with strscpy_pad() to
+make sure there's no garbade data and also make get_task_comm() be
+consistent with get_task_comm().
 
-IMHO, one bug might be that the driver module might be removed when
-there are still users, some reference still exists. This patch
-causes that CONFIG_DEBUG_KOBJECT_RELEASE will not longer help
-to catch this kind of problems.
+This commit log didn't clearly describe the historical changes.  So I
+think we can update the commit log and subject with:
 
-Is there any other common bug type that might be discovered by
-the delayed release?
+Subject: use strscpy_pad with strlcpy in __set_task_comm
+Commit log:
+strlcpy is not suggested to use by the checkpatch.pl, so we'd better
+recplace it with strscpy.
+To avoid leaving garbage data and be consistent with the usage in
+__get_task_comm(), the strscpy_pad is used here.
 
-I just want to be sure that this patch does not make
-CONFIG_DEBUG_KOBJECT_RELEASE useless.
+WDYT?
 
-Best Regards,
-Petr
+[1]. https://lore.kernel.org/lkml/20211007120752.5195-3-laoar.shao@gmail.com/
+[2]. https://lore.kernel.org/lkml/20211021034516.4400-2-laoar.shao@gmail.com/
+
+> > Signed-off-by: Yafang Shao <laoar.shao@gmail.com>
+> > Reviewed-by: Kees Cook <keescook@chromium.org>
+> > Cc: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+> > Cc: Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>
+> > Cc: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+> > Cc: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+> > Cc: Michal Miroslaw <mirq-linux@rere.qmqm.pl>
+> > Cc: Peter Zijlstra <peterz@infradead.org>
+> > Cc: Steven Rostedt <rostedt@goodmis.org>
+> > Cc: Matthew Wilcox <willy@infradead.org>
+> > Cc: David Hildenbrand <david@redhat.com>
+> > Cc: Al Viro <viro@zeniv.linux.org.uk>
+> > Cc: Kees Cook <keescook@chromium.org>
+> > Cc: Petr Mladek <pmladek@suse.com>
+> > ---
+> >  fs/exec.c | 2 +-
+> >  1 file changed, 1 insertion(+), 1 deletion(-)
+> >
+> > diff --git a/fs/exec.c b/fs/exec.c
+> > index a098c133d8d7..404156b5b314 100644
+> > --- a/fs/exec.c
+> > +++ b/fs/exec.c
+> > @@ -1224,7 +1224,7 @@ void __set_task_comm(struct task_struct *tsk, const char *buf, bool exec)
+> >  {
+> >       task_lock(tsk);
+> >       trace_task_rename(tsk, buf);
+> > -     strlcpy(tsk->comm, buf, sizeof(tsk->comm));
+> > +     strscpy_pad(tsk->comm, buf, sizeof(tsk->comm));
+> >       task_unlock(tsk);
+> >       perf_event_comm(tsk, exec);
+> >  }
+> >
+>
+>
+> --
+> Thanks,
+>
+> David / dhildenb
+>
+
+
+-- 
+Thanks
+Yafang
