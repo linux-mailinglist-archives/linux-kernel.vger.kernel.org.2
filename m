@@ -2,211 +2,179 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0E9E344BD3F
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 09:45:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BBF4344BD41
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 09:45:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230373AbhKJIsd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Nov 2021 03:48:33 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:45537 "EHLO
+        id S230393AbhKJIsk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Nov 2021 03:48:40 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124]:22255 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230141AbhKJIsc (ORCPT
+        by vger.kernel.org with ESMTP id S230307AbhKJIsi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Nov 2021 03:48:32 -0500
+        Wed, 10 Nov 2021 03:48:38 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1636533944;
+        s=mimecast20190719; t=1636533951;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=0tWzFESqyp2T8qZbCjH4Kje3Fuw0oatJIaqJ1lfIpNY=;
-        b=X/KndjLB7m+fyJGMqU2xM0Fu2qvcka08+6oTyEiOThjVs8C+yS1cJgtbb4smIelFj5P6sx
-        gtmIfvpDEajhr8tikrKvfyTcEu6wk9YuyxCOty0VmBFMfGVQjytpaARDLPjsqFfp84X/x/
-        qh1xiIGewkxjeGoATBGoA1dr47D4RVI=
-Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com
- [209.85.208.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-534-ru0483WSMtiP34le4UGm1g-1; Wed, 10 Nov 2021 03:45:43 -0500
-X-MC-Unique: ru0483WSMtiP34le4UGm1g-1
-Received: by mail-ed1-f69.google.com with SMTP id f4-20020a50e084000000b003db585bc274so1663440edl.17
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Nov 2021 00:45:43 -0800 (PST)
+        bh=8Ho5EXRGYh8IyL3hxtihj/uWe5GBsevOzHdhzQOn+II=;
+        b=bRkPSp5HZtOTVKxD98gBWy/0c3sF9zf5+oNNOVnZnA5FOMjs4gf3UxWTGJZN/0ECir2Xal
+        xIZxoYpOB7IECCzqa8gcUX9clQNUZ7WEguqolyTJNs9iRgxOOLmYeh+iiIRwnOfnwO73XK
+        fHOW39GilXq0FV/tlgvPUkSOFJ/yIQY=
+Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
+ [209.85.128.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-267-zUKwAXdiNEWNvMGUIlN-Tw-1; Wed, 10 Nov 2021 03:45:50 -0500
+X-MC-Unique: zUKwAXdiNEWNvMGUIlN-Tw-1
+Received: by mail-wm1-f69.google.com with SMTP id m18-20020a05600c3b1200b0033283ea5facso953342wms.1
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Nov 2021 00:45:50 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:in-reply-to
-         :content-transfer-encoding;
-        bh=0tWzFESqyp2T8qZbCjH4Kje3Fuw0oatJIaqJ1lfIpNY=;
-        b=79sySfsXpPgFnIr++ZGLP4mXx9eD510YApjU15UEiUFWOI5FLA1cFxzh+2Swo0XPJI
-         lvJ+4z+MJAIHD78O3fM+Q6i5o5M2NMYgn7ZIJXDjC2wfGhZWmdgloh/7OsImt72T9Tyy
-         ZKjvzrF49yL/HMNYSm3P64MYi/boXhnZHpwk64mSYY63s5LHk1osnHUqKpDD2bUtQn03
-         YhxyTUjMokVacZh16P2NEb0vSmYupjwjIRv6uFaEz2924utNqUiLJBhA0xKD4d4IVBxj
-         odsMYVys+BPNQqSB1OqLrfzZzxpF+tK9yDWKR4TYaa+WFn/wt55w90x+BWAV7c4huiBp
-         RK4g==
-X-Gm-Message-State: AOAM531ID7xnvK6TGGfsUYJ6d6fwJWwVMP/BA9g5+V0khdQh1g2FIlp1
-        4iPhRawmt4pvQpO0qvwFfW37YA6TEKC+aDHoifqRw7GErFF0lWsjcjynusd6NWnIXV55rrJDGMC
-        abLeNwjdkOTt7Akkl6gxNlt6r
-X-Received: by 2002:aa7:c917:: with SMTP id b23mr19514796edt.40.1636533942403;
-        Wed, 10 Nov 2021 00:45:42 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJyPIIO+qZOO813HU8R9f2hlPsM4WoKTJJ6lf0uqqVfa+g0IMsg0IFitFYWWY+Cvqxg9iblPlg==
-X-Received: by 2002:aa7:c917:: with SMTP id b23mr19514768edt.40.1636533942196;
-        Wed, 10 Nov 2021 00:45:42 -0800 (PST)
-Received: from ?IPV6:2001:1c00:c1e:bf00:1054:9d19:e0f0:8214? (2001-1c00-0c1e-bf00-1054-9d19-e0f0-8214.cable.dynamic.v6.ziggo.nl. [2001:1c00:c1e:bf00:1054:9d19:e0f0:8214])
-        by smtp.gmail.com with ESMTPSA id o14sm103230edj.15.2021.11.10.00.45.41
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 10 Nov 2021 00:45:41 -0800 (PST)
-Message-ID: <70b63cc2-4d08-8468-1ca7-135492394773@redhat.com>
-Date:   Wed, 10 Nov 2021 09:45:40 +0100
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=8Ho5EXRGYh8IyL3hxtihj/uWe5GBsevOzHdhzQOn+II=;
+        b=NZ8/p7DfPjTa127TS3Xh2ZFpdVYXurVRWCXkArS1CN+fKHBVs7FOczgIUMCjveu1L4
+         j2aKC2UEnOuBIbks6jY7uvXtNaMG7AnANBR+0PP8RDNlJNVY0QAc6WhyiBuD0AK63SKW
+         qDoCs8jAifz0Ggr0FGXDxsUF2LTWiOxoPCoOqLO+r8IyIcG09GO8Qfy9etKC68CE1lJu
+         4itr9V4cguQ4ASPU6ttI9ch6QbzpjxsYerJ+twFaeBX4K5W1ld0sGtRo6tT/1WWoFfi/
+         no2rZipxOX+FiY20TJODwaYOSNEKsp1m5hv0ADxlbsdZRZlu4q/zzNjjJ15p1MSK5Wm8
+         akrw==
+X-Gm-Message-State: AOAM5332uelI0kH+26+mEX5ua7Equzb5l2dYJrm6tyKMfS5yvqzlVgul
+        3QnrKGIiPT9FTFxid4WoarkW0X0EgceMw+qjKzICBQZxjMtPuqhzH02Hl4dpY8wp/mFaQsSrUSp
+        lhzxE3yAcO4F3FdQRVR8Zh/+L
+X-Received: by 2002:a7b:c351:: with SMTP id l17mr14797991wmj.120.1636533948854;
+        Wed, 10 Nov 2021 00:45:48 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJzwGlCYdC0IIag21+f5cwGkK7+HvhjYZ6HSS2si7iy6/HgYKKEBJOCk3lHgQqzHxshIq23W1A==
+X-Received: by 2002:a7b:c351:: with SMTP id l17mr14797972wmj.120.1636533948663;
+        Wed, 10 Nov 2021 00:45:48 -0800 (PST)
+Received: from krava (nat-pool-brq-u.redhat.com. [213.175.37.12])
+        by smtp.gmail.com with ESMTPSA id l4sm21365520wrv.94.2021.11.10.00.45.48
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 10 Nov 2021 00:45:48 -0800 (PST)
+Date:   Wed, 10 Nov 2021 09:45:47 +0100
+From:   Jiri Olsa <jolsa@redhat.com>
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     Ian Rogers <irogers@google.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        lkml <linux-kernel@vger.kernel.org>,
+        Peter Zijlstra <a.p.zijlstra@chello.nl>,
+        Ingo Molnar <mingo@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Michael Petlan <mpetlan@redhat.com>,
+        "linux-perf-use." <linux-perf-users@vger.kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>
+Subject: Re: [PATCH 1/2] perf tools: Add more weak libbpf functions
+Message-ID: <YYuGu+bhjSs3syGl@krava>
+References: <20211109140707.1689940-1-jolsa@kernel.org>
+ <20211109140707.1689940-2-jolsa@kernel.org>
+ <CAP-5=fVS2AwZ9bP4BjF9GDcZqmw5fwUZ6OGXdgMnFj3w_2OTaw@mail.gmail.com>
+ <CAEf4BzYXD57UDMW_scUdHUs=jgmR6f1-pt5JROwr5LYTh1vejw@mail.gmail.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.2.0
-Subject: Re: [PATCH v5 1/2] x86/PCI: Ignore E820 reservations for bridge
- windows on newer systems
-Content-Language: en-US
-To:     Bjorn Helgaas <helgaas@kernel.org>
-Cc:     "Rafael J . Wysocki" <rjw@rjwysocki.net>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        =?UTF-8?Q?Krzysztof_Wilczy=c5=84ski?= <kw@linux.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Myron Stowe <myron.stowe@redhat.com>,
-        Juha-Pekka Heikkila <juhapekka.heikkila@gmail.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H . Peter Anvin" <hpa@zytor.com>, linux-acpi@vger.kernel.org,
-        linux-pci@vger.kernel.org, x86@kernel.org,
-        linux-kernel@vger.kernel.org,
-        =?UTF-8?Q?Benoit_Gr=c3=a9goire?= <benoitg@coeus.ca>,
-        Hui Wang <hui.wang@canonical.com>, stable@vger.kernel.org,
-        "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>
-References: <20211109220717.GA1187103@bhelgaas>
-From:   Hans de Goede <hdegoede@redhat.com>
-In-Reply-To: <20211109220717.GA1187103@bhelgaas>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAEf4BzYXD57UDMW_scUdHUs=jgmR6f1-pt5JROwr5LYTh1vejw@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Bjorn,
-
-On 11/9/21 23:07, Bjorn Helgaas wrote:
-> On Sat, Nov 06, 2021 at 11:15:07AM +0100, Hans de Goede wrote:
->> On 10/20/21 23:14, Bjorn Helgaas wrote:
->>> On Wed, Oct 20, 2021 at 12:23:26PM +0200, Hans de Goede wrote:
->>>> On 10/19/21 23:52, Bjorn Helgaas wrote:
->>>>> On Thu, Oct 14, 2021 at 08:39:42PM +0200, Hans de Goede wrote:
->>>>>> Some BIOS-es contain a bug where they add addresses which map to system
->>>>>> RAM in the PCI host bridge window returned by the ACPI _CRS method, see
->>>>>> commit 4dc2287c1805 ("x86: avoid E820 regions when allocating address
->>>>>> space").
->>>>>>
->>>>>> To work around this bug Linux excludes E820 reserved addresses when
->>>>>> allocating addresses from the PCI host bridge window since 2010.
->>>>>> ...
->>>
->>>>> I haven't seen anybody else eager to merge this, so I guess I'll stick
->>>>> my neck out here.
->>>>>
->>>>> I applied this to my for-linus branch for v5.15.
->>>>
->>>> Thank you, and sorry about the build-errors which the lkp
->>>> kernel-test-robot found.
->>>>
->>>> I've just send out a patch which fixes these build-errors
->>>> (verified with both .config-s from the lkp reports).
->>>> Feel free to squash this into the original patch (or keep
->>>> them separate, whatever works for you).
->>>
->>> Thanks, I squashed the fix in.
->>>
->>> HOWEVER, I think it would be fairly risky to push this into v5.15.
->>> We would be relying on the assumption that current machines have all
->>> fixed the BIOS defect that 4dc2287c1805 addressed, and we have little
->>> evidence for that.
->>>
->>> I'm not sure there's significant benefit to having this in v5.15.
->>> Yes, the mainline v5.15 kernel would work on the affected machines,
->>> but I suspect most people with those machines are running distro
->>> kernels, not mainline kernels.
->>
->> I understand that you were reluctant to add this to 5.15 so close
->> near the end of the 5.15 cycle, but can we please get this into
->> 5.16 now ?
->>
->> I know you ultimately want to see if there is a better fix,
->> but this is hitting a *lot* of users right now and if we come up
->> with a better fix we can always use that to replace this one
->> later.
+On Tue, Nov 09, 2021 at 03:33:04PM -0800, Andrii Nakryiko wrote:
+> On Tue, Nov 9, 2021 at 10:50 AM Ian Rogers <irogers@google.com> wrote:
+> >
+> > On Tue, Nov 9, 2021 at 6:07 AM Jiri Olsa <jolsa@redhat.com> wrote:
+> > >
+> > > We hit the window where perf uses libbpf functions, that did not
+> > > make it to the official libbpf release yet and it's breaking perf
+> > > build with dynamicly linked libbpf.
+> > >
+> > > Fixing this by providing the new interface as weak functions which
+> > > calls the original libbpf functions. Fortunatelly the changes were
+> > > just renames.
+> >
+> > Could we just provide these functions behind a libbpf version #if ?
+> > Weak symbols break things in subtle ways, under certain circumstances
+> > the weak symbol is preferred over the strong due to lazy object file
+> > resolution:
+> > https://maskray.me/blog/2021-06-20-symbol-processing#archive-processing
+> > This bit me last week, but in general you get away with it as the lazy
+> > object file will get processed in an archive exposing the strong
+> > symbol. With an #if you either get a linker error for 2 definitions or
+> > 0 definitions, and it's clear what is broken.
+> >
+> > In the past we had problems due to constant propagation from weak
+> > const variables, where #if was the solution:
+> > https://lore.kernel.org/lkml/20191001003623.255186-1-irogers@google.com/
+> >
+> > There was some recent conversation on libbpf version for pahole here:
+> > https://lore.kernel.org/bpf/CAP-5=fUc3LtU0WYg-Py9Jf+9picaWHJdSw=sdOMA54uY3p1pdw@mail.gmail.com/T/
+> > https://lore.kernel.org/bpf/20211021183330.460681-1-irogers@google.com/
+> >
+> > Thanks,
+> > Ian
+> >
+> > > Signed-off-by: Jiri Olsa <jolsa@kernel.org>
+> > > ---
+> > >  tools/perf/util/bpf-event.c | 27 +++++++++++++++++++++++++++
+> > >  1 file changed, 27 insertions(+)
+> > >
+> > > diff --git a/tools/perf/util/bpf-event.c b/tools/perf/util/bpf-event.c
+> > > index 4d3b4cdce176..ceb96360fd12 100644
+> > > --- a/tools/perf/util/bpf-event.c
+> > > +++ b/tools/perf/util/bpf-event.c
+> > > @@ -33,6 +33,33 @@ struct btf * __weak btf__load_from_kernel_by_id(__u32 id)
+> > >         return err ? ERR_PTR(err) : btf;
+> > >  }
+> > >
+> > > +struct bpf_program * __weak
+> > > +bpf_object__next_program(const struct bpf_object *obj, struct bpf_program *prev)
+> > > +{
+> > > +#pragma GCC diagnostic push
+> > > +#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
+> > > +       return bpf_program__next(prev, obj);
+> > > +#pragma GCC diagnostic pop
+> > > +}
+> > > +
+> > > +struct bpf_map * __weak
+> > > +bpf_object__next_map(const struct bpf_object *obj, const struct bpf_map *prev)
+> > > +{
+> > > +#pragma GCC diagnostic push
+> > > +#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
+> > > +       return bpf_map__next(prev, obj);
+> > > +#pragma GCC diagnostic pop
+> > > +}
+> > > +
+> > > +const void * __weak
+> > > +btf__raw_data(const struct btf *btf_ro, __u32 *size)
+> > > +{
+> > > +#pragma GCC diagnostic push
+> > > +#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
+> > > +       return btf__get_raw_data(btf_ro, size);
 > 
-> I don't know whether there's a "better" fix, but I do know that if we
-> merge what we have right now, nobody will be looking for a better
-> one.
+> you can still use old variants for the time being, if you want. Were
+> new APIs used accidentally? Libbpf maintains a guarantee that if some
+> API is deprecated in favor of the new one, there will be at least one
+> full libbpf release where both APIs are available and not marked as
+> deprecated.
+
+we could use old api instead of btf__raw_data, we could just revert
+the perf change
+
+but bpf_object__next_program and bpf_object__next_map are used through
+macros like bpf_object__for_each_map or bpf_object__for_each_program,
+so we'd need to define 'old versions' of them
+
+jirka
+
 > 
-> We're in the middle of the merge window, so the v5.16 development
-> cycle is over.  The v5.17 cycle is just starting, so we have time to
-> hit that.  Obviously a fix can be backported to older kernels as
-> needed.
 > 
->> So can we please just go with this fix now, so that we can
->> fix the issues a lot of users are seeing caused by the current
->> *wrong* behavior of taking the e820 reservations into account ?
+> > > +#pragma GCC diagnostic pop
+> > > +}
+> > > +
+> > >  static int snprintf_hex(char *buf, size_t size, unsigned char *data, size_t len)
+> > >  {
+> > >         int ret = 0;
+> > > --
+> > > 2.31.1
+> > >
 > 
-> I think the fix on the table is "ignore E820 for BIOS date >= 2018"
-> plus the obvious parameters to force it both ways.
-
-Correct.
-
-> The thing I don't like is that this isn't connected at all to the
-> actual BIOS defect.  We have no indication that current BIOSes have
-> fixed the defect,
-
-We also have no indication that that defect from 10 years ago, from
-pre UEFI firmware is still present in modern day UEFI firmware which
-is basically an entire different code-base.
-
-And even 10 years ago the problem was only happening to a single
-family of laptop models (Dell Precision laptops) so this clearly
-was a bug in that specific implementation and not some generic
-issue which is likely to be carried forward.
-
-> and we have no assurance that future ones will not
-> have the defect.  It would be better if we had some algorithmic way of
-> figuring out what to do.
-
-You yourself have said that in hindsight taking E820 reservations
-into account for PCI bridge host windows was a mistake. So what
-the "ignore E820 for BIOS date >= 2018" is doing is letting the
-past be the past (without regressing on older models) while fixing
-that mistake on any hardware going forward.
-
-In the unlikely case that we hit that BIOS bug again on 1 or 2 models,
-we can simply DMI quirk those models, as we do for countless other
-BIOS issues.
-
-> Thank you very much for chasing down the dmesg log archive
-> (https://github.com/linuxhw/Dmesg; see
-> https://lore.kernel.org/r/82035130-d810-9f0b-259e-61280de1d81f@redhat.com).
-> Unfortunately I haven't had time to look through it myself, and I
-> haven't heard of anybody else doing it either.
-
-Right, I'm afraid that I already have spend way too much time on this
-myself. Note that I've been working with users on this bug on and off
-for over a year now.
-
-This is hitting many users and now that we have a viable fix, this
-really needs to be fixed now.
-
-I believe that the "ignore E820 for BIOS date >= 2018" fix is good
-enough and that you are letting perfect be the enemy of good here.
-
-As an upstream kernel maintainer myself, I'm sorry to say this,
-but if we don't get some fix for this merged soon you are leaving
-my no choice but to add my fix to the Fedora kernels as a downstream
-patch (and to advise other distros to do the same).
-
-Note that if you are still afraid of regressions going the downstream
-route is also an opportunity, Fedora will start testing moving users
-to 5.15.y soon, so I could add the patch to Fedora's 5.15.y builds and
-see how that goes ?
-
-Regards,
-
-Hans
 
