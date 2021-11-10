@@ -2,37 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F112644C7D3
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 19:53:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B574B44C7A5
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 19:53:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232740AbhKJSzk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Nov 2021 13:55:40 -0500
-Received: from mail.kernel.org ([198.145.29.99]:53390 "EHLO mail.kernel.org"
+        id S233034AbhKJSx7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Nov 2021 13:53:59 -0500
+Received: from mail.kernel.org ([198.145.29.99]:48510 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233871AbhKJSxn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Nov 2021 13:53:43 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B98B061872;
-        Wed, 10 Nov 2021 18:48:34 +0000 (UTC)
+        id S233822AbhKJSwA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Nov 2021 13:52:00 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4C3EA61506;
+        Wed, 10 Nov 2021 18:47:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1636570115;
-        bh=fT0Zs5Hif2VMstUm9hcb/4Z70zoKqekD4qV6fjd2SHw=;
+        s=korg; t=1636570063;
+        bh=r9c4M28T/B5cCe7kYAPWH6EhTTjF4No8DvsRibfL7NY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=F/mWkiH8fwN3/PFhvPQvbyegfz24jbzQLCjfpSnZuq5hTG9w1qSyJRhnB21AVuv0S
-         bec72VMN97mnixQt8I7iElVQm9pIVzoSiweGzINE+wlDFhM2/wf7thd0jvrDvCamRB
-         2aUNt2iXlZOL4rtak2lfiL2TFucg1YM9ume3k6Ik=
+        b=0C2uA7rC+C0CxwBFPkdpVB0iDOcnsCgW/oCQC1aK/zbHfDzkmYKp9ihP4yG5ZozBO
+         lL9fowipLpBnmcMAYy58DjYLyQZyiGuoHj9iXQmvUQeV6LpO9CPYs55FjPd+pVnMjv
+         C4AjIBwZGCw0itSMbwuxXslQoc4M36CqorSvtXjQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Tao Ren <rentao.bupt@gmail.com>,
-        Alan Stern <stern@rowland.harvard.edu>,
-        Neal Liu <neal_liu@aspeedtech.com>,
-        Joel Stanley <joel@jms.id.au>
-Subject: [PATCH 5.10 03/21] usb: ehci: handshake CMD_RUN instead of STS_HALT
+        stable@vger.kernel.org, Luca Ellero <luca.ellero@brickedbrain.com>,
+        Ian Abbott <abbotti@mev.co.uk>, Johan Hovold <johan@kernel.org>
+Subject: [PATCH 5.4 10/17] comedi: ni_usb6501: fix NULL-deref in command paths
 Date:   Wed, 10 Nov 2021 19:43:49 +0100
-Message-Id: <20211110182003.072897019@linuxfoundation.org>
+Message-Id: <20211110182002.542224371@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211110182002.964190708@linuxfoundation.org>
-References: <20211110182002.964190708@linuxfoundation.org>
+In-Reply-To: <20211110182002.206203228@linuxfoundation.org>
+References: <20211110182002.206203228@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,71 +39,54 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Neal Liu <neal_liu@aspeedtech.com>
+From: Johan Hovold <johan@kernel.org>
 
-commit 7f2d73788d9067fd4f677ac5f60ffd25945af7af upstream.
+commit 907767da8f3a925b060c740e0b5c92ea7dbec440 upstream.
 
-For Aspeed, HCHalted status depends on not only Run/Stop but also
-ASS/PSS status.
-Handshake CMD_RUN on startup instead.
+The driver uses endpoint-sized USB transfer buffers but had no sanity
+checks on the sizes. This can lead to zero-size-pointer dereferences or
+overflowed transfer buffers in ni6501_port_command() and
+ni6501_counter_command() if a (malicious) device has smaller max-packet
+sizes than expected (or when doing descriptor fuzz testing).
 
-Tested-by: Tao Ren <rentao.bupt@gmail.com>
-Reviewed-by: Tao Ren <rentao.bupt@gmail.com>
-Acked-by: Alan Stern <stern@rowland.harvard.edu>
-Signed-off-by: Neal Liu <neal_liu@aspeedtech.com>
-Link: https://lore.kernel.org/r/20210910073619.26095-1-neal_liu@aspeedtech.com
-Cc: Joel Stanley <joel@jms.id.au>
+Add the missing sanity checks to probe().
+
+Fixes: a03bb00e50ab ("staging: comedi: add NI USB-6501 support")
+Cc: stable@vger.kernel.org      # 3.18
+Cc: Luca Ellero <luca.ellero@brickedbrain.com>
+Reviewed-by: Ian Abbott <abbotti@mev.co.uk>
+Signed-off-by: Johan Hovold <johan@kernel.org>
+Link: https://lore.kernel.org/r/20211027093529.30896-2-johan@kernel.org
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/usb/host/ehci-hcd.c      |   11 ++++++++++-
- drivers/usb/host/ehci-platform.c |    6 ++++++
- drivers/usb/host/ehci.h          |    1 +
- 3 files changed, 17 insertions(+), 1 deletion(-)
+ drivers/staging/comedi/drivers/ni_usb6501.c |   10 ++++++++++
+ 1 file changed, 10 insertions(+)
 
---- a/drivers/usb/host/ehci-hcd.c
-+++ b/drivers/usb/host/ehci-hcd.c
-@@ -634,7 +634,16 @@ static int ehci_run (struct usb_hcd *hcd
- 	/* Wait until HC become operational */
- 	ehci_readl(ehci, &ehci->regs->command);	/* unblock posted writes */
- 	msleep(5);
--	rc = ehci_handshake(ehci, &ehci->regs->status, STS_HALT, 0, 100 * 1000);
+--- a/drivers/staging/comedi/drivers/ni_usb6501.c
++++ b/drivers/staging/comedi/drivers/ni_usb6501.c
+@@ -144,6 +144,10 @@ static const u8 READ_COUNTER_RESPONSE[]
+ 					   0x00, 0x00, 0x00, 0x02,
+ 					   0x00, 0x00, 0x00, 0x00};
+ 
++/* Largest supported packets */
++static const size_t TX_MAX_SIZE	= sizeof(SET_PORT_DIR_REQUEST);
++static const size_t RX_MAX_SIZE	= sizeof(READ_PORT_RESPONSE);
 +
-+	/* For Aspeed, STS_HALT also depends on ASS/PSS status.
-+	 * Check CMD_RUN instead.
-+	 */
-+	if (ehci->is_aspeed)
-+		rc = ehci_handshake(ehci, &ehci->regs->command, CMD_RUN,
-+				    1, 100 * 1000);
-+	else
-+		rc = ehci_handshake(ehci, &ehci->regs->status, STS_HALT,
-+				    0, 100 * 1000);
+ enum commands {
+ 	READ_PORT,
+ 	WRITE_PORT,
+@@ -501,6 +505,12 @@ static int ni6501_find_endpoints(struct
+ 	if (!devpriv->ep_rx || !devpriv->ep_tx)
+ 		return -ENODEV;
  
- 	up_write(&ehci_cf_port_reset_rwsem);
- 
---- a/drivers/usb/host/ehci-platform.c
-+++ b/drivers/usb/host/ehci-platform.c
-@@ -294,6 +294,12 @@ static int ehci_platform_probe(struct pl
- 					  "has-transaction-translator"))
- 			hcd->has_tt = 1;
- 
-+		if (of_device_is_compatible(dev->dev.of_node,
-+					    "aspeed,ast2500-ehci") ||
-+		    of_device_is_compatible(dev->dev.of_node,
-+					    "aspeed,ast2600-ehci"))
-+			ehci->is_aspeed = 1;
++	if (usb_endpoint_maxp(devpriv->ep_rx) < RX_MAX_SIZE)
++		return -ENODEV;
 +
- 		if (soc_device_match(quirk_poll_match))
- 			priv->quirk_poll = true;
++	if (usb_endpoint_maxp(devpriv->ep_tx) < TX_MAX_SIZE)
++		return -ENODEV;
++
+ 	return 0;
+ }
  
---- a/drivers/usb/host/ehci.h
-+++ b/drivers/usb/host/ehci.h
-@@ -218,6 +218,7 @@ struct ehci_hcd {			/* one per controlle
- 	unsigned		frame_index_bug:1; /* MosChip (AKA NetMos) */
- 	unsigned		need_oc_pp_cycle:1; /* MPC834X port power */
- 	unsigned		imx28_write_fix:1; /* For Freescale i.MX28 */
-+	unsigned		is_aspeed:1;
- 
- 	/* required for usb32 quirk */
- 	#define OHCI_CTRL_HCFS          (3 << 6)
 
 
