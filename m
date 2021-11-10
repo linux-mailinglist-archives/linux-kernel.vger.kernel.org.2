@@ -2,139 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 21E0144BCD9
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 09:28:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 23B5644BCDE
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 09:29:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230237AbhKJIbH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Nov 2021 03:31:07 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:24650 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229931AbhKJIbG (ORCPT
+        id S230322AbhKJIby (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Nov 2021 03:31:54 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43744 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230286AbhKJIbw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Nov 2021 03:31:06 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1636532898;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=U3N/QwJx99Htv9Bvod8btoHFfpBRUV5/sWEz28i4RYo=;
-        b=FsESyu9r1b/v48FiWdwordYEPGOp+otgPYa6y7o9y4EvfSmvA2VBK5+rN3C0v1/TOeu1AA
-        P2POoRa0I+R+PL9oBuMmDxLhPE53TbqvDSTbAABXAoGO0BEYlMRzRuTg3ovb4mwr336+l+
-        IQxjOzkBVddcCUJ+YwBv7Ds3XY/iJkE=
-Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com
- [209.85.128.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-569-9yBx3XBQOYKXDmfPMJ2Z3A-1; Wed, 10 Nov 2021 03:28:17 -0500
-X-MC-Unique: 9yBx3XBQOYKXDmfPMJ2Z3A-1
-Received: by mail-wm1-f70.google.com with SMTP id 67-20020a1c0046000000b0032cd88916e5so779117wma.6
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Nov 2021 00:28:17 -0800 (PST)
+        Wed, 10 Nov 2021 03:31:52 -0500
+Received: from mail-oi1-x22e.google.com (mail-oi1-x22e.google.com [IPv6:2607:f8b0:4864:20::22e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E0375C061764
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Nov 2021 00:29:05 -0800 (PST)
+Received: by mail-oi1-x22e.google.com with SMTP id bf8so3880903oib.6
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Nov 2021 00:29:05 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=f7rHKPXF7IbvrxgZBgwaRfmurIG9HqN9DpJB72wC+bI=;
+        b=TuB7tlTlxNHJ06giSMcvKP5BOduliRU9Wes+BVl8jRlSWGR3FOyQqy+C6b/4/JF22I
+         xLP1ip3PpAsa5FPNqLzHoXDq9IQlGTO2CQ2v/acPdM3w5ZysyMIyMC8AarTjopkU7Eue
+         x7YjTocStBQ45qy16SWD2Fejhl16N3PrMRDNR6q/SGfIFm5vXWXHtaTjQ5F0Hjh8ABnS
+         +8TQFzoFcl2LmKr7Uue/nnd1fcfUVsR8DEkDxgnRBbruYHHHs+wh9PZ67QbtQKtMuIYQ
+         oehJVgH8VUG0UFomg/6EedRCxpDDMmrKiiY98mlS/mUv1HxTbnHm7lQ6JP/s/qxur8sb
+         B2xQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:organization:in-reply-to
-         :content-transfer-encoding;
-        bh=U3N/QwJx99Htv9Bvod8btoHFfpBRUV5/sWEz28i4RYo=;
-        b=leHGpyzMj01gnMQExZ7EChcwUCD41gSqUPvwJcKTTFV239YEMnL051gCchZDkEEr7f
-         P8QURQ7ATQ4Iqq/L0CdQdTsgw/ptV/M70G5t/RAB3mwEwVm5jVCB87SabtQRMvvRwoUH
-         JpG2UrFkehdAk9W6uKIfqqAhznHBGJbjDrSg2ESwkPAVZ2pPeQzoprBMU+ve5zrEHyE9
-         oBH0iLzlCqBheE1myXnLYsTb3slx4PjZ2cYbP25NZL2hA/7g/nVaSlrkr3SDbwmQDNfY
-         59/Q0s0dG6tyNFCFsOUJvYDn+Ub7AQXO9HYJ9vrL4Ev5TPbmHqqe8Ogvu9s49kUcGtKn
-         IzCA==
-X-Gm-Message-State: AOAM532EQAuuIBxwZxmwKBiSuEUCmwmXforBnQS/S976D5It+MNx+5wE
-        RGnKYMxFGk4mTv+zBBG9RwYFaBvJMvKmaQn9HFOMxWUf7TXoaaEy9CiZSmE3MiVa7hdDhYtNiN5
-        KbAPQTWG+5KKBQgCYHmQCF+ec
-X-Received: by 2002:adf:ba0d:: with SMTP id o13mr17628078wrg.339.1636532896089;
-        Wed, 10 Nov 2021 00:28:16 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJwQ/2kqjTXPkYPHvyddhqvtTW4vWEhMZpSvnii4YyiM1CY6/ErutfetxXoUCqfLbvvZpl1HaA==
-X-Received: by 2002:adf:ba0d:: with SMTP id o13mr17628047wrg.339.1636532895920;
-        Wed, 10 Nov 2021 00:28:15 -0800 (PST)
-Received: from [192.168.3.132] (p5b0c604f.dip0.t-ipconnect.de. [91.12.96.79])
-        by smtp.gmail.com with ESMTPSA id u23sm15854437wru.21.2021.11.10.00.28.13
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 10 Nov 2021 00:28:14 -0800 (PST)
-Message-ID: <c3571571-320a-3e25-8409-5653ddca895c@redhat.com>
-Date:   Wed, 10 Nov 2021 09:28:12 +0100
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=f7rHKPXF7IbvrxgZBgwaRfmurIG9HqN9DpJB72wC+bI=;
+        b=JT69OWxGWp+zGu65KHskHFDu9OCy5r76ipWQJyDHOV/fbecDnJcIN4MYQHPqWmyB6J
+         KBhoCy+zGMOFjCy6T8wiGlAr7WQp58S/2XeUIOV0zsOHjdw9kZDSIveYIw7MvE/LaZvq
+         PUyrIPajRxqzIW6qfNTg99bYFg0HD+E6NbdVoiDqh20vkgh7OpRF5fD2w4GV1IIX7yBE
+         kwqz6jRsRY4zR+BdAstL3PXX5BLCTxoBGroTPYXXD9Ec8J/fnLgYIVOJEyKkuCrFeOKu
+         gOcXywybVZB7lyKwDxSYAzvLhpy+e9VnQa5hLxUqRQ7g91KGis7Y23YdBPrPHBRgyuKM
+         7URA==
+X-Gm-Message-State: AOAM531Bgfd6lYn4jVPnp1dPsExdxGObuqVuHl3bL9CqzHRw/UuPzUv1
+        yGUb4eLwJuKPlvn47czovh2dtcUWfSL/4z7QmpgE6Q==
+X-Google-Smtp-Source: ABdhPJyaEL5vlz5N6A4nMGJI6OOxAb6rO5+DSFGzls44RzkLp58y9QExK/RBI8PkIc3s+dGBR+D8Ys2jtTo0M+HHy4U=
+X-Received: by 2002:a54:4791:: with SMTP id o17mr11897170oic.114.1636532945359;
+ Wed, 10 Nov 2021 00:29:05 -0800 (PST)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.2.0
-Subject: Re: [PATCH 1/7] fs/exec: make __set_task_comm always set a nul
- terminated string
-Content-Language: en-US
-To:     Yafang Shao <laoar.shao@gmail.com>, akpm@linux-foundation.org
-Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
-        linux-perf-users@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        oliver.sang@intel.com, lkp@intel.com,
-        Kees Cook <keescook@chromium.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>,
-        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        Michal Miroslaw <mirq-linux@rere.qmqm.pl>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Petr Mladek <pmladek@suse.com>
-References: <20211108083840.4627-1-laoar.shao@gmail.com>
- <20211108083840.4627-2-laoar.shao@gmail.com>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat
-In-Reply-To: <20211108083840.4627-2-laoar.shao@gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+References: <20211028141938.3530-1-lukas.bulwahn@gmail.com> <20211028141938.3530-11-lukas.bulwahn@gmail.com>
+In-Reply-To: <20211028141938.3530-11-lukas.bulwahn@gmail.com>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Wed, 10 Nov 2021 09:28:53 +0100
+Message-ID: <CACRpkdakmQinPTHfV7m_Zbwh78k12gf9if4b1xiyEEW004KDCg@mail.gmail.com>
+Subject: Re: [PATCH 10/13] arm: nomadik: drop selecting obsolete CLKSRC_NOMADIK_MTU_SCHED_CLOCK
+To:     Lukas Bulwahn <lukas.bulwahn@gmail.com>
+Cc:     Russell King <linux@armlinux.org.uk>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        Sekhar Nori <nsekhar@ti.com>,
+        Bartosz Golaszewski <brgl@bgdev.pl>,
+        Linus Walleij <linusw@kernel.org>,
+        Imre Kaloz <kaloz@openwrt.org>,
+        Krzysztof Halasa <khalasa@piap.pl>,
+        Avi Fishman <avifishman70@gmail.com>,
+        Tomer Maimon <tmaimon77@gmail.com>,
+        Tali Perry <tali.perry1@gmail.com>,
+        Patrick Venture <venture@google.com>,
+        Nancy Yuen <yuenn@google.com>,
+        Benjamin Fair <benjaminfair@google.com>,
+        Dinh Nguyen <dinguyen@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        linux-arm-kernel@lists.infradead.org, openbmc@lists.ozlabs.org,
+        kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 08.11.21 09:38, Yafang Shao wrote:
-> Make sure the string set to task comm is always nul terminated.
-> 
+On Thu, Oct 28, 2021 at 4:20 PM Lukas Bulwahn <lukas.bulwahn@gmail.com> wrote:
 
-strlcpy: "the result is always a valid NUL-terminated string that fits
-in the buffer"
+> Commit 85b6fcadcf66 ("clocksource/drivers/ux500: Drop Ux500 custom
+> SCHED_CLOCK") removes a sched_clock workaround and its corresponding
+> config CLKSRC_NOMADIK_MTU_SCHED_CLOCK. Since then, selecting
+> CLKSRC_NOMADIK_MTU_SCHED_CLOCK in ./arch/arm/mach-nomadik/Kconfig has no
+> effect and ./scripts/checkkconfigsymbols.py warns:
+>
+> CLKSRC_NOMADIK_MTU_SCHED_CLOCK
+> Referencing files: arch/arm/mach-nomadik/Kconfig
+>
+> Simply drop selecting the obsolete CLKSRC_NOMADIK_MTU_SCHED_CLOCK.
+>
+> Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
 
-The only difference seems to be that strscpy_pad() pads the remainder
-with zeroes.
+Patch applied to my Nomadik tree!
 
-Is this description correct and I am missing something important?
-
-> Signed-off-by: Yafang Shao <laoar.shao@gmail.com>
-> Reviewed-by: Kees Cook <keescook@chromium.org>
-> Cc: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-> Cc: Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>
-> Cc: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-> Cc: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-> Cc: Michal Miroslaw <mirq-linux@rere.qmqm.pl> 
-> Cc: Peter Zijlstra <peterz@infradead.org>
-> Cc: Steven Rostedt <rostedt@goodmis.org>
-> Cc: Matthew Wilcox <willy@infradead.org>
-> Cc: David Hildenbrand <david@redhat.com>
-> Cc: Al Viro <viro@zeniv.linux.org.uk>
-> Cc: Kees Cook <keescook@chromium.org>
-> Cc: Petr Mladek <pmladek@suse.com>
-> ---
->  fs/exec.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/fs/exec.c b/fs/exec.c
-> index a098c133d8d7..404156b5b314 100644
-> --- a/fs/exec.c
-> +++ b/fs/exec.c
-> @@ -1224,7 +1224,7 @@ void __set_task_comm(struct task_struct *tsk, const char *buf, bool exec)
->  {
->  	task_lock(tsk);
->  	trace_task_rename(tsk, buf);
-> -	strlcpy(tsk->comm, buf, sizeof(tsk->comm));
-> +	strscpy_pad(tsk->comm, buf, sizeof(tsk->comm));
->  	task_unlock(tsk);
->  	perf_event_comm(tsk, exec);
->  }
-> 
-
-
--- 
-Thanks,
-
-David / dhildenb
-
+Yours,
+Linus Walleij
