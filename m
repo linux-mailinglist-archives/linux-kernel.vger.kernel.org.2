@@ -2,38 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D978F44C72D
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 19:46:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C437B44C6E3
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 19:43:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233286AbhKJSsz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Nov 2021 13:48:55 -0500
-Received: from mail.kernel.org ([198.145.29.99]:47598 "EHLO mail.kernel.org"
+        id S232592AbhKJSqc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Nov 2021 13:46:32 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45652 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232830AbhKJSsC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Nov 2021 13:48:02 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3828661211;
-        Wed, 10 Nov 2021 18:45:14 +0000 (UTC)
+        id S232519AbhKJSqa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Nov 2021 13:46:30 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 52CD0611C9;
+        Wed, 10 Nov 2021 18:43:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1636569914;
-        bh=MjkPmLRkBqeSC371Yk90SkrMrBG8np7SnTDM7EHCFsI=;
+        s=korg; t=1636569822;
+        bh=RjInd3JGIV8bHmngubFKVhbNniHOFgdPRRrxz8odIdY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=TFYii3XmUToqv1f/aciAXv8cUQ/2Fvlt0uUV/cIbhq0AqBg4+3JUGrxz1+RnYXTFZ
-         jTfuGcqvwXHuEDjDkhwJWqmhXP4XLv5IGJnzaUTgGfopPTP47vSLG2MJ/RxDTMsK7D
-         iBgYNT+vpaO3FX/A6FtcdbTqLJyFw50nOj4u89bw=
+        b=LVntHmwOoqi/p1YghRx9XdnnhiNEdXxe/1xgAzvv6T1etp6O+GgwJcNIzoY8UBx9O
+         w+6XHuNH7wa1CNxOcSH1chIlK0jcaX7lLg1hG2T6SBPOFCakKJxOVEsefiCaie5snB
+         g1ZaJiO2VDMPXstclQJ9cT9coHAPBLLX0yhxVqiw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, "H. Nikolaus Schaller" <hns@goldelico.com>,
-        Andreas Kemnade <andreas@kemnade.info>,
-        Johan Hovold <johan@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Lee Jones <lee.jones@linaro.org>
-Subject: [PATCH 4.9 05/22] net: hso: register netdev later to avoid a race condition
-Date:   Wed, 10 Nov 2021 19:43:12 +0100
-Message-Id: <20211110182001.760983756@linuxfoundation.org>
+        stable@vger.kernel.org, Ian Abbott <abbotti@mev.co.uk>,
+        Johan Hovold <johan@kernel.org>
+Subject: [PATCH 4.4 11/19] comedi: dt9812: fix DMA buffers on stack
+Date:   Wed, 10 Nov 2021 19:43:13 +0100
+Message-Id: <20211110182001.623863456@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211110182001.579561273@linuxfoundation.org>
-References: <20211110182001.579561273@linuxfoundation.org>
+In-Reply-To: <20211110182001.257350381@linuxfoundation.org>
+References: <20211110182001.257350381@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,118 +39,209 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Andreas Kemnade <andreas@kemnade.info>
+From: Johan Hovold <johan@kernel.org>
 
-commit 4c761daf8bb9a2cbda9facf53ea85d9061f4281e upstream.
+commit 536de747bc48262225889a533db6650731ab25d3 upstream.
 
-If the netdev is accessed before the urbs are initialized,
-there will be NULL pointer dereferences. That is avoided by
-registering it when it is fully initialized.
+USB transfer buffers are typically mapped for DMA and must not be
+allocated on the stack or transfers will fail.
 
-This case occurs e.g. if dhcpcd is running in the background
-and the device is probed, either after insmod hso or
-when the device appears on the usb bus.
+Allocate proper transfer buffers in the various command helpers and
+return an error on short transfers instead of acting on random stack
+data.
 
-A backtrace is the following:
+Note that this also fixes a stack info leak on systems where DMA is not
+used as 32 bytes are always sent to the device regardless of how short
+the command is.
 
-[ 1357.356048] usb 1-2: new high-speed USB device number 12 using ehci-omap
-[ 1357.551177] usb 1-2: New USB device found, idVendor=0af0, idProduct=8800
-[ 1357.558654] usb 1-2: New USB device strings: Mfr=3, Product=2, SerialNumber=0
-[ 1357.568572] usb 1-2: Product: Globetrotter HSUPA Modem
-[ 1357.574096] usb 1-2: Manufacturer: Option N.V.
-[ 1357.685882] hso 1-2:1.5: Not our interface
-[ 1460.886352] hso: unloaded
-[ 1460.889984] usbcore: deregistering interface driver hso
-[ 1513.769134] hso: ../drivers/net/usb/hso.c: Option Wireless
-[ 1513.846771] Unable to handle kernel NULL pointer dereference at virtual address 00000030
-[ 1513.887664] hso 1-2:1.5: Not our interface
-[ 1513.906890] usbcore: registered new interface driver hso
-[ 1513.937988] pgd = ecdec000
-[ 1513.949890] [00000030] *pgd=acd15831, *pte=00000000, *ppte=00000000
-[ 1513.956573] Internal error: Oops: 817 [#1] PREEMPT SMP ARM
-[ 1513.962371] Modules linked in: hso usb_f_ecm omap2430 bnep bluetooth g_ether usb_f_rndis u_ether libcomposite configfs ipv6 arc4 wl18xx wlcore mac80211 cfg80211 bq27xxx_battery panel_tpo_td028ttec1 omapdrm drm_kms_helper cfbfillrect snd_soc_simple_card syscopyarea cfbimgblt snd_soc_simple_card_utils sysfillrect sysimgblt fb_sys_fops snd_soc_omap_twl4030 cfbcopyarea encoder_opa362 drm twl4030_madc_hwmon wwan_on_off snd_soc_gtm601 pwm_omap_dmtimer generic_adc_battery connector_analog_tv pwm_bl extcon_gpio omap3_isp wlcore_sdio videobuf2_dma_contig videobuf2_memops w1_bq27000 videobuf2_v4l2 videobuf2_core omap_hdq snd_soc_omap_mcbsp ov9650 snd_soc_omap bmp280_i2c bmg160_i2c v4l2_common snd_pcm_dmaengine bmp280 bmg160_core at24 bmc150_magn_i2c nvmem_core videodev phy_twl4030_usb bmc150_accel_i2c tsc2007
-[ 1514.037384]  bmc150_magn bmc150_accel_core media leds_tca6507 bno055 industrialio_triggered_buffer kfifo_buf gpio_twl4030 musb_hdrc snd_soc_twl4030 twl4030_vibra twl4030_madc twl4030_pwrbutton twl4030_charger industrialio w2sg0004 ehci_omap omapdss [last unloaded: hso]
-[ 1514.062622] CPU: 0 PID: 3433 Comm: dhcpcd Tainted: G        W       4.11.0-rc8-letux+ #1
-[ 1514.071136] Hardware name: Generic OMAP36xx (Flattened Device Tree)
-[ 1514.077758] task: ee748240 task.stack: ecdd6000
-[ 1514.082580] PC is at hso_start_net_device+0x50/0xc0 [hso]
-[ 1514.088287] LR is at hso_net_open+0x68/0x84 [hso]
-[ 1514.093231] pc : [<bf79c304>]    lr : [<bf79ced8>]    psr: a00f0013
-sp : ecdd7e20  ip : 00000000  fp : ffffffff
-[ 1514.105316] r10: 00000000  r9 : ed0e080c  r8 : ecd8fe2c
-[ 1514.110839] r7 : bf79cef4  r6 : ecd8fe00  r5 : 00000000  r4 : ed0dbd80
-[ 1514.117706] r3 : 00000000  r2 : c0020c80  r1 : 00000000  r0 : ecdb7800
-[ 1514.124572] Flags: NzCv  IRQs on  FIQs on  Mode SVC_32  ISA ARM  Segment none
-[ 1514.132110] Control: 10c5387d  Table: acdec019  DAC: 00000051
-[ 1514.138153] Process dhcpcd (pid: 3433, stack limit = 0xecdd6218)
-[ 1514.144470] Stack: (0xecdd7e20 to 0xecdd8000)
-[ 1514.149078] 7e20: ed0dbd80 ecd8fe98 00000001 00000000 ecd8f800 ecd8fe00 ecd8fe60 00000000
-[ 1514.157714] 7e40: ed0e080c bf79ced8 bf79ce70 ecd8f800 00000001 bf7a0258 ecd8f830 c068d958
-[ 1514.166320] 7e60: c068d8b8 ecd8f800 00000001 00001091 00001090 c068dba4 ecd8f800 00001090
-[ 1514.174926] 7e80: ecd8f940 ecd8f800 00000000 c068dc60 00000000 00000001 ed0e0800 ecd8f800
-[ 1514.183563] 7ea0: 00000000 c06feaa8 c0ca39c2 beea57dc 00000020 00000000 306f7368 00000000
-[ 1514.192169] 7ec0: 00000000 00000000 00001091 00000000 00000000 00000000 00000000 00008914
-[ 1514.200805] 7ee0: eaa9ab60 beea57dc c0c9bfc0 eaa9ab40 00000006 00000000 00046858 c066a948
-[ 1514.209411] 7f00: beea57dc eaa9ab60 ecc6b0c0 c02837b0 00000006 c0282c90 0000c000 c0283654
-[ 1514.218017] 7f20: c09b0c00 c098bc31 00000001 c0c5e513 c0c5e513 00000000 c0151354 c01a20c0
-[ 1514.226654] 7f40: c0c5e513 c01a3134 ecdd6000 c01a3160 ee7487f0 600f0013 00000000 ee748240
-[ 1514.235260] 7f60: ee748734 00000000 ecc6b0c0 ecc6b0c0 beea57dc 00008914 00000006 00000000
-[ 1514.243896] 7f80: 00046858 c02837b0 00001091 0003a1f0 00046608 0003a248 00000036 c01071e4
-[ 1514.252502] 7fa0: ecdd6000 c0107040 0003a1f0 00046608 00000006 00008914 beea57dc 00001091
-[ 1514.261108] 7fc0: 0003a1f0 00046608 0003a248 00000036 0003ac0c 00046608 00046610 00046858
-[ 1514.269744] 7fe0: 0003a0ac beea57d4 000167eb b6f23106 400f0030 00000006 00000000 00000000
-[ 1514.278411] [<bf79c304>] (hso_start_net_device [hso]) from [<bf79ced8>] (hso_net_open+0x68/0x84 [hso])
-[ 1514.288238] [<bf79ced8>] (hso_net_open [hso]) from [<c068d958>] (__dev_open+0xa0/0xf4)
-[ 1514.296600] [<c068d958>] (__dev_open) from [<c068dba4>] (__dev_change_flags+0x8c/0x130)
-[ 1514.305023] [<c068dba4>] (__dev_change_flags) from [<c068dc60>] (dev_change_flags+0x18/0x48)
-[ 1514.313934] [<c068dc60>] (dev_change_flags) from [<c06feaa8>] (devinet_ioctl+0x348/0x714)
-[ 1514.322540] [<c06feaa8>] (devinet_ioctl) from [<c066a948>] (sock_ioctl+0x2b0/0x308)
-[ 1514.330627] [<c066a948>] (sock_ioctl) from [<c0282c90>] (vfs_ioctl+0x20/0x34)
-[ 1514.338165] [<c0282c90>] (vfs_ioctl) from [<c0283654>] (do_vfs_ioctl+0x82c/0x93c)
-[ 1514.346038] [<c0283654>] (do_vfs_ioctl) from [<c02837b0>] (SyS_ioctl+0x4c/0x74)
-[ 1514.353759] [<c02837b0>] (SyS_ioctl) from [<c0107040>] (ret_fast_syscall+0x0/0x1c)
-[ 1514.361755] Code: e3822103 e3822080 e1822781 e5981014 (e5832030)
-[ 1514.510833] ---[ end trace dfb3e53c657f34a0 ]---
-
-Reported-by: H. Nikolaus Schaller <hns@goldelico.com>
-Signed-off-by: Andreas Kemnade <andreas@kemnade.info>
-Reviewed-by: Johan Hovold <johan@kernel.org>
-Signed-off-by: David S. Miller <davem@davemloft.net>
-Cc: Lee Jones <lee.jones@linaro.org>
+Fixes: 63274cd7d38a ("Staging: comedi: add usb dt9812 driver")
+Cc: stable@vger.kernel.org      # 2.6.29
+Reviewed-by: Ian Abbott <abbotti@mev.co.uk>
+Signed-off-by: Johan Hovold <johan@kernel.org>
+Link: https://lore.kernel.org/r/20211027093529.30896-3-johan@kernel.org
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/net/usb/hso.c |   14 +++++++-------
- 1 file changed, 7 insertions(+), 7 deletions(-)
+ drivers/staging/comedi/drivers/dt9812.c |  115 +++++++++++++++++++++++---------
+ 1 file changed, 86 insertions(+), 29 deletions(-)
 
---- a/drivers/net/usb/hso.c
-+++ b/drivers/net/usb/hso.c
-@@ -2536,13 +2536,6 @@ static struct hso_device *hso_create_net
- 	SET_NETDEV_DEV(net, &interface->dev);
- 	SET_NETDEV_DEVTYPE(net, &hso_type);
+--- a/drivers/staging/comedi/drivers/dt9812.c
++++ b/drivers/staging/comedi/drivers/dt9812.c
+@@ -41,6 +41,7 @@
+ #include <linux/kernel.h>
+ #include <linux/module.h>
+ #include <linux/errno.h>
++#include <linux/slab.h>
+ #include <linux/uaccess.h>
  
--	/* registering our net device */
--	result = register_netdev(net);
--	if (result) {
--		dev_err(&interface->dev, "Failed to register device\n");
--		goto exit;
--	}
--
- 	/* start allocating */
- 	for (i = 0; i < MUX_BULK_RX_BUF_COUNT; i++) {
- 		hso_net->mux_bulk_rx_urb_pool[i] = usb_alloc_urb(0, GFP_KERNEL);
-@@ -2562,6 +2555,13 @@ static struct hso_device *hso_create_net
+ #include "../comedi_usb.h"
+@@ -246,22 +247,42 @@ static int dt9812_read_info(struct comed
+ {
+ 	struct usb_device *usb = comedi_to_usb_dev(dev);
+ 	struct dt9812_private *devpriv = dev->private;
+-	struct dt9812_usb_cmd cmd;
++	struct dt9812_usb_cmd *cmd;
++	size_t tbuf_size;
+ 	int count, ret;
++	void *tbuf;
  
- 	add_net_device(hso_dev);
- 
-+	/* registering our net device */
-+	result = register_netdev(net);
-+	if (result) {
-+		dev_err(&interface->dev, "Failed to register device\n");
-+		goto exit;
-+	}
+-	cmd.cmd = cpu_to_le32(DT9812_R_FLASH_DATA);
+-	cmd.u.flash_data_info.address =
++	tbuf_size = max(sizeof(*cmd), buf_size);
 +
- 	hso_log_port(hso_dev);
++	tbuf = kzalloc(tbuf_size, GFP_KERNEL);
++	if (!tbuf)
++		return -ENOMEM;
++
++	cmd = tbuf;
++
++	cmd->cmd = cpu_to_le32(DT9812_R_FLASH_DATA);
++	cmd->u.flash_data_info.address =
+ 	    cpu_to_le16(DT9812_DIAGS_BOARD_INFO_ADDR + offset);
+-	cmd.u.flash_data_info.numbytes = cpu_to_le16(buf_size);
++	cmd->u.flash_data_info.numbytes = cpu_to_le16(buf_size);
  
- 	hso_create_rfkill(hso_dev, interface);
+ 	/* DT9812 only responds to 32 byte writes!! */
+ 	ret = usb_bulk_msg(usb, usb_sndbulkpipe(usb, devpriv->cmd_wr.addr),
+-			   &cmd, 32, &count, DT9812_USB_TIMEOUT);
++			   cmd, sizeof(*cmd), &count, DT9812_USB_TIMEOUT);
+ 	if (ret)
+-		return ret;
++		goto out;
++
++	ret = usb_bulk_msg(usb, usb_rcvbulkpipe(usb, devpriv->cmd_rd.addr),
++			   tbuf, buf_size, &count, DT9812_USB_TIMEOUT);
++	if (!ret) {
++		if (count == buf_size)
++			memcpy(buf, tbuf, buf_size);
++		else
++			ret = -EREMOTEIO;
++	}
++out:
++	kfree(tbuf);
+ 
+-	return usb_bulk_msg(usb, usb_rcvbulkpipe(usb, devpriv->cmd_rd.addr),
+-			    buf, buf_size, &count, DT9812_USB_TIMEOUT);
++	return ret;
+ }
+ 
+ static int dt9812_read_multiple_registers(struct comedi_device *dev,
+@@ -270,22 +291,42 @@ static int dt9812_read_multiple_register
+ {
+ 	struct usb_device *usb = comedi_to_usb_dev(dev);
+ 	struct dt9812_private *devpriv = dev->private;
+-	struct dt9812_usb_cmd cmd;
++	struct dt9812_usb_cmd *cmd;
+ 	int i, count, ret;
++	size_t buf_size;
++	void *buf;
++
++	buf_size = max_t(size_t, sizeof(*cmd), reg_count);
++
++	buf = kzalloc(buf_size, GFP_KERNEL);
++	if (!buf)
++		return -ENOMEM;
++
++	cmd = buf;
+ 
+-	cmd.cmd = cpu_to_le32(DT9812_R_MULTI_BYTE_REG);
+-	cmd.u.read_multi_info.count = reg_count;
++	cmd->cmd = cpu_to_le32(DT9812_R_MULTI_BYTE_REG);
++	cmd->u.read_multi_info.count = reg_count;
+ 	for (i = 0; i < reg_count; i++)
+-		cmd.u.read_multi_info.address[i] = address[i];
++		cmd->u.read_multi_info.address[i] = address[i];
+ 
+ 	/* DT9812 only responds to 32 byte writes!! */
+ 	ret = usb_bulk_msg(usb, usb_sndbulkpipe(usb, devpriv->cmd_wr.addr),
+-			   &cmd, 32, &count, DT9812_USB_TIMEOUT);
++			   cmd, sizeof(*cmd), &count, DT9812_USB_TIMEOUT);
+ 	if (ret)
+-		return ret;
++		goto out;
+ 
+-	return usb_bulk_msg(usb, usb_rcvbulkpipe(usb, devpriv->cmd_rd.addr),
+-			    value, reg_count, &count, DT9812_USB_TIMEOUT);
++	ret = usb_bulk_msg(usb, usb_rcvbulkpipe(usb, devpriv->cmd_rd.addr),
++			   buf, reg_count, &count, DT9812_USB_TIMEOUT);
++	if (!ret) {
++		if (count == reg_count)
++			memcpy(value, buf, reg_count);
++		else
++			ret = -EREMOTEIO;
++	}
++out:
++	kfree(buf);
++
++	return ret;
+ }
+ 
+ static int dt9812_write_multiple_registers(struct comedi_device *dev,
+@@ -294,19 +335,27 @@ static int dt9812_write_multiple_registe
+ {
+ 	struct usb_device *usb = comedi_to_usb_dev(dev);
+ 	struct dt9812_private *devpriv = dev->private;
+-	struct dt9812_usb_cmd cmd;
++	struct dt9812_usb_cmd *cmd;
+ 	int i, count;
++	int ret;
+ 
+-	cmd.cmd = cpu_to_le32(DT9812_W_MULTI_BYTE_REG);
+-	cmd.u.read_multi_info.count = reg_count;
++	cmd = kzalloc(sizeof(*cmd), GFP_KERNEL);
++	if (!cmd)
++		return -ENOMEM;
++
++	cmd->cmd = cpu_to_le32(DT9812_W_MULTI_BYTE_REG);
++	cmd->u.read_multi_info.count = reg_count;
+ 	for (i = 0; i < reg_count; i++) {
+-		cmd.u.write_multi_info.write[i].address = address[i];
+-		cmd.u.write_multi_info.write[i].value = value[i];
++		cmd->u.write_multi_info.write[i].address = address[i];
++		cmd->u.write_multi_info.write[i].value = value[i];
+ 	}
+ 
+ 	/* DT9812 only responds to 32 byte writes!! */
+-	return usb_bulk_msg(usb, usb_sndbulkpipe(usb, devpriv->cmd_wr.addr),
+-			    &cmd, 32, &count, DT9812_USB_TIMEOUT);
++	ret = usb_bulk_msg(usb, usb_sndbulkpipe(usb, devpriv->cmd_wr.addr),
++			   cmd, sizeof(*cmd), &count, DT9812_USB_TIMEOUT);
++	kfree(cmd);
++
++	return ret;
+ }
+ 
+ static int dt9812_rmw_multiple_registers(struct comedi_device *dev,
+@@ -315,17 +364,25 @@ static int dt9812_rmw_multiple_registers
+ {
+ 	struct usb_device *usb = comedi_to_usb_dev(dev);
+ 	struct dt9812_private *devpriv = dev->private;
+-	struct dt9812_usb_cmd cmd;
++	struct dt9812_usb_cmd *cmd;
+ 	int i, count;
++	int ret;
++
++	cmd = kzalloc(sizeof(*cmd), GFP_KERNEL);
++	if (!cmd)
++		return -ENOMEM;
+ 
+-	cmd.cmd = cpu_to_le32(DT9812_RMW_MULTI_BYTE_REG);
+-	cmd.u.rmw_multi_info.count = reg_count;
++	cmd->cmd = cpu_to_le32(DT9812_RMW_MULTI_BYTE_REG);
++	cmd->u.rmw_multi_info.count = reg_count;
+ 	for (i = 0; i < reg_count; i++)
+-		cmd.u.rmw_multi_info.rmw[i] = rmw[i];
++		cmd->u.rmw_multi_info.rmw[i] = rmw[i];
+ 
+ 	/* DT9812 only responds to 32 byte writes!! */
+-	return usb_bulk_msg(usb, usb_sndbulkpipe(usb, devpriv->cmd_wr.addr),
+-			    &cmd, 32, &count, DT9812_USB_TIMEOUT);
++	ret = usb_bulk_msg(usb, usb_sndbulkpipe(usb, devpriv->cmd_wr.addr),
++			   cmd, sizeof(*cmd), &count, DT9812_USB_TIMEOUT);
++	kfree(cmd);
++
++	return ret;
+ }
+ 
+ static int dt9812_digital_in(struct comedi_device *dev, u8 *bits)
 
 
