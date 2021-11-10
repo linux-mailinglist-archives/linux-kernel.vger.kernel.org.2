@@ -2,145 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B128F44C2F3
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 15:29:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F50044C2F5
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 15:30:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231967AbhKJOcO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Nov 2021 09:32:14 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:60939 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231558AbhKJOcK (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Nov 2021 09:32:10 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1636554562;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=bnca2yMtA4WzvVxShB8WJkPxX9FUiW0h7CO30+UcGxs=;
-        b=HeG1niTYkeOL0vTCWVJalnrrrir8Yre0033LK+i1oqBMDTyyl1kX6GPgTTi4JNZCpck2C4
-        VQKV//nAgnLhC1IDx+tK03cLthw2JupoSkBs3Dhxe7LH18iuhDQxdFj4ugqQE0sxWGDLsx
-        clSlBKg9Xex290+JNR7PME1D/hwt7PI=
-Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
- [209.85.128.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-480-BIJ310nfPrSL4nvJQ_qAhQ-1; Wed, 10 Nov 2021 09:29:21 -0500
-X-MC-Unique: BIJ310nfPrSL4nvJQ_qAhQ-1
-Received: by mail-wm1-f69.google.com with SMTP id k5-20020a7bc3050000b02901e081f69d80so1184173wmj.8
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Nov 2021 06:29:21 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=bnca2yMtA4WzvVxShB8WJkPxX9FUiW0h7CO30+UcGxs=;
-        b=Kh934ADtaxMaRWLfmYghrVOcOpDshZS0u4QrpJjaX9FCCkSKv7Y2y60c2jJ1lauPN1
-         k6vYWFyS3uXq1ufHJkTY97aowzY+/Xe9aNAFSo3RTmdYTmQw4tniE/oLV96AJByMjLMM
-         uO889om5u+kc5I/D5Ccvsjofr0tOeoKsPcKbmcoabuONj1HL05c3JQQtCsQBWxWnWTq1
-         gmMbJ0ih9kVGvrhHzMZor1dMnUByeNQmYnyEpnUrkQgw76jc+YY8J0t2VHkp/9HA6bjj
-         Vn3zZKoZoA28wsZMNyfdRsj/AjQVkAM6Jk9PCFFBNKPqT43QdplYb3+cwH0mIjGNgKuV
-         MPCA==
-X-Gm-Message-State: AOAM531M7b+iI+sZtjUonDJ16ET96O61R/XXA3JjRJMO7vd/pHnVk9ZA
-        Dzr9Lo5bKDmaUgdV+KpSf5THMoXVjVDabT3d1o0LML+hlbbynRUpHED7YYw6cIEsZ4lyJUOiFkh
-        sjliZTUBjpSzjck5g1QJTGfdC
-X-Received: by 2002:adf:f10d:: with SMTP id r13mr180076wro.414.1636554560272;
-        Wed, 10 Nov 2021 06:29:20 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJz2szMrbPauSa/I+sU8autgCEFlMAC/W1iydquyymlOm2eFXJw326dRVjIhcOSCJVvTEJzr0A==
-X-Received: by 2002:adf:f10d:: with SMTP id r13mr180037wro.414.1636554560015;
-        Wed, 10 Nov 2021 06:29:20 -0800 (PST)
-Received: from ?IPv6:2a01:e0a:59e:9d80:527b:9dff:feef:3874? ([2a01:e0a:59e:9d80:527b:9dff:feef:3874])
-        by smtp.gmail.com with ESMTPSA id o4sm23362wry.80.2021.11.10.06.29.18
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 10 Nov 2021 06:29:19 -0800 (PST)
-Subject: Re: [PATCH v4 00/21] Support SDEI Virtualization
-To:     Gavin Shan <gshan@redhat.com>, kvmarm@lists.cs.columbia.edu
-Cc:     maz@kernel.org, linux-kernel@vger.kernel.org,
-        Jonathan.Cameron@huawei.com, pbonzini@redhat.com, will@kernel.org
-References: <20210815001352.81927-1-gshan@redhat.com>
- <eee7eeb2-cedf-e52f-1e5f-403d9edabd94@redhat.com>
-From:   Eric Auger <eauger@redhat.com>
-Message-ID: <7f5e86dd-b38d-8699-58bd-35db78ec1b7a@redhat.com>
-Date:   Wed, 10 Nov 2021 15:29:17 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.1
+        id S232149AbhKJOc5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Nov 2021 09:32:57 -0500
+Received: from mail.kernel.org ([198.145.29.99]:38970 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232041AbhKJOc4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Nov 2021 09:32:56 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPS id 9362D61107;
+        Wed, 10 Nov 2021 14:30:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1636554608;
+        bh=Y5tNTXBw5v8jZusqMsW1ANBlY5U4Ik9/H+BSPK/jB5Y=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=hnfXy6Vl/UbochV4b5pgmus3w7h7K8tED7GbnOfqa7xbF9pTZ1b6+gkC5Q1C6JtwE
+         xTEhQytCVkhEmM1/rIOP7GfYmZx6N1np+j3FmZLcoScGwg8v9HiJ9B1zPjQh/tbiOc
+         Yq9HtQK2oH7j6PeDbfgKxiQzy8qmOprRnq/XcTm3rzVaIbB7kZJzBpcQyJ0MgGeIrI
+         0tl7+QxOvxebljoiB305VhWkDynncfMG3PDWr3MEcqj2mlqYFb2PALZ+YJGHM+ziLQ
+         +8QZYEtY4P2Cr3FI74eZGs/eVE5gLKNNTz05H1lVz6Suc2QbFPQz8NzpB/lM8l6bt2
+         OIFmV0bW/96Wg==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 85E7860A6B;
+        Wed, 10 Nov 2021 14:30:08 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-In-Reply-To: <eee7eeb2-cedf-e52f-1e5f-403d9edabd94@redhat.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
 Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH net 0/8] net: hns3: add some fixes for -net
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <163655460854.14356.13696488352742404658.git-patchwork-notify@kernel.org>
+Date:   Wed, 10 Nov 2021 14:30:08 +0000
+References: <20211110134256.25025-1-huangguangbin2@huawei.com>
+In-Reply-To: <20211110134256.25025-1-huangguangbin2@huawei.com>
+To:     Guangbin Huang <huangguangbin2@huawei.com>
+Cc:     davem@davemloft.net, kuba@kernel.org, wangjie125@huawei.com,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        lipeng321@huawei.com, chenhao288@hisilicon.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Gavin,
+Hello:
 
-On 8/15/21 2:19 AM, Gavin Shan wrote:
-> On 8/15/21 10:13 AM, Gavin Shan wrote:
->> This series intends to virtualize Software Delegated Exception Interface
->> (SDEI), which is defined by DEN0054A. It allows the hypervisor to deliver
->> NMI-alike event to guest and it's needed by asynchronous page fault to
->> deliver page-not-present notification from hypervisor to guest. The code
->> and the required qemu changes can be found from:
->>
->>     https://developer.arm.com/documentation/den0054/latest
->>     https://github.com/gwshan/linux    ("kvm/arm64_sdei")
->>     https://github.com/gwshan/qemu     ("kvm/arm64_sdei")
->>
->> The SDEI event is identified by a 32-bits number. Bits[31:24] are used
->> to indicate the SDEI event properties while bits[23:0] are identifying
->> the unique number. The implementation takes bits[23:22] to indicate the
->> owner of the SDEI event. For example, those SDEI events owned by KVM
->> should have these two bits set to 0b01. Besides, the implementation
->> supports SDEI events owned by KVM only.
->>
->> The design is pretty straightforward and the implementation is just
->> following the SDEI specification, to support the defined SMCCC intefaces,
->> except the IRQ binding stuff. There are several data structures
->> introduced.
->> Some of the objects have to be migrated by VMM. So their definitions are
->> split up for VMM to include the corresponding states for migration.
->>
->>     struct kvm_sdei_kvm
->>        Associated with VM and used to track the KVM exposed SDEI events
->>        and those registered by guest.
->>     struct kvm_sdei_vcpu
->>        Associated with vCPU and used to track SDEI event delivery. The
->>        preempted context is saved prior to the delivery and restored
->>        after that.
->>     struct kvm_sdei_event
->>        SDEI events exposed by KVM so that guest can register and enable.
->>     struct kvm_sdei_kvm_event
->>        SDEI events that have been registered by guest.
->>     struct kvm_sdei_vcpu_event
->>        SDEI events that have been queued to specific vCPU for delivery.
->>
->> The series is organized as below:
->>
->>     PATCH[01]    Introduces template for smccc_get_argx()
->>     PATCH[02]    Introduces the data structures and infrastructure
->>     PATCH[03-14] Supports various SDEI related hypercalls
->>     PATCH[15]    Supports SDEI event notification
->>     PATCH[16-17] Introduces ioctl command for migration
->>     PATCH[18-19] Supports SDEI event injection and cancellation
->>     PATCH[20]    Exports SDEI capability
->>     PATCH[21]    Adds self-test case for SDEI virtualization
->>
+This series was applied to netdev/net.git (master)
+by David S. Miller <davem@davemloft.net>:
+
+On Wed, 10 Nov 2021 21:42:48 +0800 you wrote:
+> This series adds some fixes for the HNS3 ethernet driver.
+> 
+> Guangbin Huang (4):
+>   net: hns3: fix failed to add reuse multicast mac addr to hardware when
+>     mc mac table is full
+>   net: hns3: fix some mac statistics is always 0 in device version V2
+>   net: hns3: remove check VF uc mac exist when set by PF
+>   net: hns3: allow configure ETS bandwidth of all TCs
 > 
 > [...]
-> 
-> I explicitly copied James Morse and Mark Rutland when posting the series,
-> but something unknown went wrong. I'm including them here to avoid
-> reposting the whole series.
-I don't see James nor Mark included here either
 
-Eric
-> 
-> Thanks,
-> Gavin
-> 
-> _______________________________________________
-> kvmarm mailing list
-> kvmarm@lists.cs.columbia.edu
-> https://lists.cs.columbia.edu/mailman/listinfo/kvmarm
-> 
+Here is the summary with links:
+  - [net,1/8] net: hns3: fix failed to add reuse multicast mac addr to hardware when mc mac table is full
+    https://git.kernel.org/netdev/net/c/3b4c6566c158
+  - [net,2/8] net: hns3: fix ROCE base interrupt vector initialization bug
+    https://git.kernel.org/netdev/net/c/beb27ca451a5
+  - [net,3/8] net: hns3: fix pfc packet number incorrect after querying pfc parameters
+    https://git.kernel.org/netdev/net/c/0b653a81a26d
+  - [net,4/8] net: hns3: sync rx ring head in echo common pull
+    https://git.kernel.org/netdev/net/c/3b6db4a0492b
+  - [net,5/8] net: hns3: fix kernel crash when unload VF while it is being reset
+    https://git.kernel.org/netdev/net/c/e140c7983e30
+  - [net,6/8] net: hns3: fix some mac statistics is always 0 in device version V2
+    https://git.kernel.org/netdev/net/c/1122eac19476
+  - [net,7/8] net: hns3: remove check VF uc mac exist when set by PF
+    https://git.kernel.org/netdev/net/c/91fcc79bff40
+  - [net,8/8] net: hns3: allow configure ETS bandwidth of all TCs
+    https://git.kernel.org/netdev/net/c/688db0c7a4a6
+
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
 
