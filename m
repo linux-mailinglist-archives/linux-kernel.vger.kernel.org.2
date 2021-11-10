@@ -2,61 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DA1A144BA68
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 03:39:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 10BC744BA6B
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 03:40:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230011AbhKJCly (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Nov 2021 21:41:54 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51960 "EHLO
+        id S230020AbhKJCnW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Nov 2021 21:43:22 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52286 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229717AbhKJClx (ORCPT
+        with ESMTP id S229717AbhKJCnV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Nov 2021 21:41:53 -0500
-Received: from mail-pf1-x42e.google.com (mail-pf1-x42e.google.com [IPv6:2607:f8b0:4864:20::42e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC532C061764;
-        Tue,  9 Nov 2021 18:39:06 -0800 (PST)
-Received: by mail-pf1-x42e.google.com with SMTP id n85so1246285pfd.10;
-        Tue, 09 Nov 2021 18:39:06 -0800 (PST)
+        Tue, 9 Nov 2021 21:43:21 -0500
+Received: from mail-pj1-x102b.google.com (mail-pj1-x102b.google.com [IPv6:2607:f8b0:4864:20::102b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 70D5AC061764;
+        Tue,  9 Nov 2021 18:40:34 -0800 (PST)
+Received: by mail-pj1-x102b.google.com with SMTP id gf14-20020a17090ac7ce00b001a7a2a0b5c3so346677pjb.5;
+        Tue, 09 Nov 2021 18:40:34 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=Mkk7gNnp0YbcgFN+jbyPPP0eQtmzhbTwC6PXKFwoF30=;
-        b=KL7KVnMFCClji6KlA9p7MuR0LxCDQRRL+NPJNYdld0H4EkWwSNJGWhvnPM8qHsyPzB
-         aGT6R98M2BSxUTnGmdOz9rKuRZu1aLYsINvOX62Kh1NKe6edOJz+sDlI9AVvjwd7VGdY
-         b9NKPcR4EciR10xM6u43Yd2t+BeFErnT3KW714lBG0DS7twp8Q76vvQVQMsag34ceNDi
-         3CP6BWq2dSFQskCMGIsG5uBoRtoH0LbAv2xo6okuRl3QEbSLdFhlj8yB8du3Mz4rmHTw
-         NqOYd54LQj9wN/IoRzotr9vCMzwPNzCyIHLHHwtgMPfT07pAt/AlJevjvaUAASKBpP60
-         oD4g==
+        bh=yK8tf+b3N+A2kTTCczmEPv1PnBms4K5YZkWqOi0Jnp4=;
+        b=K/JgB3VrqU0y907Q/ElTo0Bpg/CKpq7MDHa1EdGLt6taS2XIaTkhJxYUfeFDRJ4erm
+         SeDOzfqwRRP6emZIQ1Pijz9utNg7JrOG3OHUSnCggxDu/zNvpwF2nSZu+hDtyVwzWyyI
+         rqUzc1QmtGGgb8MJE3QD/ZV4Ow1WyPd1jDB6VyFy7ti2bzF0J9q/uJgQsj4k+i61UacE
+         GbCpSu0fTp487wpJAXAGhvJ9ep/pTriogzE3SJI10+0hBt2KtO/0q3S0Ib2h5MC+vWv+
+         Wy6x5j4ig4kf/PatsYoHlOHy6TwMZFUiSNbQSy3Woxu2bRWbPIQM5ir+7lapei64uomI
+         aYmQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=Mkk7gNnp0YbcgFN+jbyPPP0eQtmzhbTwC6PXKFwoF30=;
-        b=c17XimLUrvbk6ZZrVSISwD84wSL+EmPDTYHacz7Kfc99vg3mOm3upWpahyrQMDre8x
-         gqKY7jv8XJIW9vqNGXJAs0ThkRTsAvgHVWj8CAi4GeMrOOtduAe6O2rKDEVUrnhM7GWW
-         yENysgTDwfAzoZLAXM5Byw9qsle54YGq3rJSQjEtzNUiEH1FzrbWPwPJNU2sx/d2nPfq
-         uXjG7qxB7pOHdokpN8AAqGEDdb+WZcJO3wufMIHrJYj3IEzmcSJXGRy2nUP4VjjQKoUf
-         Rw9IUtqkLEYVq9SoXVnShRWiC5mq2bT5OxdodFtbJvLLlazv2YAibT6iBrQ/O0SMLWFn
-         vBtA==
-X-Gm-Message-State: AOAM531LcdyOl01NR9VCIpE/BwX8/DTH23TeVuRrnQm4ckoS1mNnAjid
-        QSR5mLRd2biiZ744NcW2OV1rhQ9ArA4=
-X-Google-Smtp-Source: ABdhPJxgLJOQnDEmsTET+jLnbw+6l4UJubpySbki3xtlwreUujDvyjgy75RCan+NVJjNvFtI+QTJOA==
-X-Received: by 2002:a05:6a00:1693:b0:44c:64a3:d318 with SMTP id k19-20020a056a00169300b0044c64a3d318mr13547511pfc.81.1636511946240;
-        Tue, 09 Nov 2021 18:39:06 -0800 (PST)
+        bh=yK8tf+b3N+A2kTTCczmEPv1PnBms4K5YZkWqOi0Jnp4=;
+        b=pc819MUs1EvilLwAp1cMVAFOTMXNyK6DUJAr7X7nRyUwKPDwjl2H524WJkAwteu/RQ
+         fCC1Gowtje7AMa2RAu6c4NV0ga5ueQbw33hUKpZOALD20d3DKl2oLuCRm2yahrj7l9BT
+         KjGFPag6Wi2SVHQ9jYY32vPlVH+1lEnzitsZjSY0fCH2PwygtPqWSAfCmMEh2BRQY8GP
+         jdcLyJa1qwitFmkLw2GMhd+9QGTm2wePNElyuGxs4JdFT4QQ2b3o94qXHRY/pNPk/b7j
+         bMLfecwa9NrKV36ExKDnvLw7aoOKlK3k5QSdflscC1a+winsOYpBv8IjzO2OQ3CZVIpi
+         UO7A==
+X-Gm-Message-State: AOAM530DMaTpSNBdcqrlV1kQi8WEcZfWOWgRIbxvuVl8TL0mURZF2YZ2
+        qre+nkCGA2wVmgowh25btuQ=
+X-Google-Smtp-Source: ABdhPJzsyUO0t0QbjXLAGh7rjMEDgFSQKWlVNNr5f5oCf9Sb5QqFOtLuUemzva4UmPg0WPMMazk4gw==
+X-Received: by 2002:a17:903:22c6:b0:141:fac1:b722 with SMTP id y6-20020a17090322c600b00141fac1b722mr12612172plg.23.1636512033976;
+        Tue, 09 Nov 2021 18:40:33 -0800 (PST)
 Received: from localhost.localdomain ([193.203.214.57])
-        by smtp.gmail.com with ESMTPSA id k1sm3715889pjj.54.2021.11.09.18.39.04
+        by smtp.gmail.com with ESMTPSA id c20sm21587957pfl.201.2021.11.09.18.40.31
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 09 Nov 2021 18:39:06 -0800 (PST)
+        Tue, 09 Nov 2021 18:40:33 -0800 (PST)
 From:   cgel.zte@gmail.com
 X-Google-Original-From: yao.jing2@zte.com.cn
-To:     hare@kernel.org
-Cc:     jejb@linux.ibm.com, martin.petersen@oracle.com,
-        linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Jing Yao <yao.jing2@zte.com.cn>, Zeal Robot <zealci@zte.com.cn>
-Subject: [PATCH] scsi: myrs: Replace snprintf in show functions with sysfs_emit
-Date:   Wed, 10 Nov 2021 02:39:01 +0000
-Message-Id: <20211110023901.135804-1-yao.jing2@zte.com.cn>
+To:     johan@kernel.org
+Cc:     gregkh@linuxfoundation.org, jirislaby@kernel.org, joel@jms.id.au,
+        andrew@aj.id.au, zev@bewilderbeest.net, yao.jing2@zte.com.cn,
+        linux-serial@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-aspeed@lists.ozlabs.org, linux-kernel@vger.kernel.org,
+        Zeal Robot <zealci@zte.com.cn>
+Subject: [PATCH] serial: 8250_aspeed_vuart: Replace snprintf in show functions with  sysfs_emit
+Date:   Wed, 10 Nov 2021 02:40:28 +0000
+Message-Id: <20211110024028.135887-1-yao.jing2@zte.com.cn>
 X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -76,135 +78,40 @@ sense.
 Reported-by: Zeal Robot <zealci@zte.com.cn>
 Signed-off-by: Jing Yao <yao.jing2@zte.com.cn>
 ---
- drivers/scsi/myrs.c | 32 ++++++++++++++++----------------
- 1 file changed, 16 insertions(+), 16 deletions(-)
+ drivers/tty/serial/8250/8250_aspeed_vuart.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/scsi/myrs.c b/drivers/scsi/myrs.c
-index 6ea323e9a2e3..22cb819c0c06 100644
---- a/drivers/scsi/myrs.c
-+++ b/drivers/scsi/myrs.c
-@@ -941,7 +941,7 @@ static ssize_t raid_state_show(struct device *dev,
- 	int ret;
+diff --git a/drivers/tty/serial/8250/8250_aspeed_vuart.c b/drivers/tty/serial/8250/8250_aspeed_vuart.c
+index 2350fb3bb5e4..36c39b8ea7af 100644
+--- a/drivers/tty/serial/8250/8250_aspeed_vuart.c
++++ b/drivers/tty/serial/8250/8250_aspeed_vuart.c
+@@ -82,7 +82,7 @@ static ssize_t lpc_address_show(struct device *dev,
+ 	addr = (aspeed_vuart_readb(vuart, ASPEED_VUART_ADDRH) << 8) |
+ 		(aspeed_vuart_readb(vuart, ASPEED_VUART_ADDRL));
  
- 	if (!sdev->hostdata)
--		return snprintf(buf, 16, "Unknown\n");
-+		return sysfs_emit(buf, "Unknown\n");
- 
- 	if (sdev->channel >= cs->ctlr_info->physchan_present) {
- 		struct myrs_ldev_info *ldev_info = sdev->hostdata;
-@@ -949,9 +949,9 @@ static ssize_t raid_state_show(struct device *dev,
- 
- 		name = myrs_devstate_name(ldev_info->dev_state);
- 		if (name)
--			ret = snprintf(buf, 32, "%s\n", name);
-+			ret = sysfs_emit(buf, "%s\n", name);
- 		else
--			ret = snprintf(buf, 32, "Invalid (%02X)\n",
-+			ret = sysfs_emit(buf, "Invalid (%02X)\n",
- 				       ldev_info->dev_state);
- 	} else {
- 		struct myrs_pdev_info *pdev_info;
-@@ -960,9 +960,9 @@ static ssize_t raid_state_show(struct device *dev,
- 		pdev_info = sdev->hostdata;
- 		name = myrs_devstate_name(pdev_info->dev_state);
- 		if (name)
--			ret = snprintf(buf, 32, "%s\n", name);
-+			ret = sysfs_emit(buf, "%s\n", name);
- 		else
--			ret = snprintf(buf, 32, "Invalid (%02X)\n",
-+			ret = sysfs_emit(buf, "Invalid (%02X)\n",
- 				       pdev_info->dev_state);
- 	}
- 	return ret;
-@@ -1060,7 +1060,7 @@ static ssize_t raid_level_show(struct device *dev,
- 	const char *name = NULL;
- 
- 	if (!sdev->hostdata)
--		return snprintf(buf, 16, "Unknown\n");
-+		return sysfs_emit(buf, "Unknown\n");
- 
- 	if (sdev->channel >= cs->ctlr_info->physchan_present) {
- 		struct myrs_ldev_info *ldev_info;
-@@ -1068,13 +1068,13 @@ static ssize_t raid_level_show(struct device *dev,
- 		ldev_info = sdev->hostdata;
- 		name = myrs_raid_level_name(ldev_info->raid_level);
- 		if (!name)
--			return snprintf(buf, 32, "Invalid (%02X)\n",
-+			return sysfs_emit(buf, "Invalid (%02X)\n",
- 					ldev_info->dev_state);
- 
- 	} else
- 		name = myrs_raid_level_name(MYRS_RAID_PHYSICAL);
- 
--	return snprintf(buf, 32, "%s\n", name);
-+	return sysfs_emit(buf, "%s\n", name);
- }
- static DEVICE_ATTR_RO(raid_level);
- 
-@@ -1088,7 +1088,7 @@ static ssize_t rebuild_show(struct device *dev,
- 	unsigned char status;
- 
- 	if (sdev->channel < cs->ctlr_info->physchan_present)
--		return snprintf(buf, 32, "physical device - not rebuilding\n");
-+		return sysfs_emit(buf, "physical device - not rebuilding\n");
- 
- 	ldev_info = sdev->hostdata;
- 	ldev_num = ldev_info->ldev_num;
-@@ -1100,11 +1100,11 @@ static ssize_t rebuild_show(struct device *dev,
- 		return -EIO;
- 	}
- 	if (ldev_info->rbld_active) {
--		return snprintf(buf, 32, "rebuilding block %zu of %zu\n",
-+		return sysfs_emit(buf, "rebuilding block %zu of %zu\n",
- 				(size_t)ldev_info->rbld_lba,
- 				(size_t)ldev_info->cfg_devsize);
- 	} else
--		return snprintf(buf, 32, "not rebuilding\n");
-+		return sysfs_emit(buf, "not rebuilding\n");
+-	return snprintf(buf, PAGE_SIZE - 1, "0x%x\n", addr);
++	return sysfs_emit(buf, "0x%x\n", addr);
  }
  
- static ssize_t rebuild_store(struct device *dev,
-@@ -1192,7 +1192,7 @@ static ssize_t consistency_check_show(struct device *dev,
- 	unsigned short ldev_num;
+ static int aspeed_vuart_set_lpc_address(struct aspeed_vuart *vuart, u32 addr)
+@@ -124,7 +124,7 @@ static ssize_t sirq_show(struct device *dev,
+ 	reg &= ASPEED_VUART_GCRB_HOST_SIRQ_MASK;
+ 	reg >>= ASPEED_VUART_GCRB_HOST_SIRQ_SHIFT;
  
- 	if (sdev->channel < cs->ctlr_info->physchan_present)
--		return snprintf(buf, 32, "physical device - not checking\n");
-+		return sysfs_emit(buf, "physical device - not checking\n");
- 
- 	ldev_info = sdev->hostdata;
- 	if (!ldev_info)
-@@ -1200,11 +1200,11 @@ static ssize_t consistency_check_show(struct device *dev,
- 	ldev_num = ldev_info->ldev_num;
- 	myrs_get_ldev_info(cs, ldev_num, ldev_info);
- 	if (ldev_info->cc_active)
--		return snprintf(buf, 32, "checking block %zu of %zu\n",
-+		return sysfs_emit(buf, "checking block %zu of %zu\n",
- 				(size_t)ldev_info->cc_lba,
- 				(size_t)ldev_info->cfg_devsize);
- 	else
--		return snprintf(buf, 32, "not checking\n");
-+		return sysfs_emit(buf, "not checking\n");
+-	return snprintf(buf, PAGE_SIZE - 1, "%u\n", reg);
++	return sysfs_emit(buf, "%u\n", reg);
  }
  
- static ssize_t consistency_check_store(struct device *dev,
-@@ -1305,7 +1305,7 @@ static ssize_t serial_show(struct device *dev,
+ static int aspeed_vuart_set_sirq(struct aspeed_vuart *vuart, u32 sirq)
+@@ -171,7 +171,7 @@ static ssize_t sirq_polarity_show(struct device *dev,
+ 	reg = aspeed_vuart_readb(vuart, ASPEED_VUART_GCRA);
+ 	reg &= ASPEED_VUART_GCRA_HOST_SIRQ_POLARITY;
  
- 	memcpy(serial, cs->ctlr_info->serial_number, 16);
- 	serial[16] = '\0';
--	return snprintf(buf, 16, "%s\n", serial);
-+	return sysfs_emit(buf, "%s\n", serial);
+-	return snprintf(buf, PAGE_SIZE - 1, "%u\n", reg ? 1 : 0);
++	return sysfs_emit(buf, "%u\n", reg ? 1 : 0);
  }
- static DEVICE_ATTR_RO(serial);
  
-@@ -1315,7 +1315,7 @@ static ssize_t ctlr_num_show(struct device *dev,
- 	struct Scsi_Host *shost = class_to_shost(dev);
- 	struct myrs_hba *cs = shost_priv(shost);
- 
--	return snprintf(buf, 20, "%d\n", cs->host->host_no);
-+	return sysfs_emit(buf, "%d\n", cs->host->host_no);
- }
- static DEVICE_ATTR_RO(ctlr_num);
- 
+ static void aspeed_vuart_set_sirq_polarity(struct aspeed_vuart *vuart,
 -- 
 2.25.1
 
