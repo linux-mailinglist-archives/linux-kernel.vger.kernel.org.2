@@ -2,105 +2,166 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 497A544BE81
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 11:22:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A79F344BE84
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 11:24:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231161AbhKJKZO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Nov 2021 05:25:14 -0500
-Received: from perceval.ideasonboard.com ([213.167.242.64]:49418 "EHLO
-        perceval.ideasonboard.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231126AbhKJKZN (ORCPT
+        id S231167AbhKJK1D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Nov 2021 05:27:03 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124]:34481 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230117AbhKJK1C (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Nov 2021 05:25:13 -0500
-Received: from [192.168.1.111] (91-158-153-130.elisa-laajakaista.fi [91.158.153.130])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 92509D8B;
-        Wed, 10 Nov 2021 11:22:21 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1636539742;
-        bh=Kb2mqQcYSIR30c1c/QCzqZNgi4OO/yDrYs6SnhNUIuQ=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=aPLuUzA685pqCn694mGfTKHYBiuVhIufJVoMO2GulmQVv36CE3Ox+BK4MACzJ+hDp
-         8oKRyKHUh5zgtOZOi+SmyS85U7loN3CDuB7b85TZSQgdx7YQjWP0lX8HRyKEE8Npcg
-         2Z+4dZxUZ3O9UinQJ7cGN0hnmawutZyeFLSpw6Y0=
-Subject: Re: [PATCH] drm/omap: increase DSS5 max tv pclk to 192MHz
-To:     Neil Armstrong <narmstrong@baylibre.com>
-Cc:     linux-omap@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org, khilman@baylibre.com,
-        Tomi Valkeinen <tomi.valkeinen@ti.com>
-References: <20211012133939.2145462-1-narmstrong@baylibre.com>
- <b0683f52-abde-cb11-c88c-dd05645945a0@baylibre.com>
-From:   Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
-Message-ID: <f6bc98f1-2a1e-1fd9-6efe-37193b835b0d@ideasonboard.com>
-Date:   Wed, 10 Nov 2021 12:22:18 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        Wed, 10 Nov 2021 05:27:02 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1636539854;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=1AM6xM7SxUCC79CInqY7ZFCL0tWuszI3QiZ+cxT6yto=;
+        b=eIJCVn+CpDDbIq2BiHls8ghjGIqz2aeS+mqjBHcjMBJOlNGnb642428sgznseSAM0h2SZe
+        Wcbtwm4w81bGZBc1FuBTHHUbYcJ43mWa09IqMOa9m1KFFvbzKiBMyqnO6FybMnpBuR8fVu
+        Iq0ysXL6Og9HHW2FNPiC0mSVxMvmjy8=
+Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
+ [209.85.221.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-361-z1rkDqilO3OMFFENwoYQ2Q-1; Wed, 10 Nov 2021 05:24:13 -0500
+X-MC-Unique: z1rkDqilO3OMFFENwoYQ2Q-1
+Received: by mail-wr1-f72.google.com with SMTP id k8-20020a5d5248000000b001763e7c9ce5so311213wrc.22
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Nov 2021 02:24:13 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:organization:in-reply-to
+         :content-transfer-encoding;
+        bh=1AM6xM7SxUCC79CInqY7ZFCL0tWuszI3QiZ+cxT6yto=;
+        b=6Ncw49cnxC8A0C3Do1w9IEbBqmbkqeDw6My8M+syqowPAsClk7vsyu2UX1wMAS0ii7
+         32xQhWjkMdHEkGm9PXC77oqWIN//r456UQ9P8Y1H7A1jQXhzaxZx0xi3RyqVr4XJoi5N
+         pthwFNSweIlPOELp/vGd6Ey9uRGgZnD7ZAqjQSNRlF47B4SPosOCJ5E6KUouhTbqkU1K
+         A8ZElOslV+o5ZCWtaRQhPG3cVEVxK6y4qS7+oO4M6NfenRV5tlpgJzZj99CisoHw8LgQ
+         sMI1kdZCP99XaI77QregVqGjyDTISw2c5pSmWcS5sAkQP1t6Uu+nAz7EQtrs8S6u4Yeq
+         /Mlw==
+X-Gm-Message-State: AOAM53380FOppLbsiQ3YCIBoExx90StwlkZ4pMhZkXBXAXv0mMY/eAU3
+        12tyFG+AMYQPLX/H55a9uhhLSkLAO0rZ2wIv0Odwo7/f4b9miqXXp26PB0As8ozFIpvlmucvZov
+        WOSKcVa6IfRBhiT08cMy6xdim
+X-Received: by 2002:a5d:6510:: with SMTP id x16mr18317957wru.2.1636539852584;
+        Wed, 10 Nov 2021 02:24:12 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJyX3A+4KVwXJvj7AxWl/jJg0VnnA5Opg1sFCSUSqSFzkdUXNL+FUnsAKgEfveOV4qc00zOx+g==
+X-Received: by 2002:a5d:6510:: with SMTP id x16mr18317927wru.2.1636539852386;
+        Wed, 10 Nov 2021 02:24:12 -0800 (PST)
+Received: from [192.168.3.132] (p5b0c604f.dip0.t-ipconnect.de. [91.12.96.79])
+        by smtp.gmail.com with ESMTPSA id p13sm5552185wmi.0.2021.11.10.02.24.11
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 10 Nov 2021 02:24:11 -0800 (PST)
+Message-ID: <8032a24c-3800-16e5-41b7-5565e74d3863@redhat.com>
+Date:   Wed, 10 Nov 2021 11:24:10 +0100
 MIME-Version: 1.0
-In-Reply-To: <b0683f52-abde-cb11-c88c-dd05645945a0@baylibre.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.2.0
+Subject: Re: [PATCH v4] mm: Add PM_HUGE_THP_MAPPING to /proc/pid/pagemap
 Content-Language: en-US
+To:     Peter Xu <peterx@redhat.com>
+Cc:     Mina Almasry <almasrymina@google.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        "Paul E . McKenney" <paulmckrcu@fb.com>,
+        Yu Zhao <yuzhao@google.com>, Jonathan Corbet <corbet@lwn.net>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Ivan Teterevkov <ivan.teterevkov@nutanix.com>,
+        Florian Schmidt <florian.schmidt@nutanix.com>,
+        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-mm@kvack.org
+References: <20211107235754.1395488-1-almasrymina@google.com>
+ <YYtuqsnOSxA44AUX@t490s> <c5ed86d0-8af6-f54f-e352-8871395ad62e@redhat.com>
+ <YYuCaNXikls/9JhS@t490s> <793685d2-be3f-9a74-c9a3-65c486e0ef1f@redhat.com>
+ <YYuJd9ZBQiY50dVs@xz-m1.local>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat
+In-Reply-To: <YYuJd9ZBQiY50dVs@xz-m1.local>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 09/11/2021 15:33, Neil Armstrong wrote:
-> Hi Tomi,
+On 10.11.21 09:57, Peter Xu wrote:
+> On Wed, Nov 10, 2021 at 09:30:50AM +0100, David Hildenbrand wrote:
+>> On 10.11.21 09:27, Peter Xu wrote:
+>>> On Wed, Nov 10, 2021 at 09:14:42AM +0100, David Hildenbrand wrote:
+>>>> On 10.11.21 08:03, Peter Xu wrote:
+>>>>> Hi, Mina,
+>>>>>
+>>>>> Sorry to comment late.
+>>>>>
+>>>>> On Sun, Nov 07, 2021 at 03:57:54PM -0800, Mina Almasry wrote:
+>>>>>> diff --git a/Documentation/admin-guide/mm/pagemap.rst b/Documentation/admin-guide/mm/pagemap.rst
+>>>>>> index fdc19fbc10839..8a0f0064ff336 100644
+>>>>>> --- a/Documentation/admin-guide/mm/pagemap.rst
+>>>>>> +++ b/Documentation/admin-guide/mm/pagemap.rst
+>>>>>> @@ -23,7 +23,8 @@ There are four components to pagemap:
+>>>>>>      * Bit  56    page exclusively mapped (since 4.2)
+>>>>>>      * Bit  57    pte is uffd-wp write-protected (since 5.13) (see
+>>>>>>        :ref:`Documentation/admin-guide/mm/userfaultfd.rst <userfaultfd>`)
+>>>>>> -    * Bits 57-60 zero
+>>>>>> +    * Bit  58    page is a huge (PMD size) THP mapping
+>>>>>> +    * Bits 59-60 zero
+>>>>>>      * Bit  61    page is file-page or shared-anon (since 3.5)
+>>>>>>      * Bit  62    page swapped
+>>>>>>      * Bit  63    page present
+>>>>>> diff --git a/fs/proc/task_mmu.c b/fs/proc/task_mmu.c
+>>>>>> index ad667dbc96f5c..6f1403f83b310 100644
+>>>>>> --- a/fs/proc/task_mmu.c
+>>>>>> +++ b/fs/proc/task_mmu.c
+>>>>>> @@ -1302,6 +1302,7 @@ struct pagemapread {
+>>>>>>  #define PM_SOFT_DIRTY		BIT_ULL(55)
+>>>>>>  #define PM_MMAP_EXCLUSIVE	BIT_ULL(56)
+>>>>>>  #define PM_UFFD_WP		BIT_ULL(57)
+>>>>>> +#define PM_HUGE_THP_MAPPING	BIT_ULL(58)
+>>>>>
+>>>>> The ending "_MAPPING" seems redundant to me, how about just call it "PM_THP" or
+>>>>> "PM_HUGE" (as THP also means HUGE already)?
+>>>>>
+>>>>> IMHO the core problem is about permission controls, and it seems to me we're
+>>>>> actually trying to workaround it by duplicating some information we have.. so
+>>>>> it's kind of a pity.  Totally not against this patch, but imho it'll be nicer
+>>>>> if it's the permission part that to be enhanced, rather than a new but slightly
+>>>>> duplicated interface.
+>>>>
+>>>> It's not a permission problem AFAIKS: even with permissions "changed",
+>>>> any attempt to use /proc/kpageflags is just racy. Let's not go down that
+>>>> path, it's really the wrong mechanism to export to random userspace.
+>>>
+>>> I agree it's racy, but IMHO that's fine.  These are hints for userspace to make
+>>> decisions, they cannot be always right.  Even if we fetch atomically and seeing
+>>> that this pte is swapped out, it can be quickly accessed at the same time and
+>>> it'll be in-memory again.  Only if we can freeze the whole pgtable but we
+>>> can't, so they can only be used as hints.
+>>
+>> Sorry, I don't think /proc/kpageflags (or exporting the PFNs to random
+>> users via /proc/self/pagemap) is the way to go.
+>>
+>> "Since Linux 4.0 only users with the CAP_SYS_ADMIN capability can get
+>> PFNs. In 4.0 and 4.1 opens by unprivileged fail with -EPERM.  Starting
+>> from 4.2 the PFN field is zeroed if the user does not have
+>> CAP_SYS_ADMIN. Reason: information about PFNs helps in exploiting
+>> Rowhammer vulnerability."
 > 
-> On 12/10/2021 15:39, Neil Armstrong wrote:
->> From: Tomi Valkeinen <tomi.valkeinen@ti.com>
->>
->> DSS5's maximum tv pclk rate (i.e. HDMI) is set to 186MHz, which comes
->> from the TRM (DPLL_HDMI_CLK1 frequency must be lower than 186 MHz). To
->> support DRA76's wide screen HDMI feature, we need to increase this
->> maximum rate.
->>
->> Testing shows that the PLL seems to work fine even with ~240MHz clocks,
->> and even the HDMI output at that clock is stable enough for monitors to
->> show a picture. This holds true for all DRA7 and AM5 SoCs (and probably
->> also for OMAP5).
->>
->> However, the highest we can go without big refactoring to the clocking
->> code is 192MHz, as that is the DSS func clock we get from the PRCM. So,
->> increase the max HDMI pixel clock to 192MHz for now, to allow some more
->> 2k+ modes to work.
->>
->> This patch never had a clear confirmation from HW people, but this
->> change stayed on production trees for multiple years without any report
->> on an eventual breakage.
->>
->> Signed-off-by: Tomi Valkeinen <tomi.valkeinen@ti.com>
->> Signed-off-by: Neil Armstrong <narmstrong@baylibre.com>
->> ---
->>   drivers/gpu/drm/omapdrm/dss/dispc.c | 2 +-
->>   1 file changed, 1 insertion(+), 1 deletion(-)
->>
->> Tomi,
->>
->> I slighly changed the commit message to point the fact this patch has been
->> used in production fort years without any sign of breakage.
->>
->> Neil
->>
->> diff --git a/drivers/gpu/drm/omapdrm/dss/dispc.c b/drivers/gpu/drm/omapdrm/dss/dispc.c
->> index 5619420cc2cc..3c4a4991e45a 100644
->> --- a/drivers/gpu/drm/omapdrm/dss/dispc.c
->> +++ b/drivers/gpu/drm/omapdrm/dss/dispc.c
->> @@ -4458,7 +4458,7 @@ static const struct dispc_features omap54xx_dispc_feats = {
->>   	.mgr_width_max		=	4096,
->>   	.mgr_height_max		=	4096,
->>   	.max_lcd_pclk		=	170000000,
->> -	.max_tv_pclk		=	186000000,
->> +	.max_tv_pclk		=	192000000,
->>   	.max_downscale		=	4,
->>   	.max_line_width		=	2048,
->>   	.min_pcd		=	1,
->>
->> base-commit: e4e737bb5c170df6135a127739a9e6148ee3da82
->>
+> IMHO these are two problems that you mentioned.  That's also what I was
+> wondering about: could the app be granted with CAP_SYS_ADMIN then?
 > 
-> Gentle ping,
+> I am not sure whether that'll work well with /proc/kpage* though, as it's by
+> default 0400.  So perhaps we need to manual adjust the file permission too to
+> make sure the app can both access PFNs (with SYS_ADMIN) and the flags.  Totally
+> no expert on the permissions..
 
-Thanks, I'll apply this to drm-misc-next.
+Me too :)
 
-  Tomi
+IIRC changing permissions that was not an option -- which is why the
+first approach suggested a new /proc/self/pageflags. But I guess Mina
+can remind us (and eventually document all that in the patch description
+:) ).
+
+
+-- 
+Thanks,
+
+David / dhildenb
 
