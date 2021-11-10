@@ -2,140 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 20D3544C245
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 14:40:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0B0FE44C24A
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 14:42:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231959AbhKJNnO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Nov 2021 08:43:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59150 "EHLO
+        id S232047AbhKJNpY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Nov 2021 08:45:24 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59668 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231210AbhKJNnL (ORCPT
+        with ESMTP id S231460AbhKJNpX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Nov 2021 08:43:11 -0500
-Received: from mail-yb1-xb31.google.com (mail-yb1-xb31.google.com [IPv6:2607:f8b0:4864:20::b31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 67799C061764;
-        Wed, 10 Nov 2021 05:40:24 -0800 (PST)
-Received: by mail-yb1-xb31.google.com with SMTP id q74so6410624ybq.11;
-        Wed, 10 Nov 2021 05:40:24 -0800 (PST)
+        Wed, 10 Nov 2021 08:45:23 -0500
+Received: from mail-io1-xd2f.google.com (mail-io1-xd2f.google.com [IPv6:2607:f8b0:4864:20::d2f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7457DC061764
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Nov 2021 05:42:36 -0800 (PST)
+Received: by mail-io1-xd2f.google.com with SMTP id c3so2809724iob.6
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Nov 2021 05:42:36 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=t8z0LYFGE6DI0GYMpGpDh9ycQEL09twpw3cECR1Vgxg=;
-        b=Lphqzelmw/aq8+au0LafvSHcHqc6/axxJg4Qb53yDwy3F60/Ozf1/tAE5lx4cjlfah
-         rAOl8YcqG5TlLCvDijtepDIMJmp0LLBD+lj4UGWp018obtbWpc9mAtPf0+eH8PMvq6yj
-         xQn7vZ1vf0qO59acJ5rraIVChrgGVqRYLq9FfuOwQLBGKyLKxYAku2JJvF6aZJf2d5hm
-         WobeE8Epje/Y9JGosNz+J1kxcunf+5Py9A9JGvFuMY3wkN5tlTwHfXqxv1PjLYIT2bep
-         lvMQEs787bePQ7CUG+2HHKGcJd98MY8/V52VWk46JfOn2soeBxvJijnb4Qm3g4TnqllJ
-         mT8Q==
+        bh=v9i7u88nxI1XBqu3jYzX2JrdceQtSyBwNJT6G9SZhlY=;
+        b=Qhx7Lyhvm+zRU1KsuMiRU/K7+wVtKexGEM6FqHCHpi2ug/HL0UZzdQNY0cbr91720k
+         szZYTkUuZJ3zzq0sV690/b+UohoWPm0PS1XBkDSTAmatpJTvkOIK9Ee7l/9SfIjP+b5F
+         MbJb/4YpfSpQclGpuiTDbSHLQqLXFwfYOeV67b1tSNIwgrLa53r3xYQ+byWgmOq34QHa
+         6LC5H/e1BMUVr5oja4ZFEpcca9UmZ9azybGDfWLNG01I4zrP5ZoKLkPFK5qh+k13X9KM
+         3pNLCFFopYWoR0AQ9GKAKHT0IFDA4sRQMZH0PU2OYVh9zLvwaEf68vkxvbIWsZLQW7tX
+         geDA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=t8z0LYFGE6DI0GYMpGpDh9ycQEL09twpw3cECR1Vgxg=;
-        b=2agz+KrXV5EjRElaiXZByIbVqAmZbRgEpvzebwnPkzBjHdUBQC8IfUr+PW3+A8STx8
-         UhxVq5HpNt10YoZZmb7Y6fwMWrq5cQ24l6IuhGdWEMshtSz/vgYeiItpNomsgBS1SeMg
-         DFExg7qWA9QlMgZyHY5bHbsy5zaSobhk4O22O1jIyG5KHe0OWRLHsUPWCEDXyTJxHzTe
-         WiBg4D5lXezhL+U3dXuC6qD8hW8/6p01G5FpLx8gQEN72t7E8V8fH2A0OF8UCQ0wOqKD
-         x59IqqKBClQt1qebvt67YZnRvcxrlaBIJ1NU+84LOdZbsL+UwEwEribWhExGj2i4gLw4
-         1fdg==
-X-Gm-Message-State: AOAM530TbH4Ldf7iGP4ZWQdQOlDdI7H6XtQoEvW7WDTPGVvkT6N7cXm7
-        GFUpOsqCcT6D/m+yGLYq6wlhN5/cYVhD4j+f8mEzX4avYhk=
-X-Google-Smtp-Source: ABdhPJzj/O3r0ddby2+afMmLd143VEC/07nnzbWiC38BZrjVNn58H6kulJ/fPYZc315tVMeyCbCr66DTK3cPhL/c0Qw=
-X-Received: by 2002:a25:1c02:: with SMTP id c2mr18224314ybc.218.1636551623650;
- Wed, 10 Nov 2021 05:40:23 -0800 (PST)
+        bh=v9i7u88nxI1XBqu3jYzX2JrdceQtSyBwNJT6G9SZhlY=;
+        b=RcpcHODRetKxC9Zw926gsI9GGrjphHbgy+dH5me7oMw0SxfRFScwNGfG1BEwfKP2oX
+         nJTlJ68BoqH5VNaTNm7n5WCUTx/BAxQEMrEXdjlFRNKB6LKO/UubBduWMSkr3rullz0O
+         RJMyvaBqWxQdPL77mPOLLFp6TK7RLdSRoEjHKUaUh4ZqE37d//BsbJYHW2QkaoBD9kgv
+         TQB3Ci3hbfVbPdEsXtPHjMBvU7QKYDitauJ4axVUiPSNp3ddb4w9f4sKimm+zcl4HeiN
+         lar4hFZu/h6v5XKSLiu7NoJCQdCwmSx1cSTE19u9guYhKcgqUgGwFRvJc121pRxEt5Gm
+         bVyA==
+X-Gm-Message-State: AOAM531365xHjXb23jvPBFxfvPe9w+25ladcXgOUXqABL+6+mVjNxSCy
+        GxM/JM5UQ1noRZRykA2ihTFA1uzTGgXa3AI2yzA3cM/BzUQ=
+X-Google-Smtp-Source: ABdhPJx8k0gWxSHX2f9sM/iHyLVbZZnH8tCuIN3ZB89nv3YUII+HAv/a3VxYAYdcVzyV+qipzghbdpg2BB8CJFpazlM=
+X-Received: by 2002:a05:6638:4087:: with SMTP id m7mr403703jam.112.1636551755951;
+ Wed, 10 Nov 2021 05:42:35 -0800 (PST)
 MIME-Version: 1.0
-References: <20211029124437.20721-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
- <20211029124437.20721-6-prabhakar.mahadev-lad.rj@bp.renesas.com> <CAMuHMdXwJ043PuJnNU=L9+oN05ExjU-Km9CWBoXO9zqAVizByg@mail.gmail.com>
-In-Reply-To: <CAMuHMdXwJ043PuJnNU=L9+oN05ExjU-Km9CWBoXO9zqAVizByg@mail.gmail.com>
-From:   "Lad, Prabhakar" <prabhakar.csengg@gmail.com>
-Date:   Wed, 10 Nov 2021 13:39:57 +0000
-Message-ID: <CA+V-a8v6L6eFTVaCNO_gRxs4Yb0RCHyk1mmy7+r+hOp=ukLhBQ@mail.gmail.com>
-Subject: Re: [PATCH v2 5/5] pinctrl: renesas: pinctrl-rzg2l: Add support to
- get/set drive-strength and output-impedance-ohms
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
-        Biju Das <biju.das.jz@bp.renesas.com>
+References: <20211110114721.133808-1-alexs@kernel.org> <20211110124034.2574-1-sj@kernel.org>
+In-Reply-To: <20211110124034.2574-1-sj@kernel.org>
+From:   Alex Shi <seakeel@gmail.com>
+Date:   Wed, 10 Nov 2021 21:41:59 +0800
+Message-ID: <CAJy-Amky9AAap=mAzdae-92GFWzjzCXY20UOTA+L_kvWXMgPnw@mail.gmail.com>
+Subject: Re: [RFC PATCH] mm/damon: remove damon_lock
+To:     SeongJae Park <sj@kernel.org>
+Cc:     Alex Shi <alexs@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Geert,
-
-Thank you for the review.
-
-On Mon, Nov 8, 2021 at 3:40 PM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
+On Wed, Nov 10, 2021 at 8:40 PM SeongJae Park <sj@kernel.org> wrote:
 >
-> Hi Prabhakar,
+> Thank you for this patch, Alex!
 >
-> On Fri, Oct 29, 2021 at 2:45 PM Lad Prabhakar
-> <prabhakar.mahadev-lad.rj@bp.renesas.com> wrote:
-> > RZ/G2L supports two groups of pins Group-A and Group-B. For Group-A
-> > pins drive-strength can be configured and for Group-B output-impedance
-> > can be configured.
+> On Wed, 10 Nov 2021 19:47:21 +0800 alexs@kernel.org wrote:
+>
+> > From: Alex Shi <alexs@kernel.org>
 > >
-> > This patch splits PIN_CFG_IOLH macro to PIN_CFG_IOLH_A/B and adds
-> > support to get/set drive-strength and output-impedance-ohms for the
-> > supported pins.
-> >
-> > Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-> > Reviewed-by: Biju Das <biju.das.jz@bp.renesas.com>
+> > Variable nr_running_ctxs guards by damon_lock, but a lock for a int
+> > variable seems a bit heavy, a atomic_t is enough.
 >
-> Thanks for your patch!
->
-> > --- a/drivers/pinctrl/renesas/pinctrl-rzg2l.c
-> > +++ b/drivers/pinctrl/renesas/pinctrl-rzg2l.c
->
-> > @@ -501,7 +507,7 @@ static int rzg2l_pinctrl_pinconf_get(struct pinctrl_dev *pctldev,
-> >         unsigned int arg = 0;
-> >         unsigned long flags;
-> >         void __iomem *addr;
-> > -       u32 port = 0;
-> > +       u32 port = 0, reg;
->
-> "unsigned int index", for symmetry with rzg2l_pinctrl_pinconf_set()?
->
-Agreed.
+> The lock is not only for protecting nr_running_ctxs, but also for avoiding
+> different users concurrently executing damon_start(), because that could allow
+> the users interfering others.
 
-> >         u32 cfg = 0;
-> >         u8 bit = 0;
+That's right. but it could be resolved by atomic too. like the following.
+>
 > >
-> > @@ -549,6 +555,24 @@ static int rzg2l_pinctrl_pinconf_get(struct pinctrl_dev *pctldev,
-> >                 break;
-> >         }
+> > Signed-off-by: Alex Shi <alexs@kernel.org>
+> > Cc: SeongJae Park <sj@kernel.org>
+> > Cc: Andrew Morton <akpm@linux-foundation.org>
+> > Cc: linux-mm@kvack.org
+> > Cc: linux-kernel@vger.kernel.org
+> > ---
+> >  include/linux/damon.h |  1 -
+> >  mm/damon/core.c       | 31 +++++--------------------------
+> >  mm/damon/dbgfs.c      |  8 +++++---
+> >  3 files changed, 10 insertions(+), 30 deletions(-)
 > >
-> > +       case PIN_CONFIG_DRIVE_STRENGTH: {
-> > +               if (!(cfg & PIN_CFG_IOLH_A))
-> > +                       return -EINVAL;
-> > +
-> > +               reg = rzg2l_read_pin_config(pctrl, port_pin, IOLH(port), bit, IOLH_MASK);
->
-> port_pin still under discussion, cfr. my comments for the other
-> patches in this series.
->
-As discussed in patch 3/5 will drop this.
+> > diff --git a/include/linux/damon.h b/include/linux/damon.h
+> > index b4d4be3cc987..e5dcc6336ef2 100644
+> > --- a/include/linux/damon.h
+> > +++ b/include/linux/damon.h
+> > @@ -453,7 +453,6 @@ int damon_set_attrs(struct damon_ctx *ctx, unsigned long sample_int,
+> >               unsigned long min_nr_reg, unsigned long max_nr_reg);
+> >  int damon_set_schemes(struct damon_ctx *ctx,
+> >                       struct damos **schemes, ssize_t nr_schemes);
+> > -int damon_nr_running_ctxs(void);
+> >
+> >  int damon_start(struct damon_ctx **ctxs, int nr_ctxs);
+> >  int damon_stop(struct damon_ctx **ctxs, int nr_ctxs);
+> > diff --git a/mm/damon/core.c b/mm/damon/core.c
+> > index c381b3c525d0..e821e36d5c10 100644
+> > --- a/mm/damon/core.c
+> > +++ b/mm/damon/core.c
+> [...]
+> > @@ -437,19 +422,15 @@ int damon_start(struct damon_ctx **ctxs, int nr_ctxs)
+> >       int i;
+> >       int err = 0;
+> >
+> > -     mutex_lock(&damon_lock);
+> > -     if (nr_running_ctxs) {
+> > -             mutex_unlock(&damon_lock);
+> > +     if (atomic_read(&nr_running_ctxs))
 
-Cheers,
-Prabhakar
+if (atomic_inc_not_zero(&nr_running_ctxs))
+> >               return -EBUSY;
+> > -     }
+> >
+> >       for (i = 0; i < nr_ctxs; i++) {
+> >               err = __damon_start(ctxs[i]);
+> >               if (err)
+> >                       break;
+> > -             nr_running_ctxs++;
+> > +             atomic_inc(&nr_running_ctxs);
+> >       }
+> > -     mutex_unlock(&damon_lock);
+> >
 
-> The rest looks good to me, so
-> Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
+ atomic_dec(&nr_running_ctxs);
+
+Is it save the multiple ctxs issue?
+
+Thanks
+
+> >       return err;
+> >  }
 >
-> Gr{oetje,eeting}s,
+> This would let multiple concurrent threads seeing nr_running_ctxs of zero and
+> therefore proceed together.
 >
->                         Geert
 >
-> --
-> Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
->
-> In personal conversations with technical people, I call myself a hacker. But
-> when I'm talking to journalists I just say "programmer" or something like that.
->                                 -- Linus Torvalds
+> Thanks,
+> SJ
