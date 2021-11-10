@@ -2,35 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1CFCB44C715
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 19:46:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 853C244C6F3
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 19:44:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232959AbhKJSsD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Nov 2021 13:48:03 -0500
-Received: from mail.kernel.org ([198.145.29.99]:46910 "EHLO mail.kernel.org"
+        id S232167AbhKJSrI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Nov 2021 13:47:08 -0500
+Received: from mail.kernel.org ([198.145.29.99]:46092 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232956AbhKJSrb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Nov 2021 13:47:31 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0927061211;
-        Wed, 10 Nov 2021 18:44:42 +0000 (UTC)
+        id S232658AbhKJSqv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Nov 2021 13:46:51 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 221056117A;
+        Wed, 10 Nov 2021 18:44:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1636569883;
-        bh=tSw2FqKT9juOpAu73M2zBDuG7EHlnsXg5BghqluUKOg=;
+        s=korg; t=1636569843;
+        bh=8jST38o3KStDR26PTQ6PNGLoSeQnWA9v6PYh7V4vGKA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=u8rCewP3hES1QdBiAKRsC+YT9TzF8Az84BFFXmR8zH7K/ExtYenPsxPDnguI1E2+d
-         EY8H6EQxbHiCM9RJ3eK65OL3aSjJY22ukf/It8K8oItANxD2S4kKTcgmdlSiquv3A6
-         b04eZpERmdzZNFMRL4Dyfl5CJxvxUJGSR1RJpL4U=
+        b=w8nSP0d10E1aaujrPHvfpZlL8v/33VvAnBuH9xEvV/bwVIbRpya6PlN2TxkFT9ADm
+         tLBpITyePBN+E9p2dTrVhZ7nIY6mmwaUgC6fvwy8k2rqr/qVBU/Ug5RFhYc8hCly0n
+         8ecSYoxvWLXv40HTpIfKSY+A/p6YpNSifjuN8NKM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jan Kara <jack@suse.cz>,
-        syzbot+6fc7fb214625d82af7d1@syzkaller.appspotmail.com
-Subject: [PATCH 4.9 14/22] isofs: Fix out of bound access for corrupted isofs image
+        stable@vger.kernel.org, Johan Hovold <johan@kernel.org>,
+        Kalle Valo <kvalo@codeaurora.org>
+Subject: [PATCH 4.4 19/19] rsi: fix control-message timeout
 Date:   Wed, 10 Nov 2021 19:43:21 +0100
-Message-Id: <20211110182002.047574878@linuxfoundation.org>
+Message-Id: <20211110182001.882371301@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211110182001.579561273@linuxfoundation.org>
-References: <20211110182001.579561273@linuxfoundation.org>
+In-Reply-To: <20211110182001.257350381@linuxfoundation.org>
+References: <20211110182001.257350381@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,32 +39,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jan Kara <jack@suse.cz>
+From: Johan Hovold <johan@kernel.org>
 
-commit e96a1866b40570b5950cda8602c2819189c62a48 upstream.
+commit 541fd20c3ce5b0bc39f0c6a52414b6b92416831c upstream.
 
-When isofs image is suitably corrupted isofs_read_inode() can read data
-beyond the end of buffer. Sanity-check the directory entry length before
-using it.
+USB control-message timeouts are specified in milliseconds and should
+specifically not vary with CONFIG_HZ.
 
-Reported-and-tested-by: syzbot+6fc7fb214625d82af7d1@syzkaller.appspotmail.com
-CC: stable@vger.kernel.org
-Signed-off-by: Jan Kara <jack@suse.cz>
+Use the common control-message timeout define for the five-second
+timeout.
+
+Fixes: dad0d04fa7ba ("rsi: Add RS9113 wireless driver")
+Cc: stable@vger.kernel.org      # 3.15
+Signed-off-by: Johan Hovold <johan@kernel.org>
+Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
+Link: https://lore.kernel.org/r/20211025120522.6045-5-johan@kernel.org
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- fs/isofs/inode.c |    2 ++
- 1 file changed, 2 insertions(+)
+ drivers/net/wireless/rsi/rsi_91x_usb.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/fs/isofs/inode.c
-+++ b/fs/isofs/inode.c
-@@ -1265,6 +1265,8 @@ static int isofs_read_inode(struct inode
+--- a/drivers/net/wireless/rsi/rsi_91x_usb.c
++++ b/drivers/net/wireless/rsi/rsi_91x_usb.c
+@@ -42,7 +42,7 @@ static int rsi_usb_card_write(struct rsi
+ 			      buf,
+ 			      len,
+ 			      &transfer,
+-			      HZ * 5);
++			      USB_CTRL_SET_TIMEOUT);
  
- 	de = (struct iso_directory_record *) (bh->b_data + offset);
- 	de_len = *(unsigned char *) de;
-+	if (de_len < sizeof(struct iso_directory_record))
-+		goto fail;
- 
- 	if (offset + de_len > bufsize) {
- 		int frag1 = bufsize - offset;
+ 	if (status < 0) {
+ 		rsi_dbg(ERR_ZONE,
 
 
