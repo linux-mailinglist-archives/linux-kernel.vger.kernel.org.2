@@ -2,64 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D8DC44C0A2
+	by mail.lfdr.de (Postfix) with ESMTP id D2DD344C0A4
 	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 13:02:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231950AbhKJMEP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Nov 2021 07:04:15 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36186 "EHLO
+        id S231966AbhKJMEZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Nov 2021 07:04:25 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36224 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231555AbhKJMEO (ORCPT
+        with ESMTP id S231958AbhKJMEU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Nov 2021 07:04:14 -0500
-Received: from mail-pg1-x52c.google.com (mail-pg1-x52c.google.com [IPv6:2607:f8b0:4864:20::52c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E4068C061764
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Nov 2021 04:01:26 -0800 (PST)
-Received: by mail-pg1-x52c.google.com with SMTP id 200so2082406pga.1
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Nov 2021 04:01:26 -0800 (PST)
+        Wed, 10 Nov 2021 07:04:20 -0500
+Received: from mail-pj1-x102f.google.com (mail-pj1-x102f.google.com [IPv6:2607:f8b0:4864:20::102f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 869A6C06127A;
+        Wed, 10 Nov 2021 04:01:33 -0800 (PST)
+Received: by mail-pj1-x102f.google.com with SMTP id np3so1393245pjb.4;
+        Wed, 10 Nov 2021 04:01:33 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=X1SrmVsVj/8riq8Zu11HU29nfsCt2CipbOtY3TsCm9Y=;
-        b=LT/90z8YJ/QbWW07QUH+vjcl+3wdr1fYB0bZS1zbG3ZRt8JjbgRcpThMkJyUswMVEv
-         KfSph25OpOfKWM0S6YRr5sE7YUioq876SEiw8L2/e1HRHwrYYQGCHb6SaBErmsQEk3Lk
-         qfRw0f11nn2AUG0HEHcGphIievu66ghWtrde3d9+H3iK5eCH4+w00+/mTaBkxzF2v6gc
-         ZCeplsy0S1XYHb74F7KRJk+EAFj66+PLoaY4isgllyHUnTw1qC2JQsgMdav2YKEE1E8r
-         E9LDo0UxcMsxJGvlyaGz3WqW0V5xwHJ8+dVGvJjIQfNL6vrNyABZhQJb8uZJ7rgZ0g65
-         NWhw==
+        bh=MG3oDqSdSJ3YhF/Dmz9CSJmHJG/ruxVp0F9FsSXI4ZU=;
+        b=ohehGqmS1RVGGEAyVwgIkVfxsc5zvk0W5Qwn6aPxpl22CGhij0gQK3GbFjGIV1ISbR
+         tUCGYm4RaUdHkMD+Ik4FuDBkSJLqOynk+DImR5vz2gAvWkb8cNdwAs910UcCo3T3wg6g
+         z8B6WktLYMeiEPxS0I7hDdt6KFYHb6fjiIz9TwII7SSMb1iprckATC/Si3ApGaVJR26S
+         BfeEYwpbQ2czEqzPVJyiWuACqrJTom//K1nuhNkJF0xC3dlerfUlF0vqOUZtphp/RNmW
+         B5DPlBSXMjGr42hK0yFtWJBFXwB0lEjt0857LSJH96Uy1ArySXxvaU6bnbzGz4Tz1ROp
+         ci2Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=X1SrmVsVj/8riq8Zu11HU29nfsCt2CipbOtY3TsCm9Y=;
-        b=L91k6OTGXEcT1vu0xcPjShFIC36bZevwU7WAqjdzt1uZHNmIzK9cx7dCrY5NWGMIQY
-         PC/dmWTIxo8RlBt1MwlE01B1PZfA4kbB8WNRaPspfsrfgsu//GBQOFtUiJOyL57AUpXl
-         zeNv13x2OEuW7gvApr1+ou+rypIVyBV/EC+fX7B2uPv8yczKhoYWlVWqFzPnjogQbdIm
-         tKjlbUENT5mi7WG3nlgzLKKTlARrfHbDonmdqQQN1tmPBWEXk5cYXTxCOZOoFqaucfCz
-         OxaxnC85c++p1duVuBTl0yGSwVe0sQXtJJhI79S67ak6T6cMrN/+Q6/0JGsLchiEG2zg
-         thTg==
-X-Gm-Message-State: AOAM531OPVuf/1VwHX526qNb5P8LQD8Wf93ByYraD8T+Zwo+ehtPeGlm
-        jPk2rwt7+EEhAXN3aUIsEopNNhm0Iqc=
-X-Google-Smtp-Source: ABdhPJxhancTxZaxoNMmP/MKO/uA8biazVDsm5kc9jlFdKgq6Kni7hotoO8Jlezp/8gpxRxyYuQVrQ==
-X-Received: by 2002:a65:5589:: with SMTP id j9mr11275200pgs.291.1636545686306;
-        Wed, 10 Nov 2021 04:01:26 -0800 (PST)
+        bh=MG3oDqSdSJ3YhF/Dmz9CSJmHJG/ruxVp0F9FsSXI4ZU=;
+        b=zoTL9+g0wDRjzb/DMumUNE/sISvRWPi8vXhEQBKNB+P0DhClsFj4/v25qqAxsso4Jo
+         qZLx1jQ1OBBKtBMwt+Epdh97UyTpL0ZjEXiPAY9txlT2f9hcHwqjQkh/zIPcPD/T6q9m
+         vDPt9hD6GFBYdQNh0ZmOYEy4Sy5+sht0ejDB/MkDBZG41oWyqJRCXg1ECSpe3knMWNqJ
+         gwDPn9vwGNtaizciONxHuY9k868ohDFe5B3QtlFu1hERdTOMT6LFC7YMKgPVjJBssd3q
+         9dneZ2EVRoIBD+6vBUSMTnNLWU8CnXLtu+lvOKB8SP+9s6p5WKWUxbkQyP/f81wbFXZ1
+         EDVg==
+X-Gm-Message-State: AOAM531zMu8EA2oe6FCUwItUM9jX6/ti8yvv7K1yKqlp9MoBjTr4EBXn
+        SFLhF07s/u3zv7g5OT9A5j5GmIDp7yc=
+X-Google-Smtp-Source: ABdhPJyjY5vpVZBqikRsldfyn+Fk5fjCAo5Jl8+cgN/cupSDpkWRQmFrQUEm15iHx9rtya/NiWKyVg==
+X-Received: by 2002:a17:90b:33d0:: with SMTP id lk16mr16358363pjb.20.1636545692959;
+        Wed, 10 Nov 2021 04:01:32 -0800 (PST)
 Received: from localhost ([198.11.178.15])
-        by smtp.gmail.com with ESMTPSA id 145sm22090839pfx.87.2021.11.10.04.01.25
+        by smtp.gmail.com with ESMTPSA id d7sm23823077pfj.91.2021.11.10.04.01.31
         (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 10 Nov 2021 04:01:25 -0800 (PST)
+        Wed, 10 Nov 2021 04:01:32 -0800 (PST)
 From:   Lai Jiangshan <jiangshanlai@gmail.com>
 To:     linux-kernel@vger.kernel.org
 Cc:     x86@kernel.org, Lai Jiangshan <laijs@linux.alibaba.com>,
+        Andy Lutomirski <luto@kernel.org>,
         Thomas Gleixner <tglx@linutronix.de>,
         Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
         Dave Hansen <dave.hansen@linux.intel.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, Juergen Gross <jgross@suse.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, Tony Luck <tony.luck@intel.com>,
+        Juergen Gross <jgross@suse.com>,
         "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Joerg Roedel <jroedel@suse.de>
-Subject: [PATCH V5 38/50] x86/entry: Add a C macro to define the function body for IST in .entry.text
-Date:   Wed, 10 Nov 2021 19:57:24 +0800
-Message-Id: <20211110115736.3776-39-jiangshanlai@gmail.com>
+        Joerg Roedel <jroedel@suse.de>, linux-edac@vger.kernel.org
+Subject: [PATCH V5 39/50] x86/debug, mce: Use C entry code
+Date:   Wed, 10 Nov 2021 19:57:25 +0800
+Message-Id: <20211110115736.3776-40-jiangshanlai@gmail.com>
 X-Mailer: git-send-email 2.19.1.6.gb485710b
 In-Reply-To: <20211110115736.3776-1-jiangshanlai@gmail.com>
 References: <20211110115736.3776-1-jiangshanlai@gmail.com>
@@ -71,42 +73,62 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Lai Jiangshan <laijs@linux.alibaba.com>
 
-Add DEFINE_IDTENTRY_IST_ETNRY() macro to define C code to implement
-the ASM code which calls paranoid_entry(), cfunc(), paranoid_exit()
-in series for IST exceptions without error code.
-
-Not functional difference intended.
+Use DEFINE_IDTENTRY_IST_ETNRY to emit C entry function and use the function
+directly in entry_64.S.
 
 Signed-off-by: Lai Jiangshan <laijs@linux.alibaba.com>
 ---
- arch/x86/include/asm/idtentry.h | 14 ++++++++++++++
- 1 file changed, 14 insertions(+)
+ arch/x86/entry/entry_64.S        | 10 +---------
+ arch/x86/include/asm/idtentry.h  |  1 +
+ arch/x86/kernel/cpu/mce/Makefile |  3 +++
+ 3 files changed, 5 insertions(+), 9 deletions(-)
 
+diff --git a/arch/x86/entry/entry_64.S b/arch/x86/entry/entry_64.S
+index b6bcf7fcad34..61e89fd5ad8a 100644
+--- a/arch/x86/entry/entry_64.S
++++ b/arch/x86/entry/entry_64.S
+@@ -465,16 +465,8 @@ SYM_CODE_START(\asmsym)
+ 	testb	$3, CS(%rsp)
+ 	jnz	.Lfrom_usermode_switch_stack_\@
+ 
+-	/* paranoid_entry returns GS information for paranoid_exit in EBX. */
+-	call	paranoid_entry
+-
+-	UNWIND_HINT_REGS
+-
+ 	movq	%rsp, %rdi		/* pt_regs pointer */
+-
+-	call	\cfunc
+-
+-	call	paranoid_exit
++	call	ist_\cfunc
+ 	jmp	restore_regs_and_return_to_kernel
+ 
+ 	/* Switch to the regular task stack and use the noist entry point */
 diff --git a/arch/x86/include/asm/idtentry.h b/arch/x86/include/asm/idtentry.h
-index cf41901227ed..0f615943a460 100644
+index 0f615943a460..d0fd32288442 100644
 --- a/arch/x86/include/asm/idtentry.h
 +++ b/arch/x86/include/asm/idtentry.h
-@@ -337,6 +337,20 @@ void ist_paranoid_exit(unsigned long cr3, unsigned long gsbase);
- 	__visible noinstr void kernel_##func(struct pt_regs *regs, unsigned long error_code);	\
- 	__visible noinstr void   user_##func(struct pt_regs *regs, unsigned long error_code)
+@@ -358,6 +358,7 @@ __visible __entry_text void ist_##func(struct pt_regs *regs)		\
+  * Maps to DEFINE_IDTENTRY_RAW
+  */
+ #define DEFINE_IDTENTRY_IST(func)					\
++	DEFINE_IDTENTRY_IST_ETNRY(func)					\
+ 	DEFINE_IDTENTRY_RAW(func)
  
-+/**
-+ * DEFINE_IDTENTRY_IST_ENTRY - Emit __entry_text code for IST entry points
-+ * @func:	Function name of the entry point
-+ */
-+#define DEFINE_IDTENTRY_IST_ETNRY(func)					\
-+__visible __entry_text void ist_##func(struct pt_regs *regs)		\
-+{									\
-+	unsigned long cr3, gsbase;					\
-+									\
-+	ist_paranoid_entry(&cr3, &gsbase);				\
-+	func(regs);							\
-+	ist_paranoid_exit(cr3, gsbase);					\
-+}
-+
  /**
-  * DEFINE_IDTENTRY_IST - Emit code for IST entry points
-  * @func:	Function name of the entry point
+diff --git a/arch/x86/kernel/cpu/mce/Makefile b/arch/x86/kernel/cpu/mce/Makefile
+index 015856abdbb1..555963416ec3 100644
+--- a/arch/x86/kernel/cpu/mce/Makefile
++++ b/arch/x86/kernel/cpu/mce/Makefile
+@@ -1,4 +1,7 @@
+ # SPDX-License-Identifier: GPL-2.0
++
++CFLAGS_core.o			+= -fno-stack-protector
++
+ obj-y				=  core.o severity.o genpool.o
+ 
+ obj-$(CONFIG_X86_ANCIENT_MCE)	+= winchip.o p5.o
 -- 
 2.19.1.6.gb485710b
 
