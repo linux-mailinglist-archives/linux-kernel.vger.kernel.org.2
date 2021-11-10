@@ -2,131 +2,201 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A73844BDDC
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 10:35:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D338C44BDDF
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 10:35:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230508AbhKJJhb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Nov 2021 04:37:31 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:35545 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229831AbhKJJha (ORCPT
+        id S231133AbhKJJiJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Nov 2021 04:38:09 -0500
+Received: from mxout70.expurgate.net ([91.198.224.70]:51517 "EHLO
+        mxout70.expurgate.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229831AbhKJJiG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Nov 2021 04:37:30 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1636536882;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=LxMV4iFPRrUOhxosXQa0hRM/ty1+W5Q/Tq2s1HhpRhc=;
-        b=WTbbQPkqcJPbXxGhtij0L/A1fV/imBCuYc8UHUOjNufc4z39KcXpQ6LDLpO3U5qC/+X5oB
-        BCU6plJTXWQSQlnSanXFZ+yPsnVqaPxOV/jK3vvMq8IKprxI8pu9DVwpF9bW0exl3jo1RZ
-        Sr6QC/1xuQn7H4FqlMmhZ9nZ19MqH1s=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-84-6K9XdtpxPVKtVRrmf2mo3w-1; Wed, 10 Nov 2021 04:34:39 -0500
-X-MC-Unique: 6K9XdtpxPVKtVRrmf2mo3w-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id A2E2419253C2;
-        Wed, 10 Nov 2021 09:34:37 +0000 (UTC)
-Received: from localhost (unknown [10.39.193.165])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 6EA6960843;
-        Wed, 10 Nov 2021 09:34:33 +0000 (UTC)
-Date:   Wed, 10 Nov 2021 09:34:32 +0000
-From:   Stefan Hajnoczi <stefanha@redhat.com>
-To:     "Wang, Wei W" <wei.w.wang@intel.com>
-Cc:     "sgarzare@redhat.com" <sgarzare@redhat.com>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        "kuba@kernel.org" <kuba@kernel.org>,
-        "mst@redhat.com" <mst@redhat.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        "kys@microsoft.com" <kys@microsoft.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "virtualization@lists.linux-foundation.org" 
-        <virtualization@lists.linux-foundation.org>,
-        "Yamahata, Isaku" <isaku.yamahata@intel.com>,
-        "Nakajima, Jun" <jun.nakajima@intel.com>,
-        "Kleen, Andi" <andi.kleen@intel.com>,
-        Andra Paraschiv <andraprs@amazon.com>
-Subject: Re: [RFC] hypercall-vsock: add a new vsock transport
-Message-ID: <YYuSKEqj3UMLNAfw@stefanha-x1.localdomain>
-References: <71d7b0463629471e9d4887d7fcef1d8d@intel.com>
+        Wed, 10 Nov 2021 04:38:06 -0500
+Received: from [127.0.0.1] (helo=localhost)
+        by relay.expurgate.net with smtp (Exim 4.92)
+        (envelope-from <fe@dev.tdt.de>)
+        id 1mkk0h-000MaJ-1v; Wed, 10 Nov 2021 10:35:15 +0100
+Received: from [195.243.126.94] (helo=securemail.tdt.de)
+        by relay.expurgate.net with esmtps (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <fe@dev.tdt.de>)
+        id 1mkk0g-0008Pt-BS; Wed, 10 Nov 2021 10:35:14 +0100
+Received: from securemail.tdt.de (localhost [127.0.0.1])
+        by securemail.tdt.de (Postfix) with ESMTP id E47B9240042;
+        Wed, 10 Nov 2021 10:35:13 +0100 (CET)
+Received: from mail.dev.tdt.de (unknown [10.2.4.42])
+        by securemail.tdt.de (Postfix) with ESMTP id 6D3ED240041;
+        Wed, 10 Nov 2021 10:35:13 +0100 (CET)
+Received: from mail.dev.tdt.de (localhost [IPv6:::1])
+        by mail.dev.tdt.de (Postfix) with ESMTP id 0571A20176;
+        Wed, 10 Nov 2021 10:35:13 +0100 (CET)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="6kCy5STPFCJ1ef5p"
-Content-Disposition: inline
-In-Reply-To: <71d7b0463629471e9d4887d7fcef1d8d@intel.com>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Wed, 10 Nov 2021 10:35:12 +0100
+From:   Florian Eckert <fe@dev.tdt.de>
+To:     Pavel Machek <pavel@ucw.cz>
+Cc:     robh+dt@kernel.org, Eckert.Florian@googlemail.com,
+        linux-leds@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 0/2] leds: Add KTD20xx RGB LEDs driver from Kinetic
+In-Reply-To: <20211109232917.GA26764@amd>
+References: <20211109100822.5412-1-fe@dev.tdt.de>
+ <20211109232917.GA26764@amd>
+Message-ID: <41f6b993ecb9f37a7cf191f770363a79@dev.tdt.de>
+X-Sender: fe@dev.tdt.de
+User-Agent: Roundcube Webmail/1.3.16
+X-Spam-Status: No, score=-1.0 required=5.0 tests=ALL_TRUSTED autolearn=ham
+        autolearn_force=no version=3.4.2
+X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on mail.dev.tdt.de
+X-purgate-type: clean
+X-purgate: clean
+X-purgate-ID: 151534::1636536914-0000527C-E04B6D23/0/0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+> Hi!
 
---6kCy5STPFCJ1ef5p
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Thanks for reviewing my patchset.
 
-On Wed, Nov 10, 2021 at 07:12:36AM +0000, Wang, Wei W wrote:
-> We plan to add a new vsock transport based on hypercall (e.g. vmcall on I=
-ntel CPUs).
-> It transports AF_VSOCK packets between the guest and host, which is simil=
-ar to
-> virtio-vsock, vmci-vsock and hyperv-vsock.
->=20
-> Compared to the above listed vsock transports which are designed for high=
- performance,
-> the main advantages of hypercall-vsock are:
->=20
-> 1)       It is VMM agnostic. For example, one guest working on hypercall-=
-vsock can run on
->=20
-> either KVM, Hyperv, or VMware.
->=20
-> 2)       It is simpler. It doesn't rely on any complex bus enumeration
->=20
-> (e.g. virtio-pci based vsock device may need the whole implementation of =
-PCI).
->=20
-> An example usage is the communication between MigTD and host (Page 8 at
-> https://static.sched.com/hosted_files/kvmforum2021/ef/TDX%20Live%20Migrat=
-ion_Wei%20Wang.pdf).
-> MigTD communicates to host to assist the migration of the target (user) T=
-D.
-> MigTD is part of the TCB, so its implementation is expected to be as simp=
-le as possible
-> (e.g. bare mental implementation without OS, no PCI driver support).
+>> Florian Eckert (2):
+>>   leds: ktd20xx: Add the KTD20xx family of the RGB LEDs driver from
+>>     Kinetic
+>>   dt: bindings: KTD20xx: Introduce the ktd20xx family of RGB drivers
+> 
+> That's... not a nice piece of hardware.
 
-AF_VSOCK is designed to allow multiple transports, so why not. There is
-a cost to developing and maintaining a vsock transport though.
+Yes, that may be, but I have tried to use what the chip can do.
+So that it works for my use case. It would be great if we could 
+integrate it
+into the color LED framework of the kernel.
 
-I think Amazon Nitro enclaves use virtio-vsock and I've CCed Andra in
-case she has thoughts on the pros/cons and how to minimize the trusted
-computing base.
 
-If simplicity is the top priority then VIRTIO's MMIO transport without
-indirect descriptors and using the packed virtqueue layout reduces the
-size of the implementation:
-https://docs.oasis-open.org/virtio/virtio/v1.1/cs01/virtio-v1.1-cs01.html#x=
-1-1440002
+> If this uses non-standard interface, it will need to be
+> documented. But I would like to understand the limitations first.
 
-Stefan
+OK Then I will try it.
 
---6kCy5STPFCJ1ef5p
-Content-Type: application/pgp-signature; name="signature.asc"
+Register Layout:
 
------BEGIN PGP SIGNATURE-----
+| Address |  Name   |  Type  | Access | Default | B7 | B6 | B5 | B4 | B3 
+| B2 | B1 | B0 |
+|:-------:|:-------:|:------:|:------:|:-------:|:--:|:--:|:--:|:--:|:--:|:--:|:--:|:--:|
+|  0x00   |   ID    |  Data  |   R    |  0xA4   | VENDOR[2:0]  |       
+DIE_ID[4:0]      |
+|  0x01   | MONITOR | Status |   R    |  0x30   |    DIE_REV[3:0]   | SC 
+| BE | CE | UV |
+|  0x02   | CONTROL | Config |  R/W   |  0x00   |MODE[1:0]| BE 
+|TEMP[1:0]|FADE_RATE[2:0]|
+|  0x03   |  IRED0  | Config |  R/W   |  0x28   |            
+IRED_SET0[7:0]             |
+|  0x04   |  IGRN0  | Config |  R/W   |  0x28   |            
+IGRN_SET0[7:0]             |
+|  0x05   |  IBLU0  | Config |  R/W   |  0x28   |            
+IBLU_SET0[7:0]             |
+|  0x06   |  IRED1  | Config |  R/W   |  0x60   |            
+IRED_SET1[7:0]             |
+|  0x07   |  IGRN1  | Config |  R/W   |  0x60   |            
+IGRN_SET1[7:0]             |
+|  0x08   |  IBLU1  | Config |  R/W   |  0x60   |            
+IBLU_SET1[7:0]             |
+|  0x09   | ISELA12 | Config |  R/W   |  0x00   
+|ENA1|RGBA1_SEL[2:0]|ENA2|RGBA2_SEL[2:0]|
+|  0x0A   | ISELA34 | Config |  R/W   |  0x00   
+|ENA3|RGBA3_SEL[2:0]|ENA4|RGBA4_SEL[2:0]|
+|  0x0B   | ISELB12 | Config |  R/W   |  0x00   
+|ENB1|RGBB1_SEL[2:0]|ENB2|RGBB2_SEL[2:0]|
+|  0x0C   | ISELB34 | Config |  R/W   |  0x00   
+|ENB3|RGBB3_SEL[2:0]|ENB4|RGBB4_SEL[2:0]|
+|  0x0D   | ISELC12 | Config |  R/W   |  0x00   
+|ENC1|RGBC1_SEL[2:0]|ENC2|RGBC2_SEL[2:0]|
+|  0x0E   | ISELc34 | Config |  R/W   |  0x00   
+|ENC3|RGBC3_SEL[2:0]|ENC4|RGBC4_SEL[2:0]|
 
-iQEzBAEBCAAdFiEEhpWov9P5fNqsNXdanKSrs4Grc8gFAmGLkigACgkQnKSrs4Gr
-c8iPyAf8COmUtjvTHk5gX6zSZeAiKXrfyy3bnkP9NrNwxXTHGg7f6dECVUz9Gg73
-+YqbL+Li11VWyTGCltsAWVkcVmmeuW+vdAUhuxBRRoWw8VCoLKbMUif/rJV48Ms8
-KQN5ZEoGSMVFpNj6P7V6qlPMC8MRGLfeqouNZpbL5z/gTfef+vQvKGjR7NF3CegG
-CtVR2NXN+sE+bOPHB9VY11YzBlSLNcuivqb4k288LkTqemVcMQloN2w6bYkzaUP5
-IwdGx3PP13yFkDDKYv4PnJ3VJPDYVrL0Y1mxNAlFhtQ2bBnk8l3DapR/Z906kVYb
-bG7G+2Sb/uf0m34bQgrAokLNk8nWGA==
-=bN/Z
------END PGP SIGNATURE-----
+The registers 0x0A to 0x0E controls the LEDs. Each register controls two 
+LEDs.
+The top bit [3] of each byte nibble controls whether the LED is on or 
+off.
+The other bits [0:2] of each nibble, select which color register to use 
+Ixxx_SET0
+and Ixxx_SET1 (0x03 to 0x08).
 
---6kCy5STPFCJ1ef5p--
+Bit 0 -> Blue (RGBxx_SEL):
+If this bit is set to 1 then use IBLU_SET1 value otherwise bit is 0 use 
+IBLU_SET0 value.
 
+Bit 1 -> Green RGBxx_SEL):
+If this bit is set to 1 then use IGRN_SET1 value otherwise bit is 0 use 
+IGRN_SET0 value.
+
+Bit 2 -> Red RGBxx_SEL):
+If this bit is set to 1 then use IRED_SET1 value otherwise bit is 0 use 
+IRED_SET0 value.
+
+This means that we can define two colors from the full RGB range in the 
+Ixxx_SET0
+and Ixxx_SET1 respectively. And the LEDs can select which RGB color, 
+value they want
+to use for the individual basic color via the RGBxx_SEL. In reality, 
+this is the electrical
+current that the LED gets. The different electric currents produce a 
+color depending
+on the current ratio.
+
+There are now various possibilities for the whole chip to fit into the 
+color LED framework
+of the kernel.
+
+Variant1:
+Prefill Ixxx_SET0 with one value for example 0x28 and set Ixxx_SET1 to 
+0x00.
+Then we could select with the RGBxx_SEl[2:0] of an LED which color we 
+want.
+But we only could have 8 colors because of the limition
+
+This are the colors we could produce with this setup.
+| Red | Green | Blue |   Color |
+|:---:|:-----:|:----:|:-------:|
+|  0  |   0   |   1  |  Blue   |
+|  0  |   1   |   0  |  Green  |
+|  0  |   1   |   1  |Turquoise|
+|  1  |   0   |   0  |  Red    |
+|  1  |   0   |   1  |  Purple |
+|  1  |   1   |   0  |  Yellow |
+|  1  |   1   |   1  |  White  |
+|  0  |   0   |   0  |  Black  |
+
+The color brightness for the eight RGB colors can only be changed 
+together.
+To do this, the value of the entire Ixxx_SET0 must be changed at once, 
+for
+example 0x28 -> 0x14 to halve the brightness. However, this applies to 
+all LEDS!
+This variant would fit into the color LED framework of the kernel.
+
+Variant2:
+Prefill Ixxx_SET0 and Ixxx_SET1 via device sysfs with an RGB color, and
+the select for every LEDS with RGBxx[2:0] which color ratio we want to 
+use.
+The problem with this is that we have to decide beforehand which color
+we want to use. We should not change the Ixxx_SET0 and Ixx_SET1 register
+value because that would affect all the LEDs! This variant would not fit 
+so well
+into the color LED framework of the kernel, as we could not selectively 
+change the
+color for each LED.
+
+I hope I could make it understandable, if not please ask :-)
+
+> Do you have actual device where this is used?
+
+I don't know where the chip is installed, but we just have
+new hardware in the pipeline that has this chip for LED control.
+For our setup we only need 7 colors. Therefore, this chip is sufficient.
+
+
+- Best regards
+
+Florian
