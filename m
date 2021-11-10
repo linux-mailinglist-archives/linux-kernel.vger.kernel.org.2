@@ -2,143 +2,168 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 21D0544C2A6
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 14:59:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 12D3744C2A9
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 15:00:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231991AbhKJOCg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Nov 2021 09:02:36 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35386 "EHLO
+        id S232082AbhKJODj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Nov 2021 09:03:39 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35636 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231607AbhKJOCe (ORCPT
+        with ESMTP id S231607AbhKJODh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Nov 2021 09:02:34 -0500
-Received: from mail-pj1-x102c.google.com (mail-pj1-x102c.google.com [IPv6:2607:f8b0:4864:20::102c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 68A15C061766
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Nov 2021 05:59:46 -0800 (PST)
-Received: by mail-pj1-x102c.google.com with SMTP id y14-20020a17090a2b4e00b001a5824f4918so1911193pjc.4
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Nov 2021 05:59:46 -0800 (PST)
+        Wed, 10 Nov 2021 09:03:37 -0500
+Received: from mail-ed1-x536.google.com (mail-ed1-x536.google.com [IPv6:2a00:1450:4864:20::536])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8608EC061764;
+        Wed, 10 Nov 2021 06:00:49 -0800 (PST)
+Received: by mail-ed1-x536.google.com with SMTP id f4so10833904edx.12;
+        Wed, 10 Nov 2021 06:00:49 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20210112.gappssmtp.com; s=20210112;
-        h=message-id:date:mime-version:user-agent:subject:to:cc:references
-         :from:in-reply-to:content-transfer-encoding;
-        bh=tFIzrVfWxUu1s11DMzseTciEZacVYJOeZPAxD7PkBnc=;
-        b=fMUDtoK0LHbZtB4+J67U/8RChvQYDgrgNEChmKP8uO3RjuUAAPdRq004ML+AfuGCgn
-         7MiZdzrDqODFsUVAXsjvQbTS/61YMYBifNacfpXUDICni4DdnTEeLEFGKR/87CCW/0U4
-         zeNPkt0ejt+JePwX3vMqp3ENHuGTLdSU3Cm9wmTZBRBOfGntCJUTe8MeF5dTmjmkplAp
-         4rCCHYaU77kyY00DemZ765mAN/XVPiVOMsnMyWDUJNg5z8Om+kvq5wFA+Ecgjq3gJ5WM
-         SS/01f4YZrlmPyGz2n9DzCXkaca2eVq3nnMTUjfEPJ1FDqFlOwMEHSEM6/OjZldlEO44
-         SDLw==
+        d=gmail.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=fA8D8LQx/YlXJQkaVJ74h14pOC3ijTEjTXiuJ9pKPnM=;
+        b=HD9VcgWKF8LgMg5q5Bq3yYcwOVFUKV370Y+JxFK5pWvhIsudDy9N+3Plv6YfUcAuMh
+         hMqR9+NThlduVa6K5G8gFr+YmiBly/RxJa/q3PSjXkWXBxpjIfG+8FM+OA666YmwFdjy
+         mhtPtBqbGfViVsv6ExBIf3TiPG72ApVJL6hAv6iQf5wJvgGXmLsE/L5qafS6QUeSFDtb
+         WpUpO/b73SltIxv2KoQfsBKy4vV5lkAzPczxhK97OXIUBivylaHUcQmcIXmkS3Dz2JSv
+         mL/fztJ06PIRAMsJ9VeLUs1qZPWfNCNLiFHcnQrYPJTiiCOt7i9EbiyfY5bp9tsJgx38
+         aloQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :to:cc:references:from:in-reply-to:content-transfer-encoding;
-        bh=tFIzrVfWxUu1s11DMzseTciEZacVYJOeZPAxD7PkBnc=;
-        b=B/5RDvejf1PKuc00yR2sIFvXtNp8GfmhHcO5GHSjnxhIxoKY99DkywzCSfjKYNmMn6
-         Dq+Sa1qbL0FOF6AgQ4aFSdJQ+yatoXRyj+phRKrmujs/7EFGUFF/IkUN8pAuO/iGhivJ
-         b1uO2LJ2td+Qu7I9uiplE2x+113jylapFHa+SfJEqR6srs9d3bQBnISC6ZUGOCEJMcu4
-         QImBDWTvhYdSNgLKU312hYbTyfzpEfTLGcJ5K0c/xebvnrDwuJcxoD/vo+F/kRgXXwrS
-         eKMddaqJQJKlFNFUE9CTXQd5ZbuI1mvsGLvhMr6z1w1KU4H7Kdk/zsX82g81zOdQrG/R
-         XvyQ==
-X-Gm-Message-State: AOAM530cgHqockZADEBcWotSU1UFr0dylUT/jNsRAFmuBZNjEgMkzUiu
-        n3o03GrBA8mlqp06/aolALCfrg==
-X-Google-Smtp-Source: ABdhPJyhZgAb2msPG/ckhwytGG7U2KKGRU4QdobBz5WlQJnXbF5X4E026bM/Jw/kMzmZVHJF6VUNhw==
-X-Received: by 2002:a17:90a:c58f:: with SMTP id l15mr98890pjt.168.1636552786017;
-        Wed, 10 Nov 2021 05:59:46 -0800 (PST)
-Received: from [10.254.189.129] ([139.177.225.251])
-        by smtp.gmail.com with ESMTPSA id w12sm6189400pjq.2.2021.11.10.05.59.40
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 10 Nov 2021 05:59:45 -0800 (PST)
-Message-ID: <1dac28b1-9a35-25bd-08f4-e1594fdb35d1@bytedance.com>
-Date:   Wed, 10 Nov 2021 21:59:38 +0800
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=fA8D8LQx/YlXJQkaVJ74h14pOC3ijTEjTXiuJ9pKPnM=;
+        b=UaijSr15PB7n3BE7XjMKF7f0tsi/o2ZF6Ijhcj2LG0Ek9NHM6uGEUrYRxBk6fyVGLc
+         Ysj7nN3+bwDKdWSmHjO5ZGS79rIf6JlNnGGf1CSnqoLKktVXNgNVOO9qv9R1NMX0iEUS
+         /gZhclYLehVYubu7SSsbqhKVdk8huIslE+JccmAg0KtA7jO0t0QhfY43MhswHzc5ReuP
+         Rz0bsrjLmWzsa0HkxYVTh3kWNPg0niYsJjQrQSBySNsBRwO8JlVImRPWF2K7FGSiex4E
+         pH+JOkPowDpNHlaApqKxMj0Jd2S9eiFFJ557aXUaf+IkfemIXPjpzCfdBtcMVB78OnRs
+         Ke5w==
+X-Gm-Message-State: AOAM5333F4iOrqJgr7LIU5BgYJRIVnZ/cWUJVA8rScE3ES8Y+FIY/9yB
+        BNNTTphDiwZqE7FtEl4krFw=
+X-Google-Smtp-Source: ABdhPJz0AxGxyM39WNtkOjgFEJf9//jgLKeboZV4AMdH1nNuR6GOhmSxxLxjLrJlDefjVy2qK2Jz7Q==
+X-Received: by 2002:a05:6402:34d0:: with SMTP id w16mr21260996edc.360.1636552846305;
+        Wed, 10 Nov 2021 06:00:46 -0800 (PST)
+Received: from skbuf ([188.25.175.102])
+        by smtp.gmail.com with ESMTPSA id mc3sm8246022ejb.24.2021.11.10.06.00.44
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 10 Nov 2021 06:00:45 -0800 (PST)
+Date:   Wed, 10 Nov 2021 16:00:44 +0200
+From:   Vladimir Oltean <olteanv@gmail.com>
+To:     Kurt Kanzenbach <kurt@linutronix.de>
+Cc:     Martin Kaistra <martin.kaistra@linutronix.de>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        Richard Cochran <richardcochran@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        John Stultz <john.stultz@linaro.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Russell King <linux@armlinux.org.uk>,
+        Marc Kleine-Budde <mkl@pengutronix.de>,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org
+Subject: Re: [PATCH v2 6/7] net: dsa: b53: Add logic for TX timestamping
+Message-ID: <20211110140044.6qgnwqn4lpabymle@skbuf>
+References: <20211109095013.27829-1-martin.kaistra@linutronix.de>
+ <20211109095013.27829-7-martin.kaistra@linutronix.de>
+ <20211109111213.6vo5swdhxjvgmyjt@skbuf>
+ <87ee7o8otj.fsf@kurt>
+ <20211110130545.ga7ajracz2vvzotg@skbuf>
+ <8735o486mw.fsf@kurt>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:91.0)
- Gecko/20100101 Thunderbird/91.3.0
-Subject: Re: [PATCH v3 00/15] Free user PTE page table pages
-To:     David Hildenbrand <david@redhat.com>,
-        Jason Gunthorpe <jgg@nvidia.com>
-Cc:     akpm@linux-foundation.org, tglx@linutronix.de,
-        kirill.shutemov@linux.intel.com, mika.penttila@nextfour.com,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, songmuchun@bytedance.com,
-        zhouchengming@bytedance.com
-References: <20211110105428.32458-1-zhengqi.arch@bytedance.com>
- <20211110125601.GQ1740502@nvidia.com>
- <8d0bc258-58ba-52c5-2e0d-a588489f2572@redhat.com>
-From:   Qi Zheng <zhengqi.arch@bytedance.com>
-In-Reply-To: <8d0bc258-58ba-52c5-2e0d-a588489f2572@redhat.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <8735o486mw.fsf@kurt>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, Nov 10, 2021 at 02:47:19PM +0100, Kurt Kanzenbach wrote:
+> On Wed Nov 10 2021, Vladimir Oltean wrote:
+> > Hi Kurt,
+> >
+> > On Wed, Nov 10, 2021 at 08:14:32AM +0100, Kurt Kanzenbach wrote:
+> >> Hi Vladimir,
+> >> 
+> >> On Tue Nov 09 2021, Vladimir Oltean wrote:
+> >> >> +void b53_port_txtstamp(struct dsa_switch *ds, int port, struct sk_buff *skb)
+> >> >> +{
+> >> >> +	struct b53_device *dev = ds->priv;
+> >> >> +	struct b53_port_hwtstamp *ps = &dev->ports[port].port_hwtstamp;
+> >> >> +	struct sk_buff *clone;
+> >> >> +	unsigned int type;
+> >> >> +
+> >> >> +	type = ptp_classify_raw(skb);
+> >> >> +
+> >> >> +	if (type != PTP_CLASS_V2_L2)
+> >> >> +		return;
+> >> >> +
+> >> >> +	if (!test_bit(B53_HWTSTAMP_ENABLED, &ps->state))
+> >> >> +		return;
+> >> >> +
+> >> >> +	clone = skb_clone_sk(skb);
+> >> >> +	if (!clone)
+> >> >> +		return;
+> >> >> +
+> >> >> +	if (test_and_set_bit_lock(B53_HWTSTAMP_TX_IN_PROGRESS, &ps->state)) {
+> >> >
+> >> > Is it ok if you simply don't timestamp a second skb which may be sent
+> >> > while the first one is in flight, I wonder? What PTP profiles have you
+> >> > tested with? At just one PTP packet at a time, the switch isn't giving
+> >> > you a lot.
+> >> 
+> >> PTP only generates a couple of messages per second which need to be
+> >> timestamped. Therefore, this behavior shouldn't be a problem.
+> >> 
+> >> hellcreek (and mv88e6xxx) do the same thing, simply because the device
+> >> can only hold only one Tx timestamp. If we'd allow more than one PTP
+> >> packet in flight, there will be correlation problems. I've tested with
+> >> default and gPTP profile without any problems. What PTP profiles do have
+> >> in mind?
+> >
+> > First of all, let's separate "more than one packet in flight" at the
+> > hardware/driver level vs user space level. Even if there is any hardware
+> > requirement to not request TX timestamping for the 2nd frame until the
+> > 1st has been acked, that shouldn't necessarily have an implication upon
+> > what user space sees. After all, we don't tell user space anything about
+> > the realities of the hardware it's running on.
+> 
+> Fair enough.
+> 
+> >
+> > So it is true that ptp4l is single threaded and always polls
+> > synchronously for the reception of a TX timestamp on the error queue
+> > before proceeding to do anything else. But writing a kernel driver to
+> > the specification of a single user space program is questionable.
+> > Especially with the SOF_TIMESTAMPING_OPT_ID flag of the SO_TIMESTAMPING
+> > socket option, it is quite possible to write a different PTP stack that
+> > handles TX timestamps differently. It sends event messages on their
+> > respective timer expiry (sync, peer delay request, whatever), and
+> > processes TX timestamps as they come, asynchronously instead of blocking.
+> > That other PTP stack would not work reliably with this driver (or with
+> > mv88e6xxx, or with hellcreek).
+> 
+> Yeah, a PTP stack which e.g. runs delay measurements independently from
+> the other tasks (sync, announce, ...) may run into trouble with such as
+> an implementation. I'm wondering how would you solve that problem for
+> hardware such as hellcreek? If a packet for timestamping is "in-flight"
+> the Tx path for a concurrent frame would have to be delayed. That might
+> be a surprise to the user as well.
 
+Yes, of course it would have to be delayed. But it would at least see
+the timestamp, on the other hand...
 
-On 11/10/21 9:25 PM, David Hildenbrand wrote:
-> On 10.11.21 13:56, Jason Gunthorpe wrote:
->> On Wed, Nov 10, 2021 at 06:54:13PM +0800, Qi Zheng wrote:
->>
->>> In this patch series, we add a pte_refcount field to the struct page of page
->>> table to track how many users of PTE page table. Similar to the mechanism of
->>> page refcount, the user of PTE page table should hold a refcount to it before
->>> accessing. The PTE page table page will be freed when the last refcount is
->>> dropped.
->>
->> So, this approach basically adds two atomics on every PTE map
->>
->> If I have it right the reason that zap cannot clean the PTEs today is
->> because zap cannot obtain the mmap lock due to a lock ordering issue
->> with the inode lock vs mmap lock.
-> 
-> There are different ways to zap: madvise(DONTNEED) vs
-> fallocate(PUNCH_HOLE). It depends on "from where" we're actually
-> comming: a process page table walker or the rmap.
-> 
-> The way locking currently works doesn't allow to remove a page table
-> just by holding the mmap lock, not even in write mode. You'll also need
-> to hold the respective rmap locks -- which implies that reclaiming apge
-> tables crossing VMAs is "problematic". Take a look at khugepaged which
-> has to play quite some tricks to remove a page table.
-> 
-> And there are other ways we can create empty page tables via the rmap,
-> like reclaim/writeback, although they are rather a secondary concern mostly.
-> 
->>
->> If it could obtain the mmap lock then it could do the zap using the
->> write side as unmapping a vma does.
->>
->> Rather than adding a new "lock" to ever PTE I wonder if it would be
->> more efficient to break up the mmap lock and introduce a specific
->> rwsem for the page table itself, in addition to the PTL. Currently the
->> mmap lock is protecting both the vma list and the page table.
-> 
-> There is the rmap side of things as well. At least the rmap won't
-> reclaim alloc/free page tables, but it will walk page tables while
-> holding the respective rmap lock.
-> 
->>
->> I think that would allow the lock ordering issue to be resolved and
->> zap could obtain a page table rwsem.
->>
->> Compared to two atomics per PTE this would just be two atomic per
->> page table walk operation, it is conceptually a lot simpler, and would
->> allow freeing all the page table levels, not just PTEs.
-> 
-> Another alternative is to not do it in the kernel automatically, but
-> instead have a madvise(MADV_CLEANUP_PGTABLE) mechanism that will get
-> called by user space explicitly once it's reasonable. While this will
-> work for the obvious madvise(DONTNEED) users -- like memory allocators
-> -- that zap memory, it's a bit more complicated once shared memory is
-> involved and we're fallocate(PUNCH_HOLE) memory. But it would at least
-> work for many use cases that want to optimize memory consumption for
-> sparse memory mappings.
-> 
-> Note that PTEs are the biggest memory consumer. On x86-64, a 1 TiB area
-> will consume 2 GiB of PTE tables and only 4 MiB of PMD tables. So PTEs
-> are most certainly the most important part piece.
-> 
+Christian Eggers, while working on the mythical ksz9477 PTP support, had
+the same kind of hardware to work with, and he unconditionally deferred
+PTP packets, then in a kthread owned by the driver (not the tagger), he
+initialized a completion structure, sent the packet, slept until the
+completion was done (signaled by an irq thread in his case, can be
+signaled by the tagger in Martin's case), and proceeded with the next
+packet. See ksz9477_defer_xmit() here:
+https://patchwork.ozlabs.org/project/netdev/patch/20201203102117.8995-9-ceggers@arri.de/
 
-total agree!
-
-Thanks,
-Qi
+It might look like I'm trying really hard to sell deferred xmit here,
+and that's not the case - I really hate it myself. But when putting two
+and two together, it really seems to be what is needed.
