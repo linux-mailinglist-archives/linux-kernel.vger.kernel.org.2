@@ -2,291 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9842644C5AB
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 18:03:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F3B644C5B5
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 18:05:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232338AbhKJRG3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Nov 2021 12:06:29 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:20702 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232177AbhKJRGZ (ORCPT
+        id S232453AbhKJRHt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Nov 2021 12:07:49 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49692 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231612AbhKJRHs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Nov 2021 12:06:25 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1636563817;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=FQBQ5GV6gdxpV3LZ1YIPdhUG1JWyAiTVUj8IYWvvfMw=;
-        b=afLcOD3BhFQy8Syr3vv5idnYSn1dzEw0+usQXgrbSdxvwVZNMr+I2B7nRbyjs13c5wr5IH
-        1beGPIrjdCnEb9bDgvuKUy/92yrsvUKjD5xcZBT+5DNSMeP3e53sy/cmXdp+bDUCq5wic4
-        Hn/2zqY0LTgOyLUZJzNak1c3GgDcnaQ=
-Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
- [209.85.221.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-52-d3now_utNg6Wwio4sjJnXA-1; Wed, 10 Nov 2021 12:03:36 -0500
-X-MC-Unique: d3now_utNg6Wwio4sjJnXA-1
-Received: by mail-wr1-f69.google.com with SMTP id y9-20020a5d6209000000b001684625427eso564223wru.7
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Nov 2021 09:03:35 -0800 (PST)
+        Wed, 10 Nov 2021 12:07:48 -0500
+Received: from mail-lj1-x22b.google.com (mail-lj1-x22b.google.com [IPv6:2a00:1450:4864:20::22b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 65A8BC061764;
+        Wed, 10 Nov 2021 09:05:00 -0800 (PST)
+Received: by mail-lj1-x22b.google.com with SMTP id 13so6560053ljj.11;
+        Wed, 10 Nov 2021 09:05:00 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=rZ1Zl46xEZQDGHVO4B1TxjrGhlKCxJ4w4SjGu0D6fHk=;
+        b=gMl53kRifDnyOXBEmqc2rS3j2CJi4CTk6mbenQ2nClx/ZrA3OMyT8RpLruWFfHGXt8
+         cjvacfW0ZBNqM9QNV5JiD/dlzNXo4bYZSVQDYYr5IpQIXc7nm4xJm5tu/+w5H9bO9/je
+         hY6RmnYaRiZyyl23ifJd6iS7tNGk7LUcJrVjwvWy9A/14rroSUVARFqp/ELbRHyTMAyF
+         VyzKUQ+3Qu/vwiK6xcfg4sVvHHjWMeX5bR6FkFDUzIVGpic/CL7gyAOfnfEeHROK5Q8w
+         V62sVYF2/ddX/JTwGK7en6LtNEFMtgI1Cfri/L2kFD5GxN5C3euxdGQAuOrxNTwSDbZb
+         c0Lg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=FQBQ5GV6gdxpV3LZ1YIPdhUG1JWyAiTVUj8IYWvvfMw=;
-        b=a8gzqnPTICvYgQ+ykJSMbKsx7FUKBtLNeuXODIoCBjn60hV62NXAjmT4fpNpTtTZMx
-         b+XNINT1IYBSCKcC5+cNwOGUQiwPBUhSG8QW4q7e3XJ0RndWEdkpcPjaCBHQyokr1X66
-         7Syz8f4T4rdyA7rpjKG7X8n6Az7XZxt59turv/Kno/mvYjr7ux90ZJ62FAmasKX6ruAa
-         Rrs7DplSnpc8pLZ+mKmPNiTCg8ovPKo6AF+2DlgLz3jw2vR6O+LGyFm2F4zGNJmKSwLn
-         UmFcpHHi/cwD4/Ow2K22Da9PyIRyTuZKZbDH4D2svwuu9JmHqWgcJhm8qanJJMJpGZ8u
-         SIQg==
-X-Gm-Message-State: AOAM532by1JxtYxG/zscIFoOTMd2JLEKLSNDNN+ddQfTghi2xsdxU3JG
-        a+dm1l3eV6c4z+nQ3MeSVtKKxrMnQxM1YzBQDUfZZ9+oYmpW5X4i/nQP1LnDrb4+oeYFUyiWrMH
-        1gAMvP6DsSo+h8qyB3syOvSDD
-X-Received: by 2002:adf:ce0e:: with SMTP id p14mr551574wrn.423.1636563814648;
-        Wed, 10 Nov 2021 09:03:34 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJyrsIiuV6DLoUx3vhu7fe0Z8vzAwRCp5SwwfYqbhWvnsnUeDV0lvT6ihmH7onVoe32Y3qScgA==
-X-Received: by 2002:adf:ce0e:: with SMTP id p14mr551532wrn.423.1636563814405;
-        Wed, 10 Nov 2021 09:03:34 -0800 (PST)
-Received: from ?IPv6:2a01:e0a:59e:9d80:527b:9dff:feef:3874? ([2a01:e0a:59e:9d80:527b:9dff:feef:3874])
-        by smtp.gmail.com with ESMTPSA id p2sm6723185wmq.23.2021.11.10.09.03.31
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 10 Nov 2021 09:03:33 -0800 (PST)
-Subject: Re: [PATCH v4 04/15] KVM: x86: Use generic async PF slot management
-To:     Gavin Shan <gshan@redhat.com>, kvmarm@lists.cs.columbia.edu
-Cc:     kvm@vger.kernel.org, maz@kernel.org, linux-kernel@vger.kernel.org,
-        shan.gavin@gmail.com, Jonathan.Cameron@huawei.com,
-        pbonzini@redhat.com, vkuznets@redhat.com, will@kernel.org
-References: <20210815005947.83699-1-gshan@redhat.com>
- <20210815005947.83699-5-gshan@redhat.com>
-From:   Eric Auger <eauger@redhat.com>
-Message-ID: <a3b0e70a-eddd-9a85-2c9c-ba5446ac542b@redhat.com>
-Date:   Wed, 10 Nov 2021 18:03:30 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=rZ1Zl46xEZQDGHVO4B1TxjrGhlKCxJ4w4SjGu0D6fHk=;
+        b=QzQ/d1uk68FZcEUvuMBSbyhY5VnQ16+dT3mFj+KFy3YO3Yu3ANOoRn3r4tXiCyBaIk
+         QWeO/tVp/Asj6AxWrtjvzA96SLXjnMpj+Agk7aR50xM4Nr6yqnhbD6U7YOTWh8M0Y8Wg
+         UVQqlMTHOpL/oVs0Qo8n9WOMo1V5AjdMsarH4E21OmXou3D3Zod4kzrazAS8XfKg4tcX
+         3h3VicJ/b5DATWg/caTFgALatjIXdVIfyswSaSy4BRGd1AyteBR6mMrrpojp821KQGGh
+         fLtJ0ZrputC4Dhf2TtFCHuoojrmNUF33f4+O9qusa9/2mrdZ9XeTnKHYLDqzWYCBp7r0
+         f8gw==
+X-Gm-Message-State: AOAM533RV9lfmMOJty1YqxWUtTrsVDWzAKLOVimUEHLeKXEmHaQWTr98
+        Ojy4nKvP6TTqlb1jFQDaqDg17kveU7xt2nuMpT8=
+X-Google-Smtp-Source: ABdhPJwJnmkr6d7fuImEGD4NV4cjsFo+YJ+wFedBnB1RYFcqsr4CHdHdYFy6pl1MpKliBr7HkZG3kfmpGYcXmGcPcxI=
+X-Received: by 2002:a2e:2f1d:: with SMTP id v29mr410304ljv.439.1636563898700;
+ Wed, 10 Nov 2021 09:04:58 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20210815005947.83699-5-gshan@redhat.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20211109200840.135019-1-puranjay12@gmail.com> <20211109200840.135019-2-puranjay12@gmail.com>
+ <YYuIcPLx0uoUZ88B@smile.fi.intel.com>
+In-Reply-To: <YYuIcPLx0uoUZ88B@smile.fi.intel.com>
+From:   Puranjay Mohan <puranjay12@gmail.com>
+Date:   Wed, 10 Nov 2021 22:34:43 +0530
+Message-ID: <CANk7y0jRKVrTRZCzq0W1G7_Ef1QqF5yqKs==DwsR+xuhra3b4A@mail.gmail.com>
+Subject: Re: [PATCH v2 1/2] device property: Add fwnode_irq_get_byname()
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc:     Greg KH <gregkh@linuxfoundation.org>, rafael@kernel.org,
+        heikki.krogerus@linux.intel.com, kuba@kernel.org,
+        saravanak@google.com,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        "Hennerich, Michael" <Michael.Hennerich@analog.com>,
+        Jonathan Cameron <jic23@kernel.org>,
+        linux-iio <linux-iio@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Gavin,
+On Wed, Nov 10, 2021 at 2:23 PM Andy Shevchenko
+<andriy.shevchenko@linux.intel.com> wrote:
+>
+> On Wed, Nov 10, 2021 at 01:38:39AM +0530, Puranjay Mohan wrote:
+> > The fwnode framework did not have means to obtain the IRQ number from
+> > the name of a node.
+> > Add that now, in form of the fwnode_irq_get_byname() function.
+>
+> ...
+>
+> > +int fwnode_irq_get_byname(struct fwnode_handle *fwnode, const char *name)
+> > +{
+> > +     int index;
+> > +
+> > +     if (unlikely(!name))
+> > +             return -EINVAL;
+>
+> > +     index = fwnode_property_match_string(fwnode, "interrupt-names", name);
+> > +     if (index < 0)
+> > +             return index;
+>
+> It won't work like this. The ACPI table quite likely won't have this in them.
+> Also it doesn't cover the GPIO interrupts in ACPI case.
+>
+> > +     return fwnode_irq_get(fwnode, index);
+>
+> Neither this covers GPIO IRQs.
+>
+> > +}
+> > +EXPORT_SYMBOL(fwnode_irq_get_byname);
+>
+> So, first you need to provide a design for this how ACPI cases can be handled.
+>
+> Imagine these cases (at least) for _CRS method in ACPI:
+>   1/ Single GSI
+>
+>         Interrupt()
+>
+>   2/ Single GPIO IRQ
+>
+>         GpioInt()
+>
+>   3/ Both in different orders
+>     a)
+>         Interrupt()
+>         GpioInt()
+>
+>     b)
+>         GpioInt()
+>         Interrupt()
+>
+>   4/ Mixed (complicated cases)
+>
+>         Interrupt()
+>         Interrupt()
+>         GpioInt()
+>         Interrupt()
+>         GpioInt()
+>
+> Obvious question, what does the index mean in all these cases?
+>
+> Next one is, how can we quirk out the platforms with the old ACPI tables
+> where no properties are provided? For GPIO there is struct acpi_gpio_params
+> which goes deep into ACPI glue layer.
+>
+> Luckily, the GPIO IRQ case has already available APIs for indexing and naming
+> match: acpi_dev_gpio_irq_get_by().
+>
+> Hence, the main task is to define index in cases like 4 and see what can be
+> done for the GSI cases.
+>
+> --
+> With Best Regards,
+> Andy Shevchenko
+>
+>
+Hi Andy,
+I wrote this function keeping the device tree in mind. I will have to
+look into ACPI and see how the cases you mentioned can be implemented.
+Let's see how far I can get with understanding the ACPI.
 
-On 8/15/21 2:59 AM, Gavin Shan wrote:
-> This uses the generic slot management mechanism for asynchronous
-Now we have moved the hash table management in the generic code, Use
-this latter ...
-> page fault by enabling CONFIG_KVM_ASYNC_PF_SLOT because the private
-> implementation is totally duplicate to the generic one.
-> 
-> The changes introduced by this is pretty mechanical and shouldn't
-> cause any logical changes.
-suggest: No functional change intended.
-> 
-> Signed-off-by: Gavin Shan <gshan@redhat.com>
-> ---
->  arch/x86/include/asm/kvm_host.h |  2 -
->  arch/x86/kvm/Kconfig            |  1 +
->  arch/x86/kvm/mmu/mmu.c          |  2 +-
->  arch/x86/kvm/x86.c              | 86 +++------------------------------
->  4 files changed, 8 insertions(+), 83 deletions(-)
-> 
-> diff --git a/arch/x86/include/asm/kvm_host.h b/arch/x86/include/asm/kvm_host.h
-> index 974cbfb1eefe..409c1e7137cd 100644
-> --- a/arch/x86/include/asm/kvm_host.h
-> +++ b/arch/x86/include/asm/kvm_host.h
-> @@ -810,7 +810,6 @@ struct kvm_vcpu_arch {
->  
->  	struct {
->  		bool halted;
-> -		gfn_t gfns[ASYNC_PF_PER_VCPU];
->  		struct gfn_to_hva_cache data;
->  		u64 msr_en_val; /* MSR_KVM_ASYNC_PF_EN */
->  		u64 msr_int_val; /* MSR_KVM_ASYNC_PF_INT */
-> @@ -1878,7 +1877,6 @@ void kvm_arch_async_page_ready(struct kvm_vcpu *vcpu,
->  			       struct kvm_async_pf *work);
->  void kvm_arch_async_page_present_queued(struct kvm_vcpu *vcpu);
->  bool kvm_arch_can_dequeue_async_page_present(struct kvm_vcpu *vcpu);
-> -extern bool kvm_find_async_pf_gfn(struct kvm_vcpu *vcpu, gfn_t gfn);
->  
->  int kvm_skip_emulated_instruction(struct kvm_vcpu *vcpu);
->  int kvm_complete_insn_gp(struct kvm_vcpu *vcpu, int err);
-> diff --git a/arch/x86/kvm/Kconfig b/arch/x86/kvm/Kconfig
-> index ac69894eab88..53a6ef30b6ee 100644
-> --- a/arch/x86/kvm/Kconfig
-> +++ b/arch/x86/kvm/Kconfig
-> @@ -32,6 +32,7 @@ config KVM
->  	select HAVE_KVM_IRQ_ROUTING
->  	select HAVE_KVM_EVENTFD
->  	select KVM_ASYNC_PF
-> +	select KVM_ASYNC_PF_SLOT
->  	select USER_RETURN_NOTIFIER
->  	select KVM_MMIO
->  	select SCHED_INFO
-> diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
-> index c4f4fa23320e..cd8aaa662ac2 100644
-> --- a/arch/x86/kvm/mmu/mmu.c
-> +++ b/arch/x86/kvm/mmu/mmu.c
-> @@ -3799,7 +3799,7 @@ static bool try_async_pf(struct kvm_vcpu *vcpu, bool prefault, gfn_t gfn,
->  
->  	if (!prefault && kvm_can_do_async_pf(vcpu)) {
->  		trace_kvm_try_async_get_page(cr2_or_gpa, gfn);
-> -		if (kvm_find_async_pf_gfn(vcpu, gfn)) {
-> +		if (kvm_async_pf_find_slot(vcpu, gfn)) {
->  			trace_kvm_async_pf_doublefault(cr2_or_gpa, gfn);
->  			kvm_make_request(KVM_REQ_APF_HALT, vcpu);
->  			return true;
-> diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-> index 7f35d9324b99..a5f7d6122178 100644
-> --- a/arch/x86/kvm/x86.c
-> +++ b/arch/x86/kvm/x86.c
-> @@ -332,13 +332,6 @@ static struct kmem_cache *kvm_alloc_emulator_cache(void)
->  
->  static int emulator_fix_hypercall(struct x86_emulate_ctxt *ctxt);
->  
-> -static inline void kvm_async_pf_hash_reset(struct kvm_vcpu *vcpu)
-> -{
-> -	int i;
-> -	for (i = 0; i < ASYNC_PF_PER_VCPU; i++)
-> -		vcpu->arch.apf.gfns[i] = ~0;
-> -}
-> -
->  static void kvm_on_user_return(struct user_return_notifier *urn)
->  {
->  	unsigned slot;
-> @@ -854,7 +847,7 @@ void kvm_post_set_cr0(struct kvm_vcpu *vcpu, unsigned long old_cr0, unsigned lon
->  {
->  	if ((cr0 ^ old_cr0) & X86_CR0_PG) {
->  		kvm_clear_async_pf_completion_queue(vcpu);
-> -		kvm_async_pf_hash_reset(vcpu);
-> +		kvm_async_pf_reset_slot(vcpu);
->  	}
->  
->  	if ((cr0 ^ old_cr0) & KVM_MMU_CR0_ROLE_BITS)
-> @@ -3118,7 +3111,7 @@ static int kvm_pv_enable_async_pf(struct kvm_vcpu *vcpu, u64 data)
->  
->  	if (!kvm_pv_async_pf_enabled(vcpu)) {
->  		kvm_clear_async_pf_completion_queue(vcpu);
-> -		kvm_async_pf_hash_reset(vcpu);
-> +		kvm_async_pf_reset_slot(vcpu);
->  		return 0;
->  	}
->  
-> @@ -10704,7 +10697,7 @@ int kvm_arch_vcpu_create(struct kvm_vcpu *vcpu)
->  
->  	vcpu->arch.pat = MSR_IA32_CR_PAT_DEFAULT;
->  
-> -	kvm_async_pf_hash_reset(vcpu);
-> +	kvm_async_pf_reset_slot(vcpu);
->  	kvm_pmu_init(vcpu);
->  
->  	vcpu->arch.pending_external_vector = -1;
-> @@ -10828,7 +10821,7 @@ void kvm_vcpu_reset(struct kvm_vcpu *vcpu, bool init_event)
->  	kvmclock_reset(vcpu);
->  
->  	kvm_clear_async_pf_completion_queue(vcpu);
-> -	kvm_async_pf_hash_reset(vcpu);
-> +	kvm_async_pf_reset_slot(vcpu);
->  	vcpu->arch.apf.halted = false;
->  
->  	if (vcpu->arch.guest_fpu && kvm_mpx_supported()) {
-> @@ -11737,73 +11730,6 @@ void kvm_arch_async_page_ready(struct kvm_vcpu *vcpu, struct kvm_async_pf *work)
->  	kvm_mmu_do_page_fault(vcpu, work->cr2_or_gpa, 0, true);
->  }
->  
-> -static inline u32 kvm_async_pf_hash_fn(gfn_t gfn)
-> -{
-> -	BUILD_BUG_ON(!is_power_of_2(ASYNC_PF_PER_VCPU));
-> -
-> -	return hash_32(gfn & 0xffffffff, order_base_2(ASYNC_PF_PER_VCPU));
-> -}
-> -
-> -static inline u32 kvm_async_pf_next_probe(u32 key)
-> -{
-> -	return (key + 1) & (ASYNC_PF_PER_VCPU - 1);
-> -}
-> -
-> -static void kvm_add_async_pf_gfn(struct kvm_vcpu *vcpu, gfn_t gfn)
-> -{
-> -	u32 key = kvm_async_pf_hash_fn(gfn);
-> -
-> -	while (vcpu->arch.apf.gfns[key] != ~0)
-> -		key = kvm_async_pf_next_probe(key);
-> -
-> -	vcpu->arch.apf.gfns[key] = gfn;
-> -}
-> -
-> -static u32 kvm_async_pf_gfn_slot(struct kvm_vcpu *vcpu, gfn_t gfn)
-> -{
-> -	int i;
-> -	u32 key = kvm_async_pf_hash_fn(gfn);
-> -
-> -	for (i = 0; i < ASYNC_PF_PER_VCPU &&
-> -		     (vcpu->arch.apf.gfns[key] != gfn &&
-> -		      vcpu->arch.apf.gfns[key] != ~0); i++)
-> -		key = kvm_async_pf_next_probe(key);
-> -
-> -	return key;
-> -}
-> -
-> -bool kvm_find_async_pf_gfn(struct kvm_vcpu *vcpu, gfn_t gfn)
-> -{
-> -	return vcpu->arch.apf.gfns[kvm_async_pf_gfn_slot(vcpu, gfn)] == gfn;
-> -}
-> -
-> -static void kvm_del_async_pf_gfn(struct kvm_vcpu *vcpu, gfn_t gfn)
-> -{
-> -	u32 i, j, k;
-> -
-> -	i = j = kvm_async_pf_gfn_slot(vcpu, gfn);
-> -
-> -	if (WARN_ON_ONCE(vcpu->arch.apf.gfns[i] != gfn))
-> -		return;
-> -
-> -	while (true) {
-> -		vcpu->arch.apf.gfns[i] = ~0;
-> -		do {
-> -			j = kvm_async_pf_next_probe(j);
-> -			if (vcpu->arch.apf.gfns[j] == ~0)
-> -				return;
-> -			k = kvm_async_pf_hash_fn(vcpu->arch.apf.gfns[j]);
-> -			/*
-> -			 * k lies cyclically in ]i,j]
-> -			 * |    i.k.j |
-> -			 * |....j i.k.| or  |.k..j i...|
-> -			 */
-> -		} while ((i <= j) ? (i < k && k <= j) : (i < k || k <= j));
-> -		vcpu->arch.apf.gfns[i] = vcpu->arch.apf.gfns[j];
-> -		i = j;
-> -	}
-> -}
-> -
->  static inline int apf_put_user_notpresent(struct kvm_vcpu *vcpu)
->  {
->  	u32 reason = KVM_PV_REASON_PAGE_NOT_PRESENT;
-> @@ -11867,7 +11793,7 @@ bool kvm_arch_async_page_not_present(struct kvm_vcpu *vcpu,
->  	struct x86_exception fault;
->  
->  	trace_kvm_async_pf_not_present(work->arch.token, work->cr2_or_gpa);
-> -	kvm_add_async_pf_gfn(vcpu, work->arch.gfn);
-> +	kvm_async_pf_add_slot(vcpu, work->arch.gfn);
->  
->  	if (kvm_can_deliver_async_pf(vcpu) &&
->  	    !apf_put_user_notpresent(vcpu)) {
-> @@ -11904,7 +11830,7 @@ void kvm_arch_async_page_present(struct kvm_vcpu *vcpu,
->  	if (work->wakeup_all)
->  		work->arch.token = ~0; /* broadcast wakeup */
->  	else
-> -		kvm_del_async_pf_gfn(vcpu, work->arch.gfn);
-> +		kvm_async_pf_remove_slot(vcpu, work->arch.gfn);
->  	trace_kvm_async_pf_ready(work->arch.token, work->cr2_or_gpa);
->  
->  	if ((work->wakeup_all || work->notpresent_injected) &&
-> 
-Looks good to me
+-- 
+Thanks and Regards
 
-Eric
+Yours Truly,
 
+Puranjay Mohan
