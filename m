@@ -2,117 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EC1E544BE44
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 11:07:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 191DD44BE46
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 11:07:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231150AbhKJKKW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Nov 2021 05:10:22 -0500
-Received: from uho.ysoft.cz ([81.19.3.130]:18961 "EHLO uho.ysoft.cz"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229831AbhKJKKV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Nov 2021 05:10:21 -0500
-Received: from [10.0.29.210] (unknown [10.0.29.210])
-        by uho.ysoft.cz (Postfix) with ESMTP id 0A381A0753;
-        Wed, 10 Nov 2021 11:07:32 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ysoft.com;
-        s=20160406-ysoft-com; t=1636538852;
-        bh=dd4tweGuclD5iB1Lg5dfzSruG+i/XLfegDyheWwHhSE=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=LFZeOvbiVMfXPvItc40LgittKMeQljGiubYm5zvEVqxxCfcDoemPzcsrEMUipFshv
-         mSAl2Pfw0mnGkege/Q+S1mmN7dZ8HJUVT7OpNKgYcAhpnuS6Cehe/tgKAM2mH4+28o
-         Oa2Q88yz+My1z8ntDZxAmZ7T5bekDfbIRSdIKmNc=
-Subject: Re: [PATCH v2] thermal: imx: implement runtime PM support
-To:     Oleksij Rempel <o.rempel@pengutronix.de>
-Cc:     Daniel Lezcano <daniel.lezcano@linaro.org>,
-        linux-pm@vger.kernel.org, Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Amit Kucheria <amitk@kernel.org>, linux-kernel@vger.kernel.org,
-        Andrzej Pietrasiewicz <andrzej.p@collabora.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        David Jander <david@protonic.nl>,
-        Zhang Rui <rui.zhang@intel.com>,
-        Fabio Estevam <festevam@gmail.com>,
-        linux-arm-kernel@lists.infradead.org,
-        Petr Benes <petrben@gmail.com>
-References: <20211019130809.21281-1-o.rempel@pengutronix.de>
- <20211020050459.GE16320@pengutronix.de>
- <CAPwXO5b=z1nhQCo55A_XuK-Es2o7TrL2Vj6AkRSXa3Wxh0s8sA@mail.gmail.com>
- <20211021172048.GE2298@pengutronix.de>
- <CAPwXO5bWoAvZgQLQHa6CsFmZ2bcUQ9pJQBBL3F+goppMeAKkFQ@mail.gmail.com>
-From:   =?UTF-8?B?TWljaGFsIFZva8OhxI0=?= <michal.vokac@ysoft.com>
-Message-ID: <8692108c-1b46-3d3d-6911-300ac27c2980@ysoft.com>
-Date:   Wed, 10 Nov 2021 11:07:31 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        id S231166AbhKJKK2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Nov 2021 05:10:28 -0500
+Received: from Galois.linutronix.de ([193.142.43.55]:41954 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230440AbhKJKK0 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Nov 2021 05:10:26 -0500
+From:   John Ogness <john.ogness@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1636538858;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=6H3iJsYLymZGZdTTPIwaF3WwOUQj7EWnfPhR6PY5oWA=;
+        b=i97ffLNgZOCzWFBRclG7GYiqXi7MHOrZxbOXgJo0pTV9VaaVPhnG7NnoN6yM3YQF/vW6FC
+        /3gyS9iBsC5urXBvXaYF49NEiCksYHVOTalS1S/1WP1VfMlkHIkSawA/Ap8njZ2dqksKpL
+        LqdnqRoK4lkmtv0Nz56XOk+A2fQ6Qr/lejEAUjmBko0vER8YoFp+rdooaaLKYDMEXhtJoH
+        jx7lE1sPblbEaXau0X5Qe99u1WmUZbWkd/MsTkgcxhkOaB1uhw+41/cBH3eVL3dFXAOQqw
+        J6WbiaGNlGR9igGy7y9MoRYhexo0UfhlV76JID34cVRgrVSIGg+lt80o8j0N5Q==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1636538858;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=6H3iJsYLymZGZdTTPIwaF3WwOUQj7EWnfPhR6PY5oWA=;
+        b=ee6Y2TYLMpo7uGsr+qYoymWA2RnXgQ7bpfSm69n5Kv+JYUF4RpPSJ2gC9dckYjRQ6jAAGr
+        HFIj1zE58dGl46AA==
+To:     Daniel Vetter <daniel@ffwll.ch>,
+        Peter Zijlstra <peterz@infradead.org>
+Cc:     Sultan Alsawaf <sultan@kerneltoast.com>,
+        Anton Vorontsov <anton@enomsg.org>,
+        Ben Segall <bsegall@google.com>,
+        Colin Cross <ccross@android.com>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        David Airlie <airlied@linux.ie>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        dri-devel@lists.freedesktop.org, Ingo Molnar <mingo@redhat.com>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Kees Cook <keescook@chromium.org>,
+        linux-kernel@vger.kernel.org,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Mel Gorman <mgorman@suse.de>, Petr Mladek <pmladek@suse.com>,
+        Sergey Senozhatsky <senozhatsky@chromium.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Tony Luck <tony.luck@intel.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>, mkoutny@suse.com
+Subject: Re: printk deadlock due to double lock attempt on current CPU's
+ runqueue
+In-Reply-To: <YYuS1uNhxWOEX1Ci@phenom.ffwll.local>
+References: <YYrU2PdmdNkulWSM@sultan-box.localdomain>
+ <20211109213847.GY174703@worktop.programming.kicks-ass.net>
+ <YYuS1uNhxWOEX1Ci@phenom.ffwll.local>
+Date:   Wed, 10 Nov 2021 11:13:37 +0106
+Message-ID: <87fss4wcgm.fsf@jogness.linutronix.de>
 MIME-Version: 1.0
-In-Reply-To: <CAPwXO5bWoAvZgQLQHa6CsFmZ2bcUQ9pJQBBL3F+goppMeAKkFQ@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 25. 10. 21 13:06, Petr Benes wrote:
-> Hi Oleksij,
-> 
-> On Thu, 21 Oct 2021 at 19:21, Oleksij Rempel <o.rempel@pengutronix.de> wrote:
->>
->> Hi Petr,
->>
->> On Wed, Oct 20, 2021 at 05:53:03PM +0200, Petr Benes wrote:
->>> On Wed, 20 Oct 2021 at 07:05, Oleksij Rempel <o.rempel@pengutronix.de> wrote:
->>>>
->>>> Hi Petr and Michal,
->>>>
->>>> I forgot to add you for v2 in CC. Please test/review this version.
->>>
->>> Hi Oleksij,
->>>
->>> It works good. with PM as well as without PM. The only minor issue I found is,
->>> that the first temperature reading (when the driver probes) fails. That is
->>> (val & soc_data->temp_valid_mask) == 0) holds true. How does
->>> pm_runtime_resume_and_get() behave in imx_thermal_probe()?
->>> Does it go through imx_thermal_runtime_resume() with usleep_range()?
->>
->> How exactly did you reproduce it? Even more or less understanding how
-> 
-> I just placed my debug print into get_temp()
-> 
->      if ((val & soc_data->temp_valid_mask) == 0) {
->          dev_dbg(&tz->device, "temp measurement never finished\n");
->          printk("Wrong temperature reading!!!!!!\n");
->          return -EAGAIN;
->      }
-> 
->> this can potentially happen, i never had this issue on my HW. Is it something
->> HW specific?
-> 
-> IMHO it is just product of the following sequence:
-> 
-> pm_runtime_set_active(&pdev->dev);
-> pm_runtime_enable(data->dev);
-> pm_runtime_resume_and_get(data->dev);
-> thermal_zone_device_enable(data->tz);
-> 
-> With assumption imx_thermal_runtime_resume() didn't run,
-> hence the sensor didn't get enough time to come up.
-> 
-> I didn't have time to spend it on and you have better knowledge of the
-> area. If it is not that straightforward I can try to diagnose it better.
->
-Hi Oleksij,
-Did you manage to further debug and reproduce this problem?
-Do you plan to send the v3?
+On 2021-11-10, Daniel Vetter <daniel@ffwll.ch> wrote:
+> I'm a bit out of the loop but from lwn articles my understanding is
+> that part of upstreaming from -rt we no longer have the explicit "I'm
+> a safe console for direct printing" opt-in. Which I get from a
+> backwards compat pov, but I still think for at least fbcon we really
+> should never attempt a direct printk con->write, it's just all around
+> terrible.
 
-Regarding your question about the HW - this problem occured once we
-upgraded the SoC on our SBC from i.MX6DL to i.MX6Q/QP. With the DualLite
-we never had this problem but the Quad is getting hot quite fast.
-We have pretty limited cooling options so the core is operated at its
-upper temperature limits when fully loaded.
+Right now we don't have an explicit "I'm a safe console for direct
+printing" option. Right now all printing is direct. But it sounds to me
+that we should add this console flag when we introduce kthread printers.
 
-Best regards,
-Michal
+> So yeah for fbcon at least I think we really should throw out direct
+> con->write from printk completely.
 
+Even after we introduce kthread printers, there will still be situations
+where direct printing is used: booting (before kthreads exist) and
+shutdown/suspend/crash situations, when the kthreads may not be
+active.
 
+I will introduce a console flag so that consoles can opt-out for direct
+printing. (opt-out rather than opt-in is probably easier, since there
+are only a few that would need to opt-out).
+
+Since kthread printers do not yet exist (hoping to get them in for
+5.17), I am not sure how we should address the reported bug for existing
+kernels.
+
+John Ogness
