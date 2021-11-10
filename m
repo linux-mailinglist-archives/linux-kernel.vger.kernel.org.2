@@ -2,149 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5E67A44C110
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 13:16:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C115044C114
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 13:16:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231494AbhKJMSy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Nov 2021 07:18:54 -0500
-Received: from comms.puri.sm ([159.203.221.185]:47426 "EHLO comms.puri.sm"
+        id S231540AbhKJMTM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Nov 2021 07:19:12 -0500
+Received: from mail.kernel.org ([198.145.29.99]:55322 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231229AbhKJMSx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Nov 2021 07:18:53 -0500
-Received: from localhost (localhost [127.0.0.1])
-        by comms.puri.sm (Postfix) with ESMTP id 01291DFD9F;
-        Wed, 10 Nov 2021 04:15:36 -0800 (PST)
-Received: from comms.puri.sm ([127.0.0.1])
-        by localhost (comms.puri.sm [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id zz40ZZMGPKYC; Wed, 10 Nov 2021 04:15:35 -0800 (PST)
-Message-ID: <e9a3a64dcfec858e612037199df7627b77ececd9.camel@puri.sm>
-Subject: Re: [RFC 06/19] devfreq: imx8m-ddrc: Add late system sleep PM ops
-From:   Martin Kepplinger <martin.kepplinger@puri.sm>
-To:     Abel Vesa <abel.vesa@nxp.com>, Rob Herring <robh@kernel.org>,
-        Dong Aisheng <aisheng.dong@nxp.com>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        "catalin.marinas@arm.com" <catalin.marinas@arm.com>,
-        Will Deacon <will.deacon@arm.com>,
-        MyungJoo Ham <myungjoo.ham@samsung.com>,
-        Kyungmin Park <kyungmin.park@samsung.com>,
-        Chanwoo Choi <cw00.choi@samsung.com>,
-        Georgi Djakov <djakov@kernel.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
+        id S231131AbhKJMTM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Nov 2021 07:19:12 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0B97761247;
+        Wed, 10 Nov 2021 12:16:20 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1636546584;
+        bh=ZYFWL/ZZSINDrj9gVT8HDnC1qKVafjx6t2mJPgowNVQ=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=reIhBKYtcg8k442u+V9YxuQbe8lxhoFCd41JIRHoPfobRr49BEKhEDTBUAwCjT0Vf
+         Rp0CEx223jng3x8zHBLJMnLNfaS0xrx15PkY/xJ/7cFe1uXdqc3JdekDpP+80ysXF5
+         uUmkOdyU7+Wi/2sF8m32JRo1J72u5NLS28WSnUedYUGEo6g9aIKdkF6VK8DT/14LCF
+         ldkxpAYsUNmVgj31jZvsa4NSzTQ1O+B7RtbRT0Ib8LuZGZcG8gaFJ6KBFy1462TVDu
+         9u7Yz0LaUUv7rD9tiA3F07iRoRI1/GvF2wO12X+hvrZa8UwsCawwpXMey99vsww45J
+         VbXyxJRP5OlBw==
+Date:   Wed, 10 Nov 2021 14:16:18 +0200
+From:   Abel Vesa <abelvesa@kernel.org>
+To:     Saravana Kannan <saravanak@google.com>
+Cc:     Russell King <linux@armlinux.org.uk>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Magnus Damm <magnus.damm@gmail.com>,
+        Tony Lindgren <tony@atomide.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Damien Le Moal <damien.lemoal@wdc.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         Ulf Hansson <ulf.hansson@linaro.org>,
-        Ahmad Fatoum <a.fatoum@pengutronix.de>
-Cc:     Pengutronix Kernel Team <kernel@pengutronix.de>,
-        linux-serial@vger.kernel.org, NXP Linux Team <linux-imx@nxp.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        devicetree@vger.kernel.org, linux-pm@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org
-Date:   Wed, 10 Nov 2021 13:15:26 +0100
-In-Reply-To: <1631554694-9599-7-git-send-email-abel.vesa@nxp.com>
-References: <1631554694-9599-1-git-send-email-abel.vesa@nxp.com>
-         <1631554694-9599-7-git-send-email-abel.vesa@nxp.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.38.3-1 
+        Rob Herring <robh+dt@kernel.org>, kernel-team@android.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-oxnas@groups.io, linux-renesas-soc@vger.kernel.org,
+        linux-omap@vger.kernel.org, linux-riscv@lists.infradead.org
+Subject: Re: [PATCH v4 1/2] drivers: bus: simple-pm-bus: Add support for
+ probing simple bus only devices
+Message-ID: <YYu4EglV7SBZU2Iy@ryzen>
+References: <20210929000735.585237-1-saravanak@google.com>
+ <20210929000735.585237-2-saravanak@google.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210929000735.585237-2-saravanak@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Am Montag, dem 13.09.2021 um 20:38 +0300 schrieb Abel Vesa:
-> Seems that, in order to be able to resume from suspend, the dram rate
-> needs to be the highest one available. Therefore, add the late system
-> suspend/resume PM ops which set the highest rate on suspend and the
-> latest one used before suspending on resume.
-
-Hi Abel, wouldn't this mean that s2idle / freeze would be kind of
-broken by this?
-
-Does is make sense to test the lowest rate? How would I force that
-here? (just for testing)
-
-Also, you could think about splitting this series up a bit and do this
-patch seperately onto mainline (before or after the other work).
-
-thank you
-                          martin
-
-
+On 21-09-28 17:07:33, Saravana Kannan wrote:
+> fw_devlink could end up creating device links for bus only devices.
+> However, bus only devices don't get probed and can block probe() or
+> sync_state() [1] call backs of other devices. To avoid this, probe these
+> devices using the simple-pm-bus driver.
 > 
-> Signed-off-by: Abel Vesa <abel.vesa@nxp.com>
+> However, there are instances of devices that are not simple buses (they get
+> probed by their specific drivers) that also list the "simple-bus" (or other
+> bus only compatible strings) in their compatible property to automatically
+> populate their child devices. We still want these devices to get probed by
+> their specific drivers. So, we make sure this driver only probes devices
+> that are only buses.
+> 
+> [1] - https://lore.kernel.org/lkml/CAPDyKFo9Bxremkb1dDrr4OcXSpE0keVze94Cm=zrkOVxHHxBmQ@mail.gmail.com/
+> Fixes: c442a0d18744 ("driver core: Set fw_devlink to "permissive" behavior by default")
+> Signed-off-by: Saravana Kannan <saravanak@google.com>
+> Tested-by: Saravana Kannan <saravanak@google.com>
+> Tested-by: Ulf Hansson <ulf.hansson@linaro.org>
 > ---
->  drivers/devfreq/imx8m-ddrc.c | 28 +++++++++++++++++++++++++++-
->  1 file changed, 27 insertions(+), 1 deletion(-)
+>  drivers/bus/simple-pm-bus.c | 42 ++++++++++++++++++++++++++++++++++---
+>  1 file changed, 39 insertions(+), 3 deletions(-)
 > 
-> diff --git a/drivers/devfreq/imx8m-ddrc.c b/drivers/devfreq/imx8m-
-> ddrc.c
-> index f18a5c3c1c03..f39741b4a0b0 100644
-> --- a/drivers/devfreq/imx8m-ddrc.c
-> +++ b/drivers/devfreq/imx8m-ddrc.c
-> @@ -72,6 +72,8 @@ struct imx8m_ddrc {
->         struct clk *dram_alt;
->         struct clk *dram_apb;
->  
-> +       unsigned long suspend_rate;
-> +       unsigned long resume_rate;
->         int freq_count;
->         struct imx8m_ddrc_freq freq_table[IMX8M_DDRC_MAX_FREQ_COUNT];
->  };
-> @@ -271,6 +273,22 @@ static int imx8m_ddrc_target(struct device *dev,
-> unsigned long *freq, u32 flags)
->         return ret;
->  }
->  
-> +static int imx8m_ddrc_suspend(struct device *dev)
-> +{
-> +       struct imx8m_ddrc *priv = dev_get_drvdata(dev);
+> diff --git a/drivers/bus/simple-pm-bus.c b/drivers/bus/simple-pm-bus.c
+> index 01a3d0cd08ed..6b8d6257ed8a 100644
+> --- a/drivers/bus/simple-pm-bus.c
+> +++ b/drivers/bus/simple-pm-bus.c
+> @@ -13,11 +13,36 @@
+>  #include <linux/platform_device.h>
+>  #include <linux/pm_runtime.h>
+>  
+> -
+>  static int simple_pm_bus_probe(struct platform_device *pdev)
+>  {
+> -	const struct of_dev_auxdata *lookup = dev_get_platdata(&pdev->dev);
+> -	struct device_node *np = pdev->dev.of_node;
+> +	const struct device *dev = &pdev->dev;
+> +	const struct of_dev_auxdata *lookup = dev_get_platdata(dev);
+> +	struct device_node *np = dev->of_node;
+> +	const struct of_device_id *match;
 > +
-> +       priv->resume_rate = clk_get_rate(priv->dram_core);
+> +	/*
+> +	 * Allow user to use driver_override to bind this driver to a
+> +	 * transparent bus device which has a different compatible string
+> +	 * that's not listed in simple_pm_bus_of_match. We don't want to do any
+> +	 * of the simple-pm-bus tasks for these devices, so return early.
+> +	 */
+> +	if (pdev->driver_override)
+> +		return 0;
 > +
-> +       return imx8m_ddrc_target(dev, &priv->suspend_rate, 0);
-> +}
-> +
-> +static int imx8m_ddrc_resume(struct device *dev)
-> +{
-> +       struct imx8m_ddrc *priv = dev_get_drvdata(dev);
-> +
-> +       return imx8m_ddrc_target(dev, &priv->resume_rate, 0);
-> +}
-> +
->  static int imx8m_ddrc_get_cur_freq(struct device *dev, unsigned long
-> *freq)
->  {
->         struct imx8m_ddrc *priv = dev_get_drvdata(dev);
-> @@ -324,6 +342,9 @@ static int imx8m_ddrc_init_freq_info(struct
-> device *dev)
->  
->                 if (dev_pm_opp_add(dev, freq->rate * 250000, 0))
->                         return -ENODEV;
-> +
-> +               if (index ==  0)
-> +                       priv->suspend_rate = freq->rate * 250000;
->         }
->  
->         return 0;
-> @@ -399,11 +420,16 @@ static const struct of_device_id
-> imx8m_ddrc_of_match[] = {
->  };
->  MODULE_DEVICE_TABLE(of, imx8m_ddrc_of_match);
->  
-> +static const struct dev_pm_ops imx8m_ddrc_pm_ops = {
-> +       SET_LATE_SYSTEM_SLEEP_PM_OPS(imx8m_ddrc_suspend,
-> imx8m_ddrc_resume)
-> +};
-> +
->  static struct platform_driver imx8m_ddrc_platdrv = {
->         .probe          = imx8m_ddrc_probe,
->         .driver = {
->                 .name   = "imx8m-ddrc-devfreq",
-> -               .of_match_table = imx8m_ddrc_of_match,
-> +               .pm = &imx8m_ddrc_pm_ops,
-> +               .of_match_table = of_match_ptr(imx8m_ddrc_of_match),
->         },
->  };
->  module_platform_driver(imx8m_ddrc_platdrv);
+> +	match = of_match_device(dev->driver->of_match_table, dev);
+> +	/*
+> +	 * These are transparent bus devices (not simple-pm-bus matches) that
+> +	 * have their child nodes populated automatically.  So, don't need to
+> +	 * do anything more. We only match with the device if this driver is
+> +	 * the most specific match because we don't want to incorrectly bind to
+> +	 * a device that has a more specific driver.
+> +	 */
+> +	if (match && match->data) {
+> +		if (of_property_match_string(np, "compatible", match->compatible) == 0)
+> +			return 0;
+> +		else
+> +			return -ENODEV;
+> +	}
 
+This change is breaking the expected behavior for the already existent
+simple-bus nodes. All the simple-bus compatibles should be replaced now
+to simple-pm-bus. In my case, on some i.MX8 platforms, without the
+devlink, the devices suspend sequence changes (and even breaks).
 
+To avoid breaking the already existent simple-bus nodes, maybe the logic
+should've been reversed: keep the simple-bus as is and add another
+compatible, IDK, something like simple-trasnparent-bus, or something.
+
+>  
+>  	dev_dbg(&pdev->dev, "%s\n", __func__);
+>  
+> @@ -31,14 +56,25 @@ static int simple_pm_bus_probe(struct platform_device *pdev)
+>  
+>  static int simple_pm_bus_remove(struct platform_device *pdev)
+>  {
+> +	const void *data = of_device_get_match_data(&pdev->dev);
+> +
+> +	if (pdev->driver_override || data)
+> +		return 0;
+> +
+>  	dev_dbg(&pdev->dev, "%s\n", __func__);
+>  
+>  	pm_runtime_disable(&pdev->dev);
+>  	return 0;
+>  }
+>  
+> +#define ONLY_BUS	((void *) 1) /* Match if the device is only a bus. */
+> +
+>  static const struct of_device_id simple_pm_bus_of_match[] = {
+>  	{ .compatible = "simple-pm-bus", },
+> +	{ .compatible = "simple-bus",	.data = ONLY_BUS },
+> +	{ .compatible = "simple-mfd",	.data = ONLY_BUS },
+> +	{ .compatible = "isa",		.data = ONLY_BUS },
+> +	{ .compatible = "arm,amba-bus",	.data = ONLY_BUS },
+>  	{ /* sentinel */ }
+>  };
+>  MODULE_DEVICE_TABLE(of, simple_pm_bus_of_match);
+> -- 
+> 2.33.0.685.g46640cef36-goog
+>
