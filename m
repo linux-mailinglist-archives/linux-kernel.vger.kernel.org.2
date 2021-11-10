@@ -2,113 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E68444C001
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 12:16:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9804244C003
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 12:16:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231383AbhKJLSO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Nov 2021 06:18:14 -0500
-Received: from mail-pg1-f181.google.com ([209.85.215.181]:41734 "EHLO
-        mail-pg1-f181.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231131AbhKJLSL (ORCPT
+        id S231328AbhKJLTb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Nov 2021 06:19:31 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124]:46333 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229653AbhKJLT1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Nov 2021 06:18:11 -0500
-Received: by mail-pg1-f181.google.com with SMTP id n23so1947939pgh.8;
-        Wed, 10 Nov 2021 03:15:24 -0800 (PST)
+        Wed, 10 Nov 2021 06:19:27 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1636542999;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=b7mp+5lU0MhnDm60HKtkVOloR5zR9YnN9HfGbstaIfs=;
+        b=RADyz6GKBXyQD6XJsM/MD/cDFYvZ+01dnlrT7Uvduxw9ZjvKsj6Gs56AnW1mO24rgBeCTS
+        puhUYdcnWQJwMNLrXamUYTOkHgbfT1rEZruLMnkyPv2uF7YeC/pO0BPb1cpoaEw/TOMlxR
+        lvFTq5IvDJbWbiUzDz92mr8Mf8ntfS8=
+Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com
+ [209.85.128.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-275-2YcnvT6wOVm1EbY1IPNsTQ-1; Wed, 10 Nov 2021 06:16:38 -0500
+X-MC-Unique: 2YcnvT6wOVm1EbY1IPNsTQ-1
+Received: by mail-wm1-f70.google.com with SMTP id n41-20020a05600c502900b003335ab97f41so160186wmr.3
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Nov 2021 03:16:38 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=ClY6fmDoOxt9WGtpyKfVteeYzW6rEuh6CcP1PbPjKLs=;
-        b=7KS+mc/zYzu8kWe1NUQc4jnk/Sy956byztMcWbM7RwvQFiOJVQl5fUoE9OjRatzH+A
-         xbuPCaaBeT7YGhm1j2Pu152V0l0D3FfYlqSizNg434clsmGbd8M2v05th5sdIYWANjGP
-         gDvr8dnVuLq9zfA+CwVlYL/Iwe9aLTR0XQpu+9RHFFvU11nNnjssGiPg7dqRLhcRsZYT
-         oVWmZG9ZSHZZJcHzrDGrWZc3TtShH0LkftqjxanVT3X6uD51vHCEylctf1e2tdauMj41
-         XoUt8seXiqi+IKvlSGy84rJ4iDlgmbz99QX6EnFgQMMXRKMWFAA2Ius+GttzVf3bML2g
-         31eg==
-X-Gm-Message-State: AOAM530IrVhFzYkUz0Itl9p+iN/zp2Ei/mRG9ppVE/UZua911IMQ6hYJ
-        gJpJhXOPTPMP6TSQL24Fqc6fZtJOhE5Tdvew5+E=
-X-Google-Smtp-Source: ABdhPJytXP1IZu85W3D1n2+CMyE8syz896fxWd4se2sx5oabHakMgfHn+iJX8mmbMFqlgMuJ/UaEDepThBex+/NV1Mg=
-X-Received: by 2002:aa7:91c5:0:b0:49f:a400:9771 with SMTP id
- z5-20020aa791c5000000b0049fa4009771mr15317197pfa.79.1636542923673; Wed, 10
- Nov 2021 03:15:23 -0800 (PST)
+        h=x-gm-message-state:from:subject:to:cc:references:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=b7mp+5lU0MhnDm60HKtkVOloR5zR9YnN9HfGbstaIfs=;
+        b=Bc/vDuJu4TWbJFZ+RPe9T/V4jnx4G1bCokAGjzzV0t28djcSniaaTV3zoJNxdxcHlz
+         uZZ2/cG5NVb88DjWE+oOfmFnOLRfdHy1kDb+g7Jk1zRPD1CKepFjbyRsUHgsIVIRT8nQ
+         jFV0Me6H2JvcpLDlzuLQvHoJekFioOlQweKCN0hY3tGCQsHF1Phg6kfW2ZjM98/CXWt2
+         vRkFuP5YsSFofg0YiFHWPO6azP7QYHJEPZhvO9atWOce/RamgZ2DIe5/K12SQj9+BvsV
+         xSIXzeuUK95MDW8rlGWIaOk/bYLdG5pUgE3TWQaaufkO4vezbxjwCNlClDap6qt/W+ru
+         2WSQ==
+X-Gm-Message-State: AOAM533NxKScOk6RfIgGyNW8USPo/8jzWhhAc+hfwcI/SEzTfkjTAl4f
+        xaDx337KscUKAJPXho3DT12R+oKKhr2i6SSK3mHQZyEL2C8KDf+Hck12P2JMAPwr9oYkb74Qz8A
+        Br4zbTXlxGL4pjsRbp6MAMFnZ
+X-Received: by 2002:a05:600c:a08:: with SMTP id z8mr15762572wmp.165.1636542997131;
+        Wed, 10 Nov 2021 03:16:37 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJwFgu1WvaBJtOekSSDZd6W0/5PVsCaDO0G5c6yrDZz8jXAaT6s3N0Oam2ZI1nIihQXdcquXCw==
+X-Received: by 2002:a05:600c:a08:: with SMTP id z8mr15762550wmp.165.1636542996946;
+        Wed, 10 Nov 2021 03:16:36 -0800 (PST)
+Received: from ?IPv6:2a01:e0a:59e:9d80:527b:9dff:feef:3874? ([2a01:e0a:59e:9d80:527b:9dff:feef:3874])
+        by smtp.gmail.com with ESMTPSA id h1sm5337881wmb.7.2021.11.10.03.16.35
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 10 Nov 2021 03:16:36 -0800 (PST)
+From:   Eric Auger <eauger@redhat.com>
+Subject: Re: [PATCH v4 06/21] KVM: arm64: Support SDEI_EVENT_CONTEXT hypercall
+To:     Gavin Shan <gshan@redhat.com>, kvmarm@lists.cs.columbia.edu
+Cc:     maz@kernel.org, linux-kernel@vger.kernel.org,
+        Jonathan.Cameron@huawei.com, pbonzini@redhat.com, will@kernel.org
+References: <20210815001352.81927-1-gshan@redhat.com>
+ <20210815001352.81927-7-gshan@redhat.com>
+Message-ID: <d9471e38-1840-1f79-c028-8f78afc0d2c7@redhat.com>
+Date:   Wed, 10 Nov 2021 12:16:34 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.1
 MIME-Version: 1.0
-References: <20211102161125.1144023-1-kernel@esmil.dk> <20211102161125.1144023-13-kernel@esmil.dk>
- <CAHp75VdmnnrisuP00W0KYta0KgmC+fu3WMxm959dt5X1kpiKTw@mail.gmail.com>
- <CAHp75VcuGdaq_TjjRS0S8R5y-nryLABZSp7ehrXz-fUS2W3vfA@mail.gmail.com>
- <CACRpkdYe-tW2K2eOQa+FYb-ZXzrA95+pPc6kkLB8ZJLAT8G_eA@mail.gmail.com>
- <CANBLGcyo3YjygkjDmdjt4C_H=MZdHQwqumsxnatuObeP2LADAg@mail.gmail.com>
- <CAHp75VdBaKZVeA7dasHWP4E3c8F2phaGz-90FErj3bB8FJOS9w@mail.gmail.com>
- <CANBLGcw7X9SY3_=A7ZXW60646vconjCbYBsvb=D2a0BPcyn75A@mail.gmail.com>
- <CACRpkda7b+j1=X9rUrqwEFhxvp2zVTvFkxanjh3hL7AksqCX1g@mail.gmail.com>
- <CANBLGcxT_a3J+uaaKazRkfJQoBjGGGiz9agAZUzMEmfJiVXXbw@mail.gmail.com> <YYt9I7hfugtpeALs@smile.fi.intel.com>
-In-Reply-To: <YYt9I7hfugtpeALs@smile.fi.intel.com>
-From:   Emil Renner Berthing <kernel@esmil.dk>
-Date:   Wed, 10 Nov 2021 12:15:12 +0100
-Message-ID: <CANBLGcwA8q5JRizzaSQKyMAMLmC1eF8tL=z5EJ2PK89488NJFg@mail.gmail.com>
-Subject: Re: [PATCH v3 12/16] pinctrl: starfive: Add pinctrl driver for
- StarFive SoCs
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc:     Linus Walleij <linus.walleij@linaro.org>,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        devicetree <devicetree@vger.kernel.org>,
-        linux-clk <linux-clk@vger.kernel.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        "open list:SERIAL DRIVERS" <linux-serial@vger.kernel.org>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Marc Zyngier <maz@kernel.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        Maximilian Luz <luzmaximilian@gmail.com>,
-        Sagar Kadam <sagar.kadam@sifive.com>,
-        Drew Fustini <drew@beagleboard.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Michael Zhu <michael.zhu@starfivetech.com>,
-        Fu Wei <tekkamanninja@gmail.com>,
-        Anup Patel <anup.patel@wdc.com>,
-        Atish Patra <atish.patra@wdc.com>,
-        Matteo Croce <mcroce@microsoft.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Huan Feng <huan.feng@starfivetech.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210815001352.81927-7-gshan@redhat.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 10 Nov 2021 at 09:05, Andy Shevchenko <andy.shevchenko@gmail.com> wrote:
-> On Tue, Nov 09, 2021 at 10:04:24PM +0100, Emil Renner Berthing wrote:
-> > On Tue, 9 Nov 2021 at 21:29, Linus Walleij <linus.walleij@linaro.org> wrote:
-> > > On Tue, Nov 9, 2021 at 10:40 AM Emil Renner Berthing <kernel@esmil.dk> wrote:
->
-> ...
->
-> > No, I agree. I think it's only that Andy wasn't sure if these interim
-> > states might be meaningful/useful.
->
-> Exactly. Because HW could behave differently.
+Hi Gavin,
 
-Right. But I think we've now established that what is described in the
-device tree is the state the pins should be in after the function has
-been called, eg. only the reduction matters, and any interim states
-would just be a byproduct of storing the state in the configs list.
+On 8/15/21 2:13 AM, Gavin Shan wrote:
+> This supports SDEI_EVENT_CONTEXT hypercall. It's used by the guest
+> to retrieved the original registers (R0 - R17) in its SDEI event
+> handler. Those registers can be corrupted during the SDEI event
+> delivery.
+> 
+> Signed-off-by: Gavin Shan <gshan@redhat.com>
+> ---
+>  arch/arm64/kvm/sdei.c | 40 ++++++++++++++++++++++++++++++++++++++++
+>  1 file changed, 40 insertions(+)
+> 
+> diff --git a/arch/arm64/kvm/sdei.c b/arch/arm64/kvm/sdei.c
+> index b022ce0a202b..b4162efda470 100644
+> --- a/arch/arm64/kvm/sdei.c
+> +++ b/arch/arm64/kvm/sdei.c
+> @@ -270,6 +270,44 @@ static unsigned long kvm_sdei_hypercall_enable(struct kvm_vcpu *vcpu,
+>  	return ret;
+>  }
+>  
+> +static unsigned long kvm_sdei_hypercall_context(struct kvm_vcpu *vcpu)
+> +{
+> +	struct kvm *kvm = vcpu->kvm;
+> +	struct kvm_sdei_kvm *ksdei = kvm->arch.sdei;
+> +	struct kvm_sdei_vcpu *vsdei = vcpu->arch.sdei;
+> +	struct kvm_sdei_vcpu_regs *regs;
+> +	unsigned long index = smccc_get_arg1(vcpu);
+s/index/param_id to match the spec?
+> +	unsigned long ret = SDEI_SUCCESS;
+> +
+> +	/* Sanity check */
+> +	if (!(ksdei && vsdei)) {
+> +		ret = SDEI_NOT_SUPPORTED;
+> +		goto out;
+> +	}
+> +
+> +	if (index > ARRAY_SIZE(vsdei->state.critical_regs.regs)) {
+> +		ret = SDEI_INVALID_PARAMETERS;
+> +		goto out;
+> +	}
+I would move the above after regs = and use regs there (although the
+regs ARRAY_SIZE of both is identifical)
+> +
+> +	/* Check if the pending event exists */
+> +	spin_lock(&vsdei->lock);
+> +	if (!(vsdei->critical_event || vsdei->normal_event)) {
+> +		ret = SDEI_DENIED;
+> +		goto unlock;
+> +	}
+> +
+> +	/* Fetch the requested register */
+> +	regs = vsdei->critical_event ? &vsdei->state.critical_regs :
+> +				       &vsdei->state.normal_regs;
+> +	ret = regs->regs[index];
+> +
+> +unlock:
+> +	spin_unlock(&vsdei->lock);
+> +out:
+> +	return ret;
+> +}
+> +
+>  int kvm_sdei_hypercall(struct kvm_vcpu *vcpu)
+>  {
+>  	u32 func = smccc_get_function(vcpu);
+> @@ -290,6 +328,8 @@ int kvm_sdei_hypercall(struct kvm_vcpu *vcpu)
+>  		ret = kvm_sdei_hypercall_enable(vcpu, false);
+>  		break;
+>  	case SDEI_1_0_FN_SDEI_EVENT_CONTEXT:
+> +		ret = kvm_sdei_hypercall_context(vcpu);
+> +		break;
+>  	case SDEI_1_0_FN_SDEI_EVENT_COMPLETE:
+>  	case SDEI_1_0_FN_SDEI_EVENT_COMPLETE_AND_RESUME:
+>  	case SDEI_1_0_FN_SDEI_EVENT_UNREGISTER:
+> 
+Eric
 
-> > > And if it is possible
-> > > to write DTS files that have states and sequence requirements,
-> > > these should be caught in validation. Should be.
->
-> --
-> With Best Regards,
-> Andy Shevchenko
->
->
->
-> _______________________________________________
-> linux-riscv mailing list
-> linux-riscv@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/linux-riscv
