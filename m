@@ -2,119 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C151944BAB5
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 04:52:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8838844BAAF
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 04:51:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230248AbhKJDyk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Nov 2021 22:54:40 -0500
-Received: from mga04.intel.com ([192.55.52.120]:42692 "EHLO mga04.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229963AbhKJDyj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Nov 2021 22:54:39 -0500
-X-IronPort-AV: E=McAfee;i="6200,9189,10163"; a="231319822"
-X-IronPort-AV: E=Sophos;i="5.87,222,1631602800"; 
-   d="scan'208";a="231319822"
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Nov 2021 19:51:52 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.87,222,1631602800"; 
-   d="scan'208";a="602061612"
-Received: from yilunxu-optiplex-7050.sh.intel.com (HELO localhost) ([10.239.159.68])
-  by orsmga004.jf.intel.com with ESMTP; 09 Nov 2021 19:51:49 -0800
-Date:   Wed, 10 Nov 2021 11:44:57 +0800
-From:   Xu Yilun <yilun.xu@intel.com>
-To:     matthew.gerlach@linux.intel.com
-Cc:     Tom Rix <trix@redhat.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Moritz Fischer <mdf@kernel.org>, linux-fpga@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Wu Hao <hao.wu@intel.com>
-Subject: Re: [PATCH v1 1/1] fpga: dfl: pci: Use pci_find_vsec_capability()
-  when looking for DFL
-Message-ID: <20211110034457.GA286728@yilunxu-OptiPlex-7050>
-References: <20211109154127.18455-1-andriy.shevchenko@linux.intel.com>
- <8ccc133a-fb47-4548-fee3-d57775a5166d@redhat.com>
- <YYq4fSRoyzFE4Vei@smile.fi.intel.com>
- <39ac1f40-66ab-6c7e-0042-8fcdc062ed00@redhat.com>
- <alpine.DEB.2.22.394.2111091044060.1548144@rhweight-WRK1>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <alpine.DEB.2.22.394.2111091044060.1548144@rhweight-WRK1>
+        id S230228AbhKJDsQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Nov 2021 22:48:16 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38038 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229963AbhKJDsP (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Nov 2021 22:48:15 -0500
+Received: from mail-pj1-x102c.google.com (mail-pj1-x102c.google.com [IPv6:2607:f8b0:4864:20::102c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2BB4CC061764
+        for <linux-kernel@vger.kernel.org>; Tue,  9 Nov 2021 19:45:29 -0800 (PST)
+Received: by mail-pj1-x102c.google.com with SMTP id v23so431330pjr.5
+        for <linux-kernel@vger.kernel.org>; Tue, 09 Nov 2021 19:45:29 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id;
+        bh=kE7conhGwlDchql6TUuzI3SKW5A/9f27/zONhyNotjE=;
+        b=ghN8MuxFashQf2xTxaMzOG3TvvsHlnxCwUP782NhHELGj8f16T9Iyl8DyXVACHdTmu
+         rnZnXOaxC+gdu0OJKUeFPuCr3sUNr/YalYD6kfvA/oS/0i8zhsxFaZSKVS/ADAf6AS0w
+         NyeGR6Osh6kR7W7C6Ax2Gzc4usIlUd0WRA2/LQAYqx1flZ+hkOO0APZ9y33vdZBzwSVn
+         XYxLTstPgFhIpN89dV0Z54nS5sm8vK0qh1Bv2HLtaR7fQcVUXz775ug4pRGFd4/XFRl1
+         4YvCdSbb4MrVgiWRDmzBusg1gaV/3Mgpp3gJr9v5ZxD5XHWJOaD+P/NdnfqwZJl2c9iJ
+         Kuyw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=kE7conhGwlDchql6TUuzI3SKW5A/9f27/zONhyNotjE=;
+        b=zxHytJEhH2eLduB08NK98YZnQHmtiI55xFk6McbrSxPKfZjxVV9bv+DSylVTx/HW/h
+         dcbtqzScTprX+61GzAeD8hxQkagMJnJgsgH0BEE69Bq2ZBLy4c7ywk9yrNzojyeyo7EB
+         5DrCWX8rQ9HzB5dWBStiahkNWWNAOj9w9/BbCWGwMDgR4wXNKcfu8XBBPbYFuINAbCPE
+         FEz3YSJnEoE0QPU1NBXE1aVk810wxVNnEhIwFhwNtnF+T91K0COLf2tU5BYOYGHXFVYJ
+         36w/opI8L7bs25t2SGdjoTsaefY2LSPSi3XGQWBhHdKkh8OSPXhnhG0OEnl7FULOhWwZ
+         FjTw==
+X-Gm-Message-State: AOAM531ENyntW8G12S3e8NB4RmyA0lAPY90rPzRDq9dMPmdCnbx7fuOk
+        ELzHhqfPb8kIPrrvpA2OL0+kQ7/yS1c=
+X-Google-Smtp-Source: ABdhPJx4trwJ/AUKNPouFhukvbKiawlY+HdLm3vVDl1fqvWkFQsV8nVPVQ7t9wxF4ct4gJ4DHrXAKg==
+X-Received: by 2002:a17:90a:b783:: with SMTP id m3mr13511973pjr.183.1636515928469;
+        Tue, 09 Nov 2021 19:45:28 -0800 (PST)
+Received: from localhost.localdomain ([2402:7500:46a:f117:d5ee:c3e5:104f:c135])
+        by smtp.gmail.com with ESMTPSA id q6sm5995293pgn.42.2021.11.09.19.45.24
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Tue, 09 Nov 2021 19:45:27 -0800 (PST)
+From:   cy_huang <u0084500@gmail.com>
+To:     broonie@kernel.org, perex@perex.cz, tiwai@suse.com
+Cc:     oder_chiou@realtek.com, lgirdwood@gmail.com,
+        alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
+        cy_huang@richtek.com, allen_lin@richtek.com
+Subject: [PATCH v2 0/3] ASoC: rt9120: Fix settings and make compatible with rt9120s
+Date:   Wed, 10 Nov 2021 11:45:18 +0800
+Message-Id: <1636515921-31694-1-git-send-email-u0084500@gmail.com>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 09, 2021 at 10:51:33AM -0800, matthew.gerlach@linux.intel.com wrote:
-> 
-> 
-> On Tue, 9 Nov 2021, Tom Rix wrote:
-> 
-> > 
-> > On 11/9/21 10:05 AM, Andy Shevchenko wrote:
-> > > On Tue, Nov 09, 2021 at 07:55:43AM -0800, Tom Rix wrote:
-> > > > On 11/9/21 7:41 AM, Andy Shevchenko wrote:
-> > > > > Currently the find_dfls_by_vsec() opens code pci_find_vsec_capability().
-> > > > > Refactor the former to use the latter. No functional change intended.
-> > > Thanks for review, my answers below.
-> > > 
-> > > ...
-> > > 
-> > > > > +	u16 voff;
-> > > > The later use of voff in pci_read_config_dword is of type 'int', it may be
-> > > > better to keep voff as an int.
-> > > I don't think so. The rule of thumb that the types should match the
-> > > value they
-> > > got in the first place. In this case it's u16. Compiler will
-> > > implicitly cast it
-> > > to whatever is needed as long as the type is good for integer promotion.
-> > > 
-> 
-> I think u16 is more precise than int, but I think it'll get promoted to an
-> int anywhen when used with calls to pci_read_config_dword().  Was this
+From: ChiYuan Huang <cy_huang@richtek.com>
 
-I agree u16 is OK.
+This patch series add the below changes
+- Fix the wrong ocp level setting.
+- Fix clock auto sync issue.
+- Make the driver compatible with rt9120s
 
-A minor concern, is it better we also change the dfl_res_off to u16?
-dfl_res_off & voff are the same type of variables needed on positioning
-the DFL, so I'd like them listed together.
+ChiYuan Huang (3):
+  ASoC: rt9120: Update internal ocp level to the correct value
+  ASoC: rt9120: Fix clock auto sync issue when fs is the multiple of 48
+  ASoC: rt9120: Add the compatibility with rt9120s
 
-> change tested on real or emulated HW?
-> 
-> > > ...
-> > > 
-> > > > > +	voff = pci_find_vsec_capability(dev, PCI_VENDOR_ID_INTEL,
-> > > > > PCI_VSEC_ID_INTEL_DFLS);
-> > > > This may be a weakness in the origin code, but intel isn't the exclusive
-> > > > user of DFL.
-> > > This does not change the original code. If you think so, this can be
-> > > extended
-> > > later on.
-> > 
-> > I would rather see this fixed now or explained why this isn't a problem.
-> 
-> I agree that a single Vendor/VSEC id being supported is a problem, but I
-> think fixing it should be a separate patch.  Do we need to change this a
+ sound/soc/codecs/rt9120.c | 58 +++++++++++++++++++++++++++++++++++++++--------
+ 1 file changed, 48 insertions(+), 10 deletions(-)
 
-I agree. The vendor_id should be checked before VSEC ID is meaningful,
-and now this Vendor/VSEC pair is the only supported one, so this piece of
-code is good to me.
+-- 
+2.7.4
 
-> table lookup of Vendor/VSEC id's, or do we need to reserve a more generic
-> Vendor/VSEC pair?
-
-A generic Vendor/VSEC pair means all vendors must use the unified
-vendor_id if they want to use DFL. I'm not sure if this is proper.
-
-Thanks,
-Yilun
-
-> 
-> > 
-> > Tom
-> > 
-> > > 
-> > > > >    	if (!voff) {
-> > > > >    		dev_dbg(&pcidev->dev, "%s no DFL VSEC found\n", __func__);
-> > > > >    		return -ENODEV;
-> > 
-> > 
