@@ -2,159 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8DD1544C28F
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 14:54:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C94144C294
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 14:55:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232093AbhKJN52 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Nov 2021 08:57:28 -0500
-Received: from smtp-out2.suse.de ([195.135.220.29]:49938 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232053AbhKJN50 (ORCPT
+        id S232118AbhKJN5s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Nov 2021 08:57:48 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34296 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231743AbhKJN5r (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Nov 2021 08:57:26 -0500
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 798C71FD74;
-        Wed, 10 Nov 2021 13:54:38 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1636552478; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=8VUOWPq28Zr/dzCZjs3WDK3GbYBhLb5gkJbhc8O3Mt0=;
-        b=AREqCHCfL/KqARISnEw0mHyKyuNavCV7jSggRazLzocvDUiz9nAn9OiVPz8KvNuCgTBzla
-        H4JHUdE512Jk7uy+49z2Wl4OZqYVO3e15UJrB22vnRHrlBLOwnAaY7XkRwKCHveTzxN5gh
-        zui/NWWpkYM9Kjar7P41/6Pf1kr3RqQ=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1636552478;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=8VUOWPq28Zr/dzCZjs3WDK3GbYBhLb5gkJbhc8O3Mt0=;
-        b=Z7TMCJP+xbozipeIMsKOqMJFYrlqg5dIdGxtg11ddu0StzT+CkH5E6j3sHQXgzgDnp/okB
-        4liHNN446+7I6SCg==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 46D3413BFF;
-        Wed, 10 Nov 2021 13:54:38 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id XaQAEB7Pi2HNLAAAMHmgww
-        (envelope-from <tzimmermann@suse.de>); Wed, 10 Nov 2021 13:54:38 +0000
-Message-ID: <887a15cb-3a3b-4ba2-aa0f-a241e70a19fa@suse.de>
-Date:   Wed, 10 Nov 2021 14:54:37 +0100
+        Wed, 10 Nov 2021 08:57:47 -0500
+Received: from mail-ed1-x532.google.com (mail-ed1-x532.google.com [IPv6:2a00:1450:4864:20::532])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC545C061764;
+        Wed, 10 Nov 2021 05:54:59 -0800 (PST)
+Received: by mail-ed1-x532.google.com with SMTP id z21so10894472edb.5;
+        Wed, 10 Nov 2021 05:54:59 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:subject:to:cc:references:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=pnMFfXSIK0gOJzgv9P5Q3bFjh2yOHD/Py3xNzbx7liI=;
+        b=DaxEKeeveuNPHWXUsWLoMCZ8nmM+HOI2l1fjVKdlYWIXJuMEOW9uRYYwlOZGwIMOyI
+         hCb9fUe42nlb5hHD7orsrNzw/p/pOB4ktH9LcO4fUr9QQqqFGdp+P5+Z4E5+8LRjSbNl
+         kRqfYyozQ5ItH1rm0daNJh0WQJswbIa6BcVWWY3azBWgdkrhELwEz6qjdctqpw+zP035
+         zNrulUsTZXp3v/LQ3T4TtyVD4FxxqN6r6V8svZmSBAYMruH3kZGnm2ttr0ruae3Lto8t
+         BUEiil7G04L3g2e9g/ZSBe6dAtJI7KbQGqaZQdWDf7QXl/ePj8pCo9eKNX+yuhgme2H/
+         QFKQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:subject:to:cc:references:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=pnMFfXSIK0gOJzgv9P5Q3bFjh2yOHD/Py3xNzbx7liI=;
+        b=Eaoy822zazT6IaohRcfm7qBZyFld4cwLLy+LCpUbOyuT0k+/moKSxEsFV+MV5fZUJC
+         TofsMAz0L/RGtSlN3niXoO3VkVvg5rjS4QxITIrf+Ez+e4CCEq4O7dyzAugAqmr9Xw6Z
+         ahD0ecWDDc80r/8tTPHKvXWmTKHAgwDGEWFaqUc6uqQei6P/LEIBOnJFg050kYBIJEBM
+         5ryNBjH1ktEy541AhJLHVuZvO3xXx2uaKrshVG9ksUPki/Ty0EIFp/G8n9JiSLSgJeQ5
+         7eMjbFT7wF19Zf0tgYw5jrZ+fMyLWcW5JBOiNDS+foqlttL/kXKyujoIJqqqvN5FqEdv
+         3kuA==
+X-Gm-Message-State: AOAM532bPj4vruYGBLKWXIGFVALeezZcn4ZK5DvGDBt8c5MPqc7uKKi9
+        DCw+tzk9o+EoKl3+nuBktF69JMmQt24=
+X-Google-Smtp-Source: ABdhPJwhIJzOJkK/C0bDxYm/p+QeitAzm+e4vWnx+JQV2GArHBogz96153yOdjZxIXlTTfuL7XheLA==
+X-Received: by 2002:a05:6402:280f:: with SMTP id h15mr22110633ede.286.1636552498156;
+        Wed, 10 Nov 2021 05:54:58 -0800 (PST)
+Received: from ?IPv6:2a04:241e:501:3870:96c9:d70f:c1d:e56? ([2a04:241e:501:3870:96c9:d70f:c1d:e56])
+        by smtp.gmail.com with ESMTPSA id hb36sm8983687ejc.73.2021.11.10.05.54.56
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 10 Nov 2021 05:54:57 -0800 (PST)
+From:   Leonard Crestez <cdleonard@gmail.com>
+Subject: Re: [PATCH 08/11] selftests: net/fcnal: Replace sleep after server
+ start with -k
+To:     David Ahern <dsahern@gmail.com>, Shuah Khan <shuah@kernel.org>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Ido Schimmel <idosch@nvidia.com>,
+        Seth David Schoen <schoen@loyalty.org>,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Jakub Kicinski <kuba@kernel.org>,
+        David Ahern <dsahern@kernel.org>,
+        linux-kselftest@vger.kernel.org
+References: <cover.1633520807.git.cdleonard@gmail.com>
+ <ec40bd7128a30e93b90ba888f3468f394617a010.1633520807.git.cdleonard@gmail.com>
+ <43210038-b04b-3726-1355-d5f132f6c64e@gmail.com>
+ <d6882c3f-4ecf-4b4e-c20e-09b88da4fbd6@gmail.com>
+ <888962dc-8d55-4875-cf44-c0b8ebaa1978@gmail.com>
+Message-ID: <dfe10fec-b2d8-16c0-ae20-6839f47b2809@gmail.com>
+Date:   Wed, 10 Nov 2021 15:54:56 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.2.1
-Subject: Re: [PATCH v1 1/1] drm: Replace kernel.h with the necessary
- inclusions
+In-Reply-To: <888962dc-8d55-4875-cf44-c0b8ebaa1978@gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
-Cc:     Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>
-References: <20211110102423.54282-1-andriy.shevchenko@linux.intel.com>
-From:   Thomas Zimmermann <tzimmermann@suse.de>
-In-Reply-To: <20211110102423.54282-1-andriy.shevchenko@linux.intel.com>
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature";
- boundary="------------kNnrg6100HvqdEZyDADWTlJs"
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---------------kNnrg6100HvqdEZyDADWTlJs
-Content-Type: multipart/mixed; boundary="------------NAqjOnV40TzpAO02AzBOuA0P";
- protected-headers="v1"
-From: Thomas Zimmermann <tzimmermann@suse.de>
-To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
- dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
-Cc: Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
- Maxime Ripard <mripard@kernel.org>, David Airlie <airlied@linux.ie>,
- Daniel Vetter <daniel@ffwll.ch>
-Message-ID: <887a15cb-3a3b-4ba2-aa0f-a241e70a19fa@suse.de>
-Subject: Re: [PATCH v1 1/1] drm: Replace kernel.h with the necessary
- inclusions
-References: <20211110102423.54282-1-andriy.shevchenko@linux.intel.com>
-In-Reply-To: <20211110102423.54282-1-andriy.shevchenko@linux.intel.com>
+On 10/7/21 4:22 AM, David Ahern wrote:
+> On 10/6/21 3:35 PM, Leonard Crestez wrote:
+>>
+>> I counted the [FAIL] or [ OK ] markers but not the output of nettest
+>> itself. I don't know what to look for, I guess I could diff the outputs?
+>>
+>> Shouldn't it be sufficient to compare the exit codes of the nettest client?
+> 
+> mistakes happen. The 700+ tests that exist were verified by me when I
+> submitted the script - that each test passes when it should and fails
+> when it should. "FAIL" has many reasons. I tried to have separate exit
+> codes for nettest.c to capture the timeouts vs ECONNREFUSED, etc., but I
+> could easily have made a mistake. scanning the output is the best way.
+> Most of the 'supposed to fail' tests have a HINT saying why it should fail.
 
---------------NAqjOnV40TzpAO02AzBOuA0P
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: base64
+It is not good to have a test for which correctness is ambiguous to such 
+an extent, it makes reliable future changes difficult. In theory an 
+uniform TAP format is supposed to solve this but it is not applied 
+inside selftests/net.
 
-SGkNCg0KQW0gMTAuMTEuMjEgdW0gMTE6MjQgc2NocmllYiBBbmR5IFNoZXZjaGVua286DQo+
-IFdoZW4ga2VybmVsLmggaXMgdXNlZCBpbiB0aGUgaGVhZGVycyBpdCBhZGRzIGEgbG90IGlu
-dG8gZGVwZW5kZW5jeSBoZWxsLA0KPiBlc3BlY2lhbGx5IHdoZW4gdGhlcmUgYXJlIGNpcmN1
-bGFyIGRlcGVuZGVuY2llcyBhcmUgaW52b2x2ZWQuDQo+IA0KPiBSZXBsYWNlIGtlcm5lbC5o
-IGluY2x1c2lvbiB3aXRoIHRoZSBsaXN0IG9mIHdoYXQgaXMgcmVhbGx5IGJlaW5nIHVzZWQu
-DQo+IA0KPiBTaWduZWQtb2ZmLWJ5OiBBbmR5IFNoZXZjaGVua28gPGFuZHJpeS5zaGV2Y2hl
-bmtvQGxpbnV4LmludGVsLmNvbT4NCj4gLS0tDQo+ICAgaW5jbHVkZS9kcm0vZHJtX2dlbV90
-dG1faGVscGVyLmggIHwgMiArLQ0KPiAgIGluY2x1ZGUvZHJtL2RybV9nZW1fdnJhbV9oZWxw
-ZXIuaCB8IDIgKy0NCj4gICBpbmNsdWRlL2RybS9kcm1fbW0uaCAgICAgICAgICAgICAgfCA0
-ICsrKy0NCj4gICAzIGZpbGVzIGNoYW5nZWQsIDUgaW5zZXJ0aW9ucygrKSwgMyBkZWxldGlv
-bnMoLSkNCj4gDQo+IGRpZmYgLS1naXQgYS9pbmNsdWRlL2RybS9kcm1fZ2VtX3R0bV9oZWxw
-ZXIuaCBiL2luY2x1ZGUvZHJtL2RybV9nZW1fdHRtX2hlbHBlci5oDQo+IGluZGV4IGMxYWEw
-MmJkNGM4OS4uNzgwNDBmNmNjNmYzIDEwMDY0NA0KPiAtLS0gYS9pbmNsdWRlL2RybS9kcm1f
-Z2VtX3R0bV9oZWxwZXIuaA0KPiArKysgYi9pbmNsdWRlL2RybS9kcm1fZ2VtX3R0bV9oZWxw
-ZXIuaA0KPiBAQCAtMyw3ICszLDcgQEANCj4gICAjaWZuZGVmIERSTV9HRU1fVFRNX0hFTFBF
-Ul9IDQo+ICAgI2RlZmluZSBEUk1fR0VNX1RUTV9IRUxQRVJfSA0KPiAgIA0KPiAtI2luY2x1
-ZGUgPGxpbnV4L2tlcm5lbC5oPg0KPiArI2luY2x1ZGUgPGxpbnV4L2NvbnRhaW5lcl9vZi5o
-Pg0KDQpJIGJ1aWx0IHRoaXMgcGF0Y2ggb24gYSByZWNlbnQgZHJtLW1pc2MtbmV4dCwgYnV0
-IHRoZXJlJ3Mgbm8gDQpsaW51eC9jb250YWluZXJfb2YuaA0KDQpCZXN0IHJlZ2FyZHMNClRo
-b21hcw0KDQo+ICAgDQo+ICAgI2luY2x1ZGUgPGRybS9kcm1fZGV2aWNlLmg+DQo+ICAgI2lu
-Y2x1ZGUgPGRybS9kcm1fZ2VtLmg+DQo+IGRpZmYgLS1naXQgYS9pbmNsdWRlL2RybS9kcm1f
-Z2VtX3ZyYW1faGVscGVyLmggYi9pbmNsdWRlL2RybS9kcm1fZ2VtX3ZyYW1faGVscGVyLmgN
-Cj4gaW5kZXggZDNjZjA2YzlhZjY1Li5iNGNlMjdhNzI3NzMgMTAwNjQ0DQo+IC0tLSBhL2lu
-Y2x1ZGUvZHJtL2RybV9nZW1fdnJhbV9oZWxwZXIuaA0KPiArKysgYi9pbmNsdWRlL2RybS9k
-cm1fZ2VtX3ZyYW1faGVscGVyLmgNCj4gQEAgLTExLDggKzExLDggQEANCj4gICAjaW5jbHVk
-ZSA8ZHJtL3R0bS90dG1fYm9fYXBpLmg+DQo+ICAgI2luY2x1ZGUgPGRybS90dG0vdHRtX2Jv
-X2RyaXZlci5oPg0KPiAgIA0KPiArI2luY2x1ZGUgPGxpbnV4L2NvbnRhaW5lcl9vZi5oPg0K
-PiAgICNpbmNsdWRlIDxsaW51eC9kbWEtYnVmLW1hcC5oPg0KPiAtI2luY2x1ZGUgPGxpbnV4
-L2tlcm5lbC5oPiAvKiBmb3IgY29udGFpbmVyX29mKCkgKi8NCj4gICANCj4gICBzdHJ1Y3Qg
-ZHJtX21vZGVfY3JlYXRlX2R1bWI7DQo+ICAgc3RydWN0IGRybV9wbGFuZTsNCj4gZGlmZiAt
-LWdpdCBhL2luY2x1ZGUvZHJtL2RybV9tbS5oIGIvaW5jbHVkZS9kcm0vZHJtX21tLmgNCj4g
-aW5kZXggOWI0MjkyZjIyOWM2Li5hYzMzYmExYjE4YmMgMTAwNjQ0DQo+IC0tLSBhL2luY2x1
-ZGUvZHJtL2RybV9tbS5oDQo+ICsrKyBiL2luY2x1ZGUvZHJtL2RybV9tbS5oDQo+IEBAIC0z
-OSwxMyArMzksMTUgQEANCj4gICAgKi8NCj4gICAjaW5jbHVkZSA8bGludXgvYnVnLmg+DQo+
-ICAgI2luY2x1ZGUgPGxpbnV4L3JidHJlZS5oPg0KPiAtI2luY2x1ZGUgPGxpbnV4L2tlcm5l
-bC5oPg0KPiArI2luY2x1ZGUgPGxpbnV4L2xpbWl0cy5oPg0KPiAgICNpbmNsdWRlIDxsaW51
-eC9tbV90eXBlcy5oPg0KPiAgICNpbmNsdWRlIDxsaW51eC9saXN0Lmg+DQo+ICAgI2luY2x1
-ZGUgPGxpbnV4L3NwaW5sb2NrLmg+DQo+ICAgI2lmZGVmIENPTkZJR19EUk1fREVCVUdfTU0N
-Cj4gICAjaW5jbHVkZSA8bGludXgvc3RhY2tkZXBvdC5oPg0KPiAgICNlbmRpZg0KPiArI2lu
-Y2x1ZGUgPGxpbnV4L3R5cGVzLmg+DQo+ICsNCj4gICAjaW5jbHVkZSA8ZHJtL2RybV9wcmlu
-dC5oPg0KPiAgIA0KPiAgICNpZmRlZiBDT05GSUdfRFJNX0RFQlVHX01NDQo+IA0KDQotLSAN
-ClRob21hcyBaaW1tZXJtYW5uDQpHcmFwaGljcyBEcml2ZXIgRGV2ZWxvcGVyDQpTVVNFIFNv
-ZnR3YXJlIFNvbHV0aW9ucyBHZXJtYW55IEdtYkgNCk1heGZlbGRzdHIuIDUsIDkwNDA5IE7D
-vHJuYmVyZywgR2VybWFueQ0KKEhSQiAzNjgwOSwgQUcgTsO8cm5iZXJnKQ0KR2VzY2jDpGZ0
-c2bDvGhyZXI6IEl2byBUb3Rldg0K
+I attempted to write a script to compare two logs in their current 
+format: https://gitlab.com/cdleonard/kselftest-parse-nettest-fcnal
 
---------------NAqjOnV40TzpAO02AzBOuA0P--
+It does a bunch of nasty scrubbing of irrelevant behavior and got it to 
+the point where no diffs are found between repeated runs on the same 
+machine.
 
---------------kNnrg6100HvqdEZyDADWTlJs
-Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="OpenPGP_signature"
+One nasty issue was that many tests kill processes inside log_test so 
+relevant output may be shown either before or after the "TEST: " result 
+line. This was solved by associating output until the next ### with 
+previous test.
 
------BEGIN PGP SIGNATURE-----
+>> The output is also modified by a previous change to not capture server
+>> output separately and instead let it be combined with that of the
+>> client. That change is required for this one, doing out=$(nettest -k)
+>> does not return on fork unless the pipe is also closed.
+>>
+>> I did not look at your change, mine is relatively minimal because it
+>> only changes who decide when the server goes into the background: the
+>> shell script or the server itself. This makes it work very easily even
+>> for tests with multiple server instances.
+> 
+> The logging issue is why I went with 1 binary do both server and client
+> after nettest.c got support for changing namespaces.
 
-wsF5BAABCAAjFiEExndm/fpuMUdwYFFolh/E3EQov+AFAmGLzx0FAwAAAAAACgkQlh/E3EQov+B/
-RRAAs094WveDyBpl1gjBDkybhubiJOuKwc2MldCL0+nHuQ3zbCQ7reCqflbedhEUMO1cCXt1ZEhT
-wzyUguUFFYCHi4atLRFF6ajOnJSz4DS3zYRnqWZeF/dVJeVsob5qXLYgdMT+xxosOYG+nt3tpAN6
-EVDgMKgjg8Nh0qgkZ8dNN9AWqSZTJpKAoPtWY+Dx6F0PS42wkoSuKda87NVByaDDAikBu9BNx3Oh
-AA2kPhPUkMZAdYmYunuDEuEq+0KL+MQnmfoCT0VbUT4cD6OPIgnJmENQmbYeqSWHh8F8za+Zvmod
-PjzMJX3gHgCyLfT1PDvs3YvpnJakDrxILXx7mMRbURoxrpiOPpqiUmSPFxIxhab8pIIh6RLyHpZh
-ZB/tXH8KSX32q5ZWNBESIWMz80TYH6FC/sfl9IivSY7joYDg53AA6dDRMTbY4d11V80cWcafx7rd
-8Ksw0TvWOuQZOZs9w6jBUHJvf/+771uV20E2zRAUmqvEV19X2UFxazxV+BkH3EH/GDNk2DsqIDfN
-vr/cQ/QBo2ZsRxdrUq/nE7xX47mGIh3x68nUlxaTNerngRKQ25b/Vc5wn6FobuuA45+gVkhMODAE
-joUeueBjLxK+wfLkk78sCU/rbygJElty8eUbuyIMjyGr1q3aQ5tXMilHXrqF5lXNCLzIWkWNa2Te
-3Eg=
-=PvGj
------END PGP SIGNATURE-----
+It's possible to just compare the "client" and "server" logs separately 
+by sorting them on their prefix.
 
---------------kNnrg6100HvqdEZyDADWTlJs--
+I think a decent approach would be to do a bulk replace for all 
+"run_cmd{,_nsb,_nsc} nettest" with a new "run_nettest" function that 
+passes all arguments to nettest itself. That run_nettest function could 
+include a leading common "-t" arg that is parsed at the top of 
+fcnal-test.sh.
+
+--
+Regards,
+Leonard
