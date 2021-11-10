@@ -2,86 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1418244BA10
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 02:46:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4BD7544BA13
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 02:49:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229757AbhKJBsp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Nov 2021 20:48:45 -0500
-Received: from mga01.intel.com ([192.55.52.88]:24355 "EHLO mga01.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229473AbhKJBso (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Nov 2021 20:48:44 -0500
-X-IronPort-AV: E=McAfee;i="6200,9189,10163"; a="256262318"
-X-IronPort-AV: E=Sophos;i="5.87,222,1631602800"; 
-   d="scan'208";a="256262318"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Nov 2021 17:45:57 -0800
-X-IronPort-AV: E=Sophos;i="5.87,222,1631602800"; 
-   d="scan'208";a="503752418"
-Received: from unknown (HELO [10.239.13.123]) ([10.239.13.123])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Nov 2021 17:45:52 -0800
-Message-ID: <82145eab-5b0b-bc26-8f8e-2bd68b9e7b28@intel.com>
-Date:   Wed, 10 Nov 2021 09:45:50 +0800
+        id S229590AbhKJBwF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Nov 2021 20:52:05 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40998 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229470AbhKJBwD (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Nov 2021 20:52:03 -0500
+Received: from mail-pj1-x1031.google.com (mail-pj1-x1031.google.com [IPv6:2607:f8b0:4864:20::1031])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C993FC061764
+        for <linux-kernel@vger.kernel.org>; Tue,  9 Nov 2021 17:49:16 -0800 (PST)
+Received: by mail-pj1-x1031.google.com with SMTP id j6-20020a17090a588600b001a78a5ce46aso399886pji.0
+        for <linux-kernel@vger.kernel.org>; Tue, 09 Nov 2021 17:49:16 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=date:from:to:cc:subject:in-reply-to:message-id:references
+         :mime-version;
+        bh=Q1Ic7kOOPETyhFj1cyuEbcKYl8I2Bp4M76inzkMgFYw=;
+        b=JcAnLtwIyMNf+NQlLdTltzTN9P1vrtht48UYiVP+F3KKoXsfKMUrO9NfTaeljph4Of
+         Vzlb/zeuw+bEjm6OT7k5Yn0baMAKCdyYJhOA/vwx/B7B8X27L9USKYnxUvmF5u957/tu
+         bbbko4KszdScfVbNQupYSbrum8MHOlaGjSl+mXwhXma85vfySda772H3NqgYBCDrRz1r
+         xGVR4RBFSw7GPbrvT6KMIYrbv/6h/t3Xt0VA9Q+5IA27yfD5wUYlHVIB6U0ASiuU41OO
+         XrHz/MCfrgyc3J0JS/AqoHpj16VPyLlV07JzclV9mMxKn0a9W0oWHoZ++TMTv9eG6/ci
+         emug==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:in-reply-to:message-id
+         :references:mime-version;
+        bh=Q1Ic7kOOPETyhFj1cyuEbcKYl8I2Bp4M76inzkMgFYw=;
+        b=DuEjizD3qzYtsZM5EKRzeywE4W4t+DYpSdlNs1qYQm8tB515njP6ASnKdqn7dpveW4
+         S98VX0hvsjyhH9L558cMfzKydbFHqEN1mrFQvo488eLQa3ClY5bfc7f2Q2vMEXRR/b1n
+         noQVDyXje4cmCmVzJ1/J5gE/I9Sr0E0LmmLcCZdi2prx6eIG+Qjn6Vn7IM2VTHtV+1nx
+         xcutjbhSZKR5WAfIER0vcfIZgSJilJBZNXikX1aEzsu+5QBksdG1PW81J9BCfWT9O9BB
+         pOb64x4hY17uAqyEDMcxfx328AfiVwzRYC+dt533esgr+grXyRrR4KYFU8+ztzNlTIYz
+         5dag==
+X-Gm-Message-State: AOAM533ZTIBjAHi9RODiT3cqFendhAzjXxRvJ3m+gQuRsqJ/cAkuG8Zn
+        i6znOOa1eILo4FSEZvFirhQrag==
+X-Google-Smtp-Source: ABdhPJywsEcL1jsUSgZb/S9gKVQtVO/v+FSrb8WQK3KYJE9KG+KL5Zqq+J57CUAmXi9vSqcMhFS5JA==
+X-Received: by 2002:a17:902:784c:b0:138:f4e5:9df8 with SMTP id e12-20020a170902784c00b00138f4e59df8mr12132125pln.14.1636508956033;
+        Tue, 09 Nov 2021 17:49:16 -0800 (PST)
+Received: from [2620:15c:17:3:9e39:3ebd:7991:6639] ([2620:15c:17:3:9e39:3ebd:7991:6639])
+        by smtp.gmail.com with ESMTPSA id u9sm12051146pfi.23.2021.11.09.17.49.15
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 09 Nov 2021 17:49:15 -0800 (PST)
+Date:   Tue, 9 Nov 2021 17:49:14 -0800 (PST)
+From:   David Rientjes <rientjes@google.com>
+To:     Marco Elver <elver@google.com>
+cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Christoph Lameter <cl@linux.com>,
+        Pekka Enberg <penberg@kernel.org>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Vlastimil Babka <vbabka@suse.cz>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, Dmitry Vyukov <dvyukov@google.com>,
+        Alexander Potapenko <glider@google.com>,
+        kasan-dev@googlegroups.com, Ingo Molnar <mingo@redhat.com>
+Subject: Re: [PATCH] mm/slab_common: use WARN() if cache still has objects
+ on destroy
+In-Reply-To: <20211102170733.648216-1-elver@google.com>
+Message-ID: <146e59b4-76c-69e4-969-ce8a75ccfe5d@google.com>
+References: <20211102170733.648216-1-elver@google.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
- Firefox/91.0 Thunderbird/91.3.0
-Subject: Re: [RFC PATCH v2 24/69] KVM: x86: Introduce "protected guest"
- concept and block disallowed ioctls
-Content-Language: en-US
-To:     Paolo Bonzini <pbonzini@redhat.com>,
-        Tom Lendacky <thomas.lendacky@amd.com>
-Cc:     isaku.yamahata@gmail.com,
-        "Yamahata, Isaku" <isaku.yamahata@intel.com>, x86@kernel.org,
-        Joerg Roedel <joro@8bytes.org>,
-        Jim Mattson <jmattson@google.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H . Peter Anvin" <hpa@zytor.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>, erdemaktas@google.com,
-        Connor Kuehl <ckuehl@redhat.com>,
-        Sean Christopherson <seanjc@google.com>,
-        linux-kernel@vger.kernel.org, kvm@vger.kernel.org
-References: <cover.1625186503.git.isaku.yamahata@intel.com>
- <482264f17fa0652faad9bd5364d652d11cb2ecb8.1625186503.git.isaku.yamahata@intel.com>
- <02ca73b2-7f04-813d-5bb7-649c0edafa06@redhat.com>
- <209a57e9-ca9c-3939-4aaa-4602e3dd7cdd@amd.com>
- <6f0d243c-4f40-d608-3309-5c37536ab866@intel.com>
- <3966eaf0-ed8e-c356-97dd-f8c5c3057439@redhat.com>
-From:   Xiaoyao Li <xiaoyao.li@intel.com>
-In-Reply-To: <3966eaf0-ed8e-c356-97dd-f8c5c3057439@redhat.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/10/2021 1:15 AM, Paolo Bonzini wrote:
-> On 11/9/21 14:37, Xiaoyao Li wrote:
->>
->> Tom,
->>
->> I think what you did in this commit is not so correct. It just 
->> silently ignores the ioctls insteaf of returning an error to userspace 
->> to tell this IOCTL is not invalid to this VM. E.g., for 
->> kvm_arch_vcpu_ioctl_get_fpu(), QEMU just gets it succesful with fpu 
->> being all zeros.
-> 
-> Yes, it's a "cop out" that removes the need for more complex changes in 
-> QEMU.
-> 
-> I think for the get/set registers ioctls 
-> KVM_GET/SET_{REGS,SREGS,FPU,XSAVE,XCRS} we need to consider SEV-ES 
-> backwards compatibility.  This means, at least for now, only apply the 
-> restriction to TDX (using a bool-returning function, see the review for 
-> 28/69).
-> 
-> For SMM, MCE, vCPU events and for kvm_valid/dirty_regs, it can be done 
-> as in this patch.
-> 
+On Tue, 2 Nov 2021, Marco Elver wrote:
 
-thank you Paolo,
+> Calling kmem_cache_destroy() while the cache still has objects allocated
+> is a kernel bug, and will usually result in the entire cache being
+> leaked. While the message in kmem_cache_destroy() resembles a warning,
+> it is currently not implemented using a real WARN().
+> 
+> This is problematic for infrastructure testing the kernel, all of which
+> rely on the specific format of WARN()s to pick up on bugs.
+> 
+> Some 13 years ago this used to be a simple WARN_ON() in slub, but
+> d629d8195793 ("slub: improve kmem_cache_destroy() error message")
+> changed it into an open-coded warning to avoid confusion with a bug in
+> slub itself.
+> 
+> Instead, turn the open-coded warning into a real WARN() with the message
+> preserved, so that test systems can actually identify these issues, and
+> we get all the other benefits of using a normal WARN(). The warning
+> message is extended with "when called from <caller-ip>" to make it even
+> clearer where the fault lies.
+> 
+> For most configurations this is only a cosmetic change, however, note
+> that WARN() here will now also respect panic_on_warn.
+> 
+> Signed-off-by: Marco Elver <elver@google.com>
 
-I will go with this direction.
+Acked-by: David Rientjes <rientjes@google.com>
 
-
+Thanks Marco!
