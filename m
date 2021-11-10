@@ -2,99 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3DAEC44BCB7
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 09:19:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5031444BCB8
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 09:19:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230165AbhKJIVy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Nov 2021 03:21:54 -0500
-Received: from Galois.linutronix.de ([193.142.43.55]:41408 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230136AbhKJIVx (ORCPT
+        id S230170AbhKJIWP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Nov 2021 03:22:15 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41590 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229791AbhKJIWO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Nov 2021 03:21:53 -0500
-Message-ID: <c342fbf3-44b2-ce22-888f-363b709ea986@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1636532345;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=BN0MsiNbgeRKb+wkl1o9CWyi634gHXLRKnp+TwIJuMo=;
-        b=2jdebMqMvjbryDpOrBpDXQUQiTiL/S+JXKDJMKO3RJSXmVPI76It05CXknKsVBf2Oy77jn
-        Ymgsk64r+QZnCwiXlZ0I2lDZH5Wgsh0YnfF19Ro6TKOJkJ8SIisSVXgZ0BYDj0SerJBh/h
-        nAFmOYN6PnXtpx6Bz/UmJHcyOQ/uvpn79MpVFPvVpQBmhhYPj2yuXbe2UHrm1i4I3zQ4H+
-        ZZUuwysRn+eFjGR/H3c0eKlJ/KYR5rUImOwycRZQC9TmtISKEi8GEp6Ow2zMxqk+mHr1Tm
-        sRc7LMONau9rQQXXMHv4M8gE/yxly4utyFxY43GLIPIJUXzyOJJjgkq2VwSVDA==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1636532345;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=BN0MsiNbgeRKb+wkl1o9CWyi634gHXLRKnp+TwIJuMo=;
-        b=T5DrVa8i7km/keaSIh/JD0Zt7lo6ne8WiNRjMVgAoz6JJ0FrbPR34+ri4LBep3Jpqfg5oF
-        4zByVAA3oQK1OrAQ==
-Date:   Wed, 10 Nov 2021 09:19:04 +0100
+        Wed, 10 Nov 2021 03:22:14 -0500
+Received: from mail-wm1-x32a.google.com (mail-wm1-x32a.google.com [IPv6:2a00:1450:4864:20::32a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A0D79C061764
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Nov 2021 00:19:26 -0800 (PST)
+Received: by mail-wm1-x32a.google.com with SMTP id o29so1365437wms.2
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Nov 2021 00:19:26 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=zLqvkJgCAjTpG7osjAd/FkvEnqLbJcOnM2H/5l4Vzaw=;
+        b=UCkWN1tSpS5JUTTx7zgcSa5m9stl66ndA4gYaFnPI2bmrsTTXg7k3Va2ZebxETy/wR
+         LFecnX363/kcZszgXJNu5IuJfu5IFsFkZirLiaYzuPdKErLXjDu40NB6yXlKQrATif2Y
+         ChDP+fsf+zPdCdljIXObW8MmlCiJWkFjbbL4NybS0CpHt2Dcf5VgZ1qDWt80htUJ0tqK
+         Ch2oTnGTznSQVStaabqR/EbadZCbbw3wJ8pcTTuXJwud6Ks+DKxwU1IIRwMpl4nnE+QS
+         4kZMeQf8ZmdpFTuZPyu/eDslQ4QyuG9JPaED4gaCFkdizI/b5/IHSkF504BPapZg6vec
+         zABA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=zLqvkJgCAjTpG7osjAd/FkvEnqLbJcOnM2H/5l4Vzaw=;
+        b=IbbLdx6b1kezLBV51f40PyQON4Etv08ioEFrylBR0JnK1T4lZw0wml1EmMwmkv8K3j
+         S+5MYiPYs/7oTUHxSVJdZ1UrluOuIVuWVhpFljG0Ql4BrcpGTMAOC3BM3BcKdF5YXtWt
+         jXVc8Sr/rMFYn3kcI5rlt73cWVZ6aehQqfsCNdVdy/ih0lE0CPyC6qtg84f97KwKU28h
+         pKyTUrydQr0Y/VhYV6riNTbr1ezgNC4NgehAo4gHJeqY+SHUmMCgZr+4ppkfQxVCaY4r
+         CN0esPBisZnimgNU47DTNI666gylald//jPjfjYXYHGN3P5uA5VsO5/p/qZW0cE7AY4v
+         nLKA==
+X-Gm-Message-State: AOAM531kuFgNX2m/zMhw0xmiHVp42Yr1MoDJ1mGBzgUuem26YjY+LCNu
+        QCx35QhaN4x9WByEJXv7t6lEvjVXCK0zRoLSKUM=
+X-Google-Smtp-Source: ABdhPJy4/gB8DKfcmePGuY/mzp/sDmcCG8NLfxezZxkp1104cfrJelcsLMlSM15sext1XDFGmqmM0v+5NWH3ZMsuwao=
+X-Received: by 2002:a05:600c:4f14:: with SMTP id l20mr14100359wmq.164.1636532365107;
+ Wed, 10 Nov 2021 00:19:25 -0800 (PST)
 MIME-Version: 1.0
-Subject: Re: [PATCH v2 1/7] net: dsa: b53: Add BroadSync HD register
- definitions
-Content-Language: en-US
-To:     Florian Fainelli <f.fainelli@gmail.com>
-Cc:     Richard Cochran <richardcochran@gmail.com>,
-        Kurt Kanzenbach <kurt@linutronix.de>,
-        Vladimir Oltean <olteanv@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        John Stultz <john.stultz@linaro.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Russell King <linux@armlinux.org.uk>,
-        Marc Kleine-Budde <mkl@pengutronix.de>,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        Andrew Lunn <andrew@lunn.ch>,
-        Vivien Didelot <vivien.didelot@gmail.com>
-References: <20211109095013.27829-1-martin.kaistra@linutronix.de>
- <20211109095013.27829-2-martin.kaistra@linutronix.de>
- <6839c4e9-123d-227a-630d-fae8a2df6483@gmail.com>
-From:   Martin Kaistra <martin.kaistra@linutronix.de>
-In-Reply-To: <6839c4e9-123d-227a-630d-fae8a2df6483@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Received: by 2002:a5d:508e:0:0:0:0:0 with HTTP; Wed, 10 Nov 2021 00:19:24
+ -0800 (PST)
+Reply-To: mrs.helenfavour1@gmail.com
+From:   "Mrs.Helen Favour" <francisalberte@gmail.com>
+Date:   Wed, 10 Nov 2021 09:19:24 +0100
+Message-ID: <CAF++zQ6atpzLNXnayX579gf0d-CW96FmUbw8AxhxYTStg979Gg@mail.gmail.com>
+Subject: hear from you soon
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Am 09.11.21 um 19:04 schrieb Florian Fainelli:
-> On 11/9/21 1:50 AM, Martin Kaistra wrote:
->> From: Kurt Kanzenbach <kurt@linutronix.de>
->>
->> Add register definitions for the BroadSync HD features of
->> BCM53128. These will be used to enable PTP support.
->>
->> Signed-off-by: Kurt Kanzenbach <kurt@linutronix.de>
->> Signed-off-by: Martin Kaistra <martin.kaistra@linutronix.de>
->> ---
-> 
-> [snip]
-> 
->> +/*************************************************************************
->> + * ARL Control Registers
->> + *************************************************************************/
->> +
->> +/* Multiport Control Register (16 bit) */
->> +#define B53_MPORT_CTRL			0x0e
->> +#define   MPORT_CTRL_DIS_FORWARD	0
->> +#define   MPORT_CTRL_CMP_ETYPE		1
->> +#define   MPORT_CTRL_CMP_ADDR		2
->> +#define   MPORT_CTRL_CMP_ADDR_ETYPE	3
->> +#define   MPORT_CTRL_SHIFT(x)		((x) << 1)
->> +#define   MPORT_CTRL_MASK		0x2
-> 
-> The mask should be 0x3 since this is a 2-bit wide field.
-> 
+My Dearest..
 
-Correct, thanks.
-Currently, this mask is not used, as I am just writing
-MPORT0_TS_EN |
-  (MPORT_CTRL_CMP_ETYPE << MPORT_CTRL_SHIFT(0))
-to the register. Should I keep the definition anyway?
+May the peace of the Lord be unto you and your household Amen? I am
+Mrs.Helen Favour, I am writing you now from the Hospital due to my
+cancer sickness,Please I have a fund I inherited from my late husband
+Mr. Gabriel Favour the sum of ($3,400,000.00 USD) and I want to donate
+it in your name to help the less privilege, widows and motherless home
+in your country,
+
+I will be happy to hear from you soon.
+
+Thanks and God bless you
+
+Yours faithful Sister.
