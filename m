@@ -2,87 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2945444CCA6
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 23:25:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0855E44CCAD
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 23:28:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233679AbhKJW14 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Nov 2021 17:27:56 -0500
-Received: from vps0.lunn.ch ([185.16.172.187]:55422 "EHLO vps0.lunn.ch"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233552AbhKJW1z (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Nov 2021 17:27:55 -0500
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
-        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
-        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
-        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
-        bh=6c7O9hvf//7ub1+0PLLd9pZ0Zd9X3mBxwS7SrJoaOIw=; b=aQMlY2ZIhrflITkxdfmcBwng62
-        wFM9qpYp8HuEJd6lyYIrJXjB3i4EPMasctvzVpUopFvVd5a1dywemthxZO5ivY0/UomxgPdqFOZpy
-        grMYLlM87sH6DmRsfZHkYh7S/TeX0cr24HjK/VdzLAuR70oJz7ok54yDgvktn+eviZLk=;
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
-        (envelope-from <andrew@lunn.ch>)
-        id 1mkw1a-00D937-Nb; Wed, 10 Nov 2021 23:24:58 +0100
-Date:   Wed, 10 Nov 2021 23:24:58 +0100
-From:   Andrew Lunn <andrew@lunn.ch>
-To:     Ansuel Smith <ansuelsmth@gmail.com>
-Cc:     Marek =?iso-8859-1?Q?Beh=FAn?= <kabel@kernel.org>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Vladimir Oltean <olteanv@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>, Pavel Machek <pavel@ucw.cz>,
-        John Crispin <john@phrozen.org>, netdev@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-leds@vger.kernel.org
-Subject: Re: [RFC PATCH v3 2/8] leds: add function to configure hardware
- controlled LED
-Message-ID: <YYxGuloRkpsCI1oJ@lunn.ch>
-References: <20211109022608.11109-1-ansuelsmth@gmail.com>
- <20211109022608.11109-3-ansuelsmth@gmail.com>
- <20211109040103.7b56bf82@thinkpad>
- <YYqEPZpGmjNgFj0L@Ansuel-xps.localdomain>
- <YYre31rVDcs8OWre@lunn.ch>
- <YYwisR8XLL7TnwCB@Ansuel-xps.localdomain>
+        id S233690AbhKJWap (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Nov 2021 17:30:45 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38322 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233519AbhKJWao (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Nov 2021 17:30:44 -0500
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E49C1C061766;
+        Wed, 10 Nov 2021 14:27:55 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+        Content-Type:In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:
+        Subject:Sender:Reply-To:Content-ID:Content-Description;
+        bh=ajE2E1oSo9dMdca3nNcODp4DAhXTWNhCgu0RAXyw3Ts=; b=zZ9gUMnX+5lgCf/ZDSs2giGD2x
+        pYvIHVANyt+wE9U86AVXKNBSFYn2SLmKPKhTE6Ek4pOcdOtRG2KLOFqI1LF0XYp/+yNnj6do2TwyP
+        qb82kSIOdOwCqoLvUuJIndcEJo+8rihYLaaIad1cR4sk2T3Db5bh73eRBNwPHBYnu0xMVy3BSg9TD
+        qQIOVkzo6aXJM8ba1+5AleepYAoLPnRskqqJEsuhcwxoJHFQlJ8iqSpHX0E3JRwkYml/JtYEyy+Lb
+        4/claBL7QjKZDCOnJfYjui1utRDVX7teIlBW3dp2cW1jmIBg0rmp2Jq8PsFPp3WoqbmXYvn2A16F1
+        Tfxz46FQ==;
+Received: from [2601:1c0:6280:3f0::aa0b]
+        by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mkw3z-006Xsi-SV; Wed, 10 Nov 2021 22:27:27 +0000
+Subject: Re: [PATCH v7 43/45] virt: Add SEV-SNP guest driver
+To:     Brijesh Singh <brijesh.singh@amd.com>, x86@kernel.org,
+        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        linux-efi@vger.kernel.org, platform-driver-x86@vger.kernel.org,
+        linux-coco@lists.linux.dev, linux-mm@kvack.org
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Joerg Roedel <jroedel@suse.de>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, Ard Biesheuvel <ardb@kernel.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Jim Mattson <jmattson@google.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Sergio Lopez <slp@redhat.com>, Peter Gonda <pgonda@google.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+        David Rientjes <rientjes@google.com>,
+        Dov Murik <dovmurik@linux.ibm.com>,
+        Tobin Feldman-Fitzthum <tobin@ibm.com>,
+        Borislav Petkov <bp@alien8.de>,
+        Michael Roth <michael.roth@amd.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        "Kirill A . Shutemov" <kirill@shutemov.name>,
+        Andi Kleen <ak@linux.intel.com>,
+        "Dr . David Alan Gilbert" <dgilbert@redhat.com>,
+        tony.luck@intel.com, marcorr@google.com,
+        sathyanarayanan.kuppuswamy@linux.intel.com
+References: <20211110220731.2396491-1-brijesh.singh@amd.com>
+ <20211110220731.2396491-44-brijesh.singh@amd.com>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <e8baf85f-8f17-d43e-4656-ed9003affaa8@infradead.org>
+Date:   Wed, 10 Nov 2021 14:27:25 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YYwisR8XLL7TnwCB@Ansuel-xps.localdomain>
+In-Reply-To: <20211110220731.2396491-44-brijesh.singh@amd.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> If we should reuse blink_set to control hw blink I need to understand 2
-> thing.
-> 
-> The idea to implement the function hw_control_configure was to provide
-> the triggers some way to configure the various blink_mode. (and by using
-> the cmd enum provide different info based on the return value)
-> 
-> The advised path from Marek is to make the changes in the trigger_data
-> and the LED driver will then use that to configure blink mode.
-> 
-> I need to call an example to explain my concern:
-> qca8k switch. Can both run in hardware mode and software mode (by
-> controlling the reg to trigger manual blink) and also there is an extra
-> mode to blink permanently at 4hz.
-> 
-> Now someone would declare the brightness_set to control the led
-> manually and blink_set (for the permanent 4hz blink feature)
-> So that's where my idea comes about introducting another function and
-> the fact that it wouldn't match that well with blink_set with some LED.
-> 
-> I mean if we really want to use blink_set also for this(hw_control), we
-> can consider adding a bool to understand when hw_control is active or not.
-> So blink_set can be used for both feature.
+Hi,
 
-I don't see why we need the bool. The driver should know that speeds
-it supports. If asked to do something it cannot do in the current mode
-it should return either -EINVAL, or maybe -EOPNOTSUPP. Depending on
-how to the trigger works, we might want -EOPNOTSUPP when in a hardware
-offload mode, which gets returned to user space. If we are in a
-software blinking mode -EINVAL, so that the trigger does the blinking
-in software.
+On 11/10/21 2:07 PM, Brijesh Singh wrote:
+> diff --git a/drivers/virt/coco/sevguest/Kconfig b/drivers/virt/coco/sevguest/Kconfig
+> new file mode 100644
+> index 000000000000..96190919cca8
+> --- /dev/null
+> +++ b/drivers/virt/coco/sevguest/Kconfig
+> @@ -0,0 +1,9 @@
+> +config SEV_GUEST
+> +	tristate "AMD SEV Guest driver"
+> +	default y
 
-   Andrew
+For this to remain as "default y", you need to justify it.
+E.g., if a board cannot boot with an interrupt controller,
+the driver for the interrupt controller can be "default y".
+
+So why is this default y?
+No other drivers in drivers/virt/ are default y.
+
+> +	depends on AMD_MEM_ENCRYPT && CRYPTO_AEAD2
+> +	help
+> +	  The driver can be used by the SEV-SNP guest to communicate with the PSP to
+> +	  request the attestation report and more.
+> +
+> +	  If you choose 'M' here, this module will be called sevguest.
+
+thanks.
+-- 
+~Randy
