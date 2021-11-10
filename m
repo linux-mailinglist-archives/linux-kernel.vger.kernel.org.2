@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9745E44C7B0
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 19:53:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C94CD44C7E1
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 19:53:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233438AbhKJSyU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Nov 2021 13:54:20 -0500
-Received: from mail.kernel.org ([198.145.29.99]:48748 "EHLO mail.kernel.org"
+        id S233000AbhKJS4e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Nov 2021 13:56:34 -0500
+Received: from mail.kernel.org ([198.145.29.99]:54180 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233314AbhKJSwH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Nov 2021 13:52:07 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8418D6135E;
-        Wed, 10 Nov 2021 18:47:53 +0000 (UTC)
+        id S232697AbhKJSya (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Nov 2021 13:54:30 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id BB636619E8;
+        Wed, 10 Nov 2021 18:48:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1636570074;
-        bh=ZTvlc2gUgLC9PyBHFdtZ9XRNHYyVMg4ksJLgSc90fUI=;
+        s=korg; t=1636570138;
+        bh=5P+CV5TATPTtoir218qglaHIm3frLX7l/G/zKQctxZk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=L8C4MIk44rzyeJFamUwlc9HEOWg1k+wikKck9n0PHaxO85kcagCcD6M5SnMqYKtIz
-         Rav08MMI0dg0XIyIV4Bg09I+DtWPiDMVv35VGXAlHBixDCM3pY0FLXIh3vdKVruTWD
-         Z3rwQajJ6Z8Da9p1PUHb8prvtqj1qV7b2CqH8qNc=
+        b=KzNfpPJqGvIO49xi4aCGUWKeDI/bcGSF7FarX43TimPef7Ffp92WLuHWt5BZiE8yT
+         RhRDau1tu/blzP9wc24gydI/qhVq1EenFvr6qTbOKw71DuY4lbysp8ImxSp8QGlM8Y
+         GsE9J2YMe8IVdEdwx2g7PaMx7KPoGUy/bqHLxCNc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Larry Finger <Larry.Finger@lwfinger.net>,
-        Johan Hovold <johan@kernel.org>
-Subject: [PATCH 5.4 14/17] staging: r8712u: fix control-message timeout
+        stable@vger.kernel.org, Takashi Iwai <tiwai@suse.de>
+Subject: [PATCH 5.14 01/24] ALSA: pcm: Check mmap capability of runtime dma buffer at first
 Date:   Wed, 10 Nov 2021 19:43:53 +0100
-Message-Id: <20211110182002.668739062@linuxfoundation.org>
+Message-Id: <20211110182003.386664901@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211110182002.206203228@linuxfoundation.org>
-References: <20211110182002.206203228@linuxfoundation.org>
+In-Reply-To: <20211110182003.342919058@linuxfoundation.org>
+References: <20211110182003.342919058@linuxfoundation.org>
 User-Agent: quilt/0.66
+X-stable: review
+X-Patchwork-Hint: ignore
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
@@ -39,33 +40,63 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Johan Hovold <johan@kernel.org>
+From: Takashi Iwai <tiwai@suse.de>
 
-commit ce4940525f36ffdcf4fa623bcedab9c2a6db893a upstream.
+commit cbea6e5a7772b7a5b80baa8f98fd77853487fd2a upstream.
 
-USB control-message timeouts are specified in milliseconds and should
-specifically not vary with CONFIG_HZ.
+Currently we check only the substream->dma_buffer as the preset of the
+buffer configuration for verifying the availability of mmap.  But a
+few drivers rather set up the buffer in the own way without the
+standard buffer preallocation using substream->dma_buffer, and they
+miss the proper checks.  (Now it's working more or less fine as most
+of them are running only on x86).
 
-Fixes: 2865d42c78a9 ("staging: r8712u: Add the new driver to the mainline kernel")
-Cc: stable@vger.kernel.org      # 2.6.37
-Acked-by: Larry Finger <Larry.Finger@lwfinger.net>
-Signed-off-by: Johan Hovold <johan@kernel.org>
-Link: https://lore.kernel.org/r/20211025120910.6339-3-johan@kernel.org
+Actually, they may set up the runtime dma_buffer (referred via
+snd_pcm_get_dma_buf()) at the open callback, though.  That is, this
+could have been used as the primary source.
+
+This patch changes the hw_support_mmap() function to check the runtime
+dma buffer at first.  It's usually NULL with the standard buffer
+preallocation, and in that case, we continue checking
+substream->dma_buffer as fallback.
+
+Link: https://lore.kernel.org/r/20210809071829.22238-2-tiwai@suse.de
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/staging/rtl8712/usb_ops_linux.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ sound/core/pcm_native.c |    9 +++++++--
+ 1 file changed, 7 insertions(+), 2 deletions(-)
 
---- a/drivers/staging/rtl8712/usb_ops_linux.c
-+++ b/drivers/staging/rtl8712/usb_ops_linux.c
-@@ -493,7 +493,7 @@ int r8712_usbctrl_vendorreq(struct intf_
- 		memcpy(pIo_buf, pdata, len);
+--- a/sound/core/pcm_native.c
++++ b/sound/core/pcm_native.c
+@@ -243,13 +243,18 @@ int snd_pcm_info_user(struct snd_pcm_sub
+ 
+ static bool hw_support_mmap(struct snd_pcm_substream *substream)
+ {
++	struct snd_dma_buffer *dmabuf;
++
+ 	if (!(substream->runtime->hw.info & SNDRV_PCM_INFO_MMAP))
+ 		return false;
+ 
+ 	if (substream->ops->mmap || substream->ops->page)
+ 		return true;
+ 
+-	switch (substream->dma_buffer.dev.type) {
++	dmabuf = snd_pcm_get_dma_buf(substream);
++	if (!dmabuf)
++		dmabuf = &substream->dma_buffer;
++	switch (dmabuf->dev.type) {
+ 	case SNDRV_DMA_TYPE_UNKNOWN:
+ 		/* we can't know the device, so just assume that the driver does
+ 		 * everything right
+@@ -259,7 +264,7 @@ static bool hw_support_mmap(struct snd_p
+ 	case SNDRV_DMA_TYPE_VMALLOC:
+ 		return true;
+ 	default:
+-		return dma_can_mmap(substream->dma_buffer.dev.dev);
++		return dma_can_mmap(dmabuf->dev.dev);
  	}
- 	status = usb_control_msg(udev, pipe, request, reqtype, value, index,
--				 pIo_buf, len, HZ / 2);
-+				 pIo_buf, len, 500);
- 	if (status > 0) {  /* Success this control transfer. */
- 		if (requesttype == 0x01) {
- 			/* For Control read transfer, we have to copy the read
+ }
+ 
 
 
