@@ -2,38 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 38C4644C79B
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 19:53:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7D06944C7B3
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 19:53:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233631AbhKJSxJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Nov 2021 13:53:09 -0500
-Received: from mail.kernel.org ([198.145.29.99]:48284 "EHLO mail.kernel.org"
+        id S232613AbhKJSy3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Nov 2021 13:54:29 -0500
+Received: from mail.kernel.org ([198.145.29.99]:47820 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233230AbhKJSvG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Nov 2021 13:51:06 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7CB7061211;
-        Wed, 10 Nov 2021 18:47:30 +0000 (UTC)
+        id S233504AbhKJSwj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Nov 2021 13:52:39 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2B94F61247;
+        Wed, 10 Nov 2021 18:48:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1636570050;
-        bh=BD5P/rENzkQLAA5GsOKYD9XmrUAsWECJt25wfIusa5k=;
+        s=korg; t=1636570081;
+        bh=LLBinJJM2VdG9psh21G8WbOpU84azKF13NA2GJ6SUOY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Ydg8i9m4R06d64r0+9OWI/L+PrcwkG5bJl5MkZnKlqFaNJofR7P5jXjHd3egUWsCw
-         w5DtXPPnJ8f9/DMcX0fsVPm332eTh1nRMy3cMob6YGziyGO0qyvmQb7Bav+a/NsUrU
-         WQbKDL8irycV2Cg0C9NPiurHSOLEJEv09WyG79v0=
+        b=fRvyWOKejFbe0ynx8jQHKyu7WZBmwgMoYmeafYMbHhPTO0kUQMmJYEzKZwh22ToUE
+         4iuBuLvAcnMh7P6kI7r7pvy1GOijwxXLpTOwQrOvYzrGZeIaevmIB+UBOsD20eAxMy
+         9PWA9wwstmtenpj7VAjvou+tOkt3Lj8zbcaUYQYY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Petr Mladek <pmladek@suse.com>, Yi Fan <yfa@google.com>
-Subject: [PATCH 5.4 07/17] printk/console: Allow to disable console output by using console="" or console=null
-Date:   Wed, 10 Nov 2021 19:43:46 +0100
-Message-Id: <20211110182002.444875720@linuxfoundation.org>
+        stable@vger.kernel.org, torvic9@mailbox.org,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Nathan Chancellor <nathan@kernel.org>
+Subject: [PATCH 5.10 01/21] KVM: x86: avoid warning with -Wbitwise-instead-of-logical
+Date:   Wed, 10 Nov 2021 19:43:47 +0100
+Message-Id: <20211110182003.010947261@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211110182002.206203228@linuxfoundation.org>
-References: <20211110182002.206203228@linuxfoundation.org>
+In-Reply-To: <20211110182002.964190708@linuxfoundation.org>
+References: <20211110182002.964190708@linuxfoundation.org>
 User-Agent: quilt/0.66
+X-stable: review
+X-Patchwork-Hint: ignore
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
@@ -41,62 +42,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Petr Mladek <pmladek@suse.com>
+From: Paolo Bonzini <pbonzini@redhat.com>
 
-commit 3cffa06aeef7ece30f6b5ac0ea51f264e8fea4d0 upstream.
+commit 3d5e7a28b1ea2d603dea478e58e37ce75b9597ab upstream.
 
-The commit 48021f98130880dd74 ("printk: handle blank console arguments
-passed in.") prevented crash caused by empty console= parameter value.
+This is a new warning in clang top-of-tree (will be clang 14):
 
-Unfortunately, this value is widely used on Chromebooks to disable
-the console output. The above commit caused performance regression
-because the messages were pushed on slow console even though nobody
-was watching it.
+In file included from arch/x86/kvm/mmu/mmu.c:27:
+arch/x86/kvm/mmu/spte.h:318:9: error: use of bitwise '|' with boolean operands [-Werror,-Wbitwise-instead-of-logical]
+        return __is_bad_mt_xwr(rsvd_check, spte) |
+               ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+                                                 ||
+arch/x86/kvm/mmu/spte.h:318:9: note: cast one or both operands to int to silence this warning
 
-Use ttynull driver explicitly for console="" and console=null
-parameters. It has been created for exactly this purpose.
+The code is fine, but change it anyway to shut up this clever clogs
+of a compiler.
 
-It causes that preferred_console is set. As a result, ttySX and ttyX
-are not used as a fallback. And only ttynull console gets registered by
-default.
-
-It still allows to register other consoles either by additional console=
-parameters or SPCR. It prevents regression because it worked this way even
-before. Also it is a sane semantic. Preventing output on all consoles
-should be done another way, for example, by introducing mute_console
-parameter.
-
-Link: https://lore.kernel.org/r/20201006025935.GA597@jagdpanzerIV.localdomain
-Suggested-by: Sergey Senozhatsky <sergey.senozhatsky@gmail.com>
-Reviewed-by: Guenter Roeck <linux@roeck-us.net>
-Tested-by: Guenter Roeck <linux@roeck-us.net>
-Acked-by: Sergey Senozhatsky <sergey.senozhatsky@gmail.com>
-Signed-off-by: Petr Mladek <pmladek@suse.com>
-Link: https://lore.kernel.org/r/20201111135450.11214-3-pmladek@suse.com
-Cc: Yi Fan <yfa@google.com>
+Reported-by: torvic9@mailbox.org
+Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
+[nathan: Backport to 5.10, which does not have 961f84457cd4]
+Signed-off-by: Nathan Chancellor <nathan@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- kernel/printk/printk.c |    9 ++++++++-
- 1 file changed, 8 insertions(+), 1 deletion(-)
+ arch/x86/kvm/mmu/mmu.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/kernel/printk/printk.c
-+++ b/kernel/printk/printk.c
-@@ -2193,8 +2193,15 @@ static int __init console_setup(char *st
- 	char *s, *options, *brl_options = NULL;
- 	int idx;
- 
--	if (str[0] == 0)
-+	/*
-+	 * console="" or console=null have been suggested as a way to
-+	 * disable console output. Use ttynull that has been created
-+	 * for exacly this purpose.
-+	 */
-+	if (str[0] == 0 || strcmp(str, "null") == 0) {
-+		__add_preferred_console("ttynull", 0, NULL, NULL);
- 		return 1;
-+	}
- 
- 	if (_braille_console_setup(&str, &brl_options))
- 		return 1;
+--- a/arch/x86/kvm/mmu/mmu.c
++++ b/arch/x86/kvm/mmu/mmu.c
+@@ -3545,7 +3545,7 @@ static bool get_mmio_spte(struct kvm_vcp
+ 		 * reserved bit and EPT's invalid memtype/XWR checks to avoid
+ 		 * adding a Jcc in the loop.
+ 		 */
+-		reserved |= __is_bad_mt_xwr(rsvd_check, sptes[level - 1]) |
++		reserved |= __is_bad_mt_xwr(rsvd_check, sptes[level - 1]) ||
+ 			    __is_rsvd_bits_set(rsvd_check, sptes[level - 1],
+ 					       level);
+ 	}
 
 
