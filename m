@@ -2,96 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E68CD44C8F9
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 20:26:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4A4FB44C8FB
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 20:27:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232986AbhKJT3Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Nov 2021 14:29:16 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53390 "EHLO
+        id S233010AbhKJT32 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Nov 2021 14:29:28 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53450 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231666AbhKJT3P (ORCPT
+        with ESMTP id S233001AbhKJT30 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Nov 2021 14:29:15 -0500
-Received: from mail-pl1-x635.google.com (mail-pl1-x635.google.com [IPv6:2607:f8b0:4864:20::635])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E8BFC061764;
-        Wed, 10 Nov 2021 11:26:27 -0800 (PST)
-Received: by mail-pl1-x635.google.com with SMTP id r5so3922569pls.1;
-        Wed, 10 Nov 2021 11:26:27 -0800 (PST)
+        Wed, 10 Nov 2021 14:29:26 -0500
+Received: from mail-wr1-x429.google.com (mail-wr1-x429.google.com [IPv6:2a00:1450:4864:20::429])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BACACC061766
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Nov 2021 11:26:38 -0800 (PST)
+Received: by mail-wr1-x429.google.com with SMTP id b12so5869851wrh.4
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Nov 2021 11:26:38 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=1qbhSqcF16F2mjX6K1Vd2e5isFrE+1abQtDD/mqQSQ0=;
-        b=kQNVmmBR8oG7TYiFOmbk7q4nk2xkMM18MNMD6LTnUc/wEbyG7rsysYdH2wW9pp/vBW
-         6GsmsOKR9MEXum8u267pm0ZsJMnhE3zZaqMmBzTwU4kzaRlW06WNM1FbtFMdFshuWs08
-         NIidpcJPVzgHbWJifPZfZtN53MslqMWpvjwX/5u1ZWj4B8oyVpRT2p2Hbr6sFs9VBx4+
-         9jxxzyph1DcsI5hG7GJzG+WuzIpwuH+kih4QrMPIDLq7t14gFENxpIeBrViWlxd2CawO
-         LqTBxaLk3tj2bxrbpyqyUaQgFXwW39x4RbzGy95+HxNOqYhYI3sWQB3c+RUmL8bS1V+F
-         2N9g==
+        d=baylibre-com.20210112.gappssmtp.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=67RflP8EMvWl3pms6qSQzXgIsULKMBC3q9PmqMFeHNI=;
+        b=6Z+nm+/nqAhDht1rZGlH/mNfNev5GGs2XCS2grf4aCItbDCNfifaUAIHKy9l8+BQyj
+         uhI5IDMkB24u5Qi++8U15ZgIa0ko5Gk8cXFmcZKIJJ4d8qzjA3Bw84qnik4R4seqk5NJ
+         YV6ZCg8YWAoLspbhtwdWPjGtqTGSQ6g849jommWhtF6Q5VINSclLpCYLG9241Db6Ou3x
+         sx2cvLka6b4WicRbGJsP1RmCistSuGKqaEPK8N7rU/itSFmuxm92sU3RqxNwCK6DsumG
+         faG76Avn4/z2ySDBa0X/xgWlEPbL2Voq2dAkzqnNSa6hTLXjgMiLNP8D+KHz/qSQfheM
+         1qBw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=1qbhSqcF16F2mjX6K1Vd2e5isFrE+1abQtDD/mqQSQ0=;
-        b=OHtiudMmI3+yDKj8bbe8Sb8g3NKqpKQIiZzIWumwcRMsElb2w8wnnLX5hJEdkkUA9w
-         DNLcLWLA3BKNbEhg7d4MB2ThQ5Hhz1ztb/JRgVQ6/bvuKORX//Vr0r+lN/gOE+pPDIW3
-         tzM1YAmlfq6aQlIsShj3uzZZYYZz7XcFhm7QBrGSBHZwA/+HECslHeXMwD5ssARuy2L8
-         dK4E4cHxPRsWSHivbiSXJu3gid0WIFt3SH1Rju1QAkuyXOhFC+lFfYgFrK8NGClPG53y
-         eCg7uEZML5GtK3Vx8krUO7LUpmKi/H/AGO/RQDZfpna9tpqXWZp7cQG12IrgVY7StYir
-         Ck4Q==
-X-Gm-Message-State: AOAM530ej3fiN/ddWeeJQjNDPFsUkLgj/nUJLVrig9KNvaMrU0V9D4iy
-        b9GsR9V147ja4ytRhxEyIuPrtf3gBSs=
-X-Google-Smtp-Source: ABdhPJx/ZnDWh3if6/hc+jMRHD5tVRjJoXXAo25eMhH/BIHm7MXi891tv/nPDHVy4hAOTHoG9wy0oQ==
-X-Received: by 2002:a17:90b:20d:: with SMTP id fy13mr10887113pjb.47.1636572386340;
-        Wed, 10 Nov 2021 11:26:26 -0800 (PST)
-Received: from [10.67.48.245] ([192.19.223.252])
-        by smtp.googlemail.com with ESMTPSA id l28sm315148pgu.45.2021.11.10.11.26.25
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 10 Nov 2021 11:26:25 -0800 (PST)
-Subject: Re: [PATCH 4.9 00/22] 4.9.290-rc1 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org
-Cc:     torvalds@linux-foundation.org, akpm@linux-foundation.org,
-        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
-        stable@vger.kernel.org
-References: <20211110182001.579561273@linuxfoundation.org>
-From:   Florian Fainelli <f.fainelli@gmail.com>
-Message-ID: <f0fe2b4a-7de6-eb34-7539-62d1b758515a@gmail.com>
-Date:   Wed, 10 Nov 2021 11:26:24 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        bh=67RflP8EMvWl3pms6qSQzXgIsULKMBC3q9PmqMFeHNI=;
+        b=HwgoaRR6+7Tc1DN+2ThdB3etBfK6qj/I8DeaiN8EmMRdz4Gqb3CR1Wa+HR2dgIoPzn
+         rg08jlTj0E/xBeWLZsGrcHg6zYKS46DowXbcFN6V44Gi1sXuyS33WDNPahqORPTxGg8F
+         abDK/fbrp0RUhov0YoePwRzhsmFjujGgAqsMKMnjb1u51Ng3j5FIG3EENh5iG4NJoDST
+         DGnnhoA6I7QwUIVfhagiDBWj/ShMKD0hLfrfivNpR9Pai6UeHPo1fy8vuHWbEXHEIuHZ
+         ige1zFREOWkFlBYYShcA7B9JkT0t24SKStxwXxJgeD+leHMH4ZtOEfV+M6DE/0EFKjzu
+         aISA==
+X-Gm-Message-State: AOAM531agKqXQNeEbK7WalHxgefCDkGgd38UaiMup0EUhwJgwVbR+Hsn
+        4eH28CNBX1wbm0vrFuV5HmQ+Kg==
+X-Google-Smtp-Source: ABdhPJz6hgMMPdrdO/rkxLRSJQ8E+hfok+dIssCwkfCmuwTnnaVIj/RzSyF9FTfspETklUhTNBXD7w==
+X-Received: by 2002:a5d:604a:: with SMTP id j10mr1781746wrt.93.1636572397342;
+        Wed, 10 Nov 2021 11:26:37 -0800 (PST)
+Received: from localhost.localdomain ([88.160.162.107])
+        by smtp.gmail.com with ESMTPSA id m14sm1282370wrp.28.2021.11.10.11.26.36
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 10 Nov 2021 11:26:36 -0800 (PST)
+From:   Fabien Parent <fparent@baylibre.com>
+To:     Rob Herring <robh+dt@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>
+Cc:     Fabien Parent <fparent@baylibre.com>, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] arm64: dts: mediatek: mt8183-evb: Add node for thermistor
+Date:   Wed, 10 Nov 2021 20:26:31 +0100
+Message-Id: <20211110192631.4182485-1-fparent@baylibre.com>
+X-Mailer: git-send-email 2.33.1
 MIME-Version: 1.0
-In-Reply-To: <20211110182001.579561273@linuxfoundation.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/10/21 10:43 AM, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 4.9.290 release.
-> There are 22 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
-> 
-> Responses should be made by Fri, 12 Nov 2021 18:19:54 +0000.
-> Anything received after that time might be too late.
-> 
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-4.9.290-rc1.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-4.9.y
-> and the diffstat can be found below.
-> 
-> thanks,
-> 
-> greg k-h
+Add node to be able to read the temperature for the thermistor
+connected to AUXIN0.
 
-On ARCH_BRCMSTB, using 32-bit and 64-bit ARM kernels:
+Signed-off-by: Fabien Parent <fparent@baylibre.com>
+---
+ arch/arm64/boot/dts/mediatek/mt8183-evb.dts | 8 ++++++++
+ 1 file changed, 8 insertions(+)
 
-Tested-by: Florian Fainelli <f.fainelli@gmail.com>
+diff --git a/arch/arm64/boot/dts/mediatek/mt8183-evb.dts b/arch/arm64/boot/dts/mediatek/mt8183-evb.dts
+index 7bc0a6a7fadf..f3fd3cca23e9 100644
+--- a/arch/arm64/boot/dts/mediatek/mt8183-evb.dts
++++ b/arch/arm64/boot/dts/mediatek/mt8183-evb.dts
+@@ -36,6 +36,14 @@ scp_mem_reserved: scp_mem_region {
+ 			no-map;
+ 		};
+ 	};
++
++	ntc@0 {
++		compatible = "murata,ncp03wf104";
++		pullup-uv = <1800000>;
++		pullup-ohm = <390000>;
++		pulldown-ohm = <0>;
++		io-channels = <&auxadc 0>;
++	};
+ };
+ 
+ &auxadc {
 -- 
-Florian
+2.33.1
+
