@@ -2,132 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F0DE044C432
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 16:18:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1391044C437
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 16:19:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232375AbhKJPVb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Nov 2021 10:21:31 -0500
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:14766 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S231743AbhKJPVa (ORCPT
+        id S232302AbhKJPVj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Nov 2021 10:21:39 -0500
+Received: from mail-ed1-f51.google.com ([209.85.208.51]:39474 "EHLO
+        mail-ed1-f51.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231743AbhKJPVh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Nov 2021 10:21:30 -0500
-Received: from pps.filterd (m0098416.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 1AAEtRx6028274;
-        Wed, 10 Nov 2021 15:18:34 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
- subject : message-id : references : mime-version : content-type :
- in-reply-to; s=pp1; bh=HW7Kl1MQFM0BkBddD88/pIpAwZhXGdUz0xBlIIt9TFc=;
- b=NDXijefgn7RIbJscFc9UTa0TeCqQylevHXveFN7Ub3cFp/DLUkj3mhSslxoLmnHYJo77
- o+WiERDCTfUS8jluYKbyDdfc6QMuwBKOpDaD+d3mYgyLGpSh8LuNSxj2+NWtcDPLUDZm
- S1X+cGapv/7Ru8Cav6+lOHOH6s77PCJ37owjWj/OqrpXNXC5qBhG4Wd8CaPeP1Jm2rey
- KhdRoMiKBKfFL8y6cjE2Qrm/VPQdXVWxqxGMTY8s52qjrZPqTip06POM2sBKmo4Ydrpt
- ZeSHEy5AVReXmZ4pvPhI29CZA7d2do8TAItxKGsRrQgP8+0q2phUWBzjQc+X20QpwSGK FQ== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 3c8ecc40wn-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 10 Nov 2021 15:18:33 +0000
-Received: from m0098416.ppops.net (m0098416.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 1AADRdxU002139;
-        Wed, 10 Nov 2021 15:18:33 GMT
-Received: from ppma04fra.de.ibm.com (6a.4a.5195.ip4.static.sl-reverse.com [149.81.74.106])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 3c8ecc40w4-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 10 Nov 2021 15:18:33 +0000
-Received: from pps.filterd (ppma04fra.de.ibm.com [127.0.0.1])
-        by ppma04fra.de.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 1AAFDCYa006831;
-        Wed, 10 Nov 2021 15:18:31 GMT
-Received: from b06avi18626390.portsmouth.uk.ibm.com (b06avi18626390.portsmouth.uk.ibm.com [9.149.26.192])
-        by ppma04fra.de.ibm.com with ESMTP id 3c5hba9rbp-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 10 Nov 2021 15:18:31 +0000
-Received: from d06av25.portsmouth.uk.ibm.com (d06av25.portsmouth.uk.ibm.com [9.149.105.61])
-        by b06avi18626390.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 1AAFBmIO26804522
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 10 Nov 2021 15:11:48 GMT
-Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 0169E11C058;
-        Wed, 10 Nov 2021 15:18:28 +0000 (GMT)
-Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id AC23511C071;
-        Wed, 10 Nov 2021 15:18:27 +0000 (GMT)
-Received: from osiris (unknown [9.145.55.149])
-        by d06av25.portsmouth.uk.ibm.com (Postfix) with ESMTPS;
-        Wed, 10 Nov 2021 15:18:27 +0000 (GMT)
-Date:   Wed, 10 Nov 2021 16:18:26 +0100
-From:   Heiko Carstens <hca@linux.ibm.com>
-To:     Philipp Rudo <prudo@redhat.com>
-Cc:     Baoquan He <bhe@redhat.com>, linux-kernel@vger.kernel.org,
-        linux-s390@vger.kernel.org, kexec@lists.infradead.org,
-        dyoung@redhat.com, akpm@linux-foundation.org
-Subject: Re: [PATCH] s390/kexec: fix memory leak of ipl report buffer
-Message-ID: <YYviwi3PVD11xcCs@osiris>
-References: <20211029092635.14804-1-bhe@redhat.com>
- <20211029183132.20839ad0@rhtmp>
+        Wed, 10 Nov 2021 10:21:37 -0500
+Received: by mail-ed1-f51.google.com with SMTP id r12so11961343edt.6;
+        Wed, 10 Nov 2021 07:18:48 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=mO3hph1YkCApcCuLSKx4NqEPJzPi9cWVsNMhXuQPk3w=;
+        b=5IOrj4xgidzAdICKGA9OLjt/Es4HP4/BqeNEMST285iP2ys4EPGeyAGYJgGci0etmd
+         Gvw2c3hRvQp7K55+lzqWsRBgLVn4f17WAO5TYPZqr8fBzEyBdninV6AYiBqIxc6BKqvk
+         oh39HC2FfjpkXuOCH/sgEp/d4gedGb7wIMM7B9y6ok0XkYkcleQubdEgEwoCzEPt3fx5
+         eJRiQvkXdWNolYt2p4d9PSDVrqauSybieGCyljYqd3ZqTsK0QS8ff/BFAznUzpGZYU9f
+         BBuc23bqXTjXtZwouKe7+QY45oEncK9cfxht5SBtwiDKZCLWRHO8jxS3J8btDaeCQNiN
+         BHBw==
+X-Gm-Message-State: AOAM531D4OGnGw/J6rOo2GGYza+UM8UkD9bbpt0E+L12kxebpxvwjFJs
+        003jW4swiulG0GUmQk5zaT5pzH9S+USyEp4r
+X-Google-Smtp-Source: ABdhPJwnYjlHdTMWVCJvkQQtkFQdNPEUIsDquASVQ6Zr8+bb8R87wH69RFXVDr6LUnAG3ZStsXi84Q==
+X-Received: by 2002:a17:906:538d:: with SMTP id g13mr508060ejo.62.1636557526490;
+        Wed, 10 Nov 2021 07:18:46 -0800 (PST)
+Received: from mail-wr1-f47.google.com (mail-wr1-f47.google.com. [209.85.221.47])
+        by smtp.gmail.com with ESMTPSA id mc3sm26442ejb.24.2021.11.10.07.18.44
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 10 Nov 2021 07:18:44 -0800 (PST)
+Received: by mail-wr1-f47.google.com with SMTP id d24so4716255wra.0;
+        Wed, 10 Nov 2021 07:18:44 -0800 (PST)
+X-Received: by 2002:a05:6000:4b:: with SMTP id k11mr627335wrx.86.1636557523979;
+ Wed, 10 Nov 2021 07:18:43 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211029183132.20839ad0@rhtmp>
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: 7IfjqiT3O8J9M4ZLwYOo6ydICH44Qp25
-X-Proofpoint-ORIG-GUID: xeJVl4jtQeuUMYxFAbg6s0aftZgQFUI_
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.205,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.0.607.475
- definitions=2021-11-10_05,2021-11-08_02,2020-04-07_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0
- priorityscore=1501 spamscore=0 clxscore=1011 phishscore=0
- lowpriorityscore=0 suspectscore=0 impostorscore=0 adultscore=0
- mlxlogscore=981 mlxscore=0 bulkscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2110150000 definitions=main-2111100079
+References: <163649323416.309189.4637503793406396694.stgit@warthog.procyon.org.uk>
+In-Reply-To: <163649323416.309189.4637503793406396694.stgit@warthog.procyon.org.uk>
+From:   Marc Dionne <marc.dionne@auristor.com>
+Date:   Wed, 10 Nov 2021 11:18:32 -0400
+X-Gmail-Original-Message-ID: <CAB9dFdvOM=QPGxNj1GpZkedd_kq9HWsc__MpUJevOGfSsNfopQ@mail.gmail.com>
+Message-ID: <CAB9dFdvOM=QPGxNj1GpZkedd_kq9HWsc__MpUJevOGfSsNfopQ@mail.gmail.com>
+Subject: Re: [PATCH v4 0/5] netfs, 9p, afs, ceph: Support folios, at least partially
+To:     David Howells <dhowells@redhat.com>
+Cc:     "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        kafs-testing@auristor.com, Ilya Dryomov <idryomov@gmail.com>,
+        linux-cachefs@redhat.com, linux-afs@lists.infradead.org,
+        ceph-devel@vger.kernel.org, Jeff Layton <jlayton@kernel.org>,
+        Dominique Martinet <asmadeus@codewreck.org>,
+        v9fs-developer@lists.sourceforge.net,
+        linux-fsdevel@vger.kernel.org, linux-cifs@vger.kernel.org,
+        linux-nfs@vger.kernel.org, devel@lists.orangefs.org,
+        linux-mm@kvack.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 29, 2021 at 06:31:32PM +0200, Philipp Rudo wrote:
-> Hi Baoquan,
-> 
-> On Fri, 29 Oct 2021 17:26:35 +0800
-> Baoquan He <bhe@redhat.com> wrote:
-> 
-> > A memory leak is reported by kmemleak scanning:
-...
-> > The ipl report buffer is allocated via vmalloc, while has no chance to free
-> > if the kexe loading is unloaded. This will cause obvious memory leak
-> > when kexec/kdump kernel is reloaded, manually, or triggered, e.g by
-> > memory hotplug.
-> > 
-> > Here, add struct kimage_arch to s390 to pass out the ipl report buffer
-> > address, and introduce arch dependent function
-> > arch_kimage_file_post_load_cleanup() to free it when unloaded.
-> > 
-> > Signed-off-by: Baoquan He <bhe@redhat.com>
-> 
-> other than a missing
-> 
-> Fixes: 99feaa717e55 ("s390/kexec_file: Create ipl report and pass to
-> next kernel")
-> 
-> the patch looks good to me.
-> 
-> Reviewed-by: Philipp Rudo <prudo@redhat.com>
-...
-> >  	buf.buffer = ipl_report_finish(data->report);
-> >  	buf.bufsz = data->report->size;
-> >  	buf.memsz = buf.bufsz;
-> > +	image->arch.ipl_buf = buf.buffer;
+On Tue, Nov 9, 2021 at 5:28 PM David Howells <dhowells@redhat.com> wrote:
+>
+>
+> Here's a set of patches to convert netfs, 9p and afs to use folios and to
+> provide sufficient conversion for ceph that it can continue to use the
+> netfs library.  Jeff Layton is working on fully converting ceph.
+>
+> This has been rebased on to the 9p merge in Linus's tree[5] so that it has
+> access to both the 9p conversion to fscache and folios.
+>
+> Changes
+> =======
+> ver #4:
+>  - Detached and sent the afs symlink split patch separately.
+>  - Handed the 9p netfslibisation patch off to Dominique Martinet.
+>  - Added a patch to foliate page_endio().
+>  - Fixed a bug in afs_redirty_page() whereby it didn't set the next page
+>    index in the loop and returned too early.
+>  - Simplified a check in v9fs_vfs_write_folio_locked()[4].
+>  - Undid a change to afs_symlink_readpage()[4].
+>  - Used offset_in_folio() in afs_write_end()[4].
+>  - Rebased on 9p-folio merge upstream[5].
+>
+> ver #3:
+>  - Rebased on upstream as folios have been pulled.
+>  - Imported a patch to convert 9p to netfslib from my
+>    fscache-remove-old-api branch[3].
+>  - Foliated netfslib.
+>
+> ver #2:
+>  - Reorder the patches to put both non-folio afs patches to the front.
+>  - Use page_offset() rather than manual calculation[1].
+>  - Fix folio_inode() to directly access the inode[2].
+>
+> David
+>
+> Link: https://lore.kernel.org/r/YST/0e92OdSH0zjg@casper.infradead.org/ [1]
+> Link: https://lore.kernel.org/r/YST8OcVNy02Rivbm@casper.infradead.org/ [2]
+> Link: https://lore.kernel.org/r/163551653404.1877519.12363794970541005441.stgit@warthog.procyon.org.uk/ [3]
+> Link: https://lore.kernel.org/r/YYKa3bfQZxK5/wDN@casper.infradead.org/ [4]
+> Link: https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=f89ce84bc33330607a782e47a8b19406ed109b15 [5]
+> Link: https://lore.kernel.org/r/2408234.1628687271@warthog.procyon.org.uk/ # v0
+> Link: https://lore.kernel.org/r/162981147473.1901565.1455657509200944265.stgit@warthog.procyon.org.uk/ # v1
+> Link: https://lore.kernel.org/r/163005740700.2472992.12365214290752300378.stgit@warthog.procyon.org.uk/ # v2
+> Link: https://lore.kernel.org/r/163584174921.4023316.8927114426959755223.stgit@warthog.procyon.org.uk>/ # v3
+> ---
+> David Howells (5):
+>       folio: Add a function to change the private data attached to a folio
+>       folio: Add a function to get the host inode for a folio
+>       folio: Add replacements for page_endio()
+>       netfs, 9p, afs, ceph: Use folios
+>       afs: Use folios in directory handling
+>
+>
+>  fs/9p/vfs_addr.c           |  83 +++++----
+>  fs/9p/vfs_file.c           |  20 +--
+>  fs/afs/dir.c               | 229 ++++++++++--------------
+>  fs/afs/dir_edit.c          | 154 ++++++++--------
+>  fs/afs/file.c              |  68 ++++----
+>  fs/afs/internal.h          |  46 ++---
+>  fs/afs/write.c             | 347 ++++++++++++++++++-------------------
+>  fs/ceph/addr.c             |  80 +++++----
+>  fs/netfs/read_helper.c     | 165 +++++++++---------
+>  include/linux/netfs.h      |  12 +-
+>  include/linux/pagemap.h    |  23 ++-
+>  include/trace/events/afs.h |  21 +--
+>  mm/filemap.c               |  64 ++++---
+>  mm/page-writeback.c        |   2 +-
+>  14 files changed, 666 insertions(+), 648 deletions(-)
+>
+>
+>
+> Tested-by: Jeff Layton <jlayton@kernel.org>
+> Tested-by: Dominique Martinet <asmadeus@codewreck.org>
+> Tested-by: kafs-testing@auristor.com
 
-This seems (still) to be incorrect: ipl_report_finish() may return
--ENOMEN, but there is no error checking anywhere, as far as I can
-tell, which would make this:
+The updated series passed our automated test suite, which is mostly
+targeted afs testing, but with a framework that also relies on 9p.
 
-> > +int arch_kimage_file_post_load_cleanup(struct kimage *image)
-> > +{
-> > +	kvfree(image->arch.ipl_buf);
-> > +	image->arch.ipl_buf = NULL;
-> > +
-> > +	return kexec_image_post_load_cleanup_default(image);
-> > +}
+So you can reapply:
+Tested-by: kafs-testing@auristor.com
 
-most likely not do what we want. That is: if this code is reached at
-all in such a case. I'll check and might add a patch before this to
-fix this also.
+Marc
