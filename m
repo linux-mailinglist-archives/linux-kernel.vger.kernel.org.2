@@ -2,98 +2,232 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CAD5A44C348
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 15:45:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D4B9A44C34C
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 15:45:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232297AbhKJOrw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Nov 2021 09:47:52 -0500
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:34964 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S232077AbhKJOrv (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Nov 2021 09:47:51 -0500
-Received: from pps.filterd (m0098420.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 1AADhQXG025477;
-        Wed, 10 Nov 2021 14:45:00 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
- subject : message-id : references : mime-version : content-type :
- in-reply-to; s=pp1; bh=qrtOUARlNxFt0nyxxQJFykHNr55tEEq31MM0sJJdQ+w=;
- b=c6/WUCHyPhwMF87TD+Y0qzr8dFLxgPdbYxdyiZ+GIbAPoVdMwVFungngiMvjWgMYB8yW
- 8GXvt54rcaed65H4lT5XLmphuJ/Yvz7gqEV+dccflYeloORZKIiNvuI2hc8k2nE+nbLF
- Aa7lo3QAzX/MmAQ/BOpDyjIktWejhjnPfV2ld9tNSclBx+zdcFlPjWI4Co+Jnp4st5Ok
- +NncB6b/IGlM0LIdQP/KSlmd43veE68TS64iAGVLoAmtEwbTWv0XT7po9ACP+mdQDoEW
- V3fkdtePDx9eM9ixUIF3LjKuP3FRBeAIYLMFeJrAamp/NAo9A3Staq3U3ijsuB8dA7El 7w== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 3c8f7f9kwd-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 10 Nov 2021 14:44:59 +0000
-Received: from m0098420.ppops.net (m0098420.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 1AADsKMm012785;
-        Wed, 10 Nov 2021 14:44:59 GMT
-Received: from ppma04ams.nl.ibm.com (63.31.33a9.ip4.static.sl-reverse.com [169.51.49.99])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 3c8f7f9kvv-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 10 Nov 2021 14:44:59 +0000
-Received: from pps.filterd (ppma04ams.nl.ibm.com [127.0.0.1])
-        by ppma04ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 1AAEX63F004042;
-        Wed, 10 Nov 2021 14:44:57 GMT
-Received: from b06cxnps4074.portsmouth.uk.ibm.com (d06relay11.portsmouth.uk.ibm.com [9.149.109.196])
-        by ppma04ams.nl.ibm.com with ESMTP id 3c5hbakc8t-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 10 Nov 2021 14:44:57 +0000
-Received: from d06av25.portsmouth.uk.ibm.com (d06av25.portsmouth.uk.ibm.com [9.149.105.61])
-        by b06cxnps4074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 1AAEisp32097850
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 10 Nov 2021 14:44:54 GMT
-Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id ED1D811C050;
-        Wed, 10 Nov 2021 14:44:53 +0000 (GMT)
-Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 6CBEB11C054;
-        Wed, 10 Nov 2021 14:44:53 +0000 (GMT)
-Received: from osiris (unknown [9.145.55.149])
-        by d06av25.portsmouth.uk.ibm.com (Postfix) with ESMTPS;
-        Wed, 10 Nov 2021 14:44:53 +0000 (GMT)
-Date:   Wed, 10 Nov 2021 15:44:51 +0100
-From:   Heiko Carstens <hca@linux.ibm.com>
-To:     cgel.zte@gmail.com
-Cc:     gor@linux.ibm.com, borntraeger@de.ibm.com, agordeev@linux.ibm.com,
-        svens@linux.ibm.com, egorenar@linux.ibm.com, geert@linux-m68k.org,
-        zhang.mingyu@zte.com.cn, frankja@linux.ibm.com,
-        ebiederm@xmission.com, linux-s390@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Zeal Robot <zealci@zte.com.cn>
-Subject: Re: [PATCH] s390:Use BUG_ON instead of if condition followed by BUG.
-Message-ID: <YYva4z083aMSsEwW@osiris>
-References: <20211103055622.25441-1-zhang.mingyu@zte.com.cn>
+        id S232310AbhKJOsl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Nov 2021 09:48:41 -0500
+Received: from foss.arm.com ([217.140.110.172]:47110 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231731AbhKJOsk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Nov 2021 09:48:40 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 5D497139F;
+        Wed, 10 Nov 2021 06:45:52 -0800 (PST)
+Received: from e113632-lin (e113632-lin.cambridge.arm.com [10.1.196.57])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 75C503F718;
+        Wed, 10 Nov 2021 06:45:51 -0800 (PST)
+From:   Valentin Schneider <valentin.schneider@arm.com>
+To:     Mike Galbraith <efault@gmx.de>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Marco Elver <elver@google.com>
+Cc:     linux-kernel@vger.kernel.org,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@kernel.org>
+Subject: Re: [PATCH] sched: Split preemption model selection between DYNAMIC & !DYNAMIC
+In-Reply-To: <87h7cks16n.mognet@arm.com>
+References: <20211109151057.3489223-1-valentin.schneider@arm.com> <20211110011738.GD288354@lothringen> <beec14cee84de7a4bedd7a63c2acdf150a82bc09.camel@gmx.de> <87h7cks16n.mognet@arm.com>
+Date:   Wed, 10 Nov 2021 14:45:45 +0000
+Message-ID: <87bl2srrvq.mognet@arm.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211103055622.25441-1-zhang.mingyu@zte.com.cn>
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: S7I6OuV1MIchDiIt6sVIH4J4YCoaeuPa
-X-Proofpoint-GUID: WDH-7azIeI3gNArPt3IySihomsBnTmbn
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.205,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.0.607.475
- definitions=2021-11-10_05,2021-11-08_02,2020-04-07_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0 adultscore=0
- mlxlogscore=418 priorityscore=1501 bulkscore=0 mlxscore=0 clxscore=1011
- suspectscore=0 spamscore=0 phishscore=0 malwarescore=0 lowpriorityscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2110150000
- definitions=main-2111100076
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 03, 2021 at 05:56:22AM +0000, cgel.zte@gmail.com wrote:
-> From: Zhang Mingyu <zhang.mingyu@zte.com.cn>
-> 
-> This issue was detected with the help of Coccinelle.
-> 
-> Reported-by: Zeal Robot <zealci@zte.com.cn>
-> Signed-off-by: Zhang Mingyu <zhang.mingyu@zte.com.cn>
-> ---
->  arch/s390/mm/fault.c | 3 +--
->  1 file changed, 1 insertion(+), 2 deletions(-)
+On 10/11/21 11:24, Valentin Schneider wrote:
+> Following Frederic's _STATIC suggestion, I got to the below. The nice thing
+> is if a defconfig picks say PREEMPT_VOLUNTARY and the arch supports
+> PREEMPT_DYNAMIC, then it'll pick PREEMPT_VOLUNTARY_BEHAVIOUR. The less nice
+> thing is that we end up selecting PREEMPT_STATIC for PREEMPT_DYNAMIC
+> kernels, naming's hard... Maybe _BUILD rather than _STATIC?
+>
 
-S-O-B chain is incorrect. Sent by cgel.zte@gmail.com, but not listed
-anywhere. Therefore not applying.
+And now without a legacy compatibility layer crud...
+
+---
+diff --git a/include/linux/kernel.h b/include/linux/kernel.h
+index 2776423a587e..9c7d774ef809 100644
+--- a/include/linux/kernel.h
++++ b/include/linux/kernel.h
+@@ -88,7 +88,7 @@
+ struct completion;
+ struct user;
+ 
+-#ifdef CONFIG_PREEMPT_VOLUNTARY
++#ifdef CONFIG_PREEMPT_VOLUNTARY_BUILD
+ 
+ extern int __cond_resched(void);
+ # define might_resched() __cond_resched()
+diff --git a/include/linux/vermagic.h b/include/linux/vermagic.h
+index 1eaaa93c37bf..f2b71920024c 100644
+--- a/include/linux/vermagic.h
++++ b/include/linux/vermagic.h
+@@ -15,7 +15,7 @@
+ #else
+ #define MODULE_VERMAGIC_SMP ""
+ #endif
+-#ifdef CONFIG_PREEMPT
++#ifdef CONFIG_PREEMPT_BUILD
+ #define MODULE_VERMAGIC_PREEMPT "preempt "
+ #elif defined(CONFIG_PREEMPT_RT)
+ #define MODULE_VERMAGIC_PREEMPT "preempt_rt "
+@@ -39,9 +39,9 @@
+ #define MODULE_RANDSTRUCT_PLUGIN
+ #endif
+ 
+-#define VERMAGIC_STRING 						\
++#define VERMAGIC_STRING							\
+ 	UTS_RELEASE " "							\
+-	MODULE_VERMAGIC_SMP MODULE_VERMAGIC_PREEMPT 			\
++	MODULE_VERMAGIC_SMP MODULE_VERMAGIC_PREEMPT			\
+ 	MODULE_VERMAGIC_MODULE_UNLOAD MODULE_VERMAGIC_MODVERSIONS	\
+ 	MODULE_ARCH_VERMAGIC						\
+ 	MODULE_RANDSTRUCT_PLUGIN
+diff --git a/init/Makefile b/init/Makefile
+index 2846113677ee..04eeee12c076 100644
+--- a/init/Makefile
++++ b/init/Makefile
+@@ -30,7 +30,7 @@ $(obj)/version.o: include/generated/compile.h
+ quiet_cmd_compile.h = CHK     $@
+       cmd_compile.h = \
+ 	$(CONFIG_SHELL) $(srctree)/scripts/mkcompile_h $@	\
+-	"$(UTS_MACHINE)" "$(CONFIG_SMP)" "$(CONFIG_PREEMPT)"	\
++	"$(UTS_MACHINE)" "$(CONFIG_SMP)" "$(CONFIG_PREEMPT_BUILD)"	\
+ 	"$(CONFIG_PREEMPT_RT)" $(CONFIG_CC_VERSION_TEXT) "$(LD)"
+ 
+ include/generated/compile.h: FORCE
+diff --git a/kernel/Kconfig.preempt b/kernel/Kconfig.preempt
+index 60f1bfc3c7b2..ce77f0265660 100644
+--- a/kernel/Kconfig.preempt
++++ b/kernel/Kconfig.preempt
+@@ -1,12 +1,23 @@
+ # SPDX-License-Identifier: GPL-2.0-only
+ 
++config PREEMPT_NONE_BUILD
++	bool
++
++config PREEMPT_VOLUNTARY_BUILD
++	bool
++
++config PREEMPT_BUILD
++	bool
++	select PREEMPTION
++	select UNINLINE_SPIN_UNLOCK if !ARCH_INLINE_SPIN_UNLOCK
++
+ choice
+ 	prompt "Preemption Model"
+-	default PREEMPT_NONE_BEHAVIOUR
++	default PREEMPT_NONE
+ 
+-config PREEMPT_NONE_BEHAVIOUR
++config PREEMPT_NONE
+ 	bool "No Forced Preemption (Server)"
+-	select PREEMPT_NONE if !PREEMPT_DYNAMIC
++	select PREEMPT_NONE_BUILD if !PREEMPT_DYNAMIC
+ 	help
+ 	  This is the traditional Linux preemption model, geared towards
+ 	  throughput. It will still provide good latencies most of the
+@@ -18,10 +29,10 @@ config PREEMPT_NONE_BEHAVIOUR
+ 	  raw processing power of the kernel, irrespective of scheduling
+ 	  latencies.
+ 
+-config PREEMPT_VOLUNTARY_BEHAVIOUR
++config PREEMPT_VOLUNTARY
+ 	bool "Voluntary Kernel Preemption (Desktop)"
+ 	depends on !ARCH_NO_PREEMPT
+-	select PREEMPT_VOLUNTARY if !PREEMPT_DYNAMIC
++	select PREEMPT_VOLUNTARY_BUILD if !PREEMPT_DYNAMIC
+ 	help
+ 	  This option reduces the latency of the kernel by adding more
+ 	  "explicit preemption points" to the kernel code. These new
+@@ -37,10 +48,10 @@ config PREEMPT_VOLUNTARY_BEHAVIOUR
+ 
+ 	  Select this if you are building a kernel for a desktop system.
+ 
+-config PREEMPT_BEHAVIOUR
++config PREEMPT
+ 	bool "Preemptible Kernel (Low-Latency Desktop)"
+ 	depends on !ARCH_NO_PREEMPT
+-	select PREEMPT
++	select PREEMPT_BUILD
+ 	help
+ 	  This option reduces the latency of the kernel by making
+ 	  all kernel code (that is not executing in a critical section)
+@@ -58,7 +69,7 @@ config PREEMPT_BEHAVIOUR
+ 
+ config PREEMPT_RT
+ 	bool "Fully Preemptible Kernel (Real-Time)"
+-	depends on EXPERT && ARCH_SUPPORTS_RT && !PREEMPT_DYNAMIC
++	depends on EXPERT && ARCH_SUPPORTS_RT
+ 	select PREEMPTION
+ 	help
+ 	  This option turns the kernel into a real-time kernel by replacing
+@@ -75,17 +86,6 @@ config PREEMPT_RT
+ 
+ endchoice
+ 
+-config PREEMPT_NONE
+-	bool
+-
+-config PREEMPT_VOLUNTARY
+-	bool
+-
+-config PREEMPT
+-	bool
+-	select PREEMPTION
+-	select UNINLINE_SPIN_UNLOCK if !ARCH_INLINE_SPIN_UNLOCK
+-
+ config PREEMPT_COUNT
+        bool
+ 
+@@ -95,8 +95,8 @@ config PREEMPTION
+ 
+ config PREEMPT_DYNAMIC
+ 	bool "Preemption behaviour defined on boot"
+-	depends on HAVE_PREEMPT_DYNAMIC
+-	select PREEMPT
++	depends on HAVE_PREEMPT_DYNAMIC && !PREEMPT_RT
++	select PREEMPT_BUILD
+ 	default y
+ 	help
+ 	  This option allows to define the preemption model on the kernel
+diff --git a/kernel/kcsan/kcsan_test.c b/kernel/kcsan/kcsan_test.c
+index dc55fd5a36fc..845b17cf7811 100644
+--- a/kernel/kcsan/kcsan_test.c
++++ b/kernel/kcsan/kcsan_test.c
+@@ -1005,13 +1005,13 @@ static const void *nthreads_gen_params(const void *prev, char *desc)
+ 	else
+ 		nthreads *= 2;
+ 
+-	if (!IS_ENABLED(CONFIG_PREEMPT) || !IS_ENABLED(CONFIG_KCSAN_INTERRUPT_WATCHER)) {
++	if (!IS_ENABLED(CONFIG_PREEMPTION) || !IS_ENABLED(CONFIG_KCSAN_INTERRUPT_WATCHER)) {
+ 		/*
+ 		 * Without any preemption, keep 2 CPUs free for other tasks, one
+ 		 * of which is the main test case function checking for
+ 		 * completion or failure.
+ 		 */
+-		const long min_unused_cpus = IS_ENABLED(CONFIG_PREEMPT_NONE) ? 2 : 0;
++		const long min_unused_cpus = IS_ENABLED(CONFIG_PREEMPT_NONE_BUILD) ? 2 : 0;
+ 		const long min_required_cpus = 2 + min_unused_cpus;
+ 
+ 		if (num_online_cpus() < min_required_cpus) {
+diff --git a/kernel/trace/trace.c b/kernel/trace/trace.c
+index 7896d30d90f7..3b3226ffbafa 100644
+--- a/kernel/trace/trace.c
++++ b/kernel/trace/trace.c
+@@ -4271,11 +4271,11 @@ print_trace_header(struct seq_file *m, struct trace_iterator *iter)
+ 		   entries,
+ 		   total,
+ 		   buf->cpu,
+-#if defined(CONFIG_PREEMPT_NONE)
++#if defined(CONFIG_PREEMPT_NONE_BUILD)
+ 		   "server",
+-#elif defined(CONFIG_PREEMPT_VOLUNTARY)
++#elif defined(CONFIG_PREEMPT_VOLUNTARY_BUILD)
+ 		   "desktop",
+-#elif defined(CONFIG_PREEMPT)
++#elif defined(CONFIG_PREEMPT_BUILD)
+ 		   "preempt",
+ #elif defined(CONFIG_PREEMPT_RT)
+ 		   "preempt_rt",
