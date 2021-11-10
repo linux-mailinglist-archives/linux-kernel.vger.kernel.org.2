@@ -2,141 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 95EAE44C38C
+	by mail.lfdr.de (Postfix) with ESMTP id 1E33E44C38B
 	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 16:01:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232384AbhKJPD5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Nov 2021 10:03:57 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:51401 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232338AbhKJPD4 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
+        id S232361AbhKJPD4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Wed, 10 Nov 2021 10:03:56 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1636556468;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=cuzPpu25xMZj9bq/LSjhEetjUdKRTAJi3G60ivnlha8=;
-        b=KhdTlH7oEJ15o27HhFijs2BZKLrL5HJp9v+zBtMlvtvK6TXDBkxpkSfJkFDJbEWAeS6EZa
-        /RCNytnO/sBwK2ogJ5a5nPhfiRITN7qc48K8CDEZmWGAljopupcIgl/HwByJfTphLWnFSX
-        GuyQSpiEs+awWNzum88/IIYO2+8dvQE=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-399-fDpyC4X_NH6CpTCXrN6_fw-1; Wed, 10 Nov 2021 10:00:59 -0500
-X-MC-Unique: fDpyC4X_NH6CpTCXrN6_fw-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 471C680A5D6;
-        Wed, 10 Nov 2021 15:00:56 +0000 (UTC)
-Received: from starship (unknown [10.40.194.243])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 6C7CB1017E37;
-        Wed, 10 Nov 2021 15:00:46 +0000 (UTC)
-Message-ID: <18d77c7a10f283848c4efe0370401c436869f3a2.camel@redhat.com>
-Subject: Re: [PATCH 3/3] KVM: x86/mmu: don't skip mmu initialization when
- mmu root level changes
-From:   Maxim Levitsky <mlevitsk@redhat.com>
-To:     Vitaly Kuznetsov <vkuznets@redhat.com>, kvm@vger.kernel.org
-Cc:     Wanpeng Li <wanpengli@tencent.com>, Borislav Petkov <bp@alien8.de>,
-        Ingo Molnar <mingo@redhat.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, linux-kernel@vger.kernel.org,
-        Sean Christopherson <seanjc@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Jim Mattson <jmattson@google.com>
-Date:   Wed, 10 Nov 2021 17:00:45 +0200
-In-Reply-To: <87r1bom5h3.fsf@vitty.brq.redhat.com>
-References: <20211110100018.367426-1-mlevitsk@redhat.com>
-         <20211110100018.367426-4-mlevitsk@redhat.com>
-         <87r1bom5h3.fsf@vitty.brq.redhat.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.36.5 (3.36.5-2.fc32) 
+Received: from smtp2.axis.com ([195.60.68.18]:43056 "EHLO smtp2.axis.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232298AbhKJPDz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Nov 2021 10:03:55 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=axis.com; q=dns/txt; s=axis-central1; t=1636556467;
+  x=1668092467;
+  h=subject:to:cc:references:from:message-id:date:
+   mime-version:in-reply-to:content-transfer-encoding;
+  bh=w0+riHq93iG+CQH80ytBE3AjjZfp5T1CrQE9fCr8XTs=;
+  b=HUYGn81jjrygZQGjDMiE98shA8Qm+RVjaS5G3bDXLRo6d80tZoNVVX/b
+   XN7m4lqMDYSR+CH4fVCkJMj5PvoBCy9jaKhgRDL0ZFlbT+lqaow4qGleC
+   kgQfOlC1dj/LOz95CoOQHq3Tx+/a6VCRiZ6VZuP/qJmIFgvuSGvLIFYg3
+   KPUhvzrJxqhQPN/3jjd3kZ8rlFeRqMNkVYTh8Tz+ndAlJh9G+I4IzQ1Ml
+   i/b/CVfMEpM38dkfTq6I/REhewhmrjcm7jCd8pcrNgxKu83fWPWlLeU2k
+   K9itcMMbYnz3hrYPSY1iZbQHcpIwHolYuE8DPoPsvhKUc1AfFbkHeNYO0
+   Q==;
+Subject: Re: [PATCH] rtc: rs5c372: Add RTC_VL_READ, RTC_VL_CLR ioctls
+To:     Camel Guo <Camel.Guo@axis.com>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>
+CC:     Alessandro Zummo <a.zummo@towertech.it>, kernel <kernel@axis.com>,
+        "linux-rtc@vger.kernel.org" <linux-rtc@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+References: <20211110115455.18699-1-camel.guo@axis.com>
+ <YYvPCehWWVE5mKTy@piout.net> <2303e635-dbd0-1730-cc6f-84021eb37223@axis.com>
+ <YYvW3T3wM/Qn5jSw@piout.net> <fa032379-2ca6-f5ca-0e84-91ae13a19488@axis.com>
+From:   Camel Guo <camelg@axis.com>
+Message-ID: <44db2451-852e-7f93-5d61-535e9decfefd@axis.com>
+Date:   Wed, 10 Nov 2021 16:01:05 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
+In-Reply-To: <fa032379-2ca6-f5ca-0e84-91ae13a19488@axis.com>
+Content-Type: text/plain; charset="windows-1252"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.0.5.60]
+X-ClientProxiedBy: se-mail06w.axis.com (10.20.40.12) To se-mail03w.axis.com
+ (10.20.40.9)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 2021-11-10 at 15:48 +0100, Vitaly Kuznetsov wrote:
-> Maxim Levitsky <mlevitsk@redhat.com> writes:
+Patch V2 has been uploaded. Please review patch v2 instead.
+
+On 11/10/21 3:30 PM, Camel Guo wrote:
+> Hello,
 > 
-> > When running mix of 32 and 64 bit guests, it is possible to have mmu
-> > reset with same mmu role but different root level (32 bit vs 64 bit paging)
-> > 
-> > Signed-off-by: Maxim Levitsky <mlevitsk@redhat.com>
-> > ---
-> >  arch/x86/kvm/mmu/mmu.c | 14 ++++++++++----
-> >  1 file changed, 10 insertions(+), 4 deletions(-)
-> > 
-> > diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
-> > index 354d2ca92df4d..763867475860f 100644
-> > --- a/arch/x86/kvm/mmu/mmu.c
-> > +++ b/arch/x86/kvm/mmu/mmu.c
-> > @@ -4745,7 +4745,10 @@ static void init_kvm_tdp_mmu(struct kvm_vcpu *vcpu)
-> >  	union kvm_mmu_role new_role =
-> >  		kvm_calc_tdp_mmu_root_page_role(vcpu, &regs, false);
-> >  
-> > -	if (new_role.as_u64 == context->mmu_role.as_u64)
-> > +	u8 new_root_level = role_regs_to_root_level(&regs);
-> > +
-> > +	if (new_role.as_u64 == context->mmu_role.as_u64 &&
-> > +	    context->root_level == new_root_level)
-> >  		return;
+> On 11/10/21 3:27 PM, Alexandre Belloni wrote:
+>> On 10/11/2021 15:03:49+0100, Camel Guo wrote:
+>>> > On 10/11/2021 12:54:54+0100, Camel Guo wrote:
+>>> > > From: Camel Guo <camelg@axis.com>
+>>> > > +     switch (cmd) {
+>>> > > +     case RTC_VL_READ:
+>>> > > +             flags = 0;
+>>> > > +
+>>> > > +             switch (rs5c->type) {
+>>> > > +             case rtc_r2025sd:
+>>> > > +             case rtc_r2221tl:
+>>> > > +                     if ((rs5c->type == rtc_r2025sd && !(ctrl2 & R2x2x_CTRL2_XSTP)) ||
+>>> > > +                             (rs5c->type == rtc_r2221tl &&  (ctrl2 & R2x2x_CTRL2_XSTP))) {
+>>> > > +                             flags |= RTC_VL_DATA_INVALID;
+>>> > > +                     }
+>>> > > +                     if (ctrl2 & R2x2x_CTRL2_VDET)
+>>> > > +                             flags |= RTC_VL_ACCURACY_LOW;
+>>> > 
+>>> > Shouldn't that be RTC_VL_BACKUP_LOW?
+>>> 
+>>> Some drivers (e.g: rv3029_ioctl and rv8803_ioctl) use RTC_VL_ACCURACY_LOW,
+>>> but some other drivers (e.g: abx80x_ioctl, pcf2127_rtc_ioctl and
+>>> pcf8523_rtc_ioctl) use RTC_VL_BACKUP_LOW instead. Is there any guideline or
+>>> document telling the differences between them?
+>>> 
+>> 
+>> RTC_VL_BACKUP_LOW: The backup voltage is low
+>> RTC_VL_ACCURACY_LOW: the primary or backup voltage is low, temperature
+>> compensation (or similar) has stopped
 > 
-> role_regs_to_root_level() uses 3 things: CR0.PG, EFER.LMA and CR4.PAE
-> and two of these three are already encoded into extended mmu role
-> (kvm_calc_mmu_role_ext()). Could we achieve the same result by adding
-> EFER.LMA there?
-
-Absolutely. I just wanted your feedback on this to see if there is any reason to not
-do this.
-
-Also it seems that only basic role is compared here.
-
-I don't 100% know the reason why we have basic and extended roles - there is a
-comment about basic/extended mmu role to minimize the size of arch.gfn_track,
-but I haven't yet studied in depth why.
-
-Best regards,
-	Maxim Levitsky
-
+> Then I agree that we should go for RTC_VL_BACKUP_LOW.
 > 
-> >  
-> >  	context->mmu_role.as_u64 = new_role.as_u64;
-> > @@ -4757,7 +4760,7 @@ static void init_kvm_tdp_mmu(struct kvm_vcpu *vcpu)
-> >  	context->get_guest_pgd = get_cr3;
-> >  	context->get_pdptr = kvm_pdptr_read;
-> >  	context->inject_page_fault = kvm_inject_page_fault;
-> > -	context->root_level = role_regs_to_root_level(&regs);
-> > +	context->root_level = new_root_level;
-> >  
-> >  	if (!is_cr0_pg(context))
-> >  		context->gva_to_gpa = nonpaging_gva_to_gpa;
-> > @@ -4806,7 +4809,10 @@ static void shadow_mmu_init_context(struct kvm_vcpu *vcpu, struct kvm_mmu *conte
-> >  				    struct kvm_mmu_role_regs *regs,
-> >  				    union kvm_mmu_role new_role)
-> >  {
-> > -	if (new_role.as_u64 == context->mmu_role.as_u64)
-> > +	u8 new_root_level = role_regs_to_root_level(regs);
-> > +
-> > +	if (new_role.as_u64 == context->mmu_role.as_u64 &&
-> > +	    context->root_level == new_root_level)
-> >  		return;
-> >  
-> >  	context->mmu_role.as_u64 = new_role.as_u64;
-> > @@ -4817,8 +4823,8 @@ static void shadow_mmu_init_context(struct kvm_vcpu *vcpu, struct kvm_mmu *conte
-> >  		paging64_init_context(context);
-> >  	else
-> >  		paging32_init_context(context);
-> > -	context->root_level = role_regs_to_root_level(regs);
-> >  
-> > +	context->root_level = new_root_level;
-> >  	reset_guest_paging_metadata(vcpu, context);
-> >  	context->shadow_root_level = new_role.base.level;
-
-
+>> 
+>> -- 
+>> Alexandre Belloni, co-owner and COO, Bootlin
+>> Embedded Linux and Kernel engineering
+>> https://bootlin.com
