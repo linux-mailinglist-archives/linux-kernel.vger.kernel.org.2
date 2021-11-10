@@ -2,96 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BC01544CDA7
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Nov 2021 00:09:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C168444CDB0
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Nov 2021 00:13:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234022AbhKJXMR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Nov 2021 18:12:17 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48432 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229470AbhKJXMM (ORCPT
+        id S234040AbhKJXQj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Nov 2021 18:16:39 -0500
+Received: from office.oderland.com ([91.201.60.5]:43962 "EHLO
+        office.oderland.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229470AbhKJXQh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Nov 2021 18:12:12 -0500
-Received: from mail-pg1-x536.google.com (mail-pg1-x536.google.com [IPv6:2607:f8b0:4864:20::536])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 96E9DC061766;
-        Wed, 10 Nov 2021 15:09:24 -0800 (PST)
-Received: by mail-pg1-x536.google.com with SMTP id r132so1390676pgr.9;
-        Wed, 10 Nov 2021 15:09:24 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=ZYed9L8tjDqmmdBqxssK0wwI7VDJqETx7qq/WFdWQUc=;
-        b=iNEqvP820+RbB95cErAT/weZ5I/BWtMAV8dNJMPcXLSG4UK7YHmCrkaCJociQEr/rE
-         qo5d8dCk91E5sdJVfdwKPAd4PnlQP+Frjv95rUMeYyF34hq/jV3A7jqQ0W6+8e9SIpci
-         R2wiwTp8OaX8n5ODn12+bJfbp5Mc0+CfdytTljuILNBM5UbjSjraDRverqH+uFEvC52V
-         rb0KBMILQP8y0D9XbWLsuDv4cNik2APLx6BIIuQ49ZewHyE7/qBV4V0rji5W2BwO41B4
-         GTiwyePaYBEijEOBSiD4j9h7EsHGfHhIdMfmgXaxr/ySx00UjeI3ZiQHgG2D8eNI21TV
-         zFMA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=ZYed9L8tjDqmmdBqxssK0wwI7VDJqETx7qq/WFdWQUc=;
-        b=VglFOrW1DvSE7QomVdN9KON3aiYQOvDXVn6I0gPA6X5dGKNLyBGvfjB7Z58kyXuhUR
-         2ks5XWD3YPYfyDdwjOe1m5AzZS6VvkWOg8Igz571a1SY6H1CF0zb4Lqz5cZRb6DdObbF
-         gjvUXMUA4M+6Tic4tCXK9zo7E9GR4O6nbXOtka2YnMl6cnYB6cvhUuuCPuoWkYg2YoOU
-         ODa4Qx/nc16BN/d112zDup3tKow+V2tWCUIrQ2LiN4Jfx0LkO0WjCgpOHLy/Z0HaADH0
-         NmCT66pMEH5up3cFzYHv9Fnfw3gF57PkWMvYEyomExEdIZ+3InIL1sg4N4q6gU51rfJj
-         0xdA==
-X-Gm-Message-State: AOAM530D7jG8GTpmNX7vMYZvbHke+PvJT850Y9njmL7ciPznFkF6n/LF
-        2G9GoKM0K1LGe+tAFwIVMAx73VoPJpk=
-X-Google-Smtp-Source: ABdhPJzDOF3wEaiKVUpFXm1/tmaJFShw6YlA+fHVDFY/wue8hUqADpNdqtOChuzhQNMH494VQNVd3Q==
-X-Received: by 2002:a63:2d47:: with SMTP id t68mr1712163pgt.52.1636585763650;
-        Wed, 10 Nov 2021 15:09:23 -0800 (PST)
-Received: from [10.67.48.245] ([192.19.223.252])
-        by smtp.googlemail.com with ESMTPSA id i185sm662603pfg.80.2021.11.10.15.09.22
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 10 Nov 2021 15:09:22 -0800 (PST)
-Subject: Re: [PATCH 5.14 00/24] 5.14.18-rc1 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org
-Cc:     torvalds@linux-foundation.org, akpm@linux-foundation.org,
-        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
-        stable@vger.kernel.org
-References: <20211110182003.342919058@linuxfoundation.org>
-From:   Florian Fainelli <f.fainelli@gmail.com>
-Message-ID: <fb06974d-d62e-5c62-1d98-05064199d606@gmail.com>
-Date:   Wed, 10 Nov 2021 15:09:21 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        Wed, 10 Nov 2021 18:16:37 -0500
+Received: from [155.4.220.82] (port=41166 helo=[10.137.0.14])
+        by office.oderland.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.94.2)
+        (envelope-from <josef@oderland.se>)
+        id 1mkwmn-005xmh-Hr; Thu, 11 Nov 2021 00:13:45 +0100
+Message-ID: <607f86a1-9295-aa97-1765-43050be29d8b@oderland.se>
+Date:   Thu, 11 Nov 2021 00:13:42 +0100
 MIME-Version: 1.0
-In-Reply-To: <20211110182003.342919058@linuxfoundation.org>
-Content-Type: text/plain; charset=utf-8
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:93.0) Gecko/20100101
+ Thunderbird/93.0
 Content-Language: en-US
+From:   Josef Johansson <josef@oderland.se>
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     boris.ostrovsky@oracle.com, helgaas@kernel.org, jgross@suse.com,
+        linux-pci@vger.kernel.org, maz@kernel.org,
+        xen-devel@lists.xenproject.org, Jason Andryuk <jandryuk@gmail.com>,
+        David Woodhouse <dwmw2@infradead.org>,
+        Peter Jones <pjones@redhat.com>, linux-fbdev@vger.kernel.org,
+        Peter Zijlstra <peterz@infradead.org>,
+        LKML <linux-kernel@vger.kernel.org>, x86@kernel.org
+References: <90277228-cf14-0cfa-c95e-d42e7d533353@oderland.se>
+ <20211025012503.33172-1-jandryuk@gmail.com> <87fssmg8k4.ffs@tglx>
+ <87cznqg5k8.ffs@tglx> <d1cc20aa-5c5c-6c7b-2e5d-bc31362ad891@oderland.se>
+ <89d6c2f4-4d00-972f-e434-cb1839e78598@oderland.se>
+ <5b3d4653-0cdf-e098-0a4a-3c5c3ae3977b@oderland.se> <87ee7w6bxi.ffs@tglx>
+ <19176a3c-e554-0ff4-2e0b-5813d353d15e@oderland.se>
+Subject: Re: [PATCH] PCI/MSI: Move non-mask check back into low level
+ accessors
+In-Reply-To: <19176a3c-e554-0ff4-2e0b-5813d353d15e@oderland.se>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - office.oderland.com
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - oderland.se
+X-Get-Message-Sender-Via: office.oderland.com: authenticated_id: josjoh@oderland.se
+X-Authenticated-Sender: office.oderland.com: josjoh@oderland.se
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/10/21 10:43 AM, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 5.14.18 release.
-> There are 24 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
-> 
-> Responses should be made by Fri, 12 Nov 2021 18:19:54 +0000.
-> Anything received after that time might be too late.
-> 
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.14.18-rc1.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.14.y
-> and the diffstat can be found below.
-> 
-> thanks,
-> 
-> greg k-h
+On 11/10/21 21:30, Josef Johansson wrote:
+> On 11/4/21 00:45, Thomas Gleixner wrote:
+>> On Wed, Oct 27 2021 at 17:29, Josef Johansson wrote:
+>>
+>> CC+: EFIFB and scheduler folks
+>>
+>>> On 10/27/21 14:01, Josef Johansson wrote:
+>>>
+>>> printk: Suspending console(s) (use no_console_suspend to debug)
+>>> [drm] free PSP TMR buffer
+>>> PM: suspend devices took 0.428 seconds
+>>> ACPI: EC: interrupt blocked
+>>> ACPI: PM: Preparing to enter system sleep state S3
+>>> ACPI: EC: event blocked
+>>> ACPI: EC: EC stopped
+>>> ACPI: PM: Saving platform NVS memory
+>>> Disabling non-boot CPUs ...
+>>> ------------[ cut here ]------------
+>>> WARNING: CPU: 1 PID: 0 at arch/x86/mm/tlb.c:522  switch_mm_irqs_off+0x3c5/0x400
+>> 	if (WARN_ON_ONCE(__read_cr3() != build_cr3(real_prev->pgd, prev_asid))) {
+>>
+>>> Modules linked in: snd_seq_dummy snd_hrtimer snd_seq snd_seq_device snd_timer nf_tables nfnetlink vfat fat intel_rapl_msr think_lmi firmware_attributes_class wmi_bmof intel_rapl_common pcspkr uvcvideo videobuf2_vmalloc videobuf2_memops joydev videobuf2_v4l2 sp5100_tco k10temp videobuf2_common i2c_piix4 iwlwifi videodev mc cfg80211 thinkpad_acpi ipmi_devintf ucsi_acpi platform_profile typec_ucsi ledtrig_audio ipmi_msghandler r8169 rfkill typec snd wmi soundcore video i2c_scmi fuse xenfs ip_tables dm_thin_pool dm_persistent_data dm_bio_prison dm_crypt trusted asn1_encoder hid_multitouch amdgpu crct10dif_pclmul crc32_pclmul crc32c_intel gpu_sched i2c_algo_bit drm_ttm_helper ghash_clmulni_intel ttm serio_raw drm_kms_helper cec sdhci_pci cqhci sdhci xhci_pci drm xhci_pci_renesas nvme xhci_hcd ehci_pci mmc_core ehci_hcd nvme_core xen_acpi_processor xen_privcmd xen_pciback xen_blkback xen_gntalloc xen_gntdev xen_evtchn uinput
+>>> CPU: 1 PID: 0 Comm: swapper/1 Tainted: G        W        --------- ---  5.15.0-0.rc7.0.fc32.qubes.x86_64 #1
+>>> Hardware name: LENOVO 20Y1S02400/20Y1S02400, BIOS R1BET65W(1.34 ) 06/17/2021
+>>> RIP: e030:switch_mm_irqs_off+0x3c5/0x400
+>>> Code: f0 41 80 65 01 fb ba 01 00 00 00 49 8d b5 60 23 00 00 4c 89 ef 49 c7 85 68 23 00 00 60 1d 08 81 e8 a0 f3 08 00 e9 15 fd ff ff <0f> 0b e8 34 fa ff ff e9 ad fc ff ff 0f 0b e9 31 fe ff ff 0f 0b e9
+>>> RSP: e02b:ffffc900400f3eb0 EFLAGS: 00010006
+>>> RAX: 00000001336c6000 RBX: ffff888140660000 RCX: 0000000000000040
+>>> RDX: ffff8881003027c0 RSI: 0000000000000000 RDI: ffff8881b36c6000
+>>> RBP: ffffffff829d91c0 R08: 0000000000000000 R09: 0000000000000000
+>>> R10: 0000000000000008 R11: 0000000000000000 R12: ffff888104e88440
+>>> R13: ffff8881003027c0 R14: 0000000000000000 R15: 0000000000000001
+>>> FS:  0000000000000000(0000) GS:ffff888140640000(0000) knlGS:0000000000000000
+>>> CS:  10000e030 DS: 002b ES: 002b CR0: 0000000080050033
+>>> CR2: 000060b7d78bf198 CR3: 0000000002810000 CR4: 0000000000050660
+>>> Call Trace:
+>>>  switch_mm+0x1c/0x30
+>>>  idle_task_exit+0x55/0x60
+>>>  play_dead_common+0xa/0x20
+>>>  xen_pv_play_dead+0xa/0x60
+>> So this is when bringing the non boot CPUs down and the switch_mm() code
+>> discovers inconsistency between CR3 and the expected value.
+>>
+>> Would probably be interesting to print the actual values, but XEN folks
+>> might have an idea.
+> I can install some print-statements showing some more info here.
+> I guess I will be getting memory addresses, we already know that CR3 is
+> 0000000002810000
+>
+> If you have any hints on how to do an effective print statement for this
+> please do say so :)
+> I'll try though and see what I find out.
 
-On ARCH_BRCMSTB, using 32-bit and 64-bit ARM kernels:
+diff --git a/arch/x86/mm/tlb.c b/arch/x86/mm/tlb.c
+index 59ba2968af1b..511792852e9e 100644
+--- a/arch/x86/mm/tlb.c
++++ b/arch/x86/mm/tlb.c
+@@ -520,6 +520,10 @@ void switch_mm_irqs_off(struct mm_struct *prev, struct mm_struct *next,
+ 	 */
+ #ifdef CONFIG_DEBUG_VM
+ 	if (WARN_ON_ONCE(__read_cr3() != build_cr3(real_prev->pgd, prev_asid))) {
++		printk("josef-debug: cr3: %lx, build_cr3: %lx, (%px, %x)",
++			__read_cr3(),
++			build_cr3(real_prev->pgd, prev_asid),
++			real_prev->pgd, prev_asid);
+ 		/*
+ 		 * If we were to BUG here, we'd be very likely to kill
+ 		 * the system so hard that we don't see the call trace.
 
-Tested-by: Florian Fainelli <f.fainelli@gmail.com>
--- 
-Florian
+this patch gave me the three values which where already known,
+__read_cr3 = CR3 = 0000000002810000
+build_cr3 = RAX = 00000001336c6000
+real_prev->pgd = RDI = ffff8881b36c6000
+prev_asid = RSI = 0
+
+Not sure what conclusions I should draw though.
+
+>>>  do_idle+0xd1/0xe0
+>>>  cpu_startup_entry+0x19/0x20
+>>>  asm_cpu_bringup_and_idle+0x5/0x1000
+>>> ---[ end trace b068d3cd1b7f5f4b ]---
+>>> smpboot: CPU 1 is now offline
+>>> smpboot: CPU 2 is now offline
+>>> smpboot: CPU 3 is now offline
+>>> smpboot: CPU 4 is now offline
+>>> smpboot: CPU 5 is now offline
+>>> smpboot: CPU 6 is now offline
+>>> smpboot: CPU 7 is now offline
+>>> ACPI: PM: Low-level resume complete
+>>> ACPI: EC: EC started
+>>> ACPI: PM: Restoring platform NVS memory
+>>> xen_acpi_processor: Uploading Xen processor PM info
+>>> xen_acpi_processor: (_PXX): Hypervisor error (-19) for ACPI CPU1
+>>> xen_acpi_processor: (_PXX): Hypervisor error (-19) for ACPI CPU3
+>>> xen_acpi_processor: (_PXX): Hypervisor error (-19) for ACPI CPU5
+>>> xen_acpi_processor: (_PXX): Hypervisor error (-19) for ACPI CPU7
+>>> xen_acpi_processor: (_PXX): Hypervisor error (-19) for ACPI CPU9
+>>>
+
