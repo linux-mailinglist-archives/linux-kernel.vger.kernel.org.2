@@ -2,64 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3287344BCF2
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 09:33:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CEE3644BCF3
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 09:34:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230245AbhKJIf6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Nov 2021 03:35:58 -0500
-Received: from mga12.intel.com ([192.55.52.136]:8725 "EHLO mga12.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229831AbhKJIf5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Nov 2021 03:35:57 -0500
-X-IronPort-AV: E=McAfee;i="6200,9189,10163"; a="212653576"
-X-IronPort-AV: E=Sophos;i="5.87,223,1631602800"; 
-   d="scan'208";a="212653576"
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Nov 2021 00:33:09 -0800
-X-IronPort-AV: E=Sophos;i="5.87,223,1631602800"; 
-   d="scan'208";a="669719835"
-Received: from smile.fi.intel.com ([10.237.72.184])
-  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Nov 2021 00:33:06 -0800
-Received: from andy by smile.fi.intel.com with local (Exim 4.95)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1mkj2M-005Lwm-LZ;
-        Wed, 10 Nov 2021 10:32:54 +0200
-Date:   Wed, 10 Nov 2021 10:32:54 +0200
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Puranjay Mohan <puranjay12@gmail.com>
-Cc:     gregkh@linuxfoundation.org, rafael@kernel.org,
-        heikki.krogerus@linux.intel.com, kuba@kernel.org,
-        saravanak@google.com, linux-kernel@vger.kernel.org,
-        lars@metafoo.de, Michael.Hennerich@analog.com, jic23@kernel.org,
-        linux-iio@vger.kernel.org
-Subject: Re: [PATCH v2 0/2] device property: Adding fwnode_irq_get_byname()
-Message-ID: <YYuDtjVnZS8SBVqE@smile.fi.intel.com>
-References: <20211109200840.135019-1-puranjay12@gmail.com>
+        id S229850AbhKJIhA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Nov 2021 03:37:00 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44948 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229582AbhKJIg7 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Nov 2021 03:36:59 -0500
+Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 310EDC061764
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Nov 2021 00:34:12 -0800 (PST)
+Received: from zn.tnic (p200300ec2f111e004e08fd5d8baa7a9c.dip0.t-ipconnect.de [IPv6:2003:ec:2f11:1e00:4e08:fd5d:8baa:7a9c])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id DEA101EC0567;
+        Wed, 10 Nov 2021 09:34:09 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1636533250;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=SPZmtZcn45Qf/3yC2FzsLNHIF0feCAyEo3hwMKuUAV8=;
+        b=ONWoLaWOjvvhzyhXot+EKqczHNF73MO9bnkB7fJ9q9RLfhBy4fQaWDFVNgYy/UMApazUmD
+        XPl+A2ttQ54n41pG5oxwMRh4AsgCDxSE2XZ8sUPKZyiHhMKv2y4v7rf7SP3SDEfJScU1TK
+        NJT2upULS0+QJT/ybkE9NOqWm+jR99w=
+Date:   Wed, 10 Nov 2021 09:34:02 +0100
+From:   Borislav Petkov <bp@alien8.de>
+To:     "tarumizu.kohei@fujitsu.com" <tarumizu.kohei@fujitsu.com>
+Cc:     "catalin.marinas@arm.com" <catalin.marinas@arm.com>,
+        "will@kernel.org" <will@kernel.org>,
+        "tglx@linutronix.de" <tglx@linutronix.de>,
+        "mingo@redhat.com" <mingo@redhat.com>,
+        "dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>,
+        "x86@kernel.org" <x86@kernel.org>, "hpa@zytor.com" <hpa@zytor.com>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [RFC PATCH v2 0/5] Add hardware prefetch driver for A64FX and
+ Intel processors
+Message-ID: <YYuD+jRPUQrsmAkD@zn.tnic>
+References: <20211104052122.553868-1-tarumizu.kohei@fujitsu.com>
+ <YYP4fAgKSh4bVvgD@zn.tnic>
+ <OSBPR01MB20370518F9296BA4302FF7DC80919@OSBPR01MB2037.jpnprd01.prod.outlook.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20211109200840.135019-1-puranjay12@gmail.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+In-Reply-To: <OSBPR01MB20370518F9296BA4302FF7DC80919@OSBPR01MB2037.jpnprd01.prod.outlook.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 10, 2021 at 01:38:38AM +0530, Puranjay Mohan wrote:
-> The first patch in this series adds the fwnode_irq_get_byname() which is
-> the generic version of the of_irq_get_byname(). It is used to get the
-> IRQ number from name of the interrupt.
-> 
-> The second patch in this series uses the fwnode_irq_get_byname()
-> function in the IIO driver of the ADXL355 accelerometer. The driver has
-> been tested after applying this patch on a Raspberry PI. The ADXL355 was
-> connected to the Raspberry Pi using I2C and fwnode_irq_get_byname() was
-> used to get the IRQ number for the "DRDY" interrupt. Earlier this driver
-> was using of_irq_get_byname() to get this IRQ number.
+On Mon, Nov 08, 2021 at 02:17:43AM +0000, tarumizu.kohei@fujitsu.com wrote:
+> The following performance improvements have been reported for some
+> Intel processors.
+> https://github.com/xmrig/xmrig/issues/1433#issuecomment-572126184
 
-This is marked as v2, can we have a link / changelog from v1, please?
+Yes, I know about that use case.
+
+> For these reasons, we would like to add this interface to the
+> upstream kernel.
+
+So put all those justifications at the beginning of your 0th message
+when you send a patchset so that it is clear to reviewers *why* you're
+doing this. The "why" is the most important - everything else comes
+after.
+
+> > I'm not sure about a wholly separate drivers/hwpf/ - it's not like there are
+> > gazillion different hw prefetch drivers.
+> 
+> We created a new directory to lump multiple separate files into one
+> place. We don't think this is a good way. If there is any other
+> suitable way, we would like to change it.
+
+Well, how many prefetcher drivers will be there?
+
+On x86 there will be one per vendor, so 2-3 the most...
+
+Also, as dhansen points out, we have already
+
+  /sys/devices/system/cpu/cpu*/cache
+
+so all those knobs belong there on x86.
+
+Also, I think that shoehorning all these different cache architectures
+and different prefetcher knobs which are available from each CPU, into a
+common sysfs hierarchy is going to cause a lot of ugly ifdeffery if not
+done right.
+
+Some caches will have control A while others won't - they will have
+control B so people will wonder why control A works on box B_a but not
+on box B_b...
+
+So we have to be very careful what we expose to userspace because it
+becomes an ABI which we have to support for an indefinite time.
+
+Also, if you're going to give the xmrig example, then we should involve
+the xmrig people and ask them whether the stuff you're exposing to
+userspace is good for their use case.
+
+And so on and so on...
+
+Thx.
 
 -- 
-With Best Regards,
-Andy Shevchenko
+Regards/Gruss,
+    Boris.
 
-
+https://people.kernel.org/tglx/notes-about-netiquette
