@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 185E144C7A0
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 19:53:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1669544C806
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 19:57:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232923AbhKJSx4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Nov 2021 13:53:56 -0500
-Received: from mail.kernel.org ([198.145.29.99]:47364 "EHLO mail.kernel.org"
+        id S233134AbhKJS5n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Nov 2021 13:57:43 -0500
+Received: from mail.kernel.org ([198.145.29.99]:54844 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233807AbhKJSwA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Nov 2021 13:52:00 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 02F0F61248;
-        Wed, 10 Nov 2021 18:47:32 +0000 (UTC)
+        id S233719AbhKJSzc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Nov 2021 13:55:32 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4FA05619E1;
+        Wed, 10 Nov 2021 18:49:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1636570053;
-        bh=V7cbqsf/0ok8TSlwOomIBuWql8qeCRdXM4NdoX97pSA=;
+        s=korg; t=1636570168;
+        bh=m91u4AUSBvuJlLQR5nC2A9E4fcoxzN+ge/HimR2tUro=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=NlEHgRvqIgYvsHUNfvsj9rcMboM4LTFQY5cCqnm3QtDWxiSrRWhEPFbtgI6mhZhmf
-         UHzbUFym9msgH0M7jFfFFuQN420vJjbT+dgeiSnAOGoo0WF/TI/bw9NOakACwZA0Ob
-         lWvQH11M7dkHQwZofBmbEyBceVMGIj7RkADWtvZM=
+        b=M8CX7ECc3pQGyD1Lgb+as5Po8AezbWEg4ddkiyCTOpqLDkQQCB5OilY6ZZL9WfIQi
+         uKFW9TkRzExqBo3aT7b1tNAiIBYPJRI/ir3CyZI8TLxc/XpMHwsfPgw91IHDwiWbjv
+         QGBI/peRGrBd+vVzv3Z9Ztaipqc68HRnAnOCxx/0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Subject: [PATCH 5.4 16/17] media: staging/intel-ipu3: css: Fix wrong size comparison imgu_css_fw_init
-Date:   Wed, 10 Nov 2021 19:43:55 +0100
-Message-Id: <20211110182002.729703535@linuxfoundation.org>
+        stable@vger.kernel.org, Eduardo Habkost <ehabkost@redhat.com>,
+        Juergen Gross <jgross@suse.com>,
+        Paolo Bonzini <pbonzini@redhat.com>
+Subject: [PATCH 5.14 04/24] Revert "x86/kvm: fix vcpu-id indexed array sizes"
+Date:   Wed, 10 Nov 2021 19:43:56 +0100
+Message-Id: <20211110182003.477469174@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211110182002.206203228@linuxfoundation.org>
-References: <20211110182002.206203228@linuxfoundation.org>
+In-Reply-To: <20211110182003.342919058@linuxfoundation.org>
+References: <20211110182003.342919058@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,80 +40,55 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Gustavo A. R. Silva <gustavoars@kernel.org>
+From: Juergen Gross <jgross@suse.com>
 
-commit a44f9d6f9dc1fb314a3f1ed2dcd4fbbcc3d9f892 upstream.
+commit 1e254d0d86a0f2efd4190a89d5204b37c18c6381 upstream.
 
-There is a wrong comparison of the total size of the loaded firmware
-css->fw->size with the size of a pointer to struct imgu_fw_header.
+This reverts commit 76b4f357d0e7d8f6f0013c733e6cba1773c266d3.
 
-Turn binary_header into a flexible-array member[1][2], use the
-struct_size() helper and fix the wrong size comparison. Notice
-that the loaded firmware needs to contain at least one 'struct
-imgu_fw_info' item in the binary_header[] array.
+The commit has the wrong reasoning, as KVM_MAX_VCPU_ID is not defining the
+maximum allowed vcpu-id as its name suggests, but the number of vcpu-ids.
+So revert this patch again.
 
-It's also worth mentioning that
-
-	"css->fw->size < struct_size(css->fwp, binary_header, 1)"
-
-with binary_header declared as a flexible-array member is equivalent
-to
-
-	"css->fw->size < sizeof(struct imgu_fw_header)"
-
-with binary_header declared as a one-element array (as in the original
-code).
-
-The replacement of the one-element array with a flexible-array member
-also helps with the ongoing efforts to globally enable -Warray-bounds
-and get us closer to being able to tighten the FORTIFY_SOURCE routines
-on memcpy().
-
-[1] https://en.wikipedia.org/wiki/Flexible_array_member
-[2] https://www.kernel.org/doc/html/v5.10/process/deprecated.html#zero-length-and-one-element-arrays
-
-Link: https://github.com/KSPP/linux/issues/79
-Link: https://github.com/KSPP/linux/issues/109
-
-Fixes: 09d290f0ba21 ("media: staging/intel-ipu3: css: Add support for firmware management")
-Cc: stable@vger.kernel.org
-Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
-Signed-off-by: Sakari Ailus <sakari.ailus@linux.intel.com>
-Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Suggested-by: Eduardo Habkost <ehabkost@redhat.com>
+Signed-off-by: Juergen Gross <jgross@suse.com>
+Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
+Message-Id: <20210913135745.13944-2-jgross@suse.com>
+Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/staging/media/ipu3/ipu3-css-fw.c |    7 +++----
- drivers/staging/media/ipu3/ipu3-css-fw.h |    2 +-
- 2 files changed, 4 insertions(+), 5 deletions(-)
+ arch/x86/kvm/ioapic.c |    2 +-
+ arch/x86/kvm/ioapic.h |    4 ++--
+ 2 files changed, 3 insertions(+), 3 deletions(-)
 
---- a/drivers/staging/media/ipu3/ipu3-css-fw.c
-+++ b/drivers/staging/media/ipu3/ipu3-css-fw.c
-@@ -124,12 +124,11 @@ int imgu_css_fw_init(struct imgu_css *cs
- 	/* Check and display fw header info */
+--- a/arch/x86/kvm/ioapic.c
++++ b/arch/x86/kvm/ioapic.c
+@@ -96,7 +96,7 @@ static unsigned long ioapic_read_indirec
+ static void rtc_irq_eoi_tracking_reset(struct kvm_ioapic *ioapic)
+ {
+ 	ioapic->rtc_status.pending_eoi = 0;
+-	bitmap_zero(ioapic->rtc_status.dest_map.map, KVM_MAX_VCPU_ID + 1);
++	bitmap_zero(ioapic->rtc_status.dest_map.map, KVM_MAX_VCPU_ID);
+ }
  
- 	css->fwp = (struct imgu_fw_header *)css->fw->data;
--	if (css->fw->size < sizeof(struct imgu_fw_header *) ||
-+	if (css->fw->size < struct_size(css->fwp, binary_header, 1) ||
- 	    css->fwp->file_header.h_size != sizeof(struct imgu_fw_bi_file_h))
- 		goto bad_fw;
--	if (sizeof(struct imgu_fw_bi_file_h) +
--	    css->fwp->file_header.binary_nr * sizeof(struct imgu_fw_info) >
--	    css->fw->size)
-+	if (struct_size(css->fwp, binary_header,
-+			css->fwp->file_header.binary_nr) > css->fw->size)
- 		goto bad_fw;
+ static void kvm_rtc_eoi_tracking_restore_all(struct kvm_ioapic *ioapic);
+--- a/arch/x86/kvm/ioapic.h
++++ b/arch/x86/kvm/ioapic.h
+@@ -43,13 +43,13 @@ struct kvm_vcpu;
  
- 	dev_info(dev, "loaded firmware version %.64s, %u binaries, %zu bytes\n",
---- a/drivers/staging/media/ipu3/ipu3-css-fw.h
-+++ b/drivers/staging/media/ipu3/ipu3-css-fw.h
-@@ -170,7 +170,7 @@ struct imgu_fw_bi_file_h {
+ struct dest_map {
+ 	/* vcpu bitmap where IRQ has been sent */
+-	DECLARE_BITMAP(map, KVM_MAX_VCPU_ID + 1);
++	DECLARE_BITMAP(map, KVM_MAX_VCPU_ID);
  
- struct imgu_fw_header {
- 	struct imgu_fw_bi_file_h file_header;
--	struct imgu_fw_info binary_header[1];	/* binary_nr items */
-+	struct imgu_fw_info binary_header[];	/* binary_nr items */
+ 	/*
+ 	 * Vector sent to a given vcpu, only valid when
+ 	 * the vcpu's bit in map is set
+ 	 */
+-	u8 vectors[KVM_MAX_VCPU_ID + 1];
++	u8 vectors[KVM_MAX_VCPU_ID];
  };
  
- /******************* Firmware functions *******************/
+ 
 
 
