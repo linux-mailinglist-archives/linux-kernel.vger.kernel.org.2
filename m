@@ -2,151 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C68E444C6CC
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 19:30:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 14E9B44C6DD
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 19:42:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232350AbhKJSd0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Nov 2021 13:33:26 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:26046 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229969AbhKJSdZ (ORCPT
+        id S232096AbhKJSpk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Nov 2021 13:45:40 -0500
+Received: from lelv0142.ext.ti.com ([198.47.23.249]:50912 "EHLO
+        lelv0142.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229969AbhKJSph (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Nov 2021 13:33:25 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1636569037;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=RpX5BvbKEHNdXgGoPmln1SO/jawptVK+J9B4IT3zhNs=;
-        b=YXLPHBwYwk0aZH9NUhJLaIokoqEU0ssukY/tUlVr9zWYJCyB428+0y2/dAh30Q59dT+8/7
-        xMTZPelHdwn+zpqLT7lZOTHXFci3k70aBasEXRWIR6GFxfXfGOLS3ojhlihxA/4hHRbANa
-        BKB3u92jDYn1CALa47tl+VNv0bgjs1A=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-454-1sbKNL0MP_Ka4HrBtgzDqQ-1; Wed, 10 Nov 2021 13:30:34 -0500
-X-MC-Unique: 1sbKNL0MP_Ka4HrBtgzDqQ-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id C653F1006AA0;
-        Wed, 10 Nov 2021 18:30:30 +0000 (UTC)
-Received: from [10.22.19.24] (unknown [10.22.19.24])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 97F0767856;
-        Wed, 10 Nov 2021 18:30:23 +0000 (UTC)
-Message-ID: <a6b9f5e7-3d4d-ba84-2c80-ba70187c3e10@redhat.com>
-Date:   Wed, 10 Nov 2021 13:30:23 -0500
+        Wed, 10 Nov 2021 13:45:37 -0500
+Received: from fllv0034.itg.ti.com ([10.64.40.246])
+        by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 1AAIgmSt010504;
+        Wed, 10 Nov 2021 12:42:48 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1636569768;
+        bh=20xiynZ1X3msxg/XvoGGOO3+AYxPfmrR9XazGsyvlR0=;
+        h=Date:From:To:CC:Subject:References:In-Reply-To;
+        b=IJB4q1oCSJgkAVNnpIM0spujLm+M1z0cMUpuAqyh/BcrL+M8XiLZS8yf0h9XFemPG
+         ZxHZcwFXPwsC5NGM8ujtHavijLIBl44wDzf4Y14BRWd/0CyH5TGfy1d+NvpeCR7vMw
+         6eIfZrkKNoT4HH/mEABhTNfEh/3fHw/oubv0Te/Y=
+Received: from DLEE105.ent.ti.com (dlee105.ent.ti.com [157.170.170.35])
+        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 1AAIgm26020127
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Wed, 10 Nov 2021 12:42:48 -0600
+Received: from DLEE115.ent.ti.com (157.170.170.26) by DLEE105.ent.ti.com
+ (157.170.170.35) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14; Wed, 10
+ Nov 2021 12:42:48 -0600
+Received: from lelv0327.itg.ti.com (10.180.67.183) by DLEE115.ent.ti.com
+ (157.170.170.26) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14 via
+ Frontend Transport; Wed, 10 Nov 2021 12:42:48 -0600
+Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
+        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 1AAIglmW084083;
+        Wed, 10 Nov 2021 12:42:47 -0600
+Date:   Thu, 11 Nov 2021 00:12:46 +0530
+From:   Pratyush Yadav <p.yadav@ti.com>
+To:     Dinh Nguyen <dinguyen@kernel.org>
+CC:     <broonie@kernel.org>, <a-nandan@ti.com>,
+        <linux-spi@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] spi: cadence-quadspi: fix write completion support
+Message-ID: <20211110184246.zermc35sgyzpjedd@ti.com>
+References: <20211108200854.3616121-1-dinguyen@kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.2.0
-Subject: Re: [PATCH v8 0/6] cgroup/cpuset: Add new cpuset partition type &
- empty effecitve cpus
-Content-Language: en-US
-To:     Marcelo Tosatti <mtosatti@redhat.com>,
-        Jan Kiszka <jan.kiszka@siemens.com>
-Cc:     "Moessbauer, Felix" <felix.moessbauer@siemens.com>,
-        =?UTF-8?Q?Michal_Koutn=c3=bd?= <mkoutny@suse.com>,
-        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
-        "cgroups@vger.kernel.org" <cgroups@vger.kernel.org>,
-        "corbet@lwn.net" <corbet@lwn.net>,
-        "frederic@kernel.org" <frederic@kernel.org>,
-        "guro@fb.com" <guro@fb.com>,
-        "hannes@cmpxchg.org" <hannes@cmpxchg.org>,
-        "juri.lelli@redhat.com" <juri.lelli@redhat.com>,
-        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-kselftest@vger.kernel.org" <linux-kselftest@vger.kernel.org>,
-        "lizefan.x@bytedance.com" <lizefan.x@bytedance.com>,
-        "pauld@redhat.com" <pauld@redhat.com>,
-        "peterz@infradead.org" <peterz@infradead.org>,
-        "shuah@kernel.org" <shuah@kernel.org>,
-        "tj@kernel.org" <tj@kernel.org>,
-        "henning.schild@siemens.com" <henning.schild@siemens.com>
-References: <20211018143619.205065-1-longman@redhat.com>
- <20211110111357.17617-1-felix.moessbauer@siemens.com>
- <20211110135653.GD20566@blackbody.suse.cz>
- <AM9PR10MB4869C14EAE01B87C0037BF6A89939@AM9PR10MB4869.EURPRD10.PROD.OUTLOOK.COM>
- <20211110161020.GA20101@fuller.cnet>
- <c1e94031-a179-dc72-e5ee-3f8197bea492@siemens.com>
- <20211110172946.GA30250@fuller.cnet>
-From:   Waiman Long <longman@redhat.com>
-In-Reply-To: <20211110172946.GA30250@fuller.cnet>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <20211108200854.3616121-1-dinguyen@kernel.org>
+User-Agent: NeoMutt/20171215
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 08/11/21 02:08PM, Dinh Nguyen wrote:
+> Some versions of the Cadence QSPI controller does not have the write
+> completion register implemented(CQSPI_REG_WR_COMPLETION_CTRL). On the
+> Intel SoCFPGA platform the CQSPI_REG_WR_COMPLETION_CTRL register is
+> not configured.
+> 
+> Add a quirk to not write to the CQSPI_REG_WR_COMPLETION_CTRL register.
+> 
+> Fixes: 9cb2ff111712 ("spi: cadence-quadspi: Disable Auto-HW polling)
+> Signed-off-by: Dinh Nguyen <dinguyen@kernel.org>
+> ---
+>  drivers/spi/spi-cadence-quadspi.c | 24 +++++++++++++++++++++---
+>  1 file changed, 21 insertions(+), 3 deletions(-)
+> 
+> diff --git a/drivers/spi/spi-cadence-quadspi.c b/drivers/spi/spi-cadence-quadspi.c
+> index 8b3d268ac63c..b808c94641fa 100644
+> --- a/drivers/spi/spi-cadence-quadspi.c
+> +++ b/drivers/spi/spi-cadence-quadspi.c
+> @@ -37,6 +37,7 @@
+>  #define CQSPI_NEEDS_WR_DELAY		BIT(0)
+>  #define CQSPI_DISABLE_DAC_MODE		BIT(1)
+>  #define CQSPI_SUPPORT_EXTERNAL_DMA	BIT(2)
+> +#define CQSPI_NO_SUPPORT_WR_COMPLETION	BIT(3)
+>  
+>  /* Capabilities */
+>  #define CQSPI_SUPPORTS_OCTAL		BIT(0)
+> @@ -86,6 +87,7 @@ struct cqspi_st {
+>  	struct cqspi_flash_pdata f_pdata[CQSPI_MAX_CHIPSELECT];
+>  	bool			use_dma_read;
+>  	u32			pd_dev_id;
+> +	bool			wr_completion;
 
-On 11/10/21 12:29, Marcelo Tosatti wrote:
-> On Wed, Nov 10, 2021 at 05:15:41PM +0100, Jan Kiszka wrote:
->> On 10.11.21 17:10, Marcelo Tosatti wrote:
->>> On Wed, Nov 10, 2021 at 03:21:54PM +0000, Moessbauer, Felix wrote:
->>>>
->>>>> -----Original Message-----
->>>>> From: Michal Koutný <mkoutny@suse.com>
->>>>> Sent: Wednesday, November 10, 2021 2:57 PM
->>>>> To: Moessbauer, Felix (T RDA IOT SES-DE) <felix.moessbauer@siemens.com>
->>>>> Cc: longman@redhat.com; akpm@linux-foundation.org;
->>>>> cgroups@vger.kernel.org; corbet@lwn.net; frederic@kernel.org; guro@fb.com;
->>>>> hannes@cmpxchg.org; juri.lelli@redhat.com; linux-doc@vger.kernel.org; linux-
->>>>> kernel@vger.kernel.org; linux-kselftest@vger.kernel.org;
->>>>> lizefan.x@bytedance.com; mtosatti@redhat.com; pauld@redhat.com;
->>>>> peterz@infradead.org; shuah@kernel.org; tj@kernel.org; Kiszka, Jan (T RDA
->>>>> IOT) <jan.kiszka@siemens.com>; Schild, Henning (T RDA IOT SES-DE)
->>>>> <henning.schild@siemens.com>
->>>>> Subject: Re: [PATCH v8 0/6] cgroup/cpuset: Add new cpuset partition type &
->>>>> empty effecitve cpus
->>>>>
->>>>> Hello.
->>>>>
->>>>> On Wed, Nov 10, 2021 at 12:13:57PM +0100, Felix Moessbauer
->>>>> <felix.moessbauer@siemens.com> wrote:
->>>>>> However, I was not able to see any latency improvements when using
->>>>>> cpuset.cpus.partition=isolated.
->>>>> Interesting. What was the baseline against which you compared it (isolcpus, no
->>>>> cpusets,...)?
->>>> For this test, I just compared both settings cpuset.cpus.partition=isolated|root.
->>>> There, I did not see a significant difference (but I know, RT tuning depends on a ton of things).
->>>>
->>>>>> The test was performed with jitterdebugger on CPUs 1-3 and the following
->>>>> cmdline:
->>>>>> rcu_nocbs=1-4 nohz_full=1-4 irqaffinity=0,5-6,11 intel_pstate=disable
->>>>>> On the other cpus, stress-ng was executed to generate load.
->>>>>> [...]
->>>>>> This requires cgroup.type=threaded on both cgroups and changes to the
->>>>>> application (threads have to be born in non-rt group and moved to rt-group).
->>>>> But even with isolcpus the application would need to set affinity of threads to
->>>>> the selected CPUs (cf cgroup migrating). Do I miss anything?
->>>> Yes, that's true. But there are two differences (given that you use isolcpus):
->>>> 1. the application only has to set the affinity for rt threads.
->>>>   Threads that do not explicitly set the affinity are automatically excluded from the isolated cores.
->>>>   Even common rt test applications like jitterdebugger do not pin their non-rt threads.
->>>> 2. Threads can be started on non-rt CPUs and then bound to a specific rt CPU.
->>>> This binding can be specified before thread creation via pthread_create.
->>>> By that, you can make sure that at no point in time a thread has a "forbidden" CPU in its affinities.
->>>>
->>>> With cgroup2, you cannot guarantee the second aspect, as thread creation and moving to a cgroup is not an atomic operation.
->>>> Also - please correct me if I'm wrong - you first have to create a thread before moving it into a group.
->>>> At creation time, you cannot set the final affinity mask (as you create it in the non-rt group and there the CPU is not in the cpuset.cpus).
->>>> Once you move the thread to the rt cgroup, it has a default mask and by that can be executed on other rt cores.
->>> man clone3:
->>>
->>>         CLONE_NEWCGROUP (since Linux 4.6)
->>>                Create  the  process  in  a  new cgroup namespace.  If this flag is not set, then (as with fork(2)) the
->>>                process is created in the same cgroup namespaces as the calling process.
->>>
->>>                For further information on cgroup namespaces, see cgroup_namespaces(7).
->>>
->>>                Only a privileged process (CAP_SYS_ADMIN) can employ CLONE_NEWCGROUP.
->>>
->> Is there pthread_attr_setcgroup_np()?
->>
->> Jan
-> Don't know... Waiman?
+We have a bunch of bools lying around in this struct: is_decoded_cs, 
+rclk_en, use_direct_mode, use_dma_read, and now wr_completion. It is 
+probably worth it to use bitfields and save some memory.
 
-I don't think there is such libpthread call yet.
+Anyway, I don't consider this a blocker. So either way,
 
--Longman
+Reviewed-by: Pratyush Yadav <p.yadav@ti.com>
 
+>  };
+>  
+>  struct cqspi_driver_platdata {
+> @@ -996,9 +998,11 @@ static int cqspi_write_setup(struct cqspi_flash_pdata *f_pdata,
+>  	 * polling on the controller's side. spinand and spi-nor will take
+>  	 * care of polling the status register.
+>  	 */
+> -	reg = readl(reg_base + CQSPI_REG_WR_COMPLETION_CTRL);
+> -	reg |= CQSPI_REG_WR_DISABLE_AUTO_POLL;
+> -	writel(reg, reg_base + CQSPI_REG_WR_COMPLETION_CTRL);
+> +	if (cqspi->wr_completion) {
+> +		reg = readl(reg_base + CQSPI_REG_WR_COMPLETION_CTRL);
+> +		reg |= CQSPI_REG_WR_DISABLE_AUTO_POLL;
+> +		writel(reg, reg_base + CQSPI_REG_WR_COMPLETION_CTRL);
+> +	}
+>  
+>  	reg = readl(reg_base + CQSPI_REG_SIZE);
+>  	reg &= ~CQSPI_REG_SIZE_ADDRESS_MASK;
+> @@ -1736,6 +1740,10 @@ static int cqspi_probe(struct platform_device *pdev)
+>  
+>  	cqspi->master_ref_clk_hz = clk_get_rate(cqspi->clk);
+>  	master->max_speed_hz = cqspi->master_ref_clk_hz;
+> +
+> +	/* write completion is supported by default */
+> +	cqspi->wr_completion = true;
+> +
+>  	ddata  = of_device_get_match_data(dev);
+>  	if (ddata) {
+>  		if (ddata->quirks & CQSPI_NEEDS_WR_DELAY)
+> @@ -1747,6 +1755,8 @@ static int cqspi_probe(struct platform_device *pdev)
+>  			cqspi->use_direct_mode = true;
+>  		if (ddata->quirks & CQSPI_SUPPORT_EXTERNAL_DMA)
+>  			cqspi->use_dma_read = true;
+> +		if (ddata->quirks & CQSPI_NO_SUPPORT_WR_COMPLETION)
+> +			cqspi->wr_completion = false;
+>  
+>  		if (of_device_is_compatible(pdev->dev.of_node,
+>  					    "xlnx,versal-ospi-1.0"))
+> @@ -1859,6 +1869,10 @@ static const struct cqspi_driver_platdata intel_lgm_qspi = {
+>  	.quirks = CQSPI_DISABLE_DAC_MODE,
+>  };
+>  
+> +static const struct cqspi_driver_platdata socfpga_qspi = {
+> +	.quirks = CQSPI_NO_SUPPORT_WR_COMPLETION,
+> +};
+> +
+>  static const struct cqspi_driver_platdata versal_ospi = {
+>  	.hwcaps_mask = CQSPI_SUPPORTS_OCTAL,
+>  	.quirks = CQSPI_DISABLE_DAC_MODE | CQSPI_SUPPORT_EXTERNAL_DMA,
+> @@ -1887,6 +1901,10 @@ static const struct of_device_id cqspi_dt_ids[] = {
+>  		.compatible = "xlnx,versal-ospi-1.0",
+>  		.data = (void *)&versal_ospi,
+>  	},
+> +	{
+> +		.compatible = "intel,socfpga-qspi",
+> +		.data = (void *)&socfpga_qspi,
+> +	},
+>  	{ /* end of table */ }
+>  };
+>  
+> -- 
+> 2.25.1
+> 
+
+-- 
+Regards,
+Pratyush Yadav
+Texas Instruments Inc.
