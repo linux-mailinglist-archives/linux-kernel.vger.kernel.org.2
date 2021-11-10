@@ -2,36 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BB4BF44C80A
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 19:57:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3AD0C44C827
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 19:57:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234094AbhKJS5y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Nov 2021 13:57:54 -0500
-Received: from mail.kernel.org ([198.145.29.99]:53486 "EHLO mail.kernel.org"
+        id S233594AbhKJS7H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Nov 2021 13:59:07 -0500
+Received: from mail.kernel.org ([198.145.29.99]:54534 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233834AbhKJSzg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Nov 2021 13:55:36 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3752E619F9;
-        Wed, 10 Nov 2021 18:49:38 +0000 (UTC)
+        id S233214AbhKJS4y (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Nov 2021 13:56:54 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 867EA619E9;
+        Wed, 10 Nov 2021 18:50:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1636570179;
-        bh=08oGUgCNKqZEEcbBNz54bpGRAWPqPM6qIl8eztjzCSo=;
+        s=korg; t=1636570202;
+        bh=kGRRujJ0TVYCqkl5oZ2FAq43hUPCyXV5Cn7Rt0hFsQU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=GoIKQURYtjByiRZszTvl2bf9HRtgipTzNa2FwQ8A4vS1ZgS0BNQKnQJlQ5r5O1lCW
-         vQtAYGfEOckUoVjDPfb2sRGQhGh9jj0Eoz3fErOh53aBs30w91RBha85FRtXJIVkXl
-         WMyW5dPR+ofekP8ZaFDAD7CWwhTSFFNdbQsrduH0=
+        b=RVMRPGPZO+TXgK7hYgQqxI8K9Ddgb7HwahPmLN525t3yLKJmfkB4FusU8SgPkDr/T
+         HhWdim/BjB5MfaMeC8HelmvYOHv+cMN2lt4RtaiOgCM+0+AKW9/dPR3Tg/511luQEv
+         GU+vgBE5ZEJdNH5Scl4bm7UQ9qi/2S/35TS/PVWY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Alan Stern <stern@rowland.harvard.edu>,
-        James Buren <braewoods+lkml@braewoods.net>
-Subject: [PATCH 5.14 08/24] usb-storage: Add compatibility quirk flags for iODD 2531/2541
+        stable@vger.kernel.org, torvic9@mailbox.org,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Nathan Chancellor <nathan@kernel.org>
+Subject: [PATCH 5.15 01/26] KVM: x86: avoid warning with -Wbitwise-instead-of-logical
 Date:   Wed, 10 Nov 2021 19:44:00 +0100
-Message-Id: <20211110182003.600220659@linuxfoundation.org>
+Message-Id: <20211110182003.757795469@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211110182003.342919058@linuxfoundation.org>
-References: <20211110182003.342919058@linuxfoundation.org>
+In-Reply-To: <20211110182003.700594531@linuxfoundation.org>
+References: <20211110182003.700594531@linuxfoundation.org>
 User-Agent: quilt/0.66
+X-stable: review
+X-Patchwork-Hint: ignore
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
@@ -39,43 +42,45 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: James Buren <braewoods+lkml@braewoods.net>
+From: Paolo Bonzini <pbonzini@redhat.com>
 
-commit 05c8f1b67e67dcd786ae3fe44492bbc617b4bd12 upstream.
+commit 3d5e7a28b1ea2d603dea478e58e37ce75b9597ab upstream.
 
-These drive enclosures have firmware bugs that make it impossible to mount
-a new virtual ISO image after Linux ejects the old one if the device is
-locked by Linux. Windows bypasses this problem by the fact that they do
-not lock the device. Add a quirk to disable device locking for these
-drive enclosures.
+This is a new warning in clang top-of-tree (will be clang 14):
 
-Acked-by: Alan Stern <stern@rowland.harvard.edu>
-Signed-off-by: James Buren <braewoods+lkml@braewoods.net>
-Cc: stable <stable@vger.kernel.org>
-Link: https://lore.kernel.org/r/20211014015504.2695089-1-braewoods+lkml@braewoods.net
+In file included from arch/x86/kvm/mmu/mmu.c:27:
+arch/x86/kvm/mmu/spte.h:318:9: error: use of bitwise '|' with boolean operands [-Werror,-Wbitwise-instead-of-logical]
+        return __is_bad_mt_xwr(rsvd_check, spte) |
+               ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+                                                 ||
+arch/x86/kvm/mmu/spte.h:318:9: note: cast one or both operands to int to silence this warning
+
+The code is fine, but change it anyway to shut up this clever clogs
+of a compiler.
+
+Reported-by: torvic9@mailbox.org
+Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
+Cc: Nathan Chancellor <nathan@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/usb/storage/unusual_devs.h |   10 ++++++++++
- 1 file changed, 10 insertions(+)
+ arch/x86/kvm/mmu/spte.h |    7 +------
+ 1 file changed, 1 insertion(+), 6 deletions(-)
 
---- a/drivers/usb/storage/unusual_devs.h
-+++ b/drivers/usb/storage/unusual_devs.h
-@@ -407,6 +407,16 @@ UNUSUAL_DEV(  0x04b8, 0x0602, 0x0110, 0x
- 		USB_SC_SCSI, USB_PR_BULK, NULL, US_FL_SINGLE_LUN),
+--- a/arch/x86/kvm/mmu/spte.h
++++ b/arch/x86/kvm/mmu/spte.h
+@@ -310,12 +310,7 @@ static inline bool __is_bad_mt_xwr(struc
+ static __always_inline bool is_rsvd_spte(struct rsvd_bits_validate *rsvd_check,
+ 					 u64 spte, int level)
+ {
+-	/*
+-	 * Use a bitwise-OR instead of a logical-OR to aggregate the reserved
+-	 * bits and EPT's invalid memtype/XWR checks to avoid an extra Jcc
+-	 * (this is extremely unlikely to be short-circuited as true).
+-	 */
+-	return __is_bad_mt_xwr(rsvd_check, spte) |
++	return __is_bad_mt_xwr(rsvd_check, spte) ||
+ 	       __is_rsvd_bits_set(rsvd_check, spte, level);
+ }
  
- /*
-+ * Reported by James Buren <braewoods+lkml@braewoods.net>
-+ * Virtual ISOs cannot be remounted if ejected while the device is locked
-+ * Disable locking to mimic Windows behavior that bypasses the issue
-+ */
-+UNUSUAL_DEV(  0x04c5, 0x2028, 0x0001, 0x0001,
-+		"iODD",
-+		"2531/2541",
-+		USB_SC_DEVICE, USB_PR_DEVICE, NULL, US_FL_NOT_LOCKABLE),
-+
-+/*
-  * Not sure who reported this originally but
-  * Pavel Machek <pavel@ucw.cz> reported that the extra US_FL_SINGLE_LUN
-  * flag be added */
 
 
