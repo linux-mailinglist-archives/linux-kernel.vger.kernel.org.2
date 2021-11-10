@@ -2,167 +2,228 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 52A9D44C1CF
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 14:04:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F58144C1D3
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 14:05:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231926AbhKJNHF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Nov 2021 08:07:05 -0500
-Received: from smtp1.axis.com ([195.60.68.17]:43568 "EHLO smtp1.axis.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231679AbhKJNHD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Nov 2021 08:07:03 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=axis.com; q=dns/txt; s=axis-central1; t=1636549457;
-  x=1668085457;
-  h=subject:to:cc:references:from:message-id:date:
-   mime-version:in-reply-to:content-transfer-encoding;
-  bh=nU3nv8rOCy8pYPsaPbC1Tl2lc1EFo7HiiaRCokA64wI=;
-  b=Rdt5pyaqRK6HVwsW5YRRhVi8Elb8G6TFpgZHGrLzGLCQtoyVGTpeh2M+
-   3RZtmIJqxxshDoK+Lgvpy+12UmCMRUimxpmEWxLOpsakTkYeJwq5f603a
-   RVZllvsMDf00gNJ9gWDRmp5y0JgCbVPF6SYwS2rj2HVoRD9JPQ5hyAZGo
-   IVVOA3Yd9PMW/weWNAdVIGmfRmMdqGNRz297wvID81w5bcpYWRk+O/q1t
-   ZJqZVRdmOB04I7vTTwyQjYeaWXJxAipoCsr5d5/B0b4xwlnCZghLZLNhh
-   C9bsjnLJxd6RirpxwpqFegZGRTysc7JkJZmXC2Lg5MmNhO6pKGl3sOxRy
-   A==;
-Subject: Re: [PATCH] rtc: rs5c372: Add support of RTC_VL_READ ioctl
-To:     Pavel Modilaynen <pavel.modilaynen@axis.com>,
-        <a.zummo@towertech.it>, <alexandre.belloni@bootlin.com>
-CC:     <linux-rtc@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <kernel@axis.com>, Pavel Modilaynen <pavelmn@axis.com>
-References: <20211105004049.5486-1-pavel.modilaynen@axis.com>
-From:   Camel Guo <camelg@axis.com>
-Message-ID: <bf954e46-700c-48f4-ee51-65733f643a18@axis.com>
-Date:   Wed, 10 Nov 2021 14:03:19 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        id S231987AbhKJNH7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Nov 2021 08:07:59 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124]:49868 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231868AbhKJNH6 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Nov 2021 08:07:58 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1636549509;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=1/tDYR4EfPC0uXsIiY1xU9HH0ceFumPt9NXUOE2Jyb8=;
+        b=ippwKW+3MO7VUPKweGwxa2itU19VD5mcTaWX2R72+Luw9sboo+uIRg6k3mpWMQLZ84XNl6
+        Ns2E76YhzAgaJCcCbWgMbuZo1E98hdRMr8nGei4IjviVRfDkwlHoF/qJTjxLKYq67FixIe
+        ThDohHIMpjXr6P8VW+9aSm4hJCY693I=
+Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com
+ [209.85.208.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-353-MZLVRG3tMgaElYNAyXm8lg-1; Wed, 10 Nov 2021 08:05:08 -0500
+X-MC-Unique: MZLVRG3tMgaElYNAyXm8lg-1
+Received: by mail-ed1-f70.google.com with SMTP id h13-20020a05640250cd00b003e35ea5357fso2283538edb.2
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Nov 2021 05:05:08 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:from:to:cc:references:in-reply-to
+         :content-transfer-encoding;
+        bh=1/tDYR4EfPC0uXsIiY1xU9HH0ceFumPt9NXUOE2Jyb8=;
+        b=vuYsVd9QqbHhVRa5+Srh7KgU3N+OfYCDTHpPFFEarH9YkHtVcjY3Zjy5jRDjdk06xq
+         nae46pAD2ML3VUB630hNWWGik18gnubK3rytsE9+otNfSBsZBF107INZ2J5bT9fJg5Ky
+         dCV+xH95ZnU4OfkJBwyYjeO+tcvOwfpCaAlQDrJ1jdv699nn3KNJnPl6F2Smnv3tfqY/
+         HuNk3gMakLnSLzHLJg0HIc+WgSglO21PmG3/IBKs3MHUhPE7JzlTcvUJ/46/cfwAxoJn
+         c09GIyCektpDH9m9PLoKIF+s75h3Y9KIrtQ0dDhp/fIuoiw5BNi6TuRCLkkgFfzy1XwY
+         PkOw==
+X-Gm-Message-State: AOAM53209lKbsEjGyJDLSrZ320FOOvytlUc7z1reAlW2Rorq0CRN6eoP
+        FDePOsawJ8WZ6nJOlujEwyhW6LdGbam99VO70xqJncv7eoOh18VSKCK5J9xopG7wONjhwLrQKdF
+        kato2AVRt0PMdhHVbvZ6m9H7Z
+X-Received: by 2002:a17:906:fcc8:: with SMTP id qx8mr20182971ejb.370.1636549506129;
+        Wed, 10 Nov 2021 05:05:06 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJydSd6oaioieY+lLTRv2xUigxnlj5cVKLXEQIOtCqrRNYlVby8BE6xOMpTRliX1B651DRXPGw==
+X-Received: by 2002:a17:906:fcc8:: with SMTP id qx8mr20182939ejb.370.1636549505874;
+        Wed, 10 Nov 2021 05:05:05 -0800 (PST)
+Received: from ?IPV6:2001:1c00:c1e:bf00:1054:9d19:e0f0:8214? (2001-1c00-0c1e-bf00-1054-9d19-e0f0-8214.cable.dynamic.v6.ziggo.nl. [2001:1c00:c1e:bf00:1054:9d19:e0f0:8214])
+        by smtp.gmail.com with ESMTPSA id g21sm11374732ejt.87.2021.11.10.05.05.05
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 10 Nov 2021 05:05:05 -0800 (PST)
+Message-ID: <1a001812-1f18-1999-44b7-30fe3a19f460@redhat.com>
+Date:   Wed, 10 Nov 2021 14:05:04 +0100
 MIME-Version: 1.0
-In-Reply-To: <20211105004049.5486-1-pavel.modilaynen@axis.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.2.0
+Subject: Re: [PATCH v5 1/2] x86/PCI: Ignore E820 reservations for bridge
+ windows on newer systems
 Content-Language: en-US
+From:   Hans de Goede <hdegoede@redhat.com>
+To:     Bjorn Helgaas <helgaas@kernel.org>
+Cc:     "Rafael J . Wysocki" <rjw@rjwysocki.net>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        =?UTF-8?Q?Krzysztof_Wilczy=c5=84ski?= <kw@linux.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Myron Stowe <myron.stowe@redhat.com>,
+        Juha-Pekka Heikkila <juhapekka.heikkila@gmail.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "H . Peter Anvin" <hpa@zytor.com>, linux-acpi@vger.kernel.org,
+        linux-pci@vger.kernel.org, x86@kernel.org,
+        linux-kernel@vger.kernel.org,
+        =?UTF-8?Q?Benoit_Gr=c3=a9goire?= <benoitg@coeus.ca>,
+        Hui Wang <hui.wang@canonical.com>, stable@vger.kernel.org,
+        "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>
+References: <20211109220717.GA1187103@bhelgaas>
+ <70b63cc2-4d08-8468-1ca7-135492394773@redhat.com>
+In-Reply-To: <70b63cc2-4d08-8468-1ca7-135492394773@redhat.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.0.5.60]
-X-ClientProxiedBy: se-mail02w.axis.com (10.20.40.8) To se-mail03w.axis.com
- (10.20.40.9)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+Hi Bjorn,
 
-After discussion internally on this patch, we would like to abandon this 
-patch and purpose this one 
-https://lore.kernel.org/linux-rtc/20211110115455.18699-1-camel.guo@axis.com/T/#u 
-instead. Sorry for the inconvenience and please review that patch instead.
+On 11/10/21 09:45, Hans de Goede wrote:
+> Hi Bjorn,
+> 
+> On 11/9/21 23:07, Bjorn Helgaas wrote:
+>> On Sat, Nov 06, 2021 at 11:15:07AM +0100, Hans de Goede wrote:
+>>> On 10/20/21 23:14, Bjorn Helgaas wrote:
+>>>> On Wed, Oct 20, 2021 at 12:23:26PM +0200, Hans de Goede wrote:
+>>>>> On 10/19/21 23:52, Bjorn Helgaas wrote:
+>>>>>> On Thu, Oct 14, 2021 at 08:39:42PM +0200, Hans de Goede wrote:
+>>>>>>> Some BIOS-es contain a bug where they add addresses which map to system
+>>>>>>> RAM in the PCI host bridge window returned by the ACPI _CRS method, see
+>>>>>>> commit 4dc2287c1805 ("x86: avoid E820 regions when allocating address
+>>>>>>> space").
+>>>>>>>
+>>>>>>> To work around this bug Linux excludes E820 reserved addresses when
+>>>>>>> allocating addresses from the PCI host bridge window since 2010.
+>>>>>>> ...
+>>>>
+>>>>>> I haven't seen anybody else eager to merge this, so I guess I'll stick
+>>>>>> my neck out here.
+>>>>>>
+>>>>>> I applied this to my for-linus branch for v5.15.
+>>>>>
+>>>>> Thank you, and sorry about the build-errors which the lkp
+>>>>> kernel-test-robot found.
+>>>>>
+>>>>> I've just send out a patch which fixes these build-errors
+>>>>> (verified with both .config-s from the lkp reports).
+>>>>> Feel free to squash this into the original patch (or keep
+>>>>> them separate, whatever works for you).
+>>>>
+>>>> Thanks, I squashed the fix in.
+>>>>
+>>>> HOWEVER, I think it would be fairly risky to push this into v5.15.
+>>>> We would be relying on the assumption that current machines have all
+>>>> fixed the BIOS defect that 4dc2287c1805 addressed, and we have little
+>>>> evidence for that.
+>>>>
+>>>> I'm not sure there's significant benefit to having this in v5.15.
+>>>> Yes, the mainline v5.15 kernel would work on the affected machines,
+>>>> but I suspect most people with those machines are running distro
+>>>> kernels, not mainline kernels.
+>>>
+>>> I understand that you were reluctant to add this to 5.15 so close
+>>> near the end of the 5.15 cycle, but can we please get this into
+>>> 5.16 now ?
+>>>
+>>> I know you ultimately want to see if there is a better fix,
+>>> but this is hitting a *lot* of users right now and if we come up
+>>> with a better fix we can always use that to replace this one
+>>> later.
+>>
+>> I don't know whether there's a "better" fix, but I do know that if we
+>> merge what we have right now, nobody will be looking for a better
+>> one.
+>>
+>> We're in the middle of the merge window, so the v5.16 development
+>> cycle is over.  The v5.17 cycle is just starting, so we have time to
+>> hit that.  Obviously a fix can be backported to older kernels as
+>> needed.
+>>
+>>> So can we please just go with this fix now, so that we can
+>>> fix the issues a lot of users are seeing caused by the current
+>>> *wrong* behavior of taking the e820 reservations into account ?
+>>
+>> I think the fix on the table is "ignore E820 for BIOS date >= 2018"
+>> plus the obvious parameters to force it both ways.
+> 
+> Correct.
+> 
+>> The thing I don't like is that this isn't connected at all to the
+>> actual BIOS defect.  We have no indication that current BIOSes have
+>> fixed the defect,
+> 
+> We also have no indication that that defect from 10 years ago, from
+> pre UEFI firmware is still present in modern day UEFI firmware which
+> is basically an entire different code-base.
+> 
+> And even 10 years ago the problem was only happening to a single
+> family of laptop models (Dell Precision laptops) so this clearly
+> was a bug in that specific implementation and not some generic
+> issue which is likely to be carried forward.
+> 
+>> and we have no assurance that future ones will not
+>> have the defect.  It would be better if we had some algorithmic way of
+>> figuring out what to do.
+> 
+> You yourself have said that in hindsight taking E820 reservations
+> into account for PCI bridge host windows was a mistake. So what
+> the "ignore E820 for BIOS date >= 2018" is doing is letting the
+> past be the past (without regressing on older models) while fixing
+> that mistake on any hardware going forward.
+> 
+> In the unlikely case that we hit that BIOS bug again on 1 or 2 models,
+> we can simply DMI quirk those models, as we do for countless other
+> BIOS issues.
+> 
+>> Thank you very much for chasing down the dmesg log archive
+>> (https://github.com/linuxhw/Dmesg; see
+>> https://lore.kernel.org/r/82035130-d810-9f0b-259e-61280de1d81f@redhat.com).
+>> Unfortunately I haven't had time to look through it myself, and I
+>> haven't heard of anybody else doing it either.
+> 
+> Right, I'm afraid that I already have spend way too much time on this
+> myself. Note that I've been working with users on this bug on and off
+> for over a year now.
+> 
+> This is hitting many users and now that we have a viable fix, this
+> really needs to be fixed now.
+> 
+> I believe that the "ignore E820 for BIOS date >= 2018" fix is good
+> enough and that you are letting perfect be the enemy of good here.
+> 
+> As an upstream kernel maintainer myself, I'm sorry to say this,
+> but if we don't get some fix for this merged soon you are leaving
+> my no choice but to add my fix to the Fedora kernels as a downstream
+> patch (and to advise other distros to do the same).
+> 
+> Note that if you are still afraid of regressions going the downstream
+> route is also an opportunity, Fedora will start testing moving users
+> to 5.15.y soon, so I could add the patch to Fedora's 5.15.y builds and
+> see how that goes ?
 
-Best Regards
-Camel Guo
+So I've discussed this with the Fedora kernel maintainers and they have
+agreed to add the patch to the Fedora 5.15 kernels, which we will ask
+our users to start testing soon (we first run some voluntary testing
+before eventually moving all users over).
 
-On 11/5/21 1:40 AM, Pavel Modilaynen wrote:
-> From: Pavel Modilaynen <pavelmn@lnxpavelmn.se.axis.com>
-> 
-> Read, cache and expose with RTC_VL_READ ioctl low voltage
-> detection flag. It is supported on all devices except RS5C372A/B,
-> for which osciallation halt detection bit is interpreted
-> as low voltage condition.
-> Add RTC_VL_CLEAR ioctl to clear the cached value.
-> 
-> Signed-off-by: Pavel Modilaynen <pavelmn@lnxpavelmn.se.axis.com>
-> ---
->   drivers/rtc/rtc-rs5c372.c | 46 +++++++++++++++++++++++++++++++++++++++
->   1 file changed, 46 insertions(+)
-> 
-> diff --git a/drivers/rtc/rtc-rs5c372.c b/drivers/rtc/rtc-rs5c372.c
-> index 80980414890c..68d2ed9670c4 100644
-> --- a/drivers/rtc/rtc-rs5c372.c
-> +++ b/drivers/rtc/rtc-rs5c372.c
-> @@ -126,6 +126,7 @@ struct rs5c372 {
->   	unsigned		smbus:1;
->   	char			buf[17];
->   	char			*regs;
-> +	int			voltage_low;
->   };
->   
->   static int rs5c_get_regs(struct rs5c372 *rs5c)
-> @@ -216,22 +217,40 @@ static int rs5c372_rtc_read_time(struct device *dev, struct rtc_time *tm)
->   	if (status < 0)
->   		return status;
->   
-> +	/* check the warning bits */
->   	switch (rs5c->type) {
->   	case rtc_r2025sd:
->   	case rtc_r2221tl:
->   		if ((rs5c->type == rtc_r2025sd && !(ctrl2 & R2x2x_CTRL2_XSTP)) ||
->   		    (rs5c->type == rtc_r2221tl &&  (ctrl2 & R2x2x_CTRL2_XSTP))) {
->   			dev_warn(&client->dev, "rtc oscillator interruption detected. Please reset the rtc clock.\n");
-> +			/* keep it as indicator of low/dead battery */
-> +			rs5c->voltage_low = 1;
->   			return -EINVAL;
->   		}
->   		break;
->   	default:
->   		if (ctrl2 & RS5C_CTRL2_XSTP) {
->   			dev_warn(&client->dev, "rtc oscillator interruption detected. Please reset the rtc clock.\n");
-> +			/* keep it as indicator of low/dead battery */
-> +			rs5c->voltage_low = 1;
->   			return -EINVAL;
->   		}
->   	}
->   
-> +
-> +	switch (rs5c->type) {
-> +	case rtc_rs5c372a:
-> +	case rtc_rs5c372b:
-> +		break;
-> +	default:
-> +		if (ctrl2 & R2x2x_CTRL2_VDET) {
-> +			rs5c->voltage_low = 1;
-> +			dev_warn(&client->dev, "low voltage detected\n");
-> +		}
-> +		break;
-> +	}
-> +
->   	tm->tm_sec = bcd2bin(rs5c->regs[RS5C372_REG_SECS] & 0x7f);
->   	tm->tm_min = bcd2bin(rs5c->regs[RS5C372_REG_MINS] & 0x7f);
->   	tm->tm_hour = rs5c_reg2hr(rs5c, rs5c->regs[RS5C372_REG_HOURS]);
-> @@ -485,6 +504,32 @@ static int rs5c372_rtc_proc(struct device *dev, struct seq_file *seq)
->   #define	rs5c372_rtc_proc	NULL
->   #endif
->   
-> +#ifdef CONFIG_RTC_INTF_DEV
-> +static int rs5c372_ioctl(struct device *dev, unsigned int cmd, unsigned long arg)
-> +{
-> +	struct rs5c372	*rs5c = i2c_get_clientdata(to_i2c_client(dev));
-> +
-> +	dev_dbg(dev, "%s: cmd=%x\n", __func__, cmd);
-> +
-> +	switch (cmd) {
-> +	case RTC_VL_READ:
-> +		if (rs5c->voltage_low)
-> +			dev_info(dev, "low voltage detected, date/time is not reliable.\n");
-> +
-> +		return put_user(rs5c->voltage_low, (unsigned int __user *)arg);
-> +	case RTC_VL_CLR:
-> +		/* Clear the cached value. */
-> +		rs5c->voltage_low = 0;
-> +		return 0;
-> +	default:
-> +		return -ENOIOCTLCMD;
-> +	}
-> +	return 0;
-> +}
-> +#else
-> +#define rs5c372_ioctl	NULL
-> +#endif
-> +
->   static const struct rtc_class_ops rs5c372_rtc_ops = {
->   	.proc		= rs5c372_rtc_proc,
->   	.read_time	= rs5c372_rtc_read_time,
-> @@ -492,6 +537,7 @@ static const struct rtc_class_ops rs5c372_rtc_ops = {
->   	.read_alarm	= rs5c_read_alarm,
->   	.set_alarm	= rs5c_set_alarm,
->   	.alarm_irq_enable = rs5c_rtc_alarm_irq_enable,
-> +	.ioctl		= rs5c372_ioctl,
->   };
->   
->   #if IS_ENABLED(CONFIG_RTC_INTF_SYSFS)
-> 
+This will provide us with valuable feedback wrt this patch causing
+regressions as you are worried about, or not.
+
+Assuming no regressions show up I hope that this will give you
+some assurance that there the patch causes no regressions and that
+you will then be willing to pick this up later during the 5.16
+cycle so that Fedora only deviates from upstream for 1 cycle.
+
+Regards,
+
+Hans
+
