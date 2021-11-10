@@ -2,112 +2,201 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3764C44BADE
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 05:38:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9159D44BAE1
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 05:40:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230366AbhKJEkt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Nov 2021 23:40:49 -0500
-Received: from mout.gmx.net ([212.227.15.19]:51665 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230357AbhKJEks (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Nov 2021 23:40:48 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1636519069;
-        bh=DpxA7OMbSJcqPkO09lUDBIH0m5uZiuKEOS13QI73+d0=;
-        h=X-UI-Sender-Class:Subject:From:To:Cc:Date:In-Reply-To:References;
-        b=GRjQqXiRAfs1hjOGKf1G/hK5RiQO2q2pbmLPL86H7PQyFRwdVR+YuOYwMvo4MlOYg
-         9boKzPCRhMRcF+PAm02qnTdyr1jvpLd7fwoDulx1ckrkfvNcNgp3D7MRlyqtuM05h/
-         lvat/sjkeSiP4iXSZKKYmT6SJco1Tiu3yo+D4E18=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from homer.fritz.box ([212.114.172.107]) by mail.gmx.net (mrgmx004
- [212.227.17.190]) with ESMTPSA (Nemesis) id 1N8ob6-1mgvzn1xnq-015oBM; Wed, 10
- Nov 2021 05:37:49 +0100
-Message-ID: <beec14cee84de7a4bedd7a63c2acdf150a82bc09.camel@gmx.de>
-Subject: Re: [PATCH] sched: Split preemption model selection between DYNAMIC
- & !DYNAMIC
-From:   Mike Galbraith <efault@gmx.de>
-To:     Frederic Weisbecker <frederic@kernel.org>,
-        Valentin Schneider <valentin.schneider@arm.com>
-Cc:     linux-kernel@vger.kernel.org,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>
-Date:   Wed, 10 Nov 2021 05:37:48 +0100
-In-Reply-To: <20211110011738.GD288354@lothringen>
-References: <20211109151057.3489223-1-valentin.schneider@arm.com>
-         <20211110011738.GD288354@lothringen>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.42.0 
+        id S230389AbhKJEnX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Nov 2021 23:43:23 -0500
+Received: from alexa-out-sd-02.qualcomm.com ([199.106.114.39]:15425 "EHLO
+        alexa-out-sd-02.qualcomm.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230357AbhKJEnV (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Nov 2021 23:43:21 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=quicinc.com; i=@quicinc.com; q=dns/txt; s=qcdkim;
+  t=1636519235; x=1668055235;
+  h=subject:to:cc:references:from:message-id:date:
+   mime-version:in-reply-to:content-transfer-encoding;
+  bh=ZsH6MhhbqNu57vYniPHkgklgigBcIxZ7QmJ8tNlyAIs=;
+  b=HhRAvOZIChv5+IGeJyW0OpSg65KEvPEHmSdwj8oWn9t7a6Uf39/cW9MW
+   UuXITnBZwwr7okLxNEd96vrWMx47swHF4B0u+ovMKXEeWrDbirTWlFX8X
+   XpSfpDipj3VMMf/DaJYbuIDxKnvhm9P88FlIFTfltICssCxPxWVZ8rWFw
+   w=;
+Received: from unknown (HELO ironmsg01-sd.qualcomm.com) ([10.53.140.141])
+  by alexa-out-sd-02.qualcomm.com with ESMTP; 09 Nov 2021 20:40:34 -0800
+X-QCInternal: smtphost
+Received: from nasanex01b.na.qualcomm.com ([10.46.141.250])
+  by ironmsg01-sd.qualcomm.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Nov 2021 20:40:34 -0800
+Received: from [10.216.57.197] (10.80.80.8) by nasanex01b.na.qualcomm.com
+ (10.46.141.250) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.922.7; Tue, 9 Nov 2021
+ 20:40:30 -0800
+Subject: Re: [PATCH] rcu-tasks: Inspect stalled task's trc state in locked
+ state
+To:     <paulmck@kernel.org>
+CC:     <josh@joshtriplett.org>, <rostedt@goodmis.org>,
+        <mathieu.desnoyers@efficios.com>, <jiangshanlai@gmail.com>,
+        <joel@joelfernandes.org>, <rcu@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <urezki@gmail.com>,
+        <frederic@kernel.org>, <boqun.feng@gmail.com>
+References: <20211109112214.19618-1-quic_neeraju@quicinc.com>
+ <20211109145235.GV641268@paulmck-ThinkPad-P17-Gen-1>
+From:   quic_neeraju <quic_neeraju@quicinc.com>
+Message-ID: <d099f078-eef7-1c44-7086-b67971218f3f@quicinc.com>
+Date:   Wed, 10 Nov 2021 10:10:27 +0530
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.14.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:oM3iQXdkOSBVEdUv2AQSd3PPuGcrPh9sE4tn9+iJEQwdjhWdmwv
- GpgsyvW0zCbTzQxkhtyvww9F3o55ERdyquQLQivuOIu+tgPqiyxy0t3iAtkRwRVdyyGgmXp
- 4yGnXZvZE0VKfHa2dHPCpNHWuUXVDoE8XcLQ26ZtEIx9EiLgK9oI+StVngMGdrE0VlquGB1
- q7GRkxoyQx/CnHerZ4bdQ==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:n22W6p+mgNQ=:TIoc8TEmV7hUcRfUFMLjwX
- zxR0u3T8D34dEmgwioRDf7JwLeZJ7r3sXs9UHkExKegZf0CUUKMlumyOXmmtJ4Qy95CtqkXaF
- TTDNPdshhJxHDHTeBKACChM+6ezvRkbvjqo7c369StHC/SHlR6Hlhe29twAuXV7XU72DCn3L0
- vEAAGbuLhS9Z5l8q8TUtZZPJ84eJWQ5ayCWOXoUwvLq8smE3z5TrPusw8r3CEaKE4VRw+4IDl
- uqXhPV9AfzNkWN4nHTU9F4UKBcWalcleDM+8pXlfZERpigu2GyTjlXqPAp7pChg8fhpOvmoHC
- 15ASpjkRlUVpQBn5xt3KvKINnzpFtGur61+mCYNUddNwHoczQQ7qke/LlA3CQ8hzPnhK1C/CR
- B2Gobr3eBzGKRJiGgo5R8ZWKd02PxBPQj6wXix9C+sMZLMUsSJKt991J4RgkBeJoK0kJvPgIt
- nX05taaP3FcV7uSk8oZLyd8j3Gg60uGshq8MP0DPkAYX8nhOBCeC5KzmWheVjt+7sEQYOV6ba
- DTx7MLdN7C+64ZwZcmOqKFFaghya/kvxY6O6YW2N/+T8fFHZ5hdA6z6fR9k90B183J4FB6ZMd
- Nd34GC0yjzwOm5auKPvzKdmIZom0LFuUmIPGdpgbbM3lj5enTyI1AkDudV2RAJHnKC+vfwNQW
- fEoT4pH+maH9fIbul4nIu40GBV/D6ldB4rWAK+p0vVW8k4EeWuQiwOhG7jHcox1602NXHoQxF
- ML7Q80iO1w19gNLnBP4Kop/lvwwtETe4sEvI47JvP9Lns4+I9GWMowaUWIc/FhCwy4SyfL67P
- xPQ3u+d/nD3nV4KPDwnrSW0Iyjij7zdfDWsK3MdTgLUAlD6sTTCG7baZEWhPFAvHGCuFXuAt3
- 6y49wiMBuk5u1+9ZskDkuZ2Hi4M/3GSNXAJ9N6LdmL0kGTaJo3Xiw4tO/4ZDNGKm4IoqlthoL
- uujfmxAuuSsP0iHspL4Ws4j8hA8EywAILFmgFRKBYZQersmDgurkqYc/HZ1JSo0hWegL+clUl
- xfDJ3Cs6xU6WYkurZQupLEc/x9pt5poVwmjT4mZhQerWvONfkgnrnCvp1Fh8XSeVPWPTvh8oP
- J8VhMnrh1ejUaY=
+In-Reply-To: <20211109145235.GV641268@paulmck-ThinkPad-P17-Gen-1>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nasanex01b.na.qualcomm.com (10.46.141.250)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 2021-11-10 at 02:17 +0100, Frederic Weisbecker wrote:
-> On Tue, Nov 09, 2021 at 03:10:57PM +0000, Valentin Schneider wrote:
-> > +choice
-> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0prompt "Default boot-time P=
-reemption Model"
-> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0depends on PREEMPT_DYNAMIC
-> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0default PREEMPT_NONE_BEHAVI=
-OUR
-> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0help
-> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 This option defines =
-the default preemption model of the kernel
-> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if it hasn't been sp=
-ecified by the "preempt=3D" command line parameter.
-> > =C2=A0
-> > -config PREEMPT_VOLUNTARY
-> > -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0bool
-> > +config PREEMPT_NONE_BEHAVIOUR
-> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0bool "No Forced Preemption =
-(Server)"
-> > =C2=A0
-> > -config PREEMPT
-> > -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0bool
-> > -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0select PREEMPTION
-> > -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0select UNINLINE_SPIN_UNLOCK=
- if !ARCH_INLINE_SPIN_UNLOCK
-> > +config PREEMPT_VOLUNTARY_BEHAVIOUR
-> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0bool "Voluntary Kernel Pree=
-mption (Desktop)"
-> > +
-> > +config PREEMPT_BEHAVIOUR
-> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0bool "Preemptible Kernel (L=
-ow-Latency Desktop)"
-> > +endchoice
->
-> The problem here is that you're duplicating the existing titles
-> for the static entries and you're losing all the help that text that use=
-d to come
-> along. The point of the BEHAVIOUR thing, further mapping to either
-> static or dynamic preemption, was to avoid that duplication and keep the
-> same titles and help for the three behaviour, whether static or dynamic.
+Hi Paul,
 
-Adding "depends on !PREEMPT_DYNAMIC" to the first (legacy?) choice made
-it appear/disappear at the appropriate time as well, but I have no idea
-how duplication of help text can be avoided.
 
-	-Mike
+On 11/9/2021 8:22 PM, Paul E. McKenney wrote:
+> On Tue, Nov 09, 2021 at 04:52:14PM +0530, Neeraj Upadhyay wrote:
+>> On RCU tasks trace stall, inspect the RCU-tasks-trace specific
+>> states of stalled task in locked down state, using try_invoke_
+>> on_locked_down_task(), to get reliable trc state of a non-running
+>> stalled task.
+>>
+>> Signed-off-by: Neeraj Upadhyay <quic_neeraju@quicinc.com>
+> 
+> Queued for further review and testing, thank you!
+> 
+> Along those lines, what did you do to test this?  I would like to
+> add that to the commit message.  (The usual approach is to use the
+> rcutorture.stall_cpu module parameter, in case I have not yet passed
+> that along.)
+> 
+
+Before sending the patch, I had tested with TRACE01 and adding long 
+delay before rcu_read_unlock_trace() in tasks_tracing_torture_read_unlock()
+
+static void tasks_tracing_torture_read_unlock(int idx)
+{
+         rcu_read_unlock_trace();
+}
+
+I retested with below commandline (without adding delay in 
+tasks_tracing_torture_read_unlock()):
+
+tools/testing/selftests/rcutorture/bin/kvm.sh --cpus 8 --configs TRACE01 
+--bootargs "rcutorture.torture_type=tasks-tracing 
+rcutorture.stall_cpu=10 rcutorture.stall_cpu_block=1 
+rcupdate.rcu_task_stall_timeout=100" --trust-make
+
+With this, I can see stalls for both RUNNING and WAITING state task:
+
+[   21.520291] INFO: rcu_tasks_trace detected stalls on tasks:
+[   21.521292] P85: ... nesting: 1N cpu: 2
+[   21.521966] task:rcu_torture_sta state:D stack:15080 pid:   85 ppid: 
+     2 flags:0x00004000
+[   21.523384] Call Trace:
+[   21.523808]  __schedule+0x273/0x6e0
+[   21.524428]  schedule+0x35/0xa0
+[   21.524971]  schedule_timeout+0x1ed/0x270
+[   21.525690]  ? del_timer_sync+0x30/0x30
+[   21.526371]  ? rcu_torture_writer+0x720/0x720
+[   21.527106]  rcu_torture_stall+0x24a/0x270
+[   21.527816]  kthread+0x115/0x140
+[   21.528401]  ? set_kthread_struct+0x40/0x40
+[   21.529136]  ret_from_fork+0x22/0x30
+[   21.529766]  1 holdouts
+[   21.632300] INFO: rcu_tasks_trace detected stalls on tasks:
+[   21.632345] rcu_torture_stall end.
+[   21.633293] P85: .
+[   21.633294] task:rcu_torture_sta state:R  running task 
+stack:15080 pid:   85 ppid:     2 flags:0x00004000
+[   21.633299] Call Trace:
+[   21.633301]  ? vprintk_emit+0xab/0x180
+[   21.633306]  ? vprintk_emit+0x11a/0x180
+[   21.633308]  ? _printk+0x4d/0x69
+[   21.633311]  ? __default_send_IPI_shortcut+0x1f/0x40
+
+
+
+Thanks
+Neeraj
+
+> 							Thanx, Paul
+> 
+>> ---
+>>   kernel/rcu/tasks.h | 43 ++++++++++++++++++++++++++++++++++---------
+>>   1 file changed, 34 insertions(+), 9 deletions(-)
+>>
+>> diff --git a/kernel/rcu/tasks.h b/kernel/rcu/tasks.h
+>> index e4a32db9f712..4e49b847971b 100644
+>> --- a/kernel/rcu/tasks.h
+>> +++ b/kernel/rcu/tasks.h
+>> @@ -1073,25 +1073,50 @@ static void rcu_tasks_trace_postscan(struct list_head *hop)
+>>   	// Any tasks that exit after this point will set ->trc_reader_checked.
+>>   }
+>>   
+>> +/* Communicate task state back to the RCU tasks trace stall warning request. */
+>> +struct trc_stall_chk_rdr {
+>> +	int nesting;
+>> +	int ipi_to_cpu;
+>> +	u8 needqs;
+>> +};
+>> +
+>> +static bool trc_check_slow_task(struct task_struct *t, void *arg)
+>> +{
+>> +	struct trc_stall_chk_rdr *trc_rdrp = arg;
+>> +
+>> +	if (task_curr(t))
+>> +		return false; // It is running, so decline to inspect it.
+>> +	trc_rdrp->nesting = READ_ONCE(t->trc_reader_nesting);
+>> +	trc_rdrp->ipi_to_cpu = READ_ONCE(t->trc_ipi_to_cpu);
+>> +	trc_rdrp->needqs = READ_ONCE(t->trc_reader_special.b.need_qs);
+>> +	return true;
+>> +}
+>> +
+>>   /* Show the state of a task stalling the current RCU tasks trace GP. */
+>>   static void show_stalled_task_trace(struct task_struct *t, bool *firstreport)
+>>   {
+>>   	int cpu;
+>> +	struct trc_stall_chk_rdr trc_rdr;
+>> +	bool is_idle_tsk = is_idle_task(t);
+>>   
+>>   	if (*firstreport) {
+>>   		pr_err("INFO: rcu_tasks_trace detected stalls on tasks:\n");
+>>   		*firstreport = false;
+>>   	}
+>> -	// FIXME: This should attempt to use try_invoke_on_nonrunning_task().
+>>   	cpu = task_cpu(t);
+>> -	pr_alert("P%d: %c%c%c nesting: %d%c cpu: %d\n",
+>> -		 t->pid,
+>> -		 ".I"[READ_ONCE(t->trc_ipi_to_cpu) >= 0],
+>> -		 ".i"[is_idle_task(t)],
+>> -		 ".N"[cpu >= 0 && tick_nohz_full_cpu(cpu)],
+>> -		 READ_ONCE(t->trc_reader_nesting),
+>> -		 " N"[!!READ_ONCE(t->trc_reader_special.b.need_qs)],
+>> -		 cpu);
+>> +	if (!try_invoke_on_locked_down_task(t, trc_check_slow_task, &trc_rdr))
+>> +		pr_alert("P%d: %c\n",
+>> +			 t->pid,
+>> +			 ".i"[is_idle_tsk]);
+>> +	else
+>> +		pr_alert("P%d: %c%c%c nesting: %d%c cpu: %d\n",
+>> +			 t->pid,
+>> +			 ".I"[trc_rdr.ipi_to_cpu >= 0],
+>> +			 ".i"[is_idle_tsk],
+>> +			 ".N"[cpu >= 0 && tick_nohz_full_cpu(cpu)],
+>> +			 trc_rdr.nesting,
+>> +			 " N"[!!trc_rdr.needqs],
+>> +			 cpu);
+>>   	sched_show_task(t);
+>>   }
+>>   
+>> -- 
+>> 2.17.1
+>>
