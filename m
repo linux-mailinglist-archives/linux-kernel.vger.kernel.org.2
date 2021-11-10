@@ -2,78 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 92DBC44C0AA
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 13:03:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 115B744C0BE
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 13:06:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232000AbhKJMFZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Nov 2021 07:05:25 -0500
-Received: from mail.kernel.org ([198.145.29.99]:51858 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231670AbhKJMFK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Nov 2021 07:05:10 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C8C596115A;
-        Wed, 10 Nov 2021 12:02:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1636545742;
-        bh=7MgLyEqQs0tsTjzVsvVzeXDQT4IirjoXUmST78bHbTA=;
-        h=From:To:Cc:Subject:Date:From;
-        b=B/GepwNww4Qm4HiRT8hda+8Fh7FbxwlruM6NufVWoZ8ONVpBJmiT0k36DDd4refYr
-         01cjA149P8jumHXpbIpYKfZQqLAiWFOA6S/fOg6l83GhGpAM70NYzcq/OiZN8PWJkZ
-         RBUkYTpV6qRqMa1fBWdHh6+3zKbh9w9a1+3EkWj9q8KAHsV+TQnw/i5UwjFk2yFjVU
-         N2gvG4OFqK6xb6iJqiDJVPKNLmEws70eE/Ny8sSsNAuUXeToT2OJQHLo+jcaSQ40v5
-         FYTCKAk78lsI+wYq36lULZqcbQVW6NpMG+Bxq7Z707kIwtu4ZqGMznKDSpX4vfgPn0
-         iwdNnHqsRMQAg==
-From:   alexs@kernel.org
-Cc:     Alex Shi <alexs@kernel.org>, Xinyong Wang <wang.xy.chn@gmail.com>,
-        Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] doc/zh_CN: fix a translation error in management-style
-Date:   Wed, 10 Nov 2021 20:02:13 +0800
-Message-Id: <20211110120213.134313-1-alexs@kernel.org>
+        id S231478AbhKJMII (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Nov 2021 07:08:08 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37170 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231131AbhKJMIH (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Nov 2021 07:08:07 -0500
+Received: from mail-pj1-x1029.google.com (mail-pj1-x1029.google.com [IPv6:2607:f8b0:4864:20::1029])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B461C061764;
+        Wed, 10 Nov 2021 04:05:20 -0800 (PST)
+Received: by mail-pj1-x1029.google.com with SMTP id gb13-20020a17090b060d00b001a674e2c4a8so1492613pjb.4;
+        Wed, 10 Nov 2021 04:05:20 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=SmZpl8+j/iKc0sB5URMOhtFVFzKAZretNZR5phX8V54=;
+        b=AaiaX03JzpUeQ855h1+dV9l4+ukSmXVfDTYDUIvRLiaosXsME3ilMxt6JVmhe3eg0D
+         hEI8vZ/w0nFcav9KXmHFLiYPNUYV9Iq790h1ZUCk3NxUlH46TZhg9ttbXmTf9XQmlYya
+         BKo3z3+De7+ajAo6ETVtdZjNKkdFyOauMMbR/stun+H8uoTsNuTF9JdnQG/2XrQ0wblS
+         nvpjiL0Pbcbpw5iuPJFkMcBYjSRXGXqj/gV7LZO+Xe31ATHqy8NYxRjGo14yRul/841d
+         dPgJWb1g9WtsHZyDJff21j+hMeiOrF77u40X6gZQpYjiZ4BKiva4FqCa4QEwFIfdmzw6
+         80jA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=SmZpl8+j/iKc0sB5URMOhtFVFzKAZretNZR5phX8V54=;
+        b=7wSfUem2mrlu9eWcKxRktODMEkxCEQn6rgMQWGUoWfY35j5Ag3Y4mAGzlluRANicBh
+         D1z8Dadwar0ZsPNX4LQz6YWBtvRfnbd2cvCLBuERD9KDURQgrL5V/BX3mFv1ad7zhOfb
+         H2R3965KyQrGYV2N0+KUS9TRSZzweZiVRntSnXrD9dS4tknCEptngHckz75ROp3oSPU1
+         PIYYreYKcGI4mu5jTloKYANNYs2DHn6R7O07CRm5WU378HQGl79bzZhSgojiequB7GF4
+         PgkZ6dOvGssmOiwClQ9DjqJdTmon7WcsGfKJj2I2o6CAKBGGYazl0YscrM/mdmxziqdk
+         OZRQ==
+X-Gm-Message-State: AOAM532MPJmbkCSnmosaH5V3BhgXCrYf/1DRk6AV835HBq9UGfXlEJ7J
+        E3NX18zXq+1I+feeU/NH0Sc=
+X-Google-Smtp-Source: ABdhPJxp1tSXAzZDWhWtzwlC+WpFHm5YVQ6u/yn2MK4ACIYuoQeY9VzDPTcS+qoyy0lkfOpDtimAVA==
+X-Received: by 2002:a17:902:e294:b0:143:86a8:c56d with SMTP id o20-20020a170902e29400b0014386a8c56dmr2079842plc.22.1636545919705;
+        Wed, 10 Nov 2021 04:05:19 -0800 (PST)
+Received: from localhost.localdomain ([193.203.214.57])
+        by smtp.gmail.com with ESMTPSA id on6sm7070697pjb.47.2021.11.10.04.05.17
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 10 Nov 2021 04:05:19 -0800 (PST)
+From:   cgel.zte@gmail.com
+X-Google-Original-From: deng.changcheng@zte.com.cn
+To:     robdclark@gmail.com
+Cc:     sean@poorly.run, airlied@linux.ie, daniel@ffwll.ch,
+        swboyd@chromium.org, abhinavk@codeaurora.org,
+        deng.changcheng@zte.com.cn, linux-arm-msm@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, freedreno@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org, Zeal Robot <zealci@zte.com.cn>
+Subject: [PATCH linux-next] drm/msm/dp: remove unneeded variable
+Date:   Wed, 10 Nov 2021 12:05:12 +0000
+Message-Id: <20211110120512.150940-1-deng.changcheng@zte.com.cn>
 X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Alex Shi <alexs@kernel.org>
+From: Changcheng Deng <deng.changcheng@zte.com.cn>
 
-'The name of the game' means the most important part of an activity, so
-we should translate it by the meaning instead of the words.
+Fix the following coccicheck review:
+./drivers/gpu/drm/msm/dp/dp_debug.c: Unneeded variable
 
-Suggested-by: Xinyong Wang <wang.xy.chn@gmail.com>
-Signed-off-by: Alex Shi <alexs@kernel.org>
-Cc: Jonathan Corbet <corbet@lwn.net> 
-Cc: linux-doc@vger.kernel.org 
-Cc: linux-kernel@vger.kernel.org 
+Remove unneeded variable used to store return value.
+
+Reported-by: Zeal Robot <zealci@zte.com.cn>
+Signed-off-by: Changcheng Deng <deng.changcheng@zte.com.cn>
 ---
- Documentation/translations/zh_CN/process/management-style.rst | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/gpu/drm/msm/dp/dp_debug.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-diff --git a/Documentation/translations/zh_CN/process/management-style.rst b/Documentation/translations/zh_CN/process/management-style.rst
-index c6a5bb285797..8053ae474328 100644
---- a/Documentation/translations/zh_CN/process/management-style.rst
-+++ b/Documentation/translations/zh_CN/process/management-style.rst
-@@ -36,14 +36,14 @@ Linux内核管理风格
- 每个人都认为管理者做决定，而且决策很重要。决定越大越痛苦，管理者就必须越高级。
- 这很明显，但事实并非如此。
+diff --git a/drivers/gpu/drm/msm/dp/dp_debug.c b/drivers/gpu/drm/msm/dp/dp_debug.c
+index 2f6247e80e9d..c5c75273d1e5 100644
+--- a/drivers/gpu/drm/msm/dp/dp_debug.c
++++ b/drivers/gpu/drm/msm/dp/dp_debug.c
+@@ -365,7 +365,6 @@ static const struct file_operations test_active_fops = {
  
--游戏的名字是 **避免** 做出决定。尤其是，如果有人告诉你“选择（a）或（b），
-+最重要的是 **避免** 做出决定。尤其是，如果有人告诉你“选择（a）或（b），
- 我们真的需要你来做决定”，你就是陷入麻烦的管理者。你管理的人比你更了解细节，
- 所以如果他们来找你做技术决策，你完蛋了。你显然没有能力为他们做这个决定。
+ static int dp_debug_init(struct dp_debug *dp_debug, struct drm_minor *minor)
+ {
+-	int rc = 0;
+ 	struct dp_debug_private *debug = container_of(dp_debug,
+ 			struct dp_debug_private, dp_debug);
  
- （推论：如果你管理的人不比你更了解细节，你也会被搞砸，尽管原因完全不同。
- 也就是说，你的工作是错的，他们应该管理你的才智）
+@@ -386,7 +385,7 @@ static int dp_debug_init(struct dp_debug *dp_debug, struct drm_minor *minor)
  
--所以游戏的名字是 **避免** 做出决定，至少是那些大而痛苦的决定。做一些小的
-+所以最重要的是 **避免** 做出决定，至少是那些大而痛苦的决定。做一些小的
- 和非结果性的决定是很好的，并且使您看起来好像知道自己在做什么，所以内核管理者
- 需要做的是将那些大的和痛苦的决定变成那些没有人真正关心的小事情。
+ 	debug->root = minor->debugfs_root;
  
+-	return rc;
++	return 0;
+ }
+ 
+ struct dp_debug *dp_debug_get(struct device *dev, struct dp_panel *panel,
 -- 
-2.27.0
+2.25.1
 
