@@ -2,77 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E8C644C676
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 18:50:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 21CEF44C682
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 18:52:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232553AbhKJRxP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Nov 2021 12:53:15 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59932 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230380AbhKJRxO (ORCPT
+        id S232564AbhKJRyx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Nov 2021 12:54:53 -0500
+Received: from smtp-out2.suse.de ([195.135.220.29]:37358 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232091AbhKJRyw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Nov 2021 12:53:14 -0500
-Received: from mail-io1-xd36.google.com (mail-io1-xd36.google.com [IPv6:2607:f8b0:4864:20::d36])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 589CBC061766
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Nov 2021 09:50:26 -0800 (PST)
-Received: by mail-io1-xd36.google.com with SMTP id w22so3806652ioa.1
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Nov 2021 09:50:26 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=0S9sZv9rv1MLrkq7aAvaZJLfChB0QbHa6Bap7OCVON4=;
-        b=Mpj3q9y8P8tXTskEXoJ+jEkJNmYg08YiZzsMCwx006007UkWib0VzvWz+XRgkwol5g
-         Cq2E/j2ydmsTRrr6KctSBpI480yI3FutqwVcqwb2VlKHUwJWTSsJTCzxJGnIs6kVN/3O
-         DGBhPSDpOxGfegmMhpOX5LX4qoDI1mjiVhMW60IwBCuqrEqdpCvWOXNc2veK2u35aN08
-         9ckXcJZs87m5QlP77fFFqpf/4jYJaI9QF6U+YIzxX/8Yk9uT+ZKlfuBEgd4y9TQUghkw
-         qaMwa1ayBoLvEKFMLOFsRyir02bszFEdJx/Mmy+VsMnvsU7c1SxsVicijg0LX8EzhIH2
-         MSxA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=0S9sZv9rv1MLrkq7aAvaZJLfChB0QbHa6Bap7OCVON4=;
-        b=fVxZ5r7FXJsqSP+qUK5PznZv0ctZqChG/6zWrM2ittAXwNiJRq/RHW3E1/JaVIuK5k
-         SxYdbXeE1y1w/NjUZYJCxjzLKWqGTasJxdXHgSVOutiLZt2S7cqwksCZ+w9vlplec9IG
-         W6B4sO8ctFLpcCR4dS3tf0OoRsFozps4PnN0OvtBSJhYgqxRn9NK6wqDOT4Ptd1LA1/y
-         xU9o2XaRkhDc0LeiMXIZQA1Vq2m/eYQVEtfKxw6TcwU5PcW7eHDhLqP+O3ewhuzBYGK9
-         NJ27Hqy/gpsQf9zabcCkA5P82/SCpZJ7sQbbsJ76AjqR9C59IDpXO1awAE1x5oiOPCAf
-         EnPw==
-X-Gm-Message-State: AOAM533zwDuLncnxTkqJTkSuRf7Dq6nJvJ4ydysCFj4MSC1LAkPx8ElM
-        58ooY3jOe4V7WGrVGpbRgbG1dwSEm/cYkg02V87Nhg==
-X-Google-Smtp-Source: ABdhPJx8SVMZqY/M+G/wfHByt0Gdg7mcZQx8twUBaM2wGi8juiZIcAzzBUsezhqV/JnXuzMhcKYRZ7I6PzZJKf5g7kI=
-X-Received: by 2002:a02:c559:: with SMTP id g25mr489184jaj.123.1636566625557;
- Wed, 10 Nov 2021 09:50:25 -0800 (PST)
+        Wed, 10 Nov 2021 12:54:52 -0500
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 53FC31FDC1;
+        Wed, 10 Nov 2021 17:52:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1636566723; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=KvAGaaEk28BI3M4YLWXsJxHLc6pSST1USyqVE8D7V0U=;
+        b=dy+BELMi2a26LP+9/WoG7sygm2jQaK0aPhymhLAFozDgSa+Om7lHTdxBL3zlvpx5ad173n
+        sizdEvd6MbtzonKUrDJib73uc0TRbxg0+HaMJZh1oiVVnGxDBJh8zp1iolsBx61zKTwd6p
+        zZpBowSmOeBbvUhfLAawN85O+V7o5zQ=
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 16D6313C7D;
+        Wed, 10 Nov 2021 17:52:03 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id iYcEBcMGjGGVLwAAMHmgww
+        (envelope-from <mkoutny@suse.com>); Wed, 10 Nov 2021 17:52:03 +0000
+Date:   Wed, 10 Nov 2021 18:52:01 +0100
+From:   Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>
+To:     Jan Kiszka <jan.kiszka@siemens.com>
+Cc:     Marcelo Tosatti <mtosatti@redhat.com>,
+        "Moessbauer, Felix" <felix.moessbauer@siemens.com>,
+        "longman@redhat.com" <longman@redhat.com>,
+        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
+        "cgroups@vger.kernel.org" <cgroups@vger.kernel.org>,
+        "corbet@lwn.net" <corbet@lwn.net>,
+        "frederic@kernel.org" <frederic@kernel.org>,
+        "guro@fb.com" <guro@fb.com>,
+        "hannes@cmpxchg.org" <hannes@cmpxchg.org>,
+        "juri.lelli@redhat.com" <juri.lelli@redhat.com>,
+        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-kselftest@vger.kernel.org" <linux-kselftest@vger.kernel.org>,
+        "lizefan.x@bytedance.com" <lizefan.x@bytedance.com>,
+        "pauld@redhat.com" <pauld@redhat.com>,
+        "peterz@infradead.org" <peterz@infradead.org>,
+        "shuah@kernel.org" <shuah@kernel.org>,
+        "tj@kernel.org" <tj@kernel.org>,
+        "henning.schild@siemens.com" <henning.schild@siemens.com>
+Subject: Re: [PATCH v8 0/6] cgroup/cpuset: Add new cpuset partition type &
+ empty effecitve cpus
+Message-ID: <20211110175201.GA51149@blackbody.suse.cz>
+References: <20211018143619.205065-1-longman@redhat.com>
+ <20211110111357.17617-1-felix.moessbauer@siemens.com>
+ <20211110135653.GD20566@blackbody.suse.cz>
+ <AM9PR10MB4869C14EAE01B87C0037BF6A89939@AM9PR10MB4869.EURPRD10.PROD.OUTLOOK.COM>
+ <20211110161020.GA20101@fuller.cnet>
+ <c1e94031-a179-dc72-e5ee-3f8197bea492@siemens.com>
 MIME-Version: 1.0
-References: <20211107235754.1395488-1-almasrymina@google.com> <YYtuqsnOSxA44AUX@t490s>
-In-Reply-To: <YYtuqsnOSxA44AUX@t490s>
-From:   Mina Almasry <almasrymina@google.com>
-Date:   Wed, 10 Nov 2021 09:50:13 -0800
-Message-ID: <CAHS8izP9zJYfqmDouA1otnD-CsQtWJSta0KhOQq81qLSTOHB4Q@mail.gmail.com>
-Subject: Re: [PATCH v4] mm: Add PM_HUGE_THP_MAPPING to /proc/pid/pagemap
-To:     Peter Xu <peterx@redhat.com>
-Cc:     David Hildenbrand <david@redhat.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        "Paul E . McKenney" <paulmckrcu@fb.com>,
-        Yu Zhao <yuzhao@google.com>, Jonathan Corbet <corbet@lwn.net>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Ivan Teterevkov <ivan.teterevkov@nutanix.com>,
-        Florian Schmidt <florian.schmidt@nutanix.com>,
-        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-mm@kvack.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <c1e94031-a179-dc72-e5ee-3f8197bea492@siemens.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 9, 2021 at 11:03 PM Peter Xu <peterx@redhat.com> wrote:
->
-> The ending "_MAPPING" seems redundant to me, how about just call it "PM_THP" or
-> "PM_HUGE" (as THP also means HUGE already)?
->
+On Wed, Nov 10, 2021 at 05:15:41PM +0100, Jan Kiszka <jan.kiszka@siemens.com> wrote:
+> Is there pthread_attr_setcgroup_np()?
 
-So I want to make it clear that the flag is set only when the page is
-PMD mappend and is a THP (not hugetlbfs or some other PMD device
-mapping). PM_THP would imply the flag is set only if the underlying
-page is THP without regard to whether it's actually PMD mapped or not.
+If I'm not mistaken the 'p' in pthreads stands for POSIX and cgroups are
+Linux specific so you won't find that (unless you implement that
+yourself). ¯\_(ツ)_/¯
+
+Michal
