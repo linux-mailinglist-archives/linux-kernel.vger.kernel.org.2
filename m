@@ -2,35 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 878F444C828
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 19:57:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 00C0844C829
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Nov 2021 19:57:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233657AbhKJS7J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Nov 2021 13:59:09 -0500
-Received: from mail.kernel.org ([198.145.29.99]:54652 "EHLO mail.kernel.org"
+        id S233846AbhKJS7O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Nov 2021 13:59:14 -0500
+Received: from mail.kernel.org ([198.145.29.99]:54834 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233245AbhKJS5C (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Nov 2021 13:57:02 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 103CC61A08;
-        Wed, 10 Nov 2021 18:50:03 +0000 (UTC)
+        id S233768AbhKJS5Z (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Nov 2021 13:57:25 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A5753619F8;
+        Wed, 10 Nov 2021 18:50:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1636570204;
-        bh=An4mUW80MSsxbz+rCJVpLo3RQdg5IAnU60AaarSe0aw=;
+        s=korg; t=1636570207;
+        bh=CF0B4qdBRt2TJVQY65TiIf6oSFnUxWCikjLAXxCIRsY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=j51sLbwU0rbww3RGz1nLna3jA/lx/fIj4UbNqf7WAUUj+m6GDsLtgLr24pfQPoo6b
-         5ZHGary4tyiKMXF48L2FHP6ZBca1esB3H9I4ggzXCA0U9HpZT2rjgTDZNZ/TURcSjV
-         qrGWGI3kupWmUPN1+m+vTAPCpGTqOkQLk7dXGKBo=
+        b=12cCJJkeZIfmSznlCAgcJiPDBH8LsHCkM/Pd6y+2M8PWFY4+z4Uer9fKPUiyLmEip
+         Q5NaZ2jFL5K8YjSSpYsoEW7cW7AhGxKEkHUQ+ReJyfD5GDoLbkCnI2iP+rurxAReFq
+         1ixXc30k2+0xJ1UonOsGxEkRTz9SdUlRHnMW7TDI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Todd Kjos <tkjos@google.com>,
-        Stephen Smalley <stephen.smalley.work@gmail.com>,
-        kernel test robot <lkp@intel.com>,
-        Casey Schaufler <casey@schaufler-ca.com>,
-        Paul Moore <paul@paul-moore.com>
-Subject: [PATCH 5.15 10/26] binder: use cred instead of task for getsecid
-Date:   Wed, 10 Nov 2021 19:44:09 +0100
-Message-Id: <20211110182004.032172995@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Todd Kjos <tkjos@google.com>
+Subject: [PATCH 5.15 11/26] binder: dont detect sender/target during buffer cleanup
+Date:   Wed, 10 Nov 2021 19:44:10 +0100
+Message-Id: <20211110182004.062752810@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
 In-Reply-To: <20211110182003.700594531@linuxfoundation.org>
 References: <20211110182003.700594531@linuxfoundation.org>
@@ -44,59 +42,95 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Todd Kjos <tkjos@google.com>
 
-commit 4d5b5539742d2554591751b4248b0204d20dcc9d upstream.
+commit 32e9f56a96d8d0f23cb2aeb2a3cd18d40393e787 upstream.
 
-Use the 'struct cred' saved at binder_open() to lookup
-the security ID via security_cred_getsecid(). This
-ensures that the security context that opened binder
-is the one used to generate the secctx.
+When freeing txn buffers, binder_transaction_buffer_release()
+attempts to detect whether the current context is the target by
+comparing current->group_leader to proc->tsk. This is an unreliable
+test. Instead explicitly pass an 'is_failure' boolean.
 
-Cc: stable@vger.kernel.org # 5.4+
-Fixes: ec74136ded79 ("binder: create node flag to request sender's security context")
+Detecting the sender was being used as a way to tell if the
+transaction failed to be sent.  When cleaning up after
+failing to send a transaction, there is no need to close
+the fds associated with a BINDER_TYPE_FDA object. Now
+'is_failure' can be used to accurately detect this case.
+
+Fixes: 44d8047f1d87 ("binder: use standard functions to allocate fds")
+Cc: stable <stable@vger.kernel.org>
+Acked-by: Christian Brauner <christian.brauner@ubuntu.com>
 Signed-off-by: Todd Kjos <tkjos@google.com>
-Suggested-by: Stephen Smalley <stephen.smalley.work@gmail.com>
-Reported-by: kernel test robot <lkp@intel.com>
-Acked-by: Casey Schaufler <casey@schaufler-ca.com>
-Signed-off-by: Paul Moore <paul@paul-moore.com>
+Link: https://lore.kernel.org/r/20211015233811.3532235-1-tkjos@google.com
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/android/binder.c |   11 +----------
- include/linux/security.h |    5 +++++
- 2 files changed, 6 insertions(+), 10 deletions(-)
+ drivers/android/binder.c |   14 +++++++-------
+ 1 file changed, 7 insertions(+), 7 deletions(-)
 
 --- a/drivers/android/binder.c
 +++ b/drivers/android/binder.c
-@@ -2722,16 +2722,7 @@ static void binder_transaction(struct bi
- 		u32 secid;
- 		size_t added_size;
+@@ -1870,7 +1870,7 @@ static void binder_transaction_buffer_re
+ 		binder_dec_node(buffer->target_node, 1, 0);
  
--		/*
--		 * Arguably this should be the task's subjective LSM secid but
--		 * we can't reliably access the subjective creds of a task
--		 * other than our own so we must use the objective creds, which
--		 * are safe to access.  The downside is that if a task is
--		 * temporarily overriding it's creds it will not be reflected
--		 * here; however, it isn't clear that binder would handle that
--		 * case well anyway.
--		 */
--		security_task_getsecid_obj(proc->tsk, &secid);
-+		security_cred_getsecid(proc->cred, &secid);
- 		ret = security_secid_to_secctx(secid, &secctx, &secctx_sz);
- 		if (ret) {
- 			return_error = BR_FAILED_REPLY;
---- a/include/linux/security.h
-+++ b/include/linux/security.h
-@@ -1041,6 +1041,11 @@ static inline void security_transfer_cre
+ 	off_start_offset = ALIGN(buffer->data_size, sizeof(void *));
+-	off_end_offset = is_failure ? failed_at :
++	off_end_offset = is_failure && failed_at ? failed_at :
+ 				off_start_offset + buffer->offsets_size;
+ 	for (buffer_offset = off_start_offset; buffer_offset < off_end_offset;
+ 	     buffer_offset += sizeof(binder_size_t)) {
+@@ -1956,9 +1956,8 @@ static void binder_transaction_buffer_re
+ 			binder_size_t fd_buf_size;
+ 			binder_size_t num_valid;
+ 
+-			if (proc->tsk != current->group_leader) {
++			if (is_failure) {
+ 				/*
+-				 * Nothing to do if running in sender context
+ 				 * The fd fixups have not been applied so no
+ 				 * fds need to be closed.
+ 				 */
+@@ -3176,6 +3175,7 @@ err_invalid_target_handle:
+  * binder_free_buf() - free the specified buffer
+  * @proc:	binder proc that owns buffer
+  * @buffer:	buffer to be freed
++ * @is_failure:	failed to send transaction
+  *
+  * If buffer for an async transaction, enqueue the next async
+  * transaction from the node.
+@@ -3185,7 +3185,7 @@ err_invalid_target_handle:
+ static void
+ binder_free_buf(struct binder_proc *proc,
+ 		struct binder_thread *thread,
+-		struct binder_buffer *buffer)
++		struct binder_buffer *buffer, bool is_failure)
  {
+ 	binder_inner_proc_lock(proc);
+ 	if (buffer->transaction) {
+@@ -3213,7 +3213,7 @@ binder_free_buf(struct binder_proc *proc
+ 		binder_node_inner_unlock(buf_node);
+ 	}
+ 	trace_binder_transaction_buffer_release(buffer);
+-	binder_transaction_buffer_release(proc, thread, buffer, 0, false);
++	binder_transaction_buffer_release(proc, thread, buffer, 0, is_failure);
+ 	binder_alloc_free_buf(&proc->alloc, buffer);
  }
  
-+static inline void security_cred_getsecid(const struct cred *c, u32 *secid)
-+{
-+	*secid = 0;
-+}
-+
- static inline int security_kernel_act_as(struct cred *cred, u32 secid)
- {
- 	return 0;
+@@ -3415,7 +3415,7 @@ static int binder_thread_write(struct bi
+ 				     proc->pid, thread->pid, (u64)data_ptr,
+ 				     buffer->debug_id,
+ 				     buffer->transaction ? "active" : "finished");
+-			binder_free_buf(proc, thread, buffer);
++			binder_free_buf(proc, thread, buffer, false);
+ 			break;
+ 		}
+ 
+@@ -4108,7 +4108,7 @@ retry:
+ 			buffer->transaction = NULL;
+ 			binder_cleanup_transaction(t, "fd fixups failed",
+ 						   BR_FAILED_REPLY);
+-			binder_free_buf(proc, thread, buffer);
++			binder_free_buf(proc, thread, buffer, true);
+ 			binder_debug(BINDER_DEBUG_FAILED_TRANSACTION,
+ 				     "%d:%d %stransaction %d fd fixups failed %d/%d, line %d\n",
+ 				     proc->pid, thread->pid,
 
 
