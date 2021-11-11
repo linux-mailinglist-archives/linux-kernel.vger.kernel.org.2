@@ -2,84 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E33F44DA4F
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Nov 2021 17:25:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3FC2A44DA50
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Nov 2021 17:25:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234090AbhKKQ15 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Nov 2021 11:27:57 -0500
-Received: from mail.kernel.org ([198.145.29.99]:44122 "EHLO mail.kernel.org"
+        id S234168AbhKKQ17 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Nov 2021 11:27:59 -0500
+Received: from mail.kernel.org ([198.145.29.99]:44146 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232033AbhKKQ14 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Nov 2021 11:27:56 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A3C246124C;
-        Thu, 11 Nov 2021 16:25:03 +0000 (UTC)
+        id S234057AbhKKQ15 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 11 Nov 2021 11:27:57 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 34D576124D;
+        Thu, 11 Nov 2021 16:25:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1636647906;
-        bh=dw0x+LBQ552ApvZujaQIillgV6iC1yb5QQ5PK/digpQ=;
-        h=Date:From:To:cc:Subject:In-Reply-To:References:From;
-        b=AQu3TUpVccJo4t7u3W3hOW69QX8iDiJz8OrLBhAO1QJQhPdKguQishmbKqVi6KrON
-         y4Y1KdAToySCDwJx9OJe8PlwiVd8iH+62xubOBPXSX4/je/rqHZlzpwqUDKGGJOlBe
-         JHrylfyQcRyOxdnTwLdaz4cDrFyiXV5nKWjAf4NHj3/Zdrk464+HTyk5p+abcqtEpH
-         0QAFVoqJ6ikODrnzHA9r0CSTLyuEMKHkXiLqX9H8Dt0CAzgbM9DN6/KfakeV/fxgb1
-         co0YrhJzDbDXLs/8QRANEXorz+wzMF9NoJJZ4drQ4H+AWxwdjD6deloua9TyTpidos
-         Z9Jv8NfiG3S6g==
-Date:   Thu, 11 Nov 2021 17:25:01 +0100 (CET)
-From:   Jiri Kosina <jikos@kernel.org>
-To:     Arnd Bergmann <arnd@kernel.org>
-cc:     Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
-        Benson Leung <bleung@chromium.org>,
-        Sumesh K Naduvalath <sumesh.k.naduvalath@intel.com>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Mark Gross <markgross@kernel.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        =?ISO-8859-15?Q?Thomas_Wei=DFschuh?= <linux@weissschuh.net>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Guenter Roeck <groeck@chromium.org>,
-        Lee Jones <lee.jones@linaro.org>,
-        =?ISO-8859-15?Q?Uwe_Kleine-K=F6nig?= <uwe@kleine-koenig.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-input@vger.kernel.org, linux-kernel@vger.kernel.org,
-        platform-driver-x86@vger.kernel.org, llvm@lists.linux.dev
-Subject: Re: [PATCH] HID: intel-ish-hid: fix module device-id handling
-In-Reply-To: <20211111085842.2846422-1-arnd@kernel.org>
-Message-ID: <nycvar.YFH.7.76.2111111723190.12554@cbobk.fhfr.pm>
-References: <20211111085842.2846422-1-arnd@kernel.org>
-User-Agent: Alpine 2.21 (LSU 202 2017-01-01)
+        s=k20201202; t=1636647907;
+        bh=Kj16yNfhHFJEjceu4fTIk5nXb1yz+0FTGUj0PCGsGpU=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=QgDELcQiyFQGct7OCeQWJwo0JTdz2AwmZJgokLph7qrR1xUzQiy+SIPr3J9FArQJC
+         1Iy6RyIClYYQW0pNt6w248QP7WN48xT6oJ82723z/FI2iqV1zYExZuOSjylgNDZMp8
+         ruC8/yk2PotT7ESyaF3m/hMKAtiAe3gvyVf4K5Vl1FP9Tzh4+pQzvQx1jp+a4nOaCZ
+         uxcT0w1KbhksH8d7KB7oKm/FnEbApF53D+6CjrcabMBLmfoLB2blXHqyKCVnlayTBi
+         v5x2OzVuEPbrHWg+UhEhNFTWcfnT3qCXurrTzDS+Voj0RTXO00GqDBLoQYkhE0+uZw
+         MJ/BsVAqhwWhQ==
+Date:   Thu, 11 Nov 2021 16:25:02 +0000
+From:   Mark Brown <broonie@kernel.org>
+To:     Serge Semin <fancer.lancer@gmail.com>
+Cc:     Serge Semin <Sergey.Semin@baikalelectronics.ru>,
+        nandhini.srikandan@intel.com, robh+dt@kernel.org,
+        linux-spi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org, mgross@linux.intel.com,
+        kris.pan@intel.com, kenchappa.demakkanavar@intel.com,
+        furong.zhou@intel.com, mallikarjunappa.sangannavar@intel.com,
+        mahesh.r.vaidya@intel.com, rashmi.a@intel.com
+Subject: Re: [PATCH v3 3/5] spi: dw: Add support for master mode selection
+ for DWC SSI controller
+Message-ID: <YY1D3tM4fg8h6mmj@sirena.org.uk>
+References: <20211111065201.10249-1-nandhini.srikandan@intel.com>
+ <20211111065201.10249-4-nandhini.srikandan@intel.com>
+ <YY0lpZkIsJih+g2o@sirena.org.uk>
+ <20211111145246.dj4gogl4rlbem6qc@mobilestation>
+ <YY0zUjjVobtg85o6@sirena.org.uk>
+ <20211111160627.fcgrvj2k7x3lwtkp@mobilestation>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="AV3LzPoSWuGFOXTP"
+Content-Disposition: inline
+In-Reply-To: <20211111160627.fcgrvj2k7x3lwtkp@mobilestation>
+X-Cookie: Teutonic:
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 11 Nov 2021, Arnd Bergmann wrote:
 
-> From: Arnd Bergmann <arnd@arndb.de>
-> 
-> A late addititon to the intel-ish-hid framework caused a build failure
-> with clang, and introduced an ABI to the module loader that stops working
-> if any driver ever needs to bind to more than one UUID:
-> 
-> drivers/hid/intel-ish-hid/ishtp-fw-loader.c:1067:4: error: initializer element is not a compile-time constant
-> 
-> Change the ishtp_device_id to have correct documentation and a driver_data
-> field like all the other ones, and change the drivers to use the ID table
-> as the primary identification in a way that works with all compilers
-> and avoids duplciating the identifiers.
-> 
-> Fixes: f155dfeaa4ee ("platform/x86: isthp_eclite: only load for matching devices")
-> Fixes: facfe0a4fdce ("platform/chrome: chros_ec_ishtp: only load for matching devices")
-> Fixes: 0d0cccc0fd83 ("HID: intel-ish-hid: hid-client: only load for matching devices")
-> Fixes: 44e2a58cb880 ("HID: intel-ish-hid: fw-loader: only load for matching devices")
-> Fixes: cb1a2c6847f7 ("HID: intel-ish-hid: use constants for modaliases")
-> Fixes: fa443bc3c1e4 ("HID: intel-ish-hid: add support for MODULE_DEVICE_TABLE()")
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+--AV3LzPoSWuGFOXTP
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-I have fixed the ecl_ishtp_cl_driver.id initialization and applied. Thanks 
-a lot for spotting and fixing this, Arnd.
+On Thu, Nov 11, 2021 at 07:06:27PM +0300, Serge Semin wrote:
+> On Thu, Nov 11, 2021 at 03:14:26PM +0000, Mark Brown wrote:
 
--- 
-Jiri Kosina
-SUSE Labs
+> > Given that people seem to frequently customise these IPs when
+> > integrating them I wouldn't trust people not to have added some other
+> > control into that reserved bit doing some magic stuff that's useful in
+> > their system.
 
+> In that case the corresponding platform code would have needed to have
+> that peculiarity properly handled and not to use a generic compatibles
+> like "snps,dwc-ssi-1.01a" or "snps,dw-apb-ssi", which are supposed to
+> be utilized for the default IP-core configs only. For the sake of the
+> code simplification I'd stick to setting that flag for each generic
+> DWC SSI-compatible device. That will be also helpful for DWC SSIs
+> which for some reason have the slave-mode enabled by default.
+
+That's easier right up until the point where it explodes - I'd prefer to
+be more conservative here.  Fixing things up after the fact gets painful
+when people end up only finding the bug in released kernels, especially
+if it's distro end users or similar rather than developers.
+
+> Alternatively the driver could read the IP-core version from the
+> DW_SPI_VERSION register, parse it (since it's in ASCII) and then use
+> it in the conditional Master mode activation here. But that could have
+> been a better solution in case if the older IP-cores would have used
+> that bit for something special, while Nandhini claims it was reserved.
+> So in this case I would stick with a simpler approach until we get to
+> face any problem in this matter, especially seeing we already pocking
+> the reserved bits of the CTRL0 register in this driver in the
+> spi_hw_init() method when it comes to the DFS field width detection.
+
+If the device has a version register checking that seems ideal - the
+infrastructure will most likely be useful in future anyway.  A bit of a
+shame that it's an ASCII string though.
+
+--AV3LzPoSWuGFOXTP
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmGNQ90ACgkQJNaLcl1U
+h9DmvQf5AY9PFw5IVy4WN+B9MYaHh4+rlQJibwn43uFWSZkDXlGWhPWyp2OB5SmH
+N00SM+7kz5/+XubpqnvpAPrEduhm6a4ZdoeOXn9rC31KBBthI07PbTTD8KUkE444
+WpBFlimRio+bQSDe2yqf7J4d7UJbJqeVc4cfE3sEqP6xsyAP7LgMR2Q4WeM1xm8o
+ht3tDasCB8vfRoKSFmPSn9vYMoq5WdOHgUYSihuQuHfAPnCUojBw/8HkhWHInK7h
+q7Q1fHcGAiLvgzYkSUJzYIzNzT+Hpsif2StoxU25hfLalo9mPzF5YsuHI7qLiVDx
+DwgFdiZ4ZQaBk6tQNaknZHEyOFLOtQ==
+=EjKm
+-----END PGP SIGNATURE-----
+
+--AV3LzPoSWuGFOXTP--
