@@ -2,139 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 359BB44D6BD
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Nov 2021 13:43:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4A92B44D6C1
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Nov 2021 13:43:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232968AbhKKMp6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Nov 2021 07:45:58 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60062 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232126AbhKKMp4 (ORCPT
+        id S233317AbhKKMqc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Nov 2021 07:46:32 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:58453 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232126AbhKKMq2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Nov 2021 07:45:56 -0500
-Received: from mail-pl1-x62d.google.com (mail-pl1-x62d.google.com [IPv6:2607:f8b0:4864:20::62d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9452AC061767
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Nov 2021 04:43:07 -0800 (PST)
-Received: by mail-pl1-x62d.google.com with SMTP id b11so5617954pld.12
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Nov 2021 04:43:07 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=USmt7anIX2PGWTer7zUxYY8feegDwUP1c/up9xPpWxQ=;
-        b=EV7cgYZzVbRJqEkWsNadZUif+UZxU2GpYogF9EHqzIXFbNQMV1fbnXo0aNC2CEk/Zc
-         JQa8SHrgnN9l+GejMu0tLcIRL+P5eTtfip1eAbX+VxE5S1sLOIo5wCKSO7AzboFR8LY1
-         e2HicZy+kn/B9YxEjDbemf6+WZKncJHwLWIJO6+gv3Ch7GmDlDDOKSiE8JBIWneeMUPk
-         CpZ0SeRNn44CddAC9GPjPMV9pvM6xWM01UuzboVvUKxEWWwAo51zX4icFdeqnwf4BiJK
-         cSoCrJSXD8M1KAZmljromnbmXaekELJTrwrU70ULoXLrsulpJRQcOrJNk+i9pgbfagfl
-         FTBg==
+        Thu, 11 Nov 2021 07:46:28 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1636634619;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=uKc3H6CdVhgitN4KLFQLoNDBlrzn28pYKJNfimv2lu8=;
+        b=THtVbcNgIklQXs+pg42nnslrr2HM4e44fvDVys86dreuGltB1qLKuQp8kpm6CEZeHcnRmX
+        rCPzEDn+tMPfEIyHFEoz/8Qyx6XaLeh12T9JHKTzkZ7S9Bv3tZ/VtsI0snCy+YlYwnnWbW
+        Xbc5JSLZaUR510MuwxeRYEQZ62F0NRg=
+Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com
+ [209.85.208.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-519-1ttEmdbIOc6h_sXR-dLvQw-1; Thu, 11 Nov 2021 07:43:38 -0500
+X-MC-Unique: 1ttEmdbIOc6h_sXR-dLvQw-1
+Received: by mail-ed1-f71.google.com with SMTP id m8-20020a056402510800b003e29de5badbso5286357edd.18
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Nov 2021 04:43:38 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=USmt7anIX2PGWTer7zUxYY8feegDwUP1c/up9xPpWxQ=;
-        b=L3yzPffqDLUUlSZBD6bmx16PORbUrE6NE0JqSZ8TMFv1t4ZzpcxNYaSG7pP+4qWGiT
-         MWlc3ZymTHSDSgfACW0xzo3K/j/sTYHvh/kg4iwOH0biEityvWCY7tYuvJdH7FcA6QH2
-         tZgeebjU5ygiMsiV72B1GdgyomZIpsCISzU0hsW3ZOqGSaNcMzw/e+nWv/u/bjFgWal0
-         9uygHzprgkW4EscXLtj5NlvrKCUcCMcxthlow2nSM85x1NEyUOvCyFk661r8+sF2vlF5
-         PVU3oPHcRITdRlBMEoZR/zS5tywQ7WwkAr7V2Kdbxl8KnMRRoRKZvxOzxcXjOadmQDLB
-         +mEA==
-X-Gm-Message-State: AOAM533vdD1lfaXusJEBj5OmVUOLFP4OFc0JaGLdWYdLMV/qZUA0EZ6I
-        R/zK/DstqljhmworT//VfGgx0g==
-X-Google-Smtp-Source: ABdhPJy7hrsMSt+vPE9iMVSb0pdsSDnMMkt91nNIT+76HeRNO/Dd8x46k3CwmJaSmj+JwZhALbwwcA==
-X-Received: by 2002:a17:90b:380e:: with SMTP id mq14mr26585493pjb.74.1636634586974;
-        Thu, 11 Nov 2021 04:43:06 -0800 (PST)
-Received: from leoy-ThinkPad-X240s ([148.163.172.147])
-        by smtp.gmail.com with ESMTPSA id j7sm8888551pjf.41.2021.11.11.04.43.01
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 11 Nov 2021 04:43:06 -0800 (PST)
-Date:   Thu, 11 Nov 2021 20:42:57 +0800
-From:   Leo Yan <leo.yan@linaro.org>
-To:     German Gomez <german.gomez@arm.com>
-Cc:     Namhyung Kim <namhyung@kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        linux-perf-users <linux-perf-users@vger.kernel.org>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        John Garry <john.garry@huawei.com>,
-        Will Deacon <will@kernel.org>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH v2 4/4] perf arm-spe: Support hardware-based PID tracing
-Message-ID: <20211111124257.GB106654@leoy-ThinkPad-X240s>
-References: <20211109115020.31623-1-german.gomez@arm.com>
- <20211109115020.31623-5-german.gomez@arm.com>
- <CAM9d7cg7Lp49xOc3BOhM4O9fqs7i+v6cNd=eaKWjDbREiE3Pvg@mail.gmail.com>
- <20211111074148.GC102075@leoy-ThinkPad-X240s>
- <CAM9d7cjW_=hDkHVWchNFDyqZXbbBwMb224hbZTMsCe34MLL-4Q@mail.gmail.com>
- <20211111083002.GA106401@leoy-ThinkPad-X240s>
- <5c0e255b-e140-d157-7dfd-b27a43e128c9@arm.com>
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:in-reply-to
+         :content-transfer-encoding;
+        bh=uKc3H6CdVhgitN4KLFQLoNDBlrzn28pYKJNfimv2lu8=;
+        b=tgXKzbd3qkwBj+d7nJN/2Dakf27KMgMzLofFCm++V9SnzwsQm3E0kTX+2UjZvS4WL3
+         xsluOTUmBh5CILjOGNKukuJPJLlF/2NZtBPeNzlhCrq3FORm5dwVOhyn918eYAOkuzOQ
+         uzHTgN7mxefiK7Qbn/IrYAsg6gTfaQY7+IfwQlMl6EE/5rBqHhnd7GlY0xBVUeDUY1HA
+         Vz/hiX/qRzNKuMinPPoWLcEB1+lE8+aB2k+GuPW2TEVh2m0hVaPFzu/WYbQpv+zSfikU
+         afplcFO+e3UYzNXrsvvj6mCvlW2pfWoRilJIL7zpKo8jahK1JZv3ltnw+jXB+Wi6SJnA
+         X4Yg==
+X-Gm-Message-State: AOAM5304Hfe9uJQEgJGoY/HCRAvuV6Bd92SzaoCpgYkpEy+uo7FBICql
+        a/5mwJ3tuO9lBNkZGsRttE3UJGDcglu5+N1Lcr3KMTd4ResWDt57n3FmoKLOEIzk/Wuc5s5A10Q
+        SXJECIHp0ypLN2rqHm3bByDJW
+X-Received: by 2002:a05:6402:182:: with SMTP id r2mr9526820edv.313.1636634617079;
+        Thu, 11 Nov 2021 04:43:37 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJyTF5sKqZoFHMlKzl2tzmMRD3+TAcCnipEnTedxAFD66OImX4D5Ep2weTMCJWFrYKvY0Ps/kw==
+X-Received: by 2002:a05:6402:182:: with SMTP id r2mr9526695edv.313.1636634616235;
+        Thu, 11 Nov 2021 04:43:36 -0800 (PST)
+Received: from ?IPV6:2001:b07:6468:f312:63a7:c72e:ea0e:6045? ([2001:b07:6468:f312:63a7:c72e:ea0e:6045])
+        by smtp.gmail.com with ESMTPSA id ga1sm1296408ejc.40.2021.11.11.04.43.35
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 11 Nov 2021 04:43:35 -0800 (PST)
+Message-ID: <83984ea7-9658-4f7d-36bf-b47123329ef4@redhat.com>
+Date:   Thu, 11 Nov 2021 13:43:34 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <5c0e255b-e140-d157-7dfd-b27a43e128c9@arm.com>
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.2.0
+Subject: Re: [PATCH v6 0/5] Add Guest API & Guest Kernel support for SEV live
+ migration.
+Content-Language: en-US
+To:     Ashish Kalra <Ashish.Kalra@amd.com>
+Cc:     seanjc@google.com, tglx@linutronix.de, mingo@redhat.com,
+        hpa@zytor.com, joro@8bytes.org, bp@alien8.de,
+        Thomas.Lendacky@amd.com, x86@kernel.org, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, srutherford@google.com,
+        brijesh.singh@amd.com, dovmurik@linux.ibm.com, tobin@linux.ibm.com,
+        jejb@linux.ibm.com, dgilbert@redhat.com
+References: <cover.1629726117.git.ashish.kalra@amd.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+In-Reply-To: <cover.1629726117.git.ashish.kalra@amd.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 11, 2021 at 12:23:08PM +0000, German Gomez wrote:
-> On 11/11/2021 08:30, Leo Yan wrote:
-> > On Wed, Nov 10, 2021 at 11:59:05PM -0800, Namhyung Kim wrote:
-
-[...]
-
-> >>>>> +static int arm_spe_set_tid(struct arm_spe_queue *speq, pid_t tid)
-> >>>>> +{
-> >>>>> +       struct arm_spe *spe = speq->spe;
-> >>>>> +       int err = machine__set_current_tid(spe->machine, speq->cpu, tid, tid);
-> >>>>
-> >>>> I think we should pass -1 as pid as we don't know the real pid.
-> >>>>
-> >>> AFAICT, I observe one case for machine__set_current_tid() returning error
-> >>> is 'speq->cpu' is -1 (this is the case for per-thread tracing).  In
-> >>> this case, if pass '-1' for pid/tid, it still will return failure.
-> >>>
-> >>> So here should return the error as it is.  Am I missing anything?
-> >>
-> >> I'm not saying about the error.  It's about thread status.
-> >> In the machine__set_current_tid(), it calls
-> >> machine__findnew_thread() with given pid and tid.
-> >>
-> >> I suspect it can set pid to a wrong value if the thread has
-> >> no pid value at the moment.
-> >
-> > Here we should avoid to write pid '-1' with
-> > machine__set_current_tid().
+On 8/24/21 13:03, Ashish Kalra wrote:
+> adds guest api and guest kernel support for SEV live migration.
 > 
-> If the kernel is writing the tids to the contextidr, isn't it wrong to
-> assume tid == pid when decoding the context packets here? I haven't
-> observed any impact in the built-in commands though, so there must be
-> something I'm not seeing.
+> The patch series introduces a new hypercall. The guest OS can use this
+> hypercall to notify the page encryption status. If the page is encrypted
+> with guest specific-key then we use SEV command during the migration.
+> If page is not encrypted then fallback to default. This new hypercall
+> is invoked using paravirt_ops.
+> 
+> This section descibes how the SEV live migration feature is negotiated
+> between the host and guest, the host indicates this feature support via
+> KVM_FEATURE_CPUID. The guest firmware (OVMF) detects this feature and
+> sets a UEFI enviroment variable indicating OVMF support for live
+> migration, the guest kernel also detects the host support for this
+> feature via cpuid and in case of an EFI boot verifies if OVMF also
+> supports this feature by getting the UEFI enviroment variable and if it
+> set then enables live migration feature on host by writing to a custom
+> MSR, if not booted under EFI, then it simply enables the feature by
+> again writing to the custom MSR.
 
-Okay, let me correct myself :)
+Queued, thanks.
 
-I checked Intel-pt's implementation, I understand now that we need to 
-distinguish the cases for pid/tid from context switch event and only tid
-from SPE context packet.
+Paolo
 
-Since the context switch event contains the correct pid and tid
-values, we should set both of them, see Intel-PT's implementation [1].
-
-As Namhyung pointed, we need to set pid as '-1' when we only know the
-tid value from SPE context packet; see [2].
-
-So we should use the same with Intel-pt.
-
-Sorry for I didn't really understand well Namhyung's suggestion and
-thanks you both pointed out the issue.
-
-Leo
-
-P.s. an offline topic is we should send a patch to fix cs-etm issue
-as well [3].
-
-[1] https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/tools/perf/util/intel-pt.c#n2920
-[2] https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/tools/perf/util/intel-pt.c#n2215
-[3] https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/tools/perf/util/cs-etm.c#n1121
