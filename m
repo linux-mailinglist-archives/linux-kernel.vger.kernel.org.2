@@ -2,112 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DD5B244D1F1
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Nov 2021 07:28:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 72C6444D1F3
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Nov 2021 07:31:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229814AbhKKGbo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Nov 2021 01:31:44 -0500
-Received: from mail.loongson.cn ([114.242.206.163]:36286 "EHLO loongson.cn"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229533AbhKKGbm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Nov 2021 01:31:42 -0500
-Received: from localhost.localdomain.localdomain (unknown [10.2.5.46])
-        by mail.loongson.cn (Coremail) with SMTP id AQAAf9CxidEauIxh2SgCAA--.5061S2;
-        Thu, 11 Nov 2021 14:28:48 +0800 (CST)
-From:   Yinbo Zhu <zhuyinbo@loongson.cn>
-To:     Mathias Nyman <mathias.nyman@intel.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     zhuyinbo@loongson.cn
-Subject: [PATCH v3] usb: xhci: add LWP quirk for ensuring uPD720201 into D3 state after S5
-Date:   Thu, 11 Nov 2021 14:28:38 +0800
-Message-Id: <1636612118-32481-1-git-send-email-zhuyinbo@loongson.cn>
-X-Mailer: git-send-email 1.8.3.1
-X-CM-TRANSID: AQAAf9CxidEauIxh2SgCAA--.5061S2
-X-Coremail-Antispam: 1UD129KBjvJXoW7AF1kJw4kGF4DKr1UCrWruFg_yoW5JrWfpF
-        s8Xaya9rs5Kr4Iqr93Ar18Zas5G3ZrZryUKryIk3yqgrWjyrs5KFyUGFW3Ar9xWaykJr1a
-        9F1vgw15WFW7GaUanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUkI14x267AKxVWUJVW8JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
-        1l84ACjcxK6xIIjxv20xvE14v26r4j6ryUM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4j
-        6F4UM28EF7xvwVC2z280aVAFwI0_Cr1j6rxdM28EF7xvwVC2z280aVCY1x0267AKxVW0oV
-        Cq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0
-        I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFVCjc4AY6r1j6r
-        4UM4x0Y48IcxkI7VAKI48JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwCY02Avz4vE-syl42xK
-        82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGw
-        C20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r126r1DMIIYrxkI7VAKI48J
-        MIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r1j6r4UMI
-        IF0xvE42xK8VAvwI8IcIk0rVWrZr1j6s0DMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvE
-        x4A2jsIEc7CjxVAFwI0_Jr0_GrUvcSsGvfC2KfnxnUUI43ZEXa7VUbrMaUUUUUU==
-X-CM-SenderInfo: 52kx5xhqerqz5rrqw2lrqou0/
+        id S230015AbhKKGd5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Nov 2021 01:33:57 -0500
+Received: from smtp-out2.suse.de ([195.135.220.29]:58230 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229533AbhKKGd4 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 11 Nov 2021 01:33:56 -0500
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out2.suse.de (Postfix) with ESMTP id C2E461FD3E;
+        Thu, 11 Nov 2021 06:31:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1636612266; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=69ymtPsNq/3eZDHfNUePOVSowkMa13fiJITlUV6+ofo=;
+        b=UIdAWqj2GbiR3JP0DlmAgOiRts0q3wfu8W39R7vb72BY435rFWoCYs0vFk1p9qlQkZqahq
+        XFpsxg3YKyun94YhEhk+bI+857Vn6Np8uL2dyJWs4uVi2zULmzp9YnIqEL5cTnWhQ29Rh0
+        i3pw5Iod0nbWSAfdSBbVvHqtvvOvcEA=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1636612266;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=69ymtPsNq/3eZDHfNUePOVSowkMa13fiJITlUV6+ofo=;
+        b=l6P9dnK0rd62R8j/D5puDWymcUHYY6hY1tTbgDZBfObJ5QfcNhW+mMJBhNUFZX8nMNMYak
+        FvRNDl2XwL0ErhCA==
+Received: from alsa1.suse.de (alsa1.suse.de [10.160.4.42])
+        by relay2.suse.de (Postfix) with ESMTP id B2170A3B81;
+        Thu, 11 Nov 2021 06:31:06 +0000 (UTC)
+Date:   Thu, 11 Nov 2021 07:31:06 +0100
+Message-ID: <s5hv90z5hlh.wl-tiwai@suse.de>
+From:   Takashi Iwai <tiwai@suse.de>
+To:     Pkshih <pkshih@realtek.com>
+Cc:     Takashi Iwai <tiwai@suse.de>,
+        "kvalo@codeaurora.org" <kvalo@codeaurora.org>,
+        "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>,
+        "Larry.Finger@gmail.com" <Larry.Finger@gmail.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] rtw89: Fix crash by loading compressed firmware file
+In-Reply-To: <68f61525b26f46578a62b2a54d775c17@realtek.com>
+References: <20211105071725.31539-1-tiwai@suse.de>
+        <s5hpmrfgj93.wl-tiwai@suse.de>
+        <87zgqjqaae.fsf@codeaurora.org>
+        <s5hh7crgflg.wl-tiwai@suse.de>
+        <87v917q8hw.fsf@codeaurora.org>
+        <bd80d3b6cdc42d7818d7d5c6a5036d8188eb4a67.camel@realtek.com>
+        <s5h5yt6fxpf.wl-tiwai@suse.de>
+        <68f61525b26f46578a62b2a54d775c17@realtek.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
+ FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
+ (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-After S5, any pci device should into D3 state that if supported, but the
-uPD720201 was not and cause OSPM power consumption is more higher that
-S5 than S4. Due to that uPD720201 firmware behavior was unknown and the
-_PS3 method wasn't implemented in ACPI table which can make device into
-D3, I think xhci HCD can add a quirk ensure it into D3 state after S5
-that is appropriate and this patch was to add the XHCI_LWP_QURIK and set
-PCI_D3hot to uPD720201 pmsc register in xhci_pci_shutdown and
-xhci_pci_remove to fix xhci power consumption issue.
+On Thu, 11 Nov 2021 03:28:09 +0100,
+Pkshih wrote:
+> 
+> 
+> > -----Original Message-----
+> > From: Takashi Iwai <tiwai@suse.de>
+> > Sent: Friday, November 5, 2021 11:07 PM
+> > To: Pkshih <pkshih@realtek.com>
+> > Cc: kvalo@codeaurora.org; linux-wireless@vger.kernel.org; Larry.Finger@gmail.com;
+> > linux-kernel@vger.kernel.org
+> > Subject: Re: [PATCH] rtw89: Fix crash by loading compressed firmware file
+> > 
+> > 
+> > You should put const in the cast in le32_get_bits() invocations, at
+> > least.
+> > 
+> > For the le32_replace_bits(), ideally it should be rewritten in some
+> > better way the compiler can catch.  e.g. use an inline function to
+> > take a void * argument without const,
+> > 
+> > static inline void RTW89_SET_FWCMD_CXRFK_TYPE(void *cmd, unsigned int val)
+> > {
+> > 	le32p_replace_bits((__le32 *)((u8 *)(cmd) + 2), val, GENMASK(17, 10));
+> > }
+> > 
+> > Then the compiler will warn when you pass a const pointer there.
+> > 
+> 
+> I have sent a patchset [1] to do these two things by patch 2 and 3.
+> 
+> > 
+> > BTW, while reading your reply, I noticed that it's an unaligned access
+> > to a 32bit value, which is another potential breakage on some
+> > architectures.  So the whole stuff has to be rewritten in anyway...
+> > 
+> 
+> We use these macros/inline function on skb->data mostly, and I 
+> suppose skb->data is a 32bit aligned address. Since I don't have
+> this kind of machine on hand, I would like to defer this work until
+> I have one.
 
-Signed-off-by: Yinbo Zhu <zhuyinbo@loongson.cn>
----
-Change in v3:
-		Add D3 set in xhci_pci_remove function.
+I actually misread the code.  The register offset is applied to __le32
+pointer, so this should be fine.
 
- drivers/usb/host/xhci-pci.c | 9 +++++++++
- drivers/usb/host/xhci.h     | 1 +
- 2 files changed, 10 insertions(+)
+> > > partition size we are going to download, and it is only used
+> > > by rtw89_fw_download_hdr(). So, I will set the partition size
+> > > after copying constant firmware header into skb->data.
+> > 
+> > Sounds good.
+> > 
+> 
+> Please check if my patch works on your platform.
+> Thanks you.
+> 
+> [1] https://lore.kernel.org/linux-wireless/20211111021457.13776-1-pkshih@realtek.com/T/#t
 
-diff --git a/drivers/usb/host/xhci-pci.c b/drivers/usb/host/xhci-pci.c
-index 2c9f25c..6258a5a 100644
---- a/drivers/usb/host/xhci-pci.c
-+++ b/drivers/usb/host/xhci-pci.c
-@@ -265,6 +265,7 @@ static void xhci_pci_quirks(struct device *dev, struct xhci_hcd *xhci)
- 	    pdev->device == 0x0014) {
- 		xhci->quirks |= XHCI_TRUST_TX_LENGTH;
- 		xhci->quirks |= XHCI_ZERO_64B_REGS;
-+		xhci->quirks |= XHCI_LWP_QUIRK;
- 	}
- 	if (pdev->vendor == PCI_VENDOR_ID_RENESAS &&
- 	    pdev->device == 0x0015) {
-@@ -466,6 +467,10 @@ static void xhci_pci_remove(struct pci_dev *dev)
- 		pci_set_power_state(dev, PCI_D3hot);
- 
- 	usb_hcd_pci_remove(dev);
-+
-+	/* Workaround for decreasing power consumption after S5 */
-+	if (xhci->quirks & XHCI_LWP_QUIRK)
-+		pci_set_power_state(dev, PCI_D3hot);
- }
- 
- #ifdef CONFIG_PM
-@@ -610,6 +615,10 @@ static void xhci_pci_shutdown(struct usb_hcd *hcd)
- 	/* Yet another workaround for spurious wakeups at shutdown with HSW */
- 	if (xhci->quirks & XHCI_SPURIOUS_WAKEUP)
- 		pci_set_power_state(pdev, PCI_D3hot);
-+
-+	/* Workaround for decreasing power consumption after S5 */
-+	if (xhci->quirks & XHCI_LWP_QUIRK)
-+		pci_set_power_state(pdev, PCI_D3hot);
- }
- #endif /* CONFIG_PM */
- 
-diff --git a/drivers/usb/host/xhci.h b/drivers/usb/host/xhci.h
-index dca6181..bcd70d1 100644
---- a/drivers/usb/host/xhci.h
-+++ b/drivers/usb/host/xhci.h
-@@ -1899,6 +1899,7 @@ struct xhci_hcd {
- #define XHCI_SG_TRB_CACHE_SIZE_QUIRK	BIT_ULL(39)
- #define XHCI_NO_SOFT_RETRY	BIT_ULL(40)
- #define XHCI_BROKEN_D3COLD	BIT_ULL(41)
-+#define XHCI_LWP_QUIRK		BIT_ULL(42)
- 
- 	unsigned int		num_active_eps;
- 	unsigned int		limit_active_eps;
--- 
-1.8.3.1
+Thanks.  I'll ask people testing those patches.
 
+
+Takashi
