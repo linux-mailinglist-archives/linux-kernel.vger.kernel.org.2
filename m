@@ -2,104 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D35A144D7A7
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Nov 2021 14:56:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AD8F344D7A8
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Nov 2021 14:56:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233602AbhKKN7L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Nov 2021 08:59:11 -0500
-Received: from szxga01-in.huawei.com ([45.249.212.187]:30933 "EHLO
-        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233303AbhKKN7J (ORCPT
+        id S233629AbhKKN7P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Nov 2021 08:59:15 -0500
+Received: from bhuna.collabora.co.uk ([46.235.227.227]:45218 "EHLO
+        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233606AbhKKN7M (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Nov 2021 08:59:09 -0500
-Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.54])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4Hqjmw4W3kzcb05;
-        Thu, 11 Nov 2021 21:51:28 +0800 (CST)
-Received: from dggema769-chm.china.huawei.com (10.1.198.211) by
- dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
- 15.1.2308.15; Thu, 11 Nov 2021 21:56:19 +0800
-Received: from localhost (10.174.179.215) by dggema769-chm.china.huawei.com
- (10.1.198.211) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.15; Thu, 11
- Nov 2021 21:56:18 +0800
-From:   YueHaibing <yuehaibing@huawei.com>
-To:     <srinivas.pandruvada@linux.intel.com>, <jikos@kernel.org>,
-        <benjamin.tissoires@redhat.com>, <hdegoede@redhat.com>,
-        <linux@weissschuh.net>
-CC:     <linux-input@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        YueHaibing <yuehaibing@huawei.com>
-Subject: [PATCH -next] HID: intel-ish-hid: fw-loader: Fix build error
-Date:   Thu, 11 Nov 2021 21:56:07 +0800
-Message-ID: <20211111135607.38716-1-yuehaibing@huawei.com>
-X-Mailer: git-send-email 2.10.2.windows.1
+        Thu, 11 Nov 2021 08:59:12 -0500
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: kholk11)
+        with ESMTPSA id 8FEFE1F45C72
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=collabora.com; s=mail;
+        t=1636638982; bh=KL910SP64J7G4Wb7kjnHDqpyVus2MRcEbakn+kqdIos=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=U8XhgZf2aG7UA6FkTnLmxTDwrgfC2Tz/rnIRee255WLCLeL3/pCWUYD8a6clcyhhc
+         0JfDUkVdl3PrpypTjoPk+wJxJO+FHvb9iOY16HBynUhzC7HUspx4IzAAK/097BcW7F
+         ZssPgbrv6V5XNf1IfE3z8FI9FvBb91mFb1YI7wFFHy0qBfPTskRALq1uUHmo+C0zkt
+         +fLKPWj0QIK3SuARD1n4+W+joLWjGLBDjxnhFZxtncAkcqp/qm88NF6AEthYZtGykR
+         f4EJxAve32QAjlXtMwCNqrzgN2+oHml+wDlgpvC/jf9qXNzx31FLnjnkX1AqH5jwzK
+         W2ybNjaMFjeMA==
+Subject: Re: [RFC PATCH] soc: mediatek: Add support always on flag
+To:     Chunfeng Yun <chunfeng.yun@mediatek.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Chun-Jie Chen <chun-jie.chen@mediatek.com>
+Cc:     linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org
+References: <20211102072058.4107-1-chunfeng.yun@mediatek.com>
+From:   AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>
+Message-ID: <e6ebf764-b94a-7b77-df17-1cb8e4b14635@collabora.com>
+Date:   Thu, 11 Nov 2021 14:56:19 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.174.179.215]
-X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
- dggema769-chm.china.huawei.com (10.1.198.211)
-X-CFilter-Loop: Reflected
+In-Reply-To: <20211102072058.4107-1-chunfeng.yun@mediatek.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-drivers/hid/intel-ish-hid/ishtp-fw-loader.c:1067:4: error: initializer element is not constant
-  { loader_ishtp_guid },
-    ^~~~~~~~~~~~~~~~~
+Il 02/11/21 08:20, Chunfeng Yun ha scritto:
+> There is a t-phy shared by PCIe and USB3 on mt8195, if the t-phy is
+> used by PCIe, when power off its mtcmos, need software reset it
+> (workaround way, usually hardware do it, but has an issue on mt8195),
+> but it has side effect to USB2 phy(works with USB3 phy to support
+> USB3.2 Gen1), so add support GENPD_FLAG_ALWAYS_ON flag, and make its
+> power always on;
+> Another reason is that USB3.2 Gen1/2 need keep power always on when
+> support runtime-pm due to hardware limitation until now;
+> 
+> Signed-off-by: Chunfeng Yun <chunfeng.yun@mediatek.com>
+> ---
+>   drivers/soc/mediatek/mt8195-pm-domains.h | 2 +-
+>   drivers/soc/mediatek/mtk-pm-domains.c    | 2 ++
+>   drivers/soc/mediatek/mtk-pm-domains.h    | 1 +
+>   3 files changed, 4 insertions(+), 1 deletion(-)
+> 
 
-The reason is that we are using non-const expressions to initialize the
-static structure, which will probably trigger a compiling error/warning
-on gcc-7.5.0. Fix it by converting const variable into macro.
+Hello Chunfeng,
+what are are the side effects on the USB2 PHY? Can you please expand?
 
-Fixes: 44e2a58cb880 ("HID: intel-ish-hid: fw-loader: only load for matching devices")
-Signed-off-by: YueHaibing <yuehaibing@huawei.com>
----
- drivers/hid/intel-ish-hid/ishtp-fw-loader.c | 12 ++++++------
- 1 file changed, 6 insertions(+), 6 deletions(-)
+Also, wouldn't it be possible to also reset the USB2 PHY when resetting the t-phy
+in order to get it back up and running?
 
-diff --git a/drivers/hid/intel-ish-hid/ishtp-fw-loader.c b/drivers/hid/intel-ish-hid/ishtp-fw-loader.c
-index 945a9d0b68cd..98657b3bfd3f 100644
---- a/drivers/hid/intel-ish-hid/ishtp-fw-loader.c
-+++ b/drivers/hid/intel-ish-hid/ishtp-fw-loader.c
-@@ -76,9 +76,9 @@ enum ish_loader_commands {
- #define LOADER_XFER_MODE_ISHTP			BIT(1)
- 
- /* ISH Transport Loader client unique GUID */
--static const guid_t loader_ishtp_guid =
--	GUID_INIT(0xc804d06a, 0x55bd, 0x4ea7,
--		  0xad, 0xed, 0x1e, 0x31, 0x22, 0x8c, 0x76, 0xdc);
-+#define LOADER_ISHTP_GUID \
-+	GUID_INIT(0xc804d06a, 0x55bd, 0x4ea7, \
-+		  0xad, 0xed, 0x1e, 0x31, 0x22, 0x8c, 0x76, 0xdc)
- 
- #define FILENAME_SIZE				256
- 
-@@ -880,7 +880,7 @@ static int loader_init(struct ishtp_cl *loader_ishtp_cl, int reset)
- 
- 	fw_client =
- 		ishtp_fw_cl_get_client(ishtp_get_ishtp_device(loader_ishtp_cl),
--				       &loader_ishtp_guid);
-+				       &LOADER_ISHTP_GUID);
- 	if (!fw_client) {
- 		dev_err(cl_data_to_dev(client_data),
- 			"ISH client uuid not found\n");
-@@ -1057,14 +1057,14 @@ static int loader_ishtp_cl_reset(struct ishtp_cl_device *cl_device)
- 
- static struct ishtp_cl_driver	loader_ishtp_cl_driver = {
- 	.name = "ish-loader",
--	.guid = &loader_ishtp_guid,
-+	.guid = &LOADER_ISHTP_GUID,
- 	.probe = loader_ishtp_cl_probe,
- 	.remove = loader_ishtp_cl_remove,
- 	.reset = loader_ishtp_cl_reset,
- };
- 
- static const struct ishtp_device_id loader_ishtp_id_table[] = {
--	{ loader_ishtp_guid },
-+	{ LOADER_ISHTP_GUID },
- 	{ }
- };
- MODULE_DEVICE_TABLE(ishtp, loader_ishtp_id_table);
--- 
-2.17.1
+Moreover, as for the USB3.2 hardware limitation... I would say that this is more
+like something that has to be accounted for in the USB driver, instead of the PM
+domains driver... unless there's some reason that stops you from doing that?
 
+Thanks,
+- Angelo
