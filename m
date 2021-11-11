@@ -2,116 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B014344DE0B
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Nov 2021 23:58:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E61E44DE12
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Nov 2021 23:59:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234095AbhKKXBU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Nov 2021 18:01:20 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58808 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229835AbhKKXBS (ORCPT
+        id S234248AbhKKXCC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Nov 2021 18:02:02 -0500
+Received: from hostingweb31-40.netsons.net ([89.40.174.40]:55082 "EHLO
+        hostingweb31-40.netsons.net" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230131AbhKKXB7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Nov 2021 18:01:18 -0500
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ABFA6C061766;
-        Thu, 11 Nov 2021 14:58:28 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-        Content-Type:In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:
-        Subject:Sender:Reply-To:Content-ID:Content-Description;
-        bh=4VEbIBkqcGJ3l7Zgq/uZwytuUTxQjnyHYFTzYLajeFM=; b=TRKP74wrJUWYaJp4HuEvwVy7CF
-        YTjoRR5QTzBEeBxq3PCrmmtk8OoH2yjaSangsFbsIzdeSF3SLaE56izUwg7fntdvR2wOK/SS+BBoW
-        mlw1ocs5fd6xel1vUL09N1TKuP894s35YGVDEpjPgpVFbveFsZ22oH/jfhCfNxY8cANsFbTSLGVAx
-        K2DBb0Cg0FcItQGhKOg0hYwZVpeswRgpzsjAb1ohwaQTwk1JI+3g3tjD+fcTGOK18WGrRiP2XgaLJ
-        80qxVMKle/wX4S20DP1RY6pgKSTZD0GwVGh8FXexqBMDy9+bYRS3kt0g4B2yElOISKUDDoO4fTzVX
-        z6FuMwhQ==;
-Received: from [2601:1c0:6280:3f0::aa0b]
-        by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mlJ17-008w1k-MP; Thu, 11 Nov 2021 22:58:01 +0000
-Subject: Re: [PATCH v7 43/45] virt: Add SEV-SNP guest driver
-To:     Brijesh Singh <brijesh.singh@amd.com>, x86@kernel.org,
-        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        linux-efi@vger.kernel.org, platform-driver-x86@vger.kernel.org,
-        linux-coco@lists.linux.dev, linux-mm@kvack.org
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Joerg Roedel <jroedel@suse.de>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, Ard Biesheuvel <ardb@kernel.org>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Jim Mattson <jmattson@google.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Sergio Lopez <slp@redhat.com>, Peter Gonda <pgonda@google.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        David Rientjes <rientjes@google.com>,
-        Dov Murik <dovmurik@linux.ibm.com>,
-        Tobin Feldman-Fitzthum <tobin@ibm.com>,
-        Borislav Petkov <bp@alien8.de>,
-        Michael Roth <michael.roth@amd.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        "Kirill A . Shutemov" <kirill@shutemov.name>,
-        Andi Kleen <ak@linux.intel.com>,
-        "Dr . David Alan Gilbert" <dgilbert@redhat.com>,
-        tony.luck@intel.com, marcorr@google.com,
-        sathyanarayanan.kuppuswamy@linux.intel.com
-References: <20211110220731.2396491-1-brijesh.singh@amd.com>
- <20211110220731.2396491-44-brijesh.singh@amd.com>
- <e8baf85f-8f17-d43e-4656-ed9003affaa8@infradead.org>
- <38e5047c-43a9-400b-c507-337011e0e605@amd.com>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <e6b412e4-f38e-d212-f52a-e7bdc9a26eff@infradead.org>
-Date:   Thu, 11 Nov 2021 14:57:59 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        Thu, 11 Nov 2021 18:01:59 -0500
+Received: from [77.244.183.192] (port=63166 helo=melee.fritz.box)
+        by hostingweb31.netsons.net with esmtpa (Exim 4.94.2)
+        (envelope-from <luca@lucaceresoli.net>)
+        id 1mlJ2C-0007N5-1p; Thu, 11 Nov 2021 23:59:08 +0100
+From:   Luca Ceresoli <luca@lucaceresoli.net>
+To:     linux-kernel@vger.kernel.org
+Cc:     Luca Ceresoli <luca@lucaceresoli.net>,
+        Lee Jones <lee.jones@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Chanwoo Choi <cw00.choi@samsung.com>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
+        Alessandro Zummo <a.zummo@towertech.it>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Wim Van Sebroeck <wim@linux-watchdog.org>,
+        Guenter Roeck <linux@roeck-us.net>, devicetree@vger.kernel.org,
+        linux-rtc@vger.kernel.org, linux-watchdog@vger.kernel.org,
+        Chiwoong Byun <woong.byun@samsung.com>,
+        Laxman Dewangan <ldewangan@nvidia.com>,
+        Randy Dunlap <rdunlap@infradead.org>
+Subject: [PATCH v3 0/8] Add MAX77714 PMIC minimal driver (RTC and watchdog only)
+Date:   Thu, 11 Nov 2021 23:58:44 +0100
+Message-Id: <20211111225852.3128201-1-luca@lucaceresoli.net>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-In-Reply-To: <38e5047c-43a9-400b-c507-337011e0e605@amd.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
 Content-Transfer-Encoding: 8bit
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - hostingweb31.netsons.net
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - lucaceresoli.net
+X-Get-Message-Sender-Via: hostingweb31.netsons.net: authenticated_id: luca+lucaceresoli.net/only user confirmed/virtual account not confirmed
+X-Authenticated-Sender: hostingweb31.netsons.net: luca@lucaceresoli.net
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/11/21 11:27 AM, Brijesh Singh wrote:
-> Hi Randy,
-> 
-> On 11/10/21 4:27 PM, Randy Dunlap wrote:
->> Hi,
->>
->> On 11/10/21 2:07 PM, Brijesh Singh wrote:
->>> diff --git a/drivers/virt/coco/sevguest/Kconfig b/drivers/virt/coco/sevguest/Kconfig
->>> new file mode 100644
->>> index 000000000000..96190919cca8
->>> --- /dev/null
->>> +++ b/drivers/virt/coco/sevguest/Kconfig
->>> @@ -0,0 +1,9 @@
->>> +config SEV_GUEST
->>> +    tristate "AMD SEV Guest driver"
->>> +    default y
->>
->> For this to remain as "default y", you need to justify it.
->> E.g., if a board cannot boot with an interrupt controller,
->> the driver for the interrupt controller can be "default y".
->>
->> So why is this default y?
->> No other drivers in drivers/virt/ are default y.
->>
-> 
-> I choose the default "y" for two reasons:
-> 
-> 1.  The driver is built if the user enables the AMD memory encryption support. If the user has selected the AMD memory encryption support, they will be querying an attestation report to verify that the guest is running on AMD memory encryption enabled hardware.
+Hi,
 
-OK, I see. I'm OK with this.
+this series adds minimal drivers for the Maxim Semiconductor MAX77714
+(https://www.maximintegrated.com/en/products/power/power-management-ics/MAX77714.html).
+Only RTC and watchdog are implemented by these patches.
 
-> 2. Typically, an attestation report is retrieved from an initial ramdisk (before mounting the disk). IIUC, the standard initramfs build tools may not include the driver by default and requires the user to go through hoops.
-> 
-> However, I have no strong reason to keep it to "y" if other prefers "m".
+All implemented functionality is tested and working: RTC read/write,
+watchdog start/stop/ping/set_timeout.
 
-"m" is no better than "y" in this case.
+Patches 1-3 + 6 are trivial cleanups to the max77686 drivers and Kconfig
+indentation and can probably be applied easily.
 
-thanks.
+Patches 4, 5, 7 and 8 add: dt bindings, mfd driver, watchdog driver and rtc
+driver.
+
+Changes in v3:
+ - fixed all issues reported on v1 patches
+ - removed patch 1 of v2, already applied
+   ("mfd: max77686: Correct tab-based alignment of register addresses")
+
+Changes in v2:
+ - fixed all issues reported on v1 patches
+ - added patch 7 ("watchdog: Kconfig: fix help text indentation")
+ - additional minor improvements
+
+Luca
+
+Luca Ceresoli (8):
+  rtc: max77686: convert comments to kernel-doc format
+  rtc: max77686: rename day-of-month defines
+  rtc: max77686: remove unused code to read in 12-hour mode
+  dt-bindings: mfd: add Maxim MAX77714 PMIC
+  mfd: max77714: Add driver for Maxim MAX77714 PMIC
+  watchdog: Kconfig: fix help text indentation
+  watchdog: max77714: add driver for the watchdog in the MAX77714 PMIC
+  rtc: max77686: add MAX77714 support
+
+ .../bindings/mfd/maxim,max77714.yaml          |  68 +++++++
+ MAINTAINERS                                   |   8 +
+ drivers/mfd/Kconfig                           |  14 ++
+ drivers/mfd/Makefile                          |   1 +
+ drivers/mfd/max77686.c                        |   2 +-
+ drivers/mfd/max77714.c                        | 152 +++++++++++++++
+ drivers/rtc/Kconfig                           |   2 +-
+ drivers/rtc/rtc-max77686.c                    |  75 +++++---
+ drivers/watchdog/Kconfig                      |  57 +++---
+ drivers/watchdog/Makefile                     |   1 +
+ drivers/watchdog/max77714_wdt.c               | 179 ++++++++++++++++++
+ include/linux/mfd/max77686-private.h          |   4 +-
+ include/linux/mfd/max77714.h                  |  60 ++++++
+ 13 files changed, 565 insertions(+), 58 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/mfd/maxim,max77714.yaml
+ create mode 100644 drivers/mfd/max77714.c
+ create mode 100644 drivers/watchdog/max77714_wdt.c
+ create mode 100644 include/linux/mfd/max77714.h
+
 -- 
-~Randy
+2.25.1
+
