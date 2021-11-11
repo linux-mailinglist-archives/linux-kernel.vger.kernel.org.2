@@ -2,108 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A431E44DD55
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Nov 2021 22:51:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 96E1244DD56
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Nov 2021 22:53:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234197AbhKKVyQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Nov 2021 16:54:16 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43896 "EHLO
+        id S230215AbhKKV4d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Nov 2021 16:56:33 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44396 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229868AbhKKVyN (ORCPT
+        with ESMTP id S229520AbhKKV4c (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Nov 2021 16:54:13 -0500
-Received: from mail-pf1-x42f.google.com (mail-pf1-x42f.google.com [IPv6:2607:f8b0:4864:20::42f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A1B9EC061766;
-        Thu, 11 Nov 2021 13:51:23 -0800 (PST)
-Received: by mail-pf1-x42f.google.com with SMTP id z6so6715796pfe.7;
-        Thu, 11 Nov 2021 13:51:23 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=z7K7MdZ98+kLM0UgbtnX5grxWcLXUyrdZOf5losamR8=;
-        b=k/rcSxbTuja+nfRj8kbPAalS7Ja6FRWrkjh8/JWJ3U0OIFnU/R/SL+HgXUCmaSX/MD
-         yZBy0+tI3sBmElnLmllX18AIwGLjU2oQ9N+dT/6RHhj5V4UOAhgJTtqGLkYRWxihwO5y
-         j9iB3TRYwfEzkjz1HF7I2DL+HYkJavKtsNeAXaUmDXbF2OYPpRriBQ4Pd4+1cw76fYq0
-         JDKBjxto2gnpyiWqm1xwipgGCo4SK4FsVRN2XXWgY+JPa6prmjkgY+rVEfWAHTh3Krbi
-         M3s//dxGaafcUigKfpRnJaIo7BQUd91BxpevlSRLjLI1+2qtmtHi//MDKK9uK7lP8cWw
-         6IOQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=z7K7MdZ98+kLM0UgbtnX5grxWcLXUyrdZOf5losamR8=;
-        b=eIYxMtOnJqRrv+VT6LNl7kjYpNHWEIeaeBqbv73na72bfektBUTgQrX9rwxXn0hiRy
-         ob0JRKq6aNTWesXXXDjJlnc2Infvex7edlxbXp5IomINkDk9mEj3QBBU5i22Z5Om8CFS
-         6uCoorFQtSIuomD2RkPWN09WSgsJoWSaqnjV+P5mPS5CLJSBGtu0HvCQbjEmjFLLbHdx
-         XE6Ejw4NZ40T2fD8doTDqR34XnKjoE2k66ND7m6NYyrblgYRV/xo+kw9Bzk4jHDsn1wg
-         P50/SkR7/2z00Ru+8zfO/UAzSSOakJ9WEOqLPDk4dB9mRNldczu72NH3Em5SBOjY8ZKo
-         Jksg==
-X-Gm-Message-State: AOAM5335eNgzmLXXRptcRueq7uj5Wf4iDHxjLPM8uoAF78S4ZHsVyTn6
-        mzLF2RHOWEgg4mR8/TucKtp6f8e/XK0=
-X-Google-Smtp-Source: ABdhPJyrE0aTj9fPnkalcVvbbBApThucSuvu+/csgGx9tTu/LweymXE5fqc9qCSniieOHsIrBznb1A==
-X-Received: by 2002:a63:91c8:: with SMTP id l191mr6728990pge.404.1636667482192;
-        Thu, 11 Nov 2021 13:51:22 -0800 (PST)
-Received: from [10.67.48.245] ([192.19.223.252])
-        by smtp.googlemail.com with ESMTPSA id s2sm10012008pjs.56.2021.11.11.13.51.20
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 11 Nov 2021 13:51:21 -0800 (PST)
-Subject: Re: [PATCH v8 4/8] PCI/portdrv: Create pcie_is_port_dev() func from
- existing code
-To:     Jim Quinlan <jim2101024@gmail.com>, linux-pci@vger.kernel.org,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Nicolas Saenz Julienne <nsaenz@kernel.org>,
-        Rob Herring <robh@kernel.org>, Mark Brown <broonie@kernel.org>,
-        bcm-kernel-feedback-list@broadcom.com, james.quinlan@broadcom.com
-Cc:     Sean V Kelley <sean.v.kelley@intel.com>,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        Qiuxu Zhuo <qiuxu.zhuo@intel.com>,
-        Keith Busch <kbusch@kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
-References: <20211110221456.11977-1-jim2101024@gmail.com>
- <20211110221456.11977-5-jim2101024@gmail.com>
-From:   Florian Fainelli <f.fainelli@gmail.com>
-Message-ID: <aa040d6e-66b0-5159-2eba-870db74b0e31@gmail.com>
-Date:   Thu, 11 Nov 2021 13:51:19 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        Thu, 11 Nov 2021 16:56:32 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 90F8BC061766
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Nov 2021 13:53:42 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Transfer-Encoding:
+        Content-Type:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
+        Sender:Reply-To:Content-ID:Content-Description;
+        bh=wJGYNi/IUwMAvyqo2DoDo2Wg9faUWg7yyelsmIHdJCs=; b=lf28jWG974biqEVbWiIBn9sk6M
+        jUNsSEyt7jYpwIWMMlRbCSoLO5Mje2ITHZsMnBJ050xeOswrV19hE5f2WqMrwMDmZJYZ80EcBOjvB
+        AiqhHkZlTKcWDLybD8RcLBhwYGhoJDgoXKemM/Cpkmate7otmDH9KFmhnAdBwQj01Lsb7ptGvhH/E
+        jTsRHKMrOaIj+29qdXqWU7QKjX3pbhn3JC1egoP8DnvfBXufd21SEyy8CLovBkChcwKJFt/g16i9J
+        jM27vbLAM4GnVqmEA5yHnUiI5IPY9outgWBPWj/+4bwaH28LMpbuJTJCk5RNFOFna+21qs4X7Hktj
+        MROmgzUQ==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mlI0i-00341i-GP; Thu, 11 Nov 2021 21:53:33 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 1762930001B;
+        Thu, 11 Nov 2021 22:53:32 +0100 (CET)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id F3C112C25B0B6; Thu, 11 Nov 2021 22:53:31 +0100 (CET)
+Date:   Thu, 11 Nov 2021 22:53:31 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Waiman Long <longman@redhat.com>
+Cc:     Hillf Danton <hdanton@sina.com>,
+        =?utf-8?B?6ams5oyv5Y2O?= <mazhenhua@xiaomi.com>,
+        mingo <mingo@redhat.com>, will <will@kernel.org>,
+        "boqun.feng" <boqun.feng@gmail.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Subject: Re: [BUG]locking/rwsem: only clean RWSEM_FLAG_HANDOFF when already
+ set
+Message-ID: <YY2Q220iEiFdaKlT@hirez.programming.kicks-ass.net>
+References: <13d683ed-793c-b502-44ff-f28114d9386b@redhat.com>
+ <02e118c0-2116-b806-2b48-b9c91dc847dd@redhat.com>
+ <20211110213854.GE174703@worktop.programming.kicks-ass.net>
+ <YY0x55wxO2v5HCOW@hirez.programming.kicks-ass.net>
+ <61735528-141c-8d77-592d-b6b8fb75ebaa@redhat.com>
+ <YY1s6v9b/tYtNnGv@hirez.programming.kicks-ass.net>
+ <e16f9fc2-ce01-192b-065d-460c2ad9b317@redhat.com>
+ <20211111202647.GH174703@worktop.programming.kicks-ass.net>
+ <be3dc705-494a-913e-230f-9533c7404ac2@redhat.com>
+ <436bcf39-297a-f5a6-ac58-a82e77cb3b83@redhat.com>
 MIME-Version: 1.0
-In-Reply-To: <20211110221456.11977-5-jim2101024@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <436bcf39-297a-f5a6-ac58-a82e77cb3b83@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/10/21 2:14 PM, Jim Quinlan wrote:
-> The function will be needed elsewhere in a few commits.
+On Thu, Nov 11, 2021 at 04:25:56PM -0500, Waiman Long wrote:
 > 
-> Signed-off-by: Jim Quinlan <jim2101024@gmail.com>
-> ---
->  drivers/pci/pci.h              |  2 ++
->  drivers/pci/pcie/portdrv_pci.c | 23 ++++++++++++++++++-----
->  2 files changed, 20 insertions(+), 5 deletions(-)
+> On 11/11/21 16:01, Waiman Long wrote:
+> > 
+> > On 11/11/21 15:26, Peter Zijlstra wrote:
+> > > On Thu, Nov 11, 2021 at 02:36:52PM -0500, Waiman Long wrote:
+> > > 
+> > > > @@ -434,6 +430,7 @@ static void rwsem_mark_wake(struct
+> > > > rw_semaphore *sem,
+> > > >               if (!(oldcount & RWSEM_FLAG_HANDOFF) &&
+> > > >                   time_after(jiffies, waiter->timeout)) {
+> > > >                   adjustment -= RWSEM_FLAG_HANDOFF;
+> > > > +                waiter->handoff_set = true;
+> > > >                   lockevent_inc(rwsem_rlock_handoff);
+> > > >               }
+> > > Do we really need this flag? Wouldn't it be the same as waiter-is-first
+> > > AND sem-has-handoff ?
+> > That is true. The only downside is that we have to read the count first
+> > in rwsem_out_nolock_clear_flags(). Since this is not a fast path, it
+> > should be OK to do that.
 > 
-> diff --git a/drivers/pci/pci.h b/drivers/pci/pci.h
-> index 1cce56c2aea0..c2bd1995d3a9 100644
-> --- a/drivers/pci/pci.h
-> +++ b/drivers/pci/pci.h
-> @@ -744,4 +744,6 @@ extern const struct attribute_group aspm_ctrl_attr_group;
->  
->  extern const struct attribute_group pci_dev_reset_method_attr_group;
->  
-> +bool pcie_is_port_dev(struct pci_dev *dev);
+> I just realize that I may still need this flag for writer to determine if it
+> should spin after failing to acquire the lock. Or I will have to do extra
+> read of count value in the loop. I don't need to use it for writer now.
 
-Looks like you need an inline stub here when CONFIG_PCIEPORTBUS is
-disabled to avoid the linking failure reported by the kbuild robot:
+Maybe it's too late here, but afaict this is right after failing
+try_write_lock(), which will have done at least that load you're
+interested in, no?
 
-static inline bool pcie_is_port_dev(struct pci_dev *dev)
-{
-	return false;
-}
-
-Thanks!
---
-Florian
+Simply have try_write_lock() update &count or something.
