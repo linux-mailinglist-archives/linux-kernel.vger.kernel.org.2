@@ -2,176 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B46F244DB07
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Nov 2021 18:17:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4385944DB0B
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Nov 2021 18:23:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233823AbhKKRTd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Nov 2021 12:19:33 -0500
-Received: from m43-7.mailgun.net ([69.72.43.7]:42414 "EHLO m43-7.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229539AbhKKRTc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Nov 2021 12:19:32 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1636651003; h=Content-Transfer-Encoding: Content-Type:
- In-Reply-To: From: References: Cc: To: Subject: MIME-Version: Date:
- Message-ID: Sender; bh=9ATOQmqTmW60i4WG7OBHPJjTDiTX5iJKy/x0ZGMNLKw=; b=q6oa7z46TbafLZ2p92R8RxnoSVJ4C2rtYZ8uRWjMKo3YS2lQQg4AVQurSaS2EVDkr4ssk9Nj
- NPF1cf/1ktDqMDtDUwlfiHLzCAEgdUpGz9LHMWMj3OVHNt+mHbyPgvlgFBgQUxEjZ9pYenR+
- QeOIl78eMc23knaY5VTxfBj6IgU=
-X-Mailgun-Sending-Ip: 69.72.43.7
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n06.prod.us-east-1.postgun.com with SMTP id
- 618d4f9cc51781f169ead687 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 11 Nov 2021 17:15:08
- GMT
-Sender: akhilpo=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id CDFA7C43619; Thu, 11 Nov 2021 17:15:06 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-6.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        NICE_REPLY_A,SPF_FAIL,URIBL_BLOCKED autolearn=unavailable autolearn_force=no
-        version=3.4.0
-Received: from [192.168.1.16] (unknown [117.210.184.103])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: akhilpo)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id A096AC4338F;
-        Thu, 11 Nov 2021 17:14:59 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 smtp.codeaurora.org A096AC4338F
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=codeaurora.org
-Message-ID: <89cbb324-b111-657f-fb3c-8ece3c21017b@codeaurora.org>
-Date:   Thu, 11 Nov 2021 22:44:56 +0530
+        id S233887AbhKKR01 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Nov 2021 12:26:27 -0500
+Received: from mail-lf1-f47.google.com ([209.85.167.47]:38763 "EHLO
+        mail-lf1-f47.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229539AbhKKR0Y (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 11 Nov 2021 12:26:24 -0500
+Received: by mail-lf1-f47.google.com with SMTP id bi37so10855265lfb.5;
+        Thu, 11 Nov 2021 09:23:34 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=89eWb+BbvalK+w5Mc6cUfBs8kDWrHjXvg4EaZ2R2HWg=;
+        b=UykTfzlxX+W9awqVG9buZvx83XZPT9XaS7ndztGZqAv9HNQ2+e6t6dqoT4gl95hUga
+         jjv+DPISrBsH6Pmk9hQoGKOES5e/ll5U+KKxSe4M+TK5mQrw10fqANY5LDwJxgSm9YDX
+         Jaga8xoWWqCAAymkeTHouSy0/SjSkJoyemWdBRQJ9MmF3raMoFmORREWOSTecGkecArk
+         l1GOrCu7COGszRWSx0deXLv9cLoAq0H3qW6LPiQYA2dJ6xF2SZ457gGm3A5CfOpf1Yqk
+         G9VsyniNBcB0QDurseR2LAE3wZ2Tg2w891ab5Od5RtCyPjR3B8LXdhh0iSoXJ2YDrqaz
+         Jk/A==
+X-Gm-Message-State: AOAM533g6fK9aGO+IVTFWv1Anj4y9EigCtvWowqVl3dGFY8XX8f0T0so
+        OntIuPsEoPIwXneAwmlnn9jwdfEC4Cko1Vjn+Is=
+X-Google-Smtp-Source: ABdhPJz9fENr/SPGizW9fDv9mUizjaQ2xLA8gD00TBkzy3s2mS45eIFUywGUQe6AFKZQMoRMXpXOSHikIcTzyDxwfCI=
+X-Received: by 2002:a05:6512:22c3:: with SMTP id g3mr7922212lfu.528.1636651413501;
+ Thu, 11 Nov 2021 09:23:33 -0800 (PST)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
- Thunderbird/91.1.1
-Subject: Re: [PATCH 5/5] drm/msm: Add debugfs to disable hw err handling
-Content-Language: en-US
-To:     Rob Clark <robdclark@gmail.com>, dri-devel@lists.freedesktop.org
-Cc:     freedreno@lists.freedesktop.org, linux-arm-msm@vger.kernel.org,
-        Jordan Crouse <jordan@cosmicpenguin.net>,
-        Rob Clark <robdclark@chromium.org>,
-        Sean Paul <sean@poorly.run>, David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@somainline.org>,
-        Konrad Dybcio <konrad.dybcio@somainline.org>,
-        Yangtao Li <tiny.windzz@gmail.com>,
-        Marijn Suijten <marijn.suijten@somainline.org>,
-        Jonathan Marek <jonathan@marek.ca>,
-        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-        Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>,
-        Sharat Masetty <smasetty@codeaurora.org>,
-        Douglas Anderson <dianders@chromium.org>,
-        open list <linux-kernel@vger.kernel.org>
-References: <20211109181117.591148-1-robdclark@gmail.com>
- <20211109181117.591148-6-robdclark@gmail.com>
-From:   Akhil P Oommen <akhilpo@codeaurora.org>
-In-Reply-To: <20211109181117.591148-6-robdclark@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+References: <20211111133625.193568-1-german.gomez@arm.com> <20211111133625.193568-5-german.gomez@arm.com>
+In-Reply-To: <20211111133625.193568-5-german.gomez@arm.com>
+From:   Namhyung Kim <namhyung@kernel.org>
+Date:   Thu, 11 Nov 2021 09:23:22 -0800
+Message-ID: <CAM9d7chUkk-e0-giLH_moiEri2N28+G1cE-F3+JsXHK89vDJWg@mail.gmail.com>
+Subject: Re: [PATCH v3 4/4] perf arm-spe: Support hardware-based PID tracing
+To:     German Gomez <german.gomez@arm.com>
+Cc:     linux-kernel <linux-kernel@vger.kernel.org>,
+        linux-perf-users <linux-perf-users@vger.kernel.org>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        John Garry <john.garry@huawei.com>,
+        Will Deacon <will@kernel.org>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Leo Yan <leo.yan@linaro.org>,
+        linux-arm-kernel@lists.infradead.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/9/2021 11:41 PM, Rob Clark wrote:
-> From: Rob Clark <robdclark@chromium.org>
-> 
-> Add a debugfs interface to ignore hw error irqs, in order to force
-> fallback to sw hangcheck mechanism.  Because the hw error detection is
-> pretty good on newer gens, we need this for igt tests to test the sw
-> hang detection.
-> 
-> Signed-off-by: Rob Clark <robdclark@chromium.org>
-> ---
->   drivers/gpu/drm/msm/adreno/a5xx_gpu.c | 6 ++++++
->   drivers/gpu/drm/msm/adreno/a6xx_gpu.c | 4 ++++
->   drivers/gpu/drm/msm/msm_debugfs.c     | 3 +++
->   drivers/gpu/drm/msm/msm_drv.h         | 9 +++++++++
->   4 files changed, 22 insertions(+)
-> 
-> diff --git a/drivers/gpu/drm/msm/adreno/a5xx_gpu.c b/drivers/gpu/drm/msm/adreno/a5xx_gpu.c
-> index 6163990a4d09..ec8e043c9d38 100644
-> --- a/drivers/gpu/drm/msm/adreno/a5xx_gpu.c
-> +++ b/drivers/gpu/drm/msm/adreno/a5xx_gpu.c
-> @@ -1252,6 +1252,7 @@ static void a5xx_fault_detect_irq(struct msm_gpu *gpu)
->   
->   static irqreturn_t a5xx_irq(struct msm_gpu *gpu)
->   {
-> +	struct msm_drm_private *priv = gpu->dev->dev_private;
->   	u32 status = gpu_read(gpu, REG_A5XX_RBBM_INT_0_STATUS);
->   
->   	/*
-> @@ -1261,6 +1262,11 @@ static irqreturn_t a5xx_irq(struct msm_gpu *gpu)
->   	gpu_write(gpu, REG_A5XX_RBBM_INT_CLEAR_CMD,
->   		status & ~A5XX_RBBM_INT_0_MASK_RBBM_AHB_ERROR);
->   
-> +	if (priv->disable_err_irq) {
-> +		status &= A5XX_RBBM_INT_0_MASK_CP_CACHE_FLUSH_TS |
-> +			  A5XX_RBBM_INT_0_MASK_CP_SW;
-> +	}
-> +
->   	/* Pass status to a5xx_rbbm_err_irq because we've already cleared it */
->   	if (status & RBBM_ERROR_MASK)
->   		a5xx_rbbm_err_irq(gpu, status);
-> diff --git a/drivers/gpu/drm/msm/adreno/a6xx_gpu.c b/drivers/gpu/drm/msm/adreno/a6xx_gpu.c
-> index 3d2da81cb2c9..8a2af3a27e33 100644
-> --- a/drivers/gpu/drm/msm/adreno/a6xx_gpu.c
-> +++ b/drivers/gpu/drm/msm/adreno/a6xx_gpu.c
-> @@ -1373,10 +1373,14 @@ static void a6xx_fault_detect_irq(struct msm_gpu *gpu)
->   
->   static irqreturn_t a6xx_irq(struct msm_gpu *gpu)
->   {
-> +	struct msm_drm_private *priv = gpu->dev->dev_private;
->   	u32 status = gpu_read(gpu, REG_A6XX_RBBM_INT_0_STATUS);
->   
->   	gpu_write(gpu, REG_A6XX_RBBM_INT_CLEAR_CMD, status);
->   
-> +	if (priv->disable_err_irq)
-> +		status &= A6XX_RBBM_INT_0_MASK_CP_CACHE_FLUSH_TS;
-> +
->   	if (status & A6XX_RBBM_INT_0_MASK_RBBM_HANG_DETECT)
->   		a6xx_fault_detect_irq(gpu);
->   
-> diff --git a/drivers/gpu/drm/msm/msm_debugfs.c b/drivers/gpu/drm/msm/msm_debugfs.c
-> index 6a99e8b5d25d..956b1efc3721 100644
-> --- a/drivers/gpu/drm/msm/msm_debugfs.c
-> +++ b/drivers/gpu/drm/msm/msm_debugfs.c
-> @@ -242,6 +242,9 @@ void msm_debugfs_init(struct drm_minor *minor)
->   	debugfs_create_u32("hangcheck_period_ms", 0600, minor->debugfs_root,
->   		&priv->hangcheck_period);
->   
-> +	debugfs_create_bool("disable_err_irq", 0600, minor->debugfs_root,
-> +		&priv->disable_err_irq);
-> +
->   	debugfs_create_file("shrink", S_IRWXU, minor->debugfs_root,
->   		dev, &shrink_fops);
->   
-> diff --git a/drivers/gpu/drm/msm/msm_drv.h b/drivers/gpu/drm/msm/msm_drv.h
-> index 2943c21d9aac..a8da7a7efb84 100644
-> --- a/drivers/gpu/drm/msm/msm_drv.h
-> +++ b/drivers/gpu/drm/msm/msm_drv.h
-> @@ -246,6 +246,15 @@ struct msm_drm_private {
->   
->   	/* For hang detection, in ms */
->   	unsigned int hangcheck_period;
-> +
-> +	/**
-> +	 * disable_err_irq:
-> +	 *
-> +	 * Disable handling of GPU hw error interrupts, to force fallback to
-> +	 * sw hangcheck timer.  Written (via debugfs) by igt tests to test
-> +	 * the sw hangcheck mechanism.
-> +	 */
-> +	bool disable_err_irq;
->   };
->   
->   struct msm_format {
-> 
+On Thu, Nov 11, 2021 at 5:36 AM German Gomez <german.gomez@arm.com> wrote:
+>
+> If Arm SPE traces contain CONTEXT packets with TID info, use these
+> values for tracking tid of samples. Otherwise fall back to using context
+> switch events and display a message warning the user of possible timing
+> inaccuracies [1].
+>
+> [1] https://lore.kernel.org/lkml/f877cfa6-9b25-6445-3806-ca44a4042eaf@arm.com/
+>
+> Signed-off-by: German Gomez <german.gomez@arm.com>
 
-Reviewed-by: Akhil P Oommen <akhilpo@codeaurora.org>
+Acked-by: Namhyung Kim <namhyung@kernel.org>
 
--Akhil.
+Thanks,
+Namhyung
