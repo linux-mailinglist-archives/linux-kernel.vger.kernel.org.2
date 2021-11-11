@@ -2,71 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AF86B44D27B
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Nov 2021 08:30:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 41E7D44D282
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Nov 2021 08:31:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231847AbhKKHc7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Nov 2021 02:32:59 -0500
-Received: from mail-lf1-f44.google.com ([209.85.167.44]:37738 "EHLO
-        mail-lf1-f44.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229649AbhKKHc6 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Nov 2021 02:32:58 -0500
-Received: by mail-lf1-f44.google.com with SMTP id c32so12113142lfv.4;
-        Wed, 10 Nov 2021 23:30:08 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Bdxh8C8Ix0fdeZSOa9W/5X4HmbH4M0dJAJ3EvFO+DoU=;
-        b=JiVmdCnIgm1mtkK0KWPrLKWeEHMoI8cg5dOwafqF0W9IIb4/kjEw89cHZ6WdtXAYCs
-         o/YNEdF2XvYrqy6YT3QJH6ewN09M2j+gZhdLrxLXHQpq6LuHWN6rH37FdDwJrG8Iuf1f
-         S0pbE9d34i3XCwlGWbwMw9UpHdiXQK0wkcrxc7YGGj3a30iABZzzFzjJfxVTslKzWSvf
-         yGhRvaUA7b6C5BlgeR7pwIb/cOmYJRB7vEUZYWeXOwh3d9eKUHGOYOI+TkOI+TFwWSvu
-         nEmrArqpxcudh028gsspYVw5uf4I6lY7KNvEJr8fdvVQQZFnneYa2QxPnvJE42pot+dv
-         Do6g==
-X-Gm-Message-State: AOAM532K22g/jqlA6DGoHXzFDLeti/Rz/ZOFs5UeoYrTuHMBnMEUiQBz
-        PiRLxhqu5lX2QV0mdHNmLrzwW0sxtBfg7FjUlmE=
-X-Google-Smtp-Source: ABdhPJwdFtwVuWwSDWa9Ba9hQaay0HoSXzvGaVC1CveRB2r2L4hp/bkgEec89sZo6iISNCXsTko2o1xTOcGEcMJ+udE=
-X-Received: by 2002:a05:6512:b8c:: with SMTP id b12mr4750174lfv.99.1636615808214;
- Wed, 10 Nov 2021 23:30:08 -0800 (PST)
+        id S231514AbhKKHel (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Nov 2021 02:34:41 -0500
+Received: from mail.kernel.org ([198.145.29.99]:47722 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229533AbhKKHej (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 11 Nov 2021 02:34:39 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id ECB2B61284;
+        Thu, 11 Nov 2021 07:31:47 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1636615910;
+        bh=nKTRLlWeGHO7HiGF56FDAr2Uz60VV5i9mUwmGSLNAJo=;
+        h=From:To:Cc:Subject:Date:From;
+        b=SuFAOeX360ZHo6STmYdmkcef9x5x9/GVZBmgB2P/tcw1Prn7677LPOxi7HzC2GxmP
+         1gm8H02f+Z0DtJnntOPW5MmKch+qaKBLP117lLdDR/chrjPbAHQZ4ZwXGet6MzX8Cr
+         Lrhidj0sv/SISDDQelO/g2Iw/9rKfbVBdqrgvzPkFCSQ9h5tXOMTBcCITpi1Rz6u9c
+         KAT4UHnN64xfS0eOP6OQp3f1mGPNqGgwnhk4uML3Xe+8kzUIRzgCvLIASn5t9ZKfRB
+         PYsqS+fIK71wqZw90kmPnXalOHbZrjEZzTKcdmIHhd7bHmn8zIjHStgjxwg0jKiInj
+         +nyc1nYg3bFVQ==
+From:   Arnd Bergmann <arnd@kernel.org>
+To:     Luca Coelho <luciano.coelho@intel.com>,
+        Kalle Valo <kvalo@codeaurora.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Johannes Berg <johannes.berg@intel.com>
+Cc:     Arnd Bergmann <arnd@arndb.de>, kernel test robot <lkp@intel.com>,
+        Yaara Baruch <yaara.baruch@intel.com>,
+        Matti Gottlieb <matti.gottlieb@intel.com>,
+        Emmanuel Grumbach <emmanuel.grumbach@intel.com>,
+        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, llvm@lists.linux.dev
+Subject: [PATCH] [v2] iwlwifi: pcie: fix constant-conversion warning
+Date:   Thu, 11 Nov 2021 08:31:37 +0100
+Message-Id: <20211111073145.2504032-1-arnd@kernel.org>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-References: <20211109115020.31623-1-german.gomez@arm.com> <20211109115020.31623-3-german.gomez@arm.com>
- <20211111071815.GA102075@leoy-ThinkPad-X240s>
-In-Reply-To: <20211111071815.GA102075@leoy-ThinkPad-X240s>
-From:   Namhyung Kim <namhyung@kernel.org>
-Date:   Wed, 10 Nov 2021 23:29:57 -0800
-Message-ID: <CAM9d7ci_iFk5n_0WECGAsyGjgqRCSH4UG_AECDSeO-0i4FMuNQ@mail.gmail.com>
-Subject: Re: [PATCH v2 2/4] perf arm-spe: Update --switch-events docs in perf-record
-To:     Leo Yan <leo.yan@linaro.org>
-Cc:     German Gomez <german.gomez@arm.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        linux-perf-users <linux-perf-users@vger.kernel.org>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        John Garry <john.garry@huawei.com>,
-        Will Deacon <will@kernel.org>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        linux-arm-kernel@lists.infradead.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 10, 2021 at 11:18 PM Leo Yan <leo.yan@linaro.org> wrote:
->
-> On Tue, Nov 09, 2021 at 11:50:18AM +0000, German Gomez wrote:
-> > Update perf-record docs and Arm SPE recording options so that they are
-> > consistent. This includes supporting the --no-switch-events flag in Arm
-> > SPE as well.
-> >
-> > Signed-off-by: German Gomez <german.gomez@arm.com>
->
-> Reviewed-by: Leo Yan <leo.yan@linaro.org>
+From: Arnd Bergmann <arnd@arndb.de>
 
-Acked-by: Namhyung Kim <namhyung@kernel.org>
+clang points out a potential issue with integer overflow when
+the iwl_dev_info_table[] array is empty:
 
-Thanks,
-Namhyung
+drivers/net/wireless/intel/iwlwifi/pcie/drv.c:1344:42: error: implicit conversion from 'unsigned long' to 'int' changes value from 18446744073709551615 to -1 [-Werror,-Wconstant-conversion]
+        for (i = ARRAY_SIZE(iwl_dev_info_table) - 1; i >= 0; i--) {
+               ~ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~
+
+This is still harmless, as the loop correctly terminates, but adding
+an extra range check makes that obvious to both readers and to the
+compiler.
+
+Fixes: 3f7320428fa4 ("iwlwifi: pcie: simplify iwl_pci_find_dev_info()")
+Reported-by: kernel test robot <lkp@intel.com>
+Cc: Nick Desaulniers <ndesaulniers@google.com>
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+---
+Changes in v2:
+- replace int cast with a range check
+---
+ drivers/net/wireless/intel/iwlwifi/pcie/drv.c | 3 +++
+ 1 file changed, 3 insertions(+)
+
+diff --git a/drivers/net/wireless/intel/iwlwifi/pcie/drv.c b/drivers/net/wireless/intel/iwlwifi/pcie/drv.c
+index c574f041f096..fcda7603024b 100644
+--- a/drivers/net/wireless/intel/iwlwifi/pcie/drv.c
++++ b/drivers/net/wireless/intel/iwlwifi/pcie/drv.c
+@@ -1341,6 +1341,9 @@ iwl_pci_find_dev_info(u16 device, u16 subsystem_device,
+ {
+ 	int i;
+ 
++	if (ARRAY_SIZE(iwl_dev_info_table) == 0)
++		return NULL;
++
+ 	for (i = ARRAY_SIZE(iwl_dev_info_table) - 1; i >= 0; i--) {
+ 		const struct iwl_dev_info *dev_info = &iwl_dev_info_table[i];
+ 
+-- 
+2.29.2
+
