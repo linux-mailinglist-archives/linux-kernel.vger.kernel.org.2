@@ -2,106 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 581FE44D1BF
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Nov 2021 06:43:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E3D6344D1C4
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Nov 2021 06:52:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232744AbhKKFqM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Nov 2021 00:46:12 -0500
-Received: from mga05.intel.com ([192.55.52.43]:43040 "EHLO mga05.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231954AbhKKFqL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Nov 2021 00:46:11 -0500
-X-IronPort-AV: E=McAfee;i="6200,9189,10164"; a="319056164"
-X-IronPort-AV: E=Sophos;i="5.87,225,1631602800"; 
-   d="scan'208";a="319056164"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Nov 2021 21:43:22 -0800
-X-IronPort-AV: E=Sophos;i="5.87,225,1631602800"; 
-   d="scan'208";a="492414901"
-Received: from rongch2-mobl.ccr.corp.intel.com (HELO [10.255.28.108]) ([10.255.28.108])
-  by orsmga007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Nov 2021 21:43:20 -0800
-Subject: Re: [kbuild-all] Re:
- arch/arm/boot/compressed/fdt_check_mem_start.c:62:10: warning: no previous
- prototype for 'fdt_check_mem_start'
-To:     Geert Uytterhoeven <geert@linux-m68k.org>,
-        kernel test robot <lkp@intel.com>
-Cc:     kbuild-all@lists.01.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Russell King <rmk+kernel@armlinux.org.uk>,
-        Ard Biesheuvel <ardb@kernel.org>
-References: <202111100840.gaI6caTo-lkp@intel.com>
- <CAMuHMdUXYv8eSd6FY5JzjZ9bR1sfGT4jgwdj4qvD6heG9ue7Mw@mail.gmail.com>
-From:   "Chen, Rong A" <rong.a.chen@intel.com>
-Message-ID: <b0050723-5ff4-0cea-0607-f7616037e4a3@intel.com>
-Date:   Thu, 11 Nov 2021 13:43:17 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Firefox/78.0 Thunderbird/78.12.0
+        id S230040AbhKKFzE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Nov 2021 00:55:04 -0500
+Received: from mailgw02.mediatek.com ([210.61.82.184]:47172 "EHLO
+        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S229379AbhKKFzA (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 11 Nov 2021 00:55:00 -0500
+X-UUID: 7d811d0450dd4fc3900d3df737020a61-20211111
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Transfer-Encoding:Content-Type:In-Reply-To:MIME-Version:Date:Message-ID:From:References:CC:To:Subject; bh=MK+z4HNd2YFz9V+YGPzL05tuq66xxcNIrnCbC5g3B+Y=;
+        b=mDcLwma5BhIR8AiEhAd4NlgbRK3sQW4cBtlL4NZw+rcn0Me+WhEcI2gFrAT+OCCmUwukp0AQVQJgwdytlnPJehU9EPAa85dlWSMLdAZoS7i50mPZ7plGOUciB9Ispf8oL3XrdB31B8V2dOnE+0TdZZeoxlJ+SyA5AYJJ+8joWpg=;
+X-UUID: 7d811d0450dd4fc3900d3df737020a61-20211111
+Received: from mtkmbs10n1.mediatek.inc [(172.21.101.34)] by mailgw02.mediatek.com
+        (envelope-from <peter.wang@mediatek.com>)
+        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
+        with ESMTP id 1049544693; Thu, 11 Nov 2021 13:52:09 +0800
+Received: from mtkmbs10n1.mediatek.inc (172.21.101.34) by
+ mtkmbs07n2.mediatek.inc (172.21.101.141) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Thu, 11 Nov 2021 13:52:08 +0800
+Received: from [172.21.84.99] (172.21.84.99) by mtkmbs10n1.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.2.792.15 via Frontend
+ Transport; Thu, 11 Nov 2021 13:52:08 +0800
+Subject: Re: [PATCH] scsi: ufs: ufs-mediatek: add put_device() after
+ of_find_device_by_node()
+To:     <cgel.zte@gmail.com>, <stanley.chu@mediatek.com>
+CC:     <alim.akhtar@samsung.com>, <avri.altman@wdc.com>,
+        <jejb@linux.ibm.com>, <martin.petersen@oracle.com>,
+        <matthias.bgg@gmail.com>, <linux-scsi@vger.kernel.org>,
+        <linux-mediatek@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        Ye Guojin <ye.guojin@zte.com.cn>,
+        Zeal Robot <zealci@zte.com.cn>
+References: <20211110105133.150171-1-ye.guojin@zte.com.cn>
+From:   Peter Wang <peter.wang@mediatek.com>
+Message-ID: <b4b38f93-27a7-53d0-b20f-0e9728ef6dbe@mediatek.com>
+Date:   Thu, 11 Nov 2021 13:52:08 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <CAMuHMdUXYv8eSd6FY5JzjZ9bR1sfGT4jgwdj4qvD6heG9ue7Mw@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
+In-Reply-To: <20211110105133.150171-1-ye.guojin@zte.com.cn>
+Content-Type: text/plain; charset="utf-8"; format=flowed
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+DQpPbiAxMS8xMC8yMSA2OjUxIFBNLCBjZ2VsLnp0ZUBnbWFpbC5jb20gd3JvdGU6DQo+IEZyb206
+IFllIEd1b2ppbiA8eWUuZ3VvamluQHp0ZS5jb20uY24+DQo+DQo+IFRoaXMgd2FzIGZvdW5kIGJ5
+IGNvY2NpY2hlY2s6DQo+IC4vZHJpdmVycy9zY3NpL3Vmcy91ZnMtbWVkaWF0ZWsuYywgMjExLCAx
+LTcsIEVSUk9SIG1pc3NpbmcgcHV0X2RldmljZTsNCj4gY2FsbCBvZl9maW5kX2RldmljZV9ieV9u
+b2RlIG9uIGxpbmUgMTE4NSwgYnV0IHdpdGhvdXQgYSBjb3JyZXNwb25kaW5nDQo+IG9iamVjdCBy
+ZWxlYXNlIHdpdGhpbiB0aGlzIGZ1bmN0aW9uLg0KPg0KPiBSZXBvcnRlZC1ieTogWmVhbCBSb2Jv
+dCA8emVhbGNpQHp0ZS5jb20uY24+DQo+IFNpZ25lZC1vZmYtYnk6IFllIEd1b2ppbiA8eWUuZ3Vv
+amluQHp0ZS5jb20uY24+DQo+IC0tLQ0KPiAgIGRyaXZlcnMvc2NzaS91ZnMvdWZzLW1lZGlhdGVr
+LmMgfCAxICsNCj4gICAxIGZpbGUgY2hhbmdlZCwgMSBpbnNlcnRpb24oKykNCj4NCj4gZGlmZiAt
+LWdpdCBhL2RyaXZlcnMvc2NzaS91ZnMvdWZzLW1lZGlhdGVrLmMgYi9kcml2ZXJzL3Njc2kvdWZz
+L3Vmcy1tZWRpYXRlay5jDQo+IGluZGV4IGZjNWIyMTQzNDdiMy4uNTM5M2I1YzlkZDljIDEwMDY0
+NA0KPiAtLS0gYS9kcml2ZXJzL3Njc2kvdWZzL3Vmcy1tZWRpYXRlay5jDQo+ICsrKyBiL2RyaXZl
+cnMvc2NzaS91ZnMvdWZzLW1lZGlhdGVrLmMNCj4gQEAgLTExODksNiArMTE4OSw3IEBAIHN0YXRp
+YyBpbnQgdWZzX210a19wcm9iZShzdHJ1Y3QgcGxhdGZvcm1fZGV2aWNlICpwZGV2KQ0KPiAgIAl9
+DQo+ICAgCWxpbmsgPSBkZXZpY2VfbGlua19hZGQoZGV2LCAmcmVzZXRfcGRldi0+ZGV2LA0KPiAg
+IAkJRExfRkxBR19BVVRPUFJPQkVfQ09OU1VNRVIpOw0KPiArCXB1dF9kZXZpY2UoJnJlc2V0X3Bk
+ZXYtPmRldik7DQoNCg0KVGhhbmtzIGZvciBmaXggdGhpcyBtaXNzaW5nLg0KUmV2aWV3ZWQtYnk6
+IFBldGVyIFdhbmcgPHBldGVyLndhbmdAbWVkaWF0ZWsuY29tPg0KDQoNCj4gICAJaWYgKCFsaW5r
+KSB7DQo+ICAgCQlkZXZfbm90aWNlKGRldiwgImFkZCByZXNldCBkZXZpY2VfbGluayBmYWlsXG4i
+KTsNCj4gICAJCWdvdG8gc2tpcF9yZXNldDs=
 
-
-On 11/10/2021 5:36 PM, Geert Uytterhoeven wrote:
-> Hi Kernel Test Robot,
-> 
-> On Wed, Nov 10, 2021 at 1:39 AM kernel test robot <lkp@intel.com> wrote:
->> FYI, the error/warning still remains.
-> 
-> Indeed, and currently there are no plans to fix that.
-> Please add it to the ignorelist.
-
-Hi Geert,
-
-Thanks for the feedback, we'll ignore the warning.
-
-Best Regards,
-Rong Chen
-
-> 
-> Thanks!
-> 
->> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
->> head:   cb690f5238d71f543f4ce874aa59237cf53a877c
->> commit: 0673cb38951215060d7993b43ad3c45cd413c2c3 ARM: 9045/1: uncompress: Validate start of physical memory against passed DTB
->> date:   9 months ago
->> config: arm-randconfig-r022-20210927 (attached as .config)
->> compiler: arm-linux-gnueabi-gcc (GCC) 11.2.0
->> reproduce (this is a W=1 build):
->>          wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
->>          chmod +x ~/bin/make.cross
->>          # https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=0673cb38951215060d7993b43ad3c45cd413c2c3
->>          git remote add linus https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
->>          git fetch --no-tags linus master
->>          git checkout 0673cb38951215060d7993b43ad3c45cd413c2c3
->>          # save the attached .config to linux build tree
->>          COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-11.2.0 make.cross ARCH=arm
->>
->> If you fix the issue, kindly add following tag as appropriate
->> Reported-by: kernel test robot <lkp@intel.com>
->>
->> All warnings (new ones prefixed by >>):
->>
->>>> arch/arm/boot/compressed/fdt_check_mem_start.c:62:10: warning: no previous prototype for 'fdt_check_mem_start' [-Wmissing-prototypes]
->>        62 | uint32_t fdt_check_mem_start(uint32_t mem_start, const void *fdt)
->>           |          ^~~~~~~~~~~~~~~~~~~
-> 
-> Gr{oetje,eeting}s,
-> 
->                          Geert
-> 
-> --
-> Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-> 
-> In personal conversations with technical people, I call myself a hacker. But
-> when I'm talking to journalists I just say "programmer" or something like that.
->                                  -- Linus Torvalds
-> _______________________________________________
-> kbuild-all mailing list -- kbuild-all@lists.01.org
-> To unsubscribe send an email to kbuild-all-leave@lists.01.org
-> 
