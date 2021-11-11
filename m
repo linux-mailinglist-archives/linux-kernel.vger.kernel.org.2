@@ -2,91 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8FDF344DE6B
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Nov 2021 00:18:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7426F44DE6D
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Nov 2021 00:21:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234351AbhKKXVp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Nov 2021 18:21:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35364 "EHLO
+        id S234361AbhKKXYj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Nov 2021 18:24:39 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36004 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230131AbhKKXVo (ORCPT
+        with ESMTP id S230131AbhKKXYh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Nov 2021 18:21:44 -0500
-Received: from mail-pj1-x1029.google.com (mail-pj1-x1029.google.com [IPv6:2607:f8b0:4864:20::1029])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 382DFC061766
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Nov 2021 15:18:54 -0800 (PST)
-Received: by mail-pj1-x1029.google.com with SMTP id gb13-20020a17090b060d00b001a674e2c4a8so6036583pjb.4
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Nov 2021 15:18:54 -0800 (PST)
+        Thu, 11 Nov 2021 18:24:37 -0500
+Received: from mail-io1-xd29.google.com (mail-io1-xd29.google.com [IPv6:2607:f8b0:4864:20::d29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D15FC061766
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Nov 2021 15:21:48 -0800 (PST)
+Received: by mail-io1-xd29.google.com with SMTP id x10so8976305ioj.9
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Nov 2021 15:21:48 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=+nKH7Jq3NhdojnXvW4tSs4Y1mW4omOFE5WjvvSn/QaY=;
-        b=I71bHlbQUhfwehM8/SoRzotkYdMbLUDdbrA0MiFSXN+xlvotJKaZtDnt7V12t9sslN
-         um32cxesImgEOA4PaEPF1+qS3ikzl75FWY0zfizWeAvkXVNKwnQXw8XxyV/kruDjc4tz
-         mpDX76rp7J+/TFUL4yfOB4bmJZF2qBiXejsuiF1D7QxFKHaF9ZVm8nNI4T+lwcG/LUWV
-         opHzuqSEJ+RdN29wXNShJvHOLh5wAtzMu57LLAeM0RNzJHlQPbcXVRwfPO70Hso+zsKw
-         uhtVLx8zXcdPKcQLdu08TY46m0aQzn58fs0hLPCVA2PLGqGzzrYC7riajTqqmIleohUC
-         zfBg==
+        d=gmail.com; s=20210112;
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=NHAujRj3nNPe07TxWi88DybAbp7vcb7zQT2ctaDgCnw=;
+        b=bhQ2/poJbmf248WwSYK+SMChKnhPqpdIc0Zcd+0yV4kmd+SZ9KrRRIy6dhWkg6OZkm
+         GYRV3Sz4cKaWNMgzBwsUMrnWullXQAPte0FMj5Lrb3qx7KrxKuYqKYUgjt6F+0h9YpcF
+         lAFpe1TxJ0XfqrcK4ehDV9PaGqa+oFWbZc4weaTc6q8E/nWStVabFpBeevqXb9ckl06q
+         7DqICdqEVm99aNcZqbHsNevlqQdipvAucmT0R7PgoceQ0KB/h4/WK2rRES6nG6OJjdav
+         1gs1tCHHPWNwFGRfvQDWUgD1/iQyEN5tRtqYuZ9iR4uk6lYU1kPUJOlgUR+j1rjO9PT2
+         J29g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=+nKH7Jq3NhdojnXvW4tSs4Y1mW4omOFE5WjvvSn/QaY=;
-        b=uBRu0RCn+kyZacKgwj0BgtlnqlqqZSxKDds9/y/lcfwX4Dbuu+6Hf9wQLxtPEOsTgJ
-         oaEGcbOvVfmH+Dv9fhfWc63rNLjZ/SuXFiXyrkFSqlXeZn5RvFPS1t+LlCRj4x7iRAyw
-         h20qymfSZxUz17FStFOPyNi6xok+DSRq0GLOXtFApj0GwuUof5eKybMaksZioRxd4/Jd
-         7cZB1LSFI6ODoEXG9qHnvNjFzlNc/tTyjgdXG6wRC545BWbOzLVkQUmCECfko8q2fq/S
-         l9qEmRFVfSoxuqpP+xQETjsc4ALmLCNjBYtX6bjZ1EIX4bO04ddy6vwrpGJoVS1S/0os
-         hD1g==
-X-Gm-Message-State: AOAM530llJyCIU8sVDtkEJtbMhEGfuix6uaLaxvxiB7wLbFpzlTFfGyb
-        e9Fz8DMqMfHNrj/vVI0OnjTfbg==
-X-Google-Smtp-Source: ABdhPJz2o2C+7XQx4Gb6IYiglolaPY8Msws8BYacdvjrJxiyEhBfppRRfzHavmUxB66jqMYJDw8njA==
-X-Received: by 2002:a17:902:f092:b0:141:ccb6:897 with SMTP id p18-20020a170902f09200b00141ccb60897mr3090951pla.89.1636672733617;
-        Thu, 11 Nov 2021 15:18:53 -0800 (PST)
-Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
-        by smtp.gmail.com with ESMTPSA id b19sm4491094pfv.63.2021.11.11.15.18.52
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 11 Nov 2021 15:18:52 -0800 (PST)
-Date:   Thu, 11 Nov 2021 23:18:49 +0000
-From:   Sean Christopherson <seanjc@google.com>
-To:     Ben Gardon <bgardon@google.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, David Matlack <dmatlack@google.com>
-Subject: Re: [PATCH] KVM: x86/mmu: Update number of zapped pages even if page
- list is stable
-Message-ID: <YY2k2VdRuYPZI/xO@google.com>
-References: <20211111221448.2683827-1-seanjc@google.com>
- <CANgfPd98+K-ELe0eAN0d+eqFjSa6ypOOP3MDb_nSwfrCZzpdCw@mail.gmail.com>
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=NHAujRj3nNPe07TxWi88DybAbp7vcb7zQT2ctaDgCnw=;
+        b=uFrVTYgQvcC0IkeYpae6u9F2HIvbBs8mZiDyx+fQCEnlH7xhtfH7rowgqn4+RGqPsA
+         UMg1ajgps7xZsnZpKD0wcpYhPk64xo/1dsZf/INH/08rM7A2RyOPe8vmlM9OD1u9TaM9
+         7aty3dcJBcNnP18yZRwxr+C+GB8DuGcIpDankAJtWBP1LfMQ9BQqob5tfo9sR1PEoMhN
+         oeWEKdBs5wdrjgn3n9I5kTzjGSLdzHFLrh6QimHwo7UZC1hqD15P/oZtvyz8R3Wi2WLl
+         Mlqfm26PdUgDTyl87+ihA6y43rkw8au6ymO85gXLwWe/gbUberzmImXJPL+XrmDoLK9H
+         4Caw==
+X-Gm-Message-State: AOAM5307YRDUky0sMwaUhExOEV4HVcFrzpoOI9ojgi9x5dUZOWgJj4wp
+        T4L3BSxKPhv+aI2IWvGdNguczeDUiEJoyhkEB7o=
+X-Google-Smtp-Source: ABdhPJzkZmRCHdgHzsRkTNDIADxngYLwhzWsPStX2hOYEQSOhYYNmN6C7H24v5l4lABZeq8U0cWrIWlbHVMh2Ia8d+g=
+X-Received: by 2002:a6b:5c05:: with SMTP id z5mr7117579ioh.181.1636672907492;
+ Thu, 11 Nov 2021 15:21:47 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CANgfPd98+K-ELe0eAN0d+eqFjSa6ypOOP3MDb_nSwfrCZzpdCw@mail.gmail.com>
+Received: by 2002:a05:6602:2f16:0:0:0:0 with HTTP; Thu, 11 Nov 2021 15:21:47
+ -0800 (PST)
+Reply-To: salemchantal@mail.ee
+From:   MRS Salem Chantal Lawrence <angelamark454@gmail.com>
+Date:   Thu, 11 Nov 2021 15:21:47 -0800
+Message-ID: <CAFirAodX9xExFNEEfCKcCHxTMGZF_QRNVRCvU7cqOR2+Rw3xOQ@mail.gmail.com>
+Subject: Dear Friend
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 11, 2021, Ben Gardon wrote:
-> On Thu, Nov 11, 2021 at 2:14 PM Sean Christopherson <seanjc@google.com> wrote:
-> > Fixes: fbb158cb88b6 ("KVM: x86/mmu: Revert "Revert "KVM: MMU: zap pages in batch""")
-> > Reported-by: David Matlack <dmatlack@google.com>
-> > Cc: Ben Gardon <bgardon@google.com>
-> > Cc: stable@vger.kernel.org
-> > Signed-off-by: Sean Christopherson <seanjc@google.com>
-> 
-> Reviewed-by: Ben Gardon <bgardon@google.com>
-> 
-> While I can see this fixing the above stall, there's still a potential
-> issue where zapped_obsolete_pages can accumulate an arbitrary number
-> of pages from multiple batches of zaps. If this list gets very large,
-> we could see a stall after the loop while trying to free the pages.
-> I'm not aware of this ever happening, but it could be worth yielding
-> during that freeing process as well.
+Attention
 
-Ya.  I tagged this one for stable because its very much a regression that I
-introduced when reverting the revert, i.e. the very original implemenation worked.
-Sadly, I did not get to do a triple revert :-)
+You have been compensated with the sum of 4.6 million dollars in this
+United Nation the payment will be issue into Atm Visa Card and send to you
+from the Bank we need your Address Passport and your whatsapp number
+
+Contact This My WhatsApp Number for more Details (+1 (201)308-2233
+
+THANKS
+MRS Salem Chantal Lawrence
