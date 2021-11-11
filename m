@@ -2,95 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 80F0244D5FB
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Nov 2021 12:40:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 151AC44D600
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Nov 2021 12:41:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233098AbhKKLn1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Nov 2021 06:43:27 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45932 "EHLO
+        id S233152AbhKKLnx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Nov 2021 06:43:53 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46036 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229668AbhKKLn0 (ORCPT
+        with ESMTP id S232987AbhKKLnw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Nov 2021 06:43:26 -0500
-Received: from mail-ot1-x329.google.com (mail-ot1-x329.google.com [IPv6:2607:f8b0:4864:20::329])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46DD8C061766
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Nov 2021 03:40:37 -0800 (PST)
-Received: by mail-ot1-x329.google.com with SMTP id v15-20020a9d604f000000b0056cdb373b82so488764otj.7
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Nov 2021 03:40:37 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=2kswfYXPfOrb43VA/X4OesUiF8o8DkuzTUOlQBSmXF0=;
-        b=MJ8tyrwScTqC4dImWwscwqVagJong8JN5+ES17WP+6JD4uW3Kj2MmD8k/yzl5NR80V
-         LwyJUTDbK9w4mP7kvVKKSPQJWRLQ1NqmZHb5RlcacNjOrqCA35EOR1GnVeFNmrF6miYe
-         gjAykCMYYuib08d57EF4TaV22gtt5Vj3RZPK1dU3TelVbUW8QhycjAUOtZa7nASrgJ+q
-         McrdqjAub8FV4wymL9qIOp1rT4bkxeMkK1YjWsAhDPntSzTJBP7+gKSYQiqPHDB2CBfA
-         WLzyrmlRDf03vr9POBBa68mEyimTsKHwJmcNndnmhaBd2MwivOEXCoTZRIsTV9QvXAsd
-         X3Cg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=2kswfYXPfOrb43VA/X4OesUiF8o8DkuzTUOlQBSmXF0=;
-        b=Ep4uV+kF0hO+on5ZIBC20LcjFbg89XUIWvh7pVbO1q537vz5y5ARzOy8JTPTBu5AnR
-         ipGbWrxYex/FTNppWWqflYAw0sV/zAG52GLC04A2UQQotsbvWgpFaj5nI4D6rK+g7dy8
-         KORpZnXH7OK0dYZj4ufuXebE5QUPm3tJHWWJTn4GszSPa6SPbM0WQmFdcCeULH5T4tLl
-         aCBy3kOyafAbMltBgqsZ0D1uMbVls6nQwIhJRzVSCgMwBg7RwqYz+uLQJISxjhrSack4
-         d0ZGxE9/RkF2v9nyEJOglNMn5fuQeggubQpZHaXaWTeq55exzWGP2s2nH+SkS0I5pMb9
-         0QHg==
-X-Gm-Message-State: AOAM533MHsam+9T4ELtwek1RaUpaBh4syug+hHb1rlEuMQYsuZQDpQR8
-        asdBF89iw6ThuHfJilKB+tAHgEzj+EsJezP/0DUohdBPMYQ=
-X-Google-Smtp-Source: ABdhPJyMx+UsrRwT6aFImNsdpBCtCwztby1lv8wnfOfF2gmGQlu4WpDJxWXVZipTFzyKxKJmRdz27zzuXTKOOtPslDQ=
-X-Received: by 2002:a9d:7617:: with SMTP id k23mr5208642otl.351.1636630836651;
- Thu, 11 Nov 2021 03:40:36 -0800 (PST)
+        Thu, 11 Nov 2021 06:43:52 -0500
+Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 570DDC061766;
+        Thu, 11 Nov 2021 03:41:03 -0800 (PST)
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: kholk11)
+        with ESMTPSA id 542691F45B1A
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=collabora.com; s=mail;
+        t=1636630861; bh=yaYinyVYYl0N0+dtMK6+ku0bg03EnhdN+DOz/1sMwr8=;
+        h=Subject:From:To:Cc:References:Date:In-Reply-To:From;
+        b=no3Uds5F4F508vhMrZab+HejB/C3NhT5KZUDZRYsQXmxZ/JLYlFoKTLKUpb2hzBxE
+         BgJAwDrXf1Ado/c/hLd3dPF00AjE3S4yMfKNiC+boOLn7hAgCnr9oE1Sz4b7XXuLKE
+         Bkj9qW4XxFaKRDdVC1kR+C8XyTtz7OI6LGezuDYkoHHwHsb+RKyyYpZ/pjZjJ9wr4b
+         G/qwQ/2SsBlzcPSB/6g3bbBCdqJfZc1zSbcQiS0PtjKl1CsjXt1DlVoS2iu92npFrY
+         LzZU/xW98Bokw+uovBd6WuIlpdjRfRGCJElGWWU5qREaviFcx5jVJWy6UiAyqzOaOJ
+         8eKvxTizo/RiQ==
+Subject: Re: [PATCH v8 1/7] soc: mediatek: mmsys: add support for MDP
+From:   AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>
+To:     Moudy Ho <moudy.ho@mediatek.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Jernej Skrabec <jernej.skrabec@siol.net>
+Cc:     Maoguang Meng <maoguang.meng@mediatek.com>,
+        daoyuan huang <daoyuan.huang@mediatek.com>,
+        Ping-Hsun Wu <ping-hsun.wu@mediatek.com>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Rob Landley <rob@landley.net>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        linux-media@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
+        tfiga@chromium.org, drinkcat@chromium.org, acourbot@chromium.org,
+        pihsun@chromium.org, menghui.lin@mediatek.com,
+        sj.huang@mediatek.com, allen-kh.cheng@mediatek.com,
+        randy.wu@mediatek.com, srv_heupstream@mediatek.com,
+        hsinyi@google.com
+References: <20211015123832.17914-1-moudy.ho@mediatek.com>
+ <20211015123832.17914-2-moudy.ho@mediatek.com>
+ <31577e05-34b8-2e5e-14f0-db9949ffdd3d@collabora.com>
+Message-ID: <6876d923-bd71-8f10-e5fb-1c228642a163@collabora.com>
+Date:   Thu, 11 Nov 2021 12:40:57 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-References: <20211111084617.6746-1-ajaygargnsit@gmail.com> <6864f744-ca3e-f328-8793-2adb0146db03@bytedance.com>
-In-Reply-To: <6864f744-ca3e-f328-8793-2adb0146db03@bytedance.com>
-From:   Ajay Garg <ajaygargnsit@gmail.com>
-Date:   Thu, 11 Nov 2021 17:10:24 +0530
-Message-ID: <CAHP4M8VNZY+NLzUAVHTWK6a6pggvv4a-q9nvYAqkkco6id3Tog@mail.gmail.com>
-Subject: Re: [PATCH] mm: shmem: do not call PageHWPoison on a ERR-page
-To:     Muchun Song <songmuchun@bytedance.com>
-Cc:     hughd@google.com, akpm@linux-foundation.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <31577e05-34b8-2e5e-14f0-db9949ffdd3d@collabora.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
->
-> How about the following changes since the above if block
-> already do the judgment?
->
-> diff --git a/mm/shmem.c b/mm/shmem.c
-> index f0eee4e221a7..0c84b6624026 100644
-> --- a/mm/shmem.c
-> +++ b/mm/shmem.c
-> @@ -4195,13 +4195,13 @@ struct page *shmem_read_mapping_page_gfp(struct
-> address_space *mapping,
->          BUG_ON(!shmem_mapping(mapping));
->          error = shmem_getpage_gfp(inode, index, &page, SGP_CACHE,
->                                    gfp, NULL, NULL, NULL);
-> -       if (error)
-> +       if (error) {
->                  page = ERR_PTR(error);
-> -       else
-> +       } else {
->                  unlock_page(page);
-> -
-> -       if (PageHWPoison(page))
-> -               page = ERR_PTR(-EIO);
-> +               if (PageHWPoison(page))
-> +                       page = ERR_PTR(-EIO);
-> +       }
->
->          return page;
+Il 18/10/21 15:50, AngeloGioacchino Del Regno ha scritto:
+> Il 15/10/21 14:38, Moudy Ho ha scritto:
+>> For the purpose of module independence, related settings should be moved
+>> from MDP to the corresponding driver.
+>> This patch adds more 8183 MDP settings and interface. and MDP
+>> related settings must be set via CMDQ to avoid frame unsynchronized.
+>>
+>> Signed-off-by: Moudy Ho <moudy.ho@mediatek.com>
+>> ---
+>>   drivers/soc/mediatek/Kconfig           |   1 +
+>>   drivers/soc/mediatek/mt8183-mmsys.h    | 219 +++++++++++++++++++++++++
+>>   drivers/soc/mediatek/mtk-mmsys.c       |  52 ++++++
+>>   drivers/soc/mediatek/mtk-mmsys.h       |   2 +
+>>   include/linux/soc/mediatek/mtk-mmsys.h |  56 +++++++
+>>   5 files changed, 330 insertions(+)
+>>
+> 
 
+This patch does not apply cleanly anymore, as of next-20211111.
+Can you please send a v9 asap?
 
-You have
-
-* simply put braces (not required for 1-liner if/else blocks)
-* contributed nothing to the issue the patch addresses.
-
-I hope this is not a deliberate joke/spam.
+Thanks,
+Angelo
