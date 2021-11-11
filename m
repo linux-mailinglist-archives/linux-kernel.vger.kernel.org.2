@@ -2,236 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 982EB44D852
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Nov 2021 15:32:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CB62244D85C
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Nov 2021 15:33:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233600AbhKKOfZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Nov 2021 09:35:25 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57078 "EHLO
+        id S233726AbhKKOgJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Nov 2021 09:36:09 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57260 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232815AbhKKOfV (ORCPT
+        with ESMTP id S233062AbhKKOgH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Nov 2021 09:35:21 -0500
-Received: from mail-ed1-x533.google.com (mail-ed1-x533.google.com [IPv6:2a00:1450:4864:20::533])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 55B42C061767
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Nov 2021 06:32:32 -0800 (PST)
-Received: by mail-ed1-x533.google.com with SMTP id m14so25262288edd.0
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Nov 2021 06:32:32 -0800 (PST)
+        Thu, 11 Nov 2021 09:36:07 -0500
+Received: from mail-wr1-x42a.google.com (mail-wr1-x42a.google.com [IPv6:2a00:1450:4864:20::42a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 76DE3C061766
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Nov 2021 06:33:18 -0800 (PST)
+Received: by mail-wr1-x42a.google.com with SMTP id u1so10101951wru.13
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Nov 2021 06:33:18 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
+        d=immu-ne.20210112.gappssmtp.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=ntyQoIMsqCXcReeRS5/ylB7GeUq21ujmpM7z4typwPw=;
-        b=fOvlvPBFrbQbpkouPvU6yzpZLf7IgKR+rMTwe7ar6Rk/aWzh1+3HwVOrXlAPd2pvru
-         1EaxYkmMeZmCUbQ7IDeKZxQibsPBDbWDLF8tsN7DLJeRMAt5SZ4W7dwvtpMULfvRoxoz
-         cvqRUvthlTOKJ++ru04nWDWKwdusixuXknL8QRCJjuKxmwhpW6P7sgh78SECog1718Gu
-         zpqXHqvrUasrRU5BBtPg79kZtUs4bGm9eAnwUyP4Wb8MXlK6xyS12GPfxpfJ0/S4nIXO
-         b+xNfbEnS52ysd1Da96ogKWWQJAu6tcc9PYflHLFmBDDVYwyZtO86XDLJIk5hqgDOpjt
-         P6+A==
+         :cc;
+        bh=ja+uZ/098TjANxx6nNWMaIY7Dtj1bPhX+Sb1SEHf/Xo=;
+        b=1tkzBNyit1lHlwLMhV8wO6Trj9HbVtfFvWLfYVSnLNz6nXqyAMIp9RsOjYIFl3d2DC
+         tm4rr8+ITlvF42xmdKZZV3Sy16aQU2b9uM5UGQ2z1ClhMhu+DIoDVGspTGiIbz+zFP/k
+         w2ntKmQFmRDpV+HqJkIIp6lmV0cwcSfX0D2UdwwaeezhvftVmeDzOi6ilmTiu44bXuv7
+         H//Cfv1ChlsjJmkO/bnTQwtNDAdw+ibEx3JNboblEaOZX/bRohCat2b/5VjXCm6Hlgu1
+         5TZPRLaIiwryxVXXq+pfL9KK2HLWLqNw+E3u4cXLth3/RGR7IhauqSyYdCwxgNkLDybq
+         8o1w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=ntyQoIMsqCXcReeRS5/ylB7GeUq21ujmpM7z4typwPw=;
-        b=G5U95OxHMjFaEfUo1rYCJI6w5ry6+/TPeGyPhtcOBMnRTMD5tkE7nqN/DPnqN9xpDy
-         5TWU/l96kJwbxDlNWnwab0LkwCATrQTBtYRiAC9Jjjc/T1+o6arIq/Qf93XdHbbw3J7Z
-         QbnTNImcIVWm4OUaqLTR9v3r5co+y3Hu6Iexwo8fFCh4iCYFhyE8Evms6LQJnT4Y8PTS
-         LisjOZuhVVwYoVoUkFfan7bFVimGQsVmCKx0kF/1Run0/T9ElV/TVd4mUk84qi/bPnbT
-         Jyxm8S2hbooBF1dTWE29yo+eQu0FlfwaFZloXe9Z25G5YyxcIfbqa0gZLIVLCruE2aiH
-         IJdA==
-X-Gm-Message-State: AOAM532Tc3HYp0D65u8meKLNNRNkpYD1fAfhaL0dhpMf9aEKEDPXNM6I
-        l12s3j65Ttl5+FBebqkjLFpG93RbUkqq432w83onYQ==
-X-Google-Smtp-Source: ABdhPJyNGvtI0jStQdpzcqafH5hK8YL0uhi2mAyz5bo0nBTNG7M5zlU6whxmr4XRVNbjbu634WWWBSVWbeF1uHybIJQ=
-X-Received: by 2002:a05:6402:4412:: with SMTP id y18mr10191911eda.103.1636641150024;
- Thu, 11 Nov 2021 06:32:30 -0800 (PST)
+         :message-id:subject:to:cc;
+        bh=ja+uZ/098TjANxx6nNWMaIY7Dtj1bPhX+Sb1SEHf/Xo=;
+        b=2zbDuHZcOFK8RnP/AOEnCMR1r6XbMHwyHYXWn2PMH47edHae4YsZ1c5vStixvcciVu
+         I1FT5zNXklCwgfdVIlibvz0M+PstwOmFMDzsWlaT4XG5LX79D/Qyrb/3c7M7ekBfmzcM
+         VsnkkeFGWlbvZ85YAIGcIzpQ0c2je6fP5t7wHWIc/4XFUWDt/HetVkP37hT9XMjXhbbD
+         Gk9zq8k9WRY00B+l/rqAGOqf+snpN8GtfcXLvWdMEy7ErKjU/mjtIIpjs/gi5gP5XC41
+         CVSyTUWo788ysiJ6rdwC66fYLrE9Tn0TeI3xmfcu93n1fwyAXWPjXtp6CnorslGqlIZn
+         ejbA==
+X-Gm-Message-State: AOAM530+bqTu34ecqDtxAil/19XQqGNrDao73T28iIVc9LjypTCh4vQv
+        gP2G0fuUbRBH4s2sAIX/BDp58rMFyPVGnB20Vqe3bw==
+X-Google-Smtp-Source: ABdhPJyHKnKU2yO/043Tx5WStHAw2sXQcCYHF5i9tDrEJvv+DcWtsumYvTGAM1y+bagXbaOScmpSgccmxmw1wgGPQwc=
+X-Received: by 2002:a5d:464c:: with SMTP id j12mr9302472wrs.150.1636641197026;
+ Thu, 11 Nov 2021 06:33:17 -0800 (PST)
 MIME-Version: 1.0
-References: <20211110182001.994215976@linuxfoundation.org>
-In-Reply-To: <20211110182001.994215976@linuxfoundation.org>
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Thu, 11 Nov 2021 20:02:18 +0530
-Message-ID: <CA+G9fYsUwT8QssS0p_r94QfFC6hG_dqkWGzkNOKgTGY_0BnkUw@mail.gmail.com>
-Subject: Re: [PATCH 4.19 00/16] 4.19.217-rc1 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-kernel@vger.kernel.org, shuah@kernel.org,
-        f.fainelli@gmail.com, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, jonathanh@nvidia.com,
-        stable@vger.kernel.org, pavel@denx.de, akpm@linux-foundation.org,
-        torvalds@linux-foundation.org, linux@roeck-us.net
+References: <CAHifhD5V9vwJenRLcPRH5ZMeLa_JnjZKfdcFZw1CjceBtC6=Ew@mail.gmail.com>
+ <CAHp75VeyQEaABFOnEUh2pdFx9ROJvRcud-BuEbKWmaEWpL9_Uw@mail.gmail.com>
+ <CAHifhD7Qf7+dc7K-MjNguqmiCWUxOJZmQoCTRUZOR-RWMm_JPw@mail.gmail.com>
+ <CAHp75Ve9BMNy3gP=-Dajm+Lgu+E4FCqc4phLgV1_cr2qUnTX_w@mail.gmail.com>
+ <CAHifhD4n7O5eWFPOjRAmHYL52tW0K=uXXzVj7L5+enTFwFXW2A@mail.gmail.com>
+ <CAArk9MP5cKJ+VhAZUseW4LnQNRvux=MZe2eSy3rQkbHKnUsGig@mail.gmail.com>
+ <CAHp75VdRwvU5WjFP5E4gg8U+_e34A0Lwze+nz_wVHoB49jLeLg@mail.gmail.com>
+ <CAArk9MNGSxR+92n-D2pe_+r+Z0Q9FoTMPqk11sAKA=4Vckj0HQ@mail.gmail.com>
+ <YYy7QZGKeEEfI1mH@lahna> <CAHifhD5bXu2nP533RXyWDnyNt=k2rRZq5Z6A6CCik_2e6XNgGA@mail.gmail.com>
+ <YYzxWPIWFAV04LRU@lahna> <CAD2FfiGnmFSTPvkJaXj+cf4yDvci-j+2QkpMqNY821fUT5C=CA@mail.gmail.com>
+ <CAHp75Vcp=hC1oL5FBQDDFe8EBxWB9Po4FKNS9ZGtD3q-yQPtAw@mail.gmail.com>
+ <CAHifhD6p9qSm5dv1spz+oPRhRkBZeQspHNEphE49fODacm-S6g@mail.gmail.com> <CAHp75Vfk5WHWiQxwmqEzVEymgpvjxKWEZbaQ9+=Et7N63Ps=Ng@mail.gmail.com>
+In-Reply-To: <CAHp75Vfk5WHWiQxwmqEzVEymgpvjxKWEZbaQ9+=Et7N63Ps=Ng@mail.gmail.com>
+From:   Hans-Gert Dahmen <hans-gert.dahmen@immu.ne>
+Date:   Thu, 11 Nov 2021 15:33:05 +0100
+Message-ID: <CAHifhD5bGZOcZFNsHYFeecikHGUts73U4k6=aUVNTKEeETW5rQ@mail.gmail.com>
+Subject: Re: [PATCH] firmware: export x86_64 platform flash bios region via sysfs
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc:     Richard Hughes <hughsient@gmail.com>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        Mauro Lima <mauro.lima@eclypsium.com>,
+        Greg KH <gregkh@linuxfoundation.org>,
+        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Philipp Deppenwiese <philipp.deppenwiese@immu.ne>,
+        "platform-driver-x86@vger.kernel.org" 
+        <platform-driver-x86@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 11 Nov 2021 at 00:17, Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
+Am Do., 11. Nov. 2021 um 14:55 Uhr schrieb Andy Shevchenko
+<andy.shevchenko@gmail.com>:
 >
-> This is the start of the stable review cycle for the 4.19.217 release.
-> There are 16 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
+> On Thu, Nov 11, 2021 at 2:56 PM Hans-Gert Dahmen
+> <hans-gert.dahmen@immu.ne> wrote:
+> >
+> > Am Do., 11. Nov. 2021 um 13:46 Uhr schrieb Andy Shevchenko
+> > <andy.shevchenko@gmail.com>:
+> > >
+> > > On Thu, Nov 11, 2021 at 1:46 PM Richard Hughes <hughsient@gmail.com> wrote:
+> > > > On Thu, 11 Nov 2021 at 10:33, Mika Westerberg
+> > > > <mika.westerberg@linux.intel.com> wrote:
+> > >
+> > > > it's always going to work on x64 -- if the system firmware isn't available at that offset then the platform just isn't going to boot.
+> > >
+> > > Well, it's _usual_ case, but in general the assumption is simply
+> > > incorrect. Btw, have you checked it on Coreboot enabled platforms?
+> > > What about bare metal configurations where the bootloader provides
+> > > services to the OS?
+> >
+> > No it is always the case. I suggest you go read your own Intel specs
+> > and datasheets
 >
-> Responses should be made by Fri, 12 Nov 2021 18:19:54 +0000.
-> Anything received after that time might be too late.
+> Point me out, please, chapters in SDM (I never really read it in full,
+> it's kinda 10x Bible size). What x86 expects is 16 bytes at the end of
+> 1Mb physical address space that the CPU runs at first.
+
+So you do not know what you are talking about, am I correct? Starting
+from 386 the first instruction is executed at 0xFFFFFFF0h. What you
+are referring to is the 8086 reset vector and that was like 40 years
+ago.
+
+Please refer to SDM volume 3A, chapter 9, section 9.1.4 "First
+Instruction Executed", paragraph two. Just watch out for the hex
+number train starting with FFFFF... then you will find it. This is
+what requires the memory range to be mapped. Modern Intel CPUs require
+larger portions, because of the ACM loading and XuCode and whatnot.
+Please refer to the email [1] from me linked below where I reference
+all PCH datasheets of the x64 era to prove that 16MB are mapped
+hard-wired. Note that the range cannot be turned off and will read
+back 0xFF's if the PCH registers are configured to not be backed by
+the actual SPI flash contents.
+
+[1] https://lkml.org/lkml/2021/6/24/379
+
 >
-> The whole patch series can be found in one patch at:
->         https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-=
-4.19.217-rc1.gz
-> or in the git tree and branch at:
->         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
--rc.git linux-4.19.y
-> and the diffstat can be found below.
+> > before spreading further FUD. I have experienced u-root
+> > and coreboot developers sitting right next to me in my office and they
+> > were among the ones suggesting my patch. This is just laughable,
+> > please stop it Andy.
 >
-> thanks,
+> Yeah, zillion people can't ever make a mistake... I see.
 >
-> greg k-h
+> --
+> With Best Regards,
+> Andy Shevchenko
 
-Results from Linaro=E2=80=99s test farm.
-No regressions on arm64, arm, x86_64, and i386.
-
-Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
-
-## Build
-* kernel: 4.19.217-rc1
-* git: https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-=
-rc.git
-* git branch: linux-4.19.y
-* git commit: f1ca790424bdd0693e501e24dc3300f01460cfed
-* git describe: v4.19.216-17-gf1ca790424bd
-* test details:
-https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-4.19.y/build/v4.19=
-.216-17-gf1ca790424bd
-
-## No regressions (compared to v4.19.216)
-
-## No fixes (compared to v4.19.216)
-
-## Test result summary
-total: 83189, pass: 66945, fail: 783, skip: 13526, xfail: 1935
-
-## Build Summary
-* arm: 130 total, 108 passed, 22 failed
-* arm64: 38 total, 38 passed, 0 failed
-* dragonboard-410c: 1 total, 1 passed, 0 failed
-* hi6220-hikey: 1 total, 1 passed, 0 failed
-* i386: 19 total, 19 passed, 0 failed
-* juno-r2: 1 total, 1 passed, 0 failed
-* mips: 27 total, 27 passed, 0 failed
-* s390: 12 total, 12 passed, 0 failed
-* sparc: 12 total, 12 passed, 0 failed
-* x15: 1 total, 1 passed, 0 failed
-* x86: 1 total, 1 passed, 0 failed
-* x86_64: 22 total, 22 passed, 0 failed
-
-## Test suites summary
-* fwts
-* igt-gpu-tools
-* kselftest-android
-* kselftest-arm64
-* kselftest-arm64/arm64.btitest.bti_c_func
-* kselftest-arm64/arm64.btitest.bti_j_func
-* kselftest-arm64/arm64.btitest.bti_jc_func
-* kselftest-arm64/arm64.btitest.bti_none_func
-* kselftest-arm64/arm64.btitest.nohint_func
-* kselftest-arm64/arm64.btitest.paciasp_func
-* kselftest-arm64/arm64.nobtitest.bti_c_func
-* kselftest-arm64/arm64.nobtitest.bti_j_func
-* kselftest-arm64/arm64.nobtitest.bti_jc_func
-* kselftest-arm64/arm64.nobtitest.bti_none_func
-* kselftest-arm64/arm64.nobtitest.nohint_func
-* kselftest-arm64/arm64.nobtitest.paciasp_func
-* kselftest-bpf
-* kselftest-breakpoints
-* kselftest-capabilities
-* kselftest-cgroup
-* kselftest-clone3
-* kselftest-core
-* kselftest-cpu-hotplug
-* kselftest-cpufreq
-* kselftest-drivers
-* kselftest-efivarfs
-* kselftest-filesystems
-* kselftest-firmware
-* kselftest-fpu
-* kselftest-futex
-* kselftest-gpio
-* kselftest-intel_pstate
-* kselftest-ipc
-* kselftest-ir
-* kselftest-kcmp
-* kselftest-kexec
-* kselftest-kvm
-* kselftest-lib
-* kselftest-livepatch
-* kselftest-membarrier
-* kselftest-memfd
-* kselftest-memory-hotplug
-* kselftest-mincore
-* kselftest-mount
-* kselftest-mqueue
-* kselftest-net
-* kselftest-netfilter
-* kselftest-nsfs
-* kselftest-openat2
-* kselftest-pid_namespace
-* kselftest-pidfd
-* kselftest-proc
-* kselftest-pstore
-* kselftest-ptrace
-* kselftest-rseq
-* kselftest-rtc
-* kselftest-seccomp
-* kselftest-sigaltstack
-* kselftest-size
-* kselftest-splice
-* kselftest-static_keys
-* kselftest-sync
-* kselftest-sysctl
-* kselftest-tc-testing
-* kselftest-timens
-* kselftest-timers
-* kselftest-tmpfs
-* kselftest-tpm2
-* kselftest-user
-* kselftest-vm
-* kselftest-x86
-* kselftest-zram
-* kvm-unit-tests
-* libhugetlbfs
-* linux-log-parser
-* ltp-cap_bounds-tests
-* ltp-commands-tests
-* ltp-containers-tests
-* ltp-controllers-tests
-* ltp-cpuhotplug-tests
-* ltp-crypto-tests
-* ltp-cve-tests
-* ltp-dio-tests
-* ltp-fcntl-locktests-tests
-* ltp-filecaps-tests
-* ltp-fs-tests
-* ltp-fs_bind-tests
-* ltp-fs_perms_simple-tests
-* ltp-fsx-tests
-* ltp-hugetlb-tests
-* ltp-io-tests
-* ltp-ipc-tests
-* ltp-math-tests
-* ltp-mm-tests
-* ltp-nptl-tests
-* ltp-open-posix-tests
-* ltp-pty-tests
-* ltp-sched-tests
-* ltp-securebits-tests
-* ltp-syscalls-tests
-* ltp-tracing-tests
-* network-basic-tests
-* packetdrill
-* perf
-* rcutorture
-* ssuite
-* v4l2-compliance
-
---
-Linaro LKFT
-https://lkft.linaro.org
+Hans-Gert
