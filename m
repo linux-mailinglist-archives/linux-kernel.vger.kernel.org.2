@@ -2,105 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 64A8744DD26
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Nov 2021 22:36:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6DF9944DD29
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Nov 2021 22:36:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234141AbhKKVjD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Nov 2021 16:39:03 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40392 "EHLO
+        id S234185AbhKKVjG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Nov 2021 16:39:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40416 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234172AbhKKVjB (ORCPT
+        with ESMTP id S234179AbhKKVjF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Nov 2021 16:39:01 -0500
-Received: from mail-io1-xd36.google.com (mail-io1-xd36.google.com [IPv6:2607:f8b0:4864:20::d36])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C1230C061766
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Nov 2021 13:36:10 -0800 (PST)
-Received: by mail-io1-xd36.google.com with SMTP id c3so8720281iob.6
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Nov 2021 13:36:10 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linuxfoundation.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=E3VV7uh5c+wN1000HyR81BxkFplBNT0BtJEN5rQLMHU=;
-        b=ACljz+RtrdcqkNXyR0qeDDk5tm0T9Zxc99IxB3oC1d/Ai9hznTfbj23gljrq5IHtIt
-         D3wjk2FBl9KhpYSEs5ir63UXTEAjiYulXq5D0DhVSrkACE7qjhVlQIlEuyvIjiH02IBx
-         ul6kJpeN/LIeAAXkn/Vil+HWWQxQYvrTgzNW8=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=E3VV7uh5c+wN1000HyR81BxkFplBNT0BtJEN5rQLMHU=;
-        b=1T+Y6Vy25COmp07TS6YZ+BFKmckh7Mp7piwQa+BvHi515RpsQD2ps0JYTsxM5UZ7gR
-         W9bZUUlqrASTtRAJlaIhKwyVMMIqkNdznnrvn4npOseZJpNDPAeI9iR0B1C+jurshdrr
-         F/ljn9th5exsgQHzHVo0qu1NXtjxSMZeARCQTiVgpurJ4XMYdZneu3gyoMVjj/O2OaMf
-         0NYX36Uy/0NEl3D8twjvMDZM9unTwmOvH+SeaWSxaG4YisGz7xlJnwqttqsX65Wqg8nF
-         FcwoI1F2+1U59Glg/r2aYp7y1Be6J1y1EnfLACJzEmGHbWAJ/8mnFeUL0AJbyu9Jp/Ma
-         jfJw==
-X-Gm-Message-State: AOAM533QUceggUczoLlCOBZknp2R74UJ04ynhX2VXDvZF+NI/P9G23Dv
-        OclUk/CGk3PWPpUkEv77n1o1fQ==
-X-Google-Smtp-Source: ABdhPJzGpTK9ZoAxZwfjMH08M6bq9mSGFtC4qBO3A7MsfI4GKH+tGLc/mR9+DaABJ1XjACRCLmv5Yg==
-X-Received: by 2002:a05:6638:2487:: with SMTP id x7mr7797197jat.94.1636666570207;
-        Thu, 11 Nov 2021 13:36:10 -0800 (PST)
-Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
-        by smtp.gmail.com with ESMTPSA id y1sm2658825ilp.43.2021.11.11.13.36.09
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 11 Nov 2021 13:36:09 -0800 (PST)
-Subject: Re: [PATCH 5.10 00/21] 5.10.79-rc1 review
-To:     Sudip Mukherjee <sudipm.mukherjee@gmail.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
-        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
-        patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
-        jonathanh@nvidia.com, f.fainelli@gmail.com, stable@vger.kernel.org,
-        Shuah Khan <skhan@linuxfoundation.org>
-References: <20211110182002.964190708@linuxfoundation.org>
- <YY0UQAQ54Vq4vC3z@debian>
-From:   Shuah Khan <skhan@linuxfoundation.org>
-Message-ID: <dc99862f-f4a5-4351-e4c8-43237238377e@linuxfoundation.org>
-Date:   Thu, 11 Nov 2021 14:36:08 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        Thu, 11 Nov 2021 16:39:05 -0500
+Received: from relay03.th.seeweb.it (relay03.th.seeweb.it [IPv6:2001:4b7a:2000:18::164])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D365C061766;
+        Thu, 11 Nov 2021 13:36:15 -0800 (PST)
+Received: from [192.168.1.101] (83.6.165.118.neoplus.adsl.tpnet.pl [83.6.165.118])
+        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by m-r1.th.seeweb.it (Postfix) with ESMTPSA id 6C8A120225;
+        Thu, 11 Nov 2021 22:36:13 +0100 (CET)
+Message-ID: <bb03bac2-2bfb-0b4c-e624-ca36b32212c3@somainline.org>
+Date:   Thu, 11 Nov 2021 22:36:12 +0100
 MIME-Version: 1.0
-In-Reply-To: <YY0UQAQ54Vq4vC3z@debian>
-Content-Type: text/plain; charset=utf-8; format=flowed
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.1.1
+Subject: Re: [PATCH v3 5/8] arm64: dts: qcom: sdm660-xiaomi-lavender: Add
+ volume up button
 Content-Language: en-US
+To:     Dang Huynh <danct12@riseup.net>
+Cc:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Alexey Min <alexey.min@gmail.com>,
+        Caleb Connolly <caleb@connolly.tech>,
+        Martin Botka <martin.botka@somainline.org>
+References: <20211111031635.3839947-1-danct12@riseup.net>
+ <20211111031635.3839947-6-danct12@riseup.net>
+From:   Konrad Dybcio <konrad.dybcio@somainline.org>
+In-Reply-To: <20211111031635.3839947-6-danct12@riseup.net>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/11/21 6:01 AM, Sudip Mukherjee wrote:
-> Hi Greg,
-> 
-> On Wed, Nov 10, 2021 at 07:43:46PM +0100, Greg Kroah-Hartman wrote:
->> This is the start of the stable review cycle for the 5.10.79 release.
->> There are 21 patches in this series, all will be posted as a response
->> to this one.  If anyone has any issues with these being applied, please
->> let me know.
->>
->> Responses should be made by Fri, 12 Nov 2021 18:19:54 +0000.
->> Anything received after that time might be too late.
-> 
-> systemd-journal-flush.service failed due to a timeout resulting in a very very
-> slow boot on my test laptop. qemu test on openqa failed due to the same problem.
-> 
-> https://openqa.qa.codethink.co.uk/tests/365
-> 
-> A bisect showed the problem to be 8615ff6dd1ac ("mm: filemap: check if THP has
-> hwpoisoned subpage for PMD page fault"). Reverting it on top of 5.10.79-rc1
-> fixed the problem.
-> Incidentally, I was having similar problem with Linus's tree
-> for last few days and was failing since 20211106 (did not get the time to check).
-> I will test mainline again with this commit reverted.
-> 
-> 
 
-Reverting mm: filemap: check if THP has hwpoisoned subpage for PMD page fault"
-worked for me on my test system.
 
-With this commit boots are long and shutdown was at the 20+ minute m ark when
-I powered it down. This commit isn't in any of the other release candidates.
+On 11.11.2021 04:16, Dang Huynh wrote:
+> This enables the volume up key.
+> 
+> Reviewed-by: Caleb Connolly <caleb@connolly.tech>
+> Reviewed-by: Martin Botka <martin.botka@somainline.org>
+> Reviewed-by: Konrad Dybcio <konradybcio@gmail.com>
+Drop.
 
-thanks,
--- Shuah
+> Signed-off-by: Dang Huynh <danct12@riseup.net>
+> ---
+>  .../boot/dts/qcom/sdm660-xiaomi-lavender.dts      | 15 +++++++++++++++
+>  1 file changed, 15 insertions(+)
+> 
+> diff --git a/arch/arm64/boot/dts/qcom/sdm660-xiaomi-lavender.dts b/arch/arm64/boot/dts/qcom/sdm660-xiaomi-lavender.dts
+> index 729b71407c36..456562cb6028 100644
+> --- a/arch/arm64/boot/dts/qcom/sdm660-xiaomi-lavender.dts
+> +++ b/arch/arm64/boot/dts/qcom/sdm660-xiaomi-lavender.dts
+> @@ -9,6 +9,9 @@
+>  #include "sdm660.dtsi"
+>  #include "pm660.dtsi"
+>  #include "pm660l.dtsi"
+> +#include <dt-bindings/gpio/gpio.h>
+gpio.h can safely be moved to the SoC DTSI.
+
+Konrad
