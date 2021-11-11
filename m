@@ -2,139 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1EFCD44D959
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Nov 2021 16:44:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B79644D958
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Nov 2021 16:44:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233959AbhKKPrU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Nov 2021 10:47:20 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45452 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233872AbhKKPrP (ORCPT
+        id S233874AbhKKPrR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Nov 2021 10:47:17 -0500
+Received: from out30-130.freemail.mail.aliyun.com ([115.124.30.130]:42950 "EHLO
+        out30-130.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233870AbhKKPrO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Nov 2021 10:47:15 -0500
-Received: from mail-ed1-x535.google.com (mail-ed1-x535.google.com [IPv6:2a00:1450:4864:20::535])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8040FC0613F5
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Nov 2021 07:44:25 -0800 (PST)
-Received: by mail-ed1-x535.google.com with SMTP id b15so25628369edd.7
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Nov 2021 07:44:25 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=paul-moore-com.20210112.gappssmtp.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=EPQ7vOyVbbdDApHDNZY5gQprN5zr7x8ve73iIkJlJYY=;
-        b=0QU+TYq0W1sc8EeqjE/tNL4yaJ2SFpNf3JbfSJ6XIrpKAwitFcd/yhNROOgoDQwjkj
-         1NMRGqLcfCZMpvPlHqan1c+mGhTrU6zkuQyIp+ySJiC9/Q4lWo3vjntt84USDZ+k21am
-         Yln5xnwGUa2TRf7uWX/0J2QQw+MgU7rUQsfB1IVcQYKFqckaUvu0uZfFQL1/ExxFooFF
-         s/SsXAhYMI4P2W4V6ll0c5VDrqiwvHDDsiF2YCUQo593d1kCA06mEik43mYDWUL1uDms
-         bFOX+T1rjMLZtSH7cboYBKh/gb810BB/Fo1Se41dkIg5AHQm25qVdO6u70csjbkXtDSr
-         O4sg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=EPQ7vOyVbbdDApHDNZY5gQprN5zr7x8ve73iIkJlJYY=;
-        b=FOv9Z1kdJotXSqY2+u0yvH3f4ow7ZbcCRgUs3Buxtib9mPyaAX+VGvCpDQmkmxXefM
-         5fQeWHyjDTQi/rQXmNv6pBI3P4aKxidbJDHiGCrKqHzEr2yYnvMepKgmu3l/jL7KK0jt
-         xLx/wt0UarW0xQ2W3b5XQ7l1hfjDttt+mSy/+hM7fXdlX+eZdbnv0PPcAc6S4vPWZkel
-         u2WksvXXiz7hcobsPUtb5gXI5FkH5P9kGvr7yU7tBFz2hadPnzDVpPhTu+IG66dO3obq
-         A8iwUm4yiG9Y3uMjlJSxkalGIZ643kak0eCG69maGkZBxUEcyPrfjWbJ4+PHTXsy+RQ1
-         vsxg==
-X-Gm-Message-State: AOAM531+g5ok8UCB1hZ2X5v7Kvqy2hJikfLzUjQKNHI0idQLBx6Ez+0C
-        z1XigQexfhkzgMslwkUrHIshe3/3Ao0q2Yyz2ksw
-X-Google-Smtp-Source: ABdhPJw5AV/+6LHJGpXCxldUJSlAQrshxCBciUosbU8oRccWa5FSy8lbwzIVunwib2JpOIbLzgCLXChfqP/otc9BRVQ=
-X-Received: by 2002:a17:907:9484:: with SMTP id dm4mr10250499ejc.307.1636645463777;
- Thu, 11 Nov 2021 07:44:23 -0800 (PST)
+        Thu, 11 Nov 2021 10:47:14 -0500
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R361e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04423;MF=xhao@linux.alibaba.com;NM=1;PH=DS;RN=5;SR=0;TI=SMTPD_---0Uw3iC5R_1636645462;
+Received: from B-X3VXMD6M-2058.lan(mailfrom:xhao@linux.alibaba.com fp:SMTPD_---0Uw3iC5R_1636645462)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Thu, 11 Nov 2021 23:44:22 +0800
+From:   Xin Hao <xhao@linux.alibaba.com>
+Reply-To: xhao@linux.alibaba.com
+Subject: Re: [PATCH V2 0/4] mm/damon: Do some small changes
+To:     SeongJae Park <sj@kernel.org>
+Cc:     sjpark@amazon.de, akpm@linux-foundation.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+References: <20211111092440.11576-1-sj@kernel.org>
+Message-ID: <1a2e1816-70d1-c463-9133-eeb8108daac1@linux.alibaba.com>
+Date:   Thu, 11 Nov 2021 23:44:18 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.14.0
 MIME-Version: 1.0
-References: <20211104195949.135374-1-omosnace@redhat.com> <20211109062140.2ed84f96@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
- <CAHC9VhTVNOUHJp+NbqV5AgtwR6+3V6am0SKGKF0CegsPqjQ8pw@mail.gmail.com> <CAFqZXNuct_T-SkvoRg2n7+ye0--OkMJ_gS31V-t3Cm+Yy7FhxQ@mail.gmail.com>
-In-Reply-To: <CAFqZXNuct_T-SkvoRg2n7+ye0--OkMJ_gS31V-t3Cm+Yy7FhxQ@mail.gmail.com>
-From:   Paul Moore <paul@paul-moore.com>
-Date:   Thu, 11 Nov 2021 10:44:12 -0500
-Message-ID: <CAHC9VhTmkQy1_1xFn9StgrwT2m8nyCwvHCMA+1sRdTW6xWR96A@mail.gmail.com>
-Subject: Re: [PATCH net] selinux: fix SCTP client peeloff socket labeling
-To:     Ondrej Mosnacek <omosnace@redhat.com>
-Cc:     Jakub Kicinski <kuba@kernel.org>, Xin Long <lucien.xin@gmail.com>,
-        network dev <netdev@vger.kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Richard Haines <richard_c_haines@btinternet.com>,
-        Vlad Yasevich <vyasevich@gmail.com>,
-        Neil Horman <nhorman@tuxdriver.com>,
-        Marcelo Ricardo Leitner <marcelo.leitner@gmail.com>,
-        "linux-sctp @ vger . kernel . org" <linux-sctp@vger.kernel.org>,
-        SElinux list <selinux@vger.kernel.org>,
-        Linux kernel mailing list <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20211111092440.11576-1-sj@kernel.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 11, 2021 at 7:59 AM Ondrej Mosnacek <omosnace@redhat.com> wrote:
-> On Tue, Nov 9, 2021 at 4:00 PM Paul Moore <paul@paul-moore.com> wrote:
-> > On Tue, Nov 9, 2021 at 9:21 AM Jakub Kicinski <kuba@kernel.org> wrote:
-> > > On Thu,  4 Nov 2021 20:59:49 +0100 Ondrej Mosnacek wrote:
-> > > > As agreed with Xin Long, I'm posting this fix up instead of him. I am
-> > > > now fairly convinced that this is the right way to deal with the
-> > > > immediate problem of client peeloff socket labeling. I'll work on
-> > > > addressing the side problem regarding selinux_socket_post_create()
-> > > > being called on the peeloff sockets separately.
-> > >
-> > > IIUC Paul would like to see this part to come up in the same series.
-> >
-> > Just to reaffirm the IIUC part - yes, your understanding is correct.
+Hi, Park:
+
+On 2021/11/11 下午5:24, SeongJae Park wrote:
+> Hello Xin,
 >
-> The more I'm reading these threads, the more I'm getting confused...
-> Do you insist on resending the whole original series with
-> modifications? Or actual revert patches + the new patches? Or is it
-> enough to revert/resend only the patches that need changes? Do you
-> also insist on the selinux_socket_post_create() thing to be fixed in
-> the same series? Note that the original patches are still in the
-> net.git tree and it doesn't seem like Dave will want to rebase them
-> away, so it seems explicit reverting is the only way to "respin" the
-> series...
-
-DaveM is stubbornly rejecting the revert requests so for now I would
-continue to base any patches on top of the netdev tree.  If that
-changes we can reconcile any changes as necessary, that should not be
-a major issue.
-
-As far as what I would like to see from the patches, ignoring the
-commit description vs cover letter discussion, I would like to see
-patches that fix all of the known LSM/SELinux/SCTP problems as have
-been discussed over the past couple of weeks.  Even beyond this
-particular issue I generally disapprove of partial fixes to known
-problems; I would rather see us sort out all of the issues in a single
-patchset so that we can review everything in a sane manner.  In this
-particular case things are a bit more complicated because of the
-current state of the patches in the netdev tree, but as mentioned
-above just treat the netdev tree as broken and base your patches on
-that with all of the necessary "Fixes:" metadata and the like.
-
-> Regardless of the answers, this thing has rabbithole'd too much and
-> I'm already past my free cycles to dedicate to this, so I think it
-> will take me (and Xin) some time to prepare the corrected and
-> re-documented patches. Moreover, I think I realized how to to deal
-> with the peer_secid-vs.-multiple-assocs-on-one-socket problem that Xin
-> mentions in patch 4/4, fixing which can't really be split out into a
-> separate patch and will need some test coverage, so I don't think I
-> can rush this up at this point...
-
-It's not clear to me from your comments above if this is something you
-are currently working on, planning to work on soon, or giving up on in
-the near term.  Are we able to rely on you for a patchset to fix this
-or are you unable to see this through at this time?
-
-> In the short term, I'd suggest
-> either reverting patches 3/4 and 4/4 (which are the only ones that
-> would need re-doing; the first two are good changes on their own) or
-> leaving everything as is (it's not functionally worse than what we had
-> before...) and waiting for the proper fixes.
-
-DaveM has thus far failed to honor the revert request so it doesn't
-appear that reverting 3/4 and 4/4 is an option.  In the near term that
-leaves us with the other two options: leave it as-is or fix it
-properly.  I am firmly in the fix it properly camp, regardless of the
-revert state, so that is the direction I would like to see things go.
+> On Thu, 11 Nov 2021 14:07:00 +0800 Xin Hao <xhao@linux.alibaba.com> wrote:
+>
+>> These four patches are mainly to do some small changes.
+>>
+>> V1 -> V2
+>> 	Add reviewed by SeongJae Park
+>> 	Add two new patches
+>> V1:
+>> https://lore.kernel.org/linux-mm/cover.1636546262.git.xhao@linux.alibaba.com/
+>>
+>>
+>> Xin Hao (4):
+>>    mm/damon: Unified access_check function naming rules
+>>    mm/damon: Add 'age' of region tracepoint support
+>>    mm/damon/core: Using function abs() instead of diff_of()
+>>    mm/damon: Remove some no need func definitions in damon.h file
+> Overall, all patches looks good to me, though I asked[1] a trivial change in
+> the commit message of the second patch.
+Ok,  I will add a detail message to explain it in commit in my next 
+patch, thanks.
+>
+> Also, I found one interesting thing.  It seems you are wrapping body of the
+> commit messages at <75 columns[2]?  That's obviously neither a problem, nor
+> even trivial nit.  But... I'd prefer the messages look more consistent with
+> others.
+Thank you very much for your careful correction,  I will fix it in my 
+next patch too.
+>
+> [1] https://lore.kernel.org/linux-mm/20211111082034.13323-1-sj@kernel.org/
+> [2] https://docs.kernel.org/process/submitting-patches.html?highlight=75#the-canonical-patch-format
+>
+>
+> Thanks,
+> SJ
+>
+>>   include/linux/damon.h        | 25 ++-----------------------
+>>   include/trace/events/damon.h |  7 +++++--
+>>   mm/damon/core.c              |  6 ++----
+>>   mm/damon/vaddr.c             |  8 ++++----
+>>   4 files changed, 13 insertions(+), 33 deletions(-)
+>>
+>> --
+>> 2.31.0
 
 -- 
-paul moore
-www.paul-moore.com
+Best Regards!
+Xin Hao
+
