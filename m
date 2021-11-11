@@ -2,115 +2,393 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8874D44D406
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Nov 2021 10:27:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7EC8644D411
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Nov 2021 10:29:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232067AbhKKJ37 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Nov 2021 04:29:59 -0500
-Received: from smtp-out2.suse.de ([195.135.220.29]:49884 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229668AbhKKJ36 (ORCPT
+        id S232431AbhKKJci (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Nov 2021 04:32:38 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:56017 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230021AbhKKJch (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Nov 2021 04:29:58 -0500
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out2.suse.de (Postfix) with ESMTP id 5B54C1FD29;
-        Thu, 11 Nov 2021 09:27:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1636622827; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-         mime-version:mime-version:content-type:content-type:
+        Thu, 11 Nov 2021 04:32:37 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1636622988;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=pl6aAvDoTx6EdeF3PlSqs4c8bMd7axYmKzOYDsF5224=;
-        b=En04iaVMWrZRqB7CcOMiYmOz7s7M5ASxSf/5/slytEjXMAyyLB7xo155L8gXz04268QjUf
-        MqZSRmmG478bkrPYtZs4dne43QMHz+h6EDa8HvEIC1+X+Ao26+F2SQ0UwmFG33a0q06jiJ
-        uBC5LH7JDN2wEmUYYqQGljwjQFsGyi0=
-Received: from suse.cz (unknown [10.100.216.66])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by relay2.suse.de (Postfix) with ESMTPS id C9647A3B84;
-        Thu, 11 Nov 2021 09:27:06 +0000 (UTC)
-Date:   Thu, 11 Nov 2021 10:27:06 +0100
-From:   Petr Mladek <pmladek@suse.com>
-To:     Peter Zijlstra <peterz@infradead.org>,
-        Sultan Alsawaf <sultan@kerneltoast.com>,
-        Anton Vorontsov <anton@enomsg.org>,
-        Ben Segall <bsegall@google.com>,
-        Colin Cross <ccross@android.com>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        David Airlie <airlied@linux.ie>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        dri-devel@lists.freedesktop.org, Ingo Molnar <mingo@redhat.com>,
-        John Ogness <john.ogness@linutronix.de>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Kees Cook <keescook@chromium.org>,
-        linux-kernel@vger.kernel.org,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Mel Gorman <mgorman@suse.de>,
-        Sergey Senozhatsky <senozhatsky@chromium.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        Tony Luck <tony.luck@intel.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>, mkoutny@suse.com
-Subject: Re: printk deadlock due to double lock attempt on current CPU's
- runqueue
-Message-ID: <YYzh6rxX6tY8/d+L@alley>
-References: <YYrU2PdmdNkulWSM@sultan-box.localdomain>
- <20211109213847.GY174703@worktop.programming.kicks-ass.net>
- <YYuS1uNhxWOEX1Ci@phenom.ffwll.local>
+        bh=C+cDjd5H0uszqEmUBhyikNku6GZ57TD7BmVEKZrOfGI=;
+        b=iWM+bREtIs7NbjIvwE102A/Yg9vRi0H4nuJNM9nSSusr+MwIvzV/IL9SQt4ppsEL7XpKCF
+        aDBV9iKsk6rIQxrts9d05Gr8jr0xdnTZZ6BHOVeJ6A7h5ASKP+A8CUn1ZwZazkvGc2lYMM
+        pU8hXEdI/JFntmwYjpXKKUyiXYftlXo=
+Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com
+ [209.85.208.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-591-cgEjXjW1Pn--MmvXhRw3ow-1; Thu, 11 Nov 2021 04:29:46 -0500
+X-MC-Unique: cgEjXjW1Pn--MmvXhRw3ow-1
+Received: by mail-ed1-f69.google.com with SMTP id r25-20020a05640216d900b003dca3501ab4so4881671edx.15
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Nov 2021 01:29:46 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:in-reply-to
+         :content-transfer-encoding;
+        bh=C+cDjd5H0uszqEmUBhyikNku6GZ57TD7BmVEKZrOfGI=;
+        b=7lOHanSGpmtkANLV7oMC8zxnUyQW3+taHLddMEbvOEoPbeXaSFcerOlsnsTih2ZJXX
+         eIBVQXpP66gLhEQ1v4vo+l5Gr8H7qAkW8YkS+PzLkD4xxDaTPU2kSRUwC2Iu3mEmcVPa
+         /dfGnoGBttFlveN7jdyuY6RnhQd3nTwoozfoAQNd45atwsGYkHP7qm6LlT6gvUC+vgdH
+         Rx/4pcP+fIGTJv6B9sC0ZUVKBC75VF/cbXb00vHHf+dSxzKVSFeS3vfLNVH//d9Bfa16
+         jYIQwtPYczdYk6+2xU3gs06rYw+rD/88/O6D8CEfOKGX/pI7NEUuHIAojSjXbI/SUPEK
+         jT3Q==
+X-Gm-Message-State: AOAM5330oWSeovhIrSbjYNg6s+JkK8sSs87EPacVH56tfs19sECRrnYK
+        6Cri1vQv0YZ5zCXQ2iHZ5JfR41Gpg/4xhACr4pYsvGnk2tv+brop9LPZffUV746OE73syCYzxqh
+        hi41fWPSbVVWPzDbv5MlNUUmS
+X-Received: by 2002:aa7:df8f:: with SMTP id b15mr8008459edy.202.1636622985175;
+        Thu, 11 Nov 2021 01:29:45 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJwX4WTDXiWGD3sx5UzqSuzeES9OezCcx1w3Rqr2uyovIJDiDA/+afjbQcXKMvFJNBKJJ6veWQ==
+X-Received: by 2002:aa7:df8f:: with SMTP id b15mr8008421edy.202.1636622984962;
+        Thu, 11 Nov 2021 01:29:44 -0800 (PST)
+Received: from ?IPV6:2001:1c00:c1e:bf00:1054:9d19:e0f0:8214? (2001-1c00-0c1e-bf00-1054-9d19-e0f0-8214.cable.dynamic.v6.ziggo.nl. [2001:1c00:c1e:bf00:1054:9d19:e0f0:8214])
+        by smtp.gmail.com with ESMTPSA id ck4sm1146836edb.72.2021.11.11.01.29.44
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 11 Nov 2021 01:29:44 -0800 (PST)
+Message-ID: <98b01dc2-c53b-827f-7f15-dec8c937367c@redhat.com>
+Date:   Thu, 11 Nov 2021 10:29:43 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YYuS1uNhxWOEX1Ci@phenom.ffwll.local>
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.2.0
+Subject: Re: [PATCH] HID: intel-ish-hid: fix module device-id handling
+Content-Language: en-US
+To:     Arnd Bergmann <arnd@kernel.org>,
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+        Jiri Kosina <jikos@kernel.org>,
+        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
+        Benson Leung <bleung@chromium.org>,
+        Sumesh K Naduvalath <sumesh.k.naduvalath@intel.com>,
+        Mark Gross <markgross@kernel.org>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        =?UTF-8?Q?Thomas_Wei=c3=9fschuh?= <linux@weissschuh.net>
+Cc:     Arnd Bergmann <arnd@arndb.de>, Guenter Roeck <groeck@chromium.org>,
+        Lee Jones <lee.jones@linaro.org>,
+        =?UTF-8?Q?Uwe_Kleine-K=c3=b6nig?= <uwe@kleine-koenig.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-input@vger.kernel.org, linux-kernel@vger.kernel.org,
+        platform-driver-x86@vger.kernel.org, llvm@lists.linux.dev
+References: <20211111085842.2846422-1-arnd@kernel.org>
+From:   Hans de Goede <hdegoede@redhat.com>
+In-Reply-To: <20211111085842.2846422-1-arnd@kernel.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed 2021-11-10 10:37:26, Daniel Vetter wrote:
-> On Tue, Nov 09, 2021 at 10:38:47PM +0100, Peter Zijlstra wrote:
-> > On Tue, Nov 09, 2021 at 12:06:48PM -0800, Sultan Alsawaf wrote:
-> > > Hi,
-> > > 
-> > > I encountered a printk deadlock on 5.13 which appears to still affect the latest
-> > > kernel. The deadlock occurs due to printk being used while having the current
- > > > CPU's runqueue locked, and the underlying framebuffer console attempting to lock
-> > > the same runqueue when printk tries to flush the log buffer.
-> > 
-> > Yes, that's a known 'feature' of some consoles. printk() is in the
-> > process of being reworked to not call con->write() from the printk()
-> > calling context, which would go a long way towards fixing this.
+Hi,
+
+On 11/11/21 09:56, Arnd Bergmann wrote:
+> From: Arnd Bergmann <arnd@arndb.de>
 > 
-> And it's getting worse by the year:
-> - direct scanout displays (i.e. just a few mmio writes and it will show
->   up) are on the way out at least in laptops, everyone gets self-refresh
->   (dp psr) under software control, so without being able to kick a kthread
->   off nothing shows up except more oopses
-
-printk() tries to avoid this problem by waking processes via
-irq_vork(). For example, it is used for waking userspace log
-daemons, see wake_up_klogd().
-
-There is one hidden wake_up_process() in up() of @console_sem.
-It is "less" critical because it calls the wake_up() only when
-there is another process waiting for console_lock(). It must
-be a non-printk caller because printk() uses trylock and does
-not add waiters. So, there is a non-trivial chance to avoid
-the deadlock and the messages.
-
-I wonder if fbdev might use the same trick.
-
-> - because of the impendence mismatch between fbdev and drm-kms we even go
->   ever more this direction for dumb framebuffers, including the firmware
->   boot-up framebuffer simpledrm. This could perhaps be fixed with a new
->   dedicate console driver directly on top of drm-kms, but that's on the
->   wishlist for years and I don't see anyone typing that.
+> A late addititon to the intel-ish-hid framework caused a build failure
+> with clang, and introduced an ABI to the module loader that stops working
+> if any driver ever needs to bind to more than one UUID:
 > 
-> So yeah for fbcon at least I think we really should throw out direct
-> con->write from printk completely.
+> drivers/hid/intel-ish-hid/ishtp-fw-loader.c:1067:4: error: initializer element is not a compile-time constant
+> 
+> Change the ishtp_device_id to have correct documentation and a driver_data
+> field like all the other ones, and change the drivers to use the ID table
+> as the primary identification in a way that works with all compilers
+> and avoids duplciating the identifiers.
+> 
+> Fixes: f155dfeaa4ee ("platform/x86: isthp_eclite: only load for matching devices")
+> Fixes: facfe0a4fdce ("platform/chrome: chros_ec_ishtp: only load for matching devices")
+> Fixes: 0d0cccc0fd83 ("HID: intel-ish-hid: hid-client: only load for matching devices")
+> Fixes: 44e2a58cb880 ("HID: intel-ish-hid: fw-loader: only load for matching devices")
+> Fixes: cb1a2c6847f7 ("HID: intel-ish-hid: use constants for modaliases")
+> Fixes: fa443bc3c1e4 ("HID: intel-ish-hid: add support for MODULE_DEVICE_TABLE()")
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+> ---
+> I did not see this reported on the list so far, but it has probably
+> shown up in other build bots as well.
+> 
+> There are lots of ways to fix the warning, I picked this way to address
+> the more urgent problem of fixing the mod_devicetable.h format before
+> it is too late for that.
 
-Yup, that would be great.
+Thank you for fixing this, patch looks good to me:
 
-Well, I guess that it would be available only for a panic mode when it
-will not race with other users?
+Reviewed-by: Hans de Goede <hdegoede@redhat.com>
 
-Best Regards,
-Petr
+Regards,
+
+Hans
+
+
+
+
+> ---
+>  drivers/hid/intel-ish-hid/ishtp-fw-loader.c  | 19 ++++++++-----------
+>  drivers/hid/intel-ish-hid/ishtp-hid-client.c | 19 ++++++++-----------
+>  drivers/hid/intel-ish-hid/ishtp/bus.c        |  2 +-
+>  drivers/platform/chrome/cros_ec_ishtp.c      | 19 ++++++++-----------
+>  drivers/platform/x86/intel/ishtp_eclite.c    | 19 ++++++++-----------
+>  include/linux/intel-ish-client-if.h          |  4 ++--
+>  include/linux/mod_devicetable.h              |  5 +++--
+>  7 files changed, 38 insertions(+), 49 deletions(-)
+> 
+> diff --git a/drivers/hid/intel-ish-hid/ishtp-fw-loader.c b/drivers/hid/intel-ish-hid/ishtp-fw-loader.c
+> index 945a9d0b68cd..0e1183e96147 100644
+> --- a/drivers/hid/intel-ish-hid/ishtp-fw-loader.c
+> +++ b/drivers/hid/intel-ish-hid/ishtp-fw-loader.c
+> @@ -76,9 +76,12 @@ enum ish_loader_commands {
+>  #define LOADER_XFER_MODE_ISHTP			BIT(1)
+>  
+>  /* ISH Transport Loader client unique GUID */
+> -static const guid_t loader_ishtp_guid =
+> -	GUID_INIT(0xc804d06a, 0x55bd, 0x4ea7,
+> -		  0xad, 0xed, 0x1e, 0x31, 0x22, 0x8c, 0x76, 0xdc);
+> +static const struct ishtp_device_id loader_ishtp_id_table[] = {
+> +	{ .guid = GUID_INIT(0xc804d06a, 0x55bd, 0x4ea7,
+> +		  0xad, 0xed, 0x1e, 0x31, 0x22, 0x8c, 0x76, 0xdc) },
+> +	{ }
+> +};
+> +MODULE_DEVICE_TABLE(ishtp, loader_ishtp_id_table);
+>  
+>  #define FILENAME_SIZE				256
+>  
+> @@ -880,7 +883,7 @@ static int loader_init(struct ishtp_cl *loader_ishtp_cl, int reset)
+>  
+>  	fw_client =
+>  		ishtp_fw_cl_get_client(ishtp_get_ishtp_device(loader_ishtp_cl),
+> -				       &loader_ishtp_guid);
+> +				       &loader_ishtp_id_table[0].guid);
+>  	if (!fw_client) {
+>  		dev_err(cl_data_to_dev(client_data),
+>  			"ISH client uuid not found\n");
+> @@ -1057,18 +1060,12 @@ static int loader_ishtp_cl_reset(struct ishtp_cl_device *cl_device)
+>  
+>  static struct ishtp_cl_driver	loader_ishtp_cl_driver = {
+>  	.name = "ish-loader",
+> -	.guid = &loader_ishtp_guid,
+> +	.id = loader_ishtp_id_table,
+>  	.probe = loader_ishtp_cl_probe,
+>  	.remove = loader_ishtp_cl_remove,
+>  	.reset = loader_ishtp_cl_reset,
+>  };
+>  
+> -static const struct ishtp_device_id loader_ishtp_id_table[] = {
+> -	{ loader_ishtp_guid },
+> -	{ }
+> -};
+> -MODULE_DEVICE_TABLE(ishtp, loader_ishtp_id_table);
+> -
+>  static int __init ish_loader_init(void)
+>  {
+>  	return ishtp_cl_driver_register(&loader_ishtp_cl_driver, THIS_MODULE);
+> diff --git a/drivers/hid/intel-ish-hid/ishtp-hid-client.c b/drivers/hid/intel-ish-hid/ishtp-hid-client.c
+> index fb47d38d1e87..4338c9b68a43 100644
+> --- a/drivers/hid/intel-ish-hid/ishtp-hid-client.c
+> +++ b/drivers/hid/intel-ish-hid/ishtp-hid-client.c
+> @@ -12,9 +12,12 @@
+>  #include "ishtp-hid.h"
+>  
+>  /* ISH Transport protocol (ISHTP in short) GUID */
+> -static const guid_t hid_ishtp_guid =
+> -	GUID_INIT(0x33AECD58, 0xB679, 0x4E54,
+> -		  0x9B, 0xD9, 0xA0, 0x4D, 0x34, 0xF0, 0xC2, 0x26);
+> +static const struct ishtp_device_id hid_ishtp_id_table[] = {
+> +	{ .guid = GUID_INIT(0x33AECD58, 0xB679, 0x4E54,
+> +		  0x9B, 0xD9, 0xA0, 0x4D, 0x34, 0xF0, 0xC2, 0x26), },
+> +	{ }
+> +};
+> +MODULE_DEVICE_TABLE(ishtp, hid_ishtp_id_table);
+>  
+>  /* Rx ring buffer pool size */
+>  #define HID_CL_RX_RING_SIZE	32
+> @@ -662,7 +665,7 @@ static int hid_ishtp_cl_init(struct ishtp_cl *hid_ishtp_cl, int reset)
+>  	ishtp_set_tx_ring_size(hid_ishtp_cl, HID_CL_TX_RING_SIZE);
+>  	ishtp_set_rx_ring_size(hid_ishtp_cl, HID_CL_RX_RING_SIZE);
+>  
+> -	fw_client = ishtp_fw_cl_get_client(dev, &hid_ishtp_guid);
+> +	fw_client = ishtp_fw_cl_get_client(dev, &hid_ishtp_id_table[0].guid);
+>  	if (!fw_client) {
+>  		dev_err(cl_data_to_dev(client_data),
+>  			"ish client uuid not found\n");
+> @@ -945,19 +948,13 @@ static const struct dev_pm_ops hid_ishtp_pm_ops = {
+>  
+>  static struct ishtp_cl_driver	hid_ishtp_cl_driver = {
+>  	.name = "ish-hid",
+> -	.guid = &hid_ishtp_guid,
+> +	.id = hid_ishtp_id_table,
+>  	.probe = hid_ishtp_cl_probe,
+>  	.remove = hid_ishtp_cl_remove,
+>  	.reset = hid_ishtp_cl_reset,
+>  	.driver.pm = &hid_ishtp_pm_ops,
+>  };
+>  
+> -static const struct ishtp_device_id hid_ishtp_id_table[] = {
+> -	{ hid_ishtp_guid },
+> -	{ }
+> -};
+> -MODULE_DEVICE_TABLE(ishtp, hid_ishtp_id_table);
+> -
+>  static int __init ish_hid_init(void)
+>  {
+>  	int	rv;
+> diff --git a/drivers/hid/intel-ish-hid/ishtp/bus.c b/drivers/hid/intel-ish-hid/ishtp/bus.c
+> index e159cd1c5f37..f68aba8794fe 100644
+> --- a/drivers/hid/intel-ish-hid/ishtp/bus.c
+> +++ b/drivers/hid/intel-ish-hid/ishtp/bus.c
+> @@ -241,7 +241,7 @@ static int ishtp_cl_bus_match(struct device *dev, struct device_driver *drv)
+>  	struct ishtp_cl_device *device = to_ishtp_cl_device(dev);
+>  	struct ishtp_cl_driver *driver = to_ishtp_cl_driver(drv);
+>  
+> -	return guid_equal(driver->guid,
+> +	return guid_equal(&driver->id[0].guid,
+>  			  &device->fw_client->props.protocol_name);
+>  }
+>  
+> diff --git a/drivers/platform/chrome/cros_ec_ishtp.c b/drivers/platform/chrome/cros_ec_ishtp.c
+> index 8c17358e84c1..4020b8354bae 100644
+> --- a/drivers/platform/chrome/cros_ec_ishtp.c
+> +++ b/drivers/platform/chrome/cros_ec_ishtp.c
+> @@ -41,9 +41,12 @@ enum cros_ec_ish_channel {
+>  #define ISHTP_SEND_TIMEOUT			(3 * HZ)
+>  
+>  /* ISH Transport CrOS EC ISH client unique GUID */
+> -static const guid_t cros_ish_guid =
+> -	GUID_INIT(0x7b7154d0, 0x56f4, 0x4bdc,
+> -		  0xb0, 0xd8, 0x9e, 0x7c, 0xda,	0xe0, 0xd6, 0xa0);
+> +static const struct ishtp_device_id cros_ec_ishtp_id_table[] = {
+> +	{ .guid = GUID_INIT(0x7b7154d0, 0x56f4, 0x4bdc,
+> +		  0xb0, 0xd8, 0x9e, 0x7c, 0xda,	0xe0, 0xd6, 0xa0), },
+> +	{ }
+> +};
+> +MODULE_DEVICE_TABLE(ishtp, cros_ec_ishtp_id_table);
+>  
+>  struct header {
+>  	u8 channel;
+> @@ -389,7 +392,7 @@ static int cros_ish_init(struct ishtp_cl *cros_ish_cl)
+>  	ishtp_set_tx_ring_size(cros_ish_cl, CROS_ISH_CL_TX_RING_SIZE);
+>  	ishtp_set_rx_ring_size(cros_ish_cl, CROS_ISH_CL_RX_RING_SIZE);
+>  
+> -	fw_client = ishtp_fw_cl_get_client(dev, &cros_ish_guid);
+> +	fw_client = ishtp_fw_cl_get_client(dev, &cros_ec_ishtp_id_table[0].guid);
+>  	if (!fw_client) {
+>  		dev_err(cl_data_to_dev(client_data),
+>  			"ish client uuid not found\n");
+> @@ -765,7 +768,7 @@ static SIMPLE_DEV_PM_OPS(cros_ec_ishtp_pm_ops, cros_ec_ishtp_suspend,
+>  
+>  static struct ishtp_cl_driver	cros_ec_ishtp_driver = {
+>  	.name = "cros_ec_ishtp",
+> -	.guid = &cros_ish_guid,
+> +	.id = cros_ec_ishtp_id_table,
+>  	.probe = cros_ec_ishtp_probe,
+>  	.remove = cros_ec_ishtp_remove,
+>  	.reset = cros_ec_ishtp_reset,
+> @@ -774,12 +777,6 @@ static struct ishtp_cl_driver	cros_ec_ishtp_driver = {
+>  	},
+>  };
+>  
+> -static const struct ishtp_device_id cros_ec_ishtp_id_table[] = {
+> -	{ cros_ish_guid },
+> -	{ }
+> -};
+> -MODULE_DEVICE_TABLE(ishtp, cros_ec_ishtp_id_table);
+> -
+>  static int __init cros_ec_ishtp_mod_init(void)
+>  {
+>  	return ishtp_cl_driver_register(&cros_ec_ishtp_driver, THIS_MODULE);
+> diff --git a/drivers/platform/x86/intel/ishtp_eclite.c b/drivers/platform/x86/intel/ishtp_eclite.c
+> index b9fb8f28fd63..b2da3a4b3e1b 100644
+> --- a/drivers/platform/x86/intel/ishtp_eclite.c
+> +++ b/drivers/platform/x86/intel/ishtp_eclite.c
+> @@ -93,9 +93,12 @@ struct ishtp_opregion_dev {
+>  };
+>  
+>  /* eclite ishtp client UUID: 6a19cc4b-d760-4de3-b14d-f25ebd0fbcd9 */
+> -static const guid_t ecl_ishtp_guid =
+> -	GUID_INIT(0x6a19cc4b, 0xd760, 0x4de3,
+> -		  0xb1, 0x4d, 0xf2, 0x5e, 0xbd, 0xf, 0xbc, 0xd9);
+> +static const struct ishtp_device_id ecl_ishtp_id_table[] = {
+> +	{ .guid = GUID_INIT(0x6a19cc4b, 0xd760, 0x4de3,
+> +		  0xb1, 0x4d, 0xf2, 0x5e, 0xbd, 0xf, 0xbc, 0xd9), },
+> +	{ }
+> +};
+> +MODULE_DEVICE_TABLE(ishtp, ecl_ishtp_id_table);
+>  
+>  /* ACPI DSM UUID: 91d936a7-1f01-49c6-a6b4-72f00ad8d8a5 */
+>  static const guid_t ecl_acpi_guid =
+> @@ -462,7 +465,7 @@ static int ecl_ishtp_cl_init(struct ishtp_cl *ecl_ishtp_cl)
+>  	ishtp_set_tx_ring_size(ecl_ishtp_cl, ECL_CL_TX_RING_SIZE);
+>  	ishtp_set_rx_ring_size(ecl_ishtp_cl, ECL_CL_RX_RING_SIZE);
+>  
+> -	fw_client = ishtp_fw_cl_get_client(dev, &ecl_ishtp_guid);
+> +	fw_client = ishtp_fw_cl_get_client(dev, &ecl_ishtp_id_table[0].guid);
+>  	if (!fw_client) {
+>  		dev_err(cl_data_to_dev(opr_dev), "fw client not found\n");
+>  		return -ENOENT;
+> @@ -674,19 +677,13 @@ static const struct dev_pm_ops ecl_ishtp_pm_ops = {
+>  
+>  static struct ishtp_cl_driver ecl_ishtp_cl_driver = {
+>  	.name = "ishtp-eclite",
+> -	.guid = &ecl_ishtp_guid,
+> +	.id = &ecl_ishtp_id_table,
+>  	.probe = ecl_ishtp_cl_probe,
+>  	.remove = ecl_ishtp_cl_remove,
+>  	.reset = ecl_ishtp_cl_reset,
+>  	.driver.pm = &ecl_ishtp_pm_ops,
+>  };
+>  
+> -static const struct ishtp_device_id ecl_ishtp_id_table[] = {
+> -	{ ecl_ishtp_guid },
+> -	{ }
+> -};
+> -MODULE_DEVICE_TABLE(ishtp, ecl_ishtp_id_table);
+> -
+>  static int __init ecl_ishtp_init(void)
+>  {
+>  	return ishtp_cl_driver_register(&ecl_ishtp_cl_driver, THIS_MODULE);
+> diff --git a/include/linux/intel-ish-client-if.h b/include/linux/intel-ish-client-if.h
+> index aee8ff4739b1..f45f13304add 100644
+> --- a/include/linux/intel-ish-client-if.h
+> +++ b/include/linux/intel-ish-client-if.h
+> @@ -9,7 +9,7 @@
+>  #define _INTEL_ISH_CLIENT_IF_H_
+>  
+>  #include <linux/device.h>
+> -#include <linux/uuid.h>
+> +#include <linux/mod_devicetable.h>
+>  
+>  struct ishtp_cl_device;
+>  struct ishtp_device;
+> @@ -40,7 +40,7 @@ enum cl_state {
+>  struct ishtp_cl_driver {
+>  	struct device_driver driver;
+>  	const char *name;
+> -	const guid_t *guid;
+> +	const struct ishtp_device_id *id;
+>  	int (*probe)(struct ishtp_cl_device *dev);
+>  	void (*remove)(struct ishtp_cl_device *dev);
+>  	int (*reset)(struct ishtp_cl_device *dev);
+> diff --git a/include/linux/mod_devicetable.h b/include/linux/mod_devicetable.h
+> index befbf53c4b7c..bcfd5357c9a5 100644
+> --- a/include/linux/mod_devicetable.h
+> +++ b/include/linux/mod_devicetable.h
+> @@ -901,11 +901,12 @@ struct dfl_device_id {
+>  
+>  /**
+>   * struct ishtp_device_id - ISHTP device identifier
+> - * @guid_string: 36 char string of the form fa50ff2b-f2e8-45de-83fa-65417f2f49ba
+> - * @context: pointer to driver specific data
+> + * @guid: 16-byte binary guid representation
+> + * @driver_data: pointer to driver specific data
+>   */
+>  struct ishtp_device_id {
+>  	guid_t guid;
+> +	kernel_ulong_t driver_data;
+>  };
+>  
+>  #endif /* LINUX_MOD_DEVICETABLE_H */
+> 
+
