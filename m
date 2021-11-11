@@ -2,114 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 00CA644D54A
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Nov 2021 11:49:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B827344D546
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Nov 2021 11:48:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233019AbhKKKvz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Nov 2021 05:51:55 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34456 "EHLO
+        id S232955AbhKKKvo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Nov 2021 05:51:44 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34432 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232975AbhKKKvs (ORCPT
+        with ESMTP id S229668AbhKKKvn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Nov 2021 05:51:48 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1771AC061766;
-        Thu, 11 Nov 2021 02:48:59 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=Lk4G/R3I07fhmcAqeSUqtCqNDck8UECisYgW0RP2fZk=; b=AET3uxMt3hHFzdG81TShZLlRhA
-        lnzx4x2xkBejjcu8i+MuOlBWGAq82yBnQhP9jNhSKqzutZkvoPrE+DaFRBQ2JOb4j5DojW+YmB1TQ
-        EZfc3k1Z3m4KXMajFbDtwS9023NbK50LztQbXevsdQvS6AOv4JY3DBFmFrzKqXOH+RV3M0pyTvPbI
-        9sn7wEgLyUpWZTEsemou0MiLDGDeur8Ama9taCLIXAaN6Ru7/xY5zsA5qZdI+ad11Hfx7npvyG54r
-        SstAvX6uYL3TOGkFqkoXYIn4TKwOJvn7Eki+iTRy2VOK059F6VHaZNIoBBTll1KF9xSh0wvNlGSuH
-        NL6Mf2Yg==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1ml7ce-002eyR-My; Thu, 11 Nov 2021 10:48:01 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id CB96930001B;
-        Thu, 11 Nov 2021 11:47:57 +0100 (CET)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 950042D1ADCA5; Thu, 11 Nov 2021 11:47:57 +0100 (CET)
-Date:   Thu, 11 Nov 2021 11:47:57 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Paolo Bonzini <pbonzini@redhat.com>
-Cc:     Sean Christopherson <seanjc@google.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Will Deacon <will@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Marc Zyngier <maz@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Guo Ren <guoren@kernel.org>, Nick Hu <nickhu@andestech.com>,
-        Greentime Hu <green.hu@gmail.com>,
-        Vincent Chen <deanbo422@gmail.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
-        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        Juergen Gross <jgross@suse.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        James Morse <james.morse@arm.com>,
-        Alexandru Elisei <alexandru.elisei@arm.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Stefano Stabellini <sstabellini@kernel.org>,
-        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
-        linux-csky@vger.kernel.org, linux-riscv@lists.infradead.org,
-        kvm@vger.kernel.org, xen-devel@lists.xenproject.org,
-        Artem Kashkanov <artem.kashkanov@intel.com>,
-        Like Xu <like.xu.linux@gmail.com>,
-        Like Xu <like.xu@linux.intel.com>,
-        Zhu Lingshan <lingshan.zhu@intel.com>
-Subject: Re: [PATCH v4 01/17] perf: Protect perf_guest_cbs with RCU
-Message-ID: <YYz03fcDRV9NZnyA@hirez.programming.kicks-ass.net>
-References: <20211111020738.2512932-1-seanjc@google.com>
- <20211111020738.2512932-2-seanjc@google.com>
- <d784dc27-72d0-d64f-e1f4-a2b9a5f86dd4@redhat.com>
+        Thu, 11 Nov 2021 05:51:43 -0500
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3FE96C061766
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Nov 2021 02:48:54 -0800 (PST)
+Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=[127.0.0.1])
+        by metis.ext.pengutronix.de with esmtp (Exim 4.92)
+        (envelope-from <h.assmann@pengutronix.de>)
+        id 1ml7dL-00011i-GX; Thu, 11 Nov 2021 11:48:43 +0100
+Subject: Re: [Linux-stm32] [PATCH net] net: stmmac: allow a tc-taprio
+ base-time of zero
+To:     Vladimir Oltean <vladimir.oltean@nxp.com>,
+        Ahmad Fatoum <a.fatoum@pengutronix.de>,
+        Michael Olbrich <m.olbrich@pengutronix.de>
+Cc:     Yannick Vignon <yannick.vignon@nxp.com>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        "David S. Miller" <davem@davemloft.net>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        Xiaoliang Yang <xiaoliang.yang_1@nxp.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Jose Abreu <joabreu@synopsys.com>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Giuseppe Cavallaro <peppe.cavallaro@st.com>,
+        Kurt Kanzenbach <kurt.kanzenbach@linutronix.de>,
+        "linux-stm32@st-md-mailman.stormreply.com" 
+        <linux-stm32@st-md-mailman.stormreply.com>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>
+References: <20211108202854.1740995-1-vladimir.oltean@nxp.com>
+ <87bl2t3fkq.fsf@kurt> <20211109103504.ahl2djymnevsbhoj@skbuf>
+ <6bf6db8b-4717-71fe-b6de-9f6e12202dad@pengutronix.de>
+ <20211109142255.5ohhfyin7hsffmlk@skbuf>
+ <20211110123843.3u4jo3xe7plows6r@skbuf>
+From:   Holger Assmann <h.assmann@pengutronix.de>
+Message-ID: <7090ab87-e0ba-3f5a-116d-71ce34a94c97@pengutronix.de>
+Date:   Thu, 11 Nov 2021 11:48:40 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <d784dc27-72d0-d64f-e1f4-a2b9a5f86dd4@redhat.com>
+In-Reply-To: <20211110123843.3u4jo3xe7plows6r@skbuf>
+Content-Type: text/plain; charset=utf-8
+Content-Language: de-DE
+Content-Transfer-Encoding: 7bit
+X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
+X-SA-Exim-Mail-From: h.assmann@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 11, 2021 at 08:26:58AM +0100, Paolo Bonzini wrote:
-> On 11/11/21 03:07, Sean Christopherson wrote:
+Hi,
 
-> >   EXPORT_SYMBOL_GPL(perf_register_guest_info_callbacks);
-> >   int perf_unregister_guest_info_callbacks(struct perf_guest_info_callbacks *cbs)
-> >   {
-> > -	perf_guest_cbs = NULL;
-> > +	if (WARN_ON_ONCE(rcu_access_pointer(perf_guest_cbs) != cbs))
-> > +		return -EINVAL;
-> > +
-> > +	rcu_assign_pointer(perf_guest_cbs, NULL);
-> > +	synchronize_rcu();
-> This technically could be RCU_INIT_POINTER but it's not worth a respin.
-> There are dozens of other occurrences, and if somebody wanted they
-> could use Coccinelle to fix all of them.
+Am 10.11.21 um 13:38 schrieb Vladimir Oltean:
+>>
+>> Indeed. Was there a v2 to that?
+> 
+> FWIW I've applied that patch and made a few fixups according to my
+> liking, and it works fine. I can resend it myself if there aren't any
+> volunteers from Pengutronix.
+> 
 
-I've been pushing the other way, trying to get rid of RCU_INIT_POINTER()
-since rcu_assign_pointer(, NULL) actualy DTRT per __builtin_constant_p()
-etc.
+Feel free to do so!
 
-There's a very few sites where we use RCU_INIT_POINTER() with a !NULL
-argument, and those are 'special'.
+Greetings,
+Holger
+
+-- 
+Pengutronix e.K.                         | Holger Assmann              |
+Steuerwalder Str. 21                     | http://www.pengutronix.de/  |
+31137 Hildesheim, Germany                | Phone: +49-5121-206917-0    |
+Amtsgericht Hildesheim, HRA 2686         | Fax:   +49-5121-206917-5555 |
