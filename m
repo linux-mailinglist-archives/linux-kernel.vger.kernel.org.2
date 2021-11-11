@@ -2,81 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DF17744D7AB
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Nov 2021 14:56:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0A2F644D7B2
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Nov 2021 14:57:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233660AbhKKN7i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Nov 2021 08:59:38 -0500
-Received: from mail.kernel.org ([198.145.29.99]:49490 "EHLO mail.kernel.org"
+        id S233769AbhKKOAT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Nov 2021 09:00:19 -0500
+Received: from mail.kernel.org ([198.145.29.99]:49926 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233648AbhKKN7b (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Nov 2021 08:59:31 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A46FD61183;
-        Thu, 11 Nov 2021 13:56:39 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1636639002;
-        bh=6vOseyaNjpyc3RrsnYe5dQcUBdM9qrNIItmf8XBYGTo=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=l0kR/ARYirmImP0Ufca60fE2T2tLY/D2p6hLawPFm9nlvztEfcpfTLSDEOB3Ev8oQ
-         LHV0I6+BosNwdqyHKU958VaVJhCHsHkX8AkzoDDQij5napZXEteUkVDgQBDsdJ5EXQ
-         M7XeCvvKW1ZHzTDD+pQQRMQQP/I/48aBJ9AgmV4GJ4qum4ULXdFMybcAXf1B86Q0/E
-         b+1NB/H99Wu9iZiFLJ+vX/NcTN/6RLQoipvCpoj8r06I6sBw4sQycrmE0RSJZsNBIR
-         WI8mHcmLWZXZaxLQokOcjbqoGbCy7f2enUbFjClnnB1HX1iJziH6bC+cNDYfZ5Bsbz
-         bTD/iQL/NW7NA==
-Date:   Thu, 11 Nov 2021 13:56:36 +0000
-From:   Mark Brown <broonie@kernel.org>
-To:     nandhini.srikandan@intel.com
-Cc:     fancer.lancer@gmail.com, robh+dt@kernel.org,
-        linux-spi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, mgross@linux.intel.com,
-        kris.pan@intel.com, kenchappa.demakkanavar@intel.com,
-        furong.zhou@intel.com, mallikarjunappa.sangannavar@intel.com,
-        mahesh.r.vaidya@intel.com, rashmi.a@intel.com
-Subject: Re: [PATCH v3 2/5] spi: dw: Add SSTE support for DWC SSI controller
-Message-ID: <YY0hFOr0SnDDDuSf@sirena.org.uk>
-References: <20211111065201.10249-1-nandhini.srikandan@intel.com>
- <20211111065201.10249-3-nandhini.srikandan@intel.com>
+        id S233630AbhKKOAG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 11 Nov 2021 09:00:06 -0500
+Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 677C6610A0;
+        Thu, 11 Nov 2021 13:57:16 +0000 (UTC)
+Date:   Thu, 11 Nov 2021 08:57:14 -0500
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     "Srivatsa S. Bhat" <srivatsa@csail.mit.edu>, jgross@suse.com,
+        x86@kernel.org, pv-drivers@vmware.com,
+        Alexey Makhalov <amakhalov@vmware.com>,
+        Deep Shah <sdeep@vmware.com>, stable@vger.kernel.org,
+        virtualization@lists.linux-foundation.org, keerthanak@vmware.com,
+        srivatsab@vmware.com, anishs@vmware.com, vithampi@vmware.com,
+        linux-kernel@vger.kernel.org, namit@vmware.com, joe@perches.com,
+        kuba@kernel.org
+Subject: Re: [PATCH v3 1/3] MAINTAINERS: Update maintainers for paravirt ops
+ and VMware hypervisor interface
+Message-ID: <20211111085714.57f8cd3f@gandalf.local.home>
+In-Reply-To: <YYy9P7Rjg9hntmm3@kroah.com>
+References: <163657479269.84207.13658789048079672839.stgit@srivatsa-dev>
+        <163657487268.84207.5604596767569015608.stgit@srivatsa-dev>
+        <YYy9P7Rjg9hntmm3@kroah.com>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="2eQA/zqGWyINvOmX"
-Content-Disposition: inline
-In-Reply-To: <20211111065201.10249-3-nandhini.srikandan@intel.com>
-X-Cookie: Teutonic:
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, 11 Nov 2021 07:50:39 +0100
+Greg KH <gregkh@linuxfoundation.org> wrote:
 
---2eQA/zqGWyINvOmX
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+> > Signed-off-by: Srivatsa S. Bhat (VMware) <srivatsa@csail.mit.edu>
+> > Acked-by: Alexey Makhalov <amakhalov@vmware.com>
+> > Acked-by: Deep Shah <sdeep@vmware.com>
+> > Acked-by: Juergen Gross <jgross@suse.com>
+> > Cc: stable@vger.kernel.org  
+> 
+> Why are MAINTAINERS updates needed for stable?  That's not normal :(
 
-On Thu, Nov 11, 2021 at 02:51:58PM +0800, nandhini.srikandan@intel.com wrot=
-e:
-> From: Nandhini Srikandan <nandhini.srikandan@intel.com>
->=20
-> Add support for Slave Select Toggle Enable (SSTE) in DWC SSI controller
-> via DTS. The slave select line will toggle between consecutive data frame=
-s,
-> with the serial clock being held to its default value while slave
-> select line is high.
+Probably not needed, but does it hurt?  And who's normal?
 
-This should be controlled by SPI_CS_WORD.
-
---2eQA/zqGWyINvOmX
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmGNIRMACgkQJNaLcl1U
-h9AXtwf/b2yvopc/rcJwvQhIfY7WzAYCakC0ieVKTp3McpPZt67nMUBnaOqi8LlL
-GCjmx1wtgTY6GhWjgaf6Mzmw37P6t74Y/S977Zn5FeeTLDIeuBwlk1etG03lnJBP
-ELic6wolkf48XQVRyBu1VfQvUFH3CIh7v449ywdINGrp4zNfq1UzvJ4zIpQ7h/cX
-qOY3dxs1NUT6d/hrgV1OVWRH3LhC0XFw/9CtYIbMGpqyjhDp9jc4JDhy0S9vI9x9
-BDshR8AibUHzW91nTGY6cpRjqV+5c0XLzSC02kDzO1mkmoxaGDJcjaxnW/jcDGcS
-dwp0aqSsmKZcruVfwSJB2/NvPhWa2g==
-=8YXG
------END PGP SIGNATURE-----
-
---2eQA/zqGWyINvOmX--
+-- Steve
