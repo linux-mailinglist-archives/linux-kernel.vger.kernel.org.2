@@ -2,179 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AD93B44DAF0
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Nov 2021 18:03:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E453144DAF4
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Nov 2021 18:05:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234343AbhKKRGI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Nov 2021 12:06:08 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35678 "EHLO
+        id S233392AbhKKRIO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Nov 2021 12:08:14 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36126 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234261AbhKKRGG (ORCPT
+        with ESMTP id S229710AbhKKRII (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Nov 2021 12:06:06 -0500
-Received: from mail-ot1-x32e.google.com (mail-ot1-x32e.google.com [IPv6:2607:f8b0:4864:20::32e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 28887C061766
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Nov 2021 09:03:16 -0800 (PST)
-Received: by mail-ot1-x32e.google.com with SMTP id z2-20020a9d71c2000000b0055c6a7d08b8so9816188otj.5
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Nov 2021 09:03:16 -0800 (PST)
+        Thu, 11 Nov 2021 12:08:08 -0500
+Received: from mail-ua1-x932.google.com (mail-ua1-x932.google.com [IPv6:2607:f8b0:4864:20::932])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3A686C061767
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Nov 2021 09:05:19 -0800 (PST)
+Received: by mail-ua1-x932.google.com with SMTP id az37so13190970uab.13
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Nov 2021 09:05:19 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
+        d=linaro.org; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=mV7Svxbj6a7twrtS2MVOqCX/bM3yCZxI1fpz6mS4fBw=;
-        b=F20SqIrIDG0tWmpJrHPaq/wzkFpJgh2vFwXSqyYOhX6soAcJ3HRucB0XZI8+dF2xci
-         ieWyWfH0N3839hsbHaCVWHWvGg+ZohnwB+8FvK6RxBD/AAqzbgNJGqVnlAA+NvguSQy6
-         oL07KgDhJDDU3ijUFeosNse/TWAtDTWroDTCmINXX0q69v40VHVRvr6LOOZY3+hlv/Mz
-         j+fbZGQALvU6RucGFZk733JrYjj4ofTkDpFG3RtXt/FulLMc846Fmtzd99aPcjDOvEZL
-         B/46ZZVttLomQBR8pgKAAwvQzbAOvPcO4cmdLle1D2YrN34cjjlog0DKhgC+4lapZNYi
-         M3JQ==
+         :cc;
+        bh=HpH5aIz9YnVDHI1tp8iTZZAenfgFZ0zd85byr9qx2Vg=;
+        b=UdpJvinnJT+rLEFmcyE1XHdkYN5/vP9xkk5tjrHpQIiw4ffxoGhvbphUSs2mcUdX4D
+         3r+xBe/0FJFrmNU4CbxYY2TdLL7CXWcvqB93caoIZdPwyJU/IgPt1NlEhwcFv53BWXf/
+         qXqQFrmYNBd8smXfy/EhORtC667VtYArv9JzSNOJXozAK/ywKHZEv1xASbPwo0dx/pjg
+         TktB1xI1teAGUwEa0ZB7Bkkun+VtcUmnNa38vGhhj+RHSYUllNIHBrRg1UA2SrZK34kR
+         INkzZajs/okE0aVh48P1gDCtumnEJ4UfVHj910U9DcCdjHeMcu9ltMNPEPYP+gsrM/RD
+         Ffpg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=mV7Svxbj6a7twrtS2MVOqCX/bM3yCZxI1fpz6mS4fBw=;
-        b=H0KxwRynhAke8PaOrivwB9cFn+YSG9pcKMtrFaTNlaDYjWEu2W8daTTlqS6xXhiH+S
-         Si78EkAIyrAmpsUoCtGWSRPynb5x/4KLSzBuKGjKrOwsHPrqR834BY2cPA6HhXtNEJU7
-         EKbsXwzWGnYrlSfFXnlHZTujXcuiwwaNWB25JLJQdWW2mQ7DTQUQhqskAEipvariEobJ
-         jrGlCNKtDKV1nsX4DcNyDfKcwc2Kn93KbGEZ/L/62VBV/h1Ed/U2UizeClI7/28OMYkd
-         uG/eabJp1eWc+5isSrbhqssReKiaJeOvNKXfVCFcXAnYu0JI7Unje9BuP0kENL971swn
-         Q7IQ==
-X-Gm-Message-State: AOAM533/Ffaer2UD8WYJ2G9U9BwRW760oMKzhJvU5VWxV56u/dpmaOAF
-        /t/y9YleG9W4L2y0krEMT5bHkD2/D+Do5qHEi9IlpXdhH1FGTg==
-X-Google-Smtp-Source: ABdhPJxMsF2RcSEdjkezayc2/ABjmuTyd7BvR1tF+oeWV+kQ296nqd8azRAZ/CuOv0O2mCxP8qxZzKeV+SD3fU/L30s=
-X-Received: by 2002:a9d:7617:: with SMTP id k23mr6844213otl.351.1636650195487;
- Thu, 11 Nov 2021 09:03:15 -0800 (PST)
+         :message-id:subject:to:cc;
+        bh=HpH5aIz9YnVDHI1tp8iTZZAenfgFZ0zd85byr9qx2Vg=;
+        b=PVIVRCQqwV5k57xFynPicwJX7ogq8m5vvNEJvlkcWBnjsyGnOcldPk5sNYJjLgeNqJ
+         x5UyJh3nXmTQJmZKKwMe9UixY4KWmnZ9pL/AUePkBDNLtGTExfU9NNZLvoKh/vN/m8M7
+         GIZtIz5A51RafwOX8bkQSZjpES6ah8jYG0aKTAoIkABC7I67VsjfUxkOFVcTiJTxTeVT
+         IpI5GoehFd85Atdxfz34ucfmD7ifSUu/w8TgEiH3biqp5onU4AoUsBYmB19c69cUtTiA
+         5jdG6JxnixL1tvI5UglOrpk8hp6mPiIjXHRWC9LXmn5codFjSIl1kzZugmYwjdwyA4kj
+         iTrw==
+X-Gm-Message-State: AOAM53138ohRhx+JJ4I46su1eskquwzDf+EwaByqq6cf4mzAyRNzvlg1
+        XH2uZVYUEqMswCyZw3zKDaNxTZ2fkCTqAcgY69oMZQ==
+X-Google-Smtp-Source: ABdhPJzj9aD0XnB8FKZNP4f62gsXxPkbQXP07nxLWlCQRJ6aFNZfRb5dxpkDED6uVInZTLrnALcpuJSMqBG4Ju7YfXY=
+X-Received: by 2002:a67:1781:: with SMTP id 123mr488406vsx.1.1636650318135;
+ Thu, 11 Nov 2021 09:05:18 -0800 (PST)
 MIME-Version: 1.0
-References: <c19e9907-4651-7503-915e-60f4df530e95@kernel.dk>
-In-Reply-To: <c19e9907-4651-7503-915e-60f4df530e95@kernel.dk>
-From:   Ajay Garg <ajaygargnsit@gmail.com>
-Date:   Thu, 11 Nov 2021 22:33:03 +0530
-Message-ID: <CAHP4M8WdJUH4UY5s0La=Xq9sMnqDQzk=zSaFTZ9G321KYVmx0A@mail.gmail.com>
-Subject: Re: ____i915_gem_object_get_pages() -> shmem_get_pages() crash in -git
-To:     Jens Axboe <axboe@kernel.dk>
-Cc:     airlied@linux.ie, daniel@ffwll.ch, dri-devel@lists.freedesktop.org,
-        LKML <linux-kernel@vger.kernel.org>
+References: <20211021202256.28517-1-semen.protsenko@linaro.org> <163502632457.411308.6365977083733513077.b4-ty@bootlin.com>
+In-Reply-To: <163502632457.411308.6365977083733513077.b4-ty@bootlin.com>
+From:   Sam Protsenko <semen.protsenko@linaro.org>
+Date:   Thu, 11 Nov 2021 19:05:06 +0200
+Message-ID: <CAPLW+4mBKH_-A5rWGKgpA=r8as6UqhmHf6h1DRg0fEY9jSmJQA@mail.gmail.com>
+Subject: Re: [PATCH v2 0/3] rtc: s3c: S3C driver improvements
+To:     Alexandre Belloni <alexandre.belloni@bootlin.com>
+Cc:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        Alessandro Zummo <a.zummo@towertech.it>,
+        linux-kernel@vger.kernel.org, linux-rtc@vger.kernel.org,
+        linux-samsung-soc@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Jens.
-
-Same issue at my side.
-
-Have posted a patch at
-https://lore.kernel.org/linux-mm/CAMZfGtUp6dkT4OWzLhL8whqNnXAbfVw5c6AQogHzY=
-3bbM_k2Qw@mail.gmail.com/T/#m2189d135b9293de9b4a11362f0179c17b254d5ab
-
-Will be great to hear back if it fixes things at your side too.
-
-
-Thanks and Regards,
-Ajay
-
-On Thu, Nov 11, 2021 at 7:54 PM Jens Axboe <axboe@kernel.dk> wrote:
+On Sun, 24 Oct 2021 at 00:58, Alexandre Belloni
+<alexandre.belloni@bootlin.com> wrote:
 >
-> Hi,
+> On Thu, 21 Oct 2021 23:22:53 +0300, Sam Protsenko wrote:
+> > While working on Exynos850 support (where this driver works fine in its
+> > current state), I've stumbled upon some minor issue. This is the effort
+> > to fix those.
+> >
+> >   * [PATCH 1/3]: moves S3C RTC driver to newer API usage
+> >     (no functional changes)
+> >   * [PATCH 2/3]: refactoring/cleanup (no functional changes)
+> >   * [PATCH 3/3]: adds time range, as [PATCH 1/3] made it possible
+> >
+> > [...]
 >
-> Running -git as of a day or two ago on my laptop, and I've hit this resum=
-e
-> crash a few times:
+> Applied, thanks!
 >
-> OOM killer enabled.
-> Restarting tasks ... done.
-> thermal thermal_zone7: failed to read out thermal zone (-61)
-> xfs filesystem being remounted at /run/systemd/unit-root/var/cache/privat=
-e/fwupdmgr supports timestamps until 2038 (0x7fffffff)
-> PM: suspend exit
-> BUG: unable to handle page fault for address: fffffffffffffff4
-> #PF: supervisor read access in kernel mode
-> #PF: error_code(0x0000) - not-present page
-> PGD 21360b067 P4D 21360b067 PUD 21360d067 PMD 0
-> Oops: 0000 [#1] PREEMPT SMP
-> CPU: 7 PID: 3687 Comm: Xorg Tainted: G S                5.15.0+ #12136
-> Hardware name: LENOVO 20XWCTO1WW/20XWCTO1WW, BIOS N32ET72W (1.48 ) 10/08/=
-2021
-> RIP: 0010:shmem_read_mapping_page_gfp+0x53/0x90
-> Code: af 75 5b 41 89 d0 6a 00 45 31 c9 b9 02 00 00 00 6a 00 48 8d 55 f0 4=
-c 89 d7 e8 89 f6 ff ff 5a 85 c0 59 74 2b 48 98 48 89 45 f0 <48> 8b 10 f7 c2=
- 00 00 80 00 48 c7 c2 fb ff ff ff 48 0f 45 c2 48 8b
-> RSP: 0018:ffffa01940ec7c18 EFLAGS: 00010282
-> RAX: fffffffffffffff4 RBX: 00000000000002f3 RCX: 0000000000000000
-> RDX: 0000000000000000 RSI: ffffffffffffffff RDI: ffffffffaff0a3c0
-> RBP: ffffa01940ec7c28 R08: 0000000000000000 R09: 0000000000000f00
-> R10: 0000000000000002 R11: 0000000000000000 R12: 00000000001120d2
-> R13: ffff8c6b0648a200 R14: ffff8c69a45472c0 R15: ffff8c69ba412c10
-> FS:  00007ffae02f3a40(0000) GS:ffff8c6b8f7c0000(0000) knlGS:0000000000000=
-000
-> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> CR2: fffffffffffffff4 CR3: 000000010efb5001 CR4: 0000000000570ee0
-> PKRU: 55555554
-> Call Trace:
->  <TASK>
->  shmem_get_pages+0x242/0x640 [i915]
->  ? drm_vma_node_allow+0xb7/0xe0 [drm]
->  ? drm_gem_handle_create_tail+0xca/0x1a0 [drm]
->  ____i915_gem_object_get_pages+0x20/0x50 [i915]
->  __i915_gem_object_get_pages+0x35/0x40 [i915]
->  i915_gem_set_domain_ioctl+0x255/0x2d0 [i915]
->  ? i915_gem_object_set_to_cpu_domain+0xb0/0xb0 [i915]
->  drm_ioctl_kernel+0xb4/0x140 [drm]
->  drm_ioctl+0x22d/0x440 [drm]
->  ? i915_gem_object_set_to_cpu_domain+0xb0/0xb0 [i915]
->  ? __fget_files+0x74/0xa0
->  __x64_sys_ioctl+0x8e/0xc0
->  do_syscall_64+0x35/0xb0
->  entry_SYSCALL_64_after_hwframe+0x44/0xae
-> RIP: 0033:0x7ffae065350b
-> Code: 0f 1e fa 48 8b 05 85 39 0d 00 64 c7 00 26 00 00 00 48 c7 c0 ff ff f=
-f ff c3 66 0f 1f 44 00 00 f3 0f 1e fa b8 10 00 00 00 0f 05 <48> 3d 01 f0 ff=
- ff 73 01 c3 48 8b 0d 55 39 0d 00 f7 d8 64 89 01 48
-> RSP: 002b:00007ffe8b906c88 EFLAGS: 00000246 ORIG_RAX: 0000000000000010
-> RAX: ffffffffffffffda RBX: 00005611c921d0b0 RCX: 00007ffae065350b
-> RDX: 00007ffe8b906cd4 RSI: 00000000400c645f RDI: 0000000000000011
-> RBP: 00007ffe8b906d60 R08: 00005611ca9f7360 R09: 00005611cb62e920
-> R10: 00005611c9167010 R11: 0000000000000246 R12: 00005611ca9f7360
-> R13: 00005611c921d0c8 R14: 00007ffe8b906cd4 R15: 0000000000000011
->  </TASK>
-> Modules linked in: rfcomm ccm cmac bnep iwlmvm mac80211 btusb btrtl binfm=
-t_misc btbcm uvcvideo btintel bluetooth x86_pkg_temp_thermal videobuf2_vmal=
-loc videobuf2_memops videobuf2_v4l2 videobuf2_common videodev nls_iso8859_1=
- intel_powerclamp mc coretemp ecdh_generic ecc libarc4 kvm_intel wmi_bmof i=
-wlwifi snd_hda_codec_hdmi kvm snd_ctl_led snd_hda_codec_realtek snd_hda_cod=
-ec_generic cfg80211 irqbypass snd_hda_intel snd_intel_dspcfg snd_hda_codec =
-intel_cstate input_leds snd_hwdep thinkpad_acpi snd_hda_core serio_raw hid_=
-multitouch nvram ledtrig_audio mei_me platform_profile snd_seq snd_pcm mei =
-snd_timer processor_thermal_device_pci_legacy snd_seq_device intel_soc_dts_=
-iosf processor_thermal_device processor_thermal_rfim snd ucsi_acpi typec_uc=
-si processor_thermal_mbox typec processor_thermal_rapl intel_rapl_common so=
-undcore int3403_thermal int340x_thermal_zone int3400_thermal wmi acpi_therm=
-al_rel acpi_pad sch_fq_codel msr ip_tables x_tables usbhid i915 hid_generic=
- i2c_algo_bit
->  ttm drm_kms_helper syscopyarea sysfillrect sysimgblt fb_sys_fops drm crc=
-t10dif_pclmul crc32_pclmul nvme ghash_clmulni_intel aesni_intel nvme_core i=
-ntel_lpss_pci crypto_simd intel_lpss cryptd idma64 virt_dma video
-> CR2: fffffffffffffff4
-> ---[ end trace f26a0d7d10ef13d6 ]---
-> RIP: 0010:shmem_read_mapping_page_gfp+0x53/0x90
-> Code: af 75 5b 41 89 d0 6a 00 45 31 c9 b9 02 00 00 00 6a 00 48 8d 55 f0 4=
-c 89 d7 e8 89 f6 ff ff 5a 85 c0 59 74 2b 48 98 48 89 45 f0 <48> 8b 10 f7 c2=
- 00 00 80 00 48 c7 c2 fb ff ff ff 48 0f 45 c2 48 8b
-> RSP: 0018:ffffa01940ec7c18 EFLAGS: 00010282
-> RAX: fffffffffffffff4 RBX: 00000000000002f3 RCX: 0000000000000000
-> RDX: 0000000000000000 RSI: ffffffffffffffff RDI: ffffffffaff0a3c0
-> RBP: ffffa01940ec7c28 R08: 0000000000000000 R09: 0000000000000f00
-> R10: 0000000000000002 R11: 0000000000000000 R12: 00000000001120d2
-> R13: ffff8c6b0648a200 R14: ffff8c69a45472c0 R15: ffff8c69ba412c10
-> FS:  00007ffae02f3a40(0000) GS:ffff8c6b8f7c0000(0000) knlGS:0000000000000=
-000
-> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> CR2: fffffffffffffff4 CR3: 000000010efb5001 CR4: 0000000000570ee0
-> PKRU: 55555554
+
+Hi Alexandre,
+
+Just want to check if this series is going to be merged during current
+merge window, or is it scheduled for the next one?
+
+Thanks!
+
+> [1/3] rtc: s3c: Remove usage of devm_rtc_device_register()
+>       commit: dba28c37f23a09fc32dbc37463ddb2feb3886f98
+> [2/3] rtc: s3c: Extract read/write IO into separate functions
+>       commit: e4a1444e10cbda2892a4ea7325ef5efa47c75cfb
+> [3/3] rtc: s3c: Add time range
+>       commit: a5feda3b361e11b291786d5c4ff86d4b9a55498f
 >
-> Ring a bell for anyone? This is an X1 gen9 laptop, intel graphics.
->
+> Best regards,
 > --
-> Jens Axboe
->
+> Alexandre Belloni <alexandre.belloni@bootlin.com>
