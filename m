@@ -2,89 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 41E7D44D282
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Nov 2021 08:31:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9111244D284
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Nov 2021 08:33:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231514AbhKKHel (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Nov 2021 02:34:41 -0500
-Received: from mail.kernel.org ([198.145.29.99]:47722 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229533AbhKKHej (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Nov 2021 02:34:39 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id ECB2B61284;
-        Thu, 11 Nov 2021 07:31:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1636615910;
-        bh=nKTRLlWeGHO7HiGF56FDAr2Uz60VV5i9mUwmGSLNAJo=;
-        h=From:To:Cc:Subject:Date:From;
-        b=SuFAOeX360ZHo6STmYdmkcef9x5x9/GVZBmgB2P/tcw1Prn7677LPOxi7HzC2GxmP
-         1gm8H02f+Z0DtJnntOPW5MmKch+qaKBLP117lLdDR/chrjPbAHQZ4ZwXGet6MzX8Cr
-         Lrhidj0sv/SISDDQelO/g2Iw/9rKfbVBdqrgvzPkFCSQ9h5tXOMTBcCITpi1Rz6u9c
-         KAT4UHnN64xfS0eOP6OQp3f1mGPNqGgwnhk4uML3Xe+8kzUIRzgCvLIASn5t9ZKfRB
-         PYsqS+fIK71wqZw90kmPnXalOHbZrjEZzTKcdmIHhd7bHmn8zIjHStgjxwg0jKiInj
-         +nyc1nYg3bFVQ==
-From:   Arnd Bergmann <arnd@kernel.org>
-To:     Luca Coelho <luciano.coelho@intel.com>,
-        Kalle Valo <kvalo@codeaurora.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Johannes Berg <johannes.berg@intel.com>
-Cc:     Arnd Bergmann <arnd@arndb.de>, kernel test robot <lkp@intel.com>,
-        Yaara Baruch <yaara.baruch@intel.com>,
-        Matti Gottlieb <matti.gottlieb@intel.com>,
-        Emmanuel Grumbach <emmanuel.grumbach@intel.com>,
-        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, llvm@lists.linux.dev
-Subject: [PATCH] [v2] iwlwifi: pcie: fix constant-conversion warning
-Date:   Thu, 11 Nov 2021 08:31:37 +0100
-Message-Id: <20211111073145.2504032-1-arnd@kernel.org>
-X-Mailer: git-send-email 2.29.2
+        id S230127AbhKKHgX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Nov 2021 02:36:23 -0500
+Received: from mailgw01.mediatek.com ([60.244.123.138]:60714 "EHLO
+        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S229533AbhKKHgV (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 11 Nov 2021 02:36:21 -0500
+X-UUID: a9bda5ee136f42ab8225119f601b11dc-20211111
+X-UUID: a9bda5ee136f42ab8225119f601b11dc-20211111
+Received: from mtkcas10.mediatek.inc [(172.21.101.39)] by mailgw01.mediatek.com
+        (envelope-from <mark-pk.tsai@mediatek.com>)
+        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 1598580129; Thu, 11 Nov 2021 15:33:31 +0800
+Received: from mtkmbs10n1.mediatek.inc (172.21.101.34) by
+ mtkmbs10n1.mediatek.inc (172.21.101.34) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.792.15; Thu, 11 Nov 2021 15:33:30 +0800
+Received: from mtksdccf07.mediatek.inc (172.21.84.99) by
+ mtkmbs10n1.mediatek.inc (172.21.101.73) with Microsoft SMTP Server id
+ 15.2.792.15 via Frontend Transport; Thu, 11 Nov 2021 15:33:30 +0800
+From:   Mark-PK Tsai <mark-pk.tsai@mediatek.com>
+To:     <rppt@kernel.org>
+CC:     <akpm@linux-foundation.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <linux-mm@kvack.org>,
+        <linux@armlinux.org.uk>, <rppt@linux.ibm.com>, <tony@atomide.com>,
+        <wangkefeng.wang@huawei.com>, <mark-pk.tsai@mediatek.com>,
+        <yj.chiang@mediatek.com>
+Subject: Re: [PATCH v3 0/4] memblock, arm: fixes for freeing of the memory map
+Date:   Thu, 11 Nov 2021 15:33:29 +0800
+Message-ID: <20211111073329.13095-1-mark-pk.tsai@mediatek.com>
+X-Mailer: git-send-email 2.18.0
+In-Reply-To: <20210630071211.21011-1-rppt@kernel.org>
+References: <20210630071211.21011-1-rppt@kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-MTK:  N
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Arnd Bergmann <arnd@arndb.de>
+Hi,
 
-clang points out a potential issue with integer overflow when
-the iwl_dev_info_table[] array is empty:
+The lts kernel also have this issue. (we use 5.4-lts kernel.)
+Currently we patch our custom kernel to select CONFIG_HOLES_IN_ZONE for arch arm.
+But I think the formal solution should backport to lts.
 
-drivers/net/wireless/intel/iwlwifi/pcie/drv.c:1344:42: error: implicit conversion from 'unsigned long' to 'int' changes value from 18446744073709551615 to -1 [-Werror,-Wconstant-conversion]
-        for (i = ARRAY_SIZE(iwl_dev_info_table) - 1; i >= 0; i--) {
-               ~ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~
+Would you help to backport this patch series? (including the below commit)
 
-This is still harmless, as the loop correctly terminates, but adding
-an extra range check makes that obvious to both readers and to the
-compiler.
+(024591f9a6e0 arm: ioremap: don't abuse pfn_valid() to check if pfn is in RAM)
 
-Fixes: 3f7320428fa4 ("iwlwifi: pcie: simplify iwl_pci_find_dev_info()")
-Reported-by: kernel test robot <lkp@intel.com>
-Cc: Nick Desaulniers <ndesaulniers@google.com>
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
----
-Changes in v2:
-- replace int cast with a range check
----
- drivers/net/wireless/intel/iwlwifi/pcie/drv.c | 3 +++
- 1 file changed, 3 insertions(+)
-
-diff --git a/drivers/net/wireless/intel/iwlwifi/pcie/drv.c b/drivers/net/wireless/intel/iwlwifi/pcie/drv.c
-index c574f041f096..fcda7603024b 100644
---- a/drivers/net/wireless/intel/iwlwifi/pcie/drv.c
-+++ b/drivers/net/wireless/intel/iwlwifi/pcie/drv.c
-@@ -1341,6 +1341,9 @@ iwl_pci_find_dev_info(u16 device, u16 subsystem_device,
- {
- 	int i;
- 
-+	if (ARRAY_SIZE(iwl_dev_info_table) == 0)
-+		return NULL;
-+
- 	for (i = ARRAY_SIZE(iwl_dev_info_table) - 1; i >= 0; i--) {
- 		const struct iwl_dev_info *dev_info = &iwl_dev_info_table[i];
- 
--- 
-2.29.2
-
+Thanks!
