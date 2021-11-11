@@ -2,123 +2,166 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AA67B44D1FC
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Nov 2021 07:43:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B3D2244D1FD
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Nov 2021 07:46:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230362AbhKKGqK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Nov 2021 01:46:10 -0500
-Received: from mail-io1-f71.google.com ([209.85.166.71]:38755 "EHLO
-        mail-io1-f71.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229969AbhKKGqJ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Nov 2021 01:46:09 -0500
-Received: by mail-io1-f71.google.com with SMTP id g4-20020a05660226c400b005e14d3f1e6bso3500550ioo.5
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Nov 2021 22:43:21 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=mnls3d+B5dNpFY4b4y80Brjr8wlqrHuUE32ifq4dCs8=;
-        b=VmGe4expkd9JVZtS3d5Edpfhgte9dHm125Cw9FfycoV2o+1J2NE5phVA+9ypS5yv9A
-         W6LovuSw5Uk+Vbrw/o96+W1fhtFSYitwSFvV/2Hs2vtzm/o8XKshvNIRN6xib3faXLuQ
-         n4RDM5H0xKHMSR+ac31CeyRC7IFOWz4yXKehAvx2IIXgUwxXyKKRIVz9hZA4wptPSnWC
-         0jRBRKHz16Zr1IuJ2rqtOq6pNSngrfSKNs7vXrBKe4eCVzl1EeAuPvLtH5XRKe1lzCBq
-         0xBEZq3/cqjZ1Mwz1vTcDZUsG1W8R5hzNYv1Vo0D/mkjGBPhKCROhRMRZ2fp/wWjKllE
-         ppmg==
-X-Gm-Message-State: AOAM531QycP+rxhh2VnVHw1klEGgvm2zDs5ayLkdmXjD+nQxlAzavbzl
-        GB6TSYPppLnG359JTy/1gy/ky0TCllOS9VUeqNoV9Bai8d8f
-X-Google-Smtp-Source: ABdhPJwA57G8Lx4oLqI477r2EWE3KPXCpaPPjX1Ze5ECwkKzAOip1D1Ie0wh3HxAAwqEy/qD2XyMFpdoT6dMY3KnFpfmeynDLMds
+        id S230493AbhKKGtW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Nov 2021 01:49:22 -0500
+Received: from mail-eopbgr1320132.outbound.protection.outlook.com ([40.107.132.132]:43712
+        "EHLO APC01-PU1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S229649AbhKKGtV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 11 Nov 2021 01:49:21 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=BuECx8DIEqNqb5mO9mwhuKXakqsv9T7RiQ12/IImB+W3DEJr9GuUjSrfxUHvmZuqOkNaI9EVXuC+Tw5PkWgzSxvhrPamBCU99ybRoWcjM4YrwFrWitW7MKussT10cd0cxcuAK3pz4PY5u87DXh7IQwCnebG6FX1U3l5TriT6soUaouG1uDHdvo6IkrMIy166Afnr3oLjQpCbg/27uQycAomtFj7WYXLHiklwh7yaLj3lQkUpJY8u1G7ZUxp9U+4CEaTXPso5T764AxbuO54UKICA+7KfWqHiam+BbW2SDSp+GKwja0zESbsP7qvmkKk9DwTv28LDunwCcHd2ERg/Mw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=0Rb0fEVVPRfLkfggrMZ+0O9SFO104LaNF7gS+qQdrsU=;
+ b=OU8boVi4Azea0YbjnvML/TxarmsYdmeBODGvZmeE+HRsIJLPw5Kv/asLpRXmhdBBwLhUGWoCMPnW2eEAF3xYUhbCS3SOx4PNY+cFYLB0/V1F2WYIB8PYDYLrYauAgtVNu5d3wjQb611o78jK3Je17ILTVvVxjNCJGYUUS43Wb7cr7Pc8vcynPq89Zad3ZEJQYAVI3QNXb/4CF38VgW/7BNlcYgRlTGMuXg4r/DMs4g5knOfft3e0ZMbMdxLDqZRJRh0MzGoUxqXJxrw0Bgy2FyKXvzmqON4VzTPRciKqydepI2eY95a4kZ91vtFmmxyL33THWphD4w2D5ei3yvWpJw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=vivo.com; dmarc=pass action=none header.from=vivo.com;
+ dkim=pass header.d=vivo.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=vivo0.onmicrosoft.com;
+ s=selector2-vivo0-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=0Rb0fEVVPRfLkfggrMZ+0O9SFO104LaNF7gS+qQdrsU=;
+ b=O1/pv71+KHc71s+ysqs9Fkv39ac/+cDVspIMFYRATe/mcRebujbb3ESkZpxHyFaJXPSWCvzsy8luOLjRQiSfGt4+24w9SvdZTXzIyxVI0zp/ASd4m6xF3oLq7aVh1YY8v/8GbZ8MXrmpJ8XnPPmwYbKLgGb/uxwZwrsU3o1/Ucg=
+Authentication-Results: kernel.org; dkim=none (message not signed)
+ header.d=none;kernel.org; dmarc=none action=none header.from=vivo.com;
+Received: from TYZPR06MB4173.apcprd06.prod.outlook.com (2603:1096:400:26::14)
+ by TY2PR06MB3648.apcprd06.prod.outlook.com (2603:1096:404:fa::14) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4669.13; Thu, 11 Nov
+ 2021 06:46:30 +0000
+Received: from TYZPR06MB4173.apcprd06.prod.outlook.com
+ ([fe80::5e:78e1:eba3:7d0e]) by TYZPR06MB4173.apcprd06.prod.outlook.com
+ ([fe80::5e:78e1:eba3:7d0e%8]) with mapi id 15.20.4669.016; Thu, 11 Nov 2021
+ 06:46:30 +0000
+From:   Yihao Han <hanyihao@vivo.com>
+To:     SeongJae Park <sj@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Cc:     kernel@vivo.com, Yihao Han <hanyihao@vivo.com>
+Subject: [PATCH v2] mm/damon/vaddr: remove swap_ranges() and replace it with swap()
+Date:   Wed, 10 Nov 2021 22:46:17 -0800
+Message-Id: <20211111064617.4729-1-hanyihao@vivo.com>
+X-Mailer: git-send-email 2.17.1
+Content-Type: text/plain
+X-ClientProxiedBy: HK2PR02CA0203.apcprd02.prod.outlook.com
+ (2603:1096:201:20::15) To TYZPR06MB4173.apcprd06.prod.outlook.com
+ (2603:1096:400:26::14)
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:1561:: with SMTP id k1mr2998713ilu.135.1636613000688;
- Wed, 10 Nov 2021 22:43:20 -0800 (PST)
-Date:   Wed, 10 Nov 2021 22:43:20 -0800
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000008a7c9605d07da846@google.com>
-Subject: [syzbot] WARNING in __dev_change_net_namespace
-From:   syzbot <syzbot+5434727aa485c3203fed@syzkaller.appspotmail.com>
-To:     andrii@kernel.org, ast@kernel.org, avagin@gmail.com,
-        bpf@vger.kernel.org, cong.wang@bytedance.com, daniel@iogearbox.net,
-        davem@davemloft.net, hawk@kernel.org, johannes.berg@intel.com,
-        john.fastabend@gmail.com, kafai@fb.com, kpsingh@kernel.org,
-        kuba@kernel.org, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, songliubraving@fb.com,
-        syzkaller-bugs@googlegroups.com, yhs@fb.com
-Content-Type: text/plain; charset="UTF-8"
+Received: from ubuntu.localdomain (103.220.76.181) by HK2PR02CA0203.apcprd02.prod.outlook.com (2603:1096:201:20::15) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4690.15 via Frontend Transport; Thu, 11 Nov 2021 06:46:29 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 80a05415-eed5-4698-5e63-08d9a4defe21
+X-MS-TrafficTypeDiagnostic: TY2PR06MB3648:
+X-Microsoft-Antispam-PRVS: <TY2PR06MB36489FF7EF5D33DA4E45E354A2949@TY2PR06MB3648.apcprd06.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:4941;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: u2lHn6KxF9l65Di3T/PMC8djIE1N41fW1NWRpVlMvGbhOR43FzWU8LcKHxyyUPbw6C4sBZI3pTfAAK6sWKbPXpGPOwRiluTO2fVa3YhHdJ/mX3L4xCIVYnft+1XTSSClh67xIJA/jJjaCWRdjaLGom2rv2dhJHeXT6UNBlmmUd0f0fwOcmizqSFOkEFoSWVTGrV9ZdTKhHDAahMRZa8CXF+3bynve15FLtiWiLd8piy90fKtOWUCIJtgEQkYGFlhee2fasgH589xsudoNj8T0DKv/i6U9ZvmU/l8c2Mi/EEMNWtfKdoTYm22zmw+PHRXRkxTYoYIwz4wWm/5I6xIvbSqe2uIoW/pObCLDdNo9VqqXt8BpmPbAvVB9K9XLSkA5iVsVcLO5cSUdmXSCiFSH+Jbzmws8otArMeWVzVntLUPTRf+GUH716alaBXjAfAwR5vH6rZgwnIjHaNzrTmQgnOkMKZ80JyBs0zR12vyu/X/c+Fr2KR4/wN3ukPfGf8gm9peQwFoq0DZDn9lqduZGBJJKcd5wVYD9he70MgqAGEcMG4VreF3RcutuQQuxkIE0oOYc0fPeXMDIEUk5pmHi4sHkC11FR9CJqhf4MN20VWBZSVNesOOG6BW/u1KeEFzCmLGXgk0DE03+iYucTZTrZ1/LAq6pQfP7bXIws8dROpNaBvtROD2N4/WDVQ3HmZ8Llca7rPxAYhiUNPM/CyzkA==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:TYZPR06MB4173.apcprd06.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(110136005)(6512007)(316002)(38100700002)(1076003)(4326008)(66946007)(8676002)(6506007)(107886003)(2906002)(26005)(2616005)(5660300002)(83380400001)(956004)(52116002)(508600001)(66556008)(6666004)(186003)(86362001)(8936002)(66476007)(6486002)(38350700002)(36756003);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?YlJ1nUoovEWy3a6H6FQf19xNvZ1otwFeN1sfu43S79xxMw7lOLG4VKi/OaHj?=
+ =?us-ascii?Q?EBgU1Ddip8CWD69ME8FMsM2ODN5AvrjCgZlqdUDPJ1ydMD1YUWgQVE+kX2Yk?=
+ =?us-ascii?Q?xm9m10Qs7TUxu1QmPUA+fUCYgwD6huu81CkdkB4eF23CyOiTC9gCOYug7d0b?=
+ =?us-ascii?Q?SsaX8x5AO2u2yeuvj9ytxe7DRHlMzHY1rPaqU5jTzUPOnqx8aF/TMnguPzkp?=
+ =?us-ascii?Q?bOpuI5YKoeGZPPoiPQujmjToGY7bKccP2aqR9q4KuzbkdI3HoO/iW3xzuv8q?=
+ =?us-ascii?Q?RdWxDNpYzqZXDYfV+pA3fC5LEDA7JEhMaVzlfao5Q9prUiVXw0cH5h2O0aWr?=
+ =?us-ascii?Q?oK9rvQ8aCRYq9y1wvmXQD+iiXCmZX+wBU2CJCUBUnXBi6J+TaYGTKXfoDJVa?=
+ =?us-ascii?Q?nVX+Ul76X424ZlHRuOVQeHoOJ/6kvt/NsWtZJWYUJxd7j6QW19pIoX+64VxT?=
+ =?us-ascii?Q?4zBZ0q0VYtTL0ys80600y0t6VVNVDwn5IGE5MNxk67f+jmtjuug7jsqYZvMV?=
+ =?us-ascii?Q?Pc5JHkwCSPiCueebksSqfNLezMQyc6FV2Vw4AFLO1JYYGR5pgFdgJ4JD13rI?=
+ =?us-ascii?Q?HMrS8bNc3JSfI//1qVGlBCpRKpbkaqdMejfESm2CcX8hDy6gs/t66pny+g2E?=
+ =?us-ascii?Q?uWmLGZspai86ooOcpDRlaArpb0psXnw+HHa6bwi30c8fte8Z8ShVJbfhP+mG?=
+ =?us-ascii?Q?z/jnIb46Nt15C0A5RlD/XayQ+m3cpTdNPRNcYQVtZRYbCWqntlaletRNlqjY?=
+ =?us-ascii?Q?kt9d2XRX72sPFtX/RYfZRhp1I0VIF+Yzlr3pgq14oxZOlx2zZGxadtC75ahw?=
+ =?us-ascii?Q?Uch+EyhAwHZVryiiDW+GeT+m4qfMZXIra7+NRSRiOyj7pYyEShaFR7PhxBSr?=
+ =?us-ascii?Q?CVxb6m80VKCoovEFduQgai6xxlaYRPr91ZgnmfzjaTy2V7bh6m12KQqHZaan?=
+ =?us-ascii?Q?ltTJoa+pfp2OiLWtA0VikPo4w1p4JGkwF/9jO6kK0TCK+oQ0fp4OtExHixBD?=
+ =?us-ascii?Q?a5vDDwOoTR3hK3o+A96tRuaMKo1xshNRmRFC3vECS6kqKNaSJIDw0Hpd9s6F?=
+ =?us-ascii?Q?d4xVjoGbCQJvh4W5mQ0upSjvTaKCa+DQD07xbLr4rHTgvNubzpF2J3l8hSP8?=
+ =?us-ascii?Q?Fh1tEJsyIMaU7K+ZC1zLRLK67eOzy2Dmd99YYqGVlWDXafbXI4w1rGQVSUrG?=
+ =?us-ascii?Q?0pjtle3umlvNtXoLCkexMJaFFzD8GxtZaXeIp+OT7u2jBuUCaoJZJveAwckz?=
+ =?us-ascii?Q?TJ9mc/p18/KuTQ2l+TcDOR6eXJ9GiH5peACEmYVhuiwI2UoaXsVAN8vtts0I?=
+ =?us-ascii?Q?SFPAM50RSAOAHjHEv0Ytrxm94dgpoVZcpYvQ0Xuq6hp1L2zyqrMvRWsg0ZZI?=
+ =?us-ascii?Q?x0Yl0h+eNz4AjOmQFD+BBIfN9WbMgHixWX3hMnoeTvUgvzvFMJ7BV6tXpbrX?=
+ =?us-ascii?Q?LQLYOuSH586fECRzcPAxmRMdn3RB8RJ6dQoHjsRgu6A0Ptad9JlQ4zGMO0Pi?=
+ =?us-ascii?Q?48WVAr/FLMvOx10Q0RCmNKhkJY2znYrjmaiDkKo7cjcGoUXJtD7uUVXiTMJm?=
+ =?us-ascii?Q?yDtALadrRoN6ZH/M670DatM9NRllZ+unG5+3Il44dwVFKEDXAr+Di7ZHlsmN?=
+ =?us-ascii?Q?6L0xZr1WHFJ24BoMRQAWwCA=3D?=
+X-OriginatorOrg: vivo.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 80a05415-eed5-4698-5e63-08d9a4defe21
+X-MS-Exchange-CrossTenant-AuthSource: TYZPR06MB4173.apcprd06.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 11 Nov 2021 06:46:30.3886
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 923e42dc-48d5-4cbe-b582-1a797a6412ed
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: LPk1PeP2g3FWwNIvF7LYdyA+x+bymG/lw01nQzOa/4t/9L6XaYGkQtpO5UfgsHAtcV4iZZdJ80yqNJ9d3408GA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: TY2PR06MB3648
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+Remove 'swap_ranges()' and replace it with the macro 'swap()'
+defined in 'include/linux/minmax.h' to simplify code and improve efficiency
 
-syzbot found the following issue on:
+Changes in v2:
+- Remove the 'swap_ranges()' function and replace it with 'swap()' 
+rather than changing the 'swap_ranges()' itself
 
-HEAD commit:    512b7931ad05 Merge branch 'akpm' (patches from Andrew)
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=15b45fb6b00000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=99780e4a2873b273
-dashboard link: https://syzkaller.appspot.com/bug?extid=5434727aa485c3203fed
-compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.2
-
-Unfortunately, I don't have any reproducer for this issue yet.
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+5434727aa485c3203fed@syzkaller.appspotmail.com
-
-RAX: ffffffffffffffda RBX: 00007f02bf014f60 RCX: 00007f02bef01ae9
-RDX: 0000000000000000 RSI: 0000000020000080 RDI: 0000000000000003
-RBP: 00007f02bc4771d0 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000002
-R13: 00007ffcc2738d7f R14: 00007f02bc477300 R15: 0000000000022000
- </TASK>
-------------[ cut here ]------------
-WARNING: CPU: 0 PID: 4974 at net/core/dev.c:11254 __dev_change_net_namespace+0x1079/0x1330 net/core/dev.c:11254
-Modules linked in:
-CPU: 0 PID: 4974 Comm: syz-executor.2 Not tainted 5.15.0-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-RIP: 0010:__dev_change_net_namespace+0x1079/0x1330 net/core/dev.c:11254
-Code: c7 c7 80 9b 8c 8a c6 05 ba 0e 3b 06 01 e8 36 73 d5 01 0f 0b e9 69 f0 ff ff e8 e3 95 57 fa 0f 0b e9 60 fb ff ff e8 d7 95 57 fa <0f> 0b e9 2a fb ff ff 41 bd ea ff ff ff e9 62 f2 ff ff e8 f0 38 9e
-RSP: 0018:ffffc900217aed70 EFLAGS: 00010246
-RAX: 0000000000040000 RBX: 00000000fffffff4 RCX: ffffc9000b291000
-RDX: 0000000000040000 RSI: ffffffff87202d59 RDI: 0000000000000003
-RBP: ffff88815cbea000 R08: 0000000000000000 R09: ffff88815cbea64b
-R10: ffffffff87202882 R11: 0000000000000000 R12: dffffc0000000000
-R13: ffffffff8d0e3dc0 R14: ffff88815cbeac00 R15: ffffffff8d0e3f0c
-FS:  00007f02bc477700(0000) GS:ffff8880b9c00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 0000001b32027000 CR3: 0000000162d58000 CR4: 0000000000350ef0
-Call Trace:
- <TASK>
- do_setlink+0x275/0x3970 net/core/rtnetlink.c:2624
- __rtnl_newlink+0xde6/0x1750 net/core/rtnetlink.c:3391
- rtnl_newlink+0x64/0xa0 net/core/rtnetlink.c:3506
- rtnetlink_rcv_msg+0x413/0xb80 net/core/rtnetlink.c:5571
- netlink_rcv_skb+0x153/0x420 net/netlink/af_netlink.c:2491
- netlink_unicast_kernel net/netlink/af_netlink.c:1319 [inline]
- netlink_unicast+0x533/0x7d0 net/netlink/af_netlink.c:1345
- netlink_sendmsg+0x86d/0xda0 net/netlink/af_netlink.c:1916
- sock_sendmsg_nosec net/socket.c:704 [inline]
- sock_sendmsg+0xcf/0x120 net/socket.c:724
- ____sys_sendmsg+0x6e8/0x810 net/socket.c:2409
- ___sys_sendmsg+0xf3/0x170 net/socket.c:2463
- __sys_sendmsg+0xe5/0x1b0 net/socket.c:2492
- do_syscall_x64 arch/x86/entry/common.c:50 [inline]
- do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
- entry_SYSCALL_64_after_hwframe+0x44/0xae
-RIP: 0033:0x7f02bef01ae9
-Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 bc ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007f02bc477188 EFLAGS: 00000246 ORIG_RAX: 000000000000002e
-RAX: ffffffffffffffda RBX: 00007f02bf014f60 RCX: 00007f02bef01ae9
-RDX: 0000000000000000 RSI: 0000000020000080 RDI: 0000000000000003
-RBP: 00007f02bc4771d0 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000002
-R13: 00007ffcc2738d7f R14: 00007f02bc477300 R15: 0000000000022000
- </TASK>
-
-
+Reviewed-by: Muchun Song <songmuchun@bytedance.com>
+Signed-off-by: Yihao Han <hanyihao@vivo.com>
 ---
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+ mm/damon/vaddr.c | 16 +++-------------
+ 1 file changed, 3 insertions(+), 13 deletions(-)
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+diff --git a/mm/damon/vaddr.c b/mm/damon/vaddr.c
+index 35fe49080ee9..814dc811d7c4 100644
+--- a/mm/damon/vaddr.c
++++ b/mm/damon/vaddr.c
+@@ -97,16 +97,6 @@ static unsigned long sz_range(struct damon_addr_range *r)
+ 	return r->end - r->start;
+ }
+ 
+-static void swap_ranges(struct damon_addr_range *r1,
+-			struct damon_addr_range *r2)
+-{
+-	struct damon_addr_range tmp;
+-
+-	tmp = *r1;
+-	*r1 = *r2;
+-	*r2 = tmp;
+-}
+-
+ /*
+  * Find three regions separated by two biggest unmapped regions
+  *
+@@ -145,9 +135,9 @@ static int __damon_va_three_regions(struct vm_area_struct *vma,
+ 		gap.start = last_vma->vm_end;
+ 		gap.end = vma->vm_start;
+ 		if (sz_range(&gap) > sz_range(&second_gap)) {
+-			swap_ranges(&gap, &second_gap);
++			swap(gap, second_gap);
+ 			if (sz_range(&second_gap) > sz_range(&first_gap))
+-				swap_ranges(&second_gap, &first_gap);
++				swap(second_gap, first_gap);
+ 		}
+ next:
+ 		last_vma = vma;
+@@ -158,7 +148,7 @@ static int __damon_va_three_regions(struct vm_area_struct *vma,
+ 
+ 	/* Sort the two biggest gaps by address */
+ 	if (first_gap.start > second_gap.start)
+-		swap_ranges(&first_gap, &second_gap);
++		swap(first_gap, second_gap);
+ 
+ 	/* Store the result */
+ 	regions[0].start = ALIGN(start, DAMON_MIN_REGION);
+-- 
+2.17.1
+
