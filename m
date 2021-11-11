@@ -2,129 +2,234 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AF92E44D774
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Nov 2021 14:45:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 939F844D77D
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Nov 2021 14:46:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232257AbhKKNsP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Nov 2021 08:48:15 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:26464 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233299AbhKKNsL (ORCPT
+        id S233453AbhKKNtR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Nov 2021 08:49:17 -0500
+Received: from smtp-out2.suse.de ([195.135.220.29]:44900 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232815AbhKKNtP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Nov 2021 08:48:11 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1636638322;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=2yQ/kuuLA5DM2/1kHzwjtCpUZK1BxKEhkS6A9QGB5NA=;
-        b=JwGp8HTID6fdNT28Lxr/F+9x8UguJW49E1qxanOCH9qzeiogDis2d1DY2lhkqKQiaV32uD
-        67N1gv2nV3g/DjrMI8nvQkLU7CAn78sle3/mh0Ck2PQ4+945GFaeudDoI2Zi9u6r9Bs7Mf
-        QROBGlmGTZ09CzogjCBjNyL8Yt3Vtns=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-8-2a1cRGN-NAutNk9PnJi_qw-1; Thu, 11 Nov 2021 08:45:18 -0500
-X-MC-Unique: 2a1cRGN-NAutNk9PnJi_qw-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        Thu, 11 Nov 2021 08:49:15 -0500
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 85F76804140;
-        Thu, 11 Nov 2021 13:45:17 +0000 (UTC)
-Received: from T590 (ovpn-8-28.pek2.redhat.com [10.72.8.28])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 6F68A5F4F5;
-        Thu, 11 Nov 2021 13:45:02 +0000 (UTC)
-Date:   Thu, 11 Nov 2021 21:44:54 +0800
-From:   Ming Lei <ming.lei@redhat.com>
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     Jens Axboe <axboe@kernel.dk>,
-        Christoph Hellwig <hch@infradead.org>,
-        linux-block@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 4/5] block: move queue enter logic into
- blk_mq_submit_bio()
-Message-ID: <YY0eVnbjmHmPZ3M4@T590>
-References: <YYQoLzMn7+s9hxpX@infradead.org>
- <2865c289-7014-2250-0f5b-a9ed8770d0ec@kernel.dk>
- <YYQo4ougXZvgv11X@infradead.org>
- <8c6163f4-0c0f-5254-5f79-9074f5a73cfe@kernel.dk>
- <461c4758-2675-1d11-ac8a-6f25ef01d781@kernel.dk>
- <YYQr3jl3avsuOUAJ@infradead.org>
- <3d29a5ce-aace-6198-3ea9-e6f603e74aa1@kernel.dk>
- <YYQuyt2/y1MgzRi0@infradead.org>
- <87ee0091-9c2f-50e8-c8f2-dcebebb9de48@kernel.dk>
- <alpine.DEB.2.22.394.2111111350150.2780761@ramsan.of.borg>
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 703431FD54;
+        Thu, 11 Nov 2021 13:46:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1636638385; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=NAF/yJr5v/6eyyS3wjyZwr6hNg/ZHfjNI3pJFtQctxI=;
+        b=ia0CZcCp4uTBojcw+YTkCVlP/P+OA3hTIEuZOdEcpYEKaamVTRvnIOEH8ad3EdykZsuE+s
+        HTPOf9CvxN0ZpLdrVEVPAAtP81m+uKvIA/jao9vlYCQXN1tBRxskK5V2s6qSn3Ysh2B2Zl
+        OYvW+BcM+T+Fl40OqMCKyinu6ysXP04=
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 9453F13D8F;
+        Thu, 11 Nov 2021 13:46:24 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id pCUgIbAejWGINAAAMHmgww
+        (envelope-from <jgross@suse.com>); Thu, 11 Nov 2021 13:46:24 +0000
+Subject: Re: [PATCH v3 3/3] MAINTAINERS: Mark VMware mailing list entries as
+ email aliases
+To:     "Srivatsa S. Bhat" <srivatsa@csail.mit.edu>, x86@kernel.org,
+        pv-drivers@vmware.com
+Cc:     Zack Rusin <zackr@vmware.com>, Nadav Amit <namit@vmware.com>,
+        Vivek Thampi <vithampi@vmware.com>,
+        Vishal Bhakta <vbhakta@vmware.com>,
+        Ronak Doshi <doshir@vmware.com>,
+        linux-graphics-maintainer@vmware.com,
+        dri-devel@lists.freedesktop.org, linux-rdma@vger.kernel.org,
+        linux-scsi@vger.kernel.org, netdev@vger.kernel.org,
+        linux-input@vger.kernel.org, amakhalov@vmware.com,
+        sdeep@vmware.com, virtualization@lists.linux-foundation.org,
+        keerthanak@vmware.com, srivatsab@vmware.com, anishs@vmware.com,
+        linux-kernel@vger.kernel.org, joe@perches.com, kuba@kernel.org,
+        rostedt@goodmis.org
+References: <163657479269.84207.13658789048079672839.stgit@srivatsa-dev>
+ <163657493334.84207.11063282485812745766.stgit@srivatsa-dev>
+From:   Juergen Gross <jgross@suse.com>
+Message-ID: <1074ce5f-06a4-52da-7d2c-6c281e871f7a@suse.com>
+Date:   Thu, 11 Nov 2021 14:46:23 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.12.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <alpine.DEB.2.22.394.2111111350150.2780761@ramsan.of.borg>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
+In-Reply-To: <163657493334.84207.11063282485812745766.stgit@srivatsa-dev>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature";
+ boundary="UU6HyAmpNKquL2EeOkjBcsuZswhHmhCPA"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 11, 2021 at 01:58:38PM +0100, Geert Uytterhoeven wrote:
-> 	Hi Jens,
-> 
-> On Thu, 4 Nov 2021, Jens Axboe wrote:
-> > On 11/4/21 1:04 PM, Christoph Hellwig wrote:
-> > > On Thu, Nov 04, 2021 at 01:02:54PM -0600, Jens Axboe wrote:
-> > > > On 11/4/21 12:52 PM, Christoph Hellwig wrote:
-> > > > > Looks good:
-> > > > > 
-> > > > > Reviewed-by: Christoph Hellwig <hch@lst.de>
-> > > > 
-> > > > So these two are now:
-> > > > 
-> > > > https://git.kernel.dk/cgit/linux-block/commit/?h=for-5.16/block&id=c98cb5bbdab10d187aff9b4e386210eb2332af96
-> > > > 
-> > > > which is the one I sent here, and then the next one gets cleaned up to
-> > > > remove that queue enter helper:
-> > > > 
-> > > > https://git.kernel.dk/cgit/linux-block/commit/?h=for-5.16/block&id=7f930eb31eeb07f1b606b3316d8ad3ab6a92905b
-> > > > 
-> > > > Can I add your reviewed-by to this last one as well? Only change is the
-> > > > removal of blk_mq_enter_queue() and the weird construct there, it's just
-> > > > bio_queue_enter() now.
-> > > 
-> > > Sure.
-> > 
-> > Thanks, prematurely already done, as you could tell :-)
-> 
-> The updated version is now commit 900e080752025f00 ("block: move queue
-> enter logic into blk_mq_submit_bio()") in Linus' tree.
-> 
-> I have bisected failures on m68k/atari (on ARAnyM, using nfhd as the
-> root device) to this commit, e.g.:
-> 
->     sd 0:0:0:0: [sda] tag#0 FAILED Result: hostbyte=DID_OK driverbyte=DRIVER_OK cmd_age=0s
->     sd 0:0:0:0: [sda] tag#0 Sense Key : Illegal Request [current]
->     sd 0:0:0:0: [sda] tag#0 Add. Sense: Invalid field in cdb
->     sd 0:0:0:0: [sda] tag#0 CDB: Write(10) 2a 08 00 00 00 01 00 00 08 00
->     critical target error, dev sda, sector 1 op 0x1:(WRITE) flags 0x20800 phys_seg 1 prio class 0
->     Buffer I/O error on dev sda1, logical block 0, lost sync page write
-> 
->     EXT4-fs (sda1): I/O error while writing superblock
->     sd 0:0:0:0: [sda] tag#0 FAILED Result: hostbyte=DID_OK driverbyte=DRIVER_OK cmd_age=0s
->     sd 0:0:0:0: [sda] tag#0 Sense Key : Illegal Request [current]
->     sd 0:0:0:0: [sda] tag#0 Add. Sense: Invalid field in cdb
->     sd 0:0:0:0: [sda] tag#0 CDB: Write(10) 2a 08 00 00 00 01 00 00 08 00
->     critical target error, dev sda, sector 1 op 0x1:(WRITE) flags 0x20800 phys_seg 1 prio class 0
->     Buffer I/O error on dev sda1, logical block 0, lost sync page write
->     EXT4-fs (sda1): I/O error while writing superblock
-> 
-> This may happen either when mounting the root file system (leading to an
-> unable to mount root fs panic), or later (leading to a read-only
-> rootfs).
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--UU6HyAmpNKquL2EeOkjBcsuZswhHmhCPA
+Content-Type: multipart/mixed; boundary="sjjohHWLN7n6IklkiI33KpOryat72rluS";
+ protected-headers="v1"
+From: Juergen Gross <jgross@suse.com>
+To: "Srivatsa S. Bhat" <srivatsa@csail.mit.edu>, x86@kernel.org,
+ pv-drivers@vmware.com
+Cc: Zack Rusin <zackr@vmware.com>, Nadav Amit <namit@vmware.com>,
+ Vivek Thampi <vithampi@vmware.com>, Vishal Bhakta <vbhakta@vmware.com>,
+ Ronak Doshi <doshir@vmware.com>, linux-graphics-maintainer@vmware.com,
+ dri-devel@lists.freedesktop.org, linux-rdma@vger.kernel.org,
+ linux-scsi@vger.kernel.org, netdev@vger.kernel.org,
+ linux-input@vger.kernel.org, amakhalov@vmware.com, sdeep@vmware.com,
+ virtualization@lists.linux-foundation.org, keerthanak@vmware.com,
+ srivatsab@vmware.com, anishs@vmware.com, linux-kernel@vger.kernel.org,
+ joe@perches.com, kuba@kernel.org, rostedt@goodmis.org
+Message-ID: <1074ce5f-06a4-52da-7d2c-6c281e871f7a@suse.com>
+Subject: Re: [PATCH v3 3/3] MAINTAINERS: Mark VMware mailing list entries as
+ email aliases
+References: <163657479269.84207.13658789048079672839.stgit@srivatsa-dev>
+ <163657493334.84207.11063282485812745766.stgit@srivatsa-dev>
+In-Reply-To: <163657493334.84207.11063282485812745766.stgit@srivatsa-dev>
 
-BTW, today I just found that hang in blk_mq_freeze_queue_wait() is
-caused by commit 900e080752025f00, and the following patch can fix it:
+--sjjohHWLN7n6IklkiI33KpOryat72rluS
+Content-Type: multipart/mixed;
+ boundary="------------70DE7479312B276329FA74A4"
+Content-Language: en-US
 
-- blk-mq: don't grab ->q_usage_counter in blk_mq_sched_bio_merge
+This is a multi-part message in MIME format.
+--------------70DE7479312B276329FA74A4
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: quoted-printable
 
-https://lore.kernel.org/linux-block/20211111085650.GA476@lst.de/T/#m759b88fda094a65ebf29bc81b780967cdaf9cf28
+On 10.11.21 21:09, Srivatsa S. Bhat wrote:
+> From: Srivatsa S. Bhat (VMware) <srivatsa@csail.mit.edu>
+>=20
+> VMware mailing lists in the MAINTAINERS file are private lists meant
+> for VMware-internal review/notification for patches to the respective
+> subsystems. Anyone can post to these addresses, but there is no public
+> read access like open mailing lists, which makes them more like email
+> aliases instead (to reach out to reviewers).
+>=20
+> So update all the VMware mailing list references in the MAINTAINERS
+> file to mark them as such, using "R: email-alias@vmware.com".
+>=20
+> Signed-off-by: Srivatsa S. Bhat (VMware) <srivatsa@csail.mit.edu>
 
-Maybe you can try the above patch.
+Acked-by: Juergen Gross <jgross@suse.com>
 
-Thanks,
-Ming
 
+Juergen
+
+--------------70DE7479312B276329FA74A4
+Content-Type: application/pgp-keys;
+ name="OpenPGP_0xB0DE9DD628BF132F.asc"
+Content-Transfer-Encoding: quoted-printable
+Content-Description: OpenPGP public key
+Content-Disposition: attachment;
+ filename="OpenPGP_0xB0DE9DD628BF132F.asc"
+
+-----BEGIN PGP PUBLIC KEY BLOCK-----
+
+xsBNBFOMcBYBCACgGjqjoGvbEouQZw/ToiBg9W98AlM2QHV+iNHsEs7kxWhKMjrioyspZKOBy=
+cWx
+w3ie3j9uvg9EOB3aN4xiTv4qbnGiTr3oJhkB1gsb6ToJQZ8uxGq2kaV2KL9650I1SJvedYm8O=
+f8Z
+d621lSmoKOwlNClALZNew72NjJLEzTalU1OdT7/i1TXkH09XSSI8mEQ/ouNcMvIJNwQpd369y=
+9bf
+IhWUiVXEK7MlRgUG6MvIj6Y3Am/BBLUVbDa4+gmzDC9ezlZkTZG2t14zWPvxXP3FAp2pkW0xq=
+G7/
+377qptDmrk42GlSKN4z76ELnLxussxc7I2hx18NUcbP8+uty4bMxABEBAAHNHEp1ZXJnZW4gR=
+3Jv
+c3MgPGpnQHBmdXBmLm5ldD7CwHkEEwECACMFAlOMcBYCGwMHCwkIBwMCAQYVCAIJCgsEFgIDA=
+QIe
+AQIXgAAKCRCw3p3WKL8TL0KdB/93FcIZ3GCNwFU0u3EjNbNjmXBKDY4FUGNQH2lvWAUy+dnyT=
+hpw
+dtF/jQ6j9RwE8VP0+NXcYpGJDWlNb9/JmYqLiX2Q3TyevpB0CA3dbBQp0OW0fgCetToGIQrg0=
+MbD
+1C/sEOv8Mr4NAfbauXjZlvTj30H2jO0u+6WGM6nHwbh2l5O8ZiHkH32iaSTfN7Eu5RnNVUJbv=
+oPH
+Z8SlM4KWm8rG+lIkGurqqu5gu8q8ZMKdsdGC4bBxdQKDKHEFExLJK/nRPFmAuGlId1E3fe10v=
+5QL
++qHI3EIPtyfE7i9Hz6rVwi7lWKgh7pe0ZvatAudZ+JNIlBKptb64FaiIOAWDCx1SzR9KdWVyZ=
+2Vu
+IEdyb3NzIDxqZ3Jvc3NAc3VzZS5jb20+wsB5BBMBAgAjBQJTjHCvAhsDBwsJCAcDAgEGFQgCC=
+QoL
+BBYCAwECHgECF4AACgkQsN6d1ii/Ey/HmQf/RtI7kv5A2PS4RF7HoZhPVPogNVbC4YA6lW7Dr=
+Wf0
+teC0RR3MzXfy6pJ+7KLgkqMlrAbN/8Dvjoz78X+5vhH/rDLa9BuZQlhFmvcGtCF8eR0T1v0nC=
+/nu
+AFVGy+67q2DH8As3KPu0344TBDpAvr2uYM4tSqxK4DURx5INz4ZZ0WNFHcqsfvlGJALDeE0Lh=
+ITT
+d9jLzdDad1pQSToCnLl6SBJZjDOX9QQcyUigZFtCXFst4dlsvddrxyqT1f17+2cFSdu7+ynLm=
+XBK
+7abQ3rwJY8SbRO2iRulogc5vr/RLMMlscDAiDkaFQWLoqHHOdfO9rURssHNN8WkMnQfvUewRz=
+80h
+SnVlcmdlbiBHcm9zcyA8amdyb3NzQG5vdmVsbC5jb20+wsB5BBMBAgAjBQJTjHDXAhsDBwsJC=
+AcD
+AgEGFQgCCQoLBBYCAwECHgECF4AACgkQsN6d1ii/Ey8PUQf/ehmgCI9jB9hlgexLvgOtf7PJn=
+FOX
+gMLdBQgBlVPO3/D9R8LtF9DBAFPNhlrsfIG/SqICoRCqUcJ96Pn3P7UUinFG/I0ECGF4EvTE1=
+jnD
+kfJZr6jrbjgyoZHiw/4BNwSTL9rWASyLgqlA8u1mf+c2yUwcGhgkRAd1gOwungxcwzwqgljf0=
+N51
+N5JfVRHRtyfwq/ge+YEkDGcTU6Y0sPOuj4Dyfm8fJzdfHNQsWq3PnczLVELStJNdapwPOoE+l=
+otu
+fe3AM2vAEYJ9rTz3Cki4JFUsgLkHFqGZarrPGi1eyQcXeluldO3m91NK/1xMI3/+8jbO0tsn1=
+tqS
+EUGIJi7ox80eSnVlcmdlbiBHcm9zcyA8amdyb3NzQHN1c2UuZGU+wsB5BBMBAgAjBQJTjHDrA=
+hsD
+BwsJCAcDAgEGFQgCCQoLBBYCAwECHgECF4AACgkQsN6d1ii/Ey+LhQf9GL45eU5vOowA2u5N3=
+g3O
+ZUEBmDHVVbqMtzwlmNC4k9Kx39r5s2vcFl4tXqW7g9/ViXYuiDXb0RfUpZiIUW89siKrkzmQ5=
+dM7
+wRqzgJpJwK8Bn2MIxAKArekWpiCKvBOB/Cc+3EXE78XdlxLyOi/NrmSGRIov0karw2RzMNOu5=
+D+j
+LRZQd1Sv27AR+IP3I8U4aqnhLpwhK7MEy9oCILlgZ1QZe49kpcumcZKORmzBTNh30FVKK1Evm=
+V2x
+AKDoaEOgQB4iFQLhJCdP1I5aSgM5IVFdn7v5YgEYuJYx37IoN1EblHI//x/e2AaIHpzK5h88N=
+Eaw
+QsaNRpNSrcfbFmAg987ATQRTjHAWAQgAyzH6AOODMBjgfWE9VeCgsrwH3exNAU32gLq2xvjpW=
+nHI
+s98ndPUDpnoxWQugJ6MpMncr0xSwFmHEgnSEjK/PAjppgmyc57BwKII3sV4on+gDVFJR6Y8ZR=
+wgn
+BC5mVM6JjQ5xDk8WRXljExRfUX9pNhdE5eBOZJrDRoLUmmjDtKzWaDhIg/+1Hzz93X4fCQkNV=
+bVF
+LELU9bMaLPBG/x5q4iYZ2k2ex6d47YE1ZFdMm6YBYMOljGkZKwYde5ldM9mo45mmwe0icXKLk=
+pEd
+IXKTZeKDO+Hdv1aqFuAcccTg9RXDQjmwhC3yEmrmcfl0+rPghO0Iv3OOImwTEe4co3c1mwARA=
+QAB
+wsBfBBgBAgAJBQJTjHAWAhsMAAoJELDendYovxMvQ/gH/1ha96vm4P/L+bQpJwrZ/dneZcmEw=
+Tbe
+8YFsw2V/Buv6Z4Mysln3nQK5ZadD534CF7TDVft7fC4tU4PONxF5D+/tvgkPfDAfF77zy2AH1=
+vJz
+Q1fOU8lYFpZXTXIHb+559UqvIB8AdgR3SAJGHHt4RKA0F7f5ipYBBrC6cyXJyyoprT10EMvU8=
+VGi
+wXvTyJz3fjoYsdFzpWPlJEBRMedCot60g5dmbdrZ5DWClAr0yau47zpWj3enf1tLWaqcsuylW=
+svi
+uGjKGw7KHQd3bxALOknAp4dN3QwBYCKuZ7AddY9yjynVaD5X7nF9nO5BjR/i1DG86lem3iBDX=
+zXs
+ZDn8R38=3D
+=3D2wuH
+-----END PGP PUBLIC KEY BLOCK-----
+
+--------------70DE7479312B276329FA74A4--
+
+--sjjohHWLN7n6IklkiI33KpOryat72rluS--
+
+--UU6HyAmpNKquL2EeOkjBcsuZswhHmhCPA
+Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="OpenPGP_signature"
+
+-----BEGIN PGP SIGNATURE-----
+
+wsB5BAABCAAjFiEEhRJncuj2BJSl0Jf3sN6d1ii/Ey8FAmGNHq8FAwAAAAAACgkQsN6d1ii/Ey/9
+dgf/Q0I7w7riRIIWsIohFJK9GXIxTsH7a0tXejDwGNNCZgkN2Fg0HPA6qKtePFrw9SSWWPxTXzpj
+k2Vkx5cecHODWygm4EuqMipawRlsfDZIIXSZwKQe7im1Q/gg8Ia0/RGT9i65FQEAz54EP+nWKEWN
+J889ahikfXsudz39IOXf+XjUkbmwVN/abmC35CC5mwtgsmBrXLwficnpwLBNrMwBOAwS7To+q6eA
+0e596byenUg1NcS2yjPBBJ+L8JxSf4lzXbtnCkeX38MmF/veoa1/vnhqfpUUOaCuAvXzIDjqAUkT
+z9pZeOg/gJztvwhNTNzoR9dPKnzXAxixTLwfgVgtQA==
+=mGeS
+-----END PGP SIGNATURE-----
+
+--UU6HyAmpNKquL2EeOkjBcsuZswhHmhCPA--
