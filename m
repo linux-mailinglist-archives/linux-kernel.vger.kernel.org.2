@@ -2,236 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9613944DB97
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Nov 2021 19:27:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4AFE544DB99
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Nov 2021 19:27:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234400AbhKKSaB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Nov 2021 13:30:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54548 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233928AbhKKSaA (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Nov 2021 13:30:00 -0500
-Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com [IPv6:2a00:1450:4864:20::52b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 78C60C061767
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Nov 2021 10:27:10 -0800 (PST)
-Received: by mail-ed1-x52b.google.com with SMTP id r12so27653096edt.6
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Nov 2021 10:27:10 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=T1jwxPk1RXD/ec6P3EaU2QcuBrfCqbQCQKTkeZy+/MI=;
-        b=bTojq4ZgpqZd7aeml/3AQ21KsdJXtyGV58pvX9gj3hNOm5ZAZWtEIvWW1yU/VoW2yI
-         Gn9G2XKYtFDgP24d88UsU3+3TbKe4JGpIKajpyeN2uDWxrydTaoNyyKuWoiCLoihASb7
-         b+OaH+Bvj8zb/6wcaZVOqm8qVvS/tVKRuBZsiksxVra4df5HzTbOGwYPeguZQa9QYO9Z
-         pYYspWc+8ZS5eLLm4f09DbBYLSWLkaPs0PWiF6829P43CkZfS59CunYEVV0ZBMA5LWiS
-         lZup+yaaJ6Lvb/oR3+7WqCg0lWZWJnZqe+ptsqHaLQjyrwkJbAEk+iH+ta831cmSZlYy
-         xX6A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=T1jwxPk1RXD/ec6P3EaU2QcuBrfCqbQCQKTkeZy+/MI=;
-        b=ClC5/xwavVu+/adjzzvtUGKsJM4IBjsA1a+ggOTu4wankPdVf0mzqFqG4A2LIXEEAL
-         qFKRjcS4LNCrHflDxIJ6Ho76N+QVgy5s7wmcXjEhJFfZCWWzMIv2K5a/kIUtfbf0IwZe
-         qkpOs4v+T/82ny+Ip7GaejVSmSUg5C/GIV4iBzeTdRjJrFAHcuCtOL1Hd+Vh+y1yCuhO
-         lU1551yd6GRYYMWeNjIQir/0BXRu1ZcN/YorMgOZSTMYiN51Y7ENsG/7IvTqTC+1J2Mn
-         pNk3NRd+0IWQn/KcjCLKa+77XJgrvPBIbtZ/Kq23GOBlY8o44TR+2O16b2QRHRAIR1uj
-         W3VQ==
-X-Gm-Message-State: AOAM531BBwY6ZmzVrZmY1S85ePxOT7+/Arr6FvBQBV2mQVKfcPwdXQ4C
-        5bUQ5EZUh58lwBW2UpDAhIkMqizWDFFF0wqgM7lvcw==
-X-Google-Smtp-Source: ABdhPJw++JLNVLrIVFIeLd39o65ucuCKh35yaRPhwK1p7Bth0hILA6Ail12wkGBOxzh9BKhtq+//DM6Nwl9kh4KfhKQ=
-X-Received: by 2002:a17:907:7f90:: with SMTP id qk16mr12009344ejc.169.1636655227509;
- Thu, 11 Nov 2021 10:27:07 -0800 (PST)
+        id S234438AbhKKSak (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Nov 2021 13:30:40 -0500
+Received: from mail.kernel.org ([198.145.29.99]:60370 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233923AbhKKSaj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 11 Nov 2021 13:30:39 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 66D2760FC2;
+        Thu, 11 Nov 2021 18:27:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1636655269;
+        bh=VW9JEaDWG7lXT/3YcWIqMRxGkLSUlVUC8SJ2TK4yg30=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=GnOwzs68n4h4CEP4N0jCfPFz7Pq9nVNsROjr5zRXvYH1GoMT7dVUXXbBUm08I5XYU
+         19AAShFGLQMqAY2QTafB9/TgQhY8RyMqQf/C7vjg3v+o+vqQzPNLGhwe3h2JRvluzy
+         9FoSknuAAEsW33cGev+920dLUPbrXUnoM04paiqG+V7Zz1XfT7o6d4yTlec3QNQUdH
+         gXiW6PJ+qK3qbFcoYw9tJ8vRvFV+2Xed0K4l/5z2z9wsf/t6jwTpxG2acUrsz7woTN
+         sciK1MZZwVpJ2TyhNuzb3F8d8gTB1TG90tais5YZ80DwDkXGxtNk7WO/o+x+W7bLX3
+         qYNYf+neXV9rQ==
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id C0287410A1; Thu, 11 Nov 2021 15:27:46 -0300 (-03)
+Date:   Thu, 11 Nov 2021 15:27:46 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Namhyung Kim <namhyung@kernel.org>
+Cc:     German Gomez <german.gomez@arm.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        linux-perf-users <linux-perf-users@vger.kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        John Garry <john.garry@huawei.com>,
+        Will Deacon <will@kernel.org>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Leo Yan <leo.yan@linaro.org>,
+        linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH v3 4/4] perf arm-spe: Support hardware-based PID tracing
+Message-ID: <YY1gop7wkdECurb7@kernel.org>
+References: <20211111133625.193568-1-german.gomez@arm.com>
+ <20211111133625.193568-5-german.gomez@arm.com>
+ <CAM9d7chUkk-e0-giLH_moiEri2N28+G1cE-F3+JsXHK89vDJWg@mail.gmail.com>
 MIME-Version: 1.0
-References: <20211110182002.666244094@linuxfoundation.org>
-In-Reply-To: <20211110182002.666244094@linuxfoundation.org>
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Thu, 11 Nov 2021 23:56:56 +0530
-Message-ID: <CA+G9fYuUTNv1phEJ+8RXPJiDzgrnm84DhASgB=aSp_QTm9BorA@mail.gmail.com>
-Subject: Re: [PATCH 4.14 00/22] 4.14.255-rc1 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-kernel@vger.kernel.org, shuah@kernel.org,
-        f.fainelli@gmail.com, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, jonathanh@nvidia.com,
-        stable@vger.kernel.org, pavel@denx.de, akpm@linux-foundation.org,
-        torvalds@linux-foundation.org, linux@roeck-us.net
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAM9d7chUkk-e0-giLH_moiEri2N28+G1cE-F3+JsXHK89vDJWg@mail.gmail.com>
+X-Url:  http://acmel.wordpress.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 11 Nov 2021 at 00:15, Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
->
-> This is the start of the stable review cycle for the 4.14.255 release.
-> There are 22 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
->
-> Responses should be made by Fri, 12 Nov 2021 18:19:54 +0000.
-> Anything received after that time might be too late.
->
-> The whole patch series can be found in one patch at:
->         https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-=
-4.14.255-rc1.gz
-> or in the git tree and branch at:
->         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
--rc.git linux-4.14.y
-> and the diffstat can be found below.
->
-> thanks,
->
-> greg k-h
+Em Thu, Nov 11, 2021 at 09:23:22AM -0800, Namhyung Kim escreveu:
+> On Thu, Nov 11, 2021 at 5:36 AM German Gomez <german.gomez@arm.com> wrote:
+> >
+> > If Arm SPE traces contain CONTEXT packets with TID info, use these
+> > values for tracking tid of samples. Otherwise fall back to using context
+> > switch events and display a message warning the user of possible timing
+> > inaccuracies [1].
+> >
+> > [1] https://lore.kernel.org/lkml/f877cfa6-9b25-6445-3806-ca44a4042eaf@arm.com/
+> >
+> > Signed-off-by: German Gomez <german.gomez@arm.com>
+> 
+> Acked-by: Namhyung Kim <namhyung@kernel.org>
 
-Results from Linaro=E2=80=99s test farm.
-No regressions on arm64, arm, x86_64, and i386.
+Thanks, applied.
 
-Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
+- Arnaldo
 
-## Build
-* kernel: 4.14.255-rc1
-* git: https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-=
-rc.git
-* git branch: linux-4.14.y
-* git commit: 0e0c342dbc368325d81b6ae17b54f1e668fa7447
-* git describe: v4.14.254-23-g0e0c342dbc36
-* test details:
-https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-4.14.y/build/v4.14=
-.254-23-g0e0c342dbc36
-
-## No regressions (compared to v4.14.254-8-g158dfc742cc7)
-
-## Fixes (compared to v4.14.254-8-g158dfc742cc7)
-No fixes found.
-
-## Test result summary
-total: 79228, pass: 63222, fail: 787, skip: 13230, xfail: 1989
-
-## Build Summary
-* arm: 130 total, 108 passed, 22 failed
-* arm64: 35 total, 35 passed, 0 failed
-* dragonboard-410c: 1 total, 1 passed, 0 failed
-* hi6220-hikey: 1 total, 1 passed, 0 failed
-* i386: 19 total, 19 passed, 0 failed
-* juno-r2: 1 total, 1 passed, 0 failed
-* mips: 22 total, 22 passed, 0 failed
-* sparc: 12 total, 12 passed, 0 failed
-* x15: 1 total, 1 passed, 0 failed
-* x86: 1 total, 1 passed, 0 failed
-* x86_64: 19 total, 19 passed, 0 failed
-
-## Test suites summary
-* fwts
-* igt-gpu-tools
-* kselftest-android
-* kselftest-arm64
-* kselftest-arm64/arm64.btitest.bti_c_func
-* kselftest-arm64/arm64.btitest.bti_j_func
-* kselftest-arm64/arm64.btitest.bti_jc_func
-* kselftest-arm64/arm64.btitest.bti_none_func
-* kselftest-arm64/arm64.btitest.nohint_func
-* kselftest-arm64/arm64.btitest.paciasp_func
-* kselftest-arm64/arm64.nobtitest.bti_c_func
-* kselftest-arm64/arm64.nobtitest.bti_j_func
-* kselftest-arm64/arm64.nobtitest.bti_jc_func
-* kselftest-arm64/arm64.nobtitest.bti_none_func
-* kselftest-arm64/arm64.nobtitest.nohint_func
-* kselftest-arm64/arm64.nobtitest.paciasp_func
-* kselftest-bpf
-* kselftest-breakpoints
-* kselftest-capabilities
-* kselftest-cgroup
-* kselftest-clone3
-* kselftest-core
-* kselftest-cpu-hotplug
-* kselftest-cpufreq
-* kselftest-drivers
-* kselftest-efivarfs
-* kselftest-filesystems
-* kselftest-firmware
-* kselftest-fpu
-* kselftest-futex
-* kselftest-gpio
-* kselftest-intel_pstate
-* kselftest-ipc
-* kselftest-ir
-* kselftest-kcmp
-* kselftest-kexec
-* kselftest-kvm
-* kselftest-lib
-* kselftest-livepatch
-* kselftest-membarrier
-* kselftest-memfd
-* kselftest-memory-hotplug
-* kselftest-mincore
-* kselftest-mount
-* kselftest-mqueue
-* kselftest-net
-* kselftest-netfilter
-* kselftest-nsfs
-* kselftest-openat2
-* kselftest-pid_namespace
-* kselftest-pidfd
-* kselftest-proc
-* kselftest-pstore
-* kselftest-ptrace
-* kselftest-rseq
-* kselftest-rtc
-* kselftest-seccomp
-* kselftest-sigaltstack
-* kselftest-size
-* kselftest-splice
-* kselftest-static_keys
-* kselftest-sync
-* kselftest-sysctl
-* kselftest-tc-testing
-* kselftest-timens
-* kselftest-timers
-* kselftest-tmpfs
-* kselftest-tpm2
-* kselftest-user
-* kselftest-vm
-* kselftest-x86
-* kselftest-zram
-* kvm-unit-tests
-* libhugetlbfs
-* linux-log-parser
-* ltp-cap_bounds-tests
-* ltp-commands-tests
-* ltp-containers-tests
-* ltp-controllers-tests
-* ltp-cpuhotplug-tests
-* ltp-crypto-tests
-* ltp-cve-tests
-* ltp-dio-tests
-* ltp-fcntl-locktests-tests
-* ltp-filecaps-tests
-* ltp-fs-tests
-* ltp-fs_bind-tests
-* ltp-fs_perms_simple-tests
-* ltp-fsx-tests
-* ltp-hugetlb-tests
-* ltp-io-tests
-* ltp-ipc-tests
-* ltp-math-tests
-* ltp-mm-tests
-* ltp-nptl-tests
-* ltp-open-posix-tests
-* ltp-pty-tests
-* ltp-sched-tests
-* ltp-securebits-tests
-* ltp-syscalls-tests
-* ltp-tracing-tests
-* network-basic-tests
-* packetdrill
-* perf
-* rcutorture
-* ssuite
-* v4l2-compliance
-
---
-Linaro LKFT
-https://lkft.linaro.org
