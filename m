@@ -2,164 +2,245 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F11244D4AF
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Nov 2021 11:06:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 28A3844D4B3
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Nov 2021 11:06:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232870AbhKKKI7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Nov 2021 05:08:59 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:26156 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232257AbhKKKI5 (ORCPT
+        id S232881AbhKKKJZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Nov 2021 05:09:25 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53244 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232535AbhKKKJY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Nov 2021 05:08:57 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1636625168;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=jl6i9Vg5MH/D47qfgpp1++mvVXS5mXYZyKefeF00ENM=;
-        b=BYT7gpKl0ciEu7JZa8s2Gad2/zns9UCqsAF/DiwrKTa3Gc5aRZNuxMChC1N8AipDeVFmdG
-        G3wmCrZ8Raa8rJTuPGsNjmBK9YtIoB2aytkPDV5jm48IWAK8+dUafYoXkaFTyvufdp5EOk
-        GzGi1gAyTDozdR6UFTHpmLO15n/54F0=
-Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
- [209.85.128.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-518-W0PZUduVO1qDJXBnZ1mXEA-1; Thu, 11 Nov 2021 05:06:07 -0500
-X-MC-Unique: W0PZUduVO1qDJXBnZ1mXEA-1
-Received: by mail-wm1-f72.google.com with SMTP id z126-20020a1c7e84000000b003335e5dc26bso1226411wmc.8
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Nov 2021 02:06:07 -0800 (PST)
+        Thu, 11 Nov 2021 05:09:24 -0500
+Received: from mail-oi1-x235.google.com (mail-oi1-x235.google.com [IPv6:2607:f8b0:4864:20::235])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8CAEBC061767
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Nov 2021 02:06:35 -0800 (PST)
+Received: by mail-oi1-x235.google.com with SMTP id n66so10658966oia.9
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Nov 2021 02:06:35 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=wuvwDD3Iz+0nxw7WCXIhtGkfBZuUHKSOA7fghzk+kgY=;
+        b=vTj1VAUsYvk5iVlZ1V2Wa64PovAtmyVuCpE5RKBzj615OjkMwAIVbuE4huWtU6ZACE
+         Z8ZUgCgNGacNyfoCGkkil9b5m9KkZdWReNs21vtTGjGjsptyEIHaKs9yVyxKflBms/LU
+         b+ecuodvaCyqlElgLHPBjmUaH3R5o1t026vxAt5NrV9+zgH6zgOsWVKETDt1Yh6sV7nz
+         WJtcBGM3MgGE4B8AfssJ27jPhw4xdQAvOcEGj3hF9VlK/hfALL3vBhGGHRwsrJdVXKfp
+         PwZgJlrblicxmHvNr82W0NfIpzP74OGcpQ9CgG1dwUrqAuAPCvLkKY2AWjQjGN63Y/il
+         TQwQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:from:to:cc:references:organization:in-reply-to
-         :content-transfer-encoding;
-        bh=jl6i9Vg5MH/D47qfgpp1++mvVXS5mXYZyKefeF00ENM=;
-        b=kwDLxUPJDpeUf/1H5tKe2xzu2ahFK1pqscXfzuimgt1JIU076CNjHZN96eIs+MShKT
-         EVrPq+XoNQpZKc/89tH4xO5sYjM13I6RUDsh95so/8C9bk+ZwXxvsjH6wK9rEtjRHBJd
-         NPcYRteZFrkd+xqmizxc3X2m1POqCplQEi9rmIB4hnSHGSg1jP/jOgnFTsKcxU5cmUwt
-         lb1kyFOpijGT4x4LK94dtlYXqBx16Rk+AICSGxb5i75AELaJR0BkdsoLL0DSaTniUizq
-         ym+VM4mgD9ZxhAJOLqaxXYivSV5Fc4hr4Bs1NM6KMLNGOGRSiylF47niOo1gjMeXCVUI
-         BeGA==
-X-Gm-Message-State: AOAM532dsdI/fkcmA7BTv0npH1T6oW02DosLdVVoJY0CdS5ChCOgKDlk
-        QOMuGbc7W7l/OP5OMyXQpYXNJ/1Cl9pcDjTydKhvcGfmaeoSjIEgxtQdoyg1l+RVGrrC4iNbws6
-        hCJu1W31oM01WKAf+UXmTFDN0
-X-Received: by 2002:adf:ef52:: with SMTP id c18mr7576533wrp.162.1636625166582;
-        Thu, 11 Nov 2021 02:06:06 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJzsepfx71+Xyqb2g2FyILt7HhfvGVM2Y27qZ2ME6eL9iigsTPlV6uU5mw6Ulj3j6sBKopzmZQ==
-X-Received: by 2002:adf:ef52:: with SMTP id c18mr7576497wrp.162.1636625166404;
-        Thu, 11 Nov 2021 02:06:06 -0800 (PST)
-Received: from [192.168.3.132] (p4ff23ee8.dip0.t-ipconnect.de. [79.242.62.232])
-        by smtp.gmail.com with ESMTPSA id l15sm2324926wme.47.2021.11.11.02.06.05
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 11 Nov 2021 02:06:05 -0800 (PST)
-Message-ID: <b495d38d-5cdd-8a33-b9d3-de721095ccab@redhat.com>
-Date:   Thu, 11 Nov 2021 11:06:04 +0100
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=wuvwDD3Iz+0nxw7WCXIhtGkfBZuUHKSOA7fghzk+kgY=;
+        b=NwaxHbaZXurPyZK+105j847CCVNyds1T028xveYfhenPlzsdJxL00VULf3hV0g7HC4
+         KGuX851I7a5lXpszQucCCAMqhzPPSvH0eScfnT7q5MGhN+2LflpYEPzbRXquiBW8Mn9I
+         yuiDT63b5N/jLyDYqzNCmMCCykRryXFixCbSzYd2rsS/mUs016IHYMo64IgrFKC+uR/K
+         MqTGHVWBjkbxaZunmQknna6rDMjTDCdvYXjVMpR+LR0O3KurwD9wtMsTr7vRPmY5t+4K
+         PM26hDTQ1FEvKXvKxwHPn3CIOZFMMPQxbXzmrsW9vv9/ltiafVFZkK0Pnrhyb2Yduzfl
+         2lfQ==
+X-Gm-Message-State: AOAM530lmC9fCbZp85MsZC1mbtGzXQT34KTH5Wtyg2lcHsAVdVsylwjR
+        EXEeYCHZc0btnNHfiOJPjkhXSjvqYpreKeDpk948nw==
+X-Google-Smtp-Source: ABdhPJxt4ATY9UUF8VNIV+A1QdL3lmH3fStFIQG1zVT5abHDxLCSBYj7WiHjDyuyq+CdPOBzzoNVF9yiGeXVzgCmv8E=
+X-Received: by 2002:a05:6808:3097:: with SMTP id bl23mr5266037oib.0.1636625194783;
+ Thu, 11 Nov 2021 02:06:34 -0800 (PST)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.2.0
-Subject: Re: [PATCH 4/7] fs/binfmt_elf: use get_task_comm instead of
- open-coded string copy
-Content-Language: en-US
-From:   David Hildenbrand <david@redhat.com>
-To:     Yafang Shao <laoar.shao@gmail.com>, akpm@linux-foundation.org
-Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
-        linux-perf-users@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        oliver.sang@intel.com, lkp@intel.com,
-        Kees Cook <keescook@chromium.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>,
-        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        Michal Miroslaw <mirq-linux@rere.qmqm.pl>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Petr Mladek <pmladek@suse.com>
-References: <20211108083840.4627-1-laoar.shao@gmail.com>
- <20211108083840.4627-5-laoar.shao@gmail.com>
- <a13c0541-59a3-6561-6d42-b51fef9f7c8b@redhat.com>
-Organization: Red Hat
-In-Reply-To: <a13c0541-59a3-6561-6d42-b51fef9f7c8b@redhat.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+References: <20211110182003.342919058@linuxfoundation.org>
+In-Reply-To: <20211110182003.342919058@linuxfoundation.org>
+From:   Naresh Kamboju <naresh.kamboju@linaro.org>
+Date:   Thu, 11 Nov 2021 15:36:23 +0530
+Message-ID: <CA+G9fYtFejMyeAnNL5pXTOkyXeOgFwy94d5hdbWd2x+PxCeEjg@mail.gmail.com>
+Subject: Re: [PATCH 5.14 00/24] 5.14.18-rc1 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-kernel@vger.kernel.org, shuah@kernel.org,
+        f.fainelli@gmail.com, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, jonathanh@nvidia.com,
+        stable@vger.kernel.org, pavel@denx.de, akpm@linux-foundation.org,
+        torvalds@linux-foundation.org, linux@roeck-us.net
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11.11.21 11:03, David Hildenbrand wrote:
-> On 08.11.21 09:38, Yafang Shao wrote:
->> It is better to use get_task_comm() instead of the open coded string
->> copy as we do in other places.
->>
->> struct elf_prpsinfo is used to dump the task information in userspace
->> coredump or kernel vmcore. Below is the verfication of vmcore,
->>
->> crash> ps
->>    PID    PPID  CPU       TASK        ST  %MEM     VSZ    RSS  COMM
->>       0      0   0  ffffffff9d21a940  RU   0.0       0      0  [swapper/0]
->>>     0      0   1  ffffa09e40f85e80  RU   0.0       0      0  [swapper/1]
->>>     0      0   2  ffffa09e40f81f80  RU   0.0       0      0  [swapper/2]
->>>     0      0   3  ffffa09e40f83f00  RU   0.0       0      0  [swapper/3]
->>>     0      0   4  ffffa09e40f80000  RU   0.0       0      0  [swapper/4]
->>>     0      0   5  ffffa09e40f89f80  RU   0.0       0      0  [swapper/5]
->>       0      0   6  ffffa09e40f8bf00  RU   0.0       0      0  [swapper/6]
->>>     0      0   7  ffffa09e40f88000  RU   0.0       0      0  [swapper/7]
->>>     0      0   8  ffffa09e40f8de80  RU   0.0       0      0  [swapper/8]
->>>     0      0   9  ffffa09e40f95e80  RU   0.0       0      0  [swapper/9]
->>>     0      0  10  ffffa09e40f91f80  RU   0.0       0      0  [swapper/10]
->>>     0      0  11  ffffa09e40f93f00  RU   0.0       0      0  [swapper/11]
->>>     0      0  12  ffffa09e40f90000  RU   0.0       0      0  [swapper/12]
->>>     0      0  13  ffffa09e40f9bf00  RU   0.0       0      0  [swapper/13]
->>>     0      0  14  ffffa09e40f98000  RU   0.0       0      0  [swapper/14]
->>>     0      0  15  ffffa09e40f9de80  RU   0.0       0      0  [swapper/15]
->>
->> It works well as expected.
->>
->> Suggested-by: Kees Cook <keescook@chromium.org>
->> Signed-off-by: Yafang Shao <laoar.shao@gmail.com>
->> Cc: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
->> Cc: Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>
->> Cc: Andrii Nakryiko <andrii.nakryiko@gmail.com>
->> Cc: Michal Miroslaw <mirq-linux@rere.qmqm.pl>
->> Cc: Peter Zijlstra <peterz@infradead.org>
->> Cc: Steven Rostedt <rostedt@goodmis.org>
->> Cc: Matthew Wilcox <willy@infradead.org>
->> Cc: David Hildenbrand <david@redhat.com>
->> Cc: Al Viro <viro@zeniv.linux.org.uk>
->> Cc: Kees Cook <keescook@chromium.org>
->> Cc: Petr Mladek <pmladek@suse.com>
->> ---
->>  fs/binfmt_elf.c | 2 +-
->>  1 file changed, 1 insertion(+), 1 deletion(-)
->>
->> diff --git a/fs/binfmt_elf.c b/fs/binfmt_elf.c
->> index a813b70f594e..138956fd4a88 100644
->> --- a/fs/binfmt_elf.c
->> +++ b/fs/binfmt_elf.c
->> @@ -1572,7 +1572,7 @@ static int fill_psinfo(struct elf_prpsinfo *psinfo, struct task_struct *p,
->>  	SET_UID(psinfo->pr_uid, from_kuid_munged(cred->user_ns, cred->uid));
->>  	SET_GID(psinfo->pr_gid, from_kgid_munged(cred->user_ns, cred->gid));
->>  	rcu_read_unlock();
->> -	strncpy(psinfo->pr_fname, p->comm, sizeof(psinfo->pr_fname));
->> +	get_task_comm(psinfo->pr_fname, p);
->>  
->>  	return 0;
->>  }
->>
-> 
-> We have a hard-coded "pr_fname[16]" as well, not sure if we want to
-> adjust that to use TASK_COMM_LEN?
+On Thu, 11 Nov 2021 at 00:19, Greg Kroah-Hartman
+<gregkh@linuxfoundation.org> wrote:
+>
+> This is the start of the stable review cycle for the 5.14.18 release.
+> There are 24 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+>
+> Responses should be made by Fri, 12 Nov 2021 18:19:54 +0000.
+> Anything received after that time might be too late.
+>
+> The whole patch series can be found in one patch at:
+>         https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-=
+5.14.18-rc1.gz
+> or in the git tree and branch at:
+>         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
+-rc.git linux-5.14.y
+> and the diffstat can be found below.
+>
+> thanks,
+>
+> greg k-h
 
-But if the intention is to chance TASK_COMM_LEN later, we might want to
-keep that unchanged.
+Results from Linaro=E2=80=99s test farm.
+No regressions on arm64, arm, x86_64, and i386.
 
-(replacing the 16 by a define might still be a good idea, similar to how
-it's done for ELF_PRARGSZ, but just a thought)
+Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
 
+## Build
+* kernel: 5.14.18-rc1
+* git: https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-=
+rc.git
+* git branch: linux-5.14.y
+* git commit: f4613872ae53b177f31fb92c5ba342bb4a0c3731
+* git describe: v5.14.17-25-gf4613872ae53
+* test details:
+https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-5.14.y/build/v5.14=
+.17-25-gf4613872ae53
 
--- 
-Thanks,
+## No regressions (compared to v5.14.17)
 
-David / dhildenb
+## No fixes (compared to v5.14.17)
 
+## Test result summary
+total: 94576, pass: 79818, fail: 1089, skip: 12781, xfail: 888
+
+## Build Summary
+* arc: 10 total, 10 passed, 0 failed
+* arm: 290 total, 268 passed, 22 failed
+* arm64: 40 total, 40 passed, 0 failed
+* dragonboard-410c: 1 total, 1 passed, 0 failed
+* hi6220-hikey: 1 total, 1 passed, 0 failed
+* i386: 39 total, 39 passed, 0 failed
+* juno-r2: 1 total, 1 passed, 0 failed
+* mips: 37 total, 37 passed, 0 failed
+* parisc: 12 total, 12 passed, 0 failed
+* powerpc: 54 total, 48 passed, 6 failed
+* riscv: 24 total, 24 passed, 0 failed
+* s390: 18 total, 18 passed, 0 failed
+* sh: 24 total, 24 passed, 0 failed
+* sparc: 12 total, 12 passed, 0 failed
+* x15: 1 total, 1 passed, 0 failed
+* x86: 1 total, 1 passed, 0 failed
+* x86_64: 40 total, 40 passed, 0 failed
+
+## Test suites summary
+* fwts
+* igt-gpu-tools
+* kselftest-
+* kselftest-android
+* kselftest-arm64
+* kselftest-arm64/arm64.btitest.bti_c_func
+* kselftest-arm64/arm64.btitest.bti_j_func
+* kselftest-arm64/arm64.btitest.bti_jc_func
+* kselftest-arm64/arm64.btitest.bti_none_func
+* kselftest-arm64/arm64.btitest.nohint_func
+* kselftest-arm64/arm64.btitest.paciasp_func
+* kselftest-arm64/arm64.nobtitest.bti_c_func
+* kselftest-arm64/arm64.nobtitest.bti_j_func
+* kselftest-arm64/arm64.nobtitest.bti_jc_func
+* kselftest-arm64/arm64.nobtitest.bti_none_func
+* kselftest-arm64/arm64.nobtitest.nohint_func
+* kselftest-arm64/arm64.nobtitest.paciasp_func
+* kselftest-bpf
+* kselftest-breakpoints
+* kselftest-capabilities
+* kselftest-cgroup
+* kselftest-clone3
+* kselftest-core
+* kselftest-cpu-hotplug
+* kselftest-cpufreq
+* kselftest-drivers
+* kselftest-efivarfs
+* kselftest-filesystems
+* kselftest-firmware
+* kselftest-fpu
+* kselftest-futex
+* kselftest-gpio
+* kselftest-intel_pstate
+* kselftest-ipc
+* kselftest-ir
+* kselftest-kcmp
+* kselftest-kexec
+* kselftest-kvm
+* kselftest-lib
+* kselftest-livepatch
+* kselftest-lkdtm
+* kselftest-membarrier
+* kselftest-memfd
+* kselftest-memory-hotplug
+* kselftest-mincore
+* kselftest-mount
+* kselftest-mqueue
+* kselftest-net
+* kselftest-netfilter
+* kselftest-nsfs
+* kselftest-openat2
+* kselftest-pid_namespace
+* kselftest-pidfd
+* kselftest-proc
+* kselftest-pstore
+* kselftest-ptrace
+* kselftest-rseq
+* kselftest-rtc
+* kselftest-seccomp
+* kselftest-sigaltstack
+* kselftest-size
+* kselftest-splice
+* kselftest-static_keys
+* kselftest-sync
+* kselftest-sysctl
+* kselftest-tc-testing
+* kselftest-timens
+* kselftest-timers
+* kselftest-tmpfs
+* kselftest-tpm2
+* kselftest-user
+* kselftest-vm
+* kselftest-x86
+* kselftest-zram
+* kunit
+* kvm-unit-tests
+* libgpiod
+* libhugetlbfs
+* linux-log-parser
+* ltp-cap_bounds-tests
+* ltp-commands-tests
+* ltp-containers-tests
+* ltp-controllers-tests
+* ltp-cpuhotplug-tests
+* ltp-crypto-tests
+* ltp-cve-tests
+* ltp-dio-tests
+* ltp-fcntl-locktests-tests
+* ltp-filecaps-tests
+* ltp-fs-tests
+* ltp-fs_bind-tests
+* ltp-fs_perms_simple-tests
+* ltp-fsx-tests
+* ltp-hugetlb-tests
+* ltp-io-tests
+* ltp-ipc-tests
+* ltp-math-tests
+* ltp-mm-tests
+* ltp-nptl-tests
+* ltp-open-posix-tests
+* ltp-pty-tests
+* ltp-sched-tests
+* ltp-securebits-tests
+* ltp-syscalls-tests
+* ltp-tracing-tests
+* network-basic-tests
+* packetdrill
+* perf
+* rcutorture
+* ssuite
+* v4l2-compliance
+
+--
+Linaro LKFT
+https://lkft.linaro.org
