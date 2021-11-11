@@ -2,165 +2,248 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 07EDA44D464
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Nov 2021 10:51:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D49C344D46A
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Nov 2021 10:51:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232774AbhKKJyH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Nov 2021 04:54:07 -0500
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:16248 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S232611AbhKKJyF (ORCPT
+        id S232828AbhKKJyn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Nov 2021 04:54:43 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49830 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232318AbhKKJym (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Nov 2021 04:54:05 -0500
-Received: from pps.filterd (m0098420.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 1AB8hchF015946;
-        Thu, 11 Nov 2021 09:50:32 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
- : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding; s=pp1;
- bh=9yzO3BN01R+xwzrsYOarJeAaAZRR7/sSADKUU1/AwUU=;
- b=Yl4IkLQNpU6cT1gSgFFV6IAdZVQrcTtnIFH5kKUQlEnhSvo43hIMII+rQQXAbvmFgs6U
- 6/HM5mvAkv0qcelGhlsRBZiMScPoN/KbG2m3acmmEUOwseqlehFkGza/EDOUTbvMPZSJ
- GQiCvVHFYCMGwOMVe30zmi13ohNxiSGQl0PLrWU6kXNxaOAkJqpJXyIAhLtxtL6H8WlE
- 9WxN5wcmYtVL0iGmumqRxDVN8QMQn9A2sY+CKYMCPuoUlqPyK9YusvAf/Bmo53PulagS
- pffpwXxsl4tbv1ZjD+e5h99ii/CuWPmbWn/aEq3PK7n0oQhp5DeUPXRrMgjLGOxDaYJO MA== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 3c8ywvskb4-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 11 Nov 2021 09:50:31 +0000
-Received: from m0098420.ppops.net (m0098420.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 1AB9Gt3v000675;
-        Thu, 11 Nov 2021 09:50:31 GMT
-Received: from ppma03fra.de.ibm.com (6b.4a.5195.ip4.static.sl-reverse.com [149.81.74.107])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 3c8ywvska3-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 11 Nov 2021 09:50:31 +0000
-Received: from pps.filterd (ppma03fra.de.ibm.com [127.0.0.1])
-        by ppma03fra.de.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 1AB9nJmM003941;
-        Thu, 11 Nov 2021 09:50:29 GMT
-Received: from b06cxnps3075.portsmouth.uk.ibm.com (d06relay10.portsmouth.uk.ibm.com [9.149.109.195])
-        by ppma03fra.de.ibm.com with ESMTP id 3c5hbasbxr-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 11 Nov 2021 09:50:29 +0000
-Received: from d06av22.portsmouth.uk.ibm.com (d06av22.portsmouth.uk.ibm.com [9.149.105.58])
-        by b06cxnps3075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 1AB9oOxx51052872
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 11 Nov 2021 09:50:24 GMT
-Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id D8E9A4C05C;
-        Thu, 11 Nov 2021 09:50:23 +0000 (GMT)
-Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id B7A734C066;
-        Thu, 11 Nov 2021 09:50:22 +0000 (GMT)
-Received: from localhost.localdomain (unknown [9.145.11.147])
-        by d06av22.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Thu, 11 Nov 2021 09:50:22 +0000 (GMT)
-From:   Claudio Imbrenda <imbrenda@linux.ibm.com>
-To:     linux-kernel@vger.kernel.org, linux-mm@kvack.org
-Cc:     thuth@redhat.com, frankja@linux.ibm.com, borntraeger@de.ibm.com,
-        Ulrich.Weigand@de.ibm.com, heiko.carstens@de.ibm.com,
-        david@redhat.com, ultrachin@163.com, akpm@linux-foundation.org,
-        vbabka@suse.cz, brookxu.cn@gmail.com, xiaoggchen@tencent.com,
-        linuszeng@tencent.com, yihuilu@tencent.com, mhocko@suse.com,
-        daniel.m.jordan@oracle.com, axboe@kernel.dk, legion@kernel.org,
-        peterz@infradead.org, aarcange@redhat.com, christian@brauner.io,
-        ebiederm@xmission.com, tglx@linutronix.de
-Subject: [RFC v1 4/4] kernel/fork.c: process_mmput_async: stop OOM while freeing memory
-Date:   Thu, 11 Nov 2021 10:50:08 +0100
-Message-Id: <20211111095008.264412-6-imbrenda@linux.ibm.com>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20211111095008.264412-1-imbrenda@linux.ibm.com>
-References: <20211111095008.264412-1-imbrenda@linux.ibm.com>
+        Thu, 11 Nov 2021 04:54:42 -0500
+Received: from mail-ot1-x32e.google.com (mail-ot1-x32e.google.com [IPv6:2607:f8b0:4864:20::32e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B21A5C061767
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Nov 2021 01:51:53 -0800 (PST)
+Received: by mail-ot1-x32e.google.com with SMTP id h16-20020a9d7990000000b0055c7ae44dd2so8069531otm.10
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Nov 2021 01:51:53 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=krjHmZ3Dw2WTF4k+Byn44pC5MSd5GJTXjQ+BQM/xy4g=;
+        b=JSFD2F8W1IREu+5qjrlSHU99pUMSiD5AD7iPoQhriZDqp+HY98jFJAM+I0KUB0NrQu
+         I3WfGS+NdjyCA8ZjXQHzTVFEAM3WXKH8chU6s2qXkvojTxtshVBf/qe1EC0NFgTZAJzA
+         krSszWi5INV5SyMPnQ0fXWpsGt1r7+OT1869cp9yo2fU8MO6CJGAY8RA3GFbcvJhDHwW
+         u65x8XVJBbr/M1NWj7adczup/TQPoKHsG1J3QiXyKVme0TU/cMT7qks3W+nZCAHhyGEV
+         DxQRivGjvQYg6llw59+6HuIbkF5TVARuxbwL/1yyIWYCzzAgBTaraFGOXApNMSyYaKp2
+         afeg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=krjHmZ3Dw2WTF4k+Byn44pC5MSd5GJTXjQ+BQM/xy4g=;
+        b=Mqouq+2pjO/+mGmLcX+ewDB+C1B1CyIfdC/4uRM3YwexKelCEC8xAxKRFu16S0iCMl
+         nDC+B5N6YndZxkRrsvxKltkN4eUiWIu8I/iAgN7hOboeJVSoq1C7ZDCspRimpXeuVbLQ
+         14Jgllk7CL/DL0FcMgUHkFXJuyj8ia4Z+hZdQKQbv+wy1HWr4bElR0LQr9LxrayStBY2
+         bCFzcgQMjRcrRfEIZusuAlJyv+VkHX3BczOolR09FV6XzS4Hk9oLTajm0TPEbOQZZu8f
+         rV7S5CkO2aSEEw7WJgKDcttfad6p7ws7/Cm1MT8jB3VLHUiXDUI2Tj5ZqdmlFGK3YG5q
+         Dkmw==
+X-Gm-Message-State: AOAM532lvzyfYYmoiNAVwOC2nRYSH2ZG6/zIVgHfH+sILLfvcAH9qmXF
+        HB3+3WhCMr95F830wI57OlVlL1I+QFBETXcPnzKsfg==
+X-Google-Smtp-Source: ABdhPJzvhOh9Tsh8IuynZRDgZBSpRFmdZur4oMk8rMYoPBEQ/vu2f2E6VsmCNOzxAPZmVnw6YqnG2+qcr8dBvUFqoKw=
+X-Received: by 2002:a9d:662:: with SMTP id 89mr4811351otn.157.1636624312815;
+ Thu, 11 Nov 2021 01:51:52 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: B7S9vjvRQblh7Daa7g2JMtqFHEdIVmw4
-X-Proofpoint-ORIG-GUID: JJjGFKWaQASuTc3y7iLoJeuCTRReAybx
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.205,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.0.607.475
- definitions=2021-11-11_02,2021-11-08_02,2020-04-07_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0 malwarescore=0
- mlxlogscore=999 impostorscore=0 mlxscore=0 lowpriorityscore=0 phishscore=0
- spamscore=0 clxscore=1015 priorityscore=1501 suspectscore=0 bulkscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2110150000
- definitions=main-2111110056
+References: <20211111003519.1050494-1-tadeusz.struk@linaro.org>
+In-Reply-To: <20211111003519.1050494-1-tadeusz.struk@linaro.org>
+From:   Marco Elver <elver@google.com>
+Date:   Thu, 11 Nov 2021 10:51:41 +0100
+Message-ID: <CANpmjNNcVFmnBV-1Daauqk5ww8YRUVRtVs_SXVAPWG5CrFBVPg@mail.gmail.com>
+Subject: Re: [PATCH] skbuff: suppress clang object-size-mismatch error
+To:     Tadeusz Struk <tadeusz.struk@linaro.org>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Jonathan Lemon <jonathan.lemon@gmail.com>,
+        Alexander Lobakin <alobakin@pm.me>,
+        Willem de Bruijn <willemb@google.com>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Cong Wang <cong.wang@bytedance.com>,
+        Kevin Hao <haokexin@gmail.com>,
+        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        llvm@lists.linux.dev, Kees Cook <keescook@chromium.org>,
+        Eric Dumazet <edumazet@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch implements a simple OOM notifier to stop the OOM killer
-while a mm is being reclaimed asynchronously using the
-process_mmput_async syscall.
+On Thu, 11 Nov 2021 at 01:36, Tadeusz Struk <tadeusz.struk@linaro.org> wrote:
+> Kernel throws a runtime object-size-mismatch error in skbuff queue
+> helpers like in [1]. This happens every time there is a pattern
+> like the below:
+>
+> int skbuf_xmit(struct sk_buff *skb)
+> {
+>         struct sk_buff_head list;
+>
+>         __skb_queue_head_init(&list);
+>         __skb_queue_tail(&list, skb); <-- offending call
+>
+>         return do_xmit(net, &list);
+> }
+>
+> and the kernel is build with clang and -fsanitize=undefined flag set.
+> The reason is that the functions __skb_queue_[tail|head]() access the
+> struct sk_buff_head object via a pointer to struct sk_buff, which is
+> much bigger in size than the sk_buff_head. This could cause undefined
+> behavior and clang is complaining:
+>
+> UBSAN: object-size-mismatch in ./include/linux/skbuff.h:2023:28
+> member access within address ffffc90000cb71c0 with insufficient space
+> for an object of type 'struct sk_buff'
 
-Tested on s390x.
+The config includes CONFIG_UBSAN_OBJECT_SIZE, right? Normally that's
+disabled by default, probably why nobody has noticed these much.
 
-Signed-off-by: Claudio Imbrenda <imbrenda@linux.ibm.com>
----
- kernel/fork.c | 28 ++++++++++++++++++++++++++++
- 1 file changed, 28 insertions(+)
+> Suppress the error with __attribute__((no_sanitize("undefined")))
+> in the skb helpers.
 
-diff --git a/kernel/fork.c b/kernel/fork.c
-index 0da39b76005c..7279209eb69c 100644
---- a/kernel/fork.c
-+++ b/kernel/fork.c
-@@ -118,6 +118,11 @@
-  */
- #define MAX_THREADS FUTEX_TID_MASK
- 
-+/*
-+ * Priority for the OOM notifier used in process_mmput_async
-+ */
-+#define PROCESS_MMPUT_ASYNC_OOM_NOTIFY_PRIORITY 70
-+
- /*
-  * Protected counters by write_lock_irq(&tasklist_lock)
-  */
-@@ -3203,13 +3208,27 @@ int sysctl_max_threads(struct ctl_table *table, int write,
- 	return 0;
- }
- 
-+/* Prevent the OOM from being triggered while we are cleaning up asynchronously */
-+static int mmput_async_oom_notifier(struct notifier_block *nb, unsigned long dummy, void *parm)
-+{
-+	/*
-+	 * We cannot know the speed at which pages are being freed, so we
-+	 * fake it and say it's at least one. This is already enough to
-+	 * stop the OOM killer.
-+	 */
-+	*(unsigned long *)parm += PAGE_SIZE;
-+	return NOTIFY_OK;
-+}
-+
- SYSCALL_DEFINE2(process_mmput_async, int, pidfd, unsigned int, flags)
- {
- #ifdef CONFIG_MMU
-+	struct notifier_block oom_nb;
- 	struct mm_struct *mm = NULL;
- 	struct task_struct *task;
- 	unsigned int tmp;
- 	struct pid *pid;
-+	int r;
- 
- 	if (flags)
- 		return -EINVAL;
-@@ -3280,8 +3299,17 @@ SYSCALL_DEFINE2(process_mmput_async, int, pidfd, unsigned int, flags)
- 	if (atomic_read(&mm->mm_users))
- 		panic("mm_users not 0 but trying to __mmput anyway!");
- 
-+	/*
-+	 * Register an OOM notifier, to stop the OOM while we are
-+	 * asynchronously freeing the mm.
-+	 */
-+	oom_nb.priority = PROCESS_MMPUT_ASYNC_OOM_NOTIFY_PRIORITY;
-+	oom_nb.notifier_call = mmput_async_oom_notifier;
-+	r = register_oom_notifier(&oom_nb);
- 	/* Do the actual work */
- 	__mmput(mm);
-+	if (!r)
-+		unregister_oom_notifier(&oom_nb);
- 	/* And put the extra reference taken above */
- 	mmdrop(mm);
- 
--- 
-2.31.1
+Isn't there a better way, because doing this might also suppress other
+issues wholesale. __no_sanitize_undefined should be the last resort.
 
+> [1] https://syzkaller.appspot.com/bug?id=5d9f0bca58cea80f272b73500df67dcd9e35c886
+>
+> Cc: "Nathan Chancellor" <nathan@kernel.org>
+> Cc: "Nick Desaulniers" <ndesaulniers@google.com>
+> Cc: "Jakub Kicinski" <kuba@kernel.org>
+> Cc: "David S. Miller" <davem@davemloft.net>
+> Cc: "Jonathan Lemon" <jonathan.lemon@gmail.com>
+> Cc: "Alexander Lobakin" <alobakin@pm.me>
+> Cc: "Willem de Bruijn" <willemb@google.com>
+> Cc: "Paolo Abeni" <pabeni@redhat.com>
+> Cc: "Cong Wang" <cong.wang@bytedance.com>
+> Cc: "Kevin Hao" <haokexin@gmail.com>
+> Cc: "Ilias Apalodimas" <ilias.apalodimas@linaro.org>
+> Cc: "Marco Elver" <elver@google.com>
+> Cc: <netdev@vger.kernel.org>
+> Cc: <linux-kernel@vger.kernel.org>
+> Cc: <llvm@lists.linux.dev>
+>
+> Signed-off-by: Tadeusz Struk <tadeusz.struk@linaro.org>
+> ---
+>  include/linux/skbuff.h | 49 ++++++++++++++++++++++++------------------
+>  1 file changed, 28 insertions(+), 21 deletions(-)
+>
+> diff --git a/include/linux/skbuff.h b/include/linux/skbuff.h
+> index 0bd6520329f6..8ec46e3a503d 100644
+> --- a/include/linux/skbuff.h
+> +++ b/include/linux/skbuff.h
+> @@ -1933,9 +1933,10 @@ static inline void skb_queue_head_init_class(struct sk_buff_head *list,
+>   *     The "__skb_xxxx()" functions are the non-atomic ones that
+>   *     can only be called with interrupts disabled.
+>   */
+> -static inline void __skb_insert(struct sk_buff *newsk,
+> -                               struct sk_buff *prev, struct sk_buff *next,
+> -                               struct sk_buff_head *list)
+> +static inline void __no_sanitize_undefined
+> +__skb_insert(struct sk_buff *newsk,
+> +            struct sk_buff *prev, struct sk_buff *next,
+> +            struct sk_buff_head *list)
+>  {
+>         /* See skb_queue_empty_lockless() and skb_peek_tail()
+>          * for the opposite READ_ONCE()
+> @@ -1966,8 +1967,9 @@ static inline void __skb_queue_splice(const struct sk_buff_head *list,
+>   *     @list: the new list to add
+>   *     @head: the place to add it in the first list
+>   */
+> -static inline void skb_queue_splice(const struct sk_buff_head *list,
+> -                                   struct sk_buff_head *head)
+> +static inline void __no_sanitize_undefined
+> +skb_queue_splice(const struct sk_buff_head *list,
+> +                struct sk_buff_head *head)
+>  {
+>         if (!skb_queue_empty(list)) {
+>                 __skb_queue_splice(list, (struct sk_buff *) head, head->next);
+> @@ -1982,8 +1984,9 @@ static inline void skb_queue_splice(const struct sk_buff_head *list,
+>   *
+>   *     The list at @list is reinitialised
+>   */
+> -static inline void skb_queue_splice_init(struct sk_buff_head *list,
+> -                                        struct sk_buff_head *head)
+> +static inline void __no_sanitize_undefined
+> +skb_queue_splice_init(struct sk_buff_head *list,
+> +                     struct sk_buff_head *head)
+>  {
+>         if (!skb_queue_empty(list)) {
+>                 __skb_queue_splice(list, (struct sk_buff *) head, head->next);
+> @@ -1997,8 +2000,9 @@ static inline void skb_queue_splice_init(struct sk_buff_head *list,
+>   *     @list: the new list to add
+>   *     @head: the place to add it in the first list
+>   */
+> -static inline void skb_queue_splice_tail(const struct sk_buff_head *list,
+> -                                        struct sk_buff_head *head)
+> +static inline void __no_sanitize_undefined
+> +skb_queue_splice_tail(const struct sk_buff_head *list,
+> +                     struct sk_buff_head *head)
+>  {
+>         if (!skb_queue_empty(list)) {
+>                 __skb_queue_splice(list, head->prev, (struct sk_buff *) head);
+> @@ -2014,8 +2018,9 @@ static inline void skb_queue_splice_tail(const struct sk_buff_head *list,
+>   *     Each of the lists is a queue.
+>   *     The list at @list is reinitialised
+>   */
+> -static inline void skb_queue_splice_tail_init(struct sk_buff_head *list,
+> -                                             struct sk_buff_head *head)
+> +static inline void __no_sanitize_undefined
+> +skb_queue_splice_tail_init(struct sk_buff_head *list,
+> +                          struct sk_buff_head *head)
+>  {
+>         if (!skb_queue_empty(list)) {
+>                 __skb_queue_splice(list, head->prev, (struct sk_buff *) head);
+> @@ -2035,9 +2040,10 @@ static inline void skb_queue_splice_tail_init(struct sk_buff_head *list,
+>   *
+>   *     A buffer cannot be placed on two lists at the same time.
+>   */
+> -static inline void __skb_queue_after(struct sk_buff_head *list,
+> -                                    struct sk_buff *prev,
+> -                                    struct sk_buff *newsk)
+> +static inline void __no_sanitize_undefined
+> +__skb_queue_after(struct sk_buff_head *list,
+> +                 struct sk_buff *prev,
+> +                 struct sk_buff *newsk)
+>  {
+>         __skb_insert(newsk, prev, prev->next, list);
+>  }
+> @@ -2045,9 +2051,10 @@ static inline void __skb_queue_after(struct sk_buff_head *list,
+>  void skb_append(struct sk_buff *old, struct sk_buff *newsk,
+>                 struct sk_buff_head *list);
+>
+> -static inline void __skb_queue_before(struct sk_buff_head *list,
+> -                                     struct sk_buff *next,
+> -                                     struct sk_buff *newsk)
+> +static inline void __no_sanitize_undefined
+> +__skb_queue_before(struct sk_buff_head *list,
+> +                  struct sk_buff *next,
+> +                  struct sk_buff *newsk)
+>  {
+>         __skb_insert(newsk, next->prev, next, list);
+>  }
+> @@ -2062,8 +2069,8 @@ static inline void __skb_queue_before(struct sk_buff_head *list,
+>   *
+>   *     A buffer cannot be placed on two lists at the same time.
+>   */
+> -static inline void __skb_queue_head(struct sk_buff_head *list,
+> -                                   struct sk_buff *newsk)
+> +static inline void __no_sanitize_undefined
+> +__skb_queue_head(struct sk_buff_head *list, struct sk_buff *newsk)
+>  {
+>         __skb_queue_after(list, (struct sk_buff *)list, newsk);
+>  }
+> @@ -2079,8 +2086,8 @@ void skb_queue_head(struct sk_buff_head *list, struct sk_buff *newsk);
+>   *
+>   *     A buffer cannot be placed on two lists at the same time.
+>   */
+> -static inline void __skb_queue_tail(struct sk_buff_head *list,
+> -                                  struct sk_buff *newsk)
+> +static inline void __no_sanitize_undefined
+> +__skb_queue_tail(struct sk_buff_head *list, struct sk_buff *newsk)
+>  {
+>         __skb_queue_before(list, (struct sk_buff *)list, newsk);
+>  }
+> --
+> 2.33.1
+>
