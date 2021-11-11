@@ -2,88 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 37A4344D504
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Nov 2021 11:31:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D52B44D50B
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Nov 2021 11:33:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232861AbhKKKe3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Nov 2021 05:34:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58764 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229668AbhKKKe0 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Nov 2021 05:34:26 -0500
-Received: from mail-ua1-x929.google.com (mail-ua1-x929.google.com [IPv6:2607:f8b0:4864:20::929])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5430CC061766;
-        Thu, 11 Nov 2021 02:31:37 -0800 (PST)
-Received: by mail-ua1-x929.google.com with SMTP id az37so10791136uab.13;
-        Thu, 11 Nov 2021 02:31:37 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=4enwRC8TuKI2GB0AGVlP6QNL8DbsgjOg0CrVYrlGOUA=;
-        b=ILoQYjHk7zJpnrivYmFTUEt3aohMdnm8X8NL/q2Juw27tzobMu2E/LxzuhtO0Dlhca
-         5huWCJWp7czN/DbK4uBcINTRnDvQWTlTZI1ASJgI5EEY+pIxvqZSHb3+qZi5KmjtA8MG
-         ZMA0HKeHp0zL6ZuAUmck9k8gUKnaHSwEFeaA83x2tQPpmHxOkqPGB0G1Ttj12WxCfVfy
-         nvW1zorlAMVbEEv3BUdCGSRINcvPSNBXRprTgXB6RBuK1ZJdSax5qVxs8GrXd/bQzjv2
-         3wOI3whOv99YhdkUT3KkqvUkKcRggjebYWBQUEyFLQDCCVryY65E7ZnFN7OSYS2dXJi+
-         JiuA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=4enwRC8TuKI2GB0AGVlP6QNL8DbsgjOg0CrVYrlGOUA=;
-        b=FoNMNovfdD5zCzRRtgbgocEAaMu09Zp22uMbz6ZVIe1MrIIsY6M9j1rhOTkIOR498h
-         ESLrt0/dN+1/OJstw+GhkwlRngJbyoBZOYkbLf3p7Wlu3F2EbmhmMiNCLFaxfNV/5bPU
-         2Pml+hWVKei6yW27tLQaq6qhkwGCjgHzVU9/p3Uvtj2QfPqEw1TKdC8IEca1BJqsSswb
-         WKxH/Tcqb2nYMtBAKWEmvZy/C8In8Ul5F/IV8Sptp0fP+tTtXkMlCmth4OUdmZbQxNL9
-         eNWn5oaO4xiZ8lhQ6scS/UqOeIjNwFzIvtui/lLAfeAi/yGFAOrXToGGzMYaQs80DKsg
-         IW3w==
-X-Gm-Message-State: AOAM532bdyEmr4yIkRFPgw9ajB2JGun9npbbWE25muw6TJye1xB5JxbI
-        MTZ3JwSkmfJUSwLXN855nJVR7jn7SKOQIy6yCxo=
-X-Google-Smtp-Source: ABdhPJxM7Zqn7XS994yvFxrEsUq21I4hiwrV6KG12OVBJxfJ0cNGQ9M/sygXzAFBkMtWcG07qPbROzjYFjjdf8z+nD4=
-X-Received: by 2002:a67:f516:: with SMTP id u22mr9305581vsn.47.1636626696452;
- Thu, 11 Nov 2021 02:31:36 -0800 (PST)
-MIME-Version: 1.0
-References: <20211111083954.6286-1-lukas.bulwahn@gmail.com>
-In-Reply-To: <20211111083954.6286-1-lukas.bulwahn@gmail.com>
-From:   Fabio Estevam <festevam@gmail.com>
-Date:   Thu, 11 Nov 2021 07:31:25 -0300
-Message-ID: <CAOMZO5B4k=UvE5XTgbsjCfoo0h0Y7H+xN6mwh9Bnc2L82QYzwQ@mail.gmail.com>
-Subject: Re: [PATCH] iio: imx8qxp-adc: fix dependency to the intended ARCH_MXC config
-To:     Lukas Bulwahn <lukas.bulwahn@gmail.com>
-Cc:     Jonathan Cameron <jic23@kernel.org>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Cai Huoqing <caihuoqing@baidu.com>, linux-iio@vger.kernel.org,
-        kernel-janitors@vger.kernel.org,
-        linux-kernel <linux-kernel@vger.kernel.org>
+        id S232847AbhKKKgS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Nov 2021 05:36:18 -0500
+Received: from mout.gmx.net ([212.227.15.19]:37269 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232318AbhKKKgQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 11 Nov 2021 05:36:16 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1636626768;
+        bh=uMU1373AJ5b0uKpR/RatT/DkoeOsKokoX2iJcNWel8U=;
+        h=X-UI-Sender-Class:Subject:From:To:Cc:Date:In-Reply-To:References;
+        b=R6tRD/0BVuDwwwdLGMrLggr5YULeD4oqnyRIH5CNFpi7zf0fPlL8KdTd3DubtpxnF
+         TCwvVXpzfm2wa4sNntEzGf5Ae2LdEy2TBUjwjRohKn0yaY/wU4L2pSvAIIE7YIHfzw
+         IcKO+1MHeHt3cuvhrv0WSMsYPannhyTsciJc0Z1k=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from homer.fritz.box ([212.114.172.107]) by mail.gmx.net (mrgmx005
+ [212.227.17.190]) with ESMTPSA (Nemesis) id 1M7b2d-1mmUIP1zLR-0083Gp; Thu, 11
+ Nov 2021 11:32:48 +0100
+Message-ID: <26fd47db11763a9c79662a66eed2dbdbcbedaa8a.camel@gmx.de>
+Subject: Re: [PATCH v2 2/5] preempt/dynamic: Introduce preempt mode accessors
+From:   Mike Galbraith <efault@gmx.de>
+To:     Marco Elver <elver@google.com>
+Cc:     Valentin Schneider <valentin.schneider@arm.com>,
+        linux-kernel@vger.kernel.org, kasan-dev@googlegroups.com,
+        linuxppc-dev@lists.ozlabs.org, linux-kbuild@vger.kernel.org,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Michal Marek <michal.lkml@markovi.net>,
+        Nick Desaulniers <ndesaulniers@google.com>
+Date:   Thu, 11 Nov 2021 11:32:40 +0100
+In-Reply-To: <CANpmjNPeRwupeg=S8yGGUracoehSUbS-Fkfb8juv5mYN36uiqg@mail.gmail.com>
+References: <20211110202448.4054153-1-valentin.schneider@arm.com>
+         <20211110202448.4054153-3-valentin.schneider@arm.com>
+         <a7c704c2ae77e430d7f0657c5db664f877263830.camel@gmx.de>
+         <803a905890530ea1b86db6ac45bd1fd940cf0ac3.camel@gmx.de>
+         <a7febd8825a2ab99bd1999664c6d4aa618b49442.camel@gmx.de>
+         <CANpmjNPeRwupeg=S8yGGUracoehSUbS-Fkfb8juv5mYN36uiqg@mail.gmail.com>
 Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.42.0 
+MIME-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:uuwX788BL/oP1FC37c/JIA2AX9+HNeNHkFeDgDrreyZCxwfBg0P
+ B+LG2N6R4OuzGdOAYShamBgnrdfwteiTsZbAt3bWKAG4xA8ILr8IE8V8eRKdYmsI+QT4ieO
+ hSGLZCIAvzMybM5e4d039bw+2e9jg0wvFDF+Hvd9V0aPc42JqL2Hq55llwqtmw1QBPduxu9
+ rFSdKtZIpm4OcQmGqQUXQ==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:tJHMHumK5Ow=:WzGr7EVNBA75U29zZgCq9T
+ SH5u6IUYmUgYVPKQC6dyltXmdR8eq//e3pTu2OzThSYmBIu9/NaxZ2/IA2sKuJiyK+yFTzrz5
+ I/HO/mwgHzqLmwD/0DWQMgoQhcJpYCfbUYZYKy2TLdqLRVhNV1A2Cjk2BZZuEU4Do2CUwT/eM
+ wIpShikX11920Uxw/YETz5drZBAPyyvz9zJqk/yQ+rc1KXFv2e0FBOJfDN6wEd+Gvq5+cjGLR
+ dyGZUYeYODZMUpuAR85mw6IR2cGW64i+9ROqZnuoDJdUJwBRt+1vI6UopW20ZAPB/6XSgIzoh
+ 6Qs6/0y24T0Er4XHnZTI2cxFbzvUnZKvsR4fvInhTvyNC83jalZoD1Bj1iMtAIY+QIVXLv36B
+ EXoxruXp/NcOvv19ewBKC9sC3iOmUxILYXSVj8UevLj7pjHUJ3Uu5EXqdLz7yT23WIbN3WDig
+ CeBx418hv8rdQKUQbvsxRGQUbuKhDkKh3z5e8gLXQqFumqYJGhKfmjmdMWSfA6zHwzaA59KS3
+ LPz6U15vXGZ6c/2oKKQqPRWTF8pS9TwACFE/m96KICA5cmF1WA6aV3ryOGXmsyVWSFunp1Xnj
+ xZzIm3kkyWYtZ0Fn92uNtY2TecsMSPaxL8sNQjbv8mkMzJwFpskie7EeHrKwBKM6jqtyHqD5B
+ 8kyqZ6IMr+cytx1g56gpncODPICpz4oRGhGVvF7pwteqmz4jEZ9JWbf/4vegn1Ak3iF3gPZMy
+ vSQ6BrmBGzZc7t2mMtOXTWPCVApr4Q+uOifNKAEMe241zzCFDUvW+pOFXeUVLEaDU43IwDudY
+ 6MCeRNbQctVEBAKnkUQS0Il/dZw5JazqlnaS+aeeYHa8AwzmoqazLXcfq6OuwXJ8SEE1xj9M/
+ BkhTYFoSE4jk6klAhutpMoNIKHo1L6ZYEQkj4ZQVR1vsW4SJax+xiSDDvdlUzRIU4LLOgYA/V
+ aHo+bkLFBdQ+afhD7Hf65ElPd7tZCgK4bAQL3A2Yjp/2g4iJo39sib4bpoEylT0GjY2v0SLhz
+ KqXTT4atTgR1C/Gw4S5+sH+Xz7Kwu/yZKR3BWH3smtCZrUkBNdhxpFKI6IXxJdOHsdn7oGbho
+ RB/Uuzm8D7VlZw=
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Lukas,
+On Thu, 2021-11-11 at 10:36 +0100, Marco Elver wrote:
+> On Thu, 11 Nov 2021 at 04:47, Mike Galbraith <efault@gmx.de> wrote:
+> >
+> > On Thu, 2021-11-11 at 04:35 +0100, Mike Galbraith wrote:
+> > > On Thu, 2021-11-11 at 04:16 +0100, Mike Galbraith wrote:
+> > > > On Wed, 2021-11-10 at 20:24 +0000, Valentin Schneider wrote:
+> > > > >
+> > > > > diff --git a/include/linux/sched.h b/include/linux/sched.h
+> > > > > index 5f8db54226af..0640d5622496 100644
+> > > > > --- a/include/linux/sched.h
+> > > > > +++ b/include/linux/sched.h
+> > > > > @@ -2073,6 +2073,22 @@ static inline void cond_resched_rcu(void)
+> > > > > =C2=A0#endif
+> > > > > =C2=A0}
+> > > > >
+> > > > > +#ifdef CONFIG_PREEMPT_DYNAMIC
+> > > > > +
+> > > > > +extern bool is_preempt_none(void);
+> > > > > +extern bool is_preempt_voluntary(void);
+> > > > > +extern bool is_preempt_full(void);
+> > > > > +
+> > > > > +#else
+> > > > > +
+> > > > > +#define is_preempt_none() IS_ENABLED(CONFIG_PREEMPT_NONE)
+> > > > > +#define is_preempt_voluntary()
+> > > > > IS_ENABLED(CONFIG_PREEMPT_VOLUNTARY)
+> > > > > +#define is_preempt_full() IS_ENABLED(CONFIG_PREEMPT)
+> > > >
+> > > > I think that should be IS_ENABLED(CONFIG_PREEMPTION), see
+> > > > c1a280b68d4e.
+> > > >
+> > > > Noticed while applying the series to an RT tree, where tglx
+> > > > has done that replacement to the powerpc spot your next patch
+> > > > diddles.
+> > >
+> > > Damn, then comes patch 5 properly differentiating PREEMPT/PREEMPT_RT=
+.
+> >
+> > So I suppose the powerpc spot should remain CONFIG_PREEMPT and become
+> > CONFIG_PREEMPTION when the RT change gets merged, because that spot is
+> > about full preemptibility, not a distinct preemption model.
+> >
+> > That's rather annoying :-/
+>
+> I guess the question is if is_preempt_full() should be true also if
+> is_preempt_rt() is true?
 
-On Thu, Nov 11, 2021 at 5:40 AM Lukas Bulwahn <lukas.bulwahn@gmail.com> wrote:
->
-> Commit 1e23dcaa1a9f ("iio: imx8qxp-adc: Add driver support for NXP IMX8QXP
-> ADC") adds the config IMX8QXP_ADC for this new driver, which depends on
-> the non-existing config ARCH_MXC_ARM64.
->
-> Hence, ./scripts/checkkconfigsymbols.py warns:
->
->   ARCH_MXC_ARM64
->   Referencing files: drivers/iio/adc/Kconfig
->
-> Probably, the existing config ARCH_MXC is intended to be referred here.
-> So, repair the dependency to refer to that config.
->
-> Fixes: 1e23dcaa1a9f ("iio: imx8qxp-adc: Add driver support for NXP IMX8QXP ADC")
-> Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
+That's what CONFIG_PREEMPTION is.  More could follow, but it was added
+to allow multiple models to say "preemptible".
 
-This looks good.
+> Not sure all cases are happy with that, e.g. the kernel/trace/trace.c
+> case, which wants to print the precise preemption level.
 
-The incorrect  ARCH_MXC_ARM64 symbol probably came when porting the
-driver from the NXP downstream kernel:
+Yeah, that's the "annoying" bit, needing one oddball model accessor
+that isn't about a particular model.
 
-Reviewed-by: Fabio Estevam <festevam@gmail.com>
+> To avoid confusion, I'd introduce another helper that says true if the
+> preemption level is "at least full", currently that'd be "full or rt".
+> Something like is_preempt_full_or_rt() (but might as well write
+> "is_preempt_full() || is_preempt_rt()"), or is_preemption() (to match
+> that Kconfig variable, although it's slightly confusing). The
+> implementation of that helper can just be a static inline function
+> returning "is_preempt_full() || is_preempt_rt()".
+>
+> Would that help?
+
+Yeah, as it sits two accessors are needed, one that says PREEMPT the
+other PREEMPTION, spelling optional.
+
+	-Mike
