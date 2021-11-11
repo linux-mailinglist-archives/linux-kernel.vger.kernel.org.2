@@ -2,82 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A9D3144CE20
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Nov 2021 01:09:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1817F44CE21
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Nov 2021 01:09:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234316AbhKKALt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        id S234330AbhKKALv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Nov 2021 19:11:51 -0500
+Received: from mail.kernel.org ([198.145.29.99]:37474 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234285AbhKKALt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 10 Nov 2021 19:11:49 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33608 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234287AbhKKALs (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Nov 2021 19:11:48 -0500
-Received: from mail-lj1-x234.google.com (mail-lj1-x234.google.com [IPv6:2a00:1450:4864:20::234])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0D19CC061766
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Nov 2021 16:08:59 -0800 (PST)
-Received: by mail-lj1-x234.google.com with SMTP id v15so8615038ljc.0
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Nov 2021 16:08:58 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=yDjMT76zXXGk5F960573DQU0E4PoEGZAHFCp+Tmf80w=;
-        b=BKU4np8esifPSBuytBzf7Ief7UfpQSZCMuejwaH0SHBXEJr5alactVBostbfNmdeko
-         7v1G/EUa+ikc3nm+85b3K59bSJARKCHz/8+2KMtSClrHsKWAywOfIwV82G4c9cc6rrwc
-         HRu1b4onBc/AxjvQZt9Or0ewy/VFoMKJs3A0DdP/oeFKku2vhIZIlOcpPERde2R6t87Z
-         0n1P/jWOFsCiM0wRbKpN8gyK4wchmRslOeHZqOH0GYLawvU0+hobupN8Kc5WPRJJrg/x
-         3KNavWuU+6DzZ74IWDL2S61Dr4KvoJggcqEgArfnXxL6Ch4CMO5gkgAtGSA7nNYWryzc
-         sqvw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=yDjMT76zXXGk5F960573DQU0E4PoEGZAHFCp+Tmf80w=;
-        b=sRvmKN6URYYIksr+sq5xty8I7la68JlhLZK81FI/E7E2A5cGS1G0t4vCqxUOS46C2J
-         74JO72L4fVXj4prT4VHL+wr5iZIigzgOCxL7dvJOKNggME7ykCNR3ZZZqV9aLHI+Nyim
-         VhqEa2mcSVpCY5YFxowWLQGR6XpsrhMjEaAJAjegxyN8h5iBW8GB48T02BzFof59bjsb
-         bcU4u9AD4Ioi93LaQl/KnnKSfUaOdBg7zRB8kvUsWeC6E0WnBcun5Fsfa5qa7+m5Bez4
-         vBxtTeyNXkYVmLsvgj9brJsVdWcZ6nQl0EJTqWXRkVHcowR6FFVNmc4o9+vaTq1PwGsA
-         2uVQ==
-X-Gm-Message-State: AOAM531VYmJ9RHGXVviKVyQpghtsOk+6gPuyFlv6PuehNEM0LXkGO18n
-        k50R2M0i/hG4NysUKp/nqKr30QzdDLj5tJdQI9h9ug==
-X-Google-Smtp-Source: ABdhPJwYekg35ZpH8F5So1cR61CNazDOLuVjMR/QnicyLM0m8jsMRDK+GGrvLCJojntqikJb6Cm747AxAl3EzRmKpUI=
-X-Received: by 2002:a2e:bc1b:: with SMTP id b27mr3100349ljf.91.1636589337211;
- Wed, 10 Nov 2021 16:08:57 -0800 (PST)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A7B8D6103C;
+        Thu, 11 Nov 2021 00:09:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1636589340;
+        bh=v+NyK5maH0Zq1WEqTfD47eXM/F383z8TNC+eQNyTHR0=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=KyFE6Bi+GdRuBhoAN0QbU0AtXjSyVR/VZoq3gFRrR6WXOagzT8Ib52/pjsbjVsXFI
+         ErT4XdBD90CmLQTSj12qNITtEQ49w+IzqBtCg42VS7pZv4j9Ehdg1bItiRFaBNHoRG
+         FTcAPsMtdYnz8kJobbLOX25JWKP7JwrC2U42LbCeTNa/rgXpqG7CM45jA4SvGIA6yI
+         6PsEdnq0fv35EpUA6Y3Bw4PTL9Az+HqvPnkUdDNeeiE1eCWhut+KsJdRIEkq6BKkLN
+         TTaktwqz6iJW9HMar4o3MFSAiW2VpyuUIGiJpuIFTiS3PKA/LqfMwLzqP/shM5uORt
+         XMysyL863Y1TA==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id 6418D5C0A70; Wed, 10 Nov 2021 16:09:00 -0800 (PST)
+Date:   Wed, 10 Nov 2021 16:09:00 -0800
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Wander Lairson Costa <wander@redhat.com>
+Cc:     Davidlohr Bueso <dave@stgolabs.net>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        "open list:TORTURE-TEST MODULES" <linux-kernel@vger.kernel.org>,
+        "open list:READ-COPY UPDATE (RCU)" <rcu@vger.kernel.org>
+Subject: Re: [PATCH v3 1/1] rcutorture: Avoid soft lockup during cpu stall
+Message-ID: <20211111000900.GI641268@paulmck-ThinkPad-P17-Gen-1>
+Reply-To: paulmck@kernel.org
+References: <20211110143745.468361-1-wander@redhat.com>
+ <20211110143745.468361-2-wander@redhat.com>
 MIME-Version: 1.0
-References: <20211110230138.3883950-1-almasrymina@google.com>
-In-Reply-To: <20211110230138.3883950-1-almasrymina@google.com>
-From:   Shakeel Butt <shakeelb@google.com>
-Date:   Wed, 10 Nov 2021 16:08:45 -0800
-Message-ID: <CALvZod6o68s150XFoDFPmaHeiGxQGmTzARE7qrr0KHo4Mpi1BQ@mail.gmail.com>
-Subject: Re: [PATCH v5] hugetlb: Add hugetlb.*.numa_stat file
-To:     Mina Almasry <almasrymina@google.com>
-Cc:     Mike Kravetz <mike.kravetz@oracle.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Shuah Khan <shuah@kernel.org>,
-        Miaohe Lin <linmiaohe@huawei.com>,
-        Oscar Salvador <osalvador@suse.de>,
-        Michal Hocko <mhocko@suse.com>,
-        Muchun Song <songmuchun@bytedance.com>,
-        David Rientjes <rientjes@google.com>,
-        Jue Wang <juew@google.com>, Yang Yao <ygyao@google.com>,
-        Joanna Li <joannali@google.com>,
-        Cannon Matthews <cannonmatthews@google.com>,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211110143745.468361-2-wander@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 10, 2021 at 3:01 PM Mina Almasry <almasrymina@google.com> wrote:
->
-[...]
->
-> +struct hugetlb_cgroup_per_node {
-> +       /* hugetlb usage in pages over all hstates. */
-> +       unsigned long usage[HUGE_MAX_HSTATE];
-> +};
-> +
+On Wed, Nov 10, 2021 at 11:37:45AM -0300, Wander Lairson Costa wrote:
+> If we use the module stall_cpu option, we may get a soft lockup warning
+> in case we also don't pass the stall_cpu_block option.
+> 
+> Introduce the stall_no_softlockup option to avoid a soft lockup on
+> cpu stall even if we don't use the stall_cpu_block option.
+> 
+> Signed-off-by: Wander Lairson Costa <wander@redhat.com>
 
-You missed my other question. Why do you think concurrent access to
-this struct is safe?
+Queued for review and further testing, thank you!
+
+							Thanx, Paul
+
+> ---
+>  kernel/rcu/rcutorture.c | 5 +++++
+>  1 file changed, 5 insertions(+)
+> 
+> diff --git a/kernel/rcu/rcutorture.c b/kernel/rcu/rcutorture.c
+> index 36a273589a35..bc854f935548 100644
+> --- a/kernel/rcu/rcutorture.c
+> +++ b/kernel/rcu/rcutorture.c
+> @@ -46,6 +46,7 @@
+>  #include <linux/oom.h>
+>  #include <linux/tick.h>
+>  #include <linux/rcupdate_trace.h>
+> +#include <linux/nmi.h>
+>  
+>  #include "rcu.h"
+>  
+> @@ -112,6 +113,8 @@ torture_param(int, shutdown_secs, 0, "Shutdown time (s), <= zero to disable.");
+>  torture_param(int, stall_cpu, 0, "Stall duration (s), zero to disable.");
+>  torture_param(int, stall_cpu_holdoff, 10,
+>  	     "Time to wait before starting stall (s).");
+> +torture_param(bool, stall_no_softlockup, false,
+> +	     "Avoid softlockup warning during cpu stall.");
+>  torture_param(int, stall_cpu_irqsoff, 0, "Disable interrupts while stalling.");
+>  torture_param(int, stall_cpu_block, 0, "Sleep while stalling.");
+>  torture_param(int, stall_gp_kthread, 0,
+> @@ -2085,6 +2088,8 @@ static int rcu_torture_stall(void *args)
+>  #else
+>  				schedule_timeout_uninterruptible(HZ);
+>  #endif
+> +			} else if (stall_no_softlockup) {
+> +				touch_softlockup_watchdog();
+>  			}
+>  		if (stall_cpu_irqsoff)
+>  			local_irq_enable();
+> -- 
+> 2.27.0
+> 
