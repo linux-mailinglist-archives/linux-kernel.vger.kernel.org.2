@@ -2,120 +2,242 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 062E244D265
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Nov 2021 08:18:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4074A44D266
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Nov 2021 08:20:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230491AbhKKHVQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Nov 2021 02:21:16 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43456 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229533AbhKKHVL (ORCPT
+        id S231204AbhKKHXE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Nov 2021 02:23:04 -0500
+Received: from smtp-out2.suse.de ([195.135.220.29]:59576 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229533AbhKKHXD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Nov 2021 02:21:11 -0500
-Received: from mail-pj1-x1034.google.com (mail-pj1-x1034.google.com [IPv6:2607:f8b0:4864:20::1034])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C3B7AC061766
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Nov 2021 23:18:22 -0800 (PST)
-Received: by mail-pj1-x1034.google.com with SMTP id j6-20020a17090a588600b001a78a5ce46aso3884707pji.0
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Nov 2021 23:18:22 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=PYrvbXawX/D86nhUYmoX07v/ep6S8FSDyEh1vsVQ5lA=;
-        b=nBaUZWPAK0PuqPJ946GqOziDlcGX017pnlnYd7tQi7u36QwyYhUNmU78WEgB/Bwh8z
-         lquVB+f2q2T6ei+5VFL9vGKhkUKLjv1FdfSuSH4CIy76Rwbi9p62GXC3iT2x+BCPpclQ
-         aTrKoP+LsHRj1uOeFh/FiRAm7BluCU7MPJRn4JIkLzziU/Go1KD1FeGVHIwMA05zPdAm
-         QtV6j2LswVZ48UQtJmU2NrD8ibnX1Ox673WVu/IteTsYHBj+zF4hEUplqzPZ7kV8GI2D
-         grY7eaHTS4enzY7pRi8pDgSq1VmIIriOYWT0ldtnM686k0U1DRmgne90k3b7DJgcQ1BJ
-         +p2g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=PYrvbXawX/D86nhUYmoX07v/ep6S8FSDyEh1vsVQ5lA=;
-        b=qEEwdmo94B82QGKRxg1SSM/oNXp/QAj2la3ZwMixeQZwWR0uJF4Ev87M7G3BK3nC6h
-         wBMG6NZ/TT6YFHx8eCg7M8SsZcE21DoeWlM8kTrLcPODrvqfKlT4VtdbccVPrsRSjC78
-         xMsQrIUUgSLKOslUN0hsr9t0W/hAJKmFsqT2VvLpLMhT78E9Jidalwog5gUY31QkFayR
-         ZwrrECQ3efc4nE19ESfvxDJ7w9y/KUI5+iFZM+EEIINAgp+3k6RFbNtdxoI0R4xM5iAI
-         kyzHeSa3D2Ue05u9/h+8W7NsH8RIZefrXo1RRuA9n846FJQMzYrzpLCmQ0QhsVuYkb0l
-         wNTQ==
-X-Gm-Message-State: AOAM530r7PNrNTvYTV/wjseeygt20Xj/8QciyLm8jWfvGumfvVOhcf6f
-        5W2zNU4khDAGlga2ORxCwWatC0oDsM3Pp90D
-X-Google-Smtp-Source: ABdhPJydPbEjUiXMik5uIU53Rj70Ky1Wu38t2u0Q19XKvOMobEIbSXRkxrgmnL6ASFs/LxSavtIGbw==
-X-Received: by 2002:a17:90b:4a4d:: with SMTP id lb13mr23719780pjb.97.1636615101877;
-        Wed, 10 Nov 2021 23:18:21 -0800 (PST)
-Received: from leoy-ThinkPad-X240s ([148.163.172.147])
-        by smtp.gmail.com with ESMTPSA id h6sm1865485pfi.174.2021.11.10.23.18.18
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 10 Nov 2021 23:18:21 -0800 (PST)
-Date:   Thu, 11 Nov 2021 15:18:15 +0800
-From:   Leo Yan <leo.yan@linaro.org>
-To:     German Gomez <german.gomez@arm.com>
-Cc:     linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
-        acme@kernel.org, Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        John Garry <john.garry@huawei.com>,
-        Will Deacon <will@kernel.org>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH v2 2/4] perf arm-spe: Update --switch-events docs in
- perf-record
-Message-ID: <20211111071815.GA102075@leoy-ThinkPad-X240s>
-References: <20211109115020.31623-1-german.gomez@arm.com>
- <20211109115020.31623-3-german.gomez@arm.com>
+        Thu, 11 Nov 2021 02:23:03 -0500
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 490E71FD39;
+        Thu, 11 Nov 2021 07:20:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1636615214; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=46U/oKk1TRvieSc552dwNQAJzTbYOme3TPvDOsMOoDM=;
+        b=Ekqi9gmMYR+LB52LZfdwawXyl08uKkk48++Q1H2b+pDCVgAh8FqWawm+eS4IQTjx3edbgc
+        B81YJT3HFPuqmxuk6Ih1gYE4wNLwIuK1FrtaWVy23tSkutJVwS8cnnk9a8Q5oCU7lr2ytp
+        v7YzbJM5XS3N1ZxlFPpxcsje4HPgYbU=
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 085B313D46;
+        Thu, 11 Nov 2021 07:20:14 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id ZRJGAC7EjGFALwAAMHmgww
+        (envelope-from <jgross@suse.com>); Thu, 11 Nov 2021 07:20:13 +0000
+Subject: Re: [PATCH v2 11/23] x86,xen: Remove .fixup usage
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     x86@kernel.org, linux-kernel@vger.kernel.org, jpoimboe@redhat.com,
+        mark.rutland@arm.com, dvyukov@google.com, seanjc@google.com,
+        pbonzini@redhat.com, mbenes@suse.cz
+References: <20211110100102.250793167@infradead.org>
+ <20211110101325.545019822@infradead.org>
+ <42933d6b-c6f4-7420-1d0f-7f5d6ec17d8e@suse.com>
+ <YYumVx7qO3gY2tgD@hirez.programming.kicks-ass.net>
+ <YYu/Mg8lSO9zX01z@hirez.programming.kicks-ass.net>
+ <62c65309-b37e-4974-c4c1-733081357808@suse.com>
+ <20211110161700.GC174703@worktop.programming.kicks-ass.net>
+From:   Juergen Gross <jgross@suse.com>
+Message-ID: <bc749e58-74d3-47d8-4466-6863720444d1@suse.com>
+Date:   Thu, 11 Nov 2021 08:20:13 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.12.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211109115020.31623-3-german.gomez@arm.com>
+In-Reply-To: <20211110161700.GC174703@worktop.programming.kicks-ass.net>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature";
+ boundary="Er4pCbbIePxs8mCRzSqBJAdcjq8ihlG88"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 09, 2021 at 11:50:18AM +0000, German Gomez wrote:
-> Update perf-record docs and Arm SPE recording options so that they are
-> consistent. This includes supporting the --no-switch-events flag in Arm
-> SPE as well.
-> 
-> Signed-off-by: German Gomez <german.gomez@arm.com>
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--Er4pCbbIePxs8mCRzSqBJAdcjq8ihlG88
+Content-Type: multipart/mixed; boundary="Qk4QXvgOZC2128QyqB9AinCKhwaN1BEDG";
+ protected-headers="v1"
+From: Juergen Gross <jgross@suse.com>
+To: Peter Zijlstra <peterz@infradead.org>
+Cc: x86@kernel.org, linux-kernel@vger.kernel.org, jpoimboe@redhat.com,
+ mark.rutland@arm.com, dvyukov@google.com, seanjc@google.com,
+ pbonzini@redhat.com, mbenes@suse.cz
+Message-ID: <bc749e58-74d3-47d8-4466-6863720444d1@suse.com>
+Subject: Re: [PATCH v2 11/23] x86,xen: Remove .fixup usage
+References: <20211110100102.250793167@infradead.org>
+ <20211110101325.545019822@infradead.org>
+ <42933d6b-c6f4-7420-1d0f-7f5d6ec17d8e@suse.com>
+ <YYumVx7qO3gY2tgD@hirez.programming.kicks-ass.net>
+ <YYu/Mg8lSO9zX01z@hirez.programming.kicks-ass.net>
+ <62c65309-b37e-4974-c4c1-733081357808@suse.com>
+ <20211110161700.GC174703@worktop.programming.kicks-ass.net>
+In-Reply-To: <20211110161700.GC174703@worktop.programming.kicks-ass.net>
 
-Reviewed-by: Leo Yan <leo.yan@linaro.org>
+--Qk4QXvgOZC2128QyqB9AinCKhwaN1BEDG
+Content-Type: multipart/mixed;
+ boundary="------------8597BEF94F362F68996D20DA"
+Content-Language: en-US
 
-> ---
->  tools/perf/Documentation/perf-record.txt | 2 +-
->  tools/perf/arch/arm64/util/arm-spe.c     | 4 +++-
->  2 files changed, 4 insertions(+), 2 deletions(-)
-> 
-> diff --git a/tools/perf/Documentation/perf-record.txt b/tools/perf/Documentation/perf-record.txt
-> index 2d7df8703..3cf7bac67 100644
-> --- a/tools/perf/Documentation/perf-record.txt
-> +++ b/tools/perf/Documentation/perf-record.txt
-> @@ -469,7 +469,7 @@ This option sets the time out limit. The default value is 500 ms.
->  
->  --switch-events::
->  Record context switch events i.e. events of type PERF_RECORD_SWITCH or
-> -PERF_RECORD_SWITCH_CPU_WIDE. In some cases (e.g. Intel PT or CoreSight)
-> +PERF_RECORD_SWITCH_CPU_WIDE. In some cases (e.g. Intel PT, CoreSight or Arm SPE)
->  switch events will be enabled automatically, which can be suppressed by
->  by the option --no-switch-events.
->  
-> diff --git a/tools/perf/arch/arm64/util/arm-spe.c b/tools/perf/arch/arm64/util/arm-spe.c
-> index 58ba8d15c..725a06cd2 100644
-> --- a/tools/perf/arch/arm64/util/arm-spe.c
-> +++ b/tools/perf/arch/arm64/util/arm-spe.c
-> @@ -169,8 +169,10 @@ static int arm_spe_recording_options(struct auxtrace_record *itr,
->  	if (!perf_cpu_map__empty(cpus)) {
->  		evsel__set_sample_bit(tracking_evsel, TIME);
->  		evsel__set_sample_bit(tracking_evsel, CPU);
-> +
->  		/* also track task context switch */
-> -		tracking_evsel->core.attr.context_switch = 1;
-> +		if (!record_opts__no_switch_events(opts))
-> +			tracking_evsel->core.attr.context_switch = 1;
->  	}
->  
->  	return 0;
-> -- 
-> 2.25.1
-> 
+This is a multi-part message in MIME format.
+--------------8597BEF94F362F68996D20DA
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: quoted-printable
+
+On 10.11.21 17:17, Peter Zijlstra wrote:
+> On Wed, Nov 10, 2021 at 01:52:57PM +0100, Juergen Gross wrote:
+>> On 10.11.21 13:46, Peter Zijlstra wrote:
+>>> On Wed, Nov 10, 2021 at 12:00:39PM +0100, Peter Zijlstra wrote:
+>>>> On Wed, Nov 10, 2021 at 11:35:37AM +0100, Juergen Gross wrote:
+>>>
+>>>>>> +		     _ASM_EXTABLE_TYPE_REG(1b, 2b, EX_TYPE_EFAUL_REG, %[ret])
+>>>>>
+>>>>> I guess you didn't compile that? There is a typo: s/EFAUL/EFAULT/
+>>>>
+>>>> Damn.. I figure that must've gotten lost in the robot spam telling m=
+e
+>>>> clang can't do __cold on labels :/
+>>>
+>>> new patch at:
+>>>
+>>>     https://lkml.kernel.org/r/YYu/AteC/Wamqn46@hirez.programming.kick=
+s-ass.net
+>>>
+>>
+>> "not found"
+>=20
+> Argh.. msgid contains '/' and that doesn't really work with URLs.
+>=20
+> https://lore.kernel.org/lkml/YYu%2FAteC%2FWamqn46@hirez.programming.kic=
+ks-ass.net/
+>=20
+> is the right url, in case you hand't yet found the actual email.
+
+Looks good, you can add my:
+
+Reviewed-by: Juergen Gross <jgross@suse.com>
+
+
+Juergen
+
+--------------8597BEF94F362F68996D20DA
+Content-Type: application/pgp-keys;
+ name="OpenPGP_0xB0DE9DD628BF132F.asc"
+Content-Transfer-Encoding: quoted-printable
+Content-Description: OpenPGP public key
+Content-Disposition: attachment;
+ filename="OpenPGP_0xB0DE9DD628BF132F.asc"
+
+-----BEGIN PGP PUBLIC KEY BLOCK-----
+
+xsBNBFOMcBYBCACgGjqjoGvbEouQZw/ToiBg9W98AlM2QHV+iNHsEs7kxWhKMjrioyspZKOBy=
+cWx
+w3ie3j9uvg9EOB3aN4xiTv4qbnGiTr3oJhkB1gsb6ToJQZ8uxGq2kaV2KL9650I1SJvedYm8O=
+f8Z
+d621lSmoKOwlNClALZNew72NjJLEzTalU1OdT7/i1TXkH09XSSI8mEQ/ouNcMvIJNwQpd369y=
+9bf
+IhWUiVXEK7MlRgUG6MvIj6Y3Am/BBLUVbDa4+gmzDC9ezlZkTZG2t14zWPvxXP3FAp2pkW0xq=
+G7/
+377qptDmrk42GlSKN4z76ELnLxussxc7I2hx18NUcbP8+uty4bMxABEBAAHNHEp1ZXJnZW4gR=
+3Jv
+c3MgPGpnQHBmdXBmLm5ldD7CwHkEEwECACMFAlOMcBYCGwMHCwkIBwMCAQYVCAIJCgsEFgIDA=
+QIe
+AQIXgAAKCRCw3p3WKL8TL0KdB/93FcIZ3GCNwFU0u3EjNbNjmXBKDY4FUGNQH2lvWAUy+dnyT=
+hpw
+dtF/jQ6j9RwE8VP0+NXcYpGJDWlNb9/JmYqLiX2Q3TyevpB0CA3dbBQp0OW0fgCetToGIQrg0=
+MbD
+1C/sEOv8Mr4NAfbauXjZlvTj30H2jO0u+6WGM6nHwbh2l5O8ZiHkH32iaSTfN7Eu5RnNVUJbv=
+oPH
+Z8SlM4KWm8rG+lIkGurqqu5gu8q8ZMKdsdGC4bBxdQKDKHEFExLJK/nRPFmAuGlId1E3fe10v=
+5QL
++qHI3EIPtyfE7i9Hz6rVwi7lWKgh7pe0ZvatAudZ+JNIlBKptb64FaiIOAWDCx1SzR9KdWVyZ=
+2Vu
+IEdyb3NzIDxqZ3Jvc3NAc3VzZS5jb20+wsB5BBMBAgAjBQJTjHCvAhsDBwsJCAcDAgEGFQgCC=
+QoL
+BBYCAwECHgECF4AACgkQsN6d1ii/Ey/HmQf/RtI7kv5A2PS4RF7HoZhPVPogNVbC4YA6lW7Dr=
+Wf0
+teC0RR3MzXfy6pJ+7KLgkqMlrAbN/8Dvjoz78X+5vhH/rDLa9BuZQlhFmvcGtCF8eR0T1v0nC=
+/nu
+AFVGy+67q2DH8As3KPu0344TBDpAvr2uYM4tSqxK4DURx5INz4ZZ0WNFHcqsfvlGJALDeE0Lh=
+ITT
+d9jLzdDad1pQSToCnLl6SBJZjDOX9QQcyUigZFtCXFst4dlsvddrxyqT1f17+2cFSdu7+ynLm=
+XBK
+7abQ3rwJY8SbRO2iRulogc5vr/RLMMlscDAiDkaFQWLoqHHOdfO9rURssHNN8WkMnQfvUewRz=
+80h
+SnVlcmdlbiBHcm9zcyA8amdyb3NzQG5vdmVsbC5jb20+wsB5BBMBAgAjBQJTjHDXAhsDBwsJC=
+AcD
+AgEGFQgCCQoLBBYCAwECHgECF4AACgkQsN6d1ii/Ey8PUQf/ehmgCI9jB9hlgexLvgOtf7PJn=
+FOX
+gMLdBQgBlVPO3/D9R8LtF9DBAFPNhlrsfIG/SqICoRCqUcJ96Pn3P7UUinFG/I0ECGF4EvTE1=
+jnD
+kfJZr6jrbjgyoZHiw/4BNwSTL9rWASyLgqlA8u1mf+c2yUwcGhgkRAd1gOwungxcwzwqgljf0=
+N51
+N5JfVRHRtyfwq/ge+YEkDGcTU6Y0sPOuj4Dyfm8fJzdfHNQsWq3PnczLVELStJNdapwPOoE+l=
+otu
+fe3AM2vAEYJ9rTz3Cki4JFUsgLkHFqGZarrPGi1eyQcXeluldO3m91NK/1xMI3/+8jbO0tsn1=
+tqS
+EUGIJi7ox80eSnVlcmdlbiBHcm9zcyA8amdyb3NzQHN1c2UuZGU+wsB5BBMBAgAjBQJTjHDrA=
+hsD
+BwsJCAcDAgEGFQgCCQoLBBYCAwECHgECF4AACgkQsN6d1ii/Ey+LhQf9GL45eU5vOowA2u5N3=
+g3O
+ZUEBmDHVVbqMtzwlmNC4k9Kx39r5s2vcFl4tXqW7g9/ViXYuiDXb0RfUpZiIUW89siKrkzmQ5=
+dM7
+wRqzgJpJwK8Bn2MIxAKArekWpiCKvBOB/Cc+3EXE78XdlxLyOi/NrmSGRIov0karw2RzMNOu5=
+D+j
+LRZQd1Sv27AR+IP3I8U4aqnhLpwhK7MEy9oCILlgZ1QZe49kpcumcZKORmzBTNh30FVKK1Evm=
+V2x
+AKDoaEOgQB4iFQLhJCdP1I5aSgM5IVFdn7v5YgEYuJYx37IoN1EblHI//x/e2AaIHpzK5h88N=
+Eaw
+QsaNRpNSrcfbFmAg987ATQRTjHAWAQgAyzH6AOODMBjgfWE9VeCgsrwH3exNAU32gLq2xvjpW=
+nHI
+s98ndPUDpnoxWQugJ6MpMncr0xSwFmHEgnSEjK/PAjppgmyc57BwKII3sV4on+gDVFJR6Y8ZR=
+wgn
+BC5mVM6JjQ5xDk8WRXljExRfUX9pNhdE5eBOZJrDRoLUmmjDtKzWaDhIg/+1Hzz93X4fCQkNV=
+bVF
+LELU9bMaLPBG/x5q4iYZ2k2ex6d47YE1ZFdMm6YBYMOljGkZKwYde5ldM9mo45mmwe0icXKLk=
+pEd
+IXKTZeKDO+Hdv1aqFuAcccTg9RXDQjmwhC3yEmrmcfl0+rPghO0Iv3OOImwTEe4co3c1mwARA=
+QAB
+wsBfBBgBAgAJBQJTjHAWAhsMAAoJELDendYovxMvQ/gH/1ha96vm4P/L+bQpJwrZ/dneZcmEw=
+Tbe
+8YFsw2V/Buv6Z4Mysln3nQK5ZadD534CF7TDVft7fC4tU4PONxF5D+/tvgkPfDAfF77zy2AH1=
+vJz
+Q1fOU8lYFpZXTXIHb+559UqvIB8AdgR3SAJGHHt4RKA0F7f5ipYBBrC6cyXJyyoprT10EMvU8=
+VGi
+wXvTyJz3fjoYsdFzpWPlJEBRMedCot60g5dmbdrZ5DWClAr0yau47zpWj3enf1tLWaqcsuylW=
+svi
+uGjKGw7KHQd3bxALOknAp4dN3QwBYCKuZ7AddY9yjynVaD5X7nF9nO5BjR/i1DG86lem3iBDX=
+zXs
+ZDn8R38=3D
+=3D2wuH
+-----END PGP PUBLIC KEY BLOCK-----
+
+--------------8597BEF94F362F68996D20DA--
+
+--Qk4QXvgOZC2128QyqB9AinCKhwaN1BEDG--
+
+--Er4pCbbIePxs8mCRzSqBJAdcjq8ihlG88
+Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="OpenPGP_signature"
+
+-----BEGIN PGP SIGNATURE-----
+
+wsB5BAABCAAjFiEEhRJncuj2BJSl0Jf3sN6d1ii/Ey8FAmGMxC0FAwAAAAAACgkQsN6d1ii/Ey92
+Qgf9H4/lJ3I0vpaK1RjojRPUDRGi1m41aIDobr5tHCH0/KVV2hpMivoW5G0NYRDY3845g+5Xxtqg
+Ig3K8GxvbCTXvn75fZnvCSFaA6OcuNgwH91avwdwMM8hKmcL4TqX4lM4J/d98brGLuPcTK6d5/Ks
+apK31aZ5BnN7X6i5pQ4vXyrOA9UdIT5/W4vYt2hxZxYVN2hPtALQRBG5V1Oeqg9C9gqnkt9tm+Y+
+qzG9gn6BOZlJlCxJb75CHm4Um73d9JvYx7M2DFOWpRNx5d8KIALbQdzXhGd2c/XTipitBGQI5kKG
+YBE1I0cUac4ovNZyj6MCZwxQ6GuNusP0hNwUY1i3KA==
+=jG8K
+-----END PGP SIGNATURE-----
+
+--Er4pCbbIePxs8mCRzSqBJAdcjq8ihlG88--
