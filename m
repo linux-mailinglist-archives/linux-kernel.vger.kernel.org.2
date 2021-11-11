@@ -2,142 +2,184 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D370344D72A
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Nov 2021 14:24:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 523BA44D72C
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Nov 2021 14:24:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233276AbhKKN11 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Nov 2021 08:27:27 -0500
-Received: from mail.efficios.com ([167.114.26.124]:37520 "EHLO
-        mail.efficios.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231380AbhKKN1Z (ORCPT
+        id S233410AbhKKN1c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Nov 2021 08:27:32 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:49230 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233389AbhKKN1b (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Nov 2021 08:27:25 -0500
-Received: from localhost (localhost [127.0.0.1])
-        by mail.efficios.com (Postfix) with ESMTP id C098839676E;
-        Thu, 11 Nov 2021 08:24:35 -0500 (EST)
-Received: from mail.efficios.com ([127.0.0.1])
-        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10032)
-        with ESMTP id YYeI4G3aTRmn; Thu, 11 Nov 2021 08:24:35 -0500 (EST)
-Received: from localhost (localhost [127.0.0.1])
-        by mail.efficios.com (Postfix) with ESMTP id 20DA93968C7;
-        Thu, 11 Nov 2021 08:24:35 -0500 (EST)
-DKIM-Filter: OpenDKIM Filter v2.10.3 mail.efficios.com 20DA93968C7
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=efficios.com;
-        s=default; t=1636637075;
-        bh=pmN1tZi2Ga/dogjwxPcnzqahDJ8goX5On/iHqGwpSbE=;
-        h=Date:From:To:Message-ID:MIME-Version;
-        b=Ep8aNNCfY7m5K1FBeU42+IxLJnYEeIucA9LeFe7FtX6rgfdqjKKAIxiSxtzpYBpMw
-         JwhI8VJ5GoYdFQAthOyyF7sBoN2oCZN7726uMOg2cJ4tutjs/Lg6RNzqjAEKOechyX
-         O1eWLaSXwfJ0o6BBu4oA9U6KhWoftzN0ViFg0zH7LPd30Q94HCSjjWZzaq3v174fHE
-         FLCEZ99WL+hSAXD+oYI3a6fsDYKNTo5J3HtjM4yOGNxguccT1jeUKjvf6LxyDtvl4w
-         GChlGiWSB/IR0QXL1JOJh0eKN2LLk5tRRa1xFxvu/RLRY3BNilhWUXD/db3b1MP1tM
-         Q56Cr0aCyRIxw==
-X-Virus-Scanned: amavisd-new at efficios.com
-Received: from mail.efficios.com ([127.0.0.1])
-        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id zsyUYC97eWzG; Thu, 11 Nov 2021 08:24:35 -0500 (EST)
-Received: from mail03.efficios.com (mail03.efficios.com [167.114.26.124])
-        by mail.efficios.com (Postfix) with ESMTP id 083E1396B00;
-        Thu, 11 Nov 2021 08:24:35 -0500 (EST)
-Date:   Thu, 11 Nov 2021 08:24:34 -0500 (EST)
-From:   Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-To:     rostedt <rostedt@goodmis.org>
-Cc:     jbaron <jbaron@akamai.com>,
-        Sai Prakash Ranjan <quic_saipraka@quicinc.com>,
-        Will Deacon <will@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        quic psodagud <quic_psodagud@quicinc.com>,
-        maz <maz@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        linux-arm-msm@vger.kernel.org, Ingo Molnar <mingo@redhat.com>,
-        jim cromie <jim.cromie@gmail.com>, seanpaul@chromium.org
-Message-ID: <1665247433.56.1636637074878.JavaMail.zimbra@efficios.com>
-In-Reply-To: <20211109172848.304b1c19@gandalf.local.home>
-References: <cover.1636452784.git.quic_saipraka@quicinc.com> <264b77dd-5509-60f9-248c-a93135b01aa9@quicinc.com> <20211109124046.2a772bcb@gandalf.local.home> <c5715db5-965b-c1f5-3e99-04caec3d4f2c@quicinc.com> <e037f449-9784-c78e-431d-43f035a9f49f@akamai.com> <20211109165104.176b4cf9@gandalf.local.home> <55a9fe7b-5573-0f80-e075-758b377a6c47@akamai.com> <20211109172848.304b1c19@gandalf.local.home>
-Subject: Re: [PATCHv3 3/3] dynamic_debug: Add a flag for dynamic event
- tracing
+        Thu, 11 Nov 2021 08:27:31 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1636637082;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=n3WqyrBq2uTJR8bpD8MKc2sLqvPUK4BN0YHRdeMyR0k=;
+        b=hJX6mF9TFKumWbxSQJ12XSCPEUmwY0qJcjoaWtaFPnpF14kfVTxIp3MO35kHlBmFWtzTmo
+        +h3dazAcJo61vDrGothQWe8We8Z6r7YVcR0+1kABR9JfnE49ygBwr9IOAzrVIZqOrVg8h5
+        yHt/4Pp6jEQW+wiIptM/yhDouVqAxjk=
+Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com
+ [209.85.208.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-264-8yj53UKwOSyHuPpjqmlSoA-1; Thu, 11 Nov 2021 08:24:39 -0500
+X-MC-Unique: 8yj53UKwOSyHuPpjqmlSoA-1
+Received: by mail-ed1-f70.google.com with SMTP id x13-20020a05640226cd00b003e2bf805a02so5347218edd.23
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Nov 2021 05:24:38 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:in-reply-to
+         :content-transfer-encoding;
+        bh=n3WqyrBq2uTJR8bpD8MKc2sLqvPUK4BN0YHRdeMyR0k=;
+        b=1bK6v/oLGoNX8mtRXfJnPqqVRZXuJQsjHCdFuCpwS3wHLxrhIHXFxj/PH2K4/dXnUs
+         Hw8Qk9bS8tLRoLhaO3efrOUqITvY6E87cNwMcHp0fIJpHX4wbaLxYcarYBwxG7ou3JIg
+         k6vSjmy6xM8pXLFcx54CHzmv0LY/QogIgPFe95yK6BUBYzUuw3ykjUl7/N+b+mtH+wjX
+         XLMWDiiC9NRnQzbFoO6pRo72QdrIew19uD98z4yVZrU/+VxBSU1EDtydIUbp9ia1sLJY
+         jkeFziiUT98ohAz+DVJIRkuUOk5haatqIdskmlCSf21w1cUrTfci1KCS2LJgB+q06z1d
+         xk9w==
+X-Gm-Message-State: AOAM530T6Lj7J8kEAoRQbTNZTMArwYtqtpCUeTwP0Ws6T0afcT8H+bUm
+        AMjUQCj/HEc5qxae/54J73jD3jRZKNu8IJ0MKOWBbyAMMnzlc27OmWywwTA72CGVB0lTRWSbU+A
+        IElM32T1hQPR2YmrkkMGSStEO
+X-Received: by 2002:a17:907:1c1f:: with SMTP id nc31mr9435975ejc.210.1636637077975;
+        Thu, 11 Nov 2021 05:24:37 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJz4Rc9RSHfyPuquSvW65YFg3YPh5YwwspZVNv/qX0D7M932u2rP7K0HG2NJ0phRnS7ZSu7eHg==
+X-Received: by 2002:a17:907:1c1f:: with SMTP id nc31mr9435941ejc.210.1636637077764;
+        Thu, 11 Nov 2021 05:24:37 -0800 (PST)
+Received: from ?IPV6:2001:b07:6468:f312:63a7:c72e:ea0e:6045? ([2001:b07:6468:f312:63a7:c72e:ea0e:6045])
+        by smtp.gmail.com with ESMTPSA id em21sm1342487ejc.103.2021.11.11.05.24.35
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 11 Nov 2021 05:24:37 -0800 (PST)
+Message-ID: <511ea6df-ae7e-dbbb-8b11-95d6f440ddb3@redhat.com>
+Date:   Thu, 11 Nov 2021 14:24:34 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.2.0
+Subject: Re: [PATCH v4] KVM: x86: inhibit APICv when KVM_GUESTDBG_BLOCKIRQ
+ active
+Content-Language: en-US
+To:     Maxim Levitsky <mlevitsk@redhat.com>, kvm@vger.kernel.org
+Cc:     "H. Peter Anvin" <hpa@zytor.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        linux-kernel@vger.kernel.org, Ingo Molnar <mingo@redhat.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
+        Borislav Petkov <bp@alien8.de>
+References: <20211108090245.166408-1-mlevitsk@redhat.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+In-Reply-To: <20211108090245.166408-1-mlevitsk@redhat.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-Originating-IP: [167.114.26.124]
-X-Mailer: Zimbra 8.8.15_GA_4156 (ZimbraWebClient - FF94 (Linux)/8.8.15_GA_4156)
-Thread-Topic: dynamic_debug: Add a flag for dynamic event tracing
-Thread-Index: ETB17VPNXK5+4Gp8n5NYuqqK7RA4yg==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
------ On Nov 9, 2021, at 5:28 PM, rostedt rostedt@goodmis.org wrote:
-
-> [ Hmm, should add Mathieu in on this discussion ]
+On 11/8/21 10:02, Maxim Levitsky wrote:
+> KVM_GUESTDBG_BLOCKIRQ relies on interrupts being injected using
+> standard kvm's inject_pending_event, and not via APICv/AVIC.
 > 
-> On Tue, 9 Nov 2021 17:13:13 -0500
-> Jason Baron <jbaron@akamai.com> wrote:
+> Since this is a debug feature, just inhibit APICv/AVIC while
+> KVM_GUESTDBG_BLOCKIRQ is in use on at least one vCPU.
 > 
->> > What we are looking at there is to pass the dynamic debug descriptor to the
->> > trace event filtering logic, where you could filter on information passed
->> > to it. For example, on a specific file if a trace event is called by
->> > several different files or modules.
->> > 
->> > -- Steve
->> 
->> Ok, Could this be done at the dynamic debug level as it can already match
->> on specific files and line numbers currently?
+> Fixes: 61e5f69ef0837 ("KVM: x86: implement KVM_GUESTDBG_BLOCKIRQ")
 > 
-> Not sure what you mean by that.
+> Reported-by: Vitaly Kuznetsov <vkuznets@redhat.com>
+> Signed-off-by: Maxim Levitsky <mlevitsk@redhat.com>
+> Reviewed-and-tested-by: Sean Christopherson <seanjc@google.com>
+> ---
+>   arch/x86/include/asm/kvm_host.h |  1 +
+>   arch/x86/kvm/svm/avic.c         |  3 ++-
+>   arch/x86/kvm/vmx/vmx.c          |  3 ++-
+>   arch/x86/kvm/x86.c              | 20 ++++++++++++++++++++
+>   4 files changed, 25 insertions(+), 2 deletions(-)
 > 
-> The idea was that this would only be enabled if dynamic debug is enabled
-> and that the DEFINE_DYNAMIC_DEBUG_METADATA() could be used at the
-> tracepoint function location (trace_foo()) by the tracepoint macros. And
-> then if one of the callbacks registered for the tracepoint had a
-> "dynamic_debug" flag set, it would be passed the descriptor in as a pointer.
+> diff --git a/arch/x86/include/asm/kvm_host.h b/arch/x86/include/asm/kvm_host.h
+> index 88fce6ab4bbd7..8f6e15b95a4d8 100644
+> --- a/arch/x86/include/asm/kvm_host.h
+> +++ b/arch/x86/include/asm/kvm_host.h
+> @@ -1034,6 +1034,7 @@ struct kvm_x86_msr_filter {
+>   #define APICV_INHIBIT_REASON_IRQWIN     3
+>   #define APICV_INHIBIT_REASON_PIT_REINJ  4
+>   #define APICV_INHIBIT_REASON_X2APIC	5
+> +#define APICV_INHIBIT_REASON_BLOCKIRQ	6
+>   
+>   struct kvm_arch {
+>   	unsigned long n_used_mmu_pages;
+> diff --git a/arch/x86/kvm/svm/avic.c b/arch/x86/kvm/svm/avic.c
+> index 8052d92069e01..affc0ea98d302 100644
+> --- a/arch/x86/kvm/svm/avic.c
+> +++ b/arch/x86/kvm/svm/avic.c
+> @@ -904,7 +904,8 @@ bool svm_check_apicv_inhibit_reasons(ulong bit)
+>   			  BIT(APICV_INHIBIT_REASON_NESTED) |
+>   			  BIT(APICV_INHIBIT_REASON_IRQWIN) |
+>   			  BIT(APICV_INHIBIT_REASON_PIT_REINJ) |
+> -			  BIT(APICV_INHIBIT_REASON_X2APIC);
+> +			  BIT(APICV_INHIBIT_REASON_X2APIC) |
+> +			  BIT(APICV_INHIBIT_REASON_BLOCKIRQ);
+>   
+>   	return supported & BIT(bit);
+>   }
+> diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
+> index 71f54d85f104c..e4fc9ff7cd944 100644
+> --- a/arch/x86/kvm/vmx/vmx.c
+> +++ b/arch/x86/kvm/vmx/vmx.c
+> @@ -7565,7 +7565,8 @@ static void hardware_unsetup(void)
+>   static bool vmx_check_apicv_inhibit_reasons(ulong bit)
+>   {
+>   	ulong supported = BIT(APICV_INHIBIT_REASON_DISABLE) |
+> -			  BIT(APICV_INHIBIT_REASON_HYPERV);
+> +			  BIT(APICV_INHIBIT_REASON_HYPERV) |
+> +			  BIT(APICV_INHIBIT_REASON_BLOCKIRQ);
+>   
+>   	return supported & BIT(bit);
+>   }
+> diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
+> index ac83d873d65b0..6064ac47c8a37 100644
+> --- a/arch/x86/kvm/x86.c
+> +++ b/arch/x86/kvm/x86.c
+> @@ -10703,6 +10703,24 @@ int kvm_arch_vcpu_ioctl_set_sregs(struct kvm_vcpu *vcpu,
+>   	return ret;
+>   }
+>   
+> +static void kvm_arch_vcpu_guestdbg_update_apicv_inhibit(struct kvm *kvm)
+> +{
+> +	bool inhibit = false;
+> +	struct kvm_vcpu *vcpu;
+> +	int i;
+> +
+> +	down_write(&kvm->arch.apicv_update_lock);
+> +
+> +	kvm_for_each_vcpu(i, vcpu, kvm) {
+> +		if (vcpu->guest_debug & KVM_GUESTDBG_BLOCKIRQ) {
+> +			inhibit = true;
+> +			break;
+> +		}
+> +	}
+> +	__kvm_request_apicv_update(kvm, !inhibit, APICV_INHIBIT_REASON_BLOCKIRQ);
+> +	up_write(&kvm->arch.apicv_update_lock);
+> +}
+> +
+>   int kvm_arch_vcpu_ioctl_set_guest_debug(struct kvm_vcpu *vcpu,
+>   					struct kvm_guest_debug *dbg)
+>   {
+> @@ -10755,6 +10773,8 @@ int kvm_arch_vcpu_ioctl_set_guest_debug(struct kvm_vcpu *vcpu,
+>   
+>   	static_call(kvm_x86_update_exception_bitmap)(vcpu);
+>   
+> +	kvm_arch_vcpu_guestdbg_update_apicv_inhibit(vcpu->kvm);
+> +
+>   	r = 0;
+>   
+>   out:
 > 
-> And then, for example, the filtering logic of ftrace could then reference
-> the information of the event, if the user passed in something special.
-> 
-> # echo 'DEBUG_FILE ~ "drivers/soc/qcom/*"' > events/rwmmio/rwmmio_write/filter
-> # echo 1 > events/rwmmio/rwmmio_write/enable
-> 
-> And then only the rwmmio_write events that came from the qcom directory
-> would be printed.
-> 
-> We would create special event fields like "DEBUG_FILE", "DEBUG_FUNC",
-> "DEBUG_MOD", "DEBUG_LINE", etc, that could be used if dyndebug is enabled
-> in the kernel.
-> 
-> Of course this is going to bloat the kernel as it will create a dynamic
-> debug descriptor at every tracepoint location.
 
-I think there is indeed value in doing this. Where I'm not sure is regarding
-how we allow this to be enabled/configured.
+Queued, thanks.
 
-The way I see it, it might be sufficient and simpler to do just something along
-those lines:
+Paolo
 
-- Introduce a new struct tracepoint_caller_info, which would contain information
-  about file, line number and module name where each trace_*() statement is located.
-- Add a new CONFIG_TRACEPOINT_CALLER_INFO which generates this new structure at
-  build time for kernel and modules. This would indeed bloat the kernel, but it's
-  a build-time configurable trade-off.
-- Change the prototype for the tracepoint callbacks to add an additional argument
-  "struct tracepoint_caller_info *caller_info". When CONFIG_TRACEPOINT_CALLER_INFO
-  is disabled, simply have this pointer be NULL. When CONFIG_TRACEPOINT_CALLER_INFO
-  is enabled, pass the tracepoint's caller_info structure as parameter.
-
-It should be straightforward to adapt the tracepoint callback prototypes within each
-user within the Linux kernel tree. And for out-of-tree users, they have to adapt to
-that kind of change already anyway.
-
-Thoughts ?
-
-Thanks,
-
-Mathieu
-
--- 
-Mathieu Desnoyers
-EfficiOS Inc.
-http://www.efficios.com
