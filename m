@@ -2,120 +2,172 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 64A4A44DAE4
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Nov 2021 18:00:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 161AD44DAE7
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Nov 2021 18:00:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234222AbhKKRCv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Nov 2021 12:02:51 -0500
-Received: from mail.kernel.org ([198.145.29.99]:35178 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229539AbhKKRCt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Nov 2021 12:02:49 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5514D611AD;
-        Thu, 11 Nov 2021 17:00:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1636650000;
-        bh=SOJgNCQs2VmeLfMcIiAUa/P9miurRiJIhPfSbrNuO5s=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=e1m9I0MkJ+GowGBam1O2FfZk9ylK6AE5nTOn8BMBaaO4NEWM6QlAGXefRbX7+2gIl
-         c1+9QKjHHoyOjlGFBgMGHPJGTvOSD0iWFtb6CEhsCfYugmUfqVSNO6O1+Np8rYH5Us
-         4dU/RoowXTfoUc+TL2gen7ma0Bb6a47J/JQRwdpS+Rz2sh5eSZny1rk8XivEmucFJD
-         hFwDFzH9kgbf5KIUHlN9Kpmb1Cd1LbxVSVx4KX+Xh/LUj6FsYdOY89p3eqiqo7OH//
-         hnz6d24yDDLxgQEx93aN/g6MnFQhpz3Dqhy3v4r+IVLJ+7aOamcDPOm00YBFTCvAZ4
-         /wREBbEo+Tmvw==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 1F29B5C0527; Thu, 11 Nov 2021 09:00:00 -0800 (PST)
-Date:   Thu, 11 Nov 2021 09:00:00 -0800
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     =?utf-8?B?67CV7JiB7KSA?= <her0gyu@naver.com>
-Cc:     linux-kernel@vger.kernel.org
-Subject: Re: Some question for synchronize_rcu_tasks
-Message-ID: <20211111170000.GP641268@paulmck-ThinkPad-P17-Gen-1>
-Reply-To: paulmck@kernel.org
-References: <f34411bb1ea682892971ac2eb38762@cweb007.nm.nfra.io>
- <20211111154733.GN641268@paulmck-ThinkPad-P17-Gen-1>
- <547737bb65e9db75df674d097aa8129@cweb005.nm.nfra.io>
+        id S234292AbhKKRDm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Nov 2021 12:03:42 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:57809 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233598AbhKKRDl (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 11 Nov 2021 12:03:41 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1636650051;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=LvPJ3DPf50AjuLZNIBe+A/f3Y+TOfLYvCDVvaRUOQ0w=;
+        b=VpLSFU3nSRhC1uTVQ2u+1wEZ7yBZ3zw/qMbTkCoJrvH2HiIZEpHuzgu7rv6vMONwUgEYBD
+        B15mz8uUGzQFSwhFvM87ICdUqa6RFXcYhTAM6b8Nm2MO4KevLyWUM5Zpqim0T6ymZV5/Uh
+        xEnHrkAfjnwpq4DKGC9Wuj2iRgjhcK4=
+Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
+ [209.85.128.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-330-srwxM-ihMfOF-zXliG0ffQ-1; Thu, 11 Nov 2021 12:00:50 -0500
+X-MC-Unique: srwxM-ihMfOF-zXliG0ffQ-1
+Received: by mail-wm1-f69.google.com with SMTP id 67-20020a1c0046000000b0032cd88916e5so2996984wma.6
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Nov 2021 09:00:49 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=LvPJ3DPf50AjuLZNIBe+A/f3Y+TOfLYvCDVvaRUOQ0w=;
+        b=bmiCrIFNjL2xVhbJIhgagO/vPv5fCyq6iNyG5XWjFNLhJ+2HVL0djJFL0jdJO7dfOi
+         WvG4wkvtne5YkGEwV7GWxOZYl8Ex3Z2/MQ9WzbrUybX/H5OPeybDEayEbxRALBRJdZRc
+         G+doosyvOuj4BLJOr/6PUF1oueXA84xGpjZY4EFURlIm5pZ0/ZQfaItBepCeI2Efez7j
+         N++RJRa+IJA2Q6dsx11jYSpQnQ2NsGfOqi1nFCWnT8bHhn1v35KuWn3+VLZDTCCH00PU
+         bRS/UthbOUHqbZ4kR+dsNI1DTjTuq/5skqiqtxJL8Y7+8b6csecjlLvgTIE6tK756SzU
+         x3BQ==
+X-Gm-Message-State: AOAM532PHQ6q8ko18ZrvV/biG7OsPVmxVc2J5OVxfiLTR7pGIA0BTTLF
+        z4LDM52X3HJOTbiTnLJMGKpFQawvtUdFmM4Fvl7NXTwT7ZN+kp4w2VWAOlE/wrqmfUWYCCiNPVu
+        e6Zq0tBJc0FAD1t96Jk52GFiG
+X-Received: by 2002:adf:e6c5:: with SMTP id y5mr10528207wrm.79.1636650048863;
+        Thu, 11 Nov 2021 09:00:48 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJwvi6BbO2p3v31Oc+9TVb84uceco+hGZ5RzQV4jqofLRZp76P1kQ9PyATS1+sO+pho+vH1fAQ==
+X-Received: by 2002:adf:e6c5:: with SMTP id y5mr10528172wrm.79.1636650048606;
+        Thu, 11 Nov 2021 09:00:48 -0800 (PST)
+Received: from redhat.com ([2.55.135.246])
+        by smtp.gmail.com with ESMTPSA id k37sm3644050wms.21.2021.11.11.09.00.47
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 11 Nov 2021 09:00:47 -0800 (PST)
+Date:   Thu, 11 Nov 2021 12:00:45 -0500
+From:   "Michael S. Tsirkin" <mst@redhat.com>
+To:     Gerd Hoffmann <kraxel@redhat.com>
+Cc:     linux-pci@vger.kernel.org, Bjorn Helgaas <bhelgaas@google.com>,
+        open list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] pciehp: fast unplug for virtual machines
+Message-ID: <20211111115931-mutt-send-email-mst@kernel.org>
+References: <20211111090225.946381-1-kraxel@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <547737bb65e9db75df674d097aa8129@cweb005.nm.nfra.io>
+In-Reply-To: <20211111090225.946381-1-kraxel@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 12, 2021 at 01:21:16AM +0900, 박영준 wrote:
-> Thank you for fast reply. 
-> I missed the point kernel compile option dependency. 
+On Thu, Nov 11, 2021 at 10:02:24AM +0100, Gerd Hoffmann wrote:
+> The PCIe specification asks the OS to wait five seconds after the
+> attention button has been pressed before actually un-plugging the
+> device.  This gives the operator the chance to cancel the operation
+> by pressing the attention button again within those five seconds.
+> 
+> For physical hardware this makes sense.  Picking the wrong button
+> by accident can easily happen and it can be corrected that way.
+> 
+> For virtual hardware the benefits are questionable.  Typically
+> users find the five second delay annoying.
+> 
+> This patch adds the fast_virtual_unplug module parameter to the
+> pciehp driver.  When enabled (which is the default) the linux
+> kernel will simply skip the delay for virtual pcie ports, which
+> reduces the total time for the unplug operation from 6-7 seconds
+> to 1-2 seconds.
 
-Been there, done that!  I should have CCed LKML initially, so I did so
-this time.  Others might have similar questions, after all.  Or better
-answers, for that matter.
+BTW how come it's still taking seconds, not milliseconds?
 
-> I have more questions.  
-> So, to what extent synchronize_sched guarantees if I apply OPTPROBE forcefully? what kind of problem happens?(on PREEMPT=y kernel that synchronize_rcu_tasks is not applied)
-> (In my opinion it can not catchup preempted task switch on trampoline handler or preempt twice on trampoline handler)
-
-Yes, doing that would be a bad idea and it could break as you say.
-
-> And some not associated with RCU question..
-> If I have to replace synchronize_sched not using synchronize_rcu_tasks,
-> I think the possible way is to use live kernel patch style seeing task task switch + task eip address checking (is it on the trampoline?)is possible way. 
-> (with proper locking, task stack seeing guarantees trampoline is not referenced, and task eip address checking guarantee possible stack trace fasle positive.)
-> Do you think it is possible or impossible?
-
-For one thing, in recent kernels, there is no synchronize_sched().
-You instead use synchronize_rcu(), which handles preemption in kernels
-built with PREEMPT=y.  But use of synchronize_rcu() to protect trampolines
-in PREEMPT=y kernels require that the rcu_read_lock() be executed before
-transfering to the trampoline and that the rcu_read_unlock() be executed
-after returning from the trampoline.  This is not always convenient.
-
-On your approach of checking the EIP, Mike Ask claimed that Apple did
-something like this in their Objective-C runtime:
-https://www.mikeash.com/pyblog/friday-qa-2015-05-29-concurrent-memory-deallocation-in-the-objective-c-runtime.html
-
-But Linux systems can have tens of thousands of trampolines, at which point
-that might not be a good approach.  Especially given that some trampolines
-call functions, which means that you would need to trace the stack as well
-as check the EIP.  Plus you would need to send IPIs to safely and reliably
-check each CPU's state.
-
-So why not avoid all these problems and just use synchronize_rcu_tasks()?
-
-							Thanx, Paul
-
-> Sincerely yours
-> -----Original Message-----
-> From: "Paul E. McKenney"<paulmck@kernel.org>
-> To: "박영준"<her0gyu@naver.com>;
-> Cc:
-> Sent: 2021-11-12 (금) 00:47:33 (GMT+09:00)
-> Subject: Re: Some question for synchronize_rcu_tasks
+> Virtual pcie ports are identified by PCI ID.  For now the qemu
+> pcie root ports are detected, other hardware can be added easily.
+> 
+> Signed-off-by: Gerd Hoffmann <kraxel@redhat.com>
+> ---
+>  drivers/pci/hotplug/pciehp.h      |  3 +++
+>  drivers/pci/hotplug/pciehp_core.c |  5 +++++
+>  drivers/pci/hotplug/pciehp_ctrl.c | 11 ++++++++++-
+>  3 files changed, 18 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/pci/hotplug/pciehp.h b/drivers/pci/hotplug/pciehp.h
+> index 69fd401691be..131ffec2e947 100644
+> --- a/drivers/pci/hotplug/pciehp.h
+> +++ b/drivers/pci/hotplug/pciehp.h
+> @@ -79,6 +79,7 @@ extern int pciehp_poll_time;
+>   * @request_result: result of last user request submitted to the IRQ thread
+>   * @requester: wait queue to wake up on completion of user request,
+>   *	used for synchronous slot enable/disable request via sysfs
+> + * @is_virtual: virtual machine pcie port.
+>   *
+>   * PCIe hotplug has a 1:1 relationship between controller and slot, hence
+>   * unlike other drivers, the two aren't represented by separate structures.
+> @@ -109,6 +110,8 @@ struct controller {
+>  	unsigned int ist_running;
+>  	int request_result;
+>  	wait_queue_head_t requester;
+> +
+> +	bool is_virtual;
+>  };
 >  
-> On Fri, Nov 12, 2021 at 12:08:31AM +0900, 박영준 wrote:
-> > Dear paulmck
-> > Hi I am the security developer of South Korea
-> > recently I search the code patch area and I have some question of synchronize_rcu_tasks.
-> > On the commit 'a30b85df7d599f626973e9cd3056fe755bd778e0'(kprobe/core.c) synchronize_sched is changed to synchronize_rcu_tasks.
-> > As I understand, there is a problem for removal of trampoline handler.
-> > In my opinion, on PREEMPT=y kernel, there is a chance to be preempted twice on trampoline handler which synchronize_sched does not wait or
-> > synchronize_sched just guarantee pre-exiting interrupt is done therefore if the task on trampoline is switched to another task, it is totally problem.
-> > (because it is switched to trampoline after some time later)
-> > These are just my opinion so I am not sure of it. And As I think, maybe I don't know what I don't know.
-> > If you give me some explanation or opinion, it will be very very helpful.
-> > Thank you for reading my email.
-> 
-> If you are saying that synchronize_sched() would not be sufficient in
-> a PREEMPT=y kernel, you are quite correct.  And this is why OPTPROBES
-> depended on !PREEMPT before this patch was applied.
-> 
-> But in a PREEMPT=n kernel, there can be no preemption, and so in that
-> case synchronize_sched() would work just fine.
-> 
-> Thus, the overall effect of this patch was to make OPTPROBES available
-> in PREEMPT=y kernels as well as in PREEMPT=n kernels.
-> 
-> Or are you asking some other question?
-> 
-> Thanx, Paul
+>  /**
+> diff --git a/drivers/pci/hotplug/pciehp_core.c b/drivers/pci/hotplug/pciehp_core.c
+> index ad3393930ecb..28867ec33f5b 100644
+> --- a/drivers/pci/hotplug/pciehp_core.c
+> +++ b/drivers/pci/hotplug/pciehp_core.c
+> @@ -227,6 +227,11 @@ static int pciehp_probe(struct pcie_device *dev)
+>  		goto err_out_shutdown_notification;
+>  	}
+>  
+> +	if (dev->port->vendor == PCI_VENDOR_ID_REDHAT &&
+> +	    dev->port->device == 0x000c)
+> +		/* qemu pcie root port */
+> +		ctrl->is_virtual = true;
+> +
+>  	pciehp_check_presence(ctrl);
+>  
+>  	return 0;
+> diff --git a/drivers/pci/hotplug/pciehp_ctrl.c b/drivers/pci/hotplug/pciehp_ctrl.c
+> index 529c34808440..119bb11f87d6 100644
+> --- a/drivers/pci/hotplug/pciehp_ctrl.c
+> +++ b/drivers/pci/hotplug/pciehp_ctrl.c
+> @@ -15,12 +15,17 @@
+>  
+>  #define dev_fmt(fmt) "pciehp: " fmt
+>  
+> +#include <linux/moduleparam.h>
+>  #include <linux/kernel.h>
+>  #include <linux/types.h>
+>  #include <linux/pm_runtime.h>
+>  #include <linux/pci.h>
+>  #include "pciehp.h"
+>  
+> +static bool fast_virtual_unplug = true;
+> +module_param(fast_virtual_unplug, bool, 0644);
+> +MODULE_PARM_DESC(fast_virtual_unplug, "Fast unplug (don't wait 5 seconds) for virtual machines.");
+> +
+>  /* The following routines constitute the bulk of the
+>     hotplug controller logic
+>   */
+> @@ -176,7 +181,11 @@ void pciehp_handle_button_press(struct controller *ctrl)
+>  		/* blink power indicator and turn off attention */
+>  		pciehp_set_indicators(ctrl, PCI_EXP_SLTCTL_PWR_IND_BLINK,
+>  				      PCI_EXP_SLTCTL_ATTN_IND_OFF);
+> -		schedule_delayed_work(&ctrl->button_work, 5 * HZ);
+> +		if (ctrl->is_virtual && fast_virtual_unplug) {
+> +			schedule_delayed_work(&ctrl->button_work, 1);
+> +		} else {
+> +			schedule_delayed_work(&ctrl->button_work, 5 * HZ);
+> +		}
+>  		break;
+>  	case BLINKINGOFF_STATE:
+>  	case BLINKINGON_STATE:
+> -- 
+> 2.33.1
+
