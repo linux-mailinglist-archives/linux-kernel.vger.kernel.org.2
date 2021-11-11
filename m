@@ -2,225 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6ACB244D51E
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Nov 2021 11:37:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 18FD444D520
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Nov 2021 11:37:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232730AbhKKKjr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Nov 2021 05:39:47 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59958 "EHLO
+        id S232921AbhKKKkR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Nov 2021 05:40:17 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60074 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230256AbhKKKjq (ORCPT
+        with ESMTP id S230256AbhKKKkQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Nov 2021 05:39:46 -0500
-Received: from mail-ed1-x52e.google.com (mail-ed1-x52e.google.com [IPv6:2a00:1450:4864:20::52e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30834C061766;
-        Thu, 11 Nov 2021 02:36:57 -0800 (PST)
-Received: by mail-ed1-x52e.google.com with SMTP id z21so22326890edb.5;
-        Thu, 11 Nov 2021 02:36:57 -0800 (PST)
+        Thu, 11 Nov 2021 05:40:16 -0500
+Received: from mail-pf1-x436.google.com (mail-pf1-x436.google.com [IPv6:2607:f8b0:4864:20::436])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 903C6C061766;
+        Thu, 11 Nov 2021 02:37:27 -0800 (PST)
+Received: by mail-pf1-x436.google.com with SMTP id n85so5224995pfd.10;
+        Thu, 11 Nov 2021 02:37:27 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=M5pVKe47yKtjW0MKmtZXDquLokYlNX8+sMw+tEQRB2c=;
-        b=bMoxvFeh4C/OUX+ZD+sGBxBE9zEBZs2apIIJXb9f/PuJd4S8IZhcctjsNAcvDDuc+8
-         8MsO+YrrpLpX2diBL/ku5D8COPf5LpZR//zhvqkf8bvDR79WY7zghu09VnapvY7tNGfd
-         uSSCjtpfT4DmGp1BlJWxi1zR4JcT6sUp8PYw6Hz9mCSQHujiBp/1NQDSG3cGgDSxj9eu
-         nERh6lbvgQlvfa4RrO8DNeNyZ/caQMcIkG3PWAhtm6FJnf3tx/YhPRrWydjJW5R31l3Y
-         Yr9rO6NMiczfCWqkqB7KgAX+AiScXWZgB6TSTOuIMY4qvbvCxo9OWrCI0F5XwT7p9ee4
-         1BmQ==
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=TsdgksjzIgtw7/d4jST9JcU2EdYuVW+gAM2jdZ5dk8s=;
+        b=eFm/kf4UZg9lOvY/C8KDN/+7dL/ps+IYCMQtb2bn7Ap29kRo8Uz08oWe/3kTOjpnfA
+         zmxj1ks5z4EA0kWOy0b0rlj/GeXAZg8Q03oELBpfzoOR7i/PPcKCBh5BRkYms3NtkNgP
+         l7jVQAVPfTxUB/NIKCuPQomC1EALGVDp9jZqlYMvEywAYFaXVRn5HsTOf7LC4eGBojLE
+         rNnTwbiGdiIJkw4BVeC/26P8Mhl1MtYqS/5BUvImF/DMHvdWtPI9Ri2V/8Bm2c0AXR2v
+         yeVtIQNLq5cFhD4A++ZLUZOHVZr78fvXMMQrkZYNGoocU0hggv33+h+fFhiYGRlYV0w0
+         R0+A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=M5pVKe47yKtjW0MKmtZXDquLokYlNX8+sMw+tEQRB2c=;
-        b=632YO2GpCuU1K8QDdCDM5M/1U847xFLL5ZYVVyo23rshn98g3c976WQbZe76TJrrVy
-         ZHZ2waVjFRi3TrfWJ5292ko7L4xHo2cGjyt2iBHDejW99MukZ0o2W+VS4zVhTXDkT4Lx
-         prIufj+6ccCfwi5APW8Yp0r1DcuwTIypM5aYS0oH3v/OkmkX12SrrZsznXcbuayu1gze
-         ztPpupj/4Ow4aAXSqd2UECK63E+On/CEQOfPPQuawIWjEM3dlISuRfJiyeUBdpyUuiIG
-         nam3tRROfK8ws5/mdRkcPyA82zKWTK1GAIWUfbHsFaAf3Yf857PtZX4Dv7h4Q85VYgtZ
-         Azeg==
-X-Gm-Message-State: AOAM532FuuDfLbVRx5I0FMzArb339OjL7zPRoBSUvVe4xCRzU4pN1Tmf
-        opYMWkJohXpGXZ8dPPJ5eOIiP9NO0wdLRBQq/48=
-X-Google-Smtp-Source: ABdhPJzkWJzxENQ+uwppyRAue2SX6spIb5vmW0aJu04zaZbg/JLAstkKlVpptxxEn3SNkLosmat/lx4fa6jFFpHs1Mc=
-X-Received: by 2002:a17:906:c152:: with SMTP id dp18mr7835459ejc.241.1636627015702;
- Thu, 11 Nov 2021 02:36:55 -0800 (PST)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=TsdgksjzIgtw7/d4jST9JcU2EdYuVW+gAM2jdZ5dk8s=;
+        b=8MOKYk/IQ7oGCid4CxleWYMiy7znMwxeQ+SA1m8F2u4PWr96wYfMZKpIXaADeAjTp5
+         8VTVKO0s6tuIuHrz6fJzes8xIt41mf3c3KFblWeaYCKEP/C3X2fDExinueHm9vKxTgHA
+         Jl5iDeeSFRbBUafeIFDB2pA3mGYXHfWk+RQb6XOUjh/c2YFv9MiVuFlnsCMcphIgsgyD
+         0rBvF11seTL8/eAEIqK3AzGVNcJqE2xkQgOOqnWcT74K8s01h03Vgq0lwl7TIF8I94+Q
+         7lNfqgkEx4LZkTBPHdDwtl7N8lNdxTj+8boRLQ970xjDgOvyoYeKCXez2HOgZG3lL+iu
+         oZZQ==
+X-Gm-Message-State: AOAM530gHH8mSkvr8UO/CSanRrz+CjQ45kc9Ju8pxo28CMkucv9BvH1R
+        46UWXS+x49wph58pANgQuZkJbFtuKAw=
+X-Google-Smtp-Source: ABdhPJwe54+KwEJg+g2Q3mweAMYeskRKlDhb9UiTQmH2gRWCxHZi9DuqngGwgRjh6sKgT3gh4I2+PA==
+X-Received: by 2002:a63:6747:: with SMTP id b68mr3784340pgc.371.1636627047223;
+        Thu, 11 Nov 2021 02:37:27 -0800 (PST)
+Received: from localhost.localdomain ([193.203.214.57])
+        by smtp.gmail.com with ESMTPSA id p2sm2072018pja.55.2021.11.11.02.37.25
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 11 Nov 2021 02:37:26 -0800 (PST)
+From:   cgel.zte@gmail.com
+X-Google-Original-From: zhang.mingyu@zte.com.cn
+To:     axboe@kernel.dk
+Cc:     linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Zhang Mingyu <zhang.mingyu@zte.com.cn>,
+        Zeal Robot <zealci@zte.com.cn>
+Subject: [PATCH] blk-mq:Use BUG_ON instead of if condition followed by BUG.
+Date:   Thu, 11 Nov 2021 10:37:22 +0000
+Message-Id: <20211111103722.1650-1-zhang.mingyu@zte.com.cn>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-References: <20211109083926.32052-1-christian.gmeiner@gmail.com>
- <20211109083926.32052-2-christian.gmeiner@gmail.com> <YYq4tjyv0qh+Zpqe@ripper>
-In-Reply-To: <YYq4tjyv0qh+Zpqe@ripper>
-From:   Christian Gmeiner <christian.gmeiner@gmail.com>
-Date:   Thu, 11 Nov 2021 11:36:44 +0100
-Message-ID: <CAH9NwWcyKyaGrTZ1=N73gA+zjO0wH_oMzLG_zi2TUc3dN69SNg@mail.gmail.com>
-Subject: Re: [RFC PATCH v2 1/1] rpmsg: add syslog driver
-To:     Bjorn Andersson <bjorn.andersson@linaro.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Ohad Ben-Cohen <ohad@wizery.com>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        linux-remoteproc@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Bjorn
+From: Zhang Mingyu <zhang.mingyu@zte.com.cn>
 
+This issue was detected with the help of Coccinelle.
 
-> > Allows the remote firmware to log into syslog.
-> >
->
-> This allows the remote firmware to print log messages in the kernel log,
-> not the syslog (although your system might inject the kernel log into
-> the syslog as well)
->
+Reported-by: Zeal Robot <zealci@zte.com.cn>
+Signed-off-by: Zhang Mingyu <zhang.mingyu@zte.com.cn>
+---
+ block/blk-mq.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-Correct.
-
-> > Signed-off-by: Christian Gmeiner <christian.gmeiner@gmail.com>
-> > ---
-> >  drivers/rpmsg/Kconfig        |  8 +++++
-> >  drivers/rpmsg/Makefile       |  1 +
-> >  drivers/rpmsg/rpmsg_syslog.c | 65 ++++++++++++++++++++++++++++++++++++
->
-> drivers/rpmsg is for rpmsg bus and transport drivers. Client drivers
-> should live elsewhere.
->
-
-Ahh .. yes.
-
-> But perhaps, rather than having a driver for this, you could simply use
-> rpmsg_char and a userspace tool; if you want to get the remote processor
-> logs into syslog, instead of the kernel log?
->
-
-I thought about that too (also regarding the rpmsg tty driver) but that means I
-need to start/supervise a user space tool.
-
-> >  3 files changed, 74 insertions(+)
-> >  create mode 100644 drivers/rpmsg/rpmsg_syslog.c
-> >
-> > diff --git a/drivers/rpmsg/Kconfig b/drivers/rpmsg/Kconfig
-> > index 0b4407abdf13..801f9956ec21 100644
-> > --- a/drivers/rpmsg/Kconfig
-> > +++ b/drivers/rpmsg/Kconfig
-> > @@ -73,4 +73,12 @@ config RPMSG_VIRTIO
-> >       select RPMSG_NS
-> >       select VIRTIO
-> >
-> > +config RPMSG_SYSLOG
-> > +     tristate "SYSLOG device interface"
-> > +     depends on RPMSG
-> > +     help
-> > +       Say Y here to export rpmsg endpoints as device files, usually found
-> > +       in /dev. They make it possible for user-space programs to send and
-> > +       receive rpmsg packets.
-> > +
-> >  endmenu
-> > diff --git a/drivers/rpmsg/Makefile b/drivers/rpmsg/Makefile
-> > index 8d452656f0ee..75b2ec7133a5 100644
-> > --- a/drivers/rpmsg/Makefile
-> > +++ b/drivers/rpmsg/Makefile
-> > @@ -9,3 +9,4 @@ obj-$(CONFIG_RPMSG_QCOM_GLINK_RPM) += qcom_glink_rpm.o
-> >  obj-$(CONFIG_RPMSG_QCOM_GLINK_SMEM) += qcom_glink_smem.o
-> >  obj-$(CONFIG_RPMSG_QCOM_SMD) += qcom_smd.o
-> >  obj-$(CONFIG_RPMSG_VIRTIO)   += virtio_rpmsg_bus.o
-> > +obj-$(CONFIG_RPMSG_SYSLOG)   += rpmsg_syslog.o
-> > diff --git a/drivers/rpmsg/rpmsg_syslog.c b/drivers/rpmsg/rpmsg_syslog.c
-> > new file mode 100644
-> > index 000000000000..b3fdae495fd9
-> > --- /dev/null
-> > +++ b/drivers/rpmsg/rpmsg_syslog.c
-> > @@ -0,0 +1,65 @@
-> > +// SPDX-License-Identifier: GPL-2.0
-> > +
-> > +#include <linux/kernel.h>
-> > +#include <linux/module.h>
-> > +#include <linux/rpmsg.h>
-> > +
-> > +static int rpmsg_syslog_cb(struct rpmsg_device *rpdev, void *data, int len,
-> > +                        void *priv, u32 src)
-> > +{
-> > +     const char *buffer = data;
-> > +
-> > +     switch (buffer[0]) {
-> > +     case 'e':
-> > +             dev_err(&rpdev->dev, "%s", buffer + 1);
-> > +             break;
-> > +     case 'w':
-> > +             dev_warn(&rpdev->dev, "%s", buffer + 1);
-> > +             break;
-> > +     case 'i':
-> > +             dev_info(&rpdev->dev, "%s", buffer + 1);
-> > +             break;
-> > +     default:
-> > +             dev_info(&rpdev->dev, "%s", buffer);
-> > +             break;
-> > +     }
-> > +
-> > +     return 0;
-> > +}
-> > +
-> > +static int rpmsg_syslog_probe(struct rpmsg_device *rpdev)
-> > +{
-> > +     struct rpmsg_endpoint *syslog_ept;
-> > +     struct rpmsg_channel_info syslog_chinfo = {
-> > +             .src = 42,
-> > +             .dst = 42,
-> > +             .name = "syslog",
-> > +     };
-> > +
-> > +     /*
-> > +      * Create the syslog service endpoint associated to the RPMsg
-> > +      * device. The endpoint will be automatically destroyed when the RPMsg
-> > +      * device will be deleted.
-> > +      */
-> > +     syslog_ept = rpmsg_create_ept(rpdev, rpmsg_syslog_cb, NULL, syslog_chinfo);
->
-> The rpmsg_device_id below should cause the device to probe on the
-> presence of a "syslog" channel announcement, so why are you creating a
-> new endpoint with the same here?
->
-> Why aren't you just specifying the callback of the driver?
->
-
-Good question. I think I was happy that I got work working somehow. I
-also want to send out
-a documentation update as it is not up to date with the current API.
-
-> > +     if (!syslog_ept) {
-> > +             dev_err(&rpdev->dev, "failed to create the syslog ept\n");
-> > +             return -ENOMEM;
-> > +     }
-> > +     rpdev->ept = syslog_ept;
-> > +
-> > +     return 0;
-> > +}
-> > +
-> > +static struct rpmsg_device_id rpmsg_driver_syslog_id_table[] = {
-> > +     { .name = "syslog" },
-> > +     { },
-> > +};
-> > +MODULE_DEVICE_TABLE(rpmsg, rpmsg_driver_syslog_id_table);
-> > +
-> > +static struct rpmsg_driver rpmsg_syslog_client = {
-> > +     .drv.name       = KBUILD_MODNAME,
-> > +     .id_table       = rpmsg_driver_syslog_id_table,
-> > +     .probe          = rpmsg_syslog_probe,
-> > +};
-> > +module_rpmsg_driver(rpmsg_syslog_client);
->
-> I would expect that building this as a module gives you complaints about
-> lacking MODULE_LICENSE().
->
-
-Yeah .. I never built it as a module.
-
-The biggest question I have: do you see any possibility to get such a
-redirection
-driver into mainline? At the moment I have not heard a big no.
-
+diff --git a/block/blk-mq.c b/block/blk-mq.c
+index 7c5c8a26c8fc..05bffbc6b8ff 100644
+--- a/block/blk-mq.c
++++ b/block/blk-mq.c
+@@ -818,8 +818,7 @@ EXPORT_SYMBOL(__blk_mq_end_request);
+ 
+ void blk_mq_end_request(struct request *rq, blk_status_t error)
+ {
+-	if (blk_update_request(rq, error, blk_rq_bytes(rq)))
+-		BUG();
++	BUG_ON(blk_update_request(rq, error, blk_rq_bytes(rq)));
+ 	__blk_mq_end_request(rq, error);
+ }
+ EXPORT_SYMBOL(blk_mq_end_request);
 -- 
-greets
---
-Christian Gmeiner, MSc
+2.25.1
 
-https://christian-gmeiner.info/privacypolicy
