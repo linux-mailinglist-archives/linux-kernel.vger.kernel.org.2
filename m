@@ -2,245 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 34FA644DC7C
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Nov 2021 21:27:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B327D44DC80
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Nov 2021 21:28:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233417AbhKKU3x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Nov 2021 15:29:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52928 "EHLO
+        id S233483AbhKKUbT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Nov 2021 15:31:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53266 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229785AbhKKU3v (ORCPT
+        with ESMTP id S233191AbhKKUbP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Nov 2021 15:29:51 -0500
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 15F67C061766
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Nov 2021 12:27:02 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=57M32KCr99mfqpQx+P/wOq1PJ9H4ReEA+yThcJaPntg=; b=UupfG5T+N5guGMgZjUvnSNv3Sr
-        rGNYsXwDTD5kc156+qnZyp3KiJHCNU5YtS/AhUXT8QOgJ40yVkFlYB+/SZcl6z6ygdhr1bfxPMjK2
-        1JPY5bzwRjsc+AZ3ha/u/o2oGZ+BN5fBj7eIxpZvnvruZHsioD+EaaumqRGepSCEbYkhrHoXbyLGd
-        AhihOybcBRo+O7cmXUy2QpAMEGCsKerXCaxVkZuAGO7Qxe2cdlwBemPoscBEzQO3c1WXpjGJ+Ihc+
-        o+ttk7Bk8X2dmZErnJoU1+RXMkkxVaC7ipnXKCo/k1XARZSiYlCRdIRjj+l9WWqgDteyHvdNwu+o9
-        sGKDLPKg==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=worktop.programming.kicks-ass.net)
-        by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mlGem-00FWPZ-K1; Thu, 11 Nov 2021 20:26:48 +0000
-Received: by worktop.programming.kicks-ass.net (Postfix, from userid 1000)
-        id BC773986981; Thu, 11 Nov 2021 21:26:47 +0100 (CET)
-Date:   Thu, 11 Nov 2021 21:26:47 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Waiman Long <longman@redhat.com>
-Cc:     Hillf Danton <hdanton@sina.com>,
-        =?utf-8?B?6ams5oyv5Y2O?= <mazhenhua@xiaomi.com>,
-        mingo <mingo@redhat.com>, will <will@kernel.org>,
-        "boqun.feng" <boqun.feng@gmail.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Subject: Re: [BUG]locking/rwsem: only clean RWSEM_FLAG_HANDOFF when already
- set
-Message-ID: <20211111202647.GH174703@worktop.programming.kicks-ass.net>
-References: <4fafad133b074f279dbab1aa3642e23f@xiaomi.com>
- <20211107090131.1535-1-hdanton@sina.com>
- <13d683ed-793c-b502-44ff-f28114d9386b@redhat.com>
- <02e118c0-2116-b806-2b48-b9c91dc847dd@redhat.com>
- <20211110213854.GE174703@worktop.programming.kicks-ass.net>
- <YY0x55wxO2v5HCOW@hirez.programming.kicks-ass.net>
- <61735528-141c-8d77-592d-b6b8fb75ebaa@redhat.com>
- <YY1s6v9b/tYtNnGv@hirez.programming.kicks-ass.net>
- <e16f9fc2-ce01-192b-065d-460c2ad9b317@redhat.com>
+        Thu, 11 Nov 2021 15:31:15 -0500
+Received: from mail-oi1-x233.google.com (mail-oi1-x233.google.com [IPv6:2607:f8b0:4864:20::233])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E2B70C0613F5
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Nov 2021 12:28:25 -0800 (PST)
+Received: by mail-oi1-x233.google.com with SMTP id o83so13698043oif.4
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Nov 2021 12:28:25 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=gBiwdPPgqDE+FpLiui3l4oL6zGJDjA4BEp171adZNFs=;
+        b=B8NeVe5nPMz0rQZrp8+YjBhrDYXgs9ZklicjiIFaaDb90Y8E8SawcNdECdGOLY72/k
+         ba3Z+4/8l7CKpSFeET7DVi39dVzpPoU5w8ZdslaOVU4b7NdZoVKQEThssjddoBa+ayt1
+         5i3XTg9UukhSSRxUsDv8+ks04MuzyKAkA27uAsvdQxHEreu7mn9xRvkwsQHBR/JE/VlQ
+         6NAA+SCh48PlpKFfhS4WAwU83oahtGYVOqbBK1t7NiezlRXg+1U51MbCxlMqzSZ4O/Yi
+         pehdGv72QC2rr4Ya6MKZNihO/8U9pTUdS46YH3T8gJXrWhDCIuYYbHlx737huac2cpvX
+         nYEw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=gBiwdPPgqDE+FpLiui3l4oL6zGJDjA4BEp171adZNFs=;
+        b=tFKh3N+671h5fsXBRCRSrHzx9ff+2DLLhwC0pvo+3YOiaFtL/bxEASw54+HxwasXbZ
+         A4WLaNwrIFoZSRrDZJnFzoiLY6Z7s15mctv9tYx028AgCts9PsAIt8Lj1lEw8/m5Z2PU
+         HCm7EfYfaa2s0eBuIoGn565Q1LGwraU0L1nCL5dcMlCY2f/czPl9XO2zhPm+bLyN+26n
+         0Z5p/dhyjGGyndOxFjGoHx+NDl835oloYu9z5DS85LPANNMjF2hbqaITcVXwtxMYg9B8
+         4+RuYBgiG3E3+cHuZwFPDvKM/CYkvftMTJajCiUECWLtzK/CwciZfBPyU0bJp4HlyiLP
+         phhg==
+X-Gm-Message-State: AOAM53041SikaI98cdxC5UqQzQZtwAFXwvD0b8bExpyg1g077JBVXLsV
+        PSKbDPln78WJlmzduBauKiBL1fUrI+t1pz8XyimeaQ==
+X-Google-Smtp-Source: ABdhPJz1t8ilCe+azR4nxyMELuFZ202q6/P+OrgSG758hZXZJ0cRdCRts8XbAIgXPHpBGut6c4m3RRCMxRay292CWw0=
+X-Received: by 2002:a05:6808:60e:: with SMTP id y14mr8514570oih.162.1636662505339;
+ Thu, 11 Nov 2021 12:28:25 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <e16f9fc2-ce01-192b-065d-460c2ad9b317@redhat.com>
+References: <20211109161253.2202108-1-robh@kernel.org> <CACRpkda1+86GgvCJEehg9CGS78Q10FJ3ZHzdmHpYHrY7tAwkwA@mail.gmail.com>
+ <CAL_Jsq+gjP=3=wMYJ83KAn7Jf6xgaqoW9yn-bfoqD3Ung+CcKg@mail.gmail.com>
+In-Reply-To: <CAL_Jsq+gjP=3=wMYJ83KAn7Jf6xgaqoW9yn-bfoqD3Ung+CcKg@mail.gmail.com>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Thu, 11 Nov 2021 21:28:14 +0100
+Message-ID: <CACRpkdbZvyQL3H31=00W-XeELR_g8xfRDyt-htLfh9DNSSDYxQ@mail.gmail.com>
+Subject: Re: [PATCH] gpio: xlp: Remove Netlogic XLP variants
+To:     Rob Herring <robh@kernel.org>
+Cc:     Bartosz Golaszewski <brgl@bgdev.pl>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        "open list:MIPS" <linux-mips@vger.kernel.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 11, 2021 at 02:36:52PM -0500, Waiman Long wrote:
+On Thu, Nov 11, 2021 at 9:13 PM Rob Herring <robh@kernel.org> wrote:
+> On Thu, Nov 11, 2021 at 4:43 AM Linus Walleij <linus.walleij@linaro.org> wrote:
 
-> @@ -434,6 +430,7 @@ static void rwsem_mark_wake(struct rw_semaphore *sem,
->  			if (!(oldcount & RWSEM_FLAG_HANDOFF) &&
->  			    time_after(jiffies, waiter->timeout)) {
->  				adjustment -= RWSEM_FLAG_HANDOFF;
-> +				waiter->handoff_set = true;
->  				lockevent_inc(rwsem_rlock_handoff);
->  			}
->  
+> > > @@ -373,7 +263,7 @@ static int xlp_gpio_probe(struct platform_device *pdev)
+> > >         gc->label = dev_name(&pdev->dev);
+> > >         gc->base = 0;
+> >
+> > Can we also set this to -1 and use dynamic GPIO base allocation?
+> > (Can be a separate patch.)
+>
+> No clue. What's normal for GPIO ACPI systems?
 
-Do we really need this flag? Wouldn't it be the same as waiter-is-first
-AND sem-has-handoff ?
+Dynamic allocation (-1) c.f.
+drivers/pinctrl/intel/pinctrl-intel.c
 
->  static inline bool rwsem_try_write_lock(struct rw_semaphore *sem,
-> +					struct rwsem_waiter *waiter)
->  {
->  	long count, new;
-> +	bool first = rwsem_first_waiter(sem) == waiter;
+> Does that mean more than
+> 1 instance is broken currently?
 
-flip those lines for reverse xmas please
+Yes.
 
->  
->  	lockdep_assert_held(&sem->wait_lock);
->  
-> @@ -546,13 +541,14 @@ static inline bool rwsem_try_write_lock(struct rw_semaphore *sem,
->  	do {
->  		bool has_handoff = !!(count & RWSEM_FLAG_HANDOFF);
->  
-> -		if (has_handoff && wstate == WRITER_NOT_FIRST)
-> +		if (has_handoff && !first)
->  			return false;
->  
->  		new = count;
->  
->  		if (count & RWSEM_LOCK_MASK) {
-> -			if (has_handoff || (wstate != WRITER_HANDOFF))
-> +			if (has_handoff || (!waiter->rt_task &&
-> +					    !time_after(jiffies, waiter->timeout)))
-
-
-Does ->rt_task really help over rt_task(current) ? I suppose there's an
-argument for locality, but that should be pretty much it, no?
-
->  				return false;
->  
->  			new |= RWSEM_FLAG_HANDOFF;
-> @@ -889,6 +888,24 @@ rwsem_spin_on_owner(struct rw_semaphore *sem)
->  }
->  #endif
->  
-> +/*
-> + * Common code to handle rwsem flags in out_nolock path with wait_lock held.
-> + */
-> +static inline void rwsem_out_nolock_clear_flags(struct rw_semaphore *sem,
-> +						struct rwsem_waiter *waiter)
-> +{
-> +	long flags = 0;
-> +
-> +	list_del(&waiter->list);
-> +	if (list_empty(&sem->wait_list))
-> +		flags = RWSEM_FLAG_HANDOFF | RWSEM_FLAG_WAITERS;
-> +	else if (waiter->handoff_set)
-> +		flags = RWSEM_FLAG_HANDOFF;
-> +
-> +	if (flags)
-> +		atomic_long_andnot(flags,  &sem->count);
-> +}
-
-Right, so I like sharing this between the two _slowpath functions, that
-makes sense.
-
-The difference between this and my approach is that I unconditionally
-clear HANDOFF when @waiter was the first. Because if it was set, it
-must've been ours, and if it wasn't set, clearing it doesn't really hurt
-much. This is an unlikely path, I don't think the potentially extra
-atomic is an issue here.
-
-> +
->  /*
->   * Wait for the read lock to be granted
->   */
-> @@ -936,6 +953,7 @@ rwsem_down_read_slowpath(struct rw_semaphore *sem, long count, unsigned int stat
->  	waiter.task = current;
->  	waiter.type = RWSEM_WAITING_FOR_READ;
->  	waiter.timeout = jiffies + RWSEM_WAIT_TIMEOUT;
-> +	waiter.handoff_set = false;
-
-Forgot to set rt_task
-
->  
->  	raw_spin_lock_irq(&sem->wait_lock);
->  	if (list_empty(&sem->wait_list)) {
-
-> @@ -1038,16 +1051,13 @@ rwsem_down_write_slowpath(struct rw_semaphore *sem, int state)
->  	waiter.task = current;
->  	waiter.type = RWSEM_WAITING_FOR_WRITE;
->  	waiter.timeout = jiffies + RWSEM_WAIT_TIMEOUT;
-
-Forget to set handoff_set
-
-> +	waiter.rt_task = rt_task(current);
->  
->  	raw_spin_lock_irq(&sem->wait_lock);
-
-Again, I'm not convinced we need these variables.
-
-> @@ -1083,13 +1093,16 @@ rwsem_down_write_slowpath(struct rw_semaphore *sem, int state)
->  	/* wait until we successfully acquire the lock */
->  	set_current_state(state);
->  	for (;;) {
-> -		if (rwsem_try_write_lock(sem, wstate)) {
-> +		if (rwsem_try_write_lock(sem, &waiter)) {
->  			/* rwsem_try_write_lock() implies ACQUIRE on success */
->  			break;
->  		}
->  
->  		raw_spin_unlock_irq(&sem->wait_lock);
->  
-> +		if (signal_pending_state(state, current))
-> +			goto out_nolock;
-> +
->  		/*
->  		 * After setting the handoff bit and failing to acquire
->  		 * the lock, attempt to spin on owner to accelerate lock
-> @@ -1098,7 +1111,7 @@ rwsem_down_write_slowpath(struct rw_semaphore *sem, int state)
->  		 * In this case, we attempt to acquire the lock again
->  		 * without sleeping.
->  		 */
-> -		if (wstate == WRITER_HANDOFF) {
-> +		if (waiter.handoff_set) {
->  			enum owner_state owner_state;
->  
->  			preempt_disable();
-
-Does it matter much if we spin-wait for every first or only for handoff?
-
-Either way around, I think spin-wait ought to terminate on sigpending
-(same for mutex I suppose).
-
-> @@ -1109,40 +1122,9 @@ rwsem_down_write_slowpath(struct rw_semaphore *sem, int state)
->  				goto trylock_again;
->  		}
->  
-> -		/* Block until there are no active lockers. */
-> -		for (;;) {
-> -			if (signal_pending_state(state, current))
-> -				goto out_nolock;
-> -
-> -			schedule();
-> -			lockevent_inc(rwsem_sleep_writer);
-> -			set_current_state(state);
-> -			/*
-> -			 * If HANDOFF bit is set, unconditionally do
-> -			 * a trylock.
-> -			 */
-> -			if (wstate == WRITER_HANDOFF)
-> -				break;
-> -
-> -			if ((wstate == WRITER_NOT_FIRST) &&
-> -			    (rwsem_first_waiter(sem) == &waiter))
-> -				wstate = WRITER_FIRST;
-> -
-> -			count = atomic_long_read(&sem->count);
-> -			if (!(count & RWSEM_LOCK_MASK))
-> -				break;
-> -
-> -			/*
-> -			 * The setting of the handoff bit is deferred
-> -			 * until rwsem_try_write_lock() is called.
-> -			 */
-> -			if ((wstate == WRITER_FIRST) && (rt_task(current) ||
-> -			    time_after(jiffies, waiter.timeout))) {
-> -				wstate = WRITER_HANDOFF;
-> -				lockevent_inc(rwsem_wlock_handoff);
-> -				break;
-> -			}
-> -		}
-> +		schedule();
-> +		lockevent_inc(rwsem_sleep_writer);
-> +		set_current_state(state);
->  trylock_again:
->  		raw_spin_lock_irq(&sem->wait_lock);
->  	}
-
-Nice.
+Yours,
+Linus Walleij
