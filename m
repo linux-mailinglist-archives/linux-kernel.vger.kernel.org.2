@@ -2,80 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 350D744CE6F
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Nov 2021 01:41:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 162DD44CE73
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Nov 2021 01:41:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232018AbhKKAoD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Nov 2021 19:44:03 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41030 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231254AbhKKAoC (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Nov 2021 19:44:02 -0500
-Received: from mail-lf1-x12a.google.com (mail-lf1-x12a.google.com [IPv6:2a00:1450:4864:20::12a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1D166C061766
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Nov 2021 16:41:14 -0800 (PST)
-Received: by mail-lf1-x12a.google.com with SMTP id bi37so5167532lfb.5
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Nov 2021 16:41:14 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:sender:from:date:message-id:subject:to;
-        bh=uvWQJ9DM1oR1e3DzeJzhL307x5p5vimC2N9/CxDWhI0=;
-        b=I4192rqBuSzYBEsi0MR1wehSj2ONZ7L1HMAv584vxwsNNhNA9/deIL8lRg5QE2iNCH
-         hhExqiR7857/d0ynu60a8Ngv/ph9wQBpXSBULu33jH9cbVyDNrsyGvBAEiyvzLUhmYps
-         /8H2RZsjYpAG282aynIFCXgjTI1VRnl0GA7XZhKyxdVPJiUq55ce019kQ8bTjREfpCmr
-         zjJDXX8vwTiPtSzLtFMef1psrl0y1U9HYOOu9g71a2voFIReF6qPlbAi8uFk+9qf6eyy
-         dNxY4SjXTxrS/6NQbT2d50aVFkmf+q6odxOdfxGclBblsNx9jiJ+C1TDdPbS2CNvtV6P
-         iTIQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:sender:from:date:message-id:subject
-         :to;
-        bh=uvWQJ9DM1oR1e3DzeJzhL307x5p5vimC2N9/CxDWhI0=;
-        b=bBg03iVabs14dFKdgkiR4YAdyoMXOPp1q4K5f0yU3A2pVx8vaXT1lbWCZXth4eUMA4
-         JBx8i9H1RRxKhHfBU755EqsyNxV8QwR8hk6REJieoEWOoBgaJhVGNLlheaGqz0cOHRef
-         v8iiYYaD4V3o3nDtblyLM0Pc+Q6z6oqfLwG2qkAerBbsr7gkeE6Ly18F40xj/DoL8URT
-         Pn4rGHnTJ36g7fbR8a0WiWaf+GW6rXVyiLqDrMe+uy7OPfXtQ9FuSmhRRJtRPeLItj76
-         B0UMMlNQRN6R0G98cYgnHmv36PfbcmNkO0QTwCL2eH4ZG3L184bP66crIs/DVitVbR/X
-         y8/Q==
-X-Gm-Message-State: AOAM531ObIg170xY/FTKl6v74zDXXMrfZfN+xXwG3SVPhtPElAZT7dgX
-        H0Kmq+GL4nhBKkmErYSqWjPRdiANYuQSkfnLLb4=
-X-Google-Smtp-Source: ABdhPJz3iW6HAdEYuXQZZkupkU9cckoB2L6FamrhLVpj1HJhH65F0s9zik57DBNS9IL4Yp9B1h9LFlyqB72pD8OjjKk=
-X-Received: by 2002:a19:c185:: with SMTP id r127mr2974386lff.572.1636591272471;
- Wed, 10 Nov 2021 16:41:12 -0800 (PST)
+        id S232476AbhKKAoJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Nov 2021 19:44:09 -0500
+Received: from mail.kernel.org ([198.145.29.99]:42380 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232077AbhKKAoH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Nov 2021 19:44:07 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 86ED26135E;
+        Thu, 11 Nov 2021 00:41:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1636591279;
+        bh=hhTl/K3vGzRFZ3vjhy7pDbKkn6USsecqA6WNitwGUGk=;
+        h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
+        b=N4YAEYew+VeYugIXPsKBigKFuYUo+PkHXePWFofolFcvM+F4aHIyZhEPkJ1wn3LLf
+         ZcvG1irdlEbT5Jet+UZ7DISPOpxd9pcQLEPp77MZWPcGYhN+JYNKb6oHPtqMfe5KFX
+         yBeEuRVd6pYxxjVWDJXUxe01H+jVsqdzkQOVrbY8IyPkN0m4e+lZQa/rhEvBEK5fia
+         BACwM+kjtY4XhkRBoutMwKPdqK38NGnB3HdL1yWnGaP/uugNEaD9yehptySANwK58M
+         fw3pOUUFu8TKNeyHAvG4fCNuCP5diMEhHfWWdFGWHRbAGxI1bX526OsFttTlCEbQIy
+         fqt1AdGctnVMw==
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Sender: musaabudu666@gmail.com
-Received: by 2002:a05:6512:3404:0:0:0:0 with HTTP; Wed, 10 Nov 2021 16:41:11
- -0800 (PST)
-From:   Mrs Suzara Maling Wan <mrs.suzara.maling.wan64@gmail.com>
-Date:   Thu, 11 Nov 2021 01:41:11 +0100
-X-Google-Sender-Auth: UO42eTFI4Y_c4iqJMhjTk4wXXhM
-Message-ID: <CAH2+iROiDZGtC=jqZjAerQ-exKPthkSL2OkUAb-JrxmJEAgVVQ@mail.gmail.com>
-Subject: PLEASE RESPOND VERY URGENTLY
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20211109164650.2233507-3-robh@kernel.org>
+References: <20211109164650.2233507-1-robh@kernel.org> <20211109164650.2233507-3-robh@kernel.org>
+Subject: Re: [PATCH 2/2] clk: versatile: clk-icst: Ensure clock names are unique
+From:   Stephen Boyd <sboyd@kernel.org>
+Cc:     devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        Guenter Roeck <linux@roeck-us.net>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org,
+        stable@vger.kernel.org
+To:     Linus Walleij <linus.walleij@linaro.org>,
+        Rob Herring <robh@kernel.org>,
+        Sudeep Holla <sudeep.holla@arm.com>
+Date:   Wed, 10 Nov 2021 16:41:18 -0800
+User-Agent: alot/0.9.1
+Message-Id: <20211111004119.86ED26135E@mail.kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
--- 
-Good Day,
+Quoting Rob Herring (2021-11-09 08:46:50)
+> Commit 2d3de197a818 ("ARM: dts: arm: Update ICST clock nodes 'reg' and
+> node names") moved to using generic node names. That results in trying
+> to register multiple clocks with the same name. Fix this by including
+> the unit-address in the clock name.
+>=20
+> Fixes: 2d3de197a818 ("ARM: dts: arm: Update ICST clock nodes 'reg' and no=
+de names")
+> Cc: stable@vger.kernel.org
+> Cc: Linus Walleij <linus.walleij@linaro.org>
+> Cc: Stephen Boyd <sboyd@kernel.org>
+> Cc: linux-arm-kernel@lists.infradead.org
+> Cc: linux-clk@vger.kernel.org
+> Signed-off-by: Rob Herring <robh@kernel.org>
+> ---
 
-My names are Mrs Suzara Maling Wan, I am a Nationality of the Republic
-of the Philippine presently base in West Africa B/F, dealing with
-exportation of Gold, I was diagnose of blood Causal decease, and my
-doctor have announce to me that I have few days to leave due to the
-condition of my sickness.
-
-I have a desire to build an orphanage home in your country of which i
-cannot execute the project myself due to my present health condition,
-I am willing to hand over the project under your care for you to help
-me fulfill my dreams and desire of building an orphanage home in your
-country.
-
-Reply if you are willing to help so that I can direct you to my bank
-for the urgent transfer of the fund/money require for the project to
-your account as I have already made the fund/money available.
-
-With kind regards
-Mrs Suzara Maling Wan
+Reviewed-by: Stephen Boyd <sboyd@kernel.org>
