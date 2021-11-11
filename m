@@ -2,237 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E6D3544D324
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Nov 2021 09:25:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D0BBD44D326
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Nov 2021 09:26:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232261AbhKKI23 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Nov 2021 03:28:29 -0500
-Received: from conssluserg-06.nifty.com ([210.131.2.91]:29936 "EHLO
-        conssluserg-06.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231951AbhKKI21 (ORCPT
+        id S232137AbhKKI3g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Nov 2021 03:29:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58628 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229649AbhKKI3c (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Nov 2021 03:28:27 -0500
-Received: from mail-pf1-f179.google.com (mail-pf1-f179.google.com [209.85.210.179]) (authenticated)
-        by conssluserg-06.nifty.com with ESMTP id 1AB8POsT028081;
-        Thu, 11 Nov 2021 17:25:25 +0900
-DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-06.nifty.com 1AB8POsT028081
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
-        s=dec2015msa; t=1636619125;
-        bh=Z2YN+VYCj8asUHagcN3R0/dTGsOGDJIgkvjL+Da4uis=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=xgf6vmio6Kn4F3Q35shemtJySHDqiJxgrd6zJvK1rcWnHhS/FXsXoujQPlZVX8L9o
-         uUANQhLfxPKTxqULko8ItQte4r/BmmF9WK6Ei9kmRYGP4dAONKjHjhQruP24aYCKMY
-         3ECivf3T1M0njjzKd3MWlQCH+Sqt3quzb0cJ9J/M5yg1s64HYaZ0e6G4sbcLf3k+mZ
-         G+Z9xSQT5kH0/N9tjnXSPX8BOpgGFh67yL3IrafRP6eUk/W952V4tnrzI9cQDTDLI+
-         TnKxXD+TfvVeH1i8UsU2sZyX7NSCOpuIcf6vcSW/xE0x3fi9/LKg/mb2ktnL+YjlCC
-         6Ya5gBwgR3waA==
-X-Nifty-SrcIP: [209.85.210.179]
-Received: by mail-pf1-f179.google.com with SMTP id n26so381050pff.3;
-        Thu, 11 Nov 2021 00:25:25 -0800 (PST)
-X-Gm-Message-State: AOAM532CSB8Rj21y9GRkjk40/Nd5DtQd2Ii1fC2M1d3/9GaxUxqt9pr5
-        L9jQUcVvM62+TCq7hCFKWI4R5ixAnmrdxDGhYmk=
-X-Google-Smtp-Source: ABdhPJzoItMy01mzbTQHkIyteNZkrr7ASUXaKmCvREZwRervqiEBoUuGzHVQqDNsLhnyRZr42qv91SvwkJBOYvYlLuU=
-X-Received: by 2002:a63:f542:: with SMTP id e2mr3595032pgk.186.1636619124386;
- Thu, 11 Nov 2021 00:25:24 -0800 (PST)
+        Thu, 11 Nov 2021 03:29:32 -0500
+Received: from mail-ed1-x52f.google.com (mail-ed1-x52f.google.com [IPv6:2a00:1450:4864:20::52f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA857C061767
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Nov 2021 00:26:43 -0800 (PST)
+Received: by mail-ed1-x52f.google.com with SMTP id z21so21076640edb.5
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Nov 2021 00:26:43 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=BUA8cT1yNGUc7DNHm9M9jCLdwArLczgi/VVgmJMyKuw=;
+        b=WD4t8nHEPj8jfQJ2PXumfYpqqhk/xWQKha1+7H9j+z/NWiUsvopX2M7GGVZwlP2zR1
+         31+JgmrUgZ2Sil95OkdKdiTN2MPmXQNNIa+RfQUHedeT30XAwEIF55UGiI4Gh+x/JjNr
+         /MAcHcLgz7YZ4ApS4LsBhT/2KxBtaIdor0t2/S9MfDJZLyJcWit2MgMlbhLd+oO3xXvN
+         tzOidhK9yYdG6VIWAb4mol70Q2fI0vg3Xear+XvcC6r9Pu4MejS/FmEmK603p4/2BjcP
+         MXVWtCLg95P+N6jOYLo4QXowewMVKNIY2WkDbNWWE8KXWEX277hxNXTkNDeV8/O6aLw8
+         eOIA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=BUA8cT1yNGUc7DNHm9M9jCLdwArLczgi/VVgmJMyKuw=;
+        b=ZlhfuwOVvI4k/WynjjK3+m1mLwJjC/X3A7NI9QCpCvHHI3CgYsMDE8q4qSZK7YSp80
+         SQmtJbEEby9IN3MTtxM2YZj54OOmpm1Wq0Km9iArENDpBE59hNCjgFQVDbtt+6P9UrgY
+         Yy6gSAJPsm2dkt3tnajB8aO2IWQ3n/oosUb98bDTrG+6oV8gy0YgrbbZ1EAoESLN1hXs
+         +97Qj4BgJGRZRnulclk1YLjVc9ZeM+0wJfzoK6x3iGNOkZGS1J9CDglnTXHdI9ldpvKI
+         OHYC+y6Rqz4jdwSz6My+7wHk/nvFq2ifLM1yFGAzdRQYyVH5STRRHuaRm3HQ8xv6yUn9
+         YWlw==
+X-Gm-Message-State: AOAM530F5rBQySd87IwSCjlP99MJrSlSRsjsECjuiogg7Aln1H3BdRfN
+        K2AP9QdlBfJ+WMLfv9hMXCC2thIiorg8lWMrnT5rDA==
+X-Google-Smtp-Source: ABdhPJyGyHbjogLeLt524wf5FjRZ2UBTmqsg3aU9e5sHbiRlTb+tWK8lhevxD8Or9lCYOyt8ZTGRTizAwj4jGSng2I8=
+X-Received: by 2002:a17:906:a08d:: with SMTP id q13mr6923927ejy.465.1636619202419;
+ Thu, 11 Nov 2021 00:26:42 -0800 (PST)
 MIME-Version: 1.0
-References: <20211105023815.85784-1-masahiroy@kernel.org> <20211110084927.GA5976@alpha.franken.de>
- <CAK7LNASKBJ6BT+PD7=KhGZ6wPfY7maEaj5g0rtkEhfmfxjxWuA@mail.gmail.com>
- <20211110185218.GB13827@alpha.franken.de> <CAK7LNAQu+FMw+MxVg=roydAP+vZBvZ9-ussC5C6TN=SL6HN6NA@mail.gmail.com>
- <20211111081429.GA4865@alpha.franken.de>
-In-Reply-To: <20211111081429.GA4865@alpha.franken.de>
-From:   Masahiro Yamada <masahiroy@kernel.org>
-Date:   Thu, 11 Nov 2021 17:24:47 +0900
-X-Gmail-Original-Message-ID: <CAK7LNAQwMc+-s4aNmqrmz7Gdi_u0geU=M=gAHe08TD_AMVP+LQ@mail.gmail.com>
-Message-ID: <CAK7LNAQwMc+-s4aNmqrmz7Gdi_u0geU=M=gAHe08TD_AMVP+LQ@mail.gmail.com>
-Subject: Re: [PATCH] mips: decompressor: do not copy source files while building
-To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-Cc:     "open list:BROADCOM NVRAM DRIVER" <linux-mips@vger.kernel.org>,
-        Alexander Lobakin <alobakin@pm.me>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Paul Cercueil <paul@crapouillou.net>,
-        Xingxing Su <suxingxing@loongson.cn>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        zhaoxiao <zhaoxiao@uniontech.com>
+References: <CAK8P3a3ZuL9TQbj+tGkdvRRmEv_jT3OvzmaoFKHwdw=5J1w_SA@mail.gmail.com>
+ <20211110180359.2338349-1-anders.roxell@linaro.org> <CAKwvOdkoKvjecTfxbRwZ=BYirvy-Jq64pHtHuct8oWgExv1xPw@mail.gmail.com>
+ <CAKwvOdnNKHJ++8vJS7WvaZX1aRZHk5uA7LP+S=ApSjRcU4QDkQ@mail.gmail.com>
+In-Reply-To: <CAKwvOdnNKHJ++8vJS7WvaZX1aRZHk5uA7LP+S=ApSjRcU4QDkQ@mail.gmail.com>
+From:   Anders Roxell <anders.roxell@linaro.org>
+Date:   Thu, 11 Nov 2021 09:26:31 +0100
+Message-ID: <CADYN=9JRazXg+eGT8NYG-XVTkyhkpoTRkQKm=d7zjYRYzjkpRg@mail.gmail.com>
+Subject: Re: [PATCHv2] selftests: timens: exec: use 'labs()' over 'abs()'
+To:     Nick Desaulniers <ndesaulniers@google.com>
+Cc:     shuah@kernel.org, nathan@kernel.org,
+        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
+        llvm@lists.linux.dev, Arnd Bergmann <arnd@arndb.de>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 11, 2021 at 5:14 PM Thomas Bogendoerfer
-<tsbogend@alpha.franken.de> wrote:
+On Wed, 10 Nov 2021 at 21:11, Nick Desaulniers <ndesaulniers@google.com> wrote:
 >
-> On Thu, Nov 11, 2021 at 04:55:35PM +0900, Masahiro Yamada wrote:
-> > On Thu, Nov 11, 2021 at 3:52 AM Thomas Bogendoerfer
-> > <tsbogend@alpha.franken.de> wrote:
+> On Wed, Nov 10, 2021 at 12:09 PM Nick Desaulniers
+> <ndesaulniers@google.com> wrote:
+> >
+> > On Wed, Nov 10, 2021 at 10:04 AM Anders Roxell <anders.roxell@linaro.org> wrote:
 > > >
-> > > On Thu, Nov 11, 2021 at 02:02:32AM +0900, Masahiro Yamada wrote:
-> > > > On Wed, Nov 10, 2021 at 5:56 PM Thomas Bogendoerfer
-> > > > <tsbogend@alpha.franken.de> wrote:
-> > > > >
-> > > > > On Fri, Nov 05, 2021 at 11:38:14AM +0900, Masahiro Yamada wrote:
-> > > > > > As commit 7ae4a78daacf ("ARM: 8969/1: decompressor: simplify libfdt
-> > > > > > builds") stated, copying source files during the build time may not
-> > > > > > end up with as clean code as expected.
-> > > > > >
-> > > > > > Do similar for mips to clean up the Makefile and .gitignore.
-> > > > > >
-> > > > > > Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
-> > > > > > ---
-> > > > > >
-> > > > > >  arch/mips/boot/compressed/.gitignore   |  3 ---
-> > > > > >  arch/mips/boot/compressed/Makefile     | 12 ------------
-> > > > > >  arch/mips/boot/compressed/ashldi3.c    |  2 ++
-> > > > > >  arch/mips/boot/compressed/bswapsi.c    |  2 ++
-> > > > > >  arch/mips/boot/compressed/uart-ath79.c |  2 ++
-> > > > > >  scripts/remove-stale-files             |  5 +++++
-> > > > > >  6 files changed, 11 insertions(+), 15 deletions(-)
-> > > > > >  delete mode 100644 arch/mips/boot/compressed/.gitignore
-> > > > > >  create mode 100644 arch/mips/boot/compressed/ashldi3.c
-> > > > > >  create mode 100644 arch/mips/boot/compressed/bswapsi.c
-> > > > > >  create mode 100644 arch/mips/boot/compressed/uart-ath79.c
-> > > > > >
-> > > > > > diff --git a/arch/mips/boot/compressed/.gitignore b/arch/mips/boot/compressed/.gitignore
-> > > > > > deleted file mode 100644
-> > > > > > index d358395614c9..000000000000
-> > > > > > --- a/arch/mips/boot/compressed/.gitignore
-> > > > > > +++ /dev/null
-> > > > > > @@ -1,3 +0,0 @@
-> > > > > > -# SPDX-License-Identifier: GPL-2.0-only
-> > > > > > -ashldi3.c
-> > > > > > -bswapsi.c
-> > > > > > diff --git a/arch/mips/boot/compressed/Makefile b/arch/mips/boot/compressed/Makefile
-> > > > > > index 3548b3b45269..e6584dab2360 100644
-> > > > > > --- a/arch/mips/boot/compressed/Makefile
-> > > > > > +++ b/arch/mips/boot/compressed/Makefile
-> > > > > > @@ -50,20 +50,8 @@ vmlinuzobjs-$(CONFIG_MIPS_ALCHEMY)            += $(obj)/uart-alchemy.o
-> > > > > >  vmlinuzobjs-$(CONFIG_ATH79)                     += $(obj)/uart-ath79.o
-> > > > > >  endif
-> > > > > >
-> > > > > > -extra-y += uart-ath79.c
-> > > > > > -$(obj)/uart-ath79.c: $(srctree)/arch/mips/ath79/early_printk.c
-> > > > > > -     $(call cmd,shipped)
-> > > > > > -
-> > > > > >  vmlinuzobjs-$(CONFIG_KERNEL_XZ) += $(obj)/ashldi3.o
-> > > > > >
-> > > > > > -extra-y += ashldi3.c
-> > > > > > -$(obj)/ashldi3.c: $(obj)/%.c: $(srctree)/lib/%.c FORCE
-> > > > > > -     $(call if_changed,shipped)
-> > > > > > -
-> > > > > > -extra-y += bswapsi.c
-> > > > > > -$(obj)/bswapsi.c: $(obj)/%.c: $(srctree)/arch/mips/lib/%.c FORCE
-> > > > > > -     $(call if_changed,shipped)
-> > > > > > -
-> > > > > >  targets := $(notdir $(vmlinuzobjs-y))
-> > > > > >
-> > > > > >  targets += vmlinux.bin
-> > > > > > diff --git a/arch/mips/boot/compressed/ashldi3.c b/arch/mips/boot/compressed/ashldi3.c
-> > > > > > new file mode 100644
-> > > > > > index 000000000000..f7bf6a7aae31
-> > > > > > --- /dev/null
-> > > > > > +++ b/arch/mips/boot/compressed/ashldi3.c
-> > > > > > @@ -0,0 +1,2 @@
-> > > > > > +// SPDX-License-Identifier: GPL-2.0-only
-> > > > > > +#include "../../../../lib/ashldi3.c"
-> > > > > > diff --git a/arch/mips/boot/compressed/bswapsi.c b/arch/mips/boot/compressed/bswapsi.c
-> > > > > > new file mode 100644
-> > > > > > index 000000000000..fdb9c6476904
-> > > > > > --- /dev/null
-> > > > > > +++ b/arch/mips/boot/compressed/bswapsi.c
-> > > > > > @@ -0,0 +1,2 @@
-> > > > > > +// SPDX-License-Identifier: GPL-2.0-only
-> > > > > > +#include "../../lib/bswapsi.c"
-> > > > > > diff --git a/arch/mips/boot/compressed/uart-ath79.c b/arch/mips/boot/compressed/uart-ath79.c
-> > > > > > new file mode 100644
-> > > > > > index 000000000000..d686820921be
-> > > > > > --- /dev/null
-> > > > > > +++ b/arch/mips/boot/compressed/uart-ath79.c
-> > > > > > @@ -0,0 +1,2 @@
-> > > > > > +// SPDX-License-Identifier: GPL-2.0-only
-> > > > > > +#include "../../ath79/early_printk.c"
-> > > > > > diff --git a/scripts/remove-stale-files b/scripts/remove-stale-files
-> > > > > > index eb630ee287c3..c534fe1eac16 100755
-> > > > > > --- a/scripts/remove-stale-files
-> > > > > > +++ b/scripts/remove-stale-files
-> > > > > > @@ -28,4 +28,9 @@ if [ -n "${building_out_of_srctree}" ]; then
-> > > > > >       do
-> > > > > >               rm -f arch/arm/boot/compressed/${f}
-> > > > > >       done
-> > > > > > +
-> > > > > > +     for f in uart-ath79.c ashldi3.c bswapsi.c
-> > > > > > +     do
-> > > > > > +             rm -f arch/mips/boot/compressed/${f}
-> > > > > > +     done
-> > > > >
-> > > > > hmm, isn't this the wrong action now that these files have been added
-> > > > > to git ?
-> > > > >
-> > > > > Thomas.
-> > > >
-> > > >
-> > > > Please note that the entire code block is enclosed by:
-> > > >
-> > > > if [ -n "${building_out_of_srctree}" ]; then
-> > > >            ...
-> > > > fi
-> > > >
-> > > >
-> > > > "building_out_of_srctree" is set when you are doing
-> > > > out-of-tree build  (O=<output-dir>).
-> > > >
-> > > > So, only the generated files are removed.
+> > > When building selftests/timens with clang, the compiler warn about the
+> > > function abs() see below:
 > > >
-> > > but there aren't copied/generated any longer or I'm missing someting ?
+> > > exec.c:33:8: error: absolute value function 'abs' given an argument of type 'long' but has parameter of type 'int' which may cause truncation of value [-Werror,-Wabsolute-value]
+> > >                         if (abs(tst.tv_sec - now.tv_sec) > 5)
+> > >                             ^
+> > > exec.c:33:8: note: use function 'labs' instead
+> > >                         if (abs(tst.tv_sec - now.tv_sec) > 5)
+> > >                             ^~~
+> > >                             labs
 > > >
-> > > Anyway I've applied your patch to mips-next with changes to also cover
+> > > Rework to store the time difference in a 'long long' and pass that to
+> > > llabs(), since the variable can be an 'int', 'long' or 'long long'
+> > > depending on the architecture and C library.
 > > >
-> > > https://patchwork.kernel.org/project/linux-mips/patch/20211110030944.6733-1-rdunlap@infradead.org/
-> > >
+> > > Suggested-by: Arnd Bergmann <arnd@arndb.de>
+> > > Signed-off-by: Anders Roxell <anders.roxell@linaro.org>
 > >
-> >
-> > Your conversion is wrong.
-> >
-> > The original code:
-> >
-> > $(obj)/bswapdi.c: $(obj)/%.c: $(srctree)/arch/mips/lib/%.c FORCE
-> >         $(call if_changed,shipped)
-> >
-> >
-> > copied mips-specific library code
-> > (arch/mips/lib/bswapdi.c)
-> >
-> >
-> > Now, you do
-> >
-> > #include "../../../../lib/ashldi3.c"
-> >
-> > , which wraps the generic library code
-> > (lib/ashldi3.c)
+> > Thanks for the patch!
+> > Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
 >
-> arch/mips/boot/compressed/bswapdi.c in my tree is
->
-> diff --git a/arch/mips/boot/compressed/bswapdi.c b/arch/mips/boot/compressed/bswapdi.c
-> new file mode 100644
-> index 000000000000..acb28aebb025
-> --- /dev/null
-> +++ b/arch/mips/boot/compressed/bswapdi.c
-> @@ -0,0 +1,2 @@
-> +// SPDX-License-Identifier: GPL-2.0-only
-> +#include "../../lib/bswapdi.c"
->
-> which looks correct to me.
->
-> Thomas.
+> ah, gmail doesn't do a great job at showing the subject when a v2 is
+> sent in-reply-to.
 
+oh right, sorry.
 
-My bad - I read the code wrongly.
+>  Should the oneline mention llabs rather than labs
+> now?
 
-Yes, the code is correct.
+You are correct, can this be changed when the patch gets applied or
+should I send a v3?
 
-Sorry for that.
-
-
-
-
--- 
-Best Regards
-Masahiro Yamada
+Cheers,
+Anders
