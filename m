@@ -2,125 +2,176 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 05A6144DAFC
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Nov 2021 18:10:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B46F244DB07
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Nov 2021 18:17:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234270AbhKKRNB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Nov 2021 12:13:01 -0500
-Received: from bhuna.collabora.co.uk ([46.235.227.227]:47214 "EHLO
-        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229710AbhKKRNA (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Nov 2021 12:13:00 -0500
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: ritesh)
-        with ESMTPSA id A98661F45F82
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=collabora.com; s=mail;
-        t=1636650610; bh=gzPwpXJRMu8yzxK71eUeHysRVbadXnuxET79GLTdXvs=;
-        h=Subject:From:Reply-To:To:Cc:Date:In-Reply-To:References:From;
-        b=Y+st0clLbWs4fJEgkPCjylHIHvLiZ+9PqzG5cVNhwuC5Mx2yVQrn2gmHkwbfSzbYb
-         HFq769dnw6DibwKqHvLkhyz33TtPfhAiFqkucw/lkAHlvpEad4QiVMDO2c2tzvt4De
-         UpY8dvVlJ/htSTJPB7i1ZkOHicRNhzSl5lODogfx+JjRHbD3aA6qVJAMee9nbmoxdD
-         9DxNG6yDg6BRtHxBEEkNjgE4sQAmeizqWX7vyuolTNFik9X6VPHCNH1Q06n9TOyQVU
-         GsQRd3vby6zjqdLq0yTHtqGAHKU4G5L63xT7I8MYwmnWZGckSo9P5iflkqzKJzryZt
-         W1E2WbuD3wzaA==
-Message-ID: <ba9a4b5405774f157df790c57d658b9f37e1ae61.camel@collabora.com>
-Subject: Re: [PATCH] hostfs: Fix writeback of dirty pages
-From:   Ritesh Raj Sarraf <ritesh.sarraf@collabora.com>
-Reply-To: ritesh.sarraf@collabora.com
-To:     Sjoerd Simons <sjoerd@collabora.com>, linux-um@lists.infradead.org
-Cc:     Anton Ivanov <anton.ivanov@cambridgegreys.com>,
-        Jeff Dike <jdike@addtoit.com>,
-        Richard Weinberger <richard@nod.at>,
-        linux-kernel@vger.kernel.org
-Date:   Thu, 11 Nov 2021 22:40:02 +0530
-In-Reply-To: <20211105081052.2353801-1-sjoerd@collabora.com>
-References: <20211105081052.2353801-1-sjoerd@collabora.com>
-Organization: Collabora
-Content-Type: multipart/signed; micalg="pgp-sha512";
-        protocol="application/pgp-signature"; boundary="=-mPx2yEaImVsfjNu+RXgK"
-User-Agent: Evolution 3.42.0-2 
+        id S233823AbhKKRTd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Nov 2021 12:19:33 -0500
+Received: from m43-7.mailgun.net ([69.72.43.7]:42414 "EHLO m43-7.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229539AbhKKRTc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 11 Nov 2021 12:19:32 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1636651003; h=Content-Transfer-Encoding: Content-Type:
+ In-Reply-To: From: References: Cc: To: Subject: MIME-Version: Date:
+ Message-ID: Sender; bh=9ATOQmqTmW60i4WG7OBHPJjTDiTX5iJKy/x0ZGMNLKw=; b=q6oa7z46TbafLZ2p92R8RxnoSVJ4C2rtYZ8uRWjMKo3YS2lQQg4AVQurSaS2EVDkr4ssk9Nj
+ NPF1cf/1ktDqMDtDUwlfiHLzCAEgdUpGz9LHMWMj3OVHNt+mHbyPgvlgFBgQUxEjZ9pYenR+
+ QeOIl78eMc23knaY5VTxfBj6IgU=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n06.prod.us-east-1.postgun.com with SMTP id
+ 618d4f9cc51781f169ead687 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 11 Nov 2021 17:15:08
+ GMT
+Sender: akhilpo=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id CDFA7C43619; Thu, 11 Nov 2021 17:15:06 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-6.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        NICE_REPLY_A,SPF_FAIL,URIBL_BLOCKED autolearn=unavailable autolearn_force=no
+        version=3.4.0
+Received: from [192.168.1.16] (unknown [117.210.184.103])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: akhilpo)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id A096AC4338F;
+        Thu, 11 Nov 2021 17:14:59 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 smtp.codeaurora.org A096AC4338F
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=codeaurora.org
+Message-ID: <89cbb324-b111-657f-fb3c-8ece3c21017b@codeaurora.org>
+Date:   Thu, 11 Nov 2021 22:44:56 +0530
 MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
+ Thunderbird/91.1.1
+Subject: Re: [PATCH 5/5] drm/msm: Add debugfs to disable hw err handling
+Content-Language: en-US
+To:     Rob Clark <robdclark@gmail.com>, dri-devel@lists.freedesktop.org
+Cc:     freedreno@lists.freedesktop.org, linux-arm-msm@vger.kernel.org,
+        Jordan Crouse <jordan@cosmicpenguin.net>,
+        Rob Clark <robdclark@chromium.org>,
+        Sean Paul <sean@poorly.run>, David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@somainline.org>,
+        Konrad Dybcio <konrad.dybcio@somainline.org>,
+        Yangtao Li <tiny.windzz@gmail.com>,
+        Marijn Suijten <marijn.suijten@somainline.org>,
+        Jonathan Marek <jonathan@marek.ca>,
+        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+        Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>,
+        Sharat Masetty <smasetty@codeaurora.org>,
+        Douglas Anderson <dianders@chromium.org>,
+        open list <linux-kernel@vger.kernel.org>
+References: <20211109181117.591148-1-robdclark@gmail.com>
+ <20211109181117.591148-6-robdclark@gmail.com>
+From:   Akhil P Oommen <akhilpo@codeaurora.org>
+In-Reply-To: <20211109181117.591148-6-robdclark@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
---=-mPx2yEaImVsfjNu+RXgK
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-
-On Fri, 2021-11-05 at 09:10 +0100, Sjoerd Simons wrote:
-> Hostfs was not setting up the backing device information, which means
-> it
-> uses the noop bdi. The noop bdi does not have the writeback
-> capability
-> enabled, which in turns means=C2=A0 dirty pages never got written back to
-> storage.
->=20
-> In other words programs using mmap to write to files on=C2=A0 hostfs neve=
-r
-> actually got their data written out...
->=20
-> Fix this by simply setting up the bdi with default settings as all
-> the
-> required code for writeback is already in place.
->=20
-> Signed-off-by: Sjoerd Simons <sjoerd@collabora.com>
->=20
-
-Tested-by: Ritesh Raj Sarraf <ritesh@collabora.com>
-
+On 11/9/2021 11:41 PM, Rob Clark wrote:
+> From: Rob Clark <robdclark@chromium.org>
+> 
+> Add a debugfs interface to ignore hw error irqs, in order to force
+> fallback to sw hangcheck mechanism.  Because the hw error detection is
+> pretty good on newer gens, we need this for igt tests to test the sw
+> hang detection.
+> 
+> Signed-off-by: Rob Clark <robdclark@chromium.org>
 > ---
->=20
-> =C2=A0fs/hostfs/hostfs_kern.c | 3 +++
-> =C2=A01 file changed, 3 insertions(+)
->=20
-> diff --git a/fs/hostfs/hostfs_kern.c b/fs/hostfs/hostfs_kern.c
-> index d5c9d886cd9f..ef481c3d9019 100644
-> --- a/fs/hostfs/hostfs_kern.c
-> +++ b/fs/hostfs/hostfs_kern.c
-> @@ -924,6 +924,9 @@ static int hostfs_fill_sb_common(struct
-> super_block *sb, void *d, int silent)
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0sb->s_op =3D &hostfs_sbop=
-s;
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0sb->s_d_op =3D &simple_de=
-ntry_operations;
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0sb->s_maxbytes =3D MAX_LF=
-S_FILESIZE;
-> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0err =3D super_setup_bdi(sb);
-> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0if (err)
-> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0goto out;
-> =C2=A0
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0/* NULL is printed as '(n=
-ull)' by printf(): avoid that. */
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0if (req_root =3D=3D NULL)
+>   drivers/gpu/drm/msm/adreno/a5xx_gpu.c | 6 ++++++
+>   drivers/gpu/drm/msm/adreno/a6xx_gpu.c | 4 ++++
+>   drivers/gpu/drm/msm/msm_debugfs.c     | 3 +++
+>   drivers/gpu/drm/msm/msm_drv.h         | 9 +++++++++
+>   4 files changed, 22 insertions(+)
+> 
+> diff --git a/drivers/gpu/drm/msm/adreno/a5xx_gpu.c b/drivers/gpu/drm/msm/adreno/a5xx_gpu.c
+> index 6163990a4d09..ec8e043c9d38 100644
+> --- a/drivers/gpu/drm/msm/adreno/a5xx_gpu.c
+> +++ b/drivers/gpu/drm/msm/adreno/a5xx_gpu.c
+> @@ -1252,6 +1252,7 @@ static void a5xx_fault_detect_irq(struct msm_gpu *gpu)
+>   
+>   static irqreturn_t a5xx_irq(struct msm_gpu *gpu)
+>   {
+> +	struct msm_drm_private *priv = gpu->dev->dev_private;
+>   	u32 status = gpu_read(gpu, REG_A5XX_RBBM_INT_0_STATUS);
+>   
+>   	/*
+> @@ -1261,6 +1262,11 @@ static irqreturn_t a5xx_irq(struct msm_gpu *gpu)
+>   	gpu_write(gpu, REG_A5XX_RBBM_INT_CLEAR_CMD,
+>   		status & ~A5XX_RBBM_INT_0_MASK_RBBM_AHB_ERROR);
+>   
+> +	if (priv->disable_err_irq) {
+> +		status &= A5XX_RBBM_INT_0_MASK_CP_CACHE_FLUSH_TS |
+> +			  A5XX_RBBM_INT_0_MASK_CP_SW;
+> +	}
+> +
+>   	/* Pass status to a5xx_rbbm_err_irq because we've already cleared it */
+>   	if (status & RBBM_ERROR_MASK)
+>   		a5xx_rbbm_err_irq(gpu, status);
+> diff --git a/drivers/gpu/drm/msm/adreno/a6xx_gpu.c b/drivers/gpu/drm/msm/adreno/a6xx_gpu.c
+> index 3d2da81cb2c9..8a2af3a27e33 100644
+> --- a/drivers/gpu/drm/msm/adreno/a6xx_gpu.c
+> +++ b/drivers/gpu/drm/msm/adreno/a6xx_gpu.c
+> @@ -1373,10 +1373,14 @@ static void a6xx_fault_detect_irq(struct msm_gpu *gpu)
+>   
+>   static irqreturn_t a6xx_irq(struct msm_gpu *gpu)
+>   {
+> +	struct msm_drm_private *priv = gpu->dev->dev_private;
+>   	u32 status = gpu_read(gpu, REG_A6XX_RBBM_INT_0_STATUS);
+>   
+>   	gpu_write(gpu, REG_A6XX_RBBM_INT_CLEAR_CMD, status);
+>   
+> +	if (priv->disable_err_irq)
+> +		status &= A6XX_RBBM_INT_0_MASK_CP_CACHE_FLUSH_TS;
+> +
+>   	if (status & A6XX_RBBM_INT_0_MASK_RBBM_HANG_DETECT)
+>   		a6xx_fault_detect_irq(gpu);
+>   
+> diff --git a/drivers/gpu/drm/msm/msm_debugfs.c b/drivers/gpu/drm/msm/msm_debugfs.c
+> index 6a99e8b5d25d..956b1efc3721 100644
+> --- a/drivers/gpu/drm/msm/msm_debugfs.c
+> +++ b/drivers/gpu/drm/msm/msm_debugfs.c
+> @@ -242,6 +242,9 @@ void msm_debugfs_init(struct drm_minor *minor)
+>   	debugfs_create_u32("hangcheck_period_ms", 0600, minor->debugfs_root,
+>   		&priv->hangcheck_period);
+>   
+> +	debugfs_create_bool("disable_err_irq", 0600, minor->debugfs_root,
+> +		&priv->disable_err_irq);
+> +
+>   	debugfs_create_file("shrink", S_IRWXU, minor->debugfs_root,
+>   		dev, &shrink_fops);
+>   
+> diff --git a/drivers/gpu/drm/msm/msm_drv.h b/drivers/gpu/drm/msm/msm_drv.h
+> index 2943c21d9aac..a8da7a7efb84 100644
+> --- a/drivers/gpu/drm/msm/msm_drv.h
+> +++ b/drivers/gpu/drm/msm/msm_drv.h
+> @@ -246,6 +246,15 @@ struct msm_drm_private {
+>   
+>   	/* For hang detection, in ms */
+>   	unsigned int hangcheck_period;
+> +
+> +	/**
+> +	 * disable_err_irq:
+> +	 *
+> +	 * Disable handling of GPU hw error interrupts, to force fallback to
+> +	 * sw hangcheck timer.  Written (via debugfs) by igt tests to test
+> +	 * the sw hangcheck mechanism.
+> +	 */
+> +	bool disable_err_irq;
+>   };
+>   
+>   struct msm_format {
+> 
 
---=20
-Ritesh Raj Sarraf
-Collabora
+Reviewed-by: Akhil P Oommen <akhilpo@codeaurora.org>
 
---=-mPx2yEaImVsfjNu+RXgK
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part
-Content-Transfer-Encoding: 7bit
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEEQCVDstmIVAB/Yn02pjpYo/LhdWkFAmGNTmoACgkQpjpYo/Lh
-dWnuIw/9Hs9NnkW5ktqmp8OL7AQFsgz/XAWlA45RW/5X8qPmRDDVm5PuvDeLdqbn
-luiP6lwGDL4kDu6FXVR2CAEFiNeRTD8eIuLUsK8o6M0ceINdRXbbmRxA7o2zsQgP
-GPTyUM7RdlEQco9BebY7Jz8EfKpaIPEMDN4Xt4oqqGLEULiq65qFahLBBq9sELvM
-TPPMvTHCcdQ73ZA9UIbBg/raeyAHZFRc25yVw9escbZhISIwAJ14ZO0VhOuufPHj
-pS2ZuYS0zCfx5Y6tJoFt0nhCWG+9U4OG1f4CEQhxRk9wyvb1IWbhL3n5rpkK/guD
-hH0G9KAMzRSxs7BCInibIeKolFzSk+T3JjZW9Wr7PPB3bbLp4WVmdmb2R2A2cYh/
-InzxwJ01iwtu1HXvp5TXpIWJ2ascPYML2SJnPJiFnc81K1e2w2VuoNv2nRTt1xOh
-/4t+PYzOB7jzqqzVCoqxXJs02+vASVaXI7WzZIDLnT7CRMyGRLZ+S+6pJ9aVysMN
-p4d5hneM2h4F0fvWq4kkKApwB01jBoOEcvJuZiOaz5iGPiUIO2CU32z5pU/TSztE
-uNhn7ksm2JnGX1qoESiYCI2G80rN1tNElAFcLUt5+wLJeZAt41tA6SG0jeG3zUL6
-pcEBytWB2NCox8LZM6lLEW3X1mhmx3GD/SfNuxjCKQoeCtrMY90=
-=wNMv
------END PGP SIGNATURE-----
-
---=-mPx2yEaImVsfjNu+RXgK--
+-Akhil.
