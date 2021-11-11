@@ -2,445 +2,192 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 909A144DB12
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Nov 2021 18:25:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2149944DB24
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Nov 2021 18:30:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234356AbhKKR14 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Nov 2021 12:27:56 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40454 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230034AbhKKR1y (ORCPT
+        id S234336AbhKKRdj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Nov 2021 12:33:39 -0500
+Received: from smtp-out1.suse.de ([195.135.220.28]:54602 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229710AbhKKRdh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Nov 2021 12:27:54 -0500
-Received: from mail-wm1-x32a.google.com (mail-wm1-x32a.google.com [IPv6:2a00:1450:4864:20::32a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 50D2DC061766;
-        Thu, 11 Nov 2021 09:25:05 -0800 (PST)
-Received: by mail-wm1-x32a.google.com with SMTP id i8-20020a7bc948000000b0030db7b70b6bso7839889wml.1;
-        Thu, 11 Nov 2021 09:25:05 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=zgBKXggqPVetU68KGBm4584kojRj0gkhJsc4ekHLtyY=;
-        b=mSBO6jKvUDUrDujMOOsE9+haj1UlgrHhJjBMLp+MUUODGjC0fETAzOH2omwVOTMM4c
-         M0AvPQ59w185Qvd6y44tcaOHtbzl3TdnObRC/1j8BAKewAbPIJpX7T5O/F0I2hbD0UTV
-         NzKVONgAzE5ckF/sAsXUliYy9lTXPqQMcnpSGesk+O58aakGbkRFKV5H+Yoxi5rEzO29
-         wfXt02m1sy6ANbsLtnGwZFfRxKQ2tWA67JnQdKNSV5IkqXjQ5RsOFaOka/j6jJzVo3Ea
-         8jRZMxIE0z2uOVfoCMg4tLoCXaL8LstYPp77OR4MmbKC147Zf2GcpKk7LwqL8aFMbMGR
-         6OkQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=zgBKXggqPVetU68KGBm4584kojRj0gkhJsc4ekHLtyY=;
-        b=aeSJXjUJHtWhGteT4DoYivZ6DeYbV0JxsU0wFEoL1nQycTq4x84IYgJUIieo3+R7j0
-         a54JzJYPuLfosfhJI6mNvGfWg7gatBORU4Z7bkEX0dRuUl5+BjsdU2PVkQwtKCUdGEot
-         rTNHi8QEgD6kIRexwVyO86BETJ/uZr+Opf9e5kkDU0TCiPJp6MbXReK4TOFg2h1NWPX3
-         gcT3VF6XXQxySfpMAii1rXmTm1+2am+801+4WhL5DxtM6OH3myz5/gNS83mhg1QBFF1y
-         tuZ+Vx1Vr1HIuuCruc5U+ESALJfqAreFe5h5cDZkh72RWNpn3yrOCsgUFkHzGEelVXRj
-         1PhA==
-X-Gm-Message-State: AOAM532oAwIY8O80i8ZCMlzJXKu7PkCsUzmQjwUV5yaBy+6nb/XPjtYU
-        o7KtnhWCA2y0s+4k/6R7/lfj8f8OC4q+eEmcWe4=
-X-Google-Smtp-Source: ABdhPJy5WFdLyHrsPjo1iNYVbiP4ZiianEc/xZ5/y9q1/GLbYdL1vltvRakXuSPeGRQRAuR4T50SmoPrDwWNXwHlEOQ=
-X-Received: by 2002:a05:600c:4f4b:: with SMTP id m11mr9661150wmq.151.1636651503677;
- Thu, 11 Nov 2021 09:25:03 -0800 (PST)
+        Thu, 11 Nov 2021 12:33:37 -0500
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out1.suse.de (Postfix) with ESMTP id 3468F21B2D;
+        Thu, 11 Nov 2021 17:30:47 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1636651847; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=eMlI4REmxQS7q9claJoGhhHqfhqrytf65Kp/9KOdFhE=;
+        b=2LFav6K/ze6UqXrvKNjQEXv6jw0TxM6rk2IeE8Xh/kq8JuP/9G/w9g+Y9+/YHj1lgHVCWp
+        3BNTj6YFv3O5ehNSX4woHMHcsJq4mFovL28W20OPAzTlqHsNCYhRlX/nNZ1DOmVBavRueQ
+        gx+IYe1lmX58hJ1fm02DVRUG6BJXp2Q=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1636651847;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=eMlI4REmxQS7q9claJoGhhHqfhqrytf65Kp/9KOdFhE=;
+        b=HppQ4C9UeSr/5dTfam95WAcwAJ0thVH2HWx1jH8vkljcPwOecsiTAxaf5u+Fj8DE82yZVE
+        PYnOJc0XkHr/jWDA==
+Received: from quack2.suse.cz (unknown [10.100.200.198])
+        by relay2.suse.de (Postfix) with ESMTP id 0849CA3B84;
+        Thu, 11 Nov 2021 17:30:47 +0000 (UTC)
+Received: by quack2.suse.cz (Postfix, from userid 1000)
+        id D007C1E14EF; Thu, 11 Nov 2021 18:30:43 +0100 (CET)
+Date:   Thu, 11 Nov 2021 18:30:43 +0100
+From:   Jan Kara <jack@suse.cz>
+To:     Amir Goldstein <amir73il@gmail.com>
+Cc:     Vivek Goyal <vgoyal@redhat.com>, Jan Kara <jack@suse.cz>,
+        Ioannis Angelakopoulos <iangelak@redhat.com>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        virtio-fs-list <virtio-fs@redhat.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Miklos Szeredi <miklos@szeredi.hu>,
+        Steve French <sfrench@samba.org>
+Subject: Re: [RFC PATCH 0/7] Inotify support in FUSE and virtiofs
+Message-ID: <20211111173043.GB25491@quack2.suse.cz>
+References: <20211027132319.GA7873@quack2.suse.cz>
+ <YXm2tAMYwFFVR8g/@redhat.com>
+ <20211102110931.GD12774@quack2.suse.cz>
+ <CAOQ4uxiYQYG8Ta=MNJKpa_0pAPd0MS9PL2r_0ZRD+_TKOw6C7g@mail.gmail.com>
+ <20211103100900.GB20482@quack2.suse.cz>
+ <CAOQ4uxjsULgLuOFUYkEePySx6iPXRczgCZMxx8E5ncw=oarLPg@mail.gmail.com>
+ <YYMO1ip9ynXFXc8f@redhat.com>
+ <20211104100316.GA10060@quack2.suse.cz>
+ <YYU/7269JX2neLjz@redhat.com>
+ <CAOQ4uxiM_i+6Zs+ewg8mfA5aKs-gY7yj3kdrmPLO8Zn+bz4DbA@mail.gmail.com>
 MIME-Version: 1.0
-References: <20210728010632.2633470-1-robdclark@gmail.com> <20210728010632.2633470-8-robdclark@gmail.com>
- <e9e50cad-2341-cb25-ef84-0d61a2cb7469@codeaurora.org> <CAF6AEGvTyy-MCv6wdkpPyohLwUg4U_2ACT0gsXRG2z6iOYQ+Tg@mail.gmail.com>
- <7bc57359-0cf1-d657-f23e-e89404da6e91@codeaurora.org>
-In-Reply-To: <7bc57359-0cf1-d657-f23e-e89404da6e91@codeaurora.org>
-From:   Rob Clark <robdclark@gmail.com>
-Date:   Thu, 11 Nov 2021 09:30:02 -0800
-Message-ID: <CAF6AEGsy1WZHOnuOgviFxW8y7yzmfGE4pWYzoAFXfxbS09m5pg@mail.gmail.com>
-Subject: Re: [Freedreno] [PATCH v4 07/13] drm/msm: Track "seqno" fences by idr
-To:     Akhil P Oommen <akhilpo@codeaurora.org>
-Cc:     Rob Clark <robdclark@chromium.org>,
-        David Airlie <airlied@linux.ie>,
-        "open list:DRM DRIVER FOR MSM ADRENO GPU" 
-        <linux-arm-msm@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        "moderated list:DMA BUFFER SHARING FRAMEWORK" 
-        <linaro-mm-sig@lists.linaro.org>, Sean Paul <sean@poorly.run>,
-        freedreno <freedreno@lists.freedesktop.org>,
-        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
-        "open list:DMA BUFFER SHARING FRAMEWORK" 
-        <linux-media@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAOQ4uxiM_i+6Zs+ewg8mfA5aKs-gY7yj3kdrmPLO8Zn+bz4DbA@mail.gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 11, 2021 at 7:54 AM Akhil P Oommen <akhilpo@codeaurora.org> wro=
-te:
->
-> On 11/10/2021 10:25 PM, Rob Clark wrote:
-> > On Wed, Nov 10, 2021 at 7:28 AM Akhil P Oommen <akhilpo@codeaurora.org>=
- wrote:
-> >>
-> >> On 7/28/2021 6:36 AM, Rob Clark wrote:
-> >>> From: Rob Clark <robdclark@chromium.org>
-> >>>
-> >>> Previously the (non-fd) fence returned from submit ioctl was a raw
-> >>> seqno, which is scoped to the ring.  But from UABI standpoint, the
-> >>> ioctls related to seqno fences all specify a submitqueue.  We can
-> >>> take advantage of that to replace the seqno fences with a cyclic idr
-> >>> handle.
-> >>>
-> >>> This is in preperation for moving to drm scheduler, at which point
-> >>> the submit ioctl will return after queuing the submit job to the
-> >>> scheduler, but before the submit is written into the ring (and
-> >>> therefore before a ring seqno has been assigned).  Which means we
-> >>> need to replace the dma_fence that userspace may need to wait on
-> >>> with a scheduler fence.
-> >>>
-> >>> Signed-off-by: Rob Clark <robdclark@chromium.org>
-> >>> Acked-by: Christian K=C3=B6nig <christian.koenig@amd.com>
-> >>> ---
-> >>>    drivers/gpu/drm/msm/msm_drv.c         | 30 +++++++++++++++++--
-> >>>    drivers/gpu/drm/msm/msm_fence.c       | 42 -----------------------=
-----
-> >>>    drivers/gpu/drm/msm/msm_fence.h       |  3 --
-> >>>    drivers/gpu/drm/msm/msm_gem.h         |  1 +
-> >>>    drivers/gpu/drm/msm/msm_gem_submit.c  | 23 ++++++++++++++-
-> >>>    drivers/gpu/drm/msm/msm_gpu.h         |  5 ++++
-> >>>    drivers/gpu/drm/msm/msm_submitqueue.c |  5 ++++
-> >>>    7 files changed, 61 insertions(+), 48 deletions(-)
-> >>>
-> >>> diff --git a/drivers/gpu/drm/msm/msm_drv.c b/drivers/gpu/drm/msm/msm_=
-drv.c
-> >>> index 9b8fa2ad0d84..1594ae39d54f 100644
-> >>> --- a/drivers/gpu/drm/msm/msm_drv.c
-> >>> +++ b/drivers/gpu/drm/msm/msm_drv.c
-> >>> @@ -911,6 +911,7 @@ static int msm_ioctl_wait_fence(struct drm_device=
- *dev, void *data,
-> >>>        ktime_t timeout =3D to_ktime(args->timeout);
-> >>>        struct msm_gpu_submitqueue *queue;
-> >>>        struct msm_gpu *gpu =3D priv->gpu;
-> >>> +     struct dma_fence *fence;
-> >>>        int ret;
-> >>>
-> >>>        if (args->pad) {
-> >>> @@ -925,10 +926,35 @@ static int msm_ioctl_wait_fence(struct drm_devi=
-ce *dev, void *data,
-> >>>        if (!queue)
-> >>>                return -ENOENT;
-> >>>
-> >>> -     ret =3D msm_wait_fence(gpu->rb[queue->prio]->fctx, args->fence,=
- &timeout,
-> >>> -             true);
-> >>> +     /*
-> >>> +      * Map submitqueue scoped "seqno" (which is actually an idr key=
-)
-> >>> +      * back to underlying dma-fence
-> >>> +      *
-> >>> +      * The fence is removed from the fence_idr when the submit is
-> >>> +      * retired, so if the fence is not found it means there is noth=
-ing
-> >>> +      * to wait for
-> >>> +      */
-> >>> +     ret =3D mutex_lock_interruptible(&queue->lock);
-> >>> +     if (ret)
-> >>> +             return ret;
-> >>> +     fence =3D idr_find(&queue->fence_idr, args->fence);
-> >>> +     if (fence)
-> >>> +             fence =3D dma_fence_get_rcu(fence);
-> >>> +     mutex_unlock(&queue->lock);
-> >>> +
-> >>> +     if (!fence)
-> >>> +             return 0;
-> >>>
-> >>> +     ret =3D dma_fence_wait_timeout(fence, true, timeout_to_jiffies(=
-&timeout));
-> >>> +     if (ret =3D=3D 0) {
-> >>> +             ret =3D -ETIMEDOUT;
-> >>> +     } else if (ret !=3D -ERESTARTSYS) {
-> >>> +             ret =3D 0;
-> >>> +     }
-> >>> +
-> >>> +     dma_fence_put(fence);
-> >>>        msm_submitqueue_put(queue);
-> >>> +
-> >>>        return ret;
-> >>>    }
-> >>>
-> >>> diff --git a/drivers/gpu/drm/msm/msm_fence.c b/drivers/gpu/drm/msm/ms=
-m_fence.c
-> >>> index b92a9091a1e2..f2cece542c3f 100644
-> >>> --- a/drivers/gpu/drm/msm/msm_fence.c
-> >>> +++ b/drivers/gpu/drm/msm/msm_fence.c
-> >>> @@ -24,7 +24,6 @@ msm_fence_context_alloc(struct drm_device *dev, vol=
-atile uint32_t *fenceptr,
-> >>>        strncpy(fctx->name, name, sizeof(fctx->name));
-> >>>        fctx->context =3D dma_fence_context_alloc(1);
-> >>>        fctx->fenceptr =3D fenceptr;
-> >>> -     init_waitqueue_head(&fctx->event);
-> >>>        spin_lock_init(&fctx->spinlock);
-> >>>
-> >>>        return fctx;
-> >>> @@ -45,53 +44,12 @@ static inline bool fence_completed(struct msm_fen=
-ce_context *fctx, uint32_t fenc
-> >>>                (int32_t)(*fctx->fenceptr - fence) >=3D 0;
-> >>>    }
-> >>>
-> >>> -/* legacy path for WAIT_FENCE ioctl: */
-> >>> -int msm_wait_fence(struct msm_fence_context *fctx, uint32_t fence,
-> >>> -             ktime_t *timeout, bool interruptible)
-> >>> -{
-> >>> -     int ret;
-> >>> -
-> >>> -     if (fence > fctx->last_fence) {
-> >>> -             DRM_ERROR_RATELIMITED("%s: waiting on invalid fence: %u=
- (of %u)\n",
-> >>> -                             fctx->name, fence, fctx->last_fence);
-> >>> -             return -EINVAL;
-> >>
-> >> Rob, we changed this pre-existing behaviour in this patch. Now, when
-> >> userspace tries to wait on a future fence, we don't return an error.
-> >>
-> >> I just want to check if this was accidental or not?
-> >
-> > Hmm, perhaps we should do this to restore the previous behavior:
-> >
-> > -------------
-> > diff --git a/drivers/gpu/drm/msm/msm_drv.c b/drivers/gpu/drm/msm/msm_dr=
-v.c
-> > index 73e827641024..3dd6da56eae6 100644
-> > --- a/drivers/gpu/drm/msm/msm_drv.c
-> > +++ b/drivers/gpu/drm/msm/msm_drv.c
-> > @@ -1000,8 +1000,12 @@ static int msm_ioctl_wait_fence(struct
-> > drm_device *dev, void *data,
-> >                  fence =3D dma_fence_get_rcu(fence);
-> >          mutex_unlock(&queue->lock);
-> >
-> > -       if (!fence)
-> > -               return 0;
-> > +       if (!fence) {
-> > +               struct msm_fence_context *fctx =3D gpu->rb[queue->ring_=
-nr]->fctx;
-> > +               DRM_ERROR_RATELIMITED("%s: waiting on invalid fence:
-> > %u (of %u)\n",
-> > +                                     fctx->name, fence, fctx->last_fen=
-ce);
-> > +               return -EINVAL;
-> > +       }
->
-> With this, when userspace tries to wait on a fence which is already
-> retired, it gets -EINVAL instead of success. Will this break userspace?
+On Wed 10-11-21 08:28:13, Amir Goldstein wrote:
+> > > OK, so do I understand both you and Amir correctly that you think that
+> > > always relying on the FUSE server for generating the events and just piping
+> > > them to the client is not long-term viable design for FUSE? Mostly because
+> > > caching of modifications on the client is essentially inevitable and hence
+> > > generating events from the server would be unreliable (delayed too much)?
+> 
+> This is one aspect, but we do not have to tie remote notifications to
+> the cache coherency problem that is more complicated.
+> 
+> OTOH, if virtiofs take the route of "remote groups", why not take it one step
+> further and implement "remote event queue".
+> Then, it does not need to push event notifications from the server
+> into fsnotify at all.
+> Instead, FUSE client can communicate with the server using ioctl or a new
+> command to implement new_group() that returns a special FUSE file and
+> use FUSE POLL/READ to check/read the server's event queue.
 
-Oh, right, we definitely don't want that.. I guess that was the reason
-for the original logic.
+Yes, that could work. But I don't see how you want to avoid pushing events
+to fsnotify on the client side. Suppose app creates fanotify group G, it
+adds mark for some filesystem F1 to it, then in adds marks for another
+filesystem F2 - this time it is FUSE based fs. App wants to receive events
+for both F1 and F2 but events for F2 are actually coming from the server
+and somehow they have to get into G's queue for an app to read them.
 
-I have a different idea.. will send a patch in a bit.
+> There is already a precedent of this model with CIFS_IOC_NOTIFY
+> and SMB2_CHANGE_NOTIFY - SMB protocol, samba server and Windows server
+> support watching a directory or a subtree. I think it is a "oneshot" watch, so
+> there is no polling nor queue involved.
 
-BR,
--R
+OK, are you aiming at completely separate notification API for userspace
+for FUSE-based filesystems? Then I see why you don't need to push events
+to fsnotify but I don't quite like that for a few reasons:
 
-> -Akhil.
->
-> >
-> >          ret =3D dma_fence_wait_timeout(fence, true, timeout_to_jiffies=
-(&timeout));
-> >          if (ret =3D=3D 0) {
-> > -------------
-> >
-> > BR,
-> > -R
-> >
-> >> -Akhil.
-> >>
-> >>> -     }
-> >>> -
-> >>> -     if (!timeout) {
-> >>> -             /* no-wait: */
-> >>> -             ret =3D fence_completed(fctx, fence) ? 0 : -EBUSY;
-> >>> -     } else {
-> >>> -             unsigned long remaining_jiffies =3D timeout_to_jiffies(=
-timeout);
-> >>> -
-> >>> -             if (interruptible)
-> >>> -                     ret =3D wait_event_interruptible_timeout(fctx->=
-event,
-> >>> -                             fence_completed(fctx, fence),
-> >>> -                             remaining_jiffies);
-> >>> -             else
-> >>> -                     ret =3D wait_event_timeout(fctx->event,
-> >>> -                             fence_completed(fctx, fence),
-> >>> -                             remaining_jiffies);
-> >>> -
-> >>> -             if (ret =3D=3D 0) {
-> >>> -                     DBG("timeout waiting for fence: %u (completed: =
-%u)",
-> >>> -                                     fence, fctx->completed_fence);
-> >>> -                     ret =3D -ETIMEDOUT;
-> >>> -             } else if (ret !=3D -ERESTARTSYS) {
-> >>> -                     ret =3D 0;
-> >>> -             }
-> >>> -     }
-> >>> -
-> >>> -     return ret;
-> >>> -}
-> >>> -
-> >>>    /* called from workqueue */
-> >>>    void msm_update_fence(struct msm_fence_context *fctx, uint32_t fen=
-ce)
-> >>>    {
-> >>>        spin_lock(&fctx->spinlock);
-> >>>        fctx->completed_fence =3D max(fence, fctx->completed_fence);
-> >>>        spin_unlock(&fctx->spinlock);
-> >>> -
-> >>> -     wake_up_all(&fctx->event);
-> >>>    }
-> >>>
-> >>>    struct msm_fence {
-> >>> diff --git a/drivers/gpu/drm/msm/msm_fence.h b/drivers/gpu/drm/msm/ms=
-m_fence.h
-> >>> index 6ab97062ff1a..4783db528bcc 100644
-> >>> --- a/drivers/gpu/drm/msm/msm_fence.h
-> >>> +++ b/drivers/gpu/drm/msm/msm_fence.h
-> >>> @@ -49,7 +49,6 @@ struct msm_fence_context {
-> >>>         */
-> >>>        volatile uint32_t *fenceptr;
-> >>>
-> >>> -     wait_queue_head_t event;
-> >>>        spinlock_t spinlock;
-> >>>    };
-> >>>
-> >>> @@ -57,8 +56,6 @@ struct msm_fence_context * msm_fence_context_alloc(=
-struct drm_device *dev,
-> >>>                volatile uint32_t *fenceptr, const char *name);
-> >>>    void msm_fence_context_free(struct msm_fence_context *fctx);
-> >>>
-> >>> -int msm_wait_fence(struct msm_fence_context *fctx, uint32_t fence,
-> >>> -             ktime_t *timeout, bool interruptible);
-> >>>    void msm_update_fence(struct msm_fence_context *fctx, uint32_t fen=
-ce);
-> >>>
-> >>>    struct dma_fence * msm_fence_alloc(struct msm_fence_context *fctx)=
-;
-> >>> diff --git a/drivers/gpu/drm/msm/msm_gem.h b/drivers/gpu/drm/msm/msm_=
-gem.h
-> >>> index da3af702a6c8..e0579abda5b9 100644
-> >>> --- a/drivers/gpu/drm/msm/msm_gem.h
-> >>> +++ b/drivers/gpu/drm/msm/msm_gem.h
-> >>> @@ -320,6 +320,7 @@ struct msm_gem_submit {
-> >>>        struct ww_acquire_ctx ticket;
-> >>>        uint32_t seqno;         /* Sequence number of the submit on th=
-e ring */
-> >>>        struct dma_fence *fence;
-> >>> +     int fence_id;       /* key into queue->fence_idr */
-> >>>        struct msm_gpu_submitqueue *queue;
-> >>>        struct pid *pid;    /* submitting process */
-> >>>        bool fault_dumped;  /* Limit devcoredump dumping to one per su=
-bmit */
-> >>> diff --git a/drivers/gpu/drm/msm/msm_gem_submit.c b/drivers/gpu/drm/m=
-sm/msm_gem_submit.c
-> >>> index 4f02fa3c78f9..f6f595aae2c5 100644
-> >>> --- a/drivers/gpu/drm/msm/msm_gem_submit.c
-> >>> +++ b/drivers/gpu/drm/msm/msm_gem_submit.c
-> >>> @@ -68,7 +68,14 @@ void __msm_gem_submit_destroy(struct kref *kref)
-> >>>                        container_of(kref, struct msm_gem_submit, ref)=
-;
-> >>>        unsigned i;
-> >>>
-> >>> +     if (submit->fence_id) {
-> >>> +             mutex_lock(&submit->queue->lock);
-> >>> +             idr_remove(&submit->queue->fence_idr, submit->fence_id)=
-;
-> >>> +             mutex_unlock(&submit->queue->lock);
-> >>> +     }
-> >>> +
-> >>>        dma_fence_put(submit->fence);
-> >>> +
-> >>>        put_pid(submit->pid);
-> >>>        msm_submitqueue_put(submit->queue);
-> >>>
-> >>> @@ -872,6 +879,20 @@ int msm_ioctl_gem_submit(struct drm_device *dev,=
- void *data,
-> >>>                goto out;
-> >>>        }
-> >>>
-> >>> +     /*
-> >>> +      * Allocate an id which can be used by WAIT_FENCE ioctl to map =
-back
-> >>> +      * to the underlying fence.
-> >>> +      */
-> >>> +     mutex_lock(&queue->lock);
-> >>> +     submit->fence_id =3D idr_alloc_cyclic(&queue->fence_idr,
-> >>> +                     submit->fence, 0, INT_MAX, GFP_KERNEL);
-> >>> +     mutex_unlock(&queue->lock);
-> >>> +     if (submit->fence_id < 0) {
-> >>> +             ret =3D submit->fence_id =3D 0;
-> >>> +             submit->fence_id =3D 0;
-> >>> +             goto out;
-> >>> +     }
-> >>> +
-> >>>        if (args->flags & MSM_SUBMIT_FENCE_FD_OUT) {
-> >>>                struct sync_file *sync_file =3D sync_file_create(submi=
-t->fence);
-> >>>                if (!sync_file) {
-> >>> @@ -886,7 +907,7 @@ int msm_ioctl_gem_submit(struct drm_device *dev, =
-void *data,
-> >>>
-> >>>        msm_gpu_submit(gpu, submit);
-> >>>
-> >>> -     args->fence =3D submit->fence->seqno;
-> >>> +     args->fence =3D submit->fence_id;
-> >>>
-> >>>        msm_reset_syncobjs(syncobjs_to_reset, args->nr_in_syncobjs);
-> >>>        msm_process_post_deps(post_deps, args->nr_out_syncobjs,
-> >>> diff --git a/drivers/gpu/drm/msm/msm_gpu.h b/drivers/gpu/drm/msm/msm_=
-gpu.h
-> >>> index 96efcb31e502..579627252540 100644
-> >>> --- a/drivers/gpu/drm/msm/msm_gpu.h
-> >>> +++ b/drivers/gpu/drm/msm/msm_gpu.h
-> >>> @@ -263,6 +263,9 @@ struct msm_gpu_perfcntr {
-> >>>     *             which set of pgtables do submits jobs associated wi=
-th the
-> >>>     *             submitqueue use)
-> >>>     * @node:      node in the context's list of submitqueues
-> >>> + * @fence_idr: maps fence-id to dma_fence for userspace visible fenc=
-e
-> >>> + *             seqno, protected by submitqueue lock
-> >>> + * @lock:      submitqueue lock
-> >>>     * @ref:       reference count
-> >>>     */
-> >>>    struct msm_gpu_submitqueue {
-> >>> @@ -272,6 +275,8 @@ struct msm_gpu_submitqueue {
-> >>>        int faults;
-> >>>        struct msm_file_private *ctx;
-> >>>        struct list_head node;
-> >>> +     struct idr fence_idr;
-> >>> +     struct mutex lock;
-> >>>        struct kref ref;
-> >>>    };
-> >>>
-> >>> diff --git a/drivers/gpu/drm/msm/msm_submitqueue.c b/drivers/gpu/drm/=
-msm/msm_submitqueue.c
-> >>> index 9e9fec61d629..66f8d0fb38b0 100644
-> >>> --- a/drivers/gpu/drm/msm/msm_submitqueue.c
-> >>> +++ b/drivers/gpu/drm/msm/msm_submitqueue.c
-> >>> @@ -12,6 +12,8 @@ void msm_submitqueue_destroy(struct kref *kref)
-> >>>        struct msm_gpu_submitqueue *queue =3D container_of(kref,
-> >>>                struct msm_gpu_submitqueue, ref);
-> >>>
-> >>> +     idr_destroy(&queue->fence_idr);
-> >>> +
-> >>>        msm_file_private_put(queue->ctx);
-> >>>
-> >>>        kfree(queue);
-> >>> @@ -89,6 +91,9 @@ int msm_submitqueue_create(struct drm_device *drm, =
-struct msm_file_private *ctx,
-> >>>        if (id)
-> >>>                *id =3D queue->id;
-> >>>
-> >>> +     idr_init(&queue->fence_idr);
-> >>> +     mutex_init(&queue->lock);
-> >>> +
-> >>>        list_add_tail(&queue->node, &ctx->submitqueues);
-> >>>
-> >>>        write_unlock(&ctx->queuelock);
-> >>>
-> >>
->
+1) Application has to be aware whether the filesystem it operates on is
+FUSE based or not. That is IMO unnecessary burden for the applications.
+
+2) If application wants to watch for several paths potentially on multiple
+filesystems, it would now need to somehow merge the event streams from FUSE
+API and {fa/i}notify API.
+
+3) It would potentially duplicate quite some parts of fsnotify API
+handling.
+
+> > So initial implementation could be about, application either get local
+> > events or remote events (based on filesystem). Down the line more
+> > complicated modes can emerge where some combination of local and remote
+> > events could be generated and applications could specify it. That
+> > probably will be extension of fanotiy/inotify API.
+> 
+> There is one more problem with this approach.
+> We cannot silently change the behavior of existing FUSE filesystems.
+> What if a system has antivirus configured to scan access to virtiofs mounts?
+> Do you consider it reasonable that on system upgrade, the capability of
+> adding local watches would go away?
+ 
+I agree we have to be careful there. If fanotify / inotify is currently
+usable with virtiofs, just missing events coming from host changes (which
+are presumably rare for lots of setups), it is likely used by someone and
+we should not regress it.
+
+> I understand the desire to have existing inotify applications work out of
+> the box to get remote notifications, but I have doubts if this goal is even
+> worth pursuing. Considering that the existing known use case described in this
+> thread is already using polling to identify changes to config files on the host,
+> it could just as well be using a new API to get the job done.
+> 
+> If we had to plan an interface without considering existing applications,
+> I think it would look something like:
+> 
+> #define FAN_MARK_INODE                                 0x00000000
+> #define FAN_MARK_MOUNT                               0x00000010
+> #define FAN_MARK_FILESYSTEM                      0x00000100
+> #define FAN_MARK_REMOTE_INODE                0x00001000
+> #define FAN_MARK_REMOTE_FILESYSTEM     0x00001100
+> 
+> Then, the application can choose to add a remote mark with a certain
+> event mask and a local mark with a different event mask without any ambiguity.
+> The remote events could be tagged with a flag (turn reserved member of
+> fanotify_event_metadata into flags).
+> 
+> We have made a lot of effort to make fanotify a super set of inotify
+> functionality removing old UAPI mistakes and baggage along the way,
+> so I'd really hate to see us going down the path of ambiguous UAPI
+> again.
+
+So there's a question: Does application care whether the event comes from
+local or remote side? I'd say generally no - a file change is simply a file
+change and it does not matter who did it. Also again this API implies the
+application has to be aware it runs on a filesystem that may generate
+remote events to ask for them. But presumably knowledgeable app can always
+ask for local & remote events and if that fails (fs does not support remote
+events), ask only for local. That's not a big burden.
+
+The question is why would we make remote events explicit (and thus
+complicate the API and usage) when generally apps cannot be bothered who
+did the change. I suppose it makes implementation and some of the
+consequences on the stream of events more obvious. Also it allows
+functionality such as permission or mount events which are only local when
+the server does not support them which could be useful for "mostly local"
+filesystems. Hum...
+
+> IMO, the work that Ioannis has already done to support remote
+> notifications with virtiofsd is perfectly valid as a private functionality
+> of virtiofs, just like cifs CIFS_IOC_NOTIFY.
+> 
+> If we want to go further and implement a "remote notification subsystem"
+> then I think we should take other fs (e.g.cifs) into consideration and think
+> about functionality beyond the plain remote watch and create an UAPI
+> that can be used to extend the functionality further.
+
+So I agree that if we go for "remote notification subsystem", then we
+better consider cases like other FUSE filesystems, cifs, or NFS. I haven't
+yet made up my mind whether we cannot somehow seamlessly incorporate remote
+events into fsnotify because it seems to me they are identical to local
+events from app point of view. But I agree that if we cannot find a way to
+integrate remote events without many rough edges, then it is better to make
+remote events explicit.
+
+								Honza
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
