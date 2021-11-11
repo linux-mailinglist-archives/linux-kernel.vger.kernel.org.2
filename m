@@ -2,79 +2,765 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8FCDF44CFD7
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Nov 2021 03:11:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8519544CFDC
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Nov 2021 03:11:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233964AbhKKCNR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Nov 2021 21:13:17 -0500
-Received: from zg8tmty1ljiyny4xntqumjca.icoremail.net ([165.227.154.27]:39181
-        "HELO zg8tmty1ljiyny4xntqumjca.icoremail.net" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with SMTP id S234265AbhKKCNE (ORCPT
+        id S233674AbhKKCOO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Nov 2021 21:14:14 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32792 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233493AbhKKCOL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Nov 2021 21:13:04 -0500
-Received: by ajax-webmail-mail-app4 (Coremail) ; Thu, 11 Nov 2021 10:09:59
- +0800 (GMT+08:00)
-X-Originating-IP: [183.159.98.51]
-Date:   Thu, 11 Nov 2021 10:09:59 +0800 (GMT+08:00)
-X-CM-HeaderCharset: UTF-8
-From:   "Lin Ma" <linma@zju.edu.cn>
-To:     "Jakub Kicinski" <kuba@kernel.org>
-Cc:     netdev@vger.kernel.org, davem@davemloft.net, jirislaby@kernel.org,
-        gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org
-Subject: Re: Re: [PATCH v1 2/2] hamradio: defer 6pack kfree after
- unregister_netdev
-X-Priority: 3
-X-Mailer: Coremail Webmail Server Version XT5.0.13 build 20210104(ab8c30b6)
- Copyright (c) 2002-2021 www.mailtech.cn zju.edu.cn
-In-Reply-To: <20211110180612.2f2eb760@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-References: <20211108103721.30522-1-linma@zju.edu.cn>
- <20211108103759.30541-1-linma@zju.edu.cn>
- <20211110180525.20422f66@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
- <20211110180612.2f2eb760@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset=UTF-8
+        Wed, 10 Nov 2021 21:14:11 -0500
+Received: from mail-il1-x12e.google.com (mail-il1-x12e.google.com [IPv6:2607:f8b0:4864:20::12e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B8923C061767
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Nov 2021 18:11:20 -0800 (PST)
+Received: by mail-il1-x12e.google.com with SMTP id x9so4423621ilu.6
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Nov 2021 18:11:20 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=V86pGsGH3+4tLng+NULFNp41vGIclgvzZTeIDe7nl2I=;
+        b=bbnDDEHFzBWE9ANBajzzV4yf5f8tNmM41EwG8Vgn2XUd1lQ7MhLC4DJb6GFVQWGyMM
+         bIRlqJEOgdh7VTQaJnlioX5XMK3OigplZiMHM90UtHs6GRjOrUZv1Kwjps0UjjUb1p04
+         gTHp+r284ehAWlhVnnveojRagTB+Mil52QeK00Dq//jMlHWpqMyXpO2ClnHTp3V+CvSl
+         qlVzeuuMxmvjDYxDF42qXjnV+AZQHI3WCGahpHZUszkXLvluJQy0pWQWfDOyjdBfsa0l
+         MQW/5Hq1jIsdS/38L9q4MIblqQL3JI1l+0PJH5vkEmoqin4cGPg9Gak0IicAKEyEeqNT
+         HU7Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=V86pGsGH3+4tLng+NULFNp41vGIclgvzZTeIDe7nl2I=;
+        b=u/ipAAukr6m99ifZy6971FFamGjaOz2QimBK1zjoWmZJz1mVhfDgywqyKXCUFTLXsc
+         AHCM5Ts4U8+/RKtlIqB9+rONBCcX5u13v58c3I5rl0v1Ec0PHWKMngdof60wAoRph/Gu
+         2JNOMnVtSAI5YPy0T3f4NwzZSF/KCsxFHmgc9paR/qc5GJfL+cjK35k5+Vi/E1i+A+Gx
+         fCXWllHxicX4d78aZGjkdTv0jfz7OhQZ3KBhxo2f77FkxiFhmQyTnipKT1FFhcpTa7DP
+         Owlmvwci8gP7JGRPUe+SNCh83XIySK/6MaXr85mqyuWnbluNKNr0BkpY1+q8GH3+nrtJ
+         HvEg==
+X-Gm-Message-State: AOAM5302YQzqbAar6s/GWKscF3tYSZc/xpK59+vaKKWCuNKzLt83apJa
+        h8FjVi3R7LRNIvh6iD01/tUF0yPQJjZrDSMXRYGk6A==
+X-Google-Smtp-Source: ABdhPJxpCON6+Jj2TXx6JRUkOx2BvgRWselFtPZrFTxOc9xO5us7X8/7hP/yPIE2lDKKg4FKcaVje/rC1AJ0+jQxmM0=
+X-Received: by 2002:a92:de4d:: with SMTP id e13mr2132793ilr.283.1636596679682;
+ Wed, 10 Nov 2021 18:11:19 -0800 (PST)
 MIME-Version: 1.0
-Message-ID: <724aae55.1863af.17d0cc249ab.Coremail.linma@zju.edu.cn>
-X-Coremail-Locale: en_US
-X-CM-TRANSID: cS_KCgAXSXR3e4xhh7ffBA--.61118W
-X-CM-SenderInfo: qtrwiiyqvtljo62m3hxhgxhubq/1tbiAwUCElNG3ElR6gAUs5
-X-Coremail-Antispam: 1Ur529EdanIXcx71UUUUU7IcSsGvfJ3iIAIbVAYjsxI4VWxJw
-        CS07vEb4IE77IF4wCS07vE1I0E4x80FVAKz4kxMIAIbVAFxVCaYxvI4VCIwcAKzIAtYxBI
-        daVFxhVjvjDU=
+References: <20211111003453.209115-1-andrealmeid@collabora.com> <20211111003453.209115-2-andrealmeid@collabora.com>
+In-Reply-To: <20211111003453.209115-2-andrealmeid@collabora.com>
+From:   Daniel Latypov <dlatypov@google.com>
+Date:   Wed, 10 Nov 2021 18:11:08 -0800
+Message-ID: <CAGS_qxq0rNHsWmvjhRGrKcD5gXcFCRL_fcC+OMdi6jOfFz-=nw@mail.gmail.com>
+Subject: Re: [RFC PATCH 1/1] drm: selftest: convert drm_damage_helper selftest
+ to KUnit
+To:     =?UTF-8?Q?Andr=C3=A9_Almeida?= <andrealmeid@collabora.com>
+Cc:     Daniel Vetter <daniel@ffwll.ch>,
+        Shuah Khan <skhan@linuxfoundation.org>,
+        Brendan Higgins <brendanhiggins@google.com>,
+        David Gow <davidgow@google.com>, kunit-dev@googlegroups.com,
+        linux-kselftest@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        daniel@fooishbar.org, igt-dev@lists.freedesktop.org,
+        leandro.ribeiro@collabora.com, n@nfraprado.net,
+        rodrigosiqueiramelo@gmail.com, melissa.srw@gmail.com,
+        ~lkcamp/discussion@lists.sr.ht, isabbasso@riseup.net,
+        maira.canal@usp.br, arthur.grillo@usp.br,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SGkgdGhlcmUsCgo+IFNlbnQgVGltZTogMjAyMS0xMS0xMSAxMDowNjoxMiAoVGh1cnNkYXkpCj4g
-VG86ICJMaW4gTWEiIDxsaW5tYUB6anUuZWR1LmNuPgo+IENjOiBuZXRkZXZAdmdlci5rZXJuZWwu
-b3JnLCBkYXZlbUBkYXZlbWxvZnQubmV0LCBqaXJpc2xhYnlAa2VybmVsLm9yZywgZ3JlZ2toQGxp
-bnV4Zm91bmRhdGlvbi5vcmcsIGxpbnV4LWtlcm5lbEB2Z2VyLmtlcm5lbC5vcmcKPiBTdWJqZWN0
-OiBSZTogW1BBVENIIHYxIDIvMl0gaGFtcmFkaW86IGRlZmVyIDZwYWNrIGtmcmVlIGFmdGVyIHVu
-cmVnaXN0ZXJfbmV0ZGV2Cj4gCj4gT24gV2VkLCAxMCBOb3YgMjAyMSAxODowNToyNSAtMDgwMCBK
-YWt1YiBLaWNpbnNraSB3cm90ZToKPiA+ID4gZGlmZiAtLWdpdCBhL2RyaXZlcnMvbmV0L2hhbXJh
-ZGlvLzZwYWNrLmMgYi9kcml2ZXJzL25ldC9oYW1yYWRpby82cGFjay5jCj4gPiA+IGluZGV4IDQ5
-ZjEwMDUzYTc5NC4uYmZkZjg5ZTU0NzUyIDEwMDY0NAo+ID4gPiAtLS0gYS9kcml2ZXJzL25ldC9o
-YW1yYWRpby82cGFjay5jCj4gPiA+ICsrKyBiL2RyaXZlcnMvbmV0L2hhbXJhZGlvLzZwYWNrLmMK
-PiA+ID4gQEAgLTY3MiwxMSArNjcyLDEzIEBAIHN0YXRpYyB2b2lkIHNpeHBhY2tfY2xvc2Uoc3Ry
-dWN0IHR0eV9zdHJ1Y3QgKnR0eSkKPiA+ID4gIAlkZWxfdGltZXJfc3luYygmc3AtPnR4X3QpOwo+
-ID4gPiAgCWRlbF90aW1lcl9zeW5jKCZzcC0+cmVzeW5jX3QpOwo+ID4gPiAgCj4gPiA+IC0JLyog
-RnJlZSBhbGwgNnBhY2sgZnJhbWUgYnVmZmVycy4gKi8KPiA+ID4gKwl1bnJlZ2lzdGVyX25ldGRl
-dihzcC0+ZGV2KTsKPiA+ID4gKwo+ID4gPiArCS8qIEZyZWUgYWxsIDZwYWNrIGZyYW1lIGJ1ZmZl
-cnMgYWZ0ZXIgdW5yZWcuICovCj4gPiA+ICAJa2ZyZWUoc3AtPnJidWZmKTsKPiA+ID4gIAlrZnJl
-ZShzcC0+eGJ1ZmYpOwo+ID4gPiAgCj4gPiA+IC0JdW5yZWdpc3Rlcl9uZXRkZXYoc3AtPmRldik7
-Cj4gPiA+ICsJZnJlZV9uZXRkZXYoc3AtPmRldik7ICAKPiA+IAo+ID4gWW91IHNob3VsZCBtZW50
-aW9uIGluIHRoZSBjb21taXQgbWVzc2FnZSB3aHkgeW91IHRoaW5rIGl0J3Mgc2FmZSB0byBhZGQK
-PiA+IGZyZWVfbmV0ZGV2KCkgd2hpY2ggd2Fzbid0IGhlcmUgYmVmb3JlLi4uCj4gPiAKPiA+IFRo
-aXMgZHJpdmVyIHNlZW1zIHRvIGJlIHNldHRpbmc6Cj4gPiAKPiA+IAlkZXYtPm5lZWRzX2ZyZWVf
-bmV0ZGV2CT0gdHJ1ZTsKPiA+IAo+ID4gc28gdW5yZWdpc3Rlcl9uZXRkZXYoKSB3aWxsIGZyZWUg
-dGhlIG5ldGRldiBhdXRvbWF0aWNhbGx5Lgo+ID4gCj4gPiBUaGF0IHNhaWQgSSBkb24ndCBzZWUg
-YSByZWFzb24gd2h5IHRoaXMgZHJpdmVyIG5lZWRzIHRoZSBhdXRvbWF0aWMKPiA+IGNsZWFudXAu
-Cj4gPiAKPiA+IFlvdSBjYW4gZWl0aGVyIHJlbW92ZSB0aGF0IHNldHRpbmcgYW5kIHRoZW4geW91
-IGNhbiBjYWxsIGZyZWVfbmV0ZGV2KCkKPiA+IGxpa2UgeW91IGRvLCBvciB5b3UgbmVlZCB0byBt
-b3ZlIHRoZSBjbGVhbnVwIHRvIGRldi0+cHJpdl9kZXN0cnVjdG9yLgo+IAo+IExvb2tzIGxpa2Ug
-dGhpcyBnbyBhcHBsaWVkIGFscmVhZHksIHBsZWFzZSBzZW5kIGEgZm9sbG93IHVwIGZpeC4KCk9v
-b29wcywgdGhhbmtzIGZvciB0aGUgcmVtaW5kLiBYRAoKSSBqdXN0IGZvdW5kIHRoYXQgdGhlIG1r
-aWxsIGFkZHMgdGhlIGZyZWVfbmV0ZGV2IGFmdGVyIHRoZSB1bnJlZ2lzdGVyX25ldGRldiBzbyBJ
-IGRpZCBpdCB0b28uIE5vIGlkZWEgYWJvdXQgdGhpcyBhdXRvbWF0aWMgY2xlYW51cC4KClNob3Vs
-ZCBJIHNlbmQgdGhlIGZpeCBpbiB0aGlzIHRocmVhZCBvciBvcGVuIGEgbmV3IG9uZT8KClRoYW5r
-cwoKTGluIAo=
+On Wed, Nov 10, 2021 at 4:35 PM Andr=C3=A9 Almeida <andrealmeid@collabora.c=
+om> wrote:
+>
+> From: Ma=C3=ADra Canal <maira.canal@usp.br>
+>
+> Considering the current adoption of the KUnit framework, convert the
+> DRM damage helper selftest to the KUnit API.
+
+Overall, this looks promising.
+
+I have 2 small suggestions below about the test assertions.
+
+Another suggestion: should we add a drivers/gpu/drm/.kunitconfig file?
+
+See https://www.kernel.org/doc/html/latest/dev-tools/kunit/running_tips.htm=
+l#defining-a-set-of-tests
+That gives the example of
+$ ./tools/testing/kunit/kunit.py run --kunitconfig=3Dlib/kunit
+That works by picking up the lib/kunit/.kunitconfig file.
+
+Adding one for this test would make it easier for others to run these
+tests, e.g. via
+
+$ cat drivers/gpu/drm/.kunitconfig
+CONFIG_KUNIT=3Dy
+CONFIG_DRM=3Dy
+CONFIG_DRM_DAMAGE_HELPER_KUNIT_TEST=3Dy
+
+$ ./tools/testing/kunit/kunit.py run --kunitconfig=3Ddrivers/gpu/drm --arch=
+=3Dx86_64
+...
+Testing complete. 21 tests run. 0 failed. 0 crashed. 0 skipped.
+
+>
+> Co-developed-by: Arthur Grillo <arthur.grillo@usp.br>
+> Signed-off-by: Arthur Grillo <arthur.grillo@usp.br>
+> Signed-off-by: Ma=C3=ADra Canal <maira.canal@usp.br>
+> Signed-off-by: Andr=C3=A9 Almeida <andrealmeid@collabora.com>
+> ---
+>  drivers/gpu/drm/Kconfig                       |  13 ++
+>  drivers/gpu/drm/Makefile                      |   2 +-
+>  drivers/gpu/drm/selftests/Makefile            |   5 +-
+>  .../gpu/drm/selftests/drm_modeset_selftests.h |  21 --
+>  .../drm/selftests/test-drm_damage_helper.c    | 215 +++++++++---------
+>  5 files changed, 127 insertions(+), 129 deletions(-)
+>
+> diff --git a/drivers/gpu/drm/Kconfig b/drivers/gpu/drm/Kconfig
+> index cea777ae7fb9..56f6ca74ebb6 100644
+> --- a/drivers/gpu/drm/Kconfig
+> +++ b/drivers/gpu/drm/Kconfig
+> @@ -79,6 +79,19 @@ config DRM_DEBUG_SELFTEST
+>
+>           If in doubt, say "N".
+>
+> +config DRM_DAMAGE_HELPER_KUNIT_TEST
+> +       tristate "KUnit tests for DRM damage helper"
+> +       depends on DRM && KUNIT
+> +       select DRM_KMS_HELPER
+> +       default KUNIT_ALL_TESTS
+> +       help
+> +         This option provides a KUnit module that can be used to run
+> +         an unit test on the DRM damage helper API. This option is not
+> +         useful for distributions or general kernels, but only for kerne=
+l
+> +         developers working on DRM and associated drivers.
+> +
+> +         If in doubt, say "N".
+> +
+>  config DRM_KMS_HELPER
+>         tristate
+>         depends on DRM
+> diff --git a/drivers/gpu/drm/Makefile b/drivers/gpu/drm/Makefile
+> index ad1112154898..e632c43c9b7d 100644
+> --- a/drivers/gpu/drm/Makefile
+> +++ b/drivers/gpu/drm/Makefile
+> @@ -58,7 +58,7 @@ drm_kms_helper-$(CONFIG_DRM_DP_AUX_CHARDEV) +=3D drm_dp=
+_aux_dev.o
+>  drm_kms_helper-$(CONFIG_DRM_DP_CEC) +=3D drm_dp_cec.o
+>
+>  obj-$(CONFIG_DRM_KMS_HELPER) +=3D drm_kms_helper.o
+> -obj-$(CONFIG_DRM_DEBUG_SELFTEST) +=3D selftests/
+> +obj-y +=3D selftests/
+>
+>  obj-$(CONFIG_DRM)      +=3D drm.o
+>  obj-$(CONFIG_DRM_MIPI_DBI) +=3D drm_mipi_dbi.o
+> diff --git a/drivers/gpu/drm/selftests/Makefile b/drivers/gpu/drm/selftes=
+ts/Makefile
+> index 0856e4b12f70..311f6af2caf1 100644
+> --- a/drivers/gpu/drm/selftests/Makefile
+> +++ b/drivers/gpu/drm/selftests/Makefile
+> @@ -1,7 +1,8 @@
+>  # SPDX-License-Identifier: GPL-2.0-only
+>  test-drm_modeset-y :=3D test-drm_modeset_common.o test-drm_plane_helper.=
+o \
+>                        test-drm_format.o test-drm_framebuffer.o \
+> -                     test-drm_damage_helper.o test-drm_dp_mst_helper.o \
+> -                     test-drm_rect.o
+> +                     test-drm_dp_mst_helper.o test-drm_rect.o
+>
+>  obj-$(CONFIG_DRM_DEBUG_SELFTEST) +=3D test-drm_mm.o test-drm_modeset.o t=
+est-drm_cmdline_parser.o
+> +
+> +obj-$(CONFIG_DRM_DAMAGE_HELPER_KUNIT_TEST) +=3D test-drm_damage_helper.o
+> diff --git a/drivers/gpu/drm/selftests/drm_modeset_selftests.h b/drivers/=
+gpu/drm/selftests/drm_modeset_selftests.h
+> index 782e285ca383..4787b3b70709 100644
+> --- a/drivers/gpu/drm/selftests/drm_modeset_selftests.h
+> +++ b/drivers/gpu/drm/selftests/drm_modeset_selftests.h
+> @@ -15,26 +15,5 @@ selftest(check_drm_format_block_width, igt_check_drm_f=
+ormat_block_width)
+>  selftest(check_drm_format_block_height, igt_check_drm_format_block_heigh=
+t)
+>  selftest(check_drm_format_min_pitch, igt_check_drm_format_min_pitch)
+>  selftest(check_drm_framebuffer_create, igt_check_drm_framebuffer_create)
+> -selftest(damage_iter_no_damage, igt_damage_iter_no_damage)
+> -selftest(damage_iter_no_damage_fractional_src, igt_damage_iter_no_damage=
+_fractional_src)
+> -selftest(damage_iter_no_damage_src_moved, igt_damage_iter_no_damage_src_=
+moved)
+> -selftest(damage_iter_no_damage_fractional_src_moved, igt_damage_iter_no_=
+damage_fractional_src_moved)
+> -selftest(damage_iter_no_damage_not_visible, igt_damage_iter_no_damage_no=
+t_visible)
+> -selftest(damage_iter_no_damage_no_crtc, igt_damage_iter_no_damage_no_crt=
+c)
+> -selftest(damage_iter_no_damage_no_fb, igt_damage_iter_no_damage_no_fb)
+> -selftest(damage_iter_simple_damage, igt_damage_iter_simple_damage)
+> -selftest(damage_iter_single_damage, igt_damage_iter_single_damage)
+> -selftest(damage_iter_single_damage_intersect_src, igt_damage_iter_single=
+_damage_intersect_src)
+> -selftest(damage_iter_single_damage_outside_src, igt_damage_iter_single_d=
+amage_outside_src)
+> -selftest(damage_iter_single_damage_fractional_src, igt_damage_iter_singl=
+e_damage_fractional_src)
+> -selftest(damage_iter_single_damage_intersect_fractional_src, igt_damage_=
+iter_single_damage_intersect_fractional_src)
+> -selftest(damage_iter_single_damage_outside_fractional_src, igt_damage_it=
+er_single_damage_outside_fractional_src)
+> -selftest(damage_iter_single_damage_src_moved, igt_damage_iter_single_dam=
+age_src_moved)
+> -selftest(damage_iter_single_damage_fractional_src_moved, igt_damage_iter=
+_single_damage_fractional_src_moved)
+> -selftest(damage_iter_damage, igt_damage_iter_damage)
+> -selftest(damage_iter_damage_one_intersect, igt_damage_iter_damage_one_in=
+tersect)
+> -selftest(damage_iter_damage_one_outside, igt_damage_iter_damage_one_outs=
+ide)
+> -selftest(damage_iter_damage_src_moved, igt_damage_iter_damage_src_moved)
+> -selftest(damage_iter_damage_not_visible, igt_damage_iter_damage_not_visi=
+ble)
+>  selftest(dp_mst_calc_pbn_mode, igt_dp_mst_calc_pbn_mode)
+>  selftest(dp_mst_sideband_msg_req_decode, igt_dp_mst_sideband_msg_req_dec=
+ode)
+> diff --git a/drivers/gpu/drm/selftests/test-drm_damage_helper.c b/drivers=
+/gpu/drm/selftests/test-drm_damage_helper.c
+> index 1c19a5d3eefb..83905661d41e 100644
+> --- a/drivers/gpu/drm/selftests/test-drm_damage_helper.c
+> +++ b/drivers/gpu/drm/selftests/test-drm_damage_helper.c
+> @@ -3,14 +3,11 @@
+>   * Test case for drm_damage_helper functions
+>   */
+>
+> -#define pr_fmt(fmt) "drm_damage_helper: " fmt
+> -
+> +#include <kunit/test.h>
+>  #include <drm/drm_damage_helper.h>
+>  #include <drm/drm_plane.h>
+>  #include <drm/drm_drv.h>
+>
+> -#include "test-drm_modeset_common.h"
+> -
+>  struct drm_driver mock_driver;
+>  static struct drm_device mock_device;
+>  static struct drm_object_properties mock_obj_props;
+> @@ -114,7 +111,7 @@ const struct drm_framebuffer fb =3D {
+>         mock_setup(&old_state); \
+>         mock_setup(&state);
+>
+> -int igt_damage_iter_no_damage(void *ignored)
+> +static void igt_damage_iter_no_damage(struct kunit *test)
+>  {
+>         struct drm_atomic_helper_damage_iter iter;
+>         struct drm_rect clip;
+> @@ -129,13 +126,12 @@ int igt_damage_iter_no_damage(void *ignored)
+>         drm_atomic_for_each_plane_damage(&iter, &clip)
+>                 num_hits++;
+>
+> -       FAIL(num_hits !=3D 1, "Should return plane src as damage.");
+> -       FAIL_ON(!check_damage_clip(&state, &clip, 0, 0, 2048, 2048));
+> -
+> -       return 0;
+> +       KUNIT_EXPECT_EQ(test, num_hits, 1);
+
+optional:
+KUNIT_EXPECT_EQ_MSG(test, num_hits, 1, "Should return...")
+
+can be used to make the error message more similar to the original.
+
+The same applies to the other instances below
+
+
+> +       KUNIT_EXPECT_TRUE(test,
+> +                       check_damage_clip(&state, &clip, 0, 0, 2048, 2048=
+));
+
+optional:
+
+check_damage_clip(test, &state, &clip, 0, 0, 2048, 2048);
+
+and then change check_damage_clip like so:
+
+static void check_damage_clip(struct kunit *test, struct drm_plane_state *s=
+tate,
+                              struct drm_rect *r, int x1, int y1, int x2,
+                              int y2)
+{
+        /*
+         * Round down x1/y1 and round up x2/y2. This is because damage is n=
+ot in
+         * 16.16 fixed point so to catch all pixels.
+         */
+        int src_x1 =3D state->src.x1 >> 16;
+        int src_y1 =3D state->src.y1 >> 16;
+        int src_x2 =3D (state->src.x2 >> 16) + !!(state->src.x2 & 0xFFFF);
+        int src_y2 =3D (state->src.y2 >> 16) + !!(state->src.y2 & 0xFFFF);
+
+        if (x1 >=3D x2 || y1 >=3D y2) {
+                KUNIT_FAIL(test, "Cannot have damage clip with no dimension=
+.");
+        } else if (x1 < src_x1 || y1 < src_y1 || x2 > src_x2 || y2 > src_y2=
+) {
+                KUNIT_FAIL(test, "Damage cannot be outside rounded plane sr=
+c.");
+        } else if (r->x1 !=3D x1 || r->y1 !=3D y1 || r->x2 !=3D x2 || r->y2=
+ !=3D y2) {
+                KUNIT_FAIL(test, "Damage =3D %d %d %d %d", r->x1, r->y1, r-=
+>x2,
+                           r->y2);
+}
+
+I'd actually recommend enhancing the original error messages a bit, e.g.:
+KUNIT_FAIL(test, "Damage =3D %d %d %d %d, want =3D %d %d %d %d",
+           r->x1, r->y1, r->x2, r->y2,
+           x1, y1, x2, y2)
+
+Then if I deliberately mess up one of the calls to this func, I get:
+
+[18:08:02]     # igt_damage_iter_no_damage_src_moved: EXPECTATION
+FAILED at drivers/gpu/drm/selftests/test-drm_damage_helper.c:87
+[18:08:02] Damage =3D 10 10 1034 778, want =3D 11 10 1034 778
+[18:08:02]     not ok 3 - igt_damage_iter_no_damage_src_moved
+
+        }
+}
+
+
+>  }
+>
+> -int igt_damage_iter_no_damage_fractional_src(void *ignored)
+> +static void igt_damage_iter_no_damage_fractional_src(struct kunit *test)
+>  {
+>         struct drm_atomic_helper_damage_iter iter;
+>         struct drm_rect clip;
+> @@ -152,13 +148,12 @@ int igt_damage_iter_no_damage_fractional_src(void *=
+ignored)
+>         drm_atomic_for_each_plane_damage(&iter, &clip)
+>                 num_hits++;
+>
+> -       FAIL(num_hits !=3D 1, "Should return rounded off plane src as dam=
+age.");
+> -       FAIL_ON(!check_damage_clip(&state, &clip, 3, 3, 1028, 772));
+> -
+> -       return 0;
+> +       KUNIT_EXPECT_EQ(test, num_hits, 1);
+> +       KUNIT_EXPECT_TRUE(test,
+> +                       check_damage_clip(&state, &clip, 3, 3, 1028, 772)=
+);
+>  }
+>
+> -int igt_damage_iter_no_damage_src_moved(void *ignored)
+> +static void igt_damage_iter_no_damage_src_moved(struct kunit *test)
+>  {
+>         struct drm_atomic_helper_damage_iter iter;
+>         struct drm_rect clip;
+> @@ -174,13 +169,12 @@ int igt_damage_iter_no_damage_src_moved(void *ignor=
+ed)
+>         drm_atomic_for_each_plane_damage(&iter, &clip)
+>                 num_hits++;
+>
+> -       FAIL(num_hits !=3D 1, "Should return plane src as damage.");
+> -       FAIL_ON(!check_damage_clip(&state, &clip, 10, 10, 1034, 778));
+> -
+> -       return 0;
+> +       KUNIT_EXPECT_EQ(test, num_hits, 1);
+> +       KUNIT_EXPECT_TRUE(test,
+> +                       check_damage_clip(&state, &clip, 10, 10, 1034, 77=
+8));
+>  }
+>
+> -int igt_damage_iter_no_damage_fractional_src_moved(void *ignored)
+> +static void igt_damage_iter_no_damage_fractional_src_moved(struct kunit =
+*test)
+>  {
+>         struct drm_atomic_helper_damage_iter iter;
+>         struct drm_rect clip;
+> @@ -197,13 +191,11 @@ int igt_damage_iter_no_damage_fractional_src_moved(=
+void *ignored)
+>         drm_atomic_for_each_plane_damage(&iter, &clip)
+>                 num_hits++;
+>
+> -       FAIL(num_hits !=3D 1, "Should return plane src as damage.");
+> -       FAIL_ON(!check_damage_clip(&state, &clip, 4, 4, 1029, 773));
+> -
+> -       return 0;
+> +       KUNIT_EXPECT_EQ(test, num_hits, 1);
+> +       KUNIT_EXPECT_TRUE(test, check_damage_clip(&state, &clip, 4, 4, 10=
+29, 773));
+>  }
+>
+> -int igt_damage_iter_no_damage_not_visible(void *ignored)
+> +static void igt_damage_iter_no_damage_not_visible(struct kunit *test)
+>  {
+>         struct drm_atomic_helper_damage_iter iter;
+>         struct drm_rect clip;
+> @@ -221,12 +213,10 @@ int igt_damage_iter_no_damage_not_visible(void *ign=
+ored)
+>         drm_atomic_for_each_plane_damage(&iter, &clip)
+>                 num_hits++;
+>
+> -       FAIL(num_hits !=3D 0, "Should have no damage.");
+> -
+> -       return 0;
+> +       KUNIT_EXPECT_EQ(test, num_hits, 0);
+>  }
+>
+> -int igt_damage_iter_no_damage_no_crtc(void *ignored)
+> +static void igt_damage_iter_no_damage_no_crtc(struct kunit *test)
+>  {
+>         struct drm_atomic_helper_damage_iter iter;
+>         struct drm_rect clip;
+> @@ -242,12 +232,10 @@ int igt_damage_iter_no_damage_no_crtc(void *ignored=
+)
+>         drm_atomic_for_each_plane_damage(&iter, &clip)
+>                 num_hits++;
+>
+> -       FAIL(num_hits !=3D 0, "Should have no damage.");
+> -
+> -       return 0;
+> +       KUNIT_EXPECT_EQ(test, num_hits, 0);
+>  }
+>
+> -int igt_damage_iter_no_damage_no_fb(void *ignored)
+> +static void igt_damage_iter_no_damage_no_fb(struct kunit *test)
+>  {
+>         struct drm_atomic_helper_damage_iter iter;
+>         struct drm_plane_state old_state;
+> @@ -267,12 +255,10 @@ int igt_damage_iter_no_damage_no_fb(void *ignored)
+>         drm_atomic_for_each_plane_damage(&iter, &clip)
+>                 num_hits++;
+>
+> -       FAIL(num_hits !=3D 0, "Should have no damage.");
+> -
+> -       return 0;
+> +       KUNIT_EXPECT_EQ(test, num_hits, 0);
+>  }
+>
+> -int igt_damage_iter_simple_damage(void *ignored)
+> +static void igt_damage_iter_simple_damage(struct kunit *test)
+>  {
+>         struct drm_atomic_helper_damage_iter iter;
+>         struct drm_property_blob damage_blob;
+> @@ -292,13 +278,11 @@ int igt_damage_iter_simple_damage(void *ignored)
+>         drm_atomic_for_each_plane_damage(&iter, &clip)
+>                 num_hits++;
+>
+> -       FAIL(num_hits !=3D 1, "Should return damage when set.");
+> -       FAIL_ON(!check_damage_clip(&state, &clip, 0, 0, 1024, 768));
+> -
+> -       return 0;
+> +       KUNIT_EXPECT_EQ(test, num_hits, 1);
+> +       KUNIT_EXPECT_TRUE(test, check_damage_clip(&state, &clip, 0, 0, 10=
+24, 768));
+>  }
+>
+> -int igt_damage_iter_single_damage(void *ignored)
+> +static void igt_damage_iter_single_damage(struct kunit *test)
+>  {
+>         struct drm_atomic_helper_damage_iter iter;
+>         struct drm_property_blob damage_blob;
+> @@ -317,13 +301,12 @@ int igt_damage_iter_single_damage(void *ignored)
+>         drm_atomic_for_each_plane_damage(&iter, &clip)
+>                 num_hits++;
+>
+> -       FAIL(num_hits !=3D 1, "Should return damage when set.");
+> -       FAIL_ON(!check_damage_clip(&state, &clip, 256, 192, 768, 576));
+> -
+> -       return 0;
+> +       KUNIT_EXPECT_EQ(test, num_hits, 1);
+> +       KUNIT_EXPECT_TRUE(test,
+> +                       check_damage_clip(&state, &clip, 256, 192, 768, 5=
+76));
+>  }
+>
+> -int igt_damage_iter_single_damage_intersect_src(void *ignored)
+> +static void igt_damage_iter_single_damage_intersect_src(struct kunit *te=
+st)
+>  {
+>         struct drm_atomic_helper_damage_iter iter;
+>         struct drm_property_blob damage_blob;
+> @@ -343,13 +326,12 @@ int igt_damage_iter_single_damage_intersect_src(voi=
+d *ignored)
+>         drm_atomic_for_each_plane_damage(&iter, &clip)
+>                 num_hits++;
+>
+> -       FAIL(num_hits !=3D 1, "Should return damage clipped to src.");
+> -       FAIL_ON(!check_damage_clip(&state, &clip, 256, 192, 1024, 768));
+> -
+> -       return 0;
+> +       KUNIT_EXPECT_EQ(test, num_hits, 1);
+> +       KUNIT_EXPECT_TRUE(test,
+> +                       check_damage_clip(&state, &clip, 256, 192, 1024, =
+768));
+>  }
+>
+> -int igt_damage_iter_single_damage_outside_src(void *ignored)
+> +static void igt_damage_iter_single_damage_outside_src(struct kunit *test=
+)
+>  {
+>         struct drm_atomic_helper_damage_iter iter;
+>         struct drm_property_blob damage_blob;
+> @@ -369,12 +351,10 @@ int igt_damage_iter_single_damage_outside_src(void =
+*ignored)
+>         drm_atomic_for_each_plane_damage(&iter, &clip)
+>                 num_hits++;
+>
+> -       FAIL(num_hits !=3D 0, "Should have no damage.");
+> -
+> -       return 0;
+> +       KUNIT_EXPECT_EQ(test, num_hits, 0);
+>  }
+>
+> -int igt_damage_iter_single_damage_fractional_src(void *ignored)
+> +static void igt_damage_iter_single_damage_fractional_src(struct kunit *t=
+est)
+>  {
+>         struct drm_atomic_helper_damage_iter iter;
+>         struct drm_property_blob damage_blob;
+> @@ -396,13 +376,13 @@ int igt_damage_iter_single_damage_fractional_src(vo=
+id *ignored)
+>         drm_atomic_for_each_plane_damage(&iter, &clip)
+>                 num_hits++;
+>
+> -       FAIL(num_hits !=3D 1, "Should return damage when set.");
+> -       FAIL_ON(!check_damage_clip(&state, &clip, 10, 10, 256, 330));
+> -
+> -       return 0;
+> +       KUNIT_EXPECT_EQ(test, num_hits, 1);
+> +       KUNIT_EXPECT_TRUE(test,
+> +                       check_damage_clip(&state, &clip, 10, 10, 256, 330=
+));
+>  }
+>
+> -int igt_damage_iter_single_damage_intersect_fractional_src(void *ignored=
+)
+> +static void igt_damage_iter_single_damage_intersect_fractional_src(
+> +               struct kunit *test)
+>  {
+>         struct drm_atomic_helper_damage_iter iter;
+>         struct drm_property_blob damage_blob;
+> @@ -425,13 +405,13 @@ int igt_damage_iter_single_damage_intersect_fractio=
+nal_src(void *ignored)
+>         drm_atomic_for_each_plane_damage(&iter, &clip)
+>                 num_hits++;
+>
+> -       FAIL(num_hits !=3D 1, "Should return damage clipped to rounded of=
+f src.");
+> -       FAIL_ON(!check_damage_clip(&state, &clip, 10, 4, 1029, 330));
+> -
+> -       return 0;
+> +       KUNIT_EXPECT_EQ(test, num_hits, 1);
+> +       KUNIT_EXPECT_TRUE(test,
+> +                       check_damage_clip(&state, &clip, 10, 4, 1029, 330=
+));
+>  }
+>
+> -int igt_damage_iter_single_damage_outside_fractional_src(void *ignored)
+> +static void igt_damage_iter_single_damage_outside_fractional_src(
+> +               struct kunit *test)
+>  {
+>         struct drm_atomic_helper_damage_iter iter;
+>         struct drm_property_blob damage_blob;
+> @@ -454,12 +434,10 @@ int igt_damage_iter_single_damage_outside_fractiona=
+l_src(void *ignored)
+>         drm_atomic_for_each_plane_damage(&iter, &clip)
+>                 num_hits++;
+>
+> -       FAIL(num_hits !=3D 0, "Should have no damage.");
+> -
+> -       return 0;
+> +       KUNIT_EXPECT_EQ(test, num_hits, 0);
+>  }
+>
+> -int igt_damage_iter_single_damage_src_moved(void *ignored)
+> +static void igt_damage_iter_single_damage_src_moved(struct kunit *test)
+>  {
+>         struct drm_atomic_helper_damage_iter iter;
+>         struct drm_property_blob damage_blob;
+> @@ -480,13 +458,13 @@ int igt_damage_iter_single_damage_src_moved(void *i=
+gnored)
+>         drm_atomic_for_each_plane_damage(&iter, &clip)
+>                 num_hits++;
+>
+> -       FAIL(num_hits !=3D 1, "Should return plane src as damage.");
+> -       FAIL_ON(!check_damage_clip(&state, &clip, 10, 10, 1034, 778));
+> -
+> -       return 0;
+> +       KUNIT_EXPECT_EQ(test, num_hits, 1);
+> +       KUNIT_EXPECT_TRUE(test,
+> +                       check_damage_clip(&state, &clip, 10, 10, 1034, 77=
+8));
+>  }
+>
+> -int igt_damage_iter_single_damage_fractional_src_moved(void *ignored)
+> +static void igt_damage_iter_single_damage_fractional_src_moved(
+> +               struct kunit *test)
+>  {
+>         struct drm_atomic_helper_damage_iter iter;
+>         struct drm_property_blob damage_blob;
+> @@ -509,13 +487,11 @@ int igt_damage_iter_single_damage_fractional_src_mo=
+ved(void *ignored)
+>         drm_atomic_for_each_plane_damage(&iter, &clip)
+>                 num_hits++;
+>
+> -       FAIL(num_hits !=3D 1, "Should return rounded off plane src as dam=
+age.");
+> -       FAIL_ON(!check_damage_clip(&state, &clip, 4, 4, 1029, 773));
+> -
+> -       return 0;
+> +       KUNIT_EXPECT_EQ(test, num_hits, 1);
+> +       KUNIT_EXPECT_TRUE(test, check_damage_clip(&state, &clip, 4, 4, 10=
+29, 773));
+>  }
+>
+> -int igt_damage_iter_damage(void *ignored)
+> +static void igt_damage_iter_damage(struct kunit *test)
+>  {
+>         struct drm_atomic_helper_damage_iter iter;
+>         struct drm_property_blob damage_blob;
+> @@ -535,18 +511,18 @@ int igt_damage_iter_damage(void *ignored)
+>         drm_atomic_helper_damage_iter_init(&iter, &old_state, &state);
+>         drm_atomic_for_each_plane_damage(&iter, &clip) {
+>                 if (num_hits =3D=3D 0)
+> -                       FAIL_ON(!check_damage_clip(&state, &clip, 20, 30,=
+ 200, 180));
+> +                       KUNIT_EXPECT_TRUE(test,
+> +                                       check_damage_clip(&state, &clip, =
+20, 30, 200, 180));
+>                 if (num_hits =3D=3D 1)
+> -                       FAIL_ON(!check_damage_clip(&state, &clip, 240, 20=
+0, 280, 250));
+> +                       KUNIT_EXPECT_TRUE(test,
+> +                                       check_damage_clip(&state, &clip, =
+240, 200, 280, 250));
+>                 num_hits++;
+>         }
+>
+> -       FAIL(num_hits !=3D 2, "Should return damage when set.");
+> -
+> -       return 0;
+> +       KUNIT_EXPECT_EQ(test, num_hits, 2);
+>  }
+>
+> -int igt_damage_iter_damage_one_intersect(void *ignored)
+> +static void igt_damage_iter_damage_one_intersect(struct kunit *test)
+>  {
+>         struct drm_atomic_helper_damage_iter iter;
+>         struct drm_property_blob damage_blob;
+> @@ -568,18 +544,18 @@ int igt_damage_iter_damage_one_intersect(void *igno=
+red)
+>         drm_atomic_helper_damage_iter_init(&iter, &old_state, &state);
+>         drm_atomic_for_each_plane_damage(&iter, &clip) {
+>                 if (num_hits =3D=3D 0)
+> -                       FAIL_ON(!check_damage_clip(&state, &clip, 20, 30,=
+ 200, 180));
+> +                       KUNIT_EXPECT_TRUE(test,
+> +                                       check_damage_clip(&state, &clip, =
+20, 30, 200, 180));
+>                 if (num_hits =3D=3D 1)
+> -                       FAIL_ON(!check_damage_clip(&state, &clip, 4, 4, 1=
+029, 773));
+> +                       KUNIT_EXPECT_TRUE(test,
+> +                                       check_damage_clip(&state, &clip, =
+4, 4, 1029, 773));
+>                 num_hits++;
+>         }
+>
+> -       FAIL(num_hits !=3D 2, "Should return damage when set.");
+> -
+> -       return 0;
+> +       KUNIT_EXPECT_EQ(test, num_hits, 2);
+>  }
+>
+> -int igt_damage_iter_damage_one_outside(void *ignored)
+> +static void igt_damage_iter_damage_one_outside(struct kunit *test)
+>  {
+>         struct drm_atomic_helper_damage_iter iter;
+>         struct drm_property_blob damage_blob;
+> @@ -600,13 +576,12 @@ int igt_damage_iter_damage_one_outside(void *ignore=
+d)
+>         drm_atomic_for_each_plane_damage(&iter, &clip)
+>                 num_hits++;
+>
+> -       FAIL(num_hits !=3D 1, "Should return damage when set.");
+> -       FAIL_ON(!check_damage_clip(&state, &clip, 240, 200, 280, 250));
+> -
+> -       return 0;
+> +       KUNIT_EXPECT_EQ(test, num_hits, 1);
+> +       KUNIT_EXPECT_TRUE(test,
+> +                       check_damage_clip(&state, &clip, 240, 200, 280, 2=
+50));
+>  }
+>
+> -int igt_damage_iter_damage_src_moved(void *ignored)
+> +static void igt_damage_iter_damage_src_moved(struct kunit *test)
+>  {
+>         struct drm_atomic_helper_damage_iter iter;
+>         struct drm_property_blob damage_blob;
+> @@ -629,13 +604,11 @@ int igt_damage_iter_damage_src_moved(void *ignored)
+>         drm_atomic_for_each_plane_damage(&iter, &clip)
+>                 num_hits++;
+>
+> -       FAIL(num_hits !=3D 1, "Should return round off plane src as damag=
+e.");
+> -       FAIL_ON(!check_damage_clip(&state, &clip, 3, 3, 1028, 772));
+> -
+> -       return 0;
+> +       KUNIT_EXPECT_EQ(test, num_hits, 1);
+> +       KUNIT_EXPECT_TRUE(test, check_damage_clip(&state, &clip, 3, 3, 10=
+28, 772));
+>  }
+>
+> -int igt_damage_iter_damage_not_visible(void *ignored)
+> +static void igt_damage_iter_damage_not_visible(struct kunit *test)
+>  {
+>         struct drm_atomic_helper_damage_iter iter;
+>         struct drm_property_blob damage_blob;
+> @@ -660,7 +633,39 @@ int igt_damage_iter_damage_not_visible(void *ignored=
+)
+>         drm_atomic_for_each_plane_damage(&iter, &clip)
+>                 num_hits++;
+>
+> -       FAIL(num_hits !=3D 0, "Should not return any damage.");
+> -
+> -       return 0;
+> +       KUNIT_EXPECT_EQ(test, num_hits, 0);
+>  }
+> +
+> +static struct kunit_case drm_damage_helper_tests[] =3D {
+> +       KUNIT_CASE(igt_damage_iter_no_damage),
+> +       KUNIT_CASE(igt_damage_iter_no_damage_fractional_src),
+> +       KUNIT_CASE(igt_damage_iter_no_damage_src_moved),
+> +       KUNIT_CASE(igt_damage_iter_no_damage_fractional_src_moved),
+> +       KUNIT_CASE(igt_damage_iter_no_damage_not_visible),
+> +       KUNIT_CASE(igt_damage_iter_no_damage_no_crtc),
+> +       KUNIT_CASE(igt_damage_iter_no_damage_no_fb),
+> +       KUNIT_CASE(igt_damage_iter_simple_damage),
+> +       KUNIT_CASE(igt_damage_iter_single_damage),
+> +       KUNIT_CASE(igt_damage_iter_single_damage_intersect_src),
+> +       KUNIT_CASE(igt_damage_iter_single_damage_outside_src),
+> +       KUNIT_CASE(igt_damage_iter_single_damage_fractional_src),
+> +       KUNIT_CASE(igt_damage_iter_single_damage_intersect_fractional_src=
+),
+> +       KUNIT_CASE(igt_damage_iter_single_damage_outside_fractional_src),
+> +       KUNIT_CASE(igt_damage_iter_single_damage_src_moved),
+> +       KUNIT_CASE(igt_damage_iter_single_damage_fractional_src_moved),
+> +       KUNIT_CASE(igt_damage_iter_damage),
+> +       KUNIT_CASE(igt_damage_iter_damage_one_intersect),
+> +       KUNIT_CASE(igt_damage_iter_damage_one_outside),
+> +       KUNIT_CASE(igt_damage_iter_damage_src_moved),
+> +       KUNIT_CASE(igt_damage_iter_damage_not_visible),
+> +       { }
+> +};
+> +
+> +static struct kunit_suite drm_damage_helper_test_suite =3D {
+> +       .name =3D "drm_damage_helper_tests",
+> +       .test_cases =3D drm_damage_helper_tests,
+> +};
+> +
+> +kunit_test_suite(drm_damage_helper_test_suite);
+> +
+> +MODULE_LICENSE("GPL");
+> --
+> 2.33.1
+>
