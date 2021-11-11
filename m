@@ -2,85 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B827344D546
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Nov 2021 11:48:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A26944D532
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Nov 2021 11:42:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232955AbhKKKvo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Nov 2021 05:51:44 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34432 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229668AbhKKKvn (ORCPT
+        id S232904AbhKKKo7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Nov 2021 05:44:59 -0500
+Received: from szxga02-in.huawei.com ([45.249.212.188]:15816 "EHLO
+        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230256AbhKKKo6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Nov 2021 05:51:43 -0500
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3FE96C061766
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Nov 2021 02:48:54 -0800 (PST)
-Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=[127.0.0.1])
-        by metis.ext.pengutronix.de with esmtp (Exim 4.92)
-        (envelope-from <h.assmann@pengutronix.de>)
-        id 1ml7dL-00011i-GX; Thu, 11 Nov 2021 11:48:43 +0100
-Subject: Re: [Linux-stm32] [PATCH net] net: stmmac: allow a tc-taprio
- base-time of zero
-To:     Vladimir Oltean <vladimir.oltean@nxp.com>,
-        Ahmad Fatoum <a.fatoum@pengutronix.de>,
-        Michael Olbrich <m.olbrich@pengutronix.de>
-Cc:     Yannick Vignon <yannick.vignon@nxp.com>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        "David S. Miller" <davem@davemloft.net>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        Xiaoliang Yang <xiaoliang.yang_1@nxp.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jose Abreu <joabreu@synopsys.com>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Giuseppe Cavallaro <peppe.cavallaro@st.com>,
-        Kurt Kanzenbach <kurt.kanzenbach@linutronix.de>,
-        "linux-stm32@st-md-mailman.stormreply.com" 
-        <linux-stm32@st-md-mailman.stormreply.com>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>
-References: <20211108202854.1740995-1-vladimir.oltean@nxp.com>
- <87bl2t3fkq.fsf@kurt> <20211109103504.ahl2djymnevsbhoj@skbuf>
- <6bf6db8b-4717-71fe-b6de-9f6e12202dad@pengutronix.de>
- <20211109142255.5ohhfyin7hsffmlk@skbuf>
- <20211110123843.3u4jo3xe7plows6r@skbuf>
-From:   Holger Assmann <h.assmann@pengutronix.de>
-Message-ID: <7090ab87-e0ba-3f5a-116d-71ce34a94c97@pengutronix.de>
-Date:   Thu, 11 Nov 2021 11:48:40 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        Thu, 11 Nov 2021 05:44:58 -0500
+Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.55])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4HqdZ75xLzz90nF;
+        Thu, 11 Nov 2021 18:41:51 +0800 (CST)
+Received: from kwepemm600004.china.huawei.com (7.193.23.242) by
+ dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.15; Thu, 11 Nov 2021 18:42:07 +0800
+Received: from huawei.com (10.175.101.6) by kwepemm600004.china.huawei.com
+ (7.193.23.242) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2308.15; Thu, 11 Nov
+ 2021 18:42:06 +0800
+From:   Guo Xuenan <guoxuenan@huawei.com>
+To:     <guoxuenan@huawei.com>
+CC:     <akpm@linux-foundation.org>, <cy.fan@huawei.com>, <cyan@fb.com>,
+        <fangwei1@huawei.com>, <hsiangkao@linux.alibaba.com>,
+        <linux-kernel@vger.kernel.org>,
+        <syzbot+63d688f1d899c588fb71@syzkaller.appspotmail.com>,
+        <terrelln@fb.com>, <wangli74@huawei.com>
+Subject: [PATCH v3] lz4: fix LZ4_decompress_safe_partial read out of bound
+Date:   Thu, 11 Nov 2021 18:50:48 +0800
+Message-ID: <20211111105048.2006070-1-guoxuenan@huawei.com>
+X-Mailer: git-send-email 2.31.1
+In-Reply-To: <20211111085058.1940591-1-guoxuenan@huawei.com>
+References: <20211111085058.1940591-1-guoxuenan@huawei.com>
 MIME-Version: 1.0
-In-Reply-To: <20211110123843.3u4jo3xe7plows6r@skbuf>
-Content-Type: text/plain; charset=utf-8
-Content-Language: de-DE
-Content-Transfer-Encoding: 7bit
-X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
-X-SA-Exim-Mail-From: h.assmann@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.101.6]
+X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
+ kwepemm600004.china.huawei.com (7.193.23.242)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+When partialDecoding, it is EOF if we've either, filled the output
+buffer or can't proceed with reading an offset for following match.
 
-Am 10.11.21 um 13:38 schrieb Vladimir Oltean:
->>
->> Indeed. Was there a v2 to that?
-> 
-> FWIW I've applied that patch and made a few fixups according to my
-> liking, and it works fine. I can resend it myself if there aren't any
-> volunteers from Pengutronix.
-> 
+In some extreme corner cases when compressed data is crusted corrupted,
+UAF will occur. As reported by KASAN [1], LZ4_decompress_safe_partial
+may lead to read out of bound problem during decoding. lz4 upstream has
+fixed it [2] and this issue has been disscussed here [3] before.
 
-Feel free to do so!
+current decompression routine was ported from lz4 v1.8.3, bumping lib/lz4
+to v1.9.+ is certainly a huge work to be done later, so, we'd better fix
+it first.
 
-Greetings,
-Holger
+[1] https://lore.kernel.org/all/000000000000830d1205cf7f0477@google.com/
+[2] https://github.com/lz4/lz4/commit/c5d6f8a8be3927c0bec91bcc58667a6cfad244ad#
+[3] https://lore.kernel.org/all/CC666AE8-4CA4-4951-B6FB-A2EFDE3AC03B@fb.com/
 
+Reported-by: syzbot+63d688f1d899c588fb71@syzkaller.appspotmail.com
+Cc: hsiangkao@linux.alibaba.com
+Cc: terrelln@fb.com
+Cc: cyan@fb.com
+Cc: cy.fan@huawei.com
+Signed-off-by: Guo Xuenan <guoxuenan@huawei.com>
+---
+ lib/lz4/lz4_decompress.c | 8 ++++++--
+ 1 file changed, 6 insertions(+), 2 deletions(-)
+
+diff --git a/lib/lz4/lz4_decompress.c b/lib/lz4/lz4_decompress.c
+index 926f4823d5ea..fd1728d94bab 100644
+--- a/lib/lz4/lz4_decompress.c
++++ b/lib/lz4/lz4_decompress.c
+@@ -271,8 +271,12 @@ static FORCE_INLINE int LZ4_decompress_generic(
+ 			ip += length;
+ 			op += length;
+ 
+-			/* Necessarily EOF, due to parsing restrictions */
+-			if (!partialDecoding || (cpy == oend))
++			/* Necessarily EOF when !partialDecoding.
++			 * When partialDecoding, it is EOF if we've either
++			 * filled the output buffer or
++			 * can't proceed with reading an offset for following match.
++			 */
++			if (!partialDecoding || (cpy == oend) || (ip >= (iend - 2)))
+ 				break;
+ 		} else {
+ 			/* may overwrite up to WILDCOPYLENGTH beyond cpy */
 -- 
-Pengutronix e.K.                         | Holger Assmann              |
-Steuerwalder Str. 21                     | http://www.pengutronix.de/  |
-31137 Hildesheim, Germany                | Phone: +49-5121-206917-0    |
-Amtsgericht Hildesheim, HRA 2686         | Fax:   +49-5121-206917-5555 |
+2.31.1
+
