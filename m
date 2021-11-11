@@ -2,209 +2,189 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5EA2444D305
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Nov 2021 09:14:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BD88644D315
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Nov 2021 09:20:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232161AbhKKIRc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Nov 2021 03:17:32 -0500
-Received: from elvis.franken.de ([193.175.24.41]:41876 "EHLO elvis.franken.de"
+        id S232057AbhKKIXY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Nov 2021 03:23:24 -0500
+Received: from mga04.intel.com ([192.55.52.120]:58449 "EHLO mga04.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231675AbhKKIRb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Nov 2021 03:17:31 -0500
-Received: from uucp (helo=alpha)
-        by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
-        id 1ml5EF-0001Sm-00; Thu, 11 Nov 2021 09:14:39 +0100
-Received: by alpha.franken.de (Postfix, from userid 1000)
-        id 3ABB6C2C80; Thu, 11 Nov 2021 09:14:29 +0100 (CET)
-Date:   Thu, 11 Nov 2021 09:14:29 +0100
-From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-To:     Masahiro Yamada <masahiroy@kernel.org>
-Cc:     "open list:BROADCOM NVRAM DRIVER" <linux-mips@vger.kernel.org>,
-        Alexander Lobakin <alobakin@pm.me>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Paul Cercueil <paul@crapouillou.net>,
-        Xingxing Su <suxingxing@loongson.cn>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        zhaoxiao <zhaoxiao@uniontech.com>
-Subject: Re: [PATCH] mips: decompressor: do not copy source files while
- building
-Message-ID: <20211111081429.GA4865@alpha.franken.de>
-References: <20211105023815.85784-1-masahiroy@kernel.org>
- <20211110084927.GA5976@alpha.franken.de>
- <CAK7LNASKBJ6BT+PD7=KhGZ6wPfY7maEaj5g0rtkEhfmfxjxWuA@mail.gmail.com>
- <20211110185218.GB13827@alpha.franken.de>
- <CAK7LNAQu+FMw+MxVg=roydAP+vZBvZ9-ussC5C6TN=SL6HN6NA@mail.gmail.com>
+        id S229674AbhKKIXP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 11 Nov 2021 03:23:15 -0500
+X-IronPort-AV: E=McAfee;i="6200,9189,10164"; a="231596668"
+X-IronPort-AV: E=Sophos;i="5.87,225,1631602800"; 
+   d="scan'208";a="231596668"
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Nov 2021 00:20:25 -0800
+X-IronPort-AV: E=Sophos;i="5.87,225,1631602800"; 
+   d="scan'208";a="602529955"
+Received: from yhuang6-desk2.sh.intel.com (HELO yhuang6-desk2.ccr.corp.intel.com) ([10.239.159.101])
+  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Nov 2021 00:20:22 -0800
+From:   "Huang, Ying" <ying.huang@intel.com>
+To:     Baolin Wang <baolin.wang@linux.alibaba.com>
+Cc:     <akpm@linux-foundation.org>, <dave.hansen@linux.intel.com>,
+        <ziy@nvidia.com>, <osalvador@suse.de>, <shy828301@gmail.com>,
+        <zhongjiang-ali@linux.alibaba.com>, <xlpang@linux.alibaba.com>,
+        <linux-mm@kvack.org>, <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v2 1/2] mm: migrate: Support multiple target nodes demotion
+References: <cover.1636616548.git.baolin.wang@linux.alibaba.com>
+        <ae040cf8152f085e216c5ad862e03f7d62464c0d.1636616548.git.baolin.wang@linux.alibaba.com>
+Date:   Thu, 11 Nov 2021 16:20:20 +0800
+In-Reply-To: <ae040cf8152f085e216c5ad862e03f7d62464c0d.1636616548.git.baolin.wang@linux.alibaba.com>
+        (Baolin Wang's message of "Thu, 11 Nov 2021 15:48:34 +0800")
+Message-ID: <87zgqbm7cr.fsf@yhuang6-desk2.ccr.corp.intel.com>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/27.1 (gnu/linux)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAK7LNAQu+FMw+MxVg=roydAP+vZBvZ9-ussC5C6TN=SL6HN6NA@mail.gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain; charset=ascii
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 11, 2021 at 04:55:35PM +0900, Masahiro Yamada wrote:
-> On Thu, Nov 11, 2021 at 3:52 AM Thomas Bogendoerfer
-> <tsbogend@alpha.franken.de> wrote:
-> >
-> > On Thu, Nov 11, 2021 at 02:02:32AM +0900, Masahiro Yamada wrote:
-> > > On Wed, Nov 10, 2021 at 5:56 PM Thomas Bogendoerfer
-> > > <tsbogend@alpha.franken.de> wrote:
-> > > >
-> > > > On Fri, Nov 05, 2021 at 11:38:14AM +0900, Masahiro Yamada wrote:
-> > > > > As commit 7ae4a78daacf ("ARM: 8969/1: decompressor: simplify libfdt
-> > > > > builds") stated, copying source files during the build time may not
-> > > > > end up with as clean code as expected.
-> > > > >
-> > > > > Do similar for mips to clean up the Makefile and .gitignore.
-> > > > >
-> > > > > Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
-> > > > > ---
-> > > > >
-> > > > >  arch/mips/boot/compressed/.gitignore   |  3 ---
-> > > > >  arch/mips/boot/compressed/Makefile     | 12 ------------
-> > > > >  arch/mips/boot/compressed/ashldi3.c    |  2 ++
-> > > > >  arch/mips/boot/compressed/bswapsi.c    |  2 ++
-> > > > >  arch/mips/boot/compressed/uart-ath79.c |  2 ++
-> > > > >  scripts/remove-stale-files             |  5 +++++
-> > > > >  6 files changed, 11 insertions(+), 15 deletions(-)
-> > > > >  delete mode 100644 arch/mips/boot/compressed/.gitignore
-> > > > >  create mode 100644 arch/mips/boot/compressed/ashldi3.c
-> > > > >  create mode 100644 arch/mips/boot/compressed/bswapsi.c
-> > > > >  create mode 100644 arch/mips/boot/compressed/uart-ath79.c
-> > > > >
-> > > > > diff --git a/arch/mips/boot/compressed/.gitignore b/arch/mips/boot/compressed/.gitignore
-> > > > > deleted file mode 100644
-> > > > > index d358395614c9..000000000000
-> > > > > --- a/arch/mips/boot/compressed/.gitignore
-> > > > > +++ /dev/null
-> > > > > @@ -1,3 +0,0 @@
-> > > > > -# SPDX-License-Identifier: GPL-2.0-only
-> > > > > -ashldi3.c
-> > > > > -bswapsi.c
-> > > > > diff --git a/arch/mips/boot/compressed/Makefile b/arch/mips/boot/compressed/Makefile
-> > > > > index 3548b3b45269..e6584dab2360 100644
-> > > > > --- a/arch/mips/boot/compressed/Makefile
-> > > > > +++ b/arch/mips/boot/compressed/Makefile
-> > > > > @@ -50,20 +50,8 @@ vmlinuzobjs-$(CONFIG_MIPS_ALCHEMY)            += $(obj)/uart-alchemy.o
-> > > > >  vmlinuzobjs-$(CONFIG_ATH79)                     += $(obj)/uart-ath79.o
-> > > > >  endif
-> > > > >
-> > > > > -extra-y += uart-ath79.c
-> > > > > -$(obj)/uart-ath79.c: $(srctree)/arch/mips/ath79/early_printk.c
-> > > > > -     $(call cmd,shipped)
-> > > > > -
-> > > > >  vmlinuzobjs-$(CONFIG_KERNEL_XZ) += $(obj)/ashldi3.o
-> > > > >
-> > > > > -extra-y += ashldi3.c
-> > > > > -$(obj)/ashldi3.c: $(obj)/%.c: $(srctree)/lib/%.c FORCE
-> > > > > -     $(call if_changed,shipped)
-> > > > > -
-> > > > > -extra-y += bswapsi.c
-> > > > > -$(obj)/bswapsi.c: $(obj)/%.c: $(srctree)/arch/mips/lib/%.c FORCE
-> > > > > -     $(call if_changed,shipped)
-> > > > > -
-> > > > >  targets := $(notdir $(vmlinuzobjs-y))
-> > > > >
-> > > > >  targets += vmlinux.bin
-> > > > > diff --git a/arch/mips/boot/compressed/ashldi3.c b/arch/mips/boot/compressed/ashldi3.c
-> > > > > new file mode 100644
-> > > > > index 000000000000..f7bf6a7aae31
-> > > > > --- /dev/null
-> > > > > +++ b/arch/mips/boot/compressed/ashldi3.c
-> > > > > @@ -0,0 +1,2 @@
-> > > > > +// SPDX-License-Identifier: GPL-2.0-only
-> > > > > +#include "../../../../lib/ashldi3.c"
-> > > > > diff --git a/arch/mips/boot/compressed/bswapsi.c b/arch/mips/boot/compressed/bswapsi.c
-> > > > > new file mode 100644
-> > > > > index 000000000000..fdb9c6476904
-> > > > > --- /dev/null
-> > > > > +++ b/arch/mips/boot/compressed/bswapsi.c
-> > > > > @@ -0,0 +1,2 @@
-> > > > > +// SPDX-License-Identifier: GPL-2.0-only
-> > > > > +#include "../../lib/bswapsi.c"
-> > > > > diff --git a/arch/mips/boot/compressed/uart-ath79.c b/arch/mips/boot/compressed/uart-ath79.c
-> > > > > new file mode 100644
-> > > > > index 000000000000..d686820921be
-> > > > > --- /dev/null
-> > > > > +++ b/arch/mips/boot/compressed/uart-ath79.c
-> > > > > @@ -0,0 +1,2 @@
-> > > > > +// SPDX-License-Identifier: GPL-2.0-only
-> > > > > +#include "../../ath79/early_printk.c"
-> > > > > diff --git a/scripts/remove-stale-files b/scripts/remove-stale-files
-> > > > > index eb630ee287c3..c534fe1eac16 100755
-> > > > > --- a/scripts/remove-stale-files
-> > > > > +++ b/scripts/remove-stale-files
-> > > > > @@ -28,4 +28,9 @@ if [ -n "${building_out_of_srctree}" ]; then
-> > > > >       do
-> > > > >               rm -f arch/arm/boot/compressed/${f}
-> > > > >       done
-> > > > > +
-> > > > > +     for f in uart-ath79.c ashldi3.c bswapsi.c
-> > > > > +     do
-> > > > > +             rm -f arch/mips/boot/compressed/${f}
-> > > > > +     done
-> > > >
-> > > > hmm, isn't this the wrong action now that these files have been added
-> > > > to git ?
-> > > >
-> > > > Thomas.
-> > >
-> > >
-> > > Please note that the entire code block is enclosed by:
-> > >
-> > > if [ -n "${building_out_of_srctree}" ]; then
-> > >            ...
-> > > fi
-> > >
-> > >
-> > > "building_out_of_srctree" is set when you are doing
-> > > out-of-tree build  (O=<output-dir>).
-> > >
-> > > So, only the generated files are removed.
-> >
-> > but there aren't copied/generated any longer or I'm missing someting ?
-> >
-> > Anyway I've applied your patch to mips-next with changes to also cover
-> >
-> > https://patchwork.kernel.org/project/linux-mips/patch/20211110030944.6733-1-rdunlap@infradead.org/
-> >
-> 
-> 
-> Your conversion is wrong.
-> 
-> The original code:
-> 
-> $(obj)/bswapdi.c: $(obj)/%.c: $(srctree)/arch/mips/lib/%.c FORCE
->         $(call if_changed,shipped)
-> 
-> 
-> copied mips-specific library code
-> (arch/mips/lib/bswapdi.c)
-> 
-> 
-> Now, you do
-> 
-> #include "../../../../lib/ashldi3.c"
-> 
-> , which wraps the generic library code
-> (lib/ashldi3.c)
+Baolin Wang <baolin.wang@linux.alibaba.com> writes:
 
-arch/mips/boot/compressed/bswapdi.c in my tree is 
+> We have some machines with multiple memory types like below, which
+> have one fast (DRAM) memory node and two slow (persistent memory) memory
+> nodes. According to current node demotion policy, if node 0 fills up,
+> its memory should be migrated to node 1, when node 1 fills up, its
+> memory will be migrated to node 2: node 0 -> node 1 -> node 2 ->stop.
+>
+> But this is not efficient and suitbale memory migration route
+> for our machine with multiple slow memory nodes. Since the distance
+> between node 0 to node 1 and node 0 to node 2 is equal, and memory
+> migration between slow memory nodes will increase persistent memory
+> bandwidth greatly, which will hurt the whole system's performance.
+>
+> Thus for this case, we can treat the slow memory node 1 and node 2
+> as a whole slow memory region, and we should migrate memory from
+> node 0 to node 1 and node 2 if node 0 fills up.
+>
+> This patch changes the node_demotion data structure to support multiple
+> target nodes, and establishes the migration path to support multiple
+> target nodes with validating if the node distance is the best or not.
+>
+> available: 3 nodes (0-2)
+> node 0 cpus: 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15
+> node 0 size: 62153 MB
+> node 0 free: 55135 MB
+> node 1 cpus:
+> node 1 size: 127007 MB
+> node 1 free: 126930 MB
+> node 2 cpus:
+> node 2 size: 126968 MB
+> node 2 free: 126878 MB
+> node distances:
+> node   0   1   2
+>   0:  10  20  20
+>   1:  20  10  20
+>   2:  20  20  10
+>
+> Signed-off-by: Baolin Wang <baolin.wang@linux.alibaba.com>
+> ---
+>  mm/migrate.c | 138 +++++++++++++++++++++++++++++++++++++++++++----------------
+>  1 file changed, 102 insertions(+), 36 deletions(-)
+>
+> diff --git a/mm/migrate.c b/mm/migrate.c
+> index cf25b00..126e9e6 100644
+> --- a/mm/migrate.c
+> +++ b/mm/migrate.c
+> @@ -50,6 +50,7 @@
+>  #include <linux/ptrace.h>
+>  #include <linux/oom.h>
+>  #include <linux/memory.h>
+> +#include <linux/random.h>
+>  
+>  #include <asm/tlbflush.h>
+>  
+> @@ -1119,12 +1120,25 @@ static int __unmap_and_move(struct page *page, struct page *newpage,
+>   *
+>   * This is represented in the node_demotion[] like this:
+>   *
+> - *	{  1, // Node 0 migrates to 1
+> - *	   2, // Node 1 migrates to 2
+> - *	  -1, // Node 2 does not migrate
+> - *	   4, // Node 3 migrates to 4
+> - *	   5, // Node 4 migrates to 5
+> - *	  -1} // Node 5 does not migrate
+> + *	{  nr=1, nodes[0]=1 }, // Node 0 migrates to 1
+> + *	{  nr=1, nodes[0]=2 }, // Node 1 migrates to 2
+> + *	{  nr=0, nodes[0]=-1 }, // Node 2 does not migrate
+> + *	{  nr=1, nodes[0]=4 }, // Node 3 migrates to 4
+> + *	{  nr=1, nodes[0]=5 }, // Node 4 migrates to 5
+> + *	{  nr=0, nodes[0]=-1 }, // Node 5 does not migrate
+> + *
+> + * Moreover some systems may have multiple slow memory nodes.
+> + * Suppose a system has one socket with 3 memory nodes, node 0
+> + * is fast memory type, and node 1/2 both are slow memory
+> + * type, and the distance between fast memory node and slow
+> + * memory node is same. So the migration path should be:
+> + *
+> + *	0 -> 1/2 -> stop
+> + *
+> + * This is represented in the node_demotion[] like this:
+> + *	{ nr=2, {nodes[0]=1, nodes[1]=2} }, // Node 0 migrates to node 1 and node 2
+> + *	{ nr=0, nodes[0]=-1, }, // Node 1 dose not migrate
+> + *	{ nr=0, nodes[0]=-1, }, // Node 2 does not migrate
+>   */
+>  
+>  /*
+> @@ -1135,8 +1149,13 @@ static int __unmap_and_move(struct page *page, struct page *newpage,
+>   * must be held over all reads to ensure that no cycles are
+>   * observed.
+>   */
+> -static int node_demotion[MAX_NUMNODES] __read_mostly =
+> -	{[0 ...  MAX_NUMNODES - 1] = NUMA_NO_NODE};
+> +#define DEFAULT_DEMOTION_TARGET_NODES 15
+> +struct demotion_nodes {
+> +	unsigned short nr;
+> +	short nodes[DEFAULT_DEMOTION_TARGET_NODES];
+> +};
+> +
+> +static struct demotion_nodes node_demotion[MAX_NUMNODES] __read_mostly;
+>  
+>  /**
+>   * next_demotion_node() - Get the next node in the demotion path
+> @@ -1149,6 +1168,8 @@ static int __unmap_and_move(struct page *page, struct page *newpage,
+>   */
+>  int next_demotion_node(int node)
+>  {
+> +	struct demotion_nodes *nd = &node_demotion[node];
+> +	unsigned short target_nr, index;
+>  	int target;
+>  
+>  	/*
+> @@ -1161,9 +1182,25 @@ int next_demotion_node(int node)
+>  	 * node_demotion[] reads need to be consistent.
+>  	 */
+>  	rcu_read_lock();
+> -	target = READ_ONCE(node_demotion[node]);
+> -	rcu_read_unlock();
+> +	target_nr = READ_ONCE(nd->nr);
+> +
+> +	if (target_nr == 0) {
+> +		target = NUMA_NO_NODE;
+> +		goto out;
+> +	} else if (target_nr == 1) {
+> +		index = 0;
+> +	} else {
+> +		/*
+> +		 * If there are multiple target nodes, just select one
+> +		 * target node randomly.
+> +		 */
+> +		index = get_random_int() % target_nr;
+> +	}
 
-diff --git a/arch/mips/boot/compressed/bswapdi.c b/arch/mips/boot/compressed/bswapdi.c
-new file mode 100644
-index 000000000000..acb28aebb025
---- /dev/null
-+++ b/arch/mips/boot/compressed/bswapdi.c
-@@ -0,0 +1,2 @@
-+// SPDX-License-Identifier: GPL-2.0-only
-+#include "../../lib/bswapdi.c"
+How about use "switch" here?
 
-which looks correct to me.
+Best Regards,
+Huang, Ying
 
-Thomas.
+> +
+> +	target = READ_ONCE(nd->nodes[index]);
+>  
+> +out:
+> +	rcu_read_unlock();
+>  	return target;
+>  }
+>  
 
--- 
-Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
-good idea.                                                [ RFC1925, 2.3 ]
+[snip]
