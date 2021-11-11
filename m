@@ -2,205 +2,278 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0304D44D3A1
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Nov 2021 09:58:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D04144D3A9
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Nov 2021 09:59:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232552AbhKKJAs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Nov 2021 04:00:48 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37422 "EHLO
+        id S232558AbhKKJBy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Nov 2021 04:01:54 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37718 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232357AbhKKJAk (ORCPT
+        with ESMTP id S231951AbhKKJBv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Nov 2021 04:00:40 -0500
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3FD7AC061767;
-        Thu, 11 Nov 2021 00:57:51 -0800 (PST)
-Date:   Thu, 11 Nov 2021 08:57:48 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1636621069;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
-        bh=DB/6RgQ/PZizcqcCryGHpNqX5euRa/sbj4pJCAFPBsc=;
-        b=MzgT7Ol9MzuFhvso8ccr6eQFnIAwlWWF2LHomn2aCjslMc3nrI/RQy7HDq1FLqb4Z4r6b8
-        vOmqeu8flsl9kChLoy6DMDL431isKylQ4KTxtwIrl/K4BCo3yTdHkGWa8YzBaDhjlUsa8J
-        SlL3xHTOijvyS1XusZ7OjpJMVR6GZcwgp2u0ZAMNv5JpvMKZaR0fV5ygINqrSteGDu/fBO
-        aOlgIDldAviLCODsNGpkDIVfhnzgT0Piwaxh/xsdPJ1CeRTYk4lR+S/9Jy9IZx8d2yNlxn
-        nXv/X3R/JTphyp27E6rWVbvuiJKdTPk46WXJXqjY9uzRP5vnWVfDkgem8X0tJw==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1636621069;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
-        bh=DB/6RgQ/PZizcqcCryGHpNqX5euRa/sbj4pJCAFPBsc=;
-        b=gPsN0m4hsP3OKBqkOfnm/aa1w7QpdbYM1Iwr1gE76qyI1E8KvZCdcGuKTc2VQ9OT78DE47
-        G6ENsoqsQFiTN8Cw==
-From:   "tip-bot2 for Thomas Gleixner" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: irq/urgent] PCI/MSI: Move non-mask check back into low level accessors
-Cc:     Josef Johansson <josef@oderland.se>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Bjorn Helgaas <helgaas@kernel.org>, stable@vger.kernel.org,
-        x86@kernel.org, linux-kernel@vger.kernel.org, maz@kernel.org
+        Thu, 11 Nov 2021 04:01:51 -0500
+Received: from mail-wr1-x42a.google.com (mail-wr1-x42a.google.com [IPv6:2a00:1450:4864:20::42a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E008CC061767
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Nov 2021 00:59:02 -0800 (PST)
+Received: by mail-wr1-x42a.google.com with SMTP id c4so8534505wrd.9
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Nov 2021 00:59:02 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=KE0Q6DOV6GHSl4Ouk9hbWg9wbGXQ6gt7NPW0dQOJ5po=;
+        b=ow2WLWo0fzNtQWXrzho8EFOOTI8eLxBjTf+jcG8AZvhqn2/UGbPs3TaTtYsjmFXJBR
+         hI/+h9qhlGTzfoLunaNy58FCyHoJf7KVDzzPgqyAtvt9kiNgd/RXCr7FRjr4Yr13aB2I
+         bI5E1GvDElQVyaC6Y9wus0M+mmclx8lzN5m6AguJ7c/Qoh2TktBdWPX35Vav4oqRpQCx
+         Odk/AB7HzDKNQAa7KACCJMwq7qPdbVAmLInbXOSwV1C4Z/kD3BET9Ach7qr1y9keFJbb
+         wFQVxFmojCjeXFJxBYZ7QUZuc9tndupdqNzS4BQS/+Wxan6SIKoSuqPrcrCzjZKcSaHd
+         FNcQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=KE0Q6DOV6GHSl4Ouk9hbWg9wbGXQ6gt7NPW0dQOJ5po=;
+        b=SN+0lrPBlh3WidHn5qwp67zFTOVH1p+2TctvuYV9TvEQb2mAX5aJ2ckx4BKcIHd6Id
+         Dp+czi7Hr163Q3rtPjrFxjs6iIhWLAiyUTznzvxL2liCZkp07hhpYCHH79f6UruP5geB
+         G5HK8AjJPW5+yjIOF7ZCsFQb8wBF4GPSPaYRmYPsRhmtfDNvuHQ7ihZdWVqFTLaBQbX/
+         tNSrLsR+7jOctTO+Eb+xYfsnc1FfbiwZEt9ah9/Uz/npaWtOXJ8ZGzhRHoRTcZl7BX02
+         67TQ+OIolnhFayDTWu+fbdJMvIfvkDoJ4/I8Nz1bBx09opFO7ayVEv0mDoRzRiwhlgXi
+         B5Jw==
+X-Gm-Message-State: AOAM530ElwdZKxzSTlUUqfleobzGqHQDiNixCcF+oOm9hY3rnwQ7VV6d
+        RjBs26N/0Qd0F5ygCEkAp/Wmbi9uIgOAnw==
+X-Google-Smtp-Source: ABdhPJwecduRraw4fkfz7VAJRwJdCdMAJ+Qlmhhl1A91WrxY0eaZ0X3L6iML1OqupkhhfhfV2FrMZQ==
+X-Received: by 2002:a05:6000:1010:: with SMTP id a16mr6841303wrx.155.1636621141247;
+        Thu, 11 Nov 2021 00:59:01 -0800 (PST)
+Received: from elver.google.com ([2a00:79e0:15:13:fd21:69cc:1f2b:9812])
+        by smtp.gmail.com with ESMTPSA id m36sm2258925wms.25.2021.11.11.00.59.00
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 11 Nov 2021 00:59:00 -0800 (PST)
+Date:   Thu, 11 Nov 2021 09:58:54 +0100
+From:   Marco Elver <elver@google.com>
+To:     Valentin Schneider <valentin.schneider@arm.com>
+Cc:     linux-kernel@vger.kernel.org, kasan-dev@googlegroups.com,
+        linuxppc-dev@lists.ozlabs.org, linux-kbuild@vger.kernel.org,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Mike Galbraith <efault@gmx.de>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Michal Marek <michal.lkml@markovi.net>,
+        Nick Desaulniers <ndesaulniers@google.com>
+Subject: Re: [PATCH v2 1/5] preempt: Restore preemption model selection
+ configs
+Message-ID: <YYzbTvrNQTUhgrWW@elver.google.com>
+References: <20211110202448.4054153-1-valentin.schneider@arm.com>
+ <20211110202448.4054153-2-valentin.schneider@arm.com>
 MIME-Version: 1.0
-Message-ID: <163662106897.414.14667708131641356919.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211110202448.4054153-2-valentin.schneider@arm.com>
+User-Agent: Mutt/2.0.5 (2021-01-21)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the irq/urgent branch of tip:
+On Wed, Nov 10, 2021 at 08:24PM +0000, Valentin Schneider wrote:
+> Commit c597bfddc9e9 ("sched: Provide Kconfig support for default dynamic
+> preempt mode") changed the selectable config names for the preemption
+> model. This means a config file must now select
+> 
+>   CONFIG_PREEMPT_BEHAVIOUR=y
+> 
+> rather than
+> 
+>   CONFIG_PREEMPT=y
+> 
+> to get a preemptible kernel. This means all arch config files would need to
+> be updated - right now they'll all end up with the default
+> CONFIG_PREEMPT_NONE_BEHAVIOUR.
+> 
+> Rather than touch a good hundred of config files, restore usage of
+> CONFIG_PREEMPT{_NONE, _VOLUNTARY}. Make them configure:
+> o The build-time preemption model when !PREEMPT_DYNAMIC
+> o The default boot-time preemption model when PREEMPT_DYNAMIC
+> 
+> Add siblings of those configs with the _BUILD suffix to unconditionally
+> designate the build-time preemption model (PREEMPT_DYNAMIC is built with
+> the "highest" preemption model it supports, aka PREEMPT). Downstream
+> configs should by now all be depending / selected by CONFIG_PREEMPTION
+> rather than CONFIG_PREEMPT, so only a few sites need patching up.
+> 
+> Signed-off-by: Valentin Schneider <valentin.schneider@arm.com>
 
-Commit-ID:     9c8e9c9681a0f3f1ae90a90230d059c7a1dece5a
-Gitweb:        https://git.kernel.org/tip/9c8e9c9681a0f3f1ae90a90230d059c7a1dece5a
-Author:        Thomas Gleixner <tglx@linutronix.de>
-AuthorDate:    Thu, 04 Nov 2021 00:27:29 +01:00
-Committer:     Thomas Gleixner <tglx@linutronix.de>
-CommitterDate: Thu, 11 Nov 2021 09:50:30 +01:00
+Acked-by: Marco Elver <elver@google.com>
 
-PCI/MSI: Move non-mask check back into low level accessors
+Much better, thank you!
 
-The recent rework of PCI/MSI[X] masking moved the non-mask checks from the
-low level accessors into the higher level mask/unmask functions.
-
-This missed the fact that these accessors can be invoked from other places
-as well. The missing checks break XEN-PV which sets pci_msi_ignore_mask and
-also violates the virtual MSIX and the msi_attrib.maskbit protections.
-
-Instead of sprinkling checks all over the place, lift them back into the
-low level accessor functions. To avoid checking three different conditions
-combine them into one property of msi_desc::msi_attrib.
-
-[ josef: Fixed the missed conversion in the core code ]
-
-Fixes: fcacdfbef5a1 ("PCI/MSI: Provide a new set of mask and unmask functions")
-Reported-by: Josef Johansson <josef@oderland.se>
-Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Tested-by: Josef Johansson <josef@oderland.se>
-Cc: Bjorn Helgaas <helgaas@kernel.org>
-Cc: stable@vger.kernel.org
----
- drivers/pci/msi.c   | 26 ++++++++++++++------------
- include/linux/msi.h |  2 +-
- kernel/irq/msi.c    |  4 ++--
- 3 files changed, 17 insertions(+), 15 deletions(-)
-
-diff --git a/drivers/pci/msi.c b/drivers/pci/msi.c
-index 12e296d..6da7910 100644
---- a/drivers/pci/msi.c
-+++ b/drivers/pci/msi.c
-@@ -148,6 +148,9 @@ static noinline void pci_msi_update_mask(struct msi_desc *desc, u32 clear, u32 s
- 	raw_spinlock_t *lock = &desc->dev->msi_lock;
- 	unsigned long flags;
- 
-+	if (!desc->msi_attrib.can_mask)
-+		return;
-+
- 	raw_spin_lock_irqsave(lock, flags);
- 	desc->msi_mask &= ~clear;
- 	desc->msi_mask |= set;
-@@ -181,7 +184,8 @@ static void pci_msix_write_vector_ctrl(struct msi_desc *desc, u32 ctrl)
- {
- 	void __iomem *desc_addr = pci_msix_desc_addr(desc);
- 
--	writel(ctrl, desc_addr + PCI_MSIX_ENTRY_VECTOR_CTRL);
-+	if (desc->msi_attrib.can_mask)
-+		writel(ctrl, desc_addr + PCI_MSIX_ENTRY_VECTOR_CTRL);
- }
- 
- static inline void pci_msix_mask(struct msi_desc *desc)
-@@ -200,23 +204,17 @@ static inline void pci_msix_unmask(struct msi_desc *desc)
- 
- static void __pci_msi_mask_desc(struct msi_desc *desc, u32 mask)
- {
--	if (pci_msi_ignore_mask || desc->msi_attrib.is_virtual)
--		return;
--
- 	if (desc->msi_attrib.is_msix)
- 		pci_msix_mask(desc);
--	else if (desc->msi_attrib.maskbit)
-+	else
- 		pci_msi_mask(desc, mask);
- }
- 
- static void __pci_msi_unmask_desc(struct msi_desc *desc, u32 mask)
- {
--	if (pci_msi_ignore_mask || desc->msi_attrib.is_virtual)
--		return;
--
- 	if (desc->msi_attrib.is_msix)
- 		pci_msix_unmask(desc);
--	else if (desc->msi_attrib.maskbit)
-+	else
- 		pci_msi_unmask(desc, mask);
- }
- 
-@@ -484,7 +482,8 @@ msi_setup_entry(struct pci_dev *dev, int nvec, struct irq_affinity *affd)
- 	entry->msi_attrib.is_64		= !!(control & PCI_MSI_FLAGS_64BIT);
- 	entry->msi_attrib.is_virtual    = 0;
- 	entry->msi_attrib.entry_nr	= 0;
--	entry->msi_attrib.maskbit	= !!(control & PCI_MSI_FLAGS_MASKBIT);
-+	entry->msi_attrib.can_mask	= !pci_msi_ignore_mask &&
-+					  !!(control & PCI_MSI_FLAGS_MASKBIT);
- 	entry->msi_attrib.default_irq	= dev->irq;	/* Save IOAPIC IRQ */
- 	entry->msi_attrib.multi_cap	= (control & PCI_MSI_FLAGS_QMASK) >> 1;
- 	entry->msi_attrib.multiple	= ilog2(__roundup_pow_of_two(nvec));
-@@ -495,7 +494,7 @@ msi_setup_entry(struct pci_dev *dev, int nvec, struct irq_affinity *affd)
- 		entry->mask_pos = dev->msi_cap + PCI_MSI_MASK_32;
- 
- 	/* Save the initial mask status */
--	if (entry->msi_attrib.maskbit)
-+	if (entry->msi_attrib.can_mask)
- 		pci_read_config_dword(dev, entry->mask_pos, &entry->msi_mask);
- 
- out:
-@@ -639,10 +638,13 @@ static int msix_setup_entries(struct pci_dev *dev, void __iomem *base,
- 		entry->msi_attrib.is_virtual =
- 			entry->msi_attrib.entry_nr >= vec_count;
- 
-+		entry->msi_attrib.can_mask	= !pci_msi_ignore_mask &&
-+						  !entry->msi_attrib.is_virtual;
-+
- 		entry->msi_attrib.default_irq	= dev->irq;
- 		entry->mask_base		= base;
- 
--		if (!entry->msi_attrib.is_virtual) {
-+		if (entry->msi_attrib.can_mask) {
- 			addr = pci_msix_desc_addr(entry);
- 			entry->msix_ctrl = readl(addr + PCI_MSIX_ENTRY_VECTOR_CTRL);
- 		}
-diff --git a/include/linux/msi.h b/include/linux/msi.h
-index 49cf6eb..e616f94 100644
---- a/include/linux/msi.h
-+++ b/include/linux/msi.h
-@@ -148,7 +148,7 @@ struct msi_desc {
- 				u8	is_msix		: 1;
- 				u8	multiple	: 3;
- 				u8	multi_cap	: 3;
--				u8	maskbit		: 1;
-+				u8	can_mask	: 1;
- 				u8	is_64		: 1;
- 				u8	is_virtual	: 1;
- 				u16	entry_nr;
-diff --git a/kernel/irq/msi.c b/kernel/irq/msi.c
-index 6a5ecee..7f350ae 100644
---- a/kernel/irq/msi.c
-+++ b/kernel/irq/msi.c
-@@ -529,10 +529,10 @@ static bool msi_check_reservation_mode(struct irq_domain *domain,
- 
- 	/*
- 	 * Checking the first MSI descriptor is sufficient. MSIX supports
--	 * masking and MSI does so when the maskbit is set.
-+	 * masking and MSI does so when the can_mask attribute is set.
- 	 */
- 	desc = first_msi_entry(dev);
--	return desc->msi_attrib.is_msix || desc->msi_attrib.maskbit;
-+	return desc->msi_attrib.is_msix || desc->msi_attrib.can_mask;
- }
- 
- int __msi_domain_alloc_irqs(struct irq_domain *domain, struct device *dev,
+> ---
+>  include/linux/kernel.h   |  2 +-
+>  include/linux/vermagic.h |  2 +-
+>  init/Makefile            |  2 +-
+>  kernel/Kconfig.preempt   | 42 ++++++++++++++++++++--------------------
+>  kernel/sched/core.c      |  6 +++---
+>  5 files changed, 27 insertions(+), 27 deletions(-)
+> 
+> diff --git a/include/linux/kernel.h b/include/linux/kernel.h
+> index 2776423a587e..9c7d774ef809 100644
+> --- a/include/linux/kernel.h
+> +++ b/include/linux/kernel.h
+> @@ -88,7 +88,7 @@
+>  struct completion;
+>  struct user;
+>  
+> -#ifdef CONFIG_PREEMPT_VOLUNTARY
+> +#ifdef CONFIG_PREEMPT_VOLUNTARY_BUILD
+>  
+>  extern int __cond_resched(void);
+>  # define might_resched() __cond_resched()
+> diff --git a/include/linux/vermagic.h b/include/linux/vermagic.h
+> index 1eaaa93c37bf..329d63babaeb 100644
+> --- a/include/linux/vermagic.h
+> +++ b/include/linux/vermagic.h
+> @@ -15,7 +15,7 @@
+>  #else
+>  #define MODULE_VERMAGIC_SMP ""
+>  #endif
+> -#ifdef CONFIG_PREEMPT
+> +#ifdef CONFIG_PREEMPT_BUILD
+>  #define MODULE_VERMAGIC_PREEMPT "preempt "
+>  #elif defined(CONFIG_PREEMPT_RT)
+>  #define MODULE_VERMAGIC_PREEMPT "preempt_rt "
+> diff --git a/init/Makefile b/init/Makefile
+> index 2846113677ee..04eeee12c076 100644
+> --- a/init/Makefile
+> +++ b/init/Makefile
+> @@ -30,7 +30,7 @@ $(obj)/version.o: include/generated/compile.h
+>  quiet_cmd_compile.h = CHK     $@
+>        cmd_compile.h = \
+>  	$(CONFIG_SHELL) $(srctree)/scripts/mkcompile_h $@	\
+> -	"$(UTS_MACHINE)" "$(CONFIG_SMP)" "$(CONFIG_PREEMPT)"	\
+> +	"$(UTS_MACHINE)" "$(CONFIG_SMP)" "$(CONFIG_PREEMPT_BUILD)"	\
+>  	"$(CONFIG_PREEMPT_RT)" $(CONFIG_CC_VERSION_TEXT) "$(LD)"
+>  
+>  include/generated/compile.h: FORCE
+> diff --git a/kernel/Kconfig.preempt b/kernel/Kconfig.preempt
+> index 60f1bfc3c7b2..ce77f0265660 100644
+> --- a/kernel/Kconfig.preempt
+> +++ b/kernel/Kconfig.preempt
+> @@ -1,12 +1,23 @@
+>  # SPDX-License-Identifier: GPL-2.0-only
+>  
+> +config PREEMPT_NONE_BUILD
+> +	bool
+> +
+> +config PREEMPT_VOLUNTARY_BUILD
+> +	bool
+> +
+> +config PREEMPT_BUILD
+> +	bool
+> +	select PREEMPTION
+> +	select UNINLINE_SPIN_UNLOCK if !ARCH_INLINE_SPIN_UNLOCK
+> +
+>  choice
+>  	prompt "Preemption Model"
+> -	default PREEMPT_NONE_BEHAVIOUR
+> +	default PREEMPT_NONE
+>  
+> -config PREEMPT_NONE_BEHAVIOUR
+> +config PREEMPT_NONE
+>  	bool "No Forced Preemption (Server)"
+> -	select PREEMPT_NONE if !PREEMPT_DYNAMIC
+> +	select PREEMPT_NONE_BUILD if !PREEMPT_DYNAMIC
+>  	help
+>  	  This is the traditional Linux preemption model, geared towards
+>  	  throughput. It will still provide good latencies most of the
+> @@ -18,10 +29,10 @@ config PREEMPT_NONE_BEHAVIOUR
+>  	  raw processing power of the kernel, irrespective of scheduling
+>  	  latencies.
+>  
+> -config PREEMPT_VOLUNTARY_BEHAVIOUR
+> +config PREEMPT_VOLUNTARY
+>  	bool "Voluntary Kernel Preemption (Desktop)"
+>  	depends on !ARCH_NO_PREEMPT
+> -	select PREEMPT_VOLUNTARY if !PREEMPT_DYNAMIC
+> +	select PREEMPT_VOLUNTARY_BUILD if !PREEMPT_DYNAMIC
+>  	help
+>  	  This option reduces the latency of the kernel by adding more
+>  	  "explicit preemption points" to the kernel code. These new
+> @@ -37,10 +48,10 @@ config PREEMPT_VOLUNTARY_BEHAVIOUR
+>  
+>  	  Select this if you are building a kernel for a desktop system.
+>  
+> -config PREEMPT_BEHAVIOUR
+> +config PREEMPT
+>  	bool "Preemptible Kernel (Low-Latency Desktop)"
+>  	depends on !ARCH_NO_PREEMPT
+> -	select PREEMPT
+> +	select PREEMPT_BUILD
+>  	help
+>  	  This option reduces the latency of the kernel by making
+>  	  all kernel code (that is not executing in a critical section)
+> @@ -58,7 +69,7 @@ config PREEMPT_BEHAVIOUR
+>  
+>  config PREEMPT_RT
+>  	bool "Fully Preemptible Kernel (Real-Time)"
+> -	depends on EXPERT && ARCH_SUPPORTS_RT && !PREEMPT_DYNAMIC
+> +	depends on EXPERT && ARCH_SUPPORTS_RT
+>  	select PREEMPTION
+>  	help
+>  	  This option turns the kernel into a real-time kernel by replacing
+> @@ -75,17 +86,6 @@ config PREEMPT_RT
+>  
+>  endchoice
+>  
+> -config PREEMPT_NONE
+> -	bool
+> -
+> -config PREEMPT_VOLUNTARY
+> -	bool
+> -
+> -config PREEMPT
+> -	bool
+> -	select PREEMPTION
+> -	select UNINLINE_SPIN_UNLOCK if !ARCH_INLINE_SPIN_UNLOCK
+> -
+>  config PREEMPT_COUNT
+>         bool
+>  
+> @@ -95,8 +95,8 @@ config PREEMPTION
+>  
+>  config PREEMPT_DYNAMIC
+>  	bool "Preemption behaviour defined on boot"
+> -	depends on HAVE_PREEMPT_DYNAMIC
+> -	select PREEMPT
+> +	depends on HAVE_PREEMPT_DYNAMIC && !PREEMPT_RT
+> +	select PREEMPT_BUILD
+>  	default y
+>  	help
+>  	  This option allows to define the preemption model on the kernel
+> diff --git a/kernel/sched/core.c b/kernel/sched/core.c
+> index f2611b9cf503..97047aa7b6c2 100644
+> --- a/kernel/sched/core.c
+> +++ b/kernel/sched/core.c
+> @@ -6625,13 +6625,13 @@ __setup("preempt=", setup_preempt_mode);
+>  static void __init preempt_dynamic_init(void)
+>  {
+>  	if (preempt_dynamic_mode == preempt_dynamic_undefined) {
+> -		if (IS_ENABLED(CONFIG_PREEMPT_NONE_BEHAVIOUR)) {
+> +		if (IS_ENABLED(CONFIG_PREEMPT_NONE)) {
+>  			sched_dynamic_update(preempt_dynamic_none);
+> -		} else if (IS_ENABLED(CONFIG_PREEMPT_VOLUNTARY_BEHAVIOUR)) {
+> +		} else if (IS_ENABLED(CONFIG_PREEMPT_VOLUNTARY)) {
+>  			sched_dynamic_update(preempt_dynamic_voluntary);
+>  		} else {
+>  			/* Default static call setting, nothing to do */
+> -			WARN_ON_ONCE(!IS_ENABLED(CONFIG_PREEMPT_BEHAVIOUR));
+> +			WARN_ON_ONCE(!IS_ENABLED(CONFIG_PREEMPT));
+>  			preempt_dynamic_mode = preempt_dynamic_full;
+>  			pr_info("Dynamic Preempt: full\n");
+>  		}
+> -- 
+> 2.25.1
+> 
