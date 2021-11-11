@@ -2,55 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E894F44DB52
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Nov 2021 18:54:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 14AD144DB56
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Nov 2021 18:55:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234411AbhKKR5l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Nov 2021 12:57:41 -0500
-Received: from relay01.th.seeweb.it ([5.144.164.162]:58145 "EHLO
+        id S234420AbhKKR6e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Nov 2021 12:58:34 -0500
+Received: from relay01.th.seeweb.it ([5.144.164.162]:54555 "EHLO
         relay01.th.seeweb.it" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233705AbhKKR5k (ORCPT
+        with ESMTP id S232366AbhKKR6d (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Nov 2021 12:57:40 -0500
-X-Greylist: delayed 16086 seconds by postgrey-1.27 at vger.kernel.org; Thu, 11 Nov 2021 12:57:39 EST
+        Thu, 11 Nov 2021 12:58:33 -0500
 Received: from IcarusMOD.eternityproject.eu (unknown [2.237.20.237])
         (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by m-r1.th.seeweb.it (Postfix) with ESMTPSA id 5FF5A1FF01;
-        Thu, 11 Nov 2021 18:54:49 +0100 (CET)
-Subject: Re: [PATCH] net/ipa: ipa_resource: Fix wrong for loop range
+        by m-r1.th.seeweb.it (Postfix) with ESMTPSA id A3FA31FD2D;
+        Thu, 11 Nov 2021 18:55:42 +0100 (CET)
+Subject: Re: [PATCH] arm64: dts: qcom: Add support for SONY Xperia XZ2 / XZ2C
+ / XZ3 (Tama platform)
 To:     Konrad Dybcio <konrad.dybcio@somainline.org>,
         ~postmarketos/upstreaming@lists.sr.ht
 Cc:     martin.botka@somainline.org, marijn.suijten@somainline.org,
-        jamipkettunen@somainline.org, Alex Elder <elder@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20211111173401.551408-1-konrad.dybcio@somainline.org>
+        jamipkettunen@somainline.org, Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Anton Vorontsov <anton@enomsg.org>,
+        Colin Cross <ccross@android.com>,
+        Tony Luck <tony.luck@intel.com>, linux-arm-msm@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20211106191437.84943-1-konrad.dybcio@somainline.org>
+ <fe19d7e6-8d31-a157-65d0-da53095485ea@somainline.org>
 From:   AngeloGioacchino Del Regno 
         <angelogioacchino.delregno@somainline.org>
-Message-ID: <3ef6fa1d-6253-2f09-b3f8-abdf6c9c02e6@somainline.org>
-Date:   Thu, 11 Nov 2021 18:54:48 +0100
+Message-ID: <25b855a7-aeb9-cbdb-b832-d6fab0914569@somainline.org>
+Date:   Thu, 11 Nov 2021 18:55:42 +0100
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Thunderbird/78.13.0
 MIME-Version: 1.0
-In-Reply-To: <20211111173401.551408-1-konrad.dybcio@somainline.org>
-Content-Type: text/plain; charset=iso-8859-15; format=flowed
+In-Reply-To: <fe19d7e6-8d31-a157-65d0-da53095485ea@somainline.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Il 11/11/21 18:34, Konrad Dybcio ha scritto:
-> The destrination group count was mistakenly assigned to both dst and src loops.
-> Fix it to make IPA probe and work again.
+Il 11/11/21 03:16, Konrad Dybcio ha scritto:
 > 
-> Signed-off-by: Konrad Dybcio <konrad.dybcio@somainline.org>
-> ---
->   drivers/net/ipa/ipa_resource.c | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
+>> diff --git a/arch/arm64/boot/dts/qcom/sdm845-sony-xperia-tama.dtsi b/arch/arm64/boot/dts/qcom/sdm845-sony-xperia-tama.dtsi
+>> new file mode 100644
+>> index 000000000000..6b088675f4b9
+>> --- /dev/null
+>> +++ b/arch/arm64/boot/dts/qcom/sdm845-sony-xperia-tama.dtsi
+>> @@ -0,0 +1,442 @@
+>> +// SPDX-License-Identifier: BSD-3-Clause
+>> +/*
+>> + * Copyright (c) 2021, Konrad Dybcio <konrad.dybcio@somainline.org>
+>> + */
+>> +
+>> +#include <dt-bindings/input/input.h>
+>> +#include <dt-bindings/regulator/qcom,rpmh-regulator.h>
+>> +#include "sdm845.dtsi"
+>> +#include "pm8005.dtsi"
+>> +#include "pm8998.dtsi"
+>> +#include "pmi8998.dtsi"
+>> +
+>> +/ {
+>> +	qcom,msm-id = <321 0x20001>; /* SDM845 v2.1 */
+>> +	qcom,board-id = <8 0>;
+>> +
+>> +	gpio-keys {
 > 
+> Whooops! It seems that I totally forgot to add a compatible to gpio-keys.. Could that be fixed when applying if the patch is otherwise good? Should it not be the case, I'll surely fix that in the next revision..
 
-Acked-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@somainline.org>
+
+Just send a v2 of it, please. Makes it easier on the maintainers.
+
+Apart from that,
+Reviewed-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@somainline.org>
+
