@@ -2,153 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4E15244D3B3
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Nov 2021 10:03:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2DE1644D3B5
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Nov 2021 10:04:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232601AbhKKJFy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Nov 2021 04:05:54 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:37160 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232112AbhKKJFw (ORCPT
+        id S232446AbhKKJHF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Nov 2021 04:07:05 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38926 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231961AbhKKJHD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Nov 2021 04:05:52 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1636621383;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=HDJlKWmITGGiSJRAEgTyI1lTFGvuDXl7ywXp7NhlzRE=;
-        b=LJCu5iS/RbnNj5LCnro7rkJt0paVSu5lYZW7FNA51ZZAt2/hKw4c1l4j5Z/ezwEWki7LbW
-        eGKGGZl218xFzaJEJSknH2g/5Vt1GHiKy2JseuPvacbyf42T7l9WTLAkOpZA++uK34LMde
-        WiJBbQOoMDwHHtY9QEEbwaeKN1TFwIc=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-468-MfuEAeLuO3u2l5bcJsuzqA-1; Thu, 11 Nov 2021 04:03:00 -0500
-X-MC-Unique: MfuEAeLuO3u2l5bcJsuzqA-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 74A901927800;
-        Thu, 11 Nov 2021 09:02:59 +0000 (UTC)
-Received: from sirius.home.kraxel.org (unknown [10.39.193.245])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 23DA05D6D7;
-        Thu, 11 Nov 2021 09:02:46 +0000 (UTC)
-Received: by sirius.home.kraxel.org (Postfix, from userid 1000)
-        id 67A061800925; Thu, 11 Nov 2021 10:02:44 +0100 (CET)
-From:   Gerd Hoffmann <kraxel@redhat.com>
-To:     linux-pci@vger.kernel.org
-Cc:     mst@redhat.com, Gerd Hoffmann <kraxel@redhat.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH] pciehp: fast unplug for virtual machines
-Date:   Thu, 11 Nov 2021 10:02:24 +0100
-Message-Id: <20211111090225.946381-1-kraxel@redhat.com>
+        Thu, 11 Nov 2021 04:07:03 -0500
+Received: from mail-ua1-x942.google.com (mail-ua1-x942.google.com [IPv6:2607:f8b0:4864:20::942])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DCADBC061766
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Nov 2021 01:04:14 -0800 (PST)
+Received: by mail-ua1-x942.google.com with SMTP id b3so10524762uam.1
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Nov 2021 01:04:14 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:sender:from:date:message-id:subject:to
+         :content-transfer-encoding;
+        bh=DyD3gSI++ypE9VTJ8a4jGJzQFru1JzFlznTE64Sm3UI=;
+        b=l5Lpl2TtsG/lJC4i7lf23CNAAExBL5z3OEV7emJelcuaAKByMgXOUC7+heD80th2yb
+         zOa0jlW/SZoo9qKSWI5z4DV67gqisdMX56M0OIXZZWBfzvW09u2AbFAcX+x65eHWmdKY
+         ujG2cT+7Jkhov5pGFjoxyNcqM5iIBtTiMvFwOsL787sTlPAhlg0PhCqwHfcxHqJVri66
+         KbKfdq9Hm7PfPUSp4CfQC+KXzEBpOqUhLXPqpQGzRcoGAqgnWGAczeRWVKTmtjmERFaU
+         qzCdx4Zy0oIS95JuxH7abiAsLUdO63aZcZ3jgplVMUbrg4dChIfMNowepk25OY5CIitX
+         ePEA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:sender:from:date:message-id:subject
+         :to:content-transfer-encoding;
+        bh=DyD3gSI++ypE9VTJ8a4jGJzQFru1JzFlznTE64Sm3UI=;
+        b=4j76vlU/2puummfaXTQ3ANSyy48Fe16DDB1wN6n80mN0ZPA9MsQIXDav1bQgKcQAMM
+         rBmPncxlvKdMvWaTdsHWOswqeQSeGY69T/fj//IU+8Hg4sOhGyzWUpqg5fol9fspDZKo
+         lC93ZuKdfF1vgadsUa6yg69vg5oQa9h5I9LMcO1z4JOR86GD6XqvtNiQTZ1dfBgfD2EW
+         EOcr43MsUtSPZVHS12GpqcTdXiyzOQyvdIt8+o5ZXXjjqsm2tN9+0h7XyRlkrA3INfSg
+         wVjHPKqSyGUX3q+YEz4j8PAs+wCkYLWyba8U6ETKISnuJoveqK4ktDG/9dXZdF4WUp3+
+         KFsA==
+X-Gm-Message-State: AOAM5316ebiGBpgTiO+dML8UrPG1n4K6jlzqj2ixQULbyfJHxYYD9q7c
+        toMf0gVYw82LFYPhJ29EAn2X6CxrIglbojl4BxE=
+X-Google-Smtp-Source: ABdhPJzM5FAxoZN4fx/gT0LJUKGUmOBI53XT0jWHhwslDMGhS7EA4k6nUQ+truvrI+YHTWHiMrmPI98a6Y4eTe6ZXEM=
+X-Received: by 2002:a05:6102:b13:: with SMTP id b19mr8206023vst.1.1636621453842;
+ Thu, 11 Nov 2021 01:04:13 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
+Sender: ifeanyiomaka1@gmail.com
+Received: by 2002:a59:b7e7:0:b0:23d:a0ee:79eb with HTTP; Thu, 11 Nov 2021
+ 01:04:13 -0800 (PST)
+From:   DINA MCKENNA <dinamckennahowley@gmail.com>
+Date:   Thu, 11 Nov 2021 09:04:13 +0000
+X-Google-Sender-Auth: D5AY3Gh1ixlQiYKk4Qc6nRoJxJo
+Message-ID: <CAO-KV18sxjsSkp2kpgworPHhcaiQeT82s-nuf5qAqboEJcqR-A@mail.gmail.com>
+Subject: Hello,
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The PCIe specification asks the OS to wait five seconds after the
-attention button has been pressed before actually un-plugging the
-device.  This gives the operator the chance to cancel the operation
-by pressing the attention button again within those five seconds.
+Hello my dear,
 
-For physical hardware this makes sense.  Picking the wrong button
-by accident can easily happen and it can be corrected that way.
+ I sent this mail praying it will get to you in a good condition of
+health, since I myself are in a very critical health condition in
+which I sleep every night without knowing if I may be alive to see the
+next day. I bring peace and love to you. It is by the grace of God, I
+had no choice than to do what is lawful and right in the sight of God
+for eternal life and in the sight of man, for witness of God=E2=80=99s merc=
+y
+and glory upon my life. I am Mrs. Dina Mckenna Howley, a widow. I am
+suffering from a long time brain tumor, It has defiled all forms of
+medical treatment, and right now I have about a few months to leave,
+according to medical experts. The situation has gotten complicated
+recently with my inability to hear proper, am communicating with you
+with the help of the chief nurse herein the hospital, from all
+indication my conditions is really deteriorating and it is quite
+obvious that, according to my doctors they have advised me that I may
+not live too long, Because this illness has gotten to a very bad
+stage. I plead that you will not expose or betray this trust and
+confidence that I am about to repose on you for the mutual benefit of
+the orphans and the less privilege. I have some funds I inherited from
+my late husband, the sum of ($ 11,000,000.00, Eleven Million Dollars).
+Having known my condition, I decided to donate this fund to you
+believing that you will utilize it the way i am going to instruct
+herein. I need you to assist me and reclaim this money and use it for
+Charity works therein your country Croatia for orphanages and gives
+justice and help to the poor, needy and widows says The Lord."
+Jeremiah 22:15-16.=E2=80=9C and also build schools for less privilege that
+will be named after my late husband if possible and to promote the
+word of God and the effort that the house of God is maintained. I do
+not want a situation where this money will be used in an ungodly
+manner. That's why I'm taking this decision. I'm not afraid of death,
+so I know where I'm going. I accept this decision because I do not
+have any child who will inherit this money after I die.. Please I want
+your sincerely and urgent answer to know if you will be able to
+execute this project for the glory of God, and I will give you more
+information on how the fund will be transferred to your bank account.
+May the grace, peace, love and the truth in the Word of God be with
+you and all those that you love and care for.
 
-For virtual hardware the benefits are questionable.  Typically
-users find the five second delay annoying.
+I'm waiting for your immediate reply.
 
-This patch adds the fast_virtual_unplug module parameter to the
-pciehp driver.  When enabled (which is the default) the linux
-kernel will simply skip the delay for virtual pcie ports, which
-reduces the total time for the unplug operation from 6-7 seconds
-to 1-2 seconds.
-
-Virtual pcie ports are identified by PCI ID.  For now the qemu
-pcie root ports are detected, other hardware can be added easily.
-
-Signed-off-by: Gerd Hoffmann <kraxel@redhat.com>
----
- drivers/pci/hotplug/pciehp.h      |  3 +++
- drivers/pci/hotplug/pciehp_core.c |  5 +++++
- drivers/pci/hotplug/pciehp_ctrl.c | 11 ++++++++++-
- 3 files changed, 18 insertions(+), 1 deletion(-)
-
-diff --git a/drivers/pci/hotplug/pciehp.h b/drivers/pci/hotplug/pciehp.h
-index 69fd401691be..131ffec2e947 100644
---- a/drivers/pci/hotplug/pciehp.h
-+++ b/drivers/pci/hotplug/pciehp.h
-@@ -79,6 +79,7 @@ extern int pciehp_poll_time;
-  * @request_result: result of last user request submitted to the IRQ thread
-  * @requester: wait queue to wake up on completion of user request,
-  *	used for synchronous slot enable/disable request via sysfs
-+ * @is_virtual: virtual machine pcie port.
-  *
-  * PCIe hotplug has a 1:1 relationship between controller and slot, hence
-  * unlike other drivers, the two aren't represented by separate structures.
-@@ -109,6 +110,8 @@ struct controller {
- 	unsigned int ist_running;
- 	int request_result;
- 	wait_queue_head_t requester;
-+
-+	bool is_virtual;
- };
- 
- /**
-diff --git a/drivers/pci/hotplug/pciehp_core.c b/drivers/pci/hotplug/pciehp_core.c
-index ad3393930ecb..28867ec33f5b 100644
---- a/drivers/pci/hotplug/pciehp_core.c
-+++ b/drivers/pci/hotplug/pciehp_core.c
-@@ -227,6 +227,11 @@ static int pciehp_probe(struct pcie_device *dev)
- 		goto err_out_shutdown_notification;
- 	}
- 
-+	if (dev->port->vendor == PCI_VENDOR_ID_REDHAT &&
-+	    dev->port->device == 0x000c)
-+		/* qemu pcie root port */
-+		ctrl->is_virtual = true;
-+
- 	pciehp_check_presence(ctrl);
- 
- 	return 0;
-diff --git a/drivers/pci/hotplug/pciehp_ctrl.c b/drivers/pci/hotplug/pciehp_ctrl.c
-index 529c34808440..119bb11f87d6 100644
---- a/drivers/pci/hotplug/pciehp_ctrl.c
-+++ b/drivers/pci/hotplug/pciehp_ctrl.c
-@@ -15,12 +15,17 @@
- 
- #define dev_fmt(fmt) "pciehp: " fmt
- 
-+#include <linux/moduleparam.h>
- #include <linux/kernel.h>
- #include <linux/types.h>
- #include <linux/pm_runtime.h>
- #include <linux/pci.h>
- #include "pciehp.h"
- 
-+static bool fast_virtual_unplug = true;
-+module_param(fast_virtual_unplug, bool, 0644);
-+MODULE_PARM_DESC(fast_virtual_unplug, "Fast unplug (don't wait 5 seconds) for virtual machines.");
-+
- /* The following routines constitute the bulk of the
-    hotplug controller logic
-  */
-@@ -176,7 +181,11 @@ void pciehp_handle_button_press(struct controller *ctrl)
- 		/* blink power indicator and turn off attention */
- 		pciehp_set_indicators(ctrl, PCI_EXP_SLTCTL_PWR_IND_BLINK,
- 				      PCI_EXP_SLTCTL_ATTN_IND_OFF);
--		schedule_delayed_work(&ctrl->button_work, 5 * HZ);
-+		if (ctrl->is_virtual && fast_virtual_unplug) {
-+			schedule_delayed_work(&ctrl->button_work, 1);
-+		} else {
-+			schedule_delayed_work(&ctrl->button_work, 5 * HZ);
-+		}
- 		break;
- 	case BLINKINGOFF_STATE:
- 	case BLINKINGON_STATE:
--- 
-2.33.1
-
+May God Bless you,
+Mrs. Dina Mckenna..
