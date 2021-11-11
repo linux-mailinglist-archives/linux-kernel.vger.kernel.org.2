@@ -2,175 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2295444D60D
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Nov 2021 12:47:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 902F944D616
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Nov 2021 12:51:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233172AbhKKLu1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Nov 2021 06:50:27 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:23766 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230358AbhKKLu0 (ORCPT
+        id S233160AbhKKLxr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Nov 2021 06:53:47 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48266 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232778AbhKKLxo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Nov 2021 06:50:26 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1636631256;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=3FPfS7kZXFceS9Lgp1RH/lsyVsBLRGLqfS3FoOXYSuE=;
-        b=BGjnSm70KtBlGpjs0vJ7W0gmDQ4Ez6G6kqdiSunpoBEro6UoY3oO4udWrWVLdcdy/yxhdA
-        2YZo6bQxZ0T6yGZnyusZZ8fbrJe1eYyweE9px0nW3/yTQCM+qPccCMupapWq5M5prB1Cr+
-        uF5rmyjCY/ah0JrjHLk+gdatf6NyLBI=
-Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com
- [209.85.128.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-524-02b_PLNcOi-rY3obamdpvQ-1; Thu, 11 Nov 2021 06:47:35 -0500
-X-MC-Unique: 02b_PLNcOi-rY3obamdpvQ-1
-Received: by mail-wm1-f70.google.com with SMTP id m1-20020a1ca301000000b003231d5b3c4cso4661091wme.5
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Nov 2021 03:47:35 -0800 (PST)
+        Thu, 11 Nov 2021 06:53:44 -0500
+Received: from mail-ua1-x92b.google.com (mail-ua1-x92b.google.com [IPv6:2607:f8b0:4864:20::92b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EF2E5C061767
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Nov 2021 03:50:55 -0800 (PST)
+Received: by mail-ua1-x92b.google.com with SMTP id v3so11165867uam.10
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Nov 2021 03:50:55 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=eclypsium.com; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=rsWZX79zxYaniJvm5v5ckZ5qJETbzJZYQnSDbyuzpRo=;
+        b=L/dGrhUISgG27gmCRyaKGFNjWfUyJdqZps3CSjvE9j3ZMSkZgpmu9kuKVPKXweCDMV
+         dL1hOdZor/e+luPdxB0ZS52O1FNPeJPJ5PG3XUt40a8ybMCzxsOY4JM/XmjSXu1YEhQg
+         1wI8JRibUU7zJ91q22Ml7wtcZo8oJ7yaCKEEmxWzxwQfTHpxF6Est7BbBzVIGQR4Sq4E
+         PYnJzB9CV4TVUgnuq7nxXAa1S5kNZj/vzVgsOIsX7jWsTPbeT2uWcUCBlp90n8jWhTK1
+         yJWD9ZorMuKMGT5bY3/YbpxRQ/NFjJUll174kmLkvOMKVKbs9oq9NKkij4PGX8tTIwh+
+         rb1w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:organization:in-reply-to
-         :content-transfer-encoding;
-        bh=3FPfS7kZXFceS9Lgp1RH/lsyVsBLRGLqfS3FoOXYSuE=;
-        b=Gzn9LiPBg2+pZIhX8K7DcrOMU/4NHBMOxGX3PEgjGdJZ1cZSvW5qaXWOsac6otocHe
-         QdesRUB/Bg230d6UkXTBKEK0CweKF03F25HxxOpJS9zr0d/SadCDxItTxOCWp3TIJ5Pu
-         RJMND/O04VY7tnrrspGyf1atxTPWWEeiFBOWmToLdLDS34GFQKhs0zPgb3rd1JnXB6Or
-         1RhksfJDJhrjBSindigx1MqZPaUcHxdoowYIzx3XL9X5z1tPkfsammJ64qL7Mu364lBU
-         e2iXiW0X5lG4LXazLkWSXO/DrttjHx7PIV/OK2eXEeQussZq/Ca47NJ0qEC6++tNS7ct
-         bPnQ==
-X-Gm-Message-State: AOAM533ITE4rve66htdYzPiKd+WaSaO/fGNgFWzj+P5dsIS0JLD4o2XB
-        GEW+LD4F1Z+EveYuxdCL+SitF5Xi9V+l/3E/lUbQxctgmHeVxTZKsopvv6c+DZlsvNar83lR7k9
-        e21XNKSuI/qs2TkMbVoeMAR5C
-X-Received: by 2002:a5d:45cc:: with SMTP id b12mr8082378wrs.164.1636631254683;
-        Thu, 11 Nov 2021 03:47:34 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJwO566pckJvXEcwz+OG93YPsApF+toGZKExvaMFLBrnliRRTv/LgjAiYUOFAAaeaDr4bLvTMw==
-X-Received: by 2002:a5d:45cc:: with SMTP id b12mr8082352wrs.164.1636631254480;
-        Thu, 11 Nov 2021 03:47:34 -0800 (PST)
-Received: from [192.168.3.132] (p4ff23ee8.dip0.t-ipconnect.de. [79.242.62.232])
-        by smtp.gmail.com with ESMTPSA id d8sm2782565wrm.76.2021.11.11.03.47.33
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 11 Nov 2021 03:47:33 -0800 (PST)
-Message-ID: <70dd5e1c-99c9-c1ca-4e3f-1a894896cf06@redhat.com>
-Date:   Thu, 11 Nov 2021 12:47:33 +0100
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=rsWZX79zxYaniJvm5v5ckZ5qJETbzJZYQnSDbyuzpRo=;
+        b=owJxoA6RJfPaVIh6Cf7KJu0zcUdo6C1PYTXTWu2brmDtHJk6SNZuIVsyVk/2FDXDsw
+         zhJ1Z+fyv3DTVZVWlXIYF85Yk3vxRLvVkAiOX/DkZnlA7miHD/ePZIZDgDI9wBHxSgJh
+         9jLjSnCCUhk5txhJ7kC480BFiDhYf1KqMnF98bjD6dT4Jq2mWQBp5ggDg8jembt/MJ95
+         AOzeZdvW4A60pTaSquiK0Z3hTSZO3yLN6tAX7bpXVLlLiRdrA+p1FWizQbC9QPvyVW4e
+         O5njnpkprmlWhH/7jnAseJaGJzC+ngUrX6Koj2OoPUg2FRVCI4L7VpW6BzK0JITtAiiS
+         JZ6g==
+X-Gm-Message-State: AOAM5301hOB2ej0qxZHT4BY0KQuIfdzHn517ljaM21gAGT5GV+I0sUVr
+        jY1imanH+FemRQ8ju+tATCtdT2qtLGucU574PIslyA==
+X-Google-Smtp-Source: ABdhPJxorDTPpuaU4bo05ZshO90aOGQAXuhyUKKDiW7KPqWhaDmrc2uHSvawEQLIJp2ndV5e/QVEb0XM6qbLG+vhcoo=
+X-Received: by 2002:a67:f805:: with SMTP id l5mr9893262vso.17.1636631455023;
+ Thu, 11 Nov 2021 03:50:55 -0800 (PST)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.2.0
-Subject: Re: [PATCH 4/7] fs/binfmt_elf: use get_task_comm instead of
- open-coded string copy
-Content-Language: en-US
-To:     Petr Mladek <pmladek@suse.com>
-Cc:     Yafang Shao <laoar.shao@gmail.com>, akpm@linux-foundation.org,
-        netdev@vger.kernel.org, bpf@vger.kernel.org,
-        linux-perf-users@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        oliver.sang@intel.com, lkp@intel.com,
-        Kees Cook <keescook@chromium.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>,
-        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        Michal Miroslaw <mirq-linux@rere.qmqm.pl>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Al Viro <viro@zeniv.linux.org.uk>
-References: <20211108083840.4627-1-laoar.shao@gmail.com>
- <20211108083840.4627-5-laoar.shao@gmail.com>
- <a13c0541-59a3-6561-6d42-b51fef9f7c8b@redhat.com>
- <b495d38d-5cdd-8a33-b9d3-de721095ccab@redhat.com> <YYz/4bSdSXR3Palz@alley>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat
-In-Reply-To: <YYz/4bSdSXR3Palz@alley>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+References: <CAHifhD6K5hbpHS-X+2L=pfUe+7OpyTbB7uyh8WGbdaeBMwoYPg@mail.gmail.com>
+ <CAHp75VfbYsyC=7Ncnex1f_jiwrZhExDF7iy4oSGZgS1cHmsN0Q@mail.gmail.com>
+ <CAHifhD5V9vwJenRLcPRH5ZMeLa_JnjZKfdcFZw1CjceBtC6=Ew@mail.gmail.com>
+ <CAHp75VeyQEaABFOnEUh2pdFx9ROJvRcud-BuEbKWmaEWpL9_Uw@mail.gmail.com>
+ <CAHifhD7Qf7+dc7K-MjNguqmiCWUxOJZmQoCTRUZOR-RWMm_JPw@mail.gmail.com>
+ <CAHp75Ve9BMNy3gP=-Dajm+Lgu+E4FCqc4phLgV1_cr2qUnTX_w@mail.gmail.com>
+ <CAHifhD4n7O5eWFPOjRAmHYL52tW0K=uXXzVj7L5+enTFwFXW2A@mail.gmail.com>
+ <CAArk9MP5cKJ+VhAZUseW4LnQNRvux=MZe2eSy3rQkbHKnUsGig@mail.gmail.com>
+ <CAHp75VdRwvU5WjFP5E4gg8U+_e34A0Lwze+nz_wVHoB49jLeLg@mail.gmail.com>
+ <CAArk9MNGSxR+92n-D2pe_+r+Z0Q9FoTMPqk11sAKA=4Vckj0HQ@mail.gmail.com> <YYy7QZGKeEEfI1mH@lahna>
+In-Reply-To: <YYy7QZGKeEEfI1mH@lahna>
+From:   Mauro Lima <mauro.lima@eclypsium.com>
+Date:   Thu, 11 Nov 2021 08:50:43 -0300
+Message-ID: <CAArk9MOyuX1zq5V3N_6gVOxdrqhsNTR1KF2FzSNUxk8fA5UPjQ@mail.gmail.com>
+Subject: Re: [PATCH] firmware: export x86_64 platform flash bios region via sysfs
+To:     Mika Westerberg <mika.westerberg@linux.intel.com>
+Cc:     Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Hans-Gert Dahmen <hans-gert.dahmen@immu.ne>,
+        Greg KH <gregkh@linuxfoundation.org>,
+        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Philipp Deppenwiese <philipp.deppenwiese@immu.ne>,
+        Richard Hughes <hughsient@gmail.com>,
+        "platform-driver-x86@vger.kernel.org" 
+        <platform-driver-x86@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11.11.21 12:34, Petr Mladek wrote:
-> On Thu 2021-11-11 11:06:04, David Hildenbrand wrote:
->> On 11.11.21 11:03, David Hildenbrand wrote:
->>> On 08.11.21 09:38, Yafang Shao wrote:
->>>> It is better to use get_task_comm() instead of the open coded string
->>>> copy as we do in other places.
->>>>
->>>> struct elf_prpsinfo is used to dump the task information in userspace
->>>> coredump or kernel vmcore. Below is the verfication of vmcore,
->>>>
->>>> crash> ps
->>>>    PID    PPID  CPU       TASK        ST  %MEM     VSZ    RSS  COMM
->>>>       0      0   0  ffffffff9d21a940  RU   0.0       0      0  [swapper/0]
->>>>>     0      0   1  ffffa09e40f85e80  RU   0.0       0      0  [swapper/1]
->>>>>     0      0   2  ffffa09e40f81f80  RU   0.0       0      0  [swapper/2]
->>>>>     0      0   3  ffffa09e40f83f00  RU   0.0       0      0  [swapper/3]
->>>>>     0      0   4  ffffa09e40f80000  RU   0.0       0      0  [swapper/4]
->>>>>     0      0   5  ffffa09e40f89f80  RU   0.0       0      0  [swapper/5]
->>>>       0      0   6  ffffa09e40f8bf00  RU   0.0       0      0  [swapper/6]
->>>>>     0      0   7  ffffa09e40f88000  RU   0.0       0      0  [swapper/7]
->>>>>     0      0   8  ffffa09e40f8de80  RU   0.0       0      0  [swapper/8]
->>>>>     0      0   9  ffffa09e40f95e80  RU   0.0       0      0  [swapper/9]
->>>>>     0      0  10  ffffa09e40f91f80  RU   0.0       0      0  [swapper/10]
->>>>>     0      0  11  ffffa09e40f93f00  RU   0.0       0      0  [swapper/11]
->>>>>     0      0  12  ffffa09e40f90000  RU   0.0       0      0  [swapper/12]
->>>>>     0      0  13  ffffa09e40f9bf00  RU   0.0       0      0  [swapper/13]
->>>>>     0      0  14  ffffa09e40f98000  RU   0.0       0      0  [swapper/14]
->>>>>     0      0  15  ffffa09e40f9de80  RU   0.0       0      0  [swapper/15]
->>>>
->>>> It works well as expected.
->>>>
->>>> Suggested-by: Kees Cook <keescook@chromium.org>
->>>> Signed-off-by: Yafang Shao <laoar.shao@gmail.com>
->>>> Cc: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
->>>> Cc: Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>
->>>> Cc: Andrii Nakryiko <andrii.nakryiko@gmail.com>
->>>> Cc: Michal Miroslaw <mirq-linux@rere.qmqm.pl>
->>>> Cc: Peter Zijlstra <peterz@infradead.org>
->>>> Cc: Steven Rostedt <rostedt@goodmis.org>
->>>> Cc: Matthew Wilcox <willy@infradead.org>
->>>> Cc: David Hildenbrand <david@redhat.com>
->>>> Cc: Al Viro <viro@zeniv.linux.org.uk>
->>>> Cc: Kees Cook <keescook@chromium.org>
->>>> Cc: Petr Mladek <pmladek@suse.com>
->>>> ---
->>>>  fs/binfmt_elf.c | 2 +-
->>>>  1 file changed, 1 insertion(+), 1 deletion(-)
->>>>
->>>> diff --git a/fs/binfmt_elf.c b/fs/binfmt_elf.c
->>>> index a813b70f594e..138956fd4a88 100644
->>>> --- a/fs/binfmt_elf.c
->>>> +++ b/fs/binfmt_elf.c
->>>> @@ -1572,7 +1572,7 @@ static int fill_psinfo(struct elf_prpsinfo *psinfo, struct task_struct *p,
->>>>  	SET_UID(psinfo->pr_uid, from_kuid_munged(cred->user_ns, cred->uid));
->>>>  	SET_GID(psinfo->pr_gid, from_kgid_munged(cred->user_ns, cred->gid));
->>>>  	rcu_read_unlock();
->>>> -	strncpy(psinfo->pr_fname, p->comm, sizeof(psinfo->pr_fname));
->>>> +	get_task_comm(psinfo->pr_fname, p);
->>>>  
->>>>  	return 0;
->>>>  }
->>>>
->>>
->>> We have a hard-coded "pr_fname[16]" as well, not sure if we want to
->>> adjust that to use TASK_COMM_LEN?
->>
->> But if the intention is to chance TASK_COMM_LEN later, we might want to
->> keep that unchanged.
-> 
-> It seems that len will not change in the end. Another solution is
-> going to be used for the long names, see
-> https://lore.kernel.org/r/20211108084142.4692-1-laoar.shao@gmail.com.
+Hi Mika
 
-Yes, that's what I recall as well. The I read the patch
-subjects+descriptions in this series "make it adopt to task comm size
-change" and was slightly confused.
+On Thu, Nov 11, 2021 at 3:42 AM Mika Westerberg
+<mika.westerberg@linux.intel.com> wrote:
+>
+> Hi,
+>
+> On Wed, Nov 10, 2021 at 02:37:56PM -0300, Mauro Lima wrote:
+> > > Try again to collaborate with Intel SPI driver author(s) /
+> > > maintainer(s) by sending the proposal that may work.
+> >
+> > The proposal I sent makes the driver work only with read ops, but that
+> > was not the issue with this driver. The issue was something related to
+> > a status register and this was fixed. So if there is no issue with
+> > write/erase ops, the bug was fixed and there is no intention to remove
+> > the tag. What kind of proposal are we talking about?
+>
+> I think we discussed this previously already but in any case, instead of
+> removing the tag from the "main" driver, we can make certain "safe"
+> parts of the driver available without that tag. That would allow you to
+> read the things the controller exposes and allow distros safely include
+> the driver too. By "safe" parts, I mean the information available
+> through the SPI flash controller without actually sending commands to
+> the flash chip. I think this is the information everybody (on this
+> thread at least) is interested in. Unless I'm mistaken - I did not check
+> the original patch. If that's not enough we can possibly expand it to
+> cover the controllers that only use hardware sequencer since they
+> operate on a certain limited set of ops that should not break anything
+> accidentally.
 
-Maybe we should just remove any notion of "task comm size change" from
-this series and instead just call it a cleanup.
-
-
--- 
-Thanks,
-
-David / dhildenb
-
+We discussed this previously indeed, and you are right that we are
+interested in the spi configuration, but we are also interested in
+reading the bios. For that we needed to use the driver, if that
+expansion you are talking about, gives me the possibility to use the
+driver for reading the flash and having this functionality without any
+dangerous tag, it would be awesome.
