@@ -2,153 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9661844D2C6
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Nov 2021 08:57:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7FCD144D2C7
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Nov 2021 08:57:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232002AbhKKH7s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Nov 2021 02:59:48 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:60288 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231874AbhKKH7r (ORCPT
+        id S229706AbhKKH7z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Nov 2021 02:59:55 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52010 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232110AbhKKH7w (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Nov 2021 02:59:47 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1636617418;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=IsiWJOCukmBcK7kCfQJuDEL0VlH6Lf2OFetW684iiSs=;
-        b=AS93FhjhlQse0Y2HpjfSq7SbRCqWLPtLpCN5jvPZK58X2pHEK/CpLzgJjGvj0WlQiKEPgi
-        zYTvuR94oHZTujQcFgtUifwi+rPs5WKe3JBhxQpYbVVy1ZrpHNl43DLTgjPdrY5/vFmOVh
-        gJhRAz+3lGryR/FbF2v+l1wTZAeN6Ck=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-456-npEDT5IMMd-nhiWZMui2aQ-1; Thu, 11 Nov 2021 02:56:55 -0500
-X-MC-Unique: npEDT5IMMd-nhiWZMui2aQ-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id C6AD919251A2;
-        Thu, 11 Nov 2021 07:56:53 +0000 (UTC)
-Received: from localhost (unknown [10.39.193.105])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id A7CE45C1B4;
-        Thu, 11 Nov 2021 07:56:46 +0000 (UTC)
-From:   Cornelia Huck <cohuck@redhat.com>
-To:     Randy Dunlap <rdunlap@infradead.org>,
-        Jason Gunthorpe <jgg@nvidia.com>,
-        kernel test robot <lkp@intel.com>
-Cc:     kbuild-all@lists.01.org, linux-kernel@vger.kernel.org,
-        Alex Williamson <alex.williamson@redhat.com>,
-        Eric Auger <eric.auger@redhat.com>, kvm@vger.kernel.org
-Subject: Re: drivers/vfio/vfio.c:293: warning: expecting prototype for
- Container objects(). Prototype was for vfio_container_get() instead
-In-Reply-To: <38a9cb92-a473-40bf-b8f9-85cc5cfc2da4@infradead.org>
-Organization: Red Hat GmbH
-References: <202111102328.WDUm0Bl7-lkp@intel.com>
- <20211110164256.GY1740502@nvidia.com>
- <38a9cb92-a473-40bf-b8f9-85cc5cfc2da4@infradead.org>
-User-Agent: Notmuch/0.33.1 (https://notmuchmail.org)
-Date:   Thu, 11 Nov 2021 08:56:45 +0100
-Message-ID: <87v90z86rm.fsf@redhat.com>
+        Thu, 11 Nov 2021 02:59:52 -0500
+Received: from mail-pf1-x435.google.com (mail-pf1-x435.google.com [IPv6:2607:f8b0:4864:20::435])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 27B9CC061766
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Nov 2021 23:57:04 -0800 (PST)
+Received: by mail-pf1-x435.google.com with SMTP id c126so5015294pfb.0
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Nov 2021 23:57:04 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=RyhYx0Yjx3c0gD9sFK1NOJQka/tEBMj1zX12qg04JEo=;
+        b=RID5nb4wtCvW6jPmfGI3fZF0wYEc2cqH/6qM8oiSYeL9d3extZzAWCmQX2inLE6r3n
+         RBZPVOs8TgEyGPu4QXHAtlf/wz8HbPHUnoXn/gv5cZT7BgJuQ79lCHqT+j1C5bYF6cZN
+         n1AnuAvhoMwZGtqD1uhbhgA2pV/1XLtfGmmUACjHPsyv5D4dby3ijQrXX4NCnExhcrrE
+         OjE/3ew5pOlPEEHcBTHXRgx7bnIHuLXxmLHCqCDDmRFdmNOfEkzIzntjgOZyjOP1GjYW
+         XCBe4ly+DaDsgc6YA9vJ2frimr546sYmN+jNIWp975N7s1GH8K0kSGTv6Gtuk2PKqfbw
+         SP/A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=RyhYx0Yjx3c0gD9sFK1NOJQka/tEBMj1zX12qg04JEo=;
+        b=JGXatyi26GdW6pxeAsCgwb/D4eeMP/6nCxBrq6Vx1UkZR3O1bQ1hLWqKb+6oOKgvVp
+         8bc4tLdfkXIxa4t5RcnsFoYjIAHz3q58W3Olh+UeyK1RWNRTazv6KxpM6pUSkHVg9VIh
+         VYQlWpmmha3FwC4XMba3Wwpxh2Btai9g8xjK0T47jK/ZySO2kRpSTCF1or+AIhJfa2BR
+         TI6FzhNs3REuphBDn3mbVUWDslaQA4cAK9oHN1VdZ3S95Le1KfMFLnlJ6I976ddTPrjj
+         22vngncaKFrCw2wwyfa96D1own8viq2y5dQ64jULWcVlXik0TQqvdHmCernm8RtgD6OV
+         e/7A==
+X-Gm-Message-State: AOAM531XXG01ywPalLTmwXUdTDUef0e9KzyXMC9kKr6BhmN+YhUleE6Z
+        XXOy8El+yCBktBCHgsopHh+mX6b+/n4=
+X-Google-Smtp-Source: ABdhPJz5D6/eJ1FPoLwGQME8M/qbVyHCI8LxgpxgV0fzYz9JLNtR/Xf2gwv/4ElW9L0AdRkzWYTBVQ==
+X-Received: by 2002:a62:ea16:0:b0:47b:f3d7:7a9 with SMTP id t22-20020a62ea16000000b0047bf3d707a9mr5098046pfh.60.1636617423168;
+        Wed, 10 Nov 2021 23:57:03 -0800 (PST)
+Received: from localhost.localdomain ([193.203.214.57])
+        by smtp.gmail.com with ESMTPSA id e24sm1938078pfn.8.2021.11.10.23.57.01
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 10 Nov 2021 23:57:02 -0800 (PST)
+From:   cgel.zte@gmail.com
+X-Google-Original-From: ran.jianping@zte.com.cn
+To:     agk@redhat.com
+Cc:     snitzer@redhat.com, dm-devel@redhat.com,
+        linux-kernel@vger.kernel.org,
+        ran jianping <ran.jianping@zte.com.cn>,
+        Zeal Robot <zealci@zte.com.cn>
+Subject: [PATCH] dm snapshot: remove unneeded variable
+Date:   Thu, 11 Nov 2021 07:56:59 +0000
+Message-Id: <20211111075659.158155-1-ran.jianping@zte.com.cn>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 10 2021, Randy Dunlap <rdunlap@infradead.org> wrote:
+From: ran jianping <ran.jianping@zte.com.cn>
 
-> On 11/10/21 8:42 AM, Jason Gunthorpe wrote:
->> On Wed, Nov 10, 2021 at 11:12:39PM +0800, kernel test robot wrote:
->>> Hi Jason,
->>>
->>> FYI, the error/warning still remains.
->> 
->> This is just a long standing kdoc misuse.
->> 
->> vfio is not W=1 kdoc clean.
->> 
->> Until someone takes a project to fix this comprehensively there is not
->> much point in reporting new complaints related the existing mis-use..
->
-> Hi,
->
-> Can we just remove all misused "/**" comments in vfio.c until
-> someone cares enough to use proper kernel-doc there?
->
-> ---
-> From: Randy Dunlap <rdunlap@infradead.org>
-> Subject: [PATCH] vfio/vfio: remove all kernel-doc notation
->
-> vfio.c abuses (misuses) "/**", which indicates the beginning of
-> kernel-doc notation in the kernel tree. This causes a bunch of
-> kernel-doc complaints about this source file, so quieten all of
-> them by changing all "/**" to "/*".
->
-> vfio.c:236: warning: This comment starts with '/**', but isn't a kernel-doc comment. Refer Documentation/doc-guide/kernel-doc.rst
->   * IOMMU driver registration
-> vfio.c:236: warning: missing initial short description on line:
->   * IOMMU driver registration
-> vfio.c:295: warning: expecting prototype for Container objects(). Prototype was for vfio_container_get() instead
-> vfio.c:317: warning: expecting prototype for Group objects(). Prototype was for __vfio_group_get_from_iommu() instead
-> vfio.c:496: warning: Function parameter or member 'device' not described in 'vfio_device_put'
-> vfio.c:496: warning: expecting prototype for Device objects(). Prototype was for vfio_device_put() instead
-> vfio.c:599: warning: This comment starts with '/**', but isn't a kernel-doc comment. Refer Documentation/doc-guide/kernel-doc.rst
->   * Async device support
-> vfio.c:599: warning: missing initial short description on line:
->   * Async device support
-> vfio.c:693: warning: This comment starts with '/**', but isn't a kernel-doc comment. Refer Documentation/doc-guide/kernel-doc.rst
->   * VFIO driver API
-> vfio.c:693: warning: missing initial short description on line:
->   * VFIO driver API
-> vfio.c:835: warning: This comment starts with '/**', but isn't a kernel-doc comment. Refer Documentation/doc-guide/kernel-doc.rst
->   * Get a reference to the vfio_device for a device.  Even if the
-> vfio.c:835: warning: missing initial short description on line:
->   * Get a reference to the vfio_device for a device.  Even if the
-> vfio.c:969: warning: This comment starts with '/**', but isn't a kernel-doc comment. Refer Documentation/doc-guide/kernel-doc.rst
->   * VFIO base fd, /dev/vfio/vfio
-> vfio.c:969: warning: missing initial short description on line:
->   * VFIO base fd, /dev/vfio/vfio
-> vfio.c:1187: warning: This comment starts with '/**', but isn't a kernel-doc comment. Refer Documentation/doc-guide/kernel-doc.rst
->   * VFIO Group fd, /dev/vfio/$GROUP
-> vfio.c:1187: warning: missing initial short description on line:
->   * VFIO Group fd, /dev/vfio/$GROUP
-> vfio.c:1540: warning: This comment starts with '/**', but isn't a kernel-doc comment. Refer Documentation/doc-guide/kernel-doc.rst
->   * VFIO Device fd
-> vfio.c:1540: warning: missing initial short description on line:
->   * VFIO Device fd
-> vfio.c:1615: warning: This comment starts with '/**', but isn't a kernel-doc comment. Refer Documentation/doc-guide/kernel-doc.rst
->   * External user API, exported by symbols to be linked dynamically.
-> vfio.c:1615: warning: missing initial short description on line:
->   * External user API, exported by symbols to be linked dynamically.
-> vfio.c:1663: warning: This comment starts with '/**', but isn't a kernel-doc comment. Refer Documentation/doc-guide/kernel-doc.rst
->   * External user API, exported by symbols to be linked dynamically.
-> vfio.c:1663: warning: missing initial short description on line:
->   * External user API, exported by symbols to be linked dynamically.
-> vfio.c:1742: warning: Function parameter or member 'caps' not described in 'vfio_info_cap_add'
-> vfio.c:1742: warning: Function parameter or member 'size' not described in 'vfio_info_cap_add'
-> vfio.c:1742: warning: Function parameter or member 'id' not described in 'vfio_info_cap_add'
-> vfio.c:1742: warning: Function parameter or member 'version' not described in 'vfio_info_cap_add'
-> vfio.c:1742: warning: expecting prototype for Sub(). Prototype was for vfio_info_cap_add() instead
-> vfio.c:2276: warning: This comment starts with '/**', but isn't a kernel-doc comment. Refer Documentation/doc-guide/kernel-doc.rst
->   * Module/class support
-> vfio.c:2276: warning: missing initial short description on line:
->   * Module/class support
->
-> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-> Reported-by: kernel test robot <lkp@intel.com>
-> Cc: Jason Gunthorpe <jgg@nvidia.com>
-> Cc: Alex Williamson <alex.williamson@redhat.com>
-> Cc: Eric Auger <eric.auger@redhat.com>
-> Cc: Cornelia Huck <cohuck@redhat.com>
-> Cc: kvm@vger.kernel.org
-> ---
->   drivers/vfio/vfio.c |   28 ++++++++++++++--------------
->   1 file changed, 14 insertions(+), 14 deletions(-)
+Fix the following coccicheck review:
+./drivers/md/dm-snap-transient.c:91:10-12: Unneeded variable
 
-It's been like that since the code was introduced, these were probably
-never intended to be kerneldoc comments.
+Remove unneeded variable used to store return value.
 
-Reviewed-by: Cornelia Huck <cohuck@redhat.com>
+Reported-by: Zeal Robot <zealci@zte.com.cn>
+Signed-off-by: ran jianping <ran.jianping@zte.com.cn>
+---
+ drivers/md/dm-snap-transient.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
+
+diff --git a/drivers/md/dm-snap-transient.c b/drivers/md/dm-snap-transient.c
+index 0e0ae4c36b37..d95b59855da0 100644
+--- a/drivers/md/dm-snap-transient.c
++++ b/drivers/md/dm-snap-transient.c
+@@ -88,7 +88,6 @@ static unsigned transient_status(struct dm_exception_store *store,
+ 				 status_type_t status, char *result,
+ 				 unsigned maxlen)
+ {
+-	unsigned sz = 0;
+ 
+ 	switch (status) {
+ 	case STATUSTYPE_INFO:
+@@ -101,7 +100,7 @@ static unsigned transient_status(struct dm_exception_store *store,
+ 		break;
+ 	}
+ 
+-	return sz;
++	return 0;
+ }
+ 
+ static struct dm_exception_store_type _transient_type = {
+-- 
+2.25.1
 
