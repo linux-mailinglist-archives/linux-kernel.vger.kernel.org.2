@@ -2,81 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3036544D7EA
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Nov 2021 15:14:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0767B44D807
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Nov 2021 15:16:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233550AbhKKORC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Nov 2021 09:17:02 -0500
-Received: from mail.zju.edu.cn ([61.164.42.155]:36374 "EHLO zju.edu.cn"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S231739AbhKKORB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Nov 2021 09:17:01 -0500
-Received: from localhost.localdomain (unknown [222.205.2.245])
-        by mail-app3 (Coremail) with SMTP id cC_KCgB371IrJY1htn75Bw--.17565S4;
-        Thu, 11 Nov 2021 22:14:03 +0800 (CST)
-From:   Lin Ma <linma@zju.edu.cn>
-To:     netdev@vger.kernel.org
-Cc:     davem@davemloft.net, kuba@kernel.org, jirislaby@kernel.org,
-        gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org,
-        Lin Ma <linma@zju.edu.cn>
-Subject: [PATCH v1] hamradio: remove needs_free_netdev to avoid UAF
-Date:   Thu, 11 Nov 2021 22:14:02 +0800
-Message-Id: <20211111141402.7551-1-linma@zju.edu.cn>
-X-Mailer: git-send-email 2.33.1
+        id S233882AbhKKOTF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Nov 2021 09:19:05 -0500
+Received: from mail.kernel.org ([198.145.29.99]:54260 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233863AbhKKOS7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 11 Nov 2021 09:18:59 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0E31861179;
+        Thu, 11 Nov 2021 14:16:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1636640170;
+        bh=P/cgPht51capsY2dgopdPL2n154YnylfyauvmKPuFjQ=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=npqBj2F/gMTkNq/IGlwvxMHmpMqfi/2TdzYvWSJdPTP+EsDS6viv1wQbJkM8t1JT5
+         27B7O0X7OcUb8K5lffAtLWvfmE8U/0qYlOFOcnimDjsF5AgtcKIkmpj2KoQwCUGLXi
+         yM5khfny4vG/3iZ88FRqoV1PpGDgFuBDiwRmev9Y+sQl5ixIfunw13wYDzRm5cohAK
+         c11bqHUSB5jcg4Zij6/vxYePJ6wROrFBuwG/sCqN7lmK6XGFKkZ941tXOn6GVIrqHj
+         CdAUub8hCViTMpUNcgPT+gnhTZE/VBnDBUXOyrqVwYtxni8K0GerLS0DRm/bGpj5nh
+         V0cwOj7ca/d4A==
+Date:   Thu, 11 Nov 2021 14:16:05 +0000
+From:   Mark Brown <broonie@kernel.org>
+To:     nandhini.srikandan@intel.com
+Cc:     fancer.lancer@gmail.com, robh+dt@kernel.org,
+        linux-spi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org, mgross@linux.intel.com,
+        kris.pan@intel.com, kenchappa.demakkanavar@intel.com,
+        furong.zhou@intel.com, mallikarjunappa.sangannavar@intel.com,
+        mahesh.r.vaidya@intel.com, rashmi.a@intel.com
+Subject: Re: [PATCH v3 3/5] spi: dw: Add support for master mode selection
+ for DWC SSI controller
+Message-ID: <YY0lpZkIsJih+g2o@sirena.org.uk>
+References: <20211111065201.10249-1-nandhini.srikandan@intel.com>
+ <20211111065201.10249-4-nandhini.srikandan@intel.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: cC_KCgB371IrJY1htn75Bw--.17565S4
-X-Coremail-Antispam: 1UD129KBjvJXoWrZFW3AFy5CrW3Ww13Ar18Xwb_yoW8Jry3pa
-        yrCFWSyr18Gr1fCw1xAay8W3W5ua1Iv343ua4ag3s09rsxur1qkr18CFWj9r1jvFZ8A3W2
-        vF1jvryxA3Z5A3DanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUvY1xkIjI8I6I8E6xAIw20EY4v20xvaj40_Wr0E3s1l1IIY67AE
-        w4v_Jr0_Jr4l8cAvFVAK0II2c7xJM28CjxkF64kEwVA0rcxSw2x7M28EF7xvwVC0I7IYx2
-        IY67AKxVWDJVCq3wA2z4x0Y4vE2Ix0cI8IcVCY1x0267AKxVWxJr0_GcWl84ACjcxK6I8E
-        87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_GcCE3s1le2I262IYc4CY6c
-        8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_JrI_
-        JrylYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvY0x0EwI
-        xGrwACjI8F5VA0II8E6IAqYI8I648v4I1lc2xSY4AK67AK6ry5MxAIw28IcxkI7VAKI48J
-        MxAIw28IcVCjz48v1sIEY20_GFWkJr1UJwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c
-        02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_JF0_
-        Jw1lIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7
-        CjxVAFwI0_Gr0_Cr1lIxAIcVCF04k26cxKx2IYs7xG6r1j6r1xMIIF0xvEx4A2jsIE14v2
-        6r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x0J
-        UXiSdUUUUU=
-X-CM-SenderInfo: qtrwiiyqvtljo62m3hxhgxhubq/
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="qSvA2DvqoPBjehSL"
+Content-Disposition: inline
+In-Reply-To: <20211111065201.10249-4-nandhini.srikandan@intel.com>
+X-Cookie: Teutonic:
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The former patch "defer 6pack kfree after unregister_netdev" reorders
-the kfree of two buffer after the unregister_netdev to prevent the race
-condition. It also adds free_netdev() function in sixpack_close(), which
-is a direct copy from the similar code in mkiss_close().
 
-However, in sixpack driver, the flag needs_free_netdev is set to true in
-sp_setup(), hence the unregister_netdev() will free the netdev
-automatically. Therefore, as the sp is netdev_priv, use-after-free
-occurs.
+--qSvA2DvqoPBjehSL
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-This patch removes the needs_free_netdev = true and just let the
-free_netdev to finish this deallocation task.
+On Thu, Nov 11, 2021 at 02:51:59PM +0800, nandhini.srikandan@intel.com wrote:
 
-Signed-off-by: Lin Ma <linma@zju.edu.cn>
----
- drivers/net/hamradio/6pack.c | 1 -
- 1 file changed, 1 deletion(-)
+> Add support to select the controller mode as master mode by setting
+> Bit 31 of CTRLR0 register. This feature is supported for controller
+> versions above v1.02.
 
-diff --git a/drivers/net/hamradio/6pack.c b/drivers/net/hamradio/6pack.c
-index bfdf89e54752..8a19a06b505d 100644
---- a/drivers/net/hamradio/6pack.c
-+++ b/drivers/net/hamradio/6pack.c
-@@ -306,7 +306,6 @@ static void sp_setup(struct net_device *dev)
- {
- 	/* Finish setting up the DEVICE info. */
- 	dev->netdev_ops		= &sp_netdev_ops;
--	dev->needs_free_netdev	= true;
- 	dev->mtu		= SIXP_MTU;
- 	dev->hard_header_len	= AX25_MAX_HEADER_LEN;
- 	dev->header_ops 	= &ax25_header_ops;
--- 
-2.33.1
+Clearly older versions of the controller can also run in this mode...
 
+> -		if (dws->caps & DW_SPI_CAP_KEEMBAY_MST)
+> -			cr0 |= DWC_SSI_CTRLR0_KEEMBAY_MST;
+> +		/* CTRLR0[31] MST */
+> +		cr0 |= DWC_SSI_CTRLR0_MST;
+
+This makes the configuration unconditional, it's not gated by controller
+version checks or any kind of quirk any more meaning that if anything
+interprets that bit differently things might break.  If this is really
+required to put the controller in master mode it seems that either the
+1.02 version is not widespread or this is generally the hardware
+default.
+
+--qSvA2DvqoPBjehSL
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmGNJaQACgkQJNaLcl1U
+h9DFnQf/frlvzd67TD+A5vGVsfzedq/NoP5b2R3dHNvBMDnNdLbX2S+tOrZQKKHD
+CWc7si2qHOdrvzXBepGSlz2n0mPcXeQ6xD7tAZCpRw12eMDBTIUP0KsZOCfb+lwk
+xzw8ZPlQsqyWM5B09yyJgX0kc991LxLgBHmt4PFCEAx2XZpPrSWGlxlHnRCG1GpQ
+NrEhTUV4GQlbVRwcEBoiqkjXIvdQ+BsPiwb+eOsbd+gqmz5fuKPMOs2D3w9dgA/u
+zouWhMYCrCHByKw5X/q9rJHjYylSTKCAQX8o1bgYy9PfFOcX45F4QzKzKEdJUfKp
+xThqFJmhmc/cHw16AiaedQPl9IWvnw==
+=T3Uv
+-----END PGP SIGNATURE-----
+
+--qSvA2DvqoPBjehSL--
