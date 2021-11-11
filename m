@@ -2,190 +2,180 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8321944DDFC
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Nov 2021 23:54:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DB12B44DE06
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Nov 2021 23:57:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234234AbhKKW5A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Nov 2021 17:57:00 -0500
-Received: from relay9-d.mail.gandi.net ([217.70.183.199]:43409 "EHLO
-        relay9-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229839AbhKKW47 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Nov 2021 17:56:59 -0500
-Received: (Authenticated sender: alexandre.belloni@bootlin.com)
-        by relay9-d.mail.gandi.net (Postfix) with ESMTPSA id 426CAFF807;
-        Thu, 11 Nov 2021 22:54:07 +0000 (UTC)
-Date:   Thu, 11 Nov 2021 23:54:06 +0100
-From:   Alexandre Belloni <alexandre.belloni@bootlin.com>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     linux-rtc@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [GIT PULL] RTC for 5.16
-Message-ID: <YY2fDo+B4GfFWjn5@piout.net>
+        id S234263AbhKKXAA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Nov 2021 18:00:00 -0500
+Received: from mail.kernel.org ([198.145.29.99]:34624 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229652AbhKKW74 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 11 Nov 2021 17:59:56 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A3EF36117A;
+        Thu, 11 Nov 2021 22:57:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1636671426;
+        bh=Fke2kpJoV7ZdebST5OG4QUzZNvn/+L40Mt3Qr+Q39dE=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=uA8Qh2ACUtM+Koojg7bk1RsGPOCuATq+VNvONtb+zgKIju2XN/DkFBUYWB5szQJaS
+         GYg4kJsswJaEVh1zCZ0R5NiSwiEU3kOkXCLGMAsSF3aahtl2lCdItpFZZEncnjgvQO
+         qENCtHbWMmvcd/fkJ00SacrSgFAKhGpFWzeMdq2hOuOJw1ZK8pFxhEhqQExAso3H9I
+         S4e/Z3cNHKnhYSZ96vm7TpotdADkHyGx7lnIuQ7/3vFC7uEaocNJTeBB7RUQ6vjHXr
+         LeofzqSiNiSwhLOb9YvPb1fESonBFXnIz708ZpgYnOH4tfe8R1hgArsveMMeB2kQwj
+         uLk0dGBmshhOg==
+Received: by mail-ed1-f48.google.com with SMTP id w1so30175152edd.10;
+        Thu, 11 Nov 2021 14:57:06 -0800 (PST)
+X-Gm-Message-State: AOAM532cBmkScPPpWLPdaSVP3TUBROu33iIGT/rZAtdWzZDZ+xSiMYlb
+        ml9IeCtwDbLRaPjHc+fmDAVYjJ19Ohs7+fCRqA==
+X-Google-Smtp-Source: ABdhPJyg4OjjlPogZaxOM6Go90c4QFQjKFlcoLadGYtyk1/S/dwzo3R6OBdK/gEByym5XEI3bgC/djwDXjvi5d6Z0dk=
+X-Received: by 2002:a17:907:16ac:: with SMTP id hc44mr13340204ejc.363.1636671425091;
+ Thu, 11 Nov 2021 14:57:05 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+References: <20211110221456.11977-1-jim2101024@gmail.com> <20211110221456.11977-6-jim2101024@gmail.com>
+In-Reply-To: <20211110221456.11977-6-jim2101024@gmail.com>
+From:   Rob Herring <robh@kernel.org>
+Date:   Thu, 11 Nov 2021 16:56:53 -0600
+X-Gmail-Original-Message-ID: <CAL_Jsq+6g-EhyVCeWTMkjOZmBwsOOVZo2jXpzAkjOXcZaxb2eA@mail.gmail.com>
+Message-ID: <CAL_Jsq+6g-EhyVCeWTMkjOZmBwsOOVZo2jXpzAkjOXcZaxb2eA@mail.gmail.com>
+Subject: Re: [PATCH v8 5/8] PCI/portdrv: add mechanism to turn on subdev regulators
+To:     Jim Quinlan <jim2101024@gmail.com>
+Cc:     PCI <linux-pci@vger.kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Nicolas Saenz Julienne <nsaenz@kernel.org>,
+        Mark Brown <broonie@kernel.org>,
+        "maintainer:BROADCOM BCM7XXX ARM ARCHITECTURE" 
+        <bcm-kernel-feedback-list@broadcom.com>,
+        Jim Quinlan <james.quinlan@broadcom.com>,
+        Sean V Kelley <sean.v.kelley@intel.com>,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        Qiuxu Zhuo <qiuxu.zhuo@intel.com>,
+        Keith Busch <kbusch@kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Linus,
+On Wed, Nov 10, 2021 at 4:15 PM Jim Quinlan <jim2101024@gmail.com> wrote:
+>
+> Adds a mechanism inside the root port device to identify standard PCIe
+> regulators in the DT, allocate them, and turn them on before the rest of
+> the bus is scanned during pci_host_probe().  A root complex driver can
+> leverage this mechanism by setting the pci_ops methods add_bus and
+> remove_bus to pci_subdev_regulators_{add,remove}_bus.
+>
+> The allocated structure that contains the regulators is stored in
+> dev.driver_data.
+>
+> The unabridged reason for doing this is as follows.  We would like the
+> Broadcom STB PCIe root complex driver (and others) to be able to turn
+> off/on regulators[1] that provide power to endpoint[2] devices.  Typically,
+> the drivers of these endpoint devices are stock Linux drivers that are not
+> aware that these regulator(s) exist and must be turned on for the driver to
+> be probed.  The simple solution of course is to turn these regulators on at
+> boot and keep them on.  However, this solution does not satisfy at least
+> three of our usage modes:
+>
+> 1. For example, one customer uses multiple PCIe controllers, but wants the
+> ability to, by script invoking and unbind, turn any or all of them by and
+> their subdevices off to save power, e.g. when in battery mode.
+>
+> 2. Another example is when a watchdog script discovers that an endpoint
+> device is in an unresponsive state and would like to unbind, power toggle,
+> and re-bind just the PCIe endpoint and controller.
+>
+> 3. Of course we also want power turned off during suspend mode.  However,
+> some endpoint devices may be able to "wake" during suspend and we need to
+> recognise this case and veto the nominal act of turning off its regulator.
+> Such is the case with Wake-on-LAN and Wake-on-WLAN support where PCIe
+> end-point device needs to be kept powered on in order to receive network
+> packets and wake-up the system.
+>
+> In all of these cases it is advantageous for the PCIe controller to govern
+> the turning off/on the regulators needed by the endpoint device.  The first
+> two cases can be done by simply unbinding and binding the PCIe controller,
+> if the controller has control of these regulators.
+>
+> [1] These regulators typically govern the actual power supply to the
+>     endpoint chip.  Sometimes they may be a the official PCIe socket
+>     power -- such as 3.3v or aux-3.3v.  Sometimes they are truly
+>     the regulator(s) that supply power to the EP chip.
+>
+> [2] The 99% configuration of our boards is a single endpoint device
+>     attached to the PCIe controller.  I use the term endpoint but it could
+>     possible mean a switch as well.
+>
+> Signed-off-by: Jim Quinlan <jim2101024@gmail.com>
+> ---
+>  drivers/pci/bus.c              | 72 ++++++++++++++++++++++++++++++++++
+>  drivers/pci/pci.h              |  8 ++++
+>  drivers/pci/pcie/portdrv_pci.c | 32 +++++++++++++++
+>  3 files changed, 112 insertions(+)
+>
+> diff --git a/drivers/pci/bus.c b/drivers/pci/bus.c
+> index 3cef835b375f..c39fdf36b0ad 100644
+> --- a/drivers/pci/bus.c
+> +++ b/drivers/pci/bus.c
+> @@ -419,3 +419,75 @@ void pci_bus_put(struct pci_bus *bus)
+>         if (bus)
+>                 put_device(&bus->dev);
+>  }
+> +
+> +static void *alloc_subdev_regulators(struct device *dev)
+> +{
+> +       static const char * const supplies[] = {
+> +               "vpcie3v3",
+> +               "vpcie3v3aux",
+> +               "vpcie12v",
+> +       };
+> +       const size_t size = sizeof(struct subdev_regulators)
+> +               + sizeof(struct regulator_bulk_data) * ARRAY_SIZE(supplies);
+> +       struct subdev_regulators *sr;
+> +       int i;
+> +
+> +       sr = devm_kzalloc(dev, size, GFP_KERNEL);
+> +
+> +       if (sr) {
+> +               sr->num_supplies = ARRAY_SIZE(supplies);
+> +               for (i = 0; i < ARRAY_SIZE(supplies); i++)
+> +                       sr->supplies[i].supply = supplies[i];
+> +       }
+> +
+> +       return sr;
+> +}
+> +
+> +
+> +int pci_subdev_regulators_add_bus(struct pci_bus *bus)
+> +{
+> +       struct device *dev = &bus->dev;
+> +       struct subdev_regulators *sr;
+> +       int ret;
+> +
+> +       if (!pcie_is_port_dev(bus->self))
+> +               return 0;
+> +
+> +       if (WARN_ON(bus->dev.driver_data))
+> +               dev_err(dev, "multiple clients using dev.driver_data\n");
+> +
+> +       sr = alloc_subdev_regulators(&bus->dev);
+> +       if (!sr)
+> +               return -ENOMEM;
+> +
+> +       bus->dev.driver_data = sr;
+> +       ret = regulator_bulk_get(dev, sr->num_supplies, sr->supplies);
+> +       if (ret)
+> +               return ret;
+> +
+> +       ret = regulator_bulk_enable(sr->num_supplies, sr->supplies);
+> +       if (ret) {
+> +               dev_err(dev, "failed to enable regulators for downstream device\n");
+> +               return ret;
+> +       }
+> +
+> +       return 0;
+> +}
+> +EXPORT_SYMBOL_GPL(pci_subdev_regulators_add_bus);
 
-Here is the RTC subsystem pull request for v5.16. This includes new
-ioctls to get and set parameters and in particular the backup switch
-mode that is needed for some RTCs to actually enable the backup voltage
-(and have a useful RTC).
-The same interface can also be used to get the actual features supported
-by the RTC so userspace has a better way than trying and failing.
+Can't these just go in the portdrv probe and remove functions now?
 
-The following changes since commit 6880fa6c56601bb8ed59df6c30fd390cc5f6dd8f:
-
-  Linux 5.15-rc1 (2021-09-12 16:28:37 -0700)
-
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/abelloni/linux.git tags/rtc-5.16
-
-for you to fetch changes up to b476266f063e680039be1541cfde5f5cee400da3:
-
-  rtc: rx8025: use .set_offset/.read_offset (2021-11-10 00:45:57 +0100)
-
-----------------------------------------------------------------
-RTC for 5.16
-
-Subsystem:
- - Add new ioctl to get and set extra RTC parameters, this includes backup
-   switch mode
- - Expose available features to userspace, in particular, when alarmas have a
-   resolution of one minute instead of a second.
- - Let the core handle those alarms with a minute resolution
-
-New driver:
- - MSTAR MSC313 RTC
-
-Drivers:
- - Add SPI ID table where necessary
- - Add BSM support for rv3028, rv3032 and pcf8523
- - s3c: set RTC range
- - rx8025: set range, implement .set_offset and .read_offset
-
-----------------------------------------------------------------
-Alexander Stein (1):
-      rtc: pcf85063: add support for fixed clock
-
-Alexandre Belloni (28):
-      rtc: msc313: fix missing include
-      rtc: add alarm related features
-      rtc: add parameter ioctl
-      rtc: expose correction feature
-      rtc: add correction parameter
-      rtc: add BSM parameter
-      rtc: rv3028: add BSM support
-      rtc: rv3032: allow setting BSM
-      rtc: pcf8523: avoid reading BLF in pcf8523_rtc_read_time
-      rtc: expose RTC_FEATURE_UPDATE_INTERRUPT
-      rtc: pcf8523: switch to regmap
-      rtc: pcf8523: always compile pcf8523_rtc_ioctl
-      rtc: pcf8523: remove unecessary ifdefery
-      rtc: pcf8523: allow usage on ACPI platforms
-      rtc: pcf8523: add BSM support
-      rtc: pcf85063: silence cppcheck warning
-      rtc: handle alarms with a minute resolution
-      rtc: s35390a: let the core handle the alarm resolution
-      rtc: rv3032: let the core handle the alarm resolution
-      rtc: ab-eoz9: use RTC_FEATURE_UPDATE_INTERRUPT
-      rtc: ab-eoz9: support UIE when available
-      rtc: ab8500: let the core handle the alarm resolution
-      rtc: rx8025: switch to devm_rtc_allocate_device
-      rtc: rx8025: let the core handle the alarm resolution
-      rtc: rx8025: set range
-      rtc: rx8025: clear RTC_FEATURE_ALARM when alarm are not supported
-      rtc: rx8025: use rtc_add_group
-      rtc: rx8025: use .set_offset/.read_offset
-
-Colin Ian King (2):
-      rtc: msc313: Fix unintentional sign extension issues with left shift of a u16
-      rtc: m41t80: return NULL rather than a plain 0 integer
-
-Dan Carpenter (1):
-      rtc: rv3032: fix error handling in rv3032_clkout_set_rate()
-
-Daniel Palmer (1):
-      rtc: Add support for the MSTAR MSC313 RTC
-
-Dmitry Osipenko (1):
-      rtc: tps80031: Remove driver
-
-Dominique Martinet (1):
-      rtc: rv8803: fix writing back ctrl in flag register
-
-Krzysztof Kozlowski (2):
-      rtc: omap: drop unneeded MODULE_ALIAS
-      rtc: s5m: drop unneeded MODULE_ALIAS
-
-Mark Brown (4):
-      rtc: ds1302: Add SPI ID table
-      rtc: ds1390: Add SPI ID table
-      rtc: pcf2123: Add SPI ID table
-      rtc: mcp795: Add SPI ID table
-
-Phil Elwell (1):
-      rtc: pcf85063: Always clear EXT_TEST from set_time
-
-Romain Perier (1):
-      dt-bindings: rtc: Add Mstar MSC313e RTC devicetree bindings documentation
-
-Sam Protsenko (3):
-      rtc: s3c: Remove usage of devm_rtc_device_register()
-      rtc: s3c: Extract read/write IO into separate functions
-      rtc: s3c: Add time range
-
-Samuel Holland (1):
-      rtc: sun6i: Allow probing without an early clock provider
-
-Wolfram Sang (1):
-      rtc: rx6110: simplify getting the adapter of a client
-
-Yang Yingliang (2):
-      rtc: class: don't call cdev_device_del() when cdev_device_add() failed
-      rtc: class: check return value when calling dev_set_name()
-
- .../devicetree/bindings/rtc/mstar,msc313-rtc.yaml  |  49 +++
- .../devicetree/bindings/rtc/nxp,pcf85063.txt       |   9 +
- MAINTAINERS                                        |   1 +
- drivers/rtc/Kconfig                                |  19 +-
- drivers/rtc/Makefile                               |   2 +-
- drivers/rtc/class.c                                |  20 +-
- drivers/rtc/dev.c                                  |  65 +++
- drivers/rtc/interface.c                            |  15 +-
- drivers/rtc/rtc-ab-eoz9.c                          |   3 +-
- drivers/rtc/rtc-ab8500.c                           |  23 +-
- drivers/rtc/rtc-ds1302.c                           |   7 +
- drivers/rtc/rtc-ds1390.c                           |   7 +
- drivers/rtc/rtc-m41t80.c                           |   2 +-
- drivers/rtc/rtc-mcp795.c                           |   7 +
- drivers/rtc/rtc-msc313.c                           | 259 ++++++++++++
- drivers/rtc/rtc-omap.c                             |   1 -
- drivers/rtc/rtc-pcf2123.c                          |   9 +
- drivers/rtc/rtc-pcf85063.c                         |  16 +-
- drivers/rtc/rtc-pcf8523.c                          | 434 +++++++++------------
- drivers/rtc/rtc-rv3028.c                           |  74 ++++
- drivers/rtc/rtc-rv3032.c                           |  89 ++++-
- drivers/rtc/rtc-rv8803.c                           |   4 +-
- drivers/rtc/rtc-rx6110.c                           |   2 +-
- drivers/rtc/rtc-rx8025.c                           | 141 +++----
- drivers/rtc/rtc-s35390a.c                          |   7 +-
- drivers/rtc/rtc-s3c.c                              | 106 +++--
- drivers/rtc/rtc-s5m.c                              |   1 -
- drivers/rtc/rtc-sun6i.c                            |  13 +-
- drivers/rtc/rtc-tps80031.c                         | 324 ---------------
- include/linux/rtc.h                                |   3 +
- include/uapi/linux/rtc.h                           |  31 +-
- 31 files changed, 982 insertions(+), 761 deletions(-)
- create mode 100644 Documentation/devicetree/bindings/rtc/mstar,msc313-rtc.yaml
- create mode 100644 drivers/rtc/rtc-msc313.c
- delete mode 100644 drivers/rtc/rtc-tps80031.c
-
--- 
-Alexandre Belloni, co-owner and COO, Bootlin
-Embedded Linux and Kernel engineering
-https://bootlin.com
+Rob
