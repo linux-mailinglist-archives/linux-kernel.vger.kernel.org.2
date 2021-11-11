@@ -2,122 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E48144D3F5
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Nov 2021 10:21:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F18944D3F8
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Nov 2021 10:22:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232623AbhKKJYA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Nov 2021 04:24:00 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:33951 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232659AbhKKJXx (ORCPT
+        id S232450AbhKKJYw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Nov 2021 04:24:52 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43058 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229674AbhKKJYr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Nov 2021 04:23:53 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1636622464;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=M7EnEFZM8hpmKbZzBB2524z5yoBtQtMivZ7RH2EH6gg=;
-        b=PX4R1m79QGqC9agcCQuFvNIsFtUVB2SNOYKGV+9n/D0dU3TKd5tvGNcJIqho3rqz/40k8c
-        PqEKrXsElN5RKxCZHu/cz1L3cZoLKgSf/yWjAtHDjUKvsMel6wA0d3u00SfNVKHbZfPPg3
-        qDl4L+ONgveUxEz++sf+XP+dA60s8OY=
-Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
- [209.85.128.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-520-U9WsRGJmOoCD8z2uQx07OA-1; Thu, 11 Nov 2021 04:21:03 -0500
-X-MC-Unique: U9WsRGJmOoCD8z2uQx07OA-1
-Received: by mail-wm1-f72.google.com with SMTP id 205-20020a1c00d6000000b003335d1384f1so1533922wma.3
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Nov 2021 01:21:02 -0800 (PST)
+        Thu, 11 Nov 2021 04:24:47 -0500
+Received: from mail-lf1-x12a.google.com (mail-lf1-x12a.google.com [IPv6:2a00:1450:4864:20::12a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F3AEC0613F5
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Nov 2021 01:21:58 -0800 (PST)
+Received: by mail-lf1-x12a.google.com with SMTP id b40so12686215lfv.10
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Nov 2021 01:21:58 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=upzcV63NGKfkcgiX0pF2jdWcUrYxKUE4MnPXAlmhZ24=;
+        b=xITzxxjhV5bA9MTZ9uG5YUE2S5tR5hlBgqhBgSx0uLF2Q9yNZovs+KT6z1In0PQJNh
+         0OyAKYXNaT1139a6RzIJ9T1IbxrrR7vAOQngnXWq7J232baYxeSQG8PKMYWR9xVLK+xa
+         BhUgCP9a9R4hNZLRj+KlDiwlj2q35fPONGGsLtkVHMa3pq/4QUmS+oVBF+CAeYaXrcjX
+         L4ln7EuawMiSAWgSda7TS9arDP6yB5uAzps91Pr9kVD7WQB3WqBuvjrQcBNU7P7hnVGv
+         0WfhqrsXGO640evD5yam0MQOsRn1S+AeAgnatB12p1jRtgeG5KqwqAwVDrSNWXNjJyyy
+         /Umw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=M7EnEFZM8hpmKbZzBB2524z5yoBtQtMivZ7RH2EH6gg=;
-        b=r8DkzjKx2V5Rp9HcjzP+yeiA35OqchFc5GXxXO1bXNVGHgkNMznp8++ZsglPrOnDs2
-         Wbk3RVUl4ybzMdERhdeKPhlS8SycxRaflrJhU6BLlVB7TxaNhS1lJM7iu6xPA0ApGBHk
-         QJUqVxDzBi/sRPP4MRCUTjpFYxrJZN5lVk8cWndVdGYWdgSpoypltNdI0KKiY2J3Jzwd
-         EAqKIrON2NjvuSvr2rhH4J4/PlLSbiGcxbAwhFZIrexeOwg4AoY8eBAHXdsisZmvtqJC
-         8IltgbS+Rg9J6fyF+iVXFKSuq/MBqC9Svf4CjO+5TDXiVxKwqto4A4s6aO2QZTPUlPFx
-         z6uA==
-X-Gm-Message-State: AOAM531sfYtsdWMoewurFfuIh40q1XLUQDurkm0KP2Fjo8Ilu60MzVTJ
-        EJJsDR2xE0ykAwaBYgr5O+OWg+o/yDNQvMl60ir805AM4ole3y5lBOVnG1AHTyTlz35Qkxc7yXm
-        CZbCmL53pGqeXIggDq9AVlUdOIqXgSyJOU2feJ8YUQsOuhz1LGIWuq0U+YGXMoM5AAzUQ7z+YT9
-        w=
-X-Received: by 2002:a5d:6e8c:: with SMTP id k12mr6960361wrz.401.1636622461443;
-        Thu, 11 Nov 2021 01:21:01 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJwoCpfVGEoP5JTD2lYYhZ8BrAUpodfbF1IJMQ5/neOUnHUU1QzYlFJgKjg18hFHJMVZCV5Zog==
-X-Received: by 2002:a5d:6e8c:: with SMTP id k12mr6960329wrz.401.1636622461175;
-        Thu, 11 Nov 2021 01:21:01 -0800 (PST)
-Received: from minerva.home ([92.176.231.106])
-        by smtp.gmail.com with ESMTPSA id c6sm10242842wmq.46.2021.11.11.01.21.00
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 11 Nov 2021 01:21:00 -0800 (PST)
-From:   Javier Martinez Canillas <javierm@redhat.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     Sam Ravnborg <sam@ravnborg.org>, linux-fbdev@vger.kernel.org,
-        dri-devel@lists.freedesktop.org,
-        Daniel Vetter <daniel.vetter@ffwll.ch>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        Ilya Trukhanov <lahvuun@gmail.com>,
-        Javier Martinez Canillas <javierm@redhat.com>
-Subject: [PATCH] fbdev: Prevent probing generic drivers if a FB is already registered
-Date:   Thu, 11 Nov 2021 10:20:53 +0100
-Message-Id: <20211111092053.1328304-1-javierm@redhat.com>
-X-Mailer: git-send-email 2.33.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=upzcV63NGKfkcgiX0pF2jdWcUrYxKUE4MnPXAlmhZ24=;
+        b=ow6i2v317BMvTN5MQjUjqwN9lIi9/ywQSY8roaWd6IAepUBLjLF0GRJmhfG6fsXMrP
+         4UQCgH+KzQ3gXgfmI+ELvPB29JRy3x4RJR+FjbqkVaIKPY/f44K89F0mgEYj1EYMy5Sa
+         0R5BPKK/1Bk3xxlDzFIB6gNmvgT5Jeapo6+ibQIh6INVrCD9txLJqe+jLlbJcGhRPqhH
+         EJnehPiA7V+5Y1EmaKCqEZs/f+f9im+cTi0HP9Gs1SjrvzLdRONFb67OIzbRaynqjzSz
+         KKk9yZ+REr1VA50DLtCsGlWAHX7zzwRGs4WPRnK8sTNC5IpVnw9zZNjg1UoiXtXduOmr
+         Zonw==
+X-Gm-Message-State: AOAM530BP+HQ6y49bqYvDrWpresPfQajKz3fwnoFt4Vil8vo7UAHpwwJ
+        wmx7u2BmqvTrsRgzzNqqxS9MBtbjEA5BEzXISOCEUQ==
+X-Google-Smtp-Source: ABdhPJwltgmgxSoCafwjV++Ud4heliO80/2F+tNg3MhJJVkgjUldFy5JKooQdnOSvoRB1dfX8e9S2gCDAEl+Lj9sX4c=
+X-Received: by 2002:ac2:5a46:: with SMTP id r6mr5589070lfn.358.1636622516569;
+ Thu, 11 Nov 2021 01:21:56 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <cover.1636564631.git.hns@goldelico.com> <e7936cff7fc24d187ef2680d3b4edb0ade58f293.1636564631.git.hns@goldelico.com>
+ <857E13BF-020B-4184-801D-783ADBDC42A1@goldelico.com>
+In-Reply-To: <857E13BF-020B-4184-801D-783ADBDC42A1@goldelico.com>
+From:   Ulf Hansson <ulf.hansson@linaro.org>
+Date:   Thu, 11 Nov 2021 10:21:19 +0100
+Message-ID: <CAPDyKFqMm18GuTk9=v==iVxKa=SWLj2Xh6acoK=N6dVJJ6Xiaw@mail.gmail.com>
+Subject: Re: [PATCH v2 4/6] mmc: core: Fixup storing of OCR for MMC_QUIRK_NONSTD_SDIO
+To:     "H. Nikolaus Schaller" <hns@goldelico.com>
+Cc:     =?UTF-8?Q?Gra=C5=BEvydas_Ignotas?= <notasas@gmail.com>,
+        linux-mmc@vger.kernel.org,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Discussions about the Letux Kernel 
+        <letux-kernel@openphoenux.org>, kernel@pyra-handheld.com,
+        Linux-OMAP <linux-omap@vger.kernel.org>,
+        =?UTF-8?B?SsOpcsO0bWUgUG91aWxsZXI=?= <Jerome.Pouiller@silabs.com>,
+        Avri Altman <avri.altman@wdc.com>,
+        Shawn Lin <shawn.lin@rock-chips.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Tony Lindgren <tony@atomide.com>,
+        Bean Huo <beanhuo@micron.com>,
+        Kiwoong Kim <kwmad.kim@samsung.com>,
+        Tian Tao <tiantao6@hisilicon.com>,
+        Andreas Kemnade <andreas@kemnade.info>,
+        Yang Li <abaci-bugfix@linux.alibaba.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The efifb and simplefb drivers just render to a pre-allocated frame buffer
-and rely on the display hardware being initialized before the kernel boots.
+On Wed, 10 Nov 2021 at 18:20, H. Nikolaus Schaller <hns@goldelico.com> wrote:
+>
+> > Am 10.11.2021 um 18:17 schrieb H. Nikolaus Schaller <hns@goldelico.com>:
+> >
+> > From: Ulf Hansson <ulf.hansson@linaro.org>
+> >
+> > The mmc core takes a specific path to support initializing of a
+> > non-standard SDIO card. This is triggered by looking for the card-quirk,
+> > MMC_QUIRK_NONSTD_SDIO.
+> >
+> >       if (card->type == MMC_TYPE_SD_COMBO) {
+> > --
+> > 2.33.0
+> >
+>
+> Sorry, I just recognised after pressing the send button that with "early"
+> you probably meant this to be 1/6... Should I resubmit?
 
-But if another driver already probed correctly and registered a fbdev, the
-generic drivers shouldn't be probed since an actual driver for the display
-hardware is already present.
+No need to re-submit, this works fine!
 
-Reported-by: Ilya Trukhanov <lahvuun@gmail.com>
-Signed-off-by: Javier Martinez Canillas <javierm@redhat.com>
----
-
- drivers/video/fbdev/efifb.c    | 6 ++++++
- drivers/video/fbdev/simplefb.c | 6 ++++++
- 2 files changed, 12 insertions(+)
-
-diff --git drivers/video/fbdev/efifb.c drivers/video/fbdev/efifb.c
-index edca3703b964..76325c07cf0c 100644
---- drivers/video/fbdev/efifb.c
-+++ drivers/video/fbdev/efifb.c
-@@ -351,6 +351,12 @@ static int efifb_probe(struct platform_device *dev)
- 	char *option = NULL;
- 	efi_memory_desc_t md;
- 
-+	if (num_registered_fb > 0) {
-+		dev_err(&dev->dev,
-+			"efifb: a framebuffer is already registered\n");
-+		return -EINVAL;
-+	}
-+
- 	if (screen_info.orig_video_isVGA != VIDEO_TYPE_EFI || pci_dev_disabled)
- 		return -ENODEV;
- 
-diff --git drivers/video/fbdev/simplefb.c drivers/video/fbdev/simplefb.c
-index 62f0ded70681..55c1f54d7663 100644
---- drivers/video/fbdev/simplefb.c
-+++ drivers/video/fbdev/simplefb.c
-@@ -407,6 +407,12 @@ static int simplefb_probe(struct platform_device *pdev)
- 	struct simplefb_par *par;
- 	struct resource *mem;
- 
-+	if (num_registered_fb > 0) {
-+		dev_err(&pdev->dev,
-+			"simplefb: a framebuffer is already registered\n");
-+		return -EINVAL;
-+	}
-+
- 	if (fb_get_options("simplefb", NULL))
- 		return -ENODEV;
- 
--- 
-2.33.1
-
+Kind regards
+Uffe
