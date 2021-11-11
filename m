@@ -2,58 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D1F944D911
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Nov 2021 16:17:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6652B44D914
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Nov 2021 16:18:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233925AbhKKPUf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Nov 2021 10:20:35 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:39490 "EHLO
+        id S233995AbhKKPU5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Nov 2021 10:20:57 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:56823 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233858AbhKKPUe (ORCPT
+        by vger.kernel.org with ESMTP id S233982AbhKKPUz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Nov 2021 10:20:34 -0500
+        Thu, 11 Nov 2021 10:20:55 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1636643865;
+        s=mimecast20190719; t=1636643886;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=svjHyjzQ7VAcc5T4gHqBKsZL9dmjawAUG7iPlCYGOBg=;
-        b=IVcpQJRdbHW+4O5fFAhL++fpuI/uMcfdbVSX75hetjgG5+osOgpv3iEWFh/FsW1MpxKh8j
-        Ptd1KWRcUcKKkrT0kLe4MxY73DsMU6H3jiLFG+Aj//Y1czqZynjHZYQEz/Tcw5ZS/9YJk7
-        USuXOqUY+ZP8AYDZWlV5WIj/jsE5jTU=
-Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
- [209.85.221.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-597-bHN_EMlLNmmZeo_6jbsr4g-1; Thu, 11 Nov 2021 10:17:43 -0500
-X-MC-Unique: bHN_EMlLNmmZeo_6jbsr4g-1
-Received: by mail-wr1-f69.google.com with SMTP id q7-20020adff507000000b0017d160d35a8so1065763wro.4
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Nov 2021 07:17:43 -0800 (PST)
+        bh=Q0cNtUhNUJ5YTp4Z6b5j4V9T45pxGqGdZ1VnAV+7W+0=;
+        b=HrYJuCFu5hl6FzSMuYS0EpvAypdOwcUbgxizdTmF7z437UzE/CHNkZHTOYncglAjU5P8om
+        r1B5IK9qVqodUJDxkN3v7pNFyvXXKjPZ6i2WnEmG1T0DBHQLUsjhLKWaNgHpf8t+xGfryM
+        wpVO6iOvOeYl2HKRkg5p9mFfexpQVgw=
+Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
+ [209.85.221.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-421-ya5QVeZBPaurj3MPhTYdZA-1; Thu, 11 Nov 2021 10:18:05 -0500
+X-MC-Unique: ya5QVeZBPaurj3MPhTYdZA-1
+Received: by mail-wr1-f72.google.com with SMTP id y10-20020adffa4a000000b0017eea6cb05dso1059924wrr.6
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Nov 2021 07:18:04 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
          :content-language:to:cc:references:from:in-reply-to
          :content-transfer-encoding;
-        bh=svjHyjzQ7VAcc5T4gHqBKsZL9dmjawAUG7iPlCYGOBg=;
-        b=pTCkTcwdy9FjlqdPKAS9HdLpkQIW6mjztJXynpIT9Im4wpSTceOAIeNWmFHAtH5jOT
-         kksROFOPXCT/D4tkuwhj5Hg8CaVzdyOFFxTG21MLWsagpEHegNMq021bVXf8TMjqbLRz
-         unNq5Lm91+vwTyxi/uy8fQ0JRDotiF0P1OMLWR+mKPSlk1x8rb0S2Z5wU0Ivc6ujuHo5
-         bc8zGFe00EQIN0jMXHWsAGuMTS41/QD+iGTafI2tVvarj9ot7Q2Jt7smBZqxdk4SxgRl
-         clEskzXNBhIXq1oh4erq/eUi6VmPMPr9Cvm5AtmBnxkWFsYU0OsnyioStAycJN+RkIgq
-         FpQg==
-X-Gm-Message-State: AOAM532vdzq24w+0//xr+nppFhQk3x3WcXksh4jEsULDr71endxrQsTu
-        kcIxe2Y8wi9EMwycqmGRvfgQy70IsJaMrpmXbC3ztRZXrASQjb6yPUmM1vVg7FZ6sXUVNaXmGZD
-        /pWMegu49IRyWNiZbyJF277oc
-X-Received: by 2002:a7b:cf0f:: with SMTP id l15mr9176416wmg.92.1636643862709;
-        Thu, 11 Nov 2021 07:17:42 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJyvN43VVbPmqMqwsW1EL01shLxTONh5ZnEEZ+HuuEZ0oidamWSIzdkWNf3qofGECrc4T5fMlQ==
-X-Received: by 2002:a7b:cf0f:: with SMTP id l15mr9176361wmg.92.1636643862378;
-        Thu, 11 Nov 2021 07:17:42 -0800 (PST)
+        bh=Q0cNtUhNUJ5YTp4Z6b5j4V9T45pxGqGdZ1VnAV+7W+0=;
+        b=nTJv2mrTLKXuf9v7h0CMSosqHCy4UXA84ZdjKh1X44hLAijszAQFaLGniTHByK/24F
+         JQ4SeaB4YOYjM+HOmEpNWNI23orTovN/zeY7myIgCnbiWbqWheJeLCGK3wMyQC4+azXd
+         Q28QtPYClsSdJxqyzZsB5AxOdJ1/KUQEwsBooXeMnvxzntlRTxuRo3wnbKztGgptXg95
+         kdttb3QnFthd/pXs9ZOX/SU3yFkt1XVDN0XJT7mWay8qFEWQqxYtHucFQdQRFnu1ky5N
+         nAzjMWtL3WdfelZWKZLGO7oGThf5yPxucDz6TE7lVt6xKohPKAjRmAif3qHz8h+bjzeB
+         hIKQ==
+X-Gm-Message-State: AOAM530rGOSTyUvLR4J2Lwm7M6CLAHN0BDuAkR8M1Ofc9DhaNMF2FK9i
+        wbcLlK1bFXutXFSRY6rbUydoYuE8r9Jnw+Hu2myUB8peB8oAWEPpk5WDni5GYvifp6HVs8ANyAs
+        rVR5R1/qTgJjTDyPnJqx24XT6
+X-Received: by 2002:a05:600c:19d1:: with SMTP id u17mr26609317wmq.148.1636643883864;
+        Thu, 11 Nov 2021 07:18:03 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJyjfe6VczNOYkTc9EVKpzTYfmmgunIBpEZIImi/kWgjnIGXR5Cp5VKUzRC389SULr+6Qtr1Kg==
+X-Received: by 2002:a05:600c:19d1:: with SMTP id u17mr26609256wmq.148.1636643883580;
+        Thu, 11 Nov 2021 07:18:03 -0800 (PST)
 Received: from ?IPV6:2001:b07:6468:f312:63a7:c72e:ea0e:6045? ([2001:b07:6468:f312:63a7:c72e:ea0e:6045])
-        by smtp.gmail.com with ESMTPSA id j11sm3199336wrt.3.2021.11.11.07.17.41
+        by smtp.gmail.com with ESMTPSA id l8sm10841698wmc.40.2021.11.11.07.18.01
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 11 Nov 2021 07:17:41 -0800 (PST)
-Message-ID: <7ad12d6e-0caa-c0ab-9920-f11f4c7801f5@redhat.com>
-Date:   Thu, 11 Nov 2021 16:17:40 +0100
+        Thu, 11 Nov 2021 07:18:02 -0800 (PST)
+Message-ID: <174d6879-0a5f-5045-c453-c55db6454514@redhat.com>
+Date:   Thu, 11 Nov 2021 16:18:00 +0100
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
  Thunderbird/91.2.0
@@ -103,7 +103,7 @@ now:
  From 0ac1004d9e15e9460b51651bd095e6c5ee9cf4f9 Mon Sep 17 00:00:00 2001
 From: Paolo Bonzini <pbonzini@redhat.com>
 Date: Thu, 11 Nov 2021 10:02:26 -0500
-Subject: [PATCH 1/2] KVM: SEV: provide helpers to charge/uncharge misc_cg
+Subject: [PATCH 1/4] KVM: SEV: provide helpers to charge/uncharge misc_cg
 
 Avoid code duplication across all callers of misc_cg_try_charge and
 misc_cg_uncharge.  The resource type for KVM is always derived from
@@ -179,7 +179,7 @@ index 7c94fe307b39..5bafa4bf7c49 100644
  From 5214132ae7e8310de26d5791f7fe913085a8e53c Mon Sep 17 00:00:00 2001
 From: Paolo Bonzini <pbonzini@redhat.com>
 Date: Thu, 11 Nov 2021 10:08:32 -0500
-Subject: [PATCH] fix cgroup charging
+Subject: [PATCH 2/4] fix cgroup charging
 
 
 diff --git a/arch/x86/kvm/svm/sev.c b/arch/x86/kvm/svm/sev.c
@@ -265,7 +265,7 @@ index 5bafa4bf7c49..97048ff7c2ad 100644
  From 943ba93c57ee25f85538decd68dca6e4ebdaf2c1 Mon Sep 17 00:00:00 2001
 From: Paolo Bonzini <pbonzini@redhat.com>
 Date: Thu, 11 Nov 2021 10:13:38 -0500
-Subject: [PATCH] KVM: generalize "bugged" VM to "dead" VM
+Subject: [PATCH 3/4] KVM: generalize "bugged" VM to "dead" VM
 
 Generalize KVM_REQ_VM_BUGGED so that it can be called even in cases
 where it is by design that the VM cannot be operated upon.  In this
@@ -385,7 +385,7 @@ index 3f6d450355f0..d31724500501 100644
  From fb168352e16a4dbd95a7c0d1e6add18f0496ac97 Mon Sep 17 00:00:00 2001
 From: Paolo Bonzini <pbonzini@redhat.com>
 Date: Thu, 11 Nov 2021 10:14:49 -0500
-Subject: [PATCH] mark src vm as dead
+Subject: [PATCH 4/4] mark src vm as dead
 
 
 diff --git a/arch/x86/kvm/svm/sev.c b/arch/x86/kvm/svm/sev.c
