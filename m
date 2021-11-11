@@ -2,172 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F93B44DAB5
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Nov 2021 17:46:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CC06944DAC0
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Nov 2021 17:48:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234278AbhKKQtC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Nov 2021 11:49:02 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124]:47347 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233966AbhKKQtA (ORCPT
+        id S234318AbhKKQur (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Nov 2021 11:50:47 -0500
+Received: from jabberwock.ucw.cz ([46.255.230.98]:44028 "EHLO
+        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233966AbhKKQuq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Nov 2021 11:49:00 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1636649171;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=fA0i4I2sJQvNiM1THao7+ZG2wZ9nUHKTkW18M399t/8=;
-        b=K+AWjPPazzGeEE2hLou/p9lG0eqm5Z+zS6E+JYq5ezCbBKS17FJUniZbY4ufGNxtwc3zEc
-        kYAIWhnSwm8w2TJIS/gTL+RL3bPo4XCzedLu08NeZhyIxq/yQP6ODedsls90S0xcZyjycW
-        fMN86icy5NqvIyRvlJ/y5Nvg+dRP/DI=
-Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
- [209.85.221.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-337-lh8yVkQ5PaSu8_mh5866fw-1; Thu, 11 Nov 2021 11:46:10 -0500
-X-MC-Unique: lh8yVkQ5PaSu8_mh5866fw-1
-Received: by mail-wr1-f69.google.com with SMTP id h7-20020adfaa87000000b001885269a937so1123209wrc.17
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Nov 2021 08:46:10 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=fA0i4I2sJQvNiM1THao7+ZG2wZ9nUHKTkW18M399t/8=;
-        b=7Ax7yTBt/KrCGOr7PPVHW32j7XSilPnFMdSJG+KnfOh9YCJFB3+XZ3VU2IE2RPkDx0
-         4fLqDh/22nRyW9f+LepRS0HE24j60MogN18eahbKWHjTUId7N2Un0DiafDt74Xh2G84N
-         MeGpGpBwQlp8OOh5UddZCV8Jr5tODVLvB19fu7CRSTLlF+WnA7GTEX34reHtCD4eQKl7
-         9HAoDYKWW6bFyPd1FSLwZFFz6ppGIRCsQbOK3964ubZbMpTXKRiYQ7C1OtHLdBMD7a63
-         OajFxd+8mBNoB0IAiBH56wnIzHKlrlNmp2GcXZ+Zvi+aySHYEFxQ1LEJYWi2fi4JM7Ar
-         dr8w==
-X-Gm-Message-State: AOAM533CoIzgldDQ2YJzgYqOFEc5alYIcR9T4gjs60/0Uw81XpLutNoJ
-        k1TQfAqbOGOOgm55xJSffqP/Pt+yP3HKVGYIGQpyt3pLaWZV8CUsQ9nJW01DAX9oh99pMSKES41
-        uoYRqThStmTPmxK7Zmx8C6Q4X
-X-Received: by 2002:a05:6000:12c5:: with SMTP id l5mr10340648wrx.173.1636649168176;
-        Thu, 11 Nov 2021 08:46:08 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJxKRZDaiYOBTv5xC4SSYkhznLpliqsStYNu35LyQ+ZrmZjgf7f0+en9CTvLiG3noAEvPWA86w==
-X-Received: by 2002:a05:6000:12c5:: with SMTP id l5mr10340607wrx.173.1636649167942;
-        Thu, 11 Nov 2021 08:46:07 -0800 (PST)
-Received: from redhat.com ([2.55.135.246])
-        by smtp.gmail.com with ESMTPSA id z12sm3408376wrv.78.2021.11.11.08.46.05
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 11 Nov 2021 08:46:07 -0800 (PST)
-Date:   Thu, 11 Nov 2021 11:46:03 -0500
-From:   "Michael S. Tsirkin" <mst@redhat.com>
-To:     Vincent Whitchurch <vincent.whitchurch@axis.com>
-Cc:     wsa@kernel.org, jie.deng@intel.com, viresh.kumar@linaro.org,
-        conghui.chen@intel.com, virtualization@lists.linux-foundation.org,
-        linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel@axis.com
-Subject: Re: [PATCH v2 1/2] i2c: virtio: disable timeout handling
-Message-ID: <20211111114434-mutt-send-email-mst@kernel.org>
-References: <20211111160412.11980-1-vincent.whitchurch@axis.com>
- <20211111160412.11980-2-vincent.whitchurch@axis.com>
+        Thu, 11 Nov 2021 11:50:46 -0500
+Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
+        id F16961C0B77; Thu, 11 Nov 2021 17:47:55 +0100 (CET)
+Date:   Thu, 11 Nov 2021 17:47:54 +0100
+From:   Pavel Machek <pavel@ucw.cz>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+        Christoph Hellwig <hch@lst.de>, Omar Sandoval <osandov@fb.com>,
+        Ming Lei <ming.lei@redhat.com>, Jens Axboe <axboe@kernel.dk>,
+        Zubin Mithra <zsm@chromium.org>
+Subject: Re: [PATCH 4.19 01/16] block: introduce multi-page bvec helpers
+Message-ID: <20211111164754.GA29545@duo.ucw.cz>
+References: <20211110182001.994215976@linuxfoundation.org>
+ <20211110182002.041203616@linuxfoundation.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha1;
+        protocol="application/pgp-signature"; boundary="9amGYk9869ThD9tj"
 Content-Disposition: inline
-In-Reply-To: <20211111160412.11980-2-vincent.whitchurch@axis.com>
+In-Reply-To: <20211110182002.041203616@linuxfoundation.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 11, 2021 at 05:04:11PM +0100, Vincent Whitchurch wrote:
-> If a timeout is hit, it can result is incorrect data on the I2C bus
-> and/or memory corruptions in the guest since the device can still be
-> operating on the buffers it was given while the guest has freed them.
-> 
-> Here is, for example, the start of a slub_debug splat which was
-> triggered on the next transfer after one transfer was forced to timeout
-> by setting a breakpoint in the backend (rust-vmm/vhost-device):
-> 
->  BUG kmalloc-1k (Not tainted): Poison overwritten
->  First byte 0x1 instead of 0x6b
->  Allocated in virtio_i2c_xfer+0x65/0x35c age=350 cpu=0 pid=29
->  	__kmalloc+0xc2/0x1c9
->  	virtio_i2c_xfer+0x65/0x35c
->  	__i2c_transfer+0x429/0x57d
->  	i2c_transfer+0x115/0x134
->  	i2cdev_ioctl_rdwr+0x16a/0x1de
->  	i2cdev_ioctl+0x247/0x2ed
->  	vfs_ioctl+0x21/0x30
->  	sys_ioctl+0xb18/0xb41
->  Freed in virtio_i2c_xfer+0x32e/0x35c age=244 cpu=0 pid=29
->  	kfree+0x1bd/0x1cc
->  	virtio_i2c_xfer+0x32e/0x35c
->  	__i2c_transfer+0x429/0x57d
->  	i2c_transfer+0x115/0x134
->  	i2cdev_ioctl_rdwr+0x16a/0x1de
->  	i2cdev_ioctl+0x247/0x2ed
->  	vfs_ioctl+0x21/0x30
->  	sys_ioctl+0xb18/0xb41
-> 
-> There is no simple fix for this (the driver would have to always create
-> bounce buffers and hold on to them until the device eventually returns
-> the buffers), so just disable the timeout support for now.
-> 
-> Fixes: 3cfc88380413d20f ("i2c: virtio: add a virtio i2c frontend driver")
-> Acked-by: Jie Deng <jie.deng@intel.com>
-> Signed-off-by: Vincent Whitchurch <vincent.whitchurch@axis.com>
 
-Acked-by: Michael S. Tsirkin <mst@redhat.com>
+--9amGYk9869ThD9tj
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-For an eventual fix, I think you'd have to reset the device,
-then you can get free up the outstanding buffers.
-This has to be done carefully to make sure it does
-not race with interrupts and/or new requests, typically
-not easy.
+Hi!
 
-> ---
->  drivers/i2c/busses/i2c-virtio.c | 14 +++++---------
->  1 file changed, 5 insertions(+), 9 deletions(-)
-> 
-> diff --git a/drivers/i2c/busses/i2c-virtio.c b/drivers/i2c/busses/i2c-virtio.c
-> index f10a603b13fb..7b2474e6876f 100644
-> --- a/drivers/i2c/busses/i2c-virtio.c
-> +++ b/drivers/i2c/busses/i2c-virtio.c
-> @@ -106,11 +106,10 @@ static int virtio_i2c_prepare_reqs(struct virtqueue *vq,
->  
->  static int virtio_i2c_complete_reqs(struct virtqueue *vq,
->  				    struct virtio_i2c_req *reqs,
-> -				    struct i2c_msg *msgs, int num,
-> -				    bool timedout)
-> +				    struct i2c_msg *msgs, int num)
->  {
->  	struct virtio_i2c_req *req;
-> -	bool failed = timedout;
-> +	bool failed = false;
->  	unsigned int len;
->  	int i, j = 0;
->  
-> @@ -132,7 +131,7 @@ static int virtio_i2c_complete_reqs(struct virtqueue *vq,
->  			j++;
->  	}
->  
-> -	return timedout ? -ETIMEDOUT : j;
-> +	return j;
->  }
->  
->  static int virtio_i2c_xfer(struct i2c_adapter *adap, struct i2c_msg *msgs,
-> @@ -141,7 +140,6 @@ static int virtio_i2c_xfer(struct i2c_adapter *adap, struct i2c_msg *msgs,
->  	struct virtio_i2c *vi = i2c_get_adapdata(adap);
->  	struct virtqueue *vq = vi->vq;
->  	struct virtio_i2c_req *reqs;
-> -	unsigned long time_left;
->  	int count;
->  
->  	reqs = kcalloc(num, sizeof(*reqs), GFP_KERNEL);
-> @@ -164,11 +162,9 @@ static int virtio_i2c_xfer(struct i2c_adapter *adap, struct i2c_msg *msgs,
->  	reinit_completion(&vi->completion);
->  	virtqueue_kick(vq);
->  
-> -	time_left = wait_for_completion_timeout(&vi->completion, adap->timeout);
-> -	if (!time_left)
-> -		dev_err(&adap->dev, "virtio i2c backend timeout.\n");
-> +	wait_for_completion(&vi->completion);
->  
-> -	count = virtio_i2c_complete_reqs(vq, reqs, msgs, count, !time_left);
-> +	count = virtio_i2c_complete_reqs(vq, reqs, msgs, count);
->  
->  err_free:
->  	kfree(reqs);
-> -- 
-> 2.28.0
+> From: Ming Lei <ming.lei@redhat.com>
+>=20
+> commit 3d75ca0adef4280650c6690a0c4702a74a6f3c95 upstream.
+>=20
+> This patch introduces helpers of 'mp_bvec_iter_*' for multi-page bvec
+> support.
+>=20
+> The introduced helpers treate one bvec as real multi-page segment,
+> which may include more than one pages.
+>=20
+> The existed helpers of bvec_iter_* are interfaces for supporting current
+> bvec iterator which is thought as single-page by drivers, fs, dm and
+> etc. These introduced helpers will build single-page bvec in flight, so
+> this way won't break current bio/bvec users, which needn't any
+> change.
 
+I don't understand why we have this in 4.19-stable. I don't see
+followup patches needing it, and it does not claim to fix a bug.
+
+> +#define mp_bvec_iter_bvec(bvec, iter)				\
+> +((struct bio_vec) {						\
+> +	.bv_page	=3D mp_bvec_iter_page((bvec), (iter)),	\
+> +	.bv_len		=3D mp_bvec_iter_len((bvec), (iter)),	\
+> +	.bv_offset	=3D mp_bvec_iter_offset((bvec), (iter)),	\
+> +})
+> +
+> +/* For building single-page bvec in flight */
+> + #define bvec_iter_offset(bvec, iter)				\
+> +	(mp_bvec_iter_offset((bvec), (iter)) % PAGE_SIZE)
+> +
+
+Plus this one is strange. IIRC preprocessor directives have to put #
+in column zero?
+
+Best regards,
+								Pavel
+--=20
+http://www.livejournal.com/~pavelmachek
+
+--9amGYk9869ThD9tj
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iF0EABECAB0WIQRPfPO7r0eAhk010v0w5/Bqldv68gUCYY1JOgAKCRAw5/Bqldv6
+8oPrAJ9Src2Q2Dyal2GgwRHc1QluAaxboQCgq0VdB92UlzXrBAEYpR7XQo/4YMg=
+=amyN
+-----END PGP SIGNATURE-----
+
+--9amGYk9869ThD9tj--
