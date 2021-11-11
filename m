@@ -2,146 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B270E44CEA6
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Nov 2021 02:12:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9948C44CEAE
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Nov 2021 02:14:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232550AbhKKBP2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Nov 2021 20:15:28 -0500
-Received: from wnew1-smtp.messagingengine.com ([64.147.123.26]:54253 "EHLO
-        wnew1-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232202AbhKKBP0 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Nov 2021 20:15:26 -0500
-Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
-        by mailnew.west.internal (Postfix) with ESMTP id B794F2B016A9;
-        Wed, 10 Nov 2021 20:12:37 -0500 (EST)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute4.internal (MEProxy); Wed, 10 Nov 2021 20:12:38 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:date:from:message-id:subject:to
-        :x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-        fm1; bh=gzBopdKcSAuOB8C+OTK/rUbW4nSHcYhlAOpsPtq26FU=; b=HeP3Sa7n
-        6Rcn/CUSdLeUx2Z6uVIDrEkdRpKkGhJ97J+tGqTz5BS//IUj3Yefq2puJesm9ECm
-        mcgJV9WVHcJp8PUP54CXewmz5xf2jS9F0+9kGy3ScADwh1GQssoiM7SZnt7ucoVx
-        +qEjOFEEIn3BwHAMBbj5xGoX7xO6D6jyYqNIGrrgNBYSP/Blojjuu9HRJiOtTI+8
-        SnEKPWrBHYOT6NhNY1m23MRBWc9Jx2JrV3N/7TlCBe4T38cz+KdOW82Aa7uqGZj8
-        G28bGYkbhHS6jZ+QB8Fjq65mG9ChMhQ/KSghrVTICNdD7jQgOdqDqOFmNG/QE5/d
-        OdjvUTgfu27qJA==
-X-ME-Sender: <xms:BW6MYcOCqOQW1H_FMtDGuQWBeDDVxpXMbff8oF6UTKKnLHnB-MQOEw>
-    <xme:BW6MYS_79K5gFAXdQlr1dfvE1tbo2FThqy2S4F-LgTaD5XsqcLzrS1jQDAEMAdcEM
-    DjzpDwrZKGo154BCHk>
-X-ME-Received: <xmr:BW6MYTSFr-A8cDnQ9iptnXOF9P4xbVUU-7fLj_tyNY6-YcWsQ9bwrgs2CXmrAzB3lW_EGRThgiTcV45xOCBAQya940FdUjxyut8>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvuddrvddtgddvkecutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenog
-    fhohhrsghiugguvghnjfgurhculdehtddtmdenucfjughrpefvkffhufffsedttdertddt
-    tdenucfhrhhomhephfhinhhnucfvhhgrihhnuceofhhthhgrihhnsehlihhnuhigqdhmie
-    ekkhdrohhrgheqnecuhfhorhgsihguuggvnhfjughrpefvkffhufffsedttdertddttddp
-    vffkhffuffestddtredttddtnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpe
-    hmrghilhhfrhhomhepfhhthhgrihhnsehlihhnuhigqdhmieekkhdrohhrgh
-X-ME-Proxy: <xmx:BW6MYUvbO4U_0V_Tr_YOAIuB8nShZr2XCrvTBfYW8Lvk1_F1nY4AiQ>
-    <xmx:BW6MYUeF6fDVV1Yv7B80WWuszJnRldeRJcVm2tYeUttnHOgeZ5qzbA>
-    <xmx:BW6MYY0lhlG7J2BYZ7PEkDv5jr2P-7q46795PArIY2X2QTDiWliIyQ>
-    <xmx:BW6MYVpU7zDW8sfEllsHaFGJLt54PaYLngHBQG62_pUO9PwlCymypF0ZAHw>
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
- 10 Nov 2021 20:12:34 -0500 (EST)
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     "Mike Rapoport" <rppt@kernel.org>, "Sam Creasey" <sammy@sammy.net>,
-        linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org
-Message-Id: <a57524fe38123ea17a6741cdc282f6c84c30a009.1636593047.git.fthain@linux-m68k.org>
-From:   Finn Thain <fthain@linux-m68k.org>
-Subject: [PATCH] m68k: Enable memtest kernel parameter
-Date:   Thu, 11 Nov 2021 12:10:47 +1100
+        id S232681AbhKKBQl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Nov 2021 20:16:41 -0500
+Received: from mga06.intel.com ([134.134.136.31]:54337 "EHLO mga06.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232179AbhKKBQk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Nov 2021 20:16:40 -0500
+X-IronPort-AV: E=McAfee;i="6200,9189,10164"; a="293652766"
+X-IronPort-AV: E=Sophos;i="5.87,225,1631602800"; 
+   d="scan'208";a="293652766"
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Nov 2021 17:13:51 -0800
+X-IronPort-AV: E=Sophos;i="5.87,225,1631602800"; 
+   d="scan'208";a="602427994"
+Received: from rhweight-mobl.amr.corp.intel.com (HELO rhweight-mobl.ra.intel.com) ([10.212.236.115])
+  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Nov 2021 17:13:50 -0800
+From:   Russ Weight <russell.h.weight@intel.com>
+To:     sudeep.holla@arm.com, cristian.marussi@arm.com, ardb@kernel.org,
+        bjorn.andersson@linaro.org, gregkh@linuxfoundation.org,
+        linux-kernel@vger.kernel.org
+Cc:     trix@redhat.com, lgoncalv@redhat.com, yilun.xu@intel.com,
+        hao.wu@intel.com, matthew.gerlach@intel.com,
+        Russ Weight <russell.h.weight@intel.com>
+Subject: [RFC PATCH 0/5] Firmware Upload Framework
+Date:   Wed, 10 Nov 2021 17:13:40 -0800
+Message-Id: <20211111011345.25049-1-russell.h.weight@intel.com>
+X-Mailer: git-send-email 2.25.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Enable the memtest feature and rearrange some code to prevent it from
-clobbering the initrd.
+The Firmware Upload framework provides a common API for uploading firmware
+files to target devices. An example use case involves FPGA devices that
+load FPGA, Card BMC, and firmware images from FLASH when the card boots.
+Users need the ability to update these firmware images while the card is
+in use.
 
-The CONFIG_BLK_DEV_INITRD symbol was conditional on !defined(CONFIG_SUN3).
-For simplicity, remove that test on the basis that m68k_ramdisk.size == 0
-on Sun 3.
+Device drivers that instantiate the Firmware Upload class driver will
+interact with the target device to transfer and authenticate the firmware
+data. Uploads are performed in the context of a kernel worker thread in
+order to facilitate progress indicators during lengthy uploads.
 
-The SLIME source code at http://sammy.net/ shows that no BI_RAMDISK entry
-is ever passed to the kernel due to #ifdef 0 around the relevant code.
+This driver was previously submitted in the context of the FPGA sub-
+system as the "FPGA Image Load Framework", but the framework is generic
+enough to support other devices as well. The previous submission of this
+patch-set can be viewed here:
 
-Cc: Mike Rapoport <rppt@kernel.org>
-Cc: Sam Creasey <sammy@sammy.net>
-Signed-off-by: Finn Thain <fthain@linux-m68k.org>
----
-Are there any other Linux bootloaders on Sun 3?
----
- arch/m68k/Kconfig           |  1 +
- arch/m68k/kernel/setup_mm.c | 15 ++++++---------
- arch/m68k/mm/motorola.c     |  2 ++
- 3 files changed, 9 insertions(+), 9 deletions(-)
+https://marc.info/?l=linux-kernel&m=163295640216820&w=2
 
-diff --git a/arch/m68k/Kconfig b/arch/m68k/Kconfig
-index 0b50da08a9c5..0e96066b3c46 100644
---- a/arch/m68k/Kconfig
-+++ b/arch/m68k/Kconfig
-@@ -9,6 +9,7 @@ config M68K
- 	select ARCH_HAVE_NMI_SAFE_CMPXCHG if RMW_INSNS
- 	select ARCH_MIGHT_HAVE_PC_PARPORT if ISA
- 	select ARCH_NO_PREEMPT if !COLDFIRE
-+	select ARCH_USE_MEMTEST
- 	select ARCH_WANT_IPC_PARSE_VERSION
- 	select BINFMT_FLAT_ARGVP_ENVP_ON_STACK
- 	select DMA_DIRECT_REMAP if HAS_DMA && MMU && !COLDFIRE
-diff --git a/arch/m68k/kernel/setup_mm.c b/arch/m68k/kernel/setup_mm.c
-index 4b51bfd38e5f..49e573b94326 100644
---- a/arch/m68k/kernel/setup_mm.c
-+++ b/arch/m68k/kernel/setup_mm.c
-@@ -338,13 +338,6 @@ void __init setup_arch(char **cmdline_p)
- 		panic("No configuration setup");
- 	}
- 
--	paging_init();
--
--#ifdef CONFIG_NATFEAT
--	nf_init();
--#endif
--
--#ifndef CONFIG_SUN3
- #ifdef CONFIG_BLK_DEV_INITRD
- 	if (m68k_ramdisk.size) {
- 		memblock_reserve(m68k_ramdisk.addr, m68k_ramdisk.size);
-@@ -354,6 +347,12 @@ void __init setup_arch(char **cmdline_p)
- 	}
- #endif
- 
-+	paging_init();
-+
-+#ifdef CONFIG_NATFEAT
-+	nf_init();
-+#endif
-+
- #ifdef CONFIG_ATARI
- 	if (MACH_IS_ATARI)
- 		atari_stram_reserve_pages((void *)availmem);
-@@ -364,8 +363,6 @@ void __init setup_arch(char **cmdline_p)
- 	}
- #endif
- 
--#endif /* !CONFIG_SUN3 */
--
- /* set ISA defs early as possible */
- #if defined(CONFIG_ISA) && defined(MULTI_ISA)
- 	if (MACH_IS_Q40) {
-diff --git a/arch/m68k/mm/motorola.c b/arch/m68k/mm/motorola.c
-index 9f3f77785aa7..5b6575eb6d02 100644
---- a/arch/m68k/mm/motorola.c
-+++ b/arch/m68k/mm/motorola.c
-@@ -455,6 +455,8 @@ void __init paging_init(void)
- 
- 	flush_tlb_all();
- 
-+	early_memtest(min_addr, max_addr);
-+
- 	/*
- 	 * initialize the bad page table and bad page to point
- 	 * to a couple of allocated pages
+The n3000bmc-sec-update driver is the first driver to use the Firmware
+Upload API. A recent version of these patches can be viewed here:
+
+https://marc.info/?l=linux-kernel&m=163295697217095&w=2
+
+I don't think I am duplicating any functionality that is currently covered
+in the firmware subsystem. I appreciate your feedback on these patches.
+
+- Russ
+
+Russ Weight (5):
+  firmware: Create firmware upload framework
+  firmware: upload: Enable firmware uploads
+  firmware: upload: Signal eventfd when complete
+  firmware: upload: Add status ioctl
+  firmware: upload: Enable cancel of firmware upload
+
+ .../driver-api/firmware/firmware-upload.rst   |  54 +++
+ Documentation/driver-api/firmware/index.rst   |   1 +
+ MAINTAINERS                                   |   9 +
+ drivers/firmware/Kconfig                      |   8 +
+ drivers/firmware/Makefile                     |   1 +
+ drivers/firmware/firmware-upload.c            | 413 ++++++++++++++++++
+ include/linux/firmware/firmware-upload.h      |  69 +++
+ include/uapi/linux/firmware-upload.h          |  73 ++++
+ 8 files changed, 628 insertions(+)
+ create mode 100644 Documentation/driver-api/firmware/firmware-upload.rst
+ create mode 100644 drivers/firmware/firmware-upload.c
+ create mode 100644 include/linux/firmware/firmware-upload.h
+ create mode 100644 include/uapi/linux/firmware-upload.h
+
 -- 
-2.26.3
+2.25.1
 
