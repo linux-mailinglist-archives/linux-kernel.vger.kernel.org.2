@@ -2,86 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 67A4D44D066
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Nov 2021 04:27:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E8A6044D068
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Nov 2021 04:28:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232005AbhKKD3k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Nov 2021 22:29:40 -0500
-Received: from mga12.intel.com ([192.55.52.136]:35483 "EHLO mga12.intel.com"
+        id S232286AbhKKDbB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Nov 2021 22:31:01 -0500
+Received: from mga07.intel.com ([134.134.136.100]:31079 "EHLO mga07.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229931AbhKKD3j (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Nov 2021 22:29:39 -0500
-X-IronPort-AV: E=McAfee;i="6200,9189,10164"; a="212869389"
+        id S230256AbhKKDbA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Nov 2021 22:31:00 -0500
+X-IronPort-AV: E=McAfee;i="6200,9189,10164"; a="296279809"
 X-IronPort-AV: E=Sophos;i="5.87,225,1631602800"; 
-   d="scan'208";a="212869389"
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Nov 2021 19:26:51 -0800
+   d="scan'208";a="296279809"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Nov 2021 19:28:11 -0800
 X-IronPort-AV: E=Sophos;i="5.87,225,1631602800"; 
-   d="scan'208";a="452574508"
-Received: from agluck-desk2.sc.intel.com (HELO agluck-desk2.amr.corp.intel.com) ([10.3.52.146])
-  by orsmga006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Nov 2021 19:26:50 -0800
-Date:   Wed, 10 Nov 2021 19:26:49 -0800
-From:   "Luck, Tony" <tony.luck@intel.com>
-To:     Jarkko Sakkinen <jarkko@kernel.org>
-Cc:     Reinette Chatre <reinette.chatre@intel.com>,
-        dave.hansen@linux.intel.com, tglx@linutronix.de, bp@alien8.de,
-        mingo@redhat.com, linux-sgx@vger.kernel.org, x86@kernel.org,
-        seanjc@google.com, hpa@zytor.com, linux-kernel@vger.kernel.org,
-        stable@vger.kernel.org
-Subject: Re: [PATCH V2] x86/sgx: Fix free page accounting
-Message-ID: <YYyNeW28jqKwD0tF@agluck-desk2.amr.corp.intel.com>
-References: <b2e69e9febcae5d98d331de094d9cc7ce3217e66.1636487172.git.reinette.chatre@intel.com>
- <8e0bb87f05b79317a06ed2d8ab5e2f5cf6132b6a.camel@kernel.org>
- <794a7034-f6a7-4aff-7958-b1bd959ced24@intel.com>
- <94df4c660532a6bf414b6bbd8e25c3ea2e4eda5b.camel@kernel.org>
+   d="scan'208";a="504253909"
+Received: from xiaoyaol-mobl.ccr.corp.intel.com (HELO [10.239.13.123]) ([10.239.13.123])
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Nov 2021 19:28:07 -0800
+Message-ID: <5689dc7e-b0e0-1733-f00f-66dc7b62b960@intel.com>
+Date:   Thu, 11 Nov 2021 11:28:04 +0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <94df4c660532a6bf414b6bbd8e25c3ea2e4eda5b.camel@kernel.org>
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
+ Firefox/91.0 Thunderbird/91.3.0
+Subject: Re: [RFC PATCH v2 22/69] KVM: x86: Add vm_type to differentiate
+ legacy VMs from protected VMs
+Content-Language: en-US
+To:     Sean Christopherson <seanjc@google.com>,
+        Paolo Bonzini <pbonzini@redhat.com>
+Cc:     "Yamahata, Isaku" <isaku.yamahata@intel.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "H . Peter Anvin" <hpa@zytor.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        "erdemaktas@google.com" <erdemaktas@google.com>,
+        Connor Kuehl <ckuehl@redhat.com>,
+        "x86@kernel.org" <x86@kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+        "isaku.yamahata@gmail.com" <isaku.yamahata@gmail.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>
+References: <cover.1625186503.git.isaku.yamahata@intel.com>
+ <8eb87cd52a89d957af03f93a9ece5634426a7757.1625186503.git.isaku.yamahata@intel.com>
+ <e2270f66-abd8-db17-c3bd-b6d9459624ec@redhat.com>
+ <YO356ni0SjPsLsSo@google.com>
+From:   Xiaoyao Li <xiaoyao.li@intel.com>
+In-Reply-To: <YO356ni0SjPsLsSo@google.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 11, 2021 at 04:55:14AM +0200, Jarkko Sakkinen wrote:
-> On Wed, 2021-11-10 at 10:51 -0800, Reinette Chatre wrote:
-> > sgx_should_reclaim() would only succeed when sgx_nr_free_pages goes 
-> > below the watermark. Once sgx_nr_free_pages becomes corrupted there is 
-> > no clear way in which it can correct itself since it is only ever 
-> > incremented or decremented.
+On 7/14/2021 4:39 AM, Sean Christopherson wrote:
+> On Tue, Jul 06, 2021, Paolo Bonzini wrote:
+>> On 03/07/21 00:04, isaku.yamahata@intel.com wrote:
+>>>    struct kvm_arch {
+>>> +	unsigned long vm_type;
+>>
+>> Also why not just int or u8?
 > 
-> So one scenario would be:
+> Heh, because kvm_dev_ioctl_create_vm() takes an "unsigned long" for the type and
+> it felt wrong to store it as something else.  Storing it as a smaller field should
+> be fine, I highly doubt we'll get to 256 types anytime soon :-)
+
+It's the bit position. We can get only 8 types with u8 actually.
+
 > 
-> 1. CPU A does a READ of sgx_nr_free_pages.
-> 2. CPU B does a READ of sgx_nr_free_pages.
-> 3. CPU A does a STORE of sgx_nr_free_pages.
-> 4. CPU B does a STORE of sgx_nr_free_pages.
+> I think kvm_x86_ops.is_vm_type_supported() should take the full size though.
 > 
-> ?
-> 
-> That does corrupt the value, yes, but I don't see anything like this
-> in the commit message, so I'll have to check.
-> 
-> I think the commit message is lacking a concurrency scenario, and the
-> current transcripts are a bit useless.
 
-What about this part:
-
-	With sgx_nr_free_pages accessed and modified from a few places
-	it is essential to ensure that these accesses are done safely but
-	this is not the case. sgx_nr_free_pages is read without any
-	protection and updated with inconsistent protection by any one
-	of the spin locks associated with the individual NUMA nodes.
-	For example:
-
-	      CPU_A                                 CPU_B
-	      -----                                 -----
-	 spin_lock(&nodeA->lock);              spin_lock(&nodeB->lock);
-	 ...                                   ...
-	 sgx_nr_free_pages--;  /* NOT SAFE */  sgx_nr_free_pages--;
-
-	 spin_unlock(&nodeA->lock);            spin_unlock(&nodeB->lock);
-
-Maybe you missed the "NOT SAFE" hidden in the middle of
-the picture?
-
--Tony
