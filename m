@@ -2,142 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5A72A44D485
+	by mail.lfdr.de (Postfix) with ESMTP id 1151C44D481
 	for <lists+linux-kernel@lfdr.de>; Thu, 11 Nov 2021 10:58:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232876AbhKKKBO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Nov 2021 05:01:14 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124]:41818 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232844AbhKKKBH (ORCPT
+        id S232882AbhKKKBK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Nov 2021 05:01:10 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51270 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229649AbhKKKBG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Nov 2021 05:01:07 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1636624698;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=2WfCXGbrfuPcyNxfHFWFibzfvtpe2j1zKl+DzGNBc4s=;
-        b=BXfyKjNdGsFD7VO56TXscMOjAnwuhKqgJwyXk92evB6z03/0d5Nox6KEMukhkL/FP2QZzu
-        grZPq2xLSGH5jMJiJWCdODhMbOKuLPr76K8W2LOoZS62JUTcEYJp1GDqEFuEiXQU26VCxa
-        BPjjVZXqQpObs+qKosaW/H7jaCtXDSY=
-Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
- [209.85.221.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-285-xJjyxgMkPyKOxhZ_OAA9UA-1; Thu, 11 Nov 2021 04:58:17 -0500
-X-MC-Unique: xJjyxgMkPyKOxhZ_OAA9UA-1
-Received: by mail-wr1-f71.google.com with SMTP id b1-20020a5d6341000000b001901ddd352eso119730wrw.7
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Nov 2021 01:58:16 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:organization:in-reply-to
-         :content-transfer-encoding;
-        bh=2WfCXGbrfuPcyNxfHFWFibzfvtpe2j1zKl+DzGNBc4s=;
-        b=rjb2cUKOsxROkbxku/4jOOhJW7VN3I0ZfUK1flF1Po0MAczN/C5Txq8WUyGf7Qzd+O
-         aTGAykUBvAAqJl5mrewfe92xgqmuUDL2xhmUaphU3p+aV9cGngjo7Co28xqbZO28+3dh
-         kduMTKS2puIumgLbhWlBHAJsJ8KRRV7PbfbB9VQul/GUjU5lq0wQpf0cudqj9qziMLUZ
-         lQ81S4M2rzfd6F1JlsH84b/Nht0d+lnV9+5TtNNU06ya8J47y0nmeUy5OPyUJU7wcr5H
-         i0bNMKG6c+ovN68dRHm7+TSzwZAQj4YUv/MJeGxSgOtB97/zz7/y0GPQml8iKJdu9hmu
-         wzwQ==
-X-Gm-Message-State: AOAM5312uAyhJM5rjKdnP1ODki0l0sbvsz28NfjFLwatlzws+wWntg9d
-        CPsogyC31cTeqFcu6xywjYyrR1ish3mUDn+xCgSUpM54+NKBa+b7nURQ7QkNA2BE+Su03RWNNWy
-        BB4oyB2vKseTMvIdJrQKijiOu
-X-Received: by 2002:a1c:23d2:: with SMTP id j201mr2503865wmj.76.1636624695808;
-        Thu, 11 Nov 2021 01:58:15 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJzrulQBQPuRy6L+qz74whcjWLY8u+rgH1OO6eX2oTETTCSbO+kpZ6/tGPnb1PaeF7ZEn/lzpw==
-X-Received: by 2002:a1c:23d2:: with SMTP id j201mr2503832wmj.76.1636624695641;
-        Thu, 11 Nov 2021 01:58:15 -0800 (PST)
-Received: from [192.168.3.132] (p4ff23ee8.dip0.t-ipconnect.de. [79.242.62.232])
-        by smtp.gmail.com with ESMTPSA id 4sm3186059wrz.90.2021.11.11.01.58.13
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 11 Nov 2021 01:58:15 -0800 (PST)
-Message-ID: <3526ab88-afa3-e87b-d773-72807a27a88d@redhat.com>
-Date:   Thu, 11 Nov 2021 10:58:13 +0100
+        Thu, 11 Nov 2021 05:01:06 -0500
+Received: from wp530.webpack.hosteurope.de (wp530.webpack.hosteurope.de [IPv6:2a01:488:42:1000:50ed:8234::])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5CC53C061766;
+        Thu, 11 Nov 2021 01:58:17 -0800 (PST)
+Received: from ip4d173d4a.dynamic.kabel-deutschland.de ([77.23.61.74] helo=[192.168.66.200]); authenticated
+        by wp530.webpack.hosteurope.de running ExIM with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        id 1ml6qU-0006ei-Sn; Thu, 11 Nov 2021 10:58:14 +0100
+Message-ID: <23b693d5-0335-8f42-a206-65e170ab6e52@leemhuis.info>
+Date:   Thu, 11 Nov 2021 10:58:14 +0100
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
  Thunderbird/91.2.0
-Subject: Re: [PATCH 1/7] fs/exec: make __set_task_comm always set a nul
- terminated string
-Content-Language: en-US
-To:     Yafang Shao <laoar.shao@gmail.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        netdev <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        "linux-perf-use." <linux-perf-users@vger.kernel.org>,
-        linux-fsdevel@vger.kernel.org, Linux MM <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        kernel test robot <oliver.sang@intel.com>,
-        kbuild test robot <lkp@intel.com>,
-        Kees Cook <keescook@chromium.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>,
-        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        Michal Miroslaw <mirq-linux@rere.qmqm.pl>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Petr Mladek <pmladek@suse.com>
-References: <20211108083840.4627-1-laoar.shao@gmail.com>
- <20211108083840.4627-2-laoar.shao@gmail.com>
- <c3571571-320a-3e25-8409-5653ddca895c@redhat.com>
- <CALOAHbCexkBs7FCdmQcatQbc+RsGTSoJkNBop0khsZX=g8Ftkg@mail.gmail.com>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat
-In-Reply-To: <CALOAHbCexkBs7FCdmQcatQbc+RsGTSoJkNBop0khsZX=g8Ftkg@mail.gmail.com>
+Subject: Re: [PATCH] fbdev: Prevent probing generic drivers if a FB is already
+ registered
+Content-Language: en-BS
+To:     Javier Martinez Canillas <javierm@redhat.com>,
+        linux-kernel@vger.kernel.org
+Cc:     linux-fbdev@vger.kernel.org,
+        Daniel Vetter <daniel.vetter@ffwll.ch>,
+        dri-devel@lists.freedesktop.org,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Ilya Trukhanov <lahvuun@gmail.com>,
+        Sam Ravnborg <sam@ravnborg.org>
+References: <20211111092053.1328304-1-javierm@redhat.com>
+From:   Thorsten Leemhuis <regressions@leemhuis.info>
+In-Reply-To: <20211111092053.1328304-1-javierm@redhat.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
+X-bounce-key: webpack.hosteurope.de;regressions@leemhuis.info;1636624697;2c1c1e15;
+X-HE-SMSGID: 1ml6qU-0006ei-Sn
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10.11.21 10:05, Yafang Shao wrote:
-> On Wed, Nov 10, 2021 at 4:28 PM David Hildenbrand <david@redhat.com> wrote:
->>
->> On 08.11.21 09:38, Yafang Shao wrote:
->>> Make sure the string set to task comm is always nul terminated.
->>>
->>
->> strlcpy: "the result is always a valid NUL-terminated string that fits
->> in the buffer"
->>
->> The only difference seems to be that strscpy_pad() pads the remainder
->> with zeroes.
->>
->> Is this description correct and I am missing something important?
->>
+On 11.11.21 10:20, Javier Martinez Canillas wrote:
+> The efifb and simplefb drivers just render to a pre-allocated frame buffer
+> and rely on the display hardware being initialized before the kernel boots.
 > 
-> In a earlier version [1], the checkpatch.py found a warning:
-> WARNING: Prefer strscpy over strlcpy - see:
-> https://lore.kernel.org/r/CAHk-=wgfRnXz0W3D37d01q3JFkr_i_uTL=V6A6G1oUZcprmknw@mail.gmail.com/
-> So I replaced strlcpy() with strscpy() to fix this warning.
-> And then in v5[2], the strscpy() was replaced with strscpy_pad() to
-> make sure there's no garbade data and also make get_task_comm() be
-> consistent with get_task_comm().
+> But if another driver already probed correctly and registered a fbdev, the
+> generic drivers shouldn't be probed since an actual driver for the display
+> hardware is already present.
 > 
-> This commit log didn't clearly describe the historical changes.  So I
-> think we can update the commit log and subject with:
-> 
-> Subject: use strscpy_pad with strlcpy in __set_task_comm
-> Commit log:
-> strlcpy is not suggested to use by the checkpatch.pl, so we'd better
-> recplace it with strscpy.
-> To avoid leaving garbage data and be consistent with the usage in
-> __get_task_comm(), the strscpy_pad is used here.
-> 
-> WDYT?
+> Reported-by: Ilya Trukhanov <lahvuun@gmail.com>
+> Signed-off-by: Javier Martinez Canillas <javierm@redhat.com>
+> ---
 
-Yes, that makes it clearer what this patch actually does :)
+TLDR: Javier, in case you need to send an improved patch, could you
+please add this before the 'Reported-by:'
 
-With the subject+description changed
+Link: https://lore.kernel.org/r/20211110200253.rfudkt3edbd3nsyj@lahvuun/
 
-Reviewed-by: David Hildenbrand <david@redhat.com>
+And if the patch is already good to go: could the subsystem maintainer
+please add it when applying?
 
-Thanks!
 
--- 
-Thanks,
+Long story: hi, this is your Linux kernel regression tracker speaking.
+Thanks for working on a fix for a regression I'm keeping an eye on.
 
-David / dhildenb
+There is one small detail that could be improved: the commit message
+would benefit from a link to the regression report, for reasons
+explained in Documentation/process/submitting-patches.rst. To quote:
 
+```
+If related discussions or any other background information behind the
+change can be found on the web, add 'Link:' tags pointing to it. In case
+your patch fixes a bug, for example, add a tag with a URL referencing
+the report in the mailing list archives or a bug tracker;
+```
+
+This concept is old, but the text was reworked recently to make this use
+case for the Link: tag clearer. For details see:
+https://git.kernel.org/linus/1f57bd42b77c
+
+Yes, that "Link:" is not really crucial; but it's good to have if
+someone needs to look into the backstory of this change sometime in the
+future. But I care for a different reason. I'm tracking this regression
+(and others) with regzbot, my Linux kernel regression tracking bot. This
+bot will notice if a patch with a Link: tag to a tracked regression gets
+posted and record that, which allowed anyone looking into the regression
+to quickly gasp the current status from regzbot's webui
+(https://linux-regtracking.leemhuis.info/regzbot ) or its reports. The
+bot will also notice if a commit with a Link: tag to a regression report
+is applied by Linus and then automatically mark the regression as
+resolved then.
+
+IOW: this tag makes my life a regression tracker a lot easier, as I
+otherwise have to tell regzbot manually about the fix. ;-)
+
+Ciao, Thorsten (while carrying his Linux kernel regression tracker hat)
+
+#regzbot ^backmonitor
+https://lore.kernel.org/r/20211110200253.rfudkt3edbd3nsyj@lahvuun/
