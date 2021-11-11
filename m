@@ -2,118 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D521F44D1DC
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Nov 2021 07:16:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B30E44D1E9
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Nov 2021 07:21:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230344AbhKKGSv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Nov 2021 01:18:51 -0500
-Received: from mailgw02.mediatek.com ([210.61.82.184]:56104 "EHLO
-        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S229674AbhKKGSu (ORCPT
+        id S231373AbhKKGX7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Nov 2021 01:23:59 -0500
+Received: from wout5-smtp.messagingengine.com ([64.147.123.21]:35377 "EHLO
+        wout5-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229674AbhKKGXz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Nov 2021 01:18:50 -0500
-X-UUID: b19ff7f055f84f59846da09edcc5d20f-20211111
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=tHZR4ShgONrY1xlUrKSMoIV7qdy+WnxCRT5rQr7aNKg=;
-        b=AXypkWyzZ8T+5Xhbxi3j/hp1XjY94qr1XZyfZ6FI6buZRJY/nBAWGrytEpmzcR7H7w8Op8tWD2eRS37nUO8JtFNGQ5OQ51zcKR8IOKQ+m0hQNnEqR5phz2VHzEorka/4HK1ULoVzlb9AasCtv13+S6RVkeHXI3lLXcPPeNZk/B8=;
-X-UUID: b19ff7f055f84f59846da09edcc5d20f-20211111
-Received: from mtkmbs10n1.mediatek.inc [(172.21.101.34)] by mailgw02.mediatek.com
-        (envelope-from <biao.huang@mediatek.com>)
-        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
-        with ESMTP id 806377556; Thu, 11 Nov 2021 14:15:57 +0800
-Received: from mtkmbs10n1.mediatek.inc (172.21.101.34) by
- mtkmbs10n2.mediatek.inc (172.21.101.183) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.792.3;
- Thu, 11 Nov 2021 14:15:56 +0800
-Received: from mhfsdcap04 (10.17.3.154) by mtkmbs10n1.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.2.792.15 via Frontend
- Transport; Thu, 11 Nov 2021 14:15:55 +0800
-Message-ID: <426d15179d7d79c3f3bd4774e23d4f5e384c7956.camel@mediatek.com>
-Subject: Re: [PATCH 4/5] dt-bindings: net: dwmac: Convert mediatek-dwmac to
- DT schema
-From:   Biao Huang <biao.huang@mediatek.com>
-To:     Rob Herring <robh@kernel.org>
-CC:     <davem@davemloft.net>, Jose Abreu <joabreu@synopsys.com>,
-        <srv_heupstream@mediatek.com>,
-        <linux-mediatek@lists.infradead.org>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-stm32@st-md-mailman.stormreply.com>,
-        Giuseppe Cavallaro <peppe.cavallaro@st.com>,
-        <devicetree@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>, <macpaul.lin@mediatek.com>,
-        "Jakub Kicinski" <kuba@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        "Maxime Coquelin" <mcoquelin.stm32@gmail.com>
-Date:   Thu, 11 Nov 2021 14:15:55 +0800
-In-Reply-To: <1636573460.872424.1783735.nullmailer@robh.at.kernel.org>
-References: <20211110083948.6082-1-biao.huang@mediatek.com>
-         <20211110083948.6082-5-biao.huang@mediatek.com>
-         <1636573460.872424.1783735.nullmailer@robh.at.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.2 
+        Thu, 11 Nov 2021 01:23:55 -0500
+Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
+        by mailout.west.internal (Postfix) with ESMTP id 903E032019DA;
+        Thu, 11 Nov 2021 01:21:06 -0500 (EST)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute5.internal (MEProxy); Thu, 11 Nov 2021 01:21:07 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=Ird/Co
+        1YqQUp1YcWv57cF2bwHWsDv4vjeqtH46VjxBA=; b=aTf8cBpLIhiRsDpBJOw0WA
+        L2Z7SdELEychvFNEST6RsawydxZPgy7wzuplZFru5r33/TDRqHG4P6hcfg52jDPM
+        usjsnTaWWBg3Hbd1CLHrZOBgQejJ9OwpNaimnqp7tCA3lpD27VkJ9pK9xTc73VKr
+        HqS2UuyT8WHxVdEamonl4PwOkhfIo2vo77fh02+gpmp4RDZ8xnLu1LeByoRXxVPm
+        qYZgOh8QX5KM0KI9vuLhnfo+7vieEQKZ9VB3A0xlr/sRsroM+B9F2PX16qoeW0rV
+        py8VRMT4aMiUqDjcW79/4k2eRdGRfJ8Hw9TmbDZ8rfE4oyFdIsw2HNN/zcT5MYlQ
+        ==
+X-ME-Sender: <xms:UbaMYYpcrIQdIJs0kfjYUe3lYS5kD2JqtgXrJ4A1-tnPViDwe_W9jg>
+    <xme:UbaMYep-tZu90bQ_sDrgy40z3bjyhEkkZlWvAJfvVYIM3HLeqISjxdfoW6Ljp9NiY
+    dTcWKVbFI89TJGMap4>
+X-ME-Received: <xmr:UbaMYdOdZT_KP9ihbgTRhNacNQAWYHqXBgHcZX1tSUYszXKqf31IdXe_WEC0CQhk7NNOPiaZ6FuF2yPVzRV-ChUR1O_HtFS3k88>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvuddrvddtgdeklecutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
+    fjughrpeffhffvufgjkfhfgggtsehttdertddttddvnecuhfhrohhmpefhihhnnhcuvfhh
+    rghinhcuoehfthhhrghinheslhhinhhugidqmheikehkrdhorhhgqeenucggtffrrghtth
+    gvrhhnpeevudfhheduhfdugeduuddvgefhveeigefhteeguddvkeehgfejjeehhfetvdek
+    ieenucffohhmrghinhepshgrmhhmhidrnhgvthenucevlhhushhtvghrufhiiigvpedtne
+    curfgrrhgrmhepmhgrihhlfhhrohhmpehfthhhrghinheslhhinhhugidqmheikehkrdho
+    rhhg
+X-ME-Proxy: <xmx:UbaMYf4wdweHaNPBKs7GZmjcC4m7aQoX9wWT6ICRQHu8vlelONvfGg>
+    <xmx:UbaMYX7UL-6CMrEQ50llEEgZXYtRjOFgCzlsQ-bUmPZgj675PoyDBA>
+    <xmx:UbaMYfhJVQwNA-CxdWw_tU9jokMnDIKWVewRotoUn8QsU868K3z2pg>
+    <xmx:UraMYZn2by6BQUnTFyRMFsE42UyL_1hDGFm21AVnpHJIthYsNleplg>
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Thu,
+ 11 Nov 2021 01:21:02 -0500 (EST)
+Date:   Thu, 11 Nov 2021 17:20:56 +1100 (AEDT)
+From:   Finn Thain <fthain@linux-m68k.org>
+To:     Randy Dunlap <rdunlap@infradead.org>
+cc:     Geert Uytterhoeven <geert@linux-m68k.org>,
+        Mike Rapoport <rppt@kernel.org>, Sam Creasey <sammy@sammy.net>,
+        linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] m68k: Enable memtest kernel parameter
+In-Reply-To: <725c0578-d816-f0c9-175a-7400c4a01887@infradead.org>
+Message-ID: <fc341bdf-a145-3a6b-5325-eb8dce2f1cf4@linux-m68k.org>
+References: <a57524fe38123ea17a6741cdc282f6c84c30a009.1636593047.git.fthain@linux-m68k.org> <725c0578-d816-f0c9-175a-7400c4a01887@infradead.org>
 MIME-Version: 1.0
-X-MTK:  N
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-RGVhciBSb2IsDQoJVGhhbmtzIGZvciB5b3VyIGNvbW1lbnRzfg0KCUknbGwgY2hlY2sgYWdhaW4g
-d2l0aCB1cGRhdGVkIGR0c2NoZW1hLCBhbmQgc2VuZCBpbiBuZXh0DQp2ZXJzaW9uLg0KCQ0KQmVz
-dCBSZWdhcmRzIQ0KQmlhbw0KDQpPbiBXZWQsIDIwMjEtMTEtMTAgYXQgMTM6NDQgLTA2MDAsIFJv
-YiBIZXJyaW5nIHdyb3RlOg0KPiBPbiBXZWQsIDEwIE5vdiAyMDIxIDE2OjM5OjQ3ICswODAwLCBC
-aWFvIEh1YW5nIHdyb3RlOg0KPiA+IENvbnZlcnQgbWVkaWF0ZWstZHdtYWMgdG8gRFQgc2NoZW1h
-LCBhbmQgZGVsZXRlIG9sZCBtZWRpYXRlay0NCj4gPiBkd21hYy50eHQuDQo+ID4gDQo+ID4gU2ln
-bmVkLW9mZi1ieTogQmlhbyBIdWFuZyA8Ymlhby5odWFuZ0BtZWRpYXRlay5jb20+DQo+ID4gLS0t
-DQo+ID4gIC4uLi9iaW5kaW5ncy9uZXQvbWVkaWF0ZWstZHdtYWMudHh0ICAgICAgICAgICB8ICA5
-MSAtLS0tLS0tLS0NCj4gPiAgLi4uL2JpbmRpbmdzL25ldC9tZWRpYXRlay1kd21hYy55YW1sICAg
-ICAgICAgIHwgMTc5DQo+ID4gKysrKysrKysrKysrKysrKysrDQo+ID4gIDIgZmlsZXMgY2hhbmdl
-ZCwgMTc5IGluc2VydGlvbnMoKyksIDkxIGRlbGV0aW9ucygtKQ0KPiA+ICBkZWxldGUgbW9kZSAx
-MDA2NDQgRG9jdW1lbnRhdGlvbi9kZXZpY2V0cmVlL2JpbmRpbmdzL25ldC9tZWRpYXRlay0NCj4g
-PiBkd21hYy50eHQNCj4gPiAgY3JlYXRlIG1vZGUgMTAwNjQ0IERvY3VtZW50YXRpb24vZGV2aWNl
-dHJlZS9iaW5kaW5ncy9uZXQvbWVkaWF0ZWstDQo+ID4gZHdtYWMueWFtbA0KPiA+IA0KPiANCj4g
-TXkgYm90IGZvdW5kIGVycm9ycyBydW5uaW5nICdtYWtlIERUX0NIRUNLRVJfRkxBR1M9LW0NCj4g
-ZHRfYmluZGluZ19jaGVjaycNCj4gb24geW91ciBwYXRjaCAoRFRfQ0hFQ0tFUl9GTEFHUyBpcyBu
-ZXcgaW4gdjUuMTMpOg0KPiANCj4geWFtbGxpbnQgd2FybmluZ3MvZXJyb3JzOg0KPiANCj4gZHRz
-Y2hlbWEvZHRjIHdhcm5pbmdzL2Vycm9yczoNCj4gL2J1aWxkcy9yb2JoZXJyaW5nL2xpbnV4LWR0
-LQ0KPiByZXZpZXcvRG9jdW1lbnRhdGlvbi9kZXZpY2V0cmVlL2JpbmRpbmdzL25ldC9tZWRpYXRl
-ay1kd21hYy55YW1sOg0KPiBwcm9wZXJ0aWVzOm1lZGlhdGVrLHR4LWRlbGF5LXBzOiAnJHJlZicg
-c2hvdWxkIG5vdCBiZSB2YWxpZCB1bmRlcg0KPiB7J2NvbnN0JzogJyRyZWYnfQ0KPiAJaGludDog
-U3RhbmRhcmQgdW5pdCBzdWZmaXggcHJvcGVydGllcyBkb24ndCBuZWVkIGEgdHlwZSAkcmVmDQo+
-IAlmcm9tIHNjaGVtYSAkaWQ6IGh0dHA6Ly9kZXZpY2V0cmVlLm9yZy9tZXRhLXNjaGVtYXMvY29y
-ZS55YW1sIw0KPiAvYnVpbGRzL3JvYmhlcnJpbmcvbGludXgtZHQtDQo+IHJldmlldy9Eb2N1bWVu
-dGF0aW9uL2RldmljZXRyZWUvYmluZGluZ3MvbmV0L21lZGlhdGVrLWR3bWFjLnlhbWw6DQo+IHBy
-b3BlcnRpZXM6bWVkaWF0ZWsscngtZGVsYXktcHM6ICckcmVmJyBzaG91bGQgbm90IGJlIHZhbGlk
-IHVuZGVyDQo+IHsnY29uc3QnOiAnJHJlZid9DQo+IAloaW50OiBTdGFuZGFyZCB1bml0IHN1ZmZp
-eCBwcm9wZXJ0aWVzIGRvbid0IG5lZWQgYSB0eXBlICRyZWYNCj4gCWZyb20gc2NoZW1hICRpZDog
-aHR0cDovL2RldmljZXRyZWUub3JnL21ldGEtc2NoZW1hcy9jb3JlLnlhbWwjDQo+IC9idWlsZHMv
-cm9iaGVycmluZy9saW51eC1kdC0NCj4gcmV2aWV3L0RvY3VtZW50YXRpb24vZGV2aWNldHJlZS9i
-aW5kaW5ncy9uZXQvbWVkaWF0ZWstZHdtYWMueWFtbDoNCj4gcHJvcGVydGllczpjbG9ja3M6IHsn
-bWluSXRlbXMnOiA1LCAnbWF4SXRlbXMnOiA2LCAnaXRlbXMnOg0KPiBbeydkZXNjcmlwdGlvbic6
-ICdBWEkgY2xvY2snfSwgeydkZXNjcmlwdGlvbic6ICdBUEIgY2xvY2snfSwNCj4geydkZXNjcmlw
-dGlvbic6ICdNQUMgY2xvY2sgZ2F0ZSd9LCB7J2Rlc2NyaXB0aW9uJzogJ01BQyBNYWluIGNsb2Nr
-J30sDQo+IHsnZGVzY3JpcHRpb24nOiAnUFRQIGNsb2NrJ30sIHsnZGVzY3JpcHRpb24nOiAnUk1J
-SSByZWZlcmVuY2UgY2xvY2sNCj4gcHJvdmlkZWQgYnkgTUFDJ31dfSBzaG91bGQgbm90IGJlIHZh
-bGlkIHVuZGVyIHsncmVxdWlyZWQnOg0KPiBbJ21heEl0ZW1zJ119DQo+IAloaW50OiAibWF4SXRl
-bXMiIGlzIG5vdCBuZWVkZWQgd2l0aCBhbiAiaXRlbXMiIGxpc3QNCj4gCWZyb20gc2NoZW1hICRp
-ZDogaHR0cDovL2RldmljZXRyZWUub3JnL21ldGEtc2NoZW1hcy9pdGVtcy55YW1sIw0KPiAvYnVp
-bGRzL3JvYmhlcnJpbmcvbGludXgtZHQtDQo+IHJldmlldy9Eb2N1bWVudGF0aW9uL2RldmljZXRy
-ZWUvYmluZGluZ3MvbmV0L21lZGlhdGVrLWR3bWFjLnlhbWw6DQo+IGlnbm9yaW5nLCBlcnJvciBp
-biBzY2hlbWE6IHByb3BlcnRpZXM6IG1lZGlhdGVrLHR4LWRlbGF5LXBzDQo+IHdhcm5pbmc6IG5v
-IHNjaGVtYSBmb3VuZCBpbiBmaWxlOg0KPiAuL0RvY3VtZW50YXRpb24vZGV2aWNldHJlZS9iaW5k
-aW5ncy9uZXQvbWVkaWF0ZWstZHdtYWMueWFtbA0KPiBEb2N1bWVudGF0aW9uL2RldmljZXRyZWUv
-YmluZGluZ3MvbmV0L21lZGlhdGVrLQ0KPiBkd21hYy5leGFtcGxlLmR0LnlhbWw6MDowOiAvZXhh
-bXBsZS0wL2V0aGVybmV0QDExMDFjMDAwOiBmYWlsZWQgdG8NCj4gbWF0Y2ggYW55IHNjaGVtYSB3
-aXRoIGNvbXBhdGlibGU6IFsnbWVkaWF0ZWssbXQyNzEyLWdtYWMnLA0KPiAnc25wcyxkd21hYy00
-LjIwYSddDQo+IA0KPiBkb2MgcmVmZXJlbmNlIGVycm9ycyAobWFrZSByZWZjaGVja2RvY3MpOg0K
-PiANCj4gU2VlIGh0dHBzOi8vcGF0Y2h3b3JrLm96bGFicy5vcmcvcGF0Y2gvMTU1MzMwNA0KPiAN
-Cj4gVGhpcyBjaGVjayBjYW4gZmFpbCBpZiB0aGVyZSBhcmUgYW55IGRlcGVuZGVuY2llcy4gVGhl
-IGJhc2UgZm9yIGENCj4gcGF0Y2gNCj4gc2VyaWVzIGlzIGdlbmVyYWxseSB0aGUgbW9zdCByZWNl
-bnQgcmMxLg0KPiANCj4gSWYgeW91IGFscmVhZHkgcmFuICdtYWtlIGR0X2JpbmRpbmdfY2hlY2sn
-IGFuZCBkaWRuJ3Qgc2VlIHRoZSBhYm92ZQ0KPiBlcnJvcihzKSwgdGhlbiBtYWtlIHN1cmUgJ3lh
-bWxsaW50JyBpcyBpbnN0YWxsZWQgYW5kIGR0LXNjaGVtYSBpcyB1cA0KPiB0bw0KPiBkYXRlOg0K
-PiANCj4gcGlwMyBpbnN0YWxsIGR0c2NoZW1hIC0tdXBncmFkZQ0KPiANCj4gUGxlYXNlIGNoZWNr
-IGFuZCByZS1zdWJtaXQuDQo+IA0K
+On Wed, 10 Nov 2021, Randy Dunlap wrote:
 
+> On 11/10/21 5:10 PM, Finn Thain wrote:
+> > Enable the memtest feature and rearrange some code to prevent it from
+> > clobbering the initrd.
+> > 
+> > The CONFIG_BLK_DEV_INITRD symbol was conditional on !defined(CONFIG_SUN3).
+> > For simplicity, remove that test on the basis that m68k_ramdisk.size == 0
+> > on Sun 3.
+> > 
+> > The SLIME source code athttp://sammy.net/  shows that no BI_RAMDISK entry
+> > is ever passed to the kernel due to #ifdef 0 around the relevant code.
+> > 
+> > Cc: Mike Rapoport<rppt@kernel.org>
+> > Cc: Sam Creasey<sammy@sammy.net>
+> > Signed-off-by: Finn Thain<fthain@linux-m68k.org>
+> > ---
+> > Are there any other Linux bootloaders on Sun 3?
+> > ---
+> >   arch/m68k/Kconfig           |  1 +
+> >   arch/m68k/kernel/setup_mm.c | 15 ++++++---------
+> >   arch/m68k/mm/motorola.c     |  2 ++
+> >   3 files changed, 9 insertions(+), 9 deletions(-)
+> 
+> Hi Finn,
+> 
+> Please also update Documentation/admin-guide/kernel-parameters.txt:
+> 
+> 	memtest=	[KNL,X86,ARM,PPC,RISCV] Enable memtest
+> 
+> to include "M68K".
+> 
+> thanks.
+> 
+
+Will do.
+
+Thanks for your review.
