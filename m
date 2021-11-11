@@ -2,92 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 518FE44D2BA
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Nov 2021 08:51:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D983644D2BD
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Nov 2021 08:53:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231722AbhKKHyj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Nov 2021 02:54:39 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:59825 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229706AbhKKHyh (ORCPT
+        id S231367AbhKKH41 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Nov 2021 02:56:27 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51246 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229668AbhKKH4Z (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Nov 2021 02:54:37 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1636617108;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=j0cBMqZ5/FRmtHivqu4thgkkpo6zFWw/Co/9X0tXpIw=;
-        b=BlNlypVZeQRkVOjvcy3z5KrHIHAT0gVDZzJA1OcSna4oC5tZUv73AlleVGCO/7PzKJl9Mb
-        DmYeGMucA/TMreaz6eucei0ptWuU8QXDjI/DS6UVkLisA0aS8eoVpTJyo2gntdRjoRMXMA
-        CVgWbATpZ/oBEGD9VU35VT+rmlOASNc=
-Received: from mail-ot1-f70.google.com (mail-ot1-f70.google.com
- [209.85.210.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-602-_OnCee9-NwGZ4qpvrj4m2Q-1; Thu, 11 Nov 2021 02:51:47 -0500
-X-MC-Unique: _OnCee9-NwGZ4qpvrj4m2Q-1
-Received: by mail-ot1-f70.google.com with SMTP id v13-20020a9d69cd000000b00563c36fd48cso2868264oto.4
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Nov 2021 23:51:47 -0800 (PST)
+        Thu, 11 Nov 2021 02:56:25 -0500
+Received: from mail-pl1-x636.google.com (mail-pl1-x636.google.com [IPv6:2607:f8b0:4864:20::636])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 33490C061766
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Nov 2021 23:53:37 -0800 (PST)
+Received: by mail-pl1-x636.google.com with SMTP id y7so5259359plp.0
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Nov 2021 23:53:37 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=diz0NWx3rdvWrK+h2Sf0MO5zGVzedXNR+hpSRRnycnA=;
+        b=SXDf3XyP3dim1D2PY9KOt14+Waxr6N8f+Er0zIC8SzYnmyCedY7sUFLR7ebyk4zyc9
+         /m48yQJesHORmAzZLhKDnDnJZZNKpwLDjrbbVTxH7p/xnaHMYgQDDYxG3v3KjJtoDYu4
+         7+/HXysc08iGMvvioTVG6zlJ8AphXtbay+xxfyAe2kWLGNtA6bl6E45uHtcaiEzB80Z4
+         415VdMz3gIkkVy1uDLuF4slJd6Q/861bIXqacu/mvK8RPdXAiBkKrwd8JttsUHHG1RTs
+         TD2/hzZi6Q5ytIMhA6y17aOtaw/E+sBKHDILiHh/eWqIT0+l8dPQmSYeHONtNbO0/Bh7
+         P6zg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=j0cBMqZ5/FRmtHivqu4thgkkpo6zFWw/Co/9X0tXpIw=;
-        b=mKOddrDQXBphvdL/U0wsCdLPKzO/LG9wwzmvx9ssE5v0jBLzFj55Y/mTNtcLpZuCFg
-         q8RH7/z/uzrQJl/fC0QYKE8HwY1kjfyr+lfOCr952WfdrbfQAXJLftfcHKOt2b6pJASK
-         jR/gowtN2rXNehSlU2dTdRD68Gpot2bhRKNJ34ctLYqSkFl6FTBiPq7YkKCp7eqpHqq9
-         Qegpiz5pR+pR1CKyx84mctoHRqZv5i0PtZAj+oLPVM3WieZV1uEO8jIyFTZSDxNIHjcB
-         rLJjz+T74ZUPJ6QjXmyp8I0BQ6Qj8N+/VtOvzxy4HQgpIAH9zvSjy9qIpoJPVz/AwIQC
-         W57g==
-X-Gm-Message-State: AOAM531MIhgegL0XDWwB0/SG6dwHhTDvlO7FjpUdeMs3QjvC+pI2HAay
-        wl9oQm1cLsirxfxoa3V9JvH0025DInpraDp7wCvp3k+YGaC4QgN2r2Tg+ccPFQLO6gKCssFR/wq
-        9ZRn37aAdrO2UBKpv6dWUcJxi
-X-Received: by 2002:aca:4283:: with SMTP id p125mr17796307oia.81.1636617107042;
-        Wed, 10 Nov 2021 23:51:47 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJxzvU/7xML3Z3YThghMCQlVLSkqZXe3Ud3UCLZzlVsAwFG0lMuaYgoTgtqgcvG18q6/gu0YqA==
-X-Received: by 2002:aca:4283:: with SMTP id p125mr17796293oia.81.1636617106809;
-        Wed, 10 Nov 2021 23:51:46 -0800 (PST)
-Received: from treble ([2600:1700:6e32:6c00::35])
-        by smtp.gmail.com with ESMTPSA id p14sm424833oov.0.2021.11.10.23.51.45
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=diz0NWx3rdvWrK+h2Sf0MO5zGVzedXNR+hpSRRnycnA=;
+        b=oFhteJKvuI37wB5Lv7bXI53eXcxITj13+PGI4twF8RB2bZQv3qrH/4cC80FpoBqEil
+         Qma7hSAe/v+49nvO35n500yj8eXTTzeb+3+bJ558IOCuhFrrmmDyKqO4QxZeP9IcGOat
+         SRZjgR54iyjQtpwqMx7qk9A6i0TPAFhlOMxIHXQRfTWqgFQ9gWEZ6+dul1oQ8rKRNqEL
+         w2xnJu/xhMm+6o4w9gfg5GnIqyyXQgtz3Suc0b6THpjXrD2fo1r4uXQS2K/oLw9bjoKm
+         01ZKjQUFXbeWlwMwu7th3U24Lxfx3K5ecTb4LbGuB7nBIVDYJQSehvZ4kGzNUTUQghEw
+         AQ0w==
+X-Gm-Message-State: AOAM533+CvJCTr9ji1ACkVyvv0d4S5BGKJGrl5HydLc+jepAPtDSthjn
+        ogUNxcjhUX7isXdbBRIHy5v8aLERpLU=
+X-Google-Smtp-Source: ABdhPJx4gxlJQ++7M32dN0ueUqjuOYAZbpVnYJHLFS+S2wzEmX735KSmG143dJm161eSP05yi7z94Q==
+X-Received: by 2002:a17:902:e9c6:b0:141:c588:99b2 with SMTP id 6-20020a170902e9c600b00141c58899b2mr5882063plk.63.1636617216784;
+        Wed, 10 Nov 2021 23:53:36 -0800 (PST)
+Received: from localhost.localdomain ([193.203.214.57])
+        by smtp.gmail.com with ESMTPSA id il13sm4703883pjb.52.2021.11.10.23.53.35
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 10 Nov 2021 23:51:46 -0800 (PST)
-Date:   Wed, 10 Nov 2021 23:51:43 -0800
-From:   Josh Poimboeuf <jpoimboe@redhat.com>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     x86@kernel.org, linux-kernel@vger.kernel.org, mark.rutland@arm.com,
-        dvyukov@google.com, seanjc@google.com, pbonzini@redhat.com,
-        mbenes@suse.cz
-Subject: Re: [PATCH v2 20/23] x86,usercopy: Remove .fixup usage
-Message-ID: <20211111075143.td3fickblsvl3hau@treble>
-References: <20211110100102.250793167@infradead.org>
- <20211110101326.081701085@infradead.org>
+        Wed, 10 Nov 2021 23:53:36 -0800 (PST)
+From:   cgel.zte@gmail.com
+X-Google-Original-From: ran.jianping@zte.com.cn
+To:     agk@redhat.com
+Cc:     snitzer@redhat.com, dm-devel@redhat.com,
+        linux-kernel@vger.kernel.org,
+        ran jianping <ran.jianping@zte.com.cn>,
+        Zeal Robot <zealci@zte.com.cn>
+Subject: [PATCH] dm: remove unneeded variable
+Date:   Thu, 11 Nov 2021 07:53:31 +0000
+Message-Id: <20211111075331.158061-1-ran.jianping@zte.com.cn>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20211110101326.081701085@infradead.org>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 10, 2021 at 11:01:22AM +0100, Peter Zijlstra wrote:
-> +static bool ex_handler_ucopy_leng(const struct exception_table_entry *fixup,
-> +				   struct pt_regs *regs, int trapnr, int reg, int imm)
-> +{
-> +	regs->cx = imm * regs->cx + *pt_regs_nr(regs, reg);
-> +	return ex_handler_uaccess(fixup, regs, trapnr);
-> +}
-> +
->  int ex_get_fixup_type(unsigned long ip)
->  {
->  	const struct exception_table_entry *e = search_exception_tables(ip);
-> @@ -217,6 +224,8 @@ int fixup_exception(struct pt_regs *regs
->  		return ex_handler_imm_reg(e, regs, reg, imm);
->  	case EX_TYPE_FAULT_SGX:
->  		return ex_handler_sgx(e, regs, trapnr);
-> +	case EX_TYPE_UCOPY_LEN:
-> +		return ex_handler_ucopy_leng(e, regs, trapnr, reg, imm);
+From: ran jianping <ran.jianping@zte.com.cn>
 
-"leng"?
+Fix the following coccicheck review:
+./drivers/md/dm-ps-round-robin.c:91:5-7:Unneeded variable
 
+Remove unneeded variable used to store return value.
+
+Reported-by: Zeal Robot <zealci@zte.com.cn>
+Signed-off-by: ran jianping <ran.jianping@zte.com.cn>
+---
+ drivers/md/dm-ps-round-robin.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
+
+diff --git a/drivers/md/dm-ps-round-robin.c b/drivers/md/dm-ps-round-robin.c
+index 27f44c5fa04e..455fc02af1cf 100644
+--- a/drivers/md/dm-ps-round-robin.c
++++ b/drivers/md/dm-ps-round-robin.c
+@@ -88,7 +88,6 @@ static int rr_status(struct path_selector *ps, struct dm_path *path,
+ 		     status_type_t type, char *result, unsigned int maxlen)
+ {
+ 	struct path_info *pi;
+-	int sz = 0;
+ 
+ 	if (!path)
+ 		DMEMIT("0 ");
+@@ -107,7 +106,7 @@ static int rr_status(struct path_selector *ps, struct dm_path *path,
+ 		}
+ 	}
+ 
+-	return sz;
++	return 0;
+ }
+ 
+ /*
 -- 
-Josh
+2.25.1
 
