@@ -2,109 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 21CA444CE49
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Nov 2021 01:22:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 90B2744CE4D
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Nov 2021 01:26:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231370AbhKKAZj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Nov 2021 19:25:39 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:46394 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229781AbhKKAZh (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Nov 2021 19:25:37 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1636590169;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=3TDJg+pdCtnM6lS7EJ41XYk+4Tr9XchJbfkF9Ihtrc4=;
-        b=aeK5S0zCbmcGvQuSuqWmxOo4pLzAmCXokY0NhifGmUlAnKiK8H0XiYQrJ887yuTmdkqItg
-        f4sD4yP0De/iFHStfutHR1SqGNTlUgPdZzQtb0kCkes/Hkh6/cP8jNSUVX6Jj5Kt7bVYRw
-        CgWHjvdpArTDNqLIxQoGhNQl59CoJMo=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-72-vE1OVwnqOBuMu1idqC9_lw-1; Wed, 10 Nov 2021 19:22:48 -0500
-X-MC-Unique: vE1OVwnqOBuMu1idqC9_lw-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 381901006AA0;
-        Thu, 11 Nov 2021 00:22:47 +0000 (UTC)
-Received: from localhost (ovpn-12-86.pek2.redhat.com [10.72.12.86])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id BF0AB608BA;
-        Thu, 11 Nov 2021 00:22:36 +0000 (UTC)
-Date:   Thu, 11 Nov 2021 08:22:33 +0800
-From:   Baoquan He <bhe@redhat.com>
-To:     Heiko Carstens <hca@linux.ibm.com>
-Cc:     Philipp Rudo <prudo@redhat.com>, linux-kernel@vger.kernel.org,
-        linux-s390@vger.kernel.org, kexec@lists.infradead.org,
-        dyoung@redhat.com, akpm@linux-foundation.org
-Subject: Re: [PATCH] s390/kexec: fix memory leak of ipl report buffer
-Message-ID: <20211111002233.GA10944@MiWiFi-R3L-srv>
-References: <20211029092635.14804-1-bhe@redhat.com>
- <20211029183132.20839ad0@rhtmp>
- <YYviwi3PVD11xcCs@osiris>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YYviwi3PVD11xcCs@osiris>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
+        id S231714AbhKKA2t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Nov 2021 19:28:49 -0500
+Received: from mail.kernel.org ([198.145.29.99]:39888 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229781AbhKKA2q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Nov 2021 19:28:46 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPS id 8E0C46124D;
+        Thu, 11 Nov 2021 00:25:58 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1636590358;
+        bh=RvcmTypCGJuVmMbF9obKN+aMwiS7ZjEEck1lH72/gQE=;
+        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
+        b=rfhRB5j9N6AJiom8BXhHp5q8f9aFubmBpdYmwWhYknISmP641xfjKhnZ0qDdeJWfN
+         BK0XD+5zuMH319dN1uNJEJTRQ6aOwEjlElZ9ievWw9+POrnABy0UKxl8Q5uS4wKeA9
+         BD8YVzB8iuMEn68EkKaoDDei0+8LVOa6igB1OyMmObQyWeKqfw1FYpZFbY/9RzfF0X
+         xinFzV88FMEQVPDXD3V9YATWERPCx3q10Hbk7Mw2YnUsdd1ao80HyCSnsVX2vYUkRG
+         4h1gLyPzDuD23EoDGZC0DzLjBp448/oZ2Xrbzrzy58tcpiA5eHu3UY/KbRhpzEsAdL
+         T7dCxCp1DBZhg==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 785756008E;
+        Thu, 11 Nov 2021 00:25:58 +0000 (UTC)
+Subject: Re: [GIT PULL] pidfd updates
+From:   pr-tracker-bot@kernel.org
+In-Reply-To: <20211110145222.1967514-1-brauner@kernel.org>
+References: <20211110145222.1967514-1-brauner@kernel.org>
+X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
+X-PR-Tracked-Message-Id: <20211110145222.1967514-1-brauner@kernel.org>
+X-PR-Tracked-Remote: git@gitolite.kernel.org:pub/scm/linux/kernel/git/brauner/linux tags/pidfd.v5.16
+X-PR-Tracked-Commit-Id: ee9955d61a0a770152f9c3af470bd1689f034c74
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: 6752de1aebee8e73ee9cc31263407fdf0e29c274
+Message-Id: <163659035843.13025.14339337110736659683.pr-tracker-bot@kernel.org>
+Date:   Thu, 11 Nov 2021 00:25:58 +0000
+To:     Christian Brauner <brauner@kernel.org>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/10/21 at 04:18pm, Heiko Carstens wrote:
-> On Fri, Oct 29, 2021 at 06:31:32PM +0200, Philipp Rudo wrote:
-> > Hi Baoquan,
-> > 
-> > On Fri, 29 Oct 2021 17:26:35 +0800
-> > Baoquan He <bhe@redhat.com> wrote:
-> > 
-> > > A memory leak is reported by kmemleak scanning:
-> ...
-> > > The ipl report buffer is allocated via vmalloc, while has no chance to free
-> > > if the kexe loading is unloaded. This will cause obvious memory leak
-> > > when kexec/kdump kernel is reloaded, manually, or triggered, e.g by
-> > > memory hotplug.
-> > > 
-> > > Here, add struct kimage_arch to s390 to pass out the ipl report buffer
-> > > address, and introduce arch dependent function
-> > > arch_kimage_file_post_load_cleanup() to free it when unloaded.
-> > > 
-> > > Signed-off-by: Baoquan He <bhe@redhat.com>
-> > 
-> > other than a missing
-> > 
-> > Fixes: 99feaa717e55 ("s390/kexec_file: Create ipl report and pass to
-> > next kernel")
-> > 
-> > the patch looks good to me.
-> > 
-> > Reviewed-by: Philipp Rudo <prudo@redhat.com>
-> ...
-> > >  	buf.buffer = ipl_report_finish(data->report);
-> > >  	buf.bufsz = data->report->size;
-> > >  	buf.memsz = buf.bufsz;
-> > > +	image->arch.ipl_buf = buf.buffer;
-> 
-> This seems (still) to be incorrect: ipl_report_finish() may return
-> -ENOMEN, but there is no error checking anywhere, as far as I can
-> tell, which would make this:
-> 
-> > > +int arch_kimage_file_post_load_cleanup(struct kimage *image)
-> > > +{
-> > > +	kvfree(image->arch.ipl_buf);
-> > > +	image->arch.ipl_buf = NULL;
-> > > +
-> > > +	return kexec_image_post_load_cleanup_default(image);
-> > > +}
-> 
-> most likely not do what we want. That is: if this code is reached at
-> all in such a case. I'll check and might add a patch before this to
-> fix this also.
+The pull request you sent on Wed, 10 Nov 2021 15:52:23 +0100:
 
-Right, we should check the returned value firstly. Thanks a lot for
-reivewing, Heiko. I will post v2 to add a patch to check the returned
-value as you suggested, and also update this patch to add missing Fixes tag. 
+> git@gitolite.kernel.org:pub/scm/linux/kernel/git/brauner/linux tags/pidfd.v5.16
 
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/6752de1aebee8e73ee9cc31263407fdf0e29c274
+
+Thank you!
+
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
