@@ -2,80 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F2D1A44D83F
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Nov 2021 15:29:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F034A44D84A
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Nov 2021 15:31:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233653AbhKKOcM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Nov 2021 09:32:12 -0500
-Received: from nautica.notk.org ([91.121.71.147]:44961 "EHLO nautica.notk.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232823AbhKKOcL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Nov 2021 09:32:11 -0500
-Received: by nautica.notk.org (Postfix, from userid 108)
-        id ED658C01F; Thu, 11 Nov 2021 15:29:18 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=codewreck.org; s=2;
-        t=1636640958; bh=FLQzEjkMg/HyEOuGGfg/HD+FqViJ2CfzeI4vtlX4CKc=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=14LM0lsJlo8UFQwB0ITWsURyJMpC6p7GbMWBmlWlqq78qjvpvHZ8JhvcPHLW7x4hr
-         +kZ2yJi9efxxriJ4dOjWjYW+aOEKLr8uCABtSbW/hMVGtMwroMA8YU+zBEuAVuq1y+
-         Eh77/eihcaliAQHZyqXMXIUlD/yf4gwHCBY0h03Ug83aaMJ8M7RL6e8DxaEhg+DhXN
-         5bnrEUdsfpqlhB0wWaX1t+ZbQ0j6nXY0wzg/fNBvEGCzcg8RqpVYk71bKwMEREbWst
-         c+VGu21kWdEw3CC7yKbyoDgS1rpHQfaJPUG4W0PIbnPgPBuKYi5B/NuoBMYZp6Sz18
-         yKHs6nCXq36cg==
-X-Spam-Checker-Version: SpamAssassin 3.3.2 (2011-06-06) on nautica.notk.org
-X-Spam-Level: 
-X-Spam-Status: No, score=0.0 required=5.0 tests=UNPARSEABLE_RELAY
-        autolearn=unavailable version=3.3.2
-Received: from odin.codewreck.org (localhost [127.0.0.1])
-        by nautica.notk.org (Postfix) with ESMTPS id F18D9C009;
-        Thu, 11 Nov 2021 15:29:13 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=codewreck.org; s=2;
-        t=1636640958; bh=FLQzEjkMg/HyEOuGGfg/HD+FqViJ2CfzeI4vtlX4CKc=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=14LM0lsJlo8UFQwB0ITWsURyJMpC6p7GbMWBmlWlqq78qjvpvHZ8JhvcPHLW7x4hr
-         +kZ2yJi9efxxriJ4dOjWjYW+aOEKLr8uCABtSbW/hMVGtMwroMA8YU+zBEuAVuq1y+
-         Eh77/eihcaliAQHZyqXMXIUlD/yf4gwHCBY0h03Ug83aaMJ8M7RL6e8DxaEhg+DhXN
-         5bnrEUdsfpqlhB0wWaX1t+ZbQ0j6nXY0wzg/fNBvEGCzcg8RqpVYk71bKwMEREbWst
-         c+VGu21kWdEw3CC7yKbyoDgS1rpHQfaJPUG4W0PIbnPgPBuKYi5B/NuoBMYZp6Sz18
-         yKHs6nCXq36cg==
-Received: from localhost (odin.codewreck.org [local])
-        by odin.codewreck.org (OpenSMTPD) with ESMTPA id 33223ae0;
-        Thu, 11 Nov 2021 14:29:09 +0000 (UTC)
-Date:   Thu, 11 Nov 2021 23:28:53 +0900
-From:   Dominique Martinet <asmadeus@codewreck.org>
-To:     David Howells <dhowells@redhat.com>
-Cc:     "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        linux-afs@lists.infradead.org, Jeff Layton <jlayton@kernel.org>,
-        Marc Dionne <marc.dionne@auristor.com>,
-        linux-cachefs@redhat.com, Ilya Dryomov <idryomov@gmail.com>,
-        ceph-devel@vger.kernel.org, kafs-testing@auristor.com,
-        v9fs-developer@lists.sourceforge.net,
-        linux-fsdevel@vger.kernel.org, linux-cifs@vger.kernel.org,
-        linux-nfs@vger.kernel.org, devel@lists.orangefs.org,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v5 0/4] netfs, 9p, afs, ceph: Support folios, at least
- partially
-Message-ID: <YY0opaUbuiqMGHpr@codewreck.org>
-References: <163657847613.834781.7923681076643317435.stgit@warthog.procyon.org.uk>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <163657847613.834781.7923681076643317435.stgit@warthog.procyon.org.uk>
+        id S233702AbhKKOds (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Nov 2021 09:33:48 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56668 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231290AbhKKOdg (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 11 Nov 2021 09:33:36 -0500
+Received: from mail-pj1-x102c.google.com (mail-pj1-x102c.google.com [IPv6:2607:f8b0:4864:20::102c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 31A38C061767;
+        Thu, 11 Nov 2021 06:30:47 -0800 (PST)
+Received: by mail-pj1-x102c.google.com with SMTP id gt5so4300846pjb.1;
+        Thu, 11 Nov 2021 06:30:47 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=message-id:date:from:in-reply-to:subject:to:cc
+         :content-transfer-encoding;
+        bh=79DoY9Qj3E/W4EIJde2rtZdzgiCf/lCRPS50IAItn7E=;
+        b=BzGDB54s9nkqX8085q/fu0bBjVNjHCLgPBb/OBlu5DqYZ+tyYvQNPIeK3ln4ctspHb
+         vUK68av84uHTqOX39KzYz6pSfiWvoaU6jM1b1iCMMTPcxXQjxzhUsXb0634zV1a4+OwD
+         o9F18ymK8CvL+W1CZyVUee3eRDU5hCj48I3QuOUTyoog8kVHcegYIYQAFHoOKqS77Ude
+         Nsiasx1zmBlykujPGA+z/j1NcIO/ZcPhmQEm5Qgqz4ibsHJ/fye92o4RlHlumzEQRELb
+         O+CNNx/HLPQoxZdD3oeDAbSHRLuwKete9gAUO7WqtZQbARKVs2g0NTSuHfzoPheCbyrK
+         0izg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:message-id:date:from:in-reply-to:subject:to:cc
+         :content-transfer-encoding;
+        bh=79DoY9Qj3E/W4EIJde2rtZdzgiCf/lCRPS50IAItn7E=;
+        b=mAhG+yVjpK+rcPi/wwuT2b5hkqE0RIvJY/Y62VK8TwO7YlxhmOnHhpZL/PFPoTaFKc
+         orPGNSiJXLoS8xMNyuLM072JQblfuWUZw+Z6adSgg5Bk1BU1K9thXwRM/4swRyUzGRFY
+         tb3hC9aryOVr84A7FCDR9OMwduQDI9dvl8eauxIdfm7r1bDTGd9bmiJhXQWsXdV0qCT8
+         S2D2+MbEP8tjtDm8gVJzESVNYnJlOkKHmkiR01heQuPjLW/D0k0xyUdKzWrr8Luhs3lO
+         Wm4gggGsjs8fmtv1h6WKs4rxC78o3lOZu6rXJ2+aCKWCQ3AEgYjz5xFIxqOVBJTrqFAq
+         3tWQ==
+X-Gm-Message-State: AOAM533Me14nJJNpcGdm2KQa7aD9HTTtV9q9Qp5ozmGwT6zWJ6EnnfB4
+        rIIig498fz7O1WeTy7/WlNNWbzsb+WEAWavzJKs=
+X-Google-Smtp-Source: ABdhPJyp/Y1K6M9v1TF4O7uoKlqqFPIdz67W4bw2BpApkNUiSe6UDCVg26M58fNmOpVkb+0w2TlPHQ==
+X-Received: by 2002:a17:902:8302:b0:143:6e5f:a4a0 with SMTP id bd2-20020a170902830200b001436e5fa4a0mr8617831plb.20.1636641046213;
+        Thu, 11 Nov 2021 06:30:46 -0800 (PST)
+Received: from cl-arch-kdev (cl-arch-kdev.xen.prgmr.com. [2605:2700:0:2:a800:ff:fed6:fc0d])
+        by smtp.gmail.com with ESMTPSA id s6sm2575632pgr.85.2021.11.11.06.30.44
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 11 Nov 2021 06:30:45 -0800 (PST)
+Message-ID: <618d2915.1c69fb81.41542.6fa9@mx.google.com>
+Date:   Thu, 11 Nov 2021 06:30:45 -0800 (PST)
+X-Google-Original-Date: Thu, 11 Nov 2021 14:30:44 GMT
+From:   Fox Chen <foxhlchen@gmail.com>
+In-Reply-To: <20211110182003.342919058@linuxfoundation.org>
+Subject: RE: [PATCH 5.14 00/24] 5.14.18-rc1 review
+To:     linux-kernel@vger.kernel.org
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        torvalds@linux-foundation.org, akpm@linux-foundation.org,
+        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+        f.fainelli@gmail.com, stable@vger.kernel.org,
+        Fox Chen <foxhlchen@gmail.com>
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-David Howells wrote on Wed, Nov 10, 2021 at 09:07:56PM +0000:
-> Here's a set of patches to convert netfs, 9p and afs to use folios and to
-> provide sufficient conversion for ceph that it can continue to use the
-> netfs library.  Jeff Layton is working on fully converting ceph.
+On Wed, 10 Nov 2021 19:43:52 +0100, Greg Kroah-Hartman <gregkh@linuxfoundation.org> wrote:
+> This is the start of the stable review cycle for the 5.14.18 release.
+> There are 24 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
 > 
-> This has been rebased on to the 9p merge in Linus's tree[5] so that it has
-> access to both the 9p conversion to fscache and folios.
+> Responses should be made by Fri, 12 Nov 2021 18:19:54 +0000.
+> Anything received after that time might be too late.
+> 
+> The whole patch series can be found in one patch at:
+> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.14.18-rc1.gz
+> or in the git tree and branch at:
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.14.y
+> and the diffstat can be found below.
+> 
+> thanks,
+> 
+> greg k-h
+> 
 
-Ran basic tests on 9p with this; it'd probably deserve a bit more
-soak-in but at least doesn't seem to break anything obvious:
-(Re-)Tested-by: Dominique Martinet <asmadeus@codewreck.org>
+5.14.18-rc1 Successfully Compiled and booted on my Raspberry PI 4b (8g) (bcm2711)
+                
+Tested-by: Fox Chen <foxhlchen@gmail.com>
 
--- 
-Dominique
