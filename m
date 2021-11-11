@@ -2,92 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EC6C544D392
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Nov 2021 09:56:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 502AB44D399
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Nov 2021 09:57:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232296AbhKKI72 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Nov 2021 03:59:28 -0500
-Received: from mail.kernel.org ([198.145.29.99]:36466 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229649AbhKKI71 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Nov 2021 03:59:27 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 850BF61884;
-        Thu, 11 Nov 2021 08:56:37 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1636620998;
-        bh=sE/wsCuVFrDFdU7KxWKCbILvWcYkGJYS1wyCg2ri3+8=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=z0XLGu2d217WzQ2kPfDprdMHYIjNm6j+Jh11Xg8i4lGTqgaZDtUGKMb4UQCMB12Bg
-         6YD+NzUB8ljFZmkqL/5nCWD8Ph5kbgZeKxxiDng7r9ZE5uYWaufngJabk6SPknuift
-         m79JF6hSUg6efd/fX2rQDqqa7N+APMxB7xhhRSCg=
-Date:   Thu, 11 Nov 2021 09:56:35 +0100
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Johannes Berg <johannes@sipsolutions.net>
-Cc:     syzbot <syzbot+5434727aa485c3203fed@syzkaller.appspotmail.com>,
-        "andrii@kernel.org" <andrii@kernel.org>,
-        "ast@kernel.org" <ast@kernel.org>,
-        "avagin@gmail.com" <avagin@gmail.com>,
-        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
-        "cong.wang@bytedance.com" <cong.wang@bytedance.com>,
-        "daniel@iogearbox.net" <daniel@iogearbox.net>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        "hawk@kernel.org" <hawk@kernel.org>,
-        "john.fastabend@gmail.com" <john.fastabend@gmail.com>,
-        "kafai@fb.com" <kafai@fb.com>,
-        "kpsingh@kernel.org" <kpsingh@kernel.org>,
-        "kuba@kernel.org" <kuba@kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "songliubraving@fb.com" <songliubraving@fb.com>,
-        "syzkaller-bugs@googlegroups.com" <syzkaller-bugs@googlegroups.com>,
-        "yhs@fb.com" <yhs@fb.com>
-Subject: Re: [syzbot] WARNING in __dev_change_net_namespace
-Message-ID: <YYzaw+7TSwcGTGQI@kroah.com>
-References: <0000000000008a7c9605d07da846@google.com>
- <e6bfbffa089c711fa3ea21f5f8ab852aaa4d9c00.camel@sipsolutions.net>
+        id S232045AbhKKJAj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Nov 2021 04:00:39 -0500
+Received: from Galois.linutronix.de ([193.142.43.55]:48230 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230256AbhKKJAh (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 11 Nov 2021 04:00:37 -0500
+Date:   Thu, 11 Nov 2021 08:57:45 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1636621067;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=DbcwKz3W3qN9osp6n/72imrTqJ43KA0UAlr6lcDjls0=;
+        b=ATev9VUTGEhsUSCsAKfnGbjk6v5rkVse1ZynDcR6smx4PuH745NPk6Rj3nvtvajz0NiCon
+        l5EuXWxIxyqtLsDkJkyaxrw93YBFvifpu247JEkMunneeaZL/6GBlYZjbmV31g973dcBPX
+        I0ZtXa4YCQo65NygwueJ155RHtjOs+teu38UzTryhiHCErXaO/5Jzt9I44JC5dR0m4Tp+F
+        eQDbnK0DkxTVz0IbNWdoQV/8+Sla6wQvEyCfV3DlZSXNZTEQu26ie2ZP5rk69pgfvjyqKg
+        qmQtXTRuP4RZpIqX5x4wrAZLt24ACFLRPsUy7+3AD/NdPKZwiPq7urdB06DSuQ==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1636621067;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=DbcwKz3W3qN9osp6n/72imrTqJ43KA0UAlr6lcDjls0=;
+        b=VPENRKzIanxu8WC9rVuWg1Cze5LR+qGyPazoK3VVYpA/vwZxzp+7gXCNSWbUXFS1F2GzB2
+        wqmIaXw5tuIhoADw==
+From:   "tip-bot2 for Thomas Gleixner" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: irq/urgent] PCI/MSI: Destroy sysfs before freeing entries
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        "Greg Kroah-Hartman" <gregkh@linuxfoundation.org>,
+        Bjorn Helgaas <helgaas@kernel.org>, stable@vger.kernel.org,
+        x86@kernel.org, linux-kernel@vger.kernel.org, maz@kernel.org
+In-Reply-To: <87sfw5305m.ffs@tglx>
+References: <87sfw5305m.ffs@tglx>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <e6bfbffa089c711fa3ea21f5f8ab852aaa4d9c00.camel@sipsolutions.net>
+Message-ID: <163662106535.414.10271441206287447086.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 11, 2021 at 08:50:33AM +0100, Johannes Berg wrote:
-> On Thu, 2021-11-11 at 06:43 +0000, syzbot wrote:
-> > 
-> > console output: https://syzkaller.appspot.com/x/log.txt?x=15b45fb6b00000
-> 
-> So we see that fault injection is triggering a memory allocation failure
-> deep within the device_rename():
-> 
-> int __dev_change_net_namespace(struct net_device *dev, struct net *net,
->                                const char *pat, int new_ifindex)
-> {
-> ...
->         /* Fixup kobjects */
->         err = device_rename(&dev->dev, dev->name);
->         WARN_ON(err);
-> 
-> 
-> So we hit that WARN_ON().
-> 
-> I'm not really sure what to do about that though. Feels like we should
-> be able to cope with failures here, but clearly we don't, and it seems
-> like it would also be tricky to do after all the work already done at
-> this point.
-> 
-> Perhaps device_rename() could grow an API to preallocate all the
-> memories, but that would also be fairly involved, I imagine?
+The following commit has been merged into the irq/urgent branch of tip:
 
-That would be a mess to unwind at times.  For fault-injection stuff like
-this, that can not be hit in "real world operation", if the issue can
-not be easily handled, I don't think it is worth worrying about.
+Commit-ID:     3735459037114d31e5acd9894fad9aed104231a0
+Gitweb:        https://git.kernel.org/tip/3735459037114d31e5acd9894fad9aed104231a0
+Author:        Thomas Gleixner <tglx@linutronix.de>
+AuthorDate:    Tue, 09 Nov 2021 14:53:57 +01:00
+Committer:     Thomas Gleixner <tglx@linutronix.de>
+CommitterDate: Thu, 11 Nov 2021 09:50:31 +01:00
 
-We have some things like this in the tty layer at boot time, if a memory
-failure happens then, we have bigger overall problems in the system than
-trying to recover from minor stuff like this.
+PCI/MSI: Destroy sysfs before freeing entries
 
-thanks,
+free_msi_irqs() frees the MSI entries before destroying the sysfs entries
+which are exposing them. Nothing prevents a concurrent free while a sysfs
+file is read and accesses the possibly freed entry.
 
-greg k-h
+Move the sysfs release ahead of freeing the entries.
+
+Fixes: 1c51b50c2995 ("PCI/MSI: Export MSI mode using attributes, not kobjects")
+Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+Reviewed-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc: Bjorn Helgaas <helgaas@kernel.org>
+Cc: stable@vger.kernel.org
+Link: https://lore.kernel.org/r/87sfw5305m.ffs@tglx
+
+---
+ drivers/pci/msi.c | 10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
+
+diff --git a/drivers/pci/msi.c b/drivers/pci/msi.c
+index 7043301..48e3f4e 100644
+--- a/drivers/pci/msi.c
++++ b/drivers/pci/msi.c
+@@ -368,6 +368,11 @@ static void free_msi_irqs(struct pci_dev *dev)
+ 			for (i = 0; i < entry->nvec_used; i++)
+ 				BUG_ON(irq_has_action(entry->irq + i));
+ 
++	if (dev->msi_irq_groups) {
++		msi_destroy_sysfs(&dev->dev, dev->msi_irq_groups);
++		dev->msi_irq_groups = NULL;
++	}
++
+ 	pci_msi_teardown_msi_irqs(dev);
+ 
+ 	list_for_each_entry_safe(entry, tmp, msi_list, list) {
+@@ -379,11 +384,6 @@ static void free_msi_irqs(struct pci_dev *dev)
+ 		list_del(&entry->list);
+ 		free_msi_entry(entry);
+ 	}
+-
+-	if (dev->msi_irq_groups) {
+-		msi_destroy_sysfs(&dev->dev, dev->msi_irq_groups);
+-		dev->msi_irq_groups = NULL;
+-	}
+ }
+ 
+ static void pci_intx_for_msi(struct pci_dev *dev, int enable)
