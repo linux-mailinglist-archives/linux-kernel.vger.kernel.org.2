@@ -2,115 +2,237 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DE43744D702
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Nov 2021 14:11:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0555244D707
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Nov 2021 14:12:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233055AbhKKNNU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Nov 2021 08:13:20 -0500
-Received: from foss.arm.com ([217.140.110.172]:39338 "EHLO foss.arm.com"
+        id S233144AbhKKNPO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Nov 2021 08:15:14 -0500
+Received: from mail.skyhub.de ([5.9.137.197]:55026 "EHLO mail.skyhub.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231380AbhKKNNS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Nov 2021 08:13:18 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 5E33CED1;
-        Thu, 11 Nov 2021 05:10:26 -0800 (PST)
-Received: from [10.57.58.62] (unknown [10.57.58.62])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id AAD353F70D;
-        Thu, 11 Nov 2021 05:10:23 -0800 (PST)
-Subject: Re: [PATCH v2 4/4] perf arm-spe: Support hardware-based PID tracing
-To:     Leo Yan <leo.yan@linaro.org>
-Cc:     Namhyung Kim <namhyung@kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        linux-perf-users <linux-perf-users@vger.kernel.org>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        John Garry <john.garry@huawei.com>,
-        Will Deacon <will@kernel.org>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        linux-arm-kernel@lists.infradead.org
-References: <20211109115020.31623-1-german.gomez@arm.com>
- <20211109115020.31623-5-german.gomez@arm.com>
- <CAM9d7cg7Lp49xOc3BOhM4O9fqs7i+v6cNd=eaKWjDbREiE3Pvg@mail.gmail.com>
- <20211111074148.GC102075@leoy-ThinkPad-X240s>
- <CAM9d7cjW_=hDkHVWchNFDyqZXbbBwMb224hbZTMsCe34MLL-4Q@mail.gmail.com>
- <20211111083002.GA106401@leoy-ThinkPad-X240s>
- <5c0e255b-e140-d157-7dfd-b27a43e128c9@arm.com>
- <20211111124257.GB106654@leoy-ThinkPad-X240s>
-From:   German Gomez <german.gomez@arm.com>
-Message-ID: <19f1e8c8-5c46-0954-112e-eca57c564e97@arm.com>
-Date:   Thu, 11 Nov 2021 13:10:21 +0000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        id S230497AbhKKNPK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 11 Nov 2021 08:15:10 -0500
+Received: from zn.tnic (p200300ec2f0fc2009b8aa8c4b7cee745.dip0.t-ipconnect.de [IPv6:2003:ec:2f0f:c200:9b8a:a8c4:b7ce:e745])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id E5C1F1EC053B;
+        Thu, 11 Nov 2021 14:12:19 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1636636340;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=BB/5j8yp8zgZTafTr+YIfIDcdB1GvmcYy75NcA3IPWE=;
+        b=FoAt07H942Ks49t/dJN7rbEGovvLpRKsd8PdA1BNLYhlrU0Vs5VZt0QNbWq25j959e9GF2
+        tkef26RJNMi4vj/SoXitcc1ZgezU5dwixoWiI62q0Dzr2HZiteTCeXqGfNo/+AW6/yoMWv
+        usPKFy6j+N4Gnk68RvjAFjSDUVNgS/k=
+Date:   Thu, 11 Nov 2021 14:12:12 +0100
+From:   Borislav Petkov <bp@alien8.de>
+To:     Naveen Krishna Chatradhi <nchatrad@amd.com>
+Cc:     linux-edac@vger.kernel.org, x86@kernel.org,
+        linux-kernel@vger.kernel.org, mingo@redhat.com, mchehab@kernel.org,
+        yazen.ghannam@amd.com, Muralidhara M K <muralimk@amd.com>
+Subject: Re: [PATCH v6 5/5] EDAC/amd64: Enumerate memory on Aldebaran GPU
+ nodes
+Message-ID: <YY0WrKjnQ20IjrhB@zn.tnic>
+References: <20211028130106.15701-1-nchatrad@amd.com>
+ <20211028130106.15701-6-nchatrad@amd.com>
 MIME-Version: 1.0
-In-Reply-To: <20211111124257.GB106654@leoy-ThinkPad-X240s>
 Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+Content-Disposition: inline
+In-Reply-To: <20211028130106.15701-6-nchatrad@amd.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi, thanks for looking into it
+On Thu, Oct 28, 2021 at 06:31:06PM +0530, Naveen Krishna Chatradhi wrote:
+> On newer heterogeneous systems with AMD CPUs, the data fabrics of the GPUs
+> are connected directly via custom links.
+> 
+> One such system, where Aldebaran GPU nodes are connected to the
+> Family 19h, model 30h family of CPU nodes, the Aldebaran GPUs can report
+> memory errors via SMCA banks.
+> 
+> Aldebaran GPU support was added to DRM framework
+> https://lists.freedesktop.org/archives/amd-gfx/2021-February/059694.html
+> 
+> The GPU nodes comes with HBM2 memory in-built, ECC support is enabled by
+> default and the UMCs on GPU node are different from the UMCs on CPU nodes.
+> 
+> GPU specific ops routines are defined to extend the amd64_edac
+> module to enumerate HBM memory leveraging the existing edac and the
+> amd64 specific data structures.
+> 
+> Note: The UMC Phys on GPU nodes are enumerated as csrows and the UMC
+> channels connected to HBM banks are enumerated as ranks.
 
-On 11/11/2021 12:42, Leo Yan wrote:
-> On Thu, Nov 11, 2021 at 12:23:08PM +0000, German Gomez wrote:
->> On 11/11/2021 08:30, Leo Yan wrote:
->>> On Wed, Nov 10, 2021 at 11:59:05PM -0800, Namhyung Kim wrote:
-> [...]
->
->>>>>>> +static int arm_spe_set_tid(struct arm_spe_queue *speq, pid_t tid)
->>>>>>> +{
->>>>>>> +       struct arm_spe *spe = speq->spe;
->>>>>>> +       int err = machine__set_current_tid(spe->machine, speq->cpu, tid, tid);
->>>>>> I think we should pass -1 as pid as we don't know the real pid.
->>>>>>
->>>>> AFAICT, I observe one case for machine__set_current_tid() returning error
->>>>> is 'speq->cpu' is -1 (this is the case for per-thread tracing).  In
->>>>> this case, if pass '-1' for pid/tid, it still will return failure.
->>>>>
->>>>> So here should return the error as it is.  Am I missing anything?
->>>> I'm not saying about the error.  It's about thread status.
->>>> In the machine__set_current_tid(), it calls
->>>> machine__findnew_thread() with given pid and tid.
->>>>
->>>> I suspect it can set pid to a wrong value if the thread has
->>>> no pid value at the moment.
->>> Here we should avoid to write pid '-1' with
->>> machine__set_current_tid().
->> If the kernel is writing the tids to the contextidr, isn't it wrong to
->> assume tid == pid when decoding the context packets here? I haven't
->> observed any impact in the built-in commands though, so there must be
->> something I'm not seeing.
-> Okay, let me correct myself :)
->
-> I checked Intel-pt's implementation, I understand now that we need to 
-> distinguish the cases for pid/tid from context switch event and only tid
-> from SPE context packet.
->
-> Since the context switch event contains the correct pid and tid
-> values, we should set both of them, see Intel-PT's implementation [1].
->
-> As Namhyung pointed, we need to set pid as '-1' when we only know the
-> tid value from SPE context packet; see [2].
+For all your future commit messages, from
+Documentation/process/submitting-patches.rst:
 
-I will correct this and resend the patch for SPE.
+ "Describe your changes in imperative mood, e.g. "make xyzzy do frotz"
+  instead of "[This patch] makes xyzzy do frotz" or "[I] changed xyzzy
+  to do frotz", as if you are giving orders to the codebase to change
+  its behaviour."
 
-Thanks,
-German
+Also, do not talk about what your patch does - that should hopefully be
+visible in the diff itself. Rather, talk about *why* you're doing what
+you're doing.
 
->
-> So we should use the same with Intel-pt.
->
-> Sorry for I didn't really understand well Namhyung's suggestion and
-> thanks you both pointed out the issue.
->
-> Leo
->
-> P.s. an offline topic is we should send a patch to fix cs-etm issue
-> as well [3].
->
-> [1] https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/tools/perf/util/intel-pt.c#n2920
-> [2] https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/tools/perf/util/intel-pt.c#n2215
-> [3] https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/tools/perf/util/cs-etm.c#n1121
+> 
+> Cc: Yazen Ghannam <yazen.ghannam@amd.com>
+> Co-developed-by: Muralidhara M K <muralimk@amd.com>
+> Signed-off-by: Muralidhara M K <muralimk@amd.com>
+> Signed-off-by: Naveen Krishna Chatradhi <nchatrad@amd.com>
+> Link: https://lkml.kernel.org/r/20210823185437.94417-4-nchatrad@amd.com
+> ---
+> Changes since v5:
+> Removed else condition in per_family_init for 19h family
+> 
+> Changes since v4:
+>  Split "f17_addr_mask_to_cs_size" instead as did in 3rd patch earlier
+> 
+> Changes since v3:
+> 1. Bifurcated the GPU code from v2
+> 
+> Changes since v2:
+> 1. Restored line deletions and handled minor comments
+> 2. Modified commit message and some of the function comments
+> 3. variable df_inst_id is introduced instead of umc_num
+> 
+> Changes since v1:
+> 1. Modifed the commit message
+> 2. Change the edac_cap
+> 3. kept sizes of both cpu and noncpu together
+> 4. return success if the !F3 condition true and remove unnecessary validation
+> 
+>  drivers/edac/amd64_edac.c | 298 +++++++++++++++++++++++++++++++++-----
+>  drivers/edac/amd64_edac.h |  27 ++++
+>  2 files changed, 292 insertions(+), 33 deletions(-)
+> 
+> diff --git a/drivers/edac/amd64_edac.c b/drivers/edac/amd64_edac.c
+> index 7953ffe9d547..b404fa5b03ce 100644
+> --- a/drivers/edac/amd64_edac.c
+> +++ b/drivers/edac/amd64_edac.c
+> @@ -1121,6 +1121,20 @@ static void debug_display_dimm_sizes_df(struct amd64_pvt *pvt, u8 ctrl)
+>  	}
+>  }
+>  
+> +static void debug_display_dimm_sizes_gpu(struct amd64_pvt *pvt, u8 ctrl)
+> +{
+> +	int size, cs = 0, cs_mode;
+> +
+> +	edac_printk(KERN_DEBUG, EDAC_MC, "UMC%d chip selects:\n", ctrl);
+> +
+> +	cs_mode = CS_EVEN_PRIMARY | CS_ODD_PRIMARY;
+> +
+> +	for_each_chip_select(cs, ctrl, pvt) {
+> +		size = pvt->ops->dbam_to_cs(pvt, ctrl, cs_mode, cs);
+> +		amd64_info(EDAC_MC ": %d: %5dMB\n", cs, size);
+> +	}
+> +}
+> +
+>  static void __dump_misc_regs_df(struct amd64_pvt *pvt)
+>  {
+>  	struct amd64_umc *umc;
+> @@ -1165,6 +1179,27 @@ static void __dump_misc_regs_df(struct amd64_pvt *pvt)
+>  		 pvt->dhar, dhar_base(pvt));
+>  }
+>  
+> +static void __dump_misc_regs_gpu(struct amd64_pvt *pvt)
+
+The function pointer this gets assigned to is called *get*_misc_regs.
+But this function is is doing *dump*.
+
+When I see __dump_misc_regs_gpu() I'd expect this function to be called
+by a higher level dump_misc_regs() as the "__" denotes layering usually.
+
+There is, in fact, dump_misc_regs() but that one calls
+->get_misc_regs().
+
+So this all needs fixing - right now I see a mess.
+
+Also, there's <function_name>_gpu and gpu_<function_name> with the "gpu"
+being either prefix or suffix. You need to fix the current ones to be
+only prefixes - in a pre-patch - and then add yours as prefixes only too.
+
+And in talking about pre-patches - this one is doing a bunch of things
+at once and needs splitting. You do the preparatory work like carving
+out common functionality and other refactoring in pre-patches, and then
+you add the new functionality ontop.
+
+Also, I don't like ->is_gpu one bit, it being sprinkled like that around
+the code. This says that the per-family attrs and ops assignment is
+lacking.
+
+
+> @@ -2982,7 +3132,17 @@ static void decode_umc_error(int node_id, struct mce *m)
+>  
+>  	pvt->ops->get_umc_err_info(m, &err);
+>  
+> -	if (umc_normaddr_to_sysaddr(m->addr, pvt->mc_node_id, err.channel, &sys_addr)) {
+> +	/*
+> +	 * GPU node has #phys[X] which has #channels[Y] each.
+> +	 * On GPUs, df_inst_id = [X] * num_ch_per_phy + [Y].
+> +	 * On CPUs, "Channel"="UMC Number"="DF Instance ID".
+> +	 */
+
+This comment doesn't look like it is destined for human beings to read
+but maybe to be parsed by programs?
+
+> +	if (pvt->is_gpu)
+> +		df_inst_id = (err.csrow * pvt->channel_count / mci->nr_csrows) + err.channel;
+
+I'm not sure we want to log ECCs from the GPUs: what is going to happen
+to them, how does the further error recovery look like?
+
+Also, EDAC sysfs structure currently has only DIMMs, below's from my
+box.
+
+I don't see how that structure fits the GPUs so here's the $10^6
+question: why does EDAC need to know about GPUs?
+
+What is the strategy here?
+
+Your 0th message talks about the "what" but what gets added is not
+important - the "why" is.
+
+$ grep -r . /sys/devices/system/edac/mc/ 2>/dev/null
+/sys/devices/system/edac/mc/power/runtime_active_time:0
+/sys/devices/system/edac/mc/power/runtime_status:unsupported
+/sys/devices/system/edac/mc/power/runtime_suspended_time:0
+/sys/devices/system/edac/mc/power/control:auto
+/sys/devices/system/edac/mc/mc0/ce_count:0
+/sys/devices/system/edac/mc/mc0/rank7/dimm_ue_count:0
+/sys/devices/system/edac/mc/mc0/rank7/dimm_mem_type:Unbuffered-DDR4
+/sys/devices/system/edac/mc/mc0/rank7/power/runtime_active_time:0
+/sys/devices/system/edac/mc/mc0/rank7/power/runtime_status:unsupported
+/sys/devices/system/edac/mc/mc0/rank7/power/runtime_suspended_time:0
+/sys/devices/system/edac/mc/mc0/rank7/power/control:auto
+/sys/devices/system/edac/mc/mc0/rank7/dimm_dev_type:Unknown
+/sys/devices/system/edac/mc/mc0/rank7/size:8192
+/sys/devices/system/edac/mc/mc0/rank7/dimm_ce_count:0
+/sys/devices/system/edac/mc/mc0/rank7/dimm_label:mc#0csrow#3channel#1
+/sys/devices/system/edac/mc/mc0/rank7/dimm_location:csrow 3 channel 1 
+/sys/devices/system/edac/mc/mc0/rank7/dimm_edac_mode:SECDED
+/sys/devices/system/edac/mc/mc0/topmem:0x00000000e0000000
+/sys/devices/system/edac/mc/mc0/mc_name:F17h
+/sys/devices/system/edac/mc/mc0/rank5/dimm_ue_count:0
+/sys/devices/system/edac/mc/mc0/rank5/dimm_mem_type:Unbuffered-DDR4
+/sys/devices/system/edac/mc/mc0/rank5/power/runtime_active_time:0
+/sys/devices/system/edac/mc/mc0/rank5/power/runtime_status:unsupported
+/sys/devices/system/edac/mc/mc0/rank5/power/runtime_suspended_time:0
+/sys/devices/system/edac/mc/mc0/rank5/power/control:auto
+/sys/devices/system/edac/mc/mc0/rank5/dimm_dev_type:Unknown
+/sys/devices/system/edac/mc/mc0/rank5/size:8192
+/sys/devices/system/edac/mc/mc0/rank5/dimm_ce_count:0
+/sys/devices/system/edac/mc/mc0/rank5/dimm_label:mc#0csrow#2channel#1
+/sys/devices/system/edac/mc/mc0/rank5/dimm_location:csrow 2 channel 1 
+/sys/devices/system/edac/mc/mc0/rank5/dimm_edac_mode:SECDED
+/sys/devices/system/edac/mc/mc0/dram_hole:0 0 0
+/sys/devices/system/edac/mc/mc0/ce_noinfo_count:0
+...
+
+-- 
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
