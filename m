@@ -2,93 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DE98A44D2B6
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Nov 2021 08:50:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 518FE44D2BA
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Nov 2021 08:51:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231954AbhKKHxh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Nov 2021 02:53:37 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50610 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229706AbhKKHxd (ORCPT
+        id S231722AbhKKHyj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Nov 2021 02:54:39 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:59825 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229706AbhKKHyh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Nov 2021 02:53:33 -0500
-Received: from sipsolutions.net (s3.sipsolutions.net [IPv6:2a01:4f8:191:4433::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F80EC061766;
-        Wed, 10 Nov 2021 23:50:44 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=sipsolutions.net; s=mail; h=Content-Transfer-Encoding:MIME-Version:
-        Content-Type:References:In-Reply-To:Date:Cc:To:From:Subject:Message-ID:Sender
-        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-To:
-        Resent-Cc:Resent-Message-ID; bh=4HCVFFk19upOjTLWNUM/OfRNFSnFhC8rZPL5tgGbIYE=;
-        t=1636617044; x=1637826644; b=lX02yLfzgZEG3RvUVNmrUq3brvZPz/Sddu9O3r/KE3wP593
-        k6RPCXWohDWxiCt0nTb02/eymF+eJfJ4hAIIBMqv2AA5YSDfzEuQ7nkApgU4F2goas2IQAAr66Kgz
-        o84YXX9RiXgMMbO11adU+9wyIU2sT1IwkpG0hu/SSPu3HA02DCderbhB0tG/3Red3zQdn6juLqT3A
-        Ct13Ot1jsvA4bjaHELuB/FSMT/lTurqMUx+PwUvPNULLm5xhyLQHw4lRLIaSsrxXYZq4v0FcCbjHQ
-        RRLdBjB0dagHzQd14N+x6l80rT9DajWuLaV4GKgYoRd64x0xL/H7xA5NlegRL4NA==;
-Received: by sipsolutions.net with esmtpsa (TLS1.3:ECDHE_SECP256R1__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
-        (Exim 4.95)
-        (envelope-from <johannes@sipsolutions.net>)
-        id 1ml4qx-00Dh6U-8K;
-        Thu, 11 Nov 2021 08:50:35 +0100
-Message-ID: <e6bfbffa089c711fa3ea21f5f8ab852aaa4d9c00.camel@sipsolutions.net>
-Subject: Re: [syzbot] WARNING in __dev_change_net_namespace
-From:   Johannes Berg <johannes@sipsolutions.net>
-To:     syzbot <syzbot+5434727aa485c3203fed@syzkaller.appspotmail.com>,
-        "andrii@kernel.org" <andrii@kernel.org>,
-        "ast@kernel.org" <ast@kernel.org>,
-        "avagin@gmail.com" <avagin@gmail.com>,
-        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
-        "cong.wang@bytedance.com" <cong.wang@bytedance.com>,
-        "daniel@iogearbox.net" <daniel@iogearbox.net>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        "hawk@kernel.org" <hawk@kernel.org>,
-        "john.fastabend@gmail.com" <john.fastabend@gmail.com>,
-        "kafai@fb.com" <kafai@fb.com>,
-        "kpsingh@kernel.org" <kpsingh@kernel.org>,
-        "kuba@kernel.org" <kuba@kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "songliubraving@fb.com" <songliubraving@fb.com>,
-        "syzkaller-bugs@googlegroups.com" <syzkaller-bugs@googlegroups.com>,
-        "yhs@fb.com" <yhs@fb.com>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Date:   Thu, 11 Nov 2021 08:50:33 +0100
-In-Reply-To: <0000000000008a7c9605d07da846@google.com>
-References: <0000000000008a7c9605d07da846@google.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.38.4 (3.38.4-1.fc33) 
+        Thu, 11 Nov 2021 02:54:37 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1636617108;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=j0cBMqZ5/FRmtHivqu4thgkkpo6zFWw/Co/9X0tXpIw=;
+        b=BlNlypVZeQRkVOjvcy3z5KrHIHAT0gVDZzJA1OcSna4oC5tZUv73AlleVGCO/7PzKJl9Mb
+        DmYeGMucA/TMreaz6eucei0ptWuU8QXDjI/DS6UVkLisA0aS8eoVpTJyo2gntdRjoRMXMA
+        CVgWbATpZ/oBEGD9VU35VT+rmlOASNc=
+Received: from mail-ot1-f70.google.com (mail-ot1-f70.google.com
+ [209.85.210.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-602-_OnCee9-NwGZ4qpvrj4m2Q-1; Thu, 11 Nov 2021 02:51:47 -0500
+X-MC-Unique: _OnCee9-NwGZ4qpvrj4m2Q-1
+Received: by mail-ot1-f70.google.com with SMTP id v13-20020a9d69cd000000b00563c36fd48cso2868264oto.4
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Nov 2021 23:51:47 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=j0cBMqZ5/FRmtHivqu4thgkkpo6zFWw/Co/9X0tXpIw=;
+        b=mKOddrDQXBphvdL/U0wsCdLPKzO/LG9wwzmvx9ssE5v0jBLzFj55Y/mTNtcLpZuCFg
+         q8RH7/z/uzrQJl/fC0QYKE8HwY1kjfyr+lfOCr952WfdrbfQAXJLftfcHKOt2b6pJASK
+         jR/gowtN2rXNehSlU2dTdRD68Gpot2bhRKNJ34ctLYqSkFl6FTBiPq7YkKCp7eqpHqq9
+         Qegpiz5pR+pR1CKyx84mctoHRqZv5i0PtZAj+oLPVM3WieZV1uEO8jIyFTZSDxNIHjcB
+         rLJjz+T74ZUPJ6QjXmyp8I0BQ6Qj8N+/VtOvzxy4HQgpIAH9zvSjy9qIpoJPVz/AwIQC
+         W57g==
+X-Gm-Message-State: AOAM531MIhgegL0XDWwB0/SG6dwHhTDvlO7FjpUdeMs3QjvC+pI2HAay
+        wl9oQm1cLsirxfxoa3V9JvH0025DInpraDp7wCvp3k+YGaC4QgN2r2Tg+ccPFQLO6gKCssFR/wq
+        9ZRn37aAdrO2UBKpv6dWUcJxi
+X-Received: by 2002:aca:4283:: with SMTP id p125mr17796307oia.81.1636617107042;
+        Wed, 10 Nov 2021 23:51:47 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJxzvU/7xML3Z3YThghMCQlVLSkqZXe3Ud3UCLZzlVsAwFG0lMuaYgoTgtqgcvG18q6/gu0YqA==
+X-Received: by 2002:aca:4283:: with SMTP id p125mr17796293oia.81.1636617106809;
+        Wed, 10 Nov 2021 23:51:46 -0800 (PST)
+Received: from treble ([2600:1700:6e32:6c00::35])
+        by smtp.gmail.com with ESMTPSA id p14sm424833oov.0.2021.11.10.23.51.45
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 10 Nov 2021 23:51:46 -0800 (PST)
+Date:   Wed, 10 Nov 2021 23:51:43 -0800
+From:   Josh Poimboeuf <jpoimboe@redhat.com>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     x86@kernel.org, linux-kernel@vger.kernel.org, mark.rutland@arm.com,
+        dvyukov@google.com, seanjc@google.com, pbonzini@redhat.com,
+        mbenes@suse.cz
+Subject: Re: [PATCH v2 20/23] x86,usercopy: Remove .fixup usage
+Message-ID: <20211111075143.td3fickblsvl3hau@treble>
+References: <20211110100102.250793167@infradead.org>
+ <20211110101326.081701085@infradead.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-malware-bazaar: not-scanned
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20211110101326.081701085@infradead.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 2021-11-11 at 06:43 +0000, syzbot wrote:
-> 
-> console output: https://syzkaller.appspot.com/x/log.txt?x=15b45fb6b00000
+On Wed, Nov 10, 2021 at 11:01:22AM +0100, Peter Zijlstra wrote:
+> +static bool ex_handler_ucopy_leng(const struct exception_table_entry *fixup,
+> +				   struct pt_regs *regs, int trapnr, int reg, int imm)
+> +{
+> +	regs->cx = imm * regs->cx + *pt_regs_nr(regs, reg);
+> +	return ex_handler_uaccess(fixup, regs, trapnr);
+> +}
+> +
+>  int ex_get_fixup_type(unsigned long ip)
+>  {
+>  	const struct exception_table_entry *e = search_exception_tables(ip);
+> @@ -217,6 +224,8 @@ int fixup_exception(struct pt_regs *regs
+>  		return ex_handler_imm_reg(e, regs, reg, imm);
+>  	case EX_TYPE_FAULT_SGX:
+>  		return ex_handler_sgx(e, regs, trapnr);
+> +	case EX_TYPE_UCOPY_LEN:
+> +		return ex_handler_ucopy_leng(e, regs, trapnr, reg, imm);
 
-So we see that fault injection is triggering a memory allocation failure
-deep within the device_rename():
+"leng"?
 
-int __dev_change_net_namespace(struct net_device *dev, struct net *net,
-                               const char *pat, int new_ifindex)
-{
-...
-        /* Fixup kobjects */
-        err = device_rename(&dev->dev, dev->name);
-        WARN_ON(err);
-
-
-So we hit that WARN_ON().
-
-I'm not really sure what to do about that though. Feels like we should
-be able to cope with failures here, but clearly we don't, and it seems
-like it would also be tricky to do after all the work already done at
-this point.
-
-Perhaps device_rename() could grow an API to preallocate all the
-memories, but that would also be fairly involved, I imagine?
-
-johannes
+-- 
+Josh
 
