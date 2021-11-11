@@ -2,180 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0AC5A44D5BB
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Nov 2021 12:20:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0654E44D58C
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Nov 2021 12:08:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233133AbhKKLXR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Nov 2021 06:23:17 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41478 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233128AbhKKLXN (ORCPT
+        id S233033AbhKKLLh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Nov 2021 06:11:37 -0500
+Received: from mx0a-00069f02.pphosted.com ([205.220.165.32]:39414 "EHLO
+        mx0a-00069f02.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232964AbhKKLLe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Nov 2021 06:23:13 -0500
-Received: from mail-pj1-x102f.google.com (mail-pj1-x102f.google.com [IPv6:2607:f8b0:4864:20::102f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1D7A7C0613F5
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Nov 2021 03:20:25 -0800 (PST)
-Received: by mail-pj1-x102f.google.com with SMTP id j6-20020a17090a588600b001a78a5ce46aso4325881pji.0
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Nov 2021 03:20:25 -0800 (PST)
+        Thu, 11 Nov 2021 06:11:34 -0500
+Received: from pps.filterd (m0246629.ppops.net [127.0.0.1])
+        by mx0b-00069f02.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 1AB9aDOU010759;
+        Thu, 11 Nov 2021 11:08:41 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : content-type : in-reply-to :
+ mime-version; s=corp-2021-07-09;
+ bh=Y/gzQQT2fguPa+Z+9AOUkiLI+e2xCrBG+ef47GBRyGE=;
+ b=DK3zXVJB0AaRXFBBmHTpzNvTwa7c+XhLZDogSAeYCwJXvll7y4/T0euNwdUtznghpl9P
+ osEXRn8PoY0RPtmRqqGXWvTHV2cPy37ZbFjftz9/7zWXB/Sfg7cxAG6Kt5CNVoTCEG/8
+ JFiYSVkzxLzNk4JUOS2mDyOS65+y8LMRqMavJFQE3UBr8bxSqEMTC6tKF99l1ymUa9vn
+ kmj6RM/wXrPrWKoj8b3p5lGbHPVjgXbLEbKYALJm8kU5O6hnYKvapOy9IVC89+0pIZda
+ ByvuFVL2kMDJ0QC/D/gbzgWK4rIxZ+4+WJKkjN5Nlajd5kRQKjkWISMXsB3roc5dVptI VA== 
+Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
+        by mx0b-00069f02.pphosted.com with ESMTP id 3c7yq7jyvv-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 11 Nov 2021 11:08:41 +0000
+Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
+        by userp3030.oracle.com (8.16.1.2/8.16.1.2) with SMTP id 1ABB1fvk088795;
+        Thu, 11 Nov 2021 11:08:40 GMT
+Received: from nam10-bn7-obe.outbound.protection.outlook.com (mail-bn7nam10lp2100.outbound.protection.outlook.com [104.47.70.100])
+        by userp3030.oracle.com with ESMTP id 3c842dq7ff-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 11 Nov 2021 11:08:39 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=N36VO1XwH8s2FG/BIKtj8MfUNumx2Y4Z30PJaM2tFScajwggm7eA2fu3acZvVIQ1PmTOYhvQzVT3HNp2wq7gIJ+qS4DBnMGByhou3N6QU9VgnZIH0ZJzM5AvJxgKUSTVzFe54OERXLkzlz4YHhiRvzMJFAtNz1YqB08bUaT6s4zgydlXaXt6YK5PK03Srv47QYJVPzGyUcL+xr82LNEZT6p25/848CbVnxGiVW/nT0m1sRVTSSHEe6n8x/K1mGc8Dry2QVV7M9gmkuPTGBFdo21hN78T9MWW3XLHSIou2ORLKdqyYpafNyWVJpEOAV9iWe8HzVCxd75bTMqHJ9ihwA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=Y/gzQQT2fguPa+Z+9AOUkiLI+e2xCrBG+ef47GBRyGE=;
+ b=OTKKEbxJFVIQiUqIP2rs6XKQPht8U7DCp1EU7RXZkeQ2Yg4ecy7uYcuNwP0kMu0pNLEb23GbfsP8lBL/JRN97hF6c0ycPG+a8SyobiO8O5uocbwShDarIHpC7zt4lRzH3d+0jT/LlnlifDnzjNNaTleAKgfoh5XXCA03lktaE+EDiJVWREubDOllVApy5IGd8KzThfvYRFQMzCFQpxLGogwaQWrmcmnyzG0xfLDYRlnl4ej1zur0mWGlKrKQdbNrIi3FXO5DxzriPpyaVbJthELtITNrRsVA79OEpH1ukb5PItWSDMi3nxKn6TpNE77P5sMentfwLpP7wrc5jcZoVQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20210112.gappssmtp.com; s=20210112;
-        h=subject:to:references:from:message-id:date:user-agent:mime-version
-         :in-reply-to:content-transfer-encoding;
-        bh=VRB9ou2DZeA0o+t18fFALSwlTiVINpnkFyfn5eiRYgY=;
-        b=BUquwp4W1x9BwErrd4SWtP7cMmnJ6t+dsDxa2+59/GF+RVn1AW46nl/N7r+lR/hoBf
-         NiWmXqxmut5t+ATFAKBnF2IGpOtQ130jkweO1CprUPkD17PJI7ucdtVAodjkeiI/ZhI2
-         pJ4TpvoW5jV1t9fPaDI0f7cOYv5ZrTmqnX/8WVVQ2BZ+GQZVUNNU6QbDx/Y4HBwUs2CR
-         /fQ3uTOlMyU07GKu3OagU4p+h7KTrrI3HpgGyNeWizrUYbldDWq/5XK8HDUbI6FGvn8H
-         R/bERbswzdGdqarF4lyMsuPr2qJ/QTNmJMgrcsvLw4ZBIFm3UZg+YsYos9KsuXTyFL9N
-         1V5g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding;
-        bh=VRB9ou2DZeA0o+t18fFALSwlTiVINpnkFyfn5eiRYgY=;
-        b=i2sX+6C9jS1+J5QM6sWBUdfGW4f7UzoR1oNxPwRYykfGSe/cpwabtc3jgPL0brUUgo
-         SadkGzCt8S4bkhoDkJdS2PJw9qkheKFuTLFt0EPNLt5juj8kj6cyouiMF+POTLWYp8bl
-         WkbOsBQW86ZSDcxCHZNEGN5v9srFAg1AqecX7leP9HgwM+XkoSo66dWxjF4KZ5EPRCJD
-         jKPSTwuURIzZqLIRiOeWVrQDuc169d69REEX66fzHeIOeOjcN06c5DuB6lfGno1BYgJV
-         TA5Ol3NoxibkhMnr9EMQS/2rLnR5BttCoFEDr1MQeEEzCxh3ei8poxCLLv27MKhIBBO7
-         Crlw==
-X-Gm-Message-State: AOAM533yir6BiwRj7IKX6Db8rmn/JpcjfUBqkq07PCn4XLIZOeANP8gv
-        9yELmW4JPyF/twIUXknHhhxdbsbwkL+FbBV5
-X-Google-Smtp-Source: ABdhPJyMo1QkSdOM03deL7g8FxZKZms+Bek7dLKkLtiFSd7jE9rRK3I83VaSvAusUjMU/Q7j+N4vYw==
-X-Received: by 2002:a17:903:41cb:b0:142:62a:4d86 with SMTP id u11-20020a17090341cb00b00142062a4d86mr7081096ple.43.1636629624445;
-        Thu, 11 Nov 2021 03:20:24 -0800 (PST)
-Received: from Smcdef-MBP.local ([139.177.225.240])
-        by smtp.gmail.com with ESMTPSA id z1sm2039953pge.4.2021.11.11.03.20.22
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 11 Nov 2021 03:20:24 -0800 (PST)
-Subject: Re: [PATCH] mm: shmem: do not call PageHWPoison on a ERR-page
-To:     Ajay Garg <ajaygargnsit@gmail.com>, hughd@google.com,
-        akpm@linux-foundation.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-References: <20211111084617.6746-1-ajaygargnsit@gmail.com>
-From:   Muchun Song <songmuchun@bytedance.com>
-Message-ID: <6864f744-ca3e-f328-8793-2adb0146db03@bytedance.com>
-Date:   Thu, 11 Nov 2021 19:06:53 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.12.0
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Y/gzQQT2fguPa+Z+9AOUkiLI+e2xCrBG+ef47GBRyGE=;
+ b=upOgJJm1gkuVY7ODMbLrwJOZv0Zqi1FCoowvNtpbcDUWK3ANxl/IhLqDJ3WsHKvhm2lraOAXJMNc2a4EuVn/zRnEjwPOixi+nm4+c95/XqH4wk/pFjkvkARiz/uGDTDv+6I6P1/bGzbZ7wxG/pCrDCbh7NmawAtXgoO4Xeyfk7c=
+Authentication-Results: chromium.org; dkim=none (message not signed)
+ header.d=none;chromium.org; dmarc=none action=none header.from=oracle.com;
+Received: from MWHPR1001MB2365.namprd10.prod.outlook.com
+ (2603:10b6:301:2d::28) by MWHPR10MB1613.namprd10.prod.outlook.com
+ (2603:10b6:301:a::18) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4669.11; Thu, 11 Nov
+ 2021 11:08:37 +0000
+Received: from MWHPR1001MB2365.namprd10.prod.outlook.com
+ ([fe80::d409:11b5:5eb2:6be9]) by MWHPR1001MB2365.namprd10.prod.outlook.com
+ ([fe80::d409:11b5:5eb2:6be9%5]) with mapi id 15.20.4690.016; Thu, 11 Nov 2021
+ 11:08:37 +0000
+Date:   Thu, 11 Nov 2021 14:08:18 +0300
+From:   Dan Carpenter <dan.carpenter@oracle.com>
+To:     Ricardo Ribalda <ribalda@chromium.org>
+Cc:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+        laurent.pinchart@ideasonboard.com, mchehab@kernel.org,
+        hverkuil-cisco@xs4all.nl, linux-media@vger.kernel.org,
+        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
+Subject: Re: [PATCH] media: uvcvideo: Fix a memory leak in an error handling
+ path of 'uvc_ioctl_ctrl_map()'
+Message-ID: <20211111110818.GR2001@kadam>
+References: <95f3fd02313ff41d6808b8e1f20e0c582f46edc8.1636617903.git.christophe.jaillet@wanadoo.fr>
+ <20211111103303.GQ2001@kadam>
+ <CANiDSCvuk1M2C0HuErXnRcVAj6VgFESaPGPFes2OxC9Qtx5P5A@mail.gmail.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CANiDSCvuk1M2C0HuErXnRcVAj6VgFESaPGPFes2OxC9Qtx5P5A@mail.gmail.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-ClientProxiedBy: JNAP275CA0005.ZAFP275.PROD.OUTLOOK.COM (2603:1086:0:4c::10)
+ To MWHPR1001MB2365.namprd10.prod.outlook.com (2603:10b6:301:2d::28)
 MIME-Version: 1.0
-In-Reply-To: <20211111084617.6746-1-ajaygargnsit@gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Received: from kadam (102.222.70.114) by JNAP275CA0005.ZAFP275.PROD.OUTLOOK.COM (2603:1086:0:4c::10) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4669.11 via Frontend Transport; Thu, 11 Nov 2021 11:08:31 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: d7437487-77af-4870-b3ce-08d9a5039c45
+X-MS-TrafficTypeDiagnostic: MWHPR10MB1613:
+X-Microsoft-Antispam-PRVS: <MWHPR10MB1613FCCF8470BD8AEE5E85BF8E949@MWHPR10MB1613.namprd10.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:1079;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: EsPQyUBh6ztq2tq7+fSbxdubHoE/15HSfZ399S1cfbbhupgcPcgkp8JZUfYiuCdZ7OYDoXLFIwm/psYNuAmDlISBrufJuOLmyto/eDArsBnPibRddL/gvYPqn6H2FpDrLQPQHYf9UFQkqs624O7rP663TE84U/UOGlaULxCdVkadGbhYvXXTkd7F/m1q8c/Uibbv+w2pazf0AVEoE5IEF4QW2cmymtX2ka//rSAo1SiEd5kXtRRUe0CN+9r1u+BTWv4yEO1IPtfkT/SSUTxIV1GYadxRaAw6dWvZ++BLCxG6l/cRuvXpg07WjDQ/FX77BF3am+6D5UxaWUjLF3KIff1Kz/4NvgWCYXxBupnOJX17gzh2gOC4fJPPHzay+br66jF9B71yjc2QpXagBbzB1oNNTBAThrXBeHYa849kZufOXa41QkvLd/VS8yrr/ZuqRMXs+fp3f2PBQ3HUiH8zAdpZDl4q1JPAdWP1rSCgB1QCgwIi8m3MHVOYVgZ7dGt7MZOu8UXpistXFgS3+es9G7Qj8VPOwQb2S+oMT9fM/L4ABGwZwcStab3CF04e1QITFpQiTH+O6+a9Jx0kMlMlDgcVvzLmTMNnkVdw0sLKNxac+svl8ME7/5AjniPy/AfOSoxGjWuteVq9D0h4+KcTTl3c4C9K7yEi0+QCa71PBuCaYceWHHc3V+TXUKpGhA8rJi/Xcr5+yAZHYJ/+i13RkyXMimEzWiuLytYsDd5m9bwMuUYkB/LRPLlskgFjGPnX4NH1jJDtGv4+/+3q/IwQKZ8QpchmQ06jocYpaSHphRk=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MWHPR1001MB2365.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(38100700002)(5660300002)(38350700002)(186003)(52116002)(9686003)(6496006)(86362001)(55016002)(33716001)(8936002)(66946007)(26005)(8676002)(4326008)(6666004)(1076003)(956004)(316002)(33656002)(66476007)(6916009)(2906002)(508600001)(9576002)(66556008)(44832011)(966005)(4744005);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?wri7YqtD9Fw5dhqPNTQj+c+EclMQlqnDC2KExTeWB1MyYLx5vSpH3uTgDO52?=
+ =?us-ascii?Q?Fkv9fNgw2QUpPTL4AiDKfXTnfwE2YYGzzREIL3hXwt1Y3bwBFShzZp1gfVP9?=
+ =?us-ascii?Q?7+bZ46cmQxibAUeQFK23WGZp5Be0CpaSqPYhEXIA7T7fPOiiOMR5COwUuhxd?=
+ =?us-ascii?Q?q1Ezdqid4a4yLS/1SkEFb3VdTvLkgDPRgJ1UP29/Dvph7G5YuUB4lkpcMZoa?=
+ =?us-ascii?Q?sfGqrXbcBPkrqhXHGQ8fGg9eq33sDY+wCClYbetfhlFD48WqG84nFoIHkQsn?=
+ =?us-ascii?Q?+sKi91n12SPgESBU1vteQL/lKX+VGVTxlOXQjtDukrlO2PUYaoBrbzPDnFal?=
+ =?us-ascii?Q?9vJy2HF+44v9TIM8yP3swf+qar1FXC8FP1k1idHswyiyOn+7VD+Tmwl1C5XZ?=
+ =?us-ascii?Q?GiLZCpWMvYHK/BBL/ZNE6D3q9etAvyj0IQkfTQl+w0kaciLsazr3msxO6akB?=
+ =?us-ascii?Q?XGQn3SwEVQDCkPQAaNYbzwbzDEzJpcTFwuDcojjk+nlbjtI5mbAPXqStBxSn?=
+ =?us-ascii?Q?Q5oQXIV/ASm5wX6kmL3RbHJluJDFZX0ab9egsyB7WRvt1zVDrEFAetnmCx80?=
+ =?us-ascii?Q?Nk9pUW4jXxasBmFg+qq73Pod4m5wq2fG3yBqPz+OGu2qTiJ4pzorsa717Sn2?=
+ =?us-ascii?Q?eq9x6lZ7XAwgRRDaMkWYl4jN3TTFvZnHNGHnuTASdi7HYNgGwg2wqbXSsOJy?=
+ =?us-ascii?Q?Wu/Pu9qs8PngeWSsmQ+aXaYfE7pGPuiExVl+3mRHJv4UROVGqyLgfwl3KVWx?=
+ =?us-ascii?Q?uyU9lPvVTtiUfMNAUmScnBj4E2cFC7Lcx7tiwN2WbF53KvzGjn2bt775q29d?=
+ =?us-ascii?Q?w+wEc6MC1HWkPSpAEtj29rqdVTIpWAlOg88uS5iojnxEcQUNxA+ez4N909C7?=
+ =?us-ascii?Q?vlMzersPNPQ5++gf/6a1b9m4OWi/tUMMa7ZDXXJdUpctYKDkzVT5VucGQg2L?=
+ =?us-ascii?Q?lAwGCfgd4I9OGzdRSgQS3c1WWPxXLV19nF7Y4f9zk4aoEOZzQtX/2SvTwKrs?=
+ =?us-ascii?Q?9GQKQ/7wIBBU7izOSjUzK9X/zep9MM3t9UnT9etiBasDkMo2z85RtP3ruarU?=
+ =?us-ascii?Q?JIgOLEEWfDs1Hx0YjHzZFArG8dETC5EEyEv3PEQ8PLAaEYlc2p4lHuCYOC8E?=
+ =?us-ascii?Q?SOJQUEgnp+IRTQ1RVXCawJqaNXtpNf79DhXHvYBLG/gmo1xSj2fT0dv3A3/4?=
+ =?us-ascii?Q?HpFud/2q9yMNw34IXozPckZwMflZjJ+dOFczOGnlrZnpei4hpWiaCOcEG6Lx?=
+ =?us-ascii?Q?9fpU+Fbr13d8qH/XiZS6TQfWDsipRW/bC9p+VjeX7JewyzPMnXEvKF4tUaj0?=
+ =?us-ascii?Q?QtUXXMMs7NLMXGl9On7yp9Aq8hFtGOtMBgqT/wNObevcUx28PWSCthfp7PjZ?=
+ =?us-ascii?Q?5IerdJzGVTe8wvsnD++LuEgVQAChlxhklK/EVIHxSSXR5YsgJYrj25WQZNAO?=
+ =?us-ascii?Q?D7Cu8w+qW0gFOZCRTfxci+V1JC1X1wiHwgUq4KYHgdWCy79fT7tOt91UlDTH?=
+ =?us-ascii?Q?tDF5ZJqlBCjPF+Ey/okPRPZEhO8YpwWwsW2WZDX0K2hKt6T1SLxe7tRLthlV?=
+ =?us-ascii?Q?Nws/xA4sMTc/W2H9VRxk8o0m2zUyuHv35h2vmYvzvSt7LBxew8mWJE/njSsy?=
+ =?us-ascii?Q?xtRAFW8BmSkvOxaNS7auJZGeW7zsaHOdBl6t0GKiHKzWcLZRW1mmyegibIgE?=
+ =?us-ascii?Q?jueYEI+xgVpvMrqXes3CUR6/Tzo=3D?=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: d7437487-77af-4870-b3ce-08d9a5039c45
+X-MS-Exchange-CrossTenant-AuthSource: MWHPR1001MB2365.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 11 Nov 2021 11:08:37.6553
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: MJBiAQEGb25yr1QyQlw7NcUkQZuyZhjJLzIQLoKJHFsNgZBX6kakS7qkipgRCQwK/ITuSun1dVYlpSWhhhBDz99WLI1UHiYqVNDmYiJ5daE=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MWHPR10MB1613
+X-Proofpoint-Virus-Version: vendor=nai engine=6300 definitions=10164 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 malwarescore=0 spamscore=0
+ suspectscore=0 adultscore=0 bulkscore=0 mlxlogscore=936 phishscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2110150000
+ definitions=main-2111110066
+X-Proofpoint-GUID: RI7whW8iwgH0G1-vOTzvv097QqUWtshp
+X-Proofpoint-ORIG-GUID: RI7whW8iwgH0G1-vOTzvv097QqUWtshp
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, Nov 11, 2021 at 11:40:32AM +0100, Ricardo Ribalda wrote:
+> I belive this is also addressed by this patch that is under review:
+> 
+> https://patchwork.linuxtv.org/project/linux-media/patch/20211008120914.69175-1-ribalda@chromium.org/
+> 
 
+Ah perfect.  My approach was quite lazy and that's a better way.  Thanks!
 
-On 2021/11/11 16:46, Ajay Garg wrote:
-> commit b9d02f1bdd98
-> ("mm: shmem: don't truncate page if memory failure happens")
-> 
-> introduced a PageHWPoison(page) call in "shmem_read_mapping_page_gfp"
-> in shmem.c.
-> 
-> Now, if "shmem_getpage_gfp" returns an error, page is set to ERR-page.
-> Therafter, calling PageHWPoison() on this ERR-page, causes KASAN to OOP
-> the kernel :
-> 
->   #############################
-> BUG: unable to handle page fault for address: fffffffffffffff4
-> PF: supervisor read access in kernel mode
-> PF: error_code(0x0000) - not-present page
-> PGD 18e019067 P4D 18e019067 PUD 18e01b067 PMD 0
-> Oops: 0000 [#1] PREEMPT SMP DEBUG_PAGEALLOC KASAN PTI
-> CPU: 0 PID: 4836 Comm: MATLAB Not tainted 5.15.0+ #18
-> Hardware name: Dell Inc. Latitude E6320/0GJF11, BIOS A19 11/14/2013
-> RIP: 0010:shmem_read_mapping_page_gfp+0xd3/0x140
-> Code: 4c 89 ff e8 6f eb ff ff 5a 59 85 c0 74 64 48 63 d8 48 89 5d 98 be 08 00 00 00 48 89 df e8 e5 67 0c 00 48 89 df e8 6d 5c 0c 00 <48> 8b 13 48 c7 c0 fb ff ff ff f7 c2 00 00 80 00 74 30 48 ba 00 00
-> RSP: 0018:ffff88806b33f998 EFLAGS: 00010246
-> RAX: 0000000000000000 RBX: fffffffffffffff4 RCX: ffffffffb7a37ba3
-> RDX: 0000000000000003 RSI: dffffc0000000000 RDI: fffffffffffffff4
-> RBP: ffff88806b33fa20 R08: 1ffffffffffffffe R09: fffffffffffffffb
-> R10: fffffbffffffffff R11: 0000000000000001 R12: 1ffff1100d667f33
-> R13: 00000000001120d2 R14: 00000000000005db R15: ffff88814e64e2d8
-> FS:  00007f379a384640(0000) GS:ffff888161a00000(0000) knlGS:0000000000000000
-> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> CR2: fffffffffffffff4 CR3: 00000000269dc004 CR4: 00000000000606f0
-> Call Trace:
-> <TASK>
-> ? shmem_fault+0x480/0x480
-> ? __cond_resched+0x1c/0x30
-> ? __kasan_check_read+0x11/0x20
-> shmem_get_pages+0x3a4/0xa70 [i915]
-> ? shmem_writeback+0x3b0/0x3b0 [i915]
-> ? i915_gem_object_wait_reservation+0x330/0x560 [i915]
-> ...
-> ...
->   ################################
-> 
-> So, we proceed with PageHWPoison() call, only if the page is not a
-> ERR-page.
-> 
-> 
-> P.S. : Alternative (optimised) solution :
-> ===========================================
-> 
-> We could save some CPU cycles, if we directly replace
-> 
->          if (error)
->                  page = ERR_PTR(error);
->          else
->                  unlock_page(page);
-> 
-> with
-> 
->          if (error)
->                  return ERR_PTR(error);
-> 
-> 
-> Fixes: b9d02f1bdd98 ("mm: shmem: don't truncate page if memory failure happens")
-> Signed-off-by: Ajay Garg <ajaygargnsit@gmail.com>
-> ---
->   mm/shmem.c | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/mm/shmem.c b/mm/shmem.c
-> index 23c91a8beb78..427863cbf0dc 100644
-> --- a/mm/shmem.c
-> +++ b/mm/shmem.c
-> @@ -4222,7 +4222,7 @@ struct page *shmem_read_mapping_page_gfp(struct address_space *mapping,
->   	else
->   		unlock_page(page);
->   
-> -	if (PageHWPoison(page))
-> +	if (!IS_ERR(page) && PageHWPoison(page))
->   		page = ERR_PTR(-EIO);
+regards,
+dan carpenter
 
-How about the following changes since the above if block
-already do the judgment?
-
-diff --git a/mm/shmem.c b/mm/shmem.c
-index f0eee4e221a7..0c84b6624026 100644
---- a/mm/shmem.c
-+++ b/mm/shmem.c
-@@ -4195,13 +4195,13 @@ struct page *shmem_read_mapping_page_gfp(struct 
-address_space *mapping,
-         BUG_ON(!shmem_mapping(mapping));
-         error = shmem_getpage_gfp(inode, index, &page, SGP_CACHE,
-                                   gfp, NULL, NULL, NULL);
--       if (error)
-+       if (error) {
-                 page = ERR_PTR(error);
--       else
-+       } else {
-                 unlock_page(page);
--
--       if (PageHWPoison(page))
--               page = ERR_PTR(-EIO);
-+               if (PageHWPoison(page))
-+                       page = ERR_PTR(-EIO);
-+       }
-
-         return page;
-  #else
-
->   
->   	return page;
-> 
