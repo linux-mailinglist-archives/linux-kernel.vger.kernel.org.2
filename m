@@ -2,155 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F97E44DCF9
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Nov 2021 22:16:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6EBD744DCFC
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Nov 2021 22:16:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233856AbhKKVSr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Nov 2021 16:18:47 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35824 "EHLO
+        id S233940AbhKKVTN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Nov 2021 16:19:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35936 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231825AbhKKVSq (ORCPT
+        with ESMTP id S231825AbhKKVTM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Nov 2021 16:18:46 -0500
-Received: from mail-yb1-xb2d.google.com (mail-yb1-xb2d.google.com [IPv6:2607:f8b0:4864:20::b2d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 37581C061766;
-        Thu, 11 Nov 2021 13:15:57 -0800 (PST)
-Received: by mail-yb1-xb2d.google.com with SMTP id q74so18271706ybq.11;
-        Thu, 11 Nov 2021 13:15:57 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=KZdf4pMbWq8JTXgN5BWgwK9VtgLgJIIxkJxdX9n1lyM=;
-        b=VN4vDAoplsMxRSbbxCk/I00mBDrUG8/NDPKjr5ztZVGC+1mmKCo1+j8HaklCqshzA+
-         pfZXB5oLe/vj5b9G3SRNbzSQDXEcjPKUWqeTcIM/yCE5LmeLrf6unboszK6v64m180qn
-         93EZ2QpRXunL3WzZ+bHRlBhlIigQh3ut8KP2WOBBWfeEfsWCX2cnOeibbcJQgERZJaz8
-         bplZyATTSP58oNoi0wD/UgXhBDtR9kDBySBfgDQbYlk9IXWy2xlm0+Or+2CskFIgs6K1
-         yOzyZi5eCZi9LrGjTYBl/S0d1W32qLJ/YG+xbSb89VoqyruqrzOGfFBfknER6m3aCTJH
-         +i2A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=KZdf4pMbWq8JTXgN5BWgwK9VtgLgJIIxkJxdX9n1lyM=;
-        b=o3374jZHEPz6uz0FSLLbWk7D0dGJW0sAL0OjauRlBHeArV/6DF9E6HGWRhkIFByCol
-         KGPCp5EQc+ASaA5cgk6tGiqssYDnycwj6ax5ocPHYRF6jO/e1I9EGlQZ/+P1Nfw22OYL
-         PeHIEV4dX842VeddYnO7PdVJO7zYoMTXTahb3PgzcLxWP+yoGCThKRZN6WAVQgzDrGha
-         YsQ878pAVNMSnm1W2uWKoca2qUKCPKL7ZND4X8wxc4Nb0UZaY3TjnCwZiY36NUebtqMs
-         HdW17pgs4pWZmqUg56dPiQ5TnqRu0JYicBdcQgeSQM0BE6fn0wyExBp+CjAywBla0pJc
-         7Ccg==
-X-Gm-Message-State: AOAM531e3kh7J6bij3h97iOj9SpPdElYRBpzolNy8+eyG3QgOOPmzDdL
-        lcIT210QFOo6y/VK6Ea3oohNRXxvmTbmCCBSEoo=
-X-Google-Smtp-Source: ABdhPJy7vtoWJN2CnXVY6+ohh9k2M8NECOo45VNy9NesiNYejc8QzoxX917R2E+4vlYnBTVI58aWdYqc77yA4r46lp8=
-X-Received: by 2002:a25:56c3:: with SMTP id k186mr11374215ybb.543.1636665356487;
- Thu, 11 Nov 2021 13:15:56 -0800 (PST)
+        Thu, 11 Nov 2021 16:19:12 -0500
+Received: from relay02.th.seeweb.it (relay02.th.seeweb.it [IPv6:2001:4b7a:2000:18::163])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 64C5AC061767
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Nov 2021 13:16:22 -0800 (PST)
+Received: from [192.168.1.101] (83.6.165.118.neoplus.adsl.tpnet.pl [83.6.165.118])
+        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by m-r1.th.seeweb.it (Postfix) with ESMTPSA id 3ED321F89E;
+        Thu, 11 Nov 2021 22:16:20 +0100 (CET)
+Message-ID: <c6f1ed00-c7a0-bd68-da46-b545f27f6211@somainline.org>
+Date:   Thu, 11 Nov 2021 22:16:19 +0100
 MIME-Version: 1.0
-References: <20211110225808.16388-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
- <20211110225808.16388-6-prabhakar.mahadev-lad.rj@bp.renesas.com> <CAHp75VcM-BWoLmS8yBm9uVcbUb6bZr--+m5qXx=WFe024sWJoQ@mail.gmail.com>
-In-Reply-To: <CAHp75VcM-BWoLmS8yBm9uVcbUb6bZr--+m5qXx=WFe024sWJoQ@mail.gmail.com>
-From:   "Lad, Prabhakar" <prabhakar.csengg@gmail.com>
-Date:   Thu, 11 Nov 2021 21:15:30 +0000
-Message-ID: <CA+V-a8v=pJTRDvASViCmcnxLHzbcRsDYUuNu0G3uNNv0fw0Erg@mail.gmail.com>
-Subject: Re: [RFC PATCH v3 5/7] gpio: gpiolib: Add ngirq member to struct gpio_irq_chip
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc:     Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
-        Marc Zyngier <maz@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.1.1
+Subject: Re: [PATCH v3 2/8] arm64: dts: qcom: sdm630-pm660: Move RESIN to
+ pm660 dtsi
+Content-Language: en-US
+To:     Dang Huynh <danct12@riseup.net>
+Cc:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
         Rob Herring <robh+dt@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Magnus Damm <magnus.damm@gmail.com>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        devicetree <devicetree@vger.kernel.org>,
-        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Biju Das <biju.das.jz@bp.renesas.com>
-Content-Type: text/plain; charset="UTF-8"
+        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Alexey Min <alexey.min@gmail.com>,
+        Caleb Connolly <caleb@connolly.tech>,
+        Martin Botka <martin.botka@somainline.org>
+References: <20211111031635.3839947-1-danct12@riseup.net>
+ <20211111031635.3839947-3-danct12@riseup.net>
+From:   Konrad Dybcio <konrad.dybcio@somainline.org>
+In-Reply-To: <20211111031635.3839947-3-danct12@riseup.net>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Andy,
+Reviewed-by: Konrad Dybcio <konrad.dybcio@somainline.org>
 
-Thank you for the review.
-
-On Thu, Nov 11, 2021 at 8:52 PM Andy Shevchenko
-<andy.shevchenko@gmail.com> wrote:
->
-> On Thu, Nov 11, 2021 at 12:59 AM Lad Prabhakar
-> <prabhakar.mahadev-lad.rj@bp.renesas.com> wrote:
-> >
-> > Number of GPIO IRQ's supported by the chip is not always
->
-> supported GPIO IRQs by the chip
->
-will update the change log.
-
-> > equal to the number of GPIO pins. For example on Renesas RZ/G2L
-> > SoC where it has GPIO0-122 pins but at a give point a maximum
-> > of only 32 GPIO pins can be used as IRQ lines in the IRQC domain.
-> >
-> > This patch adds ngirq member to struct gpio_irq_chip and passes
-> > this as a size to irq_domain_create_hierarchy()/irq_domain_create_simple()
-> > if it is being set in the driver otherwise fallbacks to using ngpio.
->
-> ...
->
-> >         gc->irq.domain = irq_domain_create_hierarchy(
-> >                 gc->irq.parent_domain,
-> >                 0,
-> > -               gc->ngpio,
-> > +               gc->irq.ngirq ? gc->irq.ngirq : gc->ngpio,
->
-> You may use ?: instead as it's done somewhere else in this module.
->
-Agreed will do.
-
-> >                 gc->irq.fwnode,
-> >                 &gc->irq.child_irq_domain_ops,
-> >                 gc);
->
-> ...
->
-> >                 gc->irq.domain = irq_domain_create_simple(fwnode,
-> > -                       gc->ngpio,
-> > +                       gc->irq.ngirq ? gc->irq.ngirq : gc->ngpio,
->
-> Ditto.
->
-
-> >                         gc->irq.first,
-> >                         gc->irq.domain_ops ?: &gpiochip_domain_ops,
->
-> (^^^ You see?)
->
-Thanks for the pointer.
-
-> >                         gc);
->
-> ...
->
-> > +       /**
-> > +        * @ngirq:
-> > +        *
-> > +        * The number of GPIO IRQ's handled by this IRQ domain; usually is
->
-> handled GPIO IRQs
->
-OK, will update the description as mentioned above.
-
-> > +        * equal to ngpio
->
-> Missed period.
->
-Ouch.
-
-Cheers,
-Prabhakar
-> > +        */
->
-> --
-> With Best Regards,
-> Andy Shevchenko
+Konrad
