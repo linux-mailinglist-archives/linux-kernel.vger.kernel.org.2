@@ -2,75 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C18144D7C6
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Nov 2021 15:03:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A991744D7B0
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Nov 2021 14:57:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233267AbhKKOG1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Nov 2021 09:06:27 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50208 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232033AbhKKOG0 (ORCPT
+        id S233707AbhKKOAK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Nov 2021 09:00:10 -0500
+Received: from szxga03-in.huawei.com ([45.249.212.189]:27199 "EHLO
+        szxga03-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232903AbhKKOAC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Nov 2021 09:06:26 -0500
-Received: from mail-yb1-xb30.google.com (mail-yb1-xb30.google.com [IPv6:2607:f8b0:4864:20::b30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 45449C061766;
-        Thu, 11 Nov 2021 06:03:37 -0800 (PST)
-Received: by mail-yb1-xb30.google.com with SMTP id g17so15218587ybe.13;
-        Thu, 11 Nov 2021 06:03:37 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:from:date:message-id:subject:to:cc;
-        bh=Jl86n894deUc+EyzRc3Kdc4ie9DWCIIIPAtn9wSfF7Q=;
-        b=AQUQHcFJKaL1KwaFejo9eGaweb58HS1JVUQzPZsZiVPTjQ0uAYpePfp0jR68cO3T4/
-         dqbA7IbAUFbg1wBIHM/NexyD9QxOdP4kNQ56WXfVZZCkcNENtbd78P1tobLKTFCrNFd3
-         l9pgdUiDSZA/KxaO0vOdwqF8R25oNEoV8m43ZDTkV7+k4JK6lC4c7tYhrTPID4os3lFc
-         XfnWo+B1aerxK0wYxEaTPKOa03ZNuhQ765wpofvfss6GVC+HXY/0RbHVJm5no/3j/2Ud
-         x3JdtSs+0DBIL5c0BhOXQPEcF3q9Yog44kf0U8nsvZjXQK5h5L8r1NVzN3snZ1hENHjQ
-         BxiQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
-        bh=Jl86n894deUc+EyzRc3Kdc4ie9DWCIIIPAtn9wSfF7Q=;
-        b=gTnutKENjAyyB5k8Hhx2kmN+wYRWzW3uv2qdoDugKUZjI7YIs1vYu8KvSRDRJpauet
-         6oJhpz8vTEvS+XmjyG3vPPHjBW0lUvBuZwY26k+4rUKm+v33Oehu0SJOnDt3AtGoKI5g
-         M8dEb1VEJJSypLkJAO7gSeJcD454Faa3Zu9eP9ANdAqnnOGuBgI0hYHFqyqd7spdQCFX
-         UrJoAnmlbLYQzB2vXHwd+i0ZbmeLyMRZoHyhsm+XzZP+8k/4L2hA+m2WynrVUtcLfxDP
-         Ol/cGic4Do5nSqAx+CLGIZLu6JQi4kNjqcLrkTHp12KLyjkKk9Hw6YkhpuDmLYOKkObA
-         J83g==
-X-Gm-Message-State: AOAM533MntM8UBELZzYHMi09vJRAHnP1kwnjJwDJCNhg6Xt0u+ooQYtb
-        X18zmGLvnWnA0eVmZ53Rj91XVZfgEnVP19VQwQUVzWNwREM=
-X-Google-Smtp-Source: ABdhPJymxzFgO75t6intJsw4qa109jrrYnG+4AyV8xGLU6d54TKTGqHttzlsvFjaG3tov1L98lYMKiH3Vgds9MHnoZE=
-X-Received: by 2002:a25:bdc5:: with SMTP id g5mr8235631ybk.403.1636639416542;
- Thu, 11 Nov 2021 06:03:36 -0800 (PST)
+        Thu, 11 Nov 2021 09:00:02 -0500
+Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.53])
+        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4Hqjsc4qQtz8vCk;
+        Thu, 11 Nov 2021 21:55:32 +0800 (CST)
+Received: from dggpemm500015.china.huawei.com (7.185.36.181) by
+ dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.15; Thu, 11 Nov 2021 21:57:10 +0800
+Received: from huawei.com (10.175.103.91) by dggpemm500015.china.huawei.com
+ (7.185.36.181) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2308.15; Thu, 11 Nov
+ 2021 21:57:09 +0800
+From:   Wang ShaoBo <bobo.shaobowang@huawei.com>
+To:     <peterz@infradead.org>
+CC:     <linux-kernel@vger.kernel.org>, <dietmar.eggemann@arm.com>,
+        <sudeep.holla@arm.com>, <song.bao.hua@hisilicon.com>,
+        <cj.chengjian@huawei.com>, <huawei.libin@huawei.com>,
+        <weiyongjun1@huawei.com>
+Subject: [PATCH v2] arch_topology: Fix missing clear cluster_cpumask in remove_cpu_topology()
+Date:   Thu, 11 Nov 2021 22:04:35 +0800
+Message-ID: <20211111140435.3209001-1-bobo.shaobowang@huawei.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-From:   Sudip Mukherjee <sudipm.mukherjee@gmail.com>
-Date:   Thu, 11 Nov 2021 14:03:00 +0000
-Message-ID: <CADVatmOuOk6RoZF=M9sZm2L=9NuDDsSNNCJJbAtkgScG0og1Ww@mail.gmail.com>
-Subject: regression with mainline kernel
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Stable <stable@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.103.91]
+X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
+ dggpemm500015.china.huawei.com (7.185.36.181)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus,
+When testing cpu online and offline, warning happened like this:
 
-My testing has been failing for the last few days. Last good test was
-with 6f2b76a4a384 and I started seeing the failure with ce840177930f5
-where boot timeout.
+[  146.746743] WARNING: CPU: 92 PID: 974 at kernel/sched/topology.c:2215 build_sched_domains+0x81c/0x11b0
+[  146.749988] CPU: 92 PID: 974 Comm: kworker/92:2 Not tainted 5.15.0 #9
+[  146.750402] Hardware name: Huawei TaiShan 2280 V2/BC82AMDDA, BIOS 1.79 08/21/2021
+[  146.751213] Workqueue: events cpuset_hotplug_workfn
+[  146.751629] pstate: 00400009 (nzcv daif +PAN -UAO -TCO -DIT -SSBS BTYPE=--)
+[  146.752048] pc : build_sched_domains+0x81c/0x11b0
+[  146.752461] lr : build_sched_domains+0x414/0x11b0
+[  146.752860] sp : ffff800040a83a80
+[  146.753247] x29: ffff800040a83a80 x28: ffff20801f13a980 x27: ffff20800448ae00
+[  146.753644] x26: ffff800012a858e8 x25: ffff800012ea48c0 x24: 0000000000000000
+[  146.754039] x23: ffff800010ab7d60 x22: ffff800012f03758 x21: 000000000000005f
+[  146.754427] x20: 000000000000005c x19: ffff004080012840 x18: ffffffffffffffff
+[  146.754814] x17: 3661613030303230 x16: 30303078303a3239 x15: ffff800011f92b48
+[  146.755197] x14: ffff20be3f95cef6 x13: 2e6e69616d6f642d x12: 6465686373204c4c
+[  146.755578] x11: ffff20bf7fc83a00 x10: 0000000000000040 x9 : 0000000000000000
+[  146.755957] x8 : 0000000000000002 x7 : ffffffffe0000000 x6 : 0000000000000002
+[  146.756334] x5 : 0000000090000000 x4 : 00000000f0000000 x3 : 0000000000000001
+[  146.756705] x2 : 0000000000000080 x1 : ffff800012f03860 x0 : 0000000000000001
+[  146.757070] Call trace:
+[  146.757421]  build_sched_domains+0x81c/0x11b0
+[  146.757771]  partition_sched_domains_locked+0x57c/0x978
+[  146.758118]  rebuild_sched_domains_locked+0x44c/0x7f0
+[  146.758460]  rebuild_sched_domains+0x2c/0x48
+[  146.758791]  cpuset_hotplug_workfn+0x3fc/0x888
+[  146.759114]  process_one_work+0x1f4/0x480
+[  146.759429]  worker_thread+0x48/0x460
+[  146.759734]  kthread+0x158/0x168
+[  146.760030]  ret_from_fork+0x10/0x20
+[  146.760318] ---[ end trace 82c44aad6900e81a ]---
 
-Last good test - https://openqa.qa.codethink.co.uk/tests/323
-Failing test - https://openqa.qa.codethink.co.uk/tests/335
+For some architectures like risc-v and arm64 which use common code
+clear_cpu_topology() in shutting down CPUx, When CONFIG_SCHED_CLUSTER
+is set, cluster_sibling in cpu_topology of each sibling adjacent
+to CPUx is missed clearing, this may cause checking failed in
+topology_span_sane() which don't allow Non-NUMA levels's mask partially
+overlaped, finally results in rebuilding topology failure when CPUx
+online again.
 
-Saw a similar issue with 5.10.79-rc1 today and bisect showed the
-problem with 8615ff6dd1ac but that was already in the last good test I
-had.
-I will do a bisect tonight and let you know the result.
+This warning can only be reproduced when we disable a part of CPUs in
+one cluster, then enable one of the disabled CPUs.
 
+Three steps to reproduce (CPU 92, 93, 94, 95 are in one cluster):
+  echo 0 > cpu92/online
+  echo 0 > cpu93/online
+  echo 1 > cpu92/online # WARN_ON !topology_span_sane
 
+Fixes: c5e22feffdd7 ("topology: Represent clusters of CPUs within a die")
+Signed-off-by: Wang ShaoBo <bobo.shaobowang@huawei.com>
+Reviewed-by: Dietmar Eggemann <dietmar.eggemann@arm.com>
+Reviewed-by: Sudeep Holla <sudeep.holla@arm.com>
+Acked-by: Barry Song <song.bao.hua@hisilicon.com>
+Tested-by: Dietmar Eggemann <dietmar.eggemann@arm.com>
+---
+ drivers/base/arch_topology.c | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/drivers/base/arch_topology.c b/drivers/base/arch_topology.c
+index 981e72a3dafb..ff16a36a908b 100644
+--- a/drivers/base/arch_topology.c
++++ b/drivers/base/arch_topology.c
+@@ -677,6 +677,8 @@ void remove_cpu_topology(unsigned int cpu)
+ 		cpumask_clear_cpu(cpu, topology_core_cpumask(sibling));
+ 	for_each_cpu(sibling, topology_sibling_cpumask(cpu))
+ 		cpumask_clear_cpu(cpu, topology_sibling_cpumask(sibling));
++	for_each_cpu(sibling, topology_cluster_cpumask(cpu))
++		cpumask_clear_cpu(cpu, topology_cluster_cpumask(sibling));
+ 	for_each_cpu(sibling, topology_llc_cpumask(cpu))
+ 		cpumask_clear_cpu(cpu, topology_llc_cpumask(sibling));
+ 
 -- 
-Regards
-Sudip
+2.25.1
+
