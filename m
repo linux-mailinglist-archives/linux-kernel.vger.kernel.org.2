@@ -2,86 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F84644DB29
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Nov 2021 18:33:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 300DF44DB2C
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Nov 2021 18:34:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234358AbhKKRga (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Nov 2021 12:36:30 -0500
-Received: from linux.microsoft.com ([13.77.154.182]:53086 "EHLO
-        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234311AbhKKRg2 (ORCPT
+        id S234381AbhKKRhK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Nov 2021 12:37:10 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42532 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232659AbhKKRhG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Nov 2021 12:36:28 -0500
-Received: from kbox (unknown [24.17.193.74])
-        by linux.microsoft.com (Postfix) with ESMTPSA id 01EE720C359F;
-        Thu, 11 Nov 2021 09:33:38 -0800 (PST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 01EE720C359F
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1636652019;
-        bh=7U99bjDYm24pDBGfnRysUQ1K18qet1ytsQFDtTd8BeY=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=nF3GMnpb+5a/Dqcg0yrBiAhB6vNWYbbGkUCVo1OYXBi8nn8ZrW4wWytycxp7Vx2Pb
-         dmU2HjJHsmubbKjPseShSroDjZTjU0WrAVEeuF/9X5tZwQQMOshXYHyjYCDgLt9ICp
-         Rpux1aE8DGA7y92LKceN9Xc08rU8WcgArp8rQEvk=
-Date:   Thu, 11 Nov 2021 09:33:34 -0800
-From:   Beau Belgrave <beaub@linux.microsoft.com>
-To:     Masami Hiramatsu <mhiramat@kernel.org>
-Cc:     Steven Rostedt <rostedt@goodmis.org>,
-        linux-trace-devel@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v4 02/10] user_events: Add minimal support for
- trace_event into ftrace
-Message-ID: <20211111173334.GA1433@kbox>
-References: <20211104170433.2206-1-beaub@linux.microsoft.com>
- <20211104170433.2206-3-beaub@linux.microsoft.com>
- <20211107233115.1f77e93c4bdf3ff649be99c1@kernel.org>
- <20211108171336.GA1690@kbox>
- <20211108131639.33a4f186@gandalf.local.home>
- <20211108202527.GA1862@kbox>
- <20211109115634.5fb6d984d7b4e701c740d5f3@kernel.org>
- <20211109190844.GA1529@kbox>
- <20211110225630.babcd70ec85f97e369b0e446@kernel.org>
+        Thu, 11 Nov 2021 12:37:06 -0500
+Received: from relay05.th.seeweb.it (relay05.th.seeweb.it [IPv6:2001:4b7a:2000:18::166])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 51AE2C061766
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Nov 2021 09:34:16 -0800 (PST)
+Received: from localhost.localdomain (83.6.165.118.neoplus.adsl.tpnet.pl [83.6.165.118])
+        by m-r2.th.seeweb.it (Postfix) with ESMTPA id 415D63F1EA;
+        Thu, 11 Nov 2021 18:34:11 +0100 (CET)
+From:   Konrad Dybcio <konrad.dybcio@somainline.org>
+To:     ~postmarketos/upstreaming@lists.sr.ht
+Cc:     martin.botka@somainline.org,
+        angelogioacchino.delregno@somainline.org,
+        marijn.suijten@somainline.org, jamipkettunen@somainline.org,
+        Konrad Dybcio <konrad.dybcio@somainline.org>,
+        Alex Elder <elder@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] net/ipa: ipa_resource: Fix wrong for loop range
+Date:   Thu, 11 Nov 2021 18:34:00 +0100
+Message-Id: <20211111173401.551408-1-konrad.dybcio@somainline.org>
+X-Mailer: git-send-email 2.33.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211110225630.babcd70ec85f97e369b0e446@kernel.org>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 10, 2021 at 10:56:30PM +0900, Masami Hiramatsu wrote:
-> On Tue, 9 Nov 2021 11:08:44 -0800
-> Beau Belgrave <beaub@linux.microsoft.com> wrote:
+The destrination group count was mistakenly assigned to both dst and src loops.
+Fix it to make IPA probe and work again.
 
-> I would like to keep verifying in writer side then we can ensure the
-> data on ring buffer (of perf and of ftrace) is sane. If you add the unsafe
-> flag, you have to change all the code which access the ring buffer, not only
-> the filter but also eprobes, histograms, perf-tools, and other user-space
-> tracing tools which reads the tracing buffer directly.
-> 
-> > It sounded like Steven wanted to think about this a bit, so I'll wait a
-> > bit before poking again for consensus :)
-> > 
-> > Do you have any strong feelings about where it goes?
-> 
-> I recommend you to start verifying the writer side, it should make the
-> change as small as possible. Unsafe flag idea may involve many other
-> tools. And it is not fundamentary required for user-events.
-> 
-> Thank you,
-> 
-> -- 
-> Masami Hiramatsu <mhiramat@kernel.org>
+Signed-off-by: Konrad Dybcio <konrad.dybcio@somainline.org>
+---
+ drivers/net/ipa/ipa_resource.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Ok, I will start there.
+diff --git a/drivers/net/ipa/ipa_resource.c b/drivers/net/ipa/ipa_resource.c
+index e3da95d69409..06cec7199382 100644
+--- a/drivers/net/ipa/ipa_resource.c
++++ b/drivers/net/ipa/ipa_resource.c
+@@ -52,7 +52,7 @@ static bool ipa_resource_limits_valid(struct ipa *ipa,
+ 				return false;
+ 	}
+ 
+-	group_count = data->rsrc_group_src_count;
++	group_count = data->rsrc_group_dst_count;
+ 	if (!group_count || group_count > IPA_RESOURCE_GROUP_MAX)
+ 		return false;
+ 
+-- 
+2.33.0
 
-Are static string buffers required as well for the null check?
-
-Or is this only for dyn strings that require the check?
-
-Also, I am assuming that __rel_loc offset is based after the __rel_loc
-payload, IE: Offset 0 of __rel_loc is immediately after the 4 byte
-__rel_loc description?
-
-Thanks,
--Beau
