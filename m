@@ -2,88 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3E84944D087
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Nov 2021 04:50:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E321D44D08B
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Nov 2021 04:56:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232890AbhKKDxe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Nov 2021 22:53:34 -0500
-Received: from mail.kernel.org ([198.145.29.99]:44006 "EHLO mail.kernel.org"
+        id S232634AbhKKD67 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Nov 2021 22:58:59 -0500
+Received: from mout.gmx.net ([212.227.17.20]:59619 "EHLO mout.gmx.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229699AbhKKDxc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Nov 2021 22:53:32 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 53C8C611C0;
-        Thu, 11 Nov 2021 03:50:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1636602643;
-        bh=T+cPUWC/bivZ6XKwLoaOFy2OKpe0dq582Iibix/HQYc=;
-        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-        b=p+LZzp2Lr9l8v3nd1/QSNTyDYFjufKyyxIAUUYvMgcg+wgF6s7INq3blY34H4C+dw
-         25exyo/uG8ZLWtxbu/V0qw+goxZXr2/O7JOy2BlYi4hAFlif8krBINeSgVKa4JckmY
-         BxpuNUMTKWBcbI0NKbAPOcD4n/dTMV4v7sLmyjTKa1mxARdNn5GKCDYdiAJLxSXqpX
-         SEKXxgoqcglaynh/Dao243XVcHyrRHkmdL6Zd+fEFvdYte5eTGFLo7HC5tylKlBhtK
-         9zEh6kblXXeOof5r8PdRen+kmgYzF8gBur9HhMDNTjjZ+ujV77GnIko5hP9FZFJ5ZG
-         d/f80ftzYIVuw==
-Message-ID: <f99dca08d332b01daec9eed7e4a55f042b551a67.camel@kernel.org>
-Subject: Re: [PATCH V2] x86/sgx: Fix free page accounting
-From:   Jarkko Sakkinen <jarkko@kernel.org>
-To:     "Luck, Tony" <tony.luck@intel.com>
-Cc:     Reinette Chatre <reinette.chatre@intel.com>,
-        dave.hansen@linux.intel.com, tglx@linutronix.de, bp@alien8.de,
-        mingo@redhat.com, linux-sgx@vger.kernel.org, x86@kernel.org,
-        seanjc@google.com, hpa@zytor.com, linux-kernel@vger.kernel.org,
-        stable@vger.kernel.org
-Date:   Thu, 11 Nov 2021 05:50:41 +0200
-In-Reply-To: <YYyNeW28jqKwD0tF@agluck-desk2.amr.corp.intel.com>
-References: <b2e69e9febcae5d98d331de094d9cc7ce3217e66.1636487172.git.reinette.chatre@intel.com>
-         <8e0bb87f05b79317a06ed2d8ab5e2f5cf6132b6a.camel@kernel.org>
-         <794a7034-f6a7-4aff-7958-b1bd959ced24@intel.com>
-         <94df4c660532a6bf414b6bbd8e25c3ea2e4eda5b.camel@kernel.org>
-         <YYyNeW28jqKwD0tF@agluck-desk2.amr.corp.intel.com>
+        id S231171AbhKKD66 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Nov 2021 22:58:58 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1636602934;
+        bh=dQamGkACivMnZRQUR0T76ZNCpqCZTQRKjl1oGTBkQl8=;
+        h=X-UI-Sender-Class:Subject:From:To:Cc:Date:In-Reply-To:References;
+        b=Yves5vPe/SSFfHtPUADj0VB94SOMy+Zbo9BW9i0rMDRhU4a3IKmVsbXjZsGRD85I3
+         gJj8zpq1uFPc1rATTH8J1TPUMKGlCcO9NP+DzBGeVDhCxdSsCgAurU1xj5zx34n4l2
+         Xq+ie3YoounjpMWE4L+AkvetI2TekH7IfLvQ1LqA=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from homer.fritz.box ([212.114.172.107]) by mail.gmx.net (mrgmx104
+ [212.227.17.168]) with ESMTPSA (Nemesis) id 1MuUjC-1mTu4a2aTy-00rXfd; Thu, 11
+ Nov 2021 04:55:34 +0100
+Message-ID: <952135b1fcfdabe40c2cfaf2ef0a5b90ede418fe.camel@gmx.de>
+Subject: Re: [PATCH v2 2/5] preempt/dynamic: Introduce preempt mode accessors
+From:   Mike Galbraith <efault@gmx.de>
+To:     Valentin Schneider <valentin.schneider@arm.com>,
+        linux-kernel@vger.kernel.org, kasan-dev@googlegroups.com,
+        linuxppc-dev@lists.ozlabs.org, linux-kbuild@vger.kernel.org
+Cc:     Marco Elver <elver@google.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Michal Marek <michal.lkml@markovi.net>,
+        Nick Desaulniers <ndesaulniers@google.com>
+Date:   Thu, 11 Nov 2021 04:55:30 +0100
+In-Reply-To: <a7febd8825a2ab99bd1999664c6d4aa618b49442.camel@gmx.de>
+References: <20211110202448.4054153-1-valentin.schneider@arm.com>
+         <20211110202448.4054153-3-valentin.schneider@arm.com>
+         <a7c704c2ae77e430d7f0657c5db664f877263830.camel@gmx.de>
+         <803a905890530ea1b86db6ac45bd1fd940cf0ac3.camel@gmx.de>
+         <a7febd8825a2ab99bd1999664c6d4aa618b49442.camel@gmx.de>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: base64
-User-Agent: Evolution 3.40.4-1 
+User-Agent: Evolution 3.42.0 
 MIME-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:qqcgSnijT7Gw/VNX30SqkB8YdoGSCJKiue2bRmosehBHInhIZuM
+ 6DZWOjxgWyIEvIeL7Gc976oonmjoY3HIceHHbwHi72bdnd2Gy+AWDEjKmA0WKHQ0CELOyD3
+ xLnU0oKxZOds2XaKZjWN/+cAkATrBuJlSJHbhDH0nCttt8tD52gDip/JCkLGmF9g5w8sHqC
+ GkJN8GHNKWsuhjUFrVHNg==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:eEWI9N1+sSQ=:MUAOZY4Ngrc5ZNOlWGZeyG
+ pqP9pc6zPRXcdR6ad8Xlc+jc/mJNRz+Svfzr7MggeZQ4eDj6OQQLgRBCcikSL5USnqjUEW2m6
+ CWQTp3BrwaZxxZfBpbB4N5WjczQDNDhDOq4Zhiw/d9yZmjBCFWl15FHE4Yw7tZe3OsD9XPHik
+ 0R3Bzs1tINPwcjUn/tYIL8ARKxF+4yYyDUwHNpwAzN4I+C4iLftcHSQmAiY3m/PcxCr0SGj/f
+ v92/Cj4MYzGzv4wMgSX0gZEQ8tKREivmzKTRixKodssvflrbLcWGC6z9rkeB2lRwvE4sqQ2k6
+ RGpLkQ85dvunXUzXAWY2O2cZNW2gd1M0Y+hV9g5PcQYW5XXURp2SahMbiHxRJD3SqnNLL0TP5
+ AEwRNCFXr0n2ytyl7yOjHZUx5p7iAXiMycNMCmgLe/yk2sl+z24zHY/7mpJGIzQSmR5SiY7iJ
+ c1eTW+cCdCN+QQbxuB2ejtjLjSlSd4/V38A0HyKe2Pihq6/hibzabFGY97qrqLkOa5j+6ytfY
+ SI2/UUA63c2utNAC4Pf+6X1sLgLOQXpSGOvsD20ME9W8WHyfZXE3Gt2QxvMMyiPh9byqwCs2o
+ XtRlwHqpz4UBv+r6abzjlPfrHN3RJehVLXRF1vwv61Z409xa+8BMLs5GxvQUnFaBjjNj6cMsG
+ H2NDDkM6RaioEStzakCkr7XcPhIw/0eOq+KqxVKKWSeFGC5vYTodArZzCe/HgZ2ML/z8KCX4p
+ LvoMc/RcpnOThvUU6MFO4bvISSXSGhop94bgbRZ30uxYIGa06Gyu1RDDux6OKMYdQdq+kM6ZR
+ 9ozvD36JiV5Ynq1VumV8SSjmd7hMyKeCv9GGg4gh9UAQIXTlyBcBkhcnATofgc5dZhl/fFIrG
+ apDn2e0weD8Qpta82xhkPEyV3eM+8eHD1XbAKarChCaFU+FtBuLcCI9yXwDtsqR2PqXJkchLX
+ nkz07bbCfKZGvPGTOpE8Pr7jrXB1lMYEv+rXjI5E+y632R7B5CHDLfZqz4Jxhnsjzf/9+8UX9
+ 2tpkU4324OelND7dC7BLMQWSLkGV7RU7pLqYHUvmE0L1uK4cVtn5zg+6Qa/dDVyfhCiVF306W
+ rVFnq0DtdWAPmE=
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-T24gV2VkLCAyMDIxLTExLTEwIGF0IDE5OjI2IC0wODAwLCBMdWNrLCBUb255IHdyb3RlOgo+IE9u
-IFRodSwgTm92IDExLCAyMDIxIGF0IDA0OjU1OjE0QU0gKzAyMDAsIEphcmtrbyBTYWtraW5lbiB3
-cm90ZToKPiA+IE9uIFdlZCwgMjAyMS0xMS0xMCBhdCAxMDo1MSAtMDgwMCwgUmVpbmV0dGUgQ2hh
-dHJlIHdyb3RlOgo+ID4gPiBzZ3hfc2hvdWxkX3JlY2xhaW0oKSB3b3VsZCBvbmx5IHN1Y2NlZWQg
-d2hlbiBzZ3hfbnJfZnJlZV9wYWdlcyBnb2VzIAo+ID4gPiBiZWxvdyB0aGUgd2F0ZXJtYXJrLiBP
-bmNlIHNneF9ucl9mcmVlX3BhZ2VzIGJlY29tZXMgY29ycnVwdGVkIHRoZXJlIGlzIAo+ID4gPiBu
-byBjbGVhciB3YXkgaW4gd2hpY2ggaXQgY2FuIGNvcnJlY3QgaXRzZWxmIHNpbmNlIGl0IGlzIG9u
-bHkgZXZlciAKPiA+ID4gaW5jcmVtZW50ZWQgb3IgZGVjcmVtZW50ZWQuCj4gPiAKPiA+IFNvIG9u
-ZSBzY2VuYXJpbyB3b3VsZCBiZToKPiA+IAo+ID4gMS4gQ1BVIEEgZG9lcyBhIFJFQUQgb2Ygc2d4
-X25yX2ZyZWVfcGFnZXMuCj4gPiAyLiBDUFUgQiBkb2VzIGEgUkVBRCBvZiBzZ3hfbnJfZnJlZV9w
-YWdlcy4KPiA+IDMuIENQVSBBIGRvZXMgYSBTVE9SRSBvZiBzZ3hfbnJfZnJlZV9wYWdlcy4KPiA+
-IDQuIENQVSBCIGRvZXMgYSBTVE9SRSBvZiBzZ3hfbnJfZnJlZV9wYWdlcy4KPiA+IAo+ID4gPwo+
-ID4gCj4gPiBUaGF0IGRvZXMgY29ycnVwdCB0aGUgdmFsdWUsIHllcywgYnV0IEkgZG9uJ3Qgc2Vl
-IGFueXRoaW5nIGxpa2UgdGhpcwo+ID4gaW4gdGhlIGNvbW1pdCBtZXNzYWdlLCBzbyBJJ2xsIGhh
-dmUgdG8gY2hlY2suCj4gPiAKPiA+IEkgdGhpbmsgdGhlIGNvbW1pdCBtZXNzYWdlIGlzIGxhY2tp
-bmcgYSBjb25jdXJyZW5jeSBzY2VuYXJpbywgYW5kIHRoZQo+ID4gY3VycmVudCB0cmFuc2NyaXB0
-cyBhcmUgYSBiaXQgdXNlbGVzcy4KPiAKPiBXaGF0IGFib3V0IHRoaXMgcGFydDoKPiAKPiDCoMKg
-wqDCoMKgwqDCoMKgV2l0aCBzZ3hfbnJfZnJlZV9wYWdlcyBhY2Nlc3NlZCBhbmQgbW9kaWZpZWQg
-ZnJvbSBhIGZldyBwbGFjZXMKPiDCoMKgwqDCoMKgwqDCoMKgaXQgaXMgZXNzZW50aWFsIHRvIGVu
-c3VyZSB0aGF0IHRoZXNlIGFjY2Vzc2VzIGFyZSBkb25lIHNhZmVseSBidXQKPiDCoMKgwqDCoMKg
-wqDCoMKgdGhpcyBpcyBub3QgdGhlIGNhc2UuIHNneF9ucl9mcmVlX3BhZ2VzIGlzIHJlYWQgd2l0
-aG91dCBhbnkKPiDCoMKgwqDCoMKgwqDCoMKgcHJvdGVjdGlvbiBhbmQgdXBkYXRlZCB3aXRoIGlu
-Y29uc2lzdGVudCBwcm90ZWN0aW9uIGJ5IGFueSBvbmUKPiDCoMKgwqDCoMKgwqDCoMKgb2YgdGhl
-IHNwaW4gbG9ja3MgYXNzb2NpYXRlZCB3aXRoIHRoZSBpbmRpdmlkdWFsIE5VTUEgbm9kZXMuCj4g
-wqDCoMKgwqDCoMKgwqDCoEZvciBleGFtcGxlOgo+IAo+IMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
-oMKgIENQVV9BwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqDCoCBDUFVfQgo+IMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIC0tLS0t
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
-oMKgwqDCoCAtLS0tLQo+IMKgwqDCoMKgwqDCoMKgwqAgc3Bpbl9sb2NrKCZub2RlQS0+bG9jayk7
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgc3Bpbl9sb2NrKCZub2RlQi0+bG9jayk7Cj4gwqDC
-oMKgwqDCoMKgwqDCoCAuLi7CoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCAuLi4KPiDCoMKgwqDCoMKgwqDCoMKgIHNneF9u
-cl9mcmVlX3BhZ2VzLS07wqAgLyogTk9UIFNBRkUgKi/CoCBzZ3hfbnJfZnJlZV9wYWdlcy0tOwo+
-IAo+IMKgwqDCoMKgwqDCoMKgwqAgc3Bpbl91bmxvY2soJm5vZGVBLT5sb2NrKTvCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgIHNwaW5fdW5sb2NrKCZub2RlQi0+bG9jayk7Cj4gCj4gTWF5YmUgeW91IG1p
-c3NlZCB0aGUgIk5PVCBTQUZFIiBoaWRkZW4gaW4gdGhlIG1pZGRsZSBvZgo+IHRoZSBwaWN0dXJl
-Pwo+IAo+IC1Ub255CgpGb3IgbWUgZnJvbSB0aGF0IHRoZSBvcmRlcmluZyBpcyBub3QgY2xlYXIu
-IEUuZy4gY29tcGFyZSB0bwpodHRwczovL3d3dy5rZXJuZWwub3JnL2RvYy9Eb2N1bWVudGF0aW9u
-L21lbW9yeS1iYXJyaWVycy50eHQKCi9KYXJra28KCg==
+On Thu, 2021-11-11 at 04:47 +0100, Mike Galbraith wrote:
+>
+> So I suppose the powerpc spot should remain CONFIG_PREEMPT and become
+> CONFIG_PREEMPTION when the RT change gets merged, because that spot is
+> about full preemptibility, not a distinct preemption model.
 
+KCSAN needs a little help to be usable by RT, but ditto that spot.
+
+	-Mike
