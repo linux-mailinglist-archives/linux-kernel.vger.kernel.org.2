@@ -2,56 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1606A44CE95
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Nov 2021 02:07:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0070C44CE9F
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Nov 2021 02:08:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232583AbhKKBKm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Nov 2021 20:10:42 -0500
-Received: from mail.kernel.org ([198.145.29.99]:44344 "EHLO mail.kernel.org"
+        id S232690AbhKKBKu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Nov 2021 20:10:50 -0500
+Received: from mail.kernel.org ([198.145.29.99]:44424 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232187AbhKKBKi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Nov 2021 20:10:38 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPS id 570B86135E;
-        Thu, 11 Nov 2021 01:07:50 +0000 (UTC)
+        id S232621AbhKKBKo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Nov 2021 20:10:44 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPS id A9FFB619A6;
+        Thu, 11 Nov 2021 01:07:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1636592870;
-        bh=0XVgoaE1gcgfoEqBzxC+CW2CBZY5v560y6QZ1l7Gndo=;
+        s=k20201202; t=1636592876;
+        bh=Os/nGoCntru26Hn7elgDYfFUD1gZ954VnRevSbRRgtE=;
         h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-        b=PrqH6ctElEZ/wjHa5dGQivKY5L9aliU6U4MIE/rdsPjrIgRMI+CntYd1UQl1jezKr
-         J/e/gSAh1M7EbEMVgsUClmDJJDSC4HOZ4Sy9G2Tg9RtVCZ2MtSRrLAFTOkiUbgy+hK
-         OLoxEKY9+yoSsvmKYT/u/mjvhejygthdSMsowvZ0XhbsBCkIecKyYHnUpaeZn9hrRM
-         v4ZvZXxXtC/+IxUfWQyDBLXyjltSoyFmoo/FB3ckZYIgq6K25WD0v/Qm5fY+2GvfNJ
-         jG3mz9xaEOOguZQTiQaszkR/BEJKgJTNzgpYsR9u1Q/RX7vOv6aAYf92dNuN8ISQqC
-         U3wLQgTlqzrUA==
+        b=FlkQYQQOwaLa3exNOzKcHJedPf2DOOc+cuJ4lufRkCLYDBegbpzrWBavKM6CnSd12
+         eCEWgG4vVvgImEPvsXy30vX85pe1Cqdxy590nYcDpO0MS/0ED0jpguhlanncVkGs8i
+         y8Fl78wtwfG969BiAMFlfQEEO7eNAOUoLYlPDAmKWcqwpZMDTjyuG5C3FADKQtqf9x
+         NMzaekxmsUdyhRdp9dPZ7f/Xlj7K9PKf0u/73a4+pyFepf3J4ohxgGsTG0D8aRZ6hP
+         u5xZpSr31X20cEICH/eEI+/Sdi3LuLsjQK+KcOLpyH7Y2rVB8VDACZ+dV/qfJbzj6Q
+         7P+JU/m6AZZ3A==
 Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 46C6F60965;
-        Thu, 11 Nov 2021 01:07:50 +0000 (UTC)
-Subject: Re: [GIT PULL] Btrfs update, part 2
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id A11746008E;
+        Thu, 11 Nov 2021 01:07:56 +0000 (UTC)
+Subject: Re: [GIT PULL] nfsd changes for 5.16
 From:   pr-tracker-bot@kernel.org
-In-Reply-To: <cover.1636564333.git.dsterba@suse.com>
-References: <cover.1636564333.git.dsterba@suse.com>
-X-PR-Tracked-List-Id: <linux-btrfs.vger.kernel.org>
-X-PR-Tracked-Message-Id: <cover.1636564333.git.dsterba@suse.com>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/kdave/linux.git for-5.16-deadlock-fix-tag
-X-PR-Tracked-Commit-Id: 51bd9563b6783de8315f38f7baed949e77c42311
+In-Reply-To: <20211110215022.GA17888@fieldses.org>
+References: <20211110215022.GA17888@fieldses.org>
+X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
+X-PR-Tracked-Message-Id: <20211110215022.GA17888@fieldses.org>
+X-PR-Tracked-Remote: git://linux-nfs.org/~bfields/linux.git tags/nfsd-5.16
+X-PR-Tracked-Commit-Id: 80479eb862102f9513e93fcf726c78cc0be2e3b2
 X-PR-Merge-Tree: torvalds/linux.git
 X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 6070dcc8e5b1495e11ffd467c77eaeac40f95a93
-Message-Id: <163659287022.32583.17378469213133143021.pr-tracker-bot@kernel.org>
-Date:   Thu, 11 Nov 2021 01:07:50 +0000
-To:     David Sterba <dsterba@suse.com>
-Cc:     torvalds@linux-foundation.org, David Sterba <dsterba@suse.com>,
-        linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org
+X-PR-Merge-Commit-Id: 38764c734028bf0ae4cf262f3eb7d965c86298bd
+Message-Id: <163659287665.32583.4714912593557446253.pr-tracker-bot@kernel.org>
+Date:   Thu, 11 Nov 2021 01:07:56 +0000
+To:     "J. Bruce Fields" <bfields@fieldses.org>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        linux-nfs@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Chuck Lever <chuck.lever@oracle.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Wed, 10 Nov 2021 18:38:09 +0100:
+The pull request you sent on Wed, 10 Nov 2021 16:50:22 -0500:
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/kdave/linux.git for-5.16-deadlock-fix-tag
+> git://linux-nfs.org/~bfields/linux.git tags/nfsd-5.16
 
 has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/6070dcc8e5b1495e11ffd467c77eaeac40f95a93
+https://git.kernel.org/torvalds/c/38764c734028bf0ae4cf262f3eb7d965c86298bd
 
 Thank you!
 
