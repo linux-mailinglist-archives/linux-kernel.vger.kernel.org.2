@@ -2,82 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1406344D227
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Nov 2021 07:54:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E071944D22A
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Nov 2021 07:58:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231851AbhKKG5f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Nov 2021 01:57:35 -0500
-Received: from mga11.intel.com ([192.55.52.93]:34073 "EHLO mga11.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231730AbhKKG53 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Nov 2021 01:57:29 -0500
-X-IronPort-AV: E=McAfee;i="6200,9189,10164"; a="230324766"
-X-IronPort-AV: E=Sophos;i="5.87,225,1631602800"; 
-   d="scan'208";a="230324766"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Nov 2021 22:54:41 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.87,225,1631602800"; 
-   d="scan'208";a="642864959"
-Received: from ubuntu18.png.intel.com ([10.88.229.69])
-  by fmsmga001.fm.intel.com with ESMTP; 10 Nov 2021 22:54:38 -0800
-From:   nandhini.srikandan@intel.com
-To:     fancer.lancer@gmail.com, broonie@kernel.org, robh+dt@kernel.org,
-        linux-spi@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     devicetree@vger.kernel.org, mgross@linux.intel.com,
-        kris.pan@intel.com, kenchappa.demakkanavar@intel.com,
-        furong.zhou@intel.com, mallikarjunappa.sangannavar@intel.com,
-        mahesh.r.vaidya@intel.com, nandhini.srikandan@intel.com,
-        rashmi.a@intel.com
-Subject: [PATCH v3 5/5] spi: dw: Add support for Intel Thunder Bay SPI controller
-Date:   Thu, 11 Nov 2021 14:52:01 +0800
-Message-Id: <20211111065201.10249-6-nandhini.srikandan@intel.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20211111065201.10249-1-nandhini.srikandan@intel.com>
-References: <20211111065201.10249-1-nandhini.srikandan@intel.com>
+        id S231414AbhKKHBI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Nov 2021 02:01:08 -0500
+Received: from smtpbguseast3.qq.com ([54.243.244.52]:47126 "EHLO
+        smtpbguseast3.qq.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231185AbhKKHBH (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 11 Nov 2021 02:01:07 -0500
+X-QQ-mid: bizesmtp31t1636613882truf2e02
+Received: from localhost.localdomain (unknown [113.57.152.160])
+        by esmtp6.qq.com (ESMTP) with 
+        id ; Thu, 11 Nov 2021 14:58:01 +0800 (CST)
+X-QQ-SSF: 01400000000000I0F000B00C0000000
+X-QQ-FEAT: AY4E1/TiQGEqooOLL+JwiziAqSqzJdg1D17e0luiDXA0GDGf7aPI255il749k
+        1ZimvTCKWXlMgYCS2U0VDWGD9aiH/b3sTU8UStJTjhM1yz04Sl3vAzHAtSI3Z07hfbaCYQa
+        jvd9IIuTNxztfjcGFgPWNhR5S3VMeXMIHWd+gvqmWj/vDejKfnHvERYoV1uG39Ry52mwT7m
+        V6VqKpRcTTQrOow/lARfIRyWyRpsXGdkrqlUNJG9ngKg5rzMC/zl1QKnxnXHxVCcrsUJIKV
+        nyDyMQL9jaMeEKTOWh+ZTegNiv+/O+a8zArZXKGGvLzWU8D+aEklwbdXeu3gSkfqo9qgTKS
+        Ivcn6O05Y2WgxxsmqSG8eAYwMNM9g==
+X-QQ-GoodBg: 2
+From:   huangbibo <huangbibo@uniontech.com>
+To:     linux-i2c@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org, jarkko.nikula@linux.intel.com,
+        mika.westerberg@linux.intel.com, andriy.shevchenko@linux.intel.com,
+        p.zabel@pengutronix.de, huangbibo <huangbibo@uniontech.com>
+Subject: [PATCH] i2c: designware: I2C unexpected interrupt handling will cause kernel panic
+Date:   Thu, 11 Nov 2021 14:57:59 +0800
+Message-Id: <20211111065759.7423-1-huangbibo@uniontech.com>
+X-Mailer: git-send-email 2.20.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-QQ-SENDSIZE: 520
+Feedback-ID: bizesmtp:uniontech.com:qybgforeign:qybgforeign6
+X-QQ-Bgrelay: 1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Nandhini Srikandan <nandhini.srikandan@intel.com>
+I2C interrupts may be triggered unexpectedly,
+such as programs that directly access I2C registers,
+bus conflicts caused by hardware design defects, etc.
+These can cause null pointer reference errors and kernel panic.
 
-Add support for Intel Thunder Bay SPI controller, which uses DesignWare
-DWC_ssi core and also add common init function for both Keem Bay and
-Thunder Bay.
+kernel log:
+[   52.676442] Unable to handle kernel NULL pointer dereference at virtual address 0000000000000000
+...
+[   52.816536] Workqueue: efi_rts_wq efi_call_rts
+[   52.820968] pstate: 60000085 (nZCv daIf -PAN -UAO)
+[   52.825753] pc : i2c_dw_isr+0x36c/0x5e0 [i2c_designware_core]
+[   52.831487] lr : i2c_dw_isr+0x88/0x5e0 [i2c_designware_core]
+[   52.837134] sp : ffff8020fff17650
+[   52.924451] Call trace:
+[   52.926888]  i2c_dw_isr+0x36c/0x5e0 [i2c_designware_core]
+...
+[   52.957394]  gic_handle_irq+0x7c/0x178
+[   52.961130]  el1_irq+0xb0/0x140
+[   52.964259]  0x21291d30
+[   52.983729]  0x21160938
+[   52.986164]  __efi_rt_asm_wrapper+0x28/0x44
+[   52.990335]  efi_call_rts+0x78/0x448
+[   53.019021] Kernel panic - not syncing: Fatal exception in interrupt
 
-Signed-off-by: Nandhini Srikandan <nandhini.srikandan@intel.com>
+Signed-off-by: huangbibo <huangbibo@uniontech.com>
 ---
- drivers/spi/spi-dw-mmio.c | 9 +++++----
- 1 file changed, 5 insertions(+), 4 deletions(-)
+ drivers/i2c/busses/i2c-designware-master.c | 10 ++++++++--
+ 1 file changed, 8 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/spi/spi-dw-mmio.c b/drivers/spi/spi-dw-mmio.c
-index 3379720cfcb8..c357680f4aa3 100644
---- a/drivers/spi/spi-dw-mmio.c
-+++ b/drivers/spi/spi-dw-mmio.c
-@@ -214,10 +214,10 @@ static int dw_spi_dwc_ssi_init(struct platform_device *pdev,
- 	return 0;
- }
+diff --git a/drivers/i2c/busses/i2c-designware-master.c b/drivers/i2c/busses/i2c-designware-master.c
+index 2871cf2ee8b4..6af1ede38253 100644
+--- a/drivers/i2c/busses/i2c-designware-master.c
++++ b/drivers/i2c/busses/i2c-designware-master.c
+@@ -631,8 +631,14 @@ static int i2c_dw_irq_handler_master(struct dw_i2c_dev *dev)
+ 	if (stat & DW_IC_INTR_RX_FULL)
+ 		i2c_dw_read(dev);
  
--static int dw_spi_keembay_init(struct platform_device *pdev,
--			       struct dw_spi_mmio *dwsmmio)
-+static int dw_spi_intel_init(struct platform_device *pdev,
-+			     struct dw_spi_mmio *dwsmmio)
- {
--	dwsmmio->dws.caps = DW_SPI_CAP_KEEMBAY_MST | DW_SPI_CAP_DWC_SSI;
-+	dwsmmio->dws.caps = DW_SPI_CAP_DWC_SSI;
+-	if (stat & DW_IC_INTR_TX_EMPTY)
+-		i2c_dw_xfer_msg(dev);
++	if (stat & DW_IC_INTR_TX_EMPTY) {
++		if (dev->msgs) {
++			i2c_dw_xfer_msg(dev);
++		} else { //null  pointer
++			i2c_dw_disable_int(dev);
++			return 0;
++		}
++	}
  
- 	return 0;
- }
-@@ -348,7 +348,8 @@ static const struct of_device_id dw_spi_mmio_of_match[] = {
- 	{ .compatible = "amazon,alpine-dw-apb-ssi", .data = dw_spi_alpine_init},
- 	{ .compatible = "renesas,rzn1-spi", .data = dw_spi_dw_apb_init},
- 	{ .compatible = "snps,dwc-ssi-1.01a", .data = dw_spi_dwc_ssi_init},
--	{ .compatible = "intel,keembay-ssi", .data = dw_spi_keembay_init},
-+	{ .compatible = "intel,keembay-ssi", .data = dw_spi_intel_init},
-+	{ .compatible = "intel,thunderbay-ssi", .data = dw_spi_intel_init},
- 	{ .compatible = "microchip,sparx5-spi", dw_spi_mscc_sparx5_init},
- 	{ .compatible = "canaan,k210-spi", dw_spi_canaan_k210_init},
- 	{ /* end of table */}
+ 	/*
+ 	 * No need to modify or disable the interrupt mask here.
 -- 
-2.17.1
+2.20.1
+
+
 
