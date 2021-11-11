@@ -2,95 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 50CC944DE07
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Nov 2021 23:57:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C057444DE3F
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Nov 2021 00:04:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234320AbhKKXAC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Nov 2021 18:00:02 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58500 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234240AbhKKW75 (ORCPT
+        id S234150AbhKKXHO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Nov 2021 18:07:14 -0500
+Received: from mail-pl1-f180.google.com ([209.85.214.180]:37813 "EHLO
+        mail-pl1-f180.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229839AbhKKXHM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Nov 2021 17:59:57 -0500
-Received: from mail-pj1-x1033.google.com (mail-pj1-x1033.google.com [IPv6:2607:f8b0:4864:20::1033])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9181BC061766;
-        Thu, 11 Nov 2021 14:57:07 -0800 (PST)
-Received: by mail-pj1-x1033.google.com with SMTP id gt5so5208289pjb.1;
-        Thu, 11 Nov 2021 14:57:07 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=p0ib5mh0m9IgYQvAbwkxu2Vd7F/N58zy9lwbLSe3RPQ=;
-        b=Ck7r2yklLFFbeh+El7AOfStAtNR1McHufDCIj1lNpnxb4iC9a+Zi7zIbawxSOoS0yj
-         C+0TqFNmVPIP+Dn/6IcBxuRksJY/F5A+t29G27UwPUzPVxh42r4xRkQiBGH16ylT4DXP
-         ev2H9WhPhuyrdVSUde1Z86pVvL3CPgdIONyzFWYHnz8LsYy6bBycCH/xS/Chn8sRp5dv
-         zkizdbi4TaINVMB0Qv2qY+oB7Jy41nGT08OwT0xCohBhZUPLxdoWfB0yHpahkkk+dNcf
-         7TA9jseEAVir9Z6OsR5mnixg7vWaWwY0gzkSzXtI0RsHljCRJG+t8dvJb4MwccSPFRQD
-         xy9w==
+        Thu, 11 Nov 2021 18:07:12 -0500
+Received: by mail-pl1-f180.google.com with SMTP id n8so6959576plf.4;
+        Thu, 11 Nov 2021 15:04:23 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=p0ib5mh0m9IgYQvAbwkxu2Vd7F/N58zy9lwbLSe3RPQ=;
-        b=jfuwMNnoJtzAQSsfV/8u5CxYKi1NuQOdnlWgej1b1p8hl33xE3wDBc5KHsLIGM26mu
-         KxVnAunGPFL0ge7+xcvfHZTvkcyYu19yfrrDd9L9+nOTBKrFW5FBowD2USO197VfUQMO
-         7sTxe9hA59B+LBeiyBmmmiZXWFHBiqpa7+aGaJ45HsIPavTrbk0ZoUAX0vJ0HAvEpypF
-         zK9mkeEfCKZpzz/n7oJm6EOpXS3zN/QQXG642GAQs8bEtA88fe6y/y2XacwzVQFRAAz4
-         1yRmw8xm+9bPlt0S/L7T8E1sFaALLRbGz9segc8f+kQDgRKbPFW3NBCWOkbX21Ql9xAk
-         eQ2A==
-X-Gm-Message-State: AOAM53051ymQ46yaBGbYr4f95iTb58616EUSMAXgqVUI1fnaX/aeTpLK
-        TRIyMoz1OyeV7+GtNQWO5fj5xMs069o=
-X-Google-Smtp-Source: ABdhPJwXxuqHiQ7wn6wlrhogFUw/YurkDkkM2WprlH3tc0LxKT/qyGi84rHA8R+cDX5t11sdnb3H0g==
-X-Received: by 2002:a17:90b:3850:: with SMTP id nl16mr30708953pjb.10.1636671427093;
-        Thu, 11 Nov 2021 14:57:07 -0800 (PST)
-Received: from localhost (c-73-25-156-94.hsd1.or.comcast.net. [73.25.156.94])
-        by smtp.gmail.com with ESMTPSA id c5sm3165352pjm.52.2021.11.11.14.57.05
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 11 Nov 2021 14:57:06 -0800 (PST)
-From:   Rob Clark <robdclark@gmail.com>
-To:     dri-devel@lists.freedesktop.org
-Cc:     freedreno@lists.freedesktop.org, linux-arm-msm@vger.kernel.org,
-        Rob Clark <robdclark@chromium.org>,
-        Rob Clark <robdclark@gmail.com>, Sean Paul <sean@poorly.run>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH] drm/msm: Demote debug message
-Date:   Thu, 11 Nov 2021 15:02:14 -0800
-Message-Id: <20211111230214.765476-1-robdclark@gmail.com>
-X-Mailer: git-send-email 2.31.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=CErV24ALLmtWHDv6Dg2Qhb0FOh3xq1Wa3w1/GJ4lZbo=;
+        b=4e0UX9Qsm72C1ZBGXy0GCqbhzDdMiCMxOKCSgaebGWLoRvDHXdx1NQDxLUtu5gOB49
+         JrQb3Fn3YuYICba4SGdiDB2YnIfB7MqQoFBzV8BRBox+2C59Gas/zM7bfkV2yL3jIdpz
+         dHhSBf4fxsLWtNdckXQsAuqVgEL8LGMtEpkXTWK/DU0flrRR/El1ZzxmmyJJ4FqcszvK
+         9Fbmy0VCOnZxVfrEETwbDEXm9KRenZDDoGhpgtHUAeuZdfXJtj1+DFionx3gT8lzrIvV
+         7Y3Vrb3dWr39m5s1B9q9U6htPw+PIHdbj7aHHYSTuMvFbe1KoY3djd9AvRU8Bf+CQKQR
+         GpKg==
+X-Gm-Message-State: AOAM5338rLX4hI/kKRXnJf8IijQiEPR00RUw9Ebfil579szaG2dVwjrh
+        aXC7HBIbctMD0sVXiAB1c+YEOpZlT2ONqCB2HAA=
+X-Google-Smtp-Source: ABdhPJwDbzrsxKzE9i1z6gPeh3fpqAXyMhqZWJsKWQps8Fb82bOoN9fZpAP7ITZ8MQCrDHMRtOBbF32CeFI5d3+zvz0=
+X-Received: by 2002:a17:902:728e:b0:143:a388:868b with SMTP id
+ d14-20020a170902728e00b00143a388868bmr2600284pll.33.1636671862963; Thu, 11
+ Nov 2021 15:04:22 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20211102161125.1144023-1-kernel@esmil.dk> <20211102161125.1144023-12-kernel@esmil.dk>
+ <CACRpkdb0CrJ_uTbtfg-xGq8uu0AKoqfAB03mF2CA_G8ys_8Lzg@mail.gmail.com>
+In-Reply-To: <CACRpkdb0CrJ_uTbtfg-xGq8uu0AKoqfAB03mF2CA_G8ys_8Lzg@mail.gmail.com>
+From:   Emil Renner Berthing <kernel@esmil.dk>
+Date:   Fri, 12 Nov 2021 00:04:11 +0100
+Message-ID: <CANBLGcwvGptHxP5+JQEQV1Y7G=dNTt86QuVgfUuvQDDBfNrzOA@mail.gmail.com>
+Subject: Re: [PATCH v3 11/16] dt-bindings: pinctrl: Add StarFive JH7100 bindings
+To:     Linus Walleij <linus.walleij@linaro.org>,
+        Arnd Bergmann <arnd@arndb.de>, Olof Johansson <olof@lixom.net>
+Cc:     linux-riscv <linux-riscv@lists.infradead.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        linux-clk <linux-clk@vger.kernel.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        "open list:SERIAL DRIVERS" <linux-serial@vger.kernel.org>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Marc Zyngier <maz@kernel.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        Maximilian Luz <luzmaximilian@gmail.com>,
+        Sagar Kadam <sagar.kadam@sifive.com>,
+        Drew Fustini <drew@beagleboard.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Michael Zhu <michael.zhu@starfivetech.com>,
+        Fu Wei <tekkamanninja@gmail.com>,
+        Anup Patel <anup.patel@wdc.com>,
+        Atish Patra <atish.patra@wdc.com>,
+        Matteo Croce <mcroce@microsoft.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        soc@kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Rob Clark <robdclark@chromium.org>
+On Tue, 9 Nov 2021 at 01:46, Linus Walleij <linus.walleij@linaro.org> wrote:
+> On Tue, Nov 2, 2021 at 5:12 PM Emil Renner Berthing <kernel@esmil.dk> wrote:
+> > Add bindings for the GPIO/pin controller on the JH7100 RISC-V SoC by
+> > StarFive Ltd. This is a test chip for their upcoming JH7110 SoC.
+> >
+> > Signed-off-by: Emil Renner Berthing <kernel@esmil.dk>
+> > ---
+> >
+> > @Linus: I'm really struggling to find a good way to describe how pin
+> > muxing works on the JH7100. As you can see I've now resorted to
+> > ascii-art to try to explain it, but please let me know if it's still
+> > unclear.
+>
+> This looks perfectly acceptable to me:
+> Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
 
-Mesa attempts to allocate a cached-coherent buffer in order to determine
-if cached-coherent is supported.  Resulting in seeing this error message
-once per process with newer mesa.  But no reason for this to be more
-than a debug msg.
+Thank you.
 
-Signed-off-by: Rob Clark <robdclark@chromium.org>
----
- drivers/gpu/drm/msm/msm_gem.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+> As it appears to have some cross dependencies I assume
+> it will be merged through the SoC tree?
 
-diff --git a/drivers/gpu/drm/msm/msm_gem.c b/drivers/gpu/drm/msm/msm_gem.c
-index 6b03e00cc5f2..27c3ece4d146 100644
---- a/drivers/gpu/drm/msm/msm_gem.c
-+++ b/drivers/gpu/drm/msm/msm_gem.c
-@@ -1121,7 +1121,7 @@ static int msm_gem_new_impl(struct drm_device *dev,
- 			break;
- 		fallthrough;
- 	default:
--		DRM_DEV_ERROR(dev->dev, "invalid cache flag: %x\n",
-+		DRM_DEV_DEBUG(dev->dev, "invalid cache flag: %x\n",
- 				(flags & MSM_BO_CACHE_MASK));
- 		return -EINVAL;
- 	}
--- 
-2.31.1
+I don't know. I've never tried this before, so whatever is easiest I
+guess. Do I do anything special other than cc'ing soc@kernel.org for
+v4 to make that happen?
 
+/Emil
