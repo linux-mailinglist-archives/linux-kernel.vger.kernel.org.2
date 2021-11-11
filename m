@@ -2,105 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9541D44D667
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Nov 2021 13:13:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D1C2444D674
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Nov 2021 13:15:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233210AbhKKMP2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Nov 2021 07:15:28 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53222 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232855AbhKKMP1 (ORCPT
+        id S233030AbhKKMS0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Nov 2021 07:18:26 -0500
+Received: from Galois.linutronix.de ([193.142.43.55]:49332 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230358AbhKKMSX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Nov 2021 07:15:27 -0500
-Received: from mail-yb1-xb33.google.com (mail-yb1-xb33.google.com [IPv6:2607:f8b0:4864:20::b33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 872C6C061766
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Nov 2021 04:12:38 -0800 (PST)
-Received: by mail-yb1-xb33.google.com with SMTP id q74so14459625ybq.11
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Nov 2021 04:12:38 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20210112.gappssmtp.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=uzX0j/pXSoaKsl6RsYsXPTfSGUQR1MnGXUzur5DcEnE=;
-        b=ROg6S+2bDI17/ri6eg2myT8UBjMjm9ZxL3/wG/uq9uTWC5HyvwVwosUFt/wMt1Cdvp
-         ey6+W1k+pK9lcIuE8sldf03jhQdcvOfPL6T9rmV2wqZq83+tTOGtaOztj5WNpcm4cmVZ
-         hPL4gBYQs4FppDNuC1JehW+h/5I/yRL1MCxOq8N4+FLNjXZR91p/SAKoRR7Rspj1xmTU
-         nk7A0IG5VklPhsrwUXpkQ+8GEva0P6utCVLHIz2OKf49JKTYi6B6fkj/rOdW9LktknLC
-         pQMzu4uV3h66+N7TTS6LqHVGm9lqtBGciTMqW0KM6SwoqakoGNnrCRlpNBhDuDO1mAPg
-         iZow==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=uzX0j/pXSoaKsl6RsYsXPTfSGUQR1MnGXUzur5DcEnE=;
-        b=3Va39tSAatWGtfbxBN5g+yFkcJjcwwK4FT8YxflakWJ5ZwdYr4HNsnnoO1aebjt/Ol
-         h9NyoXqFDckV3qtpiCzvqmVHFtXzPFVJ2eA+mHBpZWZ4FqcLE4je50rcx4n26Y0Wf7zi
-         yNbtb3KWXQrSGClRNVMn/X0CAuUDM3QLvAFSy5RQAmUumYL0jskK7khNkYPzHwHCBYrt
-         DbxaQxvVtVU1EbNSU5sVOrtfTaXFdlP9TYZHLvu97LSx2l7LqEzdSfeybWeVIeM0b2S/
-         ojMjs/Bo2O2Bt6/b1+WLnU2jsZizeCuMN2raEAPOOPAYJShz2RSPLdh4WpIQMc7UXXuo
-         jE1g==
-X-Gm-Message-State: AOAM533abpS0wengwbxta5zZ8f0a9KPLnNAAZIasw10cW0FLHb86vuAM
-        RDnc8cgZEd4Jm6jplxbPU2eD3axng0uNPWaSIVl4sQ==
-X-Google-Smtp-Source: ABdhPJxOyeHjYITOB8RJtUXaN0LJVFxZIppfhk4ltjrXDzQhxWLVS8VSQXpjbHiWUjS7HxB6Ce2sDZkUmyUsw5VPnOE=
-X-Received: by 2002:a25:b0a8:: with SMTP id f40mr7074181ybj.125.1636632757819;
- Thu, 11 Nov 2021 04:12:37 -0800 (PST)
+        Thu, 11 Nov 2021 07:18:23 -0500
+Date:   Thu, 11 Nov 2021 12:15:32 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1636632933;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=UfjJtKrHq7LeVOEuNmGXKQ+uIhLteyltsMXwiJq+rFE=;
+        b=gemDb6/9++7oIPuaV2W2vrt3H0ZMJYh4zzKxMvok7aemk+Nm79l7SoZLHFUfiNmUCNaUl0
+        2Gl30uBPjvkxC5dNg86sak/wJkAmbeARKdCAZnsD3FE+rwyKB1IYi0+024RSk1UZOn7wLU
+        dufQhewsWme5tyTtKnp/i+sNBqqKh8rxoCHwbWbZ7VqbJ2hu94BZY8Tzf+dtQbmO7xLPjQ
+        qZgr6NWvZY2sslEMPLhUhnXOfq2tgH7q/zrAfZe6aoNxQwosaRImcJqP2tozTzDPIKGvfr
+        +a7QCAK2kKDP3qQ98N27J5xbi/bMIK2KEFKr8l2z5Vdi3SaRiTqKiDm+rXCDIA==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1636632933;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=UfjJtKrHq7LeVOEuNmGXKQ+uIhLteyltsMXwiJq+rFE=;
+        b=8qwlFRGx5O1MupE9KLPyeYJ3EuDRUqbMfygt459zKsOT5IeA/ZG+i+rzePUWk3SdnSZ5US
+        tc0woqD29YoyrtDg==
+From:   "tip-bot2 for Peter Zijlstra" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: locking/urgent] static_call,x86: Robustify trampoline patching
+Cc:     "Peter Zijlstra (Intel)" <peterz@infradead.org>, x86@kernel.org,
+        linux-kernel@vger.kernel.org
+In-Reply-To: <20211030074758.GT174703@worktop.programming.kicks-ass.net>
+References: <20211030074758.GT174703@worktop.programming.kicks-ass.net>
 MIME-Version: 1.0
-References: <20211111084617.6746-1-ajaygargnsit@gmail.com> <6864f744-ca3e-f328-8793-2adb0146db03@bytedance.com>
- <CAHP4M8VNZY+NLzUAVHTWK6a6pggvv4a-q9nvYAqkkco6id3Tog@mail.gmail.com>
-In-Reply-To: <CAHP4M8VNZY+NLzUAVHTWK6a6pggvv4a-q9nvYAqkkco6id3Tog@mail.gmail.com>
-From:   Muchun Song <songmuchun@bytedance.com>
-Date:   Thu, 11 Nov 2021 20:11:56 +0800
-Message-ID: <CAMZfGtXCFJ3NUw-bBsphLbCtdDAfHERAEkTSMU9k1cfd4DrRMA@mail.gmail.com>
-Subject: Re: [PATCH] mm: shmem: do not call PageHWPoison on a ERR-page
-To:     Ajay Garg <ajaygargnsit@gmail.com>
-Cc:     Hugh Dickins <hughd@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Message-ID: <163663293212.414.10737140849753868860.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 11, 2021 at 7:40 PM Ajay Garg <ajaygargnsit@gmail.com> wrote:
->
-> >
-> > How about the following changes since the above if block
-> > already do the judgment?
-> >
-> > diff --git a/mm/shmem.c b/mm/shmem.c
-> > index f0eee4e221a7..0c84b6624026 100644
-> > --- a/mm/shmem.c
-> > +++ b/mm/shmem.c
-> > @@ -4195,13 +4195,13 @@ struct page *shmem_read_mapping_page_gfp(struct
-> > address_space *mapping,
-> >          BUG_ON(!shmem_mapping(mapping));
-> >          error = shmem_getpage_gfp(inode, index, &page, SGP_CACHE,
-> >                                    gfp, NULL, NULL, NULL);
-> > -       if (error)
-> > +       if (error) {
-> >                  page = ERR_PTR(error);
-> > -       else
-> > +       } else {
-> >                  unlock_page(page);
-> > -
-> > -       if (PageHWPoison(page))
-> > -               page = ERR_PTR(-EIO);
-> > +               if (PageHWPoison(page))
-> > +                       page = ERR_PTR(-EIO);
-> > +       }
-> >
-> >          return page;
->
->
-> You have
->
-> * simply put braces (not required for 1-liner if/else blocks)
-> * contributed nothing to the issue the patch addresses.
->
-> I hope this is not a deliberate joke/spam.
+The following commit has been merged into the locking/urgent branch of tip:
 
-What? I put "if (PageHWPoison(page))" into the else branch,
-it should be added braces since it's not 1-line blocks. Why do
-you think it does not address the issue? What am I missing
-here?
+Commit-ID:     2105a92748e83e2e3ee6be539da959706bbb3898
+Gitweb:        https://git.kernel.org/tip/2105a92748e83e2e3ee6be539da959706bbb3898
+Author:        Peter Zijlstra <peterz@infradead.org>
+AuthorDate:    Sat, 30 Oct 2021 09:47:58 +02:00
+Committer:     Peter Zijlstra <peterz@infradead.org>
+CommitterDate: Thu, 11 Nov 2021 13:09:31 +01:00
+
+static_call,x86: Robustify trampoline patching
+
+Add a few signature bytes after the static call trampoline and verify
+those bytes match before patching the trampoline. This avoids patching
+random other JMPs (such as CFI jump-table entries) instead.
+
+These bytes decode as:
+
+   d:   53                      push   %rbx
+   e:   43 54                   rex.XB push %r12
+
+And happen to spell "SCT".
+
+Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+Link: https://lkml.kernel.org/r/20211030074758.GT174703@worktop.programming.kicks-ass.net
+---
+ arch/x86/include/asm/static_call.h |  1 +
+ arch/x86/kernel/static_call.c      | 14 ++++++++++----
+ tools/objtool/check.c              |  3 +++
+ 3 files changed, 14 insertions(+), 4 deletions(-)
+
+diff --git a/arch/x86/include/asm/static_call.h b/arch/x86/include/asm/static_call.h
+index cbb67b6..39ebe05 100644
+--- a/arch/x86/include/asm/static_call.h
++++ b/arch/x86/include/asm/static_call.h
+@@ -27,6 +27,7 @@
+ 	    ".globl " STATIC_CALL_TRAMP_STR(name) "		\n"	\
+ 	    STATIC_CALL_TRAMP_STR(name) ":			\n"	\
+ 	    insns "						\n"	\
++	    ".byte 0x53, 0x43, 0x54				\n"	\
+ 	    ".type " STATIC_CALL_TRAMP_STR(name) ", @function	\n"	\
+ 	    ".size " STATIC_CALL_TRAMP_STR(name) ", . - " STATIC_CALL_TRAMP_STR(name) " \n" \
+ 	    ".popsection					\n")
+diff --git a/arch/x86/kernel/static_call.c b/arch/x86/kernel/static_call.c
+index ea028e7..9c407a3 100644
+--- a/arch/x86/kernel/static_call.c
++++ b/arch/x86/kernel/static_call.c
+@@ -56,10 +56,15 @@ static void __ref __static_call_transform(void *insn, enum insn_type type, void 
+ 	text_poke_bp(insn, code, size, emulate);
+ }
+ 
+-static void __static_call_validate(void *insn, bool tail)
++static void __static_call_validate(void *insn, bool tail, bool tramp)
+ {
+ 	u8 opcode = *(u8 *)insn;
+ 
++	if (tramp && memcmp(insn+5, "SCT", 3)) {
++		pr_err("trampoline signature fail");
++		BUG();
++	}
++
+ 	if (tail) {
+ 		if (opcode == JMP32_INSN_OPCODE ||
+ 		    opcode == RET_INSN_OPCODE)
+@@ -74,7 +79,8 @@ static void __static_call_validate(void *insn, bool tail)
+ 	/*
+ 	 * If we ever trigger this, our text is corrupt, we'll probably not live long.
+ 	 */
+-	WARN_ONCE(1, "unexpected static_call insn opcode 0x%x at %pS\n", opcode, insn);
++	pr_err("unexpected static_call insn opcode 0x%x at %pS\n", opcode, insn);
++	BUG();
+ }
+ 
+ static inline enum insn_type __sc_insn(bool null, bool tail)
+@@ -97,12 +103,12 @@ void arch_static_call_transform(void *site, void *tramp, void *func, bool tail)
+ 	mutex_lock(&text_mutex);
+ 
+ 	if (tramp) {
+-		__static_call_validate(tramp, true);
++		__static_call_validate(tramp, true, true);
+ 		__static_call_transform(tramp, __sc_insn(!func, true), func);
+ 	}
+ 
+ 	if (IS_ENABLED(CONFIG_HAVE_STATIC_CALL_INLINE) && site) {
+-		__static_call_validate(site, tail);
++		__static_call_validate(site, tail, false);
+ 		__static_call_transform(site, __sc_insn(!func, tail), func);
+ 	}
+ 
+diff --git a/tools/objtool/check.c b/tools/objtool/check.c
+index add3990..2173582 100644
+--- a/tools/objtool/check.c
++++ b/tools/objtool/check.c
+@@ -3310,6 +3310,9 @@ static bool ignore_unreachable_insn(struct objtool_file *file, struct instructio
+ 	if (!insn->func)
+ 		return false;
+ 
++	if (insn->func->static_call_tramp)
++		return true;
++
+ 	/*
+ 	 * CONFIG_UBSAN_TRAP inserts a UD2 when it sees
+ 	 * __builtin_unreachable().  The BUG() macro has an unreachable() after
