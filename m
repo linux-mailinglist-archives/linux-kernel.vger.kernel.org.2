@@ -2,156 +2,195 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0654E44D58C
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Nov 2021 12:08:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2359444D589
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Nov 2021 12:08:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233033AbhKKLLh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Nov 2021 06:11:37 -0500
-Received: from mx0a-00069f02.pphosted.com ([205.220.165.32]:39414 "EHLO
-        mx0a-00069f02.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232964AbhKKLLe (ORCPT
+        id S232981AbhKKLLf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Nov 2021 06:11:35 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38868 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230400AbhKKLLd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Nov 2021 06:11:34 -0500
-Received: from pps.filterd (m0246629.ppops.net [127.0.0.1])
-        by mx0b-00069f02.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 1AB9aDOU010759;
-        Thu, 11 Nov 2021 11:08:41 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : references : content-type : in-reply-to :
- mime-version; s=corp-2021-07-09;
- bh=Y/gzQQT2fguPa+Z+9AOUkiLI+e2xCrBG+ef47GBRyGE=;
- b=DK3zXVJB0AaRXFBBmHTpzNvTwa7c+XhLZDogSAeYCwJXvll7y4/T0euNwdUtznghpl9P
- osEXRn8PoY0RPtmRqqGXWvTHV2cPy37ZbFjftz9/7zWXB/Sfg7cxAG6Kt5CNVoTCEG/8
- JFiYSVkzxLzNk4JUOS2mDyOS65+y8LMRqMavJFQE3UBr8bxSqEMTC6tKF99l1ymUa9vn
- kmj6RM/wXrPrWKoj8b3p5lGbHPVjgXbLEbKYALJm8kU5O6hnYKvapOy9IVC89+0pIZda
- ByvuFVL2kMDJ0QC/D/gbzgWK4rIxZ+4+WJKkjN5Nlajd5kRQKjkWISMXsB3roc5dVptI VA== 
-Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
-        by mx0b-00069f02.pphosted.com with ESMTP id 3c7yq7jyvv-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 11 Nov 2021 11:08:41 +0000
-Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
-        by userp3030.oracle.com (8.16.1.2/8.16.1.2) with SMTP id 1ABB1fvk088795;
-        Thu, 11 Nov 2021 11:08:40 GMT
-Received: from nam10-bn7-obe.outbound.protection.outlook.com (mail-bn7nam10lp2100.outbound.protection.outlook.com [104.47.70.100])
-        by userp3030.oracle.com with ESMTP id 3c842dq7ff-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 11 Nov 2021 11:08:39 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=N36VO1XwH8s2FG/BIKtj8MfUNumx2Y4Z30PJaM2tFScajwggm7eA2fu3acZvVIQ1PmTOYhvQzVT3HNp2wq7gIJ+qS4DBnMGByhou3N6QU9VgnZIH0ZJzM5AvJxgKUSTVzFe54OERXLkzlz4YHhiRvzMJFAtNz1YqB08bUaT6s4zgydlXaXt6YK5PK03Srv47QYJVPzGyUcL+xr82LNEZT6p25/848CbVnxGiVW/nT0m1sRVTSSHEe6n8x/K1mGc8Dry2QVV7M9gmkuPTGBFdo21hN78T9MWW3XLHSIou2ORLKdqyYpafNyWVJpEOAV9iWe8HzVCxd75bTMqHJ9ihwA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=Y/gzQQT2fguPa+Z+9AOUkiLI+e2xCrBG+ef47GBRyGE=;
- b=OTKKEbxJFVIQiUqIP2rs6XKQPht8U7DCp1EU7RXZkeQ2Yg4ecy7uYcuNwP0kMu0pNLEb23GbfsP8lBL/JRN97hF6c0ycPG+a8SyobiO8O5uocbwShDarIHpC7zt4lRzH3d+0jT/LlnlifDnzjNNaTleAKgfoh5XXCA03lktaE+EDiJVWREubDOllVApy5IGd8KzThfvYRFQMzCFQpxLGogwaQWrmcmnyzG0xfLDYRlnl4ej1zur0mWGlKrKQdbNrIi3FXO5DxzriPpyaVbJthELtITNrRsVA79OEpH1ukb5PItWSDMi3nxKn6TpNE77P5sMentfwLpP7wrc5jcZoVQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
+        Thu, 11 Nov 2021 06:11:33 -0500
+Received: from mail-pg1-x52a.google.com (mail-pg1-x52a.google.com [IPv6:2607:f8b0:4864:20::52a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E4A2EC061767
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Nov 2021 03:08:44 -0800 (PST)
+Received: by mail-pg1-x52a.google.com with SMTP id p17so4881443pgj.2
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Nov 2021 03:08:44 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Y/gzQQT2fguPa+Z+9AOUkiLI+e2xCrBG+ef47GBRyGE=;
- b=upOgJJm1gkuVY7ODMbLrwJOZv0Zqi1FCoowvNtpbcDUWK3ANxl/IhLqDJ3WsHKvhm2lraOAXJMNc2a4EuVn/zRnEjwPOixi+nm4+c95/XqH4wk/pFjkvkARiz/uGDTDv+6I6P1/bGzbZ7wxG/pCrDCbh7NmawAtXgoO4Xeyfk7c=
-Authentication-Results: chromium.org; dkim=none (message not signed)
- header.d=none;chromium.org; dmarc=none action=none header.from=oracle.com;
-Received: from MWHPR1001MB2365.namprd10.prod.outlook.com
- (2603:10b6:301:2d::28) by MWHPR10MB1613.namprd10.prod.outlook.com
- (2603:10b6:301:a::18) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4669.11; Thu, 11 Nov
- 2021 11:08:37 +0000
-Received: from MWHPR1001MB2365.namprd10.prod.outlook.com
- ([fe80::d409:11b5:5eb2:6be9]) by MWHPR1001MB2365.namprd10.prod.outlook.com
- ([fe80::d409:11b5:5eb2:6be9%5]) with mapi id 15.20.4690.016; Thu, 11 Nov 2021
- 11:08:37 +0000
-Date:   Thu, 11 Nov 2021 14:08:18 +0300
-From:   Dan Carpenter <dan.carpenter@oracle.com>
-To:     Ricardo Ribalda <ribalda@chromium.org>
-Cc:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-        laurent.pinchart@ideasonboard.com, mchehab@kernel.org,
-        hverkuil-cisco@xs4all.nl, linux-media@vger.kernel.org,
-        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
-Subject: Re: [PATCH] media: uvcvideo: Fix a memory leak in an error handling
- path of 'uvc_ioctl_ctrl_map()'
-Message-ID: <20211111110818.GR2001@kadam>
-References: <95f3fd02313ff41d6808b8e1f20e0c582f46edc8.1636617903.git.christophe.jaillet@wanadoo.fr>
- <20211111103303.GQ2001@kadam>
- <CANiDSCvuk1M2C0HuErXnRcVAj6VgFESaPGPFes2OxC9Qtx5P5A@mail.gmail.com>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CANiDSCvuk1M2C0HuErXnRcVAj6VgFESaPGPFes2OxC9Qtx5P5A@mail.gmail.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-ClientProxiedBy: JNAP275CA0005.ZAFP275.PROD.OUTLOOK.COM (2603:1086:0:4c::10)
- To MWHPR1001MB2365.namprd10.prod.outlook.com (2603:10b6:301:2d::28)
+        d=bytedance-com.20210112.gappssmtp.com; s=20210112;
+        h=message-id:date:mime-version:user-agent:subject:to:cc:references
+         :from:in-reply-to:content-transfer-encoding;
+        bh=1+xaCmV6Hn3zO59rMpgR4feSecB3T/0jAB5KPesc7ZA=;
+        b=cYkjIYJYQAO5ZoYoWf+CL9ig21nVS7CqMr23yCxjvuIVAy0SgtP1WiQ0WQQ3BOfl/v
+         hV9R0mNGbxT3v5++I9ooZm3+gj/m4Pu4JdP0flapAf3eVOoQtpv/Cp5FlypDqNYgvO8Y
+         0JsKCYjQ0tkybNjzafcgdoA1Hwb1hwJt2v+wtbCvzs5r8M40B+6sb+H5L/ThGWi5nI9c
+         tWURndWHuC4Mdi9vpiZWG4kNTEnJxQ+CqtEKijOwVliB+ODZLD1E0byvyQ1eHX6X4pmv
+         Hlmt9ylUjT2DqKRZKRuQoEvEjiEnAic7uzaouay1g/eB1wgkXZ7NyqlbzwkejrwFKF76
+         WhsQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :to:cc:references:from:in-reply-to:content-transfer-encoding;
+        bh=1+xaCmV6Hn3zO59rMpgR4feSecB3T/0jAB5KPesc7ZA=;
+        b=0lnF9lpB6zLfEK9GOcWMelorO98xQWiBHXRh16UR3bgMeUNRCOx4xUsb+MASjw+9MG
+         MOCejONJUHvnnLhR2ayCKrrUgUcJaHlHO3ErUDlaEo9bE40dgSnTMR5OQoEAhbgORjGp
+         Yw35RVAj5TxLcetnBJxBYSuGTe1xhuEnt0a38omGmUlYkSefP/5IXChT+sy/vLGu/2Py
+         cB8858ncBpmcDej9jQKv1263klbWnrDEhyUN3zUERMXMF9YSfUed77dCCY4dkFKRZpFU
+         DAi2x6AlRkSyU9+3IxnwKKmpJibws+NhJF9GIS3XRA8lka2w6j4EYqL9+XsnoSjlWCH+
+         JYlg==
+X-Gm-Message-State: AOAM533yRMlgOCljhmT5D8e+2nKUf9CRPS8HTv/p67kDHzqbZsBve0fo
+        81Kq4NGiVCkzkAW3e26TJ9Tceg==
+X-Google-Smtp-Source: ABdhPJz67P4vUHNseHsMlzE9QMANsBWRW6gtm2ephSmH+1A44Wp4PNkq94ElDr7xgac1/L+wC+q9Gg==
+X-Received: by 2002:a63:1b5c:: with SMTP id b28mr4039791pgm.316.1636628924386;
+        Thu, 11 Nov 2021 03:08:44 -0800 (PST)
+Received: from [10.254.173.217] ([139.177.225.248])
+        by smtp.gmail.com with ESMTPSA id z22sm1877942pfe.93.2021.11.11.03.08.38
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 11 Nov 2021 03:08:43 -0800 (PST)
+Message-ID: <9ee06b52-4844-7996-fa34-34fc7d4fdc10@bytedance.com>
+Date:   Thu, 11 Nov 2021 19:08:35 +0800
 MIME-Version: 1.0
-Received: from kadam (102.222.70.114) by JNAP275CA0005.ZAFP275.PROD.OUTLOOK.COM (2603:1086:0:4c::10) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4669.11 via Frontend Transport; Thu, 11 Nov 2021 11:08:31 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: d7437487-77af-4870-b3ce-08d9a5039c45
-X-MS-TrafficTypeDiagnostic: MWHPR10MB1613:
-X-Microsoft-Antispam-PRVS: <MWHPR10MB1613FCCF8470BD8AEE5E85BF8E949@MWHPR10MB1613.namprd10.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:1079;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: EsPQyUBh6ztq2tq7+fSbxdubHoE/15HSfZ399S1cfbbhupgcPcgkp8JZUfYiuCdZ7OYDoXLFIwm/psYNuAmDlISBrufJuOLmyto/eDArsBnPibRddL/gvYPqn6H2FpDrLQPQHYf9UFQkqs624O7rP663TE84U/UOGlaULxCdVkadGbhYvXXTkd7F/m1q8c/Uibbv+w2pazf0AVEoE5IEF4QW2cmymtX2ka//rSAo1SiEd5kXtRRUe0CN+9r1u+BTWv4yEO1IPtfkT/SSUTxIV1GYadxRaAw6dWvZ++BLCxG6l/cRuvXpg07WjDQ/FX77BF3am+6D5UxaWUjLF3KIff1Kz/4NvgWCYXxBupnOJX17gzh2gOC4fJPPHzay+br66jF9B71yjc2QpXagBbzB1oNNTBAThrXBeHYa849kZufOXa41QkvLd/VS8yrr/ZuqRMXs+fp3f2PBQ3HUiH8zAdpZDl4q1JPAdWP1rSCgB1QCgwIi8m3MHVOYVgZ7dGt7MZOu8UXpistXFgS3+es9G7Qj8VPOwQb2S+oMT9fM/L4ABGwZwcStab3CF04e1QITFpQiTH+O6+a9Jx0kMlMlDgcVvzLmTMNnkVdw0sLKNxac+svl8ME7/5AjniPy/AfOSoxGjWuteVq9D0h4+KcTTl3c4C9K7yEi0+QCa71PBuCaYceWHHc3V+TXUKpGhA8rJi/Xcr5+yAZHYJ/+i13RkyXMimEzWiuLytYsDd5m9bwMuUYkB/LRPLlskgFjGPnX4NH1jJDtGv4+/+3q/IwQKZ8QpchmQ06jocYpaSHphRk=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MWHPR1001MB2365.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(38100700002)(5660300002)(38350700002)(186003)(52116002)(9686003)(6496006)(86362001)(55016002)(33716001)(8936002)(66946007)(26005)(8676002)(4326008)(6666004)(1076003)(956004)(316002)(33656002)(66476007)(6916009)(2906002)(508600001)(9576002)(66556008)(44832011)(966005)(4744005);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?wri7YqtD9Fw5dhqPNTQj+c+EclMQlqnDC2KExTeWB1MyYLx5vSpH3uTgDO52?=
- =?us-ascii?Q?Fkv9fNgw2QUpPTL4AiDKfXTnfwE2YYGzzREIL3hXwt1Y3bwBFShzZp1gfVP9?=
- =?us-ascii?Q?7+bZ46cmQxibAUeQFK23WGZp5Be0CpaSqPYhEXIA7T7fPOiiOMR5COwUuhxd?=
- =?us-ascii?Q?q1Ezdqid4a4yLS/1SkEFb3VdTvLkgDPRgJ1UP29/Dvph7G5YuUB4lkpcMZoa?=
- =?us-ascii?Q?sfGqrXbcBPkrqhXHGQ8fGg9eq33sDY+wCClYbetfhlFD48WqG84nFoIHkQsn?=
- =?us-ascii?Q?+sKi91n12SPgESBU1vteQL/lKX+VGVTxlOXQjtDukrlO2PUYaoBrbzPDnFal?=
- =?us-ascii?Q?9vJy2HF+44v9TIM8yP3swf+qar1FXC8FP1k1idHswyiyOn+7VD+Tmwl1C5XZ?=
- =?us-ascii?Q?GiLZCpWMvYHK/BBL/ZNE6D3q9etAvyj0IQkfTQl+w0kaciLsazr3msxO6akB?=
- =?us-ascii?Q?XGQn3SwEVQDCkPQAaNYbzwbzDEzJpcTFwuDcojjk+nlbjtI5mbAPXqStBxSn?=
- =?us-ascii?Q?Q5oQXIV/ASm5wX6kmL3RbHJluJDFZX0ab9egsyB7WRvt1zVDrEFAetnmCx80?=
- =?us-ascii?Q?Nk9pUW4jXxasBmFg+qq73Pod4m5wq2fG3yBqPz+OGu2qTiJ4pzorsa717Sn2?=
- =?us-ascii?Q?eq9x6lZ7XAwgRRDaMkWYl4jN3TTFvZnHNGHnuTASdi7HYNgGwg2wqbXSsOJy?=
- =?us-ascii?Q?Wu/Pu9qs8PngeWSsmQ+aXaYfE7pGPuiExVl+3mRHJv4UROVGqyLgfwl3KVWx?=
- =?us-ascii?Q?uyU9lPvVTtiUfMNAUmScnBj4E2cFC7Lcx7tiwN2WbF53KvzGjn2bt775q29d?=
- =?us-ascii?Q?w+wEc6MC1HWkPSpAEtj29rqdVTIpWAlOg88uS5iojnxEcQUNxA+ez4N909C7?=
- =?us-ascii?Q?vlMzersPNPQ5++gf/6a1b9m4OWi/tUMMa7ZDXXJdUpctYKDkzVT5VucGQg2L?=
- =?us-ascii?Q?lAwGCfgd4I9OGzdRSgQS3c1WWPxXLV19nF7Y4f9zk4aoEOZzQtX/2SvTwKrs?=
- =?us-ascii?Q?9GQKQ/7wIBBU7izOSjUzK9X/zep9MM3t9UnT9etiBasDkMo2z85RtP3ruarU?=
- =?us-ascii?Q?JIgOLEEWfDs1Hx0YjHzZFArG8dETC5EEyEv3PEQ8PLAaEYlc2p4lHuCYOC8E?=
- =?us-ascii?Q?SOJQUEgnp+IRTQ1RVXCawJqaNXtpNf79DhXHvYBLG/gmo1xSj2fT0dv3A3/4?=
- =?us-ascii?Q?HpFud/2q9yMNw34IXozPckZwMflZjJ+dOFczOGnlrZnpei4hpWiaCOcEG6Lx?=
- =?us-ascii?Q?9fpU+Fbr13d8qH/XiZS6TQfWDsipRW/bC9p+VjeX7JewyzPMnXEvKF4tUaj0?=
- =?us-ascii?Q?QtUXXMMs7NLMXGl9On7yp9Aq8hFtGOtMBgqT/wNObevcUx28PWSCthfp7PjZ?=
- =?us-ascii?Q?5IerdJzGVTe8wvsnD++LuEgVQAChlxhklK/EVIHxSSXR5YsgJYrj25WQZNAO?=
- =?us-ascii?Q?D7Cu8w+qW0gFOZCRTfxci+V1JC1X1wiHwgUq4KYHgdWCy79fT7tOt91UlDTH?=
- =?us-ascii?Q?tDF5ZJqlBCjPF+Ey/okPRPZEhO8YpwWwsW2WZDX0K2hKt6T1SLxe7tRLthlV?=
- =?us-ascii?Q?Nws/xA4sMTc/W2H9VRxk8o0m2zUyuHv35h2vmYvzvSt7LBxew8mWJE/njSsy?=
- =?us-ascii?Q?xtRAFW8BmSkvOxaNS7auJZGeW7zsaHOdBl6t0GKiHKzWcLZRW1mmyegibIgE?=
- =?us-ascii?Q?jueYEI+xgVpvMrqXes3CUR6/Tzo=3D?=
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: d7437487-77af-4870-b3ce-08d9a5039c45
-X-MS-Exchange-CrossTenant-AuthSource: MWHPR1001MB2365.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 11 Nov 2021 11:08:37.6553
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: MJBiAQEGb25yr1QyQlw7NcUkQZuyZhjJLzIQLoKJHFsNgZBX6kakS7qkipgRCQwK/ITuSun1dVYlpSWhhhBDz99WLI1UHiYqVNDmYiJ5daE=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MWHPR10MB1613
-X-Proofpoint-Virus-Version: vendor=nai engine=6300 definitions=10164 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 malwarescore=0 spamscore=0
- suspectscore=0 adultscore=0 bulkscore=0 mlxlogscore=936 phishscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2110150000
- definitions=main-2111110066
-X-Proofpoint-GUID: RI7whW8iwgH0G1-vOTzvv097QqUWtshp
-X-Proofpoint-ORIG-GUID: RI7whW8iwgH0G1-vOTzvv097QqUWtshp
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:91.0)
+ Gecko/20100101 Thunderbird/91.3.0
+Subject: Re: [PATCH v3 00/15] Free user PTE page table pages
+To:     David Hildenbrand <david@redhat.com>,
+        Jason Gunthorpe <jgg@nvidia.com>
+Cc:     akpm@linux-foundation.org, tglx@linutronix.de,
+        kirill.shutemov@linux.intel.com, mika.penttila@nextfour.com,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, songmuchun@bytedance.com,
+        zhouchengming@bytedance.com
+References: <20211110105428.32458-1-zhengqi.arch@bytedance.com>
+ <20211110125601.GQ1740502@nvidia.com>
+ <8d0bc258-58ba-52c5-2e0d-a588489f2572@redhat.com>
+ <20211110143859.GS1740502@nvidia.com>
+ <6ac9cc0d-7dea-0e19-51b3-625ec6561ac7@redhat.com>
+ <20211110163925.GX1740502@nvidia.com>
+ <7c97d86f-57f4-f764-3e92-1660690a0f24@redhat.com>
+ <60515562-5f93-11cd-6c6a-c7cc92ff3bf8@bytedance.com>
+ <a052e0ba-a22c-5df1-80b8-d847efacd66e@redhat.com>
+From:   Qi Zheng <zhengqi.arch@bytedance.com>
+In-Reply-To: <a052e0ba-a22c-5df1-80b8-d847efacd66e@redhat.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 11, 2021 at 11:40:32AM +0100, Ricardo Ribalda wrote:
-> I belive this is also addressed by this patch that is under review:
+
+
+On 11/11/21 5:22 PM, David Hildenbrand wrote:
+> On 11.11.21 04:58, Qi Zheng wrote:
+>>
+>>
+>> On 11/11/21 1:37 AM, David Hildenbrand wrote:
+>>>>> It would still be a fairly coarse-grained locking, I am not sure if that
+>>>>> is a step into the right direction. If you want to modify *some* page
+>>>>> table in your process you have exclude each and every page table walker.
+>>>>> Or did I mis-interpret what you were saying?
+>>>>
+>>>> That is one possible design, it favours fast walking and penalizes
+>>>> mutation. We could also stick a lock in the PMD (instead of a
+>>>> refcount) and still logically be using a lock instead of a refcount
+>>>> scheme. Remember modify here is "want to change a table pointer into a
+>>>> leaf pointer" so it isn't an every day activity..
+>>>
+>>> It will be if we somewhat frequent when reclaim an empty PTE page table
+>>> as soon as it turns empty. This not only happens when zapping, but also
+>>> during writeback/swapping. So while writing back / swapping you might be
+>>> left with empty page tables to reclaim.
+>>>
+>>> Of course, this is the current approach. Another approach that doesn't
+>>> require additional refcounts is scanning page tables for empty ones and
+>>> reclaiming them. This scanning can either be triggered manually from
+>>> user space or automatically from the kernel.
+>>
+>> Whether it is introducing a special rwsem or scanning an empty page
+>> table, there are two problems as follows:
+>>
+>> 	#1. When to trigger the scanning or releasing?
 > 
-> https://patchwork.linuxtv.org/project/linux-media/patch/20211008120914.69175-1-ribalda@chromium.org/
+> For example when reclaiming memory, when scanning page tables in
+> khugepaged, or triggered by user space (note that this is the approach I
+> originally looked into). But it certainly requires more locking thought
+> to avoid stopping essentially any page table walker.
+> 
+>> 	#2. Every time to release a 4K page table page, 512 page table
+>> 	    entries need to be scanned.
+> 
+> It would happen only when actually trigger reclaim of page tables
+> (again, someone has to trigger it), so it's barely an issue.
+> 
+> For example, khugepaged already scans the page tables either way.
+> 
+>>
+>> For #1, if the scanning is triggered manually from user space, the
+>> kernel is relatively passive, and the user does not fully know the best
+>> timing to scan. If the scanning is triggered automatically from the
+>> kernel, that is great. But the timing is not easy to confirm, is it
+>> scanned and reclaimed every time zap or try_to_unmap?
+>>
+>> For #2, refcount has advantages.
+>>
+>>>
+>>>>
+>>>> There is some advantage with this thinking because it harmonizes well
+>>>> with the other stuff that wants to convert tables into leafs, but has
+>>>> to deal with complicated locking.
+>>>>
+>>>> On the other hand, refcounts are a degenerate kind of rwsem and only
+>>>> help with freeing pages. It also puts more atomics in normal fast
+>>>> paths since we are refcounting each PTE, not read locking the PMD.
+>>>>
+>>>> Perhaps the ideal thing would be to stick a rwsem in the PMD. read
+>>>> means a table cannot be come a leaf. I don't know if there is space
+>>>> for another atomic in the PMD level, and we'd have to use a hitching
+>>>> post/hashed waitq scheme too since there surely isn't room for a waitq
+>>>> too..
+>>>>
+>>>> I wouldn't be so quick to say one is better than the other, but at
+>>>> least let's have thought about a locking solution before merging
+>>>> refcounts :)
+>>>
+>>> Yes, absolutely. I can see the beauty in the current approach, because
+>>> it just reclaims "automatically" once possible -- page table empty and
+>>> nobody is walking it. The downside is that it doesn't always make sense
+>>> to reclaim an empty page table immediately once it turns empty.
+>>>
+>>> Also, it adds complexity for something that is only a problem in some
+>>> corner cases -- sparse memory mappings, especially relevant for some
+>>> memory allocators after freeing a lot of memory or running VMs with
+>>> memory ballooning after inflating the balloon. Some of these use cases
+>>> might be good with just triggering page table reclaim manually from user
+>>> space.
+>>>
+>>
+>> Yes, this is indeed a problem. Perhaps some flags can be introduced so
+>> that the release of page table pages can be delayed in some cases.
+>> Similar to the lazyfree mechanism in MADV_FREE?
+> 
+> The issue AFAIU is that once your refcount hits 0 (no more references,
+> no more entries), the longer you wait with reclaim, the longer others
+> have to wait for populating a fresh page table because the "page table
+> to be reclaimed" is still stuck around. You'd have to keep the refcount
+> increased for a while, and only drop it after a while. But when? And
+> how? IMHO it's not trivial, but maybe there is an easy way to achieve it.
 > 
 
-Ah perfect.  My approach was quite lazy and that's a better way.  Thanks!
+For running VMs with memory ballooning after inflating the balloon, is
+this a hot behavior? Even if it is, it is already facing the release and
+reallocation of physical pages. The overhead after introducing
+pte_refcount is that we need to release and re-allocate page table page.
+But 2MB physical pages only corresponds to 4KiB of PTE page table page.
+So maybe the overhead is not big.
 
-regards,
-dan carpenter
+In fact, the performance test shown on the cover letter is this case:
 
+	test program: 
+https://lore.kernel.org/lkml/20100106160614.ff756f82.kamezawa.hiroyu@jp.fujitsu.com/2-multi-fault-all.c
+
+Thanks,
+Qi
+
+> 
