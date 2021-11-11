@@ -2,91 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F034A44D84A
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Nov 2021 15:31:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 963BE44D84E
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Nov 2021 15:31:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233702AbhKKOds (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Nov 2021 09:33:48 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56668 "EHLO
+        id S233687AbhKKOeI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Nov 2021 09:34:08 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56778 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231290AbhKKOdg (ORCPT
+        with ESMTP id S233729AbhKKOeC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Nov 2021 09:33:36 -0500
-Received: from mail-pj1-x102c.google.com (mail-pj1-x102c.google.com [IPv6:2607:f8b0:4864:20::102c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 31A38C061767;
-        Thu, 11 Nov 2021 06:30:47 -0800 (PST)
-Received: by mail-pj1-x102c.google.com with SMTP id gt5so4300846pjb.1;
-        Thu, 11 Nov 2021 06:30:47 -0800 (PST)
+        Thu, 11 Nov 2021 09:34:02 -0500
+Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com [IPv6:2a00:1450:4864:20::132])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 506D5C061203;
+        Thu, 11 Nov 2021 06:31:13 -0800 (PST)
+Received: by mail-lf1-x132.google.com with SMTP id y26so14561863lfa.11;
+        Thu, 11 Nov 2021 06:31:13 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=message-id:date:from:in-reply-to:subject:to:cc
-         :content-transfer-encoding;
-        bh=79DoY9Qj3E/W4EIJde2rtZdzgiCf/lCRPS50IAItn7E=;
-        b=BzGDB54s9nkqX8085q/fu0bBjVNjHCLgPBb/OBlu5DqYZ+tyYvQNPIeK3ln4ctspHb
-         vUK68av84uHTqOX39KzYz6pSfiWvoaU6jM1b1iCMMTPcxXQjxzhUsXb0634zV1a4+OwD
-         o9F18ymK8CvL+W1CZyVUee3eRDU5hCj48I3QuOUTyoog8kVHcegYIYQAFHoOKqS77Ude
-         Nsiasx1zmBlykujPGA+z/j1NcIO/ZcPhmQEm5Qgqz4ibsHJ/fye92o4RlHlumzEQRELb
-         O+CNNx/HLPQoxZdD3oeDAbSHRLuwKete9gAUO7WqtZQbARKVs2g0NTSuHfzoPheCbyrK
-         0izg==
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=AW42d9vntwUuzupFqiI2Bns0JY8PI9k2Wa9xi//eMBI=;
+        b=bZcJGgUdY6Fm+ERsHGGETjEBIe2GcRXutGt0DvLcjhRrR+msAten9K+hdlRLSOkwCy
+         KeFhENCzEHXYKdEnsB2K0GH6gg1y+bs/G++RLOazwViRyFBP+m05FC0j0+RHkyAjJUut
+         9LNyovEUU4Y0HD1T1naArSIumvgw6w1ZkhZSxtwOPoK8PLz0zpA12lyLbXC4klqxZR7e
+         fjIiBFRRG8nHNRLIgdtSlR+hrkUfcYo0RHnKJuxj/dUeldz7NZ0+uIj3lKo2BNaRhXo0
+         GNdeZ73I1DiElIrE9gAyoOlTM4srIupr7RRck7tLD8uva8mU8e9rWjQuNF63DFb9kI49
+         hTiQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:from:in-reply-to:subject:to:cc
-         :content-transfer-encoding;
-        bh=79DoY9Qj3E/W4EIJde2rtZdzgiCf/lCRPS50IAItn7E=;
-        b=mAhG+yVjpK+rcPi/wwuT2b5hkqE0RIvJY/Y62VK8TwO7YlxhmOnHhpZL/PFPoTaFKc
-         orPGNSiJXLoS8xMNyuLM072JQblfuWUZw+Z6adSgg5Bk1BU1K9thXwRM/4swRyUzGRFY
-         tb3hC9aryOVr84A7FCDR9OMwduQDI9dvl8eauxIdfm7r1bDTGd9bmiJhXQWsXdV0qCT8
-         S2D2+MbEP8tjtDm8gVJzESVNYnJlOkKHmkiR01heQuPjLW/D0k0xyUdKzWrr8Luhs3lO
-         Wm4gggGsjs8fmtv1h6WKs4rxC78o3lOZu6rXJ2+aCKWCQ3AEgYjz5xFIxqOVBJTrqFAq
-         3tWQ==
-X-Gm-Message-State: AOAM533Me14nJJNpcGdm2KQa7aD9HTTtV9q9Qp5ozmGwT6zWJ6EnnfB4
-        rIIig498fz7O1WeTy7/WlNNWbzsb+WEAWavzJKs=
-X-Google-Smtp-Source: ABdhPJyp/Y1K6M9v1TF4O7uoKlqqFPIdz67W4bw2BpApkNUiSe6UDCVg26M58fNmOpVkb+0w2TlPHQ==
-X-Received: by 2002:a17:902:8302:b0:143:6e5f:a4a0 with SMTP id bd2-20020a170902830200b001436e5fa4a0mr8617831plb.20.1636641046213;
-        Thu, 11 Nov 2021 06:30:46 -0800 (PST)
-Received: from cl-arch-kdev (cl-arch-kdev.xen.prgmr.com. [2605:2700:0:2:a800:ff:fed6:fc0d])
-        by smtp.gmail.com with ESMTPSA id s6sm2575632pgr.85.2021.11.11.06.30.44
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=AW42d9vntwUuzupFqiI2Bns0JY8PI9k2Wa9xi//eMBI=;
+        b=HorAPTpUyKdaZp716bgz+LMj1NFfEHcZLofMQiHqptzNHfavJYFweAH57e2QXSsxJS
+         j3yLQTCtBri7GGB1n099OySpbk3HQjWA3TU+MqJvuY5PbQIdfY7XAKXFcvya0Fstcq18
+         4JbR+AFTom9vsoOZjeMwxdYAY78/taic7Lq0/oTj98/n3u8Jyjlh2PJ/KbLPlBwWfJKl
+         3Rh5wGMQW1zY5pE/K2Et0cghAokGFaR0D6f7wFXZgDCl8Jec7jMPoSAC85PYVtINXezA
+         qlyY/ZtnIQJiVQ3gK4vOCpo+b3a4KgyAdpMRDyhzY4LzmmYUTzsiVHI/Ymk0qnY9oO6v
+         WNmw==
+X-Gm-Message-State: AOAM531rTCFxpdrMMUYi818mqolxmRQ0ho25Xm+RobsCfBJwKNXjqlG8
+        k+BwB16XcZKPDX0lvNpMotM=
+X-Google-Smtp-Source: ABdhPJysT58YQnIwuZnJm2iCHkbs1ihbTuzjlyHQPA2hitYk/yoV+g3qEojPDClg20dYVPQGTMdh2A==
+X-Received: by 2002:a05:6512:31d:: with SMTP id t29mr6992891lfp.331.1636641071586;
+        Thu, 11 Nov 2021 06:31:11 -0800 (PST)
+Received: from mobilestation ([95.79.188.236])
+        by smtp.gmail.com with ESMTPSA id a18sm298011lfj.191.2021.11.11.06.31.10
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 11 Nov 2021 06:30:45 -0800 (PST)
-Message-ID: <618d2915.1c69fb81.41542.6fa9@mx.google.com>
-Date:   Thu, 11 Nov 2021 06:30:45 -0800 (PST)
-X-Google-Original-Date: Thu, 11 Nov 2021 14:30:44 GMT
-From:   Fox Chen <foxhlchen@gmail.com>
-In-Reply-To: <20211110182003.342919058@linuxfoundation.org>
-Subject: RE: [PATCH 5.14 00/24] 5.14.18-rc1 review
-To:     linux-kernel@vger.kernel.org
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        torvalds@linux-foundation.org, akpm@linux-foundation.org,
-        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
-        f.fainelli@gmail.com, stable@vger.kernel.org,
-        Fox Chen <foxhlchen@gmail.com>
-Content-Transfer-Encoding: 7bit
+        Thu, 11 Nov 2021 06:31:11 -0800 (PST)
+Date:   Thu, 11 Nov 2021 17:31:08 +0300
+From:   Serge Semin <fancer.lancer@gmail.com>
+To:     nandhini.srikandan@intel.com, broonie@kernel.org
+Cc:     Serge Semin <Sergey.Semin@baikalelectronics.ru>,
+        robh+dt@kernel.org, linux-spi@vger.kernel.org,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        mgross@linux.intel.com, kris.pan@intel.com,
+        kenchappa.demakkanavar@intel.com, furong.zhou@intel.com,
+        mallikarjunappa.sangannavar@intel.com, mahesh.r.vaidya@intel.com,
+        rashmi.a@intel.com
+Subject: Re: [PATCH v3 1/5] dt-bindings: spi: Add SSTE support for DWC SSI
+ controller
+Message-ID: <20211111143108.pxovseqvm2ywmoc2@mobilestation>
+References: <20211111065201.10249-1-nandhini.srikandan@intel.com>
+ <20211111065201.10249-2-nandhini.srikandan@intel.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211111065201.10249-2-nandhini.srikandan@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 10 Nov 2021 19:43:52 +0100, Greg Kroah-Hartman <gregkh@linuxfoundation.org> wrote:
-> This is the start of the stable review cycle for the 5.14.18 release.
-> There are 24 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
-> 
-> Responses should be made by Fri, 12 Nov 2021 18:19:54 +0000.
-> Anything received after that time might be too late.
-> 
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.14.18-rc1.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.14.y
-> and the diffstat can be found below.
-> 
-> thanks,
-> 
-> greg k-h
+Hello Nandhini, Mark
+
+On Thu, Nov 11, 2021 at 02:51:57PM +0800, nandhini.srikandan@intel.com wrote:
+> From: Nandhini Srikandan <nandhini.srikandan@intel.com>
 > 
 
-5.14.18-rc1 Successfully Compiled and booted on my Raspberry PI 4b (8g) (bcm2711)
-                
-Tested-by: Fox Chen <foxhlchen@gmail.com>
+> Add Slave Select Toggle Enable(SSTE) support for DWC SSI controller.
 
+Nandhini, as Mark said this is no need in this new property since that
+feature is supposed to be enabled by the client drivers by means of
+setting the SPI_CS_WORD flag in the spi_device->mode field. (See its
+usage for reference.)
+
+BTW Mark, why not to have a generic DT-property which would set that
+flag automatically by the SPI-core subsystem seeing it's indeed a
+client device-property? For instance there can be some property like
+"spi-cs-toggle" DT-property which when specified for the particular
+SPI-client DT-node will make the SPI-core subsystem to set the
+SPI_CS_WORD flag of the device mode? Like it has already been done for
+"spi-cs-high"/"spi-lsb-first"/etc.
+In this case Nandhini would need to just convert this patch a bit so
+to be fixing the Documentation/devicetree/bindings/spi/spi-controller.yaml
+bindings instead.
+
+-Sergey
+
+> 
+> Signed-off-by: Nandhini Srikandan <nandhini.srikandan@intel.com>
+> ---
+>  Documentation/devicetree/bindings/spi/snps,dw-apb-ssi.yaml | 6 ++++++
+>  1 file changed, 6 insertions(+)
+> 
+> diff --git a/Documentation/devicetree/bindings/spi/snps,dw-apb-ssi.yaml b/Documentation/devicetree/bindings/spi/snps,dw-apb-ssi.yaml
+> index ca91201a9926..866416d01e94 100644
+> --- a/Documentation/devicetree/bindings/spi/snps,dw-apb-ssi.yaml
+> +++ b/Documentation/devicetree/bindings/spi/snps,dw-apb-ssi.yaml
+> @@ -149,6 +149,12 @@ patternProperties:
+>            is an optional feature of the designware controller, and the
+>            upper limit is also subject to controller configuration.
+>  
+> +      snps,sste:
+> +        description: Slave select line will toggle between consecutive
+> +          data frames, with the serial clock being held to its default
+> +          value while slave select line is high.
+> +        type: boolean
+> +
+>  unevaluatedProperties: false
+>  
+>  required:
+> -- 
+> 2.17.1
+> 
