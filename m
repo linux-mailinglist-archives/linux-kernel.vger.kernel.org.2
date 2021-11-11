@@ -2,171 +2,184 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DF3F644CEB3
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Nov 2021 02:14:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 17FB744CEBA
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Nov 2021 02:18:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233074AbhKKBQw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Nov 2021 20:16:52 -0500
-Received: from mga06.intel.com ([134.134.136.31]:54337 "EHLO mga06.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232797AbhKKBQo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Nov 2021 20:16:44 -0500
-X-IronPort-AV: E=McAfee;i="6200,9189,10164"; a="293652782"
-X-IronPort-AV: E=Sophos;i="5.87,225,1631602800"; 
-   d="scan'208";a="293652782"
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Nov 2021 17:13:55 -0800
-X-IronPort-AV: E=Sophos;i="5.87,225,1631602800"; 
-   d="scan'208";a="602428032"
-Received: from rhweight-mobl.amr.corp.intel.com (HELO rhweight-mobl.ra.intel.com) ([10.212.236.115])
-  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Nov 2021 17:13:55 -0800
-From:   Russ Weight <russell.h.weight@intel.com>
-To:     sudeep.holla@arm.com, cristian.marussi@arm.com, ardb@kernel.org,
-        bjorn.andersson@linaro.org, gregkh@linuxfoundation.org,
-        linux-kernel@vger.kernel.org
-Cc:     trix@redhat.com, lgoncalv@redhat.com, yilun.xu@intel.com,
-        hao.wu@intel.com, matthew.gerlach@intel.com,
-        Russ Weight <russell.h.weight@intel.com>
-Subject: [RFC PATCH 5/5] firmware: upload: Enable cancel of firmware upload
-Date:   Wed, 10 Nov 2021 17:13:45 -0800
-Message-Id: <20211111011345.25049-6-russell.h.weight@intel.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20211111011345.25049-1-russell.h.weight@intel.com>
-References: <20211111011345.25049-1-russell.h.weight@intel.com>
+        id S232602AbhKKBU4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Nov 2021 20:20:56 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49188 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230338AbhKKBUy (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Nov 2021 20:20:54 -0500
+Received: from mail-pl1-x62e.google.com (mail-pl1-x62e.google.com [IPv6:2607:f8b0:4864:20::62e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9436DC061766
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Nov 2021 17:18:06 -0800 (PST)
+Received: by mail-pl1-x62e.google.com with SMTP id b11so4392232pld.12
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Nov 2021 17:18:06 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=t4nnDeLo1iCP0qWFNqUucoApDeR2qvBQ8UhWQ3UZmkc=;
+        b=PQIcRaRFx0EEmilZQB4hvm/u+nMZhIQEbx87Ve5EiNZyg9Gr4GgiVSeuxX7yNDLsM2
+         c+fUHjBAKtuyM+1oeAprgXKlyJ+7eVeUsL4rUT8ohL6Bcpt5QL0f7EtUqQNeA+k049kf
+         3JqD39l+MC54PdQJ4H1t7UqLLGNNkv2xdX7QqCzx83xwOacUcb+Frqd7N7JOim4oprWY
+         pDA2dAzVATQC2R4OyDgzJWGz4GkLd7w4ib6uhBCD4m1vtWF2nJWBR6QS5o/Y7mJa7jB6
+         7MZdtTio6MqHrYXfPnJjcooaSRTdD8b+K5lO5XmcJDeasoYjXjnrH2k3DY7OGgBS/AJx
+         ierg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=t4nnDeLo1iCP0qWFNqUucoApDeR2qvBQ8UhWQ3UZmkc=;
+        b=J3kmR9UgE1FPopsVyVe7FgvGI1oCugdVnR5+EJkqvW6p2FDEBnNvneD8UihVCWzWtE
+         h87F7ocGiygJEYj3HYkVfBg6v5NPlvr+0sMnRHe7uEYU+ybdzYRJ7r4hB3+8gWAsPDL+
+         oM44tLxI7dmYgpkfVcdcPp0nZzJ7jRCPCASiO+vE860ty7pGDUgaYX6OjksSx6xlECS9
+         JiPt4vp+6Xpds6Or912820usZYkyj2LONmwaJ2e0XRbSNqy7YvUn42K5Kb0Csil56J8+
+         7EOZm1cB/vzFDE735U9zxvtWEH+piTsHqnbZmmN+l6MQ85xUiZ5je3RmFvFU4ggz7yjV
+         Ljzw==
+X-Gm-Message-State: AOAM533yLIY5uldliQzEPQfqETTykGnoDgQ5f2tKa2oVXuoUKHdykpW1
+        dBiSVgn56CiQCRxVy54pQB7pCw==
+X-Google-Smtp-Source: ABdhPJz8FPQc7GIFH5vWRt+n3wEUWrg+9k44PkN/N5CImHKZdrpBhr5CuaxR3JJDQS1irQfeUnVtwQ==
+X-Received: by 2002:a17:902:e405:b0:141:b2fa:b00 with SMTP id m5-20020a170902e40500b00141b2fa0b00mr3935488ple.22.1636593485875;
+        Wed, 10 Nov 2021 17:18:05 -0800 (PST)
+Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
+        by smtp.gmail.com with ESMTPSA id z23sm609892pgn.14.2021.11.10.17.18.05
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 10 Nov 2021 17:18:05 -0800 (PST)
+Date:   Thu, 11 Nov 2021 01:18:01 +0000
+From:   Sean Christopherson <seanjc@google.com>
+To:     Ben Gardon <bgardon@google.com>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>, linux-kernel@vger.kernel.org,
+        kvm@vger.kernel.org, Peter Xu <peterx@redhat.com>,
+        Peter Shier <pshier@google.com>,
+        David Matlack <dmatlack@google.com>,
+        Mingwei Zhang <mizhang@google.com>,
+        Yulei Zhang <yulei.kernel@gmail.com>,
+        Wanpeng Li <kernellwp@gmail.com>,
+        Xiao Guangrong <xiaoguangrong.eric@gmail.com>,
+        Kai Huang <kai.huang@intel.com>,
+        Keqian Zhu <zhukeqian1@huawei.com>,
+        David Hildenbrand <david@redhat.com>
+Subject: Re: [RFC 11/19] KVM: x86/mmu: Factor shadow_zero_check out of
+ make_spte
+Message-ID: <YYxvSfUPTXbclpSa@google.com>
+References: <20211110223010.1392399-1-bgardon@google.com>
+ <20211110223010.1392399-12-bgardon@google.com>
+ <80407e4a-36e1-e606-ed9f-74429f850e77@redhat.com>
+ <CANgfPd8hzDU+v52t9Kr=b48utC1p_j3yJ8gHzo-uifAxHbh-eQ@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CANgfPd8hzDU+v52t9Kr=b48utC1p_j3yJ8gHzo-uifAxHbh-eQ@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Extend the Firmware Upload framework to include a cancel IOCTL that can be
-used to request that a firmware upload be cancelled. The IOCTL may return
-ENODEV if there is no update in progress.
+On Wed, Nov 10, 2021, Ben Gardon wrote:
+> On Wed, Nov 10, 2021 at 2:45 PM Paolo Bonzini <pbonzini@redhat.com> wrote:
+> >
+> > On 11/10/21 23:30, Ben Gardon wrote:
+> > > -     WARN_ONCE(is_rsvd_spte(&vcpu->arch.mmu->shadow_zero_check, spte, level),
+> > > +     WARN_ONCE(is_rsvd_spte(shadow_zero_check, spte, level),
+> > >                 "spte = 0x%llx, level = %d, rsvd bits = 0x%llx", spte, level,
+> > > -               get_rsvd_bits(&vcpu->arch.mmu->shadow_zero_check, spte, level));
+> > > +               get_rsvd_bits(shadow_zero_check, spte, level));
+> >
+> > Hmm, there is a deeper issue here, in that when using EPT/NPT (on either
+> > the legacy aka shadow or the TDP MMU) large parts of vcpu->arch.mmu are
+> > really the same for all vCPUs.  The only thing that varies is those
+> > parts that actually depend on the guest's paging mode---the extended
+> > role, the reserved bits, etc.  Those are needed by the emulator, but
+> > don't really belong in vcpu->arch.mmu when EPT/NPT is in use.
+> >
+> > I wonder if there's room for splitting kvm_mmu in two parts, such as
+> > kvm_mmu and kvm_guest_paging_context, and possibly change the walk_mmu
+> > pointer into a pointer to kvm_guest_paging_context.  This way the
+> > EPT/NPT MMU (again either shadow or TDP) can be moved to kvm->arch.  It
+> > should simplify this series and also David's work on eager page splitting.
+> >
+> > I'm not asking you to do this, of course, but perhaps I can trigger
+> > Sean's itch to refactor stuff. :)
+> >
+> > Paolo
+> >
+> 
+> I think that's a great idea. I'm frequently confused as to why the
+> struct kvm_mmu is a per-vcpu construct as opposed to being VM-global.
+> Moving part of the struct to be a member for struct kvm would also
+> open the door to formalizing the MMU interface a little better and
+> perhaps even reveal more MMU code that can be consolidated across
+> architectures.
 
-Signed-off-by: Russ Weight <russell.h.weight@intel.com>
----
- .../driver-api/firmware/firmware-upload.rst   |  8 +++++++
- drivers/firmware/firmware-upload.c            | 24 +++++++++++++++++--
- include/linux/firmware/firmware-upload.h      |  4 ++++
- include/uapi/linux/firmware-upload.h          |  2 ++
- 4 files changed, 36 insertions(+), 2 deletions(-)
+But what would you actually move?  Even shadow_zero_check barely squeaks by,
+e.g. if NX is ever used to for NPT, then maybe it stops being a per-VM setting.
 
-diff --git a/Documentation/driver-api/firmware/firmware-upload.rst b/Documentation/driver-api/firmware/firmware-upload.rst
-index bf079d648b5c..1a0a487fd4d6 100644
---- a/Documentation/driver-api/firmware/firmware-upload.rst
-+++ b/Documentation/driver-api/firmware/firmware-upload.rst
-@@ -44,3 +44,11 @@ FW_UPLOAD_STATUS:
- Collect status for an on-going firmware upload. The status returned includes
- how much data remains to be transferred, the progress of the upload, and
- error information in the case of a failure.
-+
-+FW_UPLOAD_CANCEL:
-+
-+Request that an on-going firmware upload be cancelled. This IOCTL will
-+return ENODEV if there is no upload in progress. Depending on the
-+implementation of the lower-level driver, the cancellation may take affect
-+immediately or it could block until a critical operation such as a FLASH
-+is safely completed.
-diff --git a/drivers/firmware/firmware-upload.c b/drivers/firmware/firmware-upload.c
-index 507cd0f3740e..7677121ba49e 100644
---- a/drivers/firmware/firmware-upload.c
-+++ b/drivers/firmware/firmware-upload.c
-@@ -181,11 +181,20 @@ static int fw_upload_ioctl_status(struct fw_upload *fwl, unsigned long arg)
- 	return 0;
- }
- 
-+static int fw_upload_ioctl_cancel(struct fw_upload *fwl, unsigned long arg)
-+{
-+	if (fwl->progress == FW_UPLOAD_PROG_IDLE)
-+		return -ENODEV;
-+
-+	fwl->ops->cancel(fwl);
-+	return 0;
-+}
-+
- static long fw_upload_ioctl(struct file *filp, unsigned int cmd,
- 			    unsigned long arg)
- {
- 	struct fw_upload *fwl = filp->private_data;
--	int ret = -ENOTTY;
-+	int ret = 0;
- 
- 	mutex_lock(&fwl->lock);
- 
-@@ -196,6 +205,12 @@ static long fw_upload_ioctl(struct file *filp, unsigned int cmd,
- 	case FW_UPLOAD_STATUS:
- 		ret = fw_upload_ioctl_status(fwl, arg);
- 		break;
-+	case FW_UPLOAD_CANCEL:
-+		ret = fw_upload_ioctl_cancel(fwl, arg);
-+		break;
-+	default:
-+		ret = -ENOTTY;
-+		break;
- 	}
- 
- 	mutex_unlock(&fwl->lock);
-@@ -226,6 +241,8 @@ static int fw_upload_release(struct inode *inode, struct file *filp)
- 		goto close_exit;
- 	}
- 
-+	fwl->ops->cancel(fwl);
-+
- 	mutex_unlock(&fwl->lock);
- 	flush_work(&fwl->work);
- 
-@@ -260,7 +277,8 @@ fw_upload_register(struct device *parent, const struct fw_upload_ops *ops,
- 	struct fw_upload *fwl;
- 	int ret;
- 
--	if (!ops || !ops->prepare || !ops->write || !ops->poll_complete) {
-+	if (!ops || !ops->cancel || !ops->prepare ||
-+	    !ops->write || !ops->poll_complete) {
- 		dev_err(parent, "Attempt to register without all required ops\n");
- 		return ERR_PTR(-ENOMEM);
- 	}
-@@ -339,6 +357,8 @@ void fw_upload_unregister(struct fw_upload *fwl)
- 		goto unregister;
- 	}
- 
-+	fwl->ops->cancel(fwl);
-+
- 	mutex_unlock(&fwl->lock);
- 	flush_work(&fwl->work);
- 
-diff --git a/include/linux/firmware/firmware-upload.h b/include/linux/firmware/firmware-upload.h
-index 63c6c65e7489..6f3971b8e117 100644
---- a/include/linux/firmware/firmware-upload.h
-+++ b/include/linux/firmware/firmware-upload.h
-@@ -26,6 +26,9 @@ struct fw_upload;
-  *			    written.
-  * @poll_complete:	    Required: Check for the completion of the
-  *			    HW authentication/programming process.
-+ * @cancel:		    Required: Request cancellation of update. This op
-+ *			    is called from the context of a different kernel
-+ *			    thread, so race conditions need to be considered.
-  * @cleanup:		    Optional: Complements the prepare()
-  *			    function and is called at the completion
-  *			    of the update, whether success or failure,
-@@ -36,6 +39,7 @@ struct fw_upload_ops {
- 	s32 (*write)(struct fw_upload *fwl, const u8 *data,
- 		     u32 offset, u32 size);
- 	u32 (*poll_complete)(struct fw_upload *fwl);
-+	void (*cancel)(struct fw_upload *fwl);
- 	void (*cleanup)(struct fw_upload *fwl);
- };
- 
-diff --git a/include/uapi/linux/firmware-upload.h b/include/uapi/linux/firmware-upload.h
-index b8d96ee3f646..3bf985d27256 100644
---- a/include/uapi/linux/firmware-upload.h
-+++ b/include/uapi/linux/firmware-upload.h
-@@ -68,4 +68,6 @@ struct fw_upload_status {
- 
- #define FW_UPLOAD_STATUS	_IOR(FW_UPLOAD_MAGIC, 1, struct fw_upload_status)
- 
-+#define FW_UPLOAD_CANCEL	_IO(FW_UPLOAD_MAGIC, 2)
-+
- #endif /* _UAPI_LINUX_FW_UPLOAD_H */
--- 
-2.25.1
+Going through the fields...
 
+These are all related to guest context:
+
+	unsigned long (*get_guest_pgd)(struct kvm_vcpu *vcpu);
+	u64 (*get_pdptr)(struct kvm_vcpu *vcpu, int index);
+	int (*page_fault)(struct kvm_vcpu *vcpu, struct kvm_page_fault *fault);
+	void (*inject_page_fault)(struct kvm_vcpu *vcpu,
+				  struct x86_exception *fault);
+	gpa_t (*gva_to_gpa)(struct kvm_vcpu *vcpu, gpa_t gva_or_gpa,
+			    u32 access, struct x86_exception *exception);
+	gpa_t (*translate_gpa)(struct kvm_vcpu *vcpu, gpa_t gpa, u32 access,
+			       struct x86_exception *exception);
+	int (*sync_page)(struct kvm_vcpu *vcpu,
+			 struct kvm_mmu_page *sp);
+	void (*invlpg)(struct kvm_vcpu *vcpu, gva_t gva, hpa_t root_hpa);
+	union kvm_mmu_role mmu_role;
+	u8 root_level;
+	u8 permissions[16];
+	u32 pkru_mask;
+	struct rsvd_bits_validate guest_rsvd_check;
+	u64 pdptrs[4];
+	gpa_t root_pgd;
+
+One field, ept_ad, can be straight deleted as it's redundant with respect to
+the above mmu_role.ad_disabled.
+
+	u8 ept_ad;
+
+Ditto for direct_map flag (mmu_role.direct) and shadow_root_level (mmu_role.level).
+I haven't bothered to yank those because they have a lot of touchpoints.
+
+	bool direct_map;
+	u8 shadow_root_level;
+
+The prev_roots could be dropped if TDP roots were tracked per-VM, but we'd still
+want an equivalent for !TDP and nTDP MMUs.
+
+	struct kvm_mmu_root_info prev_roots[KVM_MMU_NUM_PREV_ROOTS];
+
+shadow_zero_check can be made per-VM if all vCPUs are required to have the same
+cpuid.MAXPHYADDR or if we remove the (IMO) pointless 5-level vs. 4-level behavior,
+which by-the-by, has my vote since we could make shadow_zero_check _global_, not
+just per-VM, and everything I've heard is that the extra level has no measurable
+performance overhead.
+
+	struct rsvd_bits_validate shadow_zero_check;
+
+And that leaves us with:
+	hpa_t root_hpa;
+
+	u64 *pae_root;
+	u64 *pml4_root;
+	u64 *pml5_root;
+
+Of those, _none_ of them can be per-VM, because they are all nothing more than
+shadow pages, and thus cannot be per-VM unless there is exactly one set of TDP
+page tables for the guest.  Even if/when we strip the unnecessary role bits from
+these for TDP (on my todo list), we still need up to three sets of page tables:
+
+	1. Normal
+	2. SMM
+	3. Guest (if L1 doesn't use TDP)
+
+So I suppose we could refactor KVM to explicitly track its three possible TDP
+roots, but I don't think it buys us anything and would complicate supporting
+!TDP as well as nTDP.
