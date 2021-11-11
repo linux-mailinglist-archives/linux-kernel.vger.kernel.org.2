@@ -2,144 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CABD044D00E
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Nov 2021 03:28:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A8F4844D00C
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Nov 2021 03:28:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230338AbhKKCbO convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 10 Nov 2021 21:31:14 -0500
-Received: from rtits2.realtek.com ([211.75.126.72]:51728 "EHLO
-        rtits2.realtek.com.tw" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233633AbhKKCbI (ORCPT
+        id S233516AbhKKCbB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Nov 2021 21:31:01 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36660 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230338AbhKKCa7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Nov 2021 21:31:08 -0500
-Authenticated-By: 
-X-SpamFilter-By: ArmorX SpamTrap 5.73 with qID 1AB2SBPi8005815, This message is accepted by code: ctloc85258
-Received: from mail.realtek.com (rtexh36504.realtek.com.tw[172.21.6.27])
-        by rtits2.realtek.com.tw (8.15.2/2.71/5.88) with ESMTPS id 1AB2SBPi8005815
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Thu, 11 Nov 2021 10:28:11 +0800
-Received: from RTEXDAG01.realtek.com.tw (172.21.6.100) by
- RTEXH36504.realtek.com.tw (172.21.6.27) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2242.12; Thu, 11 Nov 2021 10:28:10 +0800
-Received: from RTEXMBS04.realtek.com.tw (172.21.6.97) by
- RTEXDAG01.realtek.com.tw (172.21.6.100) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.14; Wed, 10 Nov 2021 18:28:10 -0800
-Received: from RTEXMBS04.realtek.com.tw ([fe80::dc53:1026:298b:c584]) by
- RTEXMBS04.realtek.com.tw ([fe80::dc53:1026:298b:c584%5]) with mapi id
- 15.01.2308.015; Thu, 11 Nov 2021 10:28:10 +0800
-From:   Pkshih <pkshih@realtek.com>
-To:     Takashi Iwai <tiwai@suse.de>
-CC:     "kvalo@codeaurora.org" <kvalo@codeaurora.org>,
-        "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>,
-        "Larry.Finger@gmail.com" <Larry.Finger@gmail.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: RE: [PATCH] rtw89: Fix crash by loading compressed firmware file
-Thread-Topic: [PATCH] rtw89: Fix crash by loading compressed firmware file
-Thread-Index: AQHX0hU7VE24GGCl002qwvOXgdMXQqv0AUsAgACX6Q///34ogIAAjK5D///UggCAAArHAIAJHR/Q
-Date:   Thu, 11 Nov 2021 02:28:09 +0000
-Message-ID: <68f61525b26f46578a62b2a54d775c17@realtek.com>
-References: <20211105071725.31539-1-tiwai@suse.de>
-        <s5hpmrfgj93.wl-tiwai@suse.de>  <87zgqjqaae.fsf@codeaurora.org>
-        <s5hh7crgflg.wl-tiwai@suse.de>  <87v917q8hw.fsf@codeaurora.org>
-        <bd80d3b6cdc42d7818d7d5c6a5036d8188eb4a67.camel@realtek.com>
- <s5h5yt6fxpf.wl-tiwai@suse.de>
-In-Reply-To: <s5h5yt6fxpf.wl-tiwai@suse.de>
-Accept-Language: en-US, zh-TW
-Content-Language: zh-TW
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [172.21.69.188]
-x-kse-serverinfo: RTEXDAG01.realtek.com.tw, 9
-x-kse-attachmentfiltering-interceptor-info: no applicable attachment filtering
- rules found
-x-kse-antivirus-interceptor-info: scan successful
-x-kse-antivirus-info: =?us-ascii?Q?Clean,_bases:_2021/11/11_=3F=3F_12:23:00?=
-x-kse-bulkmessagesfiltering-scan-result: protection disabled
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
+        Wed, 10 Nov 2021 21:30:59 -0500
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 51881C061766;
+        Wed, 10 Nov 2021 18:28:11 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+        Content-Type:In-Reply-To:MIME-Version:Date:Message-ID:From:References:To:
+        Subject:Sender:Reply-To:Cc:Content-ID:Content-Description;
+        bh=th/0FiDnIpwmVdJ5jv3QB6l++8rUlwQG8LU84WSyudo=; b=3ADQi4ZXxj/UHn9w4dj76fjpRg
+        LQX4t2jMiq8rP8LnneByzyNONe7Uc4VhCFMc1QQMBB2Ej2chowazFojjhb4hE4ATd83/U/kIGkBZD
+        c9MQnfcmp5XCtVbakZe9/NBa+yFYsVJZeK/h8LfKK+8+VqehZTEeZnM0cBUvo7Bt2UUaKE6JZd3ej
+        hwzE0fKeiXFE7Oo9MDzPEG8mdyw/IjbGFJlSxLPJSbIPTm6XmZ6hCBxu2pzq03qesiB/jdEGQIulM
+        HBhJtBiBeZv7P94QNky8pz5e35BM4EnEO59Bxfb9K+Af7PXMBOacHbFUd5WzLt8Cz4CyXzVOWfEgy
+        9zSIexfA==;
+Received: from [2601:1c0:6280:3f0::aa0b]
+        by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mkzow-006sMM-7f; Thu, 11 Nov 2021 02:28:10 +0000
+Subject: Re: [RFC PATCH v4 2/8] leds: document additional use of blink_set for
+ hardware control
+To:     Ansuel Smith <ansuelsmth@gmail.com>, Andrew Lunn <andrew@lunn.ch>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Vladimir Oltean <olteanv@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>, Pavel Machek <pavel@ucw.cz>,
+        John Crispin <john@phrozen.org>, netdev@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-leds@vger.kernel.org,
+        =?UTF-8?Q?Marek_Beh=c3=ban?= <kabel@kernel.org>
+References: <20211111013500.13882-1-ansuelsmth@gmail.com>
+ <20211111013500.13882-3-ansuelsmth@gmail.com>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <3c37f8c8-5c0a-302c-e68c-e6ac37cde695@infradead.org>
+Date:   Wed, 10 Nov 2021 18:28:09 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-X-KSE-ServerInfo: RTEXH36504.realtek.com.tw, 9
-X-KSE-Attachment-Filter-Triggered-Rules: Clean
-X-KSE-Attachment-Filter-Triggered-Filters: Clean
-X-KSE-BulkMessagesFiltering-Scan-Result: protection disabled
-X-KSE-AntiSpam-Outbound-Interceptor-Info: scan successful
-X-KSE-AntiSpam-Version: 5.9.20, Database issued on: 11/11/2021 02:07:42
-X-KSE-AntiSpam-Status: KAS_STATUS_NOT_DETECTED
-X-KSE-AntiSpam-Method: none
-X-KSE-AntiSpam-Rate: 0
-X-KSE-AntiSpam-Info: Lua profiles 167193 [Nov 11 2021]
-X-KSE-AntiSpam-Info: Version: 5.9.20.0
-X-KSE-AntiSpam-Info: Envelope from: pkshih@realtek.com
-X-KSE-AntiSpam-Info: LuaCore: 465 465 eb31509370142567679dd183ac984a0cb2ee3296
-X-KSE-AntiSpam-Info: {Tracking_uf_ne_domains}
-X-KSE-AntiSpam-Info: {Tracking_from_domain_doesnt_match_to}
-X-KSE-AntiSpam-Info: realtek.com:7.1.1;lore.kernel.org:7.1.1;d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;127.0.0.199:7.1.2
-X-KSE-AntiSpam-Info: Rate: 0
-X-KSE-AntiSpam-Info: Status: not_detected
-X-KSE-AntiSpam-Info: Method: none
-X-KSE-AntiSpam-Info: Auth:dkim=none
-X-KSE-Antiphishing-Info: Clean
-X-KSE-Antiphishing-ScanningType: Heuristic
-X-KSE-Antiphishing-Method: None
-X-KSE-Antiphishing-Bases: 11/11/2021 02:11:00
+In-Reply-To: <20211111013500.13882-3-ansuelsmth@gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Ansuel,
 
-> -----Original Message-----
-> From: Takashi Iwai <tiwai@suse.de>
-> Sent: Friday, November 5, 2021 11:07 PM
-> To: Pkshih <pkshih@realtek.com>
-> Cc: kvalo@codeaurora.org; linux-wireless@vger.kernel.org; Larry.Finger@gmail.com;
-> linux-kernel@vger.kernel.org
-> Subject: Re: [PATCH] rtw89: Fix crash by loading compressed firmware file
-> 
-> 
-> You should put const in the cast in le32_get_bits() invocations, at
-> least.
-> 
-> For the le32_replace_bits(), ideally it should be rewritten in some
-> better way the compiler can catch.  e.g. use an inline function to
-> take a void * argument without const,
-> 
-> static inline void RTW89_SET_FWCMD_CXRFK_TYPE(void *cmd, unsigned int val)
-> {
-> 	le32p_replace_bits((__le32 *)((u8 *)(cmd) + 2), val, GENMASK(17, 10));
-> }
-> 
-> Then the compiler will warn when you pass a const pointer there.
-> 
+Sorry -- I screwed this one up a little bit on the previous iteration.
 
-I have sent a patchset [1] to do these two things by patch 2 and 3.
+On 11/10/21 5:34 PM, Ansuel Smith wrote:
+> diff --git a/Documentation/leds/leds-class.rst b/Documentation/leds/leds-class.rst
+> index 0175954717a3..c06a18b811de 100644
+> --- a/Documentation/leds/leds-class.rst
+> +++ b/Documentation/leds/leds-class.rst
+> @@ -202,6 +202,23 @@ hardware mode and any software only trigger will reject activation.
+>   On init a LED driver that support a hardware mode should reset every blink mode
+>   set by default.
+>   
+> +Once a trigger has declared support for hardware-controller blinks, it will use
 
-> 
-> BTW, while reading your reply, I noticed that it's an unaligned access
-> to a 32bit value, which is another potential breakage on some
-> architectures.  So the whole stuff has to be rewritten in anyway...
-> 
+                                            hardware-controlled
 
-We use these macros/inline function on skb->data mostly, and I 
-suppose skb->data is a 32bit aligned address. Since I don't have
-this kind of machine on hand, I would like to defer this work until
-I have one.
+> +blink_set() to try to offload his trigger on activation/configuration.
+> +blink_set() will return 0 if the requested modes set in trigger_data can be
+> +controlled by hardware or an error if both the mode bitmap is not supported by
 
-> 
-> > The macro SET_FW_HDR_PART_SIZE() is used to set the firmware
-> > partition size we are going to download, and it is only used
-> > by rtw89_fw_download_hdr(). So, I will set the partition size
-> > after copying constant firmware header into skb->data.
-> 
-> Sounds good.
-> 
+maybe:                                if both of the bitmap modes are not supported by
 
-Please check if my patch works on your platform.
-Thanks you.
+> +the hardware or there was a problem in the configuration.
+> +
+> +Following blink_set logic, setting brightness to LED_OFF with hardware control active
+> +will reset any active blink mode and disable hardware control setting the LED to off.
+> +
+> +It's in the LED driver's interest to know how to elaborate the trigger data and report support
+> +for a particular set of blink modes. For this exact reason explicit support for the specific
+> +trigger is mandatory or the driver returns -EOPNOTSUPP if asked to enter hardware mode
+> +with a not supported trigger.
+> +If the driver returns -EOPNOTSUPP on hw_control_configure(), the trigger activation will
+> +fail as the driver doesn't support that specific hardware blink modes or doesn't know
 
-[1] https://lore.kernel.org/linux-wireless/20211111021457.13776-1-pkshih@realtek.com/T/#t
+                                                                    mode
 
---
-Ping-Ke
+> +how to handle the provided trigger data.
 
+
+thanks.
+-- 
+~Randy
