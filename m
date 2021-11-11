@@ -2,141 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 470B444D82E
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Nov 2021 15:22:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 337AD44D836
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Nov 2021 15:25:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232883AbhKKOYs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Nov 2021 09:24:48 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54600 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231739AbhKKOYr (ORCPT
+        id S233576AbhKKO1z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Nov 2021 09:27:55 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124]:60669 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232699AbhKKO1x (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Nov 2021 09:24:47 -0500
-Received: from mail-io1-xd35.google.com (mail-io1-xd35.google.com [IPv6:2607:f8b0:4864:20::d35])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2062BC061766
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Nov 2021 06:21:58 -0800 (PST)
-Received: by mail-io1-xd35.google.com with SMTP id c3so7125841iob.6
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Nov 2021 06:21:58 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20210112.gappssmtp.com; s=20210112;
-        h=to:from:subject:message-id:date:user-agent:mime-version
-         :content-language:content-transfer-encoding;
-        bh=EKmFgG+cgSKbRgFxTZ4Z0n/ivv2X9oycFWZWg6SRZdw=;
-        b=ZA+Xu0vUrdE2kMUGufmGqeSc9EM4heQdp0N43qlAMwYyxD/HmwUldZ1szFPBShteuU
-         8/BODaww2JqzT4aah9NINB9yrfgMTbfXFa0xxAeUUX5RL48qQXL0+Pz4dUZFVwKCnC3l
-         hNOKqhwGtsl8tTy+MVgGcUBAYgrDczda8PmY4XDQTUJHglc8uQmVBUdgYkqrIPyn7vTo
-         aaXo2macmUyGazvYXYEICRQHST2hEgkBG7X+dY4orEj6lHNDNSqyEFyBidt9/yE9IO5w
-         9AE+ba/Y5qBvz684p/cvxkGK4cHd5P0doKgzeKvnFCqNA5HdAUeOyywQq56ks9Qwi96k
-         D6OQ==
+        Thu, 11 Nov 2021 09:27:53 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1636640704;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=8TZ85R17ksHNNki9ytrUAcivCTUFGWKfCZEjAM+vq04=;
+        b=fc7c/zbdBgA0vsB4iWprcmBXmIZkPwoFZIvYrCZeH6fPfQIB3xGCgjRjkmlGsSv7PUG89p
+        x62WTfOgf5slnIenbSW4l35TKq8eVy3z50QI143VtiFAS9lfWqyrxHjk4oA6QZ/mHLxNET
+        ajK9aA2VCKIqAedCdLUUf8rvlJPC5jM=
+Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com
+ [209.85.208.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-215-0dgXKhn1NYmBvbV0ZX4rJg-1; Thu, 11 Nov 2021 09:25:03 -0500
+X-MC-Unique: 0dgXKhn1NYmBvbV0ZX4rJg-1
+Received: by mail-ed1-f70.google.com with SMTP id t20-20020a056402525400b003e2ad6b5ee7so5538784edd.8
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Nov 2021 06:25:02 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:to:from:subject:message-id:date:user-agent
-         :mime-version:content-language:content-transfer-encoding;
-        bh=EKmFgG+cgSKbRgFxTZ4Z0n/ivv2X9oycFWZWg6SRZdw=;
-        b=y7Cor48XfsU4cLZ5/2+ZnT0HlQUH3i+Sck7OKe4wbWPZ7/0ORyCW1YeZFbZlPVAMl+
-         ekvJ+HYKtmpva2hbIwNEFdah1BTfx8iffsIIVMT+5qTXA8PGLs5ufjUdL+pp+jSe9uZC
-         5QMisYk3eCRROrxkhwsaFF04VbqaJBVPPEqMSjHqECPbYxhqlHqTj5FaECEuvHD6cYMa
-         bMjCXzrZjcxJJovEcOD8RyieWZ1ebqH9PTkv0qoqMYJdfGFl5tGD05h88fWyxPa8ipwe
-         V7EvTwpm6XxGKs+7STpZ0HqFq8BJlGgbH1hfeCUCIh7tuWl7iO5+bNGACjMzGOcj1xAF
-         2giQ==
-X-Gm-Message-State: AOAM533IQB59vUXrmRucvhrAWEFojyb5EM+fFxZPCCXNtw5IcNdWFMI+
-        yffcNd8p90EwExgFoTTekqM42RxmWikN4m5M
-X-Google-Smtp-Source: ABdhPJyHEJqvN8ZCswOE1hTNP/xjafm72+WUT7j2OsjSkiaUC63XNBab42ZomWnSFDVG0RaS1Wvn4Q==
-X-Received: by 2002:a05:6602:158b:: with SMTP id e11mr5113227iow.191.1636640517223;
-        Thu, 11 Nov 2021 06:21:57 -0800 (PST)
-Received: from [192.168.1.30] ([207.135.234.126])
-        by smtp.gmail.com with ESMTPSA id d7sm1784745iom.37.2021.11.11.06.21.56
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:in-reply-to
+         :content-transfer-encoding;
+        bh=8TZ85R17ksHNNki9ytrUAcivCTUFGWKfCZEjAM+vq04=;
+        b=s19oZly9Ancaj5NK7leBys+eBlnUk5tcKPhBmHDhT7MoFTBEn7XdSnAcuya5ccUtpW
+         j1zOM3iKys+1KaZK4TYhvBZ2iDF2tT/fPP3bvzHT7OKMjBoJl7M/X/ghTyw9MJeU6aej
+         VMwVvNNLDdYsY8/1Kvzaf+f2/B5kwZWxGtPjl8zQA5R2x5dqGJ3HwcSerUOu4jJgfzvO
+         s77hxatgz0Xhw8QcUNUKh8BPprgn2VIhUw/55v+ltH/V51eFRQcV/BCyFB/zcn9C+9qF
+         jjvhBUzRHK2gw4xStyc7HrABvgxzds7+fy/wotTx6bWfvn06xGd4/daMfVQvMN8Iy0nB
+         gj0A==
+X-Gm-Message-State: AOAM531HyTwg86F5mtjZ9XgeJni0N6A7IRmfpEA/ZAh9SmikOL+x6iS4
+        IeONOeAbbvGDXU7/BVtI5dqZVlRhWvqe2zsIUyWGzpDP564LAtgAkiiHn1Dv6tQ3Ml0t3oLv89C
+        47bkCQn4zEAzRxLDdoiECiVff
+X-Received: by 2002:a17:907:94ca:: with SMTP id dn10mr9902163ejc.263.1636640701776;
+        Thu, 11 Nov 2021 06:25:01 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJw5mlEO9ECKaC/uGnjkikEPFowycPQFS1eUhmAjLflS+IuFdyoJZ0gmnDT/yy/6DvwVIa++rw==
+X-Received: by 2002:a17:907:94ca:: with SMTP id dn10mr9902125ejc.263.1636640701520;
+        Thu, 11 Nov 2021 06:25:01 -0800 (PST)
+Received: from ?IPV6:2001:b07:6468:f312:63a7:c72e:ea0e:6045? ([2001:b07:6468:f312:63a7:c72e:ea0e:6045])
+        by smtp.gmail.com with ESMTPSA id hb36sm1402996ejc.73.2021.11.11.06.25.00
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 11 Nov 2021 06:21:56 -0800 (PST)
-To:     airlied@linux.ie, daniel@ffwll.ch, dri-devel@lists.freedesktop.org,
-        LKML <linux-kernel@vger.kernel.org>
-From:   Jens Axboe <axboe@kernel.dk>
-Subject: ____i915_gem_object_get_pages() -> shmem_get_pages() crash in -git
-Message-ID: <c19e9907-4651-7503-915e-60f4df530e95@kernel.dk>
-Date:   Thu, 11 Nov 2021 07:21:55 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Thu, 11 Nov 2021 06:25:00 -0800 (PST)
+Message-ID: <5cdb6982-d4ec-118e-2534-9498196d11b8@redhat.com>
+Date:   Thu, 11 Nov 2021 15:24:59 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.2.0
+Subject: Re: [PATCH RFC] KVM: x86: Drop arbitraty KVM_SOFT_MAX_VCPUS
 Content-Language: en-US
+To:     Vitaly Kuznetsov <vkuznets@redhat.com>, kvm@vger.kernel.org
+Cc:     Sean Christopherson <seanjc@google.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Eduardo Habkost <ehabkost@redhat.com>,
+        linux-kernel@vger.kernel.org
+References: <20211111134733.86601-1-vkuznets@redhat.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+In-Reply-To: <20211111134733.86601-1-vkuznets@redhat.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On 11/11/21 14:47, Vitaly Kuznetsov wrote:
+> KVM_CAP_NR_VCPUS is used to get the "recommended" maximum number of
+> VCPUs and arm64/mips/riscv report num_online_cpus(). Powerpc reports
+> either num_online_cpus() or num_present_cpus(), s390 has multiple
+> constants depending on hardware features. On x86, KVM reports an
+> arbitrary value of '710' which is supposed to be the maximum tested
+> value but it's possible to test all KVM_MAX_VCPUS even when there are
+> less physical CPUs available.
+> 
+> Drop the arbitrary '710' value and return num_online_cpus() on x86 as
+> well. The recommendation will match other architectures and will mean
+> 'no CPU overcommit'.
+> 
+> For reference, QEMU only queries KVM_CAP_NR_VCPUS to print a warning
+> when the requested vCPU number exceeds it. The static limit of '710'
+> is quite weird as smaller systems with just a few physical CPUs should
+> certainly "recommend" less.
+> 
+> Suggested-by: Eduardo Habkost <ehabkost@redhat.com>
+> Signed-off-by: Vitaly Kuznetsov <vkuznets@redhat.com>
 
-Running -git as of a day or two ago on my laptop, and I've hit this resume
-crash a few times:
+Yes, this is a good idea.  We cannot move it entirely to common code due 
+to POWER's handling of secondary threads in hypervisors; still, this is 
+as close as we can get to a common idea of what KVM_CAP_NR_VCPUS means.
 
-OOM killer enabled.
-Restarting tasks ... done.
-thermal thermal_zone7: failed to read out thermal zone (-61)
-xfs filesystem being remounted at /run/systemd/unit-root/var/cache/private/fwupdmgr supports timestamps until 2038 (0x7fffffff)
-PM: suspend exit
-BUG: unable to handle page fault for address: fffffffffffffff4
-#PF: supervisor read access in kernel mode
-#PF: error_code(0x0000) - not-present page
-PGD 21360b067 P4D 21360b067 PUD 21360d067 PMD 0 
-Oops: 0000 [#1] PREEMPT SMP
-CPU: 7 PID: 3687 Comm: Xorg Tainted: G S                5.15.0+ #12136
-Hardware name: LENOVO 20XWCTO1WW/20XWCTO1WW, BIOS N32ET72W (1.48 ) 10/08/2021
-RIP: 0010:shmem_read_mapping_page_gfp+0x53/0x90
-Code: af 75 5b 41 89 d0 6a 00 45 31 c9 b9 02 00 00 00 6a 00 48 8d 55 f0 4c 89 d7 e8 89 f6 ff ff 5a 85 c0 59 74 2b 48 98 48 89 45 f0 <48> 8b 10 f7 c2 00 00 80 00 48 c7 c2 fb ff ff ff 48 0f 45 c2 48 8b
-RSP: 0018:ffffa01940ec7c18 EFLAGS: 00010282
-RAX: fffffffffffffff4 RBX: 00000000000002f3 RCX: 0000000000000000
-RDX: 0000000000000000 RSI: ffffffffffffffff RDI: ffffffffaff0a3c0
-RBP: ffffa01940ec7c28 R08: 0000000000000000 R09: 0000000000000f00
-R10: 0000000000000002 R11: 0000000000000000 R12: 00000000001120d2
-R13: ffff8c6b0648a200 R14: ffff8c69a45472c0 R15: ffff8c69ba412c10
-FS:  00007ffae02f3a40(0000) GS:ffff8c6b8f7c0000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: fffffffffffffff4 CR3: 000000010efb5001 CR4: 0000000000570ee0
-PKRU: 55555554
-Call Trace:
- <TASK>
- shmem_get_pages+0x242/0x640 [i915]
- ? drm_vma_node_allow+0xb7/0xe0 [drm]
- ? drm_gem_handle_create_tail+0xca/0x1a0 [drm]
- ____i915_gem_object_get_pages+0x20/0x50 [i915]
- __i915_gem_object_get_pages+0x35/0x40 [i915]
- i915_gem_set_domain_ioctl+0x255/0x2d0 [i915]
- ? i915_gem_object_set_to_cpu_domain+0xb0/0xb0 [i915]
- drm_ioctl_kernel+0xb4/0x140 [drm]
- drm_ioctl+0x22d/0x440 [drm]
- ? i915_gem_object_set_to_cpu_domain+0xb0/0xb0 [i915]
- ? __fget_files+0x74/0xa0
- __x64_sys_ioctl+0x8e/0xc0
- do_syscall_64+0x35/0xb0
- entry_SYSCALL_64_after_hwframe+0x44/0xae
-RIP: 0033:0x7ffae065350b
-Code: 0f 1e fa 48 8b 05 85 39 0d 00 64 c7 00 26 00 00 00 48 c7 c0 ff ff ff ff c3 66 0f 1f 44 00 00 f3 0f 1e fa b8 10 00 00 00 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 8b 0d 55 39 0d 00 f7 d8 64 89 01 48
-RSP: 002b:00007ffe8b906c88 EFLAGS: 00000246 ORIG_RAX: 0000000000000010
-RAX: ffffffffffffffda RBX: 00005611c921d0b0 RCX: 00007ffae065350b
-RDX: 00007ffe8b906cd4 RSI: 00000000400c645f RDI: 0000000000000011
-RBP: 00007ffe8b906d60 R08: 00005611ca9f7360 R09: 00005611cb62e920
-R10: 00005611c9167010 R11: 0000000000000246 R12: 00005611ca9f7360
-R13: 00005611c921d0c8 R14: 00007ffe8b906cd4 R15: 0000000000000011
- </TASK>
-Modules linked in: rfcomm ccm cmac bnep iwlmvm mac80211 btusb btrtl binfmt_misc btbcm uvcvideo btintel bluetooth x86_pkg_temp_thermal videobuf2_vmalloc videobuf2_memops videobuf2_v4l2 videobuf2_common videodev nls_iso8859_1 intel_powerclamp mc coretemp ecdh_generic ecc libarc4 kvm_intel wmi_bmof iwlwifi snd_hda_codec_hdmi kvm snd_ctl_led snd_hda_codec_realtek snd_hda_codec_generic cfg80211 irqbypass snd_hda_intel snd_intel_dspcfg snd_hda_codec intel_cstate input_leds snd_hwdep thinkpad_acpi snd_hda_core serio_raw hid_multitouch nvram ledtrig_audio mei_me platform_profile snd_seq snd_pcm mei snd_timer processor_thermal_device_pci_legacy snd_seq_device intel_soc_dts_iosf processor_thermal_device processor_thermal_rfim snd ucsi_acpi typec_ucsi processor_thermal_mbox typec processor_thermal_rapl intel_rapl_common soundcore int3403_thermal int340x_thermal_zone int3400_thermal wmi acpi_thermal_rel acpi_pad sch_fq_codel msr ip_tables x_tables usbhid i915 hid_generic i2c_algo_bit
- ttm drm_kms_helper syscopyarea sysfillrect sysimgblt fb_sys_fops drm crct10dif_pclmul crc32_pclmul nvme ghash_clmulni_intel aesni_intel nvme_core intel_lpss_pci crypto_simd intel_lpss cryptd idma64 virt_dma video
-CR2: fffffffffffffff4
----[ end trace f26a0d7d10ef13d6 ]---
-RIP: 0010:shmem_read_mapping_page_gfp+0x53/0x90
-Code: af 75 5b 41 89 d0 6a 00 45 31 c9 b9 02 00 00 00 6a 00 48 8d 55 f0 4c 89 d7 e8 89 f6 ff ff 5a 85 c0 59 74 2b 48 98 48 89 45 f0 <48> 8b 10 f7 c2 00 00 80 00 48 c7 c2 fb ff ff ff 48 0f 45 c2 48 8b
-RSP: 0018:ffffa01940ec7c18 EFLAGS: 00010282
-RAX: fffffffffffffff4 RBX: 00000000000002f3 RCX: 0000000000000000
-RDX: 0000000000000000 RSI: ffffffffffffffff RDI: ffffffffaff0a3c0
-RBP: ffffa01940ec7c28 R08: 0000000000000000 R09: 0000000000000f00
-R10: 0000000000000002 R11: 0000000000000000 R12: 00000000001120d2
-R13: ffff8c6b0648a200 R14: ffff8c69a45472c0 R15: ffff8c69ba412c10
-FS:  00007ffae02f3a40(0000) GS:ffff8c6b8f7c0000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: fffffffffffffff4 CR3: 000000010efb5001 CR4: 0000000000570ee0
-PKRU: 55555554
+Queued, thanks.
 
-Ring a bell for anyone? This is an X1 gen9 laptop, intel graphics.
+Paolo
 
--- 
-Jens Axboe
+> ---
+>   arch/x86/include/asm/kvm_host.h | 1 -
+>   arch/x86/kvm/x86.c              | 2 +-
+>   2 files changed, 1 insertion(+), 2 deletions(-)
+> 
+> diff --git a/arch/x86/include/asm/kvm_host.h b/arch/x86/include/asm/kvm_host.h
+> index 88fce6ab4bbd..0232a00598f2 100644
+> --- a/arch/x86/include/asm/kvm_host.h
+> +++ b/arch/x86/include/asm/kvm_host.h
+> @@ -38,7 +38,6 @@
+>   #define __KVM_HAVE_ARCH_VCPU_DEBUGFS
+>   
+>   #define KVM_MAX_VCPUS 1024
+> -#define KVM_SOFT_MAX_VCPUS 710
+>   
+>   /*
+>    * In x86, the VCPU ID corresponds to the APIC ID, and APIC IDs
+> diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
+> index ac83d873d65b..91ef1b872b90 100644
+> --- a/arch/x86/kvm/x86.c
+> +++ b/arch/x86/kvm/x86.c
+> @@ -4137,7 +4137,7 @@ int kvm_vm_ioctl_check_extension(struct kvm *kvm, long ext)
+>   		r = !static_call(kvm_x86_cpu_has_accelerated_tpr)();
+>   		break;
+>   	case KVM_CAP_NR_VCPUS:
+> -		r = KVM_SOFT_MAX_VCPUS;
+> +		r = num_online_cpus();
+>   		break;
+>   	case KVM_CAP_MAX_VCPUS:
+>   		r = KVM_MAX_VCPUS;
+> 
 
