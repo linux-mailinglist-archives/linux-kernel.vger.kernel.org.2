@@ -2,212 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B358844DD6A
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Nov 2021 22:57:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EE6BF44DD67
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Nov 2021 22:57:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233666AbhKKWAV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Nov 2021 17:00:21 -0500
-Received: from mga04.intel.com ([192.55.52.120]:23621 "EHLO mga04.intel.com"
+        id S233431AbhKKWAL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Nov 2021 17:00:11 -0500
+Received: from mail.kernel.org ([198.145.29.99]:55288 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229520AbhKKWAT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Nov 2021 17:00:19 -0500
-X-IronPort-AV: E=McAfee;i="6200,9189,10165"; a="231744048"
-X-IronPort-AV: E=Sophos;i="5.87,227,1631602800"; 
-   d="scan'208";a="231744048"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Nov 2021 13:57:29 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.87,227,1631602800"; 
-   d="scan'208";a="534551418"
-Received: from irvmail001.ir.intel.com ([10.43.11.63])
-  by orsmga001.jf.intel.com with ESMTP; 11 Nov 2021 13:57:24 -0800
-Received: from alobakin-mobl.ger.corp.intel.com (llademan-MOBL2.ger.corp.intel.com [10.213.31.137])
-        by irvmail001.ir.intel.com (8.14.3/8.13.6/MailSET/Hub) with ESMTP id 1ABLvLZX026406;
-        Thu, 11 Nov 2021 21:57:22 GMT
-From:   Alexander Lobakin <alexandr.lobakin@intel.com>
-To:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>
-Cc:     Alexander Lobakin <alexandr.lobakin@intel.com>,
-        Jesse Brandeburg <jesse.brandeburg@intel.com>,
-        Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
-        Michal Swiatkowski <michal.swiatkowski@intel.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Kumar Kartikeya Dwivedi <memxor@gmail.com>,
-        netdev@vger.kernel.org, bpf@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH bpf] samples: bpf: fix summary per-sec stats in xdp_sample_user
-Date:   Thu, 11 Nov 2021 22:57:03 +0100
-Message-Id: <20211111215703.690-1-alexandr.lobakin@intel.com>
-X-Mailer: git-send-email 2.33.1
+        id S229652AbhKKWAK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 11 Nov 2021 17:00:10 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4880261252;
+        Thu, 11 Nov 2021 21:57:20 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1636667840;
+        bh=ticax1p1bJ7oVmYMeKFcEh+6vye+SfczkbikmorTPkM=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:From;
+        b=q1eZA77xr96iZ+RsxYzDxqMYvzLNdL0DtUZE1GbbuCdnAWdfN5LkrEcgFKRIekTqC
+         bn16QeJN8A1zo3JWq6Z/nH0GFeuSedeYjjxK01OTwMU/X5fo9IONrW37ccTcLnZYg0
+         5GRvLoovJnlOXcymAFj4m0wDTy1h441zsmmAWQrhQcSX07hLmKVOfGdC+mCPZZZ6yJ
+         id2OC09/wiW3WMdfxPs+YrVP3KVWoCl8pXrorw4evj/z8fXb2qJdNsvpKRY5DwX6I2
+         ISAeHsp4x24o1l/MTA3Cylm3jfNiV35Vxq8l4ex/hfnGXjXsdPcLRuk4HKTcMMG2CS
+         WPd+/7fC+n0XA==
+Date:   Thu, 11 Nov 2021 15:57:18 -0600
+From:   Bjorn Helgaas <helgaas@kernel.org>
+To:     Jim Quinlan <jim2101024@gmail.com>
+Cc:     linux-pci@vger.kernel.org, Bjorn Helgaas <bhelgaas@google.com>,
+        Nicolas Saenz Julienne <nsaenz@kernel.org>,
+        Rob Herring <robh@kernel.org>, Mark Brown <broonie@kernel.org>,
+        bcm-kernel-feedback-list@broadcom.com, james.quinlan@broadcom.com,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
+        "moderated list:BROADCOM BCM2711/BCM2835 ARM ARCHITECTURE" 
+        <linux-rpi-kernel@lists.infradead.org>,
+        "moderated list:BROADCOM BCM2711/BCM2835 ARM ARCHITECTURE" 
+        <linux-arm-kernel@lists.infradead.org>,
+        open list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v8 1/8] PCI: brcmstb: Change brcm_phy_stop() to return
+ void
+Message-ID: <20211111215718.GA1353371@bhelgaas>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211110221456.11977-2-jim2101024@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-sample_summary_print() uses accumulated period to calculate and
-display per-sec averages. This period gets incremented by sampling
-interval each time a new sample is formed, and thus equals to the
-number of samples collected multiplied by this interval.
-However, the totals are being calculated differently, they receive
-current sample statistics already divided by the interval gotten as
-a difference between sample timestamps for better precision -- in
-other words, they are being incremented by the per-sec values each
-sample.
-This leads to the excessive division of summary per-secs when
-interval != 1 sec. It is obvious pps couldn't become two times
-lower just from picking a different sampling interval value:
+On Wed, Nov 10, 2021 at 05:14:41PM -0500, Jim Quinlan wrote:
+> We do not use the result of this function so make it void.
 
-$ samples/bpf/xdp_redirect_cpu -p xdp_prognum_n1_inverse_qnum -c all
-  -s -d 6 -i 1
-< snip >
-  Packets received    : 2,197,230,321
-  Average packets/s   : 22,887,816
-  Packets redirected  : 2,197,230,472
-  Average redir/s     : 22,887,817
-$ samples/bpf/xdp_redirect_cpu -p xdp_prognum_n1_inverse_qnum -c all
-  -s -d 6 -i 2
-< snip >
-  Packets received    : 159,566,498
-  Average packets/s   : 11,397,607
-  Packets redirected  : 159,566,995
-  Average redir/s     : 11,397,642
+I don't get it.  Can you expand on this?
 
-This can be easily fixed by treating the divisor not as a period,
-but rather as a total number of samples, and thus incrementing it
-by 1 instead of interval. As a nice side effect, we can now remove
-so-named argument from a couple of functions. Let us also create
-an "alias" for sample_output::rx_cnt::pps named 'num' using a union
-since this field is used to store this number (period previously)
-as well, and the resulting counter-intuitive code might've been
-a reason for this bug.
+brcm_phy_cntl() can return -EIO, which means brcm_phy_stop() can
+return -EIO, which means brcm_pcie_suspend can return -EIO.
+brcm_pcie_suspend() is the dev_pm_ops.suspend() method.
 
-Fixes: 156f886cf697 ("samples: bpf: Add basic infrastructure for XDP samples")
-Signed-off-by: Alexander Lobakin <alexandr.lobakin@intel.com>
-Reviewed-by: Jesse Brandeburg <jesse.brandeburg@intel.com>
----
- samples/bpf/xdp_sample_user.c | 28 +++++++++++++++-------------
- 1 file changed, 15 insertions(+), 13 deletions(-)
+So are you saying we never use the result of dev_pm_ops.suspend()?
 
-diff --git a/samples/bpf/xdp_sample_user.c b/samples/bpf/xdp_sample_user.c
-index b32d82178199..8740838e7767 100644
---- a/samples/bpf/xdp_sample_user.c
-+++ b/samples/bpf/xdp_sample_user.c
-@@ -120,7 +120,10 @@ struct sample_output {
- 		__u64 xmit;
- 	} totals;
- 	struct {
--		__u64 pps;
-+		union {
-+			__u64 pps;
-+			__u64 num;
-+		};
- 		__u64 drop;
- 		__u64 err;
- 	} rx_cnt;
-@@ -1322,7 +1325,7 @@ int sample_install_xdp(struct bpf_program *xdp_prog, int ifindex, bool generic,
- 
- static void sample_summary_print(void)
- {
--	double period = sample_out.rx_cnt.pps;
-+	double num = sample_out.rx_cnt.num;
- 
- 	if (sample_out.totals.rx) {
- 		double pkts = sample_out.totals.rx;
-@@ -1330,7 +1333,7 @@ static void sample_summary_print(void)
- 		print_always("  Packets received    : %'-10llu\n",
- 			     sample_out.totals.rx);
- 		print_always("  Average packets/s   : %'-10.0f\n",
--			     sample_round(pkts / period));
-+			     sample_round(pkts / num));
- 	}
- 	if (sample_out.totals.redir) {
- 		double pkts = sample_out.totals.redir;
-@@ -1338,7 +1341,7 @@ static void sample_summary_print(void)
- 		print_always("  Packets redirected  : %'-10llu\n",
- 			     sample_out.totals.redir);
- 		print_always("  Average redir/s     : %'-10.0f\n",
--			     sample_round(pkts / period));
-+			     sample_round(pkts / num));
- 	}
- 	if (sample_out.totals.drop)
- 		print_always("  Rx dropped          : %'-10llu\n",
-@@ -1355,7 +1358,7 @@ static void sample_summary_print(void)
- 		print_always("  Packets transmitted : %'-10llu\n",
- 			     sample_out.totals.xmit);
- 		print_always("  Average transmit/s  : %'-10.0f\n",
--			     sample_round(pkts / period));
-+			     sample_round(pkts / num));
- 	}
- }
- 
-@@ -1422,7 +1425,7 @@ static int sample_stats_collect(struct stats_record *rec)
- 	return 0;
- }
- 
--static void sample_summary_update(struct sample_output *out, int interval)
-+static void sample_summary_update(struct sample_output *out)
- {
- 	sample_out.totals.rx += out->totals.rx;
- 	sample_out.totals.redir += out->totals.redir;
-@@ -1430,12 +1433,11 @@ static void sample_summary_update(struct sample_output *out, int interval)
- 	sample_out.totals.drop_xmit += out->totals.drop_xmit;
- 	sample_out.totals.err += out->totals.err;
- 	sample_out.totals.xmit += out->totals.xmit;
--	sample_out.rx_cnt.pps += interval;
-+	sample_out.rx_cnt.num++;
- }
- 
- static void sample_stats_print(int mask, struct stats_record *cur,
--			       struct stats_record *prev, char *prog_name,
--			       int interval)
-+			       struct stats_record *prev, char *prog_name)
- {
- 	struct sample_output out = {};
- 
-@@ -1452,7 +1454,7 @@ static void sample_stats_print(int mask, struct stats_record *cur,
- 	else if (mask & SAMPLE_DEVMAP_XMIT_CNT_MULTI)
- 		stats_get_devmap_xmit_multi(cur, prev, 0, &out,
- 					    mask & SAMPLE_DEVMAP_XMIT_CNT);
--	sample_summary_update(&out, interval);
-+	sample_summary_update(&out);
- 
- 	stats_print(prog_name, mask, cur, prev, &out);
- }
-@@ -1495,7 +1497,7 @@ static void swap(struct stats_record **a, struct stats_record **b)
- }
- 
- static int sample_timer_cb(int timerfd, struct stats_record **rec,
--			   struct stats_record **prev, int interval)
-+			   struct stats_record **prev)
- {
- 	char line[64] = "Summary";
- 	int ret;
-@@ -1524,7 +1526,7 @@ static int sample_timer_cb(int timerfd, struct stats_record **rec,
- 		snprintf(line, sizeof(line), "%s->%s", f ?: "?", t ?: "?");
- 	}
- 
--	sample_stats_print(sample_mask, *rec, *prev, line, interval);
-+	sample_stats_print(sample_mask, *rec, *prev, line);
- 	return 0;
- }
- 
-@@ -1579,7 +1581,7 @@ int sample_run(int interval, void (*post_cb)(void *), void *ctx)
- 		if (pfd[0].revents & POLLIN)
- 			ret = sample_signal_cb();
- 		else if (pfd[1].revents & POLLIN)
--			ret = sample_timer_cb(timerfd, &rec, &prev, interval);
-+			ret = sample_timer_cb(timerfd, &rec, &prev);
- 
- 		if (ret)
- 			break;
--- 
-2.33.1
-
+> Signed-off-by: Jim Quinlan <jim2101024@gmail.com>
+> ---
+>  drivers/pci/controller/pcie-brcmstb.c | 10 +++++-----
+>  1 file changed, 5 insertions(+), 5 deletions(-)
+> 
+> diff --git a/drivers/pci/controller/pcie-brcmstb.c b/drivers/pci/controller/pcie-brcmstb.c
+> index cc30215f5a43..ff7d0d291531 100644
+> --- a/drivers/pci/controller/pcie-brcmstb.c
+> +++ b/drivers/pci/controller/pcie-brcmstb.c
+> @@ -1111,9 +1111,10 @@ static inline int brcm_phy_start(struct brcm_pcie *pcie)
+>  	return pcie->rescal ? brcm_phy_cntl(pcie, 1) : 0;
+>  }
+>  
+> -static inline int brcm_phy_stop(struct brcm_pcie *pcie)
+> +static inline void brcm_phy_stop(struct brcm_pcie *pcie)
+>  {
+> -	return pcie->rescal ? brcm_phy_cntl(pcie, 0) : 0;
+> +	if (pcie->rescal)
+> +		brcm_phy_cntl(pcie, 0);
+>  }
+>  
+>  static void brcm_pcie_turn_off(struct brcm_pcie *pcie)
+> @@ -1143,14 +1144,13 @@ static void brcm_pcie_turn_off(struct brcm_pcie *pcie)
+>  static int brcm_pcie_suspend(struct device *dev)
+>  {
+>  	struct brcm_pcie *pcie = dev_get_drvdata(dev);
+> -	int ret;
+>  
+>  	brcm_pcie_turn_off(pcie);
+> -	ret = brcm_phy_stop(pcie);
+> +	brcm_phy_stop(pcie);
+>  	reset_control_rearm(pcie->rescal);
+>  	clk_disable_unprepare(pcie->clk);
+>  
+> -	return ret;
+> +	return 0;
+>  }
+>  
+>  static int brcm_pcie_resume(struct device *dev)
+> -- 
+> 2.17.1
+> 
