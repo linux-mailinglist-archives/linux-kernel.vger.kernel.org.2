@@ -2,136 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 74D4544D930
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Nov 2021 16:31:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B5B7144D935
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Nov 2021 16:31:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233899AbhKKPeK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Nov 2021 10:34:10 -0500
-Received: from smtp-relay-internal-0.canonical.com ([185.125.188.122]:36034
-        "EHLO smtp-relay-internal-0.canonical.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233752AbhKKPeJ (ORCPT
+        id S233957AbhKKPec (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Nov 2021 10:34:32 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42662 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233987AbhKKPea (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Nov 2021 10:34:09 -0500
-Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com [209.85.208.70])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by smtp-relay-internal-0.canonical.com (Postfix) with ESMTPS id E6B273F19F
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Nov 2021 15:31:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1636644678;
-        bh=M0C7+Kz82L1iJI4IsUCerrEkcKIRCNBXuupYaoELGn8=;
-        h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-         Content-Type:In-Reply-To;
-        b=Z0tRQF3//dA43VNIN1zdtZKhc0nO+D4MQMIGSI3J+2trrtgQFvWUig6MCKzVwH3ZV
-         6wBwXN95NMjRPpw8sLF+Vzu2kW0tpNK+u7Xfa4EFzhTcR/SzlVAVO87jZUFP3SC/FS
-         bBAGIqxtIu6z2vZaU5WXtGbvUuBcNuylq2aw478Z+H6moq8ULQC4EWomODAjJhb/H7
-         eeZf1SPwh32xtW/f/gg3TKqBQ0idnURyofxuITiU6Cgil7R5Hpy2/iyvjYzFV37plQ
-         pmCWqj8xaKD/Dn9RIuoszT69PtT41RLdmTMlkFUpww8QmT32xdOREDSVc8D0bpRkyB
-         3btKJYTO4rPIQ==
-Received: by mail-ed1-f70.google.com with SMTP id w12-20020a056402268c00b003e2ab5a3370so5751830edd.0
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Nov 2021 07:31:18 -0800 (PST)
+        Thu, 11 Nov 2021 10:34:30 -0500
+Received: from mail-oi1-x231.google.com (mail-oi1-x231.google.com [IPv6:2607:f8b0:4864:20::231])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3B891C0613F5
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Nov 2021 07:31:41 -0800 (PST)
+Received: by mail-oi1-x231.google.com with SMTP id be32so12152455oib.11
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Nov 2021 07:31:41 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=8pB+WwRzjj1VLddfWPFnbpX1zEu/AXjp6IsntdVdc4M=;
+        b=eVfYB5znA4+u5yoC3kq22eC1l5Wk36GwHpTFQmVXZ+6Wi+IGQQecl5zjDn5PbwLebG
+         9NHQW2rnKHVfOfkkaCicef7RsP2uCQ3uaHpeNbs8CuQklO+liFDFxf8YCkkK098I1lms
+         6LVa5VMuACMj7YYOCiicFLyVA11JCk92IaoioXkwrVxUkIuiT5fI4BcAWKbiKu9Wf+vs
+         OlvtAvy/c7q3SnQYWw1YHaUCqAuQdqCRPiuCs3gCnSbRbM0TMH4LcRsyQLHrTiRR+o6E
+         hG2jqomYCTG9lyC3nK0iC2K+lbj+FPd/WIUSUasqzzxuFnnc/bsC+ksk+rQPBWpRUMMY
+         RVbg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=M0C7+Kz82L1iJI4IsUCerrEkcKIRCNBXuupYaoELGn8=;
-        b=3jWi6cZVKEEsbWQ3B2lBlDKJ/VHq5HAadZQTgLzKB+Xu2GpMxvZy20RHZ9NAWqVKZF
-         clU3LCU3kykLHWxnWeSJX6i8oO66VAx658DDiV/q4nvPZEHkuNBIXKMTvWPZqdwKGP9i
-         jJXop7pbCrevgaxQFYRHiO8ZZiZEnUCL9BAtyR9fbNJSpI37fvksag2r/+Ix1ScKJfln
-         NNuwn8s28p6h9LqCQBWojeIFSpa4lXfQK6l/t7AxdavBtaAtTub9iJaWbxc/tdouV9oH
-         WTt9TBxsl4NkHiSs9tlsaHpiAPaeuNzYOVOZIMmXGxFhzXHl1d+6PTQLvM+EuU8PzrLa
-         +dWw==
-X-Gm-Message-State: AOAM5307hkA+Un1w8W7rEaMPKFDjHSAV7VpBL6TWJVMFlF9PR0nwAxk8
-        SUWy8ZwxwJ5HxHxnzflRoxBgYWZ/vzZO/ktCG6LX4k2K6OCIeBVSZEiJ3gwwmH1+1cYfWdVm68g
-        lYhAfD82bsiYisLZEP1uGuH0kRVHshcBagEeSrZObiQ==
-X-Received: by 2002:a50:8741:: with SMTP id 1mr5562821edv.119.1636644678606;
-        Thu, 11 Nov 2021 07:31:18 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJxNXq3MmMTketRsMLJKPUzEi/cY9pv/3KWPhTEuC6OXxeVdf1W1fHDuZk7Csd5eUT40sk6ApA==
-X-Received: by 2002:a50:8741:: with SMTP id 1mr5562788edv.119.1636644678393;
-        Thu, 11 Nov 2021 07:31:18 -0800 (PST)
-Received: from localhost ([2001:67c:1560:8007::aac:c1b6])
-        by smtp.gmail.com with ESMTPSA id y4sm1745261edq.13.2021.11.11.07.31.17
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 11 Nov 2021 07:31:18 -0800 (PST)
-Date:   Thu, 11 Nov 2021 16:31:17 +0100
-From:   Andrea Righi <andrea.righi@canonical.com>
-To:     Jakub Kicinski <kuba@kernel.org>
-Cc:     Shuah Khan <shuah@kernel.org>,
-        "David S . Miller" <davem@davemloft.net>,
-        linux-kselftest@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] selftests: net: properly support IPv6 in GSO GRE test
-Message-ID: <YY03RcYshbQFJBRb@arighi-desktop>
-References: <20211104104613.17204-1-andrea.righi@canonical.com>
- <20211111072048.00852448@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=8pB+WwRzjj1VLddfWPFnbpX1zEu/AXjp6IsntdVdc4M=;
+        b=6h3b09vIwTmHvZkxbEKVYIDK8OlLWrs7F4RRgIn0xM9+Fi1KpqG45U6LH8emLtE9zk
+         0tONLcucAyb5y5N9boCe8l29xy67NN2BNWlm6XW4K2n64GSxQrvXEI6ooQJzso9ChPLb
+         k2KbSPd/HWjIwDJKCjgemX8O9Av5KXxxjfUfR5yWX8A9dzn2fM5cOdVKRT36XKVh20K/
+         zjL1ZJhCa8gBEGUNL+UUbLKTFpJ1GDgRg2dnh4wXvjb48AQau/8BmwDG1z94V6lhpW7y
+         fjELtgXhTFwTPVSZBdLI8+VODdIXYXfL28gWURp/3UgryA4U24TP6ayzKeeCTM9gcaw/
+         7H0g==
+X-Gm-Message-State: AOAM532dpzdEB32BTfRK0k+ftkwfILuegwYmZwALOg8uVA8J/7ycv0e1
+        1xWioE4wmWgIpA2y8P7HTf9UqACXJMyWTx+bhHFgkA==
+X-Google-Smtp-Source: ABdhPJwfj+szv19ZdA3wyhVqNUMQ0EA+/NDT2FaE6iQd8Igj9fZrBAlPin27pfo4wMPzekrNeaOxHlxFTjTEVk+FqJc=
+X-Received: by 2002:a05:6808:60e:: with SMTP id y14mr6897527oih.162.1636644700468;
+ Thu, 11 Nov 2021 07:31:40 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211111072048.00852448@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+References: <20211110231436.8866-1-zajec5@gmail.com>
+In-Reply-To: <20211110231436.8866-1-zajec5@gmail.com>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Thu, 11 Nov 2021 16:31:28 +0100
+Message-ID: <CACRpkdbAS0JiqTQUU0R0yRhVCwagubwsNYLxj1DLE1Ldc+H_JQ@mail.gmail.com>
+Subject: Re: [PATCH RFC] dt-bindings: pinctrl: support specifying pins
+To:     =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>,
+        ext Tony Lindgren <tony@atomide.com>
+Cc:     Rob Herring <robh+dt@kernel.org>, linux-gpio@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <rafal@milecki.pl>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 11, 2021 at 07:20:48AM -0800, Jakub Kicinski wrote:
-> On Thu,  4 Nov 2021 11:46:13 +0100 Andrea Righi wrote:
-> > Explicitly pass -6 to netcat when the test is using IPv6 to prevent
-> > failures.
-> > 
-> > Also make sure to pass "-N" to netcat to close the socket after EOF on
-> > the client side, otherwise we would always hit the timeout and the test
-> > would fail.
-> > 
-> > Without this fix applied:
-> > 
-> >  TEST: GREv6/v4 - copy file w/ TSO                                   [FAIL]
-> >  TEST: GREv6/v4 - copy file w/ GSO                                   [FAIL]
-> >  TEST: GREv6/v6 - copy file w/ TSO                                   [FAIL]
-> >  TEST: GREv6/v6 - copy file w/ GSO                                   [FAIL]
-> > 
-> > With this fix applied:
-> > 
-> >  TEST: GREv6/v4 - copy file w/ TSO                                   [ OK ]
-> >  TEST: GREv6/v4 - copy file w/ GSO                                   [ OK ]
-> >  TEST: GREv6/v6 - copy file w/ TSO                                   [ OK ]
-> >  TEST: GREv6/v6 - copy file w/ GSO                                   [ OK ]
-> > 
-> > Fixes: 025efa0a82df ("selftests: add simple GSO GRE test")
-> > Signed-off-by: Andrea Righi <andrea.righi@canonical.com>
-> 
-> This breaks the test for me on Fedora now :(
+On Thu, Nov 11, 2021 at 12:14 AM Rafa=C5=82 Mi=C5=82ecki <zajec5@gmail.com>=
+ wrote:
 
-Oops, sorry about that.
+> While working with pinctrl in Linux I started wondering if we could
+> start specifying pins in DT instead of Linux drivers. When working with
+> DT we usually avoid hardcoding hardware description in drivers so it
+> isn't clear to me why it doesn't apply to pins.
 
-> 
-> nc: invalid option -- 'N'
-> Ncat: Try `--help' or man(1) ncat for more information, usage options and help. QUITTING.
->     TEST: GREv6/v4 - copy file w/ TSO                                   [FAIL]
-> nc: invalid option -- 'N'
-> Ncat: Try `--help' or man(1) ncat for more information, usage options and help. QUITTING.
->     TEST: GREv6/v4 - copy file w/ GSO                                   [FAIL]
-> nc: invalid option -- 'N'
-> Ncat: Try `--help' or man(1) ncat for more information, usage options and help. QUITTING.
->     TEST: GREv6/v6 - copy file w/ TSO                                   [FAIL]
-> nc: invalid option -- 'N'
-> Ncat: Try `--help' or man(1) ncat for more information, usage options and help. QUITTING.
->     TEST: GREv6/v6 - copy file w/ GSO                                   [FAIL]
-> 
-> Tests passed:   0
-> Tests failed:   4
-> 
-> 
-> Can you please test this on your distro?
+Historically this is what pinctrl-single.c does.
+Documentation/devicetree/bindings/pinctrl/pinctrl-single.txt
 
-Tested, it works fine in Ubuntu as well:
+At the time we created pin control there was a bit back-and-forth and
+the conclusion was that there is not one-size-fits all for pin defines.
 
-$ sudo ./tools/testing/selftests/net/gre_gso.sh
-    TEST: GREv6/v4 - copy file w/ TSO                                   [ OK ]
-    TEST: GREv6/v4 - copy file w/ GSO                                   [ OK ]
-    TEST: GREv6/v6 - copy file w/ TSO                                   [ OK ]
-    TEST: GREv6/v6 - copy file w/ GSO                                   [ OK ]
+The reason TI (Tony) wanted to push the information into DT
+was that what he gets is a number of unprocessed ASIC datasets,
+that are then turned into tables with a script. Header files or DTS
+source alike, but some kind of tables.
 
-Tests passed:   4
-Tests failed:   0
+At the time (2011?) it was unclear what kind of data should go into
+e.g. header and data files in the kernel (modules) and what should
+go into the DT. So the approach to put pin information into the DT
+was allowed for pinctrl-single.
 
-Tested-by: Andrea Righi <andrea.righi@canonical.com>
+The way I have understood it, DT maintainers have since gotten
+a bit wary about (ab)using the DT as a container for "anything data"
+and prefer that drivers contain details and derive these from
+compatible strings.
+
+As of today, IIUC the DT maintainers are against this scheme.
+
+That said, the topic is open in a way. Some people are also annoyed
+that some graphics drivers just ask Torvalds to pull 100.000+ lines
+of register defnes in some merge windows. The data has to go
+somewhere.
+
+Yours,
+Linus Walleij
