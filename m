@@ -2,72 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EC91D44D5A9
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Nov 2021 12:16:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 433F444D5AF
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Nov 2021 12:18:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232964AbhKKLT0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Nov 2021 06:19:26 -0500
-Received: from inva021.nxp.com ([92.121.34.21]:33972 "EHLO inva021.nxp.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230400AbhKKLTZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Nov 2021 06:19:25 -0500
-Received: from inva021.nxp.com (localhost [127.0.0.1])
-        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id 68CFE201372;
-        Thu, 11 Nov 2021 12:16:35 +0100 (CET)
-Received: from inva024.eu-rdc02.nxp.com (inva024.eu-rdc02.nxp.com [134.27.226.22])
-        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id 5BB7B20136F;
-        Thu, 11 Nov 2021 12:16:35 +0100 (CET)
-Received: from fsr-ub1664-175.ea.freescale.net (fsr-ub1664-175.ea.freescale.net [10.171.82.40])
-        by inva024.eu-rdc02.nxp.com (Postfix) with ESMTP id E25E62039A;
-        Thu, 11 Nov 2021 12:16:34 +0100 (CET)
-From:   Abel Vesa <abel.vesa@nxp.com>
-To:     Martin Kepplinger <martink@posteo.de>,
-        Shawn Guo <shawnguo@kernel.org>, Rob Herring <robh@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>
-Cc:     NXP Linux Team <linux-imx@nxp.com>,
-        linux-arm-kernel@lists.infradead.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        devicetree@vger.kernel.org, Abel Vesa <abel.vesa@nxp.com>
-Subject: [PATCH] arm64: dts: freescale: imx8mq: Disable noc dts node
-Date:   Thu, 11 Nov 2021 13:16:09 +0200
-Message-Id: <1636629369-23988-1-git-send-email-abel.vesa@nxp.com>
-X-Mailer: git-send-email 2.7.4
-X-Virus-Scanned: ClamAV using ClamSMTP
+        id S233009AbhKKLVK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Nov 2021 06:21:10 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:50609 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229668AbhKKLVC (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 11 Nov 2021 06:21:02 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1636629493;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=Cm+DUi8ko4XSbRJD2kBqXRStf4XmBaQnXCvcSQsugM4=;
+        b=O7OOvBcQuZjmXK/lX+1egIUxRrTeKwPtodZyIMhTfFHcsn9cA92ffIcZkPD7RKqBIDFEew
+        HO3WfzDe7EgOF+bpnp+6GwuGjWxdrg2xugHZ+z98o4gZkk0rH/HpB+yOjImFtfsg5aVBPh
+        wsfEWTfLlwJ0xB1/NTQJMEHdssLkEC4=
+Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com
+ [209.85.128.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-459-dlkdIVKEMeKhwf0MvRVb4w-1; Thu, 11 Nov 2021 06:18:12 -0500
+X-MC-Unique: dlkdIVKEMeKhwf0MvRVb4w-1
+Received: by mail-wm1-f70.google.com with SMTP id g80-20020a1c2053000000b003331a764709so4640272wmg.2
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Nov 2021 03:18:12 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:references:from:in-reply-to
+         :content-transfer-encoding;
+        bh=Cm+DUi8ko4XSbRJD2kBqXRStf4XmBaQnXCvcSQsugM4=;
+        b=e6SgDpCbsVWRci9fIibEOboZnzdB7DiMsGcFzAx6m0ETrhNzf/k+Zw8ZPotIoZi18H
+         VPQhrlm8pI2w8PKvWv+pO8URMy8H7oNAZlaoCqlJIjK2Qdhhba4io8hMsh6lnOEkR5Ly
+         NUOZr8/1jjzoq+vXRX7aPsPfyyuf0o5miqQOEBXIGIoSVZjoWpoKUa6T/pE8pLeW+/2K
+         cjbq9kLmxWwSOfgxe3P+6PydWRaEH78jcCwOLiR5Y5PtdQYGG+Su68w/IGr0LEJGimq2
+         mgwHguHTJyxXWyiNe1UFjOtmOHag+SoGFM0L1kZRY2dmh/wHj2fPvA6wfby6J4gfJG7W
+         XAhQ==
+X-Gm-Message-State: AOAM532rBtvHToMR8jXLnbBxLjXifCbJRKzRxKqCxzLwSBiq4tmj927q
+        5CKiMJ6S32appbDGjeOyQ0mG74SOFie8TCLCpKFqM9dEyCsw+DyO1crDGg4aDX+20f4CdfrEdA3
+        jE0Ocato2vE1Cz+A2PkuwzNgFBk2CxXwvMb7YiLtcd7vd/MhaqhtljMGLinDQf8LWw/pHSk1XQ3
+        0=
+X-Received: by 2002:a7b:c7d5:: with SMTP id z21mr24715999wmk.40.1636629491017;
+        Thu, 11 Nov 2021 03:18:11 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJw4QxzjI3CdpXCnsWkA7eOREXt8H1mIwhs9QLzOlluAuSBhSe0vmw+5iQBIRwQe7D8C02d50Q==
+X-Received: by 2002:a7b:c7d5:: with SMTP id z21mr24715959wmk.40.1636629490719;
+        Thu, 11 Nov 2021 03:18:10 -0800 (PST)
+Received: from [192.168.1.102] ([92.176.231.106])
+        by smtp.gmail.com with ESMTPSA id o2sm2797562wrg.1.2021.11.11.03.18.09
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 11 Nov 2021 03:18:10 -0800 (PST)
+Message-ID: <62258612-be91-d195-58e4-057819e7b29e@redhat.com>
+Date:   Thu, 11 Nov 2021 12:18:09 +0100
+MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.2.0
+Subject: Re: [PATCH] fbdev: Prevent probing generic drivers if a FB is already
+ registered
+Content-Language: en-US
+To:     linux-kernel@vger.kernel.org, Sam Ravnborg <sam@ravnborg.org>,
+        linux-fbdev@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Ilya Trukhanov <lahvuun@gmail.com>
+References: <20211111092053.1328304-1-javierm@redhat.com>
+ <YYzoWTMBkC64a4Cn@phenom.ffwll.local>
+From:   Javier Martinez Canillas <javierm@redhat.com>
+In-Reply-To: <YYzoWTMBkC64a4Cn@phenom.ffwll.local>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Adding interconnect properties to the consumer nodes creates
-a dependency on noc device. The imx-bus devfreq driver is not usable
-without the full interconnect support. The interconnect is not yet
-working on i.MX platforms. The devlink created on device_add makes
-the lcdif and other nodes that have the interconnect properties
-wait for the noc (imx-bus driver) to probe first.
+Hello Daniel,
 
-To make sure the interconnect consumers (nodes that have interconnect
-properties already added) will still probe, lets disable the noc node
-for now. Once the interconnect on i.MX platforms is fully functional,
-the status of the noc node can be changed.
+On 11/11/21 10:54, Daniel Vetter wrote:
+> On Thu, Nov 11, 2021 at 10:20:53AM +0100, Javier Martinez Canillas wrote:
+>> The efifb and simplefb drivers just render to a pre-allocated frame buffer
+>> and rely on the display hardware being initialized before the kernel boots.
+>>
+>> But if another driver already probed correctly and registered a fbdev, the
+>> generic drivers shouldn't be probed since an actual driver for the display
+>> hardware is already present.
+>>
+>> Reported-by: Ilya Trukhanov <lahvuun@gmail.com>
+>> Signed-off-by: Javier Martinez Canillas <javierm@redhat.com>
+> 
+> Reviewed-by: Daniel Vetter <daniel.vetter@ffwll.ch>
+>
 
-Fixes: ad1abc8a03fdbc05b ("arm64: dts: imx8mq: Add interconnect for lcdif")
-Signed-off-by: Abel Vesa <abel.vesa@nxp.com>
----
- arch/arm64/boot/dts/freescale/imx8mq.dtsi | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/arch/arm64/boot/dts/freescale/imx8mq.dtsi b/arch/arm64/boot/dts/freescale/imx8mq.dtsi
-index 972766b67a15..f3182878f596 100644
---- a/arch/arm64/boot/dts/freescale/imx8mq.dtsi
-+++ b/arch/arm64/boot/dts/freescale/imx8mq.dtsi
-@@ -1305,6 +1305,7 @@ noc: interconnect@32700000 {
- 			fsl,ddrc = <&ddrc>;
- 			#interconnect-cells = <1>;
- 			operating-points-v2 = <&noc_opp_table>;
-+			status = "disabled";
+Thanks for your review.
  
- 			noc_opp_table: opp-table {
- 				compatible = "operating-points-v2";
+> Also Cc: stable@vger.kernel.org?
+> 
+> btw time to organize drm-misc commit rights so you can push stuff like
+> this?
+
+Yes, I'll start the process today to request that.
+
+> -Daniel
+> 
+
+Best regards,
 -- 
-2.31.1
+Javier Martinez Canillas
+Linux Engineering
+Red Hat
 
