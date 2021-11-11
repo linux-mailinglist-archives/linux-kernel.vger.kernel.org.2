@@ -2,199 +2,348 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 99D8444DAB2
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Nov 2021 17:45:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4FD5A44DAAE
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Nov 2021 17:45:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234313AbhKKQsD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Nov 2021 11:48:03 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59828 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234222AbhKKQsB (ORCPT
+        id S234175AbhKKQru (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Nov 2021 11:47:50 -0500
+Received: from so254-9.mailgun.net ([198.61.254.9]:41439 "EHLO
+        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233902AbhKKQrr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Nov 2021 11:48:01 -0500
-Received: from mail-ed1-x533.google.com (mail-ed1-x533.google.com [IPv6:2a00:1450:4864:20::533])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA3F2C0613F5;
-        Thu, 11 Nov 2021 08:45:11 -0800 (PST)
-Received: by mail-ed1-x533.google.com with SMTP id g14so26603846edz.2;
-        Thu, 11 Nov 2021 08:45:11 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=u7NxryXErjXtkrtdjeJl2OkLP7Fwd8D1Ac4yme0xpGQ=;
-        b=TXzXvJntdUq1otyeLiWQQz1xbD3C6bknEk53APVTv1dGvccxr3/O8hJRWEmM8q22mA
-         ugPSVetDIQ9Ci+i5pfRRMlCp+1bwBGRGdWfZLvzUZ5ZQAjY7hOOogjpI5etzsA+hN8ZM
-         Nz1uaucW3DBCe3k4sCGaBQx9Y3e94iZ212dCtTIRue6LedtSyVPY3HBiuW20OWQe4qsq
-         uXCNvDsSZQhf1iM7pvhLjyUFu/aJx5VggCeexUSmrMmHZ7fMnzbmUiwHZZhPXAKRQT/1
-         97Lk+/443fUpLanduElQPFS+Ka4n7772e/vFExdm1zeYIVgpM1P8+3pQ5D5xmlBGvB46
-         zqww==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=u7NxryXErjXtkrtdjeJl2OkLP7Fwd8D1Ac4yme0xpGQ=;
-        b=uJ3ilwp1bigx/hwGz7+9h/RxlzdpGxJBc4Vo+P3O0Vd7KSTrJJronw3jf1+0XfxTP4
-         GlHXJp6KM5VLhBYGEH6VBs0D7svHJt9Ql5aHUUkm9DsbFrSbNdrPiBetZIiHPIQSdH9g
-         GPKi20m6gwtk8z9y7Nf+OpBD5n3fgQStmwlJobmx9+m/Emjyj2U9PrzerEQPdEHSURJW
-         a0Ib4BhzNXWBNu8958tOYE8czAqZv6s39SEPoFmaFwDhr9/suVssjHLPiD0MrANOkpom
-         lIfNXdnqnnxR8ChNg2snTUj90wU3cM8A+O3q5RzqJtRsDlbfGkq0dqbdvzmT91mICzC9
-         6UDw==
-X-Gm-Message-State: AOAM530a3bEcINvQxicgWyYK/Uap5rLSRuOjyxUpW/aZuZJGxkHauFFi
-        wFGVgqtyIUqLUQnodLXUGT0RS8p3oW5UOMALoig=
-X-Google-Smtp-Source: ABdhPJwy83UujwqCbhFtQEDkTPXfMQEi2mcXedjgv4a3KHMqQWTQdxZxGfPia4GU9ivaP3diFl56L5qWBluJyimK2nw=
-X-Received: by 2002:a17:906:2887:: with SMTP id o7mr10760234ejd.425.1636649110429;
- Thu, 11 Nov 2021 08:45:10 -0800 (PST)
+        Thu, 11 Nov 2021 11:47:47 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1636649098; h=Content-Transfer-Encoding: Content-Type:
+ In-Reply-To: From: References: Cc: To: Subject: MIME-Version: Date:
+ Message-ID: Sender; bh=//ebf0pTl7FqUfYkQSfNfcnD3tef4Up1ihIo7rYioHA=; b=nm9bouR2ghUrlHArflSjIa59hZ3ci15TjpMJ9NsvZ9heuqZt8mC2WLNu3/mKK0IdVeuJWthR
+ rwuSD8Y7mVgBXjDfRjJfbgGLUxPBCyvm2OjXOteibvMnBJlSSligUw5VegZLE+Yivm81ICkl
+ 82EGKW23ptu38c8ELSoNqW9Hjjo=
+X-Mailgun-Sending-Ip: 198.61.254.9
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n01.prod.us-east-1.postgun.com with SMTP id
+ 618d487cf6c5b6c8d5c62c8b (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 11 Nov 2021 16:44:44
+ GMT
+Sender: akhilpo=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id C8A3BC4338F; Thu, 11 Nov 2021 16:44:43 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-6.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        NICE_REPLY_A,SPF_FAIL,URIBL_BLOCKED autolearn=unavailable autolearn_force=no
+        version=3.4.0
+Received: from [192.168.1.16] (unknown [117.210.184.103])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: akhilpo)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 74C4DC4338F;
+        Thu, 11 Nov 2021 16:44:34 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 smtp.codeaurora.org 74C4DC4338F
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=codeaurora.org
+Message-ID: <1aa5b508-d225-1dbc-63ab-0958ac94c18a@codeaurora.org>
+Date:   Thu, 11 Nov 2021 22:14:31 +0530
 MIME-Version: 1.0
-References: <CAHifhD5V9vwJenRLcPRH5ZMeLa_JnjZKfdcFZw1CjceBtC6=Ew@mail.gmail.com>
- <CAHp75VeyQEaABFOnEUh2pdFx9ROJvRcud-BuEbKWmaEWpL9_Uw@mail.gmail.com>
- <CAHifhD7Qf7+dc7K-MjNguqmiCWUxOJZmQoCTRUZOR-RWMm_JPw@mail.gmail.com>
- <CAHp75Ve9BMNy3gP=-Dajm+Lgu+E4FCqc4phLgV1_cr2qUnTX_w@mail.gmail.com>
- <CAHifhD4n7O5eWFPOjRAmHYL52tW0K=uXXzVj7L5+enTFwFXW2A@mail.gmail.com>
- <CAArk9MP5cKJ+VhAZUseW4LnQNRvux=MZe2eSy3rQkbHKnUsGig@mail.gmail.com>
- <CAHp75VdRwvU5WjFP5E4gg8U+_e34A0Lwze+nz_wVHoB49jLeLg@mail.gmail.com>
- <CAArk9MNGSxR+92n-D2pe_+r+Z0Q9FoTMPqk11sAKA=4Vckj0HQ@mail.gmail.com>
- <YYy7QZGKeEEfI1mH@lahna> <CAHifhD5bXu2nP533RXyWDnyNt=k2rRZq5Z6A6CCik_2e6XNgGA@mail.gmail.com>
- <YYzxWPIWFAV04LRU@lahna> <CAD2FfiGnmFSTPvkJaXj+cf4yDvci-j+2QkpMqNY821fUT5C=CA@mail.gmail.com>
- <CAHp75Vcp=hC1oL5FBQDDFe8EBxWB9Po4FKNS9ZGtD3q-yQPtAw@mail.gmail.com>
- <CAHifhD6p9qSm5dv1spz+oPRhRkBZeQspHNEphE49fODacm-S6g@mail.gmail.com>
- <CAHp75Vfk5WHWiQxwmqEzVEymgpvjxKWEZbaQ9+=Et7N63Ps=Ng@mail.gmail.com>
- <CAHifhD5bGZOcZFNsHYFeecikHGUts73U4k6=aUVNTKEeETW5rQ@mail.gmail.com>
- <CAHp75VeSnXfjeNeBLtrR78AmB-18kTeXpknn7-jcPLEeWCrzXQ@mail.gmail.com> <CAHifhD4KbLQTA1=vVCeftKybSjU1tHGk7OZn4PN55eXUu-yKog@mail.gmail.com>
-In-Reply-To: <CAHifhD4KbLQTA1=vVCeftKybSjU1tHGk7OZn4PN55eXUu-yKog@mail.gmail.com>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Thu, 11 Nov 2021 18:44:25 +0200
-Message-ID: <CAHp75Vfc85XnVmnJ0ytm_XCGSoqFfiMQ3jxXCudsyo5XW6brTQ@mail.gmail.com>
-Subject: Re: [PATCH] firmware: export x86_64 platform flash bios region via sysfs
-To:     Hans-Gert Dahmen <hans-gert.dahmen@immu.ne>
-Cc:     Richard Hughes <hughsient@gmail.com>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        Mauro Lima <mauro.lima@eclypsium.com>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Philipp Deppenwiese <philipp.deppenwiese@immu.ne>,
-        "platform-driver-x86@vger.kernel.org" 
-        <platform-driver-x86@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
+ Thunderbird/91.1.1
+Subject: Re: [PATCH 2/5] drm/msm: Drop priv->lastctx
+Content-Language: en-US
+To:     Rob Clark <robdclark@gmail.com>, dri-devel@lists.freedesktop.org
+Cc:     freedreno@lists.freedesktop.org, linux-arm-msm@vger.kernel.org,
+        Jordan Crouse <jordan@cosmicpenguin.net>,
+        Rob Clark <robdclark@chromium.org>,
+        Sean Paul <sean@poorly.run>, David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Iskren Chernev <iskren.chernev@gmail.com>,
+        Dan Carpenter <dan.carpenter@oracle.com>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@somainline.org>,
+        Konrad Dybcio <konrad.dybcio@somainline.org>,
+        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+        Marijn Suijten <marijn.suijten@somainline.org>,
+        Jonathan Marek <jonathan@marek.ca>,
+        Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>,
+        Sharat Masetty <smasetty@codeaurora.org>,
+        Douglas Anderson <dianders@chromium.org>,
+        Yangtao Li <tiny.windzz@gmail.com>,
+        open list <linux-kernel@vger.kernel.org>
+References: <20211109181117.591148-1-robdclark@gmail.com>
+ <20211109181117.591148-3-robdclark@gmail.com>
+From:   Akhil P Oommen <akhilpo@codeaurora.org>
+In-Reply-To: <20211109181117.591148-3-robdclark@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 11, 2021 at 6:07 PM Hans-Gert Dahmen
-<hans-gert.dahmen@immu.ne> wrote:
-> Am Do., 11. Nov. 2021 um 16:31 Uhr schrieb Andy Shevchenko
-> <andy.shevchenko@gmail.com>:
-> > On Thu, Nov 11, 2021 at 4:33 PM Hans-Gert Dahmen
-> > <hans-gert.dahmen@immu.ne> wrote:
-> > > Am Do., 11. Nov. 2021 um 14:55 Uhr schrieb Andy Shevchenko
-> > > <andy.shevchenko@gmail.com>:
-> > > > On Thu, Nov 11, 2021 at 2:56 PM Hans-Gert Dahmen
-> > > > <hans-gert.dahmen@immu.ne> wrote:
-> > > > > Am Do., 11. Nov. 2021 um 13:46 Uhr schrieb Andy Shevchenko
-> > > > > <andy.shevchenko@gmail.com>:
-> > > > > > On Thu, Nov 11, 2021 at 1:46 PM Richard Hughes <hughsient@gmail.com> wrote:
-> > > > > > > On Thu, 11 Nov 2021 at 10:33, Mika Westerberg
-> > > > > > > <mika.westerberg@linux.intel.com> wrote:
-> > > > > >
-> > > > > > > it's always going to work on x64 -- if the system firmware isn't available at that offset then the platform just isn't going to boot.
-> > > > > >
-> > > > > > Well, it's _usual_ case, but in general the assumption is simply
-> > > > > > incorrect. Btw, have you checked it on Coreboot enabled platforms?
-> > > > > > What about bare metal configurations where the bootloader provides
-> > > > > > services to the OS?
-> > > > >
-> > > > > No it is always the case. I suggest you go read your own Intel specs
-> > > > > and datasheets
-> > > >
-> > > > Point me out, please, chapters in SDM (I never really read it in full,
-> > > > it's kinda 10x Bible size). What x86 expects is 16 bytes at the end of
-> > > > 1Mb physical address space that the CPU runs at first.
-> > >
-> > > So you do not know what you are talking about, am I correct?
-> >
-> > Let me comment on this provocative question later, after some other
-> > comments first.
-> >
-> > > Starting
-> > > from 386 the first instruction is executed at 0xFFFFFFF0h. What you
-> > > are referring to is the 8086 reset vector and that was like 40 years
-> > > ago.
-> >
-> > True. The idea is the same, It has a reset vector standard for x86
-> > (which doesn't explicitly tell what is there). So, nothing new or
-> > different here.
-> >
-> > > Please refer to SDM volume 3A, chapter 9, section 9.1.4 "First
-> > > Instruction Executed", paragraph two. Just watch out for the hex
-> > > number train starting with FFFFF... then you will find it. This is
-> > > what requires the memory range to be mapped. Modern Intel CPUs require
-> > > larger portions, because of the ACM loading and XuCode and whatnot.
-> >
-> > Thanks. Have you read 9.7 and 9.8, btw?
-> > Where does it tell anything about memory to be mapped to a certain
-> > address, except the last up to 16 bytes?
-> >
->
-> It doesn't, except that the FIT, ACM, BootGuard, XuCode stuff rely on
-> their binaries to be there, this just sets the upper address limit of
-> the window.
+On 11/9/2021 11:41 PM, Rob Clark wrote:
+> From: Rob Clark <robdclark@chromium.org>
+> 
+> cur_ctx_seqno already does the same thing, but handles the edge cases
+> where a refcnt'd context can live after lastclose.  So let's not have
+> two ways to do the same thing.
+> 
+> Signed-off-by: Rob Clark <robdclark@chromium.org>
+> ---
+>   drivers/gpu/drm/msm/adreno/a2xx_gpu.c |  3 +--
+>   drivers/gpu/drm/msm/adreno/a3xx_gpu.c |  3 +--
+>   drivers/gpu/drm/msm/adreno/a4xx_gpu.c |  3 +--
+>   drivers/gpu/drm/msm/adreno/a5xx_gpu.c |  8 +++-----
+>   drivers/gpu/drm/msm/adreno/a6xx_gpu.c |  9 +++------
+>   drivers/gpu/drm/msm/adreno/a6xx_gpu.h | 10 ----------
+>   drivers/gpu/drm/msm/msm_drv.c         |  6 ------
+>   drivers/gpu/drm/msm/msm_drv.h         |  2 +-
+>   drivers/gpu/drm/msm/msm_gpu.c         |  2 +-
+>   drivers/gpu/drm/msm/msm_gpu.h         | 11 +++++++++++
+>   10 files changed, 22 insertions(+), 35 deletions(-)
+> 
+> diff --git a/drivers/gpu/drm/msm/adreno/a2xx_gpu.c b/drivers/gpu/drm/msm/adreno/a2xx_gpu.c
+> index bdc989183c64..22e8295a5e2b 100644
+> --- a/drivers/gpu/drm/msm/adreno/a2xx_gpu.c
+> +++ b/drivers/gpu/drm/msm/adreno/a2xx_gpu.c
+> @@ -12,7 +12,6 @@ static bool a2xx_idle(struct msm_gpu *gpu);
+>   
+>   static void a2xx_submit(struct msm_gpu *gpu, struct msm_gem_submit *submit)
+>   {
+> -	struct msm_drm_private *priv = gpu->dev->dev_private;
+>   	struct msm_ringbuffer *ring = submit->ring;
+>   	unsigned int i;
+>   
+> @@ -23,7 +22,7 @@ static void a2xx_submit(struct msm_gpu *gpu, struct msm_gem_submit *submit)
+>   			break;
+>   		case MSM_SUBMIT_CMD_CTX_RESTORE_BUF:
+>   			/* ignore if there has not been a ctx switch: */
+> -			if (priv->lastctx == submit->queue->ctx)
+> +			if (gpu->cur_ctx_seqno == submit->queue->ctx->seqno)
+>   				break;
+>   			fallthrough;
+>   		case MSM_SUBMIT_CMD_BUF:
+> diff --git a/drivers/gpu/drm/msm/adreno/a3xx_gpu.c b/drivers/gpu/drm/msm/adreno/a3xx_gpu.c
+> index 8fb847c174ff..2e481e2692ba 100644
+> --- a/drivers/gpu/drm/msm/adreno/a3xx_gpu.c
+> +++ b/drivers/gpu/drm/msm/adreno/a3xx_gpu.c
+> @@ -30,7 +30,6 @@ static bool a3xx_idle(struct msm_gpu *gpu);
+>   
+>   static void a3xx_submit(struct msm_gpu *gpu, struct msm_gem_submit *submit)
+>   {
+> -	struct msm_drm_private *priv = gpu->dev->dev_private;
+>   	struct msm_ringbuffer *ring = submit->ring;
+>   	unsigned int i;
+>   
+> @@ -41,7 +40,7 @@ static void a3xx_submit(struct msm_gpu *gpu, struct msm_gem_submit *submit)
+>   			break;
+>   		case MSM_SUBMIT_CMD_CTX_RESTORE_BUF:
+>   			/* ignore if there has not been a ctx switch: */
+> -			if (priv->lastctx == submit->queue->ctx)
+> +			if (gpu->cur_ctx_seqno == submit->queue->ctx->seqno)
+>   				break;
+>   			fallthrough;
+>   		case MSM_SUBMIT_CMD_BUF:
+> diff --git a/drivers/gpu/drm/msm/adreno/a4xx_gpu.c b/drivers/gpu/drm/msm/adreno/a4xx_gpu.c
+> index a96ee79cc5e0..c5524d6e8705 100644
+> --- a/drivers/gpu/drm/msm/adreno/a4xx_gpu.c
+> +++ b/drivers/gpu/drm/msm/adreno/a4xx_gpu.c
+> @@ -24,7 +24,6 @@ static bool a4xx_idle(struct msm_gpu *gpu);
+>   
+>   static void a4xx_submit(struct msm_gpu *gpu, struct msm_gem_submit *submit)
+>   {
+> -	struct msm_drm_private *priv = gpu->dev->dev_private;
+>   	struct msm_ringbuffer *ring = submit->ring;
+>   	unsigned int i;
+>   
+> @@ -35,7 +34,7 @@ static void a4xx_submit(struct msm_gpu *gpu, struct msm_gem_submit *submit)
+>   			break;
+>   		case MSM_SUBMIT_CMD_CTX_RESTORE_BUF:
+>   			/* ignore if there has not been a ctx switch: */
+> -			if (priv->lastctx == submit->queue->ctx)
+> +			if (gpu->cur_ctx_seqno == submit->queue->ctx->seqno)
+>   				break;
+>   			fallthrough;
+>   		case MSM_SUBMIT_CMD_BUF:
+> diff --git a/drivers/gpu/drm/msm/adreno/a5xx_gpu.c b/drivers/gpu/drm/msm/adreno/a5xx_gpu.c
+> index 5e2750eb3810..6163990a4d09 100644
+> --- a/drivers/gpu/drm/msm/adreno/a5xx_gpu.c
+> +++ b/drivers/gpu/drm/msm/adreno/a5xx_gpu.c
+> @@ -65,7 +65,6 @@ void a5xx_flush(struct msm_gpu *gpu, struct msm_ringbuffer *ring,
+>   
+>   static void a5xx_submit_in_rb(struct msm_gpu *gpu, struct msm_gem_submit *submit)
+>   {
+> -	struct msm_drm_private *priv = gpu->dev->dev_private;
+>   	struct msm_ringbuffer *ring = submit->ring;
+>   	struct msm_gem_object *obj;
+>   	uint32_t *ptr, dwords;
+> @@ -76,7 +75,7 @@ static void a5xx_submit_in_rb(struct msm_gpu *gpu, struct msm_gem_submit *submit
+>   		case MSM_SUBMIT_CMD_IB_TARGET_BUF:
+>   			break;
+>   		case MSM_SUBMIT_CMD_CTX_RESTORE_BUF:
+> -			if (priv->lastctx == submit->queue->ctx)
+> +			if (gpu->cur_ctx_seqno == submit->queue->ctx->seqno)
+>   				break;
+>   			fallthrough;
+>   		case MSM_SUBMIT_CMD_BUF:
+> @@ -126,12 +125,11 @@ static void a5xx_submit(struct msm_gpu *gpu, struct msm_gem_submit *submit)
+>   {
+>   	struct adreno_gpu *adreno_gpu = to_adreno_gpu(gpu);
+>   	struct a5xx_gpu *a5xx_gpu = to_a5xx_gpu(adreno_gpu);
+> -	struct msm_drm_private *priv = gpu->dev->dev_private;
+>   	struct msm_ringbuffer *ring = submit->ring;
+>   	unsigned int i, ibs = 0;
+>   
+>   	if (IS_ENABLED(CONFIG_DRM_MSM_GPU_SUDO) && submit->in_rb) {
+> -		priv->lastctx = NULL;
+> +		gpu->cur_ctx_seqno = 0;
+>   		a5xx_submit_in_rb(gpu, submit);
+>   		return;
+>   	}
+> @@ -166,7 +164,7 @@ static void a5xx_submit(struct msm_gpu *gpu, struct msm_gem_submit *submit)
+>   		case MSM_SUBMIT_CMD_IB_TARGET_BUF:
+>   			break;
+>   		case MSM_SUBMIT_CMD_CTX_RESTORE_BUF:
+> -			if (priv->lastctx == submit->queue->ctx)
+> +			if (gpu->cur_ctx_seqno == submit->queue->ctx->seqno)
+>   				break;
+>   			fallthrough;
+>   		case MSM_SUBMIT_CMD_BUF:
+> diff --git a/drivers/gpu/drm/msm/adreno/a6xx_gpu.c b/drivers/gpu/drm/msm/adreno/a6xx_gpu.c
+> index 33da25b81615..3d2da81cb2c9 100644
+> --- a/drivers/gpu/drm/msm/adreno/a6xx_gpu.c
+> +++ b/drivers/gpu/drm/msm/adreno/a6xx_gpu.c
+> @@ -106,7 +106,7 @@ static void a6xx_set_pagetable(struct a6xx_gpu *a6xx_gpu,
+>   	u32 asid;
+>   	u64 memptr = rbmemptr(ring, ttbr0);
+>   
+> -	if (ctx->seqno == a6xx_gpu->cur_ctx_seqno)
+> +	if (ctx->seqno == a6xx_gpu->base.base.cur_ctx_seqno)
+>   		return;
+>   
+>   	if (msm_iommu_pagetable_params(ctx->aspace->mmu, &ttbr, &asid))
+> @@ -138,14 +138,11 @@ static void a6xx_set_pagetable(struct a6xx_gpu *a6xx_gpu,
+>   
+>   	OUT_PKT7(ring, CP_EVENT_WRITE, 1);
+>   	OUT_RING(ring, 0x31);
+> -
+> -	a6xx_gpu->cur_ctx_seqno = ctx->seqno;
+>   }
+>   
+>   static void a6xx_submit(struct msm_gpu *gpu, struct msm_gem_submit *submit)
+>   {
+>   	unsigned int index = submit->seqno % MSM_GPU_SUBMIT_STATS_COUNT;
+> -	struct msm_drm_private *priv = gpu->dev->dev_private;
+>   	struct adreno_gpu *adreno_gpu = to_adreno_gpu(gpu);
+>   	struct a6xx_gpu *a6xx_gpu = to_a6xx_gpu(adreno_gpu);
+>   	struct msm_ringbuffer *ring = submit->ring;
+> @@ -177,7 +174,7 @@ static void a6xx_submit(struct msm_gpu *gpu, struct msm_gem_submit *submit)
+>   		case MSM_SUBMIT_CMD_IB_TARGET_BUF:
+>   			break;
+>   		case MSM_SUBMIT_CMD_CTX_RESTORE_BUF:
+> -			if (priv->lastctx == submit->queue->ctx)
+> +			if (gpu->cur_ctx_seqno == submit->queue->ctx->seqno)
+>   				break;
+>   			fallthrough;
+>   		case MSM_SUBMIT_CMD_BUF:
+> @@ -1081,7 +1078,7 @@ static int hw_init(struct msm_gpu *gpu)
+>   	/* Always come up on rb 0 */
+>   	a6xx_gpu->cur_ring = gpu->rb[0];
+>   
+> -	a6xx_gpu->cur_ctx_seqno = 0;
+> +	gpu->cur_ctx_seqno = 0;
+>   
+>   	/* Enable the SQE_to start the CP engine */
+>   	gpu_write(gpu, REG_A6XX_CP_SQE_CNTL, 1);
+> diff --git a/drivers/gpu/drm/msm/adreno/a6xx_gpu.h b/drivers/gpu/drm/msm/adreno/a6xx_gpu.h
+> index 8e5527c881b1..86e0a7c3fe6d 100644
+> --- a/drivers/gpu/drm/msm/adreno/a6xx_gpu.h
+> +++ b/drivers/gpu/drm/msm/adreno/a6xx_gpu.h
+> @@ -20,16 +20,6 @@ struct a6xx_gpu {
+>   
+>   	struct msm_ringbuffer *cur_ring;
+>   
+> -	/**
+> -	 * cur_ctx_seqno:
+> -	 *
+> -	 * The ctx->seqno value of the context with current pgtables
+> -	 * installed.  Tracked by seqno rather than pointer value to
+> -	 * avoid dangling pointers, and cases where a ctx can be freed
+> -	 * and a new one created with the same address.
+> -	 */
+> -	int cur_ctx_seqno;
+> -
+>   	struct a6xx_gmu gmu;
+>   
+>   	struct drm_gem_object *shadow_bo;
+> diff --git a/drivers/gpu/drm/msm/msm_drv.c b/drivers/gpu/drm/msm/msm_drv.c
+> index 7936e8d498dd..73e827641024 100644
+> --- a/drivers/gpu/drm/msm/msm_drv.c
+> +++ b/drivers/gpu/drm/msm/msm_drv.c
+> @@ -752,14 +752,8 @@ static void context_close(struct msm_file_private *ctx)
+>   
+>   static void msm_postclose(struct drm_device *dev, struct drm_file *file)
+>   {
+> -	struct msm_drm_private *priv = dev->dev_private;
+>   	struct msm_file_private *ctx = file->driver_priv;
+>   
+> -	mutex_lock(&dev->struct_mutex);
+> -	if (ctx == priv->lastctx)
+> -		priv->lastctx = NULL;
+> -	mutex_unlock(&dev->struct_mutex);
+> -
+>   	context_close(ctx);
+>   }
+>   
+> diff --git a/drivers/gpu/drm/msm/msm_drv.h b/drivers/gpu/drm/msm/msm_drv.h
+> index 69952b239384..2943c21d9aac 100644
+> --- a/drivers/gpu/drm/msm/msm_drv.h
+> +++ b/drivers/gpu/drm/msm/msm_drv.h
+> @@ -164,7 +164,7 @@ struct msm_drm_private {
+>   
+>   	/* when we have more than one 'msm_gpu' these need to be an array: */
+>   	struct msm_gpu *gpu;
+> -	struct msm_file_private *lastctx;
+> +
+>   	/* gpu is only set on open(), but we need this info earlier */
+>   	bool is_a2xx;
+>   	bool has_cached_coherent;
+> diff --git a/drivers/gpu/drm/msm/msm_gpu.c b/drivers/gpu/drm/msm/msm_gpu.c
+> index 2c46cd968ac4..3dfc58e6498f 100644
+> --- a/drivers/gpu/drm/msm/msm_gpu.c
+> +++ b/drivers/gpu/drm/msm/msm_gpu.c
+> @@ -763,7 +763,7 @@ void msm_gpu_submit(struct msm_gpu *gpu, struct msm_gem_submit *submit)
+>   	mutex_unlock(&gpu->active_lock);
+>   
+>   	gpu->funcs->submit(gpu, submit);
+> -	priv->lastctx = submit->queue->ctx;
+> +	gpu->cur_ctx_seqno = submit->queue->ctx->seqno;
+>   
+>   	hangcheck_timer_reset(gpu);
+>   }
+> diff --git a/drivers/gpu/drm/msm/msm_gpu.h b/drivers/gpu/drm/msm/msm_gpu.h
+> index 59870095ea41..623ee416c568 100644
+> --- a/drivers/gpu/drm/msm/msm_gpu.h
+> +++ b/drivers/gpu/drm/msm/msm_gpu.h
+> @@ -144,6 +144,17 @@ struct msm_gpu {
+>   	struct msm_ringbuffer *rb[MSM_GPU_MAX_RINGS];
+>   	int nr_rings;
+>   
+> +	/**
+> +	 * cur_ctx_seqno:
+> +	 *
+> +	 * The ctx->seqno value of the last context to submit rendering,
+> +	 * and the one with current pgtables installed (for generations
+> +	 * that support per-context pgtables).  Tracked by seqno rather
+> +	 * than pointer value to avoid dangling pointers, and cases where
+> +	 * a ctx can be freed and a new one created with the same address.
+> +	 */
+> +	int cur_ctx_seqno;
+> +
+>   	/*
+>   	 * List of GEM active objects on this gpu.  Protected by
+>   	 * msm_drm_private::mm_lock
+> 
 
-Why is it needed? I mean the listed blobs are not mandatory to get
-system boot. Is this correct?
+Reviewed-by: Akhil P Oommen <akhilpo@codeaurora.org>
 
-> > > Please refer to the email [1] from me linked below where I reference
-> > > all PCH datasheets of the x64 era to prove that 16MB are mapped
-> > > hard-wired. Note that the range cannot be turned off and will read
-> > > back 0xFF's if the PCH registers are configured to not be backed by
-> > > the actual SPI flash contents.
-> >
-> > And as I said it does not cover _all_ x86 designs (usual != all) .
-> > Have you heard about Intel MID line of SoCs? Do you know that they
->
-> No and a quick search didn't turn up anything. Can you point me to
-> resources about those SoCs? Also my module is targeting x86_64, that
-> is only a subset of x86 designs.
-
-They are x86_32 and x86_64, so in the category you listed.
-
-Unfortunately there is indeed not much publicly available information,
-but I can tell you that from a design perspective you may consider
-them PCH-less.
-
-> > have no SPI NOR and the firmware is located on eMMC? Do you know that
-> > they can run Linux?
->
-> It doesn't matter where the firmware is coming from, as long as it is
-> _mapped_.
-
-It's not. That address space is full of devices, the same memory can't
-be used for ROM and devices at the same time (I won't go to the weird
-concept of different read and write paths, and it's not applicable
-here anyway).
-
-> And something has to be mapped there, even if it is just a
-> loader that gets eMMC going.
-
-(Semi-)wrong. Yes, _something_ is there (with the holes), but it's
-_not_ a firmware memory.
-
-You may google for iomem output on that kind of device.
-
-For your convenience (an excerpt):
-
-  fee00000-fee00fff : Local APIC
-   fee00000-fee00fff : Reserved
- ff000000-ffffffff : Reserved
-   ff008000-ff008fff : 0000:00:0c.0
-     ff008000-ff008fff : 0000:00:0c.0
-   ff009000-ff009fff : 0000:00:13.0
-     ff009000-ff009fff : intel_scu_ipc
-
-> > So, maybe it's you who do not know what you are talking about, am I correct?
-> >
-> > > [1] https://lkml.org/lkml/2021/6/24/379
-
--- 
-With Best Regards,
-Andy Shevchenko
+-Akhil.
