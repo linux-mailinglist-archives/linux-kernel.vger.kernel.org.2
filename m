@@ -2,94 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 539D144D8C0
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Nov 2021 15:58:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B059A44D8C7
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Nov 2021 15:59:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233941AbhKKPBF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Nov 2021 10:01:05 -0500
-Received: from mail-oi1-f181.google.com ([209.85.167.181]:41640 "EHLO
-        mail-oi1-f181.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233316AbhKKPAZ (ORCPT
+        id S233791AbhKKPBx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Nov 2021 10:01:53 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34984 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232565AbhKKPBv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Nov 2021 10:00:25 -0500
-Received: by mail-oi1-f181.google.com with SMTP id u74so12003358oie.8;
-        Thu, 11 Nov 2021 06:57:35 -0800 (PST)
+        Thu, 11 Nov 2021 10:01:51 -0500
+Received: from mail-pj1-x1033.google.com (mail-pj1-x1033.google.com [IPv6:2607:f8b0:4864:20::1033])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 112A0C061766;
+        Thu, 11 Nov 2021 06:59:02 -0800 (PST)
+Received: by mail-pj1-x1033.google.com with SMTP id t5-20020a17090a4e4500b001a0a284fcc2so4822872pjl.2;
+        Thu, 11 Nov 2021 06:59:02 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=5Yx94cRnNd+ciU2qcn93J0WLk2cjcP9Vnc7TYoHKDSk=;
+        b=BZLmbhT6VAg8/MsrPoNrXPN1QVWYMcbmVg2kt1WS6knXM7eXnBhqIkhVCjxm8TlppO
+         GnmmXe0vo8yoFPUgMNNbbMdO2/1J1BgihYx4TzUi+7NIDCuJe39x0351TiZ3XULcg53Q
+         lcaKTRoLDcp6oxr/5Kq68WwLl3uovsNuSHlHjuzSUWwOgbrVM3GaDc9VmyFYkmgaYojN
+         ZF8IHkKTIR6qEB9XxZL7TgsCRi/6aV/HDS5vYmxL4hlaHdV3AQj6qXqrBpcSxDmBo8NB
+         Wx+cdSDdfL7FbeL8Ycm85doDprzeC6+BgX419H72ztNibczIV6TViM7MM64xeTbTfwft
+         H2ZQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:in-reply-to:references:subject:date
-         :message-id;
-        bh=eOq5ir+TFZBL5cj7XaOZPw0GldpRN8fcVtMKUZ8KDPc=;
-        b=SMY2FKgbDJZoMRFWODsXCP3a5xnsRNrW/LHfFYnEZcyMtMU/AewOQf/Sb0zj78L8wb
-         04rdXvKzB2RHRYGnY7EAWWbdDHhxf7hxguX4nnmUQ5rtZX3l/xYBagSWM2YwsTibO7gV
-         uB2flJPMTHS0H2j/8HeNrilNSxGMy/FeO65hcIJkdHGs7q7Zg/xqEKXM5cqeZvOJ97C4
-         GhkVB7Yfa/6w6Sxz9PR4uURLEXbPq8taOSOYk+emwEkWv9kt+esyE/ZB3YXJSR8wXdFn
-         ElxFTDcgJmLTqqMyeuZnD9vqtb1yV6baIQ03djiIAPv/UDlo1bT92yvTXCaFvO7eeg2n
-         4lbA==
-X-Gm-Message-State: AOAM5316OSKNuYSKpj2gyQ9MZsD+oCT219up2Gf+2HKieLUiG3BjJwik
-        ToRqmvIAvfhzW08xmLJQUQ==
-X-Google-Smtp-Source: ABdhPJylUnRgVbfCJwWY8YapTYWcyJT8PtHaBGyigns+dkTO2lU8gHUIpbJagVcgphNPxro1ePlm2w==
-X-Received: by 2002:a05:6808:159a:: with SMTP id t26mr20008829oiw.106.1636642655301;
-        Thu, 11 Nov 2021 06:57:35 -0800 (PST)
-Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
-        by smtp.gmail.com with ESMTPSA id ay42sm769577oib.22.2021.11.11.06.57.34
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=5Yx94cRnNd+ciU2qcn93J0WLk2cjcP9Vnc7TYoHKDSk=;
+        b=xqW1yM5ykcEU7TxF/4U1BTO7ETIEIG2/dmrEr9bxZeXFwPqk/NddC80VTEXLTmP25X
+         8Pf0xqILaBZsF3JqXbAHvogbr5K6q8OcnKa9Yac6nobJZXOEI5yfkWDVvccBvfgGjcTC
+         gR3Eq3K6y1ffAvBKfUsWt7PV0XtMRQb1dk1tuOAeni91FbK/p5G+uHEcxI18CRQ/0Hne
+         NQaTEeIy+VFpkpT2trZp/EaUrlUPCIgg/vs5qi2SVOKSCAqhEiU9fO+iR76ZsuN8py9I
+         DF1eYEddacJpCRUBj3l4vBrOSlpUB3dmwdPt3OnEW0Jfq1DNMj1iKJ65dgOJKL8xDPV/
+         VqTA==
+X-Gm-Message-State: AOAM531NVhWkCM6UrWLIY3gqhpUvB8FzCJEDdgBdyyevJz4/8jXgJYII
+        iqFNNJZYVwgITQvt1ro8O7s=
+X-Google-Smtp-Source: ABdhPJyDAIY5N/ATJV2ryiJf4qnri1QXa5We39zqC1IfxYri3RZTSg2fHTG6KNhDSf5MiOo0FrV29Q==
+X-Received: by 2002:a17:902:ec8f:b0:142:11aa:3974 with SMTP id x15-20020a170902ec8f00b0014211aa3974mr8290216plg.30.1636642741500;
+        Thu, 11 Nov 2021 06:59:01 -0800 (PST)
+Received: from localhost.localdomain ([94.177.118.102])
+        by smtp.gmail.com with ESMTPSA id c21sm3976106pfl.15.2021.11.11.06.58.57
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 11 Nov 2021 06:57:34 -0800 (PST)
-Received: (nullmailer pid 3774089 invoked by uid 1000);
-        Thu, 11 Nov 2021 14:57:26 -0000
-From:   Rob Herring <robh@kernel.org>
-To:     Biao Huang <biao.huang@mediatek.com>
-Cc:     netdev@vger.kernel.org, linux-stm32@st-md-mailman.stormreply.com,
-        Jose Abreu <joabreu@synopsys.com>, srv_heupstream@mediatek.com,
-        davem@davemloft.net, linux-arm-kernel@lists.infradead.org,
-        macpaul.lin@mediatek.com,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Thu, 11 Nov 2021 06:59:01 -0800 (PST)
+From:   Dongliang Mu <mudongliangabcd@gmail.com>
+To:     Alexander Aring <alex.aring@gmail.com>,
+        Stefan Schmidt <stefan@datenfreihafen.org>,
+        "David S. Miller" <davem@davemloft.net>,
         Jakub Kicinski <kuba@kernel.org>,
-        linux-mediatek@lists.infradead.org,
-        Giuseppe Cavallaro <peppe.cavallaro@st.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>
-In-Reply-To: <20211111071214.21027-5-biao.huang@mediatek.com>
-References: <20211111071214.21027-1-biao.huang@mediatek.com> <20211111071214.21027-5-biao.huang@mediatek.com>
-Subject: Re: [PATCH v2 4/5] dt-bindings: net: dwmac: Convert mediatek-dwmac to DT schema
-Date:   Thu, 11 Nov 2021 08:57:26 -0600
-Message-Id: <1636642646.918741.3774088.nullmailer@robh.at.kernel.org>
+        Marcel Holtmann <marcel@holtmann.org>
+Cc:     Dongliang Mu <mudongliangabcd@gmail.com>,
+        linux-wpan@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v2] net: ieee802154: fix shift-out-of-bound in nl802154_new_interface
+Date:   Thu, 11 Nov 2021 22:58:46 +0800
+Message-Id: <20211111145847.1487241-1-mudongliangabcd@gmail.com>
+X-Mailer: git-send-email 2.25.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 11 Nov 2021 15:12:13 +0800, Biao Huang wrote:
-> Convert mediatek-dwmac to DT schema, and delete old mediatek-dwmac.txt.
-> 
-> Signed-off-by: Biao Huang <biao.huang@mediatek.com>
-> ---
->  .../bindings/net/mediatek-dwmac.txt           |  91 --------
->  .../bindings/net/mediatek-dwmac.yaml          | 211 ++++++++++++++++++
->  2 files changed, 211 insertions(+), 91 deletions(-)
->  delete mode 100644 Documentation/devicetree/bindings/net/mediatek-dwmac.txt
->  create mode 100644 Documentation/devicetree/bindings/net/mediatek-dwmac.yaml
-> 
+In nl802154_new_interface, if type retrieved from info->attr is
+NL802154_IFTYPE_UNSPEC(-1), i.e., less than NL802154_IFTYPE_MAX,
+it will trigger a shift-out-of-bound bug in BIT(type) [1].
 
-Running 'make dtbs_check' with the schema in this patch gives the
-following warnings. Consider if they are expected or the schema is
-incorrect. These may not be new warnings.
+Fix this by adding a condition to check if the variable type is
+larger than NL802154_IFTYPE_UNSPEC(-1).
 
-Note that it is not yet a requirement to have 0 warnings for dtbs_check.
-This will change in the future.
+Fixes: 65318680c97c ("ieee802154: add iftypes capability")
+Signed-off-by: Dongliang Mu <mudongliangabcd@gmail.com>
+---
+ net/ieee802154/nl802154.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Full log is available here: https://patchwork.ozlabs.org/patch/1553803
-
-
-ethernet@1101c000: clock-names: ['axi', 'apb', 'mac_main', 'ptp_ref'] is too short
-	arch/arm64/boot/dts/mediatek/mt2712-evb.dt.yaml
-
-ethernet@1101c000: clocks: [[27, 34], [27, 37], [6, 154], [6, 155]] is too short
-	arch/arm64/boot/dts/mediatek/mt2712-evb.dt.yaml
-
-ethernet@1101c000: compatible: ['mediatek,mt2712-gmac'] does not contain items matching the given schema
-	arch/arm64/boot/dts/mediatek/mt2712-evb.dt.yaml
-
-ethernet@1101c000: compatible: 'oneOf' conditional failed, one must be fixed:
-	arch/arm64/boot/dts/mediatek/mt2712-evb.dt.yaml
+diff --git a/net/ieee802154/nl802154.c b/net/ieee802154/nl802154.c
+index 277124f206e0..0613867d43ce 100644
+--- a/net/ieee802154/nl802154.c
++++ b/net/ieee802154/nl802154.c
+@@ -915,7 +915,7 @@ static int nl802154_new_interface(struct sk_buff *skb, struct genl_info *info)
+ 
+ 	if (info->attrs[NL802154_ATTR_IFTYPE]) {
+ 		type = nla_get_u32(info->attrs[NL802154_ATTR_IFTYPE]);
+-		if (type > NL802154_IFTYPE_MAX ||
++		if (type <= NL802154_IFTYPE_UNSPEC || type > NL802154_IFTYPE_MAX ||
+ 		    !(rdev->wpan_phy.supported.iftypes & BIT(type)))
+ 			return -EINVAL;
+ 	}
+-- 
+2.25.1
 
