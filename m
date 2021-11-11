@@ -2,74 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3CA8744D79C
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Nov 2021 14:54:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 89D0644D7A0
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Nov 2021 14:55:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233538AbhKKN4p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Nov 2021 08:56:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47770 "EHLO
+        id S233561AbhKKN56 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Nov 2021 08:57:58 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48154 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233583AbhKKN41 (ORCPT
+        with ESMTP id S232033AbhKKN54 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Nov 2021 08:56:27 -0500
-Received: from mail-lf1-x133.google.com (mail-lf1-x133.google.com [IPv6:2a00:1450:4864:20::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 393BDC061203
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Nov 2021 05:53:38 -0800 (PST)
-Received: by mail-lf1-x133.google.com with SMTP id bi37so9408556lfb.5
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Nov 2021 05:53:38 -0800 (PST)
+        Thu, 11 Nov 2021 08:57:56 -0500
+Received: from mail-ed1-x529.google.com (mail-ed1-x529.google.com [IPv6:2a00:1450:4864:20::529])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B877BC061766;
+        Thu, 11 Nov 2021 05:55:07 -0800 (PST)
+Received: by mail-ed1-x529.google.com with SMTP id g14so24558992edz.2;
+        Thu, 11 Nov 2021 05:55:07 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=ySwyLKxV1VWW2iuoY49N8slcSNBpLDWVYeriHwlrfb0=;
-        b=Q/BuHfGE0kMDyNIggGNv2QRhSz8Lyr6Voql+bioLnu6FouFpsc8LOEQf+G0t+bC210
-         hm5KDVM8IYJ4vWl1SWmtHBP66TFEE+A2tINbD14GNfttSUQb6ZmHtTyKGqoLh5JE7GNQ
-         N/kqhlBLzPqNsDunfXKl+2p9eA69QEeXdwyaSlUvbAaSs9h9WvfTYoxFIxeY6vBlqysg
-         sFgjfVfncTKm4H+MsFtO10KU+gvE56OZdSVGEbxKSA+MFESnONNDIPokA3mL1ZZbMspu
-         KNy4EuyE0dRY+mcFzVJUqDgVNKbESylqdztOH5nFhHdBgn5/Px2uf0kLhPgsYxIuGZCW
-         bR4Q==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=tkAHHRELUR3r+2lukxo30sI9DzwFgcJtRiHk6YyjBfE=;
+        b=nLlKfMMvzCLKY9hkrrxdIg+ATY/2fzIXErWKdMKOmbvypXaeA4UeZNQ19OCo2Zwwr1
+         zd8/YcAfB2ZIAPPykQd6Nv21RYMfVgglKgiPsd1GbafCoesPtfF8Wjwtfp+3Ma+9FT80
+         H+62xiUTd3T4Me6xC0QoMA8LR4t6rL8F5l425JvnhOlKpK68C8gupyHyTmdc5JRQ5vgX
+         ism8uomf8kvHjZlbTB1VYYlPsQszDiMT3gnsVOmOGVT7gUIeo19kUExaTrG5rej26j3v
+         4NtbxF3lBZy4/0TqBQ2Ct3155lSDhFhy+sExk6JYUevqGSP0kq9DwOzubBybKvKZO/0S
+         Brfg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=ySwyLKxV1VWW2iuoY49N8slcSNBpLDWVYeriHwlrfb0=;
-        b=yz9CEeBW9h5YlAzH4xQRMx4aEWpURJ1oiogwtRnnXZbANS25BTZSP7pZ7s8W5ynXOC
-         1S7Ib3uzl2oDy1AmpYakMBUr/u53h1zgUDFlwoVFFUtK9eTvCWYkA4HplGNP6dtlCeDk
-         Eum87Ij8k7rwSq6DheoK6Z632UdTBcynGj7t7VyGNOjtESHvECT3b3ayG/hHp18unrL4
-         NMrPu64R9ONKVx+voh+xKc44TbGQNrlE64p+QQgmpbYsSIRqr+zEstOTCKU02sPukFpV
-         ST6s+GMlgQpwfyL9oaY3c91qJJzfZpuPFYPuGEiM8ZXvpTsBPqTVMHuiW+eqqVaR6GsM
-         H6EA==
-X-Gm-Message-State: AOAM5323Z8NCVkAcbM4xkLYn71XKfsqA2VkLpY412ZhROius5pZAB2I8
-        /XroPE2/3pnGseuw8S5sK9fMnQm++ze30zgcHLw=
-X-Google-Smtp-Source: ABdhPJzL4IAaSTTheyh/wGQCj29fA4Sn72AfYBNxqe1TzhdZLr0M4qcRqlA3SAgH3rHJaS1FSYaUPKyuHmIliJOS38M=
-X-Received: by 2002:a19:c185:: with SMTP id r127mr6694288lff.572.1636638816518;
- Thu, 11 Nov 2021 05:53:36 -0800 (PST)
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=tkAHHRELUR3r+2lukxo30sI9DzwFgcJtRiHk6YyjBfE=;
+        b=gFWw6qDqiypgGQnIzbf4WjTiPcMZ6n/layeD9rCzgguxjS7b4QxPVg6N5tyKLGVlJQ
+         RnrhMb327wh+eOQririOsyLkYZTON0+KAy/Zp+TS+In/3g5vGo3+rdMq3Cl59PyhuKFW
+         FdCHIlu1mrQix7IzOKO5cLJnn3Uprl7Q3soNICsQW2oyRmUoAmQBWIMR8rqjdZA0X42C
+         9rxkY89nOJbQWF/+qSchv7rvtUrJmmSoS+9hwBiL2tPix+kcW/yRSYxh+iT7nblb2tpc
+         WDT7zoJz51rvaSoLBuuGGTi3iSBX56QXxo6uUKZRJ/fEVIH8qHvPeY+Ig4tVjADcxejJ
+         AY6g==
+X-Gm-Message-State: AOAM532ald+/6YTHSUW412+3HBnrVEIvo3Txs+WWS7mBmCccMdgVIdbP
+        FUFTLEzkNGv/kmdBERhiHburPqiAQCWSCh8emcE=
+X-Google-Smtp-Source: ABdhPJzIGR0yr2K/uYmW72GvEIHnQ6+Ni56Znw65lXQD9xptQmRMY6gNhUaJPd9WkD0ddddvNs+w9QPIr9ySKoRFgyk=
+X-Received: by 2002:a05:6402:c89:: with SMTP id cm9mr1443651edb.283.1636638906260;
+ Thu, 11 Nov 2021 05:55:06 -0800 (PST)
 MIME-Version: 1.0
-Received: by 2002:a05:6520:2de4:b0:14d:bc54:44a1 with HTTP; Thu, 11 Nov 2021
- 05:53:36 -0800 (PST)
-Reply-To: chalesjacksoninvestment68@gmail.com
-From:   Charles jackson <cj4372596@gmail.com>
-Date:   Thu, 11 Nov 2021 08:53:36 -0500
-Message-ID: <CAO-ULJqms92=COzHVioogXbRA+LryyBQ5gTN0-1dFcYpLJ=f=w@mail.gmail.com>
-Subject: lening aanbieding
-To:     undisclosed-recipients:;
+References: <CAHifhD5V9vwJenRLcPRH5ZMeLa_JnjZKfdcFZw1CjceBtC6=Ew@mail.gmail.com>
+ <CAHp75VeyQEaABFOnEUh2pdFx9ROJvRcud-BuEbKWmaEWpL9_Uw@mail.gmail.com>
+ <CAHifhD7Qf7+dc7K-MjNguqmiCWUxOJZmQoCTRUZOR-RWMm_JPw@mail.gmail.com>
+ <CAHp75Ve9BMNy3gP=-Dajm+Lgu+E4FCqc4phLgV1_cr2qUnTX_w@mail.gmail.com>
+ <CAHifhD4n7O5eWFPOjRAmHYL52tW0K=uXXzVj7L5+enTFwFXW2A@mail.gmail.com>
+ <CAArk9MP5cKJ+VhAZUseW4LnQNRvux=MZe2eSy3rQkbHKnUsGig@mail.gmail.com>
+ <CAHp75VdRwvU5WjFP5E4gg8U+_e34A0Lwze+nz_wVHoB49jLeLg@mail.gmail.com>
+ <CAArk9MNGSxR+92n-D2pe_+r+Z0Q9FoTMPqk11sAKA=4Vckj0HQ@mail.gmail.com>
+ <YYy7QZGKeEEfI1mH@lahna> <CAHifhD5bXu2nP533RXyWDnyNt=k2rRZq5Z6A6CCik_2e6XNgGA@mail.gmail.com>
+ <YYzxWPIWFAV04LRU@lahna> <CAD2FfiGnmFSTPvkJaXj+cf4yDvci-j+2QkpMqNY821fUT5C=CA@mail.gmail.com>
+ <CAHp75Vcp=hC1oL5FBQDDFe8EBxWB9Po4FKNS9ZGtD3q-yQPtAw@mail.gmail.com> <CAHifhD6p9qSm5dv1spz+oPRhRkBZeQspHNEphE49fODacm-S6g@mail.gmail.com>
+In-Reply-To: <CAHifhD6p9qSm5dv1spz+oPRhRkBZeQspHNEphE49fODacm-S6g@mail.gmail.com>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Thu, 11 Nov 2021 15:54:22 +0200
+Message-ID: <CAHp75Vfk5WHWiQxwmqEzVEymgpvjxKWEZbaQ9+=Et7N63Ps=Ng@mail.gmail.com>
+Subject: Re: [PATCH] firmware: export x86_64 platform flash bios region via sysfs
+To:     Hans-Gert Dahmen <hans-gert.dahmen@immu.ne>
+Cc:     Richard Hughes <hughsient@gmail.com>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        Mauro Lima <mauro.lima@eclypsium.com>,
+        Greg KH <gregkh@linuxfoundation.org>,
+        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Philipp Deppenwiese <philipp.deppenwiese@immu.ne>,
+        "platform-driver-x86@vger.kernel.org" 
+        <platform-driver-x86@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Goededag,
+On Thu, Nov 11, 2021 at 2:56 PM Hans-Gert Dahmen
+<hans-gert.dahmen@immu.ne> wrote:
+>
+> Am Do., 11. Nov. 2021 um 13:46 Uhr schrieb Andy Shevchenko
+> <andy.shevchenko@gmail.com>:
+> >
+> > On Thu, Nov 11, 2021 at 1:46 PM Richard Hughes <hughsient@gmail.com> wrote:
+> > > On Thu, 11 Nov 2021 at 10:33, Mika Westerberg
+> > > <mika.westerberg@linux.intel.com> wrote:
+> >
+> > > it's always going to work on x64 -- if the system firmware isn't available at that offset then the platform just isn't going to boot.
+> >
+> > Well, it's _usual_ case, but in general the assumption is simply
+> > incorrect. Btw, have you checked it on Coreboot enabled platforms?
+> > What about bare metal configurations where the bootloader provides
+> > services to the OS?
+>
+> No it is always the case. I suggest you go read your own Intel specs
+> and datasheets
 
-Ik ben een particuliere leningverstrekker, ik geef lening uit met 2%.
-COVID 19 heeft zoveel economische mensen in de wereld echt getroffen
-als gevolg van Epidemie en Lock Down. Heeft u een lening van welke
-aard dan ook nodig om een bedrijf of investering te starten? U kunt zo
-vriendelijk contact met mij opnemen voor meer informatie. Onze lening
-varieert van $ 5000 - 2.000.000 $.
+Point me out, please, chapters in SDM (I never really read it in full,
+it's kinda 10x Bible size). What x86 expects is 16 bytes at the end of
+1Mb physical address space that the CPU runs at first.
 
-Van harte,
+> before spreading further FUD. I have experienced u-root
+> and coreboot developers sitting right next to me in my office and they
+> were among the ones suggesting my patch. This is just laughable,
+> please stop it Andy.
 
-Charles Jackson
+Yeah, zillion people can't ever make a mistake... I see.
 
-Jackson Villa Phoenix,
-AZ 85006, VS
-Telefoon: +1 (781) (570) (3314)
+-- 
+With Best Regards,
+Andy Shevchenko
