@@ -2,77 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8DFCA44DC87
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Nov 2021 21:32:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 82CAF44DC89
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Nov 2021 21:35:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233343AbhKKUes (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Nov 2021 15:34:48 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54054 "EHLO
+        id S233548AbhKKUiD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Nov 2021 15:38:03 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54772 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231754AbhKKUep (ORCPT
+        with ESMTP id S229785AbhKKUh6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Nov 2021 15:34:45 -0500
-Received: from mail-oi1-x22e.google.com (mail-oi1-x22e.google.com [IPv6:2607:f8b0:4864:20::22e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E9738C061767
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Nov 2021 12:31:55 -0800 (PST)
-Received: by mail-oi1-x22e.google.com with SMTP id q124so13753161oig.3
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Nov 2021 12:31:55 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=UbyzGu3N0WG7w9a548DYe86BOPNj4uEfZNAhmdT33UU=;
-        b=FbLSf0Z6YvJ3bQWiFHND2pElxVlQ9IWrax5XKJ1ehwffexys/MBTQoc7C3URclEpVa
-         mpRQAaJMzuppbUY5dAN9eEgA6coQQNJeASZ1gG5aaPTIMkFCsyHxoMGni+IBQZRv+RSg
-         A3VregAuKJNZULaIcTTylTN+/kolCtEoZR0OhR+FNradtzUvjthGLj+1urAV6jkVmpGi
-         amNR8C5FSVDtJN+HrbeYbms1cLV7uOcT+BNyBTOdql8h3+AIxxJrhj/4sT4Pf5arPltg
-         7KqsgKlVR4PyFqd+IMnDcLWnhzHFjxcu5czPN2GrnNE2D3a2YSEMysqYRhb7EKeLpxl3
-         tzUQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=UbyzGu3N0WG7w9a548DYe86BOPNj4uEfZNAhmdT33UU=;
-        b=aHN8R+WubOpZe0eb/Qd1620T28YyyBv0BknqDB4qbVDNQKuGJHu+KdCNPf+45p3c5D
-         D94zQFYdScJ6EoG1CNsM20CPHD9GNZKQYtrUAMUkghSvRXImEgOTPsRrdGxQUCKnHPuc
-         TFRTRcuSu86OhtiEiYLdxpZScHbQHiYBQE+/tp0KU7vYnjUq1utN1lV/d9ZBUYDn/B7j
-         ie7IIAgtTNYOReZMrOERFsgih27WIUc6IplP0Nt/Zzuz9f+YoJNw8TOtBcUwKrHSRmUZ
-         9iZFgOK/qoDqRgILS5BNV4OrjOBcGoC7iqoNaV8dv0SibIH2mLoUyQw+JiEUcZkb0NF7
-         2MfA==
-X-Gm-Message-State: AOAM533HCvaniBxtmYXE68umYYYidemFjPlYREgirx7E2zvm5yJ36K2Z
-        HxJpNRcAY4fGhSdPKw0kY2lnLtRPhDywRbo3cTpi536np+E=
-X-Google-Smtp-Source: ABdhPJxmIHWrFPEygsIUhcXRMfVgLnn0WRIXb3HRTWJDJnpws25W1kOso2NAuizh0Dk5vPUNPOxsEo0j8EYQYsUd5y0=
-X-Received: by 2002:a54:4791:: with SMTP id o17mr8692071oic.114.1636662714953;
- Thu, 11 Nov 2021 12:31:54 -0800 (PST)
+        Thu, 11 Nov 2021 15:37:58 -0500
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 443E3C061766
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Nov 2021 12:35:09 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=j9UPy8daNOcuijdG48xEpyGCTw4663NtBuOm1W9gyOE=; b=j0+cva5h10luBJu4CzmqagQ6kB
+        lLPHrLGVUHH4WEqPs+d1J1X0xqa8Wk0vMtK/S8j6tLeMu6vTn13sTq5r4BENwyYbIqulxiBzxh3xk
+        tvrQEPTfNr8eBpyc3/WImPSkJhc0ni3xB6pYLJQPxuoYMxY14OG+O7viiJ6MV+3hfCg/Jzj14z8YL
+        6l0wn0LSBUSdyffC6xGiT3r2W0340cTFSaYqiwXm1+O3AyVfidh5+Q5Hvzk/OsA3p4Gt4OhTWpBY1
+        TBSnMIAQv7vXk2pB4p3Z8QQU+gmmwT1YWW74JDJfrZnkwEPBr6c7erX/7X0CZAA6fJ/kY6O7WDmh6
+        nxE2jlyQ==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=worktop.programming.kicks-ass.net)
+        by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mlGmi-00FWRM-Fl; Thu, 11 Nov 2021 20:35:01 +0000
+Received: by worktop.programming.kicks-ass.net (Postfix, from userid 1000)
+        id CC003986981; Thu, 11 Nov 2021 21:35:00 +0100 (CET)
+Date:   Thu, 11 Nov 2021 21:35:00 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Waiman Long <longman@redhat.com>
+Cc:     Hillf Danton <hdanton@sina.com>,
+        =?utf-8?B?6ams5oyv5Y2O?= <mazhenhua@xiaomi.com>,
+        mingo <mingo@redhat.com>, will <will@kernel.org>,
+        "boqun.feng" <boqun.feng@gmail.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Subject: Re: [BUG]locking/rwsem: only clean RWSEM_FLAG_HANDOFF when already
+ set
+Message-ID: <20211111203500.GI174703@worktop.programming.kicks-ass.net>
+References: <4fafad133b074f279dbab1aa3642e23f@xiaomi.com>
+ <20211107090131.1535-1-hdanton@sina.com>
+ <13d683ed-793c-b502-44ff-f28114d9386b@redhat.com>
+ <02e118c0-2116-b806-2b48-b9c91dc847dd@redhat.com>
+ <20211110213854.GE174703@worktop.programming.kicks-ass.net>
+ <YY0x55wxO2v5HCOW@hirez.programming.kicks-ass.net>
+ <61735528-141c-8d77-592d-b6b8fb75ebaa@redhat.com>
+ <YY1s6v9b/tYtNnGv@hirez.programming.kicks-ass.net>
+ <e16f9fc2-ce01-192b-065d-460c2ad9b317@redhat.com>
 MIME-Version: 1.0
-References: <20211111202506.19459-1-brgl@bgdev.pl> <20211111202506.19459-2-brgl@bgdev.pl>
-In-Reply-To: <20211111202506.19459-2-brgl@bgdev.pl>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Thu, 11 Nov 2021 21:31:43 +0100
-Message-ID: <CACRpkdaLt5Ra2S8h=8N6ek6r6aYXxg1e8WD76eP8JSau721Xew@mail.gmail.com>
-Subject: Re: [PATCH RFC 2/2] gpiolib: check the 'ngpios' property in core
- gpiolib code
-To:     Bartosz Golaszewski <brgl@bgdev.pl>
-Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <e16f9fc2-ce01-192b-065d-460c2ad9b317@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 11, 2021 at 9:25 PM Bartosz Golaszewski <brgl@bgdev.pl> wrote:
+On Thu, Nov 11, 2021 at 02:36:52PM -0500, Waiman Long wrote:
+> 
+> On 11/11/21 14:20, Peter Zijlstra wrote:
+> > On Thu, Nov 11, 2021 at 02:14:48PM -0500, Waiman Long wrote:
+> > > As for the PHASE_CHANGE name, we have to be consistent in both rwsem and
+> > > mutex. Maybe a follow up patch if you think we should change the
+> > > terminology.
+> > Well, that's exactly the point, they do radically different things.
+> > Having the same name for two different things is confusing.
+> > 
+> > Anyway, let me go read that patch you sent.
+> 
+> My understanding of handoff is to disable optimistic spinning to let waiters
+> in the wait queue have an opportunity to acquire the lock. There are
+> difference in details on how to do that in mutex and rwsem, though.
 
-> Several drivers read the 'ngpios' device property on their own, but
-> since it's defined as a standard GPIO property in the device tree bindings
-> anyway, it's a good candidate for generalization. If the driver didn't
-> set its gc->ngpio, try to read the 'ngpios' property from the GPIO
-> device's firmware node before bailing out.
->
-> Signed-off-by: Bartosz Golaszewski <brgl@bgdev.pl>
-> Suggested-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Ah, but the mutex does an actual hand-off, it hands the lock to a
+specific waiting task. That is, unlock() sets owner, as opposed to
+trylock().
 
-Nice!
-Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
+The rwsem code doesn't, it just forces a phase change. Once a waiter has
+been blocked too long, the handoff bit is set, causing new readers to be
+blocked. Then we wait for existing readers to complete. At that point,
+any next waiter (most likely a writer) should really get the lock (and
+in that regards the rwsem code is a bit funny).
 
-Yours,
-Linus Walleij
+So while both ensure fairness, the means of doing so is quite different.
+One hands the lock ownership to a specific waiter, the other arranges
+for a quiescent state such that the next waiter can proceed.
+
