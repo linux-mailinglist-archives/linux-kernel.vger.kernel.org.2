@@ -2,125 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 185A844D4D5
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Nov 2021 11:12:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 44B1E44D4CE
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Nov 2021 11:11:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232764AbhKKKPT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Nov 2021 05:15:19 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54566 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232630AbhKKKPP (ORCPT
+        id S232706AbhKKKOA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Nov 2021 05:14:00 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:41232 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230358AbhKKKN7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Nov 2021 05:15:15 -0500
-Received: from mail-oi1-x22c.google.com (mail-oi1-x22c.google.com [IPv6:2607:f8b0:4864:20::22c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 934C1C06127A
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Nov 2021 02:12:26 -0800 (PST)
-Received: by mail-oi1-x22c.google.com with SMTP id t19so10767830oij.1
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Nov 2021 02:12:26 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=x2JqhGMyfJOncOO31VPKGQJKmpqXdotolWXJ0Sscp8s=;
-        b=CkvxSK1EjyO2pbzkq70likXbwf1/G65ullJU9N53M5lbs4WkwpWvQGJ+xxcsj3R4uD
-         vcqB3rJiaK92xh67IbFVu3lAHIG/znWaTUQunSIypYeP4CnnjeTNGIm+mf+o07hHuzxl
-         uGRxyXOIOSGr3YpDTGHVku9ehCQPRKdT4tIjm0CwEBIHtMVhOjrry3RqCIKnpqVak7aE
-         eT5E5GPsB+qwjtDL4GJrrCHtn/xG1iVwritcMgG8snngv+U9QVZApUx9jhk85/z97JqK
-         c2iyK+Ej5z+UF/7SIqqzQxvu4fH5Ror0RgY3cEcQrowltSXdyTVkGunN2QHGRAJExYJh
-         ldjw==
+        Thu, 11 Nov 2021 05:13:59 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1636625469;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=0rA+4QDY7fcYCncOWJtOa/HujeNT5Vt9NxjUSIUPHvs=;
+        b=QXVTVZPP85huloPsfDZEZ7uTJtTN6mgpd1/wdYzj8qHNiwVP5SKjIDlZT3LgRKghuYZClJ
+        A55JK1Eunwz/NhQWUq237Jr6jyqF+jI7Y8x9rFL2HZnr0WbLHEuTVRLp7H4UvUxF1Mwc3B
+        w1RNE77ZK2o0M1+KseOrLcEFHv+oIvg=
+Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com
+ [209.85.128.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-210-HJQGXXY8N4mCSUQEha3dqw-1; Thu, 11 Nov 2021 05:11:07 -0500
+X-MC-Unique: HJQGXXY8N4mCSUQEha3dqw-1
+Received: by mail-wm1-f70.google.com with SMTP id g11-20020a1c200b000000b003320d092d08so2460764wmg.9
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Nov 2021 02:11:07 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=x2JqhGMyfJOncOO31VPKGQJKmpqXdotolWXJ0Sscp8s=;
-        b=dpwBbNUL5XPUwJ+3MkpEG46nltQ4EReRehBy4vhEe/4Jz8jiZ1e7fjonkSz1kl8j5a
-         H57tdD9tAix3JuT3dLd+UcvA35nJRYomyNP9mVuXIWtWfeV7SLTmTNASXK+3KmqPXWyJ
-         XZFgrMrJ/rP7ecf3Uclorcfi4vGqU68JP2hml/WcjM9pddFfZj6AhnWtv4MgJK3ENUKE
-         JdEDk/BSN8/JG6PUnRaQiek6o8in7a3oSUMIlKZOsQ5HcDOMAFbS425dmmchqm9JCMaO
-         5Vy9cBMjnbIsbC4eOYzng61ENIgQMOzItlIGCM6KhlNGrH8GAOsN4WM1hraPcX9yBQdX
-         H37Q==
-X-Gm-Message-State: AOAM530Hdk8YX6QWBZyNXWcECcc/vuGq6Zut51zvizKA69cDZwWEitTi
-        osDt4joULKkeVLOKEaWN/7c/TU8g3GpiF0w4WSiOVQ==
-X-Google-Smtp-Source: ABdhPJz7epDTv5uCxOQ8Cm3nb9HVHDMTO19qLrlz3UwOWboYoIDGzDq9VXXEzngFTMgtlnhp8icDZqg8O4nzWcv7HOo=
-X-Received: by 2002:a05:6808:118c:: with SMTP id j12mr5116357oil.65.1636625545648;
- Thu, 11 Nov 2021 02:12:25 -0800 (PST)
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:organization:in-reply-to
+         :content-transfer-encoding;
+        bh=0rA+4QDY7fcYCncOWJtOa/HujeNT5Vt9NxjUSIUPHvs=;
+        b=F5qT019xmeI3wpfMmVoFotpBKDBUUxzAPshIfPQWBnrCqiOApbd5R3KAPCC4+o7KUR
+         XWY3cBhccP4Hbuxfty5qzFdduGT3lpPHkL0JaekAvjCbiqw4rw6EBcGkaMvCz4Me6h4c
+         hxw4oxeWvX7/NGnfj9uHZfrliYpq53+fEmC0Awr03zTag4QWnW8l0PqNby8bfOm/bVSj
+         iH86ZUvORAZsAMtcTJLrPBs88DqxrSw0eD1Bxm2q3z7v88ovHW2huWjC2EiIBSOTbyrH
+         0iUe7LJiWq5MR0rJObzIMsjLqPdVBmHRtU0Nc3K3y54hmnxcWCWvIx7YA7X/i/b5yJhC
+         b4+Q==
+X-Gm-Message-State: AOAM530oy2dQ6Ew6QCBuKkLYW5U59cvdUUH44OuXp8o94mJ6450j8r8Q
+        rH6E48lSbxZpJlEu3YS4ZB2o4O6ezN5epXuB2aEZ6XyqfmJkVso0Xxc0l6CzAxcZHFz3FwhMy6z
+        sY4nKqp9IOprC1/disoEwoG7Q
+X-Received: by 2002:adf:f0c5:: with SMTP id x5mr7303222wro.320.1636625466723;
+        Thu, 11 Nov 2021 02:11:06 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJzOcg/IBIObd/PrNSThzuPmbYflfz+NcWv98QuuE6NH2tE/x226NzWn+mDBhgZ2vITILodW1Q==
+X-Received: by 2002:adf:f0c5:: with SMTP id x5mr7303188wro.320.1636625466497;
+        Thu, 11 Nov 2021 02:11:06 -0800 (PST)
+Received: from [192.168.3.132] (p4ff23ee8.dip0.t-ipconnect.de. [79.242.62.232])
+        by smtp.gmail.com with ESMTPSA id t8sm2094352wmn.44.2021.11.11.02.11.05
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 11 Nov 2021 02:11:06 -0800 (PST)
+Message-ID: <24b685c3-f16a-9ced-fb39-bf6a0b9f994e@redhat.com>
+Date:   Thu, 11 Nov 2021 11:11:04 +0100
 MIME-Version: 1.0
-References: <20211005105905.1994700-1-elver@google.com> <20211005105905.1994700-24-elver@google.com>
- <YVxjH2AtjvB8BDMD@hirez.programming.kicks-ass.net> <YVxrn2658Xdf0Asf@elver.google.com>
-In-Reply-To: <YVxrn2658Xdf0Asf@elver.google.com>
-From:   Marco Elver <elver@google.com>
-Date:   Thu, 11 Nov 2021 11:11:00 +0100
-Message-ID: <CANpmjNPk9i9Ap6LRuS32dRRCOrs4YwDP-EhfX-niCXu7zH2JOg@mail.gmail.com>
-Subject: Re: [PATCH -rcu/kcsan 23/23] objtool, kcsan: Remove memory barrier
- instrumentation from noinstr
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     "Paul E . McKenney" <paulmck@kernel.org>,
-        Alexander Potapenko <glider@google.com>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Borislav Petkov <bp@alien8.de>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Ingo Molnar <mingo@kernel.org>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Waiman Long <longman@redhat.com>,
-        Will Deacon <will@kernel.org>, kasan-dev@googlegroups.com,
-        linux-arch@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, x86@kernel.org
-Content-Type: text/plain; charset="UTF-8"
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.2.0
+Subject: Re: [PATCH 7/7] tools/testing/selftests/bpf: make it adopt to task
+ comm size change
+Content-Language: en-US
+To:     Yafang Shao <laoar.shao@gmail.com>, akpm@linux-foundation.org
+Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
+        linux-perf-users@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        oliver.sang@intel.com, lkp@intel.com,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>,
+        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        Michal Miroslaw <mirq-linux@rere.qmqm.pl>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Kees Cook <keescook@chromium.org>,
+        Petr Mladek <pmladek@suse.com>
+References: <20211108083840.4627-1-laoar.shao@gmail.com>
+ <20211108083840.4627-8-laoar.shao@gmail.com>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat
+In-Reply-To: <20211108083840.4627-8-laoar.shao@gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 5 Oct 2021 at 17:13, Marco Elver <elver@google.com> wrote:
-> On Tue, Oct 05, 2021 at 04:37PM +0200, Peter Zijlstra wrote:
-> > On Tue, Oct 05, 2021 at 12:59:05PM +0200, Marco Elver wrote:
-> > > Teach objtool to turn instrumentation required for memory barrier
-> > > modeling into nops in noinstr text.
-> > >
-> > > The __tsan_func_entry/exit calls are still emitted by compilers even
-> > > with the __no_sanitize_thread attribute. The memory barrier
-> > > instrumentation will be inserted explicitly (without compiler help), and
-> > > thus needs to also explicitly be removed.
-> >
-> > How is arm64 and others using kernel/entry + noinstr going to fix this?
-> >
-> > ISTR they fully rely on the compilers not emitting instrumentation,
-> > since they don't have objtool to fix up stray issues like this.
->
-> So this is where I'd like to hear if the approach of:
->
->  | #if !defined(CONFIG_ARCH_WANTS_NO_INSTR) || defined(CONFIG_STACK_VALIDATION)
->  | ...
->  | #else
->  | #define kcsan_noinstr noinstr
->  | static __always_inline bool within_noinstr(unsigned long ip)
->  | {
->  |      return (unsigned long)__noinstr_text_start <= ip &&
->  |             ip < (unsigned long)__noinstr_text_end;
->  | }
->  | #endif
->
-> and then (using the !STACK_VALIDATION definitions)
->
->  | kcsan_noinstr void instrumentation_may_appear_in_noinstr(void)
->  | {
->  |      if (within_noinstr(_RET_IP_))
->  |              return;
->
-> works for the non-x86 arches that select ARCH_WANTS_NO_INSTR.
->
-> If it doesn't I can easily just remove kcsan_noinstr/within_noinstr, and
-> add a "depends on !ARCH_WANTS_NO_INSTR || STACK_VALIDATION" to the
-> KCSAN_WEAK_MEMORY option.
->
-> Looking at a previous discussion [1], however, I was under the
-> impression that this would work.
->
-> [1] https://lkml.kernel.org/r/CANpmjNMAZiW-Er=2QDgGP+_3hg1LOvPYcbfGSPMv=aR6MVTB-g@mail.gmail.com
+On 08.11.21 09:38, Yafang Shao wrote:
+> The hard-coded 16 is used in various bpf progs. These progs get task
+> comm either via bpf_get_current_comm() or prctl() or
+> bpf_core_read_str(), all of which can work well even if the task comm size
+> is changed.
+> 
+> In these BPF programs, one thing to be improved is the
+> sched:sched_switch tracepoint args. As the tracepoint args are derived
+> from the kernel, we'd better make it same with the kernel. So the macro
+> TASK_COMM_LEN is converted to type enum, then all the BPF programs can
+> get it through BTF.
+> 
+> The BPF program which wants to use TASK_COMM_LEN should include the header
+> vmlinux.h. Regarding the test_stacktrace_map and test_tracepoint, as the
+> type defined in linux/bpf.h are also defined in vmlinux.h, so we don't
+> need to include linux/bpf.h again.
+> 
+> Signed-off-by: Yafang Shao <laoar.shao@gmail.com>
+> Acked-by: Andrii Nakryiko <andrii@kernel.org>
+> Cc: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+> Cc: Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>
+> Cc: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+> Cc: Michal Miroslaw <mirq-linux@rere.qmqm.pl>
+> Cc: Peter Zijlstra <peterz@infradead.org>
+> Cc: Steven Rostedt <rostedt@goodmis.org>
+> Cc: Matthew Wilcox <willy@infradead.org>
+> Cc: David Hildenbrand <david@redhat.com>
+> Cc: Al Viro <viro@zeniv.linux.org.uk>
+> Cc: Kees Cook <keescook@chromium.org>
+> Cc: Petr Mladek <pmladek@suse.com>
 
-I'll send v2 of this series after 5.16-rc1. So far I think we haven't
-been able to say the above doesn't work, which means I'll assume it
-works on non-x86 architectures with ARCH_WANTS_NO_INSTR until we get
-evidence of the opposite.
+
+Acked-by: David Hildenbrand <david@redhat.com>
+
+
+-- 
+Thanks,
+
+David / dhildenb
+
