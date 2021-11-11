@@ -2,128 +2,200 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 44B1E44D4CE
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Nov 2021 11:11:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 95DA144D4D8
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Nov 2021 11:13:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232706AbhKKKOA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Nov 2021 05:14:00 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:41232 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230358AbhKKKN7 (ORCPT
+        id S232786AbhKKKQA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Nov 2021 05:16:00 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54730 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230256AbhKKKP7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Nov 2021 05:13:59 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1636625469;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=0rA+4QDY7fcYCncOWJtOa/HujeNT5Vt9NxjUSIUPHvs=;
-        b=QXVTVZPP85huloPsfDZEZ7uTJtTN6mgpd1/wdYzj8qHNiwVP5SKjIDlZT3LgRKghuYZClJ
-        A55JK1Eunwz/NhQWUq237Jr6jyqF+jI7Y8x9rFL2HZnr0WbLHEuTVRLp7H4UvUxF1Mwc3B
-        w1RNE77ZK2o0M1+KseOrLcEFHv+oIvg=
-Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com
- [209.85.128.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-210-HJQGXXY8N4mCSUQEha3dqw-1; Thu, 11 Nov 2021 05:11:07 -0500
-X-MC-Unique: HJQGXXY8N4mCSUQEha3dqw-1
-Received: by mail-wm1-f70.google.com with SMTP id g11-20020a1c200b000000b003320d092d08so2460764wmg.9
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Nov 2021 02:11:07 -0800 (PST)
+        Thu, 11 Nov 2021 05:15:59 -0500
+Received: from mail-ua1-x92e.google.com (mail-ua1-x92e.google.com [IPv6:2607:f8b0:4864:20::92e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2EDC4C061766;
+        Thu, 11 Nov 2021 02:13:10 -0800 (PST)
+Received: by mail-ua1-x92e.google.com with SMTP id b3so10824761uam.1;
+        Thu, 11 Nov 2021 02:13:10 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:reply-to:from:date:message-id
+         :subject:to:cc;
+        bh=OV0UM9gJNoYarjOdaNebNlg6ZUQZxi88zAgzP/6FP0w=;
+        b=QrRvMTm/TwaPYXc45yS3JOUYUvVgZB71WdWV4dRm4JBHXWgxODzYLwW7+tmsU4qccH
+         5T8Jrhg1T+HfdM1ZQ7j4uHRlbn32QHJsz7p8dnRhA8RR0iahxUVUOeJ0XuI5T/eWq7xt
+         y2I2AKlwgIHG4XaEAiGZo8C7fEEZdQ0gZ9Qg7X/hG9h0eGO1t3gc7RIq7MEmhFl4W2xi
+         ulsQ8DLglPKgwxM/D2OSeg5SZRzOJXqfNDWFL5Tm58r8V3EexsnbV/eYXNaKPro6YvMV
+         Zpdbf/s7qj5I0hLSUyqykram8SZMmkApvAqQwiew7nu5zuEz9iYHiiI5GZGNH7wJU9Ja
+         eyuw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:organization:in-reply-to
-         :content-transfer-encoding;
-        bh=0rA+4QDY7fcYCncOWJtOa/HujeNT5Vt9NxjUSIUPHvs=;
-        b=F5qT019xmeI3wpfMmVoFotpBKDBUUxzAPshIfPQWBnrCqiOApbd5R3KAPCC4+o7KUR
-         XWY3cBhccP4Hbuxfty5qzFdduGT3lpPHkL0JaekAvjCbiqw4rw6EBcGkaMvCz4Me6h4c
-         hxw4oxeWvX7/NGnfj9uHZfrliYpq53+fEmC0Awr03zTag4QWnW8l0PqNby8bfOm/bVSj
-         iH86ZUvORAZsAMtcTJLrPBs88DqxrSw0eD1Bxm2q3z7v88ovHW2huWjC2EiIBSOTbyrH
-         0iUe7LJiWq5MR0rJObzIMsjLqPdVBmHRtU0Nc3K3y54hmnxcWCWvIx7YA7X/i/b5yJhC
-         b4+Q==
-X-Gm-Message-State: AOAM530oy2dQ6Ew6QCBuKkLYW5U59cvdUUH44OuXp8o94mJ6450j8r8Q
-        rH6E48lSbxZpJlEu3YS4ZB2o4O6ezN5epXuB2aEZ6XyqfmJkVso0Xxc0l6CzAxcZHFz3FwhMy6z
-        sY4nKqp9IOprC1/disoEwoG7Q
-X-Received: by 2002:adf:f0c5:: with SMTP id x5mr7303222wro.320.1636625466723;
-        Thu, 11 Nov 2021 02:11:06 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJzOcg/IBIObd/PrNSThzuPmbYflfz+NcWv98QuuE6NH2tE/x226NzWn+mDBhgZ2vITILodW1Q==
-X-Received: by 2002:adf:f0c5:: with SMTP id x5mr7303188wro.320.1636625466497;
-        Thu, 11 Nov 2021 02:11:06 -0800 (PST)
-Received: from [192.168.3.132] (p4ff23ee8.dip0.t-ipconnect.de. [79.242.62.232])
-        by smtp.gmail.com with ESMTPSA id t8sm2094352wmn.44.2021.11.11.02.11.05
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 11 Nov 2021 02:11:06 -0800 (PST)
-Message-ID: <24b685c3-f16a-9ced-fb39-bf6a0b9f994e@redhat.com>
-Date:   Thu, 11 Nov 2021 11:11:04 +0100
+        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
+         :from:date:message-id:subject:to:cc;
+        bh=OV0UM9gJNoYarjOdaNebNlg6ZUQZxi88zAgzP/6FP0w=;
+        b=Foan/J8ZI5zIT3vEjwsZG+59B5J5Rsv5Q7EIAEbH77/Txpg7Swkd4CDquG8ThTb9yU
+         CLb2CkhvgLv8A9wC7ooklZiMStgfk7HMb5ky2zlfDe0jJH5FrVn6glykt2W1vfYNS4mw
+         zzTlF5gkLODBX+4ZNVXTjhL8uhDclDhjG9M/WI6IhQYrCp3s3R+f+SRbn5m+NTs63pPh
+         Hlmn5GNKS/fjKf3dnGTT/1Goy8XKL0n39Rd0sIDEsbZqGsGrO+5ppHAcjofpO5X5rqPV
+         UaGJSpZbgnKW/O/YHb0xVJ4mYoDebgqApairQd5hjMHMSUUVVDPs3LPeJdz5nvmHxhra
+         EenA==
+X-Gm-Message-State: AOAM532ueouJ75dzzNfpVk/+rNS3Im5SCcftRkjfuXjHtEdpPf0QC65L
+        jiTW2S/ThzWS4k4W18KVq6Kmo0KBCeYE32/0ewg=
+X-Google-Smtp-Source: ABdhPJxaRHHUZ22k+Ko739D5cwF3n8FJ9wWblVSb/ZT5zX8uIXJ17kDPhR3ACJmIcRvwwzfU30Vzy5n1WHsxeMot7CY=
+X-Received: by 2002:ab0:3e3:: with SMTP id 90mr8641510uau.102.1636625589295;
+ Thu, 11 Nov 2021 02:13:09 -0800 (PST)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.2.0
-Subject: Re: [PATCH 7/7] tools/testing/selftests/bpf: make it adopt to task
- comm size change
-Content-Language: en-US
-To:     Yafang Shao <laoar.shao@gmail.com>, akpm@linux-foundation.org
-Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
-        linux-perf-users@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        oliver.sang@intel.com, lkp@intel.com,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>,
-        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        Michal Miroslaw <mirq-linux@rere.qmqm.pl>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Kees Cook <keescook@chromium.org>,
-        Petr Mladek <pmladek@suse.com>
-References: <20211108083840.4627-1-laoar.shao@gmail.com>
- <20211108083840.4627-8-laoar.shao@gmail.com>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat
-In-Reply-To: <20211108083840.4627-8-laoar.shao@gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+References: <20210715141742.15072-1-andrea.merello@gmail.com>
+ <20211028101840.24632-1-andrea.merello@gmail.com> <20211028101840.24632-11-andrea.merello@gmail.com>
+ <20211028121001.73d8abbe@jic23-huawei>
+In-Reply-To: <20211028121001.73d8abbe@jic23-huawei>
+Reply-To: andrea.merello@gmail.com
+From:   Andrea Merello <andrea.merello@gmail.com>
+Date:   Thu, 11 Nov 2021 11:12:58 +0100
+Message-ID: <CAN8YU5PjJ9e8_RuLpY0JgLek-+HwxOLJ61MAGBqqzbqd6KWuYA@mail.gmail.com>
+Subject: Re: [v2 10/10] iio: imu: add BNO055 I2C driver
+To:     Jonathan Cameron <jic23@kernel.org>
+Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        linux-iio <linux-iio@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        devicetree <devicetree@vger.kernel.org>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Rob Herring <robh+dt@kernel.org>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Matt Ranostay <matt.ranostay@konsulko.com>,
+        Alexandru Ardelean <ardeleanalex@gmail.com>,
+        Jacopo Mondi <jacopo@jmondi.org>,
+        Andrea Merello <andrea.merello@iit.it>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 08.11.21 09:38, Yafang Shao wrote:
-> The hard-coded 16 is used in various bpf progs. These progs get task
-> comm either via bpf_get_current_comm() or prctl() or
-> bpf_core_read_str(), all of which can work well even if the task comm size
-> is changed.
-> 
-> In these BPF programs, one thing to be improved is the
-> sched:sched_switch tracepoint args. As the tracepoint args are derived
-> from the kernel, we'd better make it same with the kernel. So the macro
-> TASK_COMM_LEN is converted to type enum, then all the BPF programs can
-> get it through BTF.
-> 
-> The BPF program which wants to use TASK_COMM_LEN should include the header
-> vmlinux.h. Regarding the test_stacktrace_map and test_tracepoint, as the
-> type defined in linux/bpf.h are also defined in vmlinux.h, so we don't
-> need to include linux/bpf.h again.
-> 
-> Signed-off-by: Yafang Shao <laoar.shao@gmail.com>
-> Acked-by: Andrii Nakryiko <andrii@kernel.org>
-> Cc: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-> Cc: Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>
-> Cc: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-> Cc: Michal Miroslaw <mirq-linux@rere.qmqm.pl>
-> Cc: Peter Zijlstra <peterz@infradead.org>
-> Cc: Steven Rostedt <rostedt@goodmis.org>
-> Cc: Matthew Wilcox <willy@infradead.org>
-> Cc: David Hildenbrand <david@redhat.com>
-> Cc: Al Viro <viro@zeniv.linux.org.uk>
-> Cc: Kees Cook <keescook@chromium.org>
-> Cc: Petr Mladek <pmladek@suse.com>
+Just an inline comment; OK for the rest.
 
+Il giorno gio 28 ott 2021 alle ore 13:05 Jonathan Cameron
+<jic23@kernel.org> ha scritto:
+>
+> On Thu, 28 Oct 2021 12:18:40 +0200
+> Andrea Merello <andrea.merello@gmail.com> wrote:
+>
+> > This path adds an I2C driver for communicating to a BNO055 IMU via I2C bus
+> > and it enables the BNO055 core driver to work in this scenario.
+> >
+> > Signed-off-by: Andrea Merello <andrea.merello@iit.it>
+> Hi Andrea,
+>
+> A few minor things inline.
+>
+> Jonathan
+>
+> > ---
+> >  drivers/iio/imu/bno055/Kconfig      |  6 ++++
+> >  drivers/iio/imu/bno055/Makefile     |  1 +
+> >  drivers/iio/imu/bno055/bno055_i2c.c | 54 +++++++++++++++++++++++++++++
+> >  3 files changed, 61 insertions(+)
+> >  create mode 100644 drivers/iio/imu/bno055/bno055_i2c.c
+> >
+> > diff --git a/drivers/iio/imu/bno055/Kconfig b/drivers/iio/imu/bno055/Kconfig
+> > index 941e43f0368d..87200787d548 100644
+> > --- a/drivers/iio/imu/bno055/Kconfig
+> > +++ b/drivers/iio/imu/bno055/Kconfig
+> > @@ -7,3 +7,9 @@ config BOSH_BNO055_SERIAL
+> >       tristate "Bosh BNO055 attached via serial bus"
+> >       depends on SERIAL_DEV_BUS
+> >       select BOSH_BNO055_IIO
+> > +
+> > +config BOSH_BNO055_I2C
+> > +     tristate "Bosh BNO055 attached via I2C bus"
+> > +     depends on I2C
+> > +     select REGMAP_I2C
+> > +     select BOSH_BNO055_IIO
+> > diff --git a/drivers/iio/imu/bno055/Makefile b/drivers/iio/imu/bno055/Makefile
+> > index 7285ade2f4b9..eaf24018cb28 100644
+> > --- a/drivers/iio/imu/bno055/Makefile
+> > +++ b/drivers/iio/imu/bno055/Makefile
+> > @@ -2,3 +2,4 @@
+> >
+> >  obj-$(CONFIG_BOSH_BNO055_IIO) += bno055.o
+> >  obj-$(CONFIG_BOSH_BNO055_SERIAL) += bno055_sl.o
+> > +obj-$(CONFIG_BOSH_BNO055_I2C) += bno055_i2c.o
+> > diff --git a/drivers/iio/imu/bno055/bno055_i2c.c b/drivers/iio/imu/bno055/bno055_i2c.c
+> > new file mode 100644
+> > index 000000000000..eea0daa6a61d
+> > --- /dev/null
+> > +++ b/drivers/iio/imu/bno055/bno055_i2c.c
+> > @@ -0,0 +1,54 @@
+> > +// SPDX-License-Identifier: GPL-2.0
+> > +/*
+> > + * I2C interface for Bosh BNO055 IMU.
+> > + * This file implements I2C communication up to the register read/write
+> > + * level.
+>
+> Not really. It just uses regmap, so I'd drop this comment.
+>
+> > + *
+> > + * Copyright (C) 2021 Istituto Italiano di Tecnologia
+> > + * Electronic Design Laboratory
+> > + * Written by Andrea Merello <andrea.merello@iit.it>
+> > + */
+> > +
+> > +#include <linux/i2c.h>
+>
+> Why?  I'm not seeing an i2c specific calls in here.
 
-Acked-by: David Hildenbrand <david@redhat.com>
+Because of the definition of struct i2c_client, that is being accessed
+in lines like this
+dev_err(&client->dev, "Unable to init register map");
 
-
--- 
-Thanks,
-
-David / dhildenb
-
+> > +#include <linux/regmap.h>
+> > +#include <linux/module.h>
+>
+> mod_devicetable.h for struct i2c_device_id
+>
+> > +
+> > +#include "bno055.h"
+> > +
+> > +#define BNO055_I2C_XFER_BURST_BREAK_THRESHOLD 3 /* FIXME */
+> > +
+> > +static int bno055_i2c_probe(struct i2c_client *client,
+> > +                         const struct i2c_device_id *id)
+> > +{
+> > +     struct regmap *regmap =
+> > +             devm_regmap_init_i2c(client, &bno055_regmap_config);
+> > +
+> > +     if (IS_ERR(regmap)) {
+> > +             dev_err(&client->dev, "Unable to init register map");
+> > +             return PTR_ERR(regmap);
+> > +     }
+> > +
+> > +     return bno055_probe(&client->dev, regmap,
+> > +                         BNO055_I2C_XFER_BURST_BREAK_THRESHOLD);
+> > +
+> > +     return 0;
+>
+> ?
+>
+> > +}
+> > +
+> > +static const struct i2c_device_id bno055_i2c_id[] = {
+> > +     {"bno055", 0},
+> > +     { },
+>
+> It's at terminator, so don't put a comma as we'll never add entries after this.
+>
+> > +};
+> > +MODULE_DEVICE_TABLE(i2c, bno055_i2c_id);
+> > +
+> > +static struct i2c_driver bno055_driver = {
+> > +     .driver = {
+> > +             .name = "bno055-i2c",
+> > +     },
+> > +     .probe = bno055_i2c_probe,
+> > +     .id_table = bno055_i2c_id
+> > +};
+> > +module_i2c_driver(bno055_driver);
+> > +
+> > +MODULE_AUTHOR("Andrea Merello");
+> > +MODULE_DESCRIPTION("Bosch BNO055 I2C interface");
+> > +MODULE_LICENSE("GPL v2");
+>
