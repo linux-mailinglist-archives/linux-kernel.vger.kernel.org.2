@@ -2,97 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5792F44D3D5
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Nov 2021 10:12:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 27F3044D3D7
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Nov 2021 10:15:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232076AbhKKJPK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Nov 2021 04:15:10 -0500
-Received: from smtp-relay-internal-0.canonical.com ([185.125.188.122]:48484
-        "EHLO smtp-relay-internal-0.canonical.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229861AbhKKJPH (ORCPT
+        id S231472AbhKKJRr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Nov 2021 04:17:47 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41390 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229625AbhKKJRp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Nov 2021 04:15:07 -0500
-Received: from mail-lj1-f199.google.com (mail-lj1-f199.google.com [209.85.208.199])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by smtp-relay-internal-0.canonical.com (Postfix) with ESMTPS id EDC9E3F1EB
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Nov 2021 09:12:17 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1636621937;
-        bh=COHbret3CYWs1LPEWi5njubL+5DtolSP4rEmltng+R4=;
-        h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type;
-        b=ITITTF1PWSo7Vzjb/CulwVPQ/7YF/qMXZXst4uICPSqWKk3yfskICb9WjQ5u9KIGm
-         oX18RbxCytrsOSW0B4WeQ0IZSKPZGTm4mXP3yl8Yzig4XnScycm2eVQAGufNYo1iK+
-         QLI6iUz3IBS42xLsRGAhtjNtReLZpiiIjYihS8ue1lSfY/ikNH41nuRQa2Bkh7kz7d
-         3qozF9ucR+hS9D1+d/vErnzfrKSXIiEag3eV+t+Xqd4W2m43ALucXxuXdV1bkIcEIY
-         tJLCpAEE9VK7LeSadRSYLOMOs2Uf4chmCfOJWN9ZqmDXtBh4Od2AOrP5gArn7fS4lF
-         OZUZdifKidSYg==
-Received: by mail-lj1-f199.google.com with SMTP id l9-20020a2e8349000000b00218c7c981bcso1533879ljh.8
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Nov 2021 01:12:17 -0800 (PST)
+        Thu, 11 Nov 2021 04:17:45 -0500
+Received: from mail-ed1-x534.google.com (mail-ed1-x534.google.com [IPv6:2a00:1450:4864:20::534])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CBBABC061766;
+        Thu, 11 Nov 2021 01:14:56 -0800 (PST)
+Received: by mail-ed1-x534.google.com with SMTP id z21so21536507edb.5;
+        Thu, 11 Nov 2021 01:14:56 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=/OVKpBIcZdDNwTBwBpFvLGgM+7/0ex/GiW+ZCJo7GxA=;
+        b=oTgMs/UR9WFlnJYw85CRg7h5OSZRkyVCWhvHaOB59iUx8RgPWZ6lQgSU8bhQtropze
+         CIOw2HL7muqGwsKPSHduO6OmlKc+c7qpdxoi86e18xnayxluAIjGMvLr+fjWJxof53Gi
+         HcS0ZZugT6RA1/jGkjIz2tyCTSMJ1US27zLIVMDeTY1JACQc34q7iguGTkEHqT5AiWDY
+         +RWN3pX1iRcNkcJLdmtYRnMKSSUz0+0fwWfnuGsb3bgDV98bpMpWyXDQyypm+Ds83TVs
+         S8WJwQoH2UTfyaHbhUQE4sqfNt5QH7cifxm/T2k2AHisbpPsznK1WCXLV/MGQee+4Slv
+         tV7A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=COHbret3CYWs1LPEWi5njubL+5DtolSP4rEmltng+R4=;
-        b=gy3MMpOKWQQJtt9jny20kBuScGfzqTI10+u1GnoK73HZQCLq7qIHoRPz+I87xqS4nK
-         3h26YVH9FIl+onZD21QvDG3Mn3boCdgEcVbT9aPFYwnCxg5EVHw93WBXTBhGspp8IMbp
-         4V20GcNl9Cq9JFeY/m0NcM/AG/UzHEbv1/4G7l2RhZy7ucbf+49J89GftvjGzV7ZSigj
-         FBbhyN5h+xOmrC73qsFoC5LezcJh1K0NTbKGG18gWjApaCLaiMH1b4KN6DOyGF4L/loW
-         GaePVH9s7drY71SnrdL/oxrXYgnfHcP1FqH2M/ALmUuzP7h2b8jb+ogh5xyuC//lKhHH
-         RKoQ==
-X-Gm-Message-State: AOAM532KG82/6+NEWu0qIqrBy2V8NItBH/tLuUx5CVJM1rZdCsoyS1SE
-        SJ2E4gIQpMDc+MipyHcauy/ehJyDEQHo98RK0LGJGHfwnIt+RSp+Za6zbs2o+CINQrDIpf5AlF+
-        JuHGrQ3wpdiG87Pq86AO4SzsdZA3Lnbcfg7YqlbJleg==
-X-Received: by 2002:a05:6512:159d:: with SMTP id bp29mr5203071lfb.257.1636621937415;
-        Thu, 11 Nov 2021 01:12:17 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJw50uaVBUyMp68i8IYHq/Zi1gbhDBuJB9AdjaC3oCIQ1IUx0+dBC99oJabniaazPTA5FmmCGw==
-X-Received: by 2002:a05:6512:159d:: with SMTP id bp29mr5203063lfb.257.1636621937265;
-        Thu, 11 Nov 2021 01:12:17 -0800 (PST)
-Received: from localhost.localdomain (89-77-68-124.dynamic.chello.pl. [89.77.68.124])
-        by smtp.gmail.com with ESMTPSA id g22sm230580lfr.237.2021.11.11.01.12.16
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 11 Nov 2021 01:12:16 -0800 (PST)
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        linux-arm-kernel@lists.infradead.org,
-        linux-samsung-soc@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     Arnd Bergmann <arnd@arndb.de>, kernel test robot <lkp@intel.com>
-Subject: [PATCH] ARM: s3c: include header for prototype of s3c2410_modify_misccr
-Date:   Thu, 11 Nov 2021 10:11:23 +0100
-Message-Id: <20211111091123.50853-1-krzysztof.kozlowski@canonical.com>
-X-Mailer: git-send-email 2.32.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=/OVKpBIcZdDNwTBwBpFvLGgM+7/0ex/GiW+ZCJo7GxA=;
+        b=JdGURXayH6XDUJbdrmeXFJOSbz6K87htHld9BXNdDhCz3zaxShtylK2wk2EACQbZOc
+         4omP7weoB+xfVEeZ0B3kLrNaktEm83laVaAQp/3Liqe4chW4iLEAjYwUO9UZCp56h2hi
+         rl9loNoCA4NStt8Lc96OmSVCsEXhHNeqixmYDIoriP+T/pzL9EFt353Hno3wo6QyxALV
+         dvzW3hkj7ApS9zzsBIN+Id2aFK1B1nUOK3XSrGgNmzHbSNSo7tg64TJ91l5TNiSxDWOT
+         oFTmirx5LHDqo+OTGV15lqObUJ8G03G2+dFVKK8mvmzOe7pTRJXpgXEmHOSQAIQgjfSw
+         +Exw==
+X-Gm-Message-State: AOAM531sjLYRoLT4Zk58mErVZ1xRvRqEgPj/hzs+QIZUawaoiY+mwgA/
+        pLOOEbHwlqj6O23+IZReSamgjIvNMwZQIhoVD+0=
+X-Google-Smtp-Source: ABdhPJxnRaUzjJ7TpRP1waNVkwD2VHVrVr45CFp25MOPz5+UYotVlT+wmUuh2Pw5vmPTCJi8qccKTrNZo+JmKOa2GEs=
+X-Received: by 2002:a17:906:2887:: with SMTP id o7mr7341955ejd.425.1636622095123;
+ Thu, 11 Nov 2021 01:14:55 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+References: <20211111025339.27520-1-zev@bewilderbeest.net>
+In-Reply-To: <20211111025339.27520-1-zev@bewilderbeest.net>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Thu, 11 Nov 2021 11:14:18 +0200
+Message-ID: <CAHp75Ve16gLhaZOuUC19c3OrEcq73ZP5MErvtJ7O-G=astjEPQ@mail.gmail.com>
+Subject: Re: [PATCH] hwmon: (nct6775) mask out bank number in nct6775_wmi_read_value()
+To:     Zev Weiss <zev@bewilderbeest.net>
+Cc:     linux-hwmon@vger.kernel.org, Guenter Roeck <linux@roeck-us.net>,
+        Jean Delvare <jdelvare@suse.com>,
+        Denis Pauk <pauk.denis@gmail.com>,
+        Bernhard Seibold <mail@bernhard-seibold.de>,
+        Oleksandr Natalenko <oleksandr@natalenko.name>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Include the header with prototype of s3c2410_modify_misccr to fix W=1
-warning:
+On Thu, Nov 11, 2021 at 4:53 AM Zev Weiss <zev@bewilderbeest.net> wrote:
+>
+> The first call to nct6775_asuswmi_read() in nct6775_wmi_read_value()
+> had been passing the full bank+register number instead of just the
+> lower 8 bits.
 
-  arch/arm/mach-s3c/gpio-samsung.c:1309:14: warning:
-    no previous prototype for ‘s3c2410_modify_misccr’ [-Wmissing-prototypes]
+>  It didn't end up actually causing problems because the
+> second argument of that function is a u8 anyway,
 
-Reported-by: kernel test robot <lkp@intel.com>
-Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
----
- arch/arm/mach-s3c/gpio-samsung.c | 1 +
- 1 file changed, 1 insertion(+)
+It contradicts the existence of the Fixes tag below. What do you fix then?
 
-diff --git a/arch/arm/mach-s3c/gpio-samsung.c b/arch/arm/mach-s3c/gpio-samsung.c
-index 76ef415789f2..fda2c01f5a08 100644
---- a/arch/arm/mach-s3c/gpio-samsung.c
-+++ b/arch/arm/mach-s3c/gpio-samsung.c
-@@ -35,6 +35,7 @@
- #include "gpio-core.h"
- #include "gpio-cfg.h"
- #include "gpio-cfg-helpers.h"
-+#include "hardware-s3c24xx.h"
- #include "pm.h"
- 
- int samsung_gpio_setpull_updown(struct samsung_gpio_chip *chip,
+> but it seems
+> preferable to be explicit about it at the call site (and consistent
+> with the rest of the code).
+
+Yeah, in the current state it makes sense.
+Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
+
+Later one may refactor this to drop that tons of ' & 0xff':s.
+
+> Signed-off-by: Zev Weiss <zev@bewilderbeest.net>
+> Fixes: 3fbbfc27f955 ("hwmon: (nct6775) Support access via Asus WMI")
+> ---
+>  drivers/hwmon/nct6775.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/drivers/hwmon/nct6775.c b/drivers/hwmon/nct6775.c
+> index 93dca471972e..57ce8633a725 100644
+> --- a/drivers/hwmon/nct6775.c
+> +++ b/drivers/hwmon/nct6775.c
+> @@ -1527,7 +1527,7 @@ static u16 nct6775_wmi_read_value(struct nct6775_data *data, u16 reg)
+>
+>         nct6775_wmi_set_bank(data, reg);
+>
+> -       err = nct6775_asuswmi_read(data->bank, reg, &tmp);
+> +       err = nct6775_asuswmi_read(data->bank, reg & 0xff, &tmp);
+>         if (err)
+>                 return 0;
+
+> 2.33.1
+>
+
+
 -- 
-2.32.0
-
+With Best Regards,
+Andy Shevchenko
