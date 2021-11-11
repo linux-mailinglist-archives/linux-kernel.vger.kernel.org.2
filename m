@@ -2,216 +2,317 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B02E44DC00
+	by mail.lfdr.de (Postfix) with ESMTP id 83CD244DC01
 	for <lists+linux-kernel@lfdr.de>; Thu, 11 Nov 2021 20:15:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233003AbhKKTRk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Nov 2021 14:17:40 -0500
-Received: from mail.kernel.org ([198.145.29.99]:37366 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229785AbhKKTRi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Nov 2021 14:17:38 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 97C6761269;
+        id S233546AbhKKTRr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Nov 2021 14:17:47 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:31874 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229785AbhKKTRp (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 11 Nov 2021 14:17:45 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1636658095;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=YzeRgKH/Qgg99kDPJcaXcwiXQdHDpVrdLYGz7V0Y8Po=;
+        b=JpORbFP6NJkVSO2ih1SiDXb1CcYjHPsolU/AT7/dUyAskS49I+Z9LTGGLBIls7V4eSa0Ze
+        BDx3ywWzMbAVllHqEFbVSsoTQok4ReStMncB+vrr0FCUV2lG3fwRS/h/0Hi8yl69gsFP4o
+        14uhymfwLE7VqsQtVvHCrkwTtLE6pMM=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-573-tSrVbfwRPVCprjcbI1lstw-1; Thu, 11 Nov 2021 14:14:51 -0500
+X-MC-Unique: tSrVbfwRPVCprjcbI1lstw-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 5EE398799E0;
+        Thu, 11 Nov 2021 19:14:50 +0000 (UTC)
+Received: from [10.22.8.202] (unknown [10.22.8.202])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 06B17101E59D;
         Thu, 11 Nov 2021 19:14:48 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1636658088;
-        bh=fLq87UbMLm9X6eW2rQdFoIKXAz4h2P6ghyXFhpUb+Zo=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=uiN1T+nKgpu3G3V1bNu0KoXFt/c3ZKOARv5VYcGWq0XbMcjAute2Soc2EDBXOyjRH
-         JSyBMEfHZf6KUuVrQQ9PFaKt8oobQ5ZHqFJ3vsVFp2yocqjsdI8uRWqGcNIU/M1eOj
-         2SIO/PjpWdQPhwO3WI2kae6NjNIERNW6RE2lzi6JHSOD9DW6Q2pOt9QRHAFGhImkj5
-         XP8KrX5hLY1q88DhQ8xCEmtw3wc/x4jhvwqjkYzXmLC2FXU+3W6JUtOLKnUhmMxnyk
-         4cbS+HMWQCykqK3xxMy1IcqOYkAgU5UivjKvhqkP3kzSgKktNkI5ckyaTn682p4vT+
-         dFi2Xni+OSZ8w==
-Received: by mail-oi1-f171.google.com with SMTP id o83so13340260oif.4;
-        Thu, 11 Nov 2021 11:14:48 -0800 (PST)
-X-Gm-Message-State: AOAM532Yc5h1bYVAi3nO1kkaWpEpz5Bb4cUJ4cNsQscnCugwt5zOsvYg
-        DCJDlthmkvr+clN/3OSGV5EtbMVGMSg0h82FtdE=
-X-Google-Smtp-Source: ABdhPJz2WvXAOmi6gF0GFDDVpw6ZT9hWI+Bx859nG1W+CZYMdLudyfxgodmghTkUA1HMwr1ctAsZNLMLQFv8Mp4U/UU=
-X-Received: by 2002:a05:6808:1919:: with SMTP id bf25mr8121280oib.33.1636658087851;
- Thu, 11 Nov 2021 11:14:47 -0800 (PST)
+Content-Type: multipart/mixed; boundary="------------CJNXWTbrrTYQhJTYYpn3lgEa"
+Message-ID: <61735528-141c-8d77-592d-b6b8fb75ebaa@redhat.com>
+Date:   Thu, 11 Nov 2021 14:14:48 -0500
 MIME-Version: 1.0
-References: <CAHifhD5V9vwJenRLcPRH5ZMeLa_JnjZKfdcFZw1CjceBtC6=Ew@mail.gmail.com>
- <CAHp75VeyQEaABFOnEUh2pdFx9ROJvRcud-BuEbKWmaEWpL9_Uw@mail.gmail.com>
- <CAHifhD7Qf7+dc7K-MjNguqmiCWUxOJZmQoCTRUZOR-RWMm_JPw@mail.gmail.com>
- <CAHp75Ve9BMNy3gP=-Dajm+Lgu+E4FCqc4phLgV1_cr2qUnTX_w@mail.gmail.com>
- <CAHifhD4n7O5eWFPOjRAmHYL52tW0K=uXXzVj7L5+enTFwFXW2A@mail.gmail.com>
- <CAArk9MP5cKJ+VhAZUseW4LnQNRvux=MZe2eSy3rQkbHKnUsGig@mail.gmail.com>
- <CAHp75VdRwvU5WjFP5E4gg8U+_e34A0Lwze+nz_wVHoB49jLeLg@mail.gmail.com>
- <CAArk9MNGSxR+92n-D2pe_+r+Z0Q9FoTMPqk11sAKA=4Vckj0HQ@mail.gmail.com>
- <YYy7QZGKeEEfI1mH@lahna> <CAHifhD5bXu2nP533RXyWDnyNt=k2rRZq5Z6A6CCik_2e6XNgGA@mail.gmail.com>
- <YYzxWPIWFAV04LRU@lahna> <CAD2FfiGnmFSTPvkJaXj+cf4yDvci-j+2QkpMqNY821fUT5C=CA@mail.gmail.com>
- <CAHp75Vcp=hC1oL5FBQDDFe8EBxWB9Po4FKNS9ZGtD3q-yQPtAw@mail.gmail.com>
- <CAHifhD6p9qSm5dv1spz+oPRhRkBZeQspHNEphE49fODacm-S6g@mail.gmail.com>
- <CAHp75Vfk5WHWiQxwmqEzVEymgpvjxKWEZbaQ9+=Et7N63Ps=Ng@mail.gmail.com>
- <CAHifhD5bGZOcZFNsHYFeecikHGUts73U4k6=aUVNTKEeETW5rQ@mail.gmail.com>
- <CAHp75VeSnXfjeNeBLtrR78AmB-18kTeXpknn7-jcPLEeWCrzXQ@mail.gmail.com>
- <CAHifhD4KbLQTA1=vVCeftKybSjU1tHGk7OZn4PN55eXUu-yKog@mail.gmail.com>
- <CAHp75Vfc85XnVmnJ0ytm_XCGSoqFfiMQ3jxXCudsyo5XW6brTQ@mail.gmail.com>
- <CAHifhD42G+7BQHBwS=ZFzcv9On0TFNFLV+HARjWENUAmX-8WaQ@mail.gmail.com>
- <CAHp75Vcn6023eNCmRupRDLVHQrmGgAJ56TPEjHpDoQrwNgC8Hg@mail.gmail.com> <CAHifhD7bc46ro39JVg3P_M2TRW9BJmcxMCSnMVNOc0DoNN8fHg@mail.gmail.com>
-In-Reply-To: <CAHifhD7bc46ro39JVg3P_M2TRW9BJmcxMCSnMVNOc0DoNN8fHg@mail.gmail.com>
-From:   Ard Biesheuvel <ardb@kernel.org>
-Date:   Thu, 11 Nov 2021 20:14:36 +0100
-X-Gmail-Original-Message-ID: <CAMj1kXFeHhA2CgBgiO5d39+0C42rsd1C=kZVS32z0j4WEx-vZQ@mail.gmail.com>
-Message-ID: <CAMj1kXFeHhA2CgBgiO5d39+0C42rsd1C=kZVS32z0j4WEx-vZQ@mail.gmail.com>
-Subject: Re: [PATCH] firmware: export x86_64 platform flash bios region via sysfs
-To:     Hans-Gert Dahmen <hans-gert.dahmen@immu.ne>
-Cc:     Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Richard Hughes <hughsient@gmail.com>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        Mauro Lima <mauro.lima@eclypsium.com>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Philipp Deppenwiese <philipp.deppenwiese@immu.ne>,
-        "platform-driver-x86@vger.kernel.org" 
-        <platform-driver-x86@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.2.0
+Subject: Re: [BUG]locking/rwsem: only clean RWSEM_FLAG_HANDOFF when already
+ set
+Content-Language: en-US
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Hillf Danton <hdanton@sina.com>,
+        =?UTF-8?B?6ams5oyv5Y2O?= <mazhenhua@xiaomi.com>,
+        mingo <mingo@redhat.com>, will <will@kernel.org>,
+        "boqun.feng" <boqun.feng@gmail.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+References: <4fafad133b074f279dbab1aa3642e23f@xiaomi.com>
+ <20211107090131.1535-1-hdanton@sina.com>
+ <13d683ed-793c-b502-44ff-f28114d9386b@redhat.com>
+ <02e118c0-2116-b806-2b48-b9c91dc847dd@redhat.com>
+ <20211110213854.GE174703@worktop.programming.kicks-ass.net>
+ <YY0x55wxO2v5HCOW@hirez.programming.kicks-ass.net>
+From:   Waiman Long <longman@redhat.com>
+In-Reply-To: <YY0x55wxO2v5HCOW@hirez.programming.kicks-ass.net>
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 11 Nov 2021 at 19:15, Hans-Gert Dahmen <hans-gert.dahmen@immu.ne> wrote:
->
-> Am Do., 11. Nov. 2021 um 18:49 Uhr schrieb Andy Shevchenko
-> <andy.shevchenko@gmail.com>:
-> >
-> > On Thu, Nov 11, 2021 at 6:55 PM Hans-Gert Dahmen
-> > <hans-gert.dahmen@immu.ne> wrote:
-> > > Am Do., 11. Nov. 2021 um 17:45 Uhr schrieb Andy Shevchenko
-> > > <andy.shevchenko@gmail.com>:
-> > > > On Thu, Nov 11, 2021 at 6:07 PM Hans-Gert Dahmen
-> > > > <hans-gert.dahmen@immu.ne> wrote:
-> > > > > Am Do., 11. Nov. 2021 um 16:31 Uhr schrieb Andy Shevchenko
-> > > > > <andy.shevchenko@gmail.com>:
-> > > > > > On Thu, Nov 11, 2021 at 4:33 PM Hans-Gert Dahmen
-> > > > > > <hans-gert.dahmen@immu.ne> wrote:
-> > > > > > > Am Do., 11. Nov. 2021 um 14:55 Uhr schrieb Andy Shevchenko
-> > > > > > > <andy.shevchenko@gmail.com>:
-> > > > > > > > On Thu, Nov 11, 2021 at 2:56 PM Hans-Gert Dahmen
-> > > > > > > > <hans-gert.dahmen@immu.ne> wrote:
-> > > > > > > > > Am Do., 11. Nov. 2021 um 13:46 Uhr schrieb Andy Shevchenko
-> > > > > > > > > <andy.shevchenko@gmail.com>:
-> > > > > > > > > > On Thu, Nov 11, 2021 at 1:46 PM Richard Hughes <hughsient@gmail.com> wrote:
-> > > > > > > > > > > On Thu, 11 Nov 2021 at 10:33, Mika Westerberg
-> > > > > > > > > > > <mika.westerberg@linux.intel.com> wrote:
-> > > > > > > > > >
-> > > > > > > > > > > it's always going to work on x64 -- if the system firmware isn't available at that offset then the platform just isn't going to boot.
-> >
-> > (1)
-> >
-> > > > > > > > > > Well, it's _usual_ case, but in general the assumption is simply
-> > > > > > > > > > incorrect. Btw, have you checked it on Coreboot enabled platforms?
-> > > > > > > > > > What about bare metal configurations where the bootloader provides
-> > > > > > > > > > services to the OS?
-> > > > > > > > >
-> > > > > > > > > No it is always the case. I suggest you go read your own Intel specs
-> > > > > > > > > and datasheets
-> >
-> > (2)
-> >
-> > > > > > > > Point me out, please, chapters in SDM (I never really read it in full,
-> > > > > > > > it's kinda 10x Bible size). What x86 expects is 16 bytes at the end of
-> > > > > > > > 1Mb physical address space that the CPU runs at first.
-> > > > > > >
-> > > > > > > So you do not know what you are talking about, am I correct?
-> > > > > >
-> > > > > > Let me comment on this provocative question later, after some other
-> > > > > > comments first.
-> > > > > >
-> > > > > > > Starting
-> > > > > > > from 386 the first instruction is executed at 0xFFFFFFF0h. What you
-> > > > > > > are referring to is the 8086 reset vector and that was like 40 years
-> > > > > > > ago.
-> > > > > >
-> > > > > > True. The idea is the same, It has a reset vector standard for x86
-> > > > > > (which doesn't explicitly tell what is there). So, nothing new or
-> > > > > > different here.
-> > > > > >
-> > > > > > > Please refer to SDM volume 3A, chapter 9, section 9.1.4 "First
-> > > > > > > Instruction Executed", paragraph two. Just watch out for the hex
-> > > > > > > number train starting with FFFFF... then you will find it. This is
-> > > > > > > what requires the memory range to be mapped. Modern Intel CPUs require
-> > > > > > > larger portions, because of the ACM loading and XuCode and whatnot.
-> > > > > >
-> > > > > > Thanks. Have you read 9.7 and 9.8, btw?
-> > > > > > Where does it tell anything about memory to be mapped to a certain
-> > > > > > address, except the last up to 16 bytes?
-> > > > >
-> > > > > It doesn't, except that the FIT, ACM, BootGuard, XuCode stuff rely on
-> > > > > their binaries to be there, this just sets the upper address limit of
-> > > > > the window.
-> > > >
-> > > > Why is it needed? I mean the listed blobs are not mandatory to get
-> > > > system boot. Is this correct?
-> > >
-> > > That doesn't matter for this case.
-> >
-> > Then why did you mention them?
-> >
-> > > > > > > Please refer to the email [1] from me linked below where I reference
-> > > > > > > all PCH datasheets of the x64 era to prove that 16MB are mapped
-> > > > > > > hard-wired. Note that the range cannot be turned off and will read
-> > > > > > > back 0xFF's if the PCH registers are configured to not be backed by
-> > > > > > > the actual SPI flash contents.
-> > > > > >
-> > > > > > And as I said it does not cover _all_ x86 designs (usual != all) .
-> > > > > > Have you heard about Intel MID line of SoCs? Do you know that they
-> > > > >
-> > > > > No and a quick search didn't turn up anything. Can you point me to
-> > > > > resources about those SoCs? Also my module is targeting x86_64, that
-> > > > > is only a subset of x86 designs.
-> > > >
-> > > > They are x86_32 and x86_64, so in the category you listed.
-> > > >
-> > > > Unfortunately there is indeed not much publicly available information,
-> > > > but I can tell you that from a design perspective you may consider
-> > > > them PCH-less.
-> > >
-> > > Okay fine. Now you come around the corner with undocumented Intel
-> > > devices and make your first semi-valid point.
-> >
-> > Huh?!
-> > You simply have the wrong assumption (see (1) and (2) above) and
-> > _this_ is my point. And it seems you still can't admit that. Be brave!
-> >
->
-> I thought my last email was admitting that, but, if you insist, I
-> hereby explicitly admit, that, now, after some 40 emails, you have
-> brought forward a valid point that proves my assumption wrong. If this
-> is what makes you happy, then I can also certify my defeat on paper
-> and send it to you so you can hang it as a trophy on your wall. The
-> notion of being brave or not has no value for me here, I am purely
-> interested in the technical details. I never said that my solution was
-> brilliant, and, all I wanted, was, as you already know: to retain
-> functionality used by userspace tools on locked-down systems. Please,
-> next time, be of good character and don't play games like this. Just
-> directly bring forward the evidence to challenge an assumption.
->
-> > > Why did it take you so
-> > > long?
-> >
-> > Same question to you.
-> >
-> > >  Why did you seemingly just try to derail the discussion before?
-> >
-> > See just above. I don't like when people are blind with their
-> > brilliant solutions.
->
-> Again, now, if you have the feeling that someone is blind, please
-> don't fool them around just to make them painfully aware of their
-> blind spot. IMO the more human solution is not to react with anger,
-> like you did, but with constructivism.
->
+This is a multi-part message in MIME format.
+--------------CJNXWTbrrTYQhJTYYpn3lgEa
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-Can we cut the drama please?
 
-Greg has already pointed out that you cannot blindly expose this
-without tying it to a property exposed by the hardware. Andy has
-pointed out that your assumption that any x86_64 based platform
-exposes this region does not hold.
+On 11/11/21 10:08, Peter Zijlstra wrote:
+> On Wed, Nov 10, 2021 at 10:38:55PM +0100, Peter Zijlstra wrote:
+>>
+>> The comment above RWSEM_WRITER_LOCKED seems wrong/out-dated in that
+>> there's a 4th place that modifies the HANDOFF bit namely
+>> rwsem_down_read_slowpath() in the out_nolock: case.
+>>
+>> Now the thing I'm most worried about is that rwsem_down_write_slowpath()
+>> modifies the HANDOFF bit depending on wstate, and wstate itself it not
+>> determined under the same ->wait_lock section, so there could be a race
+>> there.
+>>
+>> Another thing is that once wstate==HANDOFF, we rely on spin_on_owner()
+>> to return OWNER_NULL such that it goes to trylock_again, however if it
+>> returns anything else then we're at signal_pending_state() and the
+>> observed race can happen.
+>>
+>> Now, spin_on_owner() *can* in fact return something else, consider
+>> need_resched() being set for instance.
+>>
+>> Combined I think the observed race is valid.
+>>
+>> Now before we go make things more complicated, I think we should see if
+>> we can make things simpler. Also I think perhaps the HANDOFF name here
+>> is a misnomer.
+>>
+>> I agree that using _andnot() will fix this issue; I also agree with
+>> folding it with the existing _andnot() already there. But let me stare a
+>> little more at this code, something isn't making sense...
+> I think I want to see WRITER_HANDOFF go away. And preferably all of
+> wstate.
+>
+> Something like the *completely* untested below, might set fire to your
+> pet, eat your granny, etc..
+>
+> Also, perhaps s/HANDOFF/PHASE_CHANGE/ ?
+>
+> Waiman, did I overlook something fundamental here?
 
-So maybe it is time for some 'constructivism' on your part, and simply
-go and implement what the reviewers suggested, rather than keep this
-pointless discussion going?
+The handoff bit is also set when the current writer is a RT task. You 
+miss that in your patch. The attached patch is my version of your 
+change. What do you think about that?
+
+As for the PHASE_CHANGE name, we have to be consistent in both rwsem and 
+mutex. Maybe a follow up patch if you think we should change the 
+terminology.
+
+Cheers,
+Longman
+
+--------------CJNXWTbrrTYQhJTYYpn3lgEa
+Content-Type: text/x-patch; charset=UTF-8;
+ name="0001-locking-rwsem-Make-handoff-bit-handling-more-consist.patch"
+Content-Disposition: attachment;
+ filename*0="0001-locking-rwsem-Make-handoff-bit-handling-more-consist.pa";
+ filename*1="tch"
+Content-Transfer-Encoding: base64
+
+RnJvbSAxYzc2YTljMWI5ZDE2ZDBjZWIwN2Y2NDM4MDMwMzUxNzdiNDA0MmE1IE1vbiBTZXAg
+MTcgMDA6MDA6MDAgMjAwMQpGcm9tOiBXYWltYW4gTG9uZyA8bG9uZ21hbkByZWRoYXQuY29t
+PgpEYXRlOiBUaHUsIDExIE5vdiAyMDIxIDEzOjQ5OjM1IC0wNTAwClN1YmplY3Q6IFtQQVRD
+SF0gbG9ja2luZy9yd3NlbTogTWFrZSBoYW5kb2ZmIGJpdCBoYW5kbGluZyBtb3JlIGNvbnNp
+c3RlbnQKClRoZXJlIGFyZSBzb21lIGluY29uc2lzdGVuY3kgaW4gdGhlIHdheSB0aGF0IHRo
+ZSBoYW5kb2ZmIGJpdCBpcyBiZWluZwpoYW5kbGVkIGluIHJlYWRlcnMgYW5kIHdyaXRlcnMu
+CgpGaXJzdGx5LCB3aGVuIGEgcXVldWUgaGVhZCB3cml0ZXIgc2V0IHRoZSBoYW5kb2ZmIGJp
+dCwgaXQgd2lsbCBjbGVhciBpdAp3aGVuIHRoZSB3cml0ZXIgaXMgYmVpbmcga2lsbGVkIG9y
+IGludGVycnVwdGVkIG9uIGl0cyB3YXkgb3V0IHdpdGhvdXQKYWNxdWlyaW5nIHRoZSBsb2Nr
+LiBUaGF0IGlzIG5vdCB0aGUgY2FzZSBmb3IgYSBxdWV1ZSBoZWFkIHJlYWRlci4gVGhlCmhh
+bmRvZmYgYml0IHdpbGwgc2ltcGx5IGJlIGluaGVyaXRlZCBieSB0aGUgbmV4dCB3YWl0ZXIu
+CgpTZWNvbmRseSwgaW4gdGhlIG91dF9ub2xvY2sgcGF0aCBvZiByd3NlbV9kb3duX3JlYWRf
+c2xvd3BhdGgoKSwgYm90aAp0aGUgd2FpdGVyIGFuZCBoYW5kb2ZmIGJpdHMgYXJlIGNsZWFy
+ZWQgaWYgdGhlIHdhaXQgcXVldWUgYmVjb21lcyBlbXB0eS4KRm9yIHJ3c2VtX2Rvd25fd3Jp
+dGVfc2xvd3BhdGgoKSwgaG93ZXZlciwgdGhlIGhhbmRvZmYgYml0IGlzIG5vdCBjaGVja2Vk
+CmFuZCBjbGVhcmVkIGlmIHRoZSB3YWl0IHF1ZXVlIGlzIGVtcHR5LiBUaGlzIGNhbiBwb3Rl
+bnRpYWxseSBtYWtlIHRoZQpoYW5kb2ZmIGJpdCBzZXQgd2l0aCBlbXB0eSB3YWl0IHF1ZXVl
+LgoKVG8gbWFrZSB0aGUgaGFuZG9mZiBiaXQgaGFuZGxpbmcgbW9yZSBjb25zaXN0ZW50IGFu
+ZCByb2J1c3QsIGV4dHJhY3QKb3V0IHRoZSByd3NlbSBmbGFncyBoYW5kbGluZyBjb2RlIGlu
+dG8gYSBjb21tb250IHJ3c2VtX291dF9ub2xvY2soKQpmdW5jdGlvbiBhbmQgY2FsbCBpdCBm
+cm9tIGJvdGggdGhlIHJlYWRlciBhbmQgd3JpdGVyJ3Mgb3V0X25vbG9jayBwYXRocy4KVGhl
+IGNvbW1vbiBmdW5jdGlvbiB3aWxsIG9ubHkgdXNlIGF0b21pY19sb25nX2FuZG5vdCgpIHRv
+IGNsZWFyIGJpdHMKdG8gYXZvaWQgcG9zc2libGUgcmFjZSBjb25kaXRpb24uCgpUaGlzIHdp
+bGwgZWxtaW5hdGUgdGhlIGhhbmRvZmYgYml0IHNldCB3aXRoIGVtcHR5IHdhaXQgcXVldWUg
+Y2FzZSBhcwp3ZWxsIGFzIHRoZSBwb3NzaWJsZSByYWNlIGNvbmRpdGlvbiB0aGF0IG1heSBz
+Y3JldyB1cCB0aGUgY291bnQgdmFsdWUuCgpNb3JlIHN0YXRlcyBhcmUgc3RvcmVkIGluIHJ3
+c2VtX3dhaXRlciBzdHJ1Y3R1cmUgYW5kIHdyaXRlciBoYW5kb2ZmIGJpdApzZXR0aW5nIGFy
+ZSBhbGwgcHVzaGVkIHRvIHJ3c2VtX3RyeV93cml0ZV9sb2NrKCkuIFRoaXMgc2ltcGxpZmll
+cyB0aGUKdHJ5bG9jayBsb29wIGluIHJ3c2VtX2Rvd25fd3JpdGVfc2xvd3BhdGgoKS4KCkZp
+eGVzOiA0ZjIzZGJjMWU2NTcgKCJsb2NraW5nL3J3c2VtOiBJbXBsZW1lbnQgbG9jayBoYW5k
+b2ZmIHRvIHByZXZlbnQgbG9jayBzdGFydmF0aW9uIikKU3VnZ2VzdGVkLWJ5OiBQZXRlciBa
+aWpsc3RyYSA8cGV0ZXJ6QGluZnJhZGVhZC5vcmc+ClNpZ25lZC1vZmYtYnk6IFdhaW1hbiBM
+b25nIDxsb25nbWFuQHJlZGhhdC5jb20+Ci0tLQoga2VybmVsL2xvY2tpbmcvcndzZW0uYyB8
+IDEwOSArKysrKysrKysrKysrKysrKystLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQogMSBmaWxl
+IGNoYW5nZWQsIDQ5IGluc2VydGlvbnMoKyksIDYwIGRlbGV0aW9ucygtKQoKZGlmZiAtLWdp
+dCBhL2tlcm5lbC9sb2NraW5nL3J3c2VtLmMgYi9rZXJuZWwvbG9ja2luZy9yd3NlbS5jCmlu
+ZGV4IGM1MTM4N2E0MzI2NS4uYjVmZTIxZDU5MTZkIDEwMDY0NAotLS0gYS9rZXJuZWwvbG9j
+a2luZy9yd3NlbS5jCisrKyBiL2tlcm5lbC9sb2NraW5nL3J3c2VtLmMKQEAgLTEwNCwxMCAr
+MTA0LDExIEBACiAgKiBhdG9taWNfbG9uZ19mZXRjaF9hZGQoKSBpcyB1c2VkIHRvIG9idGFp
+biByZWFkZXIgbG9jaywgd2hlcmVhcwogICogYXRvbWljX2xvbmdfY21weGNoZygpIHdpbGwg
+YmUgdXNlZCB0byBvYnRhaW4gd3JpdGVyIGxvY2suCiAgKgotICogVGhlcmUgYXJlIHRocmVl
+IHBsYWNlcyB3aGVyZSB0aGUgbG9jayBoYW5kb2ZmIGJpdCBtYXkgYmUgc2V0IG9yIGNsZWFy
+ZWQuCi0gKiAxKSByd3NlbV9tYXJrX3dha2UoKSBmb3IgcmVhZGVycy4KLSAqIDIpIHJ3c2Vt
+X3RyeV93cml0ZV9sb2NrKCkgZm9yIHdyaXRlcnMuCi0gKiAzKSBFcnJvciBwYXRoIG9mIHJ3
+c2VtX2Rvd25fd3JpdGVfc2xvd3BhdGgoKS4KKyAqIFRoZXJlIGFyZSBmb3VyIHBsYWNlcyB3
+aGVyZSB0aGUgbG9jayBoYW5kb2ZmIGJpdCBtYXkgYmUgc2V0IG9yIGNsZWFyZWQuCisgKiAx
+KSByd3NlbV9tYXJrX3dha2UoKSBmb3IgcmVhZGVycyAgICAgICAgICAgIC0tIHNldCwgY2xl
+YXIKKyAqIDIpIHJ3c2VtX3RyeV93cml0ZV9sb2NrKCkgZm9yIHdyaXRlcnMgICAgICAgLS0g
+c2V0LCBjbGVhcgorICogMykgRXJyb3IgcGF0aCBvZiByd3NlbV9kb3duX3dyaXRlX3Nsb3dw
+YXRoKCkgLS0gY2xlYXIKKyAqIDQpIEVycm9yIHBhdGggb2YgcndzZW1fZG93bl9yZWFkX3Ns
+b3dwYXRoKCkgIC0tIGNsZWFyCiAgKgogICogRm9yIGFsbCB0aGUgYWJvdmUgY2FzZXMsIHdh
+aXRfbG9jayB3aWxsIGJlIGhlbGQuIEEgd3JpdGVyIG11c3QgYWxzbwogICogYmUgdGhlIGZp
+cnN0IG9uZSBpbiB0aGUgd2FpdF9saXN0IHRvIGJlIGVsaWdpYmxlIGZvciBzZXR0aW5nIHRo
+ZSBoYW5kb2ZmCkBAIC0zMzQsNiArMzM1LDcgQEAgc3RydWN0IHJ3c2VtX3dhaXRlciB7CiAJ
+c3RydWN0IHRhc2tfc3RydWN0ICp0YXNrOwogCWVudW0gcndzZW1fd2FpdGVyX3R5cGUgdHlw
+ZTsKIAl1bnNpZ25lZCBsb25nIHRpbWVvdXQ7CisJYm9vbCBoYW5kb2ZmX3NldCwgcnRfdGFz
+azsKIH07CiAjZGVmaW5lIHJ3c2VtX2ZpcnN0X3dhaXRlcihzZW0pIFwKIAlsaXN0X2ZpcnN0
+X2VudHJ5KCZzZW0tPndhaXRfbGlzdCwgc3RydWN0IHJ3c2VtX3dhaXRlciwgbGlzdCkKQEAg
+LTM0NCwxMiArMzQ2LDYgQEAgZW51bSByd3NlbV93YWtlX3R5cGUgewogCVJXU0VNX1dBS0Vf
+UkVBRF9PV05FRAkvKiBXYWtlciB0aHJlYWQgaG9sZHMgdGhlIHJlYWQgbG9jayAqLwogfTsK
+IAotZW51bSB3cml0ZXJfd2FpdF9zdGF0ZSB7Ci0JV1JJVEVSX05PVF9GSVJTVCwJLyogV3Jp
+dGVyIGlzIG5vdCBmaXJzdCBpbiB3YWl0IGxpc3QgKi8KLQlXUklURVJfRklSU1QsCQkvKiBX
+cml0ZXIgaXMgZmlyc3QgaW4gd2FpdCBsaXN0ICAgICAqLwotCVdSSVRFUl9IQU5ET0ZGCQkv
+KiBXcml0ZXIgaXMgZmlyc3QgJiBoYW5kb2ZmIG5lZWRlZCAqLwotfTsKLQogLyoKICAqIFRo
+ZSB0eXBpY2FsIEhaIHZhbHVlIGlzIGVpdGhlciAyNTAgb3IgMTAwMC4gU28gc2V0IHRoZSBt
+aW5pbXVtIHdhaXRpbmcKICAqIHRpbWUgdG8gYXQgbGVhc3QgNG1zIG9yIDEgamlmZnkgKGlm
+IGl0IGlzIGhpZ2hlciB0aGFuIDRtcykgaW4gdGhlIHdhaXQKQEAgLTQzNCw2ICs0MzAsNyBA
+QCBzdGF0aWMgdm9pZCByd3NlbV9tYXJrX3dha2Uoc3RydWN0IHJ3X3NlbWFwaG9yZSAqc2Vt
+LAogCQkJaWYgKCEob2xkY291bnQgJiBSV1NFTV9GTEFHX0hBTkRPRkYpICYmCiAJCQkgICAg
+dGltZV9hZnRlcihqaWZmaWVzLCB3YWl0ZXItPnRpbWVvdXQpKSB7CiAJCQkJYWRqdXN0bWVu
+dCAtPSBSV1NFTV9GTEFHX0hBTkRPRkY7CisJCQkJd2FpdGVyLT5oYW5kb2ZmX3NldCA9IHRy
+dWU7CiAJCQkJbG9ja2V2ZW50X2luYyhyd3NlbV9ybG9ja19oYW5kb2ZmKTsKIAkJCX0KIApA
+QCAtNTMxLDE0ICs1MjgsMTIgQEAgc3RhdGljIHZvaWQgcndzZW1fbWFya193YWtlKHN0cnVj
+dCByd19zZW1hcGhvcmUgKnNlbSwKICAqIFRoaXMgZnVuY3Rpb24gbXVzdCBiZSBjYWxsZWQg
+d2l0aCB0aGUgc2VtLT53YWl0X2xvY2sgaGVsZCB0byBwcmV2ZW50CiAgKiByYWNlIGNvbmRp
+dGlvbnMgYmV0d2VlbiBjaGVja2luZyB0aGUgcndzZW0gd2FpdCBsaXN0IGFuZCBzZXR0aW5n
+IHRoZQogICogc2VtLT5jb3VudCBhY2NvcmRpbmdseS4KLSAqCi0gKiBJZiB3c3RhdGUgaXMg
+V1JJVEVSX0hBTkRPRkYsIGl0IHdpbGwgbWFrZSBzdXJlIHRoYXQgZWl0aGVyIHRoZSBoYW5k
+b2ZmCi0gKiBiaXQgaXMgc2V0IG9yIHRoZSBsb2NrIGlzIGFjcXVpcmVkIHdpdGggaGFuZG9m
+ZiBiaXQgY2xlYXJlZC4KICAqLwogc3RhdGljIGlubGluZSBib29sIHJ3c2VtX3RyeV93cml0
+ZV9sb2NrKHN0cnVjdCByd19zZW1hcGhvcmUgKnNlbSwKLQkJCQkJZW51bSB3cml0ZXJfd2Fp
+dF9zdGF0ZSB3c3RhdGUpCisJCQkJCXN0cnVjdCByd3NlbV93YWl0ZXIgKndhaXRlcikKIHsK
+IAlsb25nIGNvdW50LCBuZXc7CisJYm9vbCBmaXJzdCA9IHJ3c2VtX2ZpcnN0X3dhaXRlcihz
+ZW0pID09IHdhaXRlcjsKIAogCWxvY2tkZXBfYXNzZXJ0X2hlbGQoJnNlbS0+d2FpdF9sb2Nr
+KTsKIApAQCAtNTQ2LDEzICs1NDEsMTQgQEAgc3RhdGljIGlubGluZSBib29sIHJ3c2VtX3Ry
+eV93cml0ZV9sb2NrKHN0cnVjdCByd19zZW1hcGhvcmUgKnNlbSwKIAlkbyB7CiAJCWJvb2wg
+aGFzX2hhbmRvZmYgPSAhIShjb3VudCAmIFJXU0VNX0ZMQUdfSEFORE9GRik7CiAKLQkJaWYg
+KGhhc19oYW5kb2ZmICYmIHdzdGF0ZSA9PSBXUklURVJfTk9UX0ZJUlNUKQorCQlpZiAoaGFz
+X2hhbmRvZmYgJiYgIWZpcnN0KQogCQkJcmV0dXJuIGZhbHNlOwogCiAJCW5ldyA9IGNvdW50
+OwogCiAJCWlmIChjb3VudCAmIFJXU0VNX0xPQ0tfTUFTSykgewotCQkJaWYgKGhhc19oYW5k
+b2ZmIHx8ICh3c3RhdGUgIT0gV1JJVEVSX0hBTkRPRkYpKQorCQkJaWYgKGhhc19oYW5kb2Zm
+IHx8ICghd2FpdGVyLT5ydF90YXNrICYmCisJCQkJCSAgICAhdGltZV9hZnRlcihqaWZmaWVz
+LCB3YWl0ZXItPnRpbWVvdXQpKSkKIAkJCQlyZXR1cm4gZmFsc2U7CiAKIAkJCW5ldyB8PSBS
+V1NFTV9GTEFHX0hBTkRPRkY7CkBAIC01NjksOCArNTY1LDExIEBAIHN0YXRpYyBpbmxpbmUg
+Ym9vbCByd3NlbV90cnlfd3JpdGVfbG9jayhzdHJ1Y3Qgcndfc2VtYXBob3JlICpzZW0sCiAJ
+ICogV2UgaGF2ZSBlaXRoZXIgYWNxdWlyZWQgdGhlIGxvY2sgd2l0aCBoYW5kb2ZmIGJpdCBj
+bGVhcmVkIG9yCiAJICogc2V0IHRoZSBoYW5kb2ZmIGJpdC4KIAkgKi8KLQlpZiAobmV3ICYg
+UldTRU1fRkxBR19IQU5ET0ZGKQorCWlmIChuZXcgJiBSV1NFTV9GTEFHX0hBTkRPRkYpIHsK
+KwkJd2FpdGVyLT5oYW5kb2ZmX3NldCA9IHRydWU7CisJCWxvY2tldmVudF9pbmMocndzZW1f
+d2xvY2tfaGFuZG9mZik7CiAJCXJldHVybiBmYWxzZTsKKwl9CiAKIAlyd3NlbV9zZXRfb3du
+ZXIoc2VtKTsKIAlyZXR1cm4gdHJ1ZTsKQEAgLTg4OSw2ICs4ODgsMjQgQEAgcndzZW1fc3Bp
+bl9vbl9vd25lcihzdHJ1Y3Qgcndfc2VtYXBob3JlICpzZW0pCiB9CiAjZW5kaWYKIAorLyoK
+KyAqIENvbW1vbiBjb2RlIHRvIGhhbmRsZSByd3NlbSBmbGFncyBpbiBvdXRfbm9sb2NrIHBh
+dGggd2l0aCB3YWl0X2xvY2sgaGVsZC4KKyAqLworc3RhdGljIGlubGluZSB2b2lkIHJ3c2Vt
+X291dF9ub2xvY2tfY2xlYXJfZmxhZ3Moc3RydWN0IHJ3X3NlbWFwaG9yZSAqc2VtLAorCQkJ
+CQkJc3RydWN0IHJ3c2VtX3dhaXRlciAqd2FpdGVyKQoreworCWxvbmcgZmxhZ3MgPSAwOwor
+CisJbGlzdF9kZWwoJndhaXRlci0+bGlzdCk7CisJaWYgKGxpc3RfZW1wdHkoJnNlbS0+d2Fp
+dF9saXN0KSkKKwkJZmxhZ3MgPSBSV1NFTV9GTEFHX0hBTkRPRkYgfCBSV1NFTV9GTEFHX1dB
+SVRFUlM7CisJZWxzZSBpZiAod2FpdGVyLT5oYW5kb2ZmX3NldCkKKwkJZmxhZ3MgPSBSV1NF
+TV9GTEFHX0hBTkRPRkY7CisKKwlpZiAoZmxhZ3MpCisJCWF0b21pY19sb25nX2FuZG5vdChm
+bGFncywgICZzZW0tPmNvdW50KTsKK30KKwogLyoKICAqIFdhaXQgZm9yIHRoZSByZWFkIGxv
+Y2sgdG8gYmUgZ3JhbnRlZAogICovCkBAIC05MzYsNiArOTUzLDcgQEAgcndzZW1fZG93bl9y
+ZWFkX3Nsb3dwYXRoKHN0cnVjdCByd19zZW1hcGhvcmUgKnNlbSwgbG9uZyBjb3VudCwgdW5z
+aWduZWQgaW50IHN0YXQKIAl3YWl0ZXIudGFzayA9IGN1cnJlbnQ7CiAJd2FpdGVyLnR5cGUg
+PSBSV1NFTV9XQUlUSU5HX0ZPUl9SRUFEOwogCXdhaXRlci50aW1lb3V0ID0gamlmZmllcyAr
+IFJXU0VNX1dBSVRfVElNRU9VVDsKKwl3YWl0ZXIuaGFuZG9mZl9zZXQgPSBmYWxzZTsKIAog
+CXJhd19zcGluX2xvY2tfaXJxKCZzZW0tPndhaXRfbG9jayk7CiAJaWYgKGxpc3RfZW1wdHko
+JnNlbS0+d2FpdF9saXN0KSkgewpAQCAtMTAwMiwxMSArMTAyMCw3IEBAIHJ3c2VtX2Rvd25f
+cmVhZF9zbG93cGF0aChzdHJ1Y3Qgcndfc2VtYXBob3JlICpzZW0sIGxvbmcgY291bnQsIHVu
+c2lnbmVkIGludCBzdGF0CiAJcmV0dXJuIHNlbTsKIAogb3V0X25vbG9jazoKLQlsaXN0X2Rl
+bCgmd2FpdGVyLmxpc3QpOwotCWlmIChsaXN0X2VtcHR5KCZzZW0tPndhaXRfbGlzdCkpIHsK
+LQkJYXRvbWljX2xvbmdfYW5kbm90KFJXU0VNX0ZMQUdfV0FJVEVSU3xSV1NFTV9GTEFHX0hB
+TkRPRkYsCi0JCQkJICAgJnNlbS0+Y291bnQpOwotCX0KKwlyd3NlbV9vdXRfbm9sb2NrX2Ns
+ZWFyX2ZsYWdzKHNlbSwgJndhaXRlcik7CiAJcmF3X3NwaW5fdW5sb2NrX2lycSgmc2VtLT53
+YWl0X2xvY2spOwogCV9fc2V0X2N1cnJlbnRfc3RhdGUoVEFTS19SVU5OSU5HKTsKIAlsb2Nr
+ZXZlbnRfaW5jKHJ3c2VtX3Jsb2NrX2ZhaWwpOwpAQCAtMTAyMCw3ICsxMDM0LDYgQEAgc3Rh
+dGljIHN0cnVjdCByd19zZW1hcGhvcmUgKgogcndzZW1fZG93bl93cml0ZV9zbG93cGF0aChz
+dHJ1Y3Qgcndfc2VtYXBob3JlICpzZW0sIGludCBzdGF0ZSkKIHsKIAlsb25nIGNvdW50Owot
+CWVudW0gd3JpdGVyX3dhaXRfc3RhdGUgd3N0YXRlOwogCXN0cnVjdCByd3NlbV93YWl0ZXIg
+d2FpdGVyOwogCXN0cnVjdCByd19zZW1hcGhvcmUgKnJldCA9IHNlbTsKIAlERUZJTkVfV0FL
+RV9RKHdha2VfcSk7CkBAIC0xMDM4LDE2ICsxMDUxLDEzIEBAIHJ3c2VtX2Rvd25fd3JpdGVf
+c2xvd3BhdGgoc3RydWN0IHJ3X3NlbWFwaG9yZSAqc2VtLCBpbnQgc3RhdGUpCiAJd2FpdGVy
+LnRhc2sgPSBjdXJyZW50OwogCXdhaXRlci50eXBlID0gUldTRU1fV0FJVElOR19GT1JfV1JJ
+VEU7CiAJd2FpdGVyLnRpbWVvdXQgPSBqaWZmaWVzICsgUldTRU1fV0FJVF9USU1FT1VUOwor
+CXdhaXRlci5ydF90YXNrID0gcnRfdGFzayhjdXJyZW50KTsKIAogCXJhd19zcGluX2xvY2tf
+aXJxKCZzZW0tPndhaXRfbG9jayk7Ci0KLQkvKiBhY2NvdW50IGZvciB0aGlzIGJlZm9yZSBh
+ZGRpbmcgYSBuZXcgZWxlbWVudCB0byB0aGUgbGlzdCAqLwotCXdzdGF0ZSA9IGxpc3RfZW1w
+dHkoJnNlbS0+d2FpdF9saXN0KSA/IFdSSVRFUl9GSVJTVCA6IFdSSVRFUl9OT1RfRklSU1Q7
+Ci0KIAlsaXN0X2FkZF90YWlsKCZ3YWl0ZXIubGlzdCwgJnNlbS0+d2FpdF9saXN0KTsKIAog
+CS8qIHdlJ3JlIG5vdyB3YWl0aW5nIG9uIHRoZSBsb2NrICovCi0JaWYgKHdzdGF0ZSA9PSBX
+UklURVJfTk9UX0ZJUlNUKSB7CisJaWYgKHJ3c2VtX2ZpcnN0X3dhaXRlcihzZW0pICE9ICZ3
+YWl0ZXIpIHsKIAkJY291bnQgPSBhdG9taWNfbG9uZ19yZWFkKCZzZW0tPmNvdW50KTsKIAog
+CQkvKgpAQCAtMTA4Myw3ICsxMDkzLDcgQEAgcndzZW1fZG93bl93cml0ZV9zbG93cGF0aChz
+dHJ1Y3Qgcndfc2VtYXBob3JlICpzZW0sIGludCBzdGF0ZSkKIAkvKiB3YWl0IHVudGlsIHdl
+IHN1Y2Nlc3NmdWxseSBhY3F1aXJlIHRoZSBsb2NrICovCiAJc2V0X2N1cnJlbnRfc3RhdGUo
+c3RhdGUpOwogCWZvciAoOzspIHsKLQkJaWYgKHJ3c2VtX3RyeV93cml0ZV9sb2NrKHNlbSwg
+d3N0YXRlKSkgeworCQlpZiAocndzZW1fdHJ5X3dyaXRlX2xvY2soc2VtLCAmd2FpdGVyKSkg
+ewogCQkJLyogcndzZW1fdHJ5X3dyaXRlX2xvY2soKSBpbXBsaWVzIEFDUVVJUkUgb24gc3Vj
+Y2VzcyAqLwogCQkJYnJlYWs7CiAJCX0KQEAgLTEwOTgsOSArMTEwOCwxMiBAQCByd3NlbV9k
+b3duX3dyaXRlX3Nsb3dwYXRoKHN0cnVjdCByd19zZW1hcGhvcmUgKnNlbSwgaW50IHN0YXRl
+KQogCQkgKiBJbiB0aGlzIGNhc2UsIHdlIGF0dGVtcHQgdG8gYWNxdWlyZSB0aGUgbG9jayBh
+Z2FpbgogCQkgKiB3aXRob3V0IHNsZWVwaW5nLgogCQkgKi8KLQkJaWYgKHdzdGF0ZSA9PSBX
+UklURVJfSEFORE9GRikgeworCQlpZiAod2FpdGVyLmhhbmRvZmZfc2V0KSB7CiAJCQllbnVt
+IG93bmVyX3N0YXRlIG93bmVyX3N0YXRlOwogCisJCQlpZiAoc2lnbmFsX3BlbmRpbmdfc3Rh
+dGUoc3RhdGUsIGN1cnJlbnQpKQorCQkJCWdvdG8gb3V0X25vbG9jazsKKwogCQkJcHJlZW1w
+dF9kaXNhYmxlKCk7CiAJCQlvd25lcl9zdGF0ZSA9IHJ3c2VtX3NwaW5fb25fb3duZXIoc2Vt
+KTsKIAkJCXByZWVtcHRfZW5hYmxlKCk7CkBAIC0xMTE3LDMxICsxMTMwLDE0IEBAIHJ3c2Vt
+X2Rvd25fd3JpdGVfc2xvd3BhdGgoc3RydWN0IHJ3X3NlbWFwaG9yZSAqc2VtLCBpbnQgc3Rh
+dGUpCiAJCQlzY2hlZHVsZSgpOwogCQkJbG9ja2V2ZW50X2luYyhyd3NlbV9zbGVlcF93cml0
+ZXIpOwogCQkJc2V0X2N1cnJlbnRfc3RhdGUoc3RhdGUpOwotCQkJLyoKLQkJCSAqIElmIEhB
+TkRPRkYgYml0IGlzIHNldCwgdW5jb25kaXRpb25hbGx5IGRvCi0JCQkgKiBhIHRyeWxvY2su
+Ci0JCQkgKi8KLQkJCWlmICh3c3RhdGUgPT0gV1JJVEVSX0hBTkRPRkYpCi0JCQkJYnJlYWs7
+Ci0KLQkJCWlmICgod3N0YXRlID09IFdSSVRFUl9OT1RfRklSU1QpICYmCi0JCQkgICAgKHJ3
+c2VtX2ZpcnN0X3dhaXRlcihzZW0pID09ICZ3YWl0ZXIpKQotCQkJCXdzdGF0ZSA9IFdSSVRF
+Ul9GSVJTVDsKLQotCQkJY291bnQgPSBhdG9taWNfbG9uZ19yZWFkKCZzZW0tPmNvdW50KTsK
+LQkJCWlmICghKGNvdW50ICYgUldTRU1fTE9DS19NQVNLKSkKLQkJCQlicmVhazsKIAogCQkJ
+LyoKLQkJCSAqIFRoZSBzZXR0aW5nIG9mIHRoZSBoYW5kb2ZmIGJpdCBpcyBkZWZlcnJlZAot
+CQkJICogdW50aWwgcndzZW1fdHJ5X3dyaXRlX2xvY2soKSBpcyBjYWxsZWQuCisJCQkgKiBV
+bmNvbmRpdGlvbmFsbHkgZG8gYSB0cnlsb2NrIGFuZCBzcGlubmluZyBpZgorCQkJICogSEFO
+RE9GRiBiaXQgaXMgc2V0LgogCQkJICovCi0JCQlpZiAoKHdzdGF0ZSA9PSBXUklURVJfRklS
+U1QpICYmIChydF90YXNrKGN1cnJlbnQpIHx8Ci0JCQkgICAgdGltZV9hZnRlcihqaWZmaWVz
+LCB3YWl0ZXIudGltZW91dCkpKSB7Ci0JCQkJd3N0YXRlID0gV1JJVEVSX0hBTkRPRkY7Ci0J
+CQkJbG9ja2V2ZW50X2luYyhyd3NlbV93bG9ja19oYW5kb2ZmKTsKKwkJCWlmICh3YWl0ZXIu
+aGFuZG9mZl9zZXQgfHwKKwkJCSAgICEoYXRvbWljX2xvbmdfcmVhZCgmc2VtLT5jb3VudCkg
+JiBSV1NFTV9MT0NLX01BU0spKQogCQkJCWJyZWFrOwotCQkJfQogCQl9CiB0cnlsb2NrX2Fn
+YWluOgogCQlyYXdfc3Bpbl9sb2NrX2lycSgmc2VtLT53YWl0X2xvY2spOwpAQCAtMTE1Niwx
+OSArMTE1MiwxMiBAQCByd3NlbV9kb3duX3dyaXRlX3Nsb3dwYXRoKHN0cnVjdCByd19zZW1h
+cGhvcmUgKnNlbSwgaW50IHN0YXRlKQogb3V0X25vbG9jazoKIAlfX3NldF9jdXJyZW50X3N0
+YXRlKFRBU0tfUlVOTklORyk7CiAJcmF3X3NwaW5fbG9ja19pcnEoJnNlbS0+d2FpdF9sb2Nr
+KTsKLQlsaXN0X2RlbCgmd2FpdGVyLmxpc3QpOwotCi0JaWYgKHVubGlrZWx5KHdzdGF0ZSA9
+PSBXUklURVJfSEFORE9GRikpCi0JCWF0b21pY19sb25nX2FkZCgtUldTRU1fRkxBR19IQU5E
+T0ZGLCAgJnNlbS0+Y291bnQpOwotCi0JaWYgKGxpc3RfZW1wdHkoJnNlbS0+d2FpdF9saXN0
+KSkKLQkJYXRvbWljX2xvbmdfYW5kbm90KFJXU0VNX0ZMQUdfV0FJVEVSUywgJnNlbS0+Y291
+bnQpOwotCWVsc2UKKwlyd3NlbV9vdXRfbm9sb2NrX2NsZWFyX2ZsYWdzKHNlbSwgJndhaXRl
+cik7CisJaWYgKCFsaXN0X2VtcHR5KCZzZW0tPndhaXRfbGlzdCkpCiAJCXJ3c2VtX21hcmtf
+d2FrZShzZW0sIFJXU0VNX1dBS0VfQU5ZLCAmd2FrZV9xKTsKIAlyYXdfc3Bpbl91bmxvY2tf
+aXJxKCZzZW0tPndhaXRfbG9jayk7CiAJd2FrZV91cF9xKCZ3YWtlX3EpOwogCWxvY2tldmVu
+dF9pbmMocndzZW1fd2xvY2tfZmFpbCk7Ci0KIAlyZXR1cm4gRVJSX1BUUigtRUlOVFIpOwog
+fQogCi0tIAoyLjI3LjAKCg==
+--------------CJNXWTbrrTYQhJTYYpn3lgEa--
+
