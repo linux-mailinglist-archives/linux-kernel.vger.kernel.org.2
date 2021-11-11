@@ -2,115 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A1FF244D5E6
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Nov 2021 12:35:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5141244D5EA
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Nov 2021 12:36:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233092AbhKKLiK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Nov 2021 06:38:10 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44726 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233077AbhKKLiJ (ORCPT
+        id S232770AbhKKLis (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Nov 2021 06:38:48 -0500
+Received: from smtp-out1.suse.de ([195.135.220.28]:54208 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229668AbhKKLiq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Nov 2021 06:38:09 -0500
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0745DC0613F5;
-        Thu, 11 Nov 2021 03:35:19 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=PnbX+gQU93tJ4Oopo9HMKbJdOiep79gIINOH60lEP+Q=; b=Y25YDRrKPguEKSeTtTUSYmFzie
-        uXPhh8AI174gyUJEzYFhj0TJ/dQg6+lsaH86PhNMqeKZlJuXDKlKV8xN9vLccNk8ghuixW/20cCad
-        mETlQ138dCBSEHPY65HbPbce25H4Hg8mJfvqq8GMsLa+L8snnlf0rKMSFg5vK/1LwUXTY/Wrh877q
-        4tOU+2QExR/CFrHWKAwsF778j6LUSvHP9QElOM7qMWcNRzlrB3x/AZgY+QiPgUog3NU9pP0H4Z5x7
-        HvHZBFwWf4Gly6gVTeieIsXJU8hXwfb6plEGA8NLU78c06J7L8FEnQvfrFySib8nSCOFqDzHQOTW4
-        YSpqFf0Q==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1ml8MA-00FSKN-3e; Thu, 11 Nov 2021 11:35:02 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        Thu, 11 Nov 2021 06:38:46 -0500
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id F07A930001B;
-        Thu, 11 Nov 2021 12:35:00 +0100 (CET)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id DB9E6203BF719; Thu, 11 Nov 2021 12:35:00 +0100 (CET)
-Date:   Thu, 11 Nov 2021 12:35:00 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Marco Elver <elver@google.com>
-Cc:     "Paul E . McKenney" <paulmck@kernel.org>,
-        Alexander Potapenko <glider@google.com>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Borislav Petkov <bp@alien8.de>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Ingo Molnar <mingo@kernel.org>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Waiman Long <longman@redhat.com>,
-        Will Deacon <will@kernel.org>, kasan-dev@googlegroups.com,
-        linux-arch@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, x86@kernel.org
-Subject: Re: [PATCH -rcu/kcsan 23/23] objtool, kcsan: Remove memory barrier
- instrumentation from noinstr
-Message-ID: <YYz/5BgYwHQceKx4@hirez.programming.kicks-ass.net>
-References: <20211005105905.1994700-1-elver@google.com>
- <20211005105905.1994700-24-elver@google.com>
- <YVxjH2AtjvB8BDMD@hirez.programming.kicks-ass.net>
- <YVxrn2658Xdf0Asf@elver.google.com>
- <CANpmjNPk9i9Ap6LRuS32dRRCOrs4YwDP-EhfX-niCXu7zH2JOg@mail.gmail.com>
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 26B8321B37;
+        Thu, 11 Nov 2021 11:35:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1636630556; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=Rt8/aMa5Kry7fqouFBixTE9VuPZ3pHAbttQhw0tgJc4=;
+        b=tYGz6h/KDA+Q/zJgrUumoUPd7y2S0wD7gXgB8Dlj2FqGCJJxZhq5/5HA1qzKR7H6wbDnas
+        1WCfDAhM+uo3mxBihzZHjHCIn0mY+ApqAVvLGq/7ANy1SJx87ErxkEwzCC0UE0A7FAF71I
+        /ey+7UqTTJv4VygIHujfmclXPSyl+7M=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1636630556;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=Rt8/aMa5Kry7fqouFBixTE9VuPZ3pHAbttQhw0tgJc4=;
+        b=qLh9JQx9hbbITghv5K0PLtUppefmmFDFNejE4ijyqP/vBAR62yFPrbtNmpT2aWpj8BQEwl
+        Sd8oGasviazh+cDw==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id C969313358;
+        Thu, 11 Nov 2021 11:35:54 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id lD43LBoAjWFMUAAAMHmgww
+        (envelope-from <dkirjanov@suse.de>); Thu, 11 Nov 2021 11:35:54 +0000
+Subject: Re: [PATCH v2 0/5] MediaTek Ethernet Patches on MT8195
+To:     Biao Huang <biao.huang@mediatek.com>, davem@davemloft.net,
+        Jakub Kicinski <kuba@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>
+Cc:     Matthias Brugger <matthias.bgg@gmail.com>,
+        Giuseppe Cavallaro <peppe.cavallaro@st.com>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        Jose Abreu <joabreu@synopsys.com>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        netdev@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        srv_heupstream@mediatek.com, macpaul.lin@mediatek.com
+References: <20211111071214.21027-1-biao.huang@mediatek.com>
+From:   Denis Kirjanov <dkirjanov@suse.de>
+Message-ID: <c2d3c746-ab32-eb99-0408-1409f43248cd@suse.de>
+Date:   Thu, 11 Nov 2021 14:35:53 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.14.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CANpmjNPk9i9Ap6LRuS32dRRCOrs4YwDP-EhfX-niCXu7zH2JOg@mail.gmail.com>
+In-Reply-To: <20211111071214.21027-1-biao.huang@mediatek.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: ru
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 11, 2021 at 11:11:00AM +0100, Marco Elver wrote:
-> On Tue, 5 Oct 2021 at 17:13, Marco Elver <elver@google.com> wrote:
 
-> > So this is where I'd like to hear if the approach of:
-> >
-> >  | #if !defined(CONFIG_ARCH_WANTS_NO_INSTR) || defined(CONFIG_STACK_VALIDATION)
-> >  | ...
-> >  | #else
-> >  | #define kcsan_noinstr noinstr
-> >  | static __always_inline bool within_noinstr(unsigned long ip)
-> >  | {
-> >  |      return (unsigned long)__noinstr_text_start <= ip &&
-> >  |             ip < (unsigned long)__noinstr_text_end;
 
-Provided these turn into compile time constants this stands a fair
-chance of working I suppose. Once this needs data loads things get a
-*lot* more tricky.
-
-> >  | }
-> >  | #endif
-> >
-> > and then (using the !STACK_VALIDATION definitions)
-> >
-> >  | kcsan_noinstr void instrumentation_may_appear_in_noinstr(void)
-> >  | {
-> >  |      if (within_noinstr(_RET_IP_))
-> >  |              return;
-> >
-> > works for the non-x86 arches that select ARCH_WANTS_NO_INSTR.
-> >
-> > If it doesn't I can easily just remove kcsan_noinstr/within_noinstr, and
-> > add a "depends on !ARCH_WANTS_NO_INSTR || STACK_VALIDATION" to the
-> > KCSAN_WEAK_MEMORY option.
-> >
-> > Looking at a previous discussion [1], however, I was under the
-> > impression that this would work.
-> >
-> > [1] https://lkml.kernel.org/r/CANpmjNMAZiW-Er=2QDgGP+_3hg1LOvPYcbfGSPMv=aR6MVTB-g@mail.gmail.com
+11/11/21 10:12 AM, Biao Huang пишет:
+> Changes in v2:
+> 1. fix errors/warnings in mediatek-dwmac.yaml with upgraded dtschema tools
 > 
-> I'll send v2 of this series after 5.16-rc1. So far I think we haven't
-> been able to say the above doesn't work, which means I'll assume it
-> works on non-x86 architectures with ARCH_WANTS_NO_INSTR until we get
-> evidence of the opposite.
-
-Fair enough.
+> This series include 5 patches:
+> 1. add platform level clocks management for dwmac-mediatek
+> 2. resue more common features defined in stmmac_platform.c
+> 3. add ethernet entry for mt8195
+> 4. convert mediatek-dwmac.txt to mediatek-dwmac.yaml
+> 5. add ethernet device node for mt8195
+all new feature should be sent prefixed with net-next
+> 
+> Biao Huang (5):
+>    net: stmmac: dwmac-mediatek: add platform level clocks management
+>    net: stmmac: dwmac-mediatek: Reuse more common features
+>    net: stmmac: dwmac-mediatek: add support for mt8195
+>    dt-bindings: net: dwmac: Convert mediatek-dwmac to DT schema
+>    arm64: dts: mt8195: add ethernet device node
+> 
+>   .../bindings/net/mediatek-dwmac.txt           |  91 -----
+>   .../bindings/net/mediatek-dwmac.yaml          | 211 ++++++++++++
+>   arch/arm64/boot/dts/mediatek/mt8195-evb.dts   |  92 +++++
+>   arch/arm64/boot/dts/mediatek/mt8195.dtsi      |  70 ++++
+>   .../ethernet/stmicro/stmmac/dwmac-mediatek.c  | 313 ++++++++++++++++--
+>   5 files changed, 664 insertions(+), 113 deletions(-)
+>   delete mode 100644 Documentation/devicetree/bindings/net/mediatek-dwmac.txt
+>   create mode 100644 Documentation/devicetree/bindings/net/mediatek-dwmac.yaml
+> 
+> --
+> 2.18.0
+> 
+> 
