@@ -2,96 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0712E44D57F
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Nov 2021 12:03:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4EC0144D582
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Nov 2021 12:07:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233043AbhKKLFz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Nov 2021 06:05:55 -0500
-Received: from mail.kernel.org ([198.145.29.99]:37110 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233025AbhKKLFw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Nov 2021 06:05:52 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 63CEE6128E;
-        Thu, 11 Nov 2021 11:03:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1636628583;
-        bh=C499/2hTJ14vnl1FV0Xf5J75LUu/RzkRDs4KKoGOgkw=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=HTR2SpHej8j0Ax4Mic9kpxxMMP8YRAnumNAMNE8Vr9BSavLwQYw98GNE/WagoWtpl
-         ODBiBAeEnhVF5YNrMAm6uWwy2pcELCFlUJBUkvYFTT7XS0XRZOhZESiPdVx/wW9149
-         1m4DWtqlAYsNyyNgzCRJfGk4IgnFD+UTSHB5bIKblqGZLoOenKNoZFAf5Nii8K6KA1
-         tPSN57/vQMMYIE93u2otQhBV6IQV8OVl/JzXIPmI4ixleaH+b0n9iR/jw6JSMd5yx8
-         IJ3d3CRxFOOvju+rNcEHeIE3AeB8VZq3oW2lSCABlyOqp/um4XINf1nBRhbV1nQreJ
-         7OMGBCMdMsFNQ==
-From:   Mike Rapoport <rppt@kernel.org>
-To:     x86@kernel.org
-Cc:     Andy Lutomirski <luto@kernel.org>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>,
-        Mike Rapoport <rppt@kernel.org>,
-        Mike Rapoport <rppt@linux.ibm.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Rick Edgecombe <rick.p.edgecombe@intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH 4/4] x86/mm: replace GFP_ATOMIC with GFP_KERNEL for direct map allocations
-Date:   Thu, 11 Nov 2021 13:02:41 +0200
-Message-Id: <20211111110241.25968-5-rppt@kernel.org>
-X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20211111110241.25968-1-rppt@kernel.org>
-References: <20211111110241.25968-1-rppt@kernel.org>
+        id S232932AbhKKLJo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Nov 2021 06:09:44 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38452 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229643AbhKKLJm (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 11 Nov 2021 06:09:42 -0500
+Received: from ssl.serverraum.org (ssl.serverraum.org [IPv6:2a01:4f8:151:8464::1:2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9F6C4C061766;
+        Thu, 11 Nov 2021 03:06:53 -0800 (PST)
+Received: from mwalle01.kontron.local. (unknown [213.135.10.150])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-384) server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by ssl.serverraum.org (Postfix) with ESMTPSA id 6E54B22236;
+        Thu, 11 Nov 2021 12:06:51 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc; s=mail2016061301;
+        t=1636628811;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=B5p/dVLuXbGMx3xKBjTjbL8B54ECPpXqaKXphyHJO7E=;
+        b=sny/fJeTTbB1LxeKNQ6ky8Td0TS9hNWMvjXWvGDK/qaWkMCYm9294Lrt5qS24nBrjSNmZN
+        v6N9/sPEDs2GBp8HyOp67c2S+tDNA+wXwoq2L8s9dOzJY2/1/tj1Jmi18wLo4NxfQCTcXz
+        tE9x3jmoLvvan3YvqGvWOHYirbjS/do=
+From:   Michael Walle <michael@walle.cc>
+To:     apeksha.gupta@nxp.com
+Cc:     LnxRevLi@nxp.com, davem@davemloft.net, hemant.agrawal@nxp.com,
+        kuba@kernel.org, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, nipun.gupta@nxp.com,
+        qiangqing.zhang@nxp.com, sachin.saxena@nxp.com,
+        Michael Walle <michael@walle.cc>
+Subject: Re: [PATCH 0/5] drivers/net: add NXP FEC-UIO driver
+Date:   Thu, 11 Nov 2021 12:06:42 +0100
+Message-Id: <20211111110642.3340300-1-michael@walle.cc>
+X-Mailer: git-send-email 2.30.2
+In-Reply-To: <20211110054838.27907-1-apeksha.gupta@nxp.com>
+References: <20211110054838.27907-1-apeksha.gupta@nxp.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Mike Rapoport <rppt@linux.ibm.com>
+[linux-devel@linux.nxdi.nxp.com doesn't exist in the public, which is quite
+annoying when you reply to an email and the MTA doesn't accept it due to
+invalid domains]
 
-The allocations of the direct map pages are mostly happen very early during
-the system boot and they use either the page table cache in brk area of bss
-or memblock.
+> This patch series introduce the fec-uio driver, supported for the inbuilt
+> NIC found in the NXP i.MX 8M Mini SoC. Basic hardware initialization is
+> performed in kernel via userspace input/output(UIO) to support FEC
+> ethernet device detection in user space.
 
-The few callers that effectively use page allocator for the direct map
-updates are gart_iommu_init() and memory hotplug. Neither of them happen in
-an atomic context so there is no reason to use GFP_ATOMIC for these
-allocations.
+Could you elaborate for what this driver is needed? Doesn't the imx8mm
+already have a network driver? What is the difference between them?
 
-Replace GFP_ATOMIC with GFP_KERNEL to avoid using atomic reserves for
-allocations that do not require that.
+As a user, I couldn't find what this is all about, neither in this
+commit message nor in the Kconfig help text.
 
-Signed-off-by: Mike Rapoport <rppt@linux.ibm.com>
----
- arch/x86/mm/init.c    | 2 +-
- arch/x86/mm/init_64.c | 2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
+> Userspace PMD uses standard UIO interface to access kernel for PHY
+> initialisation and for mapping the allocated memory of register &
+> buffer descriptor with DPDK which gives access to non-cacheable memory
+> for buffer descriptor.
+> 
+> Module fec-uio.ko will get generated.
+> imx8mm-evk-dpdk.dtb is required to support fec-uio driver.
 
-diff --git a/arch/x86/mm/init.c b/arch/x86/mm/init.c
-index 1895986842b9..c01f144e0015 100644
---- a/arch/x86/mm/init.c
-+++ b/arch/x86/mm/init.c
-@@ -120,7 +120,7 @@ __ref void *alloc_low_pages(unsigned int num)
- 		unsigned int order;
- 
- 		order = get_order((unsigned long)num << PAGE_SHIFT);
--		return (void *)__get_free_pages(GFP_ATOMIC | __GFP_ZERO, order);
-+		return (void *)__get_free_pages(GFP_KERNEL | __GFP_ZERO, order);
- 	}
- 
- 	if ((pgt_buf_end + num) > pgt_buf_top || !can_use_brk_pgt) {
-diff --git a/arch/x86/mm/init_64.c b/arch/x86/mm/init_64.c
-index e46d2f18d895..f3924f1a953d 100644
---- a/arch/x86/mm/init_64.c
-+++ b/arch/x86/mm/init_64.c
-@@ -227,7 +227,7 @@ static __ref void *spp_getpage(void)
- 	void *ptr;
- 
- 	if (after_bootmem)
--		ptr = (void *) get_zeroed_page(GFP_ATOMIC);
-+		ptr = (void *) get_zeroed_page(GFP_KERNEL);
- 	else
- 		ptr = memblock_alloc(PAGE_SIZE, PAGE_SIZE);
- 
--- 
-2.28.0
-
+-michael
