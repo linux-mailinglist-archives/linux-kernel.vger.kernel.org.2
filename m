@@ -2,104 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D8D3544D3CB
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Nov 2021 10:10:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4938B44D3CF
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Nov 2021 10:11:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232112AbhKKJNJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Nov 2021 04:13:09 -0500
-Received: from todd.t-8ch.de ([159.69.126.157]:40207 "EHLO todd.t-8ch.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229543AbhKKJNH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Nov 2021 04:13:07 -0500
-Date:   Thu, 11 Nov 2021 10:10:16 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=weissschuh.net;
-        s=mail; t=1636621817;
-        bh=jR20svMKeNsXprIZydpXZd6rzkZgzz81Jni1kX7WXgY=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Wy27b7kTryB/DrGHNVEQgMnJtF092YEalLJYEi+EJzUSNp9X+W/KH7y47BJLP4m7D
-         +MEX8jI0y7Tk5jjydOjSCi96TIJXKFd1vi8CKtCsWnCb9B0a1KrJVxOLDLpFxLXLTp
-         gy71S1kFgMnDIL6xhS6ORwuhoi6n7X3YpSdpevcY=
-From:   Thomas =?utf-8?Q?Wei=C3=9Fschuh?= <linux@weissschuh.net>
-To:     Nathan Chancellor <nathan@kernel.org>, linux-input@vger.kernel.org,
-        Jiri Kosina <jikos@kernel.org>,
-        Benjamin Tissoires <benjamin.tissoires@redhat.com>
-Cc:     linux-kernel@vger.kernel.org,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        Rushikesh S Kadam <rushikesh.s.kadam@intel.com>,
-        Benson Leung <bleung@chromium.org>,
-        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
-        Guenter Roeck <groeck@chromium.org>, llvm@lists.linux.dev,
-        Arnd Bergmann <arnd@arndb.de>
-Subject: Re: [PATCH 1/4] HID: intel-ish-hid: fw-loader: constify devicetable
- initializer
-Message-ID: <fa7795d5-0f53-4a8d-b55b-454c8cdfa710@t-8ch.de>
-References: <YYv22iWQ7yTfMNC5@archlinux-ax161>
- <20211110230043.701167-1-linux@weissschuh.net>
+        id S229543AbhKKJOV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Nov 2021 04:14:21 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40644 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229625AbhKKJOT (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 11 Nov 2021 04:14:19 -0500
+Received: from mail-wm1-x329.google.com (mail-wm1-x329.google.com [IPv6:2a00:1450:4864:20::329])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE33FC061766
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Nov 2021 01:11:30 -0800 (PST)
+Received: by mail-wm1-x329.google.com with SMTP id o4-20020a1c7504000000b0032cab7473caso5097148wmc.1
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Nov 2021 01:11:30 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=RJN505w6CL42PiEBXtyIsEZEsP4VhYdScJ4DvF6IvUE=;
+        b=WV4O0X4udKGv3mXB+Hyjn+Y0JK+NaM83No3U8ONvBfm9JnOz7BosU+qPGnOX9b7h6a
+         viRTnicfbRqxuku9BNAtdIx3oK590XlPQBEkrBTm62zhnZE1IJsEA1FQP58xcf2TNLzX
+         jyL2Aq1TA5p1/bMTJey4kNHPHCP9uZhAk4E2PU2VC+70VuJQ8z5K4t9dt3Eiyc6++s15
+         bKWtIr5Dq33i55/WXa0Vo+Bqxk31w5GQA4XHVaKSeX1M0i/ya66UgTtwxMST8st7S11r
+         pAnYVnVLMQXG/FNCi/rsCpVlkSXbcQrNBPgjwm4AmtvqLHhqkMOMTUPM4WPEx6+vHrpA
+         fyKg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=RJN505w6CL42PiEBXtyIsEZEsP4VhYdScJ4DvF6IvUE=;
+        b=FQXPT43xdVmLYsXz6F6HYsBh/fcEXL8Lg44KghMzydeiXCyox0o7+A1LGUMpY0UB3C
+         mBq2eDJiS/ZtW1TNDstDnsReUafTFVzzTRLYrvqB83x5kS1mf2FvP/dmmO9x5BOi4GK9
+         S4NRMtX8gx0CtwzO0pODq9OEpOpUT6cuHwhCJWvf2jzxcRdIOJ7cDsQSsAvtVWk3PrqB
+         NKuZ9wmxXwBor7G8vHre+zXbUH7ZXe7FfusvHGtuK11A/vMfbJ6CvVHrFDZHHSpfcpmP
+         sYxKBvn8N9G0KkRaBR3GJ43iUKI345cbPt9SoE8PyWn8FxTRLMwkQosXVfHChw0flDxZ
+         jiqA==
+X-Gm-Message-State: AOAM533I3jysInPmNTbwMLUWeY2C7+HIoLsMdKyge4asObHH7mtmzONC
+        qHtN0rfYNMW6RAYz337z04c6XIcHkldKgQ==
+X-Google-Smtp-Source: ABdhPJzkZFauMx8KH0DEgUcMSakcoswH2SNKj7IhgTRnKWp9Auzdv8qBuhpD4B2Wlp1Wmez/UFj7Vw==
+X-Received: by 2002:a1c:a9c6:: with SMTP id s189mr6684146wme.38.1636621889057;
+        Thu, 11 Nov 2021 01:11:29 -0800 (PST)
+Received: from elver.google.com ([2a00:79e0:15:13:fd21:69cc:1f2b:9812])
+        by smtp.gmail.com with ESMTPSA id s13sm8531050wmc.47.2021.11.11.01.11.28
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 11 Nov 2021 01:11:28 -0800 (PST)
+Date:   Thu, 11 Nov 2021 10:11:21 +0100
+From:   Marco Elver <elver@google.com>
+To:     Valentin Schneider <valentin.schneider@arm.com>
+Cc:     linux-kernel@vger.kernel.org, kasan-dev@googlegroups.com,
+        linuxppc-dev@lists.ozlabs.org, linux-kbuild@vger.kernel.org,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Mike Galbraith <efault@gmx.de>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Michal Marek <michal.lkml@markovi.net>,
+        Nick Desaulniers <ndesaulniers@google.com>
+Subject: Re: [PATCH v2 4/5] kscan: Use preemption model accessors
+Message-ID: <YYzeOQNFmuieCk3T@elver.google.com>
+References: <20211110202448.4054153-1-valentin.schneider@arm.com>
+ <20211110202448.4054153-5-valentin.schneider@arm.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20211110230043.701167-1-linux@weissschuh.net>
-Jabber-ID: thomas@t-8ch.de
-X-Accept: text/plain, text/html;q=0.2, text/*;q=0.1
-X-Accept-Language: en-us, en;q=0.8, de-de;q=0.7, de;q=0.6
+In-Reply-To: <20211110202448.4054153-5-valentin.schneider@arm.com>
+User-Agent: Mutt/2.0.5 (2021-01-21)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+Subject s/kscan/kcsan/
 
-On 2021-11-11 00:00+0100, Thomas Weißschuh wrote:
-> Previously the compilation broke on clang and gcc < 8.1.0 with errors like
-> "error: initializer element is not constant".
+On Wed, Nov 10, 2021 at 08:24PM +0000, Valentin Schneider wrote:
+> Per PREEMPT_DYNAMIC, checking CONFIG_PREEMPT doesn't tell you the actual
+> preemption model of the live kernel. Use the newly-introduced accessors
+> instead.
 > 
-> Fixes: 44e2a58cb880 ("HID: intel-ish-hid: fw-loader: only load for matching devices")
-> Reported-by: Nathan Chancellor <nathan@kernel.org>
-> Signed-off-by: Thomas Weißschuh <linux@weissschuh.net>
+> Signed-off-by: Valentin Schneider <valentin.schneider@arm.com>
+
+Reviewed-by: Marco Elver <elver@google.com>
+
+Though it currently doesn't compile as a module due to missing
+EXPORT_SYMBOL of is_preempt*().
+
 > ---
->  drivers/hid/intel-ish-hid/ishtp-fw-loader.c | 8 ++++----
->  1 file changed, 4 insertions(+), 4 deletions(-)
+>  kernel/kcsan/kcsan_test.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
 > 
-> diff --git a/drivers/hid/intel-ish-hid/ishtp-fw-loader.c b/drivers/hid/intel-ish-hid/ishtp-fw-loader.c
-> index 945a9d0b68cd..26f376faf0e6 100644
-> --- a/drivers/hid/intel-ish-hid/ishtp-fw-loader.c
-> +++ b/drivers/hid/intel-ish-hid/ishtp-fw-loader.c
-> @@ -76,9 +76,9 @@ enum ish_loader_commands {
->  #define LOADER_XFER_MODE_ISHTP			BIT(1)
+> diff --git a/kernel/kcsan/kcsan_test.c b/kernel/kcsan/kcsan_test.c
+> index dc55fd5a36fc..14d811eb9a21 100644
+> --- a/kernel/kcsan/kcsan_test.c
+> +++ b/kernel/kcsan/kcsan_test.c
+> @@ -1005,13 +1005,13 @@ static const void *nthreads_gen_params(const void *prev, char *desc)
+>  	else
+>  		nthreads *= 2;
 >  
->  /* ISH Transport Loader client unique GUID */
-> -static const guid_t loader_ishtp_guid =
-> -	GUID_INIT(0xc804d06a, 0x55bd, 0x4ea7,
-> -		  0xad, 0xed, 0x1e, 0x31, 0x22, 0x8c, 0x76, 0xdc);
-> +#define ISHTP_GUID GUID_INIT(0xc804d06a, 0x55bd, 0x4ea7, \
-> +		  0xad, 0xed, 0x1e, 0x31, 0x22, 0x8c, 0x76, 0xdc)
-> +static const guid_t loader_ishtp_guid = ISHTP_GUID;
+> -	if (!IS_ENABLED(CONFIG_PREEMPT) || !IS_ENABLED(CONFIG_KCSAN_INTERRUPT_WATCHER)) {
+> +	if (!is_preempt_full() || !IS_ENABLED(CONFIG_KCSAN_INTERRUPT_WATCHER)) {
+>  		/*
+>  		 * Without any preemption, keep 2 CPUs free for other tasks, one
+>  		 * of which is the main test case function checking for
+>  		 * completion or failure.
+>  		 */
+> -		const long min_unused_cpus = IS_ENABLED(CONFIG_PREEMPT_NONE) ? 2 : 0;
+> +		const long min_unused_cpus = is_preempt_none() ? 2 : 0;
+>  		const long min_required_cpus = 2 + min_unused_cpus;
 >  
->  #define FILENAME_SIZE				256
->  
-> @@ -1064,7 +1064,7 @@ static struct ishtp_cl_driver	loader_ishtp_cl_driver = {
->  };
->  
->  static const struct ishtp_device_id loader_ishtp_id_table[] = {
-> -	{ loader_ishtp_guid },
-> +	{ ISHTP_GUID },
->  	{ }
->  };
->  MODULE_DEVICE_TABLE(ishtp, loader_ishtp_id_table);
-> 
-> base-commit: 64355db3caf6468dc711995239efe0cbcd7d0091
+>  		if (num_online_cpus() < min_required_cpus) {
 > -- 
-> 2.33.1
-> 
-
-Please drop this whole series and use the patch
-"HID: intel-ish-hid: fix module device-id handling"[0]
-from Arnd instead.
-
-It adds proper device table support to the ISHTP bus itself also preventing
-unused-variable warnings for the device table when the drivers are built-in.
-
-Thanks,
-Thomas
-
-[0] https://lore.kernel.org/lkml/20211111085842.2846422-1-arnd@kernel.org/
+> 2.25.1
