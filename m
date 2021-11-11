@@ -2,135 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 798CA44DE91
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Nov 2021 00:38:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 40B5344DE94
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Nov 2021 00:39:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234249AbhKKXlc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Nov 2021 18:41:32 -0500
-Received: from mail-pj1-f46.google.com ([209.85.216.46]:37832 "EHLO
-        mail-pj1-f46.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231918AbhKKXlb (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Nov 2021 18:41:31 -0500
-Received: by mail-pj1-f46.google.com with SMTP id t5-20020a17090a4e4500b001a0a284fcc2so5842259pjl.2;
-        Thu, 11 Nov 2021 15:38:41 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=eCaI98BlCuECi8dJPVsw1fYuRE87T8MGMiqrl5DWOGI=;
-        b=B9sAdvW0ggyLnz9X7b/hTjk0pcJP0PjI/By/iEwgNUATH2WfdnRckNwHtLhS6ZlBz0
-         079kPKYfFiB7OxuXf0lpBA//YGFB+G2T0O5hgoKKm4N7tBh3k7Gyb35F/BuZTfXC6ODS
-         /Pu5WBMielxT0o9ISCYIiPhnb6MyeHWGJfppidg1wDdsUJagmwBlDanD6t2dJlYWmpQh
-         G/XadgQ7paqORRDGgGvzaH/0JZkZWCT+P39fOrYZcu+V3YHfWAgvzWLgM9sGdf56daRH
-         9xnL1MlbdIWldUCznkfms8Jrt2oD1gZZY7Yjbef1fNSSqlrevXBmLcTlfFZ4IM1jftwr
-         OjsA==
-X-Gm-Message-State: AOAM531OwKZ6yL+l5FZSk9hDZ+Uhv+UlY+w9rkQmq5Ii/289oUdLsNU2
-        +oftcer7EyqnMVJQsyYfLAA=
-X-Google-Smtp-Source: ABdhPJySVQIFfqJ/C3QR49OSqGdscvGDR/LmiL6MTEAXMeVeH1fbas2Shhi3BKkWNhjBioCKtEuQ4A==
-X-Received: by 2002:a17:90a:3b02:: with SMTP id d2mr12293787pjc.159.1636673921201;
-        Thu, 11 Nov 2021 15:38:41 -0800 (PST)
-Received: from rocinante ([95.155.85.46])
-        by smtp.gmail.com with ESMTPSA id w17sm236218pfu.58.2021.11.11.15.38.33
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 11 Nov 2021 15:38:40 -0800 (PST)
-Date:   Fri, 12 Nov 2021 00:38:28 +0100
-From:   Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>
-To:     Jim Quinlan <jim2101024@gmail.com>
-Cc:     linux-pci@vger.kernel.org, Bjorn Helgaas <bhelgaas@google.com>,
-        Nicolas Saenz Julienne <nsaenz@kernel.org>,
-        Rob Herring <robh@kernel.org>, Mark Brown <broonie@kernel.org>,
-        bcm-kernel-feedback-list@broadcom.com, james.quinlan@broadcom.com,
-        Sean V Kelley <sean.v.kelley@intel.com>,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        Qiuxu Zhuo <qiuxu.zhuo@intel.com>,
-        Keith Busch <kbusch@kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v8 5/8] PCI/portdrv: add mechanism to turn on subdev
- regulators
-Message-ID: <YY2pdNMnYQ/EcQoo@rocinante>
-References: <20211110221456.11977-1-jim2101024@gmail.com>
- <20211110221456.11977-6-jim2101024@gmail.com>
+        id S234418AbhKKXmg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Nov 2021 18:42:36 -0500
+Received: from mga06.intel.com ([134.134.136.31]:40980 "EHLO mga06.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231918AbhKKXmf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 11 Nov 2021 18:42:35 -0500
+X-IronPort-AV: E=McAfee;i="6200,9189,10165"; a="293863419"
+X-IronPort-AV: E=Sophos;i="5.87,227,1631602800"; 
+   d="scan'208";a="293863419"
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Nov 2021 15:39:45 -0800
+X-IronPort-AV: E=Sophos;i="5.87,227,1631602800"; 
+   d="scan'208";a="492746838"
+Received: from yhuang6-desk2.sh.intel.com (HELO yhuang6-desk2.ccr.corp.intel.com) ([10.239.159.101])
+  by orsmga007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Nov 2021 15:39:42 -0800
+From:   "Huang, Ying" <ying.huang@intel.com>
+To:     Baolin Wang <baolin.wang@linux.alibaba.com>
+Cc:     <akpm@linux-foundation.org>, <dave.hansen@linux.intel.com>,
+        <ziy@nvidia.com>, <osalvador@suse.de>, <shy828301@gmail.com>,
+        <zhongjiang-ali@linux.alibaba.com>, <xlpang@linux.alibaba.com>,
+        <linux-mm@kvack.org>, <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v2 2/2] mm: migrate: Allocate the node_demotion
+ structure dynamically
+References: <cover.1636616548.git.baolin.wang@linux.alibaba.com>
+        <e39502af91e12ba1a4bef3be4d05b11b2c7a7a9f.1636616548.git.baolin.wang@linux.alibaba.com>
+        <87pmr7m5wo.fsf@yhuang6-desk2.ccr.corp.intel.com>
+        <c08caa62-82af-0254-1e77-aa02d1ce53e5@linux.alibaba.com>
+Date:   Fri, 12 Nov 2021 07:39:39 +0800
+In-Reply-To: <c08caa62-82af-0254-1e77-aa02d1ce53e5@linux.alibaba.com> (Baolin
+        Wang's message of "Thu, 11 Nov 2021 19:20:11 +0800")
+Message-ID: <8735o2mfd0.fsf@yhuang6-desk2.ccr.corp.intel.com>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/27.1 (gnu/linux)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20211110221456.11977-6-jim2101024@gmail.com>
+Content-Type: text/plain; charset=ascii
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Jim,
+Baolin Wang <baolin.wang@linux.alibaba.com> writes:
 
-[...]
-> [1] These regulators typically govern the actual power supply to the
->     endpoint chip.  Sometimes they may be a the official PCIe socket
+> On 2021/11/11 16:51, Huang, Ying wrote:
+>> Baolin Wang <baolin.wang@linux.alibaba.com> writes:
+>> 
+>>> For the worst case (MAX_NUMNODES=1024), the node_demotion structure can
+>>> consume 32k bytes, which appears too large, so we can change to allocate
+>>> node_demotion dynamically at initialization time. Meanwhile allocating
+>>> the target demotion nodes array dynamically to select a suitable size
+>>> according to the MAX_NUMNODES.
+>>>
+>>> Signed-off-by: Baolin Wang <baolin.wang@linux.alibaba.com>
+>>> ---
+>>>   mm/migrate.c | 38 +++++++++++++++++++++++++++++---------
+>>>   1 file changed, 29 insertions(+), 9 deletions(-)
+>>>
+>>> diff --git a/mm/migrate.c b/mm/migrate.c
+>>> index 126e9e6..0145b38 100644
+>>> --- a/mm/migrate.c
+>>> +++ b/mm/migrate.c
+>>> @@ -1152,10 +1152,11 @@ static int __unmap_and_move(struct page *page, struct page *newpage,
+>>>   #define DEFAULT_DEMOTION_TARGET_NODES 15
+>>>   struct demotion_nodes {
+>>>   	unsigned short nr;
+>>> -	short nodes[DEFAULT_DEMOTION_TARGET_NODES];
+>>> +	short nodes[];
+>>>   };
+>>>   -static struct demotion_nodes node_demotion[MAX_NUMNODES]
+>>> __read_mostly;
+>>> +static struct demotion_nodes *node_demotion[MAX_NUMNODES] __read_mostly;
+>>> +static unsigned short target_nodes_max;
+>> I think we can use something as below,
+>>    #if MAX_NUMNODES < DEFAULT_DEMOTION_TARGET_NODES
+>>    #define DEMOTION_TARGET_NODES   (MAX_NUMNODES - 1)
+>>    #else
+>>    #define DEMOTION_TARGET_NODES   DEFAULT_DEMOTION_TARGET_NODES
+>>    #endif
+>
+> Yes, looks better.
+>
+>>    static struct demotion_nodes *node_demotion;
+>> Then we can allocate nr_node_ids * sizeof(struct demotion_nodes) for
+>> node_demotion.
+>
+> Yeah, this is simple. The reason I want to declare the structure like
+> "struct demotion_nodes *node_demotion[MAX_NUMNODES]" is that, we can 
+> validate the non-possible nodes which are invalid to demote memory,
+> and in case the node_demotion[nid] is failed to be allocated which can
+> be validated, though this is unlikely.
 
-In the above, did you mean to say "be at the"?
+In case allocation failure, we can still check "node_demotion == NULL".
 
-> +static void *alloc_subdev_regulators(struct device *dev)
-> +{
-> +	static const char * const supplies[] = {
-> +		"vpcie3v3",
-> +		"vpcie3v3aux",
-> +		"vpcie12v",
-> +	};
-> +	const size_t size = sizeof(struct subdev_regulators)
-> +		+ sizeof(struct regulator_bulk_data) * ARRAY_SIZE(supplies);
+Best Regards,
+Huang, Ying
 
-[...]
-> +int pci_subdev_regulators_add_bus(struct pci_bus *bus)
-> +{
-> +	struct device *dev = &bus->dev;
-> +	struct subdev_regulators *sr;
-> +	int ret;
-> +
-> +	if (!pcie_is_port_dev(bus->self))
-> +		return 0;
-> +
-> +	if (WARN_ON(bus->dev.driver_data))
-> +		dev_err(dev, "multiple clients using dev.driver_data\n");
-
-I have to ask - is the WARN_ON() above adding value given the nature of the
-error?  Would dumping a stack be of interest to someone?
-
-Having said that, why do we even need to assert this?  Can there be some
-sort of a race condition with access happening here?
-
-I am asking as pci_subdev_regulators_remove_bus() does not seem to be
-concerned about this sort of thing yet it also accesses the same driver
-data, and such.
-
-[...]
-> +/* forward declaration */
-> +static struct pci_driver pcie_portdriver;
-
-The comment above might not be needed as it's quite obvious what the code
-at this line is for, I believe.
-
-[...]
-> @@ -131,6 +155,13 @@ static int pcie_portdrv_probe(struct pci_dev *dev,
->  	if (status)
->  		return status;
->  
-> +	if (dev->bus->ops &&
-> +	    dev->bus->ops->add_bus &&
-> +	    dev->bus->dev.driver_data) {
-> +		pcie_portdriver.resume = subdev_regulator_resume;
-> +		pcie_portdriver.suspend = subdev_regulator_suspend;
-> +	}
-> +
->  	pci_save_state(dev);
-
-[...]
-> @@ -237,6 +268,7 @@ static struct pci_driver pcie_portdriver = {
->  	.err_handler	= &pcie_portdrv_err_handler,
->  
->  	.driver.pm	= PCIE_PORTDRV_PM_OPS,
-> +	/* Note: suspend and resume may be set during probe */
-
-This comment here is for the "driver.pm" line above, correct?  If so, then
-I would move it above the statement.  It's a little bit confusing
-otherwise.
-
-	Krzysztof
-
+> However, I agree with you to
+> keep things simple now and can be merged into patch 1. Will do in next 
+> version. Thanks.
