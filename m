@@ -2,83 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C65344DDD4
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Nov 2021 23:20:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4623944DDDB
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Nov 2021 23:24:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234052AbhKKWXP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Nov 2021 17:23:15 -0500
-Received: from gandalf.ozlabs.org ([150.107.74.76]:39813 "EHLO
-        gandalf.ozlabs.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233659AbhKKWXN (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Nov 2021 17:23:13 -0500
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4Hqx431FzMz4xbw;
-        Fri, 12 Nov 2021 09:20:19 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-        s=201702; t=1636669219;
-        bh=NFD0wTCrdo56jxLDaMizhrIDOrhu1DWiwRYHWWcl8wg=;
-        h=Date:From:To:Cc:Subject:From;
-        b=ephPEGZczSzmt+2rubJ/9iQ2ByONu/LU22jIcbn9Ik3A+2BvMqETOFEnPlFgBukh5
-         WOW+KmoomiA8dgXVlntVAls6Si45v+7eadqjg0ZDnVROg0fuYFvqCxRrfU59kXVu6g
-         66P503fdjfUzQ6DUCXTTvbJZNaf+yl7pXStHOR+ZlEcCceqDGo+CSytzZIMiOyplZ9
-         IMzCIAUu/BYXO5q1Os6LwgGf31sQLgQ2neRjpPA9S00cDcgGBaJJpIXy/IQ05IoZke
-         0kMgzKXRx+4Q0CWBMkXLPgsTjs9lAt0i8Uio2ita4eKfPF6iVbCBAEHpcVib79d4JK
-         flOB6azHmjn0w==
-Date:   Fri, 12 Nov 2021 09:20:18 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Paolo Bonzini <pbonzini@redhat.com>, KVM <kvm@vger.kernel.org>
-Cc:     David Woodhouse <dwmw2@infradead.org>,
-        David Woodhouse <dwmw@amazon.co.uk>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: build warning after merge of the kvm-fixes tree
-Message-ID: <20211112092018.02d354e9@canb.auug.org.au>
+        id S234092AbhKKW0t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Nov 2021 17:26:49 -0500
+Received: from mga04.intel.com ([192.55.52.120]:25622 "EHLO mga04.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233901AbhKKW0s (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 11 Nov 2021 17:26:48 -0500
+X-IronPort-AV: E=McAfee;i="6200,9189,10165"; a="231748801"
+X-IronPort-AV: E=Sophos;i="5.87,227,1631602800"; 
+   d="scan'208";a="231748801"
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Nov 2021 14:23:58 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.87,227,1631602800"; 
+   d="scan'208";a="492714436"
+Received: from lkp-server02.sh.intel.com (HELO c20d8bc80006) ([10.239.97.151])
+  by orsmga007.jf.intel.com with ESMTP; 11 Nov 2021 14:23:57 -0800
+Received: from kbuild by c20d8bc80006 with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1mlIU8-000H9q-CY; Thu, 11 Nov 2021 22:23:56 +0000
+Date:   Fri, 12 Nov 2021 06:23:02 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     "x86-ml" <x86@kernel.org>
+Cc:     linux-kernel@vger.kernel.org
+Subject: [tip:irq/urgent] BUILD SUCCESS
+ 3735459037114d31e5acd9894fad9aed104231a0
+Message-ID: <618d97c6.kXQa0jma6bsq9RUT%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/65zZXgWEOTFBB8tJbtpp/FS";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/65zZXgWEOTFBB8tJbtpp/FS
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git irq/urgent
+branch HEAD: 3735459037114d31e5acd9894fad9aed104231a0  PCI/MSI: Destroy sysfs before freeing entries
 
-Hi all,
+elapsed time: 733m
 
-After merging the kvm-fixes tree, today's linux-next build (x86_64
-allmodconfig) produced this warning:
+configs tested: 53
+configs skipped: 3
 
-arch/x86/kvm/x86.o: warning: objtool: record_steal_time.cold()+0x2a: call t=
-o __ubsan_handle_load_invalid_value() with UACCESS enabled
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
-Introduced by commit
+gcc tested configs:
+arm                                 defconfig
+arm64                            allyesconfig
+arm64                               defconfig
+arm                              allmodconfig
+arm                              allyesconfig
+ia64                             allmodconfig
+ia64                                defconfig
+ia64                             allyesconfig
+m68k                                defconfig
+m68k                             allmodconfig
+m68k                             allyesconfig
+nios2                               defconfig
+nds32                             allnoconfig
+nds32                               defconfig
+nios2                            allyesconfig
+csky                                defconfig
+alpha                               defconfig
+alpha                            allyesconfig
+arc                              allyesconfig
+xtensa                           allyesconfig
+h8300                            allyesconfig
+arc                                 defconfig
+sh                               allmodconfig
+parisc                              defconfig
+s390                             allyesconfig
+s390                                defconfig
+s390                             allmodconfig
+parisc                           allyesconfig
+sparc                            allyesconfig
+i386                                defconfig
+i386                              debian-10.3
+i386                             allyesconfig
+sparc                               defconfig
+mips                             allyesconfig
+mips                             allmodconfig
+powerpc                          allmodconfig
+powerpc                           allnoconfig
+powerpc                          allyesconfig
+riscv                    nommu_k210_defconfig
+riscv                    nommu_virt_defconfig
+riscv                             allnoconfig
+riscv                               defconfig
+riscv                          rv32_defconfig
+riscv                            allmodconfig
+riscv                            allyesconfig
+um                           x86_64_defconfig
+um                             i386_defconfig
+x86_64                              defconfig
+x86_64                               rhel-8.3
+x86_64                                  kexec
+x86_64                           allyesconfig
+x86_64                          rhel-8.3-func
+x86_64                    rhel-8.3-kselftests
 
-  7e2175ebd695 ("KVM: x86: Fix recording of guest steal time / preempted st=
-atus")
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/65zZXgWEOTFBB8tJbtpp/FS
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmGNlyIACgkQAVBC80lX
-0GwoNgf/ZJ3NWiNNcRD8W57k4qmBg+/rEWIwfpO1kwjFjByLLEkbrCQ0u+cUkR5X
-F8Tj0+NAZu1u9pLTLZgAE0kT7A3D5tTNjLkEly5iT+IV71enadhAivTGSoXpbU+0
-sXsV76ZPAh/mXjnx/tH0EwRANxxwWlRhrydHRMybOgNOb8KC0bWpPDoBBz3IVAKq
-IblV5hijbZ73GgOrZwpqX99i2R1ttNk0xY6ycw5mQi0ewKOYQlB+VgN3XLMEtnwM
-pWifDCC8kLHiMBm8q/W/cc9fxhz9U2kpANcT2a2SubEqk+NghOJ8hNpXKgQF4UmY
-PdtZym8JujP6/2DKdJcggKc1PR0HfA==
-=acKU
------END PGP SIGNATURE-----
-
---Sig_/65zZXgWEOTFBB8tJbtpp/FS--
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
