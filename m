@@ -2,182 +2,367 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 72E7244D98A
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Nov 2021 16:50:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 176A844D983
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Nov 2021 16:50:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233903AbhKKPx2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Nov 2021 10:53:28 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46774 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234128AbhKKPxB (ORCPT
+        id S234174AbhKKPwj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Nov 2021 10:52:39 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:22378 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234059AbhKKPwc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Nov 2021 10:53:01 -0500
-Received: from mail-ed1-x532.google.com (mail-ed1-x532.google.com [IPv6:2a00:1450:4864:20::532])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D5A4CC061205;
-        Thu, 11 Nov 2021 07:50:11 -0800 (PST)
-Received: by mail-ed1-x532.google.com with SMTP id c8so25538095ede.13;
-        Thu, 11 Nov 2021 07:50:11 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=0M1Wz6NU/8H3Jq07UkfYR+o0iAJjTaXNhdrl+jV6eKs=;
-        b=NUfbBY5Dg6VfgA7uhvyVuR4yoVn/iQUhzBa22R6IKkMJQu6fHB7T+8+8bABdGQQT3G
-         UzrPI1hOrHEJXqxJwgBKrBJ2s5GFAV/r461jAYHAVnwzcATGALlMmutP5bLw31I0sTZ7
-         tXJX90fNIl/S/2/fWi7dGA1VRXm6Udc0HwUwrLMmj1ocFxLqhBRP4ZXqK2F18lFytx9k
-         OKRPc6epdxYbpD5SOiGBre//WCrVghlH4GvtWrUdbwlvMPtcoLo5KZOiABWASgnntu7P
-         aXg4znQt4/yi/KrxTQqua0aEqOnJJoxqmy1i9sTcnLV2WKUnhdIsErk3sE07i15VMUBc
-         JSFw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=0M1Wz6NU/8H3Jq07UkfYR+o0iAJjTaXNhdrl+jV6eKs=;
-        b=1BshgoAS5d5Hknj2rkftWqQ7nosS9HAVKmkaNIUga/aWsNFELkIOPejC9MTdyLdl/e
-         M1x6o97ingtlHH05Y4Xj/GwLkLvOhWpw8xUcRFgMoHr7z7CfXtId3xnWbiSj6onuxn9U
-         uV4OBUfg2aPLrpbG3J2IogRh7sctRBzaXUn3Rgu0Lb6vuMep+8nhmxFuljn8VWdG4YER
-         fraakkrPGhrNjrmWIxdhYoU6Iuf/i6x93u09MhUUTGOyyz41PeDRnQt0Q7oM0Kpmjwat
-         D/PTQrdnMD11kMyAebwvft9DrTV9cz8YG5sDpeI3r8Rf2awqWBsYRek7K8TSVHdWmc4z
-         DzYw==
-X-Gm-Message-State: AOAM531NLjeiednjrcrni/4JDmfxf3YaLj/oq3xy4l5x0cw0cGFd57fa
-        Tn7jswegcFN0FMoPLesKr0OK+FOT46zabq28oPY=
-X-Google-Smtp-Source: ABdhPJxxgrQNoP2jnPDycoc5a769RJ1GueCrKscUbDQ+NWzt23+QTGAoJJwhsL3c0tZfm+uMfogmzaHj0d3Ezfs3EX0=
-X-Received: by 2002:a05:6402:1801:: with SMTP id g1mr11039835edy.107.1636645810343;
- Thu, 11 Nov 2021 07:50:10 -0800 (PST)
+        Thu, 11 Nov 2021 10:52:32 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1636645783;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=UHfO+IWLDyBmg3/813qfaQtsMPxCPwrkDucytwn2kd8=;
+        b=RW/cNiPOpobC2nQ/6AqGwjxQFcd3Q8cGUC/PER9gSTaq8GfDP6zFQrn8aWB/8CZlbEIfUi
+        nhqVMU4c7c7Fm7gphHyXhp6bdWCnjm+LkJm809HllRBIjBxslv5z3xrkBLzbONhWt3JyBd
+        f/SgxLWnZCKhO1VeLuPXL6Y/jpNnNRg=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-510-g8aikeCxPM-VP5OVl5AAyg-1; Thu, 11 Nov 2021 10:49:39 -0500
+X-MC-Unique: g8aikeCxPM-VP5OVl5AAyg-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id AAF3D100C610;
+        Thu, 11 Nov 2021 15:49:37 +0000 (UTC)
+Received: from virtlab701.virt.lab.eng.bos.redhat.com (virtlab701.virt.lab.eng.bos.redhat.com [10.19.152.228])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id D2B085E26A;
+        Thu, 11 Nov 2021 15:49:34 +0000 (UTC)
+From:   Paolo Bonzini <pbonzini@redhat.com>
+To:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org
+Cc:     pgonda@google.com, seanjc@google.com,
+        Marc Orr <marcorr@google.com>,
+        David Rientjes <rientjes@google.com>,
+        "Dr . David Alan Gilbert" <dgilbert@redhat.com>,
+        Brijesh Singh <brijesh.singh@amd.com>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "H. Peter Anvin" <hpa@zytor.com>
+Subject: [PATCH 4/7] KVM: SEV: Add support for SEV intra host migration
+Date:   Thu, 11 Nov 2021 10:49:27 -0500
+Message-Id: <20211111154930.3603189-5-pbonzini@redhat.com>
+In-Reply-To: <20211111154930.3603189-1-pbonzini@redhat.com>
+References: <20211111154930.3603189-1-pbonzini@redhat.com>
 MIME-Version: 1.0
-References: <CAHifhD5V9vwJenRLcPRH5ZMeLa_JnjZKfdcFZw1CjceBtC6=Ew@mail.gmail.com>
- <CAHp75VeyQEaABFOnEUh2pdFx9ROJvRcud-BuEbKWmaEWpL9_Uw@mail.gmail.com>
- <CAHifhD7Qf7+dc7K-MjNguqmiCWUxOJZmQoCTRUZOR-RWMm_JPw@mail.gmail.com>
- <CAHp75Ve9BMNy3gP=-Dajm+Lgu+E4FCqc4phLgV1_cr2qUnTX_w@mail.gmail.com>
- <CAHifhD4n7O5eWFPOjRAmHYL52tW0K=uXXzVj7L5+enTFwFXW2A@mail.gmail.com>
- <CAArk9MP5cKJ+VhAZUseW4LnQNRvux=MZe2eSy3rQkbHKnUsGig@mail.gmail.com>
- <CAHp75VdRwvU5WjFP5E4gg8U+_e34A0Lwze+nz_wVHoB49jLeLg@mail.gmail.com>
- <CAArk9MNGSxR+92n-D2pe_+r+Z0Q9FoTMPqk11sAKA=4Vckj0HQ@mail.gmail.com>
- <YYy7QZGKeEEfI1mH@lahna> <CAHifhD5bXu2nP533RXyWDnyNt=k2rRZq5Z6A6CCik_2e6XNgGA@mail.gmail.com>
- <YYzxWPIWFAV04LRU@lahna> <CAD2FfiGnmFSTPvkJaXj+cf4yDvci-j+2QkpMqNY821fUT5C=CA@mail.gmail.com>
- <CAHp75Vcp=hC1oL5FBQDDFe8EBxWB9Po4FKNS9ZGtD3q-yQPtAw@mail.gmail.com>
- <CAHifhD6p9qSm5dv1spz+oPRhRkBZeQspHNEphE49fODacm-S6g@mail.gmail.com>
- <CAHp75Vfk5WHWiQxwmqEzVEymgpvjxKWEZbaQ9+=Et7N63Ps=Ng@mail.gmail.com>
- <CAHifhD5bGZOcZFNsHYFeecikHGUts73U4k6=aUVNTKEeETW5rQ@mail.gmail.com>
- <CAHp75VeSnXfjeNeBLtrR78AmB-18kTeXpknn7-jcPLEeWCrzXQ@mail.gmail.com> <CAMj1kXHoRa+9gS7OEZZH2SSZQ8Tf4BUMdh-p=+OvWEb1a6ffFA@mail.gmail.com>
-In-Reply-To: <CAMj1kXHoRa+9gS7OEZZH2SSZQ8Tf4BUMdh-p=+OvWEb1a6ffFA@mail.gmail.com>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Thu, 11 Nov 2021 17:49:26 +0200
-Message-ID: <CAHp75VckB0RA6zoLRQ2UOcQRgMEf6sNxDGfpsNVr+92eArhD=Q@mail.gmail.com>
-Subject: Re: [PATCH] firmware: export x86_64 platform flash bios region via sysfs
-To:     Ard Biesheuvel <ardb@kernel.org>
-Cc:     Hans-Gert Dahmen <hans-gert.dahmen@immu.ne>,
-        Richard Hughes <hughsient@gmail.com>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        Mauro Lima <mauro.lima@eclypsium.com>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Philipp Deppenwiese <philipp.deppenwiese@immu.ne>,
-        "platform-driver-x86@vger.kernel.org" 
-        <platform-driver-x86@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 11, 2021 at 5:43 PM Ard Biesheuvel <ardb@kernel.org> wrote:
-> On Thu, 11 Nov 2021 at 16:31, Andy Shevchenko <andy.shevchenko@gmail.com> wrote:
-> > On Thu, Nov 11, 2021 at 4:33 PM Hans-Gert Dahmen
-> > <hans-gert.dahmen@immu.ne> wrote:
-> > > Am Do., 11. Nov. 2021 um 14:55 Uhr schrieb Andy Shevchenko
-> > > <andy.shevchenko@gmail.com>:
-> > > > On Thu, Nov 11, 2021 at 2:56 PM Hans-Gert Dahmen
-> > > > <hans-gert.dahmen@immu.ne> wrote:
-> > > > > Am Do., 11. Nov. 2021 um 13:46 Uhr schrieb Andy Shevchenko
-> > > > > <andy.shevchenko@gmail.com>:
-> > > > > > On Thu, Nov 11, 2021 at 1:46 PM Richard Hughes <hughsient@gmail.com> wrote:
-> > > > > > > On Thu, 11 Nov 2021 at 10:33, Mika Westerberg
-> > > > > > > <mika.westerberg@linux.intel.com> wrote:
-> > > > > >
-> > > > > > > it's always going to work on x64 -- if the system firmware isn't available at that offset then the platform just isn't going to boot.
-> > > > > >
-> > > > > > Well, it's _usual_ case, but in general the assumption is simply
-> > > > > > incorrect. Btw, have you checked it on Coreboot enabled platforms?
-> > > > > > What about bare metal configurations where the bootloader provides
-> > > > > > services to the OS?
-> > > > >
-> > > > > No it is always the case. I suggest you go read your own Intel specs
-> > > > > and datasheets
-> > > >
-> > > > Point me out, please, chapters in SDM (I never really read it in full,
-> > > > it's kinda 10x Bible size). What x86 expects is 16 bytes at the end of
-> > > > 1Mb physical address space that the CPU runs at first.
-> > >
-> > > So you do not know what you are talking about, am I correct?
-> >
-> > Let me comment on this provocative question later, after some other
-> > comments first.
-> >
-> > > Starting
-> > > from 386 the first instruction is executed at 0xFFFFFFF0h. What you
-> > > are referring to is the 8086 reset vector and that was like 40 years
-> > > ago.
-> >
-> > True. The idea is the same, It has a reset vector standard for x86
-> > (which doesn't explicitly tell what is there). So, nothing new or
-> > different here.
-> >
-> > > Please refer to SDM volume 3A, chapter 9, section 9.1.4 "First
-> > > Instruction Executed", paragraph two. Just watch out for the hex
-> > > number train starting with FFFFF... then you will find it. This is
-> > > what requires the memory range to be mapped. Modern Intel CPUs require
-> > > larger portions, because of the ACM loading and XuCode and whatnot.
-> >
-> > Thanks. Have you read 9.7 and 9.8, btw?
-> > Where does it tell anything about memory to be mapped to a certain
-> > address, except the last up to 16 bytes?
-> >
-> > > Please refer to the email [1] from me linked below where I reference
-> > > all PCH datasheets of the x64 era to prove that 16MB are mapped
-> > > hard-wired. Note that the range cannot be turned off and will read
-> > > back 0xFF's if the PCH registers are configured to not be backed by
-> > > the actual SPI flash contents.
-> >
-> > And as I said it does not cover _all_ x86 designs (usual != all) .
-> > Have you heard about Intel MID line of SoCs? Do you know that they
-> > have no SPI NOR and the firmware is located on eMMC? Do you know that
-> > they can run Linux?
-> >
-> > So, maybe it's you who do not know what you are talking about, am I correct?
-> >
-> > > [1] https://lkml.org/lkml/2021/6/24/379
->
-> Thanks for looping me in (I think ...)
+From: Peter Gonda <pgonda@google.com>
 
-Thank you for chiming in!
+For SEV to work with intra host migration, contents of the SEV info struct
+such as the ASID (used to index the encryption key in the AMD SP) and
+the list of memory regions need to be transferred to the target VM.
+This change adds a commands for a target VMM to get a source SEV VM's sev
+info.
 
-> The thing I don't like about exposing the entire SPI NOR region to
-> user space is that we can never take it back, given the 'never break
-> user space' rule. So once we ship this, the cat is out of the bag, and
-> somebody (which != the contributors of this code) will have to
-> maintain this forever.
->
-> Also, you quoted several different use cases, all of which are
-> currently served by exposing a chunk of PA space, and letting the user
-> do the interpretation. This is not how it usually works: we tend to
-> prefer targeted and maintainable interfaces. That woudl mean that,
-> e.g., fwupd can invoke some kind of syscall to get at the version
-> numbers it is after, and the logic that finds those numbers is in the
-> kernel and not in user space.
+Signed-off-by: Peter Gonda <pgonda@google.com>
+Suggested-by: Sean Christopherson <seanjc@google.com>
+Reviewed-by: Marc Orr <marcorr@google.com>
+Cc: Marc Orr <marcorr@google.com>
+Cc: Paolo Bonzini <pbonzini@redhat.com>
+Cc: Sean Christopherson <seanjc@google.com>
+Cc: David Rientjes <rientjes@google.com>
+Cc: Dr. David Alan Gilbert <dgilbert@redhat.com>
+Cc: Brijesh Singh <brijesh.singh@amd.com>
+Cc: Tom Lendacky <thomas.lendacky@amd.com>
+Cc: Vitaly Kuznetsov <vkuznets@redhat.com>
+Cc: Wanpeng Li <wanpengli@tencent.com>
+Cc: Jim Mattson <jmattson@google.com>
+Cc: Joerg Roedel <joro@8bytes.org>
+Cc: Thomas Gleixner <tglx@linutronix.de>
+Cc: Ingo Molnar <mingo@redhat.com>
+Cc: Borislav Petkov <bp@alien8.de>
+Cc: "H. Peter Anvin" <hpa@zytor.com>
+Cc: kvm@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org
+Message-Id: <20211021174303.385706-3-pgonda@google.com>
+Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
+---
+ Documentation/virt/kvm/api.rst  |  15 ++++
+ arch/x86/include/asm/kvm_host.h |   1 +
+ arch/x86/kvm/svm/sev.c          | 152 ++++++++++++++++++++++++++++++++
+ arch/x86/kvm/svm/svm.c          |   1 +
+ arch/x86/kvm/svm/svm.h          |   2 +
+ arch/x86/kvm/x86.c              |   6 ++
+ include/uapi/linux/kvm.h        |   1 +
+ 7 files changed, 178 insertions(+)
 
-I was thinking about SHA256 hashes or so (as they tell about
-binaries). In any case the interface for this seems to be in the
-kernel.
-
-It is also possible to do the other way around, i.e. piping binary to
-the kernel and wait for the answer if it is the same or not or...
-
-> For the pen testing use case, things are likely a bit different, so I
-> realize this is not universally applicable, but just exposing the PA
-> space directly is not the solution IMO.
-
-
+diff --git a/Documentation/virt/kvm/api.rst b/Documentation/virt/kvm/api.rst
+index 3b093d6dbe22..d9797c6d4b1d 100644
+--- a/Documentation/virt/kvm/api.rst
++++ b/Documentation/virt/kvm/api.rst
+@@ -6911,6 +6911,20 @@ MAP_SHARED mmap will result in an -EINVAL return.
+ When enabled the VMM may make use of the ``KVM_ARM_MTE_COPY_TAGS`` ioctl to
+ perform a bulk copy of tags to/from the guest.
+ 
++7.29 KVM_CAP_VM_MOVE_ENC_CONTEXT_FROM
++-------------------------------------
++
++Architectures: x86 SEV enabled
++Type: vm
++Parameters: args[0] is the fd of the source vm
++Returns: 0 on success
++
++This capability enables userspace to migrate the encryption context from the VM
++indicated by the fd to the VM this is called on.
++
++This is intended to support intra-host migration of VMs between userspace VMMs,
++upgrading the VMM process without interrupting the guest.
++
+ 8. Other capabilities.
+ ======================
+ 
+diff --git a/arch/x86/include/asm/kvm_host.h b/arch/x86/include/asm/kvm_host.h
+index 88fce6ab4bbd..34e50b5c3a48 100644
+--- a/arch/x86/include/asm/kvm_host.h
++++ b/arch/x86/include/asm/kvm_host.h
+@@ -1476,6 +1476,7 @@ struct kvm_x86_ops {
+ 	int (*mem_enc_reg_region)(struct kvm *kvm, struct kvm_enc_region *argp);
+ 	int (*mem_enc_unreg_region)(struct kvm *kvm, struct kvm_enc_region *argp);
+ 	int (*vm_copy_enc_context_from)(struct kvm *kvm, unsigned int source_fd);
++	int (*vm_move_enc_context_from)(struct kvm *kvm, unsigned int source_fd);
+ 
+ 	int (*get_msr_feature)(struct kvm_msr_entry *entry);
+ 
+diff --git a/arch/x86/kvm/svm/sev.c b/arch/x86/kvm/svm/sev.c
+index 227becd93cb6..8b529022f0cf 100644
+--- a/arch/x86/kvm/svm/sev.c
++++ b/arch/x86/kvm/svm/sev.c
+@@ -1532,6 +1532,158 @@ static bool cmd_allowed_from_miror(u32 cmd_id)
+ 	return false;
+ }
+ 
++static int sev_lock_for_migration(struct kvm *kvm)
++{
++	struct kvm_sev_info *sev = &to_kvm_svm(kvm)->sev_info;
++
++	/*
++	 * Bail if this VM is already involved in a migration to avoid deadlock
++	 * between two VMs trying to migrate to/from each other.
++	 */
++	if (atomic_cmpxchg_acquire(&sev->migration_in_progress, 0, 1))
++		return -EBUSY;
++
++	mutex_lock(&kvm->lock);
++
++	return 0;
++}
++
++static void sev_unlock_after_migration(struct kvm *kvm)
++{
++	struct kvm_sev_info *sev = &to_kvm_svm(kvm)->sev_info;
++
++	mutex_unlock(&kvm->lock);
++	atomic_set_release(&sev->migration_in_progress, 0);
++}
++
++
++static int sev_lock_vcpus_for_migration(struct kvm *kvm)
++{
++	struct kvm_vcpu *vcpu;
++	int i, j;
++
++	kvm_for_each_vcpu(i, vcpu, kvm) {
++		if (mutex_lock_killable(&vcpu->mutex))
++			goto out_unlock;
++	}
++
++	return 0;
++
++out_unlock:
++	kvm_for_each_vcpu(j, vcpu, kvm) {
++		if (i == j)
++			break;
++
++		mutex_unlock(&vcpu->mutex);
++	}
++	return -EINTR;
++}
++
++static void sev_unlock_vcpus_for_migration(struct kvm *kvm)
++{
++	struct kvm_vcpu *vcpu;
++	int i;
++
++	kvm_for_each_vcpu(i, vcpu, kvm) {
++		mutex_unlock(&vcpu->mutex);
++	}
++}
++
++static void sev_migrate_from(struct kvm_sev_info *dst,
++			      struct kvm_sev_info *src)
++{
++	dst->active = true;
++	dst->asid = src->asid;
++	dst->handle = src->handle;
++	dst->pages_locked = src->pages_locked;
++
++	src->asid = 0;
++	src->active = false;
++	src->handle = 0;
++	src->pages_locked = 0;
++
++	if (dst->misc_cg != src->misc_cg)
++		sev_misc_cg_uncharge(src);
++
++	put_misc_cg(src->misc_cg);
++	src->misc_cg = NULL;
++
++	INIT_LIST_HEAD(&dst->regions_list);
++	list_replace_init(&src->regions_list, &dst->regions_list);
++}
++
++int svm_vm_migrate_from(struct kvm *kvm, unsigned int source_fd)
++{
++	struct kvm_sev_info *dst_sev = &to_kvm_svm(kvm)->sev_info;
++	struct kvm_sev_info *src_sev;
++	struct file *source_kvm_file;
++	struct kvm *source_kvm;
++	int ret;
++
++	ret = sev_lock_for_migration(kvm);
++	if (ret)
++		return ret;
++
++	if (sev_guest(kvm)) {
++		ret = -EINVAL;
++		goto out_unlock;
++	}
++
++	source_kvm_file = fget(source_fd);
++	if (!file_is_kvm(source_kvm_file)) {
++		ret = -EBADF;
++		goto out_fput;
++	}
++
++	source_kvm = source_kvm_file->private_data;
++	ret = sev_lock_for_migration(source_kvm);
++	if (ret)
++		goto out_fput;
++
++	if (!sev_guest(source_kvm) || sev_es_guest(source_kvm)) {
++		ret = -EINVAL;
++		goto out_source;
++	}
++
++	src_sev = &to_kvm_svm(source_kvm)->sev_info;
++	dst_sev->misc_cg = get_current_misc_cg();
++	if (dst_sev->misc_cg != src_sev->misc_cg) {
++		ret = sev_misc_cg_try_charge(dst_sev);
++		if (ret)
++			goto out_dst_put_cgroup;
++	}
++
++	ret = sev_lock_vcpus_for_migration(kvm);
++	if (ret)
++		goto out_dst_cgroup;
++	ret = sev_lock_vcpus_for_migration(source_kvm);
++	if (ret)
++		goto out_dst_vcpu;
++
++	sev_migrate_from(dst_sev, src_sev);
++	kvm_vm_dead(source_kvm);
++	ret = 0;
++
++	sev_unlock_vcpus_for_migration(source_kvm);
++out_dst_vcpu:
++	sev_unlock_vcpus_for_migration(kvm);
++out_dst_cgroup:
++	if (ret < 0) {
++		sev_misc_cg_uncharge(dst_sev);
++out_dst_put_cgroup:
++		put_misc_cg(dst_sev->misc_cg);
++		dst_sev->misc_cg = NULL;
++	}
++out_source:
++	sev_unlock_after_migration(source_kvm);
++out_fput:
++	if (source_kvm_file)
++		fput(source_kvm_file);
++out_unlock:
++	sev_unlock_after_migration(kvm);
++	return ret;
++}
++
+ int svm_mem_enc_op(struct kvm *kvm, void __user *argp)
+ {
+ 	struct kvm_sev_cmd sev_cmd;
+diff --git a/arch/x86/kvm/svm/svm.c b/arch/x86/kvm/svm/svm.c
+index 1143b4ac900d..4a40c8876ade 100644
+--- a/arch/x86/kvm/svm/svm.c
++++ b/arch/x86/kvm/svm/svm.c
+@@ -4699,6 +4699,7 @@ static struct kvm_x86_ops svm_x86_ops __initdata = {
+ 	.mem_enc_unreg_region = svm_unregister_enc_region,
+ 
+ 	.vm_copy_enc_context_from = svm_vm_copy_asid_from,
++	.vm_move_enc_context_from = svm_vm_migrate_from,
+ 
+ 	.can_emulate_instruction = svm_can_emulate_instruction,
+ 
+diff --git a/arch/x86/kvm/svm/svm.h b/arch/x86/kvm/svm/svm.h
+index 80048841cad9..d4eae06b0695 100644
+--- a/arch/x86/kvm/svm/svm.h
++++ b/arch/x86/kvm/svm/svm.h
+@@ -80,6 +80,7 @@ struct kvm_sev_info {
+ 	u64 ap_jump_table;	/* SEV-ES AP Jump Table address */
+ 	struct kvm *enc_context_owner; /* Owner of copied encryption context */
+ 	struct misc_cg *misc_cg; /* For misc cgroup accounting */
++	atomic_t migration_in_progress;
+ };
+ 
+ struct kvm_svm {
+@@ -562,6 +563,7 @@ int svm_register_enc_region(struct kvm *kvm,
+ int svm_unregister_enc_region(struct kvm *kvm,
+ 			      struct kvm_enc_region *range);
+ int svm_vm_copy_asid_from(struct kvm *kvm, unsigned int source_fd);
++int svm_vm_migrate_from(struct kvm *kvm, unsigned int source_fd);
+ void pre_sev_run(struct vcpu_svm *svm, int cpu);
+ void __init sev_set_cpu_caps(void);
+ void __init sev_hardware_setup(void);
+diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
+index 622cb75f5e75..185094eb86b6 100644
+--- a/arch/x86/kvm/x86.c
++++ b/arch/x86/kvm/x86.c
+@@ -5845,6 +5845,12 @@ int kvm_vm_ioctl_enable_cap(struct kvm *kvm,
+ 		if (kvm_x86_ops.vm_copy_enc_context_from)
+ 			r = kvm_x86_ops.vm_copy_enc_context_from(kvm, cap->args[0]);
+ 		return r;
++	case KVM_CAP_VM_MOVE_ENC_CONTEXT_FROM:
++		r = -EINVAL;
++		if (kvm_x86_ops.vm_move_enc_context_from)
++			r = kvm_x86_ops.vm_move_enc_context_from(
++				kvm, cap->args[0]);
++		return r;
+ 	case KVM_CAP_EXIT_HYPERCALL:
+ 		if (cap->args[0] & ~KVM_EXIT_HYPERCALL_VALID_MASK) {
+ 			r = -EINVAL;
+diff --git a/include/uapi/linux/kvm.h b/include/uapi/linux/kvm.h
+index 78f0719cc2a3..d29ce9dc7a2f 100644
+--- a/include/uapi/linux/kvm.h
++++ b/include/uapi/linux/kvm.h
+@@ -1130,6 +1130,7 @@ struct kvm_ppc_resize_hpt {
+ #define KVM_CAP_BINARY_STATS_FD 203
+ #define KVM_CAP_EXIT_ON_EMULATION_FAILURE 204
+ #define KVM_CAP_ARM_MTE 205
++#define KVM_CAP_VM_MOVE_ENC_CONTEXT_FROM 206
+ 
+ #ifdef KVM_CAP_IRQ_ROUTING
+ 
 -- 
-With Best Regards,
-Andy Shevchenko
+2.27.0
+
+
