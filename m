@@ -2,157 +2,225 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F6C444D512
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Nov 2021 11:34:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6ACB244D51E
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Nov 2021 11:37:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232888AbhKKKhm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Nov 2021 05:37:42 -0500
-Received: from todd.t-8ch.de ([159.69.126.157]:60729 "EHLO todd.t-8ch.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229668AbhKKKhk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Nov 2021 05:37:40 -0500
-Date:   Thu, 11 Nov 2021 11:34:49 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=weissschuh.net;
-        s=mail; t=1636626890;
-        bh=aBlydR7c5HlIpwugUVKyBf1SZBRGaTAtRZG6QBHMdmw=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=fY+DfBWPYJLdBHhxB8cJALXUSAedjVMjdwfAvrHQNw/Ou/YcjY23rITjQPBKij53I
-         2XrsTkkoYDKBh+gK6kqpRHX4c+DvkKr+dsT8NlwMlohNqW1JJPONbvYIThVgPY5aTA
-         i0LosUsgWbAM7Ks9/pvmXpU+02qLv21wNUKTmzz4=
-From:   Thomas =?utf-8?Q?Wei=C3=9Fschuh?= <linux@weissschuh.net>
-To:     Arnd Bergmann <arnd@kernel.org>
-Cc:     Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        Jiri Kosina <jikos@kernel.org>,
-        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
-        Benson Leung <bleung@chromium.org>,
-        Sumesh K Naduvalath <sumesh.k.naduvalath@intel.com>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Mark Gross <markgross@kernel.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Guenter Roeck <groeck@chromium.org>,
-        Lee Jones <lee.jones@linaro.org>,
-        Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <uwe@kleine-koenig.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-input@vger.kernel.org, linux-kernel@vger.kernel.org,
-        platform-driver-x86@vger.kernel.org, llvm@lists.linux.dev
-Subject: Re: [PATCH] HID: intel-ish-hid: fix module device-id handling
-Message-ID: <b87d00eb-1d89-4241-a631-1cb70ec7550e@t-8ch.de>
-References: <20211111085842.2846422-1-arnd@kernel.org>
+        id S232730AbhKKKjr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Nov 2021 05:39:47 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59958 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230256AbhKKKjq (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 11 Nov 2021 05:39:46 -0500
+Received: from mail-ed1-x52e.google.com (mail-ed1-x52e.google.com [IPv6:2a00:1450:4864:20::52e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30834C061766;
+        Thu, 11 Nov 2021 02:36:57 -0800 (PST)
+Received: by mail-ed1-x52e.google.com with SMTP id z21so22326890edb.5;
+        Thu, 11 Nov 2021 02:36:57 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=M5pVKe47yKtjW0MKmtZXDquLokYlNX8+sMw+tEQRB2c=;
+        b=bMoxvFeh4C/OUX+ZD+sGBxBE9zEBZs2apIIJXb9f/PuJd4S8IZhcctjsNAcvDDuc+8
+         8MsO+YrrpLpX2diBL/ku5D8COPf5LpZR//zhvqkf8bvDR79WY7zghu09VnapvY7tNGfd
+         uSSCjtpfT4DmGp1BlJWxi1zR4JcT6sUp8PYw6Hz9mCSQHujiBp/1NQDSG3cGgDSxj9eu
+         nERh6lbvgQlvfa4RrO8DNeNyZ/caQMcIkG3PWAhtm6FJnf3tx/YhPRrWydjJW5R31l3Y
+         Yr9rO6NMiczfCWqkqB7KgAX+AiScXWZgB6TSTOuIMY4qvbvCxo9OWrCI0F5XwT7p9ee4
+         1BmQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=M5pVKe47yKtjW0MKmtZXDquLokYlNX8+sMw+tEQRB2c=;
+        b=632YO2GpCuU1K8QDdCDM5M/1U847xFLL5ZYVVyo23rshn98g3c976WQbZe76TJrrVy
+         ZHZ2waVjFRi3TrfWJ5292ko7L4xHo2cGjyt2iBHDejW99MukZ0o2W+VS4zVhTXDkT4Lx
+         prIufj+6ccCfwi5APW8Yp0r1DcuwTIypM5aYS0oH3v/OkmkX12SrrZsznXcbuayu1gze
+         ztPpupj/4Ow4aAXSqd2UECK63E+On/CEQOfPPQuawIWjEM3dlISuRfJiyeUBdpyUuiIG
+         nam3tRROfK8ws5/mdRkcPyA82zKWTK1GAIWUfbHsFaAf3Yf857PtZX4Dv7h4Q85VYgtZ
+         Azeg==
+X-Gm-Message-State: AOAM532FuuDfLbVRx5I0FMzArb339OjL7zPRoBSUvVe4xCRzU4pN1Tmf
+        opYMWkJohXpGXZ8dPPJ5eOIiP9NO0wdLRBQq/48=
+X-Google-Smtp-Source: ABdhPJzkWJzxENQ+uwppyRAue2SX6spIb5vmW0aJu04zaZbg/JLAstkKlVpptxxEn3SNkLosmat/lx4fa6jFFpHs1Mc=
+X-Received: by 2002:a17:906:c152:: with SMTP id dp18mr7835459ejc.241.1636627015702;
+ Thu, 11 Nov 2021 02:36:55 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20211111085842.2846422-1-arnd@kernel.org>
-Jabber-ID: thomas@t-8ch.de
-X-Accept: text/plain, text/html;q=0.2, text/*;q=0.1
-X-Accept-Language: en-us, en;q=0.8, de-de;q=0.7, de;q=0.6
+References: <20211109083926.32052-1-christian.gmeiner@gmail.com>
+ <20211109083926.32052-2-christian.gmeiner@gmail.com> <YYq4tjyv0qh+Zpqe@ripper>
+In-Reply-To: <YYq4tjyv0qh+Zpqe@ripper>
+From:   Christian Gmeiner <christian.gmeiner@gmail.com>
+Date:   Thu, 11 Nov 2021 11:36:44 +0100
+Message-ID: <CAH9NwWcyKyaGrTZ1=N73gA+zjO0wH_oMzLG_zi2TUc3dN69SNg@mail.gmail.com>
+Subject: Re: [RFC PATCH v2 1/1] rpmsg: add syslog driver
+To:     Bjorn Andersson <bjorn.andersson@linaro.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Ohad Ben-Cohen <ohad@wizery.com>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        linux-remoteproc@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+Hi Bjorn
 
-On 2021-11-11 09:56+0100, Arnd Bergmann wrote:
-> A late addititon to the intel-ish-hid framework caused a build failure
-> with clang, and introduced an ABI to the module loader that stops working
-> if any driver ever needs to bind to more than one UUID:
-> 
-> drivers/hid/intel-ish-hid/ishtp-fw-loader.c:1067:4: error: initializer element is not a compile-time constant
-> 
-> Change the ishtp_device_id to have correct documentation and a driver_data
-> field like all the other ones, and change the drivers to use the ID table
-> as the primary identification in a way that works with all compilers
-> and avoids duplciating the identifiers.
 
-I was not aware that the missing driver_data would actually be part of the ABI.
-Thanks for noticing!
+> > Allows the remote firmware to log into syslog.
+> >
+>
+> This allows the remote firmware to print log messages in the kernel log,
+> not the syslog (although your system might inject the kernel log into
+> the syslog as well)
+>
 
-> Fixes: f155dfeaa4ee ("platform/x86: isthp_eclite: only load for matching devices")
-> Fixes: facfe0a4fdce ("platform/chrome: chros_ec_ishtp: only load for matching devices")
-> Fixes: 0d0cccc0fd83 ("HID: intel-ish-hid: hid-client: only load for matching devices")
-> Fixes: 44e2a58cb880 ("HID: intel-ish-hid: fw-loader: only load for matching devices")
-> Fixes: cb1a2c6847f7 ("HID: intel-ish-hid: use constants for modaliases")
-> Fixes: fa443bc3c1e4 ("HID: intel-ish-hid: add support for MODULE_DEVICE_TABLE()")
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-> ---
-> I did not see this reported on the list so far, but it has probably
-> shown up in other build bots as well.
+Correct.
 
-The warning/error was also reported by Nathan here:
-https://lore.kernel.org/lkml/YYv22iWQ7yTfMNC5@archlinux-ax161/
+> > Signed-off-by: Christian Gmeiner <christian.gmeiner@gmail.com>
+> > ---
+> >  drivers/rpmsg/Kconfig        |  8 +++++
+> >  drivers/rpmsg/Makefile       |  1 +
+> >  drivers/rpmsg/rpmsg_syslog.c | 65 ++++++++++++++++++++++++++++++++++++
+>
+> drivers/rpmsg is for rpmsg bus and transport drivers. Client drivers
+> should live elsewhere.
+>
 
-> There are lots of ways to fix the warning, I picked this way to address
-> the more urgent problem of fixing the mod_devicetable.h format before
-> it is too late for that.
-> ---
->  drivers/hid/intel-ish-hid/ishtp-fw-loader.c  | 19 ++++++++-----------
->  drivers/hid/intel-ish-hid/ishtp-hid-client.c | 19 ++++++++-----------
->  drivers/hid/intel-ish-hid/ishtp/bus.c        |  2 +-
->  drivers/platform/chrome/cros_ec_ishtp.c      | 19 ++++++++-----------
->  drivers/platform/x86/intel/ishtp_eclite.c    | 19 ++++++++-----------
->  include/linux/intel-ish-client-if.h          |  4 ++--
->  include/linux/mod_devicetable.h              |  5 +++--
->  7 files changed, 38 insertions(+), 49 deletions(-)
-> 
-> diff --git a/drivers/platform/x86/intel/ishtp_eclite.c b/drivers/platform/x86/intel/ishtp_eclite.c
-> index b9fb8f28fd63..b2da3a4b3e1b 100644
-> --- a/drivers/platform/x86/intel/ishtp_eclite.c
-> +++ b/drivers/platform/x86/intel/ishtp_eclite.c
-> @@ -93,9 +93,12 @@ struct ishtp_opregion_dev {
->  };
->  
->  /* eclite ishtp client UUID: 6a19cc4b-d760-4de3-b14d-f25ebd0fbcd9 */
-> -static const guid_t ecl_ishtp_guid =
-> -	GUID_INIT(0x6a19cc4b, 0xd760, 0x4de3,
-> -		  0xb1, 0x4d, 0xf2, 0x5e, 0xbd, 0xf, 0xbc, 0xd9);
-> +static const struct ishtp_device_id ecl_ishtp_id_table[] = {
-> +	{ .guid = GUID_INIT(0x6a19cc4b, 0xd760, 0x4de3,
-> +		  0xb1, 0x4d, 0xf2, 0x5e, 0xbd, 0xf, 0xbc, 0xd9), },
-> +	{ }
-> +};
-> +MODULE_DEVICE_TABLE(ishtp, ecl_ishtp_id_table);
->  
->  /* ACPI DSM UUID: 91d936a7-1f01-49c6-a6b4-72f00ad8d8a5 */
->  static const guid_t ecl_acpi_guid =
-> @@ -462,7 +465,7 @@ static int ecl_ishtp_cl_init(struct ishtp_cl *ecl_ishtp_cl)
->  	ishtp_set_tx_ring_size(ecl_ishtp_cl, ECL_CL_TX_RING_SIZE);
->  	ishtp_set_rx_ring_size(ecl_ishtp_cl, ECL_CL_RX_RING_SIZE);
->  
-> -	fw_client = ishtp_fw_cl_get_client(dev, &ecl_ishtp_guid);
-> +	fw_client = ishtp_fw_cl_get_client(dev, &ecl_ishtp_id_table[0].guid);
->  	if (!fw_client) {
->  		dev_err(cl_data_to_dev(opr_dev), "fw client not found\n");
->  		return -ENOENT;
-> @@ -674,19 +677,13 @@ static const struct dev_pm_ops ecl_ishtp_pm_ops = {
->  
->  static struct ishtp_cl_driver ecl_ishtp_cl_driver = {
->  	.name = "ishtp-eclite",
-> -	.guid = &ecl_ishtp_guid,
-> +	.id = &ecl_ishtp_id_table,
+Ahh .. yes.
 
-This '&' should not be there.
+> But perhaps, rather than having a driver for this, you could simply use
+> rpmsg_char and a userspace tool; if you want to get the remote processor
+> logs into syslog, instead of the kernel log?
+>
 
-drivers/platform/x86/intel/ishtp_eclite.c:680:15: error: initialization of ‘const struct ishtp_device_id *’ from incompatible pointer type ‘const struct ishtp_device_id (*)[2]’ [-Werror=incompatible-pointer-types]
-  680 |         .id = &ecl_ishtp_id_table,
-      |               ^
-drivers/platform/x86/intel/ishtp_eclite.c:680:15: note: (near initialization for ‘ecl_ishtp_cl_driver.id’)
+I thought about that too (also regarding the rpmsg tty driver) but that means I
+need to start/supervise a user space tool.
 
->  	.probe = ecl_ishtp_cl_probe,
->  	.remove = ecl_ishtp_cl_remove,
->  	.reset = ecl_ishtp_cl_reset,
->  	.driver.pm = &ecl_ishtp_pm_ops,
->  };
->  
-> -static const struct ishtp_device_id ecl_ishtp_id_table[] = {
-> -	{ ecl_ishtp_guid },
-> -	{ }
-> -};
-> -MODULE_DEVICE_TABLE(ishtp, ecl_ishtp_id_table);
-> -
->  static int __init ecl_ishtp_init(void)
->  {
->  	return ishtp_cl_driver_register(&ecl_ishtp_cl_driver, THIS_MODULE);
+> >  3 files changed, 74 insertions(+)
+> >  create mode 100644 drivers/rpmsg/rpmsg_syslog.c
+> >
+> > diff --git a/drivers/rpmsg/Kconfig b/drivers/rpmsg/Kconfig
+> > index 0b4407abdf13..801f9956ec21 100644
+> > --- a/drivers/rpmsg/Kconfig
+> > +++ b/drivers/rpmsg/Kconfig
+> > @@ -73,4 +73,12 @@ config RPMSG_VIRTIO
+> >       select RPMSG_NS
+> >       select VIRTIO
+> >
+> > +config RPMSG_SYSLOG
+> > +     tristate "SYSLOG device interface"
+> > +     depends on RPMSG
+> > +     help
+> > +       Say Y here to export rpmsg endpoints as device files, usually found
+> > +       in /dev. They make it possible for user-space programs to send and
+> > +       receive rpmsg packets.
+> > +
+> >  endmenu
+> > diff --git a/drivers/rpmsg/Makefile b/drivers/rpmsg/Makefile
+> > index 8d452656f0ee..75b2ec7133a5 100644
+> > --- a/drivers/rpmsg/Makefile
+> > +++ b/drivers/rpmsg/Makefile
+> > @@ -9,3 +9,4 @@ obj-$(CONFIG_RPMSG_QCOM_GLINK_RPM) += qcom_glink_rpm.o
+> >  obj-$(CONFIG_RPMSG_QCOM_GLINK_SMEM) += qcom_glink_smem.o
+> >  obj-$(CONFIG_RPMSG_QCOM_SMD) += qcom_smd.o
+> >  obj-$(CONFIG_RPMSG_VIRTIO)   += virtio_rpmsg_bus.o
+> > +obj-$(CONFIG_RPMSG_SYSLOG)   += rpmsg_syslog.o
+> > diff --git a/drivers/rpmsg/rpmsg_syslog.c b/drivers/rpmsg/rpmsg_syslog.c
+> > new file mode 100644
+> > index 000000000000..b3fdae495fd9
+> > --- /dev/null
+> > +++ b/drivers/rpmsg/rpmsg_syslog.c
+> > @@ -0,0 +1,65 @@
+> > +// SPDX-License-Identifier: GPL-2.0
+> > +
+> > +#include <linux/kernel.h>
+> > +#include <linux/module.h>
+> > +#include <linux/rpmsg.h>
+> > +
+> > +static int rpmsg_syslog_cb(struct rpmsg_device *rpdev, void *data, int len,
+> > +                        void *priv, u32 src)
+> > +{
+> > +     const char *buffer = data;
+> > +
+> > +     switch (buffer[0]) {
+> > +     case 'e':
+> > +             dev_err(&rpdev->dev, "%s", buffer + 1);
+> > +             break;
+> > +     case 'w':
+> > +             dev_warn(&rpdev->dev, "%s", buffer + 1);
+> > +             break;
+> > +     case 'i':
+> > +             dev_info(&rpdev->dev, "%s", buffer + 1);
+> > +             break;
+> > +     default:
+> > +             dev_info(&rpdev->dev, "%s", buffer);
+> > +             break;
+> > +     }
+> > +
+> > +     return 0;
+> > +}
+> > +
+> > +static int rpmsg_syslog_probe(struct rpmsg_device *rpdev)
+> > +{
+> > +     struct rpmsg_endpoint *syslog_ept;
+> > +     struct rpmsg_channel_info syslog_chinfo = {
+> > +             .src = 42,
+> > +             .dst = 42,
+> > +             .name = "syslog",
+> > +     };
+> > +
+> > +     /*
+> > +      * Create the syslog service endpoint associated to the RPMsg
+> > +      * device. The endpoint will be automatically destroyed when the RPMsg
+> > +      * device will be deleted.
+> > +      */
+> > +     syslog_ept = rpmsg_create_ept(rpdev, rpmsg_syslog_cb, NULL, syslog_chinfo);
+>
+> The rpmsg_device_id below should cause the device to probe on the
+> presence of a "syslog" channel announcement, so why are you creating a
+> new endpoint with the same here?
+>
+> Why aren't you just specifying the callback of the driver?
+>
 
-Thomas
+Good question. I think I was happy that I got work working somehow. I
+also want to send out
+a documentation update as it is not up to date with the current API.
+
+> > +     if (!syslog_ept) {
+> > +             dev_err(&rpdev->dev, "failed to create the syslog ept\n");
+> > +             return -ENOMEM;
+> > +     }
+> > +     rpdev->ept = syslog_ept;
+> > +
+> > +     return 0;
+> > +}
+> > +
+> > +static struct rpmsg_device_id rpmsg_driver_syslog_id_table[] = {
+> > +     { .name = "syslog" },
+> > +     { },
+> > +};
+> > +MODULE_DEVICE_TABLE(rpmsg, rpmsg_driver_syslog_id_table);
+> > +
+> > +static struct rpmsg_driver rpmsg_syslog_client = {
+> > +     .drv.name       = KBUILD_MODNAME,
+> > +     .id_table       = rpmsg_driver_syslog_id_table,
+> > +     .probe          = rpmsg_syslog_probe,
+> > +};
+> > +module_rpmsg_driver(rpmsg_syslog_client);
+>
+> I would expect that building this as a module gives you complaints about
+> lacking MODULE_LICENSE().
+>
+
+Yeah .. I never built it as a module.
+
+The biggest question I have: do you see any possibility to get such a
+redirection
+driver into mainline? At the moment I have not heard a big no.
+
+-- 
+greets
+--
+Christian Gmeiner, MSc
+
+https://christian-gmeiner.info/privacypolicy
