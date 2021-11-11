@@ -2,87 +2,179 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 753C744CF33
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Nov 2021 02:45:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BF80A44CF3F
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Nov 2021 02:49:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233221AbhKKBrv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Nov 2021 20:47:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55164 "EHLO
+        id S233004AbhKKBwj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Nov 2021 20:52:39 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56214 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233150AbhKKBrt (ORCPT
+        with ESMTP id S231312AbhKKBwh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Nov 2021 20:47:49 -0500
-Received: from mail-pj1-x102e.google.com (mail-pj1-x102e.google.com [IPv6:2607:f8b0:4864:20::102e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A0647C061766
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Nov 2021 17:45:01 -0800 (PST)
-Received: by mail-pj1-x102e.google.com with SMTP id gt5so3001954pjb.1
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Nov 2021 17:45:01 -0800 (PST)
+        Wed, 10 Nov 2021 20:52:37 -0500
+Received: from mail-yb1-xb2d.google.com (mail-yb1-xb2d.google.com [IPv6:2607:f8b0:4864:20::b2d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7871FC061766
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Nov 2021 17:49:49 -0800 (PST)
+Received: by mail-yb1-xb2d.google.com with SMTP id s186so11079905yba.12
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Nov 2021 17:49:49 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=vIpqkuXH/BEP47oEfxhMZ9/fTD6xVKLD28FU3QaYHLg=;
-        b=mM69LO5YQ6sqQc8Le0frsg9F3hqNgWpT2kCUVE55Ec6XVmIu9DQfmszelkI97gfwre
-         014Qezf+KDo6iflV5bNvhE7KfBAhkKVXODMe6VNdoJINHgisiEgTQMquKsqFV1fm185d
-         MwUEn8MkPQjzJdo2iB1Bd93EX6f+U4I79VFK6n7okZD9nkY6Mq3xdiK05S14/iKUzlnk
-         VWCy0+U54EA1ov52EvgFXy3IzMYePujUrjR7lUA/p944Zx2YMyq7wxpoUei96DYgq8y8
-         vtVwALtuZUMMRDqXM47ZoctqCW52q7b6ty/7uCZ/gEaK4AqntWFTy58VUdVPUldxW6S0
-         jFqw==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=i1s9PkiERHgtuRIYjlT0cC/lRcZ1Ijv9dEf4nsTsVJ8=;
+        b=VltbIgLFxDPzIAW2CmTfeHSs7ehAUsviU5Q1FD60b6AjC51mqJMt2X+Hz2+AvTfZTG
+         pm/chewIr4uLrNTj70XrevyFEoA1TVPPhnlzdHy8Al02DbtKWnABw9Xr9pl6DDD0hL2r
+         zuR+MYXTU+IreVRs7YEhcPZ0SdMxfYK4A00ko0GkvoCCLA/gWCbPUOBLFFIYX2GUybqb
+         XL146uOQkZ76dMPTZquuYvfcW3tzI9mHvfEhIa5cmaUnP65nKH+Cx7G+5KfOM3frlkqb
+         dPQbvGlbLZSvQLkXIOeBXihr9gOVtYliIljlnvRUSAKAWec/K1g+2+dHMecLrar644n/
+         jkGA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=vIpqkuXH/BEP47oEfxhMZ9/fTD6xVKLD28FU3QaYHLg=;
-        b=wXVlLDuiHd/FnsuwOjSFzCgkjZJB4i34r3tTXitq6HH3Ylq9I0tMHeLp/azXNAveil
-         b5Ogd2Tp6MocenZcMUDO54FbtndFDgVJPmPoaXstfunKH7xbHx2RVkXMq1WVrqW1dxtI
-         3sEuZlxvdzsgurfTXRqUZp+4bLUsb3pgb7EhgS6l7Ac4zRedepJJw11AU5BwSBe2/Ao5
-         ZBEtzFRqqfep0282GS8NWs/AE8xVeCv+u0bXoNwBSwJHkgcSnIUagNvEBfqHUps9Lkma
-         W5sEMyUTzV6W4VY9cbZBLAjqGCL2Rj21oL8+37uEwMCoQZUjWQGxk6JmO9X3TZo0LoYQ
-         XHzg==
-X-Gm-Message-State: AOAM533d4ZVarq3Siz4W1Iy4i7UisiofyZNDIv7qRq0wnpszBunXCQns
-        MA2YbqsjXljhWSn0fLQiiS6u3A==
-X-Google-Smtp-Source: ABdhPJw65Cs7XdtqOeDTy0swpntsrIFQd+3JADjeMBvvt4fWbOcVc3oGGNi04LpHcIEZAJqhVlKzlg==
-X-Received: by 2002:a17:90b:350c:: with SMTP id ls12mr4066067pjb.197.1636595100452;
-        Wed, 10 Nov 2021 17:45:00 -0800 (PST)
-Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
-        by smtp.gmail.com with ESMTPSA id a8sm860341pfv.176.2021.11.10.17.44.59
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 10 Nov 2021 17:44:59 -0800 (PST)
-Date:   Thu, 11 Nov 2021 01:44:56 +0000
-From:   Sean Christopherson <seanjc@google.com>
-To:     Ben Gardon <bgardon@google.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>, linux-kernel@vger.kernel.org,
-        kvm@vger.kernel.org, Peter Xu <peterx@redhat.com>,
-        Peter Shier <pshier@google.com>,
-        David Matlack <dmatlack@google.com>,
-        Mingwei Zhang <mizhang@google.com>,
-        Yulei Zhang <yulei.kernel@gmail.com>,
-        Wanpeng Li <kernellwp@gmail.com>,
-        Xiao Guangrong <xiaoguangrong.eric@gmail.com>,
-        Kai Huang <kai.huang@intel.com>,
-        Keqian Zhu <zhukeqian1@huawei.com>,
-        David Hildenbrand <david@redhat.com>
-Subject: Re: [RFC 11/19] KVM: x86/mmu: Factor shadow_zero_check out of
- make_spte
-Message-ID: <YYx1mDJo/L79cKOH@google.com>
-References: <20211110223010.1392399-1-bgardon@google.com>
- <20211110223010.1392399-12-bgardon@google.com>
- <80407e4a-36e1-e606-ed9f-74429f850e77@redhat.com>
- <CANgfPd8hzDU+v52t9Kr=b48utC1p_j3yJ8gHzo-uifAxHbh-eQ@mail.gmail.com>
- <YYxvSfUPTXbclpSa@google.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=i1s9PkiERHgtuRIYjlT0cC/lRcZ1Ijv9dEf4nsTsVJ8=;
+        b=s2sQuxYy1FumkwqB3y89wHTtCO8q2fsQmY6/2GiY8VVAOmb/7YHnwyy7GY5dhkfVEf
+         Ka4FrsQ9qxR99AgwQVv7qDp3nP6zG2j6acEC0lL+M3wSPZrSTayzAZz35d6+CbwDIcHK
+         Sm5MhH4eU5QhLj85P/7alcPHSkGvH7YuuLdU1d/xmkhHZg/I6soZw83dWYipxn3pMube
+         k1c20hA2d4PjWVRdpzZkNXpgh1tM5BCHywtTmNef6I/kh3junMZv6I8POaqOaHBr87Xr
+         av7ltCiIRZOmuDel4J5ydLuWn1+UlPCNAKU6UfJRxDRmmyCNqcS40KsaHdykKMU7dRtc
+         nq6Q==
+X-Gm-Message-State: AOAM532Ophp4zc028Q/NX/46rSfvtq/m5iI8P8ptDijVMoWVq8JDNAts
+        8zBxfVJrqrH0om+K2DJS4V24fA0QQSm37KK+51NTuw==
+X-Google-Smtp-Source: ABdhPJxgZTY6W7XHkwpQfbf+hVyqBDB8aB3GEphK/+RWg874X6qi8/vaVjIpK0gxgnSgTo/tUlDmHDN1y/4iHwzvpYQ=
+X-Received: by 2002:a25:ae12:: with SMTP id a18mr4071732ybj.412.1636595388273;
+ Wed, 10 Nov 2021 17:49:48 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YYxvSfUPTXbclpSa@google.com>
+References: <CAJuCfpHBoMGPOUvB2ZWQ=TxbFuWBRF++UaKJZDCrQV4mzb5kMA@mail.gmail.com>
+ <YX+nYGlZBOAljoeF@dhcp22.suse.cz> <CAJuCfpGC9-c9P40x7oy=jy5SphMcd0o0G_6U1-+JAziGKG6dGA@mail.gmail.com>
+ <YYDvm9c/7cGtBvw6@dhcp22.suse.cz> <CAJuCfpFX8FRynoK29h8tpRXRT-Kk+sHboiBnc7N-8MY6AAqVLw@mail.gmail.com>
+ <CAJuCfpFOOgs9uZSW2Tp6uBW23rLHFeSA8o5WYQ_D_ykUcKL64Q@mail.gmail.com>
+ <YYrLe2u2zbmu4LfL@dhcp22.suse.cz> <CAJuCfpG0d34yRhuvOj9NX9zMp=6jWLqFPfUGV0sOO6OrwNC89A@mail.gmail.com>
+ <YYrQ/hENQPn6Mk3v@dhcp22.suse.cz> <CAJuCfpFT4-mdHHZ2i43hyJQ4dRKb7sRwnAL8GfRnZu3ecE26Ew@mail.gmail.com>
+ <YYrVmi2xdo1Gr2Bb@dhcp22.suse.cz> <CAJuCfpGrYa2Ws4GrVp_nRqVEw8j_cGXk+gprLYUx7NWUOC-uRQ@mail.gmail.com>
+In-Reply-To: <CAJuCfpGrYa2Ws4GrVp_nRqVEw8j_cGXk+gprLYUx7NWUOC-uRQ@mail.gmail.com>
+From:   Suren Baghdasaryan <surenb@google.com>
+Date:   Wed, 10 Nov 2021 17:49:37 -0800
+Message-ID: <CAJuCfpHJnVG7PMhKW-Snz38az-Bv=QCFXa7DxD=KgEMbHJOi6A@mail.gmail.com>
+Subject: Re: [PATCH 1/1] mm: prevent a race between process_mrelease and exit_mmap
+To:     Michal Hocko <mhocko@suse.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        David Rientjes <rientjes@google.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Roman Gushchin <guro@fb.com>, Rik van Riel <riel@surriel.com>,
+        Minchan Kim <minchan@kernel.org>,
+        Christian Brauner <christian@brauner.io>,
+        Christoph Hellwig <hch@infradead.org>,
+        Oleg Nesterov <oleg@redhat.com>,
+        David Hildenbrand <david@redhat.com>,
+        Jann Horn <jannh@google.com>,
+        Shakeel Butt <shakeelb@google.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Florian Weimer <fweimer@redhat.com>,
+        Jan Engelhardt <jengelh@inai.de>,
+        Linux API <linux-api@vger.kernel.org>,
+        linux-mm <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        kernel-team <kernel-team@android.com>,
+        "Kirill A. Shutemov" <kirill@shutemov.name>,
+        Andrea Arcangeli <aarcange@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 11, 2021, Sean Christopherson wrote:
-> These are all related to guest context:
-> 	int (*page_fault)(struct kvm_vcpu *vcpu, struct kvm_page_fault *fault);
-> 	void (*inject_page_fault)(struct kvm_vcpu *vcpu,
-> 				  struct x86_exception *fault);
+On Tue, Nov 9, 2021 at 1:10 PM Suren Baghdasaryan <surenb@google.com> wrote:
+>
+> On Tue, Nov 9, 2021 at 12:10 PM Michal Hocko <mhocko@suse.com> wrote:
+> >
+> > On Tue 09-11-21 12:02:37, Suren Baghdasaryan wrote:
+> > > On Tue, Nov 9, 2021 at 11:50 AM Michal Hocko <mhocko@suse.com> wrote:
+> > > >
+> > > > On Tue 09-11-21 11:37:06, Suren Baghdasaryan wrote:
+> > > > > On Tue, Nov 9, 2021 at 11:26 AM Michal Hocko <mhocko@suse.com> wrote:
+> > > > > >
+> > > > > > On Tue 09-11-21 11:01:02, Suren Baghdasaryan wrote:
+> > > > > > [...]
+> > > > > > > Discussing how the patch I want to post works for maple trees that
+> > > > > > > Matthew is working on, I've got a question:
+> > > > > > >
+> > > > > > > IIUC, according to Michal's post here:
+> > > > > > > https://lore.kernel.org/all/20170725154514.GN26723@dhcp22.suse.cz,
+> > > > > > > unmap_vmas() can race with other mmap_lock read holders (including
+> > > > > > > oom_reap_task_mm()) with no issues.
+> > > > > > > Maple tree patchset requires rcu read lock or the mmap semaphore be
+> > > > > > > held (read or write side) when walking the tree, including inside
+> > > > > > > unmap_vmas(). When asked, he told me that he is not sure why it's
+> > > > > > > currently "safe" to walk the vma->vm_next list in unmap_vmas() while
+> > > > > > > another thread is reaping the mm.
+> > > > > > > Michal (or maybe someone else), could you please clarify why
+> > > > > > > unmap_vmas() can safely race with oom_reap_task_mm()? Or maybe my
+> > > > > > > understanding was wrong?
+> > > > > >
+> > > > > > I cannot really comment on the mapple tree part. But the existing
+> > > > > > synchronization between oom reaper and exit_mmap is based on
+> > > > > > - oom_reaper takes mmap_sem for reading
+> > > > > > - exit_mmap sets MMF_OOM_SKIP and takes the exclusive mmap_sem before
+> > > > > >   unmap_vmas.
+> > > > > >
+> > > > > > The oom_reaper therefore can either unmap the address space if the lock
+> > > > > > is taken before exit_mmap or it would it would bale out on MMF_OOM_SKIP
+> > > > > > if it takes the lock afterwards. So the reaper cannot race with
+> > > > > > unmap_vmas.
+> > > > >
+> > > > > I see. So, it's the combination of MMF_OOM_SKIP and mmap_lock working
+> > > > > as a barrier which prevent them from racing with each other...
+> > > > > I wasn't sure how
+> > > > > https://lore.kernel.org/all/20170724072332.31903-1-mhocko@kernel.org/
+> > > > > was implementing this synchronization because it would take mmap_sem
+> > > > > write side after unmap_vmas() and IIUC there was no
+> > > > > "mmap_lock_write(); mmap_unlock_write();" sequence in exit_mmap at
+> > > > > that time. I'll need to checkout the old sources to figure this out.
+> > > >
+> > > > My memory is rather dimm but AFAIR the main problem was freeing page
+> > > > tables and freeing vmas not unmap_vmas. That one was no modifying the
+> > > > vma list. Essentially it was just a slightly modified madvise don't
+> > > > need. So that part was allowed to race with oom_reaper.
+> > >
+> > > So, both unmap_vmas and __oom_reap_task_mm do not modify vma list and
+> > > therefore can execute concurrently. That makes sense, thanks.
+> >
+> > Yes, those can run concurrently. One thing I completely forgot about is
+> > 27ae357fa82b ("mm, oom: fix concurrent munlock and oom reaper unmap, v3")
+> > which is about interaction with the munlock.
 
-That's incorrect, page_fault() and inject_page_fault() could be per-VM.  Neither
-is particularly interesting though.
+Agrh! This interaction with the munlock you mentioned requires us to
+take mmap_write_lock before munlock_vma_pages_all and that prevents
+__oom_reap_task_mm from running concurrently with unmap_vmas. The
+reapers would not be as effective as they are now after such a change
+:(
+
+>
+> Thanks for pointing it out. IIUC, ideally we want to get rid of all
+> these special cases and replace them with proper locking. If so, I'll
+> see what I can do here.
+>
+> >
+> > > Then I guess, if we want to be semantically correct in exit_mmap(), we
+> > > would have to take mmap_read_lock before unmap_vmas, then drop it and
+> > > take mmap_write_lock before free_pgtables.
+> >
+> > I think it would be just more straightforward to take the exclusive lock
+> > for the whole operation.
+>
+> Ok, but note that this will prevent concurrent memory reaping, so will
+> likely affect the speed at which memory is released during oom-kill. I
+> saw measurable difference when testing process_mrelease placing
+> mmap_write_lock before vs after unmap_vmas. If we take mmap_read_lock
+> before unmap_vmas and mmap_write_lock after it, then there won't be
+> such issue. You indicated that the speed of memory release should not
+> be the deciding factor here but I want to make it clear before
+> proceeding.
+> Thanks,
+> Suren.
+>
+> > --
+> > Michal Hocko
+> > SUSE Labs
