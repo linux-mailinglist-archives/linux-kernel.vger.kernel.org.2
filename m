@@ -2,91 +2,188 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B933D44D8A8
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Nov 2021 15:54:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 154BC44D8AA
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Nov 2021 15:55:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233290AbhKKO53 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Nov 2021 09:57:29 -0500
-Received: from mail.kernel.org ([198.145.29.99]:39790 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230177AbhKKO51 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Nov 2021 09:57:27 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 31CEF60F51;
-        Thu, 11 Nov 2021 14:54:38 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1636642478;
-        bh=6Dgw8HyF1/nOtZxLMcnB3+PnISjW7N0dRiQF9PMuKNk=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=GcceayDV7PmmjRw5NKwDyYdx9BD75thwhBNMvUFOJLQBm1ipvyNxgstwQy3rqaeum
-         GHUpT7x9tFTNh5rPE1h1uOlY0uSnHDUGkoAmOJXMLCF8spOE5w+M0QpYMu1T72dht4
-         SuHf1d5jgYuFSLvDKuYFBMuv6ihe+Baw/Tfw34oh8PvqVAQ9B7y3rIRFXA9njmLPb7
-         SUys5sZsGhqsNuBomQUrX5SoabwGB+FtxeRWlpwC8X9UznUEYsrq2UPgqpVw/lNQ7C
-         6GCBd2fxdE4hGWSdai7PgA1+gS1hPOheZoPLaNh8DgvYM4SZuvkeVFWvC5PUPUMqIv
-         WQn8B+htk2pAQ==
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id A804F410A1; Thu, 11 Nov 2021 11:54:35 -0300 (-03)
-Date:   Thu, 11 Nov 2021 11:54:35 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Leo Yan <leo.yan@linaro.org>
-Cc:     German Gomez <german.gomez@arm.com>, linux-kernel@vger.kernel.org,
-        linux-perf-users@vger.kernel.org,
-        John Garry <john.garry@huawei.com>,
-        Will Deacon <will@kernel.org>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH v2 0/3] perf arm-spe: Add snapshot mode support
-Message-ID: <YY0uq/dVOLmkR5Iv@kernel.org>
-References: <20211109163009.92072-1-german.gomez@arm.com>
- <20211111084621.GC106401@leoy-ThinkPad-X240s>
+        id S233672AbhKKO5r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Nov 2021 09:57:47 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34026 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230177AbhKKO5p (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 11 Nov 2021 09:57:45 -0500
+Received: from mail-ed1-x52a.google.com (mail-ed1-x52a.google.com [IPv6:2a00:1450:4864:20::52a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BCA50C061766
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Nov 2021 06:54:55 -0800 (PST)
+Received: by mail-ed1-x52a.google.com with SMTP id j21so25006837edt.11
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Nov 2021 06:54:55 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=1ql50oYZam8nRgTlii9W+zHR5ggQMofgyrRkyjXsb+4=;
+        b=g43zqm1IG0DUJDgX5IEt1eNNjc1wWkUZmlMYWGyjr0wQN0WbOgdCZ0dtI+X7lY9si0
+         Yvb32DVhCw7zzZrHT0V0kcFhyKiNjbFT8baaxAbPWvHuLf4tNRumfK9CUZHbUI5hsS3K
+         doOZc6r1hqgNzLdCxEWe0jc4CaHYH1uDPTL5EflUrJmKt4GNtsJRQMcTzg90cAw9XBGg
+         DBxQCGEcWR3Mh0XyG9sK9VZ2er5JqdnUizs6vMSZQDiLRb84emPWTpaKu/r0+uktyphi
+         oFPFZ/9jmVz7N83+KYRP7IgCtP4ObIRXEmUUYaGR5gwN4TzYXpU0UdPnRqd0SVb45XoW
+         7drQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=1ql50oYZam8nRgTlii9W+zHR5ggQMofgyrRkyjXsb+4=;
+        b=QGfhyvIl7zDpHzc2ITyygso0G8FIbqq+8MocUYi28LflTcqcxyAgdwwvENN30YFY29
+         SjBh8VyqlgDB3O4jnU37/p3+GSEYtcAT2OezGyiug7GvRG6bwhfjvHlnJJv+A46EooCp
+         CbGvh4Ko1qtkEx0wyPs+3cfhGjY6H23PPC8H3XuE3/qNK/gKrhBwS75/g0MNBMB86H49
+         hKcgahdo4EqOEDXlMZ4bFBwaeF+wiJRCz1hMn+jzSbt8glyaFRyYmcZkc0viGK0BteUm
+         Jo37SHq/pQxM/P+Dkl04/2RCXyLWlqmE1kDNJV77t0AKPicMZoAfnbgbEhoUb+N2JFT0
+         hDQw==
+X-Gm-Message-State: AOAM531udL28UbEVrHPucCmF1T5HSMeth03GqGXWCR8nVbd8AI6CeEWR
+        vyUvNDthgYpGvo+D7zFdV8D9rqFNj2NxyAwYHOs95g==
+X-Google-Smtp-Source: ABdhPJx5p+j85XYeBZcKsv3Ca/CEMzLdz1mG5k9qaSMa2wd9b562ZENHOeC2Zz1dfD/ZkbQGylMu6AF6bqfQGeP0QEA=
+X-Received: by 2002:a17:906:4791:: with SMTP id cw17mr10160961ejc.493.1636642494002;
+ Thu, 11 Nov 2021 06:54:54 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211111084621.GC106401@leoy-ThinkPad-X240s>
-X-Url:  http://acmel.wordpress.com
+References: <20211110182002.964190708@linuxfoundation.org> <YY0UQAQ54Vq4vC3z@debian>
+In-Reply-To: <YY0UQAQ54Vq4vC3z@debian>
+From:   Naresh Kamboju <naresh.kamboju@linaro.org>
+Date:   Thu, 11 Nov 2021 20:24:42 +0530
+Message-ID: <CA+G9fYvu9VQY=_NgR6-UCFOZ+57pSy1xsPkCgJuQsAS-P62Umg@mail.gmail.com>
+Subject: Re: [PATCH 5.10 00/21] 5.10.79-rc1 review
+To:     Sudip Mukherjee <sudipm.mukherjee@gmail.com>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        f.fainelli@gmail.com, torvalds@linux-foundation.org,
+        linux-kernel@vger.kernel.org, lkft-triage@lists.linaro.org,
+        patches@kernelci.org, stable@vger.kernel.org, pavel@denx.de,
+        akpm@linux-foundation.org, jonathanh@nvidia.com, shuah@kernel.org,
+        linux@roeck-us.net, Yang Shi <shy828301@gmail.com>,
+        Naoya Horiguchi <naoya.horiguchi@nec.com>,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+        Hugh Dickins <hughd@google.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Oscar Salvador <osalvador@suse.de>,
+        Peter Xu <peterx@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Thu, Nov 11, 2021 at 04:46:21PM +0800, Leo Yan escreveu:
-> Hi Arnaldo,
-> 
-> On Tue, Nov 09, 2021 at 04:30:06PM +0000, German Gomez wrote:
-> > This patchset adds snapshot mode support for arm-spe.
-> > 
-> >   - [PATCH 1/3] implements the minimal callbacks to support recording in
-> >     snapshot mode.
-> >   - [PATCH 2/3] implements the find_snapshot callback in order to handle
-> >     wrap-arounds in the AUX buffer.
-> >   - [PATCH 3/3] adds a test for spe snapshot mode.
-> 
-> I have verified this patch set on Hisilicon D06 board, please consider
-> to pick up:
-> 
-> root@ubuntu:/home/leoy/linux/tools/perf# ./perf test -v 85
-> 85: Check Arm SPE trace data recording and synthesized samples      :
-> --- start ---
-> test child forked, pid 17083
-> Recording trace with snapshot mode /tmp/__perf_test.perf.data.MI2iX
-> Looking at perf.data file for dumping samples:
-> Looking at perf.data file for reporting samples:
-> SPE snapshot testing: PASS
-> test child finished with 0
-> ---- end ----
-> Check Arm SPE trace data recording and synthesized samples: Ok
-> 
-> BTW, you could see German has another patch set for enabling pid/tid
-> for Arm SPE tracing [1].  I confirmed that the pid/tid patch set and
-> current patch set have no conflit, and don't need worry the dependency
-> between these two patch sets (so you could apply two patch sets in any
-> ordering).
+On Thu, 11 Nov 2021 at 18:32, Sudip Mukherjee
+<sudipm.mukherjee@gmail.com> wrote:
+>
+> Hi Greg,
+>
+> On Wed, Nov 10, 2021 at 07:43:46PM +0100, Greg Kroah-Hartman wrote:
+> > This is the start of the stable review cycle for the 5.10.79 release.
+> > There are 21 patches in this series, all will be posted as a response
+> > to this one.  If anyone has any issues with these being applied, please
+> > let me know.
+> >
+> > Responses should be made by Fri, 12 Nov 2021 18:19:54 +0000.
+> > Anything received after that time might be too late.
+>
+> systemd-journal-flush.service failed due to a timeout resulting in a very very
+> slow boot on my test laptop. qemu test on openqa failed due to the same problem.
+>
+> https://openqa.qa.codethink.co.uk/tests/365
+>
+> A bisect showed the problem to be 8615ff6dd1ac ("mm: filemap: check if THP has
+> hwpoisoned subpage for PMD page fault"). Reverting it on top of 5.10.79-rc1
+> fixed the problem.
+> Incidentally, I was having similar problem with Linus's tree
+> for last few days and was failing since 20211106 (did not get the time to check).
+> I will test mainline again with this commit reverted.
 
-Thanks for the clarifications, applied, its out in my tmp.perf/core
-branch, that still needs some fixes for buiding on arm related to a
-recent patchset for 'perf test' from Ian Rogers, as soon as that is
-fixed it will be set in stone in perf/core.
+I have also noticed this problem and Anders bisected and found this
+first bad commit.
 
-- Arnaldo
+Failed test log link,
+A start job is running for Journal Service (5s / 1min 27s)
+https://lkft.validation.linaro.org/scheduler/job/3901980#L2234
+
+Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
+
+Bisect log:
+
+# bad: [b85617a6291f710807d0cd078c230626dee60b16] Linux 5.10.79-rc1
+# good: [5040520482a594e92d4f69141229a6dd26173511] Linux 5.10.78
+git bisect start 'b85617a6291f710807d0cd078c230626dee60b16'
+'5040520482a594e92d4f69141229a6dd26173511'
+# bad: [7ceeda856035991a6c9804916987a03759745fb0] staging: rtl8712:
+fix use-after-free in rtl8712_dl_fw
+git bisect bad 7ceeda856035991a6c9804916987a03759745fb0
+# bad: [8615ff6dd1ac9e01b6fcf0fc0652353f79f524ed] mm: filemap: check
+if THP has hwpoisoned subpage for PMD page fault
+git bisect bad 8615ff6dd1ac9e01b6fcf0fc0652353f79f524ed
+# good: [e9cb6ce4690749d42013f1d56874c624d7241740] Revert "x86/kvm:
+fix vcpu-id indexed array sizes"
+git bisect good e9cb6ce4690749d42013f1d56874c624d7241740
+# good: [dc385dfc126d51d7a93db694f8e151afe60eb06a] mm: hwpoison:
+remove the unnecessary THP check
+git bisect good dc385dfc126d51d7a93db694f8e151afe60eb06a
+# first bad commit: [8615ff6dd1ac9e01b6fcf0fc0652353f79f524ed] mm:
+filemap: check if THP has hwpoisoned subpage for PMD page fault
+commit 8615ff6dd1ac9e01b6fcf0fc0652353f79f524ed
+Author: Yang Shi <shy828301@gmail.com>
+Date:   Thu Oct 28 14:36:11 2021 -0700
+
+    mm: filemap: check if THP has hwpoisoned subpage for PMD page fault
+
+    commit eac96c3efdb593df1a57bb5b95dbe037bfa9a522 upstream.
+
+    When handling shmem page fault the THP with corrupted subpage could be
+    PMD mapped if certain conditions are satisfied.  But kernel is supposed
+    to send SIGBUS when trying to map hwpoisoned page.
+
+    There are two paths which may do PMD map: fault around and regular
+    fault.
+
+    Before commit f9ce0be71d1f ("mm: Cleanup faultaround and finish_fault()
+    codepaths") the thing was even worse in fault around path.  The THP
+    could be PMD mapped as long as the VMA fits regardless what subpage is
+    accessed and corrupted.  After this commit as long as head page is not
+    corrupted the THP could be PMD mapped.
+
+    In the regular fault path the THP could be PMD mapped as long as the
+    corrupted page is not accessed and the VMA fits.
+
+    This loophole could be fixed by iterating every subpage to check if any
+    of them is hwpoisoned or not, but it is somewhat costly in page fault
+    path.
+
+    So introduce a new page flag called HasHWPoisoned on the first tail
+    page.  It indicates the THP has hwpoisoned subpage(s).  It is set if any
+    subpage of THP is found hwpoisoned by memory failure and after the
+    refcount is bumped successfully, then cleared when the THP is freed or
+    split.
+
+    The soft offline path doesn't need this since soft offline handler just
+    marks a subpage hwpoisoned when the subpage is migrated successfully.
+    But shmem THP didn't get split then migrated at all.
+
+    Link: https://lkml.kernel.org/r/20211020210755.23964-3-shy828301@gmail.com
+    Fixes: 800d8c63b2e9 ("shmem: add huge pages support")
+    Signed-off-by: Yang Shi <shy828301@gmail.com>
+    Reviewed-by: Naoya Horiguchi <naoya.horiguchi@nec.com>
+    Suggested-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
+    Cc: Hugh Dickins <hughd@google.com>
+    Cc: Matthew Wilcox <willy@infradead.org>
+    Cc: Oscar Salvador <osalvador@suse.de>
+    Cc: Peter Xu <peterx@redhat.com>
+    Cc: <stable@vger.kernel.org>
+    Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+    Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+    Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
+ include/linux/page-flags.h | 23 +++++++++++++++++++++++
+ mm/huge_memory.c           |  2 ++
+ mm/memory-failure.c        | 14 ++++++++++++++
+ mm/memory.c                |  9 +++++++++
+ mm/page_alloc.c            |  4 +++-
+ 5 files changed, 51 insertions(+), 1 deletion(-)
+
+
+--
+Linaro LKFT
+https://lkft.linaro.org
