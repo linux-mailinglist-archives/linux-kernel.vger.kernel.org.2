@@ -2,121 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 674B244D6F4
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Nov 2021 14:01:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 25A9744D6F7
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Nov 2021 14:01:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233274AbhKKNDz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Nov 2021 08:03:55 -0500
-Received: from mga11.intel.com ([192.55.52.93]:53930 "EHLO mga11.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232513AbhKKNDy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Nov 2021 08:03:54 -0500
-X-IronPort-AV: E=McAfee;i="6200,9189,10164"; a="230367278"
-X-IronPort-AV: E=Sophos;i="5.87,226,1631602800"; 
-   d="scan'208";a="230367278"
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Nov 2021 05:01:04 -0800
-X-IronPort-AV: E=Sophos;i="5.87,226,1631602800"; 
-   d="scan'208";a="452690470"
-Received: from lahna.fi.intel.com (HELO lahna) ([10.237.72.163])
-  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Nov 2021 05:00:59 -0800
-Received: by lahna (sSMTP sendmail emulation); Thu, 11 Nov 2021 15:00:56 +0200
-Date:   Thu, 11 Nov 2021 15:00:56 +0200
-From:   Mika Westerberg <mika.westerberg@linux.intel.com>
-To:     Richard Hughes <hughsient@gmail.com>
-Cc:     Hans-Gert Dahmen <hans-gert.dahmen@immu.ne>,
-        Mauro Lima <mauro.lima@eclypsium.com>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Philipp Deppenwiese <philipp.deppenwiese@immu.ne>,
-        "platform-driver-x86@vger.kernel.org" 
-        <platform-driver-x86@vger.kernel.org>
-Subject: Re: [PATCH] firmware: export x86_64 platform flash bios region via
- sysfs
-Message-ID: <YY0UCHtf8SAvGHTY@lahna>
-References: <CAHifhD7Qf7+dc7K-MjNguqmiCWUxOJZmQoCTRUZOR-RWMm_JPw@mail.gmail.com>
- <CAHp75Ve9BMNy3gP=-Dajm+Lgu+E4FCqc4phLgV1_cr2qUnTX_w@mail.gmail.com>
- <CAHifhD4n7O5eWFPOjRAmHYL52tW0K=uXXzVj7L5+enTFwFXW2A@mail.gmail.com>
- <CAArk9MP5cKJ+VhAZUseW4LnQNRvux=MZe2eSy3rQkbHKnUsGig@mail.gmail.com>
- <CAHp75VdRwvU5WjFP5E4gg8U+_e34A0Lwze+nz_wVHoB49jLeLg@mail.gmail.com>
- <CAArk9MNGSxR+92n-D2pe_+r+Z0Q9FoTMPqk11sAKA=4Vckj0HQ@mail.gmail.com>
- <YYy7QZGKeEEfI1mH@lahna>
- <CAHifhD5bXu2nP533RXyWDnyNt=k2rRZq5Z6A6CCik_2e6XNgGA@mail.gmail.com>
- <YYzxWPIWFAV04LRU@lahna>
- <CAD2FfiGnmFSTPvkJaXj+cf4yDvci-j+2QkpMqNY821fUT5C=CA@mail.gmail.com>
+        id S233297AbhKKNEk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Nov 2021 08:04:40 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36130 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232513AbhKKNEi (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 11 Nov 2021 08:04:38 -0500
+Received: from mail-pg1-x530.google.com (mail-pg1-x530.google.com [IPv6:2607:f8b0:4864:20::530])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E4972C061767
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Nov 2021 05:01:49 -0800 (PST)
+Received: by mail-pg1-x530.google.com with SMTP id g28so5101891pgg.3
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Nov 2021 05:01:49 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance-com.20210112.gappssmtp.com; s=20210112;
+        h=message-id:date:mime-version:user-agent:subject:to:cc:references
+         :from:in-reply-to:content-transfer-encoding;
+        bh=bps4ioSjssDqexG7TCttpX6rWJKGqfhYrDDqLvwy90M=;
+        b=TI+5R/rLqjNZN86oVUGfTx/pCWAFM/BoHTQEt4z5bzQdTqWJM7q1nsPjpdvvnoajFq
+         1kAOPpuH3oS8/kLCZox//UbMPT42abP70DWyUIzCp6ARREB1TDcA2k15YhtqC34cBt0c
+         h0YkAhBHCwExL5BVHAKkE/hUIRI+qo3rhKRjyXbBkYkwKU3hovOBBb/hyv/fcv/zg08N
+         Ym2RTO8vPeTzXQyuHhoZyM5rCWGw8UI8pK96Jdcnb86RHOBHZxrvqK5V+FcygAAzDBa+
+         WZFHnSjYSx25UoZa5x2otp6pDbBhzidm/vFNhx/b8qQauht/Bn00wx0ocd2hlbH4VaQq
+         Toyg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :to:cc:references:from:in-reply-to:content-transfer-encoding;
+        bh=bps4ioSjssDqexG7TCttpX6rWJKGqfhYrDDqLvwy90M=;
+        b=BVzE4mmbvk6BKSEKN3jJTByLpQPFyA7tm9gc0ShJxAm5NlsgBMSqMhAX8gboUtPJzc
+         CNsSek0yTxRpOB40gj6/SvNmvtjQIG4hWzXM8Ql2pyiTFUERtyCN/HoL1dcojKBblg7n
+         U1RJzCN5QC1LO4r0VUDlSsptK0gkxaX2qOPX56cel++OKhUEyoDV+3mtYuPdLLWSOsy4
+         F8YjwUE6aL9Hm7KIjFTZVGCP4MrKpl3eWirwBmV3AQzJUgy4w8dZw3wm/GssCy5EAaWL
+         khCXKYQerr/FRZeAOLuM7lXIJ12ynKBKV+hE8YxpuF/NNuQRSbUJAxM0WO8J8fwfUY57
+         2pQg==
+X-Gm-Message-State: AOAM532waM3zVAxfpEiJhZqqG/EROrRfNmkbS+7qb865XGsUCM5TI3Ia
+        73eS91shFz7HwAd/I9YHF+DA/w==
+X-Google-Smtp-Source: ABdhPJxkJ/QhSqPEiOZwSY+bDiTl+pmqtTYDvWS9ljzUpvQfkCP/5UixXtVDUn0gjMXzYyF+SWYcFg==
+X-Received: by 2002:a63:7c0d:: with SMTP id x13mr4419686pgc.410.1636635709355;
+        Thu, 11 Nov 2021 05:01:49 -0800 (PST)
+Received: from [10.254.173.217] ([139.177.225.248])
+        by smtp.gmail.com with ESMTPSA id y18sm3908650pfa.142.2021.11.11.05.01.45
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 11 Nov 2021 05:01:48 -0800 (PST)
+Message-ID: <acd69270-bd2b-dd84-d3b2-05ed91e99bf6@bytedance.com>
+Date:   Thu, 11 Nov 2021 21:01:43 +0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAD2FfiGnmFSTPvkJaXj+cf4yDvci-j+2QkpMqNY821fUT5C=CA@mail.gmail.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:91.0)
+ Gecko/20100101 Thunderbird/91.3.0
+Subject: Re: [PATCH v3 00/15] Free user PTE page table pages
+To:     David Hildenbrand <david@redhat.com>,
+        Jason Gunthorpe <jgg@nvidia.com>
+Cc:     akpm@linux-foundation.org, tglx@linutronix.de,
+        kirill.shutemov@linux.intel.com, mika.penttila@nextfour.com,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, songmuchun@bytedance.com,
+        zhouchengming@bytedance.com
+References: <20211110105428.32458-1-zhengqi.arch@bytedance.com>
+ <20211110125601.GQ1740502@nvidia.com>
+ <8d0bc258-58ba-52c5-2e0d-a588489f2572@redhat.com>
+ <20211110143859.GS1740502@nvidia.com>
+ <6ac9cc0d-7dea-0e19-51b3-625ec6561ac7@redhat.com>
+ <20211110163925.GX1740502@nvidia.com>
+ <7c97d86f-57f4-f764-3e92-1660690a0f24@redhat.com>
+ <60515562-5f93-11cd-6c6a-c7cc92ff3bf8@bytedance.com>
+ <a052e0ba-a22c-5df1-80b8-d847efacd66e@redhat.com>
+ <9ee06b52-4844-7996-fa34-34fc7d4fdc10@bytedance.com>
+ <27d73395-70b4-fe4a-4c8d-415b43ff9c1f@redhat.com>
+ <2e19ad1b-15f3-7508-c5d5-6c31765f26d3@bytedance.com>
+ <1489f02f-d024-b9ec-2ab6-e6efc8a022f1@redhat.com>
+ <791ddf94-5ad1-b431-85a1-db9a07579057@bytedance.com>
+ <2ffa76f5-ca39-2044-61fa-5398faf16a6c@redhat.com>
+From:   Qi Zheng <zhengqi.arch@bytedance.com>
+In-Reply-To: <2ffa76f5-ca39-2044-61fa-5398faf16a6c@redhat.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 11, 2021 at 11:46:39AM +0000, Richard Hughes wrote:
-> On Thu, 11 Nov 2021 at 10:33, Mika Westerberg
-> <mika.westerberg@linux.intel.com> wrote:
-> > OK, I see from your patch that it uses the direct mapped read-only
-> > region to read this data.
+
+
+On 11/11/21 8:51 PM, David Hildenbrand wrote:
+
+>>>>
+>>>> In the performance test shown on the cover, we repeatedly performed
+>>>> touch and madvise(MADV_DONTNEED) actions, which simulated the case
+>>>> you said above.
+>>>>
+>>>> We did find a small amount of performance regression, but I think it is
+>>>> acceptable, and no new perf hotspots have been added.
+>>>
+>>> That test always accesses 2MiB and does it from a single thread. Things
+>>> might (IMHO will) look different when only accessing individual pages
+>>> and doing the access from one/multiple separate threads (that's what
+>>
+>> No, it includes multi-threading:
+>>
 > 
-> Sorry for the delay in replying here. What I like about Hans-Gert's
-> patch is that it's always going to work on x64 -- if the system
-> firmware isn't available at that offset then the platform just isn't
-> going to boot. It's super simple, and means we can read out the hugely
-> complex UEFI blob without asking the user to turn off kernel lockdown
-> and secure boot so we can run the security verification tools. At the
-> moment we're in this strange situation where we ask the user to
-> cripple their platform security to run the platform security tools.
-
-I'm not sure I understand why the platform security needs to be turned
-off? Sorry if that was already mentioned somewhere in the thread, I did
-not read all of them throughly.
-
-> > Do we know what information exactly fwupd needs? I mean exposing all of
-> > this might not be good idea from security perspective (but I'm not an
-> > expert).
+> Oh sorry, I totally skipped [2].
 > 
-> Ideally, fwupd needs the entire IFD partition which contains all the
-> EFI File Volumes. We already parse these when the user is booting
-> without secure boot using the Intel SPI controller and doing *evil*
-> hacks to make the PCI device visible. The reason we want to parse the
-> BIOS can be explained pretty easily; at startup we look at the TPM
-> PCRs and we know very quickly and easily if the system firmware event
-> has changed. If the checksum changed, then the firmware was modified
-> in some way. However, saying to the user that "checksum changed" isn't
-> useful at all. What we want to do is say something like "an EFI binary
-> called RootKitz.efi was added" or "the AmiTcgPlatformPeiAfterMem.efi
-> binary changed" and actually report what was done. At the moment we
-> can do this, but not if /dev/mem cannot be used.
-
-I think exposing /dev/mem opens another can of worms that we want to
-avoid.
-
-Is there anything preventing to add a sane interface from say the
-intel-spi driver (can be something else too) that exposes the minimal
-set you need? That can be in the mainline kernel and is secure (and
-safe) enough that distros (and users) can enable it?
-
-Don't we already expose some of the EFI stuff under /sys/firmware?
-
-> > However, we can perhaps expose some of it through intel-spi,
-> > and make that work so that distros can enable it safely.
+>> 	while (1) {
+>> 		char *c;
+>> 		char *start = mmap_area[cpu];
+>> 		char *end = mmap_area[cpu] + FAULT_LENGTH;
+>> 		pthread_barrier_wait(&barrier);
+>> 		//printf("fault into %p-%p\n",start, end);
+>>
+>> 		for (c = start; c < end; c += PAGE_SIZE)
+>> 			*c = 0;
+>>
+>> 		pthread_barrier_wait(&barrier);
+>> 		for (i = 0; cpu==0 && i < num; i++)
+>> 			madvise(mmap_area[i], FAULT_LENGTH, MADV_DONTNEED);
+>> 		pthread_barrier_wait(&barrier);
+>> 	}
+>>
+>> Thread on cpu0 will use madvise(MADV_DONTNEED) to release the physical
+>> memory of threads on other cpu.
+>>
 > 
-> I think, if we're being honest, that Intel has no plans to make
-> intel-spi available as a RO interface of any sort. There's some sort
-> of hardware errata or misdesign that nobody can mention that makes the
-> RO access unsafe. I think it's probably more than missing arbitration.
+> I'll have a more detailed look at the benchmark. On a quick glimpse,
 
-No that's not the reason. The real reason I'm concerned (as the author
-and maintainer of that thing) is that last time the driver was
-accidentally enabled in Ubuntu (around 2019) there was a driver bug
-(which was fixed already but it was not yet in the Ubuntu kernel) that
-turned some Lenovo based systems' BIOSes to read-only. It has nothing to
-do with my employer or hardware errata/misdesign. I just don't want to
-spend yet another Christmas holiday trying to fix angry peoples laptops :(
+Thank you for your time :)
 
-Having said that the hardware sequencer used in the recent CPUs should
-be much safer in that sense. It should not allow things like this to
-happen (the affected systems used software based sequencer).
+> looks like the threads are also accessing a full 2MiB range, one page at
+> a time, and one thread is zapping the whole 2MiB range. A single CPU
+> only accesses memory within one 2MiB range IIRC.
+> 
+> Having multiple threads just access individual pages within a single 2
+> MiB region, and having one thread zap that memory (e.g., simulate
+> swapout) could be another benchmark.
+
+LGTM, I will simulate more scenarios for testing.
+
+> 
+> We have to make sure to run with THP disabled (e.g., using
+> madvise(MADV_NOHUGEPAGE) on the complete mapping in the benchmark
+> eventually), because otherwise you might just be populating+zapping THPs
+> if they would otherwise be allowed in the environment.
+
+Yes, I turned off THP during testing:
+
+root@~$ cat /sys/kernel/mm/transparent_hugepage/enabled
+always madvise [never]
+
+> 
+
+-- 
+Thanks,
+Qi
