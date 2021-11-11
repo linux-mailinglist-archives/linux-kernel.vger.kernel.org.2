@@ -2,124 +2,236 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 963BE44D84E
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Nov 2021 15:31:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 982EB44D852
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Nov 2021 15:32:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233687AbhKKOeI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Nov 2021 09:34:08 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56778 "EHLO
+        id S233600AbhKKOfZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Nov 2021 09:35:25 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57078 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233729AbhKKOeC (ORCPT
+        with ESMTP id S232815AbhKKOfV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Nov 2021 09:34:02 -0500
-Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com [IPv6:2a00:1450:4864:20::132])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 506D5C061203;
-        Thu, 11 Nov 2021 06:31:13 -0800 (PST)
-Received: by mail-lf1-x132.google.com with SMTP id y26so14561863lfa.11;
-        Thu, 11 Nov 2021 06:31:13 -0800 (PST)
+        Thu, 11 Nov 2021 09:35:21 -0500
+Received: from mail-ed1-x533.google.com (mail-ed1-x533.google.com [IPv6:2a00:1450:4864:20::533])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 55B42C061767
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Nov 2021 06:32:32 -0800 (PST)
+Received: by mail-ed1-x533.google.com with SMTP id m14so25262288edd.0
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Nov 2021 06:32:32 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=AW42d9vntwUuzupFqiI2Bns0JY8PI9k2Wa9xi//eMBI=;
-        b=bZcJGgUdY6Fm+ERsHGGETjEBIe2GcRXutGt0DvLcjhRrR+msAten9K+hdlRLSOkwCy
-         KeFhENCzEHXYKdEnsB2K0GH6gg1y+bs/G++RLOazwViRyFBP+m05FC0j0+RHkyAjJUut
-         9LNyovEUU4Y0HD1T1naArSIumvgw6w1ZkhZSxtwOPoK8PLz0zpA12lyLbXC4klqxZR7e
-         fjIiBFRRG8nHNRLIgdtSlR+hrkUfcYo0RHnKJuxj/dUeldz7NZ0+uIj3lKo2BNaRhXo0
-         GNdeZ73I1DiElIrE9gAyoOlTM4srIupr7RRck7tLD8uva8mU8e9rWjQuNF63DFb9kI49
-         hTiQ==
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=ntyQoIMsqCXcReeRS5/ylB7GeUq21ujmpM7z4typwPw=;
+        b=fOvlvPBFrbQbpkouPvU6yzpZLf7IgKR+rMTwe7ar6Rk/aWzh1+3HwVOrXlAPd2pvru
+         1EaxYkmMeZmCUbQ7IDeKZxQibsPBDbWDLF8tsN7DLJeRMAt5SZ4W7dwvtpMULfvRoxoz
+         cvqRUvthlTOKJ++ru04nWDWKwdusixuXknL8QRCJjuKxmwhpW6P7sgh78SECog1718Gu
+         zpqXHqvrUasrRU5BBtPg79kZtUs4bGm9eAnwUyP4Wb8MXlK6xyS12GPfxpfJ0/S4nIXO
+         b+xNfbEnS52ysd1Da96ogKWWQJAu6tcc9PYflHLFmBDDVYwyZtO86XDLJIk5hqgDOpjt
+         P6+A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=AW42d9vntwUuzupFqiI2Bns0JY8PI9k2Wa9xi//eMBI=;
-        b=HorAPTpUyKdaZp716bgz+LMj1NFfEHcZLofMQiHqptzNHfavJYFweAH57e2QXSsxJS
-         j3yLQTCtBri7GGB1n099OySpbk3HQjWA3TU+MqJvuY5PbQIdfY7XAKXFcvya0Fstcq18
-         4JbR+AFTom9vsoOZjeMwxdYAY78/taic7Lq0/oTj98/n3u8Jyjlh2PJ/KbLPlBwWfJKl
-         3Rh5wGMQW1zY5pE/K2Et0cghAokGFaR0D6f7wFXZgDCl8Jec7jMPoSAC85PYVtINXezA
-         qlyY/ZtnIQJiVQ3gK4vOCpo+b3a4KgyAdpMRDyhzY4LzmmYUTzsiVHI/Ymk0qnY9oO6v
-         WNmw==
-X-Gm-Message-State: AOAM531rTCFxpdrMMUYi818mqolxmRQ0ho25Xm+RobsCfBJwKNXjqlG8
-        k+BwB16XcZKPDX0lvNpMotM=
-X-Google-Smtp-Source: ABdhPJysT58YQnIwuZnJm2iCHkbs1ihbTuzjlyHQPA2hitYk/yoV+g3qEojPDClg20dYVPQGTMdh2A==
-X-Received: by 2002:a05:6512:31d:: with SMTP id t29mr6992891lfp.331.1636641071586;
-        Thu, 11 Nov 2021 06:31:11 -0800 (PST)
-Received: from mobilestation ([95.79.188.236])
-        by smtp.gmail.com with ESMTPSA id a18sm298011lfj.191.2021.11.11.06.31.10
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 11 Nov 2021 06:31:11 -0800 (PST)
-Date:   Thu, 11 Nov 2021 17:31:08 +0300
-From:   Serge Semin <fancer.lancer@gmail.com>
-To:     nandhini.srikandan@intel.com, broonie@kernel.org
-Cc:     Serge Semin <Sergey.Semin@baikalelectronics.ru>,
-        robh+dt@kernel.org, linux-spi@vger.kernel.org,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        mgross@linux.intel.com, kris.pan@intel.com,
-        kenchappa.demakkanavar@intel.com, furong.zhou@intel.com,
-        mallikarjunappa.sangannavar@intel.com, mahesh.r.vaidya@intel.com,
-        rashmi.a@intel.com
-Subject: Re: [PATCH v3 1/5] dt-bindings: spi: Add SSTE support for DWC SSI
- controller
-Message-ID: <20211111143108.pxovseqvm2ywmoc2@mobilestation>
-References: <20211111065201.10249-1-nandhini.srikandan@intel.com>
- <20211111065201.10249-2-nandhini.srikandan@intel.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=ntyQoIMsqCXcReeRS5/ylB7GeUq21ujmpM7z4typwPw=;
+        b=G5U95OxHMjFaEfUo1rYCJI6w5ry6+/TPeGyPhtcOBMnRTMD5tkE7nqN/DPnqN9xpDy
+         5TWU/l96kJwbxDlNWnwab0LkwCATrQTBtYRiAC9Jjjc/T1+o6arIq/Qf93XdHbbw3J7Z
+         QbnTNImcIVWm4OUaqLTR9v3r5co+y3Hu6Iexwo8fFCh4iCYFhyE8Evms6LQJnT4Y8PTS
+         LisjOZuhVVwYoVoUkFfan7bFVimGQsVmCKx0kF/1Run0/T9ElV/TVd4mUk84qi/bPnbT
+         Jyxm8S2hbooBF1dTWE29yo+eQu0FlfwaFZloXe9Z25G5YyxcIfbqa0gZLIVLCruE2aiH
+         IJdA==
+X-Gm-Message-State: AOAM532Tc3HYp0D65u8meKLNNRNkpYD1fAfhaL0dhpMf9aEKEDPXNM6I
+        l12s3j65Ttl5+FBebqkjLFpG93RbUkqq432w83onYQ==
+X-Google-Smtp-Source: ABdhPJyNGvtI0jStQdpzcqafH5hK8YL0uhi2mAyz5bo0nBTNG7M5zlU6whxmr4XRVNbjbu634WWWBSVWbeF1uHybIJQ=
+X-Received: by 2002:a05:6402:4412:: with SMTP id y18mr10191911eda.103.1636641150024;
+ Thu, 11 Nov 2021 06:32:30 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211111065201.10249-2-nandhini.srikandan@intel.com>
+References: <20211110182001.994215976@linuxfoundation.org>
+In-Reply-To: <20211110182001.994215976@linuxfoundation.org>
+From:   Naresh Kamboju <naresh.kamboju@linaro.org>
+Date:   Thu, 11 Nov 2021 20:02:18 +0530
+Message-ID: <CA+G9fYsUwT8QssS0p_r94QfFC6hG_dqkWGzkNOKgTGY_0BnkUw@mail.gmail.com>
+Subject: Re: [PATCH 4.19 00/16] 4.19.217-rc1 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-kernel@vger.kernel.org, shuah@kernel.org,
+        f.fainelli@gmail.com, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, jonathanh@nvidia.com,
+        stable@vger.kernel.org, pavel@denx.de, akpm@linux-foundation.org,
+        torvalds@linux-foundation.org, linux@roeck-us.net
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Nandhini, Mark
+On Thu, 11 Nov 2021 at 00:17, Greg Kroah-Hartman
+<gregkh@linuxfoundation.org> wrote:
+>
+> This is the start of the stable review cycle for the 4.19.217 release.
+> There are 16 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+>
+> Responses should be made by Fri, 12 Nov 2021 18:19:54 +0000.
+> Anything received after that time might be too late.
+>
+> The whole patch series can be found in one patch at:
+>         https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-=
+4.19.217-rc1.gz
+> or in the git tree and branch at:
+>         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
+-rc.git linux-4.19.y
+> and the diffstat can be found below.
+>
+> thanks,
+>
+> greg k-h
 
-On Thu, Nov 11, 2021 at 02:51:57PM +0800, nandhini.srikandan@intel.com wrote:
-> From: Nandhini Srikandan <nandhini.srikandan@intel.com>
-> 
+Results from Linaro=E2=80=99s test farm.
+No regressions on arm64, arm, x86_64, and i386.
 
-> Add Slave Select Toggle Enable(SSTE) support for DWC SSI controller.
+Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
 
-Nandhini, as Mark said this is no need in this new property since that
-feature is supposed to be enabled by the client drivers by means of
-setting the SPI_CS_WORD flag in the spi_device->mode field. (See its
-usage for reference.)
+## Build
+* kernel: 4.19.217-rc1
+* git: https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-=
+rc.git
+* git branch: linux-4.19.y
+* git commit: f1ca790424bdd0693e501e24dc3300f01460cfed
+* git describe: v4.19.216-17-gf1ca790424bd
+* test details:
+https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-4.19.y/build/v4.19=
+.216-17-gf1ca790424bd
 
-BTW Mark, why not to have a generic DT-property which would set that
-flag automatically by the SPI-core subsystem seeing it's indeed a
-client device-property? For instance there can be some property like
-"spi-cs-toggle" DT-property which when specified for the particular
-SPI-client DT-node will make the SPI-core subsystem to set the
-SPI_CS_WORD flag of the device mode? Like it has already been done for
-"spi-cs-high"/"spi-lsb-first"/etc.
-In this case Nandhini would need to just convert this patch a bit so
-to be fixing the Documentation/devicetree/bindings/spi/spi-controller.yaml
-bindings instead.
+## No regressions (compared to v4.19.216)
 
--Sergey
+## No fixes (compared to v4.19.216)
 
-> 
-> Signed-off-by: Nandhini Srikandan <nandhini.srikandan@intel.com>
-> ---
->  Documentation/devicetree/bindings/spi/snps,dw-apb-ssi.yaml | 6 ++++++
->  1 file changed, 6 insertions(+)
-> 
-> diff --git a/Documentation/devicetree/bindings/spi/snps,dw-apb-ssi.yaml b/Documentation/devicetree/bindings/spi/snps,dw-apb-ssi.yaml
-> index ca91201a9926..866416d01e94 100644
-> --- a/Documentation/devicetree/bindings/spi/snps,dw-apb-ssi.yaml
-> +++ b/Documentation/devicetree/bindings/spi/snps,dw-apb-ssi.yaml
-> @@ -149,6 +149,12 @@ patternProperties:
->            is an optional feature of the designware controller, and the
->            upper limit is also subject to controller configuration.
->  
-> +      snps,sste:
-> +        description: Slave select line will toggle between consecutive
-> +          data frames, with the serial clock being held to its default
-> +          value while slave select line is high.
-> +        type: boolean
-> +
->  unevaluatedProperties: false
->  
->  required:
-> -- 
-> 2.17.1
-> 
+## Test result summary
+total: 83189, pass: 66945, fail: 783, skip: 13526, xfail: 1935
+
+## Build Summary
+* arm: 130 total, 108 passed, 22 failed
+* arm64: 38 total, 38 passed, 0 failed
+* dragonboard-410c: 1 total, 1 passed, 0 failed
+* hi6220-hikey: 1 total, 1 passed, 0 failed
+* i386: 19 total, 19 passed, 0 failed
+* juno-r2: 1 total, 1 passed, 0 failed
+* mips: 27 total, 27 passed, 0 failed
+* s390: 12 total, 12 passed, 0 failed
+* sparc: 12 total, 12 passed, 0 failed
+* x15: 1 total, 1 passed, 0 failed
+* x86: 1 total, 1 passed, 0 failed
+* x86_64: 22 total, 22 passed, 0 failed
+
+## Test suites summary
+* fwts
+* igt-gpu-tools
+* kselftest-android
+* kselftest-arm64
+* kselftest-arm64/arm64.btitest.bti_c_func
+* kselftest-arm64/arm64.btitest.bti_j_func
+* kselftest-arm64/arm64.btitest.bti_jc_func
+* kselftest-arm64/arm64.btitest.bti_none_func
+* kselftest-arm64/arm64.btitest.nohint_func
+* kselftest-arm64/arm64.btitest.paciasp_func
+* kselftest-arm64/arm64.nobtitest.bti_c_func
+* kselftest-arm64/arm64.nobtitest.bti_j_func
+* kselftest-arm64/arm64.nobtitest.bti_jc_func
+* kselftest-arm64/arm64.nobtitest.bti_none_func
+* kselftest-arm64/arm64.nobtitest.nohint_func
+* kselftest-arm64/arm64.nobtitest.paciasp_func
+* kselftest-bpf
+* kselftest-breakpoints
+* kselftest-capabilities
+* kselftest-cgroup
+* kselftest-clone3
+* kselftest-core
+* kselftest-cpu-hotplug
+* kselftest-cpufreq
+* kselftest-drivers
+* kselftest-efivarfs
+* kselftest-filesystems
+* kselftest-firmware
+* kselftest-fpu
+* kselftest-futex
+* kselftest-gpio
+* kselftest-intel_pstate
+* kselftest-ipc
+* kselftest-ir
+* kselftest-kcmp
+* kselftest-kexec
+* kselftest-kvm
+* kselftest-lib
+* kselftest-livepatch
+* kselftest-membarrier
+* kselftest-memfd
+* kselftest-memory-hotplug
+* kselftest-mincore
+* kselftest-mount
+* kselftest-mqueue
+* kselftest-net
+* kselftest-netfilter
+* kselftest-nsfs
+* kselftest-openat2
+* kselftest-pid_namespace
+* kselftest-pidfd
+* kselftest-proc
+* kselftest-pstore
+* kselftest-ptrace
+* kselftest-rseq
+* kselftest-rtc
+* kselftest-seccomp
+* kselftest-sigaltstack
+* kselftest-size
+* kselftest-splice
+* kselftest-static_keys
+* kselftest-sync
+* kselftest-sysctl
+* kselftest-tc-testing
+* kselftest-timens
+* kselftest-timers
+* kselftest-tmpfs
+* kselftest-tpm2
+* kselftest-user
+* kselftest-vm
+* kselftest-x86
+* kselftest-zram
+* kvm-unit-tests
+* libhugetlbfs
+* linux-log-parser
+* ltp-cap_bounds-tests
+* ltp-commands-tests
+* ltp-containers-tests
+* ltp-controllers-tests
+* ltp-cpuhotplug-tests
+* ltp-crypto-tests
+* ltp-cve-tests
+* ltp-dio-tests
+* ltp-fcntl-locktests-tests
+* ltp-filecaps-tests
+* ltp-fs-tests
+* ltp-fs_bind-tests
+* ltp-fs_perms_simple-tests
+* ltp-fsx-tests
+* ltp-hugetlb-tests
+* ltp-io-tests
+* ltp-ipc-tests
+* ltp-math-tests
+* ltp-mm-tests
+* ltp-nptl-tests
+* ltp-open-posix-tests
+* ltp-pty-tests
+* ltp-sched-tests
+* ltp-securebits-tests
+* ltp-syscalls-tests
+* ltp-tracing-tests
+* network-basic-tests
+* packetdrill
+* perf
+* rcutorture
+* ssuite
+* v4l2-compliance
+
+--
+Linaro LKFT
+https://lkft.linaro.org
