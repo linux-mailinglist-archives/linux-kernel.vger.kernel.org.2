@@ -2,112 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 89D0644D7A0
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Nov 2021 14:55:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 142AE44D79E
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Nov 2021 14:54:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233561AbhKKN56 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Nov 2021 08:57:58 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48154 "EHLO
+        id S233381AbhKKN5n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Nov 2021 08:57:43 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48076 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232033AbhKKN54 (ORCPT
+        with ESMTP id S232033AbhKKN5j (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Nov 2021 08:57:56 -0500
-Received: from mail-ed1-x529.google.com (mail-ed1-x529.google.com [IPv6:2a00:1450:4864:20::529])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B877BC061766;
-        Thu, 11 Nov 2021 05:55:07 -0800 (PST)
-Received: by mail-ed1-x529.google.com with SMTP id g14so24558992edz.2;
-        Thu, 11 Nov 2021 05:55:07 -0800 (PST)
+        Thu, 11 Nov 2021 08:57:39 -0500
+Received: from mail-qv1-xf32.google.com (mail-qv1-xf32.google.com [IPv6:2607:f8b0:4864:20::f32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 10F0FC061766
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Nov 2021 05:54:50 -0800 (PST)
+Received: by mail-qv1-xf32.google.com with SMTP id i13so4081483qvm.1
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Nov 2021 05:54:50 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=tkAHHRELUR3r+2lukxo30sI9DzwFgcJtRiHk6YyjBfE=;
-        b=nLlKfMMvzCLKY9hkrrxdIg+ATY/2fzIXErWKdMKOmbvypXaeA4UeZNQ19OCo2Zwwr1
-         zd8/YcAfB2ZIAPPykQd6Nv21RYMfVgglKgiPsd1GbafCoesPtfF8Wjwtfp+3Ma+9FT80
-         H+62xiUTd3T4Me6xC0QoMA8LR4t6rL8F5l425JvnhOlKpK68C8gupyHyTmdc5JRQ5vgX
-         ism8uomf8kvHjZlbTB1VYYlPsQszDiMT3gnsVOmOGVT7gUIeo19kUExaTrG5rej26j3v
-         4NtbxF3lBZy4/0TqBQ2Ct3155lSDhFhy+sExk6JYUevqGSP0kq9DwOzubBybKvKZO/0S
-         Brfg==
+        h=mime-version:sender:from:date:message-id:subject:to;
+        bh=QXi5kHjHWd6fjjRgTXkyGAMS+MMuGm4cZgmMpd4J85s=;
+        b=iQZAa9VL4jVrqs3JttRSqTFtpBwCwhZIiuf0juUtq4+0PMb+o+ZWar7Q7/RI/nXaMu
+         7QCDUHJ9CRNsuvnoLQLCndLqbm4dkguTOpR3T2kcf+Pvqabp5sSdVQO6nJl+Dovwk/yt
+         NnM2W/73g3PftX/FWG78Qr8QC4vXjbv6rsXQr9KkIC29AsJ2+jiCzVICc1GsFB7gAUSJ
+         IPegGvPcJyOWL5jNWGbrvmv2KW1yF3FkM9UzW8SXwAF8OLy+moTIcqMGv87ovIHTzDGC
+         1hNMZpxg3aYlchrARPmufEyJKbKDVgCNau1Kaz35/WYQkonyI0/VJYWpqecXE9nkRDFu
+         j0Og==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=tkAHHRELUR3r+2lukxo30sI9DzwFgcJtRiHk6YyjBfE=;
-        b=gFWw6qDqiypgGQnIzbf4WjTiPcMZ6n/layeD9rCzgguxjS7b4QxPVg6N5tyKLGVlJQ
-         RnrhMb327wh+eOQririOsyLkYZTON0+KAy/Zp+TS+In/3g5vGo3+rdMq3Cl59PyhuKFW
-         FdCHIlu1mrQix7IzOKO5cLJnn3Uprl7Q3soNICsQW2oyRmUoAmQBWIMR8rqjdZA0X42C
-         9rxkY89nOJbQWF/+qSchv7rvtUrJmmSoS+9hwBiL2tPix+kcW/yRSYxh+iT7nblb2tpc
-         WDT7zoJz51rvaSoLBuuGGTi3iSBX56QXxo6uUKZRJ/fEVIH8qHvPeY+Ig4tVjADcxejJ
-         AY6g==
-X-Gm-Message-State: AOAM532ald+/6YTHSUW412+3HBnrVEIvo3Txs+WWS7mBmCccMdgVIdbP
-        FUFTLEzkNGv/kmdBERhiHburPqiAQCWSCh8emcE=
-X-Google-Smtp-Source: ABdhPJzIGR0yr2K/uYmW72GvEIHnQ6+Ni56Znw65lXQD9xptQmRMY6gNhUaJPd9WkD0ddddvNs+w9QPIr9ySKoRFgyk=
-X-Received: by 2002:a05:6402:c89:: with SMTP id cm9mr1443651edb.283.1636638906260;
- Thu, 11 Nov 2021 05:55:06 -0800 (PST)
+        h=x-gm-message-state:mime-version:sender:from:date:message-id:subject
+         :to;
+        bh=QXi5kHjHWd6fjjRgTXkyGAMS+MMuGm4cZgmMpd4J85s=;
+        b=MogfvjoD7deJD7I8dg243s+ACSt5ZQJB5P+GHQrEFHUKpl4pKf5lLszb2F5gW/X57U
+         v1ZrojUSNZ1/eShpWuc1ZEChbALsPj1Y1j61y7Bbl8FYUTeWrUs3erKv7QUREYA0c2OJ
+         Vf4Y2C0NLbb1zwX3CZeVGzNqve86aexQaddOqAwE2wanS9VJJI7ZtJrDxGlWgYGKScAj
+         CtbmcHpahECDaUWVAx+dYfFEn6eyg8i8WjOUI4SsGttb+YDrvHuafYBItamP9XAoaD1L
+         2v51ObOKT3Wbd4dil8v3VQ8VyHwPHOw3YqjZASEGjdbM0O2cMNe/gDx6oLwMtKRHCK3E
+         dn5A==
+X-Gm-Message-State: AOAM532NghnSKTMNlt+snQryLCNtZMUWWlPHdSBue6t+xFPh6EVdd15G
+        PrQkob5xAdPmNOJTageK1SDIVLPAzDYBM93hga0=
+X-Google-Smtp-Source: ABdhPJynw5H4Jaz+lI76M0l9sMhJSJca4+xEAwHODejjlGTtfC45NR0moCT9j+obK4sHmfTW+5uMnU94uWBu08sCc/g=
+X-Received: by 2002:a05:6214:f09:: with SMTP id gw9mr6678652qvb.36.1636638889210;
+ Thu, 11 Nov 2021 05:54:49 -0800 (PST)
 MIME-Version: 1.0
-References: <CAHifhD5V9vwJenRLcPRH5ZMeLa_JnjZKfdcFZw1CjceBtC6=Ew@mail.gmail.com>
- <CAHp75VeyQEaABFOnEUh2pdFx9ROJvRcud-BuEbKWmaEWpL9_Uw@mail.gmail.com>
- <CAHifhD7Qf7+dc7K-MjNguqmiCWUxOJZmQoCTRUZOR-RWMm_JPw@mail.gmail.com>
- <CAHp75Ve9BMNy3gP=-Dajm+Lgu+E4FCqc4phLgV1_cr2qUnTX_w@mail.gmail.com>
- <CAHifhD4n7O5eWFPOjRAmHYL52tW0K=uXXzVj7L5+enTFwFXW2A@mail.gmail.com>
- <CAArk9MP5cKJ+VhAZUseW4LnQNRvux=MZe2eSy3rQkbHKnUsGig@mail.gmail.com>
- <CAHp75VdRwvU5WjFP5E4gg8U+_e34A0Lwze+nz_wVHoB49jLeLg@mail.gmail.com>
- <CAArk9MNGSxR+92n-D2pe_+r+Z0Q9FoTMPqk11sAKA=4Vckj0HQ@mail.gmail.com>
- <YYy7QZGKeEEfI1mH@lahna> <CAHifhD5bXu2nP533RXyWDnyNt=k2rRZq5Z6A6CCik_2e6XNgGA@mail.gmail.com>
- <YYzxWPIWFAV04LRU@lahna> <CAD2FfiGnmFSTPvkJaXj+cf4yDvci-j+2QkpMqNY821fUT5C=CA@mail.gmail.com>
- <CAHp75Vcp=hC1oL5FBQDDFe8EBxWB9Po4FKNS9ZGtD3q-yQPtAw@mail.gmail.com> <CAHifhD6p9qSm5dv1spz+oPRhRkBZeQspHNEphE49fODacm-S6g@mail.gmail.com>
-In-Reply-To: <CAHifhD6p9qSm5dv1spz+oPRhRkBZeQspHNEphE49fODacm-S6g@mail.gmail.com>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Thu, 11 Nov 2021 15:54:22 +0200
-Message-ID: <CAHp75Vfk5WHWiQxwmqEzVEymgpvjxKWEZbaQ9+=Et7N63Ps=Ng@mail.gmail.com>
-Subject: Re: [PATCH] firmware: export x86_64 platform flash bios region via sysfs
-To:     Hans-Gert Dahmen <hans-gert.dahmen@immu.ne>
-Cc:     Richard Hughes <hughsient@gmail.com>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        Mauro Lima <mauro.lima@eclypsium.com>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Philipp Deppenwiese <philipp.deppenwiese@immu.ne>,
-        "platform-driver-x86@vger.kernel.org" 
-        <platform-driver-x86@vger.kernel.org>
+Sender: reymonddennis@gmail.com
+Received: by 2002:ac8:7d12:0:0:0:0:0 with HTTP; Thu, 11 Nov 2021 05:54:48
+ -0800 (PST)
+From:   "helen.carlsen" <helen.carlsen26@gmail.com>
+Date:   Thu, 11 Nov 2021 14:54:48 +0100
+X-Google-Sender-Auth: bur7Aj9tYLZ6tOuiZpAhSWjMy0k
+Message-ID: <CAOOE2sGzasS8WR2LHr42-VTwyojBA7Dvg3i7=zAvQU7St67sqg@mail.gmail.com>
+Subject: Hello
+To:     undisclosed-recipients:;
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 11, 2021 at 2:56 PM Hans-Gert Dahmen
-<hans-gert.dahmen@immu.ne> wrote:
->
-> Am Do., 11. Nov. 2021 um 13:46 Uhr schrieb Andy Shevchenko
-> <andy.shevchenko@gmail.com>:
-> >
-> > On Thu, Nov 11, 2021 at 1:46 PM Richard Hughes <hughsient@gmail.com> wrote:
-> > > On Thu, 11 Nov 2021 at 10:33, Mika Westerberg
-> > > <mika.westerberg@linux.intel.com> wrote:
-> >
-> > > it's always going to work on x64 -- if the system firmware isn't available at that offset then the platform just isn't going to boot.
-> >
-> > Well, it's _usual_ case, but in general the assumption is simply
-> > incorrect. Btw, have you checked it on Coreboot enabled platforms?
-> > What about bare metal configurations where the bootloader provides
-> > services to the OS?
->
-> No it is always the case. I suggest you go read your own Intel specs
-> and datasheets
+ I sent this mail praying it will found you in a good condition of
+health, since I myself are in a very critical health condition in
+which I  sleep every night without knowing if I may be alive to see
+the next day. I'm Mrs. Helen John carlsen, wife of late Mrs. Helen
+John carlsen, a widow suffering from long time illness. I have some
+funds I inherited from my late husband, the sum of($ 11.000.000,eleven
+million dollars)my Doctor told me recently that I have serious
+sickness which is cancer problem. What disturbs me most is my stroke
+sickness.Having known my condition, I decided to donate this fund to a
+good person that will utilize it the way i am going to instruct
+herein. I need a very honest and God fearing person who can claim this
+money and use it for Charity works, for orphanages, widows and also
+build schools for less privileges that will be named after my late
+husband if possible and to promote the word of God and the effort that
+the house of God is maintained.
 
-Point me out, please, chapters in SDM (I never really read it in full,
-it's kinda 10x Bible size). What x86 expects is 16 bytes at the end of
-1Mb physical address space that the CPU runs at first.
+I do not want a situation where this money will be used in an ungodly
+manner. That's why I'm taking this decision. I'm not afraid of death
+so I know where I'm going. I accept this decision because I do not
+have any child who will inherit this money after I die. Please I want
+your sincerely and urgent answer to know if you will be able to
+execute this project, and I will give you more information on how the
+fund will be transferred to your bank account. I am waiting for your
+reply.
 
-> before spreading further FUD. I have experienced u-root
-> and coreboot developers sitting right next to me in my office and they
-> were among the ones suggesting my patch. This is just laughable,
-> please stop it Andy.
+Best Regards,
 
-Yeah, zillion people can't ever make a mistake... I see.
-
--- 
-With Best Regards,
-Andy Shevchenko
+Mrs. Helen John carlsen,
