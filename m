@@ -2,100 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 243F544D7B7
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Nov 2021 14:59:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 25CFF44D7BA
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Nov 2021 15:00:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233518AbhKKOB4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Nov 2021 09:01:56 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:34987 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231739AbhKKOBy (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Nov 2021 09:01:54 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1636639145;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=ESUXrCbNuii7JSa0LxmJs7Rc4Q6PMtXE/VioZv4aHGg=;
-        b=Q7gx5XduY5XEgPjHyCWO6mu/B1LE/ev5GBcIQCtwB5/CPMNCKiM0HSkpKuQ/XTG4h/3mQX
-        HVwaV5uuOKWfirtxJhcNbzLZMuALfzIU34VMMub6aKPPr+HKHe8Rjv8W2jb5U97C6xJZ0B
-        qBwcxasWCGP/JV7TRvrAIjD2aqMs7Lw=
-Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
- [209.85.128.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-154-9rODn4MgNkurN-FcEcVcUA-1; Thu, 11 Nov 2021 08:59:04 -0500
-X-MC-Unique: 9rODn4MgNkurN-FcEcVcUA-1
-Received: by mail-wm1-f72.google.com with SMTP id 144-20020a1c0496000000b003305ac0e03aso4817197wme.8
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Nov 2021 05:59:03 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:in-reply-to
-         :content-transfer-encoding;
-        bh=ESUXrCbNuii7JSa0LxmJs7Rc4Q6PMtXE/VioZv4aHGg=;
-        b=cP+JUJMHdI7ppjgVio8TfjpQQf0VximGE50tIMeQq0Bf8Eqlxts7xtvFvBTm17W9QJ
-         nDwj1ZX4y+ghkxfV0e0uGOfJU45VM5ASpaxBPvaMYCP+Ab8hcH0ihaOw9Z3Ga0cUoyLk
-         sxZqRjqEsv2aIL4x5cAYw50QjA7G0BM8iWQgIjItBgwvte5bhIiwGmi0g2kg8VBNsOx2
-         8F5CrLZJnMqkBI0R3kKNDwaMf97RqZKxkllC880H2BZ9RQp3GFPsoeJZwa2tEODXcCks
-         y0xh2CH/DHikBvDv6JUIPGfEOxnVKZA/n17oASnlHwEUhaQ4+kT4AJ7n4Q8qY6HzHoRM
-         05nA==
-X-Gm-Message-State: AOAM531IsfeUeTMBFJ+lDmEIPKif+30pb1Vq+lykagLt48efdYoQrZ1T
-        4IUcVL8ezRs75LTvl62rmVEtMPHipctru06ZGfGdqFG/dSoYbdq6Sxy2ho+uiP/Pi6WHLqKmrKI
-        6wBzlRZhyG/7BRnVN/JXlQF0j
-X-Received: by 2002:adf:c70b:: with SMTP id k11mr8727181wrg.154.1636639142630;
-        Thu, 11 Nov 2021 05:59:02 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJyNPT+SEiz5ns3CHBP3dPEYod/0tJHhdmafwryzWp3IhR0o00/k/QCTEV+3ZYi0oxKXVDMwnQ==
-X-Received: by 2002:adf:c70b:: with SMTP id k11mr8727143wrg.154.1636639142358;
-        Thu, 11 Nov 2021 05:59:02 -0800 (PST)
-Received: from ?IPV6:2001:b07:6468:f312:63a7:c72e:ea0e:6045? ([2001:b07:6468:f312:63a7:c72e:ea0e:6045])
-        by smtp.gmail.com with ESMTPSA id d11sm2943517wrs.38.2021.11.11.05.59.01
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 11 Nov 2021 05:59:01 -0800 (PST)
-Message-ID: <ba60bedf-77e0-10e7-5857-faa1279d29ab@redhat.com>
-Date:   Thu, 11 Nov 2021 14:59:00 +0100
+        id S233443AbhKKOCz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Nov 2021 09:02:55 -0500
+Received: from smtp2.axis.com ([195.60.68.18]:10210 "EHLO smtp2.axis.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231739AbhKKOCx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 11 Nov 2021 09:02:53 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=axis.com; q=dns/txt; s=axis-central1; t=1636639205;
+  x=1668175205;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=RFcG43MDtINsUV9C/D4kpj+78WwyKwfn64tSQhJrSn8=;
+  b=dHPXd1tqw+n6RIIpjF8+O8CkdgEnRQaKCghI5/p0yBbvRNyWWLJCKImm
+   LggvCs+0ANwG7FBbzhD5xESXjlj/s0nuTInGLCOEs7iJ53QKIpP+bkIhJ
+   c9EehaEwV8acSflQ96BWZVYSKyo3JeHWqVU8Dlf1CZRu8aGAMDKe/NH+T
+   cbldJc/5kTNmwgPBiF1k8+U2kLIroTLhwgRcrrySlsAQRYN6OR7deg3Nh
+   H2/Q0hfGUgmmbTXJ94DbtdnOO+PPzAHSCEUN071qQcdB4+DdDjkm4tBHw
+   YJ40senz4jiSCGQsITdyI8ugUnvrq9pA7l3kjJ2gbXV9pCa1l7izPl2xl
+   w==;
+Date:   Thu, 11 Nov 2021 15:00:02 +0100
+From:   Vincent Whitchurch <vincent.whitchurch@axis.com>
+To:     Jiang Wang <jiang.wang@bytedance.com>
+CC:     <bpf@vger.kernel.org>, <cong.wang@bytedance.com>,
+        Casey Schaufler <casey@schaufler-ca.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Eric Dumazet <edumazet@google.com>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Rao Shoaib <Rao.Shoaib@oracle.com>,
+        Kuniyuki Iwashima <kuniyu@amazon.co.jp>,
+        Jakub Sitnicki <jakub@cloudflare.com>,
+        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH bpf v1] unix: fix an issue in unix_shutdown causing the
+ other end read/write failures
+Message-ID: <20211111140000.GA10779@axis.com>
+References: <20211004232530.2377085-1-jiang.wang@bytedance.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.2.0
-Subject: Re: [PATCH 0/2] KVM: x86: Sanitize writes to MSR_KVM_PV_EOI_EN
-Content-Language: en-US
-To:     Vitaly Kuznetsov <vkuznets@redhat.com>, kvm@vger.kernel.org
-Cc:     Sean Christopherson <seanjc@google.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Li RongQing <lirongqing@baidu.com>,
-        linux-kernel@vger.kernel.org
-References: <20211108152819.12485-1-vkuznets@redhat.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-In-Reply-To: <20211108152819.12485-1-vkuznets@redhat.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <20211004232530.2377085-1-jiang.wang@bytedance.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/8/21 16:28, Vitaly Kuznetsov wrote:
-> This is a continuation of work started by Li RongQing with
-> "[PATCH] KVM: x86: disable pv eoi if guest gives a wrong address":
-> https://lore.kernel.org/kvm/1636078404-48617-1-git-send-email-lirongqing@baidu.com/
+On Mon, Oct 04, 2021 at 11:25:28PM +0000, Jiang Wang wrote:
+> Commit 94531cfcbe79 ("af_unix: Add unix_stream_proto for sockmap")
+> sets unix domain socket peer state to TCP_CLOSE
+> in unix_shutdown. This could happen when the local end is shutdown
+> but the other end is not. Then the other end will get read or write
+> failures which is not expected.
 > 
-> Instead of resetting 'KVM_MSR_ENABLED' when a bogus address was written to
-> MSR_KVM_PV_EOI_EN I suggest we refuse to update MSR at all, this aligns
-> with #GP which is being injected on such writes.
+> Fix the issue by setting the local state to shutdown.
 > 
-> Vitaly Kuznetsov (2):
->    KVM: x86: Rename kvm_lapic_enable_pv_eoi()
->    KVM: x86: Don't update vcpu->arch.pv_eoi.msr_val when a bogus value
->      was written to MSR_KVM_PV_EOI_EN
-> 
->   arch/x86/kvm/hyperv.c |  4 ++--
->   arch/x86/kvm/lapic.c  | 23 ++++++++++++++---------
->   arch/x86/kvm/lapic.h  |  2 +-
->   arch/x86/kvm/x86.c    |  2 +-
->   4 files changed, 18 insertions(+), 13 deletions(-)
-> 
+> Fixes: 94531cfcbe79 (af_unix: Add unix_stream_proto for sockmap)
+> Suggested-by: Cong Wang <cong.wang@bytedance.com>
+> Reported-by: Casey Schaufler <casey@schaufler-ca.com>
+> Signed-off-by: Jiang Wang <jiang.wang@bytedance.com>
 
-Queued, thanks.
+This patch changed the behaviour of read(2) after a shutdown(2) on the
+local end of a UDS.  Before this patch, reading from a UDS after a local
+shutdown(SHUT_RDWR) would return the data written or EOF if there is no
+data, but now it always returns -EINVAL.
 
-Paolo
+For example, the following test program succeeds with "read 16 bytes" on
+v5.14 but fails with "read: Invalid argument" on v5.15 and mainline:
 
+#include <err.h>
+#include <errno.h>
+#include <stdio.h>
+#include <sys/socket.h>
+#include <sys/unistd.h>
+
+int main(int argc, char *argv[]) {
+  int sock[2];
+  int ret;
+
+  ret = socketpair(AF_UNIX, SOCK_STREAM, 0, sock);
+  if (ret < 0)
+    err(1, "socketpair");
+
+  char buf[16] = {};
+  ret = write(sock[1], buf, sizeof(buf));
+  if (ret < 0)
+    err(1, "write");
+
+  ret = shutdown(sock[0], SHUT_RDWR);
+  if (ret < 0)
+    err(1, "shutdown");
+
+  ssize_t bytes = read(sock[0], buf, sizeof(buf));
+  if (bytes < 0)
+    err(1, "read");
+
+  printf("read %zd bytes\n", bytes);
+
+  return 0;
+}
