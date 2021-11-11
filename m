@@ -2,152 +2,181 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1075444DA52
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Nov 2021 17:25:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D6D3F44DA56
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Nov 2021 17:26:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234195AbhKKQ2o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Nov 2021 11:28:44 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55284 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233987AbhKKQ2l (ORCPT
+        id S234221AbhKKQ26 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Nov 2021 11:28:58 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124]:57738 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234143AbhKKQ25 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Nov 2021 11:28:41 -0500
-Received: from mail-io1-xd32.google.com (mail-io1-xd32.google.com [IPv6:2607:f8b0:4864:20::d32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4A6DC061766
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Nov 2021 08:25:52 -0800 (PST)
-Received: by mail-io1-xd32.google.com with SMTP id r8so7613741iog.7
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Nov 2021 08:25:52 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=VRqJqxxlJwIYS/ddfWmMHHNu+A1m8d9KAG8ft6WQNF0=;
-        b=XqMsalAhGNfKo2UQ15NOwdV10LFRX/uoJ6VsXV+BlFHTzxtfrp+8eIku4RA5nHMVXx
-         9jvaPrDxo/eWbMVFOawlms6+NaGXadnzwLg6FXzlSSlmL4UjUZRUAsI9kymDAMNy/K8a
-         8g9ksjnXnM+dZWUP+yDsT+8fZzkaeNl0xqZEg=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=VRqJqxxlJwIYS/ddfWmMHHNu+A1m8d9KAG8ft6WQNF0=;
-        b=wv9z/YkRMgzYNgR0Rp64cSkmVgnFRqspvoyrlqIuNIOBXmTkTJzr0pKS6QUf0l0dBO
-         EZus2wKPjkQzQ/F/gfEW/8bqcAf2GrIHsA9T8cIECEVWkRB4o06MzQ2/N+4hYRWdlo6r
-         JKnpqMtPXSd/L+57qNeF/JWydEcf3k3QQf/uj2k0T9XeFxEV+VGas/acxXhYJIJazxr3
-         NyFE5dQ4HhCyMGa6HNIkc2w6iPVdlLMBKJXX8amMG+tTIJGfZzhXPfXxO5ITeLanztLH
-         RhcUSDzPg6dE/d+D6avIQKEhHN+CsisJmBXmMkwu9rzqrqT4onhBaK5lkB0OyzKmi7CO
-         X/xw==
-X-Gm-Message-State: AOAM530EGhTkyy2Tnr3+DliWjKAEVjexjctxt+DyFfzFHMmHB3KwEVWR
-        eK+b+DYfjF83cubaGWpgKDlHsG2MDf2lLA==
-X-Google-Smtp-Source: ABdhPJzsfwLABH0noL5eiV01ZCcXd1vU3redIx6vTOtHyy3jUKtg3HsPm3Cfp7t+ZcCwEWla7TExHg==
-X-Received: by 2002:a05:6602:2d81:: with SMTP id k1mr5912023iow.112.1636647952012;
-        Thu, 11 Nov 2021 08:25:52 -0800 (PST)
-Received: from mail-io1-f49.google.com (mail-io1-f49.google.com. [209.85.166.49])
-        by smtp.gmail.com with ESMTPSA id i4sm2169496ilv.15.2021.11.11.08.25.51
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 11 Nov 2021 08:25:51 -0800 (PST)
-Received: by mail-io1-f49.google.com with SMTP id c3so7629108iob.6
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Nov 2021 08:25:51 -0800 (PST)
-X-Received: by 2002:a05:6602:2d84:: with SMTP id k4mr5635223iow.168.1636647950862;
- Thu, 11 Nov 2021 08:25:50 -0800 (PST)
+        Thu, 11 Nov 2021 11:28:57 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1636647967;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=8bm581BkhHLAgHXcU5RDiPE2gfVwKDukiIT1uir51Iw=;
+        b=Q3yLNQh+bjsGFPlGTBedaJsQB/aX01S8KGRHvxfYMZfAsGQUvepAXTE1bhvmQRSPZC43Vg
+        tdkvMsmuQW/2XV7nS6/FqfyJb1NtB3dlt5Kq+nfkPX9Xa1a2/yRVS5NxLued/hWF1xLN88
+        J7kOHjt3No1cLHqUy1JIW/pQCv/D0xE=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-225-sDZ7WAxrN6qb7l0ozDVudQ-1; Thu, 11 Nov 2021 11:26:04 -0500
+X-MC-Unique: sDZ7WAxrN6qb7l0ozDVudQ-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 34743100C660;
+        Thu, 11 Nov 2021 16:26:00 +0000 (UTC)
+Received: from warthog.procyon.org.uk (unknown [10.33.37.68])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 3BD4A5C1D5;
+        Thu, 11 Nov 2021 16:25:53 +0000 (UTC)
+Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
+        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
+        Kingdom.
+        Registered in England and Wales under Company Registration No. 3798903
+From:   David Howells <dhowells@redhat.com>
+To:     torvalds@linux-foundation.org
+Cc:     dhowells@redhat.com,
+        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        Dominique Martinet <asmadeus@codewreck.org>,
+        Ilya Dryomov <idryomov@gmail.com>,
+        Jeff Layton <jlayton@kernel.org>,
+        Marc Dionne <marc.dionne@auristor.com>,
+        Jeffrey E Altman <jaltman@auristor.com>,
+        v9fs-developer@lists.sourceforge.net,
+        linux-afs@lists.infradead.org, linux-cachefs@redhat.com,
+        ceph-devel@vger.kernel.org, linux-cifs@vger.kernel.org,
+        linux-nfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org
+Subject: [GIT PULL] netfs, 9p, afs, ceph: Use folios
 MIME-Version: 1.0
-References: <20211028105754.v5.1.I828f5db745535fb7e36e8ffdd62d546f6d08b6d1@changeid>
- <CA+cxXh=VOkRnkgfxq8DVes=xCvR=691eY-ViQxME2fHMgt1q8Q@mail.gmail.com> <CAD=FV=Vm1X3xFFkffigKr9z_FuTeA0Z70+_0NVfWcSZy90J-Zw@mail.gmail.com>
-In-Reply-To: <CAD=FV=Vm1X3xFFkffigKr9z_FuTeA0Z70+_0NVfWcSZy90J-Zw@mail.gmail.com>
-From:   Doug Anderson <dianders@chromium.org>
-Date:   Thu, 11 Nov 2021 08:25:38 -0800
-X-Gmail-Original-Message-ID: <CAD=FV=XCLczUhVV7ZqOjCvParO9KO3e=0a3xLBWoTXW5KZczsQ@mail.gmail.com>
-Message-ID: <CAD=FV=XCLczUhVV7ZqOjCvParO9KO3e=0a3xLBWoTXW5KZczsQ@mail.gmail.com>
-Subject: Re: [PATCH v5 1/2] drm/bridge: parade-ps8640: Enable runtime power management
-To:     Philip Chen <philipchen@chromium.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Stephen Boyd <swboyd@chromium.org>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        David Airlie <airlied@linux.ie>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        Jonas Karlman <jonas@kwiboo.se>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Robert Foss <robert.foss@linaro.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        Andrzej Hajda <andrzej.hajda@intel.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <1134870.1636647952.1@warthog.procyon.org.uk>
+Content-Transfer-Encoding: quoted-printable
+Date:   Thu, 11 Nov 2021 16:25:52 +0000
+Message-ID: <1134871.1636647952@warthog.procyon.org.uk>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+Hi Linus,
 
-On Thu, Oct 28, 2021 at 12:39 PM Doug Anderson <dianders@chromium.org> wrote:
->
-> Hi,
->
-> On Thu, Oct 28, 2021 at 11:02 AM Philip Chen <philipchen@chromium.org> wrote:
-> >
-> > Add "Sam Ravnborg <sam@ravnborg.org>" to cc list for vis.
-> > Remove "Andrzej Hajda <a.hajda@samsung.com>" from cc list as the
-> > address can't be found.
->
-> Looking at <https://lore.kernel.org/all/b2fb88db-009e-4b38-dc3d-5ce9163257de@samsung.com/>,
-> it should be Andrzej Hajda <andrzej.hajda@intel.com>. I've added.
->
->
-> > On Thu, Oct 28, 2021 at 10:58 AM Philip Chen <philipchen@chromium.org> wrote:
-> > >
-> > > Fit ps8640 driver into runtime power management framework:
-> > >
-> > > First, break _poweron() to 3 parts: (1) turn on power and wait for
-> > > ps8640's internal MCU to finish init (2) check panel HPD (which is
-> > > proxied by GPIO9) (3) the other configs. As runtime_resume() can be
-> > > called before panel is powered, we only add (1) to _resume() and leave
-> > > (2)(3) to _pre_enable(). We also add (2) to _aux_transfer() as we want
-> > > to ensure panel HPD is asserted before we start AUX CH transactions.
-> > >
-> > > Second, the original driver has a mysterious delay of 50 ms between (2)
-> > > and (3). Since Parade's support can't explain what the delay is for,
-> > > and we don't see removing the delay break any boards at hand, remove
-> > > the delay to fit into this driver change.
-> > >
-> > > In addition, rename "powered" to "pre_enabled" and don't check for it
-> > > in the pm_runtime calls. The pm_runtime calls are already refcounted
-> > > so there's no reason to check there. The other user of "powered",
-> > > _get_edid(), only cares if pre_enable() has already been called.
-> > >
-> > > Lastly, change some existing DRM_...() logging to dev_...() along the
-> > > way, since DRM_...() seem to be deprecated in [1].
-> > >
-> > > [1] https://patchwork.freedesktop.org/patch/454760/
-> > >
-> > > Signed-off-by: Philip Chen <philipchen@chromium.org>
-> > > Reviewed-by: Douglas Anderson <dianders@chromium.org>
-> > > Reviewed-by: Stephen Boyd <swboyd@chromium.org>
-> > > ---
-> > > In v3, I added pm_suspend_ignore_children() in ps8640_probe().
-> > > Also, I moved the change of "put_sync_suspend" from patch 2/2 to here.
-> > > But I forgot to mention both changes. So edit v3 change log retroactively.
-> > >
-> > > In v4, I moved the change of "ps8640_ensure_hpd" return data type
-> > > from patch 2/2 to here. But I forgot to mention it. So edit v4 change log
-> > > retroactively.
-> > >
-> > > Changes in v5:
-> > > - Move the implementation of _runtime_disable() around to resolve merge
-> > >   conflict when rebasing.
-> > > - Improve the document for how autosuspend_delay is picked.
->
-> The new text looks good to me, thanks!
->
-> Since this is from @chromium.org and only reviewed-by @chromium.org
-> people, I'll plan to give it a 2-week snooze to give others ample time
-> to comment on these two patches. If 2 weeks pass w/ no comments then
-> I'll land to drm-misc-next. If someone gives an Ack and/or Reviewed-by
-> then I'll likely land sooner.
+[Apologies for the late request, but I needed to wait for folios and 9p to
+be pulled into your tree so that I could get rid of the temporary merge I
+was using and then I had to wait for my branch to be retested before I
+could send this your way - and then Willy changed his mind about how to
+handle foliation of page_endio().]
 
-My 2-week snooze went off, so this is now pushed to drm-misc-next
-fixing a small whitespace warning that the dim tool complained about.
+Anyway, could you consider pulling this please?  It converts netfslib, 9p
+and afs to use folios.  It also partially converts ceph so that it uses
+folios on the boundaries with netfslib.
 
-e9d9f9582c3d drm/bridge: parade-ps8640: Populate devices on aux-bus
-826cff3f7ebb drm/bridge: parade-ps8640: Enable runtime power management
+To help with this, a couple of folio helper functions are added in the
+first two patches.  If you don't want to take the netfs/9p/afs/ceph bits,
+could you at least consider taking the folio helpers?  Then they would be
+available to others.
 
--Doug
+These patches don't touch fscache and cachefiles as I intend to remove all
+the code that deals with pages directly from there.  Only nfs and cifs are
+using the old fscache I/O API now.  The new API uses iov_iter instead.
+
+Thanks to Jeff Layton, Dominique Martinet and AuriStor for testing and
+retesting the patches.
+
+Thanks,
+David
+
+Changes
+=3D=3D=3D=3D=3D=3D=3D
+ver #5:
+ - Got rid of the folio_endio bits again as Willy changed his mind and
+   would rather I inlined the code directly instead.
+
+ver #4:
+ - Detached and sent the afs symlink split patch separately.
+ - Handed the 9p netfslibisation patch off to Dominique Martinet.
+ - Added a patch to foliate page_endio().
+ - Fixed a bug in afs_redirty_page() whereby it didn't set the next page
+   index in the loop and returned too early.
+ - Simplified a check in v9fs_vfs_write_folio_locked()[4].
+ - Undid a change to afs_symlink_readpage()[4].
+ - Used offset_in_folio() in afs_write_end()[4].
+ - Rebased on 9p-folio merge upstream[5].
+
+ver #3:
+ - Rebased on upstream as folios have been pulled.
+ - Imported a patch to convert 9p to netfslib from my
+   fscache-remove-old-api branch[3].
+ - Foliated netfslib.
+
+ver #2:
+ - Reorder the patches to put both non-folio afs patches to the front.
+ - Use page_offset() rather than manual calculation[1].
+ - Fix folio_inode() to directly access the inode[2].
+
+Link: https://lore.kernel.org/r/YST/0e92OdSH0zjg@casper.infradead.org/ [1]
+Link: https://lore.kernel.org/r/YST8OcVNy02Rivbm@casper.infradead.org/ [2]
+Link: https://lore.kernel.org/r/163551653404.1877519.12363794970541005441.=
+stgit@warthog.procyon.org.uk/ [3]
+Link: https://lore.kernel.org/r/YYKa3bfQZxK5/wDN@casper.infradead.org/ [4]
+Link: https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/c=
+ommit/?id=3Df89ce84bc33330607a782e47a8b19406ed109b15 [5]
+Link: https://lore.kernel.org/r/2408234.1628687271@warthog.procyon.org.uk/=
+ # v0
+Link: https://lore.kernel.org/r/162981147473.1901565.1455657509200944265.s=
+tgit@warthog.procyon.org.uk/ # v1
+Link: https://lore.kernel.org/r/163005740700.2472992.12365214290752300378.=
+stgit@warthog.procyon.org.uk/ # v2
+Link: https://lore.kernel.org/r/163584174921.4023316.8927114426959755223.s=
+tgit@warthog.procyon.org.uk>/ # v3
+Link: https://lore.kernel.org/r/163649323416.309189.4637503793406396694.st=
+git@warthog.procyon.org.uk/ # v4
+Link: https://lore.kernel.org/r/163657847613.834781.7923681076643317435.st=
+git@warthog.procyon.org.uk/ # v5
+
+---
+The following changes since commit f89ce84bc33330607a782e47a8b19406ed109b1=
+5:
+
+  Merge tag '9p-for-5.16-rc1' of git://github.com/martinetd/linux (2021-11=
+-09 10:30:13 -0800)
+
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/dhowells/linux-fs.git tags=
+/netfs-folio-20211111
+
+for you to fetch changes up to 255ed63638da190e2485d32c0f696cd04d34fbc0:
+
+  afs: Use folios in directory handling (2021-11-10 21:17:09 +0000)
+
+----------------------------------------------------------------
+netfs, 9p, afs and ceph (partial) foliation
+
+----------------------------------------------------------------
+David Howells (4):
+      folio: Add a function to change the private data attached to a folio
+      folio: Add a function to get the host inode for a folio
+      netfs, 9p, afs, ceph: Use folios
+      afs: Use folios in directory handling
+
+ fs/9p/vfs_addr.c           |  83 ++++++-----
+ fs/9p/vfs_file.c           |  20 +--
+ fs/afs/dir.c               | 229 +++++++++++++-----------------
+ fs/afs/dir_edit.c          | 154 ++++++++++----------
+ fs/afs/file.c              |  70 +++++----
+ fs/afs/internal.h          |  46 +++---
+ fs/afs/write.c             | 347 ++++++++++++++++++++++------------------=
+-----
+ fs/ceph/addr.c             |  80 ++++++-----
+ fs/netfs/read_helper.c     | 165 ++++++++++-----------
+ include/linux/netfs.h      |  12 +-
+ include/linux/pagemap.h    |  33 +++++
+ include/trace/events/afs.h |  21 +--
+ mm/page-writeback.c        |   2 +-
+ 13 files changed, 636 insertions(+), 626 deletions(-)
+
