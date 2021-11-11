@@ -2,139 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7D27244D2AE
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Nov 2021 08:49:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DE98A44D2B6
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Nov 2021 08:50:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232159AbhKKHvt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Nov 2021 02:51:49 -0500
-Received: from out30-42.freemail.mail.aliyun.com ([115.124.30.42]:34766 "EHLO
-        out30-42.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231367AbhKKHvh (ORCPT
+        id S231954AbhKKHxh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Nov 2021 02:53:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50610 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229706AbhKKHxd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Nov 2021 02:51:37 -0500
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R111e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04400;MF=baolin.wang@linux.alibaba.com;NM=1;PH=DS;RN=11;SR=0;TI=SMTPD_---0Uw0LcSB_1636616926;
-Received: from localhost(mailfrom:baolin.wang@linux.alibaba.com fp:SMTPD_---0Uw0LcSB_1636616926)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Thu, 11 Nov 2021 15:48:46 +0800
-From:   Baolin Wang <baolin.wang@linux.alibaba.com>
-To:     akpm@linux-foundation.org, ying.huang@intel.com,
-        dave.hansen@linux.intel.com
-Cc:     ziy@nvidia.com, osalvador@suse.de, shy828301@gmail.com,
-        baolin.wang@linux.alibaba.com, zhongjiang-ali@linux.alibaba.com,
-        xlpang@linux.alibaba.com, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v2 2/2] mm: migrate: Allocate the node_demotion structure dynamically
-Date:   Thu, 11 Nov 2021 15:48:35 +0800
-Message-Id: <e39502af91e12ba1a4bef3be4d05b11b2c7a7a9f.1636616548.git.baolin.wang@linux.alibaba.com>
-X-Mailer: git-send-email 1.8.3.1
-In-Reply-To: <cover.1636616548.git.baolin.wang@linux.alibaba.com>
-References: <cover.1636616548.git.baolin.wang@linux.alibaba.com>
-In-Reply-To: <cover.1636616548.git.baolin.wang@linux.alibaba.com>
-References: <cover.1636616548.git.baolin.wang@linux.alibaba.com>
+        Thu, 11 Nov 2021 02:53:33 -0500
+Received: from sipsolutions.net (s3.sipsolutions.net [IPv6:2a01:4f8:191:4433::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F80EC061766;
+        Wed, 10 Nov 2021 23:50:44 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=sipsolutions.net; s=mail; h=Content-Transfer-Encoding:MIME-Version:
+        Content-Type:References:In-Reply-To:Date:Cc:To:From:Subject:Message-ID:Sender
+        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-To:
+        Resent-Cc:Resent-Message-ID; bh=4HCVFFk19upOjTLWNUM/OfRNFSnFhC8rZPL5tgGbIYE=;
+        t=1636617044; x=1637826644; b=lX02yLfzgZEG3RvUVNmrUq3brvZPz/Sddu9O3r/KE3wP593
+        k6RPCXWohDWxiCt0nTb02/eymF+eJfJ4hAIIBMqv2AA5YSDfzEuQ7nkApgU4F2goas2IQAAr66Kgz
+        o84YXX9RiXgMMbO11adU+9wyIU2sT1IwkpG0hu/SSPu3HA02DCderbhB0tG/3Red3zQdn6juLqT3A
+        Ct13Ot1jsvA4bjaHELuB/FSMT/lTurqMUx+PwUvPNULLm5xhyLQHw4lRLIaSsrxXYZq4v0FcCbjHQ
+        RRLdBjB0dagHzQd14N+x6l80rT9DajWuLaV4GKgYoRd64x0xL/H7xA5NlegRL4NA==;
+Received: by sipsolutions.net with esmtpsa (TLS1.3:ECDHE_SECP256R1__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
+        (Exim 4.95)
+        (envelope-from <johannes@sipsolutions.net>)
+        id 1ml4qx-00Dh6U-8K;
+        Thu, 11 Nov 2021 08:50:35 +0100
+Message-ID: <e6bfbffa089c711fa3ea21f5f8ab852aaa4d9c00.camel@sipsolutions.net>
+Subject: Re: [syzbot] WARNING in __dev_change_net_namespace
+From:   Johannes Berg <johannes@sipsolutions.net>
+To:     syzbot <syzbot+5434727aa485c3203fed@syzkaller.appspotmail.com>,
+        "andrii@kernel.org" <andrii@kernel.org>,
+        "ast@kernel.org" <ast@kernel.org>,
+        "avagin@gmail.com" <avagin@gmail.com>,
+        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
+        "cong.wang@bytedance.com" <cong.wang@bytedance.com>,
+        "daniel@iogearbox.net" <daniel@iogearbox.net>,
+        "davem@davemloft.net" <davem@davemloft.net>,
+        "hawk@kernel.org" <hawk@kernel.org>,
+        "john.fastabend@gmail.com" <john.fastabend@gmail.com>,
+        "kafai@fb.com" <kafai@fb.com>,
+        "kpsingh@kernel.org" <kpsingh@kernel.org>,
+        "kuba@kernel.org" <kuba@kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "songliubraving@fb.com" <songliubraving@fb.com>,
+        "syzkaller-bugs@googlegroups.com" <syzkaller-bugs@googlegroups.com>,
+        "yhs@fb.com" <yhs@fb.com>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Date:   Thu, 11 Nov 2021 08:50:33 +0100
+In-Reply-To: <0000000000008a7c9605d07da846@google.com>
+References: <0000000000008a7c9605d07da846@google.com>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.38.4 (3.38.4-1.fc33) 
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+X-malware-bazaar: not-scanned
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-For the worst case (MAX_NUMNODES=1024), the node_demotion structure can
-consume 32k bytes, which appears too large, so we can change to allocate
-node_demotion dynamically at initialization time. Meanwhile allocating
-the target demotion nodes array dynamically to select a suitable size
-according to the MAX_NUMNODES.
+On Thu, 2021-11-11 at 06:43 +0000, syzbot wrote:
+> 
+> console output: https://syzkaller.appspot.com/x/log.txt?x=15b45fb6b00000
 
-Signed-off-by: Baolin Wang <baolin.wang@linux.alibaba.com>
----
- mm/migrate.c | 38 +++++++++++++++++++++++++++++---------
- 1 file changed, 29 insertions(+), 9 deletions(-)
+So we see that fault injection is triggering a memory allocation failure
+deep within the device_rename():
 
-diff --git a/mm/migrate.c b/mm/migrate.c
-index 126e9e6..0145b38 100644
---- a/mm/migrate.c
-+++ b/mm/migrate.c
-@@ -1152,10 +1152,11 @@ static int __unmap_and_move(struct page *page, struct page *newpage,
- #define DEFAULT_DEMOTION_TARGET_NODES 15
- struct demotion_nodes {
- 	unsigned short nr;
--	short nodes[DEFAULT_DEMOTION_TARGET_NODES];
-+	short nodes[];
- };
- 
--static struct demotion_nodes node_demotion[MAX_NUMNODES] __read_mostly;
-+static struct demotion_nodes *node_demotion[MAX_NUMNODES] __read_mostly;
-+static unsigned short target_nodes_max;
- 
- /**
-  * next_demotion_node() - Get the next node in the demotion path
-@@ -1168,10 +1169,13 @@ struct demotion_nodes {
-  */
- int next_demotion_node(int node)
- {
--	struct demotion_nodes *nd = &node_demotion[node];
-+	struct demotion_nodes *nd = node_demotion[node];
- 	unsigned short target_nr, index;
- 	int target;
- 
-+	if (!nd)
-+		return NUMA_NO_NODE;
-+
- 	/*
- 	 * node_demotion[] is updated without excluding this
- 	 * function from running.  RCU doesn't provide any
-@@ -3014,9 +3018,9 @@ static void __disable_all_migrate_targets(void)
- 	int node, i;
- 
- 	for_each_online_node(node) {
--		node_demotion[node].nr = 0;
--		for (i = 0; i < DEFAULT_DEMOTION_TARGET_NODES; i++)
--			node_demotion[node].nodes[i] = NUMA_NO_NODE;
-+		node_demotion[node]->nr = 0;
-+		for (i = 0; i < target_nodes_max; i++)
-+			node_demotion[node]->nodes[i] = NUMA_NO_NODE;
- 	}
- }
- 
-@@ -3048,7 +3052,10 @@ static int establish_migrate_target(int node, nodemask_t *used,
- 				    int best_distance)
- {
- 	int migration_target, index, val;
--	struct demotion_nodes *nd = &node_demotion[node];
-+	struct demotion_nodes *nd = node_demotion[node];
-+
-+	if (WARN_ONCE(!nd, "Can not set up migration path for node:%d\n", node))
-+		return NUMA_NO_NODE;
- 
- 	migration_target = find_next_best_node(node, used);
- 	if (migration_target == NUMA_NO_NODE)
-@@ -3067,7 +3074,7 @@ static int establish_migrate_target(int node, nodemask_t *used,
- 	}
- 
- 	index = nd->nr;
--	if (WARN_ONCE(index >= DEFAULT_DEMOTION_TARGET_NODES,
-+	if (WARN_ONCE(index >= target_nodes_max,
- 		      "Exceeds maximum demotion target nodes\n"))
- 		return NUMA_NO_NODE;
- 
-@@ -3256,7 +3263,20 @@ static int migration_offline_cpu(unsigned int cpu)
- 
- static int __init migrate_on_reclaim_init(void)
- {
--	int ret;
-+	struct demotion_nodes *nd;
-+	int ret, node;
-+
-+	/* Keep the maximum target demotion nodes are less than MAX_NUMNODES. */
-+	target_nodes_max = min_t(unsigned short, DEFAULT_DEMOTION_TARGET_NODES,
-+				 MAX_NUMNODES - 1);
-+	for_each_node(node) {
-+		nd = kmalloc(struct_size(nd, nodes, target_nodes_max),
-+			     GFP_KERNEL);
-+		if (!nd)
-+			continue;
-+
-+		node_demotion[node] = nd;
-+	}
- 
- 	ret = cpuhp_setup_state_nocalls(CPUHP_MM_DEMOTION_DEAD, "mm/demotion:offline",
- 					NULL, migration_offline_cpu);
--- 
-1.8.3.1
+int __dev_change_net_namespace(struct net_device *dev, struct net *net,
+                               const char *pat, int new_ifindex)
+{
+...
+        /* Fixup kobjects */
+        err = device_rename(&dev->dev, dev->name);
+        WARN_ON(err);
+
+
+So we hit that WARN_ON().
+
+I'm not really sure what to do about that though. Feels like we should
+be able to cope with failures here, but clearly we don't, and it seems
+like it would also be tricky to do after all the work already done at
+this point.
+
+Perhaps device_rename() could grow an API to preallocate all the
+memories, but that would also be fairly involved, I imagine?
+
+johannes
 
