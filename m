@@ -2,79 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4FE6944DD2F
+	by mail.lfdr.de (Postfix) with ESMTP id 064B844DD2E
 	for <lists+linux-kernel@lfdr.de>; Thu, 11 Nov 2021 22:38:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234134AbhKKVlT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Nov 2021 16:41:19 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40920 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233894AbhKKVlR (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
+        id S234046AbhKKVlR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Thu, 11 Nov 2021 16:41:17 -0500
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 76838C061766
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Nov 2021 13:38:27 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=3lkkhLrbFiHNdf9+03ciw6IbukYuglEJPMQDkhxE4cw=; b=BCPDJh4rG8M7FoFYU8younTNO9
-        mEv2pKY8z4vjqKfCTP/fKuAYzT6d6rS5qHwvif4GFqyoqmL89SwDVZsyT9ka28lDPeDlCB6XQhDwW
-        dt60b7c1GJ7qDdPQflYqiSiOqzMZJMBXihq3gY4N7fNEv7aoYtXYQDtLiRuzb2CeZeXaZB1sQ7A1g
-        zuJlnFdtTLvH1rOPx7sPDFUGwKIvouwM19N02ytWyZOiE44adt65e78y4Os4ivwRLUF8q+0JGcCNh
-        If4QXmFk7vXHJeB52klMfVh18kwpfw8nQuTacOxuPWG+reAC6EQB1Muagu6kOwCq4JvtBrOaJDxMm
-        jAHznyZg==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mlHlw-00FWlu-Bh; Thu, 11 Nov 2021 21:38:16 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+Received: from relay02.th.seeweb.it ([5.144.164.163]:40147 "EHLO
+        relay02.th.seeweb.it" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233544AbhKKVlQ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 11 Nov 2021 16:41:16 -0500
+Received: from [192.168.1.101] (83.6.165.118.neoplus.adsl.tpnet.pl [83.6.165.118])
+        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 7CEF130003C;
-        Thu, 11 Nov 2021 22:38:14 +0100 (CET)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 669832C25B0AA; Thu, 11 Nov 2021 22:38:14 +0100 (CET)
-Date:   Thu, 11 Nov 2021 22:38:14 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Waiman Long <longman@redhat.com>
-Cc:     Hillf Danton <hdanton@sina.com>,
-        =?utf-8?B?6ams5oyv5Y2O?= <mazhenhua@xiaomi.com>,
-        mingo <mingo@redhat.com>, will <will@kernel.org>,
-        "boqun.feng" <boqun.feng@gmail.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Subject: Re: [BUG]locking/rwsem: only clean RWSEM_FLAG_HANDOFF when already
- set
-Message-ID: <YY2NRpg1q6hLIqpK@hirez.programming.kicks-ass.net>
-References: <20211107090131.1535-1-hdanton@sina.com>
- <13d683ed-793c-b502-44ff-f28114d9386b@redhat.com>
- <02e118c0-2116-b806-2b48-b9c91dc847dd@redhat.com>
- <20211110213854.GE174703@worktop.programming.kicks-ass.net>
- <YY0x55wxO2v5HCOW@hirez.programming.kicks-ass.net>
- <61735528-141c-8d77-592d-b6b8fb75ebaa@redhat.com>
- <YY1s6v9b/tYtNnGv@hirez.programming.kicks-ass.net>
- <e16f9fc2-ce01-192b-065d-460c2ad9b317@redhat.com>
- <20211111202647.GH174703@worktop.programming.kicks-ass.net>
- <be3dc705-494a-913e-230f-9533c7404ac2@redhat.com>
+        (No client certificate requested)
+        by m-r1.th.seeweb.it (Postfix) with ESMTPSA id 6AABD1FECE;
+        Thu, 11 Nov 2021 22:38:24 +0100 (CET)
+Message-ID: <9adb5f50-6156-84d1-5909-f11f06791b04@somainline.org>
+Date:   Thu, 11 Nov 2021 22:38:23 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <be3dc705-494a-913e-230f-9533c7404ac2@redhat.com>
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.1.1
+Subject: Re: [PATCH v3 7/8] arm64: dts: qcom: sdm660-xiaomi-lavender: Enable
+ Simple Framebuffer
+Content-Language: en-US
+To:     Dang Huynh <danct12@riseup.net>
+Cc:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Alexey Min <alexey.min@gmail.com>,
+        Caleb Connolly <caleb@connolly.tech>,
+        Martin Botka <martin.botka@somainline.org>
+References: <20211111031635.3839947-1-danct12@riseup.net>
+ <20211111031635.3839947-8-danct12@riseup.net>
+From:   Konrad Dybcio <konrad.dybcio@somainline.org>
+In-Reply-To: <20211111031635.3839947-8-danct12@riseup.net>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 11, 2021 at 04:01:16PM -0500, Waiman Long wrote:
 
-> > > +			if (has_handoff || (!waiter->rt_task &&
-> > > +					    !time_after(jiffies, waiter->timeout)))
-> > 
-> > Does ->rt_task really help over rt_task(current) ? I suppose there's an
-> > argument for locality, but that should be pretty much it, no?
-> Waiting for the timeout may introduce too much latency for RT task. That is
-> the only reason I am doing it. I can take it out if you think it is not
-> necessary.
 
-I meant simply calling rt_task(waiter->task) here, instead of mucking about
-with the extra variable.
+On 11.11.2021 04:16, Dang Huynh wrote:
+> This lets the user sees the framebuffer console.
+> 
+> Reviewed-by: Caleb Connolly <caleb@connolly.tech>
+> Reviewed-by: Martin Botka <martin.botka@somainline.org>
+> Reviewed-by: Konrad Dybcio <konradybcio@gmail.com>
+Drop.
+
+> Signed-off-by: Dang Huynh <danct12@riseup.net>
+> ---
+>  .../boot/dts/qcom/sdm660-xiaomi-lavender.dts   | 18 ++++++++++++++++++
+>  1 file changed, 18 insertions(+)
+> 
+> diff --git a/arch/arm64/boot/dts/qcom/sdm660-xiaomi-lavender.dts b/arch/arm64/boot/dts/qcom/sdm660-xiaomi-lavender.dts
+> index 8de3e111f427..712392545c2e 100644
+> --- a/arch/arm64/boot/dts/qcom/sdm660-xiaomi-lavender.dts
+> +++ b/arch/arm64/boot/dts/qcom/sdm660-xiaomi-lavender.dts
+> @@ -23,7 +23,20 @@ aliases {
+>  	};
+>  
+>  	chosen {
+> +		#address-cells = <2>;
+> +		#size-cells = <2>;
+> +		ranges;
+> +
+>  		stdout-path = "serial0:115200n8";
+> +
+> +		framebuffer0: framebuffer@9d400000 {
+> +			compatible = "simple-framebuffer";
+> +			reg = <0 0x9d400000 0 (1080 * 2340 * 4)>;
+> +			width = <1080>;
+> +			height = <2340>;
+> +			stride = <(1080 * 4)>;
+> +			format = "a8r8g8b8";
+> +		};
+>  	};
+>  
+>  	vph_pwr: vph-pwr-regulator {
+> @@ -61,6 +74,11 @@ ramoops@a0000000 {
+>  			ftrace-size = <0x0>;
+>  			pmsg-size = <0x20000>;
+>  		};
+> +
+> +		framebuffer_mem: memory@9d400000 {
+> +			reg = <0x0 0x9d400000 0x0 0x23ff000>;
+> +			no-map;
+> +		};
+>  	};
+>  };
+>  
+
+Reviewed-by: Konrad Dybcio <konrad.dybcio@somainline.org>
+
+Konrad
