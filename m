@@ -2,129 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 888D544D8FE
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Nov 2021 16:16:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E29DC44D901
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Nov 2021 16:16:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233813AbhKKPTS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Nov 2021 10:19:18 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39146 "EHLO
+        id S233715AbhKKPTo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Nov 2021 10:19:44 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39246 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231739AbhKKPTR (ORCPT
+        with ESMTP id S230177AbhKKPTj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Nov 2021 10:19:17 -0500
-Received: from mail-wr1-x433.google.com (mail-wr1-x433.google.com [IPv6:2a00:1450:4864:20::433])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 86C30C061766
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Nov 2021 07:16:27 -0800 (PST)
-Received: by mail-wr1-x433.google.com with SMTP id u18so10376783wrg.5
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Nov 2021 07:16:27 -0800 (PST)
+        Thu, 11 Nov 2021 10:19:39 -0500
+Received: from mail-ot1-x335.google.com (mail-ot1-x335.google.com [IPv6:2607:f8b0:4864:20::335])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69071C061766
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Nov 2021 07:16:50 -0800 (PST)
+Received: by mail-ot1-x335.google.com with SMTP id b5-20020a9d60c5000000b0055c6349ff22so9261605otk.13
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Nov 2021 07:16:50 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=immu-ne.20210112.gappssmtp.com; s=20210112;
+        d=linaro.org; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=fhj0cnQSgQJIzD/Xl/qdsU8IO4Zo9cA5GB5xCgS18Wo=;
-        b=g+hkBq+WFhVcG4fSQEvWEk1fXwaX4hUmg445Lgu1BXlnCV3cutTM0D57bvOkFHOh68
-         ILtePrPrLtbwUS/E9iScfG6rFdtXtvcJ5IRSyv02D2ETRUL3AbVablafdOKArOARyBOQ
-         b/jkm6nxefilrZB+73iX1Aae/49TedZgDktoufu5hH/mwAfP8XUYwKIAQlelCccuxE8M
-         895BgNMZN1oKjWO3dBFYSIuw8HrrBugLu3GJVIV42GP7hR8DYgQfGXd5Da9eiE5VxGw/
-         DQbdOynLiG8skPeIUiBKd3CfkvcK73jzP2ORvXTK5jRLAoD3RZf7+0r7srV53ITEv/C0
-         vHjQ==
+        bh=FhB8iItBejzwjrEa1loJueZ9ZXnRDY7hXmZta29xgJ4=;
+        b=RHhhmajT9R6bgHbRESc2fgGIJLv2CWFiaAkYb1xPPG+nNOQf6SpbKlUAhc5IufiRDY
+         BU7qnZ6QjGBz57yN5sG5Sv9pkFHUKy8UAZDWTsBRmPn0wcv7vfBPaIfQ4OpqYMcnbFZ/
+         wnxZubBSMhKfY1ILz9ikdxOvzGUNqtZTIBgAvTqI8JIamxhHi3KkMmZZOQiaqhkHqKL6
+         ql6hLDx8Za/XsD5qQzjpDOvGZeRpSBm5LQlBMqBxxc2MyDhf9metgDRpPNJsafGIkpb/
+         +LRDXHoJoRF3Aw0MB4odMuCncLgN7Ws/hK8JaZnSoTn+y1q0yKjdzUPD1sCTTlF4wFeO
+         sJLw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=fhj0cnQSgQJIzD/Xl/qdsU8IO4Zo9cA5GB5xCgS18Wo=;
-        b=qkJPmC+P8odk0RmogZiqzEBzCx+wQ63/IPCNix/V76T93oDUbRUBrCtwbnGHo3j3J9
-         wq4P/RrNMZu0TWx5t0J+dm70YzYIk2W+JhHT940qeomkX2S/MbcwsNTnMFBvczNlp8L1
-         VIEhHmeDC/9nb0aVPQh4YSsJ/yN/oVbXGzQhY/52pTtByJ7sUFDWhxhU3yux1JaMEd67
-         3aNLSke6bK/9sUOGtKfgO4kEAf9CwGKRdVrgOAm2KpCgAuS/uwYf8hju6dflAGRzcnU2
-         fRSDsBe2dKzhb1Ya6gi9h8Viu+FLLIwXlK6twVm2oia59t3jGey2elJrq9RIRiAipJXV
-         K+yg==
-X-Gm-Message-State: AOAM531km8gJOCnIbb2OdTTfipGVh8mXAWq3fdUoflhSuUCUo+4q0rYz
-        V4CWrYvFZpxQvBVD+CqlLpciaa6buVvBeXvxUvnJaQ==
-X-Google-Smtp-Source: ABdhPJxoxR4YR+eij4k5gbF83r4Woo9CGi0KEHV0yF+7MbJ2I6t/xKAke9fWDBnvUk+aFyijaXLJRQNQRHpTRAoD1/U=
-X-Received: by 2002:adf:dd0d:: with SMTP id a13mr9171660wrm.259.1636643786132;
- Thu, 11 Nov 2021 07:16:26 -0800 (PST)
+        bh=FhB8iItBejzwjrEa1loJueZ9ZXnRDY7hXmZta29xgJ4=;
+        b=AAK0osIbeSDCnkis5pvSIESlLBtfluZGxjITQ5uv2G/+pKSUEfrnoaYn9nU9cQ6UZp
+         juV8hOOCldYmo8MLrEkmJzK46gvQrLJ09cHhSaBJYbVlc8MLj0O3I1Rmufb2kJbdIi/l
+         hwe2KvG4YscwSVdmnja5tXx22cbtqRodITAfIUAwqIkG7fanO/FAQhRMH6pBU5Jr28mA
+         IWl9i1GJnyHlsnLfv6nSSkcn3lTCTalLwECFDe3v0U/N0Ng8g8nt7naWCg2CLwXhvjuO
+         a9swWGI0Z1DXvix29nBBJYNwuystPqXZgJWNsIxWTGmskhP6waeVilWs3mR2+zP7k7zj
+         O+Qg==
+X-Gm-Message-State: AOAM533S7KeC1jK7dkNSzxmFqfmTO7vUBkGDNVYINX+lBOljItSr2viq
+        nxEKNv4g+/lM/nICd/m4XcZH+Ll5o3DIy47plxJmfw==
+X-Google-Smtp-Source: ABdhPJxYcwHKiOWs+DTPgi9NESiPf7NVzw/HdlcpYLb2qQtA0XFzifD249u7EjiXWMyo/n0b8DRsmXxQk9rPwf2aPd4=
+X-Received: by 2002:a9d:6348:: with SMTP id y8mr6611657otk.179.1636643809760;
+ Thu, 11 Nov 2021 07:16:49 -0800 (PST)
 MIME-Version: 1.0
-References: <CAHp75VdRwvU5WjFP5E4gg8U+_e34A0Lwze+nz_wVHoB49jLeLg@mail.gmail.com>
- <CAArk9MNGSxR+92n-D2pe_+r+Z0Q9FoTMPqk11sAKA=4Vckj0HQ@mail.gmail.com>
- <YYy7QZGKeEEfI1mH@lahna> <CAHifhD5bXu2nP533RXyWDnyNt=k2rRZq5Z6A6CCik_2e6XNgGA@mail.gmail.com>
- <YYzxWPIWFAV04LRU@lahna> <CAD2FfiGnmFSTPvkJaXj+cf4yDvci-j+2QkpMqNY821fUT5C=CA@mail.gmail.com>
- <YY0UCHtf8SAvGHTY@lahna> <CAD2FfiF=7H7RuAdrSrrr57JF6YG=pb5jw2QMgBDQsAEwgasYLw@mail.gmail.com>
- <YY0b01g+z3lkO4w2@lahna> <CAArk9MOxZaK2WqsuPR4GbgdxSnUBqgO1KZ8OT=+siksYq+2PxQ@mail.gmail.com>
- <YY0xZjjGjNq+kUXi@lahna>
-In-Reply-To: <YY0xZjjGjNq+kUXi@lahna>
-From:   Hans-Gert Dahmen <hans-gert.dahmen@immu.ne>
-Date:   Thu, 11 Nov 2021 16:16:14 +0100
-Message-ID: <CAHifhD6+BB+4LHq1CE3ZBVhnG-V0U=3H51mjfh44dx11kMCUfg@mail.gmail.com>
-Subject: Re: [PATCH] firmware: export x86_64 platform flash bios region via sysfs
-To:     Mika Westerberg <mika.westerberg@linux.intel.com>
-Cc:     Mauro Lima <mauro.lima@eclypsium.com>,
-        Richard Hughes <hughsient@gmail.com>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Philipp Deppenwiese <philipp.deppenwiese@immu.ne>,
-        "platform-driver-x86@vger.kernel.org" 
-        <platform-driver-x86@vger.kernel.org>
+References: <20211103114830.62711-1-alistair@alistair23.me>
+ <20211103114830.62711-3-alistair@alistair23.me> <20211105152154.20f5cbd1@aktux>
+ <CAKmqyKNx00ecsAyOjtLk8i6r75WD0uw=nd=fd9z44yBuau+Vdw@mail.gmail.com> <20211110183654.61328998@kemnade.info>
+In-Reply-To: <20211110183654.61328998@kemnade.info>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Thu, 11 Nov 2021 16:16:37 +0100
+Message-ID: <CACRpkdbrf8a7B-J=3s9x7JCyGgDk9VcsTd_-9o484MtfapVzHQ@mail.gmail.com>
+Subject: Re: [PATCH v2 2/4] Documentation: DT: bindings: input: Add
+ documentation for cyttsp5
+To:     Andreas Kemnade <andreas@kemnade.info>
+Cc:     Alistair Francis <alistair23@gmail.com>,
+        Alistair Francis <alistair@alistair23.me>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        devicetree <devicetree@vger.kernel.org>,
+        linux-input <linux-input@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Mylene Josserand <mylene.josserand@free-electrons.com>,
+        Henrik Rydberg <rydberg@bitmath.org>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Am Do., 11. Nov. 2021 um 16:06 Uhr schrieb Mika Westerberg
-<mika.westerberg@linux.intel.com>:
->
-> Hi,
->
-> On Thu, Nov 11, 2021 at 11:42:52AM -0300, Mauro Lima wrote:
-> > > > > Having said that the hardware sequencer used in the recent CPUs should
-> > > > > be much safer in that sense.
-> > > >
-> > > > FWIW, I'd be fine if we had RO access for HWSEQ flash access only. If
-> > > > I understood correctly that's what Mauro proposed (with a patch) and
-> > > > instead was told that it was being rewritten as a mtd driver
-> > > > completion time unknown.
-> > >
-> > > I think Mauro proposed something different, basically exposing RO parts
-> > > of the driver only.
-> >
-> > My patch was intended to move the read functionality of the spi chip
-> > to be able to compile the driver with just that and then remove the
-> > dangerous tag. So we can use that functionality to read the flash, I'm
-> > missing what is different from the things being discussed here sorry.
->
-> I'm hinting that we could make this "non-DANGEROUS" for hardware
-> sequencer parts of the driver. Basically moving only the software
-> sequencer bits as DANGEROUS or something like that. The hardware
-> sequencer is much more safer because it does not allow to run random
-> opcodes.
->
-> In case someone is unfamiliar with this, the Intel SPI hardware
-> exposes two interfaces through the same controller. One that is called
-> software sequencer and there is a register of "allowed" opcodes that
-> software can use as it wishes. This register can be locked down but is
-> not always. The second interface is the hardware sequencer that only
-> exposes higher level commands like read, write and so on and internally
-> then executes whatever opcode the controller got from the chip
-> "supported opcodes table" (SFDP).  The recent Intel hardware, all
-> big-cores, only provide hardware sequencer and the software one is not
-> even available.
->
+On Wed, Nov 10, 2021 at 6:37 PM Andreas Kemnade <andreas@kemnade.info> wrote:
+> Alistair Francis <alistair23@gmail.com> wrote:
 
-I am familiar with this and I do totally agree. I believe HW
-sequencing is available since sandy-bridge from 2011, so it will
-suffice for modern platforms. Honestly me and my developer friends
-never understood why this driver needs to still focus on SW sequencing
-altogether, it seems like a (possibly buggy) relic that just slows
-down the vital parts. So I'd say it is a good idea to move the HW
-sequencing parts, basically splitting it, but still add a RO/RW flag
-to the module to be extra safe.
+> You have a kind of double inversion here, so things are automagically fixed.
+> IMHO to describe it correctly would be to set GPIO_ACTIVE_LOW here
+> and in the driver
+>
+>         /* Reset the gpio to be in a reset state */
+>         ts->reset_gpio = devm_gpiod_get_optional(dev, "reset", GPIOD_OUT_HIGH);
+>         if (IS_ERR(ts->reset_gpio)) {
+>                 rc = PTR_ERR(ts->reset_gpio);
+>                 dev_err(dev, "Failed to request reset gpio, error %d\n", rc);
+>                 return rc;
+>         }
+>         gpiod_set_value(ts->reset_gpio, 0);
+>
+> That is the way how other active-low reset lines are handled.
 
-> Regardless of all this the driver needs to be converted from MTD to SPI
-> (SPI MEM) before we can add any features. I'm planning to send v4 of
-> that series next week.
+Correct.
 
-This is an understandable reason and thank you for working on it.
+This is a source of confusion, I contemplated just changing the name
+of GPIOD_OUT_HIGH to GPIOD_OUT_ASSERTED etc to indicate
+what is going on.
 
-Hans-Gert
+gpiod_set_value(ts->reset_gpio, 0) should similarly be interpreted
+as "de-assert this line" no matter the polarity.
+
+Yours,
+Linus Walleij
