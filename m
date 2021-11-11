@@ -2,113 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2828444DD37
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Nov 2021 22:40:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1972E44DD40
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Nov 2021 22:46:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234108AbhKKVnZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Nov 2021 16:43:25 -0500
-Received: from relay01.th.seeweb.it ([5.144.164.162]:46995 "EHLO
-        relay01.th.seeweb.it" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233666AbhKKVnX (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Nov 2021 16:43:23 -0500
-Received: from [192.168.1.101] (83.6.165.118.neoplus.adsl.tpnet.pl [83.6.165.118])
-        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by m-r1.th.seeweb.it (Postfix) with ESMTPSA id C43691FECE;
-        Thu, 11 Nov 2021 22:40:31 +0100 (CET)
-Message-ID: <80190e08-0303-be47-9df1-b4367843623f@somainline.org>
-Date:   Thu, 11 Nov 2021 22:40:29 +0100
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.1.1
-Subject: Re: [PATCH v3 8/8] arm64: dts: qcom: sdm660-xiaomi-lavender: Add USB
-Content-Language: en-US
-To:     Dang Huynh <danct12@riseup.net>
-Cc:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        id S234010AbhKKVr3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Nov 2021 16:47:29 -0500
+Received: from mail.kernel.org ([198.145.29.99]:52660 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229868AbhKKVr2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 11 Nov 2021 16:47:28 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 15346611C0;
+        Thu, 11 Nov 2021 21:44:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1636667078;
+        bh=HeBg888XneREwYs2D1oL9Fbiy9/LIFLtfcsXmvNGOuk=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:From;
+        b=gU1vapMExoIwcO5ulvWbL5DKTPzuDfIRCY9KOp3Lt3OE31Q+YjoxghQHD/zU3cb8s
+         hAIkEP1E5h1ZM+CvdklkVPOZgQlb8i7V3xcdNL+MeROL0fpYMA4WEv1lGGuW8vd7aM
+         QTXjxh1apUputbCJ/3aqb9qlcAwJtZYqgmsZ+juSyjC9IARIxF29IYKRqpb2hWelit
+         wGGlN+CYTPaQvpzqZ8SZ67DeEY8qI2XJxv2me6MGAhvxXi6w+SuSewd+L4QPUHYDmQ
+         ftNABpjuDiVDhPVN9tx2+R/24vMWKx0yYTFGdT0NO77gSBk5w7DCy00y4eO+VfTgc3
+         kdO1r817abuDw==
+Date:   Thu, 11 Nov 2021 15:44:36 -0600
+From:   Bjorn Helgaas <helgaas@kernel.org>
+To:     Li Yang <leoyang.li@nxp.com>
+Cc:     Zhiqiang Hou <Zhiqiang.Hou@nxp.com>, linux-pci@vger.kernel.org,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>, lkml <linux-kernel@vger.kernel.org>,
+        "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" 
+        <linux-arm-kernel@lists.infradead.org>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
         Rob Herring <robh+dt@kernel.org>,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Alexey Min <alexey.min@gmail.com>,
-        Caleb Connolly <caleb@connolly.tech>,
-        Martin Botka <martin.botka@somainline.org>
-References: <20211111031635.3839947-1-danct12@riseup.net>
- <20211111031635.3839947-9-danct12@riseup.net>
-From:   Konrad Dybcio <konrad.dybcio@somainline.org>
-In-Reply-To: <20211111031635.3839947-9-danct12@riseup.net>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Shawn Guo <shawnguo@kernel.org>, gustavo.pimentel@synopsys.com,
+        Minghuan Lian <minghuan.Lian@nxp.com>,
+        Mingkai Hu <mingkai.hu@nxp.com>, Roy Zang <roy.zang@nxp.com>
+Subject: Re: [PATCHv5 0/6] PCI: layerscape: Add power management support
+Message-ID: <20211111214436.GA1352369@bhelgaas>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CADRPPNRL8m+YawUJJe0MNLhRQ4NJROv4DVzP+rWTGeS6fCbDnQ@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 11.11.2021 04:16, Dang Huynh wrote:
-> From: Alexey Min <alexey.min@gmail.com>
+On Thu, Nov 11, 2021 at 03:21:37PM -0600, Li Yang wrote:
+> On Wed, Apr 7, 2021 at 9:13 AM Zhiqiang Hou <Zhiqiang.Hou@nxp.com> wrote:
+> >
+> > From: Hou Zhiqiang <Zhiqiang.Hou@nxp.com>
+> >
+> > This patch series is to add PCIe power management support for NXP
+> > Layerscape platforms.
+> >
+> > Hou Zhiqiang (6):
+> >   PCI: layerscape: Change to use the DWC common link-up check function
+> >   dt-bindings: pci: layerscape-pci: Add a optional property big-endian
+> >   arm64: dts: layerscape: Add big-endian property for PCIe nodes
+> >   dt-bindings: pci: layerscape-pci: Update the description of SCFG
+> >     property
+> >   arm64: dts: ls1043a: Add SCFG phandle for PCIe nodes
+> >   PCI: layerscape: Add power management support
+> >
+> >  .../bindings/pci/layerscape-pci.txt           |   6 +-
+> >  .../arm64/boot/dts/freescale/fsl-ls1012a.dtsi |   1 +
+> >  .../arm64/boot/dts/freescale/fsl-ls1043a.dtsi |   6 +
+> >  .../arm64/boot/dts/freescale/fsl-ls1046a.dtsi |   3 +
+> >  drivers/pci/controller/dwc/pci-layerscape.c   | 450 ++++++++++++++----
+> >  drivers/pci/controller/dwc/pcie-designware.h  |   1 +
+> >  6 files changed, 370 insertions(+), 97 deletions(-)
 > 
-> Enable and configure DWC3 and QUSB2 PHY to enable USB
-> functionality on the Redmi Note 7.
+> Hi Bjorn,
 > 
-> Signed-off-by: Alexey Min <alexey.min@gmail.com>
-> Co-developed-by: Dang Huynh <danct12@riseup.net>
-> Signed-off-by: Dang Huynh <danct12@riseup.net>
-> ---
->  .../boot/dts/qcom/sdm660-xiaomi-lavender.dts  | 25 +++++++++++++++++++
->  1 file changed, 25 insertions(+)
-> 
-> diff --git a/arch/arm64/boot/dts/qcom/sdm660-xiaomi-lavender.dts b/arch/arm64/boot/dts/qcom/sdm660-xiaomi-lavender.dts
-> index 712392545c2e..bf7f334b0b5c 100644
-> --- a/arch/arm64/boot/dts/qcom/sdm660-xiaomi-lavender.dts
-> +++ b/arch/arm64/boot/dts/qcom/sdm660-xiaomi-lavender.dts
-> @@ -80,6 +80,15 @@ framebuffer_mem: memory@9d400000 {
->  			no-map;
->  		};
->  	};
-> +
-> +	/*
-> +	 * Until we hook up type-c detection, we
-> +	 * have to stick with this. But it works.
-> +	 */
-> +	extcon_usb: extcon-usb {
-> +		compatible = "linux,extcon-usb-gpio";
-> +		id-gpio = <&tlmm 58 GPIO_ACTIVE_HIGH>;
-> +	};
->  };
->  
->  &blsp1_uart2 {
-> @@ -96,6 +105,13 @@ &pon_resin {
->  	linux,code = <KEY_VOLUMEDOWN>;
->  };
->  
-> +&qusb2phy {
-> +	status = "okay";
-> +
-> +	vdd-supply = <&vreg_l1b_0p925>;
-> +	vdda-phy-dpdm-supply = <&vreg_l7b_3p125>;
-> +};
-> +
->  &rpm_requests {
->  	pm660l-regulators {
->  		compatible = "qcom,rpm-pm660l-regulators";
-> @@ -401,3 +417,12 @@ &sdhc_2 {
->  &tlmm {
->  	gpio-reserved-ranges = <8 4>;
->  };
-> +
-> +&usb3 {
-> +	status = "okay";
-> +};
-> +
-> +&usb3_dwc3 {
-> +	dr_mode = "peripheral";
-> +	extcon = <&extcon_usb>;
-> +};
+> I don't see any feedback on this version.  Is there any chance that
+> the binding/driver changes can be picked up?
 
-Reviewed-by: Konrad Dybcio <konrad.dybcio@somainline.org>
+Probably slipped through the cracks.  We're in the middle of the v5.16
+merge window right now.  After v5.16-rc1 is tagged (probably Nov 14),
+rebase your series on top of that, incorporate Rob's reviewed-by, and
+repost it.  Then Lorenzo will see it and take a look.
 
-On a side note, I wonder if any of the more interesting USB-C lanes (say DP out or USB3 [at least for host mode])
-are connected on this device..
-
-Konrad
+Bjorn
