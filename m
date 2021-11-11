@@ -2,75 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6DF9944DD29
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Nov 2021 22:36:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4FE6944DD2F
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Nov 2021 22:38:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234185AbhKKVjG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Nov 2021 16:39:06 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40416 "EHLO
+        id S234134AbhKKVlT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Nov 2021 16:41:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40920 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234179AbhKKVjF (ORCPT
+        with ESMTP id S233894AbhKKVlR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Nov 2021 16:39:05 -0500
-Received: from relay03.th.seeweb.it (relay03.th.seeweb.it [IPv6:2001:4b7a:2000:18::164])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D365C061766;
-        Thu, 11 Nov 2021 13:36:15 -0800 (PST)
-Received: from [192.168.1.101] (83.6.165.118.neoplus.adsl.tpnet.pl [83.6.165.118])
-        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+        Thu, 11 Nov 2021 16:41:17 -0500
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 76838C061766
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Nov 2021 13:38:27 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=3lkkhLrbFiHNdf9+03ciw6IbukYuglEJPMQDkhxE4cw=; b=BCPDJh4rG8M7FoFYU8younTNO9
+        mEv2pKY8z4vjqKfCTP/fKuAYzT6d6rS5qHwvif4GFqyoqmL89SwDVZsyT9ka28lDPeDlCB6XQhDwW
+        dt60b7c1GJ7qDdPQflYqiSiOqzMZJMBXihq3gY4N7fNEv7aoYtXYQDtLiRuzb2CeZeXaZB1sQ7A1g
+        zuJlnFdtTLvH1rOPx7sPDFUGwKIvouwM19N02ytWyZOiE44adt65e78y4Os4ivwRLUF8q+0JGcCNh
+        If4QXmFk7vXHJeB52klMfVh18kwpfw8nQuTacOxuPWG+reAC6EQB1Muagu6kOwCq4JvtBrOaJDxMm
+        jAHznyZg==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mlHlw-00FWlu-Bh; Thu, 11 Nov 2021 21:38:16 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by m-r1.th.seeweb.it (Postfix) with ESMTPSA id 6C8A120225;
-        Thu, 11 Nov 2021 22:36:13 +0100 (CET)
-Message-ID: <bb03bac2-2bfb-0b4c-e624-ca36b32212c3@somainline.org>
-Date:   Thu, 11 Nov 2021 22:36:12 +0100
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 7CEF130003C;
+        Thu, 11 Nov 2021 22:38:14 +0100 (CET)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 669832C25B0AA; Thu, 11 Nov 2021 22:38:14 +0100 (CET)
+Date:   Thu, 11 Nov 2021 22:38:14 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Waiman Long <longman@redhat.com>
+Cc:     Hillf Danton <hdanton@sina.com>,
+        =?utf-8?B?6ams5oyv5Y2O?= <mazhenhua@xiaomi.com>,
+        mingo <mingo@redhat.com>, will <will@kernel.org>,
+        "boqun.feng" <boqun.feng@gmail.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Subject: Re: [BUG]locking/rwsem: only clean RWSEM_FLAG_HANDOFF when already
+ set
+Message-ID: <YY2NRpg1q6hLIqpK@hirez.programming.kicks-ass.net>
+References: <20211107090131.1535-1-hdanton@sina.com>
+ <13d683ed-793c-b502-44ff-f28114d9386b@redhat.com>
+ <02e118c0-2116-b806-2b48-b9c91dc847dd@redhat.com>
+ <20211110213854.GE174703@worktop.programming.kicks-ass.net>
+ <YY0x55wxO2v5HCOW@hirez.programming.kicks-ass.net>
+ <61735528-141c-8d77-592d-b6b8fb75ebaa@redhat.com>
+ <YY1s6v9b/tYtNnGv@hirez.programming.kicks-ass.net>
+ <e16f9fc2-ce01-192b-065d-460c2ad9b317@redhat.com>
+ <20211111202647.GH174703@worktop.programming.kicks-ass.net>
+ <be3dc705-494a-913e-230f-9533c7404ac2@redhat.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.1.1
-Subject: Re: [PATCH v3 5/8] arm64: dts: qcom: sdm660-xiaomi-lavender: Add
- volume up button
-Content-Language: en-US
-To:     Dang Huynh <danct12@riseup.net>
-Cc:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Alexey Min <alexey.min@gmail.com>,
-        Caleb Connolly <caleb@connolly.tech>,
-        Martin Botka <martin.botka@somainline.org>
-References: <20211111031635.3839947-1-danct12@riseup.net>
- <20211111031635.3839947-6-danct12@riseup.net>
-From:   Konrad Dybcio <konrad.dybcio@somainline.org>
-In-Reply-To: <20211111031635.3839947-6-danct12@riseup.net>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <be3dc705-494a-913e-230f-9533c7404ac2@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, Nov 11, 2021 at 04:01:16PM -0500, Waiman Long wrote:
 
+> > > +			if (has_handoff || (!waiter->rt_task &&
+> > > +					    !time_after(jiffies, waiter->timeout)))
+> > 
+> > Does ->rt_task really help over rt_task(current) ? I suppose there's an
+> > argument for locality, but that should be pretty much it, no?
+> Waiting for the timeout may introduce too much latency for RT task. That is
+> the only reason I am doing it. I can take it out if you think it is not
+> necessary.
 
-On 11.11.2021 04:16, Dang Huynh wrote:
-> This enables the volume up key.
-> 
-> Reviewed-by: Caleb Connolly <caleb@connolly.tech>
-> Reviewed-by: Martin Botka <martin.botka@somainline.org>
-> Reviewed-by: Konrad Dybcio <konradybcio@gmail.com>
-Drop.
-
-> Signed-off-by: Dang Huynh <danct12@riseup.net>
-> ---
->  .../boot/dts/qcom/sdm660-xiaomi-lavender.dts      | 15 +++++++++++++++
->  1 file changed, 15 insertions(+)
-> 
-> diff --git a/arch/arm64/boot/dts/qcom/sdm660-xiaomi-lavender.dts b/arch/arm64/boot/dts/qcom/sdm660-xiaomi-lavender.dts
-> index 729b71407c36..456562cb6028 100644
-> --- a/arch/arm64/boot/dts/qcom/sdm660-xiaomi-lavender.dts
-> +++ b/arch/arm64/boot/dts/qcom/sdm660-xiaomi-lavender.dts
-> @@ -9,6 +9,9 @@
->  #include "sdm660.dtsi"
->  #include "pm660.dtsi"
->  #include "pm660l.dtsi"
-> +#include <dt-bindings/gpio/gpio.h>
-gpio.h can safely be moved to the SoC DTSI.
-
-Konrad
+I meant simply calling rt_task(waiter->task) here, instead of mucking about
+with the extra variable.
