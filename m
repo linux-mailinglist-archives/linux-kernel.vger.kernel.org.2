@@ -2,118 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1367444D6C9
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Nov 2021 13:47:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7611B44D6C8
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Nov 2021 13:46:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231951AbhKKMts (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Nov 2021 07:49:48 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60948 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233014AbhKKMtq (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
+        id S233321AbhKKMtq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Thu, 11 Nov 2021 07:49:46 -0500
-Received: from mail-ed1-x532.google.com (mail-ed1-x532.google.com [IPv6:2a00:1450:4864:20::532])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 82E9AC061766;
-        Thu, 11 Nov 2021 04:46:56 -0800 (PST)
-Received: by mail-ed1-x532.google.com with SMTP id g14so23756615edz.2;
-        Thu, 11 Nov 2021 04:46:56 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=rmYbMDi9X6r+8cr3nDRypgiDDT92VNxHsOWoaavVZTE=;
-        b=MotrSybExBfUW/MIKUe2sajkzYlRGgw3a31f7o6XhtC9oty5DMndYTKJvgisK/y680
-         jJleFoSazfg0JsaT0BZE4GueDNuSw40VwMOogfzvXvk3aT8k/sH0moOFcwJ6tSPyBzBu
-         K6ZK6PBPZq9ZxM7YVkU8faSF7/a7wUYAPYJrf+lsaA+Ju6ppbvl3A/jbEYOBlkHM1zrz
-         r02FVb8W8aduUA7/cT8XeTeo+as/2SGXpFwzPhswPlq1tRuTVQLJMEACd/EA6Z+pj8p9
-         F2lu3aXO+e0qdXyQnAN175M3XkGmy8ytZ7IO8MNkGeX8xuOcMFXHLkqMND6QoVDTohGF
-         BmDA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=rmYbMDi9X6r+8cr3nDRypgiDDT92VNxHsOWoaavVZTE=;
-        b=CsBqMEht8iP0JG6M2LwW0HIACAXST1z8DDlexvm0vVgYBSlQ+oPzhv4e8u+p9kLhRb
-         GHpHBm378Qo506DQET+jGpLCxiZxa8XBGbAiLOFYHPUPWmVKKknAgA0cisO4bBFYDxo6
-         tHQi8Tpw4a2PEwmP4KGdhLxFUbxGnotp9p7XjGzQtLW3grsytqRKSK82pYQfL/6KTOM7
-         S1Mo5Zfh4N9aToUykpcyJRxEKwPQBDPDcUTvBvxx9YAuF+FLue530gBFEQBzXYsSgSg+
-         Zu0b5lKdfz+vMfq+/VHFs1ON/6/Tnjk94qCutMN4IWgWJw/YyWL/lVZviElXHFS9qKQV
-         41MA==
-X-Gm-Message-State: AOAM531v1XHJ+z+jMknN6NEIP/JbPuQW1xC2YlulO51X8hu9gjyW8yA0
-        7ibYHTIIVmmJlbX0VkmedaeMb2JVda2J+ceUPG0=
-X-Google-Smtp-Source: ABdhPJwoOXqdX/osTzOMBxsKHW0vU01IY360A/EsL0XRDhTLLcFUL19x7sqimmocmsHBHAdmRXdaFPUM+A/l84UAOuc=
-X-Received: by 2002:a05:6402:1801:: with SMTP id g1mr9532440edy.107.1636634814997;
- Thu, 11 Nov 2021 04:46:54 -0800 (PST)
+Received: from foss.arm.com ([217.140.110.172]:38950 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229946AbhKKMto (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 11 Nov 2021 07:49:44 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 1A4BB101E;
+        Thu, 11 Nov 2021 04:46:55 -0800 (PST)
+Received: from bogus (unknown [10.57.45.194])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 2ACD53F70D;
+        Thu, 11 Nov 2021 04:46:53 -0800 (PST)
+Date:   Thu, 11 Nov 2021 12:46:50 +0000
+From:   Sudeep Holla <sudeep.holla@arm.com>
+To:     Wang ShaoBo <bobo.shaobowang@huawei.com>
+Cc:     linux-kernel@vger.kernel.org, rafael@kernel.org,
+        gregkh@linuxfoundation.org, peterz@infradead.org,
+        cj.chengjian@huawei.com, huawei.libin@huawei.com,
+        weiyongjun1@huawei.com
+Subject: Re: [PATCH] arch_topology: Fix missing clear cluster_cpumask in
+ remove_cpu_topology()
+Message-ID: <20211111124650.7mksocfjjzuzxt3i@bogus>
+References: <20211110095856.469360-1-bobo.shaobowang@huawei.com>
 MIME-Version: 1.0
-References: <CAHifhD5V9vwJenRLcPRH5ZMeLa_JnjZKfdcFZw1CjceBtC6=Ew@mail.gmail.com>
- <CAHp75VeyQEaABFOnEUh2pdFx9ROJvRcud-BuEbKWmaEWpL9_Uw@mail.gmail.com>
- <CAHifhD7Qf7+dc7K-MjNguqmiCWUxOJZmQoCTRUZOR-RWMm_JPw@mail.gmail.com>
- <CAHp75Ve9BMNy3gP=-Dajm+Lgu+E4FCqc4phLgV1_cr2qUnTX_w@mail.gmail.com>
- <CAHifhD4n7O5eWFPOjRAmHYL52tW0K=uXXzVj7L5+enTFwFXW2A@mail.gmail.com>
- <CAArk9MP5cKJ+VhAZUseW4LnQNRvux=MZe2eSy3rQkbHKnUsGig@mail.gmail.com>
- <CAHp75VdRwvU5WjFP5E4gg8U+_e34A0Lwze+nz_wVHoB49jLeLg@mail.gmail.com>
- <CAArk9MNGSxR+92n-D2pe_+r+Z0Q9FoTMPqk11sAKA=4Vckj0HQ@mail.gmail.com>
- <YYy7QZGKeEEfI1mH@lahna> <CAHifhD5bXu2nP533RXyWDnyNt=k2rRZq5Z6A6CCik_2e6XNgGA@mail.gmail.com>
- <YYzxWPIWFAV04LRU@lahna> <CAD2FfiGnmFSTPvkJaXj+cf4yDvci-j+2QkpMqNY821fUT5C=CA@mail.gmail.com>
-In-Reply-To: <CAD2FfiGnmFSTPvkJaXj+cf4yDvci-j+2QkpMqNY821fUT5C=CA@mail.gmail.com>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Thu, 11 Nov 2021 14:46:10 +0200
-Message-ID: <CAHp75Vcp=hC1oL5FBQDDFe8EBxWB9Po4FKNS9ZGtD3q-yQPtAw@mail.gmail.com>
-Subject: Re: [PATCH] firmware: export x86_64 platform flash bios region via sysfs
-To:     Richard Hughes <hughsient@gmail.com>,
-        Ard Biesheuvel <ardb@kernel.org>
-Cc:     Mika Westerberg <mika.westerberg@linux.intel.com>,
-        Hans-Gert Dahmen <hans-gert.dahmen@immu.ne>,
-        Mauro Lima <mauro.lima@eclypsium.com>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Philipp Deppenwiese <philipp.deppenwiese@immu.ne>,
-        "platform-driver-x86@vger.kernel.org" 
-        <platform-driver-x86@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211110095856.469360-1-bobo.shaobowang@huawei.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 11, 2021 at 1:46 PM Richard Hughes <hughsient@gmail.com> wrote:
-> On Thu, 11 Nov 2021 at 10:33, Mika Westerberg
-> <mika.westerberg@linux.intel.com> wrote:
+On Wed, Nov 10, 2021 at 05:58:56PM +0800, Wang ShaoBo wrote:
+> When testing cpu online and offline, warning happened like this:
+> 
+> [  146.746743] WARNING: CPU: 92 PID: 974 at kernel/sched/topology.c:2215 build_sched_domains+0x81c/0x11b0
+> [  146.749988] CPU: 92 PID: 974 Comm: kworker/92:2 Not tainted 5.15.0 #9
+> [  146.750402] Hardware name: Huawei TaiShan 2280 V2/BC82AMDDA, BIOS 1.79 08/21/2021
+> [  146.751213] Workqueue: events cpuset_hotplug_workfn
+> [  146.751629] pstate: 00400009 (nzcv daif +PAN -UAO -TCO -DIT -SSBS BTYPE=--)
+> [  146.752048] pc : build_sched_domains+0x81c/0x11b0
+> [  146.752461] lr : build_sched_domains+0x414/0x11b0
+> [  146.752860] sp : ffff800040a83a80
+> [  146.753247] x29: ffff800040a83a80 x28: ffff20801f13a980 x27: ffff20800448ae00
+> [  146.753644] x26: ffff800012a858e8 x25: ffff800012ea48c0 x24: 0000000000000000
+> [  146.754039] x23: ffff800010ab7d60 x22: ffff800012f03758 x21: 000000000000005f
+> [  146.754427] x20: 000000000000005c x19: ffff004080012840 x18: ffffffffffffffff
+> [  146.754814] x17: 3661613030303230 x16: 30303078303a3239 x15: ffff800011f92b48
+> [  146.755197] x14: ffff20be3f95cef6 x13: 2e6e69616d6f642d x12: 6465686373204c4c
+> [  146.755578] x11: ffff20bf7fc83a00 x10: 0000000000000040 x9 : 0000000000000000
+> [  146.755957] x8 : 0000000000000002 x7 : ffffffffe0000000 x6 : 0000000000000002
+> [  146.756334] x5 : 0000000090000000 x4 : 00000000f0000000 x3 : 0000000000000001
+> [  146.756705] x2 : 0000000000000080 x1 : ffff800012f03860 x0 : 0000000000000001
+> [  146.757070] Call trace:
+> [  146.757421]  build_sched_domains+0x81c/0x11b0
+> [  146.757771]  partition_sched_domains_locked+0x57c/0x978
+> [  146.758118]  rebuild_sched_domains_locked+0x44c/0x7f0
+> [  146.758460]  rebuild_sched_domains+0x2c/0x48
+> [  146.758791]  cpuset_hotplug_workfn+0x3fc/0x888
+> [  146.759114]  process_one_work+0x1f4/0x480
+> [  146.759429]  worker_thread+0x48/0x460
+> [  146.759734]  kthread+0x158/0x168
+> [  146.760030]  ret_from_fork+0x10/0x20
+> [  146.760318] ---[ end trace 82c44aad6900e81a ]---
+> 
+> For some architectures like risc-v and arm64 which use common code
+> clear_cpu_topology() in shutting down CPUx, When CONFIG_SCHED_CLUSTER
+> is set, cluster_sibling in cpu_topology of each sibling adjacent
+> to CPUx is missed clearing, this causes checking failed in
+> topology_span_sane() and rebuilding topology failure at end when CPU online.
+> 
+> Different sibling's cluster_sibling in cpu_topology[] when CPU92 offline
+> (CPU 92, 93, 94, 95 are in one cluster):
+> 
+> Before revision:
+> CPU                 [92]      [93]      [94]      [95]
+> cluster_sibling     [92]     [92-95]   [92-95]   [92-95]
+> 
+> After revision:
+> CPU                 [92]      [93]      [94]      [95]
+> cluster_sibling     [92]     [93-95]   [93-95]   [93-95]
+> 
 
-> it's always going to work on x64 -- if the system firmware isn't available at that offset then the platform just isn't going to boot.
-
-Well, it's _usual_ case, but in general the assumption is simply
-incorrect. Btw, have you checked it on Coreboot enabled platforms?
-What about bare metal configurations where the bootloader provides
-services to the OS?
-
-> Ideally, fwupd needs the entire IFD partition which contains all the
-> EFI File Volumes.
-
-Well, can't it be part of the EFI subsystem in the kernel then? (+Ard)
-
-> We already parse these when the user is booting
-> without secure boot using the Intel SPI controller and doing *evil*
-> hacks to make the PCI device visible. The reason we want to parse the
-> BIOS can be explained pretty easily; at startup we look at the TPM
-> PCRs and we know very quickly and easily if the system firmware event
-> has changed. If the checksum changed, then the firmware was modified
-> in some way. However, saying to the user that "checksum changed" isn't
-> useful at all. What we want to do is say something like "an EFI binary
-> called RootKitz.efi was added" or "the AmiTcgPlatformPeiAfterMem.efi
-> binary changed" and actually report what was done. At the moment we
-> can do this, but not if /dev/mem cannot be used.
->
-> > However, we can perhaps expose some of it through intel-spi,
-> > and make that work so that distros can enable it safely.
->
-> I think, if we're being honest, that Intel has no plans to make
-> intel-spi available as a RO interface of any sort. There's some sort
-> of hardware errata or misdesign that nobody can mention that makes the
-> RO access unsafe. I think it's probably more than missing arbitration.
-
-
+Reviewed-by: Sudeep Holla <sudeep.holla@arm.com>
 
 -- 
-With Best Regards,
-Andy Shevchenko
+Regards,
+Sudeep
