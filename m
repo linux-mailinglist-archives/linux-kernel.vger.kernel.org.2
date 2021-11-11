@@ -2,73 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9BF0144D6B6
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Nov 2021 13:39:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EFC5144D6B8
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Nov 2021 13:39:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233257AbhKKMmT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Nov 2021 07:42:19 -0500
-Received: from mail.kernel.org ([198.145.29.99]:52544 "EHLO mail.kernel.org"
+        id S232908AbhKKMme (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Nov 2021 07:42:34 -0500
+Received: from mail.skyhub.de ([5.9.137.197]:50642 "EHLO mail.skyhub.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231951AbhKKMmQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Nov 2021 07:42:16 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id BC63461038;
-        Thu, 11 Nov 2021 12:39:26 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1636634367;
-        bh=pqY6pWBKqFqLPVwFfney88YGZd/ZDQ6qptq/TVEJbvc=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Hjpu2CRgGBlIneSzKuDdGaY3RUxTiY0iD3zoR7UyDvcrJj/yDOdxP9+nd+L6T8DEA
-         XZckxBsa/DUYJyLdyNAJc2d/V6rt+2eR+gu/5QG9iDJqOgawOXkmDoDrj3GojErAEp
-         3K5M/qq6eYWUx5isn/XKOAmogtbdnt3WfPVtfcpG3lJCUqw+O3l2RkSyAZqHUbevbw
-         4dpZ20KXXm1v1DK/5e2mXvoS9LvOvaZodvTZ+9DFD/X3NCgkZPFyK6Ch/XsAwNR2DA
-         EPzn8n/APLDl8CMI0fTIQKAhzevWSQyjQUWUFp4vvOydSqVauykTT2noM+v4TmCS+2
-         HI4TOsi5osuWQ==
-Date:   Thu, 11 Nov 2021 12:39:23 +0000
-From:   Mark Brown <broonie@kernel.org>
-To:     Ansuel Smith <ansuelsmth@gmail.com>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [RESEND PATCH] regmap: allow to define reg_update_bits for no
- bus configuration
-Message-ID: <YY0O+yHo9ZSYgj83@sirena.org.uk>
-References: <20211111014138.15645-1-ansuelsmth@gmail.com>
+        id S231951AbhKKMmd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 11 Nov 2021 07:42:33 -0500
+Received: from zn.tnic (p200300ec2f0fc200bb2554a44f8eb9ed.dip0.t-ipconnect.de [IPv6:2003:ec:2f0f:c200:bb25:54a4:4f8e:b9ed])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 2CE1F1EC0532;
+        Thu, 11 Nov 2021 13:39:43 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1636634383;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=pudPfA/TcO8YJorHN3KVppXQPK26ggKvCxR2WK1znys=;
+        b=HUAKOUVVLAv4WBJdGohH5WkjVM5Qn/W1tlHtUCSGDBLIWeDQxhlpLatWdx/MVM32l0PVHk
+        oJtc7Gd0jggSqkOYvvseFtLX28VibICefe8q2w53+JQzo8ScpczOsdpYptevMIGQqmvFAR
+        lSk4F0C6dbQelvsWrWupcU2nrNDWaFM=
+Date:   Thu, 11 Nov 2021 13:39:40 +0100
+From:   Borislav Petkov <bp@alien8.de>
+To:     Naveen Krishna Chatradhi <nchatrad@amd.com>
+Cc:     linux-edac@vger.kernel.org, x86@kernel.org,
+        linux-kernel@vger.kernel.org, mingo@redhat.com, mchehab@kernel.org,
+        yazen.ghannam@amd.com, Muralidhara M K <muralimk@amd.com>
+Subject: Re: [PATCH v6 4/5] EDAC/amd64: Move struct fam_type into amd64_pvt
+ structure
+Message-ID: <YY0PDMUjcbrfY9EB@zn.tnic>
+References: <20211028130106.15701-1-nchatrad@amd.com>
+ <20211028130106.15701-5-nchatrad@amd.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="oLGvg2jcuDI+EZmV"
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20211111014138.15645-1-ansuelsmth@gmail.com>
-X-Cookie: Teutonic:
+In-Reply-To: <20211028130106.15701-5-nchatrad@amd.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, Oct 28, 2021 at 06:31:05PM +0530, Naveen Krishna Chatradhi wrote:
+> diff --git a/drivers/edac/amd64_edac.h b/drivers/edac/amd64_edac.h
+> index 881ff6322bc9..82d9f64aa150 100644
+> --- a/drivers/edac/amd64_edac.h
+> +++ b/drivers/edac/amd64_edac.h
+> @@ -389,6 +389,8 @@ struct amd64_pvt {
+>  	enum mem_type dram_type;
+>  
+>  	struct amd64_umc *umc;	/* UMC registers */
+> +
+> +	struct amd64_family_type *fam_type;
 
---oLGvg2jcuDI+EZmV
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+With my suggestion to the previous patch to assign ops and per-family
+members dynamically, you can just as well get rid of struct
+amd64_family_type and put its members directly in the pvt structure.
 
-On Thu, Nov 11, 2021 at 02:41:38AM +0100, Ansuel Smith wrote:
-> Some device requires a special handling for reg_update_bits and can't use
-> the normal regmap read write logic. An example is when locking is
-> handled by the device and rmw operations requires to do atomic operations.
+Thx.
 
-Please allow a reasonable time for review and remember that it's the
-merge window right now so no new patches are being applied.
+-- 
+Regards/Gruss,
+    Boris.
 
---oLGvg2jcuDI+EZmV
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmGNDvoACgkQJNaLcl1U
-h9AvRAf+MV+w+VUWXuLCUVCPFqEeTrrynCCx8rKKsi2BlPjNw4H/KOCz/ZsiuKse
-TuYYg9T3PDTC+lUFY+jTmi3LNR/ls7760RNFBELMNfxNK+7k1X7O05WX0HV3v58x
-3RF9d4bKwM3J1mHho/ZxPlLQHxz3rPIsMvRISP8B3uwWzQ6zJETKBhpxviP7wCeY
-5JoGJWYLwl6RF5rG4hCuXjY7XAiB0zuTE+9hbynLYMlqbeJB/HvoYwvvqeDoTQfd
-JhZPOz9V8t7YIzXLaslDrzeKfotz0i63YmsWjuEtC/MGf5NDKTmbgP5Fk0aHvSs6
-l8XIjywwQ+4UdPpbP2TmDbMY38FW1g==
-=b79x
------END PGP SIGNATURE-----
-
---oLGvg2jcuDI+EZmV--
+https://people.kernel.org/tglx/notes-about-netiquette
