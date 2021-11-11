@@ -2,125 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8143144D697
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Nov 2021 13:23:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D82E44D69C
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Nov 2021 13:23:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233352AbhKKM0D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Nov 2021 07:26:03 -0500
-Received: from foss.arm.com ([217.140.110.172]:38528 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230400AbhKKM0C (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Nov 2021 07:26:02 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 08B50101E;
-        Thu, 11 Nov 2021 04:23:13 -0800 (PST)
-Received: from [10.57.58.62] (unknown [10.57.58.62])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 621D03F70D;
-        Thu, 11 Nov 2021 04:23:10 -0800 (PST)
-Subject: Re: [PATCH v2 4/4] perf arm-spe: Support hardware-based PID tracing
-To:     Leo Yan <leo.yan@linaro.org>, Namhyung Kim <namhyung@kernel.org>
-Cc:     linux-kernel <linux-kernel@vger.kernel.org>,
-        linux-perf-users <linux-perf-users@vger.kernel.org>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        John Garry <john.garry@huawei.com>,
-        Will Deacon <will@kernel.org>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        linux-arm-kernel@lists.infradead.org
-References: <20211109115020.31623-1-german.gomez@arm.com>
- <20211109115020.31623-5-german.gomez@arm.com>
- <CAM9d7cg7Lp49xOc3BOhM4O9fqs7i+v6cNd=eaKWjDbREiE3Pvg@mail.gmail.com>
- <20211111074148.GC102075@leoy-ThinkPad-X240s>
- <CAM9d7cjW_=hDkHVWchNFDyqZXbbBwMb224hbZTMsCe34MLL-4Q@mail.gmail.com>
- <20211111083002.GA106401@leoy-ThinkPad-X240s>
-From:   German Gomez <german.gomez@arm.com>
-Message-ID: <5c0e255b-e140-d157-7dfd-b27a43e128c9@arm.com>
-Date:   Thu, 11 Nov 2021 12:23:08 +0000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        id S233487AbhKKM0J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Nov 2021 07:26:09 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55662 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233463AbhKKM0H (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 11 Nov 2021 07:26:07 -0500
+Received: from mail-ed1-x52f.google.com (mail-ed1-x52f.google.com [IPv6:2a00:1450:4864:20::52f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C741AC061767;
+        Thu, 11 Nov 2021 04:23:17 -0800 (PST)
+Received: by mail-ed1-x52f.google.com with SMTP id m14so23727064edd.0;
+        Thu, 11 Nov 2021 04:23:17 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=V5ILNs4YSePRyMbOT/U8nVhbxuOpdMS+fF2ZT1tClsc=;
+        b=o/KdlzJXqQMQBtcRAFR+OZeqeRSVwUUcUif8Eh/REjHIZss51B4RzjSpxCqTuiWnII
+         Z2cWZryXVBykSXQPDMDgElY0UEo0ZOgZc65/rWMjmvd62WmI6td6tZlYHdzJSCbo8zb2
+         GqyS0Qxcp2JdSPF7avFMQJjL+Lpq3gyn9NQJyudciUVvvsnn4AVhA9yVB9eQtVsvnyIH
+         ha/HF5GdjdCdcGGXAgw563D8ZyBNd65qgqOlsjLNZeYuWyHteFaGvmg0jZMH+VOF6Vnx
+         FzBPzxEfuBEASh9zpD0WXIXpjHEPyEcamafAoWM+Y183XO7uF31o9re2tiMiLA5UCczg
+         HNSA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=V5ILNs4YSePRyMbOT/U8nVhbxuOpdMS+fF2ZT1tClsc=;
+        b=lWjILdLg7IxBHRBzvgZtZrv71gsLqRKsMnCmEwgUUGY7z0+NE5BPd/++rZoAztKELI
+         C7Onazs0qki9/hcjHudZ4vX6iaLmNgs8AENi7W0OFNmoAvIOh5d9v7kxO8lLuGoH5tml
+         Z/79X3UA0UjIDrRUJoeXOZOup9Z/xYjEDcZjUCAnjiUcwFTMldriSBJ9fmX+WhdF9Mot
+         GXOixYfPgvldOK5gKQorF/xUPH0R54IBUFkTv5mPGwz12VpBypFzIV20fBww+HxwKif+
+         /NcCiUk1EwtUZvI+CUi2lY/mMPFyNQzlK677+Q57saYerY0B+3wyXDqWSNmE2udqpDIs
+         Mj6g==
+X-Gm-Message-State: AOAM530xw/bsArIvH2SD+rrKLkCD+a7Iv2DDqGdkvGAp5EbzXxQ3l2om
+        OE6yusKFWqIZ/XjfQw9bGUg=
+X-Google-Smtp-Source: ABdhPJy78PgXjX0plP/9AJRh16PL94apb0nSMaaeo7JemOUI4nA1+ey0TYPlrULLB/v0HWwzmACTUg==
+X-Received: by 2002:a17:906:c041:: with SMTP id bm1mr9068477ejb.280.1636633396429;
+        Thu, 11 Nov 2021 04:23:16 -0800 (PST)
+Received: from lahvuun (93-76-191-141.kha.volia.net. [93.76.191.141])
+        by smtp.gmail.com with ESMTPSA id e13sm1239611eje.95.2021.11.11.04.23.15
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 11 Nov 2021 04:23:16 -0800 (PST)
+Date:   Thu, 11 Nov 2021 14:23:14 +0200
+From:   Ilya Trukhanov <lahvuun@gmail.com>
+To:     Javier Martinez Canillas <fmartine@redhat.com>
+Cc:     linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        Hans de Goede <hdegoede@redhat.com>,
+        Peter Jones <pjones@redhat.com>,
+        Daniel Vetter <daniel.vetter@ffwll.ch>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        linux-fbdev@vger.kernel.org, Sam Ravnborg <sam@ravnborg.org>,
+        Thorsten Leemhuis <regressions@leemhuis.info>,
+        Javier Martinez Canillas <javierm@redhat.com>,
+        stable@vger.kernel.org, Borislav Petkov <bp@suse.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Subject: Re: [PATCH v3] fbdev: Prevent probing generic drivers if a FB is
+ already registered
+Message-ID: <20211111122314.fd4atj3zbiro73t3@lahvuun>
+References: <20211111115757.1351045-1-javierm@redhat.com>
 MIME-Version: 1.0
-In-Reply-To: <20211111083002.GA106401@leoy-ThinkPad-X240s>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211111115757.1351045-1-javierm@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Leo, Namhyung,
+On Thu, Nov 11, 2021 at 12:57:57PM +0100, Javier Martinez Canillas wrote:
+> The efifb and simplefb drivers just render to a pre-allocated frame buffer
+> and rely on the display hardware being initialized before the kernel boots.
+> 
+> But if another driver already probed correctly and registered a fbdev, the
+> generic drivers shouldn't be probed since an actual driver for the display
+> hardware is already present.
+> 
+> This is more likely to occur after commit d391c5827107 ("drivers/firmware:
+> move x86 Generic System Framebuffers support") since the "efi-framebuffer"
+> and "simple-framebuffer" platform devices are registered at a later time.
+> 
+> Link: https://lore.kernel.org/r/20211110200253.rfudkt3edbd3nsyj@lahvuun/
+> Fixes: d391c5827107 ("drivers/firmware: move x86 Generic System Framebuffers support")
+> Reported-by: Ilya Trukhanov <lahvuun@gmail.com>
+> Cc: <stable@vger.kernel.org> # 5.15.x
+> Signed-off-by: Javier Martinez Canillas <javierm@redhat.com>
+> Reviewed-by: Daniel Vetter <daniel.vetter@ffwll.ch>
+> ---
+> 
+> Changes in v3:
+> - Cc <stable@vger.kernel.org> since a Fixes: tag is not enough (gregkh).
+> 
+> Changes in v2:
+> - Add a Link: tag with a reference to the bug report (Thorsten Leemhuis).
+> - Add a comment explaining why the probe fails earlier (Daniel Vetter).
+> - Add a Fixes: tag for stable to pick the fix (Daniel Vetter).
+> - Add Daniel Vetter's Reviewed-by: tag.
+> - Improve the commit message and mention the culprit commit
+> 
+>  drivers/video/fbdev/efifb.c    | 11 +++++++++++
+>  drivers/video/fbdev/simplefb.c | 11 +++++++++++
+>  2 files changed, 22 insertions(+)
+> 
+> diff --git drivers/video/fbdev/efifb.c drivers/video/fbdev/efifb.c
+> index edca3703b964..ea42ba6445b2 100644
+> --- drivers/video/fbdev/efifb.c
+> +++ drivers/video/fbdev/efifb.c
+> @@ -351,6 +351,17 @@ static int efifb_probe(struct platform_device *dev)
+>  	char *option = NULL;
+>  	efi_memory_desc_t md;
+>  
+> +	/*
+> +	 * Generic drivers must not be registered if a framebuffer exists.
+> +	 * If a native driver was probed, the display hardware was already
+> +	 * taken and attempting to use the system framebuffer is dangerous.
+> +	 */
+> +	if (num_registered_fb > 0) {
+> +		dev_err(&dev->dev,
+> +			"efifb: a framebuffer is already registered\n");
+> +		return -EINVAL;
+> +	}
+> +
+>  	if (screen_info.orig_video_isVGA != VIDEO_TYPE_EFI || pci_dev_disabled)
+>  		return -ENODEV;
+>  
+> diff --git drivers/video/fbdev/simplefb.c drivers/video/fbdev/simplefb.c
+> index 62f0ded70681..b63074fd892e 100644
+> --- drivers/video/fbdev/simplefb.c
+> +++ drivers/video/fbdev/simplefb.c
+> @@ -407,6 +407,17 @@ static int simplefb_probe(struct platform_device *pdev)
+>  	struct simplefb_par *par;
+>  	struct resource *mem;
+>  
+> +	/*
+> +	 * Generic drivers must not be registered if a framebuffer exists.
+> +	 * If a native driver was probed, the display hardware was already
+> +	 * taken and attempting to use the system framebuffer is dangerous.
+> +	 */
+> +	if (num_registered_fb > 0) {
+> +		dev_err(&pdev->dev,
+> +			"simplefb: a framebuffer is already registered\n");
+> +		return -EINVAL;
+> +	}
+> +
+>  	if (fb_get_options("simplefb", NULL))
+>  		return -ENODEV;
+>  
+> -- 
+> 2.33.1
+> 
 
-On 11/11/2021 08:30, Leo Yan wrote:
-> Hi Namhyung,
->
-> On Wed, Nov 10, 2021 at 11:59:05PM -0800, Namhyung Kim wrote:
->
-> [...]
->
->>>>> +static void arm_spe_set_pid_tid_cpu(struct arm_spe *spe,
->>>>> +                                   struct auxtrace_queue *queue)
->>>>> +{
->>>>> +       struct arm_spe_queue *speq = queue->priv;
->>>>> +       pid_t tid;
->>>>> +
->>>>> +       tid = machine__get_current_tid(spe->machine, speq->cpu);
->>>>> +       if (tid != -1) {
->>>>> +               speq->tid = tid;
->>>>> +               thread__zput(speq->thread);
->>>>> +       } else
->>>>> +               speq->tid = queue->tid;
->>>>> +
->>>>> +       if ((!speq->thread) && (speq->tid != -1)) {
->>>>> +               speq->thread = machine__find_thread(spe->machine, -1,
->>>>> +                                                   speq->tid);
->>>>> +       }
->>>>> +
->>>>> +       if (speq->thread) {
->>>>> +               speq->pid = speq->thread->pid_;
->>>>> +               if (queue->cpu == -1)
->>>>> +                       speq->cpu = speq->thread->cpu;
->>>>> +       }
->>>>> +}
->>>>> +
->>>>> +static int arm_spe_set_tid(struct arm_spe_queue *speq, pid_t tid)
->>>>> +{
->>>>> +       struct arm_spe *spe = speq->spe;
->>>>> +       int err = machine__set_current_tid(spe->machine, speq->cpu, tid, tid);
->>>> I think we should pass -1 as pid as we don't know the real pid.
->>> AFAICT, I observe one case for machine__set_current_tid() returning error
->>> is 'speq->cpu' is -1 (this is the case for per-thread tracing).  In
->>> this case, if pass '-1' for pid/tid, it still will return failure.
->>>
->>> So here should return the error as it is.  Am I missing anything?
->> I'm not saying about the error.  It's about thread status.
->> In the machine__set_current_tid(), it calls
->> machine__findnew_thread() with given pid and tid.
->>
->> I suspect it can set pid to a wrong value if the thread has
->> no pid value at the moment.
-> Here we should avoid to write pid '-1' with
-> machine__set_current_tid().
+This patch fixes the suspend issue I was experiencing. Thank you.
 
-If the kernel is writing the tids to the contextidr, isn't it wrong to
-assume tid == pid when decoding the context packets here? I haven't
-observed any impact in the built-in commands though, so there must be
-something I'm not seeing.
-
-Thanks,
-German
->
-> The function arm_spe_set_tid() is invoked when SPE trace data contains
-> context packet and it passes pid coming from the context packet.  On
-> the other hand, when SPE trace data doesn't contain context packet, we
-> relies on context switch event to set pid value.  So if we pass pid
-> '-1' in arm_spe_set_tid(), it will overwrite the pid value which has
-> been set by context switch event.
->
-> Simply say, if SPE trace data contains context packet with valid pid,
-> perf invokes arm_spe_set_tid() to set the pid value.  Otherwise, it
-> should skip this operation and roll back to use the pid value from
-> the context switch event.
->
-> Thanks,
-> Leo
+Tested-by: Ilya Trukhanov <lahvuun@gmail.com> 
