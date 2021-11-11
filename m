@@ -2,155 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AA76544D954
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Nov 2021 16:43:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1EFCD44D959
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Nov 2021 16:44:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233828AbhKKPqS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Nov 2021 10:46:18 -0500
-Received: from mail.kernel.org ([198.145.29.99]:58402 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230177AbhKKPqR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Nov 2021 10:46:17 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E992161179;
-        Thu, 11 Nov 2021 15:43:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1636645407;
-        bh=s0P27p9klu2udk+yecyDLl8Dr/l7vMczMSfj2muJPsE=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=rKbNegGavffz/Uv+exArc133KjBnCAPl3fJ606L8erP3w/VRFj+07gJcCPc0h7PR4
-         aMiOefl28ZOUjAdcJKlgxnVrqVFrmIirTit4WCvSENvhHcsdht6aXZlwqe2cLxccNj
-         05GHPQb8Dq+YuLo3BFZVKfm7u3dkQrX92joAGH4ZLcogsaQ24SKFVsehXTPc7T4L7r
-         S1AMRMPhO/WVvCeNkgili+oMPU7FCActTvJZwgAkz4nNUuNSiyE9eR9uxTdO4/OnCl
-         e8ekZWlUI8mesi1vX4uSrSJ+mMrr8EBrKuv35RUgeRzYZolzSWQksM+s5yQqN87kA4
-         eBf4aiKsatRQw==
-Received: by mail-oi1-f181.google.com with SMTP id m6so12323241oim.2;
-        Thu, 11 Nov 2021 07:43:27 -0800 (PST)
-X-Gm-Message-State: AOAM530AGRI4U0n7SQJixnlAQZ/r/sqxqkwzvPofYQ9K4rOMvluVeb46
-        GdEvuZH632xwor+bmzjVQ/uFw8fO9S+8wK2VOQA=
-X-Google-Smtp-Source: ABdhPJxUeL7Ec33BBif4e5ac+GDzauD0T2LW+0yWVxtHjxIu4HtqgXqjNRlBbhOkzaStg+NY7T7HKP6ehob8/gxsMTs=
-X-Received: by 2002:a05:6808:1919:: with SMTP id bf25mr6938143oib.33.1636645407245;
- Thu, 11 Nov 2021 07:43:27 -0800 (PST)
+        id S233959AbhKKPrU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Nov 2021 10:47:20 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45452 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233872AbhKKPrP (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 11 Nov 2021 10:47:15 -0500
+Received: from mail-ed1-x535.google.com (mail-ed1-x535.google.com [IPv6:2a00:1450:4864:20::535])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8040FC0613F5
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Nov 2021 07:44:25 -0800 (PST)
+Received: by mail-ed1-x535.google.com with SMTP id b15so25628369edd.7
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Nov 2021 07:44:25 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=paul-moore-com.20210112.gappssmtp.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=EPQ7vOyVbbdDApHDNZY5gQprN5zr7x8ve73iIkJlJYY=;
+        b=0QU+TYq0W1sc8EeqjE/tNL4yaJ2SFpNf3JbfSJ6XIrpKAwitFcd/yhNROOgoDQwjkj
+         1NMRGqLcfCZMpvPlHqan1c+mGhTrU6zkuQyIp+ySJiC9/Q4lWo3vjntt84USDZ+k21am
+         Yln5xnwGUa2TRf7uWX/0J2QQw+MgU7rUQsfB1IVcQYKFqckaUvu0uZfFQL1/ExxFooFF
+         s/SsXAhYMI4P2W4V6ll0c5VDrqiwvHDDsiF2YCUQo593d1kCA06mEik43mYDWUL1uDms
+         bFOX+T1rjMLZtSH7cboYBKh/gb810BB/Fo1Se41dkIg5AHQm25qVdO6u70csjbkXtDSr
+         O4sg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=EPQ7vOyVbbdDApHDNZY5gQprN5zr7x8ve73iIkJlJYY=;
+        b=FOv9Z1kdJotXSqY2+u0yvH3f4ow7ZbcCRgUs3Buxtib9mPyaAX+VGvCpDQmkmxXefM
+         5fQeWHyjDTQi/rQXmNv6pBI3P4aKxidbJDHiGCrKqHzEr2yYnvMepKgmu3l/jL7KK0jt
+         xLx/wt0UarW0xQ2W3b5XQ7l1hfjDttt+mSy/+hM7fXdlX+eZdbnv0PPcAc6S4vPWZkel
+         u2WksvXXiz7hcobsPUtb5gXI5FkH5P9kGvr7yU7tBFz2hadPnzDVpPhTu+IG66dO3obq
+         A8iwUm4yiG9Y3uMjlJSxkalGIZ643kak0eCG69maGkZBxUEcyPrfjWbJ4+PHTXsy+RQ1
+         vsxg==
+X-Gm-Message-State: AOAM531+g5ok8UCB1hZ2X5v7Kvqy2hJikfLzUjQKNHI0idQLBx6Ez+0C
+        z1XigQexfhkzgMslwkUrHIshe3/3Ao0q2Yyz2ksw
+X-Google-Smtp-Source: ABdhPJw5AV/+6LHJGpXCxldUJSlAQrshxCBciUosbU8oRccWa5FSy8lbwzIVunwib2JpOIbLzgCLXChfqP/otc9BRVQ=
+X-Received: by 2002:a17:907:9484:: with SMTP id dm4mr10250499ejc.307.1636645463777;
+ Thu, 11 Nov 2021 07:44:23 -0800 (PST)
 MIME-Version: 1.0
-References: <CAHifhD5V9vwJenRLcPRH5ZMeLa_JnjZKfdcFZw1CjceBtC6=Ew@mail.gmail.com>
- <CAHp75VeyQEaABFOnEUh2pdFx9ROJvRcud-BuEbKWmaEWpL9_Uw@mail.gmail.com>
- <CAHifhD7Qf7+dc7K-MjNguqmiCWUxOJZmQoCTRUZOR-RWMm_JPw@mail.gmail.com>
- <CAHp75Ve9BMNy3gP=-Dajm+Lgu+E4FCqc4phLgV1_cr2qUnTX_w@mail.gmail.com>
- <CAHifhD4n7O5eWFPOjRAmHYL52tW0K=uXXzVj7L5+enTFwFXW2A@mail.gmail.com>
- <CAArk9MP5cKJ+VhAZUseW4LnQNRvux=MZe2eSy3rQkbHKnUsGig@mail.gmail.com>
- <CAHp75VdRwvU5WjFP5E4gg8U+_e34A0Lwze+nz_wVHoB49jLeLg@mail.gmail.com>
- <CAArk9MNGSxR+92n-D2pe_+r+Z0Q9FoTMPqk11sAKA=4Vckj0HQ@mail.gmail.com>
- <YYy7QZGKeEEfI1mH@lahna> <CAHifhD5bXu2nP533RXyWDnyNt=k2rRZq5Z6A6CCik_2e6XNgGA@mail.gmail.com>
- <YYzxWPIWFAV04LRU@lahna> <CAD2FfiGnmFSTPvkJaXj+cf4yDvci-j+2QkpMqNY821fUT5C=CA@mail.gmail.com>
- <CAHp75Vcp=hC1oL5FBQDDFe8EBxWB9Po4FKNS9ZGtD3q-yQPtAw@mail.gmail.com>
- <CAHifhD6p9qSm5dv1spz+oPRhRkBZeQspHNEphE49fODacm-S6g@mail.gmail.com>
- <CAHp75Vfk5WHWiQxwmqEzVEymgpvjxKWEZbaQ9+=Et7N63Ps=Ng@mail.gmail.com>
- <CAHifhD5bGZOcZFNsHYFeecikHGUts73U4k6=aUVNTKEeETW5rQ@mail.gmail.com> <CAHp75VeSnXfjeNeBLtrR78AmB-18kTeXpknn7-jcPLEeWCrzXQ@mail.gmail.com>
-In-Reply-To: <CAHp75VeSnXfjeNeBLtrR78AmB-18kTeXpknn7-jcPLEeWCrzXQ@mail.gmail.com>
-From:   Ard Biesheuvel <ardb@kernel.org>
-Date:   Thu, 11 Nov 2021 16:43:15 +0100
-X-Gmail-Original-Message-ID: <CAMj1kXHoRa+9gS7OEZZH2SSZQ8Tf4BUMdh-p=+OvWEb1a6ffFA@mail.gmail.com>
-Message-ID: <CAMj1kXHoRa+9gS7OEZZH2SSZQ8Tf4BUMdh-p=+OvWEb1a6ffFA@mail.gmail.com>
-Subject: Re: [PATCH] firmware: export x86_64 platform flash bios region via sysfs
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc:     Hans-Gert Dahmen <hans-gert.dahmen@immu.ne>,
-        Richard Hughes <hughsient@gmail.com>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        Mauro Lima <mauro.lima@eclypsium.com>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Philipp Deppenwiese <philipp.deppenwiese@immu.ne>,
-        "platform-driver-x86@vger.kernel.org" 
-        <platform-driver-x86@vger.kernel.org>
+References: <20211104195949.135374-1-omosnace@redhat.com> <20211109062140.2ed84f96@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+ <CAHC9VhTVNOUHJp+NbqV5AgtwR6+3V6am0SKGKF0CegsPqjQ8pw@mail.gmail.com> <CAFqZXNuct_T-SkvoRg2n7+ye0--OkMJ_gS31V-t3Cm+Yy7FhxQ@mail.gmail.com>
+In-Reply-To: <CAFqZXNuct_T-SkvoRg2n7+ye0--OkMJ_gS31V-t3Cm+Yy7FhxQ@mail.gmail.com>
+From:   Paul Moore <paul@paul-moore.com>
+Date:   Thu, 11 Nov 2021 10:44:12 -0500
+Message-ID: <CAHC9VhTmkQy1_1xFn9StgrwT2m8nyCwvHCMA+1sRdTW6xWR96A@mail.gmail.com>
+Subject: Re: [PATCH net] selinux: fix SCTP client peeloff socket labeling
+To:     Ondrej Mosnacek <omosnace@redhat.com>
+Cc:     Jakub Kicinski <kuba@kernel.org>, Xin Long <lucien.xin@gmail.com>,
+        network dev <netdev@vger.kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Richard Haines <richard_c_haines@btinternet.com>,
+        Vlad Yasevich <vyasevich@gmail.com>,
+        Neil Horman <nhorman@tuxdriver.com>,
+        Marcelo Ricardo Leitner <marcelo.leitner@gmail.com>,
+        "linux-sctp @ vger . kernel . org" <linux-sctp@vger.kernel.org>,
+        SElinux list <selinux@vger.kernel.org>,
+        Linux kernel mailing list <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 11 Nov 2021 at 16:31, Andy Shevchenko <andy.shevchenko@gmail.com> wrote:
->
-> On Thu, Nov 11, 2021 at 4:33 PM Hans-Gert Dahmen
-> <hans-gert.dahmen@immu.ne> wrote:
-> > Am Do., 11. Nov. 2021 um 14:55 Uhr schrieb Andy Shevchenko
-> > <andy.shevchenko@gmail.com>:
-> > > On Thu, Nov 11, 2021 at 2:56 PM Hans-Gert Dahmen
-> > > <hans-gert.dahmen@immu.ne> wrote:
-> > > > Am Do., 11. Nov. 2021 um 13:46 Uhr schrieb Andy Shevchenko
-> > > > <andy.shevchenko@gmail.com>:
-> > > > > On Thu, Nov 11, 2021 at 1:46 PM Richard Hughes <hughsient@gmail.com> wrote:
-> > > > > > On Thu, 11 Nov 2021 at 10:33, Mika Westerberg
-> > > > > > <mika.westerberg@linux.intel.com> wrote:
-> > > > >
-> > > > > > it's always going to work on x64 -- if the system firmware isn't available at that offset then the platform just isn't going to boot.
-> > > > >
-> > > > > Well, it's _usual_ case, but in general the assumption is simply
-> > > > > incorrect. Btw, have you checked it on Coreboot enabled platforms?
-> > > > > What about bare metal configurations where the bootloader provides
-> > > > > services to the OS?
-> > > >
-> > > > No it is always the case. I suggest you go read your own Intel specs
-> > > > and datasheets
+On Thu, Nov 11, 2021 at 7:59 AM Ondrej Mosnacek <omosnace@redhat.com> wrote:
+> On Tue, Nov 9, 2021 at 4:00 PM Paul Moore <paul@paul-moore.com> wrote:
+> > On Tue, Nov 9, 2021 at 9:21 AM Jakub Kicinski <kuba@kernel.org> wrote:
+> > > On Thu,  4 Nov 2021 20:59:49 +0100 Ondrej Mosnacek wrote:
+> > > > As agreed with Xin Long, I'm posting this fix up instead of him. I am
+> > > > now fairly convinced that this is the right way to deal with the
+> > > > immediate problem of client peeloff socket labeling. I'll work on
+> > > > addressing the side problem regarding selinux_socket_post_create()
+> > > > being called on the peeloff sockets separately.
 > > >
-> > > Point me out, please, chapters in SDM (I never really read it in full,
-> > > it's kinda 10x Bible size). What x86 expects is 16 bytes at the end of
-> > > 1Mb physical address space that the CPU runs at first.
+> > > IIUC Paul would like to see this part to come up in the same series.
 > >
-> > So you do not know what you are talking about, am I correct?
+> > Just to reaffirm the IIUC part - yes, your understanding is correct.
 >
-> Let me comment on this provocative question later, after some other
-> comments first.
->
-> > Starting
-> > from 386 the first instruction is executed at 0xFFFFFFF0h. What you
-> > are referring to is the 8086 reset vector and that was like 40 years
-> > ago.
->
-> True. The idea is the same, It has a reset vector standard for x86
-> (which doesn't explicitly tell what is there). So, nothing new or
-> different here.
->
-> > Please refer to SDM volume 3A, chapter 9, section 9.1.4 "First
-> > Instruction Executed", paragraph two. Just watch out for the hex
-> > number train starting with FFFFF... then you will find it. This is
-> > what requires the memory range to be mapped. Modern Intel CPUs require
-> > larger portions, because of the ACM loading and XuCode and whatnot.
->
-> Thanks. Have you read 9.7 and 9.8, btw?
-> Where does it tell anything about memory to be mapped to a certain
-> address, except the last up to 16 bytes?
->
-> > Please refer to the email [1] from me linked below where I reference
-> > all PCH datasheets of the x64 era to prove that 16MB are mapped
-> > hard-wired. Note that the range cannot be turned off and will read
-> > back 0xFF's if the PCH registers are configured to not be backed by
-> > the actual SPI flash contents.
->
-> And as I said it does not cover _all_ x86 designs (usual != all) .
-> Have you heard about Intel MID line of SoCs? Do you know that they
-> have no SPI NOR and the firmware is located on eMMC? Do you know that
-> they can run Linux?
->
-> So, maybe it's you who do not know what you are talking about, am I correct?
->
-> > [1] https://lkml.org/lkml/2021/6/24/379
->
+> The more I'm reading these threads, the more I'm getting confused...
+> Do you insist on resending the whole original series with
+> modifications? Or actual revert patches + the new patches? Or is it
+> enough to revert/resend only the patches that need changes? Do you
+> also insist on the selinux_socket_post_create() thing to be fixed in
+> the same series? Note that the original patches are still in the
+> net.git tree and it doesn't seem like Dave will want to rebase them
+> away, so it seems explicit reverting is the only way to "respin" the
+> series...
 
-Thanks for looping me in (I think ...)
+DaveM is stubbornly rejecting the revert requests so for now I would
+continue to base any patches on top of the netdev tree.  If that
+changes we can reconcile any changes as necessary, that should not be
+a major issue.
 
-The thing I don't like about exposing the entire SPI NOR region to
-user space is that we can never take it back, given the 'never break
-user space' rule. So once we ship this, the cat is out of the bag, and
-somebody (which != the contributors of this code) will have to
-maintain this forever.
+As far as what I would like to see from the patches, ignoring the
+commit description vs cover letter discussion, I would like to see
+patches that fix all of the known LSM/SELinux/SCTP problems as have
+been discussed over the past couple of weeks.  Even beyond this
+particular issue I generally disapprove of partial fixes to known
+problems; I would rather see us sort out all of the issues in a single
+patchset so that we can review everything in a sane manner.  In this
+particular case things are a bit more complicated because of the
+current state of the patches in the netdev tree, but as mentioned
+above just treat the netdev tree as broken and base your patches on
+that with all of the necessary "Fixes:" metadata and the like.
 
-Also, you quoted several different use cases, all of which are
-currently served by exposing a chunk of PA space, and letting the user
-do the interpretation. This is not how it usually works: we tend to
-prefer targeted and maintainable interfaces. That woudl mean that,
-e.g., fwupd can invoke some kind of syscall to get at the version
-numbers it is after, and the logic that finds those numbers is in the
-kernel and not in user space.
+> Regardless of the answers, this thing has rabbithole'd too much and
+> I'm already past my free cycles to dedicate to this, so I think it
+> will take me (and Xin) some time to prepare the corrected and
+> re-documented patches. Moreover, I think I realized how to to deal
+> with the peer_secid-vs.-multiple-assocs-on-one-socket problem that Xin
+> mentions in patch 4/4, fixing which can't really be split out into a
+> separate patch and will need some test coverage, so I don't think I
+> can rush this up at this point...
 
-For the pen testing use case, things are likely a bit different, so I
-realize this is not universally applicable, but just exposing the PA
-space directly is not the solution IMO.
+It's not clear to me from your comments above if this is something you
+are currently working on, planning to work on soon, or giving up on in
+the near term.  Are we able to rely on you for a patchset to fix this
+or are you unable to see this through at this time?
+
+> In the short term, I'd suggest
+> either reverting patches 3/4 and 4/4 (which are the only ones that
+> would need re-doing; the first two are good changes on their own) or
+> leaving everything as is (it's not functionally worse than what we had
+> before...) and waiting for the proper fixes.
+
+DaveM has thus far failed to honor the revert request so it doesn't
+appear that reverting 3/4 and 4/4 is an option.  In the near term that
+leaves us with the other two options: leave it as-is or fix it
+properly.  I am firmly in the fix it properly camp, regardless of the
+revert state, so that is the direction I would like to see things go.
+
+-- 
+paul moore
+www.paul-moore.com
