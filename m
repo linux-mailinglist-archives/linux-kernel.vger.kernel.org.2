@@ -2,100 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1817F44CE21
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Nov 2021 01:09:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7BF8544CE31
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Nov 2021 01:20:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234330AbhKKALv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Nov 2021 19:11:51 -0500
-Received: from mail.kernel.org ([198.145.29.99]:37474 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234285AbhKKALt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Nov 2021 19:11:49 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A7B8D6103C;
-        Thu, 11 Nov 2021 00:09:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1636589340;
-        bh=v+NyK5maH0Zq1WEqTfD47eXM/F383z8TNC+eQNyTHR0=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=KyFE6Bi+GdRuBhoAN0QbU0AtXjSyVR/VZoq3gFRrR6WXOagzT8Ib52/pjsbjVsXFI
-         ErT4XdBD90CmLQTSj12qNITtEQ49w+IzqBtCg42VS7pZv4j9Ehdg1bItiRFaBNHoRG
-         FTcAPsMtdYnz8kJobbLOX25JWKP7JwrC2U42LbCeTNa/rgXpqG7CM45jA4SvGIA6yI
-         6PsEdnq0fv35EpUA6Y3Bw4PTL9Az+HqvPnkUdDNeeiE1eCWhut+KsJdRIEkq6BKkLN
-         TTaktwqz6iJW9HMar4o3MFSAiW2VpyuUIGiJpuIFTiS3PKA/LqfMwLzqP/shM5uORt
-         XMysyL863Y1TA==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 6418D5C0A70; Wed, 10 Nov 2021 16:09:00 -0800 (PST)
-Date:   Wed, 10 Nov 2021 16:09:00 -0800
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Wander Lairson Costa <wander@redhat.com>
-Cc:     Davidlohr Bueso <dave@stgolabs.net>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        "open list:TORTURE-TEST MODULES" <linux-kernel@vger.kernel.org>,
-        "open list:READ-COPY UPDATE (RCU)" <rcu@vger.kernel.org>
-Subject: Re: [PATCH v3 1/1] rcutorture: Avoid soft lockup during cpu stall
-Message-ID: <20211111000900.GI641268@paulmck-ThinkPad-P17-Gen-1>
-Reply-To: paulmck@kernel.org
-References: <20211110143745.468361-1-wander@redhat.com>
- <20211110143745.468361-2-wander@redhat.com>
+        id S231527AbhKKAXO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Nov 2021 19:23:14 -0500
+Received: from out2-smtp.messagingengine.com ([66.111.4.26]:49217 "EHLO
+        out2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230210AbhKKAXN (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Nov 2021 19:23:13 -0500
+Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
+        by mailout.nyi.internal (Postfix) with ESMTP id 88D4C5C026E;
+        Wed, 10 Nov 2021 19:20:24 -0500 (EST)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute5.internal (MEProxy); Wed, 10 Nov 2021 19:20:24 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-id:content-type:date:from
+        :in-reply-to:message-id:mime-version:references:subject:to
+        :x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
+        fm1; bh=Z4Xz+6xEcDj+0NeWLO8w8RSF9W7GJQNkEgunDvZ8ejc=; b=LoxML2ro
+        Ehj8/VSZcVweJFB/ZvPKg3JM1pIZW6A2wiRKtNOtjI05EnEX8KiFtxooXHCDTjQE
+        JXm7iCs7AjfASPX3RBO//ZQUANq3n7HmUPwSIV8V2IFzNQ1x5ek5pLioyFaKeYac
+        go/3/DAPVQa6kAlrvHNTXr8A7TN1hRN9fjdtPVOyNHFYUh1qK15JHeEQCs9QOZ/0
+        S2WHCfqV+LCluq8czo/BJW4ClZtP8s717d535enu1GzuL8KZMv9U/FEuyMyzKEVu
+        1Rgi/UTOucP1OlnSAojL47rvBQo0vbTtV1/JwHj8hdoEAF2CxZrJKXJkHLX1OrFH
+        weqZeKaMx3pSNg==
+X-ME-Sender: <xms:x2GMYeE6NF6OHu-L4jwCw3s16c-QN11vutWueBd49ckXmS8h3mKvtg>
+    <xme:x2GMYfVThbaClyOX_2TrgD5qPDlY83IE-dxmF21yMlMxFtSWE-TqFu3L_mGm8o77v
+    0_vMmXlxkbHL-iSIz8>
+X-ME-Received: <xmr:x2GMYYI1b1OylmwylytNZze05zaR-D_JNAwktZEZhdaSo4GH0jjYGEhFXtaXW3UY4OEum7Q8b2SZO2QS-W29WHLPmwX30vv1CYs>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvuddrvddtgddujecutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
+    fjughrpeffhffvufgjkfhfgggtsehmtderredttdejnecuhfhrohhmpefhihhnnhcuvfhh
+    rghinhcuoehfthhhrghinheslhhinhhugidqmheikehkrdhorhhgqeenucggtffrrghtth
+    gvrhhnpeefffejiefgheevheefvefhteeggfeijeeiveeihfffffdugfefkeelfffhgfeh
+    vdenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehfth
+    hhrghinheslhhinhhugidqmheikehkrdhorhhg
+X-ME-Proxy: <xmx:x2GMYYEAKMVV2GnHyC6xYNE8QeCEDWo-wWFeqMSdv7a_nMFFBRH33w>
+    <xmx:x2GMYUXhq3Ox4bPzudDSiovrZ4jQ8F5HNgz3fNWrfVDEDsaZ_3ERDg>
+    <xmx:x2GMYbOEFa9xZ2xeaxehrs63YydfXYF_p68e9F-u2V-1CDrFQOTTGQ>
+    <xmx:yGGMYSxNNVAB24hZtwbj9lgdCHnRKsEiIxdVCez8h-D2fe4R0szZwg>
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
+ 10 Nov 2021 19:20:21 -0500 (EST)
+Date:   Thu, 11 Nov 2021 11:20:09 +1100 (AEDT)
+From:   Finn Thain <fthain@linux-m68k.org>
+To:     Christophe Leroy <christophe.leroy@csgroup.eu>
+cc:     Michael Ellerman <mpe@ellerman.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        "Christopher M. Riedl" <cmr@bluescreens.de>,
+        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] powerpc: Fix sigset_t copy
+In-Reply-To: <ed04d4a1-7a60-ee39-f64b-203b299e8875@csgroup.eu>
+Message-ID: <cb5f10c3-5630-547-23c1-66a44d7c8892@linux-m68k.org>
+References: <08bbe7240b384016e0b2912ecf3bf5e2d25ef2c6.1636501628.git.fthain@linux-m68k.org> <ed04d4a1-7a60-ee39-f64b-203b299e8875@csgroup.eu>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211110143745.468361-2-wander@redhat.com>
+Content-Type: multipart/mixed; BOUNDARY="-1463811774-88831904-1636589924=:27"
+Content-ID: <5c1556be-eba3-979a-fca0-533951763259@nippy.intranet>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 10, 2021 at 11:37:45AM -0300, Wander Lairson Costa wrote:
-> If we use the module stall_cpu option, we may get a soft lockup warning
-> in case we also don't pass the stall_cpu_block option.
-> 
-> Introduce the stall_no_softlockup option to avoid a soft lockup on
-> cpu stall even if we don't use the stall_cpu_block option.
-> 
-> Signed-off-by: Wander Lairson Costa <wander@redhat.com>
+  This message is in MIME format.  The first part should be readable text,
+  while the remaining parts are likely unreadable without MIME-aware tools.
 
-Queued for review and further testing, thank you!
+---1463811774-88831904-1636589924=:27
+Content-Type: text/plain; CHARSET=UTF-8
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-ID: <48a2d42c-41dc-69ad-20-46aed9554e35@nippy.intranet>
 
-							Thanx, Paul
+On Wed, 10 Nov 2021, Christophe Leroy wrote:
 
-> ---
->  kernel/rcu/rcutorture.c | 5 +++++
->  1 file changed, 5 insertions(+)
-> 
-> diff --git a/kernel/rcu/rcutorture.c b/kernel/rcu/rcutorture.c
-> index 36a273589a35..bc854f935548 100644
-> --- a/kernel/rcu/rcutorture.c
-> +++ b/kernel/rcu/rcutorture.c
-> @@ -46,6 +46,7 @@
->  #include <linux/oom.h>
->  #include <linux/tick.h>
->  #include <linux/rcupdate_trace.h>
-> +#include <linux/nmi.h>
->  
->  #include "rcu.h"
->  
-> @@ -112,6 +113,8 @@ torture_param(int, shutdown_secs, 0, "Shutdown time (s), <= zero to disable.");
->  torture_param(int, stall_cpu, 0, "Stall duration (s), zero to disable.");
->  torture_param(int, stall_cpu_holdoff, 10,
->  	     "Time to wait before starting stall (s).");
-> +torture_param(bool, stall_no_softlockup, false,
-> +	     "Avoid softlockup warning during cpu stall.");
->  torture_param(int, stall_cpu_irqsoff, 0, "Disable interrupts while stalling.");
->  torture_param(int, stall_cpu_block, 0, "Sleep while stalling.");
->  torture_param(int, stall_gp_kthread, 0,
-> @@ -2085,6 +2088,8 @@ static int rcu_torture_stall(void *args)
->  #else
->  				schedule_timeout_uninterruptible(HZ);
->  #endif
-> +			} else if (stall_no_softlockup) {
-> +				touch_softlockup_watchdog();
->  			}
->  		if (stall_cpu_irqsoff)
->  			local_irq_enable();
-> -- 
-> 2.27.0
-> 
+> Le 10/11/2021 =C3=A0 00:47, Finn Thain a =C3=A9crit=C2=A0:
+>=20
+> > Christophe, I hope this change is the one you wanted to see upstream=20
+> > (?). If it is acceptable please add your signed-off-by tag.
+>=20
+> I'm on holidays, I was planing to handle this next week.
+>=20
+
+OK. I'll leave it with you.
+---1463811774-88831904-1636589924=:27--
