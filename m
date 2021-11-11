@@ -2,248 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D49C344D46A
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Nov 2021 10:51:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4438744D471
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Nov 2021 10:55:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232828AbhKKJyn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Nov 2021 04:54:43 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49830 "EHLO
+        id S232649AbhKKJ5z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Nov 2021 04:57:55 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50534 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232318AbhKKJym (ORCPT
+        with ESMTP id S230021AbhKKJ5x (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Nov 2021 04:54:42 -0500
-Received: from mail-ot1-x32e.google.com (mail-ot1-x32e.google.com [IPv6:2607:f8b0:4864:20::32e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B21A5C061767
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Nov 2021 01:51:53 -0800 (PST)
-Received: by mail-ot1-x32e.google.com with SMTP id h16-20020a9d7990000000b0055c7ae44dd2so8069531otm.10
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Nov 2021 01:51:53 -0800 (PST)
+        Thu, 11 Nov 2021 04:57:53 -0500
+Received: from mail-wm1-x330.google.com (mail-wm1-x330.google.com [IPv6:2a00:1450:4864:20::330])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A8266C061767
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Nov 2021 01:55:04 -0800 (PST)
+Received: by mail-wm1-x330.google.com with SMTP id i12so3706224wmq.4
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Nov 2021 01:55:04 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=krjHmZ3Dw2WTF4k+Byn44pC5MSd5GJTXjQ+BQM/xy4g=;
-        b=JSFD2F8W1IREu+5qjrlSHU99pUMSiD5AD7iPoQhriZDqp+HY98jFJAM+I0KUB0NrQu
-         I3WfGS+NdjyCA8ZjXQHzTVFEAM3WXKH8chU6s2qXkvojTxtshVBf/qe1EC0NFgTZAJzA
-         krSszWi5INV5SyMPnQ0fXWpsGt1r7+OT1869cp9yo2fU8MO6CJGAY8RA3GFbcvJhDHwW
-         u65x8XVJBbr/M1NWj7adczup/TQPoKHsG1J3QiXyKVme0TU/cMT7qks3W+nZCAHhyGEV
-         DxQRivGjvQYg6llw59+6HuIbkF5TVARuxbwL/1yyIWYCzzAgBTaraFGOXApNMSyYaKp2
-         afeg==
+        d=ffwll.ch; s=google;
+        h=date:from:to:cc:subject:message-id:mail-followup-to:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=bdsCoAnax0xMdSi3LEgeLkYD/HFUU9RT8hDhS95OAt0=;
+        b=Pvr6LjVy0p4znnuxieeKa3HPTeRFxZ+3knxotyGb0PFNzFJ4xM/abD+ljU/qbLS9aR
+         5QrmdMZmVTweFvDlm2eLs44xWhyVo1EBNNm2nIWCe+7jkOi+vZBd8ZaHb6Q7ZgYPqtQp
+         kLq9fvUodqqeqMnMOUsVbbtGxI7f175Jrdez0=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=krjHmZ3Dw2WTF4k+Byn44pC5MSd5GJTXjQ+BQM/xy4g=;
-        b=Mqouq+2pjO/+mGmLcX+ewDB+C1B1CyIfdC/4uRM3YwexKelCEC8xAxKRFu16S0iCMl
-         nDC+B5N6YndZxkRrsvxKltkN4eUiWIu8I/iAgN7hOboeJVSoq1C7ZDCspRimpXeuVbLQ
-         14Jgllk7CL/DL0FcMgUHkFXJuyj8ia4Z+hZdQKQbv+wy1HWr4bElR0LQr9LxrayStBY2
-         bCFzcgQMjRcrRfEIZusuAlJyv+VkHX3BczOolR09FV6XzS4Hk9oLTajm0TPEbOQZZu8f
-         rV7S5CkO2aSEEw7WJgKDcttfad6p7ws7/Cm1MT8jB3VLHUiXDUI2Tj5ZqdmlFGK3YG5q
-         Dkmw==
-X-Gm-Message-State: AOAM532lvzyfYYmoiNAVwOC2nRYSH2ZG6/zIVgHfH+sILLfvcAH9qmXF
-        HB3+3WhCMr95F830wI57OlVlL1I+QFBETXcPnzKsfg==
-X-Google-Smtp-Source: ABdhPJzvhOh9Tsh8IuynZRDgZBSpRFmdZur4oMk8rMYoPBEQ/vu2f2E6VsmCNOzxAPZmVnw6YqnG2+qcr8dBvUFqoKw=
-X-Received: by 2002:a9d:662:: with SMTP id 89mr4811351otn.157.1636624312815;
- Thu, 11 Nov 2021 01:51:52 -0800 (PST)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id
+         :mail-followup-to:references:mime-version:content-disposition
+         :in-reply-to;
+        bh=bdsCoAnax0xMdSi3LEgeLkYD/HFUU9RT8hDhS95OAt0=;
+        b=K2Rg1wAWKqt4GYrzcP9lZev2mZ5blhtQirE8Lv0VnldwWlv4TrO8ZNqpX6SH2J6KZR
+         mPy/1rDuLPBku1ry10Q0kDl0yp7VnkghCOW6AXU1udZgw9lekAm1bb/OFaE0PwykGkdw
+         y8vttWp5DhtArOH/0BZ8N72dntbqtiUKBitqLmEkWzVAcASAUqR6SkmQ7B+af0Bx9Ncj
+         MFnff4wtonVBWaaNvnVtOowheS8JD0LcRy4C2EzendJOBOcJUziMmN5K4dFwEw0eSTc5
+         x74u/msgB2UzatgUXjfeGqXfL33sp3wVEdmsvP8fmKJLVWSm1P+gaFXozdXXN7SFjTpw
+         NYwg==
+X-Gm-Message-State: AOAM532AH0jb2hpP92+J1sratoaLDNZ9vgzUdHc04yE/ZeYXKzA9xgaZ
+        3x6EgOC4MRl1u0wFVWWmaLKE0w==
+X-Google-Smtp-Source: ABdhPJzZD6hXg1vjTxLyAuHF9yWYrd++DYJyRcez14UgECfYo+Da2LILIKoHIcu0e84TnnarVAnjJw==
+X-Received: by 2002:a7b:c1cb:: with SMTP id a11mr7024713wmj.30.1636624503159;
+        Thu, 11 Nov 2021 01:55:03 -0800 (PST)
+Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
+        by smtp.gmail.com with ESMTPSA id p19sm2521931wmq.4.2021.11.11.01.55.02
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 11 Nov 2021 01:55:02 -0800 (PST)
+Date:   Thu, 11 Nov 2021 10:54:33 +0100
+From:   Daniel Vetter <daniel@ffwll.ch>
+To:     Javier Martinez Canillas <javierm@redhat.com>
+Cc:     linux-kernel@vger.kernel.org, Sam Ravnborg <sam@ravnborg.org>,
+        linux-fbdev@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        Daniel Vetter <daniel.vetter@ffwll.ch>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Ilya Trukhanov <lahvuun@gmail.com>
+Subject: Re: [PATCH] fbdev: Prevent probing generic drivers if a FB is
+ already registered
+Message-ID: <YYzoWTMBkC64a4Cn@phenom.ffwll.local>
+Mail-Followup-To: Javier Martinez Canillas <javierm@redhat.com>,
+        linux-kernel@vger.kernel.org, Sam Ravnborg <sam@ravnborg.org>,
+        linux-fbdev@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Ilya Trukhanov <lahvuun@gmail.com>
+References: <20211111092053.1328304-1-javierm@redhat.com>
 MIME-Version: 1.0
-References: <20211111003519.1050494-1-tadeusz.struk@linaro.org>
-In-Reply-To: <20211111003519.1050494-1-tadeusz.struk@linaro.org>
-From:   Marco Elver <elver@google.com>
-Date:   Thu, 11 Nov 2021 10:51:41 +0100
-Message-ID: <CANpmjNNcVFmnBV-1Daauqk5ww8YRUVRtVs_SXVAPWG5CrFBVPg@mail.gmail.com>
-Subject: Re: [PATCH] skbuff: suppress clang object-size-mismatch error
-To:     Tadeusz Struk <tadeusz.struk@linaro.org>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jonathan Lemon <jonathan.lemon@gmail.com>,
-        Alexander Lobakin <alobakin@pm.me>,
-        Willem de Bruijn <willemb@google.com>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Cong Wang <cong.wang@bytedance.com>,
-        Kevin Hao <haokexin@gmail.com>,
-        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        llvm@lists.linux.dev, Kees Cook <keescook@chromium.org>,
-        Eric Dumazet <edumazet@google.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211111092053.1328304-1-javierm@redhat.com>
+X-Operating-System: Linux phenom 5.10.0-8-amd64 
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 11 Nov 2021 at 01:36, Tadeusz Struk <tadeusz.struk@linaro.org> wrote:
-> Kernel throws a runtime object-size-mismatch error in skbuff queue
-> helpers like in [1]. This happens every time there is a pattern
-> like the below:
->
-> int skbuf_xmit(struct sk_buff *skb)
-> {
->         struct sk_buff_head list;
->
->         __skb_queue_head_init(&list);
->         __skb_queue_tail(&list, skb); <-- offending call
->
->         return do_xmit(net, &list);
-> }
->
-> and the kernel is build with clang and -fsanitize=undefined flag set.
-> The reason is that the functions __skb_queue_[tail|head]() access the
-> struct sk_buff_head object via a pointer to struct sk_buff, which is
-> much bigger in size than the sk_buff_head. This could cause undefined
-> behavior and clang is complaining:
->
-> UBSAN: object-size-mismatch in ./include/linux/skbuff.h:2023:28
-> member access within address ffffc90000cb71c0 with insufficient space
-> for an object of type 'struct sk_buff'
+On Thu, Nov 11, 2021 at 10:20:53AM +0100, Javier Martinez Canillas wrote:
+> The efifb and simplefb drivers just render to a pre-allocated frame buffer
+> and rely on the display hardware being initialized before the kernel boots.
+> 
+> But if another driver already probed correctly and registered a fbdev, the
+> generic drivers shouldn't be probed since an actual driver for the display
+> hardware is already present.
+> 
+> Reported-by: Ilya Trukhanov <lahvuun@gmail.com>
+> Signed-off-by: Javier Martinez Canillas <javierm@redhat.com>
 
-The config includes CONFIG_UBSAN_OBJECT_SIZE, right? Normally that's
-disabled by default, probably why nobody has noticed these much.
+Reviewed-by: Daniel Vetter <daniel.vetter@ffwll.ch>
 
-> Suppress the error with __attribute__((no_sanitize("undefined")))
-> in the skb helpers.
+Also Cc: stable@vger.kernel.org?
 
-Isn't there a better way, because doing this might also suppress other
-issues wholesale. __no_sanitize_undefined should be the last resort.
+btw time to organize drm-misc commit rights so you can push stuff like
+this?
+-Daniel
 
-> [1] https://syzkaller.appspot.com/bug?id=5d9f0bca58cea80f272b73500df67dcd9e35c886
->
-> Cc: "Nathan Chancellor" <nathan@kernel.org>
-> Cc: "Nick Desaulniers" <ndesaulniers@google.com>
-> Cc: "Jakub Kicinski" <kuba@kernel.org>
-> Cc: "David S. Miller" <davem@davemloft.net>
-> Cc: "Jonathan Lemon" <jonathan.lemon@gmail.com>
-> Cc: "Alexander Lobakin" <alobakin@pm.me>
-> Cc: "Willem de Bruijn" <willemb@google.com>
-> Cc: "Paolo Abeni" <pabeni@redhat.com>
-> Cc: "Cong Wang" <cong.wang@bytedance.com>
-> Cc: "Kevin Hao" <haokexin@gmail.com>
-> Cc: "Ilias Apalodimas" <ilias.apalodimas@linaro.org>
-> Cc: "Marco Elver" <elver@google.com>
-> Cc: <netdev@vger.kernel.org>
-> Cc: <linux-kernel@vger.kernel.org>
-> Cc: <llvm@lists.linux.dev>
->
-> Signed-off-by: Tadeusz Struk <tadeusz.struk@linaro.org>
 > ---
->  include/linux/skbuff.h | 49 ++++++++++++++++++++++++------------------
->  1 file changed, 28 insertions(+), 21 deletions(-)
->
-> diff --git a/include/linux/skbuff.h b/include/linux/skbuff.h
-> index 0bd6520329f6..8ec46e3a503d 100644
-> --- a/include/linux/skbuff.h
-> +++ b/include/linux/skbuff.h
-> @@ -1933,9 +1933,10 @@ static inline void skb_queue_head_init_class(struct sk_buff_head *list,
->   *     The "__skb_xxxx()" functions are the non-atomic ones that
->   *     can only be called with interrupts disabled.
->   */
-> -static inline void __skb_insert(struct sk_buff *newsk,
-> -                               struct sk_buff *prev, struct sk_buff *next,
-> -                               struct sk_buff_head *list)
-> +static inline void __no_sanitize_undefined
-> +__skb_insert(struct sk_buff *newsk,
-> +            struct sk_buff *prev, struct sk_buff *next,
-> +            struct sk_buff_head *list)
->  {
->         /* See skb_queue_empty_lockless() and skb_peek_tail()
->          * for the opposite READ_ONCE()
-> @@ -1966,8 +1967,9 @@ static inline void __skb_queue_splice(const struct sk_buff_head *list,
->   *     @list: the new list to add
->   *     @head: the place to add it in the first list
->   */
-> -static inline void skb_queue_splice(const struct sk_buff_head *list,
-> -                                   struct sk_buff_head *head)
-> +static inline void __no_sanitize_undefined
-> +skb_queue_splice(const struct sk_buff_head *list,
-> +                struct sk_buff_head *head)
->  {
->         if (!skb_queue_empty(list)) {
->                 __skb_queue_splice(list, (struct sk_buff *) head, head->next);
-> @@ -1982,8 +1984,9 @@ static inline void skb_queue_splice(const struct sk_buff_head *list,
->   *
->   *     The list at @list is reinitialised
->   */
-> -static inline void skb_queue_splice_init(struct sk_buff_head *list,
-> -                                        struct sk_buff_head *head)
-> +static inline void __no_sanitize_undefined
-> +skb_queue_splice_init(struct sk_buff_head *list,
-> +                     struct sk_buff_head *head)
->  {
->         if (!skb_queue_empty(list)) {
->                 __skb_queue_splice(list, (struct sk_buff *) head, head->next);
-> @@ -1997,8 +2000,9 @@ static inline void skb_queue_splice_init(struct sk_buff_head *list,
->   *     @list: the new list to add
->   *     @head: the place to add it in the first list
->   */
-> -static inline void skb_queue_splice_tail(const struct sk_buff_head *list,
-> -                                        struct sk_buff_head *head)
-> +static inline void __no_sanitize_undefined
-> +skb_queue_splice_tail(const struct sk_buff_head *list,
-> +                     struct sk_buff_head *head)
->  {
->         if (!skb_queue_empty(list)) {
->                 __skb_queue_splice(list, head->prev, (struct sk_buff *) head);
-> @@ -2014,8 +2018,9 @@ static inline void skb_queue_splice_tail(const struct sk_buff_head *list,
->   *     Each of the lists is a queue.
->   *     The list at @list is reinitialised
->   */
-> -static inline void skb_queue_splice_tail_init(struct sk_buff_head *list,
-> -                                             struct sk_buff_head *head)
-> +static inline void __no_sanitize_undefined
-> +skb_queue_splice_tail_init(struct sk_buff_head *list,
-> +                          struct sk_buff_head *head)
->  {
->         if (!skb_queue_empty(list)) {
->                 __skb_queue_splice(list, head->prev, (struct sk_buff *) head);
-> @@ -2035,9 +2040,10 @@ static inline void skb_queue_splice_tail_init(struct sk_buff_head *list,
->   *
->   *     A buffer cannot be placed on two lists at the same time.
->   */
-> -static inline void __skb_queue_after(struct sk_buff_head *list,
-> -                                    struct sk_buff *prev,
-> -                                    struct sk_buff *newsk)
-> +static inline void __no_sanitize_undefined
-> +__skb_queue_after(struct sk_buff_head *list,
-> +                 struct sk_buff *prev,
-> +                 struct sk_buff *newsk)
->  {
->         __skb_insert(newsk, prev, prev->next, list);
->  }
-> @@ -2045,9 +2051,10 @@ static inline void __skb_queue_after(struct sk_buff_head *list,
->  void skb_append(struct sk_buff *old, struct sk_buff *newsk,
->                 struct sk_buff_head *list);
->
-> -static inline void __skb_queue_before(struct sk_buff_head *list,
-> -                                     struct sk_buff *next,
-> -                                     struct sk_buff *newsk)
-> +static inline void __no_sanitize_undefined
-> +__skb_queue_before(struct sk_buff_head *list,
-> +                  struct sk_buff *next,
-> +                  struct sk_buff *newsk)
->  {
->         __skb_insert(newsk, next->prev, next, list);
->  }
-> @@ -2062,8 +2069,8 @@ static inline void __skb_queue_before(struct sk_buff_head *list,
->   *
->   *     A buffer cannot be placed on two lists at the same time.
->   */
-> -static inline void __skb_queue_head(struct sk_buff_head *list,
-> -                                   struct sk_buff *newsk)
-> +static inline void __no_sanitize_undefined
-> +__skb_queue_head(struct sk_buff_head *list, struct sk_buff *newsk)
->  {
->         __skb_queue_after(list, (struct sk_buff *)list, newsk);
->  }
-> @@ -2079,8 +2086,8 @@ void skb_queue_head(struct sk_buff_head *list, struct sk_buff *newsk);
->   *
->   *     A buffer cannot be placed on two lists at the same time.
->   */
-> -static inline void __skb_queue_tail(struct sk_buff_head *list,
-> -                                  struct sk_buff *newsk)
-> +static inline void __no_sanitize_undefined
-> +__skb_queue_tail(struct sk_buff_head *list, struct sk_buff *newsk)
->  {
->         __skb_queue_before(list, (struct sk_buff *)list, newsk);
->  }
-> --
+> 
+>  drivers/video/fbdev/efifb.c    | 6 ++++++
+>  drivers/video/fbdev/simplefb.c | 6 ++++++
+>  2 files changed, 12 insertions(+)
+> 
+> diff --git drivers/video/fbdev/efifb.c drivers/video/fbdev/efifb.c
+> index edca3703b964..76325c07cf0c 100644
+> --- drivers/video/fbdev/efifb.c
+> +++ drivers/video/fbdev/efifb.c
+> @@ -351,6 +351,12 @@ static int efifb_probe(struct platform_device *dev)
+>  	char *option = NULL;
+>  	efi_memory_desc_t md;
+>  
+> +	if (num_registered_fb > 0) {
+> +		dev_err(&dev->dev,
+> +			"efifb: a framebuffer is already registered\n");
+> +		return -EINVAL;
+> +	}
+> +
+>  	if (screen_info.orig_video_isVGA != VIDEO_TYPE_EFI || pci_dev_disabled)
+>  		return -ENODEV;
+>  
+> diff --git drivers/video/fbdev/simplefb.c drivers/video/fbdev/simplefb.c
+> index 62f0ded70681..55c1f54d7663 100644
+> --- drivers/video/fbdev/simplefb.c
+> +++ drivers/video/fbdev/simplefb.c
+> @@ -407,6 +407,12 @@ static int simplefb_probe(struct platform_device *pdev)
+>  	struct simplefb_par *par;
+>  	struct resource *mem;
+>  
+> +	if (num_registered_fb > 0) {
+> +		dev_err(&pdev->dev,
+> +			"simplefb: a framebuffer is already registered\n");
+> +		return -EINVAL;
+> +	}
+> +
+>  	if (fb_get_options("simplefb", NULL))
+>  		return -ENODEV;
+>  
+> -- 
 > 2.33.1
->
+> 
+
+-- 
+Daniel Vetter
+Software Engineer, Intel Corporation
+http://blog.ffwll.ch
