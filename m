@@ -2,124 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AFF6D44CF75
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Nov 2021 03:05:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E8D7244CF77
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Nov 2021 03:05:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233525AbhKKCIA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Nov 2021 21:08:00 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59604 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233156AbhKKCH6 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Nov 2021 21:07:58 -0500
-Received: from mail-lj1-x22d.google.com (mail-lj1-x22d.google.com [IPv6:2a00:1450:4864:20::22d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 52767C061766
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Nov 2021 18:05:10 -0800 (PST)
-Received: by mail-lj1-x22d.google.com with SMTP id 13so8917329ljj.11
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Nov 2021 18:05:10 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=LMNluGg1oD1xxzKztNLmkE+a3kVEZIQ80t9yoqV5XOU=;
-        b=K9B9z96JYSZNOVrwDI6C3rzyp1zxt5naT65hnzTktky4X2rUX/4C//Z9RX1wwiloYD
-         yTu+RreHY3WWZ/ezTbbOKzlnG9NgfjNlGdjqVe5QFsz/IyPqqi/UDcrBaIH7+lPoNdwQ
-         JlqDBpDGBq0SlH7y1GUoBOXpFh4s2qaJ1SLJTEJD9mYhrd074DAbAGNPkDcUQSp/sTHd
-         hfHi4ba/20bg5XT4s1iIa+9fUF4HCcRUUK9buvmDMa97OxmyLVTzBWsDlh1KiH0LfT4N
-         aH41S1MkfxsvtgfWi0haZMpErOxQivwzPsPV+3j3GFGkRTILGlUmUpsD5lYv0rvU95jp
-         3wiQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=LMNluGg1oD1xxzKztNLmkE+a3kVEZIQ80t9yoqV5XOU=;
-        b=ttQL95mh/Tdc2RIZPsB9ZrqS16OleliV41+klg/Vm4WNTVp0ImJDLE5uo6sp458zoz
-         BshrsX0wSxC2uvkHXkzR6OJtztBF5W+L5PDcMPL9qiRTYhl5Gt74Z5b+3LskW3+ooE+V
-         6XuuoaGBX52YS0CBnEaNoiloH/7jqV36MH0QvQJan8dQYbAu0v+uH1+Ds3CLe7qaaIdn
-         71mgDgQMWd3gHCOnkWlytsiGC8bOfmSAeNf0nlPDZ6DsiGuKiZ/xfVZow1FoWZSG68qG
-         GD/oeIq5//LGi+6MpNOWtIvGXLIJ6OWyznC0fj5DOxeJBYD6IOUYDKFe6v0NBxqhDgfn
-         pH8w==
-X-Gm-Message-State: AOAM531sscOTCoa6VGQ0NMq2Vr0CxGDtUruv8WjiK5IpZedKMnthTUrz
-        6lan7DM/PI3XfAtCdIoMhC+94/4do0ZqbDOzizzE9A==
-X-Google-Smtp-Source: ABdhPJzC4Jp+umhzEA3lXMzej2zzbUmTLlT9e9wINZ3YQk5aDo16CUqE2DEpesPxsSM8/hXW01nfIjCtiq+kgOHc+Z4=
-X-Received: by 2002:a05:651c:545:: with SMTP id q5mr3475095ljp.202.1636596308510;
- Wed, 10 Nov 2021 18:05:08 -0800 (PST)
+        id S233570AbhKKCIQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Nov 2021 21:08:16 -0500
+Received: from mail.kernel.org ([198.145.29.99]:55064 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233589AbhKKCIP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Nov 2021 21:08:15 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 801B4601FF;
+        Thu, 11 Nov 2021 02:05:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1636596326;
+        bh=Euo8pJf5r2nQ1RUa0eONcm78FdllQfuJ8l5c65xmtH4=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=rSe5xIiRrvjz1iQWmSsWv1ycrJa3etMlHvpyMvXQuYE5Nfp1bd9noIKmfQkM+1ruQ
+         mblGQfR2dHo65Yq1ZzF7CQwuOwST7rEKS53/bXvJ02llTY7N3x4Svv6jDrbTNn4iR/
+         21KpLTcSRTcZtfUzqeaw4PLtCyc2bC0VVETLHKtVYjLtIB9tBveR1LDslXBZPxQKnw
+         c95z3imdL9zSTf/Q5Y74kHw2eGAco/wwLjBWMNwl+F68B+EGgUc+XxJ7pTjii3hgVW
+         Hz3N8NCIhBRmRfuIq5sMlPILLQX/jyDw5DU8flDPfmAYDcu7VAb8yIe3SsLNttC472
+         XMqWy3WNJs0qQ==
+Date:   Wed, 10 Nov 2021 18:05:25 -0800
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Lin Ma <linma@zju.edu.cn>
+Cc:     netdev@vger.kernel.org, davem@davemloft.net, jirislaby@kernel.org,
+        gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v1 2/2] hamradio: defer 6pack kfree after
+ unregister_netdev
+Message-ID: <20211110180525.20422f66@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <20211108103759.30541-1-linma@zju.edu.cn>
+References: <20211108103721.30522-1-linma@zju.edu.cn>
+        <20211108103759.30541-1-linma@zju.edu.cn>
 MIME-Version: 1.0
-References: <20211111015037.4092956-1-almasrymina@google.com>
-In-Reply-To: <20211111015037.4092956-1-almasrymina@google.com>
-From:   Shakeel Butt <shakeelb@google.com>
-Date:   Wed, 10 Nov 2021 18:04:57 -0800
-Message-ID: <CALvZod4=kf=1oqisM9KxBHNvYbHohZE1ZnTVzq_ub4pLBp0ryw@mail.gmail.com>
-Subject: Re: [PATCH v6] hugetlb: Add hugetlb.*.numa_stat file
-To:     Mina Almasry <almasrymina@google.com>
-Cc:     Mike Kravetz <mike.kravetz@oracle.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Shuah Khan <shuah@kernel.org>,
-        Miaohe Lin <linmiaohe@huawei.com>,
-        Oscar Salvador <osalvador@suse.de>,
-        Michal Hocko <mhocko@suse.com>,
-        Muchun Song <songmuchun@bytedance.com>,
-        David Rientjes <rientjes@google.com>,
-        Jue Wang <juew@google.com>, Yang Yao <ygyao@google.com>,
-        Joanna Li <joannali@google.com>,
-        Cannon Matthews <cannonmatthews@google.com>,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 10, 2021 at 5:50 PM Mina Almasry <almasrymina@google.com> wrote=
-:
->
-> For hugetlb backed jobs/VMs it's critical to understand the numa
-> information for the memory backing these jobs to deliver optimal
-> performance.
->
-> Currently this technically can be queried from /proc/self/numa_maps, but
-> there are significant issues with that. Namely:
-> 1. Memory can be mapped or unmapped.
-> 2. numa_maps are per process and need to be aggregated across all
->    processes in the cgroup. For shared memory this is more involved as
->    the userspace needs to make sure it doesn't double count shared
->    mappings.
-> 3. I believe querying numa_maps needs to hold the mmap_lock which adds
->    to the contention on this lock.
->
-> For these reasons I propose simply adding hugetlb.*.numa_stat file,
-> which shows the numa information of the cgroup similarly to
-> memory.numa_stat.
->
-> On cgroup-v2:
->    cat /sys/fs/cgroup/unified/test/hugetlb.2MB.numa_stat
->    total=3D2097152 N0=3D2097152 N1=3D0
->
-> On cgroup-v1:
->    cat /sys/fs/cgroup/hugetlb/test/hugetlb.2MB.numa_stat
->    total=3D2097152 N0=3D2097152 N1=3D0
->    hierarichal_total=3D2097152 N0=3D2097152 N1=3D0
->
-> This patch was tested manually by allocating hugetlb memory and querying
-> the hugetlb.*.numa_stat file of the cgroup and its parents.
-> =EF=BF=BC
-> Cc: Mike Kravetz <mike.kravetz@oracle.com>
-> Cc: Andrew Morton <akpm@linux-foundation.org>
-> Cc: Shuah Khan <shuah@kernel.org>
-> Cc: Miaohe Lin <linmiaohe@huawei.com>
-> Cc: Oscar Salvador <osalvador@suse.de>
-> Cc: Michal Hocko <mhocko@suse.com>
-> Cc: Muchun Song <songmuchun@bytedance.com>
-> Cc: David Rientjes <rientjes@google.com>
-> Cc: Shakeel Butt <shakeelb@google.com>
-> Cc: Jue Wang <juew@google.com>
-> Cc: Yang Yao <ygyao@google.com>
-> Cc: Joanna Li <joannali@google.com>
-> Cc: Cannon Matthews <cannonmatthews@google.com>
-> Cc: linux-mm@kvack.org
-> Cc: linux-kernel@vger.kernel.org
->
-> Signed-off-by: Mina Almasry <almasrymina@google.com>
+On Mon,  8 Nov 2021 18:37:59 +0800 Lin Ma wrote:
+> There is a possible race condition (use-after-free) like below
+> 
+>  (USE)                       |  (FREE)
+>   dev_queue_xmit             |
+>    __dev_queue_xmit          |
+>     __dev_xmit_skb           |
+>      sch_direct_xmit         | ...
+>       xmit_one               |
+>        netdev_start_xmit     | tty_ldisc_kill
+>         __netdev_start_xmit  |  6pack_close
+>          sp_xmit             |   kfree
+>           sp_encaps          |
+>                              |
+> 
+> According to the patch "defer ax25 kfree after unregister_netdev", this
 
+This is the previous patch of the series? Maybe call it "previous
+patch"?
 
-Reviewed-by: Shakeel Butt <shakeelb@google.com>
+> patch reorder the kfree after the unregister_netdev to avoid the possible
+> UAF as the unregister_netdev() is well synchronized and won't return if
+> there is a running routine.
+> 
+> Signed-off-by: Lin Ma <linma@zju.edu.cn>
+
+> diff --git a/drivers/net/hamradio/6pack.c b/drivers/net/hamradio/6pack.c
+> index 49f10053a794..bfdf89e54752 100644
+> --- a/drivers/net/hamradio/6pack.c
+> +++ b/drivers/net/hamradio/6pack.c
+> @@ -672,11 +672,13 @@ static void sixpack_close(struct tty_struct *tty)
+>  	del_timer_sync(&sp->tx_t);
+>  	del_timer_sync(&sp->resync_t);
+>  
+> -	/* Free all 6pack frame buffers. */
+> +	unregister_netdev(sp->dev);
+> +
+> +	/* Free all 6pack frame buffers after unreg. */
+>  	kfree(sp->rbuff);
+>  	kfree(sp->xbuff);
+>  
+> -	unregister_netdev(sp->dev);
+> +	free_netdev(sp->dev);
+
+You should mention in the commit message why you think it's safe to add
+free_netdev() which wasn't here before...
+
+This driver seems to be setting:
+
+	dev->needs_free_netdev	= true;
+
+so unregister_netdev() will free the netdev automatically.
+
+That said I don't see a reason why this driver needs the automatic
+cleanup.
+
+You can either remove that setting and then you can call free_netdev()
+like you do, or you need to move the cleanup to dev->priv_destructor.
+
+>  }
+>  
+>  /* Perform I/O control on an active 6pack channel. */
+
