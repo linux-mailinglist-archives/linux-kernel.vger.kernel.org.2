@@ -2,142 +2,167 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C193044D9D4
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Nov 2021 17:06:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 42ECE44D9DC
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Nov 2021 17:08:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234072AbhKKQJY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Nov 2021 11:09:24 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50690 "EHLO
+        id S234026AbhKKQKs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Nov 2021 11:10:48 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51008 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233153AbhKKQJW (ORCPT
+        with ESMTP id S232366AbhKKQKr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Nov 2021 11:09:22 -0500
-Received: from mail-lf1-x12e.google.com (mail-lf1-x12e.google.com [IPv6:2a00:1450:4864:20::12e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 37813C061766;
-        Thu, 11 Nov 2021 08:06:33 -0800 (PST)
-Received: by mail-lf1-x12e.google.com with SMTP id bu18so15402419lfb.0;
-        Thu, 11 Nov 2021 08:06:33 -0800 (PST)
+        Thu, 11 Nov 2021 11:10:47 -0500
+Received: from mail-wr1-x429.google.com (mail-wr1-x429.google.com [IPv6:2a00:1450:4864:20::429])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30224C061766
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Nov 2021 08:07:58 -0800 (PST)
+Received: by mail-wr1-x429.google.com with SMTP id c4so10601725wrd.9
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Nov 2021 08:07:58 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=CKJUqhZF5ZFTvwMtANSKQusnvw1X0fA7nKg2F8RC/Ms=;
-        b=E7DOIK5OLuR7Qd875x9oQw0cG2GNuu07Tgb4xeBwdyfFZXqPTxXbM3idPFqr5FDewI
-         9g3cmkTcvYRpXDkTeupkc8+UiJFVWjYFmkOImZ/IcvmOTa3lBCc8h2voJIkWd7fddoRv
-         +ovIqqHdzpwQHLWoXo37dnZy+YbsBkQYSHzqP1F8IvIOkzCZdFKWvyxHRZIg82N4BtZy
-         S1MfKKR3XM81iZSXu+cWhcrCz4WwcxbkDVZO7Ywr5Hb70OOc38pZtOJzizlc/AVdld6l
-         dF6uA6L+aJwQY97YkgfpaKnoIgb0GWD0yCLmxDWNFytHu12MQpIMVFUdIlk4UyPoslOs
-         zbog==
+        d=immu-ne.20210112.gappssmtp.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=jIkJoHo49nDB7d1kNVJcqRJr0HpVKkGDJ4epEGRcchQ=;
+        b=67Lrk1tLsWVtEjr2Q11WYluG4LUvxRHHehh9KUiY8bUlDNUBcWcwf2lZwc03cX1FSR
+         tOotfcpHZXrs5mzlhsQcOq47Y3ovQ+KY2PbkSCF3vdYp8lODvVcqRlh/i6VLK8edRpxF
+         YUF6lTd7ef8RNBWZ9ziZJSj/N7g1gyNt/qkvlTDOBvdQaWjaah0QHi1Bir+eQd5qr+am
+         Y4i0B/kCIk/+3YpAk1MUVyyn+UjKSfICaZ4ErIQQLKZ1pKwRg974FHFf/HECgFgPo4WZ
+         QabHYObOjWF+bsMZPQCcDkg2aQ3ClKoEE2OiiXWEqkf8TeZ8YnxuZB6i0AJmnFXnFkWw
+         CvKg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=CKJUqhZF5ZFTvwMtANSKQusnvw1X0fA7nKg2F8RC/Ms=;
-        b=TcOPwfaE2JukoHc9P8HXpGUDZ0F0nhR5dMoSCsAdPvhd6aIeXR4pK8FgXRZn6VJ9sk
-         ueU8Wniv1tTLqvHANWPoQ2pgIhz1M0kSJbYk1qwhko5/YOxMIAQ0GipJUOZtm3aPmnTB
-         HuUvWq7LuHI+7gJsf2SrNX7Oa6SFdsIcv9mfe3i8jRcwpcG2Cb5WJguUNnkTcMKMXQ2u
-         4xr8CMkDtY85dlOuXfrVEnnV8skn4K4BrFsvJJ1783D+qCLAu/biDATFhUfUES2tXmNe
-         6ZKjXA3q/Swd+6SI/OwLYQH9aYReDMMwG5PYkeTr/CDo60JniKZpPReTjWdRNVz1uJET
-         6/Zg==
-X-Gm-Message-State: AOAM531J694Nc4UYQwxvFoVOt5Q20I83XFUV9xTjNBLfo6JcIpeOl9iM
-        RElbdXjdVFDzKmBmYiUkVsw=
-X-Google-Smtp-Source: ABdhPJxPJz3SZSMyS0anevF9Xao7uDB74dc0E1Dk6qIJ+s4vfldsk+aSk7BmjfUwQjCZLAB2xV2Esw==
-X-Received: by 2002:ac2:4e44:: with SMTP id f4mr7401210lfr.458.1636646791483;
-        Thu, 11 Nov 2021 08:06:31 -0800 (PST)
-Received: from mobilestation ([95.79.188.236])
-        by smtp.gmail.com with ESMTPSA id u23sm311037lji.56.2021.11.11.08.06.30
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 11 Nov 2021 08:06:31 -0800 (PST)
-Date:   Thu, 11 Nov 2021 19:06:27 +0300
-From:   Serge Semin <fancer.lancer@gmail.com>
-To:     Mark Brown <broonie@kernel.org>
-Cc:     Serge Semin <Sergey.Semin@baikalelectronics.ru>,
-        nandhini.srikandan@intel.com, robh+dt@kernel.org,
-        linux-spi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, mgross@linux.intel.com,
-        kris.pan@intel.com, kenchappa.demakkanavar@intel.com,
-        furong.zhou@intel.com, mallikarjunappa.sangannavar@intel.com,
-        mahesh.r.vaidya@intel.com, rashmi.a@intel.com
-Subject: Re: [PATCH v3 3/5] spi: dw: Add support for master mode selection
- for DWC SSI controller
-Message-ID: <20211111160627.fcgrvj2k7x3lwtkp@mobilestation>
-References: <20211111065201.10249-1-nandhini.srikandan@intel.com>
- <20211111065201.10249-4-nandhini.srikandan@intel.com>
- <YY0lpZkIsJih+g2o@sirena.org.uk>
- <20211111145246.dj4gogl4rlbem6qc@mobilestation>
- <YY0zUjjVobtg85o6@sirena.org.uk>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=jIkJoHo49nDB7d1kNVJcqRJr0HpVKkGDJ4epEGRcchQ=;
+        b=JOcySX5ZFgrhR9SLYBRXqkbsMADpFY6P+Rf0vlbCFe4Z/UK8fdvunwAQvsaoTfiBae
+         qDz8aUph2MYQGdFqOOh6I5HwoXr3GfKH+FqGWdujj9ABvcgAxyodkwPb6ao2bNYmoBME
+         zmsgPuwqU5ZhN1bfHITfGe6rOv93ploVjAJ6swcZ/A3c4a6uSLPldY6ce0IQ8jp/QxxK
+         kk/XjSW0pFrCQ4MZto13LZEh7z9Td65008OgPwtlCBoxpDPxCFWI8e/ZT2VpifAt5ZsW
+         m+CeGjvqS7slCTgsHLjZdkCAW+nMTL5VeZQu2G2A51oz8CSFu4HJJVBE2FVST1zsNXb7
+         2fHA==
+X-Gm-Message-State: AOAM532MnpLM3EmpZdXc44QT4fTGUhInS3sOGI4GT6nyJMTjRdUUfzlC
+        Jn1+Tz+QC3qsqGkMKg3+uxxCm9GY6ReiMfCTfmVA/1Met/G3isq6
+X-Google-Smtp-Source: ABdhPJxeFAt+bFa2IjwBgy1mqrAdkL2HaPzN4eJux2ID2pL419IbRKkQt1WDH2/QiIQ4vPTgMacFZUA1k9E8mH25q/I=
+X-Received: by 2002:a5d:464c:: with SMTP id j12mr10055416wrs.150.1636646876725;
+ Thu, 11 Nov 2021 08:07:56 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YY0zUjjVobtg85o6@sirena.org.uk>
+References: <CAHifhD5V9vwJenRLcPRH5ZMeLa_JnjZKfdcFZw1CjceBtC6=Ew@mail.gmail.com>
+ <CAHp75VeyQEaABFOnEUh2pdFx9ROJvRcud-BuEbKWmaEWpL9_Uw@mail.gmail.com>
+ <CAHifhD7Qf7+dc7K-MjNguqmiCWUxOJZmQoCTRUZOR-RWMm_JPw@mail.gmail.com>
+ <CAHp75Ve9BMNy3gP=-Dajm+Lgu+E4FCqc4phLgV1_cr2qUnTX_w@mail.gmail.com>
+ <CAHifhD4n7O5eWFPOjRAmHYL52tW0K=uXXzVj7L5+enTFwFXW2A@mail.gmail.com>
+ <CAArk9MP5cKJ+VhAZUseW4LnQNRvux=MZe2eSy3rQkbHKnUsGig@mail.gmail.com>
+ <CAHp75VdRwvU5WjFP5E4gg8U+_e34A0Lwze+nz_wVHoB49jLeLg@mail.gmail.com>
+ <CAArk9MNGSxR+92n-D2pe_+r+Z0Q9FoTMPqk11sAKA=4Vckj0HQ@mail.gmail.com>
+ <YYy7QZGKeEEfI1mH@lahna> <CAHifhD5bXu2nP533RXyWDnyNt=k2rRZq5Z6A6CCik_2e6XNgGA@mail.gmail.com>
+ <YYzxWPIWFAV04LRU@lahna> <CAD2FfiGnmFSTPvkJaXj+cf4yDvci-j+2QkpMqNY821fUT5C=CA@mail.gmail.com>
+ <CAHp75Vcp=hC1oL5FBQDDFe8EBxWB9Po4FKNS9ZGtD3q-yQPtAw@mail.gmail.com>
+ <CAHifhD6p9qSm5dv1spz+oPRhRkBZeQspHNEphE49fODacm-S6g@mail.gmail.com>
+ <CAHp75Vfk5WHWiQxwmqEzVEymgpvjxKWEZbaQ9+=Et7N63Ps=Ng@mail.gmail.com>
+ <CAHifhD5bGZOcZFNsHYFeecikHGUts73U4k6=aUVNTKEeETW5rQ@mail.gmail.com> <CAHp75VeSnXfjeNeBLtrR78AmB-18kTeXpknn7-jcPLEeWCrzXQ@mail.gmail.com>
+In-Reply-To: <CAHp75VeSnXfjeNeBLtrR78AmB-18kTeXpknn7-jcPLEeWCrzXQ@mail.gmail.com>
+From:   Hans-Gert Dahmen <hans-gert.dahmen@immu.ne>
+Date:   Thu, 11 Nov 2021 17:07:44 +0100
+Message-ID: <CAHifhD4KbLQTA1=vVCeftKybSjU1tHGk7OZn4PN55eXUu-yKog@mail.gmail.com>
+Subject: Re: [PATCH] firmware: export x86_64 platform flash bios region via sysfs
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc:     Richard Hughes <hughsient@gmail.com>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        Mauro Lima <mauro.lima@eclypsium.com>,
+        Greg KH <gregkh@linuxfoundation.org>,
+        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Philipp Deppenwiese <philipp.deppenwiese@immu.ne>,
+        "platform-driver-x86@vger.kernel.org" 
+        <platform-driver-x86@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 11, 2021 at 03:14:26PM +0000, Mark Brown wrote:
-> On Thu, Nov 11, 2021 at 05:52:46PM +0300, Serge Semin wrote:
-> > On Thu, Nov 11, 2021 at 02:16:05PM +0000, Mark Brown wrote:
-> > > On Thu, Nov 11, 2021 at 02:51:59PM +0800, nandhini.srikandan@intel.com wrote:
-> 
-> > > > Add support to select the controller mode as master mode by setting
-> > > > Bit 31 of CTRLR0 register. This feature is supported for controller
-> > > > versions above v1.02.
-> 
-> > > Clearly older versions of the controller can also run in this mode...
-> 
-> > Yes, but the driver doesn't support the slave mode at the moment.
-> > So always enabling the master mode seems natural. (see my next comment
-> > also concerning this matter)
-> 
+Am Do., 11. Nov. 2021 um 16:31 Uhr schrieb Andy Shevchenko
+<andy.shevchenko@gmail.com>:
+>
+> On Thu, Nov 11, 2021 at 4:33 PM Hans-Gert Dahmen
+> <hans-gert.dahmen@immu.ne> wrote:
+> > Am Do., 11. Nov. 2021 um 14:55 Uhr schrieb Andy Shevchenko
+> > <andy.shevchenko@gmail.com>:
+> > > On Thu, Nov 11, 2021 at 2:56 PM Hans-Gert Dahmen
+> > > <hans-gert.dahmen@immu.ne> wrote:
+> > > > Am Do., 11. Nov. 2021 um 13:46 Uhr schrieb Andy Shevchenko
+> > > > <andy.shevchenko@gmail.com>:
+> > > > > On Thu, Nov 11, 2021 at 1:46 PM Richard Hughes <hughsient@gmail.com> wrote:
+> > > > > > On Thu, 11 Nov 2021 at 10:33, Mika Westerberg
+> > > > > > <mika.westerberg@linux.intel.com> wrote:
+> > > > >
+> > > > > > it's always going to work on x64 -- if the system firmware isn't available at that offset then the platform just isn't going to boot.
+> > > > >
+> > > > > Well, it's _usual_ case, but in general the assumption is simply
+> > > > > incorrect. Btw, have you checked it on Coreboot enabled platforms?
+> > > > > What about bare metal configurations where the bootloader provides
+> > > > > services to the OS?
+> > > >
+> > > > No it is always the case. I suggest you go read your own Intel specs
+> > > > and datasheets
+> > >
+> > > Point me out, please, chapters in SDM (I never really read it in full,
+> > > it's kinda 10x Bible size). What x86 expects is 16 bytes at the end of
+> > > 1Mb physical address space that the CPU runs at first.
+> >
+> > So you do not know what you are talking about, am I correct?
+>
+> Let me comment on this provocative question later, after some other
+> comments first.
+>
+> > Starting
+> > from 386 the first instruction is executed at 0xFFFFFFF0h. What you
+> > are referring to is the 8086 reset vector and that was like 40 years
+> > ago.
+>
+> True. The idea is the same, It has a reset vector standard for x86
+> (which doesn't explicitly tell what is there). So, nothing new or
+> different here.
+>
+> > Please refer to SDM volume 3A, chapter 9, section 9.1.4 "First
+> > Instruction Executed", paragraph two. Just watch out for the hex
+> > number train starting with FFFFF... then you will find it. This is
+> > what requires the memory range to be mapped. Modern Intel CPUs require
+> > larger portions, because of the ACM loading and XuCode and whatnot.
+>
+> Thanks. Have you read 9.7 and 9.8, btw?
+> Where does it tell anything about memory to be mapped to a certain
+> address, except the last up to 16 bytes?
+>
 
-> The commit message makes it sound like master mode is only supported for
-> the newer versions.
+It doesn't, except that the FIT, ACM, BootGuard, XuCode stuff rely on
+their binaries to be there, this just sets the upper address limit of
+the window.
 
-I meant it doesn't really matter if the bit has been reserved before
-and the driver doesn't support the Slave-mode of the controller
-anyway.
-Regarding the Master-mode feature availability. Originally Wan added
-that flag setting for v1.01a here:
-https://patchwork.kernel.org/project/spi-devel-general/patch/20200312113129.8198-8-wan.ahmad.zainie.wan.mohamad@intel.com/
-Nandhini said in v2 that both Keem Bay and Thunder Bay uses DWC SSI
-v1.02a and the BIT[31] functionality is not Intel-specific, but
-generic for DWC SSIs.  So version-wise it's either Wan or Nandhini
-ware mistaken at some point.
+> > Please refer to the email [1] from me linked below where I reference
+> > all PCH datasheets of the x64 era to prove that 16MB are mapped
+> > hard-wired. Note that the range cannot be turned off and will read
+> > back 0xFF's if the PCH registers are configured to not be backed by
+> > the actual SPI flash contents.
+>
+> And as I said it does not cover _all_ x86 designs (usual != all) .
+> Have you heard about Intel MID line of SoCs? Do you know that they
 
-> 
-> > > This makes the configuration unconditional, it's not gated by controller
-> > > version checks or any kind of quirk any more meaning that if anything
-> 
-> > We have already discussed this feature in v2:
-> > https://patchwork.kernel.org/project/spi-devel-general/patch/20210824085856.12714-3-nandhini.srikandan@intel.com/
-> > Since that bit has been reserved before 1.02a but is no available for
-> > any DWC SSI controller and the driver doesn't support the SPI-slave mode
-> > at the moment I suggested to just always set that flag for the DWC SSI
-> > code. Please see my reply to Nandhini here:
-> 
+No and a quick search didn't turn up anything. Can you point me to
+resources about those SoCs? Also my module is targeting x86_64, that
+is only a subset of x86 designs.
 
-> Given that people seem to frequently customise these IPs when
-> integrating them I wouldn't trust people not to have added some other
-> control into that reserved bit doing some magic stuff that's useful in
-> their system.
+> have no SPI NOR and the firmware is located on eMMC? Do you know that
+> they can run Linux?
 
-In that case the corresponding platform code would have needed to have
-that peculiarity properly handled and not to use a generic compatibles
-like "snps,dwc-ssi-1.01a" or "snps,dw-apb-ssi", which are supposed to
-be utilized for the default IP-core configs only. For the sake of the
-code simplification I'd stick to setting that flag for each generic
-DWC SSI-compatible device. That will be also helpful for DWC SSIs
-which for some reason have the slave-mode enabled by default.
+It doesn't matter where the firmware is coming from, as long as it is
+_mapped_. And something has to be mapped there, even if it is just a
+loader that gets eMMC going.
 
-Alternatively the driver could read the IP-core version from the
-DW_SPI_VERSION register, parse it (since it's in ASCII) and then use
-it in the conditional Master mode activation here. But that could have
-been a better solution in case if the older IP-cores would have used
-that bit for something special, while Nandhini claims it was reserved.
-So in this case I would stick with a simpler approach until we get to
-face any problem in this matter, especially seeing we already pocking
-the reserved bits of the CTRL0 register in this driver in the
-spi_hw_init() method when it comes to the DFS field width detection.
-
--Sergey
-
+>
+> So, maybe it's you who do not know what you are talking about, am I correct?
+>
+> > [1] https://lkml.org/lkml/2021/6/24/379
+>
+> --
+> With Best Regards,
+> Andy Shevchenko
