@@ -2,152 +2,201 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 05A7544DBB7
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Nov 2021 19:44:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3E2BB44DBB9
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Nov 2021 19:44:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234076AbhKKSqx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Nov 2021 13:46:53 -0500
-Received: from out03.mta.xmission.com ([166.70.13.233]:55896 "EHLO
-        out03.mta.xmission.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233234AbhKKSqw (ORCPT
+        id S234200AbhKKSrU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Nov 2021 13:47:20 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58460 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233425AbhKKSrT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Nov 2021 13:46:52 -0500
-Received: from in01.mta.xmission.com ([166.70.13.51]:38582)
-        by out03.mta.xmission.com with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.93)
-        (envelope-from <ebiederm@xmission.com>)
-        id 1mlF3F-002y2K-Rk; Thu, 11 Nov 2021 11:43:58 -0700
-Received: from ip68-227-160-95.om.om.cox.net ([68.227.160.95]:56522 helo=email.froward.int.ebiederm.org.xmission.com)
-        by in01.mta.xmission.com with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.93)
-        (envelope-from <ebiederm@xmission.com>)
-        id 1mlF3D-0039VC-8O; Thu, 11 Nov 2021 11:43:57 -0700
-From:   ebiederm@xmission.com (Eric W. Biederman)
-To:     Claudio Imbrenda <imbrenda@linux.ibm.com>
-Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org, thuth@redhat.com,
-        frankja@linux.ibm.com, borntraeger@de.ibm.com,
-        Ulrich.Weigand@de.ibm.com, heiko.carstens@de.ibm.com,
-        david@redhat.com, ultrachin@163.com, akpm@linux-foundation.org,
-        vbabka@suse.cz, brookxu.cn@gmail.com, xiaoggchen@tencent.com,
-        linuszeng@tencent.com, yihuilu@tencent.com, mhocko@suse.com,
-        daniel.m.jordan@oracle.com, axboe@kernel.dk, legion@kernel.org,
-        peterz@infradead.org, aarcange@redhat.com, christian@brauner.io,
-        tglx@linutronix.de
-In-Reply-To: <20211111095008.264412-3-imbrenda@linux.ibm.com> (Claudio
-        Imbrenda's message of "Thu, 11 Nov 2021 10:50:05 +0100")
-References: <20211111095008.264412-1-imbrenda@linux.ibm.com>
-        <20211111095008.264412-3-imbrenda@linux.ibm.com>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
-Date:   Thu, 11 Nov 2021 12:43:47 -0600
-Message-ID: <87y25uzg64.fsf@email.froward.int.ebiederm.org>
+        Thu, 11 Nov 2021 13:47:19 -0500
+Received: from mail-ed1-x52f.google.com (mail-ed1-x52f.google.com [IPv6:2a00:1450:4864:20::52f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ADD4AC061767
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Nov 2021 10:44:29 -0800 (PST)
+Received: by mail-ed1-x52f.google.com with SMTP id z10so1363996edc.11
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Nov 2021 10:44:29 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=VI6SG8jp9Q0ipx0iOq/j7H0ARXMUhCuktm9ozcxJySY=;
+        b=pNT9reS7363H+OP4J5rOpJ9dWe0+hgMF7XTHmuq5xjOXQw36ddKw/L33XrlGfwDrgP
+         T4ChJELO6UnRW5amptKzdw9Dt9w7Ypji5rwddWptZWtuQLsfp9d5sBwuKG1Jkv4s85hp
+         mYKHKHRxAQX6NCcz5uxKD4+9UtBo9+dw29+BBbO8pG5X69sPCHdJsgtlyezxghYtkBO1
+         I7baPs9l3YPwHlAVzQ5YcAVkkrK6g8hsIy3aYPKJTPrCzqJgUZgVlxkHozt4dDXr6O18
+         eUWLB5u/j0O3CfkPCuobe2rdRNyPNI/H66Jt5OgHczKgczpRnUMqt55LiVJXw+q6bLjF
+         i7CQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=VI6SG8jp9Q0ipx0iOq/j7H0ARXMUhCuktm9ozcxJySY=;
+        b=wGBeaWQ08agsUzDdkCcP3ZGz/4uIdm+OlhUoAzG42HwfuNqSmYvmfyxLwwDKHu4LVL
+         zVCQ5J/P5YTuu1XAgqpIHqUrwIiDLDMCleLNKxKui4x8Zg5zsGnaidZLEOnzY2IX05Qq
+         mGIwNSdmVinv/fYP18iOI2AOU2yNim+5JRYqYVhO7/iajppxEaG7Xa9fMc4q6lPWsWm2
+         bpk5BSr5b8e/qrCoglkwk1+vvcyqhUF847bpkcS/AghfJbzmJ27+2zL7jlitsceBpbU3
+         qdSDZXZDpU/gZPgeaNVuAQqayGEtmNH1VpLEFnYtYCQZHvs4EmTmccmEB+nP8ZhrcmMo
+         Zd5Q==
+X-Gm-Message-State: AOAM533JG/Kv4g4dcIA2ZEuayDh5cpNspvzEbahs8sEIs7sba1+EgkE4
+        yQGNeaggrHGqgSJSrDY46+v7ZxpEQuT7gPDkrL/5kg==
+X-Google-Smtp-Source: ABdhPJxMawge1bY/85rRHG/hzrOjTFgkJ/Y+5H4TdIyn7TOJJLoskkSwZxvSvSi3v6wuCENwi2/RZG7y3WLenlQCjcA=
+X-Received: by 2002:a05:6402:2815:: with SMTP id h21mr12766093ede.288.1636656268170;
+ Thu, 11 Nov 2021 10:44:28 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-XM-SPF: eid=1mlF3D-0039VC-8O;;;mid=<87y25uzg64.fsf@email.froward.int.ebiederm.org>;;;hst=in01.mta.xmission.com;;;ip=68.227.160.95;;;frm=ebiederm@xmission.com;;;spf=neutral
-X-XM-AID: U2FsdGVkX1+rQcRsdkx3ZlQpYyR+3bkWgYGU8S7mru8=
-X-SA-Exim-Connect-IP: 68.227.160.95
-X-SA-Exim-Mail-From: ebiederm@xmission.com
-X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on sa08.xmission.com
-X-Spam-Level: 
-X-Spam-Status: No, score=-0.2 required=8.0 tests=ALL_TRUSTED,BAYES_50,
-        DCC_CHECK_NEGATIVE,T_TM2_M_HEADER_IN_MSG,T_TooManySym_01
-        autolearn=disabled version=3.4.2
-X-Spam-Report: * -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
-        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
-        *      [score: 0.4190]
-        *  0.0 T_TM2_M_HEADER_IN_MSG BODY: No description available.
-        * -0.0 DCC_CHECK_NEGATIVE Not listed in DCC
-        *      [sa08 1397; Body=1 Fuz1=1 Fuz2=1]
-        *  0.0 T_TooManySym_01 4+ unique symbols in subject
-X-Spam-DCC: XMission; sa08 1397; Body=1 Fuz1=1 Fuz2=1 
-X-Spam-Combo: ;Claudio Imbrenda <imbrenda@linux.ibm.com>
-X-Spam-Relay-Country: 
-X-Spam-Timing: total 1688 ms - load_scoreonly_sql: 0.06 (0.0%),
-        signal_user_changed: 13 (0.8%), b_tie_ro: 11 (0.7%), parse: 1.05
-        (0.1%), extract_message_metadata: 4.3 (0.3%), get_uri_detail_list:
-        1.83 (0.1%), tests_pri_-1000: 4.3 (0.3%), tests_pri_-950: 1.64 (0.1%),
-        tests_pri_-900: 1.43 (0.1%), tests_pri_-90: 103 (6.1%), check_bayes:
-        100 (6.0%), b_tokenize: 7 (0.4%), b_tok_get_all: 10 (0.6%),
-        b_comp_prob: 3.7 (0.2%), b_tok_touch_all: 73 (4.3%), b_finish: 1.27
-        (0.1%), tests_pri_0: 1535 (91.0%), check_dkim_signature: 0.49 (0.0%),
-        check_dkim_adsp: 3.3 (0.2%), poll_dns_idle: 1.53 (0.1%), tests_pri_10:
-        4.0 (0.2%), tests_pri_500: 11 (0.6%), rewrite_mail: 0.00 (0.0%)
-Subject: Re: [RFC v1 1/4] exit: add arch mmput hook in exit_mm
-X-SA-Exim-Version: 4.2.1 (built Sat, 08 Feb 2020 21:53:50 +0000)
-X-SA-Exim-Scanned: Yes (on in01.mta.xmission.com)
+References: <20211110182001.257350381@linuxfoundation.org>
+In-Reply-To: <20211110182001.257350381@linuxfoundation.org>
+From:   Naresh Kamboju <naresh.kamboju@linaro.org>
+Date:   Fri, 12 Nov 2021 00:14:16 +0530
+Message-ID: <CA+G9fYvnHTY815vgrcEXDvuzmKOP2i67-+8sONdc6vOEQmAnWA@mail.gmail.com>
+Subject: Re: [PATCH 4.4 00/19] 4.4.292-rc1 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-kernel@vger.kernel.org, shuah@kernel.org,
+        f.fainelli@gmail.com, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, jonathanh@nvidia.com,
+        stable@vger.kernel.org, pavel@denx.de, akpm@linux-foundation.org,
+        torvalds@linux-foundation.org, linux@roeck-us.net
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Claudio Imbrenda <imbrenda@linux.ibm.com> writes:
-
-> This simple patch adds a hook for the mmput in exit_mm. This allows
-> archs to perform the mmput in custom ways if desired (e.g.
-> asynchronously)
+On Thu, 11 Nov 2021 at 00:14, Greg Kroah-Hartman
+<gregkh@linuxfoundation.org> wrote:
 >
-> No functional change intended.
-
-Ouch! No.
-
-You changes don't include an architecture taking advantage of this
-so there is not way to see how this is used in practice and maintain
-the code.
-
-Further you are making the generic code much harder to read and
-follow replacing generic code with something random that some buggy
-architecture implements that no one understands.
-
-Saying "some buggy architecture implements and no one understands"
-is a bit hyperbole but that is how these hooks feel when digging in
-to changing the code.  It takes weeks to months to read through
-ask questions etc to clean hooks like this up and change the
-code in an appropriate way.
-
-As things are ill specified like this really do need change eventually.
-
-So please use much more targeted routines for architecture code to call.
-Especially when dealing with something as fundamental as the lifetime of
-a core kernel object.
-
-If you want an example of how silly some of these kinds of things
-can get just look at arch_ptrace_stop and sigkill_pending.  Linus has
-just merged my fixes for these things.  There are worse examples, I just
-remember them off the top of my head.
-
-If this is merged as is, this feels like code that will be subtly wrong
-for a decade before someone figures it out and fixes it.
-
-Eric
-
-
-> Signed-off-by: Claudio Imbrenda <imbrenda@linux.ibm.com>
-> ---
->  include/asm-generic/mmu_context.h | 4 ++++
->  kernel/exit.c                     | 2 +-
->  2 files changed, 5 insertions(+), 1 deletion(-)
+> This is the start of the stable review cycle for the 4.4.292 release.
+> There are 19 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
 >
-> diff --git a/include/asm-generic/mmu_context.h b/include/asm-generic/mmu_context.h
-> index 91727065bacb..900931a6a105 100644
-> --- a/include/asm-generic/mmu_context.h
-> +++ b/include/asm-generic/mmu_context.h
-> @@ -73,4 +73,8 @@ static inline void deactivate_mm(struct task_struct *tsk,
->  }
->  #endif
->  
-> +#ifndef arch_exit_mm_mmput
-> +#define arch_exit_mm_mmput mmput
-> +#endif
-> +
->  #endif /* __ASM_GENERIC_MMU_CONTEXT_H */
-> diff --git a/kernel/exit.c b/kernel/exit.c
-> index f702a6a63686..6eb1fdcc434e 100644
-> --- a/kernel/exit.c
-> +++ b/kernel/exit.c
-> @@ -504,7 +504,7 @@ static void exit_mm(void)
->  	task_unlock(current);
->  	mmap_read_unlock(mm);
->  	mm_update_next_owner(mm);
-> -	mmput(mm);
-> +	arch_exit_mm_mmput(mm);
->  	if (test_thread_flag(TIF_MEMDIE))
->  		exit_oom_victim();
->  }
+> Responses should be made by Fri, 12 Nov 2021 18:19:54 +0000.
+> Anything received after that time might be too late.
+>
+> The whole patch series can be found in one patch at:
+>         https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-=
+4.4.292-rc1.gz
+> or in the git tree and branch at:
+>         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
+-rc.git linux-4.4.y
+> and the diffstat can be found below.
+>
+> thanks,
+>
+> greg k-h
+
+Results from Linaro=E2=80=99s test farm.
+No regressions on arm64, arm, x86_64, and i386.
+
+Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
+
+## Build
+* kernel: 4.4.292-rc1
+* git: https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-=
+rc.git
+* git branch: linux-4.4.y
+* git commit: 17cdd7c2c6dc2863ed141af8f99ff09851164bc6
+* git describe: v4.4.291-20-g17cdd7c2c6dc
+* test details:
+https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-4.4.y/build/v4.4.2=
+91-20-g17cdd7c2c6dc
+
+## No regressions (compared to v4.4.291-3-g59c6c12a4647)
+
+## No fixes (compared to v4.4.291-3-g59c6c12a4647)
+
+## Test result summary
+total: 38927, pass: 30852, fail: 150, skip: 6960, xfail: 965
+
+## Build Summary
+* arm: 129 total, 106 passed, 23 failed
+* arm64: 34 total, 34 passed, 0 failed
+* i386: 18 total, 18 passed, 0 failed
+* juno-r2: 1 total, 1 passed, 0 failed
+* mips: 22 total, 22 passed, 0 failed
+* sparc: 12 total, 12 passed, 0 failed
+* x15: 1 total, 1 passed, 0 failed
+* x86: 1 total, 1 passed, 0 failed
+* x86_64: 18 total, 18 passed, 0 failed
+
+## Test suites summary
+* fwts
+* kselftest-android
+* kselftest-bpf
+* kselftest-capabilities
+* kselftest-cgroup
+* kselftest-clone3
+* kselftest-core
+* kselftest-cpu-hotplug
+* kselftest-cpufreq
+* kselftest-efivarfs
+* kselftest-filesystems
+* kselftest-firmware
+* kselftest-fpu
+* kselftest-futex
+* kselftest-gpio
+* kselftest-intel_pstate
+* kselftest-ipc
+* kselftest-ir
+* kselftest-kcmp
+* kselftest-kexec
+* kselftest-kvm
+* kselftest-lib
+* kselftest-livepatch
+* kselftest-membarrier
+* kselftest-ptrace
+* kselftest-rseq
+* kselftest-rtc
+* kselftest-seccomp
+* kselftest-sigaltstack
+* kselftest-size
+* kselftest-splice
+* kselftest-static_keys
+* kselftest-sync
+* kselftest-sysctl
+* kselftest-timens
+* kselftest-timers
+* kselftest-tmpfs
+* kselftest-tpm2
+* kselftest-user
+* kselftest-vm
+* kselftest-x86
+* kselftest-zram
+* libhugetlbfs
+* linux-log-parser
+* ltp-cap_bounds-tests
+* ltp-commands-tests
+* ltp-containers-tests
+* ltp-controllers-tests
+* ltp-cpuhotplug-tests
+* ltp-crypto-tests
+* ltp-cve-tests
+* ltp-dio-tests
+* ltp-fcntl-locktests-tests
+* ltp-filecaps-tests
+* ltp-fs-tests
+* ltp-fs_bind-tests
+* ltp-fs_perms_simple-tests
+* ltp-fsx-tests
+* ltp-hugetlb-tests
+* ltp-io-tests
+* ltp-ipc-tests
+* ltp-math-tests
+* ltp-mm-tests
+* ltp-nptl-tests
+* ltp-open-posix-tests
+* ltp-pty-tests
+* ltp-sched-tests
+* ltp-securebits-tests
+* ltp-syscalls-tests
+* ltp-tracing-tests
+* network-basic-tests
+* packetdrill
+* perf
+* ssuite
+* v4l2-compliance
+
+--
+Linaro LKFT
+https://lkft.linaro.org
