@@ -2,80 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A525944D26B
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Nov 2021 08:23:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D0D144D270
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Nov 2021 08:25:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231511AbhKKH0G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Nov 2021 02:26:06 -0500
-Received: from smtp02.smtpout.orange.fr ([80.12.242.124]:52882 "EHLO
-        smtp.smtpout.orange.fr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229649AbhKKH0E (ORCPT
+        id S231635AbhKKH2b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Nov 2021 02:28:31 -0500
+Received: from mail-lj1-f176.google.com ([209.85.208.176]:38886 "EHLO
+        mail-lj1-f176.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229533AbhKKH2a (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Nov 2021 02:26:04 -0500
-Received: from pop-os.home ([86.243.171.122])
-        by smtp.orange.fr with ESMTPA
-        id l4QSmSYM1Bazol4QSmZB3p; Thu, 11 Nov 2021 08:23:15 +0100
-X-ME-Helo: pop-os.home
-X-ME-Auth: YWZlNiIxYWMyZDliZWIzOTcwYTEyYzlhMmU3ZiQ1M2U2MzfzZDfyZTMxZTBkMTYyNDBjNDJlZmQ3ZQ==
-X-ME-Date: Thu, 11 Nov 2021 08:23:15 +0100
-X-ME-IP: 86.243.171.122
-From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-To:     luciano.coelho@intel.com, kvalo@codeaurora.org,
-        davem@davemloft.net, kuba@kernel.org, rdunlap@infradead.org
-Cc:     linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel-janitors@vger.kernel.org,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Subject: [PATCH] iwlwifi: Fix memory leaks in error handling path
-Date:   Thu, 11 Nov 2021 08:23:11 +0100
-Message-Id: <1504cd7d842d13ddb8244e18004523128d5c9523.1636615284.git.christophe.jaillet@wanadoo.fr>
-X-Mailer: git-send-email 2.30.2
+        Thu, 11 Nov 2021 02:28:30 -0500
+Received: by mail-lj1-f176.google.com with SMTP id e9so10181758ljl.5;
+        Wed, 10 Nov 2021 23:25:41 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=4w43pXJEj6sPijE7G4/gLGRPchckrBkkpJmn6UFaT3c=;
+        b=GypT5sO/ey57sjf1cm41YbN72pdtBygF7BnGkLwe9D9kl9L53NOdli9JLojhdDCWcd
+         pkxhNWIMwdwWhKw+YPi9u6lWVL9ZtOzjF5ZGPJiv538ZVvyPyfeS1Jbw3RsvWjLe5XHN
+         zChbC5n1Pm1zMLjXum9NqxA4q5ikA+fKGHrza64M0prOd5ezW3zccPjElULcorVY+Llf
+         EnfRpgnf8E5woVjqlKvwWP53UId1BRrlY9WtJN7DnWU9jNoSYaLnu5d6fM5Cmfp4vjq2
+         J56VDwcR65khmS3p3oZ5g47vAwZ2liJLA8qJWu4bpkNYkQbz+cC43puvIp+i10XoDlW6
+         khhw==
+X-Gm-Message-State: AOAM531r1C/qrgJUGyvB9akbW+txGu00yHJyXaNnwDLKnjIHXlEEZ/VQ
+        FuX838WqkWY9QzO3gKOqIKisf0eQKwo36BoTmWM=
+X-Google-Smtp-Source: ABdhPJzPMVBGPuLftQNA/tOSHotYrLQMXnnafr/sQy0BbFisj6KBKPam+pROMfHCZgG4F2oQ0rUbnpbFCzuKmnVw4TQ=
+X-Received: by 2002:a2e:82ce:: with SMTP id n14mr5210040ljh.90.1636615540222;
+ Wed, 10 Nov 2021 23:25:40 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20211109115020.31623-1-german.gomez@arm.com> <20211109115020.31623-4-german.gomez@arm.com>
+In-Reply-To: <20211109115020.31623-4-german.gomez@arm.com>
+From:   Namhyung Kim <namhyung@kernel.org>
+Date:   Wed, 10 Nov 2021 23:25:28 -0800
+Message-ID: <CAM9d7cgB_kemcZLL2FK6pHOEx_TkJ72YNFW03OR_Zyhn0yrmPg@mail.gmail.com>
+Subject: Re: [PATCH v2 3/4] perf arm-spe: Save context ID in record
+To:     German Gomez <german.gomez@arm.com>
+Cc:     linux-kernel <linux-kernel@vger.kernel.org>,
+        linux-perf-users <linux-perf-users@vger.kernel.org>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Leo Yan <leo.yan@linaro.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        John Garry <john.garry@huawei.com>,
+        Will Deacon <will@kernel.org>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        linux-arm-kernel@lists.infradead.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Should an error occur (invalid TLV len or memory allocation failure), the
-memory already allocated in 'reduce_power_data' should be freed before
-returning, otherwise it is leaking.
+Hello,
 
-Fixes: 9dad325f9d57 ("iwlwifi: support loading the reduced power table from UEFI")
-Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
----
- drivers/net/wireless/intel/iwlwifi/fw/uefi.c | 6 ++++++
- 1 file changed, 6 insertions(+)
+On Tue, Nov 9, 2021 at 3:50 AM German Gomez <german.gomez@arm.com> wrote:
+>
+> This patch is to save context ID in record, this will be used to set TID
+> for samples.
+>
+> Signed-off-by: German Gomez <german.gomez@arm.com>
+> Reviewed-by: Leo Yan <leo.yan@linaro.org>
 
-diff --git a/drivers/net/wireless/intel/iwlwifi/fw/uefi.c b/drivers/net/wireless/intel/iwlwifi/fw/uefi.c
-index c875bf35533c..009dd4be597b 100644
---- a/drivers/net/wireless/intel/iwlwifi/fw/uefi.c
-+++ b/drivers/net/wireless/intel/iwlwifi/fw/uefi.c
-@@ -86,6 +86,7 @@ static void *iwl_uefi_reduce_power_section(struct iwl_trans *trans,
- 		if (len < tlv_len) {
- 			IWL_ERR(trans, "invalid TLV len: %zd/%u\n",
- 				len, tlv_len);
-+			kfree(reduce_power_data);
- 			reduce_power_data = ERR_PTR(-EINVAL);
- 			goto out;
- 		}
-@@ -105,6 +106,7 @@ static void *iwl_uefi_reduce_power_section(struct iwl_trans *trans,
- 				IWL_DEBUG_FW(trans,
- 					     "Couldn't allocate (more) reduce_power_data\n");
- 
-+				kfree(reduce_power_data);
- 				reduce_power_data = ERR_PTR(-ENOMEM);
- 				goto out;
- 			}
-@@ -134,6 +136,10 @@ static void *iwl_uefi_reduce_power_section(struct iwl_trans *trans,
- done:
- 	if (!size) {
- 		IWL_DEBUG_FW(trans, "Empty REDUCE_POWER, skipping.\n");
-+		/* Better safe than sorry, but 'reduce_power_data' should
-+		 * always be NULL if !size.
-+		 */
-+		kfree(reduce_power_data);
- 		reduce_power_data = ERR_PTR(-ENOENT);
- 		goto out;
- 	}
--- 
-2.30.2
+Acked-by: Namhyung Kim <namhyung@kernel.org>
 
+Thanks,
+Namhyung
+
+
+> ---
+>  tools/perf/util/arm-spe-decoder/arm-spe-decoder.c | 2 ++
+>  tools/perf/util/arm-spe-decoder/arm-spe-decoder.h | 1 +
+>  2 files changed, 3 insertions(+)
+>
+> diff --git a/tools/perf/util/arm-spe-decoder/arm-spe-decoder.c b/tools/perf/util/arm-spe-decoder/arm-spe-decoder.c
+> index 32fe41835..3fc528c92 100644
+> --- a/tools/perf/util/arm-spe-decoder/arm-spe-decoder.c
+> +++ b/tools/perf/util/arm-spe-decoder/arm-spe-decoder.c
+> @@ -151,6 +151,7 @@ static int arm_spe_read_record(struct arm_spe_decoder *decoder)
+>         u64 payload, ip;
+>
+>         memset(&decoder->record, 0x0, sizeof(decoder->record));
+> +       decoder->record.context_id = (u64)-1;
+>
+>         while (1) {
+>                 err = arm_spe_get_next_packet(decoder);
+> @@ -180,6 +181,7 @@ static int arm_spe_read_record(struct arm_spe_decoder *decoder)
+>                 case ARM_SPE_COUNTER:
+>                         break;
+>                 case ARM_SPE_CONTEXT:
+> +                       decoder->record.context_id = payload;
+>                         break;
+>                 case ARM_SPE_OP_TYPE:
+>                         if (idx == SPE_OP_PKT_HDR_CLASS_LD_ST_ATOMIC) {
+> diff --git a/tools/perf/util/arm-spe-decoder/arm-spe-decoder.h b/tools/perf/util/arm-spe-decoder/arm-spe-decoder.h
+> index 59bdb7309..46a8556a9 100644
+> --- a/tools/perf/util/arm-spe-decoder/arm-spe-decoder.h
+> +++ b/tools/perf/util/arm-spe-decoder/arm-spe-decoder.h
+> @@ -38,6 +38,7 @@ struct arm_spe_record {
+>         u64 timestamp;
+>         u64 virt_addr;
+>         u64 phys_addr;
+> +       u64 context_id;
+>  };
+>
+>  struct arm_spe_insn;
+> --
+> 2.25.1
+>
