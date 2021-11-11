@@ -2,75 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C706C44D1BC
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Nov 2021 06:41:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9E07F44D1BE
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Nov 2021 06:43:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230356AbhKKFoU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Nov 2021 00:44:20 -0500
-Received: from mailgw02.mediatek.com ([210.61.82.184]:57688 "EHLO
-        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S229463AbhKKFoT (ORCPT
+        id S231479AbhKKFp7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Nov 2021 00:45:59 -0500
+Received: from out30-43.freemail.mail.aliyun.com ([115.124.30.43]:42878 "EHLO
+        out30-43.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229379AbhKKFp6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Nov 2021 00:44:19 -0500
-X-UUID: 5d98166b89384666a99459a552fec35e-20211111
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Transfer-Encoding:Content-Type:In-Reply-To:MIME-Version:Date:Message-ID:From:References:CC:To:Subject; bh=uU3GXZThZjqCV+0NTVcHqLrhCFqb20KUFxJbZ2ItdwY=;
-        b=KPR8G72/hldnGPX5E2m1h56pVeQMKHwC0vech0uDAn3URu2n4ZeKKvBWRwX1AYzbTCbuJmAZtSGavKjaEYLNITdU7wImCy1eFLugGgWi7FUAlcTyXui01r9MypLeU6c/rem6HJDuc1xiS75HiRmlP9NNGtre/rd+0RtEbByx/64=;
-X-UUID: 5d98166b89384666a99459a552fec35e-20211111
-Received: from mtkexhb02.mediatek.inc [(172.21.101.103)] by mailgw02.mediatek.com
-        (envelope-from <peter.wang@mediatek.com>)
-        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 904434180; Thu, 11 Nov 2021 13:41:25 +0800
-Received: from mtkmbs10n1.mediatek.inc (172.21.101.34) by
- mtkmbs07n2.mediatek.inc (172.21.101.141) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Thu, 11 Nov 2021 13:41:24 +0800
-Received: from [172.21.84.99] (172.21.84.99) by mtkmbs10n1.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.2.792.15 via Frontend
- Transport; Thu, 11 Nov 2021 13:41:24 +0800
-Subject: Re: [PATCH] scsi: ufs: ufs-mediatek: add put_device() after
- of_find_device_by_node()
-To:     <cgel.zte@gmail.com>, <stanley.chu@mediatek.com>
-CC:     <alim.akhtar@samsung.com>, <avri.altman@wdc.com>,
-        <jejb@linux.ibm.com>, <martin.petersen@oracle.com>,
-        <matthias.bgg@gmail.com>, <linux-scsi@vger.kernel.org>,
-        <linux-mediatek@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        Ye Guojin <ye.guojin@zte.com.cn>,
-        Zeal Robot <zealci@zte.com.cn>
-References: <20211110105133.150171-1-ye.guojin@zte.com.cn>
-From:   Peter Wang <peter.wang@mediatek.com>
-Message-ID: <16e61844-6fc7-2d1d-ee30-364c6df59545@mediatek.com>
-Date:   Thu, 11 Nov 2021 13:41:24 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Thu, 11 Nov 2021 00:45:58 -0500
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R161e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04423;MF=zhangliguang@linux.alibaba.com;NM=1;PH=DS;RN=7;SR=0;TI=SMTPD_---0Uw-meSK_1636609380;
+Received: from localhost(mailfrom:zhangliguang@linux.alibaba.com fp:SMTPD_---0Uw-meSK_1636609380)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Thu, 11 Nov 2021 13:43:07 +0800
+From:   Liguang Zhang <zhangliguang@linux.alibaba.com>
+To:     Bjorn Helgaas <bhelgaas@google.com>,
+        Lukas Wunner <lukas@wunner.de>,
+        Kuppuswamy Sathyanarayanan 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>,
+        Amey Narkhede <ameynarkhede03@gmail.com>
+Cc:     linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Liguang Zhang <zhangliguang@linux.alibaba.com>
+Subject: [PATCH] PCI: pciehp: clear cmd_busy bit when Command Completed in polling mode
+Date:   Thu, 11 Nov 2021 13:42:58 +0800
+Message-Id: <20211111054258.7309-1-zhangliguang@linux.alibaba.com>
+X-Mailer: git-send-email 2.19.1.6.gb485710b
 MIME-Version: 1.0
-In-Reply-To: <20211110105133.150171-1-ye.guojin@zte.com.cn>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: base64
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-DQpPbiAxMS8xMC8yMSA2OjUxIFBNLCBjZ2VsLnp0ZUBnbWFpbC5jb20gd3JvdGU6DQo+IEZyb206
-IFllIEd1b2ppbiA8eWUuZ3VvamluQHp0ZS5jb20uY24+DQo+DQo+IFRoaXMgd2FzIGZvdW5kIGJ5
-IGNvY2NpY2hlY2s6DQo+IC4vZHJpdmVycy9zY3NpL3Vmcy91ZnMtbWVkaWF0ZWsuYywgMjExLCAx
-LTcsIEVSUk9SIG1pc3NpbmcgcHV0X2RldmljZTsNCj4gY2FsbCBvZl9maW5kX2RldmljZV9ieV9u
-b2RlIG9uIGxpbmUgMTE4NSwgYnV0IHdpdGhvdXQgYSBjb3JyZXNwb25kaW5nDQo+IG9iamVjdCBy
-ZWxlYXNlIHdpdGhpbiB0aGlzIGZ1bmN0aW9uLg0KPg0KPiBSZXBvcnRlZC1ieTogWmVhbCBSb2Jv
-dCA8emVhbGNpQHp0ZS5jb20uY24+DQo+IFNpZ25lZC1vZmYtYnk6IFllIEd1b2ppbiA8eWUuZ3Vv
-amluQHp0ZS5jb20uY24+DQo+IC0tLQ0KPiAgIGRyaXZlcnMvc2NzaS91ZnMvdWZzLW1lZGlhdGVr
-LmMgfCAxICsNCj4gICAxIGZpbGUgY2hhbmdlZCwgMSBpbnNlcnRpb24oKykNCj4NCj4gZGlmZiAt
-LWdpdCBhL2RyaXZlcnMvc2NzaS91ZnMvdWZzLW1lZGlhdGVrLmMgYi9kcml2ZXJzL3Njc2kvdWZz
-L3Vmcy1tZWRpYXRlay5jDQo+IGluZGV4IGZjNWIyMTQzNDdiMy4uNTM5M2I1YzlkZDljIDEwMDY0
-NA0KPiAtLS0gYS9kcml2ZXJzL3Njc2kvdWZzL3Vmcy1tZWRpYXRlay5jDQo+ICsrKyBiL2RyaXZl
-cnMvc2NzaS91ZnMvdWZzLW1lZGlhdGVrLmMNCj4gQEAgLTExODksNiArMTE4OSw3IEBAIHN0YXRp
-YyBpbnQgdWZzX210a19wcm9iZShzdHJ1Y3QgcGxhdGZvcm1fZGV2aWNlICpwZGV2KQ0KPiAgIAl9
-DQo+ICAgCWxpbmsgPSBkZXZpY2VfbGlua19hZGQoZGV2LCAmcmVzZXRfcGRldi0+ZGV2LA0KPiAg
-IAkJRExfRkxBR19BVVRPUFJPQkVfQ09OU1VNRVIpOw0KPiArCXB1dF9kZXZpY2UoJnJlc2V0X3Bk
-ZXYtPmRldik7DQoNClRoYW5rcyBmb3IgZml4IHRoaXMgbWlzc2luZy4NClJldmlld2VkLWJ5OiBQ
-ZXRlciBXYW5nIDxwZXRlci53YW5nQG1lZGlhdGVrLmNvbT4NCg0KPiAgIAlpZiAoIWxpbmspIHsN
-Cj4gICAJCWRldl9ub3RpY2UoZGV2LCAiYWRkIHJlc2V0IGRldmljZV9saW5rIGZhaWxcbiIpOw0K
-PiAgIAkJZ290byBza2lwX3Jlc2V0Ow==
+This patch fixes this problem that on driver probe from system startup,
+pciehp checks the Presence Detect State bit in the Slot Status register
+to bring up an occupied slot or bring down an unoccupied slot. If empty
+slot's power status is on, turn power off. The Hot-Plug interrupt isn't
+requested yet, so avoid triggering a notification by calling
+pcie_disable_notification().
+
+Both the CCIE and HPIE bits are masked in pcie_disable_notification(),
+when we issue a hotplug command, pcie_wait_cmd() will polling the
+Command Completed bit instead of waiting for an interrupt. But cmd_busy
+bit was not cleared when Command Completed which results in timeouts
+like this in pciehp_power_off_slot() and pcie_init_notification():
+
+  pcieport 0000:00:03.0: pciehp: Timeout on hotplug command 0x01c0
+(issued 2264 msec ago)
+  pcieport 0000:00:03.0: pciehp: Timeout on hotplug command 0x05c0
+(issued 2288 msec ago)
+
+Signed-off-by: Liguang Zhang <zhangliguang@linux.alibaba.com>
+---
+ drivers/pci/hotplug/pciehp_hpc.c | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/drivers/pci/hotplug/pciehp_hpc.c b/drivers/pci/hotplug/pciehp_hpc.c
+index 83a0fa119cae..8698aefc6041 100644
+--- a/drivers/pci/hotplug/pciehp_hpc.c
++++ b/drivers/pci/hotplug/pciehp_hpc.c
+@@ -98,6 +98,8 @@ static int pcie_poll_cmd(struct controller *ctrl, int timeout)
+ 		if (slot_status & PCI_EXP_SLTSTA_CC) {
+ 			pcie_capability_write_word(pdev, PCI_EXP_SLTSTA,
+ 						   PCI_EXP_SLTSTA_CC);
++			ctrl->cmd_busy = 0;
++			smp_mb();
+ 			return 1;
+ 		}
+ 		msleep(10);
+-- 
+2.19.1.6.gb485710b
 
