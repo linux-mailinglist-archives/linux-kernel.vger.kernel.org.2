@@ -2,98 +2,171 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 72D0944CEC5
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Nov 2021 02:30:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2890C44CECD
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Nov 2021 02:35:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232574AbhKKBdH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Nov 2021 20:33:07 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124]:51561 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232005AbhKKBdG (ORCPT
+        id S232785AbhKKBh4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Nov 2021 20:37:56 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52900 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232005AbhKKBhz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Nov 2021 20:33:06 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1636594217;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=60dtU+HoYlocd4haAeH2HC3xlLjzOu/VsukztW1ALDk=;
-        b=E1pSgqhlKo9mm6L6atckuKOKAG5B8ma4o40LhYkMqsybTOuL64E7z9PZ5GHGtKvLbryWda
-        H9s17xOVWMgomt91GN954LbqxIaHvGEJ6DnKYvZgAvMHlEURlKc2jCEKtvv6xOhHT7N3n/
-        QYF5aM2vihbxYlAs3GeZrac30h5Qq/I=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-83-a__PTCqxNAahdH-c-yMb9A-1; Wed, 10 Nov 2021 20:30:14 -0500
-X-MC-Unique: a__PTCqxNAahdH-c-yMb9A-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 84FB715724;
-        Thu, 11 Nov 2021 01:30:12 +0000 (UTC)
-Received: from [10.22.16.136] (unknown [10.22.16.136])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id E15D01048126;
-        Thu, 11 Nov 2021 01:30:10 +0000 (UTC)
-Message-ID: <551c33a1-25d0-a840-f26b-238bee51d4ec@redhat.com>
-Date:   Wed, 10 Nov 2021 20:30:10 -0500
+        Wed, 10 Nov 2021 20:37:55 -0500
+Received: from mail-wr1-x429.google.com (mail-wr1-x429.google.com [IPv6:2a00:1450:4864:20::429])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BBD92C061766;
+        Wed, 10 Nov 2021 17:35:06 -0800 (PST)
+Received: by mail-wr1-x429.google.com with SMTP id d24so7152598wra.0;
+        Wed, 10 Nov 2021 17:35:06 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=jwqq2pe+WQgD85hWBRRaf4L09Fzexs7QXv8b+JM/QuQ=;
+        b=WgAH6TM6E0zDFux9ky93ucwmaJ0Q/JqfoOLW4DQ9c8Z3a6AwtA2nIg+ablW7Bc8dxX
+         hB3LXOJ9gaHAJZmN7eUfEup/genRK+WewtubjaBk8lPmlBh6U/2pcy8TzDCnxylbqcP4
+         7hQzKqqwIpjZXv/O0m2DAYQmF2jK2oyNHz4flQyH34JYFJtKf4gC/MAWN6Xk+2+dJHEU
+         yPp5vHt1k0iYmvcfXCA8+2FLhP3hYA/iF4KDTsMLS28hQYezCezFo1wXFJgWUQYFHLX7
+         ODKDtaVxaVT6VY4UinQKnWp+74tqskuTk+S7gfG73RSN9s+RgzI1iPM23GTh7ZAD8Ib+
+         P1jQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=jwqq2pe+WQgD85hWBRRaf4L09Fzexs7QXv8b+JM/QuQ=;
+        b=K1ZcREeoUu4qWyqoCoCOz08Xfsjv02cFZlxXUxm1RzQyHk6zLUuazG9LFYsapCS7sB
+         ByIWRDPe/RALC2+Jnk3SuG1dFZwjBS53Oli8z0bkdWV1WR6PEBsQBg9xoj/CJdLxIlU0
+         ldrvuBjsu1uVugI2kp/tGft3fW9BXWeSJWkuK5Oymsvq4ES/SExEILhJo2aMFgRmnaX4
+         UItNjojWLRy3wSmXAfa8AgBzN4eb6nvlJ/qKr1qgVd3nKYBQ/UWF2VNu55d7inqUES/b
+         Qm7xNY3UkLPTFMpA9gIakzCDmAmSi90qJ+pLH3brGP686bv2P+mkJr9RkVduB9sp69+7
+         MA0A==
+X-Gm-Message-State: AOAM5334uw9GkHWHY3+joNjoUkIH8rzyN4j5qFNRrB6SJipjQqJpjCfC
+        BxqnKLagTfuUFHHkzsrj0pE=
+X-Google-Smtp-Source: ABdhPJxqjLxwrL/9GuF2fgTUs8BDvThhn+l79UAAYEHUn3r3U2VDncKDMWUIfGgwNyufSHAKv5DAAg==
+X-Received: by 2002:a5d:6707:: with SMTP id o7mr4270354wru.172.1636594504921;
+        Wed, 10 Nov 2021 17:35:04 -0800 (PST)
+Received: from Ansuel-xps.localdomain (93-42-71-246.ip85.fastwebnet.it. [93.42.71.246])
+        by smtp.googlemail.com with ESMTPSA id d8sm1369989wrm.76.2021.11.10.17.35.03
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 10 Nov 2021 17:35:04 -0800 (PST)
+From:   Ansuel Smith <ansuelsmth@gmail.com>
+To:     Andrew Lunn <andrew@lunn.ch>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Vladimir Oltean <olteanv@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>, Pavel Machek <pavel@ucw.cz>,
+        Ansuel Smith <ansuelsmth@gmail.com>,
+        John Crispin <john@phrozen.org>, netdev@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-leds@vger.kernel.org,
+        =?UTF-8?q?Marek=20Beh=C3=BAn?= <kabel@kernel.org>
+Subject: [RFC PATCH v4 0/8] Adds support for PHY LEDs with offload triggers
+Date:   Thu, 11 Nov 2021 02:34:52 +0100
+Message-Id: <20211111013500.13882-1-ansuelsmth@gmail.com>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.2.0
-Subject: Re: [PATCH 0/2] clocksource: Avoid incorrect hpet fallback
-Content-Language: en-US
-To:     Feng Tang <feng.tang@intel.com>,
-        "Paul E. McKenney" <paulmck@kernel.org>
-Cc:     John Stultz <john.stultz@linaro.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Stephen Boyd <sboyd@kernel.org>, linux-kernel@vger.kernel.org,
-        Peter Zijlstra <peterz@infradead.org>,
-        Cassio Neri <cassio.neri@gmail.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Frederic Weisbecker <frederic@kernel.org>
-References: <20211110221732.272986-1-longman@redhat.com>
- <20211111012301.GA15663@shbuild999.sh.intel.com>
-From:   Waiman Long <longman@redhat.com>
-In-Reply-To: <20211111012301.GA15663@shbuild999.sh.intel.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+This is another attempt in adding support for PHY LEDs. Most of the
+times Switch/PHY have connected multiple LEDs that are controlled by HW
+based on some rules/event. Currently we lack any support for a generic
+way to control the HW part and normally we either never implement the
+feature or only add control for brightness or hw blink.
 
-On 11/10/21 20:23, Feng Tang wrote:
-> Hi Waiman, Paul,
->
-> On Wed, Nov 10, 2021 at 05:17:30PM -0500, Waiman Long wrote:
->> It was found that when an x86 system was being stressed by running
->> various different benchmark suites, the clocksource watchdog might
->> occasionally mark TSC as unstable and fall back to hpet which will
->> have a signficant impact on system performance.
->   
-> We've seen similar cases while running 'netperf' and 'lockbus/ioport'
-> cases of 'stress-ng' tool.
->
-> In those scenarios, the clocksource used by kernel is tsc, while
-> hpet is used as watchdog. And when the "screwing" happens, we found
-> mostly it's the hpet's 'fault', that when system is under extreme
-> pressure, the read of hpet could take a long time, and even 2
-> consecutive read of hpet will have a big gap (up to 1ms+) in between.
-> So the screw we saw is actually caused by hpet instead of tsc, as
-> tsc read is a lightweight cpu operation
->
-> I tried the following patch to detect the screw of watchdog itself,
-> and avoid wrongly judging the tsc to be unstable. It does help in
-> our tests, please help to review.
->
-> And one futher idea is to also adding 2 consecutive read of current
-> clocksource, and compare its gap with watchdog's, and skip the check
-> if the watchdog's is bigger.
+This is based on Marek idea of providing some API to cled but use a
+different implementation that in theory should be more generilized.
 
-That is what I found too. And I also did a 2nd watchdog read to compare 
-the consecutive delay versus half the threshold and skip the test if it 
-exceeds it. My patch is actually similar in concept to what your patch does.
+The current idea is:
+- LED driver implement 3 API (hw_control_status/start/stop).
+  They are used to put the LED in hardware mode and to configure the
+  various trigger.
+- We have hardware triggers that are used to expose to userspace the
+  supported hardware mode and set the hardware mode on trigger
+  activation.
+- We can also have triggers that both support hardware and software mode.
+- The LED driver will declare each supported hardware blink mode and
+  communicate with the trigger all the supported blink modes that will
+  be available by sysfs.
+- A trigger will use blink_set to configure the blink mode to active
+  in hardware mode.
+- On hardware trigger activation, only the hardware mode is enabled but
+  the blink modes are not configured. The LED driver should reset any
+  link mode active by default.
 
-Cheers,
-Longman
+Each LED driver will have to declare explicit support for the offload
+trigger (or return not supported error code) as we the trigger_data that
+the LED driver will elaborate and understand what is referring to (based
+on the current active trigger).
+
+I posted a user for this new implementation that will benefit from this
+and will add a big feature to it. Currently qca8k can have up to 3 LEDs
+connected to each PHY port and we have some device that have only one of
+them connected and the default configuration won't work for that.
+
+I also posted the netdev trigger expanded with the hardware support.
+
+More polish is required but this is just to understand if I'm taking
+the correct path with this implementation hoping we find a correct
+implementation and we start working on the ""small details""
+
+v4:
+- Rework implementation and drop hw_configure logic.
+  We now expand blink_set.
+- Address even more spelling mistake. (thx a lot Randy)
+- Drop blink option and use blink_set delay.
+- Rework phy-activity trigger to actually make the groups dynamic.
+v3:
+- Rework start/stop as Andrew asked.
+- Introduce more logic to permit a trigger to run in hardware mode.
+- Add additional patch with netdev hardware support.
+- Use test_bit API to check flag passed to hw_control_configure.
+- Added a new cmd to hw_control_configure to reset any active blink_mode.
+- Refactor all the patches to follow this new implementation.
+v2:
+- Fix spelling mistake (sorry)
+- Drop patch 02 "permit to declare supported offload triggers".
+  Change the logic, now the LED driver declare support for them
+  using the configure_offload with the cmd TRIGGER_SUPPORTED.
+- Rework code to follow this new implementation.
+- Update Documentation to better describe how this offload
+  implementation work.
+
+Ansuel Smith (8):
+  leds: add support for hardware driven LEDs
+  leds: document additional use of blink_set for hardware control
+  leds: trigger: netdev: drop NETDEV_LED_MODE_LINKUP from mode
+  leds: trigger: netdev: rename and expose NETDEV trigger enum and
+    struct
+  leds: trigger: netdev: add hardware control support
+  leds: trigger: add hardware-phy-activity trigger
+  net: dsa: qca8k: add LEDs support
+  dt-bindings: net: dsa: qca8k: add LEDs definition example
+
+ .../devicetree/bindings/net/dsa/qca8k.yaml    |  20 +
+ Documentation/leds/leds-class.rst             |  49 ++
+ drivers/leds/Kconfig                          |  11 +
+ drivers/leds/led-class.c                      |  40 ++
+ drivers/leds/led-triggers.c                   |  22 +
+ drivers/leds/trigger/Kconfig                  |  28 ++
+ drivers/leds/trigger/Makefile                 |   1 +
+ .../trigger/ledtrig-hardware-phy-activity.c   | 180 ++++++++
+ drivers/leds/trigger/ledtrig-netdev.c         |  92 ++--
+ drivers/net/dsa/Kconfig                       |   9 +
+ drivers/net/dsa/Makefile                      |   1 +
+ drivers/net/dsa/qca8k-leds.c                  | 423 ++++++++++++++++++
+ drivers/net/dsa/qca8k.c                       |   8 +-
+ drivers/net/dsa/qca8k.h                       |  65 +++
+ include/linux/leds.h                          |  97 +++-
+ 15 files changed, 999 insertions(+), 47 deletions(-)
+ create mode 100644 drivers/leds/trigger/ledtrig-hardware-phy-activity.c
+ create mode 100644 drivers/net/dsa/qca8k-leds.c
+
+-- 
+2.32.0
 
