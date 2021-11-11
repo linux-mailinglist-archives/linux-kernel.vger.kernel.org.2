@@ -2,94 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6DD4344DC3B
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Nov 2021 20:37:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E64AA44DC3D
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Nov 2021 20:39:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233931AbhKKTkj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Nov 2021 14:40:39 -0500
-Received: from mail.kernel.org ([198.145.29.99]:46378 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229785AbhKKTki (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Nov 2021 14:40:38 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2DC4761054;
-        Thu, 11 Nov 2021 19:37:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1636659469;
-        bh=kvLxjhsqWWrkwcWX08LE4zmNFTBTSqdsykYTe1y4XWI=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=rHYM90kd9mjFoZnE+h68f+ORQaSi6aNKazXyrzZZiuDt3OTnrDOuVrwQuSg7hlal3
-         twy9VAqF95Rl9qAea2JHeQlP283Z99jORszKbsr4gdAsQttr4VYWIQ5Y/E4U/0PuGE
-         eWmhe03RnwYe87rU7ZEmzOD+BynufoKHN8xS2Ba8TiNIIy0At9V/h98m+m+Qiy7DOI
-         qoxrAqLdsWUL8SVWIth8LAxk8F/Lz/apsKTyfgtnmExHyjhcnSbQ7ai0t9OymhzAAL
-         4THo2FbJ5NAYCaK35qRggSE+iTI5HJEgAxVwBAtv7YnGe0UQn8zSci3q/vV074lrem
-         blztWnvrDQFFQ==
-Date:   Thu, 11 Nov 2021 19:37:42 +0000
-From:   Mauro Carvalho Chehab <mchehab@kernel.org>
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     Tsuchiya Yuto <kitakar@gmail.com>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-media@vger.kernel.org, linux-staging@lists.linux.dev,
-        linux-kernel@vger.kernel.org,
-        Nable <nable.maininbox@googlemail.com>,
-        Fabio Aiuto <fabioaiuto83@gmail.com>,
-        "andrey.i.trufanov" <andrey.i.trufanov@gmail.com>,
-        Patrik Gfeller <patrik.gfeller@gmail.com>,
-        Hans de Goede <hdegoede@redhat.com>
-Subject: Re: [PATCH 04/17] media: atomisp: pci: do not use err var when
- checking port validity for ISP2400
-Message-ID: <20211111193742.174f0b26@sal.lan>
-In-Reply-To: <YY1ATbqn2fAg8Oct@smile.fi.intel.com>
-References: <20211017161958.44351-1-kitakar@gmail.com>
-        <20211017161958.44351-5-kitakar@gmail.com>
-        <20211026092637.196447aa@sal.lan>
-        <1a295721fd1f1e512cd54a659a250aef162bfb6f.camel@gmail.com>
-        <20211028123944.66c212c1@sal.lan>
-        <af7cdf9de020171567c2e75b713deb2ed073e4e3.camel@gmail.com>
-        <20211101141058.36ea2c8e@sal.lan>
-        <ab48bd8c69273e8b18ff652f3615b2698a777092.camel@gmail.com>
-        <YY1ATbqn2fAg8Oct@smile.fi.intel.com>
-X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.30; x86_64-redhat-linux-gnu)
+        id S233182AbhKKTmU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Nov 2021 14:42:20 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:50659 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229785AbhKKTmR (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 11 Nov 2021 14:42:17 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1636659567;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=0cPNm28FmvGF69nKmphcoBlWDfSJ5fX9zp/LDfDQQ3I=;
+        b=ESv2zq0JBoePMmhLHgLMkuONywnUE7CEHp8QqgL/jEPRsmb4Dd3JBxJoZfci9v2mS3Aywh
+        34U3bin+ml+3hBL3onpERo8JDaerPdt9UkXZYtz1L48ea/zWZ6dzekSd6jjHRKFaZM6jm2
+        TlYkGhGvZq0wjdxgO/g/KJ6RYoXGN30=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-288-xsjv7s98MNy1w2U9edKmGg-1; Thu, 11 Nov 2021 14:39:26 -0500
+X-MC-Unique: xsjv7s98MNy1w2U9edKmGg-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 05EAB19057A0;
+        Thu, 11 Nov 2021 19:39:25 +0000 (UTC)
+Received: from wcosta.com (ovpn-116-123.gru2.redhat.com [10.97.116.123])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 1685219D9D;
+        Thu, 11 Nov 2021 19:39:17 +0000 (UTC)
+From:   Wander Lairson Costa <wander@redhat.com>
+To:     Petr Mladek <pmladek@suse.com>,
+        Sergey Senozhatsky <senozhatsky@chromium.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        John Ogness <john.ogness@linutronix.de>,
+        linux-kernel@vger.kernel.org (open list)
+Cc:     "Paul E . McKenney" <paulmck@kernel.org>,
+        Wander Lairson Costa <wander@redhat.com>
+Subject: [PATCH] printk: suppress rcu stall warnings caused by slow console devices
+Date:   Thu, 11 Nov 2021 16:38:54 -0300
+Message-Id: <20211111193854.616163-1-wander@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Thu, 11 Nov 2021 18:09:49 +0200
-Andy Shevchenko <andriy.shevchenko@linux.intel.com> escreveu:
+If we have a reasonable large dataset to flush in the printk ring
+buffer in the presence of a slow console device (like a serial port
+with a low baud rate configured), the RCU stall detector may report
+warnings.
 
-> On Thu, Nov 11, 2021 at 11:34:23PM +0900, Tsuchiya Yuto wrote:
-> > On Mon, 2021-11-01 at 14:10 +0000, Mauro Carvalho Chehab wrote:  
-> > > Em Mon, 01 Nov 2021 22:38:55 +0900
-> > > Tsuchiya Yuto <kitakar@gmail.com> escreveu:  
-> 
-> ...
-> 
-> > The full output of the make error is here:
-> > 
-> >         ("NOTE: issue: some undeclared errors")
-> >         https://github.com/kitakar5525/linux-kernel/commit/a932d16681f941161385659b9d0316a3a4975e86  
-> 
-> I just realize that we may do at some point
-> 
-> cflags-y += -Werror
->
-> to avoid changes that breaks build (with warnings). 
+This patch suppresses RCU stall warnings while flushing the ring buffer
+to the console.
 
-No need. Upstream already added Werror. It is just a matter of
-adding:
+Signed-off-by: Wander Lairson Costa <wander@redhat.com>
+---
+ kernel/printk/printk.c | 21 +++++++++++++++++++++
+ 1 file changed, 21 insertions(+)
 
-	CONFIG_WERROR=y
+diff --git a/kernel/printk/printk.c b/kernel/printk/printk.c
+index 142a58d124d9..cb995f8d4f8a 100644
+--- a/kernel/printk/printk.c
++++ b/kernel/printk/printk.c
+@@ -2523,6 +2523,20 @@ static inline int can_use_console(void)
+ 	return cpu_online(raw_smp_processor_id()) || have_callable_console();
+ }
+ 
++extern int rcu_cpu_stall_suppress;
++
++static void rcu_console_stall_suppress(void)
++{
++	if (!rcu_cpu_stall_suppress)
++		rcu_cpu_stall_suppress = 4;
++}
++
++static void rcu_console_stall_unsuppress(void)
++{
++	if (rcu_cpu_stall_suppress == 4)
++		rcu_cpu_stall_suppress = 0;
++}
++
+ /**
+  * console_unlock - unlock the console system
+  *
+@@ -2568,6 +2582,9 @@ void console_unlock(void)
+ 	 * and cleared after the "again" goto label.
+ 	 */
+ 	do_cond_resched = console_may_schedule;
++
++	rcu_console_stall_suppress();
++
+ again:
+ 	console_may_schedule = 0;
+ 
+@@ -2579,6 +2596,7 @@ void console_unlock(void)
+ 	if (!can_use_console()) {
+ 		console_locked = 0;
+ 		up_console_sem();
++		rcu_console_stall_unsuppress();
+ 		return;
+ 	}
+ 
+@@ -2645,6 +2663,7 @@ void console_unlock(void)
+ 
+ 		if (console_lock_spinning_disable_and_check()) {
+ 			printk_safe_exit_irqrestore(flags);
++			rcu_console_stall_unsuppress();
+ 			return;
+ 		}
+ 
+@@ -2669,6 +2688,8 @@ void console_unlock(void)
+ 
+ 	if (retry && console_trylock())
+ 		goto again;
++
++	rcu_console_stall_unsuppress();
+ }
+ EXPORT_SYMBOL(console_unlock);
+ 
+-- 
+2.27.0
 
-to .config.
-
-> And also I would suggest
-> to run build with `make W=1 C=1 CF=-D__CHECK_ENDIAN__ ...`
-
-Yeah, that's good. On media, we also require no (unjustified) sparse
-and smatch warnings.
-
-Regards,
-Mauro
