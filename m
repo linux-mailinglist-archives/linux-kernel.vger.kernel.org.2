@@ -2,92 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 04FF444DA9B
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Nov 2021 17:42:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 26D0144DA9E
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Nov 2021 17:42:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234259AbhKKQo5 convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 11 Nov 2021 11:44:57 -0500
-Received: from mout.kundenserver.de ([212.227.126.187]:56687 "EHLO
-        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232033AbhKKQo4 (ORCPT
+        id S234273AbhKKQpG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Nov 2021 11:45:06 -0500
+Received: from jabberwock.ucw.cz ([46.255.230.98]:42962 "EHLO
+        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234266AbhKKQpB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Nov 2021 11:44:56 -0500
-Received: from mail-wr1-f47.google.com ([209.85.221.47]) by
- mrelayeu.kundenserver.de (mreue010 [213.165.67.97]) with ESMTPSA (Nemesis) id
- 1N8oKc-1mgNHX38OU-015uAI; Thu, 11 Nov 2021 17:42:05 +0100
-Received: by mail-wr1-f47.google.com with SMTP id r8so10767656wra.7;
-        Thu, 11 Nov 2021 08:42:05 -0800 (PST)
-X-Gm-Message-State: AOAM532Z+w+8SsgL78FVABcQUZaZ+T1ec2cuGNN8CKSDejqBWmygqN1F
-        eB9sA1ZCUIQBS2QLOEWcbmt38VeIawq/OClHTS0=
-X-Google-Smtp-Source: ABdhPJx5ixmh9byW4TqjJFz6i36pu47gOG4MxdfEYwBa5JydmjzUlgQx1s3/1U2xifm5YWSSfQVw+Cg26iEzj2rLnyo=
-X-Received: by 2002:adf:d1c2:: with SMTP id b2mr10347630wrd.369.1636648925333;
- Thu, 11 Nov 2021 08:42:05 -0800 (PST)
+        Thu, 11 Nov 2021 11:45:01 -0500
+Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
+        id C17DD1C0B87; Thu, 11 Nov 2021 17:42:11 +0100 (CET)
+Date:   Thu, 11 Nov 2021 17:42:10 +0100
+From:   Pavel Machek <pavel@denx.de>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
+        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
+        patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
+        jonathanh@nvidia.com, f.fainelli@gmail.com, stable@vger.kernel.org
+Subject: Re: [PATCH 5.10 00/21] 5.10.79-rc1 review
+Message-ID: <20211111164210.GC25784@duo.ucw.cz>
+References: <20211110182002.964190708@linuxfoundation.org>
 MIME-Version: 1.0
-References: <20211111091123.50853-1-krzysztof.kozlowski@canonical.com>
- <CAK8P3a3MezegptR_-XPVm=RtOn4UYsb+TPEKjCGb-XRt9ke36A@mail.gmail.com> <16fbb472-4a82-1267-9971-db453ba009e3@canonical.com>
-In-Reply-To: <16fbb472-4a82-1267-9971-db453ba009e3@canonical.com>
-From:   Arnd Bergmann <arnd@arndb.de>
-Date:   Thu, 11 Nov 2021 17:41:49 +0100
-X-Gmail-Original-Message-ID: <CAK8P3a0iwx4vZD=_zLFh8ioSrE=M--c=yqRZjxV+bjV6vs8sNw@mail.gmail.com>
-Message-ID: <CAK8P3a0iwx4vZD=_zLFh8ioSrE=M--c=yqRZjxV+bjV6vs8sNw@mail.gmail.com>
-Subject: Re: [PATCH] ARM: s3c: include header for prototype of s3c2410_modify_misccr
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Cc:     Arnd Bergmann <arnd@arndb.de>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        "moderated list:ARM/SAMSUNG EXYNOS ARM ARCHITECTURES" 
-        <linux-samsung-soc@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        kernel test robot <lkp@intel.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-X-Provags-ID: V03:K1:Cs/rc3gJ8ojIGgdSVIXXfhFLSRK8r4TlA31y65LNadohR+T0v2L
- s2Mt33oVTImE4oDEshV/YwvEwCxq1YEQWnvnZ+QAcO6p8ISgsWPYByEziMWJQvgJ8OpcWvt
- rTrEHL94Fv2q4D/U/e3SAPX/inWjEPldeTYfdR11w4GnsW9hvcusrX4yJN8C3o8eOB0rV8N
- wKS8vth2jV6C+hifG8esA==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:M4rL7yPVZm8=:vnkqUG2+9anc8XP8PL1oyG
- TeSJDCe4OOdtj/xWUQ90OfoH2jqaxfHR5TsGcppIBg4f+2aDnxUk9+wIjR6CivQHHj0VLFxZy
- hij4Vinnp1Y0nV/H+WFGc15z7QmhjAFq4oE0LrV0TMKgfzNJKbfPN+AmfDlVKCTibcokFFxlJ
- Q3lW+q0yLYkK4vPlUgGfY41+pQO9hKReE/LLiUauCGGNxiWYATAxu+tInzOJd3IeLl0xsdOGX
- ej6yL77KrpQZWeZbLtxQTCorCMPFaNuYLSDBxSsClWqBlylCmuneYqO/8z5VDysRKjsrS2SAj
- jFe6+Dp+rHKR61TiwEhdu3nXKSZKR4t28FlWZCZdzMXYHXgqFLLHxUlHuIn3SAeWfbChR/TYb
- yJuNVvx19q14DevBAEn7hjnkrZsxDexgpja1CgZt3A0wB5F4yI0Ojf01hWwewahGG98GFEq6R
- Ul7VlpVt9yi3JhJoSuFjhgRFfa/dnLiyVwikxxx49zQqWjLOaZKDaQmF3SqDqIsD9PV19VHo5
- 3LtlAo3LQ7ZVrcudrUtxwr+Un15CR7MaogFH3wYYlYDiXjHRy7QuamqM1lBhnbwFvyOYgt6KK
- hi8uLAD95wH6av4J5PWBBXNQ2QLTNpgCBE9BXrUvV12Elg5ndtio67WAdiWqpyJlL/HnAqjkG
- QylQcU2hOJvLsOs5iGrsPjky4DsQsiTBOFs4LMIRp2+3X5383jKK0fpivue+Jh0/WdSw=
+Content-Type: multipart/signed; micalg=pgp-sha1;
+        protocol="application/pgp-signature"; boundary="vOmOzSkFvhd7u8Ms"
+Content-Disposition: inline
+In-Reply-To: <20211110182002.964190708@linuxfoundation.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 11, 2021 at 10:56 AM Krzysztof Kozlowski
-<krzysztof.kozlowski@canonical.com> wrote:
->
-> On 11/11/2021 10:46, Arnd Bergmann wrote:
-> > On Thu, Nov 11, 2021 at 10:11 AM Krzysztof Kozlowski
-> > <krzysztof.kozlowski@canonical.com> wrote:
-> >>
-> >> Include the header with prototype of s3c2410_modify_misccr to fix W=1
-> >> warning:
-> >>
-> >>   arch/arm/mach-s3c/gpio-samsung.c:1309:14: warning:
-> >>     no previous prototype for ‘s3c2410_modify_misccr’ [-Wmissing-prototypes]
-> >>
-> >> Reported-by: kernel test robot <lkp@intel.com>
-> >> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-> >
-> > Thank you for fixing it,
-> >
-> > Acked-by: Arnd Bergmann <arnd@arndb.de>
-> >
-> > If you like, I can put it into the fixes branch of the soc tree directly,
-> > otherwise I expect you'll send it in a pull request later.
->
-> It's not a serious bug and was there since long time, so maybe let's
-> send it via regular pull request.
 
-Ok, sounds good. I was worried for a bit that this would break builds
-with CONFIG_WERROR, but of course that is already broken in
-many ways with W=1.
+--vOmOzSkFvhd7u8Ms
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-        Arnd
+Hi!
+
+> This is the start of the stable review cycle for the 5.10.79 release.
+> There are 21 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+
+CIP testing did not find any problems here:
+
+https://gitlab.com/cip-project/cip-testing/linux-stable-rc-ci/-/tree/linux-=
+5.10.y
+
+Tested-by: Pavel Machek (CIP) <pavel@denx.de>
+
+Best regards,
+                                                                Pavel
+--=20
+DENX Software Engineering GmbH,      Managing Director: Wolfgang Denk
+HRB 165235 Munich, Office: Kirchenstr.5, D-82194 Groebenzell, Germany
+
+--vOmOzSkFvhd7u8Ms
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iF0EABECAB0WIQRPfPO7r0eAhk010v0w5/Bqldv68gUCYY1H4gAKCRAw5/Bqldv6
+8l1jAKCaRz4XvYNbLdQIxAKN+bGu2bsJbwCfRfphd1HUUrizh0THPmpPQFJ9sts=
+=nMJe
+-----END PGP SIGNATURE-----
+
+--vOmOzSkFvhd7u8Ms--
