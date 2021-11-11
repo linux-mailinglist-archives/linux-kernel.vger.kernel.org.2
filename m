@@ -2,80 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E78F544D33E
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Nov 2021 09:33:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9AD2744D340
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Nov 2021 09:36:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232426AbhKKIf4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Nov 2021 03:35:56 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60076 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231961AbhKKIfx (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Nov 2021 03:35:53 -0500
-Received: from mail-pf1-x430.google.com (mail-pf1-x430.google.com [IPv6:2607:f8b0:4864:20::430])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8DFA5C061767
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Nov 2021 00:33:04 -0800 (PST)
-Received: by mail-pf1-x430.google.com with SMTP id n85so4984369pfd.10
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Nov 2021 00:33:04 -0800 (PST)
+        id S232110AbhKKIjU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Nov 2021 03:39:20 -0500
+Received: from smtp1.axis.com ([195.60.68.17]:51035 "EHLO smtp1.axis.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229674AbhKKIjT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 11 Nov 2021 03:39:19 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=cQVAJBxtLDcdT8czp21oJV0GtvRbSqf0TXdQFh4Bfjc=;
-        b=BVsJ/aPJVT/YOg+ijVVxBW9o3WUEdwF1DILcpB9B4slESN0DvnXBXiaML6DMqgoptf
-         dfMm/cPxjyMqHpICGxJ5q2PrN+6q6er4o+oIVJW/BhM+hVvcmdSpv3tgsvkLXSoRoKRe
-         7tfSEcp4KsmJipC3wAxPFKF9cNUSpG6ot1yoJfvrGXB4fd5T9NgQ1qlSbprgHLqyajCl
-         V1MG7kVYCyR2+yFlA/WpnUdBYi/8H1cJlm5IboB8/zaZqt4AzCde5fQRjDhg2ipAgIP8
-         x4Z2krjhPAbkPru/qfzazMt11mXw/tsh53YzIjLDQPN2nrnsBibZ07rYTIzjDNmy8fKn
-         fzDA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=cQVAJBxtLDcdT8czp21oJV0GtvRbSqf0TXdQFh4Bfjc=;
-        b=5WnqBWzEVyue7RNfTbFCFUqdXmd6e/zTSUREFVofKWFHafOWe5lRd+91iFjboPDNWM
-         ju6KXAv4xG68PZ1g4ZbdBMic72i89abK8eE4QvspIfwMLLLGXpii4yKRwKBVaMPulpco
-         MakDpQtaQG5IJwLJ/TwlkyXBLyqY73vNjCc8/OfGTH3tx8ow7roso0aqmTHWUOf+Ra89
-         0vlXRoDQcUDzkJUmuqb6rm8tr89nDwwc9DFOR4jlepBnS1mapovBb9pJF/8ece16ghni
-         MLkK94ZuPfahxS+Vbb4UcssHTlO3zCfZOK0Zie/VP6ZMckzJJSWofN0QmIXw2BburLmH
-         ySyA==
-X-Gm-Message-State: AOAM532BrFVBTlS9+UcVda6NR0ck4AjpZhes7upJyJmaQGk0XOfKpYJz
-        Sqz9Tk84mnnzVSbZTRSEBO/Fxg==
-X-Google-Smtp-Source: ABdhPJwtCjs2MHlVJVkOEfpWgHSlApfVNOWf6hcKqZQBdBMO3Bq2IFwekq5Jiap3x9+Q2nsp/AqXfw==
-X-Received: by 2002:aa7:91c5:0:b0:49f:a400:9771 with SMTP id z5-20020aa791c5000000b0049fa4009771mr5099461pfa.79.1636619583898;
-        Thu, 11 Nov 2021 00:33:03 -0800 (PST)
-Received: from leoy-ThinkPad-X240s ([148.163.172.147])
-        by smtp.gmail.com with ESMTPSA id 7sm1649208pgk.55.2021.11.11.00.32.59
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 11 Nov 2021 00:33:03 -0800 (PST)
-Date:   Thu, 11 Nov 2021 16:32:57 +0800
-From:   Leo Yan <leo.yan@linaro.org>
-To:     German Gomez <german.gomez@arm.com>
-Cc:     linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
-        acme@kernel.org, John Garry <john.garry@huawei.com>,
-        Will Deacon <will@kernel.org>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH v2 3/3] perf arm-spe: Snapshot mode test
-Message-ID: <20211111083257.GB106401@leoy-ThinkPad-X240s>
-References: <20211109163009.92072-1-german.gomez@arm.com>
- <20211109163009.92072-4-german.gomez@arm.com>
+  d=axis.com; q=dns/txt; s=axis-central1; t=1636619791;
+  x=1668155791;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=LJ6rFTRpRnIkmc+2EB6nm5K94RP+xrX+RZYjjyX2tTA=;
+  b=Btq1j+DD8P/Q6/qR0gruc05+05oh4AVM5XVPPpb/9YnOT9+zHiB/vhg8
+   Fe2N3P+ytawx1UOshS3gJZZFBBQ+KaNHp/TDdk1SANhs0yk3YYIz7ZuJl
+   Z1fpoFtaMen+qMPtA5E2gdVezjN1hmHUNtk3Ja+IpDlVvHVBHBBivokXV
+   +TB6KE0rnNEU62eGPJkLzSVnd/y8hN45TWl2+GC1OmLeIz5TxN/Ncblrj
+   S/y2d237E20eGFJlDG+VTFFqAP5VOcr6pwkaIFB7ba58uCuKvpMbIzGad
+   BVlcefmzrQNvNhdilEGDJ/TCfdQjSAhsbS8i7dCTDZS1Rcy9fulOSeWRv
+   g==;
+From:   Camel Guo <camel.guo@axis.com>
+To:     Alessandro Zummo <a.zummo@towertech.it>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>
+CC:     <kernel@axis.com>, Camel Guo <camelg@axis.com>,
+        <linux-rtc@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: [PATCH v3] rtc: rs5c372: Add RTC_VL_READ, RTC_VL_CLR ioctls
+Date:   Thu, 11 Nov 2021 09:36:25 +0100
+Message-ID: <20211111083625.10216-1-camel.guo@axis.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211109163009.92072-4-german.gomez@arm.com>
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 09, 2021 at 04:30:09PM +0000, German Gomez wrote:
-> Shell script test_arm_spe.sh has been added to test the recording of SPE
-> tracing events in snapshot mode.
-> 
-> Signed-off-by: German Gomez <german.gomez@arm.com>
+From: Camel Guo <camelg@axis.com>
 
-Reviewed-by: Leo Yan <leo.yan@linaro.org>
+In order to make it possible to get battery voltage status, this commit
+adds RTC_VL_READ, RTC_VL_CLR ioctl commands to rtc-rs5c372.
+
+Signed-off-by: Camel Guo <camelg@axis.com>
+---
+
+Notes:
+    v2: Set RTC_VL_BACKUP_LOW if VDET is set. Do not clear PON, XSTP in
+    RTC_VL_CLR ioctl
+    
+    v3: Avoid setting registers in RTC_VL_CLR when unnecessary
+
+ drivers/rtc/rtc-rs5c372.c | 55 +++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 55 insertions(+)
+
+diff --git a/drivers/rtc/rtc-rs5c372.c b/drivers/rtc/rtc-rs5c372.c
+index 80980414890c..955513514179 100644
+--- a/drivers/rtc/rtc-rs5c372.c
++++ b/drivers/rtc/rtc-rs5c372.c
+@@ -485,6 +485,60 @@ static int rs5c372_rtc_proc(struct device *dev, struct seq_file *seq)
+ #define	rs5c372_rtc_proc	NULL
+ #endif
+ 
++#ifdef CONFIG_RTC_INTF_DEV
++static int rs5c372_ioctl(struct device *dev, unsigned int cmd, unsigned long arg)
++{
++	struct rs5c372	*rs5c = i2c_get_clientdata(to_i2c_client(dev));
++	unsigned char	ctrl2;
++	int		addr;
++	unsigned int	flags;
++
++	dev_dbg(dev, "%s: cmd=%x\n", __func__, cmd);
++
++	addr = RS5C_ADDR(RS5C_REG_CTRL2);
++	ctrl2 = i2c_smbus_read_byte_data(rs5c->client, addr);
++
++	switch (cmd) {
++	case RTC_VL_READ:
++		flags = 0;
++
++		switch (rs5c->type) {
++		case rtc_r2025sd:
++		case rtc_r2221tl:
++			if ((rs5c->type == rtc_r2025sd && !(ctrl2 & R2x2x_CTRL2_XSTP)) ||
++				(rs5c->type == rtc_r2221tl &&  (ctrl2 & R2x2x_CTRL2_XSTP))) {
++				flags |= RTC_VL_DATA_INVALID;
++			}
++			if (ctrl2 & R2x2x_CTRL2_VDET)
++				flags |= RTC_VL_BACKUP_LOW;
++			break;
++		default:
++			if (ctrl2 & RS5C_CTRL2_XSTP)
++				flags |= RTC_VL_DATA_INVALID;
++			break;
++		}
++
++		return put_user(flags, (unsigned int __user *)arg);
++	case RTC_VL_CLR:
++		/* clear VDET bit */
++		if (rs5c->type == rtc_r2025sd || rs5c->type == rtc_r2221tl) {
++			ctrl2 &= ~R2x2x_CTRL2_VDET;
++			if (i2c_smbus_write_byte_data(rs5c->client, addr, ctrl2) < 0) {
++				dev_dbg(&rs5c->client->dev, "%s: write error in line %i\n",
++						__func__, __LINE__);
++				return -EIO;
++			}
++		}
++		return 0;
++	default:
++		return -ENOIOCTLCMD;
++	}
++	return 0;
++}
++#else
++#define rs5c372_ioctl	NULL
++#endif
++
+ static const struct rtc_class_ops rs5c372_rtc_ops = {
+ 	.proc		= rs5c372_rtc_proc,
+ 	.read_time	= rs5c372_rtc_read_time,
+@@ -492,6 +546,7 @@ static const struct rtc_class_ops rs5c372_rtc_ops = {
+ 	.read_alarm	= rs5c_read_alarm,
+ 	.set_alarm	= rs5c_set_alarm,
+ 	.alarm_irq_enable = rs5c_rtc_alarm_irq_enable,
++	.ioctl		= rs5c372_ioctl,
+ };
+ 
+ #if IS_ENABLED(CONFIG_RTC_INTF_SYSFS)
+-- 
+2.20.1
+
