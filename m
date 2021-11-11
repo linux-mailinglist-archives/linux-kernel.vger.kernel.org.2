@@ -2,94 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E63A44D6F9
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Nov 2021 14:02:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E517A44D700
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Nov 2021 14:10:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233353AbhKKNEr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Nov 2021 08:04:47 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36156 "EHLO
+        id S232830AbhKKNM4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Nov 2021 08:12:56 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37910 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233144AbhKKNEp (ORCPT
+        with ESMTP id S231739AbhKKNMw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Nov 2021 08:04:45 -0500
-Received: from mail-wr1-x42e.google.com (mail-wr1-x42e.google.com [IPv6:2a00:1450:4864:20::42e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A798C061766;
-        Thu, 11 Nov 2021 05:01:56 -0800 (PST)
-Received: by mail-wr1-x42e.google.com with SMTP id u18so9689223wrg.5;
-        Thu, 11 Nov 2021 05:01:56 -0800 (PST)
+        Thu, 11 Nov 2021 08:12:52 -0500
+Received: from mail-yb1-xb32.google.com (mail-yb1-xb32.google.com [IPv6:2607:f8b0:4864:20::b32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA3B9C061766
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Nov 2021 05:10:03 -0800 (PST)
+Received: by mail-yb1-xb32.google.com with SMTP id e136so14931729ybc.4
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Nov 2021 05:10:03 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=iEdZUZMaNO0bW3dVZanMnJMMs5RMpgqxM6wjLrMPV54=;
-        b=KpbWovepdtygIetwEEJJHIxfpdBGkFf8pfRYkg+g0LZYXa4jCE5jKaW8zf9tQb5fKr
-         qd54UlDpGu2C9dJqHYHTAJvYxEYU+1TybUnteG7ejdUU9/XBMvX2cyrZC6U1UMMnmQQW
-         HXh6MGFO2+8880xatTmJWEk2aEaKz10Umci30AMoNjhgSHW/IcgODj/lve2BJivHXfal
-         1ftm8YOFxyekPpUTXBcwu4l49HiqDL6OuPXO07vdssON2RpVCJDZbqovqO7GBVDyv4hP
-         2nH8K4779ZUOkdJWM67/aczaxzYCsf2IsEskIVpiIRIoCmyo6wHTzEJm3N/qUmmrfZzb
-         PL2Q==
+        d=bytedance-com.20210112.gappssmtp.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=nCiU1h64rx5pX1K0fkW1z/FMYz6g6Gjieb21yotPglY=;
+        b=CvXVpr5HtggFlBdbWFqbVvGu/TcUumF+KeTkR8hV7DjVrNM0775Vxi+Xum808xoAxz
+         sfGB8+5hOMf/CKv2/vfJloeHqG0sEU5WwPXelcbfbAVrWmX1YEq74DObf6zuqtvTRH6K
+         rf+EWxk22SvYTa4oXaD34c13hX6QhzCJgIqekgMrX3ICMII2/t9NtrHihSBhHCieWEwN
+         ib0/QUiIi3uf/mAFwbctjufNQavhX03KiSqMbSxVZpcjN2mLcs2eVB/kRiNKgGubOEPN
+         W58ZdQ3s0TyXEocN5JkZ2Ta6QNzZ5mrobfCxavFvIKJcVgo0hY0BFF9RbF6W9AbKCxT5
+         kJzA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=iEdZUZMaNO0bW3dVZanMnJMMs5RMpgqxM6wjLrMPV54=;
-        b=BXReK2OgLfsi33sZCkEBTzAxBbdpJTLwghEQC0nMgvHQXqnmL8npPlJxkPip1owKN6
-         dmSoPqZtbMrXoJU3l+2Cu6T/xdA3CsaXwyspnfsuCpFFIMMuNjfRWnuc9K+1pFaysGBS
-         oxb8VfkZ2a0RjZx1Kcj9phab8KRv/Tz63ptmbDlpXUxzFplBJ2WNS+g/MHx8IE46/8hg
-         Repca0V/m8cb+p666Qf4/Iy48BYgZb2KCLWpe9Q2AG+hY61AGhlB0LP+THnUeryNiAWf
-         Ljw1sUy0TFER/xTrQQlQmffrsLUCzfZ9o3tjpYN9RBMf8X5NHh7syhwL8ZCCkyFQVnVn
-         skpg==
-X-Gm-Message-State: AOAM5332Eyh3PHZQwcI93Ct5TMCyqxUbit9do9x2ffzTwyzuDf/AtzLe
-        UG/7WQiKD75kOpmZTc8Sf0o=
-X-Google-Smtp-Source: ABdhPJwj38Ah5arrFaEqRHu44bvv8+maGvAmpwmS6QEiCd/Bakn6hmXRLxOFn/TCiQJ7fdaHBClYwg==
-X-Received: by 2002:adf:aac5:: with SMTP id i5mr8870854wrc.67.1636635715084;
-        Thu, 11 Nov 2021 05:01:55 -0800 (PST)
-Received: from debian (host-2-99-153-109.as13285.net. [2.99.153.109])
-        by smtp.gmail.com with ESMTPSA id l8sm10416489wmc.40.2021.11.11.05.01.54
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 11 Nov 2021 05:01:54 -0800 (PST)
-Date:   Thu, 11 Nov 2021 13:01:52 +0000
-From:   Sudip Mukherjee <sudipm.mukherjee@gmail.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
-        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
-        patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
-        jonathanh@nvidia.com, f.fainelli@gmail.com, stable@vger.kernel.org
-Subject: Re: [PATCH 5.10 00/21] 5.10.79-rc1 review
-Message-ID: <YY0UQAQ54Vq4vC3z@debian>
-References: <20211110182002.964190708@linuxfoundation.org>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=nCiU1h64rx5pX1K0fkW1z/FMYz6g6Gjieb21yotPglY=;
+        b=MLTB8nkCqyOQkQhCwQd4rk2JhS97eChK5HKBvLEL2d+n+b9/QrFPDL8NDD8LfQ1qyO
+         svxdMO0/k5nrHvkRmeEvhirUQ+mxqvoO+slCJ5DrD6EZYyHOYdUMNNO/pdJCT17CyENd
+         1twvEdnlcIh7+O7k1zYhWxOvdFuh9MjRceme7JxINGqtoJkkubKYI9zFIvkMXrHgK3SU
+         rhWIk5wNF0dYOVCbO10495vnwXNanWbV/dsEQckGS2/dXsiBF1E6YRL7YjSU5itwv0Nl
+         TVKziFDI5exwzkECsIlaNRRR9jhEsiPWEhAUkuR0uD9EEBKEslrH33rDEpJNFQdRpI92
+         w9FQ==
+X-Gm-Message-State: AOAM5301EjJhnHT7fCkNrOqonzaXrtCli9T44mg1wkcxgZfbP86CPFZt
+        DD5nzverAHAC+KWoeWZPxjF4uHRL0bhZQBt8U8V6rg==
+X-Google-Smtp-Source: ABdhPJxPCFMFVk/7fCxSyRoEBPf/Z5fAj/TAhaeD/NynAh9WVjJ18XDshk8Rqjz+IEP6VXUyVgq72pfA18fxAcythhc=
+X-Received: by 2002:a5b:648:: with SMTP id o8mr8630359ybq.208.1636636202993;
+ Thu, 11 Nov 2021 05:10:02 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211110182002.964190708@linuxfoundation.org>
+References: <20211111084617.6746-1-ajaygargnsit@gmail.com> <6864f744-ca3e-f328-8793-2adb0146db03@bytedance.com>
+ <CAHP4M8VNZY+NLzUAVHTWK6a6pggvv4a-q9nvYAqkkco6id3Tog@mail.gmail.com>
+ <CAMZfGtXCFJ3NUw-bBsphLbCtdDAfHERAEkTSMU9k1cfd4DrRMA@mail.gmail.com> <CAHP4M8UY0F3gx0eVYGKHfcoN-=f6ApT0CjA3xsZRrb3HVphK6A@mail.gmail.com>
+In-Reply-To: <CAHP4M8UY0F3gx0eVYGKHfcoN-=f6ApT0CjA3xsZRrb3HVphK6A@mail.gmail.com>
+From:   Muchun Song <songmuchun@bytedance.com>
+Date:   Thu, 11 Nov 2021 21:09:22 +0800
+Message-ID: <CAMZfGtUp6dkT4OWzLhL8whqNnXAbfVw5c6AQogHzY3bbM_k2Qw@mail.gmail.com>
+Subject: Re: [PATCH] mm: shmem: do not call PageHWPoison on a ERR-page
+To:     Ajay Garg <ajaygargnsit@gmail.com>
+Cc:     Hugh Dickins <hughd@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Greg,
+On Thu, Nov 11, 2021 at 8:21 PM Ajay Garg <ajaygargnsit@gmail.com> wrote:
+>
+> >
+> > What? I put "if (PageHWPoison(page))" into the else branch,
+> > it should be added braces since it's not 1-line blocks.
+>
+> Oh, ok.
+>
+> > Why do
+> > you think it does not address the issue? What am I missing
+> > here?
+>
+> That might work, however I haven't tested it.
+>
+> Upto the reviewers to see what they see as the best way going forward.
 
-On Wed, Nov 10, 2021 at 07:43:46PM +0100, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 5.10.79 release.
-> There are 21 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
-> 
-> Responses should be made by Fri, 12 Nov 2021 18:19:54 +0000.
-> Anything received after that time might be too late.
+I just suggest, it's up to you.
 
-systemd-journal-flush.service failed due to a timeout resulting in a very very
-slow boot on my test laptop. qemu test on openqa failed due to the same problem.
-
-https://openqa.qa.codethink.co.uk/tests/365
-
-A bisect showed the problem to be 8615ff6dd1ac ("mm: filemap: check if THP has
-hwpoisoned subpage for PMD page fault"). Reverting it on top of 5.10.79-rc1
-fixed the problem.
-Incidentally, I was having similar problem with Linus's tree
-for last few days and was failing since 20211106 (did not get the time to check).
-I will test mainline again with this commit reverted.
-
-
---
-Regards
-Sudip
+>
+>
+>
+> Thanks and Regards,
+> Ajay
