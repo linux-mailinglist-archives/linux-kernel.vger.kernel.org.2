@@ -2,155 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1713344D34B
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Nov 2021 09:39:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 54E4944D34E
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Nov 2021 09:40:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232108AbhKKImf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Nov 2021 03:42:35 -0500
-Received: from smtp2.axis.com ([195.60.68.18]:16139 "EHLO smtp2.axis.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229543AbhKKIme (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Nov 2021 03:42:34 -0500
+        id S232267AbhKKInC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Nov 2021 03:43:02 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33420 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231675AbhKKIm5 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 11 Nov 2021 03:42:57 -0500
+Received: from mail-wm1-x32e.google.com (mail-wm1-x32e.google.com [IPv6:2a00:1450:4864:20::32e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 54EB2C061766;
+        Thu, 11 Nov 2021 00:40:08 -0800 (PST)
+Received: by mail-wm1-x32e.google.com with SMTP id o4-20020a1c7504000000b0032cab7473caso5050559wmc.1;
+        Thu, 11 Nov 2021 00:40:08 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=axis.com; q=dns/txt; s=axis-central1; t=1636619985;
-  x=1668155985;
-  h=subject:to:cc:references:from:message-id:date:
-   mime-version:in-reply-to:content-transfer-encoding;
-  bh=/30Ap3V8khcmSDk0Kh7Og38EFMFY5oEZhbU4bYjbUDY=;
-  b=S5JhU1eQWzegoYodZBBnwB1z3iggS5a2gFg9G9mM9q4UiBx+O7zskJIi
-   RDKA1dnoVxm2cG5H/7iUaeH8+NsTXdRw9BhNGt2Ff+y/T56g1riTPMscu
-   cp3dLIptZ6VZd162Gk6X5upHZghC3c2Awqj6Ksgd/OuKiuXcKuQKj8DgM
-   8tu/3nhpHHo7GAcs6VD4+4ivTiX6YZrKKgxG37hbLRmvSszhRPNBxH4+R
-   U/2F1SGIFmldqadcAex/Zf/WDxsR8Lcb2FpcENC+n5320si6ESYfPZbr4
-   n+e2Z2S7acA2MY5be1cYeo55Qn2MplIYqQomZQr10B4WluRveasYPT/5r
-   g==;
-Subject: Re: [PATCH v2] rtc: rs5c372: Add RTC_VL_READ, RTC_VL_CLR ioctls
-To:     Camel Guo <Camel.Guo@axis.com>,
-        Alessandro Zummo <a.zummo@towertech.it>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>
-CC:     kernel <kernel@axis.com>,
-        "linux-rtc@vger.kernel.org" <linux-rtc@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-References: <20211110141442.9603-1-camel.guo@axis.com>
-From:   Camel Guo <camelg@axis.com>
-Message-ID: <2686847b-8834-8307-83b0-aabc7e276c8a@axis.com>
-Date:   Thu, 11 Nov 2021 09:39:44 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=sro5Y/3s4g8TJZzu3tk5+VEVjcf6f41NnmBfPjhYcdQ=;
+        b=I+GUAZM4GQa/4pokPJE83280WPe1Ib6qb7ea9R6YJGxsLt+HiuJBSxV+ZI6Z81niYa
+         247nHD2EgHLxcwe8Jj+pAcn7EdmqrDKZ0B+YOsGed0QtrJbrtZNPHy25oiwFvemwgDdT
+         sKXH9IzplNPgL86vSgBb/4KGIey9wx9WLV6wIOz2oJpOZRusZNG0NWxkHdCp+97d3ypw
+         OAbJ+gSi+tWupmKmUJaIOlTU914g17F8YSAx340FLCWdu0gk6WtO+gz0+icI5CBJA0eT
+         Qt47Cdb/H73i38QWaybfNfkto++i4Ts7wToZWeSIqol4auS2Xdnvz0rgUVF9NlMwmZko
+         TM6g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=sro5Y/3s4g8TJZzu3tk5+VEVjcf6f41NnmBfPjhYcdQ=;
+        b=WwBDMloHf+VWvy7fy2nf0xI7IJt37bjLM2Q5P8Z1/cNnzRXczOG7TYONvXuaEMw/sk
+         LpbyHiVXJ+oln8uqVYzqXwr4AF5Ac/OjBE14Q+bo37BfadsMTSRJf3d5N8ivG6g1Xo0s
+         tlhMFjNygQWwSe0IYvpmksghUCYSkdO3FJBY96EeNDVwLV1hr0/ub6MUEQL7253Xwe+V
+         v3RZ/ORk5unc5/WfVynDfgW7VPUJ1PtnEWP6reVtcQijQtI67ugKrKcIlzZCDc1CdJWU
+         0f83/OBLAK9FTpR1ihHfAMcOTejaxU9mKwCYrhLA0IS0lA0WRjO9J/IEkPX9yFx0/1Z/
+         MVVA==
+X-Gm-Message-State: AOAM5317gktW8IldxL9cPkA01QwuRPcYfaaSm94za3GArcud8UCoEsWL
+        D91522OuH3kU7+IB/bR+J3s=
+X-Google-Smtp-Source: ABdhPJxlFBxkUkWwaD+Bzflmms6wZ+6KQGQE9buzNyHJKnNy+I9rjjQwPi4d/GIujAwierG/1xVCiA==
+X-Received: by 2002:a7b:ce01:: with SMTP id m1mr10982902wmc.187.1636620006925;
+        Thu, 11 Nov 2021 00:40:06 -0800 (PST)
+Received: from localhost.elektrobit.com (eth1-fw1-nbg6.eb.noris.de. [213.95.148.172])
+        by smtp.gmail.com with ESMTPSA id l5sm2731027wrs.59.2021.11.11.00.40.05
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 11 Nov 2021 00:40:06 -0800 (PST)
+From:   Lukas Bulwahn <lukas.bulwahn@gmail.com>
+To:     Jonathan Cameron <jic23@kernel.org>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Cai Huoqing <caihuoqing@baidu.com>,
+        Fabio Estevam <festevam@gmail.com>, linux-iio@vger.kernel.org
+Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Lukas Bulwahn <lukas.bulwahn@gmail.com>
+Subject: [PATCH] iio: imx8qxp-adc: fix dependency to the intended ARCH_MXC config
+Date:   Thu, 11 Nov 2021 09:39:54 +0100
+Message-Id: <20211111083954.6286-1-lukas.bulwahn@gmail.com>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-In-Reply-To: <20211110141442.9603-1-camel.guo@axis.com>
-Content-Type: text/plain; charset="windows-1252"; format=flowed
-Content-Language: en-US
 Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.0.5.60]
-X-ClientProxiedBy: se-mail02w.axis.com (10.20.40.8) To se-mail03w.axis.com
- (10.20.40.9)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/10/21 3:14 PM, Camel Guo wrote:
-> From: Camel Guo <camelg@axis.com>
-> 
-> In order to make it possible to get battery voltage status, this commit
-> adds RTC_VL_READ, RTC_VL_CLR ioctl commands to rtc-rs5c372.
-> 
-> Signed-off-by: Camel Guo <camelg@axis.com>
-> ---
-> 
-> v2: Set RTC_VL_BACKUP_LOW if VDET is set. Do not clear PON, XSTP in
-> RTC_VL_CLR ioctl
-> 
->   drivers/rtc/rtc-rs5c372.c | 60 +++++++++++++++++++++++++++++++++++++++
->   1 file changed, 60 insertions(+)
-> 
-> diff --git a/drivers/rtc/rtc-rs5c372.c b/drivers/rtc/rtc-rs5c372.c
-> index 80980414890c..4ab8718d9360 100644
-> --- a/drivers/rtc/rtc-rs5c372.c
-> +++ b/drivers/rtc/rtc-rs5c372.c
-> @@ -485,6 +485,65 @@ static int rs5c372_rtc_proc(struct device *dev, 
-> struct seq_file *seq)
->   #define rs5c372_rtc_proc        NULL
->   #endif
-> 
-> +#ifdef CONFIG_RTC_INTF_DEV
-> +static int rs5c372_ioctl(struct device *dev, unsigned int cmd, unsigned 
-> long arg)
-> +{
-> +       struct rs5c372  *rs5c = i2c_get_clientdata(to_i2c_client(dev));
-> +       unsigned char   ctrl2;
-> +       int             addr;
-> +       unsigned int    flags;
-> +
-> +       dev_dbg(dev, "%s: cmd=%x\n", __func__, cmd);
-> +
-> +       addr = RS5C_ADDR(RS5C_REG_CTRL2);
-> +       ctrl2 = i2c_smbus_read_byte_data(rs5c->client, addr);
-> +
-> +       switch (cmd) {
-> +       case RTC_VL_READ:
-> +               flags = 0;
-> +
-> +               switch (rs5c->type) {
-> +               case rtc_r2025sd:
-> +               case rtc_r2221tl:
-> +                       if ((rs5c->type == rtc_r2025sd && !(ctrl2 & 
-> R2x2x_CTRL2_XSTP)) ||
-> +                               (rs5c->type == rtc_r2221tl &&  (ctrl2 & 
-> R2x2x_CTRL2_XSTP))) {
-> +                               flags |= RTC_VL_DATA_INVALID;
-> +                       }
-> +                       if (ctrl2 & R2x2x_CTRL2_VDET)
-> +                               flags |= RTC_VL_BACKUP_LOW;
-> +                       break;
-> +               default:
-> +                       if (ctrl2 & RS5C_CTRL2_XSTP)
-> +                               flags |= RTC_VL_DATA_INVALID;
-> +                       break;
-> +               }
-> +
-> +               return put_user(flags, (unsigned int __user *)arg);
-> +       case RTC_VL_CLR:
-> +               /* clear VDET bit */
-> +               switch (rs5c->type) {
-> +               case rtc_r2025sd:
-> +               case rtc_r2221tl:
-> +                       ctrl2 &= ~R2x2x_CTRL2_VDET;
-> +               default:
-> +                       break;
-> +               }
-> +
-> +               if (i2c_smbus_write_byte_data(rs5c->client, addr, ctrl2) 
-> < 0) {
-> +                       dev_dbg(&rs5c->client->dev, "%s: write error in 
-> line %i\n",
-> +                                       __func__, __LINE__);
-> +                       return -EIO;
-> +               }
-> +               return 0;
-> +       default:
-> +               return -ENOIOCTLCMD;
-> +       }
-> +       return 0;
-> +}
-> +#else
-> +#define rs5c372_ioctl  NULL
-> +#endif
-> +
->   static const struct rtc_class_ops rs5c372_rtc_ops = {
->           .proc           = rs5c372_rtc_proc,
->           .read_time      = rs5c372_rtc_read_time,
-> @@ -492,6 +551,7 @@ static const struct rtc_class_ops rs5c372_rtc_ops = {
->           .read_alarm     = rs5c_read_alarm,
->           .set_alarm      = rs5c_set_alarm,
->           .alarm_irq_enable = rs5c_rtc_alarm_irq_enable,
-> +       .ioctl          = rs5c372_ioctl,
->   };
-> 
->   #if IS_ENABLED(CONFIG_RTC_INTF_SYSFS)
-> -- 
-> 2.20.1
-> 
+Commit 1e23dcaa1a9f ("iio: imx8qxp-adc: Add driver support for NXP IMX8QXP
+ADC") adds the config IMX8QXP_ADC for this new driver, which depends on
+the non-existing config ARCH_MXC_ARM64.
 
-PATCH v3 is uploaded with the fix of avoiding setting ctrl2 register 
-when unnecessary.  Please review v3 instead.
+Hence, ./scripts/checkkconfigsymbols.py warns:
+
+  ARCH_MXC_ARM64
+  Referencing files: drivers/iio/adc/Kconfig
+
+Probably, the existing config ARCH_MXC is intended to be referred here.
+So, repair the dependency to refer to that config.
+
+Fixes: 1e23dcaa1a9f ("iio: imx8qxp-adc: Add driver support for NXP IMX8QXP ADC")
+Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
+---
+ drivers/iio/adc/Kconfig | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/iio/adc/Kconfig b/drivers/iio/adc/Kconfig
+index 8bf5b62a73f4..3363af15a43f 100644
+--- a/drivers/iio/adc/Kconfig
++++ b/drivers/iio/adc/Kconfig
+@@ -532,7 +532,7 @@ config IMX7D_ADC
+ 
+ config IMX8QXP_ADC
+ 	tristate "NXP IMX8QXP ADC driver"
+-	depends on ARCH_MXC_ARM64 || COMPILE_TEST
++	depends on ARCH_MXC || COMPILE_TEST
+ 	depends on HAS_IOMEM
+ 	help
+ 	  Say yes here to build support for IMX8QXP ADC.
+-- 
+2.26.2
+
