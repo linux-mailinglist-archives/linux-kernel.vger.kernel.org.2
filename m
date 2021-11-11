@@ -2,102 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B30E44D1E9
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Nov 2021 07:21:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8907E44D1ED
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Nov 2021 07:25:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231373AbhKKGX7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Nov 2021 01:23:59 -0500
-Received: from wout5-smtp.messagingengine.com ([64.147.123.21]:35377 "EHLO
-        wout5-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229674AbhKKGXz (ORCPT
+        id S231312AbhKKG1s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Nov 2021 01:27:48 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60012 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229637AbhKKG1r (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Nov 2021 01:23:55 -0500
-Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
-        by mailout.west.internal (Postfix) with ESMTP id 903E032019DA;
-        Thu, 11 Nov 2021 01:21:06 -0500 (EST)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute5.internal (MEProxy); Thu, 11 Nov 2021 01:21:07 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=Ird/Co
-        1YqQUp1YcWv57cF2bwHWsDv4vjeqtH46VjxBA=; b=aTf8cBpLIhiRsDpBJOw0WA
-        L2Z7SdELEychvFNEST6RsawydxZPgy7wzuplZFru5r33/TDRqHG4P6hcfg52jDPM
-        usjsnTaWWBg3Hbd1CLHrZOBgQejJ9OwpNaimnqp7tCA3lpD27VkJ9pK9xTc73VKr
-        HqS2UuyT8WHxVdEamonl4PwOkhfIo2vo77fh02+gpmp4RDZ8xnLu1LeByoRXxVPm
-        qYZgOh8QX5KM0KI9vuLhnfo+7vieEQKZ9VB3A0xlr/sRsroM+B9F2PX16qoeW0rV
-        py8VRMT4aMiUqDjcW79/4k2eRdGRfJ8Hw9TmbDZ8rfE4oyFdIsw2HNN/zcT5MYlQ
-        ==
-X-ME-Sender: <xms:UbaMYYpcrIQdIJs0kfjYUe3lYS5kD2JqtgXrJ4A1-tnPViDwe_W9jg>
-    <xme:UbaMYep-tZu90bQ_sDrgy40z3bjyhEkkZlWvAJfvVYIM3HLeqISjxdfoW6Ljp9NiY
-    dTcWKVbFI89TJGMap4>
-X-ME-Received: <xmr:UbaMYdOdZT_KP9ihbgTRhNacNQAWYHqXBgHcZX1tSUYszXKqf31IdXe_WEC0CQhk7NNOPiaZ6FuF2yPVzRV-ChUR1O_HtFS3k88>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvuddrvddtgdeklecutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
-    fjughrpeffhffvufgjkfhfgggtsehttdertddttddvnecuhfhrohhmpefhihhnnhcuvfhh
-    rghinhcuoehfthhhrghinheslhhinhhugidqmheikehkrdhorhhgqeenucggtffrrghtth
-    gvrhhnpeevudfhheduhfdugeduuddvgefhveeigefhteeguddvkeehgfejjeehhfetvdek
-    ieenucffohhmrghinhepshgrmhhmhidrnhgvthenucevlhhushhtvghrufhiiigvpedtne
-    curfgrrhgrmhepmhgrihhlfhhrohhmpehfthhhrghinheslhhinhhugidqmheikehkrdho
-    rhhg
-X-ME-Proxy: <xmx:UbaMYf4wdweHaNPBKs7GZmjcC4m7aQoX9wWT6ICRQHu8vlelONvfGg>
-    <xmx:UbaMYX7UL-6CMrEQ50llEEgZXYtRjOFgCzlsQ-bUmPZgj675PoyDBA>
-    <xmx:UbaMYfhJVQwNA-CxdWw_tU9jokMnDIKWVewRotoUn8QsU868K3z2pg>
-    <xmx:UraMYZn2by6BQUnTFyRMFsE42UyL_1hDGFm21AVnpHJIthYsNleplg>
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Thu,
- 11 Nov 2021 01:21:02 -0500 (EST)
-Date:   Thu, 11 Nov 2021 17:20:56 +1100 (AEDT)
-From:   Finn Thain <fthain@linux-m68k.org>
-To:     Randy Dunlap <rdunlap@infradead.org>
-cc:     Geert Uytterhoeven <geert@linux-m68k.org>,
-        Mike Rapoport <rppt@kernel.org>, Sam Creasey <sammy@sammy.net>,
-        linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] m68k: Enable memtest kernel parameter
-In-Reply-To: <725c0578-d816-f0c9-175a-7400c4a01887@infradead.org>
-Message-ID: <fc341bdf-a145-3a6b-5325-eb8dce2f1cf4@linux-m68k.org>
-References: <a57524fe38123ea17a6741cdc282f6c84c30a009.1636593047.git.fthain@linux-m68k.org> <725c0578-d816-f0c9-175a-7400c4a01887@infradead.org>
+        Thu, 11 Nov 2021 01:27:47 -0500
+Received: from mail-pg1-x52d.google.com (mail-pg1-x52d.google.com [IPv6:2607:f8b0:4864:20::52d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1DF7DC061766
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Nov 2021 22:24:59 -0800 (PST)
+Received: by mail-pg1-x52d.google.com with SMTP id s136so4331322pgs.4
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Nov 2021 22:24:59 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance-com.20210112.gappssmtp.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=eOtyQShi56C0T8mRr8HuBiN05m8/pKEj4hk5IHegoRo=;
+        b=XaneTcGxsPRnH0siZPlArroEhYD0zqaMZP/Ua5qxLd5IViCdujxVQwpsPy1PEYrNgG
+         T/fhvs7Mpp3SlY1a/IZZZAMoVtywbIFD7UYFWFUjv8PUoBme+EZOOUEghYyqII3BFaBq
+         n77itdrasVEhPX1LoWQup1p37ZyDmzokS1nvZivO7DF7mOB31UBzG5S8TcDGZiNNijP6
+         sZ7xd6KagOz1aw1MyBXTEDM0l+rlF1CssO5+2Sg9dgkb/lmVET/KC6Hdy3xcQa+HvhQE
+         cu0I3ftXTPSSPfSzBXg2aB2cEYFyaoYNlenbubyNuh9dFzClfpnBrzBFDqILF6vtQMfz
+         pf1w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=eOtyQShi56C0T8mRr8HuBiN05m8/pKEj4hk5IHegoRo=;
+        b=MmA031v3ShUV2o21mfubz3Hlp3EuGi5AZ9LfLGEnynAcwxQDPMg9Xvh07ai4DPIb19
+         ilecsykiRVn6RIt6bMHOt18ltHgkxzeo1yFuT0bHNpvGOmXWQysLdAsUJE98qfRHdOLR
+         Z5jSsU7MhX5EkN7v5vf3HCPHobBVEx1Ri5zUrMVX+kH+nMjMiDv2ekyt8jv10ynJfccp
+         4TUlPXs4Mm5FaC5aHuk7yJChFLCDbe2Um3sclbL2hH2JW1evdFnslhbVjU/Rtk3MlQPw
+         ADwrZVtVeSjp2tDGrJGRnMIV9K0vsVa5dJuLSUGORL2VvQZib5lbf2It218nEUVqXsFo
+         7TWA==
+X-Gm-Message-State: AOAM530JqvnEy/4pBam27CAlzj3XLYXQSI8Yh0Icto0tTC3iMTz2aLAp
+        L3QkEWXxbefinWWXrESkXhtvGA==
+X-Google-Smtp-Source: ABdhPJwd7ZktiBQYocQLrTGcaazgeISZEF6ZGRazpqerc6hLzT05lXW69Z/NaDuhJH5FDcJjxyhGcg==
+X-Received: by 2002:a05:6a00:807:b0:49f:d6ab:590c with SMTP id m7-20020a056a00080700b0049fd6ab590cmr4758435pfk.32.1636611898624;
+        Wed, 10 Nov 2021 22:24:58 -0800 (PST)
+Received: from C02FT5A6MD6R.bytedance.net ([61.120.150.76])
+        by smtp.gmail.com with ESMTPSA id f11sm1246652pga.11.2021.11.10.22.24.56
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Wed, 10 Nov 2021 22:24:58 -0800 (PST)
+From:   Gang Li <ligang.bdlg@bytedance.com>
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     Gang Li <ligang.bdlg@bytedance.com>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v1] vmscan: make drop_slab_node static
+Date:   Thu, 11 Nov 2021 14:24:44 +0800
+Message-Id: <20211111062445.5236-1-ligang.bdlg@bytedance.com>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 10 Nov 2021, Randy Dunlap wrote:
+drop_slab_node is only used in drop_slab. So remove it's declaration from
+header file and add keyword static for it's definition.
 
-> On 11/10/21 5:10 PM, Finn Thain wrote:
-> > Enable the memtest feature and rearrange some code to prevent it from
-> > clobbering the initrd.
-> > 
-> > The CONFIG_BLK_DEV_INITRD symbol was conditional on !defined(CONFIG_SUN3).
-> > For simplicity, remove that test on the basis that m68k_ramdisk.size == 0
-> > on Sun 3.
-> > 
-> > The SLIME source code athttp://sammy.net/  shows that no BI_RAMDISK entry
-> > is ever passed to the kernel due to #ifdef 0 around the relevant code.
-> > 
-> > Cc: Mike Rapoport<rppt@kernel.org>
-> > Cc: Sam Creasey<sammy@sammy.net>
-> > Signed-off-by: Finn Thain<fthain@linux-m68k.org>
-> > ---
-> > Are there any other Linux bootloaders on Sun 3?
-> > ---
-> >   arch/m68k/Kconfig           |  1 +
-> >   arch/m68k/kernel/setup_mm.c | 15 ++++++---------
-> >   arch/m68k/mm/motorola.c     |  2 ++
-> >   3 files changed, 9 insertions(+), 9 deletions(-)
-> 
-> Hi Finn,
-> 
-> Please also update Documentation/admin-guide/kernel-parameters.txt:
-> 
-> 	memtest=	[KNL,X86,ARM,PPC,RISCV] Enable memtest
-> 
-> to include "M68K".
-> 
-> thanks.
-> 
+Signed-off-by: Gang Li <ligang.bdlg@bytedance.com>
+---
+ include/linux/mm.h | 1 -
+ mm/vmscan.c        | 2 +-
+ 2 files changed, 1 insertion(+), 2 deletions(-)
 
-Will do.
+diff --git a/include/linux/mm.h b/include/linux/mm.h
+index a7e4a9e7d807..08b36283a57a 100644
+--- a/include/linux/mm.h
++++ b/include/linux/mm.h
+@@ -3167,7 +3167,6 @@ int drop_caches_sysctl_handler(struct ctl_table *, int, void *, size_t *,
+ #endif
+ 
+ void drop_slab(void);
+-void drop_slab_node(int nid);
+ 
+ #ifndef CONFIG_MMU
+ #define randomize_va_space 0
+diff --git a/mm/vmscan.c b/mm/vmscan.c
+index fb9584641ac7..b02548a32a1d 100644
+--- a/mm/vmscan.c
++++ b/mm/vmscan.c
+@@ -951,7 +951,7 @@ static unsigned long shrink_slab(gfp_t gfp_mask, int nid,
+ 	return freed;
+ }
+ 
+-void drop_slab_node(int nid)
++static void drop_slab_node(int nid)
+ {
+ 	unsigned long freed;
+ 	int shift = 0;
+-- 
+2.20.1
 
-Thanks for your review.
