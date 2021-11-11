@@ -2,170 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 577FB44D8D3
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Nov 2021 16:02:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6040044D8D5
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Nov 2021 16:02:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233757AbhKKPFW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Nov 2021 10:05:22 -0500
-Received: from smtp-out2.suse.de ([195.135.220.29]:55686 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233394AbhKKPFU (ORCPT
+        id S233815AbhKKPFp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Nov 2021 10:05:45 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35868 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233798AbhKKPFo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Nov 2021 10:05:20 -0500
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id CECF01FD40;
-        Thu, 11 Nov 2021 15:02:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1636642950; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=I0IS9eHAFjRbFhRVgmy1zwTE8qh3rhYd1ikPaMLm9/o=;
-        b=0XK4wzAIhjQJeIlvW/qyZnVjyx6c/uosaQxI8SBFgQ8Q/3nVa4h6aMxzcKLcueX78zaPkZ
-        sgP81p+Wnq8DTHFYZgHcCl9BIGrm4li+YZcv6F7VVlThQTh2psuxauB6TfO1KjrJxlZd19
-        7156aXVpu8M6PJgKvb4yVt5nPhCsR2E=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1636642950;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=I0IS9eHAFjRbFhRVgmy1zwTE8qh3rhYd1ikPaMLm9/o=;
-        b=I8toBzgm8ND8LYB2vlNRMR2O4Cm/YcjT+o/J0JJrsHgo6KPToMffKVmcICAebMatOSyw1T
-        JaFa+9lR9XC/wmCg==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 0505213DBC;
-        Thu, 11 Nov 2021 15:02:29 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id wXJ2OYUwjWHhcQAAMHmgww
-        (envelope-from <dkirjanov@suse.de>); Thu, 11 Nov 2021 15:02:29 +0000
-Subject: Re: [PATCH] net: stmmac: socfpga: add runtime suspend/resume callback
- for stratix10 platform
-To:     "Li, Meng" <Meng.Li@windriver.com>,
-        "peppe.cavallaro@st.com" <peppe.cavallaro@st.com>,
-        "alexandre.torgue@foss.st.com" <alexandre.torgue@foss.st.com>,
-        "joabreu@synopsys.com" <joabreu@synopsys.com>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        "kuba@kernel.org" <kuba@kernel.org>,
-        "mcoquelin.stm32@gmail.com" <mcoquelin.stm32@gmail.com>
-Cc:     "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-stm32@st-md-mailman.stormreply.com" 
-        <linux-stm32@st-md-mailman.stormreply.com>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-References: <20211111135630.24996-1-Meng.Li@windriver.com>
- <499952a2-c919-109d-4f0a-fb4db4ead604@suse.de>
- <PH0PR11MB5191582745F77F7D876001ECF1949@PH0PR11MB5191.namprd11.prod.outlook.com>
-From:   Denis Kirjanov <dkirjanov@suse.de>
-Message-ID: <788fa547-49c9-458b-8427-afddcee412a6@suse.de>
-Date:   Thu, 11 Nov 2021 18:02:29 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.14.0
+        Thu, 11 Nov 2021 10:05:44 -0500
+Received: from mail-yb1-xb36.google.com (mail-yb1-xb36.google.com [IPv6:2607:f8b0:4864:20::b36])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 33E15C061766
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Nov 2021 07:02:55 -0800 (PST)
+Received: by mail-yb1-xb36.google.com with SMTP id 131so15760493ybc.7
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Nov 2021 07:02:55 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=b8o29KaKbhMCf5wOHov2sGbl0/vltBBfTeJdXxiCu74=;
+        b=HsvYfeCVvI5/oZKMA5QfP2HaOAjafm2PgfOucMtpC4Z2WgQ+21r8++32YHxr6ag0th
+         wPchbTINVaBus5keieM66KJC3QJYOvJvQTMkpTHHhiKMTTj80z1O9L15a/NvemKlG1DS
+         fWuFmoBGFfIgnluAzkwl7yYkorvdnfn1OqUJDt6WrFQVsvs9JdtwyZxrSL4+1WEglq3e
+         v/G+dXaJtASdSR0AeJiviYyTzZDzdVtfg5yr/ZWOYt2GBXgmnbj+9F8NM6JpExg6doun
+         otQGxjvR6DBTKL3YXBwS08XmTqQphs6i2nDb9y6j8TSDgA/ms5lPUQRPhE9otePLPqNr
+         2Biw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=b8o29KaKbhMCf5wOHov2sGbl0/vltBBfTeJdXxiCu74=;
+        b=P6V754bfjm89skUIF66arf0yvAXq/dcmAyI2+Pxn2ZC7Gwv6L0CkvCR7+tve2tAUNR
+         TBgZeOYFXb5I1NKykbNO6+4+PO94HCB1m0OksvBe0J/0w+AFYGApNk99Uvtn8f9Tn2nV
+         gSpuqaajkmd2kp2rQBi17D31RWP6tkMLpw8kZb1/QR3L6AkvpYcTciUbSAhVps0XHlDz
+         iEl2ih2CRLIDaiq3E9afBAp0iN1c32c9TkSCmdl3c+plT9r+JVQ83bCf7VHm6PzqsN6U
+         2RpUI7rhXnGSuLvcYyRcSCHxgdgEuQlDdWTLMU3YmzgehJ96THl81kK7pdIbpRboWPRu
+         DSHw==
+X-Gm-Message-State: AOAM5300bblR/uH8qJmz+5icLiWNpnLOkkSKFf68Ii2zrwwqiD9PihJ2
+        /MwmsvPLIGeLK3dFzVr6Ac7GUd3WGC6+SRZ2tyk9AA==
+X-Google-Smtp-Source: ABdhPJzGfKyTi1LhQjYMtf7XBM9eH87cIhjonTwhq0TRvmNG1Ol//HSSejAJUAlk51wdMnXmMEl65gO+SIhoMGjNCyw=
+X-Received: by 2002:a05:6902:134b:: with SMTP id g11mr8505610ybu.202.1636642974118;
+ Thu, 11 Nov 2021 07:02:54 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <PH0PR11MB5191582745F77F7D876001ECF1949@PH0PR11MB5191.namprd11.prod.outlook.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: ru
-Content-Transfer-Encoding: 8bit
+References: <YYDvm9c/7cGtBvw6@dhcp22.suse.cz> <CAJuCfpFX8FRynoK29h8tpRXRT-Kk+sHboiBnc7N-8MY6AAqVLw@mail.gmail.com>
+ <CAJuCfpFOOgs9uZSW2Tp6uBW23rLHFeSA8o5WYQ_D_ykUcKL64Q@mail.gmail.com>
+ <YYrLe2u2zbmu4LfL@dhcp22.suse.cz> <CAJuCfpG0d34yRhuvOj9NX9zMp=6jWLqFPfUGV0sOO6OrwNC89A@mail.gmail.com>
+ <YYrQ/hENQPn6Mk3v@dhcp22.suse.cz> <CAJuCfpFT4-mdHHZ2i43hyJQ4dRKb7sRwnAL8GfRnZu3ecE26Ew@mail.gmail.com>
+ <YYrVmi2xdo1Gr2Bb@dhcp22.suse.cz> <CAJuCfpGrYa2Ws4GrVp_nRqVEw8j_cGXk+gprLYUx7NWUOC-uRQ@mail.gmail.com>
+ <CAJuCfpHJnVG7PMhKW-Snz38az-Bv=QCFXa7DxD=KgEMbHJOi6A@mail.gmail.com> <YYzgZARxi8csprIx@dhcp22.suse.cz>
+In-Reply-To: <YYzgZARxi8csprIx@dhcp22.suse.cz>
+From:   Suren Baghdasaryan <surenb@google.com>
+Date:   Thu, 11 Nov 2021 07:02:42 -0800
+Message-ID: <CAJuCfpEK+yruF8D9rzS44N3n6OLASL7nK2dfNj9daWpk-BguwQ@mail.gmail.com>
+Subject: Re: [PATCH 1/1] mm: prevent a race between process_mrelease and exit_mmap
+To:     Michal Hocko <mhocko@suse.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        David Rientjes <rientjes@google.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Roman Gushchin <guro@fb.com>, Rik van Riel <riel@surriel.com>,
+        Minchan Kim <minchan@kernel.org>,
+        Christian Brauner <christian@brauner.io>,
+        Christoph Hellwig <hch@infradead.org>,
+        Oleg Nesterov <oleg@redhat.com>,
+        David Hildenbrand <david@redhat.com>,
+        Jann Horn <jannh@google.com>,
+        Shakeel Butt <shakeelb@google.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Florian Weimer <fweimer@redhat.com>,
+        Jan Engelhardt <jengelh@inai.de>,
+        Linux API <linux-api@vger.kernel.org>,
+        linux-mm <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        kernel-team <kernel-team@android.com>,
+        "Kirill A. Shutemov" <kirill@shutemov.name>,
+        Andrea Arcangeli <aarcange@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, Nov 11, 2021 at 1:20 AM Michal Hocko <mhocko@suse.com> wrote:
+>
+> On Wed 10-11-21 17:49:37, Suren Baghdasaryan wrote:
+> > On Tue, Nov 9, 2021 at 1:10 PM Suren Baghdasaryan <surenb@google.com> wrote:
+> > >
+> > > On Tue, Nov 9, 2021 at 12:10 PM Michal Hocko <mhocko@suse.com> wrote:
+> [...]
+> > > > Yes, those can run concurrently. One thing I completely forgot about is
+> > > > 27ae357fa82b ("mm, oom: fix concurrent munlock and oom reaper unmap, v3")
+> > > > which is about interaction with the munlock.
+> >
+> > Agrh! This interaction with the munlock you mentioned requires us to
+> > take mmap_write_lock before munlock_vma_pages_all and that prevents
+> > __oom_reap_task_mm from running concurrently with unmap_vmas. The
+> > reapers would not be as effective as they are now after such a change
+> > :(
+>
+> __oom_reap_task_mm will not run concurrently with unmap_vmas even
+> with the current code. The mmap_sem barrier right before munlock code
+> prevents that.
 
+You are right, it will run concurrently with another
+__oom_reap_task_mm in the exit_mmap. But I thought we wanted to get
+rid of that call to __oom_reap_task_mm in exit_mmap or did I
+misunderstand?
 
-11/11/21 5:16 PM, Li, Meng пишет:
-> 
-> 
->> -----Original Message-----
->> From: Denis Kirjanov <dkirjanov@suse.de>
->> Sent: Thursday, November 11, 2021 10:02 PM
->> To: Li, Meng <Meng.Li@windriver.com>; peppe.cavallaro@st.com;
->> alexandre.torgue@foss.st.com; joabreu@synopsys.com;
->> davem@davemloft.net; kuba@kernel.org; mcoquelin.stm32@gmail.com
->> Cc: netdev@vger.kernel.org; linux-stm32@st-md-mailman.stormreply.com;
->> linux-arm-kernel@lists.infradead.org; linux-kernel@vger.kernel.org
->> Subject: Re: [PATCH] net: stmmac: socfpga: add runtime suspend/resume
->> callback for stratix10 platform
->>
->> [Please note: This e-mail is from an EXTERNAL e-mail address]
->>
->> 11/11/21 4:56 PM, Meng Li пишет:
->>> From: Meng Li <meng.li@windriver.com>
->>>
->>> According to upstream commit 5ec55823438e("net: stmmac:
->>> add clocks management for gmac driver "), it improve clocks management
->>> for stmmac driver. So, it is necessary to implement the runtime
->>> callback in dwmac-socfpga driver because it doesn’t use the common
->>> stmmac_pltfr_pm_ops instance. Otherwise, clocks are not disabled when
->>> system enters suspend status.
->>
->> Please add Fixes tag
-> 
-> Thanks for suggest.
-> Yes! this patch is used to fix an clock operation issue in dwmac-socfpga driver,
-> But I am not sure which Fixing commit ID I should use.
-> Because 5ec55823438e breaks the original clock operation of dwmac-socfpga driver, but this commit 5ec55823438e is not a bug.
-> Moreover, if without 5ec55823438e dwmac-socfpga driver also works fine.
-Yes I see. I also checked the commit 5ec55823438e and it logically 
-relates to your change
-> 
-> How about your suggest?
-> 
-> Thanks,
-> Limeng
-> 
->>>
->>> Signed-off-by: Meng Li <Meng.Li@windriver.com>
->>> ---
->>>    .../ethernet/stmicro/stmmac/dwmac-socfpga.c   | 24
->> +++++++++++++++++--
->>>    1 file changed, 22 insertions(+), 2 deletions(-)
->>>
->>> diff --git a/drivers/net/ethernet/stmicro/stmmac/dwmac-socfpga.c
->>> b/drivers/net/ethernet/stmicro/stmmac/dwmac-socfpga.c
->>> index 85208128f135..93abde467de4 100644
->>> --- a/drivers/net/ethernet/stmicro/stmmac/dwmac-socfpga.c
->>> +++ b/drivers/net/ethernet/stmicro/stmmac/dwmac-socfpga.c
->>> @@ -485,8 +485,28 @@ static int socfpga_dwmac_resume(struct device
->> *dev)
->>>    }
->>>    #endif /* CONFIG_PM_SLEEP */
->>>
->>> -static SIMPLE_DEV_PM_OPS(socfpga_dwmac_pm_ops, stmmac_suspend,
->>> -                                            socfpga_dwmac_resume);
->>> +static int __maybe_unused socfpga_dwmac_runtime_suspend(struct
->> device
->>> +*dev) {
->>> +     struct net_device *ndev = dev_get_drvdata(dev);
->>> +     struct stmmac_priv *priv = netdev_priv(ndev);
->>> +
->>> +     stmmac_bus_clks_config(priv, false);
->> check the return value?
->>> +
->>> +     return 0;
->>> +}
->>> +
->>> +static int __maybe_unused socfpga_dwmac_runtime_resume(struct
->> device
->>> +*dev) {
->>> +     struct net_device *ndev = dev_get_drvdata(dev);
->>> +     struct stmmac_priv *priv = netdev_priv(ndev);
->>> +
->>> +     return stmmac_bus_clks_config(priv, true); }
->>> +
->>> +const struct dev_pm_ops socfpga_dwmac_pm_ops = {
->>> +     SET_SYSTEM_SLEEP_PM_OPS(stmmac_suspend,
->> socfpga_dwmac_resume)
->>> +     SET_RUNTIME_PM_OPS(socfpga_dwmac_runtime_suspend,
->>> +socfpga_dwmac_runtime_resume, NULL) };
->>>
->>>    static const struct socfpga_dwmac_ops socfpga_gen5_ops = {
->>>        .set_phy_mode = socfpga_gen5_set_phy_mode,
->>>
+>
+> --
+> Michal Hocko
+> SUSE Labs
