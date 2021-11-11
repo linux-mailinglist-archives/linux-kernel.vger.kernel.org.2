@@ -2,92 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A929F44D8ED
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Nov 2021 16:11:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9142944D8F3
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Nov 2021 16:13:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233956AbhKKPOU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Nov 2021 10:14:20 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37904 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233819AbhKKPOT (ORCPT
+        id S234068AbhKKPQZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Nov 2021 10:16:25 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124]:23882 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234057AbhKKPQY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Nov 2021 10:14:19 -0500
-Received: from mail-pj1-x1029.google.com (mail-pj1-x1029.google.com [IPv6:2607:f8b0:4864:20::1029])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F606C061766;
-        Thu, 11 Nov 2021 07:11:30 -0800 (PST)
-Received: by mail-pj1-x1029.google.com with SMTP id t5-20020a17090a4e4500b001a0a284fcc2so4850658pjl.2;
-        Thu, 11 Nov 2021 07:11:30 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=zmF8oaKXdehvlU7w3N66ru34AoYsrAlhOIntXiiS+Ig=;
-        b=DNsXpaoD8pIkk7y1aw7Ej5nRrTbVd0emPHCb9lAINzZTrOvHt3lKTKZV4CAvlkJaCS
-         suAKTAJVBIZc2GlWC5wJ2WGklNZe9oe7SJrH65Yn1VIqnLP1mWdwRmkuxp/3ERUDaTHY
-         kggzoWZi7gv2JLgvmqQa5o12WeHkmoDT5iQnRpgiWnZXVJHhosgxiz+2T3Y5ze851nj8
-         MibYwgm9o/S7R0otE3I4PXgz0KquYJRbilt+CGFlOi7R2aMJAIpZqb3CEBwero6H6pcJ
-         u/tafsvDIsP0nHSCIuYDnByeGVkZOv4N8a48vKqsGtuH1CtyMXDMyo5jCDltQPHHK1kj
-         7zEQ==
+        Thu, 11 Nov 2021 10:16:24 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1636643614;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=RaQiWNaeSvc1w9swWxxIumoFqnCNft3G1L1GowqGe2c=;
+        b=MSDTsxISWasLMfut4FQp6aIyIIUpEvvO0BNmPqpvYRWtZ7W9JA5/1dF/GbtGN0h7O8qndi
+        MWSJvnPV35hZfgjDhFJ+5IQVsn7iAzNygKXl3IVygTVOWLefw1yrooxZ9DoZEY6nJw/Nf+
+        F4V2NjHbvtvYkcNwyfOft/I4/dGmF84=
+Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com
+ [209.85.208.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-271-cFMNnwEGMouMRxcwPX-ybw-1; Thu, 11 Nov 2021 10:13:33 -0500
+X-MC-Unique: cFMNnwEGMouMRxcwPX-ybw-1
+Received: by mail-ed1-f71.google.com with SMTP id w13-20020a05640234cd00b003e2fde5ff8aso5634281edc.14
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Nov 2021 07:13:33 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:in-reply-to
          :content-transfer-encoding;
-        bh=zmF8oaKXdehvlU7w3N66ru34AoYsrAlhOIntXiiS+Ig=;
-        b=yuh20ywRjDbKtAcNX1ZblIiHFptwQa4HvHfUmoD6QWuSqQ2NFCUi1Mfn+Doa7tXr1T
-         n/l+74Q0NtsckisCBl6ZoVSrFSjK0PT2d7OivsFJL+w7n92hvXIsJfaw0P+KHJP5D3ej
-         3A4DutVuU9tA1Faz2fxf8hsaqS4imbLeGLoE0AVxR2aq/BPNvYy/DU6ruvy+0FzJJ4/X
-         SP/JdRqlEwaZOPCRswmx7joKYf1pfo1zm7FJnSMj7G1uftHS7QGIxRM4EQtyIED7q6IK
-         t5ILJIF6/YqxVeyr4Rvi1XmiYn32ntU9OvM6nrxtroD4UPY94Ek/ow81qOcwBNOSkf2P
-         xuKg==
-X-Gm-Message-State: AOAM5304JU+82QbqTgsa+S9J4tW/DOzvPh37SfFXyBfSuvSlOS1f04Tw
-        ipOVwOa4GdRIiysuVnFqrvw=
-X-Google-Smtp-Source: ABdhPJxzxk89QuuAs3yQtOJxVIoREnik6aKgPIsAgmMeoBIi6y1rZb7kvBfYz83fidYaj3RY13sRWQ==
-X-Received: by 2002:a17:90b:3ecc:: with SMTP id rm12mr8891072pjb.75.1636643490033;
-        Thu, 11 Nov 2021 07:11:30 -0800 (PST)
-Received: from localhost.localdomain ([193.203.214.57])
-        by smtp.gmail.com with ESMTPSA id h25sm2122183pgm.33.2021.11.11.07.11.28
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 11 Nov 2021 07:11:29 -0800 (PST)
-From:   cgel.zte@gmail.com
-X-Google-Original-From: luo.penghao@zte.com.cn
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Stephen Rothwell <sfr@canb.auug.org.au>, linux-usb@vger.kernel.org,
-        linux-kernel@vger.kernel.org, luo penghao <luo.penghao@zte.com.cn>,
-        Zeal Robot <zealci@zte.com.cn>
-Subject: [PATCH linux-next] USB: Delete the useless assignment to "nbytes"
-Date:   Thu, 11 Nov 2021 15:11:24 +0000
-Message-Id: <20211111151124.2659-1-luo.penghao@zte.com.cn>
-X-Mailer: git-send-email 2.25.1
+        bh=RaQiWNaeSvc1w9swWxxIumoFqnCNft3G1L1GowqGe2c=;
+        b=fgrNorMNmmA94U6xx76mzrSPMi15YvwzklyAZgHtOJpWEJZw/gpsOFJEQgC2dtQK+x
+         5ZfiN5CirxOUNPUGze2aa9k5l+yKo4yXIA6EDKuYcW5yExyrKgyqNi5wIN9PDWcuRV76
+         YhavR3KPLYbYTskofiSHRQyfxM7LrxtHpFaYxKJ1uK1hsrF3yVi3N+cTpR/LNpL8Hyir
+         tEjbHkIpgjAyD79uOTNCEwAIH5XMgb/bbn/+C2ERkGK4sVbeF9OPuNYV32g6hjnvHSoR
+         sm89CCEErQpUzsHrVMixG+Fp8g2X2GL3Zu2SVpz9zFr0ulBIZt2NsgDVkzKPU//xSV9r
+         jFvA==
+X-Gm-Message-State: AOAM531N6g1ZrMm+Vp6PVXjJvZaM2s9JJ55x2t4eeRKhY/+aHlsRi4nQ
+        q9PjRXyIomEMTTUk3GwLNhT+3rNNpOCpBJuVHr/0pGXy134qC87GJkRltjcQMmvRLsVRk79pRFy
+        iKbfCEjKCK4m/r26zlJGxi7YV
+X-Received: by 2002:a05:6402:184c:: with SMTP id v12mr10984240edy.242.1636643612257;
+        Thu, 11 Nov 2021 07:13:32 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJwsd8FhsX1gKUjz/vl5VBZUjBU0VRQilvxDGoCBMaISX6Ysxjz7/nj2uP1yoHWIQVdIILT48w==
+X-Received: by 2002:a05:6402:184c:: with SMTP id v12mr10984194edy.242.1636643612058;
+        Thu, 11 Nov 2021 07:13:32 -0800 (PST)
+Received: from ?IPV6:2001:1c00:c1e:bf00:1054:9d19:e0f0:8214? (2001-1c00-0c1e-bf00-1054-9d19-e0f0-8214.cable.dynamic.v6.ziggo.nl. [2001:1c00:c1e:bf00:1054:9d19:e0f0:8214])
+        by smtp.gmail.com with ESMTPSA id nb4sm1606641ejc.21.2021.11.11.07.13.30
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 11 Nov 2021 07:13:31 -0800 (PST)
+Message-ID: <4b8f27a2-9c2f-af96-cbd2-9e4c01d37c90@redhat.com>
+Date:   Thu, 11 Nov 2021 16:13:30 +0100
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.2.0
+Subject: Re: [PATCH v4 04/11] regulator: Introduce tps68470-regulator driver
+Content-Language: en-US
+To:     Sakari Ailus <sakari.ailus@linux.intel.com>
+Cc:     "Rafael J . Wysocki" <rjw@rjwysocki.net>,
+        Mark Gross <markgross@kernel.org>,
+        Andy Shevchenko <andy@infradead.org>,
+        Wolfram Sang <wsa@the-dreams.de>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        Daniel Scally <djrscally@gmail.com>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>, Len Brown <lenb@kernel.org>,
+        linux-acpi@vger.kernel.org, platform-driver-x86@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-i2c@vger.kernel.org,
+        Kate Hsuan <hpa@redhat.com>, linux-media@vger.kernel.org,
+        linux-clk@vger.kernel.org
+References: <20211025094119.82967-1-hdegoede@redhat.com>
+ <20211025094119.82967-5-hdegoede@redhat.com>
+ <YYpmMNefsGUhqJ9W@paasikivi.fi.intel.com>
+From:   Hans de Goede <hdegoede@redhat.com>
+In-Reply-To: <YYpmMNefsGUhqJ9W@paasikivi.fi.intel.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: luo penghao <luo.penghao@zte.com.cn>
+Hi Sakari,
 
-The assignment of the local variable "nbytes" in the if statement
-will not be used
+On 11/9/21 13:14, Sakari Ailus wrote:
 
-Reported-by: Zeal Robot <zealci@zte.com.cn>
-Signed-off-by: luo penghao <luo.penghao@zte.com.cn>
----
- drivers/usb/mon/mon_bin.c | 1 -
- 1 file changed, 1 deletion(-)
+<snip>
 
-diff --git a/drivers/usb/mon/mon_bin.c b/drivers/usb/mon/mon_bin.c
-index f48a23a..b8ba0f7 100644
---- a/drivers/usb/mon/mon_bin.c
-+++ b/drivers/usb/mon/mon_bin.c
-@@ -845,7 +845,6 @@ static ssize_t mon_bin_read(struct file *file, char __user *buf,
- 			mutex_unlock(&rp->fetch_lock);
- 			return -EFAULT;
- 		}
--		nbytes -= step_len;
- 		buf += step_len;
- 		rp->b_read += step_len;
- 		done += step_len;
--- 
-2.15.2
+>> +config REGULATOR_TPS68470
+>> +	tristate "TI TPS68370 PMIC Regulators Driver"
+> 
+> s/3/4/
+
+Thanks fixed for the upcoming v6 of the patch-series.
+
+Regards,
+
+Hans
 
 
