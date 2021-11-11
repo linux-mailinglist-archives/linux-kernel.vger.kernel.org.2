@@ -2,212 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6DF6844D644
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Nov 2021 13:00:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9663444D64D
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Nov 2021 13:04:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233162AbhKKMDi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Nov 2021 07:03:38 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50558 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232815AbhKKMDf (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Nov 2021 07:03:35 -0500
-Received: from mail-pg1-x52d.google.com (mail-pg1-x52d.google.com [IPv6:2607:f8b0:4864:20::52d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B789BC061766
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Nov 2021 04:00:46 -0800 (PST)
-Received: by mail-pg1-x52d.google.com with SMTP id 200so4988381pga.1
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Nov 2021 04:00:46 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20210112.gappssmtp.com; s=20210112;
-        h=message-id:date:mime-version:user-agent:subject:to:cc:references
-         :from:in-reply-to:content-transfer-encoding;
-        bh=8mQU/a5DXQiWtemuyLrNEiXaRlt1oXHNePDS+l8sy0U=;
-        b=JB/XcE1vimwlej+IsHSxjGqvq6J1gqTAoPf6/32k8FGdrO5dk/9yEZqxP5YzWpC0sn
-         ndMI3VLYiweZXicPw/2yo+TbqD7LVpzDNO2IRxKr01iBpqssO1iwZ2L5lj1FbJJrRXf9
-         bqXNAfm1LyYUEBNwx8YdKxpCAyAHWpdUuDIIOUp38M3tMgIqjCs4OqXO6/w9gy381TSR
-         53y6bD4YF2PwOO+GXJFJOLjS6OlCIiDG6chzXAHJe8mxk1gQItFBBKzLu+NyJem+dorV
-         Cuw+BeaqNHOh7qsKIsjB76NtVxhTiogoEbF2HcfAzSGpTzEBtC7sGdV1Nnn0lL4/lbVb
-         I6HQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :to:cc:references:from:in-reply-to:content-transfer-encoding;
-        bh=8mQU/a5DXQiWtemuyLrNEiXaRlt1oXHNePDS+l8sy0U=;
-        b=faxMjSAO9TVMh2Wp2NiHCbsAvuYUO6k/n9wGKnsi56osWgyh+3uQRh9cFhrP+SP2Lz
-         cGkRyTqmoO95uNNBV0wyVzAQPThKsb2HGfK/Gxrndl3KiuC9z914KQDpXyNAx5A6Q17p
-         Y3YjR+Rt5PEN0ZzgMou107rHyC/R/mrwwKngt2YvsO5EgbBwhF/MrBM3YUKIJEPpCHHZ
-         xJmNJOTDSaVPc/jZfMV9huWqjYNmtxopNFcHiAVKC6nG6MOzUgkg+tjhfkXT9AhqiL9u
-         Jd5w2aNkpdXi3mbGzjao4wOPQpwDelDHyYC8TmuZO1468WlYTp/z1WO9qPU2fZYumhT1
-         S3fA==
-X-Gm-Message-State: AOAM533RSIh24e5bSiRvwiD2GVO5ubSZZ4IwiHJnivN4ZPeiOJunJZ0z
-        HAItEsDrsT0fn1eXIUC20Qrldw==
-X-Google-Smtp-Source: ABdhPJwvSL9McBDK/ZE696u4dfpcg5dfnlyb0sSdeeEP2MYOstUkgZb0CfeENfOU5AzL+hcjd2fT2Q==
-X-Received: by 2002:a05:6a00:238d:b0:47c:2232:80d8 with SMTP id f13-20020a056a00238d00b0047c223280d8mr6117575pfc.12.1636632014970;
-        Thu, 11 Nov 2021 04:00:14 -0800 (PST)
-Received: from [10.254.173.217] ([139.177.225.248])
-        by smtp.gmail.com with ESMTPSA id l11sm8064855pjg.22.2021.11.11.04.00.09
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 11 Nov 2021 04:00:14 -0800 (PST)
-Message-ID: <2e19ad1b-15f3-7508-c5d5-6c31765f26d3@bytedance.com>
-Date:   Thu, 11 Nov 2021 20:00:06 +0800
+        id S233215AbhKKMHl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Nov 2021 07:07:41 -0500
+Received: from foss.arm.com ([217.140.110.172]:38220 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230358AbhKKMHk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 11 Nov 2021 07:07:40 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 1C6D4101E;
+        Thu, 11 Nov 2021 04:04:51 -0800 (PST)
+Received: from [192.168.178.6] (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 973A53F70D;
+        Thu, 11 Nov 2021 04:04:49 -0800 (PST)
+Subject: Re: [PATCH] arch_topology: Fix missing clear cluster_cpumask in
+ remove_cpu_topology()
+To:     Barry Song <21cnbao@gmail.com>,
+        "Wangshaobo (bobo)" <bobo.shaobowang@huawei.com>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Sudeep Holla <sudeep.holla@arm.com>,
+        Peter Zijlstra <peterz@infradead.org>, cj.chengjian@huawei.com,
+        huawei.libin@huawei.com, weiyongjun1@huawei.com
+References: <20211110095856.469360-1-bobo.shaobowang@huawei.com>
+ <CAGsJ_4wzPWnNFe4ptphVxXSz4-50-qub+H_q0woupxOM1LtqsA@mail.gmail.com>
+ <943fef84-3920-42bc-b83f-4feaa3ab79f3@huawei.com>
+ <CAGsJ_4xFhcUaVYzVKc2EXs9FsnmPoLmmKqxiDpExwUeTyOyDMg@mail.gmail.com>
+ <CAGsJ_4yLV_-fwtH1=bmGxfcK9_TwUK5Typ_pE=zYQNt=YHoFVA@mail.gmail.com>
+From:   Dietmar Eggemann <dietmar.eggemann@arm.com>
+Message-ID: <26ed9985-24c8-b28f-44f0-caba8c7c839d@arm.com>
+Date:   Thu, 11 Nov 2021 13:04:47 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:91.0)
- Gecko/20100101 Thunderbird/91.3.0
-Subject: Re: [PATCH v3 00/15] Free user PTE page table pages
-To:     David Hildenbrand <david@redhat.com>,
-        Jason Gunthorpe <jgg@nvidia.com>
-Cc:     akpm@linux-foundation.org, tglx@linutronix.de,
-        kirill.shutemov@linux.intel.com, mika.penttila@nextfour.com,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, songmuchun@bytedance.com,
-        zhouchengming@bytedance.com
-References: <20211110105428.32458-1-zhengqi.arch@bytedance.com>
- <20211110125601.GQ1740502@nvidia.com>
- <8d0bc258-58ba-52c5-2e0d-a588489f2572@redhat.com>
- <20211110143859.GS1740502@nvidia.com>
- <6ac9cc0d-7dea-0e19-51b3-625ec6561ac7@redhat.com>
- <20211110163925.GX1740502@nvidia.com>
- <7c97d86f-57f4-f764-3e92-1660690a0f24@redhat.com>
- <60515562-5f93-11cd-6c6a-c7cc92ff3bf8@bytedance.com>
- <a052e0ba-a22c-5df1-80b8-d847efacd66e@redhat.com>
- <9ee06b52-4844-7996-fa34-34fc7d4fdc10@bytedance.com>
- <27d73395-70b4-fe4a-4c8d-415b43ff9c1f@redhat.com>
-From:   Qi Zheng <zhengqi.arch@bytedance.com>
-In-Reply-To: <27d73395-70b4-fe4a-4c8d-415b43ff9c1f@redhat.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <CAGsJ_4yLV_-fwtH1=bmGxfcK9_TwUK5Typ_pE=zYQNt=YHoFVA@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 11/11/21 7:19 PM, David Hildenbrand wrote:
-> On 11.11.21 12:08, Qi Zheng wrote:
+On 11/11/2021 10:08, Barry Song wrote:
+> On Thu, Nov 11, 2021 at 10:07 PM Barry Song <21cnbao@gmail.com> wrote:
 >>
+>> On Thu, Nov 11, 2021 at 8:25 PM Wangshaobo (bobo)
+>> <bobo.shaobowang@huawei.com> wrote:
+>>>
+>>>
+>>> 在 2021/11/11 14:25, Barry Song 写道:
+>>>
+>>> On Wed, Nov 10, 2021 at 10:53 PM Wang ShaoBo <bobo.shaobowang@huawei.com> wrote:
+>>>
+>>> When testing cpu online and offline, warning happened like this:
+>>>
+>>> [  146.746743] WARNING: CPU: 92 PID: 974 at kernel/sched/topology.c:2215 build_sched_domains+0x81c/0x11b0
+>>> [  146.749988] CPU: 92 PID: 974 Comm: kworker/92:2 Not tainted 5.15.0 #9
+>>> [  146.750402] Hardware name: Huawei TaiShan 2280 V2/BC82AMDDA, BIOS 1.79 08/21/2021
+>>> [  146.751213] Workqueue: events cpuset_hotplug_workfn
+>>> [  146.751629] pstate: 00400009 (nzcv daif +PAN -UAO -TCO -DIT -SSBS BTYPE=--)
+>>> [  146.752048] pc : build_sched_domains+0x81c/0x11b0
+>>> [  146.752461] lr : build_sched_domains+0x414/0x11b0
+>>> [  146.752860] sp : ffff800040a83a80
+>>> [  146.753247] x29: ffff800040a83a80 x28: ffff20801f13a980 x27: ffff20800448ae00
+>>> [  146.753644] x26: ffff800012a858e8 x25: ffff800012ea48c0 x24: 0000000000000000
+>>> [  146.754039] x23: ffff800010ab7d60 x22: ffff800012f03758 x21: 000000000000005f
+>>> [  146.754427] x20: 000000000000005c x19: ffff004080012840 x18: ffffffffffffffff
+>>> [  146.754814] x17: 3661613030303230 x16: 30303078303a3239 x15: ffff800011f92b48
+>>> [  146.755197] x14: ffff20be3f95cef6 x13: 2e6e69616d6f642d x12: 6465686373204c4c
+>>> [  146.755578] x11: ffff20bf7fc83a00 x10: 0000000000000040 x9 : 0000000000000000
+>>> [  146.755957] x8 : 0000000000000002 x7 : ffffffffe0000000 x6 : 0000000000000002
+>>> [  146.756334] x5 : 0000000090000000 x4 : 00000000f0000000 x3 : 0000000000000001
+>>> [  146.756705] x2 : 0000000000000080 x1 : ffff800012f03860 x0 : 0000000000000001
+>>> [  146.757070] Call trace:
+>>> [  146.757421]  build_sched_domains+0x81c/0x11b0
+>>> [  146.757771]  partition_sched_domains_locked+0x57c/0x978
+>>> [  146.758118]  rebuild_sched_domains_locked+0x44c/0x7f0
+>>> [  146.758460]  rebuild_sched_domains+0x2c/0x48
+>>> [  146.758791]  cpuset_hotplug_workfn+0x3fc/0x888
+>>> [  146.759114]  process_one_work+0x1f4/0x480
+>>> [  146.759429]  worker_thread+0x48/0x460
+>>> [  146.759734]  kthread+0x158/0x168
+>>> [  146.760030]  ret_from_fork+0x10/0x20
+>>> [  146.760318] ---[ end trace 82c44aad6900e81a ]---
+>>>
+>>> For some architectures like risc-v and arm64 which use common code
+>>> clear_cpu_topology() in shutting down CPUx, When CONFIG_SCHED_CLUSTER
+>>> is set, cluster_sibling in cpu_topology of each sibling adjacent
+>>> to CPUx is missed clearing, this causes checking failed in
+>>> topology_span_sane() and rebuilding topology failure at end when CPU online.
+>>>
+>>> Different sibling's cluster_sibling in cpu_topology[] when CPU92 offline
+>>> (CPU 92, 93, 94, 95 are in one cluster):
+>>>
+>>> Before revision:
+>>> CPU                 [92]      [93]      [94]      [95]
+>>> cluster_sibling     [92]     [92-95]   [92-95]   [92-95]
+>>>
+>>> After revision:
+>>> CPU                 [92]      [93]      [94]      [95]
+>>> cluster_sibling     [92]     [93-95]   [93-95]   [93-95]
+>>>
+>>> Signed-off-by: Wang ShaoBo <bobo.shaobowang@huawei.com>
+>>>
+>>> The patch looks correct. But how do you reproduce it?
+>>>
+>>> Hi Barry,
+>>>
+>>> you can try this test case in kunpeng 920:
+>>>
+>>>
+>> echo 0 > cpu92/online
+>> echo 0 > cpu93/online
+>> echo 1 > cpu92/online
 >>
->> On 11/11/21 5:22 PM, David Hildenbrand wrote:
->>> On 11.11.21 04:58, Qi Zheng wrote:
->>>>
->>>>
->>>> On 11/11/21 1:37 AM, David Hildenbrand wrote:
->>>>>>> It would still be a fairly coarse-grained locking, I am not sure if that
->>>>>>> is a step into the right direction. If you want to modify *some* page
->>>>>>> table in your process you have exclude each and every page table walker.
->>>>>>> Or did I mis-interpret what you were saying?
->>>>>>
->>>>>> That is one possible design, it favours fast walking and penalizes
->>>>>> mutation. We could also stick a lock in the PMD (instead of a
->>>>>> refcount) and still logically be using a lock instead of a refcount
->>>>>> scheme. Remember modify here is "want to change a table pointer into a
->>>>>> leaf pointer" so it isn't an every day activity..
->>>>>
->>>>> It will be if we somewhat frequent when reclaim an empty PTE page table
->>>>> as soon as it turns empty. This not only happens when zapping, but also
->>>>> during writeback/swapping. So while writing back / swapping you might be
->>>>> left with empty page tables to reclaim.
->>>>>
->>>>> Of course, this is the current approach. Another approach that doesn't
->>>>> require additional refcounts is scanning page tables for empty ones and
->>>>> reclaiming them. This scanning can either be triggered manually from
->>>>> user space or automatically from the kernel.
->>>>
->>>> Whether it is introducing a special rwsem or scanning an empty page
->>>> table, there are two problems as follows:
->>>>
->>>> 	#1. When to trigger the scanning or releasing?
->>>
->>> For example when reclaiming memory, when scanning page tables in
->>> khugepaged, or triggered by user space (note that this is the approach I
->>> originally looked into). But it certainly requires more locking thought
->>> to avoid stopping essentially any page table walker.
->>>
->>>> 	#2. Every time to release a 4K page table page, 512 page table
->>>> 	    entries need to be scanned.
->>>
->>> It would happen only when actually trigger reclaim of page tables
->>> (again, someone has to trigger it), so it's barely an issue.
->>>
->>> For example, khugepaged already scans the page tables either way.
->>>
->>>>
->>>> For #1, if the scanning is triggered manually from user space, the
->>>> kernel is relatively passive, and the user does not fully know the best
->>>> timing to scan. If the scanning is triggered automatically from the
->>>> kernel, that is great. But the timing is not easy to confirm, is it
->>>> scanned and reclaimed every time zap or try_to_unmap?
->>>>
->>>> For #2, refcount has advantages.
->>>>
->>>>>
->>>>>>
->>>>>> There is some advantage with this thinking because it harmonizes well
->>>>>> with the other stuff that wants to convert tables into leafs, but has
->>>>>> to deal with complicated locking.
->>>>>>
->>>>>> On the other hand, refcounts are a degenerate kind of rwsem and only
->>>>>> help with freeing pages. It also puts more atomics in normal fast
->>>>>> paths since we are refcounting each PTE, not read locking the PMD.
->>>>>>
->>>>>> Perhaps the ideal thing would be to stick a rwsem in the PMD. read
->>>>>> means a table cannot be come a leaf. I don't know if there is space
->>>>>> for another atomic in the PMD level, and we'd have to use a hitching
->>>>>> post/hashed waitq scheme too since there surely isn't room for a waitq
->>>>>> too..
->>>>>>
->>>>>> I wouldn't be so quick to say one is better than the other, but at
->>>>>> least let's have thought about a locking solution before merging
->>>>>> refcounts :)
->>>>>
->>>>> Yes, absolutely. I can see the beauty in the current approach, because
->>>>> it just reclaims "automatically" once possible -- page table empty and
->>>>> nobody is walking it. The downside is that it doesn't always make sense
->>>>> to reclaim an empty page table immediately once it turns empty.
->>>>>
->>>>> Also, it adds complexity for something that is only a problem in some
->>>>> corner cases -- sparse memory mappings, especially relevant for some
->>>>> memory allocators after freeing a lot of memory or running VMs with
->>>>> memory ballooning after inflating the balloon. Some of these use cases
->>>>> might be good with just triggering page table reclaim manually from user
->>>>> space.
->>>>>
->>>>
->>>> Yes, this is indeed a problem. Perhaps some flags can be introduced so
->>>> that the release of page table pages can be delayed in some cases.
->>>> Similar to the lazyfree mechanism in MADV_FREE?
->>>
->>> The issue AFAIU is that once your refcount hits 0 (no more references,
->>> no more entries), the longer you wait with reclaim, the longer others
->>> have to wait for populating a fresh page table because the "page table
->>> to be reclaimed" is still stuck around. You'd have to keep the refcount
->>> increased for a while, and only drop it after a while. But when? And
->>> how? IMHO it's not trivial, but maybe there is an easy way to achieve it.
->>>
+>> Yes. I was making the whole cluster offline. this warning can only be
+>> reproduced when
+>> we disable a part of CPUs in one cluster, then enable one of the disabled CPUs.
+
+I was asking myself the same question. When does this warning
+`WARN_ON(!topology_span_sane(tl, cpu_map, i)` in build_sched_domains()
+actually barf? Agree with what's said above.
+
+echo 1 > cpu92/online:
+
+...
+[  113.841009] Detected VIPT I-cache on CPU92
+[  113.845292] GICv3: CPU92: found redistributor 3d0000 region 92:0x00002000aa600000
+[  113.853059] CPU92: Booted secondary processor 0x00003d0000 [0x481fd010]
+[  114.018654] CPU92 i=94 cpu_map=0-92,94-95 tl->mask(cpu)=92,94-95 tl->mask(i)=92-95 <- !!!
+[  114.026240] ------------[ cut here ]------------
+[  114.030841] WARNING: CPU: 92 PID: 590 at kernel/sched/topology.c:2220 build_sched_domains+0x934/0x12f8
+...
+
 >>
->> For running VMs with memory ballooning after inflating the balloon, is
->> this a hot behavior? Even if it is, it is already facing the release and
->> reallocation of physical pages. The overhead after introducing
->> pte_refcount is that we need to release and re-allocate page table page.
->> But 2MB physical pages only corresponds to 4KiB of PTE page table page.
->> So maybe the overhead is not big.
-> 
-> The cases that come to my mind are
-> 
-> a) Swapping on shared memory with concurrent access
-> b) Reclaim on file-backed memory with concurrent access
-> c) Free page reporting as implemented by virtio-balloon
-> 
-> In all of these cases, you can have someone immediately re-access the
-> page table and re-populate it.
+>> Acked-by: Barry Song <song.bao.hua@hisilicon.com>
+>>
+>> Might need some refine to explain how to reproduce in commit log.
 
-In the performance test shown on the cover, we repeatedly performed
-touch and madvise(MADV_DONTNEED) actions, which simulated the case
-you said above.
++1.
 
-We did find a small amount of performance regression, but I think it is
-acceptable, and no new perf hotspots have been added.
+> and also a fix tag.
 
-> 
-> For something mostly static (balloon inflation, memory allocator), it's
-> not that big of a deal I guess.
-> 
+Reviewed-by: Dietmar Eggemann <dietmar.eggemann@arm.com>
+Tested-by: Dietmar Eggemann <dietmar.eggemann@arm.com>
