@@ -2,245 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F95444D501
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Nov 2021 11:29:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 37A4344D504
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Nov 2021 11:31:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232834AbhKKKcJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Nov 2021 05:32:09 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58252 "EHLO
+        id S232861AbhKKKe3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Nov 2021 05:34:29 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58764 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232257AbhKKKcG (ORCPT
+        with ESMTP id S229668AbhKKKe0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Nov 2021 05:32:06 -0500
-Received: from mail-ed1-x52e.google.com (mail-ed1-x52e.google.com [IPv6:2a00:1450:4864:20::52e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D16FC061766;
-        Thu, 11 Nov 2021 02:29:17 -0800 (PST)
-Received: by mail-ed1-x52e.google.com with SMTP id j21so22054625edt.11;
-        Thu, 11 Nov 2021 02:29:17 -0800 (PST)
+        Thu, 11 Nov 2021 05:34:26 -0500
+Received: from mail-ua1-x929.google.com (mail-ua1-x929.google.com [IPv6:2607:f8b0:4864:20::929])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5430CC061766;
+        Thu, 11 Nov 2021 02:31:37 -0800 (PST)
+Received: by mail-ua1-x929.google.com with SMTP id az37so10791136uab.13;
+        Thu, 11 Nov 2021 02:31:37 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=cSSM2j7SejswRGsX3hwVtwe1H75qRZbtJPmBHlBpvfk=;
-        b=JwjvF55wBHahJPzmJrcie24kBPiuCLzEytSWLiiAeCa9QhTXB3C/dB74BQ53eA5KhB
-         QTnvyAi7Nc9HTFDHmZ0ZOc3Tj2S+pX3k+z0sge2QcDUehdlkDsS8uj02Bml4v/ovhY/e
-         YpeMD1C6EShpVbbCWSG5SEoRoxOrrFloHOCoYDa6YnjLpUGpqOGiVQPFZBAeCcGWC33B
-         M9xtrE9FFrrdF0nNKYNFGmwH1yuoqBMZonN5BPi33x4QhEAVD/EQkwnT+5/0j9bEeOr9
-         m7hJLVBWw/7nfwo8OTSiaNil27cHeO3Kz/VIJOgnl/boItmeF3je8ZhWoTXgG7f12ppV
-         /7HA==
+        bh=4enwRC8TuKI2GB0AGVlP6QNL8DbsgjOg0CrVYrlGOUA=;
+        b=ILoQYjHk7zJpnrivYmFTUEt3aohMdnm8X8NL/q2Juw27tzobMu2E/LxzuhtO0Dlhca
+         5huWCJWp7czN/DbK4uBcINTRnDvQWTlTZI1ASJgI5EEY+pIxvqZSHb3+qZi5KmjtA8MG
+         ZMA0HKeHp0zL6ZuAUmck9k8gUKnaHSwEFeaA83x2tQPpmHxOkqPGB0G1Ttj12WxCfVfy
+         nvW1zorlAMVbEEv3BUdCGSRINcvPSNBXRprTgXB6RBuK1ZJdSax5qVxs8GrXd/bQzjv2
+         3wOI3whOv99YhdkUT3KkqvUkKcRggjebYWBQUEyFLQDCCVryY65E7ZnFN7OSYS2dXJi+
+         JiuA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=cSSM2j7SejswRGsX3hwVtwe1H75qRZbtJPmBHlBpvfk=;
-        b=bm0pffMAxCE2KxEya6GEoX5SzBqKLfYVD1mUVBM1Uu+hRB26qVe2jGcm48AzwlQ44I
-         aWpVAVLLiBYiOqClXvehXIkHTDsDByXqY4Wuvwg9td+rHa/nbZPl49Ap/4kFaUIPb7uG
-         /VHJs50Kx51AddEwTP3mL3I/trTiZN5cgFFNbRPy6F4XVesQxLRF3OKSqKXaU3aBCjxM
-         Hs6QhvMRwRJiSKWSs8lJfbmkHs23EM3FMIvYwdAvxm92Od3LFbpPgtHqnDbTLjf9kve7
-         IkNszoNYbZ6v0T7n5J16foKhkpVk5kM+yA7AA5jrbAgMxIPCueTO1G7hNTpPA+cxjwlz
-         zVKw==
-X-Gm-Message-State: AOAM531eivdRdNSAQNp6G99dOZHtnj5nr/kZ9EZXYcy6CG4RJL7CIWHr
-        CBKFBdPxy++1sg6JO3swcU8izwRB2c1h/33vkTc=
-X-Google-Smtp-Source: ABdhPJxsXcQ6+SsTxDpq+4K6x2ySv0Hd6ZabWSws/AOSgPuFY/HY/wdPmNXt8RS6NuL96ehVuUquhqb9PR6Rea0U9iQ=
-X-Received: by 2002:a17:907:9156:: with SMTP id l22mr8052110ejs.220.1636626555652;
- Thu, 11 Nov 2021 02:29:15 -0800 (PST)
+        bh=4enwRC8TuKI2GB0AGVlP6QNL8DbsgjOg0CrVYrlGOUA=;
+        b=FoNMNovfdD5zCzRRtgbgocEAaMu09Zp22uMbz6ZVIe1MrIIsY6M9j1rhOTkIOR498h
+         ESLrt0/dN+1/OJstw+GhkwlRngJbyoBZOYkbLf3p7Wlu3F2EbmhmMiNCLFaxfNV/5bPU
+         2Pml+hWVKei6yW27tLQaq6qhkwGCjgHzVU9/p3Uvtj2QfPqEw1TKdC8IEca1BJqsSswb
+         WKxH/Tcqb2nYMtBAKWEmvZy/C8In8Ul5F/IV8Sptp0fP+tTtXkMlCmth4OUdmZbQxNL9
+         eNWn5oaO4xiZ8lhQ6scS/UqOeIjNwFzIvtui/lLAfeAi/yGFAOrXToGGzMYaQs80DKsg
+         IW3w==
+X-Gm-Message-State: AOAM532bdyEmr4yIkRFPgw9ajB2JGun9npbbWE25muw6TJye1xB5JxbI
+        MTZ3JwSkmfJUSwLXN855nJVR7jn7SKOQIy6yCxo=
+X-Google-Smtp-Source: ABdhPJxM7Zqn7XS994yvFxrEsUq21I4hiwrV6KG12OVBJxfJ0cNGQ9M/sygXzAFBkMtWcG07qPbROzjYFjjdf8z+nD4=
+X-Received: by 2002:a67:f516:: with SMTP id u22mr9305581vsn.47.1636626696452;
+ Thu, 11 Nov 2021 02:31:36 -0800 (PST)
 MIME-Version: 1.0
-References: <20211109083926.32052-1-christian.gmeiner@gmail.com>
- <20211109083926.32052-2-christian.gmeiner@gmail.com> <YYq4tjyv0qh+Zpqe@ripper>
- <30de037d-3acd-8e9d-979c-b3d0c1c84002@foss.st.com>
-In-Reply-To: <30de037d-3acd-8e9d-979c-b3d0c1c84002@foss.st.com>
-From:   Christian Gmeiner <christian.gmeiner@gmail.com>
-Date:   Thu, 11 Nov 2021 11:29:04 +0100
-Message-ID: <CAH9NwWdy9WsaXW+XE06=yA9pGXGs_Ye6kRiNPMfM5D=Jd1rSGg@mail.gmail.com>
-Subject: Re: [RFC PATCH v2 1/1] rpmsg: add syslog driver
-To:     Arnaud POULIQUEN <arnaud.pouliquen@foss.st.com>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Ohad Ben-Cohen <ohad@wizery.com>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        linux-remoteproc@vger.kernel.org,
-        Bjorn Andersson <bjorn.andersson@linaro.org>
+References: <20211111083954.6286-1-lukas.bulwahn@gmail.com>
+In-Reply-To: <20211111083954.6286-1-lukas.bulwahn@gmail.com>
+From:   Fabio Estevam <festevam@gmail.com>
+Date:   Thu, 11 Nov 2021 07:31:25 -0300
+Message-ID: <CAOMZO5B4k=UvE5XTgbsjCfoo0h0Y7H+xN6mwh9Bnc2L82QYzwQ@mail.gmail.com>
+Subject: Re: [PATCH] iio: imx8qxp-adc: fix dependency to the intended ARCH_MXC config
+To:     Lukas Bulwahn <lukas.bulwahn@gmail.com>
+Cc:     Jonathan Cameron <jic23@kernel.org>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Cai Huoqing <caihuoqing@baidu.com>, linux-iio@vger.kernel.org,
+        kernel-janitors@vger.kernel.org,
+        linux-kernel <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Arnaud
+Hi Lukas,
 
+On Thu, Nov 11, 2021 at 5:40 AM Lukas Bulwahn <lukas.bulwahn@gmail.com> wrote:
 >
-> On 11/9/21 7:06 PM, Bjorn Andersson wrote:
-> > On Tue 09 Nov 00:39 PST 2021, Christian Gmeiner wrote:
-> >
-> >> Allows the remote firmware to log into syslog.
-> >>
+> Commit 1e23dcaa1a9f ("iio: imx8qxp-adc: Add driver support for NXP IMX8QXP
+> ADC") adds the config IMX8QXP_ADC for this new driver, which depends on
+> the non-existing config ARCH_MXC_ARM64.
 >
-> For you information a similar patch has been sent few years ago:
-> https://www.spinics.net/lists/kernel/msg3045824.html
+> Hence, ./scripts/checkkconfigsymbols.py warns:
 >
-
-Interesting - do you know why the patch was not taken?
-
-> The suspend /resume mechanism seems interesting to manage the low power use case.
+>   ARCH_MXC_ARM64
+>   Referencing files: drivers/iio/adc/Kconfig
 >
-
-Yeah .. nothing I thought about.
-
-> >
-> > This allows the remote firmware to print log messages in the kernel log,
-> > not the syslog (although your system might inject the kernel log into
-> > the syslog as well)
-> >
-> >> Signed-off-by: Christian Gmeiner <christian.gmeiner@gmail.com>
-> >> ---
-> >>  drivers/rpmsg/Kconfig        |  8 +++++
-> >>  drivers/rpmsg/Makefile       |  1 +
-> >>  drivers/rpmsg/rpmsg_syslog.c | 65 ++++++++++++++++++++++++++++++++++++
-> >
-> > drivers/rpmsg is for rpmsg bus and transport drivers. Client drivers
-> > should live elsewhere.
-> >
-> > But perhaps, rather than having a driver for this, you could simply use
-> > rpmsg_char and a userspace tool; if you want to get the remote processor
-> > logs into syslog, instead of the kernel log?
+> Probably, the existing config ARCH_MXC is intended to be referred here.
+> So, repair the dependency to refer to that config.
 >
-> This is also a question that comes to me while looking at the patch.
-> rpmsg_tty service (if available in 5.16) could be another alternative.
->
+> Fixes: 1e23dcaa1a9f ("iio: imx8qxp-adc: Add driver support for NXP IMX8QXP ADC")
+> Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
 
-I thought about it too but I do not see how the syslog/journald can read the log
-messages from this tty device without an extra user space component.
+This looks good.
 
-With a syslog redirection rpmsg service this happens automatically without any
-extra user space daemon that reads from tty and writes to syslog.
+The incorrect  ARCH_MXC_ARM64 symbol probably came when porting the
+driver from the NXP downstream kernel:
 
-Maybe I am missing something.
-
-> Regards,
-> Arnaud
->
-> >
-> >>  3 files changed, 74 insertions(+)
-> >>  create mode 100644 drivers/rpmsg/rpmsg_syslog.c
-> >>
-> >> diff --git a/drivers/rpmsg/Kconfig b/drivers/rpmsg/Kconfig
-> >> index 0b4407abdf13..801f9956ec21 100644
-> >> --- a/drivers/rpmsg/Kconfig
-> >> +++ b/drivers/rpmsg/Kconfig
-> >> @@ -73,4 +73,12 @@ config RPMSG_VIRTIO
-> >>      select RPMSG_NS
-> >>      select VIRTIO
-> >>
-> >> +config RPMSG_SYSLOG
-> >> +    tristate "SYSLOG device interface"
-> >> +    depends on RPMSG
-> >> +    help
-> >> +      Say Y here to export rpmsg endpoints as device files, usually found
-> >> +      in /dev. They make it possible for user-space programs to send and
-> >> +      receive rpmsg packets.
-> >> +
-> >>  endmenu
-> >> diff --git a/drivers/rpmsg/Makefile b/drivers/rpmsg/Makefile
-> >> index 8d452656f0ee..75b2ec7133a5 100644
-> >> --- a/drivers/rpmsg/Makefile
-> >> +++ b/drivers/rpmsg/Makefile
-> >> @@ -9,3 +9,4 @@ obj-$(CONFIG_RPMSG_QCOM_GLINK_RPM) += qcom_glink_rpm.o
-> >>  obj-$(CONFIG_RPMSG_QCOM_GLINK_SMEM) += qcom_glink_smem.o
-> >>  obj-$(CONFIG_RPMSG_QCOM_SMD)        += qcom_smd.o
-> >>  obj-$(CONFIG_RPMSG_VIRTIO)  += virtio_rpmsg_bus.o
-> >> +obj-$(CONFIG_RPMSG_SYSLOG)  += rpmsg_syslog.o
-> >> diff --git a/drivers/rpmsg/rpmsg_syslog.c b/drivers/rpmsg/rpmsg_syslog.c
-> >> new file mode 100644
-> >> index 000000000000..b3fdae495fd9
-> >> --- /dev/null
-> >> +++ b/drivers/rpmsg/rpmsg_syslog.c
-> >> @@ -0,0 +1,65 @@
-> >> +// SPDX-License-Identifier: GPL-2.0
-> >> +
-> >> +#include <linux/kernel.h>
-> >> +#include <linux/module.h>
-> >> +#include <linux/rpmsg.h>
-> >> +
-> >> +static int rpmsg_syslog_cb(struct rpmsg_device *rpdev, void *data, int len,
-> >> +                       void *priv, u32 src)
-> >> +{
-> >> +    const char *buffer = data;
-> >> +
-> >> +    switch (buffer[0]) {
-> >> +    case 'e':
-> >> +            dev_err(&rpdev->dev, "%s", buffer + 1);
-> >> +            break;
-> >> +    case 'w':
-> >> +            dev_warn(&rpdev->dev, "%s", buffer + 1);
-> >> +            break;
-> >> +    case 'i':
-> >> +            dev_info(&rpdev->dev, "%s", buffer + 1);
-> >> +            break;
-> >> +    default:
-> >> +            dev_info(&rpdev->dev, "%s", buffer);
-> >> +            break;
-> >> +    }
-> >> +
-> >> +    return 0;
-> >> +}
-> >> +
-> >> +static int rpmsg_syslog_probe(struct rpmsg_device *rpdev)
-> >> +{
-> >> +    struct rpmsg_endpoint *syslog_ept;
-> >> +    struct rpmsg_channel_info syslog_chinfo = {
-> >> +            .src = 42,
-> >> +            .dst = 42,
-> >> +            .name = "syslog",
-> >> +    };
-> >> +
-> >> +    /*
-> >> +     * Create the syslog service endpoint associated to the RPMsg
-> >> +     * device. The endpoint will be automatically destroyed when the RPMsg
-> >> +     * device will be deleted.
-> >> +     */
-> >> +    syslog_ept = rpmsg_create_ept(rpdev, rpmsg_syslog_cb, NULL, syslog_chinfo);
-> >
-> > The rpmsg_device_id below should cause the device to probe on the
-> > presence of a "syslog" channel announcement, so why are you creating a
-> > new endpoint with the same here?
-> >
-> > Why aren't you just specifying the callback of the driver?
-> >
-> >> +    if (!syslog_ept) {
-> >> +            dev_err(&rpdev->dev, "failed to create the syslog ept\n");
-> >> +            return -ENOMEM;
-> >> +    }
-> >> +    rpdev->ept = syslog_ept;
-> >> +
-> >> +    return 0;
-> >> +}
-> >> +
-> >> +static struct rpmsg_device_id rpmsg_driver_syslog_id_table[] = {
-> >> +    { .name = "syslog" },
-> >> +    { },
-> >> +};
-> >> +MODULE_DEVICE_TABLE(rpmsg, rpmsg_driver_syslog_id_table);
-> >> +
-> >> +static struct rpmsg_driver rpmsg_syslog_client = {
-> >> +    .drv.name       = KBUILD_MODNAME,
-> >> +    .id_table       = rpmsg_driver_syslog_id_table,
-> >> +    .probe          = rpmsg_syslog_probe,
-> >> +};
-> >> +module_rpmsg_driver(rpmsg_syslog_client);
-> >
-> > I would expect that building this as a module gives you complaints about
-> > lacking MODULE_LICENSE().
-> >
-> > Regards,
-> > Bjorn
-> >
-> >> --
-> >> 2.33.1
-> >>
-
-
-
--- 
-greets
---
-Christian Gmeiner, MSc
-
-https://christian-gmeiner.info/privacypolicy
+Reviewed-by: Fabio Estevam <festevam@gmail.com>
