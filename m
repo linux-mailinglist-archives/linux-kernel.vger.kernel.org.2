@@ -2,61 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 615AB44D709
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Nov 2021 14:12:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 713D644D714
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Nov 2021 14:18:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233280AbhKKNPc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Nov 2021 08:15:32 -0500
-Received: from mail.kernel.org ([198.145.29.99]:59760 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233191AbhKKNPb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Nov 2021 08:15:31 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 809B0603E8;
-        Thu, 11 Nov 2021 13:12:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1636636351;
-        bh=KcxpveW8nNs9jo6raqqZ7oRga3SQkAVo5CHjN2JDXv4=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Zwm6jlo+X+u+DuSDzQtlvkwfFvY/hpb+sIHvN3NvQtpJz8wjidnsINfNqB2wF9JNY
-         sBpbQTGGXjhDS+HHWvn6r6N+22UtCMSPkpEZ8YFvPruSU7QZ0t4bW+0clh3xxeR+tz
-         GYroQ58/XoL0cOF5QGmhy5/mCxFb3UXg/agAstgQ=
-Date:   Thu, 11 Nov 2021 14:12:28 +0100
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Pavankumar Kondeti <quic_pkondeti@quicinc.com>
-Cc:     linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org,
-        Felipe Balbi <balbi@kernel.org>, Jens Axboe <axboe@kernel.dk>,
-        Jack Pham <jackp@codeaurora.org>,
-        Peter Chen <peter.chen@nxp.com>,
-        Wesley Cheng <wcheng@codeaurora.org>,
-        Andrew Gabbasov <andrew_gabbasov@mentor.com>,
-        kernel test robot <lkp@intel.com>
-Subject: Re: [PATCH v2] usb: gadget: f_fs: Use stream_open() for endpoint
- files
-Message-ID: <YY0WvD57FGums0a8@kroah.com>
-References: <20211111120636.GA11612@hu-pkondeti-hyd.qualcomm.com>
- <1636632958-22802-1-git-send-email-quic_pkondeti@quicinc.com>
+        id S232918AbhKKNUq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Nov 2021 08:20:46 -0500
+Received: from smtp02.smtpout.orange.fr ([80.12.242.124]:63639 "EHLO
+        smtp.smtpout.orange.fr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232033AbhKKNUp (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 11 Nov 2021 08:20:45 -0500
+Received: from pop-os.home ([86.243.171.122])
+        by smtp.orange.fr with ESMTPA
+        id l9xhmV6vzBazol9xhmbNf6; Thu, 11 Nov 2021 14:17:55 +0100
+X-ME-Helo: pop-os.home
+X-ME-Auth: YWZlNiIxYWMyZDliZWIzOTcwYTEyYzlhMmU3ZiQ1M2U2MzfzZDfyZTMxZTBkMTYyNDBjNDJlZmQ3ZQ==
+X-ME-Date: Thu, 11 Nov 2021 14:17:55 +0100
+X-ME-IP: 86.243.171.122
+From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+To:     tiffany.lin@mediatek.com, andrew-ct.chen@mediatek.com,
+        mchehab@kernel.org, matthias.bgg@gmail.com, acourbot@chromium.org,
+        yunfei.dong@mediatek.com, hverkuil-cisco@xs4all.nl,
+        tzungbi@google.com
+Cc:     linux-media@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
+        kernel-janitors@vger.kernel.org,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Subject: [PATCH] media: mtk-vcodec: Fix an error handling path in 'asid_allocator_init()'
+Date:   Thu, 11 Nov 2021 14:17:51 +0100
+Message-Id: <86d3e2db237bc35eb55bd46ef07fa13a39bcdff8.1636636541.git.christophe.jaillet@wanadoo.fr>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1636632958-22802-1-git-send-email-quic_pkondeti@quicinc.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 11, 2021 at 05:45:56PM +0530, Pavankumar Kondeti wrote:
-> Function fs endpoint files does not have the notion of file position.
-> So switch to stream like functionality. This allows concurrent threads
-> to be blocked in the ffs read/write operations which use ffs_mutex_lock().
-> The ffs mutex lock deploys interruptible wait. Otherwise, threads are
-> blocking for the mutex lock in __fdget_pos(). For whatever reason, ff the
-> host does not send/receive data for longer time, hung task warnings
-> are observed.
+In case of error the 'media_device_init()' call is not balanced by a
+corresponding 'media_device_cleanup()' call.
 
-So the current code is broken?  What commit caused it to break?
+Add it, when needed, as already done in the remove function.
 
-Doesn't this change cause a change in behavior for existing userspace
-tools, or will they still work as-is?
+Fixes: 118add98f80e ("media: mtk-vcodec: vdec: add media device if using stateless api")
+Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+---
+ drivers/media/platform/mtk-vcodec/mtk_vcodec_dec_drv.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-thanks,
+diff --git a/drivers/media/platform/mtk-vcodec/mtk_vcodec_dec_drv.c b/drivers/media/platform/mtk-vcodec/mtk_vcodec_dec_drv.c
+index e6e6a8203eeb..8277c44209b5 100644
+--- a/drivers/media/platform/mtk-vcodec/mtk_vcodec_dec_drv.c
++++ b/drivers/media/platform/mtk-vcodec/mtk_vcodec_dec_drv.c
+@@ -358,6 +358,8 @@ static int mtk_vcodec_probe(struct platform_device *pdev)
+ 	if (dev->vdec_pdata->uses_stateless_api)
+ 		v4l2_m2m_unregister_media_controller(dev->m2m_dev_dec);
+ err_reg_cont:
++	if (dev->vdec_pdata->uses_stateless_api)
++		media_device_cleanup(&dev->mdev_dec);
+ 	destroy_workqueue(dev->decode_workqueue);
+ err_event_workq:
+ 	v4l2_m2m_release(dev->m2m_dev_dec);
+-- 
+2.30.2
 
-greg k-h
