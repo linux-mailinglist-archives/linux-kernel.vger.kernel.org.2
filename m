@@ -2,97 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2FDA844D3EF
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Nov 2021 10:20:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 71BE544D3F2
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Nov 2021 10:21:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232541AbhKKJX2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Nov 2021 04:23:28 -0500
-Received: from smtp-out1.suse.de ([195.135.220.28]:39030 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231576AbhKKJX1 (ORCPT
+        id S232593AbhKKJXq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Nov 2021 04:23:46 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42796 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232568AbhKKJXl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Nov 2021 04:23:27 -0500
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out1.suse.de (Postfix) with ESMTP id 553FD21B35;
-        Thu, 11 Nov 2021 09:20:37 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1636622437; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=VKcDr2fKCQCckd3lBGavIW/Vf9CpVRyHsHkDbRYBxl4=;
-        b=KPkrH2PbhZsBvSh275iz8ij3LnsQNcUkX8VhPI9+7SbFZKgx6+tXzz6Zv1yL7Qj80WxH0M
-        +vuuVBq75iQHbByg/cH50cnIwEBFMEaWmCIBiaXhbpt7IUFlYUZR8N1cRqdHf5YJt0en0s
-        mrodPCnwLfpm4N6p1p1ACTlkJsY7B+k=
-Received: from suse.cz (unknown [10.100.201.86])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by relay2.suse.de (Postfix) with ESMTPS id 03AABA3BF2;
-        Thu, 11 Nov 2021 09:20:36 +0000 (UTC)
-Date:   Thu, 11 Nov 2021 10:20:36 +0100
-From:   Michal Hocko <mhocko@suse.com>
-To:     Suren Baghdasaryan <surenb@google.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        David Rientjes <rientjes@google.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Roman Gushchin <guro@fb.com>, Rik van Riel <riel@surriel.com>,
-        Minchan Kim <minchan@kernel.org>,
-        Christian Brauner <christian@brauner.io>,
-        Christoph Hellwig <hch@infradead.org>,
-        Oleg Nesterov <oleg@redhat.com>,
-        David Hildenbrand <david@redhat.com>,
-        Jann Horn <jannh@google.com>,
-        Shakeel Butt <shakeelb@google.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Florian Weimer <fweimer@redhat.com>,
-        Jan Engelhardt <jengelh@inai.de>,
-        Linux API <linux-api@vger.kernel.org>,
-        linux-mm <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        kernel-team <kernel-team@android.com>,
-        "Kirill A. Shutemov" <kirill@shutemov.name>,
-        Andrea Arcangeli <aarcange@redhat.com>
-Subject: Re: [PATCH 1/1] mm: prevent a race between process_mrelease and
- exit_mmap
-Message-ID: <YYzgZARxi8csprIx@dhcp22.suse.cz>
-References: <YYDvm9c/7cGtBvw6@dhcp22.suse.cz>
- <CAJuCfpFX8FRynoK29h8tpRXRT-Kk+sHboiBnc7N-8MY6AAqVLw@mail.gmail.com>
- <CAJuCfpFOOgs9uZSW2Tp6uBW23rLHFeSA8o5WYQ_D_ykUcKL64Q@mail.gmail.com>
- <YYrLe2u2zbmu4LfL@dhcp22.suse.cz>
- <CAJuCfpG0d34yRhuvOj9NX9zMp=6jWLqFPfUGV0sOO6OrwNC89A@mail.gmail.com>
- <YYrQ/hENQPn6Mk3v@dhcp22.suse.cz>
- <CAJuCfpFT4-mdHHZ2i43hyJQ4dRKb7sRwnAL8GfRnZu3ecE26Ew@mail.gmail.com>
- <YYrVmi2xdo1Gr2Bb@dhcp22.suse.cz>
- <CAJuCfpGrYa2Ws4GrVp_nRqVEw8j_cGXk+gprLYUx7NWUOC-uRQ@mail.gmail.com>
- <CAJuCfpHJnVG7PMhKW-Snz38az-Bv=QCFXa7DxD=KgEMbHJOi6A@mail.gmail.com>
+        Thu, 11 Nov 2021 04:23:41 -0500
+Received: from mail-pl1-x629.google.com (mail-pl1-x629.google.com [IPv6:2607:f8b0:4864:20::629])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4866FC061766;
+        Thu, 11 Nov 2021 01:20:53 -0800 (PST)
+Received: by mail-pl1-x629.google.com with SMTP id u11so5332705plf.3;
+        Thu, 11 Nov 2021 01:20:53 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=lnOyeMNKPldF7kPwhg+7Exr0iFKBol4gkNNHNe4nQZM=;
+        b=pb1ul8icuSncNizX3EYFhiCICsQb5w1pUzk+9VBzrBABsHd0dGs05dIhHZPN8ViFHP
+         Le0c6fFq0KC0PW3hz69TGnCsaqKUAR7a5xr+6FJK/eic0lFYjvQfXGNmjEhlHr2s+dKz
+         cf5dg/55mYtZNtSN4gyrrWi2pCQ2g//YMkzLLiKuYnuFRUrnYeIGgkGJxgMcyjh68SdI
+         TqZMsVocXWbbTRAAETLRHZUz+2IHpNESyta5RBsclRHwr3lAsX4p/F9ZvV3FXl9smW/+
+         bT+RyiAUjkUEYJ8cMycWFhXNMgGRy1q+fxGY4QLH0jY2kadDSSSnqg7pKyWu+BXEgwHy
+         3j1A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=lnOyeMNKPldF7kPwhg+7Exr0iFKBol4gkNNHNe4nQZM=;
+        b=6iZa1h3uB5/Rcakccgg4ZKsWbcINU3W0oHWh6NATPqwGpeg5RWf+Giywq3SMqwE4Ki
+         YjkhaTtjUDjQKywTijF0XzK9d4RbRk4PZ3yEMjR/8sbn9TyPG8IQlB0FBbgcT8ZJK2jw
+         logKMjgbaibNQX/84qf+aeOwoO3Kjfm9gAtvZ5d9YtS34CRXYsQlIGZ/riOrjPdl8u0A
+         X4KTd2tM38673xMZK60IptBR4YIiQIwJ8xw2APfpx/phiS8EslSVd0l/lP3qJ2oX41k6
+         G+3lzXXiPo4qgVEUi0Jh1KNhMxr7Injsrxvs5Jr4Mu8pq+my1ZXLBwx1Ojr6ukA+cXqO
+         15qQ==
+X-Gm-Message-State: AOAM533jODzfQu7LVrHeuCIHPmYmUTVP9YCxN1hOqIwYep8Nhx3EZPag
+        Vhs8Oodj90aX6VarBlxZVXk=
+X-Google-Smtp-Source: ABdhPJzjNRWc+ZeFgxicwE+iBJ5D9GkbyyX2CSdkBGZInvjpnAogM7szWJbtJ7OnVysMgJNg8qheQQ==
+X-Received: by 2002:a17:902:c947:b0:141:e7f6:d688 with SMTP id i7-20020a170902c94700b00141e7f6d688mr6008602pla.56.1636622452823;
+        Thu, 11 Nov 2021 01:20:52 -0800 (PST)
+Received: from localhost.localdomain ([193.203.214.57])
+        by smtp.gmail.com with ESMTPSA id r8sm1559546pgs.50.2021.11.11.01.20.51
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 11 Nov 2021 01:20:52 -0800 (PST)
+From:   cgel.zte@gmail.com
+X-Google-Original-From: luo.penghao@zte.com.cn
+To:     "David S . Miller" <davem@davemloft.net>
+Cc:     Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
+        David Ahern <dsahern@kernel.org>,
+        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, luo penghao <luo.penghao@zte.com.cn>,
+        Zeal Robot <zealci@zte.com.cn>
+Subject: [PATCH linux-next] ipv4: Remove duplicate assignments
+Date:   Thu, 11 Nov 2021 09:20:47 +0000
+Message-Id: <20211111092047.159905-1-luo.penghao@zte.com.cn>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAJuCfpHJnVG7PMhKW-Snz38az-Bv=QCFXa7DxD=KgEMbHJOi6A@mail.gmail.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed 10-11-21 17:49:37, Suren Baghdasaryan wrote:
-> On Tue, Nov 9, 2021 at 1:10 PM Suren Baghdasaryan <surenb@google.com> wrote:
-> >
-> > On Tue, Nov 9, 2021 at 12:10 PM Michal Hocko <mhocko@suse.com> wrote:
-[...]
-> > > Yes, those can run concurrently. One thing I completely forgot about is
-> > > 27ae357fa82b ("mm, oom: fix concurrent munlock and oom reaper unmap, v3")
-> > > which is about interaction with the munlock.
-> 
-> Agrh! This interaction with the munlock you mentioned requires us to
-> take mmap_write_lock before munlock_vma_pages_all and that prevents
-> __oom_reap_task_mm from running concurrently with unmap_vmas. The
-> reapers would not be as effective as they are now after such a change
-> :(
+From: luo penghao <luo.penghao@zte.com.cn>
 
-__oom_reap_task_mm will not run concurrently with unmap_vmas even
-with the current code. The mmap_sem barrier right before munlock code
-prevents that.
+there is a same action when the variable is initialized
 
+Reported-by: Zeal Robot <zealci@zte.com.cn>
+Signed-off-by: luo penghao <luo.penghao@zte.com.cn>
+---
+ net/ipv4/ip_output.c | 1 -
+ 1 file changed, 1 deletion(-)
+
+diff --git a/net/ipv4/ip_output.c b/net/ipv4/ip_output.c
+index 9bca57e..57c1d84 100644
+--- a/net/ipv4/ip_output.c
++++ b/net/ipv4/ip_output.c
+@@ -672,7 +672,6 @@ struct sk_buff *ip_frag_next(struct sk_buff *skb, struct ip_frag_state *state)
+ 	struct sk_buff *skb2;
+ 	struct iphdr *iph;
+ 
+-	len = state->left;
+ 	/* IF: it doesn't fit, use 'mtu' - the data space left */
+ 	if (len > state->mtu)
+ 		len = state->mtu;
 -- 
-Michal Hocko
-SUSE Labs
+2.15.2
+
+
