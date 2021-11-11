@@ -2,119 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BF50A44DAFB
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Nov 2021 18:08:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 05A6144DAFC
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Nov 2021 18:10:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234268AbhKKRLn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Nov 2021 12:11:43 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36906 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233771AbhKKRLl (ORCPT
+        id S234270AbhKKRNB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Nov 2021 12:13:01 -0500
+Received: from bhuna.collabora.co.uk ([46.235.227.227]:47214 "EHLO
+        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229710AbhKKRNA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Nov 2021 12:11:41 -0500
-Received: from mail-pj1-x1033.google.com (mail-pj1-x1033.google.com [IPv6:2607:f8b0:4864:20::1033])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A8912C061766
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Nov 2021 09:08:52 -0800 (PST)
-Received: by mail-pj1-x1033.google.com with SMTP id np3so4622397pjb.4
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Nov 2021 09:08:52 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=MTeb7EwYQ6knt5Yt/ry55U3lnaRcmUX6EwlTrk8tx+c=;
-        b=ds20VIcMFOGuKghW/bzjxNO+bNyDsiYY41bgx6wWI5aCSCnwss/Co3Ny6XzbTFQeMy
-         yisAaMV+GRDylQ5IlXjZfRuEAPsgMR52HvS/aqqKnda7xSUt0Bh5+sunjV4Rv2gi9R1F
-         nkjmxOed+c9gGz0fMM/h5IaqQ2w7k3of2ZHwI=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=MTeb7EwYQ6knt5Yt/ry55U3lnaRcmUX6EwlTrk8tx+c=;
-        b=APgRzvLsWR8kfwgXOE7uo4BWZL9Zfb64A92fWJRkkSWTb3PyZujl96hjXVISi88iwq
-         pGnsn9V7EJO/YFxpBQmcJb30YutQzPw9ZZ3E0Wb7nSM2p1Y1nBhxtHspYkiLBy3BsUKg
-         Q+RTOyYkohBggpt6BzRif9WRaiPPrFNYzpaVmZBBwiYlkjkf0pG22rmChAXUQEP0jgvv
-         4St97wf42XhWiOvpANUUFIqZKmCV1QqEQ+63DcpRR6Y4mHPH+czJ+ZOHx0LkgIiHkQw9
-         tc4Ow2ei9JMivIovVAvMA0hGAAZLd4yCLJX0MSSRGPUkPxRDIb7PUuzC8DxCY5WU+G2/
-         rauQ==
-X-Gm-Message-State: AOAM5336OaRB7k7lpsoVnYuSjuz3SDP8lvXHAw+moiz1Db70MTPl9X3q
-        d1p1nB42X58ae9rUgH7NGhKflmmnkAeTWg==
-X-Google-Smtp-Source: ABdhPJy+Wspr+wgSYV8eJ6xk+ftryfQPGFwP/r7UPzbjE2qFAC9uL0TIDG3ozkjbX8I7CNV0cO239g==
-X-Received: by 2002:a17:903:1110:b0:13f:d25c:eac5 with SMTP id n16-20020a170903111000b0013fd25ceac5mr641394plh.5.1636650532110;
-        Thu, 11 Nov 2021 09:08:52 -0800 (PST)
-Received: from google.com ([2620:15c:202:201:8be6:66e1:e079:a091])
-        by smtp.googlemail.com with ESMTPSA id i184sm2735100pgc.77.2021.11.11.09.08.50
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 11 Nov 2021 09:08:51 -0800 (PST)
-Date:   Thu, 11 Nov 2021 09:08:47 -0800
-From:   Zubin Mithra <zsm@chromium.org>
-To:     Pavel Machek <pavel@ucw.cz>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-        Christoph Hellwig <hch@lst.de>, Omar Sandoval <osandov@fb.com>,
-        Ming Lei <ming.lei@redhat.com>, Jens Axboe <axboe@kernel.dk>
-Subject: Re: [PATCH 4.19 01/16] block: introduce multi-page bvec helpers
-Message-ID: <YY1OHxpimjKYgxGR@google.com>
-References: <20211110182001.994215976@linuxfoundation.org>
- <20211110182002.041203616@linuxfoundation.org>
- <20211111164754.GA29545@duo.ucw.cz>
+        Thu, 11 Nov 2021 12:13:00 -0500
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: ritesh)
+        with ESMTPSA id A98661F45F82
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=collabora.com; s=mail;
+        t=1636650610; bh=gzPwpXJRMu8yzxK71eUeHysRVbadXnuxET79GLTdXvs=;
+        h=Subject:From:Reply-To:To:Cc:Date:In-Reply-To:References:From;
+        b=Y+st0clLbWs4fJEgkPCjylHIHvLiZ+9PqzG5cVNhwuC5Mx2yVQrn2gmHkwbfSzbYb
+         HFq769dnw6DibwKqHvLkhyz33TtPfhAiFqkucw/lkAHlvpEad4QiVMDO2c2tzvt4De
+         UpY8dvVlJ/htSTJPB7i1ZkOHicRNhzSl5lODogfx+JjRHbD3aA6qVJAMee9nbmoxdD
+         9DxNG6yDg6BRtHxBEEkNjgE4sQAmeizqWX7vyuolTNFik9X6VPHCNH1Q06n9TOyQVU
+         GsQRd3vby6zjqdLq0yTHtqGAHKU4G5L63xT7I8MYwmnWZGckSo9P5iflkqzKJzryZt
+         W1E2WbuD3wzaA==
+Message-ID: <ba9a4b5405774f157df790c57d658b9f37e1ae61.camel@collabora.com>
+Subject: Re: [PATCH] hostfs: Fix writeback of dirty pages
+From:   Ritesh Raj Sarraf <ritesh.sarraf@collabora.com>
+Reply-To: ritesh.sarraf@collabora.com
+To:     Sjoerd Simons <sjoerd@collabora.com>, linux-um@lists.infradead.org
+Cc:     Anton Ivanov <anton.ivanov@cambridgegreys.com>,
+        Jeff Dike <jdike@addtoit.com>,
+        Richard Weinberger <richard@nod.at>,
+        linux-kernel@vger.kernel.org
+Date:   Thu, 11 Nov 2021 22:40:02 +0530
+In-Reply-To: <20211105081052.2353801-1-sjoerd@collabora.com>
+References: <20211105081052.2353801-1-sjoerd@collabora.com>
+Organization: Collabora
+Content-Type: multipart/signed; micalg="pgp-sha512";
+        protocol="application/pgp-signature"; boundary="=-mPx2yEaImVsfjNu+RXgK"
+User-Agent: Evolution 3.42.0-2 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211111164754.GA29545@duo.ucw.cz>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 11, 2021 at 05:47:54PM +0100, Pavel Machek wrote:
-> Hi!
-> 
-> > From: Ming Lei <ming.lei@redhat.com>
-> > 
-> > commit 3d75ca0adef4280650c6690a0c4702a74a6f3c95 upstream.
-> > 
-> > This patch introduces helpers of 'mp_bvec_iter_*' for multi-page bvec
-> > support.
-> > 
-> > The introduced helpers treate one bvec as real multi-page segment,
-> > which may include more than one pages.
-> > 
-> > The existed helpers of bvec_iter_* are interfaces for supporting current
-> > bvec iterator which is thought as single-page by drivers, fs, dm and
-> > etc. These introduced helpers will build single-page bvec in flight, so
-> > this way won't break current bio/bvec users, which needn't any
-> > change.
-> 
-> I don't understand why we have this in 4.19-stable. I don't see
-> followup patches needing it, and it does not claim to fix a bug.
 
+--=-mPx2yEaImVsfjNu+RXgK
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-There is some more context on this at:
-https://lore.kernel.org/linux-block/YXweJ00CVsDLCI7b@google.com/T/#u
-and
-https://lore.kernel.org/stable/YYVZBuDaWBKT3vOS@google.com/T/#u
+On Fri, 2021-11-05 at 09:10 +0100, Sjoerd Simons wrote:
+> Hostfs was not setting up the backing device information, which means
+> it
+> uses the noop bdi. The noop bdi does not have the writeback
+> capability
+> enabled, which in turns means=C2=A0 dirty pages never got written back to
+> storage.
+>=20
+> In other words programs using mmap to write to files on=C2=A0 hostfs neve=
+r
+> actually got their data written out...
+>=20
+> Fix this by simply setting up the bdi with default settings as all
+> the
+> required code for writeback is already in place.
+>=20
+> Signed-off-by: Sjoerd Simons <sjoerd@collabora.com>
+>=20
 
-Thanks,
-- Zubin
+Tested-by: Ritesh Raj Sarraf <ritesh@collabora.com>
 
-> 
-> > +#define mp_bvec_iter_bvec(bvec, iter)				\
-> > +((struct bio_vec) {						\
-> > +	.bv_page	= mp_bvec_iter_page((bvec), (iter)),	\
-> > +	.bv_len		= mp_bvec_iter_len((bvec), (iter)),	\
-> > +	.bv_offset	= mp_bvec_iter_offset((bvec), (iter)),	\
-> > +})
-> > +
-> > +/* For building single-page bvec in flight */
-> > + #define bvec_iter_offset(bvec, iter)				\
-> > +	(mp_bvec_iter_offset((bvec), (iter)) % PAGE_SIZE)
-> > +
-> 
-> Plus this one is strange. IIRC preprocessor directives have to put #
-> in column zero?
-> 
-> Best regards,
-> 								Pavel
-> -- 
-> http://www.livejournal.com/~pavelmachek
+> ---
+>=20
+> =C2=A0fs/hostfs/hostfs_kern.c | 3 +++
+> =C2=A01 file changed, 3 insertions(+)
+>=20
+> diff --git a/fs/hostfs/hostfs_kern.c b/fs/hostfs/hostfs_kern.c
+> index d5c9d886cd9f..ef481c3d9019 100644
+> --- a/fs/hostfs/hostfs_kern.c
+> +++ b/fs/hostfs/hostfs_kern.c
+> @@ -924,6 +924,9 @@ static int hostfs_fill_sb_common(struct
+> super_block *sb, void *d, int silent)
+> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0sb->s_op =3D &hostfs_sbop=
+s;
+> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0sb->s_d_op =3D &simple_de=
+ntry_operations;
+> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0sb->s_maxbytes =3D MAX_LF=
+S_FILESIZE;
+> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0err =3D super_setup_bdi(sb);
+> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0if (err)
+> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0goto out;
+> =C2=A0
+> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0/* NULL is printed as '(n=
+ull)' by printf(): avoid that. */
+> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0if (req_root =3D=3D NULL)
 
+--=20
+Ritesh Raj Sarraf
+Collabora
 
+--=-mPx2yEaImVsfjNu+RXgK
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part
+Content-Transfer-Encoding: 7bit
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEEQCVDstmIVAB/Yn02pjpYo/LhdWkFAmGNTmoACgkQpjpYo/Lh
+dWnuIw/9Hs9NnkW5ktqmp8OL7AQFsgz/XAWlA45RW/5X8qPmRDDVm5PuvDeLdqbn
+luiP6lwGDL4kDu6FXVR2CAEFiNeRTD8eIuLUsK8o6M0ceINdRXbbmRxA7o2zsQgP
+GPTyUM7RdlEQco9BebY7Jz8EfKpaIPEMDN4Xt4oqqGLEULiq65qFahLBBq9sELvM
+TPPMvTHCcdQ73ZA9UIbBg/raeyAHZFRc25yVw9escbZhISIwAJ14ZO0VhOuufPHj
+pS2ZuYS0zCfx5Y6tJoFt0nhCWG+9U4OG1f4CEQhxRk9wyvb1IWbhL3n5rpkK/guD
+hH0G9KAMzRSxs7BCInibIeKolFzSk+T3JjZW9Wr7PPB3bbLp4WVmdmb2R2A2cYh/
+InzxwJ01iwtu1HXvp5TXpIWJ2ascPYML2SJnPJiFnc81K1e2w2VuoNv2nRTt1xOh
+/4t+PYzOB7jzqqzVCoqxXJs02+vASVaXI7WzZIDLnT7CRMyGRLZ+S+6pJ9aVysMN
+p4d5hneM2h4F0fvWq4kkKApwB01jBoOEcvJuZiOaz5iGPiUIO2CU32z5pU/TSztE
+uNhn7ksm2JnGX1qoESiYCI2G80rN1tNElAFcLUt5+wLJeZAt41tA6SG0jeG3zUL6
+pcEBytWB2NCox8LZM6lLEW3X1mhmx3GD/SfNuxjCKQoeCtrMY90=
+=wNMv
+-----END PGP SIGNATURE-----
+
+--=-mPx2yEaImVsfjNu+RXgK--
