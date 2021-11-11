@@ -2,142 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E525F44D658
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Nov 2021 13:10:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9541D44D667
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Nov 2021 13:13:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232832AbhKKMNq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Nov 2021 07:13:46 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52818 "EHLO
+        id S233210AbhKKMP2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Nov 2021 07:15:28 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53222 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230358AbhKKMNm (ORCPT
+        with ESMTP id S232855AbhKKMP1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Nov 2021 07:13:42 -0500
-Received: from mail-lj1-x235.google.com (mail-lj1-x235.google.com [IPv6:2a00:1450:4864:20::235])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1C10FC061766
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Nov 2021 04:10:53 -0800 (PST)
-Received: by mail-lj1-x235.google.com with SMTP id 13so11469968ljj.11
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Nov 2021 04:10:53 -0800 (PST)
+        Thu, 11 Nov 2021 07:15:27 -0500
+Received: from mail-yb1-xb33.google.com (mail-yb1-xb33.google.com [IPv6:2607:f8b0:4864:20::b33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 872C6C061766
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Nov 2021 04:12:38 -0800 (PST)
+Received: by mail-yb1-xb33.google.com with SMTP id q74so14459625ybq.11
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Nov 2021 04:12:38 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
+        d=bytedance-com.20210112.gappssmtp.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=mVYKVIklyAhOeKYt/Djeg3160H0V9y1eVTKBm55rYr4=;
-        b=k3q5rOXFghTofEhfgNFZGn72Byg4WZL2YMlU6dcRFOH29E5OyE3PdQ0M6W1RFKUZOo
-         xWLww/RlEIby7RDSU/5H1KWl8+vtnxd3rGXQuU7T9UFtiSvVGWGc+A6OvPxp/+Dur9nC
-         WCYs48v2xKH3SjEsyiCmAWgKUXDHVfWfANcRXrumWUOEog/P6Pk3OOq7WbLCW19a9kvj
-         D3kj2DPxIf4BhHrVZUi4xJr3HwXqdMkp/uRl49atKJ3KliyTwzqIFbLpIyjpa3BlHDvh
-         6u+oL8zRKeXi7mKqlrBnXuxsNs4/IsJtkwrWRm3vGSBd61HiKtOyWYqSeZIXeMPPKTWL
-         jwyg==
+         :cc;
+        bh=uzX0j/pXSoaKsl6RsYsXPTfSGUQR1MnGXUzur5DcEnE=;
+        b=ROg6S+2bDI17/ri6eg2myT8UBjMjm9ZxL3/wG/uq9uTWC5HyvwVwosUFt/wMt1Cdvp
+         ey6+W1k+pK9lcIuE8sldf03jhQdcvOfPL6T9rmV2wqZq83+tTOGtaOztj5WNpcm4cmVZ
+         hPL4gBYQs4FppDNuC1JehW+h/5I/yRL1MCxOq8N4+FLNjXZR91p/SAKoRR7Rspj1xmTU
+         nk7A0IG5VklPhsrwUXpkQ+8GEva0P6utCVLHIz2OKf49JKTYi6B6fkj/rOdW9LktknLC
+         pQMzu4uV3h66+N7TTS6LqHVGm9lqtBGciTMqW0KM6SwoqakoGNnrCRlpNBhDuDO1mAPg
+         iZow==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=mVYKVIklyAhOeKYt/Djeg3160H0V9y1eVTKBm55rYr4=;
-        b=6o1F1nZlOabAQkp4ejc2zRVfCjduQMtswA5TjdRfleG2H8b70GF6s7uSVpZO1Ttq6M
-         WNOaM1Uyu206bsojkV3Nc0Q7oKxdlGdbKIerb49jr4mpNWS02isrL7dQfOmlsLrKf35m
-         rNGLEqwD7R+O3nTsZCfJOvErRi+tBEafN6WXAgJg50BDfd8jyBScdnGvhPhsQZjOeqop
-         KgErXEdzWVCFtnTZvQKxmTzFrKihdaxOXJIq4pIW0x7UR8SpSoN17CMiCFwv/rkzwudX
-         3gfvU7UMaorhn2WcQlN1+wf3vpNLNctcjhe96nZo41iqMYjczoByXNvB+MPLt54EJPDy
-         kLtA==
-X-Gm-Message-State: AOAM530bQrzu17TXuuk9mnGEkTg21xgxgX6NAs6hBx+PSRpMTQgrdc/1
-        SWgqIubEWY1fN8goCpczoPVCALBhlX/XeL6mJYLtUA==
-X-Google-Smtp-Source: ABdhPJxou4aoi7oS5hpR0rqworoRVynrLUveORbssI5/aUrXcszt6Nh4XLnfTXeqZb8oc5ikkuX0GL8UbFkNhyUb6/o=
-X-Received: by 2002:a05:651c:10b1:: with SMTP id k17mr6595483ljn.463.1636632651450;
- Thu, 11 Nov 2021 04:10:51 -0800 (PST)
+         :message-id:subject:to:cc;
+        bh=uzX0j/pXSoaKsl6RsYsXPTfSGUQR1MnGXUzur5DcEnE=;
+        b=3Va39tSAatWGtfbxBN5g+yFkcJjcwwK4FT8YxflakWJ5ZwdYr4HNsnnoO1aebjt/Ol
+         h9NyoXqFDckV3qtpiCzvqmVHFtXzPFVJ2eA+mHBpZWZ4FqcLE4je50rcx4n26Y0Wf7zi
+         yNbtb3KWXQrSGClRNVMn/X0CAuUDM3QLvAFSy5RQAmUumYL0jskK7khNkYPzHwHCBYrt
+         DbxaQxvVtVU1EbNSU5sVOrtfTaXFdlP9TYZHLvu97LSx2l7LqEzdSfeybWeVIeM0b2S/
+         ojMjs/Bo2O2Bt6/b1+WLnU2jsZizeCuMN2raEAPOOPAYJShz2RSPLdh4WpIQMc7UXXuo
+         jE1g==
+X-Gm-Message-State: AOAM533abpS0wengwbxta5zZ8f0a9KPLnNAAZIasw10cW0FLHb86vuAM
+        RDnc8cgZEd4Jm6jplxbPU2eD3axng0uNPWaSIVl4sQ==
+X-Google-Smtp-Source: ABdhPJxOyeHjYITOB8RJtUXaN0LJVFxZIppfhk4ltjrXDzQhxWLVS8VSQXpjbHiWUjS7HxB6Ce2sDZkUmyUsw5VPnOE=
+X-Received: by 2002:a25:b0a8:: with SMTP id f40mr7074181ybj.125.1636632757819;
+ Thu, 11 Nov 2021 04:12:37 -0800 (PST)
 MIME-Version: 1.0
-References: <cover.1636564631.git.hns@goldelico.com>
-In-Reply-To: <cover.1636564631.git.hns@goldelico.com>
-From:   Ulf Hansson <ulf.hansson@linaro.org>
-Date:   Thu, 11 Nov 2021 13:10:15 +0100
-Message-ID: <CAPDyKFruL-b7VgkuTL+TH5apY_bgjUTBwinYeqM0Xk4cKWP0rg@mail.gmail.com>
-Subject: Re: [PATCH v2 0/6] mmc: core: extend mmc_fixup_device and transplant
- ti,wl1251 quirks from to be retired omap_hsmmc
-To:     "H. Nikolaus Schaller" <hns@goldelico.com>
-Cc:     =?UTF-8?B?SsOpcsO0bWUgUG91aWxsZXI=?= <Jerome.Pouiller@silabs.com>,
-        Avri Altman <avri.altman@wdc.com>,
-        Shawn Lin <shawn.lin@rock-chips.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Tony Lindgren <tony@atomide.com>,
-        Bean Huo <beanhuo@micron.com>,
-        Kiwoong Kim <kwmad.kim@samsung.com>,
-        Tian Tao <tiantao6@hisilicon.com>,
-        Andreas Kemnade <andreas@kemnade.info>,
-        Yang Li <abaci-bugfix@linux.alibaba.com>, notasas@gmail.com,
-        linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        letux-kernel@openphoenux.org, kernel@pyra-handheld.com,
-        linux-omap@vger.kernel.org
+References: <20211111084617.6746-1-ajaygargnsit@gmail.com> <6864f744-ca3e-f328-8793-2adb0146db03@bytedance.com>
+ <CAHP4M8VNZY+NLzUAVHTWK6a6pggvv4a-q9nvYAqkkco6id3Tog@mail.gmail.com>
+In-Reply-To: <CAHP4M8VNZY+NLzUAVHTWK6a6pggvv4a-q9nvYAqkkco6id3Tog@mail.gmail.com>
+From:   Muchun Song <songmuchun@bytedance.com>
+Date:   Thu, 11 Nov 2021 20:11:56 +0800
+Message-ID: <CAMZfGtXCFJ3NUw-bBsphLbCtdDAfHERAEkTSMU9k1cfd4DrRMA@mail.gmail.com>
+Subject: Re: [PATCH] mm: shmem: do not call PageHWPoison on a ERR-page
+To:     Ajay Garg <ajaygargnsit@gmail.com>
+Cc:     Hugh Dickins <hughd@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 10 Nov 2021 at 18:17, H. Nikolaus Schaller <hns@goldelico.com> wrot=
-e:
+On Thu, Nov 11, 2021 at 7:40 PM Ajay Garg <ajaygargnsit@gmail.com> wrote:
 >
-> PATCH V2 2021-11-10 18:17:11:
-> * remove setting card->ocr =3D 0x80 because it is no longer needed (by H.=
- Nikolaus Schaller <hns@goldelico.com>)
-> * include patch "mmc: core: Fixup storing of OCR for MMC_QUIRK_NONSTD_SDI=
-O" by Ulf Hansson <ulf.hansson@linaro.org>
->
-> PATCH V1 2021-11-09 11:59:08:
-> * merge call of mmc_fixup_device for sdio into other commit (suggested by=
- Ulf Hansson <ulf.hansson@linaro.org>)
-> * do not call mmc_fixup_device(card, sdio_card_init_methods) for mmc and =
-sd interfaces, just sdio (suggested by Ulf Hansson <ulf.hansson@linaro.org>=
-)
-> * do not use a matching list but a single string constant (suggested by U=
-lf Hansson <ulf.hansson@linaro.org>)
-> * switched to "[PATCH v1]" (suggested by Ulf Hansson <ulf.hansson@linaro.=
-org>)
->
-> RFC V4 2021-11-05 10:05:51:
-> * remove const from char *const * (Ulf Hansson <ulf.hansson@linaro.org>)
-> * use for_each_child_of_node() to scan compatible children (Ulf Hansson <=
-ulf.hansson@linaro.org>)
-> (see: https://lore.kernel.org/lkml/CAPDyKFpr0kpRXoUACNNSwe8pL1S9wJPjnX+GF=
-GS1PNezKCDYzQ@mail.gmail.com/)
->
-> RFC V3 2021-11-03 14:00:13:
-> * patches have been split into smaller ones a little further
-> * propose a new macro for setup of device tree compatible quirks
-> * directly include patches by jerome.pouiller@silabs.com
->   in this series
->
-> RFC V2 2021-11-01 10:24:26:
-> * reworked to not misuse mmc_select_card() but add a call to
->   mmc_fixup_device() right after where host->ops->init_card
->   was called before to apply the wl1251 specific quirks.
->   Device tree matching is done by a new table passed to mmc_fixup_device(=
-).
->   suggested by: ulf.hansson@linaro.org
->   based on patches by: jerome.pouiller@silabs.com
->
-> RFC V1 2021-10-06 13:24:13:
+> >
+> > How about the following changes since the above if block
+> > already do the judgment?
+> >
+> > diff --git a/mm/shmem.c b/mm/shmem.c
+> > index f0eee4e221a7..0c84b6624026 100644
+> > --- a/mm/shmem.c
+> > +++ b/mm/shmem.c
+> > @@ -4195,13 +4195,13 @@ struct page *shmem_read_mapping_page_gfp(struct
+> > address_space *mapping,
+> >          BUG_ON(!shmem_mapping(mapping));
+> >          error = shmem_getpage_gfp(inode, index, &page, SGP_CACHE,
+> >                                    gfp, NULL, NULL, NULL);
+> > -       if (error)
+> > +       if (error) {
+> >                  page = ERR_PTR(error);
+> > -       else
+> > +       } else {
+> >                  unlock_page(page);
+> > -
+> > -       if (PageHWPoison(page))
+> > -               page = ERR_PTR(-EIO);
+> > +               if (PageHWPoison(page))
+> > +                       page = ERR_PTR(-EIO);
+> > +       }
+> >
+> >          return page;
 >
 >
-> H. Nikolaus Schaller (3):
->   mmc: core: provide macro and table to match the device tree to apply
->     quirks
->   mmc: core: transplant ti,wl1251 quirks from to be retired omap_hsmmc
->   mmc: host: omap_hsmmc: revert special init for wl1251
+> You have
 >
-> J=C3=A9r=C3=B4me Pouiller (2):
->   mmc: core: rewrite mmc_fixup_device()
->   mmc: core: allow to match the device tree to apply quirks
+> * simply put braces (not required for 1-liner if/else blocks)
+> * contributed nothing to the issue the patch addresses.
 >
-> Ulf Hansson (1):
->   mmc: core: Fixup storing of OCR for MMC_QUIRK_NONSTD_SDIO
->
->  drivers/mmc/core/card.h       | 36 ++++++++++++++++++++
->  drivers/mmc/core/quirks.h     | 64 +++++++++++++++++++++++++----------
->  drivers/mmc/core/sdio.c       |  5 ++-
->  drivers/mmc/host/omap_hsmmc.c | 36 --------------------
->  4 files changed, 87 insertions(+), 54 deletions(-)
->
+> I hope this is not a deliberate joke/spam.
 
-This looks good to me, I will queue it up as soon as rc1 is out, thanks!
-
-Kind regards
-Uffe
+What? I put "if (PageHWPoison(page))" into the else branch,
+it should be added braces since it's not 1-line blocks. Why do
+you think it does not address the issue? What am I missing
+here?
