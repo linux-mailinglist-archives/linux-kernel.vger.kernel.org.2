@@ -2,131 +2,255 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C466844D428
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Nov 2021 10:36:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9600644D42C
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Nov 2021 10:38:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232604AbhKKJjT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Nov 2021 04:39:19 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46258 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230009AbhKKJjS (ORCPT
+        id S231667AbhKKJlN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Nov 2021 04:41:13 -0500
+Received: from outbound-smtp37.blacknight.com ([46.22.139.220]:42839 "EHLO
+        outbound-smtp37.blacknight.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229649AbhKKJlM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Nov 2021 04:39:18 -0500
-Received: from mail-ot1-x335.google.com (mail-ot1-x335.google.com [IPv6:2607:f8b0:4864:20::335])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9374EC061766
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Nov 2021 01:36:29 -0800 (PST)
-Received: by mail-ot1-x335.google.com with SMTP id x19-20020a9d7053000000b0055c8b39420bso8090436otj.1
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Nov 2021 01:36:29 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=FQNotspdE85/ckyfVd22yizASeOICaHxBSL2D6Rwwpw=;
-        b=UpJAsHH3wXt4nQODZVjA9FrGKUqqDF32IatYTS1SYxwoDbaRut+X6zfgkOHGkn0yt0
-         CNegVOkjnK2sjy9Nms1243+zJFMjwFxKJ0owcLdYwK4/PjI+gpArN+24oajV3xi/bhAy
-         y4ZTyZR4eWiJ2OqOTzZEw2+igo64Nc8xI9URhaWwqZL/ND7O6tYzZtsA/GOBw2sWuoEm
-         +sywwDbjeG7T5ZEbZY9f9HgkehvolqW8JKcnjE2AosQdOyQoLdVupvgtXCV4bh2itKzF
-         r4pIhz+pgijcQhHbDC5rWqcGvaxt/0sD85qniaK0p3CW+j8Sz9/u8rlcxct8jbsPhSNe
-         rQ8A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=FQNotspdE85/ckyfVd22yizASeOICaHxBSL2D6Rwwpw=;
-        b=18F20aD0voU85hbTXZ88TM7yVEWL/Sam8W7d6Hj5tNMhOMWzyRHQZdkr+cjh1ovlrC
-         SRTL1kh26JXJ5BkxIinsxjYSYpQzEIKB0B+0rzAsGzfTPDa5ffs6INMr0PfezQW0eKzr
-         BxxqMFXqsd4j6oI4VnG4TFZY0DU1FvxPjiYUzMAlizG4S59rXI6ccuEnhAJ+1dQeqTNT
-         9cQ3pgkxrlM8MvmWgnazBhvTRFtOdNYRDDmRG6hrUbEjebl7zRB6gM0LgeZKCh4+LPxk
-         5D7azfSCHL7y1q3Gg4ew5OgZw/9paDpOmWaGiBYyx597xzf8rXCqP1mzTkmtnLvfwu+c
-         hpFA==
-X-Gm-Message-State: AOAM532UEcLPViaKog0vPmG6Kr+M/oZ5XwmXEUh8jXFt9y15gbS34JJV
-        wzYMiiMDYIXaDF2UEpAJxpVFGiW4ROqK1DPxesWee7PfWxrYYQ==
-X-Google-Smtp-Source: ABdhPJyQO1Ypmss7F9JtBJvfyJ2T6gA/zHz3aGDcxE2LvRHMlB0JEESu8sJ8bZ99S47xs/37ijAQqTB+ACr333KyuJw=
-X-Received: by 2002:a9d:77d1:: with SMTP id w17mr4791136otl.329.1636623388618;
- Thu, 11 Nov 2021 01:36:28 -0800 (PST)
+        Thu, 11 Nov 2021 04:41:12 -0500
+Received: from mail.blacknight.com (pemlinmail05.blacknight.ie [81.17.254.26])
+        by outbound-smtp37.blacknight.com (Postfix) with ESMTPS id C15B217D6
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Nov 2021 09:38:21 +0000 (GMT)
+Received: (qmail 25583 invoked from network); 11 Nov 2021 09:38:21 -0000
+Received: from unknown (HELO techsingularity.net) (mgorman@techsingularity.net@[84.203.17.29])
+  by 81.17.254.9 with ESMTPSA (AES256-SHA encrypted, authenticated); 11 Nov 2021 09:38:21 -0000
+Date:   Thu, 11 Nov 2021 09:38:19 +0000
+From:   Mel Gorman <mgorman@techsingularity.net>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Ingo Molnar <mingo@kernel.org>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        Aubrey Li <aubrey.li@linux.intel.com>,
+        "Srinivasan, Sadagopan" <Sadagopan.Srinivasan@amd.com>,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] sched/fair: Adjust the allowed NUMA imbalance when
+ SD_NUMA spans multiple LLCs
+Message-ID: <20211111093819.GI3959@techsingularity.net>
+References: <20211028130305.GS3959@techsingularity.net>
+ <YYkGkx+Wq6Ol2N9i@hirez.programming.kicks-ass.net>
+ <20211108115948.GH3959@techsingularity.net>
+ <YYkyUT5etDBBjfIE@hirez.programming.kicks-ass.net>
 MIME-Version: 1.0
-References: <20211110202448.4054153-1-valentin.schneider@arm.com>
- <20211110202448.4054153-3-valentin.schneider@arm.com> <a7c704c2ae77e430d7f0657c5db664f877263830.camel@gmx.de>
- <803a905890530ea1b86db6ac45bd1fd940cf0ac3.camel@gmx.de> <a7febd8825a2ab99bd1999664c6d4aa618b49442.camel@gmx.de>
-In-Reply-To: <a7febd8825a2ab99bd1999664c6d4aa618b49442.camel@gmx.de>
-From:   Marco Elver <elver@google.com>
-Date:   Thu, 11 Nov 2021 10:36:17 +0100
-Message-ID: <CANpmjNPeRwupeg=S8yGGUracoehSUbS-Fkfb8juv5mYN36uiqg@mail.gmail.com>
-Subject: Re: [PATCH v2 2/5] preempt/dynamic: Introduce preempt mode accessors
-To:     Mike Galbraith <efault@gmx.de>
-Cc:     Valentin Schneider <valentin.schneider@arm.com>,
-        linux-kernel@vger.kernel.org, kasan-dev@googlegroups.com,
-        linuxppc-dev@lists.ozlabs.org, linux-kbuild@vger.kernel.org,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Michal Marek <michal.lkml@markovi.net>,
-        Nick Desaulniers <ndesaulniers@google.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=iso-8859-15
+Content-Disposition: inline
+In-Reply-To: <YYkyUT5etDBBjfIE@hirez.programming.kicks-ass.net>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 11 Nov 2021 at 04:47, Mike Galbraith <efault@gmx.de> wrote:
->
-> On Thu, 2021-11-11 at 04:35 +0100, Mike Galbraith wrote:
-> > On Thu, 2021-11-11 at 04:16 +0100, Mike Galbraith wrote:
-> > > On Wed, 2021-11-10 at 20:24 +0000, Valentin Schneider wrote:
-> > > >
-> > > > diff --git a/include/linux/sched.h b/include/linux/sched.h
-> > > > index 5f8db54226af..0640d5622496 100644
-> > > > --- a/include/linux/sched.h
-> > > > +++ b/include/linux/sched.h
-> > > > @@ -2073,6 +2073,22 @@ static inline void cond_resched_rcu(void)
-> > > >  #endif
-> > > >  }
-> > > >
-> > > > +#ifdef CONFIG_PREEMPT_DYNAMIC
-> > > > +
-> > > > +extern bool is_preempt_none(void);
-> > > > +extern bool is_preempt_voluntary(void);
-> > > > +extern bool is_preempt_full(void);
-> > > > +
-> > > > +#else
-> > > > +
-> > > > +#define is_preempt_none() IS_ENABLED(CONFIG_PREEMPT_NONE)
-> > > > +#define is_preempt_voluntary()
-> > > > IS_ENABLED(CONFIG_PREEMPT_VOLUNTARY)
-> > > > +#define is_preempt_full() IS_ENABLED(CONFIG_PREEMPT)
+On Mon, Nov 08, 2021 at 03:21:05PM +0100, Peter Zijlstra wrote:
+> > > > diff --git a/kernel/sched/topology.c b/kernel/sched/topology.c
+> > > > index 4e8698e62f07..08fb02510967 100644
+> > > > --- a/kernel/sched/topology.c
+> > > > +++ b/kernel/sched/topology.c
+> > > > @@ -644,6 +644,7 @@ static void destroy_sched_domains(struct sched_domain *sd)
+> > > >  DEFINE_PER_CPU(struct sched_domain __rcu *, sd_llc);
+> > > >  DEFINE_PER_CPU(int, sd_llc_size);
+> > > >  DEFINE_PER_CPU(int, sd_llc_id);
+> > > > +DEFINE_PER_CPU(int, sd_numaimb_shift);
+> > > 
+> > > Why does it make sense for this to be a per-cpu variable? Yes, I suppose
+> > > people can get creative with cpusets, but what you're trying to capture
+> > > seems like a global system propery, no?
+> > > 
+> > 
+> > I thought things might get weird around CPU hotplug and as llc_size was
+> > tracked per-cpu, I thought it made sense to also do it for
+> > sd_numaimb_shift.
+> 
+> Ah, there were performance arguments for llc_id (saves a bunch of
+> indirections trying to look up the LLC domain) and llc_size IIRC. While
+> in this case, the user actually has a struct sched_domain handy.
+> 
+
+Very true or at least had recent access to the sd.
+
+> > > Very true or at least had very recent access to it.
+> > > 
+> > > I think I'm with Valentin here, this seems like something that wants to
+> > > use the sd/sd->child relation.
+> > > 
+> > > That also makes this the wrong place to do things since this is after
+> > > the degenerate code.
+> > > 
+> > > Perhaps this can be done in sd_init(), after all, we build the thing
+> > > bottom-up, so by the time we initialize the NODE, the MC level should
+> > > already be present.
 > > >
-> > > I think that should be IS_ENABLED(CONFIG_PREEMPTION), see
-> > > c1a280b68d4e.
-> > >
-> > > Noticed while applying the series to an RT tree, where tglx
-> > > has done that replacement to the powerpc spot your next patch
-> > > diddles.
-> >
-> > Damn, then comes patch 5 properly differentiating PREEMPT/PREEMPT_RT.
->
-> So I suppose the powerpc spot should remain CONFIG_PREEMPT and become
-> CONFIG_PREEMPTION when the RT change gets merged, because that spot is
-> about full preemptibility, not a distinct preemption model.
->
-> That's rather annoying :-/
+> > > I'm thinking you can perhaps use something like:
+> > > 
+> > > 	if (!(sd->flags & SD_SHARE_PKG_RESROUCES) &&
+> > > 	    (child->flags & SD_SHARE_PKG_RESOURCES)) {
+> > > 
+> > > 		/* this is the first domain not sharing LLC */
+> > > 		sd->new_magic_imb = /*  magic incantation goes here */
+> > > 	}
+> > 
+> > Thanks, I'll give it a shot and see what I come up with, it'll probably
+> > take me a few days to clear my table of other crud to focus on it.
+> 
+> Sure thing.
 
-I guess the question is if is_preempt_full() should be true also if
-is_preempt_rt() is true?
+At sd_init time, the sd span_weights and groups have not been fully
+calculated yet so while the child domains are partially initialised,
+we are missing some information, particularly the span of SD_NUMA (it
+can be in inferred but it's non-obvious).
 
-Not sure all cases are happy with that, e.g. the kernel/trace/trace.c
-case, which wants to print the precise preemption level.
+build_sched_domains
+  build_sched_domain
+    sd_init
+  (record span_weight)
+  build_sched_groups
 
-To avoid confusion, I'd introduce another helper that says true if the
-preemption level is "at least full", currently that'd be "full or rt".
-Something like is_preempt_full_or_rt() (but might as well write
-"is_preempt_full() || is_preempt_rt()"), or is_preemption() (to match
-that Kconfig variable, although it's slightly confusing). The
-implementation of that helper can just be a static inline function
-returning "is_preempt_full() || is_preempt_rt()".
+I thought it would be easier to figure out the allowed numa imbalance
+after groups are setup although basing it on the sd/sd->child relation
+both addresses Zen and removes the magic "25%" value at least for 2-socket
+machines with a change in behaviour for larger machines to balance
+cache usage versus memory bandwidth.
 
-Would that help?
+It also became obvious when working on this that there was an inconsistency
+between the domains used by find_busiest_group and find_idlest_group
+which deserves a separate patch but included in this monolithic path.
+
+End result;
+
+---8<--
+diff --git a/include/linux/sched/topology.h b/include/linux/sched/topology.h
+index 8f0f778b7c91..a8832e6e97f0 100644
+--- a/include/linux/sched/topology.h
++++ b/include/linux/sched/topology.h
+@@ -86,6 +86,7 @@ struct sched_domain {
+ 	unsigned int busy_factor;	/* less balancing by factor if busy */
+ 	unsigned int imbalance_pct;	/* No balance until over watermark */
+ 	unsigned int cache_nice_tries;	/* Leave cache hot tasks for # tries */
++	unsigned int imb_numa_nr;	/* Nr imbalanced tasks allowed between nodes */
+ 
+ 	int nohz_idle;			/* NOHZ IDLE status */
+ 	int flags;			/* See SD_* */
+diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+index f6a05d9b5443..582b739a5f02 100644
+--- a/kernel/sched/fair.c
++++ b/kernel/sched/fair.c
+@@ -1531,6 +1531,7 @@ struct task_numa_env {
+ 
+ 	int src_cpu, src_nid;
+ 	int dst_cpu, dst_nid;
++	int imb_numa_nr;
+ 
+ 	struct numa_stats src_stats, dst_stats;
+ 
+@@ -1927,7 +1928,7 @@ static void task_numa_find_cpu(struct task_numa_env *env,
+ 		dst_running = env->dst_stats.nr_running + 1;
+ 		imbalance = max(0, dst_running - src_running);
+ 		imbalance = adjust_numa_imbalance(imbalance, dst_running,
+-							env->dst_stats.weight);
++						  env->imb_numa_nr);
+ 
+ 		/* Use idle CPU if there is no imbalance */
+ 		if (!imbalance) {
+@@ -1992,8 +1993,10 @@ static int task_numa_migrate(struct task_struct *p)
+ 	 */
+ 	rcu_read_lock();
+ 	sd = rcu_dereference(per_cpu(sd_numa, env.src_cpu));
+-	if (sd)
++	if (sd) {
+ 		env.imbalance_pct = 100 + (sd->imbalance_pct - 100) / 2;
++		env.imb_numa_nr = sd->imb_numa_nr;
++	}
+ 	rcu_read_unlock();
+ 
+ 	/*
+@@ -8989,13 +8992,14 @@ static bool update_pick_idlest(struct sched_group *idlest,
+ }
+ 
+ /*
+- * Allow a NUMA imbalance if busy CPUs is less than 25% of the domain.
+- * This is an approximation as the number of running tasks may not be
+- * related to the number of busy CPUs due to sched_setaffinity.
++ * Allow a NUMA imbalance if busy CPUs is less than the allowed
++ * imbalance. This is an approximation as the number of running
++ * tasks may not be related to the number of busy CPUs due to
++ * sched_setaffinity.
+  */
+-static inline bool allow_numa_imbalance(int dst_running, int dst_weight)
++static inline bool allow_numa_imbalance(int dst_running, int imb_numa_nr)
+ {
+-	return (dst_running < (dst_weight >> 2));
++	return dst_running < imb_numa_nr;
+ }
+ 
+ /*
+@@ -9134,7 +9138,7 @@ find_idlest_group(struct sched_domain *sd, struct task_struct *p, int this_cpu)
+ 			 * a real need of migration, periodic load balance will
+ 			 * take care of it.
+ 			 */
+-			if (allow_numa_imbalance(local_sgs.sum_nr_running, sd->span_weight))
++			if (allow_numa_imbalance(local_sgs.sum_nr_running, sd->imb_numa_nr))
+ 				return NULL;
+ 		}
+ 
+@@ -9226,9 +9230,9 @@ static inline void update_sd_lb_stats(struct lb_env *env, struct sd_lb_stats *sd
+ #define NUMA_IMBALANCE_MIN 2
+ 
+ static inline long adjust_numa_imbalance(int imbalance,
+-				int dst_running, int dst_weight)
++				int dst_running, int imb_numa_nr)
+ {
+-	if (!allow_numa_imbalance(dst_running, dst_weight))
++	if (!allow_numa_imbalance(dst_running, imb_numa_nr))
+ 		return imbalance;
+ 
+ 	/*
+@@ -9340,7 +9344,7 @@ static inline void calculate_imbalance(struct lb_env *env, struct sd_lb_stats *s
+ 		/* Consider allowing a small imbalance between NUMA groups */
+ 		if (env->sd->flags & SD_NUMA) {
+ 			env->imbalance = adjust_numa_imbalance(env->imbalance,
+-				busiest->sum_nr_running, busiest->group_weight);
++				busiest->sum_nr_running, env->sd->imb_numa_nr);
+ 		}
+ 
+ 		return;
+diff --git a/kernel/sched/topology.c b/kernel/sched/topology.c
+index 4e8698e62f07..a47cae382617 100644
+--- a/kernel/sched/topology.c
++++ b/kernel/sched/topology.c
+@@ -2227,6 +2227,30 @@ build_sched_domains(const struct cpumask *cpu_map, struct sched_domain_attr *att
+ 		}
+ 	}
+ 
++	/* Calculate allowed NUMA imbalance */
++	for_each_cpu(i, cpu_map) {
++		for (sd = *per_cpu_ptr(d.sd, i); sd; sd = sd->parent) {
++			struct sched_domain *child = sd->child;
++
++			if (!(sd->flags & SD_SHARE_PKG_RESOURCES) &&
++			    (child->flags & SD_SHARE_PKG_RESOURCES)) {
++				struct sched_domain *sd_numa = sd;
++				int imb_numa_nr, nr_groups;
++
++				nr_groups = sd->span_weight / child->span_weight;
++				imb_numa_nr = nr_groups / num_online_nodes();
++
++				while (sd_numa) {
++					if (sd_numa->flags & SD_NUMA) {
++						sd_numa->imb_numa_nr = imb_numa_nr;
++						break;
++					}
++					sd_numa = sd_numa->parent;
++				}
++			}
++		}
++	}
++
+ 	/* Calculate CPU capacity for physical packages and nodes */
+ 	for (i = nr_cpumask_bits-1; i >= 0; i--) {
+ 		if (!cpumask_test_cpu(i, cpu_map))
+
+-- 
+Mel Gorman
+SUSE Labs
