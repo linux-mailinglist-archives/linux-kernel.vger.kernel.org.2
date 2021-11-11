@@ -2,78 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5CDAB44D331
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Nov 2021 09:28:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5420D44D335
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Nov 2021 09:29:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232344AbhKKIbQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Nov 2021 03:31:16 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59014 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231880AbhKKIbO (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Nov 2021 03:31:14 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 79790C061766
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Nov 2021 00:28:25 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=P5R7U2/6VD+fOZHpIxquns80hKyNWlKs9N6UR30rQqk=; b=dgSZzJqA/SC6c62EYopPYT+w+m
-        xBxkZTz9DimSbwGfiFOOOuXTstnt3BAk94EJrdSh1KLjrq64M0J/QAhrG8VxwCnt+jbMu4SjaWIwA
-        HxzTjFfJNRkAw06WH2GyHiOJfN1PJppNLqZKJgxP5T9hT71bIGEkoaTPq5FD4rqs8lal8lKk6wDRb
-        3wC5mT493RdRihbfuwHB7GZ/R5IgfcHKyIgA/a2rCJXnEQXey73EtLYrekzsRMcZB9StDunX9+cQS
-        EKIEDbkXyjkJtIXn1nVjfmqe8dPIIoKQTTy+5H69haNFKP/so/YdgXN7AIgQwbHpn5KGeDFmqXKvy
-        HtA/tDAw==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1ml5RQ-002ZSq-Lr; Thu, 11 Nov 2021 08:28:17 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 3D9073000DD;
-        Thu, 11 Nov 2021 09:28:16 +0100 (CET)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 221F12133E6FD; Thu, 11 Nov 2021 09:28:16 +0100 (CET)
-Date:   Thu, 11 Nov 2021 09:28:16 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Josh Poimboeuf <jpoimboe@redhat.com>
-Cc:     x86@kernel.org, linux-kernel@vger.kernel.org, mark.rutland@arm.com,
-        dvyukov@google.com, seanjc@google.com, pbonzini@redhat.com,
-        mbenes@suse.cz
-Subject: Re: [PATCH v2 20/23] x86,usercopy: Remove .fixup usage
-Message-ID: <YYzUIPxguCTuYKqL@hirez.programming.kicks-ass.net>
-References: <20211110100102.250793167@infradead.org>
- <20211110101326.081701085@infradead.org>
- <20211111075143.td3fickblsvl3hau@treble>
+        id S232421AbhKKIb6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Nov 2021 03:31:58 -0500
+Received: from mga14.intel.com ([192.55.52.115]:31653 "EHLO mga14.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232257AbhKKIb4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 11 Nov 2021 03:31:56 -0500
+X-IronPort-AV: E=McAfee;i="6200,9189,10164"; a="233119652"
+X-IronPort-AV: E=Sophos;i="5.87,225,1631602800"; 
+   d="scan'208";a="233119652"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Nov 2021 00:29:08 -0800
+X-IronPort-AV: E=Sophos;i="5.87,225,1631602800"; 
+   d="scan'208";a="504341359"
+Received: from xiaoyaol-mobl.ccr.corp.intel.com (HELO [10.239.13.123]) ([10.239.13.123])
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Nov 2021 00:29:03 -0800
+Message-ID: <7733a5fe-6284-fe1d-a09d-cc22be8b3887@intel.com>
+Date:   Thu, 11 Nov 2021 16:29:01 +0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211111075143.td3fickblsvl3hau@treble>
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
+ Firefox/91.0 Thunderbird/91.3.0
+Subject: Re: [RFC PATCH v2 22/69] KVM: x86: Add vm_type to differentiate
+ legacy VMs from protected VMs
+Content-Language: en-US
+To:     Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <seanjc@google.com>
+Cc:     "Yamahata, Isaku" <isaku.yamahata@intel.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "H . Peter Anvin" <hpa@zytor.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        "erdemaktas@google.com" <erdemaktas@google.com>,
+        Connor Kuehl <ckuehl@redhat.com>,
+        "x86@kernel.org" <x86@kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+        "isaku.yamahata@gmail.com" <isaku.yamahata@gmail.com>
+References: <cover.1625186503.git.isaku.yamahata@intel.com>
+ <8eb87cd52a89d957af03f93a9ece5634426a7757.1625186503.git.isaku.yamahata@intel.com>
+ <e2270f66-abd8-db17-c3bd-b6d9459624ec@redhat.com>
+ <YO356ni0SjPsLsSo@google.com>
+ <5689dc7e-b0e0-1733-f00f-66dc7b62b960@intel.com>
+ <055d924e-2117-247f-8339-7487153e284b@redhat.com>
+From:   Xiaoyao Li <xiaoyao.li@intel.com>
+In-Reply-To: <055d924e-2117-247f-8339-7487153e284b@redhat.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 10, 2021 at 11:51:43PM -0800, Josh Poimboeuf wrote:
-> On Wed, Nov 10, 2021 at 11:01:22AM +0100, Peter Zijlstra wrote:
-> > +static bool ex_handler_ucopy_leng(const struct exception_table_entry *fixup,
-> > +				   struct pt_regs *regs, int trapnr, int reg, int imm)
-> > +{
-> > +	regs->cx = imm * regs->cx + *pt_regs_nr(regs, reg);
-> > +	return ex_handler_uaccess(fixup, regs, trapnr);
-> > +}
-> > +
-> >  int ex_get_fixup_type(unsigned long ip)
-> >  {
-> >  	const struct exception_table_entry *e = search_exception_tables(ip);
-> > @@ -217,6 +224,8 @@ int fixup_exception(struct pt_regs *regs
-> >  		return ex_handler_imm_reg(e, regs, reg, imm);
-> >  	case EX_TYPE_FAULT_SGX:
-> >  		return ex_handler_sgx(e, regs, trapnr);
-> > +	case EX_TYPE_UCOPY_LEN:
-> > +		return ex_handler_ucopy_leng(e, regs, trapnr, reg, imm);
+On 11/11/2021 3:28 PM, Paolo Bonzini wrote:
+> On 11/11/21 04:28, Xiaoyao Li wrote:
+>>>
+>>> Heh, because kvm_dev_ioctl_create_vm() takes an "unsigned long" for 
+>>> the type and
+>>> it felt wrong to store it as something else.  Storing it as a smaller 
+>>> field should
+>>> be fine, I highly doubt we'll get to 256 types anytime soon :-)
+>>
+>> It's the bit position. We can get only 8 types with u8 actually.
 > 
-> "leng"?
+> Every architecture defines the meaning, and for x86 we can say it's not 
+> a bit position.
 
-OMG, I really should just take a break or something :/ I'll go fix.
+Sorry, I find I was wrong. The types are not bit position but value.
+
+KVM_CAP_VM_TYPES reports the supported vm types using bitmap that bit n 
+represents type value n.
+
+> Paolo
+> 
+
