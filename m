@@ -2,103 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EDEAF44D345
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Nov 2021 09:37:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C73E244D347
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Nov 2021 09:38:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232258AbhKKIkn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Nov 2021 03:40:43 -0500
-Received: from ssl.serverraum.org ([176.9.125.105]:33933 "EHLO
-        ssl.serverraum.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229674AbhKKIkm (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Nov 2021 03:40:42 -0500
-Received: from mwalle01.kontron.local. (unknown [213.135.10.150])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-384) server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by ssl.serverraum.org (Postfix) with ESMTPSA id 5DC6E22247;
-        Thu, 11 Nov 2021 09:37:48 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc; s=mail2016061301;
-        t=1636619868;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=QQI7x+XgqHwEkx4/5d9UjlzYDztSEMInJWg1DOUwNqk=;
-        b=wA+n6bz/9MpligwWUj6hol/eJXgKOvHdQsoV2lkQiVs3yRXwbZxxhzLMXDLvFdqyiFC4+n
-        xm+B3OMolZPPwh1SE07NuwptgykHISCsktQAPgQ2dAj6r992eepQGo6Ukzppa6DmSgdMd7
-        DAmJMRf4ZOYKolSpywnnmdNK2TPYg9o=
-From:   Michael Walle <michael@walle.cc>
-To:     linux-spi@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     Mark Brown <broonie@kernel.org>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Michael Walle <michael@walle.cc>,
-        =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>, Lukas Wunner <lukas@wunner.de>,
-        stable@vger.kernel.org
-Subject: [PATCH] spi: fix use-after-free of the add_lock mutex
-Date:   Thu, 11 Nov 2021 09:37:13 +0100
-Message-Id: <20211111083713.3335171-1-michael@walle.cc>
-X-Mailer: git-send-email 2.30.2
+        id S232397AbhKKIk4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Nov 2021 03:40:56 -0500
+Received: from smtp2.axis.com ([195.60.68.18]:16047 "EHLO smtp2.axis.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229674AbhKKIkz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 11 Nov 2021 03:40:55 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=axis.com; q=dns/txt; s=axis-central1; t=1636619887;
+  x=1668155887;
+  h=subject:to:cc:references:from:message-id:date:
+   mime-version:in-reply-to:content-transfer-encoding;
+  bh=dY8b38RyIn9lW0od0tLB8bKC42O3hxXYDV3J/r3mQWo=;
+  b=FjyGTwHZqQF3VH3z8mJmixvhBfL7fRs1Hp+c9b/H8oHfdDLXIC0VdfCo
+   yWh+aeICH2R6N4IrMVoJcEB7XxQcMV8PQSFahpVSKut1UIobYFf160D1X
+   7X/HNhUG1VetHnlge1NZwVrdu4+CHhvIl/o56MgFm53FRAmBMvPG/esMa
+   XKAbXEhmyNUhcbhhtWfpUZ5hL7bR4SekaKVNjRLL3yyQZPVmGAn11cUFS
+   Y1gcwKziv34Xc8so5cDySZZOMFRwIEWe9N3RjXO1wHA7RNtuOCtkmRKFX
+   G6MTgVwbSLlPw4NwQA6nfZjlNu2w1huJ+3Nm++OkU1cOvC2AYiOg4GMfX
+   Q==;
+Subject: Re: [PATCH] rtc: rs5c372: Add RTC_VL_READ, RTC_VL_CLR ioctls
+To:     Camel Guo <Camel.Guo@axis.com>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>
+CC:     Alessandro Zummo <a.zummo@towertech.it>, kernel <kernel@axis.com>,
+        "linux-rtc@vger.kernel.org" <linux-rtc@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+References: <20211110115455.18699-1-camel.guo@axis.com>
+ <YYvPCehWWVE5mKTy@piout.net> <2303e635-dbd0-1730-cc6f-84021eb37223@axis.com>
+ <YYvW3T3wM/Qn5jSw@piout.net> <fa032379-2ca6-f5ca-0e84-91ae13a19488@axis.com>
+From:   Camel Guo <camelg@axis.com>
+Message-ID: <ef97a241-d211-6114-e9fe-6e3b48d7643a@axis.com>
+Date:   Thu, 11 Nov 2021 09:38:05 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+In-Reply-To: <fa032379-2ca6-f5ca-0e84-91ae13a19488@axis.com>
+Content-Type: text/plain; charset="windows-1252"; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.0.5.60]
+X-ClientProxiedBy: se-mail02w.axis.com (10.20.40.8) To se-mail03w.axis.com
+ (10.20.40.9)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Commit 6098475d4cb4 ("spi: Fix deadlock when adding SPI controllers on
-SPI buses") introduced a per-controller mutex. But mutex_unlock() of
-said lock is called after the controller is already freed:
+On 11/10/21 3:30 PM, Camel Guo wrote:
+> Hello,
+> 
+> On 11/10/21 3:27 PM, Alexandre Belloni wrote:
+>> On 10/11/2021 15:03:49+0100, Camel Guo wrote:
+>>> > On 10/11/2021 12:54:54+0100, Camel Guo wrote:
+>>> > > From: Camel Guo <camelg@axis.com>
+>>> > > +     switch (cmd) {
+>>> > > +     case RTC_VL_READ:
+>>> > > +             flags = 0;
+>>> > > +
+>>> > > +             switch (rs5c->type) {
+>>> > > +             case rtc_r2025sd:
+>>> > > +             case rtc_r2221tl:
+>>> > > +                     if ((rs5c->type == rtc_r2025sd && !(ctrl2 & R2x2x_CTRL2_XSTP)) ||
+>>> > > +                             (rs5c->type == rtc_r2221tl &&  (ctrl2 & R2x2x_CTRL2_XSTP))) {
+>>> > > +                             flags |= RTC_VL_DATA_INVALID;
+>>> > > +                     }
+>>> > > +                     if (ctrl2 & R2x2x_CTRL2_VDET)
+>>> > > +                             flags |= RTC_VL_ACCURACY_LOW;
+>>> > 
+>>> > Shouldn't that be RTC_VL_BACKUP_LOW?
 
-  spi_unregister_controller(ctlr)
-  -> put_device(&ctlr->dev)
-    -> spi_controller_release(dev)
-  -> mutex_unlock(&ctrl->add_lock)
+Fixed in V3.
 
-Move the put_device() after the mutex_unlock().
+>>> 
+>>> Some drivers (e.g: rv3029_ioctl and rv8803_ioctl) use RTC_VL_ACCURACY_LOW,
+>>> but some other drivers (e.g: abx80x_ioctl, pcf2127_rtc_ioctl and
+>>> pcf8523_rtc_ioctl) use RTC_VL_BACKUP_LOW instead. Is there any guideline or
+>>> document telling the differences between them?
+>>> 
+>> 
+>> RTC_VL_BACKUP_LOW: The backup voltage is low
+>> RTC_VL_ACCURACY_LOW: the primary or backup voltage is low, temperature
+>> compensation (or similar) has stopped
+> 
+> Then I agree that we should go for RTC_VL_BACKUP_LOW.
 
-Fixes: 6098475d4cb4 ("spi: Fix deadlock when adding SPI controllers on SPI buses")
-Signed-off-by: Michael Walle <michael@walle.cc>
-Reviewed-by: Uwe Kleine-KÃ¶nig <u.kleine-koenig@pengutronix.de>
-Reviewed-by: Lukas Wunner <lukas@wunner.de>
-Cc: stable@vger.kernel.org # v5.15
----
-changes since RFC:
- - fix call graph indendation in commit message
+Fixed in V3.
 
- drivers/spi/spi.c | 12 ++++++------
- 1 file changed, 6 insertions(+), 6 deletions(-)
+> 
+>> 
+>> -- 
+>> Alexandre Belloni, co-owner and COO, Bootlin
+>> Embedded Linux and Kernel engineering
+>> https://bootlin.com
 
-diff --git a/drivers/spi/spi.c b/drivers/spi/spi.c
-index b23e675953e1..fdd530b150a7 100644
---- a/drivers/spi/spi.c
-+++ b/drivers/spi/spi.c
-@@ -3099,12 +3099,6 @@ void spi_unregister_controller(struct spi_controller *ctlr)
- 
- 	device_del(&ctlr->dev);
- 
--	/* Release the last reference on the controller if its driver
--	 * has not yet been converted to devm_spi_alloc_master/slave().
--	 */
--	if (!ctlr->devm_allocated)
--		put_device(&ctlr->dev);
--
- 	/* free bus id */
- 	mutex_lock(&board_lock);
- 	if (found == ctlr)
-@@ -3113,6 +3107,12 @@ void spi_unregister_controller(struct spi_controller *ctlr)
- 
- 	if (IS_ENABLED(CONFIG_SPI_DYNAMIC))
- 		mutex_unlock(&ctlr->add_lock);
-+
-+	/* Release the last reference on the controller if its driver
-+	 * has not yet been converted to devm_spi_alloc_master/slave().
-+	 */
-+	if (!ctlr->devm_allocated)
-+		put_device(&ctlr->dev);
- }
- EXPORT_SYMBOL_GPL(spi_unregister_controller);
- 
--- 
-2.30.2
+All comments are fixed in V3, please review it again.
 
