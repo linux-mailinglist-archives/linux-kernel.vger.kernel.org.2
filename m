@@ -2,112 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8096744D059
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Nov 2021 04:18:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 86EBB44D058
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Nov 2021 04:18:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234062AbhKKDUt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Nov 2021 22:20:49 -0500
-Received: from mx1.riseup.net ([198.252.153.129]:38564 "EHLO mx1.riseup.net"
+        id S233829AbhKKDUr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Nov 2021 22:20:47 -0500
+Received: from mout.gmx.net ([212.227.15.15]:44589 "EHLO mout.gmx.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233488AbhKKDUk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Nov 2021 22:20:40 -0500
-Received: from fews1.riseup.net (fews1-pn.riseup.net [10.0.1.83])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256
-         client-signature RSA-PSS (2048 bits) client-digest SHA256)
-        (Client CN "mail.riseup.net", Issuer "R3" (not verified))
-        by mx1.riseup.net (Postfix) with ESMTPS id 4HqRjp6K0nzF4mX;
-        Wed, 10 Nov 2021 19:17:50 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=riseup.net; s=squak;
-        t=1636600670; bh=rJOs4g7bozgwSUa7JZjdMB+XtSwhjDCNlVWpVg72aWc=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=paaB4IG4j/C7kHdtFEBYm+xHxe+BBUGWloQk876gC/0fWd9OYJolI1tQ2x2BqZC8c
-         fbRFCB4d4N2yqx2Smv3Vbfnt/e5b62ZRlOoZKKWcpVGajRxO4i40KMCBLz8qF50Q3M
-         H6mbnSShAX8e0r5/FiZVJQlj3gqtzbewM+JRgcTA=
-X-Riseup-User-ID: 0B43D6D9C3711605E8FEDC38747C0B88BEA6669E54E02F47FA8820D4F5B9F74C
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-         by fews1.riseup.net (Postfix) with ESMTPSA id 4HqRjl5TtBz5vVT;
-        Wed, 10 Nov 2021 19:17:47 -0800 (PST)
-From:   Dang Huynh <danct12@riseup.net>
-To:     Dang Huynh <danct12@riseup.net>
-Cc:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Alexey Min <alexey.min@gmail.com>,
-        Caleb Connolly <caleb@connolly.tech>,
-        Martin Botka <martin.botka@somainline.org>,
-        Konrad Dybcio <konradybcio@gmail.com>
-Subject: [PATCH v3 8/8] arm64: dts: qcom: sdm660-xiaomi-lavender: Add USB
-Date:   Thu, 11 Nov 2021 10:16:35 +0700
-Message-Id: <20211111031635.3839947-9-danct12@riseup.net>
-In-Reply-To: <20211111031635.3839947-1-danct12@riseup.net>
-References: <20211111031635.3839947-1-danct12@riseup.net>
+        id S232958AbhKKDUi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Nov 2021 22:20:38 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1636600623;
+        bh=YnlTNGIxb0TctMcI3romfUmhYM4cIj46dGXd8nNdiFA=;
+        h=X-UI-Sender-Class:Subject:From:To:Cc:Date:In-Reply-To:References;
+        b=eXapQbE+ReTsd7FsGokinRSwpaik7JN4vgOiwh5n0ZyZGVOwm14V71ixF68peBhLv
+         8+XUG52abJbypOFP6EzKsfgmWK8RQ5TEC87uugbGwrsp0p2Dg+Gm4Twa4dZ+FK+mUH
+         Q8szu2FwA6oAbHgsj0WSWUYtNs3NAvkbYe86S+Wo=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from homer.fritz.box ([212.114.172.107]) by mail.gmx.net (mrgmx004
+ [212.227.17.190]) with ESMTPSA (Nemesis) id 1MNswE-1n4sv12HCy-00OFiG; Thu, 11
+ Nov 2021 04:17:03 +0100
+Message-ID: <a7c704c2ae77e430d7f0657c5db664f877263830.camel@gmx.de>
+Subject: Re: [PATCH v2 2/5] preempt/dynamic: Introduce preempt mode accessors
+From:   Mike Galbraith <efault@gmx.de>
+To:     Valentin Schneider <valentin.schneider@arm.com>,
+        linux-kernel@vger.kernel.org, kasan-dev@googlegroups.com,
+        linuxppc-dev@lists.ozlabs.org, linux-kbuild@vger.kernel.org
+Cc:     Marco Elver <elver@google.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Michal Marek <michal.lkml@markovi.net>,
+        Nick Desaulniers <ndesaulniers@google.com>
+Date:   Thu, 11 Nov 2021 04:16:58 +0100
+In-Reply-To: <20211110202448.4054153-3-valentin.schneider@arm.com>
+References: <20211110202448.4054153-1-valentin.schneider@arm.com>
+         <20211110202448.4054153-3-valentin.schneider@arm.com>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.42.0 
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:qdKVFo3qUd8POKOz+yc+x/4T44OcjnJV/MAWTG4EkF4hhUSRvqQ
+ mUzoLUU1fEtSpidfUhv0y/XvxJ05PaVaIwghabR3cN0QZU3PllhBeGse5gsbZgORgHk0G65
+ 0YJqU3vKLoBpBV4AOyPaB7kj4As5svKEGAxE1eDJ/pETDTeSYlv4D6x0KqsCLgCRqrsRB1M
+ cPmkHNhgrsUG08c9itIpA==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:LZWBhAOA29M=:3Rf6nidJu4DK5U1hJ+TlOb
+ fnCw/Zzx1GMgYx0cJovFivxszUF2Vkq4E5zleDi9N1tPsHDKlj5nUJlFJXfG6YMMvqept9Nc+
+ T/1uVgUHSCiqBeamu2uv8jf7i2L7oWP96K4TnVfKoegF7s5oG6skJ54tGyWoKdeYygIvzhMM7
+ gCpfz4AgLI4AQ5bqCFBxheN9Abwlh9pvogfetMr4ml3WCCzvLRoAB3N9qKt6J6sWnSbUpBejE
+ hux2LDf/agCifoHTIVWZKuYSU8KeQr1CdZZo0d79PsmngVPNz6/Hxv33EvcoUqaRY6XorRGqf
+ DYURLAYgHILTMDxNttC1Jxx4pzyX66XkmuNziMHwM86HB5S0kljCWzfBQZvZy1zYa2mqBcf72
+ MvKJgj7bGXNeIuRwo4HjSOgUIuc+YcNj9aES9dr61Dmpu8Ims2ShrcMDFlVe8GlwraaholgCV
+ s7YsIKSDPcbikYu0jxYATZxvYh+fRgU7dwoEtH45EzdunVi19cXo5ZxvHzi1Itdg0Zy3Suw/F
+ pcprzm4RtJtiDUy8WCYlH1r/M046lHmrKvh1i+a5k/8GslvhRmHqYUobSUXHbTrlzZQgviQHj
+ D5E4kKxWpFIWju9QrXgYSm9TrMeEmldQ9EJXKVakFTj4yM0eFLegY0KdMcaWvSnBdJPsy7VGT
+ v/KQPp8J4k272DPRlf5tJ2z/XYVoy+4NGkmPeG4tZM09WKUAg5RiWF9rz/OCiE0cenrfw6GHg
+ B1mo5g4wwL/z5i/1D8RNp9JodB4qe61xYOE4QpO+MgzJ7xQxFhr8lBs6EJjqVUZ64DbqGXOxt
+ sHrHpIdUNBEN83FowKbVLGhXYO9V+tQ/OZ3tYw4Gom1FRPfO9HdBWTIOrIk8EWS52xlA9rBwG
+ HVGp/Q9nmPi3Jd8MHAs5dodJ3qeTIKyInGkd40dkcWPHxp6tQjifJ9sHm1lK5oxT7tTV2hNFC
+ TkgMtWDHH0tAw/DY/4FbCzNNF00lrTS47zQxebx7HsN66w7SYhnhh975x/+9pxIeFujzJd+BR
+ M9EuuIit0IuefH2mKHZRyXUQTaWKgIdFJ+61q4jkGBAbDmOXEe8/fAxh5+zuuuGDeyCv7jU7K
+ T+iEzWbTojYQ7M=
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Alexey Min <alexey.min@gmail.com>
+On Wed, 2021-11-10 at 20:24 +0000, Valentin Schneider wrote:
+>
+> diff --git a/include/linux/sched.h b/include/linux/sched.h
+> index 5f8db54226af..0640d5622496 100644
+> --- a/include/linux/sched.h
+> +++ b/include/linux/sched.h
+> @@ -2073,6 +2073,22 @@ static inline void cond_resched_rcu(void)
+> =C2=A0#endif
+> =C2=A0}
+> =C2=A0
+> +#ifdef CONFIG_PREEMPT_DYNAMIC
+> +
+> +extern bool is_preempt_none(void);
+> +extern bool is_preempt_voluntary(void);
+> +extern bool is_preempt_full(void);
+> +
+> +#else
+> +
+> +#define is_preempt_none() IS_ENABLED(CONFIG_PREEMPT_NONE)
+> +#define is_preempt_voluntary() IS_ENABLED(CONFIG_PREEMPT_VOLUNTARY)
+> +#define is_preempt_full() IS_ENABLED(CONFIG_PREEMPT)
 
-Enable and configure DWC3 and QUSB2 PHY to enable USB
-functionality on the Redmi Note 7.
+I think that should be IS_ENABLED(CONFIG_PREEMPTION), see c1a280b68d4e.
 
-Signed-off-by: Alexey Min <alexey.min@gmail.com>
-Co-developed-by: Dang Huynh <danct12@riseup.net>
-Signed-off-by: Dang Huynh <danct12@riseup.net>
----
- .../boot/dts/qcom/sdm660-xiaomi-lavender.dts  | 25 +++++++++++++++++++
- 1 file changed, 25 insertions(+)
+Noticed while applying the series to an RT tree, where tglx
+has done that replacement to the powerpc spot your next patch diddles.
 
-diff --git a/arch/arm64/boot/dts/qcom/sdm660-xiaomi-lavender.dts b/arch/arm64/boot/dts/qcom/sdm660-xiaomi-lavender.dts
-index 712392545c2e..bf7f334b0b5c 100644
---- a/arch/arm64/boot/dts/qcom/sdm660-xiaomi-lavender.dts
-+++ b/arch/arm64/boot/dts/qcom/sdm660-xiaomi-lavender.dts
-@@ -80,6 +80,15 @@ framebuffer_mem: memory@9d400000 {
- 			no-map;
- 		};
- 	};
-+
-+	/*
-+	 * Until we hook up type-c detection, we
-+	 * have to stick with this. But it works.
-+	 */
-+	extcon_usb: extcon-usb {
-+		compatible = "linux,extcon-usb-gpio";
-+		id-gpio = <&tlmm 58 GPIO_ACTIVE_HIGH>;
-+	};
- };
- 
- &blsp1_uart2 {
-@@ -96,6 +105,13 @@ &pon_resin {
- 	linux,code = <KEY_VOLUMEDOWN>;
- };
- 
-+&qusb2phy {
-+	status = "okay";
-+
-+	vdd-supply = <&vreg_l1b_0p925>;
-+	vdda-phy-dpdm-supply = <&vreg_l7b_3p125>;
-+};
-+
- &rpm_requests {
- 	pm660l-regulators {
- 		compatible = "qcom,rpm-pm660l-regulators";
-@@ -401,3 +417,12 @@ &sdhc_2 {
- &tlmm {
- 	gpio-reserved-ranges = <8 4>;
- };
-+
-+&usb3 {
-+	status = "okay";
-+};
-+
-+&usb3_dwc3 {
-+	dr_mode = "peripheral";
-+	extcon = <&extcon_usb>;
-+};
--- 
-2.33.1
-
+	-Mike
