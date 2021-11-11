@@ -2,213 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A890144D2C3
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Nov 2021 08:56:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9661844D2C6
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Nov 2021 08:57:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231838AbhKKH70 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Nov 2021 02:59:26 -0500
-Received: from conssluserg-04.nifty.com ([210.131.2.83]:65413 "EHLO
-        conssluserg-04.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229543AbhKKH7Y (ORCPT
+        id S232002AbhKKH7s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Nov 2021 02:59:48 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:60288 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231874AbhKKH7r (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Nov 2021 02:59:24 -0500
-Received: from mail-pl1-f180.google.com (mail-pl1-f180.google.com [209.85.214.180]) (authenticated)
-        by conssluserg-04.nifty.com with ESMTP id 1AB7uDA1003690;
-        Thu, 11 Nov 2021 16:56:13 +0900
-DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-04.nifty.com 1AB7uDA1003690
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
-        s=dec2015msa; t=1636617373;
-        bh=Yh4dHmNoLRUEfNn1E1TmtAcfvTEbIzduOLR5UEpm+ic=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=QAWPiglmzRe+4uMvMo/eqDZicK8jVuW8lCohIRUX7iWby9VTYXgC42+3p271em4ln
-         YcosvMsMKGeLJ5XEL3ko5MTnbYIgZnhid7Ae4jrGf+lbWLjuD1BLMu7j9BKhqp2m5I
-         AKNM7h7dNeFmJr+HXz3pn1JqzNO3w4LRb2nkVQheGYiBUd+y7SYLJIdduZIl7xMUgk
-         jSMiVKvu2lu7C3kx3kyISmfCWhF2BZObVyZpj5r9xbO3hgu5+ug0Pd5ea5hpIVstqq
-         Donm+9KD7+L5mCAufi+QkW+8jl5I4f1DiPSuZ/ZAsy9JczKuDszXYyva1Z8Zkx8NAm
-         Otx6FFHhmBVKw==
-X-Nifty-SrcIP: [209.85.214.180]
-Received: by mail-pl1-f180.google.com with SMTP id u17so5111054plg.9;
-        Wed, 10 Nov 2021 23:56:13 -0800 (PST)
-X-Gm-Message-State: AOAM530MqpO/xA8Ex/28eLY2nmAD5aDld1pqcjj08n0H/N0kzdyhWogW
-        tuHwYRDOU80yQf4adjs9PXpL0MoFv3jwyMBerL4=
-X-Google-Smtp-Source: ABdhPJyonjSTNck/X7CMgvN+M7qMoB9AhvyOs+DyI8P/3wfqqpf0lnV+ZRqttBo1wWxyVVOtWQVxaCpXgKqLmoNT6yY=
-X-Received: by 2002:a17:902:bc85:b0:143:954e:8548 with SMTP id
- bb5-20020a170902bc8500b00143954e8548mr3152872plb.82.1636617372510; Wed, 10
- Nov 2021 23:56:12 -0800 (PST)
+        Thu, 11 Nov 2021 02:59:47 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1636617418;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=IsiWJOCukmBcK7kCfQJuDEL0VlH6Lf2OFetW684iiSs=;
+        b=AS93FhjhlQse0Y2HpjfSq7SbRCqWLPtLpCN5jvPZK58X2pHEK/CpLzgJjGvj0WlQiKEPgi
+        zYTvuR94oHZTujQcFgtUifwi+rPs5WKe3JBhxQpYbVVy1ZrpHNl43DLTgjPdrY5/vFmOVh
+        gJhRAz+3lGryR/FbF2v+l1wTZAeN6Ck=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-456-npEDT5IMMd-nhiWZMui2aQ-1; Thu, 11 Nov 2021 02:56:55 -0500
+X-MC-Unique: npEDT5IMMd-nhiWZMui2aQ-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id C6AD919251A2;
+        Thu, 11 Nov 2021 07:56:53 +0000 (UTC)
+Received: from localhost (unknown [10.39.193.105])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id A7CE45C1B4;
+        Thu, 11 Nov 2021 07:56:46 +0000 (UTC)
+From:   Cornelia Huck <cohuck@redhat.com>
+To:     Randy Dunlap <rdunlap@infradead.org>,
+        Jason Gunthorpe <jgg@nvidia.com>,
+        kernel test robot <lkp@intel.com>
+Cc:     kbuild-all@lists.01.org, linux-kernel@vger.kernel.org,
+        Alex Williamson <alex.williamson@redhat.com>,
+        Eric Auger <eric.auger@redhat.com>, kvm@vger.kernel.org
+Subject: Re: drivers/vfio/vfio.c:293: warning: expecting prototype for
+ Container objects(). Prototype was for vfio_container_get() instead
+In-Reply-To: <38a9cb92-a473-40bf-b8f9-85cc5cfc2da4@infradead.org>
+Organization: Red Hat GmbH
+References: <202111102328.WDUm0Bl7-lkp@intel.com>
+ <20211110164256.GY1740502@nvidia.com>
+ <38a9cb92-a473-40bf-b8f9-85cc5cfc2da4@infradead.org>
+User-Agent: Notmuch/0.33.1 (https://notmuchmail.org)
+Date:   Thu, 11 Nov 2021 08:56:45 +0100
+Message-ID: <87v90z86rm.fsf@redhat.com>
 MIME-Version: 1.0
-References: <20211105023815.85784-1-masahiroy@kernel.org> <20211110084927.GA5976@alpha.franken.de>
- <CAK7LNASKBJ6BT+PD7=KhGZ6wPfY7maEaj5g0rtkEhfmfxjxWuA@mail.gmail.com> <20211110185218.GB13827@alpha.franken.de>
-In-Reply-To: <20211110185218.GB13827@alpha.franken.de>
-From:   Masahiro Yamada <masahiroy@kernel.org>
-Date:   Thu, 11 Nov 2021 16:55:35 +0900
-X-Gmail-Original-Message-ID: <CAK7LNAQu+FMw+MxVg=roydAP+vZBvZ9-ussC5C6TN=SL6HN6NA@mail.gmail.com>
-Message-ID: <CAK7LNAQu+FMw+MxVg=roydAP+vZBvZ9-ussC5C6TN=SL6HN6NA@mail.gmail.com>
-Subject: Re: [PATCH] mips: decompressor: do not copy source files while building
-To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-Cc:     "open list:BROADCOM NVRAM DRIVER" <linux-mips@vger.kernel.org>,
-        Alexander Lobakin <alobakin@pm.me>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Paul Cercueil <paul@crapouillou.net>,
-        Xingxing Su <suxingxing@loongson.cn>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        zhaoxiao <zhaoxiao@uniontech.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 11, 2021 at 3:52 AM Thomas Bogendoerfer
-<tsbogend@alpha.franken.de> wrote:
+On Wed, Nov 10 2021, Randy Dunlap <rdunlap@infradead.org> wrote:
+
+> On 11/10/21 8:42 AM, Jason Gunthorpe wrote:
+>> On Wed, Nov 10, 2021 at 11:12:39PM +0800, kernel test robot wrote:
+>>> Hi Jason,
+>>>
+>>> FYI, the error/warning still remains.
+>> 
+>> This is just a long standing kdoc misuse.
+>> 
+>> vfio is not W=1 kdoc clean.
+>> 
+>> Until someone takes a project to fix this comprehensively there is not
+>> much point in reporting new complaints related the existing mis-use..
 >
-> On Thu, Nov 11, 2021 at 02:02:32AM +0900, Masahiro Yamada wrote:
-> > On Wed, Nov 10, 2021 at 5:56 PM Thomas Bogendoerfer
-> > <tsbogend@alpha.franken.de> wrote:
-> > >
-> > > On Fri, Nov 05, 2021 at 11:38:14AM +0900, Masahiro Yamada wrote:
-> > > > As commit 7ae4a78daacf ("ARM: 8969/1: decompressor: simplify libfdt
-> > > > builds") stated, copying source files during the build time may not
-> > > > end up with as clean code as expected.
-> > > >
-> > > > Do similar for mips to clean up the Makefile and .gitignore.
-> > > >
-> > > > Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
-> > > > ---
-> > > >
-> > > >  arch/mips/boot/compressed/.gitignore   |  3 ---
-> > > >  arch/mips/boot/compressed/Makefile     | 12 ------------
-> > > >  arch/mips/boot/compressed/ashldi3.c    |  2 ++
-> > > >  arch/mips/boot/compressed/bswapsi.c    |  2 ++
-> > > >  arch/mips/boot/compressed/uart-ath79.c |  2 ++
-> > > >  scripts/remove-stale-files             |  5 +++++
-> > > >  6 files changed, 11 insertions(+), 15 deletions(-)
-> > > >  delete mode 100644 arch/mips/boot/compressed/.gitignore
-> > > >  create mode 100644 arch/mips/boot/compressed/ashldi3.c
-> > > >  create mode 100644 arch/mips/boot/compressed/bswapsi.c
-> > > >  create mode 100644 arch/mips/boot/compressed/uart-ath79.c
-> > > >
-> > > > diff --git a/arch/mips/boot/compressed/.gitignore b/arch/mips/boot/compressed/.gitignore
-> > > > deleted file mode 100644
-> > > > index d358395614c9..000000000000
-> > > > --- a/arch/mips/boot/compressed/.gitignore
-> > > > +++ /dev/null
-> > > > @@ -1,3 +0,0 @@
-> > > > -# SPDX-License-Identifier: GPL-2.0-only
-> > > > -ashldi3.c
-> > > > -bswapsi.c
-> > > > diff --git a/arch/mips/boot/compressed/Makefile b/arch/mips/boot/compressed/Makefile
-> > > > index 3548b3b45269..e6584dab2360 100644
-> > > > --- a/arch/mips/boot/compressed/Makefile
-> > > > +++ b/arch/mips/boot/compressed/Makefile
-> > > > @@ -50,20 +50,8 @@ vmlinuzobjs-$(CONFIG_MIPS_ALCHEMY)            += $(obj)/uart-alchemy.o
-> > > >  vmlinuzobjs-$(CONFIG_ATH79)                     += $(obj)/uart-ath79.o
-> > > >  endif
-> > > >
-> > > > -extra-y += uart-ath79.c
-> > > > -$(obj)/uart-ath79.c: $(srctree)/arch/mips/ath79/early_printk.c
-> > > > -     $(call cmd,shipped)
-> > > > -
-> > > >  vmlinuzobjs-$(CONFIG_KERNEL_XZ) += $(obj)/ashldi3.o
-> > > >
-> > > > -extra-y += ashldi3.c
-> > > > -$(obj)/ashldi3.c: $(obj)/%.c: $(srctree)/lib/%.c FORCE
-> > > > -     $(call if_changed,shipped)
-> > > > -
-> > > > -extra-y += bswapsi.c
-> > > > -$(obj)/bswapsi.c: $(obj)/%.c: $(srctree)/arch/mips/lib/%.c FORCE
-> > > > -     $(call if_changed,shipped)
-> > > > -
-> > > >  targets := $(notdir $(vmlinuzobjs-y))
-> > > >
-> > > >  targets += vmlinux.bin
-> > > > diff --git a/arch/mips/boot/compressed/ashldi3.c b/arch/mips/boot/compressed/ashldi3.c
-> > > > new file mode 100644
-> > > > index 000000000000..f7bf6a7aae31
-> > > > --- /dev/null
-> > > > +++ b/arch/mips/boot/compressed/ashldi3.c
-> > > > @@ -0,0 +1,2 @@
-> > > > +// SPDX-License-Identifier: GPL-2.0-only
-> > > > +#include "../../../../lib/ashldi3.c"
-> > > > diff --git a/arch/mips/boot/compressed/bswapsi.c b/arch/mips/boot/compressed/bswapsi.c
-> > > > new file mode 100644
-> > > > index 000000000000..fdb9c6476904
-> > > > --- /dev/null
-> > > > +++ b/arch/mips/boot/compressed/bswapsi.c
-> > > > @@ -0,0 +1,2 @@
-> > > > +// SPDX-License-Identifier: GPL-2.0-only
-> > > > +#include "../../lib/bswapsi.c"
-> > > > diff --git a/arch/mips/boot/compressed/uart-ath79.c b/arch/mips/boot/compressed/uart-ath79.c
-> > > > new file mode 100644
-> > > > index 000000000000..d686820921be
-> > > > --- /dev/null
-> > > > +++ b/arch/mips/boot/compressed/uart-ath79.c
-> > > > @@ -0,0 +1,2 @@
-> > > > +// SPDX-License-Identifier: GPL-2.0-only
-> > > > +#include "../../ath79/early_printk.c"
-> > > > diff --git a/scripts/remove-stale-files b/scripts/remove-stale-files
-> > > > index eb630ee287c3..c534fe1eac16 100755
-> > > > --- a/scripts/remove-stale-files
-> > > > +++ b/scripts/remove-stale-files
-> > > > @@ -28,4 +28,9 @@ if [ -n "${building_out_of_srctree}" ]; then
-> > > >       do
-> > > >               rm -f arch/arm/boot/compressed/${f}
-> > > >       done
-> > > > +
-> > > > +     for f in uart-ath79.c ashldi3.c bswapsi.c
-> > > > +     do
-> > > > +             rm -f arch/mips/boot/compressed/${f}
-> > > > +     done
-> > >
-> > > hmm, isn't this the wrong action now that these files have been added
-> > > to git ?
-> > >
-> > > Thomas.
-> >
-> >
-> > Please note that the entire code block is enclosed by:
-> >
-> > if [ -n "${building_out_of_srctree}" ]; then
-> >            ...
-> > fi
-> >
-> >
-> > "building_out_of_srctree" is set when you are doing
-> > out-of-tree build  (O=<output-dir>).
-> >
-> > So, only the generated files are removed.
+> Hi,
 >
-> but there aren't copied/generated any longer or I'm missing someting ?
+> Can we just remove all misused "/**" comments in vfio.c until
+> someone cares enough to use proper kernel-doc there?
 >
-> Anyway I've applied your patch to mips-next with changes to also cover
+> ---
+> From: Randy Dunlap <rdunlap@infradead.org>
+> Subject: [PATCH] vfio/vfio: remove all kernel-doc notation
 >
-> https://patchwork.kernel.org/project/linux-mips/patch/20211110030944.6733-1-rdunlap@infradead.org/
+> vfio.c abuses (misuses) "/**", which indicates the beginning of
+> kernel-doc notation in the kernel tree. This causes a bunch of
+> kernel-doc complaints about this source file, so quieten all of
+> them by changing all "/**" to "/*".
 >
+> vfio.c:236: warning: This comment starts with '/**', but isn't a kernel-doc comment. Refer Documentation/doc-guide/kernel-doc.rst
+>   * IOMMU driver registration
+> vfio.c:236: warning: missing initial short description on line:
+>   * IOMMU driver registration
+> vfio.c:295: warning: expecting prototype for Container objects(). Prototype was for vfio_container_get() instead
+> vfio.c:317: warning: expecting prototype for Group objects(). Prototype was for __vfio_group_get_from_iommu() instead
+> vfio.c:496: warning: Function parameter or member 'device' not described in 'vfio_device_put'
+> vfio.c:496: warning: expecting prototype for Device objects(). Prototype was for vfio_device_put() instead
+> vfio.c:599: warning: This comment starts with '/**', but isn't a kernel-doc comment. Refer Documentation/doc-guide/kernel-doc.rst
+>   * Async device support
+> vfio.c:599: warning: missing initial short description on line:
+>   * Async device support
+> vfio.c:693: warning: This comment starts with '/**', but isn't a kernel-doc comment. Refer Documentation/doc-guide/kernel-doc.rst
+>   * VFIO driver API
+> vfio.c:693: warning: missing initial short description on line:
+>   * VFIO driver API
+> vfio.c:835: warning: This comment starts with '/**', but isn't a kernel-doc comment. Refer Documentation/doc-guide/kernel-doc.rst
+>   * Get a reference to the vfio_device for a device.  Even if the
+> vfio.c:835: warning: missing initial short description on line:
+>   * Get a reference to the vfio_device for a device.  Even if the
+> vfio.c:969: warning: This comment starts with '/**', but isn't a kernel-doc comment. Refer Documentation/doc-guide/kernel-doc.rst
+>   * VFIO base fd, /dev/vfio/vfio
+> vfio.c:969: warning: missing initial short description on line:
+>   * VFIO base fd, /dev/vfio/vfio
+> vfio.c:1187: warning: This comment starts with '/**', but isn't a kernel-doc comment. Refer Documentation/doc-guide/kernel-doc.rst
+>   * VFIO Group fd, /dev/vfio/$GROUP
+> vfio.c:1187: warning: missing initial short description on line:
+>   * VFIO Group fd, /dev/vfio/$GROUP
+> vfio.c:1540: warning: This comment starts with '/**', but isn't a kernel-doc comment. Refer Documentation/doc-guide/kernel-doc.rst
+>   * VFIO Device fd
+> vfio.c:1540: warning: missing initial short description on line:
+>   * VFIO Device fd
+> vfio.c:1615: warning: This comment starts with '/**', but isn't a kernel-doc comment. Refer Documentation/doc-guide/kernel-doc.rst
+>   * External user API, exported by symbols to be linked dynamically.
+> vfio.c:1615: warning: missing initial short description on line:
+>   * External user API, exported by symbols to be linked dynamically.
+> vfio.c:1663: warning: This comment starts with '/**', but isn't a kernel-doc comment. Refer Documentation/doc-guide/kernel-doc.rst
+>   * External user API, exported by symbols to be linked dynamically.
+> vfio.c:1663: warning: missing initial short description on line:
+>   * External user API, exported by symbols to be linked dynamically.
+> vfio.c:1742: warning: Function parameter or member 'caps' not described in 'vfio_info_cap_add'
+> vfio.c:1742: warning: Function parameter or member 'size' not described in 'vfio_info_cap_add'
+> vfio.c:1742: warning: Function parameter or member 'id' not described in 'vfio_info_cap_add'
+> vfio.c:1742: warning: Function parameter or member 'version' not described in 'vfio_info_cap_add'
+> vfio.c:1742: warning: expecting prototype for Sub(). Prototype was for vfio_info_cap_add() instead
+> vfio.c:2276: warning: This comment starts with '/**', but isn't a kernel-doc comment. Refer Documentation/doc-guide/kernel-doc.rst
+>   * Module/class support
+> vfio.c:2276: warning: missing initial short description on line:
+>   * Module/class support
+>
+> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+> Reported-by: kernel test robot <lkp@intel.com>
+> Cc: Jason Gunthorpe <jgg@nvidia.com>
+> Cc: Alex Williamson <alex.williamson@redhat.com>
+> Cc: Eric Auger <eric.auger@redhat.com>
+> Cc: Cornelia Huck <cohuck@redhat.com>
+> Cc: kvm@vger.kernel.org
+> ---
+>   drivers/vfio/vfio.c |   28 ++++++++++++++--------------
+>   1 file changed, 14 insertions(+), 14 deletions(-)
 
+It's been like that since the code was introduced, these were probably
+never intended to be kerneldoc comments.
 
-Your conversion is wrong.
+Reviewed-by: Cornelia Huck <cohuck@redhat.com>
 
-The original code:
-
-$(obj)/bswapdi.c: $(obj)/%.c: $(srctree)/arch/mips/lib/%.c FORCE
-        $(call if_changed,shipped)
-
-
-copied mips-specific library code
-(arch/mips/lib/bswapdi.c)
-
-
-Now, you do
-
-#include "../../../../lib/ashldi3.c"
-
-, which wraps the generic library code
-(lib/ashldi3.c)
-
-
-
-
-
-
-
--- 
-Best Regards
-Masahiro Yamada
