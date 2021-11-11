@@ -2,76 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E99D44D026
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Nov 2021 03:53:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 58C7344D028
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Nov 2021 03:55:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234618AbhKKC4l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Nov 2021 21:56:41 -0500
-Received: from thorn.bewilderbeest.net ([71.19.156.171]:38099 "EHLO
-        thorn.bewilderbeest.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234604AbhKKC4j (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Nov 2021 21:56:39 -0500
-Received: from hatter.bewilderbeest.net (97-113-240-219.tukw.qwest.net [97.113.240.219])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        (Authenticated sender: zev)
-        by thorn.bewilderbeest.net (Postfix) with ESMTPSA id 76A00407;
-        Wed, 10 Nov 2021 18:53:50 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bewilderbeest.net;
-        s=thorn; t=1636599230;
-        bh=UxlRwr40WBjszXqnUlD1ucaCTdcWrwtOkgrw3DJK1DA=;
-        h=From:To:Cc:Subject:Date:From;
-        b=iBDLSNOKN5rrtw+PCljwdjBmZ6hLpG+mIUtMjL4DDRQBM0YUSzOAwOuZ2pgk2E1bE
-         dcdw4OPDTMDGiz7XGeiMNNOX9WE53tTY9jgj6/sLzSEyn+mmLWlp1+QIHnKi3YrK3c
-         1o9qC+OWdsOebJrrT0xZ/wjYw9KS0ntNFwMHj2qM=
-From:   Zev Weiss <zev@bewilderbeest.net>
-To:     linux-hwmon@vger.kernel.org
-Cc:     Zev Weiss <zev@bewilderbeest.net>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Jean Delvare <jdelvare@suse.com>,
-        Denis Pauk <pauk.denis@gmail.com>,
-        Bernhard Seibold <mail@bernhard-seibold.de>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Oleksandr Natalenko <oleksandr@natalenko.name>,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] hwmon: (nct6775) mask out bank number in nct6775_wmi_read_value()
-Date:   Wed, 10 Nov 2021 18:53:38 -0800
-Message-Id: <20211111025339.27520-1-zev@bewilderbeest.net>
-X-Mailer: git-send-email 2.33.1
+        id S234646AbhKKC6G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Nov 2021 21:58:06 -0500
+Received: from mail.kernel.org ([198.145.29.99]:60484 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234617AbhKKC6F (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Nov 2021 21:58:05 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3F0AD6103C;
+        Thu, 11 Nov 2021 02:55:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1636599316;
+        bh=atxczb/M0ONR08OuoKea1OCi+2gc/bRkfsLdlJ0nmDE=;
+        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
+        b=V0oSFPo9DbOlvlOYaloWsm/FbpJSCA2+P8W6xp49nVXQvFJpkQFDuDXf5E+XR3aMD
+         S5Nk0XUVc8+3iNKQQHJYWwYULUkehUAiLQQ93yfjVQTgcaQaOhmW4UkMX0CBvck2Of
+         SNVC0rdaNQ4PAgfJOUM23zt/4qYxcSWIHWAkiml6z0x7KQBdtSgDvXCKjBuDcGqeP1
+         ube6bGqkUL7mM1/a1VwIze154veXq27ye7jM/U4cQzI05T3x6mzvX3t7QmRzvumNh3
+         cHczocvrwKxiZKRweRykqVQfTeBPPVl7FYFBNEyCcG+gcWdGSwV40/7RZY8jj4lNli
+         gRu6LfOH7E9gQ==
+Message-ID: <94df4c660532a6bf414b6bbd8e25c3ea2e4eda5b.camel@kernel.org>
+Subject: Re: [PATCH V2] x86/sgx: Fix free page accounting
+From:   Jarkko Sakkinen <jarkko@kernel.org>
+To:     Reinette Chatre <reinette.chatre@intel.com>,
+        dave.hansen@linux.intel.com, tglx@linutronix.de, bp@alien8.de,
+        mingo@redhat.com, linux-sgx@vger.kernel.org, x86@kernel.org
+Cc:     seanjc@google.com, tony.luck@intel.com, hpa@zytor.com,
+        linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Date:   Thu, 11 Nov 2021 04:55:14 +0200
+In-Reply-To: <794a7034-f6a7-4aff-7958-b1bd959ced24@intel.com>
+References: <b2e69e9febcae5d98d331de094d9cc7ce3217e66.1636487172.git.reinette.chatre@intel.com>
+         <8e0bb87f05b79317a06ed2d8ab5e2f5cf6132b6a.camel@kernel.org>
+         <794a7034-f6a7-4aff-7958-b1bd959ced24@intel.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.40.4-1 
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The first call to nct6775_asuswmi_read() in nct6775_wmi_read_value()
-had been passing the full bank+register number instead of just the
-lower 8 bits.  It didn't end up actually causing problems because the
-second argument of that function is a u8 anyway, but it seems
-preferable to be explicit about it at the call site (and consistent
-with the rest of the code).
+On Wed, 2021-11-10 at 10:51 -0800, Reinette Chatre wrote:
+> sgx_should_reclaim() would only succeed when sgx_nr_free_pages goes=20
+> below the watermark. Once sgx_nr_free_pages becomes corrupted there is=
+=20
+> no clear way in which it can correct itself since it is only ever=20
+> incremented or decremented.
 
-Signed-off-by: Zev Weiss <zev@bewilderbeest.net>
-Fixes: 3fbbfc27f955 ("hwmon: (nct6775) Support access via Asus WMI")
----
- drivers/hwmon/nct6775.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+So one scenario would be:
 
-diff --git a/drivers/hwmon/nct6775.c b/drivers/hwmon/nct6775.c
-index 93dca471972e..57ce8633a725 100644
---- a/drivers/hwmon/nct6775.c
-+++ b/drivers/hwmon/nct6775.c
-@@ -1527,7 +1527,7 @@ static u16 nct6775_wmi_read_value(struct nct6775_data *data, u16 reg)
- 
- 	nct6775_wmi_set_bank(data, reg);
- 
--	err = nct6775_asuswmi_read(data->bank, reg, &tmp);
-+	err = nct6775_asuswmi_read(data->bank, reg & 0xff, &tmp);
- 	if (err)
- 		return 0;
- 
--- 
-2.33.1
+1. CPU A does a READ of sgx_nr_free_pages.
+2. CPU B does a READ of sgx_nr_free_pages.
+3. CPU A does a STORE of sgx_nr_free_pages.
+4. CPU B does a STORE of sgx_nr_free_pages.
+
+?
+
+That does corrupt the value, yes, but I don't see anything like this
+in the commit message, so I'll have to check.
+
+I think the commit message is lacking a concurrency scenario, and the
+current transcripts are a bit useless.
+
+/Jarkko
 
