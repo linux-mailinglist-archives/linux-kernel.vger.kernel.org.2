@@ -2,135 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A677844DC1F
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Nov 2021 20:20:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5187044DC23
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Nov 2021 20:23:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233746AbhKKTXN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Nov 2021 14:23:13 -0500
-Received: from out02.mta.xmission.com ([166.70.13.232]:32866 "EHLO
-        out02.mta.xmission.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231919AbhKKTXL (ORCPT
+        id S233466AbhKKT03 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Nov 2021 14:26:29 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124]:36251 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231648AbhKKT02 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Nov 2021 14:23:11 -0500
-Received: from in02.mta.xmission.com ([166.70.13.52]:35046)
-        by out02.mta.xmission.com with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.93)
-        (envelope-from <ebiederm@xmission.com>)
-        id 1mlFcS-00G5IZ-0h; Thu, 11 Nov 2021 12:20:20 -0700
-Received: from ip68-227-160-95.om.om.cox.net ([68.227.160.95]:57210 helo=email.froward.int.ebiederm.org.xmission.com)
-        by in02.mta.xmission.com with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.93)
-        (envelope-from <ebiederm@xmission.com>)
-        id 1mlFcQ-00AYdr-VM; Thu, 11 Nov 2021 12:20:19 -0700
-From:   ebiederm@xmission.com (Eric W. Biederman)
-To:     Claudio Imbrenda <imbrenda@linux.ibm.com>
-Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org, thuth@redhat.com,
-        frankja@linux.ibm.com, borntraeger@de.ibm.com,
-        Ulrich.Weigand@de.ibm.com, heiko.carstens@de.ibm.com,
-        david@redhat.com, ultrachin@163.com, akpm@linux-foundation.org,
-        vbabka@suse.cz, brookxu.cn@gmail.com, xiaoggchen@tencent.com,
-        linuszeng@tencent.com, yihuilu@tencent.com, mhocko@suse.com,
-        daniel.m.jordan@oracle.com, axboe@kernel.dk, legion@kernel.org,
-        peterz@infradead.org, aarcange@redhat.com, christian@brauner.io,
-        tglx@linutronix.de
-References: <20211111095008.264412-1-imbrenda@linux.ibm.com>
-        <20211111095008.264412-4-imbrenda@linux.ibm.com>
-Date:   Thu, 11 Nov 2021 13:20:11 -0600
-In-Reply-To: <20211111095008.264412-4-imbrenda@linux.ibm.com> (Claudio
-        Imbrenda's message of "Thu, 11 Nov 2021 10:50:06 +0100")
-Message-ID: <874k8ixzx0.fsf@email.froward.int.ebiederm.org>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
+        Thu, 11 Nov 2021 14:26:28 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1636658618;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=YIM//77eVq+WiOzKYxB2jBwFGnXPPcmuq+7JMettZwQ=;
+        b=EG82jAyqWN0LS6sBGuc2mToWvgmRhGm3dCfJodkk/AFP27NHjdQnLNUmAarKqniqQOHxjN
+        UdJwtq/tWWChlRhQ9EKAZCZQODLr+W0HyHv1Dp/DGOfr95TaXqJoUuC+E+JfATGld/S8rk
+        pXzEL2Ds034VJ52Dof+LM2JxWF/VhZc=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-167-5ZGfFq2KPbKHgHgJQsIkOQ-1; Thu, 11 Nov 2021 14:23:35 -0500
+X-MC-Unique: 5ZGfFq2KPbKHgHgJQsIkOQ-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 1A67F81C863;
+        Thu, 11 Nov 2021 19:23:34 +0000 (UTC)
+Received: from t480s.redhat.com (unknown [10.39.194.5])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 9058679582;
+        Thu, 11 Nov 2021 19:22:44 +0000 (UTC)
+From:   David Hildenbrand <david@redhat.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     David Hildenbrand <david@redhat.com>,
+        Dave Young <dyoung@redhat.com>, Baoquan He <bhe@redhat.com>,
+        Vivek Goyal <vgoyal@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Philipp Rudo <prudo@redhat.com>, kexec@lists.infradead.org,
+        linux-mm@kvack.org, linux-fsdevel@vger.kernel.org
+Subject: [PATCH v1] proc/vmcore: don't fake reading zeroes on surprise vmcore_cb unregistration
+Date:   Thu, 11 Nov 2021 20:22:43 +0100
+Message-Id: <20211111192243.22002-1-david@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-XM-SPF: eid=1mlFcQ-00AYdr-VM;;;mid=<874k8ixzx0.fsf@email.froward.int.ebiederm.org>;;;hst=in02.mta.xmission.com;;;ip=68.227.160.95;;;frm=ebiederm@xmission.com;;;spf=neutral
-X-XM-AID: U2FsdGVkX1+bxi+7685Pl1xvVwEi+cW0dk+MrWm70bM=
-X-SA-Exim-Connect-IP: 68.227.160.95
-X-SA-Exim-Mail-From: ebiederm@xmission.com
-X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on sa06.xmission.com
-X-Spam-Level: *
-X-Spam-Status: No, score=1.5 required=8.0 tests=ALL_TRUSTED,BAYES_50,
-        DCC_CHECK_NEGATIVE,T_TM2_M_HEADER_IN_MSG,T_TooManySym_01,
-        T_TooManySym_02,T_XMDrugObfuBody_08,XMSubLong autolearn=disabled
-        version=3.4.2
-X-Spam-Report: * -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
-        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
-        *      [score: 0.4177]
-        *  0.7 XMSubLong Long Subject
-        *  0.0 T_TM2_M_HEADER_IN_MSG BODY: No description available.
-        * -0.0 DCC_CHECK_NEGATIVE Not listed in DCC
-        *      [sa06 1397; Body=1 Fuz1=1 Fuz2=1]
-        *  0.0 T_TooManySym_02 5+ unique symbols in subject
-        *  0.0 T_TooManySym_01 4+ unique symbols in subject
-        *  1.0 T_XMDrugObfuBody_08 obfuscated drug references
-X-Spam-DCC: XMission; sa06 1397; Body=1 Fuz1=1 Fuz2=1 
-X-Spam-Combo: *;Claudio Imbrenda <imbrenda@linux.ibm.com>
-X-Spam-Relay-Country: 
-X-Spam-Timing: total 492 ms - load_scoreonly_sql: 0.07 (0.0%),
-        signal_user_changed: 11 (2.2%), b_tie_ro: 10 (1.9%), parse: 1.54
-        (0.3%), extract_message_metadata: 4.2 (0.9%), get_uri_detail_list:
-        1.52 (0.3%), tests_pri_-1000: 4.5 (0.9%), tests_pri_-950: 1.43 (0.3%),
-        tests_pri_-900: 1.15 (0.2%), tests_pri_-90: 143 (29.0%), check_bayes:
-        141 (28.6%), b_tokenize: 8 (1.6%), b_tok_get_all: 8 (1.5%),
-        b_comp_prob: 2.8 (0.6%), b_tok_touch_all: 118 (24.0%), b_finish: 0.98
-        (0.2%), tests_pri_0: 302 (61.3%), check_dkim_signature: 0.50 (0.1%),
-        check_dkim_adsp: 3.1 (0.6%), poll_dns_idle: 1.06 (0.2%), tests_pri_10:
-        2.3 (0.5%), tests_pri_500: 12 (2.5%), rewrite_mail: 0.00 (0.0%)
-Subject: Re: [RFC v1 2/4] kernel/fork.c: implement new process_mmput_async syscall
-X-SA-Exim-Version: 4.2.1 (built Sat, 08 Feb 2020 21:53:50 +0000)
-X-SA-Exim-Scanned: Yes (on in02.mta.xmission.com)
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Claudio Imbrenda <imbrenda@linux.ibm.com> writes:
+In commit cc5f2704c934 ("proc/vmcore: convert oldmem_pfn_is_ram callback
+to more generic vmcore callbacks"), we added detection of surprise
+vmcore_cb unregistration after the vmcore was already opened. Once
+detected, we warn the user and simulate reading zeroes from that point on
+when accessing the vmcore.
 
-> The goal of this new syscall is to be able to asynchronously free the
-> mm of a dying process. This is especially useful for processes that use
-> huge amounts of memory (e.g. databases or KVM guests). The process is
-> allowed to terminate immediately, while its mm is cleaned/reclaimed
-> asynchronously.
->
-> A separate process needs use the process_mmput_async syscall to attach
-> itself to the mm of a running target process. The process will then
-> sleep until the last user of the target mm has gone.
->
-> When the last user of the mm has gone, instead of synchronously free
-> the mm, the attached process is awoken. The syscall will then continue
-> and clean up the target mm.
->
-> This solution has the advantage that the cleanup of the target mm can
-> happen both be asynchronous and properly accounted for (e.g. cgroups).
->
-> Tested on s390x.
->
-> A separate patch will actually wire up the syscall.
+The basic reason was that unexpected unregistration, for example, by
+manually unbinding a driver from a device after opening the
+vmcore, is not supported and could result in reading oldmem the
+vmcore_cb would have actually prohibited while registered. However,
+something like that can similarly be trigger by a user that's really
+looking for trouble simply by unbinding the relevant driver before opening
+the vmcore -- or by disallowing loading the driver in the first place.
+So it's actually of limited help.
 
-I am a bit confused.
+Currently, unregistration can only be triggered via virtio-mem when
+manually unbinding the driver from the device inside the VM; there is no
+way to trigger it from the hypervisor, as hypervisors don't allow for
+unplugging virtio-mem devices -- ripping out system RAM from a VM without
+coordination with the guest is usually not a good idea.
 
-You want the process report that it has finished immediately,
-and you want the cleanup work to continue on in the background.
+The important part is that unbinding the driver and unregistering the
+vmcore_cb while concurrently reading the vmcore won't crash the system,
+and that is handled by the rwsem.
 
-Why do you need a separate process?
+To make the mechanism more future proof, let's remove the "read zero"
+part, but leave the warning in place. For example, we could have a future
+driver (like virtio-balloon) that will contact the hypervisor to figure out
+if we already populated a page for a given PFN. Hotunplugging such a device
+and consequently unregistering the vmcore_cb could be triggered from the
+hypervisor without harming the system even while kdump is running. In that
+case, we don't want to silently end up with a vmcore that contains wrong
+data, because the user inside the VM might be unaware of the hypervisor
+action and might easily miss the warning in the log.
 
-Why not just modify the process cleanup code to keep the task_struct
-running while allowing waitpid to reap the process (aka allowing
-release_task to run)?  All tasks can be already be reaped after
-exit_notify in do_exit.
+Cc: Dave Young <dyoung@redhat.com>
+Cc: Baoquan He <bhe@redhat.com>
+Cc: Vivek Goyal <vgoyal@redhat.com>
+Cc: Andrew Morton <akpm@linux-foundation.org>
+Cc: Philipp Rudo <prudo@redhat.com>
+Cc: kexec@lists.infradead.org
+Cc: linux-mm@kvack.org
+Cc: linux-fsdevel@vger.kernel.org
+Signed-off-by: David Hildenbrand <david@redhat.com>
+---
+ fs/proc/vmcore.c | 10 ++--------
+ 1 file changed, 2 insertions(+), 8 deletions(-)
 
-I can see some reasons for wanting an opt-in.  It is nice to know all of
-a processes resources have been freed when waitpid succeeds.
+diff --git a/fs/proc/vmcore.c b/fs/proc/vmcore.c
+index 30a3b66f475a..948691cf4a1a 100644
+--- a/fs/proc/vmcore.c
++++ b/fs/proc/vmcore.c
+@@ -65,8 +65,6 @@ static size_t vmcoredd_orig_sz;
+ static DECLARE_RWSEM(vmcore_cb_rwsem);
+ /* List of registered vmcore callbacks. */
+ static LIST_HEAD(vmcore_cb_list);
+-/* Whether we had a surprise unregistration of a callback. */
+-static bool vmcore_cb_unstable;
+ /* Whether the vmcore has been opened once. */
+ static bool vmcore_opened;
+ 
+@@ -94,10 +92,8 @@ void unregister_vmcore_cb(struct vmcore_cb *cb)
+ 	 * very unusual (e.g., forced driver removal), but we cannot stop
+ 	 * unregistering.
+ 	 */
+-	if (vmcore_opened) {
++	if (vmcore_opened)
+ 		pr_warn_once("Unexpected vmcore callback unregistration\n");
+-		vmcore_cb_unstable = true;
+-	}
+ 	up_write(&vmcore_cb_rwsem);
+ }
+ EXPORT_SYMBOL_GPL(unregister_vmcore_cb);
+@@ -108,8 +104,6 @@ static bool pfn_is_ram(unsigned long pfn)
+ 	bool ret = true;
+ 
+ 	lockdep_assert_held_read(&vmcore_cb_rwsem);
+-	if (unlikely(vmcore_cb_unstable))
+-		return false;
+ 
+ 	list_for_each_entry(cb, &vmcore_cb_list, next) {
+ 		if (unlikely(!cb->pfn_is_ram))
+@@ -577,7 +571,7 @@ static int vmcore_remap_oldmem_pfn(struct vm_area_struct *vma,
+ 	 * looping over all pages without a reason.
+ 	 */
+ 	down_read(&vmcore_cb_rwsem);
+-	if (!list_empty(&vmcore_cb_list) || vmcore_cb_unstable)
++	if (!list_empty(&vmcore_cb_list))
+ 		ret = remap_oldmem_pfn_checked(vma, from, pfn, size, prot);
+ 	else
+ 		ret = remap_oldmem_pfn_range(vma, from, pfn, size, prot);
 
-Still I don't see why this whole thing isn't exit_mm returning
-the mm_sturct when a flag is set, and then having an exit_mm_late
-being called and passed the returned mm after exit_notify.
+base-commit: debe436e77c72fcee804fb867f275e6d31aa999c
+-- 
+2.31.1
 
-Or maybe something with schedule_work or task_work, instead of an
-exit_mm_late.  I don't see any practical difference.
-
-I really don't see why this needs a whole other process to connect to
-the process you care about asynchronously.
-
-This whole thing seems an exercise in spending lots of resources to free
-resources much later.
-
-Eric
