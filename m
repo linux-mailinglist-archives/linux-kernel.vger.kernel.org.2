@@ -2,97 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B059A44D8C7
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Nov 2021 15:59:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D509F44D8CE
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Nov 2021 16:01:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233791AbhKKPBx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Nov 2021 10:01:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34984 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232565AbhKKPBv (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Nov 2021 10:01:51 -0500
-Received: from mail-pj1-x1033.google.com (mail-pj1-x1033.google.com [IPv6:2607:f8b0:4864:20::1033])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 112A0C061766;
-        Thu, 11 Nov 2021 06:59:02 -0800 (PST)
-Received: by mail-pj1-x1033.google.com with SMTP id t5-20020a17090a4e4500b001a0a284fcc2so4822872pjl.2;
-        Thu, 11 Nov 2021 06:59:02 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=5Yx94cRnNd+ciU2qcn93J0WLk2cjcP9Vnc7TYoHKDSk=;
-        b=BZLmbhT6VAg8/MsrPoNrXPN1QVWYMcbmVg2kt1WS6knXM7eXnBhqIkhVCjxm8TlppO
-         GnmmXe0vo8yoFPUgMNNbbMdO2/1J1BgihYx4TzUi+7NIDCuJe39x0351TiZ3XULcg53Q
-         lcaKTRoLDcp6oxr/5Kq68WwLl3uovsNuSHlHjuzSUWwOgbrVM3GaDc9VmyFYkmgaYojN
-         ZF8IHkKTIR6qEB9XxZL7TgsCRi/6aV/HDS5vYmxL4hlaHdV3AQj6qXqrBpcSxDmBo8NB
-         Wx+cdSDdfL7FbeL8Ycm85doDprzeC6+BgX419H72ztNibczIV6TViM7MM64xeTbTfwft
-         H2ZQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=5Yx94cRnNd+ciU2qcn93J0WLk2cjcP9Vnc7TYoHKDSk=;
-        b=xqW1yM5ykcEU7TxF/4U1BTO7ETIEIG2/dmrEr9bxZeXFwPqk/NddC80VTEXLTmP25X
-         8Pf0xqILaBZsF3JqXbAHvogbr5K6q8OcnKa9Yac6nobJZXOEI5yfkWDVvccBvfgGjcTC
-         gR3Eq3K6y1ffAvBKfUsWt7PV0XtMRQb1dk1tuOAeni91FbK/p5G+uHEcxI18CRQ/0Hne
-         NQaTEeIy+VFpkpT2trZp/EaUrlUPCIgg/vs5qi2SVOKSCAqhEiU9fO+iR76ZsuN8py9I
-         DF1eYEddacJpCRUBj3l4vBrOSlpUB3dmwdPt3OnEW0Jfq1DNMj1iKJ65dgOJKL8xDPV/
-         VqTA==
-X-Gm-Message-State: AOAM531NVhWkCM6UrWLIY3gqhpUvB8FzCJEDdgBdyyevJz4/8jXgJYII
-        iqFNNJZYVwgITQvt1ro8O7s=
-X-Google-Smtp-Source: ABdhPJyDAIY5N/ATJV2ryiJf4qnri1QXa5We39zqC1IfxYri3RZTSg2fHTG6KNhDSf5MiOo0FrV29Q==
-X-Received: by 2002:a17:902:ec8f:b0:142:11aa:3974 with SMTP id x15-20020a170902ec8f00b0014211aa3974mr8290216plg.30.1636642741500;
-        Thu, 11 Nov 2021 06:59:01 -0800 (PST)
-Received: from localhost.localdomain ([94.177.118.102])
-        by smtp.gmail.com with ESMTPSA id c21sm3976106pfl.15.2021.11.11.06.58.57
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 11 Nov 2021 06:59:01 -0800 (PST)
-From:   Dongliang Mu <mudongliangabcd@gmail.com>
-To:     Alexander Aring <alex.aring@gmail.com>,
-        Stefan Schmidt <stefan@datenfreihafen.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Marcel Holtmann <marcel@holtmann.org>
-Cc:     Dongliang Mu <mudongliangabcd@gmail.com>,
-        linux-wpan@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v2] net: ieee802154: fix shift-out-of-bound in nl802154_new_interface
-Date:   Thu, 11 Nov 2021 22:58:46 +0800
-Message-Id: <20211111145847.1487241-1-mudongliangabcd@gmail.com>
-X-Mailer: git-send-email 2.25.1
+        id S233712AbhKKPEL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Nov 2021 10:04:11 -0500
+Received: from mail.kernel.org ([198.145.29.99]:41050 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230177AbhKKPEH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 11 Nov 2021 10:04:07 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0CBC1610A2;
+        Thu, 11 Nov 2021 15:01:15 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1636642878;
+        bh=uS7AjnXMAtTTLK2QXT7jX014gaj/3UVYVDR6aRPON98=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=W5ovTJil3ubv82wwqLB2yw9MZ3IehldRT16BUotCXwAerMxBegV1j1cFwKBho2lVP
+         QdNvgIHtBd4JA1W+FZ8Po7F1yz0RNmx8WSxykS6/IMoiBl6boZWXC/wqqntQ5Om+z8
+         jsmQ0wzQbVdcMRKNF+jiN8oewSCzSZCJ1c7W1E14RaLbYZZBTWMf3SL1lydAG3e1Bb
+         w9OZPkxydOKU94CwSJ7XS2JmheEy1iFBGnWFk3XdSh280A1kghB7IqeLMbtuDCuqhC
+         WdaTF28E5D2F7mjlpkYZY5qflopmvCXXmGcS/m2keY+DZQJik8/DkKbuhQv0CKU3yK
+         TI+/qiMTAku5g==
+Date:   Thu, 11 Nov 2021 15:01:12 +0000
+From:   Mark Brown <broonie@kernel.org>
+To:     Serge Semin <fancer.lancer@gmail.com>
+Cc:     nandhini.srikandan@intel.com,
+        Serge Semin <Sergey.Semin@baikalelectronics.ru>,
+        robh+dt@kernel.org, linux-spi@vger.kernel.org,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        mgross@linux.intel.com, kris.pan@intel.com,
+        kenchappa.demakkanavar@intel.com, furong.zhou@intel.com,
+        mallikarjunappa.sangannavar@intel.com, mahesh.r.vaidya@intel.com,
+        rashmi.a@intel.com
+Subject: Re: [PATCH v3 1/5] dt-bindings: spi: Add SSTE support for DWC SSI
+ controller
+Message-ID: <YY0wOBoT7X//GfQ8@sirena.org.uk>
+References: <20211111065201.10249-1-nandhini.srikandan@intel.com>
+ <20211111065201.10249-2-nandhini.srikandan@intel.com>
+ <20211111143108.pxovseqvm2ywmoc2@mobilestation>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="msY2aCMFe/FNn5o4"
+Content-Disposition: inline
+In-Reply-To: <20211111143108.pxovseqvm2ywmoc2@mobilestation>
+X-Cookie: Teutonic:
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In nl802154_new_interface, if type retrieved from info->attr is
-NL802154_IFTYPE_UNSPEC(-1), i.e., less than NL802154_IFTYPE_MAX,
-it will trigger a shift-out-of-bound bug in BIT(type) [1].
 
-Fix this by adding a condition to check if the variable type is
-larger than NL802154_IFTYPE_UNSPEC(-1).
+--msY2aCMFe/FNn5o4
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Fixes: 65318680c97c ("ieee802154: add iftypes capability")
-Signed-off-by: Dongliang Mu <mudongliangabcd@gmail.com>
----
- net/ieee802154/nl802154.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+On Thu, Nov 11, 2021 at 05:31:08PM +0300, Serge Semin wrote:
 
-diff --git a/net/ieee802154/nl802154.c b/net/ieee802154/nl802154.c
-index 277124f206e0..0613867d43ce 100644
---- a/net/ieee802154/nl802154.c
-+++ b/net/ieee802154/nl802154.c
-@@ -915,7 +915,7 @@ static int nl802154_new_interface(struct sk_buff *skb, struct genl_info *info)
- 
- 	if (info->attrs[NL802154_ATTR_IFTYPE]) {
- 		type = nla_get_u32(info->attrs[NL802154_ATTR_IFTYPE]);
--		if (type > NL802154_IFTYPE_MAX ||
-+		if (type <= NL802154_IFTYPE_UNSPEC || type > NL802154_IFTYPE_MAX ||
- 		    !(rdev->wpan_phy.supported.iftypes & BIT(type)))
- 			return -EINVAL;
- 	}
--- 
-2.25.1
+> BTW Mark, why not to have a generic DT-property which would set that
+> flag automatically by the SPI-core subsystem seeing it's indeed a
+> client device-property? For instance there can be some property like
+> "spi-cs-toggle" DT-property which when specified for the particular
+> SPI-client DT-node will make the SPI-core subsystem to set the
 
+Anything like this is fundamentally part of the wire protocol for the
+device, there's no need for an extra property on top of the compatible
+for the device and the driver really, really needs to know what's going
+on to avoid data corruption.  You could also use this feature together
+with varying the word size as an optimisation at runtime (eg, do long
+sequences of register writes in a single hardware operation by setting
+an appropriate word length to cause the controller to bounce chip
+select between writes).
+
+> SPI_CS_WORD flag of the device mode? Like it has already been done for
+> "spi-cs-high"/"spi-lsb-first"/etc.
+
+I don't think either of those properties was a good idea, there's a
+bunch of stuff in the older SPI bindings that don't make much sense.
+
+--msY2aCMFe/FNn5o4
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmGNMDgACgkQJNaLcl1U
+h9A69wf8DefUDl1wuH91X13IzD3bwWUOzWSPEV4LGsq2YCdUNo9VfRJ9L7e+J4Br
+/1tkwFSlJhOVlrRAp66Ov/kVhM+Br8h+yCrLNuOHrBqDZFPIh2N5j6MSn0+QjZNB
+SN2WX7vH2FErJLjvb4iMu+6cvYKes1K9X2yXWrHvdhvQ27EgOp+BcmrF14MtDh2Y
+Y/zsuW/fYHAXqeRWPSghPLiU/mLM8Rk2Uy4nlmOPm3OB34otL2OCvo2n5hZlKr8b
+VQVxRlA3iDMNi5dyaqKXWgupLo0CiVbY6FsdBM3DXm121jLoYFOoqbm46EEBbunq
+MjOILfeaeIW0pK9oK3KIaiwhMFmyLA==
+=kf7P
+-----END PGP SIGNATURE-----
+
+--msY2aCMFe/FNn5o4--
