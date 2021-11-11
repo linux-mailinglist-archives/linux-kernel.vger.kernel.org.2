@@ -2,109 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 33D3444D358
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Nov 2021 09:46:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A482044D364
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Nov 2021 09:49:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232492AbhKKIt0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Nov 2021 03:49:26 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34814 "EHLO
+        id S232209AbhKKIwD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Nov 2021 03:52:03 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35420 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232322AbhKKItT (ORCPT
+        with ESMTP id S229543AbhKKIwC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Nov 2021 03:49:19 -0500
-Received: from mail-pj1-x1033.google.com (mail-pj1-x1033.google.com [IPv6:2607:f8b0:4864:20::1033])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 777CEC0613F5
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Nov 2021 00:46:30 -0800 (PST)
-Received: by mail-pj1-x1033.google.com with SMTP id t5-20020a17090a4e4500b001a0a284fcc2so4079506pjl.2
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Nov 2021 00:46:30 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=X9IP5stMcpgy5gXCqX9WjtPNwYi8lKxGc0A+5eLNygg=;
-        b=CNiAPKPOiMBHgpW43nm09SBn5/Bmpj8JIF8iR7UEYJZvzNvwJUjpk4XE7wWuOqOVzm
-         0YnF3WP6krIxWDbY6vq6woejuw1WhfmDS0LLzx0p4RfIMyg17cvi+W6F1ijAGTDy/AQP
-         Z55SeuY9UlHTcBkkhtX9HCcNQ5C6I2wS0v2xbllP9VPmvPZ07FqFoxoY1q1BdZVY4GYs
-         BszFpBwGDwzob8jeIRmFcFvxkjeln8OX7w4RmoyVcIZbPknk+HkMNrcK0DVovmzJUYh6
-         PAmeqAVYFkZg0vVdqT/F4fOuQfPneCLrv+eOyqJDA+x59Z+FjQNkGSyk1781AliT95dp
-         D44g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=X9IP5stMcpgy5gXCqX9WjtPNwYi8lKxGc0A+5eLNygg=;
-        b=MCvbUc57xtN3qLagJ2RuoE+7OoKvRjnv4to3b/Y+NKzHbK4evWOcHnN2zlxEq7dMZs
-         vnJOLr4ljqC4TUfyOCxLLjiM7E8RsceBS0l6cMQWxQDs7EBHIPoAGeu1sR9PKV4dGayr
-         IqxzfDzbFyrGA0KPqYVhC6lkxrI842gyWrIjh51tbkZSQnovRl4zzl0E9TnFIbBqIRq5
-         MUggVc9oyEs7uTkclmanSJziQ+ABGp9nsL0Rora5k/VyiFN894tK2opxfv3RqRrqNOZy
-         TuqHmtDTAZ6hFiefjSANk51ieWf/B5x/EgR+7pg4x4ZmW7Cw4R+lwHA/vJCGOgT+a1tD
-         ynCQ==
-X-Gm-Message-State: AOAM533xsYS2/ghqW47DlPPZUypIy7mEqyopiNH8wZyVtiIB78KMlaia
-        siMtOC1RQw5lKmZMLckxoBXNuQ==
-X-Google-Smtp-Source: ABdhPJw0g0ToYV0M2YMiLzuBLbDuk5PxfEXneXKZZqYsGl0dLARwgp4aWHhfLpm+6YzO8Ie14KDf0w==
-X-Received: by 2002:a17:902:9694:b0:143:6f27:29ad with SMTP id n20-20020a170902969400b001436f2729admr6002968plp.46.1636620389862;
-        Thu, 11 Nov 2021 00:46:29 -0800 (PST)
-Received: from leoy-ThinkPad-X240s ([148.163.172.147])
-        by smtp.gmail.com with ESMTPSA id h23sm2215233pfn.109.2021.11.11.00.46.24
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 11 Nov 2021 00:46:29 -0800 (PST)
-Date:   Thu, 11 Nov 2021 16:46:21 +0800
-From:   Leo Yan <leo.yan@linaro.org>
-To:     German Gomez <german.gomez@arm.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
-        John Garry <john.garry@huawei.com>,
-        Will Deacon <will@kernel.org>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH v2 0/3] perf arm-spe: Add snapshot mode support
-Message-ID: <20211111084621.GC106401@leoy-ThinkPad-X240s>
-References: <20211109163009.92072-1-german.gomez@arm.com>
+        Thu, 11 Nov 2021 03:52:02 -0500
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA9F3C061766
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Nov 2021 00:49:13 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=In-Reply-To:Content-Type:MIME-Version
+        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=qQClB1RuEEhDViXhRSFuuf7aZYP052UynzMbrreOcic=; b=Zd5UfjRbODlmAtwbJ4KpmWeAmF
+        79+6ibuZAQEsaWiXNYkbfxtEXbvioSVDfJ2OkN05o5rhhO9H5digIAirsBy4aoeSVcpY249GusI0Z
+        CIB8cNEqDDyg8/jVolvzxXHfPN1A/BxZ9t5eEjwhPIqAFnBMhWOqFFo5sTHm4s56nkZnDpuP21rOb
+        LV/jUu3BlyQkOkbxg/+BQ614xGg0RrtTaGmcXFZ4fThaPD3GaD27BuHWLHKw25B5zKYwXri9O4TXL
+        QNDkCZVJXVt8KwuX5I5R31/RM1RkUc6VwZ9gsBIDImeGcW4oEYp50oOW4ZKeVQu0vl9GJijXqRD4R
+        byAROOgQ==;
+Received: from hch by bombadil.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1ml5lb-007Wsc-G6; Thu, 11 Nov 2021 08:49:07 +0000
+Date:   Thu, 11 Nov 2021 00:49:07 -0800
+From:   Christoph Hellwig <hch@infradead.org>
+To:     Jaegeuk Kim <jaegeuk@kernel.org>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Linux F2FS Dev Mailing List 
+        <linux-f2fs-devel@lists.sourceforge.net>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: [GIT PULL] f2fs update for 5.16-rc1
+Message-ID: <YYzZA7UHY6p5x3Or@infradead.org>
+References: <YYyX3oZXNAjYzG0A@google.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20211109163009.92072-1-german.gomez@arm.com>
+In-Reply-To: <YYyX3oZXNAjYzG0A@google.com>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Arnaldo,
+So question on the direct I/O code.  The perfectly fine iomap code
+wasn't merged because of the pre-existing stale data exposure issuewith
+f2fs direct I/O low-level implementation.  This doesn't seem to be fixed
+or even worked around, but instead we do get new direct I/O features?
 
-On Tue, Nov 09, 2021 at 04:30:06PM +0000, German Gomez wrote:
-> This patchset adds snapshot mode support for arm-spe.
+On Wed, Nov 10, 2021 at 08:11:10PM -0800, Jaegeuk Kim wrote:
+> Hi Linus,
 > 
->   - [PATCH 1/3] implements the minimal callbacks to support recording in
->     snapshot mode.
->   - [PATCH 2/3] implements the find_snapshot callback in order to handle
->     wrap-arounds in the AUX buffer.
->   - [PATCH 3/3] adds a test for spe snapshot mode.
-
-I have verified this patch set on Hisilicon D06 board, please consider
-to pick up:
-
-root@ubuntu:/home/leoy/linux/tools/perf# ./perf test -v 85
-85: Check Arm SPE trace data recording and synthesized samples      :
---- start ---
-test child forked, pid 17083
-Recording trace with snapshot mode /tmp/__perf_test.perf.data.MI2iX
-Looking at perf.data file for dumping samples:
-Looking at perf.data file for reporting samples:
-SPE snapshot testing: PASS
-test child finished with 0
----- end ----
-Check Arm SPE trace data recording and synthesized samples: Ok
-
-BTW, you could see German has another patch set for enabling pid/tid
-for Arm SPE tracing [1].  I confirmed that the pid/tid patch set and
-current patch set have no conflit, and don't need worry the dependency
-between these two patch sets (so you could apply two patch sets in any
-ordering).
-
-Thanks,
-Leo
-
-[1] https://lore.kernel.org/lkml/20211111072714.GB102075@leoy-ThinkPad-X240s/T/#m932fd26d54278208331d4e3c32597cf63b6d4341
+> Could you please consider this pull request?
+> 
+> Thanks,
+> 
+> The following changes since commit ff1ffd71d5f0612cf194f5705c671d6b64bf5f91:
+> 
+>   Merge tag 'hyperv-fixes-signed-20210915' of git://git.kernel.org/pub/scm/linux/kernel/git/hyperv/linux (2021-09-15 17:18:56 -0700)
+> 
+> are available in the Git repository at:
+> 
+>   git://git.kernel.org/pub/scm/linux/kernel/git/jaegeuk/f2fs.git tags/f2fs-for-5.16-rc1
+> 
+> for you to fetch changes up to 5429c9dbc9025f9a166f64e22e3a69c94fd5b29b:
+> 
+>   f2fs: fix UAF in f2fs_available_free_memory (2021-11-09 08:23:17 -0800)
+> 
+> ----------------------------------------------------------------
+> f2fs-for-5.16-rc1
+> 
+> In this cycle, we've applied relatively small number of patches which fix subtle
+> corner cases mainly, while introducing a new mount option to be able to fragment
+> the disk intentionally for performance tests.
+> 
+> Enhancement:
+>  - add a mount option to fragmente on-disk layout to understand the performance
+>  - support direct IO for multi-partitions
+>  - add a fault injection of dquot_initialize
+> 
+> Bug fix:
+>  - address some lockdep complaints
+>  - fix a deadlock issue with quota
+>  - fix a memory tuning condition
+>  - fix compression condition to improve the ratio
+>  - fix disabling compression on the non-empty compressed file
+>  - invalidate cached pages before IPU/DIO writes
+> 
+> And, we've added some minor clean-ups as usual.
+> 
+> ----------------------------------------------------------------
+> Chao Yu (7):
+>       f2fs: quota: fix potential deadlock
+>       f2fs: avoid attaching SB_ACTIVE flag during mount
+>       f2fs: introduce excess_dirty_threshold()
+>       f2fs: fix wrong condition to trigger background checkpoint correctly
+>       f2fs: multidevice: support direct IO
+>       f2fs: fix incorrect return value in f2fs_sanity_check_ckpt()
+>       f2fs: support fault injection for dquot_initialize()
+> 
+> Daeho Jeong (2):
+>       f2fs: include non-compressed blocks in compr_written_block
+>       f2fs: introduce fragment allocation mode mount option
+> 
+> Dongliang Mu (1):
+>       f2fs: fix UAF in f2fs_available_free_memory
+> 
+> Fengnan Chang (1):
+>       f2fs: compress: fix overwrite may reduce compress ratio unproperly
+> 
+> Gao Xiang (1):
+>       f2fs: fix up f2fs_lookup tracepoints
+> 
+> Hyeong-Jun Kim (2):
+>       f2fs: compress: disallow disabling compress on non-empty compressed file
+>       f2fs: invalidate META_MAPPING before IPU/DIO write
+> 
+> Jaegeuk Kim (1):
+>       f2fs: should use GFP_NOFS for directory inodes
+> 
+> Keoseong Park (1):
+>       f2fs: fix to use WHINT_MODE
+> 
+> Qing Wang (1):
+>       f2fs: replace snprintf in show functions with sysfs_emit
+> 
+> Weichao Guo (1):
+>       f2fs: set SBI_NEED_FSCK flag when inconsistent node block found
+> 
+>  Documentation/ABI/testing/sysfs-fs-f2fs | 16 ++++++
+>  Documentation/filesystems/f2fs.rst      | 19 +++++++
+>  fs/f2fs/checkpoint.c                    |  8 ++-
+>  fs/f2fs/compress.c                      | 20 +++++++
+>  fs/f2fs/data.c                          | 95 +++++++++++++++++++++++++--------
+>  fs/f2fs/f2fs.h                          | 54 ++++++++++++++++---
+>  fs/f2fs/file.c                          |  6 +--
+>  fs/f2fs/gc.c                            |  5 +-
+>  fs/f2fs/inline.c                        |  2 +-
+>  fs/f2fs/inode.c                         |  4 +-
+>  fs/f2fs/namei.c                         | 32 +++++------
+>  fs/f2fs/node.c                          |  1 +
+>  fs/f2fs/node.h                          |  5 --
+>  fs/f2fs/recovery.c                      | 14 ++---
+>  fs/f2fs/segment.c                       | 83 +++++++++++++++++++++-------
+>  fs/f2fs/segment.h                       |  1 +
+>  fs/f2fs/super.c                         | 39 +++++++++++++-
+>  fs/f2fs/sysfs.c                         | 24 ++++++++-
+>  fs/f2fs/verity.c                        |  2 +-
+>  fs/f2fs/xattr.c                         |  2 +-
+>  include/trace/events/f2fs.h             | 33 ++++++++----
+>  21 files changed, 359 insertions(+), 106 deletions(-)
+---end quoted text---
