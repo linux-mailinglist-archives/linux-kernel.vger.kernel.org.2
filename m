@@ -2,115 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E236144D7CE
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Nov 2021 15:06:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 36D1544D7CF
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Nov 2021 15:06:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233590AbhKKOJM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Nov 2021 09:09:12 -0500
-Received: from mga02.intel.com ([134.134.136.20]:13577 "EHLO mga02.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232033AbhKKOJH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S233630AbhKKOJQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Nov 2021 09:09:16 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:38230 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232630AbhKKOJH (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 11 Nov 2021 09:09:07 -0500
-X-IronPort-AV: E=McAfee;i="6200,9189,10164"; a="220121290"
-X-IronPort-AV: E=Sophos;i="5.87,226,1631602800"; 
-   d="scan'208";a="220121290"
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Nov 2021 06:05:57 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.87,226,1631602800"; 
-   d="scan'208";a="733188914"
-Received: from mylly.fi.intel.com (HELO [10.237.72.56]) ([10.237.72.56])
-  by fmsmga006.fm.intel.com with ESMTP; 11 Nov 2021 06:05:55 -0800
-Subject: Re: [PATCH] i2c: designware: I2C unexpected interrupt handling will
- cause kernel panic
-To:     huangbibo <huangbibo@uniontech.com>, linux-i2c@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org, mika.westerberg@linux.intel.com,
-        andriy.shevchenko@linux.intel.com, p.zabel@pengutronix.de
-References: <20211111065759.7423-1-huangbibo@uniontech.com>
-From:   Jarkko Nikula <jarkko.nikula@linux.intel.com>
-Message-ID: <0f203acf-7f63-e2d0-b590-120d3a7ba9c5@linux.intel.com>
-Date:   Thu, 11 Nov 2021 16:05:54 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Firefox/78.0 Thunderbird/78.14.0
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1636639578;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=mz051CqN1il+dA+L7pOpHy4Rh5epXYb1k7VG3Plo7Yk=;
+        b=KHK9xC9a4JIufdCrJRUPgV8mw2/Dte2WyYxQ6czvRCTtK/FfSqi8vxQEZUIDdjzfwRO1ab
+        OxOLo6+ae9mN5oeJxBN8kWug6QXOax43HipFaHa8LdkkeAUgvB4YYROa7Iw6jFrK+QRN3n
+        DuHaxzdSg3SSsG5d0zVjj2tpYBvXWVg=
+Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
+ [209.85.128.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-6-KpQUwJ-EMKaiNoYWE2IZLw-1; Thu, 11 Nov 2021 09:06:16 -0500
+X-MC-Unique: KpQUwJ-EMKaiNoYWE2IZLw-1
+Received: by mail-wm1-f72.google.com with SMTP id z126-20020a1c7e84000000b003335e5dc26bso1533146wmc.8
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Nov 2021 06:06:16 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:in-reply-to
+         :content-transfer-encoding;
+        bh=mz051CqN1il+dA+L7pOpHy4Rh5epXYb1k7VG3Plo7Yk=;
+        b=oeCy/3sX4ozr2nJAuT60MlWU89XqLOBL51pOKYdmx1x5FtzoEge/HkR0+iNV2PNrCn
+         qiRMC1ga5Hu8LFLegrNSEseDbqZNZA0UE7W6ahjUp0QG+7awNqfx2bcnAfb0nkICEQ+8
+         l42lkPFFZOH7uaKmNihk9sUN2vZL8pxBrpj277fBtx65Dj21SpD6IVpse/nyKCluNlXF
+         tnF3l32XqgNIGiZ0Z2RSzuxxCvRB5dVlD1MTjXeioaYdqOIUvM9jeEC5cXmjegDLJho8
+         rtj7NqWMFH6kL4lNN0+k4XvX775AERnyFujqbXwecsMLiHanxGn9oHGzA9qxgJZApYQ+
+         /E0A==
+X-Gm-Message-State: AOAM532eJB6vuRHZgW3erBrHoCD06nbZ8itbdk6TIRtJ38226TC2QupR
+        /C32+MuBysOZ0RRC5i0A0y2kThbvcah6ViaeXzooJAgABApzQSZ9R3rvMangwNiWdvKgkTVmE5Z
+        we3CvuC9ukcHFNlXfCmNSSOUa
+X-Received: by 2002:a1c:4686:: with SMTP id t128mr8412196wma.194.1636639575436;
+        Thu, 11 Nov 2021 06:06:15 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJxnmeV/GdfwYMLdDvm0j8NSwj/h0xEUckijmROHxrHDUhEC4Xmn+LcBSDQ6FmrRmXjqroy88Q==
+X-Received: by 2002:a1c:4686:: with SMTP id t128mr8412162wma.194.1636639575187;
+        Thu, 11 Nov 2021 06:06:15 -0800 (PST)
+Received: from ?IPV6:2001:b07:6468:f312:63a7:c72e:ea0e:6045? ([2001:b07:6468:f312:63a7:c72e:ea0e:6045])
+        by smtp.gmail.com with ESMTPSA id t9sm3273302wrx.72.2021.11.11.06.06.14
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 11 Nov 2021 06:06:14 -0800 (PST)
+Message-ID: <15d22245-16be-9665-4d3d-91b643ff044d@redhat.com>
+Date:   Thu, 11 Nov 2021 15:06:13 +0100
 MIME-Version: 1.0
-In-Reply-To: <20211111065759.7423-1-huangbibo@uniontech.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.2.0
+Subject: Re: [PATCH v4 0/4] KVM: x86: MSR filtering and related fixes
 Content-Language: en-US
+To:     Sean Christopherson <seanjc@google.com>
+Cc:     Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Alexander Graf <graf@amazon.com>
+References: <20211109013047.2041518-1-seanjc@google.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+In-Reply-To: <20211109013047.2041518-1-seanjc@google.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi
-
-On 11/11/21 8:57 AM, huangbibo wrote:
-> I2C interrupts may be triggered unexpectedly,
-> such as programs that directly access I2C registers,
-> bus conflicts caused by hardware design defects, etc.
-> These can cause null pointer reference errors and kernel panic.
+On 11/9/21 02:30, Sean Christopherson wrote:
+> Fix a nVMX MSR interception check bug, fix two intertwined nVMX bugs bugs
+> related to MSR filtering (one directly, one indirectly), and additional
+> cleanup on top.  The main SRCU fix from the original series was merged,
+> but these got left behind (luckily, becaues the main fix was buggy).
 > 
-> kernel log:
-> [   52.676442] Unable to handle kernel NULL pointer dereference at virtual address 0000000000000000
-> ...
-> [   52.816536] Workqueue: efi_rts_wq efi_call_rts
-> [   52.820968] pstate: 60000085 (nZCv daIf -PAN -UAO)
-> [   52.825753] pc : i2c_dw_isr+0x36c/0x5e0 [i2c_designware_core]
-> [   52.831487] lr : i2c_dw_isr+0x88/0x5e0 [i2c_designware_core]
-> [   52.837134] sp : ffff8020fff17650
-> [   52.924451] Call trace:
-> [   52.926888]  i2c_dw_isr+0x36c/0x5e0 [i2c_designware_core]
-> ...
-> [   52.957394]  gic_handle_irq+0x7c/0x178
-> [   52.961130]  el1_irq+0xb0/0x140
-> [   52.964259]  0x21291d30
-> [   52.983729]  0x21160938
-> [   52.986164]  __efi_rt_asm_wrapper+0x28/0x44
-> [   52.990335]  efi_call_rts+0x78/0x448
-> [   53.019021] Kernel panic - not syncing: Fatal exception in interrupt
+> Side topic, getting a VM to actually barf on RDMSR(SPEC_CTRL) is comically
+> difficult: -spec-ctrl,-stibp,-ssbd,-ibrs-all,-ibpb,-amd-stibp,-amd-ssbd.
+> QEMU and KVM really, really want to expose SPEC_CTRL to the guest :-)
 > 
-> Signed-off-by: huangbibo <huangbibo@uniontech.com>
-> ---
->   drivers/i2c/busses/i2c-designware-master.c | 10 ++++++++--
->   1 file changed, 8 insertions(+), 2 deletions(-)
+> v4:
+>    - Rebase to 0d7d84498fb4 ("KVM: x86: SGX must obey the ... protocol")
+>    - Fix inverted passthrough check for SPEC_CTRL. [Vitaly]
+>    - Add patch to fix MSR bitmap enabling check in helper.
 > 
-> diff --git a/drivers/i2c/busses/i2c-designware-master.c b/drivers/i2c/busses/i2c-designware-master.c
-> index 2871cf2ee8b4..6af1ede38253 100644
-> --- a/drivers/i2c/busses/i2c-designware-master.c
-> +++ b/drivers/i2c/busses/i2c-designware-master.c
-> @@ -631,8 +631,14 @@ static int i2c_dw_irq_handler_master(struct dw_i2c_dev *dev)
->   	if (stat & DW_IC_INTR_RX_FULL)
->   		i2c_dw_read(dev);
->   
-> -	if (stat & DW_IC_INTR_TX_EMPTY)
-> -		i2c_dw_xfer_msg(dev);
-> +	if (stat & DW_IC_INTR_TX_EMPTY) {
-> +		if (dev->msgs) {
-> +			i2c_dw_xfer_msg(dev);
-> +		} else { //null  pointer
-> +			i2c_dw_disable_int(dev);
-> +			return 0;
-> +		}
-> +	}
+> v3:
+>    - Rebase to 9f6090b09d66 ("KVM: MMU: make spte .... in make_spte")
+> 
+> v2:
+>    - https://lkml.kernel.org/r/20210318224310.3274160-1-seanjc@google.com
+>    - Make the macro insanity slightly less insane. [Paolo]
+> 
+> v1: https://lkml.kernel.org/r/20210316184436.2544875-1-seanjc@google.com
+> 
+> Sean Christopherson (4):
+>    KVM: nVMX: Query current VMCS when determining if MSR bitmaps are in
+>      use
+>    KVM: nVMX: Handle dynamic MSR intercept toggling
+>    KVM: VMX: Macrofy the MSR bitmap getters and setters
+>    KVM: nVMX: Clean up x2APIC MSR handling for L2
+> 
+>   arch/x86/kvm/vmx/nested.c | 164 +++++++++++++++-----------------------
+>   arch/x86/kvm/vmx/vmx.c    |  61 ++------------
+>   arch/x86/kvm/vmx/vmx.h    |  28 +++++++
+>   3 files changed, 97 insertions(+), 156 deletions(-)
+> 
 
-This feels to me we are masking the problem. It's common to have 
-i2c-designware device suspended (and registers might read all bits zero) 
-and receive interrupts from another device if interrupt line is shared. 
-Also while dev->msgs is NULL.
+Queued, thanks.
 
-I'd like to understand the issue more. Could you add 
-"i2c_designware_core.dyndbg=+p" into command line in order to see 
-dev_dbg() prints in dmesg and with following patch?
+Paolo
 
---- a/drivers/i2c/busses/i2c-designware-master.c
-+++ b/drivers/i2c/busses/i2c-designware-master.c
-@@ -720,6 +720,7 @@ static int i2c_dw_irq_handler_master(struct 
-dw_i2c_dev *dev)
-         u32 stat;
-
-         stat = i2c_dw_read_clear_intrbits(dev);
-+       dev_dbg(dev->dev, "stat %#x\n", stat);
-         if (stat & DW_IC_INTR_TX_ABRT) {
-                 dev->cmd_err |= DW_IC_ERR_TX_ABRT;
-                 dev->status = STATUS_IDLE;
-
-Jarkko
