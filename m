@@ -2,78 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F075344DB74
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Nov 2021 19:09:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9A34944DBC4
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Nov 2021 19:47:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234370AbhKKSMJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Nov 2021 13:12:09 -0500
-Received: from mail.kernel.org ([198.145.29.99]:56786 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229872AbhKKSMI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Nov 2021 13:12:08 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0C4E56113B;
-        Thu, 11 Nov 2021 18:09:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1636654159;
-        bh=HV/u1EfXH9Uhf+fDpjArZqgSvFI+Y8px6GrgulFcDSk=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:From;
-        b=WwEytMjEEFd3Zc2PhVDxY7eaS0LlnfLsGqM8y8flPEehVZjpoDBYQXmvgccggHppn
-         bJh0j9vesg0L9fOOHO+dJqDP0yTCw1H3J4SmVOswmdZ/1EUe1N4XEtvJt90mLJs5E3
-         6i3uwzcHbYpOm1rLcrB6Rw6Cysl5dcVpwrvBzc/3ImqJB8JymMHuaXOVX/p9KJdpdV
-         cKCYwC0tWcsZZXlGH2FyMAitM22U/T0RYPLnmUl27VO4GVL1gHVUGJhLbi7DNRWq/3
-         W8t08dM6LR/z+4lJP6p2VSlSrvKHyfpln9wiAndqWxHHuDLRffKhb/7Q4tJs+/NAkz
-         h2usl4uZRZI3A==
-Date:   Thu, 11 Nov 2021 12:09:17 -0600
-From:   Bjorn Helgaas <helgaas@kernel.org>
-To:     Robert =?utf-8?B?xZp3acSZY2tp?= <robert@swiecki.net>
-Cc:     Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
-        <u.kleine-koenig@pengutronix.de>,
-        linux-i2c <linux-i2c@vger.kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Linux PCI <linux-pci@vger.kernel.org>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>
-Subject: Re: [PATCH] pci: Don't call resume callback for nearly bound devices
-Message-ID: <20211111180917.GA1340883@bhelgaas>
+        id S234447AbhKKSt4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Nov 2021 13:49:56 -0500
+Received: from fanzine2.igalia.com ([213.97.179.56]:50631 "EHLO
+        fanzine.igalia.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S233575AbhKKStw (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 11 Nov 2021 13:49:52 -0500
+X-Greylist: delayed 2208 seconds by postgrey-1.27 at vger.kernel.org; Thu, 11 Nov 2021 13:49:51 EST
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=igalia.com; s=20170329;
+        h=In-Reply-To:Content-Type:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date; bh=LJIW4lxDvBNuPZdFbOnJp2QLvNQr8PhdLSeOjMlDVjo=;
+        b=YoWJ3UULnfH3LiCnVUgPfEDIbU/2naxM2IjDgqUGgH7R/jaljjaxBVpTpJsqS71Gi5vxUx3iltiiFU6+3o18YGIQU05St1K8j9A6LzpFSMKEqEHlQ1vPm+dx6EVj1S2FAiVe6VFxgp/pVvXo1c+bJE62RfDZ6ComM43BE+yHzUgoHeYJ9GCxWCPwqZdlFRUSe94F7ETN7b7ugnRfEZ0xvmrCR0eiVgVvXeVbCQ2GXGSaZ568oa93a74IYAnSP4mI+AlKZsUypwaHTxoq7XFC+vrEQk8amEym/ggI72GSBZwXK9WTasVt6tMXNXivN0XxFn4UedUY8moWr460Dg2VwA==;
+Received: from [169.239.12.53] (helo=mail.igalia.com)
+        by fanzine.igalia.com with esmtpsa 
+        (Cipher TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256) (Exim)
+        id 1mlEWo-00034E-6p; Thu, 11 Nov 2021 19:10:26 +0100
+Date:   Thu, 11 Nov 2021 17:09:20 -0100
+From:   Melissa Wen <mwen@igalia.com>
+To:     Colin Ian King <colin.i.king@googlemail.com>
+Cc:     Emma Anholt <emma@anholt.net>, David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Iago Toral Quiroga <itoral@igalia.com>,
+        dri-devel@lists.freedesktop.org, kernel-janitors@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] drm/v3d: pass null pointers using NULL
+Message-ID: <20211111180920.sbngpa4vqc2ptijs@mail.igalia.com>
+References: <20211110193635.312328-1-colin.i.king@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="325a2qr3pmdrhiay"
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAP145piKqyVepa7wnuqwntycdq6tU3ZeoUV10+nweqaXNyvs=Q@mail.gmail.com>
+In-Reply-To: <20211110193635.312328-1-colin.i.king@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 11, 2021 at 06:32:28PM +0100, Robert Święcki wrote:
-> Hi,
-> 
-> > > Thank you very much for testing this.  The patch changed the way we
-> > > use runtime PM, and the dmesg snippets below look like they could be
-> > > related to runtime PM issues.
-> > >
-> > > I think the conclusion is that we need to revert these commits:
-> > >
-> > >   b5f9c644eb1b ("PCI: Remove struct pci_dev->driver")
-> > >   2a4d9408c9e8 ("PCI: Use to_pci_driver() instead of pci_dev->driver")
-> > >
-> > > from Linus' tree.  I queued up those reverts on
-> > > https://git.kernel.org/pub/scm/linux/kernel/git/helgaas/pci.git/log/?h=for-linus
-> >
-> > These reverts appeared in the Nov 11 linux-next tree.  Any chance you
-> > could verify that they solve the i2c_dw_pci_resume() issue?  If it's
-> > easier, you can apply them from:
-> > https://git.kernel.org/pub/scm/linux/kernel/git/helgaas/pci.git/log/?h=for-linus
-> > instead.
-> 
-> Looks good with the most recent 3 commits from for-linus applied on
-> the top of the current linus' tree.
-> 
-> No problematic dmesg entries, my Win11/vfio/kvm/qemu boots fine.
 
-Thank you so much for testing this!  I'll ask Linus to pull the two
-reverts related to the i2c_dw_pci_resume() issue.  Marc and Christian
-are still hoping for a fix instead of the third revert.
+--325a2qr3pmdrhiay
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Bjorn
+On 11/10, Colin Ian King wrote:
+> There are a couple of calls that are passing null pointers as
+> integer zeros rather than NULL. Fix this by using NULL instead.
+>=20
+> Fixes: 07c2a41658c4 ("drm/v3d: alloc and init job in one shot")
+> Signed-off-by: Colin Ian King <colin.i.king@gmail.com>
+> ---
+>  drivers/gpu/drm/v3d/v3d_gem.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+>=20
+> diff --git a/drivers/gpu/drm/v3d/v3d_gem.c b/drivers/gpu/drm/v3d/v3d_gem.c
+> index e47ae40a865a..c7ed2e1cbab6 100644
+> --- a/drivers/gpu/drm/v3d/v3d_gem.c
+> +++ b/drivers/gpu/drm/v3d/v3d_gem.c
+> @@ -774,7 +774,7 @@ v3d_submit_cl_ioctl(struct drm_device *dev, void *dat=
+a,
+> =20
+>  	if (args->flags & DRM_V3D_SUBMIT_CL_FLUSH_CACHE) {
+>  		ret =3D v3d_job_init(v3d, file_priv, (void *)&clean_job, sizeof(*clean=
+_job),
+> -				   v3d_job_free, 0, 0, V3D_CACHE_CLEAN);
+> +				   v3d_job_free, 0, NULL, V3D_CACHE_CLEAN);
+>  		if (ret)
+>  			goto fail;
+> =20
+> @@ -1007,7 +1007,7 @@ v3d_submit_csd_ioctl(struct drm_device *dev, void *=
+data,
+>  		goto fail;
+> =20
+>  	ret =3D v3d_job_init(v3d, file_priv, (void *)&clean_job, sizeof(*clean_=
+job),
+> -			   v3d_job_free, 0, 0, V3D_CACHE_CLEAN);
+> +			   v3d_job_free, 0, NULL, V3D_CACHE_CLEAN);
+>  	if (ret)
+>  		goto fail;
+
+Hi Colin,
+
+This fix has been already done:
+https://cgit.freedesktop.org/drm/drm-misc/commit/?id=3D75ad021f21927311b8d4=
+54939eb248a50df92525
+
+Thanks, anyway.
+
+Melissa
+> =20
+> --=20
+> 2.32.0
+>=20
+
+--325a2qr3pmdrhiay
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEEd8WOo/JViG+Tu+XIwqF3j0dLehwFAmGNXEsACgkQwqF3j0dL
+ehwXUBAAo/tDFp8Fc7C1cDgMAUeGAJzpS1GJtU1NW1hPHWXVDhfN6hiTEwtePgkQ
+edppAzJib36jKl92E9sbpNlFVJdBxUEd123iSfeXWjSptxxqjwYgnHHbkh/X06JO
+yz/ps/qfumxJGtD36c139fFobd75AvDBcJF1OO+atV9myBOTaz0DClpukUyAh7k5
+dE3C7xCgDZg6W4KFWrm+z6F8IG0cHnJlHg/8cAJ5Y3RdsPLBVLdG3Q/5SUKQCqyu
+uhpLNh1TLE3FIz81jTmafAsGGJx3cnoVcLlR+gOYOkLcMWoAJcWL5wAXhIJauQkm
+2ga4vJaMAVBY+1Q7Ffb4XHEdZdt+6KGANfw3ubu26dpXmyhyWwSGwCasFU7aITi8
+v7MoiLWUY6T0CyepvaklWS0+qBCc1xPU7QMycb/nNePYQg5e6igo4MlCfo2V+R87
+5Gkmg4TFi3Ea3EIH+7tC4PbPH3UJW0J9L1XCY3KwjroNHla5rkRhULaDUGo2jrRC
+cLh8kcuVoyogKp3g5rmpMyrmyBLTJ5ApbvsT4PjfIy/Sxg6GFT6lcWSbl2Wbz5Pu
+QUfA080DZPDYZVAWo+vSNHr+AgtfLEnLbcJHexC12kuwpNzpAB5qk6Atynf4xbwU
+uZv0BLaGGUt6BzElqRyhst6ttRFNmUZ8M58kN2VTbbvAx0BnKcE=
+=9wCf
+-----END PGP SIGNATURE-----
+
+--325a2qr3pmdrhiay--
