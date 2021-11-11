@@ -2,67 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1559D44D444
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Nov 2021 10:46:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F58E44D449
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Nov 2021 10:47:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232475AbhKKJsy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Nov 2021 04:48:54 -0500
-Received: from mail.kernel.org ([198.145.29.99]:60422 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229668AbhKKJsx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Nov 2021 04:48:53 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A2F11610FC;
-        Thu, 11 Nov 2021 09:46:01 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1636623964;
-        bh=3OLkwWk/NZSEDP1NahNmJ1beXxLc2iY3gP7DvD9SdqQ=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Ux8c7LmhPMx5KGDLJ6Ojw2y7xqoSoecV35sIZjwzPqzL1QKOShaAsGKx69Ld4/pf7
-         44BuT/wWaXUXkZkdCEcLenUyD6XsNn5Fz9GdC+xvOkKQ9NvcJZV/7YjdObWOCntBO2
-         PvvYLzN+I949FUOnZCBuQAiss+0OszfAB8B9d1BgvyQ96/hlTJYKY+M8Yit7cEXbDg
-         ns3EK+/1Epk9PNA79YIDNi7QtEA9uyYDQx0nckxAJJX3HhpBIqxy1Ls033vkb2t3P1
-         +gIQdg+CboASafJvmX4e/g9zq7M0yZs47x+wyWYymopxybNRNkUf0X1j7nussDgLOa
-         E1b2uOFJBGh0A==
-Date:   Thu, 11 Nov 2021 11:45:56 +0200
-From:   Mike Rapoport <rppt@kernel.org>
-To:     Mark-PK Tsai <mark-pk.tsai@mediatek.com>
-Cc:     akpm@linux-foundation.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        linux@armlinux.org.uk, rppt@linux.ibm.com, tony@atomide.com,
-        wangkefeng.wang@huawei.com, yj.chiang@mediatek.com
-Subject: Re: [PATCH v3 0/4] memblock, arm: fixes for freeing of the memory map
-Message-ID: <YYzmVEmKPRmA2EOW@kernel.org>
-References: <20210630071211.21011-1-rppt@kernel.org>
- <20211111073329.13095-1-mark-pk.tsai@mediatek.com>
+        id S232636AbhKKJt6 convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 11 Nov 2021 04:49:58 -0500
+Received: from mout.kundenserver.de ([217.72.192.73]:47965 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229668AbhKKJt5 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 11 Nov 2021 04:49:57 -0500
+Received: from mail-wm1-f41.google.com ([209.85.128.41]) by
+ mrelayeu.kundenserver.de (mreue107 [213.165.67.113]) with ESMTPSA (Nemesis)
+ id 1MORVA-1n4J2i35I6-00PuZE; Thu, 11 Nov 2021 10:47:06 +0100
+Received: by mail-wm1-f41.google.com with SMTP id p3-20020a05600c1d8300b003334fab53afso3878992wms.3;
+        Thu, 11 Nov 2021 01:47:06 -0800 (PST)
+X-Gm-Message-State: AOAM5336zBAUg7YcL11oBjuAS3tkHsTA+/9PuGLgVK83mw0ZV+yczodQ
+        wc8vO9onPvXqiaPWz5K3gyNLLxP/ZhBntdmqSZQ=
+X-Google-Smtp-Source: ABdhPJytHCAvrusWObWXzwN05EvfvHYgGKkC9PhNhP9qYR3xoRRQty5Xb2cddTFTIJyn31v4h0uZFAzmnl0NkLvvoPs=
+X-Received: by 2002:a05:600c:6d2:: with SMTP id b18mr6991598wmn.98.1636624026313;
+ Thu, 11 Nov 2021 01:47:06 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211111073329.13095-1-mark-pk.tsai@mediatek.com>
+References: <20211111091123.50853-1-krzysztof.kozlowski@canonical.com>
+In-Reply-To: <20211111091123.50853-1-krzysztof.kozlowski@canonical.com>
+From:   Arnd Bergmann <arnd@arndb.de>
+Date:   Thu, 11 Nov 2021 10:46:50 +0100
+X-Gmail-Original-Message-ID: <CAK8P3a3MezegptR_-XPVm=RtOn4UYsb+TPEKjCGb-XRt9ke36A@mail.gmail.com>
+Message-ID: <CAK8P3a3MezegptR_-XPVm=RtOn4UYsb+TPEKjCGb-XRt9ke36A@mail.gmail.com>
+Subject: Re: [PATCH] ARM: s3c: include header for prototype of s3c2410_modify_misccr
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Cc:     Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        "moderated list:ARM/SAMSUNG EXYNOS ARM ARCHITECTURES" 
+        <linux-samsung-soc@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        kernel test robot <lkp@intel.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+X-Provags-ID: V03:K1:m9FBGnzcA+5320/xWvi5qaXZmde75/1th7Vy63Bfp8F3PqMcFHb
+ FxfOgwTYJaszbZeA80291gBme2xF3Q7yBiLJaf5x+tpH0IV5Fiz3LHeoPbLZpHOwohOMbcs
+ Z+I6SyzUECQ3IAfEt+ueNuvboaKIj+OHRvExfpHtD0dOWOKAz3Zan1fTyVnZQcepwherTeJ
+ kgdJyEq/psCjh7UPoWxzg==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:FRL8s1huR+Y=:qZ8r0wsFFbcw/1+z5yr6TL
+ mUqmsAaLtKhXGGCYYsfa+09n2YU2CCCLg18QcMeeJ7045cV2T7zlIKt3pZ6Cq+x/TTHLcJaId
+ FMytGVSdeU6EIseVTTG/j/SX+PwZXCsSV00CCCnVQbLMrvDqGlXO+xZKLo+a4tsKx0WulXvIx
+ Mo8aWXvSBuNYoMmwciMSxZpJRiEY4JsuZBo+OF1hi5HTXkGoU9dZ8TcJH3lJF/3CwYhO6jIRh
+ dqz3SGvpwGPqjzH6gjNNhpz0bOAABd5XK3BKXtKabGmzNJyu0HjjRu9fNTUJ3xdfs191gOpAn
+ 4/r0ipqlA09dZ2UtCPmg7sFMLb9hSNOU8ILxMjHCx60z7ORz2rGQxAv4eVaLhzWFpQg2wxQI3
+ WXToMZ4WinXoWNN2Lh/gakLQHd88G3IQMRj2lYb/IT17p3Xs5I/82NcwNxyTz+CCEnqdc3eFN
+ OZqwYUqggiRSQQkCfdbBn1QmRP1KSlHMpY83r043Zci7W/l5Y2TsiQ0r9gwqshXpkupM6CXIw
+ b7OreyUYKCVZrnLFL/aRAzjK2cPrHWF3VT3xuhpOY5NECBXDpTy9X3SZrlySuo9DlBt0Nwke3
+ aRtV4DFVddL1Wsdl9RK2jhGSEYS2CHJVFWh6jC8ngQonJJHUCHkQ4fse5sW8xGHHddqCvlowP
+ 2VRToLcohA/IPUF5cHVc8nQ+U3z69suhFZB4aeker2+s7Rh+MXvdPFAuCQnFUL+b5cvc=
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On Thu, Nov 11, 2021 at 10:11 AM Krzysztof Kozlowski
+<krzysztof.kozlowski@canonical.com> wrote:
+>
+> Include the header with prototype of s3c2410_modify_misccr to fix W=1
+> warning:
+>
+>   arch/arm/mach-s3c/gpio-samsung.c:1309:14: warning:
+>     no previous prototype for ‘s3c2410_modify_misccr’ [-Wmissing-prototypes]
+>
+> Reported-by: kernel test robot <lkp@intel.com>
+> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
 
-On Thu, Nov 11, 2021 at 03:33:29PM +0800, Mark-PK Tsai wrote:
-> Hi,
-> 
-> The lts kernel also have this issue. (we use 5.4-lts kernel.)
-> Currently we patch our custom kernel to select CONFIG_HOLES_IN_ZONE for arch arm.
-> But I think the formal solution should backport to lts.
-> 
-> Would you help to backport this patch series? (including the below commit)
+Thank you for fixing it,
 
-There were a couple of changes between 5.4 and this set, so you'd need to
-"apply" the first two patches to arm::free_unused_memmap(). Other than
-that, I don't see any pitfalls here.
+Acked-by: Arnd Bergmann <arnd@arndb.de>
 
-Feel free to CC me when you post the backported series.
- 
-> (024591f9a6e0 arm: ioremap: don't abuse pfn_valid() to check if pfn is in RAM)
-> 
-> Thanks!
+If you like, I can put it into the fixes branch of the soc tree directly,
+otherwise I expect you'll send it in a pull request later.
 
--- 
-Sincerely yours,
-Mike.
+      Arnd
