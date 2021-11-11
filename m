@@ -2,96 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6EED544DA68
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Nov 2021 17:28:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B3F744DA70
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Nov 2021 17:29:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234289AbhKKQbP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Nov 2021 11:31:15 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55924 "EHLO
+        id S234303AbhKKQcE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Nov 2021 11:32:04 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56128 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234165AbhKKQbN (ORCPT
+        with ESMTP id S234079AbhKKQcB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Nov 2021 11:31:13 -0500
-Received: from mail-io1-xd2e.google.com (mail-io1-xd2e.google.com [IPv6:2607:f8b0:4864:20::d2e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E475C061766
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Nov 2021 08:28:24 -0800 (PST)
-Received: by mail-io1-xd2e.google.com with SMTP id x10so7618856ioj.9
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Nov 2021 08:28:24 -0800 (PST)
+        Thu, 11 Nov 2021 11:32:01 -0500
+Received: from mail-io1-xd2a.google.com (mail-io1-xd2a.google.com [IPv6:2607:f8b0:4864:20::d2a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 01565C061766;
+        Thu, 11 Nov 2021 08:29:12 -0800 (PST)
+Received: by mail-io1-xd2a.google.com with SMTP id c3so7643004iob.6;
+        Thu, 11 Nov 2021 08:29:11 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linuxfoundation.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=4xuNQhveWOi8sSNT5WKsU3XgUMLXeLSD9oDb8jVVHfc=;
-        b=DHwAKSThTF3kL9XfPrWqTlsenr0vCK71zsic7Q/T0wlLgVdd7oAtKnOdtSYbBSWbmj
-         HBulcYuiUhgfCQSdOwIqnnwwefk3vFH4CMVrKpm8d09PDLekdt54nKOEbHVj+TNTdEZX
-         mNEpQQ4q2WWJw/mZj56se7zpQ8+gz5YST1bTw=
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=5HYQhTv2wk1Y66cZkSyaFhq3xaOKBxKhZAD9nmuCZN0=;
+        b=lLc5LHqijYLKo9pe1ppX2OGkA97sDfqHe5SzPaj+l/vu2BYM2FI4mF7Jaz/MObxg85
+         LC05h7vmTH4/dnSztSMehUql/bMAALLU0dVCTfe7jILhW+P8VNhw+aWMg599E2NaLKsA
+         kb6rAfZCPkVreLLiLlIiFkEHl/rrrNSMTwx5QFwzwdv090Ijds93ZGBlTBtksVRGjE5c
+         ga9oxw901FELoibQM5zDKV4AzYqoB5/02D0ntAiK/3Dp+HVosdW0Wbcr+WSC4J6yZJ5k
+         AfG8Idl79gCfAUrbTLjc765kgl0I2ksJyqcUb4vEYFKjpVCEvP4qvFVzhFIfKahXopGo
+         rFPQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=4xuNQhveWOi8sSNT5WKsU3XgUMLXeLSD9oDb8jVVHfc=;
-        b=r9kFfphAHt9fpAWqpP2XSr9tFJMWTDr7oreRVeQP37GDPQDf4+VADVrVsQX7rK6jXB
-         kIkB3ZmQIyikZ8yXUeUgmbKvikx1Vs8xNz52Uq6BKg+V8SfzVUhzac2/Rfnka/rItPzx
-         mzqnTUSS2XofQjvxXaJRH70ZSNjavXwhysbkhitEZQpUrzYIHosTgwqX9HoBaj/nCMW/
-         6CxnDhhuCAVnNKqKUR/7AtVktPRlbfbD36wiSbeCiyhupR/8tCMKtOF85hoazRbmHIUg
-         H6IZlWJnCrNB05StIrJsUIpnasQJOWiXx+m8F4T14BRn32ZQ0CGZfKxANn+6Ckdz/7r4
-         h6qA==
-X-Gm-Message-State: AOAM532QsUDcChPf/ZyHfv/NfgGmQzbiEhJyezxA/xFTj0KByI69SNnH
-        z7jJT5xGQ3VfyQh8eU9q8lUc0A==
-X-Google-Smtp-Source: ABdhPJw4Octa6XlUL9XrSSp4+hEdLchkQkFTlRKDR53o/F/JhJG3yVKWcOU6ED6B94TdzjdlaVmtew==
-X-Received: by 2002:a05:6638:24ca:: with SMTP id y10mr6284180jat.109.1636648103920;
-        Thu, 11 Nov 2021 08:28:23 -0800 (PST)
-Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
-        by smtp.gmail.com with ESMTPSA id g1sm2184590iov.23.2021.11.11.08.28.23
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 11 Nov 2021 08:28:23 -0800 (PST)
-Subject: Re: [PATCH 5.14 00/24] 5.14.18-rc1 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org
-Cc:     torvalds@linux-foundation.org, akpm@linux-foundation.org,
-        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
-        f.fainelli@gmail.com, stable@vger.kernel.org,
-        Shuah Khan <skhan@linuxfoundation.org>
-References: <20211110182003.342919058@linuxfoundation.org>
-From:   Shuah Khan <skhan@linuxfoundation.org>
-Message-ID: <a3ceb6b6-1e20-be80-767d-2e56e9e25123@linuxfoundation.org>
-Date:   Thu, 11 Nov 2021 09:28:22 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=5HYQhTv2wk1Y66cZkSyaFhq3xaOKBxKhZAD9nmuCZN0=;
+        b=0zlvc3OWt5Amob9wns2IZHIU9Fc5IT2PmH8P1NXBO4DEzAcaTyaIfcT3V/uv+kjcB7
+         W0vx/IZ1iO2mh3iWcBVdQ0kcB9EojzCMiz6o+GMKHRE7FXIdLrCnHUfXP/t0RQKoogYG
+         OujibB2BNeaMW+YS2i9Mf/ZdfIKzLHzvGhQr/fri88CiPUBQ7MMHy1gmvnlWGXeBcBEL
+         BhJCiyrkA7Mec+1qSfkT0INwb9wGXR/UcuaQFdhYrWGpMeA8zzXVLFM5+5Mj3fwGHe70
+         m0Tz6UwMka4X7Eln8u1eonsCLZnLxgiXgmtVvKDVA8wpKYa93EGz6o+SC+jY8C5u4S6+
+         bMIw==
+X-Gm-Message-State: AOAM5321vN4t7aqXl8QV0zZ+hTaVI2h7DR4TzQKSunTOV8u4GvUtcIf4
+        CFpFFIynuqS0E6s7r7SUeD6Trckwc6wRpBNbrHI=
+X-Google-Smtp-Source: ABdhPJy7Rb8khGU+5gBhv/sj76de0QiEUZvtpCVtXqGFAUpCH6X6GbpTIiQbVL/ObBoN2NXWooZtNeK/0N5rCeIUAu0=
+X-Received: by 2002:a6b:b4cc:: with SMTP id d195mr5655174iof.0.1636648151279;
+ Thu, 11 Nov 2021 08:29:11 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20211110182003.342919058@linuxfoundation.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20211111091123.50853-1-krzysztof.kozlowski@canonical.com>
+In-Reply-To: <20211111091123.50853-1-krzysztof.kozlowski@canonical.com>
+From:   Alim Akhtar <alim.akhtar@gmail.com>
+Date:   Thu, 11 Nov 2021 21:58:35 +0530
+Message-ID: <CAGOxZ50Fs1YZcCY+Go-4KqeeqdLRcwJwEHuXdDX8tTL7nWsttA@mail.gmail.com>
+Subject: Re: [PATCH] ARM: s3c: include header for prototype of s3c2410_modify_misccr
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Cc:     linux-arm-kernel@lists.infradead.org,
+        linux-samsung-soc@vger.kernel.org,
+        open list <linux-kernel@vger.kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        kernel test robot <lkp@intel.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/10/21 11:43 AM, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 5.14.18 release.
-> There are 24 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
-> 
-> Responses should be made by Fri, 12 Nov 2021 18:19:54 +0000.
-> Anything received after that time might be too late.
-> 
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.14.18-rc1.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.14.y
-> and the diffstat can be found below.
-> 
-> thanks,
-> 
-> greg k-h
-> 
+Hi Krzysztof,
 
-Compiled and booted on my test system. No dmesg regressions.
+On Thu, Nov 11, 2021 at 2:42 PM Krzysztof Kozlowski
+<krzysztof.kozlowski@canonical.com> wrote:
+>
+> Include the header with prototype of s3c2410_modify_misccr to fix W=3D1
+> warning:
+>
+>   arch/arm/mach-s3c/gpio-samsung.c:1309:14: warning:
+>     no previous prototype for =E2=80=98s3c2410_modify_misccr=E2=80=99 [-W=
+missing-prototypes]
+>
+> Reported-by: kernel test robot <lkp@intel.com>
+> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+> ---
+Reviewed-by: Alim Akhtar <alim.akhtar@samsung.com>
 
-Tested-by: Shuah Khan <skhan@linuxfoundation.org>
+>  arch/arm/mach-s3c/gpio-samsung.c | 1 +
+>  1 file changed, 1 insertion(+)
+>
+> diff --git a/arch/arm/mach-s3c/gpio-samsung.c b/arch/arm/mach-s3c/gpio-sa=
+msung.c
+> index 76ef415789f2..fda2c01f5a08 100644
+> --- a/arch/arm/mach-s3c/gpio-samsung.c
+> +++ b/arch/arm/mach-s3c/gpio-samsung.c
+> @@ -35,6 +35,7 @@
+>  #include "gpio-core.h"
+>  #include "gpio-cfg.h"
+>  #include "gpio-cfg-helpers.h"
+> +#include "hardware-s3c24xx.h"
+>  #include "pm.h"
+>
+>  int samsung_gpio_setpull_updown(struct samsung_gpio_chip *chip,
+> --
+> 2.32.0
+>
 
-thanks,
--- Shuah
+
+--=20
+Regards,
+Alim
