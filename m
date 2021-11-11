@@ -2,115 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1556544D097
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Nov 2021 05:01:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 14CBC44D09B
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Nov 2021 05:06:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233115AbhKKEEb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Nov 2021 23:04:31 -0500
-Received: from mga14.intel.com ([192.55.52.115]:14992 "EHLO mga14.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230185AbhKKEEa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Nov 2021 23:04:30 -0500
-X-IronPort-AV: E=McAfee;i="6200,9189,10164"; a="233086513"
-X-IronPort-AV: E=Sophos;i="5.87,225,1631602800"; 
-   d="scan'208";a="233086513"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Nov 2021 20:01:41 -0800
-X-IronPort-AV: E=Sophos;i="5.87,225,1631602800"; 
-   d="scan'208";a="546404054"
-Received: from mgoyal-mobl.amr.corp.intel.com (HELO [10.209.27.219]) ([10.209.27.219])
-  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Nov 2021 20:01:40 -0800
-Subject: Re: [PATCH V2] x86/sgx: Fix free page accounting
-To:     Jarkko Sakkinen <jarkko@kernel.org>,
-        "Luck, Tony" <tony.luck@intel.com>
-Cc:     Reinette Chatre <reinette.chatre@intel.com>,
-        dave.hansen@linux.intel.com, tglx@linutronix.de, bp@alien8.de,
-        mingo@redhat.com, linux-sgx@vger.kernel.org, x86@kernel.org,
-        seanjc@google.com, hpa@zytor.com, linux-kernel@vger.kernel.org,
-        stable@vger.kernel.org
-References: <b2e69e9febcae5d98d331de094d9cc7ce3217e66.1636487172.git.reinette.chatre@intel.com>
- <8e0bb87f05b79317a06ed2d8ab5e2f5cf6132b6a.camel@kernel.org>
- <794a7034-f6a7-4aff-7958-b1bd959ced24@intel.com>
- <94df4c660532a6bf414b6bbd8e25c3ea2e4eda5b.camel@kernel.org>
- <YYyNeW28jqKwD0tF@agluck-desk2.amr.corp.intel.com>
- <f99dca08d332b01daec9eed7e4a55f042b551a67.camel@kernel.org>
-From:   Dave Hansen <dave.hansen@intel.com>
-Autocrypt: addr=dave.hansen@intel.com; keydata=
- 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
- z5cecg==
-Message-ID: <bacbf33c-aade-fd16-ed95-20b1d0511752@intel.com>
-Date:   Wed, 10 Nov 2021 20:01:37 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S232632AbhKKEJY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Nov 2021 23:09:24 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58174 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231185AbhKKEJT (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Nov 2021 23:09:19 -0500
+Received: from mail-qk1-x72b.google.com (mail-qk1-x72b.google.com [IPv6:2607:f8b0:4864:20::72b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3E2EC061766;
+        Wed, 10 Nov 2021 20:06:23 -0800 (PST)
+Received: by mail-qk1-x72b.google.com with SMTP id j2so4649815qkl.7;
+        Wed, 10 Nov 2021 20:06:23 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=OLcFQVtD+zrg7PXIBfRA8cAQH7T7V2/4cfVGtfrxAq8=;
+        b=lS36aFbkIRhJuC6Cd/AAaIIRXR6DpEI+MiQBTh+HAqDGQ7SJt2kOk9H7OefPb7ebNK
+         3aaMIjZ2VlWMsGo6UecehmNcDjgJPL0cuqd0Umndtlo7lzpVLJosTFKfQ5jLQmWN+gWR
+         Jr5xvZvaie2aDWnjNWXbAbJGgix5rr9ARnzYKIC+eLHLu1eICDbrqm5BMAU1FSKAGoDN
+         49GzgVLS1AtMP3yl2OZ0HlByk+DJfaIP8+CSdmBdJiTSYsNiET6sL5V9FzCrGaRLtDUg
+         DNpaMHeGFR8f41ArSJvrUf5szRHojZN4RxBZV/DP/lerAQFp9+r2/Xy1TUACK3rmOSMW
+         l+9g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=OLcFQVtD+zrg7PXIBfRA8cAQH7T7V2/4cfVGtfrxAq8=;
+        b=WqgjKERpBcPonVVBQE9V/P66ZXnnR2iJAKlkitGeay/F2ngxMBtnsaQ5LkZUAipn1K
+         z42dIb0plTjDtDPd5ATEvilYT3mE9EY8lS8UHLdQIrDo+civqykkFjI2RP1mtECHMG9H
+         8loV0DXxvmEonIfrpUO7h9/twFcZAX4EWcbqs5WhhyJX471ccGTkgw87YWPGymvzI9up
+         VcTn51GQuxS0/yuMGTNJPGqsneqNpTKiLTuuFEwvxLmzJpR7apKn80U2jNeAFYF8eez5
+         1vxA8i5dSvB+10FwnoZi4AsL/sUhYWq3NpW4cLk51inmj4KcVU1gHdhIkHnXH2u1kdn5
+         pjzw==
+X-Gm-Message-State: AOAM530Dn7/7g7oanpf5udQSVBKRWSW51PX6GUlJtEI3racWK74UeOR4
+        V5e8VGBNniLPHgTgJUeKLz0=
+X-Google-Smtp-Source: ABdhPJwy1jkciX4+znRvqnHrGi5juDKLXSdn6bNl6om1ZBoExEpt68bOz9etkvnkVJVIPj1CjWlbwA==
+X-Received: by 2002:a37:5804:: with SMTP id m4mr3775483qkb.137.1636603582779;
+        Wed, 10 Nov 2021 20:06:22 -0800 (PST)
+Received: from [192.168.43.249] (mobile-166-172-188-236.mycingular.net. [166.172.188.236])
+        by smtp.gmail.com with ESMTPSA id p5sm1084681qtw.69.2021.11.10.20.06.21
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 10 Nov 2021 20:06:22 -0800 (PST)
+Subject: Re: [PATCH/RFC] of: Shrink struct of_device_id
+To:     Geert Uytterhoeven <geert+renesas@glider.be>,
+        Rob Herring <robh+dt@kernel.org>
+Cc:     devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linuxppc-dev@lists.ozlabs.org, linux-mips@vger.kernel.org,
+        linux-riscv@lists.infradead.org, linux-renesas-soc@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <ef59d6fd3b2201b912d5eaa7f7a037d8f9adb744.1636561068.git.geert+renesas@glider.be>
+From:   Frank Rowand <frowand.list@gmail.com>
+Message-ID: <9e20f1b0-3fc4-920a-dff4-1227f72207cf@gmail.com>
+Date:   Wed, 10 Nov 2021 23:06:20 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-In-Reply-To: <f99dca08d332b01daec9eed7e4a55f042b551a67.camel@kernel.org>
+In-Reply-To: <ef59d6fd3b2201b912d5eaa7f7a037d8f9adb744.1636561068.git.geert+renesas@glider.be>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/10/21 7:50 PM, Jarkko Sakkinen wrote:
->>               CPU_A                                 CPU_B
->>               -----                                 -----
->>          spin_lock(&nodeA->lock);              spin_lock(&nodeB->lock);
->>          ...                                   ...
->>          sgx_nr_free_pages--;  /* NOT SAFE */  sgx_nr_free_pages--;
->>
->>          spin_unlock(&nodeA->lock);            spin_unlock(&nodeB->lock);
->>
->> Maybe you missed the "NOT SAFE" hidden in the middle of
->> the picture?
->>
->> -Tony
-> For me from that the ordering is not clear. E.g. compare to
-> https://www.kernel.org/doc/Documentation/memory-barriers.txt
+Hi Geert,
 
-Jarkko,
+On 11/10/21 11:23 AM, Geert Uytterhoeven wrote:
+> Currently struct of_device_id is 196 (32-bit) or 200 (64-bit) bytes
+> large.  It contains fixed-size strings for a name, a type, and a
+> compatible value, but the first two are barely used.
+> OF device ID tables contain multiple entries, plus an empty sentinel
+> entry.
+> 
+> Statistics for my current kernel source tree:
+>   - 4487 tables with 16836 entries (3367200 bytes)
+>   - 176 names (average 6.7 max 23 chars)
+>   - 66 types (average 5.1 max 21 chars)
+>   - 12192 compatible values (average 18.0 max 45 chars)
+> Taking into account the minimum needed size to store the strings, only
+> 6.9% of the allocated space is used...
 
-Reinette's explanation looks great to me.  Something "protected" by two
-different locks is not protected at all.  I don't think we need to fret
-over this too much.
+I like the idea of using less memory (and thank you for the above data!),
+but I do not like the implementation, which reduces the size (of name at
+least - I didn't check each field) to less than what the standard allows.
 
-We don't need memory barriers or anything fancy at all to explain this.
+I have an idea of another way to accomplish the same goal, but I need to
+dig a bit to make sure I'm not shooting myself in the foot.
+
+-Frank
+
+> 
+> Reduce kernel size by reducing the sizes of the fixed strings by one
+> half.
+> 
+> This reduces the size of an ARM multi_v7_defconfig kernel by ca. 400
+> KiB.  For a typical kernel supporting a single board, you can expect to
+> save 50-100 KiB.
+> 
+> Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
+> ---
+> Notes:
+>   - While gcc complains if the non-NUL characters in a string do not fit
+>     in the available space, it does not complain if there is no space to
+>     store the string's NUL-terminator.  However, that should be caught
+>     during testing, as the affected entry won't ever match.  The kernel
+>     won't crash, as such strings will still be terminated by the
+>     sentinel in the table.
+> 
+>   - We could save even more by converting the strings from fixed-size
+>     arrays to pointers, at the expense of making it harder to mark
+>     entries __init.  Given most drivers support binding and unbinding
+>     and thus cannot use __init for of_device_id tables, perhaps that's
+>     the way to go?
+> 
+> Thanks for your comments!
+> ---
+>  include/linux/mod_devicetable.h | 6 +++---
+>  1 file changed, 3 insertions(+), 3 deletions(-)
+> 
+> diff --git a/include/linux/mod_devicetable.h b/include/linux/mod_devicetable.h
+> index ae2e75d15b219920..2bb2558d52d30d2b 100644
+> --- a/include/linux/mod_devicetable.h
+> +++ b/include/linux/mod_devicetable.h
+> @@ -266,9 +266,9 @@ struct sdw_device_id {
+>   * Struct used for matching a device
+>   */
+>  struct of_device_id {
+> -	char	name[32];
+> -	char	type[32];
+> -	char	compatible[128];
+> +	char	name[24];
+> +	char	type[24];
+> +	char	compatible[48];
+>  	const void *data;
+>  };
+>  
+> 
+
