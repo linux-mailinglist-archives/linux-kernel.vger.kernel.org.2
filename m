@@ -2,95 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C626F44D3FE
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Nov 2021 10:24:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6865644D3FF
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Nov 2021 10:24:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232347AbhKKJ1I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Nov 2021 04:27:08 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43570 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229668AbhKKJ1E (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Nov 2021 04:27:04 -0500
-Received: from mail-pg1-x52a.google.com (mail-pg1-x52a.google.com [IPv6:2607:f8b0:4864:20::52a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 68AE3C061766;
-        Thu, 11 Nov 2021 01:24:15 -0800 (PST)
-Received: by mail-pg1-x52a.google.com with SMTP id q126so4658180pgq.13;
-        Thu, 11 Nov 2021 01:24:15 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=jz69xIULvh5ivMKWg9VPctkb7RXwt7Ipe5sMHPCXLOA=;
-        b=Z/TBS3VabaqAPHwNPaw9i4qGg3d5sDiqv1AAfx7yS7weTwJLz6lp9ExS86LfqXp9zz
-         lr/Q/81o4A8P8sOxTEb3mGQrc/m8kkaWNHf22SYJqKjROZWXvxXlxy3ItqiVZRIpRsuy
-         VfPo9UhImCxpq/E+9VFFoCjoiBh+DUm7+ynvlaQA0Ei7gY5sHpEokPHwALIkikJFZE+G
-         IfzjaO/ES9IxLuIu9hsCX50VbknMRDWBa7yIzKNQlHPZ+p3Qjc/YKa7dttZ6rDxT9X96
-         klaghGOpbKgxKLW8M9Lnhfp4o6BUPb7opFCBnr5JIHuiAV7zJSLQ7vSNxT1U7nN+6z6M
-         exOA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=jz69xIULvh5ivMKWg9VPctkb7RXwt7Ipe5sMHPCXLOA=;
-        b=WfqTwCRU9Sw+POa0jdSWhVjT/xrRNSIt/s274bGIJGKQtST7eqw2fACeZ3cSCTPUVI
-         J9lyl8aIxoe3q2EJrONDXX+nr8gz5QB0polO5qR4RV9dcSueOBDiC4BOoEk6YNJtpyTy
-         WkLzKto+1sU9e52LRHkgXtW+IbhtqCAsTtYAl05Gv2yLhMG0Apt9mATOchYJsa8BWfAj
-         8f7vh+Tadn6jjBYV/rwWOGfYr6So66q6Wqf8hL1yMzWxQezj9d+zUju6zL3ZP5Faf8Ib
-         FvetMJlVOTg1Yf908karK4cFvfDaxdzEtFNrs+Y+SSd4TnDeY1l342uCmch9sEPKPbpS
-         FKug==
-X-Gm-Message-State: AOAM531Rw7Rx9MkVBvOzNOX536qUwEarh67YvXJL+2zBxlANCZzS+h9j
-        FhOgPcE757ujLCT38htqDPA=
-X-Google-Smtp-Source: ABdhPJx6KnI3PRIq3MoPDsKWdX0lKsiIMEP+VGxelbE/VoZU30ku2LycRqr2IP+r8xX/aMJTN08JcQ==
-X-Received: by 2002:a63:d74a:: with SMTP id w10mr3715944pgi.341.1636622654956;
-        Thu, 11 Nov 2021 01:24:14 -0800 (PST)
-Received: from localhost.localdomain ([193.203.214.57])
-        by smtp.gmail.com with ESMTPSA id i185sm2379525pfg.80.2021.11.11.01.24.13
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 11 Nov 2021 01:24:14 -0800 (PST)
-From:   cgel.zte@gmail.com
-X-Google-Original-From: luo.penghao@zte.com.cn
-To:     Eric Dumazet <edumazet@google.com>
-Cc:     "David S . Miller" <davem@davemloft.net>,
-        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
-        David Ahern <dsahern@kernel.org>,
-        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, luo penghao <luo.penghao@zte.com.cn>,
-        Zeal Robot <zealci@zte.com.cn>
-Subject: [PATCH linux-next] ipv6: Remove assignment to 'newinet'
-Date:   Thu, 11 Nov 2021 09:23:46 +0000
-Message-Id: <20211111092346.159994-1-luo.penghao@zte.com.cn>
-X-Mailer: git-send-email 2.25.1
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        id S232505AbhKKJ1d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Nov 2021 04:27:33 -0500
+Received: from mail.kernel.org ([198.145.29.99]:57208 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230021AbhKKJ1c (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 11 Nov 2021 04:27:32 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 90CC761267;
+        Thu, 11 Nov 2021 09:24:42 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1636622683;
+        bh=W1x0ssHgAn4wHCs14v8ZVBBVxbqa2b9C3CY3UVtS1Cg=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:From;
+        b=Hq0SnEJjZLEqEUNzARMJOFeklPhUhzYouxWv5LWZb2uyzGzV929v3svuWe1dx8mz4
+         YYhlJCBNSiYvBf5OrInXoK+oFpJhPG+kSMI+8h3BZFcYvKL9P+k/kwPe1IfqxZ7bvJ
+         fdaHj+258EydEPILbsN2BxxfszG5+T4Pq2GVb5lH1ptncdKJkRt1w7N5WH0huAFkZL
+         Djzizx4ewUqHSFpKbO2YaQZ4t6/Pz4iHDp5WX4L4/HRtB1BcdxWUG5FJWEtMDfHSRj
+         +w//ziwV0eBuWEk7b/rKUercnXkqpJaXMm/tBQE0ojmw8dxApNmwAd6lZ7vc6qpnFV
+         R8JvJmM2mmfNQ==
+From:   SeongJae Park <sj@kernel.org>
+To:     Xin Hao <xhao@linux.alibaba.com>
+Cc:     sjpark@amazon.de, akpm@linux-foundation.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH V2 0/4] mm/damon: Do some small changes
+Date:   Thu, 11 Nov 2021 09:24:40 +0000
+Message-Id: <20211111092440.11576-1-sj@kernel.org>
+X-Mailer: git-send-email 2.17.1
+In-Reply-To: <cover.1636610337.git.xhao@linux.alibaba.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: luo penghao <luo.penghao@zte.com.cn>
+Hello Xin,
 
-The same statement will overwrite it afterwards. meanwhile, the
-assignment is in the if statement, the variable will not be used
+On Thu, 11 Nov 2021 14:07:00 +0800 Xin Hao <xhao@linux.alibaba.com> wrote:
 
-Reported-by: Zeal Robot <zealci@zte.com.cn>
-Signed-off-by: luo penghao <luo.penghao@zte.com.cn>
----
- net/ipv6/tcp_ipv6.c | 1 -
- 1 file changed, 1 deletion(-)
+> These four patches are mainly to do some small changes.
+> 
+> V1 -> V2
+> 	Add reviewed by SeongJae Park
+> 	Add two new patches
+> V1:
+> https://lore.kernel.org/linux-mm/cover.1636546262.git.xhao@linux.alibaba.com/
+> 
+> 
+> Xin Hao (4):
+>   mm/damon: Unified access_check function naming rules
+>   mm/damon: Add 'age' of region tracepoint support
+>   mm/damon/core: Using function abs() instead of diff_of()
+>   mm/damon: Remove some no need func definitions in damon.h file
 
-diff --git a/net/ipv6/tcp_ipv6.c b/net/ipv6/tcp_ipv6.c
-index b03dd02..80f1fbb 100644
---- a/net/ipv6/tcp_ipv6.c
-+++ b/net/ipv6/tcp_ipv6.c
-@@ -1261,7 +1261,6 @@ static struct sock *tcp_v6_syn_recv_sock(const struct sock *sk, struct sk_buff *
- 
- 		inet_sk(newsk)->pinet6 = tcp_inet6_sk(newsk);
- 
--		newinet = inet_sk(newsk);
- 		newnp = tcp_inet6_sk(newsk);
- 		newtp = tcp_sk(newsk);
- 
--- 
-2.15.2
+Overall, all patches looks good to me, though I asked[1] a trivial change in
+the commit message of the second patch.
+
+Also, I found one interesting thing.  It seems you are wrapping body of the
+commit messages at <75 columns[2]?  That's obviously neither a problem, nor
+even trivial nit.  But... I'd prefer the messages look more consistent with
+others.
+
+[1] https://lore.kernel.org/linux-mm/20211111082034.13323-1-sj@kernel.org/
+[2] https://docs.kernel.org/process/submitting-patches.html?highlight=75#the-canonical-patch-format
 
 
+Thanks,
+SJ
+
+> 
+>  include/linux/damon.h        | 25 ++-----------------------
+>  include/trace/events/damon.h |  7 +++++--
+>  mm/damon/core.c              |  6 ++----
+>  mm/damon/vaddr.c             |  8 ++++----
+>  4 files changed, 13 insertions(+), 33 deletions(-)
+> 
+> --
+> 2.31.0
