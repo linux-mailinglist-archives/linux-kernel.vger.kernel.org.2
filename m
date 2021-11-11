@@ -2,111 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6674744D075
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Nov 2021 04:36:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 487EA44D076
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Nov 2021 04:38:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231676AbhKKDjN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Nov 2021 22:39:13 -0500
-Received: from mout.gmx.net ([212.227.17.22]:47519 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230256AbhKKDjM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Nov 2021 22:39:12 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1636601745;
-        bh=+K8Pws57ECthHaz3IU9isSEu+78rlyPTi2Ia/AIqnIU=;
-        h=X-UI-Sender-Class:Subject:From:To:Cc:Date:In-Reply-To:References;
-        b=bCYCzn56z6pRPNd/ozQJMTaxqymfZr4cERB+j+6nSXcJespXzxo76y/26Q5qvVu/7
-         K/Rk+T8og5irxiViBUjKKb2QazeDffW8YYXrwgI3cTh3dEMxBhHjMroziH1B2Q7fDC
-         qdeS2KEiYqiApI/d3nV9B+TQVhlnENvnQCDaAMu8=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from homer.fritz.box ([212.114.172.107]) by mail.gmx.net (mrgmx105
- [212.227.17.168]) with ESMTPSA (Nemesis) id 1MV67y-1nAxUc3DDa-00S6B4; Thu, 11
- Nov 2021 04:35:44 +0100
-Message-ID: <803a905890530ea1b86db6ac45bd1fd940cf0ac3.camel@gmx.de>
-Subject: Re: [PATCH v2 2/5] preempt/dynamic: Introduce preempt mode accessors
-From:   Mike Galbraith <efault@gmx.de>
-To:     Valentin Schneider <valentin.schneider@arm.com>,
-        linux-kernel@vger.kernel.org, kasan-dev@googlegroups.com,
-        linuxppc-dev@lists.ozlabs.org, linux-kbuild@vger.kernel.org
-Cc:     Marco Elver <elver@google.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Michal Marek <michal.lkml@markovi.net>,
-        Nick Desaulniers <ndesaulniers@google.com>
-Date:   Thu, 11 Nov 2021 04:35:39 +0100
-In-Reply-To: <a7c704c2ae77e430d7f0657c5db664f877263830.camel@gmx.de>
-References: <20211110202448.4054153-1-valentin.schneider@arm.com>
-         <20211110202448.4054153-3-valentin.schneider@arm.com>
-         <a7c704c2ae77e430d7f0657c5db664f877263830.camel@gmx.de>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.42.0 
+        id S232138AbhKKDlC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Nov 2021 22:41:02 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52072 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230185AbhKKDlB (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Nov 2021 22:41:01 -0500
+Received: from mail-yb1-xb29.google.com (mail-yb1-xb29.google.com [IPv6:2607:f8b0:4864:20::b29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E6ABC061766
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Nov 2021 19:38:13 -0800 (PST)
+Received: by mail-yb1-xb29.google.com with SMTP id y68so6460015ybe.1
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Nov 2021 19:38:13 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance-com.20210112.gappssmtp.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=yOsFvx3uBmNrzTbP+yFE5JKWjrB+4rqD5uI1hcAhx6E=;
+        b=QCAinz1h8etTsGUK/7abyyo7bFt7h+bw3B1DdXB6u15ssBnB5HPur4a/hTbQ4ZQtSn
+         PWHhz8bYwu9+3Wg1nrtkaKbwV6u14PGbek5nfjfYdJmcJdimBhR/dZ6dwq8GcCgOXtHc
+         WZMs2I3Ed7202wgRqEwk69c8Dqiqiv6gbOzCkgDpa2zoHOryzo+kjLUtXF0t8rTBPwmy
+         rq5dwKYG1KOXH+IKXQSYdtuqJezL3JBMRoyh8t17jA7uZu6MviIqzUdNE1nRtQWc8tv0
+         eOMSx3qgKrZqbwOQoVR0yKpkbul+u+MvYPLQkH/Cfduo8gTShi6ArtWbx2ldJOz0oGB/
+         pT/A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=yOsFvx3uBmNrzTbP+yFE5JKWjrB+4rqD5uI1hcAhx6E=;
+        b=btoIQg4OqLyLw0DRJx0Yu6PCuLfzoO0TquDJzQYvqfnGPpym9zy8DCyhY0qrRqHy59
+         qRodg0K8vGTh85oGCnsj6eZxs7YdcnfE1wrI/g2AgcGuiWp993489lNJ7DKHihwY0HrY
+         rs0WxPL6Z+wwERAEK2diTd5C0OcIKoS7hQuIQ7vAQaXuYBkcsEfrx1s4zIo+QJ2e/B/r
+         4aExwxw/CZYj+HgFQBsL2qkXHJKjxIu2166pgAQqwrp4+vJ1o1qBC6tS1wbvfSBM8Gps
+         vmsHxotvdmKc31lZ2HwKWgSUdKgZGIZ60BALQgolSJMoj4nYc0k2yoP/vx4vRko0aysv
+         QO0w==
+X-Gm-Message-State: AOAM531WMWtLi0u/ywP3oCmLU1Omz0wNCLR5gX0rDLnkHzhafzf+siHv
+        6flsXltDqDsh4ievFpFeWpMQyqpGFCgJx4myqXXLfUDSzz/aEuwk
+X-Google-Smtp-Source: ABdhPJzKSIZk0rZsyKz7G4gja5tr4jOpR2PI3QokR/n2GMSumujMwDmGpqPDgHXcKIfE//WiHJswSo6oYRrtvEJ1Wh0=
+X-Received: by 2002:a05:6902:1342:: with SMTP id g2mr5020180ybu.419.1636601892568;
+ Wed, 10 Nov 2021 19:38:12 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:m5Cbra52DdXMAE7H+VG8AT7kX3qlvfgdfpx6gGyNLbPdqVV0j9i
- pqzgjniLDEtfh+GNR7V7YSZ1CReg05G3m1fkgnm9KcORv5LF22UU7ZiSxoWjxnlG4T3f68i
- XuDCvFG+2//qny6q6ZpXwZsJrPVLYHdDi/3SO9LVn3FgF7eJmr1NNUTbMSzhK4R5tO9M4Az
- tNyjyk0ii+TyMFksaQtAA==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:EYpd5k5MlBQ=:AkAFq4JduQ34cfsAEeLQGz
- NQzFKr2UtLN2lACkzrMnzk5KbDLPM/2n315ZQ22SkVf9sdJ8eKFWFfhTBJniSyEXb8o2kkGYi
- 30GSabsPni/S9Q7uHbLgQm2QN3Bh/nkQVeXLMk5oourWqhdhORVGlJneREUmyAa32WHtIJUDW
- 7IyPbNrPb3CN9INF4hfQr6A6gwGwvNXHf1aukUQR+ypLXD2nzOdlsx++iA0lHBMo/uFrSBPtl
- ShTrPStgk5McKTcTbLYAybfAg2XcOldDyf7XdkIlE+1U+H9BHOtkoi9ltfupzDm3cnr/B35Ow
- Huhrsz7/QWgjK3Ul/mhV9GGtUb+CawUMwNdPIoa5tDxkbu7OdPOTsvwJ1LBdcmPKi/e5rB76c
- FxcEhQdwRXAkju6sUORkllHVyaxYKMMqYWNAgyUKpEZv9pCdWKQlqPWiTwHnHmok1vu1I0MjD
- LUqkLRjVIiDhRdCi09LvEXl4wwrbuuGm0BER4VLGbBzJHzNPSTvWghPzqvMLZiCOPt9UeZB6P
- lnYz7r1avfa1yKQB4x/GHPT3emYVqXgt+TMVBHBQL6lhBehPBuu5dNIb0Hhz/wKUTog/qJjO2
- ktp4KvN9ZNL5dzaRzywa/UVcU6v7eVxcDMP1TUJe0dFdCfcp7Cxh59P0VcbZX1UZgDhOhNuTq
- 39xT1X2FnoyMMViwjbOT0gQgDwyJistV4LvtQBg69lg0Vn7kaElF8yRjQxmv8eEvQmmlUpM+s
- ZcaWA9ImTq9ogvsCF0AQhfJzMRmlbj32luOz91G8uIfKoCAQhYXbz3Vh9lfwvzqa1At2O6ufP
- Smu1pAxrq4rngh6JOVwmiERIfwXA6TDfwZbcyo+M+MGBdwotmKsYxBcay3LJ1kSxFq7iDrKrH
- rrYtPp1rkpR9NvzJ4vkzeOuIGqr9/sD+2mZWvKUeDoYFKlfEowfTSnHrWiQRgL+NUDx2y1RSx
- /eQkuKECO6xGGJyuV1uUFdNqDFH7V8b9lS+agRqtmxAw0hGSZ0BKSJD/g7104U3YxMvN4HzZx
- kDDrhFf2SUQDBfNgdtYhnx0/0PnAfQF0tifLCW5u380Oafrps70dyG0DbWyp7N+7iAheuzkum
- jvbGqXv/XL7eBY=
+References: <20211111032204.3721-1-hanyihao@vivo.com>
+In-Reply-To: <20211111032204.3721-1-hanyihao@vivo.com>
+From:   Muchun Song <songmuchun@bytedance.com>
+Date:   Thu, 11 Nov 2021 11:37:36 +0800
+Message-ID: <CAMZfGtWVVLKO76OmtVp+xOL1waTxBb05tvWXgsnf=k7nFF4J2A@mail.gmail.com>
+Subject: Re: [PATCH] mm/damon/vaddr: remove swap_ranges() and replace it with swap()
+To:     Yihao Han <hanyihao@vivo.com>
+Cc:     SeongJae Park <sj@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>, kernel@vivo.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 2021-11-11 at 04:16 +0100, Mike Galbraith wrote:
-> On Wed, 2021-11-10 at 20:24 +0000, Valentin Schneider wrote:
-> >
-> > diff --git a/include/linux/sched.h b/include/linux/sched.h
-> > index 5f8db54226af..0640d5622496 100644
-> > --- a/include/linux/sched.h
-> > +++ b/include/linux/sched.h
-> > @@ -2073,6 +2073,22 @@ static inline void cond_resched_rcu(void)
-> > =C2=A0#endif
-> > =C2=A0}
-> > =C2=A0
-> > +#ifdef CONFIG_PREEMPT_DYNAMIC
-> > +
-> > +extern bool is_preempt_none(void);
-> > +extern bool is_preempt_voluntary(void);
-> > +extern bool is_preempt_full(void);
-> > +
-> > +#else
-> > +
-> > +#define is_preempt_none() IS_ENABLED(CONFIG_PREEMPT_NONE)
-> > +#define is_preempt_voluntary()
-> > IS_ENABLED(CONFIG_PREEMPT_VOLUNTARY)
-> > +#define is_preempt_full() IS_ENABLED(CONFIG_PREEMPT)
+On Thu, Nov 11, 2021 at 11:22 AM Yihao Han <hanyihao@vivo.com> wrote:
 >
-> I think that should be IS_ENABLED(CONFIG_PREEMPTION), see
-> c1a280b68d4e.
+> Remove 'swap_ranges()' and replace it with the macro 'swap()'
+> defined in 'include/linux/minmax.h' to simplify code and improve efficiency
 >
-> Noticed while applying the series to an RT tree, where tglx
-> has done that replacement to the powerpc spot your next patch
-> diddles.
+> Reviewed-by: SeongJae Park <sj@kernel.org>
+> Reviewed-by: Muchun Song <songmuchun@bytedance.com>
+> Signed-off-by: Yihao Han <hanyihao@vivo.com>
 
-Damn, then comes patch 5 properly differentiating PREEMPT/PREEMPT_RT.
+Actually, I and SeongJae didn't provide Reviewed-by in the
+previous thread. But this patch looks good to me, so
 
-	-Mike
+Reviewed-by: Muchun Song <songmuchun@bytedance.com>
 
+BTW, the subject missed a "v2" tag (and changes log
+should include what you have changed since v1).
+
+Thanks.
+
+> ---
+>  mm/damon/vaddr.c | 16 +++-------------
+>  1 file changed, 3 insertions(+), 13 deletions(-)
+>
+> diff --git a/mm/damon/vaddr.c b/mm/damon/vaddr.c
+> index 35fe49080ee9..814dc811d7c4 100644
+> --- a/mm/damon/vaddr.c
+> +++ b/mm/damon/vaddr.c
+> @@ -97,16 +97,6 @@ static unsigned long sz_range(struct damon_addr_range *r)
+>         return r->end - r->start;
+>  }
+>
+> -static void swap_ranges(struct damon_addr_range *r1,
+> -                       struct damon_addr_range *r2)
+> -{
+> -       struct damon_addr_range tmp;
+> -
+> -       tmp = *r1;
+> -       *r1 = *r2;
+> -       *r2 = tmp;
+> -}
+> -
+>  /*
+>   * Find three regions separated by two biggest unmapped regions
+>   *
+> @@ -145,9 +135,9 @@ static int __damon_va_three_regions(struct vm_area_struct *vma,
+>                 gap.start = last_vma->vm_end;
+>                 gap.end = vma->vm_start;
+>                 if (sz_range(&gap) > sz_range(&second_gap)) {
+> -                       swap_ranges(&gap, &second_gap);
+> +                       swap(gap, second_gap);
+>                         if (sz_range(&second_gap) > sz_range(&first_gap))
+> -                               swap_ranges(&second_gap, &first_gap);
+> +                               swap(second_gap, first_gap);
+>                 }
+>  next:
+>                 last_vma = vma;
+> @@ -158,7 +148,7 @@ static int __damon_va_three_regions(struct vm_area_struct *vma,
+>
+>         /* Sort the two biggest gaps by address */
+>         if (first_gap.start > second_gap.start)
+> -               swap_ranges(&first_gap, &second_gap);
+> +               swap(first_gap, second_gap);
+>
+>         /* Store the result */
+>         regions[0].start = ALIGN(start, DAMON_MIN_REGION);
+> --
+> 2.17.1
+>
